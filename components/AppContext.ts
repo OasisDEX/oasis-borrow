@@ -121,6 +121,7 @@ export function setupAppContext() {
     context$,
     onEveryBlock$,
     txHelpers$,
+    readonlyAccount$
   }
 }
 
