@@ -1,0 +1,39 @@
+[
+    {
+        "scope": "https://api.testwyre.com:443",
+        "method": "POST",
+        "filteringPath": "\\/v3\\/orders\\/reserve\\?timestamp=.*",
+        "status": 200,
+        "response": {
+            "url": "https://pay.testwyre.com/purchase?accountId=AC_TJM7VTUR2JG&reservation=ER932DDTLQTNBH9XULN9&amount=1&sourceCurrency=USD&dest=ethereum%3A0x1234567890123456789012345678901234567890&destCurrency=DAI&redirectUrl=&hideTrackBtn=1&failureRedirectUrl=",
+            "reservation": "FOO"
+        },
+        "rawHeaders": [
+            "Date",
+            "Tue, 28 Jul 2020 17:06:08 GMT",
+            "Content-Type",
+            "application/json; charset=utf-8",
+            "Transfer-Encoding",
+            "chunked",
+            "Connection",
+            "close",
+            "X-Powered-By",
+            "Ben Franklin",
+            "Access-Control-Allow-Origin",
+            "*",
+            "Access-Control-Allow-Methods",
+            "GET, POST, DELETE",
+            "Access-Control-Max-Age",
+            "86400",
+            "Access-Control-Allow-Headers",
+            "Authorization, Content-Type, X-Api-Key, X-Api-Signature",
+            "X-Frame-Options",
+            "DENY",
+            "Strict-Transport-Security",
+            "max-age=31536000; preload",
+            "Content-Security-Policy",
+            "frame-ancestors 'none';"
+        ],
+        "responseIsBinary": false
+    }
+]

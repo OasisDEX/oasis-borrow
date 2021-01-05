@@ -1,0 +1,13 @@
+version: "3.2"
+services:
+  postgres:
+    image: postgres:12
+    container_name: postgres-oasis-app
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_HOST=localhost
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=db
+    ports:
+      - "5432:5432"

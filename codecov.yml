@@ -1,0 +1,15 @@
+codecov:
+  token: to-be-added
+
+ignore:
+  - "**/*.tsx"
+  - "**/*.test.ts"
+  - "components/*.ts"
+  - "components/*.ts"
+  - "helpers/*.ts"
+  - "components/blockchain/*.ts"
+  - "components/blockchain/**/*.ts"
+  - "components/content/*.ts"
+  - "helpers/icons/*.ts"
+  - "helpers/loadingIndicator/*.ts"
+  - "helpers/text/*.ts"

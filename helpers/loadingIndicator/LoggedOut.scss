@@ -1,0 +1,27 @@
+@import "../Mixins";
+
+.block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  flex-grow: 1;
+}
+
+// block version elements
+.icon {
+  margin-right: 0.5em;
+  color: $dark-grayish-blue;
+}
+
+.mainInfo {
+  display: flex;
+  align-items: center;
+}
+
+.annotate {
+  margin-top: 0.8em;
+  font-size: 15px;
+}
