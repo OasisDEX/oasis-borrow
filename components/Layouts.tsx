@@ -50,7 +50,7 @@ export function AppLayout({ children, backLink, CustomLogoWithBack }: AppLayoutP
   return (
     <BasicLayout header={<AppHeader {...{ backLink, CustomLogoWithBack }} />}>
       <WithConnection>
-        <WithTermsOfService>{children}</WithTermsOfService>
+        {children}
       </WithConnection>
     </BasicLayout>
   )

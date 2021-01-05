@@ -79,8 +79,8 @@ export function LogoWithBack({
       <BackArrow />
     </AppLink>
   ) : (
-    <Logo />
-  )
+        <Logo />
+      )
 }
 
 export function AppHeader({
@@ -101,7 +101,6 @@ export function AppHeader({
         {web3Context?.status === 'connected' || web3Context?.status === 'connectedReadonly' ? (
           <>
             {CustomLogoWithBack ? <CustomLogoWithBack /> : <LogoWithBack {...{ backLink }} />}
-            <AccountButton />
           </>
         ) : null}
       </BasicHeader>
