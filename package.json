@@ -37,7 +37,7 @@
     "@oasisdex/transactions": "^0.0.16",
     "@oasisdex/utils": "^0.0.6",
     "@oasisdex/web3-context": "^0.0.9",
-    "@prisma/client": "^2.0.0-beta.6",
+    "@prisma/client": "^2.14.0",
     "@types/ethereumjs-tx": "^2.0.0",
     "@types/mixpanel-browser": "^2.23.1",
     "@types/morgan": "^1.9.0",
@@ -138,7 +138,7 @@
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@prisma/cli": "^2.0.0-beta.6",
+    "@prisma/cli": "^2.14.0",
     "@storybook/react": "^5.3.19",
     "@types/bn.js": "^4.11.1",
     "@types/body-parser": "^1.19.0",
