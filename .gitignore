@@ -8,6 +8,7 @@ coverage
 .yalc
 yalc.lock
 .vscode
+.log
 
 public/precache.*.*.js
 public/sw.js
