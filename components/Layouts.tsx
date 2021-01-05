@@ -7,8 +7,6 @@ import { WithChildren } from 'helpers/types'
 import React from 'react'
 import { Container, Flex, SxStyleProp } from 'theme-ui'
 
-import { NoticeAppHomescreen } from './cookies/NoticeAppHomescreen'
-import { NoticePrivacy } from './cookies/NoticePrivacy'
 import { WithTermsOfService } from './termsOfService/TermsOfService'
 
 interface BasicLayoutProps extends WithChildren {
@@ -41,8 +39,6 @@ export function BasicLayout({ header, footer, children, sx, variant }: BasicLayo
         <Flex sx={{ width: '100%', height: '100%' }}>{children}</Flex>
       </Container>
       {footer}
-      {isAppContextAvailable() && <NoticePrivacy />}
-      {isAppContextAvailable() && <NoticeAppHomescreen />}
     </Flex>
   )
 }
