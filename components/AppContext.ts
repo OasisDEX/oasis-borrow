@@ -1,4 +1,4 @@
-import { SendFunction } from '@oasisdex/transactions'
+import { createSend, SendFunction } from '@oasisdex/transactions'
 import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
 import {
@@ -12,8 +12,9 @@ import {
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import { Observable } from 'rxjs'
 import { filter, map, shareReplay } from 'rxjs/operators'
-
+import { mapValues } from 'lodash'
 import { networksById } from './blockchain/config'
+import { createGasPrice$ } from 'components/blockchain/prices'
 import {
   ContextConnected,
   createAccount$,
@@ -96,7 +97,7 @@ export function setupAppContext() {
 
   const web3ContextConnected$ = createWeb3ContextConnected$(web3Context$)
 
-  const [onEveryBlock$, everyBlock$] = createOnEveryBlock$(web3ContextConnected$)
+  const [onEveryBlock$] = createOnEveryBlock$(web3ContextConnected$)
 
   const context$ = createContext$(web3ContextConnected$, readonlyAccount$)
 
@@ -104,6 +105,8 @@ export function setupAppContext() {
     filter(({ status }) => status === 'connected'),
     shareReplay(1),
   ) as Observable<ContextConnected>
+
+  const [send] = createSend<TxData>(initializedAccount$, onEveryBlock$, connectedContext$)
 
   const gasPrice$ = createGasPrice$(onEveryBlock$, context$).pipe(
     map((x) => BigNumber.max(x.plus(1), x.multipliedBy(1.01).decimalPlaces(0, 0))),
@@ -117,8 +120,6 @@ export function setupAppContext() {
     initializedAccount$,
     context$,
     onEveryBlock$,
-    everyBlock$,
-    connectedContext$,
     txHelpers$,
   }
 }
