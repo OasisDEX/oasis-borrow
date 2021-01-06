@@ -92,27 +92,17 @@ export function AppHeader({
 }) {
   const { web3Context$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
-  const { readonlyAccount, account } = useReadonlyAccount()
+  //const { readonlyAccount, account } = useReadonlyAccount()
   const { t } = useTranslation()
 
+  console.log(web3Context)
   return (
-    <>
-      <BasicHeader variant="appContainer">
-        {web3Context?.status === 'connected' || web3Context?.status === 'connectedReadonly' ? (
-          <>
-            {CustomLogoWithBack ? <CustomLogoWithBack /> : <LogoWithBack {...{ backLink }} />}
-          </>
-        ) : null}
-      </BasicHeader>
-      {readonlyAccount && account && (
-        <Container variant="appContainer" mb={4} mt={-3}>
-          <Alert variant="readonly">
-            {`${t('readonly-alert-message')} `}
-            <Text sx={{ fontWeight: 'semiBold', display: 'inline' }}>{formatAddress(account)}</Text>
-          </Alert>
-        </Container>
-      )}
-    </>
+    <BasicHeader variant="appContainer">
+      <>
+        {CustomLogoWithBack ? <CustomLogoWithBack /> : <LogoWithBack {...{ backLink }} />}
+        <AccountButton />
+      </>
+    </BasicHeader>
   )
 }
 

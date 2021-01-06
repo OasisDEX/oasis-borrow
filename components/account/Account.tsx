@@ -7,7 +7,6 @@ import { Modal, ModalCloseIcon } from 'components/Modal'
 import { formatAddress } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
-import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'i18n'
 import React, { useEffect, useRef, useState } from 'react'
 // @ts-ignore
@@ -147,15 +146,11 @@ export function AccountButton() {
     )
   }
 
-  if (web3Context?.status === 'connectedReadonly') {
-    return (
-      <AppLink href="/dashboard" withAccountPrefix={false}>
-        <Button variant="outline">{t('connect-wallet-button')}</Button>
-      </AppLink>
-    )
-  }
-
-  return null
+  return (
+    <AppLink href="/connect" withAccountPrefix={false}>
+      <Button variant="outline">{t('connect-wallet-button')}</Button>
+    </AppLink>
+  )
 }
 
 export function AccountModal({ close }: ModalProps) {
@@ -163,7 +158,6 @@ export function AccountModal({ close }: ModalProps) {
   const web3Context = useObservable(web3Context$)
   const clipboardContentRef = useRef<HTMLTextAreaElement>(null)
   const { t } = useTranslation('common')
-  const { replace } = useRedirect()
 
   function disconnect() {
     if (web3Context?.status === 'connected') {
@@ -172,7 +166,7 @@ export function AccountModal({ close }: ModalProps) {
     close()
     // for some reason queueing redirect is necessary
     setTimeout(() => {
-      replace(`/dashboard`)
+      //replace(`/dashboard`)
     }, 0)
   }
 
@@ -210,12 +204,12 @@ export function AccountModal({ close }: ModalProps) {
                 {connectionKind === 'network' ? (
                   <Text sx={{ fontWeight: 'semiBold' }}>{t('connected-in-readonly-mode')}</Text>
                 ) : (
-                  <Text sx={{ fontWeight: 'semiBold' }}>
-                    {t('connected-with', {
-                      connectionKind: getConnectionKindMessage(connectionKind),
-                    })}
-                  </Text>
-                )}
+                    <Text sx={{ fontWeight: 'semiBold' }}>
+                      {t('connected-with', {
+                        connectionKind: getConnectionKindMessage(connectionKind),
+                      })}
+                    </Text>
+                  )}
               </Flex>
               <Flex sx={{ alignItems: 'center' }}>
                 <Box mr={2}>

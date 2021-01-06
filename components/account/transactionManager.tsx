@@ -18,27 +18,27 @@ export type TxMgrTransaction = {
   id: string
   lastChange: Date
 } & (
-  | {
+    | {
       kind: 'blockchain'
       status: TxStatus
       raw: TxState<TxData>
     }
-  | {
+    | {
       kind: 'wyre'
       status: WyreOrder['status']
       raw: OnrampOrder
     }
-  | {
+    | {
       kind: 'moonpay'
       status: MoonpayOrder['status']
       raw: OnrampOrder
     }
-  | {
+    | {
       kind: 'latamex'
       status: LatamexOrder['status']
       raw: OnrampOrder
     }
-)
+  )
 
 export type NotificationTransaction = {
   tx: TxMgrTransaction
@@ -247,27 +247,11 @@ function filterTransactions(transactions: TxMgrTransaction[]) {
 
 export function createTransactionManager(
   transactions$: Observable<TxState<TxData>[]>,
-  onrampOrders$: Observable<OnrampOrder[]>,
 ): Observable<TransactionManager> {
-  return combineLatest(transactions$, onrampOrders$, every1Seconds$).pipe(
-    map(([transactions, onrampOrders]) => {
+  return combineLatest(transactions$, every1Seconds$).pipe(
+    map(([transactions]) => {
       const allTransactions = transactions
         .map(txState2Transaction)
-        .concat(
-          onrampOrders
-            .filter((o: OnrampOrder) => o.type === 'wyre')
-            .map((o: OnrampOrder) => wyreOrder2Transaction(o as WyreOrder)),
-        )
-        .concat(
-          onrampOrders
-            .filter((o: OnrampOrder) => o.type === 'moonpay')
-            .map((o: OnrampOrder) => moonpayOrder2Transaction(o as MoonpayOrder)),
-        )
-        .concat(
-          onrampOrders
-            .filter((o: OnrampOrder) => o.type === 'latamex')
-            .map((o: OnrampOrder) => latamexOrder2Transaction(o as LatamexOrder)),
-        )
         .sort(compareTransactions)
 
       const {

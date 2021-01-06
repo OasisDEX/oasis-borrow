@@ -31,6 +31,7 @@ import {
   TransferEthData,
 } from './dashboard/dsrPot/erc20Calls'
 import { DsrExitAllData, DsrExitData, DsrJoinData } from './dashboard/dsrPot/potCalls'
+import { createTransactionManager } from './account/transactionManager'
 
 export type TxData =
   | ApproveData
@@ -106,13 +107,14 @@ export function setupAppContext() {
     shareReplay(1),
   ) as Observable<ContextConnected>
 
-  const [send] = createSend<TxData>(initializedAccount$, onEveryBlock$, connectedContext$)
+  const [send, transactions$] = createSend<TxData>(initializedAccount$, onEveryBlock$, connectedContext$)
 
   const gasPrice$ = createGasPrice$(onEveryBlock$, context$).pipe(
     map((x) => BigNumber.max(x.plus(1), x.multipliedBy(1.01).decimalPlaces(0, 0))),
   )
 
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
+  const transactionManager$ = createTransactionManager(transactions$)
 
   return {
     web3Context$,
@@ -121,7 +123,8 @@ export function setupAppContext() {
     context$,
     onEveryBlock$,
     txHelpers$,
-    readonlyAccount$
+    readonlyAccount$,
+    transactionManager$
   }
 }
 

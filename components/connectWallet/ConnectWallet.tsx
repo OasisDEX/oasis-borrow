@@ -419,11 +419,10 @@ export function WithVaultConnection({ children }: WithChildren) {
   const { vault } = router.query as { vault: string; }
   const { push } = useRedirect()
 
-  console.log('WithVaultConnection')
   useEffect(() => {
     if (isNaN(+vault)) {
-      console.log('Invalid vault');
-      push('/')
+      console.log('Invalid vault', vault);
+      push('/connect')
     }
   }, [vault])
 

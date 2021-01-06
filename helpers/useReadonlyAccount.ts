@@ -12,7 +12,7 @@ export function useReadonlyAccount(withRedirect?: boolean) {
 
   useEffect(() => {
     if (withRedirect && readonlyAccount) {
-      push('/dashboard')
+      push(`/owner/${readonlyAccount}`)
     }
   }, [readonlyAccount])
 
