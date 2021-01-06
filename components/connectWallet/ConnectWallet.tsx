@@ -1,6 +1,6 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
-import { LedgerConnector, MagicLinkConnector, TrezorConnector } from '@oasisdex/connectors'
+import { LedgerConnector, TrezorConnector } from '@oasisdex/connectors'
 import { ConnectionKind, getNetworkId, Web3Context } from '@oasisdex/web3-context'
 import { UnsupportedChainIdError } from '@web3-react/core'
 import { InjectedConnector } from '@web3-react/injected-connector'
@@ -24,9 +24,6 @@ import { first, tap } from 'rxjs/operators'
 import { Alert, Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 import { assert } from 'ts-essentials'
 import Web3 from 'web3'
-
-import { getMagicLinkKey } from './magicLink'
-import { MagicLinkForm } from './MagicLinkView'
 
 export const AUTO_CONNECT = 'autoConnect'
 
@@ -81,17 +78,13 @@ async function getConnector(connectorKind: ConnectionKind, network: number, opti
         url: rpcUrls[network],
         pollingInterval: pollingInterval,
       })
-    case 'magicLink':
-      return new MagicLinkConnector({
-        ...options,
-        apiKey: getMagicLinkKey(network),
-        chainId: networksById[network].name,
-      })
     case 'network':
       return new NetworkConnector({
         urls: { [network]: networksById[network].infuraUrl },
         defaultChainId: network,
       })
+    case 'magicLink':
+      throw new Error('Magic Link not allowed')
   }
 }
 
@@ -197,7 +190,7 @@ export function getConnectionKindMessage(connectionKind: ConnectionKind) {
     case 'network':
       return 'Network'
     case 'magicLink':
-      return 'Magic Link'
+      return 'MagicLink'
   }
 }
 
@@ -211,8 +204,7 @@ export function ConnectWallet({ originalUrl }: { originalUrl?: string }) {
   useEffect(() => {
     const subscription = web3Context$.subscribe((web3Context) => {
       if (web3Context.status === 'connected') {
-        const redirectUrl = originalUrl || '/dashboard'
-        replace(`/[address]${redirectUrl}`, `/${web3Context.account}${redirectUrl}`)
+        replace(`/owner/[address]`, `/owner/${web3Context.account}`)
       }
     })
     return () => subscription.unsubscribe()
@@ -283,7 +275,6 @@ export function ConnectWallet({ originalUrl }: { originalUrl?: string }) {
         width: '100%',
       }}
     >
-      <MagicLinkForm />
       <Flex
         sx={{
           alignItems: 'center',
@@ -408,7 +399,7 @@ export function WithConnection({ children }: WithChildren) {
     if (Web3.utils.isAddress(address)) {
       readonlyAccount$.next(address)
     } else {
-        alert("invalid address -> /")
+      console.log('Invalid address');
       push('/')
     }
     return () => readonlyAccount$.next(undefined)

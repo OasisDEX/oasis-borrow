@@ -122,7 +122,7 @@ export function MarketingHeader() {
   return (
     <BasicHeader variant="landingContainer">
       <Logo />
-      <AppLink href="/dashboard" variant="nav">
+      <AppLink href="/connect" variant="nav">
         {t('connect-wallet-button')}
       </AppLink>
     </BasicHeader>
