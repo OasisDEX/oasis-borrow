@@ -16,10 +16,11 @@ import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'i18n'
-import { mapValues } from 'lodash'
+import { mapValues, startsWith } from 'lodash'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
 import { combineLatest, identity, Observable } from 'rxjs'
+import { isNumeric } from 'rxjs/internal-compatibility'
 import { first, tap } from 'rxjs/operators'
 import { Alert, Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 import { assert } from 'ts-essentials'
@@ -389,11 +390,13 @@ function autoConnect(
   }
 }
 
-export function WithConnection({ children }: WithChildren) {
+export function WithOverviewConnection({ children }: WithChildren) {
   const router = useRouter()
   const { web3Context$, readonlyAccount$ } = useAppContext()
   const { address } = router.query as { address: string; network: string }
   const { push } = useRedirect()
+
+  console.log('WithOverviewConnection')
 
   useEffect(() => {
     if (Web3.utils.isAddress(address)) {
@@ -408,4 +411,34 @@ export function WithConnection({ children }: WithChildren) {
   useEffect(() => autoConnect(web3Context$, readonlyAccount$, getNetworkId()), [])
 
   return children
+}
+
+export function WithVaultConnection({ children }: WithChildren) {
+  const router = useRouter()
+  const { web3Context$, readonlyAccount$ } = useAppContext()
+  const { vault } = router.query as { vault: string; }
+  const { push } = useRedirect()
+
+  console.log('WithVaultConnection')
+  useEffect(() => {
+    if (isNaN(+vault)) {
+      console.log('Invalid vault');
+      push('/')
+    }
+  }, [vault])
+
+  useEffect(() => autoConnect(web3Context$, readonlyAccount$, getNetworkId()), [])
+
+  return children
+
+}
+
+export function WithConnection({ children }: WithChildren) {
+  const router = useRouter()
+  if (router.pathname === "/owner/[address]") {
+    return <WithOverviewConnection>{children}</WithOverviewConnection>
+  } else if (router.pathname === "/[vault]") {
+    return <WithVaultConnection>{children}</WithVaultConnection>
+  }
+  else return children
 }

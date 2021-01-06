@@ -75,7 +75,9 @@ export function LandingPageView({ notification }: { notification?: ReactNode }) 
 
   return (
     <Box sx={{ width: '100%' }}>
-      <AppLink href="/owner/0x13c9306e6569EfaBE095C7504b40d57A26432AeA">owner</AppLink>
+      <AppLink href="/owner/0x13c9306e6569EfaBE095C7504b40d57A26432AeA">/owner/0x13c9306e6569EfaBE095C7504b40d57A26432AeA</AppLink>
+      <br />
+      <AppLink href="/500">Vault 500</AppLink>
     </Box>
   )
 }
