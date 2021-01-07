@@ -4,7 +4,6 @@ import { useObservable } from 'helpers/observableHook'
 import { Grid, Text } from 'theme-ui'
 import { useRouter } from 'next/router'
 
-const dudAddress = '0x746680A524E7Ec4b35c0c2cE5E406F7ea051e011'
 function ProxyOwner({ proxyAddress }: { proxyAddress: string }) {
   const { proxyOwner$ } = useAppContext()
 
@@ -14,7 +13,7 @@ function ProxyOwner({ proxyAddress }: { proxyAddress: string }) {
 }
 
 export default function VaultsSummary() {
-  const { web3Context$, proxyAddress$, proxyOwner$ } = useAppContext()
+  const { web3Context$, proxyAddress$, proxyOwner$, vaultsSummary$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
   const {
     query: { address },
@@ -22,8 +21,9 @@ export default function VaultsSummary() {
 
   const proxyAddress = useObservable(proxyAddress$(address))
 
-  // const vaultsSummary = useObservable(vaultsSummary$(address))
+  const vaultsSummary = useObservable(vaultsSummary$(address))
 
+  console.log(vaultsSummary)
   return (
     <Grid>
       <Text>Connected Address :: {web3Context?.account}</Text>

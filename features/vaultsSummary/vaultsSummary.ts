@@ -102,14 +102,15 @@ export function createProxyOwner$(
   )
 }
 
-// export function createVaultSummary$(
-//   context$: Observable<Context>,
-//   proxyAddress$: (address: string) => Observable<string>,
-//   address: string,
-// ): Observable<VaultsSummary> {
-//   return combineLatest(context$, proxyAddress$(address)).pipe(
-//     switchMap(([context, proxyAddress]) => {
-//       return call(context, getCdps)({ descending: true, proxyAddress })
-//     }),
-//   )
-// }
+export function createVaultSummary$(
+  connectedContext$: Observable<ContextConnected>,
+  proxyAddress$: (address: string) => Observable<string | undefined>,
+  address: string,
+): Observable<VaultsSummary> {
+  return combineLatest(connectedContext$, proxyAddress$(address)).pipe(
+    switchMap(([context, proxyAddress]) => {
+      if (!proxyAddress) return of(undefined)
+      return call(context, getCdps)({ descending: true, proxyAddress })
+    }),
+  )
+}

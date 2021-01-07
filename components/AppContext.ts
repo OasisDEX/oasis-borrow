@@ -32,7 +32,11 @@ import {
 } from './dashboard/dsrPot/erc20Calls'
 import { DsrExitAllData, DsrExitData, DsrJoinData } from './dashboard/dsrPot/potCalls'
 import { createTransactionManager } from './account/transactionManager'
-import { createProxyAddress$, createProxyOwner$ } from 'features/vaultsSummary/vaultsSummary'
+import {
+  createProxyAddress$,
+  createProxyOwner$,
+  createVaultSummary$,
+} from 'features/vaultsSummary/vaultsSummary'
 import { curry } from 'ramda'
 
 export type TxData =
@@ -125,6 +129,8 @@ export function setupAppContext() {
   const proxyAddress$ = curry(createProxyAddress$)(everyBlock$, connectedContext$)
   const proxyOwner$ = curry(createProxyOwner$)(everyBlock$, connectedContext$)
 
+  const vaultsSummary$ = curry(createVaultSummary$)(connectedContext$, proxyAddress$)
+
   return {
     web3Context$,
     setupWeb3Context$,
@@ -136,6 +142,7 @@ export function setupAppContext() {
     transactionManager$,
     proxyAddress$,
     proxyOwner$,
+    vaultsSummary$,
   }
 }
 
