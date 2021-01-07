@@ -33,6 +33,7 @@ import {
 import { DsrExitAllData, DsrExitData, DsrJoinData } from './dashboard/dsrPot/potCalls'
 import { createTransactionManager } from './account/transactionManager'
 import { createProxyAddress$, createProxyOwner$ } from 'features/vaultsSummary/vaultsSummary'
+import { curry } from 'ramda'
 
 export type TxData =
   | ApproveData
@@ -121,12 +122,8 @@ export function setupAppContext() {
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
 
-  const proxyAddress$ = (address: string) => {
-    return connectedContext$.pipe(
-      switchMap((context) => everyBlock$(createProxyAddress$(context, address))),
-      shareReplay(1),
-    )
-  }
+  const proxyAddress$ = curry(createProxyAddress$)(everyBlock$, connectedContext$)
+  const proxyOwner$ = curry(createProxyOwner$)(everyBlock$, connectedContext$)
 
   return {
     web3Context$,
@@ -138,6 +135,7 @@ export function setupAppContext() {
     readonlyAccount$,
     transactionManager$,
     proxyAddress$,
+    proxyOwner$,
   }
 }
 

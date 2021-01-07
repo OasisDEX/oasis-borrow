@@ -1,6 +1,6 @@
 import { combineLatest, Observable, of, defer } from 'rxjs'
 import { ContextConnected, Context, EveryBlockFunction$ } from '../../components/blockchain/network'
-import { mergeMap, switchMap } from 'rxjs/operators'
+import { catchError, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
 import { zipWith } from 'lodash'
 import * as dsProxy from 'components/blockchain/abi/ds-proxy.abi.json'
@@ -51,49 +51,54 @@ export const proxyAddress: CallDef<string, string | undefined> = {
   prepareArgs: (address) => [address],
 }
 
+export function createProxyAddress$(
+  everyBlock$: EveryBlockFunction$,
+  connectedContext$: Observable<ContextConnected>,
+  address: string,
+): Observable<string | undefined> {
+  return connectedContext$.pipe(
+    switchMap((context) =>
+      everyBlock$(
+        defer(() =>
+          call(
+            context,
+            proxyAddress,
+          )(address).pipe(
+            mergeMap((proxyAddress: string) => {
+              if (proxyAddress === nullAddress) {
+                return of(undefined)
+              }
+              return of(proxyAddress)
+            }),
+          ),
+        ),
+      ),
+    ),
+    shareReplay(1),
+  )
+}
+
 export const owner: CallDef<string, string | undefined> = {
   call: (dsProxyAddress, { contract }) =>
     contract(contractDesc(dsProxy, dsProxyAddress)).methods.owner,
   prepareArgs: () => [],
 }
 
-// const proxyAddress$ = connectedContext$.pipe(
-//   switchMap((context) => everyBlock$(createProxyAddress$(context, context.account))),
-//   shareReplay(1),
-// )
-
-export function createProxyAddress$(
-  context: ContextConnected,
-  address: string,
-): Observable<string | undefined> {
-  return defer(() =>
-    call(
-      context,
-      proxyAddress,
-    )(address).pipe(
-      mergeMap((proxyAddress: string) => {
-        if (proxyAddress === nullAddress) {
-          return of(undefined)
-        }
-        return of(proxyAddress)
-      }),
-    ),
-  )
-}
-
 export function createProxyOwner$(
-  context: ContextConnected,
+  everyBlock$: EveryBlockFunction$,
+  connectedContext$: Observable<ContextConnected>,
   proxyAddress: string,
 ): Observable<string | undefined> {
-  return defer(() =>
-    call(
-      context,
-      owner,
-    )(proxyAddress).pipe(
-      mergeMap((ownerAddress: string) =>
-        ownerAddress === proxyAddress ? of(ownerAddress) : of(undefined),
+  return connectedContext$.pipe(
+    switchMap((context) =>
+      everyBlock$(
+        defer(() =>
+          call(context, owner)(proxyAddress).pipe(map((ownerAddress: string) => ownerAddress)),
+        ),
       ),
     ),
+    catchError(() => of(undefined)),
+    shareReplay(1),
   )
 }
 
