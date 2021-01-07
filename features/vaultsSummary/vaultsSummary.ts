@@ -28,9 +28,9 @@ interface GetCdpsArgs {
 }
 
 interface GetCdpsResult {
-  vaultIds: string[]
-  vaultAddresses: string[]
-  vaultTypes: string[]
+  ids: string[]
+  urns: string[]
+  ilks: string[]
 }
 
 // TODO: replace with sth from web3/ethers
@@ -39,11 +39,27 @@ function bytesToString(hex: string): string {
 }
 
 const getCdps: CallDef<GetCdpsArgs, VaultSummary[]> = {
-  call: ({ proxyAddress, descending }, { contract, getCdps }) =>
-    contract(getCdps).methods[`getCdps${descending ? 'Desc' : 'Asc'}`],
+  call: ({ proxyAddress, descending }, { contract, getCdps }) => {
+    console.log(proxyAddress, descending)
+    return contract(getCdps).methods[`getCdps${descending ? 'Desc' : 'Asc'}`]
+  },
   prepareArgs: ({ proxyAddress }, { cdpManager }) => [cdpManager.address, proxyAddress],
-  postprocess: ({ vaultIds, vaultAddresses, vaultTypes }: any): VaultSummary[] =>
-    zipWith(vaultIds, vaultTypes, (id: string, type: string) => ({ id, type })),
+  postprocess: ({ ids, ilks }: any): VaultSummary[] => {
+    return zipWith(ids, ilks, (id: string, ilk: string) => ({ id, type: bytesToString(ilk) }))
+  },
+}
+
+export function createVaultSummary$(
+  connectedContext$: Observable<ContextConnected>,
+  proxyAddress$: (address: string) => Observable<string | undefined>,
+  address: string,
+): Observable<VaultSummary[]> {
+  return combineLatest(connectedContext$, proxyAddress$(address)).pipe(
+    switchMap(([context, proxyAddress]) => {
+      if (!proxyAddress) return of([])
+      return call(context, getCdps)({ proxyAddress, descending: true })
+    }),
+  )
 }
 
 export const proxyAddress: CallDef<string, string | undefined> = {
@@ -85,32 +101,16 @@ export const owner: CallDef<string, string | undefined> = {
 }
 
 export function createProxyOwner$(
-  everyBlock$: EveryBlockFunction$,
   connectedContext$: Observable<ContextConnected>,
   proxyAddress: string,
 ): Observable<string | undefined> {
   return connectedContext$.pipe(
     switchMap((context) =>
-      everyBlock$(
-        defer(() =>
-          call(context, owner)(proxyAddress).pipe(map((ownerAddress: string) => ownerAddress)),
-        ),
+      defer(() =>
+        call(context, owner)(proxyAddress).pipe(map((ownerAddress: string) => ownerAddress)),
       ),
     ),
     catchError(() => of(undefined)),
     shareReplay(1),
-  )
-}
-
-export function createVaultSummary$(
-  connectedContext$: Observable<ContextConnected>,
-  proxyAddress$: (address: string) => Observable<string | undefined>,
-  address: string,
-): Observable<VaultsSummary> {
-  return combineLatest(connectedContext$, proxyAddress$(address)).pipe(
-    switchMap(([context, proxyAddress]) => {
-      if (!proxyAddress) return of(undefined)
-      return call(context, getCdps)({ descending: true, proxyAddress })
-    }),
   )
 }
