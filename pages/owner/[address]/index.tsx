@@ -5,9 +5,11 @@ import { Grid, Text } from 'theme-ui'
 import { useRouter } from 'next/router'
 
 export default function VaultsSummary() {
-    const { web3Context$ } = useAppContext()
+    const { web3Context$, vaultsSummary$ } = useAppContext()
     const web3Context = useObservable(web3Context$)
     const { query: { address } } = useRouter()
+
+    const vaultsSummary = useObservable(vaultsSummary$(address))
 
     return <Grid>
 
