@@ -20,7 +20,6 @@ import { mapValues, startsWith } from 'lodash'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
 import { combineLatest, identity, Observable } from 'rxjs'
-import { isNumeric } from 'rxjs/internal-compatibility'
 import { first, tap } from 'rxjs/operators'
 import { Alert, Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 import { assert } from 'ts-essentials'
@@ -299,10 +298,10 @@ export function ConnectWallet({ originalUrl }: { originalUrl?: string }) {
             </Text>
           </Alert>
         )) || (
-            <Alert variant="error" sx={{ fontWeight: 'normal', borderRadius: 'large' }}>
-              <Text sx={{ my: 1, ml: 2, fontSize: 3, lineHeight: 'body' }}>{t('connect-error')}</Text>
-            </Alert>
-          ))}
+          <Alert variant="error" sx={{ fontWeight: 'normal', borderRadius: 'large' }}>
+            <Text sx={{ my: 1, ml: 2, fontSize: 3, lineHeight: 'body' }}>{t('connect-error')}</Text>
+          </Alert>
+        ))}
       <Grid columns={1} sx={{ maxWidth: '280px', width: '100%', mx: 'auto' }}>
         {SUPPORTED_WALLETS.map(({ iconName, connectionKind }) => {
           const isConnecting =
@@ -323,8 +322,8 @@ export function ConnectWallet({ originalUrl }: { originalUrl?: string }) {
                   web3Context.status === 'connecting'
                     ? undefined
                     : connectionKind === 'ledger'
-                      ? () => setConnectingLedger(true)
-                      : connect(web3Context, connectionKind, getNetworkId()),
+                    ? () => setConnectingLedger(true)
+                    : connect(web3Context, connectionKind, getNetworkId()),
               }}
             />
           )
@@ -396,13 +395,11 @@ export function WithOverviewConnection({ children }: WithChildren) {
   const { address } = router.query as { address: string; network: string }
   const { push } = useRedirect()
 
-  console.log('WithOverviewConnection')
-
   useEffect(() => {
     if (Web3.utils.isAddress(address)) {
       readonlyAccount$.next(address)
     } else {
-      console.log('Invalid address');
+      console.log('Invalid address')
       push('/')
     }
     return () => readonlyAccount$.next(undefined)
@@ -416,12 +413,12 @@ export function WithOverviewConnection({ children }: WithChildren) {
 export function WithVaultConnection({ children }: WithChildren) {
   const router = useRouter()
   const { web3Context$, readonlyAccount$ } = useAppContext()
-  const { vault } = router.query as { vault: string; }
+  const { vault } = router.query as { vault: string }
   const { push } = useRedirect()
 
   useEffect(() => {
     if (isNaN(+vault)) {
-      console.log('Invalid vault', vault);
+      console.log('Invalid vault', vault)
       push('/connect')
     }
   }, [vault])
@@ -429,15 +426,14 @@ export function WithVaultConnection({ children }: WithChildren) {
   useEffect(() => autoConnect(web3Context$, readonlyAccount$, getNetworkId()), [])
 
   return children
-
 }
 
 export function WithConnection({ children }: WithChildren) {
   const router = useRouter()
-  if (router.pathname === "/owner/[address]") {
+
+  if (router.pathname === '/owner/[address]') {
     return <WithOverviewConnection>{children}</WithOverviewConnection>
-  } else if (router.pathname === "/[vault]") {
+  } else if (router.pathname === '/[vault]') {
     return <WithVaultConnection>{children}</WithVaultConnection>
-  }
-  else return children
+  } else return children
 }

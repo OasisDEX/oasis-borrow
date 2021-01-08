@@ -7,8 +7,7 @@ import * as dsProxy from 'components/blockchain/abi/ds-proxy.abi.json'
 import { contractDesc } from 'components/blockchain/config'
 import { nullAddress } from '@oasisdex/utils'
 
-// VaultRecord instead of VaultSummary??
-interface VaultSummary {
+export interface VaultSummary {
   id: string
   type: string // ilk
 }
@@ -45,7 +44,7 @@ const getCdps: CallDef<GetCdpsArgs, VaultSummary[]> = {
     return contract(getCdps).methods[`getCdps${descending ? 'Desc' : 'Asc'}`]
   },
   prepareArgs: ({ proxyAddress }, { cdpManager }) => [cdpManager.address, proxyAddress],
-  postprocess: ({ ids, ilks }: any): VaultSummary[] => {
+  postprocess: ({ ids, urns, ilks }: GetCdpsResult): VaultSummary[] => {
     return zipWith(ids, ilks, (id: string, ilk: string) => ({ id, type: bytesToString(ilk) }))
   },
 }
