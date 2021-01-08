@@ -23,7 +23,6 @@ export default function VaultsSummary() {
 
   const vaultsSummary = useObservable(vaultsSummary$(address))
 
-  console.log(vaultsSummary)
   return (
     <Grid>
       <Text>Connected Address :: {web3Context?.account}</Text>

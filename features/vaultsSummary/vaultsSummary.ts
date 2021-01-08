@@ -7,6 +7,7 @@ import * as dsProxy from 'components/blockchain/abi/ds-proxy.abi.json'
 import { contractDesc } from 'components/blockchain/config'
 import { nullAddress } from '@oasisdex/utils'
 
+// VaultRecord instead of VaultSummary??
 interface VaultSummary {
   id: string
   type: string // ilk
