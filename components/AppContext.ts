@@ -9,12 +9,21 @@ import {
   SendTransactionFunction,
   TransactionDef,
 } from 'components/blockchain/calls/callsHelpers'
-import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
-import { Observable } from 'rxjs'
-import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
-import { mapValues } from 'lodash'
-import { networksById } from './blockchain/config'
 import { createGasPrice$ } from 'components/blockchain/prices'
+import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
+import {
+  createProxyAddress$,
+  createProxyOwner$,    createVaults$,
+vault$,
+} from 'features/vaultsSummary/vaultsSummary'
+import { mapValues } from 'lodash'
+import { curry } from 'ramda'
+import { Observable } from 'rxjs'
+import { filter, map, shareReplay } from 'rxjs/operators'
+
+import { HasGasEstimation } from '../helpers/form'
+import { createTransactionManager } from './account/transactionManager'
+import { networksById } from './blockchain/config'
 import {
   ContextConnected,
   createAccount$,
@@ -31,13 +40,6 @@ import {
   TransferEthData,
 } from './dashboard/dsrPot/erc20Calls'
 import { DsrExitAllData, DsrExitData, DsrJoinData } from './dashboard/dsrPot/potCalls'
-import { createTransactionManager } from './account/transactionManager'
-import {
-  createProxyAddress$,
-  createProxyOwner$,
-  createVaultSummary$,
-} from 'features/vaultsSummary/vaultsSummary'
-import { curry } from 'ramda'
 
 export type TxData =
   | ApproveData
@@ -104,7 +106,7 @@ export function setupAppContext() {
 
   const web3ContextConnected$ = createWeb3ContextConnected$(web3Context$)
 
-  const [onEveryBlock$, everyBlock$] = createOnEveryBlock$(web3ContextConnected$)
+  const [onEveryBlock$] = createOnEveryBlock$(web3ContextConnected$)
 
   const context$ = createContext$(web3ContextConnected$, readonlyAccount$)
 
@@ -129,7 +131,7 @@ export function setupAppContext() {
   const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
   const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
 
-  const vaultsSummary$ = curry(createVaultSummary$)(connectedContext$, proxyAddress$)
+  const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
 
   return {
     web3Context$,
@@ -142,7 +144,7 @@ export function setupAppContext() {
     transactionManager$,
     proxyAddress$,
     proxyOwner$,
-    vaultsSummary$,
+    vaults$,
   }
 }
 

@@ -1,16 +1,16 @@
-import { combineLatest, Observable, of, defer, forkJoin, EMPTY } from 'rxjs'
-import { ContextConnected, Context, EveryBlockFunction$ } from '../../components/blockchain/network'
-import { catchError, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
-import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
-import { zipWith } from 'lodash'
-import * as dsProxy from 'components/blockchain/abi/ds-proxy.abi.json'
-import { contractDesc } from 'components/blockchain/config'
 import { nullAddress } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
+import * as dsProxy from 'components/blockchain/abi/ds-proxy.abi.json'
+import { contractDesc } from 'components/blockchain/config'
+import { combineLatest, defer, EMPTY,forkJoin, Observable, of } from 'rxjs'
+import { catchError, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+
+import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
+import {  ContextConnected } from '../../components/blockchain/network'
 
 export interface VaultSummary {}
 
-interface Vault {
+export interface Vault {
   id: string
   type: string // ilk
   owner: string //proxyAddress
@@ -70,10 +70,6 @@ export function vault$(id: string): Observable<Vault> {
   return of({ ...mockVault, id })
 }
 
-interface VaultsSummary {
-  vaults: Vault[]
-}
-
 interface GetCdpsArgs {
   proxyAddress: string
   descending: boolean
@@ -83,11 +79,6 @@ interface GetCdpsResult {
   ids: string[]
   urns: string[]
   ilks: string[]
-}
-
-// TODO: replace with sth from web3/ethers
-function bytesToString(hex: string): string {
-  return Buffer.from(hex.replace(/^0x/, ''), 'hex').toString().replace(/\x00/g, '') // eslint-disable-line no-control-regex
 }
 
 const getCdps: CallDef<GetCdpsArgs, GetCdpsResult> = {
@@ -101,32 +92,18 @@ const getCdps: CallDef<GetCdpsArgs, GetCdpsResult> = {
   // },
 }
 
-export function getVaults$(
+export function createVaults$(
   connectedContext$: Observable<ContextConnected>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
   vault$: (id: string) => Observable<Vault>,
   address: string,
 ): Observable<Vault[]> {
   return combineLatest(connectedContext$, proxyAddress$(address)).pipe(
-    switchMap(([context, proxyAddress]) => {
+    switchMap(([context, proxyAddress]): Observable<GetCdpsResult> => {
       if (!proxyAddress) return EMPTY
       return call(context, getCdps)({ proxyAddress, descending: true })
     }),
-    switchMap(({ ids }) => of(...ids)),
-    forkJoin((id: string) => vault$(id)),
-  )
-}
-
-export function createVaults$(
-  connectedContext$: Observable<ContextConnected>,
-  proxyAddress$: (address: string) => Observable<string | undefined>,
-  address: string,
-): Observable<VaultSummary[]> {
-  return combineLatest(connectedContext$, proxyAddress$(address)).pipe(
-    switchMap(([context, proxyAddress]) => {
-      if (!proxyAddress) return of([])
-      return call(context, getCdps)({ proxyAddress, descending: true })
-    }),
+    switchMap(({ ids }) => forkJoin(ids.map(vault$))),
   )
 }
 

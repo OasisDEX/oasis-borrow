@@ -1,8 +1,8 @@
-import { isAppContextAvailable, useAppContext } from 'components/AppContextProvider'
-import { AppLayout, BasicLayout } from 'components/Layouts'
+import {  useAppContext } from 'components/AppContextProvider'
+import { AppLayout } from 'components/Layouts'
+import { Vault } from 'features/vaultsSummary/vaultsSummary'
 import { useObservable } from 'helpers/observableHook'
 import { Box, Grid, Text } from 'theme-ui'
-import { VaultSummary } from 'features/vaultsSummary/vaultsSummary'
 
 function ProxyOwner({ proxyAddress }: { proxyAddress: string }) {
   const { proxyOwner$ } = useAppContext()
@@ -12,7 +12,7 @@ function ProxyOwner({ proxyAddress }: { proxyAddress: string }) {
   return <Text>{proxyOwner}</Text>
 }
 
-function VaultsTable({ vaultsSummary }: { vaultsSummary: VaultSummary[] }) {
+function VaultsTable({ vaults }: { vaults: Vault[] }) {
   return (
     <Box>
       <Text sx={{ fontSize: 4 }}>Vaults ::</Text>
@@ -20,7 +20,7 @@ function VaultsTable({ vaultsSummary }: { vaultsSummary: VaultSummary[] }) {
         <Text>VaultId</Text>
         <Text>VaultType</Text>
 
-        {vaultsSummary.map((vault) => (
+        {vaults.map((vault) => (
           <>
             <Text>{vault.id}</Text>
             <Text>{vault.type}</Text>
@@ -32,18 +32,18 @@ function VaultsTable({ vaultsSummary }: { vaultsSummary: VaultSummary[] }) {
 }
 
 function Summary({ address }: { address: string }) {
-  const { web3Context$, proxyAddress$, proxyOwner$, vaultsSummary$ } = useAppContext()
+  const { web3Context$, proxyAddress$, vaults$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
   const proxyAddress = useObservable(proxyAddress$(address))
-  const vaultsSummary = useObservable(vaultsSummary$(address))
+  const vaults = useObservable(vaults$(address))
 
   return (
     <Grid>
-      <Text>Connected Address :: {web3Context?.account}</Text>
+      <Text>Connected Address :: {(web3Context as any)?.account}</Text>
       <Text>Viewing Address :: {address}</Text>
       <Text>ProxyAddress :: {proxyAddress}</Text>
       <Text>ProxyOwner :: {proxyAddress ? <ProxyOwner {...{ proxyAddress }} /> : null}</Text>
-      {vaultsSummary ? <VaultsTable {...{ vaultsSummary }} /> : null}
+      {vaults ? <VaultsTable {...{ vaults }} /> : null}
     </Grid>
   )
 }
