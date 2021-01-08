@@ -68,25 +68,22 @@ export const proxyAddress: CallDef<string, string | undefined> = {
 }
 
 export function createProxyAddress$(
-  everyBlock$: EveryBlockFunction$,
   connectedContext$: Observable<ContextConnected>,
   address: string,
 ): Observable<string | undefined> {
   return connectedContext$.pipe(
     switchMap((context) =>
-      everyBlock$(
-        defer(() =>
-          call(
-            context,
-            proxyAddress,
-          )(address).pipe(
-            mergeMap((proxyAddress: string) => {
-              if (proxyAddress === nullAddress) {
-                return of(undefined)
-              }
-              return of(proxyAddress)
-            }),
-          ),
+      defer(() =>
+        call(
+          context,
+          proxyAddress,
+        )(address).pipe(
+          mergeMap((proxyAddress: string) => {
+            if (proxyAddress === nullAddress) {
+              return of(undefined)
+            }
+            return of(proxyAddress)
+          }),
         ),
       ),
     ),

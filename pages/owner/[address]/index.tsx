@@ -2,7 +2,6 @@ import { isAppContextAvailable, useAppContext } from 'components/AppContextProvi
 import { AppLayout, BasicLayout } from 'components/Layouts'
 import { useObservable } from 'helpers/observableHook'
 import { Box, Grid, Text } from 'theme-ui'
-import { Web3ContextConnected } from '@oasisdex/web3-context'
 import { VaultSummary } from 'features/vaultsSummary/vaultsSummary'
 
 function ProxyOwner({ proxyAddress }: { proxyAddress: string }) {
@@ -37,8 +36,6 @@ function Summary({ address }: { address: string }) {
   const web3Context = useObservable(web3Context$)
   const proxyAddress = useObservable(proxyAddress$(address))
   const vaultsSummary = useObservable(vaultsSummary$(address))
-
-  console.log(vaultsSummary)
 
   return (
     <Grid>

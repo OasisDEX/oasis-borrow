@@ -126,7 +126,7 @@ export function setupAppContext() {
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
 
-  const proxyAddress$ = curry(createProxyAddress$)(everyBlock$, connectedContext$)
+  const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
   const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
 
   const vaultsSummary$ = curry(createVaultSummary$)(connectedContext$, proxyAddress$)
