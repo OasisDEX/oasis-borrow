@@ -1,6 +1,6 @@
 import { ContextConnected } from '../../components/blockchain/network'
-import { Observable } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
+import { EMPTY, Observable, of } from 'rxjs'
+import { filter, map, mergeMap, switchMap } from 'rxjs/operators'
 import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
 import Web3 from 'web3'
 
@@ -8,9 +8,7 @@ interface CdpManagerUrnsArgs {
   id: string
 }
 
-interface CdpManagerUrnsResult {
-  urns: string
-}
+type CdpManagerUrnsResult = string | undefined
 
 const cdpManagerUrns: CallDef<CdpManagerUrnsArgs, CdpManagerUrnsResult> = {
   call: ({}, { contract, cdpManager }) => {
@@ -27,6 +25,7 @@ export function createCdpManagerUrns$(
     switchMap((context) => {
       return call(context, cdpManagerUrns)({ id })
     }),
+    mergeMap((address) => (address ? of(address) : EMPTY)),
   )
 }
 
@@ -54,5 +53,6 @@ export function createCdpManagerIlks$(
     switchMap((context) => {
       return call(context, cdpManagerIlks)({ id })
     }),
+    mergeMap((kind) => (kind ? of(kind) : EMPTY)),
   )
 }
