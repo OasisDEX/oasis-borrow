@@ -1,4 +1,4 @@
-import {  useAppContext } from 'components/AppContextProvider'
+import { useAppContext } from 'components/AppContextProvider'
 import { AppLayout } from 'components/Layouts'
 import { Vault } from 'features/vaultsSummary/vaultsSummary'
 import { useObservable } from 'helpers/observableHook'

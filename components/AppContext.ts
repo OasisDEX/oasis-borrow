@@ -146,6 +146,7 @@ export function setupAppContext() {
     proxyAddress$,
     proxyOwner$,
     vaults$,
+    vault$,
   }
 }
 
