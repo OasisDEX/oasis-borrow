@@ -11,12 +11,10 @@ import {
 } from 'components/blockchain/calls/callsHelpers'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
-import {
-  createProxyAddress$,
-  createProxyOwner$,
-  createVaults$,
-  vault$,
-} from 'features/vaults/vaults'
+
+import { createProxyAddress$, createProxyOwner$ } from 'features/vaults/proxy'
+import { createVaults$, vault$ } from 'features/vaults/vaults'
+
 import { mapValues } from 'lodash'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'

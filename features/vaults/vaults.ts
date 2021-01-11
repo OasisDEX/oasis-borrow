@@ -1,12 +1,9 @@
-import { nullAddress } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import * as dsProxy from 'components/blockchain/abi/ds-proxy.abi.json'
-import { contractDesc } from 'components/blockchain/config'
-import { combineLatest, defer, EMPTY,forkJoin, Observable, of } from 'rxjs'
-import { catchError, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { combineLatest, EMPTY, forkJoin, Observable, of } from 'rxjs'
+import { switchMap } from 'rxjs/operators'
 
 import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
-import {  ContextConnected } from '../../components/blockchain/network'
+import { ContextConnected } from '../../components/blockchain/network'
 
 export interface VaultSummary {}
 
@@ -99,60 +96,12 @@ export function createVaults$(
   address: string,
 ): Observable<Vault[]> {
   return combineLatest(connectedContext$, proxyAddress$(address)).pipe(
-    switchMap(([context, proxyAddress]): Observable<GetCdpsResult> => {
-      if (!proxyAddress) return EMPTY
-      return call(context, getCdps)({ proxyAddress, descending: true })
-    }),
+    switchMap(
+      ([context, proxyAddress]): Observable<GetCdpsResult> => {
+        if (!proxyAddress) return EMPTY
+        return call(context, getCdps)({ proxyAddress, descending: true })
+      },
+    ),
     switchMap(({ ids }) => forkJoin(ids.map(vault$))),
-  )
-}
-
-export const proxyAddress: CallDef<string, string | undefined> = {
-  call: (_, { dsProxyRegistry, contract }) => contract(dsProxyRegistry).methods.proxies,
-  prepareArgs: (address) => [address],
-}
-
-export function createProxyAddress$(
-  connectedContext$: Observable<ContextConnected>,
-  address: string,
-): Observable<string | undefined> {
-  return connectedContext$.pipe(
-    switchMap((context) =>
-      defer(() =>
-        call(
-          context,
-          proxyAddress,
-        )(address).pipe(
-          mergeMap((proxyAddress: string) => {
-            if (proxyAddress === nullAddress) {
-              return of(undefined)
-            }
-            return of(proxyAddress)
-          }),
-        ),
-      ),
-    ),
-    shareReplay(1),
-  )
-}
-
-export const owner: CallDef<string, string | undefined> = {
-  call: (dsProxyAddress, { contract }) =>
-    contract(contractDesc(dsProxy, dsProxyAddress)).methods.owner,
-  prepareArgs: () => [],
-}
-
-export function createProxyOwner$(
-  connectedContext$: Observable<ContextConnected>,
-  proxyAddress: string,
-): Observable<string | undefined> {
-  return connectedContext$.pipe(
-    switchMap((context) =>
-      defer(() =>
-        call(context, owner)(proxyAddress).pipe(map((ownerAddress: string) => ownerAddress)),
-      ),
-    ),
-    catchError(() => of(undefined)),
-    shareReplay(1),
   )
 }
