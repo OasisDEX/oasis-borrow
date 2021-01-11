@@ -1,6 +1,6 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLayout } from 'components/Layouts'
-import { Vault } from 'features/vaultsSummary/vaultsSummary'
+import { Vault } from 'features/vaults/vault'
 import { useObservable } from 'helpers/observableHook'
 import { Box, Grid, Text } from 'theme-ui'
 
