@@ -103,3 +103,50 @@ export function createVatIlks$(
     filterNullish(),
   )
 }
+
+interface VatGemArgs {
+  ilk: string
+  urnAddress: string
+}
+
+type VatGemResult = BigNumber | undefined
+
+const vatGem: CallDef<VatGemArgs, VatGemResult> = {
+  call: ({}, { contract, vat }) => {
+    return contract(vat).methods['gem']
+  },
+  prepareArgs: ({ ilk, urnAddress }) => [Web3.utils.utf8ToHex(ilk), urnAddress],
+  postprocess: (gem) => (gem ? new BigNumber(gem) : undefined),
+}
+
+export function createVatGem$(
+  connectedContext$: Observable<ContextConnected>,
+  cdpManagerUrns$: (id: string) => Observable<string>,
+  cdpManagerIlks$: (id: string) => Observable<string>,
+  id: string,
+): Observable<BigNumber> {
+  return combineLatest(connectedContext$, cdpManagerIlks$(id), cdpManagerUrns$(id)).pipe(
+    switchMap(([context, ilk, urnAddress]) => {
+      return call(context, vatGem)({ ilk, urnAddress })
+    }),
+    filterNullish(),
+  )
+}
+
+const vatLine: CallDef<{}, BigNumber> = {
+  call: (_, { contract, vat }) => {
+    return contract(vat).methods['Line']
+  },
+  prepareArgs: () => [],
+}
+
+export function createVatLine$(
+  connectedContext$: Observable<ContextConnected>,
+): Observable<BigNumber> {
+  return connectedContext$.pipe(
+    switchMap((context) => {
+      return call(context, vatLine)({})
+    }),
+    filterNullish(),
+  )
+}

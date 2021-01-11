@@ -102,6 +102,8 @@ export interface Vault {
   /*
    * "Vault.unlockedCollateral" references the amount of unencumbered collateral
    * as mentioned in Vault.collateral
+   *
+   * Necessary for functionality to reclaim leftover collateral on the adapter
    */
   unlockedCollateral: BigNumber
 
@@ -267,6 +269,7 @@ export function createVault$(
   cdpManagerIlks$: (id: string) => Observable<string>,
   vatUrns$: (id: string) => Observable<Urn>,
   vatIlks$: (kind: string) => Observable<Ilk>,
+  vatGem$: (id: string) => Observable<BigNumber>,
   id: string,
 ): Observable<Vault> {
   return combineLatest(
@@ -274,11 +277,21 @@ export function createVault$(
     cdpManagerUrns$(id),
     cdpManagerIlks$(id),
     vatUrns$(id),
+    vatGem$(id),
   ).pipe(
-    switchMap(([, address, kind, { collateral, normalizedDebt }]) => {
+    switchMap(([, address, kind, { collateral, normalizedDebt }, unlockedCollateral]) => {
       return vatIlks$(kind).pipe(
         mergeMap(({ debtFloor }) => {
-          return of({ ...mockVault, id, address, kind, collateral, normalizedDebt, debtFloor })
+          return of({
+            ...mockVault,
+            id,
+            address,
+            kind,
+            collateral,
+            normalizedDebt,
+            debtFloor,
+            unlockedCollateral,
+          })
         }),
       )
     }),
