@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable, of } from 'rxjs'
-import { switchMap, take } from 'rxjs/operators'
+import { map, mergeMap, switchMap, take } from 'rxjs/operators'
 
 import { ContextConnected } from '../../components/blockchain/network'
+import { Ilk, Urn } from './vat'
 
 export interface Vault {
   /*
@@ -264,12 +265,22 @@ export function createVault$(
   connectedContext$: Observable<ContextConnected>,
   cdpManagerUrns$: (id: string) => Observable<string>,
   cdpManagerIlks$: (id: string) => Observable<string>,
+  vatUrns$: (id: string) => Observable<Urn>,
+  vatIlks$: (kind: string) => Observable<Ilk>,
   id: string,
 ): Observable<Vault> {
-  return combineLatest(connectedContext$, cdpManagerUrns$(id), cdpManagerIlks$(id)).pipe(
-    switchMap(([, address, type]) => {
-      console.log(address, type)
-      return of({ ...mockVault, id, address, type })
+  return combineLatest(
+    connectedContext$,
+    cdpManagerUrns$(id),
+    cdpManagerIlks$(id),
+    vatUrns$(id),
+  ).pipe(
+    switchMap(([, address, kind, { collateral, normalizedDebt }]) => {
+      return vatIlks$(kind).pipe(
+        mergeMap(({ debtFloor }) => {
+          return of({ ...mockVault, id, address, kind, collateral, normalizedDebt, debtFloor })
+        }),
+      )
     }),
     take(1),
   )

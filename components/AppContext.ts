@@ -14,6 +14,7 @@ import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount
 import { createCdpManagerIlks$, createCdpManagerUrns$ } from 'features/vaults/cdpManager'
 
 import { createProxyAddress$, createProxyOwner$ } from 'features/vaults/proxy'
+import { createVatIlks$, createVatUrns$ } from 'features/vaults/vat'
 import { createVault$ } from 'features/vaults/vault'
 import { createVaults$ } from 'features/vaults/vaults'
 
@@ -134,9 +135,16 @@ export function setupAppContext() {
 
   const cdpManagerUrns$ = curry(createCdpManagerUrns$)(connectedContext$)
   const cdpManagerIlks$ = curry(createCdpManagerIlks$)(connectedContext$)
+  const vatUrns$ = curry(createVatUrns$)(connectedContext$, cdpManagerUrns$, cdpManagerIlks$)
+  const vatIlks$ = curry(createVatIlks$)(connectedContext$)
 
-  const vault$ = curry(createVault$)(connectedContext$, cdpManagerUrns$, cdpManagerIlks$)
-
+  const vault$ = curry(createVault$)(
+    connectedContext$,
+    cdpManagerUrns$,
+    cdpManagerIlks$,
+    vatUrns$,
+    vatIlks$,
+  )
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
 
   return {

@@ -3,6 +3,7 @@ import { EMPTY, Observable, of } from 'rxjs'
 import { filter, map, mergeMap, switchMap } from 'rxjs/operators'
 import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
 import Web3 from 'web3'
+import { filterNullish } from './utils'
 
 interface CdpManagerUrnsArgs {
   id: string
@@ -25,7 +26,7 @@ export function createCdpManagerUrns$(
     switchMap((context) => {
       return call(context, cdpManagerUrns)({ id })
     }),
-    mergeMap((address) => (address ? of(address) : EMPTY)),
+    filterNullish(),
   )
 }
 
@@ -40,9 +41,7 @@ const cdpManagerIlks: CallDef<CdpManagerIlksArgs, CdpManagerIlksResult> = {
     return contract(cdpManager).methods['ilks']
   },
   prepareArgs: ({ id }) => [id],
-  postprocess: (ilk) => {
-    return ilk ? Web3.utils.hexToUtf8(ilk) : undefined
-  },
+  postprocess: (ilk) => (ilk ? Web3.utils.hexToUtf8(ilk) : undefined),
 }
 
 export function createCdpManagerIlks$(
@@ -53,6 +52,6 @@ export function createCdpManagerIlks$(
     switchMap((context) => {
       return call(context, cdpManagerIlks)({ id })
     }),
-    mergeMap((kind) => (kind ? of(kind) : EMPTY)),
+    filterNullish(),
   )
 }
