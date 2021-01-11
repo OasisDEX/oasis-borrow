@@ -16,7 +16,7 @@ import {
   createProxyOwner$,
   createVaults$,
   vault$,
-} from 'features/vaultsList/vaultsList'
+} from 'features/vaults/vaults'
 import { mapValues } from 'lodash'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
