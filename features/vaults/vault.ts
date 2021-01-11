@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable, of } from 'rxjs'
-import { flatMap, last, mergeMap, shareReplay, switchMap, take, tap } from 'rxjs/operators'
+import { switchMap, take } from 'rxjs/operators'
 
-import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
 import { ContextConnected } from '../../components/blockchain/network'
 
 export interface Vault {
@@ -263,10 +262,14 @@ export const mockVault: Vault = {
 
 export function createVault$(
   connectedContext$: Observable<ContextConnected>,
+  cdpManagerUrns$: (id: string) => Observable<string>,
   id: string,
 ): Observable<Vault> {
-  return connectedContext$.pipe(
-    switchMap(() => of({ ...mockVault, id })),
+  return combineLatest(connectedContext$, cdpManagerUrns$(id)).pipe(
+    switchMap(([, address]) => {
+      console.log(address)
+      return of({ ...mockVault, id, address })
+    }),
     take(1),
   )
 }

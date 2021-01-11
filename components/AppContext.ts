@@ -11,6 +11,7 @@ import {
 } from 'components/blockchain/calls/callsHelpers'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
+import { createCdpManagerUrns$ } from 'features/vaults/cdpManager'
 
 import { createProxyAddress$, createProxyOwner$ } from 'features/vaults/proxy'
 import { createVault$ } from 'features/vaults/vault'
@@ -131,7 +132,8 @@ export function setupAppContext() {
   const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
   const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
 
-  const vault$ = curry(createVault$)(connectedContext$)
+  const cdpManagerUrns$ = curry(createCdpManagerUrns$)(connectedContext$)
+  const vault$ = curry(createVault$)(connectedContext$, cdpManagerUrns$)
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
 
   return {
