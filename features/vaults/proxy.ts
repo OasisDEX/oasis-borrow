@@ -15,7 +15,7 @@ export const proxyAddress: CallDef<string, string | undefined> = {
 export function createProxyAddress$(
   connectedContext$: Observable<ContextConnected>,
   address: string,
-): Observable<string | undefined> {
+): Observable<string> {
   return connectedContext$.pipe(
     switchMap((context) =>
       defer(() =>
@@ -25,7 +25,7 @@ export function createProxyAddress$(
         )(address).pipe(
           mergeMap((proxyAddress: string) => {
             if (proxyAddress === nullAddress) {
-              return of(undefined)
+              return EMPTY
             }
             return of(proxyAddress)
           }),
@@ -45,14 +45,14 @@ export const owner: CallDef<string, string | undefined> = {
 export function createProxyOwner$(
   connectedContext$: Observable<ContextConnected>,
   proxyAddress: string,
-): Observable<string | undefined> {
+): Observable<string> {
   return connectedContext$.pipe(
     switchMap((context) =>
       defer(() =>
         call(context, owner)(proxyAddress).pipe(map((ownerAddress: string) => ownerAddress)),
       ),
     ),
-    catchError(() => of(undefined)),
+    catchError(() => EMPTY),
     shareReplay(1),
   )
 }
