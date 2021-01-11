@@ -11,8 +11,10 @@ import {
 } from 'components/blockchain/calls/callsHelpers'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
+import { createCdpManagerIlks$, createCdpManagerUrns$ } from 'features/vaults/cdpManager'
 
 import { createProxyAddress$, createProxyOwner$ } from 'features/vaults/proxy'
+import { createVatGem$, createVatIlks$, createVatLine$, createVatUrns$ } from 'features/vaults/vat'
 import { createVault$ } from 'features/vaults/vault'
 import { createVaults$ } from 'features/vaults/vaults'
 
@@ -131,7 +133,21 @@ export function setupAppContext() {
   const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
   const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
 
-  const vault$ = curry(createVault$)(connectedContext$)
+  const cdpManagerUrns$ = curry(createCdpManagerUrns$)(connectedContext$)
+  const cdpManagerIlks$ = curry(createCdpManagerIlks$)(connectedContext$)
+  const vatUrns$ = curry(createVatUrns$)(connectedContext$, cdpManagerUrns$, cdpManagerIlks$)
+  const vatIlks$ = curry(createVatIlks$)(connectedContext$)
+  const vatGem$ = curry(createVatGem$)(connectedContext$, cdpManagerUrns$, cdpManagerIlks$)
+  const vatLine$ = curry(createVatLine$)(connectedContext$)
+
+  const vault$ = curry(createVault$)(
+    connectedContext$,
+    cdpManagerUrns$,
+    cdpManagerIlks$,
+    vatUrns$,
+    vatIlks$,
+    vatGem$,
+  )
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
 
   return {

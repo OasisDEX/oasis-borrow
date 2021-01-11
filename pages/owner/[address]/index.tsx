@@ -23,7 +23,7 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
         {vaults.map((vault) => (
           <>
             <Text>{vault.id}</Text>
-            <Text>{vault.type}</Text>
+            <Text>{vault.kind}</Text>
           </>
         ))}
       </Grid>

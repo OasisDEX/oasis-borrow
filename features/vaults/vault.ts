@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable, of } from 'rxjs'
-import { flatMap, last, mergeMap, shareReplay, switchMap, take, tap } from 'rxjs/operators'
+import { map, mergeMap, switchMap, take } from 'rxjs/operators'
 
-import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
 import { ContextConnected } from '../../components/blockchain/network'
+import { Ilk, Urn } from './vat'
 
 export interface Vault {
   /*
@@ -48,14 +48,14 @@ export interface Vault {
   token: string
 
   /*
-   * The "Vault.type" is referred to as an Ilk in the core contracts. We can
+   * The "Vault.kind" is referred to as an Ilk in the core contracts. We can
    * name it more generally as a "collateral type" as each has it's own set
    * of parameters or characteristics, e.g
    * - ETH-A, gem is ETH, Stability Fee is 2.5%, ...
    * - ETH-B, gem is ETH, Stability Fee is 5% ...
    * - WBTC-A, gem is WBTC, Stability Fee is 4.5% ...
    */
-  type: string
+  kind: string
 
   /*
    * The "Vault.address" is as mentioned in Vault.id, an address for the
@@ -102,6 +102,8 @@ export interface Vault {
   /*
    * "Vault.unlockedCollateral" references the amount of unencumbered collateral
    * as mentioned in Vault.collateral
+   *
+   * Necessary for functionality to reclaim leftover collateral on the adapter
    */
   unlockedCollateral: BigNumber
 
@@ -235,7 +237,7 @@ export interface Vault {
 
 export const mockVault: Vault = {
   id: '500',
-  type: 'ETH-A',
+  kind: 'ETH-A',
   token: 'ETH',
   owner: '0x05623eb676A8abA2d381604B630ded1A81Dc05a9',
   address: '0x882cd8B63b4b6cB5ca2Bda899f6A8c968d66643e',
@@ -263,10 +265,36 @@ export const mockVault: Vault = {
 
 export function createVault$(
   connectedContext$: Observable<ContextConnected>,
+  cdpManagerUrns$: (id: string) => Observable<string>,
+  cdpManagerIlks$: (id: string) => Observable<string>,
+  vatUrns$: (id: string) => Observable<Urn>,
+  vatIlks$: (kind: string) => Observable<Ilk>,
+  vatGem$: (id: string) => Observable<BigNumber>,
   id: string,
 ): Observable<Vault> {
-  return connectedContext$.pipe(
-    switchMap(() => of({ ...mockVault, id })),
+  return combineLatest(
+    connectedContext$,
+    cdpManagerUrns$(id),
+    cdpManagerIlks$(id),
+    vatUrns$(id),
+    vatGem$(id),
+  ).pipe(
+    switchMap(([, address, kind, { collateral, normalizedDebt }, unlockedCollateral]) => {
+      return vatIlks$(kind).pipe(
+        mergeMap(({ debtFloor }) => {
+          return of({
+            ...mockVault,
+            id,
+            address,
+            kind,
+            collateral,
+            normalizedDebt,
+            debtFloor,
+            unlockedCollateral,
+          })
+        }),
+      )
+    }),
     take(1),
   )
 }
