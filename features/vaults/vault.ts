@@ -234,7 +234,7 @@ export interface Vault {
 
 export const mockVault: Vault = {
   id: '500',
-  type: 'ETH-A',
+  kind: 'ETH-A',
   token: 'ETH',
   owner: '0x05623eb676A8abA2d381604B630ded1A81Dc05a9',
   address: '0x882cd8B63b4b6cB5ca2Bda899f6A8c968d66643e',
