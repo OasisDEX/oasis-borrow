@@ -13,9 +13,10 @@ import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import {
   createProxyAddress$,
-  createProxyOwner$,    createVaults$,
-vault$,
-} from 'features/vaultsSummary/vaultsSummary'
+  createProxyOwner$,
+  createVaults$,
+  vault$,
+} from 'features/vaultsList/vaultsList'
 import { mapValues } from 'lodash'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
