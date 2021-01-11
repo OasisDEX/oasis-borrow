@@ -13,7 +13,8 @@ import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 
 import { createProxyAddress$, createProxyOwner$ } from 'features/vaults/proxy'
-import { createVaults$, vault$ } from 'features/vaults/vaults'
+import { createVault$ } from 'features/vaults/vault'
+import { createVaults$ } from 'features/vaults/vaults'
 
 import { mapValues } from 'lodash'
 import { curry } from 'ramda'
@@ -130,6 +131,7 @@ export function setupAppContext() {
   const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
   const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
 
+  const vault$ = curry(createVault$)(connectedContext$)
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
 
   return {
