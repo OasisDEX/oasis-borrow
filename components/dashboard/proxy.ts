@@ -8,26 +8,33 @@ import { owner, proxyAddress } from './dsrPot/dsProxyCalls'
 
 export function createProxyAddress$(
   context: ContextConnected,
-  account: string,
+  address: string,
 ): Observable<string | undefined> {
   return defer(() =>
     call(
       context,
       proxyAddress,
-    )(account).pipe(
+    )(address).pipe(
       mergeMap((dsProxyAddress: string) => {
         if (dsProxyAddress === nullAddress) {
           return of(undefined)
         }
-        return call(
-          context,
-          owner,
-        )(dsProxyAddress).pipe(
-          mergeMap((ownerAddress: string) =>
-            ownerAddress === account ? of(dsProxyAddress) : of(undefined),
-          ),
-        )
+        return dsProxyAddress
       }),
+    ),
+  )
+}
+
+export function createProxyOwner$(
+  context: ContextConnected,
+  proxyAddress: string,
+): Observable<string | undefined> {
+  return call(
+    context,
+    owner,
+  )(proxyAddress).pipe(
+    mergeMap((ownerAddress: string) =>
+      ownerAddress === proxyAddress ? of(ownerAddress) : of(undefined),
     ),
   )
 }
