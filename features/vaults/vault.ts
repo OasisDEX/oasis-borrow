@@ -47,14 +47,14 @@ export interface Vault {
   token: string
 
   /*
-   * The "Vault.type" is referred to as an Ilk in the core contracts. We can
+   * The "Vault.kind" is referred to as an Ilk in the core contracts. We can
    * name it more generally as a "collateral type" as each has it's own set
    * of parameters or characteristics, e.g
    * - ETH-A, gem is ETH, Stability Fee is 2.5%, ...
    * - ETH-B, gem is ETH, Stability Fee is 5% ...
    * - WBTC-A, gem is WBTC, Stability Fee is 4.5% ...
    */
-  type: string
+  kind: string
 
   /*
    * The "Vault.address" is as mentioned in Vault.id, an address for the
@@ -263,12 +263,13 @@ export const mockVault: Vault = {
 export function createVault$(
   connectedContext$: Observable<ContextConnected>,
   cdpManagerUrns$: (id: string) => Observable<string>,
+  cdpManagerIlks$: (id: string) => Observable<string>,
   id: string,
 ): Observable<Vault> {
-  return combineLatest(connectedContext$, cdpManagerUrns$(id)).pipe(
-    switchMap(([, address]) => {
-      console.log(address)
-      return of({ ...mockVault, id, address })
+  return combineLatest(connectedContext$, cdpManagerUrns$(id), cdpManagerIlks$(id)).pipe(
+    switchMap(([, address, type]) => {
+      console.log(address, type)
+      return of({ ...mockVault, id, address, type })
     }),
     take(1),
   )
