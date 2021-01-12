@@ -1,10 +1,17 @@
 import BigNumber from 'bignumber.js'
 import { curry } from 'ramda'
 
-// antecedent : consequent
-interface BinaryRatio<T> {
-  antecedent: T
-  consequent: T
+type Numeric = Number | string | BigNumber
+
+export function $parse(v: Numeric): bigint | never {
+  if (BigNumber.isBigNumber(v)) {
+    return 1n
+  } else if (typeof v === 'number') {
+    return 1n
+  } else if (typeof v === 'string') {
+    return 1n
+  }
+  throw new Error(`Could not parse input: ${v}`)
 }
 
 interface Currency {
@@ -13,23 +20,7 @@ interface Currency {
   decimals: bigint
 }
 
-type Ratio = BinaryRatio<BigInt>
-type Price = BinaryRatio<Currency>
-
-type Numberish = Number | string | BigNumber
-
-export function parseAsBigInt(v: Numberish) {
-  if (BigNumber.isBigNumber(v)) {
-    return BigInt(1)
-  } else if (typeof v === 'number') {
-    return BigInt(1)
-  } else if (typeof v === 'string') {
-    return BigInt(1)
-  }
-  throw new Error(`Could not parse input: ${v}`)
-}
-
-export function $createCurrency(decimals: bigint, symbol: string, amount: bigint): Currency {
+export function $createCurrencyFn(decimals: bigint, symbol: string, amount: bigint): Currency {
   return {
     decimals,
     symbol,
@@ -37,19 +28,42 @@ export function $createCurrency(decimals: bigint, symbol: string, amount: bigint
   }
 }
 
-const createCurrency = curry($createCurrency)
+const $createCurrency = curry($createCurrencyFn)
 
-export const WAD = createCurrency(18n)
-export const RAY = createCurrency(27n)
-export const RAD = createCurrency(45n)
+export const WAD = $createCurrency(18n)
+export const RAY = $createCurrency(27n)
+export const RAD = $createCurrency(45n)
 
-interface currencyPrintOptions {
+export const DAI = WAD('DAI')
+
+// antecedent : consequent
+// base : quote
+// numerator : denomionator
+interface BinaryRatio<T> {
+  antecedent: T
+  consequent: T
+}
+
+type Ratio = BinaryRatio<BigInt>
+type Price = BinaryRatio<Currency>
+
+//
+
+// UI specific print fn's to transform Currency
+export function $printRatio(r: Ratio): string {
+  return 'ratio'
+}
+export function $printPrice(p: Price): string {
+  return 'price'
+}
+
+interface PrintCurrencyOptions {
   showSymbol?: boolean
 }
 
-export function $print(
+export function $printCurrency(
   c: Currency,
-  options: currencyPrintOptions = {
+  options: PrintCurrencyOptions = {
     showSymbol: true,
   },
 ): string {
