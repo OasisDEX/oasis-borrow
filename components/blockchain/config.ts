@@ -10,10 +10,12 @@ import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
 import * as erc20 from './abi/erc20.json'
 import * as getCdps from './abi/get-cdps.json'
 import * as otc from './abi/matching-market.json'
+import * as mcdEnd from './abi/mcd-end.json'
 import * as mcdJoinDai from './abi/mcd-join-dai.json'
 import * as mcdJug from './abi/mcd-jug.json'
 import * as mcdOsm from './abi/mcd-osm.json'
 import * as mcdPot from './abi/mcd-pot.json'
+import * as mcdSpot from './abi/mcd-spot.json'
 import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
 import * as kovanAddresses from './addresses/kovan.json'
@@ -162,6 +164,8 @@ const protoMain = {
   mcdOsms: getOsms(mainnetAddresses),
   mcdJug: contractDesc(mcdJug, mainnetAddresses.MCD_JUG),
   mcdPot: contractDesc(mcdPot, mainnetAddresses.MCD_POT),
+  mcdEnd: contractDesc(mcdEnd, mainnetAddresses.MCD_END),
+  mcdSpot: contractDesc(mcdSpot, mainnetAddresses.MCD_SPOT),
   dssCdpManager: contractDesc(dssCdpManager, '0x36a724Bd100c39f0Ea4D3A20F7097eE01A8Ff573'),
   otcSupportMethods: contractDesc(otcSupport, '0x9b3f075b12513afe56ca2ed838613b7395f57839'),
   vat: contractDesc(vat, '0x35D1b3F3D7966A1DFe207aa4514C12a259A0492B'),
@@ -205,8 +209,10 @@ const kovan: NetworkConfig = {
   },
   getCdps: contractDesc(getCdps, kovanAddresses.GET_CDPS),
   mcdOsms: getOsms(kovanAddresses),
-  mcdPot: contractDesc(mcdPot, mainnetAddresses.MCD_POT),
+  mcdPot: contractDesc(mcdPot, kovanAddresses.MCD_POT),
   mcdJug: contractDesc(mcdJug, kovanAddresses.MCD_JUG),
+  mcdEnd: contractDesc(mcdEnd, kovanAddresses.MCD_END),
+  mcdSpot: contractDesc(mcdSpot, kovanAddresses.MCD_SPOT),
   dssCdpManager: contractDesc(dssCdpManager, '0x1476483dD8C35F25e568113C5f70249D3976ba21'),
   otcSupportMethods: contractDesc(otcSupport, '0x303f2bf24d98325479932881657f45567b3e47a8'),
   vat: contractDesc(vat, '0xbA987bDB501d131f766fEe8180Da5d81b34b69d9'),
