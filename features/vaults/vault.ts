@@ -48,14 +48,14 @@ export interface Vault {
   token: string
 
   /*
-   * The "Vault.kind" is referred to as an Ilk in the core contracts. We can
-   * name it more generally as a "collateral type" as each has it's own set
+   * The "Vault.ilk" is also called "ilk" in the core contracts. We can
+   * name it more generally as the "collateral type" as each has it's own set
    * of parameters or characteristics, e.g
    * - ETH-A, gem is ETH, Stability Fee is 2.5%, ...
    * - ETH-B, gem is ETH, Stability Fee is 5% ...
    * - WBTC-A, gem is WBTC, Stability Fee is 4.5% ...
    */
-  kind: string
+  ilk: string
 
   /*
    * The "Vault.address" is as mentioned in Vault.id, an address for the
@@ -279,14 +279,14 @@ export function createVault$(
     vatUrns$(id),
     vatGem$(id),
   ).pipe(
-    switchMap(([, address, kind, { collateral, normalizedDebt }, unlockedCollateral]) => {
-      return vatIlks$(kind).pipe(
+    switchMap(([, address, ilk, { collateral, normalizedDebt }, unlockedCollateral]) => {
+      return vatIlks$(ilk).pipe(
         mergeMap(({ debtFloor }) => {
           return of({
             ...mockVault,
             id,
             address,
-            kind,
+            ilk,
             collateral,
             normalizedDebt,
             debtFloor,
