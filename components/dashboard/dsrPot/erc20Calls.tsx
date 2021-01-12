@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { TransactionDef } from 'components/blockchain/calls/callsHelpers'
 import { TxMetaKind } from 'components/blockchain/calls/txMeta'
 import { getToken } from 'components/blockchain/config'
+import { Erc20 } from 'types/web3-v1-contracts/erc20'
 
 export type ApproveData = {
   kind: TxMetaKind.approve
@@ -11,8 +12,7 @@ export type ApproveData = {
 }
 
 export const approve: TransactionDef<ApproveData> = {
-  call: ({ token }, { tokens, contract }) =>
-    contract(tokens[token]).methods['approve(address,uint256)'],
+  call: ({ token }, { tokens, contract }) => contract<Erc20>(tokens[token]).methods.approve,
   prepareArgs: ({ spender }) => [spender, -1],
 }
 
@@ -22,8 +22,7 @@ export type DisapproveData = {
   spender: string
 }
 export const disapprove: TransactionDef<DisapproveData> = {
-  call: ({ token }, { tokens, contract }) =>
-    contract(tokens[token]).methods['approve(address,uint256)'],
+  call: ({ token }, { tokens, contract }) => contract<Erc20>(tokens[token]).methods.approve,
   prepareArgs: ({ spender }) => [spender, 0],
 }
 
@@ -34,8 +33,7 @@ export type TransferErc20Data = {
   amount: BigNumber
 }
 export const transferErc20: TransactionDef<TransferErc20Data> = {
-  call: ({ token }, { tokens, contract }) =>
-    contract(tokens[token]).methods['transfer(address,uint256)'],
+  call: ({ token }, { tokens, contract }) => contract<Erc20>(tokens[token]).methods.transfer,
   prepareArgs: ({ token, address, amount }) => [
     address,
     amountToWei(amount, getToken(token).precision).toFixed(0),

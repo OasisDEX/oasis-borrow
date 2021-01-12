@@ -7,8 +7,6 @@ import { WithChildren } from 'helpers/types'
 import React from 'react'
 import { Container, Flex, SxStyleProp } from 'theme-ui'
 
-import { WithTermsOfService } from './termsOfService/TermsOfService'
-
 interface BasicLayoutProps extends WithChildren {
   header: JSX.Element
   footer?: JSX.Element
@@ -49,9 +47,7 @@ export function AppLayout({ children, backLink, CustomLogoWithBack }: AppLayoutP
 
   return (
     <BasicLayout header={<AppHeader {...{ backLink, CustomLogoWithBack }} />}>
-      <WithConnection>
-        {children}
-      </WithConnection>
+      <WithConnection>{children}</WithConnection>
     </BasicLayout>
   )
 }

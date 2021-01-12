@@ -12,12 +12,10 @@ import {
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import { createCdpManagerIlks$, createCdpManagerUrns$ } from 'features/vaults/cdpManager'
-
 import { createProxyAddress$, createProxyOwner$ } from 'features/vaults/proxy'
 import { createVatGem$, createVatIlks$, createVatLine$, createVatUrns$ } from 'features/vaults/vat'
 import { createVault$ } from 'features/vaults/vault'
 import { createVaults$ } from 'features/vaults/vaults'
-
 import { mapValues } from 'lodash'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'

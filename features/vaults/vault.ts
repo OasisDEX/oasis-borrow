@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable, of } from 'rxjs'
-import { map, mergeMap, switchMap, take } from 'rxjs/operators'
+import { mergeMap, switchMap, take } from 'rxjs/operators'
 
 import { ContextConnected } from '../../components/blockchain/network'
 import { Ilk, Urn } from './vat'

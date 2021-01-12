@@ -3,14 +3,12 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { AccountButton } from 'components/account/Account'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink, AppLinkProps } from 'components/Links'
-import { formatAddress } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
-import { useReadonlyAccount } from 'helpers/useReadonlyAccount'
 import { useTranslation } from 'i18n'
 import React from 'react'
 import { TRANSITIONS } from 'theme'
-import { Alert, Box, Container, Text } from 'theme-ui'
+import { Box, Container } from 'theme-ui'
 
 function Logo() {
   return (
@@ -79,8 +77,8 @@ export function LogoWithBack({
       <BackArrow />
     </AppLink>
   ) : (
-        <Logo />
-      )
+    <Logo />
+  )
 }
 
 export function AppHeader({

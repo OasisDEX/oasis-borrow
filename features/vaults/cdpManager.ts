@@ -1,8 +1,10 @@
-import { ContextConnected } from '../../components/blockchain/network'
-import { EMPTY, Observable, of } from 'rxjs'
-import { filter, map, mergeMap, switchMap } from 'rxjs/operators'
-import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
+import { Observable } from 'rxjs'
+import { switchMap } from 'rxjs/operators'
+import { DssCdpManager } from 'types/web3-v1-contracts/dss-cdp-manager'
 import Web3 from 'web3'
+
+import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
+import { ContextConnected } from '../../components/blockchain/network'
 import { filterNullish } from './utils'
 
 interface CdpManagerUrnsArgs {
@@ -12,8 +14,8 @@ interface CdpManagerUrnsArgs {
 type CdpManagerUrnsResult = string | undefined
 
 const cdpManagerUrns: CallDef<CdpManagerUrnsArgs, CdpManagerUrnsResult> = {
-  call: ({}, { contract, cdpManager }) => {
-    return contract(cdpManager).methods['urns']
+  call: ({}, { contract, dssCdpManager }) => {
+    return contract<DssCdpManager>(dssCdpManager).methods.urns
   },
   prepareArgs: ({ id }) => [id],
 }
@@ -37,8 +39,8 @@ interface CdpManagerIlksArgs {
 type CdpManagerIlksResult = string | undefined
 
 const cdpManagerIlks: CallDef<CdpManagerIlksArgs, CdpManagerIlksResult> = {
-  call: ({}, { contract, cdpManager }) => {
-    return contract(cdpManager).methods['ilks']
+  call: ({}, { contract, dssCdpManager }) => {
+    return contract<DssCdpManager>(dssCdpManager).methods.ilks
   },
   prepareArgs: ({ id }) => [id],
   postprocess: (ilk) => (ilk ? Web3.utils.hexToUtf8(ilk) : undefined),
