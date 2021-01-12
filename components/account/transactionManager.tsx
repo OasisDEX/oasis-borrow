@@ -18,27 +18,27 @@ export type TxMgrTransaction = {
   id: string
   lastChange: Date
 } & (
-    | {
+  | {
       kind: 'blockchain'
       status: TxStatus
       raw: TxState<TxData>
     }
-    | {
+  | {
       kind: 'wyre'
       status: WyreOrder['status']
       raw: OnrampOrder
     }
-    | {
+  | {
       kind: 'moonpay'
       status: MoonpayOrder['status']
       raw: OnrampOrder
     }
-    | {
+  | {
       kind: 'latamex'
       status: LatamexOrder['status']
       raw: OnrampOrder
     }
-  )
+)
 
 export type NotificationTransaction = {
   tx: TxMgrTransaction
@@ -250,9 +250,7 @@ export function createTransactionManager(
 ): Observable<TransactionManager> {
   return combineLatest(transactions$, every1Seconds$).pipe(
     map(([transactions]) => {
-      const allTransactions = transactions
-        .map(txState2Transaction)
-        .sort(compareTransactions)
+      const allTransactions = transactions.map(txState2Transaction).sort(compareTransactions)
 
       const {
         recentTransactions,

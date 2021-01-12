@@ -1,11 +1,11 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { MarketingLayout } from 'components/Layouts'
-import { AppLink, EXTERNAL_LINKS } from 'components/Links'
+import { AppLink } from 'components/Links'
 import { useTranslation } from 'i18n'
 import React, { ReactNode } from 'react'
 import { TRANSITIONS } from 'theme'
-import { Box, Button, Card, Flex, Grid, Heading, Image, Text } from 'theme-ui'
+import { Box, Card, Flex, Heading, Text } from 'theme-ui'
 
 interface CardLandingProps {
   icon: ReactNode
@@ -72,10 +72,11 @@ export function SectionDescription({ heading, text }: { heading: string; text: s
 }
 
 export function LandingPageView({ notification }: { notification?: ReactNode }) {
-
   return (
     <Box sx={{ width: '100%' }}>
-      <AppLink href="/owner/0x13c9306e6569EfaBE095C7504b40d57A26432AeA">/owner/0x13c9306e6569EfaBE095C7504b40d57A26432AeA</AppLink>
+      <AppLink href="/owner/0x13c9306e6569EfaBE095C7504b40d57A26432AeA">
+        /owner/0x13c9306e6569EfaBE095C7504b40d57A26432AeA
+      </AppLink>
       <br />
       <AppLink href="/500">Vault 500</AppLink>
     </Box>

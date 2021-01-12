@@ -204,12 +204,12 @@ export function AccountModal({ close }: ModalProps) {
                 {connectionKind === 'network' ? (
                   <Text sx={{ fontWeight: 'semiBold' }}>{t('connected-in-readonly-mode')}</Text>
                 ) : (
-                    <Text sx={{ fontWeight: 'semiBold' }}>
-                      {t('connected-with', {
-                        connectionKind: getConnectionKindMessage(connectionKind),
-                      })}
-                    </Text>
-                  )}
+                  <Text sx={{ fontWeight: 'semiBold' }}>
+                    {t('connected-with', {
+                      connectionKind: getConnectionKindMessage(connectionKind),
+                    })}
+                  </Text>
+                )}
               </Flex>
               <Flex sx={{ alignItems: 'center' }}>
                 <Box mr={2}>

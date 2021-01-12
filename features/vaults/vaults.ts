@@ -1,6 +1,5 @@
-import BigNumber from 'bignumber.js'
-import { combineLatest, EMPTY, forkJoin, Observable, of } from 'rxjs'
-import { switchMap, tap } from 'rxjs/operators'
+import { combineLatest, EMPTY, forkJoin, Observable } from 'rxjs'
+import { switchMap } from 'rxjs/operators'
 
 import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
 import { ContextConnected } from '../../components/blockchain/network'

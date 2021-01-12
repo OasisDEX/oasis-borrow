@@ -1,9 +1,10 @@
-import { ContextConnected } from '../../components/blockchain/network'
-import { combineLatest, EMPTY, Observable, of, OperatorFunction, pipe, UnaryFunction } from 'rxjs'
-import { filter, mergeMap, switchMap } from 'rxjs/operators'
-import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
-import Web3 from 'web3'
 import BigNumber from 'bignumber.js'
+import { combineLatest, Observable } from 'rxjs'
+import { switchMap } from 'rxjs/operators'
+import Web3 from 'web3'
+
+import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
+import { ContextConnected } from '../../components/blockchain/network'
 import { filterNullish } from './utils'
 
 interface VatUrnsArgs {

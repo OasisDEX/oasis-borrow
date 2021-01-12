@@ -49,14 +49,14 @@ module.exports = withPWA(
           config.watch = true
           // Don't ignore all node modules.
           config.watchOptions.ignored = config.watchOptions.ignored.filter(
-            ignore => !ignore.toString().includes('node_modules')
-          );
+            (ignore) => !ignore.toString().includes('node_modules'),
+          )
           // Ignore all node modules except those here.
           config.watchOptions.ignored = [
             ...config.watchOptions.ignored,
             /node_modules([\\]+|\/)+(?!@oasisdex)/,
-            /\@oasisdex([\\]+|\/)node_modules/
-          ];
+            /\@oasisdex([\\]+|\/)node_modules/,
+          ]
         }
 
         return config

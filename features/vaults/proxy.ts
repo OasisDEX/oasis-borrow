@@ -1,8 +1,8 @@
 import { nullAddress } from '@oasisdex/utils'
-import { contractDesc } from 'components/blockchain/config'
 import * as dsProxy from 'components/blockchain/abi/ds-proxy.abi.json'
+import { contractDesc } from 'components/blockchain/config'
+import { defer, EMPTY, Observable, of } from 'rxjs'
 import { catchError, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
-import { combineLatest, defer, EMPTY, forkJoin, Observable, of } from 'rxjs'
 
 import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
 import { ContextConnected } from '../../components/blockchain/network'
