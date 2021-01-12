@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
+import { Vat } from 'types/web3-v1-contracts/vat'
 import Web3 from 'web3'
 
 import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
@@ -21,7 +22,7 @@ type VatUrnsResult = Urn | undefined
 
 const vatUrns: CallDef<VatUrnsArgs, VatUrnsResult> = {
   call: ({}, { contract, vat }) => {
-    return contract(vat).methods['urns']
+    return contract<Vat>(vat).methods.urns
   },
   prepareArgs: ({ ilk, urnAddress }) => [Web3.utils.utf8ToHex(ilk), urnAddress],
   postprocess: (urn: any) =>
@@ -78,7 +79,7 @@ type VatIlksResult = Ilk | undefined
 
 const vatIlks: CallDef<VatIlksArgs, VatIlksResult> = {
   call: ({}, { contract, vat }) => {
-    return contract(vat).methods['ilks']
+    return contract<Vat>(vat).methods.ilks
   },
   prepareArgs: ({ ilk }) => [Web3.utils.utf8ToHex(ilk)],
   postprocess: (ilk: any) =>
@@ -114,7 +115,7 @@ type VatGemResult = BigNumber | undefined
 
 const vatGem: CallDef<VatGemArgs, VatGemResult> = {
   call: ({}, { contract, vat }) => {
-    return contract(vat).methods['gem']
+    return contract<Vat>(vat).methods.gem
   },
   prepareArgs: ({ ilk, urnAddress }) => [Web3.utils.utf8ToHex(ilk), urnAddress],
   postprocess: (gem) => (gem ? new BigNumber(gem) : undefined),
@@ -136,7 +137,7 @@ export function createVatGem$(
 
 const vatLine: CallDef<{}, BigNumber> = {
   call: (_, { contract, vat }) => {
-    return contract(vat).methods['Line']
+    return contract<Vat>(vat).methods.Line
   },
   prepareArgs: () => [],
 }

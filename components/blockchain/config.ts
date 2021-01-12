@@ -5,7 +5,7 @@ import { Dictionary } from 'ts-essentials'
 import * as eth from './abi/ds-eth-token.abi.json'
 import * as dsProxyFactory from './abi/ds-proxy-factory.abi.json'
 import * as dsProxyRegistry from './abi/ds-proxy-registry.abi.json'
-import * as cdpManager from './abi/dss-cdp-manager.json'
+import * as dssCdpManager from './abi/dss-cdp-manager.json'
 import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
 import * as erc20 from './abi/erc20.abi.json'
 import * as getCdps from './abi/get-cdps.json'
@@ -147,7 +147,7 @@ const protoMain = {
     // WBTC: contractDesc(erc20, '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'),
   } as Dictionary<ContractDesc>,
   getCdps: contractDesc(getCdps, '0x36a724Bd100c39f0Ea4D3A20F7097eE01A8Ff573'),
-  cdpManager: contractDesc(cdpManager, '0x36a724Bd100c39f0Ea4D3A20F7097eE01A8Ff573'),
+  dssCdpManager: contractDesc(dssCdpManager, '0x36a724Bd100c39f0Ea4D3A20F7097eE01A8Ff573'),
   otcSupportMethods: contractDesc(otcSupport, '0x9b3f075b12513afe56ca2ed838613b7395f57839'),
   mcdPot: contractDesc(mcdPot, '0x197E90f9FAD81970bA7976f33CbD77088E5D7cf7'),
   vat: contractDesc(vat, '0x35D1b3F3D7966A1DFe207aa4514C12a259A0492B'),
@@ -190,7 +190,7 @@ const kovan: NetworkConfig = {
     // WBTC: contractDesc(erc20, '0xA08d982C2deBa0DbE433a9C6177a219E96CeE656'),
   },
   getCdps: contractDesc(getCdps, '0x592301a23d37c591C5856f28726AF820AF8e7014'),
-  cdpManager: contractDesc(cdpManager, '0x1476483dD8C35F25e568113C5f70249D3976ba21'),
+  dssCdpManager: contractDesc(dssCdpManager, '0x1476483dD8C35F25e568113C5f70249D3976ba21'),
   otcSupportMethods: contractDesc(otcSupport, '0x303f2bf24d98325479932881657f45567b3e47a8'),
   mcdPot: contractDesc(mcdPot, '0xEA190DBDC7adF265260ec4dA6e9675Fd4f5A78bb'),
   vat: contractDesc(vat, '0xbA987bDB501d131f766fEe8180Da5d81b34b69d9'),

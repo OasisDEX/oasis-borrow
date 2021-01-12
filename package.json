@@ -20,7 +20,8 @@
     "coverage": " yarn test:coverage && codecov",
     "test:fix": "yarn lint:fix && yarn tsc && yarn format:fix && yarn test && yarn typecheck",
     "test:e2e": "mocha --config ./server-test-e2e/.mocharc.js",
-    "postinstall": "rm -f node_modules/web3/index.d.ts && yarn prisma:generate && yarn patch-package",
+    "typechain:generate": "typechain --target=web3-v1 \"components/blockchain/abi/*.json\"",
+    "postinstall": "rm -f node_modules/web3/index.d.ts && yarn prisma:generate && yarn patch-package && yarn typechain:generate",
     "storybook": "start-storybook -p 6006 -c .storybook -s ./public"
   },
   "dependencies": {
@@ -208,6 +209,8 @@
     "ts-loader": "^2.3.7",
     "ts-node": "^7.0.1",
     "tsconfig-paths": "^3.9.0",
+    "typechain": "^4.0.1",
+    "typechain-target-web3-v1": "^1.0.4",
     "typescript": "^4.0.3"
   }
 }

@@ -4,21 +4,24 @@ import * as dsProxy from 'components/blockchain/abi/ds-proxy.abi.json'
 import { CallDef, TransactionDef } from 'components/blockchain/calls/callsHelpers'
 import { TxMetaKind } from 'components/blockchain/calls/txMeta'
 import { contractDesc, getToken } from 'components/blockchain/config'
+import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
+import { DssProxyActionsDsr } from 'types/web3-v1-contracts/dss-proxy-actions-dsr'
+import { McdPot } from 'types/web3-v1-contracts/mcd-pot'
 
 export const pie: CallDef<string, BigNumber> = {
-  call: (_, { contract, mcdPot }) => contract(mcdPot).methods.pie,
+  call: (_, { contract, mcdPot }) => contract<McdPot>(mcdPot).methods.pie,
   prepareArgs: (proxyAddress) => [proxyAddress],
   postprocess: (result) => new BigNumber(result),
 }
 
 export const dsr: CallDef<void, BigNumber> = {
-  call: (_, { contract, mcdPot }) => contract(mcdPot).methods.dsr,
+  call: (_, { contract, mcdPot }) => contract<McdPot>(mcdPot).methods.dsr,
   prepareArgs: () => [],
   postprocess: (result) => new BigNumber(result),
 }
 
 export const chi: CallDef<void, BigNumber> = {
-  call: (_, { contract, mcdPot }) => contract(mcdPot).methods.chi,
+  call: (_, { contract, mcdPot }) => contract<McdPot>(mcdPot).methods.chi,
   prepareArgs: () => [],
   postprocess: (result) => new BigNumber(result),
 }
@@ -31,13 +34,13 @@ export type DsrJoinData = {
 
 export const join: TransactionDef<DsrJoinData> = {
   call: ({ proxyAddress }, { contract }) =>
-    contract(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)'],
+    contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods.execute,
   prepareArgs: (data, context) => {
     const { amount } = data
     const { contract, dssProxyActionsDsr, mcdJoinDai, mcdPot } = context
     return [
       dssProxyActionsDsr.address,
-      contract(dssProxyActionsDsr)
+      contract<DssProxyActionsDsr>(dssProxyActionsDsr)
         .methods.join(
           mcdJoinDai.address,
           mcdPot.address,
@@ -56,13 +59,13 @@ export type DsrExitData = {
 
 export const exit: TransactionDef<DsrExitData> = {
   call: ({ proxyAddress }, { contract }) =>
-    contract(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)'],
+    contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods.execute,
   prepareArgs: (data, context) => {
     const { amount } = data
     const { contract, dssProxyActionsDsr, mcdJoinDai, mcdPot } = context
     return [
       dssProxyActionsDsr.address,
-      contract(dssProxyActionsDsr)
+      contract<DssProxyActionsDsr>(dssProxyActionsDsr)
         .methods.exit(
           mcdJoinDai.address,
           mcdPot.address,
@@ -80,12 +83,14 @@ export type DsrExitAllData = {
 
 export const exitAll: TransactionDef<DsrExitAllData> = {
   call: ({ proxyAddress }, { contract }) =>
-    contract(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)'],
-  prepareArgs: (data, context) => {
+    contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods.execute,
+  prepareArgs: (_data, context) => {
     const { contract, dssProxyActionsDsr, mcdJoinDai, mcdPot } = context
     return [
       dssProxyActionsDsr.address,
-      contract(dssProxyActionsDsr).methods.exitAll(mcdJoinDai.address, mcdPot.address).encodeABI(),
+      contract<DssProxyActionsDsr>(dssProxyActionsDsr)
+        .methods.exitAll(mcdJoinDai.address, mcdPot.address)
+        .encodeABI(),
     ]
   },
 }

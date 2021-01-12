@@ -3,12 +3,15 @@ import * as dsProxy from 'components/blockchain/abi/ds-proxy.abi.json'
 import { contractDesc } from 'components/blockchain/config'
 import { defer, EMPTY, Observable, of } from 'rxjs'
 import { catchError, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
+import { DsProxyRegistry } from 'types/web3-v1-contracts/ds-proxy-registry'
 
 import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
 import { ContextConnected } from '../../components/blockchain/network'
 
 export const proxyAddress: CallDef<string, string | undefined> = {
-  call: (_, { dsProxyRegistry, contract }) => contract(dsProxyRegistry).methods.proxies,
+  call: (_, { dsProxyRegistry, contract }) =>
+    contract<DsProxyRegistry>(dsProxyRegistry).methods.proxies,
   prepareArgs: (address) => [address],
 }
 
@@ -38,7 +41,7 @@ export function createProxyAddress$(
 
 export const owner: CallDef<string, string | undefined> = {
   call: (dsProxyAddress, { contract }) =>
-    contract(contractDesc(dsProxy, dsProxyAddress)).methods.owner,
+    contract<DsProxy>(contractDesc(dsProxy, dsProxyAddress)).methods.owner,
   prepareArgs: () => [],
 }
 

@@ -1,5 +1,6 @@
 import { combineLatest, EMPTY, forkJoin, Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
+import { GetCdps } from 'types/web3-v1-contracts/get-cdps'
 
 import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
 import { ContextConnected } from '../../components/blockchain/network'
@@ -19,9 +20,11 @@ interface GetCdpsResult {
 const getCdps: CallDef<GetCdpsArgs, GetCdpsResult> = {
   call: ({ proxyAddress, descending }, { contract, getCdps }) => {
     console.log(proxyAddress, descending)
-    return contract(getCdps).methods[`getCdps${descending ? 'Desc' : 'Asc'}`]
+    return descending
+      ? contract<GetCdps>(getCdps).methods.getCdpsDesc
+      : contract<GetCdps>(getCdps).methods.getCdpsAsc
   },
-  prepareArgs: ({ proxyAddress }, { cdpManager }) => [cdpManager.address, proxyAddress],
+  prepareArgs: ({ proxyAddress }, { dssCdpManager }) => [dssCdpManager.address, proxyAddress],
 }
 
 export function createVaults$(
