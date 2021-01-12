@@ -21,7 +21,7 @@ export interface Urn {
 type VatUrnsResult = Urn | undefined
 
 const vatUrns: CallDef<VatUrnsArgs, VatUrnsResult> = {
-  call: ({}, { contract, vat }) => {
+  call: (_, { contract, vat }) => {
     return contract<Vat>(vat).methods.urns
   },
   prepareArgs: ({ ilk, urnAddress }) => [Web3.utils.utf8ToHex(ilk), urnAddress],
