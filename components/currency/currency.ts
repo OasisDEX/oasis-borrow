@@ -14,13 +14,20 @@ export function $parse(v: Numeric): bigint | never {
   throw new Error(`Could not parse input: ${v}`)
 }
 
-interface Currency {
+export interface Currency {
   amount: bigint
   symbol: string
   decimals: bigint
 }
 
-export function $createCurrencyFn(decimals: bigint, symbol: string, amount: bigint): Currency {
+export function $createCurrencyFn(
+  decimals: bigint,
+  symbol: string,
+  amount: bigint,
+): Currency | never {
+  if (decimals < 0) {
+    throw new Error('Currency must have positive decimals')
+  }
   return {
     decimals,
     symbol,
@@ -36,9 +43,47 @@ export const RAD = $createCurrency(45n)
 
 export const DAI = WAD('DAI')
 
+// upscales and
+export function $scale(c: Currency, scale: BigInt): Currency | undefined {
+  if (scale > 0n) {
+    if (scale === c.decimals) {
+      return c
+    }
+    if (scale > c.decimals) {
+      // upscale
+      return c
+    }
+    if (scale < c.decimals) {
+      // NOTE: This will lose precision
+      return c
+    }
+  }
+  return undefined
+}
+
+export function $add({ a, b }: { a: Currency; b: Currency }): Currency | undefined {
+  let decimalDiff, offset, upscaledAmount
+  if (a.symbol === b.symbol) {
+    if (a.decimals === b.decimals) {
+      return $createCurrency(a.decimals, a.symbol, a.amount + b.amount)
+    } else if (a.decimals > b.decimals) {
+      decimalDiff = a.decimals - b.decimals
+      offset = 10n ** decimalDiff
+      upscaledAmount = b.amount * offset
+      return $createCurrency(a.decimals, a.symbol, a.amount + upscaledAmount)
+    } else {
+      decimalDiff = b.decimals - a.decimals
+      offset = 10n ** decimalDiff
+      upscaledAmount = a.amount * offset
+      return $createCurrency(b.decimals, a.symbol, upscaledAmount + b.amount)
+    }
+  }
+  return undefined
+}
+
 // antecedent : consequent
 // base : quote
-// numerator : denomionator
+// numerator : denominator
 interface BinaryRatio<T> {
   antecedent: T
   consequent: T
@@ -61,18 +106,18 @@ interface PrintCurrencyOptions {
   showSymbol?: boolean
 }
 
-export function $printCurrency(
+export function $print(
   c: Currency,
   options: PrintCurrencyOptions = {
     showSymbol: true,
   },
 ): string {
-  let isNeg = c.amount < 0n
+  const isNeg = c.amount < 0n
   if (isNeg) {
     c.amount = c.amount * -1n
   }
   let displayString = ''
-  let amtStr = c.amount.toString()
+  const amtStr = c.amount.toString()
   const lessThanZeroStart = `0.`
   const position = amtStr.length - Number(c.decimals)
 
