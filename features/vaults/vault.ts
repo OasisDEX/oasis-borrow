@@ -124,23 +124,29 @@ export interface Vault {
   collateralPrice: BigNumber
 
   /*
-   * "Vault.availableCollateral" is the amount of collateral that can be
-   * withdrawn from a vault without being liquidated
-   */
-  availableCollateral: BigNumber
-
-  /*
-   * "Vault.availableCollateralPrice" is the amount of collateral in USD that
-   * can be withdrawn from a vault without being liquidated
-   */
-  availableCollateralPrice: BigNumber
-
-  /*
-   * "Vault.unavailableCollateral" is the minimum amount of collateral which
+   * "Vault.backingCollateral" is the minimum amount of collateral which
    * must be locked in the vault given the current amount of debt.
    * "minSafeCollateralAmount"
    */
-  unavailableCollateral: BigNumber
+  backingCollateral: BigNumber
+
+  /*
+   * "Vault.backingCollateralPrice" is the minimum amount of collateral in USD
+   * which must be locked in the vault given the current amount of debt.
+   */
+  backingCollateralPrice: BigNumber
+
+  /*
+   * "Vault.freeCollateral" is the amount of collateral that can be
+   * withdrawn from a vault without being liquidated
+   */
+  freeCollateral: BigNumber
+
+  /*
+   * "Vault.freeCollateralPrice" is the amount of collateral in USD that
+   * can be withdrawn from a vault without being liquidated
+   */
+  freeCollateralPrice: BigNumber
 
   /*
    * The "Vault.debt" represents an amount of "internal DAI" generated through a
@@ -256,9 +262,10 @@ export const mockVault: Vault = {
   collateral: new BigNumber('98'),
   unlockedCollateral: new BigNumber('0'),
   collateralPrice: new BigNumber('122014.90'),
-  availableCollateral: new BigNumber('77.72'),
-  availableCollateralPrice: new BigNumber('96770.74'),
-  unavailableCollateral: new BigNumber('20.28'),
+  backingCollateral: new BigNumber('20.28'),
+  backingCollateralPrice: new BigNumber('20.28'),
+  freeCollateral: new BigNumber('77.72'),
+  freeCollateralPrice: new BigNumber('96770.74'),
   normalizedDebt: new BigNumber('16403.419856003889170145'),
   collateralizationRatio: new BigNumber('7.25'),
   debt: new BigNumber('16829.44'),
@@ -377,7 +384,16 @@ export function createVault$(
             { collateral, normalizedDebt },
             unlockedCollateral,
           ]) => {
-            const debt = amountFromRay(debtScalingFactor).times(amountFromWei(normalizedDebt))
+            const debt = debtScalingFactor.times(normalizedDebt)
+
+            const backingCollateral = debt.times(liquidationRatio)
+            const freeCollateral = backingCollateral.gt(collateral)
+              ? new BigNumber('0')
+              : collateral.minus(backingCollateral)
+
+            const backingCollateralPrice = backingCollateral.div(collateralPrice)
+            const freeCollateralPrice = freeCollateral.div(collateralPrice)
+
             return of({
               ...mockVault,
               id: id.toString(),
@@ -392,9 +408,10 @@ export function createVault$(
               debt,
               debtFloor,
               token,
-              //availableCollateral,
-              //availableCollateralPrice,
-              //unavailableCollateral,
+              backingCollateral,
+              backingCollateralPrice,
+              freeCollateral,
+              freeCollateralPrice,
               // collateralizationRatio,
               // debtAvailable,
               // globalDebtAvailable,
