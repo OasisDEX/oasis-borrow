@@ -1,11 +1,12 @@
-import { CallDef } from './callsHelpers'
-import BigNumber from 'bignumber.js'
-import { McdPot } from '../../../types/web3-v1-contracts/mcd-pot'
 import { amountFromWei } from '@oasisdex/utils'
-import { amountFromRay } from '../utils'
+import BigNumber from 'bignumber.js'
 import { Observable } from 'rxjs'
-import { SECONDS_PER_YEAR } from '../../constants'
 import { map } from 'rxjs/operators'
+
+import { McdPot } from '../../../types/web3-v1-contracts/mcd-pot'
+import { SECONDS_PER_YEAR } from '../../constants'
+import { amountFromRay } from '../utils'
+import { CallDef } from './callsHelpers'
 
 export const potPie: CallDef<void, BigNumber> = {
   call: (_, { contract, mcdPot }) => contract<McdPot>(mcdPot).methods.Pie,

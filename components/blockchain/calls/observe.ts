@@ -2,8 +2,8 @@ import { isEqual, memoize } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, first, shareReplay, switchMap } from 'rxjs/operators'
 
-import { call, CallDef } from './callsHelpers'
 import { ContextConnected } from '../network'
+import { call, CallDef } from './callsHelpers'
 
 export function observe<A, R>(
   onEveryBlock$: Observable<number>,

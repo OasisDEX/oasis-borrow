@@ -1,9 +1,9 @@
+import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLayout } from 'components/Layouts'
 import { useObservable } from 'helpers/observableHook'
 import { useRouter } from 'next/router'
 import { Grid, Text } from 'theme-ui'
-import BigNumber from 'bignumber.js'
 
 export default function Vault() {
   const { web3Context$, vault$ } = useAppContext()

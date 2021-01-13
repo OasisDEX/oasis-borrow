@@ -1,11 +1,11 @@
 
-
 // BASE_COLLATERAL_FEE
-import { CallDef } from './callsHelpers'
 import BigNumber from 'bignumber.js'
-import { McdOsm } from '../../../types/web3-v1-contracts/mcd-osm'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
+
+import { McdOsm } from '../../../types/web3-v1-contracts/mcd-osm'
+import { CallDef } from './callsHelpers'
 
 export const tokenPriceLastUpdate: CallDef<string, BigNumber> = {
   call: (token, context) =>

@@ -1,9 +1,8 @@
+import BigNumber from 'bignumber.js'
 import { DssCdpManager } from 'types/web3-v1-contracts/dss-cdp-manager'
 import Web3 from 'web3'
 
 import { CallDef } from './callsHelpers'
-
-import BigNumber from 'bignumber.js'
 
 export const cdpManagerUrns: CallDef<BigNumber, string> = {
   call: (_, { contract, dssCdpManager }) => {
@@ -21,14 +20,12 @@ export const cdpManagerIlks: CallDef<BigNumber, string> = {
 }
 
 export const cdpManagerCdpi: CallDef<void, BigNumber> = {
-  call: (_, { contract, dssCdpManager } ) =>
-    contract<DssCdpManager>(dssCdpManager).methods.cdpi,
+  call: (_, { contract, dssCdpManager }) => contract<DssCdpManager>(dssCdpManager).methods.cdpi,
   prepareArgs: () => [],
-  postprocess: (result) => new BigNumber(result)
+  postprocess: (result) => new BigNumber(result),
 }
 
 export const cdpManagerOwner: CallDef<BigNumber, string> = {
-  call: (id, { contract, dssCdpManager } ) =>
-    contract<DssCdpManager>(dssCdpManager).methods.owns,
+  call: (_, { contract, dssCdpManager }) => contract<DssCdpManager>(dssCdpManager).methods.owns,
   prepareArgs: (id) => [id],
 }

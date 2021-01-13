@@ -6,7 +6,7 @@ import { amountFromRay } from '../utils'
 import { CallDef } from './callsHelpers'
 
 interface SpotIlksResult {
-  priceFeedAddress: string,
+  priceFeedAddress: string
   liquidationRatio: BigNumber
 }
 
@@ -18,16 +18,16 @@ function deb<R>(f: (...args: any) => R): (...args: any) => R {
 }
 
 export const spotIlks: CallDef<string, SpotIlksResult> = {
-  call: (ilk, { contract, mcdSpot }) => contract<McdSpot>(mcdSpot).methods.ilks,
+  call: (_, { contract, mcdSpot }) => contract<McdSpot>(mcdSpot).methods.ilks,
   prepareArgs: (ilk) => [Web3.utils.utf8ToHex(ilk)],
   postprocess: deb(({ 0: pip, 1: mat }: any) => ({
-      priceFeedAddress: pip,
-      liquidationRatio: amountFromRay(new BigNumber(mat))
-  }))
+    priceFeedAddress: pip,
+    liquidationRatio: amountFromRay(new BigNumber(mat)),
+  })),
 }
 
 export const spotPar: CallDef<void, BigNumber> = {
-  call: (ilk, { contract, mcdSpot }) => contract<McdSpot>(mcdSpot).methods.par,
+  call: (_, { contract, mcdSpot }) => contract<McdSpot>(mcdSpot).methods.par,
   prepareArgs: () => [],
-  postprocess: (result: any) => amountFromRay(new BigNumber(result))
+  postprocess: (result: any) => amountFromRay(new BigNumber(result)),
 }

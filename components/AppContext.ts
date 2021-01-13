@@ -9,19 +9,16 @@ import {
   SendTransactionFunction,
   TransactionDef,
 } from 'components/blockchain/calls/callsHelpers'
-import { createGasPrice$ } from 'components/blockchain/prices'
 import {
-  cdpManagerIlks, cdpManagerOwner,
+  cdpManagerIlks,
+  cdpManagerOwner,
   cdpManagerUrns,
 } from 'components/blockchain/calls/cdpManager'
 import { createProxyAddress$, createProxyOwner$ } from 'components/blockchain/calls/proxy'
-import {
-  vatGem,
-  vatIlks,
-  vatUrns,
-} from 'components/blockchain/calls/vat'
+import { vatGem, vatIlks, vatUrns } from 'components/blockchain/calls/vat'
+import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
-import { createCollateralTypePrice$, createVault$ } from 'features/vaults/vault'
+import { createCollateralPrice$, createController$, createVault$ } from 'features/vaults/vault'
 import { createVaults$ } from 'features/vaults/vaults'
 import { mapValues } from 'lodash'
 import { curry } from 'ramda'
@@ -30,6 +27,9 @@ import { filter, map, shareReplay } from 'rxjs/operators'
 
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from './account/transactionManager'
+import { jugIlks } from './blockchain/calls/jug'
+import { observe } from './blockchain/calls/observe'
+import { spotIlks, spotPar } from './blockchain/calls/spot'
 import { networksById } from './blockchain/config'
 import {
   ContextConnected,
@@ -39,13 +39,10 @@ import {
   createOnEveryBlock$,
   createWeb3ContextConnected$,
 } from './blockchain/network'
-import { jugIlks } from './blockchain/calls/jug'
-import { spotIlks, spotPar } from './blockchain/calls/spot'
-import { observe } from './blockchain/calls/observe'
 
 export type TxData = never
-  // | ApproveData
-  // | DisapproveData
+// | ApproveData
+// | DisapproveData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -123,33 +120,35 @@ export function setupAppContext() {
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
 
+  // base
   const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
   const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
+  const cdpManagerUrns$ = observe(onEveryBlock$, connectedContext$, cdpManagerUrns)
+  const cdpManagerIlks$ = observe(onEveryBlock$, connectedContext$, cdpManagerIlks)
+  const cdpManagerOwner$ = observe(onEveryBlock$, connectedContext$, cdpManagerOwner)
+  const vatIlks$ = observe(onEveryBlock$, connectedContext$, vatIlks)
+  const vatUrns$ = observe(onEveryBlock$, connectedContext$, vatUrns)
+  const vatGem$ = observe(onEveryBlock$, connectedContext$, vatGem)
+  const spotPar$ = observe(onEveryBlock$, connectedContext$, spotPar)
+  const spotIlks$ = observe(onEveryBlock$, connectedContext$, spotIlks)
+  const jugIlks$ = observe(onEveryBlock$, connectedContext$, jugIlks)
 
-  const cdpManagerUrns$ = observe(onEveryBlock$, connectedContext$, cdpManagerUrns);
-  const cdpManagerIlks$ = observe(onEveryBlock$, connectedContext$, cdpManagerIlks);
-  const cdpManagerOwner$ = observe(onEveryBlock$, connectedContext$, cdpManagerOwner);
-  const vatIlks$ = observe(onEveryBlock$, connectedContext$, vatIlks);
-  const vatUrns$ = observe(onEveryBlock$, connectedContext$, vatUrns);
-  const vatGem$ = observe(onEveryBlock$, connectedContext$, vatGem);
-  const spotPar$ = observe(onEveryBlock$, connectedContext$, spotPar);
-  const spotIlks$ = observe(onEveryBlock$, connectedContext$, spotIlks);
-  const jugIlks$ = observe(onEveryBlock$, connectedContext$, jugIlks);
+  // computed
+  const collateralPrice$ = curry(createCollateralPrice$)(vatIlks$, spotPar$, spotIlks$)
+  const controller$ = curry(createController$)(proxyOwner$, cdpManagerOwner$)
 
-  const collateralTypePrice$ =
-    curry(createCollateralTypePrice$)(vatIlks$, spotPar$, spotIlks$)
-
-  const vault$ = curry(createVault$)(
+  const vault$ = curry(createVault$)({
     cdpManagerUrns$,
     cdpManagerIlks$,
     vatUrns$,
     vatIlks$,
     vatGem$,
     cdpManagerOwner$,
-    collateralTypePrice$,
     spotIlks$,
-    jugIlks$
-  )
+    jugIlks$,
+    collateralPrice$,
+    controller$,
+  })
 
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
 
