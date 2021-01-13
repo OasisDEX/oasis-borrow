@@ -138,14 +138,16 @@ export function setupAppContext() {
   const vatGem$ = curry(createVatGem$)(connectedContext$, cdpManagerUrns$, cdpManagerIlks$)
   const vatLine$ = curry(createVatLine$)(connectedContext$)
 
-  const vault$ = curry(createVault$)(
+  const vault$ = (id: string) => createVault$(
     connectedContext$,
     cdpManagerUrns$,
     cdpManagerIlks$,
     vatUrns$,
     vatIlks$,
     vatGem$,
+    id
   )
+
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
 
   return {
