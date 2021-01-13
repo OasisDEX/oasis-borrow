@@ -1,5 +1,5 @@
-import { CallDef } from '../../components/blockchain/calls/callsHelpers'
-import { McdEnd } from '../../types/web3-v1-contracts/mcd-end'
+import { CallDef } from './callsHelpers'
+import { McdEnd } from '../../../types/web3-v1-contracts/mcd-end'
 
 export const endLive: CallDef<void, boolean> = {
   call: (_, { contract, mcdEnd }) => contract<McdEnd>(mcdEnd).methods.live,

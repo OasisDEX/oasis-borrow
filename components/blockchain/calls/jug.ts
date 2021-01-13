@@ -1,20 +1,24 @@
 import BigNumber from 'bignumber.js'
 import Web3 from 'web3'
 
-import { CallDef } from '../../components/blockchain/calls/callsHelpers'
-import { RAY, SECONDS_PER_YEAR } from '../../components/constants'
-import { McdJug } from '../../types/web3-v1-contracts/mcd-jug'
+import { CallDef } from './callsHelpers'
+import { RAY, SECONDS_PER_YEAR } from '../../constants'
+import { McdJug } from '../../../types/web3-v1-contracts/mcd-jug'
 
-export const jugIlks: CallDef<string, [BigNumber, Date]> = {
+export interface JugIlksResult {
+  stabilityFee: BigNumber,
+  lastLevied: Date
+}
+export const jugIlks: CallDef<string, JugIlksResult> = {
   call: (collateralTypeName, { contract, mcdJug }) =>
     contract<McdJug>(mcdJug).methods.ilks,
   prepareArgs: (collateralTypeName) => [Web3.utils.utf8ToHex(collateralTypeName)],
-  postprocess: ([rawFee, rawLastLevied]: any) => {
+  postprocess: ({ 0: rawFee, 1: rawLastLevied }: any) => {
     const v = new BigNumber(rawFee).dividedBy(RAY);
     BigNumber.config({ POW_PRECISION: 100 });
     const stabilityFee = v.pow(SECONDS_PER_YEAR).minus(1);
     const lastLevied = new Date(rawLastLevied * 1000)
-    return [stabilityFee, lastLevied]
+    return { stabilityFee, lastLevied }
   }
 }
 

@@ -1,9 +1,9 @@
 
 
 // BASE_COLLATERAL_FEE
-import { CallDef } from '../../components/blockchain/calls/callsHelpers'
+import { CallDef } from './callsHelpers'
 import BigNumber from 'bignumber.js'
-import { McdOsm } from '../../types/web3-v1-contracts/mcd-osm'
+import { McdOsm } from '../../../types/web3-v1-contracts/mcd-osm'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 

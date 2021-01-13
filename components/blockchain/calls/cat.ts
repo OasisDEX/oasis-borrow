@@ -3,9 +3,9 @@ import BigNumber from 'bignumber.js'
 import { McdCat } from 'types/web3-v1-contracts/mcd-cat'
 import Web3 from 'web3'
 
-import { CallDef } from '../../components/blockchain/calls/callsHelpers'
-import { amountFromRad, } from '../../components/blockchain/utils'
-import { WAD } from '../../components/constants'
+import { CallDef } from './callsHelpers'
+import { amountFromRad, } from '../utils'
+import { WAD } from '../../constants'
 
 interface CatIlksResult {
   liquidatorAddress: string;

@@ -2,8 +2,8 @@ import { isEqual, memoize } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, first, shareReplay, switchMap } from 'rxjs/operators'
 
-import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
-import { ContextConnected } from '../../components/blockchain/network'
+import { call, CallDef } from './callsHelpers'
+import { ContextConnected } from '../network'
 
 export function observe<A, R>(
   onEveryBlock$: Observable<number>,
@@ -19,3 +19,6 @@ export function observe<A, R>(
     )
   )
 }
+
+export type CallObservable<C extends CallDef<any, any>> =
+  C extends CallDef<infer A, infer R> ? (a: A) => Observable<R> : never

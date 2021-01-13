@@ -6,8 +6,8 @@ import { catchError, map, mergeMap, shareReplay, switchMap } from 'rxjs/operator
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DsProxyRegistry } from 'types/web3-v1-contracts/ds-proxy-registry'
 
-import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
-import { ContextConnected } from '../../components/blockchain/network'
+import { call, CallDef } from './callsHelpers'
+import { ContextConnected } from '../network'
 
 export const proxyAddress: CallDef<string, string | undefined> = {
   call: (_, { dsProxyRegistry, contract }) =>

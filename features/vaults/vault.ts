@@ -1,9 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable, of } from 'rxjs'
-import { mergeMap, switchMap, take } from 'rxjs/operators'
-
-import { ContextConnected } from '../../components/blockchain/network'
-import { Ilk, Urn } from './vat'
+import { map, switchMap, take } from 'rxjs/operators'
+import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from '../../components/blockchain/calls/cdpManager'
+import { jugIlks } from '../../components/blockchain/calls/jug'
+import { spotIlks, spotPar } from '../../components/blockchain/calls/spot'
+import { vatGem, vatIlks, vatUrns } from '../../components/blockchain/calls/vat'
+import { CallObservable } from '../../components/blockchain/calls/observe'
 
 export interface Vault {
   /*
@@ -237,7 +239,7 @@ export interface Vault {
 
 export const mockVault: Vault = {
   id: '500',
-  kind: 'ETH-A',
+  ilk: 'ETH-A',
   token: 'ETH',
   owner: '0x05623eb676A8abA2d381604B630ded1A81Dc05a9',
   address: '0x882cd8B63b4b6cB5ca2Bda899f6A8c968d66643e',
@@ -263,34 +265,115 @@ export const mockVault: Vault = {
   tokenPrice: new BigNumber('1245.05'),
 }
 
+// export const minSafeCollateralAmount = {
+//   generate: id => ({
+//     dependencies: [
+//       [DEBT_VALUE, id],
+//       [LIQUIDATION_RATIO, [VAULT_TYPE, id]],
+//       [COLLATERAL_TYPE_PRICE, [VAULT_TYPE, id]]
+//     ],
+//     computed: (debtValue, liquidationRatio, price) =>
+//       calcMinSafeCollateralAmount(debtValue, liquidationRatio, price)
+//   })
+// };
+//
+// function minSafeCollateralAmount(
+//   debtValue: BigNumber, liquidationRatio: BigNumber, price: BigNumber
+// ) {
+//   return debtValue.times(liquidationRatio).div(price);
+// }
+
+export function createCollateralTypePrice$(
+  vatIlks$: CallObservable<typeof vatIlks>,
+  ratioDAIUSD$: CallObservable<typeof spotPar>,
+  liquidationRatio$: CallObservable<typeof spotIlks>,
+  ilk: string
+) {
+  return combineLatest(vatIlks$(ilk), liquidationRatio$(ilk), ratioDAIUSD$()).pipe(
+    map(([{ maxDebtPerUnitCollateral }, { liquidationRatio }, ratioDAIUSD]) =>
+      maxDebtPerUnitCollateral.times(ratioDAIUSD).times(liquidationRatio))
+  )
+}
+
+// type CL = <T, T2, T3, T4, T5, T6, T7>(
+//   v1: ObservableInput<T>,
+//   v2: ObservableInput<T2>,
+//   v3: ObservableInput<T3>,
+//   v4: ObservableInput<T4>,
+//   v5: ObservableInput<T5>,
+//   v6: ObservableInput<T6>,
+//   v7: ObservableInput<T7>
+// ) => Observable<[T, T2, T3, T4, T5, T6, T7]>;
+//
+// const fixedCombineLatest: CL = combineLatest as any;
+
 export function createVault$(
-  connectedContext$: Observable<ContextConnected>,
-  cdpManagerUrns$: (id: string) => Observable<string>,
-  cdpManagerIlks$: (id: string) => Observable<string>,
-  vatUrns$: (id: string) => Observable<Urn>,
-  vatIlks$: (kind: string) => Observable<Ilk>,
-  vatGem$: (id: string) => Observable<BigNumber>,
-  id: string,
+  cdpManagerUrns$: CallObservable<typeof cdpManagerUrns>,
+  cdpManagerIlks$: CallObservable<typeof cdpManagerIlks>,
+  vatUrns$: CallObservable<typeof vatUrns>,
+  vatIlks$: CallObservable<typeof vatIlks>,
+  vatGem$: CallObservable<typeof vatGem>,
+  cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>,
+  collateralTypePrice$: (ilk: string) => Observable<BigNumber>,
+  spotIlks$: CallObservable<typeof spotIlks>,
+  jugIlks$: CallObservable<typeof jugIlks>,
+  id: BigNumber,
 ): Observable<Vault> {
   return combineLatest(
-    connectedContext$,
     cdpManagerUrns$(id),
     cdpManagerIlks$(id),
-    vatUrns$(id),
-    vatGem$(id),
+    cdpManagerOwner$(id),
+    of('proxyOwner'),  //TODO
   ).pipe(
-    switchMap(([, address, ilk, { collateral, normalizedDebt }, unlockedCollateral]) => {
-      return vatIlks$(ilk).pipe(
-        mergeMap(({ debtFloor }) => {
+    switchMap(([
+      urnAddress,
+      ilk,
+      owner,
+      proxyOwner,
+    ]) => {
+      const token = 'ABC' // TODO
+      return combineLatest(
+        vatIlks$(ilk),
+        collateralTypePrice$(ilk),
+        spotIlks$(ilk),
+        jugIlks$(ilk),
+        vatUrns$({ ilk, urnAddress }),
+        vatGem$({ ilk, urnAddress }),
+      ).pipe(
+        switchMap(([
+          { debtFloor },
+          collateralPrice,
+          { liquidationRatio },
+          { stabilityFee },
+          { collateral, normalizedDebt },
+          unlockedCollateral,
+        ]) => {
           return of({
             ...mockVault,
-            id,
-            address,
+            id: id.toString(),
+            address: urnAddress,
             ilk,
             collateral,
             normalizedDebt,
             debtFloor,
             unlockedCollateral,
+            token,
+            owner,
+            proxyOwner,
+            collateralPrice,
+            // collateralAvailable,
+            // collateralAvailablePrice,
+            // collateralUnavailable,
+            // normalizedDebt,
+            // collateralizationRatio,
+            // debt,
+            // debtAvailable,
+            // globalDebtAvailable,
+            stabilityFee,
+            // liquidationPrice,
+            liquidationRatio,
+            // liquidationPenalty,
+            // tokenPrice
           })
         }),
       )
