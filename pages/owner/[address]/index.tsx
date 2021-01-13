@@ -6,7 +6,6 @@ import { formatCryptoBalance, formatFiatBalance } from 'helpers/formatters/forma
 import { useObservable } from 'helpers/observableHook'
 import { useMemo } from 'react'
 import { Box, Grid, Heading, Text } from 'theme-ui'
-import { Optional } from '../../../helpers/Optional'
 import Link from 'next/link'
 
 function ProxyOwner({ proxyAddress }: { proxyAddress: string }) {
