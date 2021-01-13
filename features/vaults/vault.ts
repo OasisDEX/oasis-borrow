@@ -1,4 +1,6 @@
+import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
+import { amountFromRay } from 'components/blockchain/utils'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, mergeMap, switchMap, take } from 'rxjs/operators'
 
@@ -122,22 +124,23 @@ export interface Vault {
   collateralPrice: BigNumber
 
   /*
-   * "Vault.collateralAvailable" is the amount of collateral that can be
+   * "Vault.availableCollateral" is the amount of collateral that can be
    * withdrawn from a vault without being liquidated
    */
-  collateralAvailable: BigNumber
+  availableCollateral: BigNumber
 
   /*
-   * "Vault.collateralAvailable" is the amount of collateral in USD that
+   * "Vault.availableCollateralPrice" is the amount of collateral in USD that
    * can be withdrawn from a vault without being liquidated
    */
-  collateralAvailablePrice: BigNumber
+  availableCollateralPrice: BigNumber
 
   /*
-   * "Vault.collateralUnavailable" is the minimum amount of collateral which
-   * must be locked in the vault given the current amount of debt
+   * "Vault.unavailableCollateral" is the minimum amount of collateral which
+   * must be locked in the vault given the current amount of debt.
+   * "minSafeCollateralAmount"
    */
-  collateralUnavailable: BigNumber
+  unavailableCollateral: BigNumber
 
   /*
    * The "Vault.debt" represents an amount of "internal DAI" generated through a
@@ -175,13 +178,13 @@ export interface Vault {
    * "Vault.debtAvailable" is the maximum amount of debt denominated in DAI a
    * vault can generate without being liquidated
    */
-  debtAvailable: BigNumber
+  availableDebt: BigNumber
 
   /*
    * "Vault.globalDebtAvailable" is the maximum amount of debt available to
    * generate that does not break the debt ceiling for that ilk
    */
-  globalDebtAvailable: BigNumber
+  availableGlobalDebt: BigNumber
 
   /*
    * Vault.liquidationRatio is found in Spot.ilks[ilk].mat, if the
@@ -253,14 +256,14 @@ export const mockVault: Vault = {
   collateral: new BigNumber('98'),
   unlockedCollateral: new BigNumber('0'),
   collateralPrice: new BigNumber('122014.90'),
-  collateralAvailable: new BigNumber('77.72'),
-  collateralAvailablePrice: new BigNumber('96770.74'),
-  collateralUnavailable: new BigNumber('20.28'),
+  availableCollateral: new BigNumber('77.72'),
+  availableCollateralPrice: new BigNumber('96770.74'),
+  unavailableCollateral: new BigNumber('20.28'),
   normalizedDebt: new BigNumber('16403.419856003889170145'),
   collateralizationRatio: new BigNumber('7.25'),
   debt: new BigNumber('16829.44'),
-  debtAvailable: new BigNumber('64513.82'),
-  globalDebtAvailable: new BigNumber('110593468.87'),
+  availableDebt: new BigNumber('64513.82'),
+  availableGlobalDebt: new BigNumber('110593468.87'),
   debtFloor: new BigNumber('500'),
   stabilityFee: new BigNumber(
     '0.024999999999905956943812259791573533789860268487320672821177905084121745214484109204754426155886843',
@@ -309,7 +312,6 @@ export function createController$(
 ) {
   return cdpManagerOwner$(id).pipe(mergeMap((owner) => proxyOwner$(owner)))
 }
-
 // type CL = <T, T2, T3, T4, T5, T6, T7>(
 //   v1: ObservableInput<T>,
 //   v2: ObservableInput<T2>,
@@ -368,13 +370,14 @@ export function createVault$(
       ).pipe(
         switchMap(
           ([
-            { debtFloor },
+            { debtFloor, debtScalingFactor },
             collateralPrice,
             { liquidationRatio },
             { stabilityFee },
             { collateral, normalizedDebt },
             unlockedCollateral,
           ]) => {
+            const debt = amountFromRay(debtScalingFactor).times(amountFromWei(normalizedDebt))
             return of({
               ...mockVault,
               id: id.toString(),
@@ -384,15 +387,15 @@ export function createVault$(
               controller,
               collateral,
               collateralPrice,
-              normalizedDebt,
-              debtFloor,
               unlockedCollateral,
+              normalizedDebt,
+              debt,
+              debtFloor,
               token,
-              // collateralAvailable,
-              // collateralAvailablePrice,
-              // collateralUnavailable,
+              //availableCollateral,
+              //availableCollateralPrice,
+              //unavailableCollateral,
               // collateralizationRatio,
-              // debt,
               // debtAvailable,
               // globalDebtAvailable,
               stabilityFee,
