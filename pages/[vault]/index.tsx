@@ -3,40 +3,7 @@ import { AppLayout } from 'components/Layouts'
 import { formatCryptoBalance, formatFiatBalance, formatPercent, formatPrecision } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useRouter } from 'next/router'
-import { Grid, Text, Heading, Button, Box } from 'theme-ui'
-
-interface Activity {
-
-}
-function History({activity}: {activity: Activity[]}) {
-  const heading = [
-    'activity',
-    'date',
-    'tx hash',
-  ]
-  return (
-    <Box as="table">
-      <Box as='thead'>
-        <Box as="tr">
-          {
-            heading.map(head => <Box as="th" key={head}>{head}</Box>)
-          }
-        </Box>
-      </Box>
-      <Box as="tbody">
-        {
-          activity.map(row => (
-            <Box as="tr">
-              <Box as="td"></Box>
-              <Box as="td"></Box>
-              <Box as="td"></Box>
-            </Box>
-          ))
-        }
-      </Box>
-    </Box>
-  )
-}
+import { Box,Button, Grid, Heading, Text } from 'theme-ui'
 
 export default function Vault() {
   const { web3Context$, vault$ } = useAppContext()
@@ -47,7 +14,7 @@ export default function Vault() {
 
   const vaultData = useObservable(vault$(vault as string))
 
-  console.log({vaultData})
+  console.log({ vaultData })
 
   const account = web3Context?.status === 'connected' 
     ? web3Context.account
@@ -91,10 +58,6 @@ export default function Vault() {
         <Heading>Outstanding debt</Heading>
         <Text>Outstanding Dai debt {debt}DAI</Text>
         <Text>Available to generate {debtAvailable}DAI</Text>
-      </Box>
-      <Box>
-        <Heading>Vault history</Heading>
-        <History activity={[]} />
       </Box>
     </Grid>
   )

@@ -24,7 +24,7 @@ export interface MarketingLayoutProps extends WithChildren {
 }
 
 export function BasicLayout({ header, footer, children, sx, variant }: BasicLayoutProps) {
-  console.log({variant})
+  console.log({ variant })
   return (
     <Flex
       sx={{

@@ -4,9 +4,9 @@ import { AppLayout } from 'components/Layouts'
 import { Vault } from 'features/vaults/vault'
 import { formatCryptoBalance, formatFiatBalance } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import Link from 'next/link'
 import { useMemo } from 'react'
 import { Box, Grid, Heading, Text } from 'theme-ui'
-import Link from 'next/link'
 
 function ProxyOwner({ proxyAddress }: { proxyAddress: string }) {
   const { proxyOwner$ } = useAppContext()
@@ -27,7 +27,7 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
   ]
   return (
     <Box>
-      <Box as='table' sx={{width: '100%'}}>
+      <Box as='table' sx={{ width: '100%' }}>
         <thead>
           <tr>
             {
@@ -55,7 +55,7 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
   )
 }
 
-function Stat({name, children}: {name: string, children: React.ReactNode}) {
+function Stat({ name, children }: {name: string, children: React.ReactNode}) {
   return (
     <div>
       <div>{name}</div>
@@ -88,7 +88,7 @@ function Summary({ address }: { address: string }) {
   , [vaults])
 
   return (
-    <Grid sx={{flex: 1}}>
+    <Grid sx={{ flex: 1 }}>
       <Heading as="h1">Overview</Heading>
       <Stat name="total collateral locked">
         {totalCollateral} USD
