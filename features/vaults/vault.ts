@@ -191,7 +191,7 @@ export interface Vault {
    * "Vault.globalDebtAvailable" is the maximum amount of debt available to
    * generate that does not break the debt ceiling for that ilk
    */
-  availableGlobalDebt: BigNumber
+  availableIlkDebt: BigNumber
 
   /*
    * Vault.liquidationRatio is found in Spot.ilks[ilk].mat, if the
@@ -205,7 +205,7 @@ export interface Vault {
    * to the amount of debt in USD. A value less then liquidationRatio means that
    * the vault is at risk of being liquidated.
    */
-  collateralizationRatio: BigNumber
+  collateralizationRatio: BigNumber | undefined
 
   /*
    * "Vault.tokenOraclePrice" is the USD value of 1 unit of Vault.token as calculated
@@ -228,7 +228,7 @@ export interface Vault {
    * in USD if the Vault.collateralizationRatio is equal to the
    * Vault.liquidationRatio
    */
-  liquidationPrice: BigNumber
+  liquidationPrice: BigNumber | undefined
 
   /*
    * "Vault.liquidationPenalty" is used if a vault is liquidated, the penalty
@@ -271,7 +271,7 @@ export const mockVault: Vault = {
   collateralizationRatio: new BigNumber('7.25'),
   debt: new BigNumber('16829.44'),
   availableDebt: new BigNumber('64513.82'),
-  availableGlobalDebt: new BigNumber('110593468.87'),
+  availableIlkDebt: new BigNumber('110593468.87'),
   debtFloor: new BigNumber('500'),
   stabilityFee: new BigNumber(
     '0.024999999999905956943812259791573533789860268487320672821177905084121745214484109204754426155886843',
@@ -281,24 +281,6 @@ export const mockVault: Vault = {
   liquidationPenalty: new BigNumber('0.13'),
   tokenOraclePrice: new BigNumber('1245.05'),
 }
-
-// export const minSafeCollateralAmount = {
-//   generate: id => ({
-//     dependencies: [
-//       [DEBT_VALUE, id],
-//       [LIQUIDATION_RATIO, [VAULT_TYPE, id]],
-//       [COLLATERAL_TYPE_PRICE, [VAULT_TYPE, id]]
-//     ],
-//     computed: (debtValue, liquidationRatio, price) =>
-//       calcMinSafeCollateralAmount(debtValue, liquidationRatio, price)
-//   })
-// };
-//
-// function minSafeCollateralAmount(
-//   debtValue: BigNumber, liquidationRatio: BigNumber, price: BigNumber
-// ) {
-//   return debtValue.times(liquidationRatio).div(price);
-// }
 
 export function createTokenOraclePrice$(
   vatIlks$: CallObservable<typeof vatIlks>,
@@ -386,7 +368,7 @@ export function createVault$(
       ).pipe(
         switchMap(
           ([
-            { debtFloor, debtScalingFactor },
+            { normalizedIlkDebt, debtFloor, debtScalingFactor, debtCeiling },
             tokenOraclePrice,
             { liquidationRatio },
             { stabilityFee },
@@ -395,6 +377,7 @@ export function createVault$(
           ]) => {
             const collateralPrice = collateral.times(tokenOraclePrice)
             const debt = debtScalingFactor.times(normalizedDebt)
+            const ilkDebt = debtScalingFactor.times(normalizedIlkDebt)
 
             const backingCollateral = debt.times(liquidationRatio)
             const freeCollateral = backingCollateral.gt(collateral)
@@ -403,7 +386,16 @@ export function createVault$(
 
             const backingCollateralPrice = backingCollateral.div(tokenOraclePrice)
             const freeCollateralPrice = freeCollateral.div(tokenOraclePrice)
-            const collateralizationRatio = debt.eq(zero) ? zero : collateralPrice.div(debt)
+            const collateralizationRatio = debt.eq(zero) ? undefined : collateralPrice.div(debt)
+
+            const maxAvailableDebt = collateralPrice.div(liquidationRatio)
+            const availableDebt = debt.lt(maxAvailableDebt) ? maxAvailableDebt.minus(debt) : zero
+            const availableIlkDebt = debtCeiling.minus(ilkDebt)
+
+            const liquidationPrice = collateral.eq(zero)
+              ? undefined
+              : debt.times(liquidationRatio).div(collateral)
+
             return of({
               ...mockVault,
               id: id.toString(),
@@ -423,10 +415,10 @@ export function createVault$(
               freeCollateral,
               freeCollateralPrice,
               collateralizationRatio,
-              // debtAvailable,
-              // globalDebtAvailable,
+              availableDebt,
+              availableIlkDebt,
               stabilityFee,
-              // liquidationPrice,
+              liquidationPrice,
               liquidationRatio,
               // liquidationPenalty,
               tokenOraclePrice,

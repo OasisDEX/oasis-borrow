@@ -28,7 +28,7 @@ export const vatUrns: CallDef<VatUrnsArgs, Urn> = {
 }
 
 export interface Ilk {
-  globalDebt: BigNumber // Art [wad]
+  normalizedIlkDebt: BigNumber // Art [wad]
   debtScalingFactor: BigNumber // rate [ray]
   maxDebtPerUnitCollateral: BigNumber // spot [ray]
   debtCeiling: BigNumber // line [rad]
@@ -41,7 +41,7 @@ export const vatIlks: CallDef<string, Ilk> = {
   },
   prepareArgs: (ilk) => [Web3.utils.utf8ToHex(ilk)],
   postprocess: (ilk: any) => ({
-    globalDebt: amountFromWei(new BigNumber(ilk.Art)),
+    normalizedIlkDebt: amountFromWei(new BigNumber(ilk.Art)),
     debtScalingFactor: amountFromRay(new BigNumber(ilk.rate)),
     maxDebtPerUnitCollateral: amountFromRay(new BigNumber(ilk.spot)),
     debtCeiling: amountFromRad(new BigNumber(ilk.line)),
