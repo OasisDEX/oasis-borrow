@@ -2,8 +2,8 @@ import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { Vat } from 'types/web3-v1-contracts/vat'
 import Web3 from 'web3'
-import { amountFromRad, amountFromRay } from '../utils'
 
+import { amountFromRad, amountFromRay } from '../utils'
 import { CallDef } from './callsHelpers'
 
 interface VatUrnsArgs {

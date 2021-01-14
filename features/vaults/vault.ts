@@ -1,6 +1,5 @@
-import { amountFromWei } from '@oasisdex/utils'
+
 import BigNumber from 'bignumber.js'
-import { amountFromRay } from 'components/blockchain/utils'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, mergeMap, switchMap, take } from 'rxjs/operators'
