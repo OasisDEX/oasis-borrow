@@ -9,12 +9,16 @@ import {
   SendTransactionFunction,
   TransactionDef,
 } from 'components/blockchain/calls/callsHelpers'
+import {
+  cdpManagerIlks,
+  cdpManagerOwner,
+  cdpManagerUrns,
+} from 'components/blockchain/calls/cdpManager'
+import { createProxyAddress$, createProxyOwner$ } from 'components/blockchain/calls/proxy'
+import { vatGem, vatIlks, vatUrns } from 'components/blockchain/calls/vat'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
-import { createCdpManagerIlks$, createCdpManagerUrns$ } from 'features/vaults/cdpManager'
-import { createProxyAddress$, createProxyOwner$ } from 'features/vaults/proxy'
-import { createVatGem$, createVatIlks$, createVatLine$, createVatUrns$ } from 'features/vaults/vat'
-import { createVault$ } from 'features/vaults/vault'
+import { createCollateralPrice$, createController$, createVault$ } from 'features/vaults/vault'
 import { createVaults$ } from 'features/vaults/vaults'
 import { mapValues } from 'lodash'
 import { curry } from 'ramda'
@@ -23,6 +27,9 @@ import { filter, map, shareReplay } from 'rxjs/operators'
 
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from './account/transactionManager'
+import { jugIlks } from './blockchain/calls/jug'
+import { observe } from './blockchain/calls/observe'
+import { spotIlks, spotPar } from './blockchain/calls/spot'
 import { networksById } from './blockchain/config'
 import {
   ContextConnected,
@@ -32,25 +39,10 @@ import {
   createOnEveryBlock$,
   createWeb3ContextConnected$,
 } from './blockchain/network'
-import { SetOwnerData, SetupDSProxyData } from './dashboard/dsrPot/dsProxyCalls'
-import {
-  ApproveData,
-  DisapproveData,
-  TransferErc20Data,
-  TransferEthData,
-} from './dashboard/dsrPot/erc20Calls'
-import { DsrExitAllData, DsrExitData, DsrJoinData } from './dashboard/dsrPot/potCalls'
 
-export type TxData =
-  | ApproveData
-  | DisapproveData
-  | SetupDSProxyData
-  | SetOwnerData
-  | DsrJoinData
-  | DsrExitData
-  | DsrExitAllData
-  | TransferEthData
-  | TransferErc20Data
+export type TxData = never
+// | ApproveData
+// | DisapproveData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -128,23 +120,35 @@ export function setupAppContext() {
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
 
+  // base
   const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
   const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
+  const cdpManagerUrns$ = observe(onEveryBlock$, connectedContext$, cdpManagerUrns)
+  const cdpManagerIlks$ = observe(onEveryBlock$, connectedContext$, cdpManagerIlks)
+  const cdpManagerOwner$ = observe(onEveryBlock$, connectedContext$, cdpManagerOwner)
+  const vatIlks$ = observe(onEveryBlock$, connectedContext$, vatIlks)
+  const vatUrns$ = observe(onEveryBlock$, connectedContext$, vatUrns)
+  const vatGem$ = observe(onEveryBlock$, connectedContext$, vatGem)
+  const spotPar$ = observe(onEveryBlock$, connectedContext$, spotPar)
+  const spotIlks$ = observe(onEveryBlock$, connectedContext$, spotIlks)
+  const jugIlks$ = observe(onEveryBlock$, connectedContext$, jugIlks)
 
-  const cdpManagerUrns$ = curry(createCdpManagerUrns$)(connectedContext$)
-  const cdpManagerIlks$ = curry(createCdpManagerIlks$)(connectedContext$)
-  const vatUrns$ = curry(createVatUrns$)(connectedContext$, cdpManagerUrns$, cdpManagerIlks$)
-  const vatIlks$ = curry(createVatIlks$)(connectedContext$)
-  const vatGem$ = curry(createVatGem$)(connectedContext$, cdpManagerUrns$, cdpManagerIlks$)
-  const vatLine$ = curry(createVatLine$)(connectedContext$)
-  const vault$ = curry(createVault$)(
-    connectedContext$,
+  // computed
+  const collateralPrice$ = curry(createCollateralPrice$)(vatIlks$, spotPar$, spotIlks$)
+  const controller$ = curry(createController$)(proxyOwner$, cdpManagerOwner$)
+
+  const vault$ = curry(createVault$)({
     cdpManagerUrns$,
     cdpManagerIlks$,
     vatUrns$,
     vatIlks$,
     vatGem$,
-  )
+    cdpManagerOwner$,
+    spotIlks$,
+    jugIlks$,
+    collateralPrice$,
+    controller$,
+  })
 
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
 

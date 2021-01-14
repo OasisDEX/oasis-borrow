@@ -10,10 +10,16 @@ import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
 import * as erc20 from './abi/erc20.json'
 import * as getCdps from './abi/get-cdps.json'
 import * as otc from './abi/matching-market.json'
+import * as mcdEnd from './abi/mcd-end.json'
 import * as mcdJoinDai from './abi/mcd-join-dai.json'
+import * as mcdJug from './abi/mcd-jug.json'
+import * as mcdOsm from './abi/mcd-osm.json'
 import * as mcdPot from './abi/mcd-pot.json'
+import * as mcdSpot from './abi/mcd-spot.json'
 import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
+import * as kovanAddresses from './addresses/kovan.json'
+import * as mainnetAddresses from './addresses/mainnet.json'
 
 export interface TokenConfig {
   symbol: string
@@ -130,6 +136,14 @@ const infuraProjectId = '58073b4a32df4105906c702f167b91d2'
 
 // https://kovan.infura.io/v3/58073b4a32df4105906c702f167b91d2
 
+function getOsms(addresses: Dictionary<string>) {
+  return Object.entries(addresses)
+    .filter(([key]) => key.match('PIP_.*'))
+    .map(([key, address]) =>
+      ({ [key.replace('PIP_', '')]: contractDesc(mcdOsm, address) }))
+    .reduce((acc, v) => ({ ...acc, ...v }), {})
+}
+
 const protoMain = {
   id: '1',
   name: 'main',
@@ -146,10 +160,15 @@ const protoMain = {
     CHAI: contractDesc(erc20, '0x06af07097c9eeb7fd685c692751d5c66db49c215'),
     // WBTC: contractDesc(erc20, '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'),
   } as Dictionary<ContractDesc>,
-  getCdps: contractDesc(getCdps, '0x36a724Bd100c39f0Ea4D3A20F7097eE01A8Ff573'),
+  getCdps: contractDesc(getCdps, mainnetAddresses.GET_CDPS),
+  mcdOsms: getOsms(mainnetAddresses),
+  mcdJug: contractDesc(mcdJug, mainnetAddresses.MCD_JUG),
+  mcdPot: contractDesc(mcdPot, mainnetAddresses.MCD_POT),
+  mcdEnd: contractDesc(mcdEnd, mainnetAddresses.MCD_END),
+  mcdSpot: contractDesc(mcdSpot, mainnetAddresses.MCD_SPOT),
+  mcdCat: contractDesc(mcdSpot, mainnetAddresses.MCD_CAT),
   dssCdpManager: contractDesc(dssCdpManager, '0x36a724Bd100c39f0Ea4D3A20F7097eE01A8Ff573'),
   otcSupportMethods: contractDesc(otcSupport, '0x9b3f075b12513afe56ca2ed838613b7395f57839'),
-  mcdPot: contractDesc(mcdPot, '0x197E90f9FAD81970bA7976f33CbD77088E5D7cf7'),
   vat: contractDesc(vat, '0x35D1b3F3D7966A1DFe207aa4514C12a259A0492B'),
   mcdJoinDai: contractDesc(mcdJoinDai, '0x9759A6Ac90977b93B58547b4A71c78317f391A28'),
   dsProxyRegistry: contractDesc(dsProxyRegistry, '0x4678f0a6958e4d2bc4f1baf7bc52e8f3564f3fe4'),
@@ -189,10 +208,15 @@ const kovan: NetworkConfig = {
     CHAI: contractDesc(erc20, '0xb641957b6c29310926110848db2d464c8c3c3f38'),
     // WBTC: contractDesc(erc20, '0xA08d982C2deBa0DbE433a9C6177a219E96CeE656'),
   },
-  getCdps: contractDesc(getCdps, '0x592301a23d37c591C5856f28726AF820AF8e7014'),
+  getCdps: contractDesc(getCdps, kovanAddresses.GET_CDPS),
+  mcdOsms: getOsms(kovanAddresses),
+  mcdPot: contractDesc(mcdPot, kovanAddresses.MCD_POT),
+  mcdJug: contractDesc(mcdJug, kovanAddresses.MCD_JUG),
+  mcdEnd: contractDesc(mcdEnd, kovanAddresses.MCD_END),
+  mcdSpot: contractDesc(mcdSpot, kovanAddresses.MCD_SPOT),
+  mcdCat: contractDesc(mcdSpot, kovanAddresses.MCD_CAT),
   dssCdpManager: contractDesc(dssCdpManager, '0x1476483dD8C35F25e568113C5f70249D3976ba21'),
   otcSupportMethods: contractDesc(otcSupport, '0x303f2bf24d98325479932881657f45567b3e47a8'),
-  mcdPot: contractDesc(mcdPot, '0xEA190DBDC7adF265260ec4dA6e9675Fd4f5A78bb'),
   vat: contractDesc(vat, '0xbA987bDB501d131f766fEe8180Da5d81b34b69d9'),
   mcdJoinDai: contractDesc(mcdJoinDai, '0x5AA71a3ae1C0bd6ac27A1f28e1415fFFB6F15B8c'),
   dsProxyRegistry: contractDesc(dsProxyRegistry, '0x64a436ae831c1672ae81f674cab8b6775df3475c'),

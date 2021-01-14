@@ -1,9 +1,18 @@
+import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
+import { amountFromRay } from 'components/blockchain/utils'
 import { combineLatest, Observable, of } from 'rxjs'
-import { mergeMap, switchMap, take } from 'rxjs/operators'
+import { map, mergeMap, switchMap, take } from 'rxjs/operators'
 
-import { ContextConnected } from '../../components/blockchain/network'
-import { Ilk, Urn } from './vat'
+import {
+  cdpManagerIlks,
+  cdpManagerOwner,
+  cdpManagerUrns,
+} from '../../components/blockchain/calls/cdpManager'
+import { jugIlks } from '../../components/blockchain/calls/jug'
+import { CallObservable } from '../../components/blockchain/calls/observe'
+import { spotIlks, spotPar } from '../../components/blockchain/calls/spot'
+import { vatGem, vatIlks, vatUrns } from '../../components/blockchain/calls/vat'
 
 export interface Vault {
   /*
@@ -34,12 +43,13 @@ export interface Vault {
   owner: string
 
   /*
-   * The "Vault.proxyOwner" is found in a deployed instance of a DSProxy contract.
+   * The "Vault.controller" is the assumed address of the user. It can be found
+   * by calling "owner()" in a deployed instance of a DSProxy contract.
    * Assuming again the majority of cases, the oasis borrow's user address
    * should match the address found by calling DSProxy.owner at address
    * Vault.owner.
    */
-  proxyOwner: string // address of owner of proxy
+  controller: string // address of owner of proxy which controls the vault
 
   /*
    * A "Vault.token" is referred to as a "gem" in the core contracts. The gems
@@ -114,22 +124,29 @@ export interface Vault {
   collateralPrice: BigNumber
 
   /*
-   * "Vault.collateralAvailable" is the amount of collateral that can be
+   * "Vault.backingCollateral" is the minimum amount of collateral which
+   * must be locked in the vault given the current amount of debt.
+   * "minSafeCollateralAmount"
+   */
+  backingCollateral: BigNumber
+
+  /*
+   * "Vault.backingCollateralPrice" is the minimum amount of collateral in USD
+   * which must be locked in the vault given the current amount of debt.
+   */
+  backingCollateralPrice: BigNumber
+
+  /*
+   * "Vault.freeCollateral" is the amount of collateral that can be
    * withdrawn from a vault without being liquidated
    */
-  collateralAvailable: BigNumber
+  freeCollateral: BigNumber
 
   /*
-   * "Vault.collateralAvailable" is the amount of collateral in USD that
+   * "Vault.freeCollateralPrice" is the amount of collateral in USD that
    * can be withdrawn from a vault without being liquidated
    */
-  collateralAvailablePrice: BigNumber
-
-  /*
-   * "Vault.collateralUnavailable" is the minimum amount of collateral which
-   * must be locked in the vault given the current amount of debt
-   */
-  collateralUnavailable: BigNumber
+  freeCollateralPrice: BigNumber
 
   /*
    * The "Vault.debt" represents an amount of "internal DAI" generated through a
@@ -164,16 +181,16 @@ export interface Vault {
   normalizedDebt: BigNumber
 
   /*
-   * "Vault.debtAvailable" is the maximum amount of debt denominated in DAI a
+   * "Vault.availableDebt" is the maximum amount of debt denominated in DAI a
    * vault can generate without being liquidated
    */
-  debtAvailable: BigNumber
+  availableDebt: BigNumber
 
   /*
    * "Vault.globalDebtAvailable" is the maximum amount of debt available to
    * generate that does not break the debt ceiling for that ilk
    */
-  globalDebtAvailable: BigNumber
+  availableGlobalDebt: BigNumber
 
   /*
    * Vault.liquidationRatio is found in Spot.ilks[ilk].mat, if the
@@ -237,22 +254,23 @@ export interface Vault {
 
 export const mockVault: Vault = {
   id: '500',
-  kind: 'ETH-A',
+  ilk: 'ETH-A',
   token: 'ETH',
   owner: '0x05623eb676A8abA2d381604B630ded1A81Dc05a9',
   address: '0x882cd8B63b4b6cB5ca2Bda899f6A8c968d66643e',
-  proxyOwner: '0x8A0Bfe04D175D345b5FDcD3e9Ca5d00b608Ce6A3',
+  controller: '0x8A0Bfe04D175D345b5FDcD3e9Ca5d00b608Ce6A3',
   collateral: new BigNumber('98'),
   unlockedCollateral: new BigNumber('0'),
   collateralPrice: new BigNumber('122014.90'),
-  collateralAvailable: new BigNumber('77.72'),
-  collateralAvailablePrice: new BigNumber('96770.74'),
-  collateralUnavailable: new BigNumber('20.28'),
+  backingCollateral: new BigNumber('20.28'),
+  backingCollateralPrice: new BigNumber('20.28'),
+  freeCollateral: new BigNumber('77.72'),
+  freeCollateralPrice: new BigNumber('96770.74'),
   normalizedDebt: new BigNumber('16403.419856003889170145'),
   collateralizationRatio: new BigNumber('7.25'),
   debt: new BigNumber('16829.44'),
-  debtAvailable: new BigNumber('64513.82'),
-  globalDebtAvailable: new BigNumber('110593468.87'),
+  availableDebt: new BigNumber('64513.82'),
+  availableGlobalDebt: new BigNumber('110593468.87'),
   debtFloor: new BigNumber('500'),
   stabilityFee: new BigNumber(
     '0.024999999999905956943812259791573533789860268487320672821177905084121745214484109204754426155886843',
@@ -263,36 +281,148 @@ export const mockVault: Vault = {
   tokenPrice: new BigNumber('1245.05'),
 }
 
+// export const minSafeCollateralAmount = {
+//   generate: id => ({
+//     dependencies: [
+//       [DEBT_VALUE, id],
+//       [LIQUIDATION_RATIO, [VAULT_TYPE, id]],
+//       [COLLATERAL_TYPE_PRICE, [VAULT_TYPE, id]]
+//     ],
+//     computed: (debtValue, liquidationRatio, price) =>
+//       calcMinSafeCollateralAmount(debtValue, liquidationRatio, price)
+//   })
+// };
+//
+// function minSafeCollateralAmount(
+//   debtValue: BigNumber, liquidationRatio: BigNumber, price: BigNumber
+// ) {
+//   return debtValue.times(liquidationRatio).div(price);
+// }
+
+export function createCollateralPrice$(
+  vatIlks$: CallObservable<typeof vatIlks>,
+  ratioDAIUSD$: CallObservable<typeof spotPar>,
+  liquidationRatio$: CallObservable<typeof spotIlks>,
+  ilk: string,
+) {
+  return combineLatest(vatIlks$(ilk), liquidationRatio$(ilk), ratioDAIUSD$()).pipe(
+    map(([{ maxDebtPerUnitCollateral }, { liquidationRatio }, ratioDAIUSD]) =>
+      maxDebtPerUnitCollateral.times(ratioDAIUSD).times(liquidationRatio),
+    ),
+  )
+}
+
+export function createController$(
+  proxyOwner$: (proxyAddress: string) => Observable<string>,
+  cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>,
+  id: BigNumber,
+) {
+  return cdpManagerOwner$(id).pipe(mergeMap((owner) => proxyOwner$(owner)))
+}
+// type CL = <T, T2, T3, T4, T5, T6, T7>(
+//   v1: ObservableInput<T>,
+//   v2: ObservableInput<T2>,
+//   v3: ObservableInput<T3>,
+//   v4: ObservableInput<T4>,
+//   v5: ObservableInput<T5>,
+//   v6: ObservableInput<T6>,
+//   v7: ObservableInput<T7>
+// ) => Observable<[T, T2, T3, T4, T5, T6, T7]>;
+//
+// const fixedCombineLatest: CL = combineLatest as any;
+
+interface CreateVaultArgs {
+  cdpManagerUrns$: CallObservable<typeof cdpManagerUrns>
+  cdpManagerIlks$: CallObservable<typeof cdpManagerIlks>
+  vatUrns$: CallObservable<typeof vatUrns>
+  vatIlks$: CallObservable<typeof vatIlks>
+  vatGem$: CallObservable<typeof vatGem>
+  cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>
+  spotIlks$: CallObservable<typeof spotIlks>
+  jugIlks$: CallObservable<typeof jugIlks>
+  collateralPrice$: (ilk: string) => Observable<BigNumber>
+  controller$: (id: BigNumber) => Observable<string>
+}
+
 export function createVault$(
-  connectedContext$: Observable<ContextConnected>,
-  cdpManagerUrns$: (id: string) => Observable<string>,
-  cdpManagerIlks$: (id: string) => Observable<string>,
-  vatUrns$: (id: string) => Observable<Urn>,
-  vatIlks$: (kind: string) => Observable<Ilk>,
-  vatGem$: (id: string) => Observable<BigNumber>,
-  id: string,
+  {
+    cdpManagerUrns$,
+    cdpManagerIlks$,
+    vatUrns$,
+    vatIlks$,
+    vatGem$,
+    cdpManagerOwner$,
+    spotIlks$,
+    jugIlks$,
+    collateralPrice$,
+    controller$,
+  }: CreateVaultArgs,
+  id: BigNumber,
 ): Observable<Vault> {
   return combineLatest(
-    connectedContext$,
     cdpManagerUrns$(id),
     cdpManagerIlks$(id),
-    vatUrns$(id),
-    vatGem$(id),
+    cdpManagerOwner$(id),
+    controller$(id),
   ).pipe(
-    switchMap(([, address, ilk, { collateral, normalizedDebt }, unlockedCollateral]) => {
-      return vatIlks$(ilk).pipe(
-        mergeMap(({ debtFloor }) => {
-          return of({
-            ...mockVault,
-            id,
-            address,
-            ilk,
-            collateral,
-            normalizedDebt,
-            debtFloor,
+    switchMap(([urnAddress, ilk, owner, controller]) => {
+      const token = 'ABC' // TODO
+      return combineLatest(
+        vatIlks$(ilk),
+        collateralPrice$(ilk),
+        spotIlks$(ilk),
+        jugIlks$(ilk),
+        vatUrns$({ ilk, urnAddress }),
+        vatGem$({ ilk, urnAddress }),
+      ).pipe(
+        switchMap(
+          ([
+            { debtFloor, debtScalingFactor },
+            collateralPrice,
+            { liquidationRatio },
+            { stabilityFee },
+            { collateral, normalizedDebt },
             unlockedCollateral,
-          })
-        }),
+          ]) => {
+            const debt = debtScalingFactor.times(normalizedDebt)
+
+            const backingCollateral = debt.times(liquidationRatio)
+            const freeCollateral = backingCollateral.gt(collateral)
+              ? new BigNumber('0')
+              : collateral.minus(backingCollateral)
+
+            const backingCollateralPrice = backingCollateral.div(collateralPrice)
+            const freeCollateralPrice = freeCollateral.div(collateralPrice)
+
+            return of({
+              ...mockVault,
+              id: id.toString(),
+              address: urnAddress,
+              ilk,
+              owner,
+              controller,
+              collateral,
+              collateralPrice,
+              unlockedCollateral,
+              normalizedDebt,
+              debt,
+              debtFloor,
+              token,
+              backingCollateral,
+              backingCollateralPrice,
+              freeCollateral,
+              freeCollateralPrice,
+              // collateralizationRatio,
+              // debtAvailable,
+              // globalDebtAvailable,
+              stabilityFee,
+              // liquidationPrice,
+              liquidationRatio,
+              // liquidationPenalty,
+              // tokenPrice
+            })
+          },
+        ),
       )
     }),
     take(1),

@@ -67,7 +67,8 @@ function Summary({ address }: { address: string }) {
   const { web3Context$, proxyAddress$, vaults$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
   const proxyAddress = useObservable(proxyAddress$(address))
-  const vaults = useObservable(vaults$(address))
+  const vaultsData$ = vaults$(address)
+  const vaults = useObservable(vaultsData$)
   const totalCollateral = useMemo(() => vaults !== undefined 
   ? formatFiatBalance(getTotalCollateralPrice(vaults))
   : '$0'
@@ -77,6 +78,8 @@ function Summary({ address }: { address: string }) {
       ? formatCryptoBalance(getTotalDaiDebt(vaults))
       : '0'
   , [vaults])
+
+  console.log('vaults', vaults)
 
   return (
     <Grid sx={{ flex: 1 }}>

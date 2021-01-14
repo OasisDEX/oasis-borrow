@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLayout } from 'components/Layouts'
 import { formatCryptoBalance, formatFiatBalance, formatPercent, formatPrecision } from 'helpers/formatters/format'
@@ -9,34 +10,33 @@ export default function Vault() {
   const { web3Context$, vault$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
   const {
-    query: { vault },
+    query: { vault: vaultId },
   } = useRouter()
 
-  const vaultData = useObservable(vault$(vault as string))
-
-  console.log({ vaultData })
+  const vaultData$ = vault$(new BigNumber(vaultId as string))
+  const vault = useObservable(vaultData$)
 
   const account = web3Context?.status === 'connected' 
     ? web3Context.account
     : 'Not connected'
 
-  const token = vaultData?.token;
-  const liquidationPrice = vaultData?.liquidationPrice ? formatFiatBalance(vaultData.liquidationPrice) : 0
-  const liquidationPenalty = vaultData?.liquidationPenalty ? formatPercent(vaultData.liquidationPenalty?.times(100)) : '0%'
-  const collateralizationRatio = vaultData?.collateralizationRatio?.toString()
-  const stabilityFee = vaultData?.stabilityFee ? formatPrecision(vaultData.stabilityFee, 2) : 0
-  const lockedAmount = vaultData?.collateral ? formatCryptoBalance(vaultData.collateral) : 0
-  const lockedAmountUSD = vaultData?.collateralPrice ? formatFiatBalance(vaultData.collateralPrice) : 0
-  const availableToWithdraw = vaultData?.collateralAvailable ? formatCryptoBalance(vaultData.collateralPrice) : 0
-  const availableToWithdrawPrice = vaultData?.collateralAvailablePrice ? formatCryptoBalance(vaultData.collateralAvailablePrice) : 0
-  const debt = vaultData?.debt ? formatCryptoBalance(vaultData?.debt) : '0'
-  const debtAvailable = vaultData?.debtAvailable ? formatCryptoBalance(vaultData?.debtAvailable) : 0
+  const token = vault?.token;
+  const liquidationPrice = vault?.liquidationPrice ? formatFiatBalance(vault.liquidationPrice) : 0
+  const liquidationPenalty = vault?.liquidationPenalty ? formatPercent(vault.liquidationPenalty?.times(100)) : '0%'
+  const collateralizationRatio = vault?.collateralizationRatio?.toString()
+  const stabilityFee = vault?.stabilityFee ? formatPrecision(vault.stabilityFee, 2) : 0
+  const lockedAmount = vault?.collateral ? formatCryptoBalance(vault.collateral) : 0
+  const lockedAmountUSD = vault?.collateralPrice ? formatFiatBalance(vault.collateralPrice) : 0
+  const availableToWithdraw = vault?.freeCollateral ? formatCryptoBalance(vault.freeCollateral) : 0
+  const availableToWithdrawPrice = vault?.freeCollateralPrice ? formatCryptoBalance(vault.freeCollateralPrice) : 0
+  const debt = vault?.debt ? formatCryptoBalance(vault?.debt) : '0'
+  const debtAvailable = vault?.availableDebt ? formatCryptoBalance(vault?.availableDebt) : 0
     
   return (
     <Grid>
       <Text>Connected Address :: {account}</Text>
       <Text>Vault :: {vault}</Text>
-      <Heading as="h1">{vaultData?.ilk} Vault #{vaultData?.id}</Heading>
+      <Heading as="h1">{vault?.ilk} Vault #{vault?.id}</Heading>
       <Box>
         <Heading as="h2">Liquidation price</Heading>
         <Text>Liquidation price: {liquidationPrice} USD</Text>
