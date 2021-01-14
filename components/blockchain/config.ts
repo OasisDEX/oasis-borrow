@@ -111,7 +111,7 @@ const tokens = [
   //   iconColor: AvatarSimple(wbtcColorSvg),
   //   ticker: 'wbtc-wrapped-bitcoin',
   // },
-] as const
+]
 
 // ticker comes from coinpaprika api https://api.coinpaprika.com/v1/tickers
 const tokensBySymbol = keyBy(tokens, 'symbol')
