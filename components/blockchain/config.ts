@@ -139,8 +139,7 @@ const infuraProjectId = '58073b4a32df4105906c702f167b91d2'
 function getOsms(addresses: Dictionary<string>) {
   return Object.entries(addresses)
     .filter(([key]) => key.match('PIP_.*'))
-    .map(([key, address]) =>
-      ({ [key.replace('PIP_', '')]: contractDesc(mcdOsm, address) }))
+    .map(([key, address]) => ({ [key.replace('PIP_', '')]: contractDesc(mcdOsm, address) }))
     .reduce((acc, v) => ({ ...acc, ...v }), {})
 }
 

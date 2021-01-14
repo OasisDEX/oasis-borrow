@@ -126,7 +126,12 @@ export function setupAppContext() {
   const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
   const cdpManagerUrns$ = observe(onEveryBlock$, connectedContext$, cdpManagerUrns, bigNumer2string)
   const cdpManagerIlks$ = observe(onEveryBlock$, connectedContext$, cdpManagerIlks, bigNumer2string)
-  const cdpManagerOwner$ = observe(onEveryBlock$, connectedContext$, cdpManagerOwner, bigNumer2string)
+  const cdpManagerOwner$ = observe(
+    onEveryBlock$,
+    connectedContext$,
+    cdpManagerOwner,
+    bigNumer2string,
+  )
   const vatIlks$ = observe(onEveryBlock$, connectedContext$, vatIlks)
   const vatUrns$ = observe(onEveryBlock$, connectedContext$, vatUrns, ilkUrnAddress2string)
   const vatGem$ = observe(onEveryBlock$, connectedContext$, vatGem, ilkUrnAddress2string)
@@ -136,7 +141,10 @@ export function setupAppContext() {
 
   // computed
   const collateralPrice$ = memoize(curry(createCollateralPrice$)(vatIlks$, spotPar$, spotIlks$))
-  const controller$ = memoize(curry(createController$)(proxyOwner$, cdpManagerOwner$), bigNumer2string)
+  const controller$ = memoize(
+    curry(createController$)(proxyOwner$, cdpManagerOwner$),
+    bigNumer2string,
+  )
 
   const vault$ = memoize(
     curry(createVault$)({
@@ -151,7 +159,7 @@ export function setupAppContext() {
       collateralPrice$,
       controller$,
     }),
-    bigNumer2string
+    bigNumer2string,
   )
 
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
@@ -175,8 +183,8 @@ export function setupAppContext() {
 function bigNumer2string(v: BigNumber): string {
   return v.toString()
 }
-function ilkUrnAddress2string({ ilk, urnAddress }: VatUrnsArgs): string;
-function ilkUrnAddress2string({ ilk, urnAddress }: VatGemArgs): string;
+function ilkUrnAddress2string({ ilk, urnAddress }: VatUrnsArgs): string
+function ilkUrnAddress2string({ ilk, urnAddress }: VatGemArgs): string
 function ilkUrnAddress2string({ ilk, urnAddress }: any): string {
   return `${ilk}-${urnAddress}`
 }
