@@ -27,6 +27,7 @@ import { filter, map, shareReplay } from 'rxjs/operators'
 
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from './account/transactionManager'
+import { catIlks } from './blockchain/calls/cat'
 import { jugIlks } from './blockchain/calls/jug'
 import { observe } from './blockchain/calls/observe'
 import { spotIlks, spotPar } from './blockchain/calls/spot'
@@ -132,6 +133,7 @@ export function setupAppContext() {
   const spotPar$ = observe(onEveryBlock$, connectedContext$, spotPar)
   const spotIlks$ = observe(onEveryBlock$, connectedContext$, spotIlks)
   const jugIlks$ = observe(onEveryBlock$, connectedContext$, jugIlks)
+  const catIlks$ = observe(onEveryBlock$, connectedContext$, catIlks)
 
   // computed
   const tokenOraclePrice$ = curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$)
@@ -146,6 +148,7 @@ export function setupAppContext() {
     cdpManagerOwner$,
     spotIlks$,
     jugIlks$,
+    catIlks$,
     tokenOraclePrice$,
     controller$,
   })

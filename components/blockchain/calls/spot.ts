@@ -5,7 +5,7 @@ import { McdSpot } from '../../../types/web3-v1-contracts/mcd-spot'
 import { amountFromRay } from '../utils'
 import { CallDef } from './callsHelpers'
 
-interface SpotIlksResult {
+export interface SpotIlk {
   priceFeedAddress: string
   liquidationRatio: BigNumber
 }
@@ -14,7 +14,7 @@ function deb<R>(f: (...args: any) => R): (...args: any) => R {
   return (...args: any) => f(...args)
 }
 
-export const spotIlks: CallDef<string, SpotIlksResult> = {
+export const spotIlks: CallDef<string, SpotIlk> = {
   call: (_, { contract, mcdSpot }) => contract<McdSpot>(mcdSpot).methods.ilks,
   prepareArgs: (ilk) => [Web3.utils.utf8ToHex(ilk)],
   postprocess: deb(({ 0: pip, 1: mat }: any) => ({

@@ -5,11 +5,11 @@ import { McdJug } from '../../../types/web3-v1-contracts/mcd-jug'
 import { RAY, SECONDS_PER_YEAR } from '../../constants'
 import { CallDef } from './callsHelpers'
 
-export interface JugIlksResult {
+export interface JugIlk {
   stabilityFee: BigNumber
   lastLevied: Date
 }
-export const jugIlks: CallDef<string, JugIlksResult> = {
+export const jugIlks: CallDef<string, JugIlk> = {
   call: (_, { contract, mcdJug }) => contract<McdJug>(mcdJug).methods.ilks,
   prepareArgs: (collateralTypeName) => [Web3.utils.utf8ToHex(collateralTypeName)],
   postprocess: ({ 0: rawFee, 1: rawLastLevied }: any) => {

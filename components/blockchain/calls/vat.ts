@@ -27,7 +27,7 @@ export const vatUrns: CallDef<VatUrnsArgs, Urn> = {
   }),
 }
 
-export interface Ilk {
+export interface VatIlk {
   normalizedIlkDebt: BigNumber // Art [wad]
   debtScalingFactor: BigNumber // rate [ray]
   maxDebtPerUnitCollateral: BigNumber // spot [ray]
@@ -35,7 +35,7 @@ export interface Ilk {
   debtFloor: BigNumber // debtFloor [rad]
 }
 
-export const vatIlks: CallDef<string, Ilk> = {
+export const vatIlks: CallDef<string, VatIlk> = {
   call: (_, { contract, vat }) => {
     return contract<Vat>(vat).methods.ilks
   },
