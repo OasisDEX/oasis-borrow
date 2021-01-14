@@ -54,11 +54,11 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
 }
 
 function Summary({ address }: { address: string }) {
-  const { web3Context$, proxyAddress$, vaults$, getVaultSummary$ } = useAppContext()
+  const { web3Context$, proxyAddress$, vaults$, vaultSummary$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
   const proxyAddress = useObservable(proxyAddress$(address))
   const vaults = useObservable(vaults$(address))
-  const vaultSummary = useObservable(getVaultSummary$(address))
+  const vaultSummary = useObservable(vaultSummary$(address))
 
   const totalCollateral = vaultSummary?.totalCollateralPrice 
     ? formatFiatBalance(vaultSummary?.totalCollateralPrice) 

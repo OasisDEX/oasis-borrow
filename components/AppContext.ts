@@ -153,7 +153,7 @@ export function setupAppContext() {
 
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
 
-  const getVaultSummary$ = curry(createVaultSummary)(vaults$)
+  const vaultSummary$ = curry(createVaultSummary)(vaults$)
 
   return {
     web3Context$,
@@ -168,7 +168,7 @@ export function setupAppContext() {
     proxyOwner$,
     vaults$,
     vault$,
-    getVaultSummary$,
+    vaultSummary$,
   }
 }
 
