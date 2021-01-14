@@ -28,39 +28,30 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
   return (
     <Box>
       <Box as='table' sx={{ width: '100%' }}>
-        <thead>
-          <tr>
+        <Box as="thead">
+          <Box as="tr">
             {
-              headerCells.map(header => <th>{header}</th>)
+              headerCells.map(header => <Box as="th">{header}</Box>)
             }
-          </tr>
-        </thead>
-        <tbody>
+          </Box>
+        </Box>
+        <Box as="tbody">
           {
             vaults.map(vault => (
-            <tr key={vault.id}>
-              <td>{vault.token}</td>
-              <td>{vault.id}</td>
-              <td>{vault.collateralizationRatio.toString()}</td>
-              <td>{`${formatCryptoBalance(vault.collateral)} ${vault.token}`}</td>
-              <td>{`${formatCryptoBalance(vault.collateralAvailable)} ${vault.token}`}</td>
-              <td>{formatCryptoBalance(vault.debt)}</td>
-              <td><Link href={`/${vault.id}`}>Menage Vault</Link></td>
-            </tr>
+            <Box as="tr" key={vault.id}>
+              <Box as="td">{vault.token}</Box>
+              <Box as="td">{vault.id}</Box>
+              <Box as="td">{vault.collateralizationRatio.toString()}</Box>
+              <Box as="td">{`${formatCryptoBalance(vault.collateral)} ${vault.token}`}</Box>
+              <Box as="td">{`${formatCryptoBalance(vault.collateralAvailable)} ${vault.token}`}</Box>
+              <Box as="td">{formatCryptoBalance(vault.debt)}</Box>
+              <Box as="td"><Link href={`/${vault.id}`}>Menage Vault</Link></Box>
+            </Box>
             ))
           }
-        </tbody>
+        </Box>
       </Box>
     </Box>
-  )
-}
-
-function Stat({ name, children }: {name: string, children: React.ReactNode}) {
-  return (
-    <div>
-      <div>{name}</div>
-      {children}
-    </div>
   )
 }
 
@@ -90,12 +81,14 @@ function Summary({ address }: { address: string }) {
   return (
     <Grid sx={{ flex: 1 }}>
       <Heading as="h1">Overview</Heading>
-      <Stat name="total collateral locked">
-        {totalCollateral} USD
-      </Stat>
-      <Stat name="total dai debt">
-        {totalDaiDebt} DAI
-      </Stat>
+      <Box>
+        <Heading as="h2">Total collateral locked</Heading>
+        <Box>{totalCollateral} USD</Box>
+      </Box>
+      <Box>
+        <Heading as="h2">Total dai debt</Heading>
+        <Box>{totalDaiDebt} DAI</Box>
+      </Box>
       <Text>Connected Address :: {(web3Context as any)?.account}</Text>
       <Text>Viewing Address :: {address}</Text>
       <Text>ProxyAddress :: {proxyAddress}</Text>
