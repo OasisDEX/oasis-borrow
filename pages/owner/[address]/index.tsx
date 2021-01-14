@@ -43,7 +43,7 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
               <Box as="td">{vault.id}</Box>
               <Box as="td">{vault.collateralizationRatio.toString()}</Box>
               <Box as="td">{`${formatCryptoBalance(vault.collateral)} ${vault.token}`}</Box>
-              <Box as="td">{`${formatCryptoBalance(vault.collateralAvailable)} ${vault.token}`}</Box>
+              <Box as="td">{`${formatCryptoBalance(vault.freeCollateral)} ${vault.token}`}</Box>
               <Box as="td">{formatCryptoBalance(vault.debt)}</Box>
               <Box as="td"><Link href={`/${vault.id}`}>Menage Vault</Link></Box>
             </Box>
@@ -67,8 +67,7 @@ function Summary({ address }: { address: string }) {
   const { web3Context$, proxyAddress$, vaults$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
   const proxyAddress = useObservable(proxyAddress$(address))
-  const vaultsData$ = vaults$(address)
-  const vaults = useObservable(vaultsData$)
+  const vaults = useObservable(vaults$(address))
   const totalCollateral = useMemo(() => vaults !== undefined 
   ? formatFiatBalance(getTotalCollateralPrice(vaults))
   : '$0'
@@ -78,8 +77,6 @@ function Summary({ address }: { address: string }) {
       ? formatCryptoBalance(getTotalDaiDebt(vaults))
       : '0'
   , [vaults])
-
-  console.log('vaults', vaults)
 
   return (
     <Grid sx={{ flex: 1 }}>

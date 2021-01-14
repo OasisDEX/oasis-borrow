@@ -13,8 +13,7 @@ export default function Vault() {
     query: { vault: vaultId },
   } = useRouter()
 
-  const vaultData$ = vault$(new BigNumber(vaultId as string))
-  const vault = useObservable(vaultData$)
+  const vault = useObservable(vault$(new BigNumber(vaultId as string)))
 
   const account = web3Context?.status === 'connected' 
     ? web3Context.account
@@ -35,7 +34,7 @@ export default function Vault() {
   return (
     <Grid>
       <Text>Connected Address :: {account}</Text>
-      <Text>Vault :: {vault}</Text>
+      <Text>Vault :: {vaultId}</Text>
       <Heading as="h1">{vault?.ilk} Vault #{vault?.id}</Heading>
       <Box>
         <Heading as="h2">Liquidation price</Heading>
@@ -55,7 +54,7 @@ export default function Vault() {
         <Button>Withdraw</Button>
       </Box>
       <Box>
-        <Heading>Outstanding debt</Heading>
+        <Heading as="h2">Outstanding debt</Heading>
         <Text>Outstanding Dai debt {debt}DAI</Text>
         <Text>Available to generate {debtAvailable}DAI</Text>
       </Box>
