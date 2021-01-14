@@ -313,6 +313,14 @@ export function createTokenOraclePrice$(
   )
 }
 
+/*
+ * TODO Determine if "controller" is best name for
+ * communicating relationship of
+ * id -> cdpManager.owns -> DsProxy(owner) -> controller/externalAddress/user
+ *
+ * Assumption breaks the vault in question uses a different cdpManager or if
+ * the vault has been given away
+ */
 export function createController$(
   proxyOwner$: (proxyAddress: string) => Observable<string>,
   cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>,
