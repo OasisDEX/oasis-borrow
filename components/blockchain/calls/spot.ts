@@ -11,10 +11,7 @@ interface SpotIlksResult {
 }
 
 function deb<R>(f: (...args: any) => R): (...args: any) => R {
-  return (...args: any) => {
-    console.log(f, ...args)
-    return f(...args)
-  }
+  return (...args: any) => f(...args)
 }
 
 export const spotIlks: CallDef<string, SpotIlksResult> = {

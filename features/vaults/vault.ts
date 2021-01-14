@@ -1,6 +1,7 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { amountFromRay } from 'components/blockchain/utils'
+import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, mergeMap, switchMap, take } from 'rxjs/operators'
 
@@ -207,7 +208,7 @@ export interface Vault {
   collateralizationRatio: BigNumber
 
   /*
-   * "Vault.tokenPrice" is the USD value of 1 unit of Vault.token as calculated
+   * "Vault.tokenOraclePrice" is the USD value of 1 unit of Vault.token as calculated
    * by the Maker Protocol;
    *
    * It can be computed by multiplying three values:
@@ -220,7 +221,7 @@ export interface Vault {
    *
    * tokenPrice = daiPrice * maxDebtPerUnitCollateral * liquidationRatio
    */
-  tokenPrice: BigNumber
+  tokenOraclePrice: BigNumber
 
   /*
    * "Vault.liquidationPrice" is the price of the collateral of a vault
@@ -278,7 +279,7 @@ export const mockVault: Vault = {
   liquidationPrice: new BigNumber('257.59'),
   liquidationRatio: new BigNumber('1.50'),
   liquidationPenalty: new BigNumber('0.13'),
-  tokenPrice: new BigNumber('1245.05'),
+  tokenOraclePrice: new BigNumber('1245.05'),
 }
 
 // export const minSafeCollateralAmount = {
@@ -299,7 +300,7 @@ export const mockVault: Vault = {
 //   return debtValue.times(liquidationRatio).div(price);
 // }
 
-export function createCollateralPrice$(
+export function createTokenOraclePrice$(
   vatIlks$: CallObservable<typeof vatIlks>,
   ratioDAIUSD$: CallObservable<typeof spotPar>,
   liquidationRatio$: CallObservable<typeof spotIlks>,
@@ -340,7 +341,7 @@ interface CreateVaultArgs {
   cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>
   spotIlks$: CallObservable<typeof spotIlks>
   jugIlks$: CallObservable<typeof jugIlks>
-  collateralPrice$: (ilk: string) => Observable<BigNumber>
+  tokenOraclePrice$: (ilk: string) => Observable<BigNumber>
   controller$: (id: BigNumber) => Observable<string>
 }
 
@@ -354,7 +355,7 @@ export function createVault$(
     cdpManagerOwner$,
     spotIlks$,
     jugIlks$,
-    collateralPrice$,
+    tokenOraclePrice$,
     controller$,
   }: CreateVaultArgs,
   id: BigNumber,
@@ -369,7 +370,7 @@ export function createVault$(
       const token = 'ABC' // TODO
       return combineLatest(
         vatIlks$(ilk),
-        collateralPrice$(ilk),
+        tokenOraclePrice$(ilk),
         spotIlks$(ilk),
         jugIlks$(ilk),
         vatUrns$({ ilk, urnAddress }),
@@ -378,22 +379,23 @@ export function createVault$(
         switchMap(
           ([
             { debtFloor, debtScalingFactor },
-            collateralPrice,
+            tokenOraclePrice,
             { liquidationRatio },
             { stabilityFee },
             { collateral, normalizedDebt },
             unlockedCollateral,
           ]) => {
+            const collateralPrice = collateral.times(tokenOraclePrice)
             const debt = debtScalingFactor.times(normalizedDebt)
 
             const backingCollateral = debt.times(liquidationRatio)
             const freeCollateral = backingCollateral.gt(collateral)
-              ? new BigNumber('0')
+              ? zero
               : collateral.minus(backingCollateral)
 
-            const backingCollateralPrice = backingCollateral.div(collateralPrice)
-            const freeCollateralPrice = freeCollateral.div(collateralPrice)
-
+            const backingCollateralPrice = backingCollateral.div(tokenOraclePrice)
+            const freeCollateralPrice = freeCollateral.div(tokenOraclePrice)
+            const collateralizationRatio = debt.eq(zero) ? zero : collateralPrice.div(debt)
             return of({
               ...mockVault,
               id: id.toString(),
@@ -412,14 +414,14 @@ export function createVault$(
               backingCollateralPrice,
               freeCollateral,
               freeCollateralPrice,
-              // collateralizationRatio,
+              collateralizationRatio,
               // debtAvailable,
               // globalDebtAvailable,
               stabilityFee,
               // liquidationPrice,
               liquidationRatio,
               // liquidationPenalty,
-              // tokenPrice
+              tokenOraclePrice,
             })
           },
         ),
