@@ -28,7 +28,7 @@ import { filter, map, shareReplay } from 'rxjs/operators'
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from './account/transactionManager'
 import { jugIlks } from './blockchain/calls/jug'
-import { observe } from './blockchain/calls/observe'
+import { observe as observeRaw } from './blockchain/calls/observe'
 import { spotIlks, spotPar } from './blockchain/calls/spot'
 import { networksById } from './blockchain/config'
 import {
@@ -40,6 +40,9 @@ import {
   createWeb3ContextConnected$,
 } from './blockchain/network'
 import { memoize } from 'lodash'
+import { tokenBalance } from './blockchain/calls/erc20'
+import { createBalances$ } from '../features/balances'
+import { createCollaterals$ } from '../features/collaterals'
 
 export type TxData = never
 // | ApproveData
@@ -121,23 +124,24 @@ export function setupAppContext() {
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
 
+  const observe = curry(observeRaw)(onEveryBlock$, connectedContext$)
+
   // base
   const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
   const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
-  const cdpManagerUrns$ = observe(onEveryBlock$, connectedContext$, cdpManagerUrns, bigNumer2string)
-  const cdpManagerIlks$ = observe(onEveryBlock$, connectedContext$, cdpManagerIlks, bigNumer2string)
-  const cdpManagerOwner$ = observe(
-    onEveryBlock$,
-    connectedContext$,
-    cdpManagerOwner,
-    bigNumer2string,
-  )
-  const vatIlks$ = observe(onEveryBlock$, connectedContext$, vatIlks)
-  const vatUrns$ = observe(onEveryBlock$, connectedContext$, vatUrns, ilkUrnAddress2string)
-  const vatGem$ = observe(onEveryBlock$, connectedContext$, vatGem, ilkUrnAddress2string)
-  const spotPar$ = observe(onEveryBlock$, connectedContext$, spotPar)
-  const spotIlks$ = observe(onEveryBlock$, connectedContext$, spotIlks)
-  const jugIlks$ = observe(onEveryBlock$, connectedContext$, jugIlks)
+  const cdpManagerUrns$ = observe(cdpManagerUrns, bigNumer2string)
+  const cdpManagerIlks$ = observe(cdpManagerIlks, bigNumer2string)
+  const cdpManagerOwner$ = observe(cdpManagerOwner, bigNumer2string)
+  const vatIlks$ = observe(vatIlks)
+  const vatUrns$ = observe(vatUrns, ilkUrnAddress2string)
+  const vatGem$ = observe(vatGem, ilkUrnAddress2string)
+  const spotPar$ = observe(spotPar)
+  const spotIlks$ = observe(spotIlks)
+  const jugIlks$ = observe(jugIlks)
+
+  const balance$ = observe(tokenBalance)
+
+  const collaterals$ = createCollaterals$(context$)
 
   // computed
   const collateralPrice$ = memoize(curry(createCollateralPrice$)(vatIlks$, spotPar$, spotIlks$))
@@ -145,6 +149,7 @@ export function setupAppContext() {
     curry(createController$)(proxyOwner$, cdpManagerOwner$),
     bigNumer2string,
   )
+  const balances$ = memoize(curry(createBalances$)(collaterals$, balance$))
 
   const vault$ = memoize(
     curry(createVault$)({
@@ -177,6 +182,7 @@ export function setupAppContext() {
     proxyOwner$,
     vaults$,
     vault$,
+    balances$
   }
 }
 

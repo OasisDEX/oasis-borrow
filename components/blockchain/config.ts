@@ -143,6 +143,18 @@ function getOsms(addresses: Dictionary<string>) {
     .reduce((acc, v) => ({ ...acc, ...v }), {})
 }
 
+function getCollaterals(addresses: Dictionary<string>) {
+  return Object.entries(addresses)
+    .filter(([key]) => key.match('PIP_.*'))
+    .map(([key]) => key.replace('PIP_', ''))
+}
+
+function getCollateralTokens(addresses: Dictionary<string>) {
+  return getCollaterals(addresses)
+    .map(token => ({ [token]: contractDesc(erc20, addresses[token]) }))
+    .reduce((acc, v) => ({ ...acc, ...v }), {})
+}
+
 const protoMain = {
   id: '1',
   name: 'main',
@@ -151,10 +163,11 @@ const protoMain = {
   infuraUrlWS: `wss://mainnet.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 10,
   otc: contractDesc(otc, '0x794e6e91555438aFc3ccF1c5076A74F42133d08D'),
+  collaterals: getCollaterals(mainnetAddresses),
   tokens: {
-    WETH: contractDesc(eth, '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'),
-    DAI: contractDesc(erc20, '0x6B175474E89094C44Da98b954EedeAC495271d0F'),
-    USDC: contractDesc(erc20, '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'),
+    ...getCollateralTokens(mainnetAddresses),
+    WETH: contractDesc(eth, mainnetAddresses['ETH']),
+    DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
     MKR: contractDesc(erc20, '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2'),
     CHAI: contractDesc(erc20, '0x06af07097c9eeb7fd685c692751d5c66db49c215'),
     // WBTC: contractDesc(erc20, '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'),
@@ -199,9 +212,11 @@ const kovan: NetworkConfig = {
   infuraUrlWS: `wss://kovan.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 6,
   otc: contractDesc(otc, '0xe325acB9765b02b8b418199bf9650972299235F4'),
+  collaterals: getCollaterals(mainnetAddresses),
   tokens: {
-    WETH: contractDesc(eth, '0xd0a1e359811322d97991e03f863a0c30c2cf029c'),
-    DAI: contractDesc(erc20, '0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa'),
+    ...getCollateralTokens(kovanAddresses),
+    WETH: contractDesc(eth, kovanAddresses['ETH']),
+    DAI: contractDesc(erc20, kovanAddresses['MCD_DAI']),
     USDC: contractDesc(erc20, '0x198419c5c340e8De47ce4C0E4711A03664d42CB2'),
     MKR: contractDesc(erc20, '0xaaf64bfcc32d0f15873a02163e7e500671a4ffcd'),
     CHAI: contractDesc(erc20, '0xb641957b6c29310926110848db2d464c8c3c3f38'),

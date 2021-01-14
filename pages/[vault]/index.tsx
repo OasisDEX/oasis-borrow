@@ -5,6 +5,12 @@ import { useObservable } from 'helpers/observableHook'
 import { useRouter } from 'next/router'
 import { Grid, Text } from 'theme-ui'
 
+function Balances({ owner }: { owner: string }) {
+  const { balances$ } = useAppContext()
+  const balances = useObservable(balances$(owner))
+  return <Text>{ JSON.stringify(balances, null, '  ') }</Text>
+}
+
 export default function Vault() {
   const { web3Context$, vault$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
@@ -21,6 +27,7 @@ export default function Vault() {
       <Text>Connected Address :: {web3Context?.account}</Text>
       <Text>VaultId :: {vault}</Text>
       <Text>{JSON.stringify(theVault, null, '  ')}</Text>
+      {theVault && <Balances owner={theVault.owner}/>}
     </Grid>
   )
 }
