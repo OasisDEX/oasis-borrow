@@ -1,11 +1,9 @@
-import { BigNumber } from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLayout } from 'components/Layouts'
 import { Vault } from 'features/vaults/vault'
 import { formatCryptoBalance, formatFiatBalance } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import Link from 'next/link'
-import { useMemo } from 'react'
 import { Box, Grid, Heading, Text } from 'theme-ui'
 
 function ProxyOwner({ proxyAddress }: { proxyAddress: string }) {
@@ -55,35 +53,27 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
   )
 }
 
-function getTotalCollateralPrice(vaults: Vault[]) {
-  return vaults.reduce((total, vault) => total.plus(vault.collateralPrice), new BigNumber(0))
-}
-
-function getTotalDaiDebt(vaults: Vault[]) {
-  return vaults.reduce((total, vault) => total.plus(vault.debt), new BigNumber(0))
-}
-
 function Summary({ address }: { address: string }) {
-  const { web3Context$, proxyAddress$, vaults$ } = useAppContext()
+  const { web3Context$, proxyAddress$, vaults$, getVaultSummary$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
   const proxyAddress = useObservable(proxyAddress$(address))
   const vaults = useObservable(vaults$(address))
-  const totalCollateral = useMemo(() => vaults !== undefined 
-  ? formatFiatBalance(getTotalCollateralPrice(vaults))
-  : '$0'
-  , [vaults])
-  const totalDaiDebt = useMemo(() => 
-    vaults !== undefined
-      ? formatCryptoBalance(getTotalDaiDebt(vaults))
+  const vaultSummary = useObservable(getVaultSummary$(address))
+
+  const totalCollateral = vaultSummary?.totalCollateralPrice 
+    ? formatFiatBalance(vaultSummary?.totalCollateralPrice) 
+    : '0'
+
+  const totalDaiDebt = vaultSummary?.totalDaiDebt !== undefined
+      ? formatCryptoBalance(vaultSummary.totalDaiDebt)
       : '0'
-  , [vaults])
 
   return (
     <Grid sx={{ flex: 1 }}>
       <Heading as="h1">Overview</Heading>
       <Box>
         <Heading as="h2">Total collateral locked</Heading>
-        <Box>{totalCollateral} USD</Box>
+        <Box>${totalCollateral} USD</Box>
       </Box>
       <Box>
         <Heading as="h2">Total dai debt</Heading>

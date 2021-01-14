@@ -20,6 +20,7 @@ import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import { createCollateralPrice$, createController$, createVault$ } from 'features/vaults/vault'
 import { createVaults$ } from 'features/vaults/vaults'
+import { createVaultSummary } from 'features/vaults/vaultsSummary'
 import { mapValues } from 'lodash'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
@@ -152,6 +153,8 @@ export function setupAppContext() {
 
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
 
+  const getVaultSummary$ = curry(createVaultSummary)(vaults$)
+
   return {
     web3Context$,
     setupWeb3Context$,
@@ -165,6 +168,7 @@ export function setupAppContext() {
     proxyOwner$,
     vaults$,
     vault$,
+    getVaultSummary$,
   }
 }
 
