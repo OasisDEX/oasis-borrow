@@ -18,8 +18,8 @@ import * as mcdPot from './abi/mcd-pot.json'
 import * as mcdSpot from './abi/mcd-spot.json'
 import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
-import * as kovanAddresses from './addresses/kovan.json'
-import * as mainnetAddresses from './addresses/mainnet.json'
+import { default as kovanAddresses } from './addresses/kovan.json'
+import { default as mainnetAddresses } from './addresses/mainnet.json'
 
 export interface TokenConfig {
   symbol: string
@@ -123,6 +123,10 @@ const tokens = [
 const tokensBySymbol = keyBy(tokens, 'symbol')
 
 export function getToken(tokenSymbol: string) {
+  if (!tokensBySymbol[tokenSymbol]) {
+    console.warn('No token metadata for', tokenSymbol, 'using WETH!')
+    return tokensBySymbol.ETH
+  }
   return tokensBySymbol[tokenSymbol]
 }
 
@@ -138,20 +142,21 @@ const infuraProjectId = '58073b4a32df4105906c702f167b91d2'
 
 function getOsms(addresses: Dictionary<string>) {
   return Object.entries(addresses)
-    .filter(([key]) => key.match('PIP_.*'))
+    .filter(([key]) => /PIP_.*/.test(key))
     .map(([key, address]) => ({ [key.replace('PIP_', '')]: contractDesc(mcdOsm, address) }))
     .reduce((acc, v) => ({ ...acc, ...v }), {})
 }
 
 function getCollaterals(addresses: Dictionary<string>) {
   return Object.entries(addresses)
-    .filter(([key]) => key.match('PIP_.*'))
+    .filter(([key]) => /PIP_.*/.test(key))
+    .filter(([key]) => key !== 'ETH')
     .map(([key]) => key.replace('PIP_', ''))
 }
 
 function getCollateralTokens(addresses: Dictionary<string>) {
   return getCollaterals(addresses)
-    .map(token => ({ [token]: contractDesc(erc20, addresses[token]) }))
+    .map((token) => ({ [token]: contractDesc(erc20, addresses[token]) }))
     .reduce((acc, v) => ({ ...acc, ...v }), {})
 }
 
@@ -212,7 +217,7 @@ const kovan: NetworkConfig = {
   infuraUrlWS: `wss://kovan.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 6,
   otc: contractDesc(otc, '0xe325acB9765b02b8b418199bf9650972299235F4'),
-  collaterals: getCollaterals(mainnetAddresses),
+  collaterals: getCollaterals(kovanAddresses),
   tokens: {
     ...getCollateralTokens(kovanAddresses),
     WETH: contractDesc(eth, kovanAddresses['ETH']),

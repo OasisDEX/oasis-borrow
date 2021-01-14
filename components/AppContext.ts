@@ -28,7 +28,7 @@ import { filter, map, shareReplay } from 'rxjs/operators'
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from './account/transactionManager'
 import { jugIlks } from './blockchain/calls/jug'
-import { observe as observeRaw } from './blockchain/calls/observe'
+import { observe } from './blockchain/calls/observe'
 import { spotIlks, spotPar } from './blockchain/calls/spot'
 import { networksById } from './blockchain/config'
 import {
@@ -124,22 +124,25 @@ export function setupAppContext() {
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
 
-  const observe = curry(observeRaw)(onEveryBlock$, connectedContext$)
-
   // base
   const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
   const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
-  const cdpManagerUrns$ = observe(cdpManagerUrns, bigNumer2string)
-  const cdpManagerIlks$ = observe(cdpManagerIlks, bigNumer2string)
-  const cdpManagerOwner$ = observe(cdpManagerOwner, bigNumer2string)
-  const vatIlks$ = observe(vatIlks)
-  const vatUrns$ = observe(vatUrns, ilkUrnAddress2string)
-  const vatGem$ = observe(vatGem, ilkUrnAddress2string)
-  const spotPar$ = observe(spotPar)
-  const spotIlks$ = observe(spotIlks)
-  const jugIlks$ = observe(jugIlks)
+  const cdpManagerUrns$ = observe(onEveryBlock$, connectedContext$, cdpManagerUrns, bigNumer2string)
+  const cdpManagerIlks$ = observe(onEveryBlock$, connectedContext$, cdpManagerIlks, bigNumer2string)
+  const cdpManagerOwner$ = observe(
+    onEveryBlock$,
+    connectedContext$,
+    cdpManagerOwner,
+    bigNumer2string,
+  )
+  const vatIlks$ = observe(onEveryBlock$, connectedContext$, vatIlks)
+  const vatUrns$ = observe(onEveryBlock$, connectedContext$, vatUrns, ilkUrnAddress2string)
+  const vatGem$ = observe(onEveryBlock$, connectedContext$, vatGem, ilkUrnAddress2string)
+  const spotPar$ = observe(onEveryBlock$, connectedContext$, spotPar)
+  const spotIlks$ = observe(onEveryBlock$, connectedContext$, spotIlks)
+  const jugIlks$ = observe(onEveryBlock$, connectedContext$, jugIlks)
 
-  const balance$ = observe(tokenBalance)
+  const balance$ = observe(onEveryBlock$, connectedContext$, tokenBalance)
 
   const collaterals$ = createCollaterals$(context$)
 
@@ -182,7 +185,7 @@ export function setupAppContext() {
     proxyOwner$,
     vaults$,
     vault$,
-    balances$
+    balances$,
   }
 }
 

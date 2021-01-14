@@ -8,7 +8,8 @@ import { Grid, Text } from 'theme-ui'
 function Balances({ owner }: { owner: string }) {
   const { balances$ } = useAppContext()
   const balances = useObservable(balances$(owner))
-  return <Text>{ JSON.stringify(balances, null, '  ') }</Text>
+  console.log('balances', owner, balances)
+  return <Text as="pre">{JSON.stringify(balances, null, 2)}</Text>
 }
 
 export default function Vault() {
@@ -26,8 +27,8 @@ export default function Vault() {
     <Grid>
       <Text>Connected Address :: {web3Context?.account}</Text>
       <Text>VaultId :: {vault}</Text>
-      <Text>{JSON.stringify(theVault, null, '  ')}</Text>
-      {theVault && <Balances owner={theVault.owner}/>}
+      <Text as="pre">{JSON.stringify(theVault, null, 2)}</Text>
+      {theVault?.owner && <Balances owner={theVault.owner} />}
     </Grid>
   )
 }

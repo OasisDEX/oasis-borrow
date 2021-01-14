@@ -10,13 +10,13 @@ import { CallObservable } from '../components/blockchain/calls/observe'
 export function createBalances$(
   collaterals$: Observable<string[]>,
   balance$: CallObservable<typeof tokenBalance>,
-  account: string
+  account: string,
 ): Observable<Dictionary<BigNumber>> {
   return collaterals$.pipe(
-    switchMap(tokens =>
-      combineLatest(tokens.map(token => balance$({ token, account }))).pipe(
-        map(balances => zipObject(tokens, balances))
-      )
-    )
+    switchMap((tokens) =>
+      combineLatest(tokens.map((token) => balance$({ token, account }))).pipe(
+        map((balances) => zipObject(tokens, balances)),
+      ),
+    ),
   )
 }

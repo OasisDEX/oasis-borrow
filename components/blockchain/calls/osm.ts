@@ -28,6 +28,21 @@ export function tokenPriceNextUpdate(
   )
 }
 
+// export function readOsm(context: NetworkConfig, token: string): Observable<{ next: number | undefined }> {
+//   // const slotCurrent = 3;
+//   const slotNext = 4;
+//   return combineLatest(bindNodeCallback(web3.eth.getStorageAt)(context.mcd.osms[token].address, slotNext)).pipe(
+//     map(([nxt]: [string, string]) => {
+//       const next = storageHexToBigNumber(nxt);
+//       return {
+//         // current: current[0].isZero() ? undefined : amountFromWei(current[1], token),
+//         next: next[0].isZero() ? undefined : amountFromWei(next[1], token),
+//       };
+//     }),
+//     startWith({}),
+//   );
+// }
+
 // export const tokenPricesNextUpdates = {
 //   generate: tokenList => ({
 //     dependencies: tokenList.map(token => [TOKEN_PRICE_NEXT_UPDATE, token]),
