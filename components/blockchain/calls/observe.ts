@@ -8,7 +8,8 @@ import { call, CallDef } from './callsHelpers'
 export function observe<A, R>(
   onEveryBlock$: Observable<number>,
   connectedContext$: Observable<ContextConnected>,
-  callDef: CallDef<A, R>
+  callDef: CallDef<A, R>,
+  resolver?: (args: A) => string
 ): (args: A) => Observable<R> {
   return memoize((args: A) =>
     combineLatest(connectedContext$, onEveryBlock$).pipe(
@@ -16,7 +17,8 @@ export function observe<A, R>(
       switchMap(([context]) => call(context, callDef)(args)),
       distinctUntilChanged(isEqual),
       shareReplay(1),
-    )
+    ),
+    resolver
   )
 }
 
