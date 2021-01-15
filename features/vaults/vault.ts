@@ -1,9 +1,17 @@
 import BigNumber from 'bignumber.js'
+import { Ilk } from 'features/ilks/ilks'
+import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
-import { mergeMap, switchMap, take } from 'rxjs/operators'
+import { map, mergeMap, switchMap, take } from 'rxjs/operators'
 
-import { ContextConnected } from '../../components/blockchain/network'
-import { Ilk, Urn } from './vat'
+import {
+  cdpManagerIlks,
+  cdpManagerOwner,
+  cdpManagerUrns,
+} from '../../components/blockchain/calls/cdpManager'
+import { CallObservable } from '../../components/blockchain/calls/observe'
+import {  spotIlks, spotPar } from '../../components/blockchain/calls/spot'
+import {  vatGem,  vatIlks, vatUrns } from '../../components/blockchain/calls/vat'
 
 export interface Vault {
   /*
@@ -34,12 +42,13 @@ export interface Vault {
   owner: string
 
   /*
-   * The "Vault.proxyOwner" is found in a deployed instance of a DSProxy contract.
+   * The "Vault.controller" is the assumed address of the user. It can be found
+   * by calling "owner()" in a deployed instance of a DSProxy contract.
    * Assuming again the majority of cases, the oasis borrow's user address
    * should match the address found by calling DSProxy.owner at address
    * Vault.owner.
    */
-  proxyOwner: string // address of owner of proxy
+  controller: string // address of owner of proxy which controls the vault
 
   /*
    * A "Vault.token" is referred to as a "gem" in the core contracts. The gems
@@ -114,22 +123,29 @@ export interface Vault {
   collateralPrice: BigNumber
 
   /*
-   * "Vault.collateralAvailable" is the amount of collateral that can be
+   * "Vault.backingCollateral" is the minimum amount of collateral which
+   * must be locked in the vault given the current amount of debt.
+   * "minSafeCollateralAmount"
+   */
+  backingCollateral: BigNumber
+
+  /*
+   * "Vault.backingCollateralPrice" is the minimum amount of collateral in USD
+   * which must be locked in the vault given the current amount of debt.
+   */
+  backingCollateralPrice: BigNumber
+
+  /*
+   * "Vault.freeCollateral" is the amount of collateral that can be
    * withdrawn from a vault without being liquidated
    */
-  collateralAvailable: BigNumber
+  freeCollateral: BigNumber
 
   /*
-   * "Vault.collateralAvailable" is the amount of collateral in USD that
+   * "Vault.freeCollateralPrice" is the amount of collateral in USD that
    * can be withdrawn from a vault without being liquidated
    */
-  collateralAvailablePrice: BigNumber
-
-  /*
-   * "Vault.collateralUnavailable" is the minimum amount of collateral which
-   * must be locked in the vault given the current amount of debt
-   */
-  collateralUnavailable: BigNumber
+  freeCollateralPrice: BigNumber
 
   /*
    * The "Vault.debt" represents an amount of "internal DAI" generated through a
@@ -167,13 +183,13 @@ export interface Vault {
    * "Vault.debtAvailable" is the maximum amount of debt denominated in DAI a
    * vault can generate without being liquidated
    */
-  debtAvailable: BigNumber
+  availableDebt: BigNumber
 
   /*
    * "Vault.globalDebtAvailable" is the maximum amount of debt available to
    * generate that does not break the debt ceiling for that ilk
    */
-  globalDebtAvailable: BigNumber
+  availableIlkDebt: BigNumber
 
   /*
    * Vault.liquidationRatio is found in Spot.ilks[ilk].mat, if the
@@ -187,10 +203,10 @@ export interface Vault {
    * to the amount of debt in USD. A value less then liquidationRatio means that
    * the vault is at risk of being liquidated.
    */
-  collateralizationRatio: BigNumber
+  collateralizationRatio: BigNumber | undefined
 
   /*
-   * "Vault.tokenPrice" is the USD value of 1 unit of Vault.token as calculated
+   * "Vault.tokenOraclePrice" is the USD value of 1 unit of Vault.token as calculated
    * by the Maker Protocol;
    *
    * It can be computed by multiplying three values:
@@ -203,14 +219,14 @@ export interface Vault {
    *
    * tokenPrice = daiPrice * maxDebtPerUnitCollateral * liquidationRatio
    */
-  tokenPrice: BigNumber
+  tokenOraclePrice: BigNumber
 
   /*
    * "Vault.liquidationPrice" is the price of the collateral of a vault
    * in USD if the Vault.collateralizationRatio is equal to the
    * Vault.liquidationRatio
    */
-  liquidationPrice: BigNumber
+  liquidationPrice: BigNumber | undefined
 
   /*
    * "Vault.liquidationPenalty" is used if a vault is liquidated, the penalty
@@ -237,22 +253,23 @@ export interface Vault {
 
 export const mockVault: Vault = {
   id: '500',
-  kind: 'ETH-A',
+  ilk: 'ETH-A',
   token: 'ETH',
   owner: '0x05623eb676A8abA2d381604B630ded1A81Dc05a9',
   address: '0x882cd8B63b4b6cB5ca2Bda899f6A8c968d66643e',
-  proxyOwner: '0x8A0Bfe04D175D345b5FDcD3e9Ca5d00b608Ce6A3',
+  controller: '0x8A0Bfe04D175D345b5FDcD3e9Ca5d00b608Ce6A3',
   collateral: new BigNumber('98'),
   unlockedCollateral: new BigNumber('0'),
   collateralPrice: new BigNumber('122014.90'),
-  collateralAvailable: new BigNumber('77.72'),
-  collateralAvailablePrice: new BigNumber('96770.74'),
-  collateralUnavailable: new BigNumber('20.28'),
+  backingCollateral: new BigNumber('20.28'),
+  backingCollateralPrice: new BigNumber('20.28'),
+  freeCollateral: new BigNumber('77.72'),
+  freeCollateralPrice: new BigNumber('96770.74'),
   normalizedDebt: new BigNumber('16403.419856003889170145'),
   collateralizationRatio: new BigNumber('7.25'),
   debt: new BigNumber('16829.44'),
-  debtAvailable: new BigNumber('64513.82'),
-  globalDebtAvailable: new BigNumber('110593468.87'),
+  availableDebt: new BigNumber('64513.82'),
+  availableIlkDebt: new BigNumber('110593468.87'),
   debtFloor: new BigNumber('500'),
   stabilityFee: new BigNumber(
     '0.024999999999905956943812259791573533789860268487320672821177905084121745214484109204754426155886843',
@@ -260,39 +277,127 @@ export const mockVault: Vault = {
   liquidationPrice: new BigNumber('257.59'),
   liquidationRatio: new BigNumber('1.50'),
   liquidationPenalty: new BigNumber('0.13'),
-  tokenPrice: new BigNumber('1245.05'),
+  tokenOraclePrice: new BigNumber('1245.05'),
+}
+
+export function createTokenOraclePrice$(
+  vatIlks$: CallObservable<typeof vatIlks>,
+  ratioDAIUSD$: CallObservable<typeof spotPar>,
+  liquidationRatio$: CallObservable<typeof spotIlks>,
+  ilk: string,
+) {
+  return combineLatest(vatIlks$(ilk), liquidationRatio$(ilk), ratioDAIUSD$()).pipe(
+    map(([{ maxDebtPerUnitCollateral }, { liquidationRatio }, ratioDAIUSD]) =>
+      maxDebtPerUnitCollateral.times(ratioDAIUSD).times(liquidationRatio),
+    ),
+  )
+}
+
+/*
+ * TODO Determine if "controller" is best name for
+ * communicating relationship of
+ * id -> cdpManager.owns -> DsProxy(owner) -> controller/externalAddress/user
+ *
+ * Assumption breaks the vault in question uses a different cdpManager or if
+ * the vault has been given away
+ */
+export function createController$(
+  proxyOwner$: (proxyAddress: string) => Observable<string>,
+  cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>,
+  id: BigNumber,
+) {
+  return cdpManagerOwner$(id).pipe(mergeMap((owner) => proxyOwner$(owner)))
 }
 
 export function createVault$(
-  connectedContext$: Observable<ContextConnected>,
-  cdpManagerUrns$: (id: string) => Observable<string>,
-  cdpManagerIlks$: (id: string) => Observable<string>,
-  vatUrns$: (id: string) => Observable<Urn>,
-  vatIlks$: (kind: string) => Observable<Ilk>,
-  vatGem$: (id: string) => Observable<BigNumber>,
-  id: string,
+  cdpManagerUrns$: CallObservable<typeof cdpManagerUrns>,
+  cdpManagerIlks$: CallObservable<typeof cdpManagerIlks>,
+  cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>,
+  vatUrns$: CallObservable<typeof vatUrns>,
+  vatGem$: CallObservable<typeof vatGem>,
+  ilk$: (ilk: string) => Observable<Ilk>,
+  tokenOraclePrice$: (ilk: string) => Observable<BigNumber>,
+  controller$: (id: BigNumber) => Observable<string>,
+  id: BigNumber,
 ): Observable<Vault> {
   return combineLatest(
-    connectedContext$,
     cdpManagerUrns$(id),
     cdpManagerIlks$(id),
-    vatUrns$(id),
-    vatGem$(id),
+    cdpManagerOwner$(id),
+    controller$(id),
   ).pipe(
-    switchMap(([, address, ilk, { collateral, normalizedDebt }, unlockedCollateral]) => {
-      return vatIlks$(ilk).pipe(
-        mergeMap(({ debtFloor }) => {
-          return of({
-            ...mockVault,
-            id,
-            address,
-            ilk,
-            collateral,
-            normalizedDebt,
-            debtFloor,
+    switchMap(([urnAddress, ilk, owner, controller]) => {
+      const token = 'ABC' // TODO
+      return combineLatest(
+        vatUrns$({ ilk, urnAddress }),
+        vatGem$({ ilk, urnAddress }),
+        tokenOraclePrice$(ilk),
+        ilk$(ilk),
+      ).pipe(
+        switchMap(
+          ([
+            { collateral, normalizedDebt },
             unlockedCollateral,
-          })
-        }),
+            tokenOraclePrice,
+            {
+              normalizedIlkDebt,
+              debtFloor,
+              debtScalingFactor,
+              debtCeiling,
+              liquidationRatio,
+              stabilityFee,
+              liquidationPenalty,
+            },
+          ]) => {
+            const collateralPrice = collateral.times(tokenOraclePrice)
+            const debt = debtScalingFactor.times(normalizedDebt)
+            const ilkDebt = debtScalingFactor.times(normalizedIlkDebt)
+
+            const backingCollateral = debt.times(liquidationRatio)
+            const freeCollateral = backingCollateral.gt(collateral)
+              ? zero
+              : collateral.minus(backingCollateral)
+
+            const backingCollateralPrice = backingCollateral.div(tokenOraclePrice)
+            const freeCollateralPrice = freeCollateral.div(tokenOraclePrice)
+            const collateralizationRatio = debt.eq(zero) ? undefined : collateralPrice.div(debt)
+
+            const maxAvailableDebt = collateralPrice.div(liquidationRatio)
+            const availableDebt = debt.lt(maxAvailableDebt) ? maxAvailableDebt.minus(debt) : zero
+            const availableIlkDebt = debtCeiling.minus(ilkDebt)
+
+            const liquidationPrice = collateral.eq(zero)
+              ? undefined
+              : debt.times(liquidationRatio).div(collateral)
+
+            return of({
+              id: id.toString(),
+              ilk,
+              token,
+              address: urnAddress,
+              owner,
+              controller,
+              collateral,
+              unlockedCollateral,
+              collateralPrice,
+              backingCollateral,
+              backingCollateralPrice,
+              freeCollateral,
+              freeCollateralPrice,
+              normalizedDebt,
+              collateralizationRatio,
+              debt,
+              availableDebt,
+              availableIlkDebt,
+              debtFloor,
+              stabilityFee,
+              liquidationPrice,
+              liquidationRatio,
+              liquidationPenalty,
+              tokenOraclePrice,
+            })
+          },
+        ),
       )
     }),
     take(1),

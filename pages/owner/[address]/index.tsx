@@ -37,6 +37,8 @@ function Summary({ address }: { address: string }) {
   const proxyAddress = useObservable(proxyAddress$(address))
   const vaults = useObservable(vaults$(address))
 
+  console.log('vaults', vaults)
+
   return (
     <Grid>
       <Text>Connected Address :: {(web3Context as any)?.account}</Text>
