@@ -18,6 +18,7 @@ import { createProxyAddress$, createProxyOwner$ } from 'components/blockchain/ca
 import { vatGem, vatIlks, vatUrns } from 'components/blockchain/calls/vat'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
+import { createIlks$ } from 'features/ilks/ilks'
 import { createController$, createTokenOraclePrice$, createVault$ } from 'features/vaults/vault'
 import { createVaults$ } from 'features/vaults/vaults'
 import { mapValues } from 'lodash'
@@ -137,21 +138,19 @@ export function setupAppContext() {
 
   // computed
   const tokenOraclePrice$ = curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$)
+  const ilk$ = curry(createIlks$)(vatIlks$, spotIlks$, jugIlks$, catIlks$)
   const controller$ = curry(createController$)(proxyOwner$, cdpManagerOwner$)
 
-  const vault$ = curry(createVault$)({
+  const vault$ = curry(createVault$)(
     cdpManagerUrns$,
     cdpManagerIlks$,
-    vatUrns$,
-    vatIlks$,
-    vatGem$,
     cdpManagerOwner$,
-    spotIlks$,
-    jugIlks$,
-    catIlks$,
+    vatUrns$,
+    vatGem$,
+    ilk$,
     tokenOraclePrice$,
     controller$,
-  })
+  )
 
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
 

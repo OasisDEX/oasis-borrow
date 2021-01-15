@@ -10,17 +10,13 @@ export interface SpotIlk {
   liquidationRatio: BigNumber
 }
 
-function deb<R>(f: (...args: any) => R): (...args: any) => R {
-  return (...args: any) => f(...args)
-}
-
 export const spotIlks: CallDef<string, SpotIlk> = {
   call: (_, { contract, mcdSpot }) => contract<McdSpot>(mcdSpot).methods.ilks,
   prepareArgs: (ilk) => [Web3.utils.utf8ToHex(ilk)],
-  postprocess: deb(({ 0: pip, 1: mat }: any) => ({
+  postprocess: ({ pip, mat }: any) => ({
     priceFeedAddress: pip,
     liquidationRatio: amountFromRay(new BigNumber(mat)),
-  })),
+  }),
 }
 
 export const spotPar: CallDef<void, BigNumber> = {

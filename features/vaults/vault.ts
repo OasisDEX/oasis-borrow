@@ -1,17 +1,17 @@
 import BigNumber from 'bignumber.js'
-import { CatIlk, catIlks } from 'components/blockchain/calls/cat'
+import { Ilk } from 'features/ilks/ilks'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, mergeMap, switchMap, take } from 'rxjs/operators'
+
 import {
   cdpManagerIlks,
   cdpManagerOwner,
   cdpManagerUrns,
 } from '../../components/blockchain/calls/cdpManager'
-import { JugIlk, jugIlks } from '../../components/blockchain/calls/jug'
 import { CallObservable } from '../../components/blockchain/calls/observe'
-import { SpotIlk, spotIlks, spotPar } from '../../components/blockchain/calls/spot'
-import { Urn, vatGem, VatIlk, vatIlks, vatUrns } from '../../components/blockchain/calls/vat'
+import {  spotIlks, spotPar } from '../../components/blockchain/calls/spot'
+import {  vatGem,  vatIlks, vatUrns } from '../../components/blockchain/calls/vat'
 
 export interface Vault {
   /*
@@ -308,126 +308,16 @@ export function createController$(
 ) {
   return cdpManagerOwner$(id).pipe(mergeMap((owner) => proxyOwner$(owner)))
 }
-// type CL = <T, T2, T3, T4, T5, T6, T7>(
-//   v1: ObservableInput<T>,
-//   v2: ObservableInput<T2>,
-//   v3: ObservableInput<T3>,
-//   v4: ObservableInput<T4>,
-//   v5: ObservableInput<T5>,
-//   v6: ObservableInput<T6>,
-//   v7: ObservableInput<T7>
-// ) => Observable<[T, T2, T3, T4, T5, T6, T7]>;
-//
-// const fixedCombineLatest: CL = combineLatest as any;
-
-interface AggregateVaultDataArgs {
-  id: string
-  address: string
-  ilk: string
-  token: string
-  owner: string
-  controller: string
-  vatIlk: VatIlk
-  spotIlk: SpotIlk
-  jugIlk: JugIlk
-  catIlk: CatIlk
-  urn: Urn
-  unlockedCollateral: BigNumber
-  tokenOraclePrice: BigNumber
-}
-
-function aggregateVaultData({
-  id,
-  address,
-  ilk,
-  token,
-  owner,
-  controller,
-  vatIlk: { normalizedIlkDebt, debtFloor, debtScalingFactor, debtCeiling },
-  spotIlk: { liquidationRatio },
-  jugIlk: { stabilityFee },
-  catIlk: { liquidationPenalty },
-  urn: { collateral, normalizedDebt },
-  unlockedCollateral,
-  tokenOraclePrice,
-}: AggregateVaultDataArgs): Observable<Vault> {
-  const collateralPrice = collateral.times(tokenOraclePrice)
-  const debt = debtScalingFactor.times(normalizedDebt)
-  const ilkDebt = debtScalingFactor.times(normalizedIlkDebt)
-
-  const backingCollateral = debt.times(liquidationRatio)
-  const freeCollateral = backingCollateral.gt(collateral)
-    ? zero
-    : collateral.minus(backingCollateral)
-
-  const backingCollateralPrice = backingCollateral.div(tokenOraclePrice)
-  const freeCollateralPrice = freeCollateral.div(tokenOraclePrice)
-  const collateralizationRatio = debt.eq(zero) ? undefined : collateralPrice.div(debt)
-
-  const maxAvailableDebt = collateralPrice.div(liquidationRatio)
-  const availableDebt = debt.lt(maxAvailableDebt) ? maxAvailableDebt.minus(debt) : zero
-  const availableIlkDebt = debtCeiling.minus(ilkDebt)
-
-  const liquidationPrice = collateral.eq(zero)
-    ? undefined
-    : debt.times(liquidationRatio).div(collateral)
-
-  return of({
-    id: id.toString(),
-    ilk,
-    token,
-    address,
-    owner,
-    controller,
-    collateral,
-    unlockedCollateral,
-    collateralPrice,
-    backingCollateral,
-    backingCollateralPrice,
-    freeCollateral,
-    freeCollateralPrice,
-    normalizedDebt,
-    collateralizationRatio,
-    debt,
-    availableDebt,
-    availableIlkDebt,
-    debtFloor,
-    stabilityFee,
-    liquidationPrice,
-    liquidationRatio,
-    liquidationPenalty,
-    tokenOraclePrice,
-  })
-}
-
-interface CreateVaultArgs {
-  cdpManagerUrns$: CallObservable<typeof cdpManagerUrns>
-  cdpManagerIlks$: CallObservable<typeof cdpManagerIlks>
-  vatUrns$: CallObservable<typeof vatUrns>
-  vatIlks$: CallObservable<typeof vatIlks>
-  vatGem$: CallObservable<typeof vatGem>
-  cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>
-  spotIlks$: CallObservable<typeof spotIlks>
-  jugIlks$: CallObservable<typeof jugIlks>
-  catIlks$: CallObservable<typeof catIlks>
-  tokenOraclePrice$: (ilk: string) => Observable<BigNumber>
-  controller$: (id: BigNumber) => Observable<string>
-}
 
 export function createVault$(
-  {
-    cdpManagerUrns$,
-    cdpManagerIlks$,
-    vatUrns$,
-    vatIlks$,
-    vatGem$,
-    cdpManagerOwner$,
-    spotIlks$,
-    jugIlks$,
-    catIlks$,
-    tokenOraclePrice$,
-    controller$,
-  }: CreateVaultArgs,
+  cdpManagerUrns$: CallObservable<typeof cdpManagerUrns>,
+  cdpManagerIlks$: CallObservable<typeof cdpManagerIlks>,
+  cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>,
+  vatUrns$: CallObservable<typeof vatUrns>,
+  vatGem$: CallObservable<typeof vatGem>,
+  ilk$: (ilk: string) => Observable<Ilk>,
+  tokenOraclePrice$: (ilk: string) => Observable<BigNumber>,
+  controller$: (id: BigNumber) => Observable<string>,
   id: BigNumber,
 ): Observable<Vault> {
   return combineLatest(
@@ -439,30 +329,74 @@ export function createVault$(
     switchMap(([urnAddress, ilk, owner, controller]) => {
       const token = 'ABC' // TODO
       return combineLatest(
-        vatIlks$(ilk),
-        spotIlks$(ilk),
-        jugIlks$(ilk),
-        catIlks$(ilk),
         vatUrns$({ ilk, urnAddress }),
         vatGem$({ ilk, urnAddress }),
         tokenOraclePrice$(ilk),
+        ilk$(ilk),
       ).pipe(
-        switchMap(([vatIlk, spotIlk, jugIlk, catIlk, urn, unlockedCollateral, tokenOraclePrice]) =>
-          aggregateVaultData({
-            id: id.toString(),
-            urnAddress,
-            ilk,
-            token,
-            owner,
-            controller,
-            vatIlk,
-            spotIlk,
-            jugIlk,
-            catIlk,
-            urn,
+        switchMap(
+          ([
+            { collateral, normalizedDebt },
             unlockedCollateral,
             tokenOraclePrice,
-          }),
+            {
+              normalizedIlkDebt,
+              debtFloor,
+              debtScalingFactor,
+              debtCeiling,
+              liquidationRatio,
+              stabilityFee,
+              liquidationPenalty,
+            },
+          ]) => {
+            const collateralPrice = collateral.times(tokenOraclePrice)
+            const debt = debtScalingFactor.times(normalizedDebt)
+            const ilkDebt = debtScalingFactor.times(normalizedIlkDebt)
+
+            const backingCollateral = debt.times(liquidationRatio)
+            const freeCollateral = backingCollateral.gt(collateral)
+              ? zero
+              : collateral.minus(backingCollateral)
+
+            const backingCollateralPrice = backingCollateral.div(tokenOraclePrice)
+            const freeCollateralPrice = freeCollateral.div(tokenOraclePrice)
+            const collateralizationRatio = debt.eq(zero) ? undefined : collateralPrice.div(debt)
+
+            const maxAvailableDebt = collateralPrice.div(liquidationRatio)
+            const availableDebt = debt.lt(maxAvailableDebt) ? maxAvailableDebt.minus(debt) : zero
+            const availableIlkDebt = debtCeiling.minus(ilkDebt)
+
+            const liquidationPrice = collateral.eq(zero)
+              ? undefined
+              : debt.times(liquidationRatio).div(collateral)
+
+            return of({
+              id: id.toString(),
+              ilk,
+              token,
+              address: urnAddress,
+              owner,
+              controller,
+              collateral,
+              unlockedCollateral,
+              collateralPrice,
+              backingCollateral,
+              backingCollateralPrice,
+              freeCollateral,
+              freeCollateralPrice,
+              normalizedDebt,
+              collateralizationRatio,
+              debt,
+              availableDebt,
+              availableIlkDebt,
+              debtFloor,
+              stabilityFee,
+              liquidationPrice,
+              liquidationRatio,
+              liquidationPenalty,
+              tokenOraclePrice,
+            })
+          },
         ),
       )
     }),

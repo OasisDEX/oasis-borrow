@@ -18,7 +18,7 @@ export const catIlks: CallDef<string, CatIlk> = {
   prepareArgs: (collateralTypeName) => [Web3.utils.utf8ToHex(collateralTypeName)],
   postprocess: ({ flip, chop, dunk }: any) => ({
     liquidatorAddress: flip,
-    liquidationPenalty: amountFromWei(new BigNumber(chop)).minus(WAD),
+    liquidationPenalty: amountFromWei(new BigNumber(chop).minus(WAD)),
     maxAuctionLotSize: amountFromRad(new BigNumber(dunk)),
   }),
 }
