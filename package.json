@@ -43,7 +43,7 @@
     "@types/mixpanel-browser": "^2.23.1",
     "@types/morgan": "^1.9.0",
     "@types/pg": "^7.14.3",
-    "@types/ramda": "^0.25.38",
+    "@types/ramda": "^0.27.1",
     "@types/react-responsive": "^3.0.2",
     "@types/react-tooltip": "^3.9.2",
     "@types/theme-ui": "^0.3.1",

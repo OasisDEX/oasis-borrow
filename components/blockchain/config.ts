@@ -10,6 +10,7 @@ import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
 import * as erc20 from './abi/erc20.json'
 import * as getCdps from './abi/get-cdps.json'
 import * as otc from './abi/matching-market.json'
+import * as mcdCat from './abi/mcd-cat.json'
 import * as mcdEnd from './abi/mcd-end.json'
 import * as mcdJoinDai from './abi/mcd-join-dai.json'
 import * as mcdJug from './abi/mcd-jug.json'
@@ -139,8 +140,7 @@ const infuraProjectId = '58073b4a32df4105906c702f167b91d2'
 function getOsms(addresses: Dictionary<string>) {
   return Object.entries(addresses)
     .filter(([key]) => key.match('PIP_.*'))
-    .map(([key, address]) =>
-      ({ [key.replace('PIP_', '')]: contractDesc(mcdOsm, address) }))
+    .map(([key, address]) => ({ [key.replace('PIP_', '')]: contractDesc(mcdOsm, address) }))
     .reduce((acc, v) => ({ ...acc, ...v }), {})
 }
 
@@ -166,7 +166,7 @@ const protoMain = {
   mcdPot: contractDesc(mcdPot, mainnetAddresses.MCD_POT),
   mcdEnd: contractDesc(mcdEnd, mainnetAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, mainnetAddresses.MCD_SPOT),
-  mcdCat: contractDesc(mcdSpot, mainnetAddresses.MCD_CAT),
+  mcdCat: contractDesc(mcdCat, mainnetAddresses.MCD_CAT),
   dssCdpManager: contractDesc(dssCdpManager, '0x36a724Bd100c39f0Ea4D3A20F7097eE01A8Ff573'),
   otcSupportMethods: contractDesc(otcSupport, '0x9b3f075b12513afe56ca2ed838613b7395f57839'),
   vat: contractDesc(vat, '0x35D1b3F3D7966A1DFe207aa4514C12a259A0492B'),
@@ -214,7 +214,7 @@ const kovan: NetworkConfig = {
   mcdJug: contractDesc(mcdJug, kovanAddresses.MCD_JUG),
   mcdEnd: contractDesc(mcdEnd, kovanAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, kovanAddresses.MCD_SPOT),
-  mcdCat: contractDesc(mcdSpot, kovanAddresses.MCD_CAT),
+  mcdCat: contractDesc(mcdCat, kovanAddresses.MCD_CAT),
   dssCdpManager: contractDesc(dssCdpManager, '0x1476483dD8C35F25e568113C5f70249D3976ba21'),
   otcSupportMethods: contractDesc(otcSupport, '0x303f2bf24d98325479932881657f45567b3e47a8'),
   vat: contractDesc(vat, '0xbA987bDB501d131f766fEe8180Da5d81b34b69d9'),
