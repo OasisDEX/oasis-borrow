@@ -29,7 +29,7 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
         <Box as="thead">
           <Box as="tr">
             {
-              headerCells.map(header => <Box as="th">{header}</Box>)
+              headerCells.map(header => <Box key={header} as="th">{header}</Box>)
             }
           </Box>
         </Box>

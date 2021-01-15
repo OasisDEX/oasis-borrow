@@ -17,4 +17,4 @@ export function createVaultSummary(vaults$: (address: string) => Observable<Vaul
             totalDaiDebt: getTotalDaiDebt(vaults)
         }))
     )
-}
+} 
