@@ -7,6 +7,13 @@ import { useObservable } from 'helpers/observableHook'
 import { useRouter } from 'next/router'
 import { Box,Button, Grid, Heading, Text } from 'theme-ui'
 
+function Balances({ owner }: { owner: string }) {
+  const { balances$ } = useAppContext()
+  const balances = useObservable(balances$(owner))
+  console.log('balances', owner, balances)
+  return <Text as="pre">{JSON.stringify(balances, null, 2)}</Text>
+}
+
 export default function Vault() {
   const { web3Context$, vault$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
