@@ -13,6 +13,7 @@ export interface SpotIlk {
 export const spotIlks: CallDef<string, SpotIlk> = {
   call: (_, { contract, mcdSpot }) => contract<McdSpot>(mcdSpot).methods.ilks,
   prepareArgs: (ilk) => [Web3.utils.utf8ToHex(ilk)],
+//  postprocess: ({ 0: pip, 1: mat }: any) => ({
   postprocess: ({ pip, mat }: any) => ({
     priceFeedAddress: pip,
     liquidationRatio: amountFromRay(new BigNumber(mat)),
