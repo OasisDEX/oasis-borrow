@@ -18,7 +18,8 @@ import { createProxyAddress$, createProxyOwner$ } from 'components/blockchain/ca
 import { vatGem, vatIlks, vatUrns } from 'components/blockchain/calls/vat'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
-import { createCollateralPrice$, createController$, createVault$ } from 'features/vaults/vault'
+import { createIlks$ } from 'features/ilks/ilks'
+import { createController$, createTokenOraclePrice$, createVault$ } from 'features/vaults/vault'
 import { createVaults$ } from 'features/vaults/vaults'
 import { createVaultSummary } from 'features/vaults/vaultsSummary'
 import { mapValues } from 'lodash'
@@ -28,6 +29,7 @@ import { filter, map, shareReplay } from 'rxjs/operators'
 
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from './account/transactionManager'
+import { catIlks } from './blockchain/calls/cat'
 import { jugIlks } from './blockchain/calls/jug'
 import { observe } from './blockchain/calls/observe'
 import { spotIlks, spotPar } from './blockchain/calls/spot'
@@ -133,23 +135,23 @@ export function setupAppContext() {
   const spotPar$ = observe(onEveryBlock$, connectedContext$, spotPar)
   const spotIlks$ = observe(onEveryBlock$, connectedContext$, spotIlks)
   const jugIlks$ = observe(onEveryBlock$, connectedContext$, jugIlks)
+  const catIlks$ = observe(onEveryBlock$, connectedContext$, catIlks)
 
   // computed
-  const collateralPrice$ = curry(createCollateralPrice$)(vatIlks$, spotPar$, spotIlks$)
+  const tokenOraclePrice$ = curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$)
+  const ilk$ = curry(createIlks$)(vatIlks$, spotIlks$, jugIlks$, catIlks$)
   const controller$ = curry(createController$)(proxyOwner$, cdpManagerOwner$)
 
-  const vault$ = curry(createVault$)({
+  const vault$ = curry(createVault$)(
     cdpManagerUrns$,
     cdpManagerIlks$,
-    vatUrns$,
-    vatIlks$,
-    vatGem$,
     cdpManagerOwner$,
-    spotIlks$,
-    jugIlks$,
-    collateralPrice$,
+    vatUrns$,
+    vatGem$,
+    ilk$,
+    tokenOraclePrice$,
     controller$,
-  })
+  )
 
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
 
