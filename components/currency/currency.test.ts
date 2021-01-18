@@ -1,25 +1,3 @@
-/*
- *
- * Smart contract drip
- *
- * function drip(bytes32 ilk) external note returns (uint rate) {
-        require(now >= ilks[ilk].rho, "Jug/invalid-now");
-        (, uint prev) = vat.ilks(ilk);
-        rate = rmul(rpow(add(base, ilks[ilk].duty), now - ilks[ilk].rho, ONE), prev);
-        vat.fold(ilk, vow, diff(rate, prev));
-        ilks[ilk].rho = now;
-    }
-
-    rate = rmul(rpow(add(base, ilks[ilk].duty), now - ilks[ilk].rho, ONE), prev);
-
-    base - "0"
-    duty - "1000000000782997609082909351"
-    ONE - 10 ** 27
-    prev - "1026317734294511797161403874
-    rate - "1026317878139697269316455705"
-
- */
-
 import { expect } from 'chai'
 import { Discrete } from 'money-ts/lib/Discrete'
 import { Dense } from 'money-ts/lib/Dense'
@@ -28,7 +6,7 @@ import { wrap as wrapAsInteger } from 'money-ts/lib/Integer'
 
 import { wrap as wrapAsNatural, one as N_ONE } from 'money-ts/lib/Natural'
 import { wrap as wrapAsNonZeroInteger, one as NZ_ONE } from 'money-ts/lib/NonZeroInteger'
-import { NonZeroRational, one as NZR_ONE } from 'money-ts/lib/NonZeroRational'
+import { NonZeroRational } from 'money-ts/lib/NonZeroRational'
 
 import bigInt from 'big-integer'
 import { Rational, show } from 'money-ts/lib/Rational'
