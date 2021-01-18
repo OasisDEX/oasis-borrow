@@ -43,7 +43,7 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
               <Box as="td">{`${formatCryptoBalance(vault.collateral)} ${vault.token}`}</Box>
               <Box as="td">{`${formatCryptoBalance(vault.freeCollateral)} ${vault.token}`}</Box>
               <Box as="td">{formatCryptoBalance(vault.debt)}</Box>
-              <Box as="td"><Link href={`/${vault.id}`}>Menage Vault</Link></Box>
+              <Box as="td"><Link href={`/${vault.id}`}>Manage Vault</Link></Box>
             </Box>
             ))
           }
