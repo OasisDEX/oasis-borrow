@@ -5,9 +5,9 @@ import { Box, Button, Grid, Heading, Text } from 'theme-ui'
 export function VaultView({ vault, account }: { vault: Vault; account: string }) {
     const token = vault.token;
     const vaultId = vault.id;
-    const liquidationPrice = formatFiatBalance(vault.liquidationPrice)
+    const liquidationPrice = vault.liquidationPrice ? formatFiatBalance(vault.liquidationPrice) : 0
     const liquidationPenalty = formatPercent(vault.liquidationPenalty?.times(100))
-    const collateralizationRatio = vault.collateralizationRatio.toString()
+    const collateralizationRatio = vault.collateralizationRatio ? vault.collateralizationRatio.toString() : '0'
     const stabilityFee = formatPrecision(vault.stabilityFee, 2)
     const lockedAmount = formatCryptoBalance(vault.collateral)
     const lockedAmountUSD = formatFiatBalance(vault.collateralPrice)

@@ -325,3 +325,25 @@ export function doGasEstimation<S extends HasGasEstimation>(
     } as S),
   )
 }
+
+
+type Where<S, C> = { [key in keyof S]: S[key] extends C ? key : never }[keyof S]
+type OmitFunctions<S> = Omit<S, Where<Required<S>, (...arg: unknown[]) => unknown>>
+type KeysToUnion<S extends {}> = S[keyof S]
+
+export type Change<S, K extends keyof S> = {
+  kind: K
+} & {
+  [value in K]: S[K]
+}
+
+export type Changes<S> = KeysToUnion<{ [K in keyof OmitFunctions<S>]-?: Change<S, K> }>
+
+export type ApplyChange<S extends {}, C extends Change<any, any> = Changes<S>> = (
+  state: S,
+  changes: C,
+) => S
+
+export function applyChange<S extends {}, C extends Change<any, any>>(state: S, change: C): S {
+  return { ...state, [change.kind]: change[change.kind] }
+}
