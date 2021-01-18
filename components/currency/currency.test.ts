@@ -1,6 +1,3 @@
-import { expect } from 'chai'
-import { Currency, WAD, RAY, RAD, $add, $print } from './currency'
-import BigNumber from 'bignumber.js'
 /*
  *
  * Smart contract drip
@@ -23,23 +20,78 @@ import BigNumber from 'bignumber.js'
 
  */
 
-describe.only('currency', () => {
-  // const ONE_WAD_TKN = WAD('TKN')(1n) // 18
-  // const ONE_RAY_TKN = RAY('TKN')(1n) // 27
-  // const ONE_RAD_TKN = RAD('TKN')(1n) // 45
+import { expect } from 'chai'
+import { Discrete } from 'money-ts/lib/Discrete'
+import { Dense } from 'money-ts/lib/Dense'
 
-  // describe('$add', () => {
+import { wrap as wrapAsInteger } from 'money-ts/lib/Integer'
 
-  //   it('adds', () => {
-  //     const amount = $add({ a: ONE_WAD_TKN, b: ONE_RAD_TKN })
-  //     expect($print(amount as Currency)).to.equal(
-  //       '0.000000000000000001000000000000000000000000001 TKN',
-  //     )
-  //   })
-  // })
+import { wrap as wrapAsNatural, one as N_ONE } from 'money-ts/lib/Natural'
+import { wrap as wrapAsNonZeroInteger, one as NZ_ONE } from 'money-ts/lib/NonZeroInteger'
+import { NonZeroRational, one as NZR_ONE } from 'money-ts/lib/NonZeroRational'
 
-  const rawDuty = '1000000000782997609082909351'
-  const ONE = '1000000000000000000000000000'
-  const base = '0'
-  const now = (Date.now() / 1000).toString()
+import bigInt from 'big-integer'
+import { Rational, show } from 'money-ts/lib/Rational'
+
+describe.only('money-ts', () => {
+  describe('Discrete', () => {
+    it('add', () => {
+      const intX = wrapAsInteger(bigInt(101))
+      const intY = wrapAsInteger(bigInt(2))
+
+      const x = new Discrete({ dimension: 'USD', unit: 2 }, intX)
+      const y = new Discrete({ dimension: 'USD', unit: 2 }, intY)
+
+      const z = x.add(y)
+      expect(z.toString()).equals('USD 2 103') // 1.03 USD
+    })
+
+    it('precision behaviour', () => {
+      const intA = wrapAsInteger(bigInt(4))
+      const intB = wrapAsNonZeroInteger(bigInt(3)).getOrElse(NZ_ONE)
+
+      const disA = new Discrete({ dimension: 'USD', unit: 2 }, intA)
+
+      const disB = disA.div(intB)
+      expect(disB.toString()).equals('USD 2 1') // 0.01 USD
+      const disC = disB.mul(intB)
+      expect(disC.toString()).equals('USD 2 3') // 0.03 USD - lost 0.01 in division
+    })
+  })
+
+  describe('Dense', () => {
+    it('add', () => {
+      const intX = wrapAsInteger(bigInt(101))
+      const natX = wrapAsNatural(bigInt(100)).getOrElse(N_ONE)
+      const ratX = [intX, natX] as Rational
+
+      const intY = wrapAsInteger(bigInt(2))
+      const natY = wrapAsNatural(bigInt(100)).getOrElse(N_ONE)
+      const ratY = [intY, natY] as Rational
+
+      const x = new Dense('USD', ratX)
+      const y = new Dense('USD', ratY)
+
+      const z = x.add(y)
+
+      expect(z.toString()).equals('USD 103 / 100')
+    })
+
+    it('precision behaviour', () => {
+      const intA = wrapAsInteger(bigInt(4))
+      const natA = wrapAsNatural(bigInt(100)).getOrElse(N_ONE)
+      const ratA = [intA, natA] as Rational
+
+      const intB = wrapAsNonZeroInteger(bigInt(3)).getOrElse(NZ_ONE)
+      const natB = wrapAsNatural(bigInt(100)).getOrElse(N_ONE)
+      const ratB = [intB, natB] as NonZeroRational
+
+      const denA = new Dense('USD', ratA) // 0.04 USD
+
+      const denB = denA.div(ratB)
+      expect(denB.toString()).equals('USD 4 / 3') // 0.013333333333 ... USD
+      const denC = denB.mul(ratB)
+      expect(denC.toString()).equals('USD 1 / 25') // 0.04 USD
+    })
+  })
 })

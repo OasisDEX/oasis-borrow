@@ -7345,6 +7345,11 @@ big-integer@1.6.36:
   resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.36.tgz#78631076265d4ae3555c04f85e7d9d2f3a071a36"
   integrity sha512-t70bfa7HYEA1D9idDbmuv7YbsbVkQ+Hp+8KFSul4aE5e/i1bjCNIRYJZlA8Q8p0r9T8cF/RVvwUgRA//FydEyg==
 
+big-integer@^1.6.26, big-integer@^1.6.48:
+  version "1.6.48"
+  resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.48.tgz#8fd88bd1632cba4a1c8c3e3d7159f08bb95b4b9e"
+  integrity sha512-j51egjPa7/i+RdiRuJbPdJ2FIUYYPhvYLjzoYbcMMm62ooO6F94fETG4MTs46zPAF9Brs04OajboA/qTGuz78w==
+
 big.js@^3.1.3:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-3.2.0.tgz#a5fc298b81b9e0dca2e458824784b65c52ba588e"
@@ -12169,6 +12174,16 @@ forwarded@~0.1.2:
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.2.tgz#98c23dab1175657b8c0573e8ceccd91b0ff18c84"
   integrity sha1-mMI9qxF1ZXuMBXPozszZGw/xjIQ=
 
+fp-ts@^1.0.0, fp-ts@^1.0.1:
+  version "1.19.5"
+  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-1.19.5.tgz#3da865e585dfa1fdfd51785417357ac50afc520a"
+  integrity sha512-wDNqTimnzs8QqpldiId9OavWK2NptormjXnRJTQecNjzwfyp6P/8s/zG8e4h3ja3oqkKaY72UlTjQYt/1yXf9A==
+
+fp-ts@^2.9.3:
+  version "2.9.3"
+  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-2.9.3.tgz#419b9103018ddf7c785acf2b3fecb2662afab5af"
+  integrity sha512-NjzcHYgigcbPQ6yJ52zwgsVDwKz3vwy9sjbxyzcvfXQm+j1BGeOPRuzLKEwsLyE4Xut6gG1FXJtsU9/gUB7tXg==
+
 fraction.js@4.0.9:
   version "4.0.9"
   resolved "https://registry.yarnpkg.com/fraction.js/-/fraction.js-4.0.9.tgz#ef7aa1ad47ef600021ad7fa7991dfd56c3b5f7c8"
@@ -13659,6 +13674,28 @@ invert-kv@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/invert-kv/-/invert-kv-1.0.0.tgz#104a8e4aaca6d3d8cd157a8ef8bfab2d7a3ffdb6"
   integrity sha1-EEqOSqym09jNFXqO+L+rLXo//bY=
+
+io-ts-types@^0.3.1:
+  version "0.3.14"
+  resolved "https://registry.yarnpkg.com/io-ts-types/-/io-ts-types-0.3.14.tgz#2c697df5dd649947810b6c12549931b497b3c919"
+  integrity sha512-hEUo+VpS0EXLji14CON7f/ThuLMExaA5kWfW6LIM9gC+X/INTxwLt3GYKkKQc6Fx0snM9xt/QDXd5BPjeXE1RQ==
+  dependencies:
+    fp-ts "^1.0.0"
+    io-ts "^1.1.4"
+    monocle-ts "^1.0.0"
+    newtype-ts "^0.2.1"
+
+io-ts@^1.1.4, io-ts@^1.1.5:
+  version "1.10.4"
+  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-1.10.4.tgz#cd5401b138de88e4f920adbcb7026e2d1967e6e2"
+  integrity sha512-b23PteSnYXSONJ6JQXRAlvJhuw8KOtkqa87W4wDtvMrud/DTJd5X+NpOOI+O/zZwVq6v0VLAaJ+1EDViKEuN9g==
+  dependencies:
+    fp-ts "^1.0.0"
+
+io-ts@^2.2.13:
+  version "2.2.13"
+  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.2.13.tgz#e04016685e863dd5cffb2b5262c5c9c74432dfda"
+  integrity sha512-BYJgE/BanovJKDvCnAkrr7f3gTucSyk+Sr5VtpouBO1/YfBKUyIn2z1ODG8LEF+1D4sjKZ3Bd/A5/v8JrJe5UQ==
 
 ip@^1.1.5:
   version "1.1.5"
@@ -15920,6 +15957,28 @@ moment@^2.26.0:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.26.0.tgz#5e1f82c6bafca6e83e808b30c8705eed0dcbd39a"
   integrity sha512-oIixUO+OamkUkwjhAVE18rAMfRJNsNe/Stid/gwHSOfHrOtw9EhAY2AHvdKZ/k/MggcYELFCJz/Sn2pL8b8JMw==
 
+money-ts@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/money-ts/-/money-ts-0.1.2.tgz#0a7df7af0f1e6b0ab98bb706720c4b272137cf5d"
+  integrity sha512-wTmlE/E0qVNZGnFQaNEIcKw1Pdn8Owu+BIANbSjYTxrk8qDjwJD73RwvknBchB/VHuX1le0Azp0Q07re7paJgA==
+  dependencies:
+    big-integer "^1.6.26"
+    fp-ts "^1.0.1"
+    io-ts "^1.1.5"
+    io-ts-types "^0.3.1"
+    monocle-ts "^1.0.0"
+    newtype-ts "^0.2.0"
+
+monocle-ts@^1.0.0:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/monocle-ts/-/monocle-ts-1.7.2.tgz#d9825ae18846ab63f915cb6f2194a78a40025610"
+  integrity sha512-F08hPUzQ14vOtac2vOagnvXPr0R0MRKWXF6Bwd3gQ4XnV2qfU0MzPL+L18kX4dXBkat74pxbL88V1BjAj3YOWg==
+
+monocle-ts@^2.3.4:
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/monocle-ts/-/monocle-ts-2.3.4.tgz#19136b1c9ed6d01b7f0f4cbdc5e06e24658bff0a"
+  integrity sha512-94QvNtNRyh5CwLzZpJADCsSuv9mfuXucjz2Xs7nB3Jhij/rYKNMW2ugKvg7OxWIdnPQTYApEivdoR0rGhMCirA==
+
 morgan@^1.10.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/morgan/-/morgan-1.10.0.tgz#091778abc1fc47cd3509824653dae1faab6b17d7"
@@ -16094,6 +16153,14 @@ neo-async@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
+
+newtype-ts@^0.2.0, newtype-ts@^0.2.1:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/newtype-ts/-/newtype-ts-0.2.4.tgz#a02a8f160a3d179f871848d687a93de73a964a41"
+  integrity sha512-HrzPdG0+0FK1qHbc3ld/HXu252OYgmN993bFxUtZ6NFCLUk1eq+yKwdvP07BblXQibGqMWNXBUrNoLUq23Ma2Q==
+  dependencies:
+    fp-ts "^1.0.0"
+    monocle-ts "^1.0.0"
 
 next-i18next@^4.4.2:
   version "4.4.2"
