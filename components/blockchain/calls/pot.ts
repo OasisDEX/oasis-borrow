@@ -11,13 +11,13 @@ import { CallDef } from './callsHelpers'
 export const potPie: CallDef<void, BigNumber> = {
   call: (_, { contract, mcdPot }) => contract<McdPot>(mcdPot).methods.Pie,
   prepareArgs: () => [],
-  postprocess: (result) => amountFromWei(result)
+  postprocess: (result) => amountFromWei(result),
 }
 
 export const potpie: CallDef<string, BigNumber> = {
   call: (_, { contract, mcdPot }) => contract<McdPot>(mcdPot).methods.pie,
   prepareArgs: (address) => [address],
-  postprocess: (result) => amountFromWei(result)
+  postprocess: (result) => amountFromWei(result),
 }
 
 export const potDsr: CallDef<void, BigNumber> = {
@@ -39,7 +39,5 @@ export const potRho: CallDef<void, Date> = {
 }
 
 export function annualDaiSavingsRate$(potDsr$: Observable<BigNumber>) {
-  return potDsr$.pipe(
-    map(dsr => dsr.pow(SECONDS_PER_YEAR).minus(1).times(100))
-  )
+  return potDsr$.pipe(map((dsr) => dsr.pow(SECONDS_PER_YEAR).minus(1).times(100)))
 }

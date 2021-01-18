@@ -10,7 +10,7 @@ export function amountFromRay(amount: BigNumber): BigNumber {
 }
 
 export function amountFromRad(amount: BigNumber): BigNumber {
-  return amount.div(RAD);
+  return amount.div(RAD)
 }
 
 export function funcSigTopic(v: string): string {

@@ -4,6 +4,14 @@ import { AppLayout } from 'components/Layouts'
 import { VaultView } from 'components/VaultView'
 import { useObservable } from 'helpers/observableHook'
 import { useRouter } from 'next/router'
+import { Container, Text } from 'theme-ui';
+
+function Balances({ owner }: { owner: string }) {
+  const { balances$ } = useAppContext()
+  const balances = useObservable(balances$(owner))
+  console.log('balances', owner, balances)
+  return <Text as="pre">{JSON.stringify(balances, null, 2)}</Text>
+}
 
 export default function Vault() {
   const { web3Context$, vault$ } = useAppContext()
@@ -22,7 +30,11 @@ export default function Vault() {
     return <div>No vault data</div>
   }
   
-  return <VaultView vault={vault} account={account} />
+  return (<Container>
+
+      {vault?.owner && <Balances owner={vault.owner} />}  
+      <VaultView vault={vault} account={account} />
+    </Container>)
 }
 
 Vault.layout = AppLayout
