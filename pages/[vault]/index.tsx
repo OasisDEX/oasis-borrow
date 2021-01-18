@@ -2,10 +2,8 @@ import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLayout } from 'components/Layouts'
 import { VaultView } from 'components/VaultView'
-import { formatCryptoBalance, formatFiatBalance, formatPercent, formatPrecision } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useRouter } from 'next/router'
-import { Box,Button, Grid, Heading, Text } from 'theme-ui'
 
 export default function Vault() {
   const { web3Context$, vault$ } = useAppContext()
