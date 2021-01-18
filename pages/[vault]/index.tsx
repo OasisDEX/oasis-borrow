@@ -4,13 +4,19 @@ import { AppLayout } from 'components/Layouts'
 import { VaultView } from 'components/VaultView'
 import { useObservable } from 'helpers/observableHook'
 import { useRouter } from 'next/router'
-import { Container, Text } from 'theme-ui';
+import { Container, Box, Text } from 'theme-ui';
 
 function Balances({ owner }: { owner: string }) {
   const { balances$ } = useAppContext()
   const balances = useObservable(balances$(owner))
   console.log('balances', owner, balances)
   return <Text as="pre">{JSON.stringify(balances, null, 2)}</Text>
+
+  return (
+    <Container>
+      <Box>ETH: {balances?.ETH?.toString()}</Box>
+      <Box>DAI: {balances?.DAI?.toString()}</Box>
+    </Container>)
 }
 
 export default function Vault() {

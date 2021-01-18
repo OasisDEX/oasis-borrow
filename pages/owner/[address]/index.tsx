@@ -39,7 +39,7 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
             <Box as="tr" key={vault.id}>
               <Box as="td">{vault.token}</Box>
               <Box as="td">{vault.id}</Box>
-              <Box as="td">{vault.collateralizationRatio.toString()}</Box>
+              <Box as="td">{vault.collateralizationRatio ? vault.collateralizationRatio.toString() : 0}</Box>
               <Box as="td">{`${formatCryptoBalance(vault.collateral)} ${vault.token}`}</Box>
               <Box as="td">{`${formatCryptoBalance(vault.freeCollateral)} ${vault.token}`}</Box>
               <Box as="td">{formatCryptoBalance(vault.debt)}</Box>
