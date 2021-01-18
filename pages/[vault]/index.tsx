@@ -23,6 +23,10 @@ export default function Vault() {
 
   console.log('theVault', theVault)
 
+  if(!theVault) {
+    return null
+  }
+
   return (
     <Grid>
       <Text>Connected Address :: {web3Context?.account}</Text>

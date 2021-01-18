@@ -2,8 +2,8 @@ import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { Vat } from 'types/web3-v1-contracts/vat'
 import Web3 from 'web3'
-import { amountFromRad, amountFromRay } from '../utils'
 
+import { amountFromRad, amountFromRay } from '../utils'
 import { CallDef } from './callsHelpers'
 
 export interface VatUrnsArgs {
@@ -27,21 +27,21 @@ export const vatUrns: CallDef<VatUrnsArgs, Urn> = {
   }),
 }
 
-export interface Ilk {
-  globalDebt: BigNumber // Art [wad]
+export interface VatIlk {
+  normalizedIlkDebt: BigNumber // Art [wad]
   debtScalingFactor: BigNumber // rate [ray]
   maxDebtPerUnitCollateral: BigNumber // spot [ray]
   debtCeiling: BigNumber // line [rad]
   debtFloor: BigNumber // debtFloor [rad]
 }
 
-export const vatIlks: CallDef<string, Ilk> = {
+export const vatIlks: CallDef<string, VatIlk> = {
   call: (_, { contract, vat }) => {
     return contract<Vat>(vat).methods.ilks
   },
   prepareArgs: (ilk) => [Web3.utils.utf8ToHex(ilk)],
   postprocess: (ilk: any) => ({
-    globalDebt: amountFromWei(new BigNumber(ilk.Art)),
+    normalizedIlkDebt: amountFromWei(new BigNumber(ilk.Art)),
     debtScalingFactor: amountFromRay(new BigNumber(ilk.rate)),
     maxDebtPerUnitCollateral: amountFromRay(new BigNumber(ilk.spot)),
     debtCeiling: amountFromRad(new BigNumber(ilk.line)),
