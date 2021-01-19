@@ -60,8 +60,8 @@ function Summary({ address }: { address: string }) {
   const vaults = useObservable(vaults$(address))
   const vaultSummary = useObservable(vaultSummary$(address))
 
-  const totalCollateral = vaultSummary?.totalCollateralPrice 
-    ? formatFiatBalance(vaultSummary?.totalCollateralPrice) 
+  const totalCollateral = vaultSummary?.totalCollateralPrice
+    ? formatFiatBalance(vaultSummary?.totalCollateralPrice)
     : '0'
 
   const totalDaiDebt = vaultSummary?.totalDaiDebt !== undefined

@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { Ilk } from 'features/ilks/ilks'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
-import { map, mergeMap, shareReplay, switchMap, take } from 'rxjs/operators'
+import { map, mergeMap, shareReplay, switchMap, take, tap } from 'rxjs/operators'
 
 import {
   cdpManagerIlks,
