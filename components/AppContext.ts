@@ -18,6 +18,7 @@ import { createProxyAddress$, createProxyOwner$ } from 'components/blockchain/ca
 import { vatGem, vatIlks, vatUrns } from 'components/blockchain/calls/vat'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
+import { createDepositForm } from 'features/deposit'
 import { createIlks$, Ilk } from 'features/ilks/ilks'
 import { createController$, createTokenOraclePrice$, createVault$ } from 'features/vaults/vault'
 import { createVaults$ } from 'features/vaults/vaults'
@@ -35,7 +36,7 @@ import { createTransactionManager } from './account/transactionManager'
 import { catIlks } from './blockchain/calls/cat'
 import { tokenBalance } from './blockchain/calls/erc20'
 import { jugIlks } from './blockchain/calls/jug'
-import { CallObservable, observe } from './blockchain/calls/observe'
+import { observe } from './blockchain/calls/observe'
 import { spotIlks, spotPar } from './blockchain/calls/spot'
 import { networksById } from './blockchain/config'
 import {
@@ -177,6 +178,8 @@ export function setupAppContext() {
 
   const vaultSummary$ = curry(createVaultSummary)(vaults$)
 
+  const depositForm$ = createDepositForm(connectedContext$, balance$)
+
   return {
     web3Context$,
     setupWeb3Context$,
@@ -192,6 +195,7 @@ export function setupAppContext() {
     vault$,
     vaultSummary$,
     balances$,
+    depositForm$,
   }
 }
 

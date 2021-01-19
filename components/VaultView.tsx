@@ -2,7 +2,12 @@ import { Vault } from "features/vaults/vault";
 import { formatCryptoBalance, formatFiatBalance, formatPercent, formatPrecision } from "helpers/formatters/format";
 import { Box, Button, Grid, Heading, Text } from 'theme-ui'
 
-export function VaultView({ vault, account }: { vault: Vault; account: string }) {
+interface Props {
+    vault: Vault; 
+    account: string
+    deposit(): void;
+}
+export function VaultView({ vault, account, deposit }: Props) {
     const token = vault.token;
     const vaultId = vault.id;
     const liquidationPrice = vault.liquidationPrice ? formatFiatBalance(vault.liquidationPrice) : 0
@@ -34,7 +39,7 @@ export function VaultView({ vault, account }: { vault: Vault; account: string })
             <Box>
                 <Heading as="h2">{token} locked</Heading>
                 <Text>{token} locked: {lockedAmount}{token}/{lockedAmountUSD}USD</Text>
-                <Button>Deposit</Button>
+                <Button onClick={deposit}>Deposit</Button>
                 <Text>Available to withdraw: {availableToWithdraw}{token}/{availableToWithdrawPrice}USD</Text>
                 <Button>Withdraw</Button>
             </Box>
