@@ -21,6 +21,7 @@ import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount
 import { createIlks$, Ilk } from 'features/ilks/ilks'
 import { createController$, createTokenOraclePrice$, createVault$ } from 'features/vaults/vault'
 import { createVaults$ } from 'features/vaults/vaults'
+import { createVaultSummary } from 'features/vaults/vaultsSummary'
 import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
@@ -174,6 +175,8 @@ export function setupAppContext() {
 
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
 
+  const vaultSummary$ = curry(createVaultSummary)(vaults$)
+
   return {
     web3Context$,
     setupWeb3Context$,
@@ -187,6 +190,7 @@ export function setupAppContext() {
     proxyOwner$,
     vaults$,
     vault$,
+    vaultSummary$,
     balances$,
   }
 }

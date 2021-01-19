@@ -180,7 +180,7 @@ export interface Vault {
   normalizedDebt: BigNumber
 
   /*
-   * "Vault.debtAvailable" is the maximum amount of debt denominated in DAI a
+   * "Vault.availableDebt" is the maximum amount of debt denominated in DAI a
    * vault can generate without being liquidated
    */
   availableDebt: BigNumber

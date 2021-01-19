@@ -1,40 +1,34 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLayout } from 'components/Layouts'
+import { VaultView } from 'components/VaultView'
 import { useObservable } from 'helpers/observableHook'
 import { useRouter } from 'next/router'
-import { Grid, Text } from 'theme-ui'
-
-function Balances({ owner }: { owner: string }) {
-  const { balances$ } = useAppContext()
-  const balances = useObservable(balances$(owner))
-  console.log('balances', owner, balances)
-  return <Text as="pre">{JSON.stringify(balances, null, 2)}</Text>
-}
+import { Container } from 'theme-ui';
+import { Balances } from '../../components/Balances'
 
 export default function Vault() {
   const { web3Context$, vault$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
   const {
-    query: { vault },
+    query: { vault: vaultId },
   } = useRouter()
 
-  const theVault = useObservable(vault$(new BigNumber(vault as any)))
+  const vault = useObservable(vault$(new BigNumber(vaultId as string)))
 
-  console.log('theVault', theVault)
+  const account = web3Context?.status === 'connected' 
+    ? web3Context.account
+    : 'Not connected'
 
-  if(!theVault) {
-    return null
+  if (vault === undefined) {
+    return <div>No vault data</div>
   }
-
+  
   return (
-    <Grid>
-      <Text>Connected Address :: {web3Context?.account}</Text>
-      <Text>VaultId :: {vault}</Text>
-      <Text as="pre">{JSON.stringify(theVault, null, 2)}</Text>
-      {theVault?.owner && <Balances owner={theVault.owner} />}
-    </Grid>
-  )
+    <Container>
+      {vault?.owner && <Balances owner={vault.owner} />}  
+      <VaultView vault={vault} account={account} />
+    </Container>)
 }
 
 Vault.layout = AppLayout
