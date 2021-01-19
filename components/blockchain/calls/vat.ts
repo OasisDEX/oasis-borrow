@@ -8,7 +8,7 @@ import bigInt from 'big-integer'
 import { amountFromRad, amountFromRay } from '../utils'
 import { CallDef } from './callsHelpers'
 
-interface VatUrnsArgs {
+export interface VatUrnsArgs {
   ilk: string
   urnAddress: string
 }
@@ -53,7 +53,7 @@ export const vatIlks: CallDef<string, VatIlk> = {
   }),
 }
 
-interface VatGemArgs {
+export interface VatGemArgs {
   ilk: string
   urnAddress: string
 }
