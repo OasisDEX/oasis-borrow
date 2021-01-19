@@ -1,10 +1,17 @@
+import bigInt from 'big-integer'
 import { CatIlk, catIlks } from 'components/blockchain/calls/cat'
 import { JugIlk, jugIlks } from 'components/blockchain/calls/jug'
 import { CallObservable } from 'components/blockchain/calls/observe'
 import { SpotIlk, spotIlks } from 'components/blockchain/calls/spot'
 import { VatIlk, vatIlks } from 'components/blockchain/calls/vat'
+import { $create } from 'components/currency/currency'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
+
+const a = bigInt('1')
+const ETH = $create('ETH')(18)
+
+export const IlkList = []
 
 export type Ilk = VatIlk & SpotIlk & JugIlk & CatIlk
 

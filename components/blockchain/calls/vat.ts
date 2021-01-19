@@ -2,6 +2,8 @@ import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { Vat } from 'types/web3-v1-contracts/vat'
 import Web3 from 'web3'
+import { Integer, wrap as wrapℤ, unwrap as unwrapℤ, zero } from 'money-ts/lib/Integer'
+import bigInt from 'big-integer'
 
 import { amountFromRad, amountFromRay } from '../utils'
 import { CallDef } from './callsHelpers'
@@ -11,20 +13,22 @@ interface VatUrnsArgs {
   urnAddress: string
 }
 
-export interface Urn {
+export interface Urn<Ilk> {
   collateral: BigNumber
-  normalizedDebt: BigNumber
+  normalizedDebt: Integer
 }
 
-export const vatUrns: CallDef<VatUrnsArgs, Urn> = {
+export const vatUrns: CallDef<VatUrnsArgs, Urn<Ilk> = {
   call: (_, { contract, vat }) => {
     return contract<Vat>(vat).methods.urns
   },
   prepareArgs: ({ ilk, urnAddress }) => [Web3.utils.utf8ToHex(ilk), urnAddress],
-  postprocess: (urn: any) => ({
-    collateral: amountFromWei(new BigNumber(urn.ink)),
-    normalizedDebt: amountFromWei(new BigNumber(urn.art)),
-  }),
+  postprocess: ({ ink, art }: any) => {
+    return {
+      collateral: amountFromWei(new BigNumber(ink)),
+      normalizedDebt: wrapℤ(bigInt(art)),
+    }
+  },
 }
 
 export interface VatIlk {

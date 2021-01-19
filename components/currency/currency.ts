@@ -1,9 +1,25 @@
-import BigNumber from 'bignumber.js'
 import { Discrete } from 'money-ts/lib/Discrete'
-import { Integer, wrap as integerWrap, zero } from 'money-ts/lib/Integer'
+import { Integer, wrap as wrapℤ, zero } from 'money-ts/lib/Integer'
 import bigInt from 'big-integer'
+import { none, some, Option } from 'fp-ts/Option'
+import { curry } from 'ramda'
 
-type Numeric = BigInteger | string
+type Numeric = bigInt.BigInteger | string
+
+export function _createCurrency<I extends string, U extends number>(
+  iso: I,
+  unit: U,
+  amount: Numeric,
+): Option<Currency<I, U>> {
+  // if possible serialise as an Integer
+  if (bigInt.isInstance(amount)) {
+    const v = new Currency(iso, unit, wrapℤ(amount))
+    return some(v)
+  }
+  return none
+}
+
+export const $create = curry(_createCurrency)
 
 export class Currency<I extends string, U extends number> {
   readonly _iso: I
