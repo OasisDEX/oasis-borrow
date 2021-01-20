@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { Ilk } from 'features/ilks/ilks'
 import { DssCdpManager } from 'types/web3-v1-contracts/dss-cdp-manager'
 import Web3 from 'web3'
 
@@ -11,12 +12,15 @@ export const cdpManagerUrns: CallDef<BigNumber, string> = {
   prepareArgs: (id) => [id],
 }
 
-export const cdpManagerIlks: CallDef<BigNumber, string> = {
+export const cdpManagerIlks: CallDef<BigNumber, Ilk> = {
   call: (_, { contract, dssCdpManager }) => {
     return contract<DssCdpManager>(dssCdpManager).methods.ilks
   },
   prepareArgs: (id) => [id],
-  postprocess: (ilk) => Web3.utils.hexToUtf8(ilk),
+  postprocess: (ilkBytes32: any) => {
+    // TODO Validate as ilk, what if not
+    return Web3.utils.hexToUtf8(ilkBytes32) as Ilk
+  },
 }
 
 export const cdpManagerCdpi: CallDef<void, BigNumber> = {

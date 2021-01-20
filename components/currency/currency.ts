@@ -1,34 +1,44 @@
 import { Discrete } from 'money-ts/lib/Discrete'
 import { Integer, wrap as wrapℤ, zero } from 'money-ts/lib/Integer'
 import bigInt from 'big-integer'
-import { none, some, Option } from 'fp-ts/Option'
-import { curry } from 'ramda'
+import * as E from 'fp-ts/lib/Either'
+import BigNumber from 'bignumber.js'
+import { pipe } from 'fp-ts/function'
 
-type Numeric = bigInt.BigInteger | string
+export type Numeric = bigInt.BigInteger | string | BigNumber
 
-export function _createCurrency<I extends string, U extends number>(
-  iso: I,
-  unit: U,
-  amount: Numeric,
-): Option<Currency<I, U>> {
-  // if possible serialise as an Integer
+export function $parse(amount: Numeric): E.Either<Error, Integer> {
   if (bigInt.isInstance(amount)) {
-    const v = new Currency(iso, unit, wrapℤ(amount))
-    return some(v)
+    return E.right(wrapℤ(amount))
   }
-  return none
+  if (BigNumber.isBigNumber(amount) && (amount as BigNumber).isInteger()) {
+    return E.right(wrapℤ(bigInt(amount.toString())))
+  }
+  if (typeof amount === 'string' && new BigNumber(amount).isInteger()) {
+    return E.right(wrapℤ(bigInt(amount)))
+  }
+  return E.left(new Error('could not parse'))
 }
 
-export const $create = curry(_createCurrency)
+export function $create<I extends string, U extends number>(
+  u: U,
+  i: I,
+  a: Numeric,
+): E.Either<Error, Currency<U, I>> {
+  return pipe(
+    $parse(a),
+    E.map((v) => new Currency(u, i, v)),
+  )
+}
 
-export class Currency<I extends string, U extends number> {
-  readonly _iso: I
+export class Currency<U extends number, I extends string> {
   readonly _unit: U
+  readonly _iso: I
   readonly _value: Discrete<I, U>
 
-  constructor(iso: I, unit: U, amount: Integer) {
-    this._iso = iso
+  constructor(unit: U, iso: I, amount: Integer) {
     this._unit = unit
+    this._iso = iso
     this._value = new Discrete({ dimension: iso, unit }, amount)
   }
 
@@ -50,7 +60,7 @@ export class Currency<I extends string, U extends number> {
   //   throw new Error('could not parse as integer')
   // }
 
-  public add(c: Currency<I, U>): Currency<I, U> {
+  public add(c: Currency<U, I>): Currency<U, I> {
     return this
   }
 

@@ -7,31 +7,46 @@ import bigInt from 'big-integer'
 
 import { amountFromRad, amountFromRay } from '../utils'
 import { CallDef } from './callsHelpers'
+import { Collateral, Ilk, ilkCollaterals } from 'features/ilks/ilks'
+import * as E from 'fp-ts/lib/Either'
+import * as O from 'fp-ts/lib/Option'
 
-export interface VatUrnsArgs {
-  ilk: string
+import { pipe } from 'fp-ts/function'
+import { $create } from 'components/currency/currency'
+
+interface VatUrnsArgs {
+  ilk: Ilk
   urnAddress: string
 }
 
-export interface Urn<Ilk> {
-  collateral: BigNumber
+export interface Urn {
+  collateral: Collateral<Ilk>
   normalizedDebt: Integer
 }
 
-export const vatUrns: CallDef<VatUrnsArgs, Urn<Ilk> = {
+export const vatUrns: CallDef<VatUrnsArgs, O.Option<Urn>> = {
   call: (_, { contract, vat }) => {
     return contract<Vat>(vat).methods.urns
   },
   prepareArgs: ({ ilk, urnAddress }) => [Web3.utils.utf8ToHex(ilk), urnAddress],
-  postprocess: ({ ink, art }: any) => {
-    return {
-      collateral: amountFromWei(new BigNumber(ink)),
-      normalizedDebt: wrapℤ(bigInt(art)),
-    }
+  postprocess: ({ ink, art }: any, { ilk }: VatUrnsArgs) => {
+    const { iso, unit } = ilkCollaterals[ilk]
+    const x = pipe(
+      $create(unit, iso, bigInt(art)),
+      E.map((collateral) => ({
+        collateral,
+        normalizedDebt: wrapℤ(bigInt(art)),
+      })),
+      E.fold(
+        () => O.none,
+        (urn) => O.some(urn),
+      ),
+    )
+    return x
   },
 }
 
-export interface VatIlk {
+export interface VatIlkData<Ilk> {
   normalizedIlkDebt: BigNumber // Art [wad]
   debtScalingFactor: BigNumber // rate [ray]
   maxDebtPerUnitCollateral: BigNumber // spot [ray]
@@ -39,7 +54,7 @@ export interface VatIlk {
   debtFloor: BigNumber // debtFloor [rad]
 }
 
-export const vatIlks: CallDef<string, VatIlk> = {
+export const vatIlks: CallDef<Ilk, VatIlkData<Ilk>> = {
   call: (_, { contract, vat }) => {
     return contract<Vat>(vat).methods.ilks
   },
@@ -53,7 +68,7 @@ export const vatIlks: CallDef<string, VatIlk> = {
   }),
 }
 
-export interface VatGemArgs {
+interface VatGemArgs {
   ilk: string
   urnAddress: string
 }

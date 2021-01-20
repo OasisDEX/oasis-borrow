@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { Ilk } from 'features/ilks/ilks'
+import { Ilk, IlkData } from 'features/ilks/ilks'
 import { zero } from 'helpers/zero'
-import { Natural } from 'money-ts/lib/Natural'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, mergeMap, switchMap, take } from 'rxjs/operators'
 
@@ -14,7 +13,7 @@ import { CallObservable } from '../../components/blockchain/calls/observe'
 import { spotIlks, spotPar } from '../../components/blockchain/calls/spot'
 import { vatGem, vatIlks, vatUrns } from '../../components/blockchain/calls/vat'
 
-export interface Vault {
+export interface Vault<Ilk> {
   /*
    * The "Vault.id" is recorded in a list in the cdpManager contract.
    * On creation (open) of a vault using the cdpManager contract, two
@@ -31,7 +30,7 @@ export interface Vault {
    * - ilks :: id => ilk
    *
    */
-  id: Natural
+  id: string
 
   /*
    * As mentioned in Vault.id, the "Vault.owner" is found in the cdpManager.owns
@@ -65,7 +64,7 @@ export interface Vault {
    * - ETH-B, gem is ETH, Stability Fee is 5% ...
    * - WBTC-A, gem is WBTC, Stability Fee is 4.5% ...
    */
-  ilk: string
+  ilk: Ilk
 
   /*
    * The "Vault.address" is as mentioned in Vault.id, an address for the
@@ -252,7 +251,7 @@ export interface Vault {
   debtFloor: BigNumber // iDai
 }
 
-export const mockVault: Vault = {
+export const mockVault: Vault<'ETH-A'> = {
   id: '500',
   ilk: 'ETH-A',
   token: 'ETH',
@@ -285,7 +284,7 @@ export function createTokenOraclePrice$(
   vatIlks$: CallObservable<typeof vatIlks>,
   ratioDAIUSD$: CallObservable<typeof spotPar>,
   liquidationRatio$: CallObservable<typeof spotIlks>,
-  ilk: string,
+  ilk: Ilk,
 ) {
   return combineLatest(vatIlks$(ilk), liquidationRatio$(ilk), ratioDAIUSD$()).pipe(
     map(([{ maxDebtPerUnitCollateral }, { liquidationRatio }, ratioDAIUSD]) =>
@@ -316,11 +315,11 @@ export function createVault$(
   cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>,
   vatUrns$: CallObservable<typeof vatUrns>,
   vatGem$: CallObservable<typeof vatGem>,
-  ilk$: (ilk: string) => Observable<Ilk>,
+  ilk$: (ilk: Ilk) => Observable<IlkData<Ilk>>,
   tokenOraclePrice$: (ilk: string) => Observable<BigNumber>,
   controller$: (id: BigNumber) => Observable<string>,
   id: BigNumber,
-): Observable<Vault> {
+): Observable<Vault<Ilk>> {
   return combineLatest(
     cdpManagerUrns$(id),
     cdpManagerIlks$(id),

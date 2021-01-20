@@ -1,15 +1,16 @@
 import BigNumber from 'bignumber.js'
+import { Ilk } from 'features/ilks/ilks'
 import Web3 from 'web3'
 
 import { McdJug } from '../../../types/web3-v1-contracts/mcd-jug'
 import { RAY, SECONDS_PER_YEAR } from '../../constants'
 import { CallDef } from './callsHelpers'
 
-export interface JugIlk {
+export interface JugIlkData<Ilk> {
   stabilityFee: BigNumber
   feeLastLevied: Date
 }
-export const jugIlks: CallDef<string, JugIlk> = {
+export const jugIlks: CallDef<Ilk, JugIlkData<Ilk>> = {
   call: (_, { contract, mcdJug }) => contract<McdJug>(mcdJug).methods.ilks,
   prepareArgs: (collateralTypeName) => [Web3.utils.utf8ToHex(collateralTypeName)],
   postprocess: ({ 0: rawFee, 1: rawLastLevied }: any) => {
