@@ -1,13 +1,15 @@
+import BigNumber from "bignumber.js";
 import { Vault } from "features/vaults/vault";
 import { formatCryptoBalance, formatFiatBalance, formatPercent, formatPrecision } from "helpers/formatters/format";
+import { useModal } from "helpers/modalHook";
 import { Box, Button, Grid, Heading, Text } from 'theme-ui'
+import { DepositForm } from "./DepositForm";
 
 interface Props {
     vault: Vault; 
     account: string
-    deposit(): void;
 }
-export function VaultView({ vault, account, deposit }: Props) {
+export function VaultView({ vault, account }: Props) {
     const token = vault.token;
     const vaultId = vault.id;
     const liquidationPrice = vault.liquidationPrice ? formatFiatBalance(vault.liquidationPrice) : 0
@@ -20,6 +22,8 @@ export function VaultView({ vault, account, deposit }: Props) {
     const availableToWithdrawPrice = formatCryptoBalance(vault.freeCollateralPrice)
     const debt = formatCryptoBalance(vault.debt)
     const debtAvailable = formatCryptoBalance(vault?.availableDebt)
+
+    const openModal = useModal()
 
     return (
         <Grid>
@@ -39,7 +43,7 @@ export function VaultView({ vault, account, deposit }: Props) {
             <Box>
                 <Heading as="h2">{token} locked</Heading>
                 <Text>{token} locked: {lockedAmount}{token}/{lockedAmountUSD}USD</Text>
-                <Button onClick={deposit}>Deposit</Button>
+                <Button onClick={() => openModal(DepositForm, {vaultId: new BigNumber(vault.id)})}>Deposit</Button>
                 <Text>Available to withdraw: {availableToWithdraw}{token}/{availableToWithdrawPrice}USD</Text>
                 <Button>Withdraw</Button>
             </Box>

@@ -327,7 +327,7 @@ export function createVault$(
     controller$(id),
   ).pipe(
     switchMap(([urnAddress, ilk, owner, controller]) => {
-      const token = 'ABC' // TODO
+      const token = 'ETH' // TODO
       return combineLatest(
         vatUrns$({ ilk, urnAddress }),
         vatGem$({ ilk, urnAddress }),

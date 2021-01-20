@@ -18,7 +18,7 @@ import { createProxyAddress$, createProxyOwner$ } from 'components/blockchain/ca
 import { vatGem, vatIlks, vatUrns } from 'components/blockchain/calls/vat'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
-import { createDepositForm } from 'features/deposit'
+import { createDepositForm$ } from 'features/deposit'
 import { createIlks$, Ilk } from 'features/ilks/ilks'
 import { createController$, createTokenOraclePrice$, createVault$ } from 'features/vaults/vault'
 import { createVaults$ } from 'features/vaults/vaults'
@@ -178,7 +178,7 @@ export function setupAppContext() {
 
   const vaultSummary$ = curry(createVaultSummary)(vaults$)
 
-  const depositForm$ = createDepositForm(connectedContext$, balance$)
+  const depositForm$ = memoize(curry(createDepositForm$)(connectedContext$, balance$, vault$), bigNumerTostring)
 
   return {
     web3Context$,
