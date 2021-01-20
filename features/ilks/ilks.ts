@@ -4,7 +4,7 @@ import { JugIlkData, jugIlks } from 'components/blockchain/calls/jug'
 import { CallObservable } from 'components/blockchain/calls/observe'
 import { SpotIlkData, spotIlks } from 'components/blockchain/calls/spot'
 import { VatIlkData, vatIlks } from 'components/blockchain/calls/vat'
-import { $create, $parse, Currency, Numeric } from 'components/currency/currency'
+import { $create, $parse, $parseUnsafe, Currency, Numeric } from 'components/currency/currency'
 import * as E from 'fp-ts/lib/Either'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
@@ -34,7 +34,10 @@ type CollateralTokenInfo<CollateralToken> = CollateralToken extends 'ETH'
   ? WBTC
   : never
 
-const collateralTokenInfo: Dictionary<CollateralTokenInfo<CollateralToken>, CollateralToken> = {
+export const collateralTokenInfo: Dictionary<
+  CollateralTokenInfo<CollateralToken>,
+  CollateralToken
+> = {
   ETH: {
     iso: 'ETH',
     unit: 18,
@@ -49,7 +52,7 @@ type Token = CollateralToken | 'DAI'
 
 type TokenInfo<Token> = Token extends 'DAI' ? DAI : CollateralTokenInfo<Token>
 
-const tokenInfo: Dictionary<TokenInfo<Token>, Token> = {
+export const tokenInfo: Dictionary<TokenInfo<Token>, Token> = {
   ...collateralTokenInfo,
   DAI: {
     iso: 'DAI',
@@ -59,7 +62,7 @@ const tokenInfo: Dictionary<TokenInfo<Token>, Token> = {
 
 export type Ilk = 'ETH-A' | 'ETH-B' | 'WBTC-A'
 
-const collateralTokenInfoByIlk: Dictionary<CollateralTokenInfo<CollateralToken>, Ilk> = {
+export const collateralTokenInfoByIlk: Dictionary<CollateralTokenInfo<CollateralToken>, Ilk> = {
   'ETH-A': collateralTokenInfo['ETH'],
   'ETH-B': collateralTokenInfo['ETH'],
   'WBTC-A': collateralTokenInfo['WBTC'],
@@ -73,13 +76,9 @@ export type Collateral<Ilk> = Ilk extends 'ETH-A'
   ? Currency<8, 'WBTC'>
   : never
 
-export function createCollateralByIlk(ilk: Ilk, amount: Numeric): E.Either<Error, Collateral<Ilk>> {
+export function createCollateralByIlk(ilk: Ilk, amount: Numeric): Collateral<Ilk> {
   const { iso, unit } = collateralTokenInfoByIlk[ilk]
-
-  return pipe(
-    $parse(amount),
-    E.map((v) => new Currency(unit, iso, v) as Collateral<Ilk>),
-  )
+  return new Currency(unit, iso, $parseUnsafe(amount)) as Collateral<Ilk>
 }
 
 export type IlkData<Ilk> = VatIlkData<Ilk> & SpotIlkData<Ilk> & JugIlkData<Ilk> & CatIlkData<Ilk>

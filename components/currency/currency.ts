@@ -20,6 +20,19 @@ export function $parse(amount: Numeric): E.Either<Error, Integer> {
   return E.left(new Error('could not parse'))
 }
 
+export function $parseUnsafe(amount: Numeric): Integer {
+  if (bigInt.isInstance(amount)) {
+    return wrapℤ(amount)
+  }
+  if (BigNumber.isBigNumber(amount) && (amount as BigNumber).isInteger()) {
+    return wrapℤ(bigInt(amount.toString()))
+  }
+  if (typeof amount === 'string' && new BigNumber(amount).isInteger()) {
+    return wrapℤ(bigInt(amount))
+  }
+  throw new Error('could not parse')
+}
+
 export function $create<I extends string, U extends number>(
   u: U,
   i: I,
@@ -29,6 +42,15 @@ export function $create<I extends string, U extends number>(
     $parse(a),
     E.map((v) => new Currency(u, i, v)),
   )
+}
+
+export function $createUnsafe<I extends string, U extends number>(
+  u: U,
+  i: I,
+  a: Numeric,
+): Currency<U, I> {
+  const v = $parseUnsafe(a)
+  return new Currency(u, i, v)
 }
 
 export class Currency<U extends number, I extends string> {
