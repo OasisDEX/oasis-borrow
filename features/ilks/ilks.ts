@@ -3,6 +3,7 @@ import { JugIlkData, jugIlks } from 'components/blockchain/calls/jug'
 import { CallObservable } from 'components/blockchain/calls/observe'
 import { SpotIlkData, spotIlks } from 'components/blockchain/calls/spot'
 import { VatIlkData, vatIlks } from 'components/blockchain/calls/vat'
+import { Ilk } from 'components/blockchain/maker'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 

@@ -17,6 +17,7 @@ export const spotIlks: CallDef<Ilk, SpotIlkData<Ilk>> = {
   //  postprocess: ({ 0: pip, 1: mat }: any) => ({
   postprocess: ({ pip, mat }: any) => ({
     priceFeedAddress: pip,
+    // ETH/USD =
     liquidationRatio: amountFromRay(new BigNumber(mat)),
   }),
 }

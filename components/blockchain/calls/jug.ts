@@ -10,6 +10,7 @@ export interface JugIlkData<Ilk> {
   stabilityFee: BigNumber
   feeLastLevied: Date
 }
+
 export const jugIlks: CallDef<Ilk, JugIlkData<Ilk>> = {
   call: (_, { contract, mcdJug }) => contract<McdJug>(mcdJug).methods.ilks,
   prepareArgs: (collateralTypeName) => [Web3.utils.utf8ToHex(collateralTypeName)],
