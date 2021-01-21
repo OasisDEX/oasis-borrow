@@ -25,8 +25,6 @@ type Token =
 
 export type Ilk = Ilks['type']
 
-type Where<S, C> = { [key in keyof S]: S[key] extends C ? key : never }[keyof S]
-
 type TokenByISO<I extends string> = Extract<Token, TokenInfo<I, any>>
 
 type TokenInfoFromIlk<I extends Ilk> = Extract<Ilks, IlkInfo<I, any>>['tokenInfo']
