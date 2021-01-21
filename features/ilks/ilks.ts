@@ -59,6 +59,8 @@ export const tokenInfo: Dictionary<TokenInfo<Token>, Token> = {
 
 export type Ilk = 'ETH-A' | 'ETH-B' | 'WBTC-A'
 
+type X = {[key in Ilk]: key extends `${infer A}-${any}` ? A : never}[Ilk]
+
 export const collateralTokenInfoByIlk: Dictionary<CollateralTokenInfo<CollateralToken>, Ilk> = {
   'ETH-A': collateralTokenInfo['ETH'],
   'ETH-B': collateralTokenInfo['ETH'],

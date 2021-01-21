@@ -13,30 +13,30 @@ import * as O from 'fp-ts/lib/Option'
 import { pipe } from 'fp-ts/function'
 import { $parse, $parseUnsafe, Currency } from 'components/currency/currency'
 
-// const vatUrnsSafe: CallDef<VatUrnsArgs, O.Option<Urn<Ilk>>> = {
-//   call: (_, { contract, vat }) => {
-//     return contract<Vat>(vat).methods.urns
-//   },
-//   prepareArgs: ({ ilk, urnAddress }) => [Web3.utils.utf8ToHex(ilk), urnAddress],
-//   postprocess: ({ ink, art }: any, { ilk }: VatUrnsArgs) => {
-//     const { iso, unit } = collateralTokenInfoByIlk[ilk]
-//     return pipe(
-//       $parse(ink),
-//       E.map((amount) => new Currency(unit, iso, amount) as Collateral<Ilk>),
-//       E.fold(
-//         () => O.none,
-//         (collateral) =>
-//           pipe(
-//             $parse(art),
-//             E.fold(
-//               () => O.none,
-//               (normalizedDebt) => O.some({ _tag: ilk, collateral, normalizedDebt }),
-//             ),
-//           ),
-//       ),
-//     )
-//   },
-// }
+const vatUrnsSafe: CallDef<VatUrnsArgs, O.Option<Urn<Ilk>>> = {
+  call: (_, { contract, vat }) => {
+    return contract<Vat>(vat).methods.urns
+  },
+  prepareArgs: ({ ilk, urnAddress }) => [Web3.utils.utf8ToHex(ilk), urnAddress],
+  postprocess: ({ ink, art }: any, { ilk }: VatUrnsArgs) => {
+    const { iso, unit } = collateralTokenInfoByIlk[ilk]
+    return pipe(
+      $parse(ink),
+      E.map((amount) => new Currency(unit, iso, amount) as Collateral<Ilk>),
+      E.fold(
+        () => O.none,
+        (collateral) =>
+          pipe(
+            $parse(art),
+            E.fold(
+              () => O.none,
+              (normalizedDebt) => O.some({ _tag: ilk, collateral, normalizedDebt }),
+            ),
+          ),
+      ),
+    )
+  },
+}
 
 interface VatUrnsArgs {
   ilk: Ilk
