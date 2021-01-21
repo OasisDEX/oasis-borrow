@@ -1,4 +1,4 @@
-import { createSend, SendFunction } from '@oasisdex/transactions'
+import { call, createSend, SendFunction } from '@oasisdex/transactions'
 import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
 import {
@@ -15,17 +15,17 @@ import {
   cdpManagerUrns,
 } from 'components/blockchain/calls/cdpManager'
 import { createProxyAddress$, createProxyOwner$ } from 'components/blockchain/calls/proxy'
-import { vatGem, vatIlks, vatUrns } from 'components/blockchain/calls/vat'
+import { Urn, vatGem, vatIlks, vatUrns } from 'components/blockchain/calls/vat'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
-import { createIlks$, Ilk } from 'features/ilks/ilks'
+import { Collateral, createIlks$, Ilk } from 'features/ilks/ilks'
 import { createController$, createTokenOraclePrice$, createVault$ } from 'features/vaults/vault'
 import { createVaults$ } from 'features/vaults/vaults'
 import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
-import { filter, map, shareReplay } from 'rxjs/operators'
+import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { createBalances$ } from '../features/balances'
 import { createCollaterals$ } from '../features/collaterals'
@@ -129,8 +129,18 @@ export function setupAppContext() {
   // base
   const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
   const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
-  const cdpManagerUrns$ = observe(onEveryBlock$, connectedContext$, cdpManagerUrns, bigNumerTostring)
-  const cdpManagerIlks$ = observe(onEveryBlock$, connectedContext$, cdpManagerIlks, bigNumerTostring)
+  const cdpManagerUrns$ = observe(
+    onEveryBlock$,
+    connectedContext$,
+    cdpManagerUrns,
+    bigNumerTostring,
+  )
+  const cdpManagerIlks$ = observe(
+    onEveryBlock$,
+    connectedContext$,
+    cdpManagerIlks,
+    bigNumerTostring,
+  )
   const cdpManagerOwner$ = observe(
     onEveryBlock$,
     connectedContext$,
@@ -148,6 +158,14 @@ export function setupAppContext() {
   const balance$ = observe(onEveryBlock$, connectedContext$, tokenBalance)
 
   const collaterals$ = createCollaterals$(context$)
+
+  const vatUrnsx$ = connectedContext$.pipe(
+    switchMap((context) => call(context, vatUrns)({ ilk: 'ETH-A', urnAddress: 'ss' })),
+  )
+
+  const x = vatUrnsx$.subscribe((urn) => {
+    const y = urn.collateral
+  })
 
   // computed
   const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
@@ -195,9 +213,7 @@ function bigNumerTostring(v: BigNumber): string {
   return v.toString()
 }
 
-function ilkUrnAddressTostring(
-  { ilk, urnAddress }: {ilk: string, urnAddress: string }
-): string {
+function ilkUrnAddressTostring({ ilk, urnAddress }: { ilk: Ilk; urnAddress: string }): string {
   return `${ilk}-${urnAddress}`
 }
 

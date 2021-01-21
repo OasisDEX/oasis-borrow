@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { Ilk, IlkData } from 'features/ilks/ilks'
+import { Collateral, Ilk, IlkData } from 'features/ilks/ilks'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, mergeMap, switchMap, take } from 'rxjs/operators'
@@ -106,7 +106,7 @@ export interface Vault<Ilk> {
    * In terms of this type, Vault.collateral, we are specifying the latter
    * "encumbered collateral"
    */
-  collateral: BigNumber // Currency
+  collateral: Collateral<Ilk> // Currency
 
   /*
    * "Vault.unlockedCollateral" references the amount of unencumbered collateral
@@ -349,8 +349,8 @@ export function createVault$(
               liquidationPenalty,
             },
           ]) => {
-            const collateralPrice = collateral.times(tokenOraclePrice)
             const debt = debtScalingFactor.times(normalizedDebt)
+            const collateralPrice = collateral.times(tokenOraclePrice)
             const ilkDebt = debtScalingFactor.times(normalizedIlkDebt)
 
             const backingCollateral = debt.times(liquidationRatio)

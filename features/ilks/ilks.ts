@@ -1,15 +1,12 @@
-import bigInt from 'big-integer'
 import { CatIlkData, catIlks } from 'components/blockchain/calls/cat'
 import { JugIlkData, jugIlks } from 'components/blockchain/calls/jug'
 import { CallObservable } from 'components/blockchain/calls/observe'
 import { SpotIlkData, spotIlks } from 'components/blockchain/calls/spot'
 import { VatIlkData, vatIlks } from 'components/blockchain/calls/vat'
-import { $create, $parse, $parseUnsafe, Currency, Numeric } from 'components/currency/currency'
-import * as E from 'fp-ts/lib/Either'
+import { Currency } from 'components/currency/currency'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
-import { pipe } from 'fp-ts/function'
-import { Dictionary, PickProperties } from 'ts-essentials'
+import { Dictionary } from 'ts-essentials'
 
 interface DAI {
   iso: 'DAI'
@@ -68,20 +65,15 @@ export const collateralTokenInfoByIlk: Dictionary<CollateralTokenInfo<Collateral
   'WBTC-A': collateralTokenInfo['WBTC'],
 }
 
-export type Collateral<Ilk> = Ilk extends 'ETH-A'
+export type Collateral<T extends Ilk> = T extends 'ETH-A'
   ? Currency<18, 'ETH'>
-  : Ilk extends 'ETH-B'
+  : T extends 'ETH-B'
   ? Currency<18, 'ETH'>
-  : Ilk extends 'WBTC-A'
+  : T extends 'WBTC-A'
   ? Currency<8, 'WBTC'>
   : never
 
-export function createCollateralByIlk(ilk: Ilk, amount: Numeric): Collateral<Ilk> {
-  const { iso, unit } = collateralTokenInfoByIlk[ilk]
-  return new Currency(unit, iso, $parseUnsafe(amount)) as Collateral<Ilk>
-}
-
-export type IlkData<Ilk> = VatIlkData<Ilk> & SpotIlkData<Ilk> & JugIlkData<Ilk> & CatIlkData<Ilk>
+export type IlkData<Ilk> = VatIlkData & SpotIlkData<Ilk> & JugIlkData<Ilk> & CatIlkData<Ilk>
 
 export function createIlks$(
   vatIlks$: CallObservable<typeof vatIlks>,
