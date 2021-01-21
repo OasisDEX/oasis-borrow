@@ -22,7 +22,7 @@ export type Ilks =
 
 export type Token = Ilks['token'] | DAI
 
-export type ISO = Ilks['token']['iso']
+export type ISO = Token['iso']
 
 export type Ilk = Ilks['ilk']
 
