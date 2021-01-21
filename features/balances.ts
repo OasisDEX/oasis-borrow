@@ -1,6 +1,8 @@
+import { ContextConnected } from '@oasisdex/transactions/lib/src/callHelpersContextParametrized'
+import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { zipObject } from 'lodash'
-import { combineLatest, Observable } from 'rxjs'
+import { combineLatest, from, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
 
@@ -18,5 +20,15 @@ export function createBalances$(
         map((balances) => zipObject(tokens, balances)),
       ),
     ),
+  )
+}
+
+export function createETHBalance$(
+  context$: Observable<ContextConnected>,
+  address: string,
+) {
+  return context$.pipe(
+    switchMap(context => context.web3.eth.getBalance(address)),
+    map(ethBalance => amountFromWei(new BigNumber(ethBalance)))
   )
 }

@@ -19,6 +19,7 @@ import * as mcdPot from './abi/mcd-pot.json'
 import * as mcdSpot from './abi/mcd-spot.json'
 import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
+import * as dssProxyActions from './abi/dss-proxy-actions.json'
 import { default as kovanAddresses } from './addresses/kovan.json'
 import { default as mainnetAddresses } from './addresses/mainnet.json'
 
@@ -161,6 +162,18 @@ function getCollateralTokens(addresses: Dictionary<string>) {
     .reduce((acc, v) => ({ ...acc, ...v }), {})
 }
 
+function getCollateralJoinContracts(addresses: Dictionary<string>) {
+  return Object.entries(addresses)
+    .filter(([key]) => /MCD_JOIN_(.*)/.test(key))
+    .map(([key, address]) => [key.replace('MCD_JOIN_', '').replace('_', '-'), address])
+    .reduce((acc, [ilk, address]) => ({...acc, [ilk]: address}), {} as Dictionary<string>)
+}
+
+type Replace<T extends string, S extends string, R extends string> = T extends `${infer A}${S}${infer B}` 
+  ? Replace<`${A}${R}${B}`, S, R> 
+  : T
+type Join = {[key in keyof typeof mainnetAddresses]: key extends `MCD_JOIN_${infer Ilk}` ? Replace<Ilk, '_', '-'> : never}[keyof typeof mainnetAddresses]
+
 const protoMain = {
   id: '1',
   name: 'main',
@@ -178,6 +191,9 @@ const protoMain = {
     CHAI: contractDesc(erc20, '0x06af07097c9eeb7fd685c692751d5c66db49c215'),
     // WBTC: contractDesc(erc20, '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'),
   } as Dictionary<ContractDesc>,
+  joins: {
+    ...getCollateralJoinContracts(mainnetAddresses),
+  },
   getCdps: contractDesc(getCdps, mainnetAddresses.GET_CDPS),
   mcdOsms: getOsms(mainnetAddresses),
   mcdJug: contractDesc(mcdJug, mainnetAddresses.MCD_JUG),
@@ -191,6 +207,7 @@ const protoMain = {
   mcdJoinDai: contractDesc(mcdJoinDai, '0x9759A6Ac90977b93B58547b4A71c78317f391A28'),
   dsProxyRegistry: contractDesc(dsProxyRegistry, '0x4678f0a6958e4d2bc4f1baf7bc52e8f3564f3fe4'),
   dsProxyFactory: contractDesc(dsProxyFactory, '0xa26e15c895efc0616177b7c1e7270a4c7d51c997'),
+  dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
   etherscan: {
     url: 'https://etherscan.io',
     apiUrl: 'https://api.etherscan.io/api',
@@ -228,6 +245,9 @@ const kovan: NetworkConfig = {
     CHAI: contractDesc(erc20, '0xb641957b6c29310926110848db2d464c8c3c3f38'),
     // WBTC: contractDesc(erc20, '0xA08d982C2deBa0DbE433a9C6177a219E96CeE656'),
   },
+  joins: {
+    ...getCollateralJoinContracts(mainnetAddresses),
+  },
   getCdps: contractDesc(getCdps, kovanAddresses.GET_CDPS),
   mcdOsms: getOsms(kovanAddresses),
   mcdPot: contractDesc(mcdPot, kovanAddresses.MCD_POT),
@@ -241,6 +261,7 @@ const kovan: NetworkConfig = {
   mcdJoinDai: contractDesc(mcdJoinDai, '0x5AA71a3ae1C0bd6ac27A1f28e1415fFFB6F15B8c'),
   dsProxyRegistry: contractDesc(dsProxyRegistry, '0x64a436ae831c1672ae81f674cab8b6775df3475c'),
   dsProxyFactory: contractDesc(dsProxyFactory, '0xe11e3b391f7e8bc47247866af32af67dd58dc800'),
+  dssProxyActions: contractDesc(dssProxyActions, kovanAddresses.PROXY_ACTIONS),
   etherscan: {
     url: 'https://kovan.etherscan.io',
     apiUrl: 'https://api-kovan.etherscan.io/api',

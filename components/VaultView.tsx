@@ -3,7 +3,7 @@ import { Vault } from "features/vaults/vault";
 import { formatCryptoBalance, formatFiatBalance, formatPercent, formatPrecision } from "helpers/formatters/format";
 import { useModal } from "helpers/modalHook";
 import { Box, Button, Grid, Heading, Text } from 'theme-ui'
-import { DepositForm } from "./DepositForm";
+import { DepositForm } from "../features/deposit/DepositForm";
 
 interface Props {
     vault: Vault; 

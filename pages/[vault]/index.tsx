@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { DepositForm } from 'components/DepositForm'
+import { DepositForm } from 'features/deposit/DepositForm'
 import { AppLayout } from 'components/Layouts'
 import { VaultView } from 'components/VaultView'
 import { useModal } from 'helpers/modalHook'
