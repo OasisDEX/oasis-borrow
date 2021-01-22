@@ -28,7 +28,7 @@ import { mixpanelInit } from '../components/analytics/mixpanel'
 function getLibrary(provider: any, connector: AbstractConnector): Web3 {
   const chainIdPromise = connector.getChainId()
   const wsEnhancedProvider = wsEnhanceProvider(provider, chainIdPromise)
-  return new Web3(provider)
+  return new Web3(wsEnhancedProvider)
 }
 
 const globalStyles = `
