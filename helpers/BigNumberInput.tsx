@@ -3,10 +3,6 @@ import React, { useRef } from 'react'
 import { default as MaskedInput } from 'react-text-mask'
 import { Input } from 'theme-ui'
 
-interface Props extends React.HTMLProps<HTMLInputElement> {
-  pipe: Pipe //TODO
-}
-
 export const BigNumberInput = ({ value, pipe, onChange, ...props }: any) => {
   const lastValue = useRef<string | undefined>()
   const changed = (e: React.ChangeEvent<HTMLInputElement>): void => {
