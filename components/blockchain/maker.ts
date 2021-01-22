@@ -14,13 +14,80 @@ export class AbstractCurrency<U extends number, I extends string> {
   }
 }
 
-interface AbstractToken<I extends string, U extends number> {
+interface BasicTokenDefinition<I extends string, U extends number> {
   iso: I
   unit: U
-  currency: AbstractCurrency<U, I>
+  amount: AbstractCurrency<U, I>
 }
 
-interface AbstractIlk<I extends string, T extends AbstractToken<any, any>> {
+type Erc20TokenDefinition<I extends string, U extends number> = BasicTokenDefinition<I, U> & {
+  erc20: true
+}
+
+type UniV2LPTokenDefinition<I extends string, U extends number> = Erc20TokenDefinition<I, U> & {
+  uniLp: true
+}
+
+type AbstractTokenDefinition<I extends string, U extends number> =
+  | BasicTokenDefinition<I, U>
+  | Erc20TokenDefinition<I, U>
+  | Erc721TokenDefinition<I, U>
+  | UniV2LPTokenDefinition<I, U>
+
+// export const defaultCdpTypes = [
+//   { currency: ETH, ilk: 'ETH-A' },
+//   { currency: ETH, ilk: 'ETH-B' },
+//   { currency: BAT, ilk: 'BAT-A' },
+//   { currency: USDC, ilk: 'USDC-A', decimals: 6 },
+//   { currency: PAXUSD, ilk: 'PAXUSD-A', decimals: 18 },
+//   { currency: USDT, ilk: 'USDT-A', decimals: 6 },
+//   { currency: USDC, ilk: 'USDC-B', decimals: 6 },
+//   { currency: TUSD, ilk: 'TUSD-A', decimals: 18 },
+//   { currency: GUSD, ilk: 'GUSD-A', decimals: 2 },
+
+//   { currency: WBTC, ilk: 'WBTC-A', decimals: 8 },
+//   { currency: RENBTC, ilk: 'RENBTC-A', decimals: 8 },
+
+//   { currency: KNC, ilk: 'KNC-A', decimals: 18 },
+//   { currency: ZRX, ilk: 'ZRX-A', decimals: 18 },
+//   { currency: MANA, ilk: 'MANA-A', decimals: 18 },
+//   { currency: COMP, ilk: 'COMP-A', decimals: 18 },
+//   { currency: LRC, ilk: 'LRC-A', decimals: 18 },
+//   { currency: LINK, ilk: 'LINK-A', decimals: 18 },
+//   { currency: YFI, ilk: 'YFI-A', decimals: 18 },
+//   { currency: BAL, ilk: 'BAL-A', decimals: 18 },
+//   { currency: UNI, ilk: 'UNI-A', decimals: 18 },
+//   { currency: AAVE, ilk: 'AAVE-A', decimals: 18 },
+//   { currency: UNIV2DAIETH, ilk: 'UNIV2DAIETH-A', decimals: 18 },
+// ]
+
+type TokenDefinitions =
+  | BasicTokenDefinition<'USD', 2>
+  | BasicTokenDefinition<'ETH', 18>
+  | Erc20TokenDefinition<'DAI', 18>
+  | Erc20TokenDefinition<'USDC', 6>
+  | Erc20TokenDefinition<'TUSD', 18>
+  | Erc20TokenDefinition<'USDT', 6>
+  | Erc20TokenDefinition<'GUSD', 2>
+  | Erc20TokenDefinition<'PAX', 18>
+  | Erc20TokenDefinition<'WBTC', 8>
+  | Erc20TokenDefinition<'RENBTC', 8>
+  | Erc20TokenDefinition<'KNC', 18>
+  | Erc20TokenDefinition<'ZRX', 18>
+  | Erc20TokenDefinition<'MANA', 18>
+  | Erc20TokenDefinition<'COMP', 18>
+  | Erc20TokenDefinition<'LRC', 18>
+  | Erc20TokenDefinition<'LINK', 18>
+  | Erc20TokenDefinition<'YFI', 18>
+  | Erc20TokenDefinition<'BAL', 18>
+  | Erc20TokenDefinition<'UNI', 18>
+  | Erc20TokenDefinition<'AAVE', 18>
+  | UniV2LPTokenDefinition<'UNIV2DAIETH', 18>
+
+export type TokenIsoCodes = TokenDefinitions['iso']
+export type TokenUnits = TokenDefinitions['unit']
+
+interface AbstractIlk<I extends string, T extends AbstractTokenDefinition<any, any>> {
   ilk: I
   token: T
 }
@@ -205,4 +272,5 @@ export interface Vault<I extends Ilk> {
 
 declare const v: Vault<'WBTC-A'>
 
-const xa = v.freeCollateralPrice
+const cx = v.collateralizationRatio
+const x = cx.consequentPrice
