@@ -547,6 +547,11 @@ export const theme = merge(oasisBaseTheme, {
       lineHeight: 'body',
     },
   },
+  layout: {
+    appContainer: {
+      maxWidth: '1024px',
+    },
+  },
   forms: {
     input: {
       transition: TRANSITIONS.global,
@@ -622,7 +627,7 @@ export const theme = merge(oasisBaseTheme, {
     },
   },
 })
-
+console.log(theme)
 // different theme for landing page
 export const landingTheme = merge(theme, {
   fontSizes: [10, 12, 14, 16, 18, 20, 24, 28, 48, 64, 96],
@@ -694,6 +699,9 @@ export const landingTheme = merge(theme, {
     ...customLandingIcons,
   },
   layout: {
+    appContainer: {
+      maxWidth: '1024px',
+    },
     marketingContainer: {
       variant: 'layout.appContainer',
       maxWidth: '612px',

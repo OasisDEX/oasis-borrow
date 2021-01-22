@@ -1,8 +1,10 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLayout } from 'components/Layouts'
 import { Vault } from 'features/vaults/vault'
+import { formatCryptoBalance, formatFiatBalance } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { Box, Grid, Text } from 'theme-ui'
+import Link from 'next/link'
+import { Box, Grid, Heading, Text } from 'theme-ui'
 
 function ProxyOwner({ proxyAddress }: { proxyAddress: string }) {
   const { proxyOwner$ } = useAppContext()
@@ -13,39 +15,76 @@ function ProxyOwner({ proxyAddress }: { proxyAddress: string }) {
 }
 
 function VaultsTable({ vaults }: { vaults: Vault[] }) {
+  const headerCells = [
+    'token',
+    'vault id',
+    'current ratio',
+    'deposited',
+    'avail. to withdraw',
+    'dai'
+  ]
   return (
     <Box>
-      <Text sx={{ fontSize: 4 }}>Vaults ::</Text>
-      <Grid columns={[2]} pt={3}>
-        <Text>VaultId</Text>
-        <Text>VaultType</Text>
-
-        {vaults.map((vault) => (
-          <>
-            <Text>{vault.id}</Text>
-            <Text>{vault.ilk}</Text>
-          </>
-        ))}
-      </Grid>
+      <Box as='table' sx={{ width: '100%' }}>
+        <Box as="thead">
+          <Box as="tr">
+            {
+              headerCells.map(header => <Box key={header} as="th">{header}</Box>)
+            }
+          </Box>
+        </Box>
+        <Box as="tbody">
+          {
+            vaults.map(vault => (
+            <Box as="tr" key={vault.id}>
+              <Box as="td">{vault.token}</Box>
+              <Box as="td">{vault.id}</Box>
+              <Box as="td">{vault.collateralizationRatio ? vault.collateralizationRatio.toString() : 0}</Box>
+              <Box as="td">{`${formatCryptoBalance(vault.collateral)} ${vault.token}`}</Box>
+              <Box as="td">{`${formatCryptoBalance(vault.freeCollateral)} ${vault.token}`}</Box>
+              <Box as="td">{formatCryptoBalance(vault.debt)}</Box>
+              <Box as="td"><Link href={`/${vault.id}`}>Manage Vault</Link></Box>
+            </Box>
+            ))
+          }
+        </Box>
+      </Box>
     </Box>
   )
 }
 
 function Summary({ address }: { address: string }) {
-  const { web3Context$, proxyAddress$, vaults$ } = useAppContext()
+  const { web3Context$, proxyAddress$, vaults$, vaultSummary$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
   const proxyAddress = useObservable(proxyAddress$(address))
   const vaults = useObservable(vaults$(address))
+  const vaultSummary = useObservable(vaultSummary$(address))
 
-  console.log('vaults', vaults)
+  const totalCollateral = vaultSummary?.totalCollateralPrice 
+    ? formatFiatBalance(vaultSummary?.totalCollateralPrice) 
+    : '0'
+
+  const totalDaiDebt = vaultSummary?.totalDaiDebt !== undefined
+      ? formatCryptoBalance(vaultSummary.totalDaiDebt)
+      : '0'
 
   return (
-    <Grid>
+    <Grid sx={{ flex: 1 }}>
+      <Heading as="h1">Overview</Heading>
+      <Box>
+        <Heading as="h2">Total collateral locked</Heading>
+        <Box>${totalCollateral} USD</Box>
+      </Box>
+      <Box>
+        <Heading as="h2">Total dai debt</Heading>
+        <Box>{totalDaiDebt} DAI</Box>
+      </Box>
       <Text>Connected Address :: {(web3Context as any)?.account}</Text>
       <Text>Viewing Address :: {address}</Text>
       <Text>ProxyAddress :: {proxyAddress}</Text>
-      <Text>ProxyOwner :: {proxyAddress ? <ProxyOwner {...{ proxyAddress }} /> : null}</Text>
-      {vaults ? <VaultsTable {...{ vaults }} /> : null}
+      <Text>ProxyOwner :: {proxyAddress ? <ProxyOwner proxyAddress={proxyAddress} /> : null}</Text>
+      <Heading as="h2">Your Vaults:</Heading>
+      {vaults && <VaultsTable vaults={vaults} />}
     </Grid>
   )
 }
@@ -59,6 +98,7 @@ export default function VaultsSummary() {
 
 VaultsSummary.layout = AppLayout
 VaultsSummary.layoutProps = {
+  variant: 'daiContainer',
   backLink: {
     href: '/',
   },

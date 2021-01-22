@@ -56,7 +56,7 @@ function MockContextProvider({
 }: MockContextProviderProps) {
   const ctx = ({
     web3Context$: of(web3Context),
-    transactionManager$: createTransactionManager(of(transactions), of(onrampOrders)),
+    transactionManager$: createTransactionManager(of(transactions)),
     context$: of({
       etherscan: { url: 'etherscan' },
     }),

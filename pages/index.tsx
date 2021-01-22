@@ -1,6 +1,6 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
-import { MarketingLayout } from 'components/Layouts'
+import { AppLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
 import { useTranslation } from 'i18n'
 import React, { ReactNode } from 'react'
@@ -87,7 +87,7 @@ export default function LandingPage() {
   return <LandingPageView />
 }
 
-LandingPage.layout = MarketingLayout
+LandingPage.layout = AppLayout
 LandingPage.layoutProps = {
   variant: 'landingContainer',
 }
