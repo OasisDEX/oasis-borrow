@@ -31,14 +31,17 @@ export function DepositForm({ close, vaultId }: { close: () => void, vaultId: Bi
         })
     }, [depositForm?.change])
 
-    if(!depositForm) {
+    if (!depositForm) {
         return null
     }
+
+    const canEdit = depositForm.stage === 'editing'
+    const canSubmit = !depositForm.submit
 
     return (
         <Modal>
             <ModalCloseIcon close={close} />
-            <Grid sx={{p: 4}} variant="">
+            <Grid sx={{ p: 4 }} variant="">
                 <Box>
                     <Heading>Deposit</Heading>
                 </Box>
@@ -46,26 +49,28 @@ export function DepositForm({ close, vaultId }: { close: () => void, vaultId: Bi
                     <Label>
                         <Text>Deposit</Text>
                         <BigNumberInput
-                         placeholder="0" 
-                         mask={createNumberMask({
-                            allowDecimal: true,
-                            decimalLimit: getToken(depositForm?.vault?.token!).digits,
-                            prefix: '',
-                          })}
-                         onChange={onDepositChange} 
-                         value={(depositForm?.lockAmount || null) && formatAmount(depositForm?.lockAmount as BigNumber, depositForm?.vault?.token!)} />
+                            disabled={!canEdit}
+                            placeholder="0"
+                            mask={createNumberMask({
+                                allowDecimal: true,
+                                decimalLimit: getToken(depositForm?.vault?.token!).digits,
+                                prefix: '',
+                            })}
+                            onChange={onDepositChange}
+                            value={(depositForm?.lockAmount || null) && formatAmount(depositForm?.lockAmount as BigNumber, depositForm?.vault?.token!)} />
                     </Label>
                     <Label>
                         <Text>Generate</Text>
                         <BigNumberInput
-                         placeholder="0" 
-                         mask={createNumberMask({
-                            allowDecimal: true,
-                            decimalLimit: getToken(depositForm?.vault?.token!).digits,
-                            prefix: '',
-                          })}
-                         onChange={onGenerateChange} 
-                         value={(depositForm?.drawAmount || null) && formatAmount(depositForm?.drawAmount as BigNumber, 'DAI')} />
+                            disabled={!canEdit}
+                            placeholder="0"
+                            mask={createNumberMask({
+                                allowDecimal: true,
+                                decimalLimit: getToken(depositForm?.vault?.token!).digits,
+                                prefix: '',
+                            })}
+                            onChange={onGenerateChange}
+                            value={(depositForm?.drawAmount || null) && formatAmount(depositForm?.drawAmount as BigNumber, 'DAI')} />
                     </Label>
                 </Box>
                 <Box>
@@ -79,7 +84,7 @@ export function DepositForm({ close, vaultId }: { close: () => void, vaultId: Bi
                 <Box>
                     Balance: {depositForm.balance.toString()} {depositForm.vault.token}
                 </Box>
-                <Button disabled={!depositForm.submit} onClick={depositForm.submit}>Deposit</Button>
+                <Button disabled={canSubmit} onClick={depositForm.submit}>Deposit</Button>
                 <Box>{depositForm.stage !== 'editing' && `Transaction stage: ${depositForm.stage}`}</Box>
                 <Box>{depositForm.txHash && `Transaction hash: ${depositForm.txHash}`}</Box>
             </Grid>
