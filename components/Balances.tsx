@@ -7,7 +7,6 @@ export function Balances({ owner }: { owner: string; }) {
   const balances = useObservable(balances$(owner));
   const balancesToDisplay = balances
     ? Object.entries(balances)
-      // .filter(([symbol, amount]) => amount.isGreaterThan(0) || symbol === 'ETH')
       .map(([symbol, amount]) => (
         <Box key={symbol}>
           <Text sx={{ display: 'inline', fontWeight: 'bold' }}>{symbol}:</Text>

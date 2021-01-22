@@ -8,7 +8,7 @@ import { merge, Observable, of, Subject, combineLatest } from "rxjs"
 import { first, map, scan, shareReplay, startWith, switchMap } from "rxjs/operators"
 import { Vault } from "../vaults/vault"
 import { TxHelpers } from "components/AppContext"
-import { lockAndDraw } from "./lockAndDraw"
+import { lockAndDraw } from "../../components/blockchain/calls/lockAndDraw"
 import { curry } from "ramda"
 
 export type DepositStage =
@@ -30,6 +30,7 @@ interface DepositState {
     messages: string[]
     change(change: ManualChange): void
     submit?(): void
+    reset?(): void
 }
 
 type StateChange = Changes<DepositState>
@@ -37,10 +38,7 @@ type ManualChange = Change<DepositState, 'lockAmount'> | Change<DepositState, 'd
 
 const apply: ApplyChange<DepositState> = applyChange
 
-enum ErrorMessages {
-    InsufficientFunds = 'insufficient_founds',
-    MinimumDebt = 'minimum_debt',
-}
+type ErrorMessages = 'insufficientFounds' | 'minimumDebt'
 
 export type LockAndDrawData = {
     kind: TxMetaKind.lockAndDraw
@@ -53,15 +51,15 @@ export type LockAndDrawData = {
 }
 
 function validate(state: DepositState): DepositState {
- const messages: string[] = []
+ const messages: ErrorMessages[] = []
 
  if (state.lockAmount?.gt(state.ethBalance)) {
-     messages.push(ErrorMessages.InsufficientFunds)
+     messages.push('insufficientFounds')
  }
 
  if (state.vault.debtFloor.gte(state.vault.debt.plus(state.drawAmount || 0))) {
      console.log(state.vault.debtFloor.toString())
-     messages.push(ErrorMessages.MinimumDebt)
+     messages.push('minimumDebt')
  }
 
  return { ...state, messages }
@@ -69,11 +67,11 @@ function validate(state: DepositState): DepositState {
 
 function submit(txHelpers: TxHelpers, change: (ch: StateChange) => void, state: DepositState) {
     return txHelpers.send(lockAndDraw, {
-        drawAmount: state.drawAmount!,
+        drawAmount: state.drawAmount || new BigNumber(0),
+        lockAmount: state.lockAmount || new BigNumber(0),
         ilk: state.vault.ilk,
         tkn: state.vault.token,
         kind: TxMetaKind.lockAndDraw,
-        lockAmount: state.lockAmount!,
         proxyAddress: state.vault.owner,
         id: state.vault.id,
     }).pipe(
@@ -91,7 +89,17 @@ function submit(txHelpers: TxHelpers, change: (ch: StateChange) => void, state: 
 }
 
 function addTransitions(txHelpers: TxHelpers, change: (ch: StateChange) => void, state: DepositState): DepositState {
-    if(state.messages.length === 0 && state.lockAmount && state.drawAmount) {
+    if (state.stage === 'fiasco' || state.stage === 'success') {
+        return {
+            ...state,
+            reset: () => {
+                change({kind: 'stage', stage: 'editing'})
+                change({kind: 'drawAmount', drawAmount: undefined})
+                change({kind: 'lockAmount', lockAmount: undefined})
+            }
+        }
+    }
+    if (state.messages.length === 0 && (state.lockAmount || state.drawAmount)) {
         return {
             ...state,
             submit: () => submit(txHelpers, change, state)

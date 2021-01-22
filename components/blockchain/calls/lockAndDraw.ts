@@ -5,7 +5,7 @@ import dsProxy from 'components/blockchain/abi/ds-proxy.json';
 import { DsProxy } from "types/web3-v1-contracts/ds-proxy";
 import { amountToWei } from "components/blockchain/utils";
 import { DssProxyActions } from "types/web3-v1-contracts/dss-proxy-actions";
-import { LockAndDrawData } from "./deposit";
+import { LockAndDrawData } from "../../../features/deposit/deposit";
 
 function getCallData(data: LockAndDrawData, context: ContextConnected) {
     const { dssProxyActions, dssCdpManager, mcdJoinDai, mcdJug, joins, contract } = context;
