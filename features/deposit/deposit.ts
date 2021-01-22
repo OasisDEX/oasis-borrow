@@ -64,9 +64,9 @@ function getCallData(data: LockAndDrawData, context: ContextConnected) {
     const {id, tkn, lockAmount, drawAmount, ilk} = data;
 
     if(id && tkn === 'ETH') {
-        console.log('CALL DATA', dssCdpManager.address, mcdJug.address, joins[ilk] , mcdJoinDai.address, id, amountToWei(drawAmount, 'DAI').toString())
+        console.log('CALL DATA', dssCdpManager.address, mcdJug.address, joins[ilk] , mcdJoinDai.address, id, amountToWei(drawAmount, 'DAI').toNumber())
         return contract<DssProxyActions>(dssProxyActions).methods.lockETHAndDraw(
-            dssCdpManager.address, mcdJug.address, joins[ilk] , mcdJoinDai.address, id, amountToWei(drawAmount, 'DAI').toString()
+            dssCdpManager.address, mcdJug.address, joins[ilk], mcdJoinDai.address, id, amountToWei(drawAmount, 'DAI').toString()
         )
     }
     if (tkn === 'ETH') {

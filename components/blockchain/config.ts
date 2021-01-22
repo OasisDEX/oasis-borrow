@@ -169,11 +169,6 @@ function getCollateralJoinContracts(addresses: Dictionary<string>) {
     .reduce((acc, [ilk, address]) => ({...acc, [ilk]: address}), {} as Dictionary<string>)
 }
 
-type Replace<T extends string, S extends string, R extends string> = T extends `${infer A}${S}${infer B}` 
-  ? Replace<`${A}${R}${B}`, S, R> 
-  : T
-type Join = {[key in keyof typeof mainnetAddresses]: key extends `MCD_JOIN_${infer Ilk}` ? Replace<Ilk, '_', '-'> : never}[keyof typeof mainnetAddresses]
-
 const protoMain = {
   id: '1',
   name: 'main',
