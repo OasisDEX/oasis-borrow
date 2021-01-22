@@ -241,7 +241,7 @@ const kovan: NetworkConfig = {
     // WBTC: contractDesc(erc20, '0xA08d982C2deBa0DbE433a9C6177a219E96CeE656'),
   },
   joins: {
-    ...getCollateralJoinContracts(mainnetAddresses),
+    ...getCollateralJoinContracts(kovanAddresses),
   },
   getCdps: contractDesc(getCdps, kovanAddresses.GET_CDPS),
   mcdOsms: getOsms(kovanAddresses),

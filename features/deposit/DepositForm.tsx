@@ -31,8 +31,6 @@ export function DepositForm({ close, vaultId }: { close: () => void, vaultId: Bi
         })
     }, [depositForm?.change])
 
-    console.log({depositForm})
-
     if(!depositForm) {
         return null
     }
@@ -82,6 +80,8 @@ export function DepositForm({ close, vaultId }: { close: () => void, vaultId: Bi
                     Balance: {depositForm.balance.toString()} {depositForm.vault.token}
                 </Box>
                 <Button disabled={!depositForm.submit} onClick={depositForm.submit}>Deposit</Button>
+                <Box>{depositForm.stage !== 'editing' && `Transaction stage: ${depositForm.stage}`}</Box>
+                <Box>{depositForm.txHash && `Transaction hash: ${depositForm.txHash}`}</Box>
             </Grid>
         </Modal>
     )
