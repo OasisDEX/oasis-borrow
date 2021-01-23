@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import moment from 'moment'
 
-import { getToken } from '../../components/blockchain/config'
+//import { getToken } from '../../components/blockchain/config'
 import { billion, million, one, oneThousandth, ten, thousand, zero } from '../zero'
 
 BigNumber.config({

@@ -16,28 +16,27 @@ import {
 } from 'components/blockchain/calls/cdpManager'
 import { createProxyAddress$, createProxyOwner$ } from 'components/blockchain/calls/proxy'
 import { Urn, vatGem, vatIlks, vatUrns } from 'components/blockchain/calls/vat'
-import { createGasPrice$ } from 'components/blockchain/prices'
+import { createGasPrice$ } from 'components/blockchain/gas'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
-import { Collateral, createIlks$, Ilk } from 'features/ilks/ilks'
-import { createController$, createTokenOraclePrice$, createVault$ } from 'features/vaults/vault'
-import { createVaults$ } from 'features/vaults/vaults'
-import { createVaultSummary } from 'features/vaults/vaultsSummary'
 import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
+import { Natural } from 'money-ts/lib/Natural'
+import { show } from 'money-ts/lib/NonZeroInteger'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
 import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
 
-import { createBalances$ } from '../features/balances'
-import { createCollaterals$ } from '../features/collaterals'
+// import { createBalances$ } from '../features/balances'
+// import { createCollaterals$ } from '../features/collaterals'
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from './account/transactionManager'
+import { $naturalToString, $parseNaturalUnsafe } from './atoms/numeric'
 import { catIlks } from './blockchain/calls/cat'
-import { tokenBalance } from './blockchain/calls/erc20'
 import { jugIlks } from './blockchain/calls/jug'
 import { CallObservable, observe } from './blockchain/calls/observe'
 import { spotIlks, spotPar } from './blockchain/calls/spot'
 import { networksById } from './blockchain/config'
+import { Ilk } from './blockchain/ilks'
 import {
   ContextConnected,
   createAccount$,
@@ -46,6 +45,7 @@ import {
   createOnEveryBlock$,
   createWeb3ContextConnected$,
 } from './blockchain/network'
+import { createVault$, createVaults$ } from './blockchain/vault'
 
 export type TxData = never
 // | ApproveData
@@ -127,73 +127,76 @@ export function setupAppContext() {
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
 
-  // base
   const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
   const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
+
   const cdpManagerUrns$ = observe(
     onEveryBlock$,
     connectedContext$,
     cdpManagerUrns,
-    bigNumerTostring,
+    $naturalToString,
   )
+
   const cdpManagerIlks$ = observe(
     onEveryBlock$,
     connectedContext$,
     cdpManagerIlks,
-    bigNumerTostring,
+    $naturalToString,
   )
   const cdpManagerOwner$ = observe(
     onEveryBlock$,
     connectedContext$,
     cdpManagerOwner,
-    bigNumerTostring,
+    $naturalToString,
   )
-  const vatIlks$ = observe(onEveryBlock$, connectedContext$, vatIlks)
-  const vatUrns$ = observe(onEveryBlock$, connectedContext$, vatUrns, ilkUrnAddressTostring)
-  const vatGem$ = observe(onEveryBlock$, connectedContext$, vatGem, ilkUrnAddressTostring)
-  const spotPar$ = observe(onEveryBlock$, connectedContext$, spotPar)
-  const spotIlks$ = observe(onEveryBlock$, connectedContext$, spotIlks)
-  const jugIlks$ = observe(onEveryBlock$, connectedContext$, jugIlks)
-  const catIlks$ = observe(onEveryBlock$, connectedContext$, catIlks)
+  // const vatIlks$ = observe(onEveryBlock$, connectedContext$, vatIlks)
+  // const vatUrns$ = observe(onEveryBlock$, connectedContext$, vatUrns, ilkUrnAddressTostring)
+  // const vatGem$ = observe(onEveryBlock$, connectedContext$, vatGem, ilkUrnAddressTostring)
+  // const spotPar$ = observe(onEveryBlock$, connectedContext$, spotPar)
+  // const spotIlks$ = observe(onEveryBlock$, connectedContext$, spotIlks)
+  // const jugIlks$ = observe(onEveryBlock$, connectedContext$, jugIlks)
+  // const catIlks$ = observe(onEveryBlock$, connectedContext$, catIlks)
 
-  const balance$ = observe(onEveryBlock$, connectedContext$, tokenBalance)
+  // const balance$ = observe(onEveryBlock$, connectedContext$, tokenBalance)
 
-  const collaterals$ = createCollaterals$(context$)
+  // const collaterals$ = createCollaterals$(context$)
 
-  const vatUrnsx$ = connectedContext$.pipe(
-    switchMap((context) => call(context, vatUrns)({ ilk: 'ETH-A', urnAddress: 'ss' })),
-  )
+  // const vatUrnsx$ = connectedContext$.pipe(
+  //   switchMap((context) => call(context, vatUrns)({ ilk: 'ETH-A', urnAddress: 'ss' })),
+  // )
 
-  const x = vatUrnsx$.subscribe((urn) => {
-    const y = urn.collateral
-  })
+  // const x = vatUrnsx$.subscribe((urn) => {
+  //   const y = urn.collateral
+  // })
 
-  // computed
-  const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
-  const ilk$ = memoize(curry(createIlks$)(vatIlks$, spotIlks$, jugIlks$, catIlks$))
-  const controller$ = memoize(
-    curry(createController$)(proxyOwner$, cdpManagerOwner$),
-    bigNumerTostring,
-  )
-  const balances$ = memoize(curry(createBalances$)(collaterals$, balance$))
+  // // computed
+  // const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
+  // const ilk$ = memoize(curry(createIlks$)(vatIlks$, spotIlks$, jugIlks$, catIlks$))
+  // const controller$ = memoize(
+  //   curry(createController$)(proxyOwner$, cdpManagerOwner$),
+  //   bigNumerTostring,
+  // )
+  // const balances$ = memoize(curry(createBalances$)(collaterals$, balance$))
 
   const vault$ = memoize(
     curry(createVault$)(
       cdpManagerUrns$,
       cdpManagerIlks$,
       cdpManagerOwner$,
-      vatUrns$,
-      vatGem$,
-      ilk$,
-      tokenOraclePrice$,
-      controller$,
+      // vatUrns$,
+      // vatGem$,
+      // ilk$,
+      // tokenOraclePrice$,
+      // controller$,
     ),
-    bigNumerTostring,
+    $naturalToString,
   )
 
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
 
-  const vaultSummary$ = curry(createVaultSummary)(vaults$)
+  // const vaultSummary$ = curry(createVaultSummary)(vaults$)
+
+  vault$($parseNaturalUnsafe('500')).subscribe((v) => console.log(v))
 
   return {
     web3Context$,
@@ -208,13 +211,13 @@ export function setupAppContext() {
     proxyOwner$,
     vaults$,
     vault$,
-    vaultSummary$,
-    balances$,
-  }
-}
+    cdpManagerUrns$,
+    cdpManagerIlks$,
+    cdpManagerOwner$,
 
-function bigNumerTostring(v: BigNumber): string {
-  return v.toString()
+    // vaultSummary$,
+    // balances$,
+  }
 }
 
 function ilkUrnAddressTostring({ ilk, urnAddress }: { ilk: Ilk; urnAddress: string }): string {

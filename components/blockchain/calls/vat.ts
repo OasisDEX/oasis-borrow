@@ -25,10 +25,6 @@ export interface Urn<I extends Ilk> {
   normalizedDebt: Integer
 }
 
-declare const x: Urn<'ETH-A'>
-const y = x.collateral
-const z = x.normalizedDebt
-
 function createUrnByIlk<I extends Ilk>(ink: any, art: any, ilk: I): Urn<I> {
   return {
     collateral: new Currency(18, 'ETH', $parseIntegerUnsafe(ink)) as Collateral<I>,

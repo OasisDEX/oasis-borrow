@@ -1,10 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { $parseNaturalUnsafe } from 'components/atoms/numeric'
 import { AppLayout } from 'components/Layouts'
 import { VaultView } from 'components/VaultView'
 import { useObservable } from 'helpers/observableHook'
 import { useRouter } from 'next/router'
-import { Container } from 'theme-ui';
+import { Container } from 'theme-ui'
 import { Balances } from '../../components/Balances'
 
 export default function Vault() {
@@ -14,21 +15,23 @@ export default function Vault() {
     query: { vault: vaultId },
   } = useRouter()
 
-  const vault = useObservable(vault$(new BigNumber(vaultId as string)))
+  const id = $parseNaturalUnsafe(vaultId as string)
 
-  const account = web3Context?.status === 'connected' 
-    ? web3Context.account
-    : 'Not connected'
+  const vault = undefined //useObservable(vault$(id))
+  console.log(vault)
+
+  const account = web3Context?.status === 'connected' ? web3Context.account : 'Not connected'
 
   if (vault === undefined) {
     return <div>No vault data</div>
   }
-  
+
   return (
     <Container>
-      {vault?.owner && <Balances owner={vault.owner} />}  
+      {vault?.owner && <Balances owner={vault.owner} />}
       <VaultView vault={vault} account={account} />
-    </Container>)
+    </Container>
+  )
 }
 
 Vault.layout = AppLayout

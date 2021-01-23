@@ -1,8 +1,10 @@
+import { call } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { zero } from 'helpers/zero'
 import { Natural } from 'money-ts/lib/Natural'
-import { combineLatest, Observable, of } from 'rxjs'
+import { combineLatest, EMPTY, forkJoin, Observable, of } from 'rxjs'
 import { map, mergeMap, switchMap, take } from 'rxjs/operators'
+import { TypeOf } from 'zod'
 
 import {
   cdpManagerIlks,
@@ -12,7 +14,9 @@ import {
 import { CallObservable } from '../../components/blockchain/calls/observe'
 import { spotIlks, spotPar } from '../../components/blockchain/calls/spot'
 import { vatGem, vatIlks, vatUrns } from '../../components/blockchain/calls/vat'
+import { getCdps, GetCdpsResult } from './calls/getCdps'
 import { Collateral, CollateralDebtPriceRatio, CollateralPrice, Ilk, IlkData } from './ilks'
+import { ContextConnected } from './network'
 import { RadDai } from './tokens'
 
 export interface Vault<I extends Ilk> {
@@ -228,6 +232,24 @@ export function createController$(
   return cdpManagerOwner$(id).pipe(mergeMap((owner) => proxyOwner$(owner)))
 }
 
+export function createVault$<I extends Ilk>(
+  cdpManagerUrns$: CallObservable<typeof cdpManagerUrns>,
+  cdpManagerIlks$: CallObservable<typeof cdpManagerIlks>,
+  cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>,
+  id: Natural,
+): Observable<any> {
+  return combineLatest(cdpManagerUrns$(id), cdpManagerIlks$(id), cdpManagerOwner$(id)).pipe(
+    switchMap(([address, ilk, owner]) =>
+      of({
+        address,
+        ilk,
+        owner,
+      }),
+    ),
+    take(1),
+  )
+}
+
 // export function createVault$<I extends Ilk>({
 //   cdpManagerUrns$,
 //   cdpManagerIlks$,
@@ -332,3 +354,22 @@ export function createController$(
 //     take(1),
 //   )
 // }
+
+export type Vaults = Vault<Ilk>[]
+
+export function createVaults$(
+  connectedContext$: Observable<ContextConnected>,
+  proxyAddress$: (address: string) => Observable<string | undefined>,
+  vault$: (id: Natural) => Observable<Vault<Ilk>>,
+  address: string,
+): Observable<Vault<Ilk>[]> {
+  return combineLatest(connectedContext$, proxyAddress$(address)).pipe(
+    switchMap(
+      ([context, proxyAddress]): Observable<GetCdpsResult> => {
+        if (!proxyAddress) return EMPTY
+        return call(context, getCdps)({ proxyAddress, descending: true })
+      },
+    ),
+    switchMap(({ ids }) => forkJoin(ids.map((id) => vault$(id)))),
+  )
+}

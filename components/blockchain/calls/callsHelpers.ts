@@ -9,7 +9,7 @@ import {
   SendTransactionFunction as SendTransactionFunctionAbstractContext,
   TransactionDef as TransactionDefAbstractContext,
 } from '@oasisdex/transactions'
-import { GasPrice$ } from 'components/blockchain/prices'
+import { GasPrice$ } from 'components/blockchain/gas'
 
 import { Context, ContextConnected } from '../network'
 
