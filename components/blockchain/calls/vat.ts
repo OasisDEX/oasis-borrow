@@ -7,40 +7,17 @@ import { Integer } from 'money-ts/lib/Integer'
 import { amountFromRad, amountFromRay } from '../utils'
 import { CallDef } from './callsHelpers'
 import { $parseIntegerUnsafe, Currency } from 'components/currency/currency'
-import { Collateral, Ilk } from '../maker'
-
-// import * as E from 'fp-ts/lib/Either'
-// import * as O from 'fp-ts/lib/Option'
-// import { pipe } from 'fp-ts/function'
-
-// const vatUrnsSafe: CallDef<VatUrnsArgs, O.Option<Urn<Ilk>>> = {
-//   call: (_, { contract, vat }) => {
-//     return contract<Vat>(vat).methods.urns
-//   },
-//   prepareArgs: ({ ilk, urnAddress }) => [Web3.utils.utf8ToHex(ilk), urnAddress],
-//   postprocess: ({ ink, art }: any, { ilk }: VatUrnsArgs) => {
-//     const { iso, unit } = collateralTokenInfoByIlk[ilk]
-//     return pipe(
-//       $parse(ink),
-//       E.map((amount) => new Currency(unit, iso, amount) as Collateral<Ilk>),
-//       E.fold(
-//         () => O.none,
-//         (collateral) =>
-//           pipe(
-//             $parse(art),
-//             E.fold(
-//               () => O.none,
-//               (normalizedDebt) => O.some({ _tag: ilk, collateral, normalizedDebt }),
-//             ),
-//           ),
-//       ),
-//     )
-//   },
-// }
+import { Collateral, Ilk } from '../config/ilks'
+import { RadDai, RayDAI } from '../config/tokens'
 
 interface VatUrnsArgs {
   ilk: Ilk
   urnAddress: string
+}
+
+export interface Urn<I extends Ilk> {
+  collateral: Collateral<I>
+  normalizedDebt: Integer
 }
 
 export interface Urn<I extends Ilk> {
@@ -53,9 +30,8 @@ const y = x.collateral
 const z = x.normalizedDebt
 
 function createUrnByIlk<I extends Ilk>(ink: any, art: any, ilk: I): Urn<I> {
-  const { iso, unit } = collateralTokenInfoByIlk[ilk]
   return {
-    collateral: new Currency(unit, iso, $parseIntegerUnsafe(ink)) as Collateral<I>,
+    collateral: new Currency(18, 'ETH', $parseIntegerUnsafe(ink)) as Collateral<I>,
     normalizedDebt: $parseIntegerUnsafe(art),
   }
 }
@@ -70,20 +46,21 @@ const vatUrnsUnsafe: CallDef<VatUrnsArgs, Urn<Ilk>> = {
 
 export const vatUrns = vatUrnsUnsafe
 
-export interface VatIlkData {
-  normalizedIlkDebt: BigNumber // Art [wad]
-  debtScalingFactor: BigNumber // rate [ray]
-  maxDebtPerUnitCollateral: BigNumber // spot [ray]
-  debtCeiling: BigNumber // line [rad]
-  debtFloor: BigNumber // debtFloor [rad]
+export interface VatIlk<I extends Ilk> {
+  _ilk: I
+  normalizedIlkDebt: Integer
+  debtScalingFactor: Integer
+  maxDebtPerUnitCollateral: RayDAI
+  debtCeiling: RadDai
+  debtFloor: RadDai
 }
 
-export const vatIlks: CallDef<Ilk, VatIlkData> = {
+export const vatIlks: CallDef<Ilk, VatIlk<Ilk>> = {
   call: (_, { contract, vat }) => {
     return contract<Vat>(vat).methods.ilks
   },
   prepareArgs: (ilk) => [Web3.utils.utf8ToHex(ilk)],
-  postprocess: (ilk: any) => ({
+  postprocess: (ilk) => ({
     normalizedIlkDebt: amountFromWei(new BigNumber(ilk.Art)),
     debtScalingFactor: amountFromRay(new BigNumber(ilk.rate)),
     maxDebtPerUnitCollateral: amountFromRay(new BigNumber(ilk.spot)),
@@ -93,7 +70,7 @@ export const vatIlks: CallDef<Ilk, VatIlkData> = {
 }
 
 interface VatGemArgs {
-  ilk: string
+  ilk: Ilk
   urnAddress: string
 }
 

@@ -1,17 +1,12 @@
 import BigNumber from 'bignumber.js'
-import { Ilk } from 'features/ilks/ilks'
 import Web3 from 'web3'
 
 import { McdSpot } from '../../../types/web3-v1-contracts/mcd-spot'
+import { CollateralDebtPriceRatio, Ilk } from '../config/ilks'
 import { amountFromRay } from '../utils'
 import { CallDef } from './callsHelpers'
 
-export interface SpotIlkData<Ilk> {
-  priceFeedAddress: string
-  liquidationRatio: BigNumber
-}
-
-export const spotIlks: CallDef<Ilk, SpotIlkData<Ilk>> = {
+export const spotIlks: CallDef<Ilk, SpotIlk<Ilk>> = {
   call: (_, { contract, mcdSpot }) => contract<McdSpot>(mcdSpot).methods.ilks,
   prepareArgs: (ilk) => [Web3.utils.utf8ToHex(ilk)],
   //  postprocess: ({ 0: pip, 1: mat }: any) => ({

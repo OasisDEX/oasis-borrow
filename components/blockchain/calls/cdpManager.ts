@@ -1,9 +1,11 @@
 import BigNumber from 'bignumber.js'
-import { Ilk } from 'features/ilks/ilks'
+import { Natural } from 'money-ts/lib/Natural'
 import { DssCdpManager } from 'types/web3-v1-contracts/dss-cdp-manager'
 import Web3 from 'web3'
 
 import { CallDef } from './callsHelpers'
+
+export type CdpManagerId = Natural
 
 export const cdpManagerUrns: CallDef<BigNumber, string> = {
   call: (_, { contract, dssCdpManager }) => {

@@ -1,4 +1,6 @@
-export class GenericPrice<Base extends Token<IsoCode>, Quote extends Token<IsoCode>> extends Ratio<
+import { Currency } from './currency'
+
+export class Price<Base extends Currency<any, any>, Quote extends Currency<any, any>> extends Ratio<
   Base,
   Quote
 > {
@@ -14,5 +16,3 @@ export class GenericPrice<Base extends Token<IsoCode>, Quote extends Token<IsoCo
     return this._consequent
   }
 }
-
-type Price<B extends IsoCode, Q extends IsoCode> = GenericPrice<Token<B>, Token<Q>>

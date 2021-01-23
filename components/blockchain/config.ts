@@ -21,13 +21,6 @@ import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
 import { default as kovanAddresses } from './addresses/kovan.json'
 import { default as mainnetAddresses } from './addresses/mainnet.json'
-import {
-  BasicTokenDefinition,
-  Currency,
-  Erc20TokenDefinition,
-  GenericTokenDefinition,
-  UniV2LPTokenDefinition,
-} from './currency'
 
 export function contractDesc(abi: any, address: string): ContractDesc {
   return { abi, address }
@@ -159,70 +152,3 @@ export const networksByName = keyBy([main, kovan], 'name')
 
 export const dappName = 'Oasis'
 export const pollingInterval = 12000
-
-type TokenDefinitions =
-  | BasicTokenDefinition<'USD', 2>
-  | BasicTokenDefinition<'ETH', 18>
-  | Erc20TokenDefinition<'DAI', 18>
-  | Erc20TokenDefinition<'USDC', 6>
-  | Erc20TokenDefinition<'TUSD', 18>
-  | Erc20TokenDefinition<'USDT', 6>
-  | Erc20TokenDefinition<'GUSD', 2>
-  | Erc20TokenDefinition<'PAX', 18>
-  | Erc20TokenDefinition<'WBTC', 8>
-  | Erc20TokenDefinition<'RENBTC', 8>
-  | Erc20TokenDefinition<'KNC', 18>
-  | Erc20TokenDefinition<'ZRX', 18>
-  | Erc20TokenDefinition<'MANA', 18>
-  | Erc20TokenDefinition<'COMP', 18>
-  | Erc20TokenDefinition<'LRC', 18>
-  | Erc20TokenDefinition<'LINK', 18>
-  | Erc20TokenDefinition<'YFI', 18>
-  | Erc20TokenDefinition<'BAL', 18>
-  | Erc20TokenDefinition<'UNI', 18>
-  | Erc20TokenDefinition<'AAVE', 18>
-  | Erc20TokenDefinition<'BAT', 18>
-  | UniV2LPTokenDefinition<'UNIV2DAIETH', 18>
-
-interface IlkDefinition<I extends string, T extends GenericTokenDefinition<any, any>> {
-  ilk: I
-  token: T
-}
-
-type TokenDefinition<I extends IsoCode> = Extract<TokenDefinitions, GenericTokenDefinition<I, any>>
-
-export type Ilks =
-  | IlkDefinition<'ETH-A', TokenDefinition<'ETH'>>
-  | IlkDefinition<'ETH-B', TokenDefinition<'ETH'>>
-  | IlkDefinition<'BAT-A', TokenDefinition<'BAT'>>
-  | IlkDefinition<'USDC-A', TokenDefinition<'USDC'>>
-  | IlkDefinition<'USDC-B', TokenDefinition<'USDC'>>
-  | IlkDefinition<'USDT-A', TokenDefinition<'USDT'>>
-  | IlkDefinition<'TUSD-A', TokenDefinition<'TUSD'>>
-  | IlkDefinition<'GUSD-A', TokenDefinition<'GUSD'>>
-  | IlkDefinition<'WBTC-A', TokenDefinition<'WBTC'>>
-  | IlkDefinition<'PAXUSD-A', TokenDefinition<'PAX'>>
-  | IlkDefinition<'WBTC-A', TokenDefinition<'WBTC'>>
-  | IlkDefinition<'RENBTC-A', TokenDefinition<'RENBTC'>>
-  | IlkDefinition<'WBTC-A', TokenDefinition<'WBTC'>>
-  | IlkDefinition<'KNC-A', TokenDefinition<'KNC'>>
-  | IlkDefinition<'ZRX-A', TokenDefinition<'ZRX'>>
-  | IlkDefinition<'MANA-A', TokenDefinition<'MANA'>>
-  | IlkDefinition<'COMP-A', TokenDefinition<'COMP'>>
-  | IlkDefinition<'LINK-A', TokenDefinition<'LINK'>>
-  | IlkDefinition<'YFI-A', TokenDefinition<'YFI'>>
-  | IlkDefinition<'BAL-A', TokenDefinition<'BAL'>>
-  | IlkDefinition<'UNI-A', TokenDefinition<'UNI'>>
-  | IlkDefinition<'AAVE-A', TokenDefinition<'AAVE'>>
-  | IlkDefinition<'UNIV2DAIETH-A', TokenDefinition<'UNIV2DAIETH'>>
-
-export type Tokens = TokenDefinitions['currency']
-export type Collaterals = Ilks['token']
-
-export type IsoCode = TokenDefinitions['iso']
-export type Ilk = Ilks['ilk']
-export type Collateral<I extends Ilk> = Extract<Ilks, IlkDefinition<I, any>>['token']['currency']
-export type Token<I extends IsoCode> = Extract<
-  TokenDefinitions,
-  GenericTokenDefinition<I, any>
->['currency']
