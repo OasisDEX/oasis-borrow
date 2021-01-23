@@ -21,115 +21,13 @@ import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
 import { default as kovanAddresses } from './addresses/kovan.json'
 import { default as mainnetAddresses } from './addresses/mainnet.json'
-
-export interface TokenConfig {
-  symbol: string
-  precision: number
-  digits: number
-  maxSell: string
-  name: string
-  icon: string
-  iconCircle: string
-  iconColor: string
-  ticker: string
-}
-
-const tokens = [
-  {
-    symbol: 'ETH',
-    precision: 18,
-    digits: 5,
-    maxSell: '10000000',
-    name: 'Ether',
-    icon: 'ether',
-    iconCircle: 'ether_circle_color',
-    iconColor: 'ether_color',
-    ticker: 'eth-ethereum',
-    coinbaseTicker: 'eth-usdc',
-  },
-  // {
-  //   symbol: 'WETH',
-  //   precision: 18,
-  //   digits: 5,
-  //   maxSell: '10000000',
-  //   name: 'Wrapped Ether',
-  //   icon: AvatarSimple(ethSvg),
-  //   // iconInverse: AvatarSimple(ethCircleSvg),
-  //   iconCircle: AvatarSimple(ethCircleSvg),
-  //   iconColor: AvatarSimple(ethCircleSvg),
-  //   ticker: 'eth-ethereum',
-  // },
-  {
-    symbol: 'DAI',
-    precision: 18,
-    digits: 4,
-    maxSell: '10000000',
-    name: 'Dai',
-    icon: 'dai',
-    iconCircle: 'dai_circle_color',
-    iconColor: 'dai_color',
-    ticker: 'dai-dai',
-    coinbaseTicker: 'dai-usdc',
-  },
-  // {
-  //   symbol: 'USDC',
-  //   precision: 6,
-  //   digits: 6,
-  //   digitsInstant: 2,
-  //   maxSell: '1000000000000000',
-  //   name: 'USD Coin',
-  //   icon: AvatarSimple(usdcSvg),
-  //   iconCircle: AvatarSimple(usdcCircleSvg),
-  //   iconColor: AvatarSimple(usdcColorSvg),
-  //   ticker: 'usdc-usd-coin',
-  // },
-  // {
-  //   symbol: 'CHAI',
-  //   precision: 18,
-  //   digits: 4,
-  //   maxSell: '10000000',
-  //   name: 'Maker',
-  //   icon: AvatarSimple(mkrSvg),
-  //   iconCircle: AvatarSimple(mkrSvg),
-  //   iconColor: AvatarSimple(mkrSvg),
-  //   ticker: '',
-  // },
-  // {
-  //   symbol: 'MKR',
-  //   precision: 18,
-  //   digits: 4,
-  //   maxSell: '10000000',
-  //   name: 'Maker',
-  //   icon: AvatarSimple(mkrSvg),
-  //   iconCircle: AvatarSimple(mkrSvg),
-  //   iconColor: AvatarSimple(mkrSvg),
-  //   ticker: 'usdc-usd-coin',
-  // },
-  // {
-  //   symbol: 'WBTC',
-  //   precision: 8,
-  //   digits: 5,
-  //   digitsInstant: 3,
-  //   safeCollRatio: 1.5,
-  //   maxSell: '1000000000000000',
-  //   name: 'Wrapped Bitcoin',
-  //   icon: AvatarSimple(wbtcSvg),
-  //   iconCircle: AvatarSimple(wbtcCircleSvg),
-  //   iconColor: AvatarSimple(wbtcColorSvg),
-  //   ticker: 'wbtc-wrapped-bitcoin',
-  // },
-]
-
-// ticker comes from coinpaprika api https://api.coinpaprika.com/v1/tickers
-const tokensBySymbol = keyBy(tokens, 'symbol')
-
-export function getToken(tokenSymbol: string) {
-  if (!tokensBySymbol[tokenSymbol]) {
-    console.warn('No token metadata for', tokenSymbol, 'using WETH!')
-    return tokensBySymbol.ETH
-  }
-  return tokensBySymbol[tokenSymbol]
-}
+import {
+  BasicTokenDefinition,
+  Currency,
+  Erc20TokenDefinition,
+  GenericTokenDefinition,
+  UniV2LPTokenDefinition,
+} from './currency'
 
 export function contractDesc(abi: any, address: string): ContractDesc {
   return { abi, address }
@@ -261,3 +159,70 @@ export const networksByName = keyBy([main, kovan], 'name')
 
 export const dappName = 'Oasis'
 export const pollingInterval = 12000
+
+type TokenDefinitions =
+  | BasicTokenDefinition<'USD', 2>
+  | BasicTokenDefinition<'ETH', 18>
+  | Erc20TokenDefinition<'DAI', 18>
+  | Erc20TokenDefinition<'USDC', 6>
+  | Erc20TokenDefinition<'TUSD', 18>
+  | Erc20TokenDefinition<'USDT', 6>
+  | Erc20TokenDefinition<'GUSD', 2>
+  | Erc20TokenDefinition<'PAX', 18>
+  | Erc20TokenDefinition<'WBTC', 8>
+  | Erc20TokenDefinition<'RENBTC', 8>
+  | Erc20TokenDefinition<'KNC', 18>
+  | Erc20TokenDefinition<'ZRX', 18>
+  | Erc20TokenDefinition<'MANA', 18>
+  | Erc20TokenDefinition<'COMP', 18>
+  | Erc20TokenDefinition<'LRC', 18>
+  | Erc20TokenDefinition<'LINK', 18>
+  | Erc20TokenDefinition<'YFI', 18>
+  | Erc20TokenDefinition<'BAL', 18>
+  | Erc20TokenDefinition<'UNI', 18>
+  | Erc20TokenDefinition<'AAVE', 18>
+  | Erc20TokenDefinition<'BAT', 18>
+  | UniV2LPTokenDefinition<'UNIV2DAIETH', 18>
+
+interface IlkDefinition<I extends string, T extends GenericTokenDefinition<any, any>> {
+  ilk: I
+  token: T
+}
+
+type TokenDefinition<I extends IsoCode> = Extract<TokenDefinitions, GenericTokenDefinition<I, any>>
+
+export type Ilks =
+  | IlkDefinition<'ETH-A', TokenDefinition<'ETH'>>
+  | IlkDefinition<'ETH-B', TokenDefinition<'ETH'>>
+  | IlkDefinition<'BAT-A', TokenDefinition<'BAT'>>
+  | IlkDefinition<'USDC-A', TokenDefinition<'USDC'>>
+  | IlkDefinition<'USDC-B', TokenDefinition<'USDC'>>
+  | IlkDefinition<'USDT-A', TokenDefinition<'USDT'>>
+  | IlkDefinition<'TUSD-A', TokenDefinition<'TUSD'>>
+  | IlkDefinition<'GUSD-A', TokenDefinition<'GUSD'>>
+  | IlkDefinition<'WBTC-A', TokenDefinition<'WBTC'>>
+  | IlkDefinition<'PAXUSD-A', TokenDefinition<'PAX'>>
+  | IlkDefinition<'WBTC-A', TokenDefinition<'WBTC'>>
+  | IlkDefinition<'RENBTC-A', TokenDefinition<'RENBTC'>>
+  | IlkDefinition<'WBTC-A', TokenDefinition<'WBTC'>>
+  | IlkDefinition<'KNC-A', TokenDefinition<'KNC'>>
+  | IlkDefinition<'ZRX-A', TokenDefinition<'ZRX'>>
+  | IlkDefinition<'MANA-A', TokenDefinition<'MANA'>>
+  | IlkDefinition<'COMP-A', TokenDefinition<'COMP'>>
+  | IlkDefinition<'LINK-A', TokenDefinition<'LINK'>>
+  | IlkDefinition<'YFI-A', TokenDefinition<'YFI'>>
+  | IlkDefinition<'BAL-A', TokenDefinition<'BAL'>>
+  | IlkDefinition<'UNI-A', TokenDefinition<'UNI'>>
+  | IlkDefinition<'AAVE-A', TokenDefinition<'AAVE'>>
+  | IlkDefinition<'UNIV2DAIETH-A', TokenDefinition<'UNIV2DAIETH'>>
+
+export type Tokens = TokenDefinitions['currency']
+export type Collaterals = Ilks['token']
+
+export type IsoCode = TokenDefinitions['iso']
+export type Ilk = Ilks['ilk']
+export type Collateral<I extends Ilk> = Extract<Ilks, IlkDefinition<I, any>>['token']['currency']
+export type Token<I extends IsoCode> = Extract<
+  TokenDefinitions,
+  GenericTokenDefinition<I, any>
+>['currency']
