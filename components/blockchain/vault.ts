@@ -236,6 +236,7 @@ export function createVault$<I extends Ilk>(
   cdpManagerUrns$: CallObservable<typeof cdpManagerUrns>,
   cdpManagerIlks$: CallObservable<typeof cdpManagerIlks>,
   cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>,
+  vatUrns$: CallObservable<typeof vatUrns>,
   id: Natural,
 ): Observable<any> {
   return combineLatest(cdpManagerUrns$(id), cdpManagerIlks$(id), cdpManagerOwner$(id)).pipe(

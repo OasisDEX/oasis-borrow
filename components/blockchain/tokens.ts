@@ -1,11 +1,12 @@
 import { Currency } from 'components/atoms/currency'
-
-type _<U extends number, I extends string> = Currency<U, I>
+import { $parseIntegerUnsafe, Numeric } from 'components/atoms/numeric'
+import { Dictionary } from 'lodash'
+import { Integer } from 'money-ts/lib/Integer'
 
 interface BasicTokenDefinition<I extends string, U extends number> {
   iso: I
   unit: U
-  currency: _<U, I>
+  currency: Currency<I, U>
 }
 
 type Erc20TokenDefinition<I extends string, U extends number> = BasicTokenDefinition<I, U> & {
@@ -13,7 +14,7 @@ type Erc20TokenDefinition<I extends string, U extends number> = BasicTokenDefini
 }
 
 type UniV2LPTokenDefinition<I extends string, U extends number> = Erc20TokenDefinition<I, U> & {
-  uniLp: true
+  uniLP: true
 }
 
 type GenericTokenDefinition<I extends string, U extends number> =
@@ -45,6 +46,10 @@ type TokenDefinitions =
   | Erc20TokenDefinition<'BAT', 18>
   | UniV2LPTokenDefinition<'UNIV2DAIETH', 18>
 
+export type WadDAI = Currency<'DAI', 18>
+export type RayDAI = Currency<'DAI', 27>
+export type RadDai = Currency<'DAI', 45>
+
 export type TokenCode = TokenDefinitions['iso']
 
 export type TokenDefinition<T extends TokenCode> = Extract<
@@ -53,11 +58,37 @@ export type TokenDefinition<T extends TokenCode> = Extract<
 >
 
 export type Tokens = TokenDefinitions['currency']
+
+export type TokenUnit<T extends TokenCode> = Extract<
+  TokenDefinitions,
+  GenericTokenDefinition<T, any>
+>['unit']
+
 export type Token<T extends TokenCode> = Extract<
   TokenDefinitions,
   GenericTokenDefinition<T, any>
 >['currency']
 
-export type WadDAI = Currency<18, 'DAI'>
-export type RayDAI = Currency<27, 'DAI'>
-export type RadDai = Currency<45, 'DAI'>
+function tokenUnit<T extends TokenCode>(t: T): TokenUnit<T> {
+  switch (t) {
+    case 'USD':
+    case 'GUSD':
+      return 2
+    case 'USDC':
+    case 'USDT':
+      return 6
+    case 'WBTC':
+    case 'RENBTC':
+      return 8
+    default:
+      return 18
+  }
+}
+
+function createTokenBuilder<T extends TokenCode>(t: T) {
+  return (a: Integer) => new Currency(t, tokenUnit(t), a)
+}
+
+export function $createTokenUnsafe<T extends TokenCode>(t: T, a: Numeric) {
+  return createTokenBuilder(t)($parseIntegerUnsafe(a))
+}

@@ -1,10 +1,12 @@
 import { Fraction } from 'components/atoms/fraction'
+import { Numeric } from 'components/atoms/numeric'
 import { Price } from 'components/atoms/price'
 import { PriceRatio } from 'components/atoms/priceRatio'
 import { Integer } from 'money-ts/lib/Integer'
+import { I18n } from 'next-i18next'
 import { combineLatest, Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
-import { RadDai, RayDAI, Token, TokenDefinition, TokenCode } from './tokens'
+import { RadDai, RayDAI, Token, TokenDefinition, TokenCode, $createTokenUnsafe } from './tokens'
 
 interface IlkConstructor<I extends Ilk, T extends TokenCode> {
   ilk: I
@@ -65,6 +67,15 @@ export type CollateralPrice<I extends Ilk> = Price<Token<'USD'>, Collateral<I>>
 export type DebtPrice = Price<Token<'USD'>, Token<'DAI'>>
 
 export type CollateralDebtPriceRatio<I extends Ilk> = PriceRatio<CollateralPrice<I>, DebtPrice>
+
+// Probably don't want to rely on this string splitting
+function collateralTokenCode<I extends Ilk>(ilk: Ilk): CollateralDefinition<I>['iso'] {
+  return ilk.split('-')[0] as CollateralDefinition<I>['iso']
+}
+
+export function $createCollateralUnsafe<I extends Ilk>(ilk: I, a: Numeric) {
+  return $createTokenUnsafe(collateralTokenCode(ilk), a) as Collateral<I>
+}
 
 interface VatIlk<I extends Ilk> {
   ilk: I

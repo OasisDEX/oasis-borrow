@@ -149,8 +149,9 @@ export function setupAppContext() {
     cdpManagerOwner,
     $naturalToString,
   )
+
   // const vatIlks$ = observe(onEveryBlock$, connectedContext$, vatIlks)
-  // const vatUrns$ = observe(onEveryBlock$, connectedContext$, vatUrns, ilkUrnAddressTostring)
+  const vatUrns$ = observe(onEveryBlock$, connectedContext$, vatUrns, ilkUrnAddressTostring)
   // const vatGem$ = observe(onEveryBlock$, connectedContext$, vatGem, ilkUrnAddressTostring)
   // const spotPar$ = observe(onEveryBlock$, connectedContext$, spotPar)
   // const spotIlks$ = observe(onEveryBlock$, connectedContext$, spotIlks)
@@ -183,7 +184,7 @@ export function setupAppContext() {
       cdpManagerUrns$,
       cdpManagerIlks$,
       cdpManagerOwner$,
-      // vatUrns$,
+      vatUrns$,
       // vatGem$,
       // ilk$,
       // tokenOraclePrice$,

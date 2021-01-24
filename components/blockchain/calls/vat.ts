@@ -2,13 +2,12 @@ import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { Vat } from 'types/web3-v1-contracts/vat'
 import Web3 from 'web3'
-import { Integer } from 'money-ts/lib/Integer'
+import { Integer, wrap as wrapInteger } from 'money-ts/lib/Integer'
 
 import { amountFromRad, amountFromRay } from '../utils'
 import { CallDef } from './callsHelpers'
-import { $parseIntegerUnsafe, Currency } from 'components/currency/currency'
-import { Collateral, Ilk } from '../config/ilks'
-import { RadDai, RayDAI } from '../config/tokens'
+import { $createCollateralUnsafe, Collateral, Ilk } from '../ilks'
+import { RadDai, RayDAI } from '../tokens'
 
 interface VatUrnsArgs {
   ilk: Ilk
@@ -25,25 +24,21 @@ export interface Urn<I extends Ilk> {
   normalizedDebt: Integer
 }
 
-function createUrnByIlk<I extends Ilk>(ink: any, art: any, ilk: I): Urn<I> {
-  return {
-    collateral: new Currency(18, 'ETH', $parseIntegerUnsafe(ink)) as Collateral<I>,
-    normalizedDebt: $parseIntegerUnsafe(art),
-  }
-}
-
 const vatUrnsUnsafe: CallDef<VatUrnsArgs, Urn<Ilk>> = {
   call: (_, { contract, vat }) => {
     return contract<Vat>(vat).methods.urns
   },
   prepareArgs: ({ ilk, urnAddress }) => [Web3.utils.utf8ToHex(ilk), urnAddress],
-  postprocess: ({ ink, art }: any, { ilk }: VatUrnsArgs) => createUrnByIlk(ink, art, ilk),
+  postprocess: ({ ink, art }: any, { ilk }: VatUrnsArgs) => ({
+    collateral: $createCollateralUnsafe(ilk, ink),
+    normalizedDebt: wrapInteger(art),
+  }),
 }
 
 export const vatUrns = vatUrnsUnsafe
 
 export interface VatIlk<I extends Ilk> {
-  _ilk: I
+  ilk: I
   normalizedIlkDebt: Integer
   debtScalingFactor: Integer
   maxDebtPerUnitCollateral: RayDAI
