@@ -1,8 +1,6 @@
 import React, { useContext, useState } from 'react'
 import * as ReactDOM from 'react-dom'
 
-export type ModalComponent = React.FunctionComponent<ModalProps>
-
 export interface WithClose {
   close: () => void
 }
@@ -10,11 +8,12 @@ export interface WithClose {
 export type ModalProps<T = any> = T & WithClose
 
 export interface Modal {
-  modalComponent: ModalComponent
+  modalComponent: React.ComponentType
   modalComponentProps?: any
 }
 
-export type ModalOpener = (modal: ModalComponent, modalComponentProps?: any) => void
+export type ModalOpener =
+  <M extends React.ComponentType<any>, P extends React.ComponentProps<M>>(modal: M, modalComponentProps?: Omit<P, 'close'>) => void
 
 const ModalContext = React.createContext<ModalOpener>(() => {
   console.warn('ModalContext not setup properly ')
@@ -28,7 +27,7 @@ export function ModalProvider(props: { children?: React.ReactNode }) {
   }
   return (
     <ModalContext.Provider
-      value={(modal: ModalComponent, modalProps?: any) => {
+      value={(modal, modalProps) => {
         setModal({
           modalComponent: modal,
           modalComponentProps: modalProps,

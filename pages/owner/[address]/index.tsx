@@ -3,7 +3,9 @@ import { AppLayout } from 'components/Layouts'
 import { Vault } from 'features/vaults/vault'
 import { formatCryptoBalance, formatFiatBalance } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { getQueryParams } from 'helpers/useRedirect'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { Box, Grid, Heading, Text } from 'theme-ui'
 
 function ProxyOwner({ proxyAddress }: { proxyAddress: string }) {
@@ -15,6 +17,7 @@ function ProxyOwner({ proxyAddress }: { proxyAddress: string }) {
 }
 
 function VaultsTable({ vaults }: { vaults: Vault[] }) {
+  const { query } = useRouter();
   const headerCells = [
     'token',
     'vault id',
@@ -43,7 +46,7 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
               <Box as="td">{`${formatCryptoBalance(vault.collateral)} ${vault.token}`}</Box>
               <Box as="td">{`${formatCryptoBalance(vault.freeCollateral)} ${vault.token}`}</Box>
               <Box as="td">{formatCryptoBalance(vault.debt)}</Box>
-              <Box as="td"><Link href={`/${vault.id}`}>Manage Vault</Link></Box>
+              <Box as="td"><Link as={`/${vault.id}${getQueryParams(query)}`} href={`/[vault]`}>Manage Vault</Link></Box>
             </Box>
             ))
           }

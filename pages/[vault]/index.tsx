@@ -1,15 +1,20 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { Balances } from 'components/Balances'
+import { DepositForm } from 'features/deposit/DepositForm'
 import { AppLayout } from 'components/Layouts'
 import { VaultView } from 'components/VaultView'
+import { useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { useRouter } from 'next/router'
+import { useState } from 'react'
 import { Container } from 'theme-ui';
 
 export default function Vault() {
   const { web3Context$, vault$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
+
+  
   const {
     query: { vault: vaultId },
   } = useRouter()

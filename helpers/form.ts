@@ -6,6 +6,7 @@ import { Ticker } from 'components/blockchain/prices'
 import { combineLatest, Observable, of } from 'rxjs'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { catchError, first, flatMap, map, startWith, switchMap } from 'rxjs/operators'
+import { OmitProperties, ValueOf } from 'ts-essentials'
 
 export enum FormStage {
   idle = 'idle',
@@ -326,10 +327,7 @@ export function doGasEstimation<S extends HasGasEstimation>(
   )
 }
 
-
-type Where<S, C> = { [key in keyof S]: S[key] extends C ? key : never }[keyof S]
-type OmitFunctions<S> = Omit<S, Where<Required<S>, (...arg: unknown[]) => unknown>>
-type KeysToUnion<S extends {}> = S[keyof S]
+type OmitFunctions<S> = OmitProperties<Required<S>, (...arg: any[]) => any>
 
 export type Change<S, K extends keyof S> = {
   kind: K
@@ -337,7 +335,7 @@ export type Change<S, K extends keyof S> = {
   [value in K]: S[K]
 }
 
-export type Changes<S> = KeysToUnion<{ [K in keyof OmitFunctions<S>]-?: Change<S, K> }>
+export type Changes<S> = ValueOf<{ [K in keyof OmitFunctions<S>]-?: Change<S, K> }>
 
 export type ApplyChange<S extends {}, C extends Change<any, any> = Changes<S>> = (
   state: S,
