@@ -26,10 +26,8 @@ export function contractDesc(abi: any, address: string): ContractDesc {
   return { abi, address }
 }
 
-// const infuraProjectId = 'd96fcc7c667e4a03abf1cecd266ade2d'
-
-const infuraProjectId = '58073b4a32df4105906c702f167b91d2'
-
+const infuraProjectId = 'beabcde3dcb04fb0838ff6b3a1af9805'
+//const infuraProjectId = '58073b4a32df4105906c702f167b91d2'
 // https://kovan.infura.io/v3/58073b4a32df4105906c702f167b91d2
 
 function getOsms(addresses: Dictionary<string>) {

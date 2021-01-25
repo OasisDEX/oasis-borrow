@@ -9,6 +9,7 @@ import * as NzInt from 'money-ts/lib/NonZeroInteger'
 import * as fn from 'fp-ts/function'
 import * as Ord from 'fp-ts/lib/Ord'
 import * as Eq from 'fp-ts/lib/Eq'
+import { RAD, RAY } from 'components/blockchain/constants'
 
 export type Numeric = bigInt.BigInteger | string | BigNumber | Int.Integer
 
@@ -75,21 +76,56 @@ function $NatEq(x: Nat.Natural, y: Nat.Natural) {
   return true
 }
 
-// function expBySquaring(x: Int.Integer, n: Nat.Natural): Int.Integer {
-//   if ($NatEq(n, Nat.one)) {
-//     return x
-//   }
-//   else if() {
+function $NatToInt(x: Nat.Natural): Int.Integer {
+  return Int.wrap(Nat.unwrap(x))
+}
 
-//   }
-// }
+export function $NatMod(x: Int.Integer, m: Nat.Natural) {
+  const modInt = $NatToInt(m)
+  if (Ord.lt(Int.ord)(x, modInt)) {
+    if (!Int.isPositive(x)) {
+      return Int.negate(x)
+    } else {
+      return x
+    }
+  }
+  if (Ord.gt(Int.ord)(x, modInt)) {
+    return Int.sub(x, Int.mul(Int.div(x, m), m))
+  }
+  return Int.zero
+}
+
+const $NatTwo = Nat.add(Nat.one, Nat.one)
+
+export function $NatIsEven(n: Nat.Natural) {
+  return Int.isZero($NatMod($NatToInt(n), $NatTwo))
+}
+
+function $IntTruncate(x: Int.Integer): Int.Integer {
+  return Rat.trunc([x, $Nat(RAY)])
+}
+
+export function $pow(x: Int.Integer, n: Nat.Natural): Int.Integer {
+  if ($NatEq(n, Nat.one)) {
+    return x
+  } else {
+    const square = $IntTruncate(Int.mul(x, x))
+    if ($NatIsEven(n)) {
+      return $pow(square, Nat.div(n, $NatTwo))
+    }
+    /* odd && > 2 */
+    return $IntTruncate(
+      Int.mul(x, $pow(square, Nat.div(Nat.sub(n, Nat.one).getOrElse(Nat.one), $NatTwo))),
+    )
+  }
+}
 
 export function $naturalToString(n: Nat.Natural): string {
   return Nat.show(n)
 }
 
-export function $pow(r: Nat.Natural): Nat.Natural {
-  return Nat.one
+export function $ratToPercentage(r: Rat.Rational): string {
+  return Int.show(Rat.round(Rat.mul(r, [$Int('100'), Nat.one]))) + '%'
 }
 
 export const $Int = $parseIntegerUnsafe
