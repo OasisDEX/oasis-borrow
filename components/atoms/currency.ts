@@ -11,4 +11,8 @@ export class Currency<I extends string, U extends number> {
     this._iso = iso
     this._value = new Discrete({ dimension: iso, unit }, amount)
   }
+
+  toString(): string {
+    return this._value.toString()
+  }
 }

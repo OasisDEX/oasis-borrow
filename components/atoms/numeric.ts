@@ -8,7 +8,6 @@ import * as Rat from 'money-ts/lib/Rational'
 import * as NzInt from 'money-ts/lib/NonZeroInteger'
 import * as fn from 'fp-ts/function'
 import * as Ord from 'fp-ts/lib/Ord'
-import * as Eq from 'fp-ts/lib/Eq'
 import { RAD, RAY } from 'components/blockchain/constants'
 
 export type Numeric = bigInt.BigInteger | string | BigNumber | Int.Integer

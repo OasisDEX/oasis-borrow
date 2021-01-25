@@ -1,6 +1,4 @@
-import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { $parseNaturalUnsafe } from 'components/atoms/numeric'
 import { AppLayout } from 'components/Layouts'
 import { VaultView } from 'components/VaultView'
 import { useObservable } from 'helpers/observableHook'
@@ -15,7 +13,7 @@ export default function Vault() {
     query: { vault: vaultId },
   } = useRouter()
 
-  const id = $parseNaturalUnsafe(vaultId as string)
+  //const id = $parseNaturalUnsafe(vaultId as string)
 
   const vault = undefined //useObservable(vault$(id))
   console.log(vault)

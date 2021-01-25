@@ -60,12 +60,12 @@ export type CollateralDebtPriceRatio<I extends Ilk> = PriceRatio<CollateralPrice
 
 // Probably don't want to rely on this string splitting
 // but should be fine for now
-function collateralTokenCode<I extends Ilk>(ilk: Ilk): CollateralDefinition<I>['iso'] {
+export function collateralCode<I extends Ilk>(ilk: Ilk): CollateralDefinition<I>['iso'] {
   return ilk.split('-')[0] as CollateralDefinition<I>['iso']
 }
 
 export function $createCollateralUnsafe<I extends Ilk>(ilk: I, a: Numeric) {
-  return $createTokenUnsafe(collateralTokenCode(ilk), a) as Collateral<I>
+  return $createTokenUnsafe(collateralCode(ilk), a) as Collateral<I>
 }
 
 export function $createDebtPrice(a: Numeric): DebtPrice {

@@ -30,7 +30,7 @@ import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
 // import { createCollaterals$ } from '../features/collaterals'
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from './account/transactionManager'
-import { $Nat, $naturalToString, $parseNaturalUnsafe } from './atoms/numeric'
+import { $Nat, $naturalToString } from './atoms/numeric'
 import { catIlks } from './blockchain/calls/cat'
 import { jugIlks } from './blockchain/calls/jug'
 import { CallObservable, observe } from './blockchain/calls/observe'
@@ -45,7 +45,7 @@ import {
   createOnEveryBlock$,
   createWeb3ContextConnected$,
 } from './blockchain/network'
-import { createVault$, createVaults$ } from './blockchain/vault'
+import { createController$, createVault$, createVaults$ } from './blockchain/vault'
 
 export type TxData = never
 // | ApproveData
@@ -162,26 +162,13 @@ export function setupAppContext() {
   // const balance$ = observe(onEveryBlock$, connectedContext$, tokenBalance)
   // const collaterals$ = createCollaterals$(context$)
 
-  // const vatUrnsx$ = connectedContext$.pipe(
-  //   switchMap((context) => call(context, vatUrns)({ ilk: 'ETH-A', urnAddress: 'ss' })),
-  // )
-
-  // const x = vatUrnsx$.subscribe((urn) => {
-  //   const y = urn.collateral
-  // })
-
   // // computed
-  // const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
-  //const ilk$ = curry(createIlks$)(vatIlks$, spotIlks$, jugIlks$, catIlks$)
-  // const controller$ = memoize(
-  //   curry(createController$)(proxyOwner$, cdpManagerOwner$),
-  //   bigNumerTostring,
-  // )
+  //const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
+  const ilk$ = curry(createIlks$)(vatIlks$, spotIlks$, jugIlks$, catIlks$)
+  const controller$ = curry(createController$)(proxyOwner$, cdpManagerOwner$)
   // const balances$ = memoize(curry(createBalances$)(collaterals$, balance$))
 
   //ilk$('ETH-A').subscribe(({ stabilityFee }) => console.log(stabilityFee.toPercentage()))
-
-  jugIlks$('AAVE-A').subscribe((x) => console.log(x))
 
   const vault$ = memoize(
     curry(createVault$)(
@@ -189,10 +176,10 @@ export function setupAppContext() {
       cdpManagerIlks$,
       cdpManagerOwner$,
       vatUrns$,
-      //vatGem$,
-      //ilk$,
+      vatGem$,
+      ilk$,
       // tokenOraclePrice$,
-      // controller$,
+      controller$,
     ),
     $naturalToString,
   )
@@ -201,7 +188,7 @@ export function setupAppContext() {
 
   // const vaultSummary$ = curry(createVaultSummary)(vaults$)
 
-  vault$($Nat('500')).subscribe((v) => console.log(v))
+  vault$($Nat('2942')).subscribe((v) => console.log(v))
 
   return {
     web3Context$,
