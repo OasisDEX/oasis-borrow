@@ -18,6 +18,7 @@ import { createProxyAddress$, createProxyOwner$ } from 'components/blockchain/ca
 import { vatGem, vatIlks, vatUrns } from 'components/blockchain/calls/vat'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
+import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createIlks$, Ilk } from 'features/ilks/ilks'
 import { createController$, createTokenOraclePrice$, createVault$ } from 'features/vaults/vault'
 import { createVaults$ } from 'features/vaults/vaults'
@@ -28,14 +29,14 @@ import { curry } from 'ramda'
 import { Observable } from 'rxjs'
 import { filter, map, shareReplay } from 'rxjs/operators'
 
-import { createBalances$ } from '../features/balances'
+import { createBalances$, createETHBalance$ } from '../features/balances'
 import { createCollaterals$ } from '../features/collaterals'
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from './account/transactionManager'
 import { catIlks } from './blockchain/calls/cat'
 import { tokenBalance } from './blockchain/calls/erc20'
 import { jugIlks } from './blockchain/calls/jug'
-import { CallObservable, observe } from './blockchain/calls/observe'
+import { observe } from './blockchain/calls/observe'
 import { spotIlks, spotPar } from './blockchain/calls/spot'
 import { networksById } from './blockchain/config'
 import {
@@ -47,7 +48,7 @@ import {
   createWeb3ContextConnected$,
 } from './blockchain/network'
 
-export type TxData = never
+export type TxData = LockAndDrawData
 // | ApproveData
 // | DisapproveData
 
@@ -177,6 +178,11 @@ export function setupAppContext() {
 
   const vaultSummary$ = curry(createVaultSummary)(vaults$)
 
+  const ethBalance$ = curry(createETHBalance$)(connectedContext$)
+
+  const depositForm$ = memoize(curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$, ethBalance$), bigNumerTostring)
+
+
   return {
     web3Context$,
     setupWeb3Context$,
@@ -192,6 +198,8 @@ export function setupAppContext() {
     vault$,
     vaultSummary$,
     balances$,
+    depositForm$,
+    ethBalance$,
   }
 }
 
