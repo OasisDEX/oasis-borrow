@@ -1,5 +1,4 @@
-import BigNumber from 'bignumber.js'
-import { $naturalToString } from 'components/atoms/numeric'
+import { $Nat, $naturalToString } from 'components/atoms/numeric'
 import { Natural } from 'money-ts/lib/Natural'
 import { DssCdpManager } from 'types/web3-v1-contracts/dss-cdp-manager'
 import Web3 from 'web3'
@@ -24,7 +23,7 @@ export const cdpManagerIlks: CallDef<Natural, Ilk> = {
 export const cdpManagerCdpi: CallDef<void, Natural> = {
   call: (_, { contract, dssCdpManager }) => contract<DssCdpManager>(dssCdpManager).methods.cdpi,
   prepareArgs: () => [],
-  postprocess: (result) => result,
+  postprocess: (result: any) => $Nat(result),
 }
 
 export const cdpManagerOwner: CallDef<Natural, string> = {

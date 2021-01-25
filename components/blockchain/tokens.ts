@@ -1,7 +1,7 @@
+import bigInt from 'big-integer'
 import { Currency } from 'components/atoms/currency'
-import { $parseIntegerUnsafe, Numeric } from 'components/atoms/numeric'
-import { Dictionary } from 'lodash'
-import { Integer } from 'money-ts/lib/Integer'
+import { $Int, Numeric } from 'components/atoms/numeric'
+import * as Int from 'money-ts/lib/Integer'
 
 interface BasicTokenDefinition<I extends string, U extends number> {
   iso: I
@@ -50,6 +50,10 @@ export type WadDAI = Currency<'DAI', 18>
 export type RayDAI = Currency<'DAI', 27>
 export type RadDai = Currency<'DAI', 45>
 
+export const $WadDai = (a: Numeric) => new Currency('DAI', 27, $Int(a))
+export const $RayDai = (a: Numeric) => new Currency('DAI', 27, $Int(a))
+export const $RadDai = (a: Numeric) => new Currency('DAI', 45, $Int(a))
+
 export type TokenCode = TokenDefinitions['iso']
 
 export type TokenDefinition<T extends TokenCode> = Extract<
@@ -86,9 +90,9 @@ function tokenUnit<T extends TokenCode>(t: T): TokenUnit<T> {
 }
 
 function createTokenBuilder<T extends TokenCode>(t: T) {
-  return (a: Integer) => new Currency(t, tokenUnit(t), a)
+  return (a: Int.Integer) => new Currency(t, tokenUnit(t), a)
 }
 
 export function $createTokenUnsafe<T extends TokenCode>(t: T, a: Numeric) {
-  return createTokenBuilder(t)($parseIntegerUnsafe(a))
+  return createTokenBuilder(t)($Int(a))
 }

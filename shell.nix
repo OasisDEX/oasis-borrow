@@ -9,5 +9,7 @@ mkShell {
     export PRISMA_QUERY_ENGINE_BINARY="$HOME/code/prisma/target/release/query-engine"
     export PRISMA_INTROSPECTION_ENGINE_BINARY="$HOME/code/prisma/target/release/introspection-engine"
     export PRISMA_FMT_BINARY="$HOME/code/prisma/target/release/migration-engine"
+
+    export NODE_OPTIONS=--max_old_space_size=8192
   '';
 }

@@ -1,4 +1,4 @@
-class Ratio<A, B> {
+export class Ratio<A, B> {
   readonly _antecedent: A
   readonly _consequent: B
 

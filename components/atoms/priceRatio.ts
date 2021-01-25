@@ -1,4 +1,5 @@
 import { Price } from './price'
+import { Ratio } from './ratio'
 
 export class PriceRatio<
   AntedecentPrice extends Price<any, any>,

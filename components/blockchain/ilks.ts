@@ -1,28 +1,18 @@
-import { Fraction } from 'components/atoms/fraction'
 import { Numeric } from 'components/atoms/numeric'
 import { Price } from 'components/atoms/price'
 import { PriceRatio } from 'components/atoms/priceRatio'
-import { Integer } from 'money-ts/lib/Integer'
-import { I18n } from 'next-i18next'
-import { combineLatest, Observable } from 'rxjs'
+import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
-import { RadDai, RayDAI, Token, TokenDefinition, TokenCode, $createTokenUnsafe } from './tokens'
+import { CatIlk, catIlks } from './calls/cat'
+import { JugIlk, jugIlks } from './calls/jug'
+import { CallObservable } from './calls/observe'
+import { SpotIlk, spotIlks } from './calls/spot'
+import { VatIlk, vatIlks } from './calls/vat'
+import { Token, TokenDefinition, TokenCode, $createTokenUnsafe } from './tokens'
 
 interface IlkConstructor<I extends Ilk, T extends TokenCode> {
   ilk: I
   collateralDefinition: TokenDefinition<T>
-  // normalizedIlkDebt: Integer
-  // debtScalingFactor: Integer
-  // maxDebtPerUnitCollateral: RayDAI
-  // debtCeiling: RadDai
-  // debtFloor: RadDai
-  // liquidatorAddress: string
-  // liquidationPenalty: Fraction
-  // maxDebtPerAuctionLot: RadDai
-  // priceFeedAddress: string
-  // liquidationRatio: CollateralDebtPriceRatio<I>
-  // stabilityFee: Fraction
-  // feeLastLevied: Date
 }
 
 export type Ilks =
@@ -63,12 +53,13 @@ type Collaterals = CollateralDefinitions['currency']
 
 export type Collateral<I extends Ilk> = CollateralDefinition<I>['currency']
 
-export type CollateralPrice<I extends Ilk> = Price<Token<'USD'>, Collateral<I>>
-export type DebtPrice = Price<Token<'USD'>, Token<'DAI'>>
+export type CollateralPrice<I extends Ilk> = Price<Collateral<I>, Token<'USD'>>
+export type DebtPrice = Price<Token<'DAI'>, Token<'USD'>>
 
 export type CollateralDebtPriceRatio<I extends Ilk> = PriceRatio<CollateralPrice<I>, DebtPrice>
 
 // Probably don't want to rely on this string splitting
+// but should be fine for now
 function collateralTokenCode<I extends Ilk>(ilk: Ilk): CollateralDefinition<I>['iso'] {
   return ilk.split('-')[0] as CollateralDefinition<I>['iso']
 }
@@ -77,65 +68,56 @@ export function $createCollateralUnsafe<I extends Ilk>(ilk: I, a: Numeric) {
   return $createTokenUnsafe(collateralTokenCode(ilk), a) as Collateral<I>
 }
 
-interface VatIlk<I extends Ilk> {
-  ilk: I
-  normalizedIlkDebt: Integer
-  debtScalingFactor: Integer
-  maxDebtPerUnitCollateral: RayDAI
-  debtCeiling: RadDai
-  debtFloor: RadDai
+export function $createDebtPrice(a: Numeric): DebtPrice {
+  return new Price($createTokenUnsafe('DAI', a), $createTokenUnsafe('USD', '1'))
 }
 
-interface CatIlk<I extends Ilk> {
-  ilk: I
-  liquidatorAddress: string
-  liquidationPenalty: Fraction
-  maxDebtPerAuctionLot: RadDai
+export function $createCollateralPrice<I extends Ilk>(ilk: I, a: Numeric): CollateralPrice<I> {
+  return new Price($createCollateralUnsafe(ilk, a), $createTokenUnsafe('USD', '1'))
 }
 
-interface SpotIlk<I extends Ilk> {
-  ilk: I
-  priceFeedAddress: string
-  liquidationRatio: CollateralDebtPriceRatio<I>
-}
-
-interface JugIlk<I extends Ilk> {
-  ilk: I
-  stabilityFee: Fraction
-  feeLastLevied: Date
+export function $createCollateralDebtPriceRatio<I extends Ilk>(
+  ilk: I,
+  a: Numeric,
+): CollateralDebtPriceRatio<I> {
+  return new PriceRatio(
+    new Price($createCollateralUnsafe(ilk, a), $createTokenUnsafe('USD', '1')),
+    new Price($createTokenUnsafe('DAI', '1'), $createTokenUnsafe('USD', '1')),
+  )
 }
 
 export type IlkData<I extends Ilk> = VatIlk<I> & CatIlk<I> & SpotIlk<I> & JugIlk<I>
 
-// export function createIlks$(
-//   vatIlks$: CallObservable<typeof vatIlks>,
-//   spotIlks$: CallObservable<typeof spotIlks>,
-//   jugIlks$: CallObservable<typeof jugIlks>,
-//   catIlks$: CallObservable<typeof catIlks>,
-//   ilk: Ilk,
-// ): Observable<IlkDefinition<Ilk>> {
-//   return combineLatest(vatIlks$(ilk), spotIlks$(ilk), jugIlks$(ilk), catIlks$(ilk)).pipe(
-//     switchMap(
-//       ([
-//         { normalizedIlkDebt, debtScalingFactor, maxDebtPerUnitCollateral, debtCeiling, debtFloor },
-//         { priceFeedAddress, liquidationRatio },
-//         { stabilityFee, feeLastLevied },
-//         { liquidatorAddress, liquidationPenalty, maxAuctionLotSize },
-//       ]) =>
-//         of({
-//           normalizedIlkDebt,
-//           debtScalingFactor,
-//           maxDebtPerUnitCollateral,
-//           debtCeiling,
-//           debtFloor,
-//           priceFeedAddress,
-//           liquidationRatio,
-//           stabilityFee,
-//           feeLastLevied,
-//           liquidatorAddress,
-//           liquidationPenalty,
-//           maxAuctionLotSize,
-//         }),
-//     ),
-//   )
-// }
+export function createIlks$<I extends Ilk>(
+  vatIlks$: (ilk: I) => Observable<VatIlk<I>>,
+  spotIlks$: (ilk: I) => Observable<SpotIlk<I>>,
+  jugIlks$: (ilk: I) => Observable<JugIlk<I>>,
+  catIlks$: (ilk: I) => Observable<CatIlk<I>>,
+  ilk: I,
+): Observable<IlkData<I>> {
+  return combineLatest(vatIlks$(ilk), spotIlks$(ilk), jugIlks$(ilk), catIlks$(ilk)).pipe(
+    switchMap(
+      ([
+        { normalizedIlkDebt, debtScalingFactor, maxDebtPerUnitCollateral, debtCeiling, debtFloor },
+        { priceFeedAddress, liquidationRatio },
+        { stabilityFee, dateFeeLastLevied },
+        { liquidatorAddress, liquidationPenalty, maxDebtPerAuctionLot },
+      ]) =>
+        of({
+          ilk,
+          normalizedIlkDebt,
+          debtScalingFactor,
+          maxDebtPerUnitCollateral,
+          debtCeiling,
+          debtFloor,
+          priceFeedAddress,
+          liquidationRatio,
+          stabilityFee,
+          dateFeeLastLevied,
+          liquidatorAddress,
+          liquidationPenalty,
+          maxDebtPerAuctionLot,
+        }),
+    ),
+  )
+}

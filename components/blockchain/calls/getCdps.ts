@@ -1,4 +1,4 @@
-import { $parseNaturalUnsafe } from 'components/atoms/numeric'
+import { $Nat } from 'components/atoms/numeric'
 import { Natural } from 'money-ts/lib/Natural'
 import { GetCdps } from 'types/web3-v1-contracts/get-cdps'
 import { Ilk } from '../ilks'
@@ -24,7 +24,7 @@ export const getCdps: CallDef<GetCdpsArgs, GetCdpsResult> = {
   },
   prepareArgs: ({ proxyAddress }, { dssCdpManager }) => [dssCdpManager.address, proxyAddress],
   postprocess: ({ ids, urns, ilks }: any) => ({
-    ids: ids.map((id: string) => $parseNaturalUnsafe(id)),
+    ids: ids.map((id: string) => $Nat(id)),
     urns: urns as string[],
     ilks: ilks as Ilk[],
   }),
