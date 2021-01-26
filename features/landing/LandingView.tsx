@@ -22,11 +22,11 @@ const TokenSymbolMap: Record<string, ComponentType<IconProps>> = {
     LRC: props => <Icon name="lrc" {...props}/>, 
     LINK: props => <Icon name="chainlink" {...props}/>, 
     GUSD: props => <Icon name="gemini" {...props}/>,
+    ZRX: props => <Icon name="zerox" {...props}/>,
+    USDC: props => <Icon name="usdc" {...props}/>,
     
-    USDC: props => <Icon name="close" {...props}/>, // MISSING ICON
-    ZRX: props => <Icon name="close" {...props}/>, // MISSING ICON
-    YFI: props => <Icon name="close" {...props}/>, // MISSING ICON
-    BAL: props => <Icon name="close" {...props}/>, // MISSING ICON
+    YFI: props => <Icon name="close" color="red" {...props}/>, // MISSING ICON
+    BAL: props => <Icon name="close" color="red" {...props}/>, // MISSING ICON
 } // THIS MIGHT BE MOVED TO CONFIG
 
 function Table({header, children, sx}: React.PropsWithChildren<{header: ReactNode, sx?: SxStyleProp}>) {
