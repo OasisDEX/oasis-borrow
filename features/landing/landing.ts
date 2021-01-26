@@ -18,7 +18,7 @@ interface Landing {
     rows: LandingRow[]
 }
 
-export function createLanding$(ilks$: Observable<string[]>, ilk$: (ilk: string) => Observable<Ilk>) {
+export function createLanding$(ilks$: Observable<string[]>, ilk$: (ilk: string) => Observable<Ilk>): Observable<Landing> {
 
     return ilks$.pipe(
         switchMap(types => combineLatest(types.map(ilk => ilk$(ilk))).pipe(

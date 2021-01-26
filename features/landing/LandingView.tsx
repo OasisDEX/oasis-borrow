@@ -3,8 +3,31 @@ import { useAppContext } from 'components/AppContextProvider';
 import { getConnector } from 'components/connectWallet/ConnectWallet';
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format';
 import { useObservable } from 'helpers/observableHook';
-import React, { ReactNode, useEffect } from 'react';
+import React, { ComponentProps, ComponentType, ReactNode, useEffect } from 'react';
 import { Container, Box, SxStyleProp, Button } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons'
+
+type IconProps = Omit<ComponentProps<typeof Icon>, 'name'>
+const TokenSymbolMap: Record<string, ComponentType<IconProps>> = {
+    ETH: props => <Icon name="ether" {...props}/>,
+    BAT: props => <Icon name="bat" {...props}/>,
+    SAI: props => <Icon name="sai" {...props}/>,
+    WBTC: props => <Icon name="wbtc" {...props}/>,
+    TUSD: props => <Icon name="tusd" {...props}/>,
+    KNC: props => <Icon name="kyber" {...props}/>,
+    MANA: props => <Icon name="mana" {...props}/>,
+    PAXUSD: props => <Icon name="pax" {...props}/>, 
+    USDT: props => <Icon name="usdt" {...props}/>, 
+    COMP: props => <Icon name="compound" {...props}/>, 
+    LRC: props => <Icon name="lrc" {...props}/>, 
+    LINK: props => <Icon name="chainlink" {...props}/>, 
+    GUSD: props => <Icon name="gemini" {...props}/>,
+    
+    USDC: props => <Icon name="close" {...props}/>, // MISSING ICON
+    ZRX: props => <Icon name="close" {...props}/>, // MISSING ICON
+    YFI: props => <Icon name="close" {...props}/>, // MISSING ICON
+    BAL: props => <Icon name="close" {...props}/>, // MISSING ICON
+} // THIS MIGHT BE MOVED TO CONFIG
 
 function Table({header, children, sx}: React.PropsWithChildren<{header: ReactNode, sx?: SxStyleProp}>) {
     return (
@@ -30,14 +53,14 @@ Table.Header = function({children, sx}: React.PropsWithChildren<{sx?: SxStylePro
     return <Box sx={{px: 3, lineHeight: 4, borderBottom: '1px solid #D8DFE3', ...sx}} as="th">{children}</Box>
 }
 
-export function LandingView() {
-    const { landing$, context$, readonlyAccount$, web3Context$ } = useAppContext();
-    const landing = useObservable(landing$);
-    const context = useObservable(context$);
-    const account = useObservable(readonlyAccount$);
-    
-    console.log({landing, context, account});
+function TokenSymbol({ token }: {token: string}) {
+    const TokenIcon = TokenSymbolMap[token] || TokenSymbolMap.ETH
+    return <Box><TokenIcon size="20px" sx={{verticalAlign: 'sub'}} /> {token}</Box>
+}
 
+export function LandingView() {
+    const { landing$, web3Context$ } = useAppContext();
+    const landing = useObservable(landing$);
     useEffect(() => {
         const subscription = web3Context$.subscribe(async web3Context => {
             if(web3Context.status === 'notConnected') {
@@ -67,7 +90,7 @@ export function LandingView() {
                 {
                     landing?.rows.map(ilk => (
                         <Table.Row sx={{td: {py: 2}}}>
-                            <Table.Cell>{ilk.token}</Table.Cell>
+                            <Table.Cell><TokenSymbol token={ilk.token}/></Table.Cell>
                             <Table.Cell>{ilk.ilk}</Table.Cell>
                             <Table.Cell sx={{textAlign: 'right'}}>{formatCryptoBalance(ilk.daiAvailable)}</Table.Cell>
                             <Table.Cell sx={{textAlign: 'right'}}>{formatPercent(ilk.stabilityFee)}</Table.Cell>
