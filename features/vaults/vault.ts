@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { Ilk } from 'features/ilks/ilks'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
-import { map, mergeMap, switchMap, take } from 'rxjs/operators'
+import { map, mergeMap, shareReplay, switchMap, take, tap } from 'rxjs/operators'
 
 import {
   cdpManagerIlks,
@@ -251,35 +251,6 @@ export interface Vault {
   debtFloor: BigNumber
 }
 
-export const mockVault: Vault = {
-  id: '500',
-  ilk: 'ETH-A',
-  token: 'ETH',
-  owner: '0x05623eb676A8abA2d381604B630ded1A81Dc05a9',
-  address: '0x882cd8B63b4b6cB5ca2Bda899f6A8c968d66643e',
-  controller: '0x8A0Bfe04D175D345b5FDcD3e9Ca5d00b608Ce6A3',
-  collateral: new BigNumber('98'),
-  unlockedCollateral: new BigNumber('0'),
-  collateralPrice: new BigNumber('122014.90'),
-  backingCollateral: new BigNumber('20.28'),
-  backingCollateralPrice: new BigNumber('20.28'),
-  freeCollateral: new BigNumber('77.72'),
-  freeCollateralPrice: new BigNumber('96770.74'),
-  normalizedDebt: new BigNumber('16403.419856003889170145'),
-  collateralizationRatio: new BigNumber('7.25'),
-  debt: new BigNumber('16829.44'),
-  availableDebt: new BigNumber('64513.82'),
-  availableIlkDebt: new BigNumber('110593468.87'),
-  debtFloor: new BigNumber('500'),
-  stabilityFee: new BigNumber(
-    '0.024999999999905956943812259791573533789860268487320672821177905084121745214484109204754426155886843',
-  ),
-  liquidationPrice: new BigNumber('257.59'),
-  liquidationRatio: new BigNumber('1.50'),
-  liquidationPenalty: new BigNumber('0.13'),
-  tokenOraclePrice: new BigNumber('1245.05'),
-}
-
 export function createTokenOraclePrice$(
   vatIlks$: CallObservable<typeof vatIlks>,
   ratioDAIUSD$: CallObservable<typeof spotPar>,
@@ -327,7 +298,7 @@ export function createVault$(
     controller$(id),
   ).pipe(
     switchMap(([urnAddress, ilk, owner, controller]) => {
-      const token = 'ETH' // TODO
+      const [token] = ilk.split('-');
       return combineLatest(
         vatUrns$({ ilk, urnAddress }),
         vatGem$({ ilk, urnAddress }),
@@ -400,6 +371,6 @@ export function createVault$(
         ),
       )
     }),
-    take(1),
+    shareReplay(1)
   )
 }
