@@ -35,7 +35,7 @@ export interface VatIlk {
   debtFloor: BigNumber // debtFloor [rad]
 }
 
-export const vatIlks: CallDef<string, VatIlk> = {
+export const vatIlk: CallDef<string, VatIlk> = {
   call: (_, { contract, vat }) => {
     return contract<Vat>(vat).methods.ilks
   },

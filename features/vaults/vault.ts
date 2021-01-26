@@ -10,8 +10,8 @@ import {
   cdpManagerUrns,
 } from '../../components/blockchain/calls/cdpManager'
 import { CallObservable } from '../../components/blockchain/calls/observe'
-import {  spotIlks, spotPar } from '../../components/blockchain/calls/spot'
-import {  vatGem,  vatIlks, vatUrns } from '../../components/blockchain/calls/vat'
+import {  spotIlk, spotPar } from '../../components/blockchain/calls/spot'
+import {  vatGem,  vatIlk, vatUrns } from '../../components/blockchain/calls/vat'
 
 export interface Vault {
   /*
@@ -281,9 +281,9 @@ export const mockVault: Vault = {
 }
 
 export function createTokenOraclePrice$(
-  vatIlks$: CallObservable<typeof vatIlks>,
+  vatIlks$: CallObservable<typeof vatIlk>,
   ratioDAIUSD$: CallObservable<typeof spotPar>,
-  liquidationRatio$: CallObservable<typeof spotIlks>,
+  liquidationRatio$: CallObservable<typeof spotIlk>,
   ilk: string,
 ) {
   return combineLatest(vatIlks$(ilk), liquidationRatio$(ilk), ratioDAIUSD$()).pipe(

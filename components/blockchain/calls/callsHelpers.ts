@@ -1,6 +1,5 @@
 import { SendFunction, TxMeta } from '@oasisdex/transactions'
 import {
-  call as callAbstractContext,
   CallDef as CallDefAbstractContext,
   createSendTransaction as createSendTransactionAbstractContext,
   createSendWithGasConstraints as createSendWithGasConstraintsAbstractContext,
@@ -10,6 +9,8 @@ import {
   TransactionDef as TransactionDefAbstractContext,
 } from '@oasisdex/transactions'
 import { GasPrice$ } from 'components/blockchain/prices'
+import { from, Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
 
 import { Context, ContextConnected } from '../network'
 
@@ -25,8 +26,24 @@ export type SendTransactionFunction<A extends TxMeta> = SendTransactionFunctionA
   ContextConnected
 >
 
-export function call<D, R>(context: ContextConnected, callDef: CallDef<D, R>) {
-  return callAbstractContext<D, R, ContextConnected>(context, callDef)
+export function callAbstractContext<D, R, CC extends Context>(
+  context: CC,
+  { call, prepareArgs, postprocess }: CallDefAbstractContext<D, R, CC>,
+): (args: D) => Observable<R> {
+  return (args: D) => {
+    return from<R>(
+      call(
+        args,
+        context,
+      )(...prepareArgs(args, context)).call(
+        context.status === 'connected' ? { from: (context as any).account } : {},
+      ),
+    ).pipe(map((i: R) => (postprocess ? postprocess(i, args) : i)));
+  };
+}
+
+export function call<D, R>(context: Context, callDef: CallDef<D, R>) {
+  return callAbstractContext<D, R, Context>(context, callDef)
 }
 
 export function estimateGas<A extends TxMeta>(

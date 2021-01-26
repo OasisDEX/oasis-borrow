@@ -15,11 +15,13 @@ import {
   cdpManagerUrns,
 } from 'components/blockchain/calls/cdpManager'
 import { createProxyAddress$, createProxyOwner$ } from 'components/blockchain/calls/proxy'
-import { vatGem, vatIlks, vatUrns } from 'components/blockchain/calls/vat'
+import { vatGem, vatIlk, vatUrns } from 'components/blockchain/calls/vat'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
-import { createIlks$, Ilk } from 'features/ilks/ilks'
+import { createIlk$, Ilk } from 'features/ilks/ilks'
+import { createIlks$ } from 'features/landing/ilks'
+import { createLanding$ } from 'features/landing/landing'
 import { createController$, createTokenOraclePrice$, createVault$ } from 'features/vaults/vault'
 import { createVaults$ } from 'features/vaults/vaults'
 import { createVaultSummary } from 'features/vaults/vaultsSummary'
@@ -33,11 +35,11 @@ import { createBalances$, createETHBalance$ } from '../features/balances'
 import { createCollaterals$ } from '../features/collaterals'
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from './account/transactionManager'
-import { catIlks } from './blockchain/calls/cat'
+import { catIlk } from './blockchain/calls/cat'
 import { tokenBalance } from './blockchain/calls/erc20'
-import { jugIlks } from './blockchain/calls/jug'
+import { jugIlk } from './blockchain/calls/jug'
 import { observe } from './blockchain/calls/observe'
-import { spotIlks, spotPar } from './blockchain/calls/spot'
+import { spotIlk, spotPar } from './blockchain/calls/spot'
 import { networksById } from './blockchain/config'
 import {
   ContextConnected,
@@ -139,13 +141,13 @@ export function setupAppContext() {
     cdpManagerOwner,
     bigNumerTostring,
   )
-  const vatIlks$ = observe(onEveryBlock$, connectedContext$, vatIlks)
-  const vatUrns$ = observe(onEveryBlock$, connectedContext$, vatUrns, ilkUrnAddressTostring)
-  const vatGem$ = observe(onEveryBlock$, connectedContext$, vatGem, ilkUrnAddressTostring)
-  const spotPar$ = observe(onEveryBlock$, connectedContext$, spotPar)
-  const spotIlks$ = observe(onEveryBlock$, connectedContext$, spotIlks)
-  const jugIlks$ = observe(onEveryBlock$, connectedContext$, jugIlks)
-  const catIlks$ = observe(onEveryBlock$, connectedContext$, catIlks)
+  const vatIlks$ = observe(onEveryBlock$, context$, vatIlk)
+  const vatUrns$ = observe(onEveryBlock$, context$, vatUrns, ilkUrnAddressTostring)
+  const vatGem$ = observe(onEveryBlock$, context$, vatGem, ilkUrnAddressTostring)
+  const spotPar$ = observe(onEveryBlock$, context$, spotPar)
+  const spotIlks$ = observe(onEveryBlock$, context$, spotIlk)
+  const jugIlks$ = observe(onEveryBlock$, context$, jugIlk)
+  const catIlks$ = observe(onEveryBlock$, context$, catIlk)
 
   const balance$ = observe(onEveryBlock$, connectedContext$, tokenBalance)
 
@@ -153,7 +155,7 @@ export function setupAppContext() {
 
   // computed
   const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
-  const ilk$ = memoize(curry(createIlks$)(vatIlks$, spotIlks$, jugIlks$, catIlks$))
+  const ilk$ = memoize(curry(createIlk$)(vatIlks$, spotIlks$, jugIlks$, catIlks$))
   const controller$ = memoize(
     curry(createController$)(proxyOwner$, cdpManagerOwner$),
     bigNumerTostring,
@@ -183,6 +185,9 @@ export function setupAppContext() {
   const depositForm$ = memoize(curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$, ethBalance$), bigNumerTostring)
 
 
+  const ilks$ = createIlks$(context$)
+  const landing$ = curry(createLanding$)(ilks$, ilk$)
+
   return {
     web3Context$,
     setupWeb3Context$,
@@ -200,6 +205,7 @@ export function setupAppContext() {
     balances$,
     depositForm$,
     ethBalance$,
+    landing$
   }
 }
 
