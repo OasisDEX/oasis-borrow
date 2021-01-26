@@ -13,7 +13,6 @@ export default function LandingPage() {
           if(web3Context.status === 'notConnected') {
               web3Context.connect(await getConnector('network', getNetworkId()), 'network')
           }
-          console.log('CONNECTED ********************', web3Context)
       })
       return () => subscription.unsubscribe()
   }, [])
