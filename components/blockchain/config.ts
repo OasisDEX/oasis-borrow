@@ -7,6 +7,7 @@ import * as dsProxyFactory from './abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from './abi/ds-proxy-registry.json'
 import * as dssCdpManager from './abi/dss-cdp-manager.json'
 import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
+import * as dssProxyActions from './abi/dss-proxy-actions.json'
 import * as erc20 from './abi/erc20.json'
 import * as getCdps from './abi/get-cdps.json'
 import * as otc from './abi/matching-market.json'
@@ -19,7 +20,6 @@ import * as mcdPot from './abi/mcd-pot.json'
 import * as mcdSpot from './abi/mcd-spot.json'
 import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
-import * as dssProxyActions from './abi/dss-proxy-actions.json'
 import { default as kovanAddresses } from './addresses/kovan.json'
 import { default as mainnetAddresses } from './addresses/mainnet.json'
 
@@ -166,7 +166,7 @@ function getCollateralJoinContracts(addresses: Dictionary<string>) {
   return Object.entries(addresses)
     .filter(([key]) => /MCD_JOIN_(.*)/.test(key))
     .map(([key, address]) => [key.replace('MCD_JOIN_', '').replace('_', '-'), address])
-    .reduce((acc, [ilk, address]) => ({...acc, [ilk]: address}), {} as Dictionary<string>)
+    .reduce((acc, [ilk, address]) => ({ ...acc, [ilk]: address }), {} as Dictionary<string>)
 }
 
 const protoMain = {

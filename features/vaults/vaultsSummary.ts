@@ -1,6 +1,7 @@
 import BigNumber from "bignumber.js";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+
 import { Vault } from "./vault";
 
 function getTotalCollateralPrice(vaults: Vault[]) {

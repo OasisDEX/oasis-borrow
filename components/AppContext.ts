@@ -19,7 +19,7 @@ import { vatGem, vatIlk, vatUrns } from 'components/blockchain/calls/vat'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
-import { createIlk$, Ilk } from 'features/ilks/ilks'
+import { createIlk$ } from 'features/ilks/ilks'
 import { createIlks$ } from 'features/landing/ilks'
 import { createLanding$ } from 'features/landing/landing'
 import { createController$, createTokenOraclePrice$, createVault$ } from 'features/vaults/vault'
@@ -183,7 +183,6 @@ export function setupAppContext() {
   const ethBalance$ = curry(createETHBalance$)(connectedContext$)
 
   const depositForm$ = memoize(curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$, ethBalance$), bigNumerTostring)
-
 
   const ilks$ = createIlks$(context$)
   const landing$ = curry(createLanding$)(ilks$, ilk$)

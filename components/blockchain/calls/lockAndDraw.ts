@@ -1,10 +1,11 @@
+import dsProxy from 'components/blockchain/abi/ds-proxy.json';
 import { TransactionDef } from "components/blockchain/calls/callsHelpers";
 import { contractDesc } from "components/blockchain/config";
 import { ContextConnected } from "components/blockchain/network";
-import dsProxy from 'components/blockchain/abi/ds-proxy.json';
-import { DsProxy } from "types/web3-v1-contracts/ds-proxy";
 import { amountToWei } from "components/blockchain/utils";
+import { DsProxy } from "types/web3-v1-contracts/ds-proxy";
 import { DssProxyActions } from "types/web3-v1-contracts/dss-proxy-actions";
+
 import { LockAndDrawData } from "../../../features/deposit/deposit";
 
 function getCallData(data: LockAndDrawData, context: ContextConnected) {

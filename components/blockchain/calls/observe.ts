@@ -2,7 +2,7 @@ import { isEqual, memoize } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, first, shareReplay, switchMap } from 'rxjs/operators'
 
-import { Context, ContextConnected } from '../network'
+import { Context } from '../network'
 import { call, CallDef } from './callsHelpers'
 
 export function observe<A, R>(

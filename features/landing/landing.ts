@@ -3,8 +3,6 @@ import { Ilk } from "features/ilks/ilks";
 import { combineLatest, Observable } from "rxjs";
 import { distinctUntilChanged, map, shareReplay, switchMap } from "rxjs/operators";
 
-
-
 interface LandingRow {
     token: string
     ilk: string
