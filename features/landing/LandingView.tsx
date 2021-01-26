@@ -1,33 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { getNetworkId } from '@oasisdex/web3-context';
 import { useAppContext } from 'components/AppContextProvider';
-import { getConnector } from 'components/connectWallet/ConnectWallet';
+import { getToken } from 'components/blockchain/config';
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format';
 import { useObservable } from 'helpers/observableHook';
 import React, { ComponentProps, ComponentType, ReactNode, useEffect } from 'react';
 import { Box, Button,Container, SxStyleProp } from 'theme-ui';
-
-type IconProps = Omit<ComponentProps<typeof Icon>, 'name'>
-const TokenSymbolMap: Record<string, ComponentType<IconProps>> = {
-    ETH: props => <Icon name="ether" {...props}/>,
-    BAT: props => <Icon name="bat" {...props}/>,
-    SAI: props => <Icon name="sai" {...props}/>,
-    WBTC: props => <Icon name="wbtc" {...props}/>,
-    TUSD: props => <Icon name="tusd" {...props}/>,
-    KNC: props => <Icon name="kyber" {...props}/>,
-    MANA: props => <Icon name="mana" {...props}/>,
-    PAXUSD: props => <Icon name="pax" {...props}/>, 
-    USDT: props => <Icon name="usdt" {...props}/>, 
-    COMP: props => <Icon name="compound" {...props}/>, 
-    LRC: props => <Icon name="lrc" {...props}/>, 
-    LINK: props => <Icon name="chainlink" {...props}/>, 
-    GUSD: props => <Icon name="gemini" {...props}/>,
-    ZRX: props => <Icon name="zerox" {...props}/>,
-    USDC: props => <Icon name="usdc" {...props}/>,
-    
-    YFI: props => <Icon name="close" color="red" {...props}/>, // MISSING ICON
-    BAL: props => <Icon name="close" color="red" {...props}/>, // MISSING ICON
-} // THIS MIGHT BE MOVED TO CONFIG
 
 function Table({ header, children, sx }: React.PropsWithChildren<{header: ReactNode, sx?: SxStyleProp}>) {
     return (
@@ -54,21 +31,14 @@ Table.Header = function({ children, sx }: React.PropsWithChildren<{sx?: SxStyleP
 }
 
 function TokenSymbol({ token }: {token: string}) {
-    const TokenIcon = TokenSymbolMap[token] || TokenSymbolMap.ETH
-    return <Box><TokenIcon size="20px" sx={{ verticalAlign: 'sub' }} /> {token}</Box>
+    const tokenInfo = getToken(token);
+    
+    return <Box><Icon name={tokenInfo.icon} size="20px" sx={{ verticalAlign: 'sub' }}/>{token}</Box>
 }
 
 export function LandingView() {
-    const { landing$, web3Context$ } = useAppContext();
+    const { landing$ } = useAppContext();
     const landing = useObservable(landing$);
-    useEffect(() => {
-        const subscription = web3Context$.subscribe(async web3Context => {
-            if(web3Context.status === 'notConnected') {
-                web3Context.connect(await getConnector('network', getNetworkId()), 'network')
-            }
-        })
-        return () => subscription.unsubscribe()
-    }, [])
 
     if  (landing === undefined) {
         return null;
