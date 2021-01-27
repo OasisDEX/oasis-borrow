@@ -19,7 +19,7 @@ import { vatGem, vatIlks, vatUrns } from 'components/blockchain/calls/vat'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
-import { createIlks$, Ilk } from 'features/ilks/ilks'
+import { createIlks$ } from 'features/ilks/ilks'
 import { createController$, createTokenOraclePrice$, createVault$ } from 'features/vaults/vault'
 import { createVaults$ } from 'features/vaults/vaults'
 import { createVaultSummary } from 'features/vaults/vaultsSummary'
@@ -131,13 +131,23 @@ export function setupAppContext() {
   // base
   const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
   const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
-  const cdpManagerUrns$ = observe(onEveryBlock$, connectedContext$, cdpManagerUrns, bigNumerTostring)
-  const cdpManagerIlks$ = observe(onEveryBlock$, connectedContext$, cdpManagerIlks, bigNumerTostring)
+  const cdpManagerUrns$ = observe(
+    onEveryBlock$,
+    connectedContext$,
+    cdpManagerUrns,
+    bigNumberTostring,
+  )
+  const cdpManagerIlks$ = observe(
+    onEveryBlock$,
+    connectedContext$,
+    cdpManagerIlks,
+    bigNumberTostring,
+  )
   const cdpManagerOwner$ = observe(
     onEveryBlock$,
     connectedContext$,
     cdpManagerOwner,
-    bigNumerTostring,
+    bigNumberTostring,
   )
   const vatIlks$ = observe(onEveryBlock$, connectedContext$, vatIlks)
   const vatUrns$ = observe(onEveryBlock$, connectedContext$, vatUrns, ilkUrnAddressTostring)
@@ -156,7 +166,7 @@ export function setupAppContext() {
   const ilk$ = memoize(curry(createIlks$)(vatIlks$, spotIlks$, jugIlks$, catIlks$))
   const controller$ = memoize(
     curry(createController$)(proxyOwner$, cdpManagerOwner$),
-    bigNumerTostring,
+    bigNumberTostring,
   )
   const balances$ = memoize(curry(createBalances$)(collaterals$, balance$))
 
@@ -171,7 +181,7 @@ export function setupAppContext() {
       tokenOraclePrice$,
       controller$,
     ),
-    bigNumerTostring,
+    bigNumberTostring,
   )
 
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
@@ -180,8 +190,10 @@ export function setupAppContext() {
 
   const ethBalance$ = curry(createETHBalance$)(connectedContext$)
 
-  const depositForm$ = memoize(curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$, ethBalance$), bigNumerTostring)
-
+  const depositForm$ = memoize(
+    curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$, ethBalance$),
+    bigNumberTostring,
+  )
 
   return {
     web3Context$,
@@ -203,13 +215,11 @@ export function setupAppContext() {
   }
 }
 
-function bigNumerTostring(v: BigNumber): string {
+function bigNumberTostring(v: BigNumber): string {
   return v.toString()
 }
 
-function ilkUrnAddressTostring(
-  { ilk, urnAddress }: {ilk: string, urnAddress: string }
-): string {
+function ilkUrnAddressTostring({ ilk, urnAddress }: { ilk: string; urnAddress: string }): string {
   return `${ilk}-${urnAddress}`
 }
 
