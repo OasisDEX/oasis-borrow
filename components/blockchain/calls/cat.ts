@@ -13,7 +13,7 @@ export interface CatIlk {
   maxAuctionLotSize: BigNumber
 }
 
-export const catIlks: CallDef<string, CatIlk> = {
+export const catIlk: CallDef<string, CatIlk> = {
   call: (_, { contract, mcdCat }) => contract<McdCat>(mcdCat).methods.ilks,
   prepareArgs: (collateralTypeName) => [Web3.utils.utf8ToHex(collateralTypeName)],
   postprocess: ({ flip, chop, dunk }: any) => ({

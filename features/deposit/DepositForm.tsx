@@ -1,13 +1,14 @@
-import { Modal, ModalCloseIcon, } from '../../components/Modal'
-import { Text, Label, Heading, Button, Box, Grid } from 'theme-ui';
-import { useAppContext } from '../../components/AppContextProvider';
-import { useObservable } from 'helpers/observableHook';
-import { BigNumberInput } from 'helpers/BigNumberInput'
-import { useCallback } from 'react';
 import BigNumber from 'bignumber.js';
-import { createNumberMask } from 'text-mask-addons';
-import { getToken } from '../../components/blockchain/config';
+import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount } from 'helpers/formatters/format';
+import { useObservable } from 'helpers/observableHook';
+import { useCallback } from 'react';
+import { createNumberMask } from 'text-mask-addons';
+import { Box, Button, Grid,Heading, Label, Text } from 'theme-ui';
+
+import { useAppContext } from '../../components/AppContextProvider';
+import { getToken } from '../../components/blockchain/config';
+import { Modal, ModalCloseIcon, } from '../../components/Modal'
 
 export function DepositForm({ close, vaultId }: { close: () => void, vaultId: BigNumber }) {
     const { depositForm$ } = useAppContext()

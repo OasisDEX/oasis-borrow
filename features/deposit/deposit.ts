@@ -1,15 +1,16 @@
 import BigNumber from "bignumber.js"
+import { TxHelpers } from "components/AppContext"
 import { tokenBalance } from "components/blockchain/calls/erc20"
 import { CallObservable } from "components/blockchain/calls/observe"
 import { TxMetaKind } from "components/blockchain/calls/txMeta"
 import { ContextConnected } from "components/blockchain/network"
-import { Changes, applyChange, ApplyChange, Change, transactionToX } from "helpers/form"
-import { merge, Observable, of, Subject, combineLatest } from "rxjs"
-import { first, map, scan, shareReplay, startWith, switchMap } from "rxjs/operators"
-import { Vault } from "../vaults/vault"
-import { TxHelpers } from "components/AppContext"
-import { lockAndDraw } from "../../components/blockchain/calls/lockAndDraw"
+import { ApplyChange, applyChange, Change, Changes, transactionToX } from "helpers/form"
 import { curry } from "ramda"
+import { combineLatest,merge, Observable, of, Subject } from "rxjs"
+import { first, map, scan, shareReplay, startWith, switchMap } from "rxjs/operators"
+
+import { lockAndDraw } from "../../components/blockchain/calls/lockAndDraw"
+import { Vault } from "../vaults/vault"
 
 export type DepositStage =
   | 'editing'
@@ -93,9 +94,9 @@ function addTransitions(txHelpers: TxHelpers, change: (ch: StateChange) => void,
         return {
             ...state,
             reset: () => {
-                change({kind: 'stage', stage: 'editing'})
-                change({kind: 'drawAmount', drawAmount: undefined})
-                change({kind: 'lockAmount', lockAmount: undefined})
+                change({ kind: 'stage', stage: 'editing' })
+                change({ kind: 'drawAmount', drawAmount: undefined })
+                change({ kind: 'lockAmount', lockAmount: undefined })
             }
         }
     }
@@ -129,17 +130,17 @@ export function createDepositForm$(
     )
 
     const vaultChange$ = vault$(id).pipe(
-        map(vault => ({ kind: 'vault' as const, vault})),
+        map(vault => ({ kind: 'vault' as const, vault })),
     )
 
     const ethBalanceChange$ = context$.pipe(
         switchMap(context => ethBalance$(context.account)),
-        map(ethBalance => ({kind: 'ethBalance' as const, ethBalance}))
+        map(ethBalance => ({ kind: 'ethBalance' as const, ethBalance }))
     )
 
     return combineLatest(balanceChange$, vaultChange$, ethBalanceChange$, txHelpers$).pipe(
         first(),
-        switchMap(([{balance}, {vault}, {ethBalance}, txHelpers]) => {
+        switchMap(([{ balance }, { vault }, { ethBalance }, txHelpers]) => {
             const initial: DepositState = { 
                 stage: 'editing',
                 change, 
@@ -158,6 +159,5 @@ export function createDepositForm$(
         )}),
         shareReplay(1)
     )
-    
    
 }

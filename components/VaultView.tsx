@@ -3,6 +3,7 @@ import { Vault } from "features/vaults/vault";
 import { formatCryptoBalance, formatFiatBalance, formatPercent, formatPrecision } from "helpers/formatters/format";
 import { useModal } from "helpers/modalHook";
 import { Box, Button, Grid, Heading, Text } from 'theme-ui'
+
 import { DepositForm } from "../features/deposit/DepositForm";
 
 interface Props {
@@ -43,7 +44,7 @@ export function VaultView({ vault, account }: Props) {
             <Box>
                 <Heading as="h2">{token} locked</Heading>
                 <Text>{token} locked: {lockedAmount}{token}/{lockedAmountUSD}USD</Text>
-                <Button onClick={() => openModal(DepositForm, {vaultId: new BigNumber(vault.id)})}>Deposit</Button>
+                <Button onClick={() => openModal(DepositForm, { vaultId: new BigNumber(vault.id) })}>Deposit</Button>
                 <Text>Available to withdraw: {availableToWithdraw}{token}/{availableToWithdrawPrice}USD</Text>
                 <Button>Withdraw</Button>
             </Box>
