@@ -14,6 +14,7 @@ import { spotIlks, spotPar } from '../../components/blockchain/calls/spot'
 import { vatGem, vatIlks, vatUrns } from '../../components/blockchain/calls/vat'
 import { getCdps, GetCdpsResult } from './calls/getCdps'
 import {
+  $createCollateralPrice,
   Collateral,
   collateralCode,
   CollateralDebtPriceRatio,
@@ -217,16 +218,18 @@ export interface Vault<I extends Ilk> {
   liquidationPrice: CollateralPrice<I>
 }
 
-export function createTokenOraclePrice$(
+export function createTokenOraclePrice$<I extends Ilk>(
   vatIlks$: CallObservable<typeof vatIlks>,
-  ratioDAIUSD$: CallObservable<typeof spotPar>,
+  debtPrice$: CallObservable<typeof spotPar>,
   liquidationRatio$: CallObservable<typeof spotIlks>,
-  ilk: Ilk,
-) {
-  return combineLatest(vatIlks$(ilk), liquidationRatio$(ilk), ratioDAIUSD$()).pipe(
-    map(([{ maxDebtPerUnitCollateral }, { liquidationRatio }, ratioDAIUSD]) =>
-      maxDebtPerUnitCollateral.times(ratioDAIUSD).times(liquidationRatio),
-    ),
+  ilk: I,
+): Observable<CollateralPrice<I>> {
+  return combineLatest(vatIlks$(ilk), liquidationRatio$(ilk), debtPrice$()).pipe(
+    map(([{ maxDebtPerUnitCollateral }, { liquidationRatio }, debtPrice]) => {
+      //return maxDebtPerUnitCollateral.times(debtPrice).times(liquidationRatio)
+
+      return $createCollateralPrice(ilk, '2')
+    }),
   )
 }
 export function createController$(
@@ -244,7 +247,7 @@ export function createVault$<I extends Ilk>(
   vatUrns$: CallObservable<typeof vatUrns>,
   vatGem$: CallObservable<typeof vatGem>,
   ilk$: (ilk: I) => Observable<IlkData<I>>,
-  // tokenOraclePrice$: (ilk: string) => Observable<BigNumber>
+  tokenOraclePrice$: (ilk: I) => Observable<CollateralPrice<I>>,
   controller$: (id: Natural) => Observable<string>,
   id: Natural,
 ): Observable<any> {
@@ -258,14 +261,14 @@ export function createVault$<I extends Ilk>(
       return combineLatest(
         vatUrns$({ ilk, urnAddress }),
         vatGem$({ ilk, urnAddress }),
-        //tokenOraclePrice$(ilk),
+        tokenOraclePrice$(ilk as I),
         ilk$(ilk as I),
       ).pipe(
         switchMap(
           ([
             { collateral, normalizedDebt },
             unlockedCollateral,
-            //tokenOraclePrice,
+            tokenOraclePrice,
             {
               normalizedIlkDebt,
               debtFloor,
@@ -278,9 +281,8 @@ export function createVault$<I extends Ilk>(
           ]) => {
             const debt = $RadDai(Int.mul(debtScalingFactor, normalizedDebt))
 
-            console.log(debt.toString())
-
             // const collateralPrice = collateral.times(tokenOraclePrice)
+
             // const ilkDebt = debtScalingFactor.times(normalizedIlkDebt)
 
             // const backingCollateral = debt.times(liquidationRatio)

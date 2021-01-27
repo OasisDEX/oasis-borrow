@@ -45,7 +45,12 @@ import {
   createOnEveryBlock$,
   createWeb3ContextConnected$,
 } from './blockchain/network'
-import { createController$, createVault$, createVaults$ } from './blockchain/vault'
+import {
+  createController$,
+  createTokenOraclePrice$,
+  createVault$,
+  createVaults$,
+} from './blockchain/vault'
 
 export type TxData = never
 // | ApproveData
@@ -163,7 +168,7 @@ export function setupAppContext() {
   // const collaterals$ = createCollaterals$(context$)
 
   // // computed
-  //const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
+  const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
   const ilk$ = curry(createIlks$)(vatIlks$, spotIlks$, jugIlks$, catIlks$)
   const controller$ = curry(createController$)(proxyOwner$, cdpManagerOwner$)
   // const balances$ = memoize(curry(createBalances$)(collaterals$, balance$))
@@ -178,7 +183,7 @@ export function setupAppContext() {
       vatUrns$,
       vatGem$,
       ilk$,
-      // tokenOraclePrice$,
+      tokenOraclePrice$,
       controller$,
     ),
     $naturalToString,

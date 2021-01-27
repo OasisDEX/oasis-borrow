@@ -15,4 +15,8 @@ export class Currency<I extends string, U extends number> {
   toString(): string {
     return this._value.toString()
   }
+
+  get discrete(): Discrete<I, U> {
+    return this._value
+  }
 }
