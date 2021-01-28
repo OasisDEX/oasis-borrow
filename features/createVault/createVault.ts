@@ -425,11 +425,11 @@ export function createVault$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
-  daiAllowance$: Observable<boolean>,
-  daiBalance$: Observable<BigNumber>,
+  tokenAllowance$: Observable<boolean>,
+  tokenBalance$: Observable<BigNumber>,
   addGasEstimation: AddGasEstimationFunction,
 ): Observable<DsrCreationState> {
-  return combineLatest(context$, proxyAddress$, txHelpers$, daiAllowance$, daiBalance$).pipe(
+  return combineLatest(context$, proxyAddress$, txHelpers$, tokenAllowance$, tokenBalance$).pipe(
     first(),
     switchMap(([context, proxyAddress, txHelpers, daiAllowance, daiBalance]) => {
       const change$ = new Subject<DsrCreationChange>()
