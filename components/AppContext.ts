@@ -29,7 +29,7 @@ import { filter, map, shareReplay } from 'rxjs/operators'
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from './account/transactionManager'
 import { catIlk } from './blockchain/calls/cat'
-import { ApproveData, tokenBalance } from './blockchain/calls/erc20'
+import { approve, ApproveData, tokenAllowance, tokenBalance } from './blockchain/calls/erc20'
 import { jugIlk } from './blockchain/calls/jug'
 import { observe } from './blockchain/calls/observe'
 import { CreateDsProxyData } from './blockchain/calls/proxyRegistry'
@@ -45,10 +45,13 @@ import {
   createWeb3ContextConnected$,
 } from './blockchain/network'
 import {
+  createAllowance$,
+  createAllowances$,
   createBalances$,
   createCollaterals$,
   createETHBalance$,
   createTokenAllowances$,
+  createTokens$,
 } from './blockchain/tokens'
 import {
   createController$,
@@ -164,9 +167,16 @@ export function setupAppContext() {
   const jugIlks$ = observe(onEveryBlock$, context$, jugIlk)
   const catIlks$ = observe(onEveryBlock$, context$, catIlk)
 
-  const balance$ = observe(onEveryBlock$, connectedContext$, tokenBalance)
-
   const collaterals$ = createCollaterals$(context$)
+  const tokens$ = createTokens$(context$)
+
+  const balance$ = observe(onEveryBlock$, connectedContext$, tokenBalance)
+  const tokenAllowance$ = observe(onEveryBlock$, connectedContext$, tokenAllowance)
+
+  const balances$ = memoize(curry(createBalances$)(collaterals$, balance$))
+  const allowance$ = curry(createAllowance$)(tokenAllowance$, proxyAddress$)
+
+  const allowances$ = curry(createAllowances$)(tokens$, allowance$)
 
   // computed
   const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
@@ -176,7 +186,6 @@ export function setupAppContext() {
     curry(createController$)(proxyOwner$, cdpManagerOwner$),
     bigNumberTostring,
   )
-  const balances$ = memoize(curry(createBalances$)(collaterals$, balance$))
 
   const vault$ = memoize(
     curry(createVault$)(
@@ -196,9 +205,6 @@ export function setupAppContext() {
   const vaultSummary$ = curry(createVaultSummary)(vaults$)
   const ethBalance$ = curry(createETHBalance$)(connectedContext$)
 
-  const tokenAllowances$ = createTokenAllowances$(connectedContext$, proxyAddress$)
-
-  tokenAllowances$.subscribe((x) => console.log(x))
   const depositForm$ = memoize(
     curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$, ethBalance$),
     bigNumberTostring,

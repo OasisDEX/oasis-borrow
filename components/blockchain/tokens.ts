@@ -6,12 +6,15 @@ import { map, switchMap } from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
 
 import { Context, ContextConnected } from './network'
-import { MIN_ALLOWANCE, tokenBalance } from './calls/erc20'
+import { MIN_ALLOWANCE, tokenAllowance, tokenBalance } from './calls/erc20'
 import { CallObservable } from './calls/observe'
-import { Erc20 } from 'types/web3-v1-contracts/erc20'
 
 export function createCollaterals$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(map((context) => context.collaterals))
+}
+
+export function createTokens$(context$: Observable<Context>): Observable<string[]> {
+  return context$.pipe(map((context) => [...Object.keys(context.tokens), 'ETH']))
 }
 
 export function createBalances$(
@@ -35,33 +38,30 @@ export function createETHBalance$(context$: Observable<ContextConnected>, addres
   )
 }
 
-export function allowance$(
-  { tokens, contract }: Context,
+export function createAllowance$(
+  tokenAllowance$: CallObservable<typeof tokenAllowance>,
+  proxyAddress$: (address: string) => Observable<string>,
   token: string,
-  owner: string,
-  spender: string,
+  address: string,
 ): Observable<boolean> {
-  return defer(() =>
-    from(contract<Erc20>(tokens[token]).methods.allowance(owner, spender).call()).pipe(
-      map((x: string) => new BigNumber(x).gte(MIN_ALLOWANCE)),
+  return proxyAddress$(address).pipe(
+    switchMap((proxyAddress) =>
+      tokenAllowance$({ token, owner: address, spender: proxyAddress }).pipe(
+        map((x: string) => new BigNumber(x).gte(MIN_ALLOWANCE)),
+      ),
     ),
   )
 }
 
-export function createTokenAllowances$(
-  context$: Observable<ContextConnected>,
-  proxyAddress$: (address: string) => Observable<string>,
+export function createAllowances$(
+  tokens$: Observable<string[]>,
+  allowance$: (token: string, address: string) => Observable<boolean>,
+  address: string,
 ): Observable<Dictionary<boolean>> {
-  return context$.pipe(
-    switchMap((context) =>
-      proxyAddress$(context.account).pipe(
-        switchMap((proxyAddress) =>
-          combineLatest(
-            Object.keys(context.tokens).map((token) =>
-              allowance$(context, token, context.account, proxyAddress),
-            ),
-          ).pipe(map((allowances) => zipObject(Object.keys(context.tokens), allowances))),
-        ),
+  return tokens$.pipe(
+    switchMap((tokens) =>
+      combineLatest(tokens.map((token) => allowance$(token, address))).pipe(
+        map((allowances) => zipObject(tokens, allowances)),
       ),
     ),
   )
