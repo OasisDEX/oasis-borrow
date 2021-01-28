@@ -44,7 +44,12 @@ import {
   createOnEveryBlock$,
   createWeb3ContextConnected$,
 } from './blockchain/network'
-import { createBalances$, createCollaterals$, createETHBalance$ } from './blockchain/tokens'
+import {
+  createBalances$,
+  createCollaterals$,
+  createETHBalance$,
+  createTokenAllowances$,
+} from './blockchain/tokens'
 import {
   createController$,
   createTokenOraclePrice$,
@@ -191,6 +196,9 @@ export function setupAppContext() {
   const vaultSummary$ = curry(createVaultSummary)(vaults$)
   const ethBalance$ = curry(createETHBalance$)(connectedContext$)
 
+  const tokenAllowances$ = createTokenAllowances$(connectedContext$, proxyAddress$)
+
+  tokenAllowances$.subscribe((x) => console.log(x))
   const depositForm$ = memoize(
     curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$, ethBalance$),
     bigNumberTostring,

@@ -341,8 +341,8 @@ const protoMain = {
     ...getCollateralTokens(mainnetAddresses),
     WETH: contractDesc(eth, mainnetAddresses['ETH']),
     DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
-    MKR: contractDesc(erc20, '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2'),
-    CHAI: contractDesc(erc20, '0x06af07097c9eeb7fd685c692751d5c66db49c215'),
+    //MKR: contractDesc(erc20, '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2'),
+    //CHAI: contractDesc(erc20, '0x06af07097c9eeb7fd685c692751d5c66db49c215'),
     // WBTC: contractDesc(erc20, '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'),
   } as Dictionary<ContractDesc>,
   joins: {
@@ -395,8 +395,8 @@ const kovan: NetworkConfig = {
     WETH: contractDesc(eth, kovanAddresses['ETH']),
     DAI: contractDesc(erc20, kovanAddresses['MCD_DAI']),
     USDC: contractDesc(erc20, '0x198419c5c340e8De47ce4C0E4711A03664d42CB2'),
-    MKR: contractDesc(erc20, '0xaaf64bfcc32d0f15873a02163e7e500671a4ffcd'),
-    CHAI: contractDesc(erc20, '0xb641957b6c29310926110848db2d464c8c3c3f38'),
+    //MKR: contractDesc(erc20, '0xaaf64bfcc32d0f15873a02163e7e500671a4ffcd'),
+    //CHAI: contractDesc(erc20, '0xb641957b6c29310926110848db2d464c8c3c3f38'),
     // WBTC: contractDesc(erc20, '0xA08d982C2deBa0DbE433a9C6177a219E96CeE656'),
   },
   joins: {
