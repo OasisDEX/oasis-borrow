@@ -5,6 +5,8 @@ import { SpotIlk, spotIlk } from 'components/blockchain/calls/spot'
 import { VatIlk, vatIlk } from 'components/blockchain/calls/vat'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
+import { Context } from 'components/blockchain/network'
+import { map } from 'rxjs/operators'
 
 export type Ilk = VatIlk & SpotIlk & JugIlk & CatIlk
 
@@ -38,5 +40,11 @@ export function createIlk$(
           maxAuctionLotSize,
         }),
     ),
+  )
+}
+
+export function createIlks$(context$: Observable<Context>): Observable<string[]> {
+  return context$.pipe(
+    map((context) => Object.keys(context.joins).filter((join) => join !== 'DAI')),
   )
 }

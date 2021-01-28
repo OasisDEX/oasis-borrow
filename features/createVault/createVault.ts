@@ -251,45 +251,45 @@ function setAllowance(
     .subscribe((ch) => change(ch))
 }
 
-// openVault
-function deposit(
-  { sendWithGasEstimation }: TxHelpers,
-  change: (ch: DsrCreationChange) => void,
-  { amount, proxyAddress }: DsrCreationState,
-) {
-  sendWithGasEstimation(join, {
-    kind: TxMetaKind.dsrJoin,
-    proxyAddress: proxyAddress!,
-    amount: amount!,
-  })
-    .pipe(
-      transactionToX<DsrCreationChange, DsrJoinData>(
-        { kind: 'stage', stage: 'depositWaiting4Approval' },
-        (txState) =>
-          of(
-            { kind: 'depositTxHash', depositTxHash: (txState as any).txHash as string },
-            { kind: 'stage', stage: 'depositInProgress' },
-          ),
-        (txState) => {
-          return of(
-            {
-              kind: 'stage',
-              stage: 'depositFiasco',
-            },
-            {
-              kind: 'txError',
-              txError:
-                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-                  ? txState.error
-                  : undefined,
-            },
-          )
-        },
-        () => of({ kind: 'stage', stage: 'depositSuccess' }),
-      ),
-    )
-    .subscribe((ch) => change(ch))
-}
+// // openVault
+// function deposit(
+//   { sendWithGasEstimation }: TxHelpers,
+//   change: (ch: DsrCreationChange) => void,
+//   { amount, proxyAddress }: DsrCreationState,
+// ) {
+//   sendWithGasEstimation(join, {
+//     kind: TxMetaKind.dsrJoin,
+//     proxyAddress: proxyAddress!,
+//     amount: amount!,
+//   })
+//     .pipe(
+//       transactionToX<DsrCreationChange, DsrJoinData>(
+//         { kind: 'stage', stage: 'depositWaiting4Approval' },
+//         (txState) =>
+//           of(
+//             { kind: 'depositTxHash', depositTxHash: (txState as any).txHash as string },
+//             { kind: 'stage', stage: 'depositInProgress' },
+//           ),
+//         (txState) => {
+//           return of(
+//             {
+//               kind: 'stage',
+//               stage: 'depositFiasco',
+//             },
+//             {
+//               kind: 'txError',
+//               txError:
+//                 txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+//                   ? txState.error
+//                   : undefined,
+//             },
+//           )
+//         },
+//         () => of({ kind: 'stage', stage: 'depositSuccess' }),
+//       ),
+//     )
+//     .subscribe((ch) => change(ch))
+// }
 
 function addTransitions(
   context: ContextConnected,

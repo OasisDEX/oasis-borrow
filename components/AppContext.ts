@@ -19,8 +19,7 @@ import { vatGem, vatIlk, vatUrns } from 'components/blockchain/calls/vat'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
-import { createIlk$ } from 'features/ilks/ilks'
-import { createIlks$ } from 'features/landing/ilks'
+import { createIlk$, createIlks$ } from 'features/ilks/ilks'
 import { createLanding$ } from 'features/landing/landing'
 import { createController$, createTokenOraclePrice$, createVault$ } from 'features/vaults/vault'
 import { createVaults$ } from 'features/vaults/vaults'
@@ -85,7 +84,6 @@ function createTxHelpers$(
 
 export function setupAppContext() {
   const readonlyAccount$ = createReadonlyAccount$()
-
   const chainIdToRpcUrl = mapValues(networksById, (network) => network.infuraUrl)
   const chainIdToDAIContractDesc = mapValues(networksById, (network) => network.tokens.DAI)
   const [web3Context$, setupWeb3Context$] = createWeb3Context$(
@@ -165,6 +163,7 @@ export function setupAppContext() {
   // computed
   const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
   const ilk$ = memoize(curry(createIlk$)(vatIlks$, spotIlks$, jugIlks$, catIlks$))
+
   const controller$ = memoize(
     curry(createController$)(proxyOwner$, cdpManagerOwner$),
     bigNumberTostring,
@@ -186,11 +185,8 @@ export function setupAppContext() {
   )
 
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
-
   const vaultSummary$ = curry(createVaultSummary)(vaults$)
-
   const ethBalance$ = curry(createETHBalance$)(connectedContext$)
-
   const depositForm$ = memoize(
     curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$, ethBalance$),
     bigNumberTostring,
