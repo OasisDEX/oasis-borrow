@@ -18,6 +18,7 @@ import { createProxyAddress$, createProxyOwner$ } from 'components/blockchain/ca
 import { vatGem, vatIlk, vatUrns } from 'components/blockchain/calls/vat'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
+import { createVaultCreation$ } from 'features/createVault/createVault'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createLanding$ } from 'features/landing/landing'
 import { mapValues } from 'lodash'
@@ -45,13 +46,11 @@ import {
   createWeb3ContextConnected$,
 } from './blockchain/network'
 import {
-  createAllowance$,
   createAllowances$,
   createBalances$,
   createCollaterals$,
-  createETHBalance$,
-  createTokenAllowances$,
   createTokens$,
+  createETHBalance$,
 } from './blockchain/tokens'
 import {
   createController$,
@@ -138,27 +137,12 @@ export function setupAppContext() {
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
 
-  // base
-  const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
-  const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
-  const cdpManagerUrns$ = observe(
-    onEveryBlock$,
-    connectedContext$,
-    cdpManagerUrns,
-    bigNumberTostring,
-  )
-  const cdpManagerIlks$ = observe(
-    onEveryBlock$,
-    connectedContext$,
-    cdpManagerIlks,
-    bigNumberTostring,
-  )
-  const cdpManagerOwner$ = observe(
-    onEveryBlock$,
-    connectedContext$,
-    cdpManagerOwner,
-    bigNumberTostring,
-  )
+  const proxyAddress$ = curry(createProxyAddress$)(context$)
+  const proxyOwner$ = curry(createProxyOwner$)(context$)
+
+  const cdpManagerUrns$ = observe(onEveryBlock$, context$, cdpManagerUrns, bigNumberTostring)
+  const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
+  const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumberTostring)
   const vatIlks$ = observe(onEveryBlock$, context$, vatIlk)
   const vatUrns$ = observe(onEveryBlock$, context$, vatUrns, ilkUrnAddressTostring)
   const vatGem$ = observe(onEveryBlock$, context$, vatGem, ilkUrnAddressTostring)
@@ -167,16 +151,21 @@ export function setupAppContext() {
   const jugIlks$ = observe(onEveryBlock$, context$, jugIlk)
   const catIlks$ = observe(onEveryBlock$, context$, catIlk)
 
-  const collaterals$ = createCollaterals$(context$)
   const tokens$ = createTokens$(context$)
+  const collaterals$ = createCollaterals$(context$)
 
-  const balance$ = observe(onEveryBlock$, connectedContext$, tokenBalance)
   const tokenAllowance$ = observe(onEveryBlock$, connectedContext$, tokenAllowance)
+  const tokenBalance$ = observe(onEveryBlock$, connectedContext$, tokenBalance)
 
-  const balances$ = memoize(curry(createBalances$)(collaterals$, balance$))
-  const allowance$ = curry(createAllowance$)(tokenAllowance$, proxyAddress$)
+  const balances$ = curry(createBalances$)(connectedContext$, tokenBalance$)
+  const allowances$ = curry(createAllowances$)(
+    connectedContext$,
+    proxyAddress$,
+    tokenAllowance$,
+    tokens$,
+  )
 
-  const allowances$ = curry(createAllowances$)(tokens$, allowance$)
+  allowances$.subscribe((x) => console.log(x))
 
   // computed
   const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
@@ -206,12 +195,13 @@ export function setupAppContext() {
   const ethBalance$ = curry(createETHBalance$)(connectedContext$)
 
   const depositForm$ = memoize(
-    curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$, ethBalance$),
+    curry(createDepositForm$)(connectedContext$, tokenBalance$, txHelpers$, vault$, ethBalance$),
     bigNumberTostring,
   )
 
   const ilkNames$ = createIlkNames$(context$)
   const landing$ = curry(createLanding$)(ilkNames$, ilk$)
+  //const vaultCreation = createVaultCreation$(connectedContext$, txHelpers$)
 
   return {
     web3Context$,

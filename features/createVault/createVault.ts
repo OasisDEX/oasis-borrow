@@ -12,7 +12,7 @@ import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { filter, first, map, mergeMap, scan, shareReplay, switchMap } from 'rxjs/operators'
 import { UnreachableCaseError } from 'ts-essentials'
 
-export type DsrCreationStage =
+export type VaultCreationStage =
   | 'proxyWaiting4Confirmation'
   | 'proxyWaiting4Approval'
   | 'proxyInProgress'
@@ -421,7 +421,7 @@ function constructEstimateGas(
   })
 }
 
-export function createVault$(
+export function createVaultCreation$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
