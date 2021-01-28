@@ -43,7 +43,7 @@ export function createIlk$(
   )
 }
 
-export function createIlks$(context$: Observable<Context>): Observable<string[]> {
+export function createIlkNames$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(
     map((context) => Object.keys(context.joins).filter((join) => join !== 'DAI')),
   )

@@ -1,13 +1,18 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { zipObject } from 'lodash'
-import { combineLatest,  Observable } from 'rxjs'
+import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
 
-import { tokenBalance } from '../components/blockchain/calls/erc20'
-import { CallObservable } from '../components/blockchain/calls/observe'
 import { ContextConnected } from '@oasisdex/transactions/lib/src/callHelpersContextParametrized'
+import { Context } from './network'
+import { tokenBalance } from './calls/erc20'
+import { CallObservable } from './calls/observe'
+
+export function createCollaterals$(context$: Observable<Context>): Observable<string[]> {
+  return context$.pipe(map((context) => context.collaterals))
+}
 
 export function createBalances$(
   collaterals$: Observable<string[]>,
@@ -23,12 +28,9 @@ export function createBalances$(
   )
 }
 
-export function createETHBalance$(
-  context$: Observable<ContextConnected>,
-  address: string,
-) {
+export function createETHBalance$(context$: Observable<ContextConnected>, address: string) {
   return context$.pipe(
-    switchMap(context => context.web3.eth.getBalance(address)),
-    map(ethBalance => amountFromWei(new BigNumber(ethBalance)))
+    switchMap((context) => context.web3.eth.getBalance(address)),
+    map((ethBalance) => amountFromWei(new BigNumber(ethBalance))),
   )
 }

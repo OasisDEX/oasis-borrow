@@ -1,17 +1,56 @@
 import BigNumber from 'bignumber.js'
-import { Ilk } from 'features/ilks/ilks'
+import { call } from 'components/blockchain/calls/callsHelpers'
+import { ContextConnected } from 'components/blockchain/network'
 import { zero } from 'helpers/zero'
-import { combineLatest, Observable, of } from 'rxjs'
-import { map, mergeMap, shareReplay, switchMap, take, tap } from 'rxjs/operators'
-
+import { map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { combineLatest, EMPTY, Observable, of } from 'rxjs'
 import {
   cdpManagerIlks,
   cdpManagerOwner,
   cdpManagerUrns,
 } from '../../components/blockchain/calls/cdpManager'
 import { CallObservable } from '../../components/blockchain/calls/observe'
-import {  spotIlk, spotPar } from '../../components/blockchain/calls/spot'
-import {  vatGem,  vatIlk, vatUrns } from '../../components/blockchain/calls/vat'
+import { spotIlk, spotPar } from '../../components/blockchain/calls/spot'
+import { vatGem, vatIlk, vatUrns } from '../../components/blockchain/calls/vat'
+import { getCdps, GetCdpsResult } from './calls/getCdps'
+import { Ilk } from './ilks'
+
+function getTotalCollateralPrice(vaults: Vault[]) {
+  return vaults.reduce((total, vault) => total.plus(vault.collateralPrice), new BigNumber(0))
+}
+
+function getTotalDaiDebt(vaults: Vault[]) {
+  return vaults.reduce((total, vault) => total.plus(vault.debt), new BigNumber(0))
+}
+
+export function createVaultSummary(
+  vaults$: (address: string) => Observable<Vault[]>,
+  address: string,
+) {
+  return vaults$(address).pipe(
+    map((vaults) => ({
+      totalCollateralPrice: getTotalCollateralPrice(vaults),
+      totalDaiDebt: getTotalDaiDebt(vaults),
+    })),
+  )
+}
+
+export function createVaults$(
+  connectedContext$: Observable<ContextConnected>,
+  proxyAddress$: (address: string) => Observable<string | undefined>,
+  vault$: (id: BigNumber) => Observable<Vault>,
+  address: string,
+): Observable<Vault[]> {
+  return combineLatest(connectedContext$, proxyAddress$(address)).pipe(
+    switchMap(
+      ([context, proxyAddress]): Observable<GetCdpsResult> => {
+        if (!proxyAddress) return EMPTY
+        return call(context, getCdps)({ proxyAddress, descending: true })
+      },
+    ),
+    switchMap(({ ids }) => combineLatest(ids.map((id) => vault$(new BigNumber(id)).pipe()))),
+  )
+}
 
 export interface Vault {
   /*
@@ -298,7 +337,7 @@ export function createVault$(
     controller$(id),
   ).pipe(
     switchMap(([urnAddress, ilk, owner, controller]) => {
-      const [token] = ilk.split('-');
+      const [token] = ilk.split('-')
       return combineLatest(
         vatUrns$({ ilk, urnAddress }),
         vatGem$({ ilk, urnAddress }),
@@ -371,6 +410,6 @@ export function createVault$(
         ),
       )
     }),
-    shareReplay(1)
+    shareReplay(1),
   )
 }

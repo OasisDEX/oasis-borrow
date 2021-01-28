@@ -19,19 +19,13 @@ import { vatGem, vatIlk, vatUrns } from 'components/blockchain/calls/vat'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
-import { createIlk$, createIlks$ } from 'features/ilks/ilks'
 import { createLanding$ } from 'features/landing/landing'
-import { createController$, createTokenOraclePrice$, createVault$ } from 'features/vaults/vault'
-import { createVaults$ } from 'features/vaults/vaults'
-import { createVaultSummary } from 'features/vaults/vaultsSummary'
 import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
 import { filter, map, shareReplay } from 'rxjs/operators'
 
-import { createBalances$, createETHBalance$ } from '../features/balances'
-import { createCollaterals$ } from '../features/collaterals'
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from './account/transactionManager'
 import { catIlk } from './blockchain/calls/cat'
@@ -41,6 +35,7 @@ import { observe } from './blockchain/calls/observe'
 import { CreateDsProxyData } from './blockchain/calls/proxyRegistry'
 import { spotIlk, spotPar } from './blockchain/calls/spot'
 import { networksById } from './blockchain/config'
+import { createIlk$, createIlkNames$ } from './blockchain/ilks'
 import {
   ContextConnected,
   createAccount$,
@@ -49,6 +44,14 @@ import {
   createOnEveryBlock$,
   createWeb3ContextConnected$,
 } from './blockchain/network'
+import { createBalances$, createCollaterals$, createETHBalance$ } from './blockchain/tokens'
+import {
+  createController$,
+  createTokenOraclePrice$,
+  createVault$,
+  createVaults$,
+  createVaultSummary,
+} from './blockchain/vaults'
 
 export type TxData = LockAndDrawData | ApproveData | CreateDsProxyData
 
@@ -187,13 +190,14 @@ export function setupAppContext() {
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
   const vaultSummary$ = curry(createVaultSummary)(vaults$)
   const ethBalance$ = curry(createETHBalance$)(connectedContext$)
+
   const depositForm$ = memoize(
     curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$, ethBalance$),
     bigNumberTostring,
   )
 
-  const ilks$ = createIlks$(context$)
-  const landing$ = curry(createLanding$)(ilks$, ilk$)
+  const ilkNames$ = createIlkNames$(context$)
+  const landing$ = curry(createLanding$)(ilkNames$, ilk$)
 
   return {
     web3Context$,

@@ -16,20 +16,20 @@ interface Landing {
 }
 
 export function createLanding$(
-  ilks$: Observable<string[]>,
+  ilkNames$: Observable<string[]>,
   ilk$: (ilk: string) => Observable<Ilk>,
 ): Observable<Landing> {
-  return ilks$.pipe(
-    switchMap((types) =>
-      combineLatest(types.map((ilk) => ilk$(ilk))).pipe(
+  return ilkNames$.pipe(
+    switchMap((ilkNames) =>
+      combineLatest(ilkNames.map((ilk) => ilk$(ilk))).pipe(
         map((ilks) =>
           ilks.map(
             (
               { stabilityFee, debtCeiling, liquidationRatio, debtScalingFactor, normalizedIlkDebt },
               i,
             ) => ({
-              token: types[i].split('-')[0],
-              ilk: types[i],
+              token: ilkNames[i].split('-')[0],
+              ilk: ilkNames[i],
               daiAvailable: debtCeiling.minus(debtScalingFactor.times(normalizedIlkDebt)),
               stabilityFee,
               liquidationRatio,
