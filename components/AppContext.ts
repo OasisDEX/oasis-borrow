@@ -36,9 +36,10 @@ import { createCollaterals$ } from '../features/collaterals'
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from './account/transactionManager'
 import { catIlk } from './blockchain/calls/cat'
-import { tokenBalance } from './blockchain/calls/erc20'
+import { ApproveData, tokenBalance } from './blockchain/calls/erc20'
 import { jugIlk } from './blockchain/calls/jug'
 import { observe } from './blockchain/calls/observe'
+import { CreateDsProxyData } from './blockchain/calls/proxyRegistry'
 import { spotIlk, spotPar } from './blockchain/calls/spot'
 import { networksById } from './blockchain/config'
 import {
@@ -50,9 +51,7 @@ import {
   createWeb3ContextConnected$,
 } from './blockchain/network'
 
-export type TxData = LockAndDrawData
-// | ApproveData
-// | DisapproveData
+export type TxData = LockAndDrawData | ApproveData | CreateDsProxyData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
