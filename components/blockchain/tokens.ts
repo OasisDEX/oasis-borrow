@@ -6,9 +6,8 @@ import { map, switchMap } from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
 
 import { Context, ContextConnected } from './network'
-import { MIN_ALLOWANCE, tokenAllowance, tokenBalance } from './calls/erc20'
+import { tokenAllowance, tokenBalance } from './calls/erc20'
 import { CallObservable } from './calls/observe'
-import { proxyAddress } from './calls/proxy'
 
 export function createTokens$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(map((context) => ['ETH', ...Object.keys(context.tokens)]))
@@ -29,12 +28,13 @@ export function createBalances$(
   context$: Observable<ContextConnected>,
   tokenBalance$: CallObservable<typeof tokenBalance>,
   tokens$: Observable<string[]>,
-  account: string,
 ): Observable<Dictionary<BigNumber>> {
   return combineLatest(context$, tokens$).pipe(
     switchMap(([context, tokens]) => {
-      const ethBalance$ = createETHBalance$(context$, account)
-      const tokenBalances$ = tokens.map((token) => tokenBalance$({ token, account }))
+      const ethBalance$ = createETHBalance$(context$, context.account)
+      const tokenBalances$ = tokens.map((token) =>
+        tokenBalance$({ token, account: context.account }),
+      )
       return combineLatest(ethBalance$, ...tokenBalances$).pipe(
         map(([ethBalance, ...balances]) => zipObject(tokens, [ethBalance, ...balances])),
       )

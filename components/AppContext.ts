@@ -157,7 +157,7 @@ export function setupAppContext() {
   const tokenAllowance$ = observe(onEveryBlock$, connectedContext$, tokenAllowance)
   const tokenBalance$ = observe(onEveryBlock$, connectedContext$, tokenBalance)
 
-  const balances$ = curry(createBalances$)(connectedContext$, tokenBalance$)
+  const balances$ = curry(createBalances$)(connectedContext$, tokenBalance$, tokens$)
   const allowances$ = curry(createAllowances$)(
     connectedContext$,
     proxyAddress$,
@@ -165,7 +165,7 @@ export function setupAppContext() {
     tokens$,
   )
 
-  allowances$.subscribe((x) => console.log(x))
+  balances$.subscribe((x) => console.log(x))
 
   // computed
   const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
@@ -201,7 +201,13 @@ export function setupAppContext() {
 
   const ilkNames$ = createIlkNames$(context$)
   const landing$ = curry(createLanding$)(ilkNames$, ilk$)
-  //const vaultCreation = createVaultCreation$(connectedContext$, txHelpers$)
+  const vaultCreation = createVaultCreation$(
+    connectedContext$,
+    txHelpers$,
+    proxyAddress$,
+    allowances$,
+    balances$,
+  )
 
   return {
     web3Context$,
