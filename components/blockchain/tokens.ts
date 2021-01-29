@@ -61,13 +61,12 @@ export function createAllowances$(
       combineLatest(tokens$, proxyAddress$(context.account)).pipe(
         switchMap(([tokens, proxyAddress]) => {
           if (!proxyAddress) return EMPTY
-          const tokenAllowances$ = tokens.map((token) => {
-            if (token === 'ETH') return of(true)
-            return tokenAllowance$({ token, owner: context.account, spender: proxyAddress })
-          })
-          return combineLatest(...tokenAllowances$).pipe(
-            map((allowances) => zipObject(tokens, allowances)),
-          )
+          return combineLatest(
+            tokens.map((token) => {
+              if (token === 'ETH') return of(true)
+              return tokenAllowance$({ token, owner: context.account, spender: proxyAddress })
+            }),
+          ).pipe(map((allowances) => zipObject(tokens, allowances)))
         }),
       ),
     ),

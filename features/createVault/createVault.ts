@@ -425,59 +425,78 @@ function constructEstimateGas(
 export function createVaultCreation$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
-  proxyAddress$: () => Observable<string | undefined>,
+  proxyAddress$: (address: string) => Observable<string | undefined>,
   allowances$: Observable<Dictionary<boolean, string>>,
   tokenBalance$: Observable<Dictionary<BigNumber>>,
   ilk: string,
 ): Observable<any> {
-  return of('something')
-
-  //return combineLatest(context$, txHelpers$)
-
-  // return combineLatest(context$, proxyAddress$, txHelpers$, tokenAllowance$, tokenBalance$).pipe(
-  //   first(),
-  //   switchMap(([context, proxyAddress, txHelpers, daiAllowance, daiBalance]) => {
-  //     const change$ = new Subject<DsrCreationChange>()
-  //     function change(ch: DsrCreationChange) {
-  //       change$.next(ch)
-  //     }
-  //     const stage =
-  //       (!proxyAddress && 'proxyWaiting4Confirmation') ||
-  //       (!daiAllowance && 'allowanceWaiting4Confirmation') ||
-  //       'editing'
-  //     const initialState: DsrCreationState = {
-  //       stage,
-  //       daiBalance,
-  //       proxyAddress,
-  //       messages: [],
-  //       safeConfirmations: context.safeConfirmations,
-  //       gasEstimationStatus: GasEstimationStatus.unset,
-  //     }
-  //     const daiBalanceChange$: Observable<DaiBalanceChange> = daiBalance$.pipe(
-  //       map((daiBalance) => ({ kind: 'daiBalance', daiBalance })),
-  //     )
-  //     const addressChange$ = context$.pipe(
-  //       map((ctx) => ctx.account),
-  //       filter((account) => account !== context.account),
-  //       mergeMap(() => {
-  //         return combineLatest(daiAllowance$, proxyAddress$).pipe(
-  //           switchMap(([daiAllowance, proxyAddress]) => {
-  //             const stage =
-  //               (!proxyAddress && 'proxyWaiting4Confirmation') ||
-  //               (!daiAllowance && 'allowanceWaiting4Confirmation') ||
-  //               'editing'
-  //             return of({ kind: 'stage', stage }, { kind: 'proxyAddress', proxyAddress })
-  //           }),
-  //         )
-  //       }),
-  //     )
-  //     return merge(change$, daiBalanceChange$, addressChange$).pipe(
-  //       scan(applyChange, initialState),
-  //       map(validate),
-  //       switchMap(curry(constructEstimateGas)(addGasEstimation)),
-  //       map(curry(addTransitions)(context, txHelpers, proxyAddress$, daiAllowance$, change)),
-  //     )
-  //   }),
-  //   shareReplay(1),
-  // )
+  console.log(ilk)
+  return combineLatest(context$, txHelpers$).pipe(
+    first(),
+    switchMap(([context, txHelpers]) =>
+      proxyAddress$(context.account).pipe(
+        switchMap((proxyAddress) => {
+          if (!proxyAddress) {
+            return 'no proxy, no allowance'
+          }
+          return allowances$.pipe(
+            map((allowances) => {
+              const allowance = allowances[ilk.split('-')[0]]
+              if (allowance) {
+                return 'has proxy, has allowance'
+              } else return 'has proxy, no allowance'
+            }),
+          )
+        }),
+      ),
+    ),
+  )
 }
+//return combineLatest(context$, txHelpers$)
+
+// return combineLatest(context$, proxyAddress$, txHelpers$, tokenAllowance$, tokenBalance$).pipe(
+//   first(),
+//   switchMap(([context, proxyAddress, txHelpers, daiAllowance, daiBalance]) => {
+//     const change$ = new Subject<DsrCreationChange>()
+//     function change(ch: DsrCreationChange) {
+//       change$.next(ch)
+//     }
+//     const stage =
+//       (!proxyAddress && 'proxyWaiting4Confirmation') ||
+//       (!daiAllowance && 'allowanceWaiting4Confirmation') ||
+//       'editing'
+//     const initialState: DsrCreationState = {
+//       stage,
+//       daiBalance,
+//       proxyAddress,
+//       messages: [],
+//       safeConfirmations: context.safeConfirmations,
+//       gasEstimationStatus: GasEstimationStatus.unset,
+//     }
+//     const daiBalanceChange$: Observable<DaiBalanceChange> = daiBalance$.pipe(
+//       map((daiBalance) => ({ kind: 'daiBalance', daiBalance })),
+//     )
+//     const addressChange$ = context$.pipe(
+//       map((ctx) => ctx.account),
+//       filter((account) => account !== context.account),
+//       mergeMap(() => {
+//         return combineLatest(daiAllowance$, proxyAddress$).pipe(
+//           switchMap(([daiAllowance, proxyAddress]) => {
+//             const stage =
+//               (!proxyAddress && 'proxyWaiting4Confirmation') ||
+//               (!daiAllowance && 'allowanceWaiting4Confirmation') ||
+//               'editing'
+//             return of({ kind: 'stage', stage }, { kind: 'proxyAddress', proxyAddress })
+//           }),
+//         )
+//       }),
+//     )
+//     return merge(change$, daiBalanceChange$, addressChange$).pipe(
+//       scan(applyChange, initialState),
+//       map(validate),
+//       switchMap(curry(constructEstimateGas)(addGasEstimation)),
+//       map(curry(addTransitions)(context, txHelpers, proxyAddress$, daiAllowance$, change)),
+//     )
+//   }),
+//   shareReplay(1),
+// )

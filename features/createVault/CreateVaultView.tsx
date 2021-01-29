@@ -1,9 +1,11 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { useObservable } from 'helpers/observableHook'
+import { ModalProps } from 'helpers/modalHook'
+import { ModalBackIcon, ModalBottom, ModalButton, ModalErrorMessage } from 'components/Modal'
 
-export function CreateVaultView() {
+export function CreateVaultView({ ilk }: ModalProps) {
   const { vaultCreation$ } = useAppContext()
-  const vaultCreation = useObservable(vaultCreation$('ETH-A'))
+  const vaultCreation = useObservable(vaultCreation$(ilk))
 
-  return null
+  return <ModalBottom {...{ close: () => null }}>swxw</ModalBottom>
 }
