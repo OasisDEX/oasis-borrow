@@ -201,7 +201,7 @@ export function setupAppContext() {
 
   const ilkNames$ = createIlkNames$(context$)
   const landing$ = curry(createLanding$)(ilkNames$, ilk$)
-  const vaultCreation = createVaultCreation$(
+  const vaultCreation$ = curry(createVaultCreation$)(
     connectedContext$,
     txHelpers$,
     proxyAddress$,
@@ -227,6 +227,7 @@ export function setupAppContext() {
     depositForm$,
     ethBalance$,
     landing$,
+    vaultCreation$,
   }
 }
 

@@ -428,11 +428,11 @@ export function createVaultCreation$(
   proxyAddress$: () => Observable<string | undefined>,
   allowances$: Observable<Dictionary<boolean, string>>,
   tokenBalance$: Observable<Dictionary<BigNumber>>,
-  ilk: Ilk,
+  ilk: string,
 ): Observable<any> {
-  //return of('something')
+  return of('something')
 
-  return combineLatest(context$, txHelpers$)
+  //return combineLatest(context$, txHelpers$)
 
   // return combineLatest(context$, proxyAddress$, txHelpers$, tokenAllowance$, tokenBalance$).pipe(
   //   first(),
