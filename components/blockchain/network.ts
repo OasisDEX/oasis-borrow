@@ -63,10 +63,7 @@ export function createContext$(
       return {
         ...networkData,
         ...web3Context,
-        ...((web3Context.status === 'connectedReadonly' && readonlyAccount) ||
-        (web3Context.status === 'connected' &&
-          readonlyAccount &&
-          web3Context.account !== readonlyAccount)
+        ...(web3Context.status === 'connectedReadonly' && readonlyAccount
           ? {
               status: 'connected',
               account: readonlyAccount,

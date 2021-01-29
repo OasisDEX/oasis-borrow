@@ -21,10 +21,10 @@ export const vatUrns: CallDef<VatUrnsArgs, Urn> = {
     return contract<Vat>(vat).methods.urns
   },
   prepareArgs: ({ ilk, urnAddress }) => [Web3.utils.utf8ToHex(ilk), urnAddress],
-  // postprocess: (urn: any) => ({
-  //   collateral: amountFromWei(new BigNumber(urn.ink)),
-  //   normalizedDebt: amountFromWei(new BigNumber(urn.art)),
-  // }),
+  postprocess: (urn: any) => ({
+    collateral: amountFromWei(new BigNumber(urn.ink)),
+    normalizedDebt: amountFromWei(new BigNumber(urn.art)),
+  }),
 }
 
 export interface VatIlk {
