@@ -1,4 +1,4 @@
-import { amountFromWei } from '@oasisdex/utils'
+import { amountFromWei, amountToWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { zipObject } from 'lodash'
 import { combineLatest, defer, EMPTY, from, Observable, of } from 'rxjs'
@@ -8,6 +8,7 @@ import { Dictionary } from 'ts-essentials'
 import { Context, ContextConnected } from './network'
 import { tokenAllowance, tokenBalance } from './calls/erc20'
 import { CallObservable } from './calls/observe'
+import { fromPromise } from 'rxjs/internal-compatibility'
 
 export function createTokens$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(map((context) => ['ETH', ...Object.keys(context.tokens)]))
@@ -31,12 +32,19 @@ export function createBalances$(
 ): Observable<Dictionary<BigNumber>> {
   return combineLatest(context$, tokens$).pipe(
     switchMap(([context, tokens]) => {
-      const ethBalance$ = createETHBalance$(context$, context.account)
-      const tokenBalances$ = tokens.map((token) =>
-        tokenBalance$({ token, account: context.account }),
-      )
-      return combineLatest(ethBalance$, ...tokenBalances$).pipe(
-        map(([ethBalance, ...balances]) => zipObject(tokens, [ethBalance, ...balances])),
+      const { account } = context
+      return combineLatest(
+        tokens.map((token) => {
+          if (token === 'ETH')
+            return fromPromise(context.web3.eth.getBalance(account)).pipe(
+              map((ethBalance) => amountFromWei(new BigNumber(ethBalance))),
+            )
+          return tokenBalance$({ token, account })
+        }),
+      ).pipe(
+        map((balances) => {
+          return zipObject(tokens, balances)
+        }),
       )
     }),
   )
