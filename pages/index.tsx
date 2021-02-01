@@ -1,7 +1,7 @@
 import { getNetworkId } from '@oasisdex/web3-context';
 import { useAppContext } from 'components/AppContextProvider';
 import { getConnector } from 'components/connectWallet/ConnectWallet';
-import { AppLayout } from 'components/Layouts'
+import { MarketingLayout } from 'components/Layouts'
 import { LandingView } from 'features/landing/LandingView'
 import React, { useEffect } from 'react'
 
@@ -20,7 +20,7 @@ export default function LandingPage() {
   return <LandingView />
 }
 
-LandingPage.layout = AppLayout
+LandingPage.layout = MarketingLayout
 LandingPage.layoutProps = {
   variant: 'landingContainer',
 }

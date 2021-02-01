@@ -55,6 +55,10 @@ export function AppLayout({ children, backLink, CustomLogoWithBack }: AppLayoutP
 }
 
 export function MarketingLayout({ children, variant }: MarketingLayoutProps) {
+  if (!isAppContextAvailable()) {
+    return null
+  }
+  
   return (
     <BasicLayout
       header={<MarketingHeader />}

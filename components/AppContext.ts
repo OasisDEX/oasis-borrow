@@ -1,5 +1,5 @@
 import { createSend, SendFunction } from '@oasisdex/transactions'
-import { createWeb3Context$ } from '@oasisdex/web3-context'
+import { createWeb3Context$, Web3ContextConnected } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
 import {
   createSendTransaction,
@@ -18,9 +18,11 @@ import { createProxyAddress$, createProxyOwner$ } from 'components/blockchain/ca
 import { vatGem, vatIlk, vatUrns } from 'components/blockchain/calls/vat'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
+import { createAccountOverview$ } from 'features/accountOverview/accountOverview'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createIlk$ } from 'features/ilks/ilks'
 import { createIlks$ } from 'features/landing/ilks'
+import { createIlkOverview$ } from 'features/landing/ilksOverview'
 import { createLanding$ } from 'features/landing/landing'
 import { createController$, createTokenOraclePrice$, createVault$ } from 'features/vaults/vault'
 import { createVaults$ } from 'features/vaults/vaults'
@@ -29,7 +31,7 @@ import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
-import { filter, map, shareReplay } from 'rxjs/operators'
+import { filter, map, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { createBalances$, createETHBalance$ } from '../features/balances'
 import { createCollaterals$ } from '../features/collaterals'
@@ -160,7 +162,13 @@ export function setupAppContext() {
     curry(createController$)(proxyOwner$, cdpManagerOwner$),
     bigNumerTostring,
   )
-  const balances$ = memoize(curry(createBalances$)(collaterals$, balance$))
+  const ethBalance$ = curry(createETHBalance$)(connectedContext$)
+  const balances$ = memoize(curry(createBalances$)(collaterals$, balance$, ethBalance$))
+
+  const connectedAccountBalance$ = web3Context$.pipe(
+    filter((web3Ctx): web3Ctx is Web3ContextConnected => web3Ctx.status === 'connected'),
+    switchMap(web3Ctx => balances$(web3Ctx.account)),
+  )
 
   const vault$ = memoize(
     curry(createVault$)(
@@ -180,12 +188,13 @@ export function setupAppContext() {
 
   const vaultSummary$ = curry(createVaultSummary)(vaults$)
 
-  const ethBalance$ = curry(createETHBalance$)(connectedContext$)
 
   const depositForm$ = memoize(curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$, ethBalance$), bigNumerTostring)
 
   const ilks$ = createIlks$(context$)
-  const landing$ = curry(createLanding$)(ilks$, ilk$)
+  const ilkOverview$ = createIlkOverview$(ilks$, ilk$)
+  const accountOverview$ = curry(createAccountOverview$)(vaults$, vaultSummary$, ilkOverview$, connectedAccountBalance$ as any)
+  const landing$ = curry(createLanding$)(ilkOverview$)
 
   return {
     web3Context$,
@@ -204,7 +213,8 @@ export function setupAppContext() {
     balances$,
     depositForm$,
     ethBalance$,
-    landing$
+    landing$,
+    accountOverview$
   }
 }
 
