@@ -106,15 +106,6 @@ export function setupAppContext() {
   const account$ = createAccount$(web3Context$)
   const initializedAccount$ = createInitializedAccount$(account$)
 
-  web3Context$.subscribe((web3Context) =>
-    console.log(
-      'web3Context:',
-      web3Context.status,
-      (web3Context as any).chainId,
-      (web3Context as any).account,
-    ),
-  )
-
   const web3ContextConnected$ = createWeb3ContextConnected$(web3Context$)
 
   const [onEveryBlock$] = createOnEveryBlock$(web3ContextConnected$)

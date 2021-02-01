@@ -32,6 +32,7 @@ function getCallData(data: LockAndDrawData, context: ContextConnected) {
       amountToWei(drawAmount, 'DAI').toString(),
     )
   }
+
   if (!id && tkn === 'GNT') {
     return contract<DssProxyActions>(dssProxyActions).methods.openLockGNTAndDraw(
       dssCdpManager.address,

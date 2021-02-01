@@ -17,7 +17,7 @@ import {
 } from 'helpers/form'
 import { curry } from 'lodash'
 import { combineLatest, EMPTY, merge, Observable, of, Subject } from 'rxjs'
-import { filter, first, map, scan, switchMap } from 'rxjs/operators'
+import { filter, first, map, scan, switchMap, tap } from 'rxjs/operators'
 
 export type VaultCreationStage =
   | 'proxyWaiting4Confirmation'
@@ -175,45 +175,45 @@ function setAllowance(
     .subscribe((ch) => change(ch))
 }
 
-// // openVault
-// function openVault(
-//   { sendWithGasEstimation }: TxHelpers,
-//   change: (ch: VaultCreationChange) => void,
-//   { amount, proxyAddress }: VaultCreationState,
-// ) {
-//   sendWithGasEstimation(join, {
-//     kind: TxMetaKind.dsrJoin,
-//     proxyAddress: proxyAddress!,
-//     amount: amount!,
-//   })
-//     .pipe(
-//       transactionToX<VaultCreationChange, DsrJoinData>(
-//         { kind: 'stage', stage: 'openVaultWaiting4Approval' },
-//         (txState) =>
-//           of(
-//             { kind: 'openVaultTxHash', openVaultTxHash: (txState as any).txHash as string },
-//             { kind: 'stage', stage: 'openVaultInProgress' },
-//           ),
-//         (txState) => {
-//           return of(
-//             {
-//               kind: 'stage',
-//               stage: 'openVaultFiasco',
-//             },
-//             {
-//               kind: 'txError',
-//               txError:
-//                 txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-//                   ? txState.error
-//                   : undefined,
-//             },
-//           )
-//         },
-//         () => of({ kind: 'stage', stage: 'openVaultSuccess' }),
-//       ),
-//     )
-//     .subscribe((ch) => change(ch))
-// }
+// openVault
+function openVault(
+  { sendWithGasEstimation }: TxHelpers,
+  change: (ch: VaultCreationChange) => void,
+  { lockAmount, drawAmount, proxyAddress }: VaultCreationState,
+) {
+  sendWithGasEstimation(, {
+    kind: TxMetaKind.lockAndDraw,
+    proxyAddress: proxyAddress!,
+    amount: amount!,
+  })
+    .pipe(
+      transactionToX<VaultCreationChange, DsrJoinData>(
+        { kind: 'stage', stage: 'openVaultWaiting4Approval' },
+        (txState) =>
+          of(
+            { kind: 'openVaultTxHash', openVaultTxHash: (txState as any).txHash as string },
+            { kind: 'stage', stage: 'openVaultInProgress' },
+          ),
+        (txState) => {
+          return of(
+            {
+              kind: 'stage',
+              stage: 'openVaultFiasco',
+            },
+            {
+              kind: 'txError',
+              txError:
+                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+                  ? txState.error
+                  : undefined,
+            },
+          )
+        },
+        () => of({ kind: 'stage', stage: 'openVaultSuccess' }),
+      ),
+    )
+    .subscribe((ch) => change(ch))
+}
 
 function addTransitions(
   context: ContextConnected,
@@ -318,6 +318,7 @@ function validate(state: VaultCreationState): VaultCreationState {
   //   messages[messages.length] = { kind: 'amountBiggerThanBalance' }
   // }
   // return { ...state, messages }
+  console.log(state)
   return state
 }
 
@@ -388,7 +389,7 @@ export function createOpenVault$(
                 change$.next(ch)
               }
 
-              const balanceChange$ = balance$(account, token).pipe(
+              const balanceChange$ = balance$(token, account).pipe(
                 map((value) => ({ kind: 'balance', value })),
               )
 
