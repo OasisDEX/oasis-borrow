@@ -1,11 +1,12 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { Balances } from 'components/Balances'
+import { DepositForm } from 'features/deposit/DepositForm'
 import { AppLayout } from 'components/Layouts'
 import { VaultView } from 'components/VaultView'
 import { useObservable } from 'helpers/observableHook'
 import { useRouter } from 'next/router'
 import { Container } from 'theme-ui'
-import { Balances } from '../../components/Balances'
 
 export default function Vault() {
   const { web3Context$, vault$ } = useAppContext()

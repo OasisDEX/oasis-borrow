@@ -61,18 +61,6 @@ const tokens = [
     // coinbaseTicker: ___________,
   },
   {
-    symbol: 'SAI',
-    // precision: ___________,
-    // digits: ___________,
-    // maxSell: ___________,
-    name: 'SAI',
-    icon: 'sai',
-    // iconCircle: ___________,
-    // iconColor: ___________,
-    // ticker: ___________,
-    // coinbaseTicker: ___________,
-  },
-  {
     symbol: 'WBTC',
     precision: 8,
     digits: 5,
