@@ -1,6 +1,6 @@
 import { useAppContext } from 'components/AppContextProvider';
 import { useObservable } from 'helpers/observableHook';
-import { Container, Box, Text, Heading } from 'theme-ui';
+import { Box, Container, Heading,Text } from 'theme-ui';
 
 export function Balances({ owner }: { owner: string; }) {
   const { balances$ } = useAppContext();
@@ -13,7 +13,6 @@ export function Balances({ owner }: { owner: string; }) {
           <Text sx={{ display: 'inline' }}>{amount.toString()}</Text>
         </Box>))
     : null;
-    
     
   return (
     <Container>

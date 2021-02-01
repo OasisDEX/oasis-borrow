@@ -7,6 +7,7 @@ import * as dsProxyFactory from './abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from './abi/ds-proxy-registry.json'
 import * as dssCdpManager from './abi/dss-cdp-manager.json'
 import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
+import * as dssProxyActions from './abi/dss-proxy-actions.json'
 import * as erc20 from './abi/erc20.json'
 import * as getCdps from './abi/get-cdps.json'
 import * as otc from './abi/matching-market.json'
@@ -19,7 +20,6 @@ import * as mcdPot from './abi/mcd-pot.json'
 import * as mcdSpot from './abi/mcd-spot.json'
 import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
-import * as dssProxyActions from './abi/dss-proxy-actions.json'
 import { default as kovanAddresses } from './addresses/kovan.json'
 import { default as mainnetAddresses } from './addresses/mainnet.json'
 
@@ -48,6 +48,175 @@ const tokens = [
     ticker: 'eth-ethereum',
     coinbaseTicker: 'eth-usdc',
   },
+  {
+    symbol: 'BAT',
+    // precision: ___________,
+    // digits: ___________,
+    // maxSell: ___________,
+    name: 'Basic Attention Token',
+    icon: 'bat',
+    // iconCircle: ___________,
+    // iconColor: ___________,
+    // ticker: ___________,
+    // coinbaseTicker: ___________,
+  },
+  {
+    symbol: 'WBTC',
+    precision: 8,
+    digits: 5,
+    digitsInstant: 3,
+    safeCollRatio: 1.5,
+    maxSell: '1000000000000000',
+    name: 'Wrapped Bitcoin',
+    icon: 'wbtc',
+    iconCircle: 'wbtc',
+    iconColor: 'wbtc_color',
+    ticker: 'wbtc-wrapped-bitcoin',
+  },
+  {
+    symbol: 'TUSD',
+    // precision: ___________,
+    // digits: ___________,
+    // maxSell: ___________,
+    name: 'Trust token',
+    icon: 'tusd',
+    // iconCircle: ___________,
+    // iconColor: ___________,
+    // ticker: ___________,
+    // coinbaseTicker: ___________,
+  },
+  {
+    symbol: 'TUSD',
+    // precision: ___________,
+    // digits: ___________,
+    // maxSell: ___________,
+    name: 'Trust token',
+    icon: 'tusd',
+    // iconCircle: ___________,
+    // iconColor: ___________,
+    // ticker: ___________,
+    // coinbaseTicker: ___________,
+  },
+  {
+    symbol: 'KNC',
+    // precision: ___________,
+    // digits: ___________,
+    // maxSell: ___________,
+    name: 'Kyber Network',
+    icon: 'kyber',
+    // iconCircle: ___________,
+    // iconColor: ___________,
+    // ticker: ___________,
+    // coinbaseTicker: ___________,
+  },
+  {
+    symbol: 'MANA',
+    // precision: ___________,
+    // digits: ___________,
+    // maxSell: ___________,
+    name: 'Decentraland',
+    icon: 'mana',
+    // iconCircle: ___________,
+    // iconColor: ___________,
+    // ticker: ___________,
+    // coinbaseTicker: ___________,
+  },
+  {
+    symbol: 'PAXUSD',
+    // precision: ___________,
+    // digits: ___________,
+    // maxSell: ___________,
+    name: 'Paxos Standard',
+    icon: 'pax',
+    // iconCircle: ___________,
+    // iconColor: ___________,
+    // ticker: ___________,
+    // coinbaseTicker: ___________,
+  },
+  {
+    symbol: 'USDT',
+    // precision: ___________,
+    // digits: ___________,
+    // maxSell: ___________,
+    name: 'Tether',
+    icon: 'usdt',
+    // iconCircle: ___________,
+    // iconColor: ___________,
+    // ticker: ___________,
+    // coinbaseTicker: ___________,
+  },
+  {
+    symbol: 'COMP',
+    // precision: ___________,
+    // digits: ___________,
+    // maxSell: ___________,
+    name: 'Compound',
+    icon: 'compound',
+    // iconCircle: ___________,
+    // iconColor: ___________,
+    // ticker: ___________,
+    // coinbaseTicker: ___________,
+  },
+  {
+    symbol: 'LRC',
+    // precision: ___________,
+    // digits: ___________,
+    // maxSell: ___________,
+    name: 'Loopring',
+    icon: 'lrc',
+    // iconCircle: ___________,
+    // iconColor: ___________,
+    // ticker: ___________,
+    // coinbaseTicker: ___________,
+  },
+  {
+    symbol: 'LINK',
+    // precision: ___________,
+    // digits: ___________,
+    // maxSell: ___________,
+    name: 'Chainlink',
+    icon: 'chainlink',
+    // iconCircle: ___________,
+    // iconColor: ___________,
+    // ticker: ___________,
+    // coinbaseTicker: ___________,
+  },
+  {
+    symbol: 'GUSD',
+    // precision: ___________,
+    // digits: ___________,
+    // maxSell: ___________,
+    name: 'Gemini dollar',
+    icon: 'gemini',
+    // iconCircle: ___________,
+    // iconColor: ___________,
+    // ticker: ___________,
+    // coinbaseTicker: ___________,
+  },
+  {
+    symbol: 'ZRX',
+    // precision: ___________,
+    // digits: ___________,
+    // maxSell: ___________,
+    name: '0x',
+    icon: 'zerox',
+    // iconCircle: ___________,
+    // iconColor: ___________,
+    // ticker: ___________,
+    // coinbaseTicker: ___________,
+  },
+  {
+    symbol: 'USDC',
+    precision: 6,
+    digits: 6,
+    digitsInstant: 2,
+    maxSell: '1000000000000000',
+    name: 'USD Coin',
+    icon: 'usdc',
+    // iconCircle: ___________,
+    // iconColor: ___________,
+    ticker: 'usdc-usd-coin',
+  },
   // {
   //   symbol: 'WETH',
   //   precision: 18,
@@ -73,16 +242,7 @@ const tokens = [
     coinbaseTicker: 'dai-usdc',
   },
   // {
-  //   symbol: 'USDC',
-  //   precision: 6,
-  //   digits: 6,
-  //   digitsInstant: 2,
-  //   maxSell: '1000000000000000',
-  //   name: 'USD Coin',
-  //   icon: AvatarSimple(usdcSvg),
-  //   iconCircle: AvatarSimple(usdcCircleSvg),
-  //   iconColor: AvatarSimple(usdcColorSvg),
-  //   ticker: 'usdc-usd-coin',
+
   // },
   // {
   //   symbol: 'CHAI',
@@ -105,19 +265,6 @@ const tokens = [
   //   iconCircle: AvatarSimple(mkrSvg),
   //   iconColor: AvatarSimple(mkrSvg),
   //   ticker: 'usdc-usd-coin',
-  // },
-  // {
-  //   symbol: 'WBTC',
-  //   precision: 8,
-  //   digits: 5,
-  //   digitsInstant: 3,
-  //   safeCollRatio: 1.5,
-  //   maxSell: '1000000000000000',
-  //   name: 'Wrapped Bitcoin',
-  //   icon: AvatarSimple(wbtcSvg),
-  //   iconCircle: AvatarSimple(wbtcCircleSvg),
-  //   iconColor: AvatarSimple(wbtcColorSvg),
-  //   ticker: 'wbtc-wrapped-bitcoin',
   // },
 ]
 
@@ -166,7 +313,7 @@ function getCollateralJoinContracts(addresses: Dictionary<string>) {
   return Object.entries(addresses)
     .filter(([key]) => /MCD_JOIN_(.*)/.test(key))
     .map(([key, address]) => [key.replace('MCD_JOIN_', '').replace('_', '-'), address])
-    .reduce((acc, [ilk, address]) => ({...acc, [ilk]: address}), {} as Dictionary<string>)
+    .reduce((acc, [ilk, address]) => ({ ...acc, [ilk]: address }), {} as Dictionary<string>)
 }
 
 const protoMain = {

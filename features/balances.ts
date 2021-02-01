@@ -1,13 +1,13 @@
-import { ContextConnected } from '@oasisdex/transactions/lib/src/callHelpersContextParametrized'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { zipObject } from 'lodash'
-import { combineLatest, from, Observable } from 'rxjs'
+import { combineLatest,  Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
 
 import { tokenBalance } from '../components/blockchain/calls/erc20'
 import { CallObservable } from '../components/blockchain/calls/observe'
+import { ContextConnected } from '@oasisdex/transactions/lib/src/callHelpersContextParametrized'
 
 export function createBalances$(
   collaterals$: Observable<string[]>,

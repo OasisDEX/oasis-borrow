@@ -37,7 +37,7 @@ const rpcUrls: { [chainId: number]: string } = mapValues(
   (network) => network.infuraUrl,
 )
 
-async function getConnector(connectorKind: ConnectionKind, network: number, options: any = {}) {
+export async function getConnector(connectorKind: ConnectionKind, network: number, options: any = {}) {
   assert(rpcUrls[network], 'Unsupported chainId!')
   switch (connectorKind) {
     case 'injected':
