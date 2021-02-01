@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { Balances } from 'components/Balances'
-import { DepositForm } from 'features/deposit/DepositForm'
 import { AppLayout } from 'components/Layouts'
 import { VaultView } from 'components/VaultView'
 import { useObservable } from 'helpers/observableHook'
@@ -26,7 +25,7 @@ export default function Vault() {
 
   return (
     <Container>
-      {vault.controller && <Balances owner={vault.controller} />}
+      {account && <Balances />}
       <VaultView vault={vault} account={account} />
     </Container>
   )

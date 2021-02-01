@@ -1,22 +1,24 @@
-import { useAppContext } from 'components/AppContextProvider';
-import { useObservable } from 'helpers/observableHook';
-import { Box, Container, Heading,Text } from 'theme-ui';
+import { useAppContext } from 'components/AppContextProvider'
+import { useObservable } from 'helpers/observableHook'
+import { Box, Container, Heading, Text } from 'theme-ui'
 
-export function Balances({ owner }: { owner: string; }) {
-  const { balances$ } = useAppContext();
-  const balances = useObservable(balances$(owner));
+export function Balances() {
+  const { balances$ } = useAppContext()
+
+  const balances = useObservable(balances$)
   const balancesToDisplay = balances
-    ? Object.entries(balances)
-      .map(([symbol, amount]) => (
+    ? Object.entries(balances).map(([symbol, amount]) => (
         <Box key={symbol}>
           <Text sx={{ display: 'inline', fontWeight: 'bold' }}>{symbol}:</Text>
           <Text sx={{ display: 'inline' }}>{amount.toString()}</Text>
-        </Box>))
-    : null;
-    
+        </Box>
+      ))
+    : null
+
   return (
     <Container>
       <Heading as="h2">Balances</Heading>
       {balancesToDisplay}
-    </Container>);
+    </Container>
+  )
 }
