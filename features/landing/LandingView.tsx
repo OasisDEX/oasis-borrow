@@ -94,8 +94,8 @@ export function LandingView() {
           </>
         }
       >
-        {landing.rows.map((ilk) => (
-          <Table.Row sx={{ td: { py: 2 } }}>
+        {landing.rows.map((ilk, idx) => (
+          <Table.Row key={idx} sx={{ td: { py: 2 } }}>
             <Table.Cell>
               <TokenSymbol token={ilk.token} />
             </Table.Cell>
