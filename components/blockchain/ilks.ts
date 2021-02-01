@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators'
 
 export type IlkData = VatIlk & SpotIlk & JugIlk & CatIlk
 
-export function createIlk$(
+export function createIlkData$(
   vatIlks$: CallObservable<typeof vatIlk>,
   spotIlks$: CallObservable<typeof spotIlk>,
   jugIlks$: CallObservable<typeof jugIlk>,
@@ -43,7 +43,7 @@ export function createIlk$(
   )
 }
 
-export function createIlkNames$(context$: Observable<Context>): Observable<string[]> {
+export function createIlks$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(
     map((context) => Object.keys(context.joins).filter((join) => join !== 'DAI')),
   )

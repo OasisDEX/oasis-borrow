@@ -25,6 +25,24 @@ export function createETHBalance$(context$: Observable<ContextConnected>, addres
   )
 }
 
+export function createBalance$(
+  context$: Observable<Context>,
+  tokenBalance$: CallObservable<typeof tokenBalance>,
+  token: string,
+  address: string,
+) {
+  return context$.pipe(
+    switchMap((context) => {
+      if (token === 'ETH') {
+        return fromPromise(context.web3.eth.getBalance(address)).pipe(
+          map((ethBalance) => amountFromWei(new BigNumber(ethBalance))),
+        )
+      }
+      return tokenBalance$({ token, account: address })
+    }),
+  )
+}
+
 export function createBalances$(
   context$: Observable<ContextConnected>,
   tokenBalance$: CallObservable<typeof tokenBalance>,
@@ -46,6 +64,21 @@ export function createBalances$(
           return zipObject(tokens, balances)
         }),
       )
+    }),
+  )
+}
+
+export function createAllowance$(
+  context$: Observable<Context>,
+  tokenAllowance$: CallObservable<typeof tokenAllowance>,
+  token: string,
+  owner: string,
+  spender: string,
+) {
+  return context$.pipe(
+    switchMap(() => {
+      if (token === 'ETH') return of(true)
+      return tokenAllowance$({ token, owner, spender })
     }),
   )
 }

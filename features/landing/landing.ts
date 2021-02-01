@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { Ilk } from 'features/ilks/ilks'
+import { IlkData } from 'components/blockchain/ilks'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -16,20 +16,20 @@ interface Landing {
 }
 
 export function createLanding$(
-  ilkNames$: Observable<string[]>,
-  ilk$: (ilk: string) => Observable<Ilk>,
+  ilks$: Observable<string[]>,
+  ilkData$: (ilk: string) => Observable<IlkData>,
 ): Observable<Landing> {
-  return ilkNames$.pipe(
-    switchMap((ilkNames) =>
-      combineLatest(ilkNames.map((ilk) => ilk$(ilk))).pipe(
-        map((ilks) =>
-          ilks.map(
+  return ilks$.pipe(
+    switchMap((ilks) =>
+      combineLatest(ilks.map((ilk) => ilkData$(ilk))).pipe(
+        map((ilkDataList) =>
+          ilkDataList.map(
             (
               { stabilityFee, debtCeiling, liquidationRatio, debtScalingFactor, normalizedIlkDebt },
               i,
             ) => ({
-              token: ilkNames[i].split('-')[0],
-              ilk: ilkNames[i],
+              token: ilks[i].split('-')[0],
+              ilk: ilks[i],
               daiAvailable: debtCeiling.minus(debtScalingFactor.times(normalizedIlkDebt)),
               stabilityFee,
               liquidationRatio,

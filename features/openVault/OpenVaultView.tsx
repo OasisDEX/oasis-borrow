@@ -3,9 +3,11 @@ import { useObservable } from 'helpers/observableHook'
 import { ModalProps } from 'helpers/modalHook'
 import { ModalBackIcon, ModalBottom, ModalButton, ModalErrorMessage } from 'components/Modal'
 
-export function CreateVaultView({ ilk }: ModalProps) {
-  const { vaultCreation$ } = useAppContext()
-  const vaultCreation = useObservable(vaultCreation$(ilk))
+export function OpenVaultView({ ilk }: ModalProps) {
+  const { openVault$ } = useAppContext()
 
+  const openVault = useObservable(openVault$(ilk))
+
+  console.log(openVault)
   return <ModalBottom {...{ close: () => null }}>swxw</ModalBottom>
 }

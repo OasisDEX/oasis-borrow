@@ -18,7 +18,7 @@ import { createProxyAddress$, createProxyOwner$ } from 'components/blockchain/ca
 import { vatGem, vatIlk, vatUrns } from 'components/blockchain/calls/vat'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
-import { createVaultCreation$ } from 'features/createVault/createVault'
+import { createOpenVault$ } from 'features/openVault/openVault'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createLanding$ } from 'features/landing/landing'
 import { mapValues } from 'lodash'
@@ -30,13 +30,13 @@ import { filter, map, shareReplay } from 'rxjs/operators'
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from './account/transactionManager'
 import { catIlk } from './blockchain/calls/cat'
-import { approve, ApproveData, tokenAllowance, tokenBalance } from './blockchain/calls/erc20'
+import { ApproveData, tokenAllowance, tokenBalance } from './blockchain/calls/erc20'
 import { jugIlk } from './blockchain/calls/jug'
 import { observe } from './blockchain/calls/observe'
 import { CreateDsProxyData } from './blockchain/calls/proxyRegistry'
 import { spotIlk, spotPar } from './blockchain/calls/spot'
 import { networksById } from './blockchain/config'
-import { createIlk$, createIlkNames$ } from './blockchain/ilks'
+import { createIlkData$, createIlks$ } from './blockchain/ilks'
 import {
   ContextConnected,
   createAccount$,
@@ -51,6 +51,8 @@ import {
   createCollaterals$,
   createTokens$,
   createETHBalance$,
+  createBalance$,
+  createAllowance$,
 } from './blockchain/tokens'
 import {
   createController$,
@@ -157,19 +159,15 @@ export function setupAppContext() {
   const tokenAllowance$ = observe(onEveryBlock$, connectedContext$, tokenAllowance)
   const tokenBalance$ = observe(onEveryBlock$, connectedContext$, tokenBalance)
 
-  const balances$ = curry(createBalances$)(connectedContext$, tokenBalance$, tokens$)
-  const allowances$ = curry(createAllowances$)(
-    connectedContext$,
-    proxyAddress$,
-    tokenAllowance$,
-    tokens$,
-  )
+  const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
+  const balance$ = curry(createBalance$)(context$, tokenBalance$)
 
-  balances$.subscribe((x) => console.log(x))
+  const balances$ = createBalances$(connectedContext$, tokenBalance$, tokens$)
+  const allowances$ = createAllowances$(connectedContext$, proxyAddress$, tokenAllowance$, tokens$)
 
   // computed
   const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
-  const ilk$ = memoize(curry(createIlk$)(vatIlks$, spotIlks$, jugIlks$, catIlks$))
+  const ilkData$ = memoize(curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, catIlks$))
 
   const controller$ = memoize(
     curry(createController$)(proxyOwner$, cdpManagerOwner$),
@@ -183,7 +181,7 @@ export function setupAppContext() {
       cdpManagerOwner$,
       vatUrns$,
       vatGem$,
-      ilk$,
+      ilkData$,
       tokenOraclePrice$,
       controller$,
     ),
@@ -199,14 +197,15 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  const ilkNames$ = createIlkNames$(context$)
-  const landing$ = curry(createLanding$)(ilkNames$, ilk$)
-  const vaultCreation$ = curry(createVaultCreation$)(
+  const ilks$ = createIlks$(context$)
+  const landing$ = curry(createLanding$)(ilks$, ilkData$)
+  const openVault$ = curry(createOpenVault$)(
     connectedContext$,
     txHelpers$,
     proxyAddress$,
-    allowances$,
-    balances$,
+    allowance$,
+    balance$,
+    ilkData$,
   )
 
   return {
@@ -227,7 +226,7 @@ export function setupAppContext() {
     depositForm$,
     ethBalance$,
     landing$,
-    vaultCreation$,
+    openVault$,
   }
 }
 

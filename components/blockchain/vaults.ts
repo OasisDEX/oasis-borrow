@@ -325,7 +325,7 @@ export function createVault$(
   cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>,
   vatUrns$: CallObservable<typeof vatUrns>,
   vatGem$: CallObservable<typeof vatGem>,
-  ilk$: (ilk: string) => Observable<IlkData>,
+  ilkData$: (ilk: string) => Observable<IlkData>,
   tokenOraclePrice$: (ilk: string) => Observable<BigNumber>,
   controller$: (id: BigNumber) => Observable<string>,
   id: BigNumber,
@@ -342,7 +342,7 @@ export function createVault$(
         vatUrns$({ ilk, urnAddress }),
         vatGem$({ ilk, urnAddress }),
         tokenOraclePrice$(ilk),
-        ilk$(ilk),
+        ilkData$(ilk),
       ).pipe(
         switchMap(
           ([
