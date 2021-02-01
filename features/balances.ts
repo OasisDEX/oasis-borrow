@@ -12,11 +12,12 @@ import { ContextConnected } from '@oasisdex/transactions/lib/src/callHelpersCont
 export function createBalances$(
   collaterals$: Observable<string[]>,
   balance$: CallObservable<typeof tokenBalance>,
+  ethBalance$: (account: string) => Observable<BigNumber>,
   account: string,
 ): Observable<Dictionary<BigNumber>> {
   return collaterals$.pipe(
     switchMap((tokens) =>
-      combineLatest(tokens.map((token) => balance$({ token, account }))).pipe(
+      combineLatest(tokens.map((token) => token === 'ETH' ? ethBalance$(account) : balance$({ token, account }))).pipe(
         map((balances) => zipObject(tokens, balances)),
       ),
     ),

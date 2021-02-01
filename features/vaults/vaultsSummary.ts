@@ -11,6 +11,11 @@ function getTotalCollateralPrice(vaults: Vault[]) {
 function getTotalDaiDebt(vaults: Vault[]) {
 return vaults.reduce((total, vault) => total.plus(vault.debt), new BigNumber(0))
 }
+
+export interface VaultSummary {
+    totalCollateralPrice: BigNumber
+    totalDaiDebt: BigNumber
+}
 export function createVaultSummary(vaults$: (address: string) => Observable<Vault[]>, address: string,) {
     return vaults$(address).pipe(
         map(vaults => ({
