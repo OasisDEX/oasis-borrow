@@ -4,9 +4,20 @@ const withMDX = require('@next/mdx')({
 })
 const withPWA = require('next-pwa')
 
+const isProduction = process.env.NODE_ENV === 'production'
+
 module.exports = withPWA(
   withMDX(
     withSass({
+      typescript: {
+        // !! WARN !!
+        // Dangerously allow production builds to successfully complete even if
+        // your project has type errors.
+        // We do ythis for now to allow for staging deployments during the
+        // active development phase and are planning to remove this later
+        // !! WARN !!
+        ignoreBuildErrors: isProduction,
+      },
       cssModules: true,
       pageExtensions: ['mdx', 'tsx'],
       publicRuntimeConfig: {
@@ -45,7 +56,7 @@ module.exports = withPWA(
           }
         }
 
-        if (!process.env.NODE_ENV === 'production') {
+        if (!isProduction) {
           config.watch = true
           // Don't ignore all node modules.
           config.watchOptions.ignored = config.watchOptions.ignored.filter(
