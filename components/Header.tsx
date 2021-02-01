@@ -93,7 +93,6 @@ export function AppHeader({
   //const { readonlyAccount, account } = useReadonlyAccount()
   const { t } = useTranslation()
 
-  console.log(web3Context)
   return (
     <BasicHeader variant="appContainer">
       <>

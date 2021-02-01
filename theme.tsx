@@ -635,7 +635,7 @@ export const theme = merge(oasisBaseTheme, {
     },
   },
 })
-console.log(theme)
+
 // different theme for landing page
 export const landingTheme = merge(theme, {
   fontSizes: [10, 12, 14, 16, 18, 20, 24, 28, 48, 64, 96],

@@ -162,7 +162,7 @@ export function setupAppContext() {
     curry(createController$)(proxyOwner$, cdpManagerOwner$),
     bigNumerTostring,
   )
-  const ethBalance$ = curry(createETHBalance$)(connectedContext$)
+  const ethBalance$ = memoize(curry(createETHBalance$)(connectedContext$))
   const balances$ = memoize(curry(createBalances$)(collaterals$, balance$, ethBalance$))
 
   const connectedAccountBalance$ = web3Context$.pipe(
@@ -187,7 +187,6 @@ export function setupAppContext() {
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
 
   const vaultSummary$ = curry(createVaultSummary)(vaults$)
-
 
   const depositForm$ = memoize(curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$, ethBalance$), bigNumerTostring)
 
