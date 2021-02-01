@@ -58,7 +58,7 @@ export function MarketingLayout({ children, variant }: MarketingLayoutProps) {
   if (!isAppContextAvailable()) {
     return null
   }
-  
+
   return (
     <BasicLayout
       header={<MarketingHeader />}

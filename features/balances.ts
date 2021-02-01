@@ -1,7 +1,7 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { zipObject } from 'lodash'
-import { combineLatest,  Observable } from 'rxjs'
+import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
 
@@ -17,19 +17,18 @@ export function createBalances$(
 ): Observable<Dictionary<BigNumber>> {
   return collaterals$.pipe(
     switchMap((tokens) =>
-      combineLatest(tokens.map((token) => token === 'ETH' ? ethBalance$(account) : balance$({ token, account }))).pipe(
-        map((balances) => zipObject(tokens, balances)),
-      ),
+      combineLatest(
+        tokens.map((token) =>
+          token === 'ETH' ? ethBalance$(account) : balance$({ token, account }),
+        ),
+      ).pipe(map((balances) => zipObject(tokens, balances))),
     ),
   )
 }
 
-export function createETHBalance$(
-  context$: Observable<ContextConnected>,
-  address: string,
-) {
+export function createETHBalance$(context$: Observable<ContextConnected>, address: string) {
   return context$.pipe(
-    switchMap(context => context.web3.eth.getBalance(address)),
-    map(ethBalance => amountFromWei(new BigNumber(ethBalance)))
+    switchMap((context) => context.web3.eth.getBalance(address)),
+    map((ethBalance) => amountFromWei(new BigNumber(ethBalance))),
   )
 }

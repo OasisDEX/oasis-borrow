@@ -62,13 +62,7 @@ function VaultsTable({ vaults, balances }: { vaults: Vault[]; balances?: Diction
   )
 }
 
-function AllIlks({
-  ilks,
-  balances,
-}: {
-  ilks: IlkOverview[]
-  balances?: Dictionary<BigNumber>
-}) {
+function AllIlks({ ilks, balances }: { ilks: IlkOverview[]; balances?: Dictionary<BigNumber> }) {
   return (
     <Table
       header={
@@ -103,7 +97,12 @@ function AllIlks({
     </Table>
   )
 }
-export function AccountOverviewView({ vaults, ilksOverview, vaultSummary, balances }: AccountOverview) {
+export function AccountOverviewView({
+  vaults,
+  ilksOverview,
+  vaultSummary,
+  balances,
+}: AccountOverview) {
   return (
     <>
       {vaultSummary && (

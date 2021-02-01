@@ -31,7 +31,7 @@ import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
-import { filter, map, shareReplay, switchMap, tap } from 'rxjs/operators'
+import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { createBalances$, createETHBalance$ } from '../features/balances'
 import { createCollaterals$ } from '../features/collaterals'
@@ -135,8 +135,18 @@ export function setupAppContext() {
   // base
   const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
   const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
-  const cdpManagerUrns$ = observe(onEveryBlock$, connectedContext$, cdpManagerUrns, bigNumerTostring)
-  const cdpManagerIlks$ = observe(onEveryBlock$, connectedContext$, cdpManagerIlks, bigNumerTostring)
+  const cdpManagerUrns$ = observe(
+    onEveryBlock$,
+    connectedContext$,
+    cdpManagerUrns,
+    bigNumerTostring,
+  )
+  const cdpManagerIlks$ = observe(
+    onEveryBlock$,
+    connectedContext$,
+    cdpManagerIlks,
+    bigNumerTostring,
+  )
   const cdpManagerOwner$ = observe(
     onEveryBlock$,
     connectedContext$,
@@ -167,7 +177,7 @@ export function setupAppContext() {
 
   const connectedAccountBalance$ = web3Context$.pipe(
     filter((web3Ctx): web3Ctx is Web3ContextConnected => web3Ctx.status === 'connected'),
-    switchMap(web3Ctx => balances$(web3Ctx.account)),
+    switchMap((web3Ctx) => balances$(web3Ctx.account)),
   )
 
   const vault$ = memoize(
@@ -188,11 +198,19 @@ export function setupAppContext() {
 
   const vaultSummary$ = curry(createVaultSummary)(vaults$)
 
-  const depositForm$ = memoize(curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$, ethBalance$), bigNumerTostring)
+  const depositForm$ = memoize(
+    curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$, ethBalance$),
+    bigNumerTostring,
+  )
 
   const ilks$ = createIlks$(context$)
   const ilkOverview$ = createIlkOverview$(ilks$, ilk$)
-  const accountOverview$ = curry(createAccountOverview$)(vaults$, vaultSummary$, ilkOverview$, connectedAccountBalance$ as any)
+  const accountOverview$ = curry(createAccountOverview$)(
+    vaults$,
+    vaultSummary$,
+    ilkOverview$,
+    connectedAccountBalance$ as any,
+  )
   const landing$ = curry(createLanding$)(ilkOverview$)
 
   return {
@@ -213,7 +231,7 @@ export function setupAppContext() {
     depositForm$,
     ethBalance$,
     landing$,
-    accountOverview$
+    accountOverview$,
   }
 }
 
@@ -221,9 +239,7 @@ function bigNumerTostring(v: BigNumber): string {
   return v.toString()
 }
 
-function ilkUrnAddressTostring(
-  { ilk, urnAddress }: {ilk: string, urnAddress: string }
-): string {
+function ilkUrnAddressTostring({ ilk, urnAddress }: { ilk: string; urnAddress: string }): string {
   return `${ilk}-${urnAddress}`
 }
 

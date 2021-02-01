@@ -1,15 +1,17 @@
 import { amountFromWei } from '@oasisdex/utils'
+import {
+  Web3ContextConnected,
+  Web3ContextConnectedReadonly,
+} from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { zipObject } from 'lodash'
 import { combineLatest, EMPTY, Observable, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
 
-import { Context, ContextConnected } from './network'
 import { tokenAllowance, tokenBalance } from './calls/erc20'
 import { CallObservable } from './calls/observe'
-import { fromPromise } from 'rxjs/internal-compatibility'
-import { Web3Context, Web3ContextConnected, Web3ContextConnectedReadonly } from '@oasisdex/web3-context'
+import { Context, ContextConnected } from './network'
 
 export function createTokens$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(map((context) => ['ETH', ...Object.keys(context.tokens)]))
@@ -27,12 +29,12 @@ export function createETHBalance$(context$: Observable<ContextConnected>, addres
 }
 
 export function createBalances$(
-  web3Context$: Observable<Web3ContextConnected|Web3ContextConnectedReadonly>,
+  web3Context$: Observable<Web3ContextConnected | Web3ContextConnectedReadonly>,
   // context$: Observable<ContextConnected>,
   ethBalance$: (address: string) => Observable<BigNumber>,
   tokenBalance$: CallObservable<typeof tokenBalance>,
   tokens$: Observable<string[]>,
-): Observable<Dictionary<BigNumber>|undefined> {
+): Observable<Dictionary<BigNumber> | undefined> {
   return combineLatest(web3Context$, tokens$).pipe(
     switchMap(([web3Context, tokens]) => {
       // console.log('connected', context.account, context.status)
@@ -42,7 +44,7 @@ export function createBalances$(
       const { account } = web3Context
       return combineLatest(
         tokens.map((token) =>
-          token === 'ETH' ? ethBalance$(account) : tokenBalance$({ token, account })
+          token === 'ETH' ? ethBalance$(account) : tokenBalance$({ token, account }),
         ),
       ).pipe(
         map((balances) => {

@@ -1,10 +1,9 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLayout } from 'components/Layouts'
 import { AccountOverviewView } from 'features/accountOverview/AccountOverviewView'
-
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
-import {  Grid, Text } from 'theme-ui'
+import { Grid, Text } from 'theme-ui'
 
 function ProxyOwner({ proxyAddress }: { proxyAddress: string }) {
   const { proxyOwner$ } = useAppContext()
@@ -15,11 +14,7 @@ function ProxyOwner({ proxyAddress }: { proxyAddress: string }) {
 }
 
 function Summary({ address }: { address: string }) {
-  const {
-    web3Context$,
-    proxyAddress$,
-    accountOverview$,
-  } = useAppContext()
+  const { web3Context$, proxyAddress$, accountOverview$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
   const proxyAddress = useObservable(proxyAddress$(address))
 
