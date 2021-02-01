@@ -16,13 +16,11 @@ export default function ConnectPage({
   // we have to use `useRouter()` hook for consistent url path for redirection because `req.url` in `getServerSideProps` is handled differently on client and server:
   // https://nextjs.org/docs/basic-features/data-fetching#only-runs-on-server-side
   const router = useRouter()
-
   return notFound ? <PageNotFound /> : <ConnectWallet {...{ originalUrl: router.asPath }} />
 }
 
 export async function getServerSideProps({ res, req }: GetServerSidePropsContext) {
   const originalUrl = req.url
-
   if (res && originalUrl && PATHS_TO_CATCH.some((url) => originalUrl.includes(url))) {
     return {
       props: {

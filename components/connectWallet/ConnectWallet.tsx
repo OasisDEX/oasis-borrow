@@ -37,7 +37,11 @@ const rpcUrls: { [chainId: number]: string } = mapValues(
   (network) => network.infuraUrl,
 )
 
-export async function getConnector(connectorKind: ConnectionKind, network: number, options: any = {}) {
+export async function getConnector(
+  connectorKind: ConnectionKind,
+  network: number,
+  options: any = {},
+) {
   assert(rpcUrls[network], 'Unsupported chainId!')
   switch (connectorKind) {
     case 'injected':
@@ -199,12 +203,16 @@ export function ConnectWallet({ originalUrl }: { originalUrl?: string }) {
   const web3Context = useObservable(web3Context$)
   const { t } = useTranslation('common')
   const { replace } = useRedirect()
+  const router = useRouter()
   const [connectingLedger, setConnectingLedger] = React.useState(false)
 
   useEffect(() => {
     const subscription = web3Context$.subscribe((web3Context) => {
       if (web3Context.status === 'connected') {
-        replace(`/owner/[address]`, `/owner/${web3Context.account}`)
+        //replace(`/owner/[address]`, `/owner/${web3Context.account}`)
+
+        // on connection go back to original url
+        router.back()
       }
     })
     return () => subscription.unsubscribe()
@@ -400,7 +408,7 @@ export function WithOverviewConnection({ children }: WithChildren) {
       readonlyAccount$.next(address)
     } else {
       console.log('Invalid address')
-      push('/')
+      push('/404')
     }
     return () => readonlyAccount$.next(undefined)
   }, [address])
@@ -418,8 +426,7 @@ export function WithVaultConnection({ children }: WithChildren) {
 
   useEffect(() => {
     if (isNaN(+vault)) {
-      console.log('Invalid vault', vault)
-      push('/connect')
+      push('/404')
     }
   }, [vault])
 
