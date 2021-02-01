@@ -3491,8 +3491,10 @@
   dependencies:
     bignumber.js "^7.2.1"
 
-"@oasisdex/web3-context@file:.yalc/@oasisdex/web3-context":
+"@oasisdex/web3-context@^0.0.10":
   version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@oasisdex/web3-context/-/web3-context-0.0.10.tgz#dfd1d1165529995db3d90422f0a4a6875c4d18f0"
+  integrity sha512-vOUCjQnjSR+zPdaCWSxzh8OxjG4rpWnCnvLnyI8oiYQVyXIayZjr4NT9RhondHl5rgK1WM4UJ/5mJsSvFYe7yA==
   dependencies:
     "@oasisdex/connectors" "^0.0.17"
     "@oasisdex/utils" "^0.0.7"
@@ -5408,6 +5410,15 @@
   version "6.1.3"
   resolved "https://registry.yarnpkg.com/@web3-react/network-connector/-/network-connector-6.1.3.tgz#bb24c29f047c6946b7d8fa6b1f162365e4eb95df"
   integrity sha512-u8npOL7QjdFMRTmXRT6KsqB9m3a9sVLnnaEwpmYhBUwcqgihgrO7kMTw82m0+nYq/ScTuUCFIPM29GpDLRjMwA==
+  dependencies:
+    "@web3-react/abstract-connector" "^6.0.7"
+    "@web3-react/types" "^6.0.7"
+    tiny-invariant "^1.0.6"
+
+"@web3-react/network-connector@^6.1.5":
+  version "6.1.5"
+  resolved "https://registry.yarnpkg.com/@web3-react/network-connector/-/network-connector-6.1.5.tgz#1fcce1dc7b03dac23fcc01ad0b0c870cb0e39e0b"
+  integrity sha512-Uwk8iMG8YCnTeKmyXt3Q7QJN28qTs0YTTW8/aes2R26KmYWCk3GdL2eal0QcXUixJy/IjrhXzbwzHgpneJqrWg==
   dependencies:
     "@web3-react/abstract-connector" "^6.0.7"
     "@web3-react/types" "^6.0.7"
