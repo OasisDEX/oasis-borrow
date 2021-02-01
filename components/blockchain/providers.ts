@@ -136,7 +136,11 @@ export const Ledger = {
 }
 
 export function getCurrentProviderName(
-  provider = (window as any).web3 ? (window as any).web3.currentProvider : null,
+  provider = (window as any).ethereum
+    ? (window as any).ethereum
+    : (window as any).web3
+    ? (window as any).web3.currentProvider
+    : null,
 ): Provider {
   if (!provider) {
     return WebWallet
