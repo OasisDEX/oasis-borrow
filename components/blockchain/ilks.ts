@@ -8,7 +8,7 @@ import { switchMap } from 'rxjs/operators'
 import { Context } from 'components/blockchain/network'
 import { map } from 'rxjs/operators'
 
-export type Ilk = VatIlk & SpotIlk & JugIlk & CatIlk
+export type IlkData = VatIlk & SpotIlk & JugIlk & CatIlk
 
 export function createIlk$(
   vatIlks$: CallObservable<typeof vatIlk>,
@@ -16,7 +16,7 @@ export function createIlk$(
   jugIlks$: CallObservable<typeof jugIlk>,
   catIlks$: CallObservable<typeof catIlk>,
   ilk: string,
-): Observable<Ilk> {
+): Observable<IlkData> {
   return combineLatest(vatIlks$(ilk), spotIlks$(ilk), jugIlks$(ilk), catIlks$(ilk)).pipe(
     switchMap(
       ([

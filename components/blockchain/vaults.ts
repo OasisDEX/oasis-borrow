@@ -13,7 +13,7 @@ import { CallObservable } from '../../components/blockchain/calls/observe'
 import { spotIlk, spotPar } from '../../components/blockchain/calls/spot'
 import { vatGem, vatIlk, vatUrns } from '../../components/blockchain/calls/vat'
 import { getCdps, GetCdpsResult } from './calls/getCdps'
-import { Ilk } from './ilks'
+import { IlkData } from './ilks'
 
 function getTotalCollateralPrice(vaults: Vault[]) {
   return vaults.reduce((total, vault) => total.plus(vault.collateralPrice), new BigNumber(0))
@@ -325,7 +325,7 @@ export function createVault$(
   cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>,
   vatUrns$: CallObservable<typeof vatUrns>,
   vatGem$: CallObservable<typeof vatGem>,
-  ilk$: (ilk: string) => Observable<Ilk>,
+  ilk$: (ilk: string) => Observable<IlkData>,
   tokenOraclePrice$: (ilk: string) => Observable<BigNumber>,
   controller$: (id: BigNumber) => Observable<string>,
   id: BigNumber,
