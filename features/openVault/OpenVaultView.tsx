@@ -3,7 +3,7 @@ import { useObservable } from 'helpers/observableHook'
 import { ModalProps } from 'helpers/modalHook'
 import { ModalBackIcon, ModalBottom, ModalButton, ModalErrorMessage } from 'components/Modal'
 import { OpenVaultProxyStage, OpenVaultState } from './openVault'
-import { Box, Button } from 'theme-ui'
+import { Box, Button, Grid } from 'theme-ui'
 
 function OpenVaultTransactionFlow() {
   return <Box>{null}</Box>
@@ -27,9 +27,11 @@ function OpenVaultProxyFlow({ stage, createProxy }: OpenVaultProxyFlowParams) {
   }
 
   return stage === 'proxyWaitingForConfirmation' ? (
-    <Box>
-      <Button onClick={handleProxyCreate}>Create Proxy</Button>
-    </Box>
+    <Grid sx={{ alignItems: 'center' }}>
+      <Box>
+        <Button onClick={handleProxyCreate}>Create Proxy</Button>
+      </Box>
+    </Grid>
   ) : stage === 'proxyWaitingForApproval' ? (
     <Box>{stage}</Box>
   ) : stage === 'proxyInProgress' ? (
@@ -40,7 +42,6 @@ function OpenVaultProxyFlow({ stage, createProxy }: OpenVaultProxyFlowParams) {
 }
 
 function OpenVaultView({ stage, createProxy }: OpenVaultState) {
-  console.log(stage)
   switch (stage) {
     case 'proxyWaitingForConfirmation':
     case 'proxyWaitingForApproval':
@@ -75,7 +76,9 @@ export function OpenVaultModal({ ilk, close }: ModalProps) {
 
   return openVault ? (
     <ModalBottom {...{ close }}>
-      <OpenVaultView {...openVault} />
+      <Grid sx={{ height: '75vh', justifyItems: 'center' }}>
+        <OpenVaultView {...openVault} />
+      </Grid>
     </ModalBottom>
   ) : null
 }
