@@ -20,7 +20,6 @@ interface GetCdpsResult {
 
 const getCdps: CallDef<GetCdpsArgs, GetCdpsResult> = {
   call: ({ proxyAddress, descending }, { contract, getCdps }) => {
-    console.log(proxyAddress, descending)
     return descending
       ? contract<GetCdps>(getCdps).methods.getCdpsDesc
       : contract<GetCdps>(getCdps).methods.getCdpsAsc

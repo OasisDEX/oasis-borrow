@@ -17,7 +17,6 @@ export function createBalance$(
 ) {
   return context$.pipe(
     switchMap(({ web3 }) => {
-      console.log(token)
       if (token === 'ETH') {
         return onEveryBlock$.pipe(
           switchMap(() => bindNodeCallback(web3.eth.getBalance)(address)),
