@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { McdOsm } from '../../../types/web3-v1-contracts/mcd-osm'
+import { McdOsm } from '../../types/web3-v1-contracts/mcd-osm'
 import { CallDef } from './callsHelpers'
 
 export const tokenPriceLastUpdate: CallDef<string, BigNumber> = {

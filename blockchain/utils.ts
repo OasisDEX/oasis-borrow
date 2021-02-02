@@ -3,8 +3,8 @@ import padEnd from 'lodash/padEnd'
 //@ts-ignore
 import ethAbi from 'web3-eth-abi'
 
-import { RAD, RAY } from '../constants'
-import { getToken } from './config'
+import { RAD, RAY } from '../components/constants'
+import { getToken } from './tokensMetadata'
 
 export function amountFromRay(amount: BigNumber): BigNumber {
   return amount.div(RAY)

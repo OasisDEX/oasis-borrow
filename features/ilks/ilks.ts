@@ -1,8 +1,8 @@
-import { CatIlk, catIlk } from 'components/blockchain/calls/cat'
-import { JugIlk, jugIlk } from 'components/blockchain/calls/jug'
-import { CallObservable } from 'components/blockchain/calls/observe'
-import { SpotIlk, spotIlk } from 'components/blockchain/calls/spot'
-import { VatIlk, vatIlk } from 'components/blockchain/calls/vat'
+import { CatIlk, catIlk } from 'blockchain/calls/cat'
+import { JugIlk, jugIlk } from 'blockchain/calls/jug'
+import { CallObservable } from 'blockchain/calls/observe'
+import { SpotIlk, spotIlk } from 'blockchain/calls/spot'
+import { VatIlk, vatIlk } from 'blockchain/calls/vat'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 

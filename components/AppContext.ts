@@ -8,21 +8,17 @@ import {
   EstimateGasFunction,
   SendTransactionFunction,
   TransactionDef,
-} from 'components/blockchain/calls/callsHelpers'
-import {
-  cdpManagerIlks,
-  cdpManagerOwner,
-  cdpManagerUrns,
-} from 'components/blockchain/calls/cdpManager'
-import { createProxyAddress$, createProxyOwner$ } from 'components/blockchain/calls/proxy'
-import { vatGem, vatIlk, vatUrns } from 'components/blockchain/calls/vat'
-import { createGasPrice$ } from 'components/blockchain/prices'
+} from 'blockchain/calls/callsHelpers'
+import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
+import { createProxyAddress$, createProxyOwner$ } from 'blockchain/calls/proxy'
+import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
+import { createGasPrice$ } from 'features/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import { createAccountOverview$ } from 'features/accountOverview/accountOverview'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createIlk$ } from 'features/ilks/ilks'
-import { createIlks$ } from 'features/landing/ilks'
-import { createIlkOverview$ } from 'features/landing/ilksOverview'
+import { createIlks$ } from 'features/ilks'
+import { createIlkOverview$ } from 'features/ilksOverview'
 import { createLanding$ } from 'features/landing/landing'
 import { createController$, createTokenOraclePrice$, createVault$ } from 'features/vaults/vault'
 import { createVaults$ } from 'features/vaults/vaults'
@@ -36,13 +32,13 @@ import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
 import { createBalances$, createETHBalance$ } from '../features/balances'
 import { createCollaterals$ } from '../features/collaterals'
 import { HasGasEstimation } from '../helpers/form'
-import { createTransactionManager } from './account/transactionManager'
-import { catIlk } from './blockchain/calls/cat'
-import { tokenBalance } from './blockchain/calls/erc20'
-import { jugIlk } from './blockchain/calls/jug'
-import { observe } from './blockchain/calls/observe'
-import { spotIlk, spotPar } from './blockchain/calls/spot'
-import { networksById } from './blockchain/config'
+import { createTransactionManager } from '../features/account/transactionManager'
+import { catIlk } from '../blockchain/calls/cat'
+import { tokenBalance } from '../blockchain/calls/erc20'
+import { jugIlk } from '../blockchain/calls/jug'
+import { observe } from '../blockchain/calls/observe'
+import { spotIlk, spotPar } from '../blockchain/calls/spot'
+import { networksById } from '../blockchain/config'
 import {
   ContextConnected,
   createAccount$,
@@ -50,7 +46,7 @@ import {
   createInitializedAccount$,
   createOnEveryBlock$,
   createWeb3ContextConnected$,
-} from './blockchain/network'
+} from '../blockchain/network'
 
 export type TxData = LockAndDrawData
 // | ApproveData

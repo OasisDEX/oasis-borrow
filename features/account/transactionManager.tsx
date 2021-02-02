@@ -1,6 +1,6 @@
 import { isDone, TxState, TxStatus } from '@oasisdex/transactions'
 import { TxData } from 'components/AppContext'
-import { every1Seconds$ } from 'components/blockchain/network'
+import { every1Seconds$ } from 'blockchain/network'
 import {
   LatamexOrder,
   MoonpayOrder,

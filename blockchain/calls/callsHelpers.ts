@@ -8,7 +8,7 @@ import {
   SendTransactionFunction as SendTransactionFunctionAbstractContext,
   TransactionDef as TransactionDefAbstractContext,
 } from '@oasisdex/transactions'
-import { GasPrice$ } from 'components/blockchain/prices'
+import { GasPrice$ } from 'features/prices'
 import { from, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
@@ -38,8 +38,8 @@ export function callAbstractContext<D, R, CC extends Context>(
       )(...prepareArgs(args, context)).call(
         context.status === 'connected' ? { from: (context as any).account } : {},
       ),
-    ).pipe(map((i: R) => (postprocess ? postprocess(i, args) : i)));
-  };
+    ).pipe(map((i: R) => (postprocess ? postprocess(i, args) : i)))
+  }
 }
 
 export function call<D, R>(context: Context, callDef: CallDef<D, R>) {

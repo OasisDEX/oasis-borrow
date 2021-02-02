@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { IlkOverview } from 'features/landing/ilksOverview'
+import { IlkOverview } from 'features/ilksOverview'
 import { Vault } from 'features/vaults/vault'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { getQueryParams } from 'helpers/useRedirect'

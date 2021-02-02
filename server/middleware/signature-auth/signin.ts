@@ -1,4 +1,4 @@
-import { networksById } from 'components/blockchain/config'
+import { networksById } from 'blockchain/config'
 import { recoverPersonalSignature } from 'eth-sig-util'
 import { Handler } from 'express'
 import jwt from 'jsonwebtoken'

@@ -2,8 +2,8 @@ import { amountFromWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
 import { Erc20 } from 'types/web3-v1-contracts/erc20'
 
-import { getToken } from '../config'
 import { CallDef } from './callsHelpers'
+import { getToken } from '../tokensMetadata'
 
 export const MIN_ALLOWANCE = new BigNumber('0xffffffffffffffffffffffffffffffff')
 

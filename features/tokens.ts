@@ -1,17 +1,14 @@
 import { amountFromWei } from '@oasisdex/utils'
-import {
-  Web3ContextConnected,
-  Web3ContextConnectedReadonly,
-} from '@oasisdex/web3-context'
+import { Web3ContextConnected, Web3ContextConnectedReadonly } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { zipObject } from 'lodash'
-import { combineLatest, EMPTY, Observable, of } from 'rxjs'
+import { combineLatest, Observable, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
 
-import { tokenAllowance, tokenBalance } from './calls/erc20'
-import { CallObservable } from './calls/observe'
-import { Context, ContextConnected } from './network'
+import { tokenBalance } from '../blockchain/calls/erc20'
+import { CallObservable } from '../blockchain/calls/observe'
+import { Context, ContextConnected } from '../blockchain/network'
 
 export function createTokens$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(map((context) => ['ETH', ...Object.keys(context.tokens)]))
@@ -53,29 +50,5 @@ export function createBalances$(
       )
     }),
     shareReplay(1),
-  )
-}
-
-export function createAllowances$(
-  context$: Observable<ContextConnected>,
-  proxyAddress$: (address: string) => Observable<string | undefined>,
-  tokenAllowance$: CallObservable<typeof tokenAllowance>,
-  tokens$: Observable<string[]>,
-): Observable<Dictionary<boolean>> {
-  return context$.pipe(
-    switchMap((context) =>
-      combineLatest(tokens$, proxyAddress$(context.account)).pipe(
-        switchMap(([tokens, proxyAddress]) => {
-          if (!proxyAddress) return EMPTY
-          const tokenAllowances$ = tokens.map((token) => {
-            if (token === 'ETH') return of(true)
-            return tokenAllowance$({ token, owner: context.account, spender: proxyAddress })
-          })
-          return combineLatest(...tokenAllowances$).pipe(
-            map((allowances) => zipObject(tokens, allowances)),
-          )
-        }),
-      ),
-    ),
   )
 }

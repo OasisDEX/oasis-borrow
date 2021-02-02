@@ -4,14 +4,10 @@ import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, mergeMap, shareReplay, switchMap, take, tap } from 'rxjs/operators'
 
-import {
-  cdpManagerIlks,
-  cdpManagerOwner,
-  cdpManagerUrns,
-} from '../../components/blockchain/calls/cdpManager'
-import { CallObservable } from '../../components/blockchain/calls/observe'
-import {  spotIlk, spotPar } from '../../components/blockchain/calls/spot'
-import {  vatGem,  vatIlk, vatUrns } from '../../components/blockchain/calls/vat'
+import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from '../../blockchain/calls/cdpManager'
+import { CallObservable } from '../../blockchain/calls/observe'
+import { spotIlk, spotPar } from '../../blockchain/calls/spot'
+import { vatGem, vatIlk, vatUrns } from '../../blockchain/calls/vat'
 
 export interface Vault {
   /*
@@ -298,7 +294,7 @@ export function createVault$(
     controller$(id),
   ).pipe(
     switchMap(([urnAddress, ilk, owner, controller]) => {
-      const [token] = ilk.split('-');
+      const [token] = ilk.split('-')
       return combineLatest(
         vatUrns$({ ilk, urnAddress }),
         vatGem$({ ilk, urnAddress }),
@@ -371,6 +367,6 @@ export function createVault$(
         ),
       )
     }),
-    shareReplay(1)
+    shareReplay(1),
   )
 }

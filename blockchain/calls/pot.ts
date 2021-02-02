@@ -3,8 +3,8 @@ import BigNumber from 'bignumber.js'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { McdPot } from '../../../types/web3-v1-contracts/mcd-pot'
-import { SECONDS_PER_YEAR } from '../../constants'
+import { McdPot } from '../../types/web3-v1-contracts/mcd-pot'
+import { SECONDS_PER_YEAR } from '../../components/constants'
 import { amountFromRay } from '../utils'
 import { CallDef } from './callsHelpers'
 
