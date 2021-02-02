@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAppContext } from 'components/AppContextProvider'
 import { getToken } from 'components/blockchain/config'
-import { OpenVaultView } from 'features/openVault/OpenVaultView'
+import { OpenVaultModal, OpenVaultView } from 'features/openVault/OpenVaultView'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
@@ -74,7 +74,7 @@ export function LandingView() {
   function handleVaultOpen(ilk: string) {
     return (e: React.SyntheticEvent<HTMLButtonElement>) => {
       e.preventDefault()
-      openModal(OpenVaultView, { ilk })
+      openModal(OpenVaultModal, { ilk })
     }
   }
 

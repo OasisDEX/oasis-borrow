@@ -17,37 +17,38 @@ import {
 } from 'helpers/form'
 import { curry } from 'lodash'
 import { combineLatest, EMPTY, merge, Observable, of, Subject } from 'rxjs'
-import { filter, first, map, scan, switchMap, tap } from 'rxjs/operators'
+import { filter, first, map, scan, shareReplay, startWith, switchMap, tap } from 'rxjs/operators'
 
-export type VaultCreationStage =
-  | 'proxyWaiting4Confirmation'
-  | 'proxyWaiting4Approval'
+export type OpenVaultProxyStage =
+  | 'proxyWaitingForConfirmation'
+  | 'proxyWaitingForApproval'
   | 'proxyInProgress'
   | 'proxyFiasco'
-  | 'allowanceWaiting4Confirmation'
-  | 'allowanceWaiting4Approval'
+
+export type OpenVaultStage =
+  | OpenVaultProxyStage
+  | 'allowanceWaitingForConfirmation'
+  | 'allowanceWaitingForApproval'
   | 'allowanceInProgress'
   | 'allowanceFiasco'
-  | 'editingWaiting4Continue'
+  | 'editingWaitingToContinue'
   | 'editing'
-  | 'openVaultWaiting4Confirmation'
-  | 'openVaultWaiting4Approval'
-  | 'openVaultInProgress'
-  | 'openVaultFiasco'
-  | 'openVaultSuccess'
+  | 'transactionWaitingForConfirmation'
+  | 'transactionWaitingForApproval'
+  | 'transactionInProgress'
+  | 'transactionFiasco'
+  | 'transactionSuccess'
 
-type VaultCreationMessage = {
+type OpenVaultMessage = {
   kind: 'amountIsEmpty' | 'amountBiggerThanBalance'
 }
 
-type VaultCreationChange = Changes<VaultCreationState>
+type OpenVaultChange = Changes<OpenVaultState>
 
-type ManualChange =
-  | Change<VaultCreationState, 'lockAmount'>
-  | Change<VaultCreationState, 'drawAmount'>
+type ManualChange = Change<OpenVaultState, 'lockAmount'> | Change<OpenVaultState, 'drawAmount'>
 
-export interface VaultCreationState extends HasGasEstimation {
-  stage: VaultCreationStage
+export interface OpenVaultState extends HasGasEstimation {
+  stage: OpenVaultStage
   proxyAddress?: string
   proxyTxHash?: string
   proxyConfirmations?: number
@@ -61,7 +62,7 @@ export interface VaultCreationState extends HasGasEstimation {
   // emergency shutdown!
   lockAmount?: BigNumber
   drawAmount?: BigNumber
-  messages: VaultCreationMessage[]
+  messages: OpenVaultMessage[]
   txError?: any
   change?: (change: ManualChange) => void
   createProxy?: () => void
@@ -74,18 +75,18 @@ export interface VaultCreationState extends HasGasEstimation {
   close?: () => void
 }
 
-const apply: ApplyChange<VaultCreationState> = applyChange
+const apply: ApplyChange<OpenVaultState> = applyChange
 
 function createProxy(
   { safeConfirmations }: ContextConnected,
   { sendWithGasEstimation }: TxHelpers,
   proxyAddress$: Observable<string | undefined>,
-  change: (ch: VaultCreationChange) => void,
+  change: (ch: OpenVaultChange) => void,
 ) {
   sendWithGasEstimation(createDsProxy, { kind: TxMetaKind.createDsProxy })
     .pipe(
-      transactionToX<VaultCreationChange, CreateDsProxyData>(
-        { kind: 'stage', stage: 'proxyWaiting4Approval' },
+      transactionToX<OpenVaultChange, CreateDsProxyData>(
+        { kind: 'stage', stage: 'proxyWaitingForApproval' },
         (txState) =>
           of(
             { kind: 'proxyTxHash', proxyTxHash: (txState as any).txHash as string },
@@ -131,8 +132,8 @@ function createProxy(
 function setAllowance(
   { sendWithGasEstimation }: TxHelpers,
   allowance$: Observable<boolean>,
-  change: (ch: VaultCreationChange) => void,
-  state: VaultCreationState,
+  change: (ch: OpenVaultChange) => void,
+  state: OpenVaultState,
 ) {
   sendWithGasEstimation(approve, {
     kind: TxMetaKind.approve,
@@ -140,8 +141,8 @@ function setAllowance(
     spender: state.proxyAddress!,
   })
     .pipe(
-      transactionToX<VaultCreationChange, ApproveData>(
-        { kind: 'stage', stage: 'allowanceWaiting4Approval' },
+      transactionToX<OpenVaultChange, ApproveData>(
+        { kind: 'stage', stage: 'allowanceWaitingForApproval' },
         (txState) =>
           of(
             {
@@ -168,7 +169,7 @@ function setAllowance(
         () =>
           allowance$.pipe(
             filter((allowance) => allowance),
-            switchMap(() => of({ kind: 'stage', stage: 'editingWaiting4Continue' })),
+            switchMap(() => of({ kind: 'stage', stage: 'editingWaitingToContinue' })),
           ),
       ),
     )
@@ -178,41 +179,42 @@ function setAllowance(
 // openVault
 function openVault(
   { sendWithGasEstimation }: TxHelpers,
-  change: (ch: VaultCreationChange) => void,
-  { lockAmount, drawAmount, proxyAddress }: VaultCreationState,
+  change: (ch: OpenVaultChange) => void,
+  { lockAmount, drawAmount, proxyAddress }: OpenVaultState,
 ) {
-  sendWithGasEstimation(, {
-    kind: TxMetaKind.lockAndDraw,
-    proxyAddress: proxyAddress!,
-    amount: amount!,
-  })
-    .pipe(
-      transactionToX<VaultCreationChange, DsrJoinData>(
-        { kind: 'stage', stage: 'openVaultWaiting4Approval' },
-        (txState) =>
-          of(
-            { kind: 'openVaultTxHash', openVaultTxHash: (txState as any).txHash as string },
-            { kind: 'stage', stage: 'openVaultInProgress' },
-          ),
-        (txState) => {
-          return of(
-            {
-              kind: 'stage',
-              stage: 'openVaultFiasco',
-            },
-            {
-              kind: 'txError',
-              txError:
-                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-                  ? txState.error
-                  : undefined,
-            },
-          )
-        },
-        () => of({ kind: 'stage', stage: 'openVaultSuccess' }),
-      ),
-    )
-    .subscribe((ch) => change(ch))
+  return of(undefined)
+  // sendWithGasEstimation(, {
+  //   kind: TxMetaKind.lockAndDraw,
+  //   proxyAddress: proxyAddress!,
+  //   amount: amount!,
+  // })
+  //   .pipe(
+  //     transactionToX<VaultCreationChange, DsrJoinData>(
+  //       { kind: 'stage', stage: 'openVaultWaiting4Approval' },
+  //       (txState) =>
+  //         of(
+  //           { kind: 'openVaultTxHash', openVaultTxHash: (txState as any).txHash as string },
+  //           { kind: 'stage', stage: 'openVaultInProgress' },
+  //         ),
+  //       (txState) => {
+  //         return of(
+  //           {
+  //             kind: 'stage',
+  //             stage: 'openVaultFiasco',
+  //           },
+  //           {
+  //             kind: 'txError',
+  //             txError:
+  //               txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+  //                 ? txState.error
+  //                 : undefined,
+  //           },
+  //         )
+  //       },
+  //       () => of({ kind: 'stage', stage: 'openVaultSuccess' }),
+  //     ),
+  //   )
+  //   .subscribe((ch) => change(ch))
 }
 
 function addTransitions(
@@ -220,20 +222,20 @@ function addTransitions(
   txHelpers: TxHelpers,
   proxyAddress$: Observable<string | undefined>,
   allowance$: Observable<boolean>,
-  change: (ch: VaultCreationChange) => void,
-  state: VaultCreationState,
-): VaultCreationState {
-  function backToopenVaultDai() {
+  change: (ch: OpenVaultChange) => void,
+  state: OpenVaultState,
+): OpenVaultState {
+  function backToOpenVaultEditing() {
     change({ kind: 'stage', stage: 'editing' })
   }
 
   function close() {
-    change({ kind: 'lockAmount', value: undefined })
-    change({ kind: 'drawAmount', value: undefined })
+    // change({ kind: 'lockAmount', value: undefined })
+    // change({ kind: 'drawAmount', value: undefined })
     change({ kind: 'stage', stage: 'editing' })
   }
 
-  if (state.stage === 'proxyWaiting4Confirmation') {
+  if (state.stage === 'proxyWaitingForConfirmation') {
     return {
       ...state,
       createProxy: () => createProxy(context, txHelpers, proxyAddress$, change),
@@ -247,7 +249,7 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'allowanceWaiting4Confirmation') {
+  if (state.stage === 'allowanceWaitingForConfirmation') {
     return {
       ...state,
       setAllowance: () => setAllowance(txHelpers, allowance$, change, state),
@@ -261,7 +263,7 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'editingWaiting4Continue') {
+  if (state.stage === 'editingWaitingToContinue') {
     return {
       ...state,
       continue2Editing: () => change({ kind: 'stage', stage: 'editing' }),
@@ -274,7 +276,7 @@ function addTransitions(
         ...state,
         change,
         continue2ConfirmOpenVault: () =>
-          change({ kind: 'stage', stage: 'openVaultWaiting4Confirmation' }),
+          change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' }),
       }
     }
     return {
@@ -283,23 +285,23 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'openVaultWaiting4Confirmation') {
+  if (state.stage === 'transactionWaitingForConfirmation') {
     return {
       ...state,
       openVault: () => openVault(txHelpers, change, state),
-      back: backToopenVaultDai,
+      back: backToOpenVaultEditing,
     }
   }
 
-  if (state.stage === 'openVaultFiasco') {
+  if (state.stage === 'transactionFiasco') {
     return {
       ...state,
       tryAgain: () => openVault(txHelpers, change, state),
-      back: backToopenVaultDai,
+      back: backToOpenVaultEditing,
     }
   }
 
-  if (state.stage === 'openVaultSuccess') {
+  if (state.stage === 'transactionSuccess') {
     return {
       ...state,
       close,
@@ -309,7 +311,7 @@ function addTransitions(
   return state
 }
 
-function validate(state: VaultCreationState): VaultCreationState {
+function validate(state: OpenVaultState): OpenVaultState {
   // const messages: DsrCreationMessage[] = []
   // if (!state.amount || state.amount.eq(zero)) {
   //   messages[messages.length] = { kind: 'amountIsEmpty' }
@@ -318,14 +320,13 @@ function validate(state: VaultCreationState): VaultCreationState {
   //   messages[messages.length] = { kind: 'amountBiggerThanBalance' }
   // }
   // return { ...state, messages }
-  console.log(state)
   return state
 }
 
 // function constructEstimateGas(
 //   addGasEstimation: AddGasEstimationFunction,
-//   state: VaultCreationState,
-// ): Observable<VaultCreationState> {
+//   state: OpenVaultState,
+// ): Observable<OpenVaultState> {
 //   return addGasEstimation(state, ({ estimateGas }: TxHelpers) => {
 //     const { proxyAddress, stage, amount } = state
 //
@@ -364,14 +365,16 @@ export function createOpenVault$(
       const token = ilk.split('-')[0]
 
       return combineLatest(proxyAddress$(account), balance$(token, account), ilkData$(ilk)).pipe(
+        first(),
         switchMap(([proxyAddress, balance, ilkData]) =>
           ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
             switchMap((allowance: boolean | undefined) => {
               const stage =
-                (!proxyAddress && 'proxyWaiting4Confirmation') ||
-                (!allowance && 'allowanceWaiting4Confirmation') ||
+                (!proxyAddress && 'proxyWaitingForConfirmation') ||
+                (!allowance && 'allowanceWaitingForConfirmation') ||
                 'editing'
-              const initialState: VaultCreationState = {
+
+              const initialState: OpenVaultState = {
                 stage,
                 balance,
                 ilkData,
@@ -383,9 +386,9 @@ export function createOpenVault$(
                 gasEstimationStatus: GasEstimationStatus.unset,
               }
 
-              const change$ = new Subject<VaultCreationChange>()
+              const change$ = new Subject<OpenVaultChange>()
 
-              function change(ch: VaultCreationChange) {
+              function change(ch: OpenVaultChange) {
                 change$.next(ch)
               }
 
@@ -400,13 +403,14 @@ export function createOpenVault$(
               const environmentChange$ = merge(balanceChange$, ilkDataChange$)
 
               const connectedProxyAddress$ = proxyAddress$(account)
+
               const connectedAllowance$ = proxyAddress$(account).pipe(
                 switchMap((proxyAddress) =>
                   proxyAddress ? allowance$(token, account, proxyAddress) : EMPTY,
                 ),
               )
 
-              return combineLatest(change$, environmentChange$).pipe(
+              return merge(change$, environmentChange$).pipe(
                 scan(apply, initialState),
                 map(validate),
                 map(
@@ -422,6 +426,7 @@ export function createOpenVault$(
             }),
           ),
         ),
+        shareReplay(1),
       )
     }),
   )
