@@ -1,18 +1,15 @@
-import BigNumber from 'bignumber.js'
+import { AppLink } from 'components/Links'
 import { IlkOverview } from 'features/landing/ilksOverview'
 import { Vault } from 'features/vaults/vault'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
-import { getQueryParams } from 'helpers/useRedirect'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React from 'react'
 import { Heading } from 'theme-ui'
-import { Dictionary } from 'ts-essentials'
 
 import { Table } from '../landing/LandingView'
 import { AccountOverview } from './accountOverview'
 
-function VaultsTable({ vaults, balances }: { vaults: Vault[]; balances?: Dictionary<BigNumber> }) {
+function VaultsTable({ vaults }: { vaults: Vault[] }) {
   const { query } = useRouter()
 
   return (
@@ -26,7 +23,6 @@ function VaultsTable({ vaults, balances }: { vaults: Vault[]; balances?: Diction
           <Table.Header>Avail. to withdraw</Table.Header>
           <Table.Header>DAI</Table.Header>
           <Table.Header>Current Ratio</Table.Header>
-          {balances && <Table.Header>Your wallet balance</Table.Header>}
           <Table.Header></Table.Header>
         </>
       }
@@ -44,17 +40,10 @@ function VaultsTable({ vaults, balances }: { vaults: Vault[]; balances?: Diction
               ? formatPercent(vault.collateralizationRatio.times(100))
               : 0}
           </Table.Cell>
-          {balances && (
-            <Table.Cell>
-              {vault.token in balances
-                ? `${formatCryptoBalance(balances[vault.token])} ${vault.token}`
-                : '🤷‍♂️'}
-            </Table.Cell>
-          )}
-          <Table.Cell>
-            <Link as={`/${vault.id}${getQueryParams(query)}`} href={`/[vault]`}>
+          <Table.Cell sx={{p: 3}}>
+            <AppLink variant="buttons.outline" as={`/${vault.id}`} href={`/[vault]`}>
               Manage Vault
-            </Link>
+            </AppLink>
           </Table.Cell>
         </Table.Row>
       ))}
@@ -62,7 +51,7 @@ function VaultsTable({ vaults, balances }: { vaults: Vault[]; balances?: Diction
   )
 }
 
-function AllIlks({ ilks, balances }: { ilks: IlkOverview[]; balances?: Dictionary<BigNumber> }) {
+function AllIlks({ ilks }: { ilks: IlkOverview[] }) {
   return (
     <Table
       header={
@@ -72,7 +61,6 @@ function AllIlks({ ilks, balances }: { ilks: IlkOverview[]; balances?: Dictionar
           <Table.Header>DAI Available</Table.Header>
           <Table.Header>Stability Fee</Table.Header>
           <Table.Header>Min. Coll Rato</Table.Header>
-          {balances && <Table.Header>In Your Wallet</Table.Header>}
           <Table.Header></Table.Header>
         </>
       }
@@ -84,13 +72,6 @@ function AllIlks({ ilks, balances }: { ilks: IlkOverview[]; balances?: Dictionar
           <Table.Cell>{formatCryptoBalance(vault.daiAvailable)}</Table.Cell>
           <Table.Cell>{formatPercent(vault.stabilityFee.times(100))}</Table.Cell>
           <Table.Cell>{formatPercent(vault.liquidationRatio.times(100))}</Table.Cell>
-          {balances && (
-            <Table.Cell>
-              {vault.token in balances
-                ? `${formatCryptoBalance(balances[vault.token])} ${vault.token}`
-                : '🤷‍♂️'}
-            </Table.Cell>
-          )}
           <Table.Cell>Open Vault</Table.Cell>
         </Table.Row>
       ))}
@@ -101,7 +82,6 @@ export function AccountOverviewView({
   vaults,
   ilksOverview,
   vaultSummary,
-  balances,
 }: AccountOverview) {
   return (
     <>
@@ -114,9 +94,9 @@ export function AccountOverviewView({
         </Heading>
       )}
       <Heading>Your Vaults</Heading>
-      {vaults && <VaultsTable vaults={vaults} balances={balances} />}
+      {vaults && <VaultsTable vaults={vaults} />}
       <Heading>Vaults</Heading>
-      {ilksOverview && <AllIlks ilks={ilksOverview} balances={balances} />}
+      {ilksOverview && <AllIlks ilks={ilksOverview} />}
     </>
   )
 }

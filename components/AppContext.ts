@@ -175,11 +175,6 @@ export function setupAppContext() {
   const ethBalance$ = memoize(curry(createETHBalance$)(connectedContext$))
   const balances$ = memoize(curry(createBalances$)(collaterals$, balance$, ethBalance$))
 
-  const connectedAccountBalance$ = web3Context$.pipe(
-    filter((web3Ctx): web3Ctx is Web3ContextConnected => web3Ctx.status === 'connected'),
-    switchMap((web3Ctx) => balances$(web3Ctx.account)),
-  )
-
   const vault$ = memoize(
     curry(createVault$)(
       cdpManagerUrns$,
@@ -209,7 +204,6 @@ export function setupAppContext() {
     vaults$,
     vaultSummary$,
     ilkOverview$,
-    connectedAccountBalance$ as any,
   )
   const landing$ = curry(createLanding$)(ilkOverview$)
 

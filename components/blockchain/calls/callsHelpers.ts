@@ -15,6 +15,7 @@ import { map } from 'rxjs/operators'
 import { Context, ContextConnected } from '../network'
 
 export type CallDef<A, R> = CallDefAbstractContext<A, R, Context>
+
 export type TransactionDef<A extends TxMeta> = TransactionDefAbstractContext<A, ContextConnected>
 
 export type EstimateGasFunction<A extends TxMeta> = EstimateGasFunctionAbstractContext<

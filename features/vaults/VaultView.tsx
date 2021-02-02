@@ -9,7 +9,8 @@ import {
 import { useModal } from 'helpers/modalHook'
 import { Box, Button, Grid, Heading, Text } from 'theme-ui'
 
-import { DepositForm } from '../features/deposit/DepositForm'
+import { DepositForm } from '../deposit/DepositForm'
+import { AppLink } from 'components/Links'
 
 interface Props {
   vault: Vault
@@ -35,11 +36,12 @@ export function VaultView({ vault, account }: Props) {
 
   return (
     <Grid>
+      <Box sx={{display: 'flex'}}>
+        <AppLink as={`/owner/${vault.controller}`} href={`/owner/[address]`}>Account overview</AppLink>
+        <Text sx={{mx: 3}}>{'>'}</Text>
+        <Text>Vault #{vaultId}</Text>
+      </Box>
       <Text>Connected Address :: {account}</Text>
-      <Text>Vault :: {vaultId}</Text>
-      <Heading as="h1">
-        {vault?.ilk} Vault #{vault?.id}
-      </Heading>
       <Box>
         <Heading as="h2">Liquidation price</Heading>
         <Text>Liquidation price: {liquidationPrice} USD</Text>

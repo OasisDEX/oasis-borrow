@@ -512,6 +512,9 @@ export const theme = merge(oasisBaseTheme, {
     ...brandingIcons,
     ...customIcons,
   },
+  gradients: {
+    appGradient: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)'
+  },
   lineHeights: {
     txTimestamp: 1.6,
   },
@@ -659,17 +662,6 @@ export const landingTheme = merge(theme, {
     cardLanding: '0px 2px 6px rgba(0, 0, 0, 0.04)',
     buttonPrimary: '0px 2px 1px rgba(225, 225, 225, 0.25)',
     buttonOutline: '0px 2px 8px rgba(211, 211, 211, 0.5)',
-  },
-  gradients: {
-    landingPhone: {
-      background: 'linear-gradient(180deg, #F7F9FA 0%, rgba(211, 215, 218, 0) 100%), #F6F8F9;',
-    },
-    latamexEmail: {
-      background: 'linear-gradient(256.77deg, #272940 -7.2%, #383958 93.85%);',
-    },
-    latamexBuy: {
-      background: 'linear-gradient(180deg, #333551 0%, #2E304B 100%)',
-    },
   },
   buttons: {
     primary: {

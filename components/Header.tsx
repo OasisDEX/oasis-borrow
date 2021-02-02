@@ -61,26 +61,6 @@ export function BackArrow() {
   )
 }
 
-export function LogoWithBack({
-  backLink,
-  onClick,
-}: {
-  backLink?: AppLinkProps
-  onClick?: () => void
-}) {
-  return onClick ? (
-    <Box onClick={onClick}>
-      <BackArrow />
-    </Box>
-  ) : backLink ? (
-    <AppLink {...backLink}>
-      <BackArrow />
-    </AppLink>
-  ) : (
-    <Logo />
-  )
-}
-
 export function AppHeader({
   backLink,
   CustomLogoWithBack,
@@ -88,15 +68,10 @@ export function AppHeader({
   backLink?: AppLinkProps
   CustomLogoWithBack?: () => JSX.Element
 }) {
-  const { web3Context$ } = useAppContext()
-  const web3Context = useObservable(web3Context$)
-  //const { readonlyAccount, account } = useReadonlyAccount()
-  const { t } = useTranslation()
-
   return (
     <BasicHeader variant="appContainer">
       <>
-        {CustomLogoWithBack ? <CustomLogoWithBack /> : <LogoWithBack {...{ backLink }} />}
+        <Logo />
         <AccountButton />
       </>
     </BasicHeader>

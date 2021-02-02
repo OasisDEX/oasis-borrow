@@ -56,7 +56,6 @@ function InternalLink({
   internalInNewTab,
   as,
   isAppContextAvailable,
-  withAccountPrefix = true,
   variant,
   onClick,
   ...rest
@@ -66,20 +65,10 @@ function InternalLink({
   } = useRouter()
   let readOnlyHref = href
   let readOnlyAs = as
-
-  if (isAppContextAvailable && withAccountPrefix) {
-    const { readonlyAccount$ } = useAppContext()
-    const readonlyAccount = useObservable(readonlyAccount$)
-
-    if (readonlyAccount && href.startsWith('/')) {
-      readOnlyHref = `/[address]${href}`
-      readOnlyAs = `/${readonlyAccount}${as || href}`
-    }
-  }
-
+  
   const actualHref =
     isAppContextAvailable && network
-      ? { pathname: readOnlyHref as string, query: { network } }
+      ? { pathname: readOnlyHref, query: { network } }
       : readOnlyHref
 
   const actualAs =
@@ -88,7 +77,7 @@ function InternalLink({
       : readOnlyAs
 
   return (
-    <Link href={actualHref} as={actualAs} passHref {...rest}>
+    <Link href={actualHref} as={actualAs} {...rest}>
       <ThemeLink target={internalInNewTab ? '_blank' : '_self'} {...{ sx, variant, onClick }}>
         {children}
       </ThemeLink>

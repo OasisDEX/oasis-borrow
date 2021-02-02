@@ -45,7 +45,4 @@ export default function VaultsSummary() {
 VaultsSummary.layout = AppLayout
 VaultsSummary.layoutProps = {
   variant: 'daiContainer',
-  backLink: {
-    href: '/',
-  },
 }
