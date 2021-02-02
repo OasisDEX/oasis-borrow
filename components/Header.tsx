@@ -1,9 +1,7 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AccountButton } from 'components/account/Account'
-import { useAppContext } from 'components/AppContextProvider'
 import { AppLink, AppLinkProps } from 'components/Links'
-import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'i18n'
 import React from 'react'
@@ -84,7 +82,9 @@ export function MarketingHeader() {
   return (
     <BasicHeader variant="landingContainer">
       <Logo />
-      <AccountButton />
+      <AppLink href="/connect" variant="nav">
+        {t('connect-wallet-button')}
+      </AppLink>
     </BasicHeader>
   )
 }
