@@ -16,14 +16,11 @@ import { createGasPrice$ } from 'features/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import { createAccountOverview$ } from 'features/accountOverview/accountOverview'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
-import { createIlk$ } from 'features/ilks/ilks'
+import { createIlkData$ } from 'features/ilks/ilks'
 import { createIlks$ } from 'features/ilks'
 import { createIlkOverview$ } from 'features/ilksOverview'
 import { createLanding$ } from 'features/landing/landing'
-import { createController$, createTokenOraclePrice$, createVault$ } from 'features/vaults/vault'
-import { createVaults$ } from 'features/vaults/vaults'
-
-import { createVaultSummary } from 'features/vaults/vaultsSummary'
+import { createVaultSummary } from 'features/vault/vaultSummary'
 
 import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
@@ -53,6 +50,12 @@ import {
   createCollaterals$,
   createTokens$,
 } from 'blockchain/tokens'
+import {
+  createController$,
+  createTokenOraclePrice$,
+  createVault$,
+  createVaults$,
+} from 'blockchain/vaults'
 
 export type TxData = LockAndDrawData
 // | ApproveData
@@ -158,7 +161,7 @@ export function setupAppContext() {
   // computed
   const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
 
-  const ilk$ = memoize(curry(createIlk$)(vatIlks$, spotIlks$, jugIlks$, catIlks$))
+  const ilk$ = memoize(curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, catIlks$))
 
   const controller$ = memoize(
     curry(createController$)(proxyOwner$, cdpManagerOwner$),

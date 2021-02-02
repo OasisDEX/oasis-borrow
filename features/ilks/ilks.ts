@@ -6,14 +6,15 @@ import { VatIlk, vatIlk } from 'blockchain/calls/vat'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-export type Ilk = VatIlk & SpotIlk & JugIlk & CatIlk
-export function createIlk$(
+export type IlkData = VatIlk & SpotIlk & JugIlk & CatIlk
+
+export function createIlkData$(
   vatIlks$: CallObservable<typeof vatIlk>,
   spotIlks$: CallObservable<typeof spotIlk>,
   jugIlks$: CallObservable<typeof jugIlk>,
   catIlks$: CallObservable<typeof catIlk>,
   ilk: string,
-): Observable<Ilk> {
+): Observable<IlkData> {
   return combineLatest(vatIlks$(ilk), spotIlks$(ilk), jugIlks$(ilk), catIlks$(ilk)).pipe(
     switchMap(
       ([
