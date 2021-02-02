@@ -70,9 +70,9 @@ export function createContext$(
           ? {
               status: 'connected',
               account: readonlyAccount,
-              readonly: 'true',
+              readonly: true,
             }
-          : status === 'connected'
+          : web3Context.status === 'connected'
           ? { readonly: false }
           : {}),
         contract: <T>(c: ContractDesc) => contract(web3Context.web3, c) as T,

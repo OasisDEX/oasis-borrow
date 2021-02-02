@@ -6,7 +6,7 @@ import { useObservable } from 'helpers/observableHook';
 import React, { ComponentProps, ComponentType, ReactNode, useEffect } from 'react';
 import { Box, Button,Container, SxStyleProp } from 'theme-ui';
 
-function Table({ header, children, sx }: React.PropsWithChildren<{header: ReactNode, sx?: SxStyleProp}>) {
+export function Table({ header, children, sx }: React.PropsWithChildren<{header: ReactNode, sx?: SxStyleProp}>) {
     return (
         <Container sx={{ border: '1px solid #D8DFE3', borderCollapse: 'collapse', p: 0, ...sx }} as="table">
             <Box as="thead">
