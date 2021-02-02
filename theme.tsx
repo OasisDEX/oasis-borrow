@@ -499,7 +499,20 @@ export const TRANSITIONS = {
 }
 
 export const theme = merge(oasisBaseTheme, {
+  gradients: {
+    app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)'
+  },
+  radii: {
+    small: 4,
+    medium: 8,
+    large: 16,
+    // roundish: 20,
+    // round: 32,
+  },
   colors: {
+    text: {
+      muted: '#708390'
+    },
     networks: {
       mainnet: 'rgb(41, 182, 175)',
       kovan: 'rgb(112, 87, 255)',
@@ -507,13 +520,11 @@ export const theme = merge(oasisBaseTheme, {
     },
     txManagerBg: '#E9EEF0',
   },
+
   icons: {
     ...icons,
     ...brandingIcons,
     ...customIcons,
-  },
-  gradients: {
-    appGradient: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)'
   },
   lineHeights: {
     txTimestamp: 1.6,
@@ -557,6 +568,10 @@ export const theme = merge(oasisBaseTheme, {
       px: 4,
       lineHeight: 'body',
     },
+    outline: {
+      lineHeight: 1,
+      border: 'light',
+    }
   },
   layout: {
     appContainer: {
@@ -615,6 +630,7 @@ export const theme = merge(oasisBaseTheme, {
     },
   },
   shadows: {
+    table: '0px 0px 2px rgba(0, 0, 0, 0.2)',
     cookie: '0px 1px 8px rgba(0, 0, 0, 0.09)',
   },
   zIndices: {
@@ -662,16 +678,6 @@ export const landingTheme = merge(theme, {
     cardLanding: '0px 2px 6px rgba(0, 0, 0, 0.04)',
     buttonPrimary: '0px 2px 1px rgba(225, 225, 225, 0.25)',
     buttonOutline: '0px 2px 8px rgba(211, 211, 211, 0.5)',
-  },
-  buttons: {
-    primary: {
-      boxShadow: 'buttonPrimary',
-      lineHeight: 'smallButton',
-    },
-    outline: {
-      borderColor: 'primary',
-      boxShadow: 'buttonOutline',
-    },
   },
   links: {
     nav: {

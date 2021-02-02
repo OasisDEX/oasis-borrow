@@ -4,11 +4,19 @@ import { getToken } from 'components/blockchain/config';
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format';
 import { useObservable } from 'helpers/observableHook';
 import React, { ComponentProps, ComponentType, ReactNode, useEffect } from 'react';
+import { borderRadius } from 'react-select/src/theme';
 import { Box, Button,Container, SxStyleProp } from 'theme-ui';
 
 export function Table({ header, children, sx }: React.PropsWithChildren<{header: ReactNode, sx?: SxStyleProp}>) {
     return (
-        <Container sx={{ border: '1px solid #D8DFE3', borderCollapse: 'collapse', p: 0, ...sx }} as="table">
+        <Container 
+            sx={{
+                borderCollapse: 'separate',
+                borderSpacing: '0 9px',
+                ...sx 
+            }} 
+            as="table"
+        >
             <Box as="thead">
                 <Box as="tr">
                     {header}
@@ -19,21 +27,61 @@ export function Table({ header, children, sx }: React.PropsWithChildren<{header:
 }
 
 Table.Row = function({ children, sx }: React.PropsWithChildren<{sx?: SxStyleProp}>) {
-    return <Box sx={{ borderBottom: '1px solid #D8DFE3', ...sx }} as="tr">{children}</Box>
+    return (
+        <Box 
+            sx={{
+                boxShadow: 'table',
+                background: 'white',
+                borderRadius: '8px',
+                ...sx 
+            }} 
+            as="tr"
+        >
+                {children}
+        </Box>
+    )
 }
 
 Table.Cell = function({ children, sx }: React.PropsWithChildren<{sx?: SxStyleProp}>) {
-    return <Box sx={{ px: 3, ...sx }} as="td">{children}</Box>
+    return (
+        <Box 
+            sx={{
+                p: 3,
+                ':first-child': {
+                    borderRadius: '8px 0 0 8px'
+                },
+                ':last-child': {
+                    borderRadius: '0 8px 8px 0'
+                },
+                ...sx 
+            }} 
+            as="td"
+        >
+            {children}
+        </Box>
+    )
 }
 
 Table.Header = function({ children, sx }: React.PropsWithChildren<{sx?: SxStyleProp}>) {
-    return <Box sx={{ px: 3, lineHeight: 4, borderBottom: '1px solid #D8DFE3', ...sx }} as="th">{children}</Box>
+    return (
+        <Box 
+            sx={{ 
+                px: 3,
+                color: 'text.muted',
+                fontSize: 2,
+                textAlign: 'left',
+                ...sx,
+            }} 
+            as="th"
+        >
+            {children}
+        </Box>)
 }
 
-function TokenSymbol({ token }: {token: string}) {
+export function TokenSymbol({ token }: {token: string}) {
     const tokenInfo = getToken(token);
     
-    return <Box><Icon name={tokenInfo.icon} size="20px" sx={{ verticalAlign: 'sub' }}/>{token}</Box>
+    return <Box><Icon name={tokenInfo.icon} size="20px" sx={{ verticalAlign: 'sub', mr: 2 }}/>{token}</Box>
 }
 
 export function LandingView() {
@@ -65,7 +113,7 @@ export function LandingView() {
                             <Table.Cell sx={{ textAlign: 'right' }}>{formatPercent(ilk.stabilityFee)}</Table.Cell>
                             <Table.Cell sx={{ textAlign: 'right' }}>{formatPercent(ilk.liquidationRatio)}</Table.Cell>
                             <Table.Cell sx={{ textAlign: 'right' }}>
-                                <Button variant="outline">Open Vault</Button>
+                                <Button sx={{lineHeight: 1}} variant="outline">Open Vault</Button>
                             </Table.Cell>
                         </Table.Row>
                     ))
