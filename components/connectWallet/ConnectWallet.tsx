@@ -150,11 +150,11 @@ export function getInjectedWalletKind() {
 
   if (w.imToken) return 'IMToken'
 
+  if (w.ethereum?.isMetaMask) return 'MetaMask'
+
   if (!w.web3 || typeof w.web3.currentProvider === 'undefined') return undefined
 
   if (w.web3.currentProvider.isAlphaWallet) return 'Alpha Wallet'
-
-  if (w.web3.currentProvider.isMetaMask) return 'MetaMask'
 
   if (w.web3.currentProvider.isTrust) return 'Trust'
 
