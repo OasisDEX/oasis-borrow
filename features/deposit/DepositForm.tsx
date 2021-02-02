@@ -15,7 +15,6 @@ export function DepositForm({ close, vaultId }: { close: () => void; vaultId: Bi
   const depositForm = useObservable(depositForm$(vaultId))
 
   const closeModal = useCallback(() => {
-    console.log(depositForm)
     depositForm?.reset && depositForm.reset()
     close()
   }, [depositForm])

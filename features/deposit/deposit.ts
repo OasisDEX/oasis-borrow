@@ -118,10 +118,9 @@ function addTransitions(
 
 export function createDepositForm$(
   context$: Observable<ContextConnected>,
-  balance$: CallObservable<typeof tokenBalance>,
+  balance$: (token: string, address: string) => Observable<BigNumber>,
   txHelpers$: Observable<TxHelpers>,
   vault$: (id: BigNumber) => Observable<Vault>,
-  ethBalance$: (address: string) => Observable<BigNumber>,
   id: BigNumber,
 ): Observable<DepositState> {
   const change$ = new Subject<StateChange>()
@@ -130,14 +129,14 @@ export function createDepositForm$(
   }
 
   const balanceChange$ = combineLatest(context$, vault$(id)).pipe(
-    switchMap(([context, vault]) => balance$({ account: context.account, token: vault.token })),
+    switchMap(([context, vault]) => balance$(vault.token, context.account)),
     map((balance) => ({ kind: 'balance' as const, balance })),
   )
 
   const vaultChange$ = vault$(id).pipe(map((vault) => ({ kind: 'vault' as const, vault })))
 
   const ethBalanceChange$ = context$.pipe(
-    switchMap((context) => ethBalance$(context.account)),
+    switchMap((context) => balance$('ETH', context.account)),
     map((ethBalance) => ({ kind: 'ethBalance' as const, ethBalance })),
   )
 

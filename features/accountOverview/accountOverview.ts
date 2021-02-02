@@ -19,14 +19,14 @@ export function createAccountOverview$(
   vaults$: (address: string) => Observable<Vault[]>,
   vaultsSummary$: (address: string) => Observable<VaultSummary>,
   ilkOverview$: Observable<IlkOverview[]>,
-  balances$: Observable<Dictionary<BigNumber>>,
+  balances$: (address: string) => Observable<Dictionary<BigNumber>>,
   address: string,
 ): Observable<AccountOverview> {
   return combineLatest(
     vaults$(address).pipe(startWith<Vault[] | undefined>(undefined)),
     vaultsSummary$(address).pipe(startWith<VaultSummary | undefined>(undefined)),
     ilkOverview$.pipe(startWith<IlkOverview[] | undefined>(undefined)),
-    balances$.pipe(startWith<Dictionary<BigNumber, string> | undefined>(undefined)),
+    balances$(address).pipe(startWith<Dictionary<BigNumber, string> | undefined>(undefined)),
   ).pipe(
     map(([vaults, vaultSummary, ilksOverview, balances]) => ({
       vaults,
