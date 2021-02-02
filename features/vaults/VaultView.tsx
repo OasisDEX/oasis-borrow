@@ -9,7 +9,7 @@ import {
 import { useModal } from 'helpers/modalHook'
 import { Box, Button, Grid, Heading, Text } from 'theme-ui'
 
-import { DepositForm } from '../features/deposit/DepositForm'
+import { DepositForm } from '../deposit/DepositForm'
 
 interface Props {
   vault: Vault

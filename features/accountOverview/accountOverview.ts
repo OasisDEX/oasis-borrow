@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { IlkOverview } from 'features/landing/ilksOverview'
+import { IlkOverview } from 'features/ilksOverview'
 import { Vault } from 'features/vaults/vault'
 import { VaultSummary } from 'features/vaults/vaultsSummary'
 import { Observable } from 'rxjs'

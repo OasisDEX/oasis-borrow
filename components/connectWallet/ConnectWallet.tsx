@@ -8,7 +8,7 @@ import { NetworkConnector } from '@web3-react/network-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { WalletLinkConnector } from '@web3-react/walletlink-connector'
 import { useAppContext } from 'components/AppContextProvider'
-import { dappName, networksById, pollingInterval } from 'components/blockchain/config'
+import { dappName, networksById, pollingInterval } from 'blockchain/config'
 import { LedgerAccountSelection } from 'components/connectWallet/LedgerAccountSelection'
 import { TrezorAccountSelection } from 'components/connectWallet/TrezorAccountSelection'
 import { AppSpinner } from 'helpers/loadingIndicator/LoadingIndicator'
@@ -37,7 +37,11 @@ const rpcUrls: { [chainId: number]: string } = mapValues(
   (network) => network.infuraUrl,
 )
 
-export async function getConnector(connectorKind: ConnectionKind, network: number, options: any = {}) {
+export async function getConnector(
+  connectorKind: ConnectionKind,
+  network: number,
+  options: any = {},
+) {
   assert(rpcUrls[network], 'Unsupported chainId!')
   switch (connectorKind) {
     case 'injected':

@@ -1,9 +1,9 @@
 import { BigNumber } from 'bignumber.js'
-import { getToken } from 'components/blockchain/config'
-import { Context, every10Seconds$ } from 'components/blockchain/network'
+import { Context, every10Seconds$ } from 'blockchain/network'
 import { bindNodeCallback, combineLatest, forkJoin, Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
+import { getToken } from '../blockchain/tokensMetadata'
 
 export interface Ticker {
   [label: string]: BigNumber

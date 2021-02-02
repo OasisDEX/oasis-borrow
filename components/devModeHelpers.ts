@@ -1,11 +1,11 @@
 import { TxHelpers$ } from 'components/AppContext'
-import { ContextConnected } from 'components/blockchain/network'
+import { ContextConnected } from 'blockchain/network'
 import getConfig from 'next/config'
 import { identity, Observable, of } from 'rxjs'
 import { ajax, ajaxPost } from 'rxjs/internal-compatibility'
 import { catchError, map, switchMap } from 'rxjs/operators'
 
-import { TxMetaKind } from './blockchain/calls/txMeta'
+import { TxMetaKind } from '../blockchain/calls/txMeta'
 import { setOwner } from './dashboard/dsrPot/dsProxyCalls'
 import { disapprove } from './dashboard/dsrPot/erc20Calls'
 import { createProxyAddress$ } from './dashboard/proxy'

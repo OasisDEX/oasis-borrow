@@ -1,4 +1,4 @@
-import { Context } from 'components/blockchain/network'
+import { Context } from 'blockchain/network'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 

@@ -11,8 +11,8 @@ import { of } from 'rxjs'
 import { Container, Heading } from 'theme-ui'
 import Web3 from 'web3'
 
-import { TxData } from '../AppContext'
-import { AppHeader } from '../Header'
+import { TxData } from '../../components/AppContext'
+import { AppHeader } from '../../components/Header'
 import { createTransactionManager } from './transactionManager'
 import { protoPendingTx, protoSuccessTx } from './TransactionManager.stories'
 

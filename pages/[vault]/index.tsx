@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { Balances } from 'components/Balances'
 import { AppLayout } from 'components/Layouts'
-import { VaultView } from 'components/VaultView'
+import { VaultView } from 'features/vaults/VaultView'
 import { useObservable } from 'helpers/observableHook'
 import { useRouter } from 'next/router'
 import { Container } from 'theme-ui'
@@ -25,7 +25,6 @@ export default function Vault() {
 
   return (
     <Container>
-      {vault.controller && <Balances owner={vault.controller} />}
       <VaultView vault={vault} account={account} />
     </Container>
   )

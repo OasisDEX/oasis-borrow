@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { getToken } from 'components/blockchain/config'
+
+import { getToken } from '../blockchain/tokensMetadata'
 
 export function roundHalfUp(amount: BigNumber, token: string) {
   const digits = getToken(token).digits

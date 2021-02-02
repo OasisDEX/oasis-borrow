@@ -2,10 +2,10 @@ import { TxState, TxStatus } from '@oasisdex/transactions'
 import { Web3Context } from '@oasisdex/web3-context'
 import { storiesOf } from '@storybook/react'
 import BigNumber from 'bignumber.js'
-import { AccountModal } from 'components/account/Account'
+import { AccountModal } from 'features/account/Account'
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
-import { TxMetaKind } from 'components/blockchain/calls/txMeta'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import {
   LatamexOrder,
   MoonpayOrder,
@@ -19,8 +19,8 @@ import { of } from 'rxjs'
 import { Container, Heading } from 'theme-ui'
 import Web3 from 'web3'
 
-import { TxData } from '../AppContext'
-import { AppHeader } from '../Header'
+import { TxData } from '../../components/AppContext'
+import { AppHeader } from '../../components/Header'
 import { createTransactionManager } from './transactionManager'
 
 interface MockContextProviderProps extends WithChildren {

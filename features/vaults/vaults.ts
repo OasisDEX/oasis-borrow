@@ -3,8 +3,8 @@ import { combineLatest, EMPTY, forkJoin, Observable } from 'rxjs'
 import { first, switchMap } from 'rxjs/operators'
 import { GetCdps } from 'types/web3-v1-contracts/get-cdps'
 
-import { call, CallDef } from '../../components/blockchain/calls/callsHelpers'
-import { ContextConnected } from '../../components/blockchain/network'
+import { call, CallDef } from '../../blockchain/calls/callsHelpers'
+import { ContextConnected } from '../../blockchain/network'
 import { Vault } from './vault'
 
 interface GetCdpsArgs {

@@ -12,8 +12,10 @@ export interface Modal {
   modalComponentProps?: any
 }
 
-export type ModalOpener =
-  <M extends React.ComponentType<any>, P extends React.ComponentProps<M>>(modal: M, modalComponentProps?: Omit<P, 'close'>) => void
+export type ModalOpener = <M extends React.ComponentType<any>, P extends React.ComponentProps<M>>(
+  modal: M,
+  modalComponentProps?: Omit<P, 'close'>,
+) => void
 
 const ModalContext = React.createContext<ModalOpener>(() => {
   console.warn('ModalContext not setup properly ')

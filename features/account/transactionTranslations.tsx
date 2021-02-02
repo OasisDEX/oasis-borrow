@@ -2,7 +2,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { TxState } from '@oasisdex/transactions'
 import { TxData } from 'components/AppContext'
-import { TxMetaKind } from 'components/blockchain/calls/txMeta'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { LatamexOrder, MoonpayOrder, WyreOrder } from 'components/dashboard/onrampOrders'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { roundHalfUp } from 'helpers/rounding'

@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import Web3 from 'web3'
 
-import { McdJug } from '../../../types/web3-v1-contracts/mcd-jug'
-import { RAY, SECONDS_PER_YEAR } from '../../constants'
+import { McdJug } from '../../types/web3-v1-contracts/mcd-jug'
+import { RAY, SECONDS_PER_YEAR } from '../../components/constants'
 import { CallDef } from './callsHelpers'
 
 export interface JugIlk {

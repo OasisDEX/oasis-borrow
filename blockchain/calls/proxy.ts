@@ -1,6 +1,6 @@
 import { nullAddress } from '@oasisdex/utils'
-import * as dsProxy from 'components/blockchain/abi/ds-proxy.json'
-import { contractDesc } from 'components/blockchain/config'
+import * as dsProxy from 'blockchain/abi/ds-proxy.json'
+import { contractDesc } from 'blockchain/config'
 import { defer, EMPTY, Observable, of } from 'rxjs'
 import { catchError, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
