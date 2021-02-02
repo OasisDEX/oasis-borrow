@@ -15,7 +15,7 @@ function Logo() {
     <AppLink
       withAccountPrefix={false}
       href="/"
-      sx={{ color: 'primary', fontWeight: 'semiBold', fontSize: 5 }}
+      sx={{ color: 'primary', fontWeight: 'semiBold', fontSize: 5, cursor: 'pointer' }}
     >
       Oasis
     </AppLink>
@@ -84,9 +84,7 @@ export function MarketingHeader() {
   return (
     <BasicHeader variant="landingContainer">
       <Logo />
-      <AppLink href="/connect" variant="nav">
-        {t('connect-wallet-button')}
-      </AppLink>
+      <AccountButton />
     </BasicHeader>
   )
 }
