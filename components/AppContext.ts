@@ -10,7 +10,7 @@ import {
   TransactionDef,
 } from 'blockchain/calls/callsHelpers'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
-import { createProxyAddress$, createProxyOwner$ } from 'blockchain/calls/proxy'
+import { CreateDsProxyData, createProxyAddress$, createProxyOwner$ } from 'blockchain/calls/proxy'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import { createAccountOverview$ } from 'features/accountOverview/accountOverview'
@@ -27,7 +27,7 @@ import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from '../features/account/transactionManager'
 import { catIlk } from '../blockchain/calls/cat'
-import { tokenBalance } from '../blockchain/calls/erc20'
+import { ApproveData, tokenAllowance, tokenBalance } from '../blockchain/calls/erc20'
 import { jugIlk } from '../blockchain/calls/jug'
 import { observe } from '../blockchain/calls/observe'
 import { spotIlk, spotPar } from '../blockchain/calls/spot'
@@ -45,13 +45,14 @@ import {
   createBalance$,
   createCollaterals$,
   createTokens$,
+  createAllowance$,
 } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
+import { createOpenVault$ } from 'features/openVault/openVault'
 
-export type TxData = LockAndDrawData
-// | ApproveData
+export type TxData = LockAndDrawData | ApproveData | CreateDsProxyData
 // | DisapproveData
 
 export interface TxHelpers {
@@ -148,6 +149,9 @@ export function setupAppContext() {
   const balance$ = curry(createBalance$)(onEveryBlock$, context$, tokenBalance$)
   const balances$ = curry(createBalances$)(balance$)
 
+  const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
+  const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
+
   const collaterals$ = createCollaterals$(context$)
   const tokens$ = createTokens$(context$)
 
@@ -195,7 +199,14 @@ export function setupAppContext() {
     balances$(tokens$),
   )
   const landing$ = curry(createLanding$)(ilkDataList$)
-
+  const openVault$ = curry(createOpenVault$)(
+    connectedContext$,
+    txHelpers$,
+    proxyAddress$,
+    allowance$,
+    balance$,
+    ilkData$,
+  )
   return {
     web3Context$,
     setupWeb3Context$,
@@ -213,6 +224,7 @@ export function setupAppContext() {
     depositForm$,
     landing$,
     accountOverview$,
+    openVault$,
   }
 }
 

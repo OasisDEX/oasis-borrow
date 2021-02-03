@@ -5,6 +5,8 @@ import { defer, EMPTY, Observable, of } from 'rxjs'
 import { catchError, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DsProxyRegistry } from 'types/web3-v1-contracts/ds-proxy-registry'
+import { TransactionDef } from './callsHelpers'
+import { TxMetaKind } from './txMeta'
 
 import { ContextConnected } from '../network'
 import { call, CallDef } from './callsHelpers'
@@ -58,4 +60,14 @@ export function createProxyOwner$(
     catchError(() => EMPTY),
     shareReplay(1),
   )
+}
+
+export type CreateDsProxyData = {
+  kind: TxMetaKind.createDsProxy
+}
+
+export const createDsProxy: TransactionDef<CreateDsProxyData> = {
+  call: (_, { dsProxyRegistry, contract }) =>
+    contract<DsProxyRegistry>(dsProxyRegistry).methods.build,
+  prepareArgs: () => [],
 }
