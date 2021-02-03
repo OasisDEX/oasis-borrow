@@ -16,9 +16,6 @@ import { createGasPrice$ } from 'features/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import { createAccountOverview$ } from 'features/accountOverview/accountOverview'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
-import { createIlkData$ } from 'features/ilks/ilks'
-import { createIlks$ } from 'features/ilks'
-import { createIlkOverview$ } from 'features/ilksOverview'
 import { createLanding$ } from 'features/landing/landing'
 import { createVaultSummary } from 'features/vault/vaultSummary'
 
@@ -56,6 +53,12 @@ import {
   createVault$,
   createVaults$,
 } from 'blockchain/vaults'
+import {
+  createIlkData$,
+  createIlkDataList$,
+  createIlkDataSummary$,
+  createIlks$,
+} from 'blockchain/ilks'
 
 export type TxData = LockAndDrawData
 // | ApproveData
@@ -161,7 +164,7 @@ export function setupAppContext() {
   // computed
   const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
 
-  const ilk$ = memoize(curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, catIlks$))
+  const ilkData$ = memoize(curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, catIlks$))
 
   const controller$ = memoize(
     curry(createController$)(proxyOwner$, cdpManagerOwner$),
@@ -175,7 +178,7 @@ export function setupAppContext() {
       cdpManagerOwner$,
       vatUrns$,
       vatGem$,
-      ilk$,
+      ilkData$,
       tokenOraclePrice$,
       controller$,
     ),
@@ -192,14 +195,16 @@ export function setupAppContext() {
   )
 
   const ilks$ = createIlks$(context$)
-  const ilkOverview$ = createIlkOverview$(ilks$, ilk$)
+
+  const ilkDataList$ = createIlkDataList$(ilks$, ilkData$)
+
   const accountOverview$ = curry(createAccountOverview$)(
     vaults$,
     vaultSummary$,
-    ilkOverview$,
+    ilkDataList$,
     balances$(tokens$),
   )
-  const landing$ = curry(createLanding$)(ilkOverview$)
+  const landing$ = curry(createLanding$)(ilkDataList$)
 
   return {
     web3Context$,

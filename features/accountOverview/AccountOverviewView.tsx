@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { IlkOverview } from 'features/ilksOverview'
-import { Vault } from 'features/vaults/vault'
+import { Vault } from 'blockchain/vaults'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { getQueryParams } from 'helpers/useRedirect'
 import Link from 'next/link'
@@ -99,7 +98,7 @@ function AllIlks({ ilks, balances }: { ilks: IlkOverview[]; balances?: Dictionar
 }
 export function AccountOverviewView({
   vaults,
-  ilksOverview,
+  ilkDataList,
   vaultSummary,
   balances,
 }: AccountOverview) {
@@ -116,7 +115,7 @@ export function AccountOverviewView({
       <Heading>Your Vaults</Heading>
       {vaults && <VaultsTable vaults={vaults} balances={balances} />}
       <Heading>Vaults</Heading>
-      {ilksOverview && <AllIlks ilks={ilksOverview} balances={balances} />}
+      {ilkDataList && <AllIlks ilks={ilkDataList} balances={balances} />}
     </>
   )
 }
