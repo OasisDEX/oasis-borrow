@@ -1,7 +1,7 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
-import { AccountButton } from 'components/account/Account'
 import { AppLink, AppLinkProps } from 'components/Links'
+import { AccountButton } from 'features/account/Account'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'i18n'
 import React from 'react'

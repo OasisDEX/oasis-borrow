@@ -1,12 +1,12 @@
+import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { IlkOverview } from 'features/landing/ilksOverview'
-import { Vault } from 'features/vaults/vault'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import React from 'react'
 import { Button, Heading } from 'theme-ui'
 
 import { Table, TokenSymbol } from '../landing/LandingView'
-import { AccountOverview } from './vaultsOverview'
+import { VaultsOverview } from './vaultsOverview'
 
 function VaultsTable({ vaults }: { vaults: Vault[] }) {
   return (
@@ -79,9 +79,9 @@ function AllIlks({ ilks }: { ilks: IlkOverview[] }) {
 }
 export function VaultsOverviewView({
   vaults,
-  ilksOverview,
+  ilkDataList,
   vaultSummary,
-}: AccountOverview) {
+}: VaultsOverview) {
   return (
     <>
       {vaultSummary && (
@@ -95,7 +95,7 @@ export function VaultsOverviewView({
       <Heading>Your Vaults</Heading>
       {vaults && <VaultsTable vaults={vaults} />}
       <Heading>Vaults</Heading>
-      {ilksOverview && <AllIlks ilks={ilksOverview} />}
+      {ilkDataList && <AllIlks ilks={ilkDataList} />}
     </>
   )
 }

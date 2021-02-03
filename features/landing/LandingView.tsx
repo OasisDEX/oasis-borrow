@@ -1,16 +1,16 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { getToken } from 'blockchain/tokensMetadata';
 import { useAppContext } from 'components/AppContextProvider';
-import { getToken } from 'components/blockchain/config';
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format';
 import { useObservable } from 'helpers/observableHook';
-import React, { ComponentProps, ComponentType, ReactNode, useEffect } from 'react';
-import { borderRadius } from 'react-select/src/theme';
+import React, { ReactNode } from 'react';
 import { Box, Button,Container, SxStyleProp } from 'theme-ui';
 
 export function Table({ header, children, sx }: React.PropsWithChildren<{header: ReactNode, sx?: SxStyleProp}>) {
     return (
         <Container 
             sx={{
+                p: 0,
                 borderCollapse: 'separate',
                 borderSpacing: '0 9px',
                 ...sx 
@@ -85,12 +85,12 @@ export function TokenSymbol({ token }: {token: string}) {
 }
 
 export function LandingView() {
-    const { landing$ } = useAppContext();
-    const landing = useObservable(landing$);
+  const { landing$ } = useAppContext()
+  const landing = useObservable(landing$)
 
-    if  (landing === undefined) {
-        return null;
-    }
+  if (landing === undefined) {
+    return null
+  }
 
     return (
         <Container>

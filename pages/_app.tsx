@@ -4,8 +4,8 @@ import { MDXProvider } from '@mdx-js/react'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { Web3ReactProvider } from '@web3-react/core'
 import { AppContextProvider } from 'components/AppContextProvider'
-import { SetupWeb3Context } from 'components/blockchain/web3Context'
-import { wsEnhanceProvider } from 'components/blockchain/wsEnhancedProviderProxy'
+import { SetupWeb3Context } from 'blockchain/web3Context'
+import { wsEnhanceProvider } from 'blockchain/wsEnhancedProviderProxy'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
 import { AppLayout, AppLayoutProps, MarketingLayoutProps } from 'components/Layouts'
 import { CustomMDXLink } from 'components/Links'
@@ -22,8 +22,8 @@ import { landingTheme, theme } from 'theme'
 import { components, ThemeProvider } from 'theme-ui'
 import Web3 from 'web3'
 
-import { trackingEvents } from '../components/analytics/analytics'
-import { mixpanelInit } from '../components/analytics/mixpanel'
+import { trackingEvents } from '../analytics/analytics'
+import { mixpanelInit } from '../analytics/mixpanel'
 
 function getLibrary(provider: any, connector: AbstractConnector): Web3 {
   const chainIdPromise = connector.getChainId()

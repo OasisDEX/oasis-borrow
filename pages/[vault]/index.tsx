@@ -1,8 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { Balances } from 'components/Balances'
 import { AppLayout } from 'components/Layouts'
+<<<<<<< HEAD
 import { VaultView } from 'features/vaults/VaultView'
+=======
+import { VaultView } from 'features/vault/VaultView'
+>>>>>>> 202eacab86cf9e8a9347770e35a4957bb8c14787
 import { useObservable } from 'helpers/observableHook'
 import { useRouter } from 'next/router'
 import { Container } from 'theme-ui'
