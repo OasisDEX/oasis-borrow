@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { Vault } from 'features/vaults/vault'
+import { Vault } from 'blockchain/vaults'
 import {
   formatCryptoBalance,
   formatFiatBalance,
@@ -15,6 +15,7 @@ interface Props {
   vault: Vault
   account: string
 }
+
 export function VaultView({ vault, account }: Props) {
   const token = vault.token
   const vaultId = vault.id

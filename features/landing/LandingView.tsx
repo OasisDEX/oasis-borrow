@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { useAppContext } from 'components/AppContextProvider'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import React, {  ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import { Box, Button, Container, SxStyleProp } from 'theme-ui'
 import { getToken } from '../../blockchain/tokensMetadata'
 
@@ -81,8 +81,8 @@ export function LandingView() {
           </>
         }
       >
-        {landing.rows.map((ilk) => (
-          <Table.Row sx={{ td: { py: 2 } }}>
+        {landing.rows.map((ilk, idx) => (
+          <Table.Row key={idx} sx={{ td: { py: 2 } }}>
             <Table.Cell>
               <TokenSymbol token={ilk.token} />
             </Table.Cell>

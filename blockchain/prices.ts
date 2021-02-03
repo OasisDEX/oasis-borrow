@@ -4,6 +4,9 @@ import { bindNodeCallback, combineLatest, forkJoin, Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 import { getToken } from '../blockchain/tokensMetadata'
+import { CallObservable } from './calls/observe'
+import { spotIlk, spotPar } from './calls/spot'
+import { vatIlk } from './calls/vat'
 
 export interface Ticker {
   [label: string]: BigNumber
@@ -54,3 +57,16 @@ export const tokenPricesInUSD$: Observable<Ticker> = every10Seconds$.pipe(
   map((prices) => prices.reduce((a, e) => ({ ...a, ...e }))),
   shareReplay(1),
 )
+
+export function createTokenOraclePrice$(
+  vatIlks$: CallObservable<typeof vatIlk>,
+  ratioDAIUSD$: CallObservable<typeof spotPar>,
+  liquidationRatio$: CallObservable<typeof spotIlk>,
+  ilk: string,
+) {
+  return combineLatest(vatIlks$(ilk), liquidationRatio$(ilk), ratioDAIUSD$()).pipe(
+    map(([{ maxDebtPerUnitCollateral }, { liquidationRatio }, ratioDAIUSD]) =>
+      maxDebtPerUnitCollateral.times(ratioDAIUSD).times(liquidationRatio),
+    ),
+  )
+}

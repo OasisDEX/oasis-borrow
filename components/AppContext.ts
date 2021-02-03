@@ -12,25 +12,18 @@ import {
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
 import { createProxyAddress$, createProxyOwner$ } from 'blockchain/calls/proxy'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
-import { createGasPrice$ } from 'features/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import { createAccountOverview$ } from 'features/accountOverview/accountOverview'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
-import { createIlk$ } from 'features/ilks/ilks'
-import { createIlks$ } from 'features/ilks'
-import { createIlkOverview$ } from 'features/ilksOverview'
 import { createLanding$ } from 'features/landing/landing'
-import { createController$, createTokenOraclePrice$, createVault$ } from 'features/vaults/vault'
-import { createVaults$ } from 'features/vaults/vaults'
-import { createVaultSummary } from 'features/vaults/vaultsSummary'
+import { createVaultSummary } from 'features/vault/vaultSummary'
+
 import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
 import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
 
-import { createBalances$, createETHBalance$ } from '../features/balances'
-import { createCollaterals$ } from '../features/collaterals'
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from '../features/account/transactionManager'
 import { catIlk } from '../blockchain/calls/cat'
@@ -47,6 +40,15 @@ import {
   createOnEveryBlock$,
   createWeb3ContextConnected$,
 } from '../blockchain/network'
+import {
+  createBalances$,
+  createBalance$,
+  createCollaterals$,
+  createTokens$,
+} from 'blockchain/tokens'
+import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
+import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
+import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
 
 export type TxData = LockAndDrawData
 // | ApproveData
@@ -95,14 +97,14 @@ export function setupAppContext() {
   const account$ = createAccount$(web3Context$)
   const initializedAccount$ = createInitializedAccount$(account$)
 
-  web3Context$.subscribe((web3Context) =>
-    console.log(
-      'web3Context:',
-      web3Context.status,
-      (web3Context as any).chainId,
-      (web3Context as any).account,
-    ),
-  )
+  // web3Context$.subscribe((web3Context) =>
+  //   console.log(
+  //     'web3Context:',
+  //     web3Context.status,
+  //     (web3Context as any).chainId,
+  //     (web3Context as any).account,
+  //   ),
+  // )
 
   const web3ContextConnected$ = createWeb3ContextConnected$(web3Context$)
 
@@ -131,24 +133,9 @@ export function setupAppContext() {
   // base
   const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
   const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
-  const cdpManagerUrns$ = observe(
-    onEveryBlock$,
-    connectedContext$,
-    cdpManagerUrns,
-    bigNumerTostring,
-  )
-  const cdpManagerIlks$ = observe(
-    onEveryBlock$,
-    connectedContext$,
-    cdpManagerIlks,
-    bigNumerTostring,
-  )
-  const cdpManagerOwner$ = observe(
-    onEveryBlock$,
-    connectedContext$,
-    cdpManagerOwner,
-    bigNumerTostring,
-  )
+  const cdpManagerUrns$ = observe(onEveryBlock$, context$, cdpManagerUrns, bigNumberTostring)
+  const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
+  const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumberTostring)
   const vatIlks$ = observe(onEveryBlock$, context$, vatIlk)
   const vatUrns$ = observe(onEveryBlock$, context$, vatUrns, ilkUrnAddressTostring)
   const vatGem$ = observe(onEveryBlock$, context$, vatGem, ilkUrnAddressTostring)
@@ -157,23 +144,21 @@ export function setupAppContext() {
   const jugIlks$ = observe(onEveryBlock$, context$, jugIlk)
   const catIlks$ = observe(onEveryBlock$, context$, catIlk)
 
-  const balance$ = observe(onEveryBlock$, connectedContext$, tokenBalance)
+  const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
+  const balance$ = curry(createBalance$)(onEveryBlock$, context$, tokenBalance$)
+  const balances$ = curry(createBalances$)(balance$)
 
   const collaterals$ = createCollaterals$(context$)
+  const tokens$ = createTokens$(context$)
 
   // computed
   const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
-  const ilk$ = memoize(curry(createIlk$)(vatIlks$, spotIlks$, jugIlks$, catIlks$))
+
+  const ilkData$ = memoize(curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, catIlks$))
+
   const controller$ = memoize(
     curry(createController$)(proxyOwner$, cdpManagerOwner$),
-    bigNumerTostring,
-  )
-  const ethBalance$ = memoize(curry(createETHBalance$)(connectedContext$))
-  const balances$ = memoize(curry(createBalances$)(collaterals$, balance$, ethBalance$))
-
-  const connectedAccountBalance$ = web3Context$.pipe(
-    filter((web3Ctx): web3Ctx is Web3ContextConnected => web3Ctx.status === 'connected'),
-    switchMap((web3Ctx) => balances$(web3Ctx.account)),
+    bigNumberTostring,
   )
 
   const vault$ = memoize(
@@ -183,11 +168,11 @@ export function setupAppContext() {
       cdpManagerOwner$,
       vatUrns$,
       vatGem$,
-      ilk$,
+      ilkData$,
       tokenOraclePrice$,
       controller$,
     ),
-    bigNumerTostring,
+    bigNumberTostring,
   )
 
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
@@ -195,19 +180,21 @@ export function setupAppContext() {
   const vaultSummary$ = curry(createVaultSummary)(vaults$)
 
   const depositForm$ = memoize(
-    curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$, ethBalance$),
-    bigNumerTostring,
+    curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$),
+    bigNumberTostring,
   )
 
   const ilks$ = createIlks$(context$)
-  const ilkOverview$ = createIlkOverview$(ilks$, ilk$)
+
+  const ilkDataList$ = createIlkDataList$(ilks$, ilkData$)
+
   const accountOverview$ = curry(createAccountOverview$)(
     vaults$,
     vaultSummary$,
-    ilkOverview$,
-    connectedAccountBalance$ as any,
+    ilkDataList$,
+    balances$(tokens$),
   )
-  const landing$ = curry(createLanding$)(ilkOverview$)
+  const landing$ = curry(createLanding$)(ilkDataList$)
 
   return {
     web3Context$,
@@ -223,15 +210,13 @@ export function setupAppContext() {
     vaults$,
     vault$,
     vaultSummary$,
-    balances$,
     depositForm$,
-    ethBalance$,
     landing$,
     accountOverview$,
   }
 }
 
-function bigNumerTostring(v: BigNumber): string {
+function bigNumberTostring(v: BigNumber): string {
   return v.toString()
 }
 
