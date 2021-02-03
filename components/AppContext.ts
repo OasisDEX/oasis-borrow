@@ -133,9 +133,9 @@ export function setupAppContext() {
   // base
   const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
   const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
-  const cdpManagerUrns$ = observe(onEveryBlock$, context$, cdpManagerUrns, bigNumerTostring)
-  const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumerTostring)
-  const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumerTostring)
+  const cdpManagerUrns$ = observe(onEveryBlock$, context$, cdpManagerUrns, bigNumberTostring)
+  const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
+  const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumberTostring)
   const vatIlks$ = observe(onEveryBlock$, context$, vatIlk)
   const vatUrns$ = observe(onEveryBlock$, context$, vatUrns, ilkUrnAddressTostring)
   const vatGem$ = observe(onEveryBlock$, context$, vatGem, ilkUrnAddressTostring)
@@ -158,7 +158,7 @@ export function setupAppContext() {
 
   const controller$ = memoize(
     curry(createController$)(proxyOwner$, cdpManagerOwner$),
-    bigNumerTostring,
+    bigNumberTostring,
   )
 
   const vault$ = memoize(
@@ -172,7 +172,7 @@ export function setupAppContext() {
       tokenOraclePrice$,
       controller$,
     ),
-    bigNumerTostring,
+    bigNumberTostring,
   )
 
   const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
@@ -181,7 +181,7 @@ export function setupAppContext() {
 
   const depositForm$ = memoize(
     curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$),
-    bigNumerTostring,
+    bigNumberTostring,
   )
 
   const ilks$ = createIlks$(context$)
@@ -216,7 +216,7 @@ export function setupAppContext() {
   }
 }
 
-function bigNumerTostring(v: BigNumber): string {
+function bigNumberTostring(v: BigNumber): string {
   return v.toString()
 }
 
