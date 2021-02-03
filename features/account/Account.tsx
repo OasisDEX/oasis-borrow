@@ -1,7 +1,7 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAppContext } from 'components/AppContextProvider'
-import { getConnectionKindMessage } from 'components/connectWallet/ConnectWallet'
+import { ConnectWallet, getConnectionKindMessage } from 'components/connectWallet/ConnectWallet'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { formatAddress } from 'helpers/formatters/format'
@@ -147,10 +147,24 @@ export function AccountButton() {
   }
 
   return (
-    <AppLink href="/connect" withAccountPrefix={false}>
-      <Button variant="outline">{t('connect-wallet-button')}</Button>
+    <AppLink href="/connect" variant="nav">
+        {t('connect-wallet-button')}
     </AppLink>
   )
+
+  // return (
+  //   <Button variant="outline" onClick={() => openModal(ConnectModal)} >
+  //     {t('connect-wallet-button')} 
+  //   </Button>
+  // )
+}
+
+export function ConnectModal({close}: ModalProps) {
+  return (
+    <Modal sx={{ width: 'max-content' }} variant="container">
+      <ModalCloseIcon {...{ close }} />
+      <ConnectWallet />
+    </Modal>)
 }
 
 export function AccountModal({ close }: ModalProps) {

@@ -3,7 +3,6 @@ import { AppLayout } from 'components/Layouts'
 import { VaultsOverviewView } from 'features/vaultsOverview/VaultsOverviewView'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
-import { Text } from 'theme-ui'
 
 function Summary({ address }: { address: string }) {
   const { vaultsOverview$ } = useAppContext()

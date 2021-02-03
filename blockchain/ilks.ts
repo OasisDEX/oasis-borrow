@@ -56,6 +56,7 @@ export interface IlkDataSummary {
   daiAvailable: BigNumber
   stabilityFee: BigNumber
   liquidationRatio: BigNumber
+  debt: BigNumber
 }
 
 export type IlkDataList = IlkDataSummary[]
@@ -70,7 +71,7 @@ export function createIlkDataList$(
         map((ilkDataList) =>
           ilkDataList.map(
             (
-              { stabilityFee, debtCeiling, liquidationRatio, debtScalingFactor, normalizedIlkDebt },
+              { stabilityFee, debtCeiling, liquidationRatio, debtScalingFactor, normalizedIlkDebt,  },
               i,
             ) => ({
               token: ilks[i].split('-')[0],
@@ -78,6 +79,7 @@ export function createIlkDataList$(
               daiAvailable: debtCeiling.minus(debtScalingFactor.times(normalizedIlkDebt)),
               stabilityFee,
               liquidationRatio,
+              debt: normalizedIlkDebt.times(debtScalingFactor),
             }),
           ),
         ),

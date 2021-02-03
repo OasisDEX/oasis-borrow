@@ -19,7 +19,7 @@ import { useTranslation } from 'i18n'
 import { mapValues } from 'lodash'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
-import { combineLatest, identity, Observable } from 'rxjs'
+import { combineLatest, identity, Observable, of } from 'rxjs'
 import { first, tap } from 'rxjs/operators'
 import { Alert, Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 import { assert } from 'ts-essentials'
@@ -205,14 +205,14 @@ export function ConnectWallet({ originalUrl }: { originalUrl?: string }) {
   const { replace } = useRedirect()
   const [connectingLedger, setConnectingLedger] = React.useState(false)
 
-  useEffect(() => {
-    const subscription = web3Context$.subscribe((web3Context) => {
-      if (web3Context.status === 'connected') {
-        replace(`/owner/[address]`, `/owner/${web3Context.account}`)
-      }
-    })
-    return () => subscription.unsubscribe()
-  }, [])
+  // useEffect(() => {
+  //   const subscription = web3Context$.subscribe((web3Context) => {
+  //     if (web3Context.status === 'connected') {
+  //       replace(`/owner/[address]`, `/owner/${web3Context.account}`)
+  //     }
+  //   })
+  //   return () => subscription.unsubscribe()
+  // }, [])
 
   if (!web3Context) {
     return null
@@ -413,7 +413,7 @@ export function WithVaultConnection({ children }: WithChildren) {
     }
   }, [vault])
 
-  useEffect(() => autoConnect(web3Context$, readonlyAccount$, getNetworkId()), [])
+  useEffect(() => autoConnect(web3Context$, of('kuku'), getNetworkId()), [])
 
   return children
 }

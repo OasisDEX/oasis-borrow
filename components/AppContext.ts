@@ -98,6 +98,7 @@ export function setupAppContext() {
 
   const context$ = createContext$(web3ContextConnected$, readonlyAccount$)
 
+
   const connectedContext$ = context$.pipe(
     filter(({ status }) => status === 'connected'),
     shareReplay(1),
@@ -118,7 +119,7 @@ export function setupAppContext() {
 
   // base
   const proxyAddress$ = memoize(curry(createProxyAddress$)(connectedContext$))
-  const proxyOwner$ = memoize(curry(createProxyOwner$)(connectedContext$))
+  const proxyOwner$ = memoize(curry(createProxyOwner$)(context$))
   const cdpManagerUrns$ = observe(onEveryBlock$, context$, cdpManagerUrns, bigNumberTostring)
   const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
   const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumberTostring)

@@ -1,3 +1,5 @@
+import { IlkDataSummary } from 'blockchain/ilks'
+import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { IlkOverview } from 'features/landing/ilksOverview'
@@ -6,7 +8,7 @@ import React from 'react'
 import { Box, Button, Text, Grid, Heading } from 'theme-ui'
 
 import { Table, TokenSymbol } from '../landing/LandingView'
-import { VaultsOverview } from './vaultsOverview'
+import { FeaturedIlk, VaultsOverview } from './vaultsOverview'
 
 function VaultsTable({ vaults }: { vaults: Vault[] }) {
   return (
@@ -77,25 +79,26 @@ function AllIlks({ ilks }: { ilks: IlkOverview[] }) {
 }
 
 interface CallToCationProps {
-  heading: string,
-  ilk: string,
+  ilk: FeaturedIlk,
 }
-function CallToAction() {
+function CallToAction({ilk}: CallToCationProps) {
+  const token = getToken(ilk.token);
+
   return (
-    <Grid columns="1fr 1fr"  sx={{flex: 1, background: 'linear-gradient(284.73deg, #9658D3 3.42%, #415FFF 97.28%)', borderRadius: 'large', p: 4, color: 'white'}}>
+    <Grid columns="1fr 1fr"  sx={{flex: 1, cursor: 'pointer', background: 'linear-gradient(284.73deg, #9658D3 3.42%, #415FFF 97.28%)', borderRadius: 'large', p: 4, color: 'white'}}>
       <Box sx={{gridColumn: '1/3'}}>
-        <Text>New</Text>
+        <Text>{ilk.title}</Text>
       </Box>
       <Box sx={{gridColumn: '1/3'}}>
-        <Text variant="heading" sx={{color: 'white'}}>ETH</Text>
+        <Text variant="heading" sx={{color: 'white'}}>{ilk.token}</Text>
       </Box>
       <Box>
         <Text variant="boldBody">Stability fee:</Text>
-        <Text variant="small">2.50%</Text>
+        <Text variant="small">{formatPercent(ilk.stabilityFee)}</Text>
       </Box>
       <Box>
         <Text variant="boldBody">Min coll ratio:</Text>
-        <Text variant="small">150%</Text>
+        <Text variant="small">{formatPercent(ilk.liquidationRatio)}</Text>
       </Box>
     </Grid>
   )
@@ -105,23 +108,27 @@ export function VaultsOverviewView({
   vaults,
   ilkDataList,
   vaultSummary,
+  featuredIlks
 }: VaultsOverview) {
+
+  console.log({featuredIlks})
+
   return (
     <Grid>
       <Heading sx={{textAlign: 'center'}} as="h1">Vault overview</Heading>
       <Grid columns="1fr 1fr 1fr" gap={4}>
-        <CallToAction />
-        <CallToAction />
-        <CallToAction />
+        {ilkDataList && <CallToAction ilk={{...ilkDataList[0], title: 'NEW'}} />}
+        {ilkDataList && <CallToAction ilk={{...ilkDataList[0], title: 'MOST POPULAR'}} />}
+        {ilkDataList && <CallToAction ilk={{...ilkDataList[0], title: 'CHEAPEST'}} />}
       </Grid>
-      {/* {vaultSummary && (
+      {vaultSummary && (
         <Heading>Total Dai: {formatCryptoBalance(vaultSummary.totalDaiDebt)}</Heading>
       )}
       {vaultSummary && (
         <Heading>
           Total Collateral price: {formatFiatBalance(vaultSummary.totalCollateralPrice)} USD
         </Heading>
-      )} */}
+      )}
       <Heading>Your Vaults</Heading>
       {vaults && <VaultsTable vaults={vaults} />}
       <Heading>Vaults</Heading>

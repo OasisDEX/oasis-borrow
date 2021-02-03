@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
 import { ContextConnected } from 'blockchain/network'
 import { zero } from 'helpers/zero'
-import { map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { map, mergeMap, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { combineLatest, EMPTY, Observable, of } from 'rxjs'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from './calls/cdpManager'
 import { CallObservable } from './calls/observe'
@@ -45,6 +45,7 @@ export function createVaults$(
       },
     ),
     switchMap(({ ids }) => combineLatest(ids.map((id) => vault$(new BigNumber(id)).pipe()))),
+    shareReplay(1),
   )
 }
 
@@ -299,7 +300,9 @@ export function createController$(
   cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>,
   id: BigNumber,
 ) {
-  return cdpManagerOwner$(id).pipe(mergeMap((owner) => proxyOwner$(owner)))
+  return cdpManagerOwner$(id).pipe(
+    mergeMap((owner) => proxyOwner$(owner)),
+  )
 }
 
 export function createVault$(

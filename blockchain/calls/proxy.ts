@@ -2,11 +2,11 @@ import { nullAddress } from '@oasisdex/utils'
 import * as dsProxy from 'blockchain/abi/ds-proxy.json'
 import { contractDesc } from 'blockchain/config'
 import { defer, EMPTY, Observable, of } from 'rxjs'
-import { catchError, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { catchError, map, mergeMap, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DsProxyRegistry } from 'types/web3-v1-contracts/ds-proxy-registry'
 
-import { ContextConnected } from '../network'
+import { Context, ContextConnected } from '../network'
 import { call, CallDef } from './callsHelpers'
 
 export const proxyAddress: CallDef<string, string | undefined> = {
@@ -46,7 +46,7 @@ export const owner: CallDef<string, string | undefined> = {
 }
 
 export function createProxyOwner$(
-  connectedContext$: Observable<ContextConnected>,
+  connectedContext$: Observable<Context>,
   proxyAddress: string,
 ): Observable<string> {
   return connectedContext$.pipe(
