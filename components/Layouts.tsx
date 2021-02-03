@@ -27,6 +27,8 @@ export function BasicLayout({ header, footer, children, sx, variant }: BasicLayo
   return (
     <Flex
       sx={{
+        background: theme => theme.gradients.app,
+        backgroundAttachment: 'fixed',
         flexDirection: 'column',
         minHeight: '100%',
         ...sx,
@@ -47,7 +49,7 @@ export function AppLayout({ children, backLink, CustomLogoWithBack }: AppLayoutP
   }
 
   return (
-    <BasicLayout header={<AppHeader {...{ backLink, CustomLogoWithBack }} />}>
+    <BasicLayout footer={<Footer />} header={<AppHeader {...{ backLink, CustomLogoWithBack }} />}>
       <WithConnection>{children}</WithConnection>
     </BasicLayout>
   )
@@ -62,7 +64,6 @@ export function MarketingLayout({ children, variant }: MarketingLayoutProps) {
     <BasicLayout
       header={<MarketingHeader />}
       footer={<Footer />}
-      sx={{ bg: 'surface' }}
       variant={variant || 'marketingContainer'}
     >
       {children}

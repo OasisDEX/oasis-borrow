@@ -279,20 +279,6 @@ export function ConnectWallet({ originalUrl }: { originalUrl?: string }) {
         width: '100%',
       }}
     >
-      <Flex
-        sx={{
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          maxWidth: '280px',
-          width: '100%',
-          my: 3,
-          mx: 'auto',
-        }}
-      >
-        <Box sx={{ flex: 1, height: '1px', bg: 'primaryAlt' }} />
-        <Text sx={{ color: 'onSurface', mx: 3 }}>{t('or')}</Text>
-        <Box sx={{ flex: 1, height: '1px', bg: 'primaryAlt' }} />
-      </Flex>
       <Heading as="h1">{t('connect-wallet')}</Heading>
       {web3Context.status === 'error' &&
         ((web3Context.error instanceof UnsupportedChainIdError && (

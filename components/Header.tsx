@@ -1,9 +1,7 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
-import { AccountButton } from 'features/account/Account'
-import { useAppContext } from 'components/AppContextProvider'
 import { AppLink, AppLinkProps } from 'components/Links'
-import { useObservable } from 'helpers/observableHook'
+import { AccountButton } from 'features/account/Account'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'i18n'
 import React from 'react'
@@ -15,7 +13,7 @@ function Logo() {
     <AppLink
       withAccountPrefix={false}
       href="/"
-      sx={{ color: 'primary', fontWeight: 'semiBold', fontSize: 5 }}
+      sx={{ color: 'primary', fontWeight: 'semiBold', fontSize: 5, cursor: 'pointer' }}
     >
       Oasis
     </AppLink>
@@ -61,26 +59,6 @@ export function BackArrow() {
   )
 }
 
-export function LogoWithBack({
-  backLink,
-  onClick,
-}: {
-  backLink?: AppLinkProps
-  onClick?: () => void
-}) {
-  return onClick ? (
-    <Box onClick={onClick}>
-      <BackArrow />
-    </Box>
-  ) : backLink ? (
-    <AppLink {...backLink}>
-      <BackArrow />
-    </AppLink>
-  ) : (
-    <Logo />
-  )
-}
-
 export function AppHeader({
   backLink,
   CustomLogoWithBack,
@@ -88,15 +66,10 @@ export function AppHeader({
   backLink?: AppLinkProps
   CustomLogoWithBack?: () => JSX.Element
 }) {
-  const { web3Context$ } = useAppContext()
-  const web3Context = useObservable(web3Context$)
-  //const { readonlyAccount, account } = useReadonlyAccount()
-  const { t } = useTranslation()
-
   return (
     <BasicHeader variant="appContainer">
       <>
-        {CustomLogoWithBack ? <CustomLogoWithBack /> : <LogoWithBack {...{ backLink }} />}
+        <Logo />
         <AccountButton />
       </>
     </BasicHeader>
