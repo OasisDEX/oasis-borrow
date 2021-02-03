@@ -177,7 +177,7 @@ export function setupAppContext() {
   const ilkDataList$ = createIlkDataList$(ilks$, ilkData$)
 
   const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(vaults$, vaultSummary$, ilkDataList$),
+    curry(createVaultsOverview$)(connectedContext$, vaults$, vaultSummary$, ilkDataList$),
   )
   const landing$ = curry(createLanding$)(ilkDataList$)
 

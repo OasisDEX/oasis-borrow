@@ -17,7 +17,6 @@ function Summary({ address }: { address: string }) {
   const { web3Context$, proxyAddress$, vaultsOverview$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
   const proxyAddress = useObservable(proxyAddress$(address))
-
   const vaultsOverview = useObservable(vaultsOverview$(address))
 
   if (vaultsOverview === undefined) {

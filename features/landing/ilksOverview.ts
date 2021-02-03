@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { Ilk } from 'features/ilks/ilks'
+import { IlkData } from 'blockchain/ilks'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -13,7 +13,7 @@ export interface IlkOverview {
 
 export function createIlkOverview$(
   ilkNames$: Observable<string[]>,
-  ilk$: (ilk: string) => Observable<Ilk>,
+  ilk$: (ilk: string) => Observable<IlkData>,
 ): Observable<IlkOverview[]> {
   return ilkNames$.pipe(
     switchMap((ilkNames) =>
@@ -26,7 +26,10 @@ export function createIlkOverview$(
             ) => ({
               token: ilkNames[i].split('-')[0],
               ilk: ilkNames[i],
-              daiAvailable: BigNumber.max(debtCeiling.minus(debtScalingFactor.times(normalizedIlkDebt)), new BigNumber(0)),
+              daiAvailable: BigNumber.max(
+                debtCeiling.minus(debtScalingFactor.times(normalizedIlkDebt)),
+                new BigNumber(0),
+              ),
               stabilityFee,
               liquidationRatio,
             }),
