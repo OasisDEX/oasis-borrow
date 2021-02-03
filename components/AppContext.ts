@@ -1,5 +1,5 @@
 import { createSend, SendFunction } from '@oasisdex/transactions'
-import { createWeb3Context$, Web3ContextConnected } from '@oasisdex/web3-context'
+import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
 import {
   createSendTransaction,
@@ -22,7 +22,7 @@ import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
-import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
+import { filter, map, shareReplay } from 'rxjs/operators'
 
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from '../features/account/transactionManager'
@@ -40,12 +40,7 @@ import {
   createOnEveryBlock$,
   createWeb3ContextConnected$,
 } from '../blockchain/network'
-import {
-  createBalances$,
-  createBalance$,
-  createCollaterals$,
-  createTokens$,
-} from 'blockchain/tokens'
+import { createBalance$ } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
@@ -137,10 +132,6 @@ export function setupAppContext() {
 
   const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
   const balance$ = curry(createBalance$)(onEveryBlock$, context$, tokenBalance$)
-  const balances$ = curry(createBalances$)(balance$)
-
-  const collaterals$ = createCollaterals$(context$)
-  const tokens$ = createTokens$(context$)
 
   // computed
   const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
