@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { bindNodeCallback, combineLatest, from, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 import { Context } from './network'
-import { tokenBalance } from './calls/erc20'
+import { tokenAllowance, tokenBalance } from './calls/erc20'
 import { CallObservable } from './calls/observe'
 import { Dictionary } from 'ts-essentials'
 import { zipObject } from 'lodash'
@@ -44,6 +44,21 @@ export function createBalances$(
         map((balances) => zipObject(tokens, balances)),
       ),
     ),
+  )
+}
+
+export function createAllowance$(
+  context$: Observable<Context>,
+  tokenAllowance$: CallObservable<typeof tokenAllowance>,
+  token: string,
+  owner: string,
+  spender: string,
+) {
+  return context$.pipe(
+    switchMap(() => {
+      if (token === 'ETH') return of(true)
+      return tokenAllowance$({ token, owner, spender })
+    }),
   )
 }
 
