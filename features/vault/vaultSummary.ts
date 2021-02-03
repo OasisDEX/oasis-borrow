@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { Vault } from 'blockchain/vaults'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
-
-import { Vault } from './vault'
 
 function getTotalCollateralPrice(vaults: Vault[]) {
   return vaults.reduce((total, vault) => total.plus(vault.collateralPrice), new BigNumber(0))

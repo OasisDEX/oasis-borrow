@@ -10,10 +10,7 @@ import { useModal } from 'helpers/modalHook'
 import { Box, Button, Grid, Heading, Text } from 'theme-ui'
 
 import { DepositForm } from '../deposit/DepositForm'
-<<<<<<< HEAD:features/vaults/VaultView.tsx
 import { AppLink } from 'components/Links'
-=======
->>>>>>> 202eacab86cf9e8a9347770e35a4957bb8c14787:features/vault/VaultView.tsx
 
 interface Props {
   vault: Vault
