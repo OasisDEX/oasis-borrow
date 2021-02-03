@@ -7,6 +7,11 @@ import { getToken } from '../tokensMetadata'
 import { TxMetaKind } from './txMeta'
 
 export const MIN_ALLOWANCE = new BigNumber('0xffffffffffffffffffffffffffffffff')
+//
+export const maxUint256 = new BigNumber(
+  '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+  16,
+)
 
 export interface TokenBalanceArgs {
   token: string
@@ -29,7 +34,7 @@ interface TokenAllowanceArgs {
 export const tokenAllowance: CallDef<TokenAllowanceArgs, boolean> = {
   call: ({ token }, { contract, tokens }) => contract<Erc20>(tokens[token]).methods.allowance,
   prepareArgs: ({ owner, spender }) => [owner, spender],
-  postprocess: (result: any) => new BigNumber(result).gte(MIN_ALLOWANCE),
+  postprocess: (result: any) => new BigNumber(result).gte(maxUint256),
 }
 
 export type ApproveData = {
@@ -40,5 +45,16 @@ export type ApproveData = {
 
 export const approve: TransactionDef<ApproveData> = {
   call: ({ token }, { tokens, contract }) => contract<Erc20>(tokens[token]).methods.approve,
-  prepareArgs: ({ spender }) => [spender, -1],
+  prepareArgs: ({ spender }) => [spender, maxUint256.toFixed()],
+}
+
+export type DisapproveData = {
+  kind: TxMetaKind.disapprove
+  token: string
+  spender: string
+}
+
+export const disapprove: TransactionDef<DisapproveData> = {
+  call: ({ token }, { tokens, contract }) => contract<Erc20>(tokens[token]).methods.approve,
+  prepareArgs: ({ spender }) => [spender, 0],
 }

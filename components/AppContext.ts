@@ -31,7 +31,12 @@ import { filter, map, shareReplay } from 'rxjs/operators'
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from '../features/account/transactionManager'
 import { catIlk } from '../blockchain/calls/cat'
-import { ApproveData, tokenAllowance, tokenBalance } from '../blockchain/calls/erc20'
+import {
+  ApproveData,
+  DisapproveData,
+  tokenAllowance,
+  tokenBalance,
+} from '../blockchain/calls/erc20'
 import { jugIlk } from '../blockchain/calls/jug'
 import { observe } from '../blockchain/calls/observe'
 import { spotIlk, spotPar } from '../blockchain/calls/spot'
@@ -55,8 +60,12 @@ import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks
 import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
 import { createOpenVault$ } from 'features/openVault/openVault'
 
-export type TxData = LockAndDrawData | ApproveData | CreateDsProxyData | SetProxyOwnerData
-// | DisapproveData
+export type TxData =
+  | LockAndDrawData
+  | ApproveData
+  | DisapproveData
+  | CreateDsProxyData
+  | SetProxyOwnerData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>

@@ -6,6 +6,8 @@ import { OpenVaultState } from './openVault'
 import { Box, Button, Flex, Grid, Heading, Spinner, Text } from 'theme-ui'
 import { WithChildren } from 'helpers/types'
 import React, { useEffect, useState } from 'react'
+import { MIN_ALLOWANCE } from 'blockchain/calls/erc20'
+import { BigNumber } from 'bignumber.js'
 
 interface OpenVaultWrapperProps extends WithChildren {
   title: string
@@ -51,6 +53,7 @@ function ProxyAllowanceFlow({
   steps,
   tryAgain,
   token,
+  setAllowance,
 }: OpenVaultState & { steps: number }) {
   function handleProxyCreate(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault
@@ -64,7 +67,7 @@ function ProxyAllowanceFlow({
 
   function handleSetAllowance(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault
-    createProxy!()
+    setAllowance!()
   }
 
   return (
