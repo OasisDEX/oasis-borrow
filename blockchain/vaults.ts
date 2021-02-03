@@ -286,19 +286,6 @@ export interface Vault {
   debtFloor: BigNumber
 }
 
-export function createTokenOraclePrice$(
-  vatIlks$: CallObservable<typeof vatIlk>,
-  ratioDAIUSD$: CallObservable<typeof spotPar>,
-  liquidationRatio$: CallObservable<typeof spotIlk>,
-  ilk: string,
-) {
-  return combineLatest(vatIlks$(ilk), liquidationRatio$(ilk), ratioDAIUSD$()).pipe(
-    map(([{ maxDebtPerUnitCollateral }, { liquidationRatio }, ratioDAIUSD]) =>
-      maxDebtPerUnitCollateral.times(ratioDAIUSD).times(liquidationRatio),
-    ),
-  )
-}
-
 /*
  * TODO Determine if "controller" is best name for
  * communicating relationship of

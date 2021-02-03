@@ -12,7 +12,6 @@ import {
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
 import { createProxyAddress$, createProxyOwner$ } from 'blockchain/calls/proxy'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
-import { createGasPrice$ } from 'features/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import { createAccountOverview$ } from 'features/accountOverview/accountOverview'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
@@ -47,18 +46,9 @@ import {
   createCollaterals$,
   createTokens$,
 } from 'blockchain/tokens'
-import {
-  createController$,
-  createTokenOraclePrice$,
-  createVault$,
-  createVaults$,
-} from 'blockchain/vaults'
-import {
-  createIlkData$,
-  createIlkDataList$,
-  createIlkDataSummary$,
-  createIlks$,
-} from 'blockchain/ilks'
+import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
+import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
+import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
 
 export type TxData = LockAndDrawData
 // | ApproveData
