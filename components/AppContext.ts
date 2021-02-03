@@ -16,7 +16,6 @@ import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createLanding$ } from 'features/landing/landing'
-import { createVaultSummary } from 'features/vault/vaultSummary'
 
 import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
@@ -41,7 +40,12 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createBalance$, createAllowance$ } from 'blockchain/tokens'
-import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
+import {
+  createController$,
+  createVault$,
+  createVaults$,
+  createVaultSummary$,
+} from 'blockchain/vaults'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
 import { createOpenVault$ } from 'features/openVault/openVault'
@@ -162,7 +166,7 @@ export function setupAppContext() {
 
   const vaults$ = memoize(curry(createVaults$)(connectedContext$, proxyAddress$, vault$))
 
-  const vaultSummary$ = memoize(curry(createVaultSummary)(vaults$))
+  const vaultSummary$ = memoize(curry(createVaultSummary$)(vaults$))
 
   const depositForm$ = memoize(
     curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$),
@@ -176,6 +180,7 @@ export function setupAppContext() {
     curry(createVaultsOverview$)(vaults$, vaultSummary$, ilkDataList$),
   )
   const landing$ = curry(createLanding$)(ilkDataList$)
+
   const openVault$ = curry(createOpenVault$)(
     connectedContext$,
     txHelpers$,
@@ -184,6 +189,7 @@ export function setupAppContext() {
     balance$,
     ilkData$,
   )
+
   return {
     web3Context$,
     setupWeb3Context$,
