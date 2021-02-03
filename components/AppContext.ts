@@ -1,5 +1,5 @@
 import { createSend, SendFunction } from '@oasisdex/transactions'
-import { createWeb3Context$, Web3ContextConnected } from '@oasisdex/web3-context'
+import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
 import {
   createSendTransaction,
@@ -13,7 +13,7 @@ import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/call
 import { CreateDsProxyData, createProxyAddress$, createProxyOwner$ } from 'blockchain/calls/proxy'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
-import { createAccountOverview$ } from 'features/accountOverview/accountOverview'
+import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createLanding$ } from 'features/landing/landing'
 import { createVaultSummary } from 'features/vault/vaultSummary'
@@ -22,7 +22,7 @@ import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
-import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
+import { filter, map, shareReplay } from 'rxjs/operators'
 
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from '../features/account/transactionManager'
@@ -40,13 +40,7 @@ import {
   createOnEveryBlock$,
   createWeb3ContextConnected$,
 } from '../blockchain/network'
-import {
-  createBalances$,
-  createBalance$,
-  createCollaterals$,
-  createTokens$,
-  createAllowance$,
-} from 'blockchain/tokens'
+import { createBalance$, createAllowance$ } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
@@ -98,15 +92,6 @@ export function setupAppContext() {
   const account$ = createAccount$(web3Context$)
   const initializedAccount$ = createInitializedAccount$(account$)
 
-  // web3Context$.subscribe((web3Context) =>
-  //   console.log(
-  //     'web3Context:',
-  //     web3Context.status,
-  //     (web3Context as any).chainId,
-  //     (web3Context as any).account,
-  //   ),
-  // )
-
   const web3ContextConnected$ = createWeb3ContextConnected$(web3Context$)
 
   const [onEveryBlock$] = createOnEveryBlock$(web3ContextConnected$)
@@ -132,8 +117,8 @@ export function setupAppContext() {
   const transactionManager$ = createTransactionManager(transactions$)
 
   // base
-  const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
-  const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
+  const proxyAddress$ = memoize(curry(createProxyAddress$)(connectedContext$))
+  const proxyOwner$ = memoize(curry(createProxyOwner$)(connectedContext$))
   const cdpManagerUrns$ = observe(onEveryBlock$, context$, cdpManagerUrns, bigNumberTostring)
   const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
   const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumberTostring)
@@ -147,13 +132,9 @@ export function setupAppContext() {
 
   const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
   const balance$ = curry(createBalance$)(onEveryBlock$, context$, tokenBalance$)
-  const balances$ = curry(createBalances$)(balance$)
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
-
-  const collaterals$ = createCollaterals$(context$)
-  const tokens$ = createTokens$(context$)
 
   // computed
   const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
@@ -179,9 +160,9 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
+  const vaults$ = memoize(curry(createVaults$)(connectedContext$, proxyAddress$, vault$))
 
-  const vaultSummary$ = curry(createVaultSummary)(vaults$)
+  const vaultSummary$ = memoize(curry(createVaultSummary)(vaults$))
 
   const depositForm$ = memoize(
     curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$),
@@ -189,14 +170,10 @@ export function setupAppContext() {
   )
 
   const ilks$ = createIlks$(context$)
-
   const ilkDataList$ = createIlkDataList$(ilks$, ilkData$)
 
-  const accountOverview$ = curry(createAccountOverview$)(
-    vaults$,
-    vaultSummary$,
-    ilkDataList$,
-    balances$(tokens$),
+  const vaultsOverview$ = memoize(
+    curry(createVaultsOverview$)(vaults$, vaultSummary$, ilkDataList$),
   )
   const landing$ = curry(createLanding$)(ilkDataList$)
   const openVault$ = curry(createOpenVault$)(
@@ -223,8 +200,8 @@ export function setupAppContext() {
     vaultSummary$,
     depositForm$,
     landing$,
-    accountOverview$,
     openVault$,
+    vaultsOverview$,
   }
 }
 

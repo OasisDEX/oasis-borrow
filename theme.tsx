@@ -502,7 +502,20 @@ export const TRANSITIONS = {
 }
 
 export const theme = merge(oasisBaseTheme, {
+  gradients: {
+    app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)'
+  },
+  radii: {
+    small: 4,
+    medium: 8,
+    large: 16,
+    // roundish: 20,
+    // round: 32,
+  },
   colors: {
+    text: {
+      muted: '#708390'
+    },
     networks: {
       mainnet: 'rgb(41, 182, 175)',
       kovan: 'rgb(112, 87, 255)',
@@ -510,6 +523,7 @@ export const theme = merge(oasisBaseTheme, {
     },
     txManagerBg: '#E9EEF0',
   },
+
   icons: {
     ...icons,
     ...brandingIcons,
@@ -557,6 +571,10 @@ export const theme = merge(oasisBaseTheme, {
       px: 4,
       lineHeight: 'body',
     },
+    outline: {
+      lineHeight: 1,
+      border: 'light',
+    }
   },
   layout: {
     appContainer: {
@@ -615,6 +633,7 @@ export const theme = merge(oasisBaseTheme, {
     },
   },
   shadows: {
+    table: '0px 0px 2px rgba(0, 0, 0, 0.2)',
     cookie: '0px 1px 8px rgba(0, 0, 0, 0.09)',
   },
   zIndices: {
@@ -662,27 +681,6 @@ export const landingTheme = merge(theme, {
     cardLanding: '0px 2px 6px rgba(0, 0, 0, 0.04)',
     buttonPrimary: '0px 2px 1px rgba(225, 225, 225, 0.25)',
     buttonOutline: '0px 2px 8px rgba(211, 211, 211, 0.5)',
-  },
-  gradients: {
-    landingPhone: {
-      background: 'linear-gradient(180deg, #F7F9FA 0%, rgba(211, 215, 218, 0) 100%), #F6F8F9;',
-    },
-    latamexEmail: {
-      background: 'linear-gradient(256.77deg, #272940 -7.2%, #383958 93.85%);',
-    },
-    latamexBuy: {
-      background: 'linear-gradient(180deg, #333551 0%, #2E304B 100%)',
-    },
-  },
-  buttons: {
-    primary: {
-      boxShadow: 'buttonPrimary',
-      lineHeight: 'smallButton',
-    },
-    outline: {
-      borderColor: 'primary',
-      boxShadow: 'buttonOutline',
-    },
   },
   links: {
     nav: {
