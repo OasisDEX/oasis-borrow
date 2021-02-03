@@ -299,7 +299,7 @@ export interface Vault {
  * the vault has been given away
  */
 export function createController$(
-  proxyOwner$: (proxyAddress: string) => Observable<string>,
+  proxyOwner$: (proxyAddress: string) => Observable<string | undefined>,
   cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>,
   id: BigNumber,
 ) {
@@ -314,7 +314,7 @@ export function createVault$(
   vatGem$: CallObservable<typeof vatGem>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   tokenOraclePrice$: (ilk: string) => Observable<BigNumber>,
-  controller$: (id: BigNumber) => Observable<string>,
+  controller$: (id: BigNumber) => Observable<string | undefined>,
   id: BigNumber,
 ): Observable<Vault> {
   return combineLatest(

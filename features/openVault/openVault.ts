@@ -20,14 +20,11 @@ import { combineLatest, EMPTY, merge, Observable, of, Subject } from 'rxjs'
 import { filter, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 import { TxStatus } from '@oasisdex/transactions'
 
-export type OpenVaultProxyStage =
+export type OpenVaultStage =
   | 'proxyWaitingForConfirmation'
   | 'proxyWaitingForApproval'
   | 'proxyInProgress'
   | 'proxyFiasco'
-
-export type OpenVaultStage =
-  | OpenVaultProxyStage
   | 'allowanceWaitingForConfirmation'
   | 'allowanceWaitingForApproval'
   | 'allowanceInProgress'
@@ -46,7 +43,9 @@ type OpenVaultMessage = {
 
 type OpenVaultChange = Changes<OpenVaultState>
 
-type ManualChange = Change<OpenVaultState, 'lockAmount'> | Change<OpenVaultState, 'drawAmount'>
+export type ManualChange =
+  | Change<OpenVaultState, 'lockAmount'>
+  | Change<OpenVaultState, 'drawAmount'>
 
 export interface OpenVaultState extends HasGasEstimation {
   stage: OpenVaultStage
@@ -366,7 +365,6 @@ export function createOpenVault$(
       const token = ilk.split('-')[0]
 
       return combineLatest(proxyAddress$(account), balance$(token, account), ilkData$(ilk)).pipe(
-        first(),
         switchMap(([proxyAddress, balance, ilkData]) =>
           ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
             switchMap((allowance: boolean | undefined) => {

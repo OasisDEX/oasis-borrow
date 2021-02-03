@@ -8,29 +8,29 @@ import { DsProxyRegistry } from 'types/web3-v1-contracts/ds-proxy-registry'
 import { TransactionDef } from './callsHelpers'
 import { TxMetaKind } from './txMeta'
 
-import { ContextConnected } from '../network'
+import { Context, ContextConnected } from '../network'
 import { call, CallDef } from './callsHelpers'
 
-export const proxyAddress: CallDef<string, string | undefined> = {
+export const proxyAddress: CallDef<string, string> = {
   call: (_, { dsProxyRegistry, contract }) =>
     contract<DsProxyRegistry>(dsProxyRegistry).methods.proxies,
   prepareArgs: (address) => [address],
 }
 
 export function createProxyAddress$(
-  connectedContext$: Observable<ContextConnected>,
+  context$: Observable<Context>,
   address: string,
-): Observable<string> {
-  return connectedContext$.pipe(
+): Observable<string | undefined> {
+  return context$.pipe(
     switchMap((context) =>
       defer(() =>
         call(
           context,
           proxyAddress,
         )(address).pipe(
-          mergeMap((proxyAddress: string) => {
+          mergeMap((proxyAddress) => {
             if (proxyAddress === nullAddress) {
-              return EMPTY
+              return of(undefined)
             }
             return of(proxyAddress)
           }),
@@ -48,10 +48,10 @@ export const owner: CallDef<string, string | undefined> = {
 }
 
 export function createProxyOwner$(
-  connectedContext$: Observable<ContextConnected>,
+  context$: Observable<Context>,
   proxyAddress: string,
 ): Observable<string> {
-  return connectedContext$.pipe(
+  return context$.pipe(
     switchMap((context) =>
       defer(() =>
         call(context, owner)(proxyAddress).pipe(map((ownerAddress: string) => ownerAddress)),
