@@ -50,15 +50,21 @@ function ProxyAllowanceFlow({
   createProxy,
   steps,
   tryAgain,
+  token,
 }: OpenVaultState & { steps: number }) {
   function handleProxyCreate(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault
     createProxy!()
   }
 
-  function handleProxyFail(e: React.SyntheticEvent<HTMLButtonElement>) {
+  function handleRetry(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault
-    tryAgain
+    tryAgain!()
+  }
+
+  function handleSetAllowance(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault
+    createProxy!()
   }
 
   return (
@@ -68,12 +74,19 @@ function ProxyAllowanceFlow({
           <Button onClick={handleProxyCreate}>Create Proxy</Button>
         )}
         {(stage === 'proxyWaitingForApproval' || stage === 'proxyInProgress') && <Spinner />}
-        {stage === 'proxyFiasco' && (
+        {(stage === 'proxyFiasco' || stage === 'allowanceFiasco') && (
           <Box>
             <Text>Proxy Failed :(</Text>
-            <Button onClick={handleProxyFail}>Try Again!</Button>
+            <Button onClick={handleRetry}>Try Again!</Button>
           </Box>
         )}
+        {stage === 'allowanceWaitingForConfirmation' && (
+          <Button onClick={handleSetAllowance}>Set Allowance for {token}</Button>
+        )}
+        {(stage === 'allowanceWaitingForApproval' || stage === 'allowanceInProgress') && (
+          <Spinner />
+        )}
+        {stage === 'editingWaitingToContinue' && <Button onClick={() => null}>Continue</Button>}
       </Flex>
     </OpenVaultWrapper>
   )
@@ -109,6 +122,7 @@ export function OpenVaultModal({ ilk, close }: ModalProps) {
   const openVault = useObservable(openVault$(ilk))
   const [steps, setSteps] = useState<number | undefined>(undefined)
 
+  console.log(openVault)
   useEffect(() => {
     if (openVault && !steps) {
       const flowSteps = openVault.stage === 'editing' ? 2 : 3

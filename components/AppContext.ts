@@ -126,8 +126,8 @@ export function setupAppContext() {
   const transactionManager$ = createTransactionManager(transactions$)
 
   // base
-  const proxyAddress$ = memoize(curry(createProxyAddress$)(context$))
-  const proxyOwner$ = memoize(curry(createProxyOwner$)(context$))
+  const proxyAddress$ = memoize(curry(createProxyAddress$)(onEveryBlock$, context$))
+  const proxyOwner$ = memoize(curry(createProxyOwner$)(onEveryBlock$, context$))
   const cdpManagerUrns$ = observe(onEveryBlock$, context$, cdpManagerUrns, bigNumberTostring)
   const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
   const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumberTostring)
