@@ -19,7 +19,7 @@ import { useTranslation } from 'i18n'
 import { mapValues } from 'lodash'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
-import { combineLatest, identity, Observable } from 'rxjs'
+import { combineLatest, identity, Observable, of } from 'rxjs'
 import { first, tap } from 'rxjs/operators'
 import { Alert, Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 import { assert } from 'ts-essentials'
@@ -413,7 +413,7 @@ export function WithVaultConnection({ children }: WithChildren) {
     }
   }, [vault])
 
-  useEffect(() => autoConnect(web3Context$, readonlyAccount$, getNetworkId()), [])
+  useEffect(() => autoConnect(web3Context$, of('dhshah'), getNetworkId()), [])
 
   return children
 }

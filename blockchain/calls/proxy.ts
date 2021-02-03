@@ -6,7 +6,7 @@ import { catchError, map, mergeMap, shareReplay, switchMap } from 'rxjs/operator
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DsProxyRegistry } from 'types/web3-v1-contracts/ds-proxy-registry'
 
-import { ContextConnected } from '../network'
+import { Context } from '../network'
 import { call, CallDef } from './callsHelpers'
 
 export const proxyAddress: CallDef<string, string | undefined> = {
@@ -16,7 +16,7 @@ export const proxyAddress: CallDef<string, string | undefined> = {
 }
 
 export function createProxyAddress$(
-  connectedContext$: Observable<ContextConnected>,
+  connectedContext$: Observable<Context>,
   address: string,
 ): Observable<string> {
   return connectedContext$.pipe(
@@ -34,7 +34,7 @@ export function createProxyAddress$(
           }),
         ),
       ),
-    ),
+),
     shareReplay(1),
   )
 }
@@ -46,7 +46,7 @@ export const owner: CallDef<string, string | undefined> = {
 }
 
 export function createProxyOwner$(
-  connectedContext$: Observable<ContextConnected>,
+  connectedContext$: Observable<Context>,
   proxyAddress: string,
 ): Observable<string> {
   return connectedContext$.pipe(
