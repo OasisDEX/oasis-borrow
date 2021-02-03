@@ -32,7 +32,10 @@ export function createProxyAddress$(
             if (proxyAddress === nullAddress) {
               return of(undefined)
             }
-            return of(proxyAddress)
+            return createProxyOwner$(context$, proxyAddress).pipe(
+              switchMap((owner) => (owner === address ? of(proxyAddress) : of(undefined))),
+            )
+            // return of(proxyAddress)
           }),
         ),
       ),
@@ -50,14 +53,14 @@ export const owner: CallDef<string, string | undefined> = {
 export function createProxyOwner$(
   context$: Observable<Context>,
   proxyAddress: string,
-): Observable<string> {
+): Observable<string | undefined> {
   return context$.pipe(
     switchMap((context) =>
       defer(() =>
         call(context, owner)(proxyAddress).pipe(map((ownerAddress: string) => ownerAddress)),
       ),
     ),
-    catchError(() => EMPTY),
+    catchError(() => of(undefined)),
     shareReplay(1),
   )
 }
@@ -70,4 +73,17 @@ export const createDsProxy: TransactionDef<CreateDsProxyData> = {
   call: (_, { dsProxyRegistry, contract }) =>
     contract<DsProxyRegistry>(dsProxyRegistry).methods.build,
   prepareArgs: () => [],
+}
+
+export type SetProxyOwnerData = {
+  kind: TxMetaKind.setProxyOwner
+  proxyAddress: string
+  owner: string
+}
+
+export const setProxyOwner: TransactionDef<SetProxyOwnerData> = {
+  call: ({ proxyAddress }, { contract }) =>
+    contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods.setOwner,
+  prepareArgs: ({ owner }: SetProxyOwnerData) => [owner],
+  options: () => ({ gas: 1000000 }),
 }

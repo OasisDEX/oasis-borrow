@@ -10,13 +10,18 @@ import {
   TransactionDef,
 } from 'blockchain/calls/callsHelpers'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
-import { CreateDsProxyData, createProxyAddress$, createProxyOwner$ } from 'blockchain/calls/proxy'
+import {
+  CreateDsProxyData,
+  createProxyAddress$,
+  createProxyOwner$,
+  SetProxyOwnerData,
+} from 'blockchain/calls/proxy'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createLanding$ } from 'features/landing/landing'
-
+import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
@@ -50,7 +55,7 @@ import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks
 import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
 import { createOpenVault$ } from 'features/openVault/openVault'
 
-export type TxData = LockAndDrawData | ApproveData | CreateDsProxyData
+export type TxData = LockAndDrawData | ApproveData | CreateDsProxyData | SetProxyOwnerData
 // | DisapproveData
 
 export interface TxHelpers {
@@ -163,6 +168,8 @@ export function setupAppContext() {
     ),
     bigNumberTostring,
   )
+
+  pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 
   const vaults$ = memoize(curry(createVaults$)(connectedContext$, proxyAddress$, vault$))
 
