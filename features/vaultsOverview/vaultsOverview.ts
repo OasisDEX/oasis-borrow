@@ -12,7 +12,7 @@ export interface AccountOverview {
   ilksOverview: IlkOverview[] | undefined
 }
 
-export function createAccountOverview$(
+export function createVaultsOverview$(
   vaults$: (address: string) => Observable<Vault[]>,
   vaultsSummary$: (address: string) => Observable<VaultSummary>,
   ilkOverview$: Observable<IlkOverview[]>,

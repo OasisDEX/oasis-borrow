@@ -6,7 +6,7 @@ import React from 'react'
 import { Button, Heading } from 'theme-ui'
 
 import { Table, TokenSymbol } from '../landing/LandingView'
-import { AccountOverview } from './accountOverview'
+import { AccountOverview } from './vaultsOverview'
 
 function VaultsTable({ vaults }: { vaults: Vault[] }) {
   return (
@@ -77,7 +77,7 @@ function AllIlks({ ilks }: { ilks: IlkOverview[] }) {
     </Table>
   )
 }
-export function AccountOverviewView({
+export function VaultsOverviewView({
   vaults,
   ilksOverview,
   vaultSummary,

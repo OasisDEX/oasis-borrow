@@ -18,7 +18,7 @@ import { createProxyAddress$, createProxyOwner$ } from 'components/blockchain/ca
 import { vatGem, vatIlk, vatUrns } from 'components/blockchain/calls/vat'
 import { createGasPrice$ } from 'components/blockchain/prices'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
-import { createAccountOverview$ } from 'features/accountOverview/accountOverview'
+import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createIlk$ } from 'features/ilks/ilks'
 import { createIlks$ } from 'features/landing/ilks'
@@ -133,8 +133,8 @@ export function setupAppContext() {
   const transactionManager$ = createTransactionManager(transactions$)
 
   // base
-  const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
-  const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
+  const proxyAddress$ = memoize(curry(createProxyAddress$)(connectedContext$))
+  const proxyOwner$ = memoize(curry(createProxyOwner$)(connectedContext$))
   const cdpManagerUrns$ = observe(
     onEveryBlock$,
     connectedContext$,
@@ -189,9 +189,9 @@ export function setupAppContext() {
     bigNumerTostring,
   )
 
-  const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
+  const vaults$ = memoize(curry(createVaults$)(connectedContext$, proxyAddress$, vault$))
 
-  const vaultSummary$ = curry(createVaultSummary)(vaults$)
+  const vaultSummary$ = memoize(curry(createVaultSummary)(vaults$))
 
   const depositForm$ = memoize(
     curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$, ethBalance$),
@@ -200,11 +200,11 @@ export function setupAppContext() {
 
   const ilks$ = createIlks$(context$)
   const ilkOverview$ = createIlkOverview$(ilks$, ilk$)
-  const accountOverview$ = curry(createAccountOverview$)(
+  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(
     vaults$,
     vaultSummary$,
     ilkOverview$,
-  )
+  ))
   const landing$ = curry(createLanding$)(ilkOverview$)
 
   return {
@@ -225,7 +225,7 @@ export function setupAppContext() {
     depositForm$,
     ethBalance$,
     landing$,
-    accountOverview$,
+    vaultsOverview$,
   }
 }
 
