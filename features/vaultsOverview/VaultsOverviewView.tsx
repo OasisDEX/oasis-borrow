@@ -1,3 +1,4 @@
+import { IlkDataList } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { IlkOverview } from 'features/landing/ilksOverview'
@@ -61,7 +62,13 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
   )
 }
 
-function AllIlks({ canOpenVault, ilks }: { canOpenVault: boolean; ilks: IlkOverview[] }) {
+function AllIlks({
+  canOpenVault,
+  ilkDataList,
+}: {
+  canOpenVault: boolean
+  ilkDataList: IlkDataList
+}) {
   const openModal = useModal()
 
   function handleVaultOpen(ilk: string) {
@@ -84,27 +91,27 @@ function AllIlks({ canOpenVault, ilks }: { canOpenVault: boolean; ilks: IlkOverv
         </>
       }
     >
-      {ilks.map((ilk) => (
-        <Table.Row key={ilk.ilk}>
+      {ilkDataList.map(({ ilk, token, ilkDebtAvailable, stabilityFee, liquidationRatio }) => (
+        <Table.Row key={ilk}>
           <Table.Cell>
-            <TokenSymbol token={ilk.token} />
+            <TokenSymbol token={token} />
           </Table.Cell>
-          <Table.Cell>{ilk.ilk}</Table.Cell>
+          <Table.Cell>{ilk}</Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
-            {formatCryptoBalance(ilk.daiAvailable)}
-          </Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>
-            {formatPercent(ilk.stabilityFee.times(100))}
+            {formatCryptoBalance(ilkDebtAvailable)}
           </Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
-            {formatPercent(ilk.liquidationRatio.times(100))}
+            {formatPercent(stabilityFee.times(100))}
+          </Table.Cell>
+          <Table.Cell sx={{ textAlign: 'right' }}>
+            {formatPercent(liquidationRatio.times(100))}
           </Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
             <Button
               sx={{ lineHeight: 1 }}
               variant="outline"
               disabled={!canOpenVault}
-              onClick={handleVaultOpen(ilk.ilk)}
+              onClick={handleVaultOpen(ilk)}
             >
               Open Vault
             </Button>
@@ -134,7 +141,7 @@ export function VaultsOverviewView({
       <Heading>Your Vaults</Heading>
       {vaults && <VaultsTable vaults={vaults} />}
       <Heading>Vaults</Heading>
-      {ilkDataList && <AllIlks canOpenVault={canOpenVault} ilks={ilkDataList} />}
+      {ilkDataList && <AllIlks canOpenVault={canOpenVault} ilkDataList={ilkDataList} />}
     </>
   )
 }
