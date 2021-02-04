@@ -21,6 +21,7 @@ import { filter, first, map, scan, shareReplay, switchMap } from 'rxjs/operators
 import { TxStatus } from '@oasisdex/transactions'
 
 export type OpenVaultStage =
+  | 'editing'
   | 'proxyWaitingForConfirmation'
   | 'proxyWaitingForApproval'
   | 'proxyInProgress'
@@ -29,8 +30,6 @@ export type OpenVaultStage =
   | 'allowanceWaitingForApproval'
   | 'allowanceInProgress'
   | 'allowanceFiasco'
-  | 'editingWaitingToContinue'
-  | 'editing'
   | 'transactionWaitingForConfirmation'
   | 'transactionWaitingForApproval'
   | 'transactionInProgress'
@@ -50,6 +49,7 @@ export type ManualChange =
 export interface OpenVaultState extends HasGasEstimation {
   stage: OpenVaultStage
   proxyAddress?: string
+  allowance?: boolean
   proxyTxHash?: string
   proxyConfirmations?: number
   safeConfirmations: number
@@ -225,14 +225,15 @@ function addTransitions(
   change: (ch: OpenVaultChange) => void,
   state: OpenVaultState,
 ): OpenVaultState {
+  console.log(state)
   function backToOpenVaultEditing() {
     change({ kind: 'stage', stage: 'editing' })
   }
 
   function close() {
-    // change({ kind: 'lockAmount', value: undefined })
-    // change({ kind: 'drawAmount', value: undefined })
     change({ kind: 'stage', stage: 'editing' })
+    change({ kind: 'lockAmount', lockAmount: undefined })
+    change({ kind: 'drawAmount', drawAmount: undefined })
   }
 
   if (state.stage === 'proxyWaitingForConfirmation') {
@@ -263,20 +264,20 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'editingWaitingToContinue') {
-    return {
-      ...state,
-      continue2Editing: () => change({ kind: 'stage', stage: 'editing' }),
-    }
-  }
+  // if (state.stage === 'editingWaitingToContinue') {
+  //   return {
+  //     ...state,
+  //     continue2Editing: () => change({ kind: 'stage', stage: 'editing' }),
+  //   }
+  // }
 
   if (state.stage === 'editing') {
     if (state.messages.length === 0) {
       return {
         ...state,
         change,
-        continue2ConfirmOpenVault: () =>
-          change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' }),
+        // continue2ConfirmOpenVault: () =>
+        //   change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' }),
       }
     }
     return {
@@ -368,18 +369,15 @@ export function createOpenVault$(
         switchMap(([proxyAddress, balance, ilkData]) =>
           ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
             switchMap((allowance: boolean | undefined) => {
-              const stage =
-                (!proxyAddress && 'proxyWaitingForConfirmation') ||
-                (!allowance && 'allowanceWaitingForConfirmation') ||
-                'editing'
-
+              console.log(balance)
               const initialState: OpenVaultState = {
-                stage,
+                stage: 'editing',
                 balance,
                 ilkData,
                 ilk,
                 token,
                 proxyAddress,
+                allowance,
                 messages: [],
                 safeConfirmations: context.safeConfirmations,
                 gasEstimationStatus: GasEstimationStatus.unset,
@@ -392,11 +390,11 @@ export function createOpenVault$(
               }
 
               const balanceChange$ = balance$(token, account).pipe(
-                map((value) => ({ kind: 'balance', value })),
+                map((balance) => ({ kind: 'balance', balance })),
               )
 
               const ilkDataChange$ = ilkData$(ilk).pipe(
-                map((value) => ({ kind: 'ilkData', value })),
+                map((ilkData) => ({ kind: 'ilkData', ilkData })),
               )
 
               const environmentChange$ = merge(balanceChange$, ilkDataChange$)

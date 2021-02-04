@@ -2,12 +2,13 @@ import { useAppContext } from 'components/AppContextProvider'
 import { useObservable } from 'helpers/observableHook'
 import { ModalProps } from 'helpers/modalHook'
 import { ModalBottom } from 'components/Modal'
-import { OpenVaultState } from './openVault'
+import { ManualChange, OpenVaultState } from './openVault'
 import { Box, Button, Flex, Grid, Heading, Spinner, Text } from 'theme-ui'
 import { WithChildren } from 'helpers/types'
-import React, { useEffect, useState } from 'react'
-import { MIN_ALLOWANCE } from 'blockchain/calls/erc20'
+import React from 'react'
 import { BigNumber } from 'bignumber.js'
+import { InputWithMax } from 'helpers/input'
+import { getToken } from 'blockchain/tokensMetadata'
 
 interface OpenVaultWrapperProps extends WithChildren {
   title: string
@@ -43,9 +44,6 @@ function OpenVaultWrapper({ children, title, step, steps }: OpenVaultWrapperProp
 function OpenVaultTransactionFlow() {
   return <Box>{null}</Box>
 }
-function OpenVaultEditingFlow() {
-  return <Box>{null}</Box>
-}
 
 function ProxyAllowanceFlow({
   stage,
@@ -71,7 +69,7 @@ function ProxyAllowanceFlow({
   }
 
   return (
-    <OpenVaultWrapper title={stage} step={0} steps={steps}>
+    <OpenVaultWrapper title={stage} step={1} steps={steps}>
       <Flex p={5} sx={{ justifyContent: 'center' }}>
         {stage === 'proxyWaitingForConfirmation' && (
           <Button onClick={handleProxyCreate}>Create Proxy</Button>
@@ -89,7 +87,62 @@ function ProxyAllowanceFlow({
         {(stage === 'allowanceWaitingForApproval' || stage === 'allowanceInProgress') && (
           <Spinner />
         )}
-        {stage === 'editingWaitingToContinue' && <Button onClick={() => null}>Continue</Button>}
+      </Flex>
+    </OpenVaultWrapper>
+  )
+}
+
+function handleAmountChange(kind: 'lockAmount' | 'drawAmount', change: (ch: ManualChange) => void) {
+  return (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/,/g, '')
+
+    change({
+      kind,
+      [kind]: value === '' ? undefined : new BigNumber(value),
+    })
+  }
+}
+
+function EditVault({
+  stage,
+  steps,
+  lockAmount,
+  drawAmount,
+  token,
+  messages,
+  change,
+  balance,
+}: OpenVaultState & { steps: number }) {
+  const hasError = !!messages.length
+
+  function handleSetMax(change: (ch: ManualChange) => void) {
+    return () => {
+      console.log(balance)
+      change({ kind: 'lockAmount', lockAmount: balance })
+    }
+  }
+
+  return (
+    <OpenVaultWrapper title={stage} step={0} steps={steps}>
+      <Flex p={5} sx={{ justifyContent: 'center' }}>
+        <InputWithMax
+          {...{
+            amount: lockAmount,
+            token: getToken(token),
+            disabled: stage !== 'editing',
+            hasError,
+            onChange: handleAmountChange('lockAmount', change!),
+            onSetMax: handleSetMax(change!),
+          }}
+        />
+        {/* {...{
+              amount,
+              token: getToken('DAI'),
+              disabled: stage !== 'editing',
+              hasError,
+              onChange: handleAmountChange(change!),
+              onSetMax: handleSetMax(change!),
+              }} */}
       </Flex>
     </OpenVaultWrapper>
   )
@@ -106,9 +159,8 @@ function OpenVaultView(props: OpenVaultState & { steps: number }) {
     case 'allowanceInProgress':
     case 'allowanceFiasco':
       return ProxyAllowanceFlow(props)
-    case 'editingWaitingToContinue':
     case 'editing':
-      return OpenVaultEditingFlow()
+      return EditVault(props)
     case 'transactionWaitingForConfirmation':
     case 'transactionWaitingForApproval':
     case 'transactionInProgress':
@@ -123,23 +175,22 @@ function OpenVaultView(props: OpenVaultState & { steps: number }) {
 export function OpenVaultModal({ ilk, close }: ModalProps) {
   const { openVault$ } = useAppContext()
   const openVault = useObservable(openVault$(ilk))
-  const [steps, setSteps] = useState<number | undefined>(undefined)
+  /* const [steps, setSteps] = useState<number | undefined>(undefined)
 
-  console.log(openVault)
-  useEffect(() => {
-    if (openVault && !steps) {
-      const flowSteps = openVault.stage === 'editing' ? 2 : 3
-      setSteps(flowSteps)
-    }
-  }, [openVault])
-
-  if (!openVault || !steps) {
+   * useEffect(() => {
+   *   if (openVault && !steps) {
+   *     const flowSteps = openVault.proxyAddress && openVault.allowance ? 2 : 3
+   *     setSteps(flowSteps)
+   *   }
+   * }, [openVault])
+   */
+  if (!openVault) {
     return null
   }
 
   return (
     <ModalBottom {...{ close }}>
-      <OpenVaultView {...{ ...openVault, steps }} />
+      <OpenVaultView {...{ ...openVault, steps: 3 }} />
     </ModalBottom>
   )
 }
