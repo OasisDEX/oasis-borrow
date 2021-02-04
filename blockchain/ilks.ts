@@ -8,6 +8,7 @@ import { Context } from 'blockchain/network'
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
+import { zero } from 'helpers/zero'
 
 export function createIlks$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(
@@ -21,6 +22,7 @@ export type IlkData = VatIlk &
   CatIlk & {
     token: string
     ilk: string
+    ilkDebt: BigNumber
     ilkDebtAvailable: BigNumber
   }
 
@@ -54,7 +56,15 @@ export function createIlkData$(
           maxAuctionLotSize,
           token: ilk.split('-')[0],
           ilk,
-          ilkDebtAvailable: debtCeiling.minus(debtScalingFactor.times(normalizedIlkDebt)),
+          ilkDebt: debtScalingFactor
+            .times(normalizedIlkDebt)
+            .decimalPlaces(18, BigNumber.ROUND_DOWN),
+          ilkDebtAvailable: BigNumber.max(
+            debtCeiling
+              .minus(debtScalingFactor.times(normalizedIlkDebt))
+              .decimalPlaces(18, BigNumber.ROUND_DOWN),
+            zero,
+          ),
         }),
     ),
   )

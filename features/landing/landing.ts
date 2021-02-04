@@ -1,13 +1,13 @@
-import { IlkDataSummary } from 'blockchain/ilks'
+import { IlkDataList } from 'blockchain/ilks'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 export interface Landing {
-  rows: IlkDataSummary[]
+  rows: IlkDataList
 }
 
-export function createLanding$(ilkOverview$: Observable<IlkDataSummary[]>): Observable<Landing> {
-  return ilkOverview$.pipe(
+export function createLanding$(ilkDataList$: Observable<IlkDataList>): Observable<Landing> {
+  return ilkDataList$.pipe(
     map((ilks) => ({
       rows: ilks,
     })),
