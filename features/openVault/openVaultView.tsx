@@ -107,9 +107,10 @@ function EditVault({
   stage,
   steps,
   lockAmount,
+  maxLockAmount,
   price,
   drawAmount,
-  maxDebtAmount,
+  maxDrawAmount,
   token,
   messages,
   change,
@@ -117,17 +118,47 @@ function EditVault({
 }: OpenVaultState & { steps: number }) {
   const hasError = !!messages.length
 
+  function handleDepositChange(change: (ch: ManualChange) => void) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.replace(/,/g, '')
+
+      const valueBn = new BigNumber(value)
+      change({
+        kind: 'lockAmount',
+        lockAmount: value === '' ? undefined : valueBn,
+      })
+      if (value === '' || valueBn.eq(0)) {
+        change({ kind: 'drawAmount', drawAmount: undefined })
+      }
+    }
+  }
+
+  function handleGenerateChange(change: (ch: ManualChange) => void) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.replace(/,/g, '')
+
+      const valueBn = new BigNumber(value)
+      change({
+        kind: 'drawAmount',
+        drawAmount: value === '' ? undefined : valueBn,
+      })
+    }
+  }
+
   function handleDepositMax(change: (ch: ManualChange) => void) {
     return () => {
-      change({ kind: 'lockAmount', lockAmount: balance })
+      change({ kind: 'lockAmount', lockAmount: maxLockAmount })
     }
   }
 
   function handleGenerateMax(change: (ch: ManualChange) => void) {
     return () => {
-      change({ kind: 'drawAmount', drawAmount: maxDebtAmount })
+      change({ kind: 'drawAmount', drawAmount: maxDrawAmount })
     }
   }
+
+  const canDepositMax = !!maxLockAmount
+  const canGenerateMax = !!maxDrawAmount
 
   return (
     <OpenVaultWrapper title={stage} step={0} steps={steps}>
@@ -139,9 +170,9 @@ function EditVault({
               {...{
                 amount: lockAmount,
                 token: getToken(token),
-                disabled: stage !== 'editing',
+                disabled: !canDepositMax,
                 hasError,
-                onChange: handleAmountChange('lockAmount', change!),
+                onChange: handleDepositChange(change!),
                 onSetMax: handleDepositMax(change!),
               }}
             />
@@ -152,13 +183,24 @@ function EditVault({
               {...{
                 amount: drawAmount,
                 token: getToken(token),
-                disabled: stage !== 'editing',
+                disabled: !canGenerateMax,
                 hasError,
-                onChange: handleAmountChange('drawAmount', change!),
+                onChange: handleGenerateChange(change!),
                 onSetMax: handleGenerateMax(change!),
               }}
             />
           </Box>
+          <Grid columns={'1fr 1fr'}>
+            <Text>Price</Text>
+            <Text>
+              {price.toFixed()} {token}/USD
+            </Text>
+
+            <Text>Balance</Text>
+            <Text>
+              {balance.toFixed()} {token}
+            </Text>
+          </Grid>
         </Grid>
       </Flex>
     </OpenVaultWrapper>

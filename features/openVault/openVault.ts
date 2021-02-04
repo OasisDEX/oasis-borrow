@@ -45,7 +45,6 @@ type OpenVaultChange = Changes<OpenVaultState>
 export type ManualChange =
   | Change<OpenVaultState, 'lockAmount'>
   | Change<OpenVaultState, 'drawAmount'>
-  | Change<OpenVaultState, 'maxDebtAmount'>
 
 export interface OpenVaultState extends HasGasEstimation {
   stage: OpenVaultStage
@@ -63,8 +62,10 @@ export interface OpenVaultState extends HasGasEstimation {
   price: BigNumber
   // emergency shutdown!
   lockAmount?: BigNumber
-  maxDebtAmount?: BigNumber
+  maxLockAmount?: BigNumber
   drawAmount?: BigNumber
+  maxDrawAmount?: BigNumber
+
   messages: OpenVaultMessage[]
   txError?: any
   change?: (change: ManualChange) => void
@@ -228,7 +229,6 @@ function addTransitions(
   change: (ch: OpenVaultChange) => void,
   state: OpenVaultState,
 ): OpenVaultState {
-  console.log(state)
   function backToOpenVaultEditing() {
     change({ kind: 'stage', stage: 'editing' })
   }
@@ -275,12 +275,19 @@ function addTransitions(
   // }
 
   if (state.stage === 'editing') {
-    console.log(state.price)
+    let maxLockAmount
+    if (state.token === 'ETH') {
+      maxLockAmount = state.balance.gt(0.05) ? state.balance.minus(0.05) : undefined
+    } else {
+      maxLockAmount = state.balance
+    }
+
     return {
       ...state,
       change,
-      maxDebtAmount:
+      maxDrawAmount:
         state.lockAmount !== undefined ? state.lockAmount.times(state.price) : undefined,
+      maxLockAmount,
       // continue2ConfirmOpenVault: () =>
       //   change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' }),
     }
@@ -369,7 +376,7 @@ export function createOpenVault$(
       return combineLatest(
         proxyAddress$(account),
         balance$(token, account),
-        tokenOraclePrice$(token),
+        tokenOraclePrice$(ilk),
         ilkData$(ilk),
       ).pipe(
         switchMap(([proxyAddress, balance, price, ilkData]) =>
@@ -399,7 +406,7 @@ export function createOpenVault$(
                 map((balance) => ({ kind: 'balance', balance })),
               )
 
-              const priceChange$ = tokenOraclePrice$(token).pipe(
+              const priceChange$ = tokenOraclePrice$(ilk).pipe(
                 map((price) => ({ kind: 'price', price })),
               )
 
