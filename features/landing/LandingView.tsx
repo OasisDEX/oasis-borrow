@@ -116,7 +116,7 @@ export function LandingView() {
         }
       >
         {landing.rows.map(({ token, ilk, ilkDebtAvailable, stabilityFee, liquidationRatio }) => (
-          <Table.Row sx={{ td: { py: 2 } }}>
+          <Table.Row key={ilk} sx={{ td: { py: 2 } }}>
             <Table.Cell>
               <TokenSymbol token={token} />
             </Table.Cell>
