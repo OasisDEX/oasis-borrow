@@ -9,6 +9,8 @@ import React from 'react'
 import { BigNumber } from 'bignumber.js'
 import { InputWithMax } from 'helpers/input'
 import { getToken } from 'blockchain/tokensMetadata'
+import { proxyAddress } from 'blockchain/calls/proxy'
+import { zero } from 'helpers/zero'
 
 interface OpenVaultWrapperProps extends WithChildren {
   title: string
@@ -92,42 +94,41 @@ function ProxyAllowanceFlow({
   )
 }
 
-function handleAmountChange(kind: 'lockAmount' | 'drawAmount', change: (ch: ManualChange) => void) {
-  return (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/,/g, '')
-
-    change({
-      kind,
-      [kind]: value === '' ? undefined : new BigNumber(value),
-    })
-  }
-}
-
 function EditVault({
   stage,
   steps,
   lockAmount,
   maxLockAmount,
   price,
+  ilkData: { debtCeiling, debtFloor, ilkDebt, ilkDebtAvailable, ilk, maxDebtPerUnitCollateral },
   drawAmount,
   maxDrawAmount,
   token,
   messages,
   change,
   balance,
-}: OpenVaultState & { steps: number }) {
-  const hasError = !!messages.length
+  proceed,
 
+  proxyAddress,
+  allowance,
+}: OpenVaultState & { steps: number }) {
   function handleDepositChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
 
-      const valueBn = new BigNumber(value)
-      change({
-        kind: 'lockAmount',
-        lockAmount: value === '' ? undefined : valueBn,
-      })
-      if (value === '' || valueBn.eq(0)) {
+      if (value !== '') {
+        const lockAmount = new BigNumber(value)
+        change({
+          kind: 'lockAmount',
+          lockAmount: lockAmount,
+        })
+
+        change({
+          kind: 'maxDrawAmount',
+          maxDrawAmount: lockAmount.times(maxDebtPerUnitCollateral),
+        })
+      }
+      if (value === '' || new BigNumber(value).eq(zero)) {
         change({ kind: 'drawAmount', drawAmount: undefined })
       }
     }
@@ -136,11 +137,9 @@ function EditVault({
   function handleGenerateChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
-
-      const valueBn = new BigNumber(value)
       change({
         kind: 'drawAmount',
-        drawAmount: value === '' ? undefined : valueBn,
+        drawAmount: value === '' ? undefined : new BigNumber(value),
       })
     }
   }
@@ -148,6 +147,10 @@ function EditVault({
   function handleDepositMax(change: (ch: ManualChange) => void) {
     return () => {
       change({ kind: 'lockAmount', lockAmount: maxLockAmount })
+      change({
+        kind: 'maxDrawAmount',
+        maxDrawAmount: maxLockAmount?.times(maxDebtPerUnitCollateral),
+      })
     }
   }
 
@@ -157,14 +160,34 @@ function EditVault({
     }
   }
 
+  const errorString = messages
+    .map((message) => message.kind)
+    .filter((x) => x)
+    .join(',')
+
+  const hasError = !!errorString
+
   const canDepositMax = !!maxLockAmount
   const canGenerateMax = !!maxDrawAmount
+
+  const hasProxy = !!proxyAddress
+  const hasAllowance = !!allowance
 
   return (
     <OpenVaultWrapper title={stage} step={0} steps={steps}>
       <Flex p={5} sx={{ justifyContent: 'center' }}>
         <Grid>
-          <Box>
+          <Grid columns={'2fr 3fr'}>
+            <Text>Price</Text>
+            <Text>
+              {price.toString()} {token}/USD
+            </Text>
+
+            <Text>Balance</Text>
+            <Text>
+              {balance.toString()} {token}
+            </Text>
+
             <Text>Deposit {token}</Text>
             <InputWithMax
               {...{
@@ -176,31 +199,43 @@ function EditVault({
                 onSetMax: handleDepositMax(change!),
               }}
             />
-          </Box>
-          <Box>
+
+            <Text>Amount Generatable</Text>
+            <Text>{maxDrawAmount ? maxDrawAmount.toString() : '0'} DAI</Text>
+
             <Text>Generate Dai</Text>
             <InputWithMax
               {...{
                 amount: drawAmount,
-                token: getToken(token),
+                token: getToken('DAI'),
                 disabled: !canGenerateMax,
                 hasError,
                 onChange: handleGenerateChange(change!),
                 onSetMax: handleGenerateMax(change!),
               }}
             />
-          </Box>
-          <Grid columns={'1fr 1fr'}>
-            <Text>Price</Text>
-            <Text>
-              {price.toFixed()} {token}/USD
-            </Text>
 
-            <Text>Balance</Text>
-            <Text>
-              {balance.toFixed()} {token}
-            </Text>
+            <Text>{ilk} Debt Floor</Text>
+            <Text>{debtFloor.toString()} DAI</Text>
+
+            <Text>{ilk} Debt Ceiling</Text>
+            <Text>{debtCeiling.toString()} DAI</Text>
+
+            <Text>{ilk} Debt issued</Text>
+            <Text>{ilkDebt.toString()} DAI</Text>
+
+            <Text>{ilk} Debt available</Text>
+            <Text>{ilkDebtAvailable.toString()} DAI</Text>
+
+            {hasError && (
+              <>
+                <Text>{errorString}</Text>
+              </>
+            )}
           </Grid>
+          <Button onClick={proceed!} disabled={hasError}>
+            Proceed
+          </Button>
         </Grid>
       </Flex>
     </OpenVaultWrapper>

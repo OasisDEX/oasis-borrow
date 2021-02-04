@@ -19,6 +19,7 @@ import { curry } from 'lodash'
 import { combineLatest, EMPTY, merge, Observable, of, Subject } from 'rxjs'
 import { filter, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 import { TxStatus } from '@oasisdex/transactions'
+import { zero } from 'helpers/zero'
 
 export type OpenVaultStage =
   | 'editing'
@@ -36,15 +37,12 @@ export type OpenVaultStage =
   | 'transactionFiasco'
   | 'transactionSuccess'
 
-type OpenVaultMessage = {
-  kind: 'amountIsEmpty' | 'amountBiggerThanBalance'
-}
-
 type OpenVaultChange = Changes<OpenVaultState>
 
 export type ManualChange =
   | Change<OpenVaultState, 'lockAmount'>
   | Change<OpenVaultState, 'drawAmount'>
+  | Change<OpenVaultState, 'maxDrawAmount'>
 
 export interface OpenVaultState extends HasGasEstimation {
   stage: OpenVaultStage
@@ -58,8 +56,15 @@ export interface OpenVaultState extends HasGasEstimation {
   ilk: string
   token: string
   ilkData: IlkData
+
+  ethBalance: BigNumber
   balance: BigNumber
   price: BigNumber
+
+  // should return an estimation of the amount of ETH necessary to
+  // create a proxy if necessary, set an allowance if necessary
+  // and open the vault
+  estimatedGasCost?: BigNumber
   // emergency shutdown!
   lockAmount?: BigNumber
   maxLockAmount?: BigNumber
@@ -73,10 +78,10 @@ export interface OpenVaultState extends HasGasEstimation {
   setAllowance?: () => void
   continue2ConfirmOpenVault?: () => void
   openVault?: () => void
-  continue2Editing?: () => void
   tryAgain?: () => void
   back?: () => void
   close?: () => void
+  proceed?: () => void
 }
 
 const apply: ApplyChange<OpenVaultState> = applyChange
@@ -237,6 +242,8 @@ function addTransitions(
     change({ kind: 'stage', stage: 'editing' })
     change({ kind: 'lockAmount', lockAmount: undefined })
     change({ kind: 'drawAmount', drawAmount: undefined })
+    change({ kind: 'maxLockAmount', maxLockAmount: undefined })
+    change({ kind: 'maxDrawAmount', maxDrawAmount: undefined })
   }
 
   if (state.stage === 'proxyWaitingForConfirmation') {
@@ -267,29 +274,21 @@ function addTransitions(
     }
   }
 
-  // if (state.stage === 'editingWaitingToContinue') {
-  //   return {
-  //     ...state,
-  //     continue2Editing: () => change({ kind: 'stage', stage: 'editing' }),
-  //   }
-  // }
-
   if (state.stage === 'editing') {
-    let maxLockAmount
-    if (state.token === 'ETH') {
-      maxLockAmount = state.balance.gt(0.05) ? state.balance.minus(0.05) : undefined
-    } else {
-      maxLockAmount = state.balance
-    }
-
     return {
       ...state,
       change,
-      maxDrawAmount:
-        state.lockAmount !== undefined ? state.lockAmount.times(state.price) : undefined,
-      maxLockAmount,
-      // continue2ConfirmOpenVault: () =>
-      //   change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' }),
+      proceed: !state.messages.length
+        ? () => {
+            if (!state.proxyAddress) {
+              change({ kind: 'stage', stage: 'proxyWaitingForConfirmation' })
+            } else if (!state.allowance) {
+              change({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' })
+            } else {
+              change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' })
+            }
+          }
+        : undefined,
     }
   }
 
@@ -319,16 +318,64 @@ function addTransitions(
   return state
 }
 
+type OpenVaultMessage = {
+  kind:
+    | 'lockAmountEmpty'
+    | 'lockAmountGreaterThanBalance'
+    | 'lockAmountGreaterThanMaxLockAmount'
+    | 'drawAmountLessThanDebtFloor'
+    | 'drawAmountGreaterThanDebtCeiling'
+    | 'drawAmountPossibleLessThanDebtFloor'
+    | 'vaultUnderCollateralized'
+}
+
 function validate(state: OpenVaultState): OpenVaultState {
-  // const messages: DsrCreationMessage[] = []
-  // if (!state.amount || state.amount.eq(zero)) {
-  //   messages[messages.length] = { kind: 'amountIsEmpty' }
-  // }
+  const {
+    balance,
+    lockAmount,
+    drawAmount,
+    maxLockAmount,
+    maxDrawAmount,
+    ilkData: { ilkDebtAvailable, debtFloor, maxDebtPerUnitCollateral },
+  } = state
+
+  const messages: OpenVaultMessage[] = []
+
+  // lockAmount is zero or undefined
+  if (!lockAmount || lockAmount.eq(zero)) {
+    messages[messages.length] = { kind: 'lockAmountEmpty' }
+  }
+
+  // lockAmount greater than estimated maxLockAmount
+  if (lockAmount && maxLockAmount && lockAmount.gt(maxLockAmount)) {
+    messages[messages.length] = { kind: 'lockAmountGreaterThanMaxLockAmount' }
+  }
+
+  // drawAmount less than dust
+  if (drawAmount && drawAmount.lt(debtFloor)) {
+    messages[messages.length] = { kind: 'drawAmountLessThanDebtFloor' }
+  }
+
+  // amount of dai that can be drawn given the locked amount is less than
+  // the dust amount
+  if (lockAmount && lockAmount.times(maxDebtPerUnitCollateral).lt(debtFloor)) {
+    messages[messages.length] = { kind: 'drawAmountPossibleLessThanDebtFloor' }
+  }
+
+  // if the amount of dai to be drawn is less than
+  if (drawAmount && drawAmount.gt(ilkDebtAvailable)) {
+    messages[messages.length] = { kind: 'drawAmountGreaterThanDebtCeiling' }
+  }
+
+  if (drawAmount && lockAmount && drawAmount.gt(lockAmount.times(maxDebtPerUnitCollateral))) {
+    messages[messages.length] = { kind: 'vaultUnderCollateralized' }
+  }
+
   // if (state.amount && state.daiBalance && state.amount.gt(state.daiBalance)) {
   //   messages[messages.length] = { kind: 'amountBiggerThanBalance' }
   // }
   // return { ...state, messages }
-  return state
+  return { ...state, messages }
 }
 
 // function constructEstimateGas(
@@ -376,21 +423,27 @@ export function createOpenVault$(
       return combineLatest(
         proxyAddress$(account),
         balance$(token, account),
+        balance$('ETH', account),
         tokenOraclePrice$(ilk),
         ilkData$(ilk),
       ).pipe(
-        switchMap(([proxyAddress, balance, price, ilkData]) =>
+        switchMap(([proxyAddress, balance, ethBalance, price, ilkData]) =>
           ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
             switchMap((allowance: boolean | undefined) => {
               const initialState: OpenVaultState = {
                 stage: 'editing',
-                balance,
                 ilkData,
                 ilk,
                 token,
+                balance,
+                ethBalance,
                 price,
                 proxyAddress,
                 allowance,
+                lockAmount: undefined,
+                maxLockAmount: undefined,
+                drawAmount: undefined,
+                maxDrawAmount: undefined,
                 messages: [],
                 safeConfirmations: context.safeConfirmations,
                 gasEstimationStatus: GasEstimationStatus.unset,
@@ -406,6 +459,18 @@ export function createOpenVault$(
                 map((balance) => ({ kind: 'balance', balance })),
               )
 
+              const ethBalanceChange$ = balance$('ETH', account).pipe(
+                map((ethBalance) => ({ kind: 'ethBalance', ethBalance })),
+              )
+
+              const maxLockAmountChange$ = balance$(token, account).pipe(
+                map((balance) => {
+                  const maxLockAmount =
+                    token !== 'ETH' ? balance : balance.gt(0.05) ? balance.minus(0.05) : zero
+                  return { kind: 'maxLockAmount', maxLockAmount }
+                }),
+              )
+
               const priceChange$ = tokenOraclePrice$(ilk).pipe(
                 map((price) => ({ kind: 'price', price })),
               )
@@ -414,7 +479,13 @@ export function createOpenVault$(
                 map((ilkData) => ({ kind: 'ilkData', ilkData })),
               )
 
-              const environmentChange$ = merge(balanceChange$, ilkDataChange$, priceChange$)
+              const environmentChange$ = merge(
+                balanceChange$,
+                ilkDataChange$,
+                priceChange$,
+                ethBalanceChange$,
+                maxLockAmountChange$,
+              )
 
               const connectedProxyAddress$ = proxyAddress$(account)
 
