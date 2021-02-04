@@ -10,6 +10,7 @@ import { BigNumber } from 'bignumber.js'
 import { InputWithMax } from 'helpers/input'
 import { getToken } from 'blockchain/tokensMetadata'
 import { zero } from 'helpers/zero'
+import { formatPercent } from 'helpers/formatters/format'
 
 interface OpenVaultWrapperProps extends WithChildren {
   title: string
@@ -77,8 +78,7 @@ function ProxyAllowanceFlow({
 
   return (
     <OpenVaultWrapper title={stage} step={1} steps={steps}>
-      <Flex p={5} sx={{ justifyContent: 'center' }}>
-        <Button onClick={handleProxyCreate}>Create Proxy</Button>
+      <Grid p={5} sx={{ justifyContent: 'center' }}>
         {(stage === 'proxyWaitingForApproval' || stage === 'proxyInProgress') && <Spinner />}
         {(stage === 'proxyFiasco' || stage === 'allowanceFiasco') && (
           <Box>
@@ -92,7 +92,13 @@ function ProxyAllowanceFlow({
         {(stage === 'allowanceWaitingForApproval' || stage === 'allowanceInProgress') && (
           <Spinner />
         )}
-      </Flex>
+
+        <Button
+          onClick={handleProxyCreate!}
+          disabled={disableProxyButton}
+          sx={{ width: 6 }}
+        ></Button>
+      </Grid>
     </OpenVaultWrapper>
   )
 }
@@ -102,10 +108,10 @@ function EditVault({
   steps,
   lockAmount,
   maxLockAmount,
-  price,
-  ilkData: { debtCeiling, debtFloor, ilkDebt, ilkDebtAvailable, ilk, maxDebtPerUnitCollateral },
   drawAmount,
   maxDrawAmount,
+  price,
+  ilkData: { debtCeiling, debtFloor, ilkDebt, ilkDebtAvailable, ilk, maxDebtPerUnitCollateral },
   token,
   messages,
   change,
@@ -169,10 +175,15 @@ function EditVault({
   const canDepositMax = !!maxLockAmount
   const canGenerateMax = !!maxDrawAmount
 
+  const collateralizationRatio =
+    drawAmount && lockAmount && !drawAmount.eq(zero) && !lockAmount.eq(zero)
+      ? lockAmount.times(price).div(drawAmount).times(100)
+      : undefined
+
   return (
     <OpenVaultWrapper title={stage} step={0} steps={steps}>
-      <Grid p={5} sx={{ justifyContent: 'center', maxWidth: '700px' }}>
-        <Grid columns={'2fr 3fr'}>
+      <Grid px={3} py={4} sx={{ justifyContent: 'center', justifyItems: 'center' }}>
+        <Grid columns={'2fr 3fr'} sx={{ justifyItems: 'left' }}>
           <Text>Price</Text>
           <Text>
             {price.toString()} {token}/USD
@@ -195,9 +206,6 @@ function EditVault({
             }}
           />
 
-          <Text>Amount Generatable</Text>
-          <Text>{maxDrawAmount ? maxDrawAmount.toString() : '0'} DAI</Text>
-
           <Text>Generate Dai</Text>
           <InputWithMax
             {...{
@@ -209,6 +217,13 @@ function EditVault({
               onSetMax: handleGenerateMax(change!),
             }}
           />
+
+          <Text>Collateralization Ratio</Text>
+          <Text>
+            {collateralizationRatio
+              ? formatPercent(collateralizationRatio, { precision: 4 })
+              : '--'}
+          </Text>
 
           <Text>{ilk} Debt Floor</Text>
           <Text>{debtFloor.toString()} DAI</Text>
@@ -229,9 +244,11 @@ function EditVault({
             </>
           )}
         </Grid>
-        <Button onClick={proceed!} disabled={hasError}>
-          Proceed
-        </Button>
+        <Box mt={4}>
+          <Button onClick={proceed!} disabled={hasError} sx={{ width: 6 }}>
+            Proceed
+          </Button>
+        </Box>
       </Grid>
     </OpenVaultWrapper>
   )
