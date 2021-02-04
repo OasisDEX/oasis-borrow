@@ -3471,6 +3471,30 @@
     ts-essentials "^7.0.1"
     web3-provider-engine "^14.0.1"
 
+"@oasisdex/connectors@^0.0.18":
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/@oasisdex/connectors/-/connectors-0.0.18.tgz#7f0f0f3b6caba4d0e8154df6a75677a94b988ce4"
+  integrity sha512-BTtr/k1fGs0wSNB8zBvxoYgFUhzg8Gk5rUOHB7p6G5CiRqI0TejDeMZPHk8tCw1JFYrMo31dm3x3Rrg47OYoDQ==
+  dependencies:
+    "@0x/assert" "^3.0.17"
+    "@0x/subproviders" "^6.1.9"
+    "@0x/utils" "^6.1.0"
+    "@ledgerhq/hw-app-eth" "^5.27.1"
+    "@ledgerhq/hw-transport-u2f" "^5.28.0"
+    "@web3-react/abstract-connector" "^6.0.7"
+    "@web3-react/types" "^6.0.7"
+    ethereumjs-tx "^2.1.2"
+    ethereumjs-util "^7.0.7"
+    ethjs-util "^0.1.6"
+    hdkey "^2.0.1"
+    lodash "^4.17.10"
+    magic-sdk "^3.0.1"
+    semaphore-async-await "^1.5.1"
+    trezor-connect "^8.1.17-extended"
+    ts-essentials "^7.0.1"
+    web3 "^1.3.3"
+    web3-provider-engine "^14.0.1"
+
 "@oasisdex/transactions@^0.0.17":
   version "0.0.17"
   resolved "https://registry.yarnpkg.com/@oasisdex/transactions/-/transactions-0.0.17.tgz#434089dcbf713f943badffb0ef3463a99b5c8140"
@@ -3491,12 +3515,12 @@
   dependencies:
     bignumber.js "^7.2.1"
 
-"@oasisdex/web3-context@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@oasisdex/web3-context/-/web3-context-0.0.10.tgz#dfd1d1165529995db3d90422f0a4a6875c4d18f0"
-  integrity sha512-vOUCjQnjSR+zPdaCWSxzh8OxjG4rpWnCnvLnyI8oiYQVyXIayZjr4NT9RhondHl5rgK1WM4UJ/5mJsSvFYe7yA==
+"@oasisdex/web3-context@^0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@oasisdex/web3-context/-/web3-context-0.0.11.tgz#02273fc3f2e77f2b913cfe5659a0c70e5351eeea"
+  integrity sha512-IWc/30T9+dvdQO1IoUv33UFCEfLBFh+8Lvu6ktPO3Usrd9AAQgObPWtHHXNH2UHKUrdUxSnn+TF4GOnXL4d/2Q==
   dependencies:
-    "@oasisdex/connectors" "^0.0.17"
+    "@oasisdex/connectors" "^0.0.18"
     "@oasisdex/utils" "^0.0.7"
     "@web3-react/abstract-connector" "^6.0.7"
     "@web3-react/core" "^6.1.1"
@@ -5401,6 +5425,15 @@
   version "6.0.7"
   resolved "https://registry.yarnpkg.com/@web3-react/injected-connector/-/injected-connector-6.0.7.tgz#1e0be23f51fa07fe6547fe986768a46b74c3a426"
   integrity sha512-Y7aJSz6pg+MWKtvdyuqyy6LWuH+4Tqtph1LWfiyVms9II9ar/9B/de4R8wh4wjg91wmHkU+D75yP09E/Soh2RA==
+  dependencies:
+    "@web3-react/abstract-connector" "^6.0.7"
+    "@web3-react/types" "^6.0.7"
+    tiny-warning "^1.0.3"
+
+"@web3-react/injected-connector@npm:@oasisdex/injected-connector@^6.1.11":
+  version "6.1.11"
+  resolved "https://registry.yarnpkg.com/@oasisdex/injected-connector/-/injected-connector-6.1.11.tgz#48eb0788855c936bb2f7c2c6bf696a5f775f0236"
+  integrity sha512-f/jbSRSaX8TeB6bLlRQ1bWny8l4vTX6O5bgJHCPqjqd0TZGIVa5Hf+5sGtdSGUnULCl7dmyaNgTNQVGMPIAArA==
   dependencies:
     "@web3-react/abstract-connector" "^6.0.7"
     "@web3-react/types" "^6.0.7"
