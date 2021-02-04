@@ -16,9 +16,9 @@ export const proxyAddress: CallDef<string, string | undefined> = {
 }
 
 export function createProxyAddress$(
-  connectedContext$: Observable<ContextConnected>,
+  connectedContext$: Observable<Context>,
   address: string,
-): Observable<string> {
+): Observable<string | undefined> {
   return connectedContext$.pipe(
     switchMap((context) =>
       defer(() =>
@@ -28,7 +28,7 @@ export function createProxyAddress$(
         )(address).pipe(
           mergeMap((proxyAddress: string) => {
             if (proxyAddress === nullAddress) {
-              return EMPTY
+              return of(undefined)
             }
             return of(proxyAddress)
           }),

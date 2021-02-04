@@ -1,10 +1,11 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata';
 import { useAppContext } from 'components/AppContextProvider';
+import { FeaturedIlks } from 'features/vaultsOverview/VaultsOverviewView';
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format';
 import { useObservable } from 'helpers/observableHook';
 import React, { ReactNode } from 'react';
-import { Box, Button,Container, SxStyleProp } from 'theme-ui';
+import { Box, Button,Container, Grid, Heading, SxStyleProp, Text } from 'theme-ui';
 
 export function Table({ header, children, sx }: React.PropsWithChildren<{header: ReactNode, sx?: SxStyleProp}>) {
     return (
@@ -93,7 +94,14 @@ export function LandingView() {
   }
 
     return (
-        <Container>
+        <Grid sx={{flex: 1}}>
+            <Box sx={{width: '600px', justifySelf: 'center', textAlign: 'center', my: 4}}>
+                <Heading sx={{fontSize: 7, my: 3}}>Borrow against your <br/> collateral by generating Dai</Heading>
+                <Text>Realize liquidity today and don't lose long exposure.</Text>
+            </Box>
+            <Box sx={{my: 4}}>
+                <FeaturedIlks ilks={landing.featuredIlks} />
+            </Box>
             <Table header={
                 <>
                     <Table.Header sx={{ textAlign: 'left' }}>Asset</Table.Header >
@@ -119,5 +127,5 @@ export function LandingView() {
                     ))
                 }
             </Table>
-        </Container>)
+        </Grid>)
 }

@@ -13,7 +13,7 @@ import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/call
 import { createProxyAddress$, createProxyOwner$ } from 'blockchain/calls/proxy'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
-import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
+import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createLanding$ } from 'features/landing/landing'
 import { createVaultSummary } from 'features/vault/vaultSummary'
@@ -118,7 +118,7 @@ export function setupAppContext() {
   const transactionManager$ = createTransactionManager(transactions$)
 
   // base
-  const proxyAddress$ = memoize(curry(createProxyAddress$)(connectedContext$))
+  const proxyAddress$ = memoize(curry(createProxyAddress$)(context$))
   const proxyOwner$ = memoize(curry(createProxyOwner$)(context$))
   const cdpManagerUrns$ = observe(onEveryBlock$, context$, cdpManagerUrns, bigNumberTostring)
   const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
@@ -169,13 +169,15 @@ export function setupAppContext() {
 
   const ilks$ = createIlks$(context$)
   const ilkDataList$ = createIlkDataList$(ilks$, ilkData$)
+  const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
 
   const vaultsOverview$ = memoize(curry(createVaultsOverview$)(
     vaults$,
     vaultSummary$,
     ilkDataList$,
+    featuredIlks$,
   ))
-  const landing$ = curry(createLanding$)(ilkDataList$)
+  const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
 
 
   return {

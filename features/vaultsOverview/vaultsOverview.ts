@@ -57,21 +57,26 @@ export function getCheapest(ilks: IlkDataList) {
   return minBy(ilks, ilk => ilk.stabilityFee.toNumber())
 }
 
+export function createFeaturedIlks$(ilkDataList$: Observable<IlkDataList>) {
+  return combineLatest(
+    createFeaturedIlk$(ilkDataList$, getNewest, 'New'),
+    createFeaturedIlk$(ilkDataList$, getMostPopular, 'Most Popular'),
+    createFeaturedIlk$(ilkDataList$, getCheapest, 'Cheapest'),
+  )
+}
+
 export function createVaultsOverview$(
   vaults$: (address: string) => Observable<Vault[]>,
   vaultsSummary$: (address: string) => Observable<VaultSummary>,
   ilkDataList$: Observable<IlkDataList>,
+  featuredIlks$: Observable<FeaturedIlk[]>,
   address: string,
 ): Observable<VaultsOverview> {
   return combineLatest(
     vaults$(address).pipe(startWith<Vault[] | undefined>(undefined)),
     vaultsSummary$(address).pipe(startWith<VaultSummary | undefined>(undefined)),
     ilkDataList$.pipe(startWith<IlkDataList | undefined>(undefined)),
-    combineLatest(
-      createFeaturedIlk$(ilkDataList$, getNewest, 'New'),
-      createFeaturedIlk$(ilkDataList$, getMostPopular, 'Most Popular'),
-      createFeaturedIlk$(ilkDataList$, getCheapest, 'Cheapest'),
-    ).pipe(startWith<FeaturedIlk[] | undefined>(undefined))
+    featuredIlks$.pipe(startWith<FeaturedIlk[] | undefined>(undefined))
   ).pipe(
     map(([vaults, vaultSummary, ilkDataList, featuredIlks]) => ({
       vaults,

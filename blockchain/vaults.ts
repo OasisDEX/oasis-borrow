@@ -7,7 +7,7 @@ import { combineLatest, EMPTY, Observable, of } from 'rxjs'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from './calls/cdpManager'
 import { CallObservable } from './calls/observe'
 import { vatGem, vatUrns } from './calls/vat'
-import { getCdps, GetCdpsResult } from './calls/getCdps'
+import { getCdps } from './calls/getCdps'
 import { IlkData } from './ilks'
 
 function getTotalCollateralPrice(vaults: Vault[]) {
@@ -31,19 +31,24 @@ export function createVaultSummary(
 }
 
 export function createVaults$(
-  connectedContext$: Observable<ContextConnected>,
+  context$: Observable<ContextConnected>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
   vault$: (id: BigNumber) => Observable<Vault>,
   address: string,
 ): Observable<Vault[]> {
-  return combineLatest(connectedContext$, proxyAddress$(address)).pipe(
+  return combineLatest(context$, proxyAddress$(address)).pipe(
     switchMap(
-      ([context, proxyAddress]): Observable<GetCdpsResult> => {
-        if (!proxyAddress) return EMPTY
-        return call(context, getCdps)({ proxyAddress, descending: true })
+      ([context, proxyAddress]) => {
+        console.log({context, proxyAddress})
+        if (!proxyAddress) return of([])
+        return call(context, getCdps)({ proxyAddress, descending: true }).pipe(
+          tap(res => console.log(res, 'CDP!!!!!!!')),
+          switchMap(({ ids }) => ids.length === 0 
+            ? of([]) 
+            : combineLatest(ids.map((id) => vault$(new BigNumber(id)).pipe()))),
+        )
       },
     ),
-    switchMap(({ ids }) => combineLatest(ids.map((id) => vault$(new BigNumber(id)).pipe()))),
     shareReplay(1),
   )
 }
@@ -348,7 +353,7 @@ export function createVault$(
             const debt = debtScalingFactor.times(normalizedDebt)
             const ilkDebt = debtScalingFactor.times(normalizedIlkDebt)
 
-            const backingCollateral = debt.times(liquidationRatio)
+            const backingCollateral = debt.times(liquidationRatio).div(tokenOraclePrice)
             const freeCollateral = backingCollateral.gt(collateral)
               ? zero
               : collateral.minus(backingCollateral)

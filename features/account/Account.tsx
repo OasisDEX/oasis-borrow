@@ -249,13 +249,18 @@ export function AccountModal({ close }: ModalProps) {
                   readOnly
                 />
               </Flex>
-              <Button
-                variant="textual"
-                sx={{ textAlign: 'left', fontSize: 3, p: 0, fontWeight: 'semiBold' }}
-                onClick={disconnect}
-              >
-                {t(`disconnect${connectionKind === 'magicLink' ? '-magic' : ''}`)}
-              </Button>
+              <Flex>
+                <AppLink sx={{mr: 3}} onClick={close} href="/owner/[address]" as={`/owner/${account}`}>
+                  My Page
+                </AppLink>
+                <Button
+                  variant="textual"
+                  sx={{ textAlign: 'left', fontSize: 3, p: 0, fontWeight: 'semiBold', verticalAlign: 'baseline' }}
+                  onClick={disconnect}
+                  >
+                  {t(`disconnect${connectionKind === 'magicLink' ? '-magic' : ''}`)}
+                </Button>
+              </Flex>
             </Grid>
           </Card>
         </Box>

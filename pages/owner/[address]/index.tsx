@@ -5,7 +5,7 @@ import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 
 function Summary({ address }: { address: string }) {
-  const { vaultsOverview$ } = useAppContext()
+  const { vaultsOverview$, } = useAppContext()
 
   const vaultsOverview = useObservable(vaultsOverview$(address))
 

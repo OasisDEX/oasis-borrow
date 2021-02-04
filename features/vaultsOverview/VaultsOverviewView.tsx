@@ -1,12 +1,16 @@
+import BigNumber from 'bignumber.js'
 import { IlkDataSummary } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
+import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { IlkOverview } from 'features/landing/ilksOverview'
 import { VaultSummary } from 'features/vault/vaultSummary'
-import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import { formatAddress, formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 import { Box, Button, Text, Grid, Heading, Card, Flex } from 'theme-ui'
+import { Dictionary } from 'ts-essentials'
 
 import { Table, TokenSymbol } from '../landing/LandingView'
 import { FeaturedIlk, VaultsOverview } from './vaultsOverview'
@@ -30,8 +34,8 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
         <Table.Row key={vault.id}>
           <Table.Cell><TokenSymbol token={vault.token} /></Table.Cell>
           <Table.Cell>{vault.ilk}</Table.Cell>
-          <Table.Cell sx={{textAlign: 'right'}}>{`${formatCryptoBalance(vault.freeCollateral)} ${vault.token}`}</Table.Cell>
           <Table.Cell sx={{textAlign: 'right'}}>{`${formatCryptoBalance(vault.collateral)} ${vault.token}`}</Table.Cell>
+          <Table.Cell sx={{textAlign: 'right'}}>{`${formatCryptoBalance(vault.freeCollateral)} ${vault.token}`}</Table.Cell>
           <Table.Cell sx={{textAlign: 'right'}}>{formatCryptoBalance(vault.debt)}</Table.Cell>
           <Table.Cell sx={{textAlign: 'right'}}>
             {vault.collateralizationRatio
@@ -125,18 +129,41 @@ function Summary({summary}: { summary: VaultSummary }) {
           <Text sx={{color: 'text.muted'}}>Vaults at Risk</Text>
           <Text sx={{fontWeight: 'bold', fontSize: 6}}>{summary.vaultsAtRisk}</Text>
         </Box>
-        <Graph />
+        <Graph assetRatio={summary.depositedAssetRatio} />
       </Grid>
     </Card>
   )
 }
 
-function Graph() {
+function Graph({ assetRatio }: {assetRatio: Dictionary<BigNumber>}) {
+  const assets = Object.entries(assetRatio).sort(([,a], [,b]) => b.comparedTo(a))
+
   return (
-    <Flex sx={{ gridColumn: '1/5' }}>
-      <Box sx={{ flex: 10 }}>A1</Box>
-      <Box sx={{ flex: 20 }}>A2</Box>
-    </Flex>
+    <Box sx={{ gridColumn: '1/5', my: 3 }}>
+      <Flex >
+        {
+          assets.map(([token, ratio]) => <Box key={token} sx={{ flex: ratio.toString(), height: '5px', background: getToken(token).color || 'gray' }} />)
+        }
+      </Flex>
+      <Flex>
+        {
+          assets.map(([token, ratio]) => (
+            <Box key={token} sx={{ my: 2, flex: ratio.toString() }} >
+              {ratio.gt(0.08) && <TokenSymbol token={token} />}
+            </Box>))
+        }
+      </Flex>
+    </Box>
+  )
+}
+
+export function FeaturedIlks({ilks}: {ilks: FeaturedIlk[]}) {
+  return (
+    <Grid columns="1fr 1fr 1fr" gap={4}>
+      {
+        ilks.map(ilk => <CallToAction key={ilk.title} ilk={ilk} />)
+      }
+    </Grid>
   )
 }
 
@@ -147,27 +174,44 @@ export function VaultsOverviewView({
   featuredIlks
 }: VaultsOverview) {
 
+  const { context$ } = useAppContext();
+  const context = useObservable(context$)
+
+  const readonlyAccount = context?.status === 'connected' && context.readonly && context.account
+  const displaySummary = vaults && vaults.length > 0 && vaultSummary
+  const displayFeaturedIlks = vaults?.length === 0 && featuredIlks
+  const displayVaults = vaults && vaults.length > 0 && vaults
+
   return (
     <Grid sx={{flex: 1}}>
+      {
+      readonlyAccount && 
+        <Card sx={{width: 'max-content', p: 3, justifySelf: 'center', m: 3}}>
+          Viewing {formatAddress(readonlyAccount)}
+        </Card>
+      }
       <Heading sx={{textAlign: 'center', fontSize: 7}} as="h1">Vault overview</Heading>
       <Text sx={{textAlign: 'center', justifySelf: 'center', width: 700, fontSize: 4, mb: 4}}>
         Hello 0x..102s it looks like tou currently have no Vaults open with this wallet. Open a Vault below.
       </Text>
       {
-        vaultSummary && <Summary summary={vaultSummary} />
+        displaySummary && <Summary summary={displaySummary} />
       }
       {
-        !vaultSummary && featuredIlks && 
-        <Grid columns="1fr 1fr 1fr" gap={4}>
-          {
-            featuredIlks.map(ilk => <CallToAction key={ilk.title} ilk={ilk} />)
-          }
-        </Grid>
+        displayFeaturedIlks && <FeaturedIlks ilks={displayFeaturedIlks} />
+        
       }
-      <Heading>Your Vaults</Heading>
-      {vaults && <VaultsTable vaults={vaults} />}
-      <Heading>Vaults</Heading>
-      {ilkDataList && <AllIlks ilks={ilkDataList} />}
+      {
+        displayVaults && 
+          <> 
+            <Heading>{readonlyAccount ? `Address Vaults` : 'Your Vaults'}</Heading>
+            <VaultsTable vaults={displayVaults} /> 
+          </>
+      }
+      {ilkDataList && <>
+        <Heading>Vaults</Heading>
+        <AllIlks ilks={ilkDataList} />
+      </>}
     </Grid>
   )
 }
