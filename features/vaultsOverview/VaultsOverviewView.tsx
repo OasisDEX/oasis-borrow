@@ -3,9 +3,10 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { IlkOverview } from 'features/landing/ilksOverview'
+import { VaultSummary } from 'features/vault/vaultSummary'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import React from 'react'
-import { Box, Button, Text, Grid, Heading } from 'theme-ui'
+import { Box, Button, Text, Grid, Heading, Card, Flex } from 'theme-ui'
 
 import { Table, TokenSymbol } from '../landing/LandingView'
 import { FeaturedIlk, VaultsOverview } from './vaultsOverview'
@@ -85,12 +86,12 @@ function CallToAction({ilk}: CallToCationProps) {
   const token = getToken(ilk.token);
 
   return (
-    <Grid columns="1fr 1fr"  sx={{flex: 1, cursor: 'pointer', background: 'linear-gradient(284.73deg, #9658D3 3.42%, #415FFF 97.28%)', borderRadius: 'large', p: 4, color: 'white'}}>
+    <Grid columns="1fr 1fr"  sx={{flex: 1, cursor: 'pointer', background: token.background, borderRadius: 'large', p: 4, color: 'white'}}>
       <Box sx={{gridColumn: '1/3'}}>
         <Text>{ilk.title}</Text>
       </Box>
       <Box sx={{gridColumn: '1/3'}}>
-        <Text variant="heading" sx={{color: 'white'}}>{ilk.token}</Text>
+        <Text variant="heading" sx={{color: 'white'}}>{ilk.ilk}</Text>
       </Box>
       <Box>
         <Text variant="boldBody">Stability fee:</Text>
@@ -104,6 +105,41 @@ function CallToAction({ilk}: CallToCationProps) {
   )
 }
 
+function Summary({summary}: { summary: VaultSummary }) {
+  return (
+    <Card>
+      <Grid columns="repeat(4, 1fr)">
+        <Box>
+          <Text sx={{color: 'text.muted'}}>No. of Vaults</Text>
+          <Text sx={{fontWeight: 'bold', fontSize: 6}}>{summary.numberOfVaults}</Text>
+        </Box>
+        <Box>
+          <Text sx={{color: 'text.muted'}}>Total locked</Text>
+          <Text sx={{fontWeight: 'bold', fontSize: 6}}>${formatCryptoBalance(summary.totalCollateralPrice)}</Text>
+        </Box>
+        <Box>
+          <Text sx={{color: 'text.muted'}}>Total Debt</Text>
+          <Text sx={{fontWeight: 'bold', fontSize: 6}}>{formatCryptoBalance(summary.totalDaiDebt)} DAI</Text>
+        </Box>
+        <Box>
+          <Text sx={{color: 'text.muted'}}>Vaults at Risk</Text>
+          <Text sx={{fontWeight: 'bold', fontSize: 6}}>{summary.vaultsAtRisk}</Text>
+        </Box>
+        <Graph />
+      </Grid>
+    </Card>
+  )
+}
+
+function Graph() {
+  return (
+    <Flex sx={{ gridColumn: '1/5' }}>
+      <Box sx={{ flex: 10 }}>A1</Box>
+      <Box sx={{ flex: 20 }}>A2</Box>
+    </Flex>
+  )
+}
+
 export function VaultsOverviewView({
   vaults,
   ilkDataList,
@@ -111,24 +147,23 @@ export function VaultsOverviewView({
   featuredIlks
 }: VaultsOverview) {
 
-  console.log({featuredIlks})
-
   return (
-    <Grid>
-      <Heading sx={{textAlign: 'center'}} as="h1">Vault overview</Heading>
-      <Grid columns="1fr 1fr 1fr" gap={4}>
-        {ilkDataList && <CallToAction ilk={{...ilkDataList[0], title: 'NEW'}} />}
-        {ilkDataList && <CallToAction ilk={{...ilkDataList[0], title: 'MOST POPULAR'}} />}
-        {ilkDataList && <CallToAction ilk={{...ilkDataList[0], title: 'CHEAPEST'}} />}
-      </Grid>
-      {vaultSummary && (
-        <Heading>Total Dai: {formatCryptoBalance(vaultSummary.totalDaiDebt)}</Heading>
-      )}
-      {vaultSummary && (
-        <Heading>
-          Total Collateral price: {formatFiatBalance(vaultSummary.totalCollateralPrice)} USD
-        </Heading>
-      )}
+    <Grid sx={{flex: 1}}>
+      <Heading sx={{textAlign: 'center', fontSize: 7}} as="h1">Vault overview</Heading>
+      <Text sx={{textAlign: 'center', justifySelf: 'center', width: 700, fontSize: 4, mb: 4}}>
+        Hello 0x..102s it looks like tou currently have no Vaults open with this wallet. Open a Vault below.
+      </Text>
+      {
+        vaultSummary && <Summary summary={vaultSummary} />
+      }
+      {
+        !vaultSummary && featuredIlks && 
+        <Grid columns="1fr 1fr 1fr" gap={4}>
+          {
+            featuredIlks.map(ilk => <CallToAction key={ilk.title} ilk={ilk} />)
+          }
+        </Grid>
+      }
       <Heading>Your Vaults</Heading>
       {vaults && <VaultsTable vaults={vaults} />}
       <Heading>Vaults</Heading>

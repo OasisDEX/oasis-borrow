@@ -205,14 +205,14 @@ export function ConnectWallet({ originalUrl }: { originalUrl?: string }) {
   const { replace } = useRedirect()
   const [connectingLedger, setConnectingLedger] = React.useState(false)
 
-  // useEffect(() => {
-  //   const subscription = web3Context$.subscribe((web3Context) => {
-  //     if (web3Context.status === 'connected') {
-  //       replace(`/owner/[address]`, `/owner/${web3Context.account}`)
-  //     }
-  //   })
-  //   return () => subscription.unsubscribe()
-  // }, [])
+  useEffect(() => {
+    const subscription = web3Context$.subscribe((web3Context) => {
+      if (web3Context.status === 'connected') {
+        replace(`/owner/[address]`, `/owner/${web3Context.account}`)
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [])
 
   if (!web3Context) {
     return null

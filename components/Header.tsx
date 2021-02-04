@@ -6,7 +6,7 @@ import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'i18n'
 import React from 'react'
 import { TRANSITIONS } from 'theme'
-import { Box, Container } from 'theme-ui'
+import { Box, Container, Text } from 'theme-ui'
 
 function Logo() {
   return (
@@ -15,7 +15,8 @@ function Logo() {
       href="/"
       sx={{ color: 'primary', fontWeight: 'semiBold', fontSize: 5, cursor: 'pointer' }}
     >
-      Oasis
+      <Text sx={{display: 'inline', mr: 2}}>Oasis</Text>
+      <Text sx={{display: 'inline', fontSize: 1, textTransform: 'uppercase', fontWeight: 500}}>Borrow</Text>
     </AppLink>
   )
 }

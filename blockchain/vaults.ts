@@ -6,10 +6,9 @@ import { map, mergeMap, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { combineLatest, EMPTY, Observable, of } from 'rxjs'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from './calls/cdpManager'
 import { CallObservable } from './calls/observe'
-import { spotIlk, spotPar } from './calls/spot'
-import { vatGem, vatIlk, vatUrns } from './calls/vat'
+import { vatGem, vatUrns } from './calls/vat'
 import { getCdps, GetCdpsResult } from './calls/getCdps'
-import { IlkData } from 'features/ilks/ilks'
+import { IlkData } from './ilks'
 
 function getTotalCollateralPrice(vaults: Vault[]) {
   return vaults.reduce((total, vault) => total.plus(vault.collateralPrice), new BigNumber(0))

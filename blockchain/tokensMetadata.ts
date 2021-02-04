@@ -131,6 +131,8 @@ const tokens = [
     // maxSell: ___________,
     name: 'Compound',
     icon: 'compound',
+    color: '#00D395',
+    background: 'linear-gradient(290.37deg, #4BCFA8 0%, #139D8D 96.14%)',
     // iconCircle: ___________,
     // iconColor: ___________,
     // ticker: ___________,
@@ -171,6 +173,8 @@ const tokens = [
     // iconColor: ___________,
     // ticker: ___________,
     // coinbaseTicker: ___________,
+    // background: 'linear-gradient(90deg, #2FB1C8 0%, #69DCF6 100%), #C4C4C4',
+    // color: '#69DCF6',
   },
   {
     symbol: 'ZRX',

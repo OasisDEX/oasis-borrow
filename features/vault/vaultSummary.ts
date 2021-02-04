@@ -14,13 +14,17 @@ function getTotalDaiDebt(vaults: Vault[]) {
 export interface VaultSummary {
   totalCollateralPrice: BigNumber
   totalDaiDebt: BigNumber
+  numberOfVaults: number,
+  vaultsAtRisk: number,
 }
 export function createVaultSummary(
   vaults$: (address: string) => Observable<Vault[]>,
   address: string,
-) {
+): Observable<VaultSummary> {
   return vaults$(address).pipe(
     map((vaults) => ({
+      numberOfVaults: vaults.length,
+      vaultsAtRisk: 0,
       totalCollateralPrice: getTotalCollateralPrice(vaults),
       totalDaiDebt: getTotalDaiDebt(vaults),
     })),
