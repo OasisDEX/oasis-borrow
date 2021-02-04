@@ -2,8 +2,8 @@ import BigNumber from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
 import { ContextConnected } from 'blockchain/network'
 import { zero } from 'helpers/zero'
-import { map, mergeMap, shareReplay, switchMap, tap } from 'rxjs/operators'
-import { combineLatest, EMPTY, Observable, of } from 'rxjs'
+import { map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { combineLatest, Observable, of } from 'rxjs'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from './calls/cdpManager'
 import { CallObservable } from './calls/observe'
 import { vatGem, vatUrns } from './calls/vat'
@@ -37,18 +37,19 @@ export function createVaults$(
   address: string,
 ): Observable<Vault[]> {
   return combineLatest(context$, proxyAddress$(address)).pipe(
-    switchMap(
-      ([context, proxyAddress]) => {
-        console.log({context, proxyAddress})
-        if (!proxyAddress) return of([])
-        return call(context, getCdps)({ proxyAddress, descending: true }).pipe(
-          tap(res => console.log(res, 'CDP!!!!!!!')),
-          switchMap(({ ids }) => ids.length === 0 
-            ? of([]) 
-            : combineLatest(ids.map((id) => vault$(new BigNumber(id)).pipe()))),
-        )
-      },
-    ),
+    switchMap(([context, proxyAddress]) => {
+      if (!proxyAddress) return of([])
+      return call(
+        context,
+        getCdps,
+      )({ proxyAddress, descending: true }).pipe(
+        switchMap(({ ids }) =>
+          ids.length === 0
+            ? of([])
+            : combineLatest(ids.map((id) => vault$(new BigNumber(id)).pipe())),
+        ),
+      )
+    }),
     shareReplay(1),
   )
 }
@@ -304,9 +305,7 @@ export function createController$(
   cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>,
   id: BigNumber,
 ) {
-  return cdpManagerOwner$(id).pipe(
-    mergeMap((owner) => proxyOwner$(owner)),
-  )
+  return cdpManagerOwner$(id).pipe(mergeMap((owner) => proxyOwner$(owner)))
 }
 
 export function createVault$(

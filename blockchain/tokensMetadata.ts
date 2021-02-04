@@ -25,7 +25,7 @@ const tokens = [
     ticker: 'eth-ethereum',
     coinbaseTicker: 'eth-usdc',
     color: '#667FE3',
-    background: 'linear-gradient(284.73deg, #9658D3 3.42%, #415FFF 97.28%)'
+    background: 'linear-gradient(284.73deg, #9658D3 3.42%, #415FFF 97.28%)',
   },
   {
     symbol: 'BAT',

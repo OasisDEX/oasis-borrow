@@ -34,7 +34,7 @@ export function createProxyAddress$(
           }),
         ),
       ),
-),
+    ),
     shareReplay(1),
   )
 }

@@ -37,9 +37,11 @@ export function VaultView({ vault, account }: Props) {
 
   return (
     <Grid>
-      <Box sx={{display: 'flex'}}>
-        <AppLink as={`/owner/${vault.controller}`} href={`/owner/[address]`}>Account overview</AppLink>
-        <Text sx={{mx: 3}}>{'>'}</Text>
+      <Box sx={{ display: 'flex' }}>
+        <AppLink as={`/owner/${vault.controller}`} href={`/owner/[address]`}>
+          Account overview
+        </AppLink>
+        <Text sx={{ mx: 3 }}>{'>'}</Text>
         <Text>Vault #{vaultId}</Text>
       </Box>
       <Text>Connected Address :: {account}</Text>

@@ -26,23 +26,21 @@ export function createFeaturedIlk$(
   title: string,
 ): Observable<FeaturedIlk> {
   return ilkDataList$.pipe(
-    map(ilks => ilks.filter(hasAllMetaInfo)),
+    map((ilks) => ilks.filter(hasAllMetaInfo)),
     map(selector),
     filter((ilk): ilk is IlkDataSummary => ilk !== undefined),
-    map(ilk => ({...ilk, title}))
+    map((ilk) => ({ ...ilk, title })),
   )
 }
 
 function hasAllMetaInfo(ilk: IlkDataSummary) {
-  const token = getToken(ilk.token);
+  const token = getToken(ilk.token)
 
   if (token.symbol !== ilk.token) {
     return false
   }
 
-  return 'icon' in token 
-    &&   'background' in token
-    &&   'color' in token
+  return 'icon' in token && 'background' in token && 'color' in token
 }
 
 export function getNewest(ilks: IlkDataList) {
@@ -50,11 +48,11 @@ export function getNewest(ilks: IlkDataList) {
 }
 
 export function getMostPopular(ilks: IlkDataList) {
-  return maxBy(ilks, ilk => ilk.debt)
+  return maxBy(ilks, (ilk) => ilk.debt)
 }
 
 export function getCheapest(ilks: IlkDataList) {
-  return minBy(ilks, ilk => ilk.stabilityFee.toNumber())
+  return minBy(ilks, (ilk) => ilk.stabilityFee.toNumber())
 }
 
 export function createFeaturedIlks$(ilkDataList$: Observable<IlkDataList>) {
@@ -76,7 +74,7 @@ export function createVaultsOverview$(
     vaults$(address).pipe(startWith<Vault[] | undefined>(undefined)),
     vaultsSummary$(address).pipe(startWith<VaultSummary | undefined>(undefined)),
     ilkDataList$.pipe(startWith<IlkDataList | undefined>(undefined)),
-    featuredIlks$.pipe(startWith<FeaturedIlk[] | undefined>(undefined))
+    featuredIlks$.pipe(startWith<FeaturedIlk[] | undefined>(undefined)),
   ).pipe(
     map(([vaults, vaultSummary, ilkDataList, featuredIlks]) => ({
       vaults,

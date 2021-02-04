@@ -71,7 +71,7 @@ export function createIlkDataList$(
         map((ilkDataList) =>
           ilkDataList.map(
             (
-              { stabilityFee, debtCeiling, liquidationRatio, debtScalingFactor, normalizedIlkDebt,  },
+              { stabilityFee, debtCeiling, liquidationRatio, debtScalingFactor, normalizedIlkDebt },
               i,
             ) => ({
               token: ilks[i].split('-')[0],

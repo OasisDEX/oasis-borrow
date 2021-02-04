@@ -26,7 +26,10 @@ export function createIlkOverview$(
             ) => ({
               token: ilkNames[i].split('-')[0],
               ilk: ilkNames[i],
-              daiAvailable: BigNumber.max(debtCeiling.minus(debtScalingFactor.times(normalizedIlkDebt)), new BigNumber(0)),
+              daiAvailable: BigNumber.max(
+                debtCeiling.minus(debtScalingFactor.times(normalizedIlkDebt)),
+                new BigNumber(0),
+              ),
               stabilityFee,
               liquidationRatio,
             }),

@@ -65,11 +65,9 @@ function InternalLink({
   } = useRouter()
   let readOnlyHref = href
   let readOnlyAs = as
-  
+
   const actualHref =
-    isAppContextAvailable && network
-      ? { pathname: readOnlyHref, query: { network } }
-      : readOnlyHref
+    isAppContextAvailable && network ? { pathname: readOnlyHref, query: { network } } : readOnlyHref
 
   const actualAs =
     readOnlyAs && isAppContextAvailable && network

@@ -14,34 +14,36 @@ function getTotalDaiDebt(vaults: Vault[]) {
 }
 
 function getAssetRatio(vaults: Vault[], totalLocked: BigNumber) {
-  const vaultsByToken = groupBy(vaults, vault => vault.token)
-  return mapValues(vaultsByToken, vaults => getTotalCollateralPrice(vaults).div(totalLocked))
+  const vaultsByToken = groupBy(vaults, (vault) => vault.token)
+  return mapValues(vaultsByToken, (vaults) => getTotalCollateralPrice(vaults).div(totalLocked))
 }
 
 export interface VaultSummary {
   totalCollateralPrice: BigNumber
   totalDaiDebt: BigNumber
-  numberOfVaults: number,
-  vaultsAtRisk: number,
-  depositedAssetRatio: Dictionary<BigNumber>,
+  numberOfVaults: number
+  vaultsAtRisk: number
+  depositedAssetRatio: Dictionary<BigNumber>
 }
 export function createVaultSummary(
   vaults$: (address: string) => Observable<Vault[]>,
   address: string,
 ): Observable<VaultSummary> {
   return vaults$(address).pipe(
-    switchMap(vaults => of(vaults).pipe(
-      map((vaults) => ({
-        numberOfVaults: vaults.length,
-        vaultsAtRisk: 0,
-        totalCollateralPrice: getTotalCollateralPrice(vaults),
-        totalDaiDebt: getTotalDaiDebt(vaults),
-      })),
-      map(summary => ({
-        ...summary,
-        depositedAssetRatio: getAssetRatio(vaults, summary.totalCollateralPrice)
-      }))
-    )),
+    switchMap((vaults) =>
+      of(vaults).pipe(
+        map((vaults) => ({
+          numberOfVaults: vaults.length,
+          vaultsAtRisk: 0,
+          totalCollateralPrice: getTotalCollateralPrice(vaults),
+          totalDaiDebt: getTotalDaiDebt(vaults),
+        })),
+        map((summary) => ({
+          ...summary,
+          depositedAssetRatio: getAssetRatio(vaults, summary.totalCollateralPrice),
+        })),
+      ),
+    ),
     shareReplay(1),
   )
 }

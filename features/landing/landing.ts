@@ -10,7 +10,7 @@ export interface Landing {
 
 export function createLanding$(
   ilkOverview$: Observable<IlkDataSummary[]>,
-  featuredIlks: Observable<FeaturedIlk[]>
+  featuredIlks: Observable<FeaturedIlk[]>,
 ): Observable<Landing> {
   return combineLatest(ilkOverview$, featuredIlks).pipe(
     map(([ilks, featuredIlks]) => ({

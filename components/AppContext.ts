@@ -98,7 +98,6 @@ export function setupAppContext() {
 
   const context$ = createContext$(web3ContextConnected$, readonlyAccount$)
 
-
   const connectedContext$ = context$.pipe(
     filter(({ status }) => status === 'connected'),
     shareReplay(1),
@@ -171,14 +170,10 @@ export function setupAppContext() {
   const ilkDataList$ = createIlkDataList$(ilks$, ilkData$)
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
 
-  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(
-    vaults$,
-    vaultSummary$,
-    ilkDataList$,
-    featuredIlks$,
-  ))
+  const vaultsOverview$ = memoize(
+    curry(createVaultsOverview$)(vaults$, vaultSummary$, ilkDataList$, featuredIlks$),
+  )
   const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
-
 
   return {
     web3Context$,

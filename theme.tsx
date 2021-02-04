@@ -503,7 +503,7 @@ export const TRANSITIONS = {
 
 export const theme = merge(oasisBaseTheme, {
   gradients: {
-    app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)'
+    app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
   },
   radii: {
     small: 4,
@@ -514,7 +514,7 @@ export const theme = merge(oasisBaseTheme, {
   },
   colors: {
     text: {
-      muted: '#708390'
+      muted: '#708390',
     },
     networks: {
       mainnet: 'rgb(41, 182, 175)',
@@ -574,7 +574,7 @@ export const theme = merge(oasisBaseTheme, {
     outline: {
       lineHeight: 1,
       border: 'light',
-    }
+    },
   },
   layout: {
     appContainer: {
