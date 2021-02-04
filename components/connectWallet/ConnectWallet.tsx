@@ -413,7 +413,7 @@ export function WithVaultConnection({ children }: WithChildren) {
     }
   }, [vault])
 
-  useEffect(() => autoConnect(web3Context$, of('kuku'), getNetworkId()), [])
+  useEffect(() => autoConnect(web3Context$, of('dhshah'), getNetworkId()), []) 
 
   return children
 }

@@ -6,7 +6,7 @@ import { catchError, map, mergeMap, shareReplay, switchMap, tap } from 'rxjs/ope
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DsProxyRegistry } from 'types/web3-v1-contracts/ds-proxy-registry'
 
-import { Context, ContextConnected } from '../network'
+import { Context } from '../network'
 import { call, CallDef } from './callsHelpers'
 
 export const proxyAddress: CallDef<string, string | undefined> = {
@@ -34,7 +34,7 @@ export function createProxyAddress$(
           }),
         ),
       ),
-    ),
+),
     shareReplay(1),
   )
 }
