@@ -15,7 +15,14 @@ export function createIlks$(context$: Observable<Context>): Observable<string[]>
   )
 }
 
-export type IlkData = VatIlk & SpotIlk & JugIlk & CatIlk
+export type IlkData = VatIlk &
+  SpotIlk &
+  JugIlk &
+  CatIlk & {
+    token: string
+    ilk: string
+    ilkDebtAvailable: BigNumber
+  }
 
 export function createIlkData$(
   vatIlks$: CallObservable<typeof vatIlk>,
@@ -45,44 +52,22 @@ export function createIlkData$(
           liquidatorAddress,
           liquidationPenalty,
           maxAuctionLotSize,
+          token: ilk.split('-')[0],
+          ilk,
+          ilkDebtAvailable: debtCeiling.minus(debtScalingFactor.times(normalizedIlkDebt)),
         }),
     ),
   )
 }
 
-export interface IlkDataSummary {
-  token: string
-  ilk: string
-  daiAvailable: BigNumber
-  stabilityFee: BigNumber
-  liquidationRatio: BigNumber
-}
-
-export type IlkDataList = IlkDataSummary[]
+export type IlkDataList = IlkData[]
 
 export function createIlkDataList$(
-  ilks$: Observable<string[]>,
   ilkData$: (ilk: string) => Observable<IlkData>,
+  ilks$: Observable<string[]>,
 ): Observable<IlkDataList> {
   return ilks$.pipe(
-    switchMap((ilks) =>
-      combineLatest(ilks.map((ilk) => ilkData$(ilk))).pipe(
-        map((ilkDataList) =>
-          ilkDataList.map(
-            (
-              { stabilityFee, debtCeiling, liquidationRatio, debtScalingFactor, normalizedIlkDebt },
-              i,
-            ) => ({
-              token: ilks[i].split('-')[0],
-              ilk: ilks[i],
-              daiAvailable: debtCeiling.minus(debtScalingFactor.times(normalizedIlkDebt)),
-              stabilityFee,
-              liquidationRatio,
-            }),
-          ),
-        ),
-      ),
-    ),
+    switchMap((ilks) => combineLatest(ilks.map((ilk) => ilkData$(ilk)))),
     distinctUntilChanged(),
     shareReplay(1),
   )
