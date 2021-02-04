@@ -4,7 +4,6 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { IlkOverview } from 'features/landing/ilksOverview'
 import { VaultSummary } from 'features/vault/vaultSummary'
 import {
   formatAddress,
@@ -196,7 +195,10 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
       <Flex>
         {assets.map(([token, ratio]) => (
           <Box key={token} sx={{ my: 2, flex: ratio.toString() }}>
-            {ratio.gt(0.08) && <TokenSymbol token={token} />}
+            {ratio.gt(0.08) && <Flex sx={{ flexDirection: 'column' }}>
+              <TokenSymbol token={token} />
+              <Text sx={{ml: '28px', fontSize: 1, color: 'text.muted'}}>{formatPercent(ratio.times(100), {precision: 2})}</Text>
+            </Flex>}
           </Box>
         ))}
       </Flex>
