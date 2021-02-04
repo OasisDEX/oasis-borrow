@@ -107,7 +107,9 @@ function EditVault({
   stage,
   steps,
   lockAmount,
+  price,
   drawAmount,
+  maxDebtAmount,
   token,
   messages,
   change,
@@ -115,34 +117,49 @@ function EditVault({
 }: OpenVaultState & { steps: number }) {
   const hasError = !!messages.length
 
-  function handleSetMax(change: (ch: ManualChange) => void) {
+  function handleDepositMax(change: (ch: ManualChange) => void) {
     return () => {
-      console.log(balance)
       change({ kind: 'lockAmount', lockAmount: balance })
+    }
+  }
+
+  function handleGenerateMax(change: (ch: ManualChange) => void) {
+    return () => {
+      change({ kind: 'drawAmount', drawAmount: maxDebtAmount })
     }
   }
 
   return (
     <OpenVaultWrapper title={stage} step={0} steps={steps}>
       <Flex p={5} sx={{ justifyContent: 'center' }}>
-        <InputWithMax
-          {...{
-            amount: lockAmount,
-            token: getToken(token),
-            disabled: stage !== 'editing',
-            hasError,
-            onChange: handleAmountChange('lockAmount', change!),
-            onSetMax: handleSetMax(change!),
-          }}
-        />
-        {/* {...{
-              amount,
-              token: getToken('DAI'),
-              disabled: stage !== 'editing',
-              hasError,
-              onChange: handleAmountChange(change!),
-              onSetMax: handleSetMax(change!),
-              }} */}
+        <Grid>
+          <Box>
+            <Text>Deposit {token}</Text>
+            <InputWithMax
+              {...{
+                amount: lockAmount,
+                token: getToken(token),
+                disabled: stage !== 'editing',
+                hasError,
+                onChange: handleAmountChange('lockAmount', change!),
+                onSetMax: handleDepositMax(change!),
+              }}
+            />
+          </Box>
+          <Box>
+            <Text>Generate Dai</Text>
+            <InputWithMax
+              {...{
+                amount: drawAmount,
+                token: getToken(token),
+                disabled: stage !== 'editing',
+                hasError,
+                onChange: handleAmountChange('drawAmount', change!),
+                onSetMax: handleGenerateMax(change!),
+              }}
+            />
+          </Box>
+        </Grid>
       </Flex>
     </OpenVaultWrapper>
   )

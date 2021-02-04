@@ -202,6 +202,7 @@ export function setupAppContext() {
     txHelpers$,
     proxyAddress$,
     allowance$,
+    tokenOraclePrice$,
     balance$,
     ilkData$,
   )

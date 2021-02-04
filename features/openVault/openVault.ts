@@ -45,6 +45,7 @@ type OpenVaultChange = Changes<OpenVaultState>
 export type ManualChange =
   | Change<OpenVaultState, 'lockAmount'>
   | Change<OpenVaultState, 'drawAmount'>
+  | Change<OpenVaultState, 'maxDebtAmount'>
 
 export interface OpenVaultState extends HasGasEstimation {
   stage: OpenVaultStage
@@ -59,8 +60,10 @@ export interface OpenVaultState extends HasGasEstimation {
   token: string
   ilkData: IlkData
   balance: BigNumber
+  price: BigNumber
   // emergency shutdown!
   lockAmount?: BigNumber
+  maxDebtAmount?: BigNumber
   drawAmount?: BigNumber
   messages: OpenVaultMessage[]
   txError?: any
@@ -272,17 +275,14 @@ function addTransitions(
   // }
 
   if (state.stage === 'editing') {
-    if (state.messages.length === 0) {
-      return {
-        ...state,
-        change,
-        // continue2ConfirmOpenVault: () =>
-        //   change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' }),
-      }
-    }
+    console.log(state.price)
     return {
       ...state,
       change,
+      maxDebtAmount:
+        state.lockAmount !== undefined ? state.lockAmount.times(state.price) : undefined,
+      // continue2ConfirmOpenVault: () =>
+      //   change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' }),
     }
   }
 
@@ -355,6 +355,7 @@ export function createOpenVault$(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
   allowance$: (token: string, owner: string, spender: string) => Observable<boolean>,
+  tokenOraclePrice$: (token: string) => Observable<BigNumber>,
   balance$: (token: string, address: string) => Observable<BigNumber>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilk: string,
@@ -365,17 +366,22 @@ export function createOpenVault$(
       const account = context.account
       const token = ilk.split('-')[0]
 
-      return combineLatest(proxyAddress$(account), balance$(token, account), ilkData$(ilk)).pipe(
-        switchMap(([proxyAddress, balance, ilkData]) =>
+      return combineLatest(
+        proxyAddress$(account),
+        balance$(token, account),
+        tokenOraclePrice$(token),
+        ilkData$(ilk),
+      ).pipe(
+        switchMap(([proxyAddress, balance, price, ilkData]) =>
           ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
             switchMap((allowance: boolean | undefined) => {
-              console.log(balance)
               const initialState: OpenVaultState = {
                 stage: 'editing',
                 balance,
                 ilkData,
                 ilk,
                 token,
+                price,
                 proxyAddress,
                 allowance,
                 messages: [],
@@ -393,11 +399,15 @@ export function createOpenVault$(
                 map((balance) => ({ kind: 'balance', balance })),
               )
 
+              const priceChange$ = tokenOraclePrice$(token).pipe(
+                map((price) => ({ kind: 'price', price })),
+              )
+
               const ilkDataChange$ = ilkData$(ilk).pipe(
                 map((ilkData) => ({ kind: 'ilkData', ilkData })),
               )
 
-              const environmentChange$ = merge(balanceChange$, ilkDataChange$)
+              const environmentChange$ = merge(balanceChange$, ilkDataChange$, priceChange$)
 
               const connectedProxyAddress$ = proxyAddress$(account)
 
