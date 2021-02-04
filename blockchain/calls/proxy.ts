@@ -15,7 +15,7 @@ import { DsProxyRegistry } from 'types/web3-v1-contracts/ds-proxy-registry'
 import { TransactionDef } from './callsHelpers'
 import { TxMetaKind } from './txMeta'
 
-import { Context, ContextConnected } from '../network'
+import { Context } from '../network'
 import { call, CallDef } from './callsHelpers'
 import { isEqual } from 'lodash'
 
