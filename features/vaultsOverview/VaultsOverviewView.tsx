@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { IlkDataSummary } from 'blockchain/ilks'
+import { IlkDataList, IlkDataSummary } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
@@ -68,7 +68,7 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
   )
 }
 
-function AllIlks({ ilks }: { ilks: IlkOverview[] }) {
+function AllIlks({ ilks }: { ilks: IlkDataList }) {
   return (
     <Table
       header={
@@ -108,10 +108,10 @@ function AllIlks({ ilks }: { ilks: IlkOverview[] }) {
   )
 }
 
-interface CallToCationProps {
+interface CallToActionProps {
   ilk: FeaturedIlk
 }
-function CallToAction({ ilk }: CallToCationProps) {
+function CallToAction({ ilk }: CallToActionProps) {
   const token = getToken(ilk.token)
 
   return (

@@ -48,7 +48,7 @@ export function getNewest(ilks: IlkDataList) {
 }
 
 export function getMostPopular(ilks: IlkDataList) {
-  return maxBy(ilks, (ilk) => ilk.debt)
+  return maxBy(ilks, (ilk) => ilk.ilkDebt)
 }
 
 export function getCheapest(ilks: IlkDataList) {
