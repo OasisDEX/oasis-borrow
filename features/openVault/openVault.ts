@@ -65,6 +65,7 @@ export interface OpenVaultState extends HasGasEstimation {
   // create a proxy if necessary, set an allowance if necessary
   // and open the vault
   estimatedGasCost?: BigNumber
+
   // emergency shutdown!
   lockAmount?: BigNumber
   maxLockAmount?: BigNumber
@@ -341,28 +342,22 @@ function validate(state: OpenVaultState): OpenVaultState {
 
   const messages: OpenVaultMessage[] = []
 
-  // lockAmount is zero or undefined
   if (!lockAmount || lockAmount.eq(zero)) {
     messages[messages.length] = { kind: 'lockAmountEmpty' }
   }
 
-  // lockAmount greater than estimated maxLockAmount
   if (lockAmount && maxLockAmount && lockAmount.gt(maxLockAmount)) {
     messages[messages.length] = { kind: 'lockAmountGreaterThanMaxLockAmount' }
   }
 
-  // drawAmount less than dust
   if (drawAmount && drawAmount.lt(debtFloor)) {
     messages[messages.length] = { kind: 'drawAmountLessThanDebtFloor' }
   }
 
-  // amount of dai that can be drawn given the locked amount is less than
-  // the dust amount
-  if (lockAmount && lockAmount.times(maxDebtPerUnitCollateral).lt(debtFloor)) {
+  if (maxDrawAmount && maxDrawAmount.lt(debtFloor)) {
     messages[messages.length] = { kind: 'drawAmountPossibleLessThanDebtFloor' }
   }
 
-  // if the amount of dai to be drawn is less than
   if (drawAmount && drawAmount.gt(ilkDebtAvailable)) {
     messages[messages.length] = { kind: 'drawAmountGreaterThanDebtCeiling' }
   }
@@ -371,10 +366,6 @@ function validate(state: OpenVaultState): OpenVaultState {
     messages[messages.length] = { kind: 'vaultUnderCollateralized' }
   }
 
-  // if (state.amount && state.daiBalance && state.amount.gt(state.daiBalance)) {
-  //   messages[messages.length] = { kind: 'amountBiggerThanBalance' }
-  // }
-  // return { ...state, messages }
   return { ...state, messages }
 }
 

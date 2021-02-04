@@ -9,7 +9,6 @@ import React from 'react'
 import { BigNumber } from 'bignumber.js'
 import { InputWithMax } from 'helpers/input'
 import { getToken } from 'blockchain/tokensMetadata'
-import { proxyAddress } from 'blockchain/calls/proxy'
 import { zero } from 'helpers/zero'
 
 interface OpenVaultWrapperProps extends WithChildren {
@@ -43,8 +42,12 @@ function OpenVaultWrapper({ children, title, step, steps }: OpenVaultWrapperProp
   )
 }
 
-function OpenVaultTransactionFlow() {
-  return <Box>{null}</Box>
+function OpenVaultTransactionFlow({ stage, steps }: OpenVaultState & { steps: number }) {
+  return (
+    <OpenVaultWrapper title={stage} step={2} steps={steps}>
+      {stage === 'transactionWaitingForConfirmation'}
+    </OpenVaultWrapper>
+  )
 }
 
 function ProxyAllowanceFlow({
@@ -70,12 +73,12 @@ function ProxyAllowanceFlow({
     setAllowance!()
   }
 
+  const disableProxyButton = stage !== 'proxyWaitingForConfirmation'
+
   return (
     <OpenVaultWrapper title={stage} step={1} steps={steps}>
       <Flex p={5} sx={{ justifyContent: 'center' }}>
-        {stage === 'proxyWaitingForConfirmation' && (
-          <Button onClick={handleProxyCreate}>Create Proxy</Button>
-        )}
+        <Button onClick={handleProxyCreate}>Create Proxy</Button>
         {(stage === 'proxyWaitingForApproval' || stage === 'proxyInProgress') && <Spinner />}
         {(stage === 'proxyFiasco' || stage === 'allowanceFiasco') && (
           <Box>
@@ -108,27 +111,23 @@ function EditVault({
   change,
   balance,
   proceed,
-
-  proxyAddress,
-  allowance,
 }: OpenVaultState & { steps: number }) {
   function handleDepositChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
+      const lockAmount =
+        value !== '' && !new BigNumber(value).eq(zero) ? new BigNumber(value) : undefined
+      const maxDrawAmount = lockAmount?.times(maxDebtPerUnitCollateral)
 
-      if (value !== '') {
-        const lockAmount = new BigNumber(value)
-        change({
-          kind: 'lockAmount',
-          lockAmount: lockAmount,
-        })
-
-        change({
-          kind: 'maxDrawAmount',
-          maxDrawAmount: lockAmount.times(maxDebtPerUnitCollateral),
-        })
-      }
-      if (value === '' || new BigNumber(value).eq(zero)) {
+      change({
+        kind: 'lockAmount',
+        lockAmount,
+      })
+      change({
+        kind: 'maxDrawAmount',
+        maxDrawAmount,
+      })
+      if (!lockAmount) {
         change({ kind: 'drawAmount', drawAmount: undefined })
       }
     }
@@ -163,87 +162,85 @@ function EditVault({
   const errorString = messages
     .map((message) => message.kind)
     .filter((x) => x)
-    .join(',')
+    .join(',\n')
 
   const hasError = !!errorString
 
   const canDepositMax = !!maxLockAmount
   const canGenerateMax = !!maxDrawAmount
 
-  const hasProxy = !!proxyAddress
-  const hasAllowance = !!allowance
-
   return (
     <OpenVaultWrapper title={stage} step={0} steps={steps}>
-      <Flex p={5} sx={{ justifyContent: 'center' }}>
-        <Grid>
-          <Grid columns={'2fr 3fr'}>
-            <Text>Price</Text>
-            <Text>
-              {price.toString()} {token}/USD
-            </Text>
+      <Grid p={5} sx={{ justifyContent: 'center', maxWidth: '700px' }}>
+        <Grid columns={'2fr 3fr'}>
+          <Text>Price</Text>
+          <Text>
+            {price.toString()} {token}/USD
+          </Text>
 
-            <Text>Balance</Text>
-            <Text>
-              {balance.toString()} {token}
-            </Text>
+          <Text>Balance</Text>
+          <Text>
+            {balance.toString()} {token}
+          </Text>
 
-            <Text>Deposit {token}</Text>
-            <InputWithMax
-              {...{
-                amount: lockAmount,
-                token: getToken(token),
-                disabled: !canDepositMax,
-                hasError,
-                onChange: handleDepositChange(change!),
-                onSetMax: handleDepositMax(change!),
-              }}
-            />
+          <Text>Deposit {token}</Text>
+          <InputWithMax
+            {...{
+              amount: lockAmount,
+              token: getToken(token),
+              disabledMax: !canDepositMax,
+              hasError,
+              onChange: handleDepositChange(change!),
+              onSetMax: handleDepositMax(change!),
+            }}
+          />
 
-            <Text>Amount Generatable</Text>
-            <Text>{maxDrawAmount ? maxDrawAmount.toString() : '0'} DAI</Text>
+          <Text>Amount Generatable</Text>
+          <Text>{maxDrawAmount ? maxDrawAmount.toString() : '0'} DAI</Text>
 
-            <Text>Generate Dai</Text>
-            <InputWithMax
-              {...{
-                amount: drawAmount,
-                token: getToken('DAI'),
-                disabled: !canGenerateMax,
-                hasError,
-                onChange: handleGenerateChange(change!),
-                onSetMax: handleGenerateMax(change!),
-              }}
-            />
+          <Text>Generate Dai</Text>
+          <InputWithMax
+            {...{
+              amount: drawAmount,
+              token: getToken('DAI'),
+              disabledMax: !canGenerateMax,
+              hasError,
+              onChange: handleGenerateChange(change!),
+              onSetMax: handleGenerateMax(change!),
+            }}
+          />
 
-            <Text>{ilk} Debt Floor</Text>
-            <Text>{debtFloor.toString()} DAI</Text>
+          <Text>{ilk} Debt Floor</Text>
+          <Text>{debtFloor.toString()} DAI</Text>
 
-            <Text>{ilk} Debt Ceiling</Text>
-            <Text>{debtCeiling.toString()} DAI</Text>
+          <Text>{ilk} Debt Ceiling</Text>
+          <Text>{debtCeiling.toString()} DAI</Text>
 
-            <Text>{ilk} Debt issued</Text>
-            <Text>{ilkDebt.toString()} DAI</Text>
+          <Text>{ilk} Debt issued</Text>
+          <Text>{ilkDebt.toString()} DAI</Text>
 
-            <Text>{ilk} Debt available</Text>
-            <Text>{ilkDebtAvailable.toString()} DAI</Text>
+          <Text>{ilk} Debt available</Text>
+          <Text>{ilkDebtAvailable.toString()} DAI</Text>
 
-            {hasError && (
-              <>
-                <Text>{errorString}</Text>
-              </>
-            )}
-          </Grid>
-          <Button onClick={proceed!} disabled={hasError}>
-            Proceed
-          </Button>
+          {hasError && (
+            <>
+              <Text>Errors</Text>
+              <Text sx={{ flexWrap: 'wrap' }}>{errorString}</Text>
+            </>
+          )}
         </Grid>
-      </Flex>
+        <Button onClick={proceed!} disabled={hasError}>
+          Proceed
+        </Button>
+      </Grid>
     </OpenVaultWrapper>
   )
 }
 
 function OpenVaultView(props: OpenVaultState & { steps: number }) {
   switch (props.stage) {
+    case 'editing':
+      return EditVault(props)
     case 'proxyWaitingForConfirmation':
     case 'proxyWaitingForApproval':
     case 'proxyInProgress':
@@ -253,14 +250,12 @@ function OpenVaultView(props: OpenVaultState & { steps: number }) {
     case 'allowanceInProgress':
     case 'allowanceFiasco':
       return ProxyAllowanceFlow(props)
-    case 'editing':
-      return EditVault(props)
     case 'transactionWaitingForConfirmation':
     case 'transactionWaitingForApproval':
     case 'transactionInProgress':
     case 'transactionFiasco':
     case 'transactionSuccess':
-      return OpenVaultTransactionFlow()
+      return OpenVaultTransactionFlow(props)
     default:
       return null
   }
