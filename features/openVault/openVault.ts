@@ -56,11 +56,11 @@ export interface OpenVaultState extends HasGasEstimation {
   openVaultTxHash?: string
   ilk: string
   token: string
-  ilkData?: IlkData
 
-  ethBalance?: BigNumber
-  balance?: BigNumber
-  price?: BigNumber
+  ilkData: IlkData
+  ethBalance: BigNumber
+  balance: BigNumber
+  price: BigNumber
 
   // should return an estimation of the amount of ETH necessary to
   // create a proxy if necessary, set an allowance if necessary
@@ -415,75 +415,100 @@ export function createOpenVault$(
   ilk: string,
 ): Observable<any> {
   return combineLatest(context$, txHelpers$).pipe(
-    first(),
     switchMap(([context, txHelpers]) => {
       const account = context.account
       const token = ilk.split('-')[0]
 
-      const initialState: OpenVaultState = {
-        stage: 'editing',
-        ilk,
-        token,
-        messages: [],
-        safeConfirmations: context.safeConfirmations,
-        gasEstimationStatus: GasEstimationStatus.unset,
-      }
+      return combineLatest(
+        balance$(token, account),
+        balance$('ETH', account),
+        tokenOraclePrice$(token),
+        ilkData$(ilk),
+        proxyAddress$(account),
+      ).pipe(
+        first(),
+        switchMap(([balance, ethBalance, price, ilkData, proxyAddress]) =>
+          ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
+            first(),
+            switchMap((allowance: boolean | undefined) => {
+              const initialState: OpenVaultState = {
+                stage: 'editing',
+                ilk,
+                token,
+                balance,
+                ethBalance,
+                price,
+                ilkData,
+                proxyAddress,
+                allowance,
+                messages: [],
+                safeConfirmations: context.safeConfirmations,
+                gasEstimationStatus: GasEstimationStatus.unset,
+              }
 
-      const change$ = new Subject<OpenVaultChange>()
+              const change$ = new Subject<OpenVaultChange>()
 
-      function change(ch: OpenVaultChange) {
-        change$.next(ch)
-      }
+              function change(ch: OpenVaultChange) {
+                change$.next(ch)
+              }
 
-      const balanceChange$ = balance$(token, account).pipe(
-        map((balance) => ({ kind: 'balance', balance })),
-      )
+              const balanceChange$ = balance$(token, account).pipe(
+                map((balance) => ({ kind: 'balance', balance })),
+              )
 
-      const ethBalanceChange$ = balance$('ETH', account).pipe(
-        map((ethBalance) => ({ kind: 'ethBalance', ethBalance })),
-      )
+              const ethBalanceChange$ = balance$('ETH', account).pipe(
+                map((ethBalance) => ({ kind: 'ethBalance', ethBalance })),
+              )
 
-      const maxLockAmountChange$ = balance$(token, account).pipe(
-        map((balance) => {
-          const maxLockAmount =
-            token !== 'ETH' ? balance : balance.gt(0.05) ? balance.minus(0.05) : zero
-          return { kind: 'maxLockAmount', maxLockAmount }
-        }),
-      )
+              const maxLockAmountChange$ = balance$(token, account).pipe(
+                map((balance) => {
+                  const maxLockAmount =
+                    token !== 'ETH' ? balance : balance.gt(0.05) ? balance.minus(0.05) : zero
+                  return { kind: 'maxLockAmount', maxLockAmount }
+                }),
+              )
 
-      const priceChange$ = tokenOraclePrice$(ilk).pipe(map((price) => ({ kind: 'price', price })))
+              const priceChange$ = tokenOraclePrice$(ilk).pipe(
+                map((price) => ({ kind: 'price', price })),
+              )
 
-      const ilkDataChange$ = ilkData$(ilk).pipe(map((ilkData) => ({ kind: 'ilkData', ilkData })))
+              const ilkDataChange$ = ilkData$(ilk).pipe(
+                map((ilkData) => ({ kind: 'ilkData', ilkData })),
+              )
 
-      const environmentChange$ = merge(
-        balanceChange$,
-        ilkDataChange$,
-        priceChange$,
-        ethBalanceChange$,
-        maxLockAmountChange$,
-      )
+              const environmentChange$ = merge(
+                balanceChange$,
+                ilkDataChange$,
+                priceChange$,
+                ethBalanceChange$,
+                maxLockAmountChange$,
+              )
 
-      const connectedProxyAddress$ = proxyAddress$(account)
+              const connectedProxyAddress$ = proxyAddress$(account)
 
-      const connectedAllowance$ = proxyAddress$(account).pipe(
-        switchMap((proxyAddress) =>
-          proxyAddress ? allowance$(token, account, proxyAddress) : EMPTY,
-        ),
-      )
+              const connectedAllowance$ = proxyAddress$(account).pipe(
+                switchMap((proxyAddress) =>
+                  proxyAddress ? allowance$(token, account, proxyAddress) : EMPTY,
+                ),
+              )
 
-      return merge(change$, environmentChange$).pipe(
-        scan(apply, initialState),
-        map(validate),
-        map(
-          curry(addTransitions)(
-            context,
-            txHelpers,
-            connectedProxyAddress$,
-            connectedAllowance$,
-            change,
+              return merge(change$, environmentChange$).pipe(
+                scan(apply, initialState),
+                map(validate),
+                map(
+                  curry(addTransitions)(
+                    context,
+                    txHelpers,
+                    connectedProxyAddress$,
+                    connectedAllowance$,
+                    change,
+                  ),
+                ),
+                shareReplay(1),
+              )
+            }),
           ),
         ),
-        shareReplay(1),
       )
     }),
   )
