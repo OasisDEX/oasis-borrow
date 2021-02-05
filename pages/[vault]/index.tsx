@@ -16,9 +16,7 @@ export default function Vault() {
 
   const vault = useObservable(vault$(new BigNumber(vaultId as string)))
 
-  const account = web3Context?.status === 'connected' 
-    ? web3Context.account 
-    : 'Not connected'
+  const account = web3Context?.status === 'connected' ? web3Context.account : 'Not connected'
 
   if (vault === undefined) {
     return <div>No vault data</div>
@@ -32,8 +30,3 @@ export default function Vault() {
 }
 
 Vault.layout = AppLayout
-Vault.layoutProps = {
-  backLink: {
-    href: '/',
-  },
-}

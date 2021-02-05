@@ -2,7 +2,7 @@ import { nullAddress } from '@oasisdex/utils'
 import * as dsProxy from 'blockchain/abi/ds-proxy.json'
 import { contractDesc } from 'blockchain/config'
 import { defer, EMPTY, Observable, of } from 'rxjs'
-import { catchError, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { catchError, map, mergeMap, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DsProxyRegistry } from 'types/web3-v1-contracts/ds-proxy-registry'
 
@@ -18,7 +18,7 @@ export const proxyAddress: CallDef<string, string | undefined> = {
 export function createProxyAddress$(
   connectedContext$: Observable<Context>,
   address: string,
-): Observable<string> {
+): Observable<string | undefined> {
   return connectedContext$.pipe(
     switchMap((context) =>
       defer(() =>
@@ -28,13 +28,13 @@ export function createProxyAddress$(
         )(address).pipe(
           mergeMap((proxyAddress: string) => {
             if (proxyAddress === nullAddress) {
-              return EMPTY
+              return of(undefined)
             }
             return of(proxyAddress)
           }),
         ),
       ),
-),
+    ),
     shareReplay(1),
   )
 }
