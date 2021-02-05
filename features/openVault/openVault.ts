@@ -20,6 +20,8 @@ import { combineLatest, EMPTY, merge, Observable, of, Subject } from 'rxjs'
 import { filter, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 import { TxStatus } from '@oasisdex/transactions'
 import { zero } from 'helpers/zero'
+import { lockAndDraw } from 'blockchain/calls/lockAndDraw'
+import { LockAndDrawData } from 'features/deposit/deposit'
 
 export type OpenVaultStage =
   | 'editing'
@@ -196,43 +198,48 @@ function setAllowance(
 
 // openVault
 function openVault(
-  { sendWithGasEstimation }: TxHelpers,
+  { send }: TxHelpers,
   change: (ch: OpenVaultChange) => void,
-  { lockAmount, drawAmount, proxyAddress }: OpenVaultState,
+  { lockAmount, drawAmount, proxyAddress, ilk, token }: OpenVaultState,
 ) {
-  return of(undefined)
-  // sendWithGasEstimation(, {
-  //   kind: TxMetaKind.lockAndDraw,
-  //   proxyAddress: proxyAddress!,
-  //   amount: amount!,
-  // })
-  //   .pipe(
-  //     transactionToX<VaultCreationChange, DsrJoinData>(
-  //       { kind: 'stage', stage: 'openVaultWaiting4Approval' },
-  //       (txState) =>
-  //         of(
-  //           { kind: 'openVaultTxHash', openVaultTxHash: (txState as any).txHash as string },
-  //           { kind: 'stage', stage: 'openVaultInProgress' },
-  //         ),
-  //       (txState) => {
-  //         return of(
-  //           {
-  //             kind: 'stage',
-  //             stage: 'openVaultFiasco',
-  //           },
-  //           {
-  //             kind: 'txError',
-  //             txError:
-  //               txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-  //                 ? txState.error
-  //                 : undefined,
-  //           },
-  //         )
-  //       },
-  //       () => of({ kind: 'stage', stage: 'openVaultSuccess' }),
-  //     ),
-  //   )
-  //   .subscribe((ch) => change(ch))
+  send(lockAndDraw, {
+    kind: TxMetaKind.lockAndDraw,
+    drawAmount: drawAmount || new BigNumber(0),
+    lockAmount: lockAmount || new BigNumber(0),
+    proxyAddress: proxyAddress!,
+    ilk,
+    tkn: token,
+  })
+    .pipe(
+      transactionToX<OpenVaultChange, LockAndDrawData>(
+        { kind: 'stage', stage: 'transactionWaitingForApproval' },
+        (txState) =>
+          of(
+            { kind: 'openVaultTxHash', openVaultTxHash: (txState as any).txHash as string },
+            { kind: 'stage', stage: 'transactionInProgress' },
+          ),
+        (txState) => {
+          return of(
+            {
+              kind: 'stage',
+              stage: 'transactionFiasco',
+            },
+            {
+              kind: 'txError',
+              txError:
+                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+                  ? txState.error
+                  : undefined,
+            },
+          )
+        },
+        (txState) => {
+          console.log('SUCCESS', txState)
+          return of({ kind: 'stage', stage: 'transactionSuccess' })
+        },
+      ),
+    )
+    .subscribe((ch) => change(ch))
 }
 
 function addTransitions(

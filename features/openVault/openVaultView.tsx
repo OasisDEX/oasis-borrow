@@ -50,19 +50,41 @@ function OpenVaultTransactionFlow({
   drawAmount,
   back,
   price,
+  close,
+  openVault,
+  tryAgain,
 }: OpenVaultState) {
   function handleBackToEdit(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault
     back!()
   }
 
-  const canGoBackToEdit =
-    stage === 'transactionWaitingForConfirmation' || stage === 'transactionFiasco'
+  function handleNewVault(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault
+    close!
+  }
+
+  function handleOpenVault(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault
+    if (stage === 'transactionWaitingForConfirmation') openVault!()
+    if (stage === 'transactionFiasco') tryAgain!()
+  }
+
+  const canDoAction = stage === 'transactionWaitingForConfirmation' || stage === 'transactionFiasco'
 
   const collateralizationRatio =
     drawAmount && lockAmount && price && !drawAmount.eq(zero) && !lockAmount.eq(zero)
       ? lockAmount.times(price).div(drawAmount).times(100)
       : undefined
+
+  const transactionButtonContent =
+    stage === 'transactionWaitingForConfirmation' ? (
+      'Open Vault'
+    ) : stage === 'transactionWaitingForApproval' || stage === 'transactionInProgress' ? (
+      <Spinner size={25} />
+    ) : (
+      'Retry '
+    )
 
   return (
     <Grid px={3} py={4} sx={{ justifyContent: 'center', justifyItems: 'center' }}>
@@ -90,10 +112,18 @@ function OpenVaultTransactionFlow({
         </Text>
       </Grid>
       <Grid columns="1fr 1fr" mt={4} sx={{ justifyContent: 'center' }}>
-        <Button disabled={!canGoBackToEdit} onClick={handleBackToEdit} sx={{ width: 6 }}>
-          Edit
-        </Button>
-        <Button sx={{ width: 6 }}>Confirm</Button>
+        {stage === 'transactionSuccess' ? (
+          <Button onClick={handleNewVault}>{'View new Vault'}</Button>
+        ) : (
+          <>
+            <Button disabled={!canDoAction} onClick={handleBackToEdit} sx={{ width: 6 }}>
+              Edit
+            </Button>
+            <Button disabled={!canDoAction} onClick={handleOpenVault} sx={{ width: 6 }}>
+              {transactionButtonContent}
+            </Button>
+          </>
+        )}
       </Grid>
     </Grid>
   )
@@ -201,8 +231,7 @@ function EditVault({
   function handleDepositChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
-      const lockAmount =
-        value !== '' && !new BigNumber(value).eq(zero) ? new BigNumber(value) : undefined
+      const lockAmount = value !== '' ? new BigNumber(value) : undefined
       const maxDrawAmount = lockAmount?.times(maxDebtPerUnitCollateral)
 
       change({
@@ -213,7 +242,7 @@ function EditVault({
         kind: 'maxDrawAmount',
         maxDrawAmount,
       })
-      if (!lockAmount) {
+      if (!lockAmount || new BigNumber(value).eq(zero)) {
         change({ kind: 'drawAmount', drawAmount: undefined })
       }
     }
