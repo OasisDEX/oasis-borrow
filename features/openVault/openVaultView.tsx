@@ -10,7 +10,7 @@ import { BigNumber } from 'bignumber.js'
 import { InputWithMax } from 'helpers/input'
 import { getToken } from 'blockchain/tokensMetadata'
 import { zero } from 'helpers/zero'
-import { formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 
 interface OpenVaultWrapperProps extends WithChildren {
   title: string
@@ -43,8 +43,60 @@ function OpenVaultWrapper({ children, title, step, steps }: OpenVaultWrapperProp
   )
 }
 
-function OpenVaultTransactionFlow({ stage }: OpenVaultState) {
-  return null
+function OpenVaultTransactionFlow({
+  stage,
+  lockAmount,
+  token,
+  drawAmount,
+  back,
+  price,
+}: OpenVaultState) {
+  function handleBackToEdit(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault
+    back!()
+  }
+
+  const canGoBackToEdit =
+    stage === 'transactionWaitingForConfirmation' || stage === 'transactionFiasco'
+
+  const collateralizationRatio =
+    drawAmount && lockAmount && price && !drawAmount.eq(zero) && !lockAmount.eq(zero)
+      ? lockAmount.times(price).div(drawAmount).times(100)
+      : undefined
+
+  return (
+    <Grid px={3} py={4} sx={{ justifyContent: 'center', justifyItems: 'center' }}>
+      <Text>Vault Summary</Text>
+      <Grid
+        p={5}
+        gap={4}
+        columns={'2fr 1fr 2fr'}
+        sx={{ justifyContent: 'center', alignItems: 'center' }}
+      >
+        <Text>Amount To Lock</Text>
+        <Box />
+        <Text>
+          {formatAmount(lockAmount ? lockAmount : zero, token)} {token}
+        </Text>
+
+        <Text>Amount To Generate</Text>
+        <Box />
+        <Text>{formatAmount(drawAmount ? drawAmount : zero, 'DAI')} DAI</Text>
+
+        <Text>Collateralization Ratio</Text>
+        <Box />
+        <Text>
+          {collateralizationRatio ? formatPercent(collateralizationRatio, { precision: 4 }) : '--'}
+        </Text>
+      </Grid>
+      <Grid columns="1fr 1fr" mt={4} sx={{ justifyContent: 'center' }}>
+        <Button disabled={!canGoBackToEdit} onClick={handleBackToEdit} sx={{ width: 6 }}>
+          Edit
+        </Button>
+        <Button sx={{ width: 6 }}>Confirm</Button>
+      </Grid>
+    </Grid>
+  )
 }
 
 function ProxyAllowanceFlow({
