@@ -31,6 +31,7 @@ export type OpenVaultStage =
   | 'allowanceWaitingForApproval'
   | 'allowanceInProgress'
   | 'allowanceFiasco'
+  | 'allowanceWaitToContinue'
   | 'transactionWaitingForConfirmation'
   | 'transactionWaitingForApproval'
   | 'transactionInProgress'
@@ -55,11 +56,11 @@ export interface OpenVaultState extends HasGasEstimation {
   openVaultTxHash?: string
   ilk: string
   token: string
-  ilkData: IlkData
+  ilkData?: IlkData
 
-  ethBalance: BigNumber
-  balance: BigNumber
-  price: BigNumber
+  ethBalance?: BigNumber
+  balance?: BigNumber
+  price?: BigNumber
 
   // should return an estimation of the amount of ETH necessary to
   // create a proxy if necessary, set an allowance if necessary
@@ -92,6 +93,7 @@ function createProxy(
   { sendWithGasEstimation }: TxHelpers,
   proxyAddress$: Observable<string | undefined>,
   change: (ch: OpenVaultChange) => void,
+  state: OpenVaultState,
 ) {
   sendWithGasEstimation(createDsProxy, { kind: TxMetaKind.createDsProxy })
     .pipe(
@@ -128,7 +130,13 @@ function createProxy(
                   })
                 : of(
                     { kind: 'proxyAddress', proxyAddress: proxyAddress! },
-                    { kind: 'stage', stage: 'allowanceWaiting4Confirmation' },
+                    {
+                      kind: 'stage',
+                      stage:
+                        state.token === 'ETH'
+                          ? 'allowanceWaitToContinue'
+                          : 'allowanceWaitingForConfirmation',
+                    },
                   ),
             ),
           )
@@ -179,7 +187,7 @@ function setAllowance(
         () =>
           allowance$.pipe(
             filter((allowance) => allowance),
-            switchMap(() => of({ kind: 'stage', stage: 'editingWaitingToContinue' })),
+            switchMap(() => of({ kind: 'stage', stage: 'allowanceWaitToContinue' })),
           ),
       ),
     )
@@ -247,17 +255,35 @@ function addTransitions(
     change({ kind: 'maxDrawAmount', maxDrawAmount: undefined })
   }
 
+  if (state.stage === 'editing') {
+    return {
+      ...state,
+      change,
+      proceed: !state.messages.length
+        ? () => {
+            if (!state.proxyAddress) {
+              change({ kind: 'stage', stage: 'proxyWaitingForConfirmation' })
+            } else if (!state.allowance) {
+              change({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' })
+            } else {
+              change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' })
+            }
+          }
+        : undefined,
+    }
+  }
+
   if (state.stage === 'proxyWaitingForConfirmation') {
     return {
       ...state,
-      createProxy: () => createProxy(context, txHelpers, proxyAddress$, change),
+      createProxy: () => createProxy(context, txHelpers, proxyAddress$, change, state),
     }
   }
 
   if (state.stage === 'proxyFiasco') {
     return {
       ...state,
-      tryAgain: () => createProxy(context, txHelpers, proxyAddress$, change),
+      tryAgain: () => createProxy(context, txHelpers, proxyAddress$, change, state),
     }
   }
 
@@ -275,21 +301,10 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'editing') {
+  if (state.stage === 'allowanceWaitToContinue') {
     return {
       ...state,
-      change,
-      proceed: !state.messages.length
-        ? () => {
-            if (!state.proxyAddress) {
-              change({ kind: 'stage', stage: 'proxyWaitingForConfirmation' })
-            } else if (!state.allowance) {
-              change({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' })
-            } else {
-              change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' })
-            }
-          }
-        : undefined,
+      proceed: () => change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' }),
     }
   }
 
@@ -331,14 +346,8 @@ type OpenVaultMessage = {
 }
 
 function validate(state: OpenVaultState): OpenVaultState {
-  const {
-    balance,
-    lockAmount,
-    drawAmount,
-    maxLockAmount,
-    maxDrawAmount,
-    ilkData: { ilkDebtAvailable, debtFloor, maxDebtPerUnitCollateral },
-  } = state
+  const { lockAmount, drawAmount, maxLockAmount, maxDrawAmount, ilkData } = state
+  const { ilkDebtAvailable, debtFloor, maxDebtPerUnitCollateral } = ilkData!
 
   const messages: OpenVaultMessage[] = []
 
@@ -411,95 +420,67 @@ export function createOpenVault$(
       const account = context.account
       const token = ilk.split('-')[0]
 
-      return combineLatest(
-        proxyAddress$(account),
-        balance$(token, account),
-        balance$('ETH', account),
-        tokenOraclePrice$(ilk),
-        ilkData$(ilk),
-      ).pipe(
-        switchMap(([proxyAddress, balance, ethBalance, price, ilkData]) =>
-          ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
-            switchMap((allowance: boolean | undefined) => {
-              const initialState: OpenVaultState = {
-                stage: 'editing',
-                ilkData,
-                ilk,
-                token,
-                balance,
-                ethBalance,
-                price,
-                proxyAddress,
-                allowance,
-                lockAmount: undefined,
-                maxLockAmount: undefined,
-                drawAmount: undefined,
-                maxDrawAmount: undefined,
-                messages: [],
-                safeConfirmations: context.safeConfirmations,
-                gasEstimationStatus: GasEstimationStatus.unset,
-              }
+      const initialState: OpenVaultState = {
+        stage: 'editing',
+        ilk,
+        token,
+        messages: [],
+        safeConfirmations: context.safeConfirmations,
+        gasEstimationStatus: GasEstimationStatus.unset,
+      }
 
-              const change$ = new Subject<OpenVaultChange>()
+      const change$ = new Subject<OpenVaultChange>()
 
-              function change(ch: OpenVaultChange) {
-                change$.next(ch)
-              }
+      function change(ch: OpenVaultChange) {
+        change$.next(ch)
+      }
 
-              const balanceChange$ = balance$(token, account).pipe(
-                map((balance) => ({ kind: 'balance', balance })),
-              )
+      const balanceChange$ = balance$(token, account).pipe(
+        map((balance) => ({ kind: 'balance', balance })),
+      )
 
-              const ethBalanceChange$ = balance$('ETH', account).pipe(
-                map((ethBalance) => ({ kind: 'ethBalance', ethBalance })),
-              )
+      const ethBalanceChange$ = balance$('ETH', account).pipe(
+        map((ethBalance) => ({ kind: 'ethBalance', ethBalance })),
+      )
 
-              const maxLockAmountChange$ = balance$(token, account).pipe(
-                map((balance) => {
-                  const maxLockAmount =
-                    token !== 'ETH' ? balance : balance.gt(0.05) ? balance.minus(0.05) : zero
-                  return { kind: 'maxLockAmount', maxLockAmount }
-                }),
-              )
+      const maxLockAmountChange$ = balance$(token, account).pipe(
+        map((balance) => {
+          const maxLockAmount =
+            token !== 'ETH' ? balance : balance.gt(0.05) ? balance.minus(0.05) : zero
+          return { kind: 'maxLockAmount', maxLockAmount }
+        }),
+      )
 
-              const priceChange$ = tokenOraclePrice$(ilk).pipe(
-                map((price) => ({ kind: 'price', price })),
-              )
+      const priceChange$ = tokenOraclePrice$(ilk).pipe(map((price) => ({ kind: 'price', price })))
 
-              const ilkDataChange$ = ilkData$(ilk).pipe(
-                map((ilkData) => ({ kind: 'ilkData', ilkData })),
-              )
+      const ilkDataChange$ = ilkData$(ilk).pipe(map((ilkData) => ({ kind: 'ilkData', ilkData })))
 
-              const environmentChange$ = merge(
-                balanceChange$,
-                ilkDataChange$,
-                priceChange$,
-                ethBalanceChange$,
-                maxLockAmountChange$,
-              )
+      const environmentChange$ = merge(
+        balanceChange$,
+        ilkDataChange$,
+        priceChange$,
+        ethBalanceChange$,
+        maxLockAmountChange$,
+      )
 
-              const connectedProxyAddress$ = proxyAddress$(account)
+      const connectedProxyAddress$ = proxyAddress$(account)
 
-              const connectedAllowance$ = proxyAddress$(account).pipe(
-                switchMap((proxyAddress) =>
-                  proxyAddress ? allowance$(token, account, proxyAddress) : EMPTY,
-                ),
-              )
+      const connectedAllowance$ = proxyAddress$(account).pipe(
+        switchMap((proxyAddress) =>
+          proxyAddress ? allowance$(token, account, proxyAddress) : EMPTY,
+        ),
+      )
 
-              return merge(change$, environmentChange$).pipe(
-                scan(apply, initialState),
-                map(validate),
-                map(
-                  curry(addTransitions)(
-                    context,
-                    txHelpers,
-                    connectedProxyAddress$,
-                    connectedAllowance$,
-                    change,
-                  ),
-                ),
-              )
-            }),
+      return merge(change$, environmentChange$).pipe(
+        scan(apply, initialState),
+        map(validate),
+        map(
+          curry(addTransitions)(
+            context,
+            txHelpers,
+            connectedProxyAddress$,
+            connectedAllowance$,
+            change,
           ),
         ),
         shareReplay(1),

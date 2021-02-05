@@ -43,81 +43,109 @@ function OpenVaultWrapper({ children, title, step, steps }: OpenVaultWrapperProp
   )
 }
 
-function OpenVaultTransactionFlow({ stage, steps }: OpenVaultState & { steps: number }) {
-  return (
-    <OpenVaultWrapper title={stage} step={2} steps={steps}>
-      {stage === 'transactionWaitingForConfirmation'}
-    </OpenVaultWrapper>
-  )
+function OpenVaultTransactionFlow({ stage }: OpenVaultState) {
+  return null
 }
 
 function ProxyAllowanceFlow({
   stage,
   createProxy,
-  steps,
   tryAgain,
   token,
+  proceed,
   setAllowance,
-}: OpenVaultState & { steps: number }) {
-  function handleProxyCreate(e: React.SyntheticEvent<HTMLButtonElement>) {
+  proxyConfirmations,
+  safeConfirmations,
+}: OpenVaultState) {
+  function handleProxyAction(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault
-    createProxy!()
+    if (stage === 'proxyWaitingForConfirmation') createProxy!()
+    if (stage === 'proxyFiasco') tryAgain!()
   }
 
-  function handleRetry(e: React.SyntheticEvent<HTMLButtonElement>) {
+  function handleAllowanceAction(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault
-    tryAgain!()
+    if (stage === 'allowanceWaitingForConfirmation') setAllowance!()
+    if (stage === 'allowanceFiasco') tryAgain!()
   }
 
-  function handleSetAllowance(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault
-    setAllowance!()
-  }
+  const canProxyAction = stage === 'proxyWaitingForConfirmation' || stage === 'proxyFiasco'
+  const canAllowanceAction =
+    stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFiasco'
 
-  const disableProxyButton = stage !== 'proxyWaitingForConfirmation'
+  const proxyButtonContent =
+    stage === 'proxyWaitingForConfirmation' ? (
+      'Create Proxy'
+    ) : stage === 'proxyWaitingForApproval' || stage === 'proxyInProgress' ? (
+      !proxyConfirmations ? (
+        <Spinner size={25} />
+      ) : (
+        `Confirmations: ${proxyConfirmations} / ${safeConfirmations}`
+      )
+    ) : stage === 'proxyFiasco' ? (
+      'Retry'
+    ) : (
+      ':)'
+    )
+  const allowanceButtonContent =
+    stage === 'proxyWaitingForConfirmation' ||
+    stage === 'proxyWaitingForApproval' ||
+    stage === 'proxyInProgress' ||
+    stage === 'proxyFiasco' ||
+    stage === 'allowanceWaitingForConfirmation' ? (
+      `Set ${token} Allowance`
+    ) : stage === 'allowanceWaitingForApproval' || stage === 'allowanceInProgress' ? (
+      <Spinner size={25} />
+    ) : stage === 'allowanceFiasco' ? (
+      'Retry'
+    ) : (
+      ':)'
+    )
+
+  const canProceed = stage === 'allowanceWaitToContinue'
 
   return (
-    <OpenVaultWrapper title={stage} step={1} steps={steps}>
-      <Grid p={5} sx={{ justifyContent: 'center' }}>
-        {(stage === 'proxyWaitingForApproval' || stage === 'proxyInProgress') && <Spinner />}
-        {(stage === 'proxyFiasco' || stage === 'allowanceFiasco') && (
-          <Box>
-            <Text>Proxy Failed :(</Text>
-            <Button onClick={handleRetry}>Try Again!</Button>
-          </Box>
-        )}
-        {stage === 'allowanceWaitingForConfirmation' && (
-          <Button onClick={handleSetAllowance}>Set Allowance for {token}</Button>
-        )}
-        {(stage === 'allowanceWaitingForApproval' || stage === 'allowanceInProgress') && (
-          <Spinner />
-        )}
+    <Grid px={3} py={4} sx={{ justifyContent: 'center', justifyItems: 'center' }}>
+      <Grid p={5} columns={'1fr 1fr'} sx={{ justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Set ProxyAddress</Text>
+        <Button onClick={handleProxyAction!} disabled={!canProxyAction} sx={{ width: 7 }}>
+          {proxyButtonContent}
+        </Button>
 
-        <Button
-          onClick={handleProxyCreate!}
-          disabled={disableProxyButton}
-          sx={{ width: 6 }}
-        ></Button>
+        <Text>Set Allowance</Text>
+        {token === 'ETH' ? (
+          <Button disabled={true} sx={{ width: 7 }}>
+            :)
+          </Button>
+        ) : (
+          <Button onClick={handleAllowanceAction!} disabled={!canAllowanceAction} sx={{ width: 7 }}>
+            {allowanceButtonContent}
+          </Button>
+        )}
       </Grid>
-    </OpenVaultWrapper>
+
+      <Box mt={4}>
+        <Button onClick={proceed!} disabled={!canProceed} sx={{ width: 6 }}>
+          Proceed
+        </Button>
+      </Box>
+    </Grid>
   )
 }
 
 function EditVault({
-  stage,
-  steps,
   lockAmount,
   maxLockAmount,
   drawAmount,
   maxDrawAmount,
   price,
-  ilkData: { debtCeiling, debtFloor, ilkDebt, ilkDebtAvailable, ilk, maxDebtPerUnitCollateral },
   token,
   messages,
   change,
   balance,
   proceed,
-}: OpenVaultState & { steps: number }) {
+  ilkData,
+}: OpenVaultState) {
   function handleDepositChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
@@ -165,6 +193,14 @@ function EditVault({
     }
   }
 
+  const {
+    debtCeiling,
+    debtFloor,
+    ilkDebt,
+    ilkDebtAvailable,
+    ilk,
+    maxDebtPerUnitCollateral,
+  } = ilkData!
   const errorString = messages
     .map((message) => message.kind)
     .filter((x) => x)
@@ -176,88 +212,88 @@ function EditVault({
   const canGenerateMax = !!maxDrawAmount
 
   const collateralizationRatio =
-    drawAmount && lockAmount && !drawAmount.eq(zero) && !lockAmount.eq(zero)
+    drawAmount && lockAmount && price && !drawAmount.eq(zero) && !lockAmount.eq(zero)
       ? lockAmount.times(price).div(drawAmount).times(100)
       : undefined
 
   return (
-    <OpenVaultWrapper title={stage} step={0} steps={steps}>
-      <Grid px={3} py={4} sx={{ justifyContent: 'center', justifyItems: 'center' }}>
-        <Grid columns={'2fr 3fr'} sx={{ justifyItems: 'left' }}>
-          <Text>Price</Text>
-          <Text>
-            {price.toString()} {token}/USD
-          </Text>
+    <Grid px={3} py={4} sx={{ justifyContent: 'center', justifyItems: 'center' }}>
+      <Grid columns={'2fr 3fr'} sx={{ justifyItems: 'left' }}>
+        <Text>Price</Text>
+        <Text>
+          {price?.toString()} {token}/USD
+        </Text>
 
-          <Text>Balance</Text>
-          <Text>
-            {balance.toString()} {token}
-          </Text>
+        <Text>Balance</Text>
+        <Text>
+          {balance?.toString()} {token}
+        </Text>
 
-          <Text>Deposit {token}</Text>
-          <InputWithMax
-            {...{
-              amount: lockAmount,
-              token: getToken(token),
-              disabledMax: !canDepositMax,
-              hasError,
-              onChange: handleDepositChange(change!),
-              onSetMax: handleDepositMax(change!),
-            }}
-          />
+        <Text>Deposit {token}</Text>
+        <InputWithMax
+          {...{
+            amount: lockAmount,
+            token: getToken(token),
+            disabledMax: !canDepositMax,
+            hasError,
+            onChange: handleDepositChange(change!),
+            onSetMax: handleDepositMax(change!),
+          }}
+        />
 
-          <Text>Generate Dai</Text>
-          <InputWithMax
-            {...{
-              amount: drawAmount,
-              token: getToken('DAI'),
-              disabledMax: !canGenerateMax,
-              hasError,
-              onChange: handleGenerateChange(change!),
-              onSetMax: handleGenerateMax(change!),
-            }}
-          />
+        <Text>Generate Dai</Text>
+        <InputWithMax
+          {...{
+            amount: drawAmount,
+            token: getToken('DAI'),
+            disabledMax: !canGenerateMax,
+            hasError,
+            onChange: handleGenerateChange(change!),
+            onSetMax: handleGenerateMax(change!),
+          }}
+        />
 
-          <Text>Collateralization Ratio</Text>
-          <Text>
-            {collateralizationRatio
-              ? formatPercent(collateralizationRatio, { precision: 4 })
-              : '--'}
-          </Text>
+        <Text>Collateralization Ratio</Text>
+        <Text>
+          {collateralizationRatio ? formatPercent(collateralizationRatio, { precision: 4 }) : '--'}
+        </Text>
 
-          <Text>{ilk} Debt Floor</Text>
-          <Text>{debtFloor.toString()} DAI</Text>
+        <Text>{ilk} Debt Floor</Text>
+        <Text>{debtFloor.toString()} DAI</Text>
 
-          <Text>{ilk} Debt Ceiling</Text>
-          <Text>{debtCeiling.toString()} DAI</Text>
+        <Text>{ilk} Debt Ceiling</Text>
+        <Text>{debtCeiling.toString()} DAI</Text>
 
-          <Text>{ilk} Debt issued</Text>
-          <Text>{ilkDebt.toString()} DAI</Text>
+        <Text>{ilk} Debt issued</Text>
+        <Text>{ilkDebt.toString()} DAI</Text>
 
-          <Text>{ilk} Debt available</Text>
-          <Text>{ilkDebtAvailable.toString()} DAI</Text>
+        <Text>{ilk} Debt available</Text>
+        <Text>{ilkDebtAvailable.toString()} DAI</Text>
 
-          {hasError && (
-            <>
-              <Text>Errors</Text>
-              <Text sx={{ flexWrap: 'wrap' }}>{errorString}</Text>
-            </>
-          )}
-        </Grid>
-        <Box mt={4}>
-          <Button onClick={proceed!} disabled={hasError} sx={{ width: 6 }}>
-            Proceed
-          </Button>
-        </Box>
+        {hasError && (
+          <>
+            <Text>Errors</Text>
+            <Text sx={{ flexWrap: 'wrap' }}>{errorString}</Text>
+          </>
+        )}
       </Grid>
-    </OpenVaultWrapper>
+      <Box mt={4}>
+        <Button onClick={proceed!} disabled={hasError} sx={{ width: 6 }}>
+          Proceed
+        </Button>
+      </Box>
+    </Grid>
   )
 }
 
 function OpenVaultView(props: OpenVaultState & { steps: number }) {
   switch (props.stage) {
     case 'editing':
-      return EditVault(props)
+      return (
+        <OpenVaultWrapper title={props.stage} step={0} steps={props.steps}>
+          <EditVault {...props} />
+        </OpenVaultWrapper>
+      )
     case 'proxyWaitingForConfirmation':
     case 'proxyWaitingForApproval':
     case 'proxyInProgress':
@@ -266,13 +302,22 @@ function OpenVaultView(props: OpenVaultState & { steps: number }) {
     case 'allowanceWaitingForApproval':
     case 'allowanceInProgress':
     case 'allowanceFiasco':
-      return ProxyAllowanceFlow(props)
+    case 'allowanceWaitToContinue':
+      return (
+        <OpenVaultWrapper title={props.stage} step={1} steps={props.steps}>
+          <ProxyAllowanceFlow {...props} />
+        </OpenVaultWrapper>
+      )
     case 'transactionWaitingForConfirmation':
     case 'transactionWaitingForApproval':
     case 'transactionInProgress':
     case 'transactionFiasco':
     case 'transactionSuccess':
-      return OpenVaultTransactionFlow(props)
+      return (
+        <OpenVaultWrapper title={props.stage} step={2} steps={props.steps}>
+          <OpenVaultTransactionFlow {...props} />
+        </OpenVaultWrapper>
+      )
     default:
       return null
   }
