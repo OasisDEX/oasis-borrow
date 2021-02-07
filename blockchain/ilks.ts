@@ -16,15 +16,13 @@ export function createIlks$(context$: Observable<Context>): Observable<string[]>
   )
 }
 
-export type IlkData = VatIlk &
-  SpotIlk &
-  JugIlk &
-  CatIlk & {
-    token: string
-    ilk: string
-    ilkDebt: BigNumber
-    ilkDebtAvailable: BigNumber
-  }
+interface DerivedIlkData {
+  token: string
+  ilk: string
+  ilkDebt: BigNumber
+  ilkDebtAvailable: BigNumber
+}
+export type IlkData = VatIlk & SpotIlk & JugIlk & CatIlk & DerivedIlkData
 
 export function createIlkData$(
   vatIlks$: CallObservable<typeof vatIlk>,
