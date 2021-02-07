@@ -25,7 +25,7 @@ export interface VaultSummary {
   vaultsAtRisk: number
   depositedAssetRatio: Dictionary<BigNumber>
 }
-export function createVaultSummary(
+export function createVaultSummary$(
   vaults$: (address: string) => Observable<Vault[]>,
   address: string,
 ): Observable<VaultSummary> {
