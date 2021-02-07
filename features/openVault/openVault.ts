@@ -59,7 +59,7 @@ export interface OpenVaultState extends HasGasEstimation {
   openVaultTxHash?: string
   ilk: string
   token: string
-
+  id?: number
   ilkData: IlkData
   ethBalance: BigNumber
   balance: BigNumber
@@ -211,7 +211,7 @@ function parseVaultIdFromReceiptLogs({ logs }: Receipt) {
       return false
     })
     .map(({ topics }) => {
-      return Web3.utils.hexToNumber(topics[3])
+      return Web3.utils.hexToNumber(topics![3])
     })[0]
 }
 
@@ -252,11 +252,10 @@ function openVault(
           )
         },
         (txState) => {
-          console.log(
-            'SUCCESS',
-            parseVaultIdFromReceiptLogs(txState.status === TxStatus.Success && txState.receipt),
+          const id = parseVaultIdFromReceiptLogs(
+            txState.status === TxStatus.Success && txState.receipt,
           )
-          return of({ kind: 'stage', stage: 'transactionSuccess' })
+          return of({ kind: 'stage', stage: 'transactionSuccess' }, { kind: 'id', id })
         },
       ),
     )

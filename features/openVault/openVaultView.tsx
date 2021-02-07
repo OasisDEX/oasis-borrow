@@ -11,6 +11,7 @@ import { InputWithMax } from 'helpers/input'
 import { getToken } from 'blockchain/tokensMetadata'
 import { zero } from 'helpers/zero'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { useRedirect } from 'helpers/useRedirect'
 
 interface OpenVaultWrapperProps extends WithChildren {
   title: string
@@ -53,19 +54,27 @@ function OpenVaultTransactionFlow({
   close,
   openVault,
   tryAgain,
-}: OpenVaultState) {
+  id,
+  closeModal,
+}: OpenVaultState & { closeModal: () => void }) {
+  const { replace } = useRedirect()
+
   function handleBackToEdit(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault
+    e.preventDefault()
     back!()
   }
 
   function handleNewVault(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault
-    close!
+    e.preventDefault()
+    close!()
+    closeModal()
+    setTimeout(() => {
+      replace(`/${id}`)
+    }, 0)
   }
 
   function handleOpenVault(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault
+    e.preventDefault()
     if (stage === 'transactionWaitingForConfirmation') openVault!()
     if (stage === 'transactionFiasco') tryAgain!()
   }
@@ -111,20 +120,20 @@ function OpenVaultTransactionFlow({
           {collateralizationRatio ? formatPercent(collateralizationRatio, { precision: 4 }) : '--'}
         </Text>
       </Grid>
-      <Grid columns="1fr 1fr" mt={4} sx={{ justifyContent: 'center' }}>
-        {stage === 'transactionSuccess' ? (
-          <Button onClick={handleNewVault}>{'View new Vault'}</Button>
-        ) : (
-          <>
-            <Button disabled={!canDoAction} onClick={handleBackToEdit} sx={{ width: 6 }}>
-              Edit
-            </Button>
-            <Button disabled={!canDoAction} onClick={handleOpenVault} sx={{ width: 6 }}>
-              {transactionButtonContent}
-            </Button>
-          </>
-        )}
-      </Grid>
+      {stage === 'transactionSuccess' ? (
+        <Grid mt={4} sx={{ justifyContent: 'center' }}>
+          <Button onClick={handleNewVault}>{`View Vault #${id}`}</Button>
+        </Grid>
+      ) : (
+        <Grid columns="1fr 1fr" mt={4} sx={{ justifyContent: 'center' }}>
+          <Button disabled={!canDoAction} onClick={handleBackToEdit} sx={{ width: 6 }}>
+            Edit
+          </Button>
+          <Button disabled={!canDoAction} onClick={handleOpenVault} sx={{ width: 6 }}>
+            {transactionButtonContent}
+          </Button>
+        </Grid>
+      )}
     </Grid>
   )
 }
@@ -367,7 +376,7 @@ function EditVault({
   )
 }
 
-function OpenVaultView(props: OpenVaultState & { steps: number }) {
+function OpenVaultView(props: OpenVaultState & { steps: number; closeModal: () => void }) {
   switch (props.stage) {
     case 'editing':
       return (
@@ -422,7 +431,7 @@ export function OpenVaultModal({ ilk, close }: ModalProps) {
 
   return (
     <ModalBottom {...{ close }}>
-      <OpenVaultView {...{ ...openVault, steps: 3 }} />
+      <OpenVaultView {...{ ...openVault, steps: 3, closeModal: close }} />
     </ModalBottom>
   )
 }
