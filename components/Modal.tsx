@@ -92,7 +92,7 @@ function ModalWrapper({ children }: WithChildren) {
   )
 }
 
-export function Modal({ children, variant }: ModalProps) {
+export function Modal({ children, variant, sx }: ModalProps) {
   return (
     <ModalWrapper>
       <Flex
@@ -102,6 +102,7 @@ export function Modal({ children, variant }: ModalProps) {
           height: '100%',
           width: '100%',
           overflow: 'auto',
+          ...sx,
         }}
       >
         <Container variant={variant || 'modalHalf'} m="auto" py={2}>

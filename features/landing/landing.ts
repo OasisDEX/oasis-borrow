@@ -1,15 +1,21 @@
 import { IlkDataList } from 'blockchain/ilks'
-import { Observable } from 'rxjs'
+import { FeaturedIlk } from 'features/vaultsOverview/vaultsOverview'
+import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 export interface Landing {
   rows: IlkDataList
+  featuredIlks: FeaturedIlk[]
 }
 
-export function createLanding$(ilkDataList$: Observable<IlkDataList>): Observable<Landing> {
-  return ilkDataList$.pipe(
-    map((ilks) => ({
-      rows: ilks,
+export function createLanding$(
+  ilkDataList$: Observable<IlkDataList>,
+  featuredIlks: Observable<FeaturedIlk[]>,
+): Observable<Landing> {
+  return combineLatest(ilkDataList$, featuredIlks).pipe(
+    map(([ilkDataList, featuredIlks]) => ({
+      rows: ilkDataList,
+      featuredIlks,
     })),
   )
 }

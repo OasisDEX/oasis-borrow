@@ -1,12 +1,13 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
+import { zero } from 'helpers/zero'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 export interface IlkOverview {
   token: string
   ilk: string
-  daiAvailable: BigNumber
+  ilkDebtAvailable: BigNumber
   stabilityFee: BigNumber
   liquidationRatio: BigNumber
 }
@@ -26,9 +27,9 @@ export function createIlkOverview$(
             ) => ({
               token: ilkNames[i].split('-')[0],
               ilk: ilkNames[i],
-              daiAvailable: BigNumber.max(
+              ilkDebtAvailable: BigNumber.max(
                 debtCeiling.minus(debtScalingFactor.times(normalizedIlkDebt)),
-                new BigNumber(0),
+                zero,
               ),
               stabilityFee,
               liquidationRatio,

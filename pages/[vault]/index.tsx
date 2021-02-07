@@ -30,8 +30,3 @@ export default function Vault() {
 }
 
 Vault.layout = AppLayout
-Vault.layoutProps = {
-  backLink: {
-    href: '/',
-  },
-}

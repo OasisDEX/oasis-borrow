@@ -1,7 +1,7 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAppContext } from 'components/AppContextProvider'
-import { getConnectionKindMessage } from 'components/connectWallet/ConnectWallet'
+import { ConnectWallet, getConnectionKindMessage } from 'components/connectWallet/ConnectWallet'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { formatAddress } from 'helpers/formatters/format'
@@ -147,9 +147,24 @@ export function AccountButton() {
   }
 
   return (
-    <AppLink href="/connect" withAccountPrefix={false}>
-      <Button variant="outline">{t('connect-wallet-button')}</Button>
+    <AppLink href="/connect" variant="nav">
+      {t('connect-wallet-button')}
     </AppLink>
+  )
+
+  // return (
+  //   <Button variant="outline" onClick={() => openModal(ConnectModal)} >
+  //     {t('connect-wallet-button')}
+  //   </Button>
+  // )
+}
+
+export function ConnectModal({ close }: ModalProps) {
+  return (
+    <Modal sx={{ width: 'max-content' }} variant="container">
+      <ModalCloseIcon {...{ close }} />
+      <ConnectWallet />
+    </Modal>
   )
 }
 
@@ -235,13 +250,29 @@ export function AccountModal({ close }: ModalProps) {
                   readOnly
                 />
               </Flex>
-              <Button
-                variant="textual"
-                sx={{ textAlign: 'left', fontSize: 3, p: 0, fontWeight: 'semiBold' }}
-                onClick={disconnect}
-              >
-                {t(`disconnect${connectionKind === 'magicLink' ? '-magic' : ''}`)}
-              </Button>
+              <Flex>
+                <AppLink
+                  sx={{ mr: 3 }}
+                  onClick={close}
+                  href="/owner/[address]"
+                  as={`/owner/${account}`}
+                >
+                  My Page
+                </AppLink>
+                <Button
+                  variant="textual"
+                  sx={{
+                    textAlign: 'left',
+                    fontSize: 3,
+                    p: 0,
+                    fontWeight: 'semiBold',
+                    verticalAlign: 'baseline',
+                  }}
+                  onClick={disconnect}
+                >
+                  {t(`disconnect${connectionKind === 'magicLink' ? '-magic' : ''}`)}
+                </Button>
+              </Flex>
             </Grid>
           </Card>
         </Box>

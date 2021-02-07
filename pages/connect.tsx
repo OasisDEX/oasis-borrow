@@ -39,8 +39,3 @@ export async function getServerSideProps({ res, req }: GetServerSidePropsContext
 }
 
 ConnectPage.layout = ConnectPageLayout
-ConnectPage.layoutProps = {
-  backLink: {
-    href: '/',
-  },
-}

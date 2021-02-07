@@ -18,7 +18,7 @@ import {
 } from 'blockchain/calls/proxy'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
-import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
+import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createLanding$ } from 'features/landing/landing'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
@@ -51,15 +51,11 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createBalance$, createAllowance$ } from 'blockchain/tokens'
-import {
-  createController$,
-  createVault$,
-  createVaults$,
-  createVaultSummary$,
-} from 'blockchain/vaults'
+import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
 import { createOpenVault$ } from 'features/openVault/openVault'
+import { createVaultSummary$ } from 'features/vault/vaultSummary'
 
 export type TxData =
   | LockAndDrawData
@@ -193,11 +189,6 @@ export function setupAppContext() {
   const ilks$ = createIlks$(context$)
   const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
 
-  const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(connectedContext$, vaults$, vaultSummary$, ilkDataList$),
-  )
-  const landing$ = curry(createLanding$)(ilkDataList$)
-
   const openVault$ = curry(createOpenVault$)(
     connectedContext$,
     txHelpers$,
@@ -207,6 +198,18 @@ export function setupAppContext() {
     balance$,
     ilkData$,
   )
+  const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
+
+  const vaultsOverview$ = memoize(
+    curry(createVaultsOverview$)(
+      connectedContext$,
+      vaults$,
+      vaultSummary$,
+      ilkDataList$,
+      featuredIlks$,
+    ),
+  )
+  const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
 
   return {
     web3Context$,
