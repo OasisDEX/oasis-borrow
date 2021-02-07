@@ -22,6 +22,7 @@ import { TxStatus } from '@oasisdex/transactions'
 import { zero } from 'helpers/zero'
 import { lockAndDraw } from 'blockchain/calls/lockAndDraw'
 import { LockAndDrawData } from 'features/deposit/deposit'
+import Web3 from 'web3'
 
 export type OpenVaultStage =
   | 'editing'
@@ -196,7 +197,24 @@ function setAllowance(
     .subscribe((ch) => change(ch))
 }
 
-// openVault
+interface Receipt {
+  logs: { topics: string[] | undefined }[]
+}
+
+function parseVaultIdFromReceiptLogs({ logs }: Receipt) {
+  const newCdpEventTopic = Web3.utils.keccak256('NewCdp(address,address,uint256)')
+  return logs
+    .filter((log) => {
+      if (log.topics) {
+        return log.topics[0] === newCdpEventTopic
+      }
+      return false
+    })
+    .map(({ topics }) => {
+      return Web3.utils.hexToNumber(topics[3])
+    })[0]
+}
+
 function openVault(
   { send }: TxHelpers,
   change: (ch: OpenVaultChange) => void,
@@ -234,7 +252,10 @@ function openVault(
           )
         },
         (txState) => {
-          console.log('SUCCESS', txState)
+          console.log(
+            'SUCCESS',
+            parseVaultIdFromReceiptLogs(txState.status === TxStatus.Success && txState.receipt),
+          )
           return of({ kind: 'stage', stage: 'transactionSuccess' })
         },
       ),

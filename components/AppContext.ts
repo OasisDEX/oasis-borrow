@@ -25,8 +25,8 @@ import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
-import { Observable } from 'rxjs'
-import { filter, map, shareReplay } from 'rxjs/operators'
+import { Observable, of } from 'rxjs'
+import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { HasGasEstimation } from '../helpers/form'
 import { createTransactionManager } from '../features/account/transactionManager'
@@ -42,6 +42,7 @@ import { observe } from '../blockchain/calls/observe'
 import { spotIlk, spotPar } from '../blockchain/calls/spot'
 import { networksById } from '../blockchain/config'
 import {
+  Context,
   ContextConnected,
   createAccount$,
   createContext$,

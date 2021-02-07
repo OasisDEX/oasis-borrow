@@ -3,14 +3,14 @@ import { useObservable } from 'helpers/observableHook'
 import { ModalProps } from 'helpers/modalHook'
 import { ModalBottom } from 'components/Modal'
 import { ManualChange, OpenVaultState } from './openVault'
-import { Box, Button, Flex, Grid, Heading, Spinner, Text } from 'theme-ui'
+import { Box, Button, Grid, Heading, Spinner, Text } from 'theme-ui'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
 import { BigNumber } from 'bignumber.js'
 import { InputWithMax } from 'helpers/input'
 import { getToken } from 'blockchain/tokensMetadata'
 import { zero } from 'helpers/zero'
-import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatPercent } from 'helpers/formatters/format'
 
 interface OpenVaultWrapperProps extends WithChildren {
   title: string
