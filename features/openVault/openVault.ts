@@ -379,7 +379,7 @@ function validate(state: OpenVaultState): OpenVaultState {
   const messages: OpenVaultMessage[] = []
 
   if (!lockAmount || lockAmount.eq(zero)) {
-    messages[messages.length] = { kind: 'lockAmountEmpty' }
+    messages.push({ kind: 'lockAmountEmpty' })
   }
 
   if (lockAmount && maxLockAmount && lockAmount.gt(maxLockAmount)) {

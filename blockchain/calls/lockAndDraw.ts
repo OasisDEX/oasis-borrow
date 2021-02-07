@@ -13,7 +13,6 @@ function getCallData(data: LockAndDrawData, context: ContextConnected) {
   const { dssProxyActions, dssCdpManager, mcdJoinDai, mcdJug, joins, contract } = context
   const { id, tkn, lockAmount, drawAmount, ilk } = data
 
-  console.log(data)
   if (id && tkn === 'ETH') {
     return contract<DssProxyActions>(dssProxyActions).methods.lockETHAndDraw(
       dssCdpManager.address,
@@ -68,7 +67,6 @@ export const lockAndDraw: TransactionDef<LockAndDrawData> = {
   prepareArgs: (data, context) => {
     const { dssProxyActions } = context
 
-    console.log(getCallData(data, context))
     console.log([dssProxyActions.address, getCallData(data, context).encodeABI()], 'DATA')
     return [dssProxyActions.address, getCallData(data, context).encodeABI()]
   },
