@@ -12,7 +12,7 @@ import { zero } from 'helpers/zero'
 import React from 'react'
 import { Box, Button, Grid, Heading, Spinner, Text } from 'theme-ui'
 
-import { ManualChange, OpenVaultState } from './openVault'
+import { ManualChange, OpenVaultStage, OpenVaultState } from './openVault'
 
 interface OpenVaultWrapperProps extends WithChildren {
   title: string
@@ -165,36 +165,45 @@ function ProxyAllowanceFlow({
   const canAllowanceAction =
     stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFiasco'
 
-  const proxyButtonContent =
-    stage === 'proxyWaitingForConfirmation' ? (
-      'Create Proxy'
-    ) : stage === 'proxyWaitingForApproval' || stage === 'proxyInProgress' ? (
-      !proxyConfirmations ? (
-        <Spinner size={25} />
-      ) : (
-        `Confirmations: ${proxyConfirmations} / ${safeConfirmations}`
-      )
-    ) : stage === 'proxyFiasco' ? (
-      'Retry'
-    ) : (
-      ':)'
-    )
-  const allowanceButtonContent =
-    stage === 'proxyWaitingForConfirmation' ||
-    stage === 'proxyWaitingForApproval' ||
-    stage === 'proxyInProgress' ||
-    stage === 'proxyFiasco' ||
-    stage === 'allowanceWaitingForConfirmation' ? (
-      `Set ${token} Allowance`
-    ) : stage === 'allowanceWaitingForApproval' || stage === 'allowanceInProgress' ? (
-      <Spinner size={25} />
-    ) : stage === 'allowanceFiasco' ? (
-      'Retry'
-    ) : (
-      ':)'
-    )
+  const isProxyStage = ([
+    'proxyWaitingForConfirmation',
+    'proxyWaitingForApproval',
+    'proxyInProgress',
+    'proxyFiasco',
+  ] as OpenVaultStage[]).some((s) => s === stage)
 
-  const canProceed = stage === 'allowanceWaitToContinue'
+  const proxyButtonReady = 'Create Proxy'
+  const proxyButtonLoading = <Spinner size={25} />
+  const proxyButtonConfirming = `Confirmations: ${proxyConfirmations} / ${safeConfirmations}`
+  const proxyButtonFailed = 'Retry'
+  const proxyButtonSuccess = 'Success'
+
+  const proxyButtonContent =
+    stage === 'proxyWaitingForConfirmation'
+      ? proxyButtonReady
+      : stage === 'proxyWaitingForApproval' || stage === 'proxyInProgress'
+      ? !proxyConfirmations
+        ? proxyButtonLoading
+        : proxyButtonConfirming
+      : stage === 'proxyFiasco'
+      ? proxyButtonFailed
+      : proxyButtonSuccess
+
+  const allowanceButtonReady = `Set ${token} Allowance`
+  const allowanceButtonLoading = <Spinner size={25} />
+  const allowanceButtonFailed = 'Retry'
+  const allowanceButtonSuccess = 'Success'
+
+  const allowanceButtonContent =
+    isProxyStage || stage === 'allowanceWaitingForConfirmation'
+      ? allowanceButtonReady
+      : stage === 'allowanceWaitingForApproval' || stage === 'allowanceInProgress'
+      ? allowanceButtonLoading
+      : stage === 'allowanceFiasco'
+      ? allowanceButtonFailed
+      : allowanceButtonSuccess
+
+  const canProceed = stage === 'waitToContinue'
 
   return (
     <Grid px={3} py={4} sx={{ justifyContent: 'center', justifyItems: 'center' }}>

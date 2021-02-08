@@ -33,7 +33,7 @@ export type OpenVaultStage =
   | 'allowanceWaitingForApproval'
   | 'allowanceInProgress'
   | 'allowanceFiasco'
-  | 'allowanceWaitToContinue'
+  | 'waitToContinue'
   | 'transactionWaitingForConfirmation'
   | 'transactionWaitingForApproval'
   | 'transactionInProgress'
