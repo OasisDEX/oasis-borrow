@@ -7,8 +7,8 @@ import { InjectedConnector } from '@web3-react/injected-connector'
 import { NetworkConnector } from '@web3-react/network-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { WalletLinkConnector } from '@web3-react/walletlink-connector'
-import { useAppContext } from 'components/AppContextProvider'
 import { dappName, networksById, pollingInterval } from 'blockchain/config'
+import { useAppContext } from 'components/AppContextProvider'
 import { LedgerAccountSelection } from 'components/connectWallet/LedgerAccountSelection'
 import { TrezorAccountSelection } from 'components/connectWallet/TrezorAccountSelection'
 import { AppSpinner } from 'helpers/loadingIndicator/LoadingIndicator'
@@ -198,7 +198,7 @@ export function getConnectionKindMessage(connectionKind: ConnectionKind) {
   }
 }
 
-export function ConnectWallet({ originalUrl }: { originalUrl?: string }) {
+export function ConnectWallet(_: { originalUrl?: string }) {
   const { web3Context$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
   const { t } = useTranslation('common')
@@ -402,7 +402,7 @@ export function WithOverviewConnection({ children }: WithChildren) {
 
 export function WithVaultConnection({ children }: WithChildren) {
   const router = useRouter()
-  const { web3Context$, readonlyAccount$ } = useAppContext()
+  const { web3Context$ } = useAppContext()
   const { vault } = router.query as { vault: string }
   const { push } = useRedirect()
 

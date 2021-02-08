@@ -1,6 +1,6 @@
 import { isDone, TxState, TxStatus } from '@oasisdex/transactions'
-import { TxData } from 'components/AppContext'
 import { every1Seconds$ } from 'blockchain/network'
+import { TxData } from 'components/AppContext'
 import {
   LatamexOrder,
   MoonpayOrder,
@@ -80,39 +80,6 @@ function txState2Transaction(raw: TxState<TxData>): TxMgrTransaction {
     id: txNo.toString(),
     status,
     lastChange,
-    raw,
-  }
-}
-
-function wyreOrder2Transaction(raw: WyreOrder): TxMgrTransaction {
-  const { id, status, date } = raw
-  return {
-    id,
-    kind: 'wyre',
-    status,
-    lastChange: date,
-    raw,
-  }
-}
-
-function moonpayOrder2Transaction(raw: MoonpayOrder): TxMgrTransaction {
-  const { id, status, date } = raw
-  return {
-    id,
-    kind: 'moonpay',
-    status,
-    lastChange: date,
-    raw,
-  }
-}
-
-function latamexOrder2Transaction(raw: LatamexOrder): TxMgrTransaction {
-  const { id, status, date } = raw
-  return {
-    id,
-    kind: 'latamex',
-    status,
-    lastChange: date,
     raw,
   }
 }

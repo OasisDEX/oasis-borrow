@@ -1,17 +1,18 @@
-import { useAppContext } from 'components/AppContextProvider'
-import { useObservable } from 'helpers/observableHook'
-import { ModalProps } from 'helpers/modalHook'
-import { ModalBottom } from 'components/Modal'
-import { ManualChange, OpenVaultState } from './openVault'
-import { Box, Button, Grid, Heading, Spinner, Text } from 'theme-ui'
-import { WithChildren } from 'helpers/types'
-import React from 'react'
 import { BigNumber } from 'bignumber.js'
-import { InputWithMax } from 'helpers/input'
 import { getToken } from 'blockchain/tokensMetadata'
-import { zero } from 'helpers/zero'
+import { useAppContext } from 'components/AppContextProvider'
+import { ModalBottom } from 'components/Modal'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { InputWithMax } from 'helpers/input'
+import { ModalProps } from 'helpers/modalHook'
+import { useObservable } from 'helpers/observableHook'
+import { WithChildren } from 'helpers/types'
 import { useRedirect } from 'helpers/useRedirect'
+import { zero } from 'helpers/zero'
+import React from 'react'
+import { Box, Button, Grid, Heading, Spinner, Text } from 'theme-ui'
+
+import { ManualChange, OpenVaultState } from './openVault'
 
 interface OpenVaultWrapperProps extends WithChildren {
   title: string
@@ -107,12 +108,12 @@ function OpenVaultTransactionFlow({
         <Text>Amount To Lock</Text>
         <Box />
         <Text>
-          {formatAmount(lockAmount ? lockAmount : zero, token)} {token}
+          {formatAmount(lockAmount || zero, token)} {token}
         </Text>
 
         <Text>Amount To Generate</Text>
         <Box />
-        <Text>{formatAmount(drawAmount ? drawAmount : zero, 'DAI')} DAI</Text>
+        <Text>{formatAmount(drawAmount || zero, 'DAI')} DAI</Text>
 
         <Text>Collateralization Ratio</Text>
         <Box />

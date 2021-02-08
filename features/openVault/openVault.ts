@@ -1,11 +1,13 @@
+import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { TxHelpers } from 'components/AppContext'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
+import { lockAndDraw } from 'blockchain/calls/lockAndDraw'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
-
+import { TxHelpers } from 'components/AppContext'
+import { LockAndDrawData } from 'features/deposit/deposit'
 import {
   ApplyChange,
   applyChange,
@@ -15,13 +17,10 @@ import {
   HasGasEstimation,
   transactionToX,
 } from 'helpers/form'
+import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, EMPTY, merge, Observable, of, Subject } from 'rxjs'
 import { filter, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
-import { TxStatus } from '@oasisdex/transactions'
-import { zero } from 'helpers/zero'
-import { lockAndDraw } from 'blockchain/calls/lockAndDraw'
-import { LockAndDrawData } from 'features/deposit/deposit'
 import Web3 from 'web3'
 
 export type OpenVaultStage =

@@ -1,14 +1,14 @@
+import BigNumber from 'bignumber.js'
 import { CatIlk, catIlk } from 'blockchain/calls/cat'
 import { JugIlk, jugIlk } from 'blockchain/calls/jug'
 import { CallObservable } from 'blockchain/calls/observe'
 import { SpotIlk, spotIlk } from 'blockchain/calls/spot'
 import { VatIlk, vatIlk } from 'blockchain/calls/vat'
-import { of } from 'rxjs'
 import { Context } from 'blockchain/network'
-import BigNumber from 'bignumber.js'
+import { zero } from 'helpers/zero'
+import { of } from 'rxjs'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
-import { zero } from 'helpers/zero'
 
 export function createIlks$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(

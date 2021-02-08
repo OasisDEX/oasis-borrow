@@ -1,14 +1,14 @@
 import { IlkData, IlkDataList } from 'blockchain/ilks'
+import { ContextConnected } from 'blockchain/network'
+import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { VaultSummary } from 'features/vault/vaultSummary'
-import minBy from 'lodash/minBy'
 import maxBy from 'lodash/maxBy'
+import minBy from 'lodash/minBy'
 import { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/internal/operators/map'
 import { filter, startWith } from 'rxjs/operators'
-import { getToken } from 'blockchain/tokensMetadata'
-import { ContextConnected } from 'blockchain/network'
 
 export interface FeaturedIlk extends IlkData {
   title: string

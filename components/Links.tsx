@@ -1,5 +1,4 @@
-import { isAppContextAvailable, useAppContext } from 'components/AppContextProvider'
-import { useObservable } from 'helpers/observableHook'
+import { isAppContextAvailable } from 'components/AppContextProvider'
 import { WithChildren } from 'helpers/types'
 import { LinkProps } from 'next/dist/client/link'
 import Link from 'next/link'
@@ -63,8 +62,8 @@ function InternalLink({
   const {
     query: { network },
   } = useRouter()
-  let readOnlyHref = href
-  let readOnlyAs = as
+  const readOnlyHref = href
+  const readOnlyAs = as
 
   const actualHref =
     isAppContextAvailable && network ? { pathname: readOnlyHref, query: { network } } : readOnlyHref

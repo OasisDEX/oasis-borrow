@@ -2,12 +2,13 @@ import BigNumber from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
 import { ContextConnected } from 'blockchain/network'
 import { zero } from 'helpers/zero'
-import { map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 import { combineLatest, Observable, of } from 'rxjs'
+import {  mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from './calls/cdpManager'
+import { getCdps } from './calls/getCdps'
 import { CallObservable } from './calls/observe'
 import { vatGem, vatUrns } from './calls/vat'
-import { getCdps } from './calls/getCdps'
 import { IlkData } from './ilks'
 
 export function createVaults$(

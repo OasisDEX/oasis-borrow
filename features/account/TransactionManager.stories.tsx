@@ -2,16 +2,16 @@ import { TxState, TxStatus } from '@oasisdex/transactions'
 import { Web3Context } from '@oasisdex/web3-context'
 import { storiesOf } from '@storybook/react'
 import BigNumber from 'bignumber.js'
-import { AccountModal } from 'features/account/Account'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
 import {
   LatamexOrder,
   MoonpayOrder,
   OnrampOrder,
   WyreOrder,
 } from 'components/dashboard/onrampOrders'
+import { AccountModal } from 'features/account/Account'
 import { ModalProvider } from 'helpers/modalHook'
 import { WithChildren } from 'helpers/types'
 import React from 'react'

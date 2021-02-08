@@ -1,4 +1,5 @@
 import { Dictionary } from 'ts-essentials'
+
 import * as erc20 from '../abi/erc20.json'
 import * as mcdOsm from '../abi/mcd-osm.json'
 import { contractDesc } from '../config'

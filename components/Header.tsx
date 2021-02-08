@@ -62,13 +62,7 @@ export function BackArrow() {
   )
 }
 
-export function AppHeader({
-  backLink,
-  CustomLogoWithBack,
-}: {
-  backLink?: AppLinkProps
-  CustomLogoWithBack?: () => JSX.Element
-}) {
+export function AppHeader(_: { backLink?: AppLinkProps; CustomLogoWithBack?: () => JSX.Element }) {
   return (
     <BasicHeader variant="appContainer">
       <>

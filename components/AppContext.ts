@@ -17,19 +17,23 @@ import {
   SetProxyOwnerData,
 } from 'blockchain/calls/proxy'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
+import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
+import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
+import { createAllowance$,createBalance$ } from 'blockchain/tokens'
+import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
-import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
+import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createLanding$ } from 'features/landing/landing'
-import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import { createOpenVault$ } from 'features/openVault/openVault'
+import { createVaultSummary$ } from 'features/vault/vaultSummary'
+import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
-import { Observable, of } from 'rxjs'
-import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
+import { Observable } from 'rxjs'
+import { filter, map, shareReplay } from 'rxjs/operators'
 
-import { HasGasEstimation } from '../helpers/form'
-import { createTransactionManager } from '../features/account/transactionManager'
 import { catIlk } from '../blockchain/calls/cat'
 import {
   ApproveData,
@@ -42,7 +46,6 @@ import { observe } from '../blockchain/calls/observe'
 import { spotIlk, spotPar } from '../blockchain/calls/spot'
 import { networksById } from '../blockchain/config'
 import {
-  Context,
   ContextConnected,
   createAccount$,
   createContext$,
@@ -50,12 +53,8 @@ import {
   createOnEveryBlock$,
   createWeb3ContextConnected$,
 } from '../blockchain/network'
-import { createBalance$, createAllowance$ } from 'blockchain/tokens'
-import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
-import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
-import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
-import { createOpenVault$ } from 'features/openVault/openVault'
-import { createVaultSummary$ } from 'features/vault/vaultSummary'
+import { createTransactionManager } from '../features/account/transactionManager'
+import { HasGasEstimation } from '../helpers/form'
 
 export type TxData =
   | LockAndDrawData

@@ -1,12 +1,11 @@
-import { TxHelpers$ } from 'components/AppContext'
-import { ContextConnected } from 'blockchain/network'
-import { identity, Observable, of } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
-
-import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { setProxyOwner } from 'blockchain/calls/proxy'
 import { nullAddress } from '@oasisdex/utils'
 import { disapprove } from 'blockchain/calls/erc20'
+import { setProxyOwner } from 'blockchain/calls/proxy'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { ContextConnected } from 'blockchain/network'
+import { TxHelpers$ } from 'components/AppContext'
+import { identity, Observable, of } from 'rxjs'
+import { switchMap } from 'rxjs/operators'
 
 export function pluginDevModeHelpers(
   txHelpers$: TxHelpers$,

@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { Vault } from 'blockchain/vaults'
+import { AppLink } from 'components/Links'
 import {
   formatCryptoBalance,
   formatFiatBalance,
@@ -10,7 +11,6 @@ import { useModal } from 'helpers/modalHook'
 import { Box, Button, Grid, Heading, Text } from 'theme-ui'
 
 import { DepositForm } from '../deposit/DepositForm'
-import { AppLink } from 'components/Links'
 
 interface Props {
   vault: Vault

@@ -1,8 +1,8 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { TxState } from '@oasisdex/transactions'
-import { TxData } from 'components/AppContext'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { TxData } from 'components/AppContext'
 import { LatamexOrder, MoonpayOrder, WyreOrder } from 'components/dashboard/onrampOrders'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { roundHalfUp } from 'helpers/rounding'
