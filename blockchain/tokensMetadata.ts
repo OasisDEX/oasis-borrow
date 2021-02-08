@@ -150,7 +150,7 @@ const tokens = [
     // ticker: ___________,
     // coinbaseTicker: ___________,
     color: '#3C5FCB',
-    background: 'linear-gradient(90deg, #3C5FCB 0%, #0E319D 100%), #C4C4C4'
+    background: 'linear-gradient(90deg, #3C5FCB 0%, #0E319D 100%), #C4C4C4',
   },
   {
     symbol: 'GUSD',

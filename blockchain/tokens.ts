@@ -1,6 +1,6 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { bindNodeCallback,   Observable, of } from 'rxjs'
+import { bindNodeCallback, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { tokenAllowance, tokenBalance } from './calls/erc20'

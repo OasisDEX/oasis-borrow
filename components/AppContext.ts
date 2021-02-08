@@ -19,7 +19,7 @@ import {
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
-import { createAllowance$,createBalance$ } from 'blockchain/tokens'
+import { createAllowance$, createBalance$ } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'

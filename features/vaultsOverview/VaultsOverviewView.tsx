@@ -10,7 +10,7 @@ import { formatAddress, formatCryptoBalance, formatPercent } from 'helpers/forma
 import { useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
-import { Box, Button, Card, Flex,Grid, Heading, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { Table, TokenSymbol } from '../landing/LandingView'
