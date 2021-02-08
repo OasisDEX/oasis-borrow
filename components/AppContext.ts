@@ -10,24 +10,37 @@ import {
   TransactionDef,
 } from 'blockchain/calls/callsHelpers'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
-import { createProxyAddress$, createProxyOwner$ } from 'blockchain/calls/proxy'
+import {
+  CreateDsProxyData,
+  createProxyAddress$,
+  createProxyOwner$,
+  SetProxyOwnerData,
+} from 'blockchain/calls/proxy'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
+import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
+import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
+import { createAllowance$, createBalance$ } from 'blockchain/tokens'
+import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
-import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
+import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createLanding$ } from 'features/landing/landing'
-import { createVaultSummary } from 'features/vault/vaultSummary'
-
+import { createOpenVault$ } from 'features/openVault/openVault'
+import { createVaultSummary$ } from 'features/vault/vaultSummary'
+import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
 import { filter, map, shareReplay } from 'rxjs/operators'
 
-import { HasGasEstimation } from '../helpers/form'
-import { createTransactionManager } from '../features/account/transactionManager'
 import { catIlk } from '../blockchain/calls/cat'
-import { tokenBalance } from '../blockchain/calls/erc20'
+import {
+  ApproveData,
+  DisapproveData,
+  tokenAllowance,
+  tokenBalance,
+} from '../blockchain/calls/erc20'
 import { jugIlk } from '../blockchain/calls/jug'
 import { observe } from '../blockchain/calls/observe'
 import { spotIlk, spotPar } from '../blockchain/calls/spot'
@@ -40,14 +53,15 @@ import {
   createOnEveryBlock$,
   createWeb3ContextConnected$,
 } from '../blockchain/network'
-import { createBalance$ } from 'blockchain/tokens'
-import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
-import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
-import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
+import { createTransactionManager } from '../features/account/transactionManager'
+import { HasGasEstimation } from '../helpers/form'
 
-export type TxData = LockAndDrawData
-// | ApproveData
-// | DisapproveData
+export type TxData =
+  | LockAndDrawData
+  | ApproveData
+  | DisapproveData
+  | CreateDsProxyData
+  | SetProxyOwnerData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -117,8 +131,8 @@ export function setupAppContext() {
   const transactionManager$ = createTransactionManager(transactions$)
 
   // base
-  const proxyAddress$ = memoize(curry(createProxyAddress$)(context$))
-  const proxyOwner$ = memoize(curry(createProxyOwner$)(context$))
+  const proxyAddress$ = memoize(curry(createProxyAddress$)(onEveryBlock$, context$))
+  const proxyOwner$ = memoize(curry(createProxyOwner$)(onEveryBlock$, context$))
   const cdpManagerUrns$ = observe(onEveryBlock$, context$, cdpManagerUrns, bigNumberTostring)
   const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
   const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumberTostring)
@@ -132,6 +146,9 @@ export function setupAppContext() {
 
   const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
   const balance$ = curry(createBalance$)(onEveryBlock$, context$, tokenBalance$)
+
+  const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
+  const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
 
   // computed
   const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
@@ -157,9 +174,11 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
+
   const vaults$ = memoize(curry(createVaults$)(connectedContext$, proxyAddress$, vault$))
 
-  const vaultSummary$ = memoize(curry(createVaultSummary)(vaults$))
+  const vaultSummary$ = memoize(curry(createVaultSummary$)(vaults$))
 
   const depositForm$ = memoize(
     curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$),
@@ -167,11 +186,27 @@ export function setupAppContext() {
   )
 
   const ilks$ = createIlks$(context$)
-  const ilkDataList$ = createIlkDataList$(ilks$, ilkData$)
+  const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
+
+  const openVault$ = curry(createOpenVault$)(
+    connectedContext$,
+    txHelpers$,
+    proxyAddress$,
+    allowance$,
+    tokenOraclePrice$,
+    balance$,
+    ilkData$,
+  )
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
 
   const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(vaults$, vaultSummary$, ilkDataList$, featuredIlks$),
+    curry(createVaultsOverview$)(
+      connectedContext$,
+      vaults$,
+      vaultSummary$,
+      ilkDataList$,
+      featuredIlks$,
+    ),
   )
   const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
 
@@ -191,6 +226,7 @@ export function setupAppContext() {
     vaultSummary$,
     depositForm$,
     landing$,
+    openVault$,
     vaultsOverview$,
   }
 }

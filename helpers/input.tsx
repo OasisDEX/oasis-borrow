@@ -14,6 +14,7 @@ interface InputWithSuffixProps {
 
 interface InputWithMaxProps {
   disabled?: boolean
+  disabledMax?: boolean
   token: TokenConfig
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
   onSetMax: () => void
@@ -42,6 +43,7 @@ export function InputWithSuffix({ input, suffix }: InputWithSuffixProps) {
 
 export function InputWithMax({
   disabled,
+  disabledMax,
   token,
   onChange,
   onSetMax,
@@ -68,7 +70,7 @@ export function InputWithMax({
         />
       }
       suffix={
-        <Button variant="secondary" onClick={onSetMax}>
+        <Button variant="secondary" disabled={disabledMax} onClick={onSetMax}>
           {t('max')}
         </Button>
       }

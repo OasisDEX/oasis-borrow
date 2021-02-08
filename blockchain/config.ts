@@ -19,14 +19,14 @@ import * as mcdPot from './abi/mcd-pot.json'
 import * as mcdSpot from './abi/mcd-spot.json'
 import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
-import { default as kovanAddresses } from './addresses/kovan.json'
-import { default as mainnetAddresses } from './addresses/mainnet.json'
 import {
   getCollateralJoinContracts,
   getCollaterals,
   getCollateralTokens,
   getOsms,
 } from './addresses/addressesUtils'
+import { default as kovanAddresses } from './addresses/kovan.json'
+import { default as mainnetAddresses } from './addresses/mainnet.json'
 
 export function contractDesc(abi: any, address: string): ContractDesc {
   return { abi, address }

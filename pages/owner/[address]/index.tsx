@@ -6,7 +6,6 @@ import React from 'react'
 
 function Summary({ address }: { address: string }) {
   const { vaultsOverview$ } = useAppContext()
-
   const vaultsOverview = useObservable(vaultsOverview$(address))
 
   if (vaultsOverview === undefined) {

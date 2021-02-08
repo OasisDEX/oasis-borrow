@@ -2,33 +2,14 @@ import BigNumber from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
 import { ContextConnected } from 'blockchain/network'
 import { zero } from 'helpers/zero'
-import { map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 import { combineLatest, Observable, of } from 'rxjs'
+import { mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from './calls/cdpManager'
+import { getCdps } from './calls/getCdps'
 import { CallObservable } from './calls/observe'
 import { vatGem, vatUrns } from './calls/vat'
-import { getCdps } from './calls/getCdps'
 import { IlkData } from './ilks'
-
-function getTotalCollateralPrice(vaults: Vault[]) {
-  return vaults.reduce((total, vault) => total.plus(vault.collateralPrice), new BigNumber(0))
-}
-
-function getTotalDaiDebt(vaults: Vault[]) {
-  return vaults.reduce((total, vault) => total.plus(vault.debt), new BigNumber(0))
-}
-
-export function createVaultSummary(
-  vaults$: (address: string) => Observable<Vault[]>,
-  address: string,
-) {
-  return vaults$(address).pipe(
-    map((vaults) => ({
-      totalCollateralPrice: getTotalCollateralPrice(vaults),
-      totalDaiDebt: getTotalDaiDebt(vaults),
-    })),
-  )
-}
 
 export function createVaults$(
   context$: Observable<ContextConnected>,
@@ -301,7 +282,7 @@ export interface Vault {
  * the vault has been given away
  */
 export function createController$(
-  proxyOwner$: (proxyAddress: string) => Observable<string>,
+  proxyOwner$: (proxyAddress: string) => Observable<string | undefined>,
   cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>,
   id: BigNumber,
 ) {
@@ -316,7 +297,7 @@ export function createVault$(
   vatGem$: CallObservable<typeof vatGem>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   tokenOraclePrice$: (ilk: string) => Observable<BigNumber>,
-  controller$: (id: BigNumber) => Observable<string>,
+  controller$: (id: BigNumber) => Observable<string | undefined>,
   id: BigNumber,
 ): Observable<Vault> {
   return combineLatest(

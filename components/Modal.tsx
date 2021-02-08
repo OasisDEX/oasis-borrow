@@ -127,7 +127,13 @@ export function ModalBottom({ children, close }: WithChildren & { close: () => v
           overflow: 'auto',
         }}
       >
-        <Container variant="modal" m={[0, 0, 'auto']} p={0} py={[0, 0, 2]}>
+        <Container
+          variant="modalHalf"
+          sx={{ width: '750px' }}
+          m={[0, 0, 'auto']}
+          p={0}
+          py={[0, 0, 2]}
+        >
           <Card
             p={0}
             mx={[0, 0, 3]}

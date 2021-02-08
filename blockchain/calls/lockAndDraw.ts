@@ -5,6 +5,7 @@ import { ContextConnected } from 'blockchain/network'
 import { amountToWei } from 'blockchain/utils'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
+import Web3 from 'web3'
 
 import { LockAndDrawData } from '../../features/deposit/deposit'
 
@@ -28,19 +29,8 @@ function getCallData(data: LockAndDrawData, context: ContextConnected) {
       mcdJug.address,
       joins[ilk],
       mcdJoinDai.address,
-      ilk,
-      amountToWei(drawAmount, 'DAI').toString(),
-    )
-  }
-  if (!id && tkn === 'GNT') {
-    return contract<DssProxyActions>(dssProxyActions).methods.openLockGNTAndDraw(
-      dssCdpManager.address,
-      mcdJug.address,
-      joins[ilk],
-      mcdJoinDai.address,
-      ilk,
-      amountToWei(lockAmount, 'GNT').toString(),
-      amountToWei(drawAmount, 'DAI').toString(),
+      Web3.utils.utf8ToHex(ilk),
+      amountToWei(drawAmount, 'DAI').toFixed(0),
     )
   }
   if (id) {
@@ -50,8 +40,8 @@ function getCallData(data: LockAndDrawData, context: ContextConnected) {
       joins[ilk],
       mcdJoinDai.address,
       id,
-      amountToWei(lockAmount, tkn).toString(),
-      amountToWei(drawAmount, 'DAI').toString(),
+      amountToWei(lockAmount, tkn).toFixed(0),
+      amountToWei(drawAmount, 'DAI').toFixed(0),
       true,
     )
   }
@@ -61,9 +51,9 @@ function getCallData(data: LockAndDrawData, context: ContextConnected) {
     mcdJug.address,
     joins[ilk],
     mcdJoinDai.address,
-    ilk,
-    amountToWei(lockAmount, tkn).toString(),
-    amountToWei(drawAmount, 'DAI').toString(),
+    Web3.utils.utf8ToHex(ilk),
+    amountToWei(lockAmount, tkn).toFixed(0),
+    amountToWei(drawAmount, 'DAI').toFixed(0),
     true,
   )
 }

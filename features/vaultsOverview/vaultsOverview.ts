@@ -1,19 +1,21 @@
-import { IlkDataList, IlkDataSummary } from 'blockchain/ilks'
+import { IlkData, IlkDataList } from 'blockchain/ilks'
+import { ContextConnected } from 'blockchain/network'
+import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { VaultSummary } from 'features/vault/vaultSummary'
-import minBy from 'lodash/minBy'
 import maxBy from 'lodash/maxBy'
-import { forkJoin, Observable } from 'rxjs'
+import minBy from 'lodash/minBy'
+import { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/internal/operators/map'
-import { filter, startWith, tap } from 'rxjs/operators'
-import { getToken } from 'blockchain/tokensMetadata'
+import { filter, startWith } from 'rxjs/operators'
 
-export interface FeaturedIlk extends IlkDataSummary {
+export interface FeaturedIlk extends IlkData {
   title: string
 }
 
 export interface VaultsOverview {
+  canOpenVault: boolean
   vaults: Vault[] | undefined
   vaultSummary: VaultSummary | undefined
   ilkDataList: IlkDataList | undefined
@@ -22,18 +24,18 @@ export interface VaultsOverview {
 
 export function createFeaturedIlk$(
   ilkDataList$: Observable<IlkDataList>,
-  selector: (ilks: IlkDataList) => IlkDataSummary | undefined,
+  selector: (ilks: IlkDataList) => IlkData | undefined,
   title: string,
 ): Observable<FeaturedIlk> {
   return ilkDataList$.pipe(
     map((ilks) => ilks.filter(hasAllMetaInfo)),
     map(selector),
-    filter((ilk): ilk is IlkDataSummary => ilk !== undefined),
+    filter((ilk): ilk is IlkData => ilk !== undefined),
     map((ilk) => ({ ...ilk, title })),
   )
 }
 
-function hasAllMetaInfo(ilk: IlkDataSummary) {
+function hasAllMetaInfo(ilk: IlkData) {
   const token = getToken(ilk.token)
 
   if (token.symbol !== ilk.token) {
@@ -64,6 +66,7 @@ export function createFeaturedIlks$(ilkDataList$: Observable<IlkDataList>) {
 }
 
 export function createVaultsOverview$(
+  context$: Observable<ContextConnected>,
   vaults$: (address: string) => Observable<Vault[]>,
   vaultsSummary$: (address: string) => Observable<VaultSummary>,
   ilkDataList$: Observable<IlkDataList>,
@@ -71,12 +74,14 @@ export function createVaultsOverview$(
   address: string,
 ): Observable<VaultsOverview> {
   return combineLatest(
+    context$,
     vaults$(address).pipe(startWith<Vault[] | undefined>(undefined)),
     vaultsSummary$(address).pipe(startWith<VaultSummary | undefined>(undefined)),
     ilkDataList$.pipe(startWith<IlkDataList | undefined>(undefined)),
     featuredIlks$.pipe(startWith<FeaturedIlk[] | undefined>(undefined)),
   ).pipe(
-    map(([vaults, vaultSummary, ilkDataList, featuredIlks]) => ({
+    map(([context, vaults, vaultSummary, ilkDataList, featuredIlks]) => ({
+      canOpenVault: !context.readonly,
       vaults,
       vaultSummary,
       ilkDataList,

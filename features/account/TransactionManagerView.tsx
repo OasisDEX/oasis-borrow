@@ -3,10 +3,10 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ActivityItem } from 'components/Activity'
 import { TxData } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ViewMore } from 'components/ViewMore'
 import { useObservable } from 'helpers/observableHook'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'

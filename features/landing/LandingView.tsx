@@ -125,19 +125,17 @@ export function LandingView() {
           </>
         }
       >
-        {landing.rows.map((ilk) => (
-          <Table.Row sx={{ td: { py: 2 } }}>
+        {landing.rows.map(({ token, ilk, ilkDebtAvailable, stabilityFee, liquidationRatio }) => (
+          <Table.Row key={ilk} sx={{ td: { py: 2 } }}>
             <Table.Cell>
-              <TokenSymbol token={ilk.token} />
+              <TokenSymbol token={token} />
             </Table.Cell>
-            <Table.Cell>{ilk.ilk}</Table.Cell>
+            <Table.Cell>{ilk}</Table.Cell>
             <Table.Cell sx={{ textAlign: 'right' }}>
-              {formatCryptoBalance(ilk.daiAvailable)}
+              {formatCryptoBalance(ilkDebtAvailable)}
             </Table.Cell>
-            <Table.Cell sx={{ textAlign: 'right' }}>{formatPercent(ilk.stabilityFee)}</Table.Cell>
-            <Table.Cell sx={{ textAlign: 'right' }}>
-              {formatPercent(ilk.liquidationRatio)}
-            </Table.Cell>
+            <Table.Cell sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee)}</Table.Cell>
+            <Table.Cell sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio)}</Table.Cell>
             <Table.Cell sx={{ textAlign: 'right' }}>
               <Button sx={{ lineHeight: 1 }} variant="outline">
                 Open Vault

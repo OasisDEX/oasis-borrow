@@ -1,18 +1,16 @@
 import BigNumber from 'bignumber.js'
-import { IlkDataList, IlkDataSummary } from 'blockchain/ilks'
+import { IlkDataList } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
+import { OpenVaultModal } from 'features/openVault/openVaultView'
 import { VaultSummary } from 'features/vault/vaultSummary'
-import {
-  formatAddress,
-  formatCryptoBalance,
-  formatPercent,
-} from 'helpers/formatters/format'
+import { formatAddress, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
-import { Box, Button, Text, Grid, Heading, Card, Flex } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { Table, TokenSymbol } from '../landing/LandingView'
@@ -67,7 +65,22 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
   )
 }
 
-function AllIlks({ ilks }: { ilks: IlkDataList }) {
+function AllIlks({
+  canOpenVault,
+  ilkDataList,
+}: {
+  canOpenVault: boolean
+  ilkDataList: IlkDataList
+}) {
+  const openModal = useModal()
+
+  function handleVaultOpen(ilk: string) {
+    return (e: React.SyntheticEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      openModal(OpenVaultModal, { ilk })
+    }
+  }
+
   return (
     <Table
       header={
@@ -81,23 +94,28 @@ function AllIlks({ ilks }: { ilks: IlkDataList }) {
         </>
       }
     >
-      {ilks.map((ilk) => (
-        <Table.Row key={ilk.ilk}>
+      {ilkDataList.map(({ ilk, token, ilkDebtAvailable, stabilityFee, liquidationRatio }) => (
+        <Table.Row key={ilk}>
           <Table.Cell>
-            <TokenSymbol token={ilk.token} />
+            <TokenSymbol token={token} />
           </Table.Cell>
-          <Table.Cell>{ilk.ilk}</Table.Cell>
+          <Table.Cell>{ilk}</Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
-            {formatCryptoBalance(ilk.daiAvailable)}
-          </Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>
-            {formatPercent(ilk.stabilityFee.times(100))}
+            {formatCryptoBalance(ilkDebtAvailable)}
           </Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
-            {formatPercent(ilk.liquidationRatio.times(100))}
+            {formatPercent(stabilityFee.times(100))}
           </Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
-            <Button sx={{ lineHeight: 1 }} variant="outline">
+            {formatPercent(liquidationRatio.times(100))}
+          </Table.Cell>
+          <Table.Cell sx={{ textAlign: 'right' }}>
+            <Button
+              sx={{ lineHeight: 1 }}
+              variant="outline"
+              disabled={!canOpenVault}
+              onClick={handleVaultOpen(ilk)}
+            >
               Open Vault
             </Button>
           </Table.Cell>
@@ -195,10 +213,14 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
       <Flex>
         {assets.map(([token, ratio]) => (
           <Box key={token} sx={{ my: 2, flex: ratio.toString() }}>
-            {ratio.gt(0.08) && <Flex sx={{ flexDirection: 'column' }}>
-              <TokenSymbol token={token} />
-              <Text sx={{ml: '28px', fontSize: 1, color: 'text.muted'}}>{formatPercent(ratio.times(100), {precision: 2})}</Text>
-            </Flex>}
+            {ratio.gt(0.08) && (
+              <Flex sx={{ flexDirection: 'column' }}>
+                <TokenSymbol token={token} />
+                <Text sx={{ ml: '28px', fontSize: 1, color: 'text.muted' }}>
+                  {formatPercent(ratio.times(100), { precision: 2 })}
+                </Text>
+              </Flex>
+            )}
           </Box>
         ))}
       </Flex>
@@ -217,6 +239,7 @@ export function FeaturedIlks({ ilks }: { ilks: FeaturedIlk[] }) {
 }
 
 export function VaultsOverviewView({
+  canOpenVault,
   vaults,
   ilkDataList,
   vaultSummary,
@@ -255,7 +278,7 @@ export function VaultsOverviewView({
       {ilkDataList && (
         <>
           <Heading>Vaults</Heading>
-          <AllIlks ilks={ilkDataList} />
+          <AllIlks canOpenVault={canOpenVault} ilkDataList={ilkDataList} />
         </>
       )}
     </Grid>

@@ -1,8 +1,8 @@
 export enum TxMetaKind {
-  // setupDSProxy = 'setupDSProxy',
-  // setOwner = 'setOwner',
-  // approve = 'approve',
-  // disapprove = 'disapprove',
+  createDsProxy = 'createDsProxy',
+  setProxyOwner = 'setProxyOwner',
+  approve = 'approve',
+  disapprove = 'disapprove',
   // dsrJoin = 'dsrJoin',
   // dsrExit = 'dsrExit',
   // dsrExitAll = 'dsrExitAll',

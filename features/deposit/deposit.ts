@@ -1,16 +1,14 @@
 import BigNumber from 'bignumber.js'
-import { TxHelpers } from 'components/AppContext'
-import { tokenBalance } from 'blockchain/calls/erc20'
-import { CallObservable } from 'blockchain/calls/observe'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ContextConnected } from 'blockchain/network'
+import { Vault } from 'blockchain/vaults'
+import { TxHelpers } from 'components/AppContext'
 import { ApplyChange, applyChange, Change, Changes, transactionToX } from 'helpers/form'
 import { curry } from 'ramda'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
 import { lockAndDraw } from '../../blockchain/calls/lockAndDraw'
-import { Vault } from '../vaults/vault'
 
 export type DepositStage =
   | 'editing'

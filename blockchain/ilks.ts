@@ -1,11 +1,12 @@
+import BigNumber from 'bignumber.js'
 import { CatIlk, catIlk } from 'blockchain/calls/cat'
 import { JugIlk, jugIlk } from 'blockchain/calls/jug'
 import { CallObservable } from 'blockchain/calls/observe'
 import { SpotIlk, spotIlk } from 'blockchain/calls/spot'
 import { VatIlk, vatIlk } from 'blockchain/calls/vat'
-import { of } from 'rxjs'
 import { Context } from 'blockchain/network'
-import BigNumber from 'bignumber.js'
+import { zero } from 'helpers/zero'
+import { of } from 'rxjs'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -15,7 +16,13 @@ export function createIlks$(context$: Observable<Context>): Observable<string[]>
   )
 }
 
-export type IlkData = VatIlk & SpotIlk & JugIlk & CatIlk
+interface DerivedIlkData {
+  token: string
+  ilk: string
+  ilkDebt: BigNumber
+  ilkDebtAvailable: BigNumber
+}
+export type IlkData = VatIlk & SpotIlk & JugIlk & CatIlk & DerivedIlkData
 
 export function createIlkData$(
   vatIlks$: CallObservable<typeof vatIlk>,
@@ -45,46 +52,30 @@ export function createIlkData$(
           liquidatorAddress,
           liquidationPenalty,
           maxAuctionLotSize,
+          token: ilk.split('-')[0],
+          ilk,
+          ilkDebt: debtScalingFactor
+            .times(normalizedIlkDebt)
+            .decimalPlaces(18, BigNumber.ROUND_DOWN),
+          ilkDebtAvailable: BigNumber.max(
+            debtCeiling
+              .minus(debtScalingFactor.times(normalizedIlkDebt))
+              .decimalPlaces(18, BigNumber.ROUND_DOWN),
+            zero,
+          ),
         }),
     ),
   )
 }
 
-export interface IlkDataSummary {
-  token: string
-  ilk: string
-  daiAvailable: BigNumber
-  stabilityFee: BigNumber
-  liquidationRatio: BigNumber
-  ilkDebt: BigNumber
-}
-
-export type IlkDataList = IlkDataSummary[]
+export type IlkDataList = IlkData[]
 
 export function createIlkDataList$(
-  ilks$: Observable<string[]>,
   ilkData$: (ilk: string) => Observable<IlkData>,
+  ilks$: Observable<string[]>,
 ): Observable<IlkDataList> {
   return ilks$.pipe(
-    switchMap((ilks) =>
-      combineLatest(ilks.map((ilk) => ilkData$(ilk))).pipe(
-        map((ilkDataList) =>
-          ilkDataList.map(
-            (
-              { stabilityFee, debtCeiling, liquidationRatio, debtScalingFactor, normalizedIlkDebt },
-              i,
-            ) => ({
-              token: ilks[i].split('-')[0],
-              ilk: ilks[i],
-              daiAvailable: debtCeiling.minus(debtScalingFactor.times(normalizedIlkDebt)),
-              stabilityFee,
-              liquidationRatio,
-              ilkDebt: normalizedIlkDebt.times(debtScalingFactor),
-            }),
-          ),
-        ),
-      ),
-    ),
+    switchMap((ilks) => combineLatest(ilks.map((ilk) => ilkData$(ilk)))),
     distinctUntilChanged(),
     shareReplay(1),
   )

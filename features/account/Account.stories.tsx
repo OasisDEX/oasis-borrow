@@ -52,7 +52,6 @@ function MockContextProvider({
   title,
   web3Context,
   transactions = [],
-  onrampOrders = [],
 }: MockContextProviderProps) {
   const ctx = ({
     web3Context$: of(web3Context),

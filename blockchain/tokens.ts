@@ -1,12 +1,11 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { bindNodeCallback, combineLatest, from, Observable, of } from 'rxjs'
+import { bindNodeCallback, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
-import { Context } from './network'
-import { tokenBalance } from './calls/erc20'
+
+import { tokenAllowance, tokenBalance } from './calls/erc20'
 import { CallObservable } from './calls/observe'
-import { Dictionary } from 'ts-essentials'
-import { zipObject } from 'lodash'
+import { Context } from './network'
 
 export function createBalance$(
   onEveryBlock$: Observable<number>,
@@ -26,6 +25,21 @@ export function createBalance$(
         )
       }
       return tokenBalance$({ token, account: address })
+    }),
+  )
+}
+
+export function createAllowance$(
+  context$: Observable<Context>,
+  tokenAllowance$: CallObservable<typeof tokenAllowance>,
+  token: string,
+  owner: string,
+  spender: string,
+) {
+  return context$.pipe(
+    switchMap(() => {
+      if (token === 'ETH') return of(true)
+      return tokenAllowance$({ token, owner, spender })
     }),
   )
 }
