@@ -327,7 +327,7 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'allowanceWaitToContinue') {
+  if (state.stage === 'waitToContinue') {
     return {
       ...state,
       proceed: () => change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' }),
