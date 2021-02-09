@@ -11,5 +11,9 @@ export function createOpenVault$(
   ilks$: Observable<string[]>,
   ilk: string,
 ): Observable<any> {
-  return combineLatest(context$, ilks$).pipe(switchMap(([_, ilks]) => ilks))
+  return ilks$.pipe(
+    switchMap((ilks) => {
+      return of(ilks)
+    }),
+  )
 }

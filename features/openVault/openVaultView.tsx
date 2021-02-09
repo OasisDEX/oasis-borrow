@@ -10,6 +10,7 @@ function OpenVaultCard() {
 export function OpenVaultView({ ilk }: { ilk: string }) {
   const { openVault$ } = useAppContext()
   const ilks = useObservable(openVault$(ilk))
+  console.log(ilks)
 
   return (
     <Grid columns="2fr 1fr" gap={5} sx={{ width: '100%' }}>

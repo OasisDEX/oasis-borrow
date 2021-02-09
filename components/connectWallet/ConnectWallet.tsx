@@ -418,6 +418,16 @@ export function WithVaultConnection({ children }: WithChildren) {
   return children
 }
 
+export function WithOpenVaultConnection({ children }: WithChildren) {
+  const router = useRouter()
+  const { web3Context$ } = useAppContext()
+  const { push } = useRedirect()
+
+  useEffect(() => autoConnect(web3Context$, of(undefined), getNetworkId()), [])
+
+  return children
+}
+
 export function WithConnection({ children }: WithChildren) {
   const router = useRouter()
 
@@ -425,5 +435,7 @@ export function WithConnection({ children }: WithChildren) {
     return <WithOverviewConnection>{children}</WithOverviewConnection>
   } else if (router.pathname === '/[vault]') {
     return <WithVaultConnection>{children}</WithVaultConnection>
+  } else if (router.pathname === '/vaults/open/[ilk]') {
+    return <WithOpenVaultConnection>{children}</WithOpenVaultConnection>
   } else return children
 }

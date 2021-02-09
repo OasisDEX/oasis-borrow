@@ -65,22 +65,7 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
   )
 }
 
-function AllIlks({
-  canOpenVault,
-  ilkDataList,
-}: {
-  canOpenVault: boolean
-  ilkDataList: IlkDataList
-}) {
-  const openModal = useModal()
-
-  function handleVaultOpen(ilk: string) {
-    return (e: React.SyntheticEvent<HTMLButtonElement>) => {
-      e.preventDefault()
-      openModal(OpenVaultModal, { ilk })
-    }
-  }
-
+function AllIlks({ ilkDataList }: { ilkDataList: IlkDataList }) {
   return (
     <Table
       header={
@@ -110,14 +95,14 @@ function AllIlks({
             {formatPercent(liquidationRatio.times(100))}
           </Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
-            <Button
+            <AppLink
               sx={{ lineHeight: 1 }}
-              variant="outline"
-              disabled={!canOpenVault}
-              onClick={handleVaultOpen(ilk)}
+              variant="buttons.outline"
+              as={`/vaults/open/${ilk}`}
+              href={`/vaults/open/[ilk]`}
             >
               Open Vault
-            </Button>
+            </AppLink>
           </Table.Cell>
         </Table.Row>
       ))}
@@ -278,7 +263,7 @@ export function VaultsOverviewView({
       {ilkDataList && (
         <>
           <Heading>Vaults</Heading>
-          <AllIlks canOpenVault={canOpenVault} ilkDataList={ilkDataList} />
+          <AllIlks ilkDataList={ilkDataList} />
         </>
       )}
     </Grid>

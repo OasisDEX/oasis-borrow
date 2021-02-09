@@ -12,7 +12,7 @@ import { zero } from 'helpers/zero'
 import React from 'react'
 import { Box, Button, Grid, Heading, Spinner, Text } from 'theme-ui'
 
-import { ManualChange, OpenVaultStage, OpenVaultState } from './openVault'
+import { ManualChange, OpenVaultStage, OpenVaultState } from './openVaultModal'
 
 interface OpenVaultWrapperProps extends WithChildren {
   title: string
@@ -444,12 +444,4 @@ export function OpenVaultModal({ ilk, close }: ModalProps) {
       <OpenVaultModalView {...{ ...openVaultModal, steps: 3, closeModal: close }} />
     </ModalBottom>
   )
-}
-
-export function OpenVaultView({ ilk }: { ilk: string | undefined }) {
-  const { ilks$ } = useAppContext()
-  const ilks = useObservable(ilks$)
-  console.log(ilk, ilks)
-
-  return null
 }
