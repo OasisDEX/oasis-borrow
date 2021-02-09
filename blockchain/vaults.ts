@@ -298,6 +298,7 @@ export function createVault$(
   ilkData$: (ilk: string) => Observable<IlkData>,
   tokenOraclePrice$: (ilk: string) => Observable<BigNumber>,
   controller$: (id: BigNumber) => Observable<string | undefined>,
+  ilkToToken$: Observable<(ilk: string) => string>,
   id: BigNumber,
 ): Observable<Vault> {
   return combineLatest(
@@ -305,9 +306,10 @@ export function createVault$(
     cdpManagerIlks$(id),
     cdpManagerOwner$(id),
     controller$(id),
+    ilkToToken$
   ).pipe(
-    switchMap(([urnAddress, ilk, owner, controller]) => {
-      const [token] = ilk.split('-')
+    switchMap(([urnAddress, ilk, owner, controller, ilkToToken]) => {
+      const token = ilkToToken(ilk)
       return combineLatest(
         vatUrns$({ ilk, urnAddress }),
         vatGem$({ ilk, urnAddress }),

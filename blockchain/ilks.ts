@@ -29,15 +29,17 @@ export function createIlkData$(
   spotIlks$: CallObservable<typeof spotIlk>,
   jugIlks$: CallObservable<typeof jugIlk>,
   catIlks$: CallObservable<typeof catIlk>,
+  ilkToToken$: Observable<(ilk: string) => string>,
   ilk: string,
 ): Observable<IlkData> {
-  return combineLatest(vatIlks$(ilk), spotIlks$(ilk), jugIlks$(ilk), catIlks$(ilk)).pipe(
+  return combineLatest(vatIlks$(ilk), spotIlks$(ilk), jugIlks$(ilk), catIlks$(ilk), ilkToToken$).pipe(
     switchMap(
       ([
         { normalizedIlkDebt, debtScalingFactor, maxDebtPerUnitCollateral, debtCeiling, debtFloor },
         { priceFeedAddress, liquidationRatio },
         { stabilityFee, feeLastLevied },
         { liquidatorAddress, liquidationPenalty, maxAuctionLotSize },
+        ilkToToken
       ]) =>
         of({
           normalizedIlkDebt,
@@ -52,7 +54,7 @@ export function createIlkData$(
           liquidatorAddress,
           liquidationPenalty,
           maxAuctionLotSize,
-          token: ilk.split('-')[0],
+          token: ilkToToken(ilk),
           ilk,
           ilkDebt: debtScalingFactor
             .times(normalizedIlkDebt)
