@@ -20,7 +20,7 @@
     "coverage": " yarn test:coverage && codecov",
     "test:fix": "yarn lint:fix && yarn tsc && yarn format:fix && yarn test && yarn typecheck",
     "test:e2e": "mocha --config ./server-test-e2e/.mocharc.js",
-    "typechain:generate": "typechain --target=web3-v1 \\\"blockchain/abi/*.json\\\"",
+    "typechain:generate": "typechain --target=web3-v1 'blockchain/abi/*.json'",
     "postinstall": "rm -f node_modules/web3/index.d.ts && yarn prisma:generate && yarn patch-package && yarn typechain:generate",
     "storybook": "start-storybook -p 6006 -c .storybook -s ./public"
   },
