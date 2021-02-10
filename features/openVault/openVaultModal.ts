@@ -23,7 +23,7 @@ import { combineLatest, EMPTY, merge, Observable, of, Subject } from 'rxjs'
 import { filter, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 import Web3 from 'web3'
 
-export type OpenVaultStage =
+export type OpenVaultModalStage =
   | 'editing'
   | 'proxyWaitingForConfirmation'
   | 'proxyWaitingForApproval'
@@ -40,15 +40,15 @@ export type OpenVaultStage =
   | 'transactionFiasco'
   | 'transactionSuccess'
 
-type OpenVaultChange = Changes<OpenVaultState>
+type OpenVaultModalChange = Changes<OpenVaultModalState>
 
 export type ManualChange =
-  | Change<OpenVaultState, 'lockAmount'>
-  | Change<OpenVaultState, 'drawAmount'>
-  | Change<OpenVaultState, 'maxDrawAmount'>
+  | Change<OpenVaultModalState, 'lockAmount'>
+  | Change<OpenVaultModalState, 'drawAmount'>
+  | Change<OpenVaultModalState, 'maxDrawAmount'>
 
-export interface OpenVaultState extends HasGasEstimation {
-  stage: OpenVaultStage
+export interface OpenVaultModalState extends HasGasEstimation {
+  stage: OpenVaultModalStage
   proxyAddress?: string
   allowance?: boolean
   proxyTxHash?: string
@@ -75,12 +75,12 @@ export interface OpenVaultState extends HasGasEstimation {
   drawAmount?: BigNumber
   maxDrawAmount?: BigNumber
 
-  messages: OpenVaultMessage[]
+  messages: OpenVaultModalMessage[]
   txError?: any
   change?: (change: ManualChange) => void
   createProxy?: () => void
   setAllowance?: () => void
-  continue2ConfirmOpenVault?: () => void
+  continue2ConfirmOpenVaultModal?: () => void
   openVault?: () => void
   tryAgain?: () => void
   back?: () => void
@@ -88,18 +88,18 @@ export interface OpenVaultState extends HasGasEstimation {
   proceed?: () => void
 }
 
-const apply: ApplyChange<OpenVaultState> = applyChange
+const apply: ApplyChange<OpenVaultModalState> = applyChange
 
 function createProxy(
   { safeConfirmations }: ContextConnected,
   { sendWithGasEstimation }: TxHelpers,
   proxyAddress$: Observable<string | undefined>,
-  change: (ch: OpenVaultChange) => void,
-  state: OpenVaultState,
+  change: (ch: OpenVaultModalChange) => void,
+  state: OpenVaultModalState,
 ) {
   sendWithGasEstimation(createDsProxy, { kind: TxMetaKind.createDsProxy })
     .pipe(
-      transactionToX<OpenVaultChange, CreateDsProxyData>(
+      transactionToX<OpenVaultModalChange, CreateDsProxyData>(
         { kind: 'stage', stage: 'proxyWaitingForApproval' },
         (txState) =>
           of(
@@ -152,8 +152,8 @@ function createProxy(
 function setAllowance(
   { sendWithGasEstimation }: TxHelpers,
   allowance$: Observable<boolean>,
-  change: (ch: OpenVaultChange) => void,
-  state: OpenVaultState,
+  change: (ch: OpenVaultModalChange) => void,
+  state: OpenVaultModalState,
 ) {
   sendWithGasEstimation(approve, {
     kind: TxMetaKind.approve,
@@ -161,7 +161,7 @@ function setAllowance(
     spender: state.proxyAddress!,
   })
     .pipe(
-      transactionToX<OpenVaultChange, ApproveData>(
+      transactionToX<OpenVaultModalChange, ApproveData>(
         { kind: 'stage', stage: 'allowanceWaitingForApproval' },
         (txState) =>
           of(
@@ -216,8 +216,8 @@ function parseVaultIdFromReceiptLogs({ logs }: Receipt) {
 
 function openVault(
   { send }: TxHelpers,
-  change: (ch: OpenVaultChange) => void,
-  { lockAmount, drawAmount, proxyAddress, ilk, token }: OpenVaultState,
+  change: (ch: OpenVaultModalChange) => void,
+  { lockAmount, drawAmount, proxyAddress, ilk, token }: OpenVaultModalState,
 ) {
   send(lockAndDraw, {
     kind: TxMetaKind.lockAndDraw,
@@ -228,7 +228,7 @@ function openVault(
     tkn: token,
   })
     .pipe(
-      transactionToX<OpenVaultChange, LockAndDrawData>(
+      transactionToX<OpenVaultModalChange, LockAndDrawData>(
         { kind: 'stage', stage: 'transactionWaitingForApproval' },
         (txState) =>
           of(
@@ -266,10 +266,10 @@ function addTransitions(
   txHelpers: TxHelpers,
   proxyAddress$: Observable<string | undefined>,
   allowance$: Observable<boolean>,
-  change: (ch: OpenVaultChange) => void,
-  state: OpenVaultState,
-): OpenVaultState {
-  function backToOpenVaultEditing() {
+  change: (ch: OpenVaultModalChange) => void,
+  state: OpenVaultModalState,
+): OpenVaultModalState {
+  function backToOpenVaultModalEditing() {
     change({ kind: 'stage', stage: 'editing' })
   }
 
@@ -338,7 +338,7 @@ function addTransitions(
     return {
       ...state,
       openVault: () => openVault(txHelpers, change, state),
-      back: backToOpenVaultEditing,
+      back: backToOpenVaultModalEditing,
     }
   }
 
@@ -346,7 +346,7 @@ function addTransitions(
     return {
       ...state,
       tryAgain: () => openVault(txHelpers, change, state),
-      back: backToOpenVaultEditing,
+      back: backToOpenVaultModalEditing,
     }
   }
 
@@ -360,7 +360,7 @@ function addTransitions(
   return state
 }
 
-type OpenVaultMessage = {
+type OpenVaultModalMessage = {
   kind:
     | 'lockAmountEmpty'
     | 'lockAmountGreaterThanBalance'
@@ -371,11 +371,11 @@ type OpenVaultMessage = {
     | 'vaultUnderCollateralized'
 }
 
-function validate(state: OpenVaultState): OpenVaultState {
+function validate(state: OpenVaultModalState): OpenVaultModalState {
   const { lockAmount, drawAmount, maxLockAmount, maxDrawAmount, ilkData } = state
   const { ilkDebtAvailable, debtFloor, maxDebtPerUnitCollateral } = ilkData!
 
-  const messages: OpenVaultMessage[] = []
+  const messages: OpenVaultModalMessage[] = []
 
   if (!lockAmount || lockAmount.eq(zero)) {
     messages.push({ kind: 'lockAmountEmpty' })
@@ -406,8 +406,8 @@ function validate(state: OpenVaultState): OpenVaultState {
 
 // function constructEstimateGas(
 //   addGasEstimation: AddGasEstimationFunction,
-//   state: OpenVaultState,
-// ): Observable<OpenVaultState> {
+//   state: OpenVaultModalState,
+// ): Observable<OpenVaultModalState> {
 //   return addGasEstimation(state, ({ estimateGas }: TxHelpers) => {
 //     const { proxyAddress, stage, amount } = state
 //
@@ -430,7 +430,7 @@ function validate(state: OpenVaultState): OpenVaultState {
 //   })
 // }
 
-export function createOpenVaultModal$(
+export function createOpenVaultModalModal$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
@@ -439,7 +439,7 @@ export function createOpenVaultModal$(
   balance$: (token: string, address: string) => Observable<BigNumber>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilk: string,
-): Observable<OpenVaultState> {
+): Observable<OpenVaultModalState> {
   return combineLatest(context$, txHelpers$).pipe(
     switchMap(([context, txHelpers]) => {
       const account = context.account
@@ -457,7 +457,7 @@ export function createOpenVaultModal$(
           ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
             first(),
             switchMap((allowance: boolean | undefined) => {
-              const initialState: OpenVaultState = {
+              const initialState: OpenVaultModalState = {
                 stage: 'editing',
                 ilk,
                 token,
@@ -472,9 +472,9 @@ export function createOpenVaultModal$(
                 gasEstimationStatus: GasEstimationStatus.unset,
               }
 
-              const change$ = new Subject<OpenVaultChange>()
+              const change$ = new Subject<OpenVaultModalChange>()
 
-              function change(ch: OpenVaultChange) {
+              function change(ch: OpenVaultModalChange) {
                 change$.next(ch)
               }
 

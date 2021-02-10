@@ -26,7 +26,6 @@ import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createLanding$ } from 'features/landing/landing'
 import { createOpenVault$ } from 'features/openVault/openVault'
-import { createOpenVaultModal$ } from 'features/openVault/openVaultModal'
 import { createVaultSummary$ } from 'features/vault/vaultSummary'
 import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { mapValues } from 'lodash'
@@ -189,7 +188,7 @@ export function setupAppContext() {
   const ilks$ = createIlks$(context$)
   const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
 
-  const openVaultModal$ = curry(createOpenVaultModal$)(
+  const openVault$ = curry(createOpenVault$)(
     connectedContext$,
     txHelpers$,
     proxyAddress$,
@@ -197,9 +196,8 @@ export function setupAppContext() {
     tokenOraclePrice$,
     balance$,
     ilkData$,
+    ilks$,
   )
-
-  const openVault$ = curry(createOpenVault$)(context$, ilks$)
 
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
 
@@ -231,7 +229,6 @@ export function setupAppContext() {
     vaultSummary$,
     depositForm$,
     landing$,
-    openVaultModal$,
     openVault$,
     vaultsOverview$,
   }

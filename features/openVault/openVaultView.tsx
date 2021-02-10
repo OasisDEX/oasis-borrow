@@ -1,10 +1,13 @@
+import { BigNumber } from 'bignumber.js'
+import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
+import { AmountInput } from 'helpers/input'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
-import { Box, Card, Grid, Heading, Spinner, Text } from 'theme-ui'
-import { OpenVaultState } from './openVault'
+import { Box, Button, Card, Grid, Heading, Spinner, Text } from 'theme-ui'
+import { OpenVaultStage, OpenVaultState } from './openVault'
 
-function NewVaultDetails({}: any) {
+function OpenVaultDetails({}: any) {
   return (
     <Grid columns="1fr 1fr" gap={6} sx={{ justifyContent: 'space-between' }}>
       <Grid>
@@ -34,34 +37,131 @@ function NewVaultDetails({}: any) {
   )
 }
 
-function OpenVaultCard({}: OpenVaultState) {
-  return <Card>Vault Creation modal</Card>
+function OpenVaultTitle({ stage }: { stage: OpenVaultStage }) {
+  let title = ''
+
+  const isProxyStage =
+    stage === 'proxyWaitingForConfirmation' ||
+    stage === 'proxyWaitingForApproval' ||
+    stage === 'proxyInProgress' ||
+    stage === 'proxyFailure'
+
+  const isAllowanceStage =
+    stage === 'allowanceWaitingForConfirmation' ||
+    stage === 'allowanceWaitingForApproval' ||
+    stage === 'allowanceInProgress' ||
+    stage === 'allowanceFailure'
+
+  if (stage === 'editing') {
+    title = 'Configure Your Vault'
+  } else if (isProxyStage) {
+    title = 'Create Proxy'
+  } else if (isAllowanceStage) {
+    title = 'Set allowance'
+  } else {
+    title = 'Create Your Vault'
+  }
+
+  return <Text>{title}</Text>
+}
+
+function OpenVaultDeposit() {
+  return (
+    <AmountInput
+      action={'Deposit ETH'}
+      disabled={false}
+      balance={new BigNumber('1')}
+      token={getToken('ETH')}
+      hasError={false}
+      onChange={(e) => console.log(e.target.value)}
+    />
+  )
+}
+
+function OpenVaultGenerate() {
+  return (
+    <AmountInput
+      action={'Generate DAI'}
+      disabled={false}
+      balance={new BigNumber('1')}
+      token={getToken('DAI')}
+      hasError={false}
+      onChange={(e) => console.log(e.target.value)}
+    />
+  )
+}
+
+function OpenVaultGasSelection() {
+  return null
+}
+
+function OpenVaultButton({ stage }: { stage: OpenVaultStage }) {
+  let title = ''
+
+  const isProxyStage =
+    stage === 'proxyWaitingForConfirmation' ||
+    stage === 'proxyWaitingForApproval' ||
+    stage === 'proxyInProgress' ||
+    stage === 'proxyFailure'
+
+  const isAllowanceStage =
+    stage === 'allowanceWaitingForConfirmation' ||
+    stage === 'allowanceWaitingForApproval' ||
+    stage === 'allowanceInProgress' ||
+    stage === 'allowanceFailure'
+
+  if (stage === 'editing') {
+    title = 'Confirm'
+  } else if (isProxyStage) {
+    title = 'Create Proxy'
+  } else if (isAllowanceStage) {
+    title = 'Approve allowance'
+  } else {
+    title = 'Create Your Vault'
+  }
+
+  return <Button>{title}</Button>
+}
+
+function OpenVaultForm() {
+  return null
+}
+
+function OpenVaultDisplay() {
+  return (
+    <Grid>
+      <OpenVaultDetails />
+      <OpenVaultForm />
+    </Grid>
+  )
 }
 
 export function OpenVaultView({ ilk }: { ilk: string }) {
   const { openVault$ } = useAppContext()
   const openVault = useObservable(openVault$(ilk))
 
+  console.log(openVault)
+
   if (!openVault) {
-    return (
-      <Grid sx={{ width: '100%', height: '50vh', justifyItems: 'center', alignItems: 'center' }}>
-        <Spinner size={50} />
-      </Grid>
-    )
+    return null
   }
 
-  if (!openVault.isValidIlk) {
+  if (openVault.isIlkValidationStage) {
     return (
       <Grid sx={{ width: '100%', height: '50vh', justifyItems: 'center', alignItems: 'center' }}>
-        <Box>Ilk {ilk} does not exist, please update the ilk registry if passed by governance</Box>
+        {openVault.stage === 'ilkValidationLoading' && <Spinner size={50} />}
+        {openVault.stage === 'ilkValidationFailure' && (
+          <Box>
+            Ilk {ilk} does not exist, please update the ilk registry if passed by governance
+          </Box>
+        )}
       </Grid>
     )
   }
 
   return (
-    <Grid columns="2fr 1fr" gap={5} sx={{ width: '100%' }}>
-      <NewVaultDetails />
-      <OpenVaultCard {...openVault} />
+    <Grid>
+      <OpenVaultDisplay />
     </Grid>
   )
 }
