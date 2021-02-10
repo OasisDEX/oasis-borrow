@@ -402,7 +402,7 @@ function OpenVaultView(props: OpenVaultState & { steps: number; closeModal: () =
     case 'allowanceWaitingForApproval':
     case 'allowanceInProgress':
     case 'allowanceFiasco':
-    case 'allowanceWaitToContinue':
+    case 'waitToContinue':
       return (
         <OpenVaultWrapper title={props.stage} step={1} steps={props.steps}>
           <ProxyAllowanceFlow {...props} />

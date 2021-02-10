@@ -58,7 +58,7 @@ export function describeTxNotificationStatus(tx?: TxMgrTransaction) {
     case TxStatus.Success:
       return { icon: ICONS.complete, keySuffix: 'complete' }
     default:
-      throw new UnreachableCaseError(tx)
+      throw new UnreachableCaseError(tx.status)
   }
 }
 
@@ -133,7 +133,6 @@ function RecentTransaction<A extends TxMeta>({ transaction }: { transaction: TxM
     status === TxStatus.CancelledByTheUser ||
     status === TxStatus.Error ||
     status === TxStatus.Failure
-
   const label = getTransactionTranslations(transaction)[isFailed ? 'recentFailed' : 'recent']
 
   return (
