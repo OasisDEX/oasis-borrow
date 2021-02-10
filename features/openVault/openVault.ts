@@ -189,7 +189,7 @@ function setAllowance(
         () =>
           allowance$.pipe(
             filter((allowance) => allowance),
-            switchMap(() => of({ kind: 'stage', stage: 'allowanceWaitToContinue' })),
+            switchMap(() => of({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' })),
           ),
       ),
     )
@@ -327,7 +327,7 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'allowanceWaitToContinue') {
+  if (state.stage === 'waitToContinue') {
     return {
       ...state,
       proceed: () => change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' }),

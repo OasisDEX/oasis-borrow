@@ -1,4 +1,3 @@
-
 // interface MockContextProviderProps extends WithChildren {
 //   web3Context?: Web3Context
 //   transactions?: TxState<TxData>[]

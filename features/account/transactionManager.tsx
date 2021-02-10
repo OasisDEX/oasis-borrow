@@ -11,13 +11,11 @@ import { distinctUntilChanged, map, shareReplay } from 'rxjs/operators'
 export type TxMgrTransaction = {
   id: string
   lastChange: Date
-} & (
-  | {
-      kind: 'blockchain'
-      status: TxStatus
-      raw: TxState<TxData>
-    }
-)
+} & {
+  kind: 'blockchain'
+  status: TxStatus
+  raw: TxState<TxData>
+}
 
 export type NotificationTransaction = {
   tx: TxMgrTransaction
@@ -31,7 +29,7 @@ interface TransactionManager {
 }
 
 export function isTxDone(tr: TxMgrTransaction) {
-  return ((tr.kind === 'blockchain' && isDone(tr.raw)))
+  return tr.kind === 'blockchain' && isDone(tr.raw)
 }
 
 export function TxTranslator({
