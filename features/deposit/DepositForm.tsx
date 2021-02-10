@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { useCallback } from 'react'
+import React, { useCallback } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Grid, Heading, Label, Text } from 'theme-ui'
 

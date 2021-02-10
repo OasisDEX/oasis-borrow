@@ -8,6 +8,7 @@ import {
   formatPrecision,
 } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
+import React from 'react'
 import { Box, Button, Grid, Heading, Text } from 'theme-ui'
 
 import { DepositForm } from '../deposit/DepositForm'
