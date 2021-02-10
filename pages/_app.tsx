@@ -1,10 +1,8 @@
 import { CacheProvider, Global } from '@emotion/core'
 // @ts-ignore
 import { MDXProvider } from '@mdx-js/react'
-import { AbstractConnector } from '@web3-react/abstract-connector'
 import { Web3ReactProvider } from '@web3-react/core'
 import { SetupWeb3Context } from 'blockchain/web3Context'
-import { wsEnhanceProvider } from 'blockchain/wsEnhancedProviderProxy'
 import { AppContextProvider } from 'components/AppContextProvider'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
 import { AppLayout, AppLayoutProps, MarketingLayoutProps } from 'components/Layouts'
@@ -25,10 +23,8 @@ import Web3 from 'web3'
 import { trackingEvents } from '../analytics/analytics'
 import { mixpanelInit } from '../analytics/mixpanel'
 
-function getLibrary(provider: any, connector: AbstractConnector): Web3 {
-  const chainIdPromise = connector.getChainId()
-  const wsEnhancedProvider = wsEnhanceProvider(provider, chainIdPromise)
-  return new Web3(wsEnhancedProvider)
+function getLibrary(provider: any): Web3 {
+  return new Web3(provider)
 }
 
 const globalStyles = `

@@ -1,7 +1,5 @@
 import * as mixpanel from 'mixpanel-browser'
 
-import { OnrampKind } from '../dashboard/onramp/onrampForm'
-
 export enum Pages {
   dashboard = 'Dashboard',
   onramp = 'OnRamp',
@@ -23,24 +21,6 @@ export const trackingEvents = {
       id: 'buy-dai',
       product,
       page: Pages.dashboard,
-    })
-  },
-  chooseOnrampProvider: (onramp: OnrampKind) => {
-    mixpanel.track('btn-click', {
-      id: 'choose-onramp-provider',
-      onramp,
-      product,
-      page: Pages.onramp,
-      section: 'choose-onramp',
-    })
-  },
-  onrampProceed: (token: string) => {
-    mixpanel.track('btn-click', {
-      id: 'onramp-submit',
-      product,
-      token,
-      page: Pages.onramp,
-      section: 'onramp-modal',
     })
   },
   dsrDeposit: () => {

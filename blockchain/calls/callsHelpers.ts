@@ -8,11 +8,11 @@ import {
   SendTransactionFunction as SendTransactionFunctionAbstractContext,
   TransactionDef as TransactionDefAbstractContext,
 } from '@oasisdex/transactions'
-import { GasPrice$ } from 'features/prices'
 import { from, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import { Context, ContextConnected } from '../network'
+import { GasPrice$ } from '../prices'
 
 export type CallDef<A, R> = CallDefAbstractContext<A, R, Context>
 
