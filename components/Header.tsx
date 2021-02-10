@@ -86,12 +86,10 @@ export function MarketingHeader() {
   )
 }
 
-export function ConnectPageHeader({ backLink }: { backLink: AppLinkProps }) {
+export function ConnectPageHeader() {
   return (
     <BasicHeader>
-      <AppLink {...backLink}>
-        <BackArrow />
-      </AppLink>
+      <Logo />
     </BasicHeader>
   )
 }

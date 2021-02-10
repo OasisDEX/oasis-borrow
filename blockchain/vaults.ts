@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
-import { ContextConnected } from 'blockchain/network'
+import { Context } from 'blockchain/network'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { mergeMap, shareReplay, switchMap } from 'rxjs/operators'
@@ -12,7 +12,7 @@ import { vatGem, vatUrns } from './calls/vat'
 import { IlkData } from './ilks'
 
 export function createVaults$(
-  context$: Observable<ContextConnected>,
+  context$: Observable<Context>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
   vault$: (id: BigNumber) => Observable<Vault>,
   address: string,

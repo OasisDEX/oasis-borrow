@@ -198,7 +198,7 @@ export function getConnectionKindMessage(connectionKind: ConnectionKind) {
   }
 }
 
-export function ConnectWallet(_: { originalUrl?: string }) {
+export function ConnectWallet({url}: { url?: string }) {
   const { web3Context$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
   const { t } = useTranslation('common')
@@ -207,8 +207,13 @@ export function ConnectWallet(_: { originalUrl?: string }) {
 
   useEffect(() => {
     const subscription = web3Context$.subscribe((web3Context) => {
+      console.log({url})
       if (web3Context.status === 'connected') {
-        replace(`/owner/[address]`, `/owner/${web3Context.account}`)
+        if (url) {
+          replace(url)
+        } else {
+          replace(`/owner/[address]`, `/owner/${web3Context.account}`)
+        }
       }
     })
     return () => subscription.unsubscribe()
@@ -325,13 +330,12 @@ export function ConnectWallet(_: { originalUrl?: string }) {
 
 function autoConnect(
   web3Context$: Observable<Web3Context>,
-  readOnlyAccount$: Observable<string | undefined>,
   defaultChainId: number,
 ) {
   let firstTime = true
 
-  const subscription = combineLatest(web3Context$, readOnlyAccount$).subscribe(
-    async ([web3Context, readOnlyAccount]) => {
+  const subscription = web3Context$.subscribe(
+    async (web3Context) => {
       try {
         const serialized = localStorage.getItem(AUTO_CONNECT)
         if (firstTime && web3Context.status === 'notConnected' && serialized) {
@@ -346,10 +350,8 @@ function autoConnect(
             web3Context.connect(connector, connectionKind)
           }
         } else if (web3Context.status === 'notConnected') {
-          if (readOnlyAccount) {
             console.log('autoConnecting readonly', defaultChainId)
             web3Context.connect(await getConnector('network', defaultChainId), 'network')
-          }
         }
         if (web3Context.status === 'connected') {
           localStorage.setItem(
@@ -365,7 +367,7 @@ function autoConnect(
           localStorage.removeItem(AUTO_CONNECT)
         }
       } catch (e) {
-        if (web3Context.status === 'notConnected' && readOnlyAccount) {
+        if (web3Context.status === 'notConnected') {
           console.log('falling back to autoConnecting readonly', defaultChainId)
           web3Context.connect(await getConnector('network', defaultChainId), 'network')
         }
@@ -379,51 +381,12 @@ function autoConnect(
   }
 }
 
-export function WithOverviewConnection({ children }: WithChildren) {
-  const router = useRouter()
-  const { web3Context$, readonlyAccount$ } = useAppContext()
-  const { address } = router.query as { address: string; network: string }
-  const { push } = useRedirect()
-
-  useEffect(() => {
-    if (Web3.utils.isAddress(address)) {
-      readonlyAccount$.next(address)
-    } else {
-      console.log('Invalid address')
-      push('/')
-    }
-    return () => readonlyAccount$.next(undefined)
-  }, [address])
-
-  useEffect(() => autoConnect(web3Context$, readonlyAccount$, getNetworkId()), [])
-
-  return children
-}
-
-export function WithVaultConnection({ children }: WithChildren) {
-  const router = useRouter()
-  const { web3Context$ } = useAppContext()
-  const { vault } = router.query as { vault: string }
-  const { push } = useRedirect()
-
-  useEffect(() => {
-    if (isNaN(+vault)) {
-      console.log('Invalid vault', vault)
-      push('/connect')
-    }
-  }, [vault])
-
-  useEffect(() => autoConnect(web3Context$, of('dhshah'), getNetworkId()), [])
-
-  return children
-}
 
 export function WithConnection({ children }: WithChildren) {
   const router = useRouter()
+  const { web3Context$ } = useAppContext()
+  
+  useEffect(() => autoConnect(web3Context$, getNetworkId()), [])
 
-  if (router.pathname === '/owner/[address]') {
-    return <WithOverviewConnection>{children}</WithOverviewConnection>
-  } else if (router.pathname === '/[vault]') {
-    return <WithVaultConnection>{children}</WithVaultConnection>
-  } else return children
+  return children
 }

@@ -8,7 +8,7 @@ import {
   SendTransactionFunction as SendTransactionFunctionAbstractContext,
   TransactionDef as TransactionDefAbstractContext,
 } from '@oasisdex/transactions'
-import { GasPrice$ } from 'features/prices'
+import { GasPrice$ } from 'blockchain/prices'
 import { from, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 

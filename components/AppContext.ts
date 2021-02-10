@@ -21,7 +21,6 @@ import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks
 import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
 import { createAllowance$, createBalance$ } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
-import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createLanding$ } from 'features/landing/landing'
@@ -94,8 +93,6 @@ function createTxHelpers$(
 }
 
 export function setupAppContext() {
-  const readonlyAccount$ = createReadonlyAccount$()
-
   const chainIdToRpcUrl = mapValues(networksById, (network) => network.infuraUrl)
   const chainIdToDAIContractDesc = mapValues(networksById, (network) => network.tokens.DAI)
   const [web3Context$, setupWeb3Context$] = createWeb3Context$(
@@ -110,7 +107,7 @@ export function setupAppContext() {
 
   const [onEveryBlock$] = createOnEveryBlock$(web3ContextConnected$)
 
-  const context$ = createContext$(web3ContextConnected$, readonlyAccount$)
+  const context$ = createContext$(web3ContextConnected$)
 
   const connectedContext$ = context$.pipe(
     filter(({ status }) => status === 'connected'),
@@ -176,7 +173,7 @@ export function setupAppContext() {
 
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 
-  const vaults$ = memoize(curry(createVaults$)(connectedContext$, proxyAddress$, vault$))
+  const vaults$ = memoize(curry(createVaults$)(context$, proxyAddress$, vault$))
 
   const vaultSummary$ = memoize(curry(createVaultSummary$)(vaults$))
 
@@ -201,7 +198,7 @@ export function setupAppContext() {
 
   const vaultsOverview$ = memoize(
     curry(createVaultsOverview$)(
-      connectedContext$,
+      context$,
       vaults$,
       vaultSummary$,
       ilkDataList$,
@@ -217,7 +214,6 @@ export function setupAppContext() {
     context$,
     onEveryBlock$,
     txHelpers$,
-    readonlyAccount$,
     transactionManager$,
     proxyAddress$,
     proxyOwner$,
