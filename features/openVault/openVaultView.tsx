@@ -5,7 +5,7 @@ import { AmountInput } from 'helpers/input'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 import { Box, Button, Card, Grid, Heading, Spinner, Text } from 'theme-ui'
-import { OpenVaultStage, OpenVaultState } from './openVault'
+import { EditingState, OpenVaultStage, OpenVaultState } from './openVault'
 
 function OpenVaultDetails({}: any) {
   return (
@@ -127,7 +127,7 @@ function OpenVaultForm() {
   return null
 }
 
-function OpenVaultDisplay() {
+function OpenVaultDisplay(props: EditingState) {
   return (
     <Grid>
       <OpenVaultDetails />
@@ -139,8 +139,6 @@ function OpenVaultDisplay() {
 export function OpenVaultView({ ilk }: { ilk: string }) {
   const { openVault$ } = useAppContext()
   const openVault = useObservable(openVault$(ilk))
-
-  console.log(openVault)
 
   if (!openVault) {
     return null
@@ -161,7 +159,7 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
 
   return (
     <Grid>
-      <OpenVaultDisplay />
+      <OpenVaultDisplay {...{ ...openVault }} />
     </Grid>
   )
 }

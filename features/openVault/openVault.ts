@@ -1,12 +1,13 @@
 import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
-import { ContextConnected } from 'blockchain/network'
+import { Context, ContextConnected, ContextConnectedReadOnly } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
-import { combineLatest, Observable, of, iif } from 'rxjs'
+import { combineLatest, Observable, of, iif, EMPTY } from 'rxjs'
 import { mergeMap, startWith, switchMap } from 'rxjs/operators'
 
 interface PersistentOpenVaultState {
   isIlkValidationStage: boolean
+  isEditingStage: boolean
   ilk: string
 }
 
@@ -17,6 +18,8 @@ export type IlkValidationStage =
 
 export interface IlkValidationState extends PersistentOpenVaultState {
   stage: IlkValidationStage
+  isIlkValidationStage: true
+  isEditingStage: false
 }
 
 function createIlkValidation$(
@@ -26,6 +29,7 @@ function createIlkValidation$(
   const initialState = {
     ilk,
     isIlkValidationStage: true,
+    isEditingStage: false,
     stage: 'ilkValidationLoading',
   } as IlkValidationState
 
@@ -47,9 +51,29 @@ function createIlkValidation$(
   )
 }
 
+type EditingStage = 'editingReadonly' | 'editingConnected'
+
+export interface EditingPersistentState extends PersistentOpenVaultState {
+  stage: EditingStage
+  isIlkValidationStage: false
+  isEditingStage: true
+  token: string
+}
+
+export interface EditingReadonly extends EditingPersistentState {
+  stage: 'editingReadonly'
+}
+
+export interface EditingConnected extends EditingPersistentState {
+  stage: 'editingConnected'
+  account: string
+}
+
+export type EditingState = EditingReadonly | EditingConnected
+
 export type OpenVaultStage =
   | IlkValidationStage
-  | 'editing'
+  | EditingStage
   | 'proxyWaitingForConfirmation'
   | 'proxyWaitingForApproval'
   | 'proxyInProgress'
@@ -65,10 +89,18 @@ export type OpenVaultStage =
   | 'transactionFailure'
   | 'transactionSuccess'
 
-export type OpenVaultState = IlkValidationState | { stage: 'editing' }
+export type OpenVaultState = IlkValidationState | EditingState
+
+function createOpenVaultReadonly$(context: ContextConnectedReadOnly, {}: IlkValidationState) {
+  return EMPTY
+}
+
+function createOpenVaultConnected$(context: ContextConnected, {}: IlkValidationState) {
+  return EMPTY
+}
 
 export function createOpenVault$(
-  context$: Observable<ContextConnected>,
+  context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
   allowance$: (token: string, owner: string, spender: string) => Observable<boolean>,
@@ -79,11 +111,19 @@ export function createOpenVault$(
   ilk: string,
 ): Observable<OpenVaultState> {
   return createIlkValidation$(ilks$, ilk).pipe(
-    mergeMap((ilkValidationState) =>
+    mergeMap((state) =>
       iif(
-        () => ilkValidationState.stage === 'ilkValidationSuccess',
-        of({ stage: 'editing' }),
-        of(ilkValidationState),
+        () => state.stage !== 'ilkValidationSuccess',
+        of(state),
+        context$.pipe(
+          mergeMap((context) =>
+            iif(
+              () => context.status === 'connected',
+              createOpenVaultConnected$(context as ContextConnected, state),
+              createOpenVaultReadonly$(context as ContextConnectedReadOnly, state),
+            ),
+          ),
+        ),
       ),
     ),
   )

@@ -189,7 +189,7 @@ export function setupAppContext() {
   const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
 
   const openVault$ = curry(createOpenVault$)(
-    connectedContext$,
+    context$,
     txHelpers$,
     proxyAddress$,
     allowance$,
