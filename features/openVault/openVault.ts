@@ -189,7 +189,7 @@ function setAllowance(
         () =>
           allowance$.pipe(
             filter((allowance) => allowance),
-            switchMap(() => of({ kind: 'stage', stage: 'allowanceWaitToContinue' })),
+            switchMap(() => of({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' })),
           ),
       ),
     )
