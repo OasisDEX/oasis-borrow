@@ -1,6 +1,6 @@
 import { storiesOf } from '@storybook/react'
 import { Container } from 'next/app'
-import { Text, Heading, Grid, Box } from 'theme-ui'
+import { Text, Heading, Grid, Box, Flex } from 'theme-ui'
 import {
   TypeScale,
   TypeStyle,
@@ -23,13 +23,15 @@ stories.add("Typography", () => {
     <Container>
       <Heading as="h1" sx={{my: 4, fontSize: 7}}>Typography</Heading>
       <Heading sx={{mt: 4, fontSize: 5}}>Font family</Heading>
-      <Grid sx={{my: 2}}>
+      <Grid sx={{my: 2}} gap="10px">
         {
-          Object.entries<[string, string]>(theme.fonts).map(([font, value]) => <Box key={font} sx={{fontFamily: font}}>{`${font}: ${value}`}</Box>)
+          Object.entries<[string, string]>(theme.fonts).map(([font, value]) => <Box bg="white" key={font} sx={{py: 2, fontFamily: font}}>{`${font}: ${value}`}</Box>)
         }
       </Grid>
       <Heading sx={{mt: 4, fontSize: 5}}>Type scale</Heading>
-      <TypeScale />
+      <Box bg="white">
+        <TypeScale />
+      </Box>
       <Heading sx={{mt: 4, fontSize: 5}}>Text variants</Heading>
       <Grid sx={{my: 2}} columns="repeat(4, 1fr)" gap="10px">
         {
@@ -47,15 +49,52 @@ stories.add("Typography", () => {
 stories.add("Colors", () => {
   return (
     <Container>
-      <Heading as="h1" sx={{my: 4, fontSize: 5}}>Colors</Heading>
+      <Heading as="h1" sx={{my: 4, fontSize: 7}}>Colors</Heading>
       <ColorPalette />
     </Container>
   )
 })
 
-stories.add('Theme', () => {
+const SizePreview = ({sizes}: {sizes: number[]}) => {
   return (
-    <div>COŚ</div>
+    <Grid>
+      {
+        sizes.map((size, index) => (
+          <Flex sx={{alignItems: 'center'}}>
+            <Box key={size} sx={{width: `${size}px`, height: '10px', bg: 'primary'}} />
+            <Box px={2}>{size}px</Box>
+            <Box px={2}>index: {index}</Box>
+          </Flex>
+        ))
+      }
+    </Grid>
+  )
+}
+
+stories.add('Theme elements', () => {
+  const sizes: number[] = theme.sizes 
+  const space: number[] = theme.space
+  const borders = Object.entries<[string, string]>(theme.borders)
+
+  return (
+    <Container>
+      <Heading as="h1" sx={{my: 4, fontSize: 7}}>Theme elements</Heading>
+      <Heading sx={{mt: 4, fontSize: 5}}>Sizes</Heading>
+      <Text>Used for:</Text>
+      <Text>width, height, min-width, max-width, min-height, max-height</Text>
+      <SizePreview sizes={sizes} />
+      <Heading sx={{mt: 4, fontSize: 5}}>Spaces</Heading>
+      <Text>Used for:</Text>
+      <Text>margin, margin-top, margin-right, margin-bottom, margin-left, padding, padding-top, padding-right, padding-bottom, padding-left, grid-gap, grid-column-gap, grid-row-gap</Text>
+      <SizePreview sizes={space} />
+      <Heading sx={{mt: 4, fontSize: 5}}>Borders styles</Heading>
+      <Grid>
+
+      {
+        borders.map(([name, style]) => <Box></Box> )
+      }
+      </Grid>
+    </Container>
   )
 })
 
