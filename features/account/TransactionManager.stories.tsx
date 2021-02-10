@@ -1,7 +1,6 @@
 import { TxState, TxStatus } from '@oasisdex/transactions'
 import { Web3Context } from '@oasisdex/web3-context'
 import { storiesOf } from '@storybook/react'
-import BigNumber from 'bignumber.js'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'

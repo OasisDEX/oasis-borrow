@@ -1,14 +1,11 @@
 // @ts-ignore
-import { Icon } from '@makerdao/dai-ui-icons'
+
 import { TxState } from '@oasisdex/transactions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxData } from 'components/AppContext'
 // import { LatamexOrder, MoonpayOrder, WyreOrder } from 'components/dashboard/onrampOrders'
-import { formatCryptoBalance } from 'helpers/formatters/format'
 // import { roundHalfUp } from 'helpers/rounding'
-import { zero } from 'helpers/zero'
 import React from 'react'
-import { Flex, Text } from 'theme-ui'
 
 import { TxMgrTransaction, TxTranslator } from './transactionManager'
 

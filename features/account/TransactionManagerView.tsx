@@ -3,7 +3,6 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ActivityItem } from 'components/Activity'
 import { TxData } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
