@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { AmountInput } from 'helpers/input'
+import { AmountInput, VaultActionInput } from 'components/VaultActionInput'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 import { Box, Button, Card, Grid, Heading, Spinner, Text } from 'theme-ui'
@@ -37,57 +37,17 @@ function OpenVaultDetails() {
   )
 }
 
-function OpenVaultTitle({ stage }: { stage: OpenVaultStage }) {
-  let title = ''
-
-  const isProxyStage =
-    stage === 'proxyWaitingForConfirmation' ||
-    stage === 'proxyWaitingForApproval' ||
-    stage === 'proxyInProgress' ||
-    stage === 'proxyFailure'
-
-  const isAllowanceStage =
-    stage === 'allowanceWaitingForConfirmation' ||
-    stage === 'allowanceWaitingForApproval' ||
-    stage === 'allowanceInProgress' ||
-    stage === 'allowanceFailure'
-
-  if (stage === 'editing') {
-    title = 'Configure Your Vault'
-  } else if (isProxyStage) {
-    title = 'Create Proxy'
-  } else if (isAllowanceStage) {
-    title = 'Set allowance'
-  } else {
-    title = 'Create Your Vault'
-  }
-
-  return <Text>{title}</Text>
-}
-
-function OpenVaultDeposit() {
+function OpenVaultFormTitle({ isEditingStage, isProxyStage, isAllowanceStage }: OpenVaultState) {
   return (
-    <AmountInput
-      action={'Deposit ETH'}
-      disabled={false}
-      balance={new BigNumber('1')}
-      token={getToken('ETH')}
-      hasError={false}
-      onChange={(e) => console.log(e.target.value)}
-    />
-  )
-}
-
-function OpenVaultGenerate() {
-  return (
-    <AmountInput
-      action={'Generate DAI'}
-      disabled={false}
-      balance={new BigNumber('1')}
-      token={getToken('DAI')}
-      hasError={false}
-      onChange={(e) => console.log(e.target.value)}
-    />
+    <Text>
+      {isEditingStage
+        ? 'Confirm'
+        : isProxyStage
+        ? 'Create Proxy'
+        : isAllowanceStage
+        ? 'Set Allowance'
+        : 'Create your Vault'}
+    </Text>
   )
 }
 
@@ -95,43 +55,52 @@ function OpenVaultGasSelection() {
   return null
 }
 
-function OpenVaultButton({ stage }: { stage: OpenVaultStage }) {
-  let title = ''
-
-  const isProxyStage =
-    stage === 'proxyWaitingForConfirmation' ||
-    stage === 'proxyWaitingForApproval' ||
-    stage === 'proxyInProgress' ||
-    stage === 'proxyFailure'
-
-  const isAllowanceStage =
-    stage === 'allowanceWaitingForConfirmation' ||
-    stage === 'allowanceWaitingForApproval' ||
-    stage === 'allowanceInProgress' ||
-    stage === 'allowanceFailure'
-
-  if (stage === 'editing') {
-    title = 'Confirm'
-  } else if (isProxyStage) {
-    title = 'Create Proxy'
-  } else if (isAllowanceStage) {
-    title = 'Approve allowance'
-  } else {
-    title = 'Create Your Vault'
-  }
-
-  return <Button>{title}</Button>
-}
-
-function OpenVaultForm() {
-  return <Card></Card>
-}
-
-function OpenVaultDisplay(props: EditingState) {
+function OpenVaultFormButton({ isEditingStage, isProxyStage, isAllowanceStage }: OpenVaultState) {
   return (
-    <Grid>
+    <Button>
+      {isEditingStage
+        ? 'Confirm'
+        : isProxyStage
+        ? 'Create Proxy'
+        : isAllowanceStage
+        ? 'Set Allowance'
+        : 'Create your Vault'}
+    </Button>
+  )
+}
+
+function OpenVaultForm(props: OpenVaultState) {
+  return (
+    <Card>
+      <Grid>
+        <OpenVaultFormTitle {...props} />
+        <VaultActionInput
+          action="Deposit"
+          disabled={false}
+          balance={new BigNumber('1')}
+          token={'ETH'}
+          hasError={true}
+          onChange={(e) => console.log(e.target.value)}
+        />
+        <VaultActionInput
+          action="Generate"
+          disabled={false}
+          balance={new BigNumber('1')}
+          token={'DAI'}
+          hasError={false}
+          onChange={(e) => console.log(e.target.value)}
+        />
+        <OpenVaultFormButton {...props} />
+      </Grid>
+    </Card>
+  )
+}
+
+function OpenVaultDisplay(props: OpenVaultState) {
+  return (
+    <Grid columns="2fr 1fr" gap={4}>
       <OpenVaultDetails />
-      <OpenVaultForm />
+      <OpenVaultForm {...props} />
     </Grid>
   )
 }
@@ -160,7 +129,7 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
 
   return (
     <Grid>
-      <OpenVaultDisplay {...{ ...openVault }} />
+      <OpenVaultDisplay {...openVault} />
     </Grid>
   )
 }

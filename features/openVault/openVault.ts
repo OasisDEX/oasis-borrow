@@ -2,16 +2,25 @@ import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context, ContextConnected, ContextConnectedReadOnly } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
-import { Change, Changes } from 'helpers/form'
-import { combineLatest, Observable, of, iif, EMPTY } from 'rxjs'
-import { mergeMap, startWith, switchMap } from 'rxjs/operators'
+import { Observable, of, iif } from 'rxjs'
+import { mergeMap, startWith, switchMap, map } from 'rxjs/operators'
+import {
+  createOpenVaultConnected$,
+  OpenVaultConnectedStage,
+  OpenVaultConnectedState,
+} from './openVaultConnected'
+import {
+  createOpenVaultReadonly$,
+  OpenVaultReadonlyStage,
+  OpenVaultReadonlyState,
+} from './openVaultReadonly'
 
-interface PersistentOpenVaultState {
+interface BasicOpenVaultState {
   isIlkValidationStage: boolean
   isEditingStage: boolean
   isProxyStage: boolean
   isAllowanceStage: boolean
-  ilk: string
+  isOpenStage: boolean
 }
 
 export type IlkValidationStage =
@@ -19,26 +28,19 @@ export type IlkValidationStage =
   | 'ilkValidationFailure'
   | 'ilkValidationSuccess'
 
-export interface IlkValidationState extends PersistentOpenVaultState {
+export interface IlkValidationState {
   stage: IlkValidationStage
-  isIlkValidationStage: true
-  isEditingStage: false
-  isProxyStage: false
-  isAllowanceStage: false
+  ilk: string
 }
 
 function createIlkValidation$(
   ilks$: Observable<string[]>,
   ilk: string,
 ): Observable<IlkValidationState> {
-  const initialState = {
+  const initialState: IlkValidationState = {
     ilk,
-    isIlkValidationStage: true,
-    isEditingStage: false,
-    isProxyStage: false,
-    isAllowanceStage: false,
     stage: 'ilkValidationLoading',
-  } as IlkValidationState
+  }
 
   return ilks$.pipe(
     switchMap((ilks) => {
@@ -58,216 +60,64 @@ function createIlkValidation$(
   )
 }
 
-type EditingStage = 'editingReadonly' | 'editingConnected'
+export type OpenVaultStage = IlkValidationStage | OpenVaultConnectedStage | OpenVaultReadonlyStage
+export type OpenVaultState = BasicOpenVaultState &
+  (IlkValidationState | OpenVaultConnectedState | OpenVaultReadonlyState)
 
-interface EditingPersistentState extends PersistentOpenVaultState {
-  stage: EditingStage
-  isIlkValidationStage: false
-  isEditingStage: true
-  isProxyStage: false
-  isAllowanceStage: false
-  token: string
-}
-
-interface EditingStateReadonly extends EditingPersistentState {
-  stage: 'editingReadonly'
-}
-
-interface EditingStateConnected extends EditingPersistentState {
-  stage: 'editingConnected'
-  account: string
-}
-
-export type EditingState = EditingStateReadonly | EditingStateConnected
-
-type ProxyStage =
-  | 'proxyWaitingForConfirmation'
-  | 'proxyWaitingForApproval'
-  | 'proxyInProgress'
-  | 'proxyFailure'
-  | 'proxyWaitToContinue'
-
-interface ProxyPersistentState extends PersistentOpenVaultState {
-  stage: ProxyStage
-  isIlkValidationStage: false
-  isEditingStage: false
-  isProxyStage: true
-  isAllowanceStage: false
-  proxyIsLoading: boolean
-  account: string
-}
-
-interface ProxyConfirmationState extends ProxyPersistentState {
-  stage: 'proxyWaitingForConfirmation'
-  proxyIsLoading: false
-  createProxy: () => void
-}
-
-interface ProxyFailureState extends ProxyPersistentState {
-  stage: 'proxyWaitingForConfirmation'
-  proxyIsLoading: false
-  retry: () => void
-}
-
-interface ProxyContinueState extends ProxyPersistentState {
-  stage: 'proxyWaitToContinue'
-  proxyIsLoading: false
-  continue: () => void
-}
-
-interface ProxyLoadingState extends ProxyPersistentState {
-  stage: 'proxyWaitingForApproval' | 'proxyInProgress'
-  proxyIsLoading: true
-}
-
-type ProxyState =
-  | ProxyConfirmationState
-  | ProxyFailureState
-  | ProxyContinueState
-  | ProxyLoadingState
-
-type AllowanceStage =
-  | 'allowanceWaitingForConfirmation'
-  | 'allowanceWaitingForApproval'
-  | 'allowanceInProgress'
-  | 'allowanceFailure'
-  | 'allowanceWaitToContinue'
-
-interface AllowancePersistentState extends PersistentOpenVaultState {
-  stage: AllowanceStage
-  isIlkValidationStage: false
-  isEditingStage: false
-  isProxyStage: false
-  isAllowanceStage: true
-  allowanceIsLoading: boolean
-  account: string
-}
-
-interface AllowanceConfirmationState extends AllowancePersistentState {
-  stage: 'allowanceWaitingForConfirmation'
-  allowanceIsLoading: false
-  setAllowance: () => void
-}
-
-interface AllowanceFailureState extends AllowancePersistentState {
-  stage: 'allowanceWaitingForConfirmation'
-  allowanceIsLoading: false
-  retry: () => void
-}
-
-interface AllowanceContinueState extends AllowancePersistentState {
-  stage: 'allowanceWaitToContinue'
-  allowanceIsLoading: false
-  continue: () => void
-}
-
-interface AllowanceLoadingState extends AllowancePersistentState {
-  stage: 'allowanceWaitingForApproval' | 'allowanceInProgress'
-  allowanceIsLoading: true
-}
-
-type AllowanceState =
-  | AllowanceConfirmationState
-  | AllowanceFailureState
-  | AllowanceContinueState
-  | AllowanceLoadingState
-
-type OpenStage =
-  | 'openWaitingForConfirmation'
-  | 'openWaitingForApproval'
-  | 'openInProgress'
-  | 'openFailure'
-  | 'openWaitToContinue'
-
-interface OpenPersistentState extends PersistentOpenVaultState {
-  stage: OpenStage
-  isIlkValidationStage: false
-  isEditingStage: false
-  isProxyStage: false
-  isOpenStage: true
-  openIsLoading: boolean
-  account: string
-}
-
-interface OpenConfirmationState extends OpenPersistentState {
-  stage: 'openWaitingForConfirmation'
-  openIsLoading: false
-  setOpen: () => void
-}
-
-interface OpenFailureState extends OpenPersistentState {
-  stage: 'openWaitingForConfirmation'
-  openIsLoading: false
-  retry: () => void
-}
-
-interface OpenContinueState extends OpenPersistentState {
-  stage: 'openWaitToContinue'
-  openIsLoading: false
-  continue: () => void
-}
-
-interface OpenLoadingState extends OpenPersistentState {
-  stage: 'openWaitingForApproval' | 'openInProgress'
-  openIsLoading: true
-}
-
-type OpenState = OpenConfirmationState | OpenFailureState | OpenContinueState | OpenLoadingState
-
-export type OpenVaultStage =
-  | IlkValidationStage
-  | EditingStage
-  | ProxyStage
-  | AllowanceStage
-  | OpenStage
-
-export type OpenVaultState =
-  | IlkValidationState
-  | EditingState
-  | ProxyState
-  | AllowanceState
-  | OpenState
-
-type OpenVaultChange = Changes<OpenVaultState>
-
-// export type ManualChange =
-//   | Change<OpenVaultState, 'lockAmount'>
-//   | Change<OpenVaultState, 'drawAmount'>
-//   | Change<OpenVaultState, 'maxDrawAmount'>
-
-// We still want people who haven't connected a wallet to be able simulate
-// the opening a vault. This pipeline is for managing that context. On UI side
-// it should offer a redirect to the connect page
-//
-// Also this is unreachable as it is dependent on the ilks$ which does not work
-// in the current readonly context we have taken from casual
-function createOpenVaultReadonly$(
-  context: ContextConnectedReadOnly,
-  ilk: string,
-  token: string,
-): Observable<EditingStateReadonly> {
-  return of({
-    stage: 'editingReadonly',
+function applyIsStageStates(
+  state: IlkValidationState | OpenVaultConnectedState | OpenVaultReadonlyState,
+): OpenVaultState {
+  const newState = {
+    ...state,
     isIlkValidationStage: false,
-    isEditingStage: true,
-    token,
-    ilk,
-  })
-}
+    isEditingStage: false,
+    isProxyStage: false,
+    isAllowanceStage: false,
+    isOpenStage: false,
+  }
 
-function createOpenVaultConnected$(
-  context: ContextConnected,
-  ilk: string,
-  token: string,
-): Observable<EditingStateConnected> {
-  return of({
-    stage: 'editingConnected',
-    isIlkValidationStage: false,
-    isEditingStage: true,
-    token,
-    ilk,
-    account: context.account,
-  })
+  switch (state.stage) {
+    case 'ilkValidationFailure':
+    case 'ilkValidationLoading':
+    case 'ilkValidationSuccess':
+      return {
+        ...newState,
+        isIlkValidationStage: true,
+      }
+    case 'editingReadonly':
+    case 'editingConnected':
+      return {
+        ...newState,
+        isEditingStage: true,
+      }
+    case 'proxyWaitingForConfirmation':
+    case 'proxyWaitingForApproval':
+    case 'proxyInProgress':
+    case 'proxyFailure':
+    case 'proxyWaitToContinue':
+      return {
+        ...newState,
+        isProxyStage: true,
+      }
+    case 'allowanceWaitingForConfirmation':
+    case 'allowanceWaitingForApproval':
+    case 'allowanceInProgress':
+    case 'allowanceFailure':
+    case 'allowanceWaitToContinue':
+      return {
+        ...newState,
+        isAllowanceStage: true,
+      }
+    case 'openWaitingForConfirmation':
+    case 'openWaitingForApproval':
+    case 'openInProgress':
+    case 'openFailure':
+    case 'openWaitToContinue':
+      return {
+        ...newState,
+        isOpenStage: true,
+      }
+  }
 }
 
 export function createOpenVault$(
@@ -292,11 +142,22 @@ export function createOpenVault$(
             return iif(
               () => context.status === 'connectedReadonly',
               createOpenVaultReadonly$(context as ContextConnectedReadOnly, ilk, token),
-              createOpenVaultConnected$(context as ContextConnected, ilk, token),
+              createOpenVaultConnected$(
+                txHelpers$,
+                proxyAddress$,
+                allowance$,
+                tokenOraclePrice$,
+                balance$,
+                ilkData$,
+                context as ContextConnected,
+                ilk,
+                token,
+              ),
             )
           }),
         ),
       ),
     ),
+    map(applyIsStageStates),
   )
 }
