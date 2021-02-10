@@ -91,6 +91,12 @@ export type OpenVaultStage =
 
 export type OpenVaultState = IlkValidationState | EditingState
 
+// We still want people who haven't connected a wallet to be able simulate
+// the opening a vault. This pipeline is for managing that context. On UI side
+// it should offer a redirect to the connect page
+//
+// Also this is unreachable as it is dependent on the ilks$ which does not work
+// in the current readonly context we have taken from casual
 function createOpenVaultReadonly$(
   context: ContextConnectedReadOnly,
   ilk: string,
