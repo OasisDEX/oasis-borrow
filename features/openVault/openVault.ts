@@ -60,16 +60,16 @@ export interface EditingPersistentState extends PersistentOpenVaultState {
   token: string
 }
 
-export interface EditingReadonly extends EditingPersistentState {
+export interface EditingStateReadonly extends EditingPersistentState {
   stage: 'editingReadonly'
 }
 
-export interface EditingConnected extends EditingPersistentState {
+export interface EditingStateConnected extends EditingPersistentState {
   stage: 'editingConnected'
   account: string
 }
 
-export type EditingState = EditingReadonly | EditingConnected
+export type EditingState = EditingStateReadonly | EditingStateConnected
 
 export type OpenVaultStage =
   | IlkValidationStage
@@ -91,12 +91,33 @@ export type OpenVaultStage =
 
 export type OpenVaultState = IlkValidationState | EditingState
 
-function createOpenVaultReadonly$(context: ContextConnectedReadOnly, {}: IlkValidationState) {
-  return EMPTY
+function createOpenVaultReadonly$(
+  context: ContextConnectedReadOnly,
+  ilk: string,
+  token: string,
+): Observable<EditingStateReadonly> {
+  return of({
+    stage: 'editingReadonly',
+    isIlkValidationStage: false,
+    isEditingStage: true,
+    token,
+    ilk,
+  })
 }
 
-function createOpenVaultConnected$(context: ContextConnected, {}: IlkValidationState) {
-  return EMPTY
+function createOpenVaultConnected$(
+  context: ContextConnected,
+  ilk: string,
+  token: string,
+): Observable<EditingStateConnected> {
+  return of({
+    stage: 'editingConnected',
+    isIlkValidationStage: false,
+    isEditingStage: true,
+    token,
+    ilk,
+    account: context.account,
+  })
 }
 
 export function createOpenVault$(
@@ -116,13 +137,14 @@ export function createOpenVault$(
         () => state.stage !== 'ilkValidationSuccess',
         of(state),
         context$.pipe(
-          mergeMap((context) =>
-            iif(
-              () => context.status === 'connected',
-              createOpenVaultConnected$(context as ContextConnected, state),
-              createOpenVaultReadonly$(context as ContextConnectedReadOnly, state),
-            ),
-          ),
+          mergeMap((context) => {
+            const token = ilk.split('-')[0]
+            return iif(
+              () => context.status === 'connectedReadonly',
+              createOpenVaultReadonly$(context as ContextConnectedReadOnly, ilk, token),
+              createOpenVaultConnected$(context as ContextConnected, ilk, token),
+            )
+          }),
         ),
       ),
     ),

@@ -7,7 +7,7 @@ import React from 'react'
 import { Box, Button, Card, Grid, Heading, Spinner, Text } from 'theme-ui'
 import { EditingState, OpenVaultStage, OpenVaultState } from './openVault'
 
-function OpenVaultDetails({}: any) {
+function OpenVaultDetails() {
   return (
     <Grid columns="1fr 1fr" gap={6} sx={{ justifyContent: 'space-between' }}>
       <Grid>
@@ -144,6 +144,7 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
     return null
   }
 
+  console.log(openVault)
   if (openVault.isIlkValidationStage) {
     return (
       <Grid sx={{ width: '100%', height: '50vh', justifyItems: 'center', alignItems: 'center' }}>
