@@ -21,21 +21,6 @@ export type TxMgrTransaction = {
   kind: 'blockchain'
   status: TxStatus
   raw: TxState<TxData>
-  // | {
-  //     kind: 'wyre'
-  //     status: WyreOrder['status']
-  //     raw: OnrampOrder
-  //   }
-  // | {
-  //     kind: 'moonpay'
-  //     status: MoonpayOrder['status']
-  //     raw: OnrampOrder
-  //   }
-  // | {
-  //     kind: 'latamex'
-  //     status: LatamexOrder['status']
-  //     raw: OnrampOrder
-  //   }
 }
 
 export type NotificationTransaction = {
@@ -111,28 +96,19 @@ function filterTransactions(transactions: TxMgrTransaction[]) {
 
   transactions.forEach((tx) => {
     switch (tx.status) {
-      case 'initialized':
       case TxStatus.WaitingForApproval:
         pendingTransactions.push(tx)
         signTransactions.push(tx)
         break
-      case 'pending':
       case TxStatus.Propagating:
       case TxStatus.WaitingForConfirmation:
         pendingTransactions.push(tx)
         submittedTransactions.push(tx)
         break
-      case 'accepted':
-      case 'completed':
-      case 'complete':
       case TxStatus.Success:
         recentTransactions.push(tx)
         successTransactions.push(tx)
         break
-      case 'rejected':
-      case 'expired':
-      case 'incomplete':
-      case 'failed':
       case TxStatus.CancelledByTheUser:
       case TxStatus.Error:
       case TxStatus.Failure:
