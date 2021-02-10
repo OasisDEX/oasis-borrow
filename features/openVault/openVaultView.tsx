@@ -124,7 +124,7 @@ function OpenVaultButton({ stage }: { stage: OpenVaultStage }) {
 }
 
 function OpenVaultForm() {
-  return null
+  return <Card></Card>
 }
 
 function OpenVaultDisplay(props: EditingState) {

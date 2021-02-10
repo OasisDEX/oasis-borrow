@@ -2,12 +2,15 @@ import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context, ContextConnected, ContextConnectedReadOnly } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
+import { Change, Changes } from 'helpers/form'
 import { combineLatest, Observable, of, iif, EMPTY } from 'rxjs'
 import { mergeMap, startWith, switchMap } from 'rxjs/operators'
 
 interface PersistentOpenVaultState {
   isIlkValidationStage: boolean
   isEditingStage: boolean
+  isProxyStage: boolean
+  isAllowanceStage: boolean
   ilk: string
 }
 
@@ -20,6 +23,8 @@ export interface IlkValidationState extends PersistentOpenVaultState {
   stage: IlkValidationStage
   isIlkValidationStage: true
   isEditingStage: false
+  isProxyStage: false
+  isAllowanceStage: false
 }
 
 function createIlkValidation$(
@@ -30,6 +35,8 @@ function createIlkValidation$(
     ilk,
     isIlkValidationStage: true,
     isEditingStage: false,
+    isProxyStage: false,
+    isAllowanceStage: false,
     stage: 'ilkValidationLoading',
   } as IlkValidationState
 
@@ -53,43 +60,180 @@ function createIlkValidation$(
 
 type EditingStage = 'editingReadonly' | 'editingConnected'
 
-export interface EditingPersistentState extends PersistentOpenVaultState {
+interface EditingPersistentState extends PersistentOpenVaultState {
   stage: EditingStage
   isIlkValidationStage: false
   isEditingStage: true
+  isProxyStage: false
+  isAllowanceStage: false
   token: string
 }
 
-export interface EditingStateReadonly extends EditingPersistentState {
+interface EditingStateReadonly extends EditingPersistentState {
   stage: 'editingReadonly'
 }
 
-export interface EditingStateConnected extends EditingPersistentState {
+interface EditingStateConnected extends EditingPersistentState {
   stage: 'editingConnected'
   account: string
 }
 
 export type EditingState = EditingStateReadonly | EditingStateConnected
 
-export type OpenVaultStage =
-  | IlkValidationStage
-  | EditingStage
+type ProxyStage =
   | 'proxyWaitingForConfirmation'
   | 'proxyWaitingForApproval'
   | 'proxyInProgress'
   | 'proxyFailure'
+  | 'proxyWaitToContinue'
+
+interface ProxyPersistentState extends PersistentOpenVaultState {
+  stage: ProxyStage
+  isIlkValidationStage: false
+  isEditingStage: false
+  isProxyStage: true
+  isAllowanceStage: false
+  proxyIsLoading: boolean
+  account: string
+}
+
+interface ProxyConfirmationState extends ProxyPersistentState {
+  stage: 'proxyWaitingForConfirmation'
+  proxyIsLoading: false
+  createProxy: () => void
+}
+
+interface ProxyFailureState extends ProxyPersistentState {
+  stage: 'proxyWaitingForConfirmation'
+  proxyIsLoading: false
+  retry: () => void
+}
+
+interface ProxyContinueState extends ProxyPersistentState {
+  stage: 'proxyWaitToContinue'
+  proxyIsLoading: false
+  continue: () => void
+}
+
+interface ProxyLoadingState extends ProxyPersistentState {
+  stage: 'proxyWaitingForApproval' | 'proxyInProgress'
+  proxyIsLoading: true
+}
+
+type ProxyState =
+  | ProxyConfirmationState
+  | ProxyFailureState
+  | ProxyContinueState
+  | ProxyLoadingState
+
+type AllowanceStage =
   | 'allowanceWaitingForConfirmation'
   | 'allowanceWaitingForApproval'
   | 'allowanceInProgress'
   | 'allowanceFailure'
-  | 'waitToContinue'
-  | 'transactionWaitingForConfirmation'
-  | 'transactionWaitingForApproval'
-  | 'transactionInProgress'
-  | 'transactionFailure'
-  | 'transactionSuccess'
+  | 'allowanceWaitToContinue'
 
-export type OpenVaultState = IlkValidationState | EditingState
+interface AllowancePersistentState extends PersistentOpenVaultState {
+  stage: AllowanceStage
+  isIlkValidationStage: false
+  isEditingStage: false
+  isProxyStage: false
+  isAllowanceStage: true
+  allowanceIsLoading: boolean
+  account: string
+}
+
+interface AllowanceConfirmationState extends AllowancePersistentState {
+  stage: 'allowanceWaitingForConfirmation'
+  allowanceIsLoading: false
+  setAllowance: () => void
+}
+
+interface AllowanceFailureState extends AllowancePersistentState {
+  stage: 'allowanceWaitingForConfirmation'
+  allowanceIsLoading: false
+  retry: () => void
+}
+
+interface AllowanceContinueState extends AllowancePersistentState {
+  stage: 'allowanceWaitToContinue'
+  allowanceIsLoading: false
+  continue: () => void
+}
+
+interface AllowanceLoadingState extends AllowancePersistentState {
+  stage: 'allowanceWaitingForApproval' | 'allowanceInProgress'
+  allowanceIsLoading: true
+}
+
+type AllowanceState =
+  | AllowanceConfirmationState
+  | AllowanceFailureState
+  | AllowanceContinueState
+  | AllowanceLoadingState
+
+type OpenStage =
+  | 'openWaitingForConfirmation'
+  | 'openWaitingForApproval'
+  | 'openInProgress'
+  | 'openFailure'
+  | 'openWaitToContinue'
+
+interface OpenPersistentState extends PersistentOpenVaultState {
+  stage: OpenStage
+  isIlkValidationStage: false
+  isEditingStage: false
+  isProxyStage: false
+  isOpenStage: true
+  openIsLoading: boolean
+  account: string
+}
+
+interface OpenConfirmationState extends OpenPersistentState {
+  stage: 'openWaitingForConfirmation'
+  openIsLoading: false
+  setOpen: () => void
+}
+
+interface OpenFailureState extends OpenPersistentState {
+  stage: 'openWaitingForConfirmation'
+  openIsLoading: false
+  retry: () => void
+}
+
+interface OpenContinueState extends OpenPersistentState {
+  stage: 'openWaitToContinue'
+  openIsLoading: false
+  continue: () => void
+}
+
+interface OpenLoadingState extends OpenPersistentState {
+  stage: 'openWaitingForApproval' | 'openInProgress'
+  openIsLoading: true
+}
+
+type OpenState = OpenConfirmationState | OpenFailureState | OpenContinueState | OpenLoadingState
+
+export type OpenVaultStage =
+  | IlkValidationStage
+  | EditingStage
+  | ProxyStage
+  | AllowanceStage
+  | OpenStage
+
+export type OpenVaultState =
+  | IlkValidationState
+  | EditingState
+  | ProxyState
+  | AllowanceState
+  | OpenState
+
+type OpenVaultChange = Changes<OpenVaultState>
+
+// export type ManualChange =
+//   | Change<OpenVaultState, 'lockAmount'>
+//   | Change<OpenVaultState, 'drawAmount'>
+//   | Change<OpenVaultState, 'maxDrawAmount'>
 
 // We still want people who haven't connected a wallet to be able simulate
 // the opening a vault. This pipeline is for managing that context. On UI side
