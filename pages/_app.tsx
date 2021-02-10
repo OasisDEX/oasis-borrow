@@ -95,7 +95,6 @@ const noOverlayWorkaroundScript = `
 function App({ Component, pageProps }: AppProps & CustomAppProps) {
   const Layout = Component.layout || AppLayout
   const layoutProps = Component.layoutProps
-  const pageTheme = Component.theme === 'Landing' ? landingTheme : theme
   const seoTags = Component.seoTags || (
     <PageSEOTags title="seo.default.title" description="seo.default.description" />
   )
@@ -124,7 +123,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
           <script dangerouslySetInnerHTML={{ __html: noOverlayWorkaroundScript }} />
         )}
       </Head>
-      <ThemeProvider theme={pageTheme}>
+      <ThemeProvider theme={theme}>
         <CacheProvider value={cache}>
           <MDXProvider components={{ ...components, a: CustomMDXLink }}>
             <Global styles={globalStyles} />
