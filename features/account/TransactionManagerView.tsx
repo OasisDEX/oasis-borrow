@@ -58,28 +58,8 @@ export function describeTxNotificationStatus(tx?: TxMgrTransaction) {
       return { icon: ICONS.error, keySuffix: 'rejected' }
     case TxStatus.Success:
       return { icon: ICONS.complete, keySuffix: 'complete' }
-    // Statuses from Wyre
-    case 'pending':
-      return { icon: ICONS.pending, keySuffix: 'pending' }
-    case 'failed':
-      return { icon: ICONS.error, keySuffix: 'failed' }
-    case 'complete':
-      return { icon: ICONS.complete, keySuffix: 'complete' }
-    // Statuses from Latamex
-    case 'initialized':
-      return { icon: ICONS.initialized, keySuffix: 'initialized' }
-    case 'completed':
-      return { icon: ICONS.complete, keySuffix: 'completed' }
-    case 'accepted':
-      return { icon: ICONS.complete, keySuffix: 'completed' }
-    case 'rejected':
-      return { icon: ICONS.error, keySuffix: 'rejected' }
-    case 'expired':
-      return { icon: ICONS.expired, keySuffix: 'expired' }
-    case 'incomplete':
-      return { icon: ICONS.warning, keySuffix: 'incomplete' }
     default:
-      throw new UnreachableCaseError(tx)
+      throw new UnreachableCaseError(tx.status)
   }
 }
 
@@ -100,10 +80,10 @@ export function getRecentTransactionIcon(tx: TxMgrTransaction) {
     const { meta } = raw as TxState<TxData>
 
     switch (meta.kind) {
-      case TxMetaKind.dsrJoin:
-        return ICONS_RECENT_TRANSACTIONS.dsrDeposit
-      case TxMetaKind.dsrExit:
-        return ICONS_RECENT_TRANSACTIONS.dsrWithdraw
+      // case TxMetaKind.dsrJoin:
+      //   return ICONS_RECENT_TRANSACTIONS.dsrDeposit
+      // case TxMetaKind.dsrExit:
+      //   return ICONS_RECENT_TRANSACTIONS.dsrWithdraw
       default:
         return ICONS_RECENT_TRANSACTIONS.sent
     }
@@ -153,11 +133,11 @@ function RecentTransaction<A extends TxMeta>({ transaction }: { transaction: TxM
   const isFailed =
     status === TxStatus.CancelledByTheUser ||
     status === TxStatus.Error ||
-    status === TxStatus.Failure ||
-    status === 'failed' ||
-    status === 'expired' ||
-    status === 'incomplete' ||
-    status === 'rejected'
+    status === TxStatus.Failure
+  // status === 'failed' ||
+  // status === 'expired' ||
+  // status === 'incomplete' ||
+  // status === 'rejected'
   const label = getTransactionTranslations(transaction)[isFailed ? 'recentFailed' : 'recent']
 
   return (

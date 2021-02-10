@@ -1,12 +1,12 @@
 import { isDone, TxState, TxStatus } from '@oasisdex/transactions'
 import { every1Seconds$ } from 'blockchain/network'
 import { TxData } from 'components/AppContext'
-import {
-  LatamexOrder,
-  MoonpayOrder,
-  OnrampOrder,
-  WyreOrder,
-} from 'components/dashboard/onrampOrders'
+// import {
+//   LatamexOrder,
+//   MoonpayOrder,
+//   OnrampOrder,
+//   WyreOrder,
+// } from 'components/dashboard/onrampOrders'
 import { withTranslation } from 'i18n'
 import { isEqual } from 'lodash'
 import moment from 'moment'
@@ -17,28 +17,26 @@ import { distinctUntilChanged, map, shareReplay } from 'rxjs/operators'
 export type TxMgrTransaction = {
   id: string
   lastChange: Date
-} & (
-  | {
-      kind: 'blockchain'
-      status: TxStatus
-      raw: TxState<TxData>
-    }
-  | {
-      kind: 'wyre'
-      status: WyreOrder['status']
-      raw: OnrampOrder
-    }
-  | {
-      kind: 'moonpay'
-      status: MoonpayOrder['status']
-      raw: OnrampOrder
-    }
-  | {
-      kind: 'latamex'
-      status: LatamexOrder['status']
-      raw: OnrampOrder
-    }
-)
+} & {
+  kind: 'blockchain'
+  status: TxStatus
+  raw: TxState<TxData>
+  // | {
+  //     kind: 'wyre'
+  //     status: WyreOrder['status']
+  //     raw: OnrampOrder
+  //   }
+  // | {
+  //     kind: 'moonpay'
+  //     status: MoonpayOrder['status']
+  //     raw: OnrampOrder
+  //   }
+  // | {
+  //     kind: 'latamex'
+  //     status: LatamexOrder['status']
+  //     raw: OnrampOrder
+  //   }
+}
 
 export type NotificationTransaction = {
   tx: TxMgrTransaction
@@ -53,9 +51,7 @@ interface TransactionManager {
 
 export function isTxDone(tr: TxMgrTransaction) {
   return (
-    (tr.kind === 'blockchain' && isDone(tr.raw)) ||
-    ((tr.kind === 'wyre' || tr.kind === 'moonpay' || tr.kind === 'latamex') &&
-      ['complete', 'failed'].indexOf(tr.status) >= 0)
+    tr.kind === 'blockchain' && isDone(tr.raw) && ['complete', 'failed'].indexOf(tr.status) >= 0
   )
 }
 
