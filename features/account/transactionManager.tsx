@@ -1,12 +1,6 @@
 import { isDone, TxState, TxStatus } from '@oasisdex/transactions'
 import { every1Seconds$ } from 'blockchain/network'
 import { TxData } from 'components/AppContext'
-import {
-  LatamexOrder,
-  MoonpayOrder,
-  OnrampOrder,
-  WyreOrder,
-} from 'components/dashboard/onrampOrders'
 import { withTranslation } from 'i18n'
 import { isEqual } from 'lodash'
 import moment from 'moment'
@@ -23,21 +17,6 @@ export type TxMgrTransaction = {
       status: TxStatus
       raw: TxState<TxData>
     }
-  | {
-      kind: 'wyre'
-      status: WyreOrder['status']
-      raw: OnrampOrder
-    }
-  | {
-      kind: 'moonpay'
-      status: MoonpayOrder['status']
-      raw: OnrampOrder
-    }
-  | {
-      kind: 'latamex'
-      status: LatamexOrder['status']
-      raw: OnrampOrder
-    }
 )
 
 export type NotificationTransaction = {
@@ -52,11 +31,7 @@ interface TransactionManager {
 }
 
 export function isTxDone(tr: TxMgrTransaction) {
-  return (
-    (tr.kind === 'blockchain' && isDone(tr.raw)) ||
-    ((tr.kind === 'wyre' || tr.kind === 'moonpay' || tr.kind === 'latamex') &&
-      ['complete', 'failed'].indexOf(tr.status) >= 0)
-  )
+  return ((tr.kind === 'blockchain' && isDone(tr.raw)))
 }
 
 export function TxTranslator({
@@ -115,28 +90,19 @@ function filterTransactions(transactions: TxMgrTransaction[]) {
 
   transactions.forEach((tx) => {
     switch (tx.status) {
-      case 'initialized':
       case TxStatus.WaitingForApproval:
         pendingTransactions.push(tx)
         signTransactions.push(tx)
         break
-      case 'pending':
       case TxStatus.Propagating:
       case TxStatus.WaitingForConfirmation:
         pendingTransactions.push(tx)
         submittedTransactions.push(tx)
         break
-      case 'accepted':
-      case 'completed':
-      case 'complete':
       case TxStatus.Success:
         recentTransactions.push(tx)
         successTransactions.push(tx)
         break
-      case 'rejected':
-      case 'expired':
-      case 'incomplete':
-      case 'failed':
       case TxStatus.CancelledByTheUser:
       case TxStatus.Error:
       case TxStatus.Failure:
