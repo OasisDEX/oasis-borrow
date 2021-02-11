@@ -11,7 +11,6 @@ import { Box, Text, Grid, Flex, Button } from 'theme-ui'
 type VaultAction = 'Deposit' | 'Withdraw' | 'Generate' | 'Payback'
 
 interface VaultActionInputProps {
-  action: VaultAction
   balance?: BigNumber
   disabled?: boolean
   token: string
@@ -19,6 +18,7 @@ interface VaultActionInputProps {
   showMax?: boolean
   onSetMax?: () => void
   hasError: boolean
+  action: VaultAction
   amount?: BigNumber
 }
 
@@ -29,9 +29,9 @@ export function VaultActionInput({
   token,
   onChange,
   hasError,
-  amount,
   showMax = false,
   onSetMax = () => null,
+  amount,
 }: VaultActionInputProps) {
   const { t } = useTranslation()
 
@@ -50,7 +50,7 @@ export function VaultActionInput({
         </Text>
         {BigNumber.isBigNumber(balance) ? (
           <Text onClick={onSetMax} sx={{ fontSize: 1, textAlign: 'right', cursor: 'pointer' }}>
-            Balance: {formatAmount(balance, symbol)} {symbol}
+            Balance {formatAmount(balance, symbol)} {symbol}
           </Text>
         ) : null}
       </Grid>

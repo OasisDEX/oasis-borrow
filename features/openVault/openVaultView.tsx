@@ -83,28 +83,20 @@ function OpenVaultFormInputs({
   token,
   depositAmount,
   generateAmount,
-  maxDebtPerUnitCollateral,
   change,
   collateralBalance,
-  daiBalance,
+  maxDepositAmount,
+  maxGenerateAmount,
 }: OpenVaultFormInputsProps) {
   function handleDepositChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
       const depositAmount = value !== '' ? new BigNumber(value) : zero
-      const maxDrawAmount = collateralBalance.times(maxDebtPerUnitCollateral)
 
       change({
         kind: 'depositAmount',
         depositAmount,
       })
-      /* change({
-       *   kind: 'maxDrawAmount',
-       *   maxDrawAmount,
-       * }) */
-      if (!depositAmount.eq(zero)) {
-        change({ kind: 'generateAmount', generateAmount: zero })
-      }
     }
   }
 
@@ -121,7 +113,13 @@ function OpenVaultFormInputs({
 
   function handleDepositMax(change: (ch: ManualChange) => void) {
     return () => {
-      change({ kind: 'depositAmount', depositAmount: collateralBalance })
+      change({ kind: 'depositAmount', depositAmount: maxDepositAmount })
+    }
+  }
+
+  function handleGenerateMax(change: (ch: ManualChange) => void) {
+    return () => {
+      change({ kind: 'generateAmount', generateAmount: maxGenerateAmount })
     }
   }
 
@@ -141,6 +139,8 @@ function OpenVaultFormInputs({
         action="Generate"
         amount={generateAmount}
         token={'DAI'}
+        showMax={!!maxGenerateAmount?.gt(zero)}
+        onSetMax={handleGenerateMax(change!)}
         hasError={false}
         onChange={handleGenerateChange(change!)}
       />

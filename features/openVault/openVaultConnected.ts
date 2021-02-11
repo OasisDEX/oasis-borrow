@@ -107,6 +107,13 @@ function validate(state: OpenVaultConnectedState): OpenVaultConnectedState {
   return { ...state, messages: [] }
 }
 
+function applyBounds(state: OpenVaultConnectedState): OpenVaultConnectedState {
+  const { collateralBalance, depositAmount, maxDebtPerUnitCollateral } = state
+  const maxDepositAmount = collateralBalance
+  const maxGenerateAmount = depositAmount.times(maxDebtPerUnitCollateral)
+  return { ...state, maxDepositAmount, maxGenerateAmount }
+}
+
 function addTransitions(
   context: ContextConnected,
   txHelpers: TxHelpers,
@@ -324,6 +331,7 @@ export function createOpenVaultConnected$(
 
             return merge(change$, environmentChange$).pipe(
               scan(apply, initialState),
+              map(applyBounds),
               map(validate),
               map(
                 curry(addTransitions)(
