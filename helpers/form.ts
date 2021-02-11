@@ -2,11 +2,12 @@ import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
 import { amountFromWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
 import { TxHelpers, TxHelpers$ } from 'components/AppContext'
-import { Ticker } from 'features/prices'
 import { combineLatest, Observable, of } from 'rxjs'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { catchError, first, flatMap, map, startWith, switchMap } from 'rxjs/operators'
 import { OmitProperties, ValueOf } from 'ts-essentials'
+
+import { Ticker } from '../blockchain/prices'
 
 export enum FormStage {
   idle = 'idle',

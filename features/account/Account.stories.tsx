@@ -3,7 +3,7 @@ import { Web3Context } from '@oasisdex/web3-context'
 import { storiesOf } from '@storybook/react'
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
-import { OnrampOrder } from 'components/dashboard/onrampOrders'
+// import { OnrampOrder } from 'components/dashboard/onrampOrders'
 import { ModalProvider } from 'helpers/modalHook'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
@@ -20,7 +20,7 @@ interface MockContextProviderProps extends WithChildren {
   web3Context: Web3Context
   title: string
   transactions?: TxState<TxData>[]
-  onrampOrders?: OnrampOrder[]
+  // onrampOrders?: OnrampOrder[]
 }
 
 const stories = storiesOf('Account in Header', module)
