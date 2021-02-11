@@ -3472,33 +3472,33 @@
     web3 "^1.3.3"
     web3-provider-engine "^14.0.1"
 
-"@oasisdex/transactions@^0.0.19":
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/@oasisdex/transactions/-/transactions-0.0.19.tgz#3af3c155ffb8b485122b87ad8bc2112a9f5301cc"
-  integrity sha512-DtyCcWpJ6RQU6wj+8nsVkIWAIGwBozC3xeZsrZl15FG6kA6F4aLIDAiYMbiO3I4p1FS7irJAAV/0DhodpK6meg==
+"@oasisdex/transactions@^0.0.20":
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/@oasisdex/transactions/-/transactions-0.0.20.tgz#8c0e078230bf5721f46d08b83be2fda5ea1ab7f3"
+  integrity sha512-10XoV+M/qcBd1MFiihIdERbSEq8vLNbxGJ6NYW9vErXnLb1qkjTVI8E0MV1xomQyRnu6UV0Cqj7OLVpEpEAcyg==
   dependencies:
     "@types/ramda" "^0.25.38"
-    bignumber.js "^7.2.1"
+    bignumber.js "^9.0.1"
     lodash "^4.17.20"
     ramda "^0.25.0"
     rxjs "~6.2.2"
     rxjs-take-while-inclusive "^2.1.0"
     web3 "^1.3.3"
 
-"@oasisdex/utils@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@oasisdex/utils/-/utils-0.0.7.tgz#d8ab5682831b22fe1379d0f757e3184af3252652"
-  integrity sha512-ZmeI7wdRLMcPSfTr4nD9M1nwkeKJ2c22zSnlPWV0+erV/Nanm0aXsvB63+quuQB9iU2/noAVUm38A0oS6Ty4Ig==
+"@oasisdex/utils@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@oasisdex/utils/-/utils-0.0.8.tgz#6b2890a54227259aab225b175ee47659462ab80a"
+  integrity sha512-2FWHBx6u8HQel9TxfuNrQD777DiRLG8yJMDrEGLwnGtzBMRDBqmr0Ra4l0C51/lrj/3Pa9j6Of87S1a0DiPhGA==
   dependencies:
-    bignumber.js "^7.2.1"
+    bignumber.js "^9.0.1"
 
-"@oasisdex/web3-context@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@oasisdex/web3-context/-/web3-context-0.0.12.tgz#56d0a5b0f65a0d6c9b4ba841074c12479a2fa289"
-  integrity sha512-Iqm3Ir+M2fNZaf9F01xJf6V6NVQYu5fsxBxctGepndlGUF5V62QqL/StCLK1r205qKlVdt5qmHQzsWotgLBSow==
+"@oasisdex/web3-context@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@oasisdex/web3-context/-/web3-context-0.0.13.tgz#d6510d32dfb0ce8b04a42e21ddec1890ad1f608c"
+  integrity sha512-UzypnUabAIaQqg99TOqds4FLieJzJ2yd5RCkuc7O4o2zrEIFzVE6jUMoGth8gkLhJ5V3CkUZ+jpAh4iQAjdl5g==
   dependencies:
     "@oasisdex/connectors" "^0.0.18"
-    "@oasisdex/utils" "^0.0.7"
+    "@oasisdex/utils" "^0.0.8"
     "@web3-react/abstract-connector" "^6.0.7"
     "@web3-react/core" "^6.1.1"
     "@web3-react/injected-connector" "npm:@oasisdex/injected-connector@^6.1.11"
@@ -3506,7 +3506,7 @@
     "@web3-react/types" "^6.0.7"
     "@web3-react/walletconnect-connector" "^6.1.4"
     "@web3-react/walletlink-connector" "^6.1.1"
-    bignumber.js "^7.2.1"
+    bignumber.js "^9.0.1"
     ethereum-types "^3.3.3"
     lodash "^4.17.10"
     rxjs "~6.2.2"
@@ -7374,7 +7374,7 @@ bignumber.js@*, bignumber.js@~9.0.0:
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.0.tgz#805880f84a329b5eac6e7cb6f8274b6d82bdf075"
   integrity sha512-t/OYhhJ2SD+YGBQcjY8GzzDHEk9f3nerxjtfa6tlMXfe7frs/WozhvCNoGvpM0P3bNf3Gq5ZRMlGr5f3r4/N8A==
 
-bignumber.js@7.2.1, bignumber.js@^7.2.1:
+bignumber.js@7.2.1:
   version "7.2.1"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-7.2.1.tgz#80c048759d826800807c4bfd521e50edbba57a5f"
   integrity sha512-S4XzBk5sMB+Rcb/LNcpzXr57VRTxgAvaAEDAl1AwRx27j00hT84O6OkteE7u8UB3NuaaygCRrEpqox4uDOrbdQ==
