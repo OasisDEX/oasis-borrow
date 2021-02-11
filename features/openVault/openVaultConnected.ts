@@ -58,6 +58,9 @@ export interface OpenVaultConnectedState extends TokenBalancePriceInfo {
   change?: (change: ManualChange) => void
 
   maxDebtPerUnitCollateral: BigNumber
+  ilkDebtAvailable: BigNumber
+  debtFloor: BigNumber
+  liquidationRatio: BigNumber
 }
 
 type OpenVaultMessage = {
@@ -238,7 +241,7 @@ export function createOpenVaultConnected$(
     switchMap(
       ([
         { collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance },
-        { maxDebtPerUnitCollateral },
+        { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
         proxyAddress,
       ]) =>
         ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
@@ -259,6 +262,9 @@ export function createOpenVaultConnected$(
               maxGenerateAmount: zero,
               ilk,
               maxDebtPerUnitCollateral,
+              ilkDebtAvailable,
+              debtFloor,
+              liquidationRatio,
             }
 
             const change$ = new Subject<OpenVaultConnectedChange>()
@@ -284,10 +290,20 @@ export function createOpenVaultConnected$(
             )
 
             const ilkDataChange$ = ilkData$(ilk).pipe(
-              map(({ maxDebtPerUnitCollateral }) => ({
-                kind: 'maxDebtPerUnitCollateral',
-                maxDebtPerUnitCollateral,
-              })),
+              map(({ maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor }) => [
+                {
+                  kind: 'maxDebtPerUnitCollateral',
+                  maxDebtPerUnitCollateral,
+                },
+                {
+                  kind: 'ilkDebtAvailable',
+                  ilkDebtAvailable,
+                },
+                {
+                  kind: 'debtFloor',
+                  debtFloor,
+                },
+              ]),
             )
 
             const environmentChange$ = merge(

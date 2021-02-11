@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultActionInput } from 'components/VaultActionInput'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import React from 'react'
@@ -77,15 +78,16 @@ function OpenVaultFormButton({
   )
 }
 
-type OpenVaultInputsProps = OpenVaultConnectedState
-function OpenVaultInputs({
+type OpenVaultFormInputsProps = OpenVaultConnectedState
+function OpenVaultFormInputs({
+  token,
   depositAmount,
   generateAmount,
   maxDebtPerUnitCollateral,
   change,
   collateralBalance,
   daiBalance,
-}: OpenVaultInputsProps) {
+}: OpenVaultFormInputsProps) {
   function handleDepositChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
@@ -117,6 +119,12 @@ function OpenVaultInputs({
     }
   }
 
+  function handleDepositMax(change: (ch: ManualChange) => void) {
+    return () => {
+      change({ kind: 'depositAmount', depositAmount: collateralBalance })
+    }
+  }
+
   return (
     <>
       <VaultActionInput
@@ -125,12 +133,13 @@ function OpenVaultInputs({
         balance={collateralBalance}
         token={'ETH'}
         hasError={true}
+        showMax={token !== 'ETH'}
+        onSetMax={handleDepositMax(change!)}
         onChange={handleDepositChange(change!)}
       />
       <VaultActionInput
         action="Generate"
         amount={generateAmount}
-        balance={daiBalance}
         token={'DAI'}
         hasError={false}
         onChange={handleGenerateChange(change!)}
@@ -139,13 +148,32 @@ function OpenVaultInputs({
   )
 }
 
+function OpenVaultFormDetails({ ilkDebtAvailable, liquidationRatio }: OpenVaultConnectedState) {
+  return (
+    <Card>
+      <Grid columns="3fr 2fr">
+        <Text sx={{ fontSize: 2 }}>Dai Available</Text>
+        <Text sx={{ fontSize: 2, textAlign: 'right' }}>
+          {ilkDebtAvailable ? `${formatCryptoBalance(ilkDebtAvailable)} DAI` : '--'}
+        </Text>
+
+        <Text sx={{ fontSize: 2 }}>Min. collateral ratio</Text>
+        <Text sx={{ fontSize: 2, textAlign: 'right' }}>
+          {liquidationRatio ? `${formatPercent(liquidationRatio.times(100))}` : '--'}
+        </Text>
+      </Grid>
+    </Card>
+  )
+}
+
 function OpenVaultForm(props: OpenVaultState) {
   return (
     <Card>
       <Grid>
         <OpenVaultFormTitle {...props} />
-        <OpenVaultInputs {...(props as OpenVaultConnectedState)} />
+        <OpenVaultFormInputs {...(props as OpenVaultConnectedState)} />
         <OpenVaultFormButton {...props} />
+        <OpenVaultFormDetails {...(props as OpenVaultConnectedState)} />
       </Grid>
     </Card>
   )

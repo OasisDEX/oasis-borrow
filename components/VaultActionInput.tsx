@@ -12,7 +12,7 @@ type VaultAction = 'Deposit' | 'Withdraw' | 'Generate' | 'Payback'
 
 interface VaultActionInputProps {
   action: VaultAction
-  balance: BigNumber
+  balance?: BigNumber
   disabled?: boolean
   token: string
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
@@ -37,14 +37,22 @@ export function VaultActionInput({
 
   const { symbol, digits } = getToken(token)
   return (
-    <Box sx={{ position: 'relative', border: '1px solid', borderRadius: 'medium' }}>
-      <Grid columns="1fr 1fr" p={2}>
+    <Box
+      sx={{
+        position: 'relative',
+        border: '1px solid',
+        borderRadius: 'medium',
+      }}
+    >
+      <Grid columns="1fr 2fr" p={2}>
         <Text sx={{ fontSize: 1 }}>
           {action} {token}
         </Text>
-        <Text sx={{ fontSize: 1, textAlign: 'right' }}>
-          Balance: {formatAmount(balance, symbol)}
-        </Text>
+        {BigNumber.isBigNumber(balance) ? (
+          <Text onClick={onSetMax} sx={{ fontSize: 1, textAlign: 'right', cursor: 'pointer' }}>
+            Balance: {formatAmount(balance, symbol)} {symbol}
+          </Text>
+        ) : null}
       </Grid>
 
       <BigNumberInput
@@ -56,7 +64,9 @@ export function VaultActionInput({
           prefix: '',
         })}
         onChange={onChange}
-        value={amount && !amount.eq(zero) ? formatAmount(amount!, symbol) : null}
+        value={
+          BigNumber.isBigNumber(amount) && !amount.eq(zero) ? formatAmount(amount, symbol) : null
+        }
         placeholder={`0 ${symbol}`}
         sx={{ border: 'none' }}
       />
@@ -66,8 +76,7 @@ export function VaultActionInput({
           sx={{
             position: 'absolute',
             alignItems: 'center',
-            top: '50%',
-            transform: 'translateY(-50%)',
+            transform: 'translateY(-125%)',
             right: 3,
           }}
         >
