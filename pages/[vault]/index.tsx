@@ -5,6 +5,7 @@ import { AppLayout } from 'components/Layouts'
 import { VaultView } from 'features/vault/VaultView'
 import { useObservable } from 'helpers/observableHook'
 import { useRouter } from 'next/router'
+import React from 'react'
 import { Container } from 'theme-ui'
 
 export default function Vault() {

@@ -1,16 +1,9 @@
 import { TxState, TxStatus } from '@oasisdex/transactions'
 import { Web3Context } from '@oasisdex/web3-context'
 import { storiesOf } from '@storybook/react'
-import BigNumber from 'bignumber.js'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
-import {
-  LatamexOrder,
-  MoonpayOrder,
-  OnrampOrder,
-  WyreOrder,
-} from 'components/dashboard/onrampOrders'
 import { AccountModal } from 'features/account/Account'
 import { ModalProvider } from 'helpers/modalHook'
 import { WithChildren } from 'helpers/types'
@@ -26,7 +19,7 @@ import { createTransactionManager } from './transactionManager'
 interface MockContextProviderProps extends WithChildren {
   web3Context?: Web3Context
   transactions?: TxState<TxData>[]
-  onrampOrders?: OnrampOrder[]
+  // onrampOrders?: OnrampOrder[]
   title: string
 }
 
@@ -53,7 +46,7 @@ const protoTx = {
   lastChange: new Date(),
   dismissed: false,
   meta: {
-    kind: TxMetaKind.setupDSProxy,
+    kind: TxMetaKind.createDsProxy,
   } as TxData,
 }
 
@@ -109,90 +102,10 @@ export const protoSuccessTx: TxState<TxData> = {
   confirmations: 3,
   safeConfirmations: 1,
   meta: {
-    amount: new BigNumber(1000.41),
-    kind: TxMetaKind.transferEth,
-    address: '0x',
+    // amount: new BigNumber(1000.41),
+    kind: TxMetaKind.createDsProxy,
+    // address: '0x',
   },
-}
-
-const protoPendingTxWyre: WyreOrder = {
-  id: 'testId',
-  type: 'wyre',
-  status: 'pending',
-  amount: new BigNumber(5),
-  date: new Date(),
-  token: 'DAI',
-}
-
-const protoSuccessTxWyre: WyreOrder = {
-  ...protoPendingTxWyre,
-  status: 'complete',
-}
-
-const protoFailureTxWyre: WyreOrder = {
-  ...protoPendingTxWyre,
-  status: 'failed',
-}
-
-const protoPendingTxMoonpay: MoonpayOrder = {
-  id: 'testId',
-  type: 'moonpay',
-  status: 'pending',
-  amount: new BigNumber(20),
-  date: new Date(),
-  token: 'DAI',
-}
-
-const protoPendingTxMoonpayNoAmount: MoonpayOrder = {
-  id: 'testId',
-  type: 'moonpay',
-  status: 'pending',
-  amount: new BigNumber(0),
-  date: new Date(),
-  token: 'DAI',
-}
-
-const protoSuccessTxMoonpay: MoonpayOrder = {
-  ...protoPendingTxMoonpay,
-  status: 'complete',
-}
-
-const protoFailureTxMoonpay: MoonpayOrder = {
-  ...protoPendingTxMoonpay,
-  status: 'failed',
-}
-
-const protoInitializedTxLatamex: LatamexOrder = {
-  id: 'testId',
-  type: 'latamex',
-  status: 'initialized',
-  amount: new BigNumber(132),
-  date: new Date(),
-  token: 'DAI',
-}
-
-const protoPendingTxLatamex: LatamexOrder = {
-  ...protoInitializedTxLatamex,
-  status: 'pending',
-}
-
-const protoCompletedTxLatamex: LatamexOrder = {
-  ...protoInitializedTxLatamex,
-  status: 'completed',
-}
-
-const protoRejectedTxLatamex: LatamexOrder = {
-  ...protoInitializedTxLatamex,
-  status: 'rejected',
-}
-const protoExpiredTxLatamex: LatamexOrder = {
-  ...protoInitializedTxLatamex,
-  status: 'expired',
-}
-
-const protoIncompleteTxLatamex: LatamexOrder = {
-  ...protoInitializedTxLatamex,
-  status: 'incomplete',
 }
 
 const StoryContainer = ({ children, title }: { title: string } & WithChildren) => {
@@ -210,14 +123,13 @@ const StoryContainer = ({ children, title }: { title: string } & WithChildren) =
 
 function MockContextProvider({
   transactions = [],
-  onrampOrders = [],
   web3Context,
   children,
   title,
 }: MockContextProviderProps) {
   const ctx = ({
     web3Context$: web3Context ? of(web3Context) : of(protoWeb3Context),
-    transactionManager$: createTransactionManager(of(transactions), of(onrampOrders)),
+    transactionManager$: createTransactionManager(of(transactions)),
     context$: of({
       etherscan: { url: 'etherscan' },
     }),
@@ -267,89 +179,9 @@ stories.add('General', () => {
         <AppHeader />
       </MockContextProvider>
 
-      <MockContextProvider title="Complete" transactions={[protoSuccessTx]}>
+      {/* <MockContextProvider title="Complete" transactions={[protoSuccessTx]}>
         <AppHeader />
-      </MockContextProvider>
-    </>
-  )
-})
-
-stories.add('Moonpay', () => {
-  return (
-    <>
-      <MockContextProvider title="Moonpay Pending" onrampOrders={[protoPendingTxMoonpay]}>
-        <AppHeader />
-      </MockContextProvider>
-
-      <MockContextProvider title="Moonpay Failed" onrampOrders={[protoFailureTxMoonpay]}>
-        <AppHeader />
-      </MockContextProvider>
-
-      <MockContextProvider title="Moonpay Complete" onrampOrders={[protoSuccessTxMoonpay]}>
-        <AppHeader />
-      </MockContextProvider>
-    </>
-  )
-})
-
-stories.add('Wyre', () => {
-  return (
-    <>
-      <MockContextProvider title="Wyre Pending" onrampOrders={[protoPendingTxWyre]}>
-        <AppHeader />
-      </MockContextProvider>
-
-      <MockContextProvider title="Wyre Failed" onrampOrders={[protoFailureTxWyre]}>
-        <AppHeader />
-      </MockContextProvider>
-
-      <MockContextProvider title="Wyre Complete" onrampOrders={[protoSuccessTxWyre]}>
-        <AppHeader />
-      </MockContextProvider>
-    </>
-  )
-})
-
-stories.add('Latamex', () => {
-  return (
-    <>
-      <MockContextProvider title="Latamex Initialized" onrampOrders={[protoInitializedTxLatamex]}>
-        <AppHeader />
-      </MockContextProvider>
-
-      <MockContextProvider title="Latamex Pending" onrampOrders={[protoPendingTxLatamex]}>
-        <AppHeader />
-      </MockContextProvider>
-
-      <MockContextProvider title="Latamex Rejected" onrampOrders={[protoRejectedTxLatamex]}>
-        <AppHeader />
-      </MockContextProvider>
-
-      <MockContextProvider title="Latamex Completed" onrampOrders={[protoCompletedTxLatamex]}>
-        <AppHeader />
-      </MockContextProvider>
-
-      <MockContextProvider title="Latamex Expired" onrampOrders={[protoExpiredTxLatamex]}>
-        <AppHeader />
-      </MockContextProvider>
-
-      <MockContextProvider title="Latamex Incomplete" onrampOrders={[protoIncompleteTxLatamex]}>
-        <AppHeader />
-      </MockContextProvider>
-    </>
-  )
-})
-
-storiesModal.add('Playground', () => {
-  return (
-    <>
-      <MockContextProvider
-        title="Playground"
-        transactions={[protoSignTx, protoPendingTx, protoSuccessTx]}
-        onrampOrders={[protoPendingTxMoonpay, protoPendingTxMoonpayNoAmount]}
-      >
-        <AccountModal close={() => {}} />
-      </MockContextProvider>
+      </MockContextProvider> */}
     </>
   )
 })
@@ -393,7 +225,7 @@ storiesModal.add('View More Both', () => {
           protoSuccessTx,
           protoSuccessTx,
         ]}
-        onrampOrders={[protoSuccessTxWyre]}
+        // onrampOrders={[]}
       >
         <AccountModal close={() => {}} />
       </MockContextProvider>
@@ -408,19 +240,19 @@ storiesModal.add('Translations pending, recent and icons', () => {
         title="Translations"
         transactions={[
           protoSignTx,
-          {
-            ...protoPendingTx,
-            meta: { kind: TxMetaKind.transferEth, address: '0x0', amount: new BigNumber(5) },
-          },
-          {
-            ...protoPendingTx,
-            meta: {
-              kind: TxMetaKind.transferErc20,
-              address: '0x0',
-              amount: new BigNumber(5),
-              token: 'DAI',
-            },
-          },
+          // {
+          //   ...protoPendingTx,
+          //   meta: { kind: TxMetaKind.transferEth, address: '0x0', amount: new BigNumber(5) },
+          // },
+          // {
+          //   ...protoPendingTx,
+          //   meta: {
+          //     kind: TxMetaKind.transferErc20,
+          //     address: '0x0',
+          //     amount: new BigNumber(5),
+          //     token: 'DAI',
+          //   },
+          // },
           {
             ...protoPendingTx,
             meta: { kind: TxMetaKind.disapprove, token: 'DAI', spender: '0x0' },
@@ -429,31 +261,31 @@ storiesModal.add('Translations pending, recent and icons', () => {
             ...protoPendingTx,
             meta: { kind: TxMetaKind.approve, token: 'DAI', spender: '0x0' },
           },
-          {
-            ...protoPendingTx,
-            meta: { kind: TxMetaKind.dsrExit, proxyAddress: '0x0', amount: new BigNumber(5) },
-          },
-          {
-            ...protoPendingTx,
-            meta: { kind: TxMetaKind.dsrJoin, proxyAddress: '0x0', amount: new BigNumber(5) },
-          },
-          {
-            ...protoPendingTx,
-            meta: { kind: TxMetaKind.setOwner, proxyAddress: '0x0', owner: '0x0' },
-          },
-          {
-            ...protoSuccessTx,
-            meta: { kind: TxMetaKind.transferEth, address: '0x0', amount: new BigNumber(5) },
-          },
-          {
-            ...protoSuccessTx,
-            meta: {
-              kind: TxMetaKind.transferErc20,
-              address: '0x0',
-              amount: new BigNumber(5),
-              token: 'DAI',
-            },
-          },
+          // {
+          //   ...protoPendingTx,
+          //   meta: { kind: TxMetaKind.dsrExit, proxyAddress: '0x0', amount: new BigNumber(5) },
+          // },
+          // {
+          //   ...protoPendingTx,
+          //   meta: { kind: TxMetaKind.dsrJoin, proxyAddress: '0x0', amount: new BigNumber(5) },
+          // },
+          // {
+          //   ...protoPendingTx,
+          //   meta: { kind: TxMetaKind.setOwner, proxyAddress: '0x0', owner: '0x0' },
+          // },
+          // {
+          //   ...protoSuccessTx,
+          //   meta: { kind: TxMetaKind.transferEth, address: '0x0', amount: new BigNumber(5) },
+          // },
+          // {
+          //   ...protoSuccessTx,
+          //   meta: {
+          //     kind: TxMetaKind.transferErc20,
+          //     address: '0x0',
+          //     amount: new BigNumber(5),
+          //     token: 'DAI',
+          //   },
+          // },
           {
             ...protoSuccessTx,
             meta: { kind: TxMetaKind.disapprove, token: 'DAI', spender: '0x0' },
@@ -462,26 +294,20 @@ storiesModal.add('Translations pending, recent and icons', () => {
             ...protoSuccessTx,
             meta: { kind: TxMetaKind.approve, token: 'DAI', spender: '0x0' },
           },
-          {
-            ...protoSuccessTx,
-            meta: { kind: TxMetaKind.dsrExit, proxyAddress: '0x0', amount: new BigNumber(5) },
-          },
-          {
-            ...protoSuccessTx,
-            meta: { kind: TxMetaKind.dsrJoin, proxyAddress: '0x0', amount: new BigNumber(5) },
-          },
-          {
-            ...protoSuccessTx,
-            meta: { kind: TxMetaKind.setOwner, proxyAddress: '0x0', owner: '0x0' },
-          },
+          // {
+          //   ...protoSuccessTx,
+          //   meta: { kind: TxMetaKind.dsrExit, proxyAddress: '0x0', amount: new BigNumber(5) },
+          // },
+          // {
+          //   ...protoSuccessTx,
+          //   meta: { kind: TxMetaKind.dsrJoin, proxyAddress: '0x0', amount: new BigNumber(5) },
+          // },
+          // {
+          //   ...protoSuccessTx,
+          //   meta: { kind: TxMetaKind.setOwner, proxyAddress: '0x0', owner: '0x0' },
+          // },
         ]}
-        onrampOrders={[
-          protoPendingTxWyre,
-          protoSuccessTxWyre,
-          protoPendingTxMoonpay,
-          protoSuccessTxMoonpay,
-          protoPendingTxLatamex,
-        ]}
+        // onrampOrders={[]}
       >
         <AccountModal close={() => {}} />
       </MockContextProvider>
@@ -496,19 +322,19 @@ storiesModal.add('Translations Failed', () => {
         title="Translations"
         transactions={[
           protoFailureTx,
-          {
-            ...protoFailureTx,
-            meta: { kind: TxMetaKind.transferEth, address: '0x0', amount: new BigNumber(5) },
-          },
-          {
-            ...protoFailureTx,
-            meta: {
-              kind: TxMetaKind.transferErc20,
-              address: '0x0',
-              amount: new BigNumber(5),
-              token: 'DAI',
-            },
-          },
+          // {
+          //   ...protoFailureTx,
+          //   meta: { kind: TxMetaKind.transferEth, address: '0x0', amount: new BigNumber(5) },
+          // },
+          // {
+          //   ...protoFailureTx,
+          //   meta: {
+          //     kind: TxMetaKind.transferErc20,
+          //     address: '0x0',
+          //     amount: new BigNumber(5),
+          //     token: 'DAI',
+          //   },
+          // },
           {
             ...protoFailureTx,
             meta: { kind: TxMetaKind.disapprove, token: 'DAI', spender: '0x0' },
@@ -517,20 +343,20 @@ storiesModal.add('Translations Failed', () => {
             ...protoFailureTx,
             meta: { kind: TxMetaKind.approve, token: 'DAI', spender: '0x0' },
           },
-          {
-            ...protoFailureTx,
-            meta: { kind: TxMetaKind.dsrExit, proxyAddress: '0x0', amount: new BigNumber(5) },
-          },
-          {
-            ...protoFailureTx,
-            meta: { kind: TxMetaKind.dsrJoin, proxyAddress: '0x0', amount: new BigNumber(5) },
-          },
-          {
-            ...protoFailureTx,
-            meta: { kind: TxMetaKind.setOwner, proxyAddress: '0x0', owner: '0x0' },
-          },
+          // {
+          //   ...protoFailureTx,
+          //   meta: { kind: TxMetaKind.dsrExit, proxyAddress: '0x0', amount: new BigNumber(5) },
+          // },
+          // {
+          //   ...protoFailureTx,
+          //   meta: { kind: TxMetaKind.dsrJoin, proxyAddress: '0x0', amount: new BigNumber(5) },
+          // },
+          // {
+          //   ...protoFailureTx,
+          //   meta: { kind: TxMetaKind.setOwner, proxyAddress: '0x0', owner: '0x0' },
+          // },
         ]}
-        onrampOrders={[protoFailureTxWyre, protoFailureTxMoonpay]}
+        // onrampOrders={[]}
       >
         <AccountModal close={() => {}} />
       </MockContextProvider>
