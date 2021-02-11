@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context, ContextConnected, ContextConnectedReadOnly } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
-import { Observable, of, iif } from 'rxjs'
+import { Observable, of, iif, combineLatest } from 'rxjs'
 import { mergeMap, startWith, switchMap, map } from 'rxjs/operators'
 import {
   createOpenVaultConnected$,
@@ -21,6 +21,9 @@ interface BasicOpenVaultState {
   isProxyStage: boolean
   isAllowanceStage: boolean
   isOpenStage: boolean
+
+  isConnected: boolean
+  isReadonly: boolean
 }
 
 export type IlkValidationStage =
@@ -74,6 +77,8 @@ function applyIsStageStates(
     isProxyStage: false,
     isAllowanceStage: false,
     isOpenStage: false,
+    isConnected: false,
+    isReadonly: false,
   }
 
   switch (state.stage) {
@@ -85,10 +90,16 @@ function applyIsStageStates(
         isIlkValidationStage: true,
       }
     case 'editingReadonly':
+      return {
+        ...newState,
+        isEditingStage: true,
+        isReadonly: true,
+      }
     case 'editingConnected':
       return {
         ...newState,
         isEditingStage: true,
+        isConnected: true,
       }
     case 'proxyWaitingForConfirmation':
     case 'proxyWaitingForApproval':
@@ -98,6 +109,7 @@ function applyIsStageStates(
       return {
         ...newState,
         isProxyStage: true,
+        isConnected: true,
       }
     case 'allowanceWaitingForConfirmation':
     case 'allowanceWaitingForApproval':
@@ -107,6 +119,7 @@ function applyIsStageStates(
       return {
         ...newState,
         isAllowanceStage: true,
+        isConnected: true,
       }
     case 'openWaitingForConfirmation':
     case 'openWaitingForApproval':
@@ -116,6 +129,7 @@ function applyIsStageStates(
       return {
         ...newState,
         isOpenStage: true,
+        isConnected: true,
       }
   }
 }
@@ -136,20 +150,20 @@ export function createOpenVault$(
       iif(
         () => state.stage !== 'ilkValidationSuccess',
         of(state),
-        context$.pipe(
-          mergeMap((context) => {
+        combineLatest(context$, txHelpers$).pipe(
+          mergeMap(([context, txHelpers]) => {
             const token = ilk.split('-')[0]
             return iif(
               () => context.status === 'connectedReadonly',
               createOpenVaultReadonly$(context as ContextConnectedReadOnly, ilk, token),
               createOpenVaultConnected$(
-                txHelpers$,
                 proxyAddress$,
                 allowance$,
                 tokenOraclePrice$,
                 balance$,
                 ilkData$,
                 context as ContextConnected,
+                txHelpers,
                 ilk,
                 token,
               ),

@@ -5,7 +5,7 @@ import { TxHelpers } from 'components/AppContext'
 import { applyChange, ApplyChange, Change, Changes } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of, Subject, merge } from 'rxjs'
-import { switchMap, map, scan, shareReplay } from 'rxjs/operators'
+import { switchMap, map, scan, shareReplay, first } from 'rxjs/operators'
 import { curry } from 'lodash'
 
 export type OpenVaultConnectedStage =
@@ -34,7 +34,15 @@ export type ManualChange =
 
 const apply: ApplyChange<OpenVaultConnectedState> = applyChange
 
-export interface OpenVaultConnectedState {
+interface TokenBalancePriceInfo {
+  collateralBalance: BigNumber
+  collateralPrice: BigNumber
+  ethBalance: BigNumber
+  ethPrice: BigNumber
+  daiBalance: BigNumber
+}
+
+export interface OpenVaultConnectedState extends TokenBalancePriceInfo {
   stage: OpenVaultConnectedStage
   token: string
   ilk: string
@@ -43,14 +51,13 @@ export interface OpenVaultConnectedState {
   generateAmount: BigNumber
   maxDepositAmount: BigNumber
   maxGenerateAmount: BigNumber
-  balance: BigNumber
-  ethBalance: BigNumber
-  price: BigNumber
   account: string
   progress?: () => void
   proxyAddress?: string
   allowance?: boolean
   change?: (change: ManualChange) => void
+
+  maxDebtPerUnitCollateral: BigNumber
 }
 
 type OpenVaultMessage = {
@@ -117,23 +124,23 @@ function addTransitions(
   //   change({ kind: 'maxDrawAmount', maxDrawAmount: undefined })
   // }
 
-  // if (state.stage === 'editing') {
-  //   return {
-  //     ...state,
-  //     change,
-  //     proceed: !state.messages.length
-  //       ? () => {
-  //           if (!state.proxyAddress) {
-  //             change({ kind: 'stage', stage: 'proxyWaitingForConfirmation' })
-  //           } else if (!state.allowance) {
-  //             change({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' })
-  //           } else {
-  //             change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' })
-  //           }
-  //         }
-  //       : undefined,
-  //   }
-  // }
+  if (state.stage === 'editingConnected') {
+    return {
+      ...state,
+      change,
+      proceed: !state.messages.length
+        ? () => {
+            if (!state.proxyAddress) {
+              change({ kind: 'stage', stage: 'proxyWaitingForConfirmation' })
+            } else if (!state.allowance) {
+              change({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' })
+            } else {
+              change({ kind: 'stage', stage: 'openWaitingForConfirmation' })
+            }
+          }
+        : undefined,
+    }
+  }
 
   // if (state.stage === 'proxyWaitingForConfirmation') {
   //   return {
@@ -197,106 +204,124 @@ function addTransitions(
 }
 
 export function createOpenVaultConnected$(
-  txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
   allowance$: (token: string, owner: string, spender: string) => Observable<boolean>,
   tokenOraclePrice$: (token: string) => Observable<BigNumber>,
   balance$: (token: string, address: string) => Observable<BigNumber>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   context: ContextConnected,
+  txHelpers: TxHelpers,
   ilk: string,
   token: string,
 ): Observable<OpenVaultConnectedState> {
   const account = context.account
 
-  return combineLatest(
-    txHelpers$,
+  const tokenInformation$: Observable<TokenBalancePriceInfo> = combineLatest(
     balance$(token, account),
-    balance$('ETH', account),
     tokenOraclePrice$(token),
-    ilkData$(ilk),
-    proxyAddress$(account),
+    balance$('ETH', account),
+    tokenOraclePrice$('ETH'),
+    balance$('DAI', account),
   ).pipe(
-    switchMap(([txHelpers, balance, ethBalance, price, ilkData, proxyAddress]) =>
-      ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
-        switchMap((allowance: boolean | undefined) => {
-          const initialState: OpenVaultConnectedState = {
-            stage: 'editingConnected',
-            token,
-            account,
-            balance,
-            ethBalance,
-            messages: [],
-            depositAmount: zero,
-            generateAmount: zero,
-            maxDepositAmount: zero,
-            maxGenerateAmount: zero,
-            price,
-            ilk,
-          }
+    switchMap(([collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance]) =>
+      of({
+        collateralBalance,
+        collateralPrice,
+        ethBalance,
+        ethPrice,
+        daiBalance,
+      }),
+    ),
+  )
 
-          const change$ = new Subject<OpenVaultConnectedChange>()
+  return combineLatest(tokenInformation$, ilkData$(ilk), proxyAddress$(account)).pipe(
+    switchMap(
+      ([
+        { collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance },
+        { maxDebtPerUnitCollateral },
+        proxyAddress,
+      ]) =>
+        ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
+          switchMap((allowance: boolean | undefined) => {
+            const initialState: OpenVaultConnectedState = {
+              stage: 'editingConnected',
+              token,
+              account,
+              collateralBalance,
+              collateralPrice,
+              ethBalance,
+              ethPrice,
+              daiBalance,
+              messages: [],
+              depositAmount: zero,
+              generateAmount: zero,
+              maxDepositAmount: zero,
+              maxGenerateAmount: zero,
+              ilk,
+              maxDebtPerUnitCollateral,
+            }
 
-          function change(ch: OpenVaultConnectedChange) {
-            change$.next(ch)
-          }
+            const change$ = new Subject<OpenVaultConnectedChange>()
 
-          const balanceChange$ = balance$(token, account).pipe(
-            map((balance) => ({ kind: 'balance', balance })),
-          )
+            function change(ch: OpenVaultConnectedChange) {
+              change$.next(ch)
+            }
 
-          const ethBalanceChange$ = balance$('ETH', account).pipe(
-            map((ethBalance) => ({ kind: 'ethBalance', ethBalance })),
-          )
+            const collateralBalanceChange$ = balance$(token, account).pipe(
+              map((collateralBalance) => ({ kind: 'collateralBalance', collateralBalance })),
+            )
 
-          const maxLockAmountChange$ = balance$(token, account).pipe(
-            map((balance) => {
-              const maxLockAmount =
-                token !== 'ETH' ? balance : balance.gt(0.05) ? balance.minus(0.05) : zero
-              return { kind: 'maxLockAmount', maxLockAmount }
-            }),
-          )
+            const ethBalanceChange$ = balance$('ETH', account).pipe(
+              map((ethBalance) => ({ kind: 'ethBalance', ethBalance })),
+            )
 
-          const priceChange$ = tokenOraclePrice$(ilk).pipe(
-            map((price) => ({ kind: 'price', price })),
-          )
+            const daiBalanceChange$ = balance$('DAI', account).pipe(
+              map((daiBalance) => ({ kind: 'daiBalance', daiBalance })),
+            )
 
-          const ilkDataChange$ = ilkData$(ilk).pipe(
-            map((ilkData) => ({ kind: 'ilkData', ilkData })),
-          )
+            const priceChange$ = tokenOraclePrice$(ilk).pipe(
+              map((price) => ({ kind: 'price', price })),
+            )
 
-          const environmentChange$ = merge(
-            balanceChange$,
-            ilkDataChange$,
-            priceChange$,
-            ethBalanceChange$,
-            maxLockAmountChange$,
-          )
+            const ilkDataChange$ = ilkData$(ilk).pipe(
+              map(({ maxDebtPerUnitCollateral }) => ({
+                kind: 'maxDebtPerUnitCollateral',
+                maxDebtPerUnitCollateral,
+              })),
+            )
 
-          const connectedProxyAddress$ = proxyAddress$(account)
+            const environmentChange$ = merge(
+              collateralBalanceChange$,
+              ethBalanceChange$,
+              daiBalanceChange$,
+              ilkDataChange$,
+              priceChange$,
+            )
 
-          const connectedAllowance$ = connectedProxyAddress$.pipe(
-            switchMap((proxyAddress) =>
-              proxyAddress ? allowance$(token, account, proxyAddress) : of(false),
-            ),
-          )
+            const connectedProxyAddress$ = proxyAddress$(account)
 
-          return merge(change$, environmentChange$).pipe(
-            scan(apply, initialState),
-            map(validate),
-            map(
-              curry(addTransitions)(
-                context,
-                txHelpers,
-                connectedProxyAddress$,
-                connectedAllowance$,
-                change,
+            const connectedAllowance$ = connectedProxyAddress$.pipe(
+              switchMap((proxyAddress) =>
+                proxyAddress ? allowance$(token, account, proxyAddress) : of(false),
               ),
-            ),
-            shareReplay(1),
-          )
-        }),
-      ),
+            )
+
+            return merge(change$, environmentChange$).pipe(
+              scan(apply, initialState),
+              map(validate),
+              map(
+                curry(addTransitions)(
+                  context,
+                  txHelpers,
+                  connectedProxyAddress$,
+                  connectedAllowance$,
+                  change,
+                ),
+              ),
+              shareReplay(1),
+            )
+          }),
+        ),
     ),
   )
 }

@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { getToken, TokenConfig } from 'blockchain/tokensMetadata'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'i18n'
 import React, { ChangeEvent } from 'react'
 import { createNumberMask } from 'text-mask-addons'
@@ -55,7 +56,7 @@ export function VaultActionInput({
           prefix: '',
         })}
         onChange={onChange}
-        value={amount ? formatAmount(amount!, symbol) : null}
+        value={amount && !amount.eq(zero) ? formatAmount(amount!, symbol) : null}
         placeholder={`0 ${symbol}`}
         sx={{ border: 'none' }}
       />

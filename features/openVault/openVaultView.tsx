@@ -1,11 +1,12 @@
 import { BigNumber } from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { AmountInput, VaultActionInput } from 'components/VaultActionInput'
+import { VaultActionInput } from 'components/VaultActionInput'
 import { useObservable } from 'helpers/observableHook'
+import { zero } from 'helpers/zero'
 import React from 'react'
 import { Box, Button, Card, Grid, Heading, Spinner, Text } from 'theme-ui'
-import { EditingState, OpenVaultStage, OpenVaultState } from './openVault'
+import { OpenVaultState } from './openVault'
+import { ManualChange, OpenVaultConnectedState } from './openVaultConnected'
 
 function OpenVaultDetails() {
   return (
@@ -55,11 +56,18 @@ function OpenVaultGasSelection() {
   return null
 }
 
-function OpenVaultFormButton({ isEditingStage, isProxyStage, isAllowanceStage }: OpenVaultState) {
+function OpenVaultFormButton({
+  isEditingStage,
+  isProxyStage,
+  isAllowanceStage,
+  isConnected,
+}: OpenVaultState) {
   return (
     <Button>
       {isEditingStage
-        ? 'Confirm'
+        ? isConnected
+          ? 'Confirm'
+          : 'Connect'
         : isProxyStage
         ? 'Create Proxy'
         : isAllowanceStage
@@ -69,27 +77,74 @@ function OpenVaultFormButton({ isEditingStage, isProxyStage, isAllowanceStage }:
   )
 }
 
+type OpenVaultInputsProps = OpenVaultConnectedState
+function OpenVaultInputs({
+  depositAmount,
+  generateAmount,
+  maxDebtPerUnitCollateral,
+  change,
+  collateralBalance,
+  daiBalance,
+}: OpenVaultInputsProps) {
+  function handleDepositChange(change: (ch: ManualChange) => void) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.replace(/,/g, '')
+      const depositAmount = value !== '' ? new BigNumber(value) : zero
+      const maxDrawAmount = collateralBalance.times(maxDebtPerUnitCollateral)
+
+      change({
+        kind: 'depositAmount',
+        depositAmount,
+      })
+      /* change({
+       *   kind: 'maxDrawAmount',
+       *   maxDrawAmount,
+       * }) */
+      if (!depositAmount.eq(zero)) {
+        change({ kind: 'generateAmount', generateAmount: zero })
+      }
+    }
+  }
+
+  function handleGenerateChange(change: (ch: ManualChange) => void) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.replace(/,/g, '')
+      const generateAmount = value !== '' ? new BigNumber(value) : zero
+      change({
+        kind: 'generateAmount',
+        generateAmount,
+      })
+    }
+  }
+
+  return (
+    <>
+      <VaultActionInput
+        action="Deposit"
+        amount={depositAmount}
+        balance={collateralBalance}
+        token={'ETH'}
+        hasError={true}
+        onChange={handleDepositChange(change!)}
+      />
+      <VaultActionInput
+        action="Generate"
+        amount={generateAmount}
+        balance={daiBalance}
+        token={'DAI'}
+        hasError={false}
+        onChange={handleGenerateChange(change!)}
+      />
+    </>
+  )
+}
+
 function OpenVaultForm(props: OpenVaultState) {
   return (
     <Card>
       <Grid>
         <OpenVaultFormTitle {...props} />
-        <VaultActionInput
-          action="Deposit"
-          disabled={false}
-          balance={new BigNumber('1')}
-          token={'ETH'}
-          hasError={true}
-          onChange={(e) => console.log(e.target.value)}
-        />
-        <VaultActionInput
-          action="Generate"
-          disabled={false}
-          balance={new BigNumber('1')}
-          token={'DAI'}
-          hasError={false}
-          onChange={(e) => console.log(e.target.value)}
-        />
+        <OpenVaultInputs {...(props as OpenVaultConnectedState)} />
         <OpenVaultFormButton {...props} />
       </Grid>
     </Card>
