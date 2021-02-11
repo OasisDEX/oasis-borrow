@@ -133,10 +133,6 @@ function RecentTransaction<A extends TxMeta>({ transaction }: { transaction: TxM
     status === TxStatus.CancelledByTheUser ||
     status === TxStatus.Error ||
     status === TxStatus.Failure
-  // status === 'failed' ||
-  // status === 'expired' ||
-  // status === 'incomplete' ||
-  // status === 'rejected'
   const label = getTransactionTranslations(transaction)[isFailed ? 'recentFailed' : 'recent']
 
   return (

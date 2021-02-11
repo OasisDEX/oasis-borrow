@@ -31,7 +31,7 @@ import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverv
 import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
-import { Observable } from 'rxjs'
+import { Observable, of } from 'rxjs'
 import { filter, map, shareReplay } from 'rxjs/operators'
 
 import { catIlk } from '../blockchain/calls/cat'
@@ -150,10 +150,12 @@ export function setupAppContext() {
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
 
+  const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
+
   // computed
   const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
 
-  const ilkData$ = memoize(curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, catIlks$))
+  const ilkData$ = memoize(curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, catIlks$, ilkToToken$))
 
   const controller$ = memoize(
     curry(createController$)(proxyOwner$, cdpManagerOwner$),
@@ -170,6 +172,7 @@ export function setupAppContext() {
       ilkData$,
       tokenOraclePrice$,
       controller$,
+      ilkToToken$
     ),
     bigNumberTostring,
   )
@@ -196,6 +199,7 @@ export function setupAppContext() {
     tokenOraclePrice$,
     balance$,
     ilkData$,
+    ilkToToken$
   )
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
 

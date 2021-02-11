@@ -1,12 +1,6 @@
 import { isDone, TxState, TxStatus } from '@oasisdex/transactions'
 import { every1Seconds$ } from 'blockchain/network'
 import { TxData } from 'components/AppContext'
-// import {
-//   LatamexOrder,
-//   MoonpayOrder,
-//   OnrampOrder,
-//   WyreOrder,
-// } from 'components/dashboard/onrampOrders'
 import { withTranslation } from 'i18n'
 import { isEqual } from 'lodash'
 import moment from 'moment'
@@ -35,9 +29,7 @@ interface TransactionManager {
 }
 
 export function isTxDone(tr: TxMgrTransaction) {
-  return (
-    tr.kind === 'blockchain' && isDone(tr.raw) && ['complete', 'failed'].indexOf(tr.status) >= 0
-  )
+  return tr.kind === 'blockchain' && isDone(tr.raw)
 }
 
 export function TxTranslator({

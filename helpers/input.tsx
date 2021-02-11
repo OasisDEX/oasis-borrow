@@ -1,11 +1,12 @@
 import BigNumber from 'bignumber.js'
-import { TokenConfig } from 'blockchain/tokensMetadata'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'i18n'
 import React, { ChangeEvent } from 'react'
 import { createNumberMask } from 'text-mask-addons/dist/textMaskAddons'
 import { Box, Button, Flex } from 'theme-ui'
+
+import { TokenConfig } from '../blockchain/tokensMetadata'
 
 interface InputWithSuffixProps {
   input: React.ReactElement<HTMLInputElement>
