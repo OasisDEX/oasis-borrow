@@ -110,14 +110,14 @@ function AllIlks({
             {formatPercent(liquidationRatio.times(100))}
           </Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
-            <Button
+            <AppLink
               sx={{ lineHeight: 1 }}
               variant="outline"
               disabled={!canOpenVault}
-              onClick={handleVaultOpen(ilk)}
+              href={`/vaults/open/${ilk}`}
             >
               Open Vault
-            </Button>
+            </AppLink>
           </Table.Cell>
         </Table.Row>
       ))}

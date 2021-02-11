@@ -1,7 +1,7 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { LedgerConnector, TrezorConnector } from '@oasisdex/connectors'
-import { ConnectionKind, getNetworkId, Web3Context } from '@oasisdex/web3-context'
+import { ConnectionKind, getNetworkId, Web3Context, Web3ContextNotConnected } from '@oasisdex/web3-context'
 import { UnsupportedChainIdError } from '@web3-react/core'
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { NetworkConnector } from '@web3-react/network-connector'
@@ -19,12 +19,11 @@ import { useTranslation } from 'i18n'
 import { mapValues } from 'lodash'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
-import { combineLatest, identity, Observable, of } from 'rxjs'
+import { identity, Observable, of } from 'rxjs'
 import { first, tap } from 'rxjs/operators'
 import { Alert, Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 import { assert } from 'ts-essentials'
-import Web3 from 'web3'
-
+import { redirectState$ } from 'features/router/redirectState'
 export const AUTO_CONNECT = 'autoConnect'
 
 interface AutoConnectLocalStorage {
@@ -198,26 +197,27 @@ export function getConnectionKindMessage(connectionKind: ConnectionKind) {
   }
 }
 
-export function ConnectWallet({url}: { url?: string }) {
-  const { web3Context$ } = useAppContext()
+export function ConnectWallet() {
+  const { web3Context$, redirectState$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
+  const url = useObservable(redirectState$)
   const { t } = useTranslation('common')
   const { replace } = useRedirect()
   const [connectingLedger, setConnectingLedger] = React.useState(false)
 
   useEffect(() => {
     const subscription = web3Context$.subscribe((web3Context) => {
-      console.log({url})
       if (web3Context.status === 'connected') {
-        if (url) {
+        if (url !== undefined) {
           replace(url)
+          redirectState$.next(undefined)
         } else {
-          replace(`/owner/[address]`, `/owner/${web3Context.account}`)
+          replace(`/owner/${web3Context.account}`)
         }
       }
     })
     return () => subscription.unsubscribe()
-  }, [])
+  }, [url])
 
   if (!web3Context) {
     return null
@@ -331,6 +331,7 @@ export function ConnectWallet({url}: { url?: string }) {
 function autoConnect(
   web3Context$: Observable<Web3Context>,
   defaultChainId: number,
+  fallback: (web3Context: Web3ContextNotConnected) => void 
 ) {
   let firstTime = true
 
@@ -351,7 +352,9 @@ function autoConnect(
           }
         } else if (web3Context.status === 'notConnected') {
             console.log('autoConnecting readonly', defaultChainId)
-            web3Context.connect(await getConnector('network', defaultChainId), 'network')
+            // web3Context.connect(await getConnector('network', defaultChainId), 'network')
+
+            fallback(web3Context)
         }
         if (web3Context.status === 'connected') {
           localStorage.setItem(
@@ -369,7 +372,8 @@ function autoConnect(
       } catch (e) {
         if (web3Context.status === 'notConnected') {
           console.log('falling back to autoConnecting readonly', defaultChainId)
-          web3Context.connect(await getConnector('network', defaultChainId), 'network')
+          fallback(web3Context)
+          // web3Context.connect(await getConnector('network', defaultChainId), 'network')
         }
       } finally {
         firstTime = false
@@ -381,12 +385,34 @@ function autoConnect(
   }
 }
 
+async function connectReadonly(web3Context: Web3ContextNotConnected) {
+  web3Context.connect(await getConnector('network', getNetworkId()), 'network')
+}
 
 export function WithConnection({ children }: WithChildren) {
-  const router = useRouter()
   const { web3Context$ } = useAppContext()
+  const router = useRouter()
+
+  useEffect(() => autoConnect(web3Context$, getNetworkId(), connectReadonly), [])
+
+  return children
+}
+
+export function WithWalletConnection({ children }: WithChildren) {
+  const { replace } = useRedirect()
+  const { web3Context$ } = useAppContext()
+  const web3Context = useObservable(web3Context$)
   
-  useEffect(() => autoConnect(web3Context$, getNetworkId()), [])
+  useEffect(() => {
+    if (web3Context?.status === 'connectedReadonly') {
+      redirectState$.next(window.location.pathname)
+      replace(`/connect`)
+    }
+    if (web3Context?.status === 'notConnected') {
+      redirectState$.next(window.location.pathname)
+      autoConnect(web3Context$, getNetworkId(), () => replace(`/connect`))
+    }
+  }, [web3Context?.status])
 
   return children
 }

@@ -54,6 +54,7 @@ import {
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
 import { HasGasEstimation } from '../helpers/form'
+import { redirectState$ } from 'features/router/redirectState'
 
 export type TxData =
   | LockAndDrawData
@@ -224,6 +225,7 @@ export function setupAppContext() {
     landing$,
     openVault$,
     vaultsOverview$,
+    redirectState$
   }
 }
 

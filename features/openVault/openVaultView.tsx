@@ -439,9 +439,5 @@ export function OpenVaultModal({ ilk, close }: ModalProps) {
     return null
   }
 
-  return (
-    <ModalBottom {...{ close }}>
-      <OpenVaultView {...{ ...openVault, steps: 3, closeModal: close }} />
-    </ModalBottom>
-  )
+  return <OpenVaultView {...{ ...openVault, steps: 3, closeModal: close }} />
 }

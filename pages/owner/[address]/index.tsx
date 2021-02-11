@@ -1,4 +1,5 @@
 import { useAppContext } from 'components/AppContextProvider'
+import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { VaultsOverviewView } from 'features/vaultsOverview/VaultsOverviewView'
 import { useObservable } from 'helpers/observableHook'
@@ -20,7 +21,7 @@ export default function VaultsSummary() {
   const router = useRouter();
 
   const address = router.query.address as string
-  return address ? <Summary {...{ address }} /> : null
+  return address ? <WithConnection><Summary {...{ address }} /></WithConnection> : null
 }
 
 VaultsSummary.layout = AppLayout

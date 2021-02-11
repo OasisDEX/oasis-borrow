@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { VaultView } from 'features/vault/VaultView'
 import { useObservable } from 'helpers/observableHook'
@@ -23,9 +24,11 @@ export default function Vault() {
   }
 
   return (
-    <Container>
-      <VaultView vault={vault} account={account} />
-    </Container>
+    <WithConnection>
+      <Container>
+        <VaultView vault={vault} account={account} />
+      </Container>
+    </WithConnection>
   )
 }
 
