@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
+import { AppLink } from 'components/Links'
 import { FeaturedIlks } from 'features/vaultsOverview/VaultsOverviewView'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
@@ -137,9 +138,9 @@ export function LandingView() {
             <Table.Cell sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee)}</Table.Cell>
             <Table.Cell sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio)}</Table.Cell>
             <Table.Cell sx={{ textAlign: 'right' }}>
-              <Button sx={{ lineHeight: 1 }} variant="secondary">
+              <AppLink href={`/vaults/open/${ilk}`} variant="secondary">
                 Open Vault
-              </Button>
+              </AppLink>
             </Table.Cell>
           </Table.Row>
         ))}

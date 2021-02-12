@@ -710,15 +710,17 @@ const oasisBaseTheme = {
   links: {
     nav: {
       variant: 'text.paragraph3',
+      cursor: 'pointer',
+      display: 'inline-block',
       fontWeight: 'semiBold',
     },
     outline: {
-      display: 'block',
       variant: 'buttons.outline',
+      display: 'inline-block',
     },
     secondary: {
-      display: 'block',
       variant: 'buttons.secondary',
+      display: 'inline-block',
     }
   },
   forms: {

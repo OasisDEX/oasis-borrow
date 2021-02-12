@@ -1,7 +1,7 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { LedgerConnector, TrezorConnector } from '@oasisdex/connectors'
-import { ConnectionKind, getNetworkId, Web3Context } from '@oasisdex/web3-context'
+import { ConnectionKind, getNetworkId, Web3Context, Web3ContextNotConnected } from '@oasisdex/web3-context'
 import { UnsupportedChainIdError } from '@web3-react/core'
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { NetworkConnector } from '@web3-react/network-connector'
@@ -19,12 +19,11 @@ import { useTranslation } from 'i18n'
 import { mapValues } from 'lodash'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
-import { combineLatest, identity, Observable, of } from 'rxjs'
+import { identity, Observable, of } from 'rxjs'
 import { first, tap } from 'rxjs/operators'
 import { Alert, Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 import { assert } from 'ts-essentials'
-import Web3 from 'web3'
-
+import { redirectState$ } from 'features/router/redirectState'
 export const AUTO_CONNECT = 'autoConnect'
 
 interface AutoConnectLocalStorage {
@@ -117,7 +116,7 @@ function ConnectWalletButton({
   connect?: () => void
 }) {
   return (
-    <Button variant="outlineSquare" sx={{ textAlign: 'left' }} onClick={connect}>
+    <Button variant="outline" sx={{ textAlign: 'left' }} onClick={connect}>
       <Flex sx={{ alignItems: 'center' }}>
         <Flex sx={{ ml: 1, mr: 3, alignItems: 'center' }}>
           {isConnecting ? <AppSpinner size={22} /> : <Icon name={iconName} size={22} />}
@@ -198,9 +197,10 @@ export function getConnectionKindMessage(connectionKind: ConnectionKind) {
   }
 }
 
-export function ConnectWallet(_: { originalUrl?: string }) {
-  const { web3Context$ } = useAppContext()
+export function ConnectWallet() {
+  const { web3Context$, redirectState$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
+  const url = useObservable(redirectState$)
   const { t } = useTranslation('common')
   const { replace } = useRedirect()
   const [connectingLedger, setConnectingLedger] = React.useState(false)
@@ -208,11 +208,16 @@ export function ConnectWallet(_: { originalUrl?: string }) {
   useEffect(() => {
     const subscription = web3Context$.subscribe((web3Context) => {
       if (web3Context.status === 'connected') {
-        replace(`/owner/[address]`, `/owner/${web3Context.account}`)
+        if (url !== undefined) {
+          replace(url)
+          redirectState$.next(undefined)
+        } else {
+          replace(`/owner/${web3Context.account}`)
+        }
       }
     })
     return () => subscription.unsubscribe()
-  }, [])
+  }, [url])
 
   if (!web3Context) {
     return null
@@ -288,10 +293,10 @@ export function ConnectWallet(_: { originalUrl?: string }) {
             </Text>
           </Alert>
         )) || (
-          <Alert variant="error" sx={{ fontWeight: 'normal', borderRadius: 'large' }}>
-            <Text sx={{ my: 1, ml: 2, fontSize: 3, lineHeight: 'body' }}>{t('connect-error')}</Text>
-          </Alert>
-        ))}
+            <Alert variant="error" sx={{ fontWeight: 'normal', borderRadius: 'large' }}>
+              <Text sx={{ my: 1, ml: 2, fontSize: 3, lineHeight: 'body' }}>{t('connect-error')}</Text>
+            </Alert>
+          ))}
       <Grid columns={1} sx={{ maxWidth: '280px', width: '100%', mx: 'auto' }}>
         {SUPPORTED_WALLETS.map(({ iconName, connectionKind }) => {
           const isConnecting =
@@ -312,8 +317,8 @@ export function ConnectWallet(_: { originalUrl?: string }) {
                   web3Context.status === 'connecting'
                     ? undefined
                     : connectionKind === 'ledger'
-                    ? () => setConnectingLedger(true)
-                    : connect(web3Context, connectionKind, getNetworkId()),
+                      ? () => setConnectingLedger(true)
+                      : connect(web3Context, connectionKind, getNetworkId()),
               }}
             />
           )
@@ -325,13 +330,13 @@ export function ConnectWallet(_: { originalUrl?: string }) {
 
 function autoConnect(
   web3Context$: Observable<Web3Context>,
-  readOnlyAccount$: Observable<string | undefined>,
   defaultChainId: number,
+  fallback: (web3Context: Web3ContextNotConnected) => void
 ) {
   let firstTime = true
 
-  const subscription = combineLatest(web3Context$, readOnlyAccount$).subscribe(
-    async ([web3Context, readOnlyAccount]) => {
+  const subscription = web3Context$.subscribe(
+    async (web3Context) => {
       try {
         const serialized = localStorage.getItem(AUTO_CONNECT)
         if (firstTime && web3Context.status === 'notConnected' && serialized) {
@@ -346,10 +351,7 @@ function autoConnect(
             web3Context.connect(connector, connectionKind)
           }
         } else if (web3Context.status === 'notConnected') {
-          if (readOnlyAccount) {
-            console.log('autoConnecting readonly', defaultChainId)
-            web3Context.connect(await getConnector('network', defaultChainId), 'network')
-          }
+          fallback(web3Context)
         }
         if (web3Context.status === 'connected') {
           localStorage.setItem(
@@ -365,9 +367,8 @@ function autoConnect(
           localStorage.removeItem(AUTO_CONNECT)
         }
       } catch (e) {
-        if (web3Context.status === 'notConnected' && readOnlyAccount) {
-          console.log('falling back to autoConnecting readonly', defaultChainId)
-          web3Context.connect(await getConnector('network', defaultChainId), 'network')
+        if (web3Context.status === 'notConnected') {
+          fallback(web3Context)
         }
       } finally {
         firstTime = false
@@ -379,51 +380,33 @@ function autoConnect(
   }
 }
 
-export function WithOverviewConnection({ children }: WithChildren) {
-  const router = useRouter()
-  const { web3Context$, readonlyAccount$ } = useAppContext()
-  const { address } = router.query as { address: string; network: string }
-  const { push } = useRedirect()
-
-  useEffect(() => {
-    if (Web3.utils.isAddress(address)) {
-      readonlyAccount$.next(address)
-    } else {
-      console.log('Invalid address')
-      push('/')
-    }
-    return () => readonlyAccount$.next(undefined)
-  }, [address])
-
-  useEffect(() => autoConnect(web3Context$, readonlyAccount$, getNetworkId()), [])
-
-  return children
-}
-
-export function WithVaultConnection({ children }: WithChildren) {
-  const router = useRouter()
-  const { web3Context$ } = useAppContext()
-  const { vault } = router.query as { vault: string }
-  const { push } = useRedirect()
-
-  useEffect(() => {
-    if (isNaN(+vault)) {
-      console.log('Invalid vault', vault)
-      push('/connect')
-    }
-  }, [vault])
-
-  useEffect(() => autoConnect(web3Context$, of('dhshah'), getNetworkId()), [])
-
-  return children
+async function connectReadonly(web3Context: Web3ContextNotConnected) {
+  web3Context.connect(await getConnector('network', getNetworkId()), 'network')
 }
 
 export function WithConnection({ children }: WithChildren) {
-  const router = useRouter()
+  const { web3Context$ } = useAppContext()
 
-  if (router.pathname === '/owner/[address]') {
-    return <WithOverviewConnection>{children}</WithOverviewConnection>
-  } else if (router.pathname === '/[vault]') {
-    return <WithVaultConnection>{children}</WithVaultConnection>
-  } else return children
+  useEffect(() => autoConnect(web3Context$, getNetworkId(), connectReadonly), [])
+
+  return children
+}
+
+export function WithWalletConnection({ children }: WithChildren) {
+  const { replace } = useRedirect()
+  const { web3Context$ } = useAppContext()
+  const web3Context = useObservable(web3Context$)
+
+  useEffect(() => {
+    if (web3Context?.status === 'connectedReadonly') {
+      redirectState$.next(window.location.pathname)
+      replace(`/connect`)
+    }
+    if (web3Context?.status === 'notConnected') {
+      redirectState$.next(window.location.pathname)
+      autoConnect(web3Context$, getNetworkId(), () => replace(`/connect`))
+    }
+  }, [web3Context?.status])
+
+  return children
 }

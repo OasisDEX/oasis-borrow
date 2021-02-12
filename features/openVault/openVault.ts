@@ -189,7 +189,7 @@ function setAllowance(
         () =>
           allowance$.pipe(
             filter((allowance) => allowance),
-            switchMap(() => of({ kind: 'stage', stage: 'allowanceWaitToContinue' })),
+            switchMap(() => of({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' })),
           ),
       ),
     )
@@ -438,12 +438,13 @@ export function createOpenVault$(
   tokenOraclePrice$: (token: string) => Observable<BigNumber>,
   balance$: (token: string, address: string) => Observable<BigNumber>,
   ilkData$: (ilk: string) => Observable<IlkData>,
+  ilkToToken$: Observable<(ilk: string) => string>,
   ilk: string,
 ): Observable<any> {
-  return combineLatest(context$, txHelpers$).pipe(
-    switchMap(([context, txHelpers]) => {
+  return combineLatest(context$, txHelpers$, ilkToToken$).pipe(
+    switchMap(([context, txHelpers, ilkToToken]) => {
       const account = context.account
-      const token = ilk.split('-')[0]
+      const token = ilkToToken(ilk)
 
       return combineLatest(
         balance$(token, account),

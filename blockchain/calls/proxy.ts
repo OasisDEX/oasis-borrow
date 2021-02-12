@@ -90,7 +90,7 @@ export type CreateDsProxyData = {
 
 export const createDsProxy: TransactionDef<CreateDsProxyData> = {
   call: (_, { dsProxyRegistry, contract }) =>
-    contract<DsProxyRegistry>(dsProxyRegistry).methods.build,
+    contract<DsProxyRegistry>(dsProxyRegistry).methods['build()'],
   prepareArgs: () => [],
 }
 

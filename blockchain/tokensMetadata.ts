@@ -30,7 +30,7 @@ const tokens = [
   {
     symbol: 'BAT',
     precision: 18,
-    // digits: ___________,
+    digits: 5,
     // maxSell: ___________,
     name: 'Basic Attention Token',
     icon: 'bat',
@@ -51,11 +51,12 @@ const tokens = [
     iconCircle: 'wbtc',
     iconColor: 'wbtc_color',
     ticker: 'wbtc-wrapped-bitcoin',
+    
   },
   {
     symbol: 'TUSD',
     precision: 18,
-    // digits: ___________,
+    digits: 2,
     // maxSell: ___________,
     name: 'Trust token',
     icon: 'tusd',
@@ -67,7 +68,7 @@ const tokens = [
   {
     symbol: 'KNC',
     precision: 18,
-    // digits: ___________,
+    digits: 5,
     // maxSell: ___________,
     name: 'Kyber Network',
     icon: 'kyber',
@@ -79,7 +80,7 @@ const tokens = [
   {
     symbol: 'MANA',
     precision: 18,
-    // digits: ___________,
+    digits: 5,
     // maxSell: ___________,
     name: 'Decentraland',
     icon: 'mana',
@@ -91,7 +92,7 @@ const tokens = [
   {
     symbol: 'PAXUSD',
     precision: 18,
-    // digits: ___________,
+    digits: 2,
     // maxSell: ___________,
     name: 'Paxos Standard',
     icon: 'pax',
@@ -103,7 +104,7 @@ const tokens = [
   {
     symbol: 'USDT',
     precision: 6,
-    // digits: ___________,
+    digits: 2,
     // maxSell: ___________,
     name: 'Tether',
     icon: 'usdt',
@@ -115,7 +116,7 @@ const tokens = [
   {
     symbol: 'COMP',
     precision: 18,
-    // digits: ___________,
+    digits: 5,
     // maxSell: ___________,
     name: 'Compound',
     icon: 'compound',
@@ -129,7 +130,7 @@ const tokens = [
   {
     symbol: 'LRC',
     precision: 18,
-    // digits: ___________,
+    digits: 5,
     // maxSell: ___________,
     name: 'Loopring',
     icon: 'lrc',
@@ -141,7 +142,7 @@ const tokens = [
   {
     symbol: 'LINK',
     precision: 18,
-    // digits: ___________,
+    digits: 5,
     // maxSell: ___________,
     name: 'Chainlink',
     icon: 'chainlink',
@@ -155,7 +156,7 @@ const tokens = [
   {
     symbol: 'GUSD',
     precision: 2,
-    // digits: ___________,
+    digits: 2,
     // maxSell: ___________,
     name: 'Gemini dollar',
     icon: 'gemini',
@@ -169,7 +170,7 @@ const tokens = [
   {
     symbol: 'ZRX',
     precision: 18,
-    // digits: ___________,
+    digits: 5,
     // maxSell: ___________,
     name: '0x',
     icon: 'zerox',
@@ -193,7 +194,7 @@ const tokens = [
   {
     symbol: 'BAL',
     precision: 18,
-    // digits: ___,
+    digits: 5,
     digitsInstant: 2,
     // maxSell: ______,
     name: 'Balancer',
@@ -205,7 +206,7 @@ const tokens = [
   {
     symbol: 'YFI',
     precision: 18,
-    // digits: ___,
+    digits: 5,
     digitsInstant: 2,
     // maxSell: ______,
     name: 'Yearn',

@@ -1,5 +1,5 @@
 import { IlkData, IlkDataList } from 'blockchain/ilks'
-import { ContextConnected } from 'blockchain/network'
+import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { VaultSummary } from 'features/vault/vaultSummary'
@@ -66,7 +66,7 @@ export function createFeaturedIlks$(ilkDataList$: Observable<IlkDataList>) {
 }
 
 export function createVaultsOverview$(
-  context$: Observable<ContextConnected>,
+  context$: Observable<Context>,
   vaults$: (address: string) => Observable<Vault[]>,
   vaultsSummary$: (address: string) => Observable<VaultSummary>,
   ilkDataList$: Observable<IlkDataList>,
@@ -81,7 +81,7 @@ export function createVaultsOverview$(
     featuredIlks$.pipe(startWith<FeaturedIlk[] | undefined>(undefined)),
   ).pipe(
     map(([context, vaults, vaultSummary, ilkDataList, featuredIlks]) => ({
-      canOpenVault: !context.readonly,
+      canOpenVault: context.status === 'connected',
       vaults,
       vaultSummary,
       ilkDataList,

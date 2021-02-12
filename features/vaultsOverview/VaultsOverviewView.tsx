@@ -4,13 +4,11 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { OpenVaultModal } from 'features/openVault/openVaultView'
 import { VaultSummary } from 'features/vault/vaultSummary'
 import { formatAddress, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
-import { useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
-import { Box, Button, Card, Flex, Grid, Heading, Text } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { Table, TokenSymbol } from '../landing/LandingView'
@@ -49,7 +47,6 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
           </Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
             <AppLink
-              sx={{ lineHeight: 1 }}
               variant="secondary"
               as={`/${vault.id}`}
               href={`/[vault]`}
@@ -236,7 +233,7 @@ export function VaultsOverviewView({
   const { context$ } = useAppContext()
   const context = useObservable(context$)
 
-  const readonlyAccount = context?.status === 'connected' && context.readonly && context.account
+  const readonlyAccount = context?.status === 'connected' && context.account
   const displaySummary = vaults && vaults.length > 0 && vaultSummary
   const displayFeaturedIlks = vaults?.length === 0 && featuredIlks
   const displayVaults = vaults && vaults.length > 0 && vaults
@@ -248,10 +245,10 @@ export function VaultsOverviewView({
           Viewing {formatAddress(readonlyAccount)}
         </Card>
       )}
-      <Heading sx={{ textAlign: 'center', fontSize: 7 }} as="h1">
+      <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
         Vault overview
       </Heading>
-      <Text sx={{ textAlign: 'center', justifySelf: 'center', width: 700, fontSize: 4, mb: 4 }}>
+      <Text variant="header3" sx={{ textAlign: 'center', justifySelf: 'center', mb: 4 }}>
         Hello 0x..102s it looks like tou currently have no Vaults open with this wallet. Open a
         Vault below.
       </Text>

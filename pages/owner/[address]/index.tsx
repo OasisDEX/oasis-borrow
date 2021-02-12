@@ -1,7 +1,9 @@
 import { useAppContext } from 'components/AppContextProvider'
+import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { VaultsOverviewView } from 'features/vaultsOverview/VaultsOverviewView'
 import { useObservable } from 'helpers/observableHook'
+import { useRouter } from 'next/router'
 import React from 'react'
 
 function Summary({ address }: { address: string }) {
@@ -16,10 +18,10 @@ function Summary({ address }: { address: string }) {
 }
 
 export default function VaultsSummary() {
-  const { readonlyAccount$ } = useAppContext()
+  const router = useRouter();
 
-  const address = useObservable(readonlyAccount$)
-  return address ? <Summary {...{ address }} /> : null
+  const address = router.query.address as string
+  return address ? <WithConnection><Summary {...{ address }} /></WithConnection> : null
 }
 
 VaultsSummary.layout = AppLayout

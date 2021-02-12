@@ -1,37 +1,21 @@
 import { useRouter } from 'next/router'
-import { ParsedUrlQuery } from 'querystring'
-
-// getting query params which should be persisted across page transitions
-// url can already have some query params so we have to set initial prefix
-// ommiting redirectUrl and address so it is not persisted
-export function getQueryParams(query: ParsedUrlQuery, url?: string) {
-  const initialPrefix = url && url.includes('?') ? '&' : '?'
-  let queryParams = initialPrefix
-
-  Object.entries(query).forEach(([key, value]) => {
-    // connect route is used for catching all app routes without address and it gets appended to query object
-    if (key !== 'connect' && key !== 'address' && !url?.includes(key)) {
-      const prefix = queryParams.length === 1 ? '' : '&'
-      queryParams += `${prefix}${key}=${value}`
-    }
-  })
-
-  return queryParams === initialPrefix ? '' : queryParams
-}
+import { Dictionary } from 'ts-essentials'
 
 export function useRedirect() {
   const router = useRouter()
 
-  function push(url: string, as?: string) {
-    const queryParams = getQueryParams(router.query, url)
-    /* eslint-disable-next-line */
-    router.push(`${url}${queryParams}`, `${as || url}${queryParams}`)
+  function push(pathname: string, query: Dictionary<string> = {}) {
+    const network = router.query.network;
+    const queryParams = network ? {...query, network } : query
+    
+    router.push({pathname, query: queryParams})
   }
 
-  function replace(url: string, as?: string) {
-    const queryParams = getQueryParams(router.query, url)
-    /* eslint-disable-next-line */
-    router.replace(`${url}${queryParams}`, `${as || url}${queryParams}`)
+  function replace(pathname: string, query: Dictionary<string> = {}) {
+    const network = router.query.network;
+    const queryParams = network ? {...query, network } : query
+
+    router.replace({pathname, query: queryParams})
   }
 
   return { push, replace }

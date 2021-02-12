@@ -50,7 +50,7 @@ export function AppLayout({ children, backLink, CustomLogoWithBack }: AppLayoutP
 
   return (
     <BasicLayout footer={<Footer />} header={<AppHeader {...{ backLink, CustomLogoWithBack }} />}>
-      <WithConnection>{children}</WithConnection>
+      {children}
     </BasicLayout>
   )
 }
@@ -78,5 +78,5 @@ export function ConnectPageLayout({
   if (!isAppContextAvailable()) {
     return null
   }
-  return <BasicLayout header={<ConnectPageHeader {...{ backLink }} />}>{children}</BasicLayout>
+  return <BasicLayout header={<ConnectPageHeader />}>{children}</BasicLayout>
 }
