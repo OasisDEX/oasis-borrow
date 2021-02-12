@@ -42,16 +42,15 @@ export type ContextConnectedReadOnly = NetworkConfig &
 
 export type ContextConnected = NetworkConfig &
   Web3ContextConnected &
-  WithContractMethod & { readonly: boolean } & WithWeb3ProviderGetPastLogs
+  WithContractMethod & WithWeb3ProviderGetPastLogs
 
 export type Context = ContextConnected | ContextConnectedReadOnly
 
 export function createContext$(
-  web3ContextConnected$: Observable<Web3ContextConnected | Web3ContextConnectedReadonly>,
-  readonlyAccount$: Observable<string | undefined>,
+  web3ContextConnected$: Observable<Web3ContextConnected | Web3ContextConnectedReadonly>
 ): Observable<Context> {
-  return combineLatest(web3ContextConnected$, readonlyAccount$).pipe(
-    map(([web3Context, readonlyAccount]) => {
+  return web3ContextConnected$.pipe(
+    map((web3Context) => {
       // magic link has limit for querying block range and we can't get events in one call
       // couldn't get information from them about what block range they allow
       const networkData = networksById[web3Context.chainId]
@@ -63,18 +62,6 @@ export function createContext$(
       return {
         ...networkData,
         ...web3Context,
-        ...((web3Context.status === 'connectedReadonly' && readonlyAccount) ||
-        (web3Context.status === 'connected' &&
-          readonlyAccount &&
-          web3Context.account !== readonlyAccount)
-          ? {
-              status: 'connected',
-              account: readonlyAccount,
-              readonly: true,
-            }
-          : web3Context.status === 'connected'
-          ? { readonly: false }
-          : {}),
         contract: <T>(c: ContractDesc) => contract(web3Context.web3, c) as T,
         web3ProviderGetPastLogs,
       } as Context
