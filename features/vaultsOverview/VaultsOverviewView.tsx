@@ -37,12 +37,10 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
             <TokenSymbol token={vault.token} />
           </Table.Cell>
           <Table.Cell>{vault.ilk}</Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.collateral)} ${
-            vault.token
-          }`}</Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.freeCollateral)} ${
-            vault.token
-          }`}</Table.Cell>
+          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.collateral)} ${vault.token
+            }`}</Table.Cell>
+          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.freeCollateral)} ${vault.token
+            }`}</Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>{formatCryptoBalance(vault.debt)}</Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
             {vault.collateralizationRatio
@@ -52,7 +50,7 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
           <Table.Cell sx={{ textAlign: 'right' }}>
             <AppLink
               sx={{ lineHeight: 1 }}
-              variant="buttons.outline"
+              variant="secondary"
               as={`/${vault.id}`}
               href={`/[vault]`}
             >
@@ -72,14 +70,6 @@ function AllIlks({
   canOpenVault: boolean
   ilkDataList: IlkDataList
 }) {
-  const openModal = useModal()
-
-  function handleVaultOpen(ilk: string) {
-    return (e: React.SyntheticEvent<HTMLButtonElement>) => {
-      e.preventDefault()
-      openModal(OpenVaultModal, { ilk })
-    }
-  }
 
   return (
     <Table
@@ -110,14 +100,13 @@ function AllIlks({
             {formatPercent(liquidationRatio.times(100))}
           </Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
-            <Button
-              sx={{ lineHeight: 1 }}
-              variant="outline"
+            <AppLink
+              variant="secondary"
               disabled={!canOpenVault}
-              onClick={handleVaultOpen(ilk)}
+              href={`/vaults/open/${ilk}`}
             >
               Open Vault
-            </Button>
+            </AppLink>
           </Table.Cell>
         </Table.Row>
       ))}
@@ -144,25 +133,24 @@ function CallToAction({ ilk }: CallToActionProps) {
       }}
     >
       <Box sx={{ gridColumn: '1/3' }}>
-        <Text>{ilk.title}</Text>
+        <Text variant="caption">{ilk.title}</Text>
       </Box>
       <Box sx={{ gridColumn: '1/3' }}>
-        <Text variant="heading" sx={{ color: 'white' }}>
+        <Text variant="header2" sx={{ color: 'white' }}>
           {ilk.ilk}
         </Text>
       </Box>
       <Box>
-        <Text variant="boldBody">Stability fee:</Text>
-        <Text variant="small">{formatPercent(ilk.stabilityFee)}</Text>
+        <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }} >Stability fee:</Text>
+        <Text variant="paragraph3">{formatPercent(ilk.stabilityFee)}</Text>
       </Box>
       <Box>
-        <Text variant="boldBody">Min coll ratio:</Text>
-        <Text variant="small">{formatPercent(ilk.liquidationRatio)}</Text>
+        <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>Min coll ratio:</Text>
+        <Text variant="paragraph3">{formatPercent(ilk.liquidationRatio)}</Text>
       </Box>
     </Grid>
   )
 }
-
 function Summary({ summary }: { summary: VaultSummary }) {
   return (
     <Card>

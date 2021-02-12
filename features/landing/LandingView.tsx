@@ -137,7 +137,7 @@ export function LandingView() {
             <Table.Cell sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee)}</Table.Cell>
             <Table.Cell sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio)}</Table.Cell>
             <Table.Cell sx={{ textAlign: 'right' }}>
-              <Button sx={{ lineHeight: 1 }} variant="outline">
+              <Button sx={{ lineHeight: 1 }} variant="secondary">
                 Open Vault
               </Button>
             </Table.Cell>

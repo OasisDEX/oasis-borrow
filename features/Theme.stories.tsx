@@ -1,6 +1,6 @@
 import { storiesOf } from '@storybook/react'
 import { Container } from 'next/app'
-import { Text, Heading, Grid, Box, Flex } from 'theme-ui'
+import { Text, Heading, Grid, Box, Flex, Button } from 'theme-ui'
 import {
   TypeScale,
   TypeStyle,
@@ -10,6 +10,7 @@ import {
 import React from 'react'
 
 import { theme } from '../theme'
+import { AppLink } from 'components/Links'
 
 const stories = storiesOf('Oasis Borrow Theme', module)
 stories.add("Typography", () => {
@@ -29,15 +30,15 @@ stories.add("Typography", () => {
         <TypeScale />
       </Box>
       <Heading sx={{ mt: 4, fontSize: 5 }}>Text variants</Heading>
-      <Grid sx={{ my: 2 }} columns="repeat(4, 1fr)" gap="10px">
+      <Flex sx={{ flexWrap: 'wrap' }}>
         {
           textStyles.map(style =>
-            <Box bg="white" p={3} sx={{ display: 'flex', alignItems: 'flex-end' }}>
+            <Box bg="white" p={3} sx={{ display: 'flex', alignItems: 'flex-end', m: 3, p: 4 }}>
               <Text key={style} variant={style} sx={{ textTransform: 'capitalize' }}>{style}</Text>
             </Box>
           )
         }
-      </Grid>
+      </Flex>
     </Container>
   )
 })
@@ -94,153 +95,38 @@ stories.add('Theme elements', () => {
   )
 })
 
+stories.add("Components", () => {
+  const buttons = Object.keys(theme.buttons)
+  const links = Object.keys(theme.links)
 
-// const protoWeb3Context: Web3Context = {
-//   chainId: 42,
-//   status: 'connected',
-//   deactivate: () => null,
-//   account: '0xdA1810f583320Bd25BD30130fD5Db06591bEf915',
-//   connectionKind: 'injected',
-//   web3: {} as Web3,
-// }
-
-// const StoryContainer = ({ children, title }: { title: string } & WithChildren) => {
-//   if (!isAppContextAvailable()) return null
-
-//   return (
-//     <Container variant="appContainer">
-//       <Heading variant="smallHeading" sx={{ mt: 5, mb: 3, textAlign: 'right' }}>
-//         {title}
-//       </Heading>
-//       {children}
-//     </Container>
-//   )
-// }
-
-// function MockContextProvider({
-//   children,
-//   title,
-//   web3Context,
-//   transactions = [],
-// }: MockContextProviderProps) {
-//   const ctx = ({
-//     web3Context$: of(web3Context),
-//     transactionManager$: createTransactionManager(of(transactions)),
-//     context$: of({
-//       etherscan: { url: 'etherscan' },
-//     }),
-//     readonlyAccount$: of(undefined),
-//   } as any) as AppContext
-
-//   return (
-//     <appContext.Provider value={ctx as any}>
-//       <ModalProvider>
-//         <StoryContainer {...{ title }}>{children}</StoryContainer>
-//       </ModalProvider>
-//     </appContext.Provider>
-//   )
-// }
-
-// stories.add('Connected', () => {
-//   return (
-//     <MockContextProvider title="Connected Metamask Kovan" web3Context={protoWeb3Context}>
-//       <AppHeader />
-//     </MockContextProvider>
-//   )
-// })
-
-// stories.add('Connected WalletConnect Kovan', () => {
-//   return (
-//     <MockContextProvider
-//       title="Connected WalletConnect Kovan"
-//       web3Context={{
-//         ...protoWeb3Context,
-//         connectionKind: 'walletConnect',
-//       }}
-//     >
-//       <AppHeader />
-//     </MockContextProvider>
-//   )
-// })
-
-// stories.add('Connected Coinbase wallet Mainnet', () => {
-//   return (
-//     <MockContextProvider
-//       title="Connected Coinbase wallet Mainnet"
-//       web3Context={{
-//         ...protoWeb3Context,
-//         connectionKind: 'walletLink',
-//       }}
-//     >
-//       <AppHeader />
-//     </MockContextProvider>
-//   )
-// })
-
-// stories.add('Connected MagicLink Kovan', () => {
-//   return (
-//     <MockContextProvider
-//       title="Connected MagicLink Kovan"
-//       web3Context={{
-//         ...protoWeb3Context,
-//         connectionKind: 'magicLink',
-//       }}
-//     >
-//       <AppHeader />
-//     </MockContextProvider>
-//   )
-// })
-
-// stories.add('Connected with pending transactions', () => {
-//   const newTime = new Date(Date.now() + 2)
-
-//   return (
-//     <MockContextProvider
-//       title="Connected Metamask Kovan"
-//       web3Context={protoWeb3Context}
-//       transactions={[{ ...protoPendingTx, lastChange: newTime }]}
-//     >
-//       <AppHeader />
-//     </MockContextProvider>
-//   )
-// })
-
-// stories.add('Connected with recent transactions', () => {
-//   return (
-//     <MockContextProvider
-//       title="Connected Metamask Kovan"
-//       web3Context={protoWeb3Context}
-//       transactions={[protoSuccessTx, protoSuccessTx]}
-//     >
-//       <AppHeader />
-//     </MockContextProvider>
-//   )
-// })
-
-// stories.add('Connected with recent transactions and view more', () => {
-//   return (
-//     <MockContextProvider
-//       title="Connected Metamask Kovan"
-//       web3Context={protoWeb3Context}
-//       transactions={[protoSuccessTx, protoSuccessTx, protoSuccessTx, protoSuccessTx]}
-//     >
-//       <AppHeader />
-//     </MockContextProvider>
-//   )
-// })
-
-// stories.add('Connected with pending transaction delayed', () => {
-//   const startTime = new Date()
-//   const newTime = startTime.setSeconds(startTime.getSeconds() + 2)
-
-//   return (
-//     <MockContextProvider
-//       title="Connected Metamask Kovan"
-//       web3Context={protoWeb3Context}
-//       // @ts-ignore
-//       transactions={[protoSuccessTx, { ...protoPendingTx, lastChange: newTime }]}
-//     >
-//       <AppHeader />
-//     </MockContextProvider>
-//   )
-// })
+  return (
+    <Container>
+      <Heading sx={{ mt: 4, fontSize: 5 }}>Components</Heading>
+      <Heading sx={{ mt: 4, fontSize: 5 }}>Buttons</Heading>
+      <Flex sx={{ my: 3 }}>
+        {
+          buttons.map((variant) => (
+            <Box sx={{ position: 'relative', bg: 'white', m: 3, p: 3 }} key={variant}>
+              <Text sx={{ position: 'absolute', top: 0, transform: 'translateY(-90%)' }}>{variant}</Text>
+              <Button variant={variant}>Click me</Button>
+            </Box>)
+          )
+        }
+      </Flex>
+      <Heading sx={{ mt: 4, fontSize: 5 }}>Links</Heading>
+      <Flex sx={{ my: 3 }}>
+        {
+          links.map((variant) => (
+            <Box sx={{ position: 'relative', bg: 'white', m: 3, p: 3 }} key={variant}>
+              <Text sx={{ position: 'absolute', top: 0, transform: 'translateY(-90%)' }}>{variant}</Text>
+              <AppLink href="#" variant={variant}>Click me</AppLink>
+            </Box>)
+          )
+        }
+        <Box sx={{ position: 'relative', bg: 'white', m: 3, p: 3 }}>
+          <Text sx={{ position: 'absolute', top: 0, transform: 'translateY(-90%)' }}>Default</Text>
+          <AppLink href="#" >Click me</AppLink>
+        </Box>
+      </Flex>
+    </Container>)
+})

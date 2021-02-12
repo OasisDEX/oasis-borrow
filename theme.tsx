@@ -498,425 +498,279 @@ const customLandingIcons = {
 const oasisBaseTheme = {
   useBorderBox: true,
   useBodyStyles: true,
-
   breakpoints: ["40em", "52em", "64em"],
   colors: {
     primary: "#25273D",
     primaryAlt: "#D3D4D8",
     primaryEmphasis: "#626472",
     secondary: "#ECEFF9",
-
     background: "#F6F8F9",
     surface: "#FFF",
-    text: "#25273D",
-    textAlt: "rgba(37, 39, 61, 0.67)",
-    onBackground: "#9FAFB9",
-    onPrimary: "#FFFFFF",
-    onSurface: "#708390",
-    onSecondary: "#575CFE",
 
-    muted: "#708390",
-    mutedAlt: "#656F75",
+    ghost: '#F6F6F6',
+    light: '#D1DEE6',
 
-    error: "#FDEDE8",
-    onError: "#F75524",
+    text: {
+      muted: "#708390",
+      contrast: '#FFF'
+    },
 
-    success: "#E7FCFA",
-    onSuccess: "#1AAB9B",
-
-    warning: "#FFF1CF",
-    onWarning: "#D8762D",
+    link: "#575CFE",
+    // textAlt: "rgba(37, 39, 61, 0.67)",
+    // onBackground: "#9FAFB9",
+    // onPrimary: "#FFFFFF",
+    // onSurface: "#708390",
+    // muted: "#708390",
+    // mutedAlt: "#656F75",
+    // error: "#FDEDE8",
+    // onError: "#F75524",
+    // success: "#E7FCFA",
+    // onSuccess: "#1AAB9B",
+    // warning: "#FFF1CF",
+    // onWarning: "#D8762D",
+    networks: {
+      mainnet: "rgb(41, 182, 175)",
+      kovan: "rgb(112, 87, 255)",
+      default: "#aaa"
+    },
   },
-
   fonts: {
-    body: '"Inter", "Helvetica Neue", sans-serif',
-    heading: '"FT Polar Trial", "Helvetica Neue", sans-serif',
-    monospace: "monospace",
+    body: "\"Inter\", \"Helvetica Neue\", sans-serif",
+    heading: "\"FT Polar Trial\", \"Helvetica Neue\", sans-serif",
+    monospace: "monospace"
   },
-
   fontSizes: [10, 12, 14, 16, 18, 20, 24, 32, 52, 64, 96],
-
   fontWeights: {
     body: 400,
-    semiBold: 500,
-    heading: 700,
-    bold: 700,
+    heading: 500,
+    semiBold: 600,
+    bold: 700
   },
-
   lineHeights: {
     body: 1.5,
     heading: 1.2,
     tight: 1.05,
     loose: 1.35,
-    // to properly height buttons
-    buttons: 2,
+    // 
+    buttons: '2.1em',
     secondaryButton: 0.8,
     smallButton: 1.9,
   },
-
   text: {
     header1: {
       fontFamily: "heading",
-      fontWeight: "heading",
+      fontWeight: "bold",
       lineHeight: "heading",
       fontSize: 8,
-      color: "text"
+      color: "primary"
     },
     header2: {
       fontFamily: "heading",
-      fontWeight: "semiBold",
+      fontWeight: "heading",
       lineHeight: "heading",
       fontSize: 7,
-      color: "text"
+      color: "primary"
     },
     header3: {
       fontFamily: "heading",
-      fontWeight: "heading",
+      fontWeight: "bold",
       lineHeight: "heading",
       fontSize: 5,
-      color: "text"
+      color: "primary"
     },
     paragraph1: {
       fontFamily: "body",
       fontWeight: "body",
       lineHeight: "body",
       fontSize: 4,
-      color: "text"
+      color: "primary"
     },
     paragraph2: {
       fontFamily: "body",
       fontWeight: "body",
       lineHeight: "body",
       fontSize: 3,
-      color: "text"
+      color: "primary"
     },
     paragraph3: {
       fontFamily: "body",
       fontWeight: "body",
       lineHeight: "body",
       fontSize: 2,
-      color: "text"
+      color: "primary"
     },
     paragraph4: {
       fontFamily: "body",
       fontWeight: "body",
       lineHeight: "body",
       fontSize: 1,
-      color: "text"
+      color: "primary"
     },
-
-    // heading: {
-    //   fontFamily: "heading",
-    //   lineHeight: "heading",
-    //   fontWeight: "heading",
-    //   fontSize: 6,
-    //   color: "primary",
-    // },
-    // text: {
-    //   fontSize: 3,
-    //   color: "text",
-    // },
-
-    // largeHeading: {
-    //   variant: "text.heading",
-    //   fontSize: 7,
-    // },
-    // mediumHeading: {
-    //   variant: "text.heading",
-    //   fontSize: 5,
-    // },
-    // smallHeading: {
-    //   variant: "text.heading",
-    //   fontSize: 4,
-    // },
-    // microHeading: {
-    //   variant: "text.heading",
-    //   fontSize: 3,
-    // },
-    // backgroundHeading: {
-    //   variant: "text.mediumHeading",
-    //   color: "onBackground",
-    // },
-    // surfaceHeading: {
-    //   variant: "text.mediumHeading",
-    //   color: "onSurface",
-    // },
-    // backgroundText: {
-    //   variant: "text.backgroundHeading",
-    //   fontSize: 4,
-    //   fontWeight: "body",
-    // },
-    // surfaceText: {
-    //   variant: "text.surfaceHeading",
-    //   fontSize: 4,
-    //   fontWeight: "body",
-    // },
-    // error: {
-    //   variant: "text.smallHeading",
-    //   color: "onError",
-    //   fontSize: "body",
-    // },
-    // boldBody: {
-    //   fontSize: 3,
-    //   fontWeight: "semiBold",
-    // },
-    // small: {
-    //   fontSize: 2,
-    //   color: "text",
-    // },
+    caption: {
+      variant: 'paragraph3',
+      textTransform: 'uppercase',
+      letterSpacing: '0.04em',
+    }
   },
-
   borders: {
-    light: "1px solid",
+    light: "1px solid"
   },
-
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
   sizes: [0, 4, 8, 16, 32, 64, 128, 256, 512],
-
   radii: {
-    small: 3,
-    medium: 6,
-    large: 12,
+    small: 4,
+    medium: 8,
+    large: 16,
     roundish: 20,
-    round: 32,
+    round: 32
   },
-
   shadows: {
     medium: "0 2px 8px rgba(0, 0, 0, 0.17)",
     light: "0 2px 8px rgba(0, 0, 0, 0.13)",
-    dsr: "inset 0px 1px 2px rgba(0, 0, 0, 0.03)",
     surface: "0px 2px 2px rgba(199, 199, 199, 0.25)",
-    txManager: "inset 0px 2px 2px #DCE5E9",
+    table: "0px 0px 2px rgba(0, 0, 0, 0.2)",
   },
-
-  gradients: {},
-
-  // alerts: {
-  //   error: {
-  //     fontSize: 2,
-  //     fontWeight: "semiBold",
-  //     borderRadius: "round",
-  //     bg: "error",
-  //     color: "onError",
-  //     width: "100%",
-  //     justifyContent: ["flex-start", "center"],
-  //     lineHeight: "smallButton",
-  //   },
-  //   success: {
-  //     variant: "alerts.error",
-  //     bg: "success",
-  //     color: "onSuccess",
-  //   },
-  //   warning: {
-  //     variant: "alerts.error",
-  //     bg: "warning",
-  //     color: "onWarning",
-  //   },
-  // },
-
-  // badges: {
-  //   primary: {
-  //     p: 3,
-  //     py: 2,
-  //     borderRadius: "roundish",
-  //     color: "primary",
-  //     bg: "background",
-  //     fontSize: 2,
-  //     fontWeight: "body",
-  //     lineHeight: "heading",
-  //   },
-  // },
-
-  // buttons: {
-  //   primary: {
-  //     borderRadius: "round",
-  //     cursor: "pointer",
-  //     outline: "none",
-  //     p: 3,
-  //     py: 2,
-  //     fontFamily: "body",
-  //     fontWeight: "semiBold",
-  //     bg: "primary",
-  //     lineHeight: "buttons",
-  //     transition: "150ms cubic-bezier(0.215,0.61,0.355,1)",
-  //     "&:hover": {
-  //       bg: "primaryEmphasis",
-  //     },
-  //     "&:disabled": {
-  //       bg: "primaryAlt",
-  //       pointerEvents: "none",
-  //     },
-  //   },
-  //   primaryMedium: {
-  //     variant: "buttons.primary",
-  //     fontSize: 4,
-  //     minWidth: "130px",
-  //     boxShadow: "medium",
-  //   },
-  //   primaryBig: {
-  //     variant: "buttons.primary",
-  //     fontSize: 5,
-  //     boxShadow: "medium",
-  //     lineHeight: "body",
-  //     py: 3,
-  //     px: 4,
-  //     "&:disabled": {
-  //       bg: "primaryAlt",
-  //       pointerEvents: "none",
-  //       boxShadow: "none",
-  //     },
-  //   },
-  //   primarySquare: {
-  //     variant: "buttons.primaryBig",
-  //     borderRadius: "roundish",
-  //     boxShadow: "light",
-  //   },
-  //   outline: {
-  //     variant: "buttons.primary",
-  //     fontSize: 3,
-  //     borderRadius: "round",
-  //     fontWeight: "semiBold",
-  //     border: "light",
-  //     borderColor: "muted",
-  //     bg: "surface",
-  //     color: "primary",
-  //     "&:hover": {
-  //       borderColor: "mutedAlt",
-  //       boxShadow: "surface",
-  //     },
-  //     "&:disabled": {
-  //       color: "muted",
-  //       pointerEvents: "none",
-  //     },
-  //   },
-  //   outlineSquare: {
-  //     variant: "buttons.outline",
-  //     borderRadius: "large",
-  //     fontWeight: "body",
-  //   },
-  //   secondary: {
-  //     variant: "buttons.primary",
-  //     fontSize: 5,
-  //     borderRadius: "medium",
-  //     fontWeight: "semiBold",
-  //     bg: "secondary",
-  //     color: "onSecondary",
-  //     border: "light",
-  //     borderColor: "secondary",
-  //     lineHeight: "secondaryButton",
-  //     "&:hover": {
-  //       borderColor: "onSecondary",
-  //     },
-  //   },
-  //   secondarySmall: {
-  //     variant: "buttons.secondary",
-  //     fontSize: 2,
-  //     px: 2,
-  //   },
-  //   small: {
-  //     variant: "buttons.primary",
-  //     fontSize: 2,
-  //     p: 2,
-  //     px: 3,
-  //     lineHeight: "smallButton",
-  //   },
-  //   textual: {
-  //     color: "onSecondary",
-  //     fontSize: 4,
-  //     fontWeight: "semiBold",
-  //     outline: "none",
-  //     cursor: "pointer",
-  //     background: "transparent",
-  //   },
-  // },
-
-  // forms: {
-  //   label: {
-  //     fontSize: 4,
-  //     fontWeight: "semiBold",
-  //   },
-  //   input: {
-  //     outline: "none",
-  //     borderRadius: "large",
-  //     border: "light",
-  //     borderColor: "muted",
-  //     color: "onSurface",
-  //     fontWeight: "body",
-  //     fontFamily: "body",
-  //     p: 3,
-  //     lineHeight: "tight",
-  //     fontSize: 5,
-  //     "&:focus": {
-  //       borderColor: "primary",
-  //       color: "primary",
-  //     },
-  //     "&:disabled": {
-  //       bg: "background",
-  //       pointerEvents: "none",
-  //     },
-  //   },
-  //   inputError: {
-  //     variant: "forms.input",
-  //     borderColor: "onError",
-  //     "&:focus": {
-  //       borderColor: "onError",
-  //     },
-  //   },
-  //   select: {
-  //     variant: "forms.input",
-  //   },
-  //   textarea: { variant: "forms.input", lineHeight: "body" },
-  //   textareaError: { variant: "forms.inputError" },
-  // },
-
-  // cards: {
-  //   primary: {
-  //     border: "1px solid",
-  //     borderColor: "muted",
-  //     p: 3,
-  //     borderRadius: "roundish",
-  //     bg: "surface",
-  //   },
-  //   primaryWithHover: {
-  //     variant: "cards.primary",
-  //     cursor: "pointer",
-  //     transition: "150ms cubic-bezier(0.215,0.61,0.355,1)",
-  //     "&:hover": {
-  //       borderColor: "mutedAlt",
-  //       boxShadow: "surface",
-  //     },
-  //   },
-  //   secondary: {
-  //     variant: "cards.primary",
-  //     border: "none",
-  //     bg: "background",
-  //   },
-  //   secondaryRounded: {
-  //     variant: "cards.secondary",
-  //     borderRadius: "large",
-  //   },
-  // },
-
-  // links: {
-  //   nav: {
-  //     p: 2,
-  //     fontSize: 3,
-  //     fontWeight: "body",
-  //     letterSpacing: "0.4px",
-  //     color: "text",
-  //     cursor: "pointer",
-  //     transition: "150ms cubic-bezier(0.215,0.61,0.355,1)",
-  //     "&:hover": {
-  //       color: "primary",
-  //       cursor: "pointer",
-  //     },
-  //   },
-  // },
-
+  gradients: {
+    app: "linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)"
+  },
+  layout: {
+    appContainer: {
+      maxWidth: "1024px"
+    },
+    marketingContainer: {
+      variant: "layout.appContainer",
+    },
+    landingContainer: {
+      variant: "layout.appContainer",
+      maxWidth: "1200px"
+    },
+    termsContainer: {
+      variant: "layout.appContainer",
+      maxWidth: "712px",
+      mt: 5
+    },
+    daiContainer: {
+      variant: "layout.appContainer",
+      maxWidth: "818px"
+    }
+  },
+  metadata: {
+    fontLinkHref: "https://rsms.me/inter/inter.css"
+  },
+  cards: {
+    primary: {
+      transition: "150ms cubic-bezier(0.215,0.61,0.355,1)"
+    }
+  },
+  badges: {
+    dsr: {
+      paddingLeft: "12px",
+      paddingRight: "12px",
+      paddingTop: "6px",
+      paddingBottom: "6px"
+    },
+    onramp: {
+      variant: "badges.primary",
+      px: 2
+    }
+  },
+  buttons: {
+    primary: {
+      variant: 'text.paragraph1',
+      cursor: 'pointer',
+      fontWeight: 'semiBold',
+      borderRadius: 'round',
+      lineHeight: 'buttons',
+      color: 'text.contrast'
+    },
+    outline: {
+      variant: 'text.paragraph2',
+      cursor: 'pointer',
+      background: 'none',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: 'light',
+      borderRadius: 'round',
+      color: 'primary',
+      fontWeight: 'semiBold',
+      px: 4,
+      py: 2,
+    },
+    secondary: {
+      variant: 'text.paragraph3',
+      cursor: 'pointer',
+      fontWeight: 'semiBold',
+      bg: 'ghost',
+      color: 'primary',
+      borderRadius: 'round',
+      px: 4,
+      py: 2,
+    }
+  },
+  links: {
+    nav: {
+      variant: 'text.paragraph3',
+      fontWeight: 'semiBold',
+    },
+    outline: {
+      display: 'block',
+      variant: 'buttons.outline',
+    },
+    secondary: {
+      display: 'block',
+      variant: 'buttons.secondary',
+    }
+  },
+  forms: {
+    input: {
+      transition: "150ms cubic-bezier(0.215,0.61,0.355,1)"
+    },
+    inputError: {
+      "&:focus": {
+        borderColor: "onError",
+        color: "primary"
+      }
+    },
+    inputSurface: {
+      variant: "forms.input",
+      bg: "surface",
+      fontSize: 4,
+      lineHeight: "loose"
+    },
+    inputSurfaceError: {
+      variant: "forms.inputSurface",
+      borderColor: "onError"
+    }
+  },
+  alerts: {
+    primary: {
+      width: "100%",
+      justifyContent: ["flex-start", "center"]
+    },
+    readonly: {
+      variant: "alerts.primary",
+      bg: "txManagerBg",
+      color: "primary",
+      borderRadius: "large",
+      fontWeight: "body",
+      px: 2,
+      py: 3,
+      lineHeight: "loose",
+      display: "inline-block",
+      textAlign: "center"
+    }
+  },
+  zIndices: {
+    modal: 2,
+    cookie: 3
+  },
+  sizingsCustom: {
+    pxModalBottom: "22px",
+    mlDashboardToken: "12px",
+    mbDashboardTokenAmount: "6px",
+    gapCardProduct: "12px"
+  },
   styles: {
-
-
-
     root: {
       fontFamily: "body",
       lineHeight: "body",
@@ -925,60 +779,42 @@ const oasisBaseTheme = {
     },
     spinner: {
       default: {
-        color: "primary",
+        color: "mutedAlt",
         strokeWidth: 3,
-        size: 16,
+        size: 16
       },
       small: {
         variant: "styles.spinner.default",
-        size: 12,
+        size: 12
       },
       large: {
         variant: "styles.spinner.default",
-        size: 25,
-      },
+        size: 25
+      }
     },
     h1: {
-      variant: "text.header1",
+      variant: "text.header1"
     },
     h2: {
-      variant: "text.header2",
+      variant: "text.header2"
     },
     h3: {
-      variant: "text.header3",
+      variant: "text.header3"
     },
     h4: {
-      variant: "text.microHeading",
+      variant: "text.microHeading"
     },
     a: {
-      color: "onSecondary",
+      variant: 'text.paragraph3',
+      fontWeight: 'semiBold',
       textDecoration: "none",
-    },
+      cursor: 'pointer',
+      color: 'link'
+    }
   },
-  layout: {
-    appContainer: {
-      maxWidth: '1024px',
-    },
-    container: {
-      px: 3,
-    },
-    appContainerWide: {
-      variant: "layout.container",
-      maxWidth: "632px",
-    },
-    modal: {
-      variant: "layout.appContainer",
-    },
-    modalHalf: {
-      variant: "layout.modal",
-      minHeight: "50vh",
-    },
+}
 
-  },
-  metadata: {
-    fontLinkHref: "https://rsms.me/inter/inter.css",
-  },
-};
+
 
 export const theme = oasisBaseTheme
 export default theme;
@@ -991,160 +827,487 @@ export const TRANSITIONS = {
 
 
 
-/*merge(oasisBaseTheme, {
-  gradients: {
-    app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
-  },
-  radii: {
-    small: 4,
-    medium: 8,
-    large: 16,
-    // roundish: 20,
-    // round: 32,
-  },
-  colors: {
-    text: {
-      muted: '#708390',
-    },
-    networks: {
-      mainnet: 'rgb(41, 182, 175)',
-      kovan: 'rgb(112, 87, 255)',
-      default: '#aaa',
-    },
-    txManagerBg: '#E9EEF0',
-  },
+// {
+//   useBorderBox: true,
+//   useBodyStyles: true,
 
-  icons: {
-    ...icons,
-    ...brandingIcons,
-    ...customIcons,
-  },
-  lineHeights: {
-    txTimestamp: 1.6,
-  },
-  cards: {
-    primary: {
-      transition: TRANSITIONS.global,
-    },
-  },
-  badges: {
-    dsr: {
-      paddingLeft: '12px',
-      paddingRight: '12px',
-      paddingTop: '6px',
-      paddingBottom: '6px',
-    },
-    onramp: {
-      variant: 'badges.primary',
-      px: 2,
-    },
-  },
-  buttons: {
-    primarySquare: {
-      border: 'light',
-      borderColor: 'primary',
-      '&:hover': {
-        bg: 'primaryEmphasis',
-        borderColor: 'primaryEmphasis',
-      },
-      '&:disabled': {
-        borderColor: 'primaryAlt',
-        bg: 'primaryAlt',
-        pointerEvents: 'none',
-      },
-    },
-    outlineSquareBig: {
-      variant: 'buttons.outlineSquare',
-      borderRadius: 'roundish',
-      fontSize: 5,
-      py: 3,
-      px: 4,
-      lineHeight: 'body',
-    },
-    outline: {
-      lineHeight: 1,
-      border: 'light',
-    },
-  },
-  layout: {
-    appContainer: {
-      maxWidth: '1024px',
-    },
-  },
-  forms: {
-    input: {
-      transition: TRANSITIONS.global,
-    },
-    inputError: {
-      '&:focus': {
-        borderColor: 'onError',
-        color: 'primary',
-      },
-    },
-    inputSurface: {
-      variant: 'forms.input',
-      bg: 'surface',
-      fontSize: 4,
-      lineHeight: 'loose',
-    },
-    inputSurfaceError: {
-      variant: 'forms.inputSurface',
-      borderColor: 'onError',
-    },
-  },
-  alerts: {
-    primary: {
-      width: '100%',
-      justifyContent: ['flex-start', 'center'],
-    },
-    readonly: {
-      variant: 'alerts.primary',
-      bg: 'txManagerBg',
-      color: 'primary',
-      borderRadius: 'large',
-      fontWeight: 'body',
-      px: 2,
-      py: 3,
-      lineHeight: 'loose',
-      display: 'inline-block',
-      textAlign: 'center',
-    },
-  },
-  text: {
-    timestampText: {
-      variant: 'text.text',
-      lineHeight: 'txTimestamp',
-      color: 'onBackground',
-    },
-    txManagerDescription: {
-      maxWidth: '100%',
-      textOverflow: 'ellipsis',
-      overflow: 'hidden',
-    },
-  },
-  shadows: {
-    table: '0px 0px 2px rgba(0, 0, 0, 0.2)',
-    cookie: '0px 1px 8px rgba(0, 0, 0, 0.09)',
-  },
-  zIndices: {
-    modal: 2,
-    cookie: 3,
-  },
-  sizingsCustom: {
-    pxModalBottom: '22px',
-    mlDashboardToken: '12px',
-    mbDashboardTokenAmount: '6px',
-    gapCardProduct: '12px',
-  },
-  styles: {
-    a: {
-      textDecoration: 'none',
-    },
-    spinner: {
-      default: {
-        color: 'mutedAlt',
-      },
-    },
-  },
-})
-*/
+//   breakpoints: ["40em", "52em", "64em"],
+//   colors: {
+//     primary: "#25273D",
+//     primaryAlt: "#D3D4D8",
+//     primaryEmphasis: "#626472",
+//     secondary: "#ECEFF9",
+
+//     background: "#F6F8F9",
+//     surface: "#FFF",
+//     text: "#25273D",
+//     textAlt: "rgba(37, 39, 61, 0.67)",
+//     onBackground: "#9FAFB9",
+//     onPrimary: "#FFFFFF",
+//     onSurface: "#708390",
+//     onSecondary: "#575CFE",
+
+//     muted: "#708390",
+//     mutedAlt: "#656F75",
+
+//     error: "#FDEDE8",
+//     onError: "#F75524",
+
+//     success: "#E7FCFA",
+//     onSuccess: "#1AAB9B",
+
+//     warning: "#FFF1CF",
+//     onWarning: "#D8762D",
+//   },
+
+//   fonts: {
+//     body: '"Inter", "Helvetica Neue", sans-serif',
+//     heading: '"FT Polar Trial", "Helvetica Neue", sans-serif',
+//     monospace: "monospace",
+//   },
+
+//   fontSizes: [10, 12, 14, 16, 18, 20, 24, 32, 52, 64, 96],
+
+//   fontWeights: {
+//     body: 400,
+//     semiBold: 500,
+//     heading: 700,
+//     bold: 700,
+//   },
+
+//   lineHeights: {
+//     body: 1.5,
+//     heading: 1.2,
+//     tight: 1.05,
+//     loose: 1.35,
+//     // to properly height buttons
+//     buttons: 2,
+//     secondaryButton: 0.8,
+//     smallButton: 1.9,
+//   },
+
+//   text: {
+//     header1: {
+//       fontFamily: "heading",
+//       fontWeight: "heading",
+//       lineHeight: "heading",
+//       fontSize: 8,
+//       color: "text"
+//     },
+//     header2: {
+//       fontFamily: "heading",
+//       fontWeight: "semiBold",
+//       lineHeight: "heading",
+//       fontSize: 7,
+//       color: "text"
+//     },
+//     header3: {
+//       fontFamily: "heading",
+//       fontWeight: "heading",
+//       lineHeight: "heading",
+//       fontSize: 5,
+//       color: "text"
+//     },
+//     paragraph1: {
+//       fontFamily: "body",
+//       fontWeight: "body",
+//       lineHeight: "body",
+//       fontSize: 4,
+//       color: "text"
+//     },
+//     paragraph2: {
+//       fontFamily: "body",
+//       fontWeight: "body",
+//       lineHeight: "body",
+//       fontSize: 3,
+//       color: "text"
+//     },
+//     paragraph3: {
+//       fontFamily: "body",
+//       fontWeight: "body",
+//       lineHeight: "body",
+//       fontSize: 2,
+//       color: "text"
+//     },
+//     paragraph4: {
+//       fontFamily: "body",
+//       fontWeight: "body",
+//       lineHeight: "body",
+//       fontSize: 1,
+//       color: "text"
+//     },
+
+//     // heading: {
+//     //   fontFamily: "heading",
+//     //   lineHeight: "heading",
+//     //   fontWeight: "heading",
+//     //   fontSize: 6,
+//     //   color: "primary",
+//     // },
+//     // text: {
+//     //   fontSize: 3,
+//     //   color: "text",
+//     // },
+
+//     // largeHeading: {
+//     //   variant: "text.heading",
+//     //   fontSize: 7,
+//     // },
+//     // mediumHeading: {
+//     //   variant: "text.heading",
+//     //   fontSize: 5,
+//     // },
+//     // smallHeading: {
+//     //   variant: "text.heading",
+//     //   fontSize: 4,
+//     // },
+//     // microHeading: {
+//     //   variant: "text.heading",
+//     //   fontSize: 3,
+//     // },
+//     // backgroundHeading: {
+//     //   variant: "text.mediumHeading",
+//     //   color: "onBackground",
+//     // },
+//     // surfaceHeading: {
+//     //   variant: "text.mediumHeading",
+//     //   color: "onSurface",
+//     // },
+//     // backgroundText: {
+//     //   variant: "text.backgroundHeading",
+//     //   fontSize: 4,
+//     //   fontWeight: "body",
+//     // },
+//     // surfaceText: {
+//     //   variant: "text.surfaceHeading",
+//     //   fontSize: 4,
+//     //   fontWeight: "body",
+//     // },
+//     // error: {
+//     //   variant: "text.smallHeading",
+//     //   color: "onError",
+//     //   fontSize: "body",
+//     // },
+//     // boldBody: {
+//     //   fontSize: 3,
+//     //   fontWeight: "semiBold",
+//     // },
+//     // small: {
+//     //   fontSize: 2,
+//     //   color: "text",
+//     // },
+//   },
+
+//   borders: {
+//     light: "1px solid",
+//   },
+
+//   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
+//   sizes: [0, 4, 8, 16, 32, 64, 128, 256, 512],
+
+//   radii: {
+//     small: 3,
+//     medium: 6,
+//     large: 12,
+//     roundish: 20,
+//     round: 32,
+//   },
+
+//   shadows: {
+//     medium: "0 2px 8px rgba(0, 0, 0, 0.17)",
+//     light: "0 2px 8px rgba(0, 0, 0, 0.13)",
+//     dsr: "inset 0px 1px 2px rgba(0, 0, 0, 0.03)",
+//     surface: "0px 2px 2px rgba(199, 199, 199, 0.25)",
+//     txManager: "inset 0px 2px 2px #DCE5E9",
+//   },
+
+//   gradients: {},
+
+//   // alerts: {
+//   //   error: {
+//   //     fontSize: 2,
+//   //     fontWeight: "semiBold",
+//   //     borderRadius: "round",
+//   //     bg: "error",
+//   //     color: "onError",
+//   //     width: "100%",
+//   //     justifyContent: ["flex-start", "center"],
+//   //     lineHeight: "smallButton",
+//   //   },
+//   //   success: {
+//   //     variant: "alerts.error",
+//   //     bg: "success",
+//   //     color: "onSuccess",
+//   //   },
+//   //   warning: {
+//   //     variant: "alerts.error",
+//   //     bg: "warning",
+//   //     color: "onWarning",
+//   //   },
+//   // },
+
+//   // badges: {
+//   //   primary: {
+//   //     p: 3,
+//   //     py: 2,
+//   //     borderRadius: "roundish",
+//   //     color: "primary",
+//   //     bg: "background",
+//   //     fontSize: 2,
+//   //     fontWeight: "body",
+//   //     lineHeight: "heading",
+//   //   },
+//   // },
+
+//   // buttons: {
+//   //   primary: {
+//   //     borderRadius: "round",
+//   //     cursor: "pointer",
+//   //     outline: "none",
+//   //     p: 3,
+//   //     py: 2,
+//   //     fontFamily: "body",
+//   //     fontWeight: "semiBold",
+//   //     bg: "primary",
+//   //     lineHeight: "buttons",
+//   //     transition: "150ms cubic-bezier(0.215,0.61,0.355,1)",
+//   //     "&:hover": {
+//   //       bg: "primaryEmphasis",
+//   //     },
+//   //     "&:disabled": {
+//   //       bg: "primaryAlt",
+//   //       pointerEvents: "none",
+//   //     },
+//   //   },
+//   //   primaryMedium: {
+//   //     variant: "buttons.primary",
+//   //     fontSize: 4,
+//   //     minWidth: "130px",
+//   //     boxShadow: "medium",
+//   //   },
+//   //   primaryBig: {
+//   //     variant: "buttons.primary",
+//   //     fontSize: 5,
+//   //     boxShadow: "medium",
+//   //     lineHeight: "body",
+//   //     py: 3,
+//   //     px: 4,
+//   //     "&:disabled": {
+//   //       bg: "primaryAlt",
+//   //       pointerEvents: "none",
+//   //       boxShadow: "none",
+//   //     },
+//   //   },
+//   //   primarySquare: {
+//   //     variant: "buttons.primaryBig",
+//   //     borderRadius: "roundish",
+//   //     boxShadow: "light",
+//   //   },
+//   //   outline: {
+//   //     variant: "buttons.primary",
+//   //     fontSize: 3,
+//   //     borderRadius: "round",
+//   //     fontWeight: "semiBold",
+//   //     border: "light",
+//   //     borderColor: "muted",
+//   //     bg: "surface",
+//   //     color: "primary",
+//   //     "&:hover": {
+//   //       borderColor: "mutedAlt",
+//   //       boxShadow: "surface",
+//   //     },
+//   //     "&:disabled": {
+//   //       color: "muted",
+//   //       pointerEvents: "none",
+//   //     },
+//   //   },
+//   //   outlineSquare: {
+//   //     variant: "buttons.outline",
+//   //     borderRadius: "large",
+//   //     fontWeight: "body",
+//   //   },
+//   //   secondary: {
+//   //     variant: "buttons.primary",
+//   //     fontSize: 5,
+//   //     borderRadius: "medium",
+//   //     fontWeight: "semiBold",
+//   //     bg: "secondary",
+//   //     color: "onSecondary",
+//   //     border: "light",
+//   //     borderColor: "secondary",
+//   //     lineHeight: "secondaryButton",
+//   //     "&:hover": {
+//   //       borderColor: "onSecondary",
+//   //     },
+//   //   },
+//   //   secondarySmall: {
+//   //     variant: "buttons.secondary",
+//   //     fontSize: 2,
+//   //     px: 2,
+//   //   },
+//   //   small: {
+//   //     variant: "buttons.primary",
+//   //     fontSize: 2,
+//   //     p: 2,
+//   //     px: 3,
+//   //     lineHeight: "smallButton",
+//   //   },
+//   //   textual: {
+//   //     color: "onSecondary",
+//   //     fontSize: 4,
+//   //     fontWeight: "semiBold",
+//   //     outline: "none",
+//   //     cursor: "pointer",
+//   //     background: "transparent",
+//   //   },
+//   // },
+
+//   // forms: {
+//   //   label: {
+//   //     fontSize: 4,
+//   //     fontWeight: "semiBold",
+//   //   },
+//   //   input: {
+//   //     outline: "none",
+//   //     borderRadius: "large",
+//   //     border: "light",
+//   //     borderColor: "muted",
+//   //     color: "onSurface",
+//   //     fontWeight: "body",
+//   //     fontFamily: "body",
+//   //     p: 3,
+//   //     lineHeight: "tight",
+//   //     fontSize: 5,
+//   //     "&:focus": {
+//   //       borderColor: "primary",
+//   //       color: "primary",
+//   //     },
+//   //     "&:disabled": {
+//   //       bg: "background",
+//   //       pointerEvents: "none",
+//   //     },
+//   //   },
+//   //   inputError: {
+//   //     variant: "forms.input",
+//   //     borderColor: "onError",
+//   //     "&:focus": {
+//   //       borderColor: "onError",
+//   //     },
+//   //   },
+//   //   select: {
+//   //     variant: "forms.input",
+//   //   },
+//   //   textarea: { variant: "forms.input", lineHeight: "body" },
+//   //   textareaError: { variant: "forms.inputError" },
+//   // },
+
+//   // cards: {
+//   //   primary: {
+//   //     border: "1px solid",
+//   //     borderColor: "muted",
+//   //     p: 3,
+//   //     borderRadius: "roundish",
+//   //     bg: "surface",
+//   //   },
+//   //   primaryWithHover: {
+//   //     variant: "cards.primary",
+//   //     cursor: "pointer",
+//   //     transition: "150ms cubic-bezier(0.215,0.61,0.355,1)",
+//   //     "&:hover": {
+//   //       borderColor: "mutedAlt",
+//   //       boxShadow: "surface",
+//   //     },
+//   //   },
+//   //   secondary: {
+//   //     variant: "cards.primary",
+//   //     border: "none",
+//   //     bg: "background",
+//   //   },
+//   //   secondaryRounded: {
+//   //     variant: "cards.secondary",
+//   //     borderRadius: "large",
+//   //   },
+//   // },
+
+//   // links: {
+//   //   nav: {
+//   //     p: 2,
+//   //     fontSize: 3,
+//   //     fontWeight: "body",
+//   //     letterSpacing: "0.4px",
+//   //     color: "text",
+//   //     cursor: "pointer",
+//   //     transition: "150ms cubic-bezier(0.215,0.61,0.355,1)",
+//   //     "&:hover": {
+//   //       color: "primary",
+//   //       cursor: "pointer",
+//   //     },
+//   //   },
+//   // },
+
+//   styles: {
+//     root: {
+//       fontFamily: "body",
+//       lineHeight: "body",
+//       fontWeight: "body",
+//       fontSize: 3,
+//       maxWidth: "1024px"
+//     },
+//     spinner: {
+//       default: {
+//         color: "primary",
+//         strokeWidth: 3,
+//         size: 16,
+//       },
+//       small: {
+//         variant: "styles.spinner.default",
+//         size: 12,
+//       },
+//       large: {
+//         variant: "styles.spinner.default",
+//         size: 25,
+//       },
+//     },
+//     h1: {
+//       variant: "text.header1",
+//     },
+//     h2: {
+//       variant: "text.header2",
+//     },
+//     h3: {
+//       variant: "text.header3",
+//     },
+//     h4: {
+//       variant: "text.microHeading",
+//     },
+//     a: {
+//       color: "onSecondary",
+//       textDecoration: "none",
+//     },
+//   },
+//   layout: {
+//     appContainer: {
+//       maxWidth: '1024px',
+//     },
+//     marketingContainer: {
+//       variant: 'layout.appContainer',
+//       maxWidth: '612px',
+//     },
+//     landingContainer: {
+//       variant: 'layout.appContainer',
+//       maxWidth: '1200px',
+//     },
+//     termsContainer: {
+//       variant: 'layout.appContainer',
+//       maxWidth: '712px',
+//       mt: 5,
+//     },
+//     daiContainer: {
+//       variant: 'layout.appContainer',
+//       maxWidth: '818px',
+//     },
+//   },
+//   metadata: {
+//     fontLinkHref: "https://rsms.me/inter/inter.css",
+//   },
+// };
