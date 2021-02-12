@@ -31,6 +31,9 @@ function getLibrary(provider: any, connector: AbstractConnector): Web3 {
   return new Web3(wsEnhancedProvider)
 }
 
+const FTPolarFontBold = '/static/fonts/FTPolar/FTPolarTrial-Bold'
+const FTPolarFontMedium = '/static/fonts/FTPolar/FTPolarTrial-Medium'
+
 const globalStyles = `
   html,
   body,
@@ -42,10 +45,6 @@ const globalStyles = `
   html {
     width: 100vw;
     overflow-x: hidden;
-
-    @media screen and (max-width: ${theme.sizes.container}px) {
-      width: 100%;
-    }
   }
 
   body {
@@ -64,6 +63,26 @@ const globalStyles = `
   input[type=number] {
     -moz-appearance: textfield;
   }
+
+  @font-face {
+    font-family: 'FT Polar Trial';
+    src: url('${FTPolarFontMedium}.woff2') format('woff2'),
+        url('${FTPolarFontMedium}.woff') format('woff'),
+        url('${FTPolarFontMedium}.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'FT Polar Trial';
+    src: url('${FTPolarFontBold}.woff2') format('woff2'),
+        url('${FTPolarFontBold}.woff') format('woff'),
+        url('${FTPolarFontBold}.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
 `
 
 // extending Component with static properties that can be attached to it

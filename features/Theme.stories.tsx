@@ -13,31 +13,27 @@ import { theme } from '../theme'
 
 const stories = storiesOf('Oasis Borrow Theme', module)
 stories.add("Typography", () => {
-  console.log(theme)
-
   const textStyles = Object.keys(theme.text)
-
-  console.log(textStyles)
 
   return (
     <Container>
-      <Heading as="h1" sx={{my: 4, fontSize: 7}}>Typography</Heading>
-      <Heading sx={{mt: 4, fontSize: 5}}>Font family</Heading>
-      <Grid sx={{my: 2}} gap="10px">
+      <Heading as="h1" sx={{ my: 4, fontSize: 7 }}>Typography</Heading>
+      <Heading sx={{ mt: 4, fontSize: 5 }}>Font family</Heading>
+      <Grid sx={{ my: 2 }} gap="10px">
         {
-          Object.entries<[string, string]>(theme.fonts).map(([font, value]) => <Box bg="white" key={font} sx={{py: 2, fontFamily: font}}>{`${font}: ${value}`}</Box>)
+          Object.entries(theme.fonts).map(([font, value]) => <Box bg="white" key={font} sx={{ py: 2, fontFamily: font }}>{`${font}: ${value}`}</Box>)
         }
       </Grid>
-      <Heading sx={{mt: 4, fontSize: 5}}>Type scale</Heading>
+      <Heading sx={{ mt: 4, fontSize: 5 }}>Type scale</Heading>
       <Box bg="white">
         <TypeScale />
       </Box>
-      <Heading sx={{mt: 4, fontSize: 5}}>Text variants</Heading>
-      <Grid sx={{my: 2}} columns="repeat(4, 1fr)" gap="10px">
+      <Heading sx={{ mt: 4, fontSize: 5 }}>Text variants</Heading>
+      <Grid sx={{ my: 2 }} columns="repeat(4, 1fr)" gap="10px">
         {
-          textStyles.map(style => 
-            <Box bg="white" p={3}>
-              <Text key={style} variant={style} sx={{textTransform: 'capitalize'}}>{style}</Text>
+          textStyles.map(style =>
+            <Box bg="white" p={3} sx={{ display: 'flex', alignItems: 'flex-end' }}>
+              <Text key={style} variant={style} sx={{ textTransform: 'capitalize' }}>{style}</Text>
             </Box>
           )
         }
@@ -49,19 +45,19 @@ stories.add("Typography", () => {
 stories.add("Colors", () => {
   return (
     <Container>
-      <Heading as="h1" sx={{my: 4, fontSize: 7}}>Colors</Heading>
+      <Heading as="h1" sx={{ my: 4, fontSize: 7 }}>Colors</Heading>
       <ColorPalette />
     </Container>
   )
 })
 
-const SizePreview = ({sizes}: {sizes: number[]}) => {
+const SizePreview = ({ sizes }: { sizes: number[] }) => {
   return (
     <Grid>
       {
         sizes.map((size, index) => (
-          <Flex sx={{alignItems: 'center'}}>
-            <Box key={size} sx={{width: `${size}px`, height: '10px', bg: 'primary'}} />
+          <Flex sx={{ alignItems: 'center' }}>
+            <Box key={size} sx={{ width: `${size}px`, height: '10px', bg: 'primary' }} />
             <Box px={2}>{size}px</Box>
             <Box px={2}>index: {index}</Box>
           </Flex>
@@ -72,27 +68,27 @@ const SizePreview = ({sizes}: {sizes: number[]}) => {
 }
 
 stories.add('Theme elements', () => {
-  const sizes: number[] = theme.sizes 
+  const sizes: number[] = theme.sizes
   const space: number[] = theme.space
-  const borders = Object.entries<[string, string]>(theme.borders)
+  const borders = Object.entries(theme.borders)
 
   return (
     <Container>
-      <Heading as="h1" sx={{my: 4, fontSize: 7}}>Theme elements</Heading>
-      <Heading sx={{mt: 4, fontSize: 5}}>Sizes</Heading>
+      <Heading as="h1" sx={{ my: 4, fontSize: 7 }}>Theme elements</Heading>
+      <Heading sx={{ mt: 4, fontSize: 5 }}>Sizes</Heading>
       <Text>Used for:</Text>
       <Text>width, height, min-width, max-width, min-height, max-height</Text>
       <SizePreview sizes={sizes} />
-      <Heading sx={{mt: 4, fontSize: 5}}>Spaces</Heading>
+      <Heading sx={{ mt: 4, fontSize: 5 }}>Spaces</Heading>
       <Text>Used for:</Text>
       <Text>margin, margin-top, margin-right, margin-bottom, margin-left, padding, padding-top, padding-right, padding-bottom, padding-left, grid-gap, grid-column-gap, grid-row-gap</Text>
       <SizePreview sizes={space} />
-      <Heading sx={{mt: 4, fontSize: 5}}>Borders styles</Heading>
+      <Heading sx={{ mt: 4, fontSize: 5 }}>Borders styles</Heading>
       <Grid>
 
-      {
-        borders.map(([name, style]) => <Box></Box> )
-      }
+        {
+          borders.map(([name, style]) => <Box></Box>)
+        }
       </Grid>
     </Container>
   )

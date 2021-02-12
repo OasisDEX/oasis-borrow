@@ -515,8 +515,8 @@ const oasisBaseTheme = {
     onSurface: "#708390",
     onSecondary: "#575CFE",
 
-    muted: "#D8E0E3",
-    mutedAlt: "#B0BCC0",
+    muted: "#708390",
+    mutedAlt: "#656F75",
 
     error: "#FDEDE8",
     onError: "#F75524",
@@ -526,26 +526,20 @@ const oasisBaseTheme = {
 
     warning: "#FFF1CF",
     onWarning: "#D8762D",
-
-    dsrIcon: "#AD6E06",
-    dsrBadge: "#E06B2A",
-
-    spinnerWarning: "#FDC134",
-    txManagerBg: "rgba(216, 224, 227, 0.43)",
   },
 
   fonts: {
     body: '"Inter", "Helvetica Neue", sans-serif',
-    heading: '"Inter", "Helvetica Neue", sans-serif',
+    heading: '"FT Polar Trial", "Helvetica Neue", sans-serif',
     monospace: "monospace",
   },
 
-  fontSizes: [10, 12, 14, 16, 18, 20, 24, 32, 48, 64, 96],
+  fontSizes: [10, 12, 14, 16, 18, 20, 24, 32, 52, 64, 96],
 
   fontWeights: {
     body: 400,
     semiBold: 500,
-    heading: 500,
+    heading: 700,
     bold: 700,
   },
 
@@ -558,6 +552,118 @@ const oasisBaseTheme = {
     buttons: 2,
     secondaryButton: 0.8,
     smallButton: 1.9,
+  },
+
+  text: {
+    header1: {
+      fontFamily: "heading",
+      fontWeight: "heading",
+      lineHeight: "heading",
+      fontSize: 8,
+      color: "text"
+    },
+    header2: {
+      fontFamily: "heading",
+      fontWeight: "semiBold",
+      lineHeight: "heading",
+      fontSize: 7,
+      color: "text"
+    },
+    header3: {
+      fontFamily: "heading",
+      fontWeight: "heading",
+      lineHeight: "heading",
+      fontSize: 5,
+      color: "text"
+    },
+    paragraph1: {
+      fontFamily: "body",
+      fontWeight: "body",
+      lineHeight: "body",
+      fontSize: 4,
+      color: "text"
+    },
+    paragraph2: {
+      fontFamily: "body",
+      fontWeight: "body",
+      lineHeight: "body",
+      fontSize: 3,
+      color: "text"
+    },
+    paragraph3: {
+      fontFamily: "body",
+      fontWeight: "body",
+      lineHeight: "body",
+      fontSize: 2,
+      color: "text"
+    },
+    paragraph4: {
+      fontFamily: "body",
+      fontWeight: "body",
+      lineHeight: "body",
+      fontSize: 1,
+      color: "text"
+    },
+
+    // heading: {
+    //   fontFamily: "heading",
+    //   lineHeight: "heading",
+    //   fontWeight: "heading",
+    //   fontSize: 6,
+    //   color: "primary",
+    // },
+    // text: {
+    //   fontSize: 3,
+    //   color: "text",
+    // },
+
+    // largeHeading: {
+    //   variant: "text.heading",
+    //   fontSize: 7,
+    // },
+    // mediumHeading: {
+    //   variant: "text.heading",
+    //   fontSize: 5,
+    // },
+    // smallHeading: {
+    //   variant: "text.heading",
+    //   fontSize: 4,
+    // },
+    // microHeading: {
+    //   variant: "text.heading",
+    //   fontSize: 3,
+    // },
+    // backgroundHeading: {
+    //   variant: "text.mediumHeading",
+    //   color: "onBackground",
+    // },
+    // surfaceHeading: {
+    //   variant: "text.mediumHeading",
+    //   color: "onSurface",
+    // },
+    // backgroundText: {
+    //   variant: "text.backgroundHeading",
+    //   fontSize: 4,
+    //   fontWeight: "body",
+    // },
+    // surfaceText: {
+    //   variant: "text.surfaceHeading",
+    //   fontSize: 4,
+    //   fontWeight: "body",
+    // },
+    // error: {
+    //   variant: "text.smallHeading",
+    //   color: "onError",
+    //   fontSize: "body",
+    // },
+    // boldBody: {
+    //   fontSize: 3,
+    //   fontWeight: "semiBold",
+    // },
+    // small: {
+    //   fontSize: 2,
+    //   color: "text",
+    // },
   },
 
   borders: {
@@ -583,308 +689,234 @@ const oasisBaseTheme = {
     txManager: "inset 0px 2px 2px #DCE5E9",
   },
 
-  gradients: {
-    dsr: {
-      background:
-        "linear-gradient(161.42deg, #F8D247 1.31%, #FF8154 99.3%), radial-gradient(93.42% 100% at 6.31% 0%, #F2A19E 0%, #F7E189 100%);",
-      "&:hover": {
-        background:
-          "linear-gradient(160.17deg, #F8D247 -18.03%, #FF8154 63.39%), radial-gradient(93.42% 100% at 6.31% 0%, #F2A19E 0%, #F7E189 100%)",
-      },
-    },
-  },
+  gradients: {},
 
-  text: {
-    heading: {
-      fontFamily: "heading",
-      lineHeight: "heading",
-      fontWeight: "heading",
-      fontSize: 6,
-      color: "primary",
-    },
-    text: {
-      fontSize: 3,
-      color: "text",
-    },
+  // alerts: {
+  //   error: {
+  //     fontSize: 2,
+  //     fontWeight: "semiBold",
+  //     borderRadius: "round",
+  //     bg: "error",
+  //     color: "onError",
+  //     width: "100%",
+  //     justifyContent: ["flex-start", "center"],
+  //     lineHeight: "smallButton",
+  //   },
+  //   success: {
+  //     variant: "alerts.error",
+  //     bg: "success",
+  //     color: "onSuccess",
+  //   },
+  //   warning: {
+  //     variant: "alerts.error",
+  //     bg: "warning",
+  //     color: "onWarning",
+  //   },
+  // },
 
-    largeHeading: {
-      variant: "text.heading",
-      fontSize: 7,
-    },
-    mediumHeading: {
-      variant: "text.heading",
-      fontSize: 5,
-    },
-    smallHeading: {
-      variant: "text.heading",
-      fontSize: 4,
-    },
-    microHeading: {
-      variant: "text.heading",
-      fontSize: 3,
-    },
-    backgroundHeading: {
-      variant: "text.mediumHeading",
-      color: "onBackground",
-    },
-    surfaceHeading: {
-      variant: "text.mediumHeading",
-      color: "onSurface",
-    },
-    backgroundText: {
-      variant: "text.backgroundHeading",
-      fontSize: 4,
-      fontWeight: "body",
-    },
-    surfaceText: {
-      variant: "text.surfaceHeading",
-      fontSize: 4,
-      fontWeight: "body",
-    },
-    error: {
-      variant: "text.smallHeading",
-      color: "onError",
-      fontSize: "body",
-    },
-    boldBody: {
-      fontSize: 3,
-      fontWeight: "semiBold",
-    },
-    small: {
-      fontSize: 2,
-      color: "text",
-    },
-  },
+  // badges: {
+  //   primary: {
+  //     p: 3,
+  //     py: 2,
+  //     borderRadius: "roundish",
+  //     color: "primary",
+  //     bg: "background",
+  //     fontSize: 2,
+  //     fontWeight: "body",
+  //     lineHeight: "heading",
+  //   },
+  // },
 
-  alerts: {
-    error: {
-      fontSize: 2,
-      fontWeight: "semiBold",
-      borderRadius: "round",
-      bg: "error",
-      color: "onError",
-      width: "100%",
-      justifyContent: ["flex-start", "center"],
-      lineHeight: "smallButton",
-    },
-    success: {
-      variant: "alerts.error",
-      bg: "success",
-      color: "onSuccess",
-    },
-    warning: {
-      variant: "alerts.error",
-      bg: "warning",
-      color: "onWarning",
-    },
-  },
+  // buttons: {
+  //   primary: {
+  //     borderRadius: "round",
+  //     cursor: "pointer",
+  //     outline: "none",
+  //     p: 3,
+  //     py: 2,
+  //     fontFamily: "body",
+  //     fontWeight: "semiBold",
+  //     bg: "primary",
+  //     lineHeight: "buttons",
+  //     transition: "150ms cubic-bezier(0.215,0.61,0.355,1)",
+  //     "&:hover": {
+  //       bg: "primaryEmphasis",
+  //     },
+  //     "&:disabled": {
+  //       bg: "primaryAlt",
+  //       pointerEvents: "none",
+  //     },
+  //   },
+  //   primaryMedium: {
+  //     variant: "buttons.primary",
+  //     fontSize: 4,
+  //     minWidth: "130px",
+  //     boxShadow: "medium",
+  //   },
+  //   primaryBig: {
+  //     variant: "buttons.primary",
+  //     fontSize: 5,
+  //     boxShadow: "medium",
+  //     lineHeight: "body",
+  //     py: 3,
+  //     px: 4,
+  //     "&:disabled": {
+  //       bg: "primaryAlt",
+  //       pointerEvents: "none",
+  //       boxShadow: "none",
+  //     },
+  //   },
+  //   primarySquare: {
+  //     variant: "buttons.primaryBig",
+  //     borderRadius: "roundish",
+  //     boxShadow: "light",
+  //   },
+  //   outline: {
+  //     variant: "buttons.primary",
+  //     fontSize: 3,
+  //     borderRadius: "round",
+  //     fontWeight: "semiBold",
+  //     border: "light",
+  //     borderColor: "muted",
+  //     bg: "surface",
+  //     color: "primary",
+  //     "&:hover": {
+  //       borderColor: "mutedAlt",
+  //       boxShadow: "surface",
+  //     },
+  //     "&:disabled": {
+  //       color: "muted",
+  //       pointerEvents: "none",
+  //     },
+  //   },
+  //   outlineSquare: {
+  //     variant: "buttons.outline",
+  //     borderRadius: "large",
+  //     fontWeight: "body",
+  //   },
+  //   secondary: {
+  //     variant: "buttons.primary",
+  //     fontSize: 5,
+  //     borderRadius: "medium",
+  //     fontWeight: "semiBold",
+  //     bg: "secondary",
+  //     color: "onSecondary",
+  //     border: "light",
+  //     borderColor: "secondary",
+  //     lineHeight: "secondaryButton",
+  //     "&:hover": {
+  //       borderColor: "onSecondary",
+  //     },
+  //   },
+  //   secondarySmall: {
+  //     variant: "buttons.secondary",
+  //     fontSize: 2,
+  //     px: 2,
+  //   },
+  //   small: {
+  //     variant: "buttons.primary",
+  //     fontSize: 2,
+  //     p: 2,
+  //     px: 3,
+  //     lineHeight: "smallButton",
+  //   },
+  //   textual: {
+  //     color: "onSecondary",
+  //     fontSize: 4,
+  //     fontWeight: "semiBold",
+  //     outline: "none",
+  //     cursor: "pointer",
+  //     background: "transparent",
+  //   },
+  // },
 
-  badges: {
-    primary: {
-      p: 3,
-      py: 2,
-      borderRadius: "roundish",
-      color: "primary",
-      bg: "background",
-      fontSize: 2,
-      fontWeight: "body",
-      lineHeight: "heading",
-    },
-    dsr: {
-      variant: "badges.primary",
-      color: "surface",
-      bg: "dsrBadge",
-      boxShadow: "dsr",
-    },
-  },
+  // forms: {
+  //   label: {
+  //     fontSize: 4,
+  //     fontWeight: "semiBold",
+  //   },
+  //   input: {
+  //     outline: "none",
+  //     borderRadius: "large",
+  //     border: "light",
+  //     borderColor: "muted",
+  //     color: "onSurface",
+  //     fontWeight: "body",
+  //     fontFamily: "body",
+  //     p: 3,
+  //     lineHeight: "tight",
+  //     fontSize: 5,
+  //     "&:focus": {
+  //       borderColor: "primary",
+  //       color: "primary",
+  //     },
+  //     "&:disabled": {
+  //       bg: "background",
+  //       pointerEvents: "none",
+  //     },
+  //   },
+  //   inputError: {
+  //     variant: "forms.input",
+  //     borderColor: "onError",
+  //     "&:focus": {
+  //       borderColor: "onError",
+  //     },
+  //   },
+  //   select: {
+  //     variant: "forms.input",
+  //   },
+  //   textarea: { variant: "forms.input", lineHeight: "body" },
+  //   textareaError: { variant: "forms.inputError" },
+  // },
 
-  buttons: {
-    primary: {
-      borderRadius: "round",
-      cursor: "pointer",
-      outline: "none",
-      p: 3,
-      py: 2,
-      fontFamily: "body",
-      fontWeight: "semiBold",
-      bg: "primary",
-      lineHeight: "buttons",
-      transition: "150ms cubic-bezier(0.215,0.61,0.355,1)",
-      "&:hover": {
-        bg: "primaryEmphasis",
-      },
-      "&:disabled": {
-        bg: "primaryAlt",
-        pointerEvents: "none",
-      },
-    },
-    primaryMedium: {
-      variant: "buttons.primary",
-      fontSize: 4,
-      minWidth: "130px",
-      boxShadow: "medium",
-    },
-    primaryBig: {
-      variant: "buttons.primary",
-      fontSize: 5,
-      boxShadow: "medium",
-      lineHeight: "body",
-      py: 3,
-      px: 4,
-      "&:disabled": {
-        bg: "primaryAlt",
-        pointerEvents: "none",
-        boxShadow: "none",
-      },
-    },
-    primarySquare: {
-      variant: "buttons.primaryBig",
-      borderRadius: "roundish",
-      boxShadow: "light",
-    },
-    outline: {
-      variant: "buttons.primary",
-      fontSize: 3,
-      borderRadius: "round",
-      fontWeight: "semiBold",
-      border: "light",
-      borderColor: "muted",
-      bg: "surface",
-      color: "primary",
-      "&:hover": {
-        borderColor: "mutedAlt",
-        boxShadow: "surface",
-      },
-      "&:disabled": {
-        color: "muted",
-        pointerEvents: "none",
-      },
-    },
-    outlineSquare: {
-      variant: "buttons.outline",
-      borderRadius: "large",
-      fontWeight: "body",
-    },
-    secondary: {
-      variant: "buttons.primary",
-      fontSize: 5,
-      borderRadius: "medium",
-      fontWeight: "semiBold",
-      bg: "secondary",
-      color: "onSecondary",
-      border: "light",
-      borderColor: "secondary",
-      lineHeight: "secondaryButton",
-      "&:hover": {
-        borderColor: "onSecondary",
-      },
-    },
-    secondarySmall: {
-      variant: "buttons.secondary",
-      fontSize: 2,
-      px: 2,
-    },
-    small: {
-      variant: "buttons.primary",
-      fontSize: 2,
-      p: 2,
-      px: 3,
-      lineHeight: "smallButton",
-    },
-    textual: {
-      color: "onSecondary",
-      fontSize: 4,
-      fontWeight: "semiBold",
-      outline: "none",
-      cursor: "pointer",
-      background: "transparent",
-    },
-  },
+  // cards: {
+  //   primary: {
+  //     border: "1px solid",
+  //     borderColor: "muted",
+  //     p: 3,
+  //     borderRadius: "roundish",
+  //     bg: "surface",
+  //   },
+  //   primaryWithHover: {
+  //     variant: "cards.primary",
+  //     cursor: "pointer",
+  //     transition: "150ms cubic-bezier(0.215,0.61,0.355,1)",
+  //     "&:hover": {
+  //       borderColor: "mutedAlt",
+  //       boxShadow: "surface",
+  //     },
+  //   },
+  //   secondary: {
+  //     variant: "cards.primary",
+  //     border: "none",
+  //     bg: "background",
+  //   },
+  //   secondaryRounded: {
+  //     variant: "cards.secondary",
+  //     borderRadius: "large",
+  //   },
+  // },
 
-  forms: {
-    label: {
-      fontSize: 4,
-      fontWeight: "semiBold",
-    },
-    input: {
-      outline: "none",
-      borderRadius: "large",
-      border: "light",
-      borderColor: "muted",
-      color: "onSurface",
-      fontWeight: "body",
-      fontFamily: "body",
-      p: 3,
-      lineHeight: "tight",
-      fontSize: 5,
-      "&:focus": {
-        borderColor: "primary",
-        color: "primary",
-      },
-      "&:disabled": {
-        bg: "background",
-        pointerEvents: "none",
-      },
-    },
-    inputError: {
-      variant: "forms.input",
-      borderColor: "onError",
-      "&:focus": {
-        borderColor: "onError",
-      },
-    },
-    select: {
-      variant: "forms.input",
-    },
-    textarea: { variant: "forms.input", lineHeight: "body" },
-    textareaError: { variant: "forms.inputError" },
-  },
-
-  cards: {
-    primary: {
-      border: "1px solid",
-      borderColor: "muted",
-      p: 3,
-      borderRadius: "roundish",
-      bg: "surface",
-    },
-    primaryWithHover: {
-      variant: "cards.primary",
-      cursor: "pointer",
-      transition: "150ms cubic-bezier(0.215,0.61,0.355,1)",
-      "&:hover": {
-        borderColor: "mutedAlt",
-        boxShadow: "surface",
-      },
-    },
-    secondary: {
-      variant: "cards.primary",
-      border: "none",
-      bg: "background",
-    },
-    secondaryRounded: {
-      variant: "cards.secondary",
-      borderRadius: "large",
-    },
-  },
-
-  links: {
-    nav: {
-      p: 2,
-      fontSize: 3,
-      fontWeight: "body",
-      letterSpacing: "0.4px",
-      color: "text",
-      cursor: "pointer",
-      transition: "150ms cubic-bezier(0.215,0.61,0.355,1)",
-      "&:hover": {
-        color: "primary",
-        cursor: "pointer",
-      },
-    },
-  },
+  // links: {
+  //   nav: {
+  //     p: 2,
+  //     fontSize: 3,
+  //     fontWeight: "body",
+  //     letterSpacing: "0.4px",
+  //     color: "text",
+  //     cursor: "pointer",
+  //     transition: "150ms cubic-bezier(0.215,0.61,0.355,1)",
+  //     "&:hover": {
+  //       color: "primary",
+  //       cursor: "pointer",
+  //     },
+  //   },
+  // },
 
   styles: {
+
+
+
     root: {
       fontFamily: "body",
       lineHeight: "body",
@@ -907,13 +939,13 @@ const oasisBaseTheme = {
       },
     },
     h1: {
-      variant: "text.largeHeading",
+      variant: "text.header1",
     },
     h2: {
-      variant: "text.mediumHeading",
+      variant: "text.header2",
     },
     h3: {
-      variant: "text.smallHeading",
+      variant: "text.header3",
     },
     h4: {
       variant: "text.microHeading",
@@ -924,12 +956,11 @@ const oasisBaseTheme = {
     },
   },
   layout: {
+    appContainer: {
+      maxWidth: '1024px',
+    },
     container: {
       px: 3,
-    },
-    appContainer: {
-      variant: "layout.container",
-      maxWidth: "416px",
     },
     appContainerWide: {
       variant: "layout.container",
@@ -942,12 +973,14 @@ const oasisBaseTheme = {
       variant: "layout.modal",
       minHeight: "50vh",
     },
+
   },
   metadata: {
     fontLinkHref: "https://rsms.me/inter/inter.css",
   },
 };
 
+export const theme = oasisBaseTheme
 export default theme;
 
 // Duplication from theme as exporting const from package library is breaking dai-ui website and theme-ui doesn't support yet transitions tokens :(
@@ -956,7 +989,9 @@ export const TRANSITIONS = {
   global: '150ms cubic-bezier(0.215,0.61,0.355,1)',
 }
 
-export const theme = merge(oasisBaseTheme, {
+
+
+/*merge(oasisBaseTheme, {
   gradients: {
     app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
   },
@@ -1112,3 +1147,4 @@ export const theme = merge(oasisBaseTheme, {
     },
   },
 })
+*/
