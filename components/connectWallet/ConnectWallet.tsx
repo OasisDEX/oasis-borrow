@@ -293,10 +293,10 @@ export function ConnectWallet() {
             </Text>
           </Alert>
         )) || (
-          <Alert variant="error" sx={{ fontWeight: 'normal', borderRadius: 'large' }}>
-            <Text sx={{ my: 1, ml: 2, fontSize: 3, lineHeight: 'body' }}>{t('connect-error')}</Text>
-          </Alert>
-        ))}
+            <Alert variant="error" sx={{ fontWeight: 'normal', borderRadius: 'large' }}>
+              <Text sx={{ my: 1, ml: 2, fontSize: 3, lineHeight: 'body' }}>{t('connect-error')}</Text>
+            </Alert>
+          ))}
       <Grid columns={1} sx={{ maxWidth: '280px', width: '100%', mx: 'auto' }}>
         {SUPPORTED_WALLETS.map(({ iconName, connectionKind }) => {
           const isConnecting =
@@ -317,8 +317,8 @@ export function ConnectWallet() {
                   web3Context.status === 'connecting'
                     ? undefined
                     : connectionKind === 'ledger'
-                    ? () => setConnectingLedger(true)
-                    : connect(web3Context, connectionKind, getNetworkId()),
+                      ? () => setConnectingLedger(true)
+                      : connect(web3Context, connectionKind, getNetworkId()),
               }}
             />
           )
@@ -331,7 +331,7 @@ export function ConnectWallet() {
 function autoConnect(
   web3Context$: Observable<Web3Context>,
   defaultChainId: number,
-  fallback: (web3Context: Web3ContextNotConnected) => void 
+  fallback: (web3Context: Web3ContextNotConnected) => void
 ) {
   let firstTime = true
 
@@ -351,10 +351,7 @@ function autoConnect(
             web3Context.connect(connector, connectionKind)
           }
         } else if (web3Context.status === 'notConnected') {
-            console.log('autoConnecting readonly', defaultChainId)
-            // web3Context.connect(await getConnector('network', defaultChainId), 'network')
-
-            fallback(web3Context)
+          fallback(web3Context)
         }
         if (web3Context.status === 'connected') {
           localStorage.setItem(
@@ -371,9 +368,7 @@ function autoConnect(
         }
       } catch (e) {
         if (web3Context.status === 'notConnected') {
-          console.log('falling back to autoConnecting readonly', defaultChainId)
           fallback(web3Context)
-          // web3Context.connect(await getConnector('network', defaultChainId), 'network')
         }
       } finally {
         firstTime = false
@@ -391,7 +386,6 @@ async function connectReadonly(web3Context: Web3ContextNotConnected) {
 
 export function WithConnection({ children }: WithChildren) {
   const { web3Context$ } = useAppContext()
-  const router = useRouter()
 
   useEffect(() => autoConnect(web3Context$, getNetworkId(), connectReadonly), [])
 
@@ -402,7 +396,7 @@ export function WithWalletConnection({ children }: WithChildren) {
   const { replace } = useRedirect()
   const { web3Context$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
-  
+
   useEffect(() => {
     if (web3Context?.status === 'connectedReadonly') {
       redirectState$.next(window.location.pathname)
