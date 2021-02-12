@@ -87,6 +87,7 @@ function OpenVaultFormInputs({
   collateralBalance,
   maxDepositAmount,
   maxGenerateAmount,
+  messages,
 }: OpenVaultFormInputsProps) {
   function handleDepositChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,6 +123,12 @@ function OpenVaultFormInputs({
       change({ kind: 'generateAmount', generateAmount: maxGenerateAmount })
     }
   }
+  const errorString = messages
+    ?.map((message) => message.kind)
+    .filter((x) => x)
+    .join(',\n')
+
+  const hasError = !!errorString
 
   return (
     <>
@@ -130,7 +137,7 @@ function OpenVaultFormInputs({
         amount={depositAmount}
         balance={collateralBalance}
         token={'ETH'}
-        hasError={true}
+        hasError={false}
         showMax={token !== 'ETH'}
         onSetMax={handleDepositMax(change!)}
         onChange={handleDepositChange(change!)}
@@ -144,23 +151,39 @@ function OpenVaultFormInputs({
         hasError={false}
         onChange={handleGenerateChange(change!)}
       />
+      {hasError && (
+        <>
+          <Text sx={{ flexWrap: 'wrap' }}>{errorString}</Text>
+        </>
+      )}
     </>
   )
 }
 
-function OpenVaultFormDetails({ ilkDebtAvailable, liquidationRatio }: OpenVaultConnectedState) {
+function OpenVaultFormDetails({
+  ilkDebtAvailable,
+  liquidationRatio,
+  collateralizationRatio,
+}: OpenVaultConnectedState) {
+  const daiAvailable = ilkDebtAvailable ? `${formatCryptoBalance(ilkDebtAvailable)} DAI` : '--'
+  const minCollRatio = liquidationRatio
+    ? `${formatPercent(liquidationRatio.times(100), { precision: 2 })}`
+    : '--'
+  const collRatio = collateralizationRatio
+    ? `${formatPercent(collateralizationRatio.times(100), { precision: 2 })}`
+    : '--'
+
   return (
     <Card>
-      <Grid columns="3fr 2fr">
+      <Grid columns="5fr 3fr">
         <Text sx={{ fontSize: 2 }}>Dai Available</Text>
-        <Text sx={{ fontSize: 2, textAlign: 'right' }}>
-          {ilkDebtAvailable ? `${formatCryptoBalance(ilkDebtAvailable)} DAI` : '--'}
-        </Text>
+        <Text sx={{ fontSize: 2, textAlign: 'right' }}>{daiAvailable}</Text>
 
         <Text sx={{ fontSize: 2 }}>Min. collateral ratio</Text>
-        <Text sx={{ fontSize: 2, textAlign: 'right' }}>
-          {liquidationRatio ? `${formatPercent(liquidationRatio.times(100))}` : '--'}
-        </Text>
+        <Text sx={{ fontSize: 2, textAlign: 'right' }}>{minCollRatio}</Text>
+
+        <Text sx={{ fontSize: 2 }}>Collateralization Ratio</Text>
+        <Text sx={{ fontSize: 2, textAlign: 'right' }}>{collRatio}</Text>
       </Grid>
     </Card>
   )

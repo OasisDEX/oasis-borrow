@@ -46,11 +46,9 @@ export interface OpenVaultConnectedState extends TokenBalancePriceInfo {
   stage: OpenVaultConnectedStage
   token: string
   ilk: string
-  messages: string[]
+  messages: OpenVaultMessage[]
   depositAmount: BigNumber
   generateAmount: BigNumber
-  maxDepositAmount: BigNumber
-  maxGenerateAmount: BigNumber
   account: string
   progress?: () => void
   proxyAddress?: string
@@ -61,57 +59,95 @@ export interface OpenVaultConnectedState extends TokenBalancePriceInfo {
   ilkDebtAvailable: BigNumber
   debtFloor: BigNumber
   liquidationRatio: BigNumber
+
+  maxDepositAmount: BigNumber
+  maxGenerateAmount: BigNumber
+  collateralizationRatio: BigNumber
+  depositAmountUSD: BigNumber
+  generateAmountUSD: BigNumber
+  maxDepositAmountUSD: BigNumber
 }
 
 type OpenVaultMessage = {
   kind:
-    | 'lockAmountEmpty'
-    | 'lockAmountGreaterThanBalance'
-    | 'lockAmountGreaterThanMaxLockAmount'
-    | 'drawAmountLessThanDebtFloor'
-    | 'drawAmountGreaterThanDebtCeiling'
-    | 'drawAmountPossibleLessThanDebtFloor'
+    | 'depositAmountEmpty'
+    | 'depositAmountGreaterThanMaxDepositAmount'
+    | 'generateAmountLessThanDebtFloor'
+    | 'generateAmountGreaterThanDebtCeiling'
+    | 'potentialGenerateAmountLessThanDebtFloor'
     | 'vaultUnderCollateralized'
 }
 
 function validate(state: OpenVaultConnectedState): OpenVaultConnectedState {
-  // const { lockAmount, drawAmount, maxLockAmount, maxDrawAmount, ilkData } = state
-  // const { ilkDebtAvailable, debtFloor, maxDebtPerUnitCollateral } = ilkData!
+  const {
+    depositAmount,
+    maxDepositAmount,
+    depositAmountUSD,
+    generateAmount,
+    debtFloor,
+    ilkDebtAvailable,
+    collateralizationRatio,
+    liquidationRatio,
+  } = state
 
-  // const messages: OpenVaultModalMessage[] = []
+  const messages: OpenVaultMessage[] = []
 
-  // if (!lockAmount || lockAmount.eq(zero)) {
-  //   messages.push({ kind: 'lockAmountEmpty' })
-  // }
+  if (depositAmount.eq(zero)) {
+    messages.push({ kind: 'depositAmountEmpty' })
+  }
 
-  // if (lockAmount && maxLockAmount && lockAmount.gt(maxLockAmount)) {
-  //   messages[messages.length] = { kind: 'lockAmountGreaterThanMaxLockAmount' }
-  // }
+  if (depositAmount.gt(maxDepositAmount)) {
+    messages.push({ kind: 'depositAmountGreaterThanMaxDepositAmount' })
+  }
 
-  // if (drawAmount && drawAmount.lt(debtFloor)) {
-  //   messages[messages.length] = { kind: 'drawAmountLessThanDebtFloor' }
-  // }
+  if (generateAmount.lt(debtFloor)) {
+    messages.push({ kind: 'generateAmountLessThanDebtFloor' })
+  }
 
-  // if (maxDrawAmount && maxDrawAmount.lt(debtFloor)) {
-  //   messages[messages.length] = { kind: 'drawAmountPossibleLessThanDebtFloor' }
-  // }
+  if (depositAmountUSD.lt(debtFloor)) {
+    messages.push({ kind: 'potentialGenerateAmountLessThanDebtFloor' })
+  }
 
-  // if (drawAmount && drawAmount.gt(ilkDebtAvailable)) {
-  //   messages[messages.length] = { kind: 'drawAmountGreaterThanDebtCeiling' }
-  // }
+  if (generateAmount.gt(ilkDebtAvailable)) {
+    messages.push({ kind: 'generateAmountGreaterThanDebtCeiling' })
+  }
 
-  // if (drawAmount && lockAmount && drawAmount.gt(lockAmount.times(maxDebtPerUnitCollateral))) {
-  //   messages[messages.length] = { kind: 'vaultUnderCollateralized' }
-  // }
+  if (generateAmount.gt(zero) && collateralizationRatio.lt(liquidationRatio)) {
+    messages.push({ kind: 'vaultUnderCollateralized' })
+  }
 
-  return { ...state, messages: [] }
+  return { ...state, messages }
 }
 
-function applyBounds(state: OpenVaultConnectedState): OpenVaultConnectedState {
-  const { collateralBalance, depositAmount, maxDebtPerUnitCollateral } = state
+function applyCalculations(state: OpenVaultConnectedState): OpenVaultConnectedState {
+  const {
+    collateralBalance,
+    depositAmount,
+    maxDebtPerUnitCollateral,
+    generateAmount,
+    collateralPrice,
+  } = state
+
   const maxDepositAmount = collateralBalance
+  const maxDepositAmountUSD = collateralBalance.times(collateralPrice)
+
   const maxGenerateAmount = depositAmount.times(maxDebtPerUnitCollateral)
-  return { ...state, maxDepositAmount, maxGenerateAmount }
+
+  const depositAmountUSD = collateralPrice.times(depositAmount)
+  const generateAmountUSD = generateAmount // 1 DAI === 1 USD
+
+  const collateralizationRatio = generateAmountUSD.eq(zero)
+    ? zero
+    : depositAmountUSD.div(generateAmountUSD)
+  return {
+    ...state,
+    maxDepositAmount,
+    maxGenerateAmount,
+    collateralizationRatio,
+    depositAmountUSD,
+    generateAmountUSD,
+    maxDepositAmountUSD,
+  }
 }
 
 function addTransitions(
@@ -267,6 +303,10 @@ export function createOpenVaultConnected$(
               generateAmount: zero,
               maxDepositAmount: zero,
               maxGenerateAmount: zero,
+              collateralizationRatio: zero,
+              depositAmountUSD: zero,
+              generateAmountUSD: zero,
+              maxDepositAmountUSD: zero,
               ilk,
               maxDebtPerUnitCollateral,
               ilkDebtAvailable,
@@ -292,8 +332,8 @@ export function createOpenVaultConnected$(
               map((daiBalance) => ({ kind: 'daiBalance', daiBalance })),
             )
 
-            const priceChange$ = tokenOraclePrice$(ilk).pipe(
-              map((price) => ({ kind: 'price', price })),
+            const collateralPriceChange$ = tokenOraclePrice$(ilk).pipe(
+              map((collateralPrice) => ({ kind: 'collateralPrice', collateralPrice })),
             )
 
             const ilkDataChange$ = ilkData$(ilk).pipe(
@@ -317,8 +357,8 @@ export function createOpenVaultConnected$(
               collateralBalanceChange$,
               ethBalanceChange$,
               daiBalanceChange$,
+              collateralPriceChange$,
               ilkDataChange$,
-              priceChange$,
             )
 
             const connectedProxyAddress$ = proxyAddress$(account)
@@ -331,7 +371,7 @@ export function createOpenVaultConnected$(
 
             return merge(change$, environmentChange$).pipe(
               scan(apply, initialState),
-              map(applyBounds),
+              map(applyCalculations),
               map(validate),
               map(
                 curry(addTransitions)(
