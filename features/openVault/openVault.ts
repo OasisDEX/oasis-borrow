@@ -1,84 +1,74 @@
 import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
-import { Context, ContextConnected, ContextConnectedReadOnly } from 'blockchain/network'
+import { Context, ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
-import { Observable, of, iif, combineLatest } from 'rxjs'
-import { mergeMap, startWith, switchMap, map } from 'rxjs/operators'
-import {
-  createOpenVaultConnected$,
-  OpenVaultConnectedStage,
-  OpenVaultConnectedState,
-} from './openVaultConnected'
-import {
-  createOpenVaultReadonly$,
-  OpenVaultReadonlyStage,
-  OpenVaultReadonlyState,
-} from './openVaultReadonly'
+import { applyChange, ApplyChange, Change, Changes } from 'helpers/form'
+import { zero } from 'helpers/zero'
+import { curry } from 'lodash'
+import { Observable, of, iif, combineLatest, merge, Subject, EMPTY } from 'rxjs'
+import { startWith, switchMap, map, scan, shareReplay } from 'rxjs/operators'
 
-interface BasicOpenVaultState {
-  isIlkValidationStage: boolean
-  isEditingStage: boolean
-  isProxyStage: boolean
-  isAllowanceStage: boolean
-  isOpenStage: boolean
-
-  isConnected: boolean
-  isReadonly: boolean
-}
-
-export type IlkValidationStage =
-  | 'ilkValidationLoading'
-  | 'ilkValidationFailure'
-  | 'ilkValidationSuccess'
-
-export interface IlkValidationState {
-  stage: IlkValidationStage
-  ilk: string
-}
-
-function createIlkValidation$(
-  ilks$: Observable<string[]>,
+function contextInfo$(
+  context$: Observable<Context>,
+  txHelpers$: Observable<TxHelpers>,
+  balance$: (token: string, address: string) => Observable<BigNumber>,
+  tokenOraclePrice$: (token: string) => Observable<BigNumber>,
   ilk: string,
-): Observable<IlkValidationState> {
-  const initialState: IlkValidationState = {
-    ilk,
-    stage: 'ilkValidationLoading',
-  }
-
-  return ilks$.pipe(
-    switchMap((ilks) => {
-      const isValidIlk = ilks.some((i) => i === ilk)
-      if (!isValidIlk) {
-        return of({
-          ...initialState,
-          stage: 'ilkValidationFailure',
-        })
-      }
-      return of({
-        ...initialState,
-        stage: 'ilkValidationSuccess',
-      })
+): Observable<ContextInfo> {
+  const token = ilk.split('-')[0]
+  return context$.pipe(
+    switchMap((context) => {
+      return iif(
+        () => context.status === 'connectedReadonly',
+        of({
+          collateralBalance: zero,
+          collateralPrice: zero,
+          ethBalance: zero,
+          ethPrice: zero,
+          daiBalance: zero,
+          token,
+          context,
+        }),
+        combineLatest(
+          txHelpers$,
+          balance$(token, (context as ContextConnected).account),
+          tokenOraclePrice$(token),
+          balance$('ETH', (context as ContextConnected).account),
+          tokenOraclePrice$('ETH'),
+          balance$('DAI', (context as ContextConnected).account),
+        ).pipe(
+          switchMap(
+            ([txHelpers, collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance]) =>
+              of({
+                txHelpers,
+                collateralBalance,
+                collateralPrice,
+                ethBalance,
+                ethPrice,
+                daiBalance,
+                token,
+                context,
+              }),
+          ),
+        ),
+      )
     }),
-    startWith(initialState),
   )
 }
+const defaultIsStates = {
+  isIlkValidationStage: false,
+  isEditingStage: false,
+  isProxyStage: false,
+  isAllowanceStage: false,
+  isOpenStage: false,
+  isConnected: false,
+  isReadonly: false,
+}
 
-export type OpenVaultStage = IlkValidationStage | OpenVaultConnectedStage | OpenVaultReadonlyStage
-export type OpenVaultState = BasicOpenVaultState &
-  (IlkValidationState | OpenVaultConnectedState | OpenVaultReadonlyState)
-
-function applyIsStageStates(
-  state: IlkValidationState | OpenVaultConnectedState | OpenVaultReadonlyState,
-): OpenVaultState {
+function applyIsStageStates(state: OpenVaultState): OpenVaultState {
   const newState = {
     ...state,
-    isIlkValidationStage: false,
-    isEditingStage: false,
-    isProxyStage: false,
-    isAllowanceStage: false,
-    isOpenStage: false,
-    isConnected: false,
-    isReadonly: false,
+    ...defaultIsStates,
   }
 
   switch (state.stage) {
@@ -134,6 +124,282 @@ function applyIsStageStates(
   }
 }
 
+function applyVaultCalculations(state: OpenVaultState): OpenVaultState {
+  const {
+    collateralBalance,
+    depositAmount,
+    maxDebtPerUnitCollateral,
+    generateAmount,
+    collateralPrice,
+  } = state
+
+  const maxDepositAmount = collateralBalance
+  const maxDepositAmountUSD = collateralBalance.times(collateralPrice)
+
+  const maxGenerateAmount = depositAmount.times(maxDebtPerUnitCollateral)
+
+  const depositAmountUSD = collateralPrice.times(depositAmount)
+  const generateAmountUSD = generateAmount // 1 DAI === 1 USD
+
+  const collateralizationRatio = generateAmountUSD.eq(zero)
+    ? zero
+    : depositAmountUSD.div(generateAmountUSD)
+
+  return {
+    ...state,
+    maxDepositAmount,
+    maxGenerateAmount,
+    collateralizationRatio,
+    depositAmountUSD,
+    generateAmountUSD,
+    maxDepositAmountUSD,
+  }
+}
+
+function validate(state: OpenVaultState): OpenVaultState {
+  const {
+    depositAmount,
+    maxDepositAmount,
+    depositAmountUSD,
+    generateAmount,
+    debtFloor,
+    ilkDebtAvailable,
+    collateralizationRatio,
+    liquidationRatio,
+  } = state
+
+  const messages: OpenVaultMessage[] = []
+
+  if (depositAmount.eq(zero)) {
+    messages.push({ kind: 'depositAmountEmpty' })
+  }
+
+  if (depositAmount.gt(maxDepositAmount)) {
+    messages.push({ kind: 'depositAmountGreaterThanMaxDepositAmount' })
+  }
+
+  if (generateAmount.lt(debtFloor)) {
+    messages.push({ kind: 'generateAmountLessThanDebtFloor' })
+  }
+
+  if (depositAmountUSD.lt(debtFloor)) {
+    messages.push({ kind: 'potentialGenerateAmountLessThanDebtFloor' })
+  }
+
+  if (generateAmount.gt(ilkDebtAvailable)) {
+    messages.push({ kind: 'generateAmountGreaterThanDebtCeiling' })
+  }
+
+  if (generateAmount.gt(zero) && collateralizationRatio.lt(liquidationRatio)) {
+    messages.push({ kind: 'vaultUnderCollateralized' })
+  }
+
+  return { ...state, messages }
+}
+
+type OpenVaultChange = Changes<OpenVaultState>
+
+export type ManualChange =
+  | Change<OpenVaultState, 'depositAmount'>
+  | Change<OpenVaultState, 'generateAmount'>
+
+const apply: ApplyChange<OpenVaultState> = applyChange
+
+type OpenVaultMessage = {
+  kind:
+    | 'depositAmountEmpty'
+    | 'depositAmountGreaterThanMaxDepositAmount'
+    | 'generateAmountLessThanDebtFloor'
+    | 'generateAmountGreaterThanDebtCeiling'
+    | 'potentialGenerateAmountLessThanDebtFloor'
+    | 'vaultUnderCollateralized'
+}
+
+export type OpenVaultStage =
+  | 'ilkValidationLoading'
+  | 'ilkValidationFailure'
+  | 'ilkValidationSuccess'
+  | 'editingReadonly'
+  | 'editingConnected'
+  | 'proxyWaitingForConfirmation'
+  | 'proxyWaitingForApproval'
+  | 'proxyInProgress'
+  | 'proxyFailure'
+  | 'proxyWaitToContinue'
+  | 'allowanceWaitingForConfirmation'
+  | 'allowanceWaitingForApproval'
+  | 'allowanceInProgress'
+  | 'allowanceFailure'
+  | 'allowanceWaitToContinue'
+  | 'openWaitingForConfirmation'
+  | 'openWaitingForApproval'
+  | 'openInProgress'
+  | 'openFailure'
+  | 'openWaitToContinue'
+
+interface isStageStates {
+  isIlkValidationStage: boolean
+  isEditingStage: boolean
+  isProxyStage: boolean
+  isAllowanceStage: boolean
+  isOpenStage: boolean
+  isConnected: boolean
+  isReadonly: boolean
+}
+
+interface ContextInfo {
+  context: Context
+  txHelpers?: TxHelpers
+  collateralBalance: BigNumber
+  collateralPrice: BigNumber
+  ethBalance: BigNumber
+  ethPrice: BigNumber
+  daiBalance: BigNumber
+  token: string
+}
+
+interface DiscriminatedIlkInfo {
+  maxDebtPerUnitCollateral: BigNumber
+  ilkDebtAvailable: BigNumber
+  debtFloor: BigNumber
+  liquidationRatio: BigNumber
+}
+
+interface CalculatedAmountInfo {
+  maxDepositAmount: BigNumber
+  maxGenerateAmount: BigNumber
+  collateralizationRatio: BigNumber
+  depositAmountUSD: BigNumber
+  generateAmountUSD: BigNumber
+  maxDepositAmountUSD: BigNumber
+}
+
+export interface BasicOpenVaultState {
+  stage: OpenVaultStage
+  ilk: string
+  messages: OpenVaultMessage[]
+  depositAmount: BigNumber
+  generateAmount: BigNumber
+  account?: string
+  progress?: () => void
+  proxyAddress?: string
+  allowance?: boolean
+
+  change?: (change: ManualChange) => void
+
+  collateralBalance: BigNumber
+  collateralPrice: BigNumber
+  ethBalance: BigNumber
+  ethPrice: BigNumber
+  daiBalance: BigNumber
+  token: string
+}
+
+export type OpenVaultState = BasicOpenVaultState &
+  DiscriminatedIlkInfo &
+  CalculatedAmountInfo &
+  isStageStates
+
+function addTransitions(
+  context: ContextConnected,
+  txHelpers: TxHelpers,
+  proxyAddress$: Observable<string | undefined>,
+  allowance$: Observable<boolean>,
+  change: (ch: OpenVaultChange) => void,
+  state: OpenVaultState,
+): OpenVaultState {
+  // function backToOpenVaultModalEditing() {
+  //   change({ kind: 'stage', stage: 'editing' })
+  // }
+
+  // function close() {
+  //   change({ kind: 'stage', stage: 'editing' })
+  //   change({ kind: 'lockAmount', lockAmount: undefined })
+  //   change({ kind: 'drawAmount', drawAmount: undefined })
+  //   change({ kind: 'maxLockAmount', maxLockAmount: undefined })
+  //   change({ kind: 'maxDrawAmount', maxDrawAmount: undefined })
+  // }
+
+  if (state.stage === 'editingConnected' || state.stage === 'editingReadonly') {
+    return {
+      ...state,
+      change,
+      progress:
+        !state.messages.length && state.stage === 'editingConnected'
+          ? () => {
+              if (!state.proxyAddress) {
+                change({ kind: 'stage', stage: 'proxyWaitingForConfirmation' })
+              } else if (!state.allowance) {
+                change({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' })
+              } else {
+                change({ kind: 'stage', stage: 'openWaitingForConfirmation' })
+              }
+            }
+          : undefined,
+    }
+  }
+
+  // if (state.stage === 'proxyWaitingForConfirmation') {
+  //   return {
+  //     ...state,
+  //     createProxy: () => createProxy(context, txHelpers, proxyAddress$, change, state),
+  //   }
+  // }
+
+  // if (state.stage === 'proxyFiasco') {
+  //   return {
+  //     ...state,
+  //     tryAgain: () => createProxy(context, txHelpers, proxyAddress$, change, state),
+  //   }
+  // }
+
+  // if (state.stage === 'allowanceWaitingForConfirmation') {
+  //   return {
+  //     ...state,
+  //     setAllowance: () => setAllowance(txHelpers, allowance$, change, state),
+  //   }
+  // }
+
+  // if (state.stage === 'allowanceFiasco') {
+  //   return {
+  //     ...state,
+  //     tryAgain: () => setAllowance(txHelpers, allowance$, change, state),
+  //   }
+  // }
+
+  // if (state.stage === 'waitToContinue') {
+  //   return {
+  //     ...state,
+  //     proceed: () => change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' }),
+  //   }
+  // }
+
+  // if (state.stage === 'transactionWaitingForConfirmation') {
+  //   return {
+  //     ...state,
+  //     openVault: () => openVault(txHelpers, change, state),
+  //     back: backToOpenVaultModalEditing,
+  //   }
+  // }
+
+  // if (state.stage === 'transactionFiasco') {
+  //   return {
+  //     ...state,
+  //     tryAgain: () => openVault(txHelpers, change, state),
+  //     back: backToOpenVaultModalEditing,
+  //   }
+  // }
+
+  // if (state.stage === 'transactionSuccess') {
+  //   return {
+  //     ...state,
+  //     close,
+  //   }
+  // }
+
+  return state
+}
+
 export function createOpenVault$(
   context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
@@ -145,33 +411,171 @@ export function createOpenVault$(
   ilks$: Observable<string[]>,
   ilk: string,
 ): Observable<OpenVaultState> {
-  return createIlkValidation$(ilks$, ilk).pipe(
-    mergeMap((state) =>
-      iif(
-        () => state.stage !== 'ilkValidationSuccess',
-        of(state),
-        combineLatest(context$, txHelpers$).pipe(
-          mergeMap(([context, txHelpers]) => {
-            const token = ilk.split('-')[0]
-            return iif(
-              () => context.status === 'connectedReadonly',
-              createOpenVaultReadonly$(context as ContextConnectedReadOnly, ilk, token),
-              createOpenVaultConnected$(
-                proxyAddress$,
-                allowance$,
-                tokenOraclePrice$,
-                balance$,
-                ilkData$,
-                context as ContextConnected,
+  return ilks$
+    .pipe(
+      switchMap((ilks) => {
+        const isValidIlk = ilks.some((i) => i === ilk)
+        if (!isValidIlk) {
+          return of({
+            ilk,
+            stage: 'ilkValidationFailure',
+          })
+        }
+        return of({
+          ilk,
+          stage: 'ilkValidationSuccess',
+        })
+      }),
+      startWith({ ilk, stage: 'ilkValidationLoading' }),
+    )
+    .pipe(
+      switchMap((state) => {
+        return iif(
+          () => state.stage !== 'ilkValidationSuccess',
+          of(state),
+          contextInfo$(context$, txHelpers$, balance$, tokenOraclePrice$, ilk).pipe(
+            switchMap(
+              ({
+                collateralBalance,
+                collateralPrice,
+                ethBalance,
+                ethPrice,
+                daiBalance,
                 txHelpers,
-                ilk,
+                context,
                 token,
-              ),
-            )
-          }),
-        ),
-      ),
-    ),
-    map(applyIsStageStates),
-  )
+              }) => {
+                const isConnected = context.status === 'connected'
+
+                const account = isConnected ? (context as ContextConnected).account : undefined
+                const initialStage = isConnected ? 'editingConnected' : 'editingReadonly'
+
+                const connectedProxyAddress$ = isConnected ? proxyAddress$(account!) : of(undefined)
+
+                const connectedAllowance$ = connectedProxyAddress$.pipe(
+                  switchMap((proxyAddress) =>
+                    proxyAddress ? allowance$(token, account!, proxyAddress) : of(false),
+                  ),
+                )
+
+                const change$ = new Subject<OpenVaultChange>()
+
+                function change(ch: OpenVaultChange) {
+                  change$.next(ch)
+                }
+
+                const collateralBalanceChange$ = isConnected
+                  ? balance$(token, account!).pipe(
+                      map((collateralBalance) => ({
+                        kind: 'collateralBalance',
+                        collateralBalance,
+                      })),
+                    )
+                  : EMPTY
+
+                const ethBalanceChange$ = isConnected
+                  ? balance$('ETH', account!).pipe(
+                      map((ethBalance) => ({ kind: 'ethBalance', ethBalance })),
+                    )
+                  : EMPTY
+
+                const daiBalanceChange$ = isConnected
+                  ? balance$('DAI', account!).pipe(
+                      map((daiBalance) => ({ kind: 'daiBalance', daiBalance })),
+                    )
+                  : EMPTY
+
+                return combineLatest(
+                  ilkData$(ilk),
+                  connectedProxyAddress$,
+                  connectedAllowance$,
+                ).pipe(
+                  switchMap(
+                    ([
+                      { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
+                      proxyAddress,
+                      allowance,
+                    ]) => {
+                      const initialState: OpenVaultState = {
+                        ...defaultIsStates,
+                        stage: initialStage,
+                        token,
+                        account,
+                        collateralBalance,
+                        collateralPrice,
+                        ethBalance,
+                        ethPrice,
+                        daiBalance,
+                        messages: [],
+                        depositAmount: zero,
+                        generateAmount: zero,
+                        maxDepositAmount: zero,
+                        maxGenerateAmount: zero,
+                        collateralizationRatio: zero,
+                        depositAmountUSD: zero,
+                        generateAmountUSD: zero,
+                        maxDepositAmountUSD: zero,
+                        ilk,
+                        maxDebtPerUnitCollateral,
+                        ilkDebtAvailable,
+                        debtFloor,
+                        liquidationRatio,
+                        proxyAddress,
+                        allowance,
+                      }
+
+                      const ilkDataChange$ = ilkData$(ilk).pipe(
+                        map(({ maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor }) => [
+                          {
+                            kind: 'maxDebtPerUnitCollateral',
+                            maxDebtPerUnitCollateral,
+                          },
+                          {
+                            kind: 'ilkDebtAvailable',
+                            ilkDebtAvailable,
+                          },
+                          {
+                            kind: 'debtFloor',
+                            debtFloor,
+                          },
+                        ]),
+                      )
+
+                      const collateralPriceChange$ = tokenOraclePrice$(ilk).pipe(
+                        map((collateralPrice) => ({ kind: 'collateralPrice', collateralPrice })),
+                      )
+
+                      const environmentChanges$ = merge(
+                        collateralPriceChange$,
+                        ilkDataChange$,
+                        collateralBalanceChange$,
+                        ethBalanceChange$,
+                        daiBalanceChange$,
+                      )
+
+                      return merge(change$, environmentChanges$).pipe(
+                        scan(apply, initialState),
+                        map(applyVaultCalculations),
+                        map(validate),
+                        map(
+                          curry(addTransitions)(
+                            context,
+                            txHelpers,
+                            connectedProxyAddress$,
+                            connectedAllowance$,
+                            change,
+                          ),
+                        ),
+                        shareReplay(1),
+                      )
+                    },
+                  ),
+                )
+              },
+            ),
+          ),
+        )
+      }),
+      map(applyIsStageStates),
+    )
 }

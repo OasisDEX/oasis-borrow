@@ -6,8 +6,7 @@ import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import React from 'react'
 import { Box, Button, Card, Grid, Heading, Spinner, Text } from 'theme-ui'
-import { OpenVaultState } from './openVault'
-import { ManualChange, OpenVaultConnectedState } from './openVaultConnected'
+import { ManualChange, OpenVaultState } from './openVault'
 
 function OpenVaultDetails() {
   return (
@@ -78,7 +77,6 @@ function OpenVaultFormButton({
   )
 }
 
-type OpenVaultFormInputsProps = OpenVaultConnectedState
 function OpenVaultFormInputs({
   token,
   depositAmount,
@@ -88,7 +86,7 @@ function OpenVaultFormInputs({
   maxDepositAmount,
   maxGenerateAmount,
   messages,
-}: OpenVaultFormInputsProps) {
+}: OpenVaultState) {
   function handleDepositChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
@@ -164,7 +162,7 @@ function OpenVaultFormDetails({
   ilkDebtAvailable,
   liquidationRatio,
   collateralizationRatio,
-}: OpenVaultConnectedState) {
+}: OpenVaultState) {
   const daiAvailable = ilkDebtAvailable ? `${formatCryptoBalance(ilkDebtAvailable)} DAI` : '--'
   const minCollRatio = liquidationRatio
     ? `${formatPercent(liquidationRatio.times(100), { precision: 2 })}`
@@ -194,9 +192,9 @@ function OpenVaultForm(props: OpenVaultState) {
     <Card>
       <Grid>
         <OpenVaultFormTitle {...props} />
-        <OpenVaultFormInputs {...(props as OpenVaultConnectedState)} />
+        <OpenVaultFormInputs {...props} />
         <OpenVaultFormButton {...props} />
-        <OpenVaultFormDetails {...(props as OpenVaultConnectedState)} />
+        <OpenVaultFormDetails {...props} />
       </Grid>
     </Card>
   )
@@ -215,11 +213,11 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
   const { openVault$ } = useAppContext()
   const openVault = useObservable(openVault$(ilk))
 
+  console.log(openVault)
   if (!openVault) {
     return null
   }
 
-  console.log(openVault)
   if (openVault.isIlkValidationStage) {
     return (
       <Grid sx={{ width: '100%', height: '50vh', justifyItems: 'center', alignItems: 'center' }}>
