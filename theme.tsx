@@ -788,3 +788,4 @@ export const landingTheme = merge(theme, {
     },
   },
 })
+console.log(theme)

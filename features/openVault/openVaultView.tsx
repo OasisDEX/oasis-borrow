@@ -1,3 +1,4 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultActionInput } from 'components/VaultActionInput'
@@ -57,61 +58,51 @@ function OpenVaultFormTitle({
   }
 
   return (
-    <Grid columns="2fr 1fr">
-      <Text>
-        {isEditingStage
-          ? 'Confirm'
-          : isProxyStage
-          ? 'Create Proxy'
-          : isAllowanceStage
-          ? 'Set Allowance'
-          : 'Create your Vault'}
+    <Grid pb={3}>
+      <Grid columns="2fr 1fr">
+        <Text>
+          {isEditingStage
+            ? 'Configure your Vault'
+            : isProxyStage
+            ? 'Create Proxy'
+            : isAllowanceStage
+            ? 'Set Allowance'
+            : 'Create your Vault'}
+        </Text>
+        {canReset ? (
+          <Button onClick={handleReset} disabled={!canReset} sx={{ fontSize: 1, p: 0 }}>
+            {stage === 'editing' ? 'Reset' : 'Back'}
+          </Button>
+        ) : null}
+      </Grid>
+      <Text sx={{ fontSize: 2 }}>
+        Some text here giving a little more context as to what the user is doing
       </Text>
-      {canReset ? (
-        <Button onClick={handleReset} disabled={!canReset} sx={{ fontSize: 1, p: 0 }}>
-          {stage === 'editing' ? 'Reset' : 'Back'}
-        </Button>
-      ) : null}
     </Grid>
   )
 }
 
-function OpenVaultFormButton({
-  isEditingStage,
-  isProxyStage,
-  isAllowanceStage,
-  progress,
-}: OpenVaultState) {
-  const canProgress = !!progress
+function OpenVaultFormEditing(props: OpenVaultState) {
+  const {
+    token,
+    depositAmount,
+    generateAmount,
+    change,
+    collateralBalance,
+    maxDepositAmount,
+    maxGenerateAmount,
+    messages,
+    ilkDebtAvailable,
+    liquidationRatio,
+    collateralizationRatio,
+    progress,
+  } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
-    if (canProgress) progress!()
+    progress!()
   }
 
-  return (
-    <Button disabled={!canProgress} onClick={handleProgress}>
-      {isEditingStage
-        ? 'Confirm'
-        : isProxyStage
-        ? 'Create Proxy'
-        : isAllowanceStage
-        ? 'Set Allowance'
-        : 'Create your Vault'}
-    </Button>
-  )
-}
-
-function OpenVaultFormInputs({
-  token,
-  depositAmount,
-  generateAmount,
-  change,
-  collateralBalance,
-  maxDepositAmount,
-  maxGenerateAmount,
-  messages,
-}: OpenVaultState) {
   function handleDepositChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
@@ -153,9 +144,16 @@ function OpenVaultFormInputs({
     .join(',\n')
 
   const hasError = !!errorString
+  const daiAvailable = ilkDebtAvailable ? `${formatCryptoBalance(ilkDebtAvailable)} DAI` : '--'
+  const minCollRatio = liquidationRatio
+    ? `${formatPercent(liquidationRatio.times(100), { precision: 2 })}`
+    : '--'
+  const collRatio = collateralizationRatio
+    ? `${formatPercent(collateralizationRatio.times(100), { precision: 2 })}`
+    : '--'
 
   return (
-    <>
+    <Grid>
       <VaultActionInput
         action="Deposit"
         amount={depositAmount}
@@ -180,85 +178,120 @@ function OpenVaultFormInputs({
           <Text sx={{ flexWrap: 'wrap' }}>{errorString}</Text>
         </>
       )}
-    </>
-  )
-}
 
-function OpenVaultFormDetails({
-  ilkDebtAvailable,
-  liquidationRatio,
-  collateralizationRatio,
-}: OpenVaultState) {
-  const daiAvailable = ilkDebtAvailable ? `${formatCryptoBalance(ilkDebtAvailable)} DAI` : '--'
-  const minCollRatio = liquidationRatio
-    ? `${formatPercent(liquidationRatio.times(100), { precision: 2 })}`
-    : '--'
-  const collRatio = collateralizationRatio
-    ? `${formatPercent(collateralizationRatio.times(100), { precision: 2 })}`
-    : '--'
+      <Card>
+        <Grid columns="5fr 3fr">
+          <Text sx={{ fontSize: 2 }}>Dai Available</Text>
+          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{daiAvailable}</Text>
 
-  return (
-    <Card>
-      <Grid columns="5fr 3fr">
-        <Text sx={{ fontSize: 2 }}>Dai Available</Text>
-        <Text sx={{ fontSize: 2, textAlign: 'right' }}>{daiAvailable}</Text>
+          <Text sx={{ fontSize: 2 }}>Min. collateral ratio</Text>
+          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{minCollRatio}</Text>
 
-        <Text sx={{ fontSize: 2 }}>Min. collateral ratio</Text>
-        <Text sx={{ fontSize: 2, textAlign: 'right' }}>{minCollRatio}</Text>
-
-        <Text sx={{ fontSize: 2 }}>Collateralization Ratio</Text>
-        <Text sx={{ fontSize: 2, textAlign: 'right' }}>{collRatio}</Text>
-      </Grid>
-    </Card>
-  )
-}
-
-function OpenVaultProxyConfirmations({
-  proxyConfirmations,
-  safeConfirmations,
-  proxyTxHash,
-  etherscan,
-}: OpenVaultState) {
-  return (
-    <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
-      <Flex sx={{ alignItems: 'center' }}>
-        <Spinner size={25} color="onWarning" />
-        <Grid pl={2} gap={1}>
-          <Text color="onWarning" sx={{ fontSize: 1 }}>
-            {proxyConfirmations} of {safeConfirmations}: Proxy deployment confirmed
-          </Text>
-          <Link href={`${etherscan}/tx/${proxyTxHash}`} target="_blank" rel="noopener noreferrer">
-            <Text color="onWarning" sx={{ fontSize: 1 }}>
-              View on etherscan ->
-            </Text>
-          </Link>
+          <Text sx={{ fontSize: 2 }}>Collateralization Ratio</Text>
+          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{collRatio}</Text>
         </Grid>
-      </Flex>
-    </Card>
+      </Card>
+      <Button onClick={handleProgress}>Confirm</Button>
+    </Grid>
+  )
+}
+
+function OpenVaultFormProxy(props: OpenVaultState) {
+  const { stage, proxyConfirmations, safeConfirmations, proxyTxHash, etherscan, progress } = props
+
+  const isLoading = stage === 'proxyInProgress' || stage === 'proxyWaitingForApproval'
+
+  const canProgress = !!progress
+  function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault()
+    if (canProgress) progress!()
+  }
+
+  const buttonText =
+    stage === 'proxySuccess'
+      ? 'Continue'
+      : stage === 'proxyFailure'
+      ? 'Retry Create Proxy'
+      : stage === 'proxyWaitingForConfirmation'
+      ? 'Create Proxy'
+      : 'Creating Proxy'
+
+  return (
+    <Grid>
+      <Button disabled={!canProgress} onClick={handleProgress}>
+        {isLoading ? (
+          <Flex sx={{ justifyContent: 'center' }}>
+            <Spinner size={25} color="surface" />
+            <Text pl={2}>{buttonText}</Text>
+          </Flex>
+        ) : (
+          <Text>{buttonText}</Text>
+        )}
+      </Button>
+      {stage === 'proxyInProgress' && (
+        <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Spinner size={25} color="onWarning" />
+            <Grid pl={2} gap={1}>
+              <Text color="onWarning" sx={{ fontSize: 1 }}>
+                {proxyConfirmations ? proxyConfirmations : 0} of {safeConfirmations}: Proxy
+                deployment confirming
+              </Text>
+              <Link
+                href={`${etherscan}/tx/${proxyTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Text color="onWarning" sx={{ fontSize: 1 }}>
+                  View on etherscan -{'>'}
+                </Text>
+              </Link>
+            </Grid>
+          </Flex>
+        </Card>
+      )}
+      {stage === 'proxySuccess' && (
+        <Card sx={{ backgroundColor: 'success', border: 'none' }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Icon name="checkmark" size={25} color="onSuccess" />
+            <Grid pl={2} gap={1}>
+              <Text color="onSuccess" sx={{ fontSize: 1 }}>
+                {safeConfirmations} of {safeConfirmations}: Proxy deployment confirmed
+              </Text>
+              <Link
+                href={`${etherscan}/tx/${proxyTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Text color="onSuccess" sx={{ fontSize: 1 }}>
+                  View on etherscan -{'>'}
+                </Text>
+              </Link>
+            </Grid>
+          </Flex>
+        </Card>
+      )}
+    </Grid>
   )
 }
 
 function OpenVaultForm(props: OpenVaultState) {
-  const { stage, isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, isLoading } = props
+  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
 
-  const showFormDetails = isEditingStage || isOpenStage
-
-  const showProxyConfirmations = stage === 'proxyInProgress'
   return (
-    <Card>
-      <Grid sx={{ justifyContent: 'centre' }}>
+    <Box>
+      <Card>
         <OpenVaultFormTitle {...props} />
-        {isEditingStage && <OpenVaultFormInputs {...props} />}
-        {isLoading && <Spinner size={60} />}
-        {showFormDetails && <OpenVaultFormDetails {...props} />}
-        <OpenVaultFormButton {...props} />
-        {showProxyConfirmations && <OpenVaultProxyConfirmations {...props} />}
-      </Grid>
-    </Card>
+        {isEditingStage && <OpenVaultFormEditing {...props} />}
+        {isProxyStage && <OpenVaultFormProxy {...props} />}
+        {isAllowanceStage}
+        {isOpenStage}
+      </Card>
+    </Box>
   )
 }
 
-function OpenVaultDisplay(props: OpenVaultState) {
+function OpenVaultContainer(props: OpenVaultState) {
   return (
     <Grid columns="2fr 1fr" gap={4}>
       <OpenVaultDetails />
@@ -290,7 +323,7 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
 
   return (
     <Grid>
-      <OpenVaultDisplay {...openVault} />
+      <OpenVaultContainer {...openVault} />
     </Grid>
   )
 }
