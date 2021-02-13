@@ -76,11 +76,9 @@ function applyVaultCalculations(state: OpenVaultState): OpenVaultState {
 
   const maxDepositAmount = collateralBalance
   const maxDepositAmountUSD = collateralBalance.times(collateralPrice)
-
-  const maxGenerateAmount = depositAmount.times(maxDebtPerUnitCollateral)
-
-  const depositAmountUSD = collateralPrice.times(depositAmount)
-  const generateAmountUSD = generateAmount // 1 DAI === 1 USD
+  const maxGenerateAmount = depositAmount ? depositAmount.times(maxDebtPerUnitCollateral) : zero
+  const depositAmountUSD = depositAmount ? collateralPrice.times(depositAmount) : zero
+  const generateAmountUSD = generateAmount ? generateAmount : zero // 1 DAI === 1 USD
 
   const collateralizationRatio = generateAmountUSD.eq(zero)
     ? zero
@@ -111,28 +109,29 @@ function validate(state: OpenVaultState): OpenVaultState {
 
   const messages: OpenVaultMessage[] = []
 
-  if (depositAmount.eq(zero)) {
-    messages.push({ kind: 'depositAmountEmpty' })
-  }
-
-  if (depositAmount.gt(maxDepositAmount)) {
+  // error
+  if (depositAmount?.gt(maxDepositAmount)) {
     messages.push({ kind: 'depositAmountGreaterThanMaxDepositAmount' })
   }
 
-  if (generateAmount.lt(debtFloor)) {
+  // error
+  if (generateAmount?.lt(debtFloor)) {
     messages.push({ kind: 'generateAmountLessThanDebtFloor' })
   }
 
-  if (depositAmountUSD.lt(debtFloor)) {
-    messages.push({ kind: 'potentialGenerateAmountLessThanDebtFloor' })
-  }
-
-  if (generateAmount.gt(ilkDebtAvailable)) {
+  // error
+  if (generateAmount?.gt(ilkDebtAvailable)) {
     messages.push({ kind: 'generateAmountGreaterThanDebtCeiling' })
   }
 
-  if (generateAmount.gt(zero) && collateralizationRatio.lt(liquidationRatio)) {
+  // error
+  if (generateAmount?.gt(zero) && collateralizationRatio.lt(liquidationRatio)) {
     messages.push({ kind: 'vaultUnderCollateralized' })
+  }
+
+  // warning
+  if (depositAmount?.gt(zero) && depositAmountUSD.lt(debtFloor)) {
+    messages.push({ kind: 'potentialGenerateAmountLessThanDebtFloor' })
   }
 
   return { ...state, messages }
@@ -148,7 +147,6 @@ const apply: ApplyChange<OpenVaultState> = applyChange
 
 type OpenVaultMessage = {
   kind:
-    | 'depositAmountEmpty'
     | 'depositAmountGreaterThanMaxDepositAmount'
     | 'generateAmountLessThanDebtFloor'
     | 'generateAmountGreaterThanDebtCeiling'
@@ -182,12 +180,10 @@ export interface OpenVaultState {
   stage: OpenVaultStage
   ilk: string
   messages: OpenVaultMessage[]
-  depositAmount: BigNumber
-  generateAmount: BigNumber
   account: string
   token: string
 
-  // Variable States
+  // Dynamic States
   proxyAddress?: string
   allowance?: boolean
   progress?: () => void
@@ -207,6 +203,10 @@ export interface OpenVaultState {
   afterCollateralizationRatio: BigNumber
   lockedCollateral: BigNumber
   lockedCollateralUSD: BigNumber
+
+  // Form Values
+  depositAmount?: BigNumber
+  generateAmount?: BigNumber
 
   // Form Bound Values
   maxDepositAmount: BigNumber
@@ -417,8 +417,8 @@ export function createOpenVault$(
                       ethPrice,
                       daiBalance,
                       messages: [],
-                      depositAmount: zero,
-                      generateAmount: zero,
+                      depositAmount: undefined,
+                      generateAmount: undefined,
                       maxDepositAmount: zero,
                       maxGenerateAmount: zero,
                       depositAmountUSD: zero,

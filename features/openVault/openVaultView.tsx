@@ -90,7 +90,7 @@ function OpenVaultFormInputs({
   function handleDepositChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
-      const depositAmount = value !== '' ? new BigNumber(value) : zero
+      const depositAmount = value !== '' ? new BigNumber(value) : undefined
 
       change({
         kind: 'depositAmount',
@@ -102,7 +102,7 @@ function OpenVaultFormInputs({
   function handleGenerateChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
-      const generateAmount = value !== '' ? new BigNumber(value) : zero
+      const generateAmount = value !== '' ? new BigNumber(value) : undefined
       change({
         kind: 'generateAmount',
         generateAmount,

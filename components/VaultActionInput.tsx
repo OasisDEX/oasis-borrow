@@ -64,9 +64,7 @@ export function VaultActionInput({
           prefix: '',
         })}
         onChange={onChange}
-        value={
-          BigNumber.isBigNumber(amount) && !amount.eq(zero) ? formatAmount(amount, symbol) : null
-        }
+        value={amount ? formatAmount(amount, symbol) : null}
         placeholder={`0 ${symbol}`}
         sx={{ border: 'none' }}
       />
