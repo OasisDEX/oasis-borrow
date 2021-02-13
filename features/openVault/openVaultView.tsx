@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultActionInput } from 'components/VaultActionInput'
-import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import React from 'react'
@@ -56,18 +56,11 @@ function OpenVaultGasSelection() {
   return null
 }
 
-function OpenVaultFormButton({
-  isEditingStage,
-  isProxyStage,
-  isAllowanceStage,
-  isConnected,
-}: OpenVaultState) {
+function OpenVaultFormButton({ isEditingStage, isProxyStage, isAllowanceStage }: OpenVaultState) {
   return (
     <Button>
       {isEditingStage
-        ? isConnected
-          ? 'Confirm'
-          : 'Connect'
+        ? 'Confirm'
         : isProxyStage
         ? 'Create Proxy'
         : isAllowanceStage
@@ -213,7 +206,6 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
   const { openVault$ } = useAppContext()
   const openVault = useObservable(openVault$(ilk))
 
-  console.log(openVault)
   if (!openVault) {
     return null
   }
