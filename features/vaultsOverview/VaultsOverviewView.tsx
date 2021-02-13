@@ -65,7 +65,13 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
   )
 }
 
-function AllIlks({ ilkDataList }: { ilkDataList: IlkDataList }) {
+function AllIlks({
+  canOpenVault,
+  ilkDataList,
+}: {
+  canOpenVault: boolean
+  ilkDataList: IlkDataList
+}) {
   return (
     <Table
       header={
@@ -95,14 +101,16 @@ function AllIlks({ ilkDataList }: { ilkDataList: IlkDataList }) {
             {formatPercent(liquidationRatio.times(100))}
           </Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
-            <AppLink
-              sx={{ lineHeight: 1 }}
-              variant="buttons.outline"
-              as={`/vaults/open/${ilk}`}
-              href={`/vaults/open/[ilk]`}
-            >
-              Open Vault
-            </AppLink>
+            <Button disabled={!canOpenVault} py={0} px={3}>
+              <AppLink
+                sx={{ lineHeight: 1 }}
+                variant="outline"
+                disabled={!canOpenVault}
+                href={`/vaults/open/${ilk}`}
+              >
+                Open Vault
+              </AppLink>
+            </Button>
           </Table.Cell>
         </Table.Row>
       ))}
@@ -263,7 +271,7 @@ export function VaultsOverviewView({
       {ilkDataList && (
         <>
           <Heading>Vaults</Heading>
-          <AllIlks ilkDataList={ilkDataList} />
+          <AllIlks canOpenVault={canOpenVault} ilkDataList={ilkDataList} />
         </>
       )}
     </Grid>

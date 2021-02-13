@@ -55,6 +55,7 @@ function contextInfo$(
     }),
   )
 }
+
 const defaultIsStates = {
   isIlkValidationStage: false,
   isEditingStage: false,
@@ -420,6 +421,7 @@ export function createOpenVault$(
   balance$: (token: string, address: string) => Observable<BigNumber>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilks$: Observable<string[]>,
+  ilkToToken$: Observable<(ilk: string) => string>,
   ilk: string,
 ): Observable<OpenVaultState> {
   return ilks$

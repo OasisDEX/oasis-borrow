@@ -15,9 +15,10 @@ export interface IlkOverview {
 export function createIlkOverview$(
   ilkNames$: Observable<string[]>,
   ilk$: (ilk: string) => Observable<IlkData>,
+  ilkToToken$: Observable<(ilk: string) => string>,
 ): Observable<IlkOverview[]> {
-  return ilkNames$.pipe(
-    switchMap((ilkNames) =>
+  return combineLatest(ilkNames$, ilkToToken$).pipe(
+    switchMap(([ilkNames, ilkToToken]) =>
       combineLatest(ilkNames.map((ilk) => ilk$(ilk))).pipe(
         map((ilks) =>
           ilks.map(
@@ -25,7 +26,7 @@ export function createIlkOverview$(
               { stabilityFee, debtCeiling, liquidationRatio, debtScalingFactor, normalizedIlkDebt },
               i,
             ) => ({
-              token: ilkNames[i].split('-')[0],
+              token: ilkToToken(ilkNames[i]),
               ilk: ilkNames[i],
               ilkDebtAvailable: BigNumber.max(
                 debtCeiling.minus(debtScalingFactor.times(normalizedIlkDebt)),

@@ -21,7 +21,6 @@ import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks
 import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
 import { createAllowance$, createBalance$ } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
-import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createLanding$ } from 'features/landing/landing'
@@ -31,7 +30,7 @@ import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverv
 import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
-import { Observable } from 'rxjs'
+import { Observable, of } from 'rxjs'
 import { filter, map, shareReplay } from 'rxjs/operators'
 
 import { catIlk } from '../blockchain/calls/cat'
@@ -55,6 +54,7 @@ import {
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
 import { HasGasEstimation } from '../helpers/form'
+import { redirectState$ } from 'features/router/redirectState'
 
 export type TxData =
   | LockAndDrawData
@@ -94,8 +94,6 @@ function createTxHelpers$(
 }
 
 export function setupAppContext() {
-  const readonlyAccount$ = createReadonlyAccount$()
-
   const chainIdToRpcUrl = mapValues(networksById, (network) => network.infuraUrl)
   const chainIdToDAIContractDesc = mapValues(networksById, (network) => network.tokens.DAI)
   const [web3Context$, setupWeb3Context$] = createWeb3Context$(
@@ -110,7 +108,7 @@ export function setupAppContext() {
 
   const [onEveryBlock$] = createOnEveryBlock$(web3ContextConnected$)
 
-  const context$ = createContext$(web3ContextConnected$, readonlyAccount$)
+  const context$ = createContext$(web3ContextConnected$)
 
   const connectedContext$ = context$.pipe(
     filter(({ status }) => status === 'connected'),
@@ -150,10 +148,14 @@ export function setupAppContext() {
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
 
+  const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
+
   // computed
   const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
 
-  const ilkData$ = memoize(curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, catIlks$))
+  const ilkData$ = memoize(
+    curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, catIlks$, ilkToToken$),
+  )
 
   const controller$ = memoize(
     curry(createController$)(proxyOwner$, cdpManagerOwner$),
@@ -170,13 +172,14 @@ export function setupAppContext() {
       ilkData$,
       tokenOraclePrice$,
       controller$,
+      ilkToToken$,
     ),
     bigNumberTostring,
   )
 
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 
-  const vaults$ = memoize(curry(createVaults$)(connectedContext$, proxyAddress$, vault$))
+  const vaults$ = memoize(curry(createVaults$)(context$, proxyAddress$, vault$))
 
   const vaultSummary$ = memoize(curry(createVaultSummary$)(vaults$))
 
@@ -197,18 +200,13 @@ export function setupAppContext() {
     balance$,
     ilkData$,
     ilks$,
+    ilkToToken$,
   )
 
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
 
   const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(
-      connectedContext$,
-      vaults$,
-      vaultSummary$,
-      ilkDataList$,
-      featuredIlks$,
-    ),
+    curry(createVaultsOverview$)(context$, vaults$, vaultSummary$, ilkDataList$, featuredIlks$),
   )
   const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
 
@@ -219,7 +217,6 @@ export function setupAppContext() {
     context$,
     onEveryBlock$,
     txHelpers$,
-    readonlyAccount$,
     transactionManager$,
     proxyAddress$,
     proxyOwner$,
@@ -231,6 +228,7 @@ export function setupAppContext() {
     landing$,
     openVault$,
     vaultsOverview$,
+    redirectState$,
   }
 }
 
