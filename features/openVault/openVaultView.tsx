@@ -134,7 +134,7 @@ function OpenVaultFormInputs({
         action="Deposit"
         amount={depositAmount}
         balance={collateralBalance}
-        token={'ETH'}
+        token={token}
         hasError={false}
         showMax={token !== 'ETH'}
         onSetMax={handleDepositMax(change!)}

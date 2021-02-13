@@ -265,13 +265,23 @@ interface DiscriminatedIlkInfo {
   liquidationRatio: BigNumber
 }
 
-interface CalculatedAmountInfo {
+interface FormCalculations {
   maxDepositAmount: BigNumber
   maxGenerateAmount: BigNumber
-  collateralizationRatio: BigNumber
   depositAmountUSD: BigNumber
   generateAmountUSD: BigNumber
   maxDepositAmountUSD: BigNumber
+}
+
+interface VaultCalculations {
+  liquidationPrice: BigNumber
+  afterLiquidationPrice: BigNumber
+
+  collateralizationRatio: BigNumber
+  afterCollateralizationRatio: BigNumber
+
+  lockedCollateral: BigNumber
+  lockedCollateralUSD: BigNumber
 }
 
 export interface BasicOpenVaultState {
@@ -297,7 +307,8 @@ export interface BasicOpenVaultState {
 
 export type OpenVaultState = BasicOpenVaultState &
   DiscriminatedIlkInfo &
-  CalculatedAmountInfo &
+  VaultCalculations &
+  FormCalculations &
   isStageStates
 
 function addTransitions(
