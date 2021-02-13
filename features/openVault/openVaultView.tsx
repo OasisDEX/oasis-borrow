@@ -38,27 +38,58 @@ function OpenVaultDetails() {
   )
 }
 
-function OpenVaultFormTitle({ isEditingStage, isProxyStage, isAllowanceStage }: OpenVaultState) {
-  return (
-    <Text>
-      {isEditingStage
-        ? 'Confirm'
-        : isProxyStage
-        ? 'Create Proxy'
-        : isAllowanceStage
-        ? 'Set Allowance'
-        : 'Create your Vault'}
-    </Text>
-  )
-}
-
 function OpenVaultGasSelection() {
   return null
 }
 
-function OpenVaultFormButton({ isEditingStage, isProxyStage, isAllowanceStage }: OpenVaultState) {
+function OpenVaultFormTitle({
+  isEditingStage,
+  isProxyStage,
+  isAllowanceStage,
+  reset,
+}: OpenVaultState) {
+  const canReset = !!reset
+
+  function handleReset(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault()
+    if (canReset) reset!()
+  }
+
   return (
-    <Button>
+    <Grid columns="2fr 1fr">
+      <Text>
+        {isEditingStage
+          ? 'Confirm'
+          : isProxyStage
+          ? 'Create Proxy'
+          : isAllowanceStage
+          ? 'Set Allowance'
+          : 'Create your Vault'}
+      </Text>
+      {canReset ? (
+        <Button onClick={handleReset} disabled={!canReset} sx={{ fontSize: 1, p: 0 }}>
+          Reset
+        </Button>
+      ) : null}
+    </Grid>
+  )
+}
+
+function OpenVaultFormButton({
+  isEditingStage,
+  isProxyStage,
+  isAllowanceStage,
+  progress,
+}: OpenVaultState) {
+  const canProgress = !!progress
+
+  function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault()
+    if (canProgress) progress!()
+  }
+
+  return (
+    <Button disabled={!canProgress} onClick={handleProgress}>
       {isEditingStage
         ? 'Confirm'
         : isProxyStage

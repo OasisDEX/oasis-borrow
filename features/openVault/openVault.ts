@@ -1,12 +1,37 @@
+import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
+import { approve, ApproveData } from 'blockchain/calls/erc20'
+import { lockAndDraw } from 'blockchain/calls/lockAndDraw'
+import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
-import { applyChange, ApplyChange, Change, Changes } from 'helpers/form'
+import { LockAndDrawData } from 'features/deposit/deposit'
+import { applyChange, ApplyChange, Change, Changes, transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { Observable, of, iif, combineLatest, merge, Subject } from 'rxjs'
-import { startWith, switchMap, map, scan, shareReplay } from 'rxjs/operators'
+import { startWith, switchMap, map, scan, shareReplay, filter } from 'rxjs/operators'
+import Web3 from 'web3'
+
+interface Receipt {
+  logs: { topics: string[] | undefined }[]
+}
+
+function parseVaultIdFromReceiptLogs({ logs }: Receipt): number {
+  const newCdpEventTopic = Web3.utils.keccak256('NewCdp(address,address,uint256)')
+  return logs
+    .filter((log) => {
+      if (log.topics) {
+        return log.topics[0] === newCdpEventTopic
+      }
+      return false
+    })
+    .map(({ topics }) => {
+      return Web3.utils.hexToNumber(topics![3])
+    })[0]
+}
 
 const defaultIsStates = {
   isIlkValidationStage: false,
@@ -39,7 +64,7 @@ function applyIsStageStates(state: OpenVaultState): OpenVaultState {
     case 'proxyWaitingForApproval':
     case 'proxyInProgress':
     case 'proxyFailure':
-    case 'proxyWaitToContinue':
+    case 'proxySuccess':
       return {
         ...newState,
         isProxyStage: true,
@@ -48,7 +73,7 @@ function applyIsStageStates(state: OpenVaultState): OpenVaultState {
     case 'allowanceWaitingForApproval':
     case 'allowanceInProgress':
     case 'allowanceFailure':
-    case 'allowanceWaitToContinue':
+    case 'allowanceSuccess':
       return {
         ...newState,
         isAllowanceStage: true,
@@ -57,7 +82,7 @@ function applyIsStageStates(state: OpenVaultState): OpenVaultState {
     case 'openWaitingForApproval':
     case 'openInProgress':
     case 'openFailure':
-    case 'openWaitToContinue':
+    case 'openSuccess':
       return {
         ...newState,
         isOpenStage: true,
@@ -163,17 +188,17 @@ export type OpenVaultStage =
   | 'proxyWaitingForApproval'
   | 'proxyInProgress'
   | 'proxyFailure'
-  | 'proxyWaitToContinue'
+  | 'proxySuccess'
   | 'allowanceWaitingForConfirmation'
   | 'allowanceWaitingForApproval'
   | 'allowanceInProgress'
   | 'allowanceFailure'
-  | 'allowanceWaitToContinue'
+  | 'allowanceSuccess'
   | 'openWaitingForConfirmation'
   | 'openWaitingForApproval'
   | 'openInProgress'
   | 'openFailure'
-  | 'openWaitToContinue'
+  | 'openSuccess'
 
 export interface OpenVaultState {
   // Basic States
@@ -183,11 +208,13 @@ export interface OpenVaultState {
   account: string
   token: string
 
-  // Dynamic States
+  // Dynamic Data
   proxyAddress?: string
   allowance?: boolean
   progress?: () => void
+  reset?: () => void
   change?: (change: ManualChange) => void
+  id?: number
 
   // Account Balance & Price Info
   collateralBalance: BigNumber
@@ -227,6 +254,163 @@ export interface OpenVaultState {
   isProxyStage: boolean
   isAllowanceStage: boolean
   isOpenStage: boolean
+
+  // TransactionInfo
+  allowanceTxHash?: string
+  proxyTxHash?: string
+  openTxHash?: string
+  proxyConfirmations?: number
+  txError?: any
+}
+
+function setAllowance(
+  { sendWithGasEstimation }: TxHelpers,
+  allowance$: Observable<boolean>,
+  change: (ch: OpenVaultChange) => void,
+  state: OpenVaultState,
+) {
+  sendWithGasEstimation(approve, {
+    kind: TxMetaKind.approve,
+    token: state.token,
+    spender: state.proxyAddress!,
+  })
+    .pipe(
+      transactionToX<OpenVaultChange, ApproveData>(
+        { kind: 'stage', stage: 'allowanceWaitingForApproval' },
+        (txState) =>
+          of(
+            {
+              kind: 'allowanceTxHash',
+              allowanceTxHash: (txState as any).txHash as string,
+            },
+            { kind: 'stage', stage: 'allowanceInProgress' },
+          ),
+        (txState) => {
+          return of(
+            {
+              kind: 'stage',
+              stage: 'allowanceFailure',
+            },
+            {
+              kind: 'txError',
+              txError:
+                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+                  ? txState.error
+                  : undefined,
+            },
+          )
+        },
+        () =>
+          allowance$.pipe(
+            filter((allowance) => allowance),
+            switchMap(() => of({ kind: 'stage', stage: 'allowanceSuccess' })),
+          ),
+      ),
+    )
+    .subscribe((ch) => change(ch))
+}
+
+function createProxy(
+  { safeConfirmations }: ContextConnected,
+  { sendWithGasEstimation }: TxHelpers,
+  proxyAddress$: Observable<string | undefined>,
+  change: (ch: OpenVaultChange) => void,
+  state: OpenVaultState,
+) {
+  sendWithGasEstimation(createDsProxy, { kind: TxMetaKind.createDsProxy })
+    .pipe(
+      transactionToX<OpenVaultChange, CreateDsProxyData>(
+        { kind: 'stage', stage: 'proxyWaitingForApproval' },
+        (txState) =>
+          of(
+            { kind: 'proxyTxHash', proxyTxHash: (txState as any).txHash as string },
+            { kind: 'stage', stage: 'proxyInProgress' },
+          ),
+        (txState) => {
+          return of(
+            {
+              kind: 'stage',
+              stage: 'proxyFailure',
+            },
+            {
+              kind: 'txError',
+              txError:
+                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+                  ? txState.error
+                  : undefined,
+            },
+          )
+        },
+        (txState) => {
+          return proxyAddress$.pipe(
+            filter((proxyAddress) => !!proxyAddress),
+            switchMap((proxyAddress) =>
+              (txState as any).confirmations < safeConfirmations
+                ? of({
+                    kind: 'proxyConfirmations',
+                    proxyConfirmations: (txState as any).confirmations,
+                  })
+                : of(
+                    { kind: 'proxyAddress', proxyAddress: proxyAddress! },
+                    {
+                      kind: 'stage',
+                      stage: state.token === 'ETH' ? 'editing' : 'allowanceWaitingForConfirmation',
+                    },
+                  ),
+            ),
+          )
+        },
+        safeConfirmations,
+      ),
+    )
+    .subscribe((ch) => change(ch))
+}
+
+function openVault(
+  { send }: TxHelpers,
+  change: (ch: OpenVaultChange) => void,
+  { generateAmount, depositAmount, proxyAddress, ilk, token }: OpenVaultState,
+) {
+  send(lockAndDraw, {
+    kind: TxMetaKind.lockAndDraw,
+    drawAmount: generateAmount || new BigNumber(0),
+    lockAmount: depositAmount || new BigNumber(0),
+    proxyAddress: proxyAddress!,
+    ilk,
+    tkn: token,
+  })
+    .pipe(
+      transactionToX<OpenVaultChange, LockAndDrawData>(
+        { kind: 'stage', stage: 'openWaitingForApproval' },
+        (txState) =>
+          of(
+            { kind: 'openTxHash', openTxHash: (txState as any).txHash as string },
+            { kind: 'stage', stage: 'openInProgress' },
+          ),
+        (txState) => {
+          return of(
+            {
+              kind: 'stage',
+              stage: 'openFiasco',
+            },
+            {
+              kind: 'txError',
+              txError:
+                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+                  ? txState.error
+                  : undefined,
+            },
+          )
+        },
+        (txState) => {
+          const id = parseVaultIdFromReceiptLogs(
+            txState.status === TxStatus.Success && txState.receipt,
+          )
+          return of({ kind: 'stage', stage: 'openSuccess' }, { kind: 'id', id })
+        },
+      ),
+    )
+    .subscribe((ch) => change(ch))
 }
 
 function addTransitions(
@@ -241,18 +425,17 @@ function addTransitions(
   //   change({ kind: 'stage', stage: 'editing' })
   // }
 
-  // function close() {
-  //   change({ kind: 'stage', stage: 'editing' })
-  //   change({ kind: 'lockAmount', lockAmount: undefined })
-  //   change({ kind: 'drawAmount', drawAmount: undefined })
-  //   change({ kind: 'maxLockAmount', maxLockAmount: undefined })
-  //   change({ kind: 'maxDrawAmount', maxDrawAmount: undefined })
-  // }
+  function reset() {
+    change({ kind: 'stage', stage: 'editing' })
+    change({ kind: 'depositAmount', depositAmount: undefined })
+    change({ kind: 'generateAmount', generateAmount: undefined })
+  }
 
   if (state.stage === 'editing') {
     return {
       ...state,
       change,
+      reset,
       progress: !state.messages.length
         ? () => {
             if (!state.proxyAddress) {
@@ -267,63 +450,27 @@ function addTransitions(
     }
   }
 
-  // if (state.stage === 'proxyWaitingForConfirmation') {
-  //   return {
-  //     ...state,
-  //     createProxy: () => createProxy(context, txHelpers, proxyAddress$, change, state),
-  //   }
-  // }
+  if (state.stage === 'proxyWaitingForConfirmation' || state.stage === 'proxyFailure') {
+    return {
+      ...state,
+      progress: () => createProxy(context, txHelpers, proxyAddress$, change, state),
+    }
+  }
 
-  // if (state.stage === 'proxyFiasco') {
-  //   return {
-  //     ...state,
-  //     tryAgain: () => createProxy(context, txHelpers, proxyAddress$, change, state),
-  //   }
-  // }
+  if (state.stage === 'allowanceWaitingForConfirmation' || state.stage === 'allowanceFailure') {
+    return {
+      ...state,
+      progress: () => setAllowance(txHelpers, allowance$, change, state),
+    }
+  }
 
-  // if (state.stage === 'allowanceWaitingForConfirmation') {
-  //   return {
-  //     ...state,
-  //     setAllowance: () => setAllowance(txHelpers, allowance$, change, state),
-  //   }
-  // }
-
-  // if (state.stage === 'allowanceFiasco') {
-  //   return {
-  //     ...state,
-  //     tryAgain: () => setAllowance(txHelpers, allowance$, change, state),
-  //   }
-  // }
-
-  // if (state.stage === 'waitToContinue') {
-  //   return {
-  //     ...state,
-  //     proceed: () => change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' }),
-  //   }
-  // }
-
-  // if (state.stage === 'transactionWaitingForConfirmation') {
-  //   return {
-  //     ...state,
-  //     openVault: () => openVault(txHelpers, change, state),
-  //     back: backToOpenVaultModalEditing,
-  //   }
-  // }
-
-  // if (state.stage === 'transactionFiasco') {
-  //   return {
-  //     ...state,
-  //     tryAgain: () => openVault(txHelpers, change, state),
-  //     back: backToOpenVaultModalEditing,
-  //   }
-  // }
-
-  // if (state.stage === 'transactionSuccess') {
-  //   return {
-  //     ...state,
-  //     close,
-  //   }
-  // }
+  if (state.stage === 'openWaitingForConfirmation' || state.stage === 'openFailure') {
+    return {
+      ...state,
+      progress: () => openVault(txHelpers, change, state),
+      reset,
+    }
+  }
 
   return state
 }
