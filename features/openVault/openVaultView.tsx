@@ -275,6 +275,84 @@ function OpenVaultFormProxy(props: OpenVaultState) {
   )
 }
 
+function OpenVaultFormAllowance(props: OpenVaultState) {
+  const { stage, allowanceTxHash, etherscan, progress, token } = props
+
+  const isLoading = stage === 'allowanceInProgress' || stage === 'allowanceWaitingForApproval'
+
+  const canProgress = !!progress
+  function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault()
+    if (canProgress) progress!()
+  }
+
+  const buttonText =
+    stage === 'allowanceSuccess'
+      ? 'Continue'
+      : stage === 'allowanceFailure'
+      ? 'Retry Set Allowance'
+      : stage === 'allowanceWaitingForConfirmation'
+      ? 'Set Allowance'
+      : 'Setting Allowance'
+
+  return (
+    <Grid>
+      <Button disabled={!canProgress} onClick={handleProgress}>
+        {isLoading ? (
+          <Flex sx={{ justifyContent: 'center' }}>
+            <Spinner size={25} color="surface" />
+            <Text pl={2}>{buttonText}</Text>
+          </Flex>
+        ) : (
+          <Text>{buttonText}</Text>
+        )}
+      </Button>
+      {stage === 'allowanceInProgress' && (
+        <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Spinner size={25} color="onWarning" />
+            <Grid pl={2} gap={1}>
+              <Text color="onWarning" sx={{ fontSize: 1 }}>
+                Setting Allowance for {token}
+              </Text>
+              <Link
+                href={`${etherscan}/tx/${allowanceTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Text color="onWarning" sx={{ fontSize: 1 }}>
+                  View on etherscan -{'>'}
+                </Text>
+              </Link>
+            </Grid>
+          </Flex>
+        </Card>
+      )}
+      {stage === 'allowanceSuccess' && (
+        <Card sx={{ backgroundColor: 'success', border: 'none' }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Icon name="checkmark" size={25} color="onSuccess" />
+            <Grid pl={2} gap={1}>
+              <Text color="onSuccess" sx={{ fontSize: 1 }}>
+                Set Allowance for {token}
+              </Text>
+              <Link
+                href={`${etherscan}/tx/${allowanceTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Text color="onSuccess" sx={{ fontSize: 1 }}>
+                  View on etherscan -{'>'}
+                </Text>
+              </Link>
+            </Grid>
+          </Flex>
+        </Card>
+      )}
+    </Grid>
+  )
+}
+
 function OpenVaultForm(props: OpenVaultState) {
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
 
@@ -284,7 +362,7 @@ function OpenVaultForm(props: OpenVaultState) {
         <OpenVaultFormTitle {...props} />
         {isEditingStage && <OpenVaultFormEditing {...props} />}
         {isProxyStage && <OpenVaultFormProxy {...props} />}
-        {isAllowanceStage}
+        {isAllowanceStage && <OpenVaultFormAllowance {...props} />}
         {isOpenStage}
       </Card>
     </Box>

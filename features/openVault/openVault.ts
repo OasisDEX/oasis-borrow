@@ -305,7 +305,9 @@ function setAllowance(
         () =>
           allowance$.pipe(
             filter((allowance) => allowance),
-            switchMap(() => of({ kind: 'stage', stage: 'allowanceSuccess' })),
+            switchMap((allowance) =>
+              of({ kind: 'allowance', allowance }, { kind: 'stage', stage: 'allowanceSuccess' }),
+            ),
           ),
       ),
     )
@@ -313,11 +315,10 @@ function setAllowance(
 }
 
 function createProxy(
-  { safeConfirmations }: ContextConnected,
   { sendWithGasEstimation }: TxHelpers,
   proxyAddress$: Observable<string | undefined>,
   change: (ch: OpenVaultChange) => void,
-  state: OpenVaultState,
+  { safeConfirmations }: OpenVaultState,
 ) {
   sendWithGasEstimation(createDsProxy, { kind: TxMetaKind.createDsProxy })
     .pipe(
@@ -418,7 +419,6 @@ function openVault(
 }
 
 function addTransitions(
-  context: ContextConnected,
   txHelpers: TxHelpers,
   proxyAddress$: Observable<string | undefined>,
   allowance$: Observable<boolean>,
@@ -457,7 +457,7 @@ function addTransitions(
   if (state.stage === 'proxyWaitingForConfirmation' || state.stage === 'proxyFailure') {
     return {
       ...state,
-      progress: () => createProxy(context, txHelpers, proxyAddress$, change, state),
+      progress: () => createProxy(txHelpers, proxyAddress$, change, state),
     }
   }
 
@@ -467,7 +467,7 @@ function addTransitions(
       progress: () =>
         change({
           kind: 'stage',
-          stage: state.token !== 'ETH' ? 'editing' : 'allowanceWaitingForConfirmation',
+          stage: state.token === 'ETH' ? 'editing' : 'allowanceWaitingForConfirmation',
         }),
     }
   }
@@ -476,6 +476,17 @@ function addTransitions(
     return {
       ...state,
       progress: () => setAllowance(txHelpers, allowance$, change, state),
+    }
+  }
+
+  if (state.stage === 'allowanceSuccess') {
+    return {
+      ...state,
+      progress: () =>
+        change({
+          kind: 'stage',
+          stage: 'editing',
+        }),
     }
   }
 
@@ -667,7 +678,6 @@ export function createOpenVault$(
                           map(validate),
                           map(
                             curry(addTransitions)(
-                              context,
                               txHelpers,
                               connectedProxyAddress$,
                               connectedAllowance$,
