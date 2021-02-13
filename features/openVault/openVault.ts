@@ -39,6 +39,7 @@ const defaultIsStates = {
   isProxyStage: false,
   isAllowanceStage: false,
   isOpenStage: false,
+  isLoading: false,
 }
 
 function applyIsStageStates(state: OpenVaultState): OpenVaultState {
@@ -86,6 +87,26 @@ function applyIsStageStates(state: OpenVaultState): OpenVaultState {
       return {
         ...newState,
         isOpenStage: true,
+      }
+  }
+}
+
+function applyIsLoading(state: OpenVaultState): OpenVaultState {
+  switch (state.stage) {
+    case 'proxyWaitingForApproval':
+    case 'proxyInProgress':
+    case 'allowanceWaitingForApproval':
+    case 'allowanceInProgress':
+    case 'openWaitingForApproval':
+    case 'openInProgress':
+      return {
+        ...state,
+        isLoading: true,
+      }
+    default:
+      return {
+        ...state,
+        isLoading: false,
       }
   }
 }
@@ -255,12 +276,16 @@ export interface OpenVaultState {
   isAllowanceStage: boolean
   isOpenStage: boolean
 
+  isLoading: boolean
+
   // TransactionInfo
   allowanceTxHash?: string
   proxyTxHash?: string
   openTxHash?: string
   proxyConfirmations?: number
+  safeConfirmations: number
   txError?: any
+  etherscan?: string
 }
 
 function setAllowance(
@@ -391,7 +416,7 @@ function openVault(
           return of(
             {
               kind: 'stage',
-              stage: 'openFiasco',
+              stage: 'openFailure',
             },
             {
               kind: 'txError',
@@ -468,7 +493,7 @@ function addTransitions(
     return {
       ...state,
       progress: () => openVault(txHelpers, change, state),
-      reset,
+      reset: () => change({ kind: 'stage', stage: 'editing' }),
     }
   }
 
@@ -571,14 +596,12 @@ export function createOpenVault$(
                       depositAmountUSD: zero,
                       generateAmountUSD: zero,
                       maxDepositAmountUSD: zero,
-
                       liquidationPrice: zero,
                       afterLiquidationPrice: zero,
                       collateralizationRatio: zero,
                       afterCollateralizationRatio: zero,
                       lockedCollateral: zero,
                       lockedCollateralUSD: zero,
-
                       ilk,
                       maxDebtPerUnitCollateral,
                       ilkDebtAvailable,
@@ -586,6 +609,8 @@ export function createOpenVault$(
                       liquidationRatio,
                       proxyAddress,
                       allowance,
+                      safeConfirmations: context.safeConfirmations,
+                      etherscan: context.etherscan.url,
                     }
 
                     const change$ = new Subject<OpenVaultChange>()
@@ -667,5 +692,6 @@ export function createOpenVault$(
         )
       }),
       map(applyIsStageStates),
+      map(applyIsLoading),
     )
 }

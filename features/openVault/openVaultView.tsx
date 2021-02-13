@@ -5,7 +5,7 @@ import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import React from 'react'
-import { Box, Button, Card, Grid, Heading, Spinner, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Heading, Spinner, Text, Link } from 'theme-ui'
 import { ManualChange, OpenVaultState } from './openVault'
 
 function OpenVaultDetails() {
@@ -47,6 +47,7 @@ function OpenVaultFormTitle({
   isProxyStage,
   isAllowanceStage,
   reset,
+  stage,
 }: OpenVaultState) {
   const canReset = !!reset
 
@@ -68,7 +69,7 @@ function OpenVaultFormTitle({
       </Text>
       {canReset ? (
         <Button onClick={handleReset} disabled={!canReset} sx={{ fontSize: 1, p: 0 }}>
-          Reset
+          {stage === 'editing' ? 'Reset' : 'Back'}
         </Button>
       ) : null}
     </Grid>
@@ -145,6 +146,7 @@ function OpenVaultFormInputs({
       change({ kind: 'generateAmount', generateAmount: maxGenerateAmount })
     }
   }
+
   const errorString = messages
     ?.map((message) => message.kind)
     .filter((x) => x)
@@ -211,14 +213,46 @@ function OpenVaultFormDetails({
   )
 }
 
+function OpenVaultProxyConfirmations({
+  proxyConfirmations,
+  safeConfirmations,
+  proxyTxHash,
+  etherscan,
+}: OpenVaultState) {
+  return (
+    <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
+      <Flex sx={{ alignItems: 'center' }}>
+        <Spinner size={25} color="onWarning" />
+        <Grid pl={2} gap={1}>
+          <Text color="onWarning" sx={{ fontSize: 1 }}>
+            {proxyConfirmations} of {safeConfirmations}: Proxy deployment confirmed
+          </Text>
+          <Link href={`${etherscan}/tx/${proxyTxHash}`} target="_blank" rel="noopener noreferrer">
+            <Text color="onWarning" sx={{ fontSize: 1 }}>
+              View on etherscan ->
+            </Text>
+          </Link>
+        </Grid>
+      </Flex>
+    </Card>
+  )
+}
+
 function OpenVaultForm(props: OpenVaultState) {
+  const { stage, isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, isLoading } = props
+
+  const showFormDetails = isEditingStage || isOpenStage
+
+  const showProxyConfirmations = stage === 'proxyInProgress'
   return (
     <Card>
-      <Grid>
+      <Grid sx={{ justifyContent: 'centre' }}>
         <OpenVaultFormTitle {...props} />
-        <OpenVaultFormInputs {...props} />
+        {isEditingStage && <OpenVaultFormInputs {...props} />}
+        {isLoading && <Spinner size={60} />}
+        {showFormDetails && <OpenVaultFormDetails {...props} />}
         <OpenVaultFormButton {...props} />
-        <OpenVaultFormDetails {...props} />
+        {showProxyConfirmations && <OpenVaultProxyConfirmations {...props} />}
       </Grid>
     </Card>
   )
