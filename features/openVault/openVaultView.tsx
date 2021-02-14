@@ -10,19 +10,30 @@ import React from 'react'
 import { Box, Button, Card, Flex, Grid, Heading, Spinner, Text, Link } from 'theme-ui'
 import { ManualChange, OpenVaultState } from './openVault'
 
-function OpenVaultDetails() {
+function OpenVaultDetails({
+  afterCollateralizationRatio,
+  afterLiquidationPrice,
+  token,
+}: OpenVaultState) {
+  console.log(afterCollateralizationRatio.toString())
+  const afterCollRatio = afterCollateralizationRatio.eq(zero)
+    ? '--'
+    : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
+
+  const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
+
   return (
     <Grid columns="1fr 1fr" gap={6} sx={{ justifyContent: 'space-between' }}>
       <Grid>
         <Text>Liquidation Price</Text>
-        <Heading>$1425.20</Heading>
-        <Text>After: $2500.20</Text>
+        <Heading>$0.00</Heading>
+        <Text>After: ${afterLiqPrice}</Text>
       </Grid>
 
       <Grid sx={{ textAlign: 'right' }}>
         <Text>Collateralization Ratio</Text>
-        <Heading>200.00%</Heading>
-        <Text>After: 300.00%</Text>
+        <Heading>0 %</Heading>
+        <Text>After: {afterCollRatio}</Text>
       </Grid>
 
       <Grid>
@@ -33,8 +44,8 @@ function OpenVaultDetails() {
 
       <Grid sx={{ textAlign: 'right' }}>
         <Text>Collateral Locked</Text>
-        <Heading>200.00 ETH</Heading>
-        <Text>$182,000.20 USD</Text>
+        <Heading>--.-- {token}</Heading>
+        <Text>$--.--</Text>
       </Grid>
     </Grid>
   )
@@ -158,8 +169,8 @@ function OpenVaultFormEditing(props: OpenVaultState) {
     ? `${formatPercent(liquidationRatio.times(100), { precision: 2 })}`
     : '--'
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
-    ? formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
-    : '--'
+    ? '--'
+    : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
 
   return (
     <Grid>
@@ -520,7 +531,7 @@ function OpenVaultForm(props: OpenVaultState) {
 function OpenVaultContainer(props: OpenVaultState) {
   return (
     <Grid columns="2fr 1fr" gap={4}>
-      <OpenVaultDetails />
+      <OpenVaultDetails {...props} />
       <OpenVaultForm {...props} />
     </Grid>
   )
