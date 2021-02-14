@@ -1,13 +1,17 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
+import { maxUint256 } from 'blockchain/calls/erc20'
+import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultActionInput } from 'components/VaultActionInput'
+import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
-import React from 'react'
-import { Box, Button, Card, Flex, Grid, Heading, Spinner, Text, Link } from 'theme-ui'
+import React, { useState } from 'react'
+import { createNumberMask } from 'text-mask-addons'
+import { Box, Button, Card, Flex, Grid, Heading, Spinner, Text, Link, Label, Radio } from 'theme-ui'
 import { ManualChange, OpenVaultState } from './openVault'
 
 function OpenVaultDetails({
@@ -15,7 +19,6 @@ function OpenVaultDetails({
   afterLiquidationPrice,
   token,
 }: OpenVaultState) {
-  console.log(afterCollateralizationRatio.toString())
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
     ? '--'
     : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
@@ -223,9 +226,14 @@ function OpenVaultFormEditing(props: OpenVaultState) {
   )
 }
 
-function OpenVaultFormProxy(props: OpenVaultState) {
-  const { stage, proxyConfirmations, safeConfirmations, proxyTxHash, etherscan, progress } = props
-
+function OpenVaultFormProxy({
+  stage,
+  proxyConfirmations,
+  safeConfirmations,
+  proxyTxHash,
+  etherscan,
+  progress,
+}: OpenVaultState) {
   const isLoading = stage === 'proxyInProgress' || stage === 'proxyWaitingForApproval'
 
   const canProgress = !!progress
@@ -302,29 +310,118 @@ function OpenVaultFormProxy(props: OpenVaultState) {
   )
 }
 
-function OpenVaultFormAllowance(props: OpenVaultState) {
-  const { stage, allowanceTxHash, etherscan, progress, token } = props
+function OpenVaultFormAllowance({
+  stage,
+  allowanceTxHash,
+  etherscan,
+  progress,
+  token,
+  collateralBalance,
+  allowanceAmount,
+  change,
+  errorMessages,
+}: OpenVaultState) {
+  const [isCustom, setIsCustom] = useState<Boolean>(false)
 
   const isLoading = stage === 'allowanceInProgress' || stage === 'allowanceWaitingForApproval'
-
+  const canSelectRadio = stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFailure'
   const canProgress = !!progress
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
     if (canProgress) progress!()
   }
 
+  function handleCustomAllowanceChange(change: (ch: ManualChange) => void) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.replace(/,/g, '')
+      change({
+        kind: 'allowanceAmount',
+        allowanceAmount: value !== '' ? new BigNumber(value) : undefined,
+      })
+    }
+  }
+
+  function handleUnlimited(e: React.FormEvent<HTMLLabelElement>) {
+    if (canSelectRadio) {
+      setIsCustom(false)
+      change!({ kind: 'allowanceAmount', allowanceAmount: maxUint256 })
+    }
+  }
+
+  function handleWallet(e: React.FormEvent<HTMLLabelElement>) {
+    if (canSelectRadio) {
+      setIsCustom(false)
+      change!({ kind: 'allowanceAmount', allowanceAmount: collateralBalance })
+    }
+  }
+
+  function handleCustom(e: React.FormEvent<HTMLLabelElement>) {
+    if (canSelectRadio) {
+      change!({ kind: 'allowanceAmount', allowanceAmount: undefined })
+      setIsCustom(true)
+    }
+  }
+
+  const errorString = errorMessages
+    ?.map(({ kind }) => kind)
+    .filter((x) => x)
+    .join(',\n')
+
+  const hasError = !!errorString
   const buttonText =
     stage === 'allowanceSuccess'
       ? 'Continue'
       : stage === 'allowanceFailure'
-      ? 'Retry Set Allowance'
+      ? 'Retry allowance approval'
       : stage === 'allowanceWaitingForConfirmation'
-      ? 'Set Allowance'
-      : 'Setting Allowance'
+      ? 'Approve allowance'
+      : 'Approving allowance'
 
   return (
     <Grid>
-      <Button disabled={!canProgress} onClick={handleProgress}>
+      {canSelectRadio && (
+        <>
+          <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleUnlimited}>
+            <Radio name="dark-mode" value="true" defaultChecked={true} />
+            <Text sx={{ fontSize: 2 }}>Unlimited Allowance</Text>
+          </Label>
+          <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleWallet}>
+            <Radio name="dark-mode" value="true" />
+            <Text sx={{ fontSize: 2 }}>
+              {token} in wallet ({formatCryptoBalance(collateralBalance)})
+            </Text>
+          </Label>
+          <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleCustom}>
+            <Radio name="dark-mode" value="true" />
+            <Grid columns="2fr 2fr 1fr" sx={{ alignItems: 'center' }}>
+              <Text sx={{ fontSize: 2 }}>Custom</Text>
+              <BigNumberInput
+                sx={{ p: 1, borderRadius: 'small', width: '100px', fontSize: 1 }}
+                disabled={!isCustom}
+                value={
+                  allowanceAmount && isCustom
+                    ? formatAmount(allowanceAmount, getToken(token).symbol)
+                    : null
+                }
+                mask={createNumberMask({
+                  allowDecimal: true,
+                  decimalLimit: getToken(token).digits,
+                  prefix: '',
+                })}
+                onChange={handleCustomAllowanceChange(change!)}
+              />
+              <Text sx={{ fontSize: 1 }}>{token}</Text>
+            </Grid>
+          </Label>
+        </>
+      )}
+      {hasError && (
+        <>
+          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
+        </>
+      )}
+
+      <Button disabled={!canProgress || hasError} onClick={handleProgress}>
         {isLoading ? (
           <Flex sx={{ justifyContent: 'center' }}>
             <Spinner size={25} color="surface" />

@@ -146,6 +146,7 @@ function validateErrors(state: OpenVaultState): OpenVaultState {
     ilkDebtAvailable,
     afterCollateralizationRatio,
     liquidationRatio,
+    stage,
   } = state
 
   const errorMessages: OpenVaultErrorMessage[] = []
@@ -162,8 +163,16 @@ function validateErrors(state: OpenVaultState): OpenVaultState {
     errorMessages.push({ kind: 'generateAmountGreaterThanDebtCeiling' })
   }
 
-  if (allowanceAmount?.gt(maxUint256)) {
-    errorMessages.push({ kind: 'generateAmountGreaterThanDebtCeiling' })
+  if (stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFailure') {
+    if (!allowanceAmount) {
+      errorMessages.push({ kind: 'allowanceAmountEmpty' })
+    }
+    if (allowanceAmount?.gt(maxUint256)) {
+      errorMessages.push({ kind: 'customAllowanceAmountGreaterThanMaxUint256' })
+    }
+    if (depositAmount && allowanceAmount && allowanceAmount.lt(depositAmount)) {
+      errorMessages.push({ kind: 'customAllowanceAmountLessThanDepositAmount' })
+    }
   }
 
   if (generateAmount?.gt(zero) && afterCollateralizationRatio.lt(liquidationRatio)) {
@@ -228,8 +237,10 @@ type OpenVaultErrorMessage = {
     | 'depositAmountGreaterThanMaxDepositAmount'
     | 'generateAmountLessThanDebtFloor'
     | 'generateAmountGreaterThanDebtCeiling'
-    | 'allowanceAmountGreaterThanMaxUint256'
     | 'vaultUnderCollateralized'
+    | 'allowanceAmountEmpty'
+    | 'customAllowanceAmountGreaterThanMaxUint256'
+    | 'customAllowanceAmountLessThanDepositAmount'
 }
 
 type OpenVaultWarningMessage = {
@@ -336,6 +347,7 @@ function setAllowance(
     kind: TxMetaKind.approve,
     token: state.token,
     spender: state.proxyAddress!,
+    amount: state.allowanceAmount!,
   })
     .pipe(
       transactionToX<OpenVaultChange, ApproveData>(
@@ -493,6 +505,7 @@ function addTransitions(
     change({ kind: 'stage', stage: 'editing' })
     change({ kind: 'depositAmount', depositAmount: undefined })
     change({ kind: 'generateAmount', generateAmount: undefined })
+    change({ kind: 'allowanceAmount', allowanceAmount: maxUint256 })
   }
 
   function progressEditing() {
@@ -546,6 +559,7 @@ function addTransitions(
   if (state.stage === 'allowanceWaitingForConfirmation' || state.stage === 'allowanceFailure') {
     return {
       ...state,
+      change,
       progress: () => setAllowance(txHelpers, allowance$, change, state),
       reset: () => change({ kind: 'stage', stage: 'editing' }),
     }
@@ -675,6 +689,7 @@ export function createOpenVault$(
                           allowance,
                           safeConfirmations: context.safeConfirmations,
                           etherscan: context.etherscan.url,
+                          allowanceAmount: maxUint256,
                         }
 
                         const change$ = new Subject<OpenVaultChange>()
@@ -739,9 +754,8 @@ export function createOpenVault$(
                           switchMap((proxyAddress) =>
                             proxyAddress ? allowance$(token, account, proxyAddress) : of(zero),
                           ),
-                          distinctUntilChanged(isEqual),
+                          distinctUntilChanged((x, y) => x.eq(y)),
                         )
-
                         return merge(change$, environmentChanges$).pipe(
                           scan(apply, initialState),
                           map(applyVaultCalculations),
