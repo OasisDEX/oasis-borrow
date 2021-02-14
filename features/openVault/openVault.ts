@@ -1,6 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
-import { approve, ApproveData } from 'blockchain/calls/erc20'
+import { approve, ApproveData, maxUint256 } from 'blockchain/calls/erc20'
 import { lockAndDraw } from 'blockchain/calls/lockAndDraw'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
@@ -10,9 +10,18 @@ import { TxHelpers } from 'components/AppContext'
 import { LockAndDrawData } from 'features/deposit/deposit'
 import { applyChange, ApplyChange, Change, Changes, transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
-import { curry } from 'lodash'
+import { curry, isEqual } from 'lodash'
 import { Observable, of, iif, combineLatest, merge, Subject } from 'rxjs'
-import { startWith, switchMap, map, scan, shareReplay, filter, first } from 'rxjs/operators'
+import {
+  startWith,
+  switchMap,
+  map,
+  scan,
+  shareReplay,
+  filter,
+  first,
+  distinctUntilChanged,
+} from 'rxjs/operators'
 import Web3 from 'web3'
 
 interface Receipt {
@@ -120,46 +129,82 @@ function applyVaultCalculations(state: OpenVaultState): OpenVaultState {
   }
 }
 
-function validate(state: OpenVaultState): OpenVaultState {
+function validateErrors(state: OpenVaultState): OpenVaultState {
   const {
     depositAmount,
     maxDepositAmount,
-    depositAmountUSD,
     generateAmount,
+    allowanceAmount,
     debtFloor,
     ilkDebtAvailable,
     collateralizationRatio,
     liquidationRatio,
   } = state
 
-  const messages: OpenVaultMessage[] = []
+  const errorMessages: OpenVaultErrorMessage[] = []
 
-  // error
   if (depositAmount?.gt(maxDepositAmount)) {
-    messages.push({ kind: 'depositAmountGreaterThanMaxDepositAmount' })
+    errorMessages.push({ kind: 'depositAmountGreaterThanMaxDepositAmount' })
   }
 
-  // error
   if (generateAmount?.lt(debtFloor)) {
-    messages.push({ kind: 'generateAmountLessThanDebtFloor' })
+    errorMessages.push({ kind: 'generateAmountLessThanDebtFloor' })
   }
 
-  // error
   if (generateAmount?.gt(ilkDebtAvailable)) {
-    messages.push({ kind: 'generateAmountGreaterThanDebtCeiling' })
+    errorMessages.push({ kind: 'generateAmountGreaterThanDebtCeiling' })
   }
 
-  // error
+  if (allowanceAmount?.gt(maxUint256)) {
+    errorMessages.push({ kind: 'generateAmountGreaterThanDebtCeiling' })
+  }
+
   if (generateAmount?.gt(zero) && collateralizationRatio.lt(liquidationRatio)) {
-    messages.push({ kind: 'vaultUnderCollateralized' })
+    errorMessages.push({ kind: 'vaultUnderCollateralized' })
   }
 
-  // warning
+  return { ...state, errorMessages }
+}
+
+function validateWarnings(state: OpenVaultState): OpenVaultState {
+  const {
+    allowance,
+    depositAmount,
+    generateAmount,
+    depositAmountUSD,
+    debtFloor,
+    proxyAddress,
+    token,
+  } = state
+
+  const warningMessages: OpenVaultWarningMessage[] = []
+
   if (depositAmount?.gt(zero) && depositAmountUSD.lt(debtFloor)) {
-    messages.push({ kind: 'potentialGenerateAmountLessThanDebtFloor' })
+    warningMessages.push({ kind: 'potentialGenerateAmountLessThanDebtFloor' })
   }
 
-  return { ...state, messages }
+  if (!proxyAddress) {
+    warningMessages.push({ kind: 'noProxyAddress' })
+  }
+
+  if (!depositAmount) {
+    warningMessages.push({ kind: 'depositAmountEmpty' })
+  }
+
+  if (!generateAmount) {
+    warningMessages.push({ kind: 'generateAmountEmpty' })
+  }
+
+  if (token !== 'ETH') {
+    if (!allowance) {
+      warningMessages.push({ kind: 'noAllowance' })
+    }
+    if (depositAmount && allowance && depositAmount.gt(allowance)) {
+      warningMessages.push({ kind: 'allowanceLessThanDepositAmount' })
+    }
+  }
+
+  return { ...state, warningMessages }
 }
 
 type OpenVaultChange = Changes<OpenVaultState>
@@ -171,13 +216,23 @@ export type ManualChange =
 
 const apply: ApplyChange<OpenVaultState> = applyChange
 
-type OpenVaultMessage = {
+type OpenVaultErrorMessage = {
   kind:
     | 'depositAmountGreaterThanMaxDepositAmount'
     | 'generateAmountLessThanDebtFloor'
     | 'generateAmountGreaterThanDebtCeiling'
-    | 'potentialGenerateAmountLessThanDebtFloor'
+    | 'allowanceAmountGreaterThanMaxUint256'
     | 'vaultUnderCollateralized'
+}
+
+type OpenVaultWarningMessage = {
+  kind:
+    | 'potentialGenerateAmountLessThanDebtFloor'
+    | 'depositAmountEmpty'
+    | 'generateAmountEmpty'
+    | 'noProxyAddress'
+    | 'noAllowance'
+    | 'allowanceLessThanDepositAmount'
 }
 
 export type OpenVaultStage =
@@ -205,9 +260,12 @@ export interface OpenVaultState {
   // Basic States
   stage: OpenVaultStage
   ilk: string
-  messages: OpenVaultMessage[]
   account: string
   token: string
+
+  // validation
+  errorMessages: OpenVaultErrorMessage[]
+  warningMessages: OpenVaultWarningMessage[]
 
   // Dynamic Data
   proxyAddress?: string
@@ -269,7 +327,7 @@ export interface OpenVaultState {
 
 function setAllowance(
   { sendWithGasEstimation }: TxHelpers,
-  allowance$: Observable<boolean>,
+  allowance$: Observable<BigNumber>,
   change: (ch: OpenVaultChange) => void,
   state: OpenVaultState,
 ) {
@@ -306,7 +364,6 @@ function setAllowance(
         },
         () =>
           allowance$.pipe(
-            filter((allowance) => allowance),
             switchMap((allowance) =>
               of({ kind: 'allowance', allowance }, { kind: 'stage', stage: 'allowanceSuccess' }),
             ),
@@ -437,22 +494,32 @@ function addTransitions(
     change({ kind: 'generateAmount', generateAmount: undefined })
   }
 
+  function progressEditing() {
+    const canProgress = !state.errorMessages.length
+    const hasProxy = !!state.proxyAddress
+
+    const openingEmptyVault = state.depositAmount ? state.depositAmount.eq(zero) : true
+    const depositAmountLessThanAllowance =
+      state.allowance && state.depositAmount && state.allowance.gte(state.depositAmount)
+
+    const hasAllowance =
+      state.token === 'ETH' ? true : depositAmountLessThanAllowance || openingEmptyVault
+
+    if (canProgress) {
+      if (!hasProxy) {
+        change({ kind: 'stage', stage: 'proxyWaitingForConfirmation' })
+      } else if (!hasAllowance) {
+        change({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' })
+      } else change({ kind: 'stage', stage: 'openWaitingForConfirmation' })
+    }
+  }
+
   if (state.stage === 'editing') {
     return {
       ...state,
       change,
       reset,
-      progress: !state.messages.length
-        ? () => {
-            if (!state.proxyAddress) {
-              change({ kind: 'stage', stage: 'proxyWaitingForConfirmation' })
-            } else if (!state.allowance) {
-              change({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' })
-            } else {
-              change({ kind: 'stage', stage: 'openWaitingForConfirmation' })
-            }
-          }
-        : undefined,
+      progress: progressEditing,
     }
   }
 
@@ -471,6 +538,7 @@ function addTransitions(
           kind: 'stage',
           stage: state.token === 'ETH' ? 'editing' : 'allowanceWaitingForConfirmation',
         }),
+      reset: () => change({ kind: 'stage', stage: 'editing' }),
     }
   }
 
@@ -478,6 +546,7 @@ function addTransitions(
     return {
       ...state,
       progress: () => setAllowance(txHelpers, allowance$, change, state),
+      reset: () => change({ kind: 'stage', stage: 'editing' }),
     }
   }
 
@@ -585,7 +654,8 @@ export function createOpenVault$(
                           ethBalance,
                           ethPrice,
                           daiBalance,
-                          messages: [],
+                          errorMessages: [],
+                          warningMessages: [],
                           depositAmount: undefined,
                           generateAmount: undefined,
                           maxDepositAmount: zero,
@@ -672,12 +742,14 @@ export function createOpenVault$(
                           switchMap((proxyAddress) =>
                             proxyAddress ? allowance$(token, account, proxyAddress) : of(zero),
                           ),
+                          distinctUntilChanged(isEqual),
                         )
 
                         return merge(change$, environmentChanges$).pipe(
                           scan(apply, initialState),
                           map(applyVaultCalculations),
-                          map(validate),
+                          map(validateErrors),
+                          map(validateWarnings),
                           map(
                             curry(addTransitions)(
                               txHelpers,

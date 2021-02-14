@@ -91,7 +91,8 @@ function OpenVaultFormEditing(props: OpenVaultState) {
     collateralBalance,
     maxDepositAmount,
     maxGenerateAmount,
-    messages,
+    errorMessages,
+    warningMessages,
     ilkDebtAvailable,
     liquidationRatio,
     collateralizationRatio,
@@ -138,12 +139,19 @@ function OpenVaultFormEditing(props: OpenVaultState) {
     }
   }
 
-  const errorString = messages
-    ?.map((message) => message.kind)
+  const errorString = errorMessages
+    ?.map(({ kind }) => kind)
+    .filter((x) => x)
+    .join(',\n')
+
+  const warningString = warningMessages
+    ?.map(({ kind }) => kind)
     .filter((x) => x)
     .join(',\n')
 
   const hasError = !!errorString
+  const hasWarnings = !!warningString
+
   const daiAvailable = ilkDebtAvailable ? `${formatCryptoBalance(ilkDebtAvailable)} DAI` : '--'
   const minCollRatio = liquidationRatio
     ? `${formatPercent(liquidationRatio.times(100), { precision: 2 })}`
@@ -175,7 +183,12 @@ function OpenVaultFormEditing(props: OpenVaultState) {
       />
       {hasError && (
         <>
-          <Text sx={{ flexWrap: 'wrap' }}>{errorString}</Text>
+          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
+        </>
+      )}
+      {hasWarnings && (
+        <>
+          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>
         </>
       )}
 
@@ -191,7 +204,9 @@ function OpenVaultFormEditing(props: OpenVaultState) {
           <Text sx={{ fontSize: 2, textAlign: 'right' }}>{collRatio}</Text>
         </Grid>
       </Card>
-      <Button onClick={handleProgress}>Confirm</Button>
+      <Button onClick={handleProgress} disabled={hasError}>
+        Confirm
+      </Button>
     </Grid>
   )
 }
