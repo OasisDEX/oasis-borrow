@@ -43,7 +43,7 @@ function getCallData(data: LockAndDrawData, context: ContextConnected) {
   }
   if (id) {
     return contract<DssProxyActions>(dssProxyActions).methods.lockGemAndDraw(
-      dssProxyActions.address,
+      dssCdpManager.address,
       mcdJug.address,
       joins[ilk],
       mcdJoinDai.address,
@@ -55,7 +55,7 @@ function getCallData(data: LockAndDrawData, context: ContextConnected) {
   }
 
   return contract<DssProxyActions>(dssProxyActions).methods.openLockGemAndDraw(
-    dssProxyActions.address,
+    dssCdpManager.address,
     mcdJug.address,
     joins[ilk],
     mcdJoinDai.address,
@@ -67,15 +67,12 @@ function getCallData(data: LockAndDrawData, context: ContextConnected) {
 }
 export const lockAndDraw: TransactionDef<LockAndDrawData> = {
   call: ({ proxyAddress }, { contract }) => {
-    console.log({ proxyAddress, dsProxy })
     return (contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods as any)[
       'execute(address,bytes)'
     ]
   },
   prepareArgs: (data, context) => {
     const { dssProxyActions } = context
-
-    console.log([dssProxyActions.address, getCallData(data, context).encodeABI()], 'DATA')
     return [dssProxyActions.address, getCallData(data, context).encodeABI()]
   },
   options: ({ tkn, lockAmount }) =>
