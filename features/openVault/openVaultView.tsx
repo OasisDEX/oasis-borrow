@@ -399,7 +399,7 @@ function OpenVaultFormConfirmation({
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
 
-    if (canProgress) progress!()
+    if (!!progress) progress!()
     if (stage === 'openSuccess') {
       replace(`/${id}`)
     }
