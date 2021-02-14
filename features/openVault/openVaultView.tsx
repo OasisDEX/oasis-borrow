@@ -11,7 +11,8 @@ import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
 import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
-import { Box, Button, Card, Flex, Grid, Heading, Spinner, Text, Link, Label, Radio } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
+
 import { ManualChange, OpenVaultState } from './openVault'
 
 function OpenVaultDetails({
@@ -52,10 +53,6 @@ function OpenVaultDetails({
       </Grid>
     </Grid>
   )
-}
-
-function OpenVaultGasSelection() {
-  return null
 }
 
 function OpenVaultFormTitle({
@@ -269,8 +266,7 @@ function OpenVaultFormProxy({
             <Spinner size={25} color="onWarning" />
             <Grid pl={2} gap={1}>
               <Text color="onWarning" sx={{ fontSize: 1 }}>
-                {proxyConfirmations ? proxyConfirmations : 0} of {safeConfirmations}: Proxy
-                deployment confirming
+                {proxyConfirmations || 0} of {safeConfirmations}: Proxy deployment confirming
               </Text>
               <Link
                 href={`${etherscan}/tx/${proxyTxHash}`}
@@ -493,11 +489,11 @@ function OpenVaultFormConfirmation({
   const { replace } = useRedirect()
 
   const walletBalance = formatCryptoBalance(collateralBalance)
-  const intoVault = formatCryptoBalance(depositAmount ? depositAmount : zero)
+  const intoVault = formatCryptoBalance(depositAmount || zero)
   const remainingInWallet = formatCryptoBalance(
     depositAmount ? collateralBalance.minus(depositAmount) : collateralBalance,
   )
-  const daiToBeGenerated = formatCryptoBalance(generateAmount ? generateAmount : zero)
+  const daiToBeGenerated = formatCryptoBalance(generateAmount || zero)
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
     ? '--'
     : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
@@ -508,7 +504,7 @@ function OpenVaultFormConfirmation({
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
 
-    if (!!progress) progress!()
+    if (progress) progress!()
     if (stage === 'openSuccess') {
       replace(`/${id}`)
     }

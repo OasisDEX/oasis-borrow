@@ -1,12 +1,11 @@
 import { BigNumber } from 'bignumber.js'
-import { getToken, TokenConfig } from 'blockchain/tokensMetadata'
+import { getToken } from 'blockchain/tokensMetadata'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount } from 'helpers/formatters/format'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'i18n'
 import React, { ChangeEvent } from 'react'
 import { createNumberMask } from 'text-mask-addons'
-import { Box, Text, Grid, Flex, Button } from 'theme-ui'
+import { Box, Button, Flex, Grid, Text } from 'theme-ui'
 
 type VaultAction = 'Deposit' | 'Withdraw' | 'Generate' | 'Payback'
 
@@ -28,7 +27,7 @@ export function VaultActionInput({
   balance,
   token,
   onChange,
-  hasError,
+  // hasError,
   showMax = false,
   onSetMax = () => null,
   amount,

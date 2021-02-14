@@ -42,12 +42,13 @@ export type ContextConnectedReadOnly = NetworkConfig &
 
 export type ContextConnected = NetworkConfig &
   Web3ContextConnected &
-  WithContractMethod & WithWeb3ProviderGetPastLogs
+  WithContractMethod &
+  WithWeb3ProviderGetPastLogs
 
 export type Context = ContextConnected | ContextConnectedReadOnly
 
 export function createContext$(
-  web3ContextConnected$: Observable<Web3ContextConnected | Web3ContextConnectedReadonly>
+  web3ContextConnected$: Observable<Web3ContextConnected | Web3ContextConnectedReadonly>,
 ): Observable<Context> {
   return web3ContextConnected$.pipe(
     map((web3Context) => {

@@ -18,10 +18,14 @@ function Summary({ address }: { address: string }) {
 }
 
 export default function VaultsSummary() {
-  const router = useRouter();
+  const router = useRouter()
 
   const address = router.query.address as string
-  return address ? <WithConnection><Summary {...{ address }} /></WithConnection> : null
+  return address ? (
+    <WithConnection>
+      <Summary {...{ address }} />
+    </WithConnection>
+  ) : null
 }
 
 VaultsSummary.layout = AppLayout

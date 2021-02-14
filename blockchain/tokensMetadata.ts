@@ -51,7 +51,6 @@ const tokens = [
     iconCircle: 'wbtc',
     iconColor: 'wbtc_color',
     ticker: 'wbtc-wrapped-bitcoin',
-    
   },
   {
     symbol: 'TUSD',

@@ -8,19 +8,19 @@ import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { LockAndDrawData } from 'features/deposit/deposit'
-import { applyChange, ApplyChange, Change, Changes, transactionToX } from 'helpers/form'
+import { ApplyChange, applyChange, Change, Changes, transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
-import { curry, isEqual } from 'lodash'
-import { Observable, of, iif, combineLatest, merge, Subject } from 'rxjs'
+import { curry } from 'lodash'
+import { combineLatest, iif, merge, Observable, of, Subject } from 'rxjs'
 import {
-  startWith,
-  switchMap,
+  distinctUntilChanged,
+  filter,
+  first,
   map,
   scan,
   shareReplay,
-  filter,
-  first,
-  distinctUntilChanged,
+  startWith,
+  switchMap,
 } from 'rxjs/operators'
 import Web3 from 'web3'
 
@@ -113,7 +113,7 @@ function applyVaultCalculations(state: OpenVaultState): OpenVaultState {
   const maxDepositAmountUSD = collateralBalance.times(collateralPrice)
   const maxGenerateAmount = depositAmount ? depositAmount.times(maxDebtPerUnitCollateral) : zero
   const depositAmountUSD = depositAmount ? collateralPrice.times(depositAmount) : zero
-  const generateAmountUSD = generateAmount ? generateAmount : zero // 1 DAI === 1 USD
+  const generateAmountUSD = generateAmount || zero // 1 DAI === 1 USD
 
   const afterCollateralizationRatio = generateAmountUSD.eq(zero)
     ? zero

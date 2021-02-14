@@ -6,7 +6,7 @@ import { FeaturedIlks } from 'features/vaultsOverview/VaultsOverviewView'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import React, { ReactNode } from 'react'
-import { Box, Button, Container, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
+import { Box, Container, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 
 export function Table({
   header,
@@ -138,7 +138,11 @@ export function LandingView() {
             <Table.Cell sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee)}</Table.Cell>
             <Table.Cell sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio)}</Table.Cell>
             <Table.Cell sx={{ textAlign: 'right' }}>
-              <AppLink href={`/vaults/open/${ilk}`} sx={{ lineHeight: 1 }} variant="buttons.outline">
+              <AppLink
+                href={`/vaults/open/${ilk}`}
+                sx={{ lineHeight: 1 }}
+                variant="buttons.outline"
+              >
                 Open Vault
               </AppLink>
             </Table.Cell>

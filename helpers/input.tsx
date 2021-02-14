@@ -3,9 +3,8 @@ import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'i18n'
 import React, { ChangeEvent } from 'react'
-import { borderRadius } from 'react-select/src/theme'
 import { createNumberMask } from 'text-mask-addons/dist/textMaskAddons'
-import { Text, Box, Button, Flex, Grid } from 'theme-ui'
+import { Box, Button, Flex } from 'theme-ui'
 
 import { TokenConfig } from '../blockchain/tokensMetadata'
 
