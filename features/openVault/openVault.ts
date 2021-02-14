@@ -106,6 +106,7 @@ function applyVaultCalculations(state: OpenVaultState): OpenVaultState {
     maxDebtPerUnitCollateral,
     generateAmount,
     collateralPrice,
+    liquidationRatio,
   } = state
 
   const maxDepositAmount = collateralBalance
@@ -118,11 +119,17 @@ function applyVaultCalculations(state: OpenVaultState): OpenVaultState {
     ? zero
     : depositAmountUSD.div(generateAmountUSD)
 
+  const liquidationPrice =
+    generateAmount && depositAmount && depositAmount.gt(zero)
+      ? generateAmount.times(liquidationRatio).div(depositAmount)
+      : zero
+
   return {
     ...state,
     maxDepositAmount,
     maxGenerateAmount,
     collateralizationRatio,
+    liquidationPrice,
     depositAmountUSD,
     generateAmountUSD,
     maxDepositAmountUSD,

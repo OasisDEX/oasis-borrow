@@ -2,8 +2,9 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultActionInput } from 'components/VaultActionInput'
-import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
 import React from 'react'
 import { Box, Button, Card, Flex, Grid, Heading, Spinner, Text, Link } from 'theme-ui'
@@ -368,6 +369,138 @@ function OpenVaultFormAllowance(props: OpenVaultState) {
   )
 }
 
+function OpenVaultFormConfirmation({
+  stage,
+  collateralBalance,
+  depositAmount,
+  generateAmount,
+  token,
+  collateralizationRatio,
+  liquidationPrice,
+  progress,
+  id,
+  etherscan,
+  openTxHash,
+}: OpenVaultState) {
+  const { replace } = useRedirect()
+
+  const walletBalance = formatCryptoBalance(collateralBalance)
+  const intoVault = formatCryptoBalance(depositAmount ? depositAmount : zero)
+  const remainingInWallet = formatCryptoBalance(
+    depositAmount ? collateralBalance.minus(depositAmount) : collateralBalance,
+  )
+  const daiToBeGenerated = formatCryptoBalance(generateAmount ? generateAmount : zero)
+  const collRatio = collateralizationRatio
+    ? formatPercent(collateralizationRatio.times(100), { precision: 2 })
+    : '--'
+  const liqPrice = formatAmount(liquidationPrice, 'USD')
+
+  const canProgress = !!progress || stage === 'openSuccess'
+  function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault()
+
+    if (canProgress) progress!()
+    if (stage === 'openSuccess') {
+      replace(`/${id}`)
+    }
+  }
+  const isLoading = stage === 'openInProgress' || stage === 'openWaitingForApproval'
+
+  const buttonText =
+    stage === 'openWaitingForConfirmation'
+      ? 'Create your Vault'
+      : stage === 'openFailure'
+      ? 'Retry'
+      : stage === 'openSuccess'
+      ? `Open Vault ${id!}`
+      : 'Creating your Vault'
+
+  return (
+    <Grid>
+      <Card backgroundColor="Success">
+        <Grid columns="1fr 1fr">
+          <Text sx={{ fontSize: 1 }}>In your wallet</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
+            {walletBalance} {token}
+          </Text>
+
+          <Text sx={{ fontSize: 1 }}>Moving into Vault</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
+            {intoVault} {token}
+          </Text>
+
+          <Text sx={{ fontSize: 1 }}>Remaining in Wallet</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
+            {remainingInWallet} {token}
+          </Text>
+
+          <Text sx={{ fontSize: 1 }}>Dai being generated</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>{daiToBeGenerated} DAI</Text>
+
+          <Text sx={{ fontSize: 1 }}>Collateral Ratio</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>{collRatio}</Text>
+
+          <Text sx={{ fontSize: 1 }}>Liquidation Price</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>${liqPrice}</Text>
+        </Grid>
+      </Card>
+      <Button disabled={!canProgress} onClick={handleProgress}>
+        {isLoading ? (
+          <Flex sx={{ justifyContent: 'center' }}>
+            <Spinner size={25} color="surface" />
+            <Text pl={2}>{buttonText}</Text>
+          </Flex>
+        ) : (
+          <Text>{buttonText}</Text>
+        )}
+      </Button>
+
+      {stage === 'openInProgress' && (
+        <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Spinner size={25} color="onWarning" />
+            <Grid pl={2} gap={1}>
+              <Text color="onWarning" sx={{ fontSize: 1 }}>
+                Creating your {token} Vault!
+              </Text>
+              <Link
+                href={`${etherscan}/tx/${openTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Text color="onWarning" sx={{ fontSize: 1 }}>
+                  View on etherscan -{'>'}
+                </Text>
+              </Link>
+            </Grid>
+          </Flex>
+        </Card>
+      )}
+      {stage === 'openSuccess' && (
+        <Card sx={{ backgroundColor: 'success', border: 'none' }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Icon name="checkmark" size={25} color="onSuccess" />
+            <Grid pl={2} gap={1}>
+              <Text color="onSuccess" sx={{ fontSize: 1 }}>
+                Vault #{id} created!
+              </Text>
+              <Link
+                href={`${etherscan}/tx/${openTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Text color="onSuccess" sx={{ fontSize: 1 }}>
+                  View on etherscan -{'>'}
+                </Text>
+              </Link>
+            </Grid>
+          </Flex>
+        </Card>
+      )}
+    </Grid>
+  )
+}
+
 function OpenVaultForm(props: OpenVaultState) {
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
 
@@ -378,7 +511,7 @@ function OpenVaultForm(props: OpenVaultState) {
         {isEditingStage && <OpenVaultFormEditing {...props} />}
         {isProxyStage && <OpenVaultFormProxy {...props} />}
         {isAllowanceStage && <OpenVaultFormAllowance {...props} />}
-        {isOpenStage}
+        {isOpenStage && <OpenVaultFormConfirmation {...props} />}
       </Card>
     </Box>
   )
