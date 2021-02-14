@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { bindNodeCallback, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
-import { tokenAllowance, tokenBalance } from './calls/erc20'
+import { maxUint256, tokenAllowance, tokenBalance } from './calls/erc20'
 import { CallObservable } from './calls/observe'
 import { Context } from './network'
 
@@ -38,7 +38,7 @@ export function createAllowance$(
 ) {
   return context$.pipe(
     switchMap(() => {
-      if (token === 'ETH') return of(true)
+      if (token === 'ETH') return of(maxUint256)
       return tokenAllowance$({ token, owner, spender })
     }),
   )

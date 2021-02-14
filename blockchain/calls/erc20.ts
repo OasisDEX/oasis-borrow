@@ -31,10 +31,10 @@ interface TokenAllowanceArgs {
   spender: string
 }
 
-export const tokenAllowance: CallDef<TokenAllowanceArgs, boolean> = {
+export const tokenAllowance: CallDef<TokenAllowanceArgs, BigNumber> = {
   call: ({ token }, { contract, tokens }) => contract<Erc20>(tokens[token]).methods.allowance,
   prepareArgs: ({ owner, spender }) => [owner, spender],
-  postprocess: (result: any) => new BigNumber(result).gte(maxUint256),
+  postprocess: (result: any) => new BigNumber(result),
 }
 
 export type ApproveData = {

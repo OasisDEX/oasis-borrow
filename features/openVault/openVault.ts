@@ -167,6 +167,7 @@ type OpenVaultChange = Changes<OpenVaultState>
 export type ManualChange =
   | Change<OpenVaultState, 'depositAmount'>
   | Change<OpenVaultState, 'generateAmount'>
+  | Change<OpenVaultState, 'allowanceAmount'>
 
 const apply: ApplyChange<OpenVaultState> = applyChange
 
@@ -210,7 +211,7 @@ export interface OpenVaultState {
 
   // Dynamic Data
   proxyAddress?: string
-  allowance?: boolean
+  allowance?: BigNumber
   progress?: () => void
   reset?: () => void
   change?: (change: ManualChange) => void
@@ -234,6 +235,7 @@ export interface OpenVaultState {
   // Form Values
   depositAmount?: BigNumber
   generateAmount?: BigNumber
+  allowanceAmount?: BigNumber
 
   // Form Bound Values
   maxDepositAmount: BigNumber
@@ -421,7 +423,7 @@ function openVault(
 function addTransitions(
   txHelpers: TxHelpers,
   proxyAddress$: Observable<string | undefined>,
-  allowance$: Observable<boolean>,
+  allowance$: Observable<BigNumber>,
   change: (ch: OpenVaultChange) => void,
   state: OpenVaultState,
 ): OpenVaultState {
@@ -505,7 +507,7 @@ export function createOpenVault$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
-  allowance$: (token: string, owner: string, spender: string) => Observable<boolean>,
+  allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
   tokenOraclePrice$: (token: string) => Observable<BigNumber>,
   balance$: (token: string, address: string) => Observable<BigNumber>,
   ilkData$: (ilk: string) => Observable<IlkData>,
@@ -668,7 +670,7 @@ export function createOpenVault$(
 
                         const connectedAllowance$ = connectedProxyAddress$.pipe(
                           switchMap((proxyAddress) =>
-                            proxyAddress ? allowance$(token, account, proxyAddress) : of(false),
+                            proxyAddress ? allowance$(token, account, proxyAddress) : of(zero),
                           ),
                         )
 
