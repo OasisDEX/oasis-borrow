@@ -341,21 +341,21 @@ function OpenVaultFormAllowance({
     }
   }
 
-  function handleUnlimited(e: React.FormEvent<HTMLLabelElement>) {
+  function handleUnlimited() {
     if (canSelectRadio) {
       setIsCustom(false)
       change!({ kind: 'allowanceAmount', allowanceAmount: maxUint256 })
     }
   }
 
-  function handleWallet(e: React.FormEvent<HTMLLabelElement>) {
+  function handleWallet() {
     if (canSelectRadio) {
       setIsCustom(false)
       change!({ kind: 'allowanceAmount', allowanceAmount: collateralBalance })
     }
   }
 
-  function handleCustom(e: React.FormEvent<HTMLLabelElement>) {
+  function handleCustom() {
     if (canSelectRadio) {
       change!({ kind: 'allowanceAmount', allowanceAmount: undefined })
       setIsCustom(true)
@@ -499,8 +499,9 @@ function OpenVaultFormConfirmation({
   )
   const daiToBeGenerated = formatCryptoBalance(generateAmount ? generateAmount : zero)
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
-    ? formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
-    : '--'
+    ? '--'
+    : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
+
   const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
 
   const canProgress = !!progress || stage === 'openSuccess'
@@ -520,7 +521,7 @@ function OpenVaultFormConfirmation({
       : stage === 'openFailure'
       ? 'Retry'
       : stage === 'openSuccess'
-      ? `Open Vault ${id!}`
+      ? `Open Vault #${id!}`
       : 'Creating your Vault'
 
   return (
