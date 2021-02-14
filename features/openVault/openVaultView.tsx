@@ -96,7 +96,7 @@ function OpenVaultFormEditing(props: OpenVaultState) {
     warningMessages,
     ilkDebtAvailable,
     liquidationRatio,
-    collateralizationRatio,
+    afterCollateralizationRatio,
     progress,
   } = props
 
@@ -157,8 +157,8 @@ function OpenVaultFormEditing(props: OpenVaultState) {
   const minCollRatio = liquidationRatio
     ? `${formatPercent(liquidationRatio.times(100), { precision: 2 })}`
     : '--'
-  const collRatio = collateralizationRatio
-    ? `${formatPercent(collateralizationRatio.times(100), { precision: 2 })}`
+  const afterCollRatio = afterCollateralizationRatio.eq(zero)
+    ? formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
     : '--'
 
   return (
@@ -202,7 +202,7 @@ function OpenVaultFormEditing(props: OpenVaultState) {
           <Text sx={{ fontSize: 2, textAlign: 'right' }}>{minCollRatio}</Text>
 
           <Text sx={{ fontSize: 2 }}>Collateralization Ratio</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{collRatio}</Text>
+          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{afterCollRatio}</Text>
         </Grid>
       </Card>
       <Button onClick={handleProgress} disabled={hasError}>
@@ -375,8 +375,8 @@ function OpenVaultFormConfirmation({
   depositAmount,
   generateAmount,
   token,
-  collateralizationRatio,
-  liquidationPrice,
+  afterCollateralizationRatio,
+  afterLiquidationPrice,
   progress,
   id,
   etherscan,
@@ -390,10 +390,10 @@ function OpenVaultFormConfirmation({
     depositAmount ? collateralBalance.minus(depositAmount) : collateralBalance,
   )
   const daiToBeGenerated = formatCryptoBalance(generateAmount ? generateAmount : zero)
-  const collRatio = collateralizationRatio
-    ? formatPercent(collateralizationRatio.times(100), { precision: 2 })
+  const afterCollRatio = afterCollateralizationRatio.eq(zero)
+    ? formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
     : '--'
-  const liqPrice = formatAmount(liquidationPrice, 'USD')
+  const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
 
   const canProgress = !!progress || stage === 'openSuccess'
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
@@ -438,10 +438,10 @@ function OpenVaultFormConfirmation({
           <Text sx={{ fontSize: 1, textAlign: 'right' }}>{daiToBeGenerated} DAI</Text>
 
           <Text sx={{ fontSize: 1 }}>Collateral Ratio</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>{collRatio}</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>{afterCollRatio}</Text>
 
           <Text sx={{ fontSize: 1 }}>Liquidation Price</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>${liqPrice}</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>${afterLiqPrice}</Text>
         </Grid>
       </Card>
       <Button disabled={!canProgress} onClick={handleProgress}>

@@ -115,11 +115,11 @@ function applyVaultCalculations(state: OpenVaultState): OpenVaultState {
   const depositAmountUSD = depositAmount ? collateralPrice.times(depositAmount) : zero
   const generateAmountUSD = generateAmount ? generateAmount : zero // 1 DAI === 1 USD
 
-  const collateralizationRatio = generateAmountUSD.eq(zero)
+  const afterCollateralizationRatio = generateAmountUSD.eq(zero)
     ? zero
     : depositAmountUSD.div(generateAmountUSD)
 
-  const liquidationPrice =
+  const afterLiquidationPrice =
     generateAmount && depositAmount && depositAmount.gt(zero)
       ? generateAmount.times(liquidationRatio).div(depositAmount)
       : zero
@@ -128,8 +128,8 @@ function applyVaultCalculations(state: OpenVaultState): OpenVaultState {
     ...state,
     maxDepositAmount,
     maxGenerateAmount,
-    collateralizationRatio,
-    liquidationPrice,
+    afterCollateralizationRatio,
+    afterLiquidationPrice,
     depositAmountUSD,
     generateAmountUSD,
     maxDepositAmountUSD,
@@ -144,7 +144,7 @@ function validateErrors(state: OpenVaultState): OpenVaultState {
     allowanceAmount,
     debtFloor,
     ilkDebtAvailable,
-    collateralizationRatio,
+    afterCollateralizationRatio,
     liquidationRatio,
   } = state
 
@@ -166,7 +166,7 @@ function validateErrors(state: OpenVaultState): OpenVaultState {
     errorMessages.push({ kind: 'generateAmountGreaterThanDebtCeiling' })
   }
 
-  if (generateAmount?.gt(zero) && collateralizationRatio.lt(liquidationRatio)) {
+  if (generateAmount?.gt(zero) && afterCollateralizationRatio.lt(liquidationRatio)) {
     errorMessages.push({ kind: 'vaultUnderCollateralized' })
   }
 
@@ -281,6 +281,9 @@ export interface OpenVaultState {
   reset?: () => void
   change?: (change: ManualChange) => void
   id?: number
+  depositAmount?: BigNumber
+  generateAmount?: BigNumber
+  allowanceAmount?: BigNumber
 
   // Account Balance & Price Info
   collateralBalance: BigNumber
@@ -290,17 +293,8 @@ export interface OpenVaultState {
   daiBalance: BigNumber
 
   // Vault Display Information
-  liquidationPrice: BigNumber
   afterLiquidationPrice: BigNumber
-  collateralizationRatio: BigNumber
   afterCollateralizationRatio: BigNumber
-  lockedCollateral: BigNumber
-  lockedCollateralUSD: BigNumber
-
-  // Form Values
-  depositAmount?: BigNumber
-  generateAmount?: BigNumber
-  allowanceAmount?: BigNumber
 
   // Form Bound Values
   maxDepositAmount: BigNumber
@@ -670,12 +664,8 @@ export function createOpenVault$(
                           depositAmountUSD: zero,
                           generateAmountUSD: zero,
                           maxDepositAmountUSD: zero,
-                          liquidationPrice: zero,
                           afterLiquidationPrice: zero,
-                          collateralizationRatio: zero,
                           afterCollateralizationRatio: zero,
-                          lockedCollateral: zero,
-                          lockedCollateralUSD: zero,
                           ilk,
                           maxDebtPerUnitCollateral,
                           ilkDebtAvailable,
