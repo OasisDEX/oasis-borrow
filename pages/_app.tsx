@@ -15,7 +15,7 @@ import { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
-import { landingTheme, theme } from 'theme'
+import { theme } from 'theme'
 // @ts-ignore
 import { components, ThemeProvider } from 'theme-ui'
 import Web3 from 'web3'
@@ -26,6 +26,9 @@ import { mixpanelInit } from '../analytics/mixpanel'
 function getLibrary(provider: any): Web3 {
   return new Web3(provider)
 }
+
+const FTPolarFontBold = '/static/fonts/FTPolar/FTPolarTrial-Bold'
+const FTPolarFontMedium = '/static/fonts/FTPolar/FTPolarTrial-Medium'
 
 const globalStyles = `
   html,
@@ -38,10 +41,6 @@ const globalStyles = `
   html {
     width: 100vw;
     overflow-x: hidden;
-
-    @media screen and (max-width: ${theme.sizes.container}px) {
-      width: 100%;
-    }
   }
 
   body {
@@ -60,6 +59,26 @@ const globalStyles = `
   input[type=number] {
     -moz-appearance: textfield;
   }
+
+  @font-face {
+    font-family: 'FT Polar Trial';
+    src: url('${FTPolarFontMedium}.woff2') format('woff2'),
+        url('${FTPolarFontMedium}.woff') format('woff'),
+        url('${FTPolarFontMedium}.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'FT Polar Trial';
+    src: url('${FTPolarFontBold}.woff2') format('woff2'),
+        url('${FTPolarFontBold}.woff') format('woff'),
+        url('${FTPolarFontBold}.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
 `
 
 // extending Component with static properties that can be attached to it
@@ -91,7 +110,6 @@ const noOverlayWorkaroundScript = `
 function App({ Component, pageProps }: AppProps & CustomAppProps) {
   const Layout = Component.layout || AppLayout
   const layoutProps = Component.layoutProps
-  const pageTheme = Component.theme === 'Landing' ? landingTheme : theme
   const seoTags = Component.seoTags || (
     <PageSEOTags title="seo.default.title" description="seo.default.description" />
   )
@@ -120,7 +138,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
           <script dangerouslySetInnerHTML={{ __html: noOverlayWorkaroundScript }} />
         )}
       </Head>
-      <ThemeProvider theme={pageTheme}>
+      <ThemeProvider theme={theme}>
         <CacheProvider value={cache}>
           <MDXProvider components={{ ...components, a: CustomMDXLink }}>
             <Global styles={globalStyles} />

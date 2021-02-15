@@ -4,13 +4,12 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { OpenVaultModal } from 'features/openVault/openVaultView'
 import { VaultSummary } from 'features/vault/vaultSummary'
 import { formatAddress, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
-import { useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
+import { useRouter } from 'next/router'
 import React from 'react'
-import { Box, Button, Card, Flex, Grid, Heading, Text } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { Table, TokenSymbol } from '../landing/LandingView'
@@ -37,12 +36,10 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
             <TokenSymbol token={vault.token} />
           </Table.Cell>
           <Table.Cell>{vault.ilk}</Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.collateral)} ${
-            vault.token
-          }`}</Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.freeCollateral)} ${
-            vault.token
-          }`}</Table.Cell>
+          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.collateral)} ${vault.token
+            }`}</Table.Cell>
+          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.freeCollateral)} ${vault.token
+            }`}</Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>{formatCryptoBalance(vault.debt)}</Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
             {vault.collateralizationRatio
@@ -51,8 +48,7 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
           </Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
             <AppLink
-              sx={{ lineHeight: 1 }}
-              variant="buttons.outline"
+              variant="secondary"
               as={`/${vault.id}`}
               href={`/[vault]`}
             >
@@ -72,14 +68,6 @@ function AllIlks({
   canOpenVault: boolean
   ilkDataList: IlkDataList
 }) {
-  const openModal = useModal()
-
-  function handleVaultOpen(ilk: string) {
-    return (e: React.SyntheticEvent<HTMLButtonElement>) => {
-      e.preventDefault()
-      openModal(OpenVaultModal, { ilk })
-    }
-  }
 
   return (
     <Table
@@ -111,8 +99,7 @@ function AllIlks({
           </Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
             <AppLink
-              sx={{ lineHeight: 1 }}
-              variant="outline"
+              variant="secondary"
               disabled={!canOpenVault}
               href={`/vaults/open/${ilk}`}
             >
@@ -144,25 +131,24 @@ function CallToAction({ ilk }: CallToActionProps) {
       }}
     >
       <Box sx={{ gridColumn: '1/3' }}>
-        <Text>{ilk.title}</Text>
+        <Text variant="caption">{ilk.title}</Text>
       </Box>
       <Box sx={{ gridColumn: '1/3' }}>
-        <Text variant="heading" sx={{ color: 'white' }}>
+        <Heading variant="header2" sx={{ color: 'white', mb: 4 }}>
           {ilk.ilk}
-        </Text>
+        </Heading>
       </Box>
-      <Box>
-        <Text variant="boldBody">Stability fee:</Text>
-        <Text variant="small">{formatPercent(ilk.stabilityFee)}</Text>
-      </Box>
-      <Box>
-        <Text variant="boldBody">Min coll ratio:</Text>
-        <Text variant="small">{formatPercent(ilk.liquidationRatio)}</Text>
-      </Box>
+      <Flex>
+        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }} >Stability fee:</Text>
+        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>{formatPercent(ilk.stabilityFee)}</Text>
+      </Flex>
+      <Flex>
+        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>Min coll ratio:</Text>
+        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>{formatPercent(ilk.liquidationRatio)}</Text>
+      </Flex>
     </Grid>
   )
 }
-
 function Summary({ summary }: { summary: VaultSummary }) {
   return (
     <Card>
@@ -247,8 +233,9 @@ export function VaultsOverviewView({
 }: VaultsOverview) {
   const { context$ } = useAppContext()
   const context = useObservable(context$)
+  const { query: { address } } = useRouter()
 
-  const readonlyAccount = context?.status === 'connected' && context.readonly && context.account
+  const readonlyAccount = context?.status === 'connectedReadonly' && address as string
   const displaySummary = vaults && vaults.length > 0 && vaultSummary
   const displayFeaturedIlks = vaults?.length === 0 && featuredIlks
   const displayVaults = vaults && vaults.length > 0 && vaults
@@ -260,10 +247,10 @@ export function VaultsOverviewView({
           Viewing {formatAddress(readonlyAccount)}
         </Card>
       )}
-      <Heading sx={{ textAlign: 'center', fontSize: 7 }} as="h1">
+      <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
         Vault overview
       </Heading>
-      <Text sx={{ textAlign: 'center', justifySelf: 'center', width: 700, fontSize: 4, mb: 4 }}>
+      <Text variant="header3" sx={{ textAlign: 'center', justifySelf: 'center', mb: 4 }}>
         Hello 0x..102s it looks like tou currently have no Vaults open with this wallet. Open a
         Vault below.
       </Text>
