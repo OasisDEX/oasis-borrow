@@ -3,7 +3,6 @@ import { Container } from 'next/app'
 import { Text, Heading, Grid, Box, Flex, Button } from 'theme-ui'
 import {
   TypeScale,
-  TypeStyle,
   ColorPalette,
 } from '@theme-ui/style-guide'
 
@@ -11,6 +10,7 @@ import React from 'react'
 
 import { theme } from '../theme'
 import { AppLink } from 'components/Links'
+import { Icon } from '@makerdao/dai-ui-icons'
 
 const stories = storiesOf('Oasis Borrow Theme', module)
 stories.add("Typography", () => {
@@ -33,7 +33,8 @@ stories.add("Typography", () => {
       <Flex sx={{ flexWrap: 'wrap' }}>
         {
           textStyles.map(style =>
-            <Box bg="white" p={3} sx={{ display: 'flex', alignItems: 'flex-end', m: 3, p: 4 }}>
+            <Box bg="white" p={3} sx={{ display: 'flex', alignItems: 'flex-end', m: 3, p: 4, position: 'relative' }}>
+              <Text sx={{ position: 'absolute', top: 0 }}>{style}</Text>
               <Text key={style} variant={style} sx={{ textTransform: 'capitalize' }}>{style}</Text>
             </Box>
           )
@@ -129,4 +130,25 @@ stories.add("Components", () => {
         </Box>
       </Flex>
     </Container>)
+})
+
+
+stories.add('Icons', () => {
+  const icons = Object.keys(theme.icons)
+
+  return (
+    <Container>
+      <Heading as="h1" sx={{ my: 4, fontSize: 7 }}>Icons</Heading>
+      <Flex sx={{ my: 3, flexWrap: 'wrap' }}>
+        {
+          icons.map((icon) => (
+            <Box sx={{ position: 'relative', bg: 'white', m: 3, p: 3 }} key={icon}>
+              <Text variant="paragraph4">{icon}</Text>
+              <Icon size="40px" name={icon}>Click me</Icon>
+            </Box>)
+          )
+        }
+      </Flex>
+    </Container>
+  )
 })

@@ -6,7 +6,6 @@ import { icons as brandingIcons } from '@makerdao/dai-ui-icons-branding'
 // import oasisBaseTheme from '@makerdao/dai-ui-theme-casual'
 import React from 'react'
 // @ts-ignore
-import { merge } from 'theme-ui'
 
 const customIcons = {
   arrow_down: {
@@ -516,18 +515,18 @@ const oasisBaseTheme = {
     },
 
     link: "#575CFE",
-    // textAlt: "rgba(37, 39, 61, 0.67)",
-    // onBackground: "#9FAFB9",
-    // onPrimary: "#FFFFFF",
-    // onSurface: "#708390",
-    // muted: "#708390",
-    // mutedAlt: "#656F75",
-    // error: "#FDEDE8",
-    // onError: "#F75524",
-    // success: "#E7FCFA",
-    // onSuccess: "#1AAB9B",
-    // warning: "#FFF1CF",
-    // onWarning: "#D8762D",
+    textAlt: "rgba(37, 39, 61, 0.67)",
+    onBackground: "#9FAFB9",
+    onPrimary: "#FFFFFF",
+    onSurface: "#708390",
+    muted: "#708390",
+    mutedAlt: "#656F75",
+    error: "#FDEDE8",
+    onError: "#F75524",
+    success: "#E7FCFA",
+    onSuccess: "#1AAB9B",
+    warning: "#FFF1CF",
+    onWarning: "#D8762D",
     networks: {
       mainnet: "rgb(41, 182, 175)",
       kovan: "rgb(112, 87, 255)",
@@ -607,9 +606,11 @@ const oasisBaseTheme = {
       color: "primary"
     },
     caption: {
-      variant: 'paragraph3',
+      variant: 'paragraph4',
+      fontWeight: 'heading',
       textTransform: 'uppercase',
       letterSpacing: '0.04em',
+      opacity: 0.7,
     }
   },
   borders: {
@@ -652,15 +653,44 @@ const oasisBaseTheme = {
     daiContainer: {
       variant: "layout.appContainer",
       maxWidth: "818px"
-    }
+    },
+    modal: {
+      variant: "layout.appContainer",
+    },
+    modalHalf: {
+      variant: "layout.modal",
+      minHeight: "50vh",
+    },
   },
   metadata: {
     fontLinkHref: "https://rsms.me/inter/inter.css"
   },
   cards: {
     primary: {
-      transition: "150ms cubic-bezier(0.215,0.61,0.355,1)"
-    }
+      border: "1px solid",
+      borderColor: "muted",
+      p: 3,
+      borderRadius: "roundish",
+      bg: "surface",
+    },
+    primaryWithHover: {
+      variant: "cards.primary",
+      cursor: "pointer",
+      transition: "150ms cubic-bezier(0.215,0.61,0.355,1)",
+      "&:hover": {
+        borderColor: "mutedAlt",
+        boxShadow: "surface",
+      },
+    },
+    secondary: {
+      variant: "cards.primary",
+      border: "none",
+      bg: "background",
+    },
+    secondaryRounded: {
+      variant: "cards.secondary",
+      borderRadius: "large",
+    },
   },
   badges: {
     dsr: {
@@ -705,6 +735,15 @@ const oasisBaseTheme = {
       borderRadius: 'round',
       px: 4,
       py: 2,
+    },
+    square: {
+      variant: 'text.paragraph2',
+      bg: 'white',
+      borderRadius: 'large',
+      py: 3,
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: 'light',
     }
   },
   links: {
@@ -730,25 +769,42 @@ const oasisBaseTheme = {
     ...customLandingIcons,
   },
   forms: {
+    label: {
+      fontSize: 4,
+      fontWeight: "semiBold",
+    },
     input: {
-      transition: "150ms cubic-bezier(0.215,0.61,0.355,1)"
+      outline: "none",
+      borderRadius: "large",
+      border: "light",
+      borderColor: "muted",
+      color: "onSurface",
+      fontWeight: "body",
+      fontFamily: "body",
+      p: 3,
+      lineHeight: "tight",
+      fontSize: 5,
+      "&:focus": {
+        borderColor: "primary",
+        color: "primary",
+      },
+      "&:disabled": {
+        bg: "background",
+        pointerEvents: "none",
+      },
     },
     inputError: {
+      variant: "forms.input",
+      borderColor: "onError",
       "&:focus": {
         borderColor: "onError",
-        color: "primary"
-      }
+      },
     },
-    inputSurface: {
+    select: {
       variant: "forms.input",
-      bg: "surface",
-      fontSize: 4,
-      lineHeight: "loose"
     },
-    inputSurfaceError: {
-      variant: "forms.inputSurface",
-      borderColor: "onError"
-    }
+    textarea: { variant: "forms.input", lineHeight: "body" },
+    textareaError: { variant: "forms.inputError" },
   },
   alerts: {
     primary: {
@@ -1168,45 +1224,6 @@ export const TRANSITIONS = {
 //   //     cursor: "pointer",
 //   //     background: "transparent",
 //   //   },
-//   // },
-
-//   // forms: {
-//   //   label: {
-//   //     fontSize: 4,
-//   //     fontWeight: "semiBold",
-//   //   },
-//   //   input: {
-//   //     outline: "none",
-//   //     borderRadius: "large",
-//   //     border: "light",
-//   //     borderColor: "muted",
-//   //     color: "onSurface",
-//   //     fontWeight: "body",
-//   //     fontFamily: "body",
-//   //     p: 3,
-//   //     lineHeight: "tight",
-//   //     fontSize: 5,
-//   //     "&:focus": {
-//   //       borderColor: "primary",
-//   //       color: "primary",
-//   //     },
-//   //     "&:disabled": {
-//   //       bg: "background",
-//   //       pointerEvents: "none",
-//   //     },
-//   //   },
-//   //   inputError: {
-//   //     variant: "forms.input",
-//   //     borderColor: "onError",
-//   //     "&:focus": {
-//   //       borderColor: "onError",
-//   //     },
-//   //   },
-//   //   select: {
-//   //     variant: "forms.input",
-//   //   },
-//   //   textarea: { variant: "forms.input", lineHeight: "body" },
-//   //   textareaError: { variant: "forms.inputError" },
 //   // },
 
 //   // cards: {

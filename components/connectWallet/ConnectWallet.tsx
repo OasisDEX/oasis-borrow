@@ -116,7 +116,7 @@ function ConnectWalletButton({
   connect?: () => void
 }) {
   return (
-    <Button variant="outline" sx={{ textAlign: 'left' }} onClick={connect}>
+    <Button variant="square" sx={{ textAlign: 'left' }} onClick={connect}>
       <Flex sx={{ alignItems: 'center' }}>
         <Flex sx={{ ml: 1, mr: 3, alignItems: 'center' }}>
           {isConnecting ? <AppSpinner size={22} /> : <Icon name={iconName} size={22} />}

@@ -7,6 +7,7 @@ import { AppLink } from 'components/Links'
 import { VaultSummary } from 'features/vault/vaultSummary'
 import { formatAddress, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { useRouter } from 'next/router'
 import React from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
@@ -133,18 +134,18 @@ function CallToAction({ ilk }: CallToActionProps) {
         <Text variant="caption">{ilk.title}</Text>
       </Box>
       <Box sx={{ gridColumn: '1/3' }}>
-        <Text variant="header2" sx={{ color: 'white' }}>
+        <Heading variant="header2" sx={{ color: 'white', mb: 4 }}>
           {ilk.ilk}
-        </Text>
+        </Heading>
       </Box>
-      <Box>
-        <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }} >Stability fee:</Text>
-        <Text variant="paragraph3">{formatPercent(ilk.stabilityFee)}</Text>
-      </Box>
-      <Box>
-        <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>Min coll ratio:</Text>
-        <Text variant="paragraph3">{formatPercent(ilk.liquidationRatio)}</Text>
-      </Box>
+      <Flex>
+        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }} >Stability fee:</Text>
+        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>{formatPercent(ilk.stabilityFee)}</Text>
+      </Flex>
+      <Flex>
+        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>Min coll ratio:</Text>
+        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>{formatPercent(ilk.liquidationRatio)}</Text>
+      </Flex>
     </Grid>
   )
 }
@@ -232,8 +233,9 @@ export function VaultsOverviewView({
 }: VaultsOverview) {
   const { context$ } = useAppContext()
   const context = useObservable(context$)
+  const { query: { address } } = useRouter()
 
-  const readonlyAccount = context?.status === 'connected' && context.account
+  const readonlyAccount = context?.status === 'connectedReadonly' && address as string
   const displaySummary = vaults && vaults.length > 0 && vaultSummary
   const displayFeaturedIlks = vaults?.length === 0 && featuredIlks
   const displayVaults = vaults && vaults.length > 0 && vaults
