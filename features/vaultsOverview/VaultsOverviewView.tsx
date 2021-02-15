@@ -196,7 +196,7 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
 
   return (
     <Box sx={{ gridColumn: '1/5', my: 3 }}>
-      <Flex sx={{ borderRadius: 'small', overflow: 'hidden' }}>
+      <Flex sx={{ borderRadius: 'small', overflow: 'hidden', boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)' }}>
         {assets.map(([token, ratio]) => (
           <Box
             key={token}
