@@ -6,5 +6,6 @@ declare module '@makerdao/dai-ui-icons' {
     name: string
     width?: string | number
     height?: string | number
+    onClick?(): void
   }>
 }

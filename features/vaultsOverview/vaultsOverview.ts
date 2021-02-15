@@ -22,7 +22,7 @@ export interface VaultsOverview {
   featuredIlks: FeaturedIlk[] | undefined
 }
 
-export function createFeaturedIlk$(
+export function createFeaturedIlk(
   ilkDataList$: Observable<IlkDataList>,
   selector: (ilks: IlkDataList) => IlkData | undefined,
   title: string,
@@ -59,9 +59,9 @@ export function getCheapest(ilks: IlkDataList) {
 
 export function createFeaturedIlks$(ilkDataList$: Observable<IlkDataList>) {
   return combineLatest(
-    createFeaturedIlk$(ilkDataList$, getNewest, 'New'),
-    createFeaturedIlk$(ilkDataList$, getMostPopular, 'Most Popular'),
-    createFeaturedIlk$(ilkDataList$, getCheapest, 'Cheapest'),
+    createFeaturedIlk(ilkDataList$, getNewest, 'New'),
+    createFeaturedIlk(ilkDataList$, getMostPopular, 'Most Popular'),
+    createFeaturedIlk(ilkDataList$, getCheapest, 'Cheapest'),
   )
 }
 

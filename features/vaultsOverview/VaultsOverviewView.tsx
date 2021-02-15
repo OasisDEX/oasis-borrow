@@ -4,13 +4,11 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { OpenVaultModal } from 'features/openVault/openVaultView'
 import { VaultSummary } from 'features/vault/vaultSummary'
 import { formatAddress, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
-import { useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
-import { Box, Button, Card, Flex, Grid, Heading, Text } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { Table, TokenSymbol } from '../landing/LandingView'
@@ -49,8 +47,7 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
           </Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
             <AppLink
-              sx={{ lineHeight: 1 }}
-              variant="buttons.outline"
+              variant="secondary"
               as={`/${vault.id}`}
               href={`/[vault]`}
             >
@@ -70,14 +67,6 @@ function AllIlks({
   canOpenVault: boolean
   ilkDataList: IlkDataList
 }) {
-  const openModal = useModal()
-
-  function handleVaultOpen(ilk: string) {
-    return (e: React.SyntheticEvent<HTMLButtonElement>) => {
-      e.preventDefault()
-      openModal(OpenVaultModal, { ilk })
-    }
-  }
 
   return (
     <Table
@@ -109,8 +98,7 @@ function AllIlks({
           </Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
             <AppLink
-              sx={{ lineHeight: 1 }}
-              variant="outline"
+              variant="secondary"
               disabled={!canOpenVault}
               href={`/vaults/open/${ilk}`}
             >
@@ -142,48 +130,47 @@ function CallToAction({ ilk }: CallToActionProps) {
       }}
     >
       <Box sx={{ gridColumn: '1/3' }}>
-        <Text>{ilk.title}</Text>
+        <Text variant="caption">{ilk.title}</Text>
       </Box>
       <Box sx={{ gridColumn: '1/3' }}>
-        <Text variant="heading" sx={{ color: 'white' }}>
+        <Heading variant="header2" sx={{ color: 'white', mb: 4 }}>
           {ilk.ilk}
-        </Text>
+        </Heading>
       </Box>
-      <Box>
-        <Text variant="boldBody">Stability fee:</Text>
-        <Text variant="small">{formatPercent(ilk.stabilityFee)}</Text>
-      </Box>
-      <Box>
-        <Text variant="boldBody">Min coll ratio:</Text>
-        <Text variant="small">{formatPercent(ilk.liquidationRatio)}</Text>
-      </Box>
+      <Flex>
+        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }} >Stability fee:</Text>
+        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>{formatPercent(ilk.stabilityFee)}</Text>
+      </Flex>
+      <Flex>
+        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>Min coll ratio:</Text>
+        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>{formatPercent(ilk.liquidationRatio)}</Text>
+      </Flex>
     </Grid>
   )
 }
-
 function Summary({ summary }: { summary: VaultSummary }) {
   return (
     <Card>
       <Grid columns="repeat(4, 1fr)">
         <Box>
-          <Text sx={{ color: 'text.muted' }}>No. of Vaults</Text>
-          <Text sx={{ fontWeight: 'bold', fontSize: 6 }}>{summary.numberOfVaults}</Text>
+          <Text variant="paragraph2" sx={{ color: 'text.muted' }}>No. of Vaults</Text>
+          <Text variant="header2">{summary.numberOfVaults}</Text>
         </Box>
         <Box>
-          <Text sx={{ color: 'text.muted' }}>Total locked</Text>
-          <Text sx={{ fontWeight: 'bold', fontSize: 6 }}>
+          <Text variant="paragraph2" sx={{ color: 'text.muted' }}>Total locked</Text>
+          <Text variant="header2">
             ${formatCryptoBalance(summary.totalCollateralPrice)}
           </Text>
         </Box>
         <Box>
-          <Text sx={{ color: 'text.muted' }}>Total Debt</Text>
-          <Text sx={{ fontWeight: 'bold', fontSize: 6 }}>
+          <Text variant="paragraph2" sx={{ color: 'text.muted' }}>Total Debt</Text>
+          <Text variant="header2">
             {formatCryptoBalance(summary.totalDaiDebt)} DAI
           </Text>
         </Box>
         <Box>
-          <Text sx={{ color: 'text.muted' }}>Vaults at Risk</Text>
-          <Text sx={{ fontWeight: 'bold', fontSize: 6 }}>{summary.vaultsAtRisk}</Text>
+          <Text variant="paragraph2" sx={{ color: 'text.muted' }}>Vaults at Risk</Text>
+          <Text variant="header2">{summary.vaultsAtRisk}</Text>
         </Box>
         <Graph assetRatio={summary.depositedAssetRatio} />
       </Grid>
@@ -196,7 +183,7 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
 
   return (
     <Box sx={{ gridColumn: '1/5', my: 3 }}>
-      <Flex sx={{ borderRadius: 'small', overflow: 'hidden', boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)' }}>
+      <Flex sx={{ borderRadius: 'small', overflow: 'hidden', boxShadow: 'medium' }}>
         {assets.map(([token, ratio]) => (
           <Box
             key={token}
@@ -214,7 +201,7 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
             {ratio.gt(0.08) && (
               <Flex sx={{ flexDirection: 'column' }}>
                 <TokenSymbol token={token} />
-                <Text sx={{ ml: '28px', fontSize: 1, color: 'text.muted' }}>
+                <Text variant="paragraph3" sx={{ ml: '28px', color: 'text.muted' }}>
                   {formatPercent(ratio.times(100), { precision: 2 })}
                 </Text>
               </Flex>
@@ -259,10 +246,10 @@ export function VaultsOverviewView({
           Viewing {formatAddress(readonlyAccount)}
         </Card>
       )}
-      <Heading sx={{ textAlign: 'center', fontSize: 7 }} as="h1">
+      <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
         Vault overview
       </Heading>
-      <Text sx={{ textAlign: 'center', justifySelf: 'center', width: 700, fontSize: 4, mb: 4 }}>
+      <Text variant="header3" sx={{ textAlign: 'center', justifySelf: 'center', mb: 4 }}>
         Hello 0x..102s it looks like tou currently have no Vaults open with this wallet. Open a
         Vault below.
       </Text>

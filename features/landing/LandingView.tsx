@@ -5,8 +5,8 @@ import { AppLink } from 'components/Links'
 import { FeaturedIlks } from 'features/vaultsOverview/VaultsOverviewView'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import React, { ReactNode } from 'react'
-import { Box, Button, Container, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
+import React, { ComponentProps, ReactNode } from 'react'
+import { Box, Container, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 
 export function Table({
   header,
@@ -84,14 +84,14 @@ Table.Header = function ({ children, sx }: React.PropsWithChildren<{ sx?: SxStyl
   )
 }
 
-export function TokenSymbol({ token }: { token: string }) {
+export function TokenSymbol({ token, ...props }: { token: string } & Omit<ComponentProps<typeof Icon>, 'name'>) {
   const tokenInfo = getToken(token)
 
   return (
-    <Box>
-      <Icon name={tokenInfo.icon} size="20px" sx={{ verticalAlign: 'sub', mr: 2 }} />
-      {token}
-    </Box>
+    <Flex>
+      <Icon name={tokenInfo.iconCircle} size="32px" sx={{ verticalAlign: 'sub', mr: 2 }} {...props} />
+      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>{tokenInfo.name}</Text>
+    </Flex>
   )
 }
 
@@ -138,8 +138,8 @@ export function LandingView() {
             <Table.Cell sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee)}</Table.Cell>
             <Table.Cell sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio)}</Table.Cell>
             <Table.Cell sx={{ textAlign: 'right' }}>
-              <AppLink href={`/vaults/open/${ilk}`} sx={{ lineHeight: 1 }} variant="buttons.outline">
-                Open Vault
+              <AppLink href={`/vaults/open/${ilk}`} variant="secondary">
+                Create Vault
               </AppLink>
             </Table.Cell>
           </Table.Row>
