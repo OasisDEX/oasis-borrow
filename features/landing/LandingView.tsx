@@ -89,7 +89,7 @@ export function TokenSymbol({ token, ...props }: { token: string } & Omit<Compon
 
   return (
     <Flex>
-      <Icon name={tokenInfo.iconCircle} size="32px" sx={{ verticalAlign: 'sub', mr: 2 }} {...props} />
+      <Icon name={tokenInfo.iconCircle} size="26px" sx={{ verticalAlign: 'sub', mr: 2 }} {...props} />
       <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>{tokenInfo.name}</Text>
     </Flex>
   )

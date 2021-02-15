@@ -1,3 +1,4 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { IlkDataList } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -199,11 +200,16 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
         {assets.map(([token, ratio]) => (
           <Box key={token} sx={{ my: 2, flex: ratio.toString() }}>
             {ratio.gt(0.08) && (
-              <Flex sx={{ flexDirection: 'column' }}>
-                <TokenSymbol token={token} />
-                <Text variant="paragraph3" sx={{ ml: '28px', color: 'text.muted' }}>
-                  {formatPercent(ratio.times(100), { precision: 2 })}
-                </Text>
+              <Flex>
+                <Box sx={{ mr: 1 }}>
+                  <Icon name={getToken(token).iconCircle} size="26px" sx={{ verticalAlign: 'sub', mr: 2 }} />
+                </Box>
+                <Box>
+                  <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>{getToken(token).name}</Text>
+                  <Text variant="paragraph3" sx={{ color: 'text.muted' }}>
+                    {formatPercent(ratio.times(100), { precision: 2 })}
+                  </Text>
+                </Box>
               </Flex>
             )}
           </Box>
