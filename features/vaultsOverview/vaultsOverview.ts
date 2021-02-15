@@ -2,7 +2,7 @@ import { IlkData, IlkDataList } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
-import { VaultSummary } from 'features/vault/vaultSummary'
+import { getVaultsSummary, VaultSummary } from 'features/vault/vaultSummary'
 import maxBy from 'lodash/maxBy'
 import minBy from 'lodash/minBy'
 import { Observable } from 'rxjs'
@@ -68,7 +68,6 @@ export function createFeaturedIlks$(ilkDataList$: Observable<IlkDataList>) {
 export function createVaultsOverview$(
   context$: Observable<Context>,
   vaults$: (address: string) => Observable<Vault[]>,
-  vaultsSummary$: (address: string) => Observable<VaultSummary>,
   ilkDataList$: Observable<IlkDataList>,
   featuredIlks$: Observable<FeaturedIlk[]>,
   address: string,
@@ -76,7 +75,7 @@ export function createVaultsOverview$(
   return combineLatest(
     context$,
     vaults$(address).pipe(startWith<Vault[] | undefined>(undefined)),
-    vaultsSummary$(address).pipe(startWith<VaultSummary | undefined>(undefined)),
+    vaults$(address).pipe(map(getVaultsSummary), startWith<VaultSummary | undefined>(undefined)),
     ilkDataList$.pipe(startWith<IlkDataList | undefined>(undefined)),
     featuredIlks$.pipe(startWith<FeaturedIlk[] | undefined>(undefined)),
   ).pipe(

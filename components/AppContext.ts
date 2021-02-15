@@ -179,8 +179,6 @@ export function setupAppContext() {
 
   const vaults$ = memoize(curry(createVaults$)(context$, proxyAddress$, vault$))
 
-  const vaultSummary$ = memoize(curry(createVaultSummary$)(vaults$))
-
   const depositForm$ = memoize(
     curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$),
     bigNumberTostring,
@@ -205,7 +203,6 @@ export function setupAppContext() {
     curry(createVaultsOverview$)(
       context$,
       vaults$,
-      vaultSummary$,
       ilkDataList$,
       featuredIlks$,
     ),
@@ -224,7 +221,6 @@ export function setupAppContext() {
     proxyOwner$,
     vaults$,
     vault$,
-    vaultSummary$,
     depositForm$,
     landing$,
     openVault$,

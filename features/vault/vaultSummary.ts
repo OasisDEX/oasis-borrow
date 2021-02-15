@@ -1,9 +1,16 @@
 import BigNumber from 'bignumber.js'
 import { Vault } from 'blockchain/vaults'
+import { zero } from 'helpers/zero'
 import { groupBy, mapValues } from 'lodash'
-import { Observable, of } from 'rxjs'
-import { map, shareReplay, switchMap } from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
+
+export interface VaultSummary {
+  totalCollateralPrice: BigNumber
+  totalDaiDebt: BigNumber
+  numberOfVaults: number
+  vaultsAtRisk: number
+  depositedAssetRatio: Dictionary<BigNumber>
+}
 
 function getTotalCollateralPrice(vaults: Vault[]) {
   return vaults.reduce((total, vault) => total.plus(vault.collateralPrice), new BigNumber(0))
@@ -18,32 +25,22 @@ function getAssetRatio(vaults: Vault[], totalLocked: BigNumber) {
   return mapValues(vaultsByToken, (vaults) => getTotalCollateralPrice(vaults).div(totalLocked))
 }
 
-export interface VaultSummary {
-  totalCollateralPrice: BigNumber
-  totalDaiDebt: BigNumber
-  numberOfVaults: number
-  vaultsAtRisk: number
-  depositedAssetRatio: Dictionary<BigNumber>
+function isVaultAtRisk(vault: Vault) {
+  if (vault.debt.eq(zero)) {
+    return false
+  }
+  const safetyMargin = 1.2 //
+
+  return vault.collateralizationRatio?.div(vault.liquidationRatio).lt(safetyMargin)
 }
-export function createVaultSummary$(
-  vaults$: (address: string) => Observable<Vault[]>,
-  address: string,
-): Observable<VaultSummary> {
-  return vaults$(address).pipe(
-    switchMap((vaults) =>
-      of(vaults).pipe(
-        map((vaults) => ({
-          numberOfVaults: vaults.length,
-          vaultsAtRisk: 0,
-          totalCollateralPrice: getTotalCollateralPrice(vaults),
-          totalDaiDebt: getTotalDaiDebt(vaults),
-        })),
-        map((summary) => ({
-          ...summary,
-          depositedAssetRatio: getAssetRatio(vaults, summary.totalCollateralPrice),
-        })),
-      ),
-    ),
-    shareReplay(1),
-  )
+
+export function getVaultsSummary(vaults: Vault[]): VaultSummary {
+  const totalCollateralPrice = getTotalCollateralPrice(vaults)
+  return {
+    numberOfVaults: vaults.length,
+    vaultsAtRisk: vaults.map(isVaultAtRisk).reduce((total, atRisk) => atRisk ? total + 1 : total, 0),
+    totalCollateralPrice,
+    totalDaiDebt: getTotalDaiDebt(vaults),
+    depositedAssetRatio: getAssetRatio(vaults, totalCollateralPrice)
+  }
 }

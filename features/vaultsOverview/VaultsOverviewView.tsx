@@ -37,12 +37,10 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
             <TokenSymbol token={vault.token} />
           </Table.Cell>
           <Table.Cell>{vault.ilk}</Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.collateral)} ${
-            vault.token
-          }`}</Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.freeCollateral)} ${
-            vault.token
-          }`}</Table.Cell>
+          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.collateral)} ${vault.token
+            }`}</Table.Cell>
+          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.freeCollateral)} ${vault.token
+            }`}</Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>{formatCryptoBalance(vault.debt)}</Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
             {vault.collateralizationRatio
@@ -194,18 +192,18 @@ function Summary({ summary }: { summary: VaultSummary }) {
 }
 
 function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
-  const assets = Object.entries(assetRatio).sort(([, a], [, b]) => b.comparedTo(a))
+  const assets = Object.entries(assetRatio).sort(([, ratioA], [, ratioB]) => ratioB.comparedTo(ratioA))
 
   return (
     <Box sx={{ gridColumn: '1/5', my: 3 }}>
-      <Flex>
+      <Flex sx={{ borderRadius: 'small', overflow: 'hidden' }}>
         {assets.map(([token, ratio]) => (
           <Box
             key={token}
             sx={{
               flex: ratio.toString(),
-              height: '5px',
-              background: getToken(token).color || 'gray',
+              height: 2,
+              background: getToken(token).color || 'lightGray',
             }}
           />
         ))}
@@ -244,11 +242,12 @@ export function VaultsOverviewView({
   ilkDataList,
   vaultSummary,
   featuredIlks,
-}: VaultsOverview) {
+  address,
+}: VaultsOverview & { address: string }) {
   const { context$ } = useAppContext()
   const context = useObservable(context$)
 
-  const readonlyAccount = context?.status === 'connected' && context.readonly && context.account
+  const readonlyAccount = context?.status === 'connectedReadonly' && address
   const displaySummary = vaults && vaults.length > 0 && vaultSummary
   const displayFeaturedIlks = vaults?.length === 0 && featuredIlks
   const displayVaults = vaults && vaults.length > 0 && vaults
