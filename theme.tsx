@@ -879,7 +879,6 @@ const oasisBaseTheme = {
 }
 
 export const theme = oasisBaseTheme
-export default theme
 
 // Duplication from theme as exporting const from package library is breaking dai-ui website and theme-ui doesn't support yet transitions tokens :(
 // To refactor if they will include this support

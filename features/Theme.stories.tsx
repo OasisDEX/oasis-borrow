@@ -94,7 +94,7 @@ stories.add('Theme elements', () => {
       <SizePreview sizes={space} />
       <Heading sx={{ mt: 4, fontSize: 5 }}>Borders styles</Heading>
       <Grid>
-        {borders.map(([name, style]) => (
+        {borders.map(() => (
           <Box></Box>
         ))}
       </Grid>
