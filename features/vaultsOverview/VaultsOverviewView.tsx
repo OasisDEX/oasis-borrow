@@ -36,10 +36,12 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
             <TokenSymbol token={vault.token} />
           </Table.Cell>
           <Table.Cell>{vault.ilk}</Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.collateral)} ${vault.token
-            }`}</Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.freeCollateral)} ${vault.token
-            }`}</Table.Cell>
+          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.collateral)} ${
+            vault.token
+          }`}</Table.Cell>
+          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.freeCollateral)} ${
+            vault.token
+          }`}</Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>{formatCryptoBalance(vault.debt)}</Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
             {vault.collateralizationRatio
@@ -47,11 +49,7 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
               : 0}
           </Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
-            <AppLink
-              variant="secondary"
-              as={`/${vault.id}`}
-              href={`/[vault]`}
-            >
+            <AppLink variant="secondary" as={`/${vault.id}`} href={`/[vault]`}>
               Manage Vault
             </AppLink>
           </Table.Cell>
@@ -68,7 +66,6 @@ function AllIlks({
   canOpenVault: boolean
   ilkDataList: IlkDataList
 }) {
-
   return (
     <Table
       header={
@@ -98,11 +95,7 @@ function AllIlks({
             {formatPercent(liquidationRatio.times(100))}
           </Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
-            <AppLink
-              variant="secondary"
-              disabled={!canOpenVault}
-              href={`/vaults/open/${ilk}`}
-            >
+            <AppLink variant="secondary" disabled={!canOpenVault} href={`/vaults/open/${ilk}`}>
               Open Vault
             </AppLink>
           </Table.Cell>
@@ -139,12 +132,20 @@ function CallToAction({ ilk }: CallToActionProps) {
         </Heading>
       </Box>
       <Flex>
-        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }} >Stability fee:</Text>
-        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>{formatPercent(ilk.stabilityFee)}</Text>
+        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
+          Stability fee:
+        </Text>
+        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
+          {formatPercent(ilk.stabilityFee)}
+        </Text>
       </Flex>
       <Flex>
-        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>Min coll ratio:</Text>
-        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>{formatPercent(ilk.liquidationRatio)}</Text>
+        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
+          Min coll ratio:
+        </Text>
+        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
+          {formatPercent(ilk.liquidationRatio)}
+        </Text>
       </Flex>
     </Grid>
   )
@@ -233,9 +234,11 @@ export function VaultsOverviewView({
 }: VaultsOverview) {
   const { context$ } = useAppContext()
   const context = useObservable(context$)
-  const { query: { address } } = useRouter()
+  const {
+    query: { address },
+  } = useRouter()
 
-  const readonlyAccount = context?.status === 'connectedReadonly' && address as string
+  const readonlyAccount = context?.status === 'connectedReadonly' && (address as string)
   const displaySummary = vaults && vaults.length > 0 && vaultSummary
   const displayFeaturedIlks = vaults?.length === 0 && featuredIlks
   const displayVaults = vaults && vaults.length > 0 && vaults

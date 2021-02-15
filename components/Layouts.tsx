@@ -1,5 +1,4 @@
 import { isAppContextAvailable } from 'components/AppContextProvider'
-import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { Footer } from 'components/Footer'
 import { AppHeader, ConnectPageHeader, MarketingHeader } from 'components/Header'
 import { AppLinkProps } from 'components/Links'
