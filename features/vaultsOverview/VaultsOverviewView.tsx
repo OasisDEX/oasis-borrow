@@ -5,6 +5,7 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
+import { Table, TableContainer } from 'components/Table'
 import { VaultSummary } from 'features/vault/vaultSummary'
 import { formatAddress, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
@@ -12,52 +13,62 @@ import React from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
-import { Table, TokenSymbol } from '../landing/LandingView'
+import { TokenSymbol } from '../landing/LandingView'
 import { FeaturedIlk, VaultsOverview } from './vaultsOverview'
 
 function VaultsTable({ vaults }: { vaults: Vault[] }) {
   return (
     <Table
-      header={
-        <>
-          <Table.Header>Asset</Table.Header>
-          <Table.Header>Type</Table.Header>
-          <Table.Header sx={{ textAlign: 'right' }}>Deposited</Table.Header>
-          <Table.Header sx={{ textAlign: 'right' }}>Avail. to withdraw</Table.Header>
-          <Table.Header sx={{ textAlign: 'right' }}>DAI</Table.Header>
-          <Table.Header sx={{ textAlign: 'right' }}>Current Ratio</Table.Header>
-          <Table.Header></Table.Header>
-        </>
-      }
-    >
-      {vaults.map((vault) => (
-        <Table.Row key={vault.id}>
-          <Table.Cell>
-            <TokenSymbol token={vault.token} />
-          </Table.Cell>
-          <Table.Cell>{vault.ilk}</Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.collateral)} ${vault.token
-            }`}</Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.freeCollateral)} ${vault.token
-            }`}</Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>{formatCryptoBalance(vault.debt)}</Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>
-            {vault.collateralizationRatio
-              ? formatPercent(vault.collateralizationRatio.times(100))
+      data={vaults}
+      primaryKey="id"
+      rowDefinition={[
+        {
+          header: <Text>Asset</Text>,
+          cell: ({ token }) => <TokenSymbol token={token} />
+        },
+        {
+          header: <Text>Type</Text>,
+          cell: ({ ilk }) => <Text>{ilk}</Text>
+        },
+        {
+          header: <Text sx={{ textAlign: 'right' }}>Deposited</Text>,
+          cell: ({ collateral }) => <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(collateral)}</Text>
+        },
+        {
+          header: <Text sx={{ textAlign: 'right' }}>Avail. to withdraw</Text>,
+          cell: ({ freeCollateral }) => <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(freeCollateral)}</Text>
+        },
+        {
+          header: <Text sx={{ textAlign: 'right' }}>DAI</Text>,
+          cell: ({ debt }) => <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(debt)}</Text>
+        },
+        {
+          header: <Text sx={{ textAlign: 'right' }}>Current Ratio</Text>,
+          cell: ({ collateralizationRatio }) => <Text sx={{ textAlign: 'right' }}>{
+            collateralizationRatio
+              ? formatPercent(collateralizationRatio.times(100))
               : 0}
-          </Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>
-            <AppLink
-              variant="secondary"
-              as={`/${vault.id}`}
-              href={`/[vault]`}
-            >
-              Manage Vault
-            </AppLink>
-          </Table.Cell>
-        </Table.Row>
-      ))}
-    </Table>
+          </Text>
+        },
+        {
+          header: <Text sx={{ textAlign: 'right' }}>In my wallet</Text>,
+          cell: ({ }) => <Text sx={{ textAlign: 'right' }}>0</Text>
+        },
+        {
+          header: <Text />,
+          cell: ({ id }) => (
+            <Box sx={{ textAlign: 'right' }}>
+              <AppLink
+                variant="secondary"
+                as={`/${id}`}
+                href={`/[vault]`}
+              >
+                Manage Vault
+              </AppLink>
+            </Box>)
+        }
+      ]}
+    />
   )
 }
 
@@ -71,44 +82,49 @@ function AllIlks({
 
   return (
     <Table
-      header={
-        <>
-          <Table.Header>Asset</Table.Header>
-          <Table.Header>Type</Table.Header>
-          <Table.Header sx={{ textAlign: 'right' }}>DAI Available</Table.Header>
-          <Table.Header sx={{ textAlign: 'right' }}>Stability Fee</Table.Header>
-          <Table.Header sx={{ textAlign: 'right' }}>Min. Coll Rato</Table.Header>
-          <Table.Header></Table.Header>
-        </>
-      }
-    >
-      {ilkDataList.map(({ ilk, token, ilkDebtAvailable, stabilityFee, liquidationRatio }) => (
-        <Table.Row key={ilk}>
-          <Table.Cell>
-            <TokenSymbol token={token} />
-          </Table.Cell>
-          <Table.Cell>{ilk}</Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>
+      primaryKey='ilk'
+      data={ilkDataList}
+      rowDefinition={[
+        {
+          header: <Text>Asset</Text>,
+          cell: ({ token }) => <TokenSymbol token={token} />
+        },
+        {
+          header: <Text>Type</Text>,
+          cell: ({ ilk }) => <Text>{ilk}</Text>,
+        },
+        {
+          header: <Text sx={{ textAlign: 'right' }}>DAI Available</Text>,
+          cell: ({ ilkDebtAvailable }) => <Text sx={{ textAlign: 'right' }}>
             {formatCryptoBalance(ilkDebtAvailable)}
-          </Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>
+          </Text>
+        },
+        {
+          header: <Text sx={{ textAlign: 'right' }}>Stability Fee</Text>,
+          cell: ({ stabilityFee }) => <Text sx={{ textAlign: 'right' }}>
             {formatPercent(stabilityFee.times(100))}
-          </Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>
+          </Text>
+        },
+        {
+          header: <Text sx={{ textAlign: 'right' }}>Min. Coll Rato</Text>,
+          cell: ({ liquidationRatio }) => <Text sx={{ textAlign: 'right' }}>
             {formatPercent(liquidationRatio.times(100))}
-          </Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>
+          </Text>
+        },
+        {
+          header: <Text />,
+          cell: ({ ilk }) => <Box sx={{ textAlign: 'right' }}>
             <AppLink
               variant="secondary"
               disabled={!canOpenVault}
               href={`/vaults/open/${ilk}`}
             >
               Open Vault
-            </AppLink>
-          </Table.Cell>
-        </Table.Row>
-      ))}
-    </Table>
+          </AppLink>
+          </Box>
+        }
+      ]}
+    />
   )
 }
 

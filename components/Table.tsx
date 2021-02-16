@@ -1,32 +1,102 @@
-import React from 'react'
-import { Box, Grid, SxStyleProp } from 'theme-ui'
+import React, { ReactNode } from 'react'
+import { Box, Container, SxStyleProp } from 'theme-ui'
 
-export interface TableRowProps {
-  left?: JSX.Element | string
-  center?: JSX.Element | string
-  right?: JSX.Element | string
-  sx?: SxStyleProp
-  onClick?: () => any
+export interface Row<T> {
+  header: ReactNode,
+  cell: React.ComponentType<T>
 }
 
-export function TableRow({ left, center, right, sx, onClick }: TableRowProps) {
+interface Props<T extends Record<K, string>, K extends keyof T> {
+  data: T[],
+  rowDefinition: Row<T>[]
+  primaryKey: K,
+}
+
+export function TableContainer({
+  header,
+  children,
+  sx,
+}: React.PropsWithChildren<{ header: ReactNode; sx?: SxStyleProp }>) {
   return (
-    <Grid
-      columns={['2fr 1fr 2fr']}
-      gap={0}
+    <Container
       sx={{
-        variant: onClick ? 'styles.row.clickable' : '',
-        py: 2,
-        px: 3,
-        fontSize: 3,
-        mb: 1,
+        p: 0,
+        borderCollapse: 'separate',
+        borderSpacing: '0 9px',
         ...sx,
       }}
-      onClick={onClick || undefined}
+      as="table"
     >
-      <Box sx={{ width: '100%', textAlign: 'left' }}>{left}</Box>
-      <Box sx={{ width: '100%', textAlign: 'center' }}>{center}</Box>
-      <Box sx={{ width: '100%', textAlign: 'right' }}>{right}</Box>
-    </Grid>
+      <Box as="thead">
+        <Box as="tr">{header}</Box>
+      </Box>
+      <Box as="tbody">{children}</Box>
+    </Container>
+  )
+}
+
+function Row({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
+  return (
+    <Box
+      sx={{
+        boxShadow: 'table',
+        background: 'white',
+        borderRadius: '8px',
+        ...sx,
+      }}
+      as="tr"
+    >
+      {children}
+    </Box>
+  )
+}
+
+function Cell({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
+  return (
+    <Box
+      sx={{
+        p: 3,
+        ':first-child': {
+          borderRadius: '8px 0 0 8px',
+        },
+        ':last-child': {
+          borderRadius: '0 8px 8px 0',
+        },
+        ...sx,
+      }}
+      as="td"
+    >
+      {children}
+    </Box>
+  )
+}
+
+function Header({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
+  return (
+    <Box
+      sx={{
+        px: 3,
+        color: 'text.muted',
+        fontSize: 2,
+        textAlign: 'left',
+        ...sx,
+      }}
+      as="th"
+    >
+      {children}
+    </Box>
+  )
+}
+export function Table<T extends Record<K, string>, K extends keyof T>({ data, rowDefinition, primaryKey }: Props<T, K>) {
+  return (
+    <TableContainer header={rowDefinition.map(({ header }) => <Header>{header}</Header>)}>
+      {
+        data.map(row => (
+          <Row key={row[primaryKey]}>
+            {rowDefinition.map(({ cell: Content }, idx) => <Cell key={idx}><Content {...row} /></Cell>)}
+          </Row>
+        ))
+      }
+    </TableContainer>
   )
 }

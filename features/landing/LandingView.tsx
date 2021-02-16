@@ -1,88 +1,14 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { IlkData, IlkDataList } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
+import { Row, Table } from 'components/Table'
 import { FeaturedIlks } from 'features/vaultsOverview/VaultsOverviewView'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import React, { ComponentProps, ReactNode } from 'react'
-import { Box, Container, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
-
-export function Table({
-  header,
-  children,
-  sx,
-}: React.PropsWithChildren<{ header: ReactNode; sx?: SxStyleProp }>) {
-  return (
-    <Container
-      sx={{
-        p: 0,
-        borderCollapse: 'separate',
-        borderSpacing: '0 9px',
-        ...sx,
-      }}
-      as="table"
-    >
-      <Box as="thead">
-        <Box as="tr">{header}</Box>
-      </Box>
-      <Box as="tbody">{children}</Box>
-    </Container>
-  )
-}
-
-Table.Row = function ({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
-  return (
-    <Box
-      sx={{
-        boxShadow: 'table',
-        background: 'white',
-        borderRadius: '8px',
-        ...sx,
-      }}
-      as="tr"
-    >
-      {children}
-    </Box>
-  )
-}
-
-Table.Cell = function ({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
-  return (
-    <Box
-      sx={{
-        p: 3,
-        ':first-child': {
-          borderRadius: '8px 0 0 8px',
-        },
-        ':last-child': {
-          borderRadius: '0 8px 8px 0',
-        },
-        ...sx,
-      }}
-      as="td"
-    >
-      {children}
-    </Box>
-  )
-}
-
-Table.Header = function ({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
-  return (
-    <Box
-      sx={{
-        px: 3,
-        color: 'text.muted',
-        fontSize: 2,
-        textAlign: 'left',
-        ...sx,
-      }}
-      as="th"
-    >
-      {children}
-    </Box>
-  )
-}
+import React, { ComponentProps } from 'react'
+import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 export function TokenSymbol({ token, ...props }: { token: string } & Omit<ComponentProps<typeof Icon>, 'name'>) {
   const tokenInfo = getToken(token)
@@ -94,6 +20,37 @@ export function TokenSymbol({ token, ...props }: { token: string } & Omit<Compon
     </Flex>
   )
 }
+
+const rowDefinition: Row<IlkData>[] = [
+  {
+    header: <Text>Asset</Text>,
+    cell: ({ token }) => <TokenSymbol token={token} />
+  },
+  {
+    header: <Text>Type</Text>,
+    cell: ({ ilk }) => <Text>{ilk}</Text>
+  },
+  {
+    header: <Text sx={{ textAlign: 'right' }}>DAI Available</Text>,
+    cell: ({ ilkDebtAvailable }) => <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(ilkDebtAvailable)}</Text>
+  },
+  {
+    header: <Text sx={{ textAlign: 'right' }}>Stability Fee</Text>,
+    cell: ({ stabilityFee }) => <Text sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee)}</Text>
+  },
+  {
+    header: <Text sx={{ textAlign: 'right' }}>Min. Coll Ratio</Text>,
+    cell: ({ liquidationRatio }) => <Text sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio)}</Text>
+  },
+  {
+    header: <Text />,
+    cell: ({ ilk }) => <Box sx={{ textAlign: 'right' }}>
+      <AppLink href={`/vaults/open/${ilk}`} variant="secondary">
+        Create Vault
+        </AppLink>
+    </Box>
+  },
+]
 
 export function LandingView() {
   const { landing$ } = useAppContext()
@@ -115,36 +72,10 @@ export function LandingView() {
         <FeaturedIlks ilks={landing.featuredIlks} />
       </Box>
       <Table
-        header={
-          <>
-            <Table.Header sx={{ textAlign: 'left' }}>Asset</Table.Header>
-            <Table.Header sx={{ textAlign: 'left' }}>Type</Table.Header>
-            <Table.Header sx={{ textAlign: 'right' }}>DAI Available</Table.Header>
-            <Table.Header sx={{ textAlign: 'right' }}>Stability Fee</Table.Header>
-            <Table.Header sx={{ textAlign: 'right' }}>Min. Coll Ratio</Table.Header>
-            <Table.Header></Table.Header>
-          </>
-        }
-      >
-        {landing.rows.map(({ token, ilk, ilkDebtAvailable, stabilityFee, liquidationRatio }) => (
-          <Table.Row key={ilk} sx={{ td: { py: 2 } }}>
-            <Table.Cell>
-              <TokenSymbol token={token} />
-            </Table.Cell>
-            <Table.Cell>{ilk}</Table.Cell>
-            <Table.Cell sx={{ textAlign: 'right' }}>
-              {formatCryptoBalance(ilkDebtAvailable)}
-            </Table.Cell>
-            <Table.Cell sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee)}</Table.Cell>
-            <Table.Cell sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio)}</Table.Cell>
-            <Table.Cell sx={{ textAlign: 'right' }}>
-              <AppLink href={`/vaults/open/${ilk}`} variant="secondary">
-                Create Vault
-              </AppLink>
-            </Table.Cell>
-          </Table.Row>
-        ))}
-      </Table>
+        data={landing.rows}
+        primaryKey="ilk"
+        rowDefinition={rowDefinition}
+      />
     </Grid>
   )
 }
