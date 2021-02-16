@@ -1,7 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { ModalBottom } from 'components/Modal'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { InputWithMax } from 'helpers/input'
 import { ModalProps } from 'helpers/modalHook'

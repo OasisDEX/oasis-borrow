@@ -1,5 +1,4 @@
 import { isAppContextAvailable } from 'components/AppContextProvider'
-import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { Footer } from 'components/Footer'
 import { AppHeader, ConnectPageHeader, MarketingHeader } from 'components/Header'
 import { AppLinkProps } from 'components/Links'
@@ -71,10 +70,7 @@ export function MarketingLayout({ children, variant }: MarketingLayoutProps) {
   )
 }
 
-export function ConnectPageLayout({
-  children,
-  backLink,
-}: WithChildren & { backLink: AppLinkProps }) {
+export function ConnectPageLayout({ children }: WithChildren & { backLink: AppLinkProps }) {
   if (!isAppContextAvailable()) {
     return null
   }

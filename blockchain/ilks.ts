@@ -32,14 +32,20 @@ export function createIlkData$(
   ilkToToken$: Observable<(ilk: string) => string>,
   ilk: string,
 ): Observable<IlkData> {
-  return combineLatest(vatIlks$(ilk), spotIlks$(ilk), jugIlks$(ilk), catIlks$(ilk), ilkToToken$).pipe(
+  return combineLatest(
+    vatIlks$(ilk),
+    spotIlks$(ilk),
+    jugIlks$(ilk),
+    catIlks$(ilk),
+    ilkToToken$,
+  ).pipe(
     switchMap(
       ([
         { normalizedIlkDebt, debtScalingFactor, maxDebtPerUnitCollateral, debtCeiling, debtFloor },
         { priceFeedAddress, liquidationRatio },
         { stabilityFee, feeLastLevied },
         { liquidatorAddress, liquidationPenalty, maxAuctionLotSize },
-        ilkToToken
+        ilkToToken,
       ]) =>
         of({
           normalizedIlkDebt,

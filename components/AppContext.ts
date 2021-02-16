@@ -25,6 +25,7 @@ import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createLanding$ } from 'features/landing/landing'
 import { createOpenVault$ } from 'features/openVault/openVault'
+import { redirectState$ } from 'features/router/redirectState'
 import { createVaultSummary$ } from 'features/vault/vaultSummary'
 import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { mapValues } from 'lodash'
@@ -54,7 +55,6 @@ import {
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
 import { HasGasEstimation } from '../helpers/form'
-import { redirectState$ } from 'features/router/redirectState'
 
 export type TxData =
   | LockAndDrawData
@@ -153,7 +153,9 @@ export function setupAppContext() {
   // computed
   const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
 
-  const ilkData$ = memoize(curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, catIlks$, ilkToToken$))
+  const ilkData$ = memoize(
+    curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, catIlks$, ilkToToken$),
+  )
 
   const controller$ = memoize(
     curry(createController$)(proxyOwner$, cdpManagerOwner$),
@@ -170,7 +172,7 @@ export function setupAppContext() {
       ilkData$,
       tokenOraclePrice$,
       controller$,
-      ilkToToken$
+      ilkToToken$,
     ),
     bigNumberTostring,
   )
@@ -197,18 +199,12 @@ export function setupAppContext() {
     tokenOraclePrice$,
     balance$,
     ilkData$,
-    ilkToToken$
+    ilkToToken$,
   )
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
 
   const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(
-      context$,
-      vaults$,
-      vaultSummary$,
-      ilkDataList$,
-      featuredIlks$,
-    ),
+    curry(createVaultsOverview$)(context$, vaults$, vaultSummary$, ilkDataList$, featuredIlks$),
   )
   const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
 
@@ -229,7 +225,7 @@ export function setupAppContext() {
     landing$,
     openVault$,
     vaultsOverview$,
-    redirectState$
+    redirectState$,
   }
 }
 

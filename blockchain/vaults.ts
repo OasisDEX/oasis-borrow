@@ -306,7 +306,7 @@ export function createVault$(
     cdpManagerIlks$(id),
     cdpManagerOwner$(id),
     controller$(id),
-    ilkToToken$
+    ilkToToken$,
   ).pipe(
     switchMap(([urnAddress, ilk, owner, controller, ilkToToken]) => {
       const token = ilkToToken(ilk)
