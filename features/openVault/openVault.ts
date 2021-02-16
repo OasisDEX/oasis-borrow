@@ -152,31 +152,31 @@ function validateErrors(state: OpenVaultState): OpenVaultState {
   const errorMessages: OpenVaultErrorMessage[] = []
 
   if (depositAmount?.gt(maxDepositAmount)) {
-    errorMessages.push({ kind: 'depositAmountGreaterThanMaxDepositAmount' })
+    errorMessages.push('depositAmountGreaterThanMaxDepositAmount')
   }
 
   if (generateAmount?.lt(debtFloor)) {
-    errorMessages.push({ kind: 'generateAmountLessThanDebtFloor' })
+    errorMessages.push('generateAmountLessThanDebtFloor')
   }
 
   if (generateAmount?.gt(ilkDebtAvailable)) {
-    errorMessages.push({ kind: 'generateAmountGreaterThanDebtCeiling' })
+    errorMessages.push('generateAmountGreaterThanDebtCeiling')
   }
 
   if (stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFailure') {
     if (!allowanceAmount) {
-      errorMessages.push({ kind: 'allowanceAmountEmpty' })
+      errorMessages.push('allowanceAmountEmpty')
     }
     if (allowanceAmount?.gt(maxUint256)) {
-      errorMessages.push({ kind: 'customAllowanceAmountGreaterThanMaxUint256' })
+      errorMessages.push('customAllowanceAmountGreaterThanMaxUint256')
     }
     if (depositAmount && allowanceAmount && allowanceAmount.lt(depositAmount)) {
-      errorMessages.push({ kind: 'customAllowanceAmountLessThanDepositAmount' })
+      errorMessages.push('customAllowanceAmountLessThanDepositAmount')
     }
   }
 
   if (generateAmount?.gt(zero) && afterCollateralizationRatio.lt(liquidationRatio)) {
-    errorMessages.push({ kind: 'vaultUnderCollateralized' })
+    errorMessages.push('vaultUnderCollateralized')
   }
 
   return { ...state, errorMessages }
@@ -196,27 +196,27 @@ function validateWarnings(state: OpenVaultState): OpenVaultState {
   const warningMessages: OpenVaultWarningMessage[] = []
 
   if (depositAmount?.gt(zero) && depositAmountUSD.lt(debtFloor)) {
-    warningMessages.push({ kind: 'potentialGenerateAmountLessThanDebtFloor' })
+    warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
   }
 
   if (!proxyAddress) {
-    warningMessages.push({ kind: 'noProxyAddress' })
+    warningMessages.push('noProxyAddress')
   }
 
   if (!depositAmount) {
-    warningMessages.push({ kind: 'depositAmountEmpty' })
+    warningMessages.push('depositAmountEmpty')
   }
 
   if (!generateAmount) {
-    warningMessages.push({ kind: 'generateAmountEmpty' })
+    warningMessages.push('generateAmountEmpty')
   }
 
   if (token !== 'ETH') {
     if (!allowance) {
-      warningMessages.push({ kind: 'noAllowance' })
+      warningMessages.push('noAllowance')
     }
     if (depositAmount && allowance && depositAmount.gt(allowance)) {
-      warningMessages.push({ kind: 'allowanceLessThanDepositAmount' })
+      warningMessages.push('allowanceLessThanDepositAmount')
     }
   }
 
@@ -232,26 +232,22 @@ export type ManualChange =
 
 const apply: ApplyChange<OpenVaultState> = applyChange
 
-type OpenVaultErrorMessage = {
-  kind:
-    | 'depositAmountGreaterThanMaxDepositAmount'
-    | 'generateAmountLessThanDebtFloor'
-    | 'generateAmountGreaterThanDebtCeiling'
-    | 'vaultUnderCollateralized'
-    | 'allowanceAmountEmpty'
-    | 'customAllowanceAmountGreaterThanMaxUint256'
-    | 'customAllowanceAmountLessThanDepositAmount'
-}
+type OpenVaultErrorMessage =
+  | 'depositAmountGreaterThanMaxDepositAmount'
+  | 'generateAmountLessThanDebtFloor'
+  | 'generateAmountGreaterThanDebtCeiling'
+  | 'vaultUnderCollateralized'
+  | 'allowanceAmountEmpty'
+  | 'customAllowanceAmountGreaterThanMaxUint256'
+  | 'customAllowanceAmountLessThanDepositAmount'
 
-type OpenVaultWarningMessage = {
-  kind:
-    | 'potentialGenerateAmountLessThanDebtFloor'
-    | 'depositAmountEmpty'
-    | 'generateAmountEmpty'
-    | 'noProxyAddress'
-    | 'noAllowance'
-    | 'allowanceLessThanDepositAmount'
-}
+type OpenVaultWarningMessage =
+  | 'potentialGenerateAmountLessThanDebtFloor'
+  | 'depositAmountEmpty'
+  | 'generateAmountEmpty'
+  | 'noProxyAddress'
+  | 'noAllowance'
+  | 'allowanceLessThanDepositAmount'
 
 export type OpenVaultStage =
   | 'ilkValidationLoading'

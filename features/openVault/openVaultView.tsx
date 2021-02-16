@@ -151,15 +151,8 @@ function OpenVaultFormEditing(props: OpenVaultState) {
     }
   }
 
-  const errorString = errorMessages
-    ?.map(({ kind }) => kind)
-    .filter((x) => x)
-    .join(',\n')
-
-  const warningString = warningMessages
-    ?.map(({ kind }) => kind)
-    .filter((x) => x)
-    .join(',\n')
+  const errorString = errorMessages.join(',\n')
+  const warningString = warningMessages.join(',\n')
 
   const hasError = !!errorString
   const hasWarnings = !!warningString
@@ -358,10 +351,7 @@ function OpenVaultFormAllowance({
     }
   }
 
-  const errorString = errorMessages
-    ?.map(({ kind }) => kind)
-    .filter((x) => x)
-    .join(',\n')
+  const errorString = errorMessages.join(',\n')
 
   const hasError = !!errorString
   const buttonText =
