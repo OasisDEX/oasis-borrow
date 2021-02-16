@@ -50,7 +50,9 @@ const defaultIsStates = {
   isOpenStage: false,
 }
 
-function applyIsStageStates(state: OpenVaultState): OpenVaultState {
+function applyIsStageStates(
+  state: IlkValidationState | OpenVaultState,
+): IlkValidationState | OpenVaultState {
   const newState = {
     ...state,
     ...defaultIsStates,
@@ -96,6 +98,8 @@ function applyIsStageStates(state: OpenVaultState): OpenVaultState {
         ...newState,
         isOpenStage: true,
       }
+    default:
+      return state
   }
 }
 
@@ -249,10 +253,23 @@ type OpenVaultWarningMessage =
   | 'noAllowance'
   | 'allowanceLessThanDepositAmount'
 
-export type OpenVaultStage =
+export type IlkValidationStage =
   | 'ilkValidationLoading'
   | 'ilkValidationFailure'
   | 'ilkValidationSuccess'
+
+export interface IlkValidationState {
+  stage: IlkValidationStage
+  ilk: string
+
+  isIlkValidationStage: boolean
+  isEditingStage: boolean
+  isProxyStage: boolean
+  isAllowanceStage: boolean
+  isOpenStage: boolean
+}
+
+export type OpenVaultStage =
   | 'editing'
   | 'proxyWaitingForConfirmation'
   | 'proxyWaitingForApproval'
@@ -594,7 +611,7 @@ export function createOpenVault$(
   ilks$: Observable<string[]>,
   ilkToToken$: Observable<(ilk: string) => string>,
   ilk: string,
-): Observable<OpenVaultState> {
+): Observable<IlkValidationState | OpenVaultState> {
   return ilks$
     .pipe(
       switchMap((ilks) => {

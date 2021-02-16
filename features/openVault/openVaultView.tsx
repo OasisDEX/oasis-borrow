@@ -641,10 +641,9 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
       </Grid>
     )
   }
-
   return (
     <Grid>
-      <OpenVaultContainer {...openVault} />
+      <OpenVaultContainer {...(openVault as OpenVaultState)} />
     </Grid>
   )
 }
