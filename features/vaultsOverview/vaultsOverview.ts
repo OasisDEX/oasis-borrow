@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { IlkData, IlkDataList } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -14,11 +15,16 @@ export interface FeaturedIlk extends IlkData {
   title: string
 }
 
+export interface IlkDataWithBalance extends IlkData {
+  balance: BigNumber | undefined
+  balancePrice: BigNumber | undefined
+}
+
 export interface VaultsOverview {
   canOpenVault: boolean
   vaults: Vault[] | undefined
   vaultSummary: VaultSummary | undefined
-  ilkDataList: IlkDataList | undefined
+  ilkDataList: IlkDataWithBalance[] | undefined
   featuredIlks: FeaturedIlk[] | undefined
 }
 
@@ -70,6 +76,7 @@ export function createVaultsOverview$(
   vaults$: (address: string) => Observable<Vault[]>,
   ilkDataList$: Observable<IlkDataList>,
   featuredIlks$: Observable<FeaturedIlk[]>,
+  balances$: (address: string) => Observable<Record<string, { price: BigNumber, balance: BigNumber }>>,
   address: string,
 ): Observable<VaultsOverview> {
   return combineLatest(
@@ -78,12 +85,19 @@ export function createVaultsOverview$(
     vaults$(address).pipe(map(getVaultsSummary), startWith<VaultSummary | undefined>(undefined)),
     ilkDataList$.pipe(startWith<IlkDataList | undefined>(undefined)),
     featuredIlks$.pipe(startWith<FeaturedIlk[] | undefined>(undefined)),
+    balances$(address).pipe(startWith<Record<string, { price: BigNumber, balance: BigNumber }>>({}))
   ).pipe(
-    map(([context, vaults, vaultSummary, ilkDataList, featuredIlks]) => ({
+    map(([context, vaults, vaultSummary, ilkDataList, featuredIlks, balances]) => ({
       canOpenVault: context.status === 'connected',
       vaults,
       vaultSummary,
-      ilkDataList,
+      ilkDataList: ilkDataList
+        ? ilkDataList.map(ilk => ({
+          ...ilk,
+          balance: balances[ilk.token]?.balance,
+          balancePrice: balances[ilk.token]?.price.times(balances[ilk.token]?.balance)
+        }))
+        : ilkDataList,
       featuredIlks,
     })),
   )

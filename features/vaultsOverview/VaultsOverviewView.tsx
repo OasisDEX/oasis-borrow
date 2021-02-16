@@ -14,7 +14,7 @@ import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { TokenSymbol } from '../landing/LandingView'
-import { FeaturedIlk, VaultsOverview } from './vaultsOverview'
+import { FeaturedIlk, IlkDataWithBalance, VaultsOverview } from './vaultsOverview'
 
 function VaultsTable({ vaults }: { vaults: Vault[] }) {
   return (
@@ -51,10 +51,6 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
           </Text>
         },
         {
-          header: <Text sx={{ textAlign: 'right' }}>In my wallet</Text>,
-          cell: ({ }) => <Text sx={{ textAlign: 'right' }}>0</Text>
-        },
-        {
           header: <Text />,
           cell: ({ id }) => (
             <Box sx={{ textAlign: 'right' }}>
@@ -75,9 +71,12 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
 function AllIlks({
   canOpenVault,
   ilkDataList,
+  isReadonly
 }: {
   canOpenVault: boolean
-  ilkDataList: IlkDataList
+  ilkDataList: IlkDataWithBalance[]
+  isReadonly: boolean,
+  address: string,
 }) {
 
   return (
@@ -111,6 +110,20 @@ function AllIlks({
             {formatPercent(liquidationRatio.times(100))}
           </Text>
         },
+        ...(isReadonly
+          ? []
+          : [{
+            header: <Text sx={{ textAlign: 'right' }}>In my wallet</Text>,
+            cell: (ilk: IlkDataWithBalance) => (
+              <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
+                <Text sx={{ textAlign: 'right' }}>
+                  {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
+                </Text>
+                <Text variant="paragraph3" sx={{ color: 'muted' }}>
+                  {`($${ilk.balancePrice ? formatCryptoBalance(ilk.balancePrice) : 0})`}
+                </Text>
+              </Flex>)
+          }]),
         {
           header: <Text />,
           cell: ({ ilk }) => <Box sx={{ textAlign: 'right' }}>
@@ -286,7 +299,12 @@ export function VaultsOverviewView({
       {ilkDataList && (
         <>
           <Heading>Vaults</Heading>
-          <AllIlks canOpenVault={canOpenVault} ilkDataList={ilkDataList} />
+          <AllIlks
+            canOpenVault={canOpenVault}
+            ilkDataList={ilkDataList}
+            isReadonly={context?.status === 'connectedReadonly'}
+            address={address}
+          />
         </>
       )}
     </Grid>

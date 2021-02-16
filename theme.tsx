@@ -728,6 +728,7 @@ const oasisBaseTheme = {
     },
     secondary: {
       variant: 'text.paragraph3',
+      whiteSpace: 'nowrap',
       cursor: 'pointer',
       fontWeight: 'semiBold',
       bg: 'ghost',

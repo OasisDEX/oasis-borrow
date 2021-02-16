@@ -89,7 +89,7 @@ function Header({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>)
 }
 export function Table<T extends Record<K, string>, K extends keyof T>({ data, rowDefinition, primaryKey }: Props<T, K>) {
   return (
-    <TableContainer header={rowDefinition.map(({ header }) => <Header>{header}</Header>)}>
+    <TableContainer header={rowDefinition.map(({ header }, index) => <Header key={index}>{header}</Header>)}>
       {
         data.map(row => (
           <Row key={row[primaryKey]}>

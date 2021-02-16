@@ -19,18 +19,17 @@ import {
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
-import { createAllowance$, createBalance$ } from 'blockchain/tokens'
+import { createAccountBalance$, createAllowance$, createBalance$ } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createLanding$ } from 'features/landing/landing'
 import { createOpenVault$ } from 'features/openVault/openVault'
-import { createVaultSummary$ } from 'features/vault/vaultSummary'
 import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
-import { Observable, of } from 'rxjs'
+import { combineLatest, Observable, of } from 'rxjs'
 import { filter, map, shareReplay } from 'rxjs/operators'
 
 import { catIlk } from '../blockchain/calls/cat'
@@ -186,6 +185,9 @@ export function setupAppContext() {
 
   const ilks$ = createIlks$(context$)
   const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
+  const tokens$ = combineLatest(ilks$, ilkToToken$).pipe(
+    map(([ilks, ilkToToken]) => ilks.map(ilkToToken)),
+  )
 
   const openVault$ = curry(createOpenVault$)(
     connectedContext$,
@@ -199,12 +201,14 @@ export function setupAppContext() {
   )
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
 
+  const accountBalances$ = curry(createAccountBalance$)(balance$, ilks$, ilkToToken$, tokenOraclePrice$)
   const vaultsOverview$ = memoize(
     curry(createVaultsOverview$)(
       context$,
       vaults$,
       ilkDataList$,
       featuredIlks$,
+      accountBalances$,
     ),
   )
   const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
@@ -225,7 +229,8 @@ export function setupAppContext() {
     landing$,
     openVault$,
     vaultsOverview$,
-    redirectState$
+    redirectState$,
+    accountBalances$
   }
 }
 

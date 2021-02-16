@@ -1,7 +1,7 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { bindNodeCallback, Observable, of } from 'rxjs'
-import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
+import { bindNodeCallback, combineLatest, Observable, of } from 'rxjs'
+import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { tokenAllowance, tokenBalance } from './calls/erc20'
 import { CallObservable } from './calls/observe'
@@ -26,6 +26,25 @@ export function createBalance$(
       }
       return tokenBalance$({ token, account: address })
     }),
+  )
+}
+
+export function createAccountBalance$(
+  tokenBalance$: (token: string, address: string) => Observable<BigNumber>,
+  ilks: Observable<string[]>,
+  ilkToToken: Observable<(ilk: string) => string>,
+  tokenPrice: (ilk: string) => Observable<BigNumber>,
+  address: string,
+): Observable<Record<string, { balance: BigNumber, price: BigNumber }>> {
+  return combineLatest(ilks, ilkToToken).pipe(
+    switchMap(([ilks, ilkToToken]) =>
+
+      of(ilks.map(ilkToToken)).pipe(
+        map(tokens => tokens.map((token, idx) => [token, ilks[idx]])),
+        switchMap(pair => combineLatest(pair.map(([token, ilk]) => combineLatest(of(token), tokenBalance$(token, address), tokenPrice(ilk))))),
+        map(data => data.reduce((acc, [token, balance, price]) => ({ ...acc, [token]: { balance, price } }), {}))
+      )
+    )
   )
 }
 
