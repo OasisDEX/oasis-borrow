@@ -82,8 +82,7 @@ function NotificationContent({
           minWidth: `calc(100% + ${buttonMinWidth})`,
           alignSelf: 'flex-end',
           height: '100%',
-          border: 'light',
-          borderColor: 'muted',
+          borderColor: 'light',
           bg: 'txManagerBg',
           boxShadow: 'txManager',
         }}
@@ -128,10 +127,10 @@ export function AccountButton() {
   if (web3Context?.status === 'connected') {
     return (
       <Flex sx={{ justifyContent: 'flex-end', minWidth: 'auto', width: '100%' }}>
-        <Flex sx={{ overflow: 'hidden', borderRadius: 'round' }}>
+        <Flex>
           <NotificationContent isVisible={isVisible} transaction={transaction?.tx} />
           <Button
-            variant="outline"
+            variant="square"
             sx={{ fontWeight: 'body', minWidth: buttonMinWidth, zIndex: 1 }}
             onClick={() => openModal(AccountModal)}
           >
@@ -151,12 +150,6 @@ export function AccountButton() {
       {t('connect-wallet-button')}
     </AppLink>
   )
-
-  // return (
-  //   <Button variant="outline" onClick={() => openModal(ConnectModal)} >
-  //     {t('connect-wallet-button')}
-  //   </Button>
-  // )
 }
 
 export function ConnectModal({ close }: ModalProps) {

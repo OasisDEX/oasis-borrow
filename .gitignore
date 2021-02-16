@@ -9,6 +9,7 @@ coverage
 yalc.lock
 .vscode
 .log
+.DS_Store
 
 public/precache.*.*.js
 public/sw.js
@@ -19,3 +20,4 @@ public/sw.js.map
 public/workbox-*.js.map
 public/worker-*.js.map
 types
+

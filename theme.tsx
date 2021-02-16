@@ -3,10 +3,9 @@ import { icons } from '@makerdao/dai-ui-icons'
 // @ts-ignore
 import { icons as brandingIcons } from '@makerdao/dai-ui-icons-branding'
 // @ts-ignore
-import oasisBaseTheme from '@makerdao/dai-ui-theme-casual'
+// import oasisBaseTheme from '@makerdao/dai-ui-theme-casual'
 import React from 'react'
 // @ts-ignore
-import { merge } from 'theme-ui'
 
 const customIcons = {
   arrow_down: {
@@ -495,46 +494,202 @@ const customLandingIcons = {
   },
 }
 
-// Duplication from theme as exporting const from package library is breaking dai-ui website and theme-ui doesn't support yet transitions tokens :(
-// To refactor if they will include this support
-export const TRANSITIONS = {
-  global: '150ms cubic-bezier(0.215,0.61,0.355,1)',
-}
-
-export const theme = merge(oasisBaseTheme, {
-  gradients: {
-    app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
-  },
-  radii: {
-    small: 4,
-    medium: 8,
-    large: 16,
-    // roundish: 20,
-    // round: 32,
-  },
+const oasisBaseTheme = {
+  useBorderBox: true,
+  useBodyStyles: true,
+  breakpoints: ['40em', '52em', '64em'],
   colors: {
+    primary: '#25273D',
+    primaryAlt: '#D3D4D8',
+    primaryEmphasis: '#626472',
+    secondary: '#ECEFF9',
+    background: '#F6F8F9',
+    surface: '#FFF',
+
+    ghost: '#F6F6F6',
+    light: '#D1DEE6',
+
     text: {
       muted: '#708390',
+      contrast: '#FFF',
     },
+
+    link: '#575CFE',
+    textAlt: 'rgba(37, 39, 61, 0.67)',
+    onBackground: '#9FAFB9',
+    onPrimary: '#FFFFFF',
+    onSurface: '#708390',
+    muted: '#708390',
+    mutedAlt: '#656F75',
+    error: '#FDEDE8',
+    onError: '#F75524',
+    success: '#E7FCFA',
+    onSuccess: '#1AAB9B',
+    warning: '#FFF1CF',
+    onWarning: '#D8762D',
     networks: {
       mainnet: 'rgb(41, 182, 175)',
       kovan: 'rgb(112, 87, 255)',
       default: '#aaa',
     },
-    txManagerBg: '#E9EEF0',
   },
-
-  icons: {
-    ...icons,
-    ...brandingIcons,
-    ...customIcons,
+  fonts: {
+    body: '"Inter", "Helvetica Neue", sans-serif',
+    heading: '"FT Polar Trial", "Helvetica Neue", sans-serif',
+    monospace: 'monospace',
+  },
+  fontSizes: [10, 12, 14, 16, 18, 20, 24, 32, 52, 64, 96],
+  fontWeights: {
+    body: 400,
+    heading: 500,
+    semiBold: 600,
+    bold: 700,
   },
   lineHeights: {
-    txTimestamp: 1.6,
+    body: 1.5,
+    heading: 1.2,
+    tight: 1.05,
+    loose: 1.35,
+    //
+    buttons: '2.1em',
+    secondaryButton: 0.8,
+    smallButton: 1.9,
+  },
+  text: {
+    header1: {
+      fontFamily: 'heading',
+      fontWeight: 'bold',
+      lineHeight: 'heading',
+      fontSize: 8,
+      color: 'primary',
+    },
+    header2: {
+      fontFamily: 'heading',
+      fontWeight: 'heading',
+      lineHeight: 'heading',
+      fontSize: 7,
+      color: 'primary',
+    },
+    header3: {
+      fontFamily: 'heading',
+      fontWeight: 'bold',
+      lineHeight: 'heading',
+      fontSize: 5,
+      color: 'primary',
+    },
+    paragraph1: {
+      fontFamily: 'body',
+      fontWeight: 'body',
+      lineHeight: 'body',
+      fontSize: 4,
+      color: 'primary',
+    },
+    paragraph2: {
+      fontFamily: 'body',
+      fontWeight: 'body',
+      lineHeight: 'body',
+      fontSize: 3,
+      color: 'primary',
+    },
+    paragraph3: {
+      fontFamily: 'body',
+      fontWeight: 'body',
+      lineHeight: 'body',
+      fontSize: 2,
+      color: 'primary',
+    },
+    paragraph4: {
+      fontFamily: 'body',
+      fontWeight: 'body',
+      lineHeight: 'body',
+      fontSize: 1,
+      color: 'primary',
+    },
+    caption: {
+      variant: 'paragraph4',
+      fontWeight: 'heading',
+      textTransform: 'uppercase',
+      letterSpacing: '0.04em',
+      opacity: 0.7,
+    },
+  },
+  borders: {
+    light: '1px solid',
+  },
+  space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
+  sizes: [0, 4, 8, 16, 32, 64, 128, 256, 512],
+  radii: {
+    small: 4,
+    medium: 8,
+    large: 16,
+    roundish: 20,
+    round: 32,
+  },
+  shadows: {
+    medium: '0 2px 8px rgba(0, 0, 0, 0.17)',
+    light: '0 2px 8px rgba(0, 0, 0, 0.13)',
+    surface: '0px 2px 2px rgba(199, 199, 199, 0.25)',
+    table: '0px 0px 2px rgba(0, 0, 0, 0.2)',
+  },
+  gradients: {
+    app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
+  },
+  layout: {
+    appContainer: {
+      maxWidth: '1024px',
+    },
+    marketingContainer: {
+      variant: 'layout.appContainer',
+    },
+    landingContainer: {
+      variant: 'layout.appContainer',
+      maxWidth: '1200px',
+    },
+    termsContainer: {
+      variant: 'layout.appContainer',
+      maxWidth: '712px',
+      mt: 5,
+    },
+    daiContainer: {
+      variant: 'layout.appContainer',
+      maxWidth: '818px',
+    },
+    modal: {
+      variant: 'layout.appContainer',
+    },
+    modalHalf: {
+      variant: 'layout.modal',
+      minHeight: '50vh',
+    },
+  },
+  metadata: {
+    fontLinkHref: 'https://rsms.me/inter/inter.css',
   },
   cards: {
     primary: {
-      transition: TRANSITIONS.global,
+      border: '1px solid',
+      borderColor: 'muted',
+      p: 3,
+      borderRadius: 'roundish',
+      bg: 'surface',
+    },
+    primaryWithHover: {
+      variant: 'cards.primary',
+      cursor: 'pointer',
+      transition: '150ms cubic-bezier(0.215,0.61,0.355,1)',
+      '&:hover': {
+        borderColor: 'mutedAlt',
+        boxShadow: 'surface',
+      },
+    },
+    secondary: {
+      variant: 'cards.primary',
+      border: 'none',
+      bg: 'background',
+    },
+    secondaryRounded: {
+      variant: 'cards.secondary',
+      borderRadius: 'large',
     },
   },
   badges: {
@@ -550,57 +705,106 @@ export const theme = merge(oasisBaseTheme, {
     },
   },
   buttons: {
-    primarySquare: {
+    primary: {
+      variant: 'text.paragraph1',
+      cursor: 'pointer',
+      fontWeight: 'semiBold',
+      borderRadius: 'round',
+      lineHeight: 'buttons',
+      color: 'text.contrast',
+    },
+    outline: {
+      variant: 'text.paragraph2',
+      cursor: 'pointer',
+      background: 'none',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: 'light',
+      borderRadius: 'round',
+      color: 'primary',
+      fontWeight: 'semiBold',
+      px: 4,
+      py: 2,
+    },
+    secondary: {
+      variant: 'text.paragraph3',
+      cursor: 'pointer',
+      fontWeight: 'semiBold',
+      bg: 'ghost',
+      color: 'primary',
+      borderRadius: 'round',
+      px: 4,
+      py: 2,
+    },
+    square: {
+      variant: 'text.paragraph2',
+      bg: 'white',
+      borderRadius: 'large',
+      py: 3,
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: 'light',
+    },
+  },
+  links: {
+    nav: {
+      variant: 'text.paragraph3',
+      cursor: 'pointer',
+      display: 'inline-block',
+      fontWeight: 'semiBold',
+    },
+    outline: {
+      variant: 'buttons.outline',
+      display: 'inline-block',
+    },
+    secondary: {
+      variant: 'buttons.secondary',
+      display: 'inline-block',
+    },
+  },
+  icons: {
+    ...icons,
+    ...brandingIcons,
+    ...customIcons,
+    ...customLandingIcons,
+  },
+  forms: {
+    label: {
+      fontSize: 4,
+      fontWeight: 'semiBold',
+    },
+    input: {
+      outline: 'none',
+      borderRadius: 'large',
       border: 'light',
-      borderColor: 'primary',
-      '&:hover': {
-        bg: 'primaryEmphasis',
-        borderColor: 'primaryEmphasis',
+      borderColor: 'muted',
+      color: 'onSurface',
+      fontWeight: 'body',
+      fontFamily: 'body',
+      p: 3,
+      lineHeight: 'tight',
+      fontSize: 5,
+      '&:focus': {
+        borderColor: 'primary',
+        color: 'primary',
       },
       '&:disabled': {
-        borderColor: 'primaryAlt',
-        bg: 'primaryAlt',
+        bg: 'background',
         pointerEvents: 'none',
       },
     },
-    outlineSquareBig: {
-      variant: 'buttons.outlineSquare',
-      borderRadius: 'roundish',
-      fontSize: 5,
-      py: 3,
-      px: 4,
-      lineHeight: 'body',
-    },
-    outline: {
-      lineHeight: 1,
-      border: 'light',
-    },
-  },
-  layout: {
-    appContainer: {
-      maxWidth: '1024px',
-    },
-  },
-  forms: {
-    input: {
-      transition: TRANSITIONS.global,
-    },
     inputError: {
+      variant: 'forms.input',
+      borderColor: 'onError',
       '&:focus': {
         borderColor: 'onError',
-        color: 'primary',
       },
     },
-    inputSurface: {
+    select: {
       variant: 'forms.input',
-      bg: 'surface',
-      fontSize: 4,
-      lineHeight: 'loose',
     },
-    inputSurfaceError: {
-      variant: 'forms.inputSurface',
-      borderColor: 'onError',
-    },
+    textarea: { variant: 'forms.input', lineHeight: 'body' },
+    textareaError: { variant: 'forms.inputError' },
   },
   alerts: {
     primary: {
@@ -620,22 +824,6 @@ export const theme = merge(oasisBaseTheme, {
       textAlign: 'center',
     },
   },
-  text: {
-    timestampText: {
-      variant: 'text.text',
-      lineHeight: 'txTimestamp',
-      color: 'onBackground',
-    },
-    txManagerDescription: {
-      maxWidth: '100%',
-      textOverflow: 'ellipsis',
-      overflow: 'hidden',
-    },
-  },
-  shadows: {
-    table: '0px 0px 2px rgba(0, 0, 0, 0.2)',
-    cookie: '0px 1px 8px rgba(0, 0, 0, 0.09)',
-  },
   zIndices: {
     modal: 2,
     cookie: 3,
@@ -647,144 +835,53 @@ export const theme = merge(oasisBaseTheme, {
     gapCardProduct: '12px',
   },
   styles: {
-    a: {
-      textDecoration: 'none',
+    root: {
+      fontFamily: 'body',
+      lineHeight: 'body',
+      fontWeight: 'body',
+      fontSize: 3,
     },
     spinner: {
       default: {
         color: 'mutedAlt',
+        strokeWidth: 3,
+        size: 16,
+      },
+      small: {
+        variant: 'styles.spinner.default',
+        size: 12,
+      },
+      large: {
+        variant: 'styles.spinner.default',
+        size: 25,
       },
     },
-  },
-})
-
-// different theme for landing page
-export const landingTheme = merge(theme, {
-  fontSizes: [10, 12, 14, 16, 18, 20, 24, 28, 48, 64, 96],
-  lineHeights: {
-    loose: 1.3,
-    body: 1.65,
-    input: 1.5,
-    headline: 1.4,
-    mdxParagraph: 1.7,
-  },
-  fontWeights: {
-    heading: 600,
-  },
-  colors: {
-    backgroundInputContact: 'rgba(196, 196, 196, 0.2)',
-    buttonEmail: '#5D6087',
-    borderCalculatorInput: '#A9A9A9',
-  },
-  shadows: {
-    cardGuide: '0px 2px 17px rgba(0, 0, 0, 0.06)',
-    cardLanding: '0px 2px 6px rgba(0, 0, 0, 0.04)',
-    buttonPrimary: '0px 2px 1px rgba(225, 225, 225, 0.25)',
-    buttonOutline: '0px 2px 8px rgba(211, 211, 211, 0.5)',
-  },
-  links: {
-    nav: {
-      color: 'primary',
-      fontWeight: 'semiBold',
-      py: 2,
-      px: 3,
-      bg: 'transparent',
-      borderRadius: 'medium',
-      lineHeight: 'loose',
-      transition: TRANSITIONS.global,
-      boxShadow: 'none',
-      textDecoration: 'none',
-      letterSpacing: 0,
-      '&:hover': {
-        bg: 'background',
-      },
-    },
-  },
-  sizingsCustom: {
-    gapHeadline: '30px',
-    gapLatam500Convert: '12px',
-  },
-  icons: {
-    ...customLandingIcons,
-  },
-  layout: {
-    appContainer: {
-      maxWidth: '1024px',
-    },
-    marketingContainer: {
-      variant: 'layout.appContainer',
-      maxWidth: '612px',
-    },
-    landingContainer: {
-      variant: 'layout.appContainer',
-      maxWidth: '1200px',
-    },
-    termsContainer: {
-      variant: 'layout.appContainer',
-      maxWidth: '712px',
-    },
-    daiContainer: {
-      variant: 'layout.appContainer',
-      maxWidth: '818px',
-    },
-  },
-  forms: {
-    input: {
-      fontSize: 'body',
-      fontWeight: 'body',
-      borderRadius: 'medium',
-      borderColor: 'transparent',
-      lineHeight: 'input',
-      color: 'primary',
-      py: 2,
-      '&:focus': {
-        bg: 'surface',
-      },
-    },
-    inputContact: {
-      variant: 'forms.input',
-      bg: 'backgroundInputContact',
-    },
-    inputError: {
-      '&:focus': {
-        borderColor: 'primary',
-        color: 'primary',
-        bg: 'surface',
-      },
-    },
-    label: {
-      fontSize: 3,
-    },
-    textareaContact: {
-      variant: 'forms.inputContact',
-      py: 3,
-    },
-  },
-  alerts: {
-    warning: {
-      py: 3,
-      px: 4,
-      color: 'primary',
-      fontWeight: 'body',
-      lineHeight: 'smallButton',
-      borderRadius: 'roundish',
-    },
-  },
-  text: {
-    error: {
-      fontWeight: 'semiBold',
-      fontSize: 2,
-    },
-  },
-  styles: {
-    p: {
-      lineHeight: 'mdxParagraph',
+    h1: {
+      variant: 'text.header1',
     },
     h2: {
-      lineHeight: 'buttons',
+      variant: 'text.header2',
+    },
+    h3: {
+      variant: 'text.header3',
     },
     h4: {
-      mt: 5,
+      variant: 'text.microHeading',
+    },
+    a: {
+      variant: 'text.paragraph3',
+      fontWeight: 'semiBold',
+      textDecoration: 'none',
+      cursor: 'pointer',
+      color: 'link',
     },
   },
-})
+}
+
+export const theme = oasisBaseTheme
+
+// Duplication from theme as exporting const from package library is breaking dai-ui website and theme-ui doesn't support yet transitions tokens :(
+// To refactor if they will include this support
+export const TRANSITIONS = {
+  global: '150ms cubic-bezier(0.215,0.61,0.355,1)',
+}

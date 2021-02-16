@@ -89,7 +89,7 @@ export function TokenSymbol({ token }: { token: string }) {
 
   return (
     <Box>
-      <Icon name={tokenInfo.icon} size="20px" sx={{ verticalAlign: 'sub', mr: 2 }} />
+      <Icon name={tokenInfo.iconCircle} size="20px" sx={{ verticalAlign: 'sub', mr: 2 }} />
       {token}
     </Box>
   )
@@ -138,12 +138,8 @@ export function LandingView() {
             <Table.Cell sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee)}</Table.Cell>
             <Table.Cell sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio)}</Table.Cell>
             <Table.Cell sx={{ textAlign: 'right' }}>
-              <AppLink
-                href={`/vaults/open/${ilk}`}
-                sx={{ lineHeight: 1 }}
-                variant="buttons.outline"
-              >
-                Open Vault
+              <AppLink href={`/vaults/open/${ilk}`} variant="secondary">
+                Create Vault
               </AppLink>
             </Table.Cell>
           </Table.Row>
