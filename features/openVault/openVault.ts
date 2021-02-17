@@ -1,6 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
-import BigNumber from 'bignumber.js'
-import { approve, ApproveData } from 'blockchain/calls/erc20'
+import { BigNumber } from 'bignumber.js'
+import { approve, ApproveData, maxUint256 } from 'blockchain/calls/erc20'
 import { lockAndDraw } from 'blockchain/calls/lockAndDraw'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
@@ -8,150 +8,351 @@ import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { LockAndDrawData } from 'features/deposit/deposit'
-import {
-  ApplyChange,
-  applyChange,
-  Change,
-  Changes,
-  GasEstimationStatus,
-  HasGasEstimation,
-  transactionToX,
-} from 'helpers/form'
+import { ApplyChange, applyChange, Change, Changes, transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
-import { combineLatest, EMPTY, merge, Observable, of, Subject } from 'rxjs'
-import { filter, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
+import { combineLatest, iif, merge, Observable, of, Subject } from 'rxjs'
+import {
+  distinctUntilChanged,
+  filter,
+  first,
+  map,
+  scan,
+  shareReplay,
+  startWith,
+  switchMap,
+} from 'rxjs/operators'
 import Web3 from 'web3'
+
+interface Receipt {
+  logs: { topics: string[] | undefined }[]
+}
+
+function parseVaultIdFromReceiptLogs({ logs }: Receipt): number {
+  const newCdpEventTopic = Web3.utils.keccak256('NewCdp(address,address,uint256)')
+  return logs
+    .filter((log) => {
+      if (log.topics) {
+        return log.topics[0] === newCdpEventTopic
+      }
+      return false
+    })
+    .map(({ topics }) => {
+      return Web3.utils.hexToNumber(topics![3])
+    })[0]
+}
+
+const defaultIsStates = {
+  isIlkValidationStage: false,
+  isEditingStage: false,
+  isProxyStage: false,
+  isAllowanceStage: false,
+  isOpenStage: false,
+}
+
+function applyIsStageStates(
+  state: IlkValidationState | OpenVaultState,
+): IlkValidationState | OpenVaultState {
+  const newState = {
+    ...state,
+    ...defaultIsStates,
+  }
+
+  switch (state.stage) {
+    case 'ilkValidationFailure':
+    case 'ilkValidationLoading':
+    case 'ilkValidationSuccess':
+      return {
+        ...newState,
+        isIlkValidationStage: true,
+      }
+    case 'editing':
+      return {
+        ...newState,
+        isEditingStage: true,
+      }
+    case 'proxyWaitingForConfirmation':
+    case 'proxyWaitingForApproval':
+    case 'proxyInProgress':
+    case 'proxyFailure':
+    case 'proxySuccess':
+      return {
+        ...newState,
+        isProxyStage: true,
+      }
+    case 'allowanceWaitingForConfirmation':
+    case 'allowanceWaitingForApproval':
+    case 'allowanceInProgress':
+    case 'allowanceFailure':
+    case 'allowanceSuccess':
+      return {
+        ...newState,
+        isAllowanceStage: true,
+      }
+    case 'openWaitingForConfirmation':
+    case 'openWaitingForApproval':
+    case 'openInProgress':
+    case 'openFailure':
+    case 'openSuccess':
+      return {
+        ...newState,
+        isOpenStage: true,
+      }
+    default:
+      return state
+  }
+}
+
+function applyVaultCalculations(state: OpenVaultState): OpenVaultState {
+  const {
+    collateralBalance,
+    depositAmount,
+    maxDebtPerUnitCollateral,
+    generateAmount,
+    collateralPrice,
+    liquidationRatio,
+  } = state
+
+  const maxDepositAmount = collateralBalance
+  const maxDepositAmountUSD = collateralBalance.times(collateralPrice)
+  const maxGenerateAmount = depositAmount ? depositAmount.times(maxDebtPerUnitCollateral) : zero
+  const depositAmountUSD = depositAmount ? collateralPrice.times(depositAmount) : zero
+  const generateAmountUSD = generateAmount || zero // 1 DAI === 1 USD
+
+  const afterCollateralizationRatio = generateAmountUSD.eq(zero)
+    ? zero
+    : depositAmountUSD.div(generateAmountUSD)
+
+  const afterLiquidationPrice =
+    generateAmount && depositAmount && depositAmount.gt(zero)
+      ? generateAmount.times(liquidationRatio).div(depositAmount)
+      : zero
+
+  return {
+    ...state,
+    maxDepositAmount,
+    maxGenerateAmount,
+    afterCollateralizationRatio,
+    afterLiquidationPrice,
+    depositAmountUSD,
+    generateAmountUSD,
+    maxDepositAmountUSD,
+  }
+}
+
+function validateErrors(state: OpenVaultState): OpenVaultState {
+  const {
+    depositAmount,
+    maxDepositAmount,
+    generateAmount,
+    allowanceAmount,
+    debtFloor,
+    ilkDebtAvailable,
+    afterCollateralizationRatio,
+    liquidationRatio,
+    stage,
+  } = state
+
+  const errorMessages: OpenVaultErrorMessage[] = []
+
+  if (depositAmount?.gt(maxDepositAmount)) {
+    errorMessages.push('depositAmountGreaterThanMaxDepositAmount')
+  }
+
+  if (generateAmount?.lt(debtFloor)) {
+    errorMessages.push('generateAmountLessThanDebtFloor')
+  }
+
+  if (generateAmount?.gt(ilkDebtAvailable)) {
+    errorMessages.push('generateAmountGreaterThanDebtCeiling')
+  }
+
+  if (stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFailure') {
+    if (!allowanceAmount) {
+      errorMessages.push('allowanceAmountEmpty')
+    }
+    if (allowanceAmount?.gt(maxUint256)) {
+      errorMessages.push('customAllowanceAmountGreaterThanMaxUint256')
+    }
+    if (depositAmount && allowanceAmount && allowanceAmount.lt(depositAmount)) {
+      errorMessages.push('customAllowanceAmountLessThanDepositAmount')
+    }
+  }
+
+  if (generateAmount?.gt(zero) && afterCollateralizationRatio.lt(liquidationRatio)) {
+    errorMessages.push('vaultUnderCollateralized')
+  }
+
+  return { ...state, errorMessages }
+}
+
+function validateWarnings(state: OpenVaultState): OpenVaultState {
+  const {
+    allowance,
+    depositAmount,
+    generateAmount,
+    depositAmountUSD,
+    debtFloor,
+    proxyAddress,
+    token,
+  } = state
+
+  const warningMessages: OpenVaultWarningMessage[] = []
+
+  if (depositAmount?.gt(zero) && depositAmountUSD.lt(debtFloor)) {
+    warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
+  }
+
+  if (!proxyAddress) {
+    warningMessages.push('noProxyAddress')
+  }
+
+  if (!depositAmount) {
+    warningMessages.push('depositAmountEmpty')
+  }
+
+  if (!generateAmount) {
+    warningMessages.push('generateAmountEmpty')
+  }
+
+  if (token !== 'ETH') {
+    if (!allowance) {
+      warningMessages.push('noAllowance')
+    }
+    if (depositAmount && allowance && depositAmount.gt(allowance)) {
+      warningMessages.push('allowanceLessThanDepositAmount')
+    }
+  }
+
+  return { ...state, warningMessages }
+}
+
+type OpenVaultChange = Changes<OpenVaultState>
+
+export type ManualChange =
+  | Change<OpenVaultState, 'depositAmount'>
+  | Change<OpenVaultState, 'generateAmount'>
+  | Change<OpenVaultState, 'allowanceAmount'>
+
+const apply: ApplyChange<OpenVaultState> = applyChange
+
+type OpenVaultErrorMessage =
+  | 'depositAmountGreaterThanMaxDepositAmount'
+  | 'generateAmountLessThanDebtFloor'
+  | 'generateAmountGreaterThanDebtCeiling'
+  | 'vaultUnderCollateralized'
+  | 'allowanceAmountEmpty'
+  | 'customAllowanceAmountGreaterThanMaxUint256'
+  | 'customAllowanceAmountLessThanDepositAmount'
+
+type OpenVaultWarningMessage =
+  | 'potentialGenerateAmountLessThanDebtFloor'
+  | 'depositAmountEmpty'
+  | 'generateAmountEmpty'
+  | 'noProxyAddress'
+  | 'noAllowance'
+  | 'allowanceLessThanDepositAmount'
+
+export type IlkValidationStage =
+  | 'ilkValidationLoading'
+  | 'ilkValidationFailure'
+  | 'ilkValidationSuccess'
+
+export interface IlkValidationState {
+  stage: IlkValidationStage
+  ilk: string
+
+  isIlkValidationStage: boolean
+  isEditingStage: boolean
+  isProxyStage: boolean
+  isAllowanceStage: boolean
+  isOpenStage: boolean
+}
 
 export type OpenVaultStage =
   | 'editing'
   | 'proxyWaitingForConfirmation'
   | 'proxyWaitingForApproval'
   | 'proxyInProgress'
-  | 'proxyFiasco'
+  | 'proxyFailure'
+  | 'proxySuccess'
   | 'allowanceWaitingForConfirmation'
   | 'allowanceWaitingForApproval'
   | 'allowanceInProgress'
-  | 'allowanceFiasco'
-  | 'waitToContinue'
-  | 'transactionWaitingForConfirmation'
-  | 'transactionWaitingForApproval'
-  | 'transactionInProgress'
-  | 'transactionFiasco'
-  | 'transactionSuccess'
+  | 'allowanceFailure'
+  | 'allowanceSuccess'
+  | 'openWaitingForConfirmation'
+  | 'openWaitingForApproval'
+  | 'openInProgress'
+  | 'openFailure'
+  | 'openSuccess'
 
-type OpenVaultChange = Changes<OpenVaultState>
-
-export type ManualChange =
-  | Change<OpenVaultState, 'lockAmount'>
-  | Change<OpenVaultState, 'drawAmount'>
-  | Change<OpenVaultState, 'maxDrawAmount'>
-
-export interface OpenVaultState extends HasGasEstimation {
+export interface OpenVaultState {
+  // Basic States
   stage: OpenVaultStage
+  ilk: string
+  account: string
+  token: string
+
+  // validation
+  errorMessages: OpenVaultErrorMessage[]
+  warningMessages: OpenVaultWarningMessage[]
+
+  // Dynamic Data
   proxyAddress?: string
-  allowance?: boolean
+  allowance?: BigNumber
+  progress?: () => void
+  reset?: () => void
+  change?: (change: ManualChange) => void
+  id?: number
+  depositAmount?: BigNumber
+  generateAmount?: BigNumber
+  allowanceAmount?: BigNumber
+
+  // Account Balance & Price Info
+  collateralBalance: BigNumber
+  collateralPrice: BigNumber
+  ethBalance: BigNumber
+  ethPrice: BigNumber
+  daiBalance: BigNumber
+
+  // Vault Display Information
+  afterLiquidationPrice: BigNumber
+  afterCollateralizationRatio: BigNumber
+
+  // Form Bound Values
+  maxDepositAmount: BigNumber
+  maxGenerateAmount: BigNumber
+  depositAmountUSD: BigNumber
+  generateAmountUSD: BigNumber
+  maxDepositAmountUSD: BigNumber
+
+  // Ilk information
+  maxDebtPerUnitCollateral: BigNumber // Updates
+  ilkDebtAvailable: BigNumber // Updates
+  debtFloor: BigNumber
+  liquidationRatio: BigNumber
+
+  // IsStage states
+  isIlkValidationStage: boolean
+  isEditingStage: boolean
+  isProxyStage: boolean
+  isAllowanceStage: boolean
+  isOpenStage: boolean
+
+  // TransactionInfo
+  allowanceTxHash?: string
   proxyTxHash?: string
+  openTxHash?: string
   proxyConfirmations?: number
   safeConfirmations: number
-  allowanceTxHash?: string
-  openVaultTxHash?: string
-  ilk: string
-  token: string
-  id?: number
-  ilkData: IlkData
-  ethBalance: BigNumber
-  balance: BigNumber
-  price: BigNumber
-
-  // should return an estimation of the amount of ETH necessary to
-  // create a proxy if necessary, set an allowance if necessary
-  // and open the vault
-  estimatedGasCost?: BigNumber
-
-  // emergency shutdown!
-  lockAmount?: BigNumber
-  maxLockAmount?: BigNumber
-  drawAmount?: BigNumber
-  maxDrawAmount?: BigNumber
-
-  messages: OpenVaultMessage[]
   txError?: any
-  change?: (change: ManualChange) => void
-  createProxy?: () => void
-  setAllowance?: () => void
-  continue2ConfirmOpenVault?: () => void
-  openVault?: () => void
-  tryAgain?: () => void
-  back?: () => void
-  close?: () => void
-  proceed?: () => void
-}
-
-const apply: ApplyChange<OpenVaultState> = applyChange
-
-function createProxy(
-  { safeConfirmations }: ContextConnected,
-  { sendWithGasEstimation }: TxHelpers,
-  proxyAddress$: Observable<string | undefined>,
-  change: (ch: OpenVaultChange) => void,
-  state: OpenVaultState,
-) {
-  sendWithGasEstimation(createDsProxy, { kind: TxMetaKind.createDsProxy })
-    .pipe(
-      transactionToX<OpenVaultChange, CreateDsProxyData>(
-        { kind: 'stage', stage: 'proxyWaitingForApproval' },
-        (txState) =>
-          of(
-            { kind: 'proxyTxHash', proxyTxHash: (txState as any).txHash as string },
-            { kind: 'stage', stage: 'proxyInProgress' },
-          ),
-        (txState) => {
-          return of(
-            {
-              kind: 'stage',
-              stage: 'proxyFiasco',
-            },
-            {
-              kind: 'txError',
-              txError:
-                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-                  ? txState.error
-                  : undefined,
-            },
-          )
-        },
-        (txState) => {
-          return proxyAddress$.pipe(
-            filter((proxyAddress) => !!proxyAddress),
-            switchMap((proxyAddress) =>
-              (txState as any).confirmations < safeConfirmations
-                ? of({
-                    kind: 'proxyConfirmations',
-                    proxyConfirmations: (txState as any).confirmations,
-                  })
-                : of(
-                    { kind: 'proxyAddress', proxyAddress: proxyAddress! },
-                    {
-                      kind: 'stage',
-                      stage:
-                        state.token === 'ETH'
-                          ? 'allowanceWaitToContinue'
-                          : 'allowanceWaitingForConfirmation',
-                    },
-                  ),
-            ),
-          )
-        },
-        safeConfirmations,
-      ),
-    )
-    .subscribe((ch) => change(ch))
+  etherscan?: string
 }
 
 function setAllowance(
   { sendWithGasEstimation }: TxHelpers,
-  allowance$: Observable<boolean>,
+  allowance$: Observable<BigNumber>,
   change: (ch: OpenVaultChange) => void,
   state: OpenVaultState,
 ) {
@@ -159,6 +360,7 @@ function setAllowance(
     kind: TxMetaKind.approve,
     token: state.token,
     spender: state.proxyAddress!,
+    amount: state.allowanceAmount!,
   })
     .pipe(
       transactionToX<OpenVaultChange, ApproveData>(
@@ -175,7 +377,7 @@ function setAllowance(
           return of(
             {
               kind: 'stage',
-              stage: 'allowanceFiasco',
+              stage: 'allowanceFailure',
             },
             {
               kind: 'txError',
@@ -188,58 +390,98 @@ function setAllowance(
         },
         () =>
           allowance$.pipe(
-            filter((allowance) => allowance),
-            switchMap(() => of({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' })),
+            switchMap((allowance) =>
+              of({ kind: 'allowance', allowance }, { kind: 'stage', stage: 'allowanceSuccess' }),
+            ),
           ),
       ),
     )
     .subscribe((ch) => change(ch))
 }
 
-interface Receipt {
-  logs: { topics: string[] | undefined }[]
-}
-
-function parseVaultIdFromReceiptLogs({ logs }: Receipt) {
-  const newCdpEventTopic = Web3.utils.keccak256('NewCdp(address,address,uint256)')
-  return logs
-    .filter((log) => {
-      if (log.topics) {
-        return log.topics[0] === newCdpEventTopic
-      }
-      return false
-    })
-    .map(({ topics }) => {
-      return Web3.utils.hexToNumber(topics![3])
-    })[0]
+function createProxy(
+  { sendWithGasEstimation }: TxHelpers,
+  proxyAddress$: Observable<string | undefined>,
+  change: (ch: OpenVaultChange) => void,
+  { safeConfirmations }: OpenVaultState,
+) {
+  sendWithGasEstimation(createDsProxy, { kind: TxMetaKind.createDsProxy })
+    .pipe(
+      transactionToX<OpenVaultChange, CreateDsProxyData>(
+        { kind: 'stage', stage: 'proxyWaitingForApproval' },
+        (txState) =>
+          of(
+            { kind: 'proxyTxHash', proxyTxHash: (txState as any).txHash as string },
+            { kind: 'stage', stage: 'proxyInProgress' },
+          ),
+        (txState) => {
+          return of(
+            {
+              kind: 'stage',
+              stage: 'proxyFailure',
+            },
+            {
+              kind: 'txError',
+              txError:
+                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+                  ? txState.error
+                  : undefined,
+            },
+          )
+        },
+        (txState) => {
+          return proxyAddress$.pipe(
+            filter((proxyAddress) => !!proxyAddress),
+            switchMap((proxyAddress) =>
+              iif(
+                () => (txState as any).confirmations < safeConfirmations,
+                of({
+                  kind: 'proxyConfirmations',
+                  proxyConfirmations: (txState as any).confirmations,
+                }),
+                of(
+                  { kind: 'proxyAddress', proxyAddress: proxyAddress! },
+                  {
+                    kind: 'stage',
+                    stage: 'proxySuccess',
+                  },
+                ),
+              ),
+            ),
+          )
+        },
+        safeConfirmations,
+      ),
+    )
+    .subscribe((ch) => change(ch))
 }
 
 function openVault(
   { send }: TxHelpers,
   change: (ch: OpenVaultChange) => void,
-  { lockAmount, drawAmount, proxyAddress, ilk, token }: OpenVaultState,
+  { generateAmount, depositAmount, proxyAddress, ilk, token }: OpenVaultState,
 ) {
   send(lockAndDraw, {
     kind: TxMetaKind.lockAndDraw,
-    drawAmount: drawAmount || new BigNumber(0),
-    lockAmount: lockAmount || new BigNumber(0),
+    drawAmount: generateAmount || new BigNumber(0),
+    lockAmount: depositAmount || new BigNumber(0),
     proxyAddress: proxyAddress!,
     ilk,
     tkn: token,
   })
     .pipe(
       transactionToX<OpenVaultChange, LockAndDrawData>(
-        { kind: 'stage', stage: 'transactionWaitingForApproval' },
+        { kind: 'stage', stage: 'openWaitingForApproval' },
         (txState) =>
           of(
-            { kind: 'openVaultTxHash', openVaultTxHash: (txState as any).txHash as string },
-            { kind: 'stage', stage: 'transactionInProgress' },
+            { kind: 'openTxHash', openTxHash: (txState as any).txHash as string },
+            { kind: 'stage', stage: 'openInProgress' },
           ),
         (txState) => {
           return of(
             {
               kind: 'stage',
-              stage: 'transactionFiasco',
+              stage: 'openFailure',
             },
             {
               kind: 'txError',
@@ -254,7 +496,7 @@ function openVault(
           const id = parseVaultIdFromReceiptLogs(
             txState.status === TxStatus.Success && txState.receipt,
           )
-          return of({ kind: 'stage', stage: 'transactionSuccess' }, { kind: 'id', id })
+          return of({ kind: 'stage', stage: 'openSuccess' }, { kind: 'id', id })
         },
       ),
     )
@@ -262,281 +504,294 @@ function openVault(
 }
 
 function addTransitions(
-  context: ContextConnected,
   txHelpers: TxHelpers,
   proxyAddress$: Observable<string | undefined>,
-  allowance$: Observable<boolean>,
+  allowance$: Observable<BigNumber>,
   change: (ch: OpenVaultChange) => void,
   state: OpenVaultState,
 ): OpenVaultState {
-  function backToOpenVaultEditing() {
+  // function backToOpenVaultModalEditing() {
+  //   change({ kind: 'stage', stage: 'editing' })
+  // }
+
+  function reset() {
     change({ kind: 'stage', stage: 'editing' })
+    change({ kind: 'depositAmount', depositAmount: undefined })
+    change({ kind: 'generateAmount', generateAmount: undefined })
+    change({ kind: 'allowanceAmount', allowanceAmount: maxUint256 })
   }
 
-  function close() {
-    change({ kind: 'stage', stage: 'editing' })
-    change({ kind: 'lockAmount', lockAmount: undefined })
-    change({ kind: 'drawAmount', drawAmount: undefined })
-    change({ kind: 'maxLockAmount', maxLockAmount: undefined })
-    change({ kind: 'maxDrawAmount', maxDrawAmount: undefined })
+  function progressEditing() {
+    const canProgress = !state.errorMessages.length
+    const hasProxy = !!state.proxyAddress
+
+    const openingEmptyVault = state.depositAmount ? state.depositAmount.eq(zero) : true
+    const depositAmountLessThanAllowance =
+      state.allowance && state.depositAmount && state.allowance.gte(state.depositAmount)
+
+    const hasAllowance =
+      state.token === 'ETH' ? true : depositAmountLessThanAllowance || openingEmptyVault
+
+    if (canProgress) {
+      if (!hasProxy) {
+        change({ kind: 'stage', stage: 'proxyWaitingForConfirmation' })
+      } else if (!hasAllowance) {
+        change({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' })
+      } else change({ kind: 'stage', stage: 'openWaitingForConfirmation' })
+    }
   }
 
   if (state.stage === 'editing') {
     return {
       ...state,
       change,
-      proceed: !state.messages.length
-        ? () => {
-            if (!state.proxyAddress) {
-              change({ kind: 'stage', stage: 'proxyWaitingForConfirmation' })
-            } else if (!state.allowance) {
-              change({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' })
-            } else {
-              change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' })
-            }
-          }
-        : undefined,
+      reset,
+      progress: progressEditing,
     }
   }
 
-  if (state.stage === 'proxyWaitingForConfirmation') {
+  if (state.stage === 'proxyWaitingForConfirmation' || state.stage === 'proxyFailure') {
     return {
       ...state,
-      createProxy: () => createProxy(context, txHelpers, proxyAddress$, change, state),
+      progress: () => createProxy(txHelpers, proxyAddress$, change, state),
     }
   }
 
-  if (state.stage === 'proxyFiasco') {
+  if (state.stage === 'proxySuccess') {
     return {
       ...state,
-      tryAgain: () => createProxy(context, txHelpers, proxyAddress$, change, state),
+      progress: () =>
+        change({
+          kind: 'stage',
+          stage: state.token === 'ETH' ? 'editing' : 'allowanceWaitingForConfirmation',
+        }),
+      reset: () => change({ kind: 'stage', stage: 'editing' }),
     }
   }
 
-  if (state.stage === 'allowanceWaitingForConfirmation') {
+  if (state.stage === 'allowanceWaitingForConfirmation' || state.stage === 'allowanceFailure') {
     return {
       ...state,
-      setAllowance: () => setAllowance(txHelpers, allowance$, change, state),
+      change,
+      progress: () => setAllowance(txHelpers, allowance$, change, state),
+      reset: () => change({ kind: 'stage', stage: 'editing' }),
     }
   }
 
-  if (state.stage === 'allowanceFiasco') {
+  if (state.stage === 'allowanceSuccess') {
     return {
       ...state,
-      tryAgain: () => setAllowance(txHelpers, allowance$, change, state),
+      progress: () =>
+        change({
+          kind: 'stage',
+          stage: 'editing',
+        }),
     }
   }
 
-  if (state.stage === 'waitToContinue') {
+  if (state.stage === 'openWaitingForConfirmation' || state.stage === 'openFailure') {
     return {
       ...state,
-      proceed: () => change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' }),
-    }
-  }
-
-  if (state.stage === 'transactionWaitingForConfirmation') {
-    return {
-      ...state,
-      openVault: () => openVault(txHelpers, change, state),
-      back: backToOpenVaultEditing,
-    }
-  }
-
-  if (state.stage === 'transactionFiasco') {
-    return {
-      ...state,
-      tryAgain: () => openVault(txHelpers, change, state),
-      back: backToOpenVaultEditing,
-    }
-  }
-
-  if (state.stage === 'transactionSuccess') {
-    return {
-      ...state,
-      close,
+      progress: () => openVault(txHelpers, change, state),
+      reset: () => change({ kind: 'stage', stage: 'editing' }),
     }
   }
 
   return state
 }
 
-type OpenVaultMessage = {
-  kind:
-    | 'lockAmountEmpty'
-    | 'lockAmountGreaterThanBalance'
-    | 'lockAmountGreaterThanMaxLockAmount'
-    | 'drawAmountLessThanDebtFloor'
-    | 'drawAmountGreaterThanDebtCeiling'
-    | 'drawAmountPossibleLessThanDebtFloor'
-    | 'vaultUnderCollateralized'
-}
-
-function validate(state: OpenVaultState): OpenVaultState {
-  const { lockAmount, drawAmount, maxLockAmount, maxDrawAmount, ilkData } = state
-  const { ilkDebtAvailable, debtFloor, maxDebtPerUnitCollateral } = ilkData!
-
-  const messages: OpenVaultMessage[] = []
-
-  if (!lockAmount || lockAmount.eq(zero)) {
-    messages.push({ kind: 'lockAmountEmpty' })
-  }
-
-  if (lockAmount && maxLockAmount && lockAmount.gt(maxLockAmount)) {
-    messages[messages.length] = { kind: 'lockAmountGreaterThanMaxLockAmount' }
-  }
-
-  if (drawAmount && drawAmount.lt(debtFloor)) {
-    messages[messages.length] = { kind: 'drawAmountLessThanDebtFloor' }
-  }
-
-  if (maxDrawAmount && maxDrawAmount.lt(debtFloor)) {
-    messages[messages.length] = { kind: 'drawAmountPossibleLessThanDebtFloor' }
-  }
-
-  if (drawAmount && drawAmount.gt(ilkDebtAvailable)) {
-    messages[messages.length] = { kind: 'drawAmountGreaterThanDebtCeiling' }
-  }
-
-  if (drawAmount && lockAmount && drawAmount.gt(lockAmount.times(maxDebtPerUnitCollateral))) {
-    messages[messages.length] = { kind: 'vaultUnderCollateralized' }
-  }
-
-  return { ...state, messages }
-}
-
-// function constructEstimateGas(
-//   addGasEstimation: AddGasEstimationFunction,
-//   state: OpenVaultState,
-// ): Observable<OpenVaultState> {
-//   return addGasEstimation(state, ({ estimateGas }: TxHelpers) => {
-//     const { proxyAddress, stage, amount } = state
-//
-//     if (stage === 'proxyWaiting4Confirmation' || stage === 'proxyFiasco') {
-//       return estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy })
-//     }
-//
-//     if (
-//       proxyAddress &&
-//       (stage === 'allowanceWaiting4Confirmation' || stage === 'allowanceFiasco')
-//     ) {
-//       return estimateGas(approve, {
-//         token: 'DAI',
-//         spender: proxyAddress,
-//         kind: TxMetaKind.approve,
-//       })
-//     }
-//
-//     return undefined
-//   })
-// }
-
 export function createOpenVault$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
-  allowance$: (token: string, owner: string, spender: string) => Observable<boolean>,
+  allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
   tokenOraclePrice$: (token: string) => Observable<BigNumber>,
   balance$: (token: string, address: string) => Observable<BigNumber>,
   ilkData$: (ilk: string) => Observable<IlkData>,
+  ilks$: Observable<string[]>,
   ilkToToken$: Observable<(ilk: string) => string>,
   ilk: string,
-): Observable<any> {
-  return combineLatest(context$, txHelpers$, ilkToToken$).pipe(
-    switchMap(([context, txHelpers, ilkToToken]) => {
-      const account = context.account
-      const token = ilkToToken(ilk)
+): Observable<IlkValidationState | OpenVaultState> {
+  return ilks$
+    .pipe(
+      switchMap((ilks) => {
+        const isValidIlk = ilks.some((i) => i === ilk)
+        if (!isValidIlk) {
+          return of({
+            ilk,
+            stage: 'ilkValidationFailure',
+          })
+        }
+        return of({
+          ilk,
+          stage: 'ilkValidationSuccess',
+        })
+      }),
+      startWith({ ilk, stage: 'ilkValidationLoading' }),
+    )
+    .pipe(
+      switchMap((state) => {
+        return iif(
+          () => state.stage !== 'ilkValidationSuccess',
+          of(state),
+          combineLatest(context$, txHelpers$, ilkToToken$).pipe(
+            switchMap(([context, txHelpers, ilkToToken]) => {
+              const account = context.account
+              const token = ilkToToken(ilk)
 
-      return combineLatest(
-        balance$(token, account),
-        balance$('ETH', account),
-        tokenOraclePrice$(token),
-        ilkData$(ilk),
-        proxyAddress$(account),
-      ).pipe(
-        first(),
-        switchMap(([balance, ethBalance, price, ilkData, proxyAddress]) =>
-          ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
-            first(),
-            switchMap((allowance: boolean | undefined) => {
-              const initialState: OpenVaultState = {
-                stage: 'editing',
-                ilk,
-                token,
-                balance,
-                ethBalance,
-                price,
-                ilkData,
-                proxyAddress,
-                allowance,
-                messages: [],
-                safeConfirmations: context.safeConfirmations,
-                gasEstimationStatus: GasEstimationStatus.unset,
-              }
-
-              const change$ = new Subject<OpenVaultChange>()
-
-              function change(ch: OpenVaultChange) {
-                change$.next(ch)
-              }
-
-              const balanceChange$ = balance$(token, account).pipe(
-                map((balance) => ({ kind: 'balance', balance })),
-              )
-
-              const ethBalanceChange$ = balance$('ETH', account).pipe(
-                map((ethBalance) => ({ kind: 'ethBalance', ethBalance })),
-              )
-
-              const maxLockAmountChange$ = balance$(token, account).pipe(
-                map((balance) => {
-                  const maxLockAmount =
-                    token !== 'ETH' ? balance : balance.gt(0.05) ? balance.minus(0.05) : zero
-                  return { kind: 'maxLockAmount', maxLockAmount }
-                }),
-              )
-
-              const priceChange$ = tokenOraclePrice$(ilk).pipe(
-                map((price) => ({ kind: 'price', price })),
-              )
-
-              const ilkDataChange$ = ilkData$(ilk).pipe(
-                map((ilkData) => ({ kind: 'ilkData', ilkData })),
-              )
-
-              const environmentChange$ = merge(
-                balanceChange$,
-                ilkDataChange$,
-                priceChange$,
-                ethBalanceChange$,
-                maxLockAmountChange$,
-              )
-
-              const connectedProxyAddress$ = proxyAddress$(account)
-
-              const connectedAllowance$ = proxyAddress$(account).pipe(
-                switchMap((proxyAddress) =>
-                  proxyAddress ? allowance$(token, account, proxyAddress) : EMPTY,
+              const userTokenInfo$ = combineLatest(
+                balance$(token, account),
+                tokenOraclePrice$(token),
+                balance$('ETH', account),
+                tokenOraclePrice$('ETH'),
+                balance$('DAI', account),
+              ).pipe(
+                switchMap(
+                  ([collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance]) =>
+                    of({
+                      collateralBalance,
+                      collateralPrice,
+                      ethBalance,
+                      ethPrice,
+                      daiBalance,
+                    }),
                 ),
               )
 
-              return merge(change$, environmentChange$).pipe(
-                scan(apply, initialState),
-                map(validate),
-                map(
-                  curry(addTransitions)(
-                    context,
-                    txHelpers,
-                    connectedProxyAddress$,
-                    connectedAllowance$,
-                    change,
-                  ),
+              return combineLatest(userTokenInfo$, ilkData$(ilk), proxyAddress$(account)).pipe(
+                first(),
+                switchMap(
+                  ([
+                    { collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance },
+                    { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
+                    proxyAddress,
+                  ]) =>
+                    (
+                      (proxyAddress && allowance$(token, account, proxyAddress)) ||
+                      of(undefined)
+                    ).pipe(
+                      first(),
+                      switchMap((allowance) => {
+                        const initialState: OpenVaultState = {
+                          ...defaultIsStates,
+                          stage: 'editing',
+                          token,
+                          account,
+                          collateralBalance,
+                          collateralPrice,
+                          ethBalance,
+                          ethPrice,
+                          daiBalance,
+                          errorMessages: [],
+                          warningMessages: [],
+                          depositAmount: undefined,
+                          generateAmount: undefined,
+                          maxDepositAmount: zero,
+                          maxGenerateAmount: zero,
+                          depositAmountUSD: zero,
+                          generateAmountUSD: zero,
+                          maxDepositAmountUSD: zero,
+                          afterLiquidationPrice: zero,
+                          afterCollateralizationRatio: zero,
+                          ilk,
+                          maxDebtPerUnitCollateral,
+                          ilkDebtAvailable,
+                          debtFloor,
+                          liquidationRatio,
+                          proxyAddress,
+                          allowance,
+                          safeConfirmations: context.safeConfirmations,
+                          etherscan: context.etherscan.url,
+                          allowanceAmount: maxUint256,
+                        }
+
+                        const change$ = new Subject<OpenVaultChange>()
+
+                        function change(ch: OpenVaultChange) {
+                          change$.next(ch)
+                        }
+
+                        const collateralBalanceChange$ = balance$(token, account!).pipe(
+                          map((collateralBalance) => ({
+                            kind: 'collateralBalance',
+                            collateralBalance,
+                          })),
+                        )
+
+                        const ethBalanceChange$ = balance$('ETH', account!).pipe(
+                          map((ethBalance) => ({ kind: 'ethBalance', ethBalance })),
+                        )
+
+                        const daiBalanceChange$ = balance$('DAI', account!).pipe(
+                          map((daiBalance) => ({ kind: 'daiBalance', daiBalance })),
+                        )
+
+                        const maxDebtPerUnitCollateralChange$ = ilkData$(ilk).pipe(
+                          map(({ maxDebtPerUnitCollateral }) => ({
+                            kind: 'maxDebtPerUnitCollateral',
+                            maxDebtPerUnitCollateral,
+                          })),
+                        )
+
+                        const ilkDebtAvailableChange$ = ilkData$(ilk).pipe(
+                          map(({ ilkDebtAvailable }) => ({
+                            kind: 'ilkDebtAvailable',
+                            ilkDebtAvailable,
+                          })),
+                        )
+
+                        const debtFloorChange$ = ilkData$(ilk).pipe(
+                          map(({ debtFloor }) => ({
+                            kind: 'debtFloor',
+                            debtFloor,
+                          })),
+                        )
+
+                        const collateralPriceChange$ = tokenOraclePrice$(ilk).pipe(
+                          map((collateralPrice) => ({ kind: 'collateralPrice', collateralPrice })),
+                        )
+
+                        const environmentChanges$ = merge(
+                          collateralPriceChange$,
+                          collateralBalanceChange$,
+                          ethBalanceChange$,
+                          daiBalanceChange$,
+                          maxDebtPerUnitCollateralChange$,
+                          ilkDebtAvailableChange$,
+                          debtFloorChange$,
+                        )
+
+                        const connectedProxyAddress$ = proxyAddress$(account)
+
+                        const connectedAllowance$ = connectedProxyAddress$.pipe(
+                          switchMap((proxyAddress) =>
+                            proxyAddress ? allowance$(token, account, proxyAddress) : of(zero),
+                          ),
+                          distinctUntilChanged((x, y) => x.eq(y)),
+                        )
+                        return merge(change$, environmentChanges$).pipe(
+                          scan(apply, initialState),
+                          map(applyVaultCalculations),
+                          map(validateErrors),
+                          map(validateWarnings),
+                          map(
+                            curry(addTransitions)(
+                              txHelpers,
+                              connectedProxyAddress$,
+                              connectedAllowance$,
+                              change,
+                            ),
+                          ),
+                          shareReplay(1),
+                        )
+                      }),
+                    ),
                 ),
-                shareReplay(1),
               )
             }),
           ),
-        ),
-      )
-    }),
-  )
+        )
+      }),
+      map(applyIsStageStates),
+    )
 }

@@ -27,17 +27,19 @@ export function InputWithSuffix({ input, suffix }: InputWithSuffixProps) {
   return (
     <Box sx={{ position: 'relative' }}>
       {input}
-      <Flex
-        sx={{
-          position: 'absolute',
-          alignItems: 'center',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          right: 3,
-        }}
-      >
-        {suffix}
-      </Flex>
+      {suffix ? (
+        <Flex
+          sx={{
+            position: 'absolute',
+            alignItems: 'center',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            right: 3,
+          }}
+        >
+          {suffix}
+        </Flex>
+      ) : null}
     </Box>
   )
 }

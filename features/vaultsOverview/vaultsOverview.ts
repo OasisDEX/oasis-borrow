@@ -4,12 +4,13 @@ import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { getVaultsSummary, VaultSummary } from 'features/vault/vaultSummary'
+import { isEqual } from 'lodash'
 import maxBy from 'lodash/maxBy'
 import minBy from 'lodash/minBy'
 import { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/internal/operators/map'
-import { filter, startWith } from 'rxjs/operators'
+import { distinctUntilChanged, filter, startWith } from 'rxjs/operators'
 
 export interface FeaturedIlk extends IlkData {
   title: string
@@ -100,5 +101,6 @@ export function createVaultsOverview$(
         : ilkDataList,
       featuredIlks,
     })),
+    distinctUntilChanged((a, b) => isEqual(a, b))
   )
 }

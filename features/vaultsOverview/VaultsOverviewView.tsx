@@ -1,14 +1,12 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
-import { IlkDataList } from 'blockchain/ilks'
+import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
-import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { Table, TableContainer } from 'components/Table'
+import { Table } from 'components/Table'
 import { VaultSummary } from 'features/vault/vaultSummary'
 import { formatAddress, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
@@ -78,7 +76,6 @@ function AllIlks({
   isReadonly: boolean,
   address: string,
 }) {
-
   return (
     <Table
       primaryKey='ilk'
@@ -168,12 +165,20 @@ function CallToAction({ ilk }: CallToActionProps) {
         </Heading>
       </Box>
       <Flex>
-        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }} >Stability fee:</Text>
-        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>{formatPercent(ilk.stabilityFee)}</Text>
+        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
+          Stability fee:
+        </Text>
+        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
+          {formatPercent(ilk.stabilityFee)}
+        </Text>
       </Flex>
       <Flex>
-        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>Min coll ratio:</Text>
-        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>{formatPercent(ilk.liquidationRatio)}</Text>
+        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
+          Min coll ratio:
+        </Text>
+        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
+          {formatPercent(ilk.liquidationRatio)}
+        </Text>
       </Flex>
     </Grid>
   )
@@ -258,18 +263,25 @@ export function FeaturedIlks({ ilks }: { ilks: FeaturedIlk[] }) {
   )
 }
 
+interface Props {
+  vaultsOverView: VaultsOverview,
+  context: Context
+  address: string,
+}
 export function VaultsOverviewView({
-  canOpenVault,
-  vaults,
-  ilkDataList,
-  vaultSummary,
-  featuredIlks,
+  vaultsOverView,
+  context,
   address,
-}: VaultsOverview & { address: string }) {
-  const { context$ } = useAppContext()
-  const context = useObservable(context$)
+}: Props) {
+  const {
+    vaults,
+    vaultSummary,
+    featuredIlks,
+    ilkDataList,
+    canOpenVault,
+  } = vaultsOverView
 
-  const readonlyAccount = context?.status === 'connectedReadonly' && address
+  const readonlyAccount = context?.status === 'connectedReadonly' && (address as string)
   const displaySummary = vaults && vaults.length > 0 && vaultSummary
   const displayFeaturedIlks = vaults?.length === 0 && featuredIlks
   const displayVaults = vaults && vaults.length > 0 && vaults

@@ -1,7 +1,12 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { LedgerConnector, TrezorConnector } from '@oasisdex/connectors'
-import { ConnectionKind, getNetworkId, Web3Context, Web3ContextNotConnected } from '@oasisdex/web3-context'
+import {
+  ConnectionKind,
+  getNetworkId,
+  Web3Context,
+  Web3ContextNotConnected,
+} from '@oasisdex/web3-context'
 import { UnsupportedChainIdError } from '@web3-react/core'
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { NetworkConnector } from '@web3-react/network-connector'
@@ -11,19 +16,18 @@ import { dappName, networksById, pollingInterval } from 'blockchain/config'
 import { useAppContext } from 'components/AppContextProvider'
 import { LedgerAccountSelection } from 'components/connectWallet/LedgerAccountSelection'
 import { TrezorAccountSelection } from 'components/connectWallet/TrezorAccountSelection'
+import { redirectState$ } from 'features/router/redirectState'
 import { AppSpinner } from 'helpers/loadingIndicator/LoadingIndicator'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'i18n'
 import { mapValues } from 'lodash'
-import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
-import { identity, Observable, of } from 'rxjs'
+import { identity, Observable } from 'rxjs'
 import { first, tap } from 'rxjs/operators'
 import { Alert, Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 import { assert } from 'ts-essentials'
-import { redirectState$ } from 'features/router/redirectState'
 export const AUTO_CONNECT = 'autoConnect'
 
 interface AutoConnectLocalStorage {
@@ -293,10 +297,10 @@ export function ConnectWallet() {
             </Text>
           </Alert>
         )) || (
-            <Alert variant="error" sx={{ fontWeight: 'normal', borderRadius: 'large' }}>
-              <Text sx={{ my: 1, ml: 2, fontSize: 3, lineHeight: 'body' }}>{t('connect-error')}</Text>
-            </Alert>
-          ))}
+          <Alert variant="error" sx={{ fontWeight: 'normal', borderRadius: 'large' }}>
+            <Text sx={{ my: 1, ml: 2, fontSize: 3, lineHeight: 'body' }}>{t('connect-error')}</Text>
+          </Alert>
+        ))}
       <Grid columns={1} sx={{ maxWidth: '280px', width: '100%', mx: 'auto' }}>
         {SUPPORTED_WALLETS.map(({ iconName, connectionKind }) => {
           const isConnecting =
@@ -317,8 +321,8 @@ export function ConnectWallet() {
                   web3Context.status === 'connecting'
                     ? undefined
                     : connectionKind === 'ledger'
-                      ? () => setConnectingLedger(true)
-                      : connect(web3Context, connectionKind, getNetworkId()),
+                    ? () => setConnectingLedger(true)
+                    : connect(web3Context, connectionKind, getNetworkId()),
               }}
             />
           )
@@ -331,50 +335,46 @@ export function ConnectWallet() {
 function autoConnect(
   web3Context$: Observable<Web3Context>,
   defaultChainId: number,
-  fallback: (web3Context: Web3ContextNotConnected) => void
+  fallback: (web3Context: Web3ContextNotConnected) => void,
 ) {
   let firstTime = true
 
-  const subscription = web3Context$.subscribe(
-    async (web3Context) => {
-      try {
-        const serialized = localStorage.getItem(AUTO_CONNECT)
-        if (firstTime && web3Context.status === 'notConnected' && serialized) {
-          const { connectionKind, magicLinkEmail } = JSON.parse(
-            serialized,
-          ) as AutoConnectLocalStorage
-          if (connectionKind !== 'ledger' && connectionKind !== 'trezor') {
-            console.log('autoConnecting from localStorage', connectionKind, defaultChainId)
-            const connector = await getConnector(connectionKind, defaultChainId, {
-              email: magicLinkEmail,
-            })
-            web3Context.connect(connector, connectionKind)
-          }
-        } else if (web3Context.status === 'notConnected') {
-          fallback(web3Context)
+  const subscription = web3Context$.subscribe(async (web3Context) => {
+    try {
+      const serialized = localStorage.getItem(AUTO_CONNECT)
+      if (firstTime && web3Context.status === 'notConnected' && serialized) {
+        const { connectionKind, magicLinkEmail } = JSON.parse(serialized) as AutoConnectLocalStorage
+        if (connectionKind !== 'ledger' && connectionKind !== 'trezor') {
+          console.log('autoConnecting from localStorage', connectionKind, defaultChainId)
+          const connector = await getConnector(connectionKind, defaultChainId, {
+            email: magicLinkEmail,
+          })
+          web3Context.connect(connector, connectionKind)
         }
-        if (web3Context.status === 'connected') {
-          localStorage.setItem(
-            AUTO_CONNECT,
-            JSON.stringify({
-              connectionKind: web3Context.connectionKind,
-              ...(web3Context.connectionKind === 'magicLink' && {
-                magicLinkEmail: web3Context.magicLinkEmail,
-              }),
-            }),
-          )
-        } else {
-          localStorage.removeItem(AUTO_CONNECT)
-        }
-      } catch (e) {
-        if (web3Context.status === 'notConnected') {
-          fallback(web3Context)
-        }
-      } finally {
-        firstTime = false
+      } else if (web3Context.status === 'notConnected') {
+        fallback(web3Context)
       }
-    },
-  )
+      if (web3Context.status === 'connected') {
+        localStorage.setItem(
+          AUTO_CONNECT,
+          JSON.stringify({
+            connectionKind: web3Context.connectionKind,
+            ...(web3Context.connectionKind === 'magicLink' && {
+              magicLinkEmail: web3Context.magicLinkEmail,
+            }),
+          }),
+        )
+      } else {
+        localStorage.removeItem(AUTO_CONNECT)
+      }
+    } catch (e) {
+      if (web3Context.status === 'notConnected') {
+        fallback(web3Context)
+      }
+    } finally {
+      firstTime = false
+    }
+  })
   return () => {
     subscription.unsubscribe()
   }
