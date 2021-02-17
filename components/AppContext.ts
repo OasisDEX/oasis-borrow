@@ -185,9 +185,6 @@ export function setupAppContext() {
 
   const ilks$ = createIlks$(context$)
   const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
-  const tokens$ = combineLatest(ilks$, ilkToToken$).pipe(
-    map(([ilks, ilkToToken]) => ilks.map(ilkToToken)),
-  )
 
   const openVault$ = curry(createOpenVault$)(
     connectedContext$,

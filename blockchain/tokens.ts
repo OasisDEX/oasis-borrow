@@ -1,7 +1,8 @@
 import { amountFromWei } from '@oasisdex/utils'
+import isEqual from 'lodash/isEqual'
 import BigNumber from 'bignumber.js'
 import { bindNodeCallback, combineLatest, Observable, of } from 'rxjs'
-import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators'
+import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { tokenAllowance, tokenBalance } from './calls/erc20'
 import { CallObservable } from './calls/observe'
@@ -37,6 +38,7 @@ export function createAccountBalance$(
   address: string,
 ): Observable<Record<string, { balance: BigNumber, price: BigNumber }>> {
   return combineLatest(ilks, ilkToToken).pipe(
+    distinctUntilChanged((a, b) => isEqual(a, b)),
     switchMap(([ilks, ilkToToken]) =>
 
       of(ilks.map(ilkToToken)).pipe(
