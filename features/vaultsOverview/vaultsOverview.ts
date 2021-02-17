@@ -88,6 +88,6 @@ export function createVaultsOverview$(
       ilkDataList,
       featuredIlks,
     })),
-    distinctUntilChanged((a, b) => isEqual(a, b)),
+    distinctUntilChanged(isEqual),
   )
 }
