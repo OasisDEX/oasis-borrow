@@ -199,8 +199,10 @@ export function setupAppContext() {
     tokenOraclePrice$,
     balance$,
     ilkData$,
+    ilks$,
     ilkToToken$,
   )
+
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
 
   const vaultsOverview$ = memoize(
@@ -220,6 +222,7 @@ export function setupAppContext() {
     proxyOwner$,
     vaults$,
     vault$,
+    ilks$,
     vaultSummary$,
     depositForm$,
     landing$,

@@ -1,4 +1,4 @@
-import { amountFromWei } from '@oasisdex/utils'
+import { amountFromWei, amountToWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
 import { Erc20 } from 'types/web3-v1-contracts/erc20'
 
@@ -8,9 +8,8 @@ import { TxMetaKind } from './txMeta'
 
 export const MIN_ALLOWANCE = new BigNumber('0xffffffffffffffffffffffffffffffff')
 //
-export const maxUint256 = new BigNumber(
-  '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
-  16,
+export const maxUint256 = amountFromWei(
+  new BigNumber('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', 16),
 )
 
 export interface TokenBalanceArgs {
@@ -31,21 +30,22 @@ interface TokenAllowanceArgs {
   spender: string
 }
 
-export const tokenAllowance: CallDef<TokenAllowanceArgs, boolean> = {
+export const tokenAllowance: CallDef<TokenAllowanceArgs, BigNumber> = {
   call: ({ token }, { contract, tokens }) => contract<Erc20>(tokens[token]).methods.allowance,
   prepareArgs: ({ owner, spender }) => [owner, spender],
-  postprocess: (result: any) => new BigNumber(result).gte(maxUint256),
+  postprocess: (result: any) => amountFromWei(new BigNumber(result)),
 }
 
 export type ApproveData = {
   kind: TxMetaKind.approve
   token: string
   spender: string
+  amount: BigNumber
 }
 
 export const approve: TransactionDef<ApproveData> = {
   call: ({ token }, { tokens, contract }) => contract<Erc20>(tokens[token]).methods.approve,
-  prepareArgs: ({ spender }) => [spender, maxUint256.toFixed()],
+  prepareArgs: ({ spender, amount }) => [spender, amountToWei(amount).toFixed()],
 }
 
 export type DisapproveData = {

@@ -1,442 +1,649 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
+import { maxUint256 } from 'blockchain/calls/erc20'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { InputWithMax } from 'helpers/input'
-import { ModalProps } from 'helpers/modalHook'
+import { VaultActionInput } from 'components/VaultActionInput'
+import { BigNumberInput } from 'helpers/BigNumberInput'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { WithChildren } from 'helpers/types'
 import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
-import React from 'react'
-import { Box, Button, Grid, Heading, Spinner, Text } from 'theme-ui'
+import React, { useState } from 'react'
+import { createNumberMask } from 'text-mask-addons'
+import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
-import { ManualChange, OpenVaultStage, OpenVaultState } from './openVault'
+import { ManualChange, OpenVaultState } from './openVault'
 
-interface OpenVaultWrapperProps extends WithChildren {
-  title: string
-  step: number
-  steps: number
-}
-
-function OpenVaultWrapper({ children, title, step, steps }: OpenVaultWrapperProps) {
-  return (
-    <Box sx={{ mt: 4, mx: 'auto', width: '100%' }}>
-      <Grid gap={4}>
-        <Grid columns={steps} sx={{ width: `calc(${steps} * 80px)`, mx: 'auto' }}>
-          {[...Array(steps).keys()].map((i) => (
-            <Box
-              key={i}
-              sx={{
-                bg: (steps === 3 ? step === i : step - 1 === i) ? 'primary' : 'muted',
-                height: 1,
-                borderRadius: 'small',
-              }}
-            />
-          ))}
-        </Grid>
-        <Heading variant="mediumHeading" as="h2" sx={{ textAlign: 'center' }}>
-          {title}
-        </Heading>
-        {children}
-      </Grid>
-    </Box>
-  )
-}
-
-function OpenVaultTransactionFlow({
-  stage,
-  lockAmount,
+function OpenVaultDetails({
+  afterCollateralizationRatio,
+  afterLiquidationPrice,
   token,
-  drawAmount,
-  back,
-  price,
-  close,
-  openVault,
-  tryAgain,
-  id,
-  closeModal,
-}: OpenVaultState & { closeModal: () => void }) {
-  const { replace } = useRedirect()
+}: OpenVaultState) {
+  const afterCollRatio = afterCollateralizationRatio.eq(zero)
+    ? '--'
+    : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
 
-  function handleBackToEdit(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault()
-    back!()
-  }
-
-  function handleNewVault(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault()
-    close!()
-    closeModal()
-    setTimeout(() => {
-      replace(`/${id}`)
-    }, 0)
-  }
-
-  function handleOpenVault(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault()
-    if (stage === 'transactionWaitingForConfirmation') openVault!()
-    if (stage === 'transactionFiasco') tryAgain!()
-  }
-
-  const canDoAction = stage === 'transactionWaitingForConfirmation' || stage === 'transactionFiasco'
-
-  const collateralizationRatio =
-    drawAmount && lockAmount && price && !drawAmount.eq(zero) && !lockAmount.eq(zero)
-      ? lockAmount.times(price).div(drawAmount).times(100)
-      : undefined
-
-  const transactionButtonContent =
-    stage === 'transactionWaitingForConfirmation' ? (
-      'Open Vault'
-    ) : stage === 'transactionWaitingForApproval' || stage === 'transactionInProgress' ? (
-      <Spinner size={25} />
-    ) : (
-      'Retry '
-    )
+  const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
 
   return (
-    <Grid px={3} py={4} sx={{ justifyContent: 'center', justifyItems: 'center' }}>
-      <Text>Vault Summary</Text>
-      <Grid
-        p={5}
-        gap={4}
-        columns={'2fr 1fr 2fr'}
-        sx={{ justifyContent: 'center', alignItems: 'center' }}
-      >
-        <Text>Amount To Lock</Text>
-        <Box />
-        <Text>
-          {formatAmount(lockAmount || zero, token)} {token}
-        </Text>
+    <Grid columns="1fr 1fr" gap={6} sx={{ justifyContent: 'space-between' }}>
+      <Grid>
+        <Text>Liquidation Price</Text>
+        <Heading>$0.00</Heading>
+        <Text>After: ${afterLiqPrice}</Text>
+      </Grid>
 
-        <Text>Amount To Generate</Text>
-        <Box />
-        <Text>{formatAmount(drawAmount || zero, 'DAI')} DAI</Text>
-
+      <Grid sx={{ textAlign: 'right' }}>
         <Text>Collateralization Ratio</Text>
-        <Box />
-        <Text>
-          {collateralizationRatio ? formatPercent(collateralizationRatio, { precision: 4 }) : '--'}
-        </Text>
+        <Heading>0 %</Heading>
+        <Text>After: {afterCollRatio}</Text>
       </Grid>
-      {stage === 'transactionSuccess' ? (
-        <Grid mt={4} sx={{ justifyContent: 'center' }}>
-          <Button onClick={handleNewVault}>{`View Vault #${id}`}</Button>
-        </Grid>
-      ) : (
-        <Grid columns="1fr 1fr" mt={4} sx={{ justifyContent: 'center' }}>
-          <Button disabled={!canDoAction} onClick={handleBackToEdit} sx={{ width: 6 }}>
-            Edit
-          </Button>
-          <Button disabled={!canDoAction} onClick={handleOpenVault} sx={{ width: 6 }}>
-            {transactionButtonContent}
-          </Button>
-        </Grid>
-      )}
+
+      <Grid>
+        <Text>Current ETH/USD Price in 9 mins</Text>
+        <Heading>$1375.0000</Heading>
+        <Text>Next price: $1325.0000 (-2.30%)</Text>
+      </Grid>
+
+      <Grid sx={{ textAlign: 'right' }}>
+        <Text>Collateral Locked</Text>
+        <Heading>--.-- {token}</Heading>
+        <Text>$--.--</Text>
+      </Grid>
     </Grid>
   )
 }
 
-function ProxyAllowanceFlow({
+function OpenVaultFormTitle({
+  isEditingStage,
+  isProxyStage,
+  isAllowanceStage,
+  reset,
   stage,
-  createProxy,
-  tryAgain,
-  token,
-  proceed,
-  setAllowance,
-  proxyConfirmations,
-  safeConfirmations,
 }: OpenVaultState) {
-  function handleProxyAction(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault
-    if (stage === 'proxyWaitingForConfirmation') createProxy!()
-    if (stage === 'proxyFiasco') tryAgain!()
+  const canReset = !!reset
+
+  function handleReset(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault()
+    if (canReset) reset!()
   }
-
-  function handleAllowanceAction(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault
-    if (stage === 'allowanceWaitingForConfirmation') setAllowance!()
-    if (stage === 'allowanceFiasco') tryAgain!()
-  }
-
-  const canProxyAction = stage === 'proxyWaitingForConfirmation' || stage === 'proxyFiasco'
-  const canAllowanceAction =
-    stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFiasco'
-
-  const isProxyStage = ([
-    'proxyWaitingForConfirmation',
-    'proxyWaitingForApproval',
-    'proxyInProgress',
-    'proxyFiasco',
-  ] as OpenVaultStage[]).some((s) => s === stage)
-
-  const proxyButtonReady = 'Create Proxy'
-  const proxyButtonLoading = <Spinner size={25} />
-  const proxyButtonConfirming = `Confirmations: ${proxyConfirmations} / ${safeConfirmations}`
-  const proxyButtonFailed = 'Retry'
-  const proxyButtonSuccess = 'Success'
-
-  const proxyButtonContent =
-    stage === 'proxyWaitingForConfirmation'
-      ? proxyButtonReady
-      : stage === 'proxyWaitingForApproval' || stage === 'proxyInProgress'
-      ? !proxyConfirmations
-        ? proxyButtonLoading
-        : proxyButtonConfirming
-      : stage === 'proxyFiasco'
-      ? proxyButtonFailed
-      : proxyButtonSuccess
-
-  const allowanceButtonReady = `Set ${token} Allowance`
-  const allowanceButtonLoading = <Spinner size={25} />
-  const allowanceButtonFailed = 'Retry'
-  const allowanceButtonSuccess = 'Success'
-
-  const allowanceButtonContent =
-    isProxyStage || stage === 'allowanceWaitingForConfirmation'
-      ? allowanceButtonReady
-      : stage === 'allowanceWaitingForApproval' || stage === 'allowanceInProgress'
-      ? allowanceButtonLoading
-      : stage === 'allowanceFiasco'
-      ? allowanceButtonFailed
-      : allowanceButtonSuccess
-
-  const canProceed = stage === 'waitToContinue'
 
   return (
-    <Grid px={3} py={4} sx={{ justifyContent: 'center', justifyItems: 'center' }}>
-      <Grid p={5} columns={'1fr 1fr'} sx={{ justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Set ProxyAddress</Text>
-        <Button onClick={handleProxyAction!} disabled={!canProxyAction} sx={{ width: 7 }}>
-          {proxyButtonContent}
-        </Button>
-
-        <Text>Set Allowance</Text>
-        {token === 'ETH' ? (
-          <Button disabled={true} sx={{ width: 7 }}>
-            :)
+    <Grid pb={3}>
+      <Grid columns="2fr 1fr">
+        <Text>
+          {isEditingStage
+            ? 'Configure your Vault'
+            : isProxyStage
+            ? 'Create Proxy'
+            : isAllowanceStage
+            ? 'Set Allowance'
+            : 'Create your Vault'}
+        </Text>
+        {canReset ? (
+          <Button onClick={handleReset} disabled={!canReset} sx={{ fontSize: 1, p: 0 }}>
+            {stage === 'editing' ? 'Reset' : 'Back'}
           </Button>
-        ) : (
-          <Button onClick={handleAllowanceAction!} disabled={!canAllowanceAction} sx={{ width: 7 }}>
-            {allowanceButtonContent}
-          </Button>
-        )}
+        ) : null}
       </Grid>
-
-      <Box mt={4}>
-        <Button onClick={proceed!} disabled={!canProceed} sx={{ width: 6 }}>
-          Proceed
-        </Button>
-      </Box>
+      <Text sx={{ fontSize: 2 }}>
+        Some text here giving a little more context as to what the user is doing
+      </Text>
     </Grid>
   )
 }
 
-function EditVault({
-  lockAmount,
-  maxLockAmount,
-  drawAmount,
-  maxDrawAmount,
-  price,
-  token,
-  messages,
-  change,
-  balance,
-  proceed,
-  ilkData,
-}: OpenVaultState) {
+function OpenVaultFormEditing(props: OpenVaultState) {
+  const {
+    token,
+    depositAmount,
+    generateAmount,
+    change,
+    collateralBalance,
+    maxDepositAmount,
+    maxGenerateAmount,
+    errorMessages,
+    warningMessages,
+    ilkDebtAvailable,
+    liquidationRatio,
+    afterCollateralizationRatio,
+    progress,
+  } = props
+
+  function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault()
+    progress!()
+  }
+
   function handleDepositChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
-      const lockAmount = value !== '' ? new BigNumber(value) : undefined
-      const maxDrawAmount = lockAmount?.times(maxDebtPerUnitCollateral)
+      const depositAmount = value !== '' ? new BigNumber(value) : undefined
 
       change({
-        kind: 'lockAmount',
-        lockAmount,
+        kind: 'depositAmount',
+        depositAmount,
       })
-      change({
-        kind: 'maxDrawAmount',
-        maxDrawAmount,
-      })
-      if (!lockAmount || new BigNumber(value).eq(zero)) {
-        change({ kind: 'drawAmount', drawAmount: undefined })
-      }
     }
   }
 
   function handleGenerateChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
+      const generateAmount = value !== '' ? new BigNumber(value) : undefined
       change({
-        kind: 'drawAmount',
-        drawAmount: value === '' ? undefined : new BigNumber(value),
+        kind: 'generateAmount',
+        generateAmount,
       })
     }
   }
 
   function handleDepositMax(change: (ch: ManualChange) => void) {
     return () => {
-      change({ kind: 'lockAmount', lockAmount: maxLockAmount })
-      change({
-        kind: 'maxDrawAmount',
-        maxDrawAmount: maxLockAmount?.times(maxDebtPerUnitCollateral),
-      })
+      change({ kind: 'depositAmount', depositAmount: maxDepositAmount })
     }
   }
 
   function handleGenerateMax(change: (ch: ManualChange) => void) {
     return () => {
-      change({ kind: 'drawAmount', drawAmount: maxDrawAmount })
+      change({ kind: 'generateAmount', generateAmount: maxGenerateAmount })
     }
   }
 
-  const {
-    debtCeiling,
-    debtFloor,
-    ilkDebt,
-    ilkDebtAvailable,
-    ilk,
-    maxDebtPerUnitCollateral,
-  } = ilkData!
-  const errorString = messages
-    .map((message) => message.kind)
-    .filter((x) => x)
-    .join(',\n')
+  const errorString = errorMessages.join(',\n')
+  const warningString = warningMessages.join(',\n')
 
   const hasError = !!errorString
+  const hasWarnings = !!warningString
 
-  const canDepositMax = !!maxLockAmount
-  const canGenerateMax = !!maxDrawAmount
-
-  const collateralizationRatio =
-    drawAmount && lockAmount && price && !drawAmount.eq(zero) && !lockAmount.eq(zero)
-      ? lockAmount.times(price).div(drawAmount).times(100)
-      : undefined
+  const daiAvailable = ilkDebtAvailable ? `${formatCryptoBalance(ilkDebtAvailable)} DAI` : '--'
+  const minCollRatio = liquidationRatio
+    ? `${formatPercent(liquidationRatio.times(100), { precision: 2 })}`
+    : '--'
+  const afterCollRatio = afterCollateralizationRatio.eq(zero)
+    ? '--'
+    : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
 
   return (
-    <Grid px={3} py={4} sx={{ justifyContent: 'center', justifyItems: 'center' }}>
-      <Grid columns={'2fr 3fr'} sx={{ justifyItems: 'left' }}>
-        <Text>Price</Text>
-        <Text>
-          {price?.toString()} {token}/USD
-        </Text>
+    <Grid>
+      <VaultActionInput
+        action="Deposit"
+        amount={depositAmount}
+        balance={collateralBalance}
+        token={token}
+        hasError={false}
+        showMax={token !== 'ETH'}
+        onSetMax={handleDepositMax(change!)}
+        onChange={handleDepositChange(change!)}
+      />
+      <VaultActionInput
+        action="Generate"
+        amount={generateAmount}
+        token={'DAI'}
+        showMax={!!maxGenerateAmount?.gt(zero)}
+        onSetMax={handleGenerateMax(change!)}
+        hasError={false}
+        onChange={handleGenerateChange(change!)}
+      />
+      {hasError && (
+        <>
+          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
+        </>
+      )}
+      {hasWarnings && (
+        <>
+          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>
+        </>
+      )}
 
-        <Text>Balance</Text>
-        <Text>
-          {balance?.toString()} {token}
-        </Text>
+      <Card>
+        <Grid columns="5fr 3fr">
+          <Text sx={{ fontSize: 2 }}>Dai Available</Text>
+          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{daiAvailable}</Text>
 
-        <Text>Deposit {token}</Text>
-        <InputWithMax
-          {...{
-            amount: lockAmount,
-            token: getToken(token),
-            disabledMax: !canDepositMax,
-            hasError,
-            onChange: handleDepositChange(change!),
-            onSetMax: handleDepositMax(change!),
-          }}
-        />
+          <Text sx={{ fontSize: 2 }}>Min. collateral ratio</Text>
+          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{minCollRatio}</Text>
 
-        <Text>Generate Dai</Text>
-        <InputWithMax
-          {...{
-            amount: drawAmount,
-            token: getToken('DAI'),
-            disabledMax: !canGenerateMax,
-            hasError,
-            onChange: handleGenerateChange(change!),
-            onSetMax: handleGenerateMax(change!),
-          }}
-        />
-
-        <Text>Collateralization Ratio</Text>
-        <Text>
-          {collateralizationRatio ? formatPercent(collateralizationRatio, { precision: 4 }) : '--'}
-        </Text>
-
-        <Text>{ilk} Debt Floor</Text>
-        <Text>{debtFloor.toString()} DAI</Text>
-
-        <Text>{ilk} Debt Ceiling</Text>
-        <Text>{debtCeiling.toString()} DAI</Text>
-
-        <Text>{ilk} Debt issued</Text>
-        <Text>{ilkDebt.toString()} DAI</Text>
-
-        <Text>{ilk} Debt available</Text>
-        <Text>{ilkDebtAvailable.toString()} DAI</Text>
-
-        {hasError && (
-          <>
-            <Text>Errors</Text>
-            <Text sx={{ flexWrap: 'wrap' }}>{errorString}</Text>
-          </>
-        )}
-      </Grid>
-      <Box mt={4}>
-        <Button onClick={proceed!} disabled={hasError} sx={{ width: 6 }}>
-          Proceed
-        </Button>
-      </Box>
+          <Text sx={{ fontSize: 2 }}>Collateralization Ratio</Text>
+          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{afterCollRatio}</Text>
+        </Grid>
+      </Card>
+      <Button onClick={handleProgress} disabled={hasError}>
+        Confirm
+      </Button>
     </Grid>
   )
 }
 
-function OpenVaultView(props: OpenVaultState & { steps: number; closeModal: () => void }) {
-  switch (props.stage) {
-    case 'editing':
-      return (
-        <OpenVaultWrapper title={props.stage} step={0} steps={props.steps}>
-          <EditVault {...props} />
-        </OpenVaultWrapper>
-      )
-    case 'proxyWaitingForConfirmation':
-    case 'proxyWaitingForApproval':
-    case 'proxyInProgress':
-    case 'proxyFiasco':
-    case 'allowanceWaitingForConfirmation':
-    case 'allowanceWaitingForApproval':
-    case 'allowanceInProgress':
-    case 'allowanceFiasco':
-    case 'waitToContinue':
-      return (
-        <OpenVaultWrapper title={props.stage} step={1} steps={props.steps}>
-          <ProxyAllowanceFlow {...props} />
-        </OpenVaultWrapper>
-      )
-    case 'transactionWaitingForConfirmation':
-    case 'transactionWaitingForApproval':
-    case 'transactionInProgress':
-    case 'transactionFiasco':
-    case 'transactionSuccess':
-      return (
-        <OpenVaultWrapper title={props.stage} step={2} steps={props.steps}>
-          <OpenVaultTransactionFlow {...props} />
-        </OpenVaultWrapper>
-      )
-    default:
-      return null
+function OpenVaultFormProxy({
+  stage,
+  proxyConfirmations,
+  safeConfirmations,
+  proxyTxHash,
+  etherscan,
+  progress,
+}: OpenVaultState) {
+  const isLoading = stage === 'proxyInProgress' || stage === 'proxyWaitingForApproval'
+
+  const canProgress = !!progress
+  function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault()
+    if (canProgress) progress!()
   }
+
+  const buttonText =
+    stage === 'proxySuccess'
+      ? 'Continue'
+      : stage === 'proxyFailure'
+      ? 'Retry Create Proxy'
+      : stage === 'proxyWaitingForConfirmation'
+      ? 'Create Proxy'
+      : 'Creating Proxy'
+
+  return (
+    <Grid>
+      <Button disabled={!canProgress} onClick={handleProgress}>
+        {isLoading ? (
+          <Flex sx={{ justifyContent: 'center' }}>
+            <Spinner size={25} color="surface" />
+            <Text pl={2}>{buttonText}</Text>
+          </Flex>
+        ) : (
+          <Text>{buttonText}</Text>
+        )}
+      </Button>
+      {stage === 'proxyInProgress' && (
+        <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Spinner size={25} color="onWarning" />
+            <Grid pl={2} gap={1}>
+              <Text color="onWarning" sx={{ fontSize: 1 }}>
+                {proxyConfirmations || 0} of {safeConfirmations}: Proxy deployment confirming
+              </Text>
+              <Link
+                href={`${etherscan}/tx/${proxyTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Text color="onWarning" sx={{ fontSize: 1 }}>
+                  View on etherscan -{'>'}
+                </Text>
+              </Link>
+            </Grid>
+          </Flex>
+        </Card>
+      )}
+      {stage === 'proxySuccess' && (
+        <Card sx={{ backgroundColor: 'success', border: 'none' }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Icon name="checkmark" size={25} color="onSuccess" />
+            <Grid pl={2} gap={1}>
+              <Text color="onSuccess" sx={{ fontSize: 1 }}>
+                {safeConfirmations} of {safeConfirmations}: Proxy deployment confirmed
+              </Text>
+              <Link
+                href={`${etherscan}/tx/${proxyTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Text color="onSuccess" sx={{ fontSize: 1 }}>
+                  View on etherscan -{'>'}
+                </Text>
+              </Link>
+            </Grid>
+          </Flex>
+        </Card>
+      )}
+    </Grid>
+  )
 }
 
-export function OpenVaultModal({ ilk, close }: ModalProps) {
+function OpenVaultFormAllowance({
+  stage,
+  allowanceTxHash,
+  etherscan,
+  progress,
+  token,
+  collateralBalance,
+  allowanceAmount,
+  change,
+  errorMessages,
+}: OpenVaultState) {
+  const [isCustom, setIsCustom] = useState<Boolean>(false)
+
+  const isLoading = stage === 'allowanceInProgress' || stage === 'allowanceWaitingForApproval'
+  const canSelectRadio = stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFailure'
+  const canProgress = !!progress
+  function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault()
+    if (canProgress) progress!()
+  }
+
+  function handleCustomAllowanceChange(change: (ch: ManualChange) => void) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.replace(/,/g, '')
+      change({
+        kind: 'allowanceAmount',
+        allowanceAmount: value !== '' ? new BigNumber(value) : undefined,
+      })
+    }
+  }
+
+  function handleUnlimited() {
+    if (canSelectRadio) {
+      setIsCustom(false)
+      change!({ kind: 'allowanceAmount', allowanceAmount: maxUint256 })
+    }
+  }
+
+  function handleWallet() {
+    if (canSelectRadio) {
+      setIsCustom(false)
+      change!({ kind: 'allowanceAmount', allowanceAmount: collateralBalance })
+    }
+  }
+
+  function handleCustom() {
+    if (canSelectRadio) {
+      change!({ kind: 'allowanceAmount', allowanceAmount: undefined })
+      setIsCustom(true)
+    }
+  }
+
+  const errorString = errorMessages.join(',\n')
+
+  const hasError = !!errorString
+  const buttonText =
+    stage === 'allowanceSuccess'
+      ? 'Continue'
+      : stage === 'allowanceFailure'
+      ? 'Retry allowance approval'
+      : stage === 'allowanceWaitingForConfirmation'
+      ? 'Approve allowance'
+      : 'Approving allowance'
+
+  return (
+    <Grid>
+      {canSelectRadio && (
+        <>
+          <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleUnlimited}>
+            <Radio name="dark-mode" value="true" defaultChecked={true} />
+            <Text sx={{ fontSize: 2 }}>Unlimited Allowance</Text>
+          </Label>
+          <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleWallet}>
+            <Radio name="dark-mode" value="true" />
+            <Text sx={{ fontSize: 2 }}>
+              {token} in wallet ({formatCryptoBalance(collateralBalance)})
+            </Text>
+          </Label>
+          <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleCustom}>
+            <Radio name="dark-mode" value="true" />
+            <Grid columns="2fr 2fr 1fr" sx={{ alignItems: 'center' }}>
+              <Text sx={{ fontSize: 2 }}>Custom</Text>
+              <BigNumberInput
+                sx={{ p: 1, borderRadius: 'small', width: '100px', fontSize: 1 }}
+                disabled={!isCustom}
+                value={
+                  allowanceAmount && isCustom
+                    ? formatAmount(allowanceAmount, getToken(token).symbol)
+                    : null
+                }
+                mask={createNumberMask({
+                  allowDecimal: true,
+                  decimalLimit: getToken(token).digits,
+                  prefix: '',
+                })}
+                onChange={handleCustomAllowanceChange(change!)}
+              />
+              <Text sx={{ fontSize: 1 }}>{token}</Text>
+            </Grid>
+          </Label>
+        </>
+      )}
+      {hasError && (
+        <>
+          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
+        </>
+      )}
+
+      <Button disabled={!canProgress || hasError} onClick={handleProgress}>
+        {isLoading ? (
+          <Flex sx={{ justifyContent: 'center' }}>
+            <Spinner size={25} color="surface" />
+            <Text pl={2}>{buttonText}</Text>
+          </Flex>
+        ) : (
+          <Text>{buttonText}</Text>
+        )}
+      </Button>
+      {stage === 'allowanceInProgress' && (
+        <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Spinner size={25} color="onWarning" />
+            <Grid pl={2} gap={1}>
+              <Text color="onWarning" sx={{ fontSize: 1 }}>
+                Setting Allowance for {token}
+              </Text>
+              <Link
+                href={`${etherscan}/tx/${allowanceTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Text color="onWarning" sx={{ fontSize: 1 }}>
+                  View on etherscan -{'>'}
+                </Text>
+              </Link>
+            </Grid>
+          </Flex>
+        </Card>
+      )}
+      {stage === 'allowanceSuccess' && (
+        <Card sx={{ backgroundColor: 'success', border: 'none' }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Icon name="checkmark" size={25} color="onSuccess" />
+            <Grid pl={2} gap={1}>
+              <Text color="onSuccess" sx={{ fontSize: 1 }}>
+                Set Allowance for {token}
+              </Text>
+              <Link
+                href={`${etherscan}/tx/${allowanceTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Text color="onSuccess" sx={{ fontSize: 1 }}>
+                  View on etherscan -{'>'}
+                </Text>
+              </Link>
+            </Grid>
+          </Flex>
+        </Card>
+      )}
+    </Grid>
+  )
+}
+
+function OpenVaultFormConfirmation({
+  stage,
+  collateralBalance,
+  depositAmount,
+  generateAmount,
+  token,
+  afterCollateralizationRatio,
+  afterLiquidationPrice,
+  progress,
+  id,
+  etherscan,
+  openTxHash,
+}: OpenVaultState) {
+  const { replace } = useRedirect()
+
+  const walletBalance = formatCryptoBalance(collateralBalance)
+  const intoVault = formatCryptoBalance(depositAmount || zero)
+  const remainingInWallet = formatCryptoBalance(
+    depositAmount ? collateralBalance.minus(depositAmount) : collateralBalance,
+  )
+  const daiToBeGenerated = formatCryptoBalance(generateAmount || zero)
+  const afterCollRatio = afterCollateralizationRatio.eq(zero)
+    ? '--'
+    : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
+
+  const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
+
+  const canProgress = !!progress || stage === 'openSuccess'
+  function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault()
+
+    if (progress) progress!()
+    if (stage === 'openSuccess') {
+      replace(`/${id}`)
+    }
+  }
+  const isLoading = stage === 'openInProgress' || stage === 'openWaitingForApproval'
+
+  const buttonText =
+    stage === 'openWaitingForConfirmation'
+      ? 'Create your Vault'
+      : stage === 'openFailure'
+      ? 'Retry'
+      : stage === 'openSuccess'
+      ? `Open Vault #${id!}`
+      : 'Creating your Vault'
+
+  return (
+    <Grid>
+      <Card backgroundColor="Success">
+        <Grid columns="1fr 1fr">
+          <Text sx={{ fontSize: 1 }}>In your wallet</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
+            {walletBalance} {token}
+          </Text>
+
+          <Text sx={{ fontSize: 1 }}>Moving into Vault</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
+            {intoVault} {token}
+          </Text>
+
+          <Text sx={{ fontSize: 1 }}>Remaining in Wallet</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
+            {remainingInWallet} {token}
+          </Text>
+
+          <Text sx={{ fontSize: 1 }}>Dai being generated</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>{daiToBeGenerated} DAI</Text>
+
+          <Text sx={{ fontSize: 1 }}>Collateral Ratio</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>{afterCollRatio}</Text>
+
+          <Text sx={{ fontSize: 1 }}>Liquidation Price</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>${afterLiqPrice}</Text>
+        </Grid>
+      </Card>
+      <Button disabled={!canProgress} onClick={handleProgress}>
+        {isLoading ? (
+          <Flex sx={{ justifyContent: 'center' }}>
+            <Spinner size={25} color="surface" />
+            <Text pl={2}>{buttonText}</Text>
+          </Flex>
+        ) : (
+          <Text>{buttonText}</Text>
+        )}
+      </Button>
+
+      {stage === 'openInProgress' && (
+        <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Spinner size={25} color="onWarning" />
+            <Grid pl={2} gap={1}>
+              <Text color="onWarning" sx={{ fontSize: 1 }}>
+                Creating your {token} Vault!
+              </Text>
+              <Link
+                href={`${etherscan}/tx/${openTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Text color="onWarning" sx={{ fontSize: 1 }}>
+                  View on etherscan -{'>'}
+                </Text>
+              </Link>
+            </Grid>
+          </Flex>
+        </Card>
+      )}
+      {stage === 'openSuccess' && (
+        <Card sx={{ backgroundColor: 'success', border: 'none' }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Icon name="checkmark" size={25} color="onSuccess" />
+            <Grid pl={2} gap={1}>
+              <Text color="onSuccess" sx={{ fontSize: 1 }}>
+                Vault #{id} created!
+              </Text>
+              <Link
+                href={`${etherscan}/tx/${openTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Text color="onSuccess" sx={{ fontSize: 1 }}>
+                  View on etherscan -{'>'}
+                </Text>
+              </Link>
+            </Grid>
+          </Flex>
+        </Card>
+      )}
+    </Grid>
+  )
+}
+
+function OpenVaultForm(props: OpenVaultState) {
+  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
+
+  return (
+    <Box>
+      <Card>
+        <OpenVaultFormTitle {...props} />
+        {isEditingStage && <OpenVaultFormEditing {...props} />}
+        {isProxyStage && <OpenVaultFormProxy {...props} />}
+        {isAllowanceStage && <OpenVaultFormAllowance {...props} />}
+        {isOpenStage && <OpenVaultFormConfirmation {...props} />}
+      </Card>
+    </Box>
+  )
+}
+
+function OpenVaultContainer(props: OpenVaultState) {
+  return (
+    <Grid columns="2fr 1fr" gap={4}>
+      <OpenVaultDetails {...props} />
+      <OpenVaultForm {...props} />
+    </Grid>
+  )
+}
+
+export function OpenVaultView({ ilk }: { ilk: string }) {
   const { openVault$ } = useAppContext()
   const openVault = useObservable(openVault$(ilk))
-  /* const [steps, setSteps] = useState<number | undefined>(undefined)
 
-   * useEffect(() => {
-   *   if (openVault && !steps) {
-   *     const flowSteps = openVault.proxyAddress && openVault.allowance ? 2 : 3
-   *     setSteps(flowSteps)
-   *   }
-   * }, [openVault])
-   */
   if (!openVault) {
     return null
   }
 
-  return <OpenVaultView {...{ ...openVault, steps: 3, closeModal: close }} />
+  if (openVault.isIlkValidationStage) {
+    return (
+      <Grid sx={{ width: '100%', height: '50vh', justifyItems: 'center', alignItems: 'center' }}>
+        {openVault.stage === 'ilkValidationLoading' && <Spinner size={50} />}
+        {openVault.stage === 'ilkValidationFailure' && (
+          <Box>
+            Ilk {ilk} does not exist, please update the ilk registry if passed by governance
+          </Box>
+        )}
+      </Grid>
+    )
+  }
+  return (
+    <Grid>
+      <OpenVaultContainer {...(openVault as OpenVaultState)} />
+    </Grid>
+  )
 }
