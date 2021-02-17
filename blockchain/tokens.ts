@@ -1,6 +1,6 @@
 import { amountFromWei } from '@oasisdex/utils'
-import isEqual from 'lodash/isEqual'
 import BigNumber from 'bignumber.js'
+import isEqual from 'lodash/isEqual'
 import { bindNodeCallback, combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -36,17 +36,27 @@ export function createAccountBalance$(
   ilkToToken: Observable<(ilk: string) => string>,
   tokenPrice: (ilk: string) => Observable<BigNumber>,
   address: string,
-): Observable<Record<string, { balance: BigNumber, price: BigNumber }>> {
+): Observable<Record<string, { balance: BigNumber; price: BigNumber }>> {
   return combineLatest(ilks, ilkToToken).pipe(
     distinctUntilChanged((a, b) => isEqual(a, b)),
     switchMap(([ilks, ilkToToken]) =>
-
       of(ilks.map(ilkToToken)).pipe(
-        map(tokens => tokens.map((token, idx) => [token, ilks[idx]])),
-        switchMap(pair => combineLatest(pair.map(([token, ilk]) => combineLatest(of(token), tokenBalance$(token, address), tokenPrice(ilk))))),
-        map(data => data.reduce((acc, [token, balance, price]) => ({ ...acc, [token]: { balance, price } }), {}))
-      )
-    )
+        map((tokens) => tokens.map((token, idx) => [token, ilks[idx]])),
+        switchMap((pair) =>
+          combineLatest(
+            pair.map(([token, ilk]) =>
+              combineLatest(of(token), tokenBalance$(token, address), tokenPrice(ilk)),
+            ),
+          ),
+        ),
+        map((data) =>
+          data.reduce(
+            (acc, [token, balance, price]) => ({ ...acc, [token]: { balance, price } }),
+            {},
+          ),
+        ),
+      ),
+    ),
   )
 }
 

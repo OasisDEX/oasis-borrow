@@ -1,15 +1,15 @@
 import React, { ReactNode } from 'react'
 import { Box, Container, SxStyleProp } from 'theme-ui'
 
-export interface Row<T> {
-  header: ReactNode,
+export interface RowDefinition<T> {
+  header: ReactNode
   cell: React.ComponentType<T>
 }
 
 interface Props<T extends Record<K, string>, K extends keyof T> {
-  data: T[],
-  rowDefinition: Row<T>[]
-  primaryKey: K,
+  data: T[]
+  rowDefinition: RowDefinition<T>[]
+  primaryKey: K
 }
 
 export function TableContainer({
@@ -87,16 +87,26 @@ function Header({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>)
     </Box>
   )
 }
-export function Table<T extends Record<K, string>, K extends keyof T>({ data, rowDefinition, primaryKey }: Props<T, K>) {
+export function Table<T extends Record<K, string>, K extends keyof T>({
+  data,
+  rowDefinition,
+  primaryKey,
+}: Props<T, K>) {
   return (
-    <TableContainer header={rowDefinition.map(({ header }, index) => <Header key={index}>{header}</Header>)}>
-      {
-        data.map(row => (
-          <Row key={row[primaryKey]}>
-            {rowDefinition.map(({ cell: Content }, idx) => <Cell key={idx}><Content {...row} /></Cell>)}
-          </Row>
-        ))
-      }
+    <TableContainer
+      header={rowDefinition.map(({ header }, index) => (
+        <Header key={index}>{header}</Header>
+      ))}
+    >
+      {data.map((row) => (
+        <Row key={row[primaryKey]}>
+          {rowDefinition.map(({ cell: Content }, idx) => (
+            <Cell key={idx}>
+              <Content {...row} />
+            </Cell>
+          ))}
+        </Row>
+      ))}
     </TableContainer>
   )
 }

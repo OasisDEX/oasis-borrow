@@ -38,9 +38,11 @@ export function getVaultsSummary(vaults: Vault[]): VaultSummary {
   const totalCollateralPrice = getTotalCollateralPrice(vaults)
   return {
     numberOfVaults: vaults.length,
-    vaultsAtRisk: vaults.map(isVaultAtRisk).reduce((total, atRisk) => atRisk ? total + 1 : total, 0),
+    vaultsAtRisk: vaults
+      .map(isVaultAtRisk)
+      .reduce((total, atRisk) => (atRisk ? total + 1 : total), 0),
     totalCollateralPrice,
     totalDaiDebt: getTotalDaiDebt(vaults),
-    depositedAssetRatio: getAssetRatio(vaults, totalCollateralPrice)
+    depositedAssetRatio: getAssetRatio(vaults, totalCollateralPrice),
   }
 }

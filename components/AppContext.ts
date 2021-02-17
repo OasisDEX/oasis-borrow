@@ -202,15 +202,14 @@ export function setupAppContext() {
 
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
 
-  const accountBalances$ = curry(createAccountBalance$)(balance$, ilks$, ilkToToken$, tokenOraclePrice$)
+  const accountBalances$ = curry(createAccountBalance$)(
+    balance$,
+    ilks$,
+    ilkToToken$,
+    tokenOraclePrice$,
+  )
   const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(
-      context$,
-      vaults$,
-      ilkDataList$,
-      featuredIlks$,
-      accountBalances$,
-    ),
+    curry(createVaultsOverview$)(context$, vaults$, ilkDataList$, featuredIlks$, accountBalances$),
   )
   const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
 
@@ -231,7 +230,7 @@ export function setupAppContext() {
     openVault$,
     vaultsOverview$,
     redirectState$,
-    accountBalances$
+    accountBalances$,
   }
 }
 

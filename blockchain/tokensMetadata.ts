@@ -52,7 +52,7 @@ const tokens = [
     iconCircle: 'wbtc_color',
     iconColor: 'wbtc_color',
     ticker: 'wbtc-wrapped-bitcoin',
-    color: "#f09242"
+    color: '#f09242',
   },
   {
     symbol: 'TUSD',
@@ -65,7 +65,7 @@ const tokens = [
     iconColor: 'tusd_color',
     // ticker: ___________,
     // coinbaseTicker: ___________,
-    color: "#195aff"
+    color: '#195aff',
   },
   {
     symbol: 'KNC',
@@ -91,7 +91,7 @@ const tokens = [
     iconColor: 'mana_color',
     // ticker: ___________,
     // coinbaseTicker: ___________,
-    color: '#f05'
+    color: '#f05',
   },
   {
     symbol: 'PAXUSD',
@@ -104,7 +104,7 @@ const tokens = [
     iconColor: 'pax_color',
     // ticker: ___________,
     // coinbaseTicker: ___________,
-    color: '#005121'
+    color: '#005121',
   },
   {
     symbol: 'USDT',
@@ -144,7 +144,7 @@ const tokens = [
     iconColor: 'lrc_color',
     // ticker: ___________,
     // coinbaseTicker: ___________,
-    color: '#1c60ff'
+    color: '#1c60ff',
   },
   {
     symbol: 'LINK',
@@ -185,7 +185,7 @@ const tokens = [
     iconColor: 'zerox_color',
     // ticker: ___________,
     // coinbaseTicker: ___________,
-    color: '#000'
+    color: '#000',
   },
   {
     symbol: 'USDC',
@@ -211,7 +211,7 @@ const tokens = [
     iconCircle: 'close_squared', // MISSING
     iconColor: 'close_squared', // MISSING
     // ticker: 'usdc-usd-coin',
-    color: '#000'
+    color: '#000',
   },
   {
     symbol: 'YFI',
@@ -249,7 +249,7 @@ const tokens = [
     iconColor: 'dai_color',
     ticker: 'dai-dai',
     coinbaseTicker: 'dai-usdc',
-    color: '#fdc134'
+    color: '#fdc134',
   },
   // {
 

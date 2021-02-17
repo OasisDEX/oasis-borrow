@@ -3,7 +3,7 @@ import { call } from 'blockchain/calls/callsHelpers'
 import { Context } from 'blockchain/network'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
-import { mergeMap, shareReplay, switchMap, tap } from 'rxjs/operators'
+import { mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from './calls/cdpManager'
 import { getCdps } from './calls/getCdps'
@@ -25,9 +25,7 @@ export function createVaults$(
         getCdps,
       )({ proxyAddress, descending: true }).pipe(
         switchMap(({ ids }) =>
-          ids.length === 0
-            ? of([])
-            : combineLatest(ids.map((id) => vault$(new BigNumber(id)))),
+          ids.length === 0 ? of([]) : combineLatest(ids.map((id) => vault$(new BigNumber(id)))),
         ),
       )
     }),

@@ -77,7 +77,9 @@ export function createVaultsOverview$(
   vaults$: (address: string) => Observable<Vault[]>,
   ilkDataList$: Observable<IlkDataList>,
   featuredIlks$: Observable<FeaturedIlk[]>,
-  balances$: (address: string) => Observable<Record<string, { price: BigNumber, balance: BigNumber }>>,
+  balances$: (
+    address: string,
+  ) => Observable<Record<string, { price: BigNumber; balance: BigNumber }>>,
   address: string,
 ): Observable<VaultsOverview> {
   return combineLatest(
@@ -86,21 +88,23 @@ export function createVaultsOverview$(
     vaults$(address).pipe(map(getVaultsSummary), startWith<VaultSummary | undefined>(undefined)),
     ilkDataList$.pipe(startWith<IlkDataList | undefined>(undefined)),
     featuredIlks$.pipe(startWith<FeaturedIlk[] | undefined>(undefined)),
-    balances$(address).pipe(startWith<Record<string, { price: BigNumber, balance: BigNumber }>>({}))
+    balances$(address).pipe(
+      startWith<Record<string, { price: BigNumber; balance: BigNumber }>>({}),
+    ),
   ).pipe(
     map(([context, vaults, vaultSummary, ilkDataList, featuredIlks, balances]) => ({
       canOpenVault: context.status === 'connected',
       vaults,
       vaultSummary,
       ilkDataList: ilkDataList
-        ? ilkDataList.map(ilk => ({
-          ...ilk,
-          balance: balances[ilk.token]?.balance,
-          balancePrice: balances[ilk.token]?.price.times(balances[ilk.token]?.balance)
-        }))
+        ? ilkDataList.map((ilk) => ({
+            ...ilk,
+            balance: balances[ilk.token]?.balance,
+            balancePrice: balances[ilk.token]?.price.times(balances[ilk.token]?.balance),
+          }))
         : ilkDataList,
       featuredIlks,
     })),
-    distinctUntilChanged((a, b) => isEqual(a, b))
+    distinctUntilChanged((a, b) => isEqual(a, b)),
   )
 }
