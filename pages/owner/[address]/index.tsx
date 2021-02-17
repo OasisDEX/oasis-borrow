@@ -7,14 +7,15 @@ import { useRouter } from 'next/router'
 import React from 'react'
 
 function Summary({ address }: { address: string }) {
-  const { vaultsOverview$ } = useAppContext()
+  const { vaultsOverview$, context$ } = useAppContext()
   const vaultsOverview = useObservable(vaultsOverview$(address))
+  const context = useObservable(context$)
 
-  if (vaultsOverview === undefined) {
+  if (vaultsOverview === undefined || context === undefined) {
     return null
   }
 
-  return <VaultsOverviewView {...vaultsOverview} />
+  return <VaultsOverviewView vaultsOverView={vaultsOverview} context={context} />
 }
 
 export default function VaultsSummary() {

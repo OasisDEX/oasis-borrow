@@ -1,12 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { IlkDataList } from 'blockchain/ilks'
+import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
-import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { VaultSummary } from 'features/vault/vaultSummary'
 import { formatAddress, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
 import { useRouter } from 'next/router'
 import React from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
@@ -36,12 +35,10 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
             <TokenSymbol token={vault.token} />
           </Table.Cell>
           <Table.Cell>{vault.ilk}</Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.collateral)} ${
-            vault.token
-          }`}</Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.freeCollateral)} ${
-            vault.token
-          }`}</Table.Cell>
+          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.collateral)} ${vault.token
+            }`}</Table.Cell>
+          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.freeCollateral)} ${vault.token
+            }`}</Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>{formatCryptoBalance(vault.debt)}</Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
             {vault.collateralizationRatio
@@ -225,15 +222,21 @@ export function FeaturedIlks({ ilks }: { ilks: FeaturedIlk[] }) {
   )
 }
 
+interface Props {
+  vaultsOverView: VaultsOverview,
+  context: Context
+}
 export function VaultsOverviewView({
-  canOpenVault,
-  vaults,
-  ilkDataList,
-  vaultSummary,
-  featuredIlks,
-}: VaultsOverview) {
-  const { context$ } = useAppContext()
-  const context = useObservable(context$)
+  vaultsOverView,
+  context,
+}: Props) {
+  const {
+    vaults,
+    vaultSummary,
+    featuredIlks,
+    ilkDataList,
+    canOpenVault,
+  } = vaultsOverView
   const {
     query: { address },
   } = useRouter()

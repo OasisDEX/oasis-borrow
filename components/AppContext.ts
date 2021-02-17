@@ -28,7 +28,7 @@ import { createOpenVault$ } from 'features/openVault/openVault'
 import { redirectState$ } from 'features/router/redirectState'
 import { createVaultSummary$ } from 'features/vault/vaultSummary'
 import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
-import { mapValues } from 'lodash'
+import { isEqual, mapValues } from 'lodash'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
@@ -135,8 +135,8 @@ export function setupAppContext() {
   const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
   const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumberTostring)
   const vatIlks$ = observe(onEveryBlock$, context$, vatIlk)
-  const vatUrns$ = observe(onEveryBlock$, context$, vatUrns, ilkUrnAddressTostring)
-  const vatGem$ = observe(onEveryBlock$, context$, vatGem, ilkUrnAddressTostring)
+  const vatUrns$ = observe(onEveryBlock$, context$, vatUrns)
+  const vatGem$ = observe(onEveryBlock$, context$, vatGem)
   const spotPar$ = observe(onEveryBlock$, context$, spotPar)
   const spotIlks$ = observe(onEveryBlock$, context$, spotIlk)
   const jugIlks$ = observe(onEveryBlock$, context$, jugIlk)
