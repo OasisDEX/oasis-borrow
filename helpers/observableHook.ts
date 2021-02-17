@@ -14,7 +14,7 @@ export function useObservable<O extends Observable<any>>(o$: O): Unpack<O> | und
       setValue(v)
     })
     return () => subscription.unsubscribe()
-  }, [])
+  }, [o$])
 
   return value
 }
