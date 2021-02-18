@@ -76,10 +76,10 @@ function OpenVaultFormTitle({
           {isEditingStage
             ? 'Configure your Vault'
             : isProxyStage
-            ? 'Create Proxy'
-            : isAllowanceStage
-            ? 'Set Allowance'
-            : 'Create your Vault'}
+              ? 'Create Proxy'
+              : isAllowanceStage
+                ? 'Set Allowance'
+                : 'Create your Vault'}
         </Text>
         {canReset ? (
           <Button onClick={handleReset} disabled={!canReset} sx={{ fontSize: 1, p: 0 }}>
@@ -236,10 +236,10 @@ function OpenVaultFormProxy({
     stage === 'proxySuccess'
       ? 'Continue'
       : stage === 'proxyFailure'
-      ? 'Retry Create Proxy'
-      : stage === 'proxyWaitingForConfirmation'
-      ? 'Create Proxy'
-      : 'Creating Proxy'
+        ? 'Retry Create Proxy'
+        : stage === 'proxyWaitingForConfirmation'
+          ? 'Create Proxy'
+          : 'Creating Proxy'
 
   return (
     <Grid>
@@ -250,8 +250,8 @@ function OpenVaultFormProxy({
             <Text pl={2}>{buttonText}</Text>
           </Flex>
         ) : (
-          <Text>{buttonText}</Text>
-        )}
+            <Text>{buttonText}</Text>
+          )}
       </Button>
       {stage === 'proxyInProgress' && (
         <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
@@ -358,10 +358,10 @@ function OpenVaultFormAllowance({
     stage === 'allowanceSuccess'
       ? 'Continue'
       : stage === 'allowanceFailure'
-      ? 'Retry allowance approval'
-      : stage === 'allowanceWaitingForConfirmation'
-      ? 'Approve allowance'
-      : 'Approving allowance'
+        ? 'Retry allowance approval'
+        : stage === 'allowanceWaitingForConfirmation'
+          ? 'Approve allowance'
+          : 'Approving allowance'
 
   return (
     <Grid>
@@ -414,8 +414,8 @@ function OpenVaultFormAllowance({
             <Text pl={2}>{buttonText}</Text>
           </Flex>
         ) : (
-          <Text>{buttonText}</Text>
-        )}
+            <Text>{buttonText}</Text>
+          )}
       </Button>
       {stage === 'allowanceInProgress' && (
         <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
@@ -505,10 +505,10 @@ function OpenVaultFormConfirmation({
     stage === 'openWaitingForConfirmation'
       ? 'Create your Vault'
       : stage === 'openFailure'
-      ? 'Retry'
-      : stage === 'openSuccess'
-      ? `Open Vault #${id!}`
-      : 'Creating your Vault'
+        ? 'Retry'
+        : stage === 'openSuccess'
+          ? `Open Vault #${id!}`
+          : 'Creating your Vault'
 
   return (
     <Grid>
@@ -546,8 +546,8 @@ function OpenVaultFormConfirmation({
             <Text pl={2}>{buttonText}</Text>
           </Flex>
         ) : (
-          <Text>{buttonText}</Text>
-        )}
+            <Text>{buttonText}</Text>
+          )}
       </Button>
 
       {stage === 'openInProgress' && (
