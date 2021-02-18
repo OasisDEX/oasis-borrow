@@ -35,10 +35,12 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
             <TokenSymbol token={vault.token} />
           </Table.Cell>
           <Table.Cell>{vault.ilk}</Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.collateral)} ${vault.token
-            }`}</Table.Cell>
-          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.freeCollateral)} ${vault.token
-            }`}</Table.Cell>
+          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(
+            vault.lockedCollateral,
+          )} ${vault.token}`}</Table.Cell>
+          <Table.Cell sx={{ textAlign: 'right' }}>{`${formatCryptoBalance(vault.freeCollateral)} ${
+            vault.token
+          }`}</Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>{formatCryptoBalance(vault.debt)}</Table.Cell>
           <Table.Cell sx={{ textAlign: 'right' }}>
             {vault.collateralizationRatio
@@ -223,20 +225,11 @@ export function FeaturedIlks({ ilks }: { ilks: FeaturedIlk[] }) {
 }
 
 interface Props {
-  vaultsOverView: VaultsOverview,
+  vaultsOverView: VaultsOverview
   context: Context
 }
-export function VaultsOverviewView({
-  vaultsOverView,
-  context,
-}: Props) {
-  const {
-    vaults,
-    vaultSummary,
-    featuredIlks,
-    ilkDataList,
-    canOpenVault,
-  } = vaultsOverView
+export function VaultsOverviewView({ vaultsOverView, context }: Props) {
+  const { vaults, vaultSummary, featuredIlks, ilkDataList, canOpenVault } = vaultsOverView
   const {
     query: { address },
   } = useRouter()

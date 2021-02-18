@@ -166,44 +166,60 @@ function validateErrors(state: ManageVaultState): ManageVaultState {
 }
 
 function validateWarnings(state: ManageVaultState): ManageVaultState {
-  // const {
-  //   allowance,
-  //   depositAmount,
-  //   generateAmount,
-  //   depositAmountUSD,
-  //   debtFloor,
-  //   proxyAddress,
-  //   token,
-  // } = state
+  const {
+    depositAmount,
+    generateAmount,
+    withdrawAmount,
+    paybackAmount,
+    depositAmountUSD,
+    debtFloor,
+    proxyAddress,
+    token,
+    debt,
+    collateralAllowance,
+    daiAllowance,
+  } = state
 
-  // const warningMessages: OpenVaultWarningMessage[] = []
+  const warningMessages: ManageVaultWarningMessage[] = []
 
-  // if (depositAmount?.gt(zero) && depositAmountUSD.lt(debtFloor)) {
-  //   warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
-  // }
+  if (depositAmountUSD && depositAmount?.gt(zero) && debt.plus(depositAmountUSD).lt(debtFloor)) {
+    warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
+  }
 
-  // if (!proxyAddress) {
-  //   warningMessages.push('noProxyAddress')
-  // }
+  if (!proxyAddress) {
+    warningMessages.push('noProxyAddress')
+  }
 
-  // if (!depositAmount) {
-  //   warningMessages.push('depositAmountEmpty')
-  // }
+  if (!depositAmount) {
+    warningMessages.push('depositAmountEmpty')
+  }
 
-  // if (!generateAmount) {
-  //   warningMessages.push('generateAmountEmpty')
-  // }
+  if (!generateAmount) {
+    warningMessages.push('generateAmountEmpty')
+  }
 
-  // if (token !== 'ETH') {
-  //   if (!allowance) {
-  //     warningMessages.push('noAllowance')
-  //   }
-  //   if (depositAmount && allowance && depositAmount.gt(allowance)) {
-  //     warningMessages.push('allowanceLessThanDepositAmount')
-  //   }
-  // }
+  if (!withdrawAmount) {
+    warningMessages.push('withdrawAmountEmpty')
+  }
 
-  return { ...state }
+  if (!paybackAmount) {
+    warningMessages.push('paybackAmountEmpty')
+  }
+
+  if (token !== 'ETH') {
+    if (!collateralAllowance) {
+      warningMessages.push('noCollateralAllowance')
+    }
+    if (depositAmount && collateralAllowance && depositAmount.gt(collateralAllowance)) {
+      warningMessages.push('collateralAllowanceLessThanDepositAmount')
+    }
+  }
+
+  if (paybackAmount && daiAllowance && paybackAmount.gt(daiAllowance)) {
+    warningMessages.push('daiAllowanceLessThanPaybackAmount')
+  }
+
+  return { ...state, warningMessages }
 }
 
 type ManageVaultChange = Changes<ManageVaultState>
