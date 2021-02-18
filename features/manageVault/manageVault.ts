@@ -83,6 +83,8 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
     depositAmountUSD,
     lockedCollateral,
     daiBalance,
+    withdrawAmount,
+    paybackAmount,
     debt,
   } = state
 
@@ -97,12 +99,27 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
 
   const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt
 
+  const afterLockedCollateral = depositAmount
+    ? lockedCollateral.plus(depositAmount)
+    : withdrawAmount
+    ? lockedCollateral.minus(withdrawAmount)
+    : lockedCollateral
+
+  const afterLockedCollateralUSD = afterLockedCollateral.times(collateralPrice)
+  const afterDebt = generateAmount
+    ? debt.plus(generateAmount)
+    : paybackAmount
+    ? debt.minus(paybackAmount)
+    : debt
+
   const afterCollateralizationRatio =
-    depositAmountUSD && !generateAmountUSD.eq(zero) ? depositAmountUSD.div(generateAmountUSD) : zero
+    afterLockedCollateralUSD.gt(zero) && afterDebt.gt(zero)
+      ? afterLockedCollateralUSD.div(afterDebt)
+      : zero
 
   const afterLiquidationPrice =
     generateAmount && depositAmount && depositAmount.gt(zero)
-      ? generateAmount.times(liquidationRatio).div(depositAmount)
+      ? afterDebt.times(liquidationRatio).div(afterLockedCollateral)
       : zero
 
   return {

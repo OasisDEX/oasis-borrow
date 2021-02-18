@@ -14,7 +14,7 @@ function ManageVaultDetails({
   token,
 }: ManageVaultState) {
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
-    ? '--'
+    ? ''
     : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
 
   const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
