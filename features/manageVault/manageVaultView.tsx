@@ -95,12 +95,16 @@ function ManageVaultFormEditing(props: ManageVaultState) {
   const {
     token,
     depositAmount,
+    depositAmountUSD,
+    maxDepositAmountUSD,
     withdrawAmount,
     generateAmount,
     paybackAmount,
     change,
     collateralBalance,
     maxDepositAmount,
+
+    collateralPrice,
     maxWithdrawAmount,
     maxGenerateAmount,
     maxPaybackAmount,
@@ -121,11 +125,40 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
       const depositAmount = value !== '' ? new BigNumber(value) : undefined
+      const depositAmountUSD = depositAmount ? collateralPrice.times(depositAmount) : undefined
 
       change({
         kind: 'depositAmount',
         depositAmount,
       })
+      change({
+        kind: 'depositAmountUSD',
+        depositAmountUSD,
+      })
+    }
+  }
+
+  function handleDepositUSDChange(change: (ch: ManualChange) => void) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.replace(/,/g, '')
+      const depositAmountUSD = value !== '' ? new BigNumber(value) : undefined
+      const depositAmount = depositAmountUSD ? collateralPrice.div(depositAmountUSD) : undefined
+
+      change({
+        kind: 'depositAmountUSD',
+        depositAmountUSD,
+      })
+      change({
+        kind: 'depositAmount',
+        depositAmount,
+      })
+    }
+  }
+
+  function handleDepositMax(change: (ch: ManualChange) => void) {
+    return () => {
+      change({ kind: 'depositAmount', depositAmount: maxDepositAmount })
+      change({ kind: 'depositAmountUSD', depositAmountUSD: maxDepositAmountUSD })
     }
   }
 
@@ -160,12 +193,6 @@ function ManageVaultFormEditing(props: ManageVaultState) {
         kind: 'paybackAmount',
         paybackAmount,
       })
-    }
-  }
-
-  function handleDepositMax(change: (ch: ManualChange) => void) {
-    return () => {
-      change({ kind: 'depositAmount', depositAmount: maxDepositAmount })
     }
   }
 
@@ -205,42 +232,47 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     <Grid>
       <VaultActionInput
         action="Deposit"
-        amount={depositAmount}
-        balance={maxDepositAmount}
         token={token}
-        hasError={false}
-        showMax={token !== 'ETH'}
+        showMax={true}
+        hasAuxiliary={true}
         onSetMax={handleDepositMax(change!)}
+        maxAmountLabel={'Balance'}
+        amount={depositAmount}
+        auxiliaryAmount={depositAmountUSD}
+        maxAmount={maxDepositAmount}
+        maxAuxiliaryAmount={maxDepositAmountUSD}
         onChange={handleDepositChange(change!)}
-      />
-      <VaultActionInput
-        action="Withdraw"
-        amount={withdrawAmount}
-        balance={maxWithdrawAmount}
-        token={token}
+        onAuxiliaryChange={handleDepositUSDChange(change!)}
         hasError={false}
-        showMax={token !== 'ETH'}
-        onSetMax={handleWithdrawMax(change!)}
-        onChange={handleWithdrawChange(change!)}
       />
-      <VaultActionInput
-        action="Generate"
-        amount={generateAmount}
-        token={'DAI'}
-        showMax={!!maxGenerateAmount?.gt(zero)}
-        onSetMax={handleGenerateMax(change!)}
-        hasError={false}
-        onChange={handleGenerateChange(change!)}
-      />
-      <VaultActionInput
-        action="Payback"
-        amount={paybackAmount}
-        token={'DAI'}
-        showMax={!!maxGenerateAmount?.gt(zero)}
-        onSetMax={handlePaybackMax(change!)}
-        hasError={false}
-        onChange={handlePaybackChange(change!)}
-      />
+      {/* <VaultActionInput
+          action="Withdraw"
+          amount={withdrawAmount}
+          balance={maxWithdrawAmount}
+          token={token}
+          hasError={false}
+          showMax={token !== 'ETH'}
+          onSetMax={handleWithdrawMax(change!)}
+          onChange={handleWithdrawChange(change!)}
+          />
+          <VaultActionInput
+          action="Generate"
+          amount={generateAmount}
+          token={'DAI'}
+          showMax={!!maxGenerateAmount?.gt(zero)}
+          onSetMax={handleGenerateMax(change!)}
+          hasError={false}
+          onChange={handleGenerateChange(change!)}
+          />
+          <VaultActionInput
+          action="Payback"
+          amount={paybackAmount}
+          token={'DAI'}
+          showMax={!!maxGenerateAmount?.gt(zero)}
+          onSetMax={handlePaybackMax(change!)}
+          hasError={false}
+          onChange={handlePaybackChange(change!)}
+          /> */}
       {hasError && (
         <>
           <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>

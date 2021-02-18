@@ -80,17 +80,19 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
     generateAmount,
     collateralPrice,
     liquidationRatio,
+    depositAmountUSD,
   } = state
 
   const maxDepositAmount = collateralBalance
   const maxDepositAmountUSD = collateralBalance.times(collateralPrice)
+
   const maxGenerateAmount = depositAmount ? depositAmount.times(maxDebtPerUnitCollateral) : zero
-  const depositAmountUSD = depositAmount ? collateralPrice.times(depositAmount) : zero
   const generateAmountUSD = generateAmount || zero // 1 DAI === 1 USD
 
-  const afterCollateralizationRatio = generateAmountUSD.eq(zero)
-    ? zero
-    : depositAmountUSD.div(generateAmountUSD)
+  const afterCollateralizationRatio =
+    depositAmountUSD && !generateAmountUSD.eq(zero)
+      ? depositAmountUSD!.div(generateAmountUSD)
+      : zero
 
   const afterLiquidationPrice =
     generateAmount && depositAmount && depositAmount.gt(zero)
@@ -103,7 +105,6 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
     maxGenerateAmount,
     afterCollateralizationRatio,
     afterLiquidationPrice,
-    depositAmountUSD,
     generateAmountUSD,
     maxDepositAmountUSD,
   }
@@ -200,9 +201,13 @@ type ManageVaultChange = Changes<ManageVaultState>
 
 export type ManualChange =
   | Change<ManageVaultState, 'depositAmount'>
+  | Change<ManageVaultState, 'depositAmountUSD'>
   | Change<ManageVaultState, 'withdrawAmount'>
+  | Change<ManageVaultState, 'withdrawAmountUSD'>
   | Change<ManageVaultState, 'generateAmount'>
+  | Change<ManageVaultState, 'generateAmountUSD'>
   | Change<ManageVaultState, 'paybackAmount'>
+  | Change<ManageVaultState, 'paybackAmountUSD'>
   | Change<ManageVaultState, 'collateralAllowanceAmount'>
   | Change<ManageVaultState, 'daiAllowanceAmount'>
 
@@ -273,11 +278,6 @@ export interface ManageVaultState {
   reset?: () => void
   change?: (change: ManualChange) => void
 
-  // Amounts
-  depositAmount?: BigNumber
-  withdrawAmount?: BigNumber
-  generateAmount?: BigNumber
-  paybackAmount?: BigNumber
   collateralAllowanceAmount?: BigNumber
   daiAllowanceAmount?: BigNumber
 
@@ -288,18 +288,28 @@ export interface ManageVaultState {
   ethPrice: BigNumber
   daiBalance: BigNumber
 
-  // Form Bound Values
+  // deposit
+  depositAmount?: BigNumber
+  depositAmountUSD?: BigNumber
   maxDepositAmount: BigNumber
-  maxWithdrawAmount: BigNumber
-  maxGenerateAmount: BigNumber
-  maxPaybackAmount: BigNumber
-  depositAmountUSD: BigNumber
-  withdrawAmountUSD: BigNumber
-  generateAmountUSD: BigNumber
-  paybackAmountUSD: BigNumber
   maxDepositAmountUSD: BigNumber
+
+  // withdraw
+  withdrawAmount?: BigNumber
+  withdrawAmountUSD?: BigNumber
+  maxWithdrawAmount: BigNumber
   maxWithdrawAmountUSD: BigNumber
+
+  // generate
+  generateAmount?: BigNumber
+  generateAmountUSD?: BigNumber
+  maxGenerateAmount: BigNumber
   maxGenerateAmountUSD: BigNumber
+
+  // payback
+  paybackAmount?: BigNumber
+  paybackAmountUSD?: BigNumber
+  maxPaybackAmount: BigNumber
   maxPaybackAmountUSD: BigNumber
 
   // Ilk information
@@ -480,20 +490,27 @@ export function createManageVault$(
                   daiBalance,
                   errorMessages: [],
                   warningMessages: [],
+
                   depositAmount: undefined,
-                  generateAmount: undefined,
+                  depositAmountUSD: undefined,
                   maxDepositAmount: zero,
-                  maxWithdrawAmount: zero,
-                  maxGenerateAmount: zero,
-                  maxPaybackAmount: zero,
-                  depositAmountUSD: zero,
-                  withdrawAmountUSD: zero,
-                  generateAmountUSD: zero,
-                  paybackAmountUSD: zero,
                   maxDepositAmountUSD: zero,
-                  maxWithdrawAmountUSD: zero,
+
+                  generateAmount: undefined,
+                  generateAmountUSD: undefined,
+                  maxGenerateAmount: zero,
                   maxGenerateAmountUSD: zero,
+
+                  withdrawAmount: undefined,
+                  withdrawAmountUSD: undefined,
+                  maxWithdrawAmount: zero,
+                  maxWithdrawAmountUSD: zero,
+
+                  paybackAmount: undefined,
+                  paybackAmountUSD: undefined,
+                  maxPaybackAmount: zero,
                   maxPaybackAmountUSD: zero,
+
                   afterLiquidationPrice: zero,
                   afterCollateralizationRatio: zero,
                   ilk,

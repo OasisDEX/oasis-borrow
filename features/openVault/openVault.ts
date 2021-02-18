@@ -769,6 +769,7 @@ export function createOpenVault$(
                           ),
                           distinctUntilChanged((x, y) => x.eq(y)),
                         )
+
                         return merge(change$, environmentChanges$).pipe(
                           scan(apply, initialState),
                           map(applyVaultCalculations),
