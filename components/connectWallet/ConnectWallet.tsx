@@ -211,16 +211,14 @@ export function ConnectWallet() {
   useEffect(() => {
     const subscription = web3Context$.subscribe((web3Context) => {
       if (web3Context.status === 'connected') {
-        redirectState$
-          .pipe(take(1))
-          .subscribe(url => {
-            if (url !== undefined) {
-              replace(url)
-              redirectState$.next(undefined)
-            } else {
-              replace(`/owner/${web3Context.account}`)
-            }
-          })
+        redirectState$.pipe(take(1)).subscribe((url) => {
+          if (url !== undefined) {
+            replace(url)
+            redirectState$.next(undefined)
+          } else {
+            replace(`/owner/${web3Context.account}`)
+          }
+        })
       }
     })
     return () => subscription.unsubscribe()
@@ -300,10 +298,10 @@ export function ConnectWallet() {
             </Text>
           </Alert>
         )) || (
-            <Alert variant="error" sx={{ fontWeight: 'normal', borderRadius: 'large' }}>
-              <Text sx={{ my: 1, ml: 2, fontSize: 3, lineHeight: 'body' }}>{t('connect-error')}</Text>
-            </Alert>
-          ))}
+          <Alert variant="error" sx={{ fontWeight: 'normal', borderRadius: 'large' }}>
+            <Text sx={{ my: 1, ml: 2, fontSize: 3, lineHeight: 'body' }}>{t('connect-error')}</Text>
+          </Alert>
+        ))}
       <Grid columns={1} sx={{ maxWidth: '280px', width: '100%', mx: 'auto' }}>
         {SUPPORTED_WALLETS.map(({ iconName, connectionKind }) => {
           const isConnecting =
@@ -324,8 +322,8 @@ export function ConnectWallet() {
                   web3Context.status === 'connecting'
                     ? undefined
                     : connectionKind === 'ledger'
-                      ? () => setConnectingLedger(true)
-                      : connect(web3Context, connectionKind, getNetworkId()),
+                    ? () => setConnectingLedger(true)
+                    : connect(web3Context, connectionKind, getNetworkId()),
               }}
             />
           )
