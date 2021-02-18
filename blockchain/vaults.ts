@@ -25,9 +25,7 @@ export function createVaults$(
         getCdps,
       )({ proxyAddress, descending: true }).pipe(
         switchMap(({ ids }) =>
-          ids.length === 0
-            ? of([])
-            : combineLatest(ids.map((id) => vault$(new BigNumber(id)))),
+          ids.length === 0 ? of([]) : combineLatest(ids.map((id) => vault$(new BigNumber(id)))),
         ),
       )
     }),
@@ -128,7 +126,7 @@ export interface Vault {
    * In terms of this type, Vault.collateral, we are specifying the latter
    * "encumbered collateral"
    */
-  collateral: BigNumber
+  lockedCollateral: BigNumber
 
   /*
    * "Vault.unlockedCollateral" references the amount of unencumbered collateral
@@ -359,7 +357,7 @@ export function createVault$(
               address: urnAddress,
               owner,
               controller,
-              collateral,
+              lockedCollateral: collateral,
               unlockedCollateral,
               collateralPrice,
               backingCollateral,

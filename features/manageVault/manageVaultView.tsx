@@ -96,16 +96,16 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     token,
     depositAmount,
     depositAmountUSD,
+    maxDepositAmount,
     maxDepositAmountUSD,
     withdrawAmount,
+    withdrawAmountUSD,
+    maxWithdrawAmount,
+    maxWithdrawAmountUSD,
     generateAmount,
     paybackAmount,
-    change,
     collateralBalance,
-    maxDepositAmount,
-
     collateralPrice,
-    maxWithdrawAmount,
     maxGenerateAmount,
     maxPaybackAmount,
     errorMessages,
@@ -114,11 +114,34 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     liquidationRatio,
     afterCollateralizationRatio,
     progress,
+    change,
   } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
     progress!()
+  }
+
+  function clearDeposit(change: (ch: ManualChange) => void) {
+    change({
+      kind: 'depositAmount',
+      depositAmount: undefined,
+    })
+    change({
+      kind: 'depositAmountUSD',
+      depositAmountUSD: undefined,
+    })
+  }
+
+  function clearWithdraw(change: (ch: ManualChange) => void) {
+    change({
+      kind: 'withdrawAmount',
+      withdrawAmount: undefined,
+    })
+    change({
+      kind: 'withdrawAmountUSD',
+      withdrawAmountUSD: undefined,
+    })
   }
 
   function handleDepositChange(change: (ch: ManualChange) => void) {
@@ -127,6 +150,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
       const depositAmount = value !== '' ? new BigNumber(value) : undefined
       const depositAmountUSD = depositAmount ? collateralPrice.times(depositAmount) : undefined
 
+      clearWithdraw(change)
       change({
         kind: 'depositAmount',
         depositAmount,
@@ -142,8 +166,12 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
       const depositAmountUSD = value !== '' ? new BigNumber(value) : undefined
-      const depositAmount = depositAmountUSD ? collateralPrice.div(depositAmountUSD) : undefined
+      const depositAmount =
+        depositAmountUSD && depositAmountUSD.gt(zero)
+          ? depositAmountUSD.div(collateralPrice)
+          : undefined
 
+      clearWithdraw(change)
       change({
         kind: 'depositAmountUSD',
         depositAmountUSD,
@@ -157,6 +185,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
 
   function handleDepositMax(change: (ch: ManualChange) => void) {
     return () => {
+      clearWithdraw(change)
       change({ kind: 'depositAmount', depositAmount: maxDepositAmount })
       change({ kind: 'depositAmountUSD', depositAmountUSD: maxDepositAmountUSD })
     }
@@ -166,11 +195,46 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
       const withdrawAmount = value !== '' ? new BigNumber(value) : undefined
+      const withdrawAmountUSD = withdrawAmount ? collateralPrice.times(withdrawAmount) : undefined
 
+      clearDeposit(change)
       change({
         kind: 'withdrawAmount',
         withdrawAmount,
       })
+      change({
+        kind: 'withdrawAmountUSD',
+        withdrawAmountUSD,
+      })
+    }
+  }
+
+  function handleWithdrawUSDChange(change: (ch: ManualChange) => void) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.replace(/,/g, '')
+      const withdrawAmountUSD = value !== '' ? new BigNumber(value) : undefined
+      const withdrawAmount =
+        withdrawAmountUSD && withdrawAmountUSD.gt(zero)
+          ? withdrawAmountUSD.div(collateralPrice)
+          : undefined
+
+      clearDeposit(change)
+      change({
+        kind: 'withdrawAmountUSD',
+        withdrawAmountUSD,
+      })
+      change({
+        kind: 'withdrawAmount',
+        withdrawAmount,
+      })
+    }
+  }
+
+  function handleWithdrawMax(change: (ch: ManualChange) => void) {
+    return () => {
+      clearDeposit(change)
+      change({ kind: 'withdrawAmount', withdrawAmount: maxWithdrawAmount })
+      change({ kind: 'withdrawAmountUSD', withdrawAmountUSD: maxWithdrawAmountUSD })
     }
   }
 
@@ -193,12 +257,6 @@ function ManageVaultFormEditing(props: ManageVaultState) {
         kind: 'paybackAmount',
         paybackAmount,
       })
-    }
-  }
-
-  function handleWithdrawMax(change: (ch: ManualChange) => void) {
-    return () => {
-      change({ kind: 'withdrawAmount', withdrawAmount: maxWithdrawAmount })
     }
   }
 
@@ -228,6 +286,9 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     ? '--'
     : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
 
+  console.log(maxWithdrawAmount.toString())
+  console.log(maxWithdrawAmountUSD.toString())
+
   return (
     <Grid>
       <VaultActionInput
@@ -245,17 +306,22 @@ function ManageVaultFormEditing(props: ManageVaultState) {
         onAuxiliaryChange={handleDepositUSDChange(change!)}
         hasError={false}
       />
+      <VaultActionInput
+        action="Withdraw"
+        showMax={true}
+        hasAuxiliary={true}
+        onSetMax={handleWithdrawMax(change!)}
+        amount={withdrawAmount}
+        auxiliaryAmount={withdrawAmountUSD}
+        maxAmount={maxWithdrawAmount}
+        maxAmountLabel={'Locked'}
+        maxAuxiliaryAmount={maxWithdrawAmountUSD}
+        token={token}
+        hasError={false}
+        onChange={handleWithdrawChange(change!)}
+        onAuxiliaryChange={handleWithdrawUSDChange(change!)}
+      />
       {/* <VaultActionInput
-          action="Withdraw"
-          amount={withdrawAmount}
-          balance={maxWithdrawAmount}
-          token={token}
-          hasError={false}
-          showMax={token !== 'ETH'}
-          onSetMax={handleWithdrawMax(change!)}
-          onChange={handleWithdrawChange(change!)}
-          />
-          <VaultActionInput
           action="Generate"
           amount={generateAmount}
           token={'DAI'}

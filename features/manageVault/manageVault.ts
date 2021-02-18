@@ -81,10 +81,14 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
     collateralPrice,
     liquidationRatio,
     depositAmountUSD,
+    lockedCollateral,
   } = state
 
   const maxDepositAmount = collateralBalance
   const maxDepositAmountUSD = collateralBalance.times(collateralPrice)
+
+  const maxWithdrawAmount = lockedCollateral
+  const maxWithdrawAmountUSD = lockedCollateral.times(collateralPrice)
 
   const maxGenerateAmount = depositAmount ? depositAmount.times(maxDebtPerUnitCollateral) : zero
   const generateAmountUSD = generateAmount || zero // 1 DAI === 1 USD
@@ -101,6 +105,8 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
     ...state,
     maxDepositAmount,
     maxGenerateAmount,
+    maxWithdrawAmount,
+    maxWithdrawAmountUSD,
     afterCollateralizationRatio,
     afterLiquidationPrice,
     generateAmountUSD,
@@ -316,6 +322,9 @@ export interface ManageVaultState {
   debtFloor: BigNumber
   liquidationRatio: BigNumber
 
+  // Vault information
+  lockedCollateral: BigNumber
+
   // Vault Display Information
   afterLiquidationPrice: BigNumber
   afterCollateralizationRatio: BigNumber
@@ -451,7 +460,7 @@ export function createManageVault$(
       const account = context.account
       return vault$(id).pipe(
         first(),
-        switchMap(({ token, ilk }) => {
+        switchMap(({ token, ilk, lockedCollateral }) => {
           const userTokenInfo$ = combineLatest(
             balance$(token, account),
             tokenOraclePrice$(token),
@@ -480,7 +489,6 @@ export function createManageVault$(
                 ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
                   first(),
                   switchMap((allowance) => {
-                    console.log('should not be called more than once')
                     const initialState: ManageVaultState = {
                       ...defaultIsStates,
                       stage: 'editing',
@@ -500,20 +508,22 @@ export function createManageVault$(
                       maxDepositAmount: zero,
                       maxDepositAmountUSD: zero,
 
-                      generateAmount: undefined,
-                      generateAmountUSD: undefined,
-                      maxGenerateAmount: zero,
-                      maxGenerateAmountUSD: zero,
-
                       withdrawAmount: undefined,
                       withdrawAmountUSD: undefined,
                       maxWithdrawAmount: zero,
                       maxWithdrawAmountUSD: zero,
 
+                      generateAmount: undefined,
+                      generateAmountUSD: undefined,
+                      maxGenerateAmount: zero,
+                      maxGenerateAmountUSD: zero,
+
                       paybackAmount: undefined,
                       paybackAmountUSD: undefined,
                       maxPaybackAmount: zero,
                       maxPaybackAmountUSD: zero,
+
+                      lockedCollateral,
 
                       afterLiquidationPrice: zero,
                       afterCollateralizationRatio: zero,
@@ -576,6 +586,13 @@ export function createManageVault$(
                       map((collateralPrice) => ({ kind: 'collateralPrice', collateralPrice })),
                     )
 
+                    const lockedCollateralChange$ = vault$(id).pipe(
+                      map(({ lockedCollateral }) => ({
+                        kind: 'lockedCollateral',
+                        lockedCollateral,
+                      })),
+                    )
+
                     const environmentChanges$ = merge(
                       collateralPriceChange$,
                       collateralBalanceChange$,
@@ -584,6 +601,7 @@ export function createManageVault$(
                       maxDebtPerUnitCollateralChange$,
                       ilkDebtAvailableChange$,
                       debtFloorChange$,
+                      lockedCollateralChange$,
                     )
 
                     const connectedProxyAddress$ = proxyAddress$(account)

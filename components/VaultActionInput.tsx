@@ -81,7 +81,7 @@ export function VaultActionInput({
         ) : null}
         {auxiliaryFlag && BigNumber.isBigNumber(maxAuxiliaryAmount) && showMax ? (
           <Text onClick={onSetMax} sx={{ fontSize: 1, textAlign: 'right', cursor: 'pointer' }}>
-            {maxAmountLabel} {formatAmount(maxAuxiliaryAmount, auxiliarySymbol)} {auxiliarySymbol}
+            {maxAmountLabel} ~{formatAmount(maxAuxiliaryAmount, auxiliarySymbol)} {auxiliarySymbol}
           </Text>
         ) : null}
       </Grid>
@@ -128,8 +128,8 @@ export function VaultActionInput({
           {hasAuxiliary && (
             <Text sx={{ fontSize: 2, px: 3, pb: 2, pt: 1 }}>
               {!auxiliaryFlag
-                ? `${formatAmount(auxiliaryAmount || zero, auxiliarySymbol)} ${auxiliarySymbol}`
-                : `${formatAmount(amount || zero, tokenSymbol)} ${tokenSymbol}`}
+                ? `~${formatAmount(auxiliaryAmount || zero, auxiliarySymbol)} ${auxiliarySymbol}`
+                : `~${formatAmount(amount || zero, tokenSymbol)} ${tokenSymbol}`}
             </Text>
           )}
         </Grid>
