@@ -91,7 +91,7 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
     generateAmount,
     collateralPrice,
     liquidationRatio,
-    depositAmountUSD,
+    freeCollateral,
     lockedCollateral,
     daiBalance,
     withdrawAmount,
@@ -102,10 +102,13 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
   const maxDepositAmount = collateralBalance
   const maxDepositAmountUSD = collateralBalance.times(collateralPrice)
 
-  const maxWithdrawAmount = lockedCollateral
-  const maxWithdrawAmountUSD = lockedCollateral.times(collateralPrice)
+  const maxWithdrawAmount = freeCollateral
+  const maxWithdrawAmountUSD = freeCollateral.times(collateralPrice)
 
-  const maxGenerateAmount = depositAmount ? depositAmount.times(maxDebtPerUnitCollateral) : zero
+  const maxGenerateAmount = lockedCollateral
+    .plus(depositAmount || zero)
+    .times(maxDebtPerUnitCollateral)
+    .minus(debt)
   const generateAmountUSD = generateAmount || zero // 1 DAI === 1 USD
 
   const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt
@@ -148,49 +151,86 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
 }
 
 function validateErrors(state: ManageVaultState): ManageVaultState {
-  // const {
-  //   depositAmount,
-  //   maxDepositAmount,
-  //   generateAmount,
-  //   allowanceAmount,
-  //   debtFloor,
-  //   ilkDebtAvailable,
-  //   afterCollateralizationRatio,
-  //   liquidationRatio,
-  //   stage,
-  // } = state
+  const {
+    depositAmount,
+    maxDepositAmount,
+    generateAmount,
+    debtFloor,
+    ilkDebtAvailable,
+    afterCollateralizationRatio,
+    liquidationRatio,
+    paybackAmount,
+    withdrawAmount,
+    maxWithdrawAmount,
+    maxPaybackAmount,
+    debt,
+    stage,
+    collateralAllowanceAmount,
+    daiAllowanceAmount,
+  } = state
 
-  // const errorMessages: OpenVaultErrorMessage[] = []
+  const errorMessages: ManageVaultErrorMessage[] = []
 
-  // if (depositAmount?.gt(maxDepositAmount)) {
-  //   errorMessages.push('depositAmountGreaterThanMaxDepositAmount')
-  // }
+  if (depositAmount?.gt(maxDepositAmount)) {
+    errorMessages.push('depositAmountGreaterThanMaxDepositAmount')
+  }
 
-  // if (generateAmount?.lt(debtFloor)) {
-  //   errorMessages.push('generateAmountLessThanDebtFloor')
-  // }
+  if (withdrawAmount?.gt(maxWithdrawAmount)) {
+    errorMessages.push('withdrawAmountGreaterThanMaxWithdrawAmount')
+  }
 
-  // if (generateAmount?.gt(ilkDebtAvailable)) {
-  //   errorMessages.push('generateAmountGreaterThanDebtCeiling')
-  // }
+  if (generateAmount && debt.plus(generateAmount).lt(debtFloor)) {
+    errorMessages.push('generateAmountLessThanDebtFloor')
+  }
 
-  // if (stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFailure') {
-  //   if (!allowanceAmount) {
-  //     errorMessages.push('allowanceAmountEmpty')
-  //   }
-  //   if (allowanceAmount?.gt(maxUint256)) {
-  //     errorMessages.push('customAllowanceAmountGreaterThanMaxUint256')
-  //   }
-  //   if (depositAmount && allowanceAmount && allowanceAmount.lt(depositAmount)) {
-  //     errorMessages.push('customAllowanceAmountLessThanDepositAmount')
-  //   }
-  // }
+  if (generateAmount?.gt(ilkDebtAvailable)) {
+    errorMessages.push('generateAmountGreaterThanDebtCeiling')
+  }
 
-  // if (generateAmount?.gt(zero) && afterCollateralizationRatio.lt(liquidationRatio)) {
-  //   errorMessages.push('vaultUnderCollateralized')
-  // }
+  if (paybackAmount?.gt(maxPaybackAmount)) {
+    errorMessages.push('paybackAmountGreaterThanMaxPaybackAmount')
+  }
 
-  return { ...state }
+  if (
+    paybackAmount &&
+    debt.minus(paybackAmount).lt(debtFloor) &&
+    debt.minus(paybackAmount).gt(zero)
+  ) {
+    errorMessages.push('paybackAmountLessThanDebtFloor')
+  }
+
+  if (
+    stage === 'collateralAllowanceWaitingForConfirmation' ||
+    stage === 'collateralAllowanceFailure'
+  ) {
+    if (!collateralAllowanceAmount) {
+      errorMessages.push('collateralAllowanceAmountEmpty')
+    }
+    if (collateralAllowanceAmount?.gt(maxUint256)) {
+      errorMessages.push('customCollateralAllowanceAmountGreaterThanMaxUint256')
+    }
+    if (depositAmount && collateralAllowanceAmount && collateralAllowanceAmount.lt(depositAmount)) {
+      errorMessages.push('customCollateralAllowanceAmountLessThanDepositAmount')
+    }
+  }
+
+  if (stage === 'daiAllowanceWaitingForConfirmation' || stage === 'daiAllowanceFailure') {
+    if (!daiAllowanceAmount) {
+      errorMessages.push('daiAllowanceAmountEmpty')
+    }
+    if (daiAllowanceAmount?.gt(maxUint256)) {
+      errorMessages.push('customDaiAllowanceAmountGreaterThanMaxUint256')
+    }
+    if (paybackAmount && daiAllowanceAmount && daiAllowanceAmount.lt(paybackAmount)) {
+      errorMessages.push('customDaiAllowanceAmountLessThanPaybackAmount')
+    }
+  }
+
+  if (generateAmount?.gt(zero) && afterCollateralizationRatio.lt(liquidationRatio)) {
+    errorMessages.push('vaultUnderCollateralized')
+  }
+
+  return { ...state, errorMessages }
 }
 
 function validateWarnings(state: ManageVaultState): ManageVaultState {
@@ -278,7 +318,7 @@ type ManageVaultErrorMessage =
   | 'customCollateralAllowanceAmountLessThanDepositAmount'
   | 'daiAllowanceAmountEmpty'
   | 'customDaiAllowanceAmountGreaterThanMaxUint256'
-  | 'customDaiAllowanceAmountLessThanDepositAmount'
+  | 'customDaiAllowanceAmountLessThanPaybackAmount'
 
 type ManageVaultWarningMessage =
   | 'potentialGenerateAmountLessThanDebtFloor'
@@ -385,6 +425,7 @@ export interface ManageVaultState {
   debt: BigNumber
   liquidationPrice: BigNumber
   collateralizationRatio: BigNumber
+  freeCollateral: BigNumber
 
   // Vault Display Information
   afterLiquidationPrice: BigNumber
@@ -483,8 +524,6 @@ function addTransitions(
     const hasProxy = !!state.proxyAddress
 
     const isDepositZero = state.depositAmount ? state.depositAmount.eq(zero) : true
-    const isWithdrawZero = state.withdrawAmount ? state.withdrawAmount.eq(zero) : true
-    const isGenerateZero = state.generateAmount ? state.generateAmount.eq(zero) : true
     const isPaybackZero = state.paybackAmount ? state.paybackAmount.eq(zero) : true
 
     const depositAmountLessThanCollateralAllowance =
@@ -531,8 +570,6 @@ function addTransitions(
 
   function progressProxy() {
     const isDepositZero = state.depositAmount ? state.depositAmount.eq(zero) : true
-    const isWithdrawZero = state.withdrawAmount ? state.withdrawAmount.eq(zero) : true
-    const isGenerateZero = state.generateAmount ? state.generateAmount.eq(zero) : true
     const isPaybackZero = state.paybackAmount ? state.paybackAmount.eq(zero) : true
 
     const depositAmountLessThanCollateralAllowance =
@@ -619,6 +656,7 @@ export function createManageVault$(
             debt,
             collateralizationRatio,
             liquidationPrice,
+            freeCollateral,
           }) => {
             const userTokenInfo$ = combineLatest(
               balance$(token, account),
@@ -689,6 +727,7 @@ export function createManageVault$(
                         debt,
                         liquidationPrice,
                         collateralizationRatio,
+                        freeCollateral,
 
                         afterLiquidationPrice: zero,
                         afterCollateralizationRatio: zero,
@@ -788,6 +827,13 @@ export function createManageVault$(
                         })),
                       )
 
+                      const freeCollateralChange$ = vault$(id).pipe(
+                        map(({ freeCollateral }) => ({
+                          kind: 'freeCollateral',
+                          freeCollateral,
+                        })),
+                      )
+
                       const environmentChanges$ = merge(
                         collateralPriceChange$,
                         collateralBalanceChange$,
@@ -804,6 +850,7 @@ export function createManageVault$(
                         collateralizationRatioChange$,
                         liquidationPriceChange$,
                         lockedCollateralPriceChange$,
+                        freeCollateralChange$,
                       )
 
                       const connectedProxyAddress$ = proxyAddress$(account)

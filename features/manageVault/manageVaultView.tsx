@@ -352,7 +352,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
         amount={withdrawAmount}
         auxiliaryAmount={withdrawAmountUSD}
         maxAmount={maxWithdrawAmount}
-        maxAmountLabel={'Locked'}
+        maxAmountLabel={'Free'}
         maxAuxiliaryAmount={maxWithdrawAmountUSD}
         token={token}
         hasError={false}
