@@ -82,7 +82,6 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
     liquidationRatio,
     depositAmountUSD,
     lockedCollateral,
-    paybackAmount,
     daiBalance,
     debt,
   } = state
@@ -224,20 +223,30 @@ const apply: ApplyChange<ManageVaultState> = applyChange
 
 type ManageVaultErrorMessage =
   | 'depositAmountGreaterThanMaxDepositAmount'
+  | 'withdrawAmountGreaterThanMaxWithdrawAmount'
   | 'generateAmountLessThanDebtFloor'
   | 'generateAmountGreaterThanDebtCeiling'
+  | 'paybackAmountGreaterThanMaxPaybackAmount'
+  | 'paybackAmountLessThanDebtFloor'
   | 'vaultUnderCollateralized'
-  | 'allowanceAmountEmpty'
-  | 'customAllowanceAmountGreaterThanMaxUint256'
-  | 'customAllowanceAmountLessThanDepositAmount'
+  | 'collateralAllowanceAmountEmpty'
+  | 'customCollateralAllowanceAmountGreaterThanMaxUint256'
+  | 'customCollateralAllowanceAmountLessThanDepositAmount'
+  | 'daiAllowanceAmountEmpty'
+  | 'customDaiAllowanceAmountGreaterThanMaxUint256'
+  | 'customDaiAllowanceAmountLessThanDepositAmount'
 
 type ManageVaultWarningMessage =
   | 'potentialGenerateAmountLessThanDebtFloor'
   | 'depositAmountEmpty'
+  | 'withdrawAmountEmpty'
   | 'generateAmountEmpty'
+  | 'paybackAmountEmpty'
   | 'noProxyAddress'
-  | 'noAllowance'
-  | 'allowanceLessThanDepositAmount'
+  | 'noCollateralAllowance'
+  | 'noDaiAllowance'
+  | 'collateralAllowanceLessThanDepositAmount'
+  | 'daiAllowanceLessThanPaybackAmount'
 
 export type ManageVaultStage =
   | 'editing'
@@ -282,10 +291,12 @@ export interface ManageVaultState {
 
   // Dynamic Data
   proxyAddress?: string
-  allowance?: BigNumber
   progress?: () => void
   reset?: () => void
   change?: (change: ManualChange) => void
+
+  collateralAllowance?: BigNumber
+  daiAllowance?: BigNumber
 
   collateralAllowanceAmount?: BigNumber
   daiAllowanceAmount?: BigNumber
@@ -346,14 +357,11 @@ export interface ManageVaultState {
 function addTransitions(
   txHelpers: TxHelpers,
   proxyAddress$: Observable<string | undefined>,
-  allowance$: Observable<BigNumber>,
+  collateralAllowance$: Observable<BigNumber>,
+  daiAllowance$: Observable<BigNumber>,
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ): ManageVaultState {
-  // function backToOpenVaultModalEditing() {
-  //   change({ kind: 'stage', stage: 'editing' })
-  // }
-
   function reset() {
     change({ kind: 'stage', stage: 'editing' })
     change({ kind: 'depositAmount', depositAmount: undefined })
@@ -366,32 +374,48 @@ function addTransitions(
     change({ kind: 'daiAllowanceAmount', daiAllowanceAmount: maxUint256 })
   }
 
-  // function progressEditing() {
-  //   const canProgress = !state.errorMessages.length
-  //   const hasProxy = !!state.proxyAddress
+  function progressEditing() {
+    const canProgress = !state.errorMessages.length
+    const hasProxy = !!state.proxyAddress
 
-  //   const openingEmptyVault = state.depositAmount ? state.depositAmount.eq(zero) : true
-  //   const depositAmountLessThanAllowance =
-  //     state.allowance && state.depositAmount && state.allowance.gte(state.depositAmount)
+    const isDepositZero = state.depositAmount ? state.depositAmount.eq(zero) : true
+    const isWithdrawZero = state.withdrawAmount ? state.withdrawAmount.eq(zero) : true
+    const isGenerateZero = state.generateAmount ? state.generateAmount.eq(zero) : true
+    const isPaybackZero = state.paybackAmount ? state.paybackAmount.eq(zero) : true
 
-  //   const hasAllowance =
-  //     state.token === 'ETH' ? true : depositAmountLessThanAllowance || openingEmptyVault
+    const depositAmountLessThanCollateralAllowance =
+      state.collateralAllowance &&
+      state.depositAmount &&
+      state.collateralAllowance.gte(state.depositAmount)
 
-  //   if (canProgress) {
-  //     if (!hasProxy) {
-  //       change({ kind: 'stage', stage: 'proxyWaitingForConfirmation' })
-  //     } else if (!hasAllowance) {
-  //       change({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' })
-  //     } else change({ kind: 'stage', stage: 'openWaitingForConfirmation' })
-  //   }
-  // }
+    const paybackAmountLessThanDaiAllowance =
+      state.daiAllowance && state.paybackAmount && state.daiAllowance.gte(state.paybackAmount)
+
+    // only needs collateral allowance to deposit
+    const hasCollateralAllowance =
+      state.token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
+
+    // only needs collateral allowance to deposit
+    const hasDaiAllowance =
+      state.token === 'ETH' ? true : paybackAmountLessThanDaiAllowance || isPaybackZero
+
+    if (canProgress) {
+      if (!hasProxy) {
+        change({ kind: 'stage', stage: 'proxyWaitingForConfirmation' })
+      } else if (!hasCollateralAllowance) {
+        change({ kind: 'stage', stage: 'collateralAllowanceWaitingForConfirmation' })
+      } else if (!hasDaiAllowance) {
+        change({ kind: 'stage', stage: 'daiAllowanceWaitingForConfirmation' })
+      } else change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' })
+    }
+  }
 
   if (state.stage === 'editing') {
     return {
       ...state,
       change,
       reset,
-      progress: () => null, //progressEditing,
+      progress: progressEditing,
     }
   }
 
@@ -486,10 +510,15 @@ export function createManageVault$(
                 { collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance },
                 { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
                 proxyAddress,
-              ]) =>
-                ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
+              ]) => {
+                const collateralAllowance$ =
+                  (proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)
+                const daiAllowance$ =
+                  (proxyAddress && allowance$('DAI', account, proxyAddress)) || of(undefined)
+
+                return combineLatest(collateralAllowance$, daiAllowance$).pipe(
                   first(),
-                  switchMap((allowance) => {
+                  switchMap(([collateralAllowance, daiAllowance]) => {
                     const initialState: ManageVaultState = {
                       ...defaultIsStates,
                       stage: 'editing',
@@ -532,9 +561,11 @@ export function createManageVault$(
                       debtFloor,
                       liquidationRatio,
                       proxyAddress,
-                      allowance,
                       safeConfirmations: context.safeConfirmations,
                       etherscan: context.etherscan.url,
+
+                      collateralAllowance,
+                      daiAllowance,
                       collateralAllowanceAmount: maxUint256,
                       daiAllowanceAmount: maxUint256,
                     }
@@ -613,9 +644,15 @@ export function createManageVault$(
 
                     const connectedProxyAddress$ = proxyAddress$(account)
 
-                    const connectedAllowance$ = connectedProxyAddress$.pipe(
+                    const connectedCollateralAllowance$ = connectedProxyAddress$.pipe(
                       switchMap((proxyAddress) =>
                         proxyAddress ? allowance$(token, account, proxyAddress) : of(zero),
+                      ),
+                      distinctUntilChanged((x, y) => x.eq(y)),
+                    )
+                    const connectedDaiAllowance$ = connectedProxyAddress$.pipe(
+                      switchMap((proxyAddress) =>
+                        proxyAddress ? allowance$('DAI', account, proxyAddress) : of(zero),
                       ),
                       distinctUntilChanged((x, y) => x.eq(y)),
                     )
@@ -629,14 +666,16 @@ export function createManageVault$(
                         curry(addTransitions)(
                           txHelpers,
                           connectedProxyAddress$,
-                          connectedAllowance$,
+                          connectedCollateralAllowance$,
+                          connectedDaiAllowance$,
                           change,
                         ),
                       ),
                       shareReplay(1),
                     )
                   }),
-                ),
+                )
+              },
             ),
           )
         }),
