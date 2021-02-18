@@ -1,14 +1,25 @@
+import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
-import { applyChange, ApplyChange, Change, Changes } from 'helpers/form'
+import { applyChange, ApplyChange, Change, Changes, transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
-import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
-import { first, distinctUntilChanged, map, switchMap, scan, shareReplay } from 'rxjs/operators'
+import { combineLatest, iif, merge, Observable, of, Subject } from 'rxjs'
+import {
+  first,
+  distinctUntilChanged,
+  map,
+  switchMap,
+  scan,
+  shareReplay,
+  filter,
+} from 'rxjs/operators'
 
 const defaultIsStates = {
   isEditingStage: false,
@@ -390,6 +401,63 @@ export interface ManageVaultState {
   etherscan?: string
 }
 
+function createProxy(
+  { sendWithGasEstimation }: TxHelpers,
+  proxyAddress$: Observable<string | undefined>,
+  change: (ch: ManageVaultChange) => void,
+  { safeConfirmations }: ManageVaultState,
+) {
+  sendWithGasEstimation(createDsProxy, { kind: TxMetaKind.createDsProxy })
+    .pipe(
+      transactionToX<ManageVaultChange, CreateDsProxyData>(
+        { kind: 'stage', stage: 'proxyWaitingForApproval' },
+        (txState) =>
+          of(
+            { kind: 'proxyTxHash', proxyTxHash: (txState as any).txHash as string },
+            { kind: 'stage', stage: 'proxyInProgress' },
+          ),
+        (txState) => {
+          return of(
+            {
+              kind: 'stage',
+              stage: 'proxyFailure',
+            },
+            {
+              kind: 'txError',
+              txError:
+                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+                  ? txState.error
+                  : undefined,
+            },
+          )
+        },
+        (txState) => {
+          return proxyAddress$.pipe(
+            filter((proxyAddress) => !!proxyAddress),
+            switchMap((proxyAddress) =>
+              iif(
+                () => (txState as any).confirmations < safeConfirmations,
+                of({
+                  kind: 'proxyConfirmations',
+                  proxyConfirmations: (txState as any).confirmations,
+                }),
+                of(
+                  { kind: 'proxyAddress', proxyAddress: proxyAddress! },
+                  {
+                    kind: 'stage',
+                    stage: 'proxySuccess',
+                  },
+                ),
+              ),
+            ),
+          )
+        },
+        safeConfirmations,
+      ),
+    )
+    .subscribe((ch) => change(ch))
+}
+
 function addTransitions(
   txHelpers: TxHelpers,
   proxyAddress$: Observable<string | undefined>,
@@ -432,8 +500,7 @@ function addTransitions(
       state.token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
 
     // only needs collateral allowance to deposit
-    const hasDaiAllowance =
-      state.token === 'ETH' ? true : paybackAmountLessThanDaiAllowance || isPaybackZero
+    const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
 
     if (canProgress) {
       if (!hasProxy) {
@@ -455,24 +522,46 @@ function addTransitions(
     }
   }
 
-  // if (state.stage === 'proxyWaitingForConfirmation' || state.stage === 'proxyFailure') {
-  //   return {
-  //     ...state,
-  //     progress: () => createProxy(txHelpers, proxyAddress$, change, state),
-  //   }
-  // }
+  if (state.stage === 'proxyWaitingForConfirmation' || state.stage === 'proxyFailure') {
+    return {
+      ...state,
+      progress: () => createProxy(txHelpers, proxyAddress$, change, state),
+    }
+  }
 
-  // if (state.stage === 'proxySuccess') {
-  //   return {
-  //     ...state,
-  //     progress: () =>
-  //       change({
-  //         kind: 'stage',
-  //         stage: state.token === 'ETH' ? 'editing' : 'allowanceWaitingForConfirmation',
-  //       }),
-  //     reset: () => change({ kind: 'stage', stage: 'editing' }),
-  //   }
-  // }
+  function progressProxy() {
+    const isDepositZero = state.depositAmount ? state.depositAmount.eq(zero) : true
+    const isWithdrawZero = state.withdrawAmount ? state.withdrawAmount.eq(zero) : true
+    const isGenerateZero = state.generateAmount ? state.generateAmount.eq(zero) : true
+    const isPaybackZero = state.paybackAmount ? state.paybackAmount.eq(zero) : true
+
+    const depositAmountLessThanCollateralAllowance =
+      state.collateralAllowance &&
+      state.depositAmount &&
+      state.collateralAllowance.gte(state.depositAmount)
+
+    const paybackAmountLessThanDaiAllowance =
+      state.daiAllowance && state.paybackAmount && state.daiAllowance.gte(state.paybackAmount)
+
+    const hasCollateralAllowance =
+      state.token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
+
+    const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+
+    if (!hasCollateralAllowance) {
+      change({ kind: 'stage', stage: 'collateralAllowanceWaitingForConfirmation' })
+    } else if (!hasDaiAllowance) {
+      change({ kind: 'stage', stage: 'daiAllowanceWaitingForConfirmation' })
+    } else change({ kind: 'stage', stage: 'editing' })
+  }
+
+  if (state.stage === 'proxySuccess') {
+    return {
+      ...state,
+      progress: progressProxy,
+      reset: () => change({ kind: 'stage', stage: 'editing' }),
+    }
+  }
 
   // if (state.stage === 'allowanceWaitingForConfirmation' || state.stage === 'allowanceFailure') {
   //   return {
@@ -707,6 +796,9 @@ export function createManageVault$(
                         maxDebtPerUnitCollateralChange$,
                         ilkDebtAvailableChange$,
                         debtFloorChange$,
+                      )
+
+                      const vaultChanges$ = merge(
                         lockedCollateralChange$,
                         debt$,
                         collateralizationRatioChange$,
@@ -729,7 +821,7 @@ export function createManageVault$(
                         distinctUntilChanged((x, y) => x.eq(y)),
                       )
 
-                      return merge(change$, environmentChanges$).pipe(
+                      return merge(change$, environmentChanges$, vaultChanges$).pipe(
                         scan(apply, initialState),
                         map(applyVaultCalculations),
                         map(validateErrors),
