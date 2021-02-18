@@ -24,6 +24,7 @@ import { createController$, createVault$, createVaults$ } from 'blockchain/vault
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createLanding$ } from 'features/landing/landing'
+import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
 import { redirectState$ } from 'features/router/redirectState'
 import { createVaultSummary$ } from 'features/vault/vaultSummary'
@@ -191,16 +192,30 @@ export function setupAppContext() {
   const ilks$ = createIlks$(context$)
   const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
 
-  const openVault$ = curry(createOpenVault$)(
-    connectedContext$,
-    txHelpers$,
-    proxyAddress$,
-    allowance$,
-    tokenOraclePrice$,
-    balance$,
-    ilkData$,
-    ilks$,
-    ilkToToken$,
+  const openVault$ = memoize(
+    curry(createOpenVault$)(
+      connectedContext$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      tokenOraclePrice$,
+      balance$,
+      ilkData$,
+      ilks$,
+      ilkToToken$,
+    ),
+  )
+  const manageVault$ = memoize(
+    curry(createManageVault$)(
+      connectedContext$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      tokenOraclePrice$,
+      balance$,
+      ilkData$,
+      vault$,
+    ),
   )
 
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
@@ -227,6 +242,7 @@ export function setupAppContext() {
     depositForm$,
     landing$,
     openVault$,
+    manageVault$,
     vaultsOverview$,
     redirectState$,
   }
