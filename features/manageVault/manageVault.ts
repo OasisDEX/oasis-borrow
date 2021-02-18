@@ -370,7 +370,10 @@ export interface ManageVaultState {
 
   // Vault information
   lockedCollateral: BigNumber
+  lockedCollateralPrice: BigNumber
   debt: BigNumber
+  liquidationPrice: BigNumber
+  collateralizationRatio: BigNumber
 
   // Vault Display Information
   afterLiquidationPrice: BigNumber
@@ -518,200 +521,237 @@ export function createManageVault$(
       const account = context.account
       return vault$(id).pipe(
         first(),
-        switchMap(({ token, ilk, lockedCollateral, debt }) => {
-          const userTokenInfo$ = combineLatest(
-            balance$(token, account),
-            tokenOraclePrice$(token),
-            balance$('ETH', account),
-            tokenOraclePrice$('ETH'),
-            balance$('DAI', account),
-          ).pipe(
-            switchMap(([collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance]) =>
-              of({
-                collateralBalance,
-                collateralPrice,
-                ethBalance,
-                ethPrice,
-                daiBalance,
-              }),
-            ),
-          )
-          return combineLatest(userTokenInfo$, ilkData$(ilk), proxyAddress$(account)).pipe(
-            first(),
-            switchMap(
-              ([
-                { collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance },
-                { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
-                proxyAddress,
-              ]) => {
-                const collateralAllowance$ =
-                  (proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)
-                const daiAllowance$ =
-                  (proxyAddress && allowance$('DAI', account, proxyAddress)) || of(undefined)
+        switchMap(
+          ({
+            token,
+            ilk,
+            lockedCollateral,
+            lockedCollateralPrice,
+            debt,
+            collateralizationRatio,
+            liquidationPrice,
+          }) => {
+            const userTokenInfo$ = combineLatest(
+              balance$(token, account),
+              tokenOraclePrice$(token),
+              balance$('ETH', account),
+              tokenOraclePrice$('ETH'),
+              balance$('DAI', account),
+            ).pipe(
+              switchMap(([collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance]) =>
+                of({
+                  collateralBalance,
+                  collateralPrice,
+                  ethBalance,
+                  ethPrice,
+                  daiBalance,
+                }),
+              ),
+            )
+            return combineLatest(userTokenInfo$, ilkData$(ilk), proxyAddress$(account)).pipe(
+              first(),
+              switchMap(
+                ([
+                  { collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance },
+                  { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
+                  proxyAddress,
+                ]) => {
+                  const collateralAllowance$ =
+                    (proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)
+                  const daiAllowance$ =
+                    (proxyAddress && allowance$('DAI', account, proxyAddress)) || of(undefined)
 
-                return combineLatest(collateralAllowance$, daiAllowance$).pipe(
-                  first(),
-                  switchMap(([collateralAllowance, daiAllowance]) => {
-                    const initialState: ManageVaultState = {
-                      ...defaultIsStates,
-                      stage: 'editing',
-                      token,
-                      id,
-                      account,
-                      collateralBalance,
-                      collateralPrice,
-                      ethBalance,
-                      ethPrice,
-                      daiBalance,
-                      errorMessages: [],
-                      warningMessages: [],
-
-                      depositAmount: undefined,
-                      depositAmountUSD: undefined,
-                      maxDepositAmount: zero,
-                      maxDepositAmountUSD: zero,
-
-                      withdrawAmount: undefined,
-                      withdrawAmountUSD: undefined,
-                      maxWithdrawAmount: zero,
-                      maxWithdrawAmountUSD: zero,
-
-                      generateAmount: undefined,
-                      generateAmountUSD: zero,
-                      maxGenerateAmount: zero,
-
-                      paybackAmount: undefined,
-                      maxPaybackAmount: zero,
-
-                      lockedCollateral,
-                      debt,
-
-                      afterLiquidationPrice: zero,
-                      afterCollateralizationRatio: zero,
-                      ilk,
-                      maxDebtPerUnitCollateral,
-                      ilkDebtAvailable,
-                      debtFloor,
-                      liquidationRatio,
-                      proxyAddress,
-                      safeConfirmations: context.safeConfirmations,
-                      etherscan: context.etherscan.url,
-
-                      collateralAllowance,
-                      daiAllowance,
-                      collateralAllowanceAmount: maxUint256,
-                      daiAllowanceAmount: maxUint256,
-                    }
-
-                    const change$ = new Subject<ManageVaultChange>()
-
-                    function change(ch: ManageVaultChange) {
-                      change$.next(ch)
-                    }
-
-                    const collateralBalanceChange$ = balance$(token, account!).pipe(
-                      map((collateralBalance) => ({
-                        kind: 'collateralBalance',
+                  return combineLatest(collateralAllowance$, daiAllowance$).pipe(
+                    first(),
+                    switchMap(([collateralAllowance, daiAllowance]) => {
+                      const initialState: ManageVaultState = {
+                        ...defaultIsStates,
+                        stage: 'editing',
+                        token,
+                        id,
+                        account,
                         collateralBalance,
-                      })),
-                    )
+                        collateralPrice,
+                        ethBalance,
+                        ethPrice,
+                        daiBalance,
+                        errorMessages: [],
+                        warningMessages: [],
 
-                    const ethBalanceChange$ = balance$('ETH', account!).pipe(
-                      map((ethBalance) => ({ kind: 'ethBalance', ethBalance })),
-                    )
+                        depositAmount: undefined,
+                        depositAmountUSD: undefined,
+                        maxDepositAmount: zero,
+                        maxDepositAmountUSD: zero,
 
-                    const daiBalanceChange$ = balance$('DAI', account!).pipe(
-                      map((daiBalance) => ({ kind: 'daiBalance', daiBalance })),
-                    )
+                        withdrawAmount: undefined,
+                        withdrawAmountUSD: undefined,
+                        maxWithdrawAmount: zero,
+                        maxWithdrawAmountUSD: zero,
 
-                    const maxDebtPerUnitCollateralChange$ = ilkData$(ilk).pipe(
-                      map(({ maxDebtPerUnitCollateral }) => ({
-                        kind: 'maxDebtPerUnitCollateral',
-                        maxDebtPerUnitCollateral,
-                      })),
-                    )
+                        generateAmount: undefined,
+                        generateAmountUSD: zero,
+                        maxGenerateAmount: zero,
 
-                    const ilkDebtAvailableChange$ = ilkData$(ilk).pipe(
-                      map(({ ilkDebtAvailable }) => ({
-                        kind: 'ilkDebtAvailable',
-                        ilkDebtAvailable,
-                      })),
-                    )
+                        paybackAmount: undefined,
+                        maxPaybackAmount: zero,
 
-                    const debtFloorChange$ = ilkData$(ilk).pipe(
-                      map(({ debtFloor }) => ({
-                        kind: 'debtFloor',
-                        debtFloor,
-                      })),
-                    )
-
-                    const collateralPriceChange$ = tokenOraclePrice$(ilk).pipe(
-                      map((collateralPrice) => ({ kind: 'collateralPrice', collateralPrice })),
-                    )
-
-                    const lockedCollateralChange$ = vault$(id).pipe(
-                      map(({ lockedCollateral }) => ({
-                        kind: 'lockedCollateral',
                         lockedCollateral,
-                      })),
-                    )
-
-                    const debt$ = vault$(id).pipe(
-                      map(({ debt }) => ({
-                        kind: 'debt',
+                        lockedCollateralPrice,
                         debt,
-                      })),
-                    )
+                        liquidationPrice,
+                        collateralizationRatio,
 
-                    const environmentChanges$ = merge(
-                      collateralPriceChange$,
-                      collateralBalanceChange$,
-                      ethBalanceChange$,
-                      daiBalanceChange$,
-                      maxDebtPerUnitCollateralChange$,
-                      ilkDebtAvailableChange$,
-                      debtFloorChange$,
-                      lockedCollateralChange$,
-                      debt$,
-                    )
+                        afterLiquidationPrice: zero,
+                        afterCollateralizationRatio: zero,
+                        ilk,
+                        maxDebtPerUnitCollateral,
+                        ilkDebtAvailable,
+                        debtFloor,
+                        liquidationRatio,
+                        proxyAddress,
+                        safeConfirmations: context.safeConfirmations,
+                        etherscan: context.etherscan.url,
 
-                    const connectedProxyAddress$ = proxyAddress$(account)
+                        collateralAllowance,
+                        daiAllowance,
+                        collateralAllowanceAmount: maxUint256,
+                        daiAllowanceAmount: maxUint256,
+                      }
 
-                    const connectedCollateralAllowance$ = connectedProxyAddress$.pipe(
-                      switchMap((proxyAddress) =>
-                        proxyAddress ? allowance$(token, account, proxyAddress) : of(zero),
-                      ),
-                      distinctUntilChanged((x, y) => x.eq(y)),
-                    )
-                    const connectedDaiAllowance$ = connectedProxyAddress$.pipe(
-                      switchMap((proxyAddress) =>
-                        proxyAddress ? allowance$('DAI', account, proxyAddress) : of(zero),
-                      ),
-                      distinctUntilChanged((x, y) => x.eq(y)),
-                    )
+                      const change$ = new Subject<ManageVaultChange>()
 
-                    return merge(change$, environmentChanges$).pipe(
-                      scan(apply, initialState),
-                      map(applyVaultCalculations),
-                      map(validateErrors),
-                      map(validateWarnings),
-                      map(
-                        curry(addTransitions)(
-                          txHelpers,
-                          connectedProxyAddress$,
-                          connectedCollateralAllowance$,
-                          connectedDaiAllowance$,
-                          change,
+                      function change(ch: ManageVaultChange) {
+                        change$.next(ch)
+                      }
+
+                      const collateralBalanceChange$ = balance$(token, account!).pipe(
+                        map((collateralBalance) => ({
+                          kind: 'collateralBalance',
+                          collateralBalance,
+                        })),
+                      )
+
+                      const ethBalanceChange$ = balance$('ETH', account!).pipe(
+                        map((ethBalance) => ({ kind: 'ethBalance', ethBalance })),
+                      )
+
+                      const daiBalanceChange$ = balance$('DAI', account!).pipe(
+                        map((daiBalance) => ({ kind: 'daiBalance', daiBalance })),
+                      )
+
+                      const maxDebtPerUnitCollateralChange$ = ilkData$(ilk).pipe(
+                        map(({ maxDebtPerUnitCollateral }) => ({
+                          kind: 'maxDebtPerUnitCollateral',
+                          maxDebtPerUnitCollateral,
+                        })),
+                      )
+
+                      const ilkDebtAvailableChange$ = ilkData$(ilk).pipe(
+                        map(({ ilkDebtAvailable }) => ({
+                          kind: 'ilkDebtAvailable',
+                          ilkDebtAvailable,
+                        })),
+                      )
+
+                      const debtFloorChange$ = ilkData$(ilk).pipe(
+                        map(({ debtFloor }) => ({
+                          kind: 'debtFloor',
+                          debtFloor,
+                        })),
+                      )
+
+                      const collateralPriceChange$ = tokenOraclePrice$(ilk).pipe(
+                        map((collateralPrice) => ({ kind: 'collateralPrice', collateralPrice })),
+                      )
+
+                      const lockedCollateralChange$ = vault$(id).pipe(
+                        map(({ lockedCollateral }) => ({
+                          kind: 'lockedCollateral',
+                          lockedCollateral,
+                        })),
+                      )
+
+                      const lockedCollateralPriceChange$ = vault$(id).pipe(
+                        map(({ lockedCollateralPrice }) => ({
+                          kind: 'lockedCollateralPrice',
+                          lockedCollateralPrice,
+                        })),
+                      )
+
+                      const debt$ = vault$(id).pipe(
+                        map(({ debt }) => ({
+                          kind: 'debt',
+                          debt,
+                        })),
+                      )
+
+                      const collateralizationRatioChange$ = vault$(id).pipe(
+                        map(({ collateralizationRatio }) => ({
+                          kind: 'collateralizationRatio',
+                          collateralizationRatio,
+                        })),
+                      )
+
+                      const liquidationPriceChange$ = vault$(id).pipe(
+                        map(({ liquidationPrice }) => ({
+                          kind: 'liquidationPrice',
+                          liquidationPrice,
+                        })),
+                      )
+
+                      const environmentChanges$ = merge(
+                        collateralPriceChange$,
+                        collateralBalanceChange$,
+                        ethBalanceChange$,
+                        daiBalanceChange$,
+                        maxDebtPerUnitCollateralChange$,
+                        ilkDebtAvailableChange$,
+                        debtFloorChange$,
+                        lockedCollateralChange$,
+                        debt$,
+                        collateralizationRatioChange$,
+                        liquidationPriceChange$,
+                        lockedCollateralPriceChange$,
+                      )
+
+                      const connectedProxyAddress$ = proxyAddress$(account)
+
+                      const connectedCollateralAllowance$ = connectedProxyAddress$.pipe(
+                        switchMap((proxyAddress) =>
+                          proxyAddress ? allowance$(token, account, proxyAddress) : of(zero),
                         ),
-                      ),
-                      shareReplay(1),
-                    )
-                  }),
-                )
-              },
-            ),
-          )
-        }),
+                        distinctUntilChanged((x, y) => x.eq(y)),
+                      )
+                      const connectedDaiAllowance$ = connectedProxyAddress$.pipe(
+                        switchMap((proxyAddress) =>
+                          proxyAddress ? allowance$('DAI', account, proxyAddress) : of(zero),
+                        ),
+                        distinctUntilChanged((x, y) => x.eq(y)),
+                      )
+
+                      return merge(change$, environmentChanges$).pipe(
+                        scan(apply, initialState),
+                        map(applyVaultCalculations),
+                        map(validateErrors),
+                        map(validateWarnings),
+                        map(
+                          curry(addTransitions)(
+                            txHelpers,
+                            connectedProxyAddress$,
+                            connectedCollateralAllowance$,
+                            connectedDaiAllowance$,
+                            change,
+                          ),
+                        ),
+                        shareReplay(1),
+                      )
+                    }),
+                  )
+                },
+              ),
+            )
+          },
+        ),
       )
     }),
     map(applyIsStageStates),

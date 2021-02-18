@@ -12,37 +12,54 @@ function ManageVaultDetails({
   afterCollateralizationRatio,
   afterLiquidationPrice,
   token,
+  collateralizationRatio,
+  liquidationPrice,
+  lockedCollateral,
+  lockedCollateralPrice,
+  collateralPrice,
 }: ManageVaultState) {
-  const afterCollRatio = afterCollateralizationRatio.eq(zero)
-    ? ''
-    : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
+  const collRatio = collateralizationRatio.eq(zero)
+    ? '--'
+    : formatPercent(collateralizationRatio.times(100), { precision: 4 })
 
+  const afterCollRatio = afterCollateralizationRatio.eq(zero)
+    ? '--'
+    : formatPercent(afterCollateralizationRatio.times(100), { precision: 4 })
+
+  const collPrice = formatAmount(collateralPrice, 'USD')
+
+  const liqPrice = formatAmount(liquidationPrice, 'USD')
   const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
+
+  const locked = formatAmount(lockedCollateral, token)
+  const lockedUSD = formatAmount(lockedCollateralPrice, token)
 
   return (
     <Grid columns="1fr 1fr" gap={6} sx={{ justifyContent: 'space-between' }}>
       <Grid>
         <Text>Liquidation Price</Text>
-        <Heading>$0.00</Heading>
+        <Heading>$ {liqPrice}</Heading>
         <Text>After: ${afterLiqPrice}</Text>
       </Grid>
 
       <Grid sx={{ textAlign: 'right' }}>
         <Text>Collateralization Ratio</Text>
-        <Heading>0 %</Heading>
+        <Heading>{collRatio}</Heading>
         <Text>After: {afterCollRatio}</Text>
       </Grid>
 
       <Grid>
         <Text>Current ETH/USD Price in 9 mins</Text>
-        <Heading>$1375.0000</Heading>
-        <Text>Next price: $1325.0000 (-2.30%)</Text>
+        <Heading>${collPrice}</Heading>
+        <Text>Next price: $--:--</Text>
       </Grid>
 
       <Grid sx={{ textAlign: 'right' }}>
         <Text>Collateral Locked</Text>
-        <Heading>--.-- {token}</Heading>
-        <Text>$--.--</Text>
+        <Heading>
+          {locked} {token}
+        </Heading>
+        <Text>$ {lockedUSD}</Text>
       </Grid>
     </Grid>
   )
