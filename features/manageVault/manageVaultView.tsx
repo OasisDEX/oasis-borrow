@@ -1,20 +1,18 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { VaultActionInput } from 'components/VaultActionInput'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import React from 'react'
 import { Box, Button, Card, Grid, Heading, Text } from 'theme-ui'
-import { ManageVaultState } from './manageVault'
+import { ManageVaultState, ManualChange } from './manageVault'
 
 function ManageVaultDetails({
-  /* afterCollateralizationRatio,
-   * afterLiquidationPrice, */
+  afterCollateralizationRatio,
+  afterLiquidationPrice,
   token,
 }: ManageVaultState) {
-  let afterCollateralizationRatio = new BigNumber(5)
-  let afterLiquidationPrice = new BigNumber(5)
-
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
     ? '--'
     : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
@@ -93,6 +91,186 @@ function ManageVaultFormTitle({
   )
 }
 
+function ManageVaultFormEditing(props: ManageVaultState) {
+  const {
+    token,
+    depositAmount,
+    withdrawAmount,
+    generateAmount,
+    paybackAmount,
+    change,
+    collateralBalance,
+    maxDepositAmount,
+    maxWithdrawAmount,
+    maxGenerateAmount,
+    maxPaybackAmount,
+    errorMessages,
+    warningMessages,
+    ilkDebtAvailable,
+    liquidationRatio,
+    afterCollateralizationRatio,
+    progress,
+  } = props
+
+  function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault()
+    progress!()
+  }
+
+  function handleDepositChange(change: (ch: ManualChange) => void) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.replace(/,/g, '')
+      const depositAmount = value !== '' ? new BigNumber(value) : undefined
+
+      change({
+        kind: 'depositAmount',
+        depositAmount,
+      })
+    }
+  }
+
+  function handleWithdrawChange(change: (ch: ManualChange) => void) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.replace(/,/g, '')
+      const withdrawAmount = value !== '' ? new BigNumber(value) : undefined
+
+      change({
+        kind: 'withdrawAmount',
+        withdrawAmount,
+      })
+    }
+  }
+
+  function handleGenerateChange(change: (ch: ManualChange) => void) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.replace(/,/g, '')
+      const generateAmount = value !== '' ? new BigNumber(value) : undefined
+      change({
+        kind: 'generateAmount',
+        generateAmount,
+      })
+    }
+  }
+
+  function handlePaybackChange(change: (ch: ManualChange) => void) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.replace(/,/g, '')
+      const paybackAmount = value !== '' ? new BigNumber(value) : undefined
+      change({
+        kind: 'paybackAmount',
+        paybackAmount,
+      })
+    }
+  }
+
+  function handleDepositMax(change: (ch: ManualChange) => void) {
+    return () => {
+      change({ kind: 'depositAmount', depositAmount: maxDepositAmount })
+    }
+  }
+
+  function handleWithdrawMax(change: (ch: ManualChange) => void) {
+    return () => {
+      change({ kind: 'withdrawAmount', withdrawAmount: maxWithdrawAmount })
+    }
+  }
+
+  function handleGenerateMax(change: (ch: ManualChange) => void) {
+    return () => {
+      change({ kind: 'generateAmount', generateAmount: maxGenerateAmount })
+    }
+  }
+
+  function handlePaybackMax(change: (ch: ManualChange) => void) {
+    return () => {
+      change({ kind: 'paybackAmount', paybackAmount: maxPaybackAmount })
+    }
+  }
+
+  const errorString = errorMessages.join(',\n')
+  const warningString = warningMessages.join(',\n')
+
+  const hasError = !!errorString
+  const hasWarnings = !!warningString
+
+  const daiAvailable = ilkDebtAvailable ? `${formatCryptoBalance(ilkDebtAvailable)} DAI` : '--'
+  const minCollRatio = liquidationRatio
+    ? `${formatPercent(liquidationRatio.times(100), { precision: 2 })}`
+    : '--'
+  const afterCollRatio = afterCollateralizationRatio.eq(zero)
+    ? '--'
+    : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
+
+  return (
+    <Grid>
+      <VaultActionInput
+        action="Deposit"
+        amount={depositAmount}
+        balance={maxDepositAmount}
+        token={token}
+        hasError={false}
+        showMax={token !== 'ETH'}
+        onSetMax={handleDepositMax(change!)}
+        onChange={handleDepositChange(change!)}
+      />
+      <VaultActionInput
+        action="Withdraw"
+        amount={withdrawAmount}
+        balance={maxWithdrawAmount}
+        token={token}
+        hasError={false}
+        showMax={token !== 'ETH'}
+        onSetMax={handleWithdrawMax(change!)}
+        onChange={handleWithdrawChange(change!)}
+      />
+      <VaultActionInput
+        action="Generate"
+        amount={generateAmount}
+        token={'DAI'}
+        showMax={!!maxGenerateAmount?.gt(zero)}
+        onSetMax={handleGenerateMax(change!)}
+        hasError={false}
+        onChange={handleGenerateChange(change!)}
+      />
+      <VaultActionInput
+        action="Payback"
+        amount={paybackAmount}
+        token={'DAI'}
+        showMax={!!maxGenerateAmount?.gt(zero)}
+        onSetMax={handlePaybackMax(change!)}
+        hasError={false}
+        onChange={handlePaybackChange(change!)}
+      />
+      {hasError && (
+        <>
+          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
+        </>
+      )}
+      {hasWarnings && (
+        <>
+          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>
+        </>
+      )}
+
+      <Card>
+        <Grid columns="5fr 3fr">
+          <Text sx={{ fontSize: 2 }}>Dai Available</Text>
+          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{daiAvailable}</Text>
+
+          <Text sx={{ fontSize: 2 }}>Min. collateral ratio</Text>
+          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{minCollRatio}</Text>
+
+          <Text sx={{ fontSize: 2 }}>Collateralization Ratio</Text>
+          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{afterCollRatio}</Text>
+        </Grid>
+      </Card>
+      <Button onClick={handleProgress} disabled={hasError}>
+        Confirm
+      </Button>
+    </Grid>
+  )
+}
+
 function ManageVaultForm(props: ManageVaultState) {
   const {
     isEditingStage,
@@ -106,7 +284,8 @@ function ManageVaultForm(props: ManageVaultState) {
     <Box>
       <Card>
         <ManageVaultFormTitle {...props} />
-        {/* {isEditingStage && <OpenVaultFormEditing {...props} />}
+        {isEditingStage && <ManageVaultFormEditing {...props} />}
+        {/*
             {isProxyStage && <OpenVaultFormProxy {...props} />}
             {isAllowanceStage && <OpenVaultFormAllowance {...props} />}
             {isOpenStage && <OpenVaultFormConfirmation {...props} />} */}
