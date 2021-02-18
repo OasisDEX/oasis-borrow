@@ -90,9 +90,7 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
   const generateAmountUSD = generateAmount || zero // 1 DAI === 1 USD
 
   const afterCollateralizationRatio =
-    depositAmountUSD && !generateAmountUSD.eq(zero)
-      ? depositAmountUSD!.div(generateAmountUSD)
-      : zero
+    depositAmountUSD && !generateAmountUSD.eq(zero) ? depositAmountUSD.div(generateAmountUSD) : zero
 
   const afterLiquidationPrice =
     generateAmount && depositAmount && depositAmount.gt(zero)
@@ -347,9 +345,13 @@ function addTransitions(
   function reset() {
     change({ kind: 'stage', stage: 'editing' })
     change({ kind: 'depositAmount', depositAmount: undefined })
+    change({ kind: 'depositAmountUSD', depositAmountUSD: undefined })
     change({ kind: 'withdrawAmount', withdrawAmount: undefined })
+    change({ kind: 'withdrawAmountUSD', withdrawAmountUSD: undefined })
     change({ kind: 'generateAmount', generateAmount: undefined })
+    change({ kind: 'generateAmountUSD', generateAmountUSD: undefined })
     change({ kind: 'paybackAmount', paybackAmount: undefined })
+    change({ kind: 'paybackAmountUSD', paybackAmountUSD: undefined })
     change({ kind: 'collateralAllowanceAmount', collateralAllowanceAmount: maxUint256 })
     change({ kind: 'daiAllowanceAmount', daiAllowanceAmount: maxUint256 })
   }
@@ -444,171 +446,175 @@ export function createManageVault$(
   vault$: (id: BigNumber) => Observable<Vault>,
   id: BigNumber,
 ): Observable<ManageVaultState> {
-  return combineLatest(context$, txHelpers$, vault$(id)).pipe(
-    switchMap(([context, txHelpers, { token, ilk }]) => {
+  return combineLatest(context$, txHelpers$).pipe(
+    switchMap(([context, txHelpers]) => {
       const account = context.account
-
-      const userTokenInfo$ = combineLatest(
-        balance$(token, account),
-        tokenOraclePrice$(token),
-        balance$('ETH', account),
-        tokenOraclePrice$('ETH'),
-        balance$('DAI', account),
-      ).pipe(
-        switchMap(([collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance]) =>
-          of({
-            collateralBalance,
-            collateralPrice,
-            ethBalance,
-            ethPrice,
-            daiBalance,
-          }),
-        ),
-      )
-
-      return combineLatest(userTokenInfo$, ilkData$(ilk), proxyAddress$(account)).pipe(
+      return vault$(id).pipe(
         first(),
-        switchMap(
-          ([
-            { collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance },
-            { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
-            proxyAddress,
-          ]) =>
-            ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
-              first(),
-              switchMap((allowance) => {
-                const initialState: ManageVaultState = {
-                  ...defaultIsStates,
-                  stage: 'editing',
-                  token,
-                  id,
-                  account,
-                  collateralBalance,
-                  collateralPrice,
-                  ethBalance,
-                  ethPrice,
-                  daiBalance,
-                  errorMessages: [],
-                  warningMessages: [],
-
-                  depositAmount: undefined,
-                  depositAmountUSD: undefined,
-                  maxDepositAmount: zero,
-                  maxDepositAmountUSD: zero,
-
-                  generateAmount: undefined,
-                  generateAmountUSD: undefined,
-                  maxGenerateAmount: zero,
-                  maxGenerateAmountUSD: zero,
-
-                  withdrawAmount: undefined,
-                  withdrawAmountUSD: undefined,
-                  maxWithdrawAmount: zero,
-                  maxWithdrawAmountUSD: zero,
-
-                  paybackAmount: undefined,
-                  paybackAmountUSD: undefined,
-                  maxPaybackAmount: zero,
-                  maxPaybackAmountUSD: zero,
-
-                  afterLiquidationPrice: zero,
-                  afterCollateralizationRatio: zero,
-                  ilk,
-                  maxDebtPerUnitCollateral,
-                  ilkDebtAvailable,
-                  debtFloor,
-                  liquidationRatio,
-                  proxyAddress,
-                  allowance,
-                  safeConfirmations: context.safeConfirmations,
-                  etherscan: context.etherscan.url,
-                  collateralAllowanceAmount: maxUint256,
-                  daiAllowanceAmount: maxUint256,
-                }
-
-                const change$ = new Subject<ManageVaultChange>()
-
-                function change(ch: ManageVaultChange) {
-                  change$.next(ch)
-                }
-
-                const collateralBalanceChange$ = balance$(token, account!).pipe(
-                  map((collateralBalance) => ({
-                    kind: 'collateralBalance',
-                    collateralBalance,
-                  })),
-                )
-
-                const ethBalanceChange$ = balance$('ETH', account!).pipe(
-                  map((ethBalance) => ({ kind: 'ethBalance', ethBalance })),
-                )
-
-                const daiBalanceChange$ = balance$('DAI', account!).pipe(
-                  map((daiBalance) => ({ kind: 'daiBalance', daiBalance })),
-                )
-
-                const maxDebtPerUnitCollateralChange$ = ilkData$(ilk).pipe(
-                  map(({ maxDebtPerUnitCollateral }) => ({
-                    kind: 'maxDebtPerUnitCollateral',
-                    maxDebtPerUnitCollateral,
-                  })),
-                )
-
-                const ilkDebtAvailableChange$ = ilkData$(ilk).pipe(
-                  map(({ ilkDebtAvailable }) => ({
-                    kind: 'ilkDebtAvailable',
-                    ilkDebtAvailable,
-                  })),
-                )
-
-                const debtFloorChange$ = ilkData$(ilk).pipe(
-                  map(({ debtFloor }) => ({
-                    kind: 'debtFloor',
-                    debtFloor,
-                  })),
-                )
-
-                const collateralPriceChange$ = tokenOraclePrice$(ilk).pipe(
-                  map((collateralPrice) => ({ kind: 'collateralPrice', collateralPrice })),
-                )
-
-                const environmentChanges$ = merge(
-                  collateralPriceChange$,
-                  collateralBalanceChange$,
-                  ethBalanceChange$,
-                  daiBalanceChange$,
-                  maxDebtPerUnitCollateralChange$,
-                  ilkDebtAvailableChange$,
-                  debtFloorChange$,
-                )
-
-                const connectedProxyAddress$ = proxyAddress$(account)
-
-                const connectedAllowance$ = connectedProxyAddress$.pipe(
-                  switchMap((proxyAddress) =>
-                    proxyAddress ? allowance$(token, account, proxyAddress) : of(zero),
-                  ),
-                  distinctUntilChanged((x, y) => x.eq(y)),
-                )
-
-                return merge(change$, environmentChanges$).pipe(
-                  scan(apply, initialState),
-                  map(applyVaultCalculations),
-                  map(validateErrors),
-                  map(validateWarnings),
-                  map(
-                    curry(addTransitions)(
-                      txHelpers,
-                      connectedProxyAddress$,
-                      connectedAllowance$,
-                      change,
-                    ),
-                  ),
-                  shareReplay(1),
-                )
+        switchMap(({ token, ilk }) => {
+          const userTokenInfo$ = combineLatest(
+            balance$(token, account),
+            tokenOraclePrice$(token),
+            balance$('ETH', account),
+            tokenOraclePrice$('ETH'),
+            balance$('DAI', account),
+          ).pipe(
+            switchMap(([collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance]) =>
+              of({
+                collateralBalance,
+                collateralPrice,
+                ethBalance,
+                ethPrice,
+                daiBalance,
               }),
             ),
-        ),
+          )
+          return combineLatest(userTokenInfo$, ilkData$(ilk), proxyAddress$(account)).pipe(
+            first(),
+            switchMap(
+              ([
+                { collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance },
+                { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
+                proxyAddress,
+              ]) =>
+                ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
+                  first(),
+                  switchMap((allowance) => {
+                    console.log('should not be called more than once')
+                    const initialState: ManageVaultState = {
+                      ...defaultIsStates,
+                      stage: 'editing',
+                      token,
+                      id,
+                      account,
+                      collateralBalance,
+                      collateralPrice,
+                      ethBalance,
+                      ethPrice,
+                      daiBalance,
+                      errorMessages: [],
+                      warningMessages: [],
+
+                      depositAmount: undefined,
+                      depositAmountUSD: undefined,
+                      maxDepositAmount: zero,
+                      maxDepositAmountUSD: zero,
+
+                      generateAmount: undefined,
+                      generateAmountUSD: undefined,
+                      maxGenerateAmount: zero,
+                      maxGenerateAmountUSD: zero,
+
+                      withdrawAmount: undefined,
+                      withdrawAmountUSD: undefined,
+                      maxWithdrawAmount: zero,
+                      maxWithdrawAmountUSD: zero,
+
+                      paybackAmount: undefined,
+                      paybackAmountUSD: undefined,
+                      maxPaybackAmount: zero,
+                      maxPaybackAmountUSD: zero,
+
+                      afterLiquidationPrice: zero,
+                      afterCollateralizationRatio: zero,
+                      ilk,
+                      maxDebtPerUnitCollateral,
+                      ilkDebtAvailable,
+                      debtFloor,
+                      liquidationRatio,
+                      proxyAddress,
+                      allowance,
+                      safeConfirmations: context.safeConfirmations,
+                      etherscan: context.etherscan.url,
+                      collateralAllowanceAmount: maxUint256,
+                      daiAllowanceAmount: maxUint256,
+                    }
+
+                    const change$ = new Subject<ManageVaultChange>()
+
+                    function change(ch: ManageVaultChange) {
+                      change$.next(ch)
+                    }
+
+                    const collateralBalanceChange$ = balance$(token, account!).pipe(
+                      map((collateralBalance) => ({
+                        kind: 'collateralBalance',
+                        collateralBalance,
+                      })),
+                    )
+
+                    const ethBalanceChange$ = balance$('ETH', account!).pipe(
+                      map((ethBalance) => ({ kind: 'ethBalance', ethBalance })),
+                    )
+
+                    const daiBalanceChange$ = balance$('DAI', account!).pipe(
+                      map((daiBalance) => ({ kind: 'daiBalance', daiBalance })),
+                    )
+
+                    const maxDebtPerUnitCollateralChange$ = ilkData$(ilk).pipe(
+                      map(({ maxDebtPerUnitCollateral }) => ({
+                        kind: 'maxDebtPerUnitCollateral',
+                        maxDebtPerUnitCollateral,
+                      })),
+                    )
+
+                    const ilkDebtAvailableChange$ = ilkData$(ilk).pipe(
+                      map(({ ilkDebtAvailable }) => ({
+                        kind: 'ilkDebtAvailable',
+                        ilkDebtAvailable,
+                      })),
+                    )
+
+                    const debtFloorChange$ = ilkData$(ilk).pipe(
+                      map(({ debtFloor }) => ({
+                        kind: 'debtFloor',
+                        debtFloor,
+                      })),
+                    )
+
+                    const collateralPriceChange$ = tokenOraclePrice$(ilk).pipe(
+                      map((collateralPrice) => ({ kind: 'collateralPrice', collateralPrice })),
+                    )
+
+                    const environmentChanges$ = merge(
+                      collateralPriceChange$,
+                      collateralBalanceChange$,
+                      ethBalanceChange$,
+                      daiBalanceChange$,
+                      maxDebtPerUnitCollateralChange$,
+                      ilkDebtAvailableChange$,
+                      debtFloorChange$,
+                    )
+
+                    const connectedProxyAddress$ = proxyAddress$(account)
+
+                    const connectedAllowance$ = connectedProxyAddress$.pipe(
+                      switchMap((proxyAddress) =>
+                        proxyAddress ? allowance$(token, account, proxyAddress) : of(zero),
+                      ),
+                      distinctUntilChanged((x, y) => x.eq(y)),
+                    )
+
+                    return merge(change$, environmentChanges$).pipe(
+                      scan(apply, initialState),
+                      map(applyVaultCalculations),
+                      map(validateErrors),
+                      map(validateWarnings),
+                      map(
+                        curry(addTransitions)(
+                          txHelpers,
+                          connectedProxyAddress$,
+                          connectedAllowance$,
+                          change,
+                        ),
+                      ),
+                      shareReplay(1),
+                    )
+                  }),
+                ),
+            ),
+          )
+        }),
       )
     }),
     map(applyIsStageStates),
