@@ -20,6 +20,7 @@ export function TableContainer({
   return (
     <Container
       sx={{
+        display: ['flex', 'table'],
         p: 0,
         borderCollapse: 'separate',
         borderSpacing: '0 9px',
@@ -27,10 +28,10 @@ export function TableContainer({
       }}
       as="table"
     >
-      <Box as="thead">
+      <Box sx={{ display: ['none', 'table-header-group'] }} as="thead">
         <Box as="tr">{header}</Box>
       </Box>
-      <Box as="tbody">{children}</Box>
+      <Box sx={{ width: '100%' }} as="tbody">{children}</Box>
     </Container>
   )
 }
@@ -39,6 +40,9 @@ function Row({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
   return (
     <Box
       sx={{
+        display: ['flex', 'table-row'],
+        mb: 3,
+        flexDirection: 'column',
         boxShadow: 'table',
         background: 'white',
         borderRadius: '8px',
@@ -100,8 +104,9 @@ export function Table<T extends Record<K, string>, K extends keyof T>({
     >
       {data.map((row) => (
         <Row key={row[primaryKey]}>
-          {rowDefinition.map(({ cell: Content }, idx) => (
-            <Cell key={idx}>
+          {rowDefinition.map(({ cell: Content, header }, idx) => (
+            <Cell sx={{ display: ['flex', 'table-cell'], justifyContent: 'space-between' }} key={idx}>
+              <Header sx={{ display: ['block', 'none'], padding: 0 }} >{header}</Header>
               <Content {...row} />
             </Cell>
           ))}

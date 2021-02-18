@@ -6,7 +6,7 @@ import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { Table } from 'components/Table'
 import { VaultSummary } from 'features/vault/vaultSummary'
-import { formatAddress, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { formatAddress, formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import React from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
@@ -24,10 +24,10 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
           header: <Text>Asset</Text>,
           cell: ({ token }) => <TokenSymbol token={token} />,
         },
-        {
-          header: <Text>Type</Text>,
-          cell: ({ ilk }) => <Text>{ilk}</Text>,
-        },
+        // {
+        //   header: <Text>Type</Text>,
+        //   cell: ({ ilk }) => <Text>{ilk}</Text>,
+        // },
         {
           header: <Text sx={{ textAlign: 'right' }}>Deposited</Text>,
           cell: ({ collateral }) => (
@@ -53,6 +53,14 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
           ),
         },
         {
+          header: <Text sx={{ textAlign: 'right' }}>Min Ratio</Text>,
+          cell: ({ liquidationRatio }) => (
+            <Text sx={{ textAlign: 'right' }}>
+              {liquidationRatio ? formatPercent(liquidationRatio.times(100)) : 0}
+            </Text>
+          ),
+        },
+        {
           header: <Text />,
           cell: ({ id }) => (
             <Box sx={{ textAlign: 'right' }}>
@@ -71,11 +79,13 @@ function AllIlks({
   canOpenVault,
   ilkDataList,
   isReadonly,
+  toggleSort,
 }: {
   canOpenVault: boolean
   ilkDataList: IlkDataWithBalance[]
   isReadonly: boolean
-  address: string
+  address: string,
+  toggleSort: (key: keyof IlkDataWithBalance) => void
 }) {
   return (
     <Table
@@ -91,19 +101,19 @@ function AllIlks({
           cell: ({ ilk }) => <Text>{ilk}</Text>,
         },
         {
-          header: <Text sx={{ textAlign: 'right' }}>DAI Available</Text>,
+          header: <Text onClick={() => toggleSort('ilkDebtAvailable')} sx={{ textAlign: 'right', whiteSpace: "nowrap" }}>DAI Available</Text>,
           cell: ({ ilkDebtAvailable }) => (
             <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(ilkDebtAvailable)}</Text>
           ),
         },
         {
-          header: <Text sx={{ textAlign: 'right' }}>Stability Fee</Text>,
+          header: <Text onClick={() => toggleSort('stabilityFee')} sx={{ textAlign: 'right', whiteSpace: "nowrap" }}>Stability Fee</Text>,
           cell: ({ stabilityFee }) => (
             <Text sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee.times(100))}</Text>
           ),
         },
         {
-          header: <Text sx={{ textAlign: 'right' }}>Min. Coll Rato</Text>,
+          header: <Text onClick={() => toggleSort('liquidationRatio')} sx={{ textAlign: 'right', whiteSpace: "nowrap" }}>Min. Coll Rato</Text>,
           cell: ({ liquidationRatio }) => (
             <Text sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio.times(100))}</Text>
           ),
@@ -111,25 +121,25 @@ function AllIlks({
         ...(isReadonly
           ? []
           : [
-              {
-                header: <Text sx={{ textAlign: 'right' }}>In my wallet</Text>,
-                cell: (ilk: IlkDataWithBalance) => (
-                  <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
-                    <Text sx={{ textAlign: 'right' }}>
-                      {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
-                    </Text>
-                    <Text variant="paragraph3" sx={{ color: 'muted' }}>
-                      {`($${ilk.balancePrice ? formatCryptoBalance(ilk.balancePrice) : 0})`}
-                    </Text>
-                  </Flex>
-                ),
-              },
-            ]),
+            {
+              header: <Text onClick={() => toggleSort('balancePrice')} sx={{ textAlign: 'right' }}>In my wallet</Text>,
+              cell: (ilk: IlkDataWithBalance) => (
+                <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
+                  <Text sx={{ textAlign: 'right' }}>
+                    {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
+                  </Text>
+                  <Text variant="paragraph3" sx={{ color: 'muted', ml: 1 }}>
+                    {`($${ilk.balancePrice ? formatFiatBalance(ilk.balancePrice) : 0})`}
+                  </Text>
+                </Flex>
+              ),
+            },
+          ]),
         {
           header: <Text />,
           cell: ({ ilk }) => (
             <Box sx={{ textAlign: 'right' }}>
-              <AppLink variant="secondary" disabled={!canOpenVault} href={`/vaults/open/${ilk}`}>
+              <AppLink sx={{ width: '100%' }} variant="secondary" href={`/vaults/open/${ilk}`}>
                 Open Vault
               </AppLink>
             </Box>
@@ -283,7 +293,14 @@ interface Props {
   address: string
 }
 export function VaultsOverviewView({ vaultsOverView, context, address }: Props) {
-  const { vaults, vaultSummary, featuredIlks, ilkDataList, canOpenVault } = vaultsOverView
+  const {
+    vaults,
+    vaultSummary,
+    featuredIlks,
+    ilkDataList,
+    canOpenVault,
+    toggleSort,
+  } = vaultsOverView
 
   const readonlyAccount = context?.status === 'connectedReadonly' && (address as string)
   const displaySummary = vaults && vaults.length > 0 && vaultSummary
@@ -320,6 +337,7 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
             ilkDataList={ilkDataList}
             isReadonly={context?.status === 'connectedReadonly'}
             address={address}
+            toggleSort={toggleSort}
           />
         </>
       )}

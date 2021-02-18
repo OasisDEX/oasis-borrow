@@ -4,13 +4,13 @@ import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { getVaultsSummary, VaultSummary } from 'features/vault/vaultSummary'
-import { isEqual } from 'lodash'
+import { isEqual, sortBy } from 'lodash'
 import maxBy from 'lodash/maxBy'
 import minBy from 'lodash/minBy'
-import { Observable } from 'rxjs'
+import { BehaviorSubject, Observable, of } from 'rxjs'
 import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/internal/operators/map'
-import { distinctUntilChanged, filter, startWith } from 'rxjs/operators'
+import { distinctUntilChanged, tap, startWith, switchMap } from 'rxjs/operators'
 
 export interface FeaturedIlk extends IlkData {
   title: string
@@ -21,25 +21,34 @@ export interface IlkDataWithBalance extends IlkData {
   balancePrice: BigNumber | undefined
 }
 
+interface Sort {
+  key: keyof IlkDataWithBalance,
+  direction: 'DESC' | 'ASC'
+}
+
 export interface VaultsOverview {
   canOpenVault: boolean
   vaults: Vault[] | undefined
   vaultSummary: VaultSummary | undefined
   ilkDataList: IlkDataWithBalance[] | undefined
   featuredIlks: FeaturedIlk[] | undefined
+  sorting: Sort | undefined
+  toggleSort(key: keyof IlkDataWithBalance): void
 }
 
-export function createFeaturedIlk(
-  ilkDataList$: Observable<IlkDataList>,
+function createFeaturedIlk(
+  ilkDataList: IlkDataList,
   selector: (ilks: IlkDataList) => IlkData | undefined,
-  title: string,
-): Observable<FeaturedIlk> {
-  return ilkDataList$.pipe(
-    map((ilks) => ilks.filter(hasAllMetaInfo)),
-    map(selector),
-    filter((ilk): ilk is IlkData => ilk !== undefined),
-    map((ilk) => ({ ...ilk, title })),
-  )
+  title: string): FeaturedIlk | undefined {
+  const featured = selector(ilkDataList.filter(hasAllMetaInfo))
+  if (featured === undefined) {
+    return undefined
+  }
+
+  return {
+    ...featured,
+    title,
+  }
 }
 
 function hasAllMetaInfo(ilk: IlkData) {
@@ -65,11 +74,39 @@ export function getCheapest(ilks: IlkDataList) {
 }
 
 export function createFeaturedIlks$(ilkDataList$: Observable<IlkDataList>) {
-  return combineLatest(
-    createFeaturedIlk(ilkDataList$, getNewest, 'New'),
-    createFeaturedIlk(ilkDataList$, getMostPopular, 'Most Popular'),
-    createFeaturedIlk(ilkDataList$, getCheapest, 'Cheapest'),
+  return ilkDataList$.pipe(
+    map(ilks => [
+      createFeaturedIlk(ilks, getNewest, 'New'),
+      createFeaturedIlk(ilks, getMostPopular, 'Most Popular'),
+      createFeaturedIlk(ilks, getCheapest, 'Cheapest'),
+    ])
   )
+}
+
+function updateSort(current: Sort | undefined, key: keyof IlkDataWithBalance): Sort | undefined {
+  if (current === undefined || current.key !== key) {
+    return {
+      key,
+      direction: 'ASC',
+    }
+  }
+  if (current.direction === 'ASC') {
+    return {
+      key,
+      direction: 'DESC'
+    }
+  }
+  return undefined
+}
+
+function sort({ ilkDataList, sorting, ...state }: VaultsOverview): VaultsOverview {
+  return {
+    ...state,
+    sorting,
+    ilkDataList: sorting
+      ? sortBy(ilkDataList, data => data[sorting.key])
+      : ilkDataList
+  }
 }
 
 export function createVaultsOverview$(
@@ -82,6 +119,9 @@ export function createVaultsOverview$(
   ) => Observable<Record<string, { price: BigNumber; balance: BigNumber }>>,
   address: string,
 ): Observable<VaultsOverview> {
+  const sorting$ = new BehaviorSubject<Sort | undefined>(undefined)
+  const toggleSort = (key: keyof IlkDataWithBalance) => sorting$.next(updateSort(sorting$.value, key))
+
   return combineLatest(
     context$,
     vaults$(address).pipe(startWith<Vault[] | undefined>(undefined)),
@@ -98,13 +138,20 @@ export function createVaultsOverview$(
       vaultSummary,
       ilkDataList: ilkDataList
         ? ilkDataList.map((ilk) => ({
-            ...ilk,
-            balance: balances[ilk.token]?.balance,
-            balancePrice: balances[ilk.token]?.price.times(balances[ilk.token]?.balance),
-          }))
+          ...ilk,
+          balance: balances[ilk.token]?.balance,
+          balancePrice: balances[ilk.token]?.price.times(balances[ilk.token]?.balance),
+        }))
         : ilkDataList,
       featuredIlks,
     })),
+    switchMap(state => combineLatest(of(state), sorting$)),
+    map(([state, sorting]) => ({
+      ...state,
+      toggleSort,
+      sorting,
+    })),
+    map(sort),
     distinctUntilChanged((a, b) => isEqual(a, b)),
   )
 }

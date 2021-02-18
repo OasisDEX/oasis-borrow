@@ -636,7 +636,8 @@ const oasisBaseTheme = {
   },
   layout: {
     appContainer: {
-      maxWidth: '1024px',
+      maxWidth: '1200px',
+      px: 3,
     },
     marketingContainer: {
       variant: 'layout.appContainer',
