@@ -61,8 +61,8 @@ const rowDefinition: RowDefinition<IlkData>[] = [
   {
     header: <Text />,
     cell: ({ ilk }) => (
-      <Box sx={{ textAlign: 'right' }}>
-        <AppLink href={`/vaults/open/${ilk}`} variant="secondary">
+      <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
+        <AppLink sx={{ width: ['100%', 'inherit'], textAlign: 'center' }} href={`/vaults/open/${ilk}`} variant="secondary">
           Create Vault
         </AppLink>
       </Box>

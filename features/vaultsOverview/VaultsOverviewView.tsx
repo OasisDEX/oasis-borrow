@@ -63,8 +63,8 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
         {
           header: <Text />,
           cell: ({ id }) => (
-            <Box sx={{ textAlign: 'right' }}>
-              <AppLink variant="secondary" as={`/${id}`} href={`/[vault]`}>
+            <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
+              <AppLink sx={{ width: ['100%', 'inherit'], textAlign: 'center' }} variant="secondary" as={`/${id}`} href={`/[vault]`}>
                 Manage Vault
               </AppLink>
             </Box>
@@ -138,8 +138,8 @@ function AllIlks({
         {
           header: <Text />,
           cell: ({ ilk }) => (
-            <Box sx={{ textAlign: 'right' }}>
-              <AppLink sx={{ width: '100%' }} variant="secondary" href={`/vaults/open/${ilk}`}>
+            <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
+              <AppLink sx={{ width: ['100%', 'inherit'], textAlign: 'center' }} variant="secondary" href={`/vaults/open/${ilk}`}>
                 Open Vault
               </AppLink>
             </Box>

@@ -78,6 +78,7 @@ function Cell({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
 function Header({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
   return (
     <Box
+      variant="paragraph2"
       sx={{
         px: 3,
         color: 'text.muted',
@@ -106,7 +107,17 @@ export function Table<T extends Record<K, string>, K extends keyof T>({
         <Row key={row[primaryKey]}>
           {rowDefinition.map(({ cell: Content, header }, idx) => (
             <Cell sx={{ display: ['flex', 'table-cell'], justifyContent: 'space-between' }} key={idx}>
-              <Header sx={{ display: ['block', 'none'], padding: 0 }} >{header}</Header>
+              <Box
+                variant="paragraph2"
+                sx={{
+                  color: 'muted',
+                  fontWeight: 'semiBold',
+                  display: ['block', 'none'],
+                  padding: 0
+                }}
+              >
+                {header}
+              </Box>
               <Content {...row} />
             </Cell>
           ))}
