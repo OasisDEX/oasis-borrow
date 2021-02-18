@@ -63,7 +63,6 @@ export function VaultActionInput({
     setAuxiliaryFlag(!auxiliaryFlag)
   }
 
-  console.log(!!auxiliaryFlag)
   return (
     <Box
       sx={{

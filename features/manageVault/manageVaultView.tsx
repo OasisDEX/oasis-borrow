@@ -103,11 +103,10 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     maxWithdrawAmount,
     maxWithdrawAmountUSD,
     generateAmount,
-    paybackAmount,
-    collateralBalance,
-    collateralPrice,
     maxGenerateAmount,
+    paybackAmount,
     maxPaybackAmount,
+    collateralPrice,
     errorMessages,
     warningMessages,
     ilkDebtAvailable,
@@ -144,12 +143,27 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     })
   }
 
+  function clearGenerate(change: (ch: ManualChange) => void) {
+    change({
+      kind: 'generateAmount',
+      generateAmount: undefined,
+    })
+  }
+
+  function clearPayback(change: (ch: ManualChange) => void) {
+    change({
+      kind: 'paybackAmount',
+      paybackAmount: undefined,
+    })
+  }
+
   function handleDepositChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
       const depositAmount = value !== '' ? new BigNumber(value) : undefined
       const depositAmountUSD = depositAmount ? collateralPrice.times(depositAmount) : undefined
 
+      clearPayback(change)
       clearWithdraw(change)
       change({
         kind: 'depositAmount',
@@ -171,6 +185,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
           ? depositAmountUSD.div(collateralPrice)
           : undefined
 
+      clearPayback(change)
       clearWithdraw(change)
       change({
         kind: 'depositAmountUSD',
@@ -185,6 +200,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
 
   function handleDepositMax(change: (ch: ManualChange) => void) {
     return () => {
+      clearPayback(change)
       clearWithdraw(change)
       change({ kind: 'depositAmount', depositAmount: maxDepositAmount })
       change({ kind: 'depositAmountUSD', depositAmountUSD: maxDepositAmountUSD })
@@ -197,6 +213,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
       const withdrawAmount = value !== '' ? new BigNumber(value) : undefined
       const withdrawAmountUSD = withdrawAmount ? collateralPrice.times(withdrawAmount) : undefined
 
+      clearGenerate(change)
       clearDeposit(change)
       change({
         kind: 'withdrawAmount',
@@ -218,6 +235,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
           ? withdrawAmountUSD.div(collateralPrice)
           : undefined
 
+      clearGenerate(change)
       clearDeposit(change)
       change({
         kind: 'withdrawAmountUSD',
@@ -232,6 +250,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
 
   function handleWithdrawMax(change: (ch: ManualChange) => void) {
     return () => {
+      clearGenerate(change)
       clearDeposit(change)
       change({ kind: 'withdrawAmount', withdrawAmount: maxWithdrawAmount })
       change({ kind: 'withdrawAmountUSD', withdrawAmountUSD: maxWithdrawAmountUSD })
@@ -242,6 +261,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
       const generateAmount = value !== '' ? new BigNumber(value) : undefined
+      clearWithdraw(change)
       change({
         kind: 'generateAmount',
         generateAmount,
@@ -249,10 +269,18 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     }
   }
 
+  function handleGenerateMax(change: (ch: ManualChange) => void) {
+    return () => {
+      clearWithdraw(change)
+      change({ kind: 'generateAmount', generateAmount: maxGenerateAmount })
+    }
+  }
+
   function handlePaybackChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
       const paybackAmount = value !== '' ? new BigNumber(value) : undefined
+      clearDeposit(change)
       change({
         kind: 'paybackAmount',
         paybackAmount,
@@ -260,14 +288,9 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     }
   }
 
-  function handleGenerateMax(change: (ch: ManualChange) => void) {
-    return () => {
-      change({ kind: 'generateAmount', generateAmount: maxGenerateAmount })
-    }
-  }
-
   function handlePaybackMax(change: (ch: ManualChange) => void) {
     return () => {
+      clearDeposit(change)
       change({ kind: 'paybackAmount', paybackAmount: maxPaybackAmount })
     }
   }
@@ -285,9 +308,6 @@ function ManageVaultFormEditing(props: ManageVaultState) {
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
     ? '--'
     : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
-
-  console.log(maxWithdrawAmount.toString())
-  console.log(maxWithdrawAmountUSD.toString())
 
   return (
     <Grid>
@@ -321,24 +341,28 @@ function ManageVaultFormEditing(props: ManageVaultState) {
         onChange={handleWithdrawChange(change!)}
         onAuxiliaryChange={handleWithdrawUSDChange(change!)}
       />
-      {/* <VaultActionInput
-          action="Generate"
-          amount={generateAmount}
-          token={'DAI'}
-          showMax={!!maxGenerateAmount?.gt(zero)}
-          onSetMax={handleGenerateMax(change!)}
-          hasError={false}
-          onChange={handleGenerateChange(change!)}
-          />
-          <VaultActionInput
-          action="Payback"
-          amount={paybackAmount}
-          token={'DAI'}
-          showMax={!!maxGenerateAmount?.gt(zero)}
-          onSetMax={handlePaybackMax(change!)}
-          hasError={false}
-          onChange={handlePaybackChange(change!)}
-          /> */}
+      <VaultActionInput
+        action="Generate"
+        amount={generateAmount}
+        token={'DAI'}
+        showMax={true}
+        maxAmount={maxGenerateAmount}
+        maxAmountLabel={'Maximum'}
+        onSetMax={handleGenerateMax(change!)}
+        onChange={handleGenerateChange(change!)}
+        hasError={false}
+      />
+      <VaultActionInput
+        action="Payback"
+        amount={paybackAmount}
+        token={'DAI'}
+        showMax={true}
+        maxAmount={maxPaybackAmount}
+        maxAmountLabel={'Maximum'}
+        onSetMax={handlePaybackMax(change!)}
+        onChange={handlePaybackChange(change!)}
+        hasError={false}
+      />
       {hasError && (
         <>
           <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
@@ -407,7 +431,6 @@ export function ManageVaultView({ id }: { id: BigNumber }) {
 
   if (!manageVault) return null
 
-  console.log(manageVault)
   return (
     <Grid>
       <ManageVaultContainer {...manageVault} />

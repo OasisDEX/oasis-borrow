@@ -82,6 +82,9 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
     liquidationRatio,
     depositAmountUSD,
     lockedCollateral,
+    paybackAmount,
+    daiBalance,
+    debt,
   } = state
 
   const maxDepositAmount = collateralBalance
@@ -92,6 +95,8 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
 
   const maxGenerateAmount = depositAmount ? depositAmount.times(maxDebtPerUnitCollateral) : zero
   const generateAmountUSD = generateAmount || zero // 1 DAI === 1 USD
+
+  const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt
 
   const afterCollateralizationRatio =
     depositAmountUSD && !generateAmountUSD.eq(zero) ? depositAmountUSD.div(generateAmountUSD) : zero
@@ -111,6 +116,7 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
     afterLiquidationPrice,
     generateAmountUSD,
     maxDepositAmountUSD,
+    maxPaybackAmount,
   }
 }
 
@@ -211,7 +217,6 @@ export type ManualChange =
   | Change<ManageVaultState, 'generateAmount'>
   | Change<ManageVaultState, 'generateAmountUSD'>
   | Change<ManageVaultState, 'paybackAmount'>
-  | Change<ManageVaultState, 'paybackAmountUSD'>
   | Change<ManageVaultState, 'collateralAllowanceAmount'>
   | Change<ManageVaultState, 'daiAllowanceAmount'>
 
@@ -306,15 +311,12 @@ export interface ManageVaultState {
 
   // generate
   generateAmount?: BigNumber
-  generateAmountUSD?: BigNumber
+  generateAmountUSD: BigNumber
   maxGenerateAmount: BigNumber
-  maxGenerateAmountUSD: BigNumber
 
   // payback
   paybackAmount?: BigNumber
-  paybackAmountUSD?: BigNumber
   maxPaybackAmount: BigNumber
-  maxPaybackAmountUSD: BigNumber
 
   // Ilk information
   maxDebtPerUnitCollateral: BigNumber // Updates
@@ -324,6 +326,7 @@ export interface ManageVaultState {
 
   // Vault information
   lockedCollateral: BigNumber
+  debt: BigNumber
 
   // Vault Display Information
   afterLiquidationPrice: BigNumber
@@ -358,9 +361,7 @@ function addTransitions(
     change({ kind: 'withdrawAmount', withdrawAmount: undefined })
     change({ kind: 'withdrawAmountUSD', withdrawAmountUSD: undefined })
     change({ kind: 'generateAmount', generateAmount: undefined })
-    change({ kind: 'generateAmountUSD', generateAmountUSD: undefined })
     change({ kind: 'paybackAmount', paybackAmount: undefined })
-    change({ kind: 'paybackAmountUSD', paybackAmountUSD: undefined })
     change({ kind: 'collateralAllowanceAmount', collateralAllowanceAmount: maxUint256 })
     change({ kind: 'daiAllowanceAmount', daiAllowanceAmount: maxUint256 })
   }
@@ -460,7 +461,7 @@ export function createManageVault$(
       const account = context.account
       return vault$(id).pipe(
         first(),
-        switchMap(({ token, ilk, lockedCollateral }) => {
+        switchMap(({ token, ilk, lockedCollateral, debt }) => {
           const userTokenInfo$ = combineLatest(
             balance$(token, account),
             tokenOraclePrice$(token),
@@ -514,16 +515,14 @@ export function createManageVault$(
                       maxWithdrawAmountUSD: zero,
 
                       generateAmount: undefined,
-                      generateAmountUSD: undefined,
+                      generateAmountUSD: zero,
                       maxGenerateAmount: zero,
-                      maxGenerateAmountUSD: zero,
 
                       paybackAmount: undefined,
-                      paybackAmountUSD: undefined,
                       maxPaybackAmount: zero,
-                      maxPaybackAmountUSD: zero,
 
                       lockedCollateral,
+                      debt,
 
                       afterLiquidationPrice: zero,
                       afterCollateralizationRatio: zero,
@@ -593,6 +592,13 @@ export function createManageVault$(
                       })),
                     )
 
+                    const debt$ = vault$(id).pipe(
+                      map(({ debt }) => ({
+                        kind: 'debt',
+                        debt,
+                      })),
+                    )
+
                     const environmentChanges$ = merge(
                       collateralPriceChange$,
                       collateralBalanceChange$,
@@ -602,6 +608,7 @@ export function createManageVault$(
                       ilkDebtAvailableChange$,
                       debtFloorChange$,
                       lockedCollateralChange$,
+                      debt$,
                     )
 
                     const connectedProxyAddress$ = proxyAddress$(account)
