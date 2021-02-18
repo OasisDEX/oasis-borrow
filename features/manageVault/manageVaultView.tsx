@@ -1,3 +1,4 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultActionInput } from 'components/VaultActionInput'
@@ -5,7 +6,7 @@ import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/format
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import React from 'react'
-import { Box, Button, Card, Grid, Heading, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Heading, Link, Spinner, Text } from 'theme-ui'
 import { ManageVaultState, ManualChange } from './manageVault'
 
 function ManageVaultDetails({
@@ -410,6 +411,89 @@ function ManageVaultFormEditing(props: ManageVaultState) {
   )
 }
 
+function ManageVaultFormProxy({
+  stage,
+  proxyConfirmations,
+  safeConfirmations,
+  proxyTxHash,
+  etherscan,
+  progress,
+}: ManageVaultState) {
+  const isLoading = stage === 'proxyInProgress' || stage === 'proxyWaitingForApproval'
+
+  const canProgress = !!progress
+  function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault()
+    if (canProgress) progress!()
+  }
+
+  const buttonText =
+    stage === 'proxySuccess'
+      ? 'Continue'
+      : stage === 'proxyFailure'
+      ? 'Retry Create Proxy'
+      : stage === 'proxyWaitingForConfirmation'
+      ? 'Create Proxy'
+      : 'Creating Proxy'
+
+  return (
+    <Grid>
+      <Button disabled={!canProgress} onClick={handleProgress}>
+        {isLoading ? (
+          <Flex sx={{ justifyContent: 'center' }}>
+            <Spinner size={25} color="surface" />
+            <Text pl={2}>{buttonText}</Text>
+          </Flex>
+        ) : (
+          <Text>{buttonText}</Text>
+        )}
+      </Button>
+      {stage === 'proxyInProgress' && (
+        <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Spinner size={25} color="onWarning" />
+            <Grid pl={2} gap={1}>
+              <Text color="onWarning" sx={{ fontSize: 1 }}>
+                {proxyConfirmations || 0} of {safeConfirmations}: Proxy deployment confirming
+              </Text>
+              <Link
+                href={`${etherscan}/tx/${proxyTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Text color="onWarning" sx={{ fontSize: 1 }}>
+                  View on etherscan -{'>'}
+                </Text>
+              </Link>
+            </Grid>
+          </Flex>
+        </Card>
+      )}
+      {stage === 'proxySuccess' && (
+        <Card sx={{ backgroundColor: 'success', border: 'none' }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Icon name="checkmark" size={25} color="onSuccess" />
+            <Grid pl={2} gap={1}>
+              <Text color="onSuccess" sx={{ fontSize: 1 }}>
+                {safeConfirmations} of {safeConfirmations}: Proxy deployment confirmed
+              </Text>
+              <Link
+                href={`${etherscan}/tx/${proxyTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Text color="onSuccess" sx={{ fontSize: 1 }}>
+                  View on etherscan -{'>'}
+                </Text>
+              </Link>
+            </Grid>
+          </Flex>
+        </Card>
+      )}
+    </Grid>
+  )
+}
+
 function ManageVaultForm(props: ManageVaultState) {
   const {
     isEditingStage,
@@ -424,8 +508,8 @@ function ManageVaultForm(props: ManageVaultState) {
       <Card>
         <ManageVaultFormTitle {...props} />
         {isEditingStage && <ManageVaultFormEditing {...props} />}
+        {isProxyStage && <ManageVaultFormProxy {...props} />}
         {/*
-            {isProxyStage && <OpenVaultFormProxy {...props} />}
             {isAllowanceStage && <OpenVaultFormAllowance {...props} />}
             {isOpenStage && <OpenVaultFormConfirmation {...props} />} */}
       </Card>
