@@ -4,13 +4,13 @@ import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { getVaultsSummary, VaultSummary } from 'features/vault/vaultSummary'
-import { isEqual, sortBy } from 'lodash'
+import { isEqual } from 'lodash'
 import maxBy from 'lodash/maxBy'
 import minBy from 'lodash/minBy'
-import { BehaviorSubject, Observable, of } from 'rxjs'
+import { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/internal/operators/map'
-import { distinctUntilChanged, tap, startWith, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, startWith } from 'rxjs/operators'
 
 export interface FeaturedIlk extends IlkData {
   title: string
@@ -21,19 +21,12 @@ export interface IlkDataWithBalance extends IlkData {
   balancePrice: BigNumber | undefined
 }
 
-interface Sort {
-  key: keyof IlkDataWithBalance,
-  direction: 'DESC' | 'ASC'
-}
-
 export interface VaultsOverview {
   canOpenVault: boolean
   vaults: Vault[] | undefined
   vaultSummary: VaultSummary | undefined
   ilkDataList: IlkDataWithBalance[] | undefined
   featuredIlks: FeaturedIlk[] | undefined
-  sorting: Sort | undefined
-  toggleSort(key: keyof IlkDataWithBalance): void
 }
 
 function createFeaturedIlk(
@@ -83,32 +76,6 @@ export function createFeaturedIlks$(ilkDataList$: Observable<IlkDataList>) {
   )
 }
 
-function updateSort(current: Sort | undefined, key: keyof IlkDataWithBalance): Sort | undefined {
-  if (current === undefined || current.key !== key) {
-    return {
-      key,
-      direction: 'ASC',
-    }
-  }
-  if (current.direction === 'ASC') {
-    return {
-      key,
-      direction: 'DESC'
-    }
-  }
-  return undefined
-}
-
-function sort({ ilkDataList, sorting, ...state }: VaultsOverview): VaultsOverview {
-  return {
-    ...state,
-    sorting,
-    ilkDataList: sorting
-      ? sortBy(ilkDataList, data => data[sorting.key])
-      : ilkDataList
-  }
-}
-
 export function createVaultsOverview$(
   context$: Observable<Context>,
   vaults$: (address: string) => Observable<Vault[]>,
@@ -119,8 +86,6 @@ export function createVaultsOverview$(
   ) => Observable<Record<string, { price: BigNumber; balance: BigNumber }>>,
   address: string,
 ): Observable<VaultsOverview> {
-  const sorting$ = new BehaviorSubject<Sort | undefined>(undefined)
-  const toggleSort = (key: keyof IlkDataWithBalance) => sorting$.next(updateSort(sorting$.value, key))
 
   return combineLatest(
     context$,
@@ -145,13 +110,6 @@ export function createVaultsOverview$(
         : ilkDataList,
       featuredIlks,
     })),
-    switchMap(state => combineLatest(of(state), sorting$)),
-    map(([state, sorting]) => ({
-      ...state,
-      toggleSort,
-      sorting,
-    })),
-    map(sort),
-    distinctUntilChanged((a, b) => isEqual(a, b)),
+    distinctUntilChanged(isEqual),
   )
 }

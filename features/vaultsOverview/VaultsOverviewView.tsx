@@ -79,13 +79,11 @@ function AllIlks({
   canOpenVault,
   ilkDataList,
   isReadonly,
-  toggleSort,
 }: {
   canOpenVault: boolean
   ilkDataList: IlkDataWithBalance[]
   isReadonly: boolean
   address: string,
-  toggleSort: (key: keyof IlkDataWithBalance) => void
 }) {
   return (
     <Table
@@ -101,19 +99,19 @@ function AllIlks({
           cell: ({ ilk }) => <Text>{ilk}</Text>,
         },
         {
-          header: <Text onClick={() => toggleSort('ilkDebtAvailable')} sx={{ textAlign: 'right', whiteSpace: "nowrap" }}>DAI Available</Text>,
+          header: <Text sx={{ textAlign: 'right', whiteSpace: "nowrap" }}>DAI Available</Text>,
           cell: ({ ilkDebtAvailable }) => (
             <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(ilkDebtAvailable)}</Text>
           ),
         },
         {
-          header: <Text onClick={() => toggleSort('stabilityFee')} sx={{ textAlign: 'right', whiteSpace: "nowrap" }}>Stability Fee</Text>,
+          header: <Text sx={{ textAlign: 'right', whiteSpace: "nowrap" }}>Stability Fee</Text>,
           cell: ({ stabilityFee }) => (
             <Text sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee.times(100))}</Text>
           ),
         },
         {
-          header: <Text onClick={() => toggleSort('liquidationRatio')} sx={{ textAlign: 'right', whiteSpace: "nowrap" }}>Min. Coll Rato</Text>,
+          header: <Text sx={{ textAlign: 'right', whiteSpace: "nowrap" }}>Min. Coll Rato</Text>,
           cell: ({ liquidationRatio }) => (
             <Text sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio.times(100))}</Text>
           ),
@@ -122,7 +120,7 @@ function AllIlks({
           ? []
           : [
             {
-              header: <Text onClick={() => toggleSort('balancePrice')} sx={{ textAlign: 'right' }}>In my wallet</Text>,
+              header: <Text sx={{ textAlign: 'right' }}>In my wallet</Text>,
               cell: (ilk: IlkDataWithBalance) => (
                 <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
                   <Text sx={{ textAlign: 'right' }}>
@@ -299,7 +297,6 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
     featuredIlks,
     ilkDataList,
     canOpenVault,
-    toggleSort,
   } = vaultsOverView
 
   const readonlyAccount = context?.status === 'connectedReadonly' && (address as string)
@@ -337,7 +334,6 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
             ilkDataList={ilkDataList}
             isReadonly={context?.status === 'connectedReadonly'}
             address={address}
-            toggleSort={toggleSort}
           />
         </>
       )}
