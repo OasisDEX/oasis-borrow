@@ -10,6 +10,7 @@ import {
   TransactionDef,
 } from 'blockchain/calls/callsHelpers'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
+import { ProxyActionData } from 'blockchain/calls/lockAndDraw'
 import {
   CreateDsProxyData,
   createProxyAddress$,
@@ -22,7 +23,6 @@ import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
 import { createAllowance$, createBalance$ } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
-import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
@@ -58,7 +58,7 @@ import { createTransactionManager } from '../features/account/transactionManager
 import { HasGasEstimation } from '../helpers/form'
 
 export type TxData =
-  | LockAndDrawData
+  | ProxyActionData
   | ApproveData
   | DisapproveData
   | CreateDsProxyData
@@ -184,11 +184,6 @@ export function setupAppContext() {
 
   const vaultSummary$ = memoize(curry(createVaultSummary$)(vaults$))
 
-  const depositForm$ = memoize(
-    curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$),
-    bigNumberTostring,
-  )
-
   const ilks$ = createIlks$(context$)
   const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
 
@@ -239,7 +234,6 @@ export function setupAppContext() {
     vault$,
     ilks$,
     vaultSummary$,
-    depositForm$,
     landing$,
     openVault$,
     manageVault$,

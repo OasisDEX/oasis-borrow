@@ -1,6 +1,7 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData, maxUint256 } from 'blockchain/calls/erc20'
+import { lockAndDraw, proxyAction, ProxyActionData } from 'blockchain/calls/lockAndDraw'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
@@ -604,6 +605,60 @@ function setDaiAllowance(
     .subscribe((ch) => change(ch))
 }
 
+function manageVault(
+  { send }: TxHelpers,
+  change: (ch: ManageVaultChange) => void,
+  {
+    generateAmount,
+    depositAmount,
+    paybackAmount,
+    withdrawAmount,
+    proxyAddress,
+    ilk,
+    token,
+    id,
+  }: ManageVaultState,
+) {
+  send(proxyAction, {
+    kind: TxMetaKind.proxyAction,
+    drawAmount: generateAmount,
+    lockAmount: depositAmount,
+    withdrawAmount,
+    paybackAmount,
+    proxyAddress: proxyAddress!,
+    ilk,
+    tkn: token,
+    id: id.toString(),
+  })
+    .pipe(
+      transactionToX<ManageVaultChange, ProxyActionData>(
+        { kind: 'stage', stage: 'transactionWaitingForApproval' },
+        (txState) =>
+          of(
+            { kind: 'transactionTxHash', transactionTxHash: (txState as any).txHash as string },
+            { kind: 'stage', stage: 'transactionInProgress' },
+          ),
+        (txState) => {
+          return of(
+            {
+              kind: 'stage',
+              stage: 'openFailure',
+            },
+            {
+              kind: 'txError',
+              txError:
+                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+                  ? txState.error
+                  : undefined,
+            },
+          )
+        },
+        () => of({ kind: 'stage', stage: 'transactionSuccess' }),
+      ),
+    )
+    .subscribe((ch) => change(ch))
+}
+
 function addTransitions(
   txHelpers: TxHelpers,
   proxyAddress$: Observable<string | undefined>,
@@ -760,13 +815,26 @@ function addTransitions(
     }
   }
 
-  // if (state.stage === 'openWaitingForConfirmation' || state.stage === 'openFailure') {
-  //   return {
-  //     ...state,
-  //     progress: () => openVault(txHelpers, change, state),
-  //     reset: () => change({ kind: 'stage', stage: 'editing' }),
-  //   }
-  // }
+  if (state.stage === 'transactionWaitingForConfirmation' || state.stage === 'transactionFailure') {
+    return {
+      ...state,
+      progress: () => manageVault(txHelpers, change, state),
+      reset: () => change({ kind: 'stage', stage: 'editing' }),
+    }
+  }
+
+  if (state.stage === 'transactionSuccess') {
+    return {
+      ...state,
+      progress: () => {
+        reset()
+        change({
+          kind: 'stage',
+          stage: 'editing',
+        })
+      },
+    }
+  }
 
   return state
 }

@@ -1,13 +1,12 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData, maxUint256 } from 'blockchain/calls/erc20'
-import { lockAndDraw } from 'blockchain/calls/lockAndDraw'
+import { lockAndDraw, proxyAction, ProxyActionData } from 'blockchain/calls/lockAndDraw'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
-import { LockAndDrawData } from 'features/deposit/deposit'
 import { ApplyChange, applyChange, Change, Changes, transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
@@ -461,8 +460,8 @@ function openVault(
   change: (ch: OpenVaultChange) => void,
   { generateAmount, depositAmount, proxyAddress, ilk, token }: OpenVaultState,
 ) {
-  send(lockAndDraw, {
-    kind: TxMetaKind.lockAndDraw,
+  send(proxyAction, {
+    kind: TxMetaKind.proxyAction,
     drawAmount: generateAmount || new BigNumber(0),
     lockAmount: depositAmount || new BigNumber(0),
     proxyAddress: proxyAddress!,
@@ -470,7 +469,7 @@ function openVault(
     tkn: token,
   })
     .pipe(
-      transactionToX<OpenVaultChange, LockAndDrawData>(
+      transactionToX<OpenVaultChange, ProxyActionData>(
         { kind: 'stage', stage: 'openWaitingForApproval' },
         (txState) =>
           of(

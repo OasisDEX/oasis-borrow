@@ -835,8 +835,148 @@ function ManageVaultFormDaiAllowance({
   )
 }
 
+function ManageVaultFormConfirmation({
+  stage,
+  collateralBalance,
+  depositAmount,
+  generateAmount,
+  paybackAmount,
+  withdrawAmount,
+  token,
+  afterCollateralizationRatio,
+  afterLiquidationPrice,
+  progress,
+  id,
+  etherscan,
+  openTxHash,
+}: ManageVaultState) {
+  const walletBalance = formatCryptoBalance(collateralBalance)
+  const depositCollateral = formatCryptoBalance(depositAmount || zero)
+  const withdrawingCollateral = formatCryptoBalance(withdrawAmount || zero)
+  const remainingInWallet = formatCryptoBalance(
+    depositAmount ? collateralBalance.minus(depositAmount) : collateralBalance,
+  )
+  const daiToBeGenerated = formatCryptoBalance(generateAmount || zero)
+  const daiPayingBack = formatCryptoBalance(paybackAmount || zero)
+
+  const afterCollRatio = afterCollateralizationRatio.eq(zero)
+    ? '--'
+    : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
+
+  const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
+
+  const canProgress = !!progress || stage === 'transactionSuccess'
+  function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault()
+
+    if (progress) progress!()
+  }
+  const isLoading = stage === 'transactionInProgress' || stage === 'transactionWaitingForApproval'
+
+  const buttonText =
+    stage === 'transactionWaitingForConfirmation'
+      ? 'Change your vault'
+      : stage === 'transactionFailure'
+      ? 'Retry'
+      : stage === 'transactionSuccess'
+      ? `Back To Editing`
+      : 'Changing your Vault'
+
+  return (
+    <Grid>
+      <Card backgroundColor="Success">
+        <Grid columns="1fr 1fr">
+          <Text sx={{ fontSize: 1 }}>In your wallet</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
+            {walletBalance} {token}
+          </Text>
+
+          <Text sx={{ fontSize: 1 }}>Moving into Vault</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
+            {depositCollateral} {token}
+          </Text>
+
+          <Text sx={{ fontSize: 1 }}>Moving out of Vault</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
+            {withdrawingCollateral} {token}
+          </Text>
+
+          <Text sx={{ fontSize: 1 }}>Remaining in Wallet</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
+            {remainingInWallet} {token}
+          </Text>
+
+          <Text sx={{ fontSize: 1 }}>Dai being generated</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>{daiToBeGenerated} DAI</Text>
+
+          <Text sx={{ fontSize: 1 }}>Dai paying back</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>{daiPayingBack} DAI</Text>
+
+          <Text sx={{ fontSize: 1 }}>Collateral Ratio</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>{afterCollRatio}</Text>
+
+          <Text sx={{ fontSize: 1 }}>Liquidation Price</Text>
+          <Text sx={{ fontSize: 1, textAlign: 'right' }}>${afterLiqPrice}</Text>
+        </Grid>
+      </Card>
+      <Button disabled={!canProgress} onClick={handleProgress}>
+        {isLoading ? (
+          <Flex sx={{ justifyContent: 'center' }}>
+            <Spinner size={25} color="surface" />
+            <Text pl={2}>{buttonText}</Text>
+          </Flex>
+        ) : (
+          <Text>{buttonText}</Text>
+        )}
+      </Button>
+
+      {stage === 'transactionInProgress' && (
+        <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Spinner size={25} color="onWarning" />
+            <Grid pl={2} gap={1}>
+              <Text color="onWarning" sx={{ fontSize: 1 }}>
+                Changing Vault!
+              </Text>
+              <Link
+                href={`${etherscan}/tx/${openTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Text color="onWarning" sx={{ fontSize: 1 }}>
+                  View on etherscan -{'>'}
+                </Text>
+              </Link>
+            </Grid>
+          </Flex>
+        </Card>
+      )}
+      {stage === 'transactionSuccess' && (
+        <Card sx={{ backgroundColor: 'success', border: 'none' }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Icon name="checkmark" size={25} color="onSuccess" />
+            <Grid pl={2} gap={1}>
+              <Text color="onSuccess" sx={{ fontSize: 1 }}>
+                Vault changed!
+              </Text>
+              <Link
+                href={`${etherscan}/tx/${openTxHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Text color="onSuccess" sx={{ fontSize: 1 }}>
+                  View on etherscan -{'>'}
+                </Text>
+              </Link>
+            </Grid>
+          </Flex>
+        </Card>
+      )}
+    </Grid>
+  )
+}
+
 function ManageVaultForm(props: ManageVaultState) {
-  console.log(props)
   const {
     isEditingStage,
     isProxyStage,
@@ -853,9 +993,7 @@ function ManageVaultForm(props: ManageVaultState) {
         {isProxyStage && <ManageVaultFormProxy {...props} />}
         {isCollateralAllowanceStage && <ManageVaultFormCollateralAllowance {...props} />}
         {isDaiAllowanceStage && <ManageVaultFormDaiAllowance {...props} />}
-
-        {/*
-            {isOpenStage && <OpenVaultFormConfirmation {...props} />} */}
+        {isTransactionStage && <ManageVaultFormConfirmation {...props} />}
       </Card>
     </Box>
   )
