@@ -41,7 +41,7 @@ function getCallData(data: ProxyActionData, context: ContextConnected) {
 
   const isOpenLockETHAndDraw = isOpenVault && isETH && isLockingOrDrawing
   const isOpenLockGemAndDraw = isOpenVault && !isETH && isLockingOrDrawing
-  const isOpenEmpty = isOpenVault && !isLockingOrDrawing
+  //const isOpenEmpty = isOpenVault && !isLockingOrDrawing
 
   const isLockETHAndDraw = !isOpenVault && isETH && isLockingAndDrawing
   const isLockGemAndDraw = !isOpenVault && !isETH && isLockingAndDrawing

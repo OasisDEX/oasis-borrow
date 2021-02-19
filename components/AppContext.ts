@@ -10,13 +10,13 @@ import {
   TransactionDef,
 } from 'blockchain/calls/callsHelpers'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
-import { ProxyActionData } from 'blockchain/calls/proxyActions'
 import {
   CreateDsProxyData,
   createProxyAddress$,
   createProxyOwner$,
   SetProxyOwnerData,
 } from 'blockchain/calls/proxy'
+import { ProxyActionData } from 'blockchain/calls/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
