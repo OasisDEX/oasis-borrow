@@ -361,6 +361,7 @@ export interface ManageVaultState {
   ilk: string
   token: string
   account: string
+  accountIsController: boolean
 
   // validation
   errorMessages: ManageVaultErrorMessage[]
@@ -657,6 +658,7 @@ export function createManageVault$(
             collateralizationRatio,
             liquidationPrice,
             freeCollateral,
+            controller,
           }) => {
             const userTokenInfo$ = combineLatest(
               balance$(token, account),
@@ -697,6 +699,7 @@ export function createManageVault$(
                         token,
                         id,
                         account,
+                        accountIsController: account === controller,
                         collateralBalance,
                         collateralPrice,
                         ethBalance,

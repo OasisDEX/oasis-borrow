@@ -132,6 +132,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     afterCollateralizationRatio,
     progress,
     change,
+    accountIsController,
   } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
@@ -349,6 +350,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
         showMax={true}
         hasAuxiliary={true}
         onSetMax={handleWithdrawMax(change!)}
+        disabled={!accountIsController}
         amount={withdrawAmount}
         auxiliaryAmount={withdrawAmountUSD}
         maxAmount={maxWithdrawAmount}
@@ -364,6 +366,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
         amount={generateAmount}
         token={'DAI'}
         showMax={true}
+        disabled={!accountIsController}
         maxAmount={maxGenerateAmount}
         maxAmountLabel={'Maximum'}
         onSetMax={handleGenerateMax(change!)}

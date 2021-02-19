@@ -74,12 +74,18 @@ export function VaultActionInput({
           {action} {token}
         </Text>
         {!auxiliaryFlag && BigNumber.isBigNumber(maxAmount) && showMax ? (
-          <Text onClick={onSetMax} sx={{ fontSize: 1, textAlign: 'right', cursor: 'pointer' }}>
+          <Text
+            onClick={!disabled ? onSetMax : () => null}
+            sx={{ fontSize: 1, textAlign: 'right', cursor: 'pointer' }}
+          >
             {maxAmountLabel} {formatAmount(maxAmount, tokenSymbol)} {tokenSymbol}
           </Text>
         ) : null}
         {auxiliaryFlag && BigNumber.isBigNumber(maxAuxiliaryAmount) && showMax ? (
-          <Text onClick={onSetMax} sx={{ fontSize: 1, textAlign: 'right', cursor: 'pointer' }}>
+          <Text
+            onClick={!disabled ? onSetMax : () => null}
+            sx={{ fontSize: 1, textAlign: 'right', cursor: 'pointer' }}
+          >
             {maxAmountLabel} ~{formatAmount(maxAuxiliaryAmount, auxiliarySymbol)} {auxiliarySymbol}
           </Text>
         ) : null}
@@ -132,7 +138,7 @@ export function VaultActionInput({
             </Text>
           )}
         </Grid>
-        {hasAuxiliary && !!onAuxiliaryChange ? (
+        {!disabled && hasAuxiliary && !!onAuxiliaryChange ? (
           <Box onClick={handleAuxiliarySwitch} sx={{ cursor: 'pointer' }}>
             <Icon name="exchange" size={25} sx={{ transform: 'rotate(90deg)' }} />
           </Box>
