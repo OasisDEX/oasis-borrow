@@ -30,8 +30,8 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
         },
         {
           header: <Text sx={{ textAlign: 'right' }}>Deposited</Text>,
-          cell: ({ collateral }) => (
-            <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(collateral)}</Text>
+          cell: ({ lockedCollateral }) => (
+            <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(lockedCollateral)}</Text>
           ),
         },
         {
