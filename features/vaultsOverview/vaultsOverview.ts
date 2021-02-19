@@ -98,13 +98,13 @@ export function createVaultsOverview$(
       vaultSummary,
       ilkDataList: ilkDataList
         ? ilkDataList.map((ilk) => ({
-            ...ilk,
-            balance: balances[ilk.token]?.balance,
-            balancePrice: balances[ilk.token]?.price.times(balances[ilk.token]?.balance),
-          }))
+          ...ilk,
+          balance: balances[ilk.token]?.balance,
+          balancePrice: balances[ilk.token]?.price.times(balances[ilk.token]?.balance),
+        }))
         : ilkDataList,
       featuredIlks,
     })),
-    distinctUntilChanged((a, b) => isEqual(a, b)),
+    distinctUntilChanged(isEqual),
   )
 }
