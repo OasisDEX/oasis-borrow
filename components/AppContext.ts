@@ -134,8 +134,8 @@ export function setupAppContext() {
   const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
   const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumberTostring)
   const vatIlks$ = observe(onEveryBlock$, context$, vatIlk)
-  const vatUrns$ = observe(onEveryBlock$, context$, vatUrns)
-  const vatGem$ = observe(onEveryBlock$, context$, vatGem)
+  const vatUrns$ = observe(onEveryBlock$, context$, vatUrns, ilkUrnAddressToString)
+  const vatGem$ = observe(onEveryBlock$, context$, vatGem, ilkUrnAddressToString)
   const spotPar$ = observe(onEveryBlock$, context$, spotPar)
   const spotIlks$ = observe(onEveryBlock$, context$, spotIlk)
   const jugIlks$ = observe(onEveryBlock$, context$, jugIlk)
@@ -238,8 +238,8 @@ function bigNumberTostring(v: BigNumber): string {
   return v.toString()
 }
 
-// function ilkUrnAddressTostring({ ilk, urnAddress }: { ilk: string; urnAddress: string }): string {
-//   return `${ilk}-${urnAddress}`
-// }
+function ilkUrnAddressToString({ ilk, urnAddress }: { ilk: string; urnAddress: string }): string {
+  return `${ilk}-${urnAddress}`
+}
 
 export type AppContext = ReturnType<typeof setupAppContext>

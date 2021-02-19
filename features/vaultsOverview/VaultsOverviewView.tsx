@@ -53,14 +53,6 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
           ),
         },
         {
-          header: <Text sx={{ textAlign: 'right' }}>Min Ratio</Text>,
-          cell: ({ liquidationRatio }) => (
-            <Text sx={{ textAlign: 'right' }}>
-              {liquidationRatio ? formatPercent(liquidationRatio.times(100)) : 0}
-            </Text>
-          ),
-        },
-        {
           header: <Text />,
           cell: ({ id }) => (
             <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
