@@ -1,6 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
+import { approve, ApproveData, maxUint256 } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
@@ -500,6 +500,110 @@ function createProxy(
     .subscribe((ch) => change(ch))
 }
 
+function setCollateralAllowance(
+  { sendWithGasEstimation }: TxHelpers,
+  collateralAllowance$: Observable<BigNumber>,
+  change: (ch: ManageVaultChange) => void,
+  state: ManageVaultState,
+) {
+  sendWithGasEstimation(approve, {
+    kind: TxMetaKind.approve,
+    token: state.token,
+    spender: state.proxyAddress!,
+    amount: state.collateralAllowanceAmount!,
+  })
+    .pipe(
+      transactionToX<ManageVaultChange, ApproveData>(
+        { kind: 'stage', stage: 'collateralAllowanceWaitingForApproval' },
+        (txState) =>
+          of(
+            {
+              kind: 'collateralAllowanceTxHash',
+              collateralAllowanceTxHash: (txState as any).txHash as string,
+            },
+            { kind: 'stage', stage: 'collateralAllowanceInProgress' },
+          ),
+        (txState) => {
+          return of(
+            {
+              kind: 'stage',
+              stage: 'collateralAllowanceFailure',
+            },
+            {
+              kind: 'txError',
+              txError:
+                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+                  ? txState.error
+                  : undefined,
+            },
+          )
+        },
+        () =>
+          collateralAllowance$.pipe(
+            switchMap((collateralAllowance) =>
+              of(
+                { kind: 'collateralAllowance', collateralAllowance },
+                { kind: 'stage', stage: 'collateralAllowanceSuccess' },
+              ),
+            ),
+          ),
+      ),
+    )
+    .subscribe((ch) => change(ch))
+}
+
+function setDaiAllowance(
+  { sendWithGasEstimation }: TxHelpers,
+  daiAllowance$: Observable<BigNumber>,
+  change: (ch: ManageVaultChange) => void,
+  state: ManageVaultState,
+) {
+  sendWithGasEstimation(approve, {
+    kind: TxMetaKind.approve,
+    token: state.token,
+    spender: state.proxyAddress!,
+    amount: state.daiAllowanceAmount!,
+  })
+    .pipe(
+      transactionToX<ManageVaultChange, ApproveData>(
+        { kind: 'stage', stage: 'daiAllowanceWaitingForApproval' },
+        (txState) =>
+          of(
+            {
+              kind: 'daiAllowanceTxHash',
+              daiAllowanceTxHash: (txState as any).txHash as string,
+            },
+            { kind: 'stage', stage: 'daiAllowanceInProgress' },
+          ),
+        (txState) => {
+          return of(
+            {
+              kind: 'stage',
+              stage: 'daiAllowanceFailure',
+            },
+            {
+              kind: 'txError',
+              txError:
+                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+                  ? txState.error
+                  : undefined,
+            },
+          )
+        },
+        () =>
+          daiAllowance$.pipe(
+            switchMap((daiAllowance) =>
+              of(
+                { kind: 'daiAllowance', daiAllowance },
+                { kind: 'stage', stage: 'daiAllowanceSuccess' },
+              ),
+            ),
+          ),
+      ),
+    )
+    .subscribe((ch) => change(ch))
+}
+
 function addTransitions(
   txHelpers: TxHelpers,
   proxyAddress$: Observable<string | undefined>,
@@ -601,25 +705,60 @@ function addTransitions(
     }
   }
 
-  // if (state.stage === 'allowanceWaitingForConfirmation' || state.stage === 'allowanceFailure') {
-  //   return {
-  //     ...state,
-  //     change,
-  //     progress: () => setAllowance(txHelpers, allowance$, change, state),
-  //     reset: () => change({ kind: 'stage', stage: 'editing' }),
-  //   }
-  // }
+  if (
+    state.stage === 'collateralAllowanceWaitingForConfirmation' ||
+    state.stage === 'collateralAllowanceFailure'
+  ) {
+    return {
+      ...state,
+      change,
+      progress: () => setCollateralAllowance(txHelpers, collateralAllowance$, change, state),
+      reset: () => change({ kind: 'stage', stage: 'editing' }),
+    }
+  }
 
-  // if (state.stage === 'allowanceSuccess') {
-  //   return {
-  //     ...state,
-  //     progress: () =>
-  //       change({
-  //         kind: 'stage',
-  //         stage: 'editing',
-  //       }),
-  //   }
-  // }
+  function progressCollateralAllowance() {
+    const isPaybackZero = state.paybackAmount ? state.paybackAmount.eq(zero) : true
+
+    const paybackAmountLessThanDaiAllowance =
+      state.daiAllowance && state.paybackAmount && state.daiAllowance.gte(state.paybackAmount)
+
+    const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+
+    if (!hasDaiAllowance) {
+      change({ kind: 'stage', stage: 'daiAllowanceWaitingForConfirmation' })
+    } else change({ kind: 'stage', stage: 'editing' })
+  }
+
+  if (state.stage === 'collateralAllowanceSuccess') {
+    return {
+      ...state,
+      progress: progressCollateralAllowance,
+    }
+  }
+
+  if (
+    state.stage === 'daiAllowanceWaitingForConfirmation' ||
+    state.stage === 'daiAllowanceFailure'
+  ) {
+    return {
+      ...state,
+      change,
+      progress: () => setCollateralAllowance(txHelpers, daiAllowance$, change, state),
+      reset: () => change({ kind: 'stage', stage: 'editing' }),
+    }
+  }
+
+  if (state.stage === 'daiAllowanceSuccess') {
+    return {
+      ...state,
+      progress: () =>
+        change({
+          kind: 'stage',
+          stage: 'editing',
+        }),
+    }
+  }
 
   // if (state.stage === 'openWaitingForConfirmation' || state.stage === 'openFailure') {
   //   return {
@@ -864,6 +1003,7 @@ export function createManageVault$(
                         ),
                         distinctUntilChanged((x, y) => x.eq(y)),
                       )
+
                       const connectedDaiAllowance$ = connectedProxyAddress$.pipe(
                         switchMap((proxyAddress) =>
                           proxyAddress ? allowance$('DAI', account, proxyAddress) : of(zero),
