@@ -22,9 +22,19 @@ export interface IlkDataWithBalance extends IlkData {
   balancePrice: BigNumber | undefined
 }
 
+type VaultsFilter<T extends keyof Vault> = `${T}_ASC` | `${T}_DESC`
+type VaultSortBy = VaultsFilter<'collateral' | 'debt' | 'liquidationPrice' | 'collateralizationRatio' | 'freeCollateral'> | undefined
+
+export interface VaultsFilterState {
+  sortBy: VaultSortBy
+  change: (ch: Changes) => void
+}
+
+type Changes = Change<VaultsFilterState, 'sortBy'>
 export interface VaultsOverview {
   canOpenVault: boolean
   vaults: Vault[] | undefined
+  filters: VaultsFilterState
   vaultSummary: VaultSummary | undefined
   ilkDataList: IlkDataWithBalance[] | undefined
   featuredIlks: FeaturedIlk[] | undefined
@@ -77,25 +87,15 @@ export function createFeaturedIlks$(ilkDataList$: Observable<IlkDataList>) {
   )
 }
 
-type VaultsFilter<T extends keyof Vault> = `${T}_ASC` | `${T}_DESC`
-type VaultSortBy = VaultsFilter<'collateral' | 'debt' | 'liquidationPrice' | 'collateralizationRatio'> | undefined
-
-interface VaultsFilterState {
-  sortBy: VaultSortBy
-  change: (ch: Changes) => void
-}
-
-type Changes = Change<VaultsFilterState, 'sortBy'>
-
 function compareBigNumber(a: BigNumber | undefined, b: BigNumber | undefined) {
   if (a === undefined && b === undefined) {
     return 0
   }
   if (a === undefined) {
-    return -1
+    return 1
   }
   if (b === undefined) {
-    return 1
+    return -1
   }
 
   return a.comparedTo(b)
@@ -119,8 +119,12 @@ function sortVaults(vaults: Vault[], sortBy: VaultSortBy): Vault[] {
       return vaults.sort((v1, v2) => compareBigNumber(v1.liquidationPrice, v2.liquidationPrice))
     case 'liquidationPrice_DESC':
       return vaults.sort((v1, v2) => compareBigNumber(v2.liquidationPrice, v1.liquidationPrice))
+    case 'freeCollateral_ASC':
+      return vaults.sort((v1, v2) => compareBigNumber(v1.freeCollateral, v2.freeCollateral))
+    case 'freeCollateral_DESC':
+      return vaults.sort((v1, v2) => compareBigNumber(v2.freeCollateral, v1.freeCollateral))
     default:
-      return vaults.sort((v1, v2) => v1.availableIlkDebt.comparedTo(v2.availableIlkDebt))
+      return vaults
   }
 }
 
@@ -176,7 +180,7 @@ export function createVaultsOverview$(
   ).pipe(
     map(([context, vaults, vaultSummary, ilkDataList, featuredIlks, balances]) => ({
       canOpenVault: context.status === 'connected',
-      vaults,
+      ...vaults,
       vaultSummary,
       ilkDataList: ilkDataList
         ? ilkDataList.map((ilk) => ({

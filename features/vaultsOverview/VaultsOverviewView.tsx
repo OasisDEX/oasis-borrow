@@ -7,14 +7,28 @@ import { AppLink } from 'components/Links'
 import { Table } from 'components/Table'
 import { VaultSummary } from 'features/vault/vaultSummary'
 import { formatAddress, formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
-import React from 'react'
-import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
+import React, { PropsWithChildren } from 'react'
+import { Box, Button, Card, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { TokenSymbol } from '../landing/LandingView'
-import { FeaturedIlk, IlkDataWithBalance, VaultsOverview } from './vaultsOverview'
+import { FeaturedIlk, IlkDataWithBalance, VaultsFilterState, VaultsOverview } from './vaultsOverview'
 
-function VaultsTable({ vaults }: { vaults: Vault[] }) {
+type Plain<T> = T extends `${infer U}_${'ASC' | 'DESC'}` ? U : undefined
+function toggleSort({ sortBy, change }: VaultsFilterState, field: Plain<VaultsFilterState['sortBy']>) {
+  if (sortBy === undefined || !sortBy.startsWith(`${field}_`)) {
+    return change({ kind: 'sortBy', sortBy: `${field}_DESC` as VaultsFilterState['sortBy'] })
+  }
+  const [, direction] = sortBy.split('_')
+
+  if (direction === 'DESC') {
+    return change({ kind: 'sortBy', sortBy: `${field}_ASC` as VaultsFilterState['sortBy'] })
+  }
+
+  return change({ kind: 'sortBy', sortBy: undefined })
+}
+
+function VaultsTable({ vaults, filters }: { vaults: Vault[], filters: VaultsFilterState }) {
   return (
     <Table
       data={vaults}
@@ -24,28 +38,24 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
           header: <Text>Asset</Text>,
           cell: ({ token }) => <TokenSymbol token={token} />,
         },
-        // {
-        //   header: <Text>Type</Text>,
-        //   cell: ({ ilk }) => <Text>{ilk}</Text>,
-        // },
         {
-          header: <Text sx={{ textAlign: 'right' }}>Deposited</Text>,
+          header: <Button variant="header" sx={{ textAlign: 'right' }} onClick={() => toggleSort(filters, 'collateral')}>Deposited</Button>,
           cell: ({ collateral }) => (
             <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(collateral)}</Text>
           ),
         },
         {
-          header: <Text sx={{ textAlign: 'right' }}>Avail. to withdraw</Text>,
+          header: <Button variant="header" sx={{ textAlign: 'right' }} onClick={() => toggleSort(filters, 'freeCollateral')}>Avail. to withdraw</Button>,
           cell: ({ freeCollateral }) => (
             <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(freeCollateral)}</Text>
           ),
         },
         {
-          header: <Text sx={{ textAlign: 'right' }}>DAI</Text>,
+          header: <Button variant="header" sx={{ textAlign: 'right' }} onClick={() => toggleSort(filters, 'debt')}>DAI</Button>,
           cell: ({ debt }) => <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(debt)}</Text>,
         },
         {
-          header: <Text sx={{ textAlign: 'right' }}>Current Ratio</Text>,
+          header: <Button variant="header" sx={{ textAlign: 'right' }} onClick={() => toggleSort(filters, 'collateralizationRatio')}>Current Ratio</Button>,
           cell: ({ collateralizationRatio }) => (
             <Text sx={{ textAlign: 'right' }}>
               {collateralizationRatio ? formatPercent(collateralizationRatio.times(100)) : 0}
@@ -289,7 +299,10 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
     featuredIlks,
     ilkDataList,
     canOpenVault,
+    filters
   } = vaultsOverView
+
+  console.log(vaultsOverView)
 
   const readonlyAccount = context?.status === 'connectedReadonly' && (address as string)
   const displaySummary = vaults && vaults.length > 0 && vaultSummary
@@ -315,7 +328,7 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
       {displayVaults && (
         <>
           <Heading>{readonlyAccount ? `Address Vaults` : 'Your Vaults'}</Heading>
-          <VaultsTable vaults={displayVaults} />
+          <VaultsTable filters={filters} vaults={displayVaults} />
         </>
       )}
       {ilkDataList && (

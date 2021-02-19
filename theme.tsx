@@ -747,6 +747,12 @@ const oasisBaseTheme = {
       borderStyle: 'solid',
       borderColor: 'light',
     },
+    header: {
+      variant: 'text.paragraph3',
+      color: 'muted',
+      fontWeight: 'semiBold',
+      background: 'none'
+    }
   },
   links: {
     nav: {
