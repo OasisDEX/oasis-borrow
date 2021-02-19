@@ -11,6 +11,7 @@ import { zero } from 'helpers/zero'
 import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
+
 import { ManageVaultState, ManualChange } from './manageVault'
 
 function ManageVaultDetails({
@@ -846,7 +847,6 @@ function ManageVaultFormConfirmation({
   afterCollateralizationRatio,
   afterLiquidationPrice,
   progress,
-  id,
   etherscan,
   openTxHash,
 }: ManageVaultState) {

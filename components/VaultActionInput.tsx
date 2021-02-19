@@ -1,5 +1,4 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-
 import { BigNumber } from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { BigNumberInput } from 'helpers/BigNumberInput'
@@ -7,7 +6,7 @@ import { formatAmount } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React, { ChangeEvent, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
-import { Box, Button, Flex, Grid, Text } from 'theme-ui'
+import { Box,   Grid, Text } from 'theme-ui'
 
 type VaultAction = 'Deposit' | 'Withdraw' | 'Generate' | 'Payback'
 

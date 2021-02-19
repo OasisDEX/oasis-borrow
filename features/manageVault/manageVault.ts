@@ -1,25 +1,25 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData, maxUint256 } from 'blockchain/calls/erc20'
-import { lockAndDraw, proxyAction, ProxyActionData } from 'blockchain/calls/lockAndDraw'
+import {  proxyAction, ProxyActionData } from 'blockchain/calls/lockAndDraw'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
-import { applyChange, ApplyChange, Change, Changes, transactionToX } from 'helpers/form'
+import { ApplyChange, applyChange, Change, Changes, transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject } from 'rxjs'
 import {
-  first,
   distinctUntilChanged,
+  filter,
+  first,
   map,
-  switchMap,
   scan,
   shareReplay,
-  filter,
+  switchMap,
 } from 'rxjs/operators'
 
 const defaultIsStates = {

@@ -29,7 +29,7 @@ import { createOpenVault$ } from 'features/openVault/openVault'
 import { redirectState$ } from 'features/router/redirectState'
 import { createVaultSummary$ } from 'features/vault/vaultSummary'
 import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
-import { isEqual, mapValues } from 'lodash'
+import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
@@ -246,8 +246,8 @@ function bigNumberTostring(v: BigNumber): string {
   return v.toString()
 }
 
-function ilkUrnAddressTostring({ ilk, urnAddress }: { ilk: string; urnAddress: string }): string {
-  return `${ilk}-${urnAddress}`
-}
+// function ilkUrnAddressTostring({ ilk, urnAddress }: { ilk: string; urnAddress: string }): string {
+//   return `${ilk}-${urnAddress}`
+// }
 
 export type AppContext = ReturnType<typeof setupAppContext>

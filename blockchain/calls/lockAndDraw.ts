@@ -8,6 +8,7 @@ import { zero } from 'helpers/zero'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import Web3 from 'web3'
+
 import { TxMetaKind } from './txMeta'
 
 export type ProxyActionData = {
