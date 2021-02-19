@@ -54,7 +54,7 @@ function getCallData(data: ProxyActionData, context: ContextConnected) {
   const isFreeETH = !isOpenVault && isETH && !isWiping && isFreeing
   const isFreeGem = !isOpenVault && !isETH && !isWiping && isFreeing
 
-  const isWipe = !isOpenVault && isETH && isWiping && !isFreeing
+  const isWipe = !isOpenVault && isWiping && !isFreeing
 
   if (isOpenEmpty) {
     return contract<DssProxyActions>(dssProxyActions).methods.open(
