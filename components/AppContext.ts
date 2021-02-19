@@ -188,16 +188,18 @@ export function setupAppContext() {
   const ilks$ = createIlks$(context$)
   const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
 
-  const openVault$ = curry(createOpenVault$)(
-    connectedContext$,
-    txHelpers$,
-    proxyAddress$,
-    allowance$,
-    tokenOraclePrice$,
-    balance$,
-    ilkData$,
-    ilks$,
-    ilkToToken$,
+  const openVault$ = memoize(
+    curry(createOpenVault$)(
+      connectedContext$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      tokenOraclePrice$,
+      balance$,
+      ilkData$,
+      ilks$,
+      ilkToToken$,
+    ),
   )
 
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
