@@ -848,7 +848,7 @@ function ManageVaultFormConfirmation({
   afterLiquidationPrice,
   progress,
   etherscan,
-  transactionTxHash,
+  manageTxHash,
 }: ManageVaultState) {
   const walletBalance = formatCryptoBalance(collateralBalance)
   const depositCollateral = formatCryptoBalance(depositAmount || zero)
@@ -865,20 +865,20 @@ function ManageVaultFormConfirmation({
 
   const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
 
-  const canProgress = !!progress || stage === 'transactionSuccess'
+  const canProgress = !!progress || stage === 'manageSuccess'
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
 
     if (progress) progress!()
   }
-  const isLoading = stage === 'transactionInProgress' || stage === 'transactionWaitingForApproval'
+  const isLoading = stage === 'manageInProgress' || stage === 'manageWaitingForApproval'
 
   const buttonText =
-    stage === 'transactionWaitingForConfirmation'
+    stage === 'manageWaitingForConfirmation'
       ? 'Change your vault'
-      : stage === 'transactionFailure'
+      : stage === 'manageFailure'
       ? 'Retry'
-      : stage === 'transactionSuccess'
+      : stage === 'manageSuccess'
       ? `Back To Editing`
       : 'Changing your Vault'
 
@@ -930,7 +930,7 @@ function ManageVaultFormConfirmation({
         )}
       </Button>
 
-      {stage === 'transactionInProgress' && (
+      {stage === 'manageInProgress' && (
         <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
           <Flex sx={{ alignItems: 'center' }}>
             <Spinner size={25} color="onWarning" />
@@ -939,7 +939,7 @@ function ManageVaultFormConfirmation({
                 Changing Vault!
               </Text>
               <Link
-                href={`${etherscan}/tx/${transactionTxHash}`}
+                href={`${etherscan}/tx/${manageTxHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -951,7 +951,7 @@ function ManageVaultFormConfirmation({
           </Flex>
         </Card>
       )}
-      {stage === 'transactionSuccess' && (
+      {stage === 'manageSuccess' && (
         <Card sx={{ backgroundColor: 'success', border: 'none' }}>
           <Flex sx={{ alignItems: 'center' }}>
             <Icon name="checkmark" size={25} color="onSuccess" />
@@ -960,7 +960,7 @@ function ManageVaultFormConfirmation({
                 Vault changed!
               </Text>
               <Link
-                href={`${etherscan}/tx/${transactionTxHash}`}
+                href={`${etherscan}/tx/${manageTxHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -982,7 +982,7 @@ function ManageVaultForm(props: ManageVaultState) {
     isProxyStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
-    isTransactionStage,
+    isManageStage,
   } = props
 
   return (
@@ -993,7 +993,7 @@ function ManageVaultForm(props: ManageVaultState) {
         {isProxyStage && <ManageVaultFormProxy {...props} />}
         {isCollateralAllowanceStage && <ManageVaultFormCollateralAllowance {...props} />}
         {isDaiAllowanceStage && <ManageVaultFormDaiAllowance {...props} />}
-        {isTransactionStage && <ManageVaultFormConfirmation {...props} />}
+        {isManageStage && <ManageVaultFormConfirmation {...props} />}
       </Card>
     </Box>
   )

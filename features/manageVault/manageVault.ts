@@ -27,7 +27,7 @@ const defaultIsStates = {
   isProxyStage: false,
   isCollateralAllowanceStage: false,
   isDaiAllowanceStage: false,
-  isTransactionStage: false,
+  isManageStage: false,
 }
 
 function applyIsStageStates(state: ManageVaultState): ManageVaultState {
@@ -70,14 +70,14 @@ function applyIsStageStates(state: ManageVaultState): ManageVaultState {
         isDaiAllowanceStage: true,
       }
 
-    case 'transactionWaitingForConfirmation':
-    case 'transactionWaitingForApproval':
-    case 'transactionInProgress':
-    case 'transactionFailure':
-    case 'transactionSuccess':
+    case 'manageWaitingForConfirmation':
+    case 'manageWaitingForApproval':
+    case 'manageInProgress':
+    case 'manageFailure':
+    case 'manageSuccess':
       return {
         ...newState,
-        isTransactionStage: true,
+        isManageStage: true,
       }
     default:
       return state
@@ -350,11 +350,11 @@ export type ManageVaultStage =
   | 'daiAllowanceInProgress'
   | 'daiAllowanceFailure'
   | 'daiAllowanceSuccess'
-  | 'transactionWaitingForConfirmation'
-  | 'transactionWaitingForApproval'
-  | 'transactionInProgress'
-  | 'transactionFailure'
-  | 'transactionSuccess'
+  | 'manageWaitingForConfirmation'
+  | 'manageWaitingForApproval'
+  | 'manageInProgress'
+  | 'manageFailure'
+  | 'manageSuccess'
 
 export interface ManageVaultState {
   stage: ManageVaultStage
@@ -373,7 +373,7 @@ export interface ManageVaultState {
   isProxyStage: boolean
   isCollateralAllowanceStage: boolean
   isDaiAllowanceStage: boolean
-  isTransactionStage: boolean
+  isManageStage: boolean
 
   // Dynamic Data
   proxyAddress?: string
@@ -433,11 +433,11 @@ export interface ManageVaultState {
   afterLiquidationPrice: BigNumber
   afterCollateralizationRatio: BigNumber
 
-  // TransactionInfo
+  // ManageInfo
   collateralAllowanceTxHash?: string
   daiAllowanceTxHash?: string
   proxyTxHash?: string
-  transactionTxHash?: string
+  manageTxHash?: string
   proxyConfirmations?: number
   safeConfirmations: number
   txError?: any
@@ -632,17 +632,17 @@ function manageVault(
   })
     .pipe(
       transactionToX<ManageVaultChange, ProxyActionData>(
-        { kind: 'stage', stage: 'transactionWaitingForApproval' },
+        { kind: 'stage', stage: 'manageWaitingForApproval' },
         (txState) =>
           of(
-            { kind: 'transactionTxHash', transactionTxHash: (txState as any).txHash as string },
-            { kind: 'stage', stage: 'transactionInProgress' },
+            { kind: 'manageTxHash', manageTxHash: (txState as any).txHash as string },
+            { kind: 'stage', stage: 'manageInProgress' },
           ),
         (txState) => {
           return of(
             {
               kind: 'stage',
-              stage: 'transactionFailure',
+              stage: 'manageFailure',
             },
             {
               kind: 'txError',
@@ -653,7 +653,7 @@ function manageVault(
             },
           )
         },
-        () => of({ kind: 'stage', stage: 'transactionSuccess' }),
+        () => of({ kind: 'stage', stage: 'manageSuccess' }),
       ),
     )
     .subscribe((ch) => change(ch))
@@ -708,7 +708,7 @@ function addTransitions(
         change({ kind: 'stage', stage: 'collateralAllowanceWaitingForConfirmation' })
       } else if (!hasDaiAllowance) {
         change({ kind: 'stage', stage: 'daiAllowanceWaitingForConfirmation' })
-      } else change({ kind: 'stage', stage: 'transactionWaitingForConfirmation' })
+      } else change({ kind: 'stage', stage: 'manageWaitingForConfirmation' })
     }
   }
 
@@ -815,7 +815,7 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'transactionWaitingForConfirmation' || state.stage === 'transactionFailure') {
+  if (state.stage === 'manageWaitingForConfirmation' || state.stage === 'manageFailure') {
     return {
       ...state,
       progress: () => manageVault(txHelpers, change, state),
@@ -823,7 +823,7 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'transactionSuccess') {
+  if (state.stage === 'manageSuccess') {
     return {
       ...state,
       progress: () => {
