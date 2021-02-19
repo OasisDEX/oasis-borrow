@@ -848,7 +848,7 @@ function ManageVaultFormConfirmation({
   afterLiquidationPrice,
   progress,
   etherscan,
-  openTxHash,
+  transactionTxHash,
 }: ManageVaultState) {
   const walletBalance = formatCryptoBalance(collateralBalance)
   const depositCollateral = formatCryptoBalance(depositAmount || zero)
@@ -939,7 +939,7 @@ function ManageVaultFormConfirmation({
                 Changing Vault!
               </Text>
               <Link
-                href={`${etherscan}/tx/${openTxHash}`}
+                href={`${etherscan}/tx/${transactionTxHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -960,7 +960,7 @@ function ManageVaultFormConfirmation({
                 Vault changed!
               </Text>
               <Link
-                href={`${etherscan}/tx/${openTxHash}`}
+                href={`${etherscan}/tx/${transactionTxHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >

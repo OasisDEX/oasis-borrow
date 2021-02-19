@@ -10,7 +10,7 @@ import {
   TransactionDef,
 } from 'blockchain/calls/callsHelpers'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
-import { ProxyActionData } from 'blockchain/calls/lockAndDraw'
+import { ProxyActionData } from 'blockchain/calls/proxyActions'
 import {
   CreateDsProxyData,
   createProxyAddress$,

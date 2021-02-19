@@ -57,14 +57,6 @@ function getCallData(data: ProxyActionData, context: ContextConnected) {
 
   const isWipe = !isOpenVault && isWiping && !isFreeing
 
-  if (isOpenEmpty) {
-    return contract<DssProxyActions>(dssProxyActions).methods.open(
-      dssCdpManager.address,
-      Web3.utils.utf8ToHex(ilk),
-      proxyAddress,
-    )
-  }
-
   if (isOpenLockETHAndDraw) {
     return contract<DssProxyActions>(dssProxyActions).methods.openLockETHAndDraw(
       dssCdpManager.address,
@@ -186,6 +178,13 @@ function getCallData(data: ProxyActionData, context: ContextConnected) {
       amountToWei(paybackAmount!, 'DAI').toFixed(0),
     )
   }
+
+  // fall through is to open an empty ilk vault
+  return contract<DssProxyActions>(dssProxyActions).methods.open(
+    dssCdpManager.address,
+    Web3.utils.utf8ToHex(ilk),
+    proxyAddress,
+  )
 }
 
 export const proxyAction: TransactionDef<ProxyActionData> = {
@@ -196,7 +195,7 @@ export const proxyAction: TransactionDef<ProxyActionData> = {
   },
   prepareArgs: (data, context) => {
     const { dssProxyActions } = context
-    return [dssProxyActions.address, getCallData(data, context)!.encodeABI()]
+    return [dssProxyActions.address, getCallData(data, context).encodeABI()]
   },
   options: ({ tkn, lockAmount }) =>
     tkn === 'ETH' && lockAmount ? { value: amountToWei(lockAmount, 'ETH').toString() } : {},

@@ -8,5 +8,5 @@ export enum TxMetaKind {
   // dsrExitAll = 'dsrExitAll',
   // transferEth = 'transferEth',
   // transferErc20 = 'transferErc20',
-  lockAndDraw = 'lockAndDraw',
+  proxyAction = 'proxyAction',
 }

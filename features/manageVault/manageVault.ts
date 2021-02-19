@@ -437,7 +437,7 @@ export interface ManageVaultState {
   collateralAllowanceTxHash?: string
   daiAllowanceTxHash?: string
   proxyTxHash?: string
-  openTxHash?: string
+  transactionTxHash?: string
   proxyConfirmations?: number
   safeConfirmations: number
   txError?: any
@@ -642,7 +642,7 @@ function manageVault(
           return of(
             {
               kind: 'stage',
-              stage: 'openFailure',
+              stage: 'transactionFailure',
             },
             {
               kind: 'txError',
