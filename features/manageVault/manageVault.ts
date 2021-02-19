@@ -560,7 +560,7 @@ function setDaiAllowance(
 ) {
   sendWithGasEstimation(approve, {
     kind: TxMetaKind.approve,
-    token: state.token,
+    token: 'DAI',
     spender: state.proxyAddress!,
     amount: state.daiAllowanceAmount!,
   })
@@ -744,7 +744,7 @@ function addTransitions(
     return {
       ...state,
       change,
-      progress: () => setCollateralAllowance(txHelpers, daiAllowance$, change, state),
+      progress: () => setDaiAllowance(txHelpers, daiAllowance$, change, state),
       reset: () => change({ kind: 'stage', stage: 'editing' }),
     }
   }

@@ -284,6 +284,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
       const generateAmount = value !== '' ? new BigNumber(value) : undefined
+      clearPayback(change)
       clearWithdraw(change)
       change({
         kind: 'generateAmount',
@@ -294,6 +295,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
 
   function handleGenerateMax(change: (ch: ManualChange) => void) {
     return () => {
+      clearPayback(change)
       clearWithdraw(change)
       change({ kind: 'generateAmount', generateAmount: maxGenerateAmount })
     }
@@ -303,6 +305,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
       const paybackAmount = value !== '' ? new BigNumber(value) : undefined
+      clearGenerate(change)
       clearDeposit(change)
       change({
         kind: 'paybackAmount',
@@ -313,6 +316,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
 
   function handlePaybackMax(change: (ch: ManualChange) => void) {
     return () => {
+      clearGenerate(change)
       clearDeposit(change)
       change({ kind: 'paybackAmount', paybackAmount: maxPaybackAmount })
     }
