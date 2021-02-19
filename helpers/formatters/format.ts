@@ -16,7 +16,7 @@ BigNumber.config({
 })
 
 export function toShorthandNumber(amount: BigNumber, suffix: string = '', precision?: number) {
-  return new BigNumber(
+  const sh = new BigNumber(
     amount
       .toString()
       .split('.')
@@ -27,8 +27,10 @@ export function toShorthandNumber(amount: BigNumber, suffix: string = '', precis
       .filter((el) => el)
       .join('.'),
   )
-    .toFixed(precision)
-    .concat(suffix)
+  if (precision) {
+    return sh.toFixed(precision).concat(suffix)
+  }
+  return sh.toFixed().concat(suffix)
 }
 
 export function formatAsShorthandNumbers(amount: BigNumber, precision?: number): string {

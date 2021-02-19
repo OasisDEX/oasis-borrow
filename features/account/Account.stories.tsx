@@ -13,7 +13,6 @@ import Web3 from 'web3'
 import { TxData } from '../../components/AppContext'
 import { AppHeader } from '../../components/Header'
 import { createTransactionManager } from './transactionManager'
-import { protoPendingTx, protoSuccessTx } from './TransactionManager.stories'
 
 interface MockContextProviderProps extends WithChildren {
   web3Context: Web3Context
@@ -113,44 +112,6 @@ stories.add('Connected MagicLink Kovan', () => {
         ...protoWeb3Context,
         connectionKind: 'magicLink',
       }}
-    >
-      <AppHeader />
-    </MockContextProvider>
-  )
-})
-
-stories.add('Connected with pending transactions', () => {
-  const newTime = new Date(Date.now() + 2)
-
-  return (
-    <MockContextProvider
-      title="Connected Metamask Kovan"
-      web3Context={protoWeb3Context}
-      transactions={[{ ...protoPendingTx, lastChange: newTime }]}
-    >
-      <AppHeader />
-    </MockContextProvider>
-  )
-})
-
-stories.add('Connected with recent transactions', () => {
-  return (
-    <MockContextProvider
-      title="Connected Metamask Kovan"
-      web3Context={protoWeb3Context}
-      transactions={[protoSuccessTx, protoSuccessTx]}
-    >
-      <AppHeader />
-    </MockContextProvider>
-  )
-})
-
-stories.add('Connected with recent transactions and view more', () => {
-  return (
-    <MockContextProvider
-      title="Connected Metamask Kovan"
-      web3Context={protoWeb3Context}
-      transactions={[protoSuccessTx, protoSuccessTx, protoSuccessTx, protoSuccessTx]}
     >
       <AppHeader />
     </MockContextProvider>
