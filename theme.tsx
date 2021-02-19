@@ -668,7 +668,7 @@ const oasisBaseTheme = {
   cards: {
     primary: {
       border: '1px solid',
-      borderColor: 'muted',
+      borderColor: 'light',
       p: 3,
       borderRadius: 'roundish',
       bg: 'surface',
@@ -728,6 +728,7 @@ const oasisBaseTheme = {
     },
     secondary: {
       variant: 'text.paragraph3',
+      whiteSpace: 'nowrap',
       cursor: 'pointer',
       fontWeight: 'semiBold',
       bg: 'ghost',
