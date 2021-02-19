@@ -1,7 +1,7 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData, maxUint256 } from 'blockchain/calls/erc20'
-import {  proxyAction, ProxyActionData } from 'blockchain/calls/lockAndDraw'
+import { proxyAction, ProxyActionData } from 'blockchain/calls/lockAndDraw'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
