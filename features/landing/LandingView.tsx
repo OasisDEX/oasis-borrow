@@ -1,9 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { IlkData } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { RowDefinition, Table, TableSortHeader } from 'components/Table'
+import {  Table, TableSortHeader } from 'components/Table'
 import { FeaturedIlks } from 'features/vaultsOverview/VaultsOverviewView'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
@@ -30,10 +29,6 @@ export function TokenSymbol({
     </Flex>
   )
 }
-
-const rowDefinition: RowDefinition<IlkData>[] = [
-
-]
 
 export function LandingView() {
   const { landing$ } = useAppContext()
@@ -67,19 +62,43 @@ export function LandingView() {
             cell: ({ ilk }) => <Text>{ilk}</Text>,
           },
           {
-            header: <TableSortHeader filters={landing.ilks.filters} sortBy="ilkDebtAvailable" sx={{ ml: 'auto' }}>DAI Available</TableSortHeader>,
+            header: (
+              <TableSortHeader
+                filters={landing.ilks.filters}
+                sortBy="ilkDebtAvailable"
+                sx={{ ml: 'auto' }}
+              >
+                DAI Available
+              </TableSortHeader>
+            ),
             cell: ({ ilkDebtAvailable }) => (
               <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(ilkDebtAvailable)}</Text>
             ),
           },
           {
-            header: <TableSortHeader filters={landing.ilks.filters} sortBy="stabilityFee" sx={{ ml: 'auto' }}>Stability Fee</TableSortHeader>,
+            header: (
+              <TableSortHeader
+                filters={landing.ilks.filters}
+                sortBy="stabilityFee"
+                sx={{ ml: 'auto' }}
+              >
+                Stability Fee
+              </TableSortHeader>
+            ),
             cell: ({ stabilityFee }) => (
               <Text sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee)}</Text>
             ),
           },
           {
-            header: <TableSortHeader filters={landing.ilks.filters} sortBy="liquidationRatio" sx={{ ml: 'auto' }}>Min. Coll Ratio</TableSortHeader>,
+            header: (
+              <TableSortHeader
+                filters={landing.ilks.filters}
+                sortBy="liquidationRatio"
+                sx={{ ml: 'auto' }}
+              >
+                Min. Coll Ratio
+              </TableSortHeader>
+            ),
             cell: ({ liquidationRatio }) => (
               <Text sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio)}</Text>
             ),
@@ -88,13 +107,18 @@ export function LandingView() {
             header: <Text />,
             cell: ({ ilk }) => (
               <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
-                <AppLink sx={{ width: ['100%', 'inherit'], textAlign: 'center' }} href={`/vaults/open/${ilk}`} variant="secondary">
+                <AppLink
+                  sx={{ width: ['100%', 'inherit'], textAlign: 'center' }}
+                  href={`/vaults/open/${ilk}`}
+                  variant="secondary"
+                >
                   Create Vault
                 </AppLink>
               </Box>
             ),
           },
-        ]} />
+        ]}
+      />
     </Grid>
   )
 }

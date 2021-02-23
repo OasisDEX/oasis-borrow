@@ -33,7 +33,9 @@ export function TableContainer({
       <Box sx={{ display: ['none', 'table-header-group'] }} as="thead">
         <Box as="tr">{header}</Box>
       </Box>
-      <Box sx={{ width: '100%' }} as="tbody">{children}</Box>
+      <Box sx={{ width: '100%' }} as="tbody">
+        {children}
+      </Box>
     </Container>
   )
 }
@@ -108,14 +110,17 @@ export function Table<T extends Record<K, string>, K extends keyof T>({
       {data.map((row) => (
         <Row key={row[primaryKey]}>
           {rowDefinition.map(({ cell: Content, header }, idx) => (
-            <Cell sx={{ display: ['flex', 'table-cell'], justifyContent: 'space-between' }} key={idx}>
+            <Cell
+              sx={{ display: ['flex', 'table-cell'], justifyContent: 'space-between' }}
+              key={idx}
+            >
               <Box
                 variant="paragraph2"
                 sx={{
                   color: 'muted',
                   fontWeight: 'semiBold',
                   display: ['block', 'none'],
-                  padding: 0
+                  padding: 0,
                 }}
               >
                 {header}
@@ -130,40 +135,49 @@ export function Table<T extends Record<K, string>, K extends keyof T>({
 }
 
 interface Sort<K extends string> {
-  sortBy: K | undefined,
-  direction: Direction,
-  change: (ch: { kind: 'sortBy', sortBy: K | undefined }) => void
+  sortBy: K | undefined
+  direction: Direction
+  change: (ch: { kind: 'sortBy'; sortBy: K | undefined }) => void
 }
 export function TableSortHeader<K extends string>({
   children,
   filters,
   sortBy,
-  sx
-}: React.PropsWithChildren<{ filters: Sort<K>, sortBy: K | undefined, sx?: SxStyleProp }>) {
-  return (<>
-    <Button
-      sx={{
-        visibility: ['hidden', 'visible'],
-        display: ['none', 'flex'],
-        alignItems: 'center',
-        ...sx
-      }}
-      variant="tableHeader"
-      onClick={() => filters.change({ kind: 'sortBy', sortBy })}
-    >
-      <Box sx={{ whiteSpace: 'nowrap' }}>{children}</Box>
-      <Box>
-        <Icon
-          sx={{ ml: 1, display: 'flex', width: 1 }}
-          size={12}
-          name={filters.direction === 'ASC' && filters.sortBy === sortBy
-            ? 'chevron_up'
-            : 'chevron_down'}
-          color={filters.direction !== undefined && filters.sortBy === sortBy
-            ? 'primary'
-            : 'text.muted'} />
-      </Box>
-    </Button>
-    <Text sx={{ display: ['block', 'none'] }} variant="tableHead">{children}</Text>
-  </>)
+  sx,
+}: React.PropsWithChildren<{ filters: Sort<K>; sortBy: K | undefined; sx?: SxStyleProp }>) {
+  return (
+    <>
+      <Button
+        sx={{
+          visibility: ['hidden', 'visible'],
+          display: ['none', 'flex'],
+          alignItems: 'center',
+          ...sx,
+        }}
+        variant="tableHeader"
+        onClick={() => filters.change({ kind: 'sortBy', sortBy })}
+      >
+        <Box sx={{ whiteSpace: 'nowrap' }}>{children}</Box>
+        <Box>
+          <Icon
+            sx={{ ml: 1, display: 'flex', width: 1 }}
+            size={12}
+            name={
+              filters.direction === 'ASC' && filters.sortBy === sortBy
+                ? 'chevron_up'
+                : 'chevron_down'
+            }
+            color={
+              filters.direction !== undefined && filters.sortBy === sortBy
+                ? 'primary'
+                : 'text.muted'
+            }
+          />
+        </Box>
+      </Button>
+      <Text sx={{ display: ['block', 'none'] }} variant="tableHead">
+        {children}
+      </Text>
+    </>
+  )
 }

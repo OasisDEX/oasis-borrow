@@ -1,86 +1,92 @@
-import { Vault } from "blockchain/vaults"
-import { compareBigNumber } from "helpers/compare"
-import { Change, Direction, SortFilters, toggleSort } from "helpers/form"
-import { Observable, Subject } from "rxjs"
-import { map, scan, startWith, switchMap } from "rxjs/operators"
+import { Vault } from 'blockchain/vaults'
+import { compareBigNumber } from 'helpers/compare'
+import { Change, Direction, toggleSort } from 'helpers/form'
+import { Observable, Subject } from 'rxjs'
+import { map, scan, startWith, switchMap } from 'rxjs/operators'
 export type VaultSortBy =
-    | 'collateral'
-    | 'debt'
-    | 'liquidationPrice'
-    | 'collateralizationRatio'
-    | 'freeCollateral'
-    | undefined
+  | 'collateral'
+  | 'debt'
+  | 'liquidationPrice'
+  | 'collateralizationRatio'
+  | 'freeCollateral'
+  | undefined
 
 export interface VaultsFilterState {
-    sortBy: VaultSortBy
-    direction: Direction
-    change: (ch: Changes) => void
+  sortBy: VaultSortBy
+  direction: Direction
+  change: (ch: Changes) => void
 }
 type Changes = Change<VaultsFilterState, 'sortBy'>
 
 function applyFilter(state: VaultsFilterState, change: Changes): VaultsFilterState {
-    switch (change.kind) {
-        case 'sortBy':
-            const [sortBy, direction] = toggleSort(state.sortBy, state.direction, change.sortBy)
-            return {
-                ...state,
-                sortBy,
-                direction,
-            }
-        default:
-            return state
-    }
+  switch (change.kind) {
+    case 'sortBy':
+      const [sortBy, direction] = toggleSort(state.sortBy, state.direction, change.sortBy)
+      return {
+        ...state,
+        sortBy,
+        direction,
+      }
+    default:
+      return state
+  }
 }
 function sortVaults(vaults: Vault[], sortBy: VaultSortBy, direction: Direction): Vault[] {
-    const filter = `${sortBy}_${direction}`
-    switch (filter) {
-        case 'collateral_ASC':
-            return vaults.sort((v1, v2) => compareBigNumber(v1.collateral, v2.collateral))
-        case 'collateral_DESC':
-            return vaults.sort((v1, v2) => compareBigNumber(v2.collateral, v1.collateral))
-        case 'collateralizationRatio_ASC':
-            return vaults.sort((v1, v2) => compareBigNumber(v1.collateralizationRatio, v2.collateralizationRatio))
-        case 'collateralizationRatio_DESC':
-            return vaults.sort((v1, v2) => compareBigNumber(v2.collateralizationRatio, v1.collateralizationRatio))
-        case 'debt_ASC':
-            return vaults.sort((v1, v2) => compareBigNumber(v1.debt, v2.debt))
-        case 'debt_DESC':
-            return vaults.sort((v1, v2) => compareBigNumber(v2.debt, v1.debt))
-        case 'liquidationPrice_ASC':
-            return vaults.sort((v1, v2) => compareBigNumber(v1.liquidationPrice, v2.liquidationPrice))
-        case 'liquidationPrice_DESC':
-            return vaults.sort((v1, v2) => compareBigNumber(v2.liquidationPrice, v1.liquidationPrice))
-        case 'freeCollateral_ASC':
-            return vaults.sort((v1, v2) => compareBigNumber(v1.freeCollateral, v2.freeCollateral))
-        case 'freeCollateral_DESC':
-            return vaults.sort((v1, v2) => compareBigNumber(v2.freeCollateral, v1.freeCollateral))
-        default:
-            return vaults.sort((v1, v2) => Number(v1.id) - Number(v2.id))
-    }
+  const filter = `${sortBy}_${direction}`
+  switch (filter) {
+    case 'collateral_ASC':
+      return vaults.sort((v1, v2) => compareBigNumber(v1.collateral, v2.collateral))
+    case 'collateral_DESC':
+      return vaults.sort((v1, v2) => compareBigNumber(v2.collateral, v1.collateral))
+    case 'collateralizationRatio_ASC':
+      return vaults.sort((v1, v2) =>
+        compareBigNumber(v1.collateralizationRatio, v2.collateralizationRatio),
+      )
+    case 'collateralizationRatio_DESC':
+      return vaults.sort((v1, v2) =>
+        compareBigNumber(v2.collateralizationRatio, v1.collateralizationRatio),
+      )
+    case 'debt_ASC':
+      return vaults.sort((v1, v2) => compareBigNumber(v1.debt, v2.debt))
+    case 'debt_DESC':
+      return vaults.sort((v1, v2) => compareBigNumber(v2.debt, v1.debt))
+    case 'liquidationPrice_ASC':
+      return vaults.sort((v1, v2) => compareBigNumber(v1.liquidationPrice, v2.liquidationPrice))
+    case 'liquidationPrice_DESC':
+      return vaults.sort((v1, v2) => compareBigNumber(v2.liquidationPrice, v1.liquidationPrice))
+    case 'freeCollateral_ASC':
+      return vaults.sort((v1, v2) => compareBigNumber(v1.freeCollateral, v2.freeCollateral))
+    case 'freeCollateral_DESC':
+      return vaults.sort((v1, v2) => compareBigNumber(v2.freeCollateral, v1.freeCollateral))
+    default:
+      return vaults.sort((v1, v2) => Number(v1.id) - Number(v2.id))
+  }
 }
 
 export interface VaultsWithFilters {
-    data: Vault[],
-    filters: VaultsFilterState
+  data: Vault[]
+  filters: VaultsFilterState
 }
 export function vaultsWithFilter$(vaults$: Observable<Vault[]>): Observable<VaultsWithFilters> {
-    const change$ = new Subject<Changes>()
-    function change(ch: Changes) {
-        change$.next(ch)
-    }
+  const change$ = new Subject<Changes>()
+  function change(ch: Changes) {
+    change$.next(ch)
+  }
 
-    const initialState: VaultsFilterState = {
-        sortBy: undefined,
-        direction: undefined,
-        change
-    }
+  const initialState: VaultsFilterState = {
+    sortBy: undefined,
+    direction: undefined,
+    change,
+  }
 
-    return change$.pipe(
-        scan(applyFilter, initialState),
-        startWith(initialState),
-        switchMap(filters => vaults$.pipe(
-            map(vaults => sortVaults(vaults, filters.sortBy, filters.direction)),
-            map(vaults => ({ filters, data: vaults }))
-        ))
-    )
+  return change$.pipe(
+    scan(applyFilter, initialState),
+    startWith(initialState),
+    switchMap((filters) =>
+      vaults$.pipe(
+        map((vaults) => sortVaults(vaults, filters.sortBy, filters.direction)),
+        map((vaults) => ({ filters, data: vaults })),
+      ),
+    ),
+  )
 }
