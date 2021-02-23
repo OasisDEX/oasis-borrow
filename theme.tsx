@@ -2,6 +2,7 @@
 import { icons } from '@makerdao/dai-ui-icons'
 // @ts-ignore
 import { icons as brandingIcons } from '@makerdao/dai-ui-icons-branding'
+import { none } from 'ramda'
 // @ts-ignore
 // import oasisBaseTheme from '@makerdao/dai-ui-theme-casual'
 import React from 'react'
@@ -612,6 +613,11 @@ const oasisBaseTheme = {
       letterSpacing: '0.04em',
       opacity: 0.7,
     },
+    tableHead: {
+      variant: 'text.paragraph3',
+      color: 'muted',
+      fontWeight: 'semiBold'
+    }
   },
   borders: {
     light: '1px solid',
@@ -747,11 +753,14 @@ const oasisBaseTheme = {
       borderStyle: 'solid',
       borderColor: 'light',
     },
-    header: {
-      variant: 'text.paragraph3',
-      color: 'muted',
-      fontWeight: 'semiBold',
-      background: 'none'
+    tableHeader: {
+      variant: 'text.tableHead',
+      background: 'none',
+      p: 0,
+      cursor: 'pointer',
+      ':focus': {
+        outline: 'none'
+      },
     }
   },
   links: {

@@ -7,55 +7,61 @@ import { AppLink } from 'components/Links'
 import { Table } from 'components/Table'
 import { VaultSummary } from 'features/vault/vaultSummary'
 import { formatAddress, formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
-import React, { PropsWithChildren } from 'react'
+import React from 'react'
 import { Box, Button, Card, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { TokenSymbol } from '../landing/LandingView'
-import { FeaturedIlk, IlkDataWithBalance, VaultsFilterState, VaultsOverview } from './vaultsOverview'
+import { VaultsFilterState, VaultSortBy, VaultsWithFilters } from './vaultsFilters'
+import { FeaturedIlk, IlkDataWithBalance, VaultsOverview } from './vaultsOverview'
 
-type Plain<T> = T extends `${infer U}_${'ASC' | 'DESC'}` ? U : undefined
-function toggleSort({ sortBy, change }: VaultsFilterState, field: Plain<VaultsFilterState['sortBy']>) {
-  if (sortBy === undefined || !sortBy.startsWith(`${field}_`)) {
-    return change({ kind: 'sortBy', sortBy: `${field}_DESC` as VaultsFilterState['sortBy'] })
-  }
-  const [, direction] = sortBy.split('_')
 
-  if (direction === 'DESC') {
-    return change({ kind: 'sortBy', sortBy: `${field}_ASC` as VaultsFilterState['sortBy'] })
-  }
-
-  return change({ kind: 'sortBy', sortBy: undefined })
+function TableSortHeader({ children, filters, sortBy, sx }: React.PropsWithChildren<{ filters: VaultsFilterState, sortBy: VaultSortBy, sx?: SxStyleProp }>) {
+  return <Button sx={{ display: 'flex', alignItems: 'center', ...sx }} variant="tableHeader" onClick={() => filters.change({ kind: 'sortBy', sortBy })}>
+    <Box sx={{ whiteSpace: 'nowrap' }}>{children}</Box>
+    <Box>
+      <Icon
+        sx={{ ml: 1, display: 'flex', width: 1 }}
+        size={12}
+        name={filters.direction === 'ASC' && filters.sortBy === sortBy
+          ? 'chevron_up'
+          : 'chevron_down'}
+        color={filters.direction !== undefined && filters.sortBy === sortBy
+          ? 'primary'
+          : 'text.muted'} />
+    </Box>
+  </Button >
 }
 
-function VaultsTable({ vaults, filters }: { vaults: Vault[], filters: VaultsFilterState }) {
+function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
+  const { data, filters } = vaults
   return (
     <Table
-      data={vaults}
+      data={data}
       primaryKey="id"
       rowDefinition={[
         {
-          header: <Text>Asset</Text>,
+          header: <Text variant="tableHead">Asset</Text>,
           cell: ({ token }) => <TokenSymbol token={token} />,
         },
         {
-          header: <Button variant="header" sx={{ textAlign: 'right' }} onClick={() => toggleSort(filters, 'collateral')}>Deposited</Button>,
+          header: <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="collateral">Deposited</TableSortHeader>,
           cell: ({ collateral }) => (
             <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(collateral)}</Text>
           ),
         },
         {
-          header: <Button variant="header" sx={{ textAlign: 'right' }} onClick={() => toggleSort(filters, 'freeCollateral')}>Avail. to withdraw</Button>,
+          header: <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy='freeCollateral'>Avail. to withdraw</TableSortHeader>,
           cell: ({ freeCollateral }) => (
             <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(freeCollateral)}</Text>
           ),
         },
         {
-          header: <Button variant="header" sx={{ textAlign: 'right' }} onClick={() => toggleSort(filters, 'debt')}>DAI</Button>,
+          header: <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy='debt'>DAI</TableSortHeader>,
           cell: ({ debt }) => <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(debt)}</Text>,
         },
         {
-          header: <Button variant="header" sx={{ textAlign: 'right' }} onClick={() => toggleSort(filters, 'collateralizationRatio')}>Current Ratio</Button>,
+          header: <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy='collateralizationRatio'>Current Ratio</TableSortHeader>,
           cell: ({ collateralizationRatio }) => (
             <Text sx={{ textAlign: 'right' }}>
               {collateralizationRatio ? formatPercent(collateralizationRatio.times(100)) : 0}
@@ -93,27 +99,27 @@ function AllIlks({
       data={ilkDataList}
       rowDefinition={[
         {
-          header: <Text>Asset</Text>,
+          header: <Text variant="tableHead">Asset</Text>,
           cell: ({ token }) => <TokenSymbol token={token} />,
         },
         {
-          header: <Text>Type</Text>,
+          header: <Text variant="tableHead">Type</Text>,
           cell: ({ ilk }) => <Text>{ilk}</Text>,
         },
         {
-          header: <Text sx={{ textAlign: 'right', whiteSpace: "nowrap" }}>DAI Available</Text>,
+          header: <Text variant="tableHead" sx={{ textAlign: 'right', whiteSpace: "nowrap" }}>DAI Available</Text>,
           cell: ({ ilkDebtAvailable }) => (
             <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(ilkDebtAvailable)}</Text>
           ),
         },
         {
-          header: <Text sx={{ textAlign: 'right', whiteSpace: "nowrap" }}>Stability Fee</Text>,
+          header: <Text variant="tableHead" sx={{ textAlign: 'right', whiteSpace: "nowrap" }}>Stability Fee</Text>,
           cell: ({ stabilityFee }) => (
             <Text sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee.times(100))}</Text>
           ),
         },
         {
-          header: <Text sx={{ textAlign: 'right', whiteSpace: "nowrap" }}>Min. Coll Rato</Text>,
+          header: <Text variant="tableHead" sx={{ textAlign: 'right', whiteSpace: "nowrap" }}>Min. Coll Rato</Text>,
           cell: ({ liquidationRatio }) => (
             <Text sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio.times(100))}</Text>
           ),
@@ -122,7 +128,7 @@ function AllIlks({
           ? []
           : [
             {
-              header: <Text sx={{ textAlign: 'right' }}>In my wallet</Text>,
+              header: <Text variant="tableHead" sx={{ textAlign: 'right' }}>In my wallet</Text>,
               cell: (ilk: IlkDataWithBalance) => (
                 <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
                   <Text sx={{ textAlign: 'right' }}>
@@ -299,15 +305,12 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
     featuredIlks,
     ilkDataList,
     canOpenVault,
-    filters
   } = vaultsOverView
 
-  console.log(vaultsOverView)
-
   const readonlyAccount = context?.status === 'connectedReadonly' && (address as string)
-  const displaySummary = vaults && vaults.length > 0 && vaultSummary
-  const displayFeaturedIlks = vaults?.length === 0 && featuredIlks
-  const displayVaults = vaults && vaults.length > 0 && vaults
+  const displaySummary = vaults && vaults.data.length > 0 && vaultSummary
+  const displayFeaturedIlks = vaults?.data.length === 0 && featuredIlks
+  const displayVaults = vaults && vaults.data.length > 0 && vaults
 
   return (
     <Grid sx={{ flex: 1 }}>
@@ -328,7 +331,7 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
       {displayVaults && (
         <>
           <Heading>{readonlyAccount ? `Address Vaults` : 'Your Vaults'}</Heading>
-          <VaultsTable filters={filters} vaults={displayVaults} />
+          <VaultsTable vaults={displayVaults} />
         </>
       )}
       {ilkDataList && (
