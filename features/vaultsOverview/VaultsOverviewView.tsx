@@ -111,20 +111,20 @@ function AllIlks({
         ...(isReadonly
           ? []
           : [
-              {
-                header: <Text sx={{ textAlign: 'right' }}>In my wallet</Text>,
-                cell: (ilk: IlkDataWithBalance) => (
-                  <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
-                    <Text sx={{ textAlign: 'right' }}>
-                      {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
-                    </Text>
-                    <Text variant="paragraph3" sx={{ color: 'muted' }}>
-                      {`($${ilk.balancePrice ? formatCryptoBalance(ilk.balancePrice) : 0})`}
-                    </Text>
-                  </Flex>
-                ),
-              },
-            ]),
+            {
+              header: <Text sx={{ textAlign: 'right' }}>In my wallet</Text>,
+              cell: (ilk: IlkDataWithBalance) => (
+                <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
+                  <Text sx={{ textAlign: 'right' }}>
+                    {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
+                  </Text>
+                  <Text variant="paragraph3" sx={{ color: 'muted' }}>
+                    {`($${ilk.balancePrice ? formatCryptoBalance(ilk.balancePrice) : 0})`}
+                  </Text>
+                </Flex>
+              ),
+            },
+          ]),
         {
           header: <Text />,
           cell: ({ ilk }) => (
@@ -147,42 +147,45 @@ function CallToAction({ ilk }: CallToActionProps) {
   const token = getToken(ilk.token)
 
   return (
-    <Grid
-      columns="1fr 1fr"
-      sx={{
-        flex: 1,
-        cursor: 'pointer',
-        background: token.background,
-        borderRadius: 'large',
-        p: 4,
-        color: 'white',
-      }}
-    >
-      <Box sx={{ gridColumn: '1/3' }}>
-        <Text variant="caption">{ilk.title}</Text>
-      </Box>
-      <Box sx={{ gridColumn: '1/3' }}>
-        <Heading variant="header2" sx={{ color: 'white', mb: 4 }}>
-          {ilk.ilk}
-        </Heading>
-      </Box>
-      <Flex>
-        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
-          Stability fee:
+    <AppLink href={`/vaults/open/${ilk.ilk}`}>
+
+      <Grid
+        columns="1fr 1fr"
+        sx={{
+          flex: 1,
+          cursor: 'pointer',
+          background: token.background,
+          borderRadius: 'large',
+          p: 4,
+          color: 'white',
+        }}
+      >
+        <Box sx={{ gridColumn: '1/3' }}>
+          <Text variant="caption">{ilk.title}</Text>
+        </Box>
+        <Box sx={{ gridColumn: '1/3' }}>
+          <Heading variant="header2" sx={{ color: 'white', mb: 4 }}>
+            {ilk.ilk}
+          </Heading>
+        </Box>
+        <Flex>
+          <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
+            Stability fee:
         </Text>
-        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
-          {formatPercent(ilk.stabilityFee)}
+          <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
+            {formatPercent(ilk.stabilityFee)}
+          </Text>
+        </Flex>
+        <Flex>
+          <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
+            Min coll ratio:
         </Text>
-      </Flex>
-      <Flex>
-        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
-          Min coll ratio:
-        </Text>
-        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
-          {formatPercent(ilk.liquidationRatio)}
-        </Text>
-      </Flex>
-    </Grid>
+          <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
+            {formatPercent(ilk.liquidationRatio)}
+          </Text>
+        </Flex>
+      </Grid>
+    </AppLink>
   )
 }
 function Summary({ summary }: { summary: VaultSummary }) {
@@ -269,7 +272,7 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
 
 export function FeaturedIlks({ ilks }: { ilks: FeaturedIlk[] }) {
   return (
-    <Grid columns="1fr 1fr 1fr" gap={4}>
+    <Grid columns={["1fr", "1fr 1fr 1fr"]} gap={4}>
       {ilks.map((ilk) => (
         <CallToAction key={ilk.title} ilk={ilk} />
       ))}
