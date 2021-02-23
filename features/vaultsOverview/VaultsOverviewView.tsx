@@ -147,24 +147,24 @@ function AllIlks({
         ...(isReadonly
           ? []
           : [
-              {
-                header: (
-                  <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="balance">
-                    In my wallet
-                  </TableSortHeader>
-                ),
-                cell: (ilk: IlkWithBalance) => (
-                  <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
-                    <Text sx={{ textAlign: 'right' }}>
-                      {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
-                    </Text>
-                    <Text variant="paragraph3" sx={{ color: 'muted', ml: 1 }}>
-                      {`($${ilk.balancePriceInUsd ? formatFiatBalance(ilk.balancePriceInUsd) : 0})`}
-                    </Text>
-                  </Flex>
-                ),
-              },
-            ]),
+            {
+              header: (
+                <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="balance">
+                  In my wallet
+                </TableSortHeader>
+              ),
+              cell: (ilk: IlkWithBalance) => (
+                <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
+                  <Text sx={{ textAlign: 'right' }}>
+                    {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
+                  </Text>
+                  <Text variant="paragraph3" sx={{ color: 'muted', ml: 1 }}>
+                    {`($${ilk.balancePriceInUsd ? formatFiatBalance(ilk.balancePriceInUsd) : 0})`}
+                  </Text>
+                </Flex>
+              ),
+            },
+          ]),
         {
           header: <Text />,
           cell: ({ ilk }) => (
