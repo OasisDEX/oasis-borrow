@@ -12,7 +12,7 @@ import { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/internal/operators/map'
 import { distinctUntilChanged } from 'rxjs/operators'
-import { ilksWithFilter$, IlksWithFilters } from './ilksFilters'
+import { ilksWithFilter$, IlksWithFilters } from '../ilks/ilksFilters'
 import { vaultsWithFilter$, VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 
 export interface FeaturedIlk extends IlkData {

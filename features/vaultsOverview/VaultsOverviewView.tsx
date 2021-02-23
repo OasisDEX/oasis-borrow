@@ -12,7 +12,7 @@ import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { TokenSymbol } from '../landing/LandingView'
-import { IlksWithFilters } from './ilksFilters'
+import { IlksWithFilters } from '../ilks/ilksFilters'
 import { VaultsWithFilters } from './vaultsFilters'
 import { FeaturedIlk, VaultsOverview } from './vaultsOverview'
 
