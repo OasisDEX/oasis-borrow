@@ -1,10 +1,8 @@
-import BigNumber from "bignumber.js"
 import { Vault } from "blockchain/vaults"
-import { Change } from "helpers/form"
+import { compareBigNumber } from "helpers/compare"
+import { Change, Direction, SortFilters, toggleSort } from "helpers/form"
 import { Observable, Subject } from "rxjs"
 import { map, scan, startWith, switchMap } from "rxjs/operators"
-
-type Direction = 'ASC' | 'DESC' | undefined
 export type VaultSortBy =
     | 'collateral'
     | 'debt'
@@ -20,18 +18,6 @@ export interface VaultsFilterState {
 }
 type Changes = Change<VaultsFilterState, 'sortBy'>
 
-function toggleSort(current: VaultSortBy, currentDirection: Direction, next: VaultSortBy): [VaultSortBy, Direction] {
-    if (current === undefined || current !== next) {
-        return [next, 'DESC']
-    }
-
-    if (currentDirection === 'DESC') {
-        return [next, 'ASC']
-    }
-
-    return [undefined, undefined]
-}
-
 function applyFilter(state: VaultsFilterState, change: Changes): VaultsFilterState {
     switch (change.kind) {
         case 'sortBy':
@@ -45,21 +31,6 @@ function applyFilter(state: VaultsFilterState, change: Changes): VaultsFilterSta
             return state
     }
 }
-
-function compareBigNumber(a: BigNumber | undefined, b: BigNumber | undefined) {
-    if (a === undefined && b === undefined) {
-        return 0
-    }
-    if (a === undefined) {
-        return -1
-    }
-    if (b === undefined) {
-        return 1
-    }
-
-    return a.comparedTo(b)
-}
-
 function sortVaults(vaults: Vault[], sortBy: VaultSortBy, direction: Direction): Vault[] {
     const filter = `${sortBy}_${direction}`
     switch (filter) {
@@ -92,7 +63,7 @@ export interface VaultsWithFilters {
     data: Vault[],
     filters: VaultsFilterState
 }
-export function vaultsFilter$(vaults$: Observable<Vault[]>): Observable<VaultsWithFilters> {
+export function vaultsWithFilter$(vaults$: Observable<Vault[]>): Observable<VaultsWithFilters> {
     const change$ = new Subject<Changes>()
     function change(ch: Changes) {
         change$.next(ch)

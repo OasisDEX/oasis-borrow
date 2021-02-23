@@ -162,10 +162,10 @@ export function toGasPriceChange(gasPrice$: Observable<BigNumber>): Observable<G
   return gasPrice$.pipe(
     map(
       (gasPrice) =>
-        ({
-          kind: FormChangeKind.gasPriceChange,
-          value: gasPrice,
-        } as GasPriceChange),
+      ({
+        kind: FormChangeKind.gasPriceChange,
+        value: gasPrice,
+      } as GasPriceChange),
     ),
   )
 }
@@ -176,10 +176,10 @@ export function toEtherPriceUSDChange(
   return ETHUsd$.pipe(
     map(
       (value) =>
-        ({
-          value,
-          kind: FormChangeKind.etherPriceUSDChange,
-        } as EtherPriceUSDChange),
+      ({
+        value,
+        kind: FormChangeKind.etherPriceUSDChange,
+      } as EtherPriceUSDChange),
     ),
   )
 }
@@ -198,10 +198,10 @@ export function toAccountChange(account$: Observable<string | undefined>) {
   return account$.pipe(
     map(
       (value) =>
-        ({
-          value,
-          kind: FormChangeKind.accountChange,
-        } as AccountChange),
+      ({
+        value,
+        kind: FormChangeKind.accountChange,
+      } as AccountChange),
     ),
   )
 }
@@ -333,8 +333,8 @@ type OmitFunctions<S> = OmitProperties<Required<S>, (...arg: any[]) => any>
 export type Change<S, K extends keyof S> = {
   kind: K
 } & {
-  [value in K]: S[K]
-}
+    [value in K]: S[K]
+  }
 
 export type Changes<S> = ValueOf<{ [K in keyof OmitFunctions<S>]-?: Change<S, K> }>
 
@@ -345,4 +345,24 @@ export type ApplyChange<S extends {}, C extends Change<any, any> = Changes<S>> =
 
 export function applyChange<S extends {}, C extends Change<any, any>>(state: S, change: C): S {
   return { ...state, [change.kind]: change[change.kind] }
+}
+
+export type Direction = 'ASC' | 'DESC' | undefined
+
+export function toggleSort<T extends string | undefined>(current: T, currentDirection: Direction, next: T): [T | undefined, Direction] {
+  if (current === undefined || current !== next) {
+    return [next, 'DESC']
+  }
+
+  if (currentDirection === 'DESC') {
+    return [next, 'ASC']
+  }
+
+  return [undefined, undefined]
+}
+
+export interface SortFilters<T extends string> {
+  sortBy: T | undefined
+  direction: Direction
+  change: (ch: { kind: 'sortBy', sortBy: T | undefined }) => void
 }

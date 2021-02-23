@@ -5,10 +5,12 @@ import { CallObservable } from 'blockchain/calls/observe'
 import { SpotIlk, spotIlk } from 'blockchain/calls/spot'
 import { VatIlk, vatIlk } from 'blockchain/calls/vat'
 import { Context } from 'blockchain/network'
+import { startWithDefault } from 'helpers/operators'
 import { zero } from 'helpers/zero'
 import { of } from 'rxjs'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
+import { TokenBalances } from './tokens'
 
 export function createIlks$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(
@@ -86,5 +88,32 @@ export function createIlkDataList$(
     switchMap((ilks) => combineLatest(ilks.map((ilk) => ilkData$(ilk)))),
     distinctUntilChanged(),
     shareReplay(1),
+  )
+}
+
+
+export interface IlkWithBalance extends IlkData {
+  balance?: BigNumber,
+  balancePriceInUsd?: BigNumber,
+}
+
+export function createIlkDataListWithBalances$(
+  context: Observable<Context>,
+  ilkDataList$: Observable<IlkDataList>,
+  balances$: (address: string) => Observable<TokenBalances>,
+): Observable<IlkWithBalance[]> {
+  return context.pipe(
+    switchMap(context => context.status === 'connected'
+      ? combineLatest(ilkDataList$, balances$(context.account))
+      : combineLatest(ilkDataList$, of({}))),
+    map(([ilkData, balances]) => ilkData.map(ilk => (
+      ilk.token in balances
+        ? {
+          ...ilk,
+          balance: balances[ilk.token].balance,
+          balancePriceInUsd: balances[ilk.token].balance.times(balances[ilk.token].price)
+        }
+        : ilk
+    )))
   )
 }

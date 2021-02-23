@@ -17,7 +17,7 @@ import {
   SetProxyOwnerData,
 } from 'blockchain/calls/proxy'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
-import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
+import { createIlkData$, createIlkDataList$, createIlkDataListWithBalances$, createIlks$ } from 'blockchain/ilks'
 import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
 import { createAccountBalance$, createAllowance$, createBalance$ } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
@@ -185,8 +185,18 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+
   const ilks$ = createIlks$(context$)
+
+  const accountBalances$ = curry(createAccountBalance$)(
+    balance$,
+    ilks$,
+    ilkToToken$,
+    tokenOraclePrice$,
+  )
+
   const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
+  const ilksWithBalance$ = createIlkDataListWithBalances$(context$, ilkDataList$, accountBalances$)
 
   const openVault$ = memoize(
     curry(createOpenVault$)(
@@ -204,14 +214,9 @@ export function setupAppContext() {
 
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
 
-  const accountBalances$ = curry(createAccountBalance$)(
-    balance$,
-    ilks$,
-    ilkToToken$,
-    tokenOraclePrice$,
-  )
+
   const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(context$, vaults$, ilkDataList$, featuredIlks$, accountBalances$),
+    curry(createVaultsOverview$)(context$, vaults$, ilksWithBalance$, featuredIlks$),
   )
   const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
 

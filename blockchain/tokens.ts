@@ -30,13 +30,15 @@ export function createBalance$(
   )
 }
 
+export type TokenBalances = Record<string, { balance: BigNumber; price: BigNumber }>
+
 export function createAccountBalance$(
   tokenBalance$: (token: string, address: string) => Observable<BigNumber>,
   ilks: Observable<string[]>,
   ilkToToken: Observable<(ilk: string) => string>,
   tokenPrice: (ilk: string) => Observable<BigNumber>,
   address: string,
-): Observable<Record<string, { balance: BigNumber; price: BigNumber }>> {
+): Observable<TokenBalances> {
   return combineLatest(ilks, ilkToToken).pipe(
     distinctUntilChanged((a, b) => isEqual(a, b)),
     switchMap(([ilks, ilkToToken]) =>
