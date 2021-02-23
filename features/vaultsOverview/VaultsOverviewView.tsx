@@ -111,20 +111,20 @@ function AllIlks({
         ...(isReadonly
           ? []
           : [
-            {
-              header: <Text sx={{ textAlign: 'right' }}>In my wallet</Text>,
-              cell: (ilk: IlkDataWithBalance) => (
-                <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
-                  <Text sx={{ textAlign: 'right' }}>
-                    {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
-                  </Text>
-                  <Text variant="paragraph3" sx={{ color: 'muted' }}>
-                    {`($${ilk.balancePrice ? formatCryptoBalance(ilk.balancePrice) : 0})`}
-                  </Text>
-                </Flex>
-              ),
-            },
-          ]),
+              {
+                header: <Text sx={{ textAlign: 'right' }}>In my wallet</Text>,
+                cell: (ilk: IlkDataWithBalance) => (
+                  <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
+                    <Text sx={{ textAlign: 'right' }}>
+                      {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
+                    </Text>
+                    <Text variant="paragraph3" sx={{ color: 'muted' }}>
+                      {`($${ilk.balancePrice ? formatCryptoBalance(ilk.balancePrice) : 0})`}
+                    </Text>
+                  </Flex>
+                ),
+              },
+            ]),
         {
           header: <Text />,
           cell: ({ ilk }) => (
@@ -148,7 +148,6 @@ function CallToAction({ ilk }: CallToActionProps) {
 
   return (
     <AppLink href={`/vaults/open/${ilk.ilk}`}>
-
       <Grid
         columns="1fr 1fr"
         sx={{
@@ -171,7 +170,7 @@ function CallToAction({ ilk }: CallToActionProps) {
         <Flex>
           <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
             Stability fee:
-        </Text>
+          </Text>
           <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
             {formatPercent(ilk.stabilityFee)}
           </Text>
@@ -179,7 +178,7 @@ function CallToAction({ ilk }: CallToActionProps) {
         <Flex>
           <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
             Min coll ratio:
-        </Text>
+          </Text>
           <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
             {formatPercent(ilk.liquidationRatio)}
           </Text>
@@ -272,7 +271,7 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
 
 export function FeaturedIlks({ ilks }: { ilks: FeaturedIlk[] }) {
   return (
-    <Grid columns={["1fr", "1fr 1fr 1fr"]} gap={4}>
+    <Grid columns={['1fr', '1fr 1fr 1fr']} gap={4}>
       {ilks.map((ilk) => (
         <CallToAction key={ilk.title} ilk={ilk} />
       ))}
