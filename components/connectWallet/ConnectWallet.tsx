@@ -25,7 +25,7 @@ import { useTranslation } from 'i18n'
 import { mapValues } from 'lodash'
 import React, { useEffect } from 'react'
 import { identity, Observable } from 'rxjs'
-import { first, take, tap } from 'rxjs/operators'
+import { first, tap } from 'rxjs/operators'
 import { Alert, Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 import { assert } from 'ts-essentials'
 export const AUTO_CONNECT = 'autoConnect'
@@ -211,14 +211,13 @@ export function ConnectWallet() {
   useEffect(() => {
     const subscription = web3Context$.subscribe((web3Context) => {
       if (web3Context.status === 'connected') {
-        redirectState$.pipe(take(1)).subscribe((url) => {
-          if (url !== undefined) {
-            replace(url)
-            redirectState$.next(undefined)
-          } else {
-            replace(`/owner/${web3Context.account}`)
-          }
-        })
+        const url = redirectState$.value
+        if (url !== undefined) {
+          replace(url)
+          redirectState$.next(undefined)
+        } else {
+          replace(`/owner/${web3Context.account}`)
+        }
       }
     })
     return () => subscription.unsubscribe()
@@ -397,7 +396,6 @@ export function WithWalletConnection({ children }: WithChildren) {
   const { replace } = useRedirect()
   const { web3Context$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
-
   useEffect(() => {
     if (web3Context?.status === 'connectedReadonly') {
       redirectState$.next(window.location.pathname)

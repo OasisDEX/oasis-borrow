@@ -57,7 +57,7 @@ function sortIlks(
     case 'balance_DESC':
       return ilks.sort((a, b) => compareBigNumber(b.balance, a.balance))
     default:
-      return ilks.sort((a, b) => compareBigNumber(a.ilkDebt, b.ilkDebt))
+      return ilks.sort((a, b) => compareBigNumber(b.ilkDebt, a.ilkDebt))
   }
 }
 

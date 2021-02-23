@@ -284,7 +284,10 @@ const tokensBySymbol = keyBy(tokens, 'symbol')
 export function getToken(tokenSymbol: string) {
   if (!tokensBySymbol[tokenSymbol]) {
     console.warn('No token metadata for', tokenSymbol, 'using WETH!')
-    return tokensBySymbol.ETH
+    return {
+      ...tokensBySymbol.ETH,
+      name: tokenSymbol,
+    }
   }
   return tokensBySymbol[tokenSymbol]
 }
