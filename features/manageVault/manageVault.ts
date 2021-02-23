@@ -2,7 +2,12 @@ import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData, maxUint256 } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
-import { proxyAction, ProxyActionData } from 'blockchain/calls/proxyActions'
+import {
+  proxyActionDepositAndGenerate,
+  ProxyActionDepositAndGenerateData,
+  proxyActionWithdrawAndPayback,
+  ProxyActionWithdrawAndPaybackData,
+} from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
@@ -605,33 +610,65 @@ function setDaiAllowance(
     .subscribe((ch) => change(ch))
 }
 
-function manageVault(
+function manageVaultDepositAndGenerate(
   { send }: TxHelpers,
   change: (ch: ManageVaultChange) => void,
-  {
-    generateAmount,
-    depositAmount,
-    paybackAmount,
-    withdrawAmount,
-    proxyAddress,
+  { generateAmount, depositAmount, proxyAddress, ilk, token, id }: ManageVaultState,
+) {
+  send(proxyActionDepositAndGenerate, {
+    kind: TxMetaKind.proxyActionDepositAndGenerate,
+    generateAmount: generateAmount || zero,
+    depositAmount: depositAmount || zero,
+    proxyAddress: proxyAddress!,
     ilk,
     token,
     id,
-  }: ManageVaultState,
-) {
-  send(proxyAction, {
-    kind: TxMetaKind.proxyAction,
-    generateAmount,
-    depositAmount,
-    withdrawAmount,
-    paybackAmount,
-    proxyAddress: proxyAddress!,
-    ilk,
-    tkn: token,
-    id: id.toString(),
   })
     .pipe(
-      transactionToX<ManageVaultChange, ProxyActionData>(
+      transactionToX<ManageVaultChange, ProxyActionDepositAndGenerateData>(
+        { kind: 'stage', stage: 'manageWaitingForApproval' },
+        (txState) =>
+          of(
+            { kind: 'manageTxHash', manageTxHash: (txState as any).txHash as string },
+            { kind: 'stage', stage: 'manageInProgress' },
+          ),
+        (txState) => {
+          return of(
+            {
+              kind: 'stage',
+              stage: 'manageFailure',
+            },
+            {
+              kind: 'txError',
+              txError:
+                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+                  ? txState.error
+                  : undefined,
+            },
+          )
+        },
+        () => of({ kind: 'stage', stage: 'manageSuccess' }),
+      ),
+    )
+    .subscribe((ch) => change(ch))
+}
+
+function manageVaultWithdrawAndPayback(
+  { send }: TxHelpers,
+  change: (ch: ManageVaultChange) => void,
+  { withdrawAmount, paybackAmount, proxyAddress, ilk, token, id }: ManageVaultState,
+) {
+  send(proxyActionWithdrawAndPayback, {
+    kind: TxMetaKind.proxyActionWithdrawAndPayback,
+    withdrawAmount: withdrawAmount || zero,
+    paybackAmount: paybackAmount || zero,
+    proxyAddress: proxyAddress!,
+    ilk,
+    token,
+    id,
+  })
+    .pipe(
+      transactionToX<ManageVaultChange, ProxyActionWithdrawAndPaybackData>(
         { kind: 'stage', stage: 'manageWaitingForApproval' },
         (txState) =>
           of(
@@ -815,10 +852,20 @@ function addTransitions(
     }
   }
 
+  function progressManage() {
+    const isDepositAndGenerate = state.depositAmount || state.generateAmount
+
+    if (isDepositAndGenerate) {
+      return manageVaultDepositAndGenerate(txHelpers, change, state)
+    } else {
+      return manageVaultWithdrawAndPayback(txHelpers, change, state)
+    }
+  }
+
   if (state.stage === 'manageWaitingForConfirmation' || state.stage === 'manageFailure') {
     return {
       ...state,
-      progress: () => manageVault(txHelpers, change, state),
+      progress: progressManage,
       reset: () => change({ kind: 'stage', stage: 'editing' }),
     }
   }

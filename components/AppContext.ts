@@ -16,7 +16,11 @@ import {
   createProxyOwner$,
   SetProxyOwnerData,
 } from 'blockchain/calls/proxy'
-import { ProxyActionData } from 'blockchain/calls/proxyActions'
+import {
+  ProxyActionDepositAndGenerateData,
+  ProxyActionOpenData,
+  ProxyActionWithdrawAndPaybackData,
+} from 'blockchain/calls/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
@@ -57,7 +61,9 @@ import { createTransactionManager } from '../features/account/transactionManager
 import { HasGasEstimation } from '../helpers/form'
 
 export type TxData =
-  | ProxyActionData
+  | ProxyActionOpenData
+  | ProxyActionDepositAndGenerateData
+  | ProxyActionWithdrawAndPaybackData
   | ApproveData
   | DisapproveData
   | CreateDsProxyData
