@@ -16,8 +16,8 @@ export type ProxyActionData = {
   id?: string
   tkn: string
   ilk: string
-  lockAmount?: BigNumber
-  drawAmount?: BigNumber
+  depositAmount?: BigNumber
+  generateAmount?: BigNumber
   withdrawAmount?: BigNumber
   paybackAmount?: BigNumber
   proxyAddress: string
@@ -25,13 +25,22 @@ export type ProxyActionData = {
 
 function getCallData(data: ProxyActionData, context: ContextConnected) {
   const { dssProxyActions, dssCdpManager, mcdJoinDai, mcdJug, joins, contract } = context
-  const { id, tkn, lockAmount, drawAmount, withdrawAmount, paybackAmount, ilk, proxyAddress } = data
+  const {
+    id,
+    tkn,
+    depositAmount,
+    generateAmount,
+    withdrawAmount,
+    paybackAmount,
+    ilk,
+    proxyAddress,
+  } = data
 
   const isOpenVault = !id
   const isETH = tkn === 'ETH'
 
-  const isLocking = lockAmount && lockAmount.gt(zero)
-  const isDrawing = drawAmount && drawAmount.gt(zero)
+  const isLocking = depositAmount && depositAmount.gt(zero)
+  const isDrawing = generateAmount && generateAmount.gt(zero)
   const isLockingAndDrawing = isLocking && isDrawing
   const isLockingOrDrawing = isLocking || isDrawing
 
@@ -64,7 +73,7 @@ function getCallData(data: ProxyActionData, context: ContextConnected) {
       joins[ilk],
       mcdJoinDai.address,
       Web3.utils.utf8ToHex(ilk),
-      amountToWei(drawAmount || zero, 'DAI').toFixed(0),
+      amountToWei(generateAmount || zero, 'DAI').toFixed(0),
     )
   }
 
@@ -75,8 +84,8 @@ function getCallData(data: ProxyActionData, context: ContextConnected) {
       joins[ilk],
       mcdJoinDai.address,
       Web3.utils.utf8ToHex(ilk),
-      amountToWei(lockAmount || zero, tkn).toFixed(0),
-      amountToWei(drawAmount || zero, 'DAI').toFixed(0),
+      amountToWei(depositAmount || zero, tkn).toFixed(0),
+      amountToWei(generateAmount || zero, 'DAI').toFixed(0),
       true,
     )
   }
@@ -88,7 +97,7 @@ function getCallData(data: ProxyActionData, context: ContextConnected) {
       joins[ilk],
       mcdJoinDai.address,
       id!,
-      amountToWei(drawAmount!, 'DAI').toFixed(0),
+      amountToWei(generateAmount!, 'DAI').toFixed(0),
     )
   }
 
@@ -99,8 +108,8 @@ function getCallData(data: ProxyActionData, context: ContextConnected) {
       joins[ilk],
       mcdJoinDai.address,
       id!,
-      amountToWei(lockAmount!, tkn).toFixed(0),
-      amountToWei(drawAmount!, 'DAI').toFixed(0),
+      amountToWei(depositAmount!, tkn).toFixed(0),
+      amountToWei(generateAmount!, 'DAI').toFixed(0),
       true,
     )
   }
@@ -112,12 +121,13 @@ function getCallData(data: ProxyActionData, context: ContextConnected) {
       id!,
     )
   }
+
   if (isLockGem) {
     return contract<DssProxyActions>(dssProxyActions).methods.lockGem(
       dssCdpManager.address,
       joins[ilk],
       id!,
-      amountToWei(lockAmount!, tkn).toFixed(0),
+      amountToWei(depositAmount!, tkn).toFixed(0),
       true,
     )
   }
@@ -127,7 +137,7 @@ function getCallData(data: ProxyActionData, context: ContextConnected) {
       mcdJug.address,
       mcdJoinDai.address,
       id!,
-      amountToWei(drawAmount!, 'DAI').toFixed(0),
+      amountToWei(generateAmount!, 'DAI').toFixed(0),
     )
   }
   if (isWipeAndFreeETH) {
@@ -197,6 +207,6 @@ export const proxyAction: TransactionDef<ProxyActionData> = {
     const { dssProxyActions } = context
     return [dssProxyActions.address, getCallData(data, context).encodeABI()]
   },
-  options: ({ tkn, lockAmount }) =>
-    tkn === 'ETH' && lockAmount ? { value: amountToWei(lockAmount, 'ETH').toString() } : {},
+  options: ({ tkn, depositAmount }) =>
+    tkn === 'ETH' && depositAmount ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
 }

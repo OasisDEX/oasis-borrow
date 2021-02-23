@@ -621,8 +621,8 @@ function manageVault(
 ) {
   send(proxyAction, {
     kind: TxMetaKind.proxyAction,
-    drawAmount: generateAmount,
-    lockAmount: depositAmount,
+    generateAmount,
+    depositAmount,
     withdrawAmount,
     paybackAmount,
     proxyAddress: proxyAddress!,

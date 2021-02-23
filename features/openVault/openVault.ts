@@ -462,8 +462,8 @@ function openVault(
 ) {
   send(proxyAction, {
     kind: TxMetaKind.proxyAction,
-    drawAmount: generateAmount || new BigNumber(0),
-    lockAmount: depositAmount || new BigNumber(0),
+    generateAmount,
+    depositAmount,
     proxyAddress: proxyAddress!,
     ilk,
     tkn: token,
