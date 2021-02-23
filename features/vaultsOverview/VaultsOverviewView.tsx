@@ -4,57 +4,17 @@ import { IlkWithBalance } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AppLink } from 'components/Links'
-import { Table } from 'components/Table'
+import { Table, TableSortHeader } from 'components/Table'
 import { VaultSummary } from 'features/vault/vaultSummary'
-import { Direction } from 'helpers/form'
 import { formatAddress, formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import React from 'react'
-import { Box, Button, Card, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { TokenSymbol } from '../landing/LandingView'
 import { IlksWithFilters } from './ilksFilters'
 import { VaultsWithFilters } from './vaultsFilters'
 import { FeaturedIlk, VaultsOverview } from './vaultsOverview'
-
-interface Sort<K extends string> {
-  sortBy: K | undefined,
-  direction: Direction,
-  change: (ch: { kind: 'sortBy', sortBy: K | undefined }) => void
-}
-function TableSortHeader<K extends string>({
-  children,
-  filters,
-  sortBy,
-  sx
-}: React.PropsWithChildren<{ filters: Sort<K>, sortBy: K | undefined, sx?: SxStyleProp }>) {
-  return (<>
-    <Button
-      sx={{
-        visibility: ['hidden', 'visible'],
-        display: ['none', 'flex'],
-        alignItems: 'center',
-        ...sx
-      }}
-      variant="tableHeader"
-      onClick={() => filters.change({ kind: 'sortBy', sortBy })}
-    >
-      <Box sx={{ whiteSpace: 'nowrap' }}>{children}</Box>
-      <Box>
-        <Icon
-          sx={{ ml: 1, display: 'flex', width: 1 }}
-          size={12}
-          name={filters.direction === 'ASC' && filters.sortBy === sortBy
-            ? 'chevron_up'
-            : 'chevron_down'}
-          color={filters.direction !== undefined && filters.sortBy === sortBy
-            ? 'primary'
-            : 'text.muted'} />
-      </Box>
-    </Button>
-    <Text sx={{ display: ['block', 'none'] }} variant="tableHead">{children}</Text>
-  </>)
-}
 
 function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
   const { data, filters } = vaults

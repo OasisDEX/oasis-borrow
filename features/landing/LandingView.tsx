@@ -3,7 +3,7 @@ import { IlkData } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { RowDefinition, Table } from 'components/Table'
+import { RowDefinition, Table, TableSortHeader } from 'components/Table'
 import { FeaturedIlks } from 'features/vaultsOverview/VaultsOverviewView'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
@@ -32,42 +32,7 @@ export function TokenSymbol({
 }
 
 const rowDefinition: RowDefinition<IlkData>[] = [
-  {
-    header: <Text>Asset</Text>,
-    cell: ({ token }) => <TokenSymbol token={token} />,
-  },
-  {
-    header: <Text>Type</Text>,
-    cell: ({ ilk }) => <Text>{ilk}</Text>,
-  },
-  {
-    header: <Text sx={{ textAlign: 'right' }}>DAI Available</Text>,
-    cell: ({ ilkDebtAvailable }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(ilkDebtAvailable)}</Text>
-    ),
-  },
-  {
-    header: <Text sx={{ textAlign: 'right' }}>Stability Fee</Text>,
-    cell: ({ stabilityFee }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee)}</Text>
-    ),
-  },
-  {
-    header: <Text sx={{ textAlign: 'right' }}>Min. Coll Ratio</Text>,
-    cell: ({ liquidationRatio }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio)}</Text>
-    ),
-  },
-  {
-    header: <Text />,
-    cell: ({ ilk }) => (
-      <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
-        <AppLink sx={{ width: ['100%', 'inherit'], textAlign: 'center' }} href={`/vaults/open/${ilk}`} variant="secondary">
-          Create Vault
-        </AppLink>
-      </Box>
-    ),
-  },
+
 ]
 
 export function LandingView() {
@@ -89,7 +54,47 @@ export function LandingView() {
       <Box sx={{ my: 4 }}>
         <FeaturedIlks ilks={landing.featuredIlks} />
       </Box>
-      <Table data={landing.rows} primaryKey="ilk" rowDefinition={rowDefinition} />
+      <Table
+        data={landing.ilks.data}
+        primaryKey="ilk"
+        rowDefinition={[
+          {
+            header: <Text>Asset</Text>,
+            cell: ({ token }) => <TokenSymbol token={token} />,
+          },
+          {
+            header: <Text>Type</Text>,
+            cell: ({ ilk }) => <Text>{ilk}</Text>,
+          },
+          {
+            header: <TableSortHeader filters={landing.ilks.filters} sortBy="ilkDebtAvailable" sx={{ ml: 'auto' }}>DAI Available</TableSortHeader>,
+            cell: ({ ilkDebtAvailable }) => (
+              <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(ilkDebtAvailable)}</Text>
+            ),
+          },
+          {
+            header: <TableSortHeader filters={landing.ilks.filters} sortBy="stabilityFee" sx={{ ml: 'auto' }}>Stability Fee</TableSortHeader>,
+            cell: ({ stabilityFee }) => (
+              <Text sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee)}</Text>
+            ),
+          },
+          {
+            header: <TableSortHeader filters={landing.ilks.filters} sortBy="liquidationRatio" sx={{ ml: 'auto' }}>Min. Coll Ratio</TableSortHeader>,
+            cell: ({ liquidationRatio }) => (
+              <Text sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio)}</Text>
+            ),
+          },
+          {
+            header: <Text />,
+            cell: ({ ilk }) => (
+              <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
+                <AppLink sx={{ width: ['100%', 'inherit'], textAlign: 'center' }} href={`/vaults/open/${ilk}`} variant="secondary">
+                  Create Vault
+                </AppLink>
+              </Box>
+            ),
+          },
+        ]} />
     </Grid>
   )
 }

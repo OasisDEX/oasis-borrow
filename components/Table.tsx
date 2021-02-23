@@ -1,5 +1,7 @@
+import { Icon } from '@makerdao/dai-ui-icons'
+import { Direction } from 'helpers/form'
 import React, { ReactNode } from 'react'
-import { Box, Container, SxStyleProp } from 'theme-ui'
+import { Box, Button, Container, SxStyleProp, Text } from 'theme-ui'
 
 export interface RowDefinition<T> {
   header: ReactNode
@@ -125,4 +127,43 @@ export function Table<T extends Record<K, string>, K extends keyof T>({
       ))}
     </TableContainer>
   )
+}
+
+interface Sort<K extends string> {
+  sortBy: K | undefined,
+  direction: Direction,
+  change: (ch: { kind: 'sortBy', sortBy: K | undefined }) => void
+}
+export function TableSortHeader<K extends string>({
+  children,
+  filters,
+  sortBy,
+  sx
+}: React.PropsWithChildren<{ filters: Sort<K>, sortBy: K | undefined, sx?: SxStyleProp }>) {
+  return (<>
+    <Button
+      sx={{
+        visibility: ['hidden', 'visible'],
+        display: ['none', 'flex'],
+        alignItems: 'center',
+        ...sx
+      }}
+      variant="tableHeader"
+      onClick={() => filters.change({ kind: 'sortBy', sortBy })}
+    >
+      <Box sx={{ whiteSpace: 'nowrap' }}>{children}</Box>
+      <Box>
+        <Icon
+          sx={{ ml: 1, display: 'flex', width: 1 }}
+          size={12}
+          name={filters.direction === 'ASC' && filters.sortBy === sortBy
+            ? 'chevron_up'
+            : 'chevron_down'}
+          color={filters.direction !== undefined && filters.sortBy === sortBy
+            ? 'primary'
+            : 'text.muted'} />
+      </Box>
+    </Button>
+    <Text sx={{ display: ['block', 'none'] }} variant="tableHead">{children}</Text>
+  </>)
 }

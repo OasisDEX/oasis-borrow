@@ -61,7 +61,7 @@ export interface IlksWithFilters {
     data: IlkWithBalance[],
     filters: IlksFilterState
 }
-export function ilksWithFilter$(vaults$: Observable<IlkWithBalance[]>): Observable<IlksWithFilters> {
+export function ilksWithFilter$(ilks$: Observable<IlkWithBalance[]>): Observable<IlksWithFilters> {
     const change$ = new Subject<Changes>()
     function change(ch: Changes) {
         change$.next(ch)
@@ -76,7 +76,7 @@ export function ilksWithFilter$(vaults$: Observable<IlkWithBalance[]>): Observab
     return change$.pipe(
         scan(applyFilter, initialState),
         startWith(initialState),
-        switchMap(filters => vaults$.pipe(
+        switchMap(filters => ilks$.pipe(
             map(ilks => sortIlks(ilks, filters.sortBy, filters.direction)),
             map(ilks => ({ filters, data: ilks }))
         ))
