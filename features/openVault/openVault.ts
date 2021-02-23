@@ -599,6 +599,25 @@ function addTransitions(
   return state
 }
 
+function ilkDataChange$<T extends keyof IlkData>(ilkData$: Observable<IlkData>, kind: T) {
+  return ilkData$.pipe(
+    map((ilkData) => ({
+      kind,
+      [kind]: ilkData[kind],
+    })),
+  )
+}
+
+type BalanceKinds = 'ethBalance' | 'daiBalance' | 'collateralBalance'
+function balanceChange$<T extends BalanceKinds>(balance$: Observable<BigNumber>, kind: T) {
+  return balance$.pipe(
+    map((balance) => ({
+      kind,
+      [kind]: balance,
+    })),
+  )
+}
+
 export function createOpenVault$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
@@ -710,54 +729,20 @@ export function createOpenVault$(
                           change$.next(ch)
                         }
 
-                        const collateralBalanceChange$ = balance$(token, account!).pipe(
-                          map((collateralBalance) => ({
-                            kind: 'collateralBalance',
-                            collateralBalance,
-                          })),
-                        )
-
-                        const ethBalanceChange$ = balance$('ETH', account!).pipe(
-                          map((ethBalance) => ({ kind: 'ethBalance', ethBalance })),
-                        )
-
-                        const daiBalanceChange$ = balance$('DAI', account!).pipe(
-                          map((daiBalance) => ({ kind: 'daiBalance', daiBalance })),
-                        )
-
-                        const maxDebtPerUnitCollateralChange$ = ilkData$(ilk).pipe(
-                          map(({ maxDebtPerUnitCollateral }) => ({
-                            kind: 'maxDebtPerUnitCollateral',
-                            maxDebtPerUnitCollateral,
-                          })),
-                        )
-
-                        const ilkDebtAvailableChange$ = ilkData$(ilk).pipe(
-                          map(({ ilkDebtAvailable }) => ({
-                            kind: 'ilkDebtAvailable',
-                            ilkDebtAvailable,
-                          })),
-                        )
-
-                        const debtFloorChange$ = ilkData$(ilk).pipe(
-                          map(({ debtFloor }) => ({
-                            kind: 'debtFloor',
-                            debtFloor,
-                          })),
-                        )
-
                         const collateralPriceChange$ = tokenOraclePrice$(ilk).pipe(
                           map((collateralPrice) => ({ kind: 'collateralPrice', collateralPrice })),
                         )
 
                         const environmentChanges$ = merge(
                           collateralPriceChange$,
-                          collateralBalanceChange$,
-                          ethBalanceChange$,
-                          daiBalanceChange$,
-                          maxDebtPerUnitCollateralChange$,
-                          ilkDebtAvailableChange$,
-                          debtFloorChange$,
+
+                          balanceChange$(balance$(token, account), 'collateralBalance'),
+                          balanceChange$(balance$('DAI', account), 'daiBalance'),
+                          balanceChange$(balance$('ETH', account), 'ethBalance'),
+
+                          ilkDataChange$(ilkData$(ilk), 'maxDebtPerUnitCollateral'),
+                          ilkDataChange$(ilkData$(ilk), 'ilkDebtAvailable'),
+                          ilkDataChange$(ilkData$(ilk), 'debtFloor'),
                         )
 
                         const connectedProxyAddress$ = proxyAddress$(account)
