@@ -839,6 +839,34 @@ function addTransitions(
   return state
 }
 
+function vaultChange$<T extends keyof Vault>(vaultData$: Observable<Vault>, kind: T) {
+  return vaultData$.pipe(
+    map((vault) => ({
+      kind,
+      [kind]: vault[kind],
+    })),
+  )
+}
+
+function ilkDataChange$<T extends keyof IlkData>(ilkData$: Observable<IlkData>, kind: T) {
+  return ilkData$.pipe(
+    map((ilkData) => ({
+      kind,
+      [kind]: ilkData[kind],
+    })),
+  )
+}
+
+type BalanceKinds = 'ethBalance' | 'daiBalance' | 'collateralBalance'
+function balanceChange$<T extends BalanceKinds>(balance$: Observable<BigNumber>, kind: T) {
+  return balance$.pipe(
+    map((balance) => ({
+      kind,
+      [kind]: balance,
+    })),
+  )
+}
+
 export function createManageVault$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
@@ -962,105 +990,27 @@ export function createManageVault$(
                         change$.next(ch)
                       }
 
-                      const collateralBalanceChange$ = balance$(token, account!).pipe(
-                        map((collateralBalance) => ({
-                          kind: 'collateralBalance',
-                          collateralBalance,
-                        })),
-                      )
-
-                      const ethBalanceChange$ = balance$('ETH', account!).pipe(
-                        map((ethBalance) => ({ kind: 'ethBalance', ethBalance })),
-                      )
-
-                      const daiBalanceChange$ = balance$('DAI', account!).pipe(
-                        map((daiBalance) => ({ kind: 'daiBalance', daiBalance })),
-                      )
-
-                      const maxDebtPerUnitCollateralChange$ = ilkData$(ilk).pipe(
-                        map(({ maxDebtPerUnitCollateral }) => ({
-                          kind: 'maxDebtPerUnitCollateral',
-                          maxDebtPerUnitCollateral,
-                        })),
-                      )
-
-                      const ilkDebtAvailableChange$ = ilkData$(ilk).pipe(
-                        map(({ ilkDebtAvailable }) => ({
-                          kind: 'ilkDebtAvailable',
-                          ilkDebtAvailable,
-                        })),
-                      )
-
-                      const debtFloorChange$ = ilkData$(ilk).pipe(
-                        map(({ debtFloor }) => ({
-                          kind: 'debtFloor',
-                          debtFloor,
-                        })),
-                      )
-
                       const collateralPriceChange$ = tokenOraclePrice$(ilk).pipe(
                         map((collateralPrice) => ({ kind: 'collateralPrice', collateralPrice })),
                       )
 
-                      const lockedCollateralChange$ = vault$(id).pipe(
-                        map(({ lockedCollateral }) => ({
-                          kind: 'lockedCollateral',
-                          lockedCollateral,
-                        })),
-                      )
-
-                      const lockedCollateralPriceChange$ = vault$(id).pipe(
-                        map(({ lockedCollateralPrice }) => ({
-                          kind: 'lockedCollateralPrice',
-                          lockedCollateralPrice,
-                        })),
-                      )
-
-                      const debt$ = vault$(id).pipe(
-                        map(({ debt }) => ({
-                          kind: 'debt',
-                          debt,
-                        })),
-                      )
-
-                      const collateralizationRatioChange$ = vault$(id).pipe(
-                        map(({ collateralizationRatio }) => ({
-                          kind: 'collateralizationRatio',
-                          collateralizationRatio,
-                        })),
-                      )
-
-                      const liquidationPriceChange$ = vault$(id).pipe(
-                        map(({ liquidationPrice }) => ({
-                          kind: 'liquidationPrice',
-                          liquidationPrice,
-                        })),
-                      )
-
-                      const freeCollateralChange$ = vault$(id).pipe(
-                        map(({ freeCollateral }) => ({
-                          kind: 'freeCollateral',
-                          freeCollateral,
-                        })),
-                      )
-
                       const environmentChanges$ = merge(
                         collateralPriceChange$,
-                        collateralBalanceChange$,
-                        ethBalanceChange$,
-                        daiBalanceChange$,
-                        maxDebtPerUnitCollateralChange$,
-                        ilkDebtAvailableChange$,
-                        debtFloorChange$,
-                      )
 
-                      const vaultChanges$ = merge(
-                        lockedCollateralChange$,
-                        debt$,
-                        collateralizationRatioChange$,
-                        liquidationPriceChange$,
-                        lockedCollateralPriceChange$,
-                        freeCollateralChange$,
+                        balanceChange$(balance$(token, account), 'collateralBalance'),
+                        balanceChange$(balance$('DAI', account), 'daiBalance'),
+                        balanceChange$(balance$('ETH', account), 'ethBalance'),
+
+                        ilkDataChange$(ilkData$(ilk), 'maxDebtPerUnitCollateral'),
+                        ilkDataChange$(ilkData$(ilk), 'ilkDebtAvailable'),
+                        ilkDataChange$(ilkData$(ilk), 'debtFloor'),
+
+                        vaultChange$(vault$(id), 'lockedCollateral'),
+                        vaultChange$(vault$(id), 'debt'),
+                        vaultChange$(vault$(id), 'collateralizationRatio'),
+                        vaultChange$(vault$(id), 'liquidationPrice'),
+                        vaultChange$(vault$(id), 'lockedCollateralPrice'),
+                        vaultChange$(vault$(id), 'freeCollateral'),
                       )
 
                       const connectedProxyAddress$ = proxyAddress$(account)
@@ -1079,7 +1029,7 @@ export function createManageVault$(
                         distinctUntilChanged((x, y) => x.eq(y)),
                       )
 
-                      return merge(change$, environmentChanges$, vaultChanges$).pipe(
+                      return merge(change$, environmentChanges$).pipe(
                         scan(apply, initialState),
                         map(applyVaultCalculations),
                         map(validateErrors),
