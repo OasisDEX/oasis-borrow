@@ -73,9 +73,7 @@ function getWithdrawAndPaybackCallData(data: WithdrawAndPaybackData, context: Co
 
 export const withdrawAndPayback: TransactionDef<WithdrawAndPaybackData> = {
   call: ({ proxyAddress }, { contract }) => {
-    return (contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods as any)[
-      'execute(address,bytes)'
-    ]
+    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => {
     const { dssProxyActions } = context
@@ -149,9 +147,7 @@ function getDepositAndGenerateCallData(data: DepositAndGenerateData, context: Co
 
 export const depositAndGenerate: TransactionDef<DepositAndGenerateData> = {
   call: ({ proxyAddress }, { contract }) => {
-    return (contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods as any)[
-      'execute(address,bytes)'
-    ]
+    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => {
     const { dssProxyActions } = context
@@ -207,9 +203,7 @@ function getOpenCallData(data: OpenData, context: ContextConnected) {
 
 export const open: TransactionDef<OpenData> = {
   call: ({ proxyAddress }, { contract }) => {
-    return (contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods as any)[
-      'execute(address,bytes)'
-    ]
+    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => {
     const { dssProxyActions } = context
