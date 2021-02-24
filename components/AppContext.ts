@@ -16,14 +16,19 @@ import {
   createProxyOwner$,
   SetProxyOwnerData,
 } from 'blockchain/calls/proxy'
+import {
+  DepositAndGenerateData,
+  OpenData,
+  WithdrawAndPaybackData,
+} from 'blockchain/calls/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
 import { createAccountBalance$, createAllowance$, createBalance$ } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
-import { createDepositForm$, LockAndDrawData } from 'features/deposit/deposit'
 import { createLanding$ } from 'features/landing/landing'
+import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
 import { redirectState$ } from 'features/router/redirectState'
 import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
@@ -56,7 +61,9 @@ import { createTransactionManager } from '../features/account/transactionManager
 import { HasGasEstimation } from '../helpers/form'
 
 export type TxData =
-  | LockAndDrawData
+  | OpenData
+  | DepositAndGenerateData
+  | WithdrawAndPaybackData
   | ApproveData
   | DisapproveData
   | CreateDsProxyData
@@ -180,24 +187,33 @@ export function setupAppContext() {
 
   const vaults$ = memoize(curry(createVaults$)(context$, proxyAddress$, vault$))
 
-  const depositForm$ = memoize(
-    curry(createDepositForm$)(connectedContext$, balance$, txHelpers$, vault$),
-    bigNumberTostring,
-  )
-
   const ilks$ = createIlks$(context$)
   const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
 
-  const openVault$ = curry(createOpenVault$)(
-    connectedContext$,
-    txHelpers$,
-    proxyAddress$,
-    allowance$,
-    tokenOraclePrice$,
-    balance$,
-    ilkData$,
-    ilks$,
-    ilkToToken$,
+  const openVault$ = memoize(
+    curry(createOpenVault$)(
+      connectedContext$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      tokenOraclePrice$,
+      balance$,
+      ilkData$,
+      ilks$,
+      ilkToToken$,
+    ),
+  )
+  const manageVault$ = memoize(
+    curry(createManageVault$)(
+      connectedContext$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      tokenOraclePrice$,
+      balance$,
+      ilkData$,
+      vault$,
+    ),
   )
 
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
@@ -225,9 +241,10 @@ export function setupAppContext() {
     proxyOwner$,
     vaults$,
     vault$,
-    depositForm$,
+    ilks$,
     landing$,
     openVault$,
+    manageVault$,
     vaultsOverview$,
     redirectState$,
     accountBalances$,
