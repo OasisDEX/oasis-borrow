@@ -3,10 +3,10 @@ import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData, maxUint256 } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import {
-  proxyActionDepositAndGenerate,
-  ProxyActionDepositAndGenerateData,
-  proxyActionWithdrawAndPayback,
-  ProxyActionWithdrawAndPaybackData,
+  depositAndGenerate,
+  DepositAndGenerateData,
+  withdrawAndPayback,
+  WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
@@ -615,8 +615,8 @@ function manageVaultDepositAndGenerate(
   change: (ch: ManageVaultChange) => void,
   { generateAmount, depositAmount, proxyAddress, ilk, token, id }: ManageVaultState,
 ) {
-  send(proxyActionDepositAndGenerate, {
-    kind: TxMetaKind.proxyActionDepositAndGenerate,
+  send(depositAndGenerate, {
+    kind: TxMetaKind.depositAndGenerate,
     generateAmount: generateAmount || zero,
     depositAmount: depositAmount || zero,
     proxyAddress: proxyAddress!,
@@ -625,7 +625,7 @@ function manageVaultDepositAndGenerate(
     id,
   })
     .pipe(
-      transactionToX<ManageVaultChange, ProxyActionDepositAndGenerateData>(
+      transactionToX<ManageVaultChange, DepositAndGenerateData>(
         { kind: 'stage', stage: 'manageWaitingForApproval' },
         (txState) =>
           of(
@@ -658,8 +658,8 @@ function manageVaultWithdrawAndPayback(
   change: (ch: ManageVaultChange) => void,
   { withdrawAmount, paybackAmount, proxyAddress, ilk, token, id }: ManageVaultState,
 ) {
-  send(proxyActionWithdrawAndPayback, {
-    kind: TxMetaKind.proxyActionWithdrawAndPayback,
+  send(withdrawAndPayback, {
+    kind: TxMetaKind.withdrawAndPayback,
     withdrawAmount: withdrawAmount || zero,
     paybackAmount: paybackAmount || zero,
     proxyAddress: proxyAddress!,
@@ -668,7 +668,7 @@ function manageVaultWithdrawAndPayback(
     id,
   })
     .pipe(
-      transactionToX<ManageVaultChange, ProxyActionWithdrawAndPaybackData>(
+      transactionToX<ManageVaultChange, WithdrawAndPaybackData>(
         { kind: 'stage', stage: 'manageWaitingForApproval' },
         (txState) =>
           of(

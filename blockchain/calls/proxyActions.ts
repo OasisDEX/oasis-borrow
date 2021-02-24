@@ -11,8 +11,8 @@ import Web3 from 'web3'
 
 import { TxMetaKind } from './txMeta'
 
-export type ProxyActionWithdrawAndPaybackData = {
-  kind: TxMetaKind.proxyActionWithdrawAndPayback
+export type WithdrawAndPaybackData = {
+  kind: TxMetaKind.withdrawAndPayback
   id: BigNumber
   token: string
   ilk: string
@@ -21,10 +21,7 @@ export type ProxyActionWithdrawAndPaybackData = {
   proxyAddress: string
 }
 
-function getWithdrawAndPaybackCallData(
-  data: ProxyActionWithdrawAndPaybackData,
-  context: ContextConnected,
-) {
+function getWithdrawAndPaybackCallData(data: WithdrawAndPaybackData, context: ContextConnected) {
   const { dssProxyActions, dssCdpManager, mcdJoinDai, joins, contract } = context
   const { id, token, withdrawAmount, paybackAmount, ilk } = data
 
@@ -74,7 +71,7 @@ function getWithdrawAndPaybackCallData(
   )
 }
 
-export const proxyActionWithdrawAndPayback: TransactionDef<ProxyActionWithdrawAndPaybackData> = {
+export const withdrawAndPayback: TransactionDef<WithdrawAndPaybackData> = {
   call: ({ proxyAddress }, { contract }) => {
     return (contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods as any)[
       'execute(address,bytes)'
@@ -86,8 +83,8 @@ export const proxyActionWithdrawAndPayback: TransactionDef<ProxyActionWithdrawAn
   },
 }
 
-export type ProxyActionDepositAndGenerateData = {
-  kind: TxMetaKind.proxyActionDepositAndGenerate
+export type DepositAndGenerateData = {
+  kind: TxMetaKind.depositAndGenerate
   id: BigNumber
   token: string
   ilk: string
@@ -96,10 +93,7 @@ export type ProxyActionDepositAndGenerateData = {
   proxyAddress: string
 }
 
-function getDepositAndGenerateCallData(
-  data: ProxyActionDepositAndGenerateData,
-  context: ContextConnected,
-) {
+function getDepositAndGenerateCallData(data: DepositAndGenerateData, context: ContextConnected) {
   const { dssProxyActions, dssCdpManager, mcdJoinDai, mcdJug, joins, contract } = context
   const { id, token, depositAmount, generateAmount, ilk } = data
 
@@ -153,7 +147,7 @@ function getDepositAndGenerateCallData(
   )
 }
 
-export const proxyActionDepositAndGenerate: TransactionDef<ProxyActionDepositAndGenerateData> = {
+export const depositAndGenerate: TransactionDef<DepositAndGenerateData> = {
   call: ({ proxyAddress }, { contract }) => {
     return (contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods as any)[
       'execute(address,bytes)'
@@ -167,8 +161,8 @@ export const proxyActionDepositAndGenerate: TransactionDef<ProxyActionDepositAnd
     token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
 }
 
-export type ProxyActionOpenData = {
-  kind: TxMetaKind.proxyActionOpen
+export type OpenData = {
+  kind: TxMetaKind.open
   token: string
   ilk: string
   depositAmount: BigNumber
@@ -176,7 +170,7 @@ export type ProxyActionOpenData = {
   proxyAddress: string
 }
 
-function getOpenCallData(data: ProxyActionOpenData, context: ContextConnected) {
+function getOpenCallData(data: OpenData, context: ContextConnected) {
   const { dssProxyActions, dssCdpManager, mcdJoinDai, mcdJug, joins, contract } = context
   const { depositAmount, generateAmount, token, ilk, proxyAddress } = data
 
@@ -211,7 +205,7 @@ function getOpenCallData(data: ProxyActionOpenData, context: ContextConnected) {
   )
 }
 
-export const proxyActionOpen: TransactionDef<ProxyActionOpenData> = {
+export const open: TransactionDef<OpenData> = {
   call: ({ proxyAddress }, { contract }) => {
     return (contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods as any)[
       'execute(address,bytes)'

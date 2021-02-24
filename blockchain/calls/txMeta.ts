@@ -9,7 +9,7 @@ export enum TxMetaKind {
   // transferEth = 'transferEth',
   // transferErc20 = 'transferErc20',
 
-  proxyActionOpen = 'proxyActionOpen',
-  proxyActionDepositAndGenerate = 'proxyActionDepositAndGenerate',
-  proxyActionWithdrawAndPayback = 'proxyActionWithdrawAndPayback',
+  open = 'open',
+  depositAndGenerate = 'depositAndGenerate',
+  withdrawAndPayback = 'withdrawAndPayback',
 }

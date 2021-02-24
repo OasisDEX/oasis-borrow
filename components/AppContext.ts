@@ -17,9 +17,9 @@ import {
   SetProxyOwnerData,
 } from 'blockchain/calls/proxy'
 import {
-  ProxyActionDepositAndGenerateData,
-  ProxyActionOpenData,
-  ProxyActionWithdrawAndPaybackData,
+  DepositAndGenerateData,
+  OpenData,
+  WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
@@ -61,9 +61,9 @@ import { createTransactionManager } from '../features/account/transactionManager
 import { HasGasEstimation } from '../helpers/form'
 
 export type TxData =
-  | ProxyActionOpenData
-  | ProxyActionDepositAndGenerateData
-  | ProxyActionWithdrawAndPaybackData
+  | OpenData
+  | DepositAndGenerateData
+  | WithdrawAndPaybackData
   | ApproveData
   | DisapproveData
   | CreateDsProxyData
