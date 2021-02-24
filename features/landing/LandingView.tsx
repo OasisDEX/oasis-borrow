@@ -1,12 +1,12 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { IlkData } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { RowDefinition, Table } from 'components/Table'
+import { Table } from 'components/Table'
 import { FeaturedIlks } from 'features/vaultsOverview/VaultsOverviewView'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { useTranslation } from 'i18n'
 import React, { ComponentProps } from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
@@ -31,47 +31,9 @@ export function TokenSymbol({
   )
 }
 
-const rowDefinition: RowDefinition<IlkData>[] = [
-  {
-    header: <Text>Asset</Text>,
-    cell: ({ token }) => <TokenSymbol token={token} />,
-  },
-  {
-    header: <Text>Type</Text>,
-    cell: ({ ilk }) => <Text>{ilk}</Text>,
-  },
-  {
-    header: <Text sx={{ textAlign: 'right' }}>DAI Available</Text>,
-    cell: ({ ilkDebtAvailable }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(ilkDebtAvailable)}</Text>
-    ),
-  },
-  {
-    header: <Text sx={{ textAlign: 'right' }}>Stability Fee</Text>,
-    cell: ({ stabilityFee }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee)}</Text>
-    ),
-  },
-  {
-    header: <Text sx={{ textAlign: 'right' }}>Min. Coll Ratio</Text>,
-    cell: ({ liquidationRatio }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio)}</Text>
-    ),
-  },
-  {
-    header: <Text />,
-    cell: ({ ilk }) => (
-      <Box sx={{ textAlign: 'right' }}>
-        <AppLink href={`/vaults/open/${ilk}`} variant="secondary">
-          Create Vault
-        </AppLink>
-      </Box>
-    ),
-  },
-]
-
 export function LandingView() {
   const { landing$ } = useAppContext()
+  const { t } = useTranslation()
   const landing = useObservable(landing$)
 
   if (landing === undefined) {
@@ -81,15 +43,56 @@ export function LandingView() {
   return (
     <Grid sx={{ flex: 1 }}>
       <Box sx={{ width: '600px', justifySelf: 'center', textAlign: 'center', my: 4 }}>
-        <Heading sx={{ fontSize: 7, my: 3 }}>
-          Borrow against your <br /> collateral by generating Dai
+        <Heading as="h1" sx={{ fontSize: 7, my: 3 }}>
+          {t('landing.hero.headline')}
         </Heading>
-        <Text>Realize liquidity today and don't lose long exposure.</Text>
+        <Text>{t('landing.hero.subheader')}</Text>
       </Box>
       <Box sx={{ my: 4 }}>
         <FeaturedIlks ilks={landing.featuredIlks} />
       </Box>
-      <Table data={landing.rows} primaryKey="ilk" rowDefinition={rowDefinition} />
+      <Table
+        data={landing.rows}
+        primaryKey="ilk"
+        rowDefinition={[
+          {
+            header: <Text>{t('system.asset')}</Text>,
+            cell: ({ token }) => <TokenSymbol token={token} />,
+          },
+          {
+            header: <Text>{t('system.type')}</Text>,
+            cell: ({ ilk }) => <Text>{ilk}</Text>,
+          },
+          {
+            header: <Text sx={{ textAlign: 'right' }}>{t('system.dai-available')}</Text>,
+            cell: ({ ilkDebtAvailable }) => (
+              <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(ilkDebtAvailable)}</Text>
+            ),
+          },
+          {
+            header: <Text sx={{ textAlign: 'right' }}>{t('system.stability-fee')}</Text>,
+            cell: ({ stabilityFee }) => (
+              <Text sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee)}</Text>
+            ),
+          },
+          {
+            header: <Text sx={{ textAlign: 'right' }}>{t('system.min-coll-ratio')}</Text>,
+            cell: ({ liquidationRatio }) => (
+              <Text sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio)}</Text>
+            ),
+          },
+          {
+            header: <Text />,
+            cell: ({ ilk }) => (
+              <Box sx={{ textAlign: 'right' }}>
+                <AppLink href={`/vaults/open/${ilk}`} variant="secondary">
+                  {t('open-vault')}
+                </AppLink>
+              </Box>
+            ),
+          },
+        ]}
+      />
     </Grid>
   )
 }
