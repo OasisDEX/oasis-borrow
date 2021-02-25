@@ -60,7 +60,7 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
           cell: ({ id }) => (
             <Box sx={{ textAlign: 'right' }}>
               <AppLink variant="secondary" as={`/${id}`} href={`/[vault]`}>
-                {t("manage-vault")}
+                {t('manage-vault')}
               </AppLink>
             </Box>
           ),
@@ -88,7 +88,7 @@ function AllIlks({
       data={ilkDataList}
       rowDefinition={[
         {
-          header: <Text >{t('system.asset')}</Text>,
+          header: <Text>{t('system.asset')}</Text>,
           cell: ({ token }) => <TokenSymbol token={token} />,
         },
         {
@@ -116,20 +116,20 @@ function AllIlks({
         ...(isReadonly
           ? []
           : [
-            {
-              header: <Text sx={{ textAlign: 'right' }}>{t('system.in-my-wallet')}</Text>,
-              cell: (ilk: IlkDataWithBalance) => (
-                <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
-                  <Text sx={{ textAlign: 'right' }}>
-                    {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
-                  </Text>
-                  <Text variant="paragraph3" sx={{ color: 'muted' }}>
-                    {`($${ilk.balancePrice ? formatCryptoBalance(ilk.balancePrice) : 0})`}
-                  </Text>
-                </Flex>
-              ),
-            },
-          ]),
+              {
+                header: <Text sx={{ textAlign: 'right' }}>{t('system.in-my-wallet')}</Text>,
+                cell: (ilk: IlkDataWithBalance) => (
+                  <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
+                    <Text sx={{ textAlign: 'right' }}>
+                      {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
+                    </Text>
+                    <Text variant="paragraph3" sx={{ color: 'muted' }}>
+                      {`($${ilk.balancePrice ? formatCryptoBalance(ilk.balancePrice) : 0})`}
+                    </Text>
+                  </Flex>
+                ),
+              },
+            ]),
         {
           header: <Text />,
           cell: ({ ilk }) => (
@@ -174,7 +174,7 @@ function CallToAction({ ilk }: CallToActionProps) {
       </Box>
       <Flex>
         <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
-          {t("system.stability-fee")}
+          {t('system.stability-fee')}
         </Text>
         <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
           {formatPercent(ilk.stabilityFee)}
@@ -182,7 +182,7 @@ function CallToAction({ ilk }: CallToActionProps) {
       </Flex>
       <Flex>
         <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
-          {t("system.min-coll-ratio")}
+          {t('system.min-coll-ratio')}
         </Text>
         <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
           {formatPercent(ilk.liquidationRatio)}
@@ -310,7 +310,10 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
       </Heading>
       <Text variant="header3" sx={{ textAlign: 'center', justifySelf: 'center', mb: 4 }}>
         {context.status === 'connected'
-          ? t('vaults-overview.message-connected', { address: formatAddress(address), count: vaults?.length || 0 })
+          ? t('vaults-overview.message-connected', {
+              address: formatAddress(address),
+              count: vaults?.length || 0,
+            })
           : t('vaults-overview.message-not-connected', { address: formatAddress(address) })}
       </Text>
       {displaySummary && <Summary summary={displaySummary} />}

@@ -19,7 +19,7 @@ interface Props {
   account: string
 }
 
-export function VaultView({ vault, account }: Props) {
+export function VaultView({ vault }: Props) {
   const { t } = useTranslation()
   const token = vault.token
   const vaultId = vault.id
@@ -45,17 +45,27 @@ export function VaultView({ vault, account }: Props) {
           {t('vaults-overview.your-vaults')}
         </AppLink>
         <Text sx={{ mx: 3 }}>{'>'}</Text>
-        <Text>{t("vault.header")}</Text>
+        <Text>
+          {t('vault.header')} {vaultId}
+        </Text>
       </Box>
       <Box>
         <Heading as="h2">{t('system.liquidation-price')}</Heading>
-        <Text>{t('system.liquidation-price')}: {liquidationPrice} USD</Text>
-        <Text>{t('system.liquidation-penalty')}: {liquidationPenalty}</Text>
+        <Text>
+          {t('system.liquidation-price')}: {liquidationPrice} USD
+        </Text>
+        <Text>
+          {t('system.liquidation-penalty')}: {liquidationPenalty}
+        </Text>
       </Box>
       <Box>
         <Heading as="h2">{t('system.collateralization-ratio')}</Heading>
-        <Text>{t('system.collateralization-ratio')}: {collateralizationRatio}</Text>
-        <Text>{t('system.stability-fee')}: {stabilityFee}%</Text>
+        <Text>
+          {t('system.collateralization-ratio')}: {collateralizationRatio}
+        </Text>
+        <Text>
+          {t('system.stability-fee')}: {stabilityFee}%
+        </Text>
       </Box>
       <Box>
         <Heading as="h2">{token} locked</Heading>
@@ -64,13 +74,13 @@ export function VaultView({ vault, account }: Props) {
           {token}/{lockedAmountUSD}USD
         </Text>
         <Button onClick={() => openModal(DepositForm, { vaultId: new BigNumber(vault.id) })}>
-          Deposit
+          {t('deposit')}
         </Button>
         <Text>
           Available to withdraw: {availableToWithdraw}
           {token}/{availableToWithdrawPrice}USD
         </Text>
-        <Button>Withdraw</Button>
+        <Button>{t('withdraw')}</Button>
       </Box>
       <Box>
         <Heading as="h2">Outstanding debt</Heading>
