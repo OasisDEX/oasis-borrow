@@ -5,7 +5,6 @@ import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AppLink } from 'components/Links'
 import { Table, TableSortHeader } from 'components/Table'
-import { VaultSummary } from 'features/vault/vaultSummary'
 import {
   formatAddress,
   formatCryptoBalance,
@@ -20,6 +19,7 @@ import { IlksWithFilters } from '../ilks/ilksFilters'
 import { TokenSymbol } from '../landing/LandingView'
 import { VaultsWithFilters } from './vaultsFilters'
 import { FeaturedIlk, VaultsOverview } from './vaultsOverview'
+import { VaultSummary } from './vaultSummary'
 
 function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
   const { data, filters } = vaults
@@ -38,8 +38,8 @@ function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
               Deposited
             </TableSortHeader>
           ),
-          cell: ({ collateral }) => (
-            <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(collateral)}</Text>
+          cell: ({ lockedCollateral }) => (
+            <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(lockedCollateral)}</Text>
           ),
         },
         {
@@ -147,24 +147,24 @@ function AllIlks({
         ...(isReadonly
           ? []
           : [
-              {
-                header: (
-                  <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="balance">
-                    In my wallet
-                  </TableSortHeader>
-                ),
-                cell: (ilk: IlkWithBalance) => (
-                  <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
-                    <Text sx={{ textAlign: 'right' }}>
-                      {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
-                    </Text>
-                    <Text variant="paragraph3" sx={{ color: 'muted', ml: 1 }}>
-                      {`($${ilk.balancePriceInUsd ? formatFiatBalance(ilk.balancePriceInUsd) : 0})`}
-                    </Text>
-                  </Flex>
-                ),
-              },
-            ]),
+            {
+              header: (
+                <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="balance">
+                  In my wallet
+                </TableSortHeader>
+              ),
+              cell: (ilk: IlkWithBalance) => (
+                <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
+                  <Text sx={{ textAlign: 'right' }}>
+                    {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
+                  </Text>
+                  <Text variant="paragraph3" sx={{ color: 'muted', ml: 1 }}>
+                    {`($${ilk.balancePriceInUsd ? formatFiatBalance(ilk.balancePriceInUsd) : 0})`}
+                  </Text>
+                </Flex>
+              ),
+            },
+          ]),
         {
           header: <Text />,
           cell: ({ ilk }) => (
@@ -191,42 +191,44 @@ function CallToAction({ ilk }: CallToActionProps) {
   const token = getToken(ilk.token)
 
   return (
-    <Grid
-      columns="1fr 1fr"
-      sx={{
-        flex: 1,
-        cursor: 'pointer',
-        background: token.background,
-        borderRadius: 'large',
-        p: 4,
-        color: 'white',
-      }}
-    >
-      <Box sx={{ gridColumn: '1/3' }}>
-        <Text variant="caption">{ilk.title}</Text>
-      </Box>
-      <Box sx={{ gridColumn: '1/3' }}>
-        <Heading variant="header2" sx={{ color: 'white', mb: 4 }}>
-          {ilk.ilk}
-        </Heading>
-      </Box>
-      <Flex>
-        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
-          Stability fee:
-        </Text>
-        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
-          {formatPercent(ilk.stabilityFee)}
-        </Text>
-      </Flex>
-      <Flex>
-        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
-          Min coll ratio:
-        </Text>
-        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
-          {formatPercent(ilk.liquidationRatio)}
-        </Text>
-      </Flex>
-    </Grid>
+    <AppLink href={`/vaults/open/${ilk.ilk}`}>
+      <Grid
+        columns="1fr 1fr"
+        sx={{
+          flex: 1,
+          cursor: 'pointer',
+          background: token.background,
+          borderRadius: 'large',
+          p: 4,
+          color: 'white',
+        }}
+      >
+        <Box sx={{ gridColumn: '1/3' }}>
+          <Text variant="caption">{ilk.title}</Text>
+        </Box>
+        <Box sx={{ gridColumn: '1/3' }}>
+          <Heading variant="header2" sx={{ color: 'white', mb: 4 }}>
+            {ilk.ilk}
+          </Heading>
+        </Box>
+        <Flex>
+          <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
+            Stability fee:
+          </Text>
+          <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
+            {formatPercent(ilk.stabilityFee)}
+          </Text>
+        </Flex>
+        <Flex>
+          <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
+            Min coll ratio:
+          </Text>
+          <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
+            {formatPercent(ilk.liquidationRatio)}
+          </Text>
+        </Flex>
+      </Grid>
+    </AppLink>
   )
 }
 function Summary({ summary }: { summary: VaultSummary }) {
@@ -313,7 +315,7 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
 
 export function FeaturedIlks({ ilks }: { ilks: FeaturedIlk[] }) {
   return (
-    <Grid columns="1fr 1fr 1fr" gap={4}>
+    <Grid columns={['1fr', '1fr 1fr 1fr']} gap={4}>
       {ilks.map((ilk) => (
         <CallToAction key={ilk.title} ilk={ilk} />
       ))}

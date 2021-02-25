@@ -169,22 +169,24 @@ function OpenVaultFormEditing(props: OpenVaultState) {
     <Grid>
       <VaultActionInput
         action="Deposit"
-        amount={depositAmount}
-        balance={collateralBalance}
         token={token}
-        hasError={false}
-        showMax={token !== 'ETH'}
-        onSetMax={handleDepositMax(change!)}
+        amount={depositAmount}
         onChange={handleDepositChange(change!)}
+        showMax={true}
+        onSetMax={handleDepositMax(change!)}
+        maxAmount={collateralBalance}
+        maxAmountLabel={'Balance'}
+        hasError={hasError}
       />
       <VaultActionInput
         action="Generate"
-        amount={generateAmount}
         token={'DAI'}
-        showMax={!!maxGenerateAmount?.gt(zero)}
-        onSetMax={handleGenerateMax(change!)}
-        hasError={false}
+        amount={generateAmount}
         onChange={handleGenerateChange(change!)}
+        showMax={true}
+        onSetMax={handleGenerateMax(change!)}
+        maxAmount={maxGenerateAmount}
+        hasError={hasError}
       />
       {hasError && (
         <>
