@@ -8,6 +8,7 @@ import {
   formatPrecision,
 } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
+import { useTranslation } from 'i18n'
 import React from 'react'
 import { Box, Button, Grid, Heading, Text } from 'theme-ui'
 
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export function VaultView({ vault, account }: Props) {
+  const { t } = useTranslation()
   const token = vault.token
   const vaultId = vault.id
   const liquidationPrice = vault.liquidationPrice ? formatFiatBalance(vault.liquidationPrice) : 0
@@ -40,21 +42,20 @@ export function VaultView({ vault, account }: Props) {
     <Grid>
       <Box sx={{ display: 'flex' }}>
         <AppLink as={`/owner/${vault.controller}`} href={`/owner/[address]`}>
-          Account overview
+          {t('vaults-overview.your-vaults')}
         </AppLink>
         <Text sx={{ mx: 3 }}>{'>'}</Text>
-        <Text>Vault #{vaultId}</Text>
-      </Box>
-      <Text>Connected Address :: {account}</Text>
-      <Box>
-        <Heading as="h2">Liquidation price</Heading>
-        <Text>Liquidation price: {liquidationPrice} USD</Text>
-        <Text>Liquidation penalty: {liquidationPenalty}</Text>
+        <Text>{t("vault.header")}</Text>
       </Box>
       <Box>
-        <Heading as="h2">Collateralization Ratio</Heading>
-        <Text>Collateralization Ratio: {collateralizationRatio}</Text>
-        <Text>Stability fee: {stabilityFee}%</Text>
+        <Heading as="h2">{t('system.liquidation-price')}</Heading>
+        <Text>{t('system.liquidation-price')}: {liquidationPrice} USD</Text>
+        <Text>{t('system.liquidation-penalty')}: {liquidationPenalty}</Text>
+      </Box>
+      <Box>
+        <Heading as="h2">{t('system.collateralization-ratio')}</Heading>
+        <Text>{t('system.collateralization-ratio')}: {collateralizationRatio}</Text>
+        <Text>{t('system.stability-fee')}: {stabilityFee}%</Text>
       </Box>
       <Box>
         <Heading as="h2">{token} locked</Heading>

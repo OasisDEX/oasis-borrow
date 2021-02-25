@@ -31,15 +31,18 @@
     "asset": "Asset",
     "type": "Type",
     "dai-available": "DAI Available",
-    "liquidation-price": "Liquidation price",
+    "liquidation-price": "Liquidation Price",
+    "liquidation-penalty": "Liquidation Penalty",
     "coll-ratio": "Coll. rato",
-    "collateralization": "Coll. locked",
+    "collateralization-ratio": "Collateralization Ratio",
+    "coll-locked": "Coll. locked",
     "dai-debt": "DAI debt",
     "in-my-wallet": "In my wallet",
     "deposited": "Deposited",
     "available-to-withdraw": "Avail. to withdraw"
   },
   "open-vault": "Open Vault",
+  "my-page": "My Page",
   "vaults-overview": {
     "header": "Vault overview",
     "message-connected": "Hello {{address}} it looks like you currently have {{count}} Vault open with this wallet. Open a Vault below.",
@@ -51,6 +54,9 @@
     "total-locked": "Total locked",
     "total-debt": "Total debt",
     "vaults-at-risk": "Vaults at risk"
+  },
+  "vault": {
+    "header": "{{ilk}} Vault #{{id}}"
   },
   "keyWithCount": "{{count}} item",
   "keyWithCount_plural": "{{count}} items",

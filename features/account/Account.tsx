@@ -212,12 +212,12 @@ export function AccountModal({ close }: ModalProps) {
                 {connectionKind === 'network' ? (
                   <Text sx={{ fontWeight: 'semiBold' }}>{t('connected-in-readonly-mode')}</Text>
                 ) : (
-                  <Text sx={{ fontWeight: 'semiBold' }}>
-                    {t('connected-with', {
-                      connectionKind: getConnectionKindMessage(connectionKind),
-                    })}
-                  </Text>
-                )}
+                    <Text sx={{ fontWeight: 'semiBold' }}>
+                      {t('connected-with', {
+                        connectionKind: getConnectionKindMessage(connectionKind),
+                      })}
+                    </Text>
+                  )}
               </Flex>
               <Flex sx={{ alignItems: 'center' }}>
                 <Box mr={2}>
@@ -250,15 +250,13 @@ export function AccountModal({ close }: ModalProps) {
                   href="/owner/[address]"
                   as={`/owner/${account}`}
                 >
-                  My Page
+                  {t('my-page')}
                 </AppLink>
                 <Button
                   variant="textual"
                   sx={{
                     textAlign: 'left',
-                    fontSize: 3,
                     p: 0,
-                    fontWeight: 'semiBold',
                     verticalAlign: 'baseline',
                   }}
                   onClick={disconnect}
