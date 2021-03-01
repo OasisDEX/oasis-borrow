@@ -5,8 +5,9 @@ import { ajax } from 'rxjs/ajax'
 import { catchError, distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { getToken } from '../blockchain/tokensMetadata'
-import { CallObservable } from './calls/observe'
+import { CallObservable, observe } from './calls/observe'
 import { spotIlk, spotPar } from './calls/spot'
+import { createTokenCurrentPrice$, createTokenNextPrice$, pipHop, pipZzz } from './calls/osm'
 import { vatIlk } from './calls/vat'
 
 export interface Ticker {
@@ -69,5 +70,41 @@ export function createTokenOraclePrice$(
     map(([{ maxDebtPerUnitCollateral }, { liquidationRatio }, ratioDAIUSD]) =>
       maxDebtPerUnitCollateral.times(ratioDAIUSD).times(liquidationRatio),
     ),
+  )
+}
+
+export interface TokenPriceData {
+  currentPrice: BigNumber
+  nextPrice: BigNumber
+  currentPriceUpdate: Date
+  nextPriceUpdate: Date
+  priceUpdateInterval: number
+}
+
+export function createOraclePriceData$(
+  currentPrice$: (token: string) => Observable<BigNumber>,
+  nextPrice$: (token: string) => Observable<BigNumber>,
+  pipZzz$: (token: string) => Observable<BigNumber>,
+  pipHop$: (token: string) => Observable<BigNumber>,
+  token: string,
+): Observable<TokenPriceData> {
+  return combineLatest(
+    currentPrice$(token),
+    nextPrice$(token),
+    pipZzz$(token),
+    pipHop$(token),
+  ).pipe(
+    switchMap(([currentPrice, nextPrice, tokenLastUpdate, updateInterval]) => {
+      const currentPriceUpdate = new Date(tokenLastUpdate.toNumber())
+      const nextPriceUpdate = new Date(tokenLastUpdate.plus(updateInterval).toNumber())
+      const priceUpdateInterval = updateInterval.toNumber()
+      return of({
+        currentPrice,
+        nextPrice,
+        currentPriceUpdate,
+        nextPriceUpdate,
+        priceUpdateInterval,
+      })
+    }),
   )
 }

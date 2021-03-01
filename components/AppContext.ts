@@ -11,6 +11,12 @@ import {
 } from 'blockchain/calls/callsHelpers'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
 import {
+  createTokenCurrentPrice$,
+  createTokenNextPrice$,
+  pipHop,
+  pipZzz,
+} from 'blockchain/calls/osm'
+import {
   CreateDsProxyData,
   createProxyAddress$,
   createProxyOwner$,
@@ -18,7 +24,7 @@ import {
 } from 'blockchain/calls/proxy'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
-import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
+import { createGasPrice$, createOraclePriceData$, createTokenOraclePrice$ } from 'blockchain/prices'
 import { createAccountBalance$, createAllowance$, createBalance$ } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
@@ -45,6 +51,7 @@ import { observe } from '../blockchain/calls/observe'
 import { spotIlk, spotPar } from '../blockchain/calls/spot'
 import { networksById } from '../blockchain/config'
 import {
+  Context,
   ContextConnected,
   createAccount$,
   createContext$,
@@ -140,6 +147,16 @@ export function setupAppContext() {
   const spotIlks$ = observe(onEveryBlock$, context$, spotIlk)
   const jugIlks$ = observe(onEveryBlock$, context$, jugIlk)
   const catIlks$ = observe(onEveryBlock$, context$, catIlk)
+
+  const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
+  const pipHop$ = observe(onEveryBlock$, context$, pipHop)
+
+  const tokenCurrentPrice$ = memoize(curry(createTokenCurrentPrice$)(onEveryBlock$, context$))
+  const tokenNextPrice$ = memoize(curry(createTokenNextPrice$)(onEveryBlock$, context$))
+
+  const oraclePriceData$ = memoize(
+    curry(createOraclePriceData$)(tokenCurrentPrice$, tokenNextPrice$, pipZzz$, pipHop$),
+  )
 
   const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
   const balance$ = curry(createBalance$)(onEveryBlock$, context$, tokenBalance$)

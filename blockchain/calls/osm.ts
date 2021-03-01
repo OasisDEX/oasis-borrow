@@ -1,58 +1,63 @@
 // BASE_COLLATERAL_FEE
+import { amountFromWei } from '@oasisdex/utils/lib/src/utils'
 import BigNumber from 'bignumber.js'
-import { combineLatest, Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { Context } from 'blockchain/network'
+import { getToken } from 'blockchain/tokensMetadata'
+import { storageHexToBigNumber } from 'blockchain/utils'
+import { bindNodeCallback, combineLatest, Observable } from 'rxjs'
+import { map, startWith, switchMap } from 'rxjs/operators'
 
 import { McdOsm } from '../../types/web3-v1-contracts/mcd-osm'
 import { CallDef } from './callsHelpers'
 
-export const tokenPriceLastUpdate: CallDef<string, BigNumber> = {
+export const pipZzz: CallDef<string, BigNumber> = {
   call: (token, context) => context.contract<McdOsm>(context.mcdOsms[token]).methods.zzz,
-  prepareArgs: (token) => [token],
+  prepareArgs: () => [],
   postprocess: (result) => new BigNumber(result).times(1000),
 }
 
-export const tokenPriceUpdateInterval: CallDef<string, BigNumber> = {
+export const pipHop: CallDef<string, BigNumber> = {
   call: (token, context) => context.contract<McdOsm>(context.mcdOsms[token]).methods.hop,
-  prepareArgs: (token) => [token],
+  prepareArgs: () => [],
   postprocess: (result) => new BigNumber(result).times(1000),
 }
 
-export function tokenPriceNextUpdate(
-  tokenPriceLastUpdate$: (token: string) => Observable<BigNumber>,
-  tokenPriceUpdateInterval$: (token: string) => Observable<BigNumber>,
+export function createTokenCurrentPrice$(
+  onEveryBlock$: Observable<number>,
+  context$: Observable<Context>,
   token: string,
-): Observable<Date> {
-  return combineLatest(tokenPriceLastUpdate$(token), tokenPriceUpdateInterval$(token)).pipe(
-    map(([lastUpdate, interval]) => new Date(lastUpdate.plus(interval).toNumber())),
+): Observable<BigNumber> {
+  const precision = getToken(token).precision
+  return combineLatest(context$, onEveryBlock$).pipe(
+    switchMap(([context]) =>
+      bindNodeCallback(context.web3.eth.getStorageAt)(
+        context.mcdOsms[token].address,
+        3, // current
+      ).pipe(
+        map((storageData: string) =>
+          amountFromWei(storageHexToBigNumber(storageData)[1], precision),
+        ),
+      ),
+    ),
   )
 }
 
-// export function readOsm(context: NetworkConfig, token: string): Observable<{ next: number | undefined }> {
-//   // const slotCurrent = 3;
-//   const slotNext = 4;
-//   return combineLatest(bindNodeCallback(web3.eth.getStorageAt)(context.mcd.osms[token].address, slotNext)).pipe(
-//     map(([nxt]: [string, string]) => {
-//       const next = storageHexToBigNumber(nxt);
-//       return {
-//         // current: current[0].isZero() ? undefined : amountFromWei(current[1], token),
-//         next: next[0].isZero() ? undefined : amountFromWei(next[1], token),
-//       };
-//     }),
-//     startWith({}),
-//   );
-// }
-
-// export const tokenPricesNextUpdates = {
-//   generate: tokenList => ({
-//     dependencies: tokenList.map(token => [TOKEN_PRICE_NEXT_UPDATE, token]),
-//     computed: (...list) =>
-//       list.reduce(
-//         (acc, time, idx) => ({
-//           [`${tokenList[idx]}`]: time,
-//           ...acc
-//         }),
-//         {}
-//       )
-//   })
-// };
+export function createTokenNextPrice$(
+  onEveryBlock$: Observable<number>,
+  context$: Observable<Context>,
+  token: string,
+): Observable<BigNumber> {
+  const precision = getToken(token).precision
+  return combineLatest(context$, onEveryBlock$).pipe(
+    switchMap(([context]) =>
+      bindNodeCallback(context.web3.eth.getStorageAt)(
+        context.mcdOsms[token].address,
+        4, // next
+      ).pipe(
+        map((storageData: string) =>
+          amountFromWei(storageHexToBigNumber(storageData)[1], precision),
+        ),
+      ),
+    ),
+  )
+}
