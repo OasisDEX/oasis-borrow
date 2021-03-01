@@ -116,20 +116,20 @@ function AllIlks({
         ...(isReadonly
           ? []
           : [
-            {
-              header: <Text sx={{ textAlign: 'right' }}>{t('system.in-my-wallet')}</Text>,
-              cell: (ilk: IlkDataWithBalance) => (
-                <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
-                  <Text sx={{ textAlign: 'right' }}>
-                    {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
-                  </Text>
-                  <Text variant="paragraph3" sx={{ color: 'muted' }}>
-                    {`($${ilk.balancePrice ? formatCryptoBalance(ilk.balancePrice) : 0})`}
-                  </Text>
-                </Flex>
-              ),
-            },
-          ]),
+              {
+                header: <Text sx={{ textAlign: 'right' }}>{t('system.in-my-wallet')}</Text>,
+                cell: (ilk: IlkDataWithBalance) => (
+                  <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
+                    <Text sx={{ textAlign: 'right' }}>
+                      {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
+                    </Text>
+                    <Text variant="paragraph3" sx={{ color: 'muted' }}>
+                      {`($${ilk.balancePrice ? formatCryptoBalance(ilk.balancePrice) : 0})`}
+                    </Text>
+                  </Flex>
+                ),
+              },
+            ]),
         {
           header: <Text />,
           cell: ({ ilk }) => (
@@ -311,9 +311,9 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
       <Text variant="header3" sx={{ textAlign: 'center', justifySelf: 'center', mb: 4 }}>
         {context.status === 'connected'
           ? t('vaults-overview.message-connected', {
-            address: formatAddress(address),
-            count: vaults?.length || 0,
-          })
+              address: formatAddress(address),
+              count: vaults?.length || 0,
+            })
           : t('vaults-overview.message-not-connected', { address: formatAddress(address) })}
       </Text>
       {displaySummary && <Summary summary={displaySummary} />}
