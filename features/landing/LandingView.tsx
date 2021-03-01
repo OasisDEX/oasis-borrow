@@ -52,7 +52,7 @@ export function LandingView() {
       <Table
         data={landing.ilks.data}
         primaryKey="ilk"
-        rowDefinition={[
+        columns={[
           {
             header: <Text>Asset</Text>,
             cell: ({ token }) => <TokenSymbol token={token} />,

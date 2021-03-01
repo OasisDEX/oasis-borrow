@@ -3,8 +3,9 @@ import BigNumber from 'bignumber.js'
 import { IlkWithBalance } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
+import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
-import { Table, TableSortHeader } from 'components/Table'
+import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import {
   formatAddress,
   formatCryptoBalance,
@@ -17,77 +18,107 @@ import { Dictionary } from 'ts-essentials'
 
 import { IlksWithFilters } from '../ilks/ilksFilters'
 import { TokenSymbol } from '../landing/LandingView'
-import { VaultsWithFilters } from './vaultsFilters'
+import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { FeaturedIlk, VaultsOverview } from './vaultsOverview'
 import { VaultSummary } from './vaultSummary'
 
+
+const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
+  {
+    headerLabel: 'system.asset',
+    header: ({ label }) => <Text variant="tableHead">{label}</Text>,
+    cell: ({ token }) => <TokenSymbol token={token} />,
+  },
+  {
+    headerLabel: 'system.collateral',
+    header: ({ label, ...filters }) => <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="collateral">
+      {label}
+    </TableSortHeader>,
+    cell: ({ lockedCollateral }) => (
+      <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(lockedCollateral)}</Text>
+    ),
+  },
+  {
+    headerLabel: 'system.freeCollateral',
+    header: ({ label, ...filters }) => (
+      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="freeCollateral">
+        {label}
+      </TableSortHeader>),
+    cell: ({ freeCollateral }) => (
+      <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(freeCollateral)}</Text>
+    ),
+  },
+  {
+    headerLabel: 'system.debt',
+    header: ({ label, ...filters }) => (
+      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="debt">
+        {label}
+      </TableSortHeader>),
+    cell: ({ debt }) => (
+      <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(debt)}</Text>
+    ),
+  },
+  {
+    headerLabel: 'system.collateralizationRatio',
+    header: ({ label, ...filters }) => (
+      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="collateralizationRatio">
+        {label}
+      </TableSortHeader>),
+    cell: ({ collateralizationRatio }) => (
+      <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(collateralizationRatio)}</Text>
+    ),
+  },
+  {
+    headerLabel: 'system.collateralizationRatio',
+    header: ({ label, ...filters }) => (
+      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="collateralizationRatio">
+        {label}
+      </TableSortHeader>),
+    cell: ({ collateralizationRatio }) => (
+      <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(collateralizationRatio)}</Text>
+    ),
+  },
+  {
+    headerLabel: '',
+    header: () => <Text />,
+    cell: ({ id }) => (
+      <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
+        <AppLink
+          sx={{ width: ['100%', 'inherit'], textAlign: 'center' }}
+          variant="secondary"
+          as={`/${id}`}
+          href={`/[vault]`}
+        >
+          Manage Vault
+                </AppLink>
+      </Box>
+    )
+  }
+]
 function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
   const { data, filters } = vaults
   return (
     <Table
       data={data}
       primaryKey="id"
-      rowDefinition={[
-        {
-          header: <Text variant="tableHead">Asset</Text>,
-          cell: ({ token }) => <TokenSymbol token={token} />,
-        },
-        {
-          header: (
-            <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="collateral">
-              Deposited
-            </TableSortHeader>
-          ),
-          cell: ({ lockedCollateral }) => (
-            <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(lockedCollateral)}</Text>
-          ),
-        },
-        {
-          header: (
-            <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="freeCollateral">
-              Avail. to withdraw
-            </TableSortHeader>
-          ),
-          cell: ({ freeCollateral }) => (
-            <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(freeCollateral)}</Text>
-          ),
-        },
-        {
-          header: (
-            <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="debt">
-              DAI
-            </TableSortHeader>
-          ),
-          cell: ({ debt }) => <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(debt)}</Text>,
-        },
-        {
-          header: (
-            <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="collateralizationRatio">
-              Current Ratio
-            </TableSortHeader>
-          ),
-          cell: ({ collateralizationRatio }) => (
-            <Text sx={{ textAlign: 'right' }}>
-              {collateralizationRatio ? formatPercent(collateralizationRatio.times(100)) : 0}
-            </Text>
-          ),
-        },
-        {
-          header: <Text />,
-          cell: ({ id }) => (
-            <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
-              <AppLink
-                sx={{ width: ['100%', 'inherit'], textAlign: 'center' }}
-                variant="secondary"
-                as={`/${id}`}
-                href={`/[vault]`}
-              >
-                Manage Vault
-              </AppLink>
-            </Box>
-          ),
-        },
-      ]}
+      state={filters}
+      columns={vaultsColumns}
+    //   {
+    //     header: <Text />,
+    //     cell: ({ id }) => (
+    //       <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
+    //         <AppLink
+    //           sx={{ width: ['100%', 'inherit'], textAlign: 'center' }}
+    //           variant="secondary"
+    //           as={`/${id}`}
+    //           href={`/[vault]`}
+    //         >
+    //           Manage Vault
+    //         </AppLink>
+    //       </Box>
+    //     ),
+    //   },
+    // ]}
     />
   )
 }
@@ -185,7 +216,7 @@ function AllIlks({
     <Table
       primaryKey="ilk"
       data={data}
-      rowDefinition={rowDef}
+      columns={rowDef}
     />
   )
 }
@@ -405,11 +436,11 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
       {ilks && (
         <>
           <Heading>Vaults</Heading>
-          <AllIlks
+          {/* <AllIlks
             ilks={ilks}
             isReadonly={context?.status === 'connectedReadonly'}
             address={address}
-          />
+          /> */}
         </>
       )}
     </Grid>
