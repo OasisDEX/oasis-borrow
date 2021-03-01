@@ -127,7 +127,7 @@ export interface Vault {
    * In terms of this type, Vault.collateral, we are specifying the latter
    * "encumbered collateral"
    */
-  collateral: BigNumber
+  lockedCollateral: BigNumber
 
   /*
    * "Vault.unlockedCollateral" references the amount of unencumbered collateral
@@ -141,7 +141,7 @@ export interface Vault {
    * "Vault.collateralPrice" is the value of the collateral denominated in USD
    * locked in a vault
    */
-  collateralPrice: BigNumber
+  lockedCollateralPrice: BigNumber
 
   /*
    * "Vault.backingCollateral" is the minimum amount of collateral which
@@ -224,14 +224,14 @@ export interface Vault {
    * to the amount of debt in USD. A value less then liquidationRatio means that
    * the vault is at risk of being liquidated.
    */
-  collateralizationRatio: BigNumber | undefined
+  collateralizationRatio: BigNumber
 
   /*
    * "Vault.liquidationPrice" is the price of the collateral of a vault
    * in USD if the Vault.collateralizationRatio is equal to the
    * Vault.liquidationRatio
    */
-  liquidationPrice: BigNumber | undefined
+  liquidationPrice: BigNumber
 
   /*
    * "Vault.liquidationPenalty" is used if a vault is liquidated, the penalty
@@ -325,14 +325,14 @@ export function createVault$(
 
             const backingCollateralPrice = backingCollateral.div(currentPrice)
             const freeCollateralPrice = freeCollateral.div(currentPrice)
-            const collateralizationRatio = debt.eq(zero) ? undefined : collateralPrice.div(debt)
+            const collateralizationRatio = debt.eq(zero) ? zero : collateralPrice.div(debt)
 
             const maxAvailableDebt = collateralPrice.div(liquidationRatio)
             const availableDebt = debt.lt(maxAvailableDebt) ? maxAvailableDebt.minus(debt) : zero
             const availableIlkDebt = debtCeiling.minus(ilkDebt)
 
             const liquidationPrice = collateral.eq(zero)
-              ? undefined
+              ? zero
               : debt.times(liquidationRatio).div(collateral)
 
             return of({
@@ -342,13 +342,13 @@ export function createVault$(
               address: urnAddress,
               owner,
               controller,
-              collateral,
-              unlockedCollateral,
-              collateralPrice,
+              lockedCollateral: collateral,
+              lockedCollateralPrice: collateralPrice,
               backingCollateral,
               backingCollateralPrice,
               freeCollateral,
               freeCollateralPrice,
+              unlockedCollateral,
               normalizedDebt,
               collateralizationRatio,
               debt,

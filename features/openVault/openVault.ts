@@ -1,14 +1,13 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData, maxUint256 } from 'blockchain/calls/erc20'
-import { lockAndDraw } from 'blockchain/calls/lockAndDraw'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
+import { open, OpenData } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { OraclePriceData } from 'blockchain/prices'
 import { TxHelpers } from 'components/AppContext'
-import { LockAndDrawData } from 'features/deposit/deposit'
 import { ApplyChange, applyChange, Change, Changes, transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
@@ -462,16 +461,16 @@ function openVault(
   change: (ch: OpenVaultChange) => void,
   { generateAmount, depositAmount, proxyAddress, ilk, token }: OpenVaultState,
 ) {
-  send(lockAndDraw, {
-    kind: TxMetaKind.lockAndDraw,
-    drawAmount: generateAmount || new BigNumber(0),
-    lockAmount: depositAmount || new BigNumber(0),
+  send(open, {
+    kind: TxMetaKind.open,
+    generateAmount: generateAmount || zero,
+    depositAmount: depositAmount || zero,
     proxyAddress: proxyAddress!,
     ilk,
-    tkn: token,
+    token,
   })
     .pipe(
-      transactionToX<OpenVaultChange, LockAndDrawData>(
+      transactionToX<OpenVaultChange, OpenData>(
         { kind: 'stage', stage: 'openWaitingForApproval' },
         (txState) =>
           of(
@@ -601,6 +600,25 @@ function addTransitions(
   return state
 }
 
+function ilkDataChange$<T extends keyof IlkData>(ilkData$: Observable<IlkData>, kind: T) {
+  return ilkData$.pipe(
+    map((ilkData) => ({
+      kind,
+      [kind]: ilkData[kind],
+    })),
+  )
+}
+
+type BalanceKinds = 'ethBalance' | 'daiBalance' | 'collateralBalance'
+function balanceChange$<T extends BalanceKinds>(balance$: Observable<BigNumber>, kind: T) {
+  return balance$.pipe(
+    map((balance) => ({
+      kind,
+      [kind]: balance,
+    })),
+  )
+}
+
 export function createOpenVault$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
@@ -718,42 +736,6 @@ export function createOpenVault$(
                           change$.next(ch)
                         }
 
-                        const collateralBalanceChange$ = balance$(token, account!).pipe(
-                          map((collateralBalance) => ({
-                            kind: 'collateralBalance',
-                            collateralBalance,
-                          })),
-                        )
-
-                        const ethBalanceChange$ = balance$('ETH', account!).pipe(
-                          map((ethBalance) => ({ kind: 'ethBalance', ethBalance })),
-                        )
-
-                        const daiBalanceChange$ = balance$('DAI', account!).pipe(
-                          map((daiBalance) => ({ kind: 'daiBalance', daiBalance })),
-                        )
-
-                        const maxDebtPerUnitCollateralChange$ = ilkData$(ilk).pipe(
-                          map(({ maxDebtPerUnitCollateral }) => ({
-                            kind: 'maxDebtPerUnitCollateral',
-                            maxDebtPerUnitCollateral,
-                          })),
-                        )
-
-                        const ilkDebtAvailableChange$ = ilkData$(ilk).pipe(
-                          map(({ ilkDebtAvailable }) => ({
-                            kind: 'ilkDebtAvailable',
-                            ilkDebtAvailable,
-                          })),
-                        )
-
-                        const debtFloorChange$ = ilkData$(ilk).pipe(
-                          map(({ debtFloor }) => ({
-                            kind: 'debtFloor',
-                            debtFloor,
-                          })),
-                        )
-
                         const collateralPriceChange$ = oraclePriceData$(token).pipe(
                           map(({ currentPrice: collateralPrice }) => ({
                             kind: 'collateralPrice',
@@ -763,12 +745,14 @@ export function createOpenVault$(
 
                         const environmentChanges$ = merge(
                           collateralPriceChange$,
-                          collateralBalanceChange$,
-                          ethBalanceChange$,
-                          daiBalanceChange$,
-                          maxDebtPerUnitCollateralChange$,
-                          ilkDebtAvailableChange$,
-                          debtFloorChange$,
+
+                          balanceChange$(balance$(token, account), 'collateralBalance'),
+                          balanceChange$(balance$('DAI', account), 'daiBalance'),
+                          balanceChange$(balance$('ETH', account), 'ethBalance'),
+
+                          ilkDataChange$(ilkData$(ilk), 'maxDebtPerUnitCollateral'),
+                          ilkDataChange$(ilkData$(ilk), 'ilkDebtAvailable'),
+                          ilkDataChange$(ilkData$(ilk), 'debtFloor'),
                         )
 
                         const connectedProxyAddress$ = proxyAddress$(account)
@@ -779,6 +763,7 @@ export function createOpenVault$(
                           ),
                           distinctUntilChanged((x, y) => x.eq(y)),
                         )
+
                         return merge(change$, environmentChanges$).pipe(
                           scan(apply, initialState),
                           map(applyVaultCalculations),

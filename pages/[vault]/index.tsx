@@ -1,34 +1,18 @@
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
-import { VaultView } from 'features/vault/VaultView'
-import { useObservable } from 'helpers/observableHook'
+import { ManageVaultView } from 'features/manageVault/manageVaultView'
 import { useRouter } from 'next/router'
 import React from 'react'
-import { Container } from 'theme-ui'
 
 export default function Vault() {
-  const { web3Context$, vault$ } = useAppContext()
-  const web3Context = useObservable(web3Context$)
-
   const {
     query: { vault: vaultId },
   } = useRouter()
 
-  const vault = useObservable(vault$(new BigNumber(vaultId as string)))
-
-  const account = web3Context?.status === 'connected' ? web3Context.account : 'Not connected'
-
-  if (vault === undefined) {
-    return <div>No vault data</div>
-  }
-
   return (
     <WithConnection>
-      <Container>
-        <VaultView vault={vault} account={account} />
-      </Container>
+      <ManageVaultView id={new BigNumber(vaultId as string)} />
     </WithConnection>
   )
 }

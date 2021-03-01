@@ -8,5 +8,8 @@ export enum TxMetaKind {
   // dsrExitAll = 'dsrExitAll',
   // transferEth = 'transferEth',
   // transferErc20 = 'transferErc20',
-  lockAndDraw = 'lockAndDraw',
+
+  open = 'open',
+  depositAndGenerate = 'depositAndGenerate',
+  withdrawAndPayback = 'withdrawAndPayback',
 }

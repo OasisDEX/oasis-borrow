@@ -5,7 +5,6 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { Table } from 'components/Table'
-import { VaultSummary } from 'features/vault/vaultSummary'
 import { formatAddress, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import React from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
@@ -13,6 +12,7 @@ import { Dictionary } from 'ts-essentials'
 
 import { TokenSymbol } from '../landing/LandingView'
 import { FeaturedIlk, IlkDataWithBalance, VaultsOverview } from './vaultsOverview'
+import { VaultSummary } from './vaultSummary'
 
 function VaultsTable({ vaults }: { vaults: Vault[] }) {
   return (
@@ -30,8 +30,8 @@ function VaultsTable({ vaults }: { vaults: Vault[] }) {
         },
         {
           header: <Text sx={{ textAlign: 'right' }}>Deposited</Text>,
-          cell: ({ collateral }) => (
-            <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(collateral)}</Text>
+          cell: ({ lockedCollateral }) => (
+            <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(lockedCollateral)}</Text>
           ),
         },
         {
