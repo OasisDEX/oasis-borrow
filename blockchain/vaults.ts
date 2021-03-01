@@ -10,6 +10,7 @@ import { getCdps } from './calls/getCdps'
 import { CallObservable } from './calls/observe'
 import { vatGem, vatUrns } from './calls/vat'
 import { IlkData } from './ilks'
+import { OraclePriceData } from './prices'
 
 export function createVaults$(
   context$: Observable<Context>,
@@ -226,22 +227,6 @@ export interface Vault {
   collateralizationRatio: BigNumber | undefined
 
   /*
-   * "Vault.tokenOraclePrice" is the USD value of 1 unit of Vault.token as calculated
-   * by the Maker Protocol;
-   *
-   * It can be computed by multiplying three values:
-   *
-   * Vat.ilks[ilk].spot - maxDebtPerUnitCollateral, sometimes called
-   * "priceWithSafetyMargin", this is the maximum amount of DAI that can be
-   * generated per unit token of that ilk.
-   * Spot.par - daiPrice, The ratio of DAI to the reference asset, it being USD
-   * Spot.ilks[ilk].mat - See Vault.liquidationRatio
-   *
-   * tokenPrice = daiPrice * maxDebtPerUnitCollateral * liquidationRatio
-   */
-  tokenOraclePrice: BigNumber
-
-  /*
    * "Vault.liquidationPrice" is the price of the collateral of a vault
    * in USD if the Vault.collateralizationRatio is equal to the
    * Vault.liquidationRatio
@@ -294,7 +279,7 @@ export function createVault$(
   vatUrns$: CallObservable<typeof vatUrns>,
   vatGem$: CallObservable<typeof vatGem>,
   ilkData$: (ilk: string) => Observable<IlkData>,
-  tokenOraclePrice$: (ilk: string) => Observable<BigNumber>,
+  oraclePriceData$: (token: string) => Observable<OraclePriceData>,
   controller$: (id: BigNumber) => Observable<string | undefined>,
   ilkToToken$: Observable<(ilk: string) => string>,
   id: BigNumber,
@@ -311,14 +296,14 @@ export function createVault$(
       return combineLatest(
         vatUrns$({ ilk, urnAddress }),
         vatGem$({ ilk, urnAddress }),
-        tokenOraclePrice$(ilk),
+        oraclePriceData$(token),
         ilkData$(ilk),
       ).pipe(
         switchMap(
           ([
             { collateral, normalizedDebt },
             unlockedCollateral,
-            tokenOraclePrice,
+            { currentPrice },
             {
               normalizedIlkDebt,
               debtFloor,
@@ -329,17 +314,17 @@ export function createVault$(
               liquidationPenalty,
             },
           ]) => {
-            const collateralPrice = collateral.times(tokenOraclePrice)
+            const collateralPrice = collateral.times(currentPrice)
             const debt = debtScalingFactor.times(normalizedDebt)
             const ilkDebt = debtScalingFactor.times(normalizedIlkDebt)
 
-            const backingCollateral = debt.times(liquidationRatio).div(tokenOraclePrice)
+            const backingCollateral = debt.times(liquidationRatio).div(currentPrice)
             const freeCollateral = backingCollateral.gt(collateral)
               ? zero
               : collateral.minus(backingCollateral)
 
-            const backingCollateralPrice = backingCollateral.div(tokenOraclePrice)
-            const freeCollateralPrice = freeCollateral.div(tokenOraclePrice)
+            const backingCollateralPrice = backingCollateral.div(currentPrice)
+            const freeCollateralPrice = freeCollateral.div(currentPrice)
             const collateralizationRatio = debt.eq(zero) ? undefined : collateralPrice.div(debt)
 
             const maxAvailableDebt = collateralPrice.div(liquidationRatio)
@@ -374,7 +359,6 @@ export function createVault$(
               liquidationPrice,
               liquidationRatio,
               liquidationPenalty,
-              tokenOraclePrice,
             })
           },
         ),

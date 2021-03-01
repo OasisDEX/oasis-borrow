@@ -24,7 +24,7 @@ import {
 } from 'blockchain/calls/proxy'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
-import { createGasPrice$, createOraclePriceData$, createTokenOraclePrice$ } from 'blockchain/prices'
+import { createGasPrice$, createOraclePriceData$ } from 'blockchain/prices'
 import { createAccountBalance$, createAllowance$, createBalance$ } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
@@ -51,7 +51,6 @@ import { observe } from '../blockchain/calls/observe'
 import { spotIlk, spotPar } from '../blockchain/calls/spot'
 import { networksById } from '../blockchain/config'
 import {
-  Context,
   ContextConnected,
   createAccount$,
   createContext$,
@@ -150,7 +149,6 @@ export function setupAppContext() {
 
   const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)
-
   const tokenCurrentPrice$ = memoize(curry(createTokenCurrentPrice$)(onEveryBlock$, context$))
   const tokenNextPrice$ = memoize(curry(createTokenNextPrice$)(onEveryBlock$, context$))
 
@@ -165,9 +163,6 @@ export function setupAppContext() {
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
 
   const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
-
-  // computed
-  const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
 
   const ilkData$ = memoize(
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, catIlks$, ilkToToken$),
@@ -186,7 +181,7 @@ export function setupAppContext() {
       vatUrns$,
       vatGem$,
       ilkData$,
-      tokenOraclePrice$,
+      oraclePriceData$,
       controller$,
       ilkToToken$,
     ),
@@ -210,7 +205,7 @@ export function setupAppContext() {
     txHelpers$,
     proxyAddress$,
     allowance$,
-    tokenOraclePrice$,
+    oraclePriceData$,
     balance$,
     ilkData$,
     ilks$,
@@ -223,7 +218,7 @@ export function setupAppContext() {
     balance$,
     ilks$,
     ilkToToken$,
-    tokenOraclePrice$,
+    oraclePriceData$,
   )
   const vaultsOverview$ = memoize(
     curry(createVaultsOverview$)(context$, vaults$, ilkDataList$, featuredIlks$, accountBalances$),

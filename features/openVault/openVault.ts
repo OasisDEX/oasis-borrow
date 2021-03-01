@@ -6,6 +6,7 @@ import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
+import { OraclePriceData } from 'blockchain/prices'
 import { TxHelpers } from 'components/AppContext'
 import { LockAndDrawData } from 'features/deposit/deposit'
 import { ApplyChange, applyChange, Change, Changes, transactionToX } from 'helpers/form'
@@ -605,7 +606,7 @@ export function createOpenVault$(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
   allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
-  tokenOraclePrice$: (token: string) => Observable<BigNumber>,
+  oraclePriceData$: (token: string) => Observable<OraclePriceData>,
   balance$: (token: string, address: string) => Observable<BigNumber>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilks$: Observable<string[]>,
@@ -641,13 +642,19 @@ export function createOpenVault$(
 
               const userTokenInfo$ = combineLatest(
                 balance$(token, account),
-                tokenOraclePrice$(token),
+                oraclePriceData$(token),
                 balance$('ETH', account),
-                tokenOraclePrice$('ETH'),
+                oraclePriceData$('ETH'),
                 balance$('DAI', account),
               ).pipe(
                 switchMap(
-                  ([collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance]) =>
+                  ([
+                    collateralBalance,
+                    { currentPrice: collateralPrice },
+                    ethBalance,
+                    { currentPrice: ethPrice },
+                    daiBalance,
+                  ]) =>
                     of({
                       collateralBalance,
                       collateralPrice,
@@ -747,8 +754,11 @@ export function createOpenVault$(
                           })),
                         )
 
-                        const collateralPriceChange$ = tokenOraclePrice$(ilk).pipe(
-                          map((collateralPrice) => ({ kind: 'collateralPrice', collateralPrice })),
+                        const collateralPriceChange$ = oraclePriceData$(token).pipe(
+                          map(({ currentPrice: collateralPrice }) => ({
+                            kind: 'collateralPrice',
+                            collateralPrice,
+                          })),
                         )
 
                         const environmentChanges$ = merge(

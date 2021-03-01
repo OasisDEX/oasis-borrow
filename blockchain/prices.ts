@@ -60,20 +60,7 @@ export const tokenPricesInUSD$: Observable<Ticker> = every10Seconds$.pipe(
   shareReplay(1),
 )
 
-export function createTokenOraclePrice$(
-  vatIlks$: CallObservable<typeof vatIlk>,
-  ratioDAIUSD$: CallObservable<typeof spotPar>,
-  liquidationRatio$: CallObservable<typeof spotIlk>,
-  ilk: string,
-) {
-  return combineLatest(vatIlks$(ilk), liquidationRatio$(ilk), ratioDAIUSD$()).pipe(
-    map(([{ maxDebtPerUnitCollateral }, { liquidationRatio }, ratioDAIUSD]) =>
-      maxDebtPerUnitCollateral.times(ratioDAIUSD).times(liquidationRatio),
-    ),
-  )
-}
-
-export interface TokenPriceData {
+export interface OraclePriceData {
   currentPrice: BigNumber
   nextPrice: BigNumber
   currentPriceUpdate: Date
@@ -87,7 +74,7 @@ export function createOraclePriceData$(
   pipZzz$: (token: string) => Observable<BigNumber>,
   pipHop$: (token: string) => Observable<BigNumber>,
   token: string,
-): Observable<TokenPriceData> {
+): Observable<OraclePriceData> {
   return combineLatest(
     currentPrice$(token),
     nextPrice$(token),

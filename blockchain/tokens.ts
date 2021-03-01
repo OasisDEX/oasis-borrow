@@ -7,6 +7,7 @@ import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operator
 import { maxUint256, tokenAllowance, tokenBalance } from './calls/erc20'
 import { CallObservable } from './calls/observe'
 import { Context } from './network'
+import { OraclePriceData } from './prices'
 
 export function createBalance$(
   onEveryBlock$: Observable<number>,
@@ -34,7 +35,7 @@ export function createAccountBalance$(
   tokenBalance$: (token: string, address: string) => Observable<BigNumber>,
   ilks: Observable<string[]>,
   ilkToToken: Observable<(ilk: string) => string>,
-  tokenPrice: (ilk: string) => Observable<BigNumber>,
+  oraclePriceData$: (token: string) => Observable<OraclePriceData>,
   address: string,
 ): Observable<Record<string, { balance: BigNumber; price: BigNumber }>> {
   return combineLatest(ilks, ilkToToken).pipe(
@@ -45,13 +46,16 @@ export function createAccountBalance$(
         switchMap((pair) =>
           combineLatest(
             pair.map(([token, ilk]) =>
-              combineLatest(of(token), tokenBalance$(token, address), tokenPrice(ilk)),
+              combineLatest(of(token), tokenBalance$(token, address), oraclePriceData$(token)),
             ),
           ),
         ),
         map((data) =>
           data.reduce(
-            (acc, [token, balance, price]) => ({ ...acc, [token]: { balance, price } }),
+            (acc, [token, balance, { currentPrice: price }]) => ({
+              ...acc,
+              [token]: { balance, price },
+            }),
             {},
           ),
         ),
