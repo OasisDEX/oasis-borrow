@@ -1,8 +1,9 @@
+import { CoinTag } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { compareBigNumber } from 'helpers/compare'
-import { Change, Direction, toggleSort } from 'helpers/form'
+import { Change, Direction, toggleSort, applyChange, ApplyChange } from 'helpers/form'
 import { Observable, Subject } from 'rxjs'
-import { map, scan, startWith, switchMap } from 'rxjs/operators'
+import { map, scan, startWith, switchMap, tap } from 'rxjs/operators'
 export type VaultSortBy =
   | 'collateral'
   | 'debt'
@@ -14,11 +15,18 @@ export type VaultSortBy =
 export interface VaultsFilterState {
   sortBy: VaultSortBy
   direction: Direction
+  search: string
+  tagFilter: CoinTag | undefined
   change: (ch: Changes) => void
 }
-type Changes = Change<VaultsFilterState, 'sortBy'>
+type Changes =
+  | Change<VaultsFilterState, 'sortBy'>
+  | Change<VaultsFilterState, 'search'>
+  | Change<VaultsFilterState, 'tagFilter'>
 
 function applyFilter(state: VaultsFilterState, change: Changes): VaultsFilterState {
+  const apply: ApplyChange<VaultsFilterState, Changes> = applyChange
+
   switch (change.kind) {
     case 'sortBy':
       const [sortBy, direction] = toggleSort(state.sortBy, state.direction, change.sortBy)
@@ -27,17 +35,18 @@ function applyFilter(state: VaultsFilterState, change: Changes): VaultsFilterSta
         sortBy,
         direction,
       }
+
     default:
-      return state
+      return apply(state, change)
   }
 }
 function sortVaults(vaults: Vault[], sortBy: VaultSortBy, direction: Direction): Vault[] {
   const filter = `${sortBy}_${direction}`
   switch (filter) {
     case 'collateral_ASC':
-      return vaults.sort((v1, v2) => compareBigNumber(v1.collateral, v2.collateral))
+      return vaults.sort((v1, v2) => compareBigNumber(v1.lockedCollateral, v2.lockedCollateral))
     case 'collateral_DESC':
-      return vaults.sort((v1, v2) => compareBigNumber(v2.collateral, v1.collateral))
+      return vaults.sort((v1, v2) => compareBigNumber(v2.lockedCollateral, v1.lockedCollateral))
     case 'collateralizationRatio_ASC':
       return vaults.sort((v1, v2) =>
         compareBigNumber(v1.collateralizationRatio, v2.collateralizationRatio),
@@ -76,12 +85,15 @@ export function vaultsWithFilter$(vaults$: Observable<Vault[]>): Observable<Vaul
   const initialState: VaultsFilterState = {
     sortBy: undefined,
     direction: undefined,
+    search: '',
+    tagFilter: undefined,
     change,
   }
 
   return change$.pipe(
     scan(applyFilter, initialState),
     startWith(initialState),
+    tap(console.log),
     switchMap((filters) =>
       vaults$.pipe(
         map((vaults) => sortVaults(vaults, filters.sortBy, filters.direction)),

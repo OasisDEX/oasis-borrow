@@ -12,6 +12,10 @@ export interface TokenConfig {
   ticker: string
 }
 
+export type CoinTag =
+  | 'stablecoin'
+  | 'LPToken'
+
 const tokens = [
   {
     symbol: 'ETH',
@@ -26,6 +30,7 @@ const tokens = [
     coinbaseTicker: 'eth-usdc',
     color: '#667FE3',
     background: 'linear-gradient(284.73deg, #9658D3 3.42%, #415FFF 97.28%)',
+    tags: [],
   },
   {
     symbol: 'BAT',
@@ -39,6 +44,7 @@ const tokens = [
     // ticker: ___________,
     // coinbaseTicker: ___________,
     color: '#ff4625',
+    tags: [],
   },
   {
     symbol: 'WBTC',
@@ -53,6 +59,7 @@ const tokens = [
     iconColor: 'wbtc_color',
     ticker: 'wbtc-wrapped-bitcoin',
     color: '#f09242',
+    tags: [],
   },
   {
     symbol: 'TUSD',
@@ -66,6 +73,7 @@ const tokens = [
     // ticker: ___________,
     // coinbaseTicker: ___________,
     color: '#195aff',
+    tags: ['stablecoin'],
   },
   {
     symbol: 'KNC',
@@ -79,6 +87,7 @@ const tokens = [
     // ticker: ___________,
     // coinbaseTicker: ___________,
     color: '#30cb9e',
+    tags: [],
   },
   {
     symbol: 'MANA',
@@ -92,6 +101,7 @@ const tokens = [
     // ticker: ___________,
     // coinbaseTicker: ___________,
     color: '#f05',
+    tags: [],
   },
   {
     symbol: 'PAXUSD',
@@ -105,6 +115,7 @@ const tokens = [
     // ticker: ___________,
     // coinbaseTicker: ___________,
     color: '#005121',
+    tags: ['stablecoin'],
   },
   {
     symbol: 'USDT',
@@ -118,6 +129,7 @@ const tokens = [
     // ticker: ___________,
     // coinbaseTicker: ___________,
     color: '259c77',
+    tags: ['stablecoin'],
   },
   {
     symbol: 'COMP',
@@ -132,6 +144,7 @@ const tokens = [
     iconColor: 'compound_color',
     // ticker: ___________,
     // coinbaseTicker: ___________,
+    tags: [],
   },
   {
     symbol: 'LRC',
@@ -145,6 +158,7 @@ const tokens = [
     // ticker: ___________,
     // coinbaseTicker: ___________,
     color: '#1c60ff',
+    tags: [],
   },
   {
     symbol: 'LINK',
@@ -159,6 +173,7 @@ const tokens = [
     // coinbaseTicker: ___________,
     color: '#375bd2',
     background: 'linear-gradient(90deg, #3C5FCB 0%, #0E319D 100%), #C4C4C4',
+    tags: [],
   },
   {
     symbol: 'GUSD',
@@ -173,6 +188,7 @@ const tokens = [
     // coinbaseTicker: ___________,
     // background: 'linear-gradient(90deg, #2FB1C8 0%, #69DCF6 100%), #C4C4C4',
     color: '#25ddfb',
+    tags: ['stablecoin'],
   },
   {
     symbol: 'ZRX',
@@ -186,6 +202,7 @@ const tokens = [
     // ticker: ___________,
     // coinbaseTicker: ___________,
     color: '#000',
+    tags: []
   },
   {
     symbol: 'USDC',
@@ -199,6 +216,7 @@ const tokens = [
     iconColor: 'usdc_circle_color',
     ticker: 'usdc-usd-coin',
     color: '#2775ca',
+    tags: ['stablecoin'],
   },
   {
     symbol: 'BAL',
@@ -212,6 +230,7 @@ const tokens = [
     iconColor: 'close_squared', // MISSING
     // ticker: 'usdc-usd-coin',
     color: '#000',
+    tags: []
   },
   {
     symbol: 'YFI',
@@ -225,6 +244,7 @@ const tokens = [
     iconColor: 'close_squared', // MISSING
     // ticker: 'usdc-usd-coin',
     color: '#0657f9',
+    tags: []
   },
   // {
   //   symbol: 'WETH',
@@ -250,6 +270,7 @@ const tokens = [
     ticker: 'dai-dai',
     coinbaseTicker: 'dai-usdc',
     color: '#fdc134',
+    tags: ['stablecoin'],
   },
   // {
 

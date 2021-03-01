@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Direction } from 'helpers/form'
-import React, { ReactNode } from 'react'
+import React, { memo, ReactNode } from 'react'
 import { Box, Button, Container, SxStyleProp, Text } from 'theme-ui'
 
 export interface RowDefinition<T> {
@@ -96,6 +96,21 @@ function Header({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>)
     </Box>
   )
 }
+
+const MyRow = memo(({ row, rowDefinition }: { row: any, rowDefinition: any[] }) => {
+  return (
+    <Row>
+      {rowDefinition.map(({ cell: Content, header }, idx) => (
+        <Cell
+          sx={{ display: ['flex', 'table-cell'], justifyContent: 'space-between' }}
+          key={idx}
+        >
+          <Content {...row} />
+        </Cell>
+      ))}
+    </Row>
+  )
+})
 export function Table<T extends Record<K, string>, K extends keyof T>({
   data,
   rowDefinition,
@@ -107,29 +122,34 @@ export function Table<T extends Record<K, string>, K extends keyof T>({
         <Header key={index}>{header}</Header>
       ))}
     >
-      {data.map((row) => (
-        <Row key={row[primaryKey]}>
-          {rowDefinition.map(({ cell: Content, header }, idx) => (
-            <Cell
-              sx={{ display: ['flex', 'table-cell'], justifyContent: 'space-between' }}
-              key={idx}
-            >
-              <Box
-                variant="paragraph2"
-                sx={{
-                  color: 'muted',
-                  fontWeight: 'semiBold',
-                  display: ['block', 'none'],
-                  padding: 0,
-                }}
-              >
-                {header}
-              </Box>
-              <Content {...row} />
-            </Cell>
-          ))}
-        </Row>
+      {data.map((row) => (<MyRow key={row[primaryKey]} row={row} rowDefinition={rowDefinition} />))}
+    </TableContainer>
+  )
+}
+
+interface TableProps<H, R> {
+  columns: {
+    header: string
+    th?: (header: H) => ReactNode
+    cell: (row: R) => ReactNode
+  }[];
+  headerState: H,
+  rows: R
+
+}
+
+export function Table2<T extends Record<K, string>, K extends keyof T>({
+  data,
+  rowDefinition,
+  primaryKey,
+}: Props<T, K>) {
+  return (
+    <TableContainer
+      header={rowDefinition.map(({ header }, index) => (
+        <Header key={index}>{header}</Header>
       ))}
+    >
+      {data.map((row) => (<MyRow key={row[primaryKey]} row={row} rowDefinition={rowDefinition} />))}
     </TableContainer>
   )
 }
