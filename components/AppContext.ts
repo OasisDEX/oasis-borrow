@@ -30,7 +30,12 @@ import {
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import { createGasPrice$, createOraclePriceData$ } from 'blockchain/prices'
-import { createAccountBalance$, createAllowance$, createBalance$ } from 'blockchain/tokens'
+import {
+  createAccountBalance$,
+  createAllowance$,
+  createBalance$,
+  createTokens$,
+} from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createLanding$ } from 'features/landing/landing'
@@ -53,7 +58,7 @@ import {
 } from '../blockchain/calls/erc20'
 import { jugIlk } from '../blockchain/calls/jug'
 import { observe } from '../blockchain/calls/observe'
-import { spotIlk, spotPar } from '../blockchain/calls/spot'
+import { spotIlk } from '../blockchain/calls/spot'
 import { networksById } from '../blockchain/config'
 import {
   ContextConnected,
@@ -149,18 +154,21 @@ export function setupAppContext() {
   const vatIlks$ = observe(onEveryBlock$, context$, vatIlk)
   const vatUrns$ = observe(onEveryBlock$, context$, vatUrns)
   const vatGem$ = observe(onEveryBlock$, context$, vatGem)
-  const spotPar$ = observe(onEveryBlock$, context$, spotPar)
+  // const spotPar$ = observe(onEveryBlock$, context$, spotPar)
   const spotIlks$ = observe(onEveryBlock$, context$, spotIlk)
   const jugIlks$ = observe(onEveryBlock$, context$, jugIlk)
   const catIlks$ = observe(onEveryBlock$, context$, catIlk)
 
   const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)
-  const tokenCurrentPrice$ = memoize(curry(createTokenCurrentPrice$)(onEveryBlock$, context$))
-  const tokenNextPrice$ = memoize(curry(createTokenNextPrice$)(onEveryBlock$, context$))
+  const tokenCurrentPrice$ = curry(createTokenCurrentPrice$)(onEveryBlock$, context$)
+  const tokenNextPrice$ = curry(createTokenNextPrice$)(onEveryBlock$, context$)
 
-  const oraclePriceData$ = memoize(
-    curry(createOraclePriceData$)(tokenCurrentPrice$, tokenNextPrice$, pipZzz$, pipHop$),
+  const oraclePriceData$ = curry(createOraclePriceData$)(
+    tokenCurrentPrice$,
+    tokenNextPrice$,
+    pipZzz$,
+    pipHop$,
   )
 
   const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
@@ -201,6 +209,7 @@ export function setupAppContext() {
 
   const ilks$ = createIlks$(context$)
   const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
+  const tokens$ = createTokens$(ilks$, ilkToToken$)
 
   const openVault$ = curry(createOpenVault$)(
     connectedContext$,
@@ -229,12 +238,8 @@ export function setupAppContext() {
 
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
 
-  const accountBalances$ = curry(createAccountBalance$)(
-    balance$,
-    ilks$,
-    ilkToToken$,
-    oraclePriceData$,
-  )
+  const accountBalances$ = curry(createAccountBalance$)(balance$, tokens$, oraclePriceData$)
+
   const vaultsOverview$ = memoize(
     curry(createVaultsOverview$)(context$, vaults$, ilkDataList$, featuredIlks$, accountBalances$),
   )

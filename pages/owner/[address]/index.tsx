@@ -15,7 +15,9 @@ function Summary({ address }: { address: string }) {
     return null
   }
 
-  return <VaultsOverviewView vaultsOverView={vaultsOverview} context={context} address={address} />
+  console.log(vaultsOverview)
+
+  return <VaultsOverviewView vaultsOverview={vaultsOverview} context={context} address={address} />
 }
 
 export default function VaultsSummary() {

@@ -31,34 +31,36 @@ export function createBalance$(
   )
 }
 
+export function createTokens$(
+  ilks$: Observable<string[]>,
+  ilkToToken$: Observable<(ilk: string) => string>,
+): Observable<string[]> {
+  return combineLatest(ilks$, ilkToToken$).pipe(
+    switchMap(([ilks, ilkToToken]) => of([...new Set(ilks.map(ilkToToken))])),
+  )
+}
+
 export function createAccountBalance$(
   tokenBalance$: (token: string, address: string) => Observable<BigNumber>,
-  ilks: Observable<string[]>,
-  ilkToToken: Observable<(ilk: string) => string>,
+  tokens$: Observable<string[]>,
   oraclePriceData$: (token: string) => Observable<OraclePriceData>,
   address: string,
 ): Observable<Record<string, { balance: BigNumber; price: BigNumber }>> {
-  return combineLatest(ilks, ilkToToken).pipe(
-    distinctUntilChanged((a, b) => isEqual(a, b)),
-    switchMap(([ilks, ilkToToken]) =>
-      of(ilks.map(ilkToToken)).pipe(
-        map((tokens) => tokens.map((token, idx) => [token, ilks[idx]])),
-        switchMap((pair) =>
-          combineLatest(
-            pair.map(([token, ilk]) =>
-              combineLatest(of(token), tokenBalance$(token, address), oraclePriceData$(token)),
-            ),
-          ),
+  return tokens$.pipe(
+    switchMap((tokens) =>
+      combineLatest(
+        tokens.map((token) =>
+          combineLatest(of(token), tokenBalance$(token, address), oraclePriceData$(token)),
         ),
-        map((data) =>
-          data.reduce(
-            (acc, [token, balance, { currentPrice: price }]) => ({
-              ...acc,
-              [token]: { balance, price },
-            }),
-            {},
-          ),
-        ),
+      ),
+    ),
+    map((data) =>
+      data.reduce(
+        (acc, [token, balance, { currentPrice: price }]) => ({
+          ...acc,
+          [token]: { balance, price },
+        }),
+        {},
       ),
     ),
   )

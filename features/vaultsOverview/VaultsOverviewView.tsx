@@ -280,12 +280,12 @@ export function FeaturedIlks({ ilks }: { ilks: FeaturedIlk[] }) {
 }
 
 interface Props {
-  vaultsOverView: VaultsOverview
+  vaultsOverview: VaultsOverview
   context: Context
   address: string
 }
-export function VaultsOverviewView({ vaultsOverView, context, address }: Props) {
-  const { vaults, vaultSummary, featuredIlks, ilkDataList, canOpenVault } = vaultsOverView
+export function VaultsOverviewView({ vaultsOverview, context, address }: Props) {
+  const { vaults, vaultSummary, featuredIlks, ilkDataList, canOpenVault } = vaultsOverview
 
   const readonlyAccount = context?.status === 'connectedReadonly' && (address as string)
   const displaySummary = vaults && vaults.length > 0 && vaultSummary
