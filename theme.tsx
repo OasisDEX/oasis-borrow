@@ -5,7 +5,7 @@ import { icons as brandingIcons } from '@makerdao/dai-ui-icons-branding'
 // @ts-ignore
 // import oasisBaseTheme from '@makerdao/dai-ui-theme-casual'
 import React from 'react'
-import { borderRadius } from 'react-select/src/theme'
+
 // @ts-ignore
 
 const customIcons = {

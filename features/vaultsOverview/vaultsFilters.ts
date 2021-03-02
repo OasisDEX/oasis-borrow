@@ -1,7 +1,7 @@
 import { CoinTag } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { compareBigNumber } from 'helpers/compare'
-import { Change, Direction, toggleSort, applyChange, ApplyChange } from 'helpers/form'
+import { ApplyChange,applyChange, Change, Direction, toggleSort } from 'helpers/form'
 import { Observable, Subject } from 'rxjs'
 import { map, scan, startWith, switchMap, tap } from 'rxjs/operators'
 export type VaultSortBy =

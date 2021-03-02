@@ -13,8 +13,8 @@ import {
   formatPercent,
 } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'i18n'
-import React, { memo, useCallback, useMemo } from 'react'
-import { Box, Button, Card, Flex, Grid, Heading, Input, Label, Radio, Text } from 'theme-ui'
+import React, { useCallback, useMemo } from 'react'
+import { Box, Button, Card, Flex, Grid, Heading, Input, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { IlksFilterState, IlksWithFilters } from '../ilks/ilksFilters'
@@ -22,7 +22,6 @@ import { TokenSymbol } from '../landing/LandingView'
 import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { FeaturedIlk, VaultsOverview } from './vaultsOverview'
 import { VaultSummary } from './vaultSummary'
-
 
 const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
   {
@@ -66,7 +65,7 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
         {label}
       </TableSortHeader>),
     cell: ({ collateralizationRatio }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(collateralizationRatio)}</Text>
+      <Text sx={{ textAlign: 'right' }}>{formatPercent(collateralizationRatio)}</Text>
     ),
   },
   {
@@ -76,7 +75,7 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
         {label}
       </TableSortHeader>),
     cell: ({ collateralizationRatio }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(collateralizationRatio)}</Text>
+      <Text sx={{ textAlign: 'right' }}>{formatPercent(collateralizationRatio)}</Text>
     ),
   },
   {

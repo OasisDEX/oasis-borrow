@@ -1,9 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Direction } from 'helpers/form'
 import { useTranslation } from 'i18n'
-import { TFunction } from 'next-i18next'
 import React, { memo, ReactNode } from 'react'
-import { Box, Button, Container, SxStyleProp, Text } from 'theme-ui'
+import { Box, Button, Container, SxStyleProp } from 'theme-ui'
 
 export interface ColumnDef<T, S> {
   headerLabel: string,
@@ -101,12 +100,13 @@ function Header({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>)
   )
 }
 
-const MyRow = memo(({ row, columns }: { row: any, columns: any[] }) => {
+const MyRow = memo(({ row, columns }: { row: any, columns: ColumnDef<any, any>[] }) => {
+  const { t } = useTranslation()
   return (
     <Row>
-      {columns.map(({ cell: Content, header }, idx) => (
+      {columns.map(({ cell: Content, headerLabel }, idx) => (
         <Cell
-          sx={{ display: ['flex', 'table-cell'], justifyContent: 'space-between' }}
+          sx={{ display: ['flex', 'table-cell'], justifyContent: 'space-between', ':before': { content: `"${t(headerLabel)}"`, display: ['block', 'none'] } }}
           key={idx}
         >
           <Content {...row} />
