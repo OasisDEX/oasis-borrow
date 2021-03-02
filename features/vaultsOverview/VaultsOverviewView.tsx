@@ -16,7 +16,7 @@ import React, { memo, useCallback, useMemo } from 'react'
 import { Box, Button, Card, Flex, Grid, Heading, Input, Label, Radio, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
-import { IlksWithFilters } from '../ilks/ilksFilters'
+import { IlksFilterState, IlksWithFilters } from '../ilks/ilksFilters'
 import { TokenSymbol } from '../landing/LandingView'
 import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { FeaturedIlk, VaultsOverview } from './vaultsOverview'
@@ -90,7 +90,7 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
           href={`/[vault]`}
         >
           Manage Vault
-                </AppLink>
+        </AppLink>
       </Box>
     )
   }
@@ -103,29 +103,32 @@ function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
       primaryKey="id"
       state={filters}
       columns={vaultsColumns}
-    //   {
-    //     header: <Text />,
-    //     cell: ({ id }) => (
-    //       <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
-    //         <AppLink
-    //           sx={{ width: ['100%', 'inherit'], textAlign: 'center' }}
-    //           variant="secondary"
-    //           as={`/${id}`}
-    //           href={`/[vault]`}
-    //         >
-    //           Manage Vault
-    //         </AppLink>
-    //       </Box>
-    //     ),
-    //   },
-    // ]}
     />
   )
 }
 
 const VaultsTableMemo = memo(VaultsTable);
 
-const Header = ({ header }: { header: string }) => <Text variant="tableHead">{header}</Text>
+const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
+  {
+    headerLabel: 'system.asset',
+    header: ({ label }) => <Text variant="tableHead">{label}</Text>,
+    cell: ({ token }) => <TokenSymbol token={token} />,
+  },
+  {
+    headerLabel: 'system.type',
+    header: ({ label }) => <Text variant="tableHead">{label}</Text>,
+    cell: ({ ilk }) => <Text>{ilk}</Text>,
+  },
+  {
+    headerLabel: 'system.dai-available',
+    header: ({ label, ...filters }) => (
+      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="ilkDebtAvailable">
+        {label}
+      </TableSortHeader>),
+    cell: ({ ilk }) => <Text>{ilk}</Text>,
+  }
+]
 function AllIlks({
   ilks,
   isReadonly,
@@ -137,14 +140,6 @@ function AllIlks({
   const { data, filters } = ilks
 
   const rowDef = useMemo(() => [
-    {
-      header: <Text variant="tableHead">Asset</Text>,
-      cell: ({ token }) => <TokenSymbol token={token} />,
-    },
-    {
-      header: <Text variant="tableHead">Type</Text>,
-      cell: ({ ilk }) => <Text>{ilk}</Text>,
-    },
     {
       header: (
         <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="ilkDebtAvailable">
