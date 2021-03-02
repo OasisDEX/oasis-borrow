@@ -37,7 +37,10 @@ export function callAbstractContext<D, R, CC extends Context>(
         args,
         context,
       )(...prepareArgs(args, context)).call(
-        context.status === 'connected' ? { from: (context as any).account } : {},
+        context.status === 'connected'
+          ? { from: (context as any).account }
+          : // spot neccessary to read osms in readonly
+            { from: context.mcdSpot.address },
       ),
     ).pipe(map((i: R) => (postprocess ? postprocess(i, args) : i)))
   }

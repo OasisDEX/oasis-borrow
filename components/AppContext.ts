@@ -10,12 +10,7 @@ import {
   TransactionDef,
 } from 'blockchain/calls/callsHelpers'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
-import {
-  createTokenCurrentPrice$,
-  createTokenNextPrice$,
-  pipHop,
-  pipZzz,
-} from 'blockchain/calls/osm'
+import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import {
   CreateDsProxyData,
   createProxyAddress$,
@@ -47,7 +42,7 @@ import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
-import { filter, map, shareReplay } from 'rxjs/operators'
+import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { catIlk } from '../blockchain/calls/cat'
 import {
@@ -132,6 +127,11 @@ export function setupAppContext() {
     shareReplay(1),
   ) as Observable<ContextConnected>
 
+  const oracleContext$ = context$.pipe(
+    switchMap((ctx) => of({ ...ctx, account: ctx.mcdSpot.address })),
+    shareReplay(1),
+  ) as Observable<ContextConnected>
+
   const [send, transactions$] = createSend<TxData>(
     initializedAccount$,
     onEveryBlock$,
@@ -161,15 +161,18 @@ export function setupAppContext() {
 
   const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)
-  const tokenCurrentPrice$ = curry(createTokenCurrentPrice$)(onEveryBlock$, context$)
-  const tokenNextPrice$ = curry(createTokenNextPrice$)(onEveryBlock$, context$)
+  const pipPeek$ = observe(onEveryBlock$, oracleContext$, pipPeek)
+  const pipPeep$ = observe(onEveryBlock$, oracleContext$, pipPeep)
 
   const oraclePriceData$ = curry(createOraclePriceData$)(
-    tokenCurrentPrice$,
-    tokenNextPrice$,
+    context$,
+    pipPeek$,
+    pipPeep$,
     pipZzz$,
     pipHop$,
   )
+
+  oraclePriceData$('USDC').subscribe(console.log)
 
   const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
   const balance$ = curry(createBalance$)(onEveryBlock$, context$, tokenBalance$)

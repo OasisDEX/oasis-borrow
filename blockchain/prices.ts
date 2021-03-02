@@ -1,14 +1,13 @@
 import { BigNumber } from 'bignumber.js'
 import { Context, every10Seconds$ } from 'blockchain/network'
-import { bindNodeCallback, combineLatest, forkJoin, Observable, of } from 'rxjs'
+import { bindNodeCallback, combineLatest, EMPTY, forkJoin, iif, Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { getToken } from '../blockchain/tokensMetadata'
-import { CallObservable, observe } from './calls/observe'
-import { spotIlk, spotPar } from './calls/spot'
-import { createTokenCurrentPrice$, createTokenNextPrice$, pipHop, pipZzz } from './calls/osm'
-import { vatIlk } from './calls/vat'
+import Web3 from 'web3'
+import { amountFromWei } from '@oasisdex/utils'
+import { contract } from '@oasisdex/web3-context'
 
 export interface Ticker {
   [label: string]: BigNumber
@@ -62,36 +61,57 @@ export const tokenPricesInUSD$: Observable<Ticker> = every10Seconds$.pipe(
 
 export interface OraclePriceData {
   currentPrice: BigNumber
-  nextPrice: BigNumber
-  currentPriceUpdate: Date
-  nextPriceUpdate: Date
-  priceUpdateInterval: number
+  nextPrice?: BigNumber
+  currentPriceUpdate?: Date
+  nextPriceUpdate?: Date
+  priceUpdateInterval?: number
+  isOSM: boolean
 }
 
+const DSVALUE_APPROX_SIZE = 6000
+
 export function createOraclePriceData$(
-  currentPrice$: (token: string) => Observable<BigNumber>,
-  nextPrice$: (token: string) => Observable<BigNumber>,
+  context$: Observable<Context>,
+  pipPeek$: (token: string) => Observable<[string, boolean]>,
+  pipPeep$: (token: string) => Observable<[string, boolean]>,
   pipZzz$: (token: string) => Observable<BigNumber>,
   pipHop$: (token: string) => Observable<BigNumber>,
   token: string,
 ): Observable<OraclePriceData> {
-  return combineLatest(
-    currentPrice$(token),
-    nextPrice$(token),
-    pipZzz$(token),
-    pipHop$(token),
-  ).pipe(
-    switchMap(([currentPrice, nextPrice, tokenLastUpdate, updateInterval]) => {
-      const currentPriceUpdate = new Date(tokenLastUpdate.toNumber())
-      const nextPriceUpdate = new Date(tokenLastUpdate.plus(updateInterval).toNumber())
-      const priceUpdateInterval = updateInterval.toNumber()
-      return of({
-        currentPrice,
-        nextPrice,
-        currentPriceUpdate,
-        nextPriceUpdate,
-        priceUpdateInterval,
-      })
-    }),
+  return context$.pipe(
+    switchMap(({ web3, mcdOsms }) =>
+      combineLatest(
+        bindNodeCallback(web3.eth.getCode)(mcdOsms[token].address),
+        pipPeek$(token),
+      ).pipe(
+        switchMap(([contractData, peek]) =>
+          iif(
+            () => contractData.length > DSVALUE_APPROX_SIZE,
+            combineLatest(of(peek), pipPeep$(token), pipZzz$(token), pipHop$(token), of(true)),
+            combineLatest(of(peek), of(undefined), of(undefined), of(undefined), of(false)),
+          ).pipe(
+            switchMap(([peek, peep, zzz, hop, isOSM]) => {
+              const currentPriceUpdate = zzz ? new Date(zzz.toNumber()) : undefined
+              const nextPriceUpdate = zzz && hop ? new Date(zzz.plus(hop).toNumber()) : undefined
+              const priceUpdateInterval = hop ? hop.toNumber() : undefined
+
+              const currentPrice = amountFromWei(new BigNumber(peek[0]), getToken(token).precision)
+              const nextPrice = peep
+                ? amountFromWei(new BigNumber(peep[0]), getToken(token).precision)
+                : undefined
+
+              return of({
+                currentPrice,
+                nextPrice,
+                currentPriceUpdate,
+                nextPriceUpdate,
+                priceUpdateInterval,
+                isOSM,
+              })
+            }),
+          ),
+        ),
+      ),
+    ),
   )
 }

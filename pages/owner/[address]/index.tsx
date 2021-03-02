@@ -15,8 +15,6 @@ function Summary({ address }: { address: string }) {
     return null
   }
 
-  console.log(vaultsOverview)
-
   return <VaultsOverviewView vaultsOverview={vaultsOverview} context={context} address={address} />
 }
 
