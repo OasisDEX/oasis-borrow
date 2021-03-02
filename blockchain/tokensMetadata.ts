@@ -12,9 +12,7 @@ export interface TokenConfig {
   ticker: string
 }
 
-export type CoinTag =
-  | 'stablecoin'
-  | 'LPToken'
+export type CoinTag = 'stablecoin' | 'LPToken'
 
 const tokens = [
   {
@@ -202,7 +200,7 @@ const tokens = [
     // ticker: ___________,
     // coinbaseTicker: ___________,
     color: '#000',
-    tags: []
+    tags: [],
   },
   {
     symbol: 'USDC',
@@ -230,7 +228,7 @@ const tokens = [
     iconColor: 'close_squared', // MISSING
     // ticker: 'usdc-usd-coin',
     color: '#000',
-    tags: []
+    tags: [],
   },
   {
     symbol: 'YFI',
@@ -244,7 +242,7 @@ const tokens = [
     iconColor: 'close_squared', // MISSING
     // ticker: 'usdc-usd-coin',
     color: '#0657f9',
-    tags: []
+    tags: [],
   },
   // {
   //   symbol: 'WETH',

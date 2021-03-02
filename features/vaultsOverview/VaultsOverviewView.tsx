@@ -31,9 +31,11 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
   },
   {
     headerLabel: 'system.collateral',
-    header: ({ label, ...filters }) => <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="collateral">
-      {label}
-    </TableSortHeader>,
+    header: ({ label, ...filters }) => (
+      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="collateral">
+        {label}
+      </TableSortHeader>
+    ),
     cell: ({ lockedCollateral }) => (
       <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(lockedCollateral)}</Text>
     ),
@@ -43,7 +45,8 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
     header: ({ label, ...filters }) => (
       <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="freeCollateral">
         {label}
-      </TableSortHeader>),
+      </TableSortHeader>
+    ),
     cell: ({ freeCollateral }) => (
       <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(freeCollateral)}</Text>
     ),
@@ -53,17 +56,17 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
     header: ({ label, ...filters }) => (
       <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="debt">
         {label}
-      </TableSortHeader>),
-    cell: ({ debt }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(debt)}</Text>
+      </TableSortHeader>
     ),
+    cell: ({ debt }) => <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(debt)}</Text>,
   },
   {
     headerLabel: 'system.collateralizationRatio',
     header: ({ label, ...filters }) => (
       <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="collateralizationRatio">
         {label}
-      </TableSortHeader>),
+      </TableSortHeader>
+    ),
     cell: ({ collateralizationRatio }) => (
       <Text sx={{ textAlign: 'right' }}>{formatPercent(collateralizationRatio)}</Text>
     ),
@@ -73,7 +76,8 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
     header: ({ label, ...filters }) => (
       <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="collateralizationRatio">
         {label}
-      </TableSortHeader>),
+      </TableSortHeader>
+    ),
     cell: ({ collateralizationRatio }) => (
       <Text sx={{ textAlign: 'right' }}>{formatPercent(collateralizationRatio)}</Text>
     ),
@@ -92,19 +96,12 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
           Manage Vault
         </AppLink>
       </Box>
-    )
-  }
+    ),
+  },
 ]
 function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
   const { data, filters } = vaults
-  return (
-    <Table
-      data={data}
-      primaryKey="id"
-      state={filters}
-      columns={vaultsColumns}
-    />
-  )
+  return <Table data={data} primaryKey="id" state={filters} columns={vaultsColumns} />
 }
 
 const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState & { isReadonly: boolean }>[] = [
@@ -123,15 +120,19 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState & { isReadonly: boo
     header: ({ label, ...filters }) => (
       <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="ilkDebtAvailable">
         {label}
-      </TableSortHeader>),
-    cell: ({ ilkDebtAvailable }) => <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(ilkDebtAvailable)}</Text>,
+      </TableSortHeader>
+    ),
+    cell: ({ ilkDebtAvailable }) => (
+      <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(ilkDebtAvailable)}</Text>
+    ),
   },
   {
     headerLabel: 'system.stability-fee',
     header: ({ label, ...filters }) => (
       <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="stabilityFee">
         {label}
-      </TableSortHeader>),
+      </TableSortHeader>
+    ),
     cell: ({ stabilityFee }) => (
       <Text sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee.times(100))}</Text>
     ),
@@ -141,20 +142,22 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState & { isReadonly: boo
     header: ({ label, ...filters }) => (
       <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="liquidationRatio">
         {label}
-      </TableSortHeader>),
+      </TableSortHeader>
+    ),
     cell: ({ liquidationRatio }) => (
       <Text sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio.times(100))}</Text>
     ),
   },
   {
     headerLabel: 'system.in-my-wallet',
-    header: ({ label, isReadonly, ...filters }) => isReadonly
-      ? null
-      : (<TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="balance">
-        {label}
-      </TableSortHeader>),
-    cell: (ilk) => ilk.balance
-      ? (
+    header: ({ label, isReadonly, ...filters }) =>
+      isReadonly ? null : (
+        <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="balance">
+          {label}
+        </TableSortHeader>
+      ),
+    cell: (ilk) =>
+      ilk.balance ? (
         <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
           <Text sx={{ textAlign: 'right' }}>
             {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
@@ -163,8 +166,7 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState & { isReadonly: boo
             {`($${ilk.balancePriceInUsd ? formatFiatBalance(ilk.balancePriceInUsd) : 0})`}
           </Text>
         </Flex>
-      )
-      : null,
+      ) : null,
   },
   {
     headerLabel: '',
@@ -195,18 +197,11 @@ function AllIlks({
   const tableState = useMemo(() => {
     return {
       ...filters,
-      isReadonly
+      isReadonly,
     }
   }, [filters, isReadonly])
 
-  return (
-    <Table
-      primaryKey='ilk'
-      data={data}
-      state={tableState}
-      columns={ilksColumns}
-    />
-  )
+  return <Table primaryKey="ilk" data={data} state={tableState} columns={ilksColumns} />
 }
 
 interface CallToActionProps {
@@ -339,29 +334,59 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
 }
 
 interface FiltersProps {
-  onSearch: (search: string) => void,
-  onTagChange: (tag: CoinTag | undefined) => void,
+  onSearch: (search: string) => void
+  onTagChange: (tag: CoinTag | undefined) => void
   search: string
-  defaultTag: string,
+  defaultTag: string
   tagFilter: CoinTag | undefined
 }
 
 export function Filters({ onSearch, search, onTagChange, tagFilter, defaultTag }: FiltersProps) {
-  const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    onSearch(e.currentTarget.value)
-  }, [onSearch])
+  const onChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      onSearch(e.currentTarget.value)
+    },
+    [onSearch],
+  )
   const { t } = useTranslation()
 
   return (
     <Flex>
-      <Button onClick={() => onTagChange(undefined)} sx={{ mr: 2 }} data-selected={tagFilter === undefined} variant="filter">{t(defaultTag)}</Button>
-      <Button onClick={() => onTagChange('stablecoin')} sx={{ mr: 2 }} data-selected={tagFilter === 'stablecoin'} variant="filter">Stablecoins</Button>
-      <Button onClick={() => onTagChange('LPToken')} sx={{ mr: 2 }} data-selected={tagFilter === 'LPToken'} variant="filter">LP Vaults</Button>
-      <Flex sx={{ variant: 'forms.search', width: "313px", ml: 'auto', alignItems: 'center' }}>
-        <Icon sx={{ position: 'relative', top: "3px", left: '3px', mx: 2 }} name="search" size="4" color="muted" />
+      <Button
+        onClick={() => onTagChange(undefined)}
+        sx={{ mr: 2 }}
+        data-selected={tagFilter === undefined}
+        variant="filter"
+      >
+        {t(defaultTag)}
+      </Button>
+      <Button
+        onClick={() => onTagChange('stablecoin')}
+        sx={{ mr: 2 }}
+        data-selected={tagFilter === 'stablecoin'}
+        variant="filter"
+      >
+        Stablecoins
+      </Button>
+      <Button
+        onClick={() => onTagChange('LPToken')}
+        sx={{ mr: 2 }}
+        data-selected={tagFilter === 'LPToken'}
+        variant="filter"
+      >
+        LP Vaults
+      </Button>
+      <Flex sx={{ variant: 'forms.search', width: '313px', ml: 'auto', alignItems: 'center' }}>
+        <Icon
+          sx={{ position: 'relative', top: '3px', left: '3px', mx: 2 }}
+          name="search"
+          size="4"
+          color="muted"
+        />
         <Input variant="plain" onChange={onChange} value={search} placeholder="Search" />
       </Flex>
-    </Flex>)
+    </Flex>
+  )
 }
 export function FeaturedIlks({ ilks }: { ilks: FeaturedIlk[] }) {
   return (
@@ -386,21 +411,33 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
   const displayFeaturedIlks = vaults?.data.length === 0 && featuredIlks
   const displayVaults = vaults && vaults.data.length > 0 && vaults
 
-  const onVaultSearch = useCallback((search: string) => {
-    vaults.filters.change({ kind: 'search', search })
-  }, [vaults.filters])
+  const onVaultSearch = useCallback(
+    (search: string) => {
+      vaults.filters.change({ kind: 'search', search })
+    },
+    [vaults.filters],
+  )
 
-  const onIlkSearch = useCallback((search: string) => {
-    ilks.filters.change({ kind: 'search', search })
-  }, [ilks.filters])
+  const onIlkSearch = useCallback(
+    (search: string) => {
+      ilks.filters.change({ kind: 'search', search })
+    },
+    [ilks.filters],
+  )
 
-  const onVaultsTagChange = useCallback((tagFilter: CoinTag | undefined) => {
-    vaults.filters.change({ kind: 'tagFilter', tagFilter })
-  }, [vaults.filters])
+  const onVaultsTagChange = useCallback(
+    (tagFilter: CoinTag | undefined) => {
+      vaults.filters.change({ kind: 'tagFilter', tagFilter })
+    },
+    [vaults.filters],
+  )
 
-  const onIlksTagChange = useCallback((tagFilter: CoinTag | undefined) => {
-    ilks.filters.change({ kind: 'tagFilter', tagFilter })
-  }, [ilks.filters])
+  const onIlksTagChange = useCallback(
+    (tagFilter: CoinTag | undefined) => {
+      ilks.filters.change({ kind: 'tagFilter', tagFilter })
+    },
+    [ilks.filters],
+  )
 
   return (
     <Grid sx={{ flex: 1 }}>

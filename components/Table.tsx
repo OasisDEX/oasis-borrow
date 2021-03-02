@@ -5,14 +5,14 @@ import React, { memo, ReactNode } from 'react'
 import { Box, Button, Container, SxStyleProp } from 'theme-ui'
 
 export interface ColumnDef<T, S> {
-  headerLabel: string,
+  headerLabel: string
   header: React.ComponentType<S & { label: string }>
   cell: React.ComponentType<T>
 }
 
 interface TableProps<T extends Record<K, string>, K extends keyof T, S> {
   data: T[]
-  state: S,
+  state: S
   columns: ColumnDef<T, S>[]
   primaryKey: K
 }
@@ -100,13 +100,17 @@ function Header({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>)
   )
 }
 
-const MyRow = memo(({ row, columns }: { row: any, columns: ColumnDef<any, any>[] }) => {
+const MyRow = memo(({ row, columns }: { row: any; columns: ColumnDef<any, any>[] }) => {
   const { t } = useTranslation()
   return (
     <Row>
       {columns.map(({ cell: Content, headerLabel }, idx) => (
         <Cell
-          sx={{ display: ['flex', 'table-cell'], justifyContent: 'space-between', ':before': { content: `"${t(headerLabel)}"`, display: ['block', 'none'] } }}
+          sx={{
+            display: ['flex', 'table-cell'],
+            justifyContent: 'space-between',
+            ':before': { content: `"${t(headerLabel)}"`, display: ['block', 'none'] },
+          }}
           key={idx}
         >
           <Content {...row} />
@@ -121,14 +125,18 @@ export function Table<T extends Record<K, string>, K extends keyof T, S>({
   primaryKey,
   state,
 }: TableProps<T, K, S>) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <TableContainer
       header={columns.map(({ header: HeaderComponent, headerLabel }) => (
-        <Header key={headerLabel}><HeaderComponent {...state} label={t(headerLabel)} /></Header>
+        <Header key={headerLabel}>
+          <HeaderComponent {...state} label={t(headerLabel)} />
+        </Header>
       ))}
     >
-      {data.map((row) => (<MyRow key={row[primaryKey]} row={row} columns={columns} />))}
+      {data.map((row) => (
+        <MyRow key={row[primaryKey]} row={row} columns={columns} />
+      ))}
     </TableContainer>
   )
 }
@@ -156,21 +164,15 @@ export function TableSortHeader<K extends string>({
       variant="tableHeader"
       onClick={() => filters.change({ kind: 'sortBy', sortBy })}
     >
-      <Box sx={{ whiteSpace: 'nowrap', color: isSelected ? 'primary' : 'text.muted' }}>{children}</Box>
+      <Box sx={{ whiteSpace: 'nowrap', color: isSelected ? 'primary' : 'text.muted' }}>
+        {children}
+      </Box>
       <Box>
         <Icon
           sx={{ ml: 1, display: 'flex', width: 1 }}
           size={12}
-          name={
-            filters.direction === 'ASC' && isSelected
-              ? 'chevron_up'
-              : 'chevron_down'
-          }
-          color={
-            isSelected
-              ? 'primary'
-              : 'text.muted'
-          }
+          name={filters.direction === 'ASC' && isSelected ? 'chevron_up' : 'chevron_down'}
+          color={isSelected ? 'primary' : 'text.muted'}
         />
       </Box>
     </Button>

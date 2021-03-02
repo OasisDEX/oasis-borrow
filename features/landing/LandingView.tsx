@@ -49,15 +49,19 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
     header: ({ label, ...filters }) => (
       <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="ilkDebtAvailable">
         {label}
-      </TableSortHeader>),
-    cell: ({ ilkDebtAvailable }) => <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(ilkDebtAvailable)}</Text>,
+      </TableSortHeader>
+    ),
+    cell: ({ ilkDebtAvailable }) => (
+      <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(ilkDebtAvailable)}</Text>
+    ),
   },
   {
     headerLabel: 'system.stability-fee',
     header: ({ label, ...filters }) => (
       <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="stabilityFee">
         {label}
-      </TableSortHeader>),
+      </TableSortHeader>
+    ),
     cell: ({ stabilityFee }) => (
       <Text sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee.times(100))}</Text>
     ),
@@ -67,7 +71,8 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
     header: ({ label, ...filters }) => (
       <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="liquidationRatio">
         {label}
-      </TableSortHeader>),
+      </TableSortHeader>
+    ),
     cell: ({ liquidationRatio }) => (
       <Text sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio.times(100))}</Text>
     ),
@@ -93,12 +98,18 @@ export function LandingView() {
   const { landing$ } = useAppContext()
   const landing = useObservable(landing$)
 
-  const onIlkSearch = useCallback((search: string) => {
-    landing?.ilks.filters.change({ kind: 'search', search })
-  }, [landing?.ilks.filters])
-  const onIlksTagChange = useCallback((tagFilter: CoinTag | undefined) => {
-    landing?.ilks.filters.change({ kind: 'tagFilter', tagFilter })
-  }, [landing?.ilks.filters])
+  const onIlkSearch = useCallback(
+    (search: string) => {
+      landing?.ilks.filters.change({ kind: 'search', search })
+    },
+    [landing?.ilks.filters],
+  )
+  const onIlksTagChange = useCallback(
+    (tagFilter: CoinTag | undefined) => {
+      landing?.ilks.filters.change({ kind: 'tagFilter', tagFilter })
+    },
+    [landing?.ilks.filters],
+  )
 
   if (landing === undefined) {
     return null

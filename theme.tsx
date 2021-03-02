@@ -774,13 +774,13 @@ const oasisBaseTheme = {
       px: 4,
       font: '',
       ':focus': {
-        outline: 'none'
+        outline: 'none',
       },
       '&[data-selected="true"]': {
         border: 'light',
-        color: 'primary'
-      }
-    }
+        color: 'primary',
+      },
+    },
   },
   links: {
     nav: {
@@ -844,16 +844,16 @@ const oasisBaseTheme = {
       fontWeight: 'semiBold',
       border: '1px solid #D1DEE6',
       p: 0,
-      ":focus-within": {
+      ':focus-within': {
         //indicate that input is focused
-      }
+      },
     },
     plain: {
       p: 0,
       border: 'none',
-      ":focus": {
+      ':focus': {
         outline: 'none',
-      }
+      },
     },
     select: {
       variant: 'forms.input',
