@@ -12,6 +12,7 @@ import {
   formatFiatBalance,
   formatPercent,
 } from 'helpers/formatters/format'
+import { Trans, useTranslation } from 'i18n'
 import React, { memo, useCallback, useMemo } from 'react'
 import { Box, Button, Card, Flex, Grid, Heading, Input, Label, Radio, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
@@ -107,9 +108,7 @@ function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
   )
 }
 
-const VaultsTableMemo = memo(VaultsTable);
-
-const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
+const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState & { isReadonly: boolean }>[] = [
   {
     headerLabel: 'system.asset',
     header: ({ label }) => <Text variant="tableHead">{label}</Text>,
@@ -126,8 +125,63 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
       <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="ilkDebtAvailable">
         {label}
       </TableSortHeader>),
-    cell: ({ ilk }) => <Text>{ilk}</Text>,
-  }
+    cell: ({ ilkDebtAvailable }) => <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(ilkDebtAvailable)}</Text>,
+  },
+  {
+    headerLabel: 'system.stability-fee',
+    header: ({ label, ...filters }) => (
+      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="stabilityFee">
+        {label}
+      </TableSortHeader>),
+    cell: ({ stabilityFee }) => (
+      <Text sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee.times(100))}</Text>
+    ),
+  },
+  {
+    headerLabel: 'system.liquidation-ratio',
+    header: ({ label, ...filters }) => (
+      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="liquidationRatio">
+        {label}
+      </TableSortHeader>),
+    cell: ({ liquidationRatio }) => (
+      <Text sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio.times(100))}</Text>
+    ),
+  },
+  {
+    headerLabel: 'system.in-my-wallet',
+    header: ({ label, isReadonly, ...filters }) => isReadonly
+      ? null
+      : (<TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="balance">
+        {label}
+      </TableSortHeader>),
+    cell: (ilk) => ilk.balance
+      ? (
+        <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
+          <Text sx={{ textAlign: 'right' }}>
+            {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
+          </Text>
+          <Text variant="paragraph3" sx={{ color: 'muted', ml: 1 }}>
+            {`($${ilk.balancePriceInUsd ? formatFiatBalance(ilk.balancePriceInUsd) : 0})`}
+          </Text>
+        </Flex>
+      )
+      : null,
+  },
+  {
+    headerLabel: '',
+    header: () => null,
+    cell: ({ ilk }) => (
+      <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
+        <AppLink
+          sx={{ width: ['100%', 'inherit'], textAlign: 'center' }}
+          variant="secondary"
+          href={`/vaults/open/${ilk}`}
+        >
+          <Trans i18nKey="open-vault" />
+        </AppLink>
+      </Box>
+    ),
+  },
 ]
 function AllIlks({
   ilks,
@@ -139,84 +193,22 @@ function AllIlks({
 }) {
   const { data, filters } = ilks
 
-  const rowDef = useMemo(() => [
-    {
-      header: (
-        <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="ilkDebtAvailable">
-          DAI Available
-        </TableSortHeader>
-      ),
-      cell: ({ ilkDebtAvailable }) => (
-        <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(ilkDebtAvailable)}</Text>
-      ),
-    },
-    {
-      header: (
-        <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="stabilityFee">
-          Stability Fee
-        </TableSortHeader>
-      ),
-      cell: ({ stabilityFee }) => (
-        <Text sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee.times(100))}</Text>
-      ),
-    },
-    {
-      header: (
-        <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="liquidationRatio">
-          Min. Coll Rato
-        </TableSortHeader>
-      ),
-      cell: ({ liquidationRatio }) => (
-        <Text sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio.times(100))}</Text>
-      ),
-    },
-    ...(isReadonly
-      ? []
-      : [
-        {
-          header: (
-            <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="balance">
-              In my wallet
-            </TableSortHeader>
-          ),
-          cell: (ilk: IlkWithBalance) => (
-            <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
-              <Text sx={{ textAlign: 'right' }}>
-                {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
-              </Text>
-              <Text variant="paragraph3" sx={{ color: 'muted', ml: 1 }}>
-                {`($${ilk.balancePriceInUsd ? formatFiatBalance(ilk.balancePriceInUsd) : 0})`}
-              </Text>
-            </Flex>
-          ),
-        },
-      ]),
-    {
-      header: <Text />,
-      cell: ({ ilk }) => (
-        <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
-          <AppLink
-            sx={{ width: ['100%', 'inherit'], textAlign: 'center' }}
-            variant="secondary"
-            href={`/vaults/open/${ilk}`}
-          >
-            Open Vault
-          </AppLink>
-        </Box>
-      ),
-    },
-  ], [filters])
+  const tableState = useMemo(() => {
+    return {
+      ...filters,
+      isReadonly
+    }
+  }, [filters, isReadonly])
 
   return (
     <Table
-      primaryKey="ilk"
+      primaryKey='ilk'
       data={data}
-      columns={rowDef}
+      state={tableState}
+      columns={ilksColumns}
     />
   )
 }
-
-const AllIlksMemo = memo(AllIlks)
 
 interface CallToActionProps {
   ilk: FeaturedIlk
@@ -351,17 +343,19 @@ interface FiltersProps {
   onSearch: (search: string) => void,
   onTagChange: (tag: CoinTag | undefined) => void,
   search: string
+  defaultTag: string,
   tagFilter: CoinTag | undefined
 }
 
-function Filters({ onSearch, search, onTagChange, tagFilter }: FiltersProps) {
+export function Filters({ onSearch, search, onTagChange, tagFilter, defaultTag }: FiltersProps) {
   const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     onSearch(e.currentTarget.value)
   }, [onSearch])
+  const { t } = useTranslation()
 
   return (
     <Flex>
-      <Button onClick={() => onTagChange(undefined)} sx={{ mr: 2 }} data-selected={tagFilter === undefined} variant="filter">Your Vaults</Button>
+      <Button onClick={() => onTagChange(undefined)} sx={{ mr: 2 }} data-selected={tagFilter === undefined} variant="filter">{t(defaultTag)}</Button>
       <Button onClick={() => onTagChange('stablecoin')} sx={{ mr: 2 }} data-selected={tagFilter === 'stablecoin'} variant="filter">Stablecoins</Button>
       <Button onClick={() => onTagChange('LPToken')} sx={{ mr: 2 }} data-selected={tagFilter === 'LPToken'} variant="filter">LP Vaults</Button>
       <Flex sx={{ variant: 'forms.search', width: "313px", ml: 'auto', alignItems: 'center' }}>
@@ -397,9 +391,17 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
     vaults.filters.change({ kind: 'search', search })
   }, [vaults.filters])
 
-  const onTagChange = useCallback((tagFilter: CoinTag | undefined) => {
+  const onIlkSearch = useCallback((search: string) => {
+    ilks.filters.change({ kind: 'search', search })
+  }, [ilks.filters])
+
+  const onVaultsTagChange = useCallback((tagFilter: CoinTag | undefined) => {
     vaults.filters.change({ kind: 'tagFilter', tagFilter })
   }, [vaults.filters])
+
+  const onIlksTagChange = useCallback((tagFilter: CoinTag | undefined) => {
+    ilks.filters.change({ kind: 'tagFilter', tagFilter })
+  }, [ilks.filters])
 
   return (
     <Grid sx={{ flex: 1 }}>
@@ -422,8 +424,9 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
           <Filters
             onSearch={onVaultSearch}
             search={vaults.filters.search}
-            onTagChange={onTagChange}
+            onTagChange={onVaultsTagChange}
             tagFilter={vaults.filters.tagFilter}
+            defaultTag="your-vaults"
           />
           <VaultsTable vaults={displayVaults} />
         </>
@@ -431,11 +434,18 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
       {ilks && (
         <>
           <Heading>Vaults</Heading>
-          {/* <AllIlks
+          <Filters
+            onSearch={onIlkSearch}
+            search={ilks.filters.search}
+            onTagChange={onIlksTagChange}
+            tagFilter={ilks.filters.tagFilter}
+            defaultTag="all-assets"
+          />
+          <AllIlks
             ilks={ilks}
             isReadonly={context?.status === 'connectedReadonly'}
             address={address}
-          /> */}
+          />
         </>
       )}
     </Grid>

@@ -1,12 +1,15 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { getToken } from 'blockchain/tokensMetadata'
+import { IlkWithBalance } from 'blockchain/ilks'
+import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { Table, TableSortHeader } from 'components/Table'
-import { FeaturedIlks } from 'features/vaultsOverview/VaultsOverviewView'
+import { ColumnDef, Table, TableSortHeader } from 'components/Table'
+import { IlksFilterState } from 'features/ilks/ilksFilters'
+import { FeaturedIlks, Filters } from 'features/vaultsOverview/VaultsOverviewView'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import React, { ComponentProps } from 'react'
+import { Trans } from 'i18n'
+import React, { ComponentProps, useCallback } from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 export function TokenSymbol({
@@ -30,9 +33,72 @@ export function TokenSymbol({
   )
 }
 
+const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
+  {
+    headerLabel: 'system.asset',
+    header: ({ label }) => <Text variant="tableHead">{label}</Text>,
+    cell: ({ token }) => <TokenSymbol token={token} />,
+  },
+  {
+    headerLabel: 'system.type',
+    header: ({ label }) => <Text variant="tableHead">{label}</Text>,
+    cell: ({ ilk }) => <Text>{ilk}</Text>,
+  },
+  {
+    headerLabel: 'system.dai-available',
+    header: ({ label, ...filters }) => (
+      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="ilkDebtAvailable">
+        {label}
+      </TableSortHeader>),
+    cell: ({ ilkDebtAvailable }) => <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(ilkDebtAvailable)}</Text>,
+  },
+  {
+    headerLabel: 'system.stability-fee',
+    header: ({ label, ...filters }) => (
+      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="stabilityFee">
+        {label}
+      </TableSortHeader>),
+    cell: ({ stabilityFee }) => (
+      <Text sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee.times(100))}</Text>
+    ),
+  },
+  {
+    headerLabel: 'system.liquidation-ratio',
+    header: ({ label, ...filters }) => (
+      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="liquidationRatio">
+        {label}
+      </TableSortHeader>),
+    cell: ({ liquidationRatio }) => (
+      <Text sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio.times(100))}</Text>
+    ),
+  },
+  {
+    headerLabel: '',
+    header: () => null,
+    cell: ({ ilk }) => (
+      <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
+        <AppLink
+          sx={{ width: ['100%', 'inherit'], textAlign: 'center' }}
+          variant="secondary"
+          href={`/vaults/open/${ilk}`}
+        >
+          <Trans i18nKey="open-vault" />
+        </AppLink>
+      </Box>
+    ),
+  },
+]
+
 export function LandingView() {
   const { landing$ } = useAppContext()
   const landing = useObservable(landing$)
+
+  const onIlkSearch = useCallback((search: string) => {
+    landing?.ilks.filters.change({ kind: 'search', search })
+  }, [landing?.ilks.filters])
+  const onIlksTagChange = useCallback((tagFilter: CoinTag | undefined) => {
+    landing?.ilks.filters.change({ kind: 'tagFilter', tagFilter })
+  }, [landing?.ilks.filters])
 
   if (landing === undefined) {
     return null
@@ -49,75 +115,18 @@ export function LandingView() {
       <Box sx={{ my: 4 }}>
         <FeaturedIlks ilks={landing.featuredIlks} />
       </Box>
+      <Filters
+        onSearch={onIlkSearch}
+        search={landing.ilks.filters.search}
+        onTagChange={onIlksTagChange}
+        tagFilter={landing.ilks.filters.tagFilter}
+        defaultTag="all-assets"
+      />
       <Table
         data={landing.ilks.data}
         primaryKey="ilk"
-        columns={[
-          {
-            header: <Text>Asset</Text>,
-            cell: ({ token }) => <TokenSymbol token={token} />,
-          },
-          {
-            header: <Text>Type</Text>,
-            cell: ({ ilk }) => <Text>{ilk}</Text>,
-          },
-          {
-            header: (
-              <TableSortHeader
-                filters={landing.ilks.filters}
-                sortBy="ilkDebtAvailable"
-                sx={{ ml: 'auto' }}
-              >
-                DAI Available
-              </TableSortHeader>
-            ),
-            cell: ({ ilkDebtAvailable }) => (
-              <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(ilkDebtAvailable)}</Text>
-            ),
-          },
-          {
-            header: (
-              <TableSortHeader
-                filters={landing.ilks.filters}
-                sortBy="stabilityFee"
-                sx={{ ml: 'auto' }}
-              >
-                Stability Fee
-              </TableSortHeader>
-            ),
-            cell: ({ stabilityFee }) => (
-              <Text sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee)}</Text>
-            ),
-          },
-          {
-            header: (
-              <TableSortHeader
-                filters={landing.ilks.filters}
-                sortBy="liquidationRatio"
-                sx={{ ml: 'auto' }}
-              >
-                Min. Coll Ratio
-              </TableSortHeader>
-            ),
-            cell: ({ liquidationRatio }) => (
-              <Text sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio)}</Text>
-            ),
-          },
-          {
-            header: <Text />,
-            cell: ({ ilk }) => (
-              <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
-                <AppLink
-                  sx={{ width: ['100%', 'inherit'], textAlign: 'center' }}
-                  href={`/vaults/open/${ilk}`}
-                  variant="secondary"
-                >
-                  Create Vault
-                </AppLink>
-              </Box>
-            ),
-          },
-        ]}
+        state={landing.ilks.filters}
+        columns={ilksColumns}
       />
     </Grid>
   )
