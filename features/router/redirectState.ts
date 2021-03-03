@@ -1,3 +1,3 @@
-import { ReplaySubject } from 'rxjs'
+import { BehaviorSubject } from 'rxjs'
 
-export const redirectState$ = new ReplaySubject<string | undefined>()
+export const redirectState$ = new BehaviorSubject<string | undefined>(undefined)

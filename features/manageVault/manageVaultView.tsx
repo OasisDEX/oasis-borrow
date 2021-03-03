@@ -8,6 +8,7 @@ import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
+import { useTranslation } from 'i18n'
 import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
@@ -28,6 +29,7 @@ function ManageVaultDetails({
   isStaticCollateralPrice,
   dateNextCollateralPrice,
 }: ManageVaultState) {
+  const { t } = useTranslation()
   const collRatio = collateralizationRatio.eq(zero)
     ? '--'
     : formatPercent(collateralizationRatio.times(100), { precision: 4 })
@@ -45,14 +47,18 @@ function ManageVaultDetails({
   return (
     <Grid columns="1fr 1fr" gap={6} sx={{ justifyContent: 'space-between' }}>
       <Grid>
-        <Text>Liquidation Price</Text>
+        <Text>{t('system.liquidation-price')}</Text>
         <Heading>$ {liqPrice}</Heading>
-        <Text>After: ${afterLiqPrice}</Text>
+        <Text>
+          {t('after')}: ${afterLiqPrice}
+        </Text>
       </Grid>
       <Grid sx={{ textAlign: 'right' }}>
-        <Text>Collateralization Ratio</Text>
+        <Text>{t('system.collateralization-ratio')}</Text>
         <Heading>{collRatio}</Heading>
-        <Text>After: {afterCollRatio}</Text>
+        <Text>
+          {t('after')}: {afterCollRatio}
+        </Text>
       </Grid>
       {isStaticCollateralPrice ? (
         <Grid>
@@ -74,7 +80,7 @@ function ManageVaultDetails({
         </Grid>
       )}
       <Grid sx={{ textAlign: 'right' }}>
-        <Text>Collateral Locked</Text>
+        <Text>{t('system.collateral-locked')}</Text>
         <Heading>
           {locked} {token}
         </Heading>
@@ -340,6 +346,8 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     }
   }
 
+  const { t } = useTranslation()
+
   const errorString = errorMessages.join(',\n')
   const warningString = warningMessages.join(',\n')
 
@@ -423,18 +431,18 @@ function ManageVaultFormEditing(props: ManageVaultState) {
 
       <Card>
         <Grid columns="5fr 3fr">
-          <Text sx={{ fontSize: 2 }}>Dai Available</Text>
+          <Text sx={{ fontSize: 2 }}>{t('system.dai-available')}</Text>
           <Text sx={{ fontSize: 2, textAlign: 'right' }}>{daiAvailable}</Text>
 
-          <Text sx={{ fontSize: 2 }}>Min. collateral ratio</Text>
+          <Text sx={{ fontSize: 2 }}>{t('system.min-coll-ratio')}</Text>
           <Text sx={{ fontSize: 2, textAlign: 'right' }}>{minCollRatio}</Text>
 
-          <Text sx={{ fontSize: 2 }}>Collateralization Ratio</Text>
+          <Text sx={{ fontSize: 2 }}>{t('system.collateralization-ratio')}</Text>
           <Text sx={{ fontSize: 2, textAlign: 'right' }}>{afterCollRatio}</Text>
         </Grid>
       </Card>
       <Button onClick={handleProgress} disabled={hasError}>
-        Confirm
+        {t('confirm')}
       </Button>
     </Grid>
   )
@@ -448,6 +456,7 @@ function ManageVaultFormProxy({
   etherscan,
   progress,
 }: ManageVaultState) {
+  const { t } = useTranslation()
   const isLoading = stage === 'proxyInProgress' || stage === 'proxyWaitingForApproval'
 
   const canProgress = !!progress
@@ -458,12 +467,12 @@ function ManageVaultFormProxy({
 
   const buttonText =
     stage === 'proxySuccess'
-      ? 'Continue'
+      ? t('continue')
       : stage === 'proxyFailure'
-      ? 'Retry Create Proxy'
+      ? t('retry-create-proxy')
       : stage === 'proxyWaitingForConfirmation'
-      ? 'Create Proxy'
-      : 'Creating Proxy'
+      ? t('create-proxy-btn')
+      : t('creating-proxy')
 
   return (
     <Grid>
@@ -483,7 +492,8 @@ function ManageVaultFormProxy({
             <Spinner size={25} color="onWarning" />
             <Grid pl={2} gap={1}>
               <Text color="onWarning" sx={{ fontSize: 1 }}>
-                {proxyConfirmations || 0} of {safeConfirmations}: Proxy deployment confirming
+                {t('one-of-some', { one: proxyConfirmations || 0, some: safeConfirmations })}:{' '}
+                {t('waiting-proxy-deployment')}
               </Text>
               <Link
                 href={`${etherscan}/tx/${proxyTxHash}`}
@@ -491,7 +501,7 @@ function ManageVaultFormProxy({
                 rel="noopener noreferrer"
               >
                 <Text color="onWarning" sx={{ fontSize: 1 }}>
-                  View on etherscan -{'>'}
+                  {t('view-on-etherscan')} -{'>'}
                 </Text>
               </Link>
             </Grid>
@@ -504,7 +514,8 @@ function ManageVaultFormProxy({
             <Icon name="checkmark" size={25} color="onSuccess" />
             <Grid pl={2} gap={1}>
               <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                {safeConfirmations} of {safeConfirmations}: Proxy deployment confirmed
+                {t('one-of-some', { one: safeConfirmations, some: safeConfirmations })}:{' '}
+                {t('confirmed-proxy-deployment')}
               </Text>
               <Link
                 href={`${etherscan}/tx/${proxyTxHash}`}
@@ -512,7 +523,7 @@ function ManageVaultFormProxy({
                 rel="noopener noreferrer"
               >
                 <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                  View on etherscan -{'>'}
+                  {t('view-on-etherscan')} -{'>'}
                 </Text>
               </Link>
             </Grid>
@@ -577,17 +588,18 @@ function ManageVaultFormCollateralAllowance({
     }
   }
 
+  const { t } = useTranslation()
   const errorString = errorMessages.join(',\n')
 
   const hasError = !!errorString
   const buttonText =
     stage === 'collateralAllowanceSuccess'
-      ? 'Continue'
+      ? t('continue')
       : stage === 'collateralAllowanceFailure'
-      ? 'Retry Allowance approval'
+      ? t('retry-allowance-approval')
       : stage === 'collateralAllowanceWaitingForConfirmation'
-      ? 'Approve Allowance'
-      : 'Approving Allowance'
+      ? t('approve-allowance')
+      : t('approving-allowance')
 
   return (
     <Grid>
@@ -595,18 +607,18 @@ function ManageVaultFormCollateralAllowance({
         <>
           <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleUnlimited}>
             <Radio name="dark-mode" value="true" defaultChecked={true} />
-            <Text sx={{ fontSize: 2 }}>Unlimited Allowance</Text>
+            <Text sx={{ fontSize: 2 }}>{t('unlimited-allowance')}</Text>
           </Label>
           <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleDeposit}>
             <Radio name="dark-mode" value="true" />
             <Text sx={{ fontSize: 2 }}>
-              {token} depositing ({formatCryptoBalance(depositAmount!)})
+              {t('token-depositing', { token, amount: formatCryptoBalance(depositAmount!) })}
             </Text>
           </Label>
           <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleCustom}>
             <Radio name="dark-mode" value="true" />
             <Grid columns="2fr 2fr 1fr" sx={{ alignItems: 'center' }}>
-              <Text sx={{ fontSize: 2 }}>Custom</Text>
+              <Text sx={{ fontSize: 2 }}>{t('custom')}</Text>
               <BigNumberInput
                 sx={{ p: 1, borderRadius: 'small', width: '100px', fontSize: 1 }}
                 disabled={!isCustom}
@@ -649,7 +661,7 @@ function ManageVaultFormCollateralAllowance({
             <Spinner size={25} color="onWarning" />
             <Grid pl={2} gap={1}>
               <Text color="onWarning" sx={{ fontSize: 1 }}>
-                Setting Allowance for {token}
+                {t('setting-allowance-for', { token })}
               </Text>
               <Link
                 href={`${etherscan}/tx/${collateralAllowanceTxHash}`}
@@ -657,7 +669,7 @@ function ManageVaultFormCollateralAllowance({
                 rel="noopener noreferrer"
               >
                 <Text color="onWarning" sx={{ fontSize: 1 }}>
-                  View on etherscan -{'>'}
+                  {t('view-on-etherscan')}
                 </Text>
               </Link>
             </Grid>
@@ -670,7 +682,7 @@ function ManageVaultFormCollateralAllowance({
             <Icon name="checkmark" size={25} color="onSuccess" />
             <Grid pl={2} gap={1}>
               <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                Set Allowance for {token}
+                {t('set-allowance-for', { token })}
               </Text>
               <Link
                 href={`${etherscan}/tx/${collateralAllowanceTxHash}`}
@@ -678,7 +690,7 @@ function ManageVaultFormCollateralAllowance({
                 rel="noopener noreferrer"
               >
                 <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                  View on etherscan -{'>'}
+                  {t('view-on-etherscan')}
                 </Text>
               </Link>
             </Grid>
@@ -742,16 +754,17 @@ function ManageVaultFormDaiAllowance({
   }
 
   const errorString = errorMessages.join(',\n')
+  const { t } = useTranslation()
 
   const hasError = !!errorString
   const buttonText =
     stage === 'daiAllowanceSuccess'
-      ? 'Continue'
+      ? t('view-on-etherscan')
       : stage === 'daiAllowanceFailure'
-      ? 'Retry Allowance approval'
+      ? t('retry-allowance-approval')
       : stage === 'daiAllowanceWaitingForConfirmation'
-      ? 'Approve Allowance'
-      : 'Approving daiAllowance'
+      ? t('approve-allowance')
+      : t('approving-allowance')
 
   return (
     <Grid>
@@ -759,18 +772,18 @@ function ManageVaultFormDaiAllowance({
         <>
           <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleUnlimited}>
             <Radio name="dark-mode" value="true" defaultChecked={true} />
-            <Text sx={{ fontSize: 2 }}>Unlimited Allowance</Text>
+            <Text sx={{ fontSize: 2 }}>{t('unlimited-allowance')}</Text>
           </Label>
           <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handlePayback}>
             <Radio name="dark-mode" value="true" />
             <Text sx={{ fontSize: 2 }}>
-              DAI paying back ({formatCryptoBalance(paybackAmount!)})
+              {t('dai-paying-back', { amount: formatCryptoBalance(paybackAmount!) })}
             </Text>
           </Label>
           <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleCustom}>
             <Radio name="dark-mode" value="true" />
             <Grid columns="2fr 2fr 1fr" sx={{ alignItems: 'center' }}>
-              <Text sx={{ fontSize: 2 }}>Custom</Text>
+              <Text sx={{ fontSize: 2 }}>{t('custom')}</Text>
               <BigNumberInput
                 sx={{ p: 1, borderRadius: 'small', width: '100px', fontSize: 1 }}
                 disabled={!isCustom}
@@ -813,7 +826,7 @@ function ManageVaultFormDaiAllowance({
             <Spinner size={25} color="onWarning" />
             <Grid pl={2} gap={1}>
               <Text color="onWarning" sx={{ fontSize: 1 }}>
-                Setting Allowance for DAI
+                {t('setting-allowance-for', { token: 'DAI' })}
               </Text>
               <Link
                 href={`${etherscan}/tx/${daiAllowanceTxHash}`}
@@ -821,7 +834,7 @@ function ManageVaultFormDaiAllowance({
                 rel="noopener noreferrer"
               >
                 <Text color="onWarning" sx={{ fontSize: 1 }}>
-                  View on etherscan -{'>'}
+                  {t('view-on-etherscan')} -{'>'}
                 </Text>
               </Link>
             </Grid>
@@ -834,7 +847,7 @@ function ManageVaultFormDaiAllowance({
             <Icon name="checkmark" size={25} color="onSuccess" />
             <Grid pl={2} gap={1}>
               <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                Set Allowance for DAI
+                {t('set-allowance-for', { token: 'DAI' })}
               </Text>
               <Link
                 href={`${etherscan}/tx/${daiAllowanceTxHash}`}
@@ -842,7 +855,7 @@ function ManageVaultFormDaiAllowance({
                 rel="noopener noreferrer"
               >
                 <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                  View on etherscan -{'>'}
+                  {t('view-on-etherscan')} -{'>'}
                 </Text>
               </Link>
             </Grid>
@@ -867,6 +880,7 @@ function ManageVaultFormConfirmation({
   etherscan,
   manageTxHash,
 }: ManageVaultState) {
+  const { t } = useTranslation()
   const walletBalance = formatCryptoBalance(collateralBalance)
   const depositCollateral = formatCryptoBalance(depositAmount || zero)
   const withdrawingCollateral = formatCryptoBalance(withdrawAmount || zero)
@@ -892,47 +906,47 @@ function ManageVaultFormConfirmation({
 
   const buttonText =
     stage === 'manageWaitingForConfirmation'
-      ? 'Change your vault'
+      ? t('change-your-vault')
       : stage === 'manageFailure'
-      ? 'Retry'
+      ? t('retry')
       : stage === 'manageSuccess'
-      ? `Back To Editing`
-      : 'Changing your Vault'
+      ? t('back-to-editing')
+      : t('change-your-vault')
 
   return (
     <Grid>
       <Card backgroundColor="Success">
         <Grid columns="1fr 1fr">
-          <Text sx={{ fontSize: 1 }}>In your wallet</Text>
+          <Text sx={{ fontSize: 1 }}>{t('system.in-your-wallet')}</Text>
           <Text sx={{ fontSize: 1, textAlign: 'right' }}>
             {walletBalance} {token}
           </Text>
 
-          <Text sx={{ fontSize: 1 }}>Moving into Vault</Text>
+          <Text sx={{ fontSize: 1 }}>{t('moving-into-vault')}</Text>
           <Text sx={{ fontSize: 1, textAlign: 'right' }}>
             {depositCollateral} {token}
           </Text>
 
-          <Text sx={{ fontSize: 1 }}>Moving out of Vault</Text>
+          <Text sx={{ fontSize: 1 }}>{t('moving-out-vault')}</Text>
           <Text sx={{ fontSize: 1, textAlign: 'right' }}>
             {withdrawingCollateral} {token}
           </Text>
 
-          <Text sx={{ fontSize: 1 }}>Remaining in Wallet</Text>
+          <Text sx={{ fontSize: 1 }}>{t('remaining-in-wallet')}</Text>
           <Text sx={{ fontSize: 1, textAlign: 'right' }}>
             {remainingInWallet} {token}
           </Text>
 
-          <Text sx={{ fontSize: 1 }}>Dai being generated</Text>
+          <Text sx={{ fontSize: 1 }}>{t('dai-being-generated')}</Text>
           <Text sx={{ fontSize: 1, textAlign: 'right' }}>{daiToBeGenerated} DAI</Text>
 
-          <Text sx={{ fontSize: 1 }}>Dai paying back</Text>
+          <Text sx={{ fontSize: 1 }}>{t('dai-paying-back')}</Text>
           <Text sx={{ fontSize: 1, textAlign: 'right' }}>{daiPayingBack} DAI</Text>
 
-          <Text sx={{ fontSize: 1 }}>Collateral Ratio</Text>
+          <Text sx={{ fontSize: 1 }}>{t('system.collateral-ratio')}</Text>
           <Text sx={{ fontSize: 1, textAlign: 'right' }}>{afterCollRatio}</Text>
 
-          <Text sx={{ fontSize: 1 }}>Liquidation Price</Text>
+          <Text sx={{ fontSize: 1 }}>{t('system.liquidation-price')}</Text>
           <Text sx={{ fontSize: 1, textAlign: 'right' }}>${afterLiqPrice}</Text>
         </Grid>
       </Card>
@@ -953,7 +967,7 @@ function ManageVaultFormConfirmation({
             <Spinner size={25} color="onWarning" />
             <Grid pl={2} gap={1}>
               <Text color="onWarning" sx={{ fontSize: 1 }}>
-                Changing Vault!
+                {t('changing-vault')}
               </Text>
               <Link
                 href={`${etherscan}/tx/${manageTxHash}`}
@@ -961,7 +975,7 @@ function ManageVaultFormConfirmation({
                 rel="noopener noreferrer"
               >
                 <Text color="onWarning" sx={{ fontSize: 1 }}>
-                  View on etherscan -{'>'}
+                  {t('view-on-etherscan')} -{'>'}
                 </Text>
               </Link>
             </Grid>
@@ -974,7 +988,7 @@ function ManageVaultFormConfirmation({
             <Icon name="checkmark" size={25} color="onSuccess" />
             <Grid pl={2} gap={1}>
               <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                Vault changed!
+                {t('vault-changed')}
               </Text>
               <Link
                 href={`${etherscan}/tx/${manageTxHash}`}
@@ -982,7 +996,7 @@ function ManageVaultFormConfirmation({
                 rel="noopener noreferrer"
               >
                 <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                  View on etherscan -{'>'}
+                  {t('view-on-etherscan')} -{'>'}
                 </Text>
               </Link>
             </Grid>

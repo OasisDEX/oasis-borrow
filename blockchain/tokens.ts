@@ -40,12 +40,14 @@ export function createTokens$(
   )
 }
 
+export type TokenBalances = Record<string, { balance: BigNumber; price: BigNumber }>
+
 export function createAccountBalance$(
   tokenBalance$: (token: string, address: string) => Observable<BigNumber>,
   tokens$: Observable<string[]>,
   oraclePriceData$: (token: string) => Observable<OraclePriceData>,
   address: string,
-): Observable<Record<string, { balance: BigNumber; price: BigNumber }>> {
+): Observable<TokenBalances> {
   return tokens$.pipe(
     switchMap((tokens) =>
       combineLatest(

@@ -1,46 +1,45 @@
-import BigNumber from 'bignumber.js'
 import { IlkData, IlkDataList } from 'blockchain/ilks'
-import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
+import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
+import { startWithDefault } from 'helpers/operators'
 import { isEqual } from 'lodash'
 import maxBy from 'lodash/maxBy'
 import minBy from 'lodash/minBy'
 import { Observable } from 'rxjs'
 import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/internal/operators/map'
-import { distinctUntilChanged, filter, startWith } from 'rxjs/operators'
+import { distinctUntilChanged } from 'rxjs/operators'
 
+import { ilksWithFilter$, IlksWithFilters } from '../ilks/ilksFilters'
+import { vaultsWithFilter$, VaultsWithFilters } from './vaultsFilters'
 import { getVaultsSummary, VaultSummary } from './vaultSummary'
 
 export interface FeaturedIlk extends IlkData {
   title: string
 }
 
-export interface IlkDataWithBalance extends IlkData {
-  balance: BigNumber | undefined
-  balancePrice: BigNumber | undefined
-}
-
 export interface VaultsOverview {
-  canOpenVault: boolean
-  vaults: Vault[] | undefined
+  vaults: VaultsWithFilters
   vaultSummary: VaultSummary | undefined
-  ilkDataList: IlkDataWithBalance[] | undefined
+  ilksWithFilters: IlksWithFilters
   featuredIlks: FeaturedIlk[] | undefined
 }
 
-export function createFeaturedIlk(
-  ilkDataList$: Observable<IlkDataList>,
+function createFeaturedIlk(
+  ilkDataList: IlkDataList,
   selector: (ilks: IlkDataList) => IlkData | undefined,
   title: string,
-): Observable<FeaturedIlk> {
-  return ilkDataList$.pipe(
-    map((ilks) => ilks.filter(hasAllMetaInfo)),
-    map(selector),
-    filter((ilk): ilk is IlkData => ilk !== undefined),
-    map((ilk) => ({ ...ilk, title })),
-  )
+): FeaturedIlk | undefined {
+  const featured = selector(ilkDataList.filter(hasAllMetaInfo))
+  if (featured === undefined) {
+    return undefined
+  }
+
+  return {
+    ...featured,
+    title,
+  }
 }
 
 function hasAllMetaInfo(ilk: IlkData) {
@@ -66,44 +65,33 @@ export function getCheapest(ilks: IlkDataList) {
 }
 
 export function createFeaturedIlks$(ilkDataList$: Observable<IlkDataList>) {
-  return combineLatest(
-    createFeaturedIlk(ilkDataList$, getNewest, 'New'),
-    createFeaturedIlk(ilkDataList$, getMostPopular, 'Most Popular'),
-    createFeaturedIlk(ilkDataList$, getCheapest, 'Cheapest'),
+  return ilkDataList$.pipe(
+    map((ilks) =>
+      [
+        createFeaturedIlk(ilks, getNewest, 'New'),
+        createFeaturedIlk(ilks, getMostPopular, 'Most Popular'),
+        createFeaturedIlk(ilks, getCheapest, 'Cheapest'),
+      ].filter((featured): featured is FeaturedIlk => featured !== undefined),
+    ),
   )
 }
 
 export function createVaultsOverview$(
-  context$: Observable<Context>,
   vaults$: (address: string) => Observable<Vault[]>,
-  ilkDataList$: Observable<IlkDataList>,
+  ilksListWithBalances$: Observable<IlkWithBalance[]>,
   featuredIlks$: Observable<FeaturedIlk[]>,
-  balances$: (
-    address: string,
-  ) => Observable<Record<string, { price: BigNumber; balance: BigNumber }>>,
   address: string,
 ): Observable<VaultsOverview> {
   return combineLatest(
-    context$,
-    vaults$(address).pipe(startWith<Vault[] | undefined>(undefined)),
-    vaults$(address).pipe(map(getVaultsSummary), startWith<VaultSummary | undefined>(undefined)),
-    ilkDataList$.pipe(startWith<IlkDataList | undefined>(undefined)),
-    featuredIlks$.pipe(startWith<FeaturedIlk[] | undefined>(undefined)),
-    balances$(address).pipe(
-      startWith<Record<string, { price: BigNumber; balance: BigNumber }>>({}),
-    ),
+    vaultsWithFilter$(vaults$(address)),
+    vaults$(address).pipe(map(getVaultsSummary)),
+    ilksWithFilter$(ilksListWithBalances$),
+    startWithDefault(featuredIlks$, undefined),
   ).pipe(
-    map(([context, vaults, vaultSummary, ilkDataList, featuredIlks, balances]) => ({
-      canOpenVault: context.status === 'connected',
+    map(([vaults, vaultSummary, ilks, featuredIlks]) => ({
       vaults,
       vaultSummary,
-      ilkDataList: ilkDataList
-        ? ilkDataList.map((ilk) => ({
-            ...ilk,
-            balance: balances[ilk.token]?.balance,
-            balancePrice: balances[ilk.token]?.price.times(balances[ilk.token]?.balance),
-          }))
-        : ilkDataList,
+      ilks,
       featuredIlks,
     })),
     distinctUntilChanged(isEqual),

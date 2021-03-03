@@ -204,7 +204,6 @@ export function getConnectionKindMessage(connectionKind: ConnectionKind) {
 export function ConnectWallet() {
   const { web3Context$, redirectState$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
-  const url = useObservable(redirectState$)
   const { t } = useTranslation('common')
   const { replace } = useRedirect()
   const [connectingLedger, setConnectingLedger] = React.useState(false)
@@ -212,6 +211,7 @@ export function ConnectWallet() {
   useEffect(() => {
     const subscription = web3Context$.subscribe((web3Context) => {
       if (web3Context.status === 'connected') {
+        const url = redirectState$.value
         if (url !== undefined) {
           replace(url)
           redirectState$.next(undefined)
@@ -221,7 +221,7 @@ export function ConnectWallet() {
       }
     })
     return () => subscription.unsubscribe()
-  }, [url])
+  }, [])
 
   if (!web3Context) {
     return null
@@ -396,7 +396,6 @@ export function WithWalletConnection({ children }: WithChildren) {
   const { replace } = useRedirect()
   const { web3Context$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
-
   useEffect(() => {
     if (web3Context?.status === 'connectedReadonly') {
       redirectState$.next(window.location.pathname)

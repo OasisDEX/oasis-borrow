@@ -10,6 +10,8 @@ import { of } from 'rxjs'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
+import { TokenBalances } from './tokens'
+
 export function createIlks$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(
     map((context) => Object.keys(context.joins).filter((join) => join !== 'DAI' && join !== 'SAI')),
@@ -88,3 +90,4 @@ export function createIlkDataList$(
     shareReplay(1),
   )
 }
+

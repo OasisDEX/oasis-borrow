@@ -1,4 +1,95 @@
 {
+  "landing": {
+    "hero": {
+      "headline": "Borrow against your collateral by generating Dai",
+      "subheader": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sem eros"
+    },
+    "footer": {
+      "blog": "Blog",
+      "borrow": "Borrow",
+      "contact": "Contact",
+      "faq": "FAQ",
+      "language": {
+        "en": "English",
+        "es": "Español",
+        "pt": "Português"
+      },
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "trade": "Trade"
+    }
+  },
+  "featured": {
+    "new": "new",
+    "most-popular": "most popular",
+    "cheapest": "cheapest"
+  },
+  "system": {
+    "dai": "DAI",
+    "stability-fee": "Stability fee",
+    "min-coll-ratio": "Min coll. ratio",
+    "asset": "Asset",
+    "type": "Type",
+    "dai-available": "DAI Available",
+    "liquidation-price": "Liquidation Price",
+    "liquidation-penalty": "Liquidation Penalty",
+    "coll-ratio": "Coll Rato",
+    "collateralization-ratio": "Collateralization Ratio",
+    "coll-locked": "Coll. locked",
+    "collateral": "Collateral",
+    "collateral-locked": "Collateral locked",
+    "dai-debt": "DAI debt",
+    "in-my-wallet": "In my wallet",
+    "in-your-wallet": "In Your wallet",
+    "deposited": "Deposited",
+    "available-to-withdraw": "Avail. to withdraw",
+    "collateral-ratio": "Collateral Ratio",
+    "vault-id": "Vault ID"
+  },
+  "stablecoins": "Stablecoins",
+  "lp-tokens": "LP tokens",
+  "open-vault": "Open Vault",
+  "my-page": "My Page",
+  "vaults-overview": {
+    "header": "Vault overview",
+    "message-connected": "Hello {{address}} it looks like you currently have {{count}} Vault open with this wallet. Open a Vault below.",
+    "message-connected_plural": "Hello {{address}} it looks like you currently have {{count}} Vaults open with this wallet. Open a Vault below.",
+    "message-not-connected": "Hello, you are viewing {{address}} it looks like currently this address has no Vaults open.",
+    "vaults": "Vaults",
+    "your-vaults": "Your Vaults",
+    "number-of-vaults": "No. of Vaults",
+    "total-locked": "Total locked",
+    "total-debt": "Total debt",
+    "vaults-at-risk": "Vaults at risk"
+  },
+  "vault": {
+    "header": "{{ilk}} Vault #{{id}}",
+    "current-price": "Current {{token}}/USD Price in {{time}}",
+    "next-price": "Next price"
+  },
+  "changing-vault": "Changing vault!",
+  "vault-changed": "Vault changed!",
+  "back-to-editing": "Back to editing",
+  "moving-into-vault": "Moving into Vault",
+  "moving-out-vault": "Moving out of Vault",
+  "remaining-in-wallet": "Remaining in Wallet",
+  "dai-being-generated": "Dai being generated",
+  "change-your-vault": "Change your vault",
+  "dai-paying-back": "DAI paying back ({{amount}})",
+  "after": "After",
+  "custom": "Custom",
+  "retry": "Retry",
+  "view-on-etherscan": "View on etherscan",
+  "keyWithCount": "{{count}} item",
+  "keyWithCount_plural": "{{count}} items",
+  "manage-vault": "Manage Vault",
+  "retry-allowance-approval": "Retry Allowance approval",
+  "approve-allowance": "Approve Allowance",
+  "approving-allowance": "Approving Allowance",
+  "unlimited-allowance": "Unlimited Allowance",
+  "set-allowance-for": "Set Allowance fro {{token}}",
+  "setting-allowance-for": "Setting Allowance for {{token}}",
+  "token-depositing": "{{token}} depositing {{amount}}",
   "404-button": "Go to home",
   "404-message": "Sorry, page not found.",
   "Argentina": "Argentina",
@@ -55,6 +146,8 @@
     "submit": "Send",
     "title": "Contact Us"
   },
+  "your-vaults": "Your Vaults",
+  "all-assets": "All Assets",
   "continue": "Continue",
   "conversion-fee": "Conversion fee",
   "copied": "Copied",
@@ -62,12 +155,13 @@
   "country": "Country",
   "create-dai-savings": "Create Dai Savings",
   "create-proxy": "Create a proxy",
+  "creating-proxy": "Creating Proxy",
   "create-proxy-btn": "Create Proxy",
+  "retry-create-proxy": "Retry Create Proxy",
   "create-proxy-desc": "In order to use Savings and other features, you will need a wallet proxy.",
   "currency": "Currency",
   "dai-savings-rate": "Dai Savings Rate",
   "deposit": "Deposit",
-  "deposited": "Deposited",
   "disconnect": "Disconnect",
   "disconnect-magic": "Log out",
   "dsr-available-withdraw": "Available to withdraw",
@@ -135,95 +229,11 @@
   "gas-estimation-error": "Error",
   "get-dai": "Get Dai",
   "get-started": "Get Started",
-  "guides": {
-    "guide": {
-      "choose-wallet": {
-        "readTime": "3 minutes",
-        "summary": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros.",
-        "title": "Choosing a wallet"
-      },
-      "introduction-to-dai": {
-        "readTime": "4 minutes",
-        "summary": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros.",
-        "title": "Introduction to Dai"
-      }
-    },
-    "sections": {
-      "1": {
-        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus hendrerit. Pellentesque aliquet nibh nec urna. In nisi neque, aliquet vel, dapibus id, mattis vel, nisi. Sed pretium, ligula sollicitudin laoreet viverra, tortor libero sodales leo, eget blandit nunc tortor eu nibh. Nullam mollis. Ut justo. Suspendisse potenti.",
-        "title": "How do I get started?"
-      },
-      "2": {
-        "description": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus hendrerit. Pellentesque aliquet nibh nec urna. In nisi neque, aliquet vel, dapibus id, mattis vel, nisi. Sed pretium, ligula sollicitudin laoreet viverra.",
-        "title": "Which wallet should I use?"
-      },
-      "3": {
-        "description": "Integer adipiscing risus a sem. Nullam quis massa sit amet nibh viverra malesuada. Nunc sem lacus, accumsan quis, faucibus non, congue vel, arcu. Ut scelerisque hendrerit tellus. Integer sagittis. Vivamus a mauris eget arcu gravida tristique. Nunc iaculis mi in ante. Vivamus imperdiet nibh feugiat est.",
-        "title": "Which wallet should I use?"
-      }
-    }
-  },
-  "introduction": {
-    "step-1": "Login with your email",
-    "step-2": "Buy Dai",
-    "step-3": "Start sending and saving",
-    "title": "How to get Dai"
-  },
+  "search-token": "Search token",
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",
   "jwt-auth-rejected": "Signature rejected",
   "jwt-auth-waiting-acceptance": "Sign message",
-  "landing": {
-    "cards": {
-      "borrow": {
-        "description": "Deposit collateral and generate Dai.",
-        "title": "Open a Maker Vault"
-      },
-      "introduction": {
-        "description": "Read a short primer on Dai.",
-        "title": "Introduction to Dai"
-      }
-    },
-    "footer": {
-      "blog": "Blog",
-      "borrow": "Borrow",
-      "contact": "Contact",
-      "faq": "FAQ",
-      "language": {
-        "en": "English",
-        "es": "Español",
-        "pt": "Português"
-      },
-      "privacy": "Privacy",
-      "terms": "Terms",
-      "trade": "Trade"
-    },
-    "hero": {
-      "button1": "Start now",
-      "button2": "Learn about Dai",
-      "headline": "Dai is a smarter digital currency for everyone. Buy, send and manage it in one place."
-    },
-    "notification-save": "Oasis Save has moved and is now part of the integrated Oasis.app experience. Any Dai locked into the DSR through Oasis Save will be available here. If you have any issues, please <0>contact us.</0>",
-    "section-title": "Oasis is the home for your smarter digital currency, Dai",
-    "sections": {
-      "1": {
-        "description": "Dai is a digital currency thats value consistently tracks the US Dollar ",
-        "title": "Dai tracks USD"
-      },
-      "2": {
-        "description": "Choose from a variety of providers, with no minimums and withdrawals at anytime.",
-        "title": "Grow your savings"
-      },
-      "3": {
-        "description": "Transfer funds or spend Dai as fast and as easy as sending a message.",
-        "title": "Send to anyone, instantly"
-      },
-      "4": {
-        "description": "Only you can access and transfer the funds in your digital wallet.",
-        "title": "You’re in complete control"
-      }
-    }
-  },
   "latamex-badge-fees": "Fees 1%-1.7%",
   "latamex-calc-buy": "I want to buy",
   "latamex-calc-spend": "I want to spend",
@@ -319,19 +329,13 @@
   "try-again": "Try again",
   "view": "View",
   "view-more": "View more",
+  "one-of-some": "{{one}} of {{some}}",
   "waiting-approval": "Waiting for approval",
   "waiting-confirmation": "Waiting for transaction confirmation",
-  "waiting-proxy-deployment": "Proxy deployment confirmed",
+  "waiting-proxy-deployment": "Proxy deployment confirming",
+  "confirmed-proxy-deployment": "Proxy deployment confirmed",
   "withdraw": "Withdraw",
   "withdrawn": "Withdrawn",
-  "wyre-badge-country": "US & Europe",
-  "wyre-badge-fees": "Fees from 2.9%",
-  "wyre-desc": "Wyre is a secure bridge between fiat currencies and cryptocurrency.",
-  "wyre-purchase-description-pending": "Buying {{ order }} with Wyre",
-  "wyre-purchase-description-recent": "Purchased {{ order }} with Wyre",
-  "wyre-purchase-description-recent-failed": "Failed to purchase {{ order }} with Wyre",
-  "wyre-purchase-notification": "Wyre purchase",
-  "wyre-purchase-notification-past": "Wyre purchased",
   "you-are-sending": "You are sending",
   "seo": {
     "default": {
