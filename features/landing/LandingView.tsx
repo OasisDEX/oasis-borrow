@@ -6,6 +6,7 @@ import { Table, TableSortHeader } from 'components/Table'
 import { FeaturedIlks } from 'features/vaultsOverview/VaultsOverviewView'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { useTranslation } from 'i18n'
 import React, { ComponentProps } from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
@@ -32,6 +33,7 @@ export function TokenSymbol({
 
 export function LandingView() {
   const { landing$ } = useAppContext()
+  const { t } = useTranslation()
   const landing = useObservable(landing$)
 
   if (landing === undefined) {
@@ -41,10 +43,10 @@ export function LandingView() {
   return (
     <Grid sx={{ flex: 1 }}>
       <Box sx={{ width: '600px', justifySelf: 'center', textAlign: 'center', my: 4 }}>
-        <Heading sx={{ fontSize: 7, my: 3 }}>
-          Borrow against your <br /> collateral by generating Dai
+        <Heading as="h1" sx={{ fontSize: 7, my: 3 }}>
+          {t('landing.hero.headline')}
         </Heading>
-        <Text>Realize liquidity today and don't lose long exposure.</Text>
+        <Text>{t('landing.hero.subheader')}</Text>
       </Box>
       <Box sx={{ my: 4 }}>
         <FeaturedIlks ilks={landing.featuredIlks} />
@@ -54,11 +56,11 @@ export function LandingView() {
         primaryKey="ilk"
         rowDefinition={[
           {
-            header: <Text>Asset</Text>,
+            header: <Text>{t('system.asset')}</Text>,
             cell: ({ token }) => <TokenSymbol token={token} />,
           },
           {
-            header: <Text>Type</Text>,
+            header: <Text>{t('system.type')}</Text>,
             cell: ({ ilk }) => <Text>{ilk}</Text>,
           },
           {
@@ -68,7 +70,7 @@ export function LandingView() {
                 sortBy="ilkDebtAvailable"
                 sx={{ ml: 'auto' }}
               >
-                DAI Available
+                {t('system.dai-available')}
               </TableSortHeader>
             ),
             cell: ({ ilkDebtAvailable }) => (
@@ -82,7 +84,7 @@ export function LandingView() {
                 sortBy="stabilityFee"
                 sx={{ ml: 'auto' }}
               >
-                Stability Fee
+                {t('system.stability-fee')}
               </TableSortHeader>
             ),
             cell: ({ stabilityFee }) => (
@@ -96,7 +98,7 @@ export function LandingView() {
                 sortBy="liquidationRatio"
                 sx={{ ml: 'auto' }}
               >
-                Min. Coll Ratio
+                {t('system.min-coll-ratio')}
               </TableSortHeader>
             ),
             cell: ({ liquidationRatio }) => (
@@ -112,7 +114,7 @@ export function LandingView() {
                   href={`/vaults/open/${ilk}`}
                   variant="secondary"
                 >
-                  Create Vault
+                  {t('open-vault')}
                 </AppLink>
               </Box>
             ),

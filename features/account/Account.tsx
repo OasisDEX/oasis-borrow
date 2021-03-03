@@ -250,15 +250,13 @@ export function AccountModal({ close }: ModalProps) {
                   href="/owner/[address]"
                   as={`/owner/${account}`}
                 >
-                  My Page
+                  {t('my-page')}
                 </AppLink>
                 <Button
                   variant="textual"
                   sx={{
                     textAlign: 'left',
-                    fontSize: 3,
                     p: 0,
-                    fontWeight: 'semiBold',
                     verticalAlign: 'baseline',
                   }}
                   onClick={disconnect}
