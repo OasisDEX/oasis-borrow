@@ -5,6 +5,7 @@ import { icons as brandingIcons } from '@makerdao/dai-ui-icons-branding'
 // @ts-ignore
 // import oasisBaseTheme from '@makerdao/dai-ui-theme-casual'
 import React from 'react'
+
 // @ts-ignore
 
 const customIcons = {
@@ -612,9 +613,14 @@ const oasisBaseTheme = {
       letterSpacing: '0.04em',
       opacity: 0.7,
     },
+    tableHead: {
+      variant: 'text.paragraph3',
+      color: 'muted',
+      fontWeight: 'semiBold',
+    },
   },
   borders: {
-    light: '1px solid',
+    light: '1px solid #D1DEE6',
   },
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
   sizes: [0, 4, 8, 16, 32, 64, 128, 256, 512],
@@ -636,7 +642,8 @@ const oasisBaseTheme = {
   },
   layout: {
     appContainer: {
-      maxWidth: '1024px',
+      maxWidth: '1200px',
+      px: 3,
     },
     marketingContainer: {
       variant: 'layout.appContainer',
@@ -746,6 +753,34 @@ const oasisBaseTheme = {
       borderStyle: 'solid',
       borderColor: 'light',
     },
+    tableHeader: {
+      variant: 'text.tableHead',
+      background: 'none',
+      p: 0,
+      cursor: 'pointer',
+      ':focus': {
+        outline: 'none',
+      },
+    },
+    filter: {
+      borderRadius: 'round',
+      background: 'none',
+      color: 'text.muted',
+      fontFamily: 'body',
+      fontWeight: 'semiBold',
+      cursor: 'pointer',
+      boxSizing: 'border-box',
+      border: '1px solid transparent',
+      px: 4,
+      font: '',
+      ':focus': {
+        outline: 'none',
+      },
+      '&[data-selected="true"]': {
+        border: 'light',
+        color: 'primary',
+      },
+    },
     textual: {
       variant: 'text.paragraph3',
       fontWeight: 'semiBold',
@@ -806,6 +841,25 @@ const oasisBaseTheme = {
       borderColor: 'onError',
       '&:focus': {
         borderColor: 'onError',
+      },
+    },
+    search: {
+      fontFamily: 'body',
+      variant: 'forms.input',
+      borderRadius: 'round',
+      fontSize: 2,
+      fontWeight: 'semiBold',
+      border: '1px solid #D1DEE6',
+      p: 0,
+      ':focus-within': {
+        //indicate that input is focused
+      },
+    },
+    plain: {
+      p: 0,
+      border: 'none',
+      ':focus': {
+        outline: 'none',
       },
     },
     select: {

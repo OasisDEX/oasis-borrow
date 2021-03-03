@@ -346,3 +346,27 @@ export type ApplyChange<S extends {}, C extends Change<any, any> = Changes<S>> =
 export function applyChange<S extends {}, C extends Change<any, any>>(state: S, change: C): S {
   return { ...state, [change.kind]: change[change.kind] }
 }
+
+export type Direction = 'ASC' | 'DESC' | undefined
+
+export function toggleSort<T extends string | undefined>(
+  current: T,
+  currentDirection: Direction,
+  next: T,
+): [T | undefined, Direction] {
+  if (current === undefined || current !== next) {
+    return [next, 'DESC']
+  }
+
+  if (currentDirection === 'DESC') {
+    return [next, 'ASC']
+  }
+
+  return [undefined, undefined]
+}
+
+export interface SortFilters<T extends string> {
+  sortBy: T | undefined
+  direction: Direction
+  change: (ch: { kind: 'sortBy'; sortBy: T | undefined }) => void
+}

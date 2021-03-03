@@ -22,11 +22,16 @@ import {
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
-import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
+import {
+  createIlkData$,
+  createIlkDataList$,
+  createIlks$,
+} from 'blockchain/ilks'
 import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
 import { createAccountBalance$, createAllowance$, createBalance$ } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
@@ -141,8 +146,8 @@ export function setupAppContext() {
   const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
   const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumberTostring)
   const vatIlks$ = observe(onEveryBlock$, context$, vatIlk)
-  const vatUrns$ = observe(onEveryBlock$, context$, vatUrns)
-  const vatGem$ = observe(onEveryBlock$, context$, vatGem)
+  const vatUrns$ = observe(onEveryBlock$, context$, vatUrns, ilkUrnAddressToString)
+  const vatGem$ = observe(onEveryBlock$, context$, vatGem, ilkUrnAddressToString)
   const spotPar$ = observe(onEveryBlock$, context$, spotPar)
   const spotIlks$ = observe(onEveryBlock$, context$, spotIlk)
   const jugIlks$ = observe(onEveryBlock$, context$, jugIlk)
@@ -188,7 +193,16 @@ export function setupAppContext() {
   const vaults$ = memoize(curry(createVaults$)(context$, proxyAddress$, vault$))
 
   const ilks$ = createIlks$(context$)
+
+  const accountBalances$ = curry(createAccountBalance$)(
+    balance$,
+    ilks$,
+    ilkToToken$,
+    tokenOraclePrice$,
+  )
+
   const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
+  const ilksWithBalance$ = createIlkDataListWithBalances$(context$, ilkDataList$, accountBalances$)
 
   const openVault$ = memoize(
     curry(createOpenVault$)(
@@ -218,14 +232,8 @@ export function setupAppContext() {
 
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
 
-  const accountBalances$ = curry(createAccountBalance$)(
-    balance$,
-    ilks$,
-    ilkToToken$,
-    tokenOraclePrice$,
-  )
   const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(context$, vaults$, ilkDataList$, featuredIlks$, accountBalances$),
+    curry(createVaultsOverview$)(vaults$, ilksWithBalance$, featuredIlks$),
   )
   const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
 
@@ -255,8 +263,8 @@ function bigNumberTostring(v: BigNumber): string {
   return v.toString()
 }
 
-// function ilkUrnAddressTostring({ ilk, urnAddress }: { ilk: string; urnAddress: string }): string {
-//   return `${ilk}-${urnAddress}`
-// }
+function ilkUrnAddressToString({ ilk, urnAddress }: { ilk: string; urnAddress: string }): string {
+  return `${ilk}-${urnAddress}`
+}
 
 export type AppContext = ReturnType<typeof setupAppContext>
