@@ -37,6 +37,7 @@ import { createLanding$ } from 'features/landing/landing'
 import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
 import { redirectState$ } from 'features/router/redirectState'
+import { createUserTokenInfo$ } from 'features/shared/userTokenInfo'
 import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { mapValues } from 'lodash'
 import { memoize } from 'lodash'
@@ -164,15 +165,9 @@ export function setupAppContext() {
   const pipPeek$ = observe(onEveryBlock$, oracleContext$, pipPeek)
   const pipPeep$ = observe(onEveryBlock$, oracleContext$, pipPeep)
 
-  const oraclePriceData$ = curry(createOraclePriceData$)(
-    context$,
-    pipPeek$,
-    pipPeep$,
-    pipZzz$,
-    pipHop$,
+  const oraclePriceData$ = memoize(
+    curry(createOraclePriceData$)(context$, pipPeek$, pipPeep$, pipZzz$, pipHop$),
   )
-
-  oraclePriceData$('USDC').subscribe(console.log)
 
   const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
   const balance$ = curry(createBalance$)(onEveryBlock$, context$, tokenBalance$)
@@ -214,13 +209,14 @@ export function setupAppContext() {
   const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
   const tokens$ = createTokens$(ilks$, ilkToToken$)
 
+  const userTokenInfo$ = memoize(curry(createUserTokenInfo$)(oraclePriceData$, balance$))
+
   const openVault$ = curry(createOpenVault$)(
     connectedContext$,
     txHelpers$,
     proxyAddress$,
     allowance$,
-    oraclePriceData$,
-    balance$,
+    userTokenInfo$,
     ilkData$,
     ilks$,
     ilkToToken$,
@@ -232,8 +228,7 @@ export function setupAppContext() {
       txHelpers$,
       proxyAddress$,
       allowance$,
-      oraclePriceData$,
-      balance$,
+      userTokenInfo$,
       ilkData$,
       vault$,
     ),

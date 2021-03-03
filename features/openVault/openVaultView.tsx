@@ -19,6 +19,11 @@ function OpenVaultDetails({
   afterCollateralizationRatio,
   afterLiquidationPrice,
   token,
+
+  currentCollateralPrice,
+  nextCollateralPrice,
+  isStaticCollateralPrice,
+  dateNextCollateralPrice,
 }: OpenVaultState) {
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
     ? '--'
@@ -40,11 +45,25 @@ function OpenVaultDetails({
         <Text>After: {afterCollRatio}</Text>
       </Grid>
 
-      <Grid>
-        <Text>Current ETH/USD Price in 9 mins</Text>
-        <Heading>$1375.0000</Heading>
-        <Text>Next price: $1325.0000 (-2.30%)</Text>
-      </Grid>
+      {isStaticCollateralPrice ? (
+        <Grid>
+          <Text>{`${token}/USD price`}</Text>
+          <Heading>${formatAmount(currentCollateralPrice, 'USD')}</Heading>
+        </Grid>
+      ) : (
+        <Grid>
+          <Text>Current ETH/USD Price in 9 mins</Text>
+          <Grid>
+            <Text>{`Current ${token}/USD price`}</Text>
+            <Heading>${formatAmount(currentCollateralPrice, 'USD')}</Heading>
+          </Grid>
+          <Text>Next price: {formatAmount(nextCollateralPrice || zero, 'USD')} </Text>
+          <Text>
+            {dateNextCollateralPrice?.toLocaleDateString()} ::{' '}
+            {dateNextCollateralPrice?.toLocaleTimeString()}
+          </Text>
+        </Grid>
+      )}
 
       <Grid sx={{ textAlign: 'right' }}>
         <Text>Collateral Locked</Text>

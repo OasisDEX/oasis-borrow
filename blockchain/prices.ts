@@ -65,7 +65,7 @@ export interface OraclePriceData {
   currentPriceUpdate?: Date
   nextPriceUpdate?: Date
   priceUpdateInterval?: number
-  isOSM: boolean
+  isStaticPrice: boolean
 }
 
 const DSVALUE_APPROX_SIZE = 6000
@@ -87,10 +87,10 @@ export function createOraclePriceData$(
         switchMap(([contractData, peek]) =>
           iif(
             () => contractData.length > DSVALUE_APPROX_SIZE,
-            combineLatest(of(peek), pipPeep$(token), pipZzz$(token), pipHop$(token), of(true)),
-            combineLatest(of(peek), of(undefined), of(undefined), of(undefined), of(false)),
+            combineLatest(of(peek), pipPeep$(token), pipZzz$(token), pipHop$(token), of(false)),
+            combineLatest(of(peek), of(undefined), of(undefined), of(undefined), of(true)),
           ).pipe(
-            switchMap(([peek, peep, zzz, hop, isOSM]) => {
+            switchMap(([peek, peep, zzz, hop, isStaticPrice]) => {
               const currentPriceUpdate = zzz ? new Date(zzz.toNumber()) : undefined
               const nextPriceUpdate = zzz && hop ? new Date(zzz.plus(hop).toNumber()) : undefined
               const priceUpdateInterval = hop ? hop.toNumber() : undefined
@@ -106,12 +106,13 @@ export function createOraclePriceData$(
                 currentPriceUpdate,
                 nextPriceUpdate,
                 priceUpdateInterval,
-                isOSM,
+                isStaticPrice,
               })
             }),
           ),
         ),
       ),
     ),
+    shareReplay(1),
   )
 }
