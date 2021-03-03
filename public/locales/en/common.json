@@ -33,17 +33,21 @@
     "dai-available": "DAI Available",
     "liquidation-price": "Liquidation Price",
     "liquidation-penalty": "Liquidation Penalty",
-    "coll-ratio": "Coll. rato",
+    "coll-ratio": "Coll Rato",
     "collateralization-ratio": "Collateralization Ratio",
     "coll-locked": "Coll. locked",
+    "collateral": "Collateral",
     "collateral-locked": "Collateral locked",
     "dai-debt": "DAI debt",
     "in-my-wallet": "In my wallet",
     "in-your-wallet": "In Your wallet",
     "deposited": "Deposited",
     "available-to-withdraw": "Avail. to withdraw",
-    "collateral-ratio": "Collateral Ratio"
+    "collateral-ratio": "Collateral Ratio",
+    "vault-id": "Vault ID"
   },
+  "stablecoins": "Stablecoins",
+  "lp-tokens": "LP tokens",
   "open-vault": "Open Vault",
   "my-page": "My Page",
   "vaults-overview": {

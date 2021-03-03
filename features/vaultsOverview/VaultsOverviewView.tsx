@@ -30,56 +30,52 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
     cell: ({ token }) => <TokenSymbol token={token} />,
   },
   {
-    headerLabel: 'system.collateral',
+    headerLabel: 'system.vault-id',
+    header: ({ label, ...filters }) => <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="id">
+      {label}
+    </TableSortHeader>,
+    cell: ({ id }) => <Text>#{id}</Text>,
+  },
+  {
+    headerLabel: 'system.liquidation-price',
+    header: ({ label, ...filters }) => (
+      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="liquidationPrice">
+        {label}
+      </TableSortHeader>
+    ),
+    cell: ({ liquidationPrice }) => (
+      <Text sx={{ textAlign: 'right' }}>${formatFiatBalance(liquidationPrice)}</Text>
+    ),
+  },
+  {
+    headerLabel: 'system.coll-ratio',
+    header: ({ label, ...filters }) => (
+      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="collateralizationRatio">
+        {label}
+      </TableSortHeader>
+    ),
+    cell: ({ collateralizationRatio }) => (
+      <Text sx={{ textAlign: 'right' }}>{formatPercent(collateralizationRatio.times(100))}</Text>
+    ),
+  },
+  {
+    headerLabel: 'system.coll-locked',
     header: ({ label, ...filters }) => (
       <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="collateral">
         {label}
       </TableSortHeader>
     ),
-    cell: ({ lockedCollateral }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(lockedCollateral)}</Text>
-    ),
+    cell: ({ lockedCollateral, token }) => <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(lockedCollateral)} {token}</Text>,
   },
   {
-    headerLabel: 'system.freeCollateral',
-    header: ({ label, ...filters }) => (
-      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="freeCollateral">
-        {label}
-      </TableSortHeader>
-    ),
-    cell: ({ freeCollateral }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(freeCollateral)}</Text>
-    ),
-  },
-  {
-    headerLabel: 'system.debt',
+    headerLabel: 'system.dai-debt',
     header: ({ label, ...filters }) => (
       <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="debt">
         {label}
       </TableSortHeader>
     ),
-    cell: ({ debt }) => <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(debt)}</Text>,
-  },
-  {
-    headerLabel: 'system.collateralizationRatio',
-    header: ({ label, ...filters }) => (
-      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="collateralizationRatio">
-        {label}
-      </TableSortHeader>
-    ),
-    cell: ({ collateralizationRatio }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatPercent(collateralizationRatio)}</Text>
-    ),
-  },
-  {
-    headerLabel: 'system.collateralizationRatio',
-    header: ({ label, ...filters }) => (
-      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="collateralizationRatio">
-        {label}
-      </TableSortHeader>
-    ),
-    cell: ({ collateralizationRatio }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatPercent(collateralizationRatio)}</Text>
+    cell: ({ debt }) => (
+      <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(debt)} DAI</Text>
     ),
   },
   {
@@ -138,7 +134,7 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState & { isReadonly: boo
     ),
   },
   {
-    headerLabel: 'system.liquidation-ratio',
+    headerLabel: 'system.min-coll-ratio',
     header: ({ label, ...filters }) => (
       <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="liquidationRatio">
         {label}
@@ -366,7 +362,7 @@ export function Filters({ onSearch, search, onTagChange, tagFilter, defaultTag }
         data-selected={tagFilter === 'stablecoin'}
         variant="filter"
       >
-        Stablecoins
+        {t('stablecoins')}
       </Button>
       <Button
         onClick={() => onTagChange('LPToken')}
@@ -374,7 +370,7 @@ export function Filters({ onSearch, search, onTagChange, tagFilter, defaultTag }
         data-selected={tagFilter === 'LPToken'}
         variant="filter"
       >
-        LP Vaults
+        {t('lp-tokens')}
       </Button>
       <Flex sx={{ variant: 'forms.search', width: '313px', ml: 'auto', alignItems: 'center' }}>
         <Icon
@@ -408,9 +404,8 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
   const { t } = useTranslation()
 
   const readonlyAccount = context?.status === 'connectedReadonly' && (address as string)
-  const displaySummary = vaults && vaults.data.length > 0 && vaultSummary
-  const displayFeaturedIlks = vaults?.data.length === 0 && featuredIlks
-  const displayVaults = vaults && vaults.data.length > 0 && vaults
+  const displayVaults = vaultSummary?.numberOfVaults !== undefined && vaultSummary?.numberOfVaults > 0
+  const displayFeaturedIlks = vaults?.data.length === 0 && vaults.filters.tagFilter === undefined
 
   const onVaultSearch = useCallback(
     (search: string) => {
@@ -454,41 +449,35 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
         {context.status === 'connected'
           ? t('vaults-overview.message-connected', {
             address: formatAddress(address),
-            count: vaults.data?.length || 0,
+            count: vaultSummary?.numberOfVaults || 0,
           })
           : t('vaults-overview.message-not-connected', { address: formatAddress(address) })}
       </Text>
-      {displaySummary && <Summary summary={displaySummary} />}
-      {displayFeaturedIlks && <FeaturedIlks ilks={displayFeaturedIlks} />}
-      {displayVaults && (
-        <>
-          <Filters
-            onSearch={onVaultSearch}
-            search={vaults.filters.search}
-            onTagChange={onVaultsTagChange}
-            tagFilter={vaults.filters.tagFilter}
-            defaultTag="your-vaults"
-          />
-          <VaultsTable vaults={displayVaults} />
-        </>
-      )}
-      {ilks && (
-        <>
-          <Heading>Vaults</Heading>
-          <Filters
-            onSearch={onIlkSearch}
-            search={ilks.filters.search}
-            onTagChange={onIlksTagChange}
-            tagFilter={ilks.filters.tagFilter}
-            defaultTag="all-assets"
-          />
-          <AllIlks
-            ilks={ilks}
-            isReadonly={context?.status === 'connectedReadonly'}
-            address={address}
-          />
-        </>
-      )}
+      {displayFeaturedIlks && featuredIlks && <FeaturedIlks ilks={featuredIlks} />}
+      {displayVaults && vaultSummary && <>
+        <Summary summary={vaultSummary} />
+        <Filters
+          onSearch={onVaultSearch}
+          search={vaults.filters.search}
+          onTagChange={onVaultsTagChange}
+          tagFilter={vaults.filters.tagFilter}
+          defaultTag="your-vaults"
+        />
+        <VaultsTable vaults={vaults} />
+      </>}
+      <Heading>Vaults</Heading>
+      <Filters
+        onSearch={onIlkSearch}
+        search={ilks.filters.search}
+        onTagChange={onIlksTagChange}
+        tagFilter={ilks.filters.tagFilter}
+        defaultTag="all-assets"
+      />
+      <AllIlks
+        ilks={ilks}
+        isReadonly={context?.status === 'connectedReadonly'}
+        address={address}
+      />
     </Grid>
   )
 }

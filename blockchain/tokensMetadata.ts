@@ -10,6 +10,8 @@ export interface TokenConfig {
   iconCircle: string
   iconColor: string
   ticker: string
+  tags: string[]
+  color: string,
 }
 
 export type CoinTag = 'stablecoin' | 'LPToken'
@@ -302,11 +304,7 @@ const tokensBySymbol = keyBy(tokens, 'symbol')
 
 export function getToken(tokenSymbol: string) {
   if (!tokensBySymbol[tokenSymbol]) {
-    console.warn('No token metadata for', tokenSymbol, 'using WETH!')
-    return {
-      ...tokensBySymbol.ETH,
-      name: tokenSymbol,
-    }
+    throw new Error('No meta information for token')
   }
   return tokensBySymbol[tokenSymbol]
 }

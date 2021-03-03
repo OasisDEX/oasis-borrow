@@ -1,5 +1,5 @@
 import { IlkWithBalance } from 'blockchain/ilks'
-import { CoinTag } from 'blockchain/tokensMetadata'
+import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { compareBigNumber } from 'helpers/compare'
 import { applyChange, Change, Direction, toggleSort } from 'helpers/form'
 import { Observable, Subject } from 'rxjs'
@@ -67,6 +67,27 @@ function sortIlks(
   }
 }
 
+function filterByTag(ilks: IlkWithBalance[], tag: CoinTag | undefined) {
+  if (tag === undefined) {
+    return ilks
+  }
+  return ilks.filter(ilk => {
+    const tokenMeta = getToken(ilk.token)
+
+    return (tokenMeta.tags as CoinTag[]).includes(tag)
+  })
+}
+
+function search(ilks: IlkWithBalance[], search: string) {
+  return ilks.filter(ilk => {
+    const tokenMeta = getToken(ilk.token)
+
+    return ilk.token.toLowerCase().includes(search.toLowerCase())
+      || tokenMeta.name.toLowerCase().includes(search.toLowerCase())
+      || ilk.ilk.toLowerCase().includes(search.toLowerCase())
+  })
+}
+
 export interface IlksWithFilters {
   data: IlkWithBalance[]
   filters: IlksFilterState
@@ -91,6 +112,8 @@ export function ilksWithFilter$(ilks$: Observable<IlkWithBalance[]>): Observable
     switchMap((filters) =>
       ilks$.pipe(
         map((ilks) => sortIlks(ilks, filters.sortBy, filters.direction)),
+        map(ilks => filterByTag(ilks, filters.tagFilter)),
+        map(ilks => search(ilks, filters.search)),
         map((ilks) => ({ filters, data: ilks })),
       ),
     ),

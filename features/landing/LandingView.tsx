@@ -67,7 +67,7 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
     ),
   },
   {
-    headerLabel: 'system.liquidation-ratio',
+    headerLabel: 'system.min-coll-ratio',
     header: ({ label, ...filters }) => (
       <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="liquidationRatio">
         {label}

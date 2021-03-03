@@ -1,7 +1,8 @@
-import { CoinTag } from 'blockchain/tokensMetadata'
+import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { compareBigNumber } from 'helpers/compare'
 import { ApplyChange, applyChange, Change, Direction, toggleSort } from 'helpers/form'
+import { token } from 'morgan'
 import { Observable, Subject } from 'rxjs'
 import { map, scan, startWith, switchMap, tap } from 'rxjs/operators'
 export type VaultSortBy =
@@ -10,6 +11,7 @@ export type VaultSortBy =
   | 'liquidationPrice'
   | 'collateralizationRatio'
   | 'freeCollateral'
+  | 'id'
   | undefined
 
 export interface VaultsFilterState {
@@ -67,14 +69,40 @@ function sortVaults(vaults: Vault[], sortBy: VaultSortBy, direction: Direction):
       return vaults.sort((v1, v2) => compareBigNumber(v1.freeCollateral, v2.freeCollateral))
     case 'freeCollateral_DESC':
       return vaults.sort((v1, v2) => compareBigNumber(v2.freeCollateral, v1.freeCollateral))
+    case 'id_ASC':
+      return vaults.sort((v1, v2) => Number(v1.id) - Number(v2.id))
+    case 'id_DESC':
+      return vaults.sort((v1, v2) => Number(v2.id) - Number(v1.id))
     default:
       return vaults.sort((v1, v2) => Number(v1.id) - Number(v2.id))
   }
 }
 
+function filterByTag(vaults: Vault[], tag: CoinTag | undefined) {
+  if (tag === undefined) {
+    return vaults
+  }
+  return vaults.filter(vault => {
+    const tokenMeta = getToken(vault.token)
+
+    return (tokenMeta.tags as CoinTag[]).includes(tag)
+  })
+}
+
+function search(vaults: Vault[], search: string) {
+  return vaults.filter(vault => {
+    const tokenMeta = getToken(vault.token)
+
+    return vault.token.toLowerCase().includes(search.toLowerCase())
+      || tokenMeta.name.toLowerCase().includes(search.toLowerCase())
+      || vault.id.includes(search)
+  })
+}
+
 export interface VaultsWithFilters {
   data: Vault[]
   filters: VaultsFilterState
+  isLoading: boolean
 }
 export function vaultsWithFilter$(vaults$: Observable<Vault[]>): Observable<VaultsWithFilters> {
   const change$ = new Subject<Changes>()
@@ -93,11 +121,13 @@ export function vaultsWithFilter$(vaults$: Observable<Vault[]>): Observable<Vaul
   return change$.pipe(
     scan(applyFilter, initialState),
     startWith(initialState),
-    tap(console.log),
     switchMap((filters) =>
       vaults$.pipe(
         map((vaults) => sortVaults(vaults, filters.sortBy, filters.direction)),
-        map((vaults) => ({ filters, data: vaults })),
+        map(vaults => filterByTag(vaults, filters.tagFilter)),
+        map(vaults => search(vaults, filters.search)),
+        map((vaults) => ({ filters, data: vaults, isLoading: false })),
+        startWith({ filters, data: [], isLoading: true })
       ),
     ),
   )
