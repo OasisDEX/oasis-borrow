@@ -151,24 +151,24 @@ function AllIlks({
         ...(isReadonly
           ? []
           : [
-            {
-              header: (
-                <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="balance">
-                  {t('system.in-my-wallet')}
-                </TableSortHeader>
-              ),
-              cell: (ilk: IlkWithBalance) => (
-                <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
-                  <Text sx={{ textAlign: 'right' }}>
-                    {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
-                  </Text>
-                  <Text variant="paragraph3" sx={{ color: 'muted', ml: 1 }}>
-                    {`($${ilk.balancePriceInUsd ? formatFiatBalance(ilk.balancePriceInUsd) : 0})`}
-                  </Text>
-                </Flex>
-              ),
-            },
-          ]),
+              {
+                header: (
+                  <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="balance">
+                    {t('system.in-my-wallet')}
+                  </TableSortHeader>
+                ),
+                cell: (ilk: IlkWithBalance) => (
+                  <Flex sx={{ alignItems: 'baseline', justifyContent: 'flex-end' }}>
+                    <Text sx={{ textAlign: 'right' }}>
+                      {ilk.balance ? formatCryptoBalance(ilk.balance) : 0}
+                    </Text>
+                    <Text variant="paragraph3" sx={{ color: 'muted', ml: 1 }}>
+                      {`($${ilk.balancePriceInUsd ? formatFiatBalance(ilk.balancePriceInUsd) : 0})`}
+                    </Text>
+                  </Flex>
+                ),
+              },
+            ]),
         {
           header: <Text />,
           cell: ({ ilk }) => (
@@ -354,9 +354,9 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
       <Text variant="header3" sx={{ textAlign: 'center', justifySelf: 'center', mb: 4 }}>
         {context.status === 'connected'
           ? t('vaults-overview.message-connected', {
-            address: formatAddress(address),
-            count: vaults.data?.length || 0,
-          })
+              address: formatAddress(address),
+              count: vaults.data?.length || 0,
+            })
           : t('vaults-overview.message-not-connected', { address: formatAddress(address) })}
       </Text>
       {displaySummary && <Summary summary={displaySummary} />}
@@ -371,18 +371,16 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
           <VaultsTable vaults={displayVaults} />
         </>
       )}
-      {
-        ilks && (
-          <>
-            <Heading>Vaults</Heading>
-            <AllIlks
-              ilks={ilks}
-              isReadonly={context?.status === 'connectedReadonly'}
-              address={address}
-            />
-          </>
-        )
-      }
-    </Grid >
+      {ilks && (
+        <>
+          <Heading>Vaults</Heading>
+          <AllIlks
+            ilks={ilks}
+            isReadonly={context?.status === 'connectedReadonly'}
+            address={address}
+          />
+        </>
+      )}
+    </Grid>
   )
 }

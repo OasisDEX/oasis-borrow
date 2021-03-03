@@ -12,7 +12,6 @@ import { distinctUntilChanged } from 'rxjs/operators'
 
 import { ilksWithFilter$, IlksWithFilters } from '../ilks/ilksFilters'
 import { vaultsWithFilter$, VaultsWithFilters } from './vaultsFilters'
-
 import { getVaultsSummary, VaultSummary } from './vaultSummary'
 
 export interface FeaturedIlk extends IlkData {

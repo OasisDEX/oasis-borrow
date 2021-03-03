@@ -35,9 +35,9 @@ function sortVaults(vaults: Vault[], sortBy: VaultSortBy, direction: Direction):
   const filter = `${sortBy}_${direction}`
   switch (filter) {
     case 'collateral_ASC':
-      return vaults.sort((v1, v2) => compareBigNumber(v1.collateral, v2.collateral))
+      return vaults.sort((v1, v2) => compareBigNumber(v1.freeCollateral, v2.freeCollateral))
     case 'collateral_DESC':
-      return vaults.sort((v1, v2) => compareBigNumber(v2.collateral, v1.collateral))
+      return vaults.sort((v1, v2) => compareBigNumber(v2.freeCollateral, v1.freeCollateral))
     case 'collateralizationRatio_ASC':
       return vaults.sort((v1, v2) =>
         compareBigNumber(v1.collateralizationRatio, v2.collateralizationRatio),
