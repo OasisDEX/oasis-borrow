@@ -1,6 +1,7 @@
-import { IlkData, IlkDataList, IlkWithBalance } from 'blockchain/ilks'
+import { IlkData, IlkDataList } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
+import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { startWithDefault } from 'helpers/operators'
 import { isEqual } from 'lodash'
 import maxBy from 'lodash/maxBy'
@@ -77,14 +78,14 @@ export function createFeaturedIlks$(ilkDataList$: Observable<IlkDataList>) {
 
 export function createVaultsOverview$(
   vaults$: (address: string) => Observable<Vault[]>,
-  ilkDataList$: Observable<IlkWithBalance[]>,
+  ilksListWithBalances$: Observable<IlkWithBalance[]>,
   featuredIlks$: Observable<FeaturedIlk[]>,
   address: string,
 ): Observable<VaultsOverview> {
   return combineLatest(
     vaultsWithFilter$(vaults$(address)),
     vaults$(address).pipe(map(getVaultsSummary)),
-    ilksWithFilter$(ilkDataList$),
+    ilksWithFilter$(ilksListWithBalances$),
     startWithDefault(featuredIlks$, undefined),
   ).pipe(
     map(([vaults, vaultSummary, ilks, featuredIlks]) => ({

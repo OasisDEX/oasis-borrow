@@ -1,9 +1,9 @@
-import { IlkWithBalance } from 'blockchain/ilks'
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { compareBigNumber } from 'helpers/compare'
 import { applyChange, Change, Direction, toggleSort } from 'helpers/form'
 import { Observable, Subject } from 'rxjs'
 import { map, scan, startWith, switchMap } from 'rxjs/operators'
+import { IlkWithBalance } from './ilksWithBalances'
 
 export type IlkSortBy =
   | 'ilkDebtAvailable'

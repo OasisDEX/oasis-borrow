@@ -1,11 +1,11 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
-import { IlkWithBalance } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
+import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import {
   formatAddress,
   formatCryptoBalance,
