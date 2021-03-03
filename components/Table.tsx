@@ -109,7 +109,7 @@ const MyRow = memo(({ row, columns }: { row: any; columns: ColumnDef<any, any>[]
           sx={{
             display: ['flex', 'table-cell'],
             justifyContent: 'space-between',
-            ':before': { content: `"${t(headerLabel)}"`, display: ['block', 'none'] },
+            ':before': { variant: 'text.paragraph2', fontWeight: 'semiBold', color: "text.muted", content: `"${t(headerLabel)}"`, display: ['block', 'none'] },
           }}
           key={idx}
         >
