@@ -8,7 +8,7 @@ import { IlksFilterState } from 'features/ilks/ilksFilters'
 import { FeaturedIlks, Filters } from 'features/vaultsOverview/VaultsOverviewView'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { Trans } from 'i18n'
+import { Trans, useTranslation } from 'i18n'
 import React, { ComponentProps, useCallback } from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
@@ -96,6 +96,7 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
 
 export function LandingView() {
   const { landing$ } = useAppContext()
+  const { t } = useTranslation()
   const landing = useObservable(landing$)
 
   const onIlkSearch = useCallback(
@@ -118,10 +119,10 @@ export function LandingView() {
   return (
     <Grid sx={{ flex: 1 }}>
       <Box sx={{ width: '600px', justifySelf: 'center', textAlign: 'center', my: 4 }}>
-        <Heading sx={{ fontSize: 7, my: 3 }}>
-          Borrow against your <br /> collateral by generating Dai
+        <Heading as="h1" sx={{ fontSize: 7, my: 3 }}>
+          {t('landing.hero.headline')}
         </Heading>
-        <Text>Realize liquidity today and don't lose long exposure.</Text>
+        <Text>{t('landing.hero.subheader')}</Text>
       </Box>
       <Box sx={{ my: 4 }}>
         <FeaturedIlks ilks={landing.featuredIlks} />

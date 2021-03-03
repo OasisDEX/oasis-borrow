@@ -781,6 +781,13 @@ const oasisBaseTheme = {
         color: 'primary',
       },
     },
+    textual: {
+      variant: 'text.paragraph3',
+      fontWeight: 'semiBold',
+      background: 'none',
+      color: 'link',
+      cursor: 'pointer',
+    },
   },
   links: {
     nav: {
