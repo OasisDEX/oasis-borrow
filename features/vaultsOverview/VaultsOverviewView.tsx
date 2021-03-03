@@ -31,9 +31,11 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
   },
   {
     headerLabel: 'system.vault-id',
-    header: ({ label, ...filters }) => <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="id">
-      {label}
-    </TableSortHeader>,
+    header: ({ label, ...filters }) => (
+      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="id">
+        {label}
+      </TableSortHeader>
+    ),
     cell: ({ id }) => <Text>#{id}</Text>,
   },
   {
@@ -65,7 +67,11 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
         {label}
       </TableSortHeader>
     ),
-    cell: ({ lockedCollateral, token }) => <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(lockedCollateral)} {token}</Text>,
+    cell: ({ lockedCollateral, token }) => (
+      <Text sx={{ textAlign: 'right' }}>
+        {formatCryptoBalance(lockedCollateral)} {token}
+      </Text>
+    ),
   },
   {
     headerLabel: 'system.dai-debt',
@@ -74,9 +80,7 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
         {label}
       </TableSortHeader>
     ),
-    cell: ({ debt }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(debt)} DAI</Text>
-    ),
+    cell: ({ debt }) => <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(debt)} DAI</Text>,
   },
   {
     headerLabel: '',
@@ -404,7 +408,8 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
   const { t } = useTranslation()
 
   const readonlyAccount = context?.status === 'connectedReadonly' && (address as string)
-  const displayVaults = vaultSummary?.numberOfVaults !== undefined && vaultSummary?.numberOfVaults > 0
+  const displayVaults =
+    vaultSummary?.numberOfVaults !== undefined && vaultSummary?.numberOfVaults > 0
   const displayFeaturedIlks = vaults?.data.length === 0 && vaults.filters.tagFilter === undefined
 
   const onVaultSearch = useCallback(
@@ -448,23 +453,25 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
       <Text variant="header3" sx={{ textAlign: 'center', justifySelf: 'center', mb: 4 }}>
         {context.status === 'connected'
           ? t('vaults-overview.message-connected', {
-            address: formatAddress(address),
-            count: vaultSummary?.numberOfVaults || 0,
-          })
+              address: formatAddress(address),
+              count: vaultSummary?.numberOfVaults || 0,
+            })
           : t('vaults-overview.message-not-connected', { address: formatAddress(address) })}
       </Text>
       {displayFeaturedIlks && featuredIlks && <FeaturedIlks ilks={featuredIlks} />}
-      {displayVaults && vaultSummary && <>
-        <Summary summary={vaultSummary} />
-        <Filters
-          onSearch={onVaultSearch}
-          search={vaults.filters.search}
-          onTagChange={onVaultsTagChange}
-          tagFilter={vaults.filters.tagFilter}
-          defaultTag="your-vaults"
-        />
-        <VaultsTable vaults={vaults} />
-      </>}
+      {displayVaults && vaultSummary && (
+        <>
+          <Summary summary={vaultSummary} />
+          <Filters
+            onSearch={onVaultSearch}
+            search={vaults.filters.search}
+            onTagChange={onVaultsTagChange}
+            tagFilter={vaults.filters.tagFilter}
+            defaultTag="your-vaults"
+          />
+          <VaultsTable vaults={vaults} />
+        </>
+      )}
       <Heading>Vaults</Heading>
       <Filters
         onSearch={onIlkSearch}
@@ -473,11 +480,7 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
         tagFilter={ilks.filters.tagFilter}
         defaultTag="all-assets"
       />
-      <AllIlks
-        ilks={ilks}
-        isReadonly={context?.status === 'connectedReadonly'}
-        address={address}
-      />
+      <AllIlks ilks={ilks} isReadonly={context?.status === 'connectedReadonly'} address={address} />
     </Grid>
   )
 }

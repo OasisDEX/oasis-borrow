@@ -2,9 +2,8 @@ import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { compareBigNumber } from 'helpers/compare'
 import { ApplyChange, applyChange, Change, Direction, toggleSort } from 'helpers/form'
-import { token } from 'morgan'
 import { Observable, Subject } from 'rxjs'
-import { map, scan, startWith, switchMap, tap } from 'rxjs/operators'
+import { map, scan, startWith, switchMap } from 'rxjs/operators'
 export type VaultSortBy =
   | 'collateral'
   | 'debt'
@@ -82,7 +81,7 @@ function filterByTag(vaults: Vault[], tag: CoinTag | undefined) {
   if (tag === undefined) {
     return vaults
   }
-  return vaults.filter(vault => {
+  return vaults.filter((vault) => {
     const tokenMeta = getToken(vault.token)
 
     return (tokenMeta.tags as CoinTag[]).includes(tag)
@@ -90,12 +89,14 @@ function filterByTag(vaults: Vault[], tag: CoinTag | undefined) {
 }
 
 function search(vaults: Vault[], search: string) {
-  return vaults.filter(vault => {
+  return vaults.filter((vault) => {
     const tokenMeta = getToken(vault.token)
 
-    return vault.token.toLowerCase().includes(search.toLowerCase())
-      || tokenMeta.name.toLowerCase().includes(search.toLowerCase())
-      || vault.id.includes(search)
+    return (
+      vault.token.toLowerCase().includes(search.toLowerCase()) ||
+      tokenMeta.name.toLowerCase().includes(search.toLowerCase()) ||
+      vault.id.includes(search)
+    )
   })
 }
 
@@ -124,10 +125,10 @@ export function vaultsWithFilter$(vaults$: Observable<Vault[]>): Observable<Vaul
     switchMap((filters) =>
       vaults$.pipe(
         map((vaults) => sortVaults(vaults, filters.sortBy, filters.direction)),
-        map(vaults => filterByTag(vaults, filters.tagFilter)),
-        map(vaults => search(vaults, filters.search)),
+        map((vaults) => filterByTag(vaults, filters.tagFilter)),
+        map((vaults) => search(vaults, filters.search)),
         map((vaults) => ({ filters, data: vaults, isLoading: false })),
-        startWith({ filters, data: [], isLoading: true })
+        startWith({ filters, data: [], isLoading: true }),
       ),
     ),
   )

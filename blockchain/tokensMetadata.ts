@@ -11,7 +11,7 @@ export interface TokenConfig {
   iconColor: string
   ticker: string
   tags: string[]
-  color: string,
+  color: string
 }
 
 export type CoinTag = 'stablecoin' | 'LPToken'
