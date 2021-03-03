@@ -378,7 +378,7 @@ export function Filters({ onSearch, search, onTagChange, tagFilter, defaultTag }
       </Button>
       <Flex sx={{ variant: 'forms.search', width: '313px', ml: 'auto', alignItems: 'center' }}>
         <Icon
-          sx={{ position: 'relative', top: '3px', left: '3px', mx: 2 }}
+          sx={{ position: 'relative', top: '6px', ml: 3 }}
           name="search"
           size="4"
           color="muted"
@@ -453,9 +453,9 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
       <Text variant="header3" sx={{ textAlign: 'center', justifySelf: 'center', mb: 4 }}>
         {context.status === 'connected'
           ? t('vaults-overview.message-connected', {
-              address: formatAddress(address),
-              count: vaultSummary?.numberOfVaults || 0,
-            })
+            address: formatAddress(address),
+            count: vaultSummary?.numberOfVaults || 0,
+          })
           : t('vaults-overview.message-not-connected', { address: formatAddress(address) })}
       </Text>
       {displayFeaturedIlks && featuredIlks && <FeaturedIlks ilks={featuredIlks} />}
