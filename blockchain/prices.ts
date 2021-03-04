@@ -2,12 +2,17 @@ import { BigNumber } from 'bignumber.js'
 import { Context, every10Seconds$ } from 'blockchain/network'
 import { bindNodeCallback, combineLatest, EMPTY, forkJoin, iif, Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
-import { catchError, distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
+import {
+  catchError,
+  distinctUntilChanged,
+  first,
+  map,
+  shareReplay,
+  switchMap,
+} from 'rxjs/operators'
 
 import { getToken } from '../blockchain/tokensMetadata'
-import Web3 from 'web3'
 import { amountFromWei } from '@oasisdex/utils'
-import { contract } from '@oasisdex/web3-context'
 
 export interface Ticker {
   [label: string]: BigNumber
@@ -80,15 +85,19 @@ export function createOraclePriceData$(
 ): Observable<OraclePriceData> {
   return context$.pipe(
     switchMap(({ web3, mcdOsms }) =>
-      combineLatest(
-        bindNodeCallback(web3.eth.getCode)(mcdOsms[token].address),
-        pipPeek$(token),
-      ).pipe(
-        switchMap(([contractData, peek]) =>
+      bindNodeCallback(web3.eth.getCode)(mcdOsms[token].address).pipe(
+        first(),
+        switchMap((contractData) =>
           iif(
             () => contractData.length > DSVALUE_APPROX_SIZE,
-            combineLatest(of(peek), pipPeep$(token), pipZzz$(token), pipHop$(token), of(false)),
-            combineLatest(of(peek), of(undefined), of(undefined), of(undefined), of(true)),
+            combineLatest(
+              pipPeek$(token),
+              pipPeep$(token),
+              pipZzz$(token),
+              pipHop$(token),
+              of(false),
+            ),
+            combineLatest(pipPeek$(token), of(undefined), of(undefined), of(undefined), of(true)),
           ).pipe(
             switchMap(([peek, peep, zzz, hop, isStaticPrice]) => {
               const currentPriceUpdate = zzz ? new Date(zzz.toNumber()) : undefined
