@@ -88,10 +88,10 @@ export function createVaultsOverview$(
     ilksWithFilter$(ilksListWithBalances$),
     startWithDefault(featuredIlks$, undefined),
   ).pipe(
-    map(([vaults, vaultSummary, ilks, featuredIlks]) => ({
+    map(([vaults, vaultSummary, ilksWithFilters, featuredIlks]) => ({
       vaults,
       vaultSummary,
-      ilks,
+      ilksWithFilters,
       featuredIlks,
     })),
     distinctUntilChanged(isEqual),
