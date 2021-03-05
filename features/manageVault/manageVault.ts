@@ -13,7 +13,7 @@ import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
-import { UserTokenInfo, userTokenInfoChange$ } from 'features/shared/userTokenInfo'
+import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
 import { ApplyChange, applyChange, Change, Changes, transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
@@ -1003,32 +1003,22 @@ export function createManageVault$(
                         change$.next(ch)
                       }
 
+                      const userTokenInfoChange$ = curry(createUserTokenInfoChange$)(userTokenInfo$)
+
                       const environmentChanges$ = merge(
-                        userTokenInfoChange$(userTokenInfo$(token, account), 'collateralBalance'),
-                        userTokenInfoChange$(userTokenInfo$(token, account), 'ethBalance'),
-                        userTokenInfoChange$(userTokenInfo$(token, account), 'daiBalance'),
-                        userTokenInfoChange$(
-                          userTokenInfo$(token, account),
-                          'currentCollateralPrice',
-                        ),
-                        userTokenInfoChange$(userTokenInfo$(token, account), 'currentEthPrice'),
-                        userTokenInfoChange$(userTokenInfo$(token, account), 'nextCollateralPrice'),
-                        userTokenInfoChange$(userTokenInfo$(token, account), 'nextEthPrice'),
-                        userTokenInfoChange$(
-                          userTokenInfo$(token, account),
-                          'dateLastCollateralPrice',
-                        ),
-                        userTokenInfoChange$(
-                          userTokenInfo$(token, account),
-                          'dateNextCollateralPrice',
-                        ),
-                        userTokenInfoChange$(userTokenInfo$(token, account), 'dateLastEthPrice'),
-                        userTokenInfoChange$(userTokenInfo$(token, account), 'dateNextEthPrice'),
-                        userTokenInfoChange$(
-                          userTokenInfo$(token, account),
-                          'isStaticCollateralPrice',
-                        ),
-                        userTokenInfoChange$(userTokenInfo$(token, account), 'isStaticEthPrice'),
+                        userTokenInfoChange$(token, account, 'collateralBalance'),
+                        userTokenInfoChange$(token, account, 'ethBalance'),
+                        userTokenInfoChange$(token, account, 'daiBalance'),
+                        userTokenInfoChange$(token, account, 'currentCollateralPrice'),
+                        userTokenInfoChange$(token, account, 'currentEthPrice'),
+                        userTokenInfoChange$(token, account, 'nextCollateralPrice'),
+                        userTokenInfoChange$(token, account, 'nextEthPrice'),
+                        userTokenInfoChange$(token, account, 'dateLastCollateralPrice'),
+                        userTokenInfoChange$(token, account, 'dateNextCollateralPrice'),
+                        userTokenInfoChange$(token, account, 'dateLastEthPrice'),
+                        userTokenInfoChange$(token, account, 'dateNextEthPrice'),
+                        userTokenInfoChange$(token, account, 'isStaticCollateralPrice'),
+                        userTokenInfoChange$(token, account, 'isStaticEthPrice'),
 
                         ilkDataChange$(ilkData$(ilk), 'maxDebtPerUnitCollateral'),
                         ilkDataChange$(ilkData$(ilk), 'ilkDebtAvailable'),
