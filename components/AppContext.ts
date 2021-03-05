@@ -30,7 +30,6 @@ import {
   createAllowance$,
   createBalance$,
   createCollateralTokens$,
-  createTokens$,
 } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'

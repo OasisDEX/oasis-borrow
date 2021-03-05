@@ -1,6 +1,5 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import isEqual from 'lodash/isEqual'
 import { bindNodeCallback, combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 

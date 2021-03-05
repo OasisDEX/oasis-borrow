@@ -1,9 +1,10 @@
-import { OraclePriceData } from 'blockchain/prices'
+
 import { useAppContext } from 'components/AppContextProvider'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
+
 import { CollateralPrice, CollateralPrices } from './collateralPrices'
 
 function CollateralPricesRow({

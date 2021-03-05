@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
+import Web3 from 'web3'
+
 import { McdOsm } from '../../types/web3-v1-contracts/mcd-osm'
 import { CallDef } from './callsHelpers'
-import Web3 from 'web3'
 
 export const pipZzz: CallDef<string, BigNumber> = {
   call: (token, context) => context.contract<McdOsm>(context.mcdOsms[token]).methods.zzz,
