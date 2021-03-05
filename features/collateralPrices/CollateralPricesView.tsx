@@ -1,4 +1,3 @@
-
 import { useAppContext } from 'components/AppContextProvider'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
