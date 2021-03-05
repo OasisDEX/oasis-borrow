@@ -749,6 +749,7 @@ export function createOpenVault$(
                               change,
                             ),
                           ),
+                          shareReplay(1),
                         )
                       }),
                     ),
@@ -759,6 +760,5 @@ export function createOpenVault$(
         )
       }),
       map(applyIsStageStates),
-      shareReplay(1),
     )
 }

@@ -20,6 +20,9 @@ export interface UserTokenInfo {
 
   isStaticCollateralPrice: boolean
   isStaticEthPrice: boolean
+
+  collateralPricePercentageChange?: string
+  ethPricePercentageChange?: string
 }
 
 export function createUserTokenInfo$(
@@ -44,6 +47,7 @@ export function createUserTokenInfo$(
           isStaticPrice: isStaticCollateralPrice,
           currentPriceUpdate: dateLastCollateralPrice,
           nextPriceUpdate: dateNextCollateralPrice,
+          percentageChange: collateralPricePercentageChange,
         },
         ethBalance,
         {
@@ -52,6 +56,7 @@ export function createUserTokenInfo$(
           isStaticPrice: isStaticEthPrice,
           currentPriceUpdate: dateLastEthPrice,
           nextPriceUpdate: dateNextEthPrice,
+          percentageChange: ethPricePercentageChange,
         },
         daiBalance,
       ]) =>
@@ -72,6 +77,9 @@ export function createUserTokenInfo$(
 
           isStaticCollateralPrice,
           isStaticEthPrice,
+
+          collateralPricePercentageChange,
+          ethPricePercentageChange,
         }),
     ),
     shareReplay(1),

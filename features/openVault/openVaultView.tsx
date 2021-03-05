@@ -9,6 +9,7 @@ import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/format
 import { useObservable } from 'helpers/observableHook'
 import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
+import { useTranslation } from 'i18n'
 import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
@@ -25,6 +26,8 @@ function OpenVaultDetails({
   isStaticCollateralPrice,
   dateNextCollateralPrice,
 }: OpenVaultState) {
+  const { t } = useTranslation()
+
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
     ? '--'
     : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
@@ -34,30 +37,34 @@ function OpenVaultDetails({
   return (
     <Grid columns="1fr 1fr" gap={6} sx={{ justifyContent: 'space-between' }}>
       <Grid>
-        <Text>Liquidation Price</Text>
+        <Text>{t('system.liquidation-price')}</Text>
         <Heading>$0.00</Heading>
-        <Text>After: ${afterLiqPrice}</Text>
+        <Text>{t('vaults.after', { price: afterLiqPrice })}</Text>
       </Grid>
 
       <Grid sx={{ textAlign: 'right' }}>
-        <Text>Collateralization Ratio</Text>
+        <Text>{t('system.collateralization-ratio')}</Text>
         <Heading>0 %</Heading>
-        <Text>After: {afterCollRatio}</Text>
+        <Text>{t('vaults.after', { price: afterCollRatio })}</Text>
       </Grid>
 
       {isStaticCollateralPrice ? (
         <Grid>
-          <Text>{`${token}/USD price`}</Text>
+          <Text>{t('vaults.current-price', { token })}</Text>
           <Heading>${formatAmount(currentCollateralPrice, 'USD')}</Heading>
         </Grid>
       ) : (
         <Grid>
-          <Text>Current ETH/USD Price in 9 mins</Text>
           <Grid>
-            <Text>{`Current ${token}/USD price`}</Text>
+            <Text>{t('vaults.current-price', { token })}</Text>
             <Heading>${formatAmount(currentCollateralPrice, 'USD')}</Heading>
           </Grid>
-          <Text>Next price: {formatAmount(nextCollateralPrice || zero, 'USD')} </Text>
+          <Text>
+            {t('vaults.next-price', {
+              token,
+              amount: formatAmount(nextCollateralPrice || zero, 'USD'),
+            })}
+          </Text>
           <Text>
             {dateNextCollateralPrice?.toLocaleDateString()} ::{' '}
             {dateNextCollateralPrice?.toLocaleTimeString()}
@@ -66,7 +73,7 @@ function OpenVaultDetails({
       )}
 
       <Grid sx={{ textAlign: 'right' }}>
-        <Text>Collateral Locked</Text>
+        <Text>{t('system.collateral-locked')}</Text>
         <Heading>--.-- {token}</Heading>
         <Text>$--.--</Text>
       </Grid>
@@ -643,6 +650,7 @@ function OpenVaultContainer(props: OpenVaultState) {
 }
 
 export function OpenVaultView({ ilk }: { ilk: string }) {
+  const { t } = useTranslation()
   const { openVault$ } = useAppContext()
   const openVault = useObservable(openVault$(ilk))
 
@@ -655,9 +663,7 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
       <Grid sx={{ width: '100%', height: '50vh', justifyItems: 'center', alignItems: 'center' }}>
         {openVault.stage === 'ilkValidationLoading' && <Spinner size={50} />}
         {openVault.stage === 'ilkValidationFailure' && (
-          <Box>
-            Ilk {ilk} does not exist, please update the ilk registry if passed by governance
-          </Box>
+          <Box>{t('vaults.ilk-does-not-exist', { ilk })}</Box>
         )}
       </Grid>
     )
