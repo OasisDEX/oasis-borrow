@@ -12,7 +12,6 @@ import {
 } from 'rxjs/operators'
 
 import { getToken } from '../blockchain/tokensMetadata'
-import { amountFromWei } from '@oasisdex/utils'
 
 export interface Ticker {
   [label: string]: BigNumber
@@ -71,9 +70,36 @@ export interface OraclePriceData {
   nextPriceUpdate?: Date
   priceUpdateInterval?: number
   isStaticPrice: boolean
+  percentageChange?: BigNumber
 }
 
 const DSVALUE_APPROX_SIZE = 6000
+
+// All oracle prices are returned as string values which have a precision of
+// 18 decimal places. We need to truncate these to the correct precision
+function transformOraclePrice({
+  token,
+  oraclePrice,
+}: {
+  token: string
+  oraclePrice: [string, boolean]
+}): BigNumber {
+  const precision = getToken(token).precision
+  const rawPrice = new BigNumber(oraclePrice[0])
+    .shiftedBy(-18)
+    .toFixed(precision, BigNumber.ROUND_DOWN)
+  return new BigNumber(rawPrice)
+}
+
+function calculatePricePercentageChange(
+  current: BigNumber,
+  next: BigNumber | undefined,
+): BigNumber | undefined {
+  if (!next) return undefined
+
+  const rawPriceChange = current.div(next)
+  return rawPriceChange.gte(1) ? rawPriceChange.minus(1).times(-1) : rawPriceChange
+}
 
 export function createOraclePriceData$(
   context$: Observable<Context>,
@@ -103,11 +129,12 @@ export function createOraclePriceData$(
               const currentPriceUpdate = zzz ? new Date(zzz.toNumber()) : undefined
               const nextPriceUpdate = zzz && hop ? new Date(zzz.plus(hop).toNumber()) : undefined
               const priceUpdateInterval = hop ? hop.toNumber() : undefined
-
-              const currentPrice = amountFromWei(new BigNumber(peek[0]), getToken(token).precision)
+              const currentPrice = transformOraclePrice({ token, oraclePrice: peek })
               const nextPrice = peep
-                ? amountFromWei(new BigNumber(peep[0]), getToken(token).precision)
+                ? transformOraclePrice({ token, oraclePrice: peep })
                 : undefined
+
+              const percentageChange = calculatePricePercentageChange(currentPrice, nextPrice)
 
               return of({
                 currentPrice,
@@ -116,6 +143,7 @@ export function createOraclePriceData$(
                 nextPriceUpdate,
                 priceUpdateInterval,
                 isStaticPrice,
+                percentageChange,
               })
             }),
           ),

@@ -125,6 +125,7 @@ const MyRow = memo(({ row, columns }: { row: any; columns: ColumnDef<any, any>[]
     </Row>
   )
 })
+
 export function Table<T extends Record<K, string>, K extends keyof T, S>({
   data,
   columns,

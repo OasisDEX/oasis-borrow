@@ -29,10 +29,12 @@ import {
   createAccountBalance$,
   createAllowance$,
   createBalance$,
+  createCollateralTokens$,
   createTokens$,
 } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageVault$ } from 'features/manageVault/manageVault'
@@ -40,8 +42,7 @@ import { createOpenVault$ } from 'features/openVault/openVault'
 import { redirectState$ } from 'features/router/redirectState'
 import { createUserTokenInfo$ } from 'features/shared/userTokenInfo'
 import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
-import { mapValues } from 'lodash'
-import { memoize } from 'lodash'
+import { mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
 import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
@@ -207,24 +208,30 @@ export function setupAppContext() {
 
   const ilks$ = createIlks$(context$)
 
-  const tokens$ = createTokens$(ilks$, ilkToToken$)
+  const collateralTokens$ = createCollateralTokens$(ilks$, ilkToToken$)
 
-  const accountBalances$ = curry(createAccountBalance$)(balance$, tokens$, oraclePriceData$)
+  const accountBalances$ = curry(createAccountBalance$)(
+    balance$,
+    collateralTokens$,
+    oraclePriceData$,
+  )
 
   const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
   const ilksWithBalance$ = createIlkDataListWithBalances$(context$, ilkDataList$, accountBalances$)
 
   const userTokenInfo$ = memoize(curry(createUserTokenInfo$)(oraclePriceData$, balance$))
 
-  const openVault$ = curry(createOpenVault$)(
-    connectedContext$,
-    txHelpers$,
-    proxyAddress$,
-    allowance$,
-    userTokenInfo$,
-    ilkData$,
-    ilks$,
-    ilkToToken$,
+  const openVault$ = memoize(
+    curry(createOpenVault$)(
+      connectedContext$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      userTokenInfo$,
+      ilkData$,
+      ilks$,
+      ilkToToken$,
+    ),
   )
 
   const manageVault$ = memoize(
@@ -238,6 +245,8 @@ export function setupAppContext() {
       vault$,
     ),
   )
+
+  const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
   const vaultsOverview$ = memoize(
@@ -264,6 +273,7 @@ export function setupAppContext() {
     vaultsOverview$,
     redirectState$,
     accountBalances$,
+    collateralPrices$,
   }
 }
 

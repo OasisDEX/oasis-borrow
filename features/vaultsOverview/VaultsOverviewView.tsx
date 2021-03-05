@@ -200,7 +200,6 @@ function AllIlks({
       isReadonly,
     }
   }, [filters, isReadonly])
-
   return <Table primaryKey="ilk" data={data} state={tableState} columns={ilksColumns} />
 }
 

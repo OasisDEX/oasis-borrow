@@ -31,7 +31,7 @@ export function createBalance$(
   )
 }
 
-export function createTokens$(
+export function createCollateralTokens$(
   ilks$: Observable<string[]>,
   ilkToToken$: Observable<(ilk: string) => string>,
 ): Observable<string[]> {
@@ -44,23 +44,27 @@ export type TokenBalances = Record<string, { balance: BigNumber; price: BigNumbe
 
 export function createAccountBalance$(
   tokenBalance$: (token: string, address: string) => Observable<BigNumber>,
-  tokens$: Observable<string[]>,
+  collateralTokens$: Observable<string[]>,
   oraclePriceData$: (token: string) => Observable<OraclePriceData>,
   address: string,
 ): Observable<TokenBalances> {
-  return tokens$.pipe(
-    switchMap((tokens) =>
+  return collateralTokens$.pipe(
+    switchMap((collateralTokens) =>
       combineLatest(
-        tokens.map((token) =>
-          combineLatest(of(token), tokenBalance$(token, address), oraclePriceData$(token)),
+        collateralTokens.map((collateralToken) =>
+          combineLatest(
+            of(collateralToken),
+            tokenBalance$(collateralToken, address),
+            oraclePriceData$(collateralToken),
+          ),
         ),
       ),
     ),
     map((data) =>
       data.reduce(
-        (acc, [token, balance, { currentPrice: price }]) => ({
+        (acc, [collateralToken, balance, { currentPrice: price }]) => ({
           ...acc,
-          [token]: { balance, price },
+          [collateralToken]: { balance, price },
         }),
         {},
       ),
