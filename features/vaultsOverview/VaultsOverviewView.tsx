@@ -453,9 +453,9 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
       <Text variant="header3" sx={{ textAlign: 'center', justifySelf: 'center', mb: 4 }}>
         {context.status === 'connected'
           ? t('vaults-overview.message-connected', {
-            address: formatAddress(address),
-            count: vaultSummary?.numberOfVaults || 0,
-          })
+              address: formatAddress(address),
+              count: vaultSummary?.numberOfVaults || 0,
+            })
           : t('vaults-overview.message-not-connected', { address: formatAddress(address) })}
       </Text>
       {displayFeaturedIlks && featuredIlks && <FeaturedIlks ilks={featuredIlks} />}
