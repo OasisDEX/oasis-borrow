@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js";
 import { IlkData, IlkDataList } from "blockchain/ilks";
 import { Context } from "blockchain/network";
 import { TokenBalances } from "blockchain/tokens";
-import { Observable, combineLatest, of } from "rxjs";
+import { combineLatest, Observable, of } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
 
 export interface IlkWithBalance extends IlkData {

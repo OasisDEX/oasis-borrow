@@ -46,6 +46,14 @@
     "collateral-ratio": "Collateral Ratio",
     "vault-id": "Vault ID"
   },
+  "event": {
+    "type": "Type",
+    "activity": "Activity",
+    "time": "Time",
+    "vault-opened": "Vault Opened",
+    "deposit": "Deposited"
+  },
+  "vault-history": "Vault History",
   "stablecoins": "Stablecoins",
   "lp-tokens": "LP tokens",
   "open-vault": "Open Vault",

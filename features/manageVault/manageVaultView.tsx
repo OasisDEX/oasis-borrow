@@ -4,6 +4,7 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultActionInput } from 'components/VaultActionInput'
+import { HistoryTable } from 'features/history/HistoryTable'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
@@ -100,12 +101,12 @@ function ManageVaultFormTitle({
           {isEditingStage
             ? 'Manage your Vault'
             : isProxyStage
-            ? 'Create Proxy'
-            : isCollateralAllowanceStage
-            ? `Set ${token} Allowance`
-            : isDaiAllowanceStage
-            ? `Set DAI Allowance`
-            : 'Action Vault'}
+              ? 'Create Proxy'
+              : isCollateralAllowanceStage
+                ? `Set ${token} Allowance`
+                : isDaiAllowanceStage
+                  ? `Set DAI Allowance`
+                  : 'Action Vault'}
         </Text>
         {canReset ? (
           <Button onClick={handleReset} disabled={!canReset} sx={{ fontSize: 1, p: 0 }}>
@@ -452,10 +453,10 @@ function ManageVaultFormProxy({
     stage === 'proxySuccess'
       ? t('continue')
       : stage === 'proxyFailure'
-      ? t('retry-create-proxy')
-      : stage === 'proxyWaitingForConfirmation'
-      ? t('create-proxy-btn')
-      : t('creating-proxy')
+        ? t('retry-create-proxy')
+        : stage === 'proxyWaitingForConfirmation'
+          ? t('create-proxy-btn')
+          : t('creating-proxy')
 
   return (
     <Grid>
@@ -466,8 +467,8 @@ function ManageVaultFormProxy({
             <Text pl={2}>{buttonText}</Text>
           </Flex>
         ) : (
-          <Text>{buttonText}</Text>
-        )}
+            <Text>{buttonText}</Text>
+          )}
       </Button>
       {stage === 'proxyInProgress' && (
         <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
@@ -579,10 +580,10 @@ function ManageVaultFormCollateralAllowance({
     stage === 'collateralAllowanceSuccess'
       ? t('continue')
       : stage === 'collateralAllowanceFailure'
-      ? t('retry-allowance-approval')
-      : stage === 'collateralAllowanceWaitingForConfirmation'
-      ? t('approve-allowance')
-      : t('approving-allowance')
+        ? t('retry-allowance-approval')
+        : stage === 'collateralAllowanceWaitingForConfirmation'
+          ? t('approve-allowance')
+          : t('approving-allowance')
 
   return (
     <Grid>
@@ -635,8 +636,8 @@ function ManageVaultFormCollateralAllowance({
             <Text pl={2}>{buttonText}</Text>
           </Flex>
         ) : (
-          <Text>{buttonText}</Text>
-        )}
+            <Text>{buttonText}</Text>
+          )}
       </Button>
       {stage === 'collateralAllowanceInProgress' && (
         <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
@@ -744,10 +745,10 @@ function ManageVaultFormDaiAllowance({
     stage === 'daiAllowanceSuccess'
       ? t('view-on-etherscan')
       : stage === 'daiAllowanceFailure'
-      ? t('retry-allowance-approval')
-      : stage === 'daiAllowanceWaitingForConfirmation'
-      ? t('approve-allowance')
-      : t('approving-allowance')
+        ? t('retry-allowance-approval')
+        : stage === 'daiAllowanceWaitingForConfirmation'
+          ? t('approve-allowance')
+          : t('approving-allowance')
 
   return (
     <Grid>
@@ -800,8 +801,8 @@ function ManageVaultFormDaiAllowance({
             <Text pl={2}>{buttonText}</Text>
           </Flex>
         ) : (
-          <Text>{buttonText}</Text>
-        )}
+            <Text>{buttonText}</Text>
+          )}
       </Button>
       {stage === 'daiAllowanceInProgress' && (
         <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
@@ -891,10 +892,10 @@ function ManageVaultFormConfirmation({
     stage === 'manageWaitingForConfirmation'
       ? t('change-your-vault')
       : stage === 'manageFailure'
-      ? t('retry')
-      : stage === 'manageSuccess'
-      ? t('back-to-editing')
-      : t('change-your-vault')
+        ? t('retry')
+        : stage === 'manageSuccess'
+          ? t('back-to-editing')
+          : t('change-your-vault')
 
   return (
     <Grid>
@@ -940,8 +941,8 @@ function ManageVaultFormConfirmation({
             <Text pl={2}>{buttonText}</Text>
           </Flex>
         ) : (
-          <Text>{buttonText}</Text>
-        )}
+            <Text>{buttonText}</Text>
+          )}
       </Button>
 
       {stage === 'manageInProgress' && (
@@ -1031,6 +1032,7 @@ export function ManageVaultView({ id }: { id: BigNumber }) {
   return (
     <Grid>
       <ManageVaultContainer {...manageVault} />
+      <HistoryTable />
     </Grid>
   )
 }
