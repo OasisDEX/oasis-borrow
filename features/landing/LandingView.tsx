@@ -8,7 +8,7 @@ import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { FeaturedIlks, Filters } from 'features/vaultsOverview/VaultsOverviewView'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { Trans, useTranslation } from 'i18n'
+import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback } from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 

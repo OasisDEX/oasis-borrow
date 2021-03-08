@@ -1,13 +1,19 @@
 import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { OpenVaultView } from 'features/openVault/openVaultView'
-import { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
-export default function OpenVault() {
-  const router = useRouter()
+export async function getServerSideProps(ctx: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(ctx.locale, ['common'])),
+      ilk: ctx.query.ilk || null,
+    },
+  }
+}
 
-  const ilk = router.query.ilk as string
+export default function OpenVault({ ilk }: { ilk: string }) {
   return (
     <WithWalletConnection>
       <OpenVaultView ilk={ilk} />

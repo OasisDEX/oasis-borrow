@@ -10,7 +10,7 @@ import { CustomMDXLink } from 'components/Links'
 // @ts-ignore
 import { cache } from 'emotion'
 import { ModalProvider } from 'helpers/modalHook'
-import { appWithTranslation } from 'i18n'
+import { appWithTranslation } from 'next-i18next'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -22,6 +22,7 @@ import Web3 from 'web3'
 
 import { trackingEvents } from '../analytics/analytics'
 import { mixpanelInit } from '../analytics/mixpanel'
+import nextI18NextConfig from '../next-i18next.config.js'
 
 function getLibrary(provider: any): Web3 {
   return new Web3(provider)
@@ -162,4 +163,4 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
   )
 }
 
-export default appWithTranslation(App)
+export default appWithTranslation(App, nextI18NextConfig)

@@ -1,5 +1,5 @@
-import { useTranslation } from 'i18n'
 import moment from 'moment'
+import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Box, Flex, Heading, Text } from 'theme-ui'
 
