@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Direction } from 'helpers/form'
-import { useTranslation } from 'i18n'
+import { useTranslation } from 'next-i18next'
 import React, { memo, ReactNode } from 'react'
 import { Box, Button, Container, SxStyleProp } from 'theme-ui'
 

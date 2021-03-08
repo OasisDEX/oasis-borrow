@@ -9,7 +9,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { ViewMore } from 'components/ViewMore'
 import { useObservable } from 'helpers/observableHook'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
-import { useTranslation } from 'i18n'
+import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Link, Spinner } from 'theme-ui'
 
