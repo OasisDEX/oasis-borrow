@@ -55,7 +55,6 @@ async function main() {
   app.use((req: any, res: any, next: any): any => {
     const parsedUrl = parse(req.url, true)
     const { pathname, query } = parsedUrl
-    console.log('hghbbh', pathname, query, parsedUrl)
     if (pathname && i18n.locales.includes(pathname.substr(1)))
       return nextApp.render(req, res, '/', query)
     next()
