@@ -163,4 +163,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
   )
 }
 
-export default appWithTranslation(App, nextI18NextConfig)
+export default appWithTranslation(
+  App as React.ComponentType<AppProps> | React.ElementType<AppProps>,
+  nextI18NextConfig,
+)
