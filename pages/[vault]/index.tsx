@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
-import { ManageVaultView } from 'features/manageVault/manageVaultView'
+import { ManageVaultView } from 'features/manageVault/ManageVaultView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
