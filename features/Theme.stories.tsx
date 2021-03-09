@@ -1,10 +1,9 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { storiesOf } from '@storybook/react'
 import { ColorPalette, TypeScale } from '@theme-ui/style-guide'
-import { AppLink } from 'components/Links'
 import { Container } from 'next/app'
 import React from 'react'
-import { Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
+import { Box, Button, Flex, Grid, Heading, Link, Text } from 'theme-ui'
 
 import { theme } from '../theme'
 
@@ -106,6 +105,8 @@ stories.add('Components', () => {
   const buttons = Object.keys(theme.buttons)
   const links = Object.keys(theme.links)
 
+  console.log(theme.links)
+
   return (
     <Container>
       <Heading sx={{ mt: 4, fontSize: 5 }}>Components</Heading>
@@ -127,14 +128,14 @@ stories.add('Components', () => {
             <Text sx={{ position: 'absolute', top: 0, transform: 'translateY(-90%)' }}>
               {variant}
             </Text>
-            <AppLink href="#" variant={variant}>
+            <Link href="#" variant={variant}>
               Click me
-            </AppLink>
+            </Link>
           </Box>
         ))}
         <Box sx={{ position: 'relative', bg: 'white', m: 3, p: 3 }}>
           <Text sx={{ position: 'absolute', top: 0, transform: 'translateY(-90%)' }}>Default</Text>
-          <AppLink href="#">Click me</AppLink>
+          <Link href="#">Click me</Link>
         </Box>
       </Flex>
     </Container>
