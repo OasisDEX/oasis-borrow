@@ -21,8 +21,7 @@
     "test:fix": "yarn lint:fix && yarn tsc && yarn format:fix && yarn test && yarn typecheck",
     "test:e2e": "mocha --config ./server-test-e2e/.mocharc.js",
     "typechain:generate": "typechain --target=web3-v1 'blockchain/abi/*.json'",
-    "postinstall": "rm -f node_modules/web3/index.d.ts && yarn prisma:generate && yarn patch-package && yarn typechain:generate",
-    "storybook": "start-storybook -p 6006 -c .storybook -s ./public"
+    "postinstall": "rm -f node_modules/web3/index.d.ts && yarn prisma:generate && yarn patch-package && yarn typechain:generate"
   },
   "dependencies": {
     "@makerdao/dai-ui-icons": "^0.0.59",
@@ -106,7 +105,6 @@
     "@babel/core": "^7.9.0",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@prisma/cli": "^2.14.0",
-    "@storybook/react": "^5.3.19",
     "@typechain/web3-v1": "^2.0.0",
     "@types/bn.js": "^4.11.1",
     "@types/body-parser": "^1.19.0",
