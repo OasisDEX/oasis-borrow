@@ -1,13 +1,17 @@
 import { BigNumber } from 'bignumber.js'
 import { Context, every10Seconds$ } from 'blockchain/network'
-import { bindNodeCallback, combineLatest, forkJoin, Observable, of } from 'rxjs'
+import { bindNodeCallback, combineLatest, forkJoin, iif, Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
-import { catchError, distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
+import {
+  catchError,
+  distinctUntilChanged,
+  first,
+  map,
+  shareReplay,
+  switchMap,
+} from 'rxjs/operators'
 
 import { getToken } from '../blockchain/tokensMetadata'
-import { CallObservable } from './calls/observe'
-import { spotIlk, spotPar } from './calls/spot'
-import { vatIlk } from './calls/vat'
 
 export interface Ticker {
   [label: string]: BigNumber
@@ -59,15 +63,93 @@ export const tokenPricesInUSD$: Observable<Ticker> = every10Seconds$.pipe(
   shareReplay(1),
 )
 
-export function createTokenOraclePrice$(
-  vatIlks$: CallObservable<typeof vatIlk>,
-  ratioDAIUSD$: CallObservable<typeof spotPar>,
-  liquidationRatio$: CallObservable<typeof spotIlk>,
-  ilk: string,
-) {
-  return combineLatest(vatIlks$(ilk), liquidationRatio$(ilk), ratioDAIUSD$()).pipe(
-    map(([{ maxDebtPerUnitCollateral }, { liquidationRatio }, ratioDAIUSD]) =>
-      maxDebtPerUnitCollateral.times(ratioDAIUSD).times(liquidationRatio),
+export interface OraclePriceData {
+  currentPrice: BigNumber
+  nextPrice?: BigNumber
+  currentPriceUpdate?: Date
+  nextPriceUpdate?: Date
+  priceUpdateInterval?: number
+  isStaticPrice: boolean
+  percentageChange?: BigNumber
+}
+
+const DSVALUE_APPROX_SIZE = 6000
+
+// All oracle prices are returned as string values which have a precision of
+// 18 decimal places. We need to truncate these to the correct precision
+function transformOraclePrice({
+  token,
+  oraclePrice,
+}: {
+  token: string
+  oraclePrice: [string, boolean]
+}): BigNumber {
+  const precision = getToken(token).precision
+  const rawPrice = new BigNumber(oraclePrice[0])
+    .shiftedBy(-18)
+    .toFixed(precision, BigNumber.ROUND_DOWN)
+  return new BigNumber(rawPrice)
+}
+
+function calculatePricePercentageChange(
+  current: BigNumber,
+  next: BigNumber | undefined,
+): BigNumber | undefined {
+  if (!next) return undefined
+
+  const rawPriceChange = current.div(next)
+  return rawPriceChange.gte(1) ? rawPriceChange.minus(1).times(-1) : rawPriceChange
+}
+
+export function createOraclePriceData$(
+  context$: Observable<Context>,
+  pipPeek$: (token: string) => Observable<[string, boolean]>,
+  pipPeep$: (token: string) => Observable<[string, boolean]>,
+  pipZzz$: (token: string) => Observable<BigNumber>,
+  pipHop$: (token: string) => Observable<BigNumber>,
+  token: string,
+): Observable<OraclePriceData> {
+  return context$.pipe(
+    switchMap(({ web3, mcdOsms }) =>
+      bindNodeCallback(web3.eth.getCode)(mcdOsms[token].address).pipe(
+        first(),
+        switchMap((contractData) =>
+          iif(
+            () => contractData.length > DSVALUE_APPROX_SIZE,
+            combineLatest(
+              pipPeek$(token),
+              pipPeep$(token),
+              pipZzz$(token),
+              pipHop$(token),
+              of(false),
+            ),
+            combineLatest(pipPeek$(token), of(undefined), of(undefined), of(undefined), of(true)),
+          ).pipe(
+            switchMap(([peek, peep, zzz, hop, isStaticPrice]) => {
+              const currentPriceUpdate = zzz ? new Date(zzz.toNumber()) : undefined
+              const nextPriceUpdate = zzz && hop ? new Date(zzz.plus(hop).toNumber()) : undefined
+              const priceUpdateInterval = hop ? hop.toNumber() : undefined
+              const currentPrice = transformOraclePrice({ token, oraclePrice: peek })
+              const nextPrice = peep
+                ? transformOraclePrice({ token, oraclePrice: peep })
+                : undefined
+
+              const percentageChange = calculatePricePercentageChange(currentPrice, nextPrice)
+
+              return of({
+                currentPrice,
+                nextPrice,
+                currentPriceUpdate,
+                nextPriceUpdate,
+                priceUpdateInterval,
+                isStaticPrice,
+                percentageChange,
+              })
+            }),
+          ),
+        ),
+      ),
     ),
+    shareReplay(1),
   )
 }

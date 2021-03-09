@@ -88,7 +88,6 @@ const protoMain = {
 export type NetworkConfig = typeof protoMain
 
 const main: NetworkConfig = protoMain
-
 const kovan: NetworkConfig = {
   id: '42',
   name: 'kovan',

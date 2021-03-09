@@ -16,7 +16,7 @@ function Summary({ address }: { address: string }) {
     return null
   }
 
-  return <VaultsOverviewView vaultsOverView={vaultsOverview} context={context} address={address} />
+  return <VaultsOverviewView vaultsOverview={vaultsOverview} context={context} address={address} />
 }
 
 export async function getServerSideProps(ctx: any) {

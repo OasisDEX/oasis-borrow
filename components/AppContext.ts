@@ -10,6 +10,7 @@ import {
   TransactionDef,
 } from 'blockchain/calls/callsHelpers'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
+import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import {
   CreateDsProxyData,
   createProxyAddress$,
@@ -23,21 +24,27 @@ import {
 } from 'blockchain/calls/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
-import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
-import { createAccountBalance$, createAllowance$, createBalance$ } from 'blockchain/tokens'
+import { createGasPrice$, createOraclePriceData$ } from 'blockchain/prices'
+import {
+  createAccountBalance$,
+  createAllowance$,
+  createBalance$,
+  createCollateralTokens$,
+} from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
 import { redirectState$ } from 'features/router/redirectState'
+import { createUserTokenInfo$ } from 'features/shared/userTokenInfo'
 import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
-import { mapValues } from 'lodash'
-import { memoize } from 'lodash'
+import { mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
-import { filter, map, shareReplay } from 'rxjs/operators'
+import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { catIlk } from '../blockchain/calls/cat'
 import {
@@ -48,7 +55,7 @@ import {
 } from '../blockchain/calls/erc20'
 import { jugIlk } from '../blockchain/calls/jug'
 import { observe } from '../blockchain/calls/observe'
-import { spotIlk, spotPar } from '../blockchain/calls/spot'
+import { spotIlk } from '../blockchain/calls/spot'
 import { networksById } from '../blockchain/config'
 import {
   ContextConnected,
@@ -122,6 +129,11 @@ export function setupAppContext() {
     shareReplay(1),
   ) as Observable<ContextConnected>
 
+  const oracleContext$ = context$.pipe(
+    switchMap((ctx) => of({ ...ctx, account: ctx.mcdSpot.address })),
+    shareReplay(1),
+  ) as Observable<ContextConnected>
+
   const [send, transactions$] = createSend<TxData>(
     initializedAccount$,
     onEveryBlock$,
@@ -144,10 +156,18 @@ export function setupAppContext() {
   const vatIlks$ = observe(onEveryBlock$, context$, vatIlk)
   const vatUrns$ = observe(onEveryBlock$, context$, vatUrns, ilkUrnAddressToString)
   const vatGem$ = observe(onEveryBlock$, context$, vatGem, ilkUrnAddressToString)
-  const spotPar$ = observe(onEveryBlock$, context$, spotPar)
   const spotIlks$ = observe(onEveryBlock$, context$, spotIlk)
   const jugIlks$ = observe(onEveryBlock$, context$, jugIlk)
   const catIlks$ = observe(onEveryBlock$, context$, catIlk)
+
+  const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
+  const pipHop$ = observe(onEveryBlock$, context$, pipHop)
+  const pipPeek$ = observe(onEveryBlock$, oracleContext$, pipPeek)
+  const pipPeep$ = observe(onEveryBlock$, oracleContext$, pipPeep)
+
+  const oraclePriceData$ = memoize(
+    curry(createOraclePriceData$)(context$, pipPeek$, pipPeep$, pipZzz$, pipHop$),
+  )
 
   const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
   const balance$ = curry(createBalance$)(onEveryBlock$, context$, tokenBalance$)
@@ -156,9 +176,6 @@ export function setupAppContext() {
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
 
   const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
-
-  // computed
-  const tokenOraclePrice$ = memoize(curry(createTokenOraclePrice$)(vatIlks$, spotPar$, spotIlks$))
 
   const ilkData$ = memoize(
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, catIlks$, ilkToToken$),
@@ -177,7 +194,7 @@ export function setupAppContext() {
       vatUrns$,
       vatGem$,
       ilkData$,
-      tokenOraclePrice$,
+      oraclePriceData$,
       controller$,
       ilkToToken$,
     ),
@@ -190,15 +207,18 @@ export function setupAppContext() {
 
   const ilks$ = createIlks$(context$)
 
+  const collateralTokens$ = createCollateralTokens$(ilks$, ilkToToken$)
+
   const accountBalances$ = curry(createAccountBalance$)(
     balance$,
-    ilks$,
-    ilkToToken$,
-    tokenOraclePrice$,
+    collateralTokens$,
+    oraclePriceData$,
   )
 
   const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
   const ilksWithBalance$ = createIlkDataListWithBalances$(context$, ilkDataList$, accountBalances$)
+
+  const userTokenInfo$ = memoize(curry(createUserTokenInfo$)(oraclePriceData$, balance$))
 
   const openVault$ = memoize(
     curry(createOpenVault$)(
@@ -206,28 +226,28 @@ export function setupAppContext() {
       txHelpers$,
       proxyAddress$,
       allowance$,
-      tokenOraclePrice$,
-      balance$,
+      userTokenInfo$,
       ilkData$,
       ilks$,
       ilkToToken$,
     ),
   )
+
   const manageVault$ = memoize(
     curry(createManageVault$)(
       connectedContext$,
       txHelpers$,
       proxyAddress$,
       allowance$,
-      tokenOraclePrice$,
-      balance$,
+      userTokenInfo$,
       ilkData$,
       vault$,
     ),
   )
 
-  const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
+  const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
+  const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
   const vaultsOverview$ = memoize(
     curry(createVaultsOverview$)(vaults$, ilksWithBalance$, featuredIlks$),
   )
@@ -252,6 +272,7 @@ export function setupAppContext() {
     vaultsOverview$,
     redirectState$,
     accountBalances$,
+    collateralPrices$,
   }
 }
 
