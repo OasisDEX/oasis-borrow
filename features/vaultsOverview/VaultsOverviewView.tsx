@@ -12,7 +12,7 @@ import {
   formatFiatBalance,
   formatPercent,
 } from 'helpers/formatters/format'
-import { Trans, useTranslation } from 'i18n'
+import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback, useMemo } from 'react'
 import { Box, Button, Card, Flex, Grid, Heading, Input, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'

@@ -7,6 +7,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
+const { i18n } = require('./next-i18next.config')
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -88,6 +89,7 @@ module.exports = withBundleAnalyzer(
           register: process.env.NODE_ENV === 'production',
           dest: 'public',
         },
+        i18n,
       }),
     ),
   ),

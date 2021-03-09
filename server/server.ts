@@ -10,7 +10,7 @@ import next from 'next'
 import { join } from 'path'
 import { parse } from 'url'
 
-import nextI18next from '../i18n'
+import { i18n } from '../next-i18next.config'
 import { getApp } from './app'
 import { configSchema } from './config'
 import { sendMailUsingSMTP } from './middleware/emails/providers/emailProvider'
@@ -42,7 +42,6 @@ async function main() {
   })
 
   await nextApp.prepare()
-  await nextI18next.initPromise
   const app = getApp(config, {
     nextHandler: handleByNext as any,
     emailProvider: sendMailUsingSMTP({
@@ -56,7 +55,7 @@ async function main() {
   app.use((req: any, res: any, next: any): any => {
     const parsedUrl = parse(req.url, true)
     const { pathname, query } = parsedUrl
-    if (pathname && nextI18next.config.allLanguages.includes(pathname.substr(1)))
+    if (pathname && i18n.locales.includes(pathname.substr(1)))
       return nextApp.render(req, res, '/', query)
     next()
   })

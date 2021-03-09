@@ -3,9 +3,10 @@ import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { VaultsOverviewView } from 'features/vaultsOverview/VaultsOverviewView'
 import { useObservable } from 'helpers/observableHook'
-import { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
+// TODO Move this to /features
 function Summary({ address }: { address: string }) {
   const { vaultsOverview$, context$ } = useAppContext()
   const vaultsOverview = useObservable(vaultsOverview$(address))
@@ -18,10 +19,16 @@ function Summary({ address }: { address: string }) {
   return <VaultsOverviewView vaultsOverview={vaultsOverview} context={context} address={address} />
 }
 
-export default function VaultsSummary() {
-  const router = useRouter()
+export async function getServerSideProps(ctx: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(ctx.locale, ['common'])),
+      address: ctx.query?.address || null,
+    },
+  }
+}
 
-  const address = router.query.address as string
+export default function VaultsSummary({ address }: { address: string }) {
   return address ? (
     <WithConnection>
       <Summary {...{ address }} />

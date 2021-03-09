@@ -4,9 +4,7 @@ import express from 'express'
 import basicAuth from 'express-basic-auth'
 import jwt from 'express-jwt'
 import morgan from 'morgan'
-import nextI18NextMiddleware from 'next-i18next/middleware'
 
-import nextI18next from '../i18n'
 import { Config } from './config'
 import { contactFormMiddleware } from './middleware/emails'
 import { EmailProvider } from './middleware/emails/types'
@@ -23,7 +21,6 @@ export function getApp(
   { nextHandler, emailProvider }: Dependencies,
 ): express.Application {
   const app = express()
-  app.use(nextI18NextMiddleware(nextI18next))
   app.enable('trust proxy')
 
   if (config.httpPassword) {

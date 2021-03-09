@@ -7,7 +7,7 @@ import { Modal, ModalCloseIcon } from 'components/Modal'
 import { formatAddress } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
-import { useTranslation } from 'i18n'
+import { useTranslation } from 'next-i18next'
 import React, { useEffect, useRef, useState } from 'react'
 // @ts-ignore
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
