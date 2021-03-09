@@ -25,9 +25,9 @@
     "cheapest": "cheapest"
   },
   "vaults": {
-    "ilk-does-not-exist": "Ilk {{ilk}} does not exist"
+    "ilk-does-not-exist": "Ilk {{ilk}} does not exist",
     "after": "After ${{price}}",
-    "current-price": "Current {{token}}/USD price"
+    "current-price": "Current {{token}}/USD price",
     "next-price": "Next {{token}}/USD price: {{amount}}"
   },
   "system": {
