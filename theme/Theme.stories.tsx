@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Box, Button, Container, Flex, Grid, Heading, Link, Text } from 'theme-ui'
-import { theme } from './'
+import { theme } from 'theme'
 import { ColorPalette, TypeScale } from '@theme-ui/style-guide'
 import { Icon } from '@makerdao/dai-ui-icons'
 
