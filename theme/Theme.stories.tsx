@@ -159,5 +159,4 @@ export const Icons = () => {
 
 export default {
   title: 'Theme',
-  component: [Icons],
 }
