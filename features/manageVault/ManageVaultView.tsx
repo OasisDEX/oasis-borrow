@@ -1030,7 +1030,7 @@ function ManageVaultForm(props: ManageVaultState) {
   )
 }
 
-function ManageVaultContainer(props: ManageVaultState) {
+export function ManageVaultContainer(props: ManageVaultState) {
   return (
     <Grid columns="2fr 1fr" gap={4}>
       <ManageVaultDetails {...props} />

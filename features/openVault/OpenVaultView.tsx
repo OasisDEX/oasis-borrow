@@ -640,7 +640,7 @@ function OpenVaultForm(props: OpenVaultState) {
   )
 }
 
-function OpenVaultContainer(props: OpenVaultState) {
+export function OpenVaultContainer(props: OpenVaultState) {
   return (
     <Grid columns="2fr 1fr" gap={4}>
       <OpenVaultDetails {...props} />
