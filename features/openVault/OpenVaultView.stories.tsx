@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { OpenVaultContainer } from 'features/openVault/OpenVaultView'
 import { zero } from 'helpers/zero'
+import React from 'react'
+import { Container, Grid } from 'theme-ui'
 import { OpenVaultStage, OpenVaultState } from './openVault'
 
 const account = '0x0000000000000000000000000000000000000DA1'
@@ -60,7 +62,11 @@ function mockOpenVaultState(newState?: MockOpenVaultStateProps): OpenVaultState 
   }
 }
 
-export const Basic = () => <OpenVaultContainer {...mockOpenVaultState()} />
+export const Basic = () => (
+  <Container variant={'appContainer'}>
+    <OpenVaultContainer {...mockOpenVaultState()} />
+  </Container>
+)
 
 export default {
   title: 'OpenVault',

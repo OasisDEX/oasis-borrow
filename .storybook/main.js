@@ -21,6 +21,9 @@ module.exports = {
   // },
   webpackFinal: async (config, { configType }) => {
     config.resolve.modules = [path.resolve(__dirname, '..'), "node_modules"]
+    config.node = {
+      fs: 'empty',
+    }
     return config
   },
 }

@@ -25,11 +25,12 @@ export const Typography = () => {
       </Box>
       <Heading sx={{ mt: 4, fontSize: 5 }}>Text variants</Heading>
       <Flex sx={{ flexWrap: 'wrap' }}>
-        {textStyles.map((style) => (
+        {textStyles.map((style, idx) => (
           <Box
             bg="white"
             p={3}
             sx={{ display: 'flex', alignItems: 'flex-end', m: 3, p: 4, position: 'relative' }}
+            key={idx}
           >
             <Text sx={{ position: 'absolute', top: 0 }}>{style}</Text>
             <Text key={style} variant={style} sx={{ textTransform: 'capitalize' }}>
@@ -56,7 +57,7 @@ export const ThemeElements = () => {
     return (
       <Grid>
         {sizes.map((size, index) => (
-          <Flex sx={{ alignItems: 'center' }}>
+          <Flex sx={{ alignItems: 'center' }} key={index}>
             <Box key={size} sx={{ width: `${size}px`, height: '10px', bg: 'primary' }} />
             <Box px={2}>{size}px</Box>
             <Box px={2}>index: {index}</Box>
@@ -68,7 +69,6 @@ export const ThemeElements = () => {
 
   const sizes: number[] = theme.sizes
   const space: number[] = theme.space
-  const borders = Object.entries(theme.borders)
 
   return (
     <Container>
@@ -87,11 +87,6 @@ export const ThemeElements = () => {
       </Text>
       <SizePreview sizes={space} />
       <Heading sx={{ mt: 4, fontSize: 5 }}>Borders styles</Heading>
-      <Grid>
-        {borders.map(() => (
-          <Box></Box>
-        ))}
-      </Grid>
     </Container>
   )
 }
