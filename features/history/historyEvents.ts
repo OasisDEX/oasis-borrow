@@ -15,28 +15,28 @@ interface VaultOpenedEvent extends HistoryEventBase {
 
 interface DepositEvent extends HistoryEventBase {
     type: 'deposit'
-    amount: string
+    collateralAmount: string
     depositor: string
 }
 
 interface WithdrawEvent extends HistoryEventBase {
     type: 'withdraw'
-    amount: string
+    collateralAmount: string
 }
 
 interface ReclaimEvent extends HistoryEventBase {
     type: 'reclaim'
-    amount: string
+    collateralAmount: string
 }
 
 interface GenerateEvent extends HistoryEventBase {
     type: 'generate'
-    amount: string
+    daiAmount: string
 }
 
 interface PaybackEvent extends HistoryEventBase {
     type: 'payback'
-    amount: string
+    daiAmount: string
 }
 
 // interface AuctionStartedEvent extends HistoryEventBase {
@@ -66,8 +66,8 @@ export type EventType = BorrowEvent['type']
 
 export interface BorrowEvent_ {
     id: string
-    type: EventType
-    tx: string
+    kind: EventType
+    hash: string
     timestamp: string
     ilk: string
     // collateral: string

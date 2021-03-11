@@ -66,6 +66,8 @@
     "express-async-handler": "^1.1.4",
     "express-basic-auth": "^1.2.0",
     "express-jwt": "^6.0.0",
+    "graphql": "^15.5.0",
+    "graphql-request": "^3.4.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
     "mixpanel-browser": "^2.29.1",

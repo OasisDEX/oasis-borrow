@@ -122,15 +122,15 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
   const afterLockedCollateral = depositAmount
     ? lockedCollateral.plus(depositAmount)
     : withdrawAmount
-    ? lockedCollateral.minus(withdrawAmount)
-    : lockedCollateral
+      ? lockedCollateral.minus(withdrawAmount)
+      : lockedCollateral
 
   const afterLockedCollateralUSD = afterLockedCollateral.times(collateralPrice)
   const afterDebt = generateAmount
     ? debt.plus(generateAmount)
     : paybackAmount
-    ? debt.minus(paybackAmount)
-    : debt
+      ? debt.minus(paybackAmount)
+      : debt
 
   const afterCollateralizationRatio =
     afterLockedCollateralUSD.gt(zero) && afterDebt.gt(zero)
@@ -965,7 +965,7 @@ export function createManageVault$(
                 ([
                   { collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance },
                   { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
-                  proxyAddress,
+                  proxyAddress
                 ]) => {
                   const collateralAllowance$ =
                     (proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)

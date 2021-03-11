@@ -1032,7 +1032,7 @@ export function ManageVaultView({ id }: { id: BigNumber }) {
   return (
     <Grid>
       <ManageVaultContainer {...manageVault} />
-      <HistoryTable />
+      <HistoryTable id={id.toString()} />
     </Grid>
   )
 }

@@ -100,7 +100,7 @@ function Header({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>)
   )
 }
 
-const MyRow = memo(({ row, columns }: { row: any; columns: ColumnDef<any, any>[] }) => {
+const TableRow = memo(({ row, columns }: { row: any; columns: ColumnDef<any, any>[] }) => {
   const { t } = useTranslation()
   return (
     <Row>
@@ -141,7 +141,7 @@ export function Table<T extends Record<K, string>, K extends keyof T, S>({
       ))}
     >
       {data.map((row) => (
-        <MyRow key={row[primaryKey]} row={row} columns={columns} />
+        <TableRow key={row[primaryKey]} row={row} columns={columns} />
       ))}
     </TableContainer>
   )

@@ -31,6 +31,7 @@ import { createGasPrice$, createTokenOraclePrice$ } from 'blockchain/prices'
 import { createAccountBalance$, createAllowance$, createBalance$ } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import { createVaultHistory$ } from 'features/history/history'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageVault$ } from 'features/manageVault/manageVault'
@@ -188,6 +189,8 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  const vaultHistory$ = memoize(curry(createVaultHistory$)(onEveryBlock$, vault$));
+
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 
   const vaults$ = memoize(curry(createVaults$)(context$, proxyAddress$, vault$))
@@ -256,6 +259,7 @@ export function setupAppContext() {
     vaultsOverview$,
     redirectState$,
     accountBalances$,
+    vaultHistory$,
   }
 }
 
