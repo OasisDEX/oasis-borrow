@@ -5,7 +5,7 @@ import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { AppContext, TxHelpers } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
-import { OpenVaultContainer, OpenVaultView } from 'features/openVault/OpenVaultView'
+import { OpenVaultView } from 'features/openVault/OpenVaultView'
 import { UserTokenInfo } from 'features/shared/userTokenInfo'
 import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
@@ -43,9 +43,9 @@ const protoTxHelpers: TxHelpers = {
 }
 
 const protoUserETHTokenInfo: UserTokenInfo = {
-  collateralBalance: zero,
-  ethBalance: zero,
-  daiBalance: zero,
+  collateralBalance: new BigNumber('5.2345'),
+  ethBalance: new BigNumber('5.2345'),
+  daiBalance: new BigNumber('100'),
 
   currentEthPrice: new BigNumber('1780.7'),
   nextEthPrice: new BigNumber('1798.6'),
@@ -227,7 +227,6 @@ const OpenVaultStoryContainer = ({ children, title }: WithChildren & { title?: s
     <Container variant="appContainer">
       <Grid>
         {title && <Card>{title}</Card>}
-
         {children}
       </Grid>
     </Container>
@@ -257,7 +256,7 @@ export const IlkValidationFailureStage = () => {
   )
 }
 
-export const EditingStageETH = () => {
+export const ETHEditingStage = () => {
   return (
     <OpenVaultContextProvider title={'Editing stage: user has no collateral balance'}>
       <OpenVaultView ilk={'ETH-A'} />
@@ -265,68 +264,88 @@ export const EditingStageETH = () => {
   )
 }
 
+export const ETHProxyWaitingForConfirmation = () => {
+  return (
+    <OpenVaultContextProvider
+      newState={{ isProxyStage: true, isEditingStage: false, stage: 'proxyWaitingForConfirmation' }}
+    >
+      <OpenVaultView ilk={'ETH-A'} />
+    </OpenVaultContextProvider>
+  )
+}
+
+export const ETHProxyWaitingForApproval = () => {
+  return (
+    <OpenVaultContextProvider
+      newState={{ isProxyStage: true, isEditingStage: false, stage: 'proxyWaitingForApproval' }}
+    >
+      <OpenVaultView ilk={'ETH-A'} />
+    </OpenVaultContextProvider>
+  )
+}
+
+export const ETHProxyFailure = () => {
+  return (
+    <OpenVaultContextProvider
+      newState={{ isProxyStage: true, isEditingStage: false, stage: 'proxyFailure' }}
+    >
+      <OpenVaultView ilk={'ETH-A'} />
+    </OpenVaultContextProvider>
+  )
+}
+
+export const ETHProxyInProgress = () => {
+  return (
+    <OpenVaultContextProvider
+      newState={{
+        isProxyStage: true,
+        isEditingStage: false,
+        stage: 'proxyInProgress',
+        proxyConfirmations: 2,
+      }}
+    >
+      <OpenVaultView ilk={'ETH-A'} />
+    </OpenVaultContextProvider>
+  )
+}
+
+export const ETHProxySuccess = () => {
+  return (
+    <OpenVaultContextProvider
+      newState={{ isProxyStage: true, isEditingStage: false, stage: 'proxySuccess' }}
+    >
+      <OpenVaultView ilk={'ETH-A'} />
+    </OpenVaultContextProvider>
+  )
+}
+
+export const ETHOpenWaitingForConfirmation = () => {
+  return (
+    <OpenVaultContextProvider
+      newState={{ isOpenStage: true, isEditingStage: false, stage: 'openWaitingForConfirmation' }}
+    >
+      <OpenVaultView ilk={'ETH-A'} />
+    </OpenVaultContextProvider>
+  )
+}
+
 export const EditingStageWBTC = () => {
   return (
-    <OpenVaultContextProvider title={'Editing stage: user has no collateral balance'}>
+    <OpenVaultContextProvider>
       <OpenVaultView ilk={'WBTC-A'} />
     </OpenVaultContextProvider>
   )
 }
 
-/*
- * export const EditStage = () => {
- *   return (
- *     <OpenVaultContextProvider
- *       context={protoContextConnected}
- *       userTokenInfo={protoUserETHTokenInfo}
- *       allowance={zero}
- *       ilks={['ETH-A']}
- *       ilkData={protoETHAIlkData}
- *     >
- *       <OpenVaultView ilk={'ETH-A'} />
- *     </OpenVaultContextProvider>
- *   )
- * }
- *  */
-/* export const EditStage = () =>
- *   OpenVaultStory({
- *     doc: 'New user view, zero balances of ETH and WBTC (collateral)',
- *   })
- *
- * export const EditStageWithBalances = () =>
- *   OpenVaultStory({
- *     newState: {
- *       collateralBalance: new BigNumber('100'),
- *       ethBalance: new BigNumber('1000'),
- *     },
- *     doc: 'New user view, have balances of ETH and the WBTC (collateral)',
- *   })
- *
- * export const EditStageWithDepositInput = () =>
- *   OpenVaultStory({
- *     newState: {
- *       collateralBalance: new BigNumber('100'),
- *       ethBalance: new BigNumber('1000'),
- *       depositAmount: new BigNumber('1'),
- *       maxGenerateAmount: defaultOpenVaultState.maxDebtPerUnitCollateral.times(new BigNumber('1')),
- *       warningMessages: ['noProxyAddress', 'generateAmountEmpty'],
- *     },
- *     doc: 'New user view, with deposit amount',
- *   })
- *
- * export const EditStageWithGenerateInput = () =>
- *   OpenVaultStory({
- *     newState: {
- *       collateralBalance: new BigNumber('100'),
- *       ethBalance: new BigNumber('1000'),
- *       generateAmount: new BigNumber('2000'),
- *       errorMessages: ['vaultUnderCollateralized   n ']
- *       warningMessages: ['noProxyAddress', 'depositAmountEmpty'],
- *     },
- *     doc: 'New user view, with deposit amount',
- *   })
- *  */
+export const EditingStageUSDC = () => {
+  return (
+    <OpenVaultContextProvider>
+      <OpenVaultView ilk={'USDC-A'} />
+    </OpenVaultContextProvider>
+  )
+}
+
 export default {
   title: 'OpenVault',
-  component: OpenVaultContainer,
+  component: OpenVaultView,
 }
