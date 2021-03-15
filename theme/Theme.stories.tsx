@@ -1,9 +1,8 @@
-import React from 'react'
-
-import { Box, Button, Container, Flex, Grid, Heading, Link, Text } from 'theme-ui'
-import { theme } from 'theme'
-import { ColorPalette, TypeScale } from '@theme-ui/style-guide'
 import { Icon } from '@makerdao/dai-ui-icons'
+import { ColorPalette, TypeScale } from '@theme-ui/style-guide'
+import React from 'react'
+import { theme } from 'theme'
+import { Box, Button, Container, Flex, Grid, Heading, Link, Text } from 'theme-ui'
 
 export const Typography = () => {
   const textStyles = Object.keys(theme.text)
