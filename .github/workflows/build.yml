@@ -31,30 +31,30 @@ jobs:
       - name: Typecheck
         run: yarn typecheck
 
-#  test-e2e:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v1
-#
-#      - name: Cache YARN dependencies
-#        uses: actions/cache@v1
-#        with:
-#          path: node_modules
-#          key: ${{ runner.OS }}-yarn-cache-${{ hashFiles('**/yarn.lock') }}
-#          restore-keys: |
-#            ${{ runner.OS }}-yarn-cache-
-#
-#      - name: Install
-#        run: yarn --no-progress --non-interactive --frozen-lockfile
-#
-#      - name: Run deps
-#        run: |
-#          cd ./scripts
-#          docker-compose up -d
-#          sleep 10
-#
-#      - name: Test-e2e
-#        run: yarn test:e2e
+  test-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Cache YARN dependencies
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-yarn-cache-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-yarn-cache-
+
+      - name: Install
+        run: yarn --no-progress --non-interactive --frozen-lockfile
+
+      - name: Run deps
+        run: |
+          cd ./scripts
+          docker-compose up -d
+          sleep 10
+
+      - name: Test-e2e
+        run: yarn test:e2e
 
 # Few tips github actions
   # - name: Setup SSH debug session
