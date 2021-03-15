@@ -15,8 +15,9 @@ import { WithChildren } from 'helpers/types'
 import { one } from 'helpers/zero'
 import { memoize } from 'lodash'
 import React from 'react'
-import { Observable, of } from 'rxjs'
+import { of } from 'rxjs'
 import { Card, Container, Grid } from 'theme-ui'
+
 import { createManageVault$, defaultManageVaultState, ManageVaultState } from './manageVault'
 import { ManageVaultView } from './ManageVaultView'
 
@@ -32,21 +33,21 @@ interface OpenVaultContextProviderProps extends WithChildren {
 
 const VAULT_ID = one
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function ManageVaultStory({
   title,
   children,
   context,
   proxyAddress,
   allowance,
-  vault,
   userTokenInfo,
   newState,
 }: OpenVaultContextProviderProps) {
   const defaultState$ = of({ ...defaultManageVaultState, ...(newState || {}) })
-  const context$ = of(context ? context : protoContextConnected)
+  const context$ = of(context || protoContextConnected)
   const txHelpers$ = of(protoTxHelpers)
   const proxyAddress$ = () => of(proxyAddress)
-  const allowance$ = () => of(allowance ? allowance : maxUint256)
+  const allowance$ = () => of(allowance || maxUint256)
   const userTokenInfo$ = (token: string) =>
     of({
       ...(token === 'ETH'
@@ -58,6 +59,7 @@ function ManageVaultStory({
     })
   const ilkData$ = (ilk: string) =>
     of(
+      // eslint-disable-next-line sonarjs/no-all-duplicated-branches
       ilk === 'ETH-A' ? protoETHAIlkData : ilk === 'WBTC-A' ? protoWBTCAIlkData : protoWBTCAIlkData,
     )
   const manageVault$ = memoize((id: BigNumber) =>
@@ -84,7 +86,7 @@ function ManageVaultStory({
   )
 }
 
-const ManageVaultStoryContainer = ({ children, title }: WithChildren & { title?: string }) => {
+const ManageVaultStoryContainer = ({ title }: WithChildren & { title?: string }) => {
   if (!isAppContextAvailable()) return null
 
   return (
