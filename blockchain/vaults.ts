@@ -293,6 +293,7 @@ export function createVault$(
   ).pipe(
     switchMap(([urnAddress, ilk, owner, controller, ilkToToken]) => {
       const token = ilkToToken(ilk)
+      console.log('ssw')
       return combineLatest(
         vatUrns$({ ilk, urnAddress }),
         vatGem$({ ilk, urnAddress }),
