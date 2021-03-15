@@ -18,7 +18,7 @@ import { EMPTY, Observable, of } from 'rxjs'
 import { Card, Container, Grid } from 'theme-ui'
 import { createOpenVault$, defaultOpenVaultState, OpenVaultState } from './openVault'
 
-interface OpenVaultContextProviderProps {
+interface StoryProps {
   title?: string
   context?: ContextConnected
   proxyAddress?: string
@@ -38,7 +38,7 @@ function createStory({
   userTokenInfo,
   newState,
   ilk,
-}: OpenVaultContextProviderProps) {
+}: StoryProps) {
   return () => {
     const defaultState$ = of({ ...defaultOpenVaultState, ...(newState || {}) })
     const context$ = of(context ? context : protoContextConnected)
