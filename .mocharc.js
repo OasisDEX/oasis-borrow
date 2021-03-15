@@ -16,7 +16,7 @@ module.exports = {
   require: ['ts-node/register/transpile-only', 'tsconfig-paths/register'],
   extension: ['ts'],
   watchExtensions: ['ts'],
-  spec: ['./helpers/**/*.test.ts', './components/**/*.test.ts'],
+  spec: ['./helpers/**/*.test.ts', './components/**/*.test.ts', './features/**/*.test.ts'],
   timeout: 1000,
 }
 

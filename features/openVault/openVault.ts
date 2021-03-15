@@ -28,7 +28,7 @@ interface Receipt {
   logs: { topics: string[] | undefined }[]
 }
 
-function parseVaultIdFromReceiptLogs({ logs }: Receipt): number {
+export function parseVaultIdFromReceiptLogs({ logs }: Receipt): number | undefined {
   const newCdpEventTopic = Web3.utils.keccak256('NewCdp(address,address,uint256)')
   return logs
     .filter((log) => {
@@ -140,7 +140,7 @@ function applyVaultCalculations(state: OpenVaultState): OpenVaultState {
   }
 }
 
-function validateErrors(state: OpenVaultState): OpenVaultState {
+export function validateErrors(state: OpenVaultState): OpenVaultState {
   const {
     depositAmount,
     maxDepositAmount,
@@ -186,7 +186,7 @@ function validateErrors(state: OpenVaultState): OpenVaultState {
   return { ...state, errorMessages }
 }
 
-function validateWarnings(state: OpenVaultState): OpenVaultState {
+export function validateWarnings(state: OpenVaultState): OpenVaultState {
   const {
     allowance,
     depositAmount,
