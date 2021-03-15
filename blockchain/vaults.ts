@@ -51,7 +51,7 @@ export interface Vault {
    * - ilks :: id => ilk
    *
    */
-  id: string
+  id: BigNumber
 
   /*
    * As mentioned in Vault.id, the "Vault.owner" is found in the cdpManager.owns
@@ -293,7 +293,6 @@ export function createVault$(
   ).pipe(
     switchMap(([urnAddress, ilk, owner, controller, ilkToToken]) => {
       const token = ilkToToken(ilk)
-      console.log('ssw')
       return combineLatest(
         vatUrns$({ ilk, urnAddress }),
         vatGem$({ ilk, urnAddress }),
@@ -337,7 +336,7 @@ export function createVault$(
               : debt.times(liquidationRatio).div(collateral)
 
             return of({
-              id: id.toString(),
+              id,
               ilk,
               token,
               address: urnAddress,

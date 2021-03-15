@@ -187,21 +187,6 @@ export function setupAppContext() {
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, catIlks$, ilkToToken$),
   )
 
-  ilkData$('USDC-A').subscribe((props) => {
-    console.log(
-      Object.fromEntries(
-        Object.entries(props).map(([k, v]) => [k, BigNumber.isBigNumber(v) ? v.toString() : v]),
-      ),
-    )
-  })
-  oraclePriceData$('USDC').subscribe((props) => {
-    console.log(
-      Object.fromEntries(
-        Object.entries(props).map(([k, v]) => [k, BigNumber.isBigNumber(v) ? v.toString() : v]),
-      ),
-    )
-  })
-
   const controller$ = memoize(
     curry(createController$)(proxyOwner$, cdpManagerOwner$),
     bigNumberTostring,
@@ -221,6 +206,17 @@ export function setupAppContext() {
     ),
     bigNumberTostring,
   )
+
+  vault$(new BigNumber('14792')).subscribe((props) => {
+    console.log(
+      Object.fromEntries(
+        Object.entries(props).map(([k, v]) => [
+          k,
+          BigNumber.isBigNumber(v) ? `new BigNumber(\"${v.toString()}\"),` : `${v},`,
+        ]),
+      ),
+    )
+  })
 
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 
@@ -299,7 +295,7 @@ export function setupAppContext() {
   }
 }
 
-function bigNumberTostring(v: BigNumber): string {
+export function bigNumberTostring(v: BigNumber): string {
   return v.toString()
 }
 

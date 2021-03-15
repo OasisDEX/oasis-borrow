@@ -1042,7 +1042,6 @@ export function ManageVaultContainer(props: ManageVaultState) {
 export function ManageVaultView({ id }: { id: BigNumber }) {
   const { manageVault$ } = useAppContext()
   const manageVault = useObservable(manageVault$(id))
-  console.log(manageVault)
   if (!manageVault) return null
 
   return (
