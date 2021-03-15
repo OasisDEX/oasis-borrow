@@ -101,7 +101,7 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
 ]
 function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
   const { data, filters } = vaults
-  return <Table data={data} primaryKey="id" state={filters} columns={vaultsColumns} />
+  return <Table data={data} primaryKey="address" state={filters} columns={vaultsColumns} />
 }
 
 const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState & { isReadonly: boolean }>[] = [
