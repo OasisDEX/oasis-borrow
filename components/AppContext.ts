@@ -207,17 +207,6 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  vault$(new BigNumber('14792')).subscribe((props) => {
-    console.log(
-      Object.fromEntries(
-        Object.entries(props).map(([k, v]) => [
-          k,
-          BigNumber.isBigNumber(v) ? `new BigNumber(\"${v.toString()}\"),` : `${v},`,
-        ]),
-      ),
-    )
-  })
-
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 
   const vaults$ = memoize(curry(createVaults$)(context$, proxyAddress$, vault$))

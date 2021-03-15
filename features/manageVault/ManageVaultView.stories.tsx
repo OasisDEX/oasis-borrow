@@ -1,6 +1,5 @@
 import { nullAddress } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
-import { cdpManagerUrns } from 'blockchain/calls/cdpManager'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { protoETHAIlkData, protoUSDCAIlkData, protoWBTCAIlkData } from 'blockchain/ilks'
 import { ContextConnected, protoContextConnected } from 'blockchain/network'
@@ -13,13 +12,13 @@ import {
   protoUserWBTCTokenInfo,
   UserTokenInfo,
 } from 'features/shared/userTokenInfo'
-import { WithChildren } from 'helpers/types'
 import { one, zero } from 'helpers/zero'
 import { memoize } from 'lodash'
 import React from 'react'
-import { Observable, of } from 'rxjs'
+import { of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
+
 import { createManageVault$, defaultManageVaultState, ManageVaultState } from './manageVault'
 import { ManageVaultView } from './ManageVaultView'
 
@@ -61,10 +60,10 @@ function createStory({
 }: Story) {
   return () => {
     const defaultState$ = of({ ...defaultManageVaultState, ...(newState || {}) })
-    const context$ = of(context ? context : protoContextConnected)
+    const context$ = of(context || protoContextConnected)
     const txHelpers$ = of(protoTxHelpers)
     const proxyAddress$ = () => of(proxyAddress)
-    const allowance$ = () => of(allowance ? allowance : maxUint256)
+    const allowance$ = () => of(allowance || maxUint256)
 
     const userTokenInfo$ = (token: string) =>
       of({
@@ -179,6 +178,7 @@ export const SimpleVault = createStory({
   debt: new BigNumber('5000'),
 })
 
+// eslint-disable-next-line import/no-default-export
 export default {
   title: 'ManageVault',
   component: ManageVaultView,
