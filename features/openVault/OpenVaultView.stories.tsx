@@ -17,6 +17,7 @@ import { memoize } from 'lodash'
 import React from 'react'
 import { EMPTY, Observable, of } from 'rxjs'
 import { Card, Container, Grid } from 'theme-ui'
+
 import { createOpenVault$, defaultOpenVaultState, OpenVaultState } from './openVault'
 
 interface OpenVaultContextProviderProps extends WithChildren {
@@ -40,10 +41,10 @@ function OpenVaultContextProvider({
   newState,
 }: OpenVaultContextProviderProps) {
   const defaultState$ = of({ ...defaultOpenVaultState, ...(newState || {}) })
-  const context$ = of(context ? context : protoContextConnected)
+  const context$ = of(context || protoContextConnected)
   const txHelpers$ = of(protoTxHelpers)
   const proxyAddress$ = () => of(proxyAddress)
-  const allowance$ = () => of(allowance ? allowance : maxUint256)
+  const allowance$ = () => of(allowance || maxUint256)
   const userTokenInfo$ = (token: string) =>
     of({
       ...(token === 'ETH'
@@ -509,6 +510,7 @@ export const PriceFeedDSValue = () => {
   )
 }
 
+// eslint-disable-next-line import/no-default-export
 export default {
   title: 'OpenVault',
   component: OpenVaultView,
