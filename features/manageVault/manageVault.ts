@@ -949,7 +949,6 @@ export function createManageVault$(
     switchMap(([context, txHelpers]) => {
       const account = context.account
 
-      console.log('ddd')
       return vault$(id).pipe(
         first(),
         switchMap(

@@ -113,7 +113,7 @@ function createStory({
     const vatUrns$ = () => of({ collateral, normalizedDebt })
     const vatGem$ = () => of(unlockedCollateral || zero)
 
-    const controller$ = () => of(controller || context?.account)
+    const controller$ = () => of(controller || context?.account || protoContextConnected.account)
     const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
 
     const vault$ = memoize(
@@ -172,10 +172,45 @@ const ManageVaultStoryContainer = ({ title }: { title?: string }) => {
   )
 }
 
-export const SimpleVault = createStory({
-  ilk: 'ETH-A',
-  collateral: new BigNumber('50'),
-  debt: new BigNumber('5000'),
+export const EditingStage = createStory({
+  ilk: 'WBTC-A',
+  collateral: zero,
+  debt: zero,
+})
+
+export const ProxyWaitingForConfirmation = createStory({
+  ilk: 'WBTC-A',
+  collateral: zero,
+  debt: zero,
+  newState: { stage: 'proxyWaitingForConfirmation' },
+})
+
+export const ProxyWaitingForApproval = createStory({
+  ilk: 'WBTC-A',
+  collateral: zero,
+  debt: zero,
+  newState: { stage: 'proxyWaitingForApproval' },
+})
+
+export const ProxyFailure = createStory({
+  ilk: 'WBTC-A',
+  collateral: zero,
+  debt: zero,
+  newState: { stage: 'proxyFailure' },
+})
+
+export const ProxyInProgress = createStory({
+  ilk: 'WBTC-A',
+  collateral: zero,
+  debt: zero,
+  newState: { stage: 'proxyInProgress' },
+})
+
+export const ProxySuccess = createStory({
+  ilk: 'WBTC-A',
+  collateral: zero,
+  debt: zero,
+  newState: { stage: 'proxySuccess' },
 })
 
 // eslint-disable-next-line import/no-default-export
