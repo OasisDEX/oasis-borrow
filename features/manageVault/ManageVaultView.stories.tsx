@@ -85,29 +85,21 @@ function createStory({
       ilk === 'ETH-A' ? protoETHAIlkData : ilk === 'WBTC-A' ? protoWBTCAIlkData : protoUSDCAIlkData
 
     const newState: Partial<ManageVaultState> = {
-      ...(depositAmount
-        ? {
-            depositAmount,
-            depositAmountUSD: depositAmount.times(protoUserTokenInfo.currentCollateralPrice),
-          }
-        : {}),
-      ...(withdrawAmount
-        ? {
-            withdrawAmount,
-            withdrawAmountUSD: withdrawAmount.times(protoUserTokenInfo.currentCollateralPrice),
-          }
-        : {}),
-      ...(generateAmount
-        ? {
-            generateAmount,
-          }
-        : {}),
-      ...(paybackAmount
-        ? {
-            paybackAmount,
-          }
-        : {}),
-      ...(stage ? { stage } : {}),
+      ...(depositAmount && {
+        depositAmount,
+        depositAmountUSD: depositAmount.times(protoUserTokenInfo.currentCollateralPrice),
+      }),
+      ...(withdrawAmount && {
+        withdrawAmount,
+        withdrawAmountUSD: withdrawAmount.times(protoUserTokenInfo.currentCollateralPrice),
+      }),
+      ...(generateAmount && {
+        generateAmount,
+      }),
+      ...(paybackAmount && {
+        paybackAmount,
+      }),
+      ...(stage && { stage }),
     }
 
     const defaultState$ = of({ ...defaultManageVaultState, ...(newState || {}) })
