@@ -251,6 +251,7 @@ export function setupAppContext() {
       ilkData$,
       vault$,
     ),
+    bigNumberTostring,
   )
 
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
