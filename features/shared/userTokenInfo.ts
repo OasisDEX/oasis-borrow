@@ -1,5 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { OraclePriceData } from 'blockchain/prices'
+import { nextHour, now } from 'helpers/time'
+import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -98,4 +100,62 @@ export function createUserTokenInfoChange$<T extends keyof UserTokenInfo>(
       [kind]: userTokenInfo[kind],
     })),
   )
+}
+
+export const protoUserETHTokenInfo: UserTokenInfo = {
+  collateralBalance: zero,
+  ethBalance: zero,
+  daiBalance: zero,
+
+  currentEthPrice: new BigNumber('1780.7'),
+  nextEthPrice: new BigNumber('1798.6'),
+  dateLastCollateralPrice: now,
+  dateNextCollateralPrice: nextHour,
+  dateLastEthPrice: now,
+  dateNextEthPrice: nextHour,
+  isStaticEthPrice: false,
+  ethPricePercentageChange: new BigNumber('0.99004781496719670855'),
+
+  currentCollateralPrice: new BigNumber('1780.7'),
+  nextCollateralPrice: new BigNumber('1798.6'),
+  isStaticCollateralPrice: false,
+  collateralPricePercentageChange: new BigNumber('0.99004781496719670855'),
+}
+
+export const protoUserWBTCTokenInfo: UserTokenInfo = {
+  collateralBalance: zero,
+  ethBalance: zero,
+  daiBalance: zero,
+
+  currentEthPrice: new BigNumber('1780.7'),
+  nextEthPrice: new BigNumber('1798.6'),
+  dateLastCollateralPrice: now,
+  dateNextCollateralPrice: nextHour,
+  dateLastEthPrice: now,
+  dateNextEthPrice: nextHour,
+  isStaticEthPrice: false,
+  ethPricePercentageChange: new BigNumber('0.99004781496719670855'),
+
+  currentCollateralPrice: new BigNumber('56176.76'),
+  isStaticCollateralPrice: false,
+  nextCollateralPrice: new BigNumber('56762.258'),
+  collateralPricePercentageChange: new BigNumber('0.98968508264769875786'),
+}
+
+export const protoUserUSDCTokenInfo: UserTokenInfo = {
+  collateralBalance: zero,
+  ethBalance: zero,
+  daiBalance: zero,
+
+  currentEthPrice: new BigNumber('1780.7'),
+  nextEthPrice: new BigNumber('1798.6'),
+  dateLastCollateralPrice: now,
+  dateNextCollateralPrice: nextHour,
+  dateLastEthPrice: now,
+  dateNextEthPrice: nextHour,
+  isStaticEthPrice: false,
+  ethPricePercentageChange: new BigNumber('0.99004781496719670855'),
+
+  currentCollateralPrice: new BigNumber('56176.76'),
+  isStaticCollateralPrice: true,
 }

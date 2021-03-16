@@ -28,7 +28,7 @@ interface Receipt {
   logs: { topics: string[] | undefined }[]
 }
 
-function parseVaultIdFromReceiptLogs({ logs }: Receipt): number {
+export function parseVaultIdFromReceiptLogs({ logs }: Receipt): number | undefined {
   const newCdpEventTopic = Web3.utils.keccak256('NewCdp(address,address,uint256)')
   return logs
     .filter((log) => {
@@ -140,7 +140,7 @@ function applyVaultCalculations(state: OpenVaultState): OpenVaultState {
   }
 }
 
-function validateErrors(state: OpenVaultState): OpenVaultState {
+export function validateErrors(state: OpenVaultState): OpenVaultState {
   const {
     depositAmount,
     maxDepositAmount,
@@ -186,7 +186,7 @@ function validateErrors(state: OpenVaultState): OpenVaultState {
   return { ...state, errorMessages }
 }
 
-function validateWarnings(state: OpenVaultState): OpenVaultState {
+export function validateWarnings(state: OpenVaultState): OpenVaultState {
   const {
     allowance,
     depositAmount,
@@ -216,7 +216,7 @@ function validateWarnings(state: OpenVaultState): OpenVaultState {
   }
 
   if (token !== 'ETH') {
-    if (!allowance) {
+    if (!allowance || !allowance.gt(zero)) {
       warningMessages.push('noAllowance')
     }
     if (depositAmount && allowance && depositAmount.gt(allowance)) {
@@ -287,7 +287,7 @@ export type OpenVaultStage =
   | 'openFailure'
   | 'openSuccess'
 
-export type OpenVaultState = UserTokenInfo & {
+export type DefaultOpenVaultState = {
   // Basic States
   stage: OpenVaultStage
   ilk: string
@@ -342,6 +342,8 @@ export type OpenVaultState = UserTokenInfo & {
   txError?: any
   etherscan?: string
 }
+
+export type OpenVaultState = UserTokenInfo & DefaultOpenVaultState
 
 function setAllowance(
   { sendWithGasEstimation }: TxHelpers,
@@ -602,7 +604,34 @@ function ilkDataChange$<T extends keyof IlkData>(ilkData$: Observable<IlkData>, 
   )
 }
 
+export const defaultOpenVaultState: DefaultOpenVaultState = {
+  ...defaultIsStates,
+  stage: 'editing',
+  token: '',
+  account: '',
+  errorMessages: [],
+  warningMessages: [],
+  depositAmount: undefined,
+  generateAmount: undefined,
+  maxDepositAmount: zero,
+  maxGenerateAmount: zero,
+  depositAmountUSD: zero,
+  generateAmountUSD: zero,
+  maxDepositAmountUSD: zero,
+  afterLiquidationPrice: zero,
+  afterCollateralizationRatio: zero,
+  ilk: '',
+  maxDebtPerUnitCollateral: zero,
+  ilkDebtAvailable: zero,
+  debtFloor: zero,
+  liquidationRatio: zero,
+  allowance: zero,
+  safeConfirmations: 0,
+  allowanceAmount: maxUint256,
+}
+
 export function createOpenVault$(
+  defaultState$: Observable<DefaultOpenVaultState>,
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
@@ -641,6 +670,7 @@ export function createOpenVault$(
               const token = ilkToToken(ilk)
               return combineLatest(
                 userTokenInfo$(token, account),
+                defaultState$,
                 ilkData$(ilk),
                 proxyAddress$(account),
               ).pipe(
@@ -648,6 +678,7 @@ export function createOpenVault$(
                 switchMap(
                   ([
                     userTokenInfo,
+                    defaultState,
                     { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
                     proxyAddress,
                   ]) =>
@@ -658,22 +689,10 @@ export function createOpenVault$(
                       first(),
                       switchMap((allowance) => {
                         const initialState: OpenVaultState = {
-                          ...defaultIsStates,
                           ...userTokenInfo,
-                          stage: 'editing',
+                          ...defaultState,
                           token,
                           account,
-                          errorMessages: [],
-                          warningMessages: [],
-                          depositAmount: undefined,
-                          generateAmount: undefined,
-                          maxDepositAmount: zero,
-                          maxGenerateAmount: zero,
-                          depositAmountUSD: zero,
-                          generateAmountUSD: zero,
-                          maxDepositAmountUSD: zero,
-                          afterLiquidationPrice: zero,
-                          afterCollateralizationRatio: zero,
                           ilk,
                           maxDebtPerUnitCollateral,
                           ilkDebtAvailable,

@@ -36,8 +36,8 @@ import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createLanding$ } from 'features/landing/landing'
-import { createManageVault$ } from 'features/manageVault/manageVault'
-import { createOpenVault$ } from 'features/openVault/openVault'
+import { createManageVault$, defaultManageVaultState } from 'features/manageVault/manageVault'
+import { createOpenVault$, defaultOpenVaultState } from 'features/openVault/openVault'
 import { redirectState$ } from 'features/router/redirectState'
 import { createUserTokenInfo$ } from 'features/shared/userTokenInfo'
 import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
@@ -81,6 +81,12 @@ export interface TxHelpers {
   send: SendTransactionFunction<TxData>
   sendWithGasEstimation: SendTransactionFunction<TxData>
   estimateGas: EstimateGasFunction<TxData>
+}
+
+export const protoTxHelpers: TxHelpers = {
+  send: () => null as any,
+  sendWithGasEstimation: () => null as any,
+  estimateGas: () => null as any,
 }
 
 export type AddGasEstimationFunction = <S extends HasGasEstimation>(
@@ -222,6 +228,7 @@ export function setupAppContext() {
 
   const openVault$ = memoize(
     curry(createOpenVault$)(
+      of(defaultOpenVaultState),
       connectedContext$,
       txHelpers$,
       proxyAddress$,
@@ -235,6 +242,7 @@ export function setupAppContext() {
 
   const manageVault$ = memoize(
     curry(createManageVault$)(
+      of(defaultManageVaultState),
       connectedContext$,
       txHelpers$,
       proxyAddress$,
@@ -243,6 +251,7 @@ export function setupAppContext() {
       ilkData$,
       vault$,
     ),
+    bigNumberTostring,
   )
 
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
@@ -276,7 +285,7 @@ export function setupAppContext() {
   }
 }
 
-function bigNumberTostring(v: BigNumber): string {
+export function bigNumberTostring(v: BigNumber): string {
   return v.toString()
 }
 

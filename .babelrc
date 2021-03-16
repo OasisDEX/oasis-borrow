@@ -4,7 +4,8 @@
       "next/babel",
       {
         "preset-env": {
-          "useBuiltIns": "usage"
+          "useBuiltIns": "usage",
+          "corejs": 2
         }
       }
     ]
@@ -18,7 +19,7 @@
         }
       }
     ],
-    "@babel/plugin-proposal-class-properties"
+    ["@babel/plugin-proposal-class-properties", { loose: true }]
   ],
   "env": {
     "test": {

@@ -128,3 +128,19 @@ export function reload(network: string) {
     document.location.href = document.location.href + '?network=' + network
   }
 }
+
+export const protoWeb3Context: Web3Context = {
+  chainId: 42,
+  status: 'connected',
+  deactivate: () => null,
+  account: '0xdA1810f583320Bd25BD30130fD5Db06591bEf915',
+  connectionKind: 'injected',
+  web3: {} as Web3,
+}
+
+export const protoContextConnected: ContextConnected = {
+  contract: () => null as any,
+  web3ProviderGetPastLogs: {} as Web3,
+  ...networksById['42'],
+  ...protoWeb3Context,
+}

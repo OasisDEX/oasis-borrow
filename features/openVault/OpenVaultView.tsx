@@ -167,13 +167,19 @@ function OpenVaultFormEditing(props: OpenVaultState) {
 
   function handleDepositMax(change: (ch: ManualChange) => void) {
     return () => {
-      change({ kind: 'depositAmount', depositAmount: maxDepositAmount })
+      change({
+        kind: 'depositAmount',
+        depositAmount: maxDepositAmount.gt(zero) ? maxDepositAmount : undefined,
+      })
     }
   }
 
   function handleGenerateMax(change: (ch: ManualChange) => void) {
     return () => {
-      change({ kind: 'generateAmount', generateAmount: maxGenerateAmount })
+      change({
+        kind: 'generateAmount',
+        generateAmount: maxGenerateAmount.gt(zero) ? maxGenerateAmount : undefined,
+      })
     }
   }
 
@@ -640,7 +646,7 @@ function OpenVaultForm(props: OpenVaultState) {
   )
 }
 
-function OpenVaultContainer(props: OpenVaultState) {
+export function OpenVaultContainer(props: OpenVaultState) {
   return (
     <Grid columns="2fr 1fr" gap={4}>
       <OpenVaultDetails {...props} />

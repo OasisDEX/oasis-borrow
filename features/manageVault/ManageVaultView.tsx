@@ -1030,7 +1030,7 @@ function ManageVaultForm(props: ManageVaultState) {
   )
 }
 
-function ManageVaultContainer(props: ManageVaultState) {
+export function ManageVaultContainer(props: ManageVaultState) {
   return (
     <Grid columns="2fr 1fr" gap={4}>
       <ManageVaultDetails {...props} />
@@ -1042,7 +1042,6 @@ function ManageVaultContainer(props: ManageVaultState) {
 export function ManageVaultView({ id }: { id: BigNumber }) {
   const { manageVault$ } = useAppContext()
   const manageVault = useObservable(manageVault$(id))
-
   if (!manageVault) return null
 
   return (

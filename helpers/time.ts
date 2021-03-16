@@ -9,3 +9,6 @@ export function useTime(refreshCycle = 1000) {
   }) //[refreshCycle, setInterval, clearInterval, setNow]
   return time
 }
+
+export const now = new Date(Date.now())
+export const nextHour = new Date(now.setHours(now.getHours() + 1, 0, 0, 0))

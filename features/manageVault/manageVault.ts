@@ -362,7 +362,7 @@ export type ManageVaultStage =
   | 'manageFailure'
   | 'manageSuccess'
 
-export type ManageVaultState = UserTokenInfo & {
+export type DefaultManageVaultState = {
   stage: ManageVaultStage
   id: BigNumber
   ilk: string
@@ -442,6 +442,8 @@ export type ManageVaultState = UserTokenInfo & {
   txError?: any
   etherscan?: string
 }
+
+export type ManageVaultState = DefaultManageVaultState & UserTokenInfo
 
 function createProxy(
   { sendWithGasEstimation }: TxHelpers,
@@ -898,7 +900,42 @@ function ilkDataChange$<T extends keyof IlkData>(ilkData$: Observable<IlkData>, 
   )
 }
 
+export const defaultManageVaultState: DefaultManageVaultState = {
+  ...defaultIsStates,
+  stage: 'editing',
+  token: '',
+  id: zero,
+  ilk: '',
+  account: '',
+  accountIsController: false,
+  errorMessages: [],
+  warningMessages: [],
+  maxDepositAmount: zero,
+  maxDepositAmountUSD: zero,
+  maxWithdrawAmount: zero,
+  maxWithdrawAmountUSD: zero,
+  generateAmountUSD: zero,
+  maxGenerateAmount: zero,
+  maxPaybackAmount: zero,
+  lockedCollateral: zero,
+  lockedCollateralPrice: zero,
+  debt: zero,
+  liquidationPrice: zero,
+  collateralizationRatio: zero,
+  freeCollateral: zero,
+  afterLiquidationPrice: zero,
+  afterCollateralizationRatio: zero,
+  maxDebtPerUnitCollateral: zero,
+  ilkDebtAvailable: zero,
+  debtFloor: zero,
+  liquidationRatio: zero,
+  safeConfirmations: 0,
+  collateralAllowanceAmount: maxUint256,
+  daiAllowanceAmount: maxUint256,
+}
+
 export function createManageVault$(
+  defaultState$: Observable<DefaultManageVaultState>,
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
@@ -911,6 +948,7 @@ export function createManageVault$(
   return combineLatest(context$, txHelpers$).pipe(
     switchMap(([context, txHelpers]) => {
       const account = context.account
+
       return vault$(id).pipe(
         first(),
         switchMap(
@@ -926,6 +964,7 @@ export function createManageVault$(
             controller,
           }) => {
             return combineLatest(
+              defaultState$,
               userTokenInfo$(token, account),
               ilkData$(ilk),
               proxyAddress$(account),
@@ -933,6 +972,7 @@ export function createManageVault$(
               first(),
               switchMap(
                 ([
+                  defaultState,
                   userTokenInfo,
                   { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
                   proxyAddress,
@@ -946,32 +986,12 @@ export function createManageVault$(
                     first(),
                     switchMap(([collateralAllowance, daiAllowance]) => {
                       const initialState: ManageVaultState = {
-                        ...defaultIsStates,
                         ...userTokenInfo,
-                        stage: 'editing',
+                        ...defaultState,
                         token,
                         id,
                         account,
                         accountIsController: account === controller,
-                        errorMessages: [],
-                        warningMessages: [],
-
-                        depositAmount: undefined,
-                        depositAmountUSD: undefined,
-                        maxDepositAmount: zero,
-                        maxDepositAmountUSD: zero,
-
-                        withdrawAmount: undefined,
-                        withdrawAmountUSD: undefined,
-                        maxWithdrawAmount: zero,
-                        maxWithdrawAmountUSD: zero,
-
-                        generateAmount: undefined,
-                        generateAmountUSD: zero,
-                        maxGenerateAmount: zero,
-
-                        paybackAmount: undefined,
-                        maxPaybackAmount: zero,
 
                         lockedCollateral,
                         lockedCollateralPrice,
@@ -980,8 +1000,6 @@ export function createManageVault$(
                         collateralizationRatio,
                         freeCollateral,
 
-                        afterLiquidationPrice: zero,
-                        afterCollateralizationRatio: zero,
                         ilk,
                         maxDebtPerUnitCollateral,
                         ilkDebtAvailable,

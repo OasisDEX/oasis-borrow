@@ -1,6 +1,6 @@
 import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
-import { OpenVaultView } from 'features/openVault/openVaultView'
+import { OpenVaultView } from 'features/openVault/OpenVaultView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
