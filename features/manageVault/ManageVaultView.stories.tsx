@@ -6,13 +6,14 @@ import { ContextConnected, protoContextConnected } from 'blockchain/network'
 import { createVault$, Vault } from 'blockchain/vaults'
 import { AppContext, bigNumberTostring, protoTxHelpers } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
+import { ManageVaultView } from 'features/manageVault/ManageVaultView'
 import {
   protoUserETHTokenInfo,
   protoUserUSDCTokenInfo,
   protoUserWBTCTokenInfo,
   UserTokenInfo,
 } from 'features/shared/userTokenInfo'
-import { one, thousand, zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { memoize } from 'lodash'
 import React from 'react'
 import { of } from 'rxjs'
@@ -25,7 +26,6 @@ import {
   ManageVaultStage,
   ManageVaultState,
 } from './manageVault'
-import { ManageVaultView } from './ManageVaultView'
 
 interface Story {
   title?: string
