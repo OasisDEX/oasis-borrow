@@ -40,7 +40,6 @@ interface Story {
   debt: BigNumber
   unlockedCollateral?: BigNumber
   controller?: string
-  //newState?: Partial<ManageVaultState>
   depositAmount?: BigNumber
   withdrawAmount?: BigNumber
   generateAmount?: BigNumber
