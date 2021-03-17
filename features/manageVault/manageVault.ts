@@ -43,7 +43,8 @@ function applyIsStageStates(state: ManageVaultState): ManageVaultState {
   }
 
   switch (state.stage) {
-    case 'editing':
+    case 'collateralEditing':
+    case 'daiEditing':
       return {
         ...newState,
         isEditingStage: true,
@@ -339,9 +340,10 @@ type ManageVaultWarningMessage =
   | 'collateralAllowanceLessThanDepositAmount'
   | 'daiAllowanceLessThanPaybackAmount'
 
+type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
+
 export type ManageVaultStage =
-  | 'collateralEditing'
-  | 'daiEditing'
+  | ManageVaultEditingStage
   | 'proxyWaitingForConfirmation'
   | 'proxyWaitingForApproval'
   | 'proxyInProgress'
@@ -365,7 +367,7 @@ export type ManageVaultStage =
 
 export type DefaultManageVaultState = {
   stage: ManageVaultStage
-  originalEditingStage: Extract<ManageVaultStage, 'collateralEditing' | 'daiEditing'>
+  originalEditingStage: ManageVaultEditingStage
   id: BigNumber
   ilk: string
   token: string
@@ -387,6 +389,7 @@ export type DefaultManageVaultState = {
   proxyAddress?: string
   progress?: () => void
   reset?: () => void
+  toggle?: () => void
   change?: (change: ManualChange) => void
 
   collateralAllowance?: BigNumber
@@ -702,8 +705,7 @@ function addTransitions(
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ): ManageVaultState {
-  function reset() {
-    change({ kind: 'stage', stage: 'editing' })
+  function clear() {
     change({ kind: 'depositAmount', depositAmount: undefined })
     change({ kind: 'depositAmountUSD', depositAmountUSD: undefined })
     change({ kind: 'withdrawAmount', withdrawAmount: undefined })
@@ -712,6 +714,11 @@ function addTransitions(
     change({ kind: 'paybackAmount', paybackAmount: undefined })
     change({ kind: 'collateralAllowanceAmount', collateralAllowanceAmount: maxUint256 })
     change({ kind: 'daiAllowanceAmount', daiAllowanceAmount: maxUint256 })
+  }
+
+  function reset() {
+    clear()
+    change({ kind: 'stage', stage: state.originalEditingStage })
   }
 
   function progressEditing() {
@@ -747,10 +754,22 @@ function addTransitions(
     }
   }
 
+  function toggleEditing() {
+    const currentEditing = state.stage
+    const otherEditing = (['collateralEditing', 'daiEditing'] as ManageVaultEditingStage[]).find(
+      (editingStage) => editingStage !== currentEditing,
+    ) as ManageVaultEditingStage
+
+    change({ kind: 'stage', stage: otherEditing })
+    change({ kind: 'originalEditingStage', originalEditingStage: otherEditing })
+    clear()
+  }
+
   if (state.stage === 'collateralEditing' || state.stage === 'daiEditing') {
     return {
       ...state,
       change,
+      toggle: toggleEditing,
       progress: progressEditing,
     }
   }
@@ -783,14 +802,14 @@ function addTransitions(
       change({ kind: 'stage', stage: 'collateralAllowanceWaitingForConfirmation' })
     } else if (!hasDaiAllowance) {
       change({ kind: 'stage', stage: 'daiAllowanceWaitingForConfirmation' })
-    } else change({ kind: 'stage', stage: 'editing' })
+    } else change({ kind: 'stage', stage: state.originalEditingStage })
   }
 
   if (state.stage === 'proxySuccess') {
     return {
       ...state,
       progress: progressProxy,
-      reset: () => change({ kind: 'stage', stage: 'editing' }),
+      reset: () => change({ kind: 'stage', stage: state.originalEditingStage }),
     }
   }
 
@@ -802,7 +821,7 @@ function addTransitions(
       ...state,
       change,
       progress: () => setCollateralAllowance(txHelpers, collateralAllowance$, change, state),
-      reset: () => change({ kind: 'stage', stage: 'editing' }),
+      reset: () => change({ kind: 'stage', stage: state.originalEditingStage }),
     }
   }
 
@@ -816,7 +835,7 @@ function addTransitions(
 
     if (!hasDaiAllowance) {
       change({ kind: 'stage', stage: 'daiAllowanceWaitingForConfirmation' })
-    } else change({ kind: 'stage', stage: 'editing' })
+    } else change({ kind: 'stage', stage: state.originalEditingStage })
   }
 
   if (state.stage === 'collateralAllowanceSuccess') {
@@ -834,7 +853,7 @@ function addTransitions(
       ...state,
       change,
       progress: () => setDaiAllowance(txHelpers, daiAllowance$, change, state),
-      reset: () => change({ kind: 'stage', stage: 'editing' }),
+      reset: () => change({ kind: 'stage', stage: state.originalEditingStage }),
     }
   }
 
@@ -844,7 +863,7 @@ function addTransitions(
       progress: () =>
         change({
           kind: 'stage',
-          stage: 'editing',
+          stage: state.originalEditingStage,
         }),
     }
   }
@@ -863,7 +882,7 @@ function addTransitions(
     return {
       ...state,
       progress: progressManage,
-      reset: () => change({ kind: 'stage', stage: 'editing' }),
+      reset: () => change({ kind: 'stage', stage: state.originalEditingStage }),
     }
   }
 
@@ -872,10 +891,6 @@ function addTransitions(
       ...state,
       progress: () => {
         reset()
-        change({
-          kind: 'stage',
-          stage: 'editing',
-        })
       },
     }
   }
@@ -903,7 +918,8 @@ function ilkDataChange$<T extends keyof IlkData>(ilkData$: Observable<IlkData>, 
 
 export const defaultManageVaultState: DefaultManageVaultState = {
   ...defaultIsStates,
-  stage: 'editing',
+  stage: 'collateralEditing',
+  originalEditingStage: 'collateralEditing',
   token: '',
   id: zero,
   ilk: '',

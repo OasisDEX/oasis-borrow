@@ -12,7 +12,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
-
+import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
 import { ManageVaultState, ManualChange } from './manageVault'
 
 function ManageVaultDetails({
@@ -86,36 +86,6 @@ function ManageVaultDetails({
         </Heading>
         <Text>$ {lockedUSD}</Text>
       </Grid>
-    </Grid>
-  )
-}
-
-function ManageVaultEditingToggle({}: ManageVaultState) {}
-
-function ManageVaultFormTitle(props: ManageVaultState) {
-  const {
-    isEditingStage,
-    isProxyStage,
-    isCollateralAllowanceStage,
-    isDaiAllowanceStage,
-    token,
-  } = props
-  return (
-    <Grid pb={3}>
-      <Text>
-        {isEditingStage ? (
-          <ManageVaultEditingToggle {...props} />
-        ) : isProxyStage ? (
-          <Text>'Create Proxy'</Text>
-        ) : isCollateralAllowanceStage ? (
-          <Text>{`Set ${token} Allowance`}</Text>
-        ) : isDaiAllowanceStage ? (
-          <Text>{`Set DAI Allowance`}</Text>
-        ) : null}
-      </Text>
-      <Text sx={{ fontSize: 2 }}>
-        Some text here giving a little more context as to what the user is doing
-      </Text>
     </Grid>
   )
 }
@@ -1006,7 +976,7 @@ function ManageVaultForm(props: ManageVaultState) {
   return (
     <Box>
       <Card>
-        <ManageVaultFormTitle {...props} />
+        <ManageVaultFormHeader {...props} />
         {isEditingStage && <ManageVaultFormEditing {...props} />}
         {isProxyStage && <ManageVaultFormProxy {...props} />}
         {isCollateralAllowanceStage && <ManageVaultFormCollateralAllowance {...props} />}
