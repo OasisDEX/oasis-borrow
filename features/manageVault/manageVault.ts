@@ -365,6 +365,7 @@ export type ManageVaultStage =
 
 export type DefaultManageVaultState = {
   stage: ManageVaultStage
+  originalEditingStage: Extract<ManageVaultStage, 'collateralEditing' | 'daiEditing'>
   id: BigNumber
   ilk: string
   token: string
@@ -746,11 +747,10 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'editing') {
+  if (state.stage === 'collateralEditing' || state.stage === 'daiEditing') {
     return {
       ...state,
       change,
-      reset,
       progress: progressEditing,
     }
   }
