@@ -297,19 +297,6 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
           <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>
         </>
       )}
-
-      <Card>
-        <Grid columns="5fr 3fr">
-          <Text sx={{ fontSize: 2 }}>{t('system.dai-available')}</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{daiAvailable}</Text>
-
-          <Text sx={{ fontSize: 2 }}>{t('system.min-coll-ratio')}</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{minCollRatio}</Text>
-
-          <Text sx={{ fontSize: 2 }}>{t('system.collateralization-ratio')}</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{afterCollRatio}</Text>
-        </Grid>
-      </Card>
       <Button onClick={handleProgress} disabled={hasError}>
         {t('confirm')}
       </Button>
