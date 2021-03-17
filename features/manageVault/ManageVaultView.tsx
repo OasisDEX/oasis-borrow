@@ -90,42 +90,29 @@ function ManageVaultDetails({
   )
 }
 
-function ManageVaultFormTitle({
-  isEditingStage,
-  isProxyStage,
-  isCollateralAllowanceStage,
-  isDaiAllowanceStage,
-  reset,
-  stage,
-  token,
-}: ManageVaultState) {
-  const canReset = !!reset
+function ManageVaultEditingToggle({}: ManageVaultState) {}
 
-  function handleReset(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault()
-    if (canReset) reset!()
-  }
-
+function ManageVaultFormTitle(props: ManageVaultState) {
+  const {
+    isEditingStage,
+    isProxyStage,
+    isCollateralAllowanceStage,
+    isDaiAllowanceStage,
+    token,
+  } = props
   return (
     <Grid pb={3}>
-      <Grid columns="2fr 1fr">
-        <Text>
-          {isEditingStage
-            ? 'Manage your Vault'
-            : isProxyStage
-            ? 'Create Proxy'
-            : isCollateralAllowanceStage
-            ? `Set ${token} Allowance`
-            : isDaiAllowanceStage
-            ? `Set DAI Allowance`
-            : 'Action Vault'}
-        </Text>
-        {canReset ? (
-          <Button onClick={handleReset} disabled={!canReset} sx={{ fontSize: 1, p: 0 }}>
-            {stage === 'editing' ? 'Reset' : 'Back'}
-          </Button>
+      <Text>
+        {isEditingStage ? (
+          <ManageVaultEditingToggle {...props} />
+        ) : isProxyStage ? (
+          <Text>'Create Proxy'</Text>
+        ) : isCollateralAllowanceStage ? (
+          <Text>{`Set ${token} Allowance`}</Text>
+        ) : isDaiAllowanceStage ? (
+          <Text>{`Set DAI Allowance`}</Text>
         ) : null}
-      </Grid>
+      </Text>
       <Text sx={{ fontSize: 2 }}>
         Some text here giving a little more context as to what the user is doing
       </Text>
