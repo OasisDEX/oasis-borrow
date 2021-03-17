@@ -340,7 +340,8 @@ type ManageVaultWarningMessage =
   | 'daiAllowanceLessThanPaybackAmount'
 
 export type ManageVaultStage =
-  | 'editing'
+  | 'collateralEditing'
+  | 'daiEditing'
   | 'proxyWaitingForConfirmation'
   | 'proxyWaitingForApproval'
   | 'proxyInProgress'
