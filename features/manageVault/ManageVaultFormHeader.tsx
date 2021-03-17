@@ -1,8 +1,11 @@
 import React from 'react'
-import { Box, Button, Flex, Grid, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Text } from 'theme-ui'
 import { ManageVaultState } from './manageVault'
 
 function ManageVaultEditingToggle({ stage, toggle }: ManageVaultState) {
+  const collateralVariant = stage === 'collateralEditing' ? 'outline' : 'filter'
+  const daiVariant = stage === 'daiEditing' ? 'outline' : 'filter'
+
   function handleToggle(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault()
     toggle!()
@@ -11,26 +14,12 @@ function ManageVaultEditingToggle({ stage, toggle }: ManageVaultState) {
   return (
     <Grid sx={{ justifyContent: 'center' }}>
       <Flex onClick={handleToggle}>
-        {stage === 'collateralEditing' && (
-          <>
-            <Button variant="outline" sx={{ py: 1 }}>
-              Collateral
-            </Button>
-            <Button variant="filter" sx={{ py: 1 }}>
-              Dai
-            </Button>
-          </>
-        )}
-        {stage === 'daiEditing' && (
-          <>
-            <Button variant="filter" sx={{ py: 1 }}>
-              Collateral
-            </Button>
-            <Button variant="outline" sx={{ py: 1 }}>
-              Dai
-            </Button>
-          </>
-        )}
+        <Button variant={collateralVariant} sx={{ py: 1 }}>
+          Collateral
+        </Button>
+        <Button variant={daiVariant} sx={{ py: 1 }}>
+          Dai
+        </Button>
       </Flex>
     </Grid>
   )
@@ -45,7 +34,7 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
     token,
   } = props
   return (
-    <Box>
+    <Box pb={3}>
       {isEditingStage ? (
         <ManageVaultEditingToggle {...props} />
       ) : (
