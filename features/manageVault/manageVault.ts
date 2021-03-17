@@ -390,6 +390,8 @@ export type DefaultManageVaultState = {
   progress?: () => void
   reset?: () => void
   toggle?: () => void
+  clearDepositAndGenerate?: () => void
+  clearPaybackAndWithdraw?: () => void
   change?: (change: ManualChange) => void
 
   collateralAllowance?: BigNumber
@@ -705,13 +707,22 @@ function addTransitions(
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ): ManageVaultState {
-  function clear() {
+  function clearDepositAndGenerate() {
     change({ kind: 'depositAmount', depositAmount: undefined })
     change({ kind: 'depositAmountUSD', depositAmountUSD: undefined })
+
+    change({ kind: 'generateAmount', generateAmount: undefined })
+  }
+
+  function clearPaybackAndWithdraw() {
     change({ kind: 'withdrawAmount', withdrawAmount: undefined })
     change({ kind: 'withdrawAmountUSD', withdrawAmountUSD: undefined })
-    change({ kind: 'generateAmount', generateAmount: undefined })
     change({ kind: 'paybackAmount', paybackAmount: undefined })
+  }
+
+  function clear() {
+    clearDepositAndGenerate()
+    clearPaybackAndWithdraw()
     change({ kind: 'collateralAllowanceAmount', collateralAllowanceAmount: maxUint256 })
     change({ kind: 'daiAllowanceAmount', daiAllowanceAmount: maxUint256 })
   }
@@ -769,6 +780,8 @@ function addTransitions(
     return {
       ...state,
       change,
+      clearDepositAndGenerate,
+      clearPaybackAndWithdraw,
       toggle: toggleEditing,
       progress: progressEditing,
     }

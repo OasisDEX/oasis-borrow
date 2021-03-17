@@ -7,6 +7,14 @@ import React from 'react'
 import { Button, Card, Grid, Text } from 'theme-ui'
 import { ManageVaultState, ManualChange } from './manageVault'
 
+function DepositAndGenerateForm(props: ManageVaultState) {
+  return null
+}
+
+function PaybackAndWithdrawForm(props: ManageVaultState) {
+  return null
+}
+
 export function ManageVaultFormEditing(props: ManageVaultState) {
   const {
     token,
@@ -31,41 +39,13 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
     progress,
     change,
     accountIsController,
+    clearPaybackAndWithdraw,
+    clearDepositAndGenerate,
   } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
     progress!()
-  }
-
-  function clearDepositAndGenerate(change: (ch: ManualChange) => void) {
-    change({
-      kind: 'depositAmount',
-      depositAmount: undefined,
-    })
-    change({
-      kind: 'depositAmountUSD',
-      depositAmountUSD: undefined,
-    })
-    change({
-      kind: 'generateAmount',
-      generateAmount: undefined,
-    })
-  }
-
-  function clearPaybackAndWithdraw(change: (ch: ManualChange) => void) {
-    change({
-      kind: 'withdrawAmount',
-      withdrawAmount: undefined,
-    })
-    change({
-      kind: 'withdrawAmountUSD',
-      withdrawAmountUSD: undefined,
-    })
-    change({
-      kind: 'paybackAmount',
-      paybackAmount: undefined,
-    })
   }
 
   function handleDepositChange(change: (ch: ManualChange) => void) {
@@ -76,7 +56,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
         ? currentCollateralPrice.times(depositAmount)
         : undefined
 
-      clearPaybackAndWithdraw(change)
+      clearPaybackAndWithdraw!()
       change({
         kind: 'depositAmount',
         depositAmount,
@@ -97,7 +77,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
           ? depositAmountUSD.div(currentCollateralPrice)
           : undefined
 
-      clearPaybackAndWithdraw(change)
+      clearPaybackAndWithdraw!()
       change({
         kind: 'depositAmountUSD',
         depositAmountUSD,
@@ -111,7 +91,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
 
   function handleDepositMax(change: (ch: ManualChange) => void) {
     return () => {
-      clearPaybackAndWithdraw(change)
+      clearPaybackAndWithdraw!()
       change({ kind: 'depositAmount', depositAmount: maxDepositAmount })
       change({ kind: 'depositAmountUSD', depositAmountUSD: maxDepositAmountUSD })
     }
@@ -125,7 +105,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
         ? currentCollateralPrice.times(withdrawAmount)
         : undefined
 
-      clearDepositAndGenerate(change)
+      clearDepositAndGenerate!()
       change({
         kind: 'withdrawAmount',
         withdrawAmount,
@@ -146,7 +126,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
           ? withdrawAmountUSD.div(currentCollateralPrice)
           : undefined
 
-      clearDepositAndGenerate(change)
+      clearDepositAndGenerate!()
       change({
         kind: 'withdrawAmountUSD',
         withdrawAmountUSD,
@@ -160,7 +140,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
 
   function handleWithdrawMax(change: (ch: ManualChange) => void) {
     return () => {
-      clearDepositAndGenerate(change)
+      clearDepositAndGenerate!()
       change({ kind: 'withdrawAmount', withdrawAmount: maxWithdrawAmount })
       change({ kind: 'withdrawAmountUSD', withdrawAmountUSD: maxWithdrawAmountUSD })
     }
@@ -170,7 +150,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
       const generateAmount = value !== '' ? new BigNumber(value) : undefined
-      clearPaybackAndWithdraw(change)
+      clearPaybackAndWithdraw!()
       change({
         kind: 'generateAmount',
         generateAmount,
@@ -180,7 +160,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
 
   function handleGenerateMax(change: (ch: ManualChange) => void) {
     return () => {
-      clearPaybackAndWithdraw(change)
+      clearPaybackAndWithdraw!()
       change({ kind: 'generateAmount', generateAmount: maxGenerateAmount })
     }
   }
@@ -189,7 +169,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
       const paybackAmount = value !== '' ? new BigNumber(value) : undefined
-      clearDepositAndGenerate(change)
+      clearDepositAndGenerate!()
       change({
         kind: 'paybackAmount',
         paybackAmount,
@@ -199,7 +179,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
 
   function handlePaybackMax(change: (ch: ManualChange) => void) {
     return () => {
-      clearDepositAndGenerate(change)
+      clearDepositAndGenerate!()
       change({ kind: 'paybackAmount', paybackAmount: maxPaybackAmount })
     }
   }
