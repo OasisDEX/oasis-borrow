@@ -28,9 +28,11 @@ const MinusIcon = () => (
 )
 
 function DepositInput({
+  stage,
   currentCollateralPrice,
   change,
   clearPaybackAndWithdraw,
+  clearDepositAndGenerate,
   maxDepositAmount,
   maxDepositAmountUSD,
   token,
@@ -54,6 +56,9 @@ function DepositInput({
         kind: 'depositAmountUSD',
         depositAmountUSD,
       })
+      if (!depositAmount && stage === 'collateralEditing') {
+        clearDepositAndGenerate!()
+      }
     }
   }
 
@@ -75,6 +80,9 @@ function DepositInput({
         kind: 'depositAmount',
         depositAmount,
       })
+      if (!depositAmountUSD && stage === 'collateralEditing') {
+        clearDepositAndGenerate!()
+      }
     }
   }
 
@@ -110,17 +118,23 @@ function GenerateInput({
   accountIsController,
   maxGenerateAmount,
   clearPaybackAndWithdraw,
+  clearDepositAndGenerate,
   change,
+  stage,
 }: ManageVaultState) {
   function handleGenerateChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
       const generateAmount = value !== '' ? new BigNumber(value) : undefined
+
       clearPaybackAndWithdraw!()
       change({
         kind: 'generateAmount',
         generateAmount,
       })
+      if (!generateAmount && stage === 'daiEditing') {
+        clearDepositAndGenerate!()
+      }
     }
   }
 
@@ -157,6 +171,8 @@ function WithdrawInput({
   maxWithdrawAmountUSD,
   token,
   clearDepositAndGenerate,
+  clearPaybackAndWithdraw,
+  stage,
 }: ManageVaultState) {
   function handleWithdrawChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -175,6 +191,9 @@ function WithdrawInput({
         kind: 'withdrawAmountUSD',
         withdrawAmountUSD,
       })
+      if (!withdrawAmount && stage === 'collateralEditing') {
+        clearPaybackAndWithdraw!()
+      }
     }
   }
 
@@ -196,6 +215,9 @@ function WithdrawInput({
         kind: 'withdrawAmount',
         withdrawAmount,
       })
+      if (!withdrawAmountUSD && stage === 'collateralEditing') {
+        clearPaybackAndWithdraw!()
+      }
     }
   }
 
@@ -231,16 +253,22 @@ function PaybackInput({
   maxPaybackAmount,
   change,
   clearDepositAndGenerate,
+  clearPaybackAndWithdraw,
+  stage,
 }: ManageVaultState) {
   function handlePaybackChange(change: (ch: ManualChange) => void) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
       const paybackAmount = value !== '' ? new BigNumber(value) : undefined
+
       clearDepositAndGenerate!()
       change({
         kind: 'paybackAmount',
         paybackAmount,
       })
+      if (!paybackAmount && stage === 'daiEditing') {
+        clearPaybackAndWithdraw!()
+      }
     }
   }
 
@@ -315,6 +343,9 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
     setShowPaybackAndWithdrawOption(false)
   }, [stage])
 
+  const showDepositAndGenerateOptionText = depositAmount || generateAmount
+  const showPaybackAndWithdrawOptionText = paybackAmount || withdrawAmount
+
   return (
     <Grid>
       <Box
@@ -324,24 +355,27 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
         }}
       >
         {inverted ? <GenerateInput {...props} /> : <DepositInput {...props} />}
-        <Text
-          mt={3}
-          sx={{
-            cursor: 'pointer',
-            fontSize: 3,
-            fontWeight: 'semiBold',
-            color: 'onSuccess',
-            userSelect: 'none',
-          }}
-          onClick={toggleDepositAndGenerateOption}
-        >
-          {showDepositAndGenerateOption ? <MinusIcon /> : <PlusIcon />}
-          {t('manage-vault.action-option', {
-            action: inverted ? t('vault-actions.deposit') : t('vault-actions.generate'),
-            token: inverted ? token : 'DAI',
-          })}
-        </Text>
+        {showDepositAndGenerateOptionText && (
+          <Text
+            mt={3}
+            sx={{
+              cursor: 'pointer',
+              fontSize: 3,
+              fontWeight: 'semiBold',
+              color: 'onSuccess',
+              userSelect: 'none',
+            }}
+            onClick={toggleDepositAndGenerateOption}
+          >
+            {showDepositAndGenerateOption ? <MinusIcon /> : <PlusIcon />}
+            {t('manage-vault.action-option', {
+              action: inverted ? t('vault-actions.deposit') : t('vault-actions.generate'),
+              token: inverted ? token : 'DAI',
+            })}
+          </Text>
+        )}
         {showDepositAndGenerateOption &&
+          (!!depositAmount || !!generateAmount) &&
           (inverted ? <DepositInput {...props} /> : <GenerateInput {...props} />)}
       </Box>
 
@@ -360,24 +394,27 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
         }}
       >
         {inverted ? <PaybackInput {...props} /> : <WithdrawInput {...props} />}
-        <Text
-          mt={3}
-          sx={{
-            cursor: 'pointer',
-            fontSize: 3,
-            fontWeight: 'semiBold',
-            color: 'onSuccess',
-            userSelect: 'none',
-          }}
-          onClick={togglePaybackAndWithdrawOption}
-        >
-          {showPaybackAndWithdrawOption ? <MinusIcon /> : <PlusIcon />}
-          {t('manage-vault.action-option', {
-            action: inverted ? t('vault-actions.withdraw') : t('vault-actions.payback'),
-            token: inverted ? token : 'DAI',
-          })}
-        </Text>
+        {showPaybackAndWithdrawOptionText && (
+          <Text
+            mt={3}
+            sx={{
+              cursor: 'pointer',
+              fontSize: 3,
+              fontWeight: 'semiBold',
+              color: 'onSuccess',
+              userSelect: 'none',
+            }}
+            onClick={togglePaybackAndWithdrawOption}
+          >
+            {showPaybackAndWithdrawOption ? <MinusIcon /> : <PlusIcon />}
+            {t('manage-vault.action-option', {
+              action: inverted ? t('vault-actions.withdraw') : t('vault-actions.payback'),
+              token: inverted ? token : 'DAI',
+            })}
+          </Text>
+        )}
         {showPaybackAndWithdrawOption &&
+          (!!paybackAmount || !!withdrawAmount) &&
           (inverted ? <WithdrawInput {...props} /> : <PaybackInput {...props} />)}
       </Box>
 
