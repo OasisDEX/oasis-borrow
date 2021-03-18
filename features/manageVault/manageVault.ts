@@ -340,7 +340,7 @@ type ManageVaultWarningMessage =
   | 'collateralAllowanceLessThanDepositAmount'
   | 'daiAllowanceLessThanPaybackAmount'
 
-type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
+export type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
 
 export type ManageVaultStage =
   | ManageVaultEditingStage

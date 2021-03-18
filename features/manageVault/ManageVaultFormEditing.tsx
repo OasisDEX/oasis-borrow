@@ -3,9 +3,14 @@ import { VaultActionInput } from 'components/VaultActionInput'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
-import { Button, Card, Grid, Text } from 'theme-ui'
-import { ManageVaultState, ManualChange } from './manageVault'
+import React, { useEffect, useState } from 'react'
+import { Box, Button, Card, Grid, Text } from 'theme-ui'
+import {
+  ManageVaultEditingStage,
+  ManageVaultStage,
+  ManageVaultState,
+  ManualChange,
+} from './manageVault'
 
 function DepositInput({
   currentCollateralPrice,
@@ -247,41 +252,19 @@ function PaybackInput({
 }
 
 interface ManageVaultInputGroupProps {
-  childOne: React.Component
-  childTwo: React.Component
+  childOne: JSX.Element
+  childTwo: JSX.Element
   inverted: boolean
-  optionTextOne: string
-  optionTextTwo: string
-}
-
-function ManageVaultInputGroup({
-  childOne,
-  childTwo,
-  inverted,
-  optionTextOne,
-  optionTextTwo,
-}: ManageVaultInputGroupProps) {
-  const [showOption, setShowOption] = useState<boolean>(false)
-  function handleOptionShow(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    e.preventDefault()
-    setShowOption(true)
-  }
-
-  return (
-    <>
-      inverted ? {childTwo} : {childOne}
-      {!showOption ? (
-        <Text onClick={handleOptionShow}>{inverted ? optionTextTwo : optionTextOne}</Text>
-      ) : inverted ? (
-        { childOne }
-      ) : (
-        { childTwo }
-      )}
-    </>
-  )
+  optionText: string
+  stage: ManageVaultEditingStage
 }
 
 export function ManageVaultFormEditing(props: ManageVaultState) {
+  const { t } = useTranslation()
+
+  const [showDepositAndGenerateOption, setShowDepositAndGenerateOption] = useState<boolean>(false)
+  const [showPaybackAndWithdrawOption, setShowPaybackAndWithdrawOption] = useState<boolean>(false)
+
   const {
     depositAmount,
     withdrawAmount,
@@ -290,14 +273,24 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
     errorMessages,
     warningMessages,
     progress,
+    stage,
+    token,
   } = props
+
+  function toggleDepositAndGenerateOption(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.preventDefault()
+    setShowDepositAndGenerateOption(!showDepositAndGenerateOption)
+  }
+
+  function togglePaybackAndWithdrawOption(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.preventDefault()
+    setShowPaybackAndWithdrawOption(!showPaybackAndWithdrawOption)
+  }
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
     progress!()
   }
-
-  const { t } = useTranslation()
 
   const errorString = errorMessages.join(',\n')
   const warningString = warningMessages.join(',\n')
@@ -305,23 +298,57 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
   const hasError = !!errorString
   const hasWarnings = !!warningString
 
-  const showDepositAndGenerate = !paybackAmount && !withdrawAmount
-  const showPaybackAndWithdraw = !depositAmount && !generateAmount
+  const disableDepositAndGenerate = paybackAmount || withdrawAmount || showPaybackAndWithdrawOption
+  const disablePaybackAndWithdraw = depositAmount || generateAmount || showDepositAndGenerateOption
+
+  const inverted = stage === 'daiEditing'
+
+  useEffect(() => {
+    setShowDepositAndGenerateOption(false)
+    setShowPaybackAndWithdrawOption(false)
+  }, [stage])
 
   return (
     <Grid>
-      {showDepositAndGenerate && (
-        <>
-          <DepositInput {...props} />
-          <GenerateInput {...props} />
-        </>
-      )}
-      {showPaybackAndWithdraw && (
-        <>
-          <WithdrawInput {...props} />
-          <PaybackInput {...props} />
-        </>
-      )}
+      <Box
+        sx={{
+          opacity: disableDepositAndGenerate ? 0.5 : 1,
+          pointerEvents: disableDepositAndGenerate ? 'none' : 'auto',
+        }}
+      >
+        {inverted ? <GenerateInput {...props} /> : <DepositInput {...props} />}
+        {!disableDepositAndGenerate && (
+          <Text sx={{ cursor: 'pointer' }} onClick={toggleDepositAndGenerateOption}>
+            {showDepositAndGenerateOption ? '-' : '+'}{' '}
+            {t('manage-vault.action-option', {
+              action: inverted ? t('vault-actions.deposit') : t('vault-actions.generate'),
+              token: inverted ? token : 'DAI',
+            })}
+          </Text>
+        )}
+        {showDepositAndGenerateOption &&
+          (inverted ? <DepositInput {...props} /> : <GenerateInput {...props} />)}
+      </Box>
+      <Box
+        sx={{
+          opacity: disablePaybackAndWithdraw ? 0.5 : 1,
+          pointerEvents: disablePaybackAndWithdraw ? 'none' : 'auto',
+        }}
+      >
+        {inverted ? <PaybackInput {...props} /> : <WithdrawInput {...props} />}
+        {!disablePaybackAndWithdraw && (
+          <Text sx={{ cursor: 'pointer' }} onClick={togglePaybackAndWithdrawOption}>
+            {showPaybackAndWithdrawOption ? '-' : '+'}{' '}
+            {t('manage-vault.action-option', {
+              action: inverted ? t('vault-actions.withdraw') : t('vault-actions.payback'),
+              token: inverted ? token : 'DAI',
+            })}
+          </Text>
+        )}
+        {showPaybackAndWithdrawOption &&
+          (inverted ? <WithdrawInput {...props} /> : <PaybackInput {...props} />)}
+      </Box>
+
       {hasError && (
         <>
           <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
