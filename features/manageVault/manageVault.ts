@@ -426,6 +426,8 @@ export type DefaultManageVaultState = {
   ilkDebtAvailable: BigNumber // Updates
   debtFloor: BigNumber
   liquidationRatio: BigNumber
+  stabilityFee: BigNumber
+  liquidationPenalty: BigNumber
 
   // Vault information
   lockedCollateral: BigNumber
@@ -957,6 +959,8 @@ export const defaultManageVaultState: DefaultManageVaultState = {
   afterCollateralizationRatio: zero,
   maxDebtPerUnitCollateral: zero,
   ilkDebtAvailable: zero,
+  stabilityFee: zero,
+  liquidationPenalty: zero,
   debtFloor: zero,
   liquidationRatio: zero,
   safeConfirmations: 0,
@@ -990,7 +994,9 @@ export function createManageVault$(
             debt,
             collateralizationRatio,
             liquidationPrice,
+            liquidationPenalty,
             freeCollateral,
+            stabilityFee,
             controller,
           }) => {
             return combineLatest(
@@ -1029,11 +1035,13 @@ export function createManageVault$(
                         liquidationPrice,
                         collateralizationRatio,
                         freeCollateral,
+                        liquidationPenalty,
 
                         ilk,
                         maxDebtPerUnitCollateral,
                         ilkDebtAvailable,
                         debtFloor,
+                        stabilityFee,
                         liquidationRatio,
                         proxyAddress,
                         safeConfirmations: context.safeConfirmations,
@@ -1078,6 +1086,8 @@ export function createManageVault$(
                         vaultChange$(vault$(id), 'liquidationPrice'),
                         vaultChange$(vault$(id), 'lockedCollateralPrice'),
                         vaultChange$(vault$(id), 'freeCollateral'),
+                        vaultChange$(vault$(id), 'stabilityFee'),
+                        vaultChange$(vault$(id), 'liquidationPenalty'),
                       )
 
                       const connectedProxyAddress$ = proxyAddress$(account)

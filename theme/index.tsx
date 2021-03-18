@@ -504,6 +504,7 @@ const oasisBaseTheme = {
     primaryAlt: '#D3D4D8',
     primaryEmphasis: '#626472',
     secondary: '#ECEFF9',
+    secondaryAlt: '#F3F7F9',
     background: '#F6F8F9',
     surface: '#FFF',
 

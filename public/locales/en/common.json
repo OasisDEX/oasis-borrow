@@ -200,7 +200,12 @@
   "manage-vault": {
     "action-option": "{{action}} {{token}} with this transaction",
     "or": "OR",
-    "title": "Manage Vault"
+    "title": "Manage Vault",
+    "dai-available": "DAI available",
+    "min-collat-ratio": "Min. collateral ratio",
+    "stability-fee": "Stability Fee",
+    "liquidation-fee": "Liquidation Fee",
+    "dust-limit": "Dust Limit"
   },
   "max": "Max",
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",
