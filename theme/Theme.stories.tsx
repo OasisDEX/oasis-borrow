@@ -1,15 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { storiesOf } from '@storybook/react'
 import { ColorPalette, TypeScale } from '@theme-ui/style-guide'
-import { AppLink } from 'components/Links'
-import { Container } from 'next/app'
 import React from 'react'
-import { Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
+import { theme } from 'theme'
+import { Box, Button, Container, Flex, Grid, Heading, Link, Text } from 'theme-ui'
 
-import { theme } from '../theme'
-
-const stories = storiesOf('Oasis Borrow Theme', module)
-stories.add('Typography', () => {
+export const Typography = () => {
   const textStyles = Object.keys(theme.text)
 
   return (
@@ -29,11 +24,12 @@ stories.add('Typography', () => {
       </Box>
       <Heading sx={{ mt: 4, fontSize: 5 }}>Text variants</Heading>
       <Flex sx={{ flexWrap: 'wrap' }}>
-        {textStyles.map((style) => (
+        {textStyles.map((style, idx) => (
           <Box
             bg="white"
             p={3}
             sx={{ display: 'flex', alignItems: 'flex-end', m: 3, p: 4, position: 'relative' }}
+            key={idx}
           >
             <Text sx={{ position: 'absolute', top: 0 }}>{style}</Text>
             <Text key={style} variant={style} sx={{ textTransform: 'capitalize' }}>
@@ -44,37 +40,34 @@ stories.add('Typography', () => {
       </Flex>
     </Container>
   )
-})
-
-stories.add('Colors', () => {
-  return (
-    <Container>
-      <Heading as="h1" sx={{ my: 4, fontSize: 7 }}>
-        Colors
-      </Heading>
-      <ColorPalette />
-    </Container>
-  )
-})
-
-const SizePreview = ({ sizes }: { sizes: number[] }) => {
-  return (
-    <Grid>
-      {sizes.map((size, index) => (
-        <Flex sx={{ alignItems: 'center' }}>
-          <Box key={size} sx={{ width: `${size}px`, height: '10px', bg: 'primary' }} />
-          <Box px={2}>{size}px</Box>
-          <Box px={2}>index: {index}</Box>
-        </Flex>
-      ))}
-    </Grid>
-  )
 }
 
-stories.add('Theme elements', () => {
+export const Colors = () => (
+  <Container>
+    <Heading as="h1" sx={{ my: 4, fontSize: 7 }}>
+      Colors
+    </Heading>
+    <ColorPalette />
+  </Container>
+)
+
+export const ThemeElements = () => {
+  const SizePreview = ({ sizes }: { sizes: number[] }) => {
+    return (
+      <Grid>
+        {sizes.map((size, index) => (
+          <Flex sx={{ alignItems: 'center' }} key={index}>
+            <Box key={size} sx={{ width: `${size}px`, height: '10px', bg: 'primary' }} />
+            <Box px={2}>{size}px</Box>
+            <Box px={2}>index: {index}</Box>
+          </Flex>
+        ))}
+      </Grid>
+    )
+  }
+
   const sizes: number[] = theme.sizes
   const space: number[] = theme.space
-  const borders = Object.entries(theme.borders)
 
   return (
     <Container>
@@ -93,16 +86,11 @@ stories.add('Theme elements', () => {
       </Text>
       <SizePreview sizes={space} />
       <Heading sx={{ mt: 4, fontSize: 5 }}>Borders styles</Heading>
-      <Grid>
-        {borders.map(() => (
-          <Box></Box>
-        ))}
-      </Grid>
     </Container>
   )
-})
+}
 
-stories.add('Components', () => {
+export const Components = () => {
   const buttons = Object.keys(theme.buttons)
   const links = Object.keys(theme.links)
 
@@ -127,21 +115,21 @@ stories.add('Components', () => {
             <Text sx={{ position: 'absolute', top: 0, transform: 'translateY(-90%)' }}>
               {variant}
             </Text>
-            <AppLink href="#" variant={variant}>
+            <Link href="#" variant={variant}>
               Click me
-            </AppLink>
+            </Link>
           </Box>
         ))}
         <Box sx={{ position: 'relative', bg: 'white', m: 3, p: 3 }}>
           <Text sx={{ position: 'absolute', top: 0, transform: 'translateY(-90%)' }}>Default</Text>
-          <AppLink href="#">Click me</AppLink>
+          <Link href="#">Click me</Link>
         </Box>
       </Flex>
     </Container>
   )
-})
+}
 
-stories.add('Icons', () => {
+export const Icons = () => {
   const icons = Object.keys(theme.icons)
 
   return (
@@ -161,4 +149,9 @@ stories.add('Icons', () => {
       </Flex>
     </Container>
   )
-})
+}
+
+// eslint-disable-next-line import/no-default-export
+export default {
+  title: 'Theme',
+}

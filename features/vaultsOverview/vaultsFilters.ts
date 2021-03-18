@@ -41,6 +41,7 @@ function applyFilter(state: VaultsFilterState, change: Changes): VaultsFilterSta
       return apply(state, change)
   }
 }
+
 function sortVaults(vaults: Vault[], sortBy: VaultSortBy, direction: Direction): Vault[] {
   const filter = `${sortBy}_${direction}`
   switch (filter) {
@@ -95,7 +96,7 @@ function search(vaults: Vault[], search: string) {
     return (
       vault.token.toLowerCase().includes(search.toLowerCase()) ||
       tokenMeta.name.toLowerCase().includes(search.toLowerCase()) ||
-      vault.id.includes(search)
+      vault.id.toString().includes(search)
     )
   })
 }

@@ -1,9 +1,9 @@
 import { isDone, TxState, TxStatus } from '@oasisdex/transactions'
 import { every1Seconds$ } from 'blockchain/network'
 import { TxData } from 'components/AppContext'
-import { withTranslation } from 'i18n'
 import { isEqual } from 'lodash'
 import moment from 'moment'
+import { TFunction, withTranslation } from 'next-i18next'
 import React from 'react'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay } from 'rxjs/operators'
@@ -41,9 +41,9 @@ export function TxTranslator({
     [key: string]: any
   }
 }) {
-  const Component = withTranslation()(({ t }) => <>{t(i18nKey, params)}</>)
+  const Component = ({ t }: { t: TFunction }) => <>{t(i18nKey, params)}</>
 
-  return <Component />
+  return <>{withTranslation()(Component)}</>
 }
 
 function txState2Transaction(raw: TxState<TxData>): TxMgrTransaction {

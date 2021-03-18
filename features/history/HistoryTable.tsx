@@ -1,4 +1,4 @@
-import { useTranslation, Trans } from "i18n";
+import { useTranslation, Trans } from "next-i18next";
 import { Container } from "next/app";
 import { Heading, Text, Box, Link } from "theme-ui";
 import { Table, ColumnDef } from 'components/Table'

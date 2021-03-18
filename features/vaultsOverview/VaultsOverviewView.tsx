@@ -12,7 +12,7 @@ import {
   formatFiatBalance,
   formatPercent,
 } from 'helpers/formatters/format'
-import { Trans, useTranslation } from 'i18n'
+import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback, useMemo } from 'react'
 import { Box, Button, Card, Flex, Grid, Heading, Input, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
@@ -101,7 +101,7 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
 ]
 function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
   const { data, filters } = vaults
-  return <Table data={data} primaryKey="id" state={filters} columns={vaultsColumns} />
+  return <Table data={data} primaryKey="address" state={filters} columns={vaultsColumns} />
 }
 
 const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState & { isReadonly: boolean }>[] = [
@@ -200,7 +200,6 @@ function AllIlks({
       isReadonly,
     }
   }, [filters, isReadonly])
-
   return <Table primaryKey="ilk" data={data} state={tableState} columns={ilksColumns} />
 }
 
@@ -399,12 +398,12 @@ export function FeaturedIlks({ ilks }: { ilks: FeaturedIlk[] }) {
 }
 
 interface Props {
-  vaultsOverView: VaultsOverview
+  vaultsOverview: VaultsOverview
   context: Context
   address: string
 }
-export function VaultsOverviewView({ vaultsOverView, context, address }: Props) {
-  const { vaults, vaultSummary, featuredIlks, ilks } = vaultsOverView
+export function VaultsOverviewView({ vaultsOverview, context, address }: Props) {
+  const { vaults, vaultSummary, featuredIlks, ilksWithFilters } = vaultsOverview
   const { t } = useTranslation()
 
   const readonlyAccount = context?.status === 'connectedReadonly' && (address as string)
@@ -421,9 +420,9 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
 
   const onIlkSearch = useCallback(
     (search: string) => {
-      ilks.filters.change({ kind: 'search', search })
+      ilksWithFilters.filters.change({ kind: 'search', search })
     },
-    [ilks.filters],
+    [ilksWithFilters.filters],
   )
 
   const onVaultsTagChange = useCallback(
@@ -435,9 +434,9 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
 
   const onIlksTagChange = useCallback(
     (tagFilter: CoinTag | undefined) => {
-      ilks.filters.change({ kind: 'tagFilter', tagFilter })
+      ilksWithFilters.filters.change({ kind: 'tagFilter', tagFilter })
     },
-    [ilks.filters],
+    [ilksWithFilters.filters],
   )
 
   return (
@@ -453,9 +452,9 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
       <Text variant="header3" sx={{ textAlign: 'center', justifySelf: 'center', mb: 4 }}>
         {context.status === 'connected'
           ? t('vaults-overview.message-connected', {
-            address: formatAddress(address),
-            count: vaultSummary?.numberOfVaults || 0,
-          })
+              address: formatAddress(address),
+              count: vaultSummary?.numberOfVaults || 0,
+            })
           : t('vaults-overview.message-not-connected', { address: formatAddress(address) })}
       </Text>
       {displayFeaturedIlks && featuredIlks && <FeaturedIlks ilks={featuredIlks} />}
@@ -475,12 +474,16 @@ export function VaultsOverviewView({ vaultsOverView, context, address }: Props) 
       <Heading>Vaults</Heading>
       <Filters
         onSearch={onIlkSearch}
-        search={ilks.filters.search}
+        search={ilksWithFilters.filters.search}
         onTagChange={onIlksTagChange}
-        tagFilter={ilks.filters.tagFilter}
+        tagFilter={ilksWithFilters.filters.tagFilter}
         defaultTag="all-assets"
       />
-      <AllIlks ilks={ilks} isReadonly={context?.status === 'connectedReadonly'} address={address} />
+      <AllIlks
+        ilks={ilksWithFilters}
+        isReadonly={context?.status === 'connectedReadonly'}
+        address={address}
+      />
     </Grid>
   )
 }

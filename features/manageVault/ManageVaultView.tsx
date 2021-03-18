@@ -9,7 +9,7 @@ import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
-import { useTranslation } from 'i18n'
+import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
@@ -24,7 +24,11 @@ function ManageVaultDetails({
   liquidationPrice,
   lockedCollateral,
   lockedCollateralPrice,
-  collateralPrice,
+
+  currentCollateralPrice,
+  nextCollateralPrice,
+  isStaticCollateralPrice,
+  dateNextCollateralPrice,
 }: ManageVaultState) {
   const { t } = useTranslation()
   const collRatio = collateralizationRatio.eq(zero)
@@ -34,8 +38,6 @@ function ManageVaultDetails({
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
     ? '--'
     : formatPercent(afterCollateralizationRatio.times(100), { precision: 4 })
-
-  const collPrice = formatAmount(collateralPrice, 'USD')
 
   const liqPrice = formatAmount(liquidationPrice, 'USD')
   const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
@@ -52,7 +54,6 @@ function ManageVaultDetails({
           {t('after')}: ${afterLiqPrice}
         </Text>
       </Grid>
-
       <Grid sx={{ textAlign: 'right' }}>
         <Text>{t('system.collateralization-ratio')}</Text>
         <Heading>{collRatio}</Heading>
@@ -60,13 +61,25 @@ function ManageVaultDetails({
           {t('after')}: {afterCollRatio}
         </Text>
       </Grid>
-
-      <Grid>
-        <Text>{t('vault.current-price', { token, time: '9 mins' })}</Text>
-        <Heading>${collPrice}</Heading>
-        <Text>{t('vault.next-price')}: $--:--</Text>
-      </Grid>
-
+      {isStaticCollateralPrice ? (
+        <Grid>
+          <Text>{`${token}/USD price`}</Text>
+          <Heading>${formatAmount(currentCollateralPrice, 'USD')}</Heading>
+        </Grid>
+      ) : (
+        <Grid>
+          <Text>Current ETH/USD Price in 9 mins</Text>
+          <Grid>
+            <Text>{`Current ${token}/USD price`}</Text>
+            <Heading>${formatAmount(currentCollateralPrice, 'USD')}</Heading>
+          </Grid>
+          <Text>Next price: {formatAmount(nextCollateralPrice || zero, 'USD')} </Text>
+          <Text>
+            {dateNextCollateralPrice?.toLocaleDateString()} ::{' '}
+            {dateNextCollateralPrice?.toLocaleTimeString()}
+          </Text>
+        </Grid>
+      )}
       <Grid sx={{ textAlign: 'right' }}>
         <Text>{t('system.collateral-locked')}</Text>
         <Heading>
@@ -136,7 +149,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     maxGenerateAmount,
     paybackAmount,
     maxPaybackAmount,
-    collateralPrice,
+    currentCollateralPrice,
     errorMessages,
     warningMessages,
     ilkDebtAvailable,
@@ -192,7 +205,9 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
       const depositAmount = value !== '' ? new BigNumber(value) : undefined
-      const depositAmountUSD = depositAmount ? collateralPrice.times(depositAmount) : undefined
+      const depositAmountUSD = depositAmount
+        ? currentCollateralPrice.times(depositAmount)
+        : undefined
 
       clearPayback(change)
       clearWithdraw(change)
@@ -213,7 +228,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
       const depositAmountUSD = value !== '' ? new BigNumber(value) : undefined
       const depositAmount =
         depositAmountUSD && depositAmountUSD.gt(zero)
-          ? depositAmountUSD.div(collateralPrice)
+          ? depositAmountUSD.div(currentCollateralPrice)
           : undefined
 
       clearPayback(change)
@@ -242,7 +257,9 @@ function ManageVaultFormEditing(props: ManageVaultState) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/,/g, '')
       const withdrawAmount = value !== '' ? new BigNumber(value) : undefined
-      const withdrawAmountUSD = withdrawAmount ? collateralPrice.times(withdrawAmount) : undefined
+      const withdrawAmountUSD = withdrawAmount
+        ? currentCollateralPrice.times(withdrawAmount)
+        : undefined
 
       clearGenerate(change)
       clearDeposit(change)
@@ -263,7 +280,7 @@ function ManageVaultFormEditing(props: ManageVaultState) {
       const withdrawAmountUSD = value !== '' ? new BigNumber(value) : undefined
       const withdrawAmount =
         withdrawAmountUSD && withdrawAmountUSD.gt(zero)
-          ? withdrawAmountUSD.div(collateralPrice)
+          ? withdrawAmountUSD.div(currentCollateralPrice)
           : undefined
 
       clearGenerate(change)
@@ -1014,7 +1031,7 @@ function ManageVaultForm(props: ManageVaultState) {
   )
 }
 
-function ManageVaultContainer(props: ManageVaultState) {
+export function ManageVaultContainer(props: ManageVaultState) {
   return (
     <Grid columns="2fr 1fr" gap={4}>
       <ManageVaultDetails {...props} />
@@ -1026,7 +1043,6 @@ function ManageVaultContainer(props: ManageVaultState) {
 export function ManageVaultView({ id }: { id: BigNumber }) {
   const { manageVault$ } = useAppContext()
   const manageVault = useObservable(manageVault$(id))
-
   if (!manageVault) return null
 
   return (

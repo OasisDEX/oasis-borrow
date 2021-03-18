@@ -1,12 +1,12 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import isEqual from 'lodash/isEqual'
 import { bindNodeCallback, combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { maxUint256, tokenAllowance, tokenBalance } from './calls/erc20'
 import { CallObservable } from './calls/observe'
 import { Context } from './network'
+import { OraclePriceData } from './prices'
 
 export function createBalance$(
   onEveryBlock$: Observable<number>,
@@ -30,33 +30,42 @@ export function createBalance$(
   )
 }
 
+export function createCollateralTokens$(
+  ilks$: Observable<string[]>,
+  ilkToToken$: Observable<(ilk: string) => string>,
+): Observable<string[]> {
+  return combineLatest(ilks$, ilkToToken$).pipe(
+    switchMap(([ilks, ilkToToken]) => of([...new Set(ilks.map(ilkToToken))])),
+  )
+}
+
 export type TokenBalances = Record<string, { balance: BigNumber; price: BigNumber }>
 
 export function createAccountBalance$(
   tokenBalance$: (token: string, address: string) => Observable<BigNumber>,
-  ilks: Observable<string[]>,
-  ilkToToken: Observable<(ilk: string) => string>,
-  tokenPrice: (ilk: string) => Observable<BigNumber>,
+  collateralTokens$: Observable<string[]>,
+  oraclePriceData$: (token: string) => Observable<OraclePriceData>,
   address: string,
 ): Observable<TokenBalances> {
-  return combineLatest(ilks, ilkToToken).pipe(
-    distinctUntilChanged((a, b) => isEqual(a, b)),
-    switchMap(([ilks, ilkToToken]) =>
-      of(ilks.map(ilkToToken)).pipe(
-        map((tokens) => tokens.map((token, idx) => [token, ilks[idx]])),
-        switchMap((pair) =>
+  return collateralTokens$.pipe(
+    switchMap((collateralTokens) =>
+      combineLatest(
+        collateralTokens.map((collateralToken) =>
           combineLatest(
-            pair.map(([token, ilk]) =>
-              combineLatest(of(token), tokenBalance$(token, address), tokenPrice(ilk)),
-            ),
+            of(collateralToken),
+            tokenBalance$(collateralToken, address),
+            oraclePriceData$(collateralToken),
           ),
         ),
-        map((data) =>
-          data.reduce(
-            (acc, [token, balance, price]) => ({ ...acc, [token]: { balance, price } }),
-            {},
-          ),
-        ),
+      ),
+    ),
+    map((data) =>
+      data.reduce(
+        (acc, [collateralToken, balance, { currentPrice: price }]) => ({
+          ...acc,
+          [collateralToken]: { balance, price },
+        }),
+        {},
       ),
     ),
   )

@@ -9,6 +9,7 @@ import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/format
 import { useObservable } from 'helpers/observableHook'
 import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
+import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
@@ -19,7 +20,14 @@ function OpenVaultDetails({
   afterCollateralizationRatio,
   afterLiquidationPrice,
   token,
+
+  currentCollateralPrice,
+  nextCollateralPrice,
+  isStaticCollateralPrice,
+  dateNextCollateralPrice,
 }: OpenVaultState) {
+  const { t } = useTranslation()
+
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
     ? '--'
     : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
@@ -29,25 +37,43 @@ function OpenVaultDetails({
   return (
     <Grid columns="1fr 1fr" gap={6} sx={{ justifyContent: 'space-between' }}>
       <Grid>
-        <Text>Liquidation Price</Text>
+        <Text>{t('system.liquidation-price')}</Text>
         <Heading>$0.00</Heading>
-        <Text>After: ${afterLiqPrice}</Text>
+        <Text>{t('vaults.after', { price: afterLiqPrice })}</Text>
       </Grid>
 
       <Grid sx={{ textAlign: 'right' }}>
-        <Text>Collateralization Ratio</Text>
+        <Text>{t('system.collateralization-ratio')}</Text>
         <Heading>0 %</Heading>
-        <Text>After: {afterCollRatio}</Text>
+        <Text>{t('vaults.after', { price: afterCollRatio })}</Text>
       </Grid>
 
-      <Grid>
-        <Text>Current ETH/USD Price in 9 mins</Text>
-        <Heading>$1375.0000</Heading>
-        <Text>Next price: $1325.0000 (-2.30%)</Text>
-      </Grid>
+      {isStaticCollateralPrice ? (
+        <Grid>
+          <Text>{t('vaults.current-price', { token })}</Text>
+          <Heading>${formatAmount(currentCollateralPrice, 'USD')}</Heading>
+        </Grid>
+      ) : (
+        <Grid>
+          <Grid>
+            <Text>{t('vaults.current-price', { token })}</Text>
+            <Heading>${formatAmount(currentCollateralPrice, 'USD')}</Heading>
+          </Grid>
+          <Text>
+            {t('vaults.next-price', {
+              token,
+              amount: formatAmount(nextCollateralPrice || zero, 'USD'),
+            })}
+          </Text>
+          <Text>
+            {dateNextCollateralPrice?.toLocaleDateString()} ::{' '}
+            {dateNextCollateralPrice?.toLocaleTimeString()}
+          </Text>
+        </Grid>
+      )}
 
       <Grid sx={{ textAlign: 'right' }}>
-        <Text>Collateral Locked</Text>
+        <Text>{t('system.collateral-locked')}</Text>
         <Heading>--.-- {token}</Heading>
         <Text>$--.--</Text>
       </Grid>
@@ -141,13 +167,19 @@ function OpenVaultFormEditing(props: OpenVaultState) {
 
   function handleDepositMax(change: (ch: ManualChange) => void) {
     return () => {
-      change({ kind: 'depositAmount', depositAmount: maxDepositAmount })
+      change({
+        kind: 'depositAmount',
+        depositAmount: maxDepositAmount.gt(zero) ? maxDepositAmount : undefined,
+      })
     }
   }
 
   function handleGenerateMax(change: (ch: ManualChange) => void) {
     return () => {
-      change({ kind: 'generateAmount', generateAmount: maxGenerateAmount })
+      change({
+        kind: 'generateAmount',
+        generateAmount: maxGenerateAmount.gt(zero) ? maxGenerateAmount : undefined,
+      })
     }
   }
 
@@ -614,7 +646,7 @@ function OpenVaultForm(props: OpenVaultState) {
   )
 }
 
-function OpenVaultContainer(props: OpenVaultState) {
+export function OpenVaultContainer(props: OpenVaultState) {
   return (
     <Grid columns="2fr 1fr" gap={4}>
       <OpenVaultDetails {...props} />
@@ -624,6 +656,7 @@ function OpenVaultContainer(props: OpenVaultState) {
 }
 
 export function OpenVaultView({ ilk }: { ilk: string }) {
+  const { t } = useTranslation()
   const { openVault$ } = useAppContext()
   const openVault = useObservable(openVault$(ilk))
 
@@ -636,9 +669,7 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
       <Grid sx={{ width: '100%', height: '50vh', justifyItems: 'center', alignItems: 'center' }}>
         {openVault.stage === 'ilkValidationLoading' && <Spinner size={50} />}
         {openVault.stage === 'ilkValidationFailure' && (
-          <Box>
-            Ilk {ilk} does not exist, please update the ilk registry if passed by governance
-          </Box>
+          <Box>{t('vaults.ilk-does-not-exist', { ilk })}</Box>
         )}
       </Grid>
     )

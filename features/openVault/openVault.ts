@@ -7,6 +7,7 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
+import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
 import { ApplyChange, applyChange, Change, Changes, transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
@@ -27,7 +28,7 @@ interface Receipt {
   logs: { topics: string[] | undefined }[]
 }
 
-function parseVaultIdFromReceiptLogs({ logs }: Receipt): number {
+export function parseVaultIdFromReceiptLogs({ logs }: Receipt): number | undefined {
   const newCdpEventTopic = Web3.utils.keccak256('NewCdp(address,address,uint256)')
   return logs
     .filter((log) => {
@@ -108,14 +109,14 @@ function applyVaultCalculations(state: OpenVaultState): OpenVaultState {
     depositAmount,
     maxDebtPerUnitCollateral,
     generateAmount,
-    collateralPrice,
+    currentCollateralPrice,
     liquidationRatio,
   } = state
 
   const maxDepositAmount = collateralBalance
-  const maxDepositAmountUSD = collateralBalance.times(collateralPrice)
+  const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
   const maxGenerateAmount = depositAmount ? depositAmount.times(maxDebtPerUnitCollateral) : zero
-  const depositAmountUSD = depositAmount ? collateralPrice.times(depositAmount) : zero
+  const depositAmountUSD = depositAmount ? currentCollateralPrice.times(depositAmount) : zero
   const generateAmountUSD = generateAmount || zero // 1 DAI === 1 USD
 
   const afterCollateralizationRatio = generateAmountUSD.eq(zero)
@@ -139,7 +140,7 @@ function applyVaultCalculations(state: OpenVaultState): OpenVaultState {
   }
 }
 
-function validateErrors(state: OpenVaultState): OpenVaultState {
+export function validateErrors(state: OpenVaultState): OpenVaultState {
   const {
     depositAmount,
     maxDepositAmount,
@@ -185,7 +186,7 @@ function validateErrors(state: OpenVaultState): OpenVaultState {
   return { ...state, errorMessages }
 }
 
-function validateWarnings(state: OpenVaultState): OpenVaultState {
+export function validateWarnings(state: OpenVaultState): OpenVaultState {
   const {
     allowance,
     depositAmount,
@@ -215,7 +216,7 @@ function validateWarnings(state: OpenVaultState): OpenVaultState {
   }
 
   if (token !== 'ETH') {
-    if (!allowance) {
+    if (!allowance || !allowance.gt(zero)) {
       warningMessages.push('noAllowance')
     }
     if (depositAmount && allowance && depositAmount.gt(allowance)) {
@@ -226,7 +227,7 @@ function validateWarnings(state: OpenVaultState): OpenVaultState {
   return { ...state, warningMessages }
 }
 
-type OpenVaultChange = Changes<OpenVaultState>
+export type OpenVaultChange = Changes<OpenVaultState>
 
 export type ManualChange =
   | Change<OpenVaultState, 'depositAmount'>
@@ -286,7 +287,7 @@ export type OpenVaultStage =
   | 'openFailure'
   | 'openSuccess'
 
-export interface OpenVaultState {
+export type DefaultOpenVaultState = {
   // Basic States
   stage: OpenVaultStage
   ilk: string
@@ -307,13 +308,6 @@ export interface OpenVaultState {
   depositAmount?: BigNumber
   generateAmount?: BigNumber
   allowanceAmount?: BigNumber
-
-  // Account Balance & Price Info
-  collateralBalance: BigNumber
-  collateralPrice: BigNumber
-  ethBalance: BigNumber
-  ethPrice: BigNumber
-  daiBalance: BigNumber
 
   // Vault Display Information
   afterLiquidationPrice: BigNumber
@@ -348,6 +342,8 @@ export interface OpenVaultState {
   txError?: any
   etherscan?: string
 }
+
+export type OpenVaultState = UserTokenInfo & DefaultOpenVaultState
 
 function setAllowance(
   { sendWithGasEstimation }: TxHelpers,
@@ -608,23 +604,39 @@ function ilkDataChange$<T extends keyof IlkData>(ilkData$: Observable<IlkData>, 
   )
 }
 
-type BalanceKinds = 'ethBalance' | 'daiBalance' | 'collateralBalance'
-function balanceChange$<T extends BalanceKinds>(balance$: Observable<BigNumber>, kind: T) {
-  return balance$.pipe(
-    map((balance) => ({
-      kind,
-      [kind]: balance,
-    })),
-  )
+export const defaultOpenVaultState: DefaultOpenVaultState = {
+  ...defaultIsStates,
+  stage: 'editing',
+  token: '',
+  account: '',
+  errorMessages: [],
+  warningMessages: [],
+  depositAmount: undefined,
+  generateAmount: undefined,
+  maxDepositAmount: zero,
+  maxGenerateAmount: zero,
+  depositAmountUSD: zero,
+  generateAmountUSD: zero,
+  maxDepositAmountUSD: zero,
+  afterLiquidationPrice: zero,
+  afterCollateralizationRatio: zero,
+  ilk: '',
+  maxDebtPerUnitCollateral: zero,
+  ilkDebtAvailable: zero,
+  debtFloor: zero,
+  liquidationRatio: zero,
+  allowance: zero,
+  safeConfirmations: 0,
+  allowanceAmount: maxUint256,
 }
 
 export function createOpenVault$(
+  defaultState$: Observable<DefaultOpenVaultState>,
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
   allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
-  tokenOraclePrice$: (token: string) => Observable<BigNumber>,
-  balance$: (token: string, address: string) => Observable<BigNumber>,
+  userTokenInfo$: (token: string, account: string) => Observable<UserTokenInfo>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilks$: Observable<string[]>,
   ilkToToken$: Observable<(ilk: string) => string>,
@@ -656,31 +668,17 @@ export function createOpenVault$(
             switchMap(([context, txHelpers, ilkToToken]) => {
               const account = context.account
               const token = ilkToToken(ilk)
-
-              const userTokenInfo$ = combineLatest(
-                balance$(token, account),
-                tokenOraclePrice$(token),
-                balance$('ETH', account),
-                tokenOraclePrice$('ETH'),
-                balance$('DAI', account),
+              return combineLatest(
+                userTokenInfo$(token, account),
+                defaultState$,
+                ilkData$(ilk),
+                proxyAddress$(account),
               ).pipe(
-                switchMap(
-                  ([collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance]) =>
-                    of({
-                      collateralBalance,
-                      collateralPrice,
-                      ethBalance,
-                      ethPrice,
-                      daiBalance,
-                    }),
-                ),
-              )
-
-              return combineLatest(userTokenInfo$, ilkData$(ilk), proxyAddress$(account)).pipe(
                 first(),
                 switchMap(
                   ([
-                    { collateralBalance, collateralPrice, ethBalance, ethPrice, daiBalance },
+                    userTokenInfo,
+                    defaultState,
                     { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
                     proxyAddress,
                   ]) =>
@@ -691,26 +689,10 @@ export function createOpenVault$(
                       first(),
                       switchMap((allowance) => {
                         const initialState: OpenVaultState = {
-                          ...defaultIsStates,
-                          stage: 'editing',
+                          ...userTokenInfo,
+                          ...defaultState,
                           token,
                           account,
-                          collateralBalance,
-                          collateralPrice,
-                          ethBalance,
-                          ethPrice,
-                          daiBalance,
-                          errorMessages: [],
-                          warningMessages: [],
-                          depositAmount: undefined,
-                          generateAmount: undefined,
-                          maxDepositAmount: zero,
-                          maxGenerateAmount: zero,
-                          depositAmountUSD: zero,
-                          generateAmountUSD: zero,
-                          maxDepositAmountUSD: zero,
-                          afterLiquidationPrice: zero,
-                          afterCollateralizationRatio: zero,
                           ilk,
                           maxDebtPerUnitCollateral,
                           ilkDebtAvailable,
@@ -729,16 +711,23 @@ export function createOpenVault$(
                           change$.next(ch)
                         }
 
-                        const collateralPriceChange$ = tokenOraclePrice$(ilk).pipe(
-                          map((collateralPrice) => ({ kind: 'collateralPrice', collateralPrice })),
+                        const userTokenInfoChange$ = curry(createUserTokenInfoChange$)(
+                          userTokenInfo$,
                         )
-
                         const environmentChanges$ = merge(
-                          collateralPriceChange$,
-
-                          balanceChange$(balance$(token, account), 'collateralBalance'),
-                          balanceChange$(balance$('DAI', account), 'daiBalance'),
-                          balanceChange$(balance$('ETH', account), 'ethBalance'),
+                          userTokenInfoChange$(token, account, 'collateralBalance'),
+                          userTokenInfoChange$(token, account, 'ethBalance'),
+                          userTokenInfoChange$(token, account, 'daiBalance'),
+                          userTokenInfoChange$(token, account, 'currentCollateralPrice'),
+                          userTokenInfoChange$(token, account, 'currentEthPrice'),
+                          userTokenInfoChange$(token, account, 'nextCollateralPrice'),
+                          userTokenInfoChange$(token, account, 'nextEthPrice'),
+                          userTokenInfoChange$(token, account, 'dateLastCollateralPrice'),
+                          userTokenInfoChange$(token, account, 'dateNextCollateralPrice'),
+                          userTokenInfoChange$(token, account, 'dateLastEthPrice'),
+                          userTokenInfoChange$(token, account, 'dateNextEthPrice'),
+                          userTokenInfoChange$(token, account, 'isStaticCollateralPrice'),
+                          userTokenInfoChange$(token, account, 'isStaticEthPrice'),
 
                           ilkDataChange$(ilkData$(ilk), 'maxDebtPerUnitCollateral'),
                           ilkDataChange$(ilkData$(ilk), 'ilkDebtAvailable'),

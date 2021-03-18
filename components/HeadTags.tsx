@@ -1,4 +1,4 @@
-import { useTranslation } from 'i18n'
+import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 import React from 'react'
 import { useThemeUI } from 'theme-ui'

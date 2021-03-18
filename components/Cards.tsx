@@ -2,7 +2,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { formatCryptoBalance } from 'helpers/formatters/format'
-import { useTranslation } from 'i18n'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Badge, Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 

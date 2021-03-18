@@ -1,18 +1,23 @@
 import BigNumber from 'bignumber.js'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
-import { ManageVaultView } from 'features/manageVault/manageVaultView'
-import { useRouter } from 'next/router'
+import { ManageVaultView } from 'features/manageVault/ManageVaultView'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
-export default function Vault() {
-  const {
-    query: { vault: vaultId },
-  } = useRouter()
+export async function getServerSideProps(ctx: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(ctx.locale, ['common'])),
+      id: ctx.query.vault || null,
+    },
+  }
+}
 
+export default function Vault({ id }: { id: string }) {
   return (
     <WithConnection>
-      <ManageVaultView id={new BigNumber(vaultId as string)} />
+      <ManageVaultView id={new BigNumber(id)} />
     </WithConnection>
   )
 }
