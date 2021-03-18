@@ -76,16 +76,16 @@
     "next-price": "Next price"
   },
   "history": {
-    "open": "Opened a new Vault with id #{{cdpId}}",
-    "deposit": "Deposited {{collateralAmount}} {{token}} into Vault",
-    "withdraw": "Withdrew {{collateralAmount}} {{token}} from Vault",
-    "deposit-generate": "Deposited {{collateralAmount}} {{token}} into Vault and generated {{daiAmount}} DAI",
-    "withdraw-payback": "Withdrew {{collateralAmount}} {{token}} from Vault and payback {{daiAmount}} DAI",
-    "generate": "Generated {{daiAmount}} DAI from Vault",
-    "payback": "Payback {{daiAmount}} DAI to Vault",
-    "transferred": "Vault given to {{dest}} by {{}}",
-    "migrated": "Vault migrated",
-    "auction_started": "Auction started, {{collateral_amount}} {{token}} taken to be auctioned"
+    "open": "Opened a new Vault with id <0>#{{cdpId}}</0>",
+    "deposit": "Deposited <0>{{collateralAmount}} {{token}}</0> into Vault",
+    "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault",
+    "deposit-generate": "Deposited <0>{{collateralAmount}} {{token}}</0> into Vault and generated <0>{{daiAmount}} DAI</0>",
+    "withdraw-payback": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault and payback <0>{{daiAmount}} DAI</0>",
+    "generate": "Generated <0>{{daiAmount}}</0> DAI from Vault",
+    "payback": "Payback <0>{{daiAmount}}</0> DAI to Vault",
+    "transfer": "Vault given to <0>{{dest}}</0> by <0>{{}}</0>",
+    "migrate": "Vault migrated",
+    "auction_started": "Auction started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} DAI</0>"
   },
   "changing-vault": "Changing vault!",
   "vault-changed": "Vault changed!",

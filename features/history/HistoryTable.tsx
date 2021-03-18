@@ -6,10 +6,12 @@ import { BorrowEvent_ } from "./historyEvents";
 import { useAppContext } from "components/AppContextProvider";
 import { useObservable } from "helpers/observableHook";
 import { useMemo } from "react";
-import { formatCryptoBalance, formatDateTime } from "helpers/formatters/format";
+import { formatCryptoBalance } from "helpers/formatters/format";
 import BigNumber from "bignumber.js";
+import moment from 'moment'
 
 interface ColumnData extends BorrowEvent_ {
+    token: string
     etherscan: {
         url: string;
         apiUrl: string;
@@ -22,17 +24,16 @@ const columns: ColumnDef<ColumnData, {}>[] = [
         headerLabel: 'event.activity',
         header: ({ label }) => <Text>{label}</Text>,
         cell: (event) => {
-            const { t } = useTranslation()
             return (
                 <Trans
                     i18nKey={`history.${event.kind.toLowerCase()}`}
-                    // values={{
-                    //     collateralAmount: event.collateralAmount ? formatCryptoBalance(new BigNumber(event.collateralAmount)) : 0,
-                    //     daiAmount: event.daiAmount ? formatCryptoBalance(new BigNumber(event.daiAmount)) : 0,
-                    //     cdpId: event.cdpId,
-                    //     token: "ETH"
-                    // }}
-                    components={{ bold: <strong /> }}
+                    values={{
+                        collateralAmount: event.collateralAmount ? formatCryptoBalance(new BigNumber(event.collateralAmount).abs()) : 0,
+                        daiAmount: event.daiAmount ? formatCryptoBalance(new BigNumber(event.daiAmount).abs()) : 0,
+                        cdpId: event.cdpId,
+                        token: event.token
+                    }}
+                    components={[<Text as="strong" variant="strong" />]}
                 />
 
             )
@@ -41,7 +42,14 @@ const columns: ColumnDef<ColumnData, {}>[] = [
     {
         headerLabel: 'event.time',
         header: ({ label }) => <Text sx={{ display: 'flex', justifyContent: 'flex-end' }}>{label}</Text>,
-        cell: ({ timestamp }) => <Text sx={{ display: 'flex', justifyContent: 'flex-end' }}>{new Date(timestamp).toUTCString()}</Text>
+        cell: ({ timestamp }) => {
+            const date = moment(timestamp)
+            return (
+                <Text sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    {date.format('MMM DD, YYYY, h:mma')}
+                </Text>
+            )
+        }
     },
     {
         headerLabel: '',
@@ -64,18 +72,17 @@ const columns: ColumnDef<ColumnData, {}>[] = [
         }
     }
 ]
-export function HistoryTable({ id }: { id: string }) {
+export function HistoryTable({ id, token }: { id: string, token: string }) {
     const { vaultHistory$, context$ } = useAppContext()
     const { t } = useTranslation()
 
     const history = useObservable(vaultHistory$(id))
     const context = useObservable(context$)
-    const historyWithEtherscan = useMemo(() => history && history.map(el => ({ ...el, etherscan: context?.etherscan })), [history, context?.etherscan])
+    const historyWithEtherscan = useMemo(() => history && history.map(el => ({ ...el, etherscan: context?.etherscan, token })), [history, context?.etherscan, token])
 
     if (historyWithEtherscan === undefined) {
         return null
     }
-
 
     return (
         <Container>

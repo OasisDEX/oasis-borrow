@@ -7,7 +7,7 @@ import getConfig from 'next/config'
 
 const query = gql`
 query VaultEvents($urn: String) {
-    allVaultEvents(filter: {urn: {equalTo: $urn}}) {
+    allVaultEvents(filter: {urn: {equalTo: $urn}}, orderBy: [TIMESTAMP_DESC,LOG_INDEX_DESC]) {
       nodes {
         kind
         collateralAmount
@@ -20,6 +20,7 @@ query VaultEvents($urn: String) {
         id
         urn
         hash
+        logIndex
       }
     }
   }  
@@ -32,7 +33,6 @@ async function getVaultHistory(urn: string): Promise<BorrowEvent_[]> {
 
   return data.allVaultEvents.nodes as BorrowEvent_[]
 }
-
 
 export function createVaultHistory$(
   everyBlock$: Observable<number>,

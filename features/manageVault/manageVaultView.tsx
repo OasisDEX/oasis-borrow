@@ -467,8 +467,8 @@ function ManageVaultFormProxy({
             <Text pl={2}>{buttonText}</Text>
           </Flex>
         ) : (
-            <Text>{buttonText}</Text>
-          )}
+          <Text>{buttonText}</Text>
+        )}
       </Button>
       {stage === 'proxyInProgress' && (
         <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
@@ -636,8 +636,8 @@ function ManageVaultFormCollateralAllowance({
             <Text pl={2}>{buttonText}</Text>
           </Flex>
         ) : (
-            <Text>{buttonText}</Text>
-          )}
+          <Text>{buttonText}</Text>
+        )}
       </Button>
       {stage === 'collateralAllowanceInProgress' && (
         <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
@@ -801,8 +801,8 @@ function ManageVaultFormDaiAllowance({
             <Text pl={2}>{buttonText}</Text>
           </Flex>
         ) : (
-            <Text>{buttonText}</Text>
-          )}
+          <Text>{buttonText}</Text>
+        )}
       </Button>
       {stage === 'daiAllowanceInProgress' && (
         <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
@@ -941,8 +941,8 @@ function ManageVaultFormConfirmation({
             <Text pl={2}>{buttonText}</Text>
           </Flex>
         ) : (
-            <Text>{buttonText}</Text>
-          )}
+          <Text>{buttonText}</Text>
+        )}
       </Button>
 
       {stage === 'manageInProgress' && (
@@ -1032,7 +1032,7 @@ export function ManageVaultView({ id }: { id: BigNumber }) {
   return (
     <Grid>
       <ManageVaultContainer {...manageVault} />
-      <HistoryTable id={id.toString()} />
+      <HistoryTable id={id.toString()} token={manageVault.token} />
     </Grid>
   )
 }
