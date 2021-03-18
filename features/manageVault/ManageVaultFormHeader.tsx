@@ -1,5 +1,6 @@
 import React from 'react'
-import { Box, Button, Card, Flex, Grid, Text } from 'theme-ui'
+import { Box, Button, Flex, Grid, Text } from 'theme-ui'
+
 import { ManageVaultState } from './manageVault'
 
 function ManageVaultEditingToggle({ stage, toggle }: ManageVaultState) {

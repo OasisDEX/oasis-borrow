@@ -1,13 +1,13 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
-
 import { BigNumber } from 'bignumber.js'
 import { VaultActionInput } from 'components/VaultActionInput'
-import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Box, Button, Card, Flex, Grid, Text } from 'theme-ui'
+
 import { ManageVaultState, ManualChange } from './manageVault'
 
 const PlusIcon = () => (
