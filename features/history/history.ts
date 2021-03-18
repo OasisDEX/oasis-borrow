@@ -3,6 +3,7 @@ import { gql, GraphQLClient } from 'graphql-request'
 import { Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 import { BorrowEvent_ } from './historyEvents'
+import getConfig from 'next/config'
 
 const query = gql`
 query VaultEvents($urn: String) {
@@ -24,23 +25,23 @@ query VaultEvents($urn: String) {
   }  
 `
 
-const client = new GraphQLClient('http://localhost:3001/v1')
+const client = new GraphQLClient(getConfig().publicRuntimeConfig.apiHost)
 
 async function getVaultHistory(urn: string): Promise<BorrowEvent_[]> {
-    const data = await client.request(query, { urn })
+  const data = await client.request(query, { urn: urn.toLowerCase() })
 
-    return data.allVaultEvents.nodes as BorrowEvent_[]
+  return data.allVaultEvents.nodes as BorrowEvent_[]
 }
 
 
 export function createVaultHistory$(
-    everyBlock$: Observable<number>,
-    vault$: (id: string) => Observable<Vault>,
-    vaultId: string,
+  everyBlock$: Observable<number>,
+  vault$: (id: string) => Observable<Vault>,
+  vaultId: string,
 ): Observable<BorrowEvent_[]> {
-    return everyBlock$.pipe(
-        switchMap(() => vault$(vaultId).pipe(
-            switchMap(vault => getVaultHistory(vault.address))
-        ))
-    )
+  return everyBlock$.pipe(
+    switchMap(() => vault$(vaultId).pipe(
+      switchMap(vault => getVaultHistory(vault.address))
+    ))
+  )
 }

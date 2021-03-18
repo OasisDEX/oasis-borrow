@@ -1,41 +1,44 @@
 
 
 interface HistoryEventBase {
-    tx: string,
+    hash: string,
     timestamp: string
-    ilk: string
-    collateral: string
     id: string,
 }
 
 interface VaultOpenedEvent extends HistoryEventBase {
-    type: 'vault-opened'
+    type: 'OPEN'
     owner: string,
 }
 
 interface DepositEvent extends HistoryEventBase {
-    type: 'deposit'
+    type: 'DEPOSIT'
     collateralAmount: string
     depositor: string
 }
 
 interface WithdrawEvent extends HistoryEventBase {
-    type: 'withdraw'
-    collateralAmount: string
-}
-
-interface ReclaimEvent extends HistoryEventBase {
-    type: 'reclaim'
+    type: 'WITHDRAW'
     collateralAmount: string
 }
 
 interface GenerateEvent extends HistoryEventBase {
-    type: 'generate'
+    type: 'GENERATE'
     daiAmount: string
 }
 
 interface PaybackEvent extends HistoryEventBase {
-    type: 'payback'
+    type: 'PAYBACK'
+    daiAmount: string
+}
+
+interface WithdrawGenerateEvent extends HistoryEventBase {
+    type: 'WITHDRAW-GENERATE',
+    daiAmount: string
+}
+
+interface WithdrawGenerateEvent extends HistoryEventBase {
+    type: 'WITHDRAW-GENERATE',
     daiAmount: string
 }
 
@@ -49,7 +52,6 @@ export type BorrowEvent =
     | VaultOpenedEvent
     | DepositEvent
     | WithdrawEvent
-    | ReclaimEvent
     | GenerateEvent
     | PaybackEvent
 
@@ -73,5 +75,8 @@ export interface BorrowEvent_ {
     // collateral: string
     owner?: string
     amount?: string
+    collateralAmount: string | null,
+    daiAmount: string | null,
+    cdpId: string | null,
     depositor?: string // only in deposit event
 }

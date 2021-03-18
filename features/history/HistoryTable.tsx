@@ -6,6 +6,8 @@ import { BorrowEvent_ } from "./historyEvents";
 import { useAppContext } from "components/AppContextProvider";
 import { useObservable } from "helpers/observableHook";
 import { useMemo } from "react";
+import { formatCryptoBalance, formatDateTime } from "helpers/formatters/format";
+import BigNumber from "bignumber.js";
 
 interface ColumnData extends BorrowEvent_ {
     etherscan: {
@@ -19,12 +21,27 @@ const columns: ColumnDef<ColumnData, {}>[] = [
     {
         headerLabel: 'event.activity',
         header: ({ label }) => <Text>{label}</Text>,
-        cell: ({ kind }) => <Text>{kind}</Text>
+        cell: (event) => {
+            const { t } = useTranslation()
+            return (
+                <Trans
+                    i18nKey={`history.${event.kind.toLowerCase()}`}
+                    // values={{
+                    //     collateralAmount: event.collateralAmount ? formatCryptoBalance(new BigNumber(event.collateralAmount)) : 0,
+                    //     daiAmount: event.daiAmount ? formatCryptoBalance(new BigNumber(event.daiAmount)) : 0,
+                    //     cdpId: event.cdpId,
+                    //     token: "ETH"
+                    // }}
+                    components={{ bold: <strong /> }}
+                />
+
+            )
+        }
     },
     {
         headerLabel: 'event.time',
         header: ({ label }) => <Text sx={{ display: 'flex', justifyContent: 'flex-end' }}>{label}</Text>,
-        cell: ({ timestamp }) => <Text sx={{ display: 'flex', justifyContent: 'flex-end' }}>{timestamp}</Text>
+        cell: ({ timestamp }) => <Text sx={{ display: 'flex', justifyContent: 'flex-end' }}>{new Date(timestamp).toUTCString()}</Text>
     },
     {
         headerLabel: '',
