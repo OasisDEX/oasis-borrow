@@ -352,6 +352,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
 
   const [showDepositAndGenerateOption, setShowDepositAndGenerateOption] = useState<boolean>(false)
   const [showPaybackAndWithdrawOption, setShowPaybackAndWithdrawOption] = useState<boolean>(false)
+  const [showManageVaultFormDetails, setShowManageVaultFormDetails] = useState<boolean>(false)
 
   const {
     depositAmount,
@@ -380,6 +381,15 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
     progress!()
   }
 
+  function handleMouseEnter(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.preventDefault()
+    setShowManageVaultFormDetails(true)
+  }
+  function handleMouseLeave(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.preventDefault()
+    setShowManageVaultFormDetails(false)
+  }
+
   const errorString = errorMessages.join(',\n')
   const warningString = warningMessages.join(',\n')
 
@@ -400,7 +410,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
   const showPaybackAndWithdrawOptionText = paybackAmount || withdrawAmount
 
   return (
-    <Grid>
+    <Grid onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <Box
         sx={{
           opacity: disableDepositAndGenerate ? 0.5 : 1,
@@ -484,7 +494,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
       <Button onClick={handleProgress} disabled={hasError}>
         {t('confirm')}
       </Button>
-      <ManageVaultFormDetails {...props} />
+      {showManageVaultFormDetails && <ManageVaultFormDetails {...props} />}
     </Grid>
   )
 }
