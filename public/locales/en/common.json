@@ -75,6 +75,18 @@
     "current-price": "Current {{token}}/USD Price in {{time}}",
     "next-price": "Next price"
   },
+  "history": {
+    "open": "Opened a new Vault with id #{{cdpId}}",
+    "deposit": "Deposited {{collateralAmount}} {{token}} into Vault",
+    "withdraw": "Withdrew {{collateralAmount}} {{token}} from Vault",
+    "deposit-generate": "Deposited {{collateralAmount}} {{token}} into Vault and generated {{daiAmount}} DAI",
+    "withdraw-payback": "Withdrew {{collateralAmount}} {{token}} from Vault and payback {{daiAmount}} DAI",
+    "generate": "Generated {{daiAmount}} DAI from Vault",
+    "payback": "Payback {{daiAmount}} DAI to Vault",
+    "transferred": "Vault given to {{dest}} by {{}}",
+    "migrated": "Vault migrated",
+    "auction_started": "Auction started, {{collateral_amount}} {{token}} taken to be auctioned"
+  },
   "changing-vault": "Changing vault!",
   "vault-changed": "Vault changed!",
   "back-to-editing": "Back to editing",
