@@ -3,7 +3,7 @@ import { VaultActionInput } from 'components/VaultActionInput'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Card, Grid, Text } from 'theme-ui'
 import { ManageVaultState, ManualChange } from './manageVault'
 
@@ -243,6 +243,41 @@ function PaybackInput({
       onChange={handlePaybackChange(change!)}
       hasError={false}
     />
+  )
+}
+
+interface ManageVaultInputGroupProps {
+  childOne: React.Component
+  childTwo: React.Component
+  inverted: boolean
+  optionTextOne: string
+  optionTextTwo: string
+}
+
+function ManageVaultInputGroup({
+  childOne,
+  childTwo,
+  inverted,
+  optionTextOne,
+  optionTextTwo,
+}: ManageVaultInputGroupProps) {
+  const [showOption, setShowOption] = useState<boolean>(false)
+  function handleOptionShow(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.preventDefault()
+    setShowOption(true)
+  }
+
+  return (
+    <>
+      inverted ? {childTwo} : {childOne}
+      {!showOption ? (
+        <Text onClick={handleOptionShow}>{inverted ? optionTextTwo : optionTextOne}</Text>
+      ) : inverted ? (
+        { childOne }
+      ) : (
+        { childTwo }
+      )}
+    </>
   )
 }
 
