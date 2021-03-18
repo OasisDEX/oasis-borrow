@@ -1,82 +1,79 @@
-
-
 interface HistoryEventBase {
-    hash: string,
+    hash: string
     timestamp: string
-    id: string,
+    id: string
+    vaultCreator: null
+    collateralAmount: null
+    daiAmount: null
+    transferFrom: null
+    transferTo: null
+    cdpId: null
 }
 
-interface VaultOpenedEvent extends HistoryEventBase {
-    type: 'OPEN'
-    owner: string,
+interface VaultOpenedEvent extends Omit<HistoryEventBase, 'vaultCreator' | 'cdpId'> {
+    kind: 'OPEN'
+    vaultCreator: string
+    cdpId: string
 }
 
-interface DepositEvent extends HistoryEventBase {
-    type: 'DEPOSIT'
+interface DepositEvent extends Omit<HistoryEventBase, 'collateralAmount'> {
+    kind: 'DEPOSIT'
     collateralAmount: string
-    depositor: string
 }
 
-interface WithdrawEvent extends HistoryEventBase {
-    type: 'WITHDRAW'
+interface WithdrawEvent extends Omit<HistoryEventBase, 'collateralAmount'> {
+    kind: 'WITHDRAW'
     collateralAmount: string
 }
 
-interface GenerateEvent extends HistoryEventBase {
-    type: 'GENERATE'
+interface GenerateEvent extends Omit<HistoryEventBase, 'daiAmount'> {
+    kind: 'GENERATE'
     daiAmount: string
 }
 
-interface PaybackEvent extends HistoryEventBase {
-    type: 'PAYBACK'
+interface PaybackEvent extends Omit<HistoryEventBase, 'daiAmount'> {
+    kind: 'PAYBACK'
     daiAmount: string
 }
 
-interface WithdrawGenerateEvent extends HistoryEventBase {
-    type: 'WITHDRAW-GENERATE',
+interface DepositGenerateEvent extends Omit<HistoryEventBase, 'daiAmount' | 'collateralAmount'> {
+    kind: 'DEPOSIT-GENERATE'
     daiAmount: string
+    collateralAmount: string
 }
 
-interface WithdrawGenerateEvent extends HistoryEventBase {
-    type: 'WITHDRAW-GENERATE',
+interface WithdrawPaybackEvent extends Omit<HistoryEventBase, 'daiAmount' | 'collateralAmount'> {
+    kind: 'WITHDRAW-PAYBACK'
     daiAmount: string
+    collateralAmount: string
 }
 
-// interface AuctionStartedEvent extends HistoryEventBase {
-//     type: 'auctionStarted'
-//     auctionId: string
-//     amount: string
-// }
+interface AuctionStartedEvent extends Omit<HistoryEventBase, 'daiAmount' | 'collateralAmount'> {
+    kind: 'AUCTION_STARTED'
+    collateralAmount: string
+    daiAmount: string
+    // auctionId: string,
+}
 
+interface VaultTransferredEvent extends Omit<HistoryEventBase, 'transferFrom' | 'transferTo'> {
+    kind: 'TRANSFER'
+    transferFrom: string
+    transferTo: string
+}
+
+interface MigrateEvent extends HistoryEventBase {
+    kind: 'MIGRATE'
+}
 export type BorrowEvent =
     | VaultOpenedEvent
     | DepositEvent
     | WithdrawEvent
     | GenerateEvent
     | PaybackEvent
+    | DepositGenerateEvent
+    | WithdrawPaybackEvent
+    | AuctionStartedEvent
+    | VaultTransferredEvent
+    | MigrateEvent
 
-export type EventType = BorrowEvent['type']
-// | 'vaultOpened'
-// | 'deposit'
-// | 'withdraw'
-// | 'reclaim'
-// | 'generate'
-// | 'payback'
-// | 'auctionStarted'
-// | 'cdpMigrated'
-// | 'cdpTransferred'
-
-export interface BorrowEvent_ {
-    id: string
-    kind: EventType
-    hash: string
-    timestamp: string
-    ilk: string
-    // collateral: string
-    owner?: string
-    amount?: string
-    collateralAmount: string | null,
-    daiAmount: string | null,
-    cdpId: string | null,
-    depositor?: string // only in deposit event
-}
+export type EventType = BorrowEvent['kind']

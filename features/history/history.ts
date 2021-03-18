@@ -1,13 +1,15 @@
 import { Vault } from 'blockchain/vaults'
 import { gql, GraphQLClient } from 'graphql-request'
-import { Observable } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
-import { BorrowEvent_ } from './historyEvents'
+import flatten from 'lodash/flatten'
 import getConfig from 'next/config'
+import { Observable } from 'rxjs'
+import { map, switchMap } from 'rxjs/operators'
+
+import { BorrowEvent } from './historyEvents'
 
 const query = gql`
-query VaultEvents($urn: String) {
-    allVaultEvents(filter: {urn: {equalTo: $urn}}, orderBy: [TIMESTAMP_DESC,LOG_INDEX_DESC]) {
+  query VaultEvents($urn: String) {
+    allVaultEvents(filter: { urn: { equalTo: $urn } }, orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]) {
       nodes {
         kind
         collateralAmount
@@ -23,25 +25,58 @@ query VaultEvents($urn: String) {
         logIndex
       }
     }
-  }  
+  }
 `
 
 const client = new GraphQLClient(getConfig().publicRuntimeConfig.apiHost)
 
-async function getVaultHistory(urn: string): Promise<BorrowEvent_[]> {
+async function getVaultHistory(urn: string): Promise<BorrowEvent[]> {
   const data = await client.request(query, { urn: urn.toLowerCase() })
 
-  return data.allVaultEvents.nodes as BorrowEvent_[]
+  return data.allVaultEvents.nodes as BorrowEvent[]
+}
+
+function splitEvents(event: BorrowEvent): BorrowEvent | BorrowEvent[] {
+  if (event.kind === 'DEPOSIT-GENERATE') {
+    return [
+      {
+        ...event,
+        id: `${event.id}_a`,
+        kind: 'GENERATE',
+      },
+      {
+        ...event,
+        kind: 'DEPOSIT',
+      },
+    ]
+  }
+  if (event.kind === 'WITHDRAW-PAYBACK') {
+    return [
+      {
+        ...event,
+        kind: 'PAYBACK',
+      },
+      {
+        ...event,
+        id: `${event.id}_a`,
+        kind: 'WITHDRAW',
+      },
+    ]
+  }
+  return event
 }
 
 export function createVaultHistory$(
   everyBlock$: Observable<number>,
   vault$: (id: string) => Observable<Vault>,
   vaultId: string,
-): Observable<BorrowEvent_[]> {
+): Observable<BorrowEvent[]> {
   return everyBlock$.pipe(
-    switchMap(() => vault$(vaultId).pipe(
-      switchMap(vault => getVaultHistory(vault.address))
-    ))
+    switchMap(() =>
+      vault$(vaultId).pipe(
+        switchMap((vault) => getVaultHistory(vault.address)),
+        map((events) => flatten(events.map(splitEvents))),
+      ),
+    ),
   )
 }

@@ -25,10 +25,10 @@ export function createIlkDataListWithBalances$(
       ilkData.map((ilk) =>
         ilk.token in balances
           ? {
-            ...ilk,
-            balance: balances[ilk.token].balance,
-            balancePriceInUsd: balances[ilk.token].balance.times(balances[ilk.token].price),
-          }
+              ...ilk,
+              balance: balances[ilk.token].balance,
+              balancePriceInUsd: balances[ilk.token].balance.times(balances[ilk.token].price),
+            }
           : ilk,
       ),
     ),

@@ -2,7 +2,7 @@ import { useTranslation, Trans } from "next-i18next";
 import { Container } from "next/app";
 import { Heading, Text, Box, Link } from "theme-ui";
 import { Table, ColumnDef } from 'components/Table'
-import { BorrowEvent_ } from "./historyEvents";
+import { BorrowEvent } from "./historyEvents";
 import { useAppContext } from "components/AppContextProvider";
 import { useObservable } from "helpers/observableHook";
 import { useMemo } from "react";
@@ -10,7 +10,7 @@ import { formatCryptoBalance } from "helpers/formatters/format";
 import BigNumber from "bignumber.js";
 import moment from 'moment'
 
-interface ColumnData extends BorrowEvent_ {
+type ColumnData = BorrowEvent & {
     token: string
     etherscan: {
         url: string;
@@ -24,10 +24,13 @@ const columns: ColumnDef<ColumnData, {}>[] = [
         headerLabel: 'event.activity',
         header: ({ label }) => <Text>{label}</Text>,
         cell: (event) => {
+
             return (
                 <Trans
                     i18nKey={`history.${event.kind.toLowerCase()}`}
                     values={{
+                        transferTo: event.transferTo,
+                        transferFrom: event.transferFrom,
                         collateralAmount: event.collateralAmount ? formatCryptoBalance(new BigNumber(event.collateralAmount).abs()) : 0,
                         daiAmount: event.daiAmount ? formatCryptoBalance(new BigNumber(event.daiAmount).abs()) : 0,
                         cdpId: event.cdpId,
