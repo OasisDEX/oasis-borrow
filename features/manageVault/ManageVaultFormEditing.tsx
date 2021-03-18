@@ -419,14 +419,14 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
       </Box>
 
       {hasError && (
-        <>
+        <Card variant="danger">
           <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
-        </>
+        </Card>
       )}
       {hasWarnings && (
-        <>
+        <Card variant="warning">
           <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>
-        </>
+        </Card>
       )}
       <Button onClick={handleProgress} disabled={hasError}>
         {t('confirm')}

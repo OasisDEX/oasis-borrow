@@ -698,6 +698,16 @@ const oasisBaseTheme = {
       variant: 'cards.secondary',
       borderRadius: 'large',
     },
+    danger: {
+      variant: 'cards.primary',
+      borderColor: 'onError',
+      bg: 'error',
+    },
+    warning: {
+      variant: 'cards.primary',
+      borderColor: 'onWarning',
+      bg: 'warning',
+    },
   },
   badges: {
     dsr: {
