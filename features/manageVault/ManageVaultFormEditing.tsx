@@ -4,7 +4,7 @@ import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
-import { Box, Button, Card, Grid, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Text } from 'theme-ui'
 import {
   ManageVaultEditingStage,
   ManageVaultStage,
@@ -329,6 +329,15 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
         {showDepositAndGenerateOption &&
           (inverted ? <DepositInput {...props} /> : <GenerateInput {...props} />)}
       </Box>
+
+      <Flex sx={{ alignItems: 'center', justifyContent: 'space-evenly' }}>
+        <Box sx={{ borderBottom: 'light', height: '0px', width: '100%' }} />
+        <Text mx={3} sx={{ minWidth: 'fit-content' }}>
+          {t('manage-vault.or')}
+        </Text>
+        <Box sx={{ borderBottom: 'light', height: '0px', width: '100%' }} />
+      </Flex>
+
       <Box
         sx={{
           opacity: disablePaybackAndWithdraw ? 0.5 : 1,

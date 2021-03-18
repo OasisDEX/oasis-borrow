@@ -199,6 +199,7 @@
   "lp-tokens": "LP tokens",
   "manage-vault": {
     "action-option": "{{action}} {{token}} with this transaction",
+    "or": "OR",
     "title": "Manage Vault"
   },
   "max": "Max",
