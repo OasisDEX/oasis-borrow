@@ -1,3 +1,6 @@
+// @ts-ignore
+import { Icon } from '@makerdao/dai-ui-icons'
+
 import { BigNumber } from 'bignumber.js'
 import { VaultActionInput } from 'components/VaultActionInput'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
@@ -5,12 +8,24 @@ import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Box, Button, Card, Flex, Grid, Text } from 'theme-ui'
-import {
-  ManageVaultEditingStage,
-  ManageVaultStage,
-  ManageVaultState,
-  ManualChange,
-} from './manageVault'
+import { ManageVaultState, ManualChange } from './manageVault'
+
+const PlusIcon = () => (
+  <Icon
+    name="plus"
+    color="onSuccess"
+    size={20}
+    sx={{ display: 'inline', verticalAlign: 'bottom', marginRight: 2 }}
+  />
+)
+const MinusIcon = () => (
+  <Icon
+    name="support_minus"
+    color="onSuccess"
+    size={20}
+    sx={{ display: 'inline', verticalAlign: 'bottom', marginRight: 2 }}
+  />
+)
 
 function DepositInput({
   currentCollateralPrice,
@@ -251,14 +266,6 @@ function PaybackInput({
   )
 }
 
-interface ManageVaultInputGroupProps {
-  childOne: JSX.Element
-  childTwo: JSX.Element
-  inverted: boolean
-  optionText: string
-  stage: ManageVaultEditingStage
-}
-
 export function ManageVaultFormEditing(props: ManageVaultState) {
   const { t } = useTranslation()
 
@@ -317,15 +324,23 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
         }}
       >
         {inverted ? <GenerateInput {...props} /> : <DepositInput {...props} />}
-        {!disableDepositAndGenerate && (
-          <Text sx={{ cursor: 'pointer' }} onClick={toggleDepositAndGenerateOption}>
-            {showDepositAndGenerateOption ? '-' : '+'}{' '}
-            {t('manage-vault.action-option', {
-              action: inverted ? t('vault-actions.deposit') : t('vault-actions.generate'),
-              token: inverted ? token : 'DAI',
-            })}
-          </Text>
-        )}
+        <Text
+          mt={3}
+          sx={{
+            cursor: 'pointer',
+            fontSize: 3,
+            fontWeight: 'semiBold',
+            color: 'onSuccess',
+            userSelect: 'none',
+          }}
+          onClick={toggleDepositAndGenerateOption}
+        >
+          {showDepositAndGenerateOption ? <MinusIcon /> : <PlusIcon />}
+          {t('manage-vault.action-option', {
+            action: inverted ? t('vault-actions.deposit') : t('vault-actions.generate'),
+            token: inverted ? token : 'DAI',
+          })}
+        </Text>
         {showDepositAndGenerateOption &&
           (inverted ? <DepositInput {...props} /> : <GenerateInput {...props} />)}
       </Box>
@@ -345,15 +360,23 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
         }}
       >
         {inverted ? <PaybackInput {...props} /> : <WithdrawInput {...props} />}
-        {!disablePaybackAndWithdraw && (
-          <Text sx={{ cursor: 'pointer' }} onClick={togglePaybackAndWithdrawOption}>
-            {showPaybackAndWithdrawOption ? '-' : '+'}{' '}
-            {t('manage-vault.action-option', {
-              action: inverted ? t('vault-actions.withdraw') : t('vault-actions.payback'),
-              token: inverted ? token : 'DAI',
-            })}
-          </Text>
-        )}
+        <Text
+          mt={3}
+          sx={{
+            cursor: 'pointer',
+            fontSize: 3,
+            fontWeight: 'semiBold',
+            color: 'onSuccess',
+            userSelect: 'none',
+          }}
+          onClick={togglePaybackAndWithdrawOption}
+        >
+          {showPaybackAndWithdrawOption ? <MinusIcon /> : <PlusIcon />}
+          {t('manage-vault.action-option', {
+            action: inverted ? t('vault-actions.withdraw') : t('vault-actions.payback'),
+            token: inverted ? token : 'DAI',
+          })}
+        </Text>
         {showPaybackAndWithdrawOption &&
           (inverted ? <WithdrawInput {...props} /> : <PaybackInput {...props} />)}
       </Box>
