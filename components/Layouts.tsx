@@ -26,8 +26,7 @@ export function BasicLayout({ header, footer, children, sx, variant }: BasicLayo
   return (
     <Flex
       sx={{
-        background: (theme) => theme.gradients.app,
-        backgroundAttachment: 'fixed',
+        bg: "white",
         flexDirection: 'column',
         minHeight: '100%',
         ...sx,

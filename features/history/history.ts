@@ -42,10 +42,12 @@ function splitEvents(event: BorrowEvent): BorrowEvent | BorrowEvent[] {
       {
         ...event,
         id: `${event.id}_a`,
+        collateralAmount: null,
         kind: 'GENERATE',
       },
       {
         ...event,
+        daiAmount: null,
         kind: 'DEPOSIT',
       },
     ]
@@ -54,10 +56,12 @@ function splitEvents(event: BorrowEvent): BorrowEvent | BorrowEvent[] {
     return [
       {
         ...event,
+        collateralAmount: null,
         kind: 'PAYBACK',
       },
       {
         ...event,
+        daiAmount: null,
         id: `${event.id}_a`,
         kind: 'WITHDRAW',
       },

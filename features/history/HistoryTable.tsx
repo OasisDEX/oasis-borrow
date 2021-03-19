@@ -6,7 +6,7 @@ import { BorrowEvent } from "./historyEvents";
 import { useAppContext } from "components/AppContextProvider";
 import { useObservable } from "helpers/observableHook";
 import { useMemo } from "react";
-import { formatCryptoBalance } from "helpers/formatters/format";
+import { formatAddress, formatCryptoBalance } from "helpers/formatters/format";
 import BigNumber from "bignumber.js";
 import moment from 'moment'
 
@@ -29,8 +29,8 @@ const columns: ColumnDef<ColumnData, {}>[] = [
                 <Trans
                     i18nKey={`history.${event.kind.toLowerCase()}`}
                     values={{
-                        transferTo: event.transferTo,
-                        transferFrom: event.transferFrom,
+                        transferTo: event.transferTo && formatAddress(event.transferTo),
+                        transferFrom: event.transferFrom && formatAddress(event.transferFrom),
                         collateralAmount: event.collateralAmount ? formatCryptoBalance(new BigNumber(event.collateralAmount).abs()) : 0,
                         daiAmount: event.daiAmount ? formatCryptoBalance(new BigNumber(event.daiAmount).abs()) : 0,
                         cdpId: event.cdpId,
@@ -48,7 +48,7 @@ const columns: ColumnDef<ColumnData, {}>[] = [
         cell: ({ timestamp }) => {
             const date = moment(timestamp)
             return (
-                <Text sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Text sx={{ display: 'flex', textAlign: 'right', whiteSpace: 'nowrap' }}>
                     {date.format('MMM DD, YYYY, h:mma')}
                 </Text>
             )
@@ -88,7 +88,7 @@ export function HistoryTable({ id, token }: { id: string, token: string }) {
     }
 
     return (
-        <Container>
+        <Box sx={{ gridColumn: '1/2' }}>
             <Heading>{t('vault-history')}</Heading>
             <Table
                 data={historyWithEtherscan}
@@ -96,6 +96,6 @@ export function HistoryTable({ id, token }: { id: string, token: string }) {
                 state={{}}
                 columns={columns}
             />
-        </Container>
+        </Box>
     )
 }
