@@ -15,7 +15,7 @@ const PlusIcon = () => (
     name="plus"
     color="onSuccess"
     size={20}
-    sx={{ display: 'inline', verticalAlign: 'bottom', marginRight: 2 }}
+    sx={{ display: 'inline', verticalAlign: 'bottom', marginRight: 1 }}
   />
 )
 const MinusIcon = () => (
@@ -23,7 +23,7 @@ const MinusIcon = () => (
     name="minus"
     color="onSuccess"
     size={20}
-    sx={{ display: 'inline', verticalAlign: 'bottom', marginRight: 2 }}
+    sx={{ display: 'inline', verticalAlign: 'bottom', marginRight: 1 }}
   />
 )
 
