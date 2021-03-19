@@ -37,11 +37,11 @@ function ManageVaultDetails({
   const { t } = useTranslation()
   const collRatio = collateralizationRatio.eq(zero)
     ? '--'
-    : formatPercent(collateralizationRatio.times(100), { precision: 4 })
+    : formatPercent(collateralizationRatio.times(100), { precision: 2 })
 
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
     ? '--'
-    : formatPercent(afterCollateralizationRatio.times(100), { precision: 4 })
+    : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
 
   const liqPrice = formatAmount(liquidationPrice, 'USD')
   const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
@@ -50,47 +50,57 @@ function ManageVaultDetails({
   const lockedUSD = formatAmount(lockedCollateralPrice, token)
 
   return (
-    <Grid columns="1fr 1fr" gap={6} sx={{ justifyContent: 'space-between' }}>
-      <Grid>
-        <Text>{t('system.liquidation-price')}</Text>
-        <Heading>$ {liqPrice}</Heading>
+    <Grid sx={{ alignSelf: 'flex-start' }} columns="1fr 1fr" gap={5}>
+      <Heading
+        as="h1"
+        variant="paragraph2"
+        sx={{ gridColumn: '1/3', fontWeight: 'semiBold', borderBottom: 'light', pb: 3 }}
+      >
+        Vault id
+      </Heading>
+      <Box>
+        <Heading variant="subheader" as="h2">{t('system.liquidation-price')}</Heading>
+        <Text variant="display">${liqPrice}</Text>
         <Text>
           {t('after')}: ${afterLiqPrice}
         </Text>
-      </Grid>
-      <Grid sx={{ textAlign: 'right' }}>
-        <Text>{t('system.collateralization-ratio')}</Text>
-        <Heading>{collRatio}</Heading>
+      </Box>
+      <Box sx={{ textAlign: 'right' }}>
+        <Heading variant="subheader" as="h2">{t('system.collateralization-ratio')}</Heading>
+        <Text variant="display">{collRatio}</Text>
         <Text>
           {t('after')}: {afterCollRatio}
         </Text>
-      </Grid>
+      </Box>
       {isStaticCollateralPrice ? (
-        <Grid>
-          <Text>{`${token}/USD price`}</Text>
-          <Heading>${formatAmount(currentCollateralPrice, 'USD')}</Heading>
-        </Grid>
+        <Box>
+          <Heading>{`${token}/USD price`}</Heading>
+          <Text>${formatAmount(currentCollateralPrice, 'USD')}</Text>
+        </Box>
       ) : (
-        <Grid>
-          <Text>Current ETH/USD Price in 9 mins</Text>
-          <Grid>
-            <Text>{`Current ${token}/USD price`}</Text>
-            <Heading>${formatAmount(currentCollateralPrice, 'USD')}</Heading>
-          </Grid>
-          <Text>Next price: {formatAmount(nextCollateralPrice || zero, 'USD')} </Text>
-          <Text>
+        <Box>
+
+          <Box>
+            <Heading variant="subheader" as="h2">{`Current ${token}/USD price`}</Heading>
+            <Text variant="header2">${formatAmount(currentCollateralPrice, 'USD')}</Text>
+          </Box>
+          <Flex>
+            <Box>Next Price <br /> in 9 min</Box>
+            <Box>{formatAmount(nextCollateralPrice || zero, 'USD')}</Box>
+          </Flex>
+          {/* <Text>
             {dateNextCollateralPrice?.toLocaleDateString()} ::{' '}
             {dateNextCollateralPrice?.toLocaleTimeString()}
-          </Text>
-        </Grid>
+          </Text> */}
+        </Box>
       )}
-      <Grid sx={{ textAlign: 'right' }}>
-        <Text>{t('system.collateral-locked')}</Text>
-        <Heading>
+      <Box sx={{ textAlign: 'right' }}>
+        <Heading as="h2" variant="subheader">{t('system.collateral-locked')}</Heading>
+        <Text>
           {locked} {token}
-        </Heading>
+        </Text>
         <Text>$ {lockedUSD}</Text>
-      </Grid>
+      </Box>
     </Grid>
   )
 }
@@ -118,12 +128,12 @@ function ManageVaultFormTitle({
           {isEditingStage
             ? 'Manage your Vault'
             : isProxyStage
-            ? 'Create Proxy'
-            : isCollateralAllowanceStage
-            ? `Set ${token} Allowance`
-            : isDaiAllowanceStage
-            ? `Set DAI Allowance`
-            : 'Action Vault'}
+              ? 'Create Proxy'
+              : isCollateralAllowanceStage
+                ? `Set ${token} Allowance`
+                : isDaiAllowanceStage
+                  ? `Set DAI Allowance`
+                  : 'Action Vault'}
         </Text>
         {canReset ? (
           <Button onClick={handleReset} disabled={!canReset} sx={{ fontSize: 1, p: 0 }}>
@@ -474,10 +484,10 @@ function ManageVaultFormProxy({
     stage === 'proxySuccess'
       ? t('continue')
       : stage === 'proxyFailure'
-      ? t('retry-create-proxy')
-      : stage === 'proxyWaitingForConfirmation'
-      ? t('create-proxy-btn')
-      : t('creating-proxy')
+        ? t('retry-create-proxy')
+        : stage === 'proxyWaitingForConfirmation'
+          ? t('create-proxy-btn')
+          : t('creating-proxy')
 
   return (
     <Grid>
@@ -601,10 +611,10 @@ function ManageVaultFormCollateralAllowance({
     stage === 'collateralAllowanceSuccess'
       ? t('continue')
       : stage === 'collateralAllowanceFailure'
-      ? t('retry-allowance-approval')
-      : stage === 'collateralAllowanceWaitingForConfirmation'
-      ? t('approve-allowance')
-      : t('approving-allowance')
+        ? t('retry-allowance-approval')
+        : stage === 'collateralAllowanceWaitingForConfirmation'
+          ? t('approve-allowance')
+          : t('approving-allowance')
 
   return (
     <Grid>
@@ -766,10 +776,10 @@ function ManageVaultFormDaiAllowance({
     stage === 'daiAllowanceSuccess'
       ? t('view-on-etherscan')
       : stage === 'daiAllowanceFailure'
-      ? t('retry-allowance-approval')
-      : stage === 'daiAllowanceWaitingForConfirmation'
-      ? t('approve-allowance')
-      : t('approving-allowance')
+        ? t('retry-allowance-approval')
+        : stage === 'daiAllowanceWaitingForConfirmation'
+          ? t('approve-allowance')
+          : t('approving-allowance')
 
   return (
     <Grid>
@@ -913,10 +923,10 @@ function ManageVaultFormConfirmation({
     stage === 'manageWaitingForConfirmation'
       ? t('change-your-vault')
       : stage === 'manageFailure'
-      ? t('retry')
-      : stage === 'manageSuccess'
-      ? t('back-to-editing')
-      : t('change-your-vault')
+        ? t('retry')
+        : stage === 'manageSuccess'
+          ? t('back-to-editing')
+          : t('change-your-vault')
 
   return (
     <Grid>
