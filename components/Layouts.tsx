@@ -26,7 +26,7 @@ export function BasicLayout({ header, footer, children, sx, variant }: BasicLayo
   return (
     <Flex
       sx={{
-        bg: "white",
+        bg: 'white',
         flexDirection: 'column',
         minHeight: '100%',
         ...sx,

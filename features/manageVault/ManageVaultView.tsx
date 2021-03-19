@@ -114,12 +114,12 @@ function ManageVaultFormTitle({
           {isEditingStage
             ? 'Manage your Vault'
             : isProxyStage
-              ? 'Create Proxy'
-              : isCollateralAllowanceStage
-                ? `Set ${token} Allowance`
-                : isDaiAllowanceStage
-                  ? `Set DAI Allowance`
-                  : 'Action Vault'}
+            ? 'Create Proxy'
+            : isCollateralAllowanceStage
+            ? `Set ${token} Allowance`
+            : isDaiAllowanceStage
+            ? `Set DAI Allowance`
+            : 'Action Vault'}
         </Text>
         {canReset ? (
           <Button onClick={handleReset} disabled={!canReset} sx={{ fontSize: 1, p: 0 }}>
@@ -470,10 +470,10 @@ function ManageVaultFormProxy({
     stage === 'proxySuccess'
       ? t('continue')
       : stage === 'proxyFailure'
-        ? t('retry-create-proxy')
-        : stage === 'proxyWaitingForConfirmation'
-          ? t('create-proxy-btn')
-          : t('creating-proxy')
+      ? t('retry-create-proxy')
+      : stage === 'proxyWaitingForConfirmation'
+      ? t('create-proxy-btn')
+      : t('creating-proxy')
 
   return (
     <Grid>
@@ -597,10 +597,10 @@ function ManageVaultFormCollateralAllowance({
     stage === 'collateralAllowanceSuccess'
       ? t('continue')
       : stage === 'collateralAllowanceFailure'
-        ? t('retry-allowance-approval')
-        : stage === 'collateralAllowanceWaitingForConfirmation'
-          ? t('approve-allowance')
-          : t('approving-allowance')
+      ? t('retry-allowance-approval')
+      : stage === 'collateralAllowanceWaitingForConfirmation'
+      ? t('approve-allowance')
+      : t('approving-allowance')
 
   return (
     <Grid>
@@ -762,10 +762,10 @@ function ManageVaultFormDaiAllowance({
     stage === 'daiAllowanceSuccess'
       ? t('view-on-etherscan')
       : stage === 'daiAllowanceFailure'
-        ? t('retry-allowance-approval')
-        : stage === 'daiAllowanceWaitingForConfirmation'
-          ? t('approve-allowance')
-          : t('approving-allowance')
+      ? t('retry-allowance-approval')
+      : stage === 'daiAllowanceWaitingForConfirmation'
+      ? t('approve-allowance')
+      : t('approving-allowance')
 
   return (
     <Grid>
@@ -909,10 +909,10 @@ function ManageVaultFormConfirmation({
     stage === 'manageWaitingForConfirmation'
       ? t('change-your-vault')
       : stage === 'manageFailure'
-        ? t('retry')
-        : stage === 'manageSuccess'
-          ? t('back-to-editing')
-          : t('change-your-vault')
+      ? t('retry')
+      : stage === 'manageSuccess'
+      ? t('back-to-editing')
+      : t('change-your-vault')
 
   return (
     <Grid>
