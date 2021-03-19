@@ -74,7 +74,8 @@
   "vault": {
     "header": "{{ilk}} Vault #{{id}}",
     "current-price": "Current {{token}}/USD Price in {{time}}",
-    "next-price": "Next price",
+    "next-price": "Next price in {{count}} minute",
+    "next-price_plural": "Next price in {{count}} minutes",
     "vault-details": "Vault Details"
   },
   "changing-vault": "Changing vault!",

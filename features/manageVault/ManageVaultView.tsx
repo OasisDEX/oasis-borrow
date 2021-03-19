@@ -17,8 +17,10 @@ import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
+import moment from 'moment'
 
 import { ManageVaultState, ManualChange } from './manageVault'
+
 
 function ManageVaultDetails({
   afterCollateralizationRatio,
@@ -33,6 +35,8 @@ function ManageVaultDetails({
   nextCollateralPrice,
   isStaticCollateralPrice,
   dateNextCollateralPrice,
+  ilk,
+  id,
 }: ManageVaultState) {
   const { t } = useTranslation()
   const collRatio = collateralizationRatio.eq(zero)
@@ -49,14 +53,32 @@ function ManageVaultDetails({
   const locked = formatAmount(lockedCollateral, token)
   const lockedUSD = formatAmount(lockedCollateralPrice, token)
 
+  const tokenInfo = getToken(token)
+
+  const newPriceIn = moment(dateNextCollateralPrice).diff(Date.now(), 'minutes')
+  const nextPriceDiff = nextCollateralPrice ? nextCollateralPrice.minus(currentCollateralPrice).div(nextCollateralPrice).times(100) : zero
+
+  const priceChangeColor = nextPriceDiff.isZero()
+    ? 'text.muted'
+    : nextPriceDiff.gt(zero)
+      ? 'onSuccess'
+      : 'onError'
+
   return (
-    <Grid sx={{ alignSelf: 'flex-start' }} columns="1fr 1fr" gap={5}>
+    <Grid sx={{ alignSelf: 'flex-start' }} columns="1fr 1fr">
       <Heading
         as="h1"
         variant="paragraph2"
         sx={{ gridColumn: '1/3', fontWeight: 'semiBold', borderBottom: 'light', pb: 3 }}
       >
-        Vault id
+        <Flex>
+          <Icon
+            name={tokenInfo.iconCircle}
+            size="26px"
+            sx={{ verticalAlign: 'sub', mr: 2 }}
+          />
+          <Text>{t('vault.header', { ilk, id })}</Text>
+        </Flex>
       </Heading>
       <Box>
         <Heading variant="subheader" as="h2">{t('system.liquidation-price')}</Heading>
@@ -74,29 +96,44 @@ function ManageVaultDetails({
       </Box>
       {isStaticCollateralPrice ? (
         <Box>
-          <Heading>{`${token}/USD price`}</Heading>
-          <Text>${formatAmount(currentCollateralPrice, 'USD')}</Text>
+          <Heading variant="subheader" as="h2">{`${token}/USD price`}</Heading>
+          <Text variant="header2">${formatAmount(currentCollateralPrice, 'USD')}</Text>
         </Box>
       ) : (
         <Box>
-
           <Box>
             <Heading variant="subheader" as="h2">{`Current ${token}/USD price`}</Heading>
-            <Text variant="header2">${formatAmount(currentCollateralPrice, 'USD')}</Text>
+            <Text variant="header2" sx={{ py: 3 }}>${formatAmount(currentCollateralPrice, 'USD')}</Text>
           </Box>
-          <Flex>
-            <Box>Next Price <br /> in 9 min</Box>
-            <Box>{formatAmount(nextCollateralPrice || zero, 'USD')}</Box>
-          </Flex>
-          {/* <Text>
-            {dateNextCollateralPrice?.toLocaleDateString()} ::{' '}
-            {dateNextCollateralPrice?.toLocaleTimeString()}
-          </Text> */}
+
+          {
+            nextCollateralPrice &&
+            <Flex sx={{ alignItems: 'center' }}>
+              <Heading variant="subheader" as="h3">
+                <Box sx={{ mr: 2 }}>
+                  <Text>{t('vault.next-price', { count: newPriceIn })}</Text>
+                </Box>
+              </Heading>
+              <Flex variant="paragraph2" sx={{ fontWeight: 'semiBold', color: priceChangeColor }}>
+                <Text >
+                  ${formatAmount(nextCollateralPrice || zero, 'USD')}
+                </Text>
+                <Text sx={{ ml: 2 }}>
+                  ({formatPercent(nextPriceDiff, { precision: 2 })})
+                </Text>
+                {
+                  nextPriceDiff.isZero()
+                    ? '-'
+                    : <Icon sx={{ ml: 2 }} name={nextPriceDiff.gt(zero) ? 'increase' : 'decrease'} />
+                }
+              </Flex>
+            </Flex>
+          }
         </Box>
       )}
       <Box sx={{ textAlign: 'right' }}>
-        <Heading as="h2" variant="subheader">{t('system.collateral-locked')}</Heading>
-        <Text>
+        <Heading variant="subheader" as="h2">{t('system.collateral-locked')}</Heading>
+        <Text variant="header2" sx={{ py: 3 }}>
           {locked} {token}
         </Text>
         <Text>$ {lockedUSD}</Text>
