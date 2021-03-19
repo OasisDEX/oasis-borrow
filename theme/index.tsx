@@ -512,8 +512,11 @@ const oasisBaseTheme = {
 
     text: {
       muted: '#708390',
+      off: '#686986',
       contrast: '#FFF',
     },
+
+
 
     link: '#575CFE',
     textAlt: 'rgba(37, 39, 61, 0.67)',

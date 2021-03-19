@@ -5,7 +5,7 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultActionInput } from 'components/VaultActionInput'
 import { BigNumberInput } from 'helpers/BigNumberInput'
-import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -113,12 +113,12 @@ function ManageVaultFormTitle({
           {isEditingStage
             ? 'Manage your Vault'
             : isProxyStage
-            ? 'Create Proxy'
-            : isCollateralAllowanceStage
-            ? `Set ${token} Allowance`
-            : isDaiAllowanceStage
-            ? `Set DAI Allowance`
-            : 'Action Vault'}
+              ? 'Create Proxy'
+              : isCollateralAllowanceStage
+                ? `Set ${token} Allowance`
+                : isDaiAllowanceStage
+                  ? `Set DAI Allowance`
+                  : 'Action Vault'}
         </Text>
         {canReset ? (
           <Button onClick={handleReset} disabled={!canReset} sx={{ fontSize: 1, p: 0 }}>
@@ -469,10 +469,10 @@ function ManageVaultFormProxy({
     stage === 'proxySuccess'
       ? t('continue')
       : stage === 'proxyFailure'
-      ? t('retry-create-proxy')
-      : stage === 'proxyWaitingForConfirmation'
-      ? t('create-proxy-btn')
-      : t('creating-proxy')
+        ? t('retry-create-proxy')
+        : stage === 'proxyWaitingForConfirmation'
+          ? t('create-proxy-btn')
+          : t('creating-proxy')
 
   return (
     <Grid>
@@ -596,10 +596,10 @@ function ManageVaultFormCollateralAllowance({
     stage === 'collateralAllowanceSuccess'
       ? t('continue')
       : stage === 'collateralAllowanceFailure'
-      ? t('retry-allowance-approval')
-      : stage === 'collateralAllowanceWaitingForConfirmation'
-      ? t('approve-allowance')
-      : t('approving-allowance')
+        ? t('retry-allowance-approval')
+        : stage === 'collateralAllowanceWaitingForConfirmation'
+          ? t('approve-allowance')
+          : t('approving-allowance')
 
   return (
     <Grid>
@@ -761,10 +761,10 @@ function ManageVaultFormDaiAllowance({
     stage === 'daiAllowanceSuccess'
       ? t('view-on-etherscan')
       : stage === 'daiAllowanceFailure'
-      ? t('retry-allowance-approval')
-      : stage === 'daiAllowanceWaitingForConfirmation'
-      ? t('approve-allowance')
-      : t('approving-allowance')
+        ? t('retry-allowance-approval')
+        : stage === 'daiAllowanceWaitingForConfirmation'
+          ? t('approve-allowance')
+          : t('approving-allowance')
 
   return (
     <Grid>
@@ -908,10 +908,10 @@ function ManageVaultFormConfirmation({
     stage === 'manageWaitingForConfirmation'
       ? t('change-your-vault')
       : stage === 'manageFailure'
-      ? t('retry')
-      : stage === 'manageSuccess'
-      ? t('back-to-editing')
-      : t('change-your-vault')
+        ? t('retry')
+        : stage === 'manageSuccess'
+          ? t('back-to-editing')
+          : t('change-your-vault')
 
   return (
     <Grid>
@@ -1030,11 +1030,57 @@ function ManageVaultForm(props: ManageVaultState) {
   )
 }
 
+function VaultDetails(props: ManageVaultState) {
+  const { t } = useTranslation()
+  return (
+    <Box sx={{ gridColumn: "1/2" }}>
+      <Heading variant="header3" mb="4">{t('vault.vault-details')}</Heading>
+      <Grid columns="1fr 1fr 1fr" sx={{ border: 'light', borderRadius: 'medium', p: 4 }}>
+        <Box>
+          <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>{t('system.vault-dai-debt')}</Box>
+          <Box  >
+            <Text sx={{ display: 'inline' }} variant="header3">{formatCryptoBalance(props.debt)}</Text>
+            <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">DAI</Text>
+          </Box>
+        </Box>
+        <Box>
+          <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>{t('system.available-to-withdraw')}</Box>
+          <Box variant="text.header3" >
+            <Text sx={{ display: 'inline' }} variant="header3">{formatFiatBalance(props.freeCollateral)}</Text>
+            <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">USD</Text>
+          </Box>
+        </Box>
+        <Box>
+          <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>{t('system.available-to-generate')}</Box>
+          <Box variant="text.header3" >
+            <Text sx={{ display: 'inline' }} variant="header3">{formatCryptoBalance(props.maxGenerateAmount)}</Text>
+            <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">USD</Text>
+          </Box>
+        </Box>
+        <Box sx={{ gridColumn: "1/4", borderBottom: 'light', height: '1px', my: 3 }} />
+        <Box>
+          <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>{t('system.liquidation-ratio')}</Box>
+          <Text sx={{ display: 'inline' }} variant="header3">{formatPercent(props.liquidationRatio.times(100))}</Text>
+        </Box>
+        <Box>
+          <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>{t('system.stability-fee')}</Box>
+          <Box variant="text.header3">{formatPercent(props.stabilityFee.times(100))}</Box>
+        </Box>
+        <Box>
+          <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>{t('system.liquidation-penalty')}</Box>
+          <Box variant="text.header3" >{formatPercent(props.liquidationPenalty.times(100))}</Box>
+        </Box>
+      </Grid>
+    </Box>
+  )
+}
+
 export function ManageVaultContainer(props: ManageVaultState) {
   return (
     <Grid columns="2fr 1fr" gap={4}>
       <ManageVaultDetails {...props} />
       <ManageVaultForm {...props} />
+      <VaultDetails {...props} />
     </Grid>
   )
 }

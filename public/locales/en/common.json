@@ -39,6 +39,7 @@
     "dai-available": "DAI Available",
     "liquidation-price": "Liquidation Price",
     "liquidation-penalty": "Liquidation Penalty",
+    "liquidation-ratio": "Liquidation Ratio",
     "coll-ratio": "Coll Rato",
     "collateralization-ratio": "Collateralization Ratio",
     "coll-locked": "Coll. locked",
@@ -48,9 +49,11 @@
     "in-my-wallet": "In my wallet",
     "in-your-wallet": "In Your wallet",
     "deposited": "Deposited",
-    "available-to-withdraw": "Avail. to withdraw",
+    "available-to-withdraw": "Available to Withdraw",
+    "available-to-generate": "Available to Generate",
     "collateral-ratio": "Collateral Ratio",
-    "vault-id": "Vault ID"
+    "vault-id": "Vault ID",
+    "vault-dai-debt": "Vault DAI Debt"
   },
   "stablecoins": "Stablecoins",
   "lp-tokens": "LP tokens",
@@ -71,7 +74,8 @@
   "vault": {
     "header": "{{ilk}} Vault #{{id}}",
     "current-price": "Current {{token}}/USD Price in {{time}}",
-    "next-price": "Next price"
+    "next-price": "Next price",
+    "vault-details": "Vault Details"
   },
   "changing-vault": "Changing vault!",
   "vault-changed": "Vault changed!",

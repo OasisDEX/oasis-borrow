@@ -123,15 +123,15 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
   const afterLockedCollateral = depositAmount
     ? lockedCollateral.plus(depositAmount)
     : withdrawAmount
-    ? lockedCollateral.minus(withdrawAmount)
-    : lockedCollateral
+      ? lockedCollateral.minus(withdrawAmount)
+      : lockedCollateral
 
   const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
   const afterDebt = generateAmount
     ? debt.plus(generateAmount)
     : paybackAmount
-    ? debt.minus(paybackAmount)
-    : debt
+      ? debt.minus(paybackAmount)
+      : debt
 
   const afterCollateralizationRatio =
     afterLockedCollateralUSD.gt(zero) && afterDebt.gt(zero)
@@ -419,6 +419,8 @@ export type DefaultManageVaultState = {
   ilkDebtAvailable: BigNumber // Updates
   debtFloor: BigNumber
   liquidationRatio: BigNumber
+  stabilityFee: BigNumber
+  liquidationPenalty: BigNumber
 
   // Vault information
   lockedCollateral: BigNumber
@@ -927,6 +929,8 @@ export const defaultManageVaultState: DefaultManageVaultState = {
   afterCollateralizationRatio: zero,
   maxDebtPerUnitCollateral: zero,
   ilkDebtAvailable: zero,
+  stabilityFee: zero,
+  liquidationPenalty: zero,
   debtFloor: zero,
   liquidationRatio: zero,
   safeConfirmations: 0,
@@ -974,7 +978,7 @@ export function createManageVault$(
                 ([
                   defaultState,
                   userTokenInfo,
-                  { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
+                  { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio, stabilityFee, liquidationPenalty },
                   proxyAddress,
                 ]) => {
                   const collateralAllowance$ =
@@ -1008,6 +1012,8 @@ export function createManageVault$(
                         proxyAddress,
                         safeConfirmations: context.safeConfirmations,
                         etherscan: context.etherscan.url,
+                        stabilityFee,
+                        liquidationPenalty,
 
                         collateralAllowance,
                         daiAllowance,
