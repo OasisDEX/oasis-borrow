@@ -402,9 +402,11 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
   const inverted = stage === 'daiEditing'
 
   useEffect(() => {
-    setShowDepositAndGenerateOption(false)
-    setShowPaybackAndWithdrawOption(false)
-  }, [stage])
+    if (!depositAmount && stage === 'collateralEditing') setShowDepositAndGenerateOption(false)
+    if (!withdrawAmount && stage === 'collateralEditing') setShowPaybackAndWithdrawOption(false)
+    if (!generateAmount && stage === 'daiEditing') setShowDepositAndGenerateOption(false)
+    if (!paybackAmount && stage === 'daiEditing') setShowPaybackAndWithdrawOption(false)
+  }, [stage, depositAmount])
 
   const showDepositAndGenerateOptionText = depositAmount || generateAmount
   const showPaybackAndWithdrawOptionText = paybackAmount || withdrawAmount
