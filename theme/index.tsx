@@ -516,8 +516,6 @@ const oasisBaseTheme = {
       contrast: '#FFF',
     },
 
-
-
     link: '#575CFE',
     textAlt: 'rgba(37, 39, 61, 0.67)',
     onBackground: '#9FAFB9',
