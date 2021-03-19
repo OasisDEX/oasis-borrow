@@ -20,7 +20,7 @@ const PlusIcon = () => (
 )
 const MinusIcon = () => (
   <Icon
-    name="support_minus"
+    name="minus"
     color="onSuccess"
     size={20}
     sx={{ display: 'inline', verticalAlign: 'bottom', marginRight: 2 }}
@@ -429,6 +429,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
               fontWeight: 'semiBold',
               color: 'onSuccess',
               userSelect: 'none',
+              lineHeight: 1.25,
             }}
             onClick={toggleDepositAndGenerateOption}
           >
@@ -468,6 +469,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
               fontWeight: 'semiBold',
               color: 'onSuccess',
               userSelect: 'none',
+              lineHeight: 1.25,
             }}
             onClick={togglePaybackAndWithdrawOption}
           >
