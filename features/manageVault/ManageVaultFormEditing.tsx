@@ -3,12 +3,11 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
 import { VaultActionInput } from 'components/VaultActionInput'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Box, Button, Card, Flex, Grid, Text } from 'theme-ui'
 
-import { ManageVaultState, ManualChange } from './manageVault'
+import { ManageVaultState } from './manageVault'
 
 const PlusIcon = () => (
   <Icon
@@ -28,70 +27,29 @@ const MinusIcon = () => (
 )
 
 function DepositInput({
-  stage,
-  currentCollateralPrice,
-  change,
-  clearPaybackAndWithdraw,
-  clearDepositAndGenerate,
   maxDepositAmount,
   maxDepositAmountUSD,
   token,
   depositAmount,
   depositAmountUSD,
+  updateDeposit,
+  updateDepositUSD,
+  updateDepositMax,
 }: ManageVaultState) {
-  function handleDepositChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      const depositAmount = value !== '' ? new BigNumber(value) : undefined
-      const depositAmountUSD = depositAmount
-        ? currentCollateralPrice.times(depositAmount)
-        : undefined
-
-      clearPaybackAndWithdraw!()
-      change({
-        kind: 'depositAmount',
-        depositAmount,
-      })
-      change({
-        kind: 'depositAmountUSD',
-        depositAmountUSD,
-      })
-      if (!depositAmount && stage === 'collateralEditing') {
-        clearDepositAndGenerate!()
-      }
-    }
+  function handleDepositChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value.replace(/,/g, '')
+    const depositAmount = value !== '' ? new BigNumber(value) : undefined
+    updateDeposit!(depositAmount)
   }
 
-  function handleDepositUSDChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      const depositAmountUSD = value !== '' ? new BigNumber(value) : undefined
-      const depositAmount =
-        depositAmountUSD && depositAmountUSD.gt(zero)
-          ? depositAmountUSD.div(currentCollateralPrice)
-          : undefined
-
-      clearPaybackAndWithdraw!()
-      change({
-        kind: 'depositAmountUSD',
-        depositAmountUSD,
-      })
-      change({
-        kind: 'depositAmount',
-        depositAmount,
-      })
-      if (!depositAmountUSD && stage === 'collateralEditing') {
-        clearDepositAndGenerate!()
-      }
-    }
+  function handleDepositUSDChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value.replace(/,/g, '')
+    const depositAmountUSD = value !== '' ? new BigNumber(value) : undefined
+    updateDepositUSD!(depositAmountUSD)
   }
 
-  function handleDepositMax(change: (ch: ManualChange) => void) {
-    return () => {
-      clearPaybackAndWithdraw!()
-      change({ kind: 'depositAmount', depositAmount: maxDepositAmount })
-      change({ kind: 'depositAmountUSD', depositAmountUSD: maxDepositAmountUSD })
-    }
+  function handleDepositMax() {
+    updateDepositMax!()
   }
 
   return (
@@ -100,14 +58,14 @@ function DepositInput({
       token={token}
       showMax={true}
       hasAuxiliary={true}
-      onSetMax={handleDepositMax(change!)}
+      onSetMax={handleDepositMax}
       maxAmountLabel={'Balance'}
       amount={depositAmount}
       auxiliaryAmount={depositAmountUSD}
       maxAmount={maxDepositAmount}
       maxAuxiliaryAmount={maxDepositAmountUSD}
-      onChange={handleDepositChange(change!)}
-      onAuxiliaryChange={handleDepositUSDChange(change!)}
+      onChange={handleDepositChange}
+      onAuxiliaryChange={handleDepositUSDChange}
       hasError={false}
     />
   )
@@ -117,32 +75,17 @@ function GenerateInput({
   generateAmount,
   accountIsController,
   maxGenerateAmount,
-  clearPaybackAndWithdraw,
-  clearDepositAndGenerate,
-  change,
-  stage,
+  updateGenerate,
+  updateGenerateMax,
 }: ManageVaultState) {
-  function handleGenerateChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      const generateAmount = value !== '' ? new BigNumber(value) : undefined
-
-      clearPaybackAndWithdraw!()
-      change({
-        kind: 'generateAmount',
-        generateAmount,
-      })
-      if (!generateAmount && stage === 'daiEditing') {
-        clearDepositAndGenerate!()
-      }
-    }
+  function handleGenerateChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value.replace(/,/g, '')
+    const generateAmount = value !== '' ? new BigNumber(value) : undefined
+    updateGenerate!(generateAmount)
   }
 
-  function handleGenerateMax(change: (ch: ManualChange) => void) {
-    return () => {
-      clearPaybackAndWithdraw!()
-      change({ kind: 'generateAmount', generateAmount: maxGenerateAmount })
-    }
+  function handleGenerateMax() {
+    updateGenerateMax!()
   }
 
   return (
@@ -154,79 +97,38 @@ function GenerateInput({
       disabled={!accountIsController}
       maxAmount={maxGenerateAmount}
       maxAmountLabel={'Maximum'}
-      onSetMax={handleGenerateMax(change!)}
-      onChange={handleGenerateChange(change!)}
+      onSetMax={handleGenerateMax}
+      onChange={handleGenerateChange}
       hasError={false}
     />
   )
 }
 
 function WithdrawInput({
-  currentCollateralPrice,
-  change,
   accountIsController,
   withdrawAmount,
   withdrawAmountUSD,
   maxWithdrawAmount,
   maxWithdrawAmountUSD,
   token,
-  clearDepositAndGenerate,
-  clearPaybackAndWithdraw,
-  stage,
+  updateWithdraw,
+  updateWithdrawUSD,
+  updateWithdrawMax,
 }: ManageVaultState) {
-  function handleWithdrawChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      const withdrawAmount = value !== '' ? new BigNumber(value) : undefined
-      const withdrawAmountUSD = withdrawAmount
-        ? currentCollateralPrice.times(withdrawAmount)
-        : undefined
-
-      clearDepositAndGenerate!()
-      change({
-        kind: 'withdrawAmount',
-        withdrawAmount,
-      })
-      change({
-        kind: 'withdrawAmountUSD',
-        withdrawAmountUSD,
-      })
-      if (!withdrawAmount && stage === 'collateralEditing') {
-        clearPaybackAndWithdraw!()
-      }
-    }
+  function handleWithdrawChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value.replace(/,/g, '')
+    const withdrawAmount = value !== '' ? new BigNumber(value) : undefined
+    updateWithdraw!(withdrawAmount)
   }
 
-  function handleWithdrawUSDChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      const withdrawAmountUSD = value !== '' ? new BigNumber(value) : undefined
-      const withdrawAmount =
-        withdrawAmountUSD && withdrawAmountUSD.gt(zero)
-          ? withdrawAmountUSD.div(currentCollateralPrice)
-          : undefined
-
-      clearDepositAndGenerate!()
-      change({
-        kind: 'withdrawAmountUSD',
-        withdrawAmountUSD,
-      })
-      change({
-        kind: 'withdrawAmount',
-        withdrawAmount,
-      })
-      if (!withdrawAmountUSD && stage === 'collateralEditing') {
-        clearPaybackAndWithdraw!()
-      }
-    }
+  function handleWithdrawUSDChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value.replace(/,/g, '')
+    const withdrawAmountUSD = value !== '' ? new BigNumber(value) : undefined
+    updateWithdrawUSD!(withdrawAmountUSD)
   }
 
-  function handleWithdrawMax(change: (ch: ManualChange) => void) {
-    return () => {
-      clearDepositAndGenerate!()
-      change({ kind: 'withdrawAmount', withdrawAmount: maxWithdrawAmount })
-      change({ kind: 'withdrawAmountUSD', withdrawAmountUSD: maxWithdrawAmountUSD })
-    }
+  function handleWithdrawMax() {
+    updateWithdrawMax!()
   }
 
   return (
@@ -234,7 +136,7 @@ function WithdrawInput({
       action="Withdraw"
       showMax={true}
       hasAuxiliary={true}
-      onSetMax={handleWithdrawMax(change!)}
+      onSetMax={handleWithdrawMax}
       disabled={!accountIsController}
       amount={withdrawAmount}
       auxiliaryAmount={withdrawAmountUSD}
@@ -243,40 +145,26 @@ function WithdrawInput({
       maxAuxiliaryAmount={maxWithdrawAmountUSD}
       token={token}
       hasError={false}
-      onChange={handleWithdrawChange(change!)}
-      onAuxiliaryChange={handleWithdrawUSDChange(change!)}
+      onChange={handleWithdrawChange}
+      onAuxiliaryChange={handleWithdrawUSDChange}
     />
   )
 }
+
 function PaybackInput({
   paybackAmount,
   maxPaybackAmount,
-  change,
-  clearDepositAndGenerate,
-  clearPaybackAndWithdraw,
-  stage,
+  updatePayback,
+  updatePaybackMax,
 }: ManageVaultState) {
-  function handlePaybackChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      const paybackAmount = value !== '' ? new BigNumber(value) : undefined
-
-      clearDepositAndGenerate!()
-      change({
-        kind: 'paybackAmount',
-        paybackAmount,
-      })
-      if (!paybackAmount && stage === 'daiEditing') {
-        clearPaybackAndWithdraw!()
-      }
-    }
+  function handlePaybackChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value.replace(/,/g, '')
+    const paybackAmount = value !== '' ? new BigNumber(value) : undefined
+    updatePayback!(paybackAmount)
   }
 
-  function handlePaybackMax(change: (ch: ManualChange) => void) {
-    return () => {
-      clearDepositAndGenerate!()
-      change({ kind: 'paybackAmount', paybackAmount: maxPaybackAmount })
-    }
+  function handlePaybackMax() {
+    updatePaybackMax!()
   }
 
   return (
@@ -287,8 +175,8 @@ function PaybackInput({
       showMax={true}
       maxAmount={maxPaybackAmount}
       maxAmountLabel={'Maximum'}
-      onSetMax={handlePaybackMax(change!)}
-      onChange={handlePaybackChange(change!)}
+      onSetMax={handlePaybackMax}
+      onChange={handlePaybackChange}
       hasError={false}
     />
   )

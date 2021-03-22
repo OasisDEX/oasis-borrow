@@ -13,7 +13,7 @@ import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
-import { ManageVaultState, ManualChange } from './manageVault'
+import { ManageVaultState } from './manageVault'
 import { ManageVaultFormEditing } from './ManageVaultFormEditing'
 
 function ManageVaultDetails({
@@ -24,7 +24,6 @@ function ManageVaultDetails({
   liquidationPrice,
   lockedCollateral,
   lockedCollateralPrice,
-
   currentCollateralPrice,
   nextCollateralPrice,
   isStaticCollateralPrice,
@@ -184,9 +183,12 @@ function ManageVaultFormCollateralAllowance({
   progress,
   token,
   collateralAllowanceAmount,
-  change,
   errorMessages,
   depositAmount,
+  updateCollateralAllowanceAmount,
+  setCollateralAllowanceAmountUnlimited,
+  setCollateralAllowanceAmountToDepositAmount,
+  resetCollateralAllowanceAmount,
 }: ManageVaultState) {
   const [isCustom, setIsCustom] = useState<Boolean>(false)
 
@@ -200,33 +202,29 @@ function ManageVaultFormCollateralAllowance({
     if (canProgress) progress!()
   }
 
-  function handleCustomCollateralAllowanceChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      change({
-        kind: 'collateralAllowanceAmount',
-        collateralAllowanceAmount: value !== '' ? new BigNumber(value) : undefined,
-      })
-    }
+  function handleCustomCollateralAllowanceChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value.replace(/,/g, '')
+    const collateralAllowanceAmount = value !== '' ? new BigNumber(value) : undefined
+    updateCollateralAllowanceAmount!(collateralAllowanceAmount)
   }
 
   function handleUnlimited() {
     if (canSelectRadio) {
       setIsCustom(false)
-      change!({ kind: 'collateralAllowanceAmount', collateralAllowanceAmount: maxUint256 })
+      setCollateralAllowanceAmountUnlimited!()
     }
   }
 
   function handleDeposit() {
     if (canSelectRadio) {
       setIsCustom(false)
-      change!({ kind: 'collateralAllowanceAmount', collateralAllowanceAmount: depositAmount })
+      setCollateralAllowanceAmountToDepositAmount!()
     }
   }
 
   function handleCustom() {
     if (canSelectRadio) {
-      change!({ kind: 'collateralAllowanceAmount', collateralAllowanceAmount: undefined })
+      resetCollateralAllowanceAmount!()
       setIsCustom(true)
     }
   }
@@ -275,7 +273,7 @@ function ManageVaultFormCollateralAllowance({
                   decimalLimit: getToken(token).digits,
                   prefix: '',
                 })}
-                onChange={handleCustomCollateralAllowanceChange(change!)}
+                onChange={handleCustomCollateralAllowanceChange}
               />
               <Text sx={{ fontSize: 1 }}>{token}</Text>
             </Grid>
@@ -350,9 +348,12 @@ function ManageVaultFormDaiAllowance({
   etherscan,
   progress,
   daiAllowanceAmount,
-  change,
   errorMessages,
   paybackAmount,
+  updateDaiAllowanceAmount,
+  setDaiAllowanceAmountUnlimited,
+  setDaiAllowanceAmountToPaybackAmount,
+  resetDaiAllowanceAmount,
 }: ManageVaultState) {
   const [isCustom, setIsCustom] = useState<Boolean>(false)
 
@@ -365,33 +366,29 @@ function ManageVaultFormDaiAllowance({
     if (canProgress) progress!()
   }
 
-  function handleCustomDaiAllowanceChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      change({
-        kind: 'daiAllowanceAmount',
-        daiAllowanceAmount: value !== '' ? new BigNumber(value) : undefined,
-      })
-    }
+  function handleCustomDaiAllowanceChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value.replace(/,/g, '')
+    const daiAllowanceAmount = value !== '' ? new BigNumber(value) : undefined
+    updateDaiAllowanceAmount!(daiAllowanceAmount)
   }
 
   function handleUnlimited() {
     if (canSelectRadio) {
       setIsCustom(false)
-      change!({ kind: 'daiAllowanceAmount', daiAllowanceAmount: maxUint256 })
+      setDaiAllowanceAmountUnlimited!()
     }
   }
 
   function handlePayback() {
     if (canSelectRadio) {
       setIsCustom(false)
-      change!({ kind: 'daiAllowanceAmount', daiAllowanceAmount: paybackAmount })
+      setDaiAllowanceAmountToPaybackAmount!()
     }
   }
 
   function handleCustom() {
     if (canSelectRadio) {
-      change!({ kind: 'daiAllowanceAmount', daiAllowanceAmount: undefined })
+      resetDaiAllowanceAmount!()
       setIsCustom(true)
     }
   }
@@ -440,7 +437,7 @@ function ManageVaultFormDaiAllowance({
                   decimalLimit: getToken('DAI').digits,
                   prefix: '',
                 })}
-                onChange={handleCustomDaiAllowanceChange(change!)}
+                onChange={handleCustomDaiAllowanceChange}
               />
               <Text sx={{ fontSize: 1 }}>DAI</Text>
             </Grid>
