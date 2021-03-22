@@ -13,14 +13,13 @@ import {
 } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
+import moment from 'moment'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
-import moment from 'moment'
 
 import { ManageVaultState, ManualChange } from './manageVault'
-
 
 function ManageVaultDetails(props: ManageVaultState) {
   const {
@@ -47,8 +46,8 @@ function ManageVaultDetails(props: ManageVaultState) {
   const collRatioColor = collateralizationRatio.isZero()
     ? 'primary'
     : collateralizationRatio.lte(liquidationRatio.times(1.2))
-      ? 'onError'
-      : 'onSuccess'
+    ? 'onError'
+    : 'onSuccess'
 
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
     ? '--'
@@ -63,13 +62,15 @@ function ManageVaultDetails(props: ManageVaultState) {
   const tokenInfo = getToken(token)
 
   const newPriceIn = moment(dateNextCollateralPrice).diff(Date.now(), 'minutes')
-  const nextPriceDiff = nextCollateralPrice ? nextCollateralPrice.minus(currentCollateralPrice).div(nextCollateralPrice).times(100) : zero
+  const nextPriceDiff = nextCollateralPrice
+    ? nextCollateralPrice.minus(currentCollateralPrice).div(nextCollateralPrice).times(100)
+    : zero
 
   const priceChangeColor = nextPriceDiff.isZero()
     ? 'text.muted'
     : nextPriceDiff.gt(zero)
-      ? 'onSuccess'
-      : 'onError'
+    ? 'onSuccess'
+    : 'onError'
 
   return (
     <Grid sx={{ alignSelf: 'flex-start' }} columns="1fr 1fr">
@@ -79,24 +80,26 @@ function ManageVaultDetails(props: ManageVaultState) {
         sx={{ gridColumn: '1/3', fontWeight: 'semiBold', borderBottom: 'light', pb: 3 }}
       >
         <Flex>
-          <Icon
-            name={tokenInfo.iconCircle}
-            size="26px"
-            sx={{ verticalAlign: 'sub', mr: 2 }}
-          />
+          <Icon name={tokenInfo.iconCircle} size="26px" sx={{ verticalAlign: 'sub', mr: 2 }} />
           <Text>{t('vault.header', { ilk, id })}</Text>
         </Flex>
       </Heading>
       <Box sx={{ mt: 5 }}>
-        <Heading variant="subheader" as="h2">{t('system.liquidation-price')}</Heading>
+        <Heading variant="subheader" as="h2">
+          {t('system.liquidation-price')}
+        </Heading>
         <Text variant="display">${liqPrice}</Text>
         <Text>
           {t('after')}: ${afterLiqPrice}
         </Text>
       </Box>
       <Box sx={{ textAlign: 'right', mt: 5 }}>
-        <Heading variant="subheader" as="h2">{t('system.collateralization-ratio')}</Heading>
-        <Text sx={{ color: collRatioColor }} variant="display">{collRatio}</Text>
+        <Heading variant="subheader" as="h2">
+          {t('system.collateralization-ratio')}
+        </Heading>
+        <Text sx={{ color: collRatioColor }} variant="display">
+          {collRatio}
+        </Text>
         <Text>
           {t('after')}: {afterCollRatio}
         </Text>
@@ -110,48 +113,40 @@ function ManageVaultDetails(props: ManageVaultState) {
         <Box sx={{ mt: 6 }}>
           <Box>
             <Heading variant="subheader" as="h2">{`Current ${token}/USD price`}</Heading>
-            <Text variant="header2" sx={{ py: 3 }}>${formatAmount(currentCollateralPrice, 'USD')}</Text>
+            <Text variant="header2" sx={{ py: 3 }}>
+              ${formatAmount(currentCollateralPrice, 'USD')}
+            </Text>
           </Box>
 
-          {
-            nextCollateralPrice &&
+          {nextCollateralPrice && (
             <Flex sx={{ alignItems: 'flex-start' }}>
               <Heading variant="subheader" as="h3">
                 <Box sx={{ mr: 2 }}>
-                  {
-                    newPriceIn < 2
-                      ? <Trans
-                        i18nKey="next-price-any-time"
-                        count={newPriceIn}
-                        components={[<br />]}
-                      />
-                      : <Trans
-                        i18nKey="vault.next-price"
-                        count={newPriceIn}
-                        components={[<br />]}
-                      />
-                  }
+                  {newPriceIn < 2 ? (
+                    <Trans i18nKey="next-price-any-time" count={newPriceIn} components={[<br />]} />
+                  ) : (
+                    <Trans i18nKey="vault.next-price" count={newPriceIn} components={[<br />]} />
+                  )}
                 </Box>
               </Heading>
-              <Flex variant="paragraph2" sx={{ fontWeight: 'semiBold', alignItems: 'center', color: priceChangeColor }}>
-                <Text >
-                  ${formatAmount(nextCollateralPrice || zero, 'USD')}
-                </Text>
-                <Text sx={{ ml: 2 }}>
-                  ({formatPercent(nextPriceDiff, { precision: 2 })})
-                </Text>
-                {
-                  nextPriceDiff.isZero()
-                    ? null
-                    : <Icon sx={{ ml: 2 }} name={nextPriceDiff.gt(zero) ? 'increase' : 'decrease'} />
-                }
+              <Flex
+                variant="paragraph2"
+                sx={{ fontWeight: 'semiBold', alignItems: 'center', color: priceChangeColor }}
+              >
+                <Text>${formatAmount(nextCollateralPrice || zero, 'USD')}</Text>
+                <Text sx={{ ml: 2 }}>({formatPercent(nextPriceDiff, { precision: 2 })})</Text>
+                {nextPriceDiff.isZero() ? null : (
+                  <Icon sx={{ ml: 2 }} name={nextPriceDiff.gt(zero) ? 'increase' : 'decrease'} />
+                )}
               </Flex>
             </Flex>
-          }
+          )}
         </Box>
       )}
       <Box sx={{ textAlign: 'right', mt: 6 }}>
-        <Heading variant="subheader" as="h2">{t('system.collateral-locked')}</Heading>
+        <Heading variant="subheader" as="h2">
+          {t('system.collateral-locked')}
+        </Heading>
         <Text variant="header2" sx={{ py: 3 }}>
           {locked} {token}
         </Text>
@@ -185,12 +180,12 @@ function ManageVaultFormTitle({
           {isEditingStage
             ? 'Manage your Vault'
             : isProxyStage
-              ? 'Create Proxy'
-              : isCollateralAllowanceStage
-                ? `Set ${token} Allowance`
-                : isDaiAllowanceStage
-                  ? `Set DAI Allowance`
-                  : 'Action Vault'}
+            ? 'Create Proxy'
+            : isCollateralAllowanceStage
+            ? `Set ${token} Allowance`
+            : isDaiAllowanceStage
+            ? `Set DAI Allowance`
+            : 'Action Vault'}
         </Text>
         {canReset ? (
           <Button onClick={handleReset} disabled={!canReset} sx={{ fontSize: 1, p: 0 }}>
@@ -541,10 +536,10 @@ function ManageVaultFormProxy({
     stage === 'proxySuccess'
       ? t('continue')
       : stage === 'proxyFailure'
-        ? t('retry-create-proxy')
-        : stage === 'proxyWaitingForConfirmation'
-          ? t('create-proxy-btn')
-          : t('creating-proxy')
+      ? t('retry-create-proxy')
+      : stage === 'proxyWaitingForConfirmation'
+      ? t('create-proxy-btn')
+      : t('creating-proxy')
 
   return (
     <Grid>
@@ -668,10 +663,10 @@ function ManageVaultFormCollateralAllowance({
     stage === 'collateralAllowanceSuccess'
       ? t('continue')
       : stage === 'collateralAllowanceFailure'
-        ? t('retry-allowance-approval')
-        : stage === 'collateralAllowanceWaitingForConfirmation'
-          ? t('approve-allowance')
-          : t('approving-allowance')
+      ? t('retry-allowance-approval')
+      : stage === 'collateralAllowanceWaitingForConfirmation'
+      ? t('approve-allowance')
+      : t('approving-allowance')
 
   return (
     <Grid>
@@ -833,10 +828,10 @@ function ManageVaultFormDaiAllowance({
     stage === 'daiAllowanceSuccess'
       ? t('view-on-etherscan')
       : stage === 'daiAllowanceFailure'
-        ? t('retry-allowance-approval')
-        : stage === 'daiAllowanceWaitingForConfirmation'
-          ? t('approve-allowance')
-          : t('approving-allowance')
+      ? t('retry-allowance-approval')
+      : stage === 'daiAllowanceWaitingForConfirmation'
+      ? t('approve-allowance')
+      : t('approving-allowance')
 
   return (
     <Grid>
@@ -980,10 +975,10 @@ function ManageVaultFormConfirmation({
     stage === 'manageWaitingForConfirmation'
       ? t('change-your-vault')
       : stage === 'manageFailure'
-        ? t('retry')
-        : stage === 'manageSuccess'
-          ? t('back-to-editing')
-          : t('change-your-vault')
+      ? t('retry')
+      : stage === 'manageSuccess'
+      ? t('back-to-editing')
+      : t('change-your-vault')
 
   return (
     <Grid>

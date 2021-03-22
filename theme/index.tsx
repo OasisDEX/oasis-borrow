@@ -513,7 +513,7 @@ const oasisBaseTheme = {
     text: {
       muted: '#708390',
       off: '#686986',
-      subtitle: "#787A9B",
+      subtitle: '#787A9B',
       contrast: '#FFF',
     },
 
@@ -614,8 +614,8 @@ const oasisBaseTheme = {
       color: 'primary',
     },
     subheader: {
-      variant: "text.paragraph2",
-      color: 'text.subtitle'
+      variant: 'text.paragraph2',
+      color: 'text.subtitle',
     },
     caption: {
       variant: 'paragraph4',

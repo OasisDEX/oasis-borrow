@@ -28,7 +28,6 @@ function OpenVaultDetails(props: OpenVaultState) {
     isStaticCollateralPrice,
     dateNextCollateralPrice,
     ilk,
-
   } = props
 
   const { t } = useTranslation()
@@ -42,13 +41,15 @@ function OpenVaultDetails(props: OpenVaultState) {
   const tokenInfo = getToken(token)
 
   const newPriceIn = moment(dateNextCollateralPrice).diff(Date.now(), 'minutes')
-  const nextPriceDiff = nextCollateralPrice ? nextCollateralPrice.minus(currentCollateralPrice).div(nextCollateralPrice).times(100) : zero
+  const nextPriceDiff = nextCollateralPrice
+    ? nextCollateralPrice.minus(currentCollateralPrice).div(nextCollateralPrice).times(100)
+    : zero
 
   const priceChangeColor = nextPriceDiff.isZero()
     ? 'text.muted'
     : nextPriceDiff.gt(zero)
-      ? 'onSuccess'
-      : 'onError'
+    ? 'onSuccess'
+    : 'onError'
 
   return (
     <Grid sx={{ alignSelf: 'flex-start' }} columns="1fr 1fr">
@@ -58,17 +59,15 @@ function OpenVaultDetails(props: OpenVaultState) {
         sx={{ gridColumn: '1/3', fontWeight: 'semiBold', borderBottom: 'light', pb: 3 }}
       >
         <Flex>
-          <Icon
-            name={tokenInfo.iconCircle}
-            size="26px"
-            sx={{ verticalAlign: 'sub', mr: 2 }}
-          />
+          <Icon name={tokenInfo.iconCircle} size="26px" sx={{ verticalAlign: 'sub', mr: 2 }} />
           <Text>{t('vault.open-vault', { ilk })}</Text>
         </Flex>
       </Heading>
 
       <Box sx={{ mt: 5 }}>
-        <Heading variant="subheader" as="h2">{t('system.liquidation-price')}</Heading>
+        <Heading variant="subheader" as="h2">
+          {t('system.liquidation-price')}
+        </Heading>
         <Text variant="display">$0.00</Text>
         <Text>
           <Text>{t('vaults.after', { price: afterLiqPrice })}</Text>
@@ -76,61 +75,57 @@ function OpenVaultDetails(props: OpenVaultState) {
       </Box>
 
       <Box sx={{ textAlign: 'right', mt: 5 }}>
-        <Heading variant="subheader" as="h2">{t('system.collateralization-ratio')}</Heading>
+        <Heading variant="subheader" as="h2">
+          {t('system.collateralization-ratio')}
+        </Heading>
         <Text variant="display">{afterCollRatio}</Text>
       </Box>
 
       {isStaticCollateralPrice ? (
         <Box sx={{ mt: 6 }}>
-          <Heading variant="subheader" as="h2">{t('vaults.current-price', { token })}</Heading>
+          <Heading variant="subheader" as="h2">
+            {t('vaults.current-price', { token })}
+          </Heading>
           <Text variant="header2">${formatAmount(currentCollateralPrice, 'USD')}</Text>
         </Box>
       ) : (
         <Box sx={{ mt: 6 }}>
           <Box>
             <Heading variant="subheader" as="h2">{`Current ${token}/USD price`}</Heading>
-            <Text variant="header2" sx={{ py: 3 }}>${formatAmount(currentCollateralPrice, 'USD')}</Text>
+            <Text variant="header2" sx={{ py: 3 }}>
+              ${formatAmount(currentCollateralPrice, 'USD')}
+            </Text>
           </Box>
 
-          {
-            nextCollateralPrice &&
+          {nextCollateralPrice && (
             <Flex sx={{ alignItems: 'flex-start' }}>
               <Heading variant="subheader" as="h3">
                 <Box sx={{ mr: 2 }}>
-                  {
-                    newPriceIn < 2
-                      ? <Trans
-                        i18nKey="next-price-any-time"
-                        count={newPriceIn}
-                        components={[<br />]}
-                      />
-                      : <Trans
-                        i18nKey="vault.next-price"
-                        count={newPriceIn}
-                        components={[<br />]}
-                      />
-                  }
+                  {newPriceIn < 2 ? (
+                    <Trans i18nKey="next-price-any-time" count={newPriceIn} components={[<br />]} />
+                  ) : (
+                    <Trans i18nKey="vault.next-price" count={newPriceIn} components={[<br />]} />
+                  )}
                 </Box>
               </Heading>
-              <Flex variant="paragraph2" sx={{ fontWeight: 'semiBold', alignItems: 'center', color: priceChangeColor }}>
-                <Text >
-                  ${formatAmount(nextCollateralPrice || zero, 'USD')}
-                </Text>
-                <Text sx={{ ml: 2 }}>
-                  ({formatPercent(nextPriceDiff, { precision: 2 })})
-                </Text>
-                {
-                  nextPriceDiff.isZero()
-                    ? null
-                    : <Icon sx={{ ml: 2 }} name={nextPriceDiff.gt(zero) ? 'increase' : 'decrease'} />
-                }
+              <Flex
+                variant="paragraph2"
+                sx={{ fontWeight: 'semiBold', alignItems: 'center', color: priceChangeColor }}
+              >
+                <Text>${formatAmount(nextCollateralPrice || zero, 'USD')}</Text>
+                <Text sx={{ ml: 2 }}>({formatPercent(nextPriceDiff, { precision: 2 })})</Text>
+                {nextPriceDiff.isZero() ? null : (
+                  <Icon sx={{ ml: 2 }} name={nextPriceDiff.gt(zero) ? 'increase' : 'decrease'} />
+                )}
               </Flex>
             </Flex>
-          }
+          )}
         </Box>
       )}
       <Box sx={{ textAlign: 'right', mt: 6 }}>
-        <Heading variant="subheader" as="h2">{t('system.collateral-locked')}</Heading>
+        <Heading variant="subheader" as="h2">
+          {t('system.collateral-locked')}
+        </Heading>
         <Text variant="header2" sx={{ py: 3 }}>
           00.00 {token}
         </Text>
@@ -140,7 +135,6 @@ function OpenVaultDetails(props: OpenVaultState) {
     </Grid>
   )
 }
-
 
 function VaultDetails(props: OpenVaultState) {
   const { t } = useTranslation()
@@ -236,10 +230,10 @@ function OpenVaultFormTitle({
           {isEditingStage
             ? 'Configure your Vault'
             : isProxyStage
-              ? 'Create Proxy'
-              : isAllowanceStage
-                ? 'Set Allowance'
-                : 'Create your Vault'}
+            ? 'Create Proxy'
+            : isAllowanceStage
+            ? 'Set Allowance'
+            : 'Create your Vault'}
         </Text>
         {canReset ? (
           <Button onClick={handleReset} disabled={!canReset} sx={{ fontSize: 1, p: 0 }}>
@@ -404,10 +398,10 @@ function OpenVaultFormProxy({
     stage === 'proxySuccess'
       ? 'Continue'
       : stage === 'proxyFailure'
-        ? 'Retry Create Proxy'
-        : stage === 'proxyWaitingForConfirmation'
-          ? 'Create Proxy'
-          : 'Creating Proxy'
+      ? 'Retry Create Proxy'
+      : stage === 'proxyWaitingForConfirmation'
+      ? 'Create Proxy'
+      : 'Creating Proxy'
 
   return (
     <Grid>
@@ -526,10 +520,10 @@ function OpenVaultFormAllowance({
     stage === 'allowanceSuccess'
       ? 'Continue'
       : stage === 'allowanceFailure'
-        ? 'Retry allowance approval'
-        : stage === 'allowanceWaitingForConfirmation'
-          ? 'Approve allowance'
-          : 'Approving allowance'
+      ? 'Retry allowance approval'
+      : stage === 'allowanceWaitingForConfirmation'
+      ? 'Approve allowance'
+      : 'Approving allowance'
 
   return (
     <Grid>
@@ -673,10 +667,10 @@ function OpenVaultFormConfirmation({
     stage === 'openWaitingForConfirmation'
       ? 'Create your Vault'
       : stage === 'openFailure'
-        ? 'Retry'
-        : stage === 'openSuccess'
-          ? `Open Vault #${id!}`
-          : 'Creating your Vault'
+      ? 'Retry'
+      : stage === 'openSuccess'
+      ? `Open Vault #${id!}`
+      : 'Creating your Vault'
 
   return (
     <Grid>

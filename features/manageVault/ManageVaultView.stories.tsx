@@ -76,8 +76,8 @@ function createStory({
       ...(ilk === 'ETH-A'
         ? protoUserETHTokenInfo
         : ilk === 'WBTC-A'
-          ? protoUserWBTCTokenInfo
-          : protoUserUSDCTokenInfo),
+        ? protoUserWBTCTokenInfo
+        : protoUserUSDCTokenInfo),
       ...(userTokenInfo || {}),
     }
 
