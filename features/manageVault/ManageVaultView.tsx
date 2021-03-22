@@ -6,6 +6,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { handleNumericInput } from 'helpers/input'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -202,12 +203,6 @@ function ManageVaultFormCollateralAllowance({
     if (canProgress) progress!()
   }
 
-  function handleCustomCollateralAllowanceChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value.replace(/,/g, '')
-    const collateralAllowanceAmount = value !== '' ? new BigNumber(value) : undefined
-    updateCollateralAllowanceAmount!(collateralAllowanceAmount)
-  }
-
   function handleUnlimited() {
     if (canSelectRadio) {
       setIsCustom(false)
@@ -273,7 +268,7 @@ function ManageVaultFormCollateralAllowance({
                   decimalLimit: getToken(token).digits,
                   prefix: '',
                 })}
-                onChange={handleCustomCollateralAllowanceChange}
+                onChange={handleNumericInput(updateCollateralAllowanceAmount!)}
               />
               <Text sx={{ fontSize: 1 }}>{token}</Text>
             </Grid>
@@ -366,12 +361,6 @@ function ManageVaultFormDaiAllowance({
     if (canProgress) progress!()
   }
 
-  function handleCustomDaiAllowanceChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value.replace(/,/g, '')
-    const daiAllowanceAmount = value !== '' ? new BigNumber(value) : undefined
-    updateDaiAllowanceAmount!(daiAllowanceAmount)
-  }
-
   function handleUnlimited() {
     if (canSelectRadio) {
       setIsCustom(false)
@@ -437,7 +426,7 @@ function ManageVaultFormDaiAllowance({
                   decimalLimit: getToken('DAI').digits,
                   prefix: '',
                 })}
-                onChange={handleCustomDaiAllowanceChange}
+                onChange={handleNumericInput(updateDaiAllowanceAmount!)}
               />
               <Text sx={{ fontSize: 1 }}>DAI</Text>
             </Grid>

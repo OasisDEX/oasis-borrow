@@ -3,6 +3,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
 import { VaultActionInput } from 'components/VaultActionInput'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Box, Button, Card, Flex, Grid, Text } from 'theme-ui'
@@ -36,36 +37,20 @@ function DepositInput({
   updateDepositUSD,
   updateDepositMax,
 }: ManageVaultState) {
-  function handleDepositChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value.replace(/,/g, '')
-    const depositAmount = value !== '' ? new BigNumber(value) : undefined
-    updateDeposit!(depositAmount)
-  }
-
-  function handleDepositUSDChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value.replace(/,/g, '')
-    const depositAmountUSD = value !== '' ? new BigNumber(value) : undefined
-    updateDepositUSD!(depositAmountUSD)
-  }
-
-  function handleDepositMax() {
-    updateDepositMax!()
-  }
-
   return (
     <VaultActionInput
       action="Deposit"
       token={token}
       showMax={true}
       hasAuxiliary={true}
-      onSetMax={handleDepositMax}
+      onSetMax={updateDepositMax!}
       maxAmountLabel={'Balance'}
       amount={depositAmount}
       auxiliaryAmount={depositAmountUSD}
       maxAmount={maxDepositAmount}
       maxAuxiliaryAmount={maxDepositAmountUSD}
-      onChange={handleDepositChange}
-      onAuxiliaryChange={handleDepositUSDChange}
+      onChange={handleNumericInput(updateDeposit!)}
+      onAuxiliaryChange={handleNumericInput(updateDepositUSD!)}
       hasError={false}
     />
   )
@@ -78,16 +63,6 @@ function GenerateInput({
   updateGenerate,
   updateGenerateMax,
 }: ManageVaultState) {
-  function handleGenerateChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value.replace(/,/g, '')
-    const generateAmount = value !== '' ? new BigNumber(value) : undefined
-    updateGenerate!(generateAmount)
-  }
-
-  function handleGenerateMax() {
-    updateGenerateMax!()
-  }
-
   return (
     <VaultActionInput
       action="Generate"
@@ -97,8 +72,8 @@ function GenerateInput({
       disabled={!accountIsController}
       maxAmount={maxGenerateAmount}
       maxAmountLabel={'Maximum'}
-      onSetMax={handleGenerateMax}
-      onChange={handleGenerateChange}
+      onSetMax={updateGenerateMax}
+      onChange={handleNumericInput(updateGenerate!)}
       hasError={false}
     />
   )
@@ -115,28 +90,12 @@ function WithdrawInput({
   updateWithdrawUSD,
   updateWithdrawMax,
 }: ManageVaultState) {
-  function handleWithdrawChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value.replace(/,/g, '')
-    const withdrawAmount = value !== '' ? new BigNumber(value) : undefined
-    updateWithdraw!(withdrawAmount)
-  }
-
-  function handleWithdrawUSDChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value.replace(/,/g, '')
-    const withdrawAmountUSD = value !== '' ? new BigNumber(value) : undefined
-    updateWithdrawUSD!(withdrawAmountUSD)
-  }
-
-  function handleWithdrawMax() {
-    updateWithdrawMax!()
-  }
-
   return (
     <VaultActionInput
       action="Withdraw"
       showMax={true}
       hasAuxiliary={true}
-      onSetMax={handleWithdrawMax}
+      onSetMax={updateWithdrawMax}
       disabled={!accountIsController}
       amount={withdrawAmount}
       auxiliaryAmount={withdrawAmountUSD}
@@ -145,8 +104,8 @@ function WithdrawInput({
       maxAuxiliaryAmount={maxWithdrawAmountUSD}
       token={token}
       hasError={false}
-      onChange={handleWithdrawChange}
-      onAuxiliaryChange={handleWithdrawUSDChange}
+      onChange={handleNumericInput(updateWithdraw!)}
+      onAuxiliaryChange={handleNumericInput(updateWithdrawUSD!)}
     />
   )
 }
@@ -157,16 +116,6 @@ function PaybackInput({
   updatePayback,
   updatePaybackMax,
 }: ManageVaultState) {
-  function handlePaybackChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value.replace(/,/g, '')
-    const paybackAmount = value !== '' ? new BigNumber(value) : undefined
-    updatePayback!(paybackAmount)
-  }
-
-  function handlePaybackMax() {
-    updatePaybackMax!()
-  }
-
   return (
     <VaultActionInput
       action="Payback"
@@ -175,8 +124,8 @@ function PaybackInput({
       showMax={true}
       maxAmount={maxPaybackAmount}
       maxAmountLabel={'Maximum'}
-      onSetMax={handlePaybackMax}
-      onChange={handlePaybackChange}
+      onSetMax={updatePaybackMax}
+      onChange={handleNumericInput(updatePayback!)}
       hasError={false}
     />
   )
