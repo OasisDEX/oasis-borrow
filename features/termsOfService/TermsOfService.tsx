@@ -74,22 +74,23 @@ function TOSWaiting4Acceptance({ stage, acceptTOS, updated }: TermsAcceptanceSta
           {t(`tos-welcome${updated ? '-updated' : ''}`)}
         </Heading>
         <Text mt={3}>{t(`tos-accept-message${updated ? '-updated' : ''}`)}</Text>
-        <AppLink
-          href="/terms"
-          withAccountPrefix={false}
-          internalInNewTab
-          sx={{ display: 'flex', my: 4, alignItems: 'center', justifyContent: 'center' }}
-        >
-          <Text sx={{ fontSize: 4, fontWeight: 'semiBold', textAlign: 'center' }}>
-            {t('tos-view')}
-          </Text>
-          <Icon
-            name="increase"
-            sx={{ ml: 2, position: 'relative', top: '1px' }}
-            size={13}
-            color="onSecondary"
-          />
-        </AppLink>
+        <Text mt={3}>{t('tos-view')}</Text>
+        {/*<AppLink*/}
+        {/*  href="/terms"*/}
+        {/*  withAccountPrefix={false}*/}
+        {/*  internalInNewTab*/}
+        {/*  sx={{ display: 'flex', my: 4, alignItems: 'center', justifyContent: 'center' }}*/}
+        {/*>*/}
+        {/*  <Text sx={{ fontSize: 4, fontWeight: 'semiBold', textAlign: 'center' }}>*/}
+        {/*    {t('tos-view')}*/}
+        {/*  </Text>*/}
+        {/*  <Icon*/}
+        {/*    name="increase"*/}
+        {/*    sx={{ ml: 2, position: 'relative', top: '1px' }}*/}
+        {/*    size={13}*/}
+        {/*    color="onSecondary"*/}
+        {/*  />*/}
+        {/*</AppLink>*/}
         <Box px={2}>
           <Label
             sx={{ fontSize: 3, fontWeight: 'body', cursor: 'pointer' }}
@@ -207,7 +208,7 @@ export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
 
   if(web3ContextConnected.status === 'connectedReadonly') {
     return (<>
-      children
+      {children}
     </>)
   }
 

@@ -40,31 +40,33 @@ function MockContextProvider({ children, title, termsAcceptance }: MockContextPr
   )
 }
 
-stories.add('Wallet Connection in Progress', () => {
-  return (
-    <MockContextProvider
-      title="Wallet Connection in Progress"
-      termsAcceptance={{
-        stage: 'walletConnectionInProgress',
-      }}
-    >
-      <TermsOfService />
-    </MockContextProvider>
-  )
-})
+// hidden state
+// stories.add('Wallet Connection in Progress', () => {
+//   return (
+//     <MockContextProvider
+//       title="Wallet Connection in Progress"
+//       termsAcceptance={{
+//         stage: 'walletConnectionInProgress',
+//       }}
+//     >
+//       <TermsOfService />
+//     </MockContextProvider>
+//   )
+// })
 
-stories.add('Checking Acceptance', () => {
-  return (
-    <MockContextProvider
-      title="Checking Acceptance"
-      termsAcceptance={{
-        stage: 'acceptanceCheckInProgress',
-      }}
-    >
-      <TermsOfService />
-    </MockContextProvider>
-  )
-})
+// hidden state
+// stories.add('Checking Acceptance', () => {
+//   return (
+//     <MockContextProvider
+//       title="Checking Acceptance"
+//       termsAcceptance={{
+//         stage: 'acceptanceCheckInProgress',
+//       }}
+//     >
+//       <TermsOfService />
+//     </MockContextProvider>
+//   )
+// })
 
 stories.add('Checking Acceptance Failed', () => {
   return (
@@ -198,15 +200,16 @@ stories.add('Acceptance save failed', () => {
   )
 })
 
-stories.add('Acceptance accepted', () => {
-  return (
-    <MockContextProvider
-      title="Acceptance accepted"
-      termsAcceptance={{
-        stage: 'acceptanceAccepted',
-      }}
-    >
-      <TermsOfService />
-    </MockContextProvider>
-  )
-})
+// hidden state
+// stories.add('Acceptance accepted', () => {
+//   return (
+//     <MockContextProvider
+//       title="Acceptance accepted"
+//       termsAcceptance={{
+//         stage: 'acceptanceAccepted',
+//       }}
+//     >
+//       <TermsOfService />
+//     </MockContextProvider>
+//   )
+// })
