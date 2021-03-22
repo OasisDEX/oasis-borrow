@@ -66,17 +66,13 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
-import { HasGasEstimation } from '../helpers/form'
-import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
-import {
-  checkAcceptanceFromApi$,
-  saveAcceptanceFromApi$,
-} from '../features/termsOfService/termsAcceptanceApi'
 import {
   checkAcceptanceLocalStorage$,
   saveAcceptanceLocalStorage$,
 } from '../features/termsOfService/termAcceptanceLocal'
+import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
+import { HasGasEstimation } from '../helpers/form'
 
 export type TxData =
   | OpenData

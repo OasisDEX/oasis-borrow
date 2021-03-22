@@ -1,10 +1,11 @@
 import { useAppContext } from 'components/AppContextProvider'
-import { WithConnection, WithWalletConnection } from 'components/connectWallet/ConnectWallet'
+import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { VaultsOverviewView } from 'features/vaultsOverview/VaultsOverviewView'
 import { useObservable } from 'helpers/observableHook'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
+
 import { WithTermsOfService } from '../../../features/termsOfService/TermsOfService'
 
 // TODO Move this to /features

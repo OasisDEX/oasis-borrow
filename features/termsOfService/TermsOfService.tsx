@@ -1,7 +1,6 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAppContext } from 'components/AppContextProvider'
-import { AppLink } from 'components/Links'
 import { Modal, ModalErrorMessage } from 'components/Modal'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
