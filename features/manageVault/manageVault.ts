@@ -241,22 +241,11 @@ export type DefaultManageVaultState = {
   progress?: () => void
   reset?: () => void
   toggle?: () => void
-  //change?: (change: ManualChange) => void
 
-  collateralAllowance?: BigNumber
-  daiAllowance?: BigNumber
-
-  collateralAllowanceAmount?: BigNumber
-  updateCollateralAllowanceAmount?: (amount?: BigNumber) => void
-  setCollateralAllowanceAmountUnlimited?: (amount?: BigNumber) => void
-  setCollateralAllowanceAmountToDepositAmount?: (amount?: BigNumber) => void
-  resetCollateralAllowanceAmount?: () => void
-
-  daiAllowanceAmount?: BigNumber
-  updateDaiAllowanceAmount?: (amount?: BigNumber) => void
-  setDaiAllowanceAmountUnlimited?: (amount?: BigNumber) => void
-  setDaiAllowanceAmountToPaybackAmount?: (amount?: BigNumber) => void
-  resetDaiAllowanceAmount?: () => void
+  showDepositAndGenerateOption: Boolean
+  showPaybackAndWithdrawOption: Boolean
+  toggleDepositAndGenerateOption?: () => void
+  togglePaybackAndWithdrawOption?: () => void
 
   // deposit
   depositAmount?: BigNumber
@@ -289,6 +278,21 @@ export type DefaultManageVaultState = {
   updateWithdrawMax?: () => void
   updatePayback?: (paybackAmount?: BigNumber) => void
   updatePaybackMax?: () => void
+
+  collateralAllowance?: BigNumber
+  daiAllowance?: BigNumber
+
+  collateralAllowanceAmount?: BigNumber
+  updateCollateralAllowanceAmount?: (amount?: BigNumber) => void
+  setCollateralAllowanceAmountUnlimited?: (amount?: BigNumber) => void
+  setCollateralAllowanceAmountToDepositAmount?: (amount?: BigNumber) => void
+  resetCollateralAllowanceAmount?: () => void
+
+  daiAllowanceAmount?: BigNumber
+  updateDaiAllowanceAmount?: (amount?: BigNumber) => void
+  setDaiAllowanceAmountUnlimited?: (amount?: BigNumber) => void
+  setDaiAllowanceAmountToPaybackAmount?: (amount?: BigNumber) => void
+  resetDaiAllowanceAmount?: () => void
 
   // Ilk information
   maxDebtPerUnitCollateral: BigNumber // Updates
@@ -328,7 +332,9 @@ export function resetAllowances(change: (ch: ManageVaultChange) => void) {
   change({ kind: 'daiAllowanceAmount', daiAllowanceAmount: maxUint256 })
 }
 
-export function resetAmountDefaults(change: (ch: ManageVaultChange) => void) {
+export function resetDefaults(change: (ch: ManageVaultChange) => void) {
+  change({ kind: 'showDepositAndGenerateOption', showDepositAndGenerateOption: false })
+  change({ kind: 'showPaybackAndWithdrawOption', showPaybackAndWithdrawOption: false })
   clearDepositAndGenerate(change)
   clearPaybackAndWithdraw(change)
   resetAllowances(change)
@@ -355,6 +361,18 @@ function addTransitions(
       updateWithdrawMax: () => actionWithdrawMax(state, change),
       updatePayback: (amount?: BigNumber) => actionPayback(state, change, amount),
       updatePaybackMax: () => actionPaybackMax(state, change),
+
+      toggleDepositAndGenerateOption: () =>
+        change({
+          kind: 'showDepositAndGenerateOption',
+          showDepositAndGenerateOption: !state.showDepositAndGenerateOption,
+        }),
+      togglePaybackAndWithdrawOption: () =>
+        change({
+          kind: 'showPaybackAndWithdrawOption',
+          showPaybackAndWithdrawOption: !state.showPaybackAndWithdrawOption,
+        }),
+
       toggle: () => toggleEditing(state, change),
       progress: () => progressEditing(state, change),
     }
@@ -507,6 +525,8 @@ export const defaultManageVaultState: DefaultManageVaultState = {
   safeConfirmations: 0,
   collateralAllowanceAmount: maxUint256,
   daiAllowanceAmount: maxUint256,
+  showDepositAndGenerateOption: false,
+  showPaybackAndWithdrawOption: false,
 }
 
 export function createManageVault$(

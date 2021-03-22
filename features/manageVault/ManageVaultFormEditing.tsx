@@ -187,8 +187,6 @@ function ManageVaultFormDetails({
 export function ManageVaultFormEditing(props: ManageVaultState) {
   const { t } = useTranslation()
 
-  const [showDepositAndGenerateOption, setShowDepositAndGenerateOption] = useState<boolean>(false)
-  const [showPaybackAndWithdrawOption, setShowPaybackAndWithdrawOption] = useState<boolean>(false)
   const [showManageVaultFormDetails, setShowManageVaultFormDetails] = useState<boolean>(false)
 
   const {
@@ -201,17 +199,11 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
     progress,
     stage,
     token,
+    toggleDepositAndGenerateOption,
+    togglePaybackAndWithdrawOption,
+    showDepositAndGenerateOption,
+    showPaybackAndWithdrawOption,
   } = props
-
-  function toggleDepositAndGenerateOption(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    e.preventDefault()
-    setShowDepositAndGenerateOption(!showDepositAndGenerateOption)
-  }
-
-  function togglePaybackAndWithdrawOption(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    e.preventDefault()
-    setShowPaybackAndWithdrawOption(!showPaybackAndWithdrawOption)
-  }
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
@@ -222,6 +214,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
     e.preventDefault()
     setShowManageVaultFormDetails(true)
   }
+
   function handleMouseLeave(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault()
     setShowManageVaultFormDetails(false)
@@ -238,15 +231,8 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
 
   const inverted = stage === 'daiEditing'
 
-  useEffect(() => {
-    if (!depositAmount && stage === 'collateralEditing') setShowDepositAndGenerateOption(false)
-    if (!withdrawAmount && stage === 'collateralEditing') setShowPaybackAndWithdrawOption(false)
-    if (!generateAmount && stage === 'daiEditing') setShowDepositAndGenerateOption(false)
-    if (!paybackAmount && stage === 'daiEditing') setShowPaybackAndWithdrawOption(false)
-  }, [stage, depositAmount])
-
-  const showDepositAndGenerateOptionText = depositAmount || generateAmount
-  const showPaybackAndWithdrawOptionText = paybackAmount || withdrawAmount
+  const showDepositAndGenerateOptionButton = depositAmount || generateAmount
+  const showPaybackAndWithdrawOptionButton = paybackAmount || withdrawAmount
 
   return (
     <Grid onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
@@ -257,7 +243,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
         }}
       >
         {inverted ? <GenerateInput {...props} /> : <DepositInput {...props} />}
-        {showDepositAndGenerateOptionText && (
+        {showDepositAndGenerateOptionButton && (
           <Text
             mt={3}
             sx={{
@@ -268,7 +254,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
               userSelect: 'none',
               lineHeight: 1.25,
             }}
-            onClick={toggleDepositAndGenerateOption}
+            onClick={toggleDepositAndGenerateOption!}
           >
             {showDepositAndGenerateOption ? <MinusIcon /> : <PlusIcon />}
             {t('manage-vault.action-option', {
@@ -297,7 +283,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
         }}
       >
         {inverted ? <PaybackInput {...props} /> : <WithdrawInput {...props} />}
-        {showPaybackAndWithdrawOptionText && (
+        {showPaybackAndWithdrawOptionButton && (
           <Text
             mt={3}
             sx={{
@@ -308,7 +294,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
               userSelect: 'none',
               lineHeight: 1.25,
             }}
-            onClick={togglePaybackAndWithdrawOption}
+            onClick={togglePaybackAndWithdrawOption!}
           >
             {showPaybackAndWithdrawOption ? <MinusIcon /> : <PlusIcon />}
             {t('manage-vault.action-option', {

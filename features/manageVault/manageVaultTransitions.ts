@@ -4,7 +4,7 @@ import {
   ManageVaultChange,
   ManageVaultEditingStage,
   ManageVaultState,
-  resetAmountDefaults,
+  resetDefaults,
 } from './manageVault'
 import {
   manageVaultDepositAndGenerate,
@@ -62,14 +62,14 @@ export function toggleEditing(
 
   change({ kind: 'stage', stage: otherEditing })
   change({ kind: 'originalEditingStage', originalEditingStage: otherEditing })
-  resetAmountDefaults(change)
+  resetDefaults(change)
 }
 
 export function resetBackToEditingStage(
   { originalEditingStage }: ManageVaultState,
   change: (ch: ManageVaultChange) => void,
 ) {
-  resetAmountDefaults(change)
+  resetDefaults(change)
   change({ kind: 'stage', stage: originalEditingStage })
 }
 

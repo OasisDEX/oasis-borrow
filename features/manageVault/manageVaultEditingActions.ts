@@ -31,6 +31,7 @@ export function actionDeposit(
     depositAmountUSD,
   })
   if (!depositAmount && stage === 'collateralEditing') {
+    change({ kind: 'showDepositAndGenerateOption', showDepositAndGenerateOption: false })
     clearDepositAndGenerate(change)
   }
 }
@@ -55,6 +56,7 @@ export function actionDepositUSD(
     depositAmount,
   })
   if (!depositAmountUSD && stage === 'collateralEditing') {
+    change({ kind: 'showDepositAndGenerateOption', showDepositAndGenerateOption: false })
     clearDepositAndGenerate(change)
   }
 }
@@ -79,6 +81,7 @@ export function actionGenerate(
     generateAmount,
   })
   if (!generateAmount && stage === 'daiEditing') {
+    change({ kind: 'showDepositAndGenerateOption', showDepositAndGenerateOption: false })
     clearDepositAndGenerate(change)
   }
 }
@@ -109,6 +112,7 @@ export function actionWithdraw(
     withdrawAmountUSD,
   })
   if (!withdrawAmount && stage === 'collateralEditing') {
+    change({ kind: 'showPaybackAndWithdrawOption', showPaybackAndWithdrawOption: false })
     clearPaybackAndWithdraw!(change)
   }
 }
@@ -133,6 +137,7 @@ export function actionWithdrawUSD(
     withdrawAmount,
   })
   if (!withdrawAmountUSD && stage === 'collateralEditing') {
+    change({ kind: 'showPaybackAndWithdrawOption', showPaybackAndWithdrawOption: false })
     clearPaybackAndWithdraw(change)
   }
 }
@@ -157,6 +162,7 @@ export function actionPayback(
     paybackAmount,
   })
   if (!paybackAmount && stage === 'daiEditing') {
+    change({ kind: 'showPaybackAndWithdrawOption', showPaybackAndWithdrawOption: false })
     clearPaybackAndWithdraw(change)
   }
 }
