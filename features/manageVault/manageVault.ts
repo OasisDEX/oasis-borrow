@@ -1,6 +1,5 @@
-
 import { BigNumber } from 'bignumber.js'
-import {   maxUint256 } from 'blockchain/calls/erc20'
+import { maxUint256 } from 'blockchain/calls/erc20'
 import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
@@ -9,15 +8,8 @@ import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userT
 import { ApplyChange, applyChange, Changes } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
-import { combineLatest,  merge, Observable, of, Subject } from 'rxjs'
-import {
-  distinctUntilChanged,
-  first,
-  map,
-  scan,
-  shareReplay,
-  switchMap,
-} from 'rxjs/operators'
+import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
+import { distinctUntilChanged, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import {
   actionDeposit,
