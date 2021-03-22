@@ -76,8 +76,8 @@ function createStory({
       ...(ilk === 'ETH-A'
         ? protoUserETHTokenInfo
         : ilk === 'WBTC-A'
-        ? protoUserWBTCTokenInfo
-        : protoUserUSDCTokenInfo),
+          ? protoUserWBTCTokenInfo
+          : protoUserUSDCTokenInfo),
       ...(userTokenInfo || {}),
     }
 
@@ -407,6 +407,17 @@ export const ManageSuccess = createStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
+  withdrawAmount: new BigNumber('0.5'),
+  paybackAmount: new BigNumber('300'),
+  userTokenInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
+  proxyAddress: '0xProxyAddress',
+  stage: 'manageSuccess',
+})
+
+export const VaultAtRisk = createStory({
+  ilk: 'ETH-A',
+  collateral: one,
+  debt: new BigNumber('4000'),
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
   userTokenInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },

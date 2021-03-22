@@ -13,7 +13,7 @@ import {
 } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
@@ -22,26 +22,33 @@ import moment from 'moment'
 import { ManageVaultState, ManualChange } from './manageVault'
 
 
-function ManageVaultDetails({
-  afterCollateralizationRatio,
-  afterLiquidationPrice,
-  token,
-  collateralizationRatio,
-  liquidationPrice,
-  lockedCollateral,
-  lockedCollateralPrice,
+function ManageVaultDetails(props: ManageVaultState) {
+  const {
+    afterCollateralizationRatio,
+    afterLiquidationPrice,
+    token,
+    collateralizationRatio,
+    liquidationPrice,
+    lockedCollateral,
+    lockedCollateralPrice,
+    liquidationRatio,
 
-  currentCollateralPrice,
-  nextCollateralPrice,
-  isStaticCollateralPrice,
-  dateNextCollateralPrice,
-  ilk,
-  id,
-}: ManageVaultState) {
+    currentCollateralPrice,
+    nextCollateralPrice,
+    isStaticCollateralPrice,
+    dateNextCollateralPrice,
+    ilk,
+    id,
+  } = props
   const { t } = useTranslation()
   const collRatio = collateralizationRatio.eq(zero)
     ? '--'
     : formatPercent(collateralizationRatio.times(100), { precision: 2 })
+  const collRatioColor = collateralizationRatio.isZero()
+    ? 'primary'
+    : collateralizationRatio.lte(liquidationRatio.times(1.2))
+      ? 'onError'
+      : 'onSuccess'
 
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
     ? '--'
@@ -80,27 +87,27 @@ function ManageVaultDetails({
           <Text>{t('vault.header', { ilk, id })}</Text>
         </Flex>
       </Heading>
-      <Box>
+      <Box sx={{ mt: 5 }}>
         <Heading variant="subheader" as="h2">{t('system.liquidation-price')}</Heading>
         <Text variant="display">${liqPrice}</Text>
         <Text>
           {t('after')}: ${afterLiqPrice}
         </Text>
       </Box>
-      <Box sx={{ textAlign: 'right' }}>
+      <Box sx={{ textAlign: 'right', mt: 5 }}>
         <Heading variant="subheader" as="h2">{t('system.collateralization-ratio')}</Heading>
-        <Text variant="display">{collRatio}</Text>
+        <Text sx={{ color: collRatioColor }} variant="display">{collRatio}</Text>
         <Text>
           {t('after')}: {afterCollRatio}
         </Text>
       </Box>
       {isStaticCollateralPrice ? (
-        <Box>
+        <Box sx={{ mt: 6 }}>
           <Heading variant="subheader" as="h2">{`${token}/USD price`}</Heading>
           <Text variant="header2">${formatAmount(currentCollateralPrice, 'USD')}</Text>
         </Box>
       ) : (
-        <Box>
+        <Box sx={{ mt: 6 }}>
           <Box>
             <Heading variant="subheader" as="h2">{`Current ${token}/USD price`}</Heading>
             <Text variant="header2" sx={{ py: 3 }}>${formatAmount(currentCollateralPrice, 'USD')}</Text>
@@ -108,13 +115,25 @@ function ManageVaultDetails({
 
           {
             nextCollateralPrice &&
-            <Flex sx={{ alignItems: 'center' }}>
+            <Flex sx={{ alignItems: 'flex-start' }}>
               <Heading variant="subheader" as="h3">
                 <Box sx={{ mr: 2 }}>
-                  <Text>{t('vault.next-price', { count: newPriceIn })}</Text>
+                  {
+                    newPriceIn < 2
+                      ? <Trans
+                        i18nKey="next-price-any-time"
+                        count={newPriceIn}
+                        components={[<br />]}
+                      />
+                      : <Trans
+                        i18nKey="vault.next-price"
+                        count={newPriceIn}
+                        components={[<br />]}
+                      />
+                  }
                 </Box>
               </Heading>
-              <Flex variant="paragraph2" sx={{ fontWeight: 'semiBold', color: priceChangeColor }}>
+              <Flex variant="paragraph2" sx={{ fontWeight: 'semiBold', alignItems: 'center', color: priceChangeColor }}>
                 <Text >
                   ${formatAmount(nextCollateralPrice || zero, 'USD')}
                 </Text>
@@ -123,7 +142,7 @@ function ManageVaultDetails({
                 </Text>
                 {
                   nextPriceDiff.isZero()
-                    ? '-'
+                    ? null
                     : <Icon sx={{ ml: 2 }} name={nextPriceDiff.gt(zero) ? 'increase' : 'decrease'} />
                 }
               </Flex>
@@ -131,13 +150,14 @@ function ManageVaultDetails({
           }
         </Box>
       )}
-      <Box sx={{ textAlign: 'right' }}>
+      <Box sx={{ textAlign: 'right', mt: 6 }}>
         <Heading variant="subheader" as="h2">{t('system.collateral-locked')}</Heading>
         <Text variant="header2" sx={{ py: 3 }}>
           {locked} {token}
         </Text>
         <Text>$ {lockedUSD}</Text>
       </Box>
+      <VaultDetails {...props} />
     </Grid>
   )
 }
@@ -1085,7 +1105,7 @@ function ManageVaultForm(props: ManageVaultState) {
 function VaultDetails(props: ManageVaultState) {
   const { t } = useTranslation()
   return (
-    <Box sx={{ gridColumn: '1/2' }}>
+    <Box sx={{ gridColumn: '1/3', mt: 6 }}>
       <Heading variant="header3" mb="4">
         {t('vault.vault-details')}
       </Heading>
@@ -1160,7 +1180,6 @@ export function ManageVaultContainer(props: ManageVaultState) {
     <Grid columns="2fr 1fr" gap={4}>
       <ManageVaultDetails {...props} />
       <ManageVaultForm {...props} />
-      <VaultDetails {...props} />
     </Grid>
   )
 }

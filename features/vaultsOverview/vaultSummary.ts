@@ -25,11 +25,11 @@ function getAssetRatio(vaults: Vault[], totalLocked: BigNumber) {
   return mapValues(vaultsByToken, (vaults) => getTotalCollateralPrice(vaults).div(totalLocked))
 }
 
-function isVaultAtRisk(vault: Vault) {
+export function isVaultAtRisk(vault: Vault) {
   if (vault.debt.eq(zero)) {
     return false
   }
-  const safetyMargin = 1.2 //
+  const safetyMargin = 1.2
 
   return vault.collateralizationRatio?.div(vault.liquidationRatio).lt(safetyMargin)
 }
