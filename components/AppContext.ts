@@ -67,6 +67,13 @@ import {
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
 import { HasGasEstimation } from '../helpers/form'
+import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
+import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
+import { checkAcceptanceFromApi$, saveAcceptanceFromApi$ } from '../features/termsOfService/termsAcceptanceApi'
+import {
+  checkAcceptanceLocalStorage$,
+  saveAcceptanceLocalStorage$,
+} from '../features/termsOfService/termAcceptanceLocal'
 
 export type TxData =
   | OpenData
@@ -262,8 +269,17 @@ export function setupAppContext() {
   )
   const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
 
+  const termsAcceptance$ = createTermsAcceptance$(
+    web3Context$,
+    'version-1',
+    jwtAuthSetupToken$,
+    checkAcceptanceLocalStorage$,     // checkAcceptanceFromApi$,
+    saveAcceptanceLocalStorage$       // saveAcceptanceFromApi$,
+  )
+
   return {
     web3Context$,
+    web3ContextConnected$,
     setupWeb3Context$,
     initializedAccount$,
     context$,
@@ -282,6 +298,7 @@ export function setupAppContext() {
     redirectState$,
     accountBalances$,
     collateralPrices$,
+    termsAcceptance$
   }
 }
 

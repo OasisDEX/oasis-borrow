@@ -4,6 +4,8 @@ import { OpenVaultView } from 'features/openVault/OpenVaultView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
+import { WithTermsOfService } from '../../../features/termsOfService/TermsOfService'
+
 export async function getServerSideProps(ctx: any) {
   return {
     props: {
@@ -16,7 +18,9 @@ export async function getServerSideProps(ctx: any) {
 export default function OpenVault({ ilk }: { ilk: string }) {
   return (
     <WithWalletConnection>
-      <OpenVaultView ilk={ilk} />
+      <WithTermsOfService>
+        <OpenVaultView ilk={ilk}/>
+      </WithTermsOfService>
     </WithWalletConnection>
   )
 }

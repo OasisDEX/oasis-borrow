@@ -113,7 +113,7 @@ export function LandingView() {
   )
 
   if (landing === undefined) {
-    return null
+    return <>loading...</>
   }
 
   return (

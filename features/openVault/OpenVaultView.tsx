@@ -661,7 +661,7 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
   const openVault = useObservable(openVault$(ilk))
 
   if (!openVault) {
-    return null
+    return <>loading...</>
   }
 
   if (openVault.isIlkValidationStage) {
