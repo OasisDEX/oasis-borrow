@@ -112,7 +112,7 @@ export function LandingView() {
     [landing?.ilks.filters],
   )
 
-  if(landingError !== undefined) {
+  if (landingError !== undefined) {
     console.log(landingError)
     return <>Error while fetching data!</>
   }
@@ -120,8 +120,6 @@ export function LandingView() {
   if (landing === undefined) {
     return <>loading...</>
   }
-
-
 
   return (
     <Grid sx={{ flex: 1 }}>

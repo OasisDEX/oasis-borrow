@@ -206,10 +206,8 @@ export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
     return null
   }
 
-  if(web3ContextConnected.status === 'connectedReadonly') {
-    return (<>
-      {children}
-    </>)
+  if (web3ContextConnected.status === 'connectedReadonly') {
+    return <>{children}</>
   }
 
   return (

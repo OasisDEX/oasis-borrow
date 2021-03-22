@@ -19,7 +19,7 @@ export default function OpenVault({ ilk }: { ilk: string }) {
   return (
     <WithWalletConnection>
       <WithTermsOfService>
-        <OpenVaultView ilk={ilk}/>
+        <OpenVaultView ilk={ilk} />
       </WithTermsOfService>
     </WithWalletConnection>
   )

@@ -69,7 +69,10 @@ import { createTransactionManager } from '../features/account/transactionManager
 import { HasGasEstimation } from '../helpers/form'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
-import { checkAcceptanceFromApi$, saveAcceptanceFromApi$ } from '../features/termsOfService/termsAcceptanceApi'
+import {
+  checkAcceptanceFromApi$,
+  saveAcceptanceFromApi$,
+} from '../features/termsOfService/termsAcceptanceApi'
 import {
   checkAcceptanceLocalStorage$,
   saveAcceptanceLocalStorage$,
@@ -273,8 +276,8 @@ export function setupAppContext() {
     web3Context$,
     'version-1',
     jwtAuthSetupToken$,
-    checkAcceptanceLocalStorage$,     // checkAcceptanceFromApi$,
-    saveAcceptanceLocalStorage$       // saveAcceptanceFromApi$,
+    checkAcceptanceLocalStorage$, // checkAcceptanceFromApi$,
+    saveAcceptanceLocalStorage$, // saveAcceptanceFromApi$,
   )
 
   return {
@@ -298,7 +301,7 @@ export function setupAppContext() {
     redirectState$,
     accountBalances$,
     collateralPrices$,
-    termsAcceptance$
+    termsAcceptance$,
   }
 }
 
