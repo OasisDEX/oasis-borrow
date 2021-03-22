@@ -10,11 +10,27 @@ export function useObservable<O extends Observable<any>>(o$: O): Unpack<O> | und
   const [value, setValue] = useState<Unpack<O> | undefined>(undefined)
 
   useEffect(() => {
-    const subscription = o$.subscribe((v: Unpack<O>) => {
-      setValue(v)
-    })
+    const subscription = o$.subscribe(
+      (v: Unpack<O>) => setValue(v),
+      (error) => console.log('error', error)
+    )
     return () => subscription.unsubscribe()
   }, [o$])
 
   return value
+}
+
+export function useObservableWithError<O extends Observable<any>>(o$: O): [Unpack<O> | undefined, any] {
+  const [value, setValue] = useState<Unpack<O> | undefined>(undefined)
+  const [error, setError] = useState<any>(undefined)
+
+  useEffect(() => {
+    const subscription = o$.subscribe(
+      (v: Unpack<O>) => setValue(v),
+      (e) => setError(e)
+    )
+    return () => subscription.unsubscribe()
+  }, [o$])
+
+  return [value, error]
 }
