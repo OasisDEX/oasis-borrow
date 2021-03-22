@@ -1,6 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
@@ -643,10 +642,26 @@ function ManageVaultForm(props: ManageVaultState) {
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
     isManageStage,
+    toggleIlkDetails,
+    showIlkDetails,
   } = props
 
+  function handleMouseEnter(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.preventDefault()
+    if (isEditingStage && !showIlkDetails) {
+      toggleIlkDetails!()
+    }
+  }
+
+  function handleMouseLeave(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.preventDefault()
+    if (isEditingStage && showIlkDetails) {
+      toggleIlkDetails!()
+    }
+  }
+
   return (
-    <Box>
+    <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <Card>
         <ManageVaultFormHeader {...props} />
         {isEditingStage && <ManageVaultFormEditing {...props} />}

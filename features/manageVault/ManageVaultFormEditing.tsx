@@ -1,11 +1,10 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
-import { BigNumber } from 'bignumber.js'
 import { VaultActionInput } from 'components/VaultActionInput'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Box, Button, Card, Flex, Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
@@ -131,7 +130,7 @@ function PaybackInput({
   )
 }
 
-function ManageVaultFormDetails({
+function ManageVaultIlkDetails({
   ilkDebtAvailable,
   liquidationRatio,
   stabilityFee,
@@ -187,8 +186,6 @@ function ManageVaultFormDetails({
 export function ManageVaultFormEditing(props: ManageVaultState) {
   const { t } = useTranslation()
 
-  const [showManageVaultFormDetails, setShowManageVaultFormDetails] = useState<boolean>(false)
-
   const {
     depositAmount,
     withdrawAmount,
@@ -203,21 +200,12 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
     togglePaybackAndWithdrawOption,
     showDepositAndGenerateOption,
     showPaybackAndWithdrawOption,
+    showIlkDetails,
   } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
     progress!()
-  }
-
-  function handleMouseEnter(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    e.preventDefault()
-    setShowManageVaultFormDetails(true)
-  }
-
-  function handleMouseLeave(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    e.preventDefault()
-    setShowManageVaultFormDetails(false)
   }
 
   const errorString = errorMessages.join(',\n')
@@ -235,7 +223,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
   const showPaybackAndWithdrawOptionButton = paybackAmount || withdrawAmount
 
   return (
-    <Grid onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <Grid>
       <Box
         sx={{
           opacity: disableDepositAndGenerate ? 0.5 : 1,
@@ -321,7 +309,7 @@ export function ManageVaultFormEditing(props: ManageVaultState) {
       <Button onClick={handleProgress} disabled={hasError}>
         {t('confirm')}
       </Button>
-      {showManageVaultFormDetails && <ManageVaultFormDetails {...props} />}
+      {showIlkDetails && <ManageVaultIlkDetails {...props} />}
     </Grid>
   )
 }

@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
+
 import { ManageVaultChange, ManageVaultState } from './manageVault'
 
 export function clearDepositAndGenerate(change: (ch: ManageVaultChange) => void) {

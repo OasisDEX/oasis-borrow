@@ -1,32 +1,24 @@
-import { TxStatus } from '@oasisdex/transactions'
+
 import { BigNumber } from 'bignumber.js'
-import { approve, ApproveData, maxUint256 } from 'blockchain/calls/erc20'
-import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
-import {
-  depositAndGenerate,
-  DepositAndGenerateData,
-  withdrawAndPayback,
-  WithdrawAndPaybackData,
-} from 'blockchain/calls/proxyActions'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
+import {   maxUint256 } from 'blockchain/calls/erc20'
 import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
-import { ApplyChange, applyChange, Changes, transactionToX } from 'helpers/form'
+import { ApplyChange, applyChange, Changes } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
-import { combineLatest, iif, merge, Observable, of, Subject } from 'rxjs'
+import { combineLatest,  merge, Observable, of, Subject } from 'rxjs'
 import {
   distinctUntilChanged,
-  filter,
   first,
   map,
   scan,
   shareReplay,
   switchMap,
 } from 'rxjs/operators'
+
 import {
   actionDeposit,
   actionDepositMax,
@@ -242,6 +234,9 @@ export type DefaultManageVaultState = {
   reset?: () => void
   toggle?: () => void
 
+  showIlkDetails: Boolean
+  toggleIlkDetails?: () => void
+
   showDepositAndGenerateOption: Boolean
   showPaybackAndWithdrawOption: Boolean
   toggleDepositAndGenerateOption?: () => void
@@ -361,7 +356,6 @@ function addTransitions(
       updateWithdrawMax: () => actionWithdrawMax(state, change),
       updatePayback: (amount?: BigNumber) => actionPayback(state, change, amount),
       updatePaybackMax: () => actionPaybackMax(state, change),
-
       toggleDepositAndGenerateOption: () =>
         change({
           kind: 'showDepositAndGenerateOption',
@@ -372,7 +366,8 @@ function addTransitions(
           kind: 'showPaybackAndWithdrawOption',
           showPaybackAndWithdrawOption: !state.showPaybackAndWithdrawOption,
         }),
-
+      toggleIlkDetails: () =>
+        change({ kind: 'showIlkDetails', showIlkDetails: !state.showIlkDetails }),
       toggle: () => toggleEditing(state, change),
       progress: () => progressEditing(state, change),
     }
@@ -527,6 +522,7 @@ export const defaultManageVaultState: DefaultManageVaultState = {
   daiAllowanceAmount: maxUint256,
   showDepositAndGenerateOption: false,
   showPaybackAndWithdrawOption: false,
+  showIlkDetails: false,
 }
 
 export function createManageVault$(
