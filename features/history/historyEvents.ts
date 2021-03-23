@@ -2,60 +2,54 @@ interface HistoryEventBase {
   hash: string
   timestamp: string
   id: string
-  vaultCreator: null
-  collateralAmount: null
-  daiAmount: null
-  transferFrom: null
-  transferTo: null
-  cdpId: null
 }
 
-interface VaultOpenedEvent extends Omit<HistoryEventBase, 'vaultCreator' | 'cdpId'> {
+interface VaultOpenedEvent extends HistoryEventBase {
   kind: 'OPEN'
   vaultCreator: string
   cdpId: string
 }
 
-interface DepositEvent extends Omit<HistoryEventBase, 'collateralAmount'> {
+interface DepositEvent extends HistoryEventBase {
   kind: 'DEPOSIT'
   collateralAmount: string
 }
 
-interface WithdrawEvent extends Omit<HistoryEventBase, 'collateralAmount'> {
+interface WithdrawEvent extends HistoryEventBase {
   kind: 'WITHDRAW'
   collateralAmount: string
 }
 
-interface GenerateEvent extends Omit<HistoryEventBase, 'daiAmount'> {
+interface GenerateEvent extends HistoryEventBase {
   kind: 'GENERATE'
   daiAmount: string
 }
 
-interface PaybackEvent extends Omit<HistoryEventBase, 'daiAmount'> {
+interface PaybackEvent extends HistoryEventBase {
   kind: 'PAYBACK'
   daiAmount: string
 }
 
-interface DepositGenerateEvent extends Omit<HistoryEventBase, 'daiAmount' | 'collateralAmount'> {
+interface DepositGenerateEvent extends HistoryEventBase {
   kind: 'DEPOSIT-GENERATE'
   daiAmount: string
   collateralAmount: string
 }
 
-interface WithdrawPaybackEvent extends Omit<HistoryEventBase, 'daiAmount' | 'collateralAmount'> {
+interface WithdrawPaybackEvent extends HistoryEventBase {
   kind: 'WITHDRAW-PAYBACK'
   daiAmount: string
   collateralAmount: string
 }
 
-interface AuctionStartedEvent extends Omit<HistoryEventBase, 'daiAmount' | 'collateralAmount'> {
+interface AuctionStartedEvent extends HistoryEventBase {
   kind: 'AUCTION_STARTED'
   collateralAmount: string
   daiAmount: string
   // auctionId: string,
 }
 
-interface VaultTransferredEvent extends Omit<HistoryEventBase, 'transferFrom' | 'transferTo'> {
+interface VaultTransferredEvent extends HistoryEventBase {
   kind: 'TRANSFER'
   transferFrom: string
   transferTo: string

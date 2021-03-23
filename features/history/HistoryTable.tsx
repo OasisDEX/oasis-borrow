@@ -30,15 +30,15 @@ const columns: ColumnDef<ColumnData, {}>[] = [
                 <Trans
                     i18nKey={`history.${event.kind.toLowerCase()}`}
                     values={{
-                        transferTo: event.transferTo && formatAddress(event.transferTo),
-                        transferFrom: event.transferFrom && formatAddress(event.transferFrom),
-                        collateralAmount: event.collateralAmount
+                        transferTo: 'transferTo' in event && formatAddress(event.transferTo),
+                        transferFrom: 'transferFrom' in event && formatAddress(event.transferFrom),
+                        collateralAmount: 'collateralAmount' in event
                             ? formatCryptoBalance(new BigNumber(event.collateralAmount).abs())
                             : 0,
-                        daiAmount: event.daiAmount
+                        daiAmount: 'daiAmount' in event
                             ? formatCryptoBalance(new BigNumber(event.daiAmount).abs())
                             : 0,
-                        cdpId: event.cdpId,
+                        cdpId: 'cdpId' in event ? event.cdpId : undefined,
                         token: event.token,
                     }}
                     components={[<Text as="strong" variant="strong" />]}
