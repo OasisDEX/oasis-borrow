@@ -542,9 +542,7 @@ export function createManageVault$(
             debt,
             collateralizationRatio,
             liquidationPrice,
-            liquidationPenalty,
             freeCollateral,
-            stabilityFee,
             controller,
           }) => {
             return combineLatest(
@@ -558,7 +556,14 @@ export function createManageVault$(
                 ([
                   defaultState,
                   userTokenInfo,
-                  { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
+                  {
+                    maxDebtPerUnitCollateral,
+                    ilkDebtAvailable,
+                    debtFloor,
+                    liquidationRatio,
+                    stabilityFee,
+                    liquidationPenalty,
+                  },
                   proxyAddress,
                 ]) => {
                   const collateralAllowance$ =

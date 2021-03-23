@@ -522,6 +522,8 @@ const oasisBaseTheme = {
 
     text: {
       muted: '#708390',
+      off: '#686986',
+      subtitle: '#787A9B',
       contrast: '#FFF',
     },
 
@@ -567,6 +569,11 @@ const oasisBaseTheme = {
     smallButton: 1.9,
   },
   text: {
+    display: {
+      fontFamily: 'heading',
+      fontWeight: 'bold',
+      fontSize: 8,
+    },
     header1: {
       fontFamily: 'heading',
       fontWeight: 'bold',
@@ -615,6 +622,10 @@ const oasisBaseTheme = {
       lineHeight: 'body',
       fontSize: 1,
       color: 'primary',
+    },
+    subheader: {
+      variant: 'text.paragraph2',
+      color: 'text.subtitle',
     },
     caption: {
       variant: 'paragraph4',

@@ -297,7 +297,8 @@
   "start-saving": "Start Saving",
   "system": {
     "asset": "Asset",
-    "available-to-withdraw": "Avail. to withdraw",
+    "available-to-withdraw": "Available to withdraw",
+    "available-to-generate": "Available to Generate",
     "coll-locked": "Coll. locked",
     "coll-ratio": "Coll Rato",
     "collateral": "Collateral",
@@ -312,10 +313,12 @@
     "in-your-wallet": "In Your wallet",
     "liquidation-penalty": "Liquidation Penalty",
     "liquidation-price": "Liquidation Price",
+    "liquidation-ratio": "Liquidation Ratio",
     "min-coll-ratio": "Min coll. ratio",
     "stability-fee": "Stability fee",
     "type": "Type",
-    "vault-id": "Vault ID"
+    "vault-id": "Vault ID",
+    "vault-dai-debt": "Vault DAI Debt"
   },
   "to-the-following-address": "to the following address",
   "token-balance": "{{token}} balance",
@@ -343,7 +346,11 @@
   "vault": {
     "current-price": "Current {{token}}/USD Price in {{time}}",
     "header": "{{ilk}} Vault #{{id}}",
-    "next-price": "Next price"
+    "next-price": "Next price in<0/>{{count}} minute",
+    "next-price_plural": "Next price in<0/>{{count}} minutes",
+    "next-price-any-time": "Next price in<0/><2 minutes",
+    "vault-details": "Vault Details",
+    "open-vault": "Open {{ilk}} Vault"
   },
   "vault-actions": {
     "deposit": "Deposit",
