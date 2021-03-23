@@ -1,6 +1,7 @@
 import { Vault } from 'blockchain/vaults'
 import { gql, GraphQLClient } from 'graphql-request'
 import flatten from 'lodash/flatten'
+import pickBy from 'lodash/pickBy'
 import getConfig from 'next/config'
 import { Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
@@ -75,7 +76,11 @@ export function createVaultHistory$(
     switchMap(() =>
       vault$(vaultId).pipe(
         switchMap((vault) => getVaultHistory(vault.address)),
-        map((events) => flatten(events.map(splitEvents))),
+        map((events) =>
+          flatten(events.map(splitEvents)).map(
+            (event) => pickBy(event, (value) => value !== null) as BorrowEvent,
+          ),
+        ),
       ),
     ),
   )

@@ -74,6 +74,15 @@ const customIcons = {
     ),
     viewBox: '0 0 45 45',
   },
+  minus: {
+    path: (
+      <path
+        d="M3 10C3 9.44772 3.44772 9 4 9H16C16.5523 9 17 9.44772 17 10C17 10.5523 16.5523 11 16 11H4C3.44772 11 3 10.5523 3 10Z"
+        fill="currentColor"
+      />
+    ),
+    viewBox: '0 0 20 20',
+  },
   ether_circle_color: {
     path: (
       <>
@@ -504,6 +513,7 @@ const oasisBaseTheme = {
     primaryAlt: '#D3D4D8',
     primaryEmphasis: '#626472',
     secondary: '#ECEFF9',
+    secondaryAlt: '#F3F7F9',
     background: '#F6F8F9',
     surface: '#FFF',
 
@@ -701,6 +711,16 @@ const oasisBaseTheme = {
     secondaryRounded: {
       variant: 'cards.secondary',
       borderRadius: 'large',
+    },
+    danger: {
+      variant: 'cards.primary',
+      borderColor: 'onError',
+      bg: 'error',
+    },
+    warning: {
+      variant: 'cards.primary',
+      borderColor: 'onWarning',
+      bg: 'warning',
     },
   },
   badges: {

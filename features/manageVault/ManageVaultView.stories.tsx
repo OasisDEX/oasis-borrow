@@ -44,7 +44,7 @@ interface Story {
   withdrawAmount?: BigNumber
   generateAmount?: BigNumber
   paybackAmount?: BigNumber
-  stage?: ManageVaultStage
+  stage: ManageVaultStage
   ilk: 'ETH-A' | 'WBTC-A' | 'USDC-A'
 }
 
@@ -85,6 +85,7 @@ function createStory({
       ilk === 'ETH-A' ? protoETHAIlkData : ilk === 'WBTC-A' ? protoWBTCAIlkData : protoUSDCAIlkData
 
     const newState: Partial<ManageVaultState> = {
+      stage,
       ...(depositAmount && {
         depositAmount,
         depositAmountUSD: depositAmount.times(protoUserTokenInfo.currentCollateralPrice),
@@ -99,7 +100,6 @@ function createStory({
       ...(paybackAmount && {
         paybackAmount,
       }),
-      ...(stage && { stage }),
     }
 
     const defaultState$ = of({ ...defaultManageVaultState, ...(newState || {}) })
@@ -189,14 +189,22 @@ const ManageVaultStoryContainer = ({ title }: { title?: string }) => {
   )
 }
 
-export const EditingStage = createStory({
+export const CollateralEditingStage = createStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
-  depositAmount: new BigNumber('2'),
-  generateAmount: new BigNumber('300'),
   userTokenInfo: { collateralBalance: new BigNumber('200') },
   proxyAddress: '0xProxyAddress',
+  stage: 'collateralEditing',
+})
+
+export const DaiEditingStage = createStory({
+  ilk: 'WBTC-A',
+  collateral: one,
+  debt: new BigNumber('3000'),
+  userTokenInfo: { collateralBalance: new BigNumber('200') },
+  proxyAddress: '0xProxyAddress',
+  stage: 'daiEditing',
 })
 
 export const ProxyWaitingForConfirmation = createStory({

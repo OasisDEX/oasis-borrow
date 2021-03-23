@@ -33,7 +33,7 @@ const columns: ColumnDef<ColumnData, {}>[] = [
             transferTo: 'transferTo' in event && formatAddress(event.transferTo),
             transferFrom: 'transferFrom' in event && formatAddress(event.transferFrom),
             collateralAmount:
-              'collateralAmount' in event
+              'collateralAmount' in event && event.collateralAmount
                 ? formatCryptoBalance(new BigNumber(event.collateralAmount).abs())
                 : 0,
             daiAmount:
