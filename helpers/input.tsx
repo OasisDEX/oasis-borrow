@@ -80,3 +80,11 @@ export function InputWithMax({
     />
   )
 }
+
+export function handleNumericInput(fn: (n?: BigNumber) => void) {
+  return (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/,/g, '')
+    const amount = value !== '' ? new BigNumber(value) : undefined
+    fn(amount)
+  }
+}
