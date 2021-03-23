@@ -36,7 +36,7 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
         {label}
       </TableSortHeader>
     ),
-    cell: ({ id }) => <Text>#{id}</Text>,
+    cell: ({ id }) => <Text>#{id.toString()}</Text>,
   },
   {
     headerLabel: 'system.liquidation-price',
