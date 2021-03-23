@@ -7,10 +7,12 @@ import { IlksFilterState } from 'features/ilks/ilksFilters'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { FeaturedIlks, Filters } from 'features/vaultsOverview/VaultsOverviewView'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
+import { useObservableWithError } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback } from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
+
+import { WithLoadingIndicator2 } from '../../helpers/loadingIndicator/LoadingIndicator'
 
 export function TokenSymbol({
   token,
@@ -97,49 +99,49 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
 export function LandingView() {
   const { landing$ } = useAppContext()
   const { t } = useTranslation()
-  const landing = useObservable(landing$)
+  const landingWithError = useObservableWithError(landing$)
 
   const onIlkSearch = useCallback(
     (search: string) => {
-      landing?.ilks.filters.change({ kind: 'search', search })
+      landingWithError.value?.ilks.filters.change({ kind: 'search', search })
     },
-    [landing?.ilks.filters],
+    [landingWithError.value?.ilks.filters],
   )
   const onIlksTagChange = useCallback(
     (tagFilter: CoinTag | undefined) => {
-      landing?.ilks.filters.change({ kind: 'tagFilter', tagFilter })
+      landingWithError.value?.ilks.filters.change({ kind: 'tagFilter', tagFilter })
     },
-    [landing?.ilks.filters],
+    [landingWithError.value?.ilks.filters],
   )
 
-  if (landing === undefined) {
-    return null
-  }
-
   return (
-    <Grid sx={{ flex: 1 }}>
-      <Box sx={{ width: '600px', justifySelf: 'center', textAlign: 'center', my: 4 }}>
-        <Heading as="h1" sx={{ fontSize: 7, my: 3 }}>
-          {t('landing.hero.headline')}
-        </Heading>
-        <Text>{t('landing.hero.subheader')}</Text>
-      </Box>
-      <Box sx={{ my: 4 }}>
-        <FeaturedIlks ilks={landing.featuredIlks} />
-      </Box>
-      <Filters
-        onSearch={onIlkSearch}
-        search={landing.ilks.filters.search}
-        onTagChange={onIlksTagChange}
-        tagFilter={landing.ilks.filters.tagFilter}
-        defaultTag="all-assets"
-      />
-      <Table
-        data={landing.ilks.data}
-        primaryKey="ilk"
-        state={landing.ilks.filters}
-        columns={ilksColumns}
-      />
-    </Grid>
+    <WithLoadingIndicator2 {...landingWithError}>
+      {(landing) => (
+        <Grid sx={{ flex: 1 }}>
+          <Box sx={{ width: '600px', justifySelf: 'center', textAlign: 'center', my: 4 }}>
+            <Heading as="h1" sx={{ fontSize: 7, my: 3 }}>
+              {t('landing.hero.headline')}
+            </Heading>
+            <Text>{t('landing.hero.subheader')}</Text>
+          </Box>
+          <Box sx={{ my: 4 }}>
+            <FeaturedIlks ilks={landing.featuredIlks} />
+          </Box>
+          <Filters
+            onSearch={onIlkSearch}
+            search={landing.ilks.filters.search}
+            onTagChange={onIlksTagChange}
+            tagFilter={landing.ilks.filters.tagFilter}
+            defaultTag="all-assets"
+          />
+          <Table
+            data={landing.ilks.data}
+            primaryKey="ilk"
+            state={landing.ilks.filters}
+            columns={ilksColumns}
+          />
+        </Grid>
+      )}
+    </WithLoadingIndicator2>
   )
 }

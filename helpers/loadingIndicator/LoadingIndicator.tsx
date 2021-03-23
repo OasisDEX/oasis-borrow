@@ -1,55 +1,37 @@
-import { WithChildren } from 'helpers/types'
 import * as React from 'react'
-import { Box, Flex, Spinner, SxStyleProp } from 'theme-ui'
-import { MarkRequired } from 'ts-essentials'
+import { Box, Spinner, SxStyleProp } from 'theme-ui'
 
-import { Loadable } from '../loadable'
+type LoadingIndicatorPropsChildren<T> =
+  | ((loadable: T) => React.ReactElement<any>)
+  | [(loadable: T) => React.ReactElement<any>, (error: any) => React.ReactElement<any>]
 
-interface LoadingIndicatorProps<T, U extends Loadable<T>> {
-  loadable?: U
-  children: (loadable: MarkRequired<U, 'value'>) => React.ReactElement<any>
+interface LoadingIndicatorProps<T> {
+  value: T | undefined
+  error: any
+  children: LoadingIndicatorPropsChildren<T>
   variant?: string
-  error?: React.ReactElement<any>
 }
 
-interface WithLoadingIndicatorWrapperProps extends WithChildren {
-  height?: number
-  sx?: any
-}
+export function WithLoadingIndicator2<T>(props: LoadingIndicatorProps<T>) {
+  const { value, error, children, variant } = props
 
-export const WithLoadingIndicatorWrapper = ({ children, sx }: WithLoadingIndicatorWrapperProps) => {
-  return (
-    <Flex sx={{ alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center', ...sx }}>
-      {children}
-    </Flex>
-  )
-}
+  if (!value && error) {
+    console.log('Error', error)
+    if (Array.isArray(children)) {
+      return children[1](value)
+    }
+    return <div>Error!</div>
+  }
 
-export function WithLoadingIndicator<T, U extends Loadable<T>>(props: LoadingIndicatorProps<T, U>) {
-  const { loadable, children, variant, error } = props
-
-  if (!loadable) {
+  if (!value) {
     return <LoadingIndicator {...{ variant }} />
   }
 
-  switch (loadable.status) {
-    case undefined:
-    case 'loading':
-      return <LoadingIndicator {...{ variant }} />
-    case 'error':
-      if (error) {
-        return error
-      }
-      return <div>error!</div>
-    case 'loaded':
-      return children(loadable as MarkRequired<U, 'value'>)
+  if (Array.isArray(children)) {
+    return children[0](value)
   }
-}
 
-export function WithLoadingIndicatorInline<T, U extends Loadable<T>>(
-  props: LoadingIndicatorProps<T, U>,
-) {
-  return WithLoadingIndicator({ ...props })
+  return children(value)
 }
 
 export const LoadingIndicator = ({ variant }: { variant?: string }) => {
