@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import React from 'react'
 import ReactSelect from 'react-select'
-import { Box,  Card, Container, Flex, Grid, Link, Text } from 'theme-ui'
+import { Box, Card, Container, Flex, Grid, Link, Text } from 'theme-ui'
 
 const {
   publicRuntimeConfig: { buildHash, buildDate },
