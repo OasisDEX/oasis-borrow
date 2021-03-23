@@ -110,12 +110,6 @@ export function TemporaryFooter() {
   return (
     <Container sx={{ maxWidth: '898px' }}>
       <Grid sx={{ color: 'text', fontSize: 2 }} columns={2}>
-        {/*<Text>*/}
-        {/*  /!* Temporary for debugging locale *!/*/}
-        {/*  <Button onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'es' : 'en')}>*/}
-        {/*    {t('change-locale')}*/}
-        {/*  </Button>*/}
-        {/*</Text>*/}
         <Text>
           Commit:{' '}
           <Link
