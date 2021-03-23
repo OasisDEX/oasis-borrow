@@ -542,9 +542,7 @@ export function createManageVault$(
             debt,
             collateralizationRatio,
             liquidationPrice,
-            liquidationPenalty,
             freeCollateral,
-            stabilityFee,
             controller,
           }) => {
             return combineLatest(
