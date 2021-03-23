@@ -1,11 +1,18 @@
 import BigNumber from 'bignumber.js'
+import { maxUint256 } from 'blockchain/calls/erc20'
 import { expect } from 'chai'
 import { protoUserWBTCTokenInfo } from 'features/shared/userTokenInfo'
 import { zero } from 'helpers/zero'
 import { beforeEach, describe, it } from 'mocha'
 
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
-import { defaultOpenVaultState, parseVaultIdFromReceiptLogs, validateWarnings } from './openVault'
+import {
+  defaultOpenVaultState,
+  OpenVaultState,
+  parseVaultIdFromReceiptLogs,
+  validateErrors,
+  validateWarnings,
+} from './openVault'
 
 const SLIGHTLY_LESS_THAN_ONE = 0.99
 const SLIGHTLY_MORE_THAN_ONE = 1.01
@@ -96,6 +103,89 @@ describe('openVault', () => {
         allowance: openVaultState.depositAmount.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
       })
       expect(warningMessages).to.deep.equal(['allowanceLessThanDepositAmount'])
+    })
+  })
+
+  describe('validateErrors', () => {
+    const depositAmount = new BigNumber('10')
+    const depositAmountUSD = depositAmount.multipliedBy(
+      protoUserWBTCTokenInfo.currentCollateralPrice,
+    )
+    const maxDepositAmount = depositAmountUSD.multipliedBy(2)
+    const ilkDebtAvailable = new BigNumber('50000')
+    const debtFloor = new BigNumber('2000')
+    const generateAmount = new BigNumber('5000')
+    const openVaultState: OpenVaultState = {
+      ...defaultOpenVaultState,
+      ...protoUserWBTCTokenInfo,
+      token: 'WBTC',
+      proxyAddress: '0xProxyAddress',
+      depositAmount,
+      depositAmountUSD,
+      generateAmount,
+      allowance: depositAmount,
+      ilkDebtAvailable,
+      maxDepositAmount,
+      debtFloor,
+    }
+    it('Should show no errors when the state is correct', () => {
+      const { errorMessages } = validateErrors(openVaultState)
+      expect(errorMessages).to.be.an('array').that.is.empty
+    })
+    it('Should show depositAmountGreaterThanMaxDepositAmount error', () => {
+      const { errorMessages } = validateErrors({
+        ...openVaultState,
+        maxDepositAmount: depositAmount.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
+      })
+      expect(errorMessages).to.deep.equal(['depositAmountGreaterThanMaxDepositAmount'])
+    })
+    it('Should show generateAmountLessThanDebtFloor error', () => {
+      const { errorMessages } = validateErrors({
+        ...openVaultState,
+        generateAmount: debtFloor.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
+      })
+      expect(errorMessages).to.deep.equal(['generateAmountLessThanDebtFloor'])
+    })
+    it('Should show generateAmountGreaterThanDebtCeiling error', () => {
+      const { errorMessages } = validateErrors({
+        ...openVaultState,
+        generateAmount: ilkDebtAvailable.multipliedBy(SLIGHTLY_MORE_THAN_ONE),
+      })
+      expect(errorMessages).to.deep.equal(['generateAmountGreaterThanDebtCeiling'])
+    })
+    describe('Should validate allowance', () => {
+      it('Should show allowanceAmountEmpty error', () => {
+        const { errorMessages } = validateErrors({
+          ...openVaultState,
+          allowanceAmount: undefined,
+          stage: 'allowanceWaitingForConfirmation',
+        })
+        expect(errorMessages).to.deep.equal(['allowanceAmountEmpty'])
+      })
+      it('Should show customAllowanceAmountGreaterThanMaxUint256 error', () => {
+        const { errorMessages } = validateErrors({
+          ...openVaultState,
+          allowanceAmount: maxUint256.plus(1),
+          stage: 'allowanceWaitingForConfirmation',
+        })
+        expect(errorMessages).to.deep.equal(['customAllowanceAmountGreaterThanMaxUint256'])
+      })
+      it('Should show customAllowanceAmountLessThanDepositAmount error', () => {
+        const { errorMessages } = validateErrors({
+          ...openVaultState,
+          allowanceAmount: depositAmount.minus(1),
+          stage: 'allowanceWaitingForConfirmation',
+        })
+        expect(errorMessages).to.deep.equal(['customAllowanceAmountLessThanDepositAmount'])
+      })
+    })
+    it('Should show vaultUnderCollateralized error', () => {
+      const { errorMessages } = validateErrors({
+        ...openVaultState,
+        afterCollateralizationRatio: new BigNumber(1.49),
+        liquidationRatio: new BigNumber(1.5),
+      })
+      expect(errorMessages).to.deep.equal(['vaultUnderCollateralized'])
     })
   })
 })
