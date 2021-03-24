@@ -9,8 +9,8 @@ import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
 import {
-  applySerialChange,
   ApplySerialChange,
+  applySerialChange,
   SerialChange,
   SerialChanges,
   transactionToX,

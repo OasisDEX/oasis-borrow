@@ -2,8 +2,8 @@ import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { compareBigNumber } from 'helpers/compare'
 import {
-  applySerialChange,
   ApplySerialChange,
+  applySerialChange,
   Direction,
   SerialChange,
   toggleSort,

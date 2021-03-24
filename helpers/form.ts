@@ -354,7 +354,7 @@ export type AtomicChange<S extends {}> = Partial<S>
 
 export type ApplyAtomicChange<S extends {}> = (state: S, stateChange: AtomicChange<S>) => S
 
-export const applyAtomicChange: ApplyAtomicChange<any> = (state, stateChange) => {
+export function applyAtomicChange<S extends {}>(state: S, stateChange: AtomicChange<S>): S {
   return { ...state, ...stateChange }
 }
 
