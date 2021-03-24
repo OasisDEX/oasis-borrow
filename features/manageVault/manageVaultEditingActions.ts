@@ -3,16 +3,16 @@ import { zero } from 'helpers/zero'
 
 import { ManageVaultChange, ManageVaultState } from './manageVault'
 
-export function clearDepositAndGenerate(change: (ch: ManageVaultChange) => void) {
-  change({ kind: 'depositAmount', depositAmount: undefined })
-  change({ kind: 'depositAmountUSD', depositAmountUSD: undefined })
-  change({ kind: 'generateAmount', generateAmount: undefined })
+export const depositAndGenerateAmountDefaults: Partial<ManageVaultState> = {
+  depositAmount: undefined,
+  depositAmountUSD: undefined,
+  generateAmount: undefined,
 }
 
-export function clearPaybackAndWithdraw(change: (ch: ManageVaultChange) => void) {
-  change({ kind: 'withdrawAmount', withdrawAmount: undefined })
-  change({ kind: 'withdrawAmountUSD', withdrawAmountUSD: undefined })
-  change({ kind: 'paybackAmount', paybackAmount: undefined })
+export const paybackAndWithdrawAmountDefaults: Partial<ManageVaultState> = {
+  withdrawAmount: undefined,
+  withdrawAmountUSD: undefined,
+  paybackAmount: undefined,
 }
 
 export function actionDeposit(
@@ -22,19 +22,16 @@ export function actionDeposit(
 ) {
   const depositAmountUSD = depositAmount ? currentCollateralPrice.times(depositAmount) : undefined
 
-  clearPaybackAndWithdraw(change)
   change({
-    kind: 'depositAmount',
     depositAmount,
-  })
-  change({
-    kind: 'depositAmountUSD',
     depositAmountUSD,
+    ...paybackAndWithdrawAmountDefaults,
+    ...(!depositAmount &&
+      stage === 'collateralEditing' && {
+        showDepositAndGenerateOption: false,
+        generateAmount: undefined,
+      }),
   })
-  if (!depositAmount && stage === 'collateralEditing') {
-    change({ kind: 'showDepositAndGenerateOption', showDepositAndGenerateOption: false })
-    clearDepositAndGenerate(change)
-  }
 }
 
 export function actionDepositUSD(
@@ -47,28 +44,27 @@ export function actionDepositUSD(
       ? depositAmountUSD.div(currentCollateralPrice)
       : undefined
 
-  clearPaybackAndWithdraw(change)
   change({
-    kind: 'depositAmountUSD',
     depositAmountUSD,
-  })
-  change({
-    kind: 'depositAmount',
     depositAmount,
+    ...paybackAndWithdrawAmountDefaults,
+    ...(!depositAmountUSD &&
+      stage === 'collateralEditing' && {
+        showDepositAndGenerateOption: false,
+        generateAmount: undefined,
+      }),
   })
-  if (!depositAmountUSD && stage === 'collateralEditing') {
-    change({ kind: 'showDepositAndGenerateOption', showDepositAndGenerateOption: false })
-    clearDepositAndGenerate(change)
-  }
 }
 
 export function actionDepositMax(
   { maxDepositAmount, maxDepositAmountUSD }: ManageVaultState,
   change: (ch: ManageVaultChange) => void,
 ) {
-  clearPaybackAndWithdraw(change)
-  change({ kind: 'depositAmount', depositAmount: maxDepositAmount })
-  change({ kind: 'depositAmountUSD', depositAmountUSD: maxDepositAmountUSD })
+  change({
+    depositAmount: maxDepositAmount,
+    depositAmountUSD: maxDepositAmountUSD,
+    ...paybackAndWithdrawAmountDefaults,
+  })
 }
 
 export function actionGenerate(
@@ -76,22 +72,23 @@ export function actionGenerate(
   change: (ch: ManageVaultChange) => void,
   generateAmount?: BigNumber,
 ) {
-  clearPaybackAndWithdraw(change)
   change({
-    kind: 'generateAmount',
     generateAmount,
+    ...paybackAndWithdrawAmountDefaults,
+    ...(!generateAmount &&
+      stage === 'daiEditing' && {
+        showDepositAndGenerateOption: false,
+        depositAmount: undefined,
+        depositAmountUSD: undefined,
+      }),
   })
-  if (!generateAmount && stage === 'daiEditing') {
-    change({ kind: 'showDepositAndGenerateOption', showDepositAndGenerateOption: false })
-    clearDepositAndGenerate(change)
-  }
 }
+
 export function actionGenerateMax(
   { maxGenerateAmount }: ManageVaultState,
   change: (ch: ManageVaultChange) => void,
 ) {
-  clearPaybackAndWithdraw(change)
-  change({ kind: 'generateAmount', generateAmount: maxGenerateAmount })
+  change({ generateAmount: maxGenerateAmount, ...depositAndGenerateAmountDefaults })
 }
 
 export function actionWithdraw(
@@ -103,19 +100,16 @@ export function actionWithdraw(
     ? currentCollateralPrice.times(withdrawAmount)
     : undefined
 
-  clearDepositAndGenerate(change)
   change({
-    kind: 'withdrawAmount',
     withdrawAmount,
-  })
-  change({
-    kind: 'withdrawAmountUSD',
     withdrawAmountUSD,
+    ...depositAndGenerateAmountDefaults,
+    ...(!withdrawAmount &&
+      stage === 'collateralEditing' && {
+        showPaybackAndWithdrawOption: false,
+        paybackAmount: undefined,
+      }),
   })
-  if (!withdrawAmount && stage === 'collateralEditing') {
-    change({ kind: 'showPaybackAndWithdrawOption', showPaybackAndWithdrawOption: false })
-    clearPaybackAndWithdraw!(change)
-  }
 }
 
 export function actionWithdrawUSD(
@@ -128,28 +122,27 @@ export function actionWithdrawUSD(
       ? withdrawAmountUSD.div(currentCollateralPrice)
       : undefined
 
-  clearDepositAndGenerate(change)
   change({
-    kind: 'withdrawAmountUSD',
     withdrawAmountUSD,
-  })
-  change({
-    kind: 'withdrawAmount',
     withdrawAmount,
+    ...depositAndGenerateAmountDefaults,
+    ...(!withdrawAmount &&
+      stage === 'collateralEditing' && {
+        showPaybackAndWithdrawOption: false,
+        paybackAmount: undefined,
+      }),
   })
-  if (!withdrawAmountUSD && stage === 'collateralEditing') {
-    change({ kind: 'showPaybackAndWithdrawOption', showPaybackAndWithdrawOption: false })
-    clearPaybackAndWithdraw(change)
-  }
 }
 
 export function actionWithdrawMax(
   { maxWithdrawAmount, maxWithdrawAmountUSD }: ManageVaultState,
   change: (ch: ManageVaultChange) => void,
 ) {
-  clearDepositAndGenerate(change)
-  change({ kind: 'withdrawAmount', withdrawAmount: maxWithdrawAmount })
-  change({ kind: 'withdrawAmountUSD', withdrawAmountUSD: maxWithdrawAmountUSD })
+  change({
+    withdrawAmount: maxWithdrawAmount,
+    withdrawAmountUSD: maxWithdrawAmountUSD,
+    ...depositAndGenerateAmountDefaults,
+  })
 }
 
 export function actionPayback(
@@ -157,21 +150,21 @@ export function actionPayback(
   change: (ch: ManageVaultChange) => void,
   paybackAmount?: BigNumber,
 ) {
-  clearDepositAndGenerate(change)
   change({
-    kind: 'paybackAmount',
     paybackAmount,
+    ...depositAndGenerateAmountDefaults,
+    ...(!paybackAmount &&
+      stage === 'daiEditing' && {
+        showPaybackAndWithdrawOption: false,
+        withdrawAmount: undefined,
+        withdrawAmountUSD: undefined,
+      }),
   })
-  if (!paybackAmount && stage === 'daiEditing') {
-    change({ kind: 'showPaybackAndWithdrawOption', showPaybackAndWithdrawOption: false })
-    clearPaybackAndWithdraw(change)
-  }
 }
 
 export function actionPaybackMax(
   { maxPaybackAmount }: ManageVaultState,
   change: (ch: ManageVaultChange) => void,
 ) {
-  clearDepositAndGenerate(change)
-  change({ kind: 'paybackAmount', paybackAmount: maxPaybackAmount })
+  change({ paybackAmount: maxPaybackAmount, ...depositAndGenerateAmountDefaults })
 }

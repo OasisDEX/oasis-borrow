@@ -330,21 +330,32 @@ export function doGasEstimation<S extends HasGasEstimation>(
 
 type OmitFunctions<S> = OmitProperties<Required<S>, (...arg: any[]) => any>
 
-export type Change<S, K extends keyof S> = {
+export type SerialChange<S, K extends keyof S> = {
   kind: K
 } & {
   [value in K]: S[K]
 }
 
-export type Changes<S> = ValueOf<{ [K in keyof OmitFunctions<S>]-?: Change<S, K> }>
+export type SerialChanges<S> = ValueOf<{ [K in keyof OmitFunctions<S>]-?: SerialChange<S, K> }>
 
-export type ApplyChange<S extends {}, C extends Change<any, any> = Changes<S>> = (
+export type ApplySerialChange<S extends {}, C extends SerialChange<any, any> = SerialChanges<S>> = (
   state: S,
   changes: C,
 ) => S
 
-export function applyChange<S extends {}, C extends Change<any, any>>(state: S, change: C): S {
+export function applySerialChange<S extends {}, C extends SerialChange<any, any>>(
+  state: S,
+  change: C,
+): S {
   return { ...state, [change.kind]: change[change.kind] }
+}
+
+export type AtomicChange<S extends {}> = Partial<S>
+
+export type ApplyAtomicChange<S extends {}> = (state: S, stateChange: AtomicChange<S>) => S
+
+export const applyAtomicChange: ApplyAtomicChange<any> = (state, stateChange) => {
+  return { ...state, ...stateChange }
 }
 
 export type Direction = 'ASC' | 'DESC' | undefined

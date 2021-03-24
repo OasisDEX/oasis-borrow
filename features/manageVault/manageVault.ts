@@ -5,11 +5,11 @@ import { ContextConnected } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
-import { ApplyChange, applyChange, Changes } from 'helpers/form'
+import { applyAtomicChange, ApplyAtomicChange, AtomicChange } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import {
   actionDeposit,
@@ -22,8 +22,8 @@ import {
   actionWithdraw,
   actionWithdrawMax,
   actionWithdrawUSD,
-  clearDepositAndGenerate,
-  clearPaybackAndWithdraw,
+  depositAndGenerateAmountDefaults,
+  paybackAndWithdrawAmountDefaults,
 } from './manageVaultEditingActions'
 import { createProxy, setCollateralAllowance, setDaiAllowance } from './manageVaultTransactions'
 import {
@@ -31,7 +31,6 @@ import {
   progressEditing,
   progressManage,
   progressProxy,
-  resetBackToEditingStage,
   toggleEditing,
 } from './manageVaultTransitions'
 import {
@@ -171,9 +170,9 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
   }
 }
 
-export type ManageVaultChange = Changes<ManageVaultState>
+export type ManageVaultChange = AtomicChange<ManageVaultState>
 
-const apply: ApplyChange<ManageVaultState> = applyChange
+const apply: ApplyAtomicChange<ManageVaultState> = applyAtomicChange
 
 export type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
 
@@ -314,17 +313,27 @@ export type DefaultManageVaultState = {
 
 export type ManageVaultState = DefaultManageVaultState & UserTokenInfo
 
-export function resetAllowances(change: (ch: ManageVaultChange) => void) {
-  change({ kind: 'collateralAllowanceAmount', collateralAllowanceAmount: maxUint256 })
-  change({ kind: 'daiAllowanceAmount', daiAllowanceAmount: maxUint256 })
+export const allowanceAmountDefaults: Partial<ManageVaultState> = {
+  collateralAllowanceAmount: maxUint256,
+  daiAllowanceAmount: maxUint256,
 }
 
 export function resetDefaults(change: (ch: ManageVaultChange) => void) {
-  change({ kind: 'showDepositAndGenerateOption', showDepositAndGenerateOption: false })
-  change({ kind: 'showPaybackAndWithdrawOption', showPaybackAndWithdrawOption: false })
-  clearDepositAndGenerate(change)
-  clearPaybackAndWithdraw(change)
-  resetAllowances(change)
+  change({
+    showDepositAndGenerateOption: false,
+    showPaybackAndWithdrawOption: false,
+    ...allowanceAmountDefaults,
+    ...depositAndGenerateAmountDefaults,
+    ...paybackAndWithdrawAmountDefaults,
+  })
+}
+
+export const formDefaults: Partial<ManageVaultState> = {
+  showDepositAndGenerateOption: false,
+  showPaybackAndWithdrawOption: false,
+  ...allowanceAmountDefaults,
+  ...depositAndGenerateAmountDefaults,
+  ...paybackAndWithdrawAmountDefaults,
 }
 
 function addTransitions(
@@ -350,16 +359,13 @@ function addTransitions(
       updatePaybackMax: () => actionPaybackMax(state, change),
       toggleDepositAndGenerateOption: () =>
         change({
-          kind: 'showDepositAndGenerateOption',
           showDepositAndGenerateOption: !state.showDepositAndGenerateOption,
         }),
       togglePaybackAndWithdrawOption: () =>
         change({
-          kind: 'showPaybackAndWithdrawOption',
           showPaybackAndWithdrawOption: !state.showPaybackAndWithdrawOption,
         }),
-      toggleIlkDetails: () =>
-        change({ kind: 'showIlkDetails', showIlkDetails: !state.showIlkDetails }),
+      toggleIlkDetails: () => change({ showIlkDetails: !state.showIlkDetails }),
       toggle: () => toggleEditing(state, change),
       progress: () => progressEditing(state, change),
     }
@@ -376,7 +382,7 @@ function addTransitions(
     return {
       ...state,
       progress: () => progressProxy(state, change),
-      reset: () => change({ kind: 'stage', stage: state.originalEditingStage }),
+      reset: () => change({ stage: state.originalEditingStage }),
     }
   }
 
@@ -387,19 +393,17 @@ function addTransitions(
     return {
       ...state,
       updateCollateralAllowanceAmount: (amount?: BigNumber) =>
-        change({ kind: 'collateralAllowanceAmount', collateralAllowanceAmount: amount }),
+        change({ collateralAllowanceAmount: amount }),
       setCollateralAllowanceAmountUnlimited: () =>
-        change({ kind: 'collateralAllowanceAmount', collateralAllowanceAmount: maxUint256 }),
+        change({ collateralAllowanceAmount: maxUint256 }),
       setCollateralAllowanceAmountToDepositAmount: () =>
         change({
-          kind: 'collateralAllowanceAmount',
           collateralAllowanceAmount: state.depositAmount,
         }),
-      resetCollateralAllowanceAmount: () =>
-        change({ kind: 'collateralAllowanceAmount', collateralAllowanceAmount: undefined }),
+      resetCollateralAllowanceAmount: () => change({ collateralAllowanceAmount: undefined }),
 
       progress: () => setCollateralAllowance(txHelpers, collateralAllowance$, change, state),
-      reset: () => change({ kind: 'stage', stage: state.originalEditingStage }),
+      reset: () => change({ stage: state.originalEditingStage }),
     }
   }
 
@@ -416,17 +420,14 @@ function addTransitions(
   ) {
     return {
       ...state,
-      updateDaiAllowanceAmount: (amount?: BigNumber) =>
-        change({ kind: 'daiAllowanceAmount', daiAllowanceAmount: amount }),
-      setDaiAllowanceAmountUnlimited: () =>
-        change({ kind: 'daiAllowanceAmount', daiAllowanceAmount: maxUint256 }),
+      updateDaiAllowanceAmount: (amount?: BigNumber) => change({ daiAllowanceAmount: amount }),
+      setDaiAllowanceAmountUnlimited: () => change({ daiAllowanceAmount: maxUint256 }),
       setDaiAllowanceAmountToPaybackAmount: () =>
-        change({ kind: 'daiAllowanceAmount', daiAllowanceAmount: state.depositAmount }),
-      resetDaiAllowanceAmount: () =>
-        change({ kind: 'daiAllowanceAmount', daiAllowanceAmount: undefined }),
+        change({ daiAllowanceAmount: state.depositAmount }),
+      resetDaiAllowanceAmount: () => change({ daiAllowanceAmount: undefined }),
 
       progress: () => setDaiAllowance(txHelpers, daiAllowance$, change, state),
-      reset: () => change({ kind: 'stage', stage: state.originalEditingStage }),
+      reset: () => change({ stage: state.originalEditingStage }),
     }
   }
 
@@ -435,7 +436,6 @@ function addTransitions(
       ...state,
       progress: () =>
         change({
-          kind: 'stage',
           stage: state.originalEditingStage,
         }),
     }
@@ -445,14 +445,14 @@ function addTransitions(
     return {
       ...state,
       progress: () => progressManage(txHelpers, state, change),
-      reset: () => change({ kind: 'stage', stage: state.originalEditingStage }),
+      reset: () => change({ stage: state.originalEditingStage }),
     }
   }
 
   if (state.stage === 'manageSuccess') {
     return {
       ...state,
-      progress: () => resetBackToEditingStage(state, change),
+      progress: () => change({ stage: state.originalEditingStage, ...formDefaults }),
     }
   }
 
@@ -462,7 +462,6 @@ function addTransitions(
 function vaultChange$<T extends keyof Vault>(vaultData$: Observable<Vault>, kind: T) {
   return vaultData$.pipe(
     map((vault) => ({
-      kind,
       [kind]: vault[kind],
     })),
   )
@@ -471,7 +470,6 @@ function vaultChange$<T extends keyof Vault>(vaultData$: Observable<Vault>, kind
 function ilkDataChange$<T extends keyof IlkData>(ilkData$: Observable<IlkData>, kind: T) {
   return ilkData$.pipe(
     map((ilkData) => ({
-      kind,
       [kind]: ilkData[kind],
     })),
   )
@@ -603,7 +601,7 @@ export function createManageVault$(
 
                       const change$ = new Subject<ManageVaultChange>()
 
-                      function change(ch: ManageVaultChange) {
+                      function change(ch: Partial<ManageVaultState>) {
                         change$.next(ch)
                       }
 
@@ -655,6 +653,7 @@ export function createManageVault$(
                       )
 
                       return merge(change$, environmentChanges$).pipe(
+                        tap((s) => console.log(s)),
                         scan(apply, initialState),
                         map(applyVaultCalculations),
                         map(validateErrors),

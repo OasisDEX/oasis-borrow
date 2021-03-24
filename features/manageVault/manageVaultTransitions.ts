@@ -43,12 +43,12 @@ export function progressEditing(
 
   if (canProgress) {
     if (!hasProxy) {
-      change({ kind: 'stage', stage: 'proxyWaitingForConfirmation' })
+      change({ stage: 'proxyWaitingForConfirmation' })
     } else if (!hasCollateralAllowance) {
-      change({ kind: 'stage', stage: 'collateralAllowanceWaitingForConfirmation' })
+      change({ stage: 'collateralAllowanceWaitingForConfirmation' })
     } else if (!hasDaiAllowance) {
-      change({ kind: 'stage', stage: 'daiAllowanceWaitingForConfirmation' })
-    } else change({ kind: 'stage', stage: 'manageWaitingForConfirmation' })
+      change({ stage: 'daiAllowanceWaitingForConfirmation' })
+    } else change({ stage: 'manageWaitingForConfirmation' })
   }
 }
 
@@ -61,17 +61,9 @@ export function toggleEditing(
     (editingStage) => editingStage !== currentEditing,
   ) as ManageVaultEditingStage
 
-  change({ kind: 'stage', stage: otherEditing })
-  change({ kind: 'originalEditingStage', originalEditingStage: otherEditing })
+  change({ stage: otherEditing })
+  change({ originalEditingStage: otherEditing })
   resetDefaults(change)
-}
-
-export function resetBackToEditingStage(
-  { originalEditingStage }: ManageVaultState,
-  change: (ch: ManageVaultChange) => void,
-) {
-  resetDefaults(change)
-  change({ kind: 'stage', stage: originalEditingStage })
 }
 
 export function progressProxy(
@@ -100,10 +92,10 @@ export function progressProxy(
   const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
 
   if (!hasCollateralAllowance) {
-    change({ kind: 'stage', stage: 'collateralAllowanceWaitingForConfirmation' })
+    change({ stage: 'collateralAllowanceWaitingForConfirmation' })
   } else if (!hasDaiAllowance) {
-    change({ kind: 'stage', stage: 'daiAllowanceWaitingForConfirmation' })
-  } else change({ kind: 'stage', stage: originalEditingStage })
+    change({ stage: 'daiAllowanceWaitingForConfirmation' })
+  } else change({ stage: originalEditingStage })
 }
 
 export function progressCollateralAllowance(
@@ -116,8 +108,8 @@ export function progressCollateralAllowance(
   const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
 
   if (!hasDaiAllowance) {
-    change({ kind: 'stage', stage: 'daiAllowanceWaitingForConfirmation' })
-  } else change({ kind: 'stage', stage: originalEditingStage })
+    change({ stage: 'daiAllowanceWaitingForConfirmation' })
+  } else change({ stage: originalEditingStage })
 }
 
 export function progressManage(
