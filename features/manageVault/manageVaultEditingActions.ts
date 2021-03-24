@@ -88,7 +88,7 @@ export function actionGenerateMax(
   { maxGenerateAmount }: ManageVaultState,
   change: (ch: ManageVaultChange) => void,
 ) {
-  change({ generateAmount: maxGenerateAmount, ...depositAndGenerateAmountDefaults })
+  change({ generateAmount: maxGenerateAmount, ...paybackAndWithdrawAmountDefaults })
 }
 
 export function actionWithdraw(
