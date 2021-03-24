@@ -13,12 +13,12 @@ import { BorrowEvent } from './historyEvents'
 type ColumnData = BorrowEvent & {
   token: string
   etherscan:
-    | {
-        url: string
-        apiUrl: string
-        apiKey: string
-      }
-    | undefined
+  | {
+    url: string
+    apiUrl: string
+    apiKey: string
+  }
+  | undefined
 }
 
 const columns: ColumnDef<ColumnData, {}>[] = [
@@ -34,10 +34,10 @@ const columns: ColumnDef<ColumnData, {}>[] = [
             transferFrom: 'transferFrom' in event && formatAddress(event.transferFrom),
             collateralAmount:
               'collateralAmount' in event && event.collateralAmount
-                ? formatCryptoBalance(new BigNumber(event.collateralAmount).abs())
+                ? formatCryptoBalance(event.collateralAmount.abs())
                 : 0,
             daiAmount:
-              'daiAmount' in event ? formatCryptoBalance(new BigNumber(event.daiAmount).abs()) : 0,
+              'daiAmount' in event ? formatCryptoBalance(event.daiAmount.abs()) : 0,
             cdpId: 'cdpId' in event ? event.cdpId : undefined,
             token: event.token,
           }}
@@ -49,12 +49,12 @@ const columns: ColumnDef<ColumnData, {}>[] = [
   {
     headerLabel: 'event.time',
     header: ({ label }) => (
-      <Text sx={{ display: 'flex', justifyContent: 'flex-end' }}>{label}</Text>
+      <Text>{label}</Text>
     ),
     cell: ({ timestamp }) => {
       const date = moment(timestamp)
       return (
-        <Text sx={{ display: 'flex', textAlign: 'right', whiteSpace: 'nowrap' }}>
+        <Text sx={{ whiteSpace: 'nowrap' }}>
           {date.format('MMM DD, YYYY, h:mma')}
         </Text>
       )
@@ -98,7 +98,7 @@ export function HistoryTable({ id, token }: { id: string; token: string }) {
 
   return (
     <Box sx={{ gridColumn: '1/2' }}>
-      <Heading>{t('vault-history')}</Heading>
+      <Heading sx={{ mb: 4 }}>{t('vault-history')}</Heading>
       <Table data={historyWithEtherscan} primaryKey="id" state={{}} columns={columns} />
     </Box>
   )

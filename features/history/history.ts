@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { Vault } from 'blockchain/vaults'
 import { gql, GraphQLClient } from 'graphql-request'
 import flatten from 'lodash/flatten'
@@ -6,7 +7,7 @@ import getConfig from 'next/config'
 import { Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
-import { BorrowEvent } from './historyEvents'
+import { BorrowEvent, ReturnedEvent } from './historyEvents'
 
 const query = gql`
   query VaultEvents($urn: String) {
@@ -31,10 +32,18 @@ const query = gql`
 
 const client = new GraphQLClient(getConfig().publicRuntimeConfig.apiHost)
 
-async function getVaultHistory(urn: string): Promise<BorrowEvent[]> {
+async function getVaultHistory(urn: string): Promise<ReturnedEvent[]> {
   const data = await client.request(query, { urn: urn.toLowerCase() })
 
-  return data.allVaultEvents.nodes as BorrowEvent[]
+  return data.allVaultEvents.nodes as ReturnedEvent[]
+}
+
+function parseBigNumbersFields(event: Partial<ReturnedEvent>): BorrowEvent {
+  const bigNumberFields = ['collateralAmount', 'daiAmount']
+  return Object.entries(event)
+    .reduce((acc, [key, value]) => bigNumberFields.includes(key) && value != null
+      ? { ...acc, [key]: new BigNumber(value) }
+      : { ...acc, [key]: value }, {}) as BorrowEvent
 }
 
 function splitEvents(event: BorrowEvent): BorrowEvent | BorrowEvent[] {
@@ -77,9 +86,10 @@ export function createVaultHistory$(
       vault$(vaultId).pipe(
         switchMap((vault) => getVaultHistory(vault.address)),
         map((events) =>
-          flatten(events.map(splitEvents)).map(
-            (event) => pickBy(event, (value) => value !== null) as BorrowEvent,
-          ),
+          flatten(events
+            .map((event) => pickBy(event, (value) => value !== null))
+            .map(parseBigNumbersFields)
+            .map(splitEvents))
         ),
       ),
     ),

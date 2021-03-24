@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js"
+
 interface HistoryEventBase {
   hash: string
   timestamp: string
@@ -12,40 +14,40 @@ interface VaultOpenedEvent extends HistoryEventBase {
 
 interface DepositEvent extends HistoryEventBase {
   kind: 'DEPOSIT'
-  collateralAmount: string
+  collateralAmount: BigNumber
 }
 
 interface WithdrawEvent extends HistoryEventBase {
   kind: 'WITHDRAW'
-  collateralAmount: string
+  collateralAmount: BigNumber
 }
 
 interface GenerateEvent extends HistoryEventBase {
   kind: 'GENERATE'
-  daiAmount: string
+  daiAmount: BigNumber
 }
 
 interface PaybackEvent extends HistoryEventBase {
   kind: 'PAYBACK'
-  daiAmount: string
+  daiAmount: BigNumber
 }
 
 interface DepositGenerateEvent extends HistoryEventBase {
   kind: 'DEPOSIT-GENERATE'
-  daiAmount: string
-  collateralAmount: string
+  daiAmount: BigNumber
+  collateralAmount: BigNumber
 }
 
 interface WithdrawPaybackEvent extends HistoryEventBase {
   kind: 'WITHDRAW-PAYBACK'
-  daiAmount: string
-  collateralAmount: string
+  daiAmount: BigNumber
+  collateralAmount: BigNumber
 }
 
 interface AuctionStartedEvent extends HistoryEventBase {
   kind: 'AUCTION_STARTED'
-  collateralAmount: string
-  daiAmount: string
+  collateralAmount: BigNumber
+  daiAmount: BigNumber
   // auctionId: string,
 }
 
@@ -57,6 +59,19 @@ interface VaultTransferredEvent extends HistoryEventBase {
 
 interface MigrateEvent extends HistoryEventBase {
   kind: 'MIGRATE'
+}
+
+export interface ReturnedEvent {
+  kind: string,
+  hash: string
+  timestamp: string
+  id: string
+  transferFrom: string | null
+  transferTo: string | null
+  collateralAmount: string | null
+  daiAmount: string | null
+  vaultCreator: string | null
+  cdpId: string | null
 }
 export type BorrowEvent =
   | VaultOpenedEvent
