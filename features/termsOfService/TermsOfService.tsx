@@ -1,6 +1,7 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAppContext } from 'components/AppContextProvider'
+import { AppLink } from 'components/Links'
 import { Modal, ModalErrorMessage } from 'components/Modal'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
@@ -45,14 +46,15 @@ function TOSWaiting4Signature({ stage, acceptJwtAuth, updated }: TermsAcceptance
   return (
     <>
       <Box px={2}>
-        <Heading sx={{ textAlign: 'center', py: 2 }}>
+        <Heading sx={{ textAlign: 'center', pb: 1, pt: 3, fontSize: 7 }}>
           {t(`tos-welcome${updated ? '-updated' : ''}`)}
         </Heading>
-        <Text mt={3}>{t('tos-jwt-signature-message')}</Text>
+        <Text mt={3} sx={{ fontWeight: '400', fontSize: '14px' }}>
+          {t('tos-jwt-signature-message')}
+        </Text>
       </Box>
       <Button
-        variant="primarySquare"
-        sx={{ mt: 4, width: '100%' }}
+        sx={{ width: '80%' }}
         disabled={stage !== 'jwtAuthWaiting4Acceptance'}
         onClick={acceptJwtAuth}
       >
@@ -69,34 +71,36 @@ function TOSWaiting4Acceptance({ stage, acceptTOS, updated }: TermsAcceptanceSta
   return (
     <>
       <Box px={3}>
-        <Heading sx={{ textAlign: 'center', py: 2 }}>
+        <Heading sx={{ textAlign: 'center', pb: 1, pt: 3, fontSize: 7 }}>
           {t(`tos-welcome${updated ? '-updated' : ''}`)}
         </Heading>
-        <Text mt={3}>{t(`tos-accept-message${updated ? '-updated' : ''}`)}</Text>
-        <Text mt={3}>{t('tos-view')}</Text>
-        {/*<AppLink*/}
-        {/*  href="/terms"*/}
-        {/*  withAccountPrefix={false}*/}
-        {/*  internalInNewTab*/}
-        {/*  sx={{ display: 'flex', my: 4, alignItems: 'center', justifyContent: 'center' }}*/}
-        {/*>*/}
-        {/*  <Text sx={{ fontSize: 4, fontWeight: 'semiBold', textAlign: 'center' }}>*/}
-        {/*    {t('tos-view')}*/}
-        {/*  </Text>*/}
-        {/*  <Icon*/}
-        {/*    name="increase"*/}
-        {/*    sx={{ ml: 2, position: 'relative', top: '1px' }}*/}
-        {/*    size={13}*/}
-        {/*    color="onSecondary"*/}
-        {/*  />*/}
-        {/*</AppLink>*/}
-        <Box px={2}>
+        <Text sx={{ mt: 3, fontSize: '14px', textAlign: 'justify' }}>
+          {t(`tos-accept-message${updated ? '-updated' : ''}`)}
+        </Text>
+        <AppLink
+          href="/terms"
+          withAccountPrefix={false}
+          internalInNewTab
+          sx={{
+            display: 'flex',
+            mt: 2,
+            mb: 4,
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '16px',
+          }}
+        >
+          <Text mt={3}>{t('tos-view')}</Text>
+        </AppLink>
+        <Box px={2} sx={{ background: '#f6f8f9', borderRadius: '12px', p: 3, mb: 4 }}>
           <Label
             sx={{ fontSize: 3, fontWeight: 'body', cursor: 'pointer' }}
             onClick={() => setChecked(!checked)}
           >
             <Flex
               sx={{
+                position: 'relative',
+                top: '8px',
                 width: '25px',
                 height: '25px',
                 border: 'light',
@@ -111,15 +115,14 @@ function TOSWaiting4Acceptance({ stage, acceptTOS, updated }: TermsAcceptanceSta
             >
               {checked && <Icon name="checkmark" color="surface" />}
             </Flex>
-            <Text ml={3} sx={{ flex: 1 }}>
+            <Text ml={3} sx={{ flex: 1, fontWeight: '400', fontSize: '14px' }}>
               {t('tos-read')}
             </Text>
           </Label>
         </Box>
       </Box>
       <Button
-        variant="primarySquare"
-        sx={{ mt: 4, width: '100%' }}
+        sx={{ width: '80%' }}
         disabled={!checked || stage !== 'acceptanceWaiting4TOSAcceptance'}
         onClick={acceptTOS}
       >
@@ -140,7 +143,7 @@ function TOSErrorScreen({
   return (
     <>
       <ModalErrorMessage {...{ message }} />
-      <Button variant="primarySquare" sx={{ mt: 4, width: '100%' }} onClick={tryAgain}>
+      <Button sx={{ width: '80%' }} onClick={tryAgain}>
         {t('try-again')}
       </Button>
     </>
@@ -160,14 +163,15 @@ export function TermsOfService() {
   if (!termsAcceptance || hiddenStages.includes(termsAcceptance.stage)) return null
 
   return (
-    <Modal>
+    <Modal sx={{ maxWidth: '400px', margin: '0px auto' }}>
       <Flex
         p={3}
         sx={{
-          minHeight: termsAcceptance.updated ? '400px' : '385px',
+          minHeight: termsAcceptance.updated ? '400px' : '290px',
           alignItems: 'center',
           flexDirection: 'column',
           justifyContent: 'space-between',
+          px: 3,
         }}
       >
         {(() => {

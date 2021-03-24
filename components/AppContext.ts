@@ -34,12 +34,17 @@ import {
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
+import { currentContent } from 'features/content'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageVault$, defaultManageVaultState } from 'features/manageVault/manageVault'
 import { createOpenVault$, defaultOpenVaultState } from 'features/openVault/openVault'
 import { redirectState$ } from 'features/router/redirectState'
 import { createUserTokenInfo$ } from 'features/shared/userTokenInfo'
+import {
+  checkAcceptanceFromApi$,
+  saveAcceptanceFromApi$,
+} from 'features/termsOfService/termsAcceptanceApi'
 import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
@@ -67,10 +72,6 @@ import {
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
-import {
-  checkAcceptanceLocalStorage$,
-  saveAcceptanceLocalStorage$,
-} from '../features/termsOfService/termAcceptanceLocal'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { HasGasEstimation } from '../helpers/form'
 
@@ -270,10 +271,10 @@ export function setupAppContext() {
 
   const termsAcceptance$ = createTermsAcceptance$(
     web3Context$,
-    'version-1',
+    currentContent.tos.version,
     jwtAuthSetupToken$,
-    checkAcceptanceLocalStorage$, // checkAcceptanceFromApi$,
-    saveAcceptanceLocalStorage$, // saveAcceptanceFromApi$,
+    checkAcceptanceFromApi$,
+    saveAcceptanceFromApi$,
   )
 
   return {
