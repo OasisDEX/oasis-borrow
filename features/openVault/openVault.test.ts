@@ -12,7 +12,7 @@ import {
   UserTokenInfo,
 } from 'features/shared/userTokenInfo'
 import { zero } from 'helpers/zero'
-import _, { memoize } from 'lodash'
+import _ from 'lodash'
 import { beforeEach, describe, it } from 'mocha'
 import { Observable, of } from 'rxjs'
 
