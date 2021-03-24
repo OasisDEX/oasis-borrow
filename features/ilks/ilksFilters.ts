@@ -1,6 +1,6 @@
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { compareBigNumber } from 'helpers/compare'
-import { applyChange, Change, Direction, toggleSort } from 'helpers/form'
+import { applySerialChange, Direction, SerialChange, toggleSort } from 'helpers/form'
 import { Observable, Subject } from 'rxjs'
 import { map, scan, startWith, switchMap } from 'rxjs/operators'
 
@@ -22,9 +22,9 @@ export interface IlksFilterState {
 }
 
 type Changes =
-  | Change<IlksFilterState, 'sortBy'>
-  | Change<IlksFilterState, 'search'>
-  | Change<IlksFilterState, 'tagFilter'>
+  | SerialChange<IlksFilterState, 'sortBy'>
+  | SerialChange<IlksFilterState, 'search'>
+  | SerialChange<IlksFilterState, 'tagFilter'>
 
 function applyFilter(state: IlksFilterState, change: Changes): IlksFilterState {
   switch (change.kind) {
@@ -36,7 +36,7 @@ function applyFilter(state: IlksFilterState, change: Changes): IlksFilterState {
         direction,
       }
     default:
-      return applyChange<IlksFilterState, Changes>(state, change)
+      return applySerialChange<IlksFilterState, Changes>(state, change)
   }
 }
 

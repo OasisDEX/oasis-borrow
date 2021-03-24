@@ -1,7 +1,13 @@
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { compareBigNumber } from 'helpers/compare'
-import { ApplyChange, applyChange, Change, Direction, toggleSort } from 'helpers/form'
+import {
+  applySerialChange,
+  ApplySerialChange,
+  Direction,
+  SerialChange,
+  toggleSort,
+} from 'helpers/form'
 import { Observable, Subject } from 'rxjs'
 import { map, scan, startWith, switchMap } from 'rxjs/operators'
 export type VaultSortBy =
@@ -21,12 +27,12 @@ export interface VaultsFilterState {
   change: (ch: Changes) => void
 }
 type Changes =
-  | Change<VaultsFilterState, 'sortBy'>
-  | Change<VaultsFilterState, 'search'>
-  | Change<VaultsFilterState, 'tagFilter'>
+  | SerialChange<VaultsFilterState, 'sortBy'>
+  | SerialChange<VaultsFilterState, 'search'>
+  | SerialChange<VaultsFilterState, 'tagFilter'>
 
 function applyFilter(state: VaultsFilterState, change: Changes): VaultsFilterState {
-  const apply: ApplyChange<VaultsFilterState, Changes> = applyChange
+  const apply: ApplySerialChange<VaultsFilterState, Changes> = applySerialChange
 
   switch (change.kind) {
     case 'sortBy':

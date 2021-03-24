@@ -8,7 +8,13 @@ import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
-import { ApplyChange, applyChange, Change, Changes, transactionToX } from 'helpers/form'
+import {
+  applySerialChange,
+  ApplySerialChange,
+  SerialChange,
+  SerialChanges,
+  transactionToX,
+} from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject } from 'rxjs'
@@ -227,14 +233,14 @@ export function validateWarnings(state: OpenVaultState): OpenVaultState {
   return { ...state, warningMessages }
 }
 
-export type OpenVaultChange = Changes<OpenVaultState>
+export type OpenVaultChange = SerialChanges<OpenVaultState>
 
 export type ManualChange =
-  | Change<OpenVaultState, 'depositAmount'>
-  | Change<OpenVaultState, 'generateAmount'>
-  | Change<OpenVaultState, 'allowanceAmount'>
+  | SerialChange<OpenVaultState, 'depositAmount'>
+  | SerialChange<OpenVaultState, 'generateAmount'>
+  | SerialChange<OpenVaultState, 'allowanceAmount'>
 
-const apply: ApplyChange<OpenVaultState> = applyChange
+const apply: ApplySerialChange<OpenVaultState> = applySerialChange
 
 type OpenVaultErrorMessage =
   | 'depositAmountGreaterThanMaxDepositAmount'
