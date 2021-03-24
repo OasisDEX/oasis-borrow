@@ -5,6 +5,7 @@ import { icons as brandingIcons } from '@makerdao/dai-ui-icons-branding'
 // @ts-ignore
 // import oasisBaseTheme from '@makerdao/dai-ui-theme-casual'
 import React from 'react'
+import { tokenIcons } from './tokenIcons'
 
 // @ts-ignore
 
@@ -48,7 +49,7 @@ const customIcons = {
   maker_circle_color: {
     path: (
       <>
-        <circle cx="22.5" cy="22.5" r="22.5" fill="url(#paint0_linear)" />
+        <circle cx="22.5" cy="22.5" r="22.5" fill="url(#maker_paint0_linear)" />
         <path
           d="M11.4254 29.25V18.6604L19.4562 24.7039V29.25H21.5066V24.2776C21.5066 23.9018 21.33 23.5479 21.0297 23.3219L11.2903 15.9926C10.502 15.3994 9.375 15.9617 9.375 16.9482V29.25H11.4254Z"
           fill="white"
@@ -59,7 +60,7 @@ const customIcons = {
         />
         <defs>
           <linearGradient
-            id="paint0_linear"
+            id="maker_paint0_linear"
             x1="22.5"
             y1="2.45869e-08"
             x2="22.5"
@@ -841,6 +842,7 @@ const oasisBaseTheme = {
     ...brandingIcons,
     ...customIcons,
     ...customLandingIcons,
+    ...tokenIcons,
   },
   forms: {
     label: {
