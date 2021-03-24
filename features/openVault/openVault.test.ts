@@ -1,12 +1,24 @@
+/* eslint-disable func-style */
 import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { protoETHAIlkData, protoUSDCAIlkData, protoWBTCAIlkData } from 'blockchain/ilks'
+import { ContextConnected, protoContextConnected } from 'blockchain/network'
 import { expect } from 'chai'
-import { protoUserWBTCTokenInfo } from 'features/shared/userTokenInfo'
+import { protoTxHelpers } from 'components/AppContext'
+import {
+  protoUserETHTokenInfo,
+  protoUserUSDCTokenInfo,
+  protoUserWBTCTokenInfo,
+  UserTokenInfo,
+} from 'features/shared/userTokenInfo'
 import { zero } from 'helpers/zero'
+import _, { memoize } from 'lodash'
 import { beforeEach, describe, it } from 'mocha'
+import { Observable, of } from 'rxjs'
 
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
 import {
+  createOpenVault$,
   defaultOpenVaultState,
   OpenVaultState,
   parseVaultIdFromReceiptLogs,
@@ -186,6 +198,152 @@ describe('openVault', () => {
         liquidationRatio: new BigNumber(1.5),
       })
       expect(errorMessages).to.deep.equal(['vaultUnderCollateralized'])
+    })
+  })
+  describe('createOpenVault$', () => {
+    interface FixtureProps {
+      title?: string
+      context?: ContextConnected
+      proxyAddress?: string
+      allowance?: BigNumber
+      ilks$?: Observable<string[]>
+      userTokenInfo?: Partial<UserTokenInfo>
+      newState?: Partial<OpenVaultState>
+      ilk: string
+    }
+
+    function createTestFixture({
+      context,
+      proxyAddress,
+      allowance,
+      ilks$,
+      userTokenInfo,
+      newState,
+      ilk,
+    }: FixtureProps) {
+      const defaultState$ = of({ ...defaultOpenVaultState, ...(newState || {}) })
+      const context$ = of(context || protoContextConnected)
+      const txHelpers$ = of(protoTxHelpers)
+      const proxyAddress$ = _.constant(of(proxyAddress))
+      const allowance$ = _.constant(of(allowance || maxUint256))
+      const userTokenInfo$ = (token: string) =>
+        of({
+          ...(token === 'ETH'
+            ? protoUserETHTokenInfo
+            : token === 'WBTC'
+            ? protoUserWBTCTokenInfo
+            : protoUserUSDCTokenInfo),
+          ...(userTokenInfo || {}),
+        })
+      const ilkData$ = (ilk: string) =>
+        of(
+          ilk === 'ETH-A'
+            ? protoETHAIlkData
+            : ilk === 'WBTC-A'
+            ? protoWBTCAIlkData
+            : protoUSDCAIlkData,
+        )
+      const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
+      const openVault$ = createOpenVault$(
+        defaultState$,
+        context$,
+        txHelpers$,
+        proxyAddress$,
+        allowance$,
+        userTokenInfo$,
+        ilkData$,
+        ilks$ || of(['ETH-A', 'WBTC-A', 'USDC-A']),
+        ilkToToken$,
+        ilk,
+      )
+      return openVault$
+    }
+
+    const doneOnce = (done: () => void) => {
+      let isFirstTime = true
+      return () => {
+        if (isFirstTime) {
+          done()
+          isFirstTime = false
+        }
+      }
+    }
+
+    it('Should first emit ilkValidationLoading stage and then go to editing stage', (done) => {
+      const ilk = 'ETH-A'
+      const oV$ = createTestFixture({ ilk })
+      let isEditingStageExpected = false
+      oV$.subscribe((state) => {
+        if (!isEditingStageExpected) {
+          expect(state.stage).to.be.equal('ilkValidationLoading')
+          expect(state.isIlkValidationStage).to.be.true
+          isEditingStageExpected = true
+        } else {
+          expect(state.stage).to.be.equal('editing')
+          expect(state.isIlkValidationStage).to.be.false
+          expect(state.isEditingStage).to.be.true
+          done()
+        }
+      })
+    })
+
+    describe('In editing stage', () => {
+      it('changes values when change is called', (done) => {
+        const ilk = 'ETH-A'
+        const depositAmount = new BigNumber(5)
+        const oV$ = createTestFixture({ ilk })
+        let isBeforeChange = true
+        oV$.subscribe((state) => {
+          if (state.isEditingStage) {
+            const ovState = state as OpenVaultState
+            if (isBeforeChange) {
+              isBeforeChange = false
+              ovState.change!({ kind: 'depositAmount', depositAmount: depositAmount })
+            } else {
+              expect(ovState.depositAmount!.toString()).to.be.equal(depositAmount.toString())
+              expect(state.isEditingStage).to.be.true
+              done()
+            }
+          }
+        })
+      })
+
+      it('is able to reset', (done) => {
+        const ilk = 'ETH-A'
+        const doneO = doneOnce(done)
+        const depositAmount = new BigNumber(5)
+        const oV$ = createTestFixture({ ilk })
+        let isBeforeChange = true
+        oV$.subscribe((state) => {
+          if (state.isEditingStage) {
+            const ovState = state as OpenVaultState
+            if (isBeforeChange) {
+              isBeforeChange = false
+              ovState.reset!()
+            } else {
+              if (ovState.depositAmount?.isEqualTo(depositAmount)) {
+                _.noop()
+              } else {
+                expect(ovState.depositAmount).to.be.undefined
+                doneO()
+              }
+            }
+          }
+        })
+      })
+
+      it('is able to progress', (done) => {
+        const ilk = 'ETH-A'
+        const oV$ = createTestFixture({ ilk })
+        oV$.subscribe((state) => {
+          if (state.isEditingStage) {
+            const ovState = state as OpenVaultState
+            ovState.progress!()
+          } else if (state.isProxyStage) {
+            done()
+          }
+        })
+      })
     })
   })
 })
