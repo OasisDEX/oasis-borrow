@@ -40,10 +40,13 @@ async function getVaultHistory(urn: string): Promise<ReturnedEvent[]> {
 
 function parseBigNumbersFields(event: Partial<ReturnedEvent>): BorrowEvent {
   const bigNumberFields = ['collateralAmount', 'daiAmount']
-  return Object.entries(event)
-    .reduce((acc, [key, value]) => bigNumberFields.includes(key) && value != null
-      ? { ...acc, [key]: new BigNumber(value) }
-      : { ...acc, [key]: value }, {}) as BorrowEvent
+  return Object.entries(event).reduce(
+    (acc, [key, value]) =>
+      bigNumberFields.includes(key) && value != null
+        ? { ...acc, [key]: new BigNumber(value) }
+        : { ...acc, [key]: value },
+    {},
+  ) as BorrowEvent
 }
 
 function splitEvents(event: BorrowEvent): BorrowEvent | BorrowEvent[] {
@@ -86,10 +89,12 @@ export function createVaultHistory$(
       vault$(vaultId).pipe(
         switchMap((vault) => getVaultHistory(vault.address)),
         map((events) =>
-          flatten(events
-            .map((event) => pickBy(event, (value) => value !== null))
-            .map(parseBigNumbersFields)
-            .map(splitEvents))
+          flatten(
+            events
+              .map((event) => pickBy(event, (value) => value !== null))
+              .map(parseBigNumbersFields)
+              .map(splitEvents),
+          ),
         ),
       ),
     ),

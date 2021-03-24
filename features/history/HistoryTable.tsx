@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { ColumnDef, Table } from 'components/Table'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
@@ -13,12 +12,12 @@ import { BorrowEvent } from './historyEvents'
 type ColumnData = BorrowEvent & {
   token: string
   etherscan:
-  | {
-    url: string
-    apiUrl: string
-    apiKey: string
-  }
-  | undefined
+    | {
+        url: string
+        apiUrl: string
+        apiKey: string
+      }
+    | undefined
 }
 
 const columns: ColumnDef<ColumnData, {}>[] = [
@@ -36,8 +35,7 @@ const columns: ColumnDef<ColumnData, {}>[] = [
               'collateralAmount' in event && event.collateralAmount
                 ? formatCryptoBalance(event.collateralAmount.abs())
                 : 0,
-            daiAmount:
-              'daiAmount' in event ? formatCryptoBalance(event.daiAmount.abs()) : 0,
+            daiAmount: 'daiAmount' in event ? formatCryptoBalance(event.daiAmount.abs()) : 0,
             cdpId: 'cdpId' in event ? event.cdpId : undefined,
             token: event.token,
           }}
@@ -48,16 +46,10 @@ const columns: ColumnDef<ColumnData, {}>[] = [
   },
   {
     headerLabel: 'event.time',
-    header: ({ label }) => (
-      <Text>{label}</Text>
-    ),
+    header: ({ label }) => <Text>{label}</Text>,
     cell: ({ timestamp }) => {
       const date = moment(timestamp)
-      return (
-        <Text sx={{ whiteSpace: 'nowrap' }}>
-          {date.format('MMM DD, YYYY, h:mma')}
-        </Text>
-      )
+      return <Text sx={{ whiteSpace: 'nowrap' }}>{date.format('MMM DD, YYYY, h:mma')}</Text>
     },
   },
   {

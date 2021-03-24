@@ -1,4 +1,4 @@
-import BigNumber from "bignumber.js"
+import BigNumber from 'bignumber.js'
 
 interface HistoryEventBase {
   hash: string
@@ -62,7 +62,7 @@ interface MigrateEvent extends HistoryEventBase {
 }
 
 export interface ReturnedEvent {
-  kind: string,
+  kind: string
   hash: string
   timestamp: string
   id: string
