@@ -1,26 +1,15 @@
+import { BigNumber } from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { ColumnDef, Table } from 'components/Table'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import moment from 'moment'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Box, Heading, Link, Text } from 'theme-ui'
+import { VaultHistoryEvent } from './vaultHistory'
 
-import { BorrowEvent } from './historyEvents'
-
-type ColumnData = BorrowEvent & {
-  token: string
-  etherscan:
-    | {
-        url: string
-        apiUrl: string
-        apiKey: string
-      }
-    | undefined
-}
-
-const columns: ColumnDef<ColumnData, {}>[] = [
+const columns: ColumnDef<VaultHistoryEvent, {}>[] = [
   {
     headerLabel: 'event.activity',
     header: ({ label }) => <Text>{label}</Text>,
@@ -73,25 +62,21 @@ const columns: ColumnDef<ColumnData, {}>[] = [
     },
   },
 ]
-export function HistoryTable({ id, token }: { id: string; token: string }) {
-  const { vaultHistory$, context$ } = useAppContext()
+
+export function VaultHistoryView({ id }: { id: BigNumber }) {
+  const { vaultHistory$ } = useAppContext()
   const { t } = useTranslation()
 
-  const history = useObservable(vaultHistory$(id))
-  const context = useObservable(context$)
-  const historyWithEtherscan = useMemo(
-    () => history && history.map((el) => ({ ...el, etherscan: context?.etherscan, token })),
-    [history, context?.etherscan, token],
-  )
+  const vaultHistory = useObservable(vaultHistory$(id))
 
-  if (historyWithEtherscan === undefined) {
+  if (vaultHistory === undefined) {
     return null
   }
 
   return (
     <Box sx={{ gridColumn: '1/2' }}>
       <Heading sx={{ mb: 4 }}>{t('vault-history')}</Heading>
-      <Table data={historyWithEtherscan} primaryKey="id" state={{}} columns={columns} />
+      <Table data={vaultHistory} primaryKey="id" state={{}} columns={columns} />
     </Box>
   )
 }

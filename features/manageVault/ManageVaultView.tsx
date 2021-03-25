@@ -824,7 +824,6 @@ export function ManageVaultContainer(props: ManageVaultState) {
     <Grid columns="2fr 1fr" gap={4}>
       <ManageVaultDetails {...props} />
       <ManageVaultForm {...props} />
-      <HistoryTable id={props.id.toString()} token={props.token} />
     </Grid>
   )
 }

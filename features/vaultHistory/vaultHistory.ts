@@ -1,13 +1,14 @@
 import BigNumber from 'bignumber.js'
+import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { gql, GraphQLClient } from 'graphql-request'
 import flatten from 'lodash/flatten'
 import pickBy from 'lodash/pickBy'
 import getConfig from 'next/config'
-import { Observable } from 'rxjs'
+import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
-import { BorrowEvent, ReturnedEvent } from './historyEvents'
+import { VaultEvent, ReturnedEvent } from './vaultHistoryEvents'
 
 const query = gql`
   query VaultEvents($urn: String) {
@@ -38,7 +39,7 @@ async function getVaultHistory(urn: string): Promise<ReturnedEvent[]> {
   return data.allVaultEvents.nodes as ReturnedEvent[]
 }
 
-function parseBigNumbersFields(event: Partial<ReturnedEvent>): BorrowEvent {
+function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
   const bigNumberFields = ['collateralAmount', 'daiAmount']
   return Object.entries(event).reduce(
     (acc, [key, value]) =>
@@ -46,10 +47,10 @@ function parseBigNumbersFields(event: Partial<ReturnedEvent>): BorrowEvent {
         ? { ...acc, [key]: new BigNumber(value) }
         : { ...acc, [key]: value },
     {},
-  ) as BorrowEvent
+  ) as VaultEvent
 }
 
-function splitEvents(event: BorrowEvent): BorrowEvent | BorrowEvent[] {
+function splitEvents(event: VaultEvent): VaultEvent | VaultEvent[] {
   if (event.kind === 'DEPOSIT-GENERATE') {
     return [
       {
@@ -79,23 +80,34 @@ function splitEvents(event: BorrowEvent): BorrowEvent | BorrowEvent[] {
   return event
 }
 
+export type VaultHistoryEvent = VaultEvent & {
+  token: string
+  etherscan?: {
+    url: string
+    apiUrl: string
+    apiKey: string
+  }
+}
+
 export function createVaultHistory$(
-  everyBlock$: Observable<number>,
-  vault$: (id: string) => Observable<Vault>,
-  vaultId: string,
-): Observable<BorrowEvent[]> {
-  return everyBlock$.pipe(
-    switchMap(() =>
-      vault$(vaultId).pipe(
-        switchMap((vault) => getVaultHistory(vault.address)),
-        map((events) =>
+  context$: Observable<Context>,
+  onEveryBlock$: Observable<number>,
+  vault$: (id: BigNumber) => Observable<Vault>,
+  vaultId: BigNumber,
+): Observable<VaultHistoryEvent[]> {
+  return combineLatest(context$, vault$(vaultId)).pipe(
+    switchMap(([{ etherscan }, { address, token }]) =>
+      onEveryBlock$.pipe(
+        switchMap(() => getVaultHistory(address)),
+        map((returnedEvents) =>
           flatten(
-            events
-              .map((event) => pickBy(event, (value) => value !== null))
+            returnedEvents
+              .map((returnedEvent) => pickBy(returnedEvent, (value) => value !== null))
               .map(parseBigNumbersFields)
               .map(splitEvents),
           ),
         ),
+        map((events) => events.map((event) => ({ etherscan, token, ...event }))),
       ),
     ),
   )
