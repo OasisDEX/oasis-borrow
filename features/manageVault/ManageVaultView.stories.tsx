@@ -26,7 +26,6 @@ import {
   ManageVaultStage,
   ManageVaultState,
 } from './manageVault'
-
 interface Story {
   title?: string
   context?: ContextConnected
@@ -178,7 +177,6 @@ function createStory({
 
 const ManageVaultStoryContainer = ({ title }: { title?: string }) => {
   if (!isAppContextAvailable()) return null
-
   return (
     <Container variant="appContainer">
       <Grid>
@@ -430,7 +428,7 @@ export const VaultAtRisk = createStory({
   paybackAmount: new BigNumber('300'),
   userTokenInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress: '0xProxyAddress',
-  stage: 'manageSuccess',
+  stage: 'collateralEditing',
 })
 
 // eslint-disable-next-line import/no-default-export

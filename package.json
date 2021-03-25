@@ -112,6 +112,7 @@
     "@prisma/cli": "^2.14.0",
     "@storybook/addon-essentials": "^6.2.0-beta.11",
     "@storybook/addon-links": "^6.2.0-beta.11",
+    "@storybook/addon-postcss": "^2.0.0",
     "@storybook/react": "^6.2.0-beta.11",
     "@typechain/web3-v1": "^2.0.0",
     "@types/bn.js": "^4.11.1",

@@ -73,7 +73,8 @@ export interface ReturnedEvent {
   vaultCreator: string | null
   cdpId: string | null
 }
-export type BorrowEvent =
+
+export type VaultEvent =
   | VaultOpenedEvent
   | DepositEvent
   | WithdrawEvent
@@ -85,4 +86,4 @@ export type BorrowEvent =
   | VaultTransferredEvent
   | MigrateEvent
 
-export type EventType = BorrowEvent['kind']
+export type EventType = VaultEvent['kind']

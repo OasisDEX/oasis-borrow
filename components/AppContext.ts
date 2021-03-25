@@ -34,13 +34,13 @@ import {
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
-import { createVaultHistory$ } from 'features/history/history'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageVault$, defaultManageVaultState } from 'features/manageVault/manageVault'
 import { createOpenVault$, defaultOpenVaultState } from 'features/openVault/openVault'
 import { redirectState$ } from 'features/router/redirectState'
 import { createUserTokenInfo$ } from 'features/shared/userTokenInfo'
+import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
@@ -208,7 +208,7 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  const vaultHistory$ = memoize(curry(createVaultHistory$)(onEveryBlock$, vault$))
+  const vaultHistory$ = memoize(curry(createVaultHistory$)(context$, onEveryBlock$, vault$))
 
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 

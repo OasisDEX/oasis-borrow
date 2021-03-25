@@ -2,7 +2,6 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { HistoryTable } from 'features/history/HistoryTable'
 import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import {
@@ -824,7 +823,6 @@ export function ManageVaultContainer(props: ManageVaultState) {
     <Grid columns="2fr 1fr" gap={4}>
       <ManageVaultDetails {...props} />
       <ManageVaultForm {...props} />
-      <HistoryTable id={props.id.toString()} token={props.token} />
     </Grid>
   )
 }
