@@ -1,14 +1,9 @@
-# Oasis.app
+# Oasis Borrow
 
 - TypeScript
 - Next.js
 - Eslint with TypeSTRICT
 - Prettier
-
-## Envs
-
-
-## Running
 
 ### Frontend
 
@@ -22,25 +17,6 @@ If you want to serve the web server over HTTPS (required for Ledger) use:
 HTTPS=true yarn start
 ```
 
-### Paths/routes
-
-Pages:
-
-- `/` - Loads Landing Page
-- `/trade` - Redirect to a default pair
-- `/trade/[base]/[quote]` - Loads trading interface
-- `/account` - Loads account information
-- `/terms` - Loads terms of service ( mocked page)
-- `/faq` - FAQ
-
-API routes:
-
-- `/api/health [GET]`
-- `/api/auth/challenge [POST]`
-- `/api/auth/signin [POST]`
-- `/api/tos/me [GET]`
-- `/api/tos/sign [POST]`
-
 ### Backend dependencies
 
 ```sh
@@ -48,31 +24,7 @@ API routes:
 ./scripts/dev.sh
 ```
 
-## Password protection
-
-If `NODE_ENV !== 'development'` password protection using `http-auth` will kick in. Username is `admin` and password is
-`arran!@#`
-
 ## Development
-
-### Test Wyre on localhost
-
-Get [`ngrok`](https://ngrok.com/) for tunneling localhost instance to external domain
-
-Autorize ngrok:
-```
-./ngrok authtoken 1d7IBiJAeUGzEaL9CeJs4Ak2SMN_nMQkztaDB9VFuNNsiubY
-```
-
-Launch ngrok tunneling:
-```
-ngrok http 3000 -subdomain=oasis-app
-```
-
-Webhooks will receive Wyre requests and save it into local db.
-
-
-### Frontend
 
 #### Storybook
 
@@ -82,20 +34,6 @@ yarn storybook
 
 ### Backend
 
-### Wyre dev-mode helpers
-
-Get orders for connected wallet address:
-```
-showOrders()
-```
-
-Change order state:
-```
-changeOrder('ORDER_ID', 'STATE')
-```
-Possible states: `PROCESSING`, `COMPLETE`, `FAILED`
-
-E.g. ``changeOrder('TF_ZNLH8HTAXFM', 'COMPLETE')``
 
 #### Prisma
 
@@ -121,7 +59,6 @@ We use raw SQLs for migrations. They are stored in `server/database/migrations`.
 ```
 yarn migrate
 ```
-
 
 ## i18n - Internationalisation
 

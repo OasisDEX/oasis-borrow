@@ -2,7 +2,7 @@ version: "3.2"
 services:
   postgres:
     image: postgres:12
-    container_name: postgres-oasis-app
+    container_name: postgres-oasis-borrow
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=pass

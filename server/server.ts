@@ -13,7 +13,6 @@ import { parse } from 'url'
 import { i18n } from '../next-i18next.config'
 import { getApp } from './app'
 import { configSchema } from './config'
-import { sendMailUsingSMTP } from './middleware/emails/providers/emailProvider'
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000
 const DEV_HTTPS_PORT = 3443
@@ -29,26 +28,11 @@ async function main() {
     // httpPassword: enablePasswordProtection ? PASSWORD : undefined,
     challengeJWTSecret: process.env.CHALLENGE_JWT_SECRET,
     userJWTSecret: process.env.USER_JWT_SECRET,
-
-    smtpSecret: {
-      host: process.env.SMTP_SERVER_NAME,
-      port: process.env.SMTP_PORT,
-      user: process.env.SMTP_USERNAME,
-      pass: process.env.SMTP_PASSWORD_SECRET,
-    },
-
-    contactEmailsSender: process.env.CONTACT_EMAILS_SENDER,
-    contactEmailsReceiver: process.env.CONTACT_EMAILS_RECEIVER,
   })
 
   await nextApp.prepare()
   const app = getApp(config, {
     nextHandler: handleByNext as any,
-    emailProvider: sendMailUsingSMTP({
-      smtpConfig: config.smtpSecret,
-      sender: config.contactEmailsSender,
-      receiver: config.contactEmailsReceiver,
-    }),
   })
 
   // Render landing pages for paths containing supported languages (e.g. /en /es)
