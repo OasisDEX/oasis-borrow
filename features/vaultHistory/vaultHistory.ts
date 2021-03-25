@@ -31,9 +31,7 @@ const query = gql`
   }
 `
 
-const client = new GraphQLClient(getConfig().publicRuntimeConfig.apiHost)
-
-async function getVaultHistory(urn: string): Promise<ReturnedEvent[]> {
+async function getVaultHistory(client: GraphQLClient, urn: string): Promise<ReturnedEvent[]> {
   const data = await client.request(query, { urn: urn.toLowerCase() })
 
   return data.allVaultEvents.nodes as ReturnedEvent[]
@@ -95,10 +93,11 @@ export function createVaultHistory$(
   vault$: (id: BigNumber) => Observable<Vault>,
   vaultId: BigNumber,
 ): Observable<VaultHistoryEvent[]> {
+  const client = new GraphQLClient(getConfig().publicRuntimeConfig.apiHost)
   return combineLatest(context$, vault$(vaultId)).pipe(
     switchMap(([{ etherscan }, { address, token }]) =>
       onEveryBlock$.pipe(
-        switchMap(() => getVaultHistory(address)),
+        switchMap(() => getVaultHistory(client, address)),
         map((returnedEvents) =>
           flatten(
             returnedEvents
