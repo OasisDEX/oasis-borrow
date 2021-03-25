@@ -34,6 +34,7 @@ import {
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
+import { createVaultHistory$ } from 'features/history/history'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageVault$, defaultManageVaultState } from 'features/manageVault/manageVault'
@@ -207,6 +208,8 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  const vaultHistory$ = memoize(curry(createVaultHistory$)(onEveryBlock$, vault$))
+
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 
   const vaults$ = memoize(curry(createVaults$)(context$, proxyAddress$, vault$))
@@ -281,6 +284,7 @@ export function setupAppContext() {
     vaultsOverview$,
     redirectState$,
     accountBalances$,
+    vaultHistory$,
     collateralPrices$,
   }
 }

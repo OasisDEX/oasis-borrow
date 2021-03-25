@@ -377,6 +377,24 @@
     "vaults-at-risk": "Vaults at risk",
     "your-vaults": "Your Vaults"
   },
+  "history": {
+    "open": "Opened a new Vault with id <0>#{{cdpId}}</0>",
+    "deposit": "Deposited <0>{{collateralAmount}} {{token}}</0> into Vault",
+    "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault",
+    "generate": "Generated <0>{{daiAmount}}</0> DAI from Vault",
+    "payback": "Payback <0>{{daiAmount}}</0> DAI to Vault",
+    "transfer": "Vault given to <0>{{transferTo}}</0> by <0>{{transferFrom}}</0>",
+    "migrate": "Vault migrated",
+    "auction_started": "Auction started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} DAI</0>"
+  },
+  "event": {
+    "type": "Type",
+    "activity": "Activity",
+    "time": "Time",
+    "vault-opened": "Vault Opened",
+    "deposit": "Deposited"
+  },
+  "vault-history": "Vault History",
   "view": "View",
   "view-more": "View more",
   "view-on-etherscan": "View on etherscan",

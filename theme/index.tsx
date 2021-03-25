@@ -639,6 +639,10 @@ const oasisBaseTheme = {
       color: 'muted',
       fontWeight: 'semiBold',
     },
+    strong: {
+      variant: 'text.paragraph2',
+      fontWeight: 'semiBold',
+    },
   },
   borders: {
     light: '1px solid #D1DEE6',
