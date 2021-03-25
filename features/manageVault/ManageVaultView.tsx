@@ -21,6 +21,7 @@ import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Te
 
 import { ManageVaultState } from './manageVault'
 import { ManageVaultFormEditing } from './ManageVaultFormEditing'
+import { VaultBannerDisplayManager } from './VaultBannerDisplayManager'
 
 function ManageVaultDetails(props: ManageVaultState) {
   const {
@@ -833,7 +834,8 @@ export function ManageVaultView({ id }: { id: BigNumber }) {
   if (!manageVault) return null
 
   return (
-    <Grid>
+    <Grid gap={4}>
+      <VaultBannerDisplayManager {...manageVault} />
       <ManageVaultContainer {...manageVault} />
     </Grid>
   )
