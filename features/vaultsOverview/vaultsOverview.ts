@@ -49,7 +49,7 @@ function hasAllMetaInfo(ilk: IlkData) {
     return false
   }
 
-  return 'icon' in token && 'background' in token && 'color' in token
+  return 'bannerIcon' in token && 'background' in token
 }
 
 export function getNewest(ilks: IlkDataList) {

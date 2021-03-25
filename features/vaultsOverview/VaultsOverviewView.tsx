@@ -14,7 +14,7 @@ import {
 } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback, useMemo } from 'react'
-import { Box, Button, Card, Flex, Grid, Heading, Input, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Heading, Input, Text, Image } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { IlksFilterState, IlksWithFilters } from '../ilks/ilksFilters'
@@ -220,8 +220,10 @@ function CallToAction({ ilk }: CallToActionProps) {
         borderRadius: 'large',
         p: 4,
         color: 'white',
+        position: 'relative',
       }}
     >
+      <Image sx={{ position: 'absolute', userSelect: 'none' }} src={token.bannerIcon} />
       <Box sx={{ gridColumn: '1/3' }}>
         <Text variant="caption">{ilk.title}</Text>
       </Box>
@@ -452,9 +454,9 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
       <Text variant="header3" sx={{ textAlign: 'center', justifySelf: 'center', mb: 4 }}>
         {context.status === 'connected'
           ? t('vaults-overview.message-connected', {
-              address: formatAddress(address),
-              count: vaultSummary?.numberOfVaults || 0,
-            })
+            address: formatAddress(address),
+            count: vaultSummary?.numberOfVaults || 0,
+          })
           : t('vaults-overview.message-not-connected', { address: formatAddress(address) })}
       </Text>
       {displayFeaturedIlks && featuredIlks && <FeaturedIlks ilks={featuredIlks} />}
