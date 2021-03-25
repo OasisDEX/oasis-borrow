@@ -2,7 +2,6 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { HistoryTable } from 'features/history/HistoryTable'
 import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import {

@@ -8,7 +8,7 @@ import getConfig from 'next/config'
 import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
-import { VaultEvent, ReturnedEvent } from './vaultHistoryEvents'
+import { ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
 const query = gql`
   query VaultEvents($urn: String) {

@@ -7,6 +7,7 @@ import moment from 'moment'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Heading, Link, Text } from 'theme-ui'
+
 import { VaultHistoryEvent } from './vaultHistory'
 
 const columns: ColumnDef<VaultHistoryEvent, {}>[] = [
