@@ -656,7 +656,7 @@ const oasisBaseTheme = {
   shadows: {
     medium: '0 2px 8px rgba(0, 0, 0, 0.17)',
     light: '0 2px 8px rgba(0, 0, 0, 0.13)',
-    surface: '0px 2px 2px rgba(199, 199, 199, 0.25)',
+    surface: '0px 0px 8px rgba(0, 0, 0, 0.2)',
     table: '0px 0px 2px rgba(0, 0, 0, 0.2)',
   },
   gradients: {
