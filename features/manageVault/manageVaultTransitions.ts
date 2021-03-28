@@ -1,123 +1,161 @@
 import { TxHelpers } from 'components/AppContext'
 import { zero } from 'helpers/zero'
 
-import {
-  ManageVaultChange,
-  ManageVaultEditingStage,
-  ManageVaultState,
-  resetDefaults,
-} from './manageVault'
+import { ManageVaultChange, ManageVaultEditingStage, ManageVaultState } from './manageVault'
+import { manageVaultFormDefaults } from './manageVaultForm'
 import {
   manageVaultDepositAndGenerate,
   manageVaultWithdrawAndPayback,
 } from './manageVaultTransactions'
 
-export function progressEditing(
-  {
-    errorMessages,
-    proxyAddress,
-    depositAmount,
-    paybackAmount,
-    collateralAllowance,
-    daiAllowance,
-    token,
-  }: ManageVaultState,
-  change: (ch: ManageVaultChange) => void,
-) {
-  const canProgress = !errorMessages.length
-  const hasProxy = !!proxyAddress
+export enum ManageVaultTransitionKind {
+  toggleEditing = 'toggleEditing',
+  progressEditing = 'progressEditing',
+  progressProxy = 'progressProxy',
+  progressCollateralAllowance = 'progressCollateralAllowance',
+  backToEditing = 'backToEditing',
+  resetToEditing = 'resetToEditing',
+}
 
-  const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
-  const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
+export type ManageVaultTransitionChange =
+  | {
+      kind: ManageVaultTransitionKind.toggleEditing
+    }
+  | {
+      kind: ManageVaultTransitionKind.progressEditing
+    }
+  | {
+      kind: ManageVaultTransitionKind.progressProxy
+    }
+  | {
+      kind: ManageVaultTransitionKind.progressCollateralAllowance
+    }
+  | {
+      kind: ManageVaultTransitionKind.backToEditing
+    }
+  | {
+      kind: ManageVaultTransitionKind.resetToEditing
+    }
 
-  const depositAmountLessThanCollateralAllowance =
-    collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
-
-  const paybackAmountLessThanDaiAllowance =
-    daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount)
-
-  const hasCollateralAllowance =
-    token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
-
-  const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
-
-  if (canProgress) {
-    if (!hasProxy) {
-      change({ kind: 'stage', stage: 'proxyWaitingForConfirmation' })
-    } else if (!hasCollateralAllowance) {
-      change({ kind: 'stage', stage: 'collateralAllowanceWaitingForConfirmation' })
-    } else if (!hasDaiAllowance) {
-      change({ kind: 'stage', stage: 'daiAllowanceWaitingForConfirmation' })
-    } else change({ kind: 'stage', stage: 'manageWaitingForConfirmation' })
+export function applyManageVaultTransition(
+  change: ManageVaultChange,
+  state: ManageVaultState,
+): ManageVaultState {
+  if (change.kind === ManageVaultTransitionKind.toggleEditing) {
+    const { stage } = state
+    const currentEditing = stage
+    const otherEditing = (['collateralEditing', 'daiEditing'] as ManageVaultEditingStage[]).find(
+      (editingStage) => editingStage !== currentEditing,
+    ) as ManageVaultEditingStage
+    return {
+      ...state,
+      ...manageVaultFormDefaults,
+      stage: otherEditing,
+      originalEditingStage: otherEditing,
+    }
   }
-}
 
-export function toggleEditing(
-  { stage }: ManageVaultState,
-  change: (ch: ManageVaultChange) => void,
-) {
-  const currentEditing = stage
-  const otherEditing = (['collateralEditing', 'daiEditing'] as ManageVaultEditingStage[]).find(
-    (editingStage) => editingStage !== currentEditing,
-  ) as ManageVaultEditingStage
+  if (change.kind === ManageVaultTransitionKind.backToEditing) {
+    const { originalEditingStage } = state
+    return {
+      ...state,
+      stage: originalEditingStage,
+    }
+  }
 
-  change({ kind: 'stage', stage: otherEditing })
-  change({ kind: 'originalEditingStage', originalEditingStage: otherEditing })
-  resetDefaults(change)
-}
+  if (change.kind === ManageVaultTransitionKind.resetToEditing) {
+    const { originalEditingStage } = state
+    return {
+      ...state,
+      ...manageVaultFormDefaults,
+      stage: originalEditingStage,
+    }
+  }
 
-export function resetBackToEditingStage(
-  { originalEditingStage }: ManageVaultState,
-  change: (ch: ManageVaultChange) => void,
-) {
-  resetDefaults(change)
-  change({ kind: 'stage', stage: originalEditingStage })
-}
+  if (change.kind === ManageVaultTransitionKind.progressEditing) {
+    const {
+      errorMessages,
+      proxyAddress,
+      depositAmount,
+      paybackAmount,
+      collateralAllowance,
+      daiAllowance,
+      token,
+    } = state
+    const canProgress = !errorMessages.length
+    const hasProxy = !!proxyAddress
 
-export function progressProxy(
-  {
-    originalEditingStage,
-    depositAmount,
-    paybackAmount,
-    collateralAllowance,
-    daiAllowance,
-    token,
-  }: ManageVaultState,
-  change: (ch: ManageVaultChange) => void,
-) {
-  const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
-  const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
+    const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
+    const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
 
-  const depositAmountLessThanCollateralAllowance =
-    collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
+    const depositAmountLessThanCollateralAllowance =
+      collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
 
-  const paybackAmountLessThanDaiAllowance =
-    daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount)
+    const paybackAmountLessThanDaiAllowance =
+      daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount)
 
-  const hasCollateralAllowance =
-    token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
+    const hasCollateralAllowance =
+      token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
 
-  const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+    const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
 
-  if (!hasCollateralAllowance) {
-    change({ kind: 'stage', stage: 'collateralAllowanceWaitingForConfirmation' })
-  } else if (!hasDaiAllowance) {
-    change({ kind: 'stage', stage: 'daiAllowanceWaitingForConfirmation' })
-  } else change({ kind: 'stage', stage: originalEditingStage })
-}
+    if (canProgress) {
+      if (!hasProxy) {
+        return { ...state, stage: 'proxyWaitingForConfirmation' }
+      }
+      if (!hasCollateralAllowance) {
+        return { ...state, stage: 'collateralAllowanceWaitingForConfirmation' }
+      }
+      if (!hasDaiAllowance) {
+        return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
+      }
+      return { ...state, stage: 'manageWaitingForConfirmation' }
+    }
+  }
 
-export function progressCollateralAllowance(
-  { originalEditingStage, paybackAmount, daiAllowance }: ManageVaultState,
-  change: (ch: ManageVaultChange) => void,
-) {
-  const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
-  const paybackAmountLessThanDaiAllowance =
-    daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount)
-  const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+  if (change.kind === ManageVaultTransitionKind.progressProxy) {
+    const {
+      originalEditingStage,
+      depositAmount,
+      paybackAmount,
+      collateralAllowance,
+      daiAllowance,
+      token,
+    } = state
+    const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
+    const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
 
-  if (!hasDaiAllowance) {
-    change({ kind: 'stage', stage: 'daiAllowanceWaitingForConfirmation' })
-  } else change({ kind: 'stage', stage: originalEditingStage })
+    const depositAmountLessThanCollateralAllowance =
+      collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
+    const paybackAmountLessThanDaiAllowance =
+      daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount)
+    const hasCollateralAllowance =
+      token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
+    const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+
+    if (!hasCollateralAllowance) {
+      return { ...state, stage: 'collateralAllowanceWaitingForConfirmation' }
+    }
+    if (!hasDaiAllowance) {
+      return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
+    }
+    return { ...state, stage: originalEditingStage }
+  }
+
+  if (change.kind === ManageVaultTransitionKind.progressCollateralAllowance) {
+    const { originalEditingStage, paybackAmount, daiAllowance } = state
+    const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
+    const paybackAmountLessThanDaiAllowance =
+      daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount)
+    const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+
+    if (!hasDaiAllowance) {
+      return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
+    }
+    return { ...state, stage: originalEditingStage }
+  }
+
+  return state
 }
 
 export function progressManage(

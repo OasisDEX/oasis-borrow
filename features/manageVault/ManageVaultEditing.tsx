@@ -183,7 +183,7 @@ function ManageVaultIlkDetails({
   )
 }
 
-export function ManageVaultFormEditing(props: ManageVaultState) {
+export function ManageVaultEditing(props: ManageVaultState) {
   const { t } = useTranslation()
 
   const {

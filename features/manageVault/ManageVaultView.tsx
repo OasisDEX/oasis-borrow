@@ -20,7 +20,7 @@ import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
-import { ManageVaultFormEditing } from './ManageVaultFormEditing'
+import { ManageVaultEditing } from './ManageVaultEditing'
 
 function ManageVaultDetails(props: ManageVaultState) {
   const {
@@ -735,7 +735,7 @@ function ManageVaultForm(props: ManageVaultState) {
     <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <Card>
         <ManageVaultFormHeader {...props} />
-        {isEditingStage && <ManageVaultFormEditing {...props} />}
+        {isEditingStage && <ManageVaultEditing {...props} />}
         {isProxyStage && <ManageVaultFormProxy {...props} />}
         {isCollateralAllowanceStage && <ManageVaultFormCollateralAllowance {...props} />}
         {isDaiAllowanceStage && <ManageVaultFormDaiAllowance {...props} />}
