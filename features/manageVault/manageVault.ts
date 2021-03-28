@@ -5,15 +5,16 @@ import { ContextConnected } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
-import { ApplyChange, applyChange, Changes } from 'helpers/form'
+import { Changes } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { compose } from 'ramda'
-import { combineLatest, merge, Observable, of, pipe, Subject } from 'rxjs'
+import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
+
 import {
-  ManageVaultActionChange,
   applyManageVaultAction,
+  ManageVaultActionChange,
   ManageVaultActionKind,
 } from './manageVaultActions'
 import {
@@ -186,7 +187,7 @@ const curriedApplyManageVaultAllowance = curry(applyManageVaultAllowance)
 const curriedApplyManageVaultTransition = curry(applyManageVaultTransition)
 const curriedApplyManageVaultTransaction = curry(applyManageVaultTransaction)
 
-const apply = (state: ManageVaultState, change: ManageVaultChange) => {
+function apply(state: ManageVaultState, change: ManageVaultActionChange) {
   return compose(
     curriedApplyManageVaultAction(change),
     curriedApplyManageVaultForm(change),
