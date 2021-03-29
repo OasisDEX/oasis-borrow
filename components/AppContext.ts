@@ -34,12 +34,17 @@ import {
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
+import { currentContent } from 'features/content'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageVault$, defaultManageVaultState } from 'features/manageVault/manageVault'
 import { createOpenVault$, defaultOpenVaultState } from 'features/openVault/openVault'
 import { redirectState$ } from 'features/router/redirectState'
 import { createUserTokenInfo$ } from 'features/shared/userTokenInfo'
+import {
+  checkAcceptanceFromApi$,
+  saveAcceptanceFromApi$,
+} from 'features/termsOfService/termsAcceptanceApi'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { mapValues, memoize } from 'lodash'
@@ -67,6 +72,8 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
+import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { HasGasEstimation } from '../helpers/form'
 
 export type TxData =
@@ -265,8 +272,17 @@ export function setupAppContext() {
   )
   const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
 
+  const termsAcceptance$ = createTermsAcceptance$(
+    web3Context$,
+    currentContent.tos.version,
+    jwtAuthSetupToken$,
+    checkAcceptanceFromApi$,
+    saveAcceptanceFromApi$,
+  )
+
   return {
     web3Context$,
+    web3ContextConnected$,
     setupWeb3Context$,
     initializedAccount$,
     context$,
@@ -286,6 +302,7 @@ export function setupAppContext() {
     accountBalances$,
     vaultHistory$,
     collateralPrices$,
+    termsAcceptance$,
   }
 }
 

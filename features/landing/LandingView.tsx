@@ -7,7 +7,7 @@ import { IlksFilterState } from 'features/ilks/ilksFilters'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { FeaturedIlks, Filters } from 'features/vaultsOverview/VaultsOverviewView'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
+import { useObservableWithError } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback } from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
@@ -97,7 +97,7 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
 export function LandingView() {
   const { landing$ } = useAppContext()
   const { t } = useTranslation()
-  const landing = useObservable(landing$)
+  const [landing, landingError] = useObservableWithError(landing$)
 
   const onIlkSearch = useCallback(
     (search: string) => {
@@ -112,8 +112,13 @@ export function LandingView() {
     [landing?.ilks.filters],
   )
 
+  if (landingError !== undefined) {
+    console.log(landingError)
+    return <>Error while fetching data!</>
+  }
+
   if (landing === undefined) {
-    return null
+    return <>loading...</>
   }
 
   return (

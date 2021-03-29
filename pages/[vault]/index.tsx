@@ -7,6 +7,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
+import { WithTermsOfService } from '../../features/termsOfService/TermsOfService'
+
 export async function getServerSideProps(ctx: any) {
   return {
     props: {
@@ -19,10 +21,12 @@ export async function getServerSideProps(ctx: any) {
 export default function Vault({ id }: { id: string }) {
   return (
     <WithConnection>
-      <Grid>
-        <ManageVaultView id={new BigNumber(id)} />
-        <VaultHistoryView id={new BigNumber(id)} />
-      </Grid>
+      <WithTermsOfService>
+        <Grid>
+          <ManageVaultView id={new BigNumber(id)} />
+          <VaultHistoryView id={new BigNumber(id)} />
+        </Grid>
+      </WithTermsOfService>
     </WithConnection>
   )
 }

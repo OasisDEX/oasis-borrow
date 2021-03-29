@@ -6,6 +6,8 @@ import { useObservable } from 'helpers/observableHook'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
+import { WithTermsOfService } from '../../../features/termsOfService/TermsOfService'
+
 // TODO Move this to /features
 function Summary({ address }: { address: string }) {
   const { vaultsOverview$, context$ } = useAppContext()
@@ -31,7 +33,9 @@ export async function getServerSideProps(ctx: any) {
 export default function VaultsSummary({ address }: { address: string }) {
   return address ? (
     <WithConnection>
-      <Summary {...{ address }} />
+      <WithTermsOfService>
+        <Summary {...{ address }} />
+      </WithTermsOfService>
     </WithConnection>
   ) : null
 }
