@@ -11,4 +11,11 @@ export function useTime(refreshCycle = 1000) {
 }
 
 export const now = new Date(Date.now())
+
 export const nextHour = new Date(now.setHours(now.getHours() + 1, 0, 0, 0))
+
+export function moreMinutes(additonalMinutes: number) {
+  const date = new Date()
+  date.setMinutes(date.getMinutes() + additonalMinutes)
+  return date
+}

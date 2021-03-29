@@ -1,42 +1,58 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { VaultActionInput } from 'components/VaultActionInput'
+import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
 import { BigNumberInput } from 'helpers/BigNumberInput'
-import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import {
+  formatAmount,
+  formatCryptoBalance,
+  formatFiatBalance,
+  formatPercent,
+} from 'helpers/formatters/format'
+import { handleNumericInput } from 'helpers/input'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
-import { useTranslation } from 'next-i18next'
+import moment from 'moment'
+import { Trans, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
-import { ManageVaultState, ManualChange } from './manageVault'
+import { VaultBannersView } from '../banners/VaultsBannersView'
+import { ManageVaultState } from './manageVault'
+import { ManageVaultFormEditing } from './ManageVaultFormEditing'
 
-function ManageVaultDetails({
-  afterCollateralizationRatio,
-  afterLiquidationPrice,
-  token,
-  collateralizationRatio,
-  liquidationPrice,
-  lockedCollateral,
-  lockedCollateralPrice,
-
-  currentCollateralPrice,
-  nextCollateralPrice,
-  isStaticCollateralPrice,
-  dateNextCollateralPrice,
-}: ManageVaultState) {
+function ManageVaultDetails(props: ManageVaultState) {
+  const {
+    afterCollateralizationRatio,
+    afterLiquidationPrice,
+    token,
+    collateralizationRatio,
+    liquidationPrice,
+    lockedCollateral,
+    lockedCollateralPrice,
+    currentCollateralPrice,
+    nextCollateralPrice,
+    isStaticCollateralPrice,
+    dateNextCollateralPrice,
+    liquidationRatio,
+    ilk,
+    id,
+  } = props
   const { t } = useTranslation()
   const collRatio = collateralizationRatio.eq(zero)
     ? '--'
-    : formatPercent(collateralizationRatio.times(100), { precision: 4 })
+    : formatPercent(collateralizationRatio.times(100), { precision: 2 })
+  const collRatioColor = collateralizationRatio.isZero()
+    ? 'primary'
+    : collateralizationRatio.lte(liquidationRatio.times(1.2))
+    ? 'onError'
+    : 'onSuccess'
 
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
     ? '--'
-    : formatPercent(afterCollateralizationRatio.times(100), { precision: 4 })
+    : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
 
   const liqPrice = formatAmount(liquidationPrice, 'USD')
   const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
@@ -44,406 +60,104 @@ function ManageVaultDetails({
   const locked = formatAmount(lockedCollateral, token)
   const lockedUSD = formatAmount(lockedCollateralPrice, token)
 
+  const tokenInfo = getToken(token)
+
+  const newPriceIn = moment(dateNextCollateralPrice).diff(Date.now(), 'minutes')
+  const nextPriceDiff = nextCollateralPrice
+    ? nextCollateralPrice.minus(currentCollateralPrice).div(nextCollateralPrice).times(100)
+    : zero
+
+  const priceChangeColor = nextPriceDiff.isZero()
+    ? 'text.muted'
+    : nextPriceDiff.gt(zero)
+    ? 'onSuccess'
+    : 'onError'
+
   return (
-    <Grid columns="1fr 1fr" gap={6} sx={{ justifyContent: 'space-between' }}>
-      <Grid>
-        <Text>{t('system.liquidation-price')}</Text>
-        <Heading>$ {liqPrice}</Heading>
+    <Grid sx={{ alignSelf: 'flex-start' }} columns="1fr 1fr">
+      <Heading
+        as="h1"
+        variant="paragraph2"
+        sx={{ gridColumn: '1/3', fontWeight: 'semiBold', borderBottom: 'light', pb: 3 }}
+      >
+        <Flex>
+          <Icon name={tokenInfo.iconCircle} size="26px" sx={{ verticalAlign: 'sub', mr: 2 }} />
+          <Text>{t('vault.header', { ilk, id })}</Text>
+        </Flex>
+      </Heading>
+      <Box sx={{ mt: 5 }}>
+        <Heading variant="subheader" as="h2">
+          {t('system.liquidation-price')}
+        </Heading>
+        <Text variant="display">${liqPrice}</Text>
         <Text>
           {t('after')}: ${afterLiqPrice}
         </Text>
-      </Grid>
-      <Grid sx={{ textAlign: 'right' }}>
-        <Text>{t('system.collateralization-ratio')}</Text>
-        <Heading>{collRatio}</Heading>
+      </Box>
+      <Box sx={{ textAlign: 'right', mt: 5 }}>
+        <Heading variant="subheader" as="h2">
+          {t('system.collateralization-ratio')}
+        </Heading>
+        <Text sx={{ color: collRatioColor }} variant="display">
+          {collRatio}
+        </Text>
         <Text>
           {t('after')}: {afterCollRatio}
         </Text>
-      </Grid>
+      </Box>
       {isStaticCollateralPrice ? (
-        <Grid>
-          <Text>{`${token}/USD price`}</Text>
-          <Heading>${formatAmount(currentCollateralPrice, 'USD')}</Heading>
-        </Grid>
+        <Box sx={{ mt: 6 }}>
+          <Heading variant="subheader" as="h2">{`${token}/USD price`}</Heading>
+          <Text variant="header2">${formatAmount(currentCollateralPrice, 'USD')}</Text>
+        </Box>
       ) : (
-        <Grid>
-          <Text>Current ETH/USD Price in 9 mins</Text>
-          <Grid>
-            <Text>{`Current ${token}/USD price`}</Text>
-            <Heading>${formatAmount(currentCollateralPrice, 'USD')}</Heading>
-          </Grid>
-          <Text>Next price: {formatAmount(nextCollateralPrice || zero, 'USD')} </Text>
-          <Text>
-            {dateNextCollateralPrice?.toLocaleDateString()} ::{' '}
-            {dateNextCollateralPrice?.toLocaleTimeString()}
-          </Text>
-        </Grid>
+        <Box sx={{ mt: 6 }}>
+          <Box>
+            <Heading variant="subheader" as="h2">{`Current ${token}/USD price`}</Heading>
+            <Text variant="header2" sx={{ py: 3 }}>
+              ${formatAmount(currentCollateralPrice, 'USD')}
+            </Text>
+          </Box>
+
+          {nextCollateralPrice && (
+            <Flex sx={{ alignItems: 'flex-start' }}>
+              <Heading variant="subheader" as="h3">
+                <Box sx={{ mr: 2 }}>
+                  {newPriceIn < 2 ? (
+                    <Trans
+                      i18nKey="vault.next-price-any-time"
+                      count={newPriceIn}
+                      components={[<br />]}
+                    />
+                  ) : (
+                    <Trans i18nKey="vault.next-price" count={newPriceIn} components={[<br />]} />
+                  )}
+                </Box>
+              </Heading>
+              <Flex
+                variant="paragraph2"
+                sx={{ fontWeight: 'semiBold', alignItems: 'center', color: priceChangeColor }}
+              >
+                <Text>${formatAmount(nextCollateralPrice || zero, 'USD')}</Text>
+                <Text sx={{ ml: 2 }}>({formatPercent(nextPriceDiff, { precision: 2 })})</Text>
+                {nextPriceDiff.isZero() ? null : (
+                  <Icon sx={{ ml: 2 }} name={nextPriceDiff.gt(zero) ? 'increase' : 'decrease'} />
+                )}
+              </Flex>
+            </Flex>
+          )}
+        </Box>
       )}
-      <Grid sx={{ textAlign: 'right' }}>
-        <Text>{t('system.collateral-locked')}</Text>
-        <Heading>
-          {locked} {token}
+      <Box sx={{ textAlign: 'right', mt: 6 }}>
+        <Heading variant="subheader" as="h2">
+          {t('system.collateral-locked')}
         </Heading>
-        <Text>$ {lockedUSD}</Text>
-      </Grid>
-    </Grid>
-  )
-}
-
-function ManageVaultFormTitle({
-  isEditingStage,
-  isProxyStage,
-  isCollateralAllowanceStage,
-  isDaiAllowanceStage,
-  reset,
-  stage,
-  token,
-}: ManageVaultState) {
-  const canReset = !!reset
-
-  function handleReset(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault()
-    if (canReset) reset!()
-  }
-
-  return (
-    <Grid pb={3}>
-      <Grid columns="2fr 1fr">
-        <Text>
-          {isEditingStage
-            ? 'Manage your Vault'
-            : isProxyStage
-            ? 'Create Proxy'
-            : isCollateralAllowanceStage
-            ? `Set ${token} Allowance`
-            : isDaiAllowanceStage
-            ? `Set DAI Allowance`
-            : 'Action Vault'}
+        <Text variant="header2" sx={{ py: 3 }}>
+          {locked} {token}
         </Text>
-        {canReset ? (
-          <Button onClick={handleReset} disabled={!canReset} sx={{ fontSize: 1, p: 0 }}>
-            {stage === 'editing' ? 'Reset' : 'Back'}
-          </Button>
-        ) : null}
-      </Grid>
-      <Text sx={{ fontSize: 2 }}>
-        Some text here giving a little more context as to what the user is doing
-      </Text>
-    </Grid>
-  )
-}
-
-function ManageVaultFormEditing(props: ManageVaultState) {
-  const {
-    token,
-    depositAmount,
-    depositAmountUSD,
-    maxDepositAmount,
-    maxDepositAmountUSD,
-    withdrawAmount,
-    withdrawAmountUSD,
-    maxWithdrawAmount,
-    maxWithdrawAmountUSD,
-    generateAmount,
-    maxGenerateAmount,
-    paybackAmount,
-    maxPaybackAmount,
-    currentCollateralPrice,
-    errorMessages,
-    warningMessages,
-    ilkDebtAvailable,
-    liquidationRatio,
-    afterCollateralizationRatio,
-    progress,
-    change,
-    accountIsController,
-  } = props
-
-  function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault()
-    progress!()
-  }
-
-  function clearDeposit(change: (ch: ManualChange) => void) {
-    change({
-      kind: 'depositAmount',
-      depositAmount: undefined,
-    })
-    change({
-      kind: 'depositAmountUSD',
-      depositAmountUSD: undefined,
-    })
-  }
-
-  function clearWithdraw(change: (ch: ManualChange) => void) {
-    change({
-      kind: 'withdrawAmount',
-      withdrawAmount: undefined,
-    })
-    change({
-      kind: 'withdrawAmountUSD',
-      withdrawAmountUSD: undefined,
-    })
-  }
-
-  function clearGenerate(change: (ch: ManualChange) => void) {
-    change({
-      kind: 'generateAmount',
-      generateAmount: undefined,
-    })
-  }
-
-  function clearPayback(change: (ch: ManualChange) => void) {
-    change({
-      kind: 'paybackAmount',
-      paybackAmount: undefined,
-    })
-  }
-
-  function handleDepositChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      const depositAmount = value !== '' ? new BigNumber(value) : undefined
-      const depositAmountUSD = depositAmount
-        ? currentCollateralPrice.times(depositAmount)
-        : undefined
-
-      clearPayback(change)
-      clearWithdraw(change)
-      change({
-        kind: 'depositAmount',
-        depositAmount,
-      })
-      change({
-        kind: 'depositAmountUSD',
-        depositAmountUSD,
-      })
-    }
-  }
-
-  function handleDepositUSDChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      const depositAmountUSD = value !== '' ? new BigNumber(value) : undefined
-      const depositAmount =
-        depositAmountUSD && depositAmountUSD.gt(zero)
-          ? depositAmountUSD.div(currentCollateralPrice)
-          : undefined
-
-      clearPayback(change)
-      clearWithdraw(change)
-      change({
-        kind: 'depositAmountUSD',
-        depositAmountUSD,
-      })
-      change({
-        kind: 'depositAmount',
-        depositAmount,
-      })
-    }
-  }
-
-  function handleDepositMax(change: (ch: ManualChange) => void) {
-    return () => {
-      clearPayback(change)
-      clearWithdraw(change)
-      change({ kind: 'depositAmount', depositAmount: maxDepositAmount })
-      change({ kind: 'depositAmountUSD', depositAmountUSD: maxDepositAmountUSD })
-    }
-  }
-
-  function handleWithdrawChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      const withdrawAmount = value !== '' ? new BigNumber(value) : undefined
-      const withdrawAmountUSD = withdrawAmount
-        ? currentCollateralPrice.times(withdrawAmount)
-        : undefined
-
-      clearGenerate(change)
-      clearDeposit(change)
-      change({
-        kind: 'withdrawAmount',
-        withdrawAmount,
-      })
-      change({
-        kind: 'withdrawAmountUSD',
-        withdrawAmountUSD,
-      })
-    }
-  }
-
-  function handleWithdrawUSDChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      const withdrawAmountUSD = value !== '' ? new BigNumber(value) : undefined
-      const withdrawAmount =
-        withdrawAmountUSD && withdrawAmountUSD.gt(zero)
-          ? withdrawAmountUSD.div(currentCollateralPrice)
-          : undefined
-
-      clearGenerate(change)
-      clearDeposit(change)
-      change({
-        kind: 'withdrawAmountUSD',
-        withdrawAmountUSD,
-      })
-      change({
-        kind: 'withdrawAmount',
-        withdrawAmount,
-      })
-    }
-  }
-
-  function handleWithdrawMax(change: (ch: ManualChange) => void) {
-    return () => {
-      clearGenerate(change)
-      clearDeposit(change)
-      change({ kind: 'withdrawAmount', withdrawAmount: maxWithdrawAmount })
-      change({ kind: 'withdrawAmountUSD', withdrawAmountUSD: maxWithdrawAmountUSD })
-    }
-  }
-
-  function handleGenerateChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      const generateAmount = value !== '' ? new BigNumber(value) : undefined
-      clearPayback(change)
-      clearWithdraw(change)
-      change({
-        kind: 'generateAmount',
-        generateAmount,
-      })
-    }
-  }
-
-  function handleGenerateMax(change: (ch: ManualChange) => void) {
-    return () => {
-      clearPayback(change)
-      clearWithdraw(change)
-      change({ kind: 'generateAmount', generateAmount: maxGenerateAmount })
-    }
-  }
-
-  function handlePaybackChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      const paybackAmount = value !== '' ? new BigNumber(value) : undefined
-      clearGenerate(change)
-      clearDeposit(change)
-      change({
-        kind: 'paybackAmount',
-        paybackAmount,
-      })
-    }
-  }
-
-  function handlePaybackMax(change: (ch: ManualChange) => void) {
-    return () => {
-      clearGenerate(change)
-      clearDeposit(change)
-      change({ kind: 'paybackAmount', paybackAmount: maxPaybackAmount })
-    }
-  }
-
-  const { t } = useTranslation()
-
-  const errorString = errorMessages.join(',\n')
-  const warningString = warningMessages.join(',\n')
-
-  const hasError = !!errorString
-  const hasWarnings = !!warningString
-
-  const daiAvailable = ilkDebtAvailable ? `${formatCryptoBalance(ilkDebtAvailable)} DAI` : '--'
-  const minCollRatio = liquidationRatio
-    ? `${formatPercent(liquidationRatio.times(100), { precision: 2 })}`
-    : '--'
-  const afterCollRatio = afterCollateralizationRatio.eq(zero)
-    ? '--'
-    : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
-
-  return (
-    <Grid>
-      <VaultActionInput
-        action="Deposit"
-        token={token}
-        showMax={true}
-        hasAuxiliary={true}
-        onSetMax={handleDepositMax(change!)}
-        maxAmountLabel={'Balance'}
-        amount={depositAmount}
-        auxiliaryAmount={depositAmountUSD}
-        maxAmount={maxDepositAmount}
-        maxAuxiliaryAmount={maxDepositAmountUSD}
-        onChange={handleDepositChange(change!)}
-        onAuxiliaryChange={handleDepositUSDChange(change!)}
-        hasError={false}
-      />
-      <VaultActionInput
-        action="Withdraw"
-        showMax={true}
-        hasAuxiliary={true}
-        onSetMax={handleWithdrawMax(change!)}
-        disabled={!accountIsController}
-        amount={withdrawAmount}
-        auxiliaryAmount={withdrawAmountUSD}
-        maxAmount={maxWithdrawAmount}
-        maxAmountLabel={'Free'}
-        maxAuxiliaryAmount={maxWithdrawAmountUSD}
-        token={token}
-        hasError={false}
-        onChange={handleWithdrawChange(change!)}
-        onAuxiliaryChange={handleWithdrawUSDChange(change!)}
-      />
-      <VaultActionInput
-        action="Generate"
-        amount={generateAmount}
-        token={'DAI'}
-        showMax={true}
-        disabled={!accountIsController}
-        maxAmount={maxGenerateAmount}
-        maxAmountLabel={'Maximum'}
-        onSetMax={handleGenerateMax(change!)}
-        onChange={handleGenerateChange(change!)}
-        hasError={false}
-      />
-      <VaultActionInput
-        action="Payback"
-        amount={paybackAmount}
-        token={'DAI'}
-        showMax={true}
-        maxAmount={maxPaybackAmount}
-        maxAmountLabel={'Maximum'}
-        onSetMax={handlePaybackMax(change!)}
-        onChange={handlePaybackChange(change!)}
-        hasError={false}
-      />
-      {hasError && (
-        <>
-          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
-        </>
-      )}
-      {hasWarnings && (
-        <>
-          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>
-        </>
-      )}
-
-      <Card>
-        <Grid columns="5fr 3fr">
-          <Text sx={{ fontSize: 2 }}>{t('system.dai-available')}</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{daiAvailable}</Text>
-
-          <Text sx={{ fontSize: 2 }}>{t('system.min-coll-ratio')}</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{minCollRatio}</Text>
-
-          <Text sx={{ fontSize: 2 }}>{t('system.collateralization-ratio')}</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{afterCollRatio}</Text>
-        </Grid>
-      </Card>
-      <Button onClick={handleProgress} disabled={hasError}>
-        {t('confirm')}
-      </Button>
+        <Text>$ {lockedUSD}</Text>
+      </Box>
+      <VaultDetails {...props} />
     </Grid>
   )
 }
@@ -541,9 +255,12 @@ function ManageVaultFormCollateralAllowance({
   progress,
   token,
   collateralAllowanceAmount,
-  change,
   errorMessages,
   depositAmount,
+  updateCollateralAllowanceAmount,
+  setCollateralAllowanceAmountUnlimited,
+  setCollateralAllowanceAmountToDepositAmount,
+  resetCollateralAllowanceAmount,
 }: ManageVaultState) {
   const [isCustom, setIsCustom] = useState<Boolean>(false)
 
@@ -557,33 +274,23 @@ function ManageVaultFormCollateralAllowance({
     if (canProgress) progress!()
   }
 
-  function handleCustomCollateralAllowanceChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      change({
-        kind: 'collateralAllowanceAmount',
-        collateralAllowanceAmount: value !== '' ? new BigNumber(value) : undefined,
-      })
-    }
-  }
-
   function handleUnlimited() {
     if (canSelectRadio) {
       setIsCustom(false)
-      change!({ kind: 'collateralAllowanceAmount', collateralAllowanceAmount: maxUint256 })
+      setCollateralAllowanceAmountUnlimited!()
     }
   }
 
   function handleDeposit() {
     if (canSelectRadio) {
       setIsCustom(false)
-      change!({ kind: 'collateralAllowanceAmount', collateralAllowanceAmount: depositAmount })
+      setCollateralAllowanceAmountToDepositAmount!()
     }
   }
 
   function handleCustom() {
     if (canSelectRadio) {
-      change!({ kind: 'collateralAllowanceAmount', collateralAllowanceAmount: undefined })
+      resetCollateralAllowanceAmount!()
       setIsCustom(true)
     }
   }
@@ -632,7 +339,7 @@ function ManageVaultFormCollateralAllowance({
                   decimalLimit: getToken(token).digits,
                   prefix: '',
                 })}
-                onChange={handleCustomCollateralAllowanceChange(change!)}
+                onChange={handleNumericInput(updateCollateralAllowanceAmount!)}
               />
               <Text sx={{ fontSize: 1 }}>{token}</Text>
             </Grid>
@@ -707,9 +414,12 @@ function ManageVaultFormDaiAllowance({
   etherscan,
   progress,
   daiAllowanceAmount,
-  change,
   errorMessages,
   paybackAmount,
+  updateDaiAllowanceAmount,
+  setDaiAllowanceAmountUnlimited,
+  setDaiAllowanceAmountToPaybackAmount,
+  resetDaiAllowanceAmount,
 }: ManageVaultState) {
   const [isCustom, setIsCustom] = useState<Boolean>(false)
 
@@ -722,33 +432,23 @@ function ManageVaultFormDaiAllowance({
     if (canProgress) progress!()
   }
 
-  function handleCustomDaiAllowanceChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      change({
-        kind: 'daiAllowanceAmount',
-        daiAllowanceAmount: value !== '' ? new BigNumber(value) : undefined,
-      })
-    }
-  }
-
   function handleUnlimited() {
     if (canSelectRadio) {
       setIsCustom(false)
-      change!({ kind: 'daiAllowanceAmount', daiAllowanceAmount: maxUint256 })
+      setDaiAllowanceAmountUnlimited!()
     }
   }
 
   function handlePayback() {
     if (canSelectRadio) {
       setIsCustom(false)
-      change!({ kind: 'daiAllowanceAmount', daiAllowanceAmount: paybackAmount })
+      setDaiAllowanceAmountToPaybackAmount!()
     }
   }
 
   function handleCustom() {
     if (canSelectRadio) {
-      change!({ kind: 'daiAllowanceAmount', daiAllowanceAmount: undefined })
+      resetDaiAllowanceAmount!()
       setIsCustom(true)
     }
   }
@@ -797,7 +497,7 @@ function ManageVaultFormDaiAllowance({
                   decimalLimit: getToken('DAI').digits,
                   prefix: '',
                 })}
-                onChange={handleCustomDaiAllowanceChange(change!)}
+                onChange={handleNumericInput(updateDaiAllowanceAmount!)}
               />
               <Text sx={{ fontSize: 1 }}>DAI</Text>
             </Grid>
@@ -1014,18 +714,107 @@ function ManageVaultForm(props: ManageVaultState) {
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
     isManageStage,
+    toggleIlkDetails,
+    showIlkDetails,
   } = props
 
+  function handleMouseEnter(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.preventDefault()
+    if (isEditingStage && !showIlkDetails) {
+      toggleIlkDetails!()
+    }
+  }
+
+  function handleMouseLeave(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.preventDefault()
+    if (isEditingStage && showIlkDetails) {
+      toggleIlkDetails!()
+    }
+  }
+
   return (
-    <Box>
+    <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <Card>
-        <ManageVaultFormTitle {...props} />
+        <ManageVaultFormHeader {...props} />
         {isEditingStage && <ManageVaultFormEditing {...props} />}
         {isProxyStage && <ManageVaultFormProxy {...props} />}
         {isCollateralAllowanceStage && <ManageVaultFormCollateralAllowance {...props} />}
         {isDaiAllowanceStage && <ManageVaultFormDaiAllowance {...props} />}
         {isManageStage && <ManageVaultFormConfirmation {...props} />}
       </Card>
+    </Box>
+  )
+}
+
+function VaultDetails(props: ManageVaultState) {
+  const { t } = useTranslation()
+  return (
+    <Box sx={{ gridColumn: '1/3', mt: 6 }}>
+      <Heading variant="header3" mb="4">
+        {t('vault.vault-details')}
+      </Heading>
+      <Grid columns="1fr 1fr 1fr" sx={{ border: 'light', borderRadius: 'medium', p: 4 }}>
+        <Box>
+          <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
+            {t('system.vault-dai-debt')}
+          </Box>
+          <Box>
+            <Text sx={{ display: 'inline' }} variant="header3">
+              {formatCryptoBalance(props.debt)}
+            </Text>
+            <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
+              DAI
+            </Text>
+          </Box>
+        </Box>
+        <Box>
+          <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
+            {t('system.available-to-withdraw')}
+          </Box>
+          <Box variant="text.header3">
+            <Text sx={{ display: 'inline' }} variant="header3">
+              {formatFiatBalance(props.freeCollateral)}
+            </Text>
+            <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
+              USD
+            </Text>
+          </Box>
+        </Box>
+        <Box>
+          <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
+            {t('system.available-to-generate')}
+          </Box>
+          <Box variant="text.header3">
+            <Text sx={{ display: 'inline' }} variant="header3">
+              {formatCryptoBalance(props.maxGenerateAmount)}
+            </Text>
+            <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
+              USD
+            </Text>
+          </Box>
+        </Box>
+        <Box sx={{ gridColumn: '1/4', borderBottom: 'light', height: '1px', my: 3 }} />
+        <Box>
+          <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
+            {t('system.liquidation-ratio')}
+          </Box>
+          <Text sx={{ display: 'inline' }} variant="header3">
+            {formatPercent(props.liquidationRatio.times(100))}
+          </Text>
+        </Box>
+        <Box>
+          <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
+            {t('system.stability-fee')}
+          </Box>
+          <Box variant="text.header3">{formatPercent(props.stabilityFee.times(100))}</Box>
+        </Box>
+        <Box>
+          <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
+            {t('system.liquidation-penalty')}
+          </Box>
+          <Box variant="text.header3">{formatPercent(props.liquidationPenalty.times(100))}</Box>
+        </Box>
+      </Grid>
     </Box>
   )
 }
@@ -1045,7 +834,8 @@ export function ManageVaultView({ id }: { id: BigNumber }) {
   if (!manageVault) return null
 
   return (
-    <Grid>
+    <Grid gap={4}>
+      <VaultBannersView id={id} />
       <ManageVaultContainer {...manageVault} />
     </Grid>
   )

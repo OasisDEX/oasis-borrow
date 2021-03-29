@@ -33,6 +33,7 @@ import {
 } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
@@ -45,6 +46,7 @@ import {
   checkAcceptanceFromApi$,
   saveAcceptanceFromApi$,
 } from 'features/termsOfService/termsAcceptanceApi'
+import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
@@ -214,6 +216,8 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  const vaultHistory$ = memoize(curry(createVaultHistory$)(context$, onEveryBlock$, vault$))
+
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 
   const vaults$ = memoize(curry(createVaults$)(context$, proxyAddress$, vault$))
@@ -277,6 +281,11 @@ export function setupAppContext() {
     saveAcceptanceFromApi$,
   )
 
+  const vaultBanners$ = memoize(
+    curry(createVaultsBanners$)(connectedContext$, userTokenInfo$, vault$),
+    bigNumberTostring,
+  )
+
   return {
     web3Context$,
     web3ContextConnected$,
@@ -295,8 +304,10 @@ export function setupAppContext() {
     openVault$,
     manageVault$,
     vaultsOverview$,
+    vaultBanners$,
     redirectState$,
     accountBalances$,
+    vaultHistory$,
     collateralPrices$,
     termsAcceptance$,
   }
