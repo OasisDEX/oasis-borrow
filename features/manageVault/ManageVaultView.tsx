@@ -19,9 +19,9 @@ import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
+import { VaultBannersView } from '../banners/VaultsBannersView'
 import { ManageVaultState } from './manageVault'
 import { ManageVaultFormEditing } from './ManageVaultFormEditing'
-import { VaultBannersView } from './VaultsBannersView'
 
 function ManageVaultDetails(props: ManageVaultState) {
   const {
