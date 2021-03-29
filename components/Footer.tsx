@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import React from 'react'
 import ReactSelect from 'react-select'
-import { Box, Button, Card, Container, Flex, Grid, Link, Text } from 'theme-ui'
+import { Box, Card, Container, Flex, Grid, Link, Text } from 'theme-ui'
 
 const {
   publicRuntimeConfig: { buildHash, buildDate },
@@ -107,20 +107,15 @@ function LanguageSelect() {
 }
 
 export function TemporaryFooter() {
-  const { t, i18n } = useTranslation('common')
-
   return (
-    <Container my={2} sx={{ display: 'none' }}>
-      <Grid sx={{ color: 'text', fontSize: 2 }} columns={3}>
-        <Text>
-          {/* Temporary for debugging locale */}
-          <Button onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'es' : 'en')}>
-            {t('change-locale')}
-          </Button>
-        </Text>
+    <Container sx={{ maxWidth: '898px' }}>
+      <Grid sx={{ color: 'text', fontSize: 2 }} columns={2}>
         <Text>
           Commit:{' '}
-          <Link href={`https://github.com/OasisDex/oasis-app/commit/${buildHash}`} target="_blank">
+          <Link
+            href={`https://github.com/OasisDex/oasis-borrow/commit/${buildHash}`}
+            target="_blank"
+          >
             {buildHash.substring(0, 10)}
           </Link>
         </Text>
