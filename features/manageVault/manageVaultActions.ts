@@ -64,11 +64,6 @@ interface PaybackMaxChange {
   kind: ManageVaultActionKind.paybackMax
 }
 
-interface UserTokenInfoChange {
-  kind: 'userTokenInfo',
-  userTokenInfo: UserTokenInfo
-}
-
 export type ManageVaultActionChange =
   | DepositChange
   | DepositUSDChange
@@ -80,7 +75,6 @@ export type ManageVaultActionChange =
   | WithdrawMaxChange
   | PaybackChange
   | PaybackMaxChange
-  | UserTokenInfoChange
 
 export const depositAndGenerateDefaults: Partial<ManageVaultState> = {
   depositAmount: undefined,
@@ -95,10 +89,10 @@ export const paybackAndWithdrawDefaults: Partial<ManageVaultState> = {
 }
 
 export function applyUserTokenInfoChange(change: ManageVaultChange, state: ManageVaultState) {
-  if(change.kind === 'userTokenInfo') {
+  if (change.kind === 'userTokenInfo') {
     return {
       ...state,
-      ...change.userTokenInfo
+      ...change.userTokenInfo,
     }
   }
   return state

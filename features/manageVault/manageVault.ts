@@ -1,11 +1,10 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
-import { IlkData } from 'blockchain/ilks'
+import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
-import { Changes } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { compose } from 'ramda'
@@ -22,6 +21,7 @@ import {
   ManageVaultAllowanceChange,
   ManageVaultAllowanceChangeKind,
 } from './manageVaultAllowances'
+import { applyManageVaultEnvironment, ManageVaultEnvironmentChange } from './manageVaultEnvironment'
 import { applyManageVaultForm, ManageVaultFormChange, ManageVaultFormKind } from './manageVaultForm'
 import {
   applyManageVaultTransaction,
@@ -173,19 +173,21 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
   }
 }
 
-export type ManageVaultGeneralisedChange = Changes<ManageVaultState>
+//export type ManageVaultGeneralisedChange = Changes<ManageVaultState>
 export type ManageVaultChange =
   | ManageVaultActionChange
   | ManageVaultFormChange
   | ManageVaultAllowanceChange
   | ManageVaultTransitionChange
   | ManageVaultTransactionChange
+  | ManageVaultEnvironmentChange
 
 const curriedApplyManageVaultAction = curry(applyManageVaultAction)
 const curriedApplyManageVaultForm = curry(applyManageVaultForm)
 const curriedApplyManageVaultAllowance = curry(applyManageVaultAllowance)
 const curriedApplyManageVaultTransition = curry(applyManageVaultTransition)
 const curriedApplyManageVaultTransaction = curry(applyManageVaultTransaction)
+const curriedApplyManageVaultEnvironment = curry(applyManageVaultEnvironment)
 
 function apply(state: ManageVaultState, change: ManageVaultActionChange) {
   return compose(
@@ -194,6 +196,7 @@ function apply(state: ManageVaultState, change: ManageVaultActionChange) {
     curriedApplyManageVaultAllowance(change),
     curriedApplyManageVaultTransition(change),
     curriedApplyManageVaultTransaction(change),
+    curriedApplyManageVaultEnvironment(change),
   )(state)
 }
 
@@ -551,120 +554,115 @@ export function createManageVault$(
       return vault$(id).pipe(
         first(),
         switchMap((vault) => {
-            return combineLatest(
-              defaultState$,
-              userTokenInfo$(vault.token, account),
-              ilkData$(vault.ilk),
-              proxyAddress$(account),
-            ).pipe(
-              first(),
-              switchMap(([defaultState, userTokenInfo, ilkData, proxyAddress]) => {
-                  const collateralAllowance$ =
-                    (proxyAddress && allowance$(vault.token, account, proxyAddress)) || of(undefined)
-                  const daiAllowance$ =
-                    (proxyAddress && allowance$('DAI', account, proxyAddress)) || of(undefined)
+          return combineLatest(
+            defaultState$,
+            userTokenInfo$(vault.token, account),
+            ilkData$(vault.ilk),
+            proxyAddress$(account),
+          ).pipe(
+            first(),
+            switchMap(([defaultState, userTokenInfo, ilkData, proxyAddress]) => {
+              const collateralAllowance$ =
+                (proxyAddress && allowance$(vault.token, account, proxyAddress)) || of(undefined)
+              const daiAllowance$ =
+                (proxyAddress && allowance$('DAI', account, proxyAddress)) || of(undefined)
 
-                  return combineLatest(collateralAllowance$, daiAllowance$).pipe(
-                    first(),
-                    switchMap(([collateralAllowance, daiAllowance]) => {
-                      vault.token
-                      const initialState: ManageVaultState = {
-                        ...userTokenInfo,
-                        ...defaultState,
-                        token: vault.token,
-                        id,
-                        account,
-                        accountIsController: account === vault.controller,
+              return combineLatest(collateralAllowance$, daiAllowance$).pipe(
+                first(),
+                switchMap(([collateralAllowance, daiAllowance]) => {
+                  vault.token
+                  const initialState: ManageVaultState = {
+                    ...userTokenInfo,
+                    ...defaultState,
+                    token: vault.token,
+                    id,
+                    account,
+                    accountIsController: account === vault.controller,
 
-                        lockedCollateral: vault.lockedCollateral,
-                        lockedCollateralPrice: vault.lockedCollateralPrice,
-                        debt: vault.debt,
-                        liquidationPrice: vault.liquidationPrice,
-                        collateralizationRatio: vault.collateralizationRatio,
-                        freeCollateral: vault.freeCollateral,
-                        liquidationPenalty: ilkData.liquidationPenalty,
-                        ilk: vault.ilk,
-                        maxDebtPerUnitCollateral: ilkData.maxDebtPerUnitCollateral,
-                        ilkDebtAvailable: ilkData.ilkDebtAvailable,
-                        debtFloor: ilkData.debtFloor,
-                        stabilityFee: ilkData.stabilityFee,
-                        liquidationRatio: ilkData.liquidationRatio,
-                        proxyAddress,
-                        safeConfirmations: context.safeConfirmations,
-                        etherscan: context.etherscan.url,
+                    lockedCollateral: vault.lockedCollateral,
+                    lockedCollateralPrice: vault.lockedCollateralPrice,
+                    debt: vault.debt,
+                    liquidationPrice: vault.liquidationPrice,
+                    collateralizationRatio: vault.collateralizationRatio,
+                    freeCollateral: vault.freeCollateral,
+                    liquidationPenalty: ilkData.liquidationPenalty,
+                    ilk: vault.ilk,
+                    maxDebtPerUnitCollateral: ilkData.maxDebtPerUnitCollateral,
+                    ilkDebtAvailable: ilkData.ilkDebtAvailable,
+                    debtFloor: ilkData.debtFloor,
+                    stabilityFee: ilkData.stabilityFee,
+                    liquidationRatio: ilkData.liquidationRatio,
+                    proxyAddress,
+                    safeConfirmations: context.safeConfirmations,
+                    etherscan: context.etherscan.url,
 
-                        collateralAllowance,
-                        daiAllowance,
-                        collateralAllowanceAmount: maxUint256,
-                        daiAllowanceAmount: maxUint256,
-                      }
+                    collateralAllowance,
+                    daiAllowance,
+                    collateralAllowanceAmount: maxUint256,
+                    daiAllowanceAmount: maxUint256,
+                  }
 
-                      const change$ = new Subject<ManageVaultChange>()
+                  const change$ = new Subject<ManageVaultChange>()
 
-                      function change(ch: ManageVaultChange) {
-                        change$.next(ch)
-                      }
+                  function change(ch: ManageVaultChange) {
+                    change$.next(ch)
+                  }
 
-                      const userTokenInfoChange$ = curry(createUserTokenInfoChange$)(userTokenInfo$)
+                  const userTokenInfoChange$ = curry(createUserTokenInfoChange$)(userTokenInfo$)
+                  const ilkDataChange$ = curry(createIlkDataChange$)(ilkData$)
 
-                      const environmentChanges$ = merge(
-                        userTokenInfoChange$(vault.token, account),
+                  const environmentChanges$ = merge(
+                    userTokenInfoChange$(vault.token, account),
+                    ilkDataChange$(vault.ilk),
 
-                        // TODO: simplyfy with a custom change, see userTokenInfoChange$
-                        ilkDataChange$(ilkData$(vault.ilk), 'maxDebtPerUnitCollateral'),
-                        ilkDataChange$(ilkData$(vault.ilk), 'ilkDebtAvailable'),
-                        ilkDataChange$(ilkData$(vault.ilk), 'debtFloor'),
-
-                        // TODO: simplyfy with a custom change, see userTokenInfoChange$
-                        vaultChange$(vault$(id), 'lockedCollateral'),
-                        vaultChange$(vault$(id), 'debt'),
-                        vaultChange$(vault$(id), 'collateralizationRatio'),
-                        vaultChange$(vault$(id), 'liquidationPrice'),
-                        vaultChange$(vault$(id), 'lockedCollateralPrice'),
-                        vaultChange$(vault$(id), 'freeCollateral'),
-                        vaultChange$(vault$(id), 'stabilityFee'),
-                        vaultChange$(vault$(id), 'liquidationPenalty'),
-                      )
-
-                      const connectedProxyAddress$ = proxyAddress$(account)
-
-                      const connectedCollateralAllowance$ = connectedProxyAddress$.pipe(
-                        switchMap((proxyAddress) =>
-                          proxyAddress ? allowance$(vault.token, account, proxyAddress) : of(zero),
-                        ),
-                        distinctUntilChanged((x, y) => x.eq(y)),
-                      )
-
-                      const connectedDaiAllowance$ = connectedProxyAddress$.pipe(
-                        switchMap((proxyAddress) =>
-                          proxyAddress ? allowance$('DAI', account, proxyAddress) : of(zero),
-                        ),
-                        distinctUntilChanged((x, y) => x.eq(y)),
-                      )
-
-                      return merge(change$, environmentChanges$).pipe(
-                        scan(apply, initialState),
-                        map(applyVaultCalculations),
-                        map(validateErrors),
-                        map(validateWarnings),
-                        map(
-                          curry(addTransitions)(
-                            txHelpers,
-                            connectedProxyAddress$,
-                            connectedCollateralAllowance$,
-                            connectedDaiAllowance$,
-                            change,
-                          ),
-                        ),
-                        shareReplay(1),
-                      )
-                    }),
+                    // TODO: simplyfy with a custom change, see userTokenInfoChange$
+                    vaultChange$(vault$(id), 'lockedCollateral'),
+                    vaultChange$(vault$(id), 'debt'),
+                    vaultChange$(vault$(id), 'collateralizationRatio'),
+                    vaultChange$(vault$(id), 'liquidationPrice'),
+                    vaultChange$(vault$(id), 'lockedCollateralPrice'),
+                    vaultChange$(vault$(id), 'freeCollateral'),
+                    vaultChange$(vault$(id), 'stabilityFee'),
+                    vaultChange$(vault$(id), 'liquidationPenalty'),
                   )
-                },
-              ),
-            )
-          },
-        ),
+
+                  const connectedProxyAddress$ = proxyAddress$(account)
+
+                  const connectedCollateralAllowance$ = connectedProxyAddress$.pipe(
+                    switchMap((proxyAddress) =>
+                      proxyAddress ? allowance$(vault.token, account, proxyAddress) : of(zero),
+                    ),
+                    distinctUntilChanged((x, y) => x.eq(y)),
+                  )
+
+                  const connectedDaiAllowance$ = connectedProxyAddress$.pipe(
+                    switchMap((proxyAddress) =>
+                      proxyAddress ? allowance$('DAI', account, proxyAddress) : of(zero),
+                    ),
+                    distinctUntilChanged((x, y) => x.eq(y)),
+                  )
+
+                  return merge(change$, environmentChanges$).pipe(
+                    scan(apply, initialState),
+                    map(applyVaultCalculations),
+                    map(validateErrors),
+                    map(validateWarnings),
+                    map(
+                      curry(addTransitions)(
+                        txHelpers,
+                        connectedProxyAddress$,
+                        connectedCollateralAllowance$,
+                        connectedDaiAllowance$,
+                        change,
+                      ),
+                    ),
+                    shareReplay(1),
+                  )
+                }),
+              )
+            }),
+          )
+        }),
       )
     }),
     map(applyIsStageStates),
