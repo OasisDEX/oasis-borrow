@@ -186,24 +186,25 @@ export type ManageVaultChange =
   | ManageVaultEnvironmentChange
   | ManageVaultInjectedOverrideChange
 
-const curriedApplyManageVaultAction = curry(applyManageVaultAction)
-const curriedApplyManageVaultForm = curry(applyManageVaultForm)
-const curriedApplyManageVaultAllowance = curry(applyManageVaultAllowance)
-const curriedApplyManageVaultTransition = curry(applyManageVaultTransition)
-const curriedApplyManageVaultTransaction = curry(applyManageVaultTransaction)
-const curriedApplyManageVaultEnvironment = curry(applyManageVaultEnvironment)
-const curriedApplyInjectedOverride = curry(applyInjectedOverride)
+type ApplyFunction = (change: ManageVaultChange, state: ManageVaultState) => ManageVaultState
+
+const applyFunctions: ApplyFunction[] = [
+  applyManageVaultAction,
+  applyManageVaultForm,
+  applyManageVaultAllowance,
+  applyManageVaultTransition,
+  applyManageVaultTransaction,
+  applyManageVaultEnvironment,
+  applyInjectedOverride,
+]
 
 function apply(state: ManageVaultState, change: ManageVaultChange) {
-  const manageVaultChangeFunctions = compose(
-    curriedApplyManageVaultAction(change),
-    curriedApplyManageVaultForm(change),
-    curriedApplyManageVaultAllowance(change),
-    curriedApplyManageVaultTransition(change),
-    curriedApplyManageVaultTransaction(change),
-    curriedApplyManageVaultEnvironment(change),
-  )
-  return compose(manageVaultChangeFunctions, curriedApplyInjectedOverride(change))(state)
+  return applyFunctions
+    .map((fn) => curry(fn)(change))
+    .reduce(
+      (acc, cfn) => compose(cfn, acc),
+      (state: ManageVaultState) => state,
+    )(state)
 }
 
 export type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
