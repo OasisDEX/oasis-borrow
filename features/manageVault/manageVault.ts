@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
-import { Vault } from 'blockchain/vaults'
+import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
 import { zero } from 'helpers/zero'
@@ -238,15 +238,12 @@ export type DefaultManageVaultState = {
   errorMessages: ManageVaultErrorMessage[]
   warningMessages: ManageVaultWarningMessage[]
 
-  // IsStage states
   isEditingStage: boolean
   isProxyStage: boolean
   isCollateralAllowanceStage: boolean
   isDaiAllowanceStage: boolean
   isManageStage: boolean
 
-  // Dynamic Data
-  proxyAddress?: string
   progress?: () => void
   reset?: () => void
   toggle?: () => void
@@ -259,24 +256,20 @@ export type DefaultManageVaultState = {
   toggleDepositAndGenerateOption?: () => void
   togglePaybackAndWithdrawOption?: () => void
 
-  // deposit
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
   maxDepositAmount: BigNumber
   maxDepositAmountUSD: BigNumber
 
-  // withdraw
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
   maxWithdrawAmount: BigNumber
   maxWithdrawAmountUSD: BigNumber
 
-  // generate
   generateAmount?: BigNumber
   generateAmountUSD: BigNumber
   maxGenerateAmount: BigNumber
 
-  // payback
   paybackAmount?: BigNumber
   maxPaybackAmount: BigNumber
 
@@ -291,6 +284,7 @@ export type DefaultManageVaultState = {
   updatePayback?: (paybackAmount?: BigNumber) => void
   updatePaybackMax?: () => void
 
+  proxyAddress?: string
   collateralAllowance?: BigNumber
   daiAllowance?: BigNumber
 
@@ -306,15 +300,13 @@ export type DefaultManageVaultState = {
   setDaiAllowanceAmountToPaybackAmount?: (amount?: BigNumber) => void
   resetDaiAllowanceAmount?: () => void
 
-  // Ilk information
-  maxDebtPerUnitCollateral: BigNumber // Updates
-  ilkDebtAvailable: BigNumber // Updates
+  maxDebtPerUnitCollateral: BigNumber
+  ilkDebtAvailable: BigNumber
   debtFloor: BigNumber
   liquidationRatio: BigNumber
   stabilityFee: BigNumber
   liquidationPenalty: BigNumber
 
-  // Vault information
   lockedCollateral: BigNumber
   lockedCollateralPrice: BigNumber
   debt: BigNumber
@@ -322,11 +314,9 @@ export type DefaultManageVaultState = {
   collateralizationRatio: BigNumber
   freeCollateral: BigNumber
 
-  // Vault Display Information
   afterLiquidationPrice: BigNumber
   afterCollateralizationRatio: BigNumber
 
-  // ManageInfo
   collateralAllowanceTxHash?: string
   daiAllowanceTxHash?: string
   proxyTxHash?: string
@@ -478,24 +468,6 @@ function addTransitions(
   return state
 }
 
-function vaultChange$<T extends keyof Vault>(vaultData$: Observable<Vault>, kind: T) {
-  return vaultData$.pipe(
-    map((vault) => ({
-      kind,
-      [kind]: vault[kind],
-    })),
-  )
-}
-
-function ilkDataChange$<T extends keyof IlkData>(ilkData$: Observable<IlkData>, kind: T) {
-  return ilkData$.pipe(
-    map((ilkData) => ({
-      kind,
-      [kind]: ilkData[kind],
-    })),
-  )
-}
-
 export const defaultManageVaultState: DefaultManageVaultState = {
   ...defaultIsStates,
   stage: 'collateralEditing',
@@ -610,20 +582,12 @@ export function createManageVault$(
 
                   const userTokenInfoChange$ = curry(createUserTokenInfoChange$)(userTokenInfo$)
                   const ilkDataChange$ = curry(createIlkDataChange$)(ilkData$)
+                  const vaultChange$ = curry(createVaultChange$)(vault$)
 
                   const environmentChanges$ = merge(
                     userTokenInfoChange$(vault.token, account),
                     ilkDataChange$(vault.ilk),
-
-                    // TODO: simplyfy with a custom change, see userTokenInfoChange$
-                    vaultChange$(vault$(id), 'lockedCollateral'),
-                    vaultChange$(vault$(id), 'debt'),
-                    vaultChange$(vault$(id), 'collateralizationRatio'),
-                    vaultChange$(vault$(id), 'liquidationPrice'),
-                    vaultChange$(vault$(id), 'lockedCollateralPrice'),
-                    vaultChange$(vault$(id), 'freeCollateral'),
-                    vaultChange$(vault$(id), 'stabilityFee'),
-                    vaultChange$(vault$(id), 'liquidationPenalty'),
+                    vaultChange$(id),
                   )
 
                   const connectedProxyAddress$ = proxyAddress$(account)

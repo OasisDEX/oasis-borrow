@@ -1,18 +1,9 @@
-import { IlkData } from 'blockchain/ilks'
-import { UserTokenInfo } from 'features/shared/userTokenInfo'
+import { IlkData, IlkDataChange } from 'blockchain/ilks'
+import { VaultChange } from 'blockchain/vaults'
+import { UserTokenInfo, UserTokenInfoChange } from 'features/shared/userTokenInfo'
 import { ManageVaultChange, ManageVaultState } from './manageVault'
 
-interface UserTokenInfoChange {
-  kind: 'userTokenInfo'
-  userTokenInfo: UserTokenInfo
-}
-
-interface IlkDataChange {
-  kind: 'ilkData'
-  ilkData: IlkData
-}
-
-export type ManageVaultEnvironmentChange = UserTokenInfoChange | IlkDataChange
+export type ManageVaultEnvironmentChange = UserTokenInfoChange | IlkDataChange | VaultChange
 
 export function applyManageVaultEnvironment(
   change: ManageVaultChange,
@@ -36,5 +27,33 @@ export function applyManageVaultEnvironment(
       debtFloor,
     }
   }
+
+  if (change.kind === 'vault') {
+    const {
+      vault: {
+        lockedCollateral,
+        debt,
+        collateralizationRatio,
+        liquidationPrice,
+        lockedCollateralPrice,
+        freeCollateral,
+        stabilityFee,
+        liquidationPenalty,
+      },
+    } = change
+
+    return {
+      ...state,
+      lockedCollateral,
+      debt,
+      collateralizationRatio,
+      liquidationPrice,
+      lockedCollateralPrice,
+      freeCollateral,
+      stabilityFee,
+      liquidationPenalty,
+    }
+  }
+
   return state
 }

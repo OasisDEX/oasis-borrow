@@ -90,7 +90,15 @@ export function createIlkDataList$(
   )
 }
 
-export function createIlkDataChange$(ilkData$: (ilk: string) => Observable<IlkData>, ilk: string) {
+export interface IlkDataChange {
+  kind: 'ilkData'
+  ilkData: IlkData
+}
+
+export function createIlkDataChange$(
+  ilkData$: (ilk: string) => Observable<IlkData>,
+  ilk: string,
+): Observable<IlkDataChange> {
   return ilkData$(ilk).pipe(map((ilkData) => ({ kind: 'ilkData', ilkData })))
 }
 
