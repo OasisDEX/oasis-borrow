@@ -2,7 +2,9 @@ import { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
 
 import { ManageVaultChange, ManageVaultState } from './manageVault'
+import { UserTokenInfo } from '../shared/userTokenInfo'
 
+// TODO: use strings not enums
 export enum ManageVaultActionKind {
   deposit = 'deposit',
   depositUSD = 'depositUSD',
@@ -62,6 +64,11 @@ interface PaybackMaxChange {
   kind: ManageVaultActionKind.paybackMax
 }
 
+interface UserTokenInfoChange {
+  kind: 'userTokenInfo',
+  userTokenInfo: UserTokenInfo
+}
+
 export type ManageVaultActionChange =
   | DepositChange
   | DepositUSDChange
@@ -73,6 +80,7 @@ export type ManageVaultActionChange =
   | WithdrawMaxChange
   | PaybackChange
   | PaybackMaxChange
+  | UserTokenInfoChange
 
 export const depositAndGenerateDefaults: Partial<ManageVaultState> = {
   depositAmount: undefined,
@@ -84,6 +92,16 @@ export const paybackAndWithdrawDefaults: Partial<ManageVaultState> = {
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
   paybackAmount: undefined,
+}
+
+export function applyUserTokenInfoChange(change: ManageVaultChange, state: ManageVaultState) {
+  if(change.kind === 'userTokenInfo') {
+    return {
+      ...state,
+      ...change.userTokenInfo
+    }
+  }
+  return state
 }
 
 export function applyManageVaultAction(change: ManageVaultChange, state: ManageVaultState) {
