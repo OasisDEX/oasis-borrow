@@ -3,7 +3,7 @@ import { call } from 'blockchain/calls/callsHelpers'
 import { Context } from 'blockchain/network'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
-import { mergeMap, shareReplay, switchMap, map } from 'rxjs/operators'
+import { map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from './calls/cdpManager'
 import { getCdps } from './calls/getCdps'

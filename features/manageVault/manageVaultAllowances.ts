@@ -8,44 +8,34 @@ export const allowanceDefaults: Partial<ManageVaultState> = {
   daiAllowanceAmount: maxUint256,
 }
 
-export enum ManageVaultAllowanceChangeKind {
-  daiAllowance = 'daiAllowance',
-  daiAllowanceUnlimited = 'daiAllowanceUnlimited',
-  daiAllowanceAsPaybackAmount = 'daiAllowanceAsPaybackAmount',
-  collateralAllowance = 'collateralAllowance',
-  collateralAllowanceUnlimited = 'collateralAllowanceUnlimited',
-  collateralAllowanceAsDepositAmount = 'collateralAllowanceAsDepositAmount',
-  allowancesReset = 'allowancesReset',
-}
-
 interface DaiAllowanceChange {
-  kind: ManageVaultAllowanceChangeKind.daiAllowance
+  kind: 'daiAllowance'
   daiAllowanceAmount?: BigNumber
 }
 
 interface DaiAllowanceUnlimitedChange {
-  kind: ManageVaultAllowanceChangeKind.daiAllowanceUnlimited
+  kind: 'daiAllowanceUnlimited'
 }
 
 interface DaiAllowancePaybackChange {
-  kind: ManageVaultAllowanceChangeKind.daiAllowanceAsPaybackAmount
+  kind: 'daiAllowanceAsPaybackAmount'
 }
 
 interface CollateralAllowanceChange {
-  kind: ManageVaultAllowanceChangeKind.collateralAllowance
+  kind: 'collateralAllowance'
   collateralAllowanceAmount?: BigNumber
 }
 
 interface CollateralAllowanceUnlimitedChange {
-  kind: ManageVaultAllowanceChangeKind.collateralAllowanceUnlimited
+  kind: 'collateralAllowanceUnlimited'
 }
 
 interface CollateralAllowanceDepositChange {
-  kind: ManageVaultAllowanceChangeKind.collateralAllowanceAsDepositAmount
+  kind: 'collateralAllowanceAsDepositAmount'
 }
 
 interface AllowancesReset {
-  kind: ManageVaultAllowanceChangeKind.allowancesReset
+  kind: 'allowancesReset'
 }
 
 export type ManageVaultAllowanceChange =
@@ -61,7 +51,7 @@ export function applyManageVaultAllowance(
   change: ManageVaultChange,
   state: ManageVaultState,
 ): ManageVaultState {
-  if (change.kind === ManageVaultAllowanceChangeKind.collateralAllowance) {
+  if (change.kind === 'collateralAllowance') {
     const { collateralAllowanceAmount } = change
     return {
       ...state,
@@ -69,7 +59,7 @@ export function applyManageVaultAllowance(
     }
   }
 
-  if (change.kind === ManageVaultAllowanceChangeKind.collateralAllowanceAsDepositAmount) {
+  if (change.kind === 'collateralAllowanceAsDepositAmount') {
     const { depositAmount } = state
     return {
       ...state,
@@ -77,14 +67,14 @@ export function applyManageVaultAllowance(
     }
   }
 
-  if (change.kind === ManageVaultAllowanceChangeKind.collateralAllowanceUnlimited) {
+  if (change.kind === 'collateralAllowanceUnlimited') {
     return {
       ...state,
       collateralAllowanceAmount: maxUint256,
     }
   }
 
-  if (change.kind === ManageVaultAllowanceChangeKind.daiAllowance) {
+  if (change.kind === 'daiAllowance') {
     const { daiAllowanceAmount } = change
     return {
       ...state,
@@ -92,7 +82,7 @@ export function applyManageVaultAllowance(
     }
   }
 
-  if (change.kind === ManageVaultAllowanceChangeKind.daiAllowanceAsPaybackAmount) {
+  if (change.kind === 'daiAllowanceAsPaybackAmount') {
     const { paybackAmount } = state
     return {
       ...state,
@@ -100,14 +90,14 @@ export function applyManageVaultAllowance(
     }
   }
 
-  if (change.kind === ManageVaultAllowanceChangeKind.daiAllowanceUnlimited) {
+  if (change.kind === 'daiAllowanceUnlimited') {
     return {
       ...state,
       daiAllowanceAmount: maxUint256,
     }
   }
 
-  if (change.kind === ManageVaultAllowanceChangeKind.allowancesReset) {
+  if (change.kind === 'allowancesReset') {
     return {
       ...state,
       ...allowanceDefaults,

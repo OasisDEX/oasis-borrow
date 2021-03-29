@@ -11,18 +11,10 @@ import { compose } from 'ramda'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
-import {
-  applyManageVaultAction,
-  ManageVaultActionChange,
-  ManageVaultActionKind,
-} from './manageVaultActions'
-import {
-  applyManageVaultAllowance,
-  ManageVaultAllowanceChange,
-  ManageVaultAllowanceChangeKind,
-} from './manageVaultAllowances'
+import { applyManageVaultAction, ManageVaultActionChange } from './manageVaultActions'
+import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
 import { applyManageVaultEnvironment, ManageVaultEnvironmentChange } from './manageVaultEnvironment'
-import { applyManageVaultForm, ManageVaultFormChange, ManageVaultFormKind } from './manageVaultForm'
+import { applyManageVaultForm, ManageVaultFormChange } from './manageVaultForm'
 import {
   applyManageVaultTransaction,
   createProxy,
@@ -33,7 +25,6 @@ import {
 import {
   applyManageVaultTransition,
   ManageVaultTransitionChange,
-  ManageVaultTransitionKind,
   progressManage,
 } from './manageVaultTransitions'
 import {
@@ -189,7 +180,7 @@ const curriedApplyManageVaultTransition = curry(applyManageVaultTransition)
 const curriedApplyManageVaultTransaction = curry(applyManageVaultTransaction)
 const curriedApplyManageVaultEnvironment = curry(applyManageVaultEnvironment)
 
-function apply(state: ManageVaultState, change: ManageVaultActionChange) {
+function apply(state: ManageVaultState, change: ManageVaultChange) {
   return compose(
     curriedApplyManageVaultAction(change),
     curriedApplyManageVaultForm(change),
@@ -340,33 +331,29 @@ function addTransitions(
   if (state.stage === 'collateralEditing' || state.stage === 'daiEditing') {
     return {
       ...state,
-      updateDeposit: (depositAmount?: BigNumber) =>
-        change({ kind: ManageVaultActionKind.deposit, depositAmount }),
+      updateDeposit: (depositAmount?: BigNumber) => change({ kind: 'deposit', depositAmount }),
       updateDepositUSD: (depositAmountUSD?: BigNumber) =>
-        change({ kind: ManageVaultActionKind.depositUSD, depositAmountUSD }),
-      updateDepositMax: () => change({ kind: ManageVaultActionKind.depositMax }),
-      updateGenerate: (generateAmount?: BigNumber) =>
-        change({ kind: ManageVaultActionKind.generate, generateAmount }),
-      updateGenerateMax: () => change({ kind: ManageVaultActionKind.generateMax }),
-      updateWithdraw: (withdrawAmount?: BigNumber) =>
-        change({ kind: ManageVaultActionKind.withdraw, withdrawAmount }),
+        change({ kind: 'depositUSD', depositAmountUSD }),
+      updateDepositMax: () => change({ kind: 'depositMax' }),
+      updateGenerate: (generateAmount?: BigNumber) => change({ kind: 'generate', generateAmount }),
+      updateGenerateMax: () => change({ kind: 'generateMax' }),
+      updateWithdraw: (withdrawAmount?: BigNumber) => change({ kind: 'withdraw', withdrawAmount }),
       updateWithdrawUSD: (withdrawAmountUSD?: BigNumber) =>
-        change({ kind: ManageVaultActionKind.withdrawUSD, withdrawAmountUSD }),
-      updateWithdrawMax: () => change({ kind: ManageVaultActionKind.withdrawMax }),
-      updatePayback: (paybackAmount?: BigNumber) =>
-        change({ kind: ManageVaultActionKind.payback, paybackAmount }),
-      updatePaybackMax: () => change({ kind: ManageVaultActionKind.paybackMax }),
+        change({ kind: 'withdrawUSD', withdrawAmountUSD }),
+      updateWithdrawMax: () => change({ kind: 'withdrawMax' }),
+      updatePayback: (paybackAmount?: BigNumber) => change({ kind: 'payback', paybackAmount }),
+      updatePaybackMax: () => change({ kind: 'paybackMax' }),
       toggleDepositAndGenerateOption: () =>
         change({
-          kind: ManageVaultFormKind.toggleDepositAndGenerateOption,
+          kind: 'toggleDepositAndGenerateOption',
         }),
       togglePaybackAndWithdrawOption: () =>
         change({
-          kind: ManageVaultFormKind.togglePaybackAndWithdrawOption,
+          kind: 'togglePaybackAndWithdrawOption',
         }),
-      toggleIlkDetails: () => change({ kind: ManageVaultFormKind.toggleIlkDetails }),
-      toggle: () => change({ kind: ManageVaultTransitionKind.toggleEditing }),
-      progress: () => change({ kind: ManageVaultTransitionKind.progressEditing }),
+      toggleIlkDetails: () => change({ kind: 'toggleIlkDetails' }),
+      toggle: () => change({ kind: 'toggleEditing' }),
+      progress: () => change({ kind: 'progressEditing' }),
     }
   }
 
@@ -380,8 +367,8 @@ function addTransitions(
   if (state.stage === 'proxySuccess') {
     return {
       ...state,
-      progress: () => change({ kind: ManageVaultTransitionKind.progressProxy }),
-      reset: () => change({ kind: ManageVaultTransitionKind.backToEditing }),
+      progress: () => change({ kind: 'progressProxy' }),
+      reset: () => change({ kind: 'backToEditing' }),
     }
   }
 
@@ -393,30 +380,29 @@ function addTransitions(
       ...state,
       updateCollateralAllowanceAmount: (collateralAllowanceAmount?: BigNumber) =>
         change({
-          kind: ManageVaultAllowanceChangeKind.collateralAllowance,
+          kind: 'collateralAllowance',
           collateralAllowanceAmount,
         }),
-      setCollateralAllowanceAmountUnlimited: () =>
-        change({ kind: ManageVaultAllowanceChangeKind.collateralAllowanceUnlimited }),
+      setCollateralAllowanceAmountUnlimited: () => change({ kind: 'collateralAllowanceUnlimited' }),
       setCollateralAllowanceAmountToDepositAmount: () =>
         change({
-          kind: ManageVaultAllowanceChangeKind.collateralAllowanceAsDepositAmount,
+          kind: 'collateralAllowanceAsDepositAmount',
         }),
       resetCollateralAllowanceAmount: () =>
         change({
-          kind: ManageVaultAllowanceChangeKind.collateralAllowance,
+          kind: 'collateralAllowance',
           collateralAllowanceAmount: undefined,
         }),
 
       progress: () => setCollateralAllowance(txHelpers, collateralAllowance$, change, state),
-      reset: () => change({ kind: ManageVaultTransitionKind.backToEditing }),
+      reset: () => change({ kind: 'backToEditing' }),
     }
   }
 
   if (state.stage === 'collateralAllowanceSuccess') {
     return {
       ...state,
-      progress: () => change({ kind: ManageVaultTransitionKind.progressCollateralAllowance }),
+      progress: () => change({ kind: 'progressCollateralAllowance' }),
     }
   }
 
@@ -427,26 +413,24 @@ function addTransitions(
     return {
       ...state,
       updateDaiAllowanceAmount: (daiAllowanceAmount?: BigNumber) =>
-        change({ kind: ManageVaultAllowanceChangeKind.daiAllowance, daiAllowanceAmount }),
-      setDaiAllowanceAmountUnlimited: () =>
-        change({ kind: ManageVaultAllowanceChangeKind.collateralAllowanceUnlimited }),
-      setDaiAllowanceAmountToPaybackAmount: () =>
-        change({ kind: ManageVaultAllowanceChangeKind.daiAllowanceAsPaybackAmount }),
+        change({ kind: 'daiAllowance', daiAllowanceAmount }),
+      setDaiAllowanceAmountUnlimited: () => change({ kind: 'collateralAllowanceUnlimited' }),
+      setDaiAllowanceAmountToPaybackAmount: () => change({ kind: 'daiAllowanceAsPaybackAmount' }),
       resetDaiAllowanceAmount: () =>
         change({
-          kind: ManageVaultAllowanceChangeKind.daiAllowance,
+          kind: 'daiAllowance',
           daiAllowanceAmount: undefined,
         }),
 
       progress: () => setDaiAllowance(txHelpers, daiAllowance$, change, state),
-      reset: () => change({ kind: ManageVaultTransitionKind.backToEditing }),
+      reset: () => change({ kind: 'backToEditing' }),
     }
   }
 
   if (state.stage === 'daiAllowanceSuccess') {
     return {
       ...state,
-      progress: () => change({ kind: ManageVaultTransitionKind.backToEditing }),
+      progress: () => change({ kind: 'backToEditing' }),
     }
   }
 
@@ -454,14 +438,14 @@ function addTransitions(
     return {
       ...state,
       progress: () => progressManage(txHelpers, state, change),
-      reset: () => change({ kind: ManageVaultTransitionKind.backToEditing }),
+      reset: () => change({ kind: 'backToEditing' }),
     }
   }
 
   if (state.stage === 'manageSuccess') {
     return {
       ...state,
-      progress: () => change({ kind: ManageVaultTransitionKind.resetToEditing }),
+      progress: () => change({ kind: 'resetToEditing' }),
     }
   }
 

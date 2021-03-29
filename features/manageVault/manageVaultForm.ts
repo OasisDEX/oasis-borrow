@@ -10,46 +10,39 @@ export const manageVaultFormDefaults: Partial<ManageVaultState> = {
   showPaybackAndWithdrawOption: false,
 }
 
-export enum ManageVaultFormKind {
-  toggleDepositAndGenerateOption = 'toggleDepositAndGenerateOption',
-  togglePaybackAndWithdrawOption = 'togglePaybackAndWithdrawOption',
-  toggleIlkDetails = 'toggleIlkDetails',
-  resetDefaults = 'resetDefaults',
-}
-
 export type ManageVaultFormChange =
   | {
-      kind: ManageVaultFormKind.toggleDepositAndGenerateOption
+      kind: 'toggleDepositAndGenerateOption'
     }
   | {
-      kind: ManageVaultFormKind.togglePaybackAndWithdrawOption
+      kind: 'togglePaybackAndWithdrawOption'
     }
   | {
-      kind: ManageVaultFormKind.toggleIlkDetails
+      kind: 'toggleIlkDetails'
     }
   | {
-      kind: ManageVaultFormKind.resetDefaults
+      kind: 'resetDefaults'
     }
 
 export function applyManageVaultForm(
   { kind }: ManageVaultChange,
   state: ManageVaultState,
 ): ManageVaultState {
-  if (kind === ManageVaultFormKind.toggleDepositAndGenerateOption) {
+  if (kind === 'toggleDepositAndGenerateOption') {
     return {
       ...state,
       showDepositAndGenerateOption: !state.showDepositAndGenerateOption,
     }
   }
 
-  if (kind === ManageVaultFormKind.togglePaybackAndWithdrawOption) {
+  if (kind === 'togglePaybackAndWithdrawOption') {
     return {
       ...state,
       showPaybackAndWithdrawOption: !state.showPaybackAndWithdrawOption,
     }
   }
 
-  if (kind === ManageVaultFormKind.toggleIlkDetails) {
+  if (kind === 'toggleIlkDetails') {
     return {
       ...state,
       showIlkDetails: !state.showIlkDetails,

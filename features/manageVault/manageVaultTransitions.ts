@@ -8,40 +8,31 @@ import {
   manageVaultWithdrawAndPayback,
 } from './manageVaultTransactions'
 
-export enum ManageVaultTransitionKind {
-  toggleEditing = 'toggleEditing',
-  progressEditing = 'progressEditing',
-  progressProxy = 'progressProxy',
-  progressCollateralAllowance = 'progressCollateralAllowance',
-  backToEditing = 'backToEditing',
-  resetToEditing = 'resetToEditing',
-}
-
 export type ManageVaultTransitionChange =
   | {
-      kind: ManageVaultTransitionKind.toggleEditing
+      kind: 'toggleEditing'
     }
   | {
-      kind: ManageVaultTransitionKind.progressEditing
+      kind: 'progressEditing'
     }
   | {
-      kind: ManageVaultTransitionKind.progressProxy
+      kind: 'progressProxy'
     }
   | {
-      kind: ManageVaultTransitionKind.progressCollateralAllowance
+      kind: 'progressCollateralAllowance'
     }
   | {
-      kind: ManageVaultTransitionKind.backToEditing
+      kind: 'backToEditing'
     }
   | {
-      kind: ManageVaultTransitionKind.resetToEditing
+      kind: 'resetToEditing'
     }
 
 export function applyManageVaultTransition(
   change: ManageVaultChange,
   state: ManageVaultState,
 ): ManageVaultState {
-  if (change.kind === ManageVaultTransitionKind.toggleEditing) {
+  if (change.kind === 'toggleEditing') {
     const { stage } = state
     const currentEditing = stage
     const otherEditing = (['collateralEditing', 'daiEditing'] as ManageVaultEditingStage[]).find(
@@ -55,7 +46,7 @@ export function applyManageVaultTransition(
     }
   }
 
-  if (change.kind === ManageVaultTransitionKind.backToEditing) {
+  if (change.kind === 'backToEditing') {
     const { originalEditingStage } = state
     return {
       ...state,
@@ -63,7 +54,7 @@ export function applyManageVaultTransition(
     }
   }
 
-  if (change.kind === ManageVaultTransitionKind.resetToEditing) {
+  if (change.kind === 'resetToEditing') {
     const { originalEditingStage } = state
     return {
       ...state,
@@ -72,7 +63,7 @@ export function applyManageVaultTransition(
     }
   }
 
-  if (change.kind === ManageVaultTransitionKind.progressEditing) {
+  if (change.kind === 'progressEditing') {
     const {
       errorMessages,
       proxyAddress,
@@ -113,7 +104,7 @@ export function applyManageVaultTransition(
     }
   }
 
-  if (change.kind === ManageVaultTransitionKind.progressProxy) {
+  if (change.kind === 'progressProxy') {
     const {
       originalEditingStage,
       depositAmount,
@@ -142,7 +133,7 @@ export function applyManageVaultTransition(
     return { ...state, stage: originalEditingStage }
   }
 
-  if (change.kind === ManageVaultTransitionKind.progressCollateralAllowance) {
+  if (change.kind === 'progressCollateralAllowance') {
     const { originalEditingStage, paybackAmount, daiAllowance } = state
     const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
     const paybackAmountLessThanDaiAllowance =

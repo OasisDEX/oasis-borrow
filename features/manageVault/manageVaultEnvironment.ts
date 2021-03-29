@@ -1,6 +1,7 @@
-import { IlkData, IlkDataChange } from 'blockchain/ilks'
+import { IlkDataChange } from 'blockchain/ilks'
 import { VaultChange } from 'blockchain/vaults'
-import { UserTokenInfo, UserTokenInfoChange } from 'features/shared/userTokenInfo'
+import { UserTokenInfoChange } from 'features/shared/userTokenInfo'
+
 import { ManageVaultChange, ManageVaultState } from './manageVault'
 
 export type ManageVaultEnvironmentChange = UserTokenInfoChange | IlkDataChange | VaultChange

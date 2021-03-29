@@ -2,66 +2,51 @@ import { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
 
 import { ManageVaultChange, ManageVaultState } from './manageVault'
-import { UserTokenInfo } from '../shared/userTokenInfo'
-
-// TODO: use strings not enums
-export enum ManageVaultActionKind {
-  deposit = 'deposit',
-  depositUSD = 'depositUSD',
-  depositMax = 'depositMax',
-  generate = 'generate',
-  generateMax = 'generateMax',
-  withdraw = 'withdraw',
-  withdrawUSD = 'withdrawUSD',
-  withdrawMax = 'withdrawMax',
-  payback = 'payback',
-  paybackMax = 'paybackMax',
-}
 
 interface DepositChange {
-  kind: ManageVaultActionKind.deposit
+  kind: 'deposit'
   depositAmount?: BigNumber
 }
 
 interface DepositUSDChange {
-  kind: ManageVaultActionKind.depositUSD
+  kind: 'depositUSD'
   depositAmountUSD?: BigNumber
 }
 
 interface DepositMaxChange {
-  kind: ManageVaultActionKind.depositMax
+  kind: 'depositMax'
 }
 
 interface GenerateChange {
-  kind: ManageVaultActionKind.generate
+  kind: 'generate'
   generateAmount?: BigNumber
 }
 
 interface GenerateMaxChange {
-  kind: ManageVaultActionKind.generateMax
+  kind: 'generateMax'
 }
 
 interface WithdrawChange {
-  kind: ManageVaultActionKind.withdraw
+  kind: 'withdraw'
   withdrawAmount?: BigNumber
 }
 
 interface WithdrawUSDChange {
-  kind: ManageVaultActionKind.withdrawUSD
+  kind: 'withdrawUSD'
   withdrawAmountUSD?: BigNumber
 }
 
 interface WithdrawMaxChange {
-  kind: ManageVaultActionKind.withdrawMax
+  kind: 'withdrawMax'
 }
 
 interface PaybackChange {
-  kind: ManageVaultActionKind.payback
+  kind: 'payback'
   paybackAmount?: BigNumber
 }
 
 interface PaybackMaxChange {
-  kind: ManageVaultActionKind.paybackMax
+  kind: 'paybackMax'
 }
 
 export type ManageVaultActionChange =
@@ -88,18 +73,8 @@ export const paybackAndWithdrawDefaults: Partial<ManageVaultState> = {
   paybackAmount: undefined,
 }
 
-export function applyUserTokenInfoChange(change: ManageVaultChange, state: ManageVaultState) {
-  if (change.kind === 'userTokenInfo') {
-    return {
-      ...state,
-      ...change.userTokenInfo,
-    }
-  }
-  return state
-}
-
 export function applyManageVaultAction(change: ManageVaultChange, state: ManageVaultState) {
-  if (change.kind === ManageVaultActionKind.deposit) {
+  if (change.kind === 'deposit') {
     const { depositAmount } = change
     const { stage, currentCollateralPrice } = state
     const depositAmountUSD = depositAmount && currentCollateralPrice.times(depositAmount)
@@ -117,7 +92,7 @@ export function applyManageVaultAction(change: ManageVaultChange, state: ManageV
     }
   }
 
-  if (change.kind === ManageVaultActionKind.depositUSD) {
+  if (change.kind === 'depositUSD') {
     const { depositAmountUSD } = change
     const { stage, currentCollateralPrice } = state
     const depositAmount = depositAmountUSD && depositAmountUSD.times(currentCollateralPrice)
@@ -135,7 +110,7 @@ export function applyManageVaultAction(change: ManageVaultChange, state: ManageV
     }
   }
 
-  if (change.kind === ManageVaultActionKind.depositMax) {
+  if (change.kind === 'depositMax') {
     const { maxDepositAmount, maxDepositAmountUSD } = state
 
     return {
@@ -146,7 +121,7 @@ export function applyManageVaultAction(change: ManageVaultChange, state: ManageV
     }
   }
 
-  if (change.kind === ManageVaultActionKind.generate) {
+  if (change.kind === 'generate') {
     const { generateAmount } = change
     const { stage } = state
     return {
@@ -162,7 +137,7 @@ export function applyManageVaultAction(change: ManageVaultChange, state: ManageV
     }
   }
 
-  if (change.kind === ManageVaultActionKind.generateMax) {
+  if (change.kind === 'generateMax') {
     const { maxGenerateAmount } = state
 
     return {
@@ -172,7 +147,7 @@ export function applyManageVaultAction(change: ManageVaultChange, state: ManageV
     }
   }
 
-  if (change.kind === ManageVaultActionKind.withdraw) {
+  if (change.kind === 'withdraw') {
     const { withdrawAmount } = change
     const { stage, currentCollateralPrice } = state
     const withdrawAmountUSD = withdrawAmount && currentCollateralPrice.times(withdrawAmount)
@@ -190,7 +165,7 @@ export function applyManageVaultAction(change: ManageVaultChange, state: ManageV
     }
   }
 
-  if (change.kind === ManageVaultActionKind.withdrawUSD) {
+  if (change.kind === 'withdrawUSD') {
     const { withdrawAmountUSD } = change
     const { stage, currentCollateralPrice } = state
     const withdrawAmount =
@@ -211,7 +186,7 @@ export function applyManageVaultAction(change: ManageVaultChange, state: ManageV
     }
   }
 
-  if (change.kind === ManageVaultActionKind.withdrawMax) {
+  if (change.kind === 'withdrawMax') {
     const { maxWithdrawAmount, maxWithdrawAmountUSD } = state
     return {
       ...state,
@@ -221,7 +196,7 @@ export function applyManageVaultAction(change: ManageVaultChange, state: ManageV
     }
   }
 
-  if (change.kind === ManageVaultActionKind.payback) {
+  if (change.kind === 'payback') {
     const { paybackAmount } = change
     const { stage } = state
     return {
@@ -237,7 +212,7 @@ export function applyManageVaultAction(change: ManageVaultChange, state: ManageV
     }
   }
 
-  if (change.kind === ManageVaultActionKind.paybackMax) {
+  if (change.kind === 'paybackMax') {
     const { maxPaybackAmount } = state
 
     return {
