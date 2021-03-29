@@ -163,12 +163,12 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
 }
 
 interface ManageVaultInjectedOverrideChange {
-  kind: 'injectedOverride'
+  kind: 'injectStateOverride'
   stateToOverride: Partial<ManageVaultState>
 }
 
 function applyInjectedOverride(change: ManageVaultChange, state: ManageVaultState) {
-  if (change.kind === 'injectedOverride') {
+  if (change.kind === 'injectStateOverride') {
     return {
       ...state,
       ...change.stateToOverride,
@@ -501,9 +501,8 @@ export function createManageVault$(
                 switchMap(([collateralAllowance, daiAllowance]) => {
                   const change$ = new Subject<ManageVaultChange>()
 
-                  change$.subscribe(console.log)
                   function change(ch: ManageVaultChange) {
-                    if (ch.kind === 'injectedOverride') {
+                    if (ch.kind === 'injectStateOverride') {
                       throw new Error("don't use injected overrides")
                     }
                     change$.next(ch)
@@ -511,7 +510,7 @@ export function createManageVault$(
 
                   // NOTE: Not to be used in production/dev, test only
                   function injectStateOverride(stateToOverride: Partial<ManageVaultState>) {
-                    return change$.next({ kind: 'injectedOverride', stateToOverride })
+                    return change$.next({ kind: 'injectStateOverride', stateToOverride })
                   }
 
                   const initialState: ManageVaultState = {

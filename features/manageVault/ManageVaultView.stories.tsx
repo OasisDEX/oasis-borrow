@@ -174,6 +174,7 @@ function createStory({
 }
 
 const ManageVaultStoryContainer = ({ title }: { title?: string }) => {
+  if (!isAppContextAvailable()) return null
   return (
     <Container variant="appContainer">
       <Grid>
@@ -188,7 +189,7 @@ export const CollateralEditingStage = createStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
-  userTokenInfo: { collateralBalance: new BigNumber('200') },
+  userTokenInfo: { collateralBalance: new BigNumber('2000') },
   proxyAddress: '0xProxyAddress',
   stage: 'collateralEditing',
 })
