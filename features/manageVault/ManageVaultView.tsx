@@ -161,7 +161,7 @@ function ManageVaultDetails(props: ManageVaultState) {
   )
 }
 
-function ManageVaultFormProxy({
+function ManageVaultProxy({
   stage,
   proxyConfirmations,
   safeConfirmations,
@@ -247,7 +247,7 @@ function ManageVaultFormProxy({
   )
 }
 
-function ManageVaultFormCollateralAllowance({
+function ManageVaultCollateralAllowance({
   stage,
   collateralAllowanceTxHash,
   etherscan,
@@ -407,7 +407,7 @@ function ManageVaultFormCollateralAllowance({
   )
 }
 
-function ManageVaultFormDaiAllowance({
+function ManageVaultDaiAllowance({
   stage,
   daiAllowanceTxHash,
   etherscan,
@@ -565,7 +565,7 @@ function ManageVaultFormDaiAllowance({
   )
 }
 
-function ManageVaultFormConfirmation({
+function ManageVaultConfirmation({
   stage,
   collateralBalance,
   depositAmount,
@@ -736,10 +736,10 @@ function ManageVaultForm(props: ManageVaultState) {
       <Card>
         <ManageVaultFormHeader {...props} />
         {isEditingStage && <ManageVaultEditing {...props} />}
-        {isProxyStage && <ManageVaultFormProxy {...props} />}
-        {isCollateralAllowanceStage && <ManageVaultFormCollateralAllowance {...props} />}
-        {isDaiAllowanceStage && <ManageVaultFormDaiAllowance {...props} />}
-        {isManageStage && <ManageVaultFormConfirmation {...props} />}
+        {isProxyStage && <ManageVaultProxy {...props} />}
+        {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
+        {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}
+        {isManageStage && <ManageVaultConfirmation {...props} />}
       </Card>
     </Box>
   )
