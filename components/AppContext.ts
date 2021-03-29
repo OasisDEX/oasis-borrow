@@ -252,7 +252,6 @@ export function setupAppContext() {
 
   const manageVault$ = memoize(
     curry(createManageVault$)(
-      of(defaultManageVaultState),
       connectedContext$,
       txHelpers$,
       proxyAddress$,

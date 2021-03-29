@@ -123,7 +123,6 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
     .plus(depositAmount || zero)
     .times(maxDebtPerUnitCollateral)
     .minus(debt)
-  const generateAmountUSD = generateAmount || zero // 1 DAI === 1 USD
 
   const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt
 
@@ -158,13 +157,26 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
     maxWithdrawAmountUSD,
     afterCollateralizationRatio,
     afterLiquidationPrice,
-    generateAmountUSD,
     maxDepositAmountUSD,
     maxPaybackAmount,
   }
 }
 
-//export type ManageVaultGeneralisedChange = Changes<ManageVaultState>
+interface ManageVaultInjectedOverrideChange {
+  kind: 'injectedOverride'
+  stateToOverride: Partial<ManageVaultState>
+}
+
+function applyInjectedOverride(change: ManageVaultChange, state: ManageVaultState) {
+  if (change.kind === 'injectedOverride') {
+    return {
+      ...state,
+      ...change.stateToOverride,
+    }
+  }
+  return state
+}
+
 export type ManageVaultChange =
   | ManageVaultActionChange
   | ManageVaultFormChange
@@ -172,6 +184,7 @@ export type ManageVaultChange =
   | ManageVaultTransitionChange
   | ManageVaultTransactionChange
   | ManageVaultEnvironmentChange
+  | ManageVaultInjectedOverrideChange
 
 const curriedApplyManageVaultAction = curry(applyManageVaultAction)
 const curriedApplyManageVaultForm = curry(applyManageVaultForm)
@@ -179,16 +192,18 @@ const curriedApplyManageVaultAllowance = curry(applyManageVaultAllowance)
 const curriedApplyManageVaultTransition = curry(applyManageVaultTransition)
 const curriedApplyManageVaultTransaction = curry(applyManageVaultTransaction)
 const curriedApplyManageVaultEnvironment = curry(applyManageVaultEnvironment)
+const curriedApplyInjectedOverride = curry(applyInjectedOverride)
 
 function apply(state: ManageVaultState, change: ManageVaultChange) {
-  return compose(
+  const manageVaultChangeFunctions = compose(
     curriedApplyManageVaultAction(change),
     curriedApplyManageVaultForm(change),
     curriedApplyManageVaultAllowance(change),
     curriedApplyManageVaultTransition(change),
     curriedApplyManageVaultTransaction(change),
     curriedApplyManageVaultEnvironment(change),
-  )(state)
+  )
+  return compose(manageVaultChangeFunctions, curriedApplyInjectedOverride(change))(state)
 }
 
 export type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
@@ -258,7 +273,6 @@ export type DefaultManageVaultState = {
   maxWithdrawAmountUSD: BigNumber
 
   generateAmount?: BigNumber
-  generateAmountUSD: BigNumber
   maxGenerateAmount: BigNumber
 
   paybackAmount?: BigNumber
@@ -316,6 +330,8 @@ export type DefaultManageVaultState = {
   safeConfirmations: number
   txError?: any
   etherscan?: string
+
+  injectStateOverride: (state: Partial<ManageVaultState>) => void
 }
 
 export type ManageVaultState = DefaultManageVaultState & UserTokenInfo
@@ -452,49 +468,7 @@ function addTransitions(
   return state
 }
 
-export const defaultManageVaultState: DefaultManageVaultState = {
-  ...defaultIsStates,
-  stage: 'collateralEditing',
-  originalEditingStage: 'collateralEditing',
-  token: '',
-  id: zero,
-  ilk: '',
-  account: '',
-  accountIsController: false,
-  errorMessages: [],
-  warningMessages: [],
-  maxDepositAmount: zero,
-  maxDepositAmountUSD: zero,
-  maxWithdrawAmount: zero,
-  maxWithdrawAmountUSD: zero,
-  generateAmountUSD: zero,
-  maxGenerateAmount: zero,
-  maxPaybackAmount: zero,
-  lockedCollateral: zero,
-  lockedCollateralPrice: zero,
-  debt: zero,
-  liquidationPrice: zero,
-  collateralizationRatio: zero,
-  freeCollateral: zero,
-  afterLiquidationPrice: zero,
-  afterCollateralizationRatio: zero,
-  maxDebtPerUnitCollateral: zero,
-  ilkDebtAvailable: zero,
-  stabilityFee: zero,
-  liquidationPenalty: zero,
-  debtFloor: zero,
-  liquidationRatio: zero,
-  safeConfirmations: 0,
-  collateralAllowanceAmount: maxUint256,
-  daiAllowanceAmount: maxUint256,
-  showDepositAndGenerateOption: false,
-  showPaybackAndWithdrawOption: false,
-  showIlkDetails: false,
-}
-
 export function createManageVault$(
-  // TODO: replace defaultManageVaultState with custom change
-  defaultState$: Observable<DefaultManageVaultState>,
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
@@ -511,13 +485,12 @@ export function createManageVault$(
         first(),
         switchMap((vault) => {
           return combineLatest(
-            defaultState$,
             userTokenInfo$(vault.token, account),
             ilkData$(vault.ilk),
             proxyAddress$(account),
           ).pipe(
             first(),
-            switchMap(([defaultState, userTokenInfo, ilkData, proxyAddress]) => {
+            switchMap(([userTokenInfo, ilkData, proxyAddress]) => {
               const collateralAllowance$ =
                 (proxyAddress && allowance$(vault.token, account, proxyAddress)) || of(undefined)
               const daiAllowance$ =
@@ -526,42 +499,72 @@ export function createManageVault$(
               return combineLatest(collateralAllowance$, daiAllowance$).pipe(
                 first(),
                 switchMap(([collateralAllowance, daiAllowance]) => {
-                  vault.token
+                  const change$ = new Subject<ManageVaultChange>()
+
+                  function change(ch: ManageVaultChange) {
+                    if (ch.kind === 'injectedOverride') {
+                      throw new Error("don't use injected overrides")
+                    }
+                    change$.next(ch)
+                  }
+
+                  // NOTE: Not to be used in production/dev, test only
+                  function injectStateOverride(stateToOverride: Partial<ManageVaultState>) {
+                    return change$.next({ kind: 'injectedOverride', stateToOverride })
+                  }
+
                   const initialState: ManageVaultState = {
                     ...userTokenInfo,
-                    ...defaultState,
-                    token: vault.token,
+                    ...defaultIsStates,
+
+                    stage: 'collateralEditing',
+                    originalEditingStage: 'collateralEditing',
+                    errorMessages: [],
+                    warningMessages: [],
+                    showIlkDetails: false,
+                    showDepositAndGenerateOption: false,
+                    showPaybackAndWithdrawOption: false,
+
+                    maxDepositAmount: zero,
+                    maxDepositAmountUSD: zero,
+                    maxGenerateAmount: zero,
+                    maxWithdrawAmount: zero,
+                    maxWithdrawAmountUSD: zero,
+                    maxPaybackAmount: zero,
+                    afterCollateralizationRatio: zero,
+                    afterLiquidationPrice: zero,
+
                     id,
                     account,
+                    proxyAddress,
+                    collateralAllowance,
+                    daiAllowance,
+
                     accountIsController: account === vault.controller,
 
+                    token: vault.token,
                     lockedCollateral: vault.lockedCollateral,
                     lockedCollateralPrice: vault.lockedCollateralPrice,
                     debt: vault.debt,
                     liquidationPrice: vault.liquidationPrice,
                     collateralizationRatio: vault.collateralizationRatio,
                     freeCollateral: vault.freeCollateral,
-                    liquidationPenalty: ilkData.liquidationPenalty,
                     ilk: vault.ilk,
+
+                    liquidationPenalty: ilkData.liquidationPenalty,
                     maxDebtPerUnitCollateral: ilkData.maxDebtPerUnitCollateral,
                     ilkDebtAvailable: ilkData.ilkDebtAvailable,
                     debtFloor: ilkData.debtFloor,
                     stabilityFee: ilkData.stabilityFee,
                     liquidationRatio: ilkData.liquidationRatio,
-                    proxyAddress,
+
                     safeConfirmations: context.safeConfirmations,
                     etherscan: context.etherscan.url,
 
-                    collateralAllowance,
-                    daiAllowance,
                     collateralAllowanceAmount: maxUint256,
                     daiAllowanceAmount: maxUint256,
-                  }
 
-                  const change$ = new Subject<ManageVaultChange>()
-
-                  function change(ch: ManageVaultChange) {
-                    change$.next(ch)
+                    injectStateOverride,
                   }
 
                   const userTokenInfoChange$ = curry(createUserTokenInfoChange$)(userTokenInfo$)
