@@ -534,6 +534,7 @@ export const defaultManageVaultState: DefaultManageVaultState = {
 }
 
 export function createManageVault$(
+  // TODO: replace defaultManageVaultState with custom change
   defaultState$: Observable<DefaultManageVaultState>,
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
@@ -549,69 +550,45 @@ export function createManageVault$(
       const account = context.account
       return vault$(id).pipe(
         first(),
-        switchMap(
-          ({
-            token,
-            ilk,
-            lockedCollateral,
-            lockedCollateralPrice,
-            debt,
-            collateralizationRatio,
-            liquidationPrice,
-            freeCollateral,
-            controller,
-          }) => {
+        switchMap((vault) => {
             return combineLatest(
               defaultState$,
-              userTokenInfo$(token, account),
-              ilkData$(ilk),
+              userTokenInfo$(vault.token, account),
+              ilkData$(vault.ilk),
               proxyAddress$(account),
             ).pipe(
               first(),
-              switchMap(
-                ([
-                  defaultState,
-                  userTokenInfo,
-                  {
-                    maxDebtPerUnitCollateral,
-                    ilkDebtAvailable,
-                    debtFloor,
-                    liquidationRatio,
-                    stabilityFee,
-                    liquidationPenalty,
-                  },
-                  proxyAddress,
-                ]) => {
+              switchMap(([defaultState, userTokenInfo, ilkData, proxyAddress]) => {
                   const collateralAllowance$ =
-                    (proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)
+                    (proxyAddress && allowance$(vault.token, account, proxyAddress)) || of(undefined)
                   const daiAllowance$ =
                     (proxyAddress && allowance$('DAI', account, proxyAddress)) || of(undefined)
 
                   return combineLatest(collateralAllowance$, daiAllowance$).pipe(
                     first(),
                     switchMap(([collateralAllowance, daiAllowance]) => {
+                      vault.token
                       const initialState: ManageVaultState = {
                         ...userTokenInfo,
                         ...defaultState,
-                        token,
+                        token: vault.token,
                         id,
                         account,
-                        accountIsController: account === controller,
+                        accountIsController: account === vault.controller,
 
-                        lockedCollateral,
-                        lockedCollateralPrice,
-                        debt,
-                        liquidationPrice,
-                        collateralizationRatio,
-                        freeCollateral,
-                        liquidationPenalty,
-
-                        ilk,
-                        maxDebtPerUnitCollateral,
-                        ilkDebtAvailable,
-                        debtFloor,
-                        stabilityFee,
-                        liquidationRatio,
+                        lockedCollateral: vault.lockedCollateral,
+                        lockedCollateralPrice: vault.lockedCollateralPrice,
+                        debt: vault.debt,
+                        liquidationPrice: vault.liquidationPrice,
+                        collateralizationRatio: vault.collateralizationRatio,
+                        freeCollateral: vault.freeCollateral,
+                        liquidationPenalty: ilkData.liquidationPenalty,
+                        ilk: vault.ilk,
+                        maxDebtPerUnitCollateral: ilkData.maxDebtPerUnitCollateral,
+                        ilkDebtAvailable: ilkData.ilkDebtAvailable,
+                        debtFloor: ilkData.debtFloor,
+                        stabilityFee: ilkData.stabilityFee,
+                        liquidationRatio: ilkData.liquidationRatio,
                         proxyAddress,
                         safeConfirmations: context.safeConfirmations,
                         etherscan: context.etherscan.url,
@@ -631,24 +608,14 @@ export function createManageVault$(
                       const userTokenInfoChange$ = curry(createUserTokenInfoChange$)(userTokenInfo$)
 
                       const environmentChanges$ = merge(
-                        userTokenInfoChange$(token, account, 'collateralBalance'),
-                        userTokenInfoChange$(token, account, 'ethBalance'),
-                        userTokenInfoChange$(token, account, 'daiBalance'),
-                        userTokenInfoChange$(token, account, 'currentCollateralPrice'),
-                        userTokenInfoChange$(token, account, 'currentEthPrice'),
-                        userTokenInfoChange$(token, account, 'nextCollateralPrice'),
-                        userTokenInfoChange$(token, account, 'nextEthPrice'),
-                        userTokenInfoChange$(token, account, 'dateLastCollateralPrice'),
-                        userTokenInfoChange$(token, account, 'dateNextCollateralPrice'),
-                        userTokenInfoChange$(token, account, 'dateLastEthPrice'),
-                        userTokenInfoChange$(token, account, 'dateNextEthPrice'),
-                        userTokenInfoChange$(token, account, 'isStaticCollateralPrice'),
-                        userTokenInfoChange$(token, account, 'isStaticEthPrice'),
+                        userTokenInfoChange$(vault.token, account),
 
-                        ilkDataChange$(ilkData$(ilk), 'maxDebtPerUnitCollateral'),
-                        ilkDataChange$(ilkData$(ilk), 'ilkDebtAvailable'),
-                        ilkDataChange$(ilkData$(ilk), 'debtFloor'),
+                        // TODO: simplyfy with a custom change, see userTokenInfoChange$
+                        ilkDataChange$(ilkData$(vault.ilk), 'maxDebtPerUnitCollateral'),
+                        ilkDataChange$(ilkData$(vault.ilk), 'ilkDebtAvailable'),
+                        ilkDataChange$(ilkData$(vault.ilk), 'debtFloor'),
 
+                        // TODO: simplyfy with a custom change, see userTokenInfoChange$
                         vaultChange$(vault$(id), 'lockedCollateral'),
                         vaultChange$(vault$(id), 'debt'),
                         vaultChange$(vault$(id), 'collateralizationRatio'),
@@ -663,7 +630,7 @@ export function createManageVault$(
 
                       const connectedCollateralAllowance$ = connectedProxyAddress$.pipe(
                         switchMap((proxyAddress) =>
-                          proxyAddress ? allowance$(token, account, proxyAddress) : of(zero),
+                          proxyAddress ? allowance$(vault.token, account, proxyAddress) : of(zero),
                         ),
                         distinctUntilChanged((x, y) => x.eq(y)),
                       )
