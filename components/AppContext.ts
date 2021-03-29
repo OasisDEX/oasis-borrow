@@ -33,6 +33,7 @@ import {
 } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
@@ -280,6 +281,11 @@ export function setupAppContext() {
     saveAcceptanceFromApi$,
   )
 
+  const vaultBanners$ = memoize(
+    curry(createVaultsBanners$)(connectedContext$, userTokenInfo$, vault$),
+    bigNumberTostring,
+  )
+
   return {
     web3Context$,
     web3ContextConnected$,
@@ -298,6 +304,7 @@ export function setupAppContext() {
     openVault$,
     manageVault$,
     vaultsOverview$,
+    vaultBanners$,
     redirectState$,
     accountBalances$,
     vaultHistory$,

@@ -818,6 +818,15 @@ const oasisBaseTheme = {
       kovan: 'rgb(112, 87, 255)',
       default: '#aaa',
     },
+    banner: {
+      warning: '#FF6A16',
+      danger: '#FE4343',
+    },
+    counter: {
+      primary: '#FF7B31',
+      secondary: '#FEB343',
+      surface: '#FFDBC7',
+    },
   },
   fonts: {
     body: '"Inter", "Helvetica Neue", sans-serif',
@@ -925,6 +934,7 @@ const oasisBaseTheme = {
   radii: {
     small: 4,
     medium: 8,
+    mediumLarge: 12,
     large: 16,
     roundish: 20,
     round: 32,
@@ -934,6 +944,7 @@ const oasisBaseTheme = {
     light: '0 2px 8px rgba(0, 0, 0, 0.13)',
     surface: '0px 2px 2px rgba(199, 199, 199, 0.25)',
     table: '0px 0px 2px rgba(0, 0, 0, 0.2)',
+    banner: '0px 0px 10px rgba(0, 0, 0, 0.1)',
   },
   gradients: {
     app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
