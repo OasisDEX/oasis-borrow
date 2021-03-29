@@ -55,6 +55,8 @@ export function Background() {
             position: 'absolute',
             left: "calc((100% - 1882px) / 2)",
             top: '-200px',
+            userSelect: 'none',
+            pointerEvents: 'none',
         }}>
             <svg
                 xmlns="http://www.w3.org/2000/svg"
