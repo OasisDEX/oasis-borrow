@@ -1,5 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { useAppContext } from 'components/AppContextProvider'
 import { Banner } from 'components/Banner'
+import { useObservable } from 'helpers/observableHook'
 import moment from 'moment'
 import React, { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
@@ -9,14 +11,6 @@ type VaultBannerProps = {
   status: JSX.Element
   header: JSX.Element | string
   subheader: JSX.Element | string
-}
-
-type VaultBannerDisplayManagerProps = {
-  token: string
-  id: BigNumber
-  liquidationPrice: BigNumber
-  nextCollateralPrice?: BigNumber
-  dateNextCollateralPrice?: Date | undefined
 }
 
 export function VaultBanner({
@@ -179,13 +173,13 @@ export function VaultNextPriceUpdateCounter({
   )
 }
 
-export function VaultBannerDisplayManager({
-  token,
-  id,
-  nextCollateralPrice,
-  liquidationPrice,
-  dateNextCollateralPrice,
-}: VaultBannerDisplayManagerProps & { id: BigNumber }) {
+export function VaultBannersView({ id }: { id: BigNumber }) {
+  const { vaultBanners$ } = useAppContext()
+  const state = useObservable(vaultBanners$(id))
+  if (!state) return null
+
+  const { token, nextCollateralPrice, dateNextCollateralPrice, liquidationPrice } = state
+
   if (nextCollateralPrice?.lt(liquidationPrice)) {
     return (
       <VaultWarningBanner
