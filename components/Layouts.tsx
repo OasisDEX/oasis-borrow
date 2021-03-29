@@ -2,6 +2,7 @@ import { isAppContextAvailable } from 'components/AppContextProvider'
 import { Footer } from 'components/Footer'
 import { AppHeader, ConnectPageHeader, MarketingHeader } from 'components/Header'
 import { AppLinkProps } from 'components/Links'
+import { Background } from 'features/landing/Background'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
 import { Container, Flex, SxStyleProp } from 'theme-ui'
@@ -32,6 +33,7 @@ export function BasicLayout({ header, footer, children, sx, variant }: BasicLayo
         ...sx,
       }}
     >
+      <Background />
       {header}
       <Container variant={variant || 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
         <Flex sx={{ width: '100%', height: '100%' }}>{children}</Flex>

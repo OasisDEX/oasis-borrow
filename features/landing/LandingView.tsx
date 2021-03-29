@@ -118,8 +118,11 @@ export function LandingView() {
   }
 
   return (
-    <Grid sx={{ flex: 1, position: 'relative' }}>
-      <Background />
+    <Grid sx={{
+      flex: 1,
+      position: 'relative',
+    }}>
+      {/* <Background /> */}
       <Box sx={{ width: '600px', justifySelf: 'center', textAlign: 'center', my: 4 }}>
         <Heading as="h1" sx={{ fontSize: 7, my: 3 }}>
           {t('landing.hero.headline')}
