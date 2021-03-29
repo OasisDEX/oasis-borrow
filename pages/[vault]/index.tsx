@@ -23,9 +23,9 @@ export default function Vault({ id }: { id: string }) {
     <WithConnection>
       <WithTermsOfService>
         <Grid>
-        <ManageVaultView id={new BigNumber(id)} />
-        <VaultHistoryView id={new BigNumber(id)} />
-      </Grid>
+          <ManageVaultView id={new BigNumber(id)} />
+          <VaultHistoryView id={new BigNumber(id)} />
+        </Grid>
       </WithTermsOfService>
     </WithConnection>
   )
