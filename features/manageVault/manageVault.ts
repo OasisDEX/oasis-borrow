@@ -607,7 +607,7 @@ export function createManageVault$(
                         change,
                       ),
                     ),
-                    shareReplay(1),
+                    map(applyIsStageStates),
                   )
                 }),
               )
@@ -616,6 +616,6 @@ export function createManageVault$(
         }),
       )
     }),
-    map(applyIsStageStates),
+    shareReplay(1),
   )
 }
