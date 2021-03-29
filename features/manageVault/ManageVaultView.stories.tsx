@@ -15,7 +15,7 @@ import {
 } from 'features/shared/userTokenInfo'
 import { one, zero } from 'helpers/zero'
 import { memoize } from 'lodash'
-import React, {  useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { of } from 'rxjs'
 import { first, switchMap } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
