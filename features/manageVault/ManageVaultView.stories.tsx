@@ -15,17 +15,12 @@ import {
 } from 'features/shared/userTokenInfo'
 import { one, zero } from 'helpers/zero'
 import { memoize } from 'lodash'
-import React from 'react'
+import React, { PropsWithChildren, useEffect, useState } from 'react'
 import { of } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
+import { first, switchMap } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
-import {
-  createManageVault$,
-  defaultManageVaultState,
-  ManageVaultStage,
-  ManageVaultState,
-} from './manageVault'
+import { createManageVault$, ManageVaultStage, ManageVaultState } from './manageVault'
 interface Story {
   title?: string
   context?: ContextConnected
@@ -101,7 +96,6 @@ function createStory({
       }),
     }
 
-    const defaultState$ = of({ ...defaultManageVaultState, ...(newState || {}) })
     const context$ = of(context || protoContextConnected)
     const txHelpers$ = of(protoTxHelpers)
     const proxyAddress$ = () => of(proxyAddress)
@@ -149,22 +143,26 @@ function createStory({
       bigNumberTostring,
     )
 
-    const manageVault$ = memoize((id: BigNumber) =>
-      createManageVault$(
-        defaultState$,
-        context$,
-        txHelpers$,
-        proxyAddress$,
-        allowance$,
-        userTokenInfo$,
-        ilkData$,
-        vault$,
-        id,
-      ),
+    const obs$ = createManageVault$(
+      context$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      userTokenInfo$,
+      ilkData$,
+      vault$,
+      VAULT_ID,
     )
 
+    useEffect(() => {
+      const subscription = obs$.pipe(first()).subscribe(({ injectStateOverride }) => {
+        injectStateOverride(newState || {})
+      })
+      return subscription.unsubscribe()
+    }, [])
+
     const ctx = ({
-      manageVault$,
+      manageVault$: () => obs$,
     } as any) as AppContext
 
     return (
@@ -176,7 +174,6 @@ function createStory({
 }
 
 const ManageVaultStoryContainer = ({ title }: { title?: string }) => {
-  if (!isAppContextAvailable()) return null
   return (
     <Container variant="appContainer">
       <Grid>

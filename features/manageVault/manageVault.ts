@@ -501,6 +501,7 @@ export function createManageVault$(
                 switchMap(([collateralAllowance, daiAllowance]) => {
                   const change$ = new Subject<ManageVaultChange>()
 
+                  change$.subscribe(console.log)
                   function change(ch: ManageVaultChange) {
                     if (ch.kind === 'injectedOverride') {
                       throw new Error("don't use injected overrides")
