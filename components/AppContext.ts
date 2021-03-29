@@ -280,7 +280,7 @@ export function setupAppContext() {
     checkAcceptanceFromApi$,
     saveAcceptanceFromApi$,
   )
-  
+
   const vaultBanners$ = memoize(
     curry(createVaultsBanners$)(connectedContext$, userTokenInfo$, vault$),
     bigNumberTostring,
