@@ -8,10 +8,9 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
-import { Change, Changes, transactionToX } from 'helpers/form'
+import { applyChange, Change, Changes, transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
-import { compose } from 'ramda'
 import { combineLatest, iif, merge, Observable, of, Subject } from 'rxjs'
 import {
   distinctUntilChanged,
@@ -237,12 +236,10 @@ export type ManualChange =
   | Change<OpenVaultState, 'generateAmount'>
   | Change<OpenVaultState, 'allowanceAmount'>
 
-//const apply: ApplyChange<OpenVaultState> = applyChange
-// breaks flow
-const curriedOpenVaultEnvironmentChange = curry(applyOpenVaultEnvironment)
-
 function apply(state: OpenVaultState, change: OpenVaultChange) {
-  return compose(curriedOpenVaultEnvironmentChange(change))(state)
+  if (change.kind === 'ilkData' || change.kind === 'userTokenInfo')
+    return applyOpenVaultEnvironment(change, state)
+  return applyChange(state, change)
 }
 
 type OpenVaultErrorMessage =
