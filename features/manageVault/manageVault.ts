@@ -186,25 +186,14 @@ export type ManageVaultChange =
   | ManageVaultEnvironmentChange
   | ManageVaultInjectedOverrideChange
 
-type ApplyFunction = (change: ManageVaultChange, state: ManageVaultState) => ManageVaultState
-
-const applyFunctions: ApplyFunction[] = [
-  applyManageVaultAction,
-  applyManageVaultForm,
-  applyManageVaultAllowance,
-  applyManageVaultTransition,
-  applyManageVaultTransaction,
-  applyManageVaultEnvironment,
-  applyInjectedOverride,
-]
-
 function apply(state: ManageVaultState, change: ManageVaultChange) {
-  return applyFunctions
-    .map((fn) => curry(fn)(change))
-    .reduce(
-      (acc, cfn) => compose(cfn, acc),
-      (state: ManageVaultState) => state,
-    )(state)
+  const s1 = applyManageVaultAction(change, state)
+  const s2 = applyManageVaultForm(change, s1)
+  const s3 = applyManageVaultAllowance(change, s2)
+  const s4 = applyManageVaultTransition(change, s3)
+  const s5 = applyManageVaultTransaction(change, s4)
+  const s6 = applyManageVaultEnvironment(change, s5)
+  return applyInjectedOverride(change, s6)
 }
 
 export type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
