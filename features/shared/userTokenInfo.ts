@@ -31,14 +31,14 @@ export function createUserTokenInfo$(
   oraclePriceData$: (token: string) => Observable<OraclePriceData>,
   balance$: (token: string, address: string) => Observable<BigNumber>,
   token: string,
-  account: string,
+  account: string | undefined,
 ): Observable<UserTokenInfo> {
   return combineLatest(
-    balance$(token, account),
+    account ? balance$(token, account) : of(zero),
     oraclePriceData$(token),
-    balance$('ETH', account),
+    account ? balance$('ETH', account) : of(zero),
     oraclePriceData$('ETH'),
-    balance$('DAI', account),
+    account ? balance$('DAI', account) : of(zero),
   ).pipe(
     switchMap(
       ([
@@ -94,9 +94,9 @@ export interface UserTokenInfoChange {
 }
 
 export function createUserTokenInfoChange$(
-  userTokenInfo$: (token: string, account: string) => Observable<UserTokenInfo>,
+  userTokenInfo$: (token: string, account: string | undefined) => Observable<UserTokenInfo>,
   token: string,
-  account: string,
+  account: string | undefined,
 ): Observable<UserTokenInfoChange> {
   return userTokenInfo$(token, account).pipe(
     map((userTokenInfo) => ({

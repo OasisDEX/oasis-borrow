@@ -636,7 +636,7 @@ export function createOpenVault$(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
   allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
-  userTokenInfo$: (token: string, account: string) => Observable<UserTokenInfo>,
+  userTokenInfo$: (token: string, account: string | undefined) => Observable<UserTokenInfo>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilks$: Observable<string[]>,
   ilkToToken$: Observable<(ilk: string) => string>,

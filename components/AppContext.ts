@@ -41,7 +41,7 @@ import { createLanding$ } from 'features/landing/landing'
 import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenVault$, defaultOpenVaultState } from 'features/openVault/openVault'
 import { redirectState$ } from 'features/router/redirectState'
-import { createUserTokenInfo$ } from 'features/shared/userTokenInfo'
+import { createUserTokenInfo$, UserTokenInfo } from 'features/shared/userTokenInfo'
 import {
   checkAcceptanceFromApi$,
   saveAcceptanceFromApi$,
@@ -235,7 +235,10 @@ export function setupAppContext() {
   const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
   const ilksWithBalance$ = createIlkDataListWithBalances$(context$, ilkDataList$, accountBalances$)
 
-  const userTokenInfo$ = memoize(curry(createUserTokenInfo$)(oraclePriceData$, balance$))
+  const userTokenInfo$ = curry(createUserTokenInfo$)(oraclePriceData$, balance$) as (
+    token: string,
+    account: string | undefined,
+  ) => Observable<UserTokenInfo>
 
   const openVault$ = memoize(
     curry(createOpenVault$)(
@@ -253,7 +256,7 @@ export function setupAppContext() {
 
   const manageVault$ = memoize(
     curry(createManageVault$)(
-      connectedContext$,
+      context$,
       txHelpers$,
       proxyAddress$,
       allowance$,

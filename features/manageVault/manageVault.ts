@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
-import { ContextConnected } from 'blockchain/network'
+import { ContextConnected, ContextConnectedReadOnly } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
@@ -245,7 +245,7 @@ export type DefaultManageVaultState = {
   id: BigNumber
   ilk: string
   token: string
-  account: string
+  account: string | undefined
   accountIsController: boolean
 
   // validation
@@ -345,7 +345,7 @@ export type DefaultManageVaultState = {
 export type ManageVaultState = DefaultManageVaultState & UserTokenInfo
 
 function addTransitions(
-  txHelpers: TxHelpers,
+  txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
   collateralAllowance$: Observable<BigNumber>,
   daiAllowance$: Observable<BigNumber>,
@@ -384,7 +384,7 @@ function addTransitions(
   if (state.stage === 'proxyWaitingForConfirmation' || state.stage === 'proxyFailure') {
     return {
       ...state,
-      progress: () => createProxy(txHelpers, proxyAddress$, change, state),
+      progress: () => createProxy(txHelpers$, proxyAddress$, change, state),
     }
   }
 
@@ -418,7 +418,7 @@ function addTransitions(
           collateralAllowanceAmount: undefined,
         }),
 
-      progress: () => setCollateralAllowance(txHelpers, collateralAllowance$, change, state),
+      progress: () => setCollateralAllowance(txHelpers$, collateralAllowance$, change, state),
       reset: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -446,7 +446,7 @@ function addTransitions(
           daiAllowanceAmount: undefined,
         }),
 
-      progress: () => setDaiAllowance(txHelpers, daiAllowance$, change, state),
+      progress: () => setDaiAllowance(txHelpers$, daiAllowance$, change, state),
       reset: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -461,7 +461,7 @@ function addTransitions(
   if (state.stage === 'manageWaitingForConfirmation' || state.stage === 'manageFailure') {
     return {
       ...state,
-      progress: () => progressManage(txHelpers, state, change),
+      progress: () => progressManage(txHelpers$, state, change),
       reset: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -477,32 +477,35 @@ function addTransitions(
 }
 
 export function createManageVault$(
-  context$: Observable<ContextConnected>,
+  context$: Observable<ContextConnected | ContextConnectedReadOnly>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
   allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
-  userTokenInfo$: (token: string, account: string) => Observable<UserTokenInfo>,
+  userTokenInfo$: (token: string, account: string | undefined) => Observable<UserTokenInfo>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   vault$: (id: BigNumber) => Observable<Vault>,
   id: BigNumber,
 ): Observable<ManageVaultState> {
-  return combineLatest(context$, txHelpers$).pipe(
-    switchMap(([context, txHelpers]) => {
-      const account = context.account
+  return context$.pipe(
+    switchMap((context) => {
+      console.log('context', context)
+      const account = context.status === 'connected' ? context.account : undefined
       return vault$(id).pipe(
         first(),
         switchMap((vault) => {
           return combineLatest(
             userTokenInfo$(vault.token, account),
             ilkData$(vault.ilk),
-            proxyAddress$(account),
+            account ? proxyAddress$(account) : of(undefined),
           ).pipe(
             first(),
             switchMap(([userTokenInfo, ilkData, proxyAddress]) => {
               const collateralAllowance$ =
-                (proxyAddress && allowance$(vault.token, account, proxyAddress)) || of(undefined)
+                account && proxyAddress
+                  ? allowance$(vault.token, account, proxyAddress)
+                  : of(undefined)
               const daiAllowance$ =
-                (proxyAddress && allowance$('DAI', account, proxyAddress)) || of(undefined)
+                account && proxyAddress ? allowance$('DAI', account, proxyAddress) : of(undefined)
 
               return combineLatest(collateralAllowance$, daiAllowance$).pipe(
                 first(),
@@ -553,18 +556,20 @@ export function createManageVault$(
                     createVaultChange$(vault$, id),
                   )
 
-                  const connectedProxyAddress$ = proxyAddress$(account)
+                  const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
 
                   const connectedCollateralAllowance$ = connectedProxyAddress$.pipe(
                     switchMap((proxyAddress) =>
-                      proxyAddress ? allowance$(vault.token, account, proxyAddress) : of(zero),
+                      account && proxyAddress
+                        ? allowance$(vault.token, account, proxyAddress)
+                        : of(zero),
                     ),
                     distinctUntilChanged((x, y) => x.eq(y)),
                   )
 
                   const connectedDaiAllowance$ = connectedProxyAddress$.pipe(
                     switchMap((proxyAddress) =>
-                      proxyAddress ? allowance$('DAI', account, proxyAddress) : of(zero),
+                      account && proxyAddress ? allowance$('DAI', account, proxyAddress) : of(zero),
                     ),
                     distinctUntilChanged((x, y) => x.eq(y)),
                   )
@@ -576,7 +581,7 @@ export function createManageVault$(
                     map(validateWarnings),
                     map(
                       curry(addTransitions)(
-                        txHelpers,
+                        txHelpers$,
                         connectedProxyAddress$,
                         connectedCollateralAllowance$,
                         connectedDaiAllowance$,

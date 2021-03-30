@@ -11,7 +11,7 @@ import {
   formatPercent,
 } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
-import { useObservable } from 'helpers/observableHook'
+import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import moment from 'moment'
 import { Trans, useTranslation } from 'next-i18next'
@@ -830,8 +830,10 @@ export function ManageVaultContainer(props: ManageVaultState) {
 
 export function ManageVaultView({ id }: { id: BigNumber }) {
   const { manageVault$ } = useAppContext()
-  const manageVault = useObservable(manageVault$(id))
-  if (!manageVault) return null
+  const [manageVault, manageVaultError] = useObservableWithError(manageVault$(id))
+
+  if (manageVaultError) return <>Error!</>
+  if (!manageVault) return <>loading...</>
 
   return (
     <Grid gap={4}>
