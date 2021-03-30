@@ -5,7 +5,7 @@ import { UserTokenInfo } from 'features/shared/userTokenInfo'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import moment from 'moment'
 import { combineLatest, Observable, of } from 'rxjs'
-import { map, switchMap, tap } from 'rxjs/operators'
+import { map, switchMap } from 'rxjs/operators'
 
 interface VaultBannersState {
   controller: string
@@ -33,7 +33,7 @@ export function createVaultsBanners$(
           // All started auctions in the past week orders in a desc order by timestamp ( recent ones first )
           const auctionsStarted = events
             .filter((event) => event.kind === 'AUCTION_STARTED')
-            .map((event) => parseInt(event.timestamp) >= moment().subtract(3, 'weeks').unix())
+            .map((event) => parseInt(event.timestamp) >= moment().subtract(1, 'weeks').unix())
             .sort((prev, next) => {
               if (prev > next) return -1
               if (prev < next) return 1

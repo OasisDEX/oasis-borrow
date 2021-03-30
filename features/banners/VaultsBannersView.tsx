@@ -48,7 +48,7 @@ export function VaultBanner({
       {isVisible && (
         <Banner close={() => setIsVisible(false)}>
           <Flex sx={{ py: 2, pr: 5 }}>
-            <Box sx={{ mr: 4 }}>{status}</Box>
+            <Box sx={{ mr: 4, flexShrink: 0 }}>{status}</Box>
             <Grid gap={2} sx={{ alignItems: 'center' }}>
               <Heading as="h3" sx={{ color }}>
                 {header}
@@ -65,10 +65,14 @@ export function VaultBanner({
 export function VaultWarningBanner({
   id,
   token,
+  isVaultController,
+  controller,
   dateNextCollateralPrice,
 }: {
   id: string
   token: string
+  isVaultController: boolean
+  controller: string
   dateNextCollateralPrice: Date | undefined
 }) {
   return (
@@ -93,17 +97,31 @@ export function VaultWarningBanner({
         ),
         [dateNextCollateralPrice!],
       )}
-      header={`${token.toUpperCase()} Vault #${id} about to get liquidated`}
+      header={`${
+        isVaultController ? 'Your ' : ''
+      }${token.toUpperCase()} Maker Vault #${id} is about to get liquidated`}
       subheader={`
-        The next price will cause a liquidation on this Vault. You can still save your Vault from
-        liquidation by adding collateral or pay back DAI.
+        The next price will cause a liquidation on this Maker Vault. You can still save your Maker Vault from
+        liquidation by adding collateral or pay back DAI. 
+        ${
+          !isVaultController
+            ? `Is this your Maker Vault? Please connect with address: 
+              ${formatAddress(controller)} and save your Maker Vault from liquidation.`
+            : ''
+        }
       `}
       color="banner.warning"
     />
   )
 }
 
-export function VaultMutedBanner({ address, account }: { address: string; account?: string }) {
+export function VaultMutedBanner({
+  controller,
+  account,
+}: {
+  controller: string
+  account?: string
+}) {
   return (
     <VaultBanner
       status={
@@ -111,7 +129,7 @@ export function VaultMutedBanner({ address, account }: { address: string; accoun
           <Icon size="auto" width="24" height="24" name="bannerWallet" />
         </StatusFrame>
       }
-      header={`You are viewing ${formatAddress(address)} Vault`}
+      header={`You are viewing ${formatAddress(controller)} Vault`}
       subheader={
         !account ? (
           `Please connect your wallet to open, manage or view your Vaults.`
@@ -131,11 +149,29 @@ export function VaultMutedBanner({ address, account }: { address: string; accoun
 
 export function VaultDangerBanner({
   unlockedCollateral,
+  isVaultController,
+  controller,
   token,
 }: {
   unlockedCollateral: BigNumber
+  isVaultController: boolean
+  controller: string
   token: string
 }) {
+  const header = isVaultController ? `Your Vault got liquidated` : `This Maker Vault got liquidated`
+  const subheader =
+    unlockedCollateral.gt(zero) &&
+    (isVaultController
+      ? `This Maker Vault has been liquidated. A portion of your collateral has been auctioned 
+      to pay back your DAI debt. You can reclaim ${formatCryptoBalance(
+        unlockedCollateral,
+      )} ${token.toUpperCase()}`
+      : `This Maker Vault has been liquidated. A portion of your collateral has been auctioned 
+      to pay back your DAI debt. If this is your vault, connect with address: ${formatAddress(
+        controller,
+      )} to reclaim
+      the remaining collateral.`)
+
   return (
     <VaultBanner
       status={
@@ -149,13 +185,8 @@ export function VaultDangerBanner({
           </StatusFrame>
         </>
       }
-      header={`Your Vault got liquidated`}
-      subheader={
-        unlockedCollateral.gt(zero) &&
-        `A liquidation has happened on this Vault. Reclaim ${formatCryptoBalance(
-          unlockedCollateral,
-        )} ${token.toUpperCase()}`
-      }
+      header={header}
+      subheader={subheader}
       color="banner.danger"
     />
   )
@@ -265,25 +296,25 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
     unlockedCollateral,
   } = state
 
+  const isVaultController = !!account && account === controller
+
   // Banner that is displayed when the user had liquidaton on his vault
   if (hasBeenLiquidated) {
-    return <VaultDangerBanner {...{ unlockedCollateral, token }} />
+    return <VaultDangerBanner {...{ unlockedCollateral, token, isVaultController, controller }} />
   }
 
   // Banner that is displayed when the user is about to be liquidated on next osm price update
   if (nextCollateralPrice?.lt(liquidationPrice)) {
     return (
       <VaultWarningBanner
-        token={token}
-        id={id.toString()}
-        dateNextCollateralPrice={dateNextCollateralPrice}
+        {...{ token, id: id.toString(), dateNextCollateralPrice, isVaultController, controller }}
       />
     )
   }
 
   // Banner that is displayed when the user is viewing someone else's vault
-  if (!account || account !== controller) {
-    return <VaultMutedBanner {...{ account, address: controller }} />
+  if (!isVaultController) {
+    return <VaultMutedBanner {...{ account, controller }} />
   }
 
   return null
