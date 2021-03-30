@@ -3,19 +3,38 @@ import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { Banner } from 'components/Banner'
 import { AppLink } from 'components/Links'
-import { formatAddress } from 'helpers/formatters/format'
+import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { WithChildren } from 'helpers/types'
+import { zero } from 'helpers/zero'
 import moment from 'moment'
 import React, { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
-import { Box, Flex, Heading, Text, useThemeUI } from 'theme-ui'
+import { Box, Flex, Grid, Heading, SxStyleProp, Text, useThemeUI } from 'theme-ui'
 
 type VaultBannerProps = {
   status: JSX.Element
   header: JSX.Element | string
-  subheader: JSX.Element | string
+  subheader?: JSX.Element | string | false
 }
 
+function StatusFrame({ children, sx }: WithChildren & { sx?: SxStyleProp }) {
+  return (
+    <Flex
+      sx={{
+        border: 'bold',
+        borderRadius: 'circle',
+        width: '56px',
+        height: '56px',
+        alignItems: 'center',
+        justifyContent: 'center',
+        ...sx,
+      }}
+    >
+      {children}
+    </Flex>
+  )
+}
 export function VaultBanner({
   status,
   header,
@@ -30,12 +49,12 @@ export function VaultBanner({
         <Banner close={() => setIsVisible(false)}>
           <Flex sx={{ py: 2, pr: 5 }}>
             <Box sx={{ mr: 4 }}>{status}</Box>
-            <Box>
-              <Heading as="h3" sx={{ mb: 2, color }}>
+            <Grid gap={2} sx={{ alignItems: 'center' }}>
+              <Heading as="h3" sx={{ color }}>
                 {header}
               </Heading>
-              <Text variant="subheader">{subheader}</Text>
-            </Box>
+              {subheader && <Text variant="subheader">{subheader}</Text>}
+            </Grid>
           </Flex>
         </Banner>
       )}
@@ -84,22 +103,13 @@ export function VaultWarningBanner({
   )
 }
 
-export function VaultMutedBanner({ address, account }: { address: string; account: string }) {
+export function VaultMutedBanner({ address, account }: { address: string; account?: string }) {
   return (
     <VaultBanner
       status={
-        <Flex
-          sx={{
-            border: 'bold',
-            borderRadius: 'circle',
-            width: '56px',
-            height: '56px',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+        <StatusFrame>
           <Icon size="auto" width="24" height="24" name="bannerWallet" />
-        </Flex>
+        </StatusFrame>
       }
       header={`You are viewing ${formatAddress(address)} Vault`}
       subheader={
@@ -119,8 +129,36 @@ export function VaultMutedBanner({ address, account }: { address: string; accoun
   )
 }
 
-export function VaultDangerBanner(props: VaultBannerProps) {
-  return <VaultBanner {...props} color="banner.danger" />
+export function VaultDangerBanner({
+  unlockedCollateral,
+  token,
+}: {
+  unlockedCollateral: BigNumber
+  token: string
+}) {
+  return (
+    <VaultBanner
+      status={
+        <>
+          <StatusFrame
+            sx={{
+              borderColor: '#FBE1D9',
+            }}
+          >
+            <Icon size="auto" height="24" width="6" name="exclamationMark" color="banner.danger" />
+          </StatusFrame>
+        </>
+      }
+      header={`Your Vault got liquidated`}
+      subheader={
+        unlockedCollateral.gt(zero) &&
+        `A liquidation has happened on this Vault. Reclaim ${formatCryptoBalance(
+          unlockedCollateral,
+        )} ${token.toUpperCase()}`
+      }
+      color="banner.danger"
+    />
+  )
 }
 
 interface VaultNextPriceUpdateCounterProps {
@@ -223,9 +261,16 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
     liquidationPrice,
     account,
     controller,
+    hasBeenLiquidated,
+    unlockedCollateral,
   } = state
 
-  // Banner that should that th euser is about to be liquidated
+  // Banner that is displayed when the user had liquidaton on his vault
+  if (hasBeenLiquidated) {
+    return <VaultDangerBanner {...{ unlockedCollateral, token }} />
+  }
+
+  // Banner that is displayed when the user is about to be liquidated on next osm price update
   if (nextCollateralPrice?.lt(liquidationPrice)) {
     return (
       <VaultWarningBanner
@@ -236,7 +281,7 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
     )
   }
 
-  // Banner that the user is viewing someone else's vault
+  // Banner that is displayed when the user is viewing someone else's vault
   if (!account || account !== controller) {
     return <VaultMutedBanner {...{ account, address: controller }} />
   }
