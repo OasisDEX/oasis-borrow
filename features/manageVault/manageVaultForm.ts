@@ -1,6 +1,6 @@
 import { ManageVaultChange, ManageVaultState } from './manageVault'
-import { depositAndGenerateDefaults, paybackAndWithdrawDefaults } from './manageVaultInput'
 import { allowanceDefaults } from './manageVaultAllowances'
+import { depositAndGenerateDefaults, paybackAndWithdrawDefaults } from './manageVaultInput'
 
 export const manageVaultFormDefaults: Partial<ManageVaultState> = {
   ...allowanceDefaults,
