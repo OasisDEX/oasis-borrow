@@ -41,6 +41,25 @@ const defaultIsStates = {
   isManageStage: false,
 }
 
+const defaultPartialState = {
+  errorMessages: [],
+  warningMessages: [],
+  showIlkDetails: false,
+  showDepositAndGenerateOption: false,
+  showPaybackAndWithdrawOption: false,
+
+  maxDepositAmount: zero,
+  maxDepositAmountUSD: zero,
+  maxGenerateAmount: zero,
+  maxWithdrawAmount: zero,
+  maxWithdrawAmountUSD: zero,
+  maxPaybackAmount: zero,
+  afterCollateralizationRatio: zero,
+  afterLiquidationPrice: zero,
+  collateralAllowanceAmount: maxUint256,
+  daiAllowanceAmount: maxUint256,
+}
+
 function applyIsStageStates(state: ManageVaultState): ManageVaultState {
   const newState = {
     ...state,
@@ -505,32 +524,16 @@ export function createManageVault$(
                   const initialState: ManageVaultState = {
                     ...userTokenInfo,
                     ...defaultIsStates,
-
+                    ...defaultPartialState,
+                    ...ilkData,
                     stage: 'collateralEditing',
                     originalEditingStage: 'collateralEditing',
-                    errorMessages: [],
-                    warningMessages: [],
-                    showIlkDetails: false,
-                    showDepositAndGenerateOption: false,
-                    showPaybackAndWithdrawOption: false,
-
-                    maxDepositAmount: zero,
-                    maxDepositAmountUSD: zero,
-                    maxGenerateAmount: zero,
-                    maxWithdrawAmount: zero,
-                    maxWithdrawAmountUSD: zero,
-                    maxPaybackAmount: zero,
-                    afterCollateralizationRatio: zero,
-                    afterLiquidationPrice: zero,
-
                     id,
                     account,
                     proxyAddress,
                     collateralAllowance,
                     daiAllowance,
-
                     accountIsController: account === vault.controller,
-
                     token: vault.token,
                     lockedCollateral: vault.lockedCollateral,
                     lockedCollateralPrice: vault.lockedCollateralPrice,
@@ -539,31 +542,15 @@ export function createManageVault$(
                     collateralizationRatio: vault.collateralizationRatio,
                     freeCollateral: vault.freeCollateral,
                     ilk: vault.ilk,
-
-                    liquidationPenalty: ilkData.liquidationPenalty,
-                    maxDebtPerUnitCollateral: ilkData.maxDebtPerUnitCollateral,
-                    ilkDebtAvailable: ilkData.ilkDebtAvailable,
-                    debtFloor: ilkData.debtFloor,
-                    stabilityFee: ilkData.stabilityFee,
-                    liquidationRatio: ilkData.liquidationRatio,
-
                     safeConfirmations: context.safeConfirmations,
                     etherscan: context.etherscan.url,
-
-                    collateralAllowanceAmount: maxUint256,
-                    daiAllowanceAmount: maxUint256,
-
                     injectStateOverride,
                   }
 
-                  const userTokenInfoChange$ = curry(createUserTokenInfoChange$)(userTokenInfo$)
-                  const ilkDataChange$ = curry(createIlkDataChange$)(ilkData$)
-                  const vaultChange$ = curry(createVaultChange$)(vault$)
-
                   const environmentChanges$ = merge(
-                    userTokenInfoChange$(vault.token, account),
-                    ilkDataChange$(vault.ilk),
-                    vaultChange$(id),
+                    createUserTokenInfoChange$(userTokenInfo$, vault.token, account),
+                    createIlkDataChange$(ilkData$, vault.ilk),
+                    createVaultChange$(vault$, id),
                   )
 
                   const connectedProxyAddress$ = proxyAddress$(account)
