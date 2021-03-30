@@ -33,7 +33,6 @@ export function BasicLayout({ header, footer, children, sx, variant }: BasicLayo
         ...sx,
       }}
     >
-      <Background />
       {header}
       <Container variant={variant || 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
         <Flex sx={{ width: '100%', height: '100%' }}>{children}</Flex>
@@ -66,6 +65,7 @@ export function MarketingLayout({ children, variant }: MarketingLayoutProps) {
       footer={<Footer />}
       variant={variant || 'marketingContainer'}
     >
+      <Background />
       {children}
     </BasicLayout>
   )

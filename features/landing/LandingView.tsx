@@ -10,8 +10,7 @@ import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback } from 'react'
-import { Box, Flex, Grid, Heading, Text, Image } from 'theme-ui'
-import { Background } from './Background'
+import { Box, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
 export function TokenSymbol({
   token,
@@ -118,10 +117,12 @@ export function LandingView() {
   }
 
   return (
-    <Grid sx={{
-      flex: 1,
-      position: 'relative',
-    }}>
+    <Grid
+      sx={{
+        flex: 1,
+        position: 'relative',
+      }}
+    >
       {/* <Background /> */}
       <Box sx={{ width: '600px', justifySelf: 'center', textAlign: 'center', my: 4 }}>
         <Heading as="h1" sx={{ fontSize: 7, my: 3 }}>
