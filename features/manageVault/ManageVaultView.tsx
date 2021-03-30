@@ -11,7 +11,7 @@ import {
   formatPercent,
 } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
-import {  useObservableWithError } from 'helpers/observableHook'
+import { useObservableWithError } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import moment from 'moment'
 import { Trans, useTranslation } from 'next-i18next'

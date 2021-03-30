@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
-import { ContextConnected, ContextConnectedReadOnly } from 'blockchain/network'
+import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
@@ -477,7 +477,7 @@ function addTransitions(
 }
 
 export function createManageVault$(
-  context$: Observable<ContextConnected | ContextConnectedReadOnly>,
+  context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
   allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
@@ -488,7 +488,6 @@ export function createManageVault$(
 ): Observable<ManageVaultState> {
   return context$.pipe(
     switchMap((context) => {
-      console.log('context', context)
       const account = context.status === 'connected' ? context.account : undefined
       return vault$(id).pipe(
         first(),
