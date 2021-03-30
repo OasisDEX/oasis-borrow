@@ -6,6 +6,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { VaultActionInput } from 'components/VaultActionInput'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { handleNumericInput } from 'helpers/input'
 import { useObservable } from 'helpers/observableHook'
 import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
@@ -253,7 +254,6 @@ function OpenVaultFormEditing(props: OpenVaultState) {
     token,
     depositAmount,
     generateAmount,
-    change,
     collateralBalance,
     maxDepositAmount,
     maxGenerateAmount,
@@ -263,52 +263,18 @@ function OpenVaultFormEditing(props: OpenVaultState) {
     liquidationRatio,
     afterCollateralizationRatio,
     progress,
+    updateDeposit,
+    updateDepositMax,
+    updateDepositUSD,
+    depositAmountUSD,
+    maxDepositAmountUSD,
+    updateGenerate,
+    updateGenerateMax,
   } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
     progress!()
-  }
-
-  function handleDepositChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      const depositAmount = value !== '' ? new BigNumber(value) : undefined
-
-      change({
-        kind: 'depositAmount',
-        depositAmount,
-      })
-    }
-  }
-
-  function handleGenerateChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      const generateAmount = value !== '' ? new BigNumber(value) : undefined
-      change({
-        kind: 'generateAmount',
-        generateAmount,
-      })
-    }
-  }
-
-  function handleDepositMax(change: (ch: ManualChange) => void) {
-    return () => {
-      change({
-        kind: 'depositAmount',
-        depositAmount: maxDepositAmount.gt(zero) ? maxDepositAmount : undefined,
-      })
-    }
-  }
-
-  function handleGenerateMax(change: (ch: ManualChange) => void) {
-    return () => {
-      change({
-        kind: 'generateAmount',
-        generateAmount: maxGenerateAmount.gt(zero) ? maxGenerateAmount : undefined,
-      })
-    }
   }
 
   const errorString = errorMessages.join(',\n')
@@ -330,24 +296,30 @@ function OpenVaultFormEditing(props: OpenVaultState) {
       <VaultActionInput
         action="Deposit"
         token={token}
-        amount={depositAmount}
-        onChange={handleDepositChange(change!)}
         showMax={true}
-        onSetMax={handleDepositMax(change!)}
-        maxAmount={collateralBalance}
+        hasAuxiliary={true}
+        onSetMax={updateDepositMax!}
+        amount={depositAmount}
+        auxiliaryAmount={depositAmountUSD}
+        onChange={handleNumericInput(updateDeposit!)}
+        onAuxiliaryChange={handleNumericInput(updateDepositUSD!)}
+        maxAmount={maxDepositAmount}
+        maxAuxiliaryAmount={maxDepositAmountUSD}
         maxAmountLabel={'Balance'}
         hasError={hasError}
       />
       <VaultActionInput
         action="Generate"
-        token={'DAI'}
         amount={generateAmount}
-        onChange={handleGenerateChange(change!)}
+        token={'DAI'}
         showMax={true}
-        onSetMax={handleGenerateMax(change!)}
         maxAmount={maxGenerateAmount}
-        hasError={hasError}
+        maxAmountLabel={'Maximum'}
+        onSetMax={updateGenerateMax}
+        onChange={handleNumericInput(updateGenerate!)}
+        hasError={false}
       />
+
       {hasError && (
         <>
           <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
