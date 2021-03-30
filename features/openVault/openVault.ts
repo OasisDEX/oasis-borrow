@@ -8,7 +8,7 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
-import { Change, Changes, transactionToX } from 'helpers/form'
+import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { compose } from 'ramda'
@@ -26,6 +26,9 @@ import {
 import Web3 from 'web3'
 
 import { applyOpenVaultEnvironment, OpenVaultEnvironmentChange } from './openVaultEnvironment'
+import { applyOpenVaultForm, OpenVaultFormChange } from './openVaultForm'
+import { applyOpenVaultInput, OpenVaultInputChange } from './openVaultInput'
+import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openVaultTransitions'
 
 interface Receipt {
   logs: { topics: string[] | undefined }[]
@@ -114,17 +117,15 @@ function applyVaultCalculations(state: OpenVaultState): OpenVaultState {
     generateAmount,
     currentCollateralPrice,
     liquidationRatio,
+    depositAmountUSD,
   } = state
 
   const maxDepositAmount = collateralBalance
   const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
   const maxGenerateAmount = depositAmount ? depositAmount.times(maxDebtPerUnitCollateral) : zero
-  const depositAmountUSD = depositAmount ? currentCollateralPrice.times(depositAmount) : zero
-  const generateAmountUSD = generateAmount || zero // 1 DAI === 1 USD
 
-  const afterCollateralizationRatio = generateAmountUSD.eq(zero)
-    ? zero
-    : depositAmountUSD.div(generateAmountUSD)
+  const afterCollateralizationRatio =
+    generateAmount && !generateAmount.eq(zero) ? depositAmountUSD.div(generateAmount) : zero
 
   const afterLiquidationPrice =
     generateAmount && depositAmount && depositAmount.gt(zero)
@@ -134,12 +135,10 @@ function applyVaultCalculations(state: OpenVaultState): OpenVaultState {
   return {
     ...state,
     maxDepositAmount,
+    maxDepositAmountUSD,
     maxGenerateAmount,
     afterCollateralizationRatio,
     afterLiquidationPrice,
-    depositAmountUSD,
-    generateAmountUSD,
-    maxDepositAmountUSD,
   }
 }
 
@@ -202,7 +201,7 @@ export function validateWarnings(state: OpenVaultState): OpenVaultState {
 
   const warningMessages: OpenVaultWarningMessage[] = []
 
-  if (depositAmount?.gt(zero) && depositAmountUSD.lt(debtFloor)) {
+  if (depositAmountUSD && depositAmount?.gt(zero) && depositAmountUSD.lt(debtFloor)) {
     warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
   }
 
@@ -230,19 +229,17 @@ export function validateWarnings(state: OpenVaultState): OpenVaultState {
   return { ...state, warningMessages }
 }
 
-export type OpenVaultChange = Changes<OpenVaultState> | OpenVaultEnvironmentChange
-
-export type ManualChange =
-  | Change<OpenVaultState, 'depositAmount'>
-  | Change<OpenVaultState, 'generateAmount'>
-  | Change<OpenVaultState, 'allowanceAmount'>
-
-//const apply: ApplyChange<OpenVaultState> = applyChange
-// breaks flow
-const curriedOpenVaultEnvironmentChange = curry(applyOpenVaultEnvironment)
+export type OpenVaultChange =
+  | OpenVaultInputChange
+  | OpenVaultFormChange
+  | OpenVaultTransitionChange
+  | OpenVaultEnvironmentChange
 
 function apply(state: OpenVaultState, change: OpenVaultChange) {
-  return compose(curriedOpenVaultEnvironmentChange(change))(state)
+  const s1 = applyOpenVaultInput(change, state)
+  const s2 = applyOpenVaultForm(change, s1)
+  const s3 = applyOpenVaultTransition(change, s2)
+  return applyOpenVaultEnvironment(change, s3)
 }
 
 type OpenVaultErrorMessage =
@@ -297,52 +294,53 @@ export type OpenVaultStage =
   | 'openSuccess'
 
 export type DefaultOpenVaultState = {
-  // Basic States
   stage: OpenVaultStage
   ilk: string
   account: string
   token: string
 
-  // validation
   errorMessages: OpenVaultErrorMessage[]
   warningMessages: OpenVaultWarningMessage[]
 
-  // Dynamic Data
   proxyAddress?: string
   allowance?: BigNumber
   progress?: () => void
   reset?: () => void
-  change?: (change: ManualChange) => void
-  id?: number
-  depositAmount?: BigNumber
-  generateAmount?: BigNumber
-  allowanceAmount?: BigNumber
+  id?: BigNumber
 
-  // Vault Display Information
+  updateDeposit: (depositAmount?: BigNumber) => void
+  updateDepositUSD: (depositAmountUSD?: BigNumber) => void
+  updateDepositMax: () => void
+  updateGenerate: (generateAmount?: BigNumber) => void
+  updateGenerateMax: () => void
+
+  toggleGenerateOption?: () => void
+  toggleIlkDetails: () => void
+  showGenerateOption: boolean
+  showIlkDetails: boolean
+
   afterLiquidationPrice: BigNumber
   afterCollateralizationRatio: BigNumber
 
-  // Form Bound Values
+  depositAmount?: BigNumber
+  depositAmountUSD?: BigNumber
   maxDepositAmount: BigNumber
-  maxGenerateAmount: BigNumber
-  depositAmountUSD: BigNumber
-  generateAmountUSD: BigNumber
   maxDepositAmountUSD: BigNumber
+  generateAmount?: BigNumber
+  maxGenerateAmount: BigNumber
+  allowanceAmount?: BigNumber
 
-  // Ilk information
-  maxDebtPerUnitCollateral: BigNumber // Updates
-  ilkDebtAvailable: BigNumber // Updates
+  maxDebtPerUnitCollateral: BigNumber
+  ilkDebtAvailable: BigNumber
   debtFloor: BigNumber
   liquidationRatio: BigNumber
 
-  // IsStage states
   isIlkValidationStage: boolean
   isEditingStage: boolean
   isProxyStage: boolean
   isAllowanceStage: boolean
   isOpenStage: boolean
 
-  // TransactionInfo
   allowanceTxHash?: string
   proxyTxHash?: string
   openTxHash?: string
@@ -514,43 +512,18 @@ function addTransitions(
   change: (ch: OpenVaultChange) => void,
   state: OpenVaultState,
 ): OpenVaultState {
-  // function backToOpenVaultModalEditing() {
-  //   change({ kind: 'stage', stage: 'editing' })
-  // }
-
-  function reset() {
-    change({ kind: 'stage', stage: 'editing' })
-    change({ kind: 'depositAmount', depositAmount: undefined })
-    change({ kind: 'generateAmount', generateAmount: undefined })
-    change({ kind: 'allowanceAmount', allowanceAmount: maxUint256 })
-  }
-
-  function progressEditing() {
-    const canProgress = !state.errorMessages.length
-    const hasProxy = !!state.proxyAddress
-
-    const openingEmptyVault = state.depositAmount ? state.depositAmount.eq(zero) : true
-    const depositAmountLessThanAllowance =
-      state.allowance && state.depositAmount && state.allowance.gte(state.depositAmount)
-
-    const hasAllowance =
-      state.token === 'ETH' ? true : depositAmountLessThanAllowance || openingEmptyVault
-
-    if (canProgress) {
-      if (!hasProxy) {
-        change({ kind: 'stage', stage: 'proxyWaitingForConfirmation' })
-      } else if (!hasAllowance) {
-        change({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' })
-      } else change({ kind: 'stage', stage: 'openWaitingForConfirmation' })
-    }
-  }
-
   if (state.stage === 'editing') {
     return {
       ...state,
-      change,
-      reset,
-      progress: progressEditing,
+      updateDeposit: (depositAmount?: BigNumber) => change({ kind: 'deposit', depositAmount }),
+      updateDepositUSD: (depositAmountUSD?: BigNumber) =>
+        change({ kind: 'depositUSD', depositAmountUSD }),
+      updateDepositMax: () => change({ kind: 'depositMax' }),
+      updateGenerate: (generateAmount?: BigNumber) => change({ kind: 'generate', generateAmount }),
+      updateGenerateMax: () => change({ kind: 'generateMax' }),
+      toggleGenerateOption: () => change({ kind: 'toggleGenerateOption' }),
+      toggleIlkDetails: () => change({ kind: 'toggleIlkDetails' }),
+      progress: () => change({ kind: 'progressEditing' }),
     }
   }
 
@@ -566,19 +539,17 @@ function addTransitions(
       ...state,
       progress: () =>
         change({
-          kind: 'stage',
-          stage: state.token === 'ETH' ? 'editing' : 'allowanceWaitingForConfirmation',
+          kind: 'progressProxy',
         }),
-      reset: () => change({ kind: 'stage', stage: 'editing' }),
+      reset: () => change({ kind: 'backToEditing' }),
     }
   }
 
   if (state.stage === 'allowanceWaitingForConfirmation' || state.stage === 'allowanceFailure') {
     return {
       ...state,
-      change,
       progress: () => setAllowance(txHelpers, allowance$, change, state),
-      reset: () => change({ kind: 'stage', stage: 'editing' }),
+      reset: () => change({ kind: 'backToEditing' }),
     }
   }
 
@@ -587,8 +558,7 @@ function addTransitions(
       ...state,
       progress: () =>
         change({
-          kind: 'stage',
-          stage: 'editing',
+          kind: 'backToEditing',
         }),
     }
   }
@@ -597,7 +567,7 @@ function addTransitions(
     return {
       ...state,
       progress: () => openVault(txHelpers, change, state),
-      reset: () => change({ kind: 'stage', stage: 'editing' }),
+      reset: () => change({ kind: 'backToEditing' }),
     }
   }
 
@@ -616,7 +586,6 @@ export const defaultOpenVaultState: DefaultOpenVaultState = {
   maxDepositAmount: zero,
   maxGenerateAmount: zero,
   depositAmountUSD: zero,
-  generateAmountUSD: zero,
   maxDepositAmountUSD: zero,
   afterLiquidationPrice: zero,
   afterCollateralizationRatio: zero,

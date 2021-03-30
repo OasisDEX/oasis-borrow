@@ -15,7 +15,7 @@ import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
-import { ManualChange, OpenVaultState } from './openVault'
+import { OpenVaultState } from './openVault'
 
 function OpenVaultDetails(props: OpenVaultState) {
   const {
