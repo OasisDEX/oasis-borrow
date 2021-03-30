@@ -11,14 +11,6 @@ export const DEFAULT_CONFIG: Config = {
   disableRequestLogging: true,
   challengeJWTSecret: 'fnt123',
   userJWTSecret: 'user-jwt-123',
-  smtpSecret: {
-    host: 'smtp.server.com',
-    port: '587',
-    user: 'user',
-    pass: 'pass',
-  },
-  contactEmailsReceiver: 'NO_RECEIVER@oasis.app',
-  contactEmailsSender: 'NO_SENDER@oasis.app',
 }
 
 function nextApiResolver(handler: {
@@ -49,7 +41,6 @@ export function setupServer(
     { ...DEFAULT_CONFIG, ...customConfig },
     {
       nextHandler: noopHandler,
-      emailProvider: noopEmailProvider,
       ...customDependencies,
     },
   )

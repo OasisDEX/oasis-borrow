@@ -1,6 +1,6 @@
 {
-  "name": "Oasis.app",
-  "short_name": "Oasis.app",
+  "name": "Oasis Borrow",
+  "short_name": "Oasis.Borrow",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#FFFFFF",

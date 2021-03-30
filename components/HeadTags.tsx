@@ -65,12 +65,12 @@ export function PageSEOTags({ title, description, url = '/', ogImage = 'og.png' 
       <meta name="twitter:card" content="summary_large_image" />
 
       <meta property="og:type" content="website" />
-      <meta property="og:site_name" content="Oasis.app" />
+      <meta property="og:site_name" content="Oasis.Borrow" />
     </Head>
   )
 }
 
-const APP_NAME = 'Oasis.app'
+const APP_NAME = 'Oasis.Borrow'
 
 export function PWATags() {
   return (
