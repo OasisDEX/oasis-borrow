@@ -1,6 +1,9 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { Banner } from 'components/Banner'
+import { AppLink } from 'components/Links'
+import { formatAddress } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import moment from 'moment'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -77,6 +80,41 @@ export function VaultWarningBanner({
         liquidation by adding collateral or pay back DAI.
       `}
       color="banner.warning"
+    />
+  )
+}
+
+export function VaultMutedBanner({ address, account }: { address: string; account: string }) {
+  return (
+    <VaultBanner
+      status={
+        <Flex
+          sx={{
+            border: 'bold',
+            borderRadius: 'circle',
+            width: '56px',
+            height: '56px',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Icon size="auto" width="24" height="24" name="bannerWallet" />
+        </Flex>
+      }
+      header={`You are viewing ${formatAddress(address)} Vault`}
+      subheader={
+        !account ? (
+          `Please connect your wallet to open, manage or view your Vaults.`
+        ) : (
+          <Text>
+            You can view your vaults{' '}
+            <AppLink href={`/owner/${account}`} target="_blank">
+              here
+            </AppLink>
+          </Text>
+        )
+      }
+      color="banner.muted"
     />
   )
 }
@@ -178,8 +216,16 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
   const state = useObservable(vaultBanners$(id))
   if (!state) return null
 
-  const { token, nextCollateralPrice, dateNextCollateralPrice, liquidationPrice } = state
+  const {
+    token,
+    nextCollateralPrice,
+    dateNextCollateralPrice,
+    liquidationPrice,
+    account,
+    controller,
+  } = state
 
+  // Banner that should that th euser is about to be liquidated
   if (nextCollateralPrice?.lt(liquidationPrice)) {
     return (
       <VaultWarningBanner
@@ -188,6 +234,11 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
         dateNextCollateralPrice={dateNextCollateralPrice}
       />
     )
+  }
+
+  // Banner that the user is viewing someone else's vault
+  if (!account || account !== controller) {
+    return <VaultMutedBanner {...{ account, address: controller }} />
   }
 
   return null

@@ -7,6 +7,8 @@ import { map, switchMap } from 'rxjs/operators'
 import { ContextConnected } from '@oasisdex/transactions/lib/src/callHelpersContextParametrized'
 
 interface VaultBannersState {
+  controller: string
+  account: string
   token: string
   id: BigNumber
   liquidationPrice: BigNumber
@@ -23,10 +25,12 @@ export function createVaultsBanners$(
   return context$.pipe(
     switchMap(({ account }) => {
       return vault$(id).pipe(
-        switchMap(({ token, liquidationPrice }) => {
+        switchMap(({ token, liquidationPrice, controller }) => {
           return userTokenInfo$(token, account).pipe(
             map(({ nextCollateralPrice, dateNextCollateralPrice }) => {
               return {
+                account,
+                controller,
                 token,
                 id,
                 liquidationPrice,
