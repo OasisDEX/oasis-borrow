@@ -49,7 +49,7 @@ interface PaybackMaxChange {
   kind: 'paybackMax'
 }
 
-export type ManageVaultActionChange =
+export type ManageVaultInputChange =
   | DepositChange
   | DepositUSDChange
   | DepositMaxChange
@@ -73,7 +73,7 @@ export const paybackAndWithdrawDefaults: Partial<ManageVaultState> = {
   paybackAmount: undefined,
 }
 
-export function applyManageVaultAction(change: ManageVaultChange, state: ManageVaultState) {
+export function applyManageVaultInput(change: ManageVaultChange, state: ManageVaultState) {
   if (change.kind === 'deposit') {
     const { depositAmount } = change
     const { stage, currentCollateralPrice } = state

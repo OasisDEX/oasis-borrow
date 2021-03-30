@@ -7,14 +7,13 @@ import { TxHelpers } from 'components/AppContext'
 import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
-import { compose } from 'ramda'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
-import { applyManageVaultAction, ManageVaultActionChange } from './manageVaultActions'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
 import { applyManageVaultEnvironment, ManageVaultEnvironmentChange } from './manageVaultEnvironment'
 import { applyManageVaultForm, ManageVaultFormChange } from './manageVaultForm'
+import { applyManageVaultInput, ManageVaultInputChange } from './manageVaultInput'
 import {
   applyManageVaultTransaction,
   createProxy,
@@ -178,7 +177,7 @@ function applyInjectedOverride(change: ManageVaultChange, state: ManageVaultStat
 }
 
 export type ManageVaultChange =
-  | ManageVaultActionChange
+  | ManageVaultInputChange
   | ManageVaultFormChange
   | ManageVaultAllowanceChange
   | ManageVaultTransitionChange
@@ -187,7 +186,7 @@ export type ManageVaultChange =
   | ManageVaultInjectedOverrideChange
 
 function apply(state: ManageVaultState, change: ManageVaultChange) {
-  const s1 = applyManageVaultAction(change, state)
+  const s1 = applyManageVaultInput(change, state)
   const s2 = applyManageVaultForm(change, s1)
   const s3 = applyManageVaultAllowance(change, s2)
   const s4 = applyManageVaultTransition(change, s3)
