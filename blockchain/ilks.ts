@@ -90,6 +90,18 @@ export function createIlkDataList$(
   )
 }
 
+export interface IlkDataChange {
+  kind: 'ilkData'
+  ilkData: IlkData
+}
+
+export function createIlkDataChange$(
+  ilkData$: (ilk: string) => Observable<IlkData>,
+  ilk: string,
+): Observable<IlkDataChange> {
+  return ilkData$(ilk).pipe(map((ilkData) => ({ kind: 'ilkData', ilkData })))
+}
+
 export const protoETHAIlkData: IlkData = {
   debtCeiling: new BigNumber('1482351717.8074963620138921299'),
   debtFloor: new BigNumber('2000'),

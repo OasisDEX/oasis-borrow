@@ -38,7 +38,7 @@ import { createCollateralPrices$ } from 'features/collateralPrices/collateralPri
 import { currentContent } from 'features/content'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createLanding$ } from 'features/landing/landing'
-import { createManageVault$, defaultManageVaultState } from 'features/manageVault/manageVault'
+import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenVault$, defaultOpenVaultState } from 'features/openVault/openVault'
 import { redirectState$ } from 'features/router/redirectState'
 import { createUserTokenInfo$ } from 'features/shared/userTokenInfo'
@@ -253,7 +253,6 @@ export function setupAppContext() {
 
   const manageVault$ = memoize(
     curry(createManageVault$)(
-      of(defaultManageVaultState),
       connectedContext$,
       txHelpers$,
       proxyAddress$,

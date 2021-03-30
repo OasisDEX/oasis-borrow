@@ -15,17 +15,12 @@ import {
 } from 'features/shared/userTokenInfo'
 import { one, zero } from 'helpers/zero'
 import { memoize } from 'lodash'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { of } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
+import { first, switchMap } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
-import {
-  createManageVault$,
-  defaultManageVaultState,
-  ManageVaultStage,
-  ManageVaultState,
-} from './manageVault'
+import { createManageVault$, ManageVaultStage, ManageVaultState } from './manageVault'
 interface Story {
   title?: string
   context?: ContextConnected
@@ -101,7 +96,6 @@ function createStory({
       }),
     }
 
-    const defaultState$ = of({ ...defaultManageVaultState, ...(newState || {}) })
     const context$ = of(context || protoContextConnected)
     const txHelpers$ = of(protoTxHelpers)
     const proxyAddress$ = () => of(proxyAddress)
@@ -149,22 +143,26 @@ function createStory({
       bigNumberTostring,
     )
 
-    const manageVault$ = memoize((id: BigNumber) =>
-      createManageVault$(
-        defaultState$,
-        context$,
-        txHelpers$,
-        proxyAddress$,
-        allowance$,
-        userTokenInfo$,
-        ilkData$,
-        vault$,
-        id,
-      ),
+    const obs$ = createManageVault$(
+      context$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      userTokenInfo$,
+      ilkData$,
+      vault$,
+      VAULT_ID,
     )
 
+    useEffect(() => {
+      const subscription = obs$.pipe(first()).subscribe(({ injectStateOverride }) => {
+        injectStateOverride(newState || {})
+      })
+      return subscription.unsubscribe()
+    }, [])
+
     const ctx = ({
-      manageVault$,
+      manageVault$: () => obs$,
     } as any) as AppContext
 
     return (
@@ -191,7 +189,7 @@ export const CollateralEditingStage = createStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
-  userTokenInfo: { collateralBalance: new BigNumber('200') },
+  userTokenInfo: { collateralBalance: new BigNumber('2000') },
   proxyAddress: '0xProxyAddress',
   stage: 'collateralEditing',
 })

@@ -21,7 +21,7 @@ import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Te
 
 import { VaultBannersView } from '../banners/VaultsBannersView'
 import { ManageVaultState } from './manageVault'
-import { ManageVaultFormEditing } from './ManageVaultFormEditing'
+import { ManageVaultEditing } from './ManageVaultEditing'
 
 function ManageVaultDetails(props: ManageVaultState) {
   const {
@@ -162,7 +162,7 @@ function ManageVaultDetails(props: ManageVaultState) {
   )
 }
 
-function ManageVaultFormProxy({
+function ManageVaultProxy({
   stage,
   proxyConfirmations,
   safeConfirmations,
@@ -248,7 +248,7 @@ function ManageVaultFormProxy({
   )
 }
 
-function ManageVaultFormCollateralAllowance({
+function ManageVaultCollateralAllowance({
   stage,
   collateralAllowanceTxHash,
   etherscan,
@@ -408,7 +408,7 @@ function ManageVaultFormCollateralAllowance({
   )
 }
 
-function ManageVaultFormDaiAllowance({
+function ManageVaultDaiAllowance({
   stage,
   daiAllowanceTxHash,
   etherscan,
@@ -566,7 +566,7 @@ function ManageVaultFormDaiAllowance({
   )
 }
 
-function ManageVaultFormConfirmation({
+function ManageVaultConfirmation({
   stage,
   collateralBalance,
   depositAmount,
@@ -736,11 +736,11 @@ function ManageVaultForm(props: ManageVaultState) {
     <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <Card>
         <ManageVaultFormHeader {...props} />
-        {isEditingStage && <ManageVaultFormEditing {...props} />}
-        {isProxyStage && <ManageVaultFormProxy {...props} />}
-        {isCollateralAllowanceStage && <ManageVaultFormCollateralAllowance {...props} />}
-        {isDaiAllowanceStage && <ManageVaultFormDaiAllowance {...props} />}
-        {isManageStage && <ManageVaultFormConfirmation {...props} />}
+        {isEditingStage && <ManageVaultEditing {...props} />}
+        {isProxyStage && <ManageVaultProxy {...props} />}
+        {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
+        {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}
+        {isManageStage && <ManageVaultConfirmation {...props} />}
       </Card>
     </Box>
   )

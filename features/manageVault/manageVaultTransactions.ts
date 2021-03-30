@@ -17,165 +17,209 @@ import { filter, switchMap } from 'rxjs/operators'
 
 import { ManageVaultChange, ManageVaultState } from './manageVault'
 
-export function createProxy(
-  { sendWithGasEstimation }: TxHelpers,
-  proxyAddress$: Observable<string | undefined>,
-  change: (ch: ManageVaultChange) => void,
-  { safeConfirmations }: ManageVaultState,
-) {
-  sendWithGasEstimation(createDsProxy, { kind: TxMetaKind.createDsProxy })
-    .pipe(
-      transactionToX<ManageVaultChange, CreateDsProxyData>(
-        { kind: 'stage', stage: 'proxyWaitingForApproval' },
-        (txState) =>
-          of(
-            { kind: 'proxyTxHash', proxyTxHash: (txState as any).txHash as string },
-            { kind: 'stage', stage: 'proxyInProgress' },
-          ),
-        (txState) => {
-          return of(
-            {
-              kind: 'stage',
-              stage: 'proxyFailure',
-            },
-            {
-              kind: 'txError',
-              txError:
-                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-                  ? txState.error
-                  : undefined,
-            },
-          )
-        },
-        (txState) => {
-          return proxyAddress$.pipe(
-            filter((proxyAddress) => !!proxyAddress),
-            switchMap((proxyAddress) =>
-              iif(
-                () => (txState as any).confirmations < safeConfirmations,
-                of({
-                  kind: 'proxyConfirmations',
-                  proxyConfirmations: (txState as any).confirmations,
-                }),
-                of(
-                  { kind: 'proxyAddress', proxyAddress: proxyAddress! },
-                  {
-                    kind: 'stage',
-                    stage: 'proxySuccess',
-                  },
-                ),
-              ),
-            ),
-          )
-        },
-        safeConfirmations,
-      ),
-    )
-    .subscribe((ch) => change(ch))
-}
+type ProxyChange =
+  | {
+      kind: 'proxyWaitingForApproval'
+    }
+  | {
+      kind: 'proxyInProgress'
+      proxyTxHash: string
+    }
+  | {
+      kind: 'proxyFailure'
+      txError?: any
+    }
+  | {
+      kind: 'proxyConfirming'
+      proxyConfirmations?: number
+    }
+  | {
+      kind: 'proxySuccess'
+      proxyAddress: string
+    }
 
-export function setCollateralAllowance(
-  { sendWithGasEstimation }: TxHelpers,
-  collateralAllowance$: Observable<BigNumber>,
-  change: (ch: ManageVaultChange) => void,
-  state: ManageVaultState,
-) {
-  sendWithGasEstimation(approve, {
-    kind: TxMetaKind.approve,
-    token: state.token,
-    spender: state.proxyAddress!,
-    amount: state.collateralAllowanceAmount!,
-  })
-    .pipe(
-      transactionToX<ManageVaultChange, ApproveData>(
-        { kind: 'stage', stage: 'collateralAllowanceWaitingForApproval' },
-        (txState) =>
-          of(
-            {
-              kind: 'collateralAllowanceTxHash',
-              collateralAllowanceTxHash: (txState as any).txHash as string,
-            },
-            { kind: 'stage', stage: 'collateralAllowanceInProgress' },
-          ),
-        (txState) => {
-          return of(
-            {
-              kind: 'stage',
-              stage: 'collateralAllowanceFailure',
-            },
-            {
-              kind: 'txError',
-              txError:
-                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-                  ? txState.error
-                  : undefined,
-            },
-          )
-        },
-        () =>
-          collateralAllowance$.pipe(
-            switchMap((collateralAllowance) =>
-              of(
-                { kind: 'collateralAllowance', collateralAllowance },
-                { kind: 'stage', stage: 'collateralAllowanceSuccess' },
-              ),
-            ),
-          ),
-      ),
-    )
-    .subscribe((ch) => change(ch))
-}
+type CollateralAllowanceChange =
+  | { kind: 'collateralAllowanceWaitingForApproval' }
+  | {
+      kind: 'collateralAllowanceInProgress'
+      collateralAllowanceTxHash: string
+    }
+  | {
+      kind: 'collateralAllowanceFailure'
+      txError?: any
+    }
+  | {
+      kind: 'collateralAllowanceSuccess'
+      collateralAllowance: BigNumber
+    }
 
-export function setDaiAllowance(
-  { sendWithGasEstimation }: TxHelpers,
-  daiAllowance$: Observable<BigNumber>,
-  change: (ch: ManageVaultChange) => void,
+type DaiAllowanceChange =
+  | { kind: 'daiAllowanceWaitingForApproval' }
+  | {
+      kind: 'daiAllowanceInProgress'
+      daiAllowanceTxHash: string
+    }
+  | {
+      kind: 'daiAllowanceFailure'
+      txError?: any
+    }
+  | {
+      kind: 'daiAllowanceSuccess'
+      daiAllowance: BigNumber
+    }
+
+type ManageChange =
+  | { kind: 'manageWaitingForApproval' }
+  | {
+      kind: 'manageInProgress'
+      manageTxHash: string
+    }
+  | {
+      kind: 'manageFailure'
+      txError?: any
+    }
+  | {
+      kind: 'manageSuccess'
+    }
+
+export type ManageVaultTransactionChange =
+  | ProxyChange
+  | CollateralAllowanceChange
+  | DaiAllowanceChange
+  | ManageChange
+
+export function applyManageVaultTransaction(
+  change: ManageVaultChange,
   state: ManageVaultState,
-) {
-  sendWithGasEstimation(approve, {
-    kind: TxMetaKind.approve,
-    token: 'DAI',
-    spender: state.proxyAddress!,
-    amount: state.daiAllowanceAmount!,
-  })
-    .pipe(
-      transactionToX<ManageVaultChange, ApproveData>(
-        { kind: 'stage', stage: 'daiAllowanceWaitingForApproval' },
-        (txState) =>
-          of(
-            {
-              kind: 'daiAllowanceTxHash',
-              daiAllowanceTxHash: (txState as any).txHash as string,
-            },
-            { kind: 'stage', stage: 'daiAllowanceInProgress' },
-          ),
-        (txState) => {
-          return of(
-            {
-              kind: 'stage',
-              stage: 'daiAllowanceFailure',
-            },
-            {
-              kind: 'txError',
-              txError:
-                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-                  ? txState.error
-                  : undefined,
-            },
-          )
-        },
-        () =>
-          daiAllowance$.pipe(
-            switchMap((daiAllowance) =>
-              of(
-                { kind: 'daiAllowance', daiAllowance },
-                { kind: 'stage', stage: 'daiAllowanceSuccess' },
-              ),
-            ),
-          ),
-      ),
-    )
-    .subscribe((ch) => change(ch))
+): ManageVaultState {
+  if (change.kind === 'proxyWaitingForApproval') {
+    return {
+      ...state,
+      stage: 'proxyWaitingForApproval',
+    }
+  }
+
+  if (change.kind === 'proxyInProgress') {
+    const { proxyTxHash } = change
+    return {
+      ...state,
+      stage: 'proxyInProgress',
+      proxyTxHash,
+    }
+  }
+
+  if (change.kind === 'proxyFailure') {
+    const { txError } = change
+    return { ...state, stage: 'proxyFailure', txError }
+  }
+
+  if (change.kind === 'proxyConfirming') {
+    const { proxyConfirmations } = change
+    return {
+      ...state,
+      proxyConfirmations,
+    }
+  }
+
+  if (change.kind === 'proxySuccess') {
+    const { proxyAddress } = change
+    return {
+      ...state,
+      proxyAddress,
+      stage: 'proxySuccess',
+    }
+  }
+
+  if (change.kind === 'collateralAllowanceWaitingForApproval') {
+    return {
+      ...state,
+      stage: 'collateralAllowanceWaitingForApproval',
+    }
+  }
+
+  if (change.kind === 'collateralAllowanceInProgress') {
+    const { collateralAllowanceTxHash } = change
+    return {
+      ...state,
+      collateralAllowanceTxHash,
+      stage: 'collateralAllowanceInProgress',
+    }
+  }
+
+  if (change.kind === 'collateralAllowanceFailure') {
+    const { txError } = change
+    return {
+      ...state,
+      stage: 'collateralAllowanceFailure',
+      txError,
+    }
+  }
+
+  if (change.kind === 'collateralAllowanceSuccess') {
+    const { collateralAllowance } = change
+    return { ...state, stage: 'collateralAllowanceSuccess', collateralAllowance }
+  }
+
+  if (change.kind === 'daiAllowanceWaitingForApproval') {
+    return {
+      ...state,
+      stage: 'daiAllowanceWaitingForApproval',
+    }
+  }
+
+  if (change.kind === 'daiAllowanceInProgress') {
+    const { daiAllowanceTxHash } = change
+    return {
+      ...state,
+      daiAllowanceTxHash,
+      stage: 'daiAllowanceInProgress',
+    }
+  }
+
+  if (change.kind === 'daiAllowanceFailure') {
+    const { txError } = change
+    return {
+      ...state,
+      stage: 'daiAllowanceFailure',
+      txError,
+    }
+  }
+
+  if (change.kind === 'daiAllowanceSuccess') {
+    const { daiAllowance } = change
+    return { ...state, stage: 'daiAllowanceSuccess', daiAllowance }
+  }
+
+  if (change.kind === 'manageWaitingForApproval') {
+    return {
+      ...state,
+      stage: 'manageWaitingForApproval',
+    }
+  }
+
+  if (change.kind === 'manageInProgress') {
+    const { manageTxHash } = change
+    return {
+      ...state,
+      manageTxHash,
+      stage: 'manageInProgress',
+    }
+  }
+
+  if (change.kind === 'manageFailure') {
+    const { txError } = change
+    return {
+      ...state,
+      stage: 'manageFailure',
+      txError,
+    }
+  }
+
+  if (change.kind === 'manageSuccess') {
+    return { ...state, stage: 'daiAllowanceSuccess' }
+  }
+
+  return state
 }
 
 export function manageVaultDepositAndGenerate(
@@ -194,28 +238,22 @@ export function manageVaultDepositAndGenerate(
   })
     .pipe(
       transactionToX<ManageVaultChange, DepositAndGenerateData>(
-        { kind: 'stage', stage: 'manageWaitingForApproval' },
+        { kind: 'manageWaitingForApproval' },
         (txState) =>
-          of(
-            { kind: 'manageTxHash', manageTxHash: (txState as any).txHash as string },
-            { kind: 'stage', stage: 'manageInProgress' },
-          ),
+          of({
+            kind: 'manageInProgress',
+            manageTxHash: (txState as any).txHash as string,
+          }),
         (txState) => {
-          return of(
-            {
-              kind: 'stage',
-              stage: 'manageFailure',
-            },
-            {
-              kind: 'txError',
-              txError:
-                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-                  ? txState.error
-                  : undefined,
-            },
-          )
+          return of({
+            kind: 'manageFailure',
+            txError:
+              txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+                ? txState.error
+                : undefined,
+          })
         },
-        () => of({ kind: 'stage', stage: 'manageSuccess' }),
+        () => of({ kind: 'manageSuccess' }),
       ),
     )
     .subscribe((ch) => change(ch))
@@ -237,28 +275,144 @@ export function manageVaultWithdrawAndPayback(
   })
     .pipe(
       transactionToX<ManageVaultChange, WithdrawAndPaybackData>(
-        { kind: 'stage', stage: 'manageWaitingForApproval' },
+        { kind: 'manageWaitingForApproval' },
         (txState) =>
-          of(
-            { kind: 'manageTxHash', manageTxHash: (txState as any).txHash as string },
-            { kind: 'stage', stage: 'manageInProgress' },
-          ),
+          of({
+            kind: 'manageInProgress',
+            manageTxHash: (txState as any).txHash as string,
+          }),
         (txState) => {
-          return of(
-            {
-              kind: 'stage',
-              stage: 'manageFailure',
-            },
-            {
-              kind: 'txError',
-              txError:
-                txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-                  ? txState.error
-                  : undefined,
-            },
-          )
+          return of({
+            kind: 'manageFailure',
+            txError:
+              txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+                ? txState.error
+                : undefined,
+          })
         },
-        () => of({ kind: 'stage', stage: 'manageSuccess' }),
+        () => of({ kind: 'manageSuccess' }),
+      ),
+    )
+    .subscribe((ch) => change(ch))
+}
+
+export function setDaiAllowance(
+  { sendWithGasEstimation }: TxHelpers,
+  daiAllowance$: Observable<BigNumber>,
+  change: (ch: ManageVaultChange) => void,
+  state: ManageVaultState,
+) {
+  sendWithGasEstimation(approve, {
+    kind: TxMetaKind.approve,
+    token: 'DAI',
+    spender: state.proxyAddress!,
+    amount: state.daiAllowanceAmount!,
+  })
+    .pipe(
+      transactionToX<ManageVaultChange, ApproveData>(
+        { kind: 'daiAllowanceWaitingForApproval' },
+        (txState) =>
+          of({
+            kind: 'daiAllowanceInProgress',
+            daiAllowanceTxHash: (txState as any).txHash as string,
+          }),
+        (txState) =>
+          of({
+            kind: 'daiAllowanceFailure',
+            txError:
+              txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+                ? txState.error
+                : undefined,
+          }),
+        () =>
+          daiAllowance$.pipe(
+            switchMap((daiAllowance) => of({ kind: 'daiAllowanceSuccess', daiAllowance })),
+          ),
+      ),
+    )
+    .subscribe((ch) => change(ch))
+}
+
+export function setCollateralAllowance(
+  { sendWithGasEstimation }: TxHelpers,
+  collateralAllowance$: Observable<BigNumber>,
+  change: (ch: ManageVaultChange) => void,
+  state: ManageVaultState,
+) {
+  sendWithGasEstimation(approve, {
+    kind: TxMetaKind.approve,
+    token: state.token,
+    spender: state.proxyAddress!,
+    amount: state.collateralAllowanceAmount!,
+  })
+    .pipe(
+      transactionToX<ManageVaultChange, ApproveData>(
+        { kind: 'collateralAllowanceWaitingForApproval' },
+        (txState) =>
+          of({
+            kind: 'collateralAllowanceInProgress',
+            collateralAllowanceTxHash: (txState as any).txHash as string,
+          }),
+        (txState) =>
+          of({
+            kind: 'collateralAllowanceFailure',
+            txError:
+              txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+                ? txState.error
+                : undefined,
+          }),
+        () =>
+          collateralAllowance$.pipe(
+            switchMap((collateralAllowance) =>
+              of({
+                kind: 'collateralAllowanceSuccess',
+                collateralAllowance,
+              }),
+            ),
+          ),
+      ),
+    )
+    .subscribe((ch) => change(ch))
+}
+
+export function createProxy(
+  { sendWithGasEstimation }: TxHelpers,
+  proxyAddress$: Observable<string | undefined>,
+  change: (ch: ManageVaultChange) => void,
+  { safeConfirmations }: ManageVaultState,
+) {
+  sendWithGasEstimation(createDsProxy, { kind: TxMetaKind.createDsProxy })
+    .pipe(
+      transactionToX<ManageVaultChange, CreateDsProxyData>(
+        { kind: 'proxyWaitingForApproval' },
+        (txState) =>
+          of({
+            kind: 'proxyInProgress',
+            proxyTxHash: (txState as any).txHash as string,
+          }),
+        (txState) =>
+          of({
+            kind: 'proxyFailure',
+            txError:
+              txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+                ? txState.error
+                : undefined,
+          }),
+        (txState) =>
+          proxyAddress$.pipe(
+            filter((proxyAddress) => !!proxyAddress),
+            switchMap((proxyAddress) =>
+              iif(
+                () => (txState as any).confirmations < safeConfirmations,
+                of({
+                  kind: 'proxyConfirming',
+                  proxyConfirmations: (txState as any).confirmations,
+                }),
+                of({ kind: 'proxySuccess', proxyAddress: proxyAddress! }),
+              ),
+            ),
+          ),
+        safeConfirmations,
       ),
     )
     .subscribe((ch) => change(ch))
