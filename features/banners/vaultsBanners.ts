@@ -8,6 +8,7 @@ import { combineLatest, Observable, of } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
 interface VaultBannersState {
+  banner?: 'ownership' | 'liquidating' | 'liquidated'
   controller: string
   account?: string
   token: string
@@ -17,6 +18,33 @@ interface VaultBannersState {
   nextCollateralPrice?: BigNumber
   unlockedCollateral: BigNumber
   dateNextCollateralPrice?: Date | undefined
+}
+
+function assignBanner(state: VaultBannersState): VaultBannersState {
+  const { hasBeenLiquidated, nextCollateralPrice, liquidationPrice, account, controller } = state
+
+  if (hasBeenLiquidated) {
+    return {
+      ...state,
+      banner: 'liquidated',
+    }
+  }
+
+  if (nextCollateralPrice?.lt(liquidationPrice)) {
+    return {
+      ...state,
+      banner: 'liquidating',
+    }
+  }
+
+  if (!account || account !== controller) {
+    return {
+      ...state,
+      banner: 'ownership',
+    }
+  }
+
+  return state
 }
 
 export function createVaultsBanners$(
@@ -50,7 +78,7 @@ export function createVaultsBanners$(
           }
 
           if (context.status !== 'connected') {
-            return of(state)
+            return of(state as VaultBannersState)
           }
 
           return userTokenInfo$(token, context.account).pipe(
@@ -64,6 +92,7 @@ export function createVaultsBanners$(
             }),
           )
         }),
+        map(assignBanner),
       )
     }),
   )

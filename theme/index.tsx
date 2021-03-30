@@ -787,12 +787,12 @@ const customLandingIcons = {
         <path
           d="M2 6C2 3.79086 3.79086 2 6 2H18C19.1046 2 20 2.89543 20 4V7H2V6Z"
           stroke="url(#paint0_linear)"
-          stroke-width="2.5"
+          strokeWidth="2.5"
         />
         <path
           d="M2 7H19C20.6569 7 22 8.34315 22 10V19C22 20.6569 20.6569 22 19 22H6C3.79086 22 2 20.2091 2 18V7Z"
           stroke="url(#paint1_linear)"
-          stroke-width="2.5"
+          strokeWidth="2.5"
         />
         <circle cx="17.5" cy="14.5" r="1.5" fill="url(#paint2_linear)" />
         <defs>
@@ -804,8 +804,8 @@ const customLandingIcons = {
             y2="7"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#282A42" />
-            <stop offset="1" stop-color="#4F548B" />
+            <stop stopColor="#282A42" />
+            <stop offset="1" stopColor="#4F548B" />
           </linearGradient>
           <linearGradient
             id="paint1_linear"
@@ -815,8 +815,8 @@ const customLandingIcons = {
             y2="22"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#282A42" />
-            <stop offset="1" stop-color="#4F548B" />
+            <stop stopColor="#282A42" />
+            <stop offset="1" stopColor="#4F548B" />
           </linearGradient>
           <linearGradient
             id="paint2_linear"
@@ -826,8 +826,8 @@ const customLandingIcons = {
             y2="13.3808"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#25273D" />
-            <stop offset="1" stop-color="#4F558C" />
+            <stop stopColor="#25273D" />
+            <stop offset="1" stopColor="#4F558C" />
           </linearGradient>
         </defs>
       </svg>
@@ -838,8 +838,8 @@ const customLandingIcons = {
     path: (
       <svg width="6" height="24" viewBox="0 0 6 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M3 0C1.41149 0 0.186548 1.39911 0.396491 2.97368L1.86784 14.0088C1.9435 14.5762 2.42753 15 3 15C3.57247 15 4.0565 14.5762 4.13216 14.0088L5.60351 2.97368C5.81345 1.39911 4.58851 0 3 0ZM3 24C4.65685 24 6 22.6569 6 21C6 19.3431 4.65685 18 3 18C1.34315 18 0 19.3431 0 21C0 22.6569 1.34315 24 3 24Z"
           fill="currentColor"
         />

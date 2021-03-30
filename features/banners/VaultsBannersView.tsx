@@ -297,39 +297,24 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
   const state = useObservable(vaultBanners$(id))
   if (!state) return null
 
-  const {
-    token,
-    nextCollateralPrice,
-    dateNextCollateralPrice,
-    liquidationPrice,
-    account,
-    controller,
-    hasBeenLiquidated,
-    unlockedCollateral,
-  } = state
+  const { token, dateNextCollateralPrice, account, controller, unlockedCollateral, banner } = state
 
   const isVaultController = !!account && account === controller
 
-  // Banner that is displayed when the user had liquidaton on his vault
-  if (hasBeenLiquidated) {
-    return (
-      <VaultLiquidatedBanner {...{ unlockedCollateral, token, isVaultController, controller }} />
-    )
+  switch (banner) {
+    case 'liquidated':
+      return (
+        <VaultLiquidatedBanner {...{ unlockedCollateral, token, isVaultController, controller }} />
+      )
+    case 'liquidating':
+      return (
+        <VaultLiquidatingBanner
+          {...{ token, id: id.toString(), dateNextCollateralPrice, isVaultController, controller }}
+        />
+      )
+    case 'ownership':
+      return <VaultOwnershipBanner {...{ account, controller }} />
+    default:
+      return null
   }
-
-  // Banner that is displayed when the user is about to be liquidated on next osm price update
-  if (nextCollateralPrice?.lt(liquidationPrice)) {
-    return (
-      <VaultLiquidatingBanner
-        {...{ token, id: id.toString(), dateNextCollateralPrice, isVaultController, controller }}
-      />
-    )
-  }
-
-  // Banner that is displayed when the user is viewing someone else's vault
-  if (!isVaultController) {
-    return <VaultOwnershipBanner {...{ account, controller }} />
-  }
-
-  return null
 }
