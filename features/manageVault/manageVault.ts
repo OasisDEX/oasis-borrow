@@ -157,7 +157,7 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
   }
 }
 
-function validateErrors(state: ManageVaultState): ManageVaultState {
+export function validateErrors(state: ManageVaultState): ManageVaultState {
   const {
     depositAmount,
     maxDepositAmount,
@@ -240,7 +240,7 @@ function validateErrors(state: ManageVaultState): ManageVaultState {
   return { ...state, errorMessages }
 }
 
-function validateWarnings(state: ManageVaultState): ManageVaultState {
+export function validateWarnings(state: ManageVaultState): ManageVaultState {
   const {
     depositAmount,
     generateAmount,
