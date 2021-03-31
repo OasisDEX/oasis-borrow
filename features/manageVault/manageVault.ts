@@ -4,12 +4,13 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
-import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
+import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
+import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
 import { applyManageVaultEnvironment, ManageVaultEnvironmentChange } from './manageVaultEnvironment'
 import { applyManageVaultForm, ManageVaultFormChange } from './manageVaultForm'
@@ -342,7 +343,7 @@ export type DefaultManageVaultState = {
   injectStateOverride: (state: Partial<ManageVaultState>) => void
 }
 
-export type ManageVaultState = DefaultManageVaultState & UserTokenInfo
+export type ManageVaultState = DefaultManageVaultState & PriceInfo & BalanceInfo
 
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
@@ -481,7 +482,8 @@ export function createManageVault$(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
   allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
-  userTokenInfo$: (token: string, account: string | undefined) => Observable<UserTokenInfo>,
+  priceInfo$: (token: string) => Observable<PriceInfo>,
+  balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   vault$: (id: BigNumber) => Observable<Vault>,
   id: BigNumber,
@@ -493,12 +495,13 @@ export function createManageVault$(
         first(),
         switchMap((vault) => {
           return combineLatest(
-            userTokenInfo$(vault.token, account),
+            priceInfo$(vault.token),
+            balanceInfo$(vault.token, account),
             ilkData$(vault.ilk),
             account ? proxyAddress$(account) : of(undefined),
           ).pipe(
             first(),
-            switchMap(([userTokenInfo, ilkData, proxyAddress]) => {
+            switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress]) => {
               const collateralAllowance$ =
                 account && proxyAddress
                   ? allowance$(vault.token, account, proxyAddress)
@@ -524,7 +527,8 @@ export function createManageVault$(
                   }
 
                   const initialState: ManageVaultState = {
-                    ...userTokenInfo,
+                    ...priceInfo,
+                    ...balanceInfo,
                     ...defaultIsStates,
                     ...defaultPartialState,
                     ...ilkData,
@@ -550,7 +554,8 @@ export function createManageVault$(
                   }
 
                   const environmentChanges$ = merge(
-                    createUserTokenInfoChange$(userTokenInfo$, vault.token, account),
+                    priceInfoChange$(priceInfo$, vault.token),
+                    balanceInfoChange$(balanceInfo$, vault.token, account),
                     createIlkDataChange$(ilkData$, vault.ilk),
                     createVaultChange$(vault$, id),
                   )

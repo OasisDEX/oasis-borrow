@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
-import { UserTokenInfo } from 'features/shared/userTokenInfo'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import moment from 'moment'
 import { combineLatest, Observable, of } from 'rxjs'
@@ -49,7 +49,7 @@ function assignBanner(state: VaultBannersState): VaultBannersState {
 
 export function createVaultsBanners$(
   context$: Observable<Context>,
-  userTokenInfo$: (token: string, account: string) => Observable<UserTokenInfo>,
+  priceInfo$: (token: string) => Observable<PriceInfo>,
   vault$: (id: BigNumber) => Observable<Vault>,
   vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
   id: BigNumber,
@@ -81,7 +81,7 @@ export function createVaultsBanners$(
             return of(state as VaultBannersState)
           }
 
-          return userTokenInfo$(token, context.account).pipe(
+          return priceInfo$(token).pipe(
             map(({ nextCollateralPrice, dateNextCollateralPrice }) => {
               return {
                 ...state,

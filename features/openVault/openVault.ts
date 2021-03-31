@@ -7,7 +7,7 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
-import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
+import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { applyChange, Change, Changes, transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
@@ -24,6 +24,7 @@ import {
 } from 'rxjs/operators'
 import Web3 from 'web3'
 
+import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyOpenVaultEnvironment, OpenVaultEnvironmentChange } from './openVaultEnvironment'
 
 interface Receipt {
@@ -349,7 +350,7 @@ export type DefaultOpenVaultState = {
   etherscan?: string
 }
 
-export type OpenVaultState = UserTokenInfo & DefaultOpenVaultState
+export type OpenVaultState = PriceInfo & BalanceInfo & DefaultOpenVaultState
 
 function setAllowance(
   { sendWithGasEstimation }: TxHelpers,
@@ -633,7 +634,8 @@ export function createOpenVault$(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
   allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
-  userTokenInfo$: (token: string, account: string | undefined) => Observable<UserTokenInfo>,
+  priceInfo$: (token: string) => Observable<PriceInfo>,
+  balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilks$: Observable<string[]>,
   ilkToToken$: Observable<(ilk: string) => string>,
@@ -666,7 +668,8 @@ export function createOpenVault$(
               const account = context.account
               const token = ilkToToken(ilk)
               return combineLatest(
-                userTokenInfo$(token, account),
+                priceInfo$(token),
+                balanceInfo$(token, account),
                 defaultState$,
                 ilkData$(ilk),
                 proxyAddress$(account),
@@ -674,7 +677,8 @@ export function createOpenVault$(
                 first(),
                 switchMap(
                   ([
-                    userTokenInfo,
+                    priceInfo,
+                    balanceInfo,
                     defaultState,
                     { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
                     proxyAddress,
@@ -686,7 +690,8 @@ export function createOpenVault$(
                       first(),
                       switchMap((allowance) => {
                         const initialState: OpenVaultState = {
-                          ...userTokenInfo,
+                          ...priceInfo,
+                          ...balanceInfo,
                           ...defaultState,
                           token,
                           account,
@@ -708,14 +713,10 @@ export function createOpenVault$(
                           change$.next(ch)
                         }
 
-                        const userTokenInfoChange$ = curry(createUserTokenInfoChange$)(
-                          userTokenInfo$,
-                        )
-                        const ilkDataChange$ = curry(createIlkDataChange$)(ilkData$)
-
                         const environmentChanges$ = merge(
-                          userTokenInfoChange$(token, account),
-                          ilkDataChange$(ilk),
+                          priceInfoChange$(priceInfo$, token),
+                          balanceInfoChange$(balanceInfo$, token, account),
+                          createIlkDataChange$(ilkData$, ilk),
                         )
 
                         const connectedProxyAddress$ = proxyAddress$(account)

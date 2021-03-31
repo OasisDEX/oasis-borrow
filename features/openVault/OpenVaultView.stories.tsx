@@ -9,8 +9,8 @@ import {
   protoUserETHTokenInfo,
   protoUserUSDCTokenInfo,
   protoUserWBTCTokenInfo,
-  UserTokenInfo,
-} from 'features/shared/userTokenInfo'
+  PriceInfo,
+} from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
 import { memoize } from 'lodash'
 import React from 'react'
@@ -25,7 +25,7 @@ interface StoryProps {
   proxyAddress?: string
   allowance?: BigNumber
   ilks$?: Observable<string[]>
-  userTokenInfo?: Partial<UserTokenInfo>
+  userTokenInfo?: Partial<PriceInfo>
   newState?: Partial<OpenVaultState>
   ilk: string
 }

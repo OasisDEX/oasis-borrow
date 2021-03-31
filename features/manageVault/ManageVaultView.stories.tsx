@@ -11,8 +11,8 @@ import {
   protoUserETHTokenInfo,
   protoUserUSDCTokenInfo,
   protoUserWBTCTokenInfo,
-  UserTokenInfo,
-} from 'features/shared/userTokenInfo'
+  PriceInfo,
+} from 'features/shared/priceInfo'
 import { one, zero } from 'helpers/zero'
 import { memoize } from 'lodash'
 import React, { useEffect } from 'react'
@@ -27,7 +27,7 @@ interface Story {
   proxyAddress?: string
   allowance?: BigNumber
   vault?: Partial<Vault>
-  userTokenInfo?: Partial<UserTokenInfo>
+  userTokenInfo?: Partial<PriceInfo>
   urnAddress?: string
   owner?: string
   collateral: BigNumber

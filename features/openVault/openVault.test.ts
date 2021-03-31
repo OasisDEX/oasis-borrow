@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
-import { protoUserWBTCTokenInfo } from 'features/shared/userTokenInfo'
+import { protoUserWBTCTokenInfo } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
 import { beforeEach, describe, it } from 'mocha'
 

@@ -1,9 +1,9 @@
 import { IlkDataChange } from 'blockchain/ilks'
-import { UserTokenInfoChange } from 'features/shared/userTokenInfo'
+import { priceInfoChange } from 'features/shared/priceInfo'
 
 import { OpenVaultChange, OpenVaultState } from './openVault'
 
-export type OpenVaultEnvironmentChange = UserTokenInfoChange | IlkDataChange
+export type OpenVaultEnvironmentChange = priceInfoChange | IlkDataChange
 
 export function applyOpenVaultEnvironment(
   change: OpenVaultChange,

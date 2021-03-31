@@ -1,15 +1,10 @@
 import { BigNumber } from 'bignumber.js'
 import { OraclePriceData } from 'blockchain/prices'
 import { nextHour, now } from 'helpers/time'
-import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 
-export interface UserTokenInfo {
-  collateralBalance: BigNumber
-  ethBalance: BigNumber
-  daiBalance: BigNumber
-
+export interface PriceInfo {
   currentCollateralPrice: BigNumber
   currentEthPrice: BigNumber
   nextCollateralPrice?: BigNumber
@@ -27,22 +22,13 @@ export interface UserTokenInfo {
   ethPricePercentageChange?: BigNumber
 }
 
-export function createUserTokenInfo$(
+export function createPriceInfo$(
   oraclePriceData$: (token: string) => Observable<OraclePriceData>,
-  balance$: (token: string, address: string) => Observable<BigNumber>,
   token: string,
-  account: string | undefined,
-): Observable<UserTokenInfo> {
-  return combineLatest(
-    account ? balance$(token, account) : of(zero),
-    oraclePriceData$(token),
-    account ? balance$('ETH', account) : of(zero),
-    oraclePriceData$('ETH'),
-    account ? balance$('DAI', account) : of(zero),
-  ).pipe(
+): Observable<PriceInfo> {
+  return combineLatest(oraclePriceData$(token), oraclePriceData$('ETH')).pipe(
     switchMap(
       ([
-        collateralBalance,
         {
           currentPrice: currentCollateralPrice,
           nextPrice: nextCollateralPrice,
@@ -51,7 +37,6 @@ export function createUserTokenInfo$(
           nextPriceUpdate: dateNextCollateralPrice,
           percentageChange: collateralPricePercentageChange,
         },
-        ethBalance,
         {
           currentPrice: currentEthPrice,
           nextPrice: nextEthPrice,
@@ -60,13 +45,8 @@ export function createUserTokenInfo$(
           nextPriceUpdate: dateNextEthPrice,
           percentageChange: ethPricePercentageChange,
         },
-        daiBalance,
       ]) =>
         of({
-          collateralBalance,
-          ethBalance,
-          daiBalance,
-
           currentCollateralPrice,
           currentEthPrice,
           nextCollateralPrice,
@@ -88,29 +68,24 @@ export function createUserTokenInfo$(
   )
 }
 
-export interface UserTokenInfoChange {
-  kind: 'userTokenInfo'
-  userTokenInfo: UserTokenInfo
+export interface PriceInfoChange {
+  kind: 'priceInfo'
+  priceInfo: PriceInfo
 }
 
-export function createUserTokenInfoChange$(
-  userTokenInfo$: (token: string, account: string | undefined) => Observable<UserTokenInfo>,
+export function priceInfoChange$(
+  priceInfo$: (token: string) => Observable<PriceInfo>,
   token: string,
-  account: string | undefined,
-): Observable<UserTokenInfoChange> {
-  return userTokenInfo$(token, account).pipe(
-    map((userTokenInfo) => ({
-      kind: 'userTokenInfo',
-      userTokenInfo,
+): Observable<PriceInfoChange> {
+  return priceInfo$(token).pipe(
+    map((priceInfo) => ({
+      kind: 'priceInfo',
+      priceInfo,
     })),
   )
 }
 
-export const protoUserETHTokenInfo: UserTokenInfo = {
-  collateralBalance: zero,
-  ethBalance: zero,
-  daiBalance: zero,
-
+export const protoUserETHTokenInfo: PriceInfo = {
   currentEthPrice: new BigNumber('1780.7'),
   nextEthPrice: new BigNumber('1798.6'),
   dateLastCollateralPrice: now,
@@ -126,11 +101,7 @@ export const protoUserETHTokenInfo: UserTokenInfo = {
   collateralPricePercentageChange: new BigNumber('0.99004781496719670855'),
 }
 
-export const protoUserWBTCTokenInfo: UserTokenInfo = {
-  collateralBalance: zero,
-  ethBalance: zero,
-  daiBalance: zero,
-
+export const protoUserWBTCTokenInfo: PriceInfo = {
   currentEthPrice: new BigNumber('1780.7'),
   nextEthPrice: new BigNumber('1798.6'),
   dateLastCollateralPrice: now,
@@ -146,11 +117,7 @@ export const protoUserWBTCTokenInfo: UserTokenInfo = {
   collateralPricePercentageChange: new BigNumber('0.98968508264769875786'),
 }
 
-export const protoUserUSDCTokenInfo: UserTokenInfo = {
-  collateralBalance: zero,
-  ethBalance: zero,
-  daiBalance: zero,
-
+export const protoUserUSDCTokenInfo: PriceInfo = {
   currentEthPrice: new BigNumber('1780.7'),
   nextEthPrice: new BigNumber('1798.6'),
   dateLastCollateralPrice: now,
