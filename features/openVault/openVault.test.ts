@@ -323,6 +323,7 @@ describe('openVault', () => {
           ilk: 'ETH-A',
           proxyAddress: '0xProxyAddress',
           txHelpers: {
+            // @ts-ignore
             send: <B>(_open: any, meta: B) => {
               const txState = {
                 account: '0x',
