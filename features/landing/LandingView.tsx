@@ -10,7 +10,7 @@ import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservableWithError } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback } from 'react'
-import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
+import { Box, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
 export function TokenSymbol({
   token,
@@ -122,11 +122,18 @@ export function LandingView() {
   }
 
   return (
-    <Grid sx={{ flex: 1 }}>
+    <Grid
+      sx={{
+        flex: 1,
+        position: 'relative',
+      }}
+    >
+      {/* <Background /> */}
       <Box sx={{ width: '600px', justifySelf: 'center', textAlign: 'center', my: 4 }}>
         <Heading as="h1" sx={{ fontSize: 7, my: 3 }}>
           {t('landing.hero.headline')}
         </Heading>
+        <Image sx={{ mixBlendMode: 'overlay', zIndex: 1 }} src="/static/img/icons_set.svg" />
         <Text>{t('landing.hero.subheader')}</Text>
       </Box>
       <Box sx={{ my: 4 }}>
