@@ -55,7 +55,7 @@ export function applyOpenVaultInput(
   if (change.kind === 'depositUSD') {
     const { depositAmountUSD } = change
     const { currentCollateralPrice } = state
-    const depositAmount = depositAmountUSD && depositAmountUSD.times(currentCollateralPrice)
+    const depositAmount = depositAmountUSD && depositAmountUSD.div(currentCollateralPrice)
 
     return {
       ...state,
