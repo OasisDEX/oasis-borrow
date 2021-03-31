@@ -180,6 +180,8 @@ export interface IlkValidationState {
   isProxyStage: boolean
   isAllowanceStage: boolean
   isOpenStage: boolean
+
+  injectStateOverride: () => void
 }
 
 export type OpenVaultStage =
@@ -350,10 +352,7 @@ function addTransitions(
   return state
 }
 
-function createIlkValidation$(
-  ilks$: Observable<string[]>,
-  ilk: string,
-): Observable<IlkValidationState> {
+function createIlkValidation$(ilks$: Observable<string[]>, ilk: string) {
   return ilks$.pipe(
     switchMap((ilks) => {
       const isValidIlk = ilks.some((i) => i === ilk)
@@ -484,7 +483,6 @@ export function createOpenVault$(
                             change,
                           ),
                         ),
-                        shareReplay(1),
                       )
                     }),
                   ),
@@ -495,5 +493,6 @@ export function createOpenVault$(
       )
     }),
     map(applyIsStageStates),
+    shareReplay(1),
   )
 }
