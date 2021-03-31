@@ -23,6 +23,7 @@ import {
   switchMap,
 } from 'rxjs/operators'
 import Web3 from 'web3'
+import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openVaultAllowances'
 
 import { applyOpenVaultEnvironment, OpenVaultEnvironmentChange } from './openVaultEnvironment'
 import { applyOpenVaultForm, OpenVaultFormChange } from './openVaultForm'
@@ -143,6 +144,7 @@ export type OpenVaultChange =
   | OpenVaultFormChange
   | OpenVaultTransitionChange
   | OpenVaultTransactionChange
+  | OpenVaultAllowanceChange
   | OpenVaultEnvironmentChange
 
 function apply(state: OpenVaultState, change: OpenVaultChange) {
@@ -150,7 +152,8 @@ function apply(state: OpenVaultState, change: OpenVaultChange) {
   const s2 = applyOpenVaultForm(change, s1)
   const s3 = applyOpenVaultTransition(change, s2)
   const s4 = applyOpenVaultTransaction(change, s3)
-  return applyOpenVaultEnvironment(change, s4)
+  const s5 = applyOpenVaultAllowance(change, s4)
+  return applyOpenVaultEnvironment(change, s5)
 }
 
 export type IlkValidationStage =
@@ -202,12 +205,6 @@ export type DefaultOpenVaultState = {
   reset?: () => void
   id?: BigNumber
 
-  updateDeposit?: (depositAmount?: BigNumber) => void
-  updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
-  updateDepositMax?: () => void
-  updateGenerate?: (generateAmount?: BigNumber) => void
-  updateGenerateMax?: () => void
-
   toggleGenerateOption?: () => void
   toggleIlkDetails?: () => void
   showGenerateOption: boolean
@@ -222,7 +219,17 @@ export type DefaultOpenVaultState = {
   maxDepositAmountUSD: BigNumber
   generateAmount?: BigNumber
   maxGenerateAmount: BigNumber
+  updateDeposit?: (depositAmount?: BigNumber) => void
+  updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
+  updateDepositMax?: () => void
+  updateGenerate?: (generateAmount?: BigNumber) => void
+  updateGenerateMax?: () => void
+
   allowanceAmount?: BigNumber
+  updateAllowanceAmount?: (amount?: BigNumber) => void
+  setAllowanceAmountUnlimited?: (amount?: BigNumber) => void
+  setAllowanceAmountToDepositAmount?: (amount?: BigNumber) => void
+  resetAllowanceAmount?: () => void
 
   maxDebtPerUnitCollateral: BigNumber
   ilkDebtAvailable: BigNumber
@@ -289,6 +296,22 @@ function addTransitions(
   if (state.stage === 'allowanceWaitingForConfirmation' || state.stage === 'allowanceFailure') {
     return {
       ...state,
+      updateAllowanceAmount: (allowanceAmount?: BigNumber) =>
+        change({
+          kind: 'allowance',
+          allowanceAmount,
+        }),
+      setAllowanceAmountUnlimited: () => change({ kind: 'allowanceUnlimited' }),
+      setAllowanceAmountToDepositAmount: () =>
+        change({
+          kind: 'allowanceAsDepositAmount',
+        }),
+      resetCollateralAllowanceAmount: () =>
+        change({
+          kind: 'allowance',
+          allowanceAmount: undefined,
+        }),
+
       progress: () => setAllowance(txHelpers, allowance$, change, state),
       reset: () => change({ kind: 'backToEditing' }),
     }

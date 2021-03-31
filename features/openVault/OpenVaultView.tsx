@@ -441,14 +441,18 @@ function OpenVaultFormAllowance({
   token,
   collateralBalance,
   allowanceAmount,
-  change,
   errorMessages,
+  updateAllowanceAmount,
+  setAllowanceAmountUnlimited,
+  setAllowanceAmountToDepositAmount,
+  resetAllowanceAmount,
 }: OpenVaultState) {
   const [isCustom, setIsCustom] = useState<Boolean>(false)
 
   const isLoading = stage === 'allowanceInProgress' || stage === 'allowanceWaitingForApproval'
   const canSelectRadio = stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFailure'
   const canProgress = !!progress
+
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
     if (canProgress) progress!()
@@ -467,20 +471,20 @@ function OpenVaultFormAllowance({
   function handleUnlimited() {
     if (canSelectRadio) {
       setIsCustom(false)
-      change!({ kind: 'allowanceAmount', allowanceAmount: maxUint256 })
+      setAllowanceAmountUnlimited!()
     }
   }
 
-  function handleWallet() {
+  function handleDeposit() {
     if (canSelectRadio) {
       setIsCustom(false)
-      change!({ kind: 'allowanceAmount', allowanceAmount: collateralBalance })
+      setAllowanceAmountToDepositAmount!()
     }
   }
 
   function handleCustom() {
     if (canSelectRadio) {
-      change!({ kind: 'allowanceAmount', allowanceAmount: undefined })
+      resetAllowanceAmount!()
       setIsCustom(true)
     }
   }
