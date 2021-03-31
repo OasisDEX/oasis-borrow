@@ -1,16 +1,18 @@
 /* eslint-disable func-style */
+import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { protoETHAIlkData, protoUSDCAIlkData, protoWBTCAIlkData } from 'blockchain/ilks'
 import { ContextConnected, protoContextConnected } from 'blockchain/network'
 import { expect } from 'chai'
-import { protoTxHelpers } from 'components/AppContext'
+import { protoTxHelpers, TxHelpers } from 'components/AppContext'
 import {
   protoUserETHTokenInfo,
   protoUserUSDCTokenInfo,
   protoUserWBTCTokenInfo,
   UserTokenInfo,
 } from 'features/shared/userTokenInfo'
+import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import _ from 'lodash'
 import { beforeEach, describe, it } from 'mocha'
@@ -210,6 +212,7 @@ describe('openVault', () => {
       userTokenInfo?: Partial<UserTokenInfo>
       newState?: Partial<OpenVaultState>
       ilk: string
+      txHelpers?: TxHelpers
     }
 
     function createTestFixture({
@@ -220,10 +223,11 @@ describe('openVault', () => {
       userTokenInfo,
       newState,
       ilk,
+      txHelpers,
     }: FixtureProps) {
       const defaultState$ = of({ ...defaultOpenVaultState, ...(newState || {}) })
       const context$ = of(context || protoContextConnected)
-      const txHelpers$ = of(protoTxHelpers)
+      const txHelpers$ = of(txHelpers || protoTxHelpers)
       const proxyAddress$ = _.constant(of(proxyAddress))
       const allowance$ = _.constant(of(allowance || maxUint256))
       const userTokenInfo$ = (token: string) =>
@@ -259,91 +263,94 @@ describe('openVault', () => {
       return openVault$
     }
 
-    const doneOnce = (done: () => void) => {
-      let isFirstTime = true
-      return () => {
-        if (isFirstTime) {
-          done()
-          isFirstTime = false
-        }
-      }
-    }
-
-    it('Should first emit ilkValidationLoading stage and then go to editing stage', (done) => {
-      const ilk = 'ETH-A'
-      const oV$ = createTestFixture({ ilk })
-      let isEditingStageExpected = false
-      oV$.subscribe((state) => {
-        if (!isEditingStageExpected) {
-          expect(state.stage).to.be.equal('ilkValidationLoading')
-          expect(state.isIlkValidationStage).to.be.true
-          isEditingStageExpected = true
-        } else {
-          expect(state.stage).to.be.equal('editing')
-          expect(state.isIlkValidationStage).to.be.false
-          expect(state.isEditingStage).to.be.true
-          done()
-        }
-      })
+    it('Should start in an editing stage', () => {
+      const state = getStateUnpacker(createTestFixture({ ilk: 'ETH-A' }))
+      const s = state()
+      expect(s.stage).to.be.equal('editing')
+      expect(s.isIlkValidationStage).to.be.false
+      expect(s.isEditingStage).to.be.true
     })
 
-    describe('In editing stage', () => {
-      it('changes values when change is called', (done) => {
-        const ilk = 'ETH-A'
-        const depositAmount = new BigNumber(5)
-        const oV$ = createTestFixture({ ilk })
-        let isBeforeChange = true
-        oV$.subscribe((state) => {
-          if (state.isEditingStage) {
-            const ovState = state as OpenVaultState
-            if (isBeforeChange) {
-              isBeforeChange = false
-              ovState.change!({ kind: 'depositAmount', depositAmount: depositAmount })
-            } else {
-              expect(ovState.depositAmount!.toString()).to.be.equal(depositAmount.toString())
-              expect(state.isEditingStage).to.be.true
-              done()
-            }
-          }
-        })
-      })
+    it('editing.change()', () => {
+      const depositAmount = new BigNumber(5)
+      const state = getStateUnpacker(createTestFixture({ ilk: 'ETH-A' }))
+      ;(state() as OpenVaultState).change!({ kind: 'depositAmount', depositAmount })
+      expect((state() as OpenVaultState).depositAmount!.toString()).to.be.equal(
+        depositAmount.toString(),
+      )
+      expect(state().isEditingStage).to.be.true
+    })
 
-      it('is able to reset', (done) => {
-        const ilk = 'ETH-A'
-        const doneO = doneOnce(done)
-        const depositAmount = new BigNumber(5)
-        const oV$ = createTestFixture({ ilk })
-        let isBeforeChange = true
-        oV$.subscribe((state) => {
-          if (state.isEditingStage) {
-            const ovState = state as OpenVaultState
-            if (isBeforeChange) {
-              isBeforeChange = false
-              ovState.reset!()
-            } else {
-              if (ovState.depositAmount?.isEqualTo(depositAmount)) {
-                _.noop()
-              } else {
-                expect(ovState.depositAmount).to.be.undefined
-                doneO()
+    it('editing.change().reset()', () => {
+      const depositAmount = new BigNumber(5)
+      const state = getStateUnpacker(createTestFixture({ ilk: 'ETH-A' }))
+      ;(state() as OpenVaultState).change!({ kind: 'depositAmount', depositAmount })
+      expect((state() as OpenVaultState).depositAmount!.toString()).to.be.equal(
+        depositAmount.toString(),
+      )
+      ;(state() as OpenVaultState).reset!()
+      expect((state() as OpenVaultState).depositAmount).to.be.undefined
+    })
+
+    it('editing.progress()', () => {
+      const state = getStateUnpacker(createTestFixture({ ilk: 'ETH-A' }))
+      ;(state() as OpenVaultState).progress!()
+      expect(state().isProxyStage).to.be.true
+      expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
+    })
+
+    it('editing.progress(proxyAddress)', () => {
+      const state = getStateUnpacker(
+        createTestFixture({ ilk: 'ETH-A', proxyAddress: '0xProxyAddress' }),
+      )
+      ;(state() as OpenVaultState).progress!()
+      expect(state().isOpenStage).to.be.true
+      expect(state().stage).to.be.equal('openWaitingForConfirmation')
+    })
+
+    it('editing.progress(proxyAddress)', () => {
+      const state = getStateUnpacker(
+        createTestFixture({ ilk: 'ETH-A', proxyAddress: '0xProxyAddress' }),
+      )
+      ;(state() as OpenVaultState).progress!()
+      expect(state().isOpenStage).to.be.true
+      expect(state().stage).to.be.equal('openWaitingForConfirmation')
+    })
+
+    it('openWaitingForConfirmation.progress()', () => {
+      const state = getStateUnpacker(
+        createTestFixture({
+          ilk: 'ETH-A',
+          proxyAddress: '0xProxyAddress',
+          txHelpers: {
+            send: <B>(_open: any, meta: B) => {
+              const txState = {
+                account: '0x',
+                txNo: 0,
+                networkId: '1',
+                meta,
+                start: Date.now(),
+                lastChange: Date.now(),
+                dismissed: false,
+                status: TxStatus.Success,
+                txHash: '0xhash',
+                blockNumber: 0,
+                receipt: newCDPTxReceipt,
+                confirmations: 15,
+                safeConfirmations: 15,
               }
-            }
-          }
-        })
-      })
-
-      it('is able to progress', (done) => {
-        const ilk = 'ETH-A'
-        const oV$ = createTestFixture({ ilk })
-        oV$.subscribe((state) => {
-          if (state.isEditingStage) {
-            const ovState = state as OpenVaultState
-            ovState.progress!()
-          } else if (state.isProxyStage) {
-            done()
-          }
-        })
-      })
+              return of(txState)
+            },
+          },
+        }),
+      )
+      ;(state() as OpenVaultState).progress!()
+      expect(state().isOpenStage).to.be.true
+      expect(state().stage).to.be.equal('openWaitingForConfirmation')
+      ;(state() as OpenVaultState).progress!()
+      expect(state().isOpenStage).to.be.true
+      expect(state().stage).to.be.equal('openSuccess')
+      expect((state() as OpenVaultState).id).to.be.equal(3281)
     })
   })
 })

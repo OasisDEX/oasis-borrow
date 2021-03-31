@@ -1,9 +1,9 @@
 import { Observable } from 'rxjs'
 
-export function unpack<T>(o: Observable<T>): any {
-  let r
+export function getStateUnpacker<D>(o$: Observable<D>): () => D {
+  let r: D
 
-  o.subscribe(
+  o$.subscribe(
     (v) => {
       r = v
     },
@@ -15,9 +15,5 @@ export function unpack<T>(o: Observable<T>): any {
 
   console.assert(r !== undefined)
 
-  return r
-}
-
-export function getStateUnpacker<D>(o$: Observable<D>): () => D {
-  return () => unpack(o$)
+  return () => r
 }
