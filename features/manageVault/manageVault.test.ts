@@ -7,8 +7,7 @@ import { protoETHAIlkData, protoUSDCAIlkData, protoWBTCAIlkData } from 'blockcha
 import { ContextConnected, protoContextConnected } from 'blockchain/network'
 import { createVault$, Vault } from 'blockchain/vaults'
 import { expect } from 'chai'
-import { protoTxHelpers, TxHelpers, TxHelpers$ } from 'components/AppContext'
-import { newCDPTxReceipt } from 'features/openVault/fixtures/newCDPtxReceipt'
+import { protoTxHelpers, TxHelpers } from 'components/AppContext'
 import {
   protoUserETHTokenInfo,
   protoUserUSDCTokenInfo,
@@ -17,7 +16,6 @@ import {
 } from 'features/shared/userTokenInfo'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
-import _ from 'lodash'
 import { describe, it } from 'mocha'
 import { of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
