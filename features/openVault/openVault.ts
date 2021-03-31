@@ -350,6 +350,28 @@ function addTransitions(
   return state
 }
 
+function createIlkValidation$(
+  ilks$: Observable<string[]>,
+  ilk: string,
+): Observable<IlkValidationState> {
+  return ilks$.pipe(
+    switchMap((ilks) => {
+      const isValidIlk = ilks.some((i) => i === ilk)
+      if (!isValidIlk) {
+        return of({
+          ilk,
+          stage: 'ilkValidationFailure',
+        })
+      }
+      return of({
+        ilk,
+        stage: 'ilkValidationSuccess',
+      })
+    }),
+    startWith({ ilk, stage: 'ilkValidationLoading' }),
+  )
+}
+
 export function createOpenVault$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
@@ -361,136 +383,117 @@ export function createOpenVault$(
   ilkToToken$: Observable<(ilk: string) => string>,
   ilk: string,
 ): Observable<IlkValidationState | OpenVaultState> {
-  return ilks$
-    .pipe(
-      switchMap((ilks) => {
-        const isValidIlk = ilks.some((i) => i === ilk)
-        if (!isValidIlk) {
-          return of({
-            ilk,
-            stage: 'ilkValidationFailure',
-          })
-        }
-        return of({
-          ilk,
-          stage: 'ilkValidationSuccess',
-        })
-      }),
-      startWith({ ilk, stage: 'ilkValidationLoading' }),
-    )
-    .pipe(
-      switchMap((state) => {
-        return iif(
-          () => state.stage !== 'ilkValidationSuccess',
-          of(state),
-          combineLatest(context$, txHelpers$, ilkToToken$).pipe(
-            switchMap(([context, txHelpers, ilkToToken]) => {
-              const account = context.account
-              const token = ilkToToken(ilk)
-              return combineLatest(
-                userTokenInfo$(token, account),
-                ilkData$(ilk),
-                proxyAddress$(account),
-              ).pipe(
-                first(),
-                switchMap(
-                  ([
-                    userTokenInfo,
-                    { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
-                    proxyAddress,
-                  ]) =>
-                    (
-                      (proxyAddress && allowance$(token, account, proxyAddress)) ||
-                      of(undefined)
-                    ).pipe(
-                      first(),
-                      switchMap((allowance) => {
-                        const change$ = new Subject<OpenVaultChange>()
+  return createIlkValidation$(ilks$, ilk).pipe(
+    switchMap((state) => {
+      return iif(
+        () => state.stage !== 'ilkValidationSuccess',
+        of(state),
+        combineLatest(context$, txHelpers$, ilkToToken$).pipe(
+          switchMap(([context, txHelpers, ilkToToken]) => {
+            const account = context.account
+            const token = ilkToToken(ilk)
+            return combineLatest(
+              userTokenInfo$(token, account),
+              ilkData$(ilk),
+              proxyAddress$(account),
+            ).pipe(
+              first(),
+              switchMap(
+                ([
+                  userTokenInfo,
+                  { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
+                  proxyAddress,
+                ]) =>
+                  (
+                    (proxyAddress && allowance$(token, account, proxyAddress)) ||
+                    of(undefined)
+                  ).pipe(
+                    first(),
+                    switchMap((allowance) => {
+                      const change$ = new Subject<OpenVaultChange>()
 
-                        function change(ch: OpenVaultChange) {
-                          if (ch.kind === 'injectStateOverride') {
-                            throw new Error("don't use injected overrides")
-                          }
-                          change$.next(ch)
+                      function change(ch: OpenVaultChange) {
+                        if (ch.kind === 'injectStateOverride') {
+                          throw new Error("don't use injected overrides")
                         }
-                        // NOTE: Not to be used in production/dev, test only
-                        function injectStateOverride(stateToOverride: Partial<OpenVaultState>) {
-                          return change$.next({ kind: 'injectStateOverride', stateToOverride })
-                        }
+                        change$.next(ch)
+                      }
+                      // NOTE: Not to be used in production/dev, test only
+                      function injectStateOverride(stateToOverride: Partial<OpenVaultState>) {
+                        return change$.next({ kind: 'injectStateOverride', stateToOverride })
+                      }
 
-                        const initialState: OpenVaultState = {
-                          ...userTokenInfo,
-                          ...defaultIsStates,
+                      const initialState: OpenVaultState = {
+                        ...userTokenInfo,
+                        ...defaultIsStates,
 
-                          stage: 'editing',
-                          errorMessages: [],
-                          warningMessages: [],
-                          showIlkDetails: false,
-                          showGenerateOption: false,
-                          afterLiquidationPrice: zero,
-                          afterCollateralizationRatio: zero,
-                          maxDepositAmount: zero,
-                          maxDepositAmountUSD: zero,
-                          maxGenerateAmount: zero,
+                        stage: 'editing',
+                        errorMessages: [],
+                        warningMessages: [],
+                        showIlkDetails: false,
+                        showGenerateOption: false,
+                        afterLiquidationPrice: zero,
+                        afterCollateralizationRatio: zero,
+                        maxDepositAmount: zero,
+                        maxDepositAmountUSD: zero,
+                        maxGenerateAmount: zero,
 
-                          token,
-                          account,
-                          ilk,
-                          maxDebtPerUnitCollateral,
-                          ilkDebtAvailable,
-                          debtFloor,
-                          liquidationRatio,
-                          proxyAddress,
-                          allowance,
-                          safeConfirmations: context.safeConfirmations,
-                          etherscan: context.etherscan.url,
-                          allowanceAmount: maxUint256,
+                        token,
+                        account,
+                        ilk,
+                        maxDebtPerUnitCollateral,
+                        ilkDebtAvailable,
+                        debtFloor,
+                        liquidationRatio,
+                        proxyAddress,
+                        allowance,
+                        safeConfirmations: context.safeConfirmations,
+                        etherscan: context.etherscan.url,
+                        allowanceAmount: maxUint256,
 
-                          injectStateOverride,
-                        }
+                        injectStateOverride,
+                      }
 
-                        const userTokenInfoChange$ = curry(createUserTokenInfoChange$)(
-                          userTokenInfo$,
-                        )
-                        const ilkDataChange$ = curry(createIlkDataChange$)(ilkData$)
+                      const userTokenInfoChange$ = curry(createUserTokenInfoChange$)(userTokenInfo$)
+                      const ilkDataChange$ = curry(createIlkDataChange$)(ilkData$)
 
-                        const environmentChanges$ = merge(
-                          userTokenInfoChange$(token, account),
-                          ilkDataChange$(ilk),
-                        )
+                      const environmentChanges$ = merge(
+                        userTokenInfoChange$(token, account),
+                        ilkDataChange$(ilk),
+                      )
 
-                        const connectedProxyAddress$ = proxyAddress$(account)
+                      const connectedProxyAddress$ = proxyAddress$(account)
 
-                        const connectedAllowance$ = connectedProxyAddress$.pipe(
-                          switchMap((proxyAddress) =>
-                            proxyAddress ? allowance$(token, account, proxyAddress) : of(zero),
+                      const connectedAllowance$ = connectedProxyAddress$.pipe(
+                        switchMap((proxyAddress) =>
+                          proxyAddress ? allowance$(token, account, proxyAddress) : of(zero),
+                        ),
+                        distinctUntilChanged((x, y) => x.eq(y)),
+                      )
+
+                      return merge(change$, environmentChanges$).pipe(
+                        scan(apply, initialState),
+                        map(applyVaultCalculations),
+                        map(validateErrors),
+                        map(validateWarnings),
+                        map(
+                          curry(addTransitions)(
+                            txHelpers,
+                            connectedProxyAddress$,
+                            connectedAllowance$,
+                            change,
                           ),
-                          distinctUntilChanged((x, y) => x.eq(y)),
-                        )
-
-                        return merge(change$, environmentChanges$).pipe(
-                          scan(apply, initialState),
-                          map(applyVaultCalculations),
-                          map(validateErrors),
-                          map(validateWarnings),
-                          map(
-                            curry(addTransitions)(
-                              txHelpers,
-                              connectedProxyAddress$,
-                              connectedAllowance$,
-                              change,
-                            ),
-                          ),
-                          shareReplay(1),
-                        )
-                      }),
-                    ),
-                ),
-              )
-            }),
-          ),
-        )
-      }),
-      map(applyIsStageStates),
-    )
+                        ),
+                        shareReplay(1),
+                      )
+                    }),
+                  ),
+              ),
+            )
+          }),
+        ),
+      )
+    }),
+    map(applyIsStageStates),
+  )
 }
