@@ -284,7 +284,7 @@ export function setupAppContext() {
   )
 
   const vaultBanners$ = memoize(
-    curry(createVaultsBanners$)(connectedContext$, userTokenInfo$, vault$),
+    curry(createVaultsBanners$)(context$, userTokenInfo$, vault$, vaultHistory$),
     bigNumberTostring,
   )
 

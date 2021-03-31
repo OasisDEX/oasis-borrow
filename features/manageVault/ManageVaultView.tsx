@@ -19,7 +19,6 @@ import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
-import { VaultBannersView } from '../banners/VaultsBannersView'
 import { ManageVaultState } from './manageVault'
 import { ManageVaultEditing } from './ManageVaultEditing'
 
@@ -837,7 +836,6 @@ export function ManageVaultView({ id }: { id: BigNumber }) {
 
   return (
     <Grid gap={4}>
-      <VaultBannersView id={id} />
       <ManageVaultContainer {...manageVault} />
     </Grid>
   )
