@@ -1,6 +1,4 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { BigNumber } from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultActionInput } from 'components/VaultActionInput'
@@ -254,7 +252,6 @@ function OpenVaultFormEditing(props: OpenVaultState) {
     token,
     depositAmount,
     generateAmount,
-    collateralBalance,
     maxDepositAmount,
     maxGenerateAmount,
     errorMessages,
@@ -458,16 +455,6 @@ function OpenVaultFormAllowance({
     if (canProgress) progress!()
   }
 
-  function handleCustomAllowanceChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      change({
-        kind: 'allowanceAmount',
-        allowanceAmount: value !== '' ? new BigNumber(value) : undefined,
-      })
-    }
-  }
-
   function handleUnlimited() {
     if (canSelectRadio) {
       setIsCustom(false)
@@ -509,7 +496,7 @@ function OpenVaultFormAllowance({
             <Radio name="dark-mode" value="true" defaultChecked={true} />
             <Text sx={{ fontSize: 2 }}>Unlimited Allowance</Text>
           </Label>
-          <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleWallet}>
+          <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleDeposit}>
             <Radio name="dark-mode" value="true" />
             <Text sx={{ fontSize: 2 }}>
               {token} in wallet ({formatCryptoBalance(collateralBalance)})
@@ -532,7 +519,7 @@ function OpenVaultFormAllowance({
                   decimalLimit: getToken(token).digits,
                   prefix: '',
                 })}
-                onChange={handleCustomAllowanceChange(change!)}
+                onChange={handleNumericInput(updateAllowanceAmount!)}
               />
               <Text sx={{ fontSize: 1 }}>{token}</Text>
             </Grid>

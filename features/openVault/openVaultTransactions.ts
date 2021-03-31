@@ -1,16 +1,17 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
+import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
+import { open, OpenData } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxHelpers } from 'components/AppContext'
 import { transactionToX } from 'helpers/form'
-import { iif, Observable, of } from 'rxjs'
-import { OpenVaultChange, OpenVaultState } from './openVault'
-import { filter, switchMap } from 'rxjs/operators'
-import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
-import { open, OpenData } from 'blockchain/calls/proxyActions'
 import { zero } from 'helpers/zero'
+import { iif, Observable, of } from 'rxjs'
+import { filter, switchMap } from 'rxjs/operators'
 import Web3 from 'web3'
+
+import { OpenVaultChange, OpenVaultState } from './openVault'
 
 type ProxyChange =
   | {

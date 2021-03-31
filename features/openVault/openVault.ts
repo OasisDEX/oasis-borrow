@@ -1,20 +1,14 @@
-import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
-import { approve, ApproveData, maxUint256 } from 'blockchain/calls/erc20'
-import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
-import { open, OpenData } from 'blockchain/calls/proxyActions'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
-import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject } from 'rxjs'
 import {
   distinctUntilChanged,
-  filter,
   first,
   map,
   scan,
@@ -22,9 +16,8 @@ import {
   startWith,
   switchMap,
 } from 'rxjs/operators'
-import Web3 from 'web3'
-import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openVaultAllowances'
 
+import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openVaultAllowances'
 import { applyOpenVaultEnvironment, OpenVaultEnvironmentChange } from './openVaultEnvironment'
 import { applyOpenVaultForm, OpenVaultFormChange } from './openVaultForm'
 import { applyOpenVaultInput, OpenVaultInputChange } from './openVaultInput'
@@ -306,7 +299,7 @@ function addTransitions(
         change({
           kind: 'allowanceAsDepositAmount',
         }),
-      resetCollateralAllowanceAmount: () =>
+      resetAllowanceAmount: () =>
         change({
           kind: 'allowance',
           allowanceAmount: undefined,

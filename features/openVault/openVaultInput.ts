@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+
 import { OpenVaultChange, OpenVaultState } from './openVault'
 
 interface DepositChange {

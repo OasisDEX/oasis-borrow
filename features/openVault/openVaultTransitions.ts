@@ -1,4 +1,5 @@
 import { zero } from 'helpers/zero'
+
 import { OpenVaultChange, OpenVaultState } from './openVault'
 
 export type OpenVaultTransitionChange =

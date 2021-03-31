@@ -1,5 +1,6 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { zero } from 'helpers/zero'
+
 import { OpenVaultState } from './openVault'
 
 export type OpenVaultErrorMessage =
