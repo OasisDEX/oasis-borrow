@@ -213,6 +213,7 @@ function CallToAction({ ilk }: CallToActionProps) {
   return (
     <Grid
       columns="1fr 1fr"
+      gap={0}
       sx={{
         flex: 1,
         cursor: 'pointer',
@@ -222,6 +223,7 @@ function CallToAction({ ilk }: CallToActionProps) {
         color: 'white',
         position: 'relative',
         boxShadow: 'surface',
+        gridTemplateRows: 'auto 1fr auto',
       }}
     >
       <Image
@@ -238,7 +240,7 @@ function CallToAction({ ilk }: CallToActionProps) {
         <Text variant="caption">{ilk.title}</Text>
       </Box>
       <Box sx={{ gridColumn: '1/3', zIndex: 1 }}>
-        <Heading variant="header2" sx={{ color: 'white', mb: 4 }}>
+        <Heading variant="header2" sx={{ color: 'white', mb: 5 }}>
           {ilk.ilk}
         </Heading>
       </Box>
@@ -387,7 +389,7 @@ export function Filters({ onSearch, search, onTagChange, tagFilter, defaultTag }
       >
         {t('lp-tokens')}
       </Button>
-      <Flex sx={{ variant: 'forms.search', width: '313px', ml: 'auto', alignItems: 'center' }}>
+      <Flex sx={{ variant: 'forms.search', borderColor: "lavender_o25", width: '313px', ml: 'auto', alignItems: 'center' }}>
         <Icon
           sx={{ position: 'relative', top: '6px', ml: 3 }}
           name="search"
@@ -464,9 +466,9 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
       <Text variant="header3" sx={{ textAlign: 'center', justifySelf: 'center', mb: 4 }}>
         {context.status === 'connected'
           ? t('vaults-overview.message-connected', {
-              address: formatAddress(address),
-              count: vaultSummary?.numberOfVaults || 0,
-            })
+            address: formatAddress(address),
+            count: vaultSummary?.numberOfVaults || 0,
+          })
           : t('vaults-overview.message-not-connected', { address: formatAddress(address) })}
       </Text>
       {displayFeaturedIlks && featuredIlks && <FeaturedIlks ilks={featuredIlks} />}

@@ -174,8 +174,8 @@
       "trade": "Trade"
     },
     "hero": {
-      "headline": "Borrow against your collateral by generating Dai",
-      "subheader": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sem eros"
+      "headline": "Borrow against your collateral and generate DAI",
+      "subheader": "Open a Maker Vault, deposit your collateral, and generate DAI against it.<0/> Connect a wallet to start."
     }
   },
   "latamex-badge-fees": "Fees 1%-1.7%",
@@ -385,17 +385,17 @@
       "subheader2": "You can view your vaults"
     },
     "liquidating": {
-      "header1":"Your {{ collateral }} Maker Vault {{ id }} is about to get liquidated.",
-      "header2":"{{ collateral }} Maker Vault {{ id }} is about to get liquidated.",
-      "subheader1":"The next price will cause a liquidation on this Maker Vault. You can still save your Maker Vault from liquidation by adding collateral or pay back DAI.",
-      "subheader2":"Is this your Maker Vault? Please connect with address: {{ address }} and save your Maker Vault from liquidation."
+      "header1": "Your {{ collateral }} Maker Vault {{ id }} is about to get liquidated.",
+      "header2": "{{ collateral }} Maker Vault {{ id }} is about to get liquidated.",
+      "subheader1": "The next price will cause a liquidation on this Maker Vault. You can still save your Maker Vault from liquidation by adding collateral or pay back DAI.",
+      "subheader2": "Is this your Maker Vault? Please connect with address: {{ address }} and save your Maker Vault from liquidation."
     },
     "liquidated": {
-      "header1":"Your Maker Vault got liquidated",
-      "header2":"This Maker Vault got liquidated",
-      "subheader1":"This Maker Vault has been liquidated. A portion of your collateral has been auctioned to pay back your DAI debt.",
-      "subheader2":"You can reclaim {{ amount }} {{ collateral }}",
-      "subheader3":"If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
+      "header1": "Your Maker Vault got liquidated",
+      "header2": "This Maker Vault got liquidated",
+      "subheader1": "This Maker Vault has been liquidated. A portion of your collateral has been auctioned to pay back your DAI debt.",
+      "subheader2": "You can reclaim {{ amount }} {{ collateral }}",
+      "subheader3": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
     }
   },
   "history": {

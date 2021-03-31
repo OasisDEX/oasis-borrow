@@ -128,15 +128,31 @@ export function LandingView() {
         position: 'relative',
       }}
     >
-      {/* <Background /> */}
-      <Box sx={{ width: '600px', justifySelf: 'center', textAlign: 'center', my: 4 }}>
-        <Heading as="h1" sx={{ fontSize: 7, my: 3 }}>
+      <Flex sx={{ justifySelf: 'center', alignItems: 'center', textAlign: 'center', my: 5, flexDirection: 'column' }}>
+        <Heading as="h1" variant="header2" sx={{ fontSize: 40, mb: 3 }}>
           {t('landing.hero.headline')}
         </Heading>
-        <Image sx={{ mixBlendMode: 'overlay', zIndex: 1 }} src="/static/img/icons_set.svg" />
-        <Text>{t('landing.hero.subheader')}</Text>
-      </Box>
-      <Box sx={{ my: 4 }}>
+        <Text variant="paragraph1" sx={{ mb: 3, color: 'lavender' }}>
+          <Trans
+            i18nKey="landing.hero.subheader"
+            components={[<br />]}
+          />
+        </Text>
+        <Image sx={{ mixBlendMode: 'overlay', zIndex: 1, mb: 4 }} src="/static/img/icons_set.svg" />
+        <AppLink
+          href="/connect"
+          variant="primary"
+          sx={{ display: 'flex', margin: '0 auto', px: '40px', py: 2, alignItems: 'center' }}>
+          {t('connect-wallet')}
+          <Icon
+            name="arrow_right"
+            sx={{
+              ml: 2,
+            }}
+          />
+        </AppLink>
+      </Flex>
+      <Box sx={{ my: 4, mb: 5 }}>
         <FeaturedIlks ilks={landing.featuredIlks} />
       </Box>
       <Filters

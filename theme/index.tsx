@@ -861,7 +861,7 @@ const oasisBaseTheme = {
     primaryEmphasis: '#626472',
     secondary: '#ECEFF9',
     secondaryAlt: '#F3F7F9',
-    background: '#F6F8F9',
+    background: '#FFFFFF',
     surface: '#FFF',
 
     ghost: '#F6F6F6',
@@ -887,6 +887,8 @@ const oasisBaseTheme = {
     onSuccess: '#1AAB9B',
     warning: '#FFF1CF',
     onWarning: '#D8762D',
+    lavender: "#787A9B",
+    lavender_o25: "#787a9b40",
     networks: {
       mainnet: 'rgb(41, 182, 175)',
       kovan: 'rgb(112, 87, 255)',
@@ -1002,7 +1004,7 @@ const oasisBaseTheme = {
     },
   },
   borders: {
-    light: '1px solid #D1DEE6',
+    light: '1px solid #787a9b40',
     bold: '3px solid #D3D4D8',
   },
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
@@ -1195,6 +1197,11 @@ const oasisBaseTheme = {
     outline: {
       variant: 'buttons.outline',
       display: 'inline-block',
+    },
+    primary: {
+      variant: 'buttons.primary',
+      display: 'inline-block',
+      bg: 'primary',
     },
     secondary: {
       variant: 'buttons.secondary',
