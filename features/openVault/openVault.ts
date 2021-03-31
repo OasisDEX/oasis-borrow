@@ -132,6 +132,21 @@ function applyVaultCalculations(state: OpenVaultState): OpenVaultState {
   }
 }
 
+interface OpenVaultInjectedOverrideChange {
+  kind: 'injectStateOverride'
+  stateToOverride: Partial<OpenVaultState>
+}
+
+function applyOpenVaultInjectedOverride(change: OpenVaultChange, state: OpenVaultState) {
+  if (change.kind === 'injectStateOverride') {
+    return {
+      ...state,
+      ...change.stateToOverride,
+    }
+  }
+  return state
+}
+
 export type OpenVaultChange =
   | OpenVaultInputChange
   | OpenVaultFormChange
@@ -139,6 +154,7 @@ export type OpenVaultChange =
   | OpenVaultTransactionChange
   | OpenVaultAllowanceChange
   | OpenVaultEnvironmentChange
+  | OpenVaultInjectedOverrideChange
 
 function apply(state: OpenVaultState, change: OpenVaultChange) {
   const s1 = applyOpenVaultInput(change, state)
@@ -146,7 +162,8 @@ function apply(state: OpenVaultState, change: OpenVaultChange) {
   const s3 = applyOpenVaultTransition(change, s2)
   const s4 = applyOpenVaultTransaction(change, s3)
   const s5 = applyOpenVaultAllowance(change, s4)
-  return applyOpenVaultEnvironment(change, s5)
+  const s6 = applyOpenVaultEnvironment(change, s5)
+  return applyOpenVaultInjectedOverride(change, s6)
 }
 
 export type IlkValidationStage =
@@ -242,6 +259,8 @@ export type DefaultOpenVaultState = {
   safeConfirmations: number
   txError?: any
   etherscan?: string
+
+  injectStateOverride: (state: Partial<OpenVaultState>) => void
 }
 
 export type OpenVaultState = UserTokenInfo & DefaultOpenVaultState
@@ -331,35 +350,7 @@ function addTransitions(
   return state
 }
 
-export const defaultOpenVaultState: DefaultOpenVaultState = {
-  ...defaultIsStates,
-  stage: 'editing',
-  token: '',
-  account: '',
-  errorMessages: [],
-  warningMessages: [],
-  depositAmount: undefined,
-  generateAmount: undefined,
-  maxDepositAmount: zero,
-  maxGenerateAmount: zero,
-  depositAmountUSD: zero,
-  maxDepositAmountUSD: zero,
-  afterLiquidationPrice: zero,
-  afterCollateralizationRatio: zero,
-  ilk: '',
-  maxDebtPerUnitCollateral: zero,
-  ilkDebtAvailable: zero,
-  debtFloor: zero,
-  liquidationRatio: zero,
-  allowance: zero,
-  safeConfirmations: 0,
-  allowanceAmount: maxUint256,
-  showGenerateOption: false,
-  showIlkDetails: false,
-}
-
 export function createOpenVault$(
-  defaultState$: Observable<DefaultOpenVaultState>,
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
@@ -398,7 +389,6 @@ export function createOpenVault$(
               const token = ilkToToken(ilk)
               return combineLatest(
                 userTokenInfo$(token, account),
-                defaultState$,
                 ilkData$(ilk),
                 proxyAddress$(account),
               ).pipe(
@@ -406,7 +396,6 @@ export function createOpenVault$(
                 switchMap(
                   ([
                     userTokenInfo,
-                    defaultState,
                     { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
                     proxyAddress,
                   ]) =>
@@ -416,9 +405,34 @@ export function createOpenVault$(
                     ).pipe(
                       first(),
                       switchMap((allowance) => {
+                        const change$ = new Subject<OpenVaultChange>()
+
+                        function change(ch: OpenVaultChange) {
+                          if (ch.kind === 'injectStateOverride') {
+                            throw new Error("don't use injected overrides")
+                          }
+                          change$.next(ch)
+                        }
+                        // NOTE: Not to be used in production/dev, test only
+                        function injectStateOverride(stateToOverride: Partial<OpenVaultState>) {
+                          return change$.next({ kind: 'injectStateOverride', stateToOverride })
+                        }
+
                         const initialState: OpenVaultState = {
                           ...userTokenInfo,
-                          ...defaultState,
+                          ...defaultIsStates,
+
+                          stage: 'editing',
+                          errorMessages: [],
+                          warningMessages: [],
+                          showIlkDetails: false,
+                          showGenerateOption: false,
+                          afterLiquidationPrice: zero,
+                          afterCollateralizationRatio: zero,
+                          maxDepositAmount: zero,
+                          maxDepositAmountUSD: zero,
+                          maxGenerateAmount: zero,
+
                           token,
                           account,
                           ilk,
@@ -431,12 +445,8 @@ export function createOpenVault$(
                           safeConfirmations: context.safeConfirmations,
                           etherscan: context.etherscan.url,
                           allowanceAmount: maxUint256,
-                        }
 
-                        const change$ = new Subject<OpenVaultChange>()
-
-                        function change(ch: OpenVaultChange) {
-                          change$.next(ch)
+                          injectStateOverride,
                         }
 
                         const userTokenInfoChange$ = curry(createUserTokenInfoChange$)(

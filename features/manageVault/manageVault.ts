@@ -166,7 +166,7 @@ interface ManageVaultInjectedOverrideChange {
   stateToOverride: Partial<ManageVaultState>
 }
 
-function applyInjectedOverride(change: ManageVaultChange, state: ManageVaultState) {
+function applyManageVaultInjectedOverride(change: ManageVaultChange, state: ManageVaultState) {
   if (change.kind === 'injectStateOverride') {
     return {
       ...state,
@@ -192,7 +192,7 @@ function apply(state: ManageVaultState, change: ManageVaultChange) {
   const s4 = applyManageVaultTransition(change, s3)
   const s5 = applyManageVaultTransaction(change, s4)
   const s6 = applyManageVaultEnvironment(change, s5)
-  return applyInjectedOverride(change, s6)
+  return applyManageVaultInjectedOverride(change, s6)
 }
 
 export type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
