@@ -151,6 +151,7 @@
   "gas-estimation-error": "Error",
   "get-dai": "Get Dai",
   "get-started": "Get Started",
+  "here": "here",
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",
   "jwt-auth-rejected": "Signature rejected",
@@ -376,6 +377,26 @@
     "vaults": "Vaults",
     "vaults-at-risk": "Vaults at risk",
     "your-vaults": "Your Vaults"
+  },
+  "vault-banners": {
+    "ownership": {
+      "header": "You are viewing {{address}} Vault",
+      "subheader1": "Please connect your wallet to open, manage or view your Vaults.",
+      "subheader2": "You can view your vaults"
+    },
+    "liquidating": {
+      "header1":"Your {{ collateral }} Maker Vault {{ id }} is about to get liquidated.",
+      "header2":"{{ collateral }} Maker Vault {{ id }} is about to get liquidated.",
+      "subheader1":"The next price will cause a liquidation on this Maker Vault. You can still save your Maker Vault from liquidation by adding collateral or pay back DAI.",
+      "subheader2":"Is this your Maker Vault? Please connect with address: {{ address }} and save your Maker Vault from liquidation."
+    },
+    "liquidated": {
+      "header1":"Your Maker Vault got liquidated",
+      "header2":"This Maker Vault got liquidated",
+      "subheader1":"This Maker Vault has been liquidated. A portion of your collateral has been auctioned to pay back your DAI debt.",
+      "subheader2":"You can reclaim {{ amount }} {{ collateral }}",
+      "subheader3":"If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
+    }
   },
   "history": {
     "open": "Opened a new Vault with id <0>#{{cdpId}}</0>",

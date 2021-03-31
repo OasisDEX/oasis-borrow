@@ -777,6 +777,78 @@ const customLandingIcons = {
       </g>
     ),
   },
+  bannerWallet: {
+    path: (
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M2 6C2 3.79086 3.79086 2 6 2H18C19.1046 2 20 2.89543 20 4V7H2V6Z"
+          stroke="url(#paint0_linear)"
+          strokeWidth="2.5"
+        />
+        <path
+          d="M2 7H19C20.6569 7 22 8.34315 22 10V19C22 20.6569 20.6569 22 19 22H6C3.79086 22 2 20.2091 2 18V7Z"
+          stroke="url(#paint1_linear)"
+          strokeWidth="2.5"
+        />
+        <circle cx="17.5" cy="14.5" r="1.5" fill="url(#paint2_linear)" />
+        <defs>
+          <linearGradient
+            id="paint0_linear"
+            x1="11"
+            y1="2"
+            x2="11"
+            y2="7"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#282A42" />
+            <stop offset="1" stopColor="#4F548B" />
+          </linearGradient>
+          <linearGradient
+            id="paint1_linear"
+            x1="12"
+            y1="7"
+            x2="12"
+            y2="22"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#282A42" />
+            <stop offset="1" stopColor="#4F548B" />
+          </linearGradient>
+          <linearGradient
+            id="paint2_linear"
+            x1="15.9483"
+            y1="15.7658"
+            x2="18.5873"
+            y2="13.3808"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#25273D" />
+            <stop offset="1" stopColor="#4F558C" />
+          </linearGradient>
+        </defs>
+      </svg>
+    ),
+    viewBox: '0 0 24 24',
+  },
+  exclamationMark: {
+    path: (
+      <svg width="6" height="24" viewBox="0 0 6 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M3 0C1.41149 0 0.186548 1.39911 0.396491 2.97368L1.86784 14.0088C1.9435 14.5762 2.42753 15 3 15C3.57247 15 4.0565 14.5762 4.13216 14.0088L5.60351 2.97368C5.81345 1.39911 4.58851 0 3 0ZM3 24C4.65685 24 6 22.6569 6 21C6 19.3431 4.65685 18 3 18C1.34315 18 0 19.3431 0 21C0 22.6569 1.34315 24 3 24Z"
+          fill="currentColor"
+        />
+      </svg>
+    ),
+    viewBox: '0 0 6 24',
+  },
 }
 
 const oasisBaseTheme = {
@@ -823,6 +895,7 @@ const oasisBaseTheme = {
     banner: {
       warning: '#FF6A16',
       danger: '#FE4343',
+      muted: 'primary',
     },
     counter: {
       primary: '#FF7B31',
@@ -930,6 +1003,7 @@ const oasisBaseTheme = {
   },
   borders: {
     light: '1px solid #D1DEE6',
+    bold: '3px solid #D3D4D8',
   },
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
   sizes: [0, 4, 8, 16, 32, 64, 128, 256, 512],
@@ -940,6 +1014,7 @@ const oasisBaseTheme = {
     large: 16,
     roundish: 20,
     round: 32,
+    circle: 50,
   },
   shadows: {
     medium: '0 2px 8px rgba(0, 0, 0, 0.17)',
