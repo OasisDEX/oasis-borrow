@@ -1,5 +1,5 @@
 codecov:
-  token: to-be-added
+  token: 0a383105-ab80-49e4-b603-5b9235012b20
 
 ignore:
   - "**/*.tsx"
