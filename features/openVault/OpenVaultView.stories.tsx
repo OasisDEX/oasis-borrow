@@ -87,8 +87,10 @@ function createStory({
     }
 
     useEffect(() => {
-      const subscription = obs$.pipe(first()).subscribe(({ injectStateOverride }) => {
-        injectStateOverride(newState || {})
+      const subscription = obs$.pipe(first()).subscribe((state: any) => {
+        if (state.injectStateOverride) {
+          state.injectStateOverride(newState || {})
+        }
       })
       return subscription.unsubscribe()
     }, [])

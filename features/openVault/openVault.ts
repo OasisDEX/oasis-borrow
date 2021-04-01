@@ -157,7 +157,9 @@ export type OpenVaultChange =
   | OpenVaultInjectedOverrideChange
 
 function apply(state: OpenVaultState, change: OpenVaultChange) {
-  const s1 = applyOpenVaultInput(change, state)
+  // must call applyVaultCalculations before each change so that the state in
+  // context of the scan aligns with the previous pipeline propagation
+  const s1 = applyOpenVaultInput(change, applyVaultCalculations(state))
   const s2 = applyOpenVaultForm(change, s1)
   const s3 = applyOpenVaultTransition(change, s2)
   const s4 = applyOpenVaultTransaction(change, s3)
@@ -180,8 +182,6 @@ export interface IlkValidationState {
   isProxyStage: boolean
   isAllowanceStage: boolean
   isOpenStage: boolean
-
-  injectStateOverride: () => void
 }
 
 export type OpenVaultStage =
@@ -417,6 +417,7 @@ export function createOpenVault$(
                         }
                         change$.next(ch)
                       }
+
                       // NOTE: Not to be used in production/dev, test only
                       function injectStateOverride(stateToOverride: Partial<OpenVaultState>) {
                         return change$.next({ kind: 'injectStateOverride', stateToOverride })

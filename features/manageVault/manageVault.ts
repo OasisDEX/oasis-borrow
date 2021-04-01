@@ -186,7 +186,9 @@ export type ManageVaultChange =
   | ManageVaultInjectedOverrideChange
 
 function apply(state: ManageVaultState, change: ManageVaultChange) {
-  const s1 = applyManageVaultInput(change, state)
+  // must call applyVaultCalculations before each change so that the state in
+  // context of the scan aligns with the previous pipeline propagation
+  const s1 = applyManageVaultInput(change, applyVaultCalculations(state))
   const s2 = applyManageVaultForm(change, s1)
   const s3 = applyManageVaultAllowance(change, s2)
   const s4 = applyManageVaultTransition(change, s3)
