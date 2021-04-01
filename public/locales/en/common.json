@@ -159,6 +159,19 @@
   "keyWithCount": "{{count}} item",
   "keyWithCount_plural": "{{count}} items",
   "landing": {
+    "faq": {
+      "title": "Borrow's FAQ",
+      "entries": [
+        {
+          "question": "What assets can I use as collateral?",
+          "answer": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora."
+        },
+        {
+          "question": "How much does it cost?",
+          "answer": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora."
+        }
+      ]
+    },
     "footer": {
       "blog": "Blog",
       "borrow": "Borrow",

@@ -9,9 +9,10 @@ import { FeaturedIlks, Filters } from 'features/vaultsOverview/VaultsOverviewVie
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservableWithError } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { ComponentProps, useCallback } from 'react'
-import { Box, Flex, Grid, Heading, Image, SxProps, Text } from 'theme-ui'
+import React, { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
+import { Box, Button, Flex, Grid, Heading, Image, SxProps, Text } from 'theme-ui'
 import { keyframes } from '@emotion/react'
+import { transform } from 'lodash'
 
 const slideIn = keyframes({
   from: {
@@ -160,6 +161,86 @@ export function Hero({ sx }: { sx?: SxProps }) {
   )
 }
 
+function Expandable() {
+  const contentRef = useRef<HTMLDivElement | null>(null)
+  const [rect, setRect] = useState<DOMRect | null>(null);
+  const [isOpen, setOpen] = useState<boolean>(false);
+
+  const toggle = useCallback(() => setOpen(!isOpen), [isOpen])
+
+  useEffect(() => {
+    if (contentRef.current === null) {
+      return
+    }
+
+    setRect(contentRef.current.getBoundingClientRect())
+  }, [])
+
+  console.log(rect)
+
+  return (
+    <Box sx={{
+      maxWidth: '762px',
+      borderTop: 'light',
+      borderBottom: 'light',
+    }}>
+      <Button sx={{ position: 'relative' }} variant="expandable" onClick={toggle}>
+        How much does it cost?
+        {
+          <Box
+            sx={{
+              width: 25,
+              height: 25,
+              marginLeft: 'auto',
+              position: 'absolute',
+              right: 0,
+              top: '50%',
+              transform: `translateY(-50%) rotate(${isOpen ? 0 : 180}deg)`,
+              transformOrigin: '50% 50%',
+              transition: 'transform 0.2s ease-in-out',
+            }}
+          >
+            <Icon
+              size={25}
+              name={isOpen ? 'minus' : 'plus'}
+            />
+          </Box>
+        }
+      </Button>
+      <Box
+        sx={{
+          overflow: 'hidden',
+          height: isOpen && rect ? `${rect.height}px` : 0,
+          transition: 'height 0.3s',
+        }}
+      >
+        <Box
+          ref={contentRef}
+          sx={{
+            pb: 3,
+          }}
+        >
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore nobis consequuntur, eaque voluptatum architecto dolores accusantium quibusdam, quos rerum obcaecati nesciunt est adipisci officia odit officiis fuga, soluta neque a?
+        </Box>
+      </Box>
+    </Box>
+  )
+}
+
+export function FAQ() {
+  const { t } = useTranslation()
+
+  return (
+    <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+      <Heading variant="heading2" sx={{ mb: 4 }}>{t('landing.faq.title')}</Heading>
+      <Expandable />
+      <Expandable />
+      <Expandable />
+      <Expandable />
+    </Flex>
+  )
+}
+
 export function LandingView() {
   const { landing$ } = useAppContext()
   const [landing, landingError] = useObservableWithError(landing$)
@@ -231,6 +312,7 @@ export function LandingView() {
           />
         </>
       }
+      <FAQ />
     </Grid>
   )
 }

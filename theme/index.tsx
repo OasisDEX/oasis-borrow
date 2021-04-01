@@ -1151,6 +1151,22 @@ const oasisBaseTheme = {
       borderStyle: 'solid',
       borderColor: 'light',
     },
+    expandable: {
+      variant: 'text.header3',
+      width: '100%',
+      background: 'none',
+      textAlign: 'left',
+      cursor: 'pointer',
+      p: 0,
+      py: 3,
+      ':hover': {
+        opacity: 0.8,
+      },
+      ':focus': {
+        outline: 'none',
+        textDecoration: 'underline',
+      },
+    },
     tableHeader: {
       variant: 'text.tableHead',
       background: 'none',
