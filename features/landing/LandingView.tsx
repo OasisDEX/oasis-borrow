@@ -160,14 +160,15 @@ export function Hero({ sx }: { sx?: SxProps }) {
     </Flex>
   )
 }
-
-function Expandable({ question, answer }: { question: string, answer: string }) {
+interface ExpandableProps {
+  question: string
+  answer: string
+  isOpen: boolean
+  toggle(): void
+}
+function Expandable({ question, answer, isOpen, toggle }: ExpandableProps) {
   const contentRef = useRef<HTMLDivElement | null>(null)
-  const [rect, setRect] = useState<DOMRect | null>(null);
-  const [isOpen, setOpen] = useState<boolean>(false);
-
-  const toggle = useCallback(() => setOpen(!isOpen), [isOpen])
-
+  const [rect, setRect] = useState<DOMRect | null>(null)
   useEffect(() => {
     if (contentRef.current === null) {
       return
@@ -227,16 +228,24 @@ function Expandable({ question, answer }: { question: string, answer: string }) 
 
 export function FAQ() {
   const { t } = useTranslation()
-
+  const [openEntry, setOpen] = useState<undefined | number>()
   const entries = t('landing.faq.entries', { returnObjects: true }) as Array<{ question: string, answer: string }>
 
   return (
     <Flex sx={{ flexDirection: 'column', alignItems: 'center', mt: 4 }}>
       <Heading variant="header2" sx={{ mb: 4 }}>{t('landing.faq.title')}</Heading>
       {
-        entries.map(({ question, answer }) => (
+        entries.map(({ question, answer }, idx) => (
           <>
-            <Expandable question={question} answer={answer} />
+            <Expandable
+              question={question}
+              answer={answer}
+              isOpen={openEntry === idx}
+              toggle={() => (openEntry === idx)
+                ? setOpen(undefined)
+                : setOpen(idx)
+              }
+            />
           </>
         ))
       }
