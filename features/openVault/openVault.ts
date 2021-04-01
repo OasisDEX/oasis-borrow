@@ -157,15 +157,14 @@ export type OpenVaultChange =
   | OpenVaultInjectedOverrideChange
 
 function apply(state: OpenVaultState, change: OpenVaultChange) {
-  // must call applyVaultCalculations before each change so that the state in
-  // context of the scan aligns with the previous pipeline propagation
-  const s1 = applyOpenVaultInput(change, applyVaultCalculations(state))
+  const s1 = applyOpenVaultInput(change, state)
   const s2 = applyOpenVaultForm(change, s1)
   const s3 = applyOpenVaultTransition(change, s2)
   const s4 = applyOpenVaultTransaction(change, s3)
   const s5 = applyOpenVaultAllowance(change, s4)
   const s6 = applyOpenVaultEnvironment(change, s5)
-  return applyOpenVaultInjectedOverride(change, s6)
+  const s7 = applyOpenVaultInjectedOverride(change, s6)
+  return applyVaultCalculations(s7)
 }
 
 export type IlkValidationStage =
@@ -473,7 +472,6 @@ export function createOpenVault$(
 
                       return merge(change$, environmentChanges$).pipe(
                         scan(apply, initialState),
-                        map(applyVaultCalculations),
                         map(validateErrors),
                         map(validateWarnings),
                         map(

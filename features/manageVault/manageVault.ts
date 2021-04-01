@@ -186,15 +186,14 @@ export type ManageVaultChange =
   | ManageVaultInjectedOverrideChange
 
 function apply(state: ManageVaultState, change: ManageVaultChange) {
-  // must call applyVaultCalculations before each change so that the state in
-  // context of the scan aligns with the previous pipeline propagation
-  const s1 = applyManageVaultInput(change, applyVaultCalculations(state))
+  const s1 = applyManageVaultInput(change, state)
   const s2 = applyManageVaultForm(change, s1)
   const s3 = applyManageVaultAllowance(change, s2)
   const s4 = applyManageVaultTransition(change, s3)
   const s5 = applyManageVaultTransaction(change, s4)
   const s6 = applyManageVaultEnvironment(change, s5)
-  return applyManageVaultInjectedOverride(change, s6)
+  const s7 = applyManageVaultInjectedOverride(change, s6)
+  return applyVaultCalculations(s7)
 }
 
 export type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
@@ -586,7 +585,6 @@ export function createManageVault$(
 
                   return merge(change$, environmentChanges$).pipe(
                     scan(apply, initialState),
-                    map(applyVaultCalculations),
                     map(validateErrors),
                     map(validateWarnings),
                     map(
