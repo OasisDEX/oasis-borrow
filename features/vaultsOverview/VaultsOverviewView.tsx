@@ -211,56 +211,58 @@ function CallToAction({ ilk }: CallToActionProps) {
   const { t } = useTranslation()
 
   return (
-    <Grid
-      columns="1fr 1fr"
-      gap={0}
-      sx={{
-        flex: 1,
-        cursor: 'pointer',
-        background: token.background,
-        borderRadius: 'large',
-        p: 4,
-        color: 'white',
-        position: 'relative',
-        boxShadow: 'surface',
-        gridTemplateRows: 'auto 1fr auto',
-      }}
-    >
-      <Image
+    <AppLink href={`/vaults/open/${ilk.ilk}`}>
+      <Grid
+        columns="1fr 1fr"
+        gap={0}
         sx={{
-          maxWidth: '150%',
-          position: 'absolute',
-          userSelect: 'none',
-          transform: 'scale(1.05)',
-          right: 0,
+          flex: 1,
+          cursor: 'pointer',
+          background: token.background,
+          borderRadius: 'large',
+          p: 4,
+          color: 'white',
+          position: 'relative',
+          boxShadow: 'surface',
+          gridTemplateRows: 'auto 1fr auto',
         }}
-        src={token.bannerIcon}
-      />
-      <Box sx={{ gridColumn: '1/3', zIndex: 1 }}>
-        <Text variant="caption">{ilk.title}</Text>
-      </Box>
-      <Box sx={{ gridColumn: '1/3', zIndex: 1 }}>
-        <Heading variant="header2" sx={{ color: 'white', mb: 5 }}>
-          {ilk.ilk}
-        </Heading>
-      </Box>
-      <Flex sx={{ zIndex: 1 }}>
-        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
-          {t('system.stability-fee')}
-        </Text>
-        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
-          {formatPercent(ilk.stabilityFee)}
-        </Text>
-      </Flex>
-      <Flex sx={{ zIndex: 1, gridRow: [3, 4, 3] }}>
-        <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
-          {t('system.min-coll-ratio')}
-        </Text>
-        <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
-          {formatPercent(ilk.liquidationRatio)}
-        </Text>
-      </Flex>
-    </Grid>
+      >
+        <Image
+          sx={{
+            maxWidth: '150%',
+            position: 'absolute',
+            userSelect: 'none',
+            transform: 'scale(1.05)',
+            right: 0,
+          }}
+          src={token.bannerIcon}
+        />
+        <Box sx={{ gridColumn: '1/3', zIndex: 1 }}>
+          <Text variant="caption">{ilk.title}</Text>
+        </Box>
+        <Box sx={{ gridColumn: '1/3', zIndex: 1 }}>
+          <Heading variant="header2" sx={{ color: 'white', mb: 5 }}>
+            {ilk.ilk}
+          </Heading>
+        </Box>
+        <Flex sx={{ zIndex: 1 }}>
+          <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
+            {t('system.stability-fee')}
+          </Text>
+          <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
+            {formatPercent(ilk.stabilityFee)}
+          </Text>
+        </Flex>
+        <Flex sx={{ zIndex: 1, gridRow: [3, 4, 3] }}>
+          <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
+            {t('system.min-coll-ratio')}
+          </Text>
+          <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
+            {formatPercent(ilk.liquidationRatio)}
+          </Text>
+        </Flex>
+      </Grid>
+    </AppLink>
   )
 }
 function Summary({ summary }: { summary: VaultSummary }) {

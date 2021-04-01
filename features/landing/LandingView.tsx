@@ -208,7 +208,7 @@ export function LandingView() {
             mb: 5,
             position: 'relative',
             animation: slideIn,
-            animationDuration: '0.7s',
+            animationDuration: '0.6s',
             animationFillMode: 'forward',
             animationTimingFunction: 'ease-out',
           }}>
@@ -225,7 +225,7 @@ export function LandingView() {
             sx={{
               position: 'relative',
               animation: slideIn,
-              animationDuration: '1s',
+              animationDuration: '0.6s',
               animationFillMode: 'forward',
             }}
           />
