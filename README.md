@@ -1,4 +1,4 @@
-# Oasis.app
+# Oasis.app [![codecov](https://codecov.io/gh/OasisDEX/oasis-borrow/branch/dev/graph/badge.svg?token=KMXTAUFL48)](https://codecov.io/gh/OasisDEX/oasis-borrow)
 
 - TypeScript
 - Next.js
