@@ -300,7 +300,6 @@ describe('manageVault', () => {
 
       const ilkData$ = () => of(protoIlkData)
 
-      console.log(debt)
       const normalizedDebt = debt
         .div(protoIlkData.debtScalingFactor)
         .decimalPlaces(18, BigNumber.ROUND_DOWN)
