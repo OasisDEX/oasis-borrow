@@ -26,6 +26,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@emotion/react": "^11.1.5",
     "@makerdao/dai-ui-icons": "^0.0.59",
     "@makerdao/dai-ui-icons-branding": "^0.0.66",
     "@makerdao/dai-ui-theme-casual": "^0.0.60",

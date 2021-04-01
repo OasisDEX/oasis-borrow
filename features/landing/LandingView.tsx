@@ -10,7 +10,19 @@ import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservableWithError } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback } from 'react'
-import { Box, Flex, Grid, Heading, Image, Text } from 'theme-ui'
+import { Box, Flex, Grid, Heading, Image, SxProps, Text } from 'theme-ui'
+import { keyframes } from '@emotion/react'
+
+const slideIn = keyframes({
+  from: {
+    top: '60px',
+    opacity: 0,
+  },
+  to: {
+    top: 0,
+    opacity: 1,
+  }
+})
 
 export function TokenSymbol({
   token,
@@ -94,9 +106,62 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
   },
 ]
 
+export function Hero({ sx }: { sx?: SxProps }) {
+  const { t } = useTranslation()
+
+  return (
+    <Flex sx={{
+      ...sx,
+      justifySelf: 'center',
+      alignItems: 'center',
+      textAlign: 'center',
+      my: 5,
+      flexDirection: 'column',
+    }}>
+      <Heading as="h1" variant="header2" sx={{ fontSize: 40, mb: 3 }}>
+        {t('landing.hero.headline')}
+      </Heading>
+      <Text variant="paragraph1" sx={{ mb: 3, color: 'lavender' }}>
+        <Trans
+          i18nKey="landing.hero.subheader"
+          components={[<br />]}
+        />
+      </Text>
+      <Box sx={{
+        opacity: 0.08,
+      }}>
+        <Image sx={{ mb: 4 }} src="/static/img/icons_set.svg" />
+      </Box>
+      <AppLink
+        href="/connect"
+        variant="primary"
+        sx={{
+          display: 'flex',
+          margin: '0 auto',
+          px: '40px',
+          py: 2,
+          alignItems: 'center',
+          '&:hover svg': {
+            transform: 'translateX(10px)',
+          }
+        }}>
+        {t('connect-wallet')}
+        <Icon
+          name="arrow_right"
+          sx={{
+            ml: 2,
+            position: 'relative',
+            left: 2,
+            transition: '0.2s'
+          }}
+        />
+      </AppLink>
+    </Flex>
+  )
+}
+
 export function LandingView() {
   const { landing$ } = useAppContext()
-  const { t } = useTranslation()
   const [landing, landingError] = useObservableWithError(landing$)
 
   const onIlkSearch = useCallback(
@@ -117,10 +182,6 @@ export function LandingView() {
     return <>Error while fetching data!</>
   }
 
-  if (landing === undefined) {
-    return <>loading...</>
-  }
-
   return (
     <Grid
       sx={{
@@ -128,46 +189,54 @@ export function LandingView() {
         position: 'relative',
       }}
     >
-      <Flex sx={{ justifySelf: 'center', alignItems: 'center', textAlign: 'center', my: 5, flexDirection: 'column' }}>
-        <Heading as="h1" variant="header2" sx={{ fontSize: 40, mb: 3 }}>
-          {t('landing.hero.headline')}
-        </Heading>
-        <Text variant="paragraph1" sx={{ mb: 3, color: 'lavender' }}>
-          <Trans
-            i18nKey="landing.hero.subheader"
-            components={[<br />]}
-          />
-        </Text>
-        <Image sx={{ mixBlendMode: 'overlay', zIndex: 1, mb: 4 }} src="/static/img/icons_set.svg" />
-        <AppLink
-          href="/connect"
-          variant="primary"
-          sx={{ display: 'flex', margin: '0 auto', px: '40px', py: 2, alignItems: 'center' }}>
-          {t('connect-wallet')}
-          <Icon
-            name="arrow_right"
+      <Hero
+        sx={{
+          position: 'relative',
+          opacity: 0,
+          animation: slideIn,
+          animationDuration: '0.7s',
+          animationTimingFunction: 'ease-out',
+          animationFillMode: 'forwards',
+          animationDelay: '0.4s'
+        }}
+      />
+      {
+        landing !== undefined &&
+        <>
+          <Box sx={{
+            my: 4,
+            mb: 5,
+            position: 'relative',
+            animation: slideIn,
+            animationDuration: '0.7s',
+            animationFillMode: 'forward',
+            animationTimingFunction: 'ease-out',
+          }}>
+            <FeaturedIlks
+              ilks={landing.featuredIlks}
+            />
+          </Box>
+          <Filters
+            onSearch={onIlkSearch}
+            search={landing.ilks.filters.search}
+            onTagChange={onIlksTagChange}
+            tagFilter={landing.ilks.filters.tagFilter}
+            defaultTag="all-assets"
             sx={{
-              ml: 2,
+              position: 'relative',
+              animation: slideIn,
+              animationDuration: '1s',
+              animationFillMode: 'forward',
             }}
           />
-        </AppLink>
-      </Flex>
-      <Box sx={{ my: 4, mb: 5 }}>
-        <FeaturedIlks ilks={landing.featuredIlks} />
-      </Box>
-      <Filters
-        onSearch={onIlkSearch}
-        search={landing.ilks.filters.search}
-        onTagChange={onIlksTagChange}
-        tagFilter={landing.ilks.filters.tagFilter}
-        defaultTag="all-assets"
-      />
-      <Table
-        data={landing.ilks.data}
-        primaryKey="ilk"
-        state={landing.ilks.filters}
-        columns={ilksColumns}
-      />
+          <Table
+            data={landing.ilks.data}
+            primaryKey="ilk"
+            state={landing.ilks.filters}
+            columns={ilksColumns}
+          />
+        </>
+      }
     </Grid>
   )
 }

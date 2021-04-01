@@ -1,5 +1,15 @@
 import React from 'react'
 import { Box } from 'theme-ui'
+import { keyframes } from '@emotion/react'
+
+const fadeOut = keyframes({
+    from: {
+        opacity: 1,
+    },
+    to: {
+        opacity: 0,
+    }
+})
 
 export function Background() {
     return (
@@ -10,6 +20,21 @@ export function Background() {
                 top: '-200px',
                 userSelect: 'none',
                 pointerEvents: 'none',
+                '&::after': {
+                    opacity: 1,
+                    content: '""',
+                    background: 'white',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    animation: fadeOut,
+                    animationDuration: '0.4s',
+                    animationDelay: '0.1s',
+                    animationTimingFunction: 'ease-out',
+                    animationFillMode: 'forwards',
+                }
             }}
         >
             <svg

@@ -14,7 +14,7 @@ import {
 } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback, useMemo } from 'react'
-import { Box, Button, Card, Flex, Grid, Heading, Image, Input, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Heading, Image, Input, SxStyleProp, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { IlksFilterState, IlksWithFilters } from '../ilks/ilksFilters'
@@ -352,9 +352,10 @@ interface FiltersProps {
   search: string
   defaultTag: string
   tagFilter: CoinTag | undefined
+  sx?: SxStyleProp
 }
 
-export function Filters({ onSearch, search, onTagChange, tagFilter, defaultTag }: FiltersProps) {
+export function Filters({ onSearch, search, onTagChange, tagFilter, defaultTag, sx }: FiltersProps) {
   const onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onSearch(e.currentTarget.value)
@@ -364,7 +365,7 @@ export function Filters({ onSearch, search, onTagChange, tagFilter, defaultTag }
   const { t } = useTranslation()
 
   return (
-    <Flex>
+    <Flex sx={sx}>
       <Button
         onClick={() => onTagChange(undefined)}
         sx={{ mr: 2 }}
