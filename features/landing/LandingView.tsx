@@ -161,7 +161,7 @@ export function Hero({ sx }: { sx?: SxProps }) {
   )
 }
 
-function Expandable() {
+function Expandable({ question, answer }: { question: string, answer: string }) {
   const contentRef = useRef<HTMLDivElement | null>(null)
   const [rect, setRect] = useState<DOMRect | null>(null);
   const [isOpen, setOpen] = useState<boolean>(false);
@@ -176,8 +176,6 @@ function Expandable() {
     setRect(contentRef.current.getBoundingClientRect())
   }, [])
 
-  console.log(rect)
-
   return (
     <Box sx={{
       maxWidth: '762px',
@@ -185,7 +183,7 @@ function Expandable() {
       borderBottom: 'light',
     }}>
       <Button sx={{ position: 'relative' }} variant="expandable" onClick={toggle}>
-        How much does it cost?
+        {question}
         {
           <Box
             sx={{
@@ -220,7 +218,7 @@ function Expandable() {
             pb: 3,
           }}
         >
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore nobis consequuntur, eaque voluptatum architecto dolores accusantium quibusdam, quos rerum obcaecati nesciunt est adipisci officia odit officiis fuga, soluta neque a?
+          {answer}
         </Box>
       </Box>
     </Box>
@@ -230,13 +228,18 @@ function Expandable() {
 export function FAQ() {
   const { t } = useTranslation()
 
+  const entries = t('landing.faq.entries', { returnObjects: true }) as Array<{ question: string, answer: string }>
+
   return (
-    <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-      <Heading variant="heading2" sx={{ mb: 4 }}>{t('landing.faq.title')}</Heading>
-      <Expandable />
-      <Expandable />
-      <Expandable />
-      <Expandable />
+    <Flex sx={{ flexDirection: 'column', alignItems: 'center', mt: 4 }}>
+      <Heading variant="header2" sx={{ mb: 4 }}>{t('landing.faq.title')}</Heading>
+      {
+        entries.map(({ question, answer }) => (
+          <>
+            <Expandable question={question} answer={answer} />
+          </>
+        ))
+      }
     </Flex>
   )
 }
