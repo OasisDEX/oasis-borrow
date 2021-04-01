@@ -208,7 +208,7 @@ export function LandingView() {
             mb: 5,
             position: 'relative',
             animation: slideIn,
-            animationDuration: '0.6s',
+            animationDuration: '0.9s',
             animationFillMode: 'forward',
             animationTimingFunction: 'ease-out',
           }}>
@@ -222,12 +222,6 @@ export function LandingView() {
             onTagChange={onIlksTagChange}
             tagFilter={landing.ilks.filters.tagFilter}
             defaultTag="all-assets"
-            sx={{
-              position: 'relative',
-              animation: slideIn,
-              animationDuration: '0.6s',
-              animationFillMode: 'forward',
-            }}
           />
           <Table
             data={landing.ilks.data}
