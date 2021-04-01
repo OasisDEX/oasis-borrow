@@ -84,69 +84,6 @@ const globalStyles = `
     font-style: normal;
     font-display: swap;
 }
-
-.layerBottom {
-  animation: pulse 7s ease-in-out infinite;
-  animation-delay: -0.5s;
-}
-
-.layerMiddle {
-  animation: pulse 7s ease-in-out infinite;
-  animation-delay: -2s;
-}
-
-.layerTop {
-  animation: pulse 7s ease-in-out infinite;
-  animation-delay: -3s;
-}
-
-
-/* animation */
-@keyframes pulse {
-  0% {
-    opacity: 0.03;
-    transform: scaleY(0.5);
-  }
-  50% {
-    opacity: 0.08;
-    transform: scaleY(1);
-  }
-  100% {
-    opacity: 0.03;
-    transform: scaleY(0.5);
-  }
-}
-
-@keyframes top-layer {
-  0% {
-    transform: rotate(0deg) translate(-40px) rotate(0deg) scale(1, 1);
-    opacity: 0.5;
-  }
-  50% {
-    transform: rotate(-180deg) translate(-40px) rotate(-180deg) scale(1, 1.3);
-    opacity: 0.8;
-  }
-  100% {
-    transform: rotate(-360deg) translate(-40px) rotate(-360deg) scale(1, 1);
-    opacity: 0.5;
-  }
-}
-
-@keyframes bottom-layer {
-  0% {
-    -moz-transform: rotate(0deg) translate(-40px) rotate(0deg) scale(1, 1);
-    opacity: 0.8;
-  }
-  50% {
-    -moz-transform: rotate(-180deg) translate(-40px) rotate(-180deg)
-      scale(0.8, 1.3);
-    opacity: 0.5;
-  }
-  100% {
-    -moz-transform: rotate(-360deg) translate(-40px) rotate(-360deg) scale(1, 1);
-    opacity: 0.8;
-  }
-}
 `
 
 // extending Component with static properties that can be attached to it
