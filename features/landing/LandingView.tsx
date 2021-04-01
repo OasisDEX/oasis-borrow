@@ -180,8 +180,10 @@ function Expandable({ question, answer, isOpen, toggle }: ExpandableProps) {
   return (
     <Box sx={{
       maxWidth: '762px',
-      borderTop: 'light',
       borderBottom: 'light',
+      '&:first-of-type': {
+        borderTop: 'light',
+      }
     }}>
       <Button sx={{ position: 'relative' }} variant="expandable" onClick={toggle}>
         {question}
