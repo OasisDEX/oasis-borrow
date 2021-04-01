@@ -1160,7 +1160,7 @@ const oasisBaseTheme = {
       p: 0,
       py: 3,
       ':hover': {
-        opacity: 0.8,
+        opacity: 0.7,
       },
       ':focus': {
         outline: 'none',
