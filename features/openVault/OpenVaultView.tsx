@@ -702,7 +702,7 @@ function OpenVaultFormConfirmation({
             <Icon name="checkmark" size={25} color="onSuccess" />
             <Grid pl={2} gap={1}>
               <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                Vault #{id} created!
+                Vault #{id?.toString()} created!
               </Text>
               <Link
                 href={`${etherscan}/tx/${openTxHash}`}
