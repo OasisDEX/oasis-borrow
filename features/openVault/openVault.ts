@@ -97,7 +97,7 @@ function applyIsStageStates(
   }
 }
 
-function applyVaultCalculations(state: OpenVaultState): OpenVaultState {
+export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultState {
   const {
     collateralBalance,
     depositAmount,
@@ -164,7 +164,7 @@ function apply(state: OpenVaultState, change: OpenVaultChange) {
   const s5 = applyOpenVaultAllowance(change, s4)
   const s6 = applyOpenVaultEnvironment(change, s5)
   const s7 = applyOpenVaultInjectedOverride(change, s6)
-  return applyVaultCalculations(s7)
+  return applyOpenVaultCalculations(s7)
 }
 
 export type IlkValidationStage =
@@ -370,6 +370,20 @@ function createIlkValidation$(ilks$: Observable<string[]>, ilk: string) {
   )
 }
 
+export const defaultOpenVaultState = {
+  ...defaultIsStates,
+  stage: 'editing' as OpenVaultStage,
+  errorMessages: [],
+  warningMessages: [],
+  showIlkDetails: false,
+  showGenerateOption: false,
+  afterLiquidationPrice: zero,
+  afterCollateralizationRatio: zero,
+  maxDepositAmount: zero,
+  maxDepositAmountUSD: zero,
+  maxGenerateAmount: zero,
+}
+
 export function createOpenVault$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
@@ -424,19 +438,7 @@ export function createOpenVault$(
 
                       const initialState: OpenVaultState = {
                         ...userTokenInfo,
-                        ...defaultIsStates,
-
-                        stage: 'editing',
-                        errorMessages: [],
-                        warningMessages: [],
-                        showIlkDetails: false,
-                        showGenerateOption: false,
-                        afterLiquidationPrice: zero,
-                        afterCollateralizationRatio: zero,
-                        maxDepositAmount: zero,
-                        maxDepositAmountUSD: zero,
-                        maxGenerateAmount: zero,
-
+                        ...defaultOpenVaultState,
                         token,
                         account,
                         ilk,

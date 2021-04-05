@@ -15,20 +15,19 @@ import {
   UserTokenInfo,
 } from 'features/shared/userTokenInfo'
 import { getStateUnpacker } from 'helpers/testHelpers'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { describe, it } from 'mocha'
 import { of } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
+import { first, switchMap } from 'rxjs/operators'
 
 import {
+  applyManageVaultCalculations,
   createManageVault$,
   defaultManageVaultState,
   ManageVaultStage,
   ManageVaultState,
-  validateErrors,
-  validateWarnings,
 } from './manageVault'
-
+import { validateErrors, validateWarnings } from './manageVaultValidations'
 const SLIGHTLY_LESS_THAN_ONE = 0.99
 const SLIGHTLY_MORE_THAN_ONE = 1.01
 
@@ -40,11 +39,35 @@ describe('manageVault', () => {
     )
     const withdrawAmount = new BigNumber('10')
     const paybackAmount = new BigNumber('10')
-    const manageVaultState = {
+    const {
+      ilkDebtAvailable,
+      maxDebtPerUnitCollateral,
+      debtFloor,
+      liquidationRatio,
+      stabilityFee,
+      liquidationPenalty,
+    } = protoWBTCAIlkData
+
+    const manageVaultState: ManageVaultState = applyManageVaultCalculations({
       ...defaultManageVaultState,
       ...protoUserWBTCTokenInfo,
+      id: one,
+      ilk: 'WBTC-A',
       token: 'WBTC',
+      account: '0x0',
+      accountIsController: true,
+      stabilityFee,
+      liquidationPenalty,
+      lockedCollateral: zero,
+      debt: zero,
+      liquidationPrice: zero,
+      collateralizationRatio: zero,
+      freeCollateral: zero,
       proxyAddress: '0xProxyAddress',
+      ilkDebtAvailable,
+      maxDebtPerUnitCollateral,
+      debtFloor,
+      liquidationRatio,
       generateAmount: new BigNumber('5000'),
       collateralAllowance: depositAmount,
       daiAllowance: paybackAmount,
@@ -52,7 +75,10 @@ describe('manageVault', () => {
       depositAmountUSD,
       withdrawAmount,
       paybackAmount,
-    }
+      safeConfirmations: 6,
+      injectStateOverride: () => {},
+    })
+
     it('Should show no warnings when the state is correct', () => {
       const { warningMessages } = validateWarnings(manageVaultState)
       expect(warningMessages).to.be.an('array').that.is.empty
@@ -82,14 +108,14 @@ describe('manageVault', () => {
     it('Should show potentialGenerateAmountLessThanDebtFloor warning when debtFloor is slightly higher that depositAmountUSD', () => {
       const { warningMessages } = validateWarnings({
         ...manageVaultState,
-        debtFloor: manageVaultState.depositAmountUSD.multipliedBy(SLIGHTLY_MORE_THAN_ONE),
+        debtFloor: manageVaultState.depositAmountUSD!.multipliedBy(SLIGHTLY_MORE_THAN_ONE),
       })
       expect(warningMessages).to.deep.equal(['potentialGenerateAmountLessThanDebtFloor'])
     })
     it('Should not show potentialGenerateAmountLessThanDebtFloor warning when debtFloor is slightly lower that depositAmountUSD', () => {
       const { warningMessages } = validateWarnings({
         ...manageVaultState,
-        debtFloor: manageVaultState.depositAmountUSD.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
+        debtFloor: manageVaultState.depositAmountUSD!.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
       })
       expect(warningMessages).to.deep.equal([])
     })
@@ -110,7 +136,7 @@ describe('manageVault', () => {
     it('Should show daiAllowanceLessThanPaybackAmount warning when allowance is not enough', () => {
       const { warningMessages } = validateWarnings({
         ...manageVaultState,
-        daiAllowance: manageVaultState.paybackAmount.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
+        daiAllowance: manageVaultState.paybackAmount!.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
       })
       expect(warningMessages).to.deep.equal(['daiAllowanceLessThanPaybackAmount'])
     })
@@ -121,29 +147,49 @@ describe('manageVault', () => {
     const depositAmountUSD = depositAmount.multipliedBy(
       protoUserWBTCTokenInfo.currentCollateralPrice,
     )
-    const maxDepositAmount = depositAmountUSD.multipliedBy(2)
     const ilkDebtAvailable = new BigNumber('50000')
     const debtFloor = new BigNumber('2000')
     const withdrawAmount = new BigNumber('10')
     const paybackAmount = new BigNumber('10')
-    const manageVaultState = {
+    const {
+      maxDebtPerUnitCollateral,
+      liquidationRatio,
+      stabilityFee,
+      liquidationPenalty,
+    } = protoWBTCAIlkData
+
+    const manageVaultState: ManageVaultState = applyManageVaultCalculations({
       ...defaultManageVaultState,
       ...protoUserWBTCTokenInfo,
       token: 'WBTC',
+      id: one,
+      ilk: 'WBTC-A',
+      account: '0x0',
+      accountIsController: true,
+      lockedCollateral: new BigNumber('100'),
+      collateralBalance: new BigNumber('100'),
       proxyAddress: '0xProxyAddress',
       generateAmount: new BigNumber('5000'),
       collateralAllowance: depositAmount,
       daiAllowance: paybackAmount,
+      maxDebtPerUnitCollateral,
+      liquidationRatio,
+      stabilityFee,
+      liquidationPenalty,
       depositAmount,
+      debt: new BigNumber('10000'),
+      daiBalance: new BigNumber('10000'),
+      liquidationPrice: zero,
+      collateralizationRatio: zero,
+      freeCollateral: new BigNumber('4000'),
       depositAmountUSD,
       withdrawAmount,
       paybackAmount,
-      maxDepositAmount,
       debtFloor,
       ilkDebtAvailable,
-      maxWithdrawAmount: withdrawAmount,
-      maxPaybackAmount: paybackAmount,
-    }
+      safeConfirmations: 6,
+      injectStateOverride: () => {},
+    })
     it('Should show no errors when the state is correct', () => {
       const { errorMessages } = validateErrors(manageVaultState)
       expect(errorMessages).to.be.an('array').that.is.empty
@@ -158,6 +204,7 @@ describe('manageVault', () => {
     it('Should show generateAmountLessThanDebtFloor error', () => {
       const { errorMessages } = validateErrors({
         ...manageVaultState,
+        debt: zero,
         generateAmount: debtFloor.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
       })
       expect(errorMessages).to.deep.equal(['generateAmountLessThanDebtFloor'])
@@ -207,7 +254,7 @@ describe('manageVault', () => {
   describe('createManageVault$', () => {
     const protoUrnAddress = '0xEe0b6175705CDFEb824e5092d6547C011EbB46A8'
 
-    interface FixtureProps {
+    type FixtureProps = Partial<ManageVaultState> & {
       context?: ContextConnected
       proxyAddress?: string
       allowance?: BigNumber
@@ -265,25 +312,6 @@ describe('manageVault', () => {
           ? protoWBTCAIlkData
           : protoUSDCAIlkData
 
-      const newState: Partial<ManageVaultState> = {
-        ...(depositAmount && {
-          depositAmount,
-          depositAmountUSD: depositAmount.times(protoUserTokenInfo.currentCollateralPrice),
-        }),
-        ...(withdrawAmount && {
-          withdrawAmount,
-          withdrawAmountUSD: withdrawAmount.times(protoUserTokenInfo.currentCollateralPrice),
-        }),
-        ...(generateAmount && {
-          generateAmount,
-        }),
-        ...(paybackAmount && {
-          paybackAmount,
-        }),
-        ...(stage && { stage }),
-      }
-
-      const defaultState$ = of({ ...defaultManageVaultState, ...(newState || {}) })
       const context$ = of(context || protoContextConnected)
       const txHelpers$ = of(txHelpers || protoTxHelpers)
       const proxyAddress$ = () => of(proxyAddress)
@@ -329,7 +357,6 @@ describe('manageVault', () => {
         )
 
       const manageVault$ = createManageVault$(
-        defaultState$,
         context$,
         txHelpers$,
         proxyAddress$,
@@ -339,6 +366,31 @@ describe('manageVault', () => {
         vault$,
         id,
       )
+
+      const newState: Partial<ManageVaultState> = {
+        ...(stage && { stage }),
+        ...(depositAmount && {
+          depositAmount,
+          depositAmountUSD: depositAmount.times(protoUserTokenInfo.currentCollateralPrice),
+        }),
+        ...(withdrawAmount && {
+          withdrawAmount,
+          withdrawAmountUSD: withdrawAmount.times(protoUserTokenInfo.currentCollateralPrice),
+        }),
+        ...(generateAmount && {
+          generateAmount,
+        }),
+        ...(paybackAmount && {
+          paybackAmount,
+        }),
+      }
+
+      manageVault$.pipe(first()).subscribe(({ injectStateOverride }: any) => {
+        if (injectStateOverride) {
+          injectStateOverride(newState || {})
+        }
+      })
+
       return manageVault$
     }
 
@@ -352,29 +404,18 @@ describe('manageVault', () => {
     it('Should start in an editing stage', () => {
       const state = getStateUnpacker(createTestFixture(defaults))
       const s = state()
-      expect(s.stage).to.be.equal('editing')
+      expect(s.stage).to.be.equal('collateralEditing')
       expect(s.isEditingStage).to.be.true
     })
 
     it('editing.change()', () => {
       const depositAmount = new BigNumber(5)
       const state = getStateUnpacker(createTestFixture(defaults))
-      ;(state() as ManageVaultState).change!({ kind: 'depositAmount', depositAmount })
+      ;(state() as ManageVaultState).updateDeposit!(depositAmount)
       expect((state() as ManageVaultState).depositAmount!.toString()).to.be.equal(
         depositAmount.toString(),
       )
       expect(state().isEditingStage).to.be.true
-    })
-
-    it('editing.change().reset()', () => {
-      const depositAmount = new BigNumber(5)
-      const state = getStateUnpacker(createTestFixture(defaults))
-      ;(state() as ManageVaultState).change!({ kind: 'depositAmount', depositAmount })
-      expect((state() as ManageVaultState).depositAmount!.toString()).to.be.equal(
-        depositAmount.toString(),
-      )
-      ;(state() as ManageVaultState).reset!()
-      expect((state() as ManageVaultState).depositAmount).to.be.undefined
     })
 
     it('editing.progress()', () => {
@@ -402,7 +443,7 @@ describe('manageVault', () => {
       expect(state().stage).to.be.equal('manageWaitingForConfirmation')
     })
 
-    it('openWaitingForConfirmation.progress()', () => {
+    it('manageWaitingForConfirmation.progress()', () => {
       const state = getStateUnpacker(
         createTestFixture({
           ...defaults,

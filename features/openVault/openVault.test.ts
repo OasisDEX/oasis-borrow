@@ -17,16 +17,17 @@ import { zero } from 'helpers/zero'
 import _ from 'lodash'
 import { beforeEach, describe, it } from 'mocha'
 import { Observable, of } from 'rxjs'
+import { first } from 'rxjs/operators'
 
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
 import {
+  applyOpenVaultCalculations,
   createOpenVault$,
   defaultOpenVaultState,
   OpenVaultState,
-  parseVaultIdFromReceiptLogs,
-  validateErrors,
-  validateWarnings,
 } from './openVault'
+import { parseVaultIdFromReceiptLogs } from './openVaultTransactions'
+import { validateErrors, validateWarnings } from './openVaultValidations'
 
 const SLIGHTLY_LESS_THAN_ONE = 0.99
 const SLIGHTLY_MORE_THAN_ONE = 1.01
@@ -37,7 +38,7 @@ describe('openVault', () => {
   describe('parseVaultIdFromReceiptLogs', () => {
     it('should return vaultId', () => {
       const vaultId = parseVaultIdFromReceiptLogs(newCDPTxReceipt)
-      expect(vaultId).to.equal(3281)
+      expect(vaultId!.toString()).to.equal('3281')
     })
     it('should return undefined if NewCdp log is not found', () => {
       const vaultId = parseVaultIdFromReceiptLogs({ logs: [] })
@@ -47,15 +48,29 @@ describe('openVault', () => {
 
   describe('validateWarnings', () => {
     const depositAmount = new BigNumber('10')
-    const openVaultState = {
+    const {
+      ilkDebtAvailable,
+      maxDebtPerUnitCollateral,
+      debtFloor,
+      liquidationRatio,
+    } = protoWBTCAIlkData
+    const openVaultState: OpenVaultState = {
       ...defaultOpenVaultState,
       ...protoUserWBTCTokenInfo,
+      account: '0x0',
+      ilk: 'WBTC-A',
       token: 'WBTC',
+      ilkDebtAvailable,
+      debtFloor,
+      liquidationRatio,
+      safeConfirmations: 5,
+      maxDebtPerUnitCollateral,
       proxyAddress: '0xProxyAddress',
       depositAmount,
       depositAmountUSD: depositAmount.multipliedBy(protoUserWBTCTokenInfo.currentCollateralPrice),
       generateAmount: new BigNumber('5000'),
       allowance: depositAmount,
+      injectStateOverride: () => {},
     }
     it('Should show no warnings when the state is correct', () => {
       const { warningMessages } = validateWarnings(openVaultState)
@@ -86,14 +101,14 @@ describe('openVault', () => {
     it('Should show potentialGenerateAmountLessThanDebtFloor warning when debtFloor is slightly higher that depositAmountUSD', () => {
       const { warningMessages } = validateWarnings({
         ...openVaultState,
-        debtFloor: openVaultState.depositAmountUSD.multipliedBy(SLIGHTLY_MORE_THAN_ONE),
+        debtFloor: openVaultState.depositAmountUSD!.multipliedBy(SLIGHTLY_MORE_THAN_ONE),
       })
       expect(warningMessages).to.deep.equal(['potentialGenerateAmountLessThanDebtFloor'])
     })
     it('Should not show potentialGenerateAmountLessThanDebtFloor warning when debtFloor is slightly lower that depositAmountUSD', () => {
       const { warningMessages } = validateWarnings({
         ...openVaultState,
-        debtFloor: openVaultState.depositAmountUSD.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
+        debtFloor: openVaultState.depositAmountUSD!.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
       })
       expect(warningMessages).to.deep.equal([])
     })
@@ -114,7 +129,7 @@ describe('openVault', () => {
     it('Should show allowanceLessThanDepositAmount warning when allowance is not enough', () => {
       const { warningMessages } = validateWarnings({
         ...openVaultState,
-        allowance: openVaultState.depositAmount.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
+        allowance: openVaultState.depositAmount!.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
       })
       expect(warningMessages).to.deep.equal(['allowanceLessThanDepositAmount'])
     })
@@ -129,9 +144,15 @@ describe('openVault', () => {
     const ilkDebtAvailable = new BigNumber('50000')
     const debtFloor = new BigNumber('2000')
     const generateAmount = new BigNumber('5000')
-    const openVaultState: OpenVaultState = {
+
+    const { maxDebtPerUnitCollateral, liquidationRatio } = protoWBTCAIlkData
+
+    const openVaultState: OpenVaultState = applyOpenVaultCalculations({
       ...defaultOpenVaultState,
       ...protoUserWBTCTokenInfo,
+      collateralBalance: maxDepositAmount.plus(10),
+      account: '0x0',
+      ilk: 'WBTC-A',
       token: 'WBTC',
       proxyAddress: '0xProxyAddress',
       depositAmount,
@@ -141,7 +162,12 @@ describe('openVault', () => {
       ilkDebtAvailable,
       maxDepositAmount,
       debtFloor,
-    }
+      maxDebtPerUnitCollateral,
+      liquidationRatio,
+      safeConfirmations: 6,
+      injectStateOverride: () => {},
+    })
+
     it('Should show no errors when the state is correct', () => {
       const { errorMessages } = validateErrors(openVaultState)
       expect(errorMessages).to.be.an('array').that.is.empty
@@ -203,14 +229,13 @@ describe('openVault', () => {
     })
   })
   describe('createOpenVault$', () => {
-    interface FixtureProps {
+    type FixtureProps = Partial<OpenVaultState> & {
       title?: string
       context?: ContextConnected
       proxyAddress?: string
       allowance?: BigNumber
       ilks$?: Observable<string[]>
       userTokenInfo?: Partial<UserTokenInfo>
-      newState?: Partial<OpenVaultState>
       ilk: string
       txHelpers?: TxHelpers
     }
@@ -221,35 +246,38 @@ describe('openVault', () => {
       allowance,
       ilks$,
       userTokenInfo,
-      newState,
       ilk,
       txHelpers,
+      stage,
+      depositAmount,
+      ...otherState
     }: FixtureProps) {
-      const defaultState$ = of({ ...defaultOpenVaultState, ...(newState || {}) })
       const context$ = of(context || protoContextConnected)
       const txHelpers$ = of(txHelpers || protoTxHelpers)
       const proxyAddress$ = _.constant(of(proxyAddress))
       const allowance$ = _.constant(of(allowance || maxUint256))
-      const userTokenInfo$ = (token: string) =>
-        of({
-          ...(token === 'ETH'
-            ? protoUserETHTokenInfo
-            : token === 'WBTC'
-            ? protoUserWBTCTokenInfo
-            : protoUserUSDCTokenInfo),
-          ...(userTokenInfo || {}),
-        })
-      const ilkData$ = (ilk: string) =>
-        of(
-          ilk === 'ETH-A'
-            ? protoETHAIlkData
-            : ilk === 'WBTC-A'
-            ? protoWBTCAIlkData
-            : protoUSDCAIlkData,
-        )
+
+      const protoUserTokenInfo = {
+        ...(ilk === 'ETH-A'
+          ? protoUserETHTokenInfo
+          : ilk === 'WBTC-A'
+          ? protoUserWBTCTokenInfo
+          : protoUserUSDCTokenInfo),
+        ...(userTokenInfo || {}),
+      }
+
+      const protoIlkData =
+        ilk === 'ETH-A'
+          ? protoETHAIlkData
+          : ilk === 'WBTC-A'
+          ? protoWBTCAIlkData
+          : protoUSDCAIlkData
+
+      const userTokenInfo$ = () => of(protoUserTokenInfo)
+      const ilkData$ = () => of(protoIlkData)
+
       const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
       const openVault$ = createOpenVault$(
-        defaultState$,
         context$,
         txHelpers$,
         proxyAddress$,
@@ -260,6 +288,21 @@ describe('openVault', () => {
         ilkToToken$,
         ilk,
       )
+
+      const newState: Partial<OpenVaultState> = {
+        ...otherState,
+        ...(stage && { stage }),
+        ...(depositAmount && {
+          depositAmount,
+          depositAmountUSD: depositAmount.times(protoUserTokenInfo.currentCollateralPrice),
+        }),
+      }
+
+      openVault$.pipe(first()).subscribe(({ injectStateOverride }: any) => {
+        if (injectStateOverride) {
+          injectStateOverride(newState || {})
+        }
+      })
       return openVault$
     }
 
@@ -274,22 +317,11 @@ describe('openVault', () => {
     it('editing.change()', () => {
       const depositAmount = new BigNumber(5)
       const state = getStateUnpacker(createTestFixture({ ilk: 'ETH-A' }))
-      ;(state() as OpenVaultState).change!({ kind: 'depositAmount', depositAmount })
+      ;(state() as OpenVaultState).updateDeposit!(depositAmount)
       expect((state() as OpenVaultState).depositAmount!.toString()).to.be.equal(
         depositAmount.toString(),
       )
       expect(state().isEditingStage).to.be.true
-    })
-
-    it('editing.change().reset()', () => {
-      const depositAmount = new BigNumber(5)
-      const state = getStateUnpacker(createTestFixture({ ilk: 'ETH-A' }))
-      ;(state() as OpenVaultState).change!({ kind: 'depositAmount', depositAmount })
-      expect((state() as OpenVaultState).depositAmount!.toString()).to.be.equal(
-        depositAmount.toString(),
-      )
-      ;(state() as OpenVaultState).reset!()
-      expect((state() as OpenVaultState).depositAmount).to.be.undefined
     })
 
     it('editing.progress()', () => {
@@ -351,7 +383,7 @@ describe('openVault', () => {
       ;(state() as OpenVaultState).progress!()
       expect(state().isOpenStage).to.be.true
       expect(state().stage).to.be.equal('openSuccess')
-      expect((state() as OpenVaultState).id).to.be.equal(3281)
+      expect((state() as OpenVaultState).id!.toString()).to.be.equal('3281')
     })
   })
 })

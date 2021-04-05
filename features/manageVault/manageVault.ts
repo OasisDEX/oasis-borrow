@@ -96,7 +96,7 @@ function applyIsStageStates(state: ManageVaultState): ManageVaultState {
   }
 }
 
-function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
+export function applyManageVaultCalculations(state: ManageVaultState): ManageVaultState {
   const {
     collateralBalance,
     depositAmount,
@@ -193,7 +193,7 @@ function apply(state: ManageVaultState, change: ManageVaultChange) {
   const s5 = applyManageVaultTransaction(change, s4)
   const s6 = applyManageVaultEnvironment(change, s5)
   const s7 = applyManageVaultInjectedOverride(change, s6)
-  return applyVaultCalculations(s7)
+  return applyManageVaultCalculations(s7)
 }
 
 export type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
@@ -303,7 +303,6 @@ export type DefaultManageVaultState = {
   liquidationPenalty: BigNumber
 
   lockedCollateral: BigNumber
-  lockedCollateralPrice: BigNumber
   debt: BigNumber
   liquidationPrice: BigNumber
   collateralizationRatio: BigNumber
@@ -458,6 +457,25 @@ function addTransitions(
   return state
 }
 
+export const defaultManageVaultState = {
+  ...defaultIsStates,
+  stage: 'collateralEditing' as ManageVaultStage,
+  originalEditingStage: 'collateralEditing' as ManageVaultEditingStage,
+  errorMessages: [],
+  warningMessages: [],
+  showIlkDetails: false,
+  showDepositAndGenerateOption: false,
+  showPaybackAndWithdrawOption: false,
+  maxDepositAmount: zero,
+  maxDepositAmountUSD: zero,
+  maxGenerateAmount: zero,
+  maxWithdrawAmount: zero,
+  maxWithdrawAmountUSD: zero,
+  maxPaybackAmount: zero,
+  afterCollateralizationRatio: zero,
+  afterLiquidationPrice: zero,
+}
+
 export function createManageVault$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
@@ -505,25 +523,7 @@ export function createManageVault$(
 
                   const initialState: ManageVaultState = {
                     ...userTokenInfo,
-                    ...defaultIsStates,
-
-                    stage: 'collateralEditing',
-                    originalEditingStage: 'collateralEditing',
-                    errorMessages: [],
-                    warningMessages: [],
-                    showIlkDetails: false,
-                    showDepositAndGenerateOption: false,
-                    showPaybackAndWithdrawOption: false,
-
-                    maxDepositAmount: zero,
-                    maxDepositAmountUSD: zero,
-                    maxGenerateAmount: zero,
-                    maxWithdrawAmount: zero,
-                    maxWithdrawAmountUSD: zero,
-                    maxPaybackAmount: zero,
-                    afterCollateralizationRatio: zero,
-                    afterLiquidationPrice: zero,
-
+                    ...defaultManageVaultState,
                     id,
                     account,
                     proxyAddress,
@@ -534,7 +534,6 @@ export function createManageVault$(
 
                     token: vault.token,
                     lockedCollateral: vault.lockedCollateral,
-                    lockedCollateralPrice: vault.lockedCollateralPrice,
                     debt: vault.debt,
                     liquidationPrice: vault.liquidationPrice,
                     collateralizationRatio: vault.collateralizationRatio,

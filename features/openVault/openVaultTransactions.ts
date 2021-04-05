@@ -61,6 +61,7 @@ type OpenChange =
     }
   | {
       kind: 'openSuccess'
+      id: BigNumber
     }
 
 export type OpenVaultTransactionChange = ProxyChange | AllowanceChange | OpenChange
@@ -163,7 +164,7 @@ export function applyOpenVaultTransaction(
   }
 
   if (change.kind === 'openSuccess') {
-    return { ...state, stage: 'openSuccess' }
+    return { ...state, stage: 'openSuccess', id: change.id }
   }
 
   return state
