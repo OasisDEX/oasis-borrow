@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
@@ -40,25 +39,6 @@ const defaultIsStates = {
   isCollateralAllowanceStage: false,
   isDaiAllowanceStage: false,
   isManageStage: false,
-}
-
-const defaultPartialState = {
-  errorMessages: [],
-  warningMessages: [],
-  showIlkDetails: false,
-  showDepositAndGenerateOption: false,
-  showPaybackAndWithdrawOption: false,
-
-  maxDepositAmount: zero,
-  maxDepositAmountUSD: zero,
-  maxGenerateAmount: zero,
-  maxWithdrawAmount: zero,
-  maxWithdrawAmountUSD: zero,
-  maxPaybackAmount: zero,
-  afterCollateralizationRatio: zero,
-  afterLiquidationPrice: zero,
-  collateralAllowanceAmount: maxUint256,
-  daiAllowanceAmount: maxUint256,
 }
 
 function applyIsStageStates(state: ManageVaultState): ManageVaultState {
@@ -116,7 +96,7 @@ function applyIsStageStates(state: ManageVaultState): ManageVaultState {
   }
 }
 
-function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
+export function applyManageVaultCalculations(state: ManageVaultState): ManageVaultState {
   const {
     collateralBalance,
     depositAmount,
@@ -186,7 +166,7 @@ interface ManageVaultInjectedOverrideChange {
   stateToOverride: Partial<ManageVaultState>
 }
 
-function applyInjectedOverride(change: ManageVaultChange, state: ManageVaultState) {
+function applyManageVaultInjectedOverride(change: ManageVaultChange, state: ManageVaultState) {
   if (change.kind === 'injectStateOverride') {
     return {
       ...state,
@@ -212,7 +192,8 @@ function apply(state: ManageVaultState, change: ManageVaultChange) {
   const s4 = applyManageVaultTransition(change, s3)
   const s5 = applyManageVaultTransaction(change, s4)
   const s6 = applyManageVaultEnvironment(change, s5)
-  return applyInjectedOverride(change, s6)
+  const s7 = applyManageVaultInjectedOverride(change, s6)
+  return applyManageVaultCalculations(s7)
 }
 
 export type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
@@ -322,7 +303,7 @@ export type DefaultManageVaultState = {
   liquidationPenalty: BigNumber
 
   lockedCollateral: BigNumber
-  lockedCollateralPrice: BigNumber
+  lockedCollateralUSD: BigNumber
   debt: BigNumber
   liquidationPrice: BigNumber
   collateralizationRatio: BigNumber
@@ -477,6 +458,25 @@ function addTransitions(
   return state
 }
 
+export const defaultPartialManageVaultState = {
+  ...defaultIsStates,
+  stage: 'collateralEditing' as ManageVaultStage,
+  originalEditingStage: 'collateralEditing' as ManageVaultEditingStage,
+  errorMessages: [],
+  warningMessages: [],
+  showIlkDetails: false,
+  showDepositAndGenerateOption: false,
+  showPaybackAndWithdrawOption: false,
+  maxDepositAmount: zero,
+  maxDepositAmountUSD: zero,
+  maxGenerateAmount: zero,
+  maxWithdrawAmount: zero,
+  maxWithdrawAmountUSD: zero,
+  maxPaybackAmount: zero,
+  afterCollateralizationRatio: zero,
+  afterLiquidationPrice: zero,
+}
+
 export function createManageVault$(
   context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
@@ -529,8 +529,7 @@ export function createManageVault$(
                   const initialState: ManageVaultState = {
                     ...priceInfo,
                     ...balanceInfo,
-                    ...defaultIsStates,
-                    ...defaultPartialState,
+                    ...defaultPartialManageVaultState,
                     ...ilkData,
                     stage: 'collateralEditing',
                     originalEditingStage: 'collateralEditing',
@@ -542,7 +541,7 @@ export function createManageVault$(
                     accountIsController: account === vault.controller,
                     token: vault.token,
                     lockedCollateral: vault.lockedCollateral,
-                    lockedCollateralPrice: vault.lockedCollateralPrice,
+                    lockedCollateralUSD: vault.lockedCollateralUSD,
                     debt: vault.debt,
                     liquidationPrice: vault.liquidationPrice,
                     collateralizationRatio: vault.collateralizationRatio,
@@ -580,7 +579,6 @@ export function createManageVault$(
 
                   return merge(change$, environmentChanges$).pipe(
                     scan(apply, initialState),
-                    map(applyVaultCalculations),
                     map(validateErrors),
                     map(validateWarnings),
                     map(

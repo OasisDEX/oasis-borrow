@@ -1,18 +1,26 @@
 import { IlkDataChange } from 'blockchain/ilks'
-import { priceInfoChange } from 'features/shared/priceInfo'
+import { BalanceInfoChange } from 'features/shared/balanceInfo'
+import { PriceInfoChange } from 'features/shared/priceInfo'
 
 import { OpenVaultChange, OpenVaultState } from './openVault'
 
-export type OpenVaultEnvironmentChange = priceInfoChange | IlkDataChange
+export type OpenVaultEnvironmentChange = PriceInfoChange | BalanceInfoChange | IlkDataChange
 
 export function applyOpenVaultEnvironment(
   change: OpenVaultChange,
   state: OpenVaultState,
 ): OpenVaultState {
-  if (change.kind === 'userTokenInfo') {
+  if (change.kind === 'priceInfo') {
     return {
       ...state,
-      ...change.userTokenInfo,
+      ...change.priceInfo,
+    }
+  }
+
+  if (change.kind === 'balanceInfo') {
+    return {
+      ...state,
+      ...change.balanceInfo,
     }
   }
 

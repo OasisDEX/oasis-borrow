@@ -30,7 +30,7 @@ function ManageVaultDetails(props: ManageVaultState) {
     collateralizationRatio,
     liquidationPrice,
     lockedCollateral,
-    lockedCollateralPrice,
+    lockedCollateralUSD,
     currentCollateralPrice,
     nextCollateralPrice,
     isStaticCollateralPrice,
@@ -57,7 +57,7 @@ function ManageVaultDetails(props: ManageVaultState) {
   const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
 
   const locked = formatAmount(lockedCollateral, token)
-  const lockedUSD = formatAmount(lockedCollateralPrice, token)
+  const lockedUSD = formatAmount(lockedCollateralUSD, token)
 
   const tokenInfo = getToken(token)
 

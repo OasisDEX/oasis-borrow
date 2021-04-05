@@ -95,7 +95,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageVa
   if (change.kind === 'depositUSD') {
     const { depositAmountUSD } = change
     const { stage, currentCollateralPrice } = state
-    const depositAmount = depositAmountUSD && depositAmountUSD.times(currentCollateralPrice)
+    const depositAmount = depositAmountUSD && depositAmountUSD.div(currentCollateralPrice)
 
     return {
       ...state,

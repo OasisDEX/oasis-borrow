@@ -85,7 +85,7 @@ export function priceInfoChange$(
   )
 }
 
-export const protoUserETHTokenInfo: PriceInfo = {
+export const protoETHPriceInfo: PriceInfo = {
   currentEthPrice: new BigNumber('1780.7'),
   nextEthPrice: new BigNumber('1798.6'),
   dateLastCollateralPrice: now,
@@ -101,7 +101,7 @@ export const protoUserETHTokenInfo: PriceInfo = {
   collateralPricePercentageChange: new BigNumber('0.99004781496719670855'),
 }
 
-export const protoUserWBTCTokenInfo: PriceInfo = {
+export const protoWBTCPriceInfo: PriceInfo = {
   currentEthPrice: new BigNumber('1780.7'),
   nextEthPrice: new BigNumber('1798.6'),
   dateLastCollateralPrice: now,
@@ -117,7 +117,7 @@ export const protoUserWBTCTokenInfo: PriceInfo = {
   collateralPricePercentageChange: new BigNumber('0.98968508264769875786'),
 }
 
-export const protoUserUSDCTokenInfo: PriceInfo = {
+export const protoUSDCPriceInfo: PriceInfo = {
   currentEthPrice: new BigNumber('1780.7'),
   nextEthPrice: new BigNumber('1798.6'),
   dateLastCollateralPrice: now,
