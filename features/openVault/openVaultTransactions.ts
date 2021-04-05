@@ -291,7 +291,9 @@ export function openVault(
         (txState) =>
           of({
             kind: 'openSuccess',
-            id: parseVaultIdFromReceiptLogs(txState.status === TxStatus.Success && txState.receipt),
+            id: parseVaultIdFromReceiptLogs(
+              txState.status === TxStatus.Success && txState.receipt,
+            )!,
           }),
       ),
     )

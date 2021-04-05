@@ -303,6 +303,7 @@ export type DefaultManageVaultState = {
   liquidationPenalty: BigNumber
 
   lockedCollateral: BigNumber
+  lockedCollateralUSD: BigNumber
   debt: BigNumber
   liquidationPrice: BigNumber
   collateralizationRatio: BigNumber
@@ -534,6 +535,7 @@ export function createManageVault$(
 
                     token: vault.token,
                     lockedCollateral: vault.lockedCollateral,
+                    lockedCollateralUSD: vault.lockedCollateralUSD,
                     debt: vault.debt,
                     liquidationPrice: vault.liquidationPrice,
                     collateralizationRatio: vault.collateralizationRatio,

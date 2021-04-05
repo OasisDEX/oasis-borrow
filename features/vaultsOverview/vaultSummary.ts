@@ -13,7 +13,7 @@ export interface VaultSummary {
 }
 
 function getTotalCollateralPrice(vaults: Vault[]) {
-  return vaults.reduce((total, vault) => total.plus(vault.lockedCollateralPrice), new BigNumber(0))
+  return vaults.reduce((total, vault) => total.plus(vault.lockedCollateralUSD), new BigNumber(0))
 }
 
 function getTotalDaiDebt(vaults: Vault[]) {
