@@ -25,7 +25,6 @@ type StoryProps = Partial<OpenVaultState> & {
   context?: ContextConnected
   proxyAddress?: string
   allowance?: BigNumber
-  ilks$?: Observable<string[]>
   priceInfo?: Partial<PriceInfo>
   balanceInfo?: Partial<BalanceInfo>
   newState?: Partial<OpenVaultState>
@@ -37,7 +36,6 @@ function createStory({
   context,
   proxyAddress,
   allowance,
-  ilks$,
   priceInfo,
   balanceInfo,
   ilk,
@@ -81,7 +79,6 @@ function createStory({
       priceInfo$,
       balanceInfo$,
       ilkData$,
-      ilks$ || of(['ETH-A', 'WBTC-A', 'USDC-A']),
       ilkToToken$,
       ilk,
     )
@@ -133,10 +130,6 @@ const OpenVaultStoryContainer = ({ title, ilk }: { title?: string; ilk: string }
     </Container>
   )
 }
-
-export const IlkValidationLoadingStage = createStory({ ilks$: EMPTY, ilk: 'ETH-A' })
-
-export const IlkValidationFailureStage = createStory({ ilk: 'ETH-Z' })
 
 export const EditingStage = createStory({
   proxyAddress: '0xProxyAddress',
