@@ -140,7 +140,7 @@ export const IlkValidationFailureStage = createStory({ ilk: 'ETH-Z' })
 
 export const EmptyEditingStage = createStory({
   proxyAddress: '0xProxyAddress',
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'WBTC-A',
 })
 
