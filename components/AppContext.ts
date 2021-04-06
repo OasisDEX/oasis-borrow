@@ -41,7 +41,7 @@ import { createLanding$ } from 'features/landing/landing'
 import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
 import { redirectState$ } from 'features/router/redirectState'
-import { createUserTokenInfo$ } from 'features/shared/userTokenInfo'
+import { createPriceInfo$ } from 'features/shared/priceInfo'
 import {
   checkAcceptanceFromApi$,
   saveAcceptanceFromApi$,
@@ -73,6 +73,7 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { HasGasEstimation } from '../helpers/form'
@@ -235,7 +236,16 @@ export function setupAppContext() {
   const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
   const ilksWithBalance$ = createIlkDataListWithBalances$(context$, ilkDataList$, accountBalances$)
 
-  const userTokenInfo$ = memoize(curry(createUserTokenInfo$)(oraclePriceData$, balance$))
+  const priceInfo$ = curry(createPriceInfo$)(oraclePriceData$)
+  // as (
+  //   token: string,
+  //   account: string | undefined,
+  // ) => Observable<PriceInfo>
+
+  const balanceInfo$ = curry(createBalanceInfo$)(balance$) as (
+    token: string,
+    account: string | undefined,
+  ) => Observable<BalanceInfo>
 
   const openVault$ = memoize(
     curry(createOpenVault$)(
@@ -243,7 +253,8 @@ export function setupAppContext() {
       txHelpers$,
       proxyAddress$,
       allowance$,
-      userTokenInfo$,
+      priceInfo$,
+      balanceInfo$,
       ilkData$,
       ilks$,
       ilkToToken$,
@@ -252,11 +263,12 @@ export function setupAppContext() {
 
   const manageVault$ = memoize(
     curry(createManageVault$)(
-      connectedContext$,
+      context$,
       txHelpers$,
       proxyAddress$,
       allowance$,
-      userTokenInfo$,
+      priceInfo$,
+      balanceInfo$,
       ilkData$,
       vault$,
     ),
@@ -280,7 +292,7 @@ export function setupAppContext() {
   )
 
   const vaultBanners$ = memoize(
-    curry(createVaultsBanners$)(context$, userTokenInfo$, vault$, vaultHistory$),
+    curry(createVaultsBanners$)(context$, priceInfo$, vault$, vaultHistory$),
     bigNumberTostring,
   )
 

@@ -8,12 +8,13 @@ import { ContextConnected, protoContextConnected } from 'blockchain/network'
 import { createVault$, Vault } from 'blockchain/vaults'
 import { expect } from 'chai'
 import { protoTxHelpers, TxHelpers } from 'components/AppContext'
+import { BalanceInfo } from 'features/shared/balanceInfo'
 import {
-  protoUserETHTokenInfo,
-  protoUserUSDCTokenInfo,
-  protoUserWBTCTokenInfo,
-  UserTokenInfo,
-} from 'features/shared/userTokenInfo'
+  PriceInfo,
+  protoETHPriceInfo,
+  protoUSDCPriceInfo,
+  protoWBTCPriceInfo,
+} from 'features/shared/priceInfo'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
 import { describe, it } from 'mocha'
@@ -23,7 +24,7 @@ import { first, switchMap } from 'rxjs/operators'
 import {
   applyManageVaultCalculations,
   createManageVault$,
-  defaultManageVaultState,
+  defaultPartialManageVaultState,
   ManageVaultStage,
   ManageVaultState,
 } from './manageVault'
@@ -34,9 +35,7 @@ const SLIGHTLY_MORE_THAN_ONE = 1.01
 describe('manageVault', () => {
   describe('validateWarnings', () => {
     const depositAmount = new BigNumber('10')
-    const depositAmountUSD = depositAmount.multipliedBy(
-      protoUserWBTCTokenInfo.currentCollateralPrice,
-    )
+    const depositAmountUSD = depositAmount.multipliedBy(protoWBTCPriceInfo.currentCollateralPrice)
     const withdrawAmount = new BigNumber('10')
     const paybackAmount = new BigNumber('10')
     const {
@@ -49,8 +48,8 @@ describe('manageVault', () => {
     } = protoWBTCAIlkData
 
     const manageVaultState: ManageVaultState = applyManageVaultCalculations({
-      ...defaultManageVaultState,
-      ...protoUserWBTCTokenInfo,
+      ...defaultPartialManageVaultState,
+      ...protoWBTCPriceInfo,
       id: one,
       ilk: 'WBTC-A',
       token: 'WBTC',
@@ -77,6 +76,9 @@ describe('manageVault', () => {
       withdrawAmount,
       paybackAmount,
       safeConfirmations: 6,
+      collateralBalance: zero,
+      ethBalance: zero,
+      daiBalance: zero,
       injectStateOverride: () => {},
     })
 
@@ -145,9 +147,7 @@ describe('manageVault', () => {
 
   describe('validateErrors', () => {
     const depositAmount = new BigNumber('10')
-    const depositAmountUSD = depositAmount.multipliedBy(
-      protoUserWBTCTokenInfo.currentCollateralPrice,
-    )
+    const depositAmountUSD = depositAmount.multipliedBy(protoWBTCPriceInfo.currentCollateralPrice)
     const ilkDebtAvailable = new BigNumber('50000')
     const debtFloor = new BigNumber('2000')
     const withdrawAmount = new BigNumber('10')
@@ -161,8 +161,8 @@ describe('manageVault', () => {
     } = protoWBTCAIlkData
 
     const manageVaultState: ManageVaultState = applyManageVaultCalculations({
-      ...defaultManageVaultState,
-      ...protoUserWBTCTokenInfo,
+      ...defaultPartialManageVaultState,
+      ...protoWBTCPriceInfo,
       token: 'WBTC',
       id: one,
       ilk: 'WBTC-A',
@@ -190,6 +190,7 @@ describe('manageVault', () => {
       debtFloor,
       ilkDebtAvailable,
       safeConfirmations: 6,
+      ethBalance: zero,
       injectStateOverride: () => {},
       debt,
     })
@@ -283,7 +284,8 @@ describe('manageVault', () => {
       proxyAddress?: string
       allowance?: BigNumber
       vault?: Partial<Vault>
-      userTokenInfo?: Partial<UserTokenInfo>
+      priceInfo?: Partial<PriceInfo>
+      balanceInfo?: Partial<BalanceInfo>
       urnAddress?: string
       owner?: string
       collateral?: BigNumber
@@ -304,7 +306,8 @@ describe('manageVault', () => {
       context,
       proxyAddress,
       allowance,
-      userTokenInfo,
+      priceInfo,
+      balanceInfo,
       urnAddress,
       owner,
       ilk = 'ETH-A',
@@ -318,16 +321,25 @@ describe('manageVault', () => {
       paybackAmount,
       txHelpers,
       stage,
-      id = zero,
+      id = one,
     }: FixtureProps = {}) {
-      const protoUserTokenInfo = {
+      const protoPriceInfo = {
         ...(ilk === 'ETH-A'
-          ? protoUserETHTokenInfo
+          ? protoETHPriceInfo
           : ilk === 'WBTC-A'
-          ? protoUserWBTCTokenInfo
-          : protoUserUSDCTokenInfo),
-        ...(userTokenInfo || {}),
+          ? protoWBTCPriceInfo
+          : protoUSDCPriceInfo),
+        ...(priceInfo || {}),
       }
+
+      const protoBalanceInfo: BalanceInfo = {
+        collateralBalance: zero,
+        ethBalance: zero,
+        daiBalance: zero,
+        ...balanceInfo,
+      }
+
+      const balanceInfo$ = () => of(protoBalanceInfo)
 
       const protoIlkData =
         ilk === 'ETH-A'
@@ -341,10 +353,10 @@ describe('manageVault', () => {
       const proxyAddress$ = () => of(proxyAddress)
       const allowance$ = () => of(allowance || maxUint256)
 
-      const userTokenInfo$ = () => of(protoUserTokenInfo)
+      const priceInfo$ = () => of(protoPriceInfo)
 
       const oraclePriceData$ = () =>
-        of(protoUserTokenInfo).pipe(
+        of(protoPriceInfo).pipe(
           switchMap(({ currentCollateralPrice }) => {
             return of({ currentPrice: currentCollateralPrice, isStaticPrice: true })
           }),
@@ -385,7 +397,8 @@ describe('manageVault', () => {
         txHelpers$,
         proxyAddress$,
         allowance$,
-        userTokenInfo$,
+        priceInfo$,
+        balanceInfo$,
         ilkData$,
         vault$,
         id,
@@ -395,11 +408,11 @@ describe('manageVault', () => {
         ...(stage && { stage }),
         ...(depositAmount && {
           depositAmount,
-          depositAmountUSD: depositAmount.times(protoUserTokenInfo.currentCollateralPrice),
+          depositAmountUSD: depositAmount.times(protoPriceInfo.currentCollateralPrice),
         }),
         ...(withdrawAmount && {
           withdrawAmount,
-          withdrawAmountUSD: withdrawAmount.times(protoUserTokenInfo.currentCollateralPrice),
+          withdrawAmountUSD: withdrawAmount.times(protoPriceInfo.currentCollateralPrice),
         }),
         ...(generateAmount && {
           generateAmount,

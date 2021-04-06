@@ -5,12 +5,13 @@ import { ContextConnected, protoContextConnected } from 'blockchain/network'
 import { AppContext, protoTxHelpers } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { OpenVaultView } from 'features/openVault/OpenVaultView'
+import { BalanceInfo } from 'features/shared/balanceInfo'
 import {
-  protoUserETHTokenInfo,
-  protoUserUSDCTokenInfo,
-  protoUserWBTCTokenInfo,
-  UserTokenInfo,
-} from 'features/shared/userTokenInfo'
+  PriceInfo,
+  protoETHPriceInfo,
+  protoUSDCPriceInfo,
+  protoWBTCPriceInfo,
+} from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
 import React, { useEffect } from 'react'
 import { EMPTY, Observable, of } from 'rxjs'
@@ -25,7 +26,9 @@ type StoryProps = Partial<OpenVaultState> & {
   proxyAddress?: string
   allowance?: BigNumber
   ilks$?: Observable<string[]>
-  userTokenInfo?: Partial<UserTokenInfo>
+  priceInfo?: Partial<PriceInfo>
+  balanceInfo?: Partial<BalanceInfo>
+  newState?: Partial<OpenVaultState>
   ilk: string
 }
 
@@ -35,7 +38,8 @@ function createStory({
   proxyAddress,
   allowance,
   ilks$,
-  userTokenInfo,
+  priceInfo,
+  balanceInfo,
   ilk,
   ...otherState
 }: StoryProps) {
@@ -45,19 +49,27 @@ function createStory({
     const proxyAddress$ = () => of(proxyAddress)
     const allowance$ = () => of(allowance || maxUint256)
 
-    const protoUserTokenInfo = {
+    const protoBalanceInfo: BalanceInfo = {
+      collateralBalance: zero,
+      ethBalance: zero,
+      daiBalance: zero,
+      ...balanceInfo,
+    }
+
+    const protoPriceInfo = {
       ...(ilk === 'ETH-A'
-        ? protoUserETHTokenInfo
+        ? protoETHPriceInfo
         : ilk === 'WBTC-A'
-        ? protoUserWBTCTokenInfo
-        : protoUserUSDCTokenInfo),
-      ...(userTokenInfo || {}),
+        ? protoWBTCPriceInfo
+        : protoUSDCPriceInfo),
+      ...(priceInfo || {}),
     }
 
     const protoIlkData =
       ilk === 'ETH-A' ? protoETHAIlkData : ilk === 'WBTC-A' ? protoWBTCAIlkData : protoUSDCAIlkData
 
-    const userTokenInfo$ = () => of(protoUserTokenInfo)
+    const balanceInfo$ = () => of(protoBalanceInfo)
+    const priceInfo$ = () => of(protoPriceInfo)
     const ilkData$ = () => of(protoIlkData)
 
     const ilkToToken$ = of(() => ilk.split('-')[0])
@@ -66,7 +78,8 @@ function createStory({
       txHelpers$,
       proxyAddress$,
       allowance$,
-      userTokenInfo$,
+      priceInfo$,
+      balanceInfo$,
       ilkData$,
       ilks$ || of(['ETH-A', 'WBTC-A', 'USDC-A']),
       ilkToToken$,
@@ -79,7 +92,7 @@ function createStory({
       ...(stage && { stage }),
       ...(depositAmount && {
         depositAmount,
-        depositAmountUSD: depositAmount.times(protoUserTokenInfo.currentCollateralPrice),
+        depositAmountUSD: depositAmount.times(protoPriceInfo.currentCollateralPrice),
       }),
       ...(generateAmount && {
         generateAmount,
@@ -127,13 +140,13 @@ export const IlkValidationFailureStage = createStory({ ilk: 'ETH-Z' })
 
 export const EmptyEditingStage = createStory({
   proxyAddress: '0xProxyAddress',
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'WBTC-A',
 })
 
 export const EditingStage = createStory({
   proxyAddress: '0xProxyAddress',
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'WBTC-A',
   depositAmount: new BigNumber('5'),
   generateAmount: new BigNumber('2500'),
@@ -142,20 +155,20 @@ export const EditingStage = createStory({
 
 export const EditingStageWarningGenerateAmountEmpty = createStory({
   proxyAddress: '0xProxyAddress',
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   depositAmount: new BigNumber('5'),
   ilk: 'WBTC-A',
 })
 
 export const EditingStageWarningDepositAndGenerateAmountEmpty = createStory({
   proxyAddress: '0xProxyAddress',
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'WBTC-A',
 })
 
 export const EditingStageNoProxyAddress = createStory({
   title: 'Both warnings are shown as because no proxyAddress exists, no allowance can exist either',
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   depositAmount: new BigNumber('5'),
   generateAmount: new BigNumber('2500'),
   ilk: 'WBTC-A',
@@ -164,13 +177,13 @@ export const EditingStageNoProxyAddress = createStory({
 export const EditingStageNoAllowance = createStory({
   proxyAddress: '0xProxyAddress',
   allowance: zero,
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'WBTC-A',
 })
 
 export const EditingStageNoProxyAndNoAllowance = createStory({
   allowance: zero,
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   depositAmount: new BigNumber('5'),
   generateAmount: new BigNumber('2500'),
   ilk: 'WBTC-A',
@@ -179,7 +192,7 @@ export const EditingStageNoProxyAndNoAllowance = createStory({
 export const EditingStageAllowanceLessThanDepositAmount = createStory({
   proxyAddress: '0xProxyAddress',
   allowance: new BigNumber('4'),
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   depositAmount: new BigNumber('5'),
   generateAmount: new BigNumber('2500'),
   ilk: 'WBTC-A',
@@ -187,14 +200,14 @@ export const EditingStageAllowanceLessThanDepositAmount = createStory({
 
 export const EditingStagePotentialGenerateAmountLessThanDebtFloor = createStory({
   proxyAddress: '0xProxyAddress',
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   depositAmount: new BigNumber('0.001'),
   ilk: 'WBTC-A',
 })
 
 export const EditingStageDepositAmountGreaterThanMaxDepositAmount = createStory({
   proxyAddress: '0xProxyAddress',
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   depositAmount: new BigNumber('101'),
   generateAmount: new BigNumber('2000'),
   ilk: 'WBTC-A',
@@ -202,7 +215,7 @@ export const EditingStageDepositAmountGreaterThanMaxDepositAmount = createStory(
 
 export const EditingStageGenerateAmountLessThanDebtFloor = createStory({
   proxyAddress: '0xProxyAddress',
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   depositAmount: new BigNumber('5'),
   generateAmount: new BigNumber('1999'),
   ilk: 'WBTC-A',
@@ -210,7 +223,7 @@ export const EditingStageGenerateAmountLessThanDebtFloor = createStory({
 
 export const EditingStageGenerateAmountGreaterThanDebtCeiling = createStory({
   proxyAddress: '0xProxyAddress',
-  userTokenInfo: { collateralBalance: new BigNumber('1000000000000') },
+  balanceInfo: { collateralBalance: new BigNumber('1000000000000') },
   depositAmount: new BigNumber('10000000000'),
   generateAmount: new BigNumber('100000000'),
   ilk: 'WBTC-A',
@@ -218,7 +231,7 @@ export const EditingStageGenerateAmountGreaterThanDebtCeiling = createStory({
 
 export const EditingStageVaultUnderCollateralized = createStory({
   proxyAddress: '0xProxyAddress',
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   depositAmount: new BigNumber('0.11'),
   generateAmount: new BigNumber('5000'),
   ilk: 'WBTC-A',
@@ -251,7 +264,7 @@ export const ProxySuccess = createStory({
 })
 
 export const AllowanceWaitingForConfirmation = createStory({
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   stage: 'allowanceWaitingForConfirmation',
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('5000'),
@@ -259,7 +272,7 @@ export const AllowanceWaitingForConfirmation = createStory({
 })
 
 export const AllowanceWaitingForApproval = createStory({
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   stage: 'allowanceWaitingForApproval',
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('5000'),
@@ -267,7 +280,7 @@ export const AllowanceWaitingForApproval = createStory({
 })
 
 export const AllowanceFailure = createStory({
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   stage: 'allowanceFailure',
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('5000'),
@@ -280,7 +293,7 @@ export const AllowanceInProgress = createStory({
 })
 
 export const AllowanceSuccess = createStory({
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   stage: 'allowanceSuccess',
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('5000'),
@@ -288,7 +301,7 @@ export const AllowanceSuccess = createStory({
 })
 
 export const OpenWaitingForConfirmation = createStory({
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   stage: 'openWaitingForConfirmation',
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('5000'),
@@ -296,7 +309,7 @@ export const OpenWaitingForConfirmation = createStory({
 })
 
 export const OpenWaitingForApproval = createStory({
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   stage: 'openWaitingForApproval',
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('5000'),
@@ -304,7 +317,7 @@ export const OpenWaitingForApproval = createStory({
 })
 
 export const OpenFailure = createStory({
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   stage: 'openFailure',
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('5000'),
@@ -312,7 +325,7 @@ export const OpenFailure = createStory({
 })
 
 export const OpenInProgress = createStory({
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   stage: 'openInProgress',
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('5000'),
@@ -320,7 +333,7 @@ export const OpenInProgress = createStory({
 })
 
 export const OpenSuccess = createStory({
-  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100') },
   stage: 'openSuccess',
   id: new BigNumber('122345'),
   depositAmount: new BigNumber('10'),

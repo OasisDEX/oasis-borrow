@@ -1,19 +1,31 @@
 import { IlkDataChange } from 'blockchain/ilks'
 import { VaultChange } from 'blockchain/vaults'
-import { UserTokenInfoChange } from 'features/shared/userTokenInfo'
+import { PriceInfoChange } from 'features/shared/priceInfo'
 
+import { BalanceInfoChange } from '../shared/balanceInfo'
 import { ManageVaultChange, ManageVaultState } from './manageVault'
 
-export type ManageVaultEnvironmentChange = UserTokenInfoChange | IlkDataChange | VaultChange
+export type ManageVaultEnvironmentChange =
+  | PriceInfoChange
+  | BalanceInfoChange
+  | IlkDataChange
+  | VaultChange
 
 export function applyManageVaultEnvironment(
   change: ManageVaultChange,
   state: ManageVaultState,
 ): ManageVaultState {
-  if (change.kind === 'userTokenInfo') {
+  if (change.kind === 'priceInfo') {
     return {
       ...state,
-      ...change.userTokenInfo,
+      ...change.priceInfo,
+    }
+  }
+
+  if (change.kind === 'balanceInfo') {
+    return {
+      ...state,
+      ...change.balanceInfo,
     }
   }
 

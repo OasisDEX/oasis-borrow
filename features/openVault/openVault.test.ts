@@ -6,12 +6,13 @@ import { protoETHAIlkData, protoUSDCAIlkData, protoWBTCAIlkData } from 'blockcha
 import { ContextConnected, protoContextConnected } from 'blockchain/network'
 import { expect } from 'chai'
 import { protoTxHelpers, TxHelpers } from 'components/AppContext'
+import { BalanceInfo } from 'features/shared/balanceInfo'
 import {
-  protoUserETHTokenInfo,
-  protoUserUSDCTokenInfo,
-  protoUserWBTCTokenInfo,
-  UserTokenInfo,
-} from 'features/shared/userTokenInfo'
+  PriceInfo,
+  protoETHPriceInfo,
+  protoUSDCPriceInfo,
+  protoWBTCPriceInfo,
+} from 'features/shared/priceInfo'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import _ from 'lodash'
@@ -23,7 +24,7 @@ import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
 import {
   applyOpenVaultCalculations,
   createOpenVault$,
-  defaultOpenVaultState,
+  defaultPartialOpenVaultState,
   OpenVaultState,
 } from './openVault'
 import { parseVaultIdFromReceiptLogs } from './openVaultTransactions'
@@ -55,8 +56,8 @@ describe('openVault', () => {
       liquidationRatio,
     } = protoWBTCAIlkData
     const openVaultState: OpenVaultState = {
-      ...defaultOpenVaultState,
-      ...protoUserWBTCTokenInfo,
+      ...defaultPartialOpenVaultState,
+      ...protoWBTCPriceInfo,
       account: '0x0',
       ilk: 'WBTC-A',
       token: 'WBTC',
@@ -67,9 +68,12 @@ describe('openVault', () => {
       maxDebtPerUnitCollateral,
       proxyAddress: '0xProxyAddress',
       depositAmount,
-      depositAmountUSD: depositAmount.multipliedBy(protoUserWBTCTokenInfo.currentCollateralPrice),
+      depositAmountUSD: depositAmount.multipliedBy(protoWBTCPriceInfo.currentCollateralPrice),
       generateAmount: new BigNumber('5000'),
       allowance: depositAmount,
+      collateralBalance: zero,
+      ethBalance: zero,
+      daiBalance: zero,
       injectStateOverride: () => {},
     }
     it('Should show no warnings when the state is correct', () => {
@@ -137,9 +141,7 @@ describe('openVault', () => {
 
   describe('validateErrors', () => {
     const depositAmount = new BigNumber('10')
-    const depositAmountUSD = depositAmount.multipliedBy(
-      protoUserWBTCTokenInfo.currentCollateralPrice,
-    )
+    const depositAmountUSD = depositAmount.multipliedBy(protoWBTCPriceInfo.currentCollateralPrice)
     const maxDepositAmount = depositAmountUSD.multipliedBy(2)
     const ilkDebtAvailable = new BigNumber('50000')
     const debtFloor = new BigNumber('2000')
@@ -148,9 +150,11 @@ describe('openVault', () => {
     const { maxDebtPerUnitCollateral, liquidationRatio } = protoWBTCAIlkData
 
     const openVaultState: OpenVaultState = applyOpenVaultCalculations({
-      ...defaultOpenVaultState,
-      ...protoUserWBTCTokenInfo,
+      ...defaultPartialOpenVaultState,
+      ...protoWBTCPriceInfo,
       collateralBalance: maxDepositAmount.plus(10),
+      ethBalance: zero,
+      daiBalance: zero,
       account: '0x0',
       ilk: 'WBTC-A',
       token: 'WBTC',
@@ -237,7 +241,8 @@ describe('openVault', () => {
       proxyAddress$?: Observable<string>
       allowance?: BigNumber
       ilks$?: Observable<string[]>
-      userTokenInfo?: Partial<UserTokenInfo>
+      priceInfo?: Partial<PriceInfo>
+      balanceInfo?: Partial<BalanceInfo>
       ilk?: string
       txHelpers?: TxHelpers
     }
@@ -248,7 +253,8 @@ describe('openVault', () => {
       proxyAddress$,
       allowance = maxUint256,
       ilks$,
-      userTokenInfo,
+      priceInfo,
+      balanceInfo,
       ilk = 'ETH-A',
       txHelpers,
       stage,
@@ -259,13 +265,20 @@ describe('openVault', () => {
       const txHelpers$ = of(txHelpers || protoTxHelpers)
       const allowance$ = _.constant(of(allowance || maxUint256))
 
-      const protoUserTokenInfo = {
+      const protoBalanceInfo: BalanceInfo = {
+        collateralBalance: zero,
+        ethBalance: zero,
+        daiBalance: zero,
+        ...balanceInfo,
+      }
+
+      const protoPriceInfo = {
         ...(ilk === 'ETH-A'
-          ? protoUserETHTokenInfo
+          ? protoETHPriceInfo
           : ilk === 'WBTC-A'
-          ? protoUserWBTCTokenInfo
-          : protoUserUSDCTokenInfo),
-        ...(userTokenInfo || {}),
+          ? protoWBTCPriceInfo
+          : protoUSDCPriceInfo),
+        ...(priceInfo || {}),
       }
 
       const protoIlkData =
@@ -275,7 +288,8 @@ describe('openVault', () => {
           ? protoWBTCAIlkData
           : protoUSDCAIlkData
 
-      const userTokenInfo$ = () => of(protoUserTokenInfo)
+      const balanceInfo$ = () => of(protoBalanceInfo)
+      const priceInfo$ = () => of(protoPriceInfo)
       const ilkData$ = () => of(protoIlkData)
 
       const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
@@ -284,7 +298,8 @@ describe('openVault', () => {
         txHelpers$,
         _.constant(proxyAddress$ || of(proxyAddress)),
         allowance$,
-        userTokenInfo$,
+        priceInfo$,
+        balanceInfo$,
         ilkData$,
         ilks$ || of(['ETH-A', 'WBTC-A', 'USDC-A']),
         ilkToToken$,
@@ -296,7 +311,7 @@ describe('openVault', () => {
         ...(stage && { stage }),
         ...(depositAmount && {
           depositAmount,
-          depositAmountUSD: depositAmount.times(protoUserTokenInfo.currentCollateralPrice),
+          depositAmountUSD: depositAmount.times(protoPriceInfo.currentCollateralPrice),
         }),
       }
 
@@ -440,7 +455,7 @@ describe('openVault', () => {
           proxyAddress,
           allowance: new BigNumber(99),
           depositAmount: new BigNumber(100),
-          userTokenInfo: { collateralBalance: new BigNumber(100) },
+          balanceInfo: { collateralBalance: new BigNumber(100) },
           txHelpers: {
             ...protoTxHelpers,
             sendWithGasEstimation: <B extends TxMeta>(_allowance: any, meta: B) =>
@@ -463,7 +478,7 @@ describe('openVault', () => {
           proxyAddress,
           allowance: new BigNumber(99),
           depositAmount: new BigNumber(100),
-          userTokenInfo: { collateralBalance: new BigNumber(100) },
+          balanceInfo: { collateralBalance: new BigNumber(100) },
           txHelpers: {
             ...protoTxHelpers,
             sendWithGasEstimation: <B extends TxMeta>(_allowance: any, meta: B) =>

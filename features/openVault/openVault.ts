@@ -3,7 +3,7 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
-import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
+import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject } from 'rxjs'
@@ -17,6 +17,7 @@ import {
   switchMap,
 } from 'rxjs/operators'
 
+import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openVaultAllowances'
 import { applyOpenVaultEnvironment, OpenVaultEnvironmentChange } from './openVaultEnvironment'
 import { applyOpenVaultForm, OpenVaultFormChange } from './openVaultForm'
@@ -264,7 +265,7 @@ export type DefaultOpenVaultState = {
   injectStateOverride: (state: Partial<OpenVaultState>) => void
 }
 
-export type OpenVaultState = UserTokenInfo & DefaultOpenVaultState
+export type OpenVaultState = PriceInfo & BalanceInfo & DefaultOpenVaultState
 
 function addTransitions(
   txHelpers: TxHelpers,
@@ -370,7 +371,7 @@ function createIlkValidation$(ilks$: Observable<string[]>, ilk: string) {
   )
 }
 
-export const defaultOpenVaultState = {
+export const defaultPartialOpenVaultState = {
   ...defaultIsStates,
   stage: 'editing' as OpenVaultStage,
   errorMessages: [],
@@ -389,7 +390,8 @@ export function createOpenVault$(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
   allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
-  userTokenInfo$: (token: string, account: string) => Observable<UserTokenInfo>,
+  priceInfo$: (token: string) => Observable<PriceInfo>,
+  balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilks$: Observable<string[]>,
   ilkToToken$: Observable<(ilk: string) => string>,
@@ -405,14 +407,18 @@ export function createOpenVault$(
             const account = context.account
             const token = ilkToToken(ilk)
             return combineLatest(
-              userTokenInfo$(token, account),
+              priceInfo$(token),
+              balanceInfo$(token, account),
+
               ilkData$(ilk),
               proxyAddress$(account),
             ).pipe(
               first(),
               switchMap(
                 ([
-                  userTokenInfo,
+                  priceInfo,
+                  balanceInfo,
+
                   { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
                   proxyAddress,
                 ]) =>
@@ -437,8 +443,9 @@ export function createOpenVault$(
                       }
 
                       const initialState: OpenVaultState = {
-                        ...userTokenInfo,
-                        ...defaultOpenVaultState,
+                        ...priceInfo,
+                        ...balanceInfo,
+                        ...defaultPartialOpenVaultState,
                         token,
                         account,
                         ilk,
@@ -455,12 +462,10 @@ export function createOpenVault$(
                         injectStateOverride,
                       }
 
-                      const userTokenInfoChange$ = curry(createUserTokenInfoChange$)(userTokenInfo$)
-                      const ilkDataChange$ = curry(createIlkDataChange$)(ilkData$)
-
                       const environmentChanges$ = merge(
-                        userTokenInfoChange$(token, account),
-                        ilkDataChange$(ilk),
+                        priceInfoChange$(priceInfo$, token),
+                        balanceInfoChange$(balanceInfo$, token, account),
+                        createIlkDataChange$(ilkData$, ilk),
                       )
 
                       const connectedProxyAddress$ = proxyAddress$(account)
