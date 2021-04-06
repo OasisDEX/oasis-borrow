@@ -131,12 +131,19 @@ const OpenVaultStoryContainer = ({ title, ilk }: { title?: string; ilk: string }
   )
 }
 
+export const EmptyEditingStage = createStory({
+  proxyAddress: '0xProxyAddress',
+  balanceInfo: { collateralBalance: new BigNumber('100') },
+  ilk: 'WBTC-A',
+})
+
 export const EditingStage = createStory({
   proxyAddress: '0xProxyAddress',
   balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'WBTC-A',
   depositAmount: new BigNumber('5'),
   generateAmount: new BigNumber('2500'),
+  showGenerateOption: true,
 })
 
 export const EditingStageWarningGenerateAmountEmpty = createStory({

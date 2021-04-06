@@ -370,7 +370,7 @@ describe('openVault', () => {
       expect(s.stage).to.be.equal('editing')
     })
 
-    it('editing.change()', () => {
+    it('editing.updateDeposit()', () => {
       const depositAmount = new BigNumber(5)
       const state = getStateUnpacker(createTestFixture())
       ;(state() as OpenVaultState).updateDeposit!(depositAmount)
@@ -378,6 +378,20 @@ describe('openVault', () => {
         depositAmount.toString(),
       )
       expect(state().stage).to.be.equal('editing')
+    })
+
+    it('editing.updateGenerate()', () => {
+      const depositAmount = new BigNumber(5)
+      const generateAmount = new BigNumber(3000)
+      const state = getStateUnpacker(createTestFixture())
+      ;(state() as OpenVaultState).updateDeposit!(depositAmount)
+      ;(state() as OpenVaultState).updateGenerate!(generateAmount)
+      expect((state() as OpenVaultState).generateAmount).to.be.undefined
+      ;(state() as OpenVaultState).toggleGenerateOption!()
+      ;(state() as OpenVaultState).updateGenerate!(generateAmount)
+      expect((state() as OpenVaultState).generateAmount!.toString()).to.be.equal(
+        generateAmount.toString(),
+      )
     })
 
     it('editing.progress()', () => {

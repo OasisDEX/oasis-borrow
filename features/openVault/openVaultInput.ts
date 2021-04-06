@@ -78,7 +78,7 @@ export function applyOpenVaultInput(
     }
   }
 
-  if (change.kind === 'generate') {
+  if (change.kind === 'generate' && state.showGenerateOption) {
     const { generateAmount } = change
     return {
       ...state,
@@ -86,7 +86,7 @@ export function applyOpenVaultInput(
     }
   }
 
-  if (change.kind === 'generateMax') {
+  if (change.kind === 'generateMax' && state.showGenerateOption) {
     const { maxGenerateAmount } = state
 
     return {

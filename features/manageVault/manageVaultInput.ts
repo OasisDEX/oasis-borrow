@@ -74,7 +74,11 @@ export const paybackAndWithdrawDefaults: Partial<ManageVaultState> = {
 }
 
 export function applyManageVaultInput(change: ManageVaultChange, state: ManageVaultState) {
-  if (change.kind === 'deposit') {
+  const canDeposit =
+    (state.stage === 'daiEditing' && state.generateAmount && state.showDepositAndGenerateOption) ||
+    state.stage === 'collateralEditing'
+
+  if (change.kind === 'deposit' && canDeposit) {
     const { depositAmount } = change
     const { stage, currentCollateralPrice } = state
     const depositAmountUSD = depositAmount && currentCollateralPrice.times(depositAmount)
@@ -92,7 +96,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageVa
     }
   }
 
-  if (change.kind === 'depositUSD') {
+  if (change.kind === 'depositUSD' && canDeposit) {
     const { depositAmountUSD } = change
     const { stage, currentCollateralPrice } = state
     const depositAmount = depositAmountUSD && depositAmountUSD.div(currentCollateralPrice)
@@ -110,7 +114,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageVa
     }
   }
 
-  if (change.kind === 'depositMax') {
+  if (change.kind === 'depositMax' && canDeposit) {
     const { maxDepositAmount, maxDepositAmountUSD } = state
 
     return {
@@ -121,7 +125,13 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageVa
     }
   }
 
-  if (change.kind === 'generate') {
+  const canGenerate =
+    (state.stage === 'collateralEditing' &&
+      state.depositAmount &&
+      state.showDepositAndGenerateOption) ||
+    state.stage === 'daiEditing'
+
+  if (change.kind === 'generate' && canGenerate) {
     const { generateAmount } = change
     const { stage } = state
     return {
@@ -137,7 +147,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageVa
     }
   }
 
-  if (change.kind === 'generateMax') {
+  if (change.kind === 'generateMax' && canGenerate) {
     const { maxGenerateAmount } = state
 
     return {
@@ -147,7 +157,11 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageVa
     }
   }
 
-  if (change.kind === 'withdraw') {
+  const canWithdraw =
+    (state.stage === 'daiEditing' && state.paybackAmount && state.showPaybackAndWithdrawOption) ||
+    state.stage === 'collateralEditing'
+
+  if (change.kind === 'withdraw' && canWithdraw) {
     const { withdrawAmount } = change
     const { stage, currentCollateralPrice } = state
     const withdrawAmountUSD = withdrawAmount && currentCollateralPrice.times(withdrawAmount)
@@ -165,7 +179,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageVa
     }
   }
 
-  if (change.kind === 'withdrawUSD') {
+  if (change.kind === 'withdrawUSD' && canWithdraw) {
     const { withdrawAmountUSD } = change
     const { stage, currentCollateralPrice } = state
     const withdrawAmount =
@@ -186,7 +200,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageVa
     }
   }
 
-  if (change.kind === 'withdrawMax') {
+  if (change.kind === 'withdrawMax' && canWithdraw) {
     const { maxWithdrawAmount, maxWithdrawAmountUSD } = state
     return {
       ...state,
@@ -196,7 +210,13 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageVa
     }
   }
 
-  if (change.kind === 'payback') {
+  const canPayback =
+    (state.stage === 'collateralEditing' &&
+      state.withdrawAmount &&
+      state.showPaybackAndWithdrawOption) ||
+    state.stage === 'daiEditing'
+
+  if (change.kind === 'payback' && canPayback) {
     const { paybackAmount } = change
     const { stage } = state
     return {
@@ -212,7 +232,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageVa
     }
   }
 
-  if (change.kind === 'paybackMax') {
+  if (change.kind === 'paybackMax' && canPayback) {
     const { maxPaybackAmount } = state
 
     return {
