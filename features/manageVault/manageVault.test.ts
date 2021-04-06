@@ -152,6 +152,7 @@ describe('manageVault', () => {
     const debtFloor = new BigNumber('2000')
     const withdrawAmount = new BigNumber('10')
     const paybackAmount = new BigNumber('10')
+    const debt = new BigNumber(3000)
     const {
       maxDebtPerUnitCollateral,
       liquidationRatio,
@@ -179,7 +180,6 @@ describe('manageVault', () => {
       stabilityFee,
       liquidationPenalty,
       depositAmount,
-      debt: new BigNumber('10000'),
       daiBalance: new BigNumber('10000'),
       liquidationPrice: zero,
       collateralizationRatio: zero,
@@ -191,6 +191,7 @@ describe('manageVault', () => {
       ilkDebtAvailable,
       safeConfirmations: 6,
       injectStateOverride: () => {},
+      debt,
     })
     it('Should show no errors when the state is correct', () => {
       const { errorMessages } = validateErrors(manageVaultState)
@@ -203,11 +204,18 @@ describe('manageVault', () => {
       })
       expect(errorMessages).to.deep.equal(['depositAmountGreaterThanMaxDepositAmount'])
     })
+    it('Should show withdrawAmountGreaterThanMaxWithdrawAmount error', () => {
+      const { errorMessages } = validateErrors({
+        ...manageVaultState,
+        maxWithdrawAmount: withdrawAmount.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
+      })
+      expect(errorMessages).to.deep.equal(['withdrawAmountGreaterThanMaxWithdrawAmount'])
+    })
     it('Should show generateAmountLessThanDebtFloor error', () => {
       const { errorMessages } = validateErrors({
         ...manageVaultState,
         debt: zero,
-        generateAmount: debtFloor.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
+        generateAmount: one,
       })
       expect(errorMessages).to.deep.equal(['generateAmountLessThanDebtFloor'])
     })
@@ -218,8 +226,22 @@ describe('manageVault', () => {
       })
       expect(errorMessages).to.deep.equal(['generateAmountGreaterThanDebtCeiling'])
     })
+    it('Should show paybackAmountGreaterThanMaxPaybackAmount error', () => {
+      const { errorMessages } = validateErrors({
+        ...manageVaultState,
+        maxPaybackAmount: paybackAmount.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
+      })
+      expect(errorMessages).to.deep.equal(['paybackAmountGreaterThanMaxPaybackAmount'])
+    })
+    it('Should show paybackAmountLessThanDebtFloor error', () => {
+      const { errorMessages } = validateErrors({
+        ...manageVaultState,
+        paybackAmount: debt.minus(debtFloor).plus(1),
+      })
+      expect(errorMessages).to.deep.equal(['paybackAmountLessThanDebtFloor'])
+    })
     describe('Should validate allowance', () => {
-      it('Should show allowanceAmountEmpty error', () => {
+      it('Should show daiAllowanceAmountEmpty error', () => {
         const { errorMessages } = validateErrors({
           ...manageVaultState,
           daiAllowanceAmount: undefined,
@@ -227,7 +249,7 @@ describe('manageVault', () => {
         })
         expect(errorMessages).to.deep.equal(['daiAllowanceAmountEmpty'])
       })
-      it('Should show customAllowanceAmountGreaterThanMaxUint256 error', () => {
+      it('Should show customDaiAllowanceAmountGreaterThanMaxUint256 error', () => {
         const { errorMessages } = validateErrors({
           ...manageVaultState,
           daiAllowanceAmount: maxUint256.plus(1),
@@ -235,7 +257,7 @@ describe('manageVault', () => {
         })
         expect(errorMessages).to.deep.equal(['customDaiAllowanceAmountGreaterThanMaxUint256'])
       })
-      it('Should show customAllowanceAmountLessThanDepositAmount error', () => {
+      it('Should show customDaiAllowanceAmountLessThanPaybackAmount error', () => {
         const { errorMessages } = validateErrors({
           ...manageVaultState,
           daiAllowanceAmount: depositAmount.minus(1),
@@ -264,8 +286,8 @@ describe('manageVault', () => {
       userTokenInfo?: Partial<UserTokenInfo>
       urnAddress?: string
       owner?: string
-      collateral: BigNumber
-      debt: BigNumber
+      collateral?: BigNumber
+      debt?: BigNumber
       unlockedCollateral?: BigNumber
       controller?: string
       depositAmount?: BigNumber
@@ -274,8 +296,8 @@ describe('manageVault', () => {
       paybackAmount?: BigNumber
       stage?: ManageVaultStage
       txHelpers?: TxHelpers
-      ilk: 'ETH-A' | 'WBTC-A' | 'USDC-A'
-      id: BigNumber
+      ilk?: 'ETH-A' | 'WBTC-A' | 'USDC-A'
+      id?: BigNumber
     }
 
     function createTestFixture({
@@ -285,9 +307,9 @@ describe('manageVault', () => {
       userTokenInfo,
       urnAddress,
       owner,
-      ilk,
-      collateral,
-      debt,
+      ilk = 'ETH-A',
+      collateral = new BigNumber(10),
+      debt = new BigNumber(1000),
       unlockedCollateral,
       controller,
       depositAmount,
@@ -296,8 +318,8 @@ describe('manageVault', () => {
       paybackAmount,
       txHelpers,
       stage,
-      id,
-    }: FixtureProps) {
+      id = zero,
+    }: FixtureProps = {}) {
       const protoUserTokenInfo = {
         ...(ilk === 'ETH-A'
           ? protoUserETHTokenInfo
@@ -396,15 +418,8 @@ describe('manageVault', () => {
       return manageVault$
     }
 
-    const defaults = {
-      ilk: 'ETH-A' as 'ETH-A',
-      id: zero,
-      debt: new BigNumber(1000),
-      collateral: new BigNumber(10),
-    }
-
     it('Should start in an editing stage', () => {
-      const state = getStateUnpacker(createTestFixture(defaults))
+      const state = getStateUnpacker(createTestFixture())
       const s = state()
       expect(s.stage).to.be.equal('collateralEditing')
       expect(s.isEditingStage).to.be.true
@@ -412,7 +427,7 @@ describe('manageVault', () => {
 
     it('editing.change()', () => {
       const depositAmount = new BigNumber(5)
-      const state = getStateUnpacker(createTestFixture(defaults))
+      const state = getStateUnpacker(createTestFixture())
       ;(state() as ManageVaultState).updateDeposit!(depositAmount)
       expect((state() as ManageVaultState).depositAmount!.toString()).to.be.equal(
         depositAmount.toString(),
@@ -421,25 +436,21 @@ describe('manageVault', () => {
     })
 
     it('editing.progress()', () => {
-      const state = getStateUnpacker(createTestFixture(defaults))
+      const state = getStateUnpacker(createTestFixture())
       ;(state() as ManageVaultState).progress!()
       expect(state().isProxyStage).to.be.true
       expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
     })
 
     it('editing.progress(proxyAddress)', () => {
-      const state = getStateUnpacker(
-        createTestFixture({ ...defaults, proxyAddress: '0xProxyAddress' }),
-      )
+      const state = getStateUnpacker(createTestFixture({ proxyAddress: '0xProxyAddress' }))
       ;(state() as ManageVaultState).progress!()
       expect(state().isManageStage).to.be.true
       expect(state().stage).to.be.equal('manageWaitingForConfirmation')
     })
 
     it('editing.progress(proxyAddress)', () => {
-      const state = getStateUnpacker(
-        createTestFixture({ ...defaults, proxyAddress: '0xProxyAddress' }),
-      )
+      const state = getStateUnpacker(createTestFixture({ proxyAddress: '0xProxyAddress' }))
       ;(state() as ManageVaultState).progress!()
       expect(state().isManageStage).to.be.true
       expect(state().stage).to.be.equal('manageWaitingForConfirmation')
@@ -448,7 +459,6 @@ describe('manageVault', () => {
     it('manageWaitingForConfirmation.progress()', () => {
       const state = getStateUnpacker(
         createTestFixture({
-          ...defaults,
           proxyAddress: '0xProxyAddress',
           txHelpers: {
             // @ts-ignore
