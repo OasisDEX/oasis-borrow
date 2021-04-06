@@ -455,5 +455,21 @@ describe('openVault', () => {
       expect(state().stage).to.be.equal('openSuccess')
       expect((state() as OpenVaultState).id).to.be.equal(3281)
     })
+
+    it('opening vault failure', () => {
+      const state = getStateUnpacker(
+        createTestFixture({
+          proxyAddress: '0xProxyAddress',
+          txHelpers: {
+            ...protoTxHelpers,
+            send: <B extends TxMeta>(_open: any, meta: B) =>
+              createMockTxState(meta, TxStatus.Failure),
+          },
+        }),
+      )
+      ;(state() as OpenVaultState).progress!()
+      ;(state() as OpenVaultState).progress!()
+      expect(state().stage).to.be.equal('openFailure')
+    })
   })
 })
