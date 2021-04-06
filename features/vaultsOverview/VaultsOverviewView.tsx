@@ -14,7 +14,7 @@ import {
 } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback, useMemo } from 'react'
-import { Box, Card, Flex, Grid, Heading, Image, Text } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { IlksFilterState, IlksWithFilters } from '../ilks/ilksFilters'
@@ -207,6 +207,47 @@ function AllIlks({
 interface CallToActionProps {
   ilk: FeaturedIlk
 }
+
+function CallToActionPlaceholder() {
+  return (
+    <Grid
+      columns="1fr 1fr"
+      gap={0}
+      sx={{
+        flex: 1,
+        cursor: 'pointer',
+        bg: 'ghost',
+        borderRadius: 'large',
+        p: 4,
+        position: 'relative',
+        boxShadow: 'surface',
+        gridTemplateRows: 'auto 1fr auto',
+        backgroundBlendMode: 'overlay',
+        opacity: 0.3,
+        color: 'transparent',
+      }}
+    >
+      <Box sx={{ gridColumn: '1/3', zIndex: 1, }}>
+        <Text variant="caption">title</Text>
+      </Box>
+      <Box sx={{ gridColumn: '1/3', zIndex: 1 }}>
+        <Heading variant="header2" sx={{ color: 'transparent', minHeight: '100px' }}>
+          ilk
+          </Heading>
+      </Box>
+      <Flex sx={{ zIndex: 1 }}>
+        <Text variant="paragraph3" sx={{ color: 'transparent', mr: 2 }}>
+          fee
+          </Text>
+      </Flex>
+      <Flex sx={{ zIndex: 1, gridRow: [3, 4, 3] }}>
+        <Text variant="paragraph3" sx={{ color: 'transparent', mr: 2 }}>
+          'ratio'
+        </Text>
+      </Flex>
+    </Grid>
+  )
+}
 function CallToAction({ ilk }: CallToActionProps) {
   const token = getToken(ilk.token)
   const { t } = useTranslation()
@@ -349,12 +390,22 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
   )
 }
 
-export function FeaturedIlks({ ilks }: { ilks: FeaturedIlk[] }) {
+export function FeaturedIlks({ ilks, sx }: { ilks: FeaturedIlk[], sx?: SxStyleProp }) {
   return (
-    <Grid columns={['1fr', '1fr 1fr 1fr']} gap={4}>
+    <Grid sx={sx} columns={['1fr', '1fr 1fr 1fr']} gap={4}>
       {ilks.map((ilk) => (
         <CallToAction key={ilk.title} ilk={ilk} />
       ))}
+    </Grid>
+  )
+}
+
+export function FeaturedIlksPlaceholder() {
+  return (
+    <Grid sx={{ position: 'absolute', left: 0, top: 0, right: 0 }} columns={['1fr', '1fr 1fr 1fr']} gap={4}>
+      <CallToActionPlaceholder />
+      <CallToActionPlaceholder />
+      <CallToActionPlaceholder />
     </Grid>
   )
 }

@@ -5,7 +5,7 @@ import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { IlksFilterState } from 'features/ilks/ilksFilters'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
-import { FeaturedIlks } from 'features/vaultsOverview/VaultsOverviewView'
+import { FeaturedIlks, FeaturedIlksPlaceholder } from 'features/vaultsOverview/VaultsOverviewView'
 import { Filters } from "features/vaultsOverview/Filters"
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservableWithError } from 'helpers/observableHook'
@@ -22,6 +22,15 @@ const slideIn = keyframes({
   },
   to: {
     top: 0,
+    opacity: 1,
+  }
+})
+
+const fadeIn = keyframes({
+  from: {
+    opacity: 0,
+  },
+  to: {
     opacity: 1,
   }
 })
@@ -258,6 +267,23 @@ export function FAQ() {
   )
 }
 
+const slideInAnimation = {
+  opacity: 0,
+  animation: slideIn,
+  animationDuration: '0.4s',
+  animationTimingFunction: 'ease-out',
+  animationFillMode: 'forwards',
+  animationDelay: '0.4s'
+}
+
+const fadeInAnimation = {
+  opacity: 0,
+  animation: fadeIn,
+  animationDuration: '0.4s',
+  animationTimingFunction: 'ease-out',
+  animationFillMode: 'forwards',
+}
+
 export function LandingView() {
   const { landing$ } = useAppContext()
   const [landing, landingError] = useObservableWithError(landing$)
@@ -290,46 +316,44 @@ export function LandingView() {
       <Hero
         sx={{
           position: 'relative',
-          opacity: 0,
-          animation: slideIn,
-          animationDuration: '0.4s',
-          animationTimingFunction: 'ease-out',
-          animationFillMode: 'forwards',
-          animationDelay: '0.4s'
+          ...slideInAnimation,
         }}
       />
-      {
-        landing !== undefined &&
-        <>
-          <Box sx={{
-            my: 4,
-            mb: [2, 3, 5],
-            position: 'relative',
-            animation: slideIn,
-            animationDuration: '0.4s',
-            animationFillMode: 'forward',
-            animationTimingFunction: 'ease-out',
-          }}>
-            <FeaturedIlks
-              ilks={landing.featuredIlks}
-            />
-          </Box>
-          <Filters
-            onSearch={onIlkSearch}
-            search={landing.ilks.filters.search}
-            onTagChange={onIlksTagChange}
-            tagFilter={landing.ilks.filters.tagFilter}
-            defaultTag="all-assets"
+      <Box sx={{
+        my: 4,
+        mb: [2, 3, 5],
+        position: 'relative',
+        ...slideInAnimation,
+      }}>
+        <FeaturedIlksPlaceholder />
+        {
+          landing !== undefined &&
+          <FeaturedIlks
+            sx={fadeInAnimation}
+            ilks={landing.featuredIlks}
           />
-          <Box sx={{ overflowX: 'auto', p: '3px' }}>
-            <Table
-              data={landing.ilks.data}
-              primaryKey="ilk"
-              state={landing.ilks.filters}
-              columns={ilksColumns}
+        }
+      </Box>
+      {
+        landing !== undefined ?
+          <Box sx={{ ...slideInAnimation }}>
+            <Filters
+              onSearch={onIlkSearch}
+              search={landing.ilks.filters.search}
+              onTagChange={onIlksTagChange}
+              tagFilter={landing.ilks.filters.tagFilter}
+              defaultTag="all-assets"
             />
+            <Box sx={{ overflowX: 'auto', p: '3px' }}>
+              <Table
+                data={landing.ilks.data}
+                primaryKey="ilk"
+                state={landing.ilks.filters}
+                columns={ilksColumns}
+              />
+            </Box>
           </Box>
-        </>
+          : <Box sx={{ height: 400 }}></Box>
       }
       <FAQ />
     </Grid>
