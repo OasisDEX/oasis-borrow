@@ -8,13 +8,13 @@ import { ContextConnected, protoContextConnected } from 'blockchain/network'
 import { createVault$, Vault } from 'blockchain/vaults'
 import { expect } from 'chai'
 import { protoTxHelpers, TxHelpers } from 'components/AppContext'
-import { BalanceInfo } from 'features/shared/balanceInfo'
+import { BalanceInfo } from '../shared/balanceInfo'
 import {
   PriceInfo,
   protoETHPriceInfo,
   protoUSDCPriceInfo,
   protoWBTCPriceInfo,
-} from 'features/shared/priceInfo'
+} from '../shared/priceInfo'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
 import { describe, it } from 'mocha'
@@ -448,6 +448,20 @@ describe('manageVault', () => {
       expect(state().isEditingStage).to.be.true
     })
 
+    it('collateral-editing.updateDepositUSD()', () => {
+      const depositAmount = new BigNumber(5)
+      const depositAmountUSD = protoETHPriceInfo.currentCollateralPrice.times(depositAmount)
+      const state = getStateUnpacker(createTestFixture())
+      ;(state() as ManageVaultState).updateDepositUSD!(depositAmountUSD)
+      expect((state() as ManageVaultState).depositAmount!.toString()).to.be.equal(
+        depositAmount.toString(),
+      )
+      expect((state() as ManageVaultState).depositAmountUSD!.toString()).to.be.equal(
+        depositAmountUSD.toString(),
+      )
+      expect(state().isEditingStage).to.be.true
+    })
+
     it('collateral-editing.updateGenerate()', () => {
       const depositAmount = new BigNumber(5)
       const generateAmount = new BigNumber(1000)
@@ -470,6 +484,20 @@ describe('manageVault', () => {
       ;(state() as ManageVaultState).updateWithdraw!(withdrawAmount)
       expect((state() as ManageVaultState).withdrawAmount!.toString()).to.be.equal(
         withdrawAmount.toString(),
+      )
+      expect(state().isEditingStage).to.be.true
+    })
+
+    it('collateral-editing.updateWithdrawUSD()', () => {
+      const withdrawAmount = new BigNumber(5)
+      const withdrawAmountUSD = protoETHPriceInfo.currentCollateralPrice.times(withdrawAmount)
+      const state = getStateUnpacker(createTestFixture())
+      ;(state() as ManageVaultState).updateWithdrawUSD!(withdrawAmountUSD)
+      expect((state() as ManageVaultState).withdrawAmount!.toString()).to.be.equal(
+        withdrawAmount.toString(),
+      )
+      expect((state() as ManageVaultState).withdrawAmountUSD!.toString()).to.be.equal(
+        withdrawAmountUSD.toString(),
       )
       expect(state().isEditingStage).to.be.true
     })
@@ -516,6 +544,26 @@ describe('manageVault', () => {
       )
     })
 
+    it('dai-editing.updateDepositUSD()', () => {
+      const generateAmount = new BigNumber(1000)
+      const depositAmount = new BigNumber(5)
+      const depositAmountUSD = protoETHPriceInfo.currentCollateralPrice.times(depositAmount)
+      const state = getStateUnpacker(createTestFixture({ stage: 'daiEditing' }))
+      ;(state() as ManageVaultState).updateDepositUSD!(depositAmountUSD)
+      expect((state() as ManageVaultState).depositAmount).to.be.undefined
+      ;(state() as ManageVaultState).updateGenerate!(generateAmount)
+      ;(state() as ManageVaultState).updateDepositUSD!(depositAmountUSD)
+      expect((state() as ManageVaultState).depositAmount).to.be.undefined
+      ;(state() as ManageVaultState).toggleDepositAndGenerateOption!()
+      ;(state() as ManageVaultState).updateDepositUSD!(depositAmountUSD)
+      expect((state() as ManageVaultState).depositAmount!.toString()).to.be.equal(
+        depositAmount.toString(),
+      )
+      expect((state() as ManageVaultState).depositAmountUSD!.toString()).to.be.equal(
+        depositAmountUSD.toString(),
+      )
+    })
+
     it('dai-editing.updatePayback()', () => {
       const paybackAmount = new BigNumber(1000)
       const state = getStateUnpacker(createTestFixture({ stage: 'daiEditing' }))
@@ -527,18 +575,22 @@ describe('manageVault', () => {
     })
 
     it('dai-editing.updateWithdraw()', () => {
-      const withdrawAmount = new BigNumber(5)
       const paybackAmount = new BigNumber(1000)
+      const withdrawAmount = new BigNumber(5)
+      const withdrawAmountUSD = protoETHPriceInfo.currentCollateralPrice.times(withdrawAmount)
       const state = getStateUnpacker(createTestFixture({ stage: 'daiEditing' }))
-      ;(state() as ManageVaultState).updateWithdraw!(withdrawAmount)
+      ;(state() as ManageVaultState).updateWithdrawUSD!(withdrawAmountUSD)
       expect((state() as ManageVaultState).withdrawAmount).to.be.undefined
       ;(state() as ManageVaultState).updatePayback!(paybackAmount)
-      ;(state() as ManageVaultState).updateWithdraw!(withdrawAmount)
+      ;(state() as ManageVaultState).updateWithdrawUSD!(withdrawAmountUSD)
       expect((state() as ManageVaultState).withdrawAmount).to.be.undefined
       ;(state() as ManageVaultState).togglePaybackAndWithdrawOption!()
-      ;(state() as ManageVaultState).updateWithdraw!(withdrawAmount)
+      ;(state() as ManageVaultState).updateWithdrawUSD!(withdrawAmountUSD)
       expect((state() as ManageVaultState).withdrawAmount!.toString()).to.be.equal(
         withdrawAmount.toString(),
+      )
+      expect((state() as ManageVaultState).withdrawAmountUSD!.toString()).to.be.equal(
+        withdrawAmountUSD.toString(),
       )
     })
 

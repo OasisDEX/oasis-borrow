@@ -383,6 +383,20 @@ describe('openVault', () => {
       expect(state().isEditingStage).to.be.true
     })
 
+    it('editing.updateDepositUSD()', () => {
+      const depositAmount = new BigNumber(5)
+      const depositAmountUSD = protoETHPriceInfo.currentCollateralPrice.times(depositAmount)
+      const state = getStateUnpacker(createTestFixture())
+      ;(state() as OpenVaultState).updateDepositUSD!(depositAmountUSD)
+      expect((state() as OpenVaultState).depositAmount!.toString()).to.be.equal(
+        depositAmount.toString(),
+      )
+      expect((state() as OpenVaultState).depositAmountUSD!.toString()).to.be.equal(
+        depositAmountUSD.toString(),
+      )
+      expect(state().isEditingStage).to.be.true
+    })
+
     it('editing.updateGenerate()', () => {
       const depositAmount = new BigNumber(5)
       const generateAmount = new BigNumber(3000)
