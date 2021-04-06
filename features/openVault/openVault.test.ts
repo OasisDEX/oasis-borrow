@@ -1,5 +1,5 @@
 /* eslint-disable func-style */
-import { TxStatus } from '@oasisdex/transactions'
+import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { protoETHAIlkData, protoUSDCAIlkData, protoWBTCAIlkData } from 'blockchain/ilks'
@@ -17,7 +17,7 @@ import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import _ from 'lodash'
 import { beforeEach, describe, it } from 'mocha'
-import { Observable, of } from 'rxjs'
+import { Observable, of, Subject } from 'rxjs'
 import { first } from 'rxjs/operators'
 
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
@@ -232,35 +232,37 @@ describe('openVault', () => {
       expect(errorMessages).to.deep.equal(['vaultUnderCollateralized'])
     })
   })
+
   describe('createOpenVault$', () => {
     type FixtureProps = Partial<OpenVaultState> & {
       title?: string
       context?: ContextConnected
       proxyAddress?: string
+      proxyAddress$?: Observable<string>
       allowance?: BigNumber
       ilks$?: Observable<string[]>
       priceInfo?: Partial<PriceInfo>
       balanceInfo?: Partial<BalanceInfo>
-      ilk: string
+      ilk?: string
       txHelpers?: TxHelpers
     }
 
     function createTestFixture({
       context,
       proxyAddress,
-      allowance,
+      proxyAddress$,
+      allowance = maxUint256,
       ilks$,
       priceInfo,
       balanceInfo,
-      ilk,
+      ilk = 'ETH-A',
       txHelpers,
       stage,
       depositAmount,
       ...otherState
-    }: FixtureProps) {
+    }: FixtureProps = {}) {
       const context$ = of(context || protoContextConnected)
       const txHelpers$ = of(txHelpers || protoTxHelpers)
-      const proxyAddress$ = _.constant(of(proxyAddress))
       const allowance$ = _.constant(of(allowance || maxUint256))
 
       const protoBalanceInfo: BalanceInfo = {
@@ -294,7 +296,7 @@ describe('openVault', () => {
       const openVault$ = createOpenVault$(
         context$,
         txHelpers$,
-        proxyAddress$,
+        _.constant(proxyAddress$ || of(proxyAddress)),
         allowance$,
         priceInfo$,
         balanceInfo$,
@@ -321,8 +323,50 @@ describe('openVault', () => {
       return openVault$
     }
 
+    function createMockTxState<T extends TxMeta>(
+      meta: T,
+      status: TxStatus = TxStatus.Success,
+      receipt: unknown = {},
+    ): Observable<TxState<T>> {
+      if (status === TxStatus.Success) {
+        const txState = {
+          account: '0x',
+          txNo: 0,
+          networkId: '1',
+          meta,
+          start: new Date(),
+          lastChange: new Date(),
+          dismissed: false,
+          status,
+          txHash: '0xhash',
+          blockNumber: 0,
+          receipt,
+          confirmations: 15,
+          safeConfirmations: 15,
+        }
+        return of(txState)
+      } else if (status === TxStatus.Failure) {
+        const txState = {
+          account: '0x',
+          txNo: 0,
+          networkId: '1',
+          meta,
+          start: new Date(),
+          lastChange: new Date(),
+          dismissed: false,
+          status,
+          txHash: '0xhash',
+          blockNumber: 0,
+          receipt,
+        }
+        return of(txState)
+      } else {
+        throw new Error('Not implemented yet')
+      }
+    }
+
     it('Should start in an editing stage', () => {
-      const state = getStateUnpacker(createTestFixture({ ilk: 'ETH-A' }))
+      const state = getStateUnpacker(createTestFixture())
       const s = state()
       expect(s.stage).to.be.equal('editing')
       expect(s.isIlkValidationStage).to.be.false
@@ -331,7 +375,7 @@ describe('openVault', () => {
 
     it('editing.change()', () => {
       const depositAmount = new BigNumber(5)
-      const state = getStateUnpacker(createTestFixture({ ilk: 'ETH-A' }))
+      const state = getStateUnpacker(createTestFixture())
       ;(state() as OpenVaultState).updateDeposit!(depositAmount)
       expect((state() as OpenVaultState).depositAmount!.toString()).to.be.equal(
         depositAmount.toString(),
@@ -340,55 +384,114 @@ describe('openVault', () => {
     })
 
     it('editing.progress()', () => {
-      const state = getStateUnpacker(createTestFixture({ ilk: 'ETH-A' }))
+      const state = getStateUnpacker(createTestFixture())
       ;(state() as OpenVaultState).progress!()
       expect(state().isProxyStage).to.be.true
       expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
     })
 
-    it('editing.progress(proxyAddress)', () => {
-      const state = getStateUnpacker(
-        createTestFixture({ ilk: 'ETH-A', proxyAddress: '0xProxyAddress' }),
-      )
-      ;(state() as OpenVaultState).progress!()
-      expect(state().isOpenStage).to.be.true
-      expect(state().stage).to.be.equal('openWaitingForConfirmation')
-    })
-
-    it('editing.progress(proxyAddress)', () => {
-      const state = getStateUnpacker(
-        createTestFixture({ ilk: 'ETH-A', proxyAddress: '0xProxyAddress' }),
-      )
-      ;(state() as OpenVaultState).progress!()
-      expect(state().isOpenStage).to.be.true
-      expect(state().stage).to.be.equal('openWaitingForConfirmation')
-    })
-
-    it('openWaitingForConfirmation.progress()', () => {
+    it('creating proxy', () => {
+      const proxyAddress$ = new Subject<string>()
+      const proxyAddress = '0xProxyAddress'
       const state = getStateUnpacker(
         createTestFixture({
-          ilk: 'ETH-A',
+          proxyAddress$,
+          txHelpers: {
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+              createMockTxState(meta),
+          },
+        }),
+      )
+      proxyAddress$.next()
+      ;(state() as OpenVaultState).progress!()
+      expect(state().isProxyStage).to.be.true
+      expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
+      ;(state() as OpenVaultState).progress!()
+      proxyAddress$.next(proxyAddress)
+      expect(state().stage).to.be.equal('proxySuccess')
+      expect((state() as OpenVaultState).proxyAddress).to.be.equal(proxyAddress)
+    })
+
+    it('creating proxy failure', () => {
+      const proxyAddress$ = new Subject<string>()
+      const proxyAddress = '0xProxyAddress'
+      const state = getStateUnpacker(
+        createTestFixture({
+          proxyAddress$,
+          txHelpers: {
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+              createMockTxState(meta, TxStatus.Failure),
+          },
+        }),
+      )
+      proxyAddress$.next()
+      ;(state() as OpenVaultState).progress!()
+      ;(state() as OpenVaultState).progress!()
+      proxyAddress$.next(proxyAddress)
+      expect(state().stage).to.be.equal('proxyFailure')
+    })
+
+    it('setting allowance', () => {
+      const proxyAddress = '0xProxyAddress'
+      const state = getStateUnpacker(
+        createTestFixture({
+          ilk: 'WBTC-A',
+          proxyAddress,
+          allowance: new BigNumber(99),
+          depositAmount: new BigNumber(100),
+          balanceInfo: { collateralBalance: new BigNumber(100) },
+          txHelpers: {
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_allowance: any, meta: B) =>
+              createMockTxState(meta),
+          },
+        }),
+      )
+      ;(state() as OpenVaultState).progress!()
+      expect(state().isAllowanceStage).to.be.true
+      expect(state().stage).to.be.equal('allowanceWaitingForConfirmation')
+      ;(state() as OpenVaultState).progress!()
+      expect(state().stage).to.be.equal('allowanceSuccess')
+    })
+
+    it('setting allowance failure', () => {
+      const proxyAddress = '0xProxyAddress'
+      const state = getStateUnpacker(
+        createTestFixture({
+          ilk: 'WBTC-A',
+          proxyAddress,
+          allowance: new BigNumber(99),
+          depositAmount: new BigNumber(100),
+          balanceInfo: { collateralBalance: new BigNumber(100) },
+          txHelpers: {
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_allowance: any, meta: B) =>
+              createMockTxState(meta, TxStatus.Failure),
+          },
+        }),
+      )
+      ;(state() as OpenVaultState).progress!()
+      ;(state() as OpenVaultState).progress!()
+      expect(state().stage).to.be.equal('allowanceFailure')
+    })
+
+    it('editing.progress(proxyAddress, allowance)', () => {
+      const state = getStateUnpacker(createTestFixture({ proxyAddress: '0xProxyAddress' }))
+      ;(state() as OpenVaultState).progress!()
+      expect(state().isOpenStage).to.be.true
+      expect(state().stage).to.be.equal('openWaitingForConfirmation')
+    })
+
+    it('opening vault', () => {
+      const state = getStateUnpacker(
+        createTestFixture({
           proxyAddress: '0xProxyAddress',
           txHelpers: {
-            // @ts-ignore
-            send: <B>(_open: any, meta: B) => {
-              const txState = {
-                account: '0x',
-                txNo: 0,
-                networkId: '1',
-                meta,
-                start: Date.now(),
-                lastChange: Date.now(),
-                dismissed: false,
-                status: TxStatus.Success,
-                txHash: '0xhash',
-                blockNumber: 0,
-                receipt: newCDPTxReceipt,
-                confirmations: 15,
-                safeConfirmations: 15,
-              }
-              return of(txState)
-            },
+            ...protoTxHelpers,
+            send: <B extends TxMeta>(_open: any, meta: B) =>
+              createMockTxState(meta, TxStatus.Success, newCDPTxReceipt),
           },
         }),
       )
@@ -399,6 +502,22 @@ describe('openVault', () => {
       expect(state().isOpenStage).to.be.true
       expect(state().stage).to.be.equal('openSuccess')
       expect((state() as OpenVaultState).id!.toString()).to.be.equal('3281')
+    })
+
+    it('opening vault failure', () => {
+      const state = getStateUnpacker(
+        createTestFixture({
+          proxyAddress: '0xProxyAddress',
+          txHelpers: {
+            ...protoTxHelpers,
+            send: <B extends TxMeta>(_open: any, meta: B) =>
+              createMockTxState(meta, TxStatus.Failure),
+          },
+        }),
+      )
+      ;(state() as OpenVaultState).progress!()
+      ;(state() as OpenVaultState).progress!()
+      expect(state().stage).to.be.equal('openFailure')
     })
   })
 })
