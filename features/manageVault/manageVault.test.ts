@@ -170,7 +170,7 @@ describe('manageVault', () => {
       expect(errorMessages).to.deep.equal(['generateAmountGreaterThanDebtCeiling'])
     })
     describe('Should validate allowance', () => {
-      it('Should show allowanceAmountEmpty error', () => {
+      it('Should show daiAllowanceAmountEmpty error', () => {
         const { errorMessages } = validateErrors({
           ...manageVaultState,
           daiAllowanceAmount: undefined,
@@ -178,7 +178,7 @@ describe('manageVault', () => {
         })
         expect(errorMessages).to.deep.equal(['daiAllowanceAmountEmpty'])
       })
-      it('Should show customAllowanceAmountGreaterThanMaxUint256 error', () => {
+      it('Should show customDaiAllowanceAmountGreaterThanMaxUint256 error', () => {
         const { errorMessages } = validateErrors({
           ...manageVaultState,
           daiAllowanceAmount: maxUint256.plus(1),
@@ -186,7 +186,7 @@ describe('manageVault', () => {
         })
         expect(errorMessages).to.deep.equal(['customDaiAllowanceAmountGreaterThanMaxUint256'])
       })
-      it('Should show customAllowanceAmountLessThanDepositAmount error', () => {
+      it('Should show customDaiAllowanceAmountLessThanPaybackAmount error', () => {
         const { errorMessages } = validateErrors({
           ...manageVaultState,
           daiAllowanceAmount: depositAmount.minus(1),
