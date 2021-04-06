@@ -40,10 +40,10 @@ export function applyManageVaultForm(
   const isCollateralStage = stage === 'collateralEditing'
   const isDaiStage = stage === 'daiEditing'
 
-  const onToggleCloseShouldClearGenerateAmount = showDepositAndGenerateOption && isCollateralStage
-  const onToggleCloseShouldClearDepositAmount = showDepositAndGenerateOption && isDaiStage
-  const onToggleCloseShouldClearPaybackAmount = showPaybackAndWithdrawOption && isCollateralStage
-  const onToggleCloseShouldClearWithdrawAmount = showPaybackAndWithdrawOption && isDaiStage
+  const shouldClearGenerateAmount = showDepositAndGenerateOption && isCollateralStage
+  const shouldClearDepositAmount = showDepositAndGenerateOption && isDaiStage
+  const shouldClearPaybackAmount = showPaybackAndWithdrawOption && isCollateralStage
+  const shouldClearWithdrawAmount = showPaybackAndWithdrawOption && isDaiStage
 
   const canToggleDepositAndGenerate =
     (isCollateralStage && depositAmount) || (isDaiStage && generateAmount)
@@ -54,8 +54,8 @@ export function applyManageVaultForm(
     return {
       ...state,
       showDepositAndGenerateOption: !showDepositAndGenerateOption,
-      ...(onToggleCloseShouldClearGenerateAmount && { generateAmount: undefined }),
-      ...(onToggleCloseShouldClearDepositAmount && { depositAmount: undefined }),
+      ...(shouldClearGenerateAmount && { generateAmount: undefined }),
+      ...(shouldClearDepositAmount && { depositAmount: undefined }),
     }
   }
 
@@ -63,8 +63,8 @@ export function applyManageVaultForm(
     return {
       ...state,
       showPaybackAndWithdrawOption: !showPaybackAndWithdrawOption,
-      ...(onToggleCloseShouldClearPaybackAmount && { paybackAmount: undefined }),
-      ...(onToggleCloseShouldClearWithdrawAmount && { withdrawAmount: undefined }),
+      ...(shouldClearPaybackAmount && { paybackAmount: undefined }),
+      ...(shouldClearWithdrawAmount && { withdrawAmount: undefined }),
     }
   }
 
