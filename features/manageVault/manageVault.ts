@@ -33,7 +33,7 @@ import {
   validateWarnings,
 } from './manageVaultValidations'
 
-const defaultIsStates = {
+const defaultManageVaultStageCategories = {
   isEditingStage: false,
   isProxyStage: false,
   isCollateralAllowanceStage: false,
@@ -41,17 +41,12 @@ const defaultIsStates = {
   isManageStage: false,
 }
 
-function applyIsStageStates(state: ManageVaultState): ManageVaultState {
-  const newState = {
-    ...state,
-    ...defaultIsStates,
-  }
-
-  switch (state.stage) {
+export function categoriseManageVaultStage(stage: ManageVaultStage) {
+  switch (stage) {
     case 'collateralEditing':
     case 'daiEditing':
       return {
-        ...newState,
+        ...defaultManageVaultStageCategories,
         isEditingStage: true,
       }
     case 'proxyWaitingForConfirmation':
@@ -60,7 +55,7 @@ function applyIsStageStates(state: ManageVaultState): ManageVaultState {
     case 'proxyFailure':
     case 'proxySuccess':
       return {
-        ...newState,
+        ...defaultManageVaultStageCategories,
         isProxyStage: true,
       }
     case 'collateralAllowanceWaitingForConfirmation':
@@ -69,7 +64,7 @@ function applyIsStageStates(state: ManageVaultState): ManageVaultState {
     case 'collateralAllowanceFailure':
     case 'collateralAllowanceSuccess':
       return {
-        ...newState,
+        ...defaultManageVaultStageCategories,
         isCollateralAllowanceStage: true,
       }
     case 'daiAllowanceWaitingForConfirmation':
@@ -78,7 +73,7 @@ function applyIsStageStates(state: ManageVaultState): ManageVaultState {
     case 'daiAllowanceFailure':
     case 'daiAllowanceSuccess':
       return {
-        ...newState,
+        ...defaultManageVaultStageCategories,
         isDaiAllowanceStage: true,
       }
 
@@ -88,11 +83,11 @@ function applyIsStageStates(state: ManageVaultState): ManageVaultState {
     case 'manageFailure':
     case 'manageSuccess':
       return {
-        ...newState,
+        ...defaultManageVaultStageCategories,
         isManageStage: true,
       }
     default:
-      return state
+      return defaultManageVaultStageCategories
   }
 }
 
@@ -233,12 +228,6 @@ export type DefaultManageVaultState = {
   // validation
   errorMessages: ManageVaultErrorMessage[]
   warningMessages: ManageVaultWarningMessage[]
-
-  isEditingStage: boolean
-  isProxyStage: boolean
-  isCollateralAllowanceStage: boolean
-  isDaiAllowanceStage: boolean
-  isManageStage: boolean
 
   progress?: () => void
   reset?: () => void
@@ -459,7 +448,6 @@ function addTransitions(
 }
 
 export const defaultPartialManageVaultState = {
-  ...defaultIsStates,
   stage: 'collateralEditing' as ManageVaultStage,
   originalEditingStage: 'collateralEditing' as ManageVaultEditingStage,
   errorMessages: [],
@@ -590,7 +578,6 @@ export function createManageVault$(
                         change,
                       ),
                     ),
-                    map(applyIsStageStates),
                   )
                 }),
               )

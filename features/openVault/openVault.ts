@@ -6,7 +6,7 @@ import { TxHelpers } from 'components/AppContext'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
-import { combineLatest, iif, merge, Observable, of, Subject } from 'rxjs'
+import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
