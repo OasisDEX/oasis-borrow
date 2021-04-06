@@ -1175,6 +1175,9 @@ const oasisBaseTheme = {
       ':focus': {
         outline: 'none',
       },
+      '&:focus-visible': {
+        textDecoration: 'underline'
+      }
     },
     filter: {
       borderRadius: 'round',
@@ -1189,6 +1192,9 @@ const oasisBaseTheme = {
       font: '',
       ':focus': {
         outline: 'none',
+      },
+      '&:focus-visible': {
+        textDecoration: 'underline'
       },
       '&[data-selected="true"]': {
         border: 'light',
@@ -1222,15 +1228,42 @@ const oasisBaseTheme = {
     outline: {
       variant: 'buttons.outline',
       display: 'inline-block',
+      '&, &:visited': {
+        textDecoration: 'none'
+      },
+      '&:focus': {
+        outline: 'none'
+      },
+      '&:focus-visible': {
+        textDecoration: 'underline'
+      }
     },
     primary: {
       variant: 'buttons.primary',
       display: 'inline-block',
       bg: 'primary',
+      '&, &:visited': {
+        textDecoration: 'none'
+      },
+      '&:focus': {
+        outline: 'none'
+      },
+      '&:focus-visible': {
+        textDecoration: 'underline'
+      }
     },
     secondary: {
       variant: 'buttons.secondary',
       display: 'inline-block',
+      '&, &:visited': {
+        textDecoration: 'none'
+      },
+      '&:focus': {
+        outline: 'none'
+      },
+      '&:focus-visible': {
+        textDecoration: 'underline'
+      }
     },
   },
   icons: {

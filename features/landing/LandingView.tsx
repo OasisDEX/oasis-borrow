@@ -179,7 +179,6 @@ function Expandable({ question, answer, isOpen, toggle }: ExpandableProps) {
 
   return (
     <Box sx={{
-      maxWidth: '762px',
       borderBottom: 'light',
       '&:first-of-type': {
         borderTop: 'light',
@@ -234,23 +233,26 @@ export function FAQ() {
   const entries = t('landing.faq.entries', { returnObjects: true }) as Array<{ question: string, answer: string }>
 
   return (
-    <Flex sx={{ flexDirection: 'column', alignItems: 'center', mt: 4 }}>
+    <Flex sx={{ flexDirection: 'column', alignItems: 'center', mt: 4, maxWidth: '762px', mx: 'auto' }}>
       <Heading variant="header2" sx={{ mb: 4 }}>{t('landing.faq.title')}</Heading>
       {
         entries.map(({ question, answer }, idx) => (
-          <>
-            <Expandable
-              question={question}
-              answer={answer}
-              isOpen={openEntry === idx}
-              toggle={() => (openEntry === idx)
-                ? setOpen(undefined)
-                : setOpen(idx)
-              }
-            />
-          </>
+          <Expandable
+            key={idx}
+            question={question}
+            answer={answer}
+            isOpen={openEntry === idx}
+            toggle={() => (openEntry === idx)
+              ? setOpen(undefined)
+              : setOpen(idx)
+            }
+          />
         ))
       }
+      <Flex sx={{ width: '100%', justifyContent: 'flex-start', mt: 3 }}>
+        <AppLink sx={{ color: 'lavender' }} href="/faq">{t('landing.link-to-full-faq')}</AppLink>
+        <AppLink sx={{ ml: 4, color: 'lavender' }} href="/privacy">{t('landing.glossary-of-terms')}</AppLink>
+      </Flex>
     </Flex>
   )
 }

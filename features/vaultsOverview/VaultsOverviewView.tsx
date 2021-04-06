@@ -241,7 +241,7 @@ function CallToAction({ ilk }: CallToActionProps) {
           <Text variant="caption">{ilk.title}</Text>
         </Box>
         <Box sx={{ gridColumn: '1/3', zIndex: 1 }}>
-          <Heading variant="header2" sx={{ color: 'white', mb: 5 }}>
+          <Heading variant="header2" sx={{ color: 'white', minHeight: '100px' }}>
             {ilk.ilk}
           </Heading>
         </Box>

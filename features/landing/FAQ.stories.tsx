@@ -1,5 +1,6 @@
 import React from 'react'
 import { FAQ as FAQComponent } from './LandingView'
+import { Router } from 'next/router'
 
 export const FAQ = () => (
     <FAQComponent />
