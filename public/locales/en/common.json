@@ -215,7 +215,6 @@
   "ledger-live": "Ledger Live",
   "ledger-select-address": "Select an address",
   "ledger-select-title": "Select Ledger Live or Legacy",
-  "lp-tokens": "LP tokens",
   "manage-vault": {
     "action-option": "{{action}} {{token}} with this transaction",
     "or": "OR",
@@ -312,8 +311,11 @@
   "setup-wallet": "Setup your wallet",
   "show-more": "Show more",
   "spots-remaining": "{{ spots }} spots remaining",
-  "stablecoins": "Stablecoins",
   "start-saving": "Start Saving",
+  "filters": {
+    "lp-token": "LP tokens",
+    "stablecoin": "Stablecoins"
+  },
   "system": {
     "asset": "Asset",
     "available-to-withdraw": "Available to withdraw",

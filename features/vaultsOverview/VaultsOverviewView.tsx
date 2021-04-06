@@ -14,7 +14,7 @@ import {
 } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback, useMemo } from 'react'
-import { Box, Button, Card, Flex, Grid, Heading, Image, Input, SxStyleProp, Text } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { IlksFilterState, IlksWithFilters } from '../ilks/ilksFilters'
@@ -22,6 +22,7 @@ import { TokenSymbol } from '../landing/LandingView'
 import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { FeaturedIlk, VaultsOverview } from './vaultsOverview'
 import { VaultSummary } from './vaultSummary'
+import { Filters } from './Filters'
 
 const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
   {
@@ -348,62 +349,6 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
   )
 }
 
-interface FiltersProps {
-  onSearch: (search: string) => void
-  onTagChange: (tag: CoinTag | undefined) => void
-  search: string
-  defaultTag: string
-  tagFilter: CoinTag | undefined
-  sx?: SxStyleProp
-}
-
-export function Filters({ onSearch, search, onTagChange, tagFilter, defaultTag, sx }: FiltersProps) {
-  const onChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      onSearch(e.currentTarget.value)
-    },
-    [onSearch],
-  )
-  const { t } = useTranslation()
-
-  return (
-    <Flex sx={sx}>
-      <Button
-        onClick={() => onTagChange(undefined)}
-        sx={{ mr: 2 }}
-        data-selected={tagFilter === undefined}
-        variant="filter"
-      >
-        {t(defaultTag)}
-      </Button>
-      <Button
-        onClick={() => onTagChange('stablecoin')}
-        sx={{ mr: 2 }}
-        data-selected={tagFilter === 'stablecoin'}
-        variant="filter"
-      >
-        {t('stablecoins')}
-      </Button>
-      <Button
-        onClick={() => onTagChange('LPToken')}
-        sx={{ mr: 2 }}
-        data-selected={tagFilter === 'LPToken'}
-        variant="filter"
-      >
-        {t('lp-tokens')}
-      </Button>
-      <Flex sx={{ variant: 'forms.search', borderColor: "lavender_o25", width: '313px', ml: 'auto', alignItems: 'center' }}>
-        <Icon
-          sx={{ position: 'relative', top: '6px', ml: 3 }}
-          name="search"
-          size="4"
-          color="muted"
-        />
-        <Input variant="plain" onChange={onChange} value={search} placeholder="Search" />
-      </Flex>
-    </Flex>
-  )
-}
 export function FeaturedIlks({ ilks }: { ilks: FeaturedIlk[] }) {
   return (
     <Grid columns={['1fr', '1fr 1fr 1fr']} gap={4}>

@@ -1,4 +1,5 @@
 import { keyBy } from 'lodash'
+import type { ElementOf } from 'ts-essentials'
 
 export interface TokenConfig {
   symbol: string
@@ -15,7 +16,8 @@ export interface TokenConfig {
   bannerIcon: string
 }
 
-export type CoinTag = 'stablecoin' | 'LPToken'
+export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
+export type CoinTag = ElementOf<typeof COIN_TAGS>
 
 const tokens = [
   {
@@ -282,7 +284,7 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: '/static/img/banner_icons/uni.svg',
-    tags: ['LPToken'],
+    tags: ['lp-token'],
   },
   {
     symbol: 'UNIV2DAIUSDC',
@@ -297,7 +299,7 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: '/static/img/banner_icons/uni.svg',
-    tags: ['LPToken'],
+    tags: ['lp-token'],
   },
   {
     symbol: 'UNIV2WBTCETH',
@@ -312,7 +314,7 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: '/static/img/banner_icons/uni.svg',
-    tags: ['LPToken'],
+    tags: ['lp-token'],
   },
   {
     symbol: 'UNIV2DAIETH',
@@ -327,7 +329,7 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: '/static/img/banner_icons/uni.svg',
-    tags: ['LPToken'],
+    tags: ['lp-token'],
   },
   {
     symbol: 'UNIV2ETHUSDT',
@@ -342,7 +344,7 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: '/static/img/banner_icons/uni.svg',
-    tags: ['LPToken'],
+    tags: ['lp-token'],
   },
   {
     symbol: 'UNIV2UNIETH',
@@ -357,7 +359,7 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: '/static/img/banner_icons/uni.svg',
-    tags: ['LPToken'],
+    tags: ['lp-token'],
   },
   {
     symbol: 'UNIV2LINKETH',
@@ -372,7 +374,7 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: '/static/img/banner_icons/uni.svg',
-    tags: ['LPToken'],
+    tags: ['lp-token'],
   },
   {
     symbol: 'UNIV2WBTCDAI',
@@ -387,7 +389,7 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: '/static/img/banner_icons/uni.svg',
-    tags: ['LPToken'],
+    tags: ['lp-token'],
   },
   {
     symbol: 'UNIV2AAVEETH',
@@ -402,7 +404,7 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: '/static/img/banner_icons/uni.svg',
-    tags: ['LPToken'],
+    tags: ['lp-token'],
   },
   {
     symbol: 'UNIV2DAIUSDT',
@@ -417,7 +419,7 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: '/static/img/banner_icons/uni.svg',
-    tags: ['LPToken'],
+    tags: ['lp-token'],
   },
   // {
   //   symbol: 'WETH',

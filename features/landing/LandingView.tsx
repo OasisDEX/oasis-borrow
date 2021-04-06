@@ -5,7 +5,8 @@ import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { IlksFilterState } from 'features/ilks/ilksFilters'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
-import { FeaturedIlks, Filters } from 'features/vaultsOverview/VaultsOverviewView'
+import { FeaturedIlks } from 'features/vaultsOverview/VaultsOverviewView'
+import { Filters } from "features/vaultsOverview/Filters"
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservableWithError } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
@@ -291,7 +292,7 @@ export function LandingView() {
           position: 'relative',
           opacity: 0,
           animation: slideIn,
-          animationDuration: '0.7s',
+          animationDuration: '0.4s',
           animationTimingFunction: 'ease-out',
           animationFillMode: 'forwards',
           animationDelay: '0.4s'
@@ -302,10 +303,10 @@ export function LandingView() {
         <>
           <Box sx={{
             my: 4,
-            mb: 5,
+            mb: [2, 3, 5],
             position: 'relative',
             animation: slideIn,
-            animationDuration: '0.9s',
+            animationDuration: '0.4s',
             animationFillMode: 'forward',
             animationTimingFunction: 'ease-out',
           }}>
@@ -320,12 +321,14 @@ export function LandingView() {
             tagFilter={landing.ilks.filters.tagFilter}
             defaultTag="all-assets"
           />
-          <Table
-            data={landing.ilks.data}
-            primaryKey="ilk"
-            state={landing.ilks.filters}
-            columns={ilksColumns}
-          />
+          <Box sx={{ overflowX: 'auto', p: '3px' }}>
+            <Table
+              data={landing.ilks.data}
+              primaryKey="ilk"
+              state={landing.ilks.filters}
+              columns={ilksColumns}
+            />
+          </Box>
         </>
       }
       <FAQ />
