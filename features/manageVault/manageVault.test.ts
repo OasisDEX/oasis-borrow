@@ -126,6 +126,8 @@ describe('manageVault', () => {
     const debtFloor = new BigNumber('2000')
     const withdrawAmount = new BigNumber('10')
     const paybackAmount = new BigNumber('10')
+    const maxPaybackAmount = new BigNumber('10000')
+    const debt = new BigNumber(3000)
     const manageVaultState = {
       ...defaultManageVaultState,
       ...protoUserWBTCTokenInfo,
@@ -142,7 +144,8 @@ describe('manageVault', () => {
       debtFloor,
       ilkDebtAvailable,
       maxWithdrawAmount: withdrawAmount,
-      maxPaybackAmount: paybackAmount,
+      maxPaybackAmount,
+      debt,
     }
     it('Should show no errors when the state is correct', () => {
       const { errorMessages } = validateErrors(manageVaultState)
@@ -155,10 +158,18 @@ describe('manageVault', () => {
       })
       expect(errorMessages).to.deep.equal(['depositAmountGreaterThanMaxDepositAmount'])
     })
+    it('Should show withdrawAmountGreaterThanMaxWithdrawAmount error', () => {
+      const { errorMessages } = validateErrors({
+        ...manageVaultState,
+        maxWithdrawAmount: withdrawAmount.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
+      })
+      expect(errorMessages).to.deep.equal(['withdrawAmountGreaterThanMaxWithdrawAmount'])
+    })
     it('Should show generateAmountLessThanDebtFloor error', () => {
       const { errorMessages } = validateErrors({
         ...manageVaultState,
-        generateAmount: debtFloor.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
+        debt: new BigNumber(0),
+        generateAmount: new BigNumber(1),
       })
       expect(errorMessages).to.deep.equal(['generateAmountLessThanDebtFloor'])
     })
@@ -168,6 +179,20 @@ describe('manageVault', () => {
         generateAmount: ilkDebtAvailable.multipliedBy(SLIGHTLY_MORE_THAN_ONE),
       })
       expect(errorMessages).to.deep.equal(['generateAmountGreaterThanDebtCeiling'])
+    })
+    it('Should show paybackAmountGreaterThanMaxPaybackAmount error', () => {
+      const { errorMessages } = validateErrors({
+        ...manageVaultState,
+        maxPaybackAmount: paybackAmount.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
+      })
+      expect(errorMessages).to.deep.equal(['paybackAmountGreaterThanMaxPaybackAmount'])
+    })
+    it('Should show paybackAmountLessThanDebtFloor error', () => {
+      const { errorMessages } = validateErrors({
+        ...manageVaultState,
+        paybackAmount: debt.minus(debtFloor).plus(1),
+      })
+      expect(errorMessages).to.deep.equal(['paybackAmountLessThanDebtFloor'])
     })
     describe('Should validate allowance', () => {
       it('Should show daiAllowanceAmountEmpty error', () => {
