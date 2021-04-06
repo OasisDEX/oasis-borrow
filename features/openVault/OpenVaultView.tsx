@@ -15,6 +15,7 @@ import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
+import { OpenVaultEditing } from './OpenVaultEditing'
 
 function OpenVaultDetails(props: OpenVaultState) {
   const {
@@ -243,106 +244,6 @@ function OpenVaultFormTitle({
       <Text sx={{ fontSize: 2 }}>
         Some text here giving a little more context as to what the user is doing
       </Text>
-    </Grid>
-  )
-}
-
-function OpenVaultFormEditing(props: OpenVaultState) {
-  const {
-    token,
-    depositAmount,
-    generateAmount,
-    maxDepositAmount,
-    maxGenerateAmount,
-    errorMessages,
-    warningMessages,
-    ilkDebtAvailable,
-    liquidationRatio,
-    afterCollateralizationRatio,
-    progress,
-    updateDeposit,
-    updateDepositMax,
-    updateDepositUSD,
-    depositAmountUSD,
-    maxDepositAmountUSD,
-    updateGenerate,
-    updateGenerateMax,
-  } = props
-
-  function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault()
-    progress!()
-  }
-
-  const errorString = errorMessages.join(',\n')
-  const warningString = warningMessages.join(',\n')
-
-  const hasError = !!errorString
-  const hasWarnings = !!warningString
-
-  const daiAvailable = ilkDebtAvailable ? `${formatCryptoBalance(ilkDebtAvailable)} DAI` : '--'
-  const minCollRatio = liquidationRatio
-    ? `${formatPercent(liquidationRatio.times(100), { precision: 2 })}`
-    : '--'
-  const afterCollRatio = afterCollateralizationRatio.eq(zero)
-    ? '--'
-    : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
-
-  return (
-    <Grid>
-      <VaultActionInput
-        action="Deposit"
-        token={token}
-        showMax={true}
-        hasAuxiliary={true}
-        onSetMax={updateDepositMax!}
-        amount={depositAmount}
-        auxiliaryAmount={depositAmountUSD}
-        onChange={handleNumericInput(updateDeposit!)}
-        onAuxiliaryChange={handleNumericInput(updateDepositUSD!)}
-        maxAmount={maxDepositAmount}
-        maxAuxiliaryAmount={maxDepositAmountUSD}
-        maxAmountLabel={'Balance'}
-        hasError={hasError}
-      />
-      <VaultActionInput
-        action="Generate"
-        amount={generateAmount}
-        token={'DAI'}
-        showMax={true}
-        maxAmount={maxGenerateAmount}
-        maxAmountLabel={'Maximum'}
-        onSetMax={updateGenerateMax}
-        onChange={handleNumericInput(updateGenerate!)}
-        hasError={false}
-      />
-
-      {hasError && (
-        <>
-          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
-        </>
-      )}
-      {hasWarnings && (
-        <>
-          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>
-        </>
-      )}
-
-      <Card>
-        <Grid columns="5fr 3fr">
-          <Text sx={{ fontSize: 2 }}>Dai Available</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{daiAvailable}</Text>
-
-          <Text sx={{ fontSize: 2 }}>Min. collateral ratio</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{minCollRatio}</Text>
-
-          <Text sx={{ fontSize: 2 }}>Collateralization Ratio</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{afterCollRatio}</Text>
-        </Grid>
-      </Card>
-      <Button onClick={handleProgress} disabled={hasError}>
-        Confirm
-      </Button>
     </Grid>
   )
 }
@@ -728,7 +629,7 @@ function OpenVaultForm(props: OpenVaultState) {
     <Box>
       <Card>
         <OpenVaultFormTitle {...props} />
-        {isEditingStage && <OpenVaultFormEditing {...props} />}
+        {isEditingStage && <OpenVaultEditing {...props} />}
         {isProxyStage && <OpenVaultFormProxy {...props} />}
         {isAllowanceStage && <OpenVaultFormAllowance {...props} />}
         {isOpenStage && <OpenVaultFormConfirmation {...props} />}
