@@ -14,7 +14,7 @@ import {
 } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
 import React, { useEffect } from 'react'
-import { EMPTY, Observable, of } from 'rxjs'
+import { of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 

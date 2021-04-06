@@ -301,7 +301,6 @@ describe('openVault', () => {
         priceInfo$,
         balanceInfo$,
         ilkData$,
-        ilks$ || of(['ETH-A', 'WBTC-A', 'USDC-A']),
         ilkToToken$,
         ilk,
       )
@@ -369,8 +368,6 @@ describe('openVault', () => {
       const state = getStateUnpacker(createTestFixture())
       const s = state()
       expect(s.stage).to.be.equal('editing')
-      expect(s.isIlkValidationStage).to.be.false
-      expect(s.isEditingStage).to.be.true
     })
 
     it('editing.change()', () => {
@@ -380,13 +377,12 @@ describe('openVault', () => {
       expect((state() as OpenVaultState).depositAmount!.toString()).to.be.equal(
         depositAmount.toString(),
       )
-      expect(state().isEditingStage).to.be.true
+      expect(state().stage).to.be.equal('editing')
     })
 
     it('editing.progress()', () => {
       const state = getStateUnpacker(createTestFixture())
       ;(state() as OpenVaultState).progress!()
-      expect(state().isProxyStage).to.be.true
       expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
     })
 
@@ -405,7 +401,6 @@ describe('openVault', () => {
       )
       proxyAddress$.next()
       ;(state() as OpenVaultState).progress!()
-      expect(state().isProxyStage).to.be.true
       expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
       ;(state() as OpenVaultState).progress!()
       proxyAddress$.next(proxyAddress)
@@ -450,7 +445,6 @@ describe('openVault', () => {
         }),
       )
       ;(state() as OpenVaultState).progress!()
-      expect(state().isAllowanceStage).to.be.true
       expect(state().stage).to.be.equal('allowanceWaitingForConfirmation')
       ;(state() as OpenVaultState).progress!()
       expect(state().stage).to.be.equal('allowanceSuccess')
@@ -480,7 +474,6 @@ describe('openVault', () => {
     it('editing.progress(proxyAddress, allowance)', () => {
       const state = getStateUnpacker(createTestFixture({ proxyAddress: '0xProxyAddress' }))
       ;(state() as OpenVaultState).progress!()
-      expect(state().isOpenStage).to.be.true
       expect(state().stage).to.be.equal('openWaitingForConfirmation')
     })
 
@@ -496,10 +489,8 @@ describe('openVault', () => {
         }),
       )
       ;(state() as OpenVaultState).progress!()
-      expect(state().isOpenStage).to.be.true
       expect(state().stage).to.be.equal('openWaitingForConfirmation')
       ;(state() as OpenVaultState).progress!()
-      expect(state().isOpenStage).to.be.true
       expect(state().stage).to.be.equal('openSuccess')
       expect((state() as OpenVaultState).id!.toString()).to.be.equal('3281')
     })
