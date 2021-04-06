@@ -26,6 +26,6 @@ export function createIlkValidation$(
         status: 'ilkValidationSuccess',
       })
     }),
-    startWith(of({ ilk, status: 'ilkValidationLoading' })),
+    startWith({ ilk, status: 'ilkValidationLoading' } as IlkValidationState),
   )
 }
