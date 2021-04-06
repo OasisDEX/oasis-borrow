@@ -138,12 +138,19 @@ export const IlkValidationLoadingStage = createStory({ ilks$: EMPTY, ilk: 'ETH-A
 
 export const IlkValidationFailureStage = createStory({ ilk: 'ETH-Z' })
 
+export const EmptyEditingStage = createStory({
+  proxyAddress: '0xProxyAddress',
+  userTokenInfo: { collateralBalance: new BigNumber('100') },
+  ilk: 'WBTC-A',
+})
+
 export const EditingStage = createStory({
   proxyAddress: '0xProxyAddress',
   balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'WBTC-A',
   depositAmount: new BigNumber('5'),
   generateAmount: new BigNumber('2500'),
+  showGenerateOption: true,
 })
 
 export const EditingStageWarningGenerateAmountEmpty = createStory({
