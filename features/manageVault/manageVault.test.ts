@@ -425,7 +425,7 @@ describe('manageVault', () => {
       expect(s.isEditingStage).to.be.true
     })
 
-    it('editing.change()', () => {
+    it('collateral-editing.updateDeposit()', () => {
       const depositAmount = new BigNumber(5)
       const state = getStateUnpacker(createTestFixture())
       ;(state() as ManageVaultState).updateDeposit!(depositAmount)
@@ -433,6 +433,100 @@ describe('manageVault', () => {
         depositAmount.toString(),
       )
       expect(state().isEditingStage).to.be.true
+    })
+
+    it('collateral-editing.updateGenerate()', () => {
+      const depositAmount = new BigNumber(5)
+      const generateAmount = new BigNumber(1000)
+      const state = getStateUnpacker(createTestFixture())
+      ;(state() as ManageVaultState).updateGenerate!(generateAmount)
+      expect((state() as ManageVaultState).generateAmount).to.be.undefined
+      ;(state() as ManageVaultState).updateDeposit!(depositAmount)
+      ;(state() as ManageVaultState).updateGenerate!(generateAmount)
+      expect((state() as ManageVaultState).generateAmount).to.be.undefined
+      ;(state() as ManageVaultState).toggleDepositAndGenerateOption!()
+      ;(state() as ManageVaultState).updateGenerate!(generateAmount)
+      expect((state() as ManageVaultState).generateAmount!.toString()).to.be.equal(
+        generateAmount.toString(),
+      )
+    })
+
+    it('collateral-editing.updateWithdraw()', () => {
+      const withdrawAmount = new BigNumber(5)
+      const state = getStateUnpacker(createTestFixture())
+      ;(state() as ManageVaultState).updateWithdraw!(withdrawAmount)
+      expect((state() as ManageVaultState).withdrawAmount!.toString()).to.be.equal(
+        withdrawAmount.toString(),
+      )
+      expect(state().isEditingStage).to.be.true
+    })
+
+    it('collateral-editing.updatePayback()', () => {
+      const withdrawAmount = new BigNumber(5)
+      const paybackAmount = new BigNumber(1000)
+      const state = getStateUnpacker(createTestFixture())
+      ;(state() as ManageVaultState).updatePayback!(paybackAmount)
+      expect((state() as ManageVaultState).paybackAmount).to.be.undefined
+      ;(state() as ManageVaultState).updateWithdraw!(withdrawAmount)
+      ;(state() as ManageVaultState).updatePayback!(paybackAmount)
+      expect((state() as ManageVaultState).paybackAmount).to.be.undefined
+      ;(state() as ManageVaultState).togglePaybackAndWithdrawOption!()
+      ;(state() as ManageVaultState).updatePayback!(paybackAmount)
+      expect((state() as ManageVaultState).paybackAmount!.toString()).to.be.equal(
+        paybackAmount.toString(),
+      )
+    })
+
+    it('dai-editing.updateGenerate()', () => {
+      const generateAmount = new BigNumber(1000)
+      const state = getStateUnpacker(createTestFixture({ stage: 'daiEditing' }))
+      ;(state() as ManageVaultState).updateGenerate!(generateAmount)
+      expect((state() as ManageVaultState).generateAmount!.toString()).to.be.equal(
+        generateAmount.toString(),
+      )
+      expect(state().isEditingStage).to.be.true
+    })
+
+    it('dai-editing.updateDeposit()', () => {
+      const generateAmount = new BigNumber(1000)
+      const depositAmount = new BigNumber(5)
+      const state = getStateUnpacker(createTestFixture({ stage: 'daiEditing' }))
+      ;(state() as ManageVaultState).updateDeposit!(depositAmount)
+      expect((state() as ManageVaultState).depositAmount).to.be.undefined
+      ;(state() as ManageVaultState).updateGenerate!(generateAmount)
+      ;(state() as ManageVaultState).updateDeposit!(depositAmount)
+      expect((state() as ManageVaultState).depositAmount).to.be.undefined
+      ;(state() as ManageVaultState).toggleDepositAndGenerateOption!()
+      ;(state() as ManageVaultState).updateDeposit!(depositAmount)
+      expect((state() as ManageVaultState).depositAmount!.toString()).to.be.equal(
+        depositAmount.toString(),
+      )
+    })
+
+    it('dai-editing.updatePayback()', () => {
+      const paybackAmount = new BigNumber(1000)
+      const state = getStateUnpacker(createTestFixture({ stage: 'daiEditing' }))
+      ;(state() as ManageVaultState).updatePayback!(paybackAmount)
+      expect((state() as ManageVaultState).paybackAmount!.toString()).to.be.equal(
+        paybackAmount.toString(),
+      )
+      expect(state().isEditingStage).to.be.true
+    })
+
+    it('dai-editing.updateWithdraw()', () => {
+      const withdrawAmount = new BigNumber(5)
+      const paybackAmount = new BigNumber(1000)
+      const state = getStateUnpacker(createTestFixture({ stage: 'daiEditing' }))
+      ;(state() as ManageVaultState).updateWithdraw!(withdrawAmount)
+      expect((state() as ManageVaultState).withdrawAmount).to.be.undefined
+      ;(state() as ManageVaultState).updatePayback!(paybackAmount)
+      ;(state() as ManageVaultState).updateWithdraw!(withdrawAmount)
+      expect((state() as ManageVaultState).withdrawAmount).to.be.undefined
+      ;(state() as ManageVaultState).togglePaybackAndWithdrawOption!()
+      ;(state() as ManageVaultState).updateWithdraw!(withdrawAmount)
+      expect((state() as ManageVaultState).withdrawAmount!.toString()).to.be.equal(
+        withdrawAmount.toString(),
+      )
     })
 
     it('editing.progress()', () => {

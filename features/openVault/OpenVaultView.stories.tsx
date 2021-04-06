@@ -137,6 +137,7 @@ export const EditingStage = createStory({
   ilk: 'WBTC-A',
   depositAmount: new BigNumber('5'),
   generateAmount: new BigNumber('2500'),
+  showGenerateOption: true,
 })
 
 export const EditingStageWarningGenerateAmountEmpty = createStory({

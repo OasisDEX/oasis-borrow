@@ -28,17 +28,43 @@ export function applyManageVaultForm(
   { kind }: ManageVaultChange,
   state: ManageVaultState,
 ): ManageVaultState {
-  if (kind === 'toggleDepositAndGenerateOption') {
+  const {
+    showDepositAndGenerateOption,
+    showPaybackAndWithdrawOption,
+    stage,
+    depositAmount,
+    generateAmount,
+    withdrawAmount,
+    paybackAmount,
+  } = state
+  const isCollateralStage = stage === 'collateralEditing'
+  const isDaiStage = stage === 'daiEditing'
+
+  const onToggleCloseShouldClearGenerateAmount = showDepositAndGenerateOption && isCollateralStage
+  const onToggleCloseShouldClearDepositAmount = showDepositAndGenerateOption && isDaiStage
+  const onToggleCloseShouldClearPaybackAmount = showPaybackAndWithdrawOption && isCollateralStage
+  const onToggleCloseShouldClearWithdrawAmount = showPaybackAndWithdrawOption && isDaiStage
+
+  const canToggleDepositAndGenerate =
+    (isCollateralStage && depositAmount) || (isDaiStage && generateAmount)
+  const canTogglePaybackAndWithdraw =
+    (isCollateralStage && withdrawAmount) || (isDaiStage && paybackAmount)
+
+  if (kind === 'toggleDepositAndGenerateOption' && canToggleDepositAndGenerate) {
     return {
       ...state,
-      showDepositAndGenerateOption: !state.showDepositAndGenerateOption,
+      showDepositAndGenerateOption: !showDepositAndGenerateOption,
+      ...(onToggleCloseShouldClearGenerateAmount && { generateAmount: undefined }),
+      ...(onToggleCloseShouldClearDepositAmount && { depositAmount: undefined }),
     }
   }
 
-  if (kind === 'togglePaybackAndWithdrawOption') {
+  if (kind === 'togglePaybackAndWithdrawOption' && canTogglePaybackAndWithdraw) {
     return {
       ...state,
-      showPaybackAndWithdrawOption: !state.showPaybackAndWithdrawOption,
+      showPaybackAndWithdrawOption: !showPaybackAndWithdrawOption,
+      ...(onToggleCloseShouldClearPaybackAmount && { paybackAmount: undefined }),
+      ...(onToggleCloseShouldClearWithdrawAmount && { withdrawAmount: undefined }),
     }
   }
 
