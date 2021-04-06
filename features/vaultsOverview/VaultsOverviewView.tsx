@@ -14,7 +14,7 @@ import {
 } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback, useMemo } from 'react'
-import { Box, Card, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading, Image, SxProps, SxStyleProp, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { IlksFilterState, IlksWithFilters } from '../ilks/ilksFilters'
@@ -215,7 +215,7 @@ function CallToActionPlaceholder() {
       gap={0}
       sx={{
         flex: 1,
-        cursor: 'pointer',
+        cursor: 'progress',
         bg: 'ghost',
         borderRadius: 'large',
         p: 4,
@@ -400,9 +400,9 @@ export function FeaturedIlks({ ilks, sx }: { ilks: FeaturedIlk[], sx?: SxStylePr
   )
 }
 
-export function FeaturedIlksPlaceholder() {
+export function FeaturedIlksPlaceholder({ sx }: { sx: SxProps }) {
   return (
-    <Grid sx={{ position: 'absolute', left: 0, top: 0, right: 0 }} columns={['1fr', '1fr 1fr 1fr']} gap={4}>
+    <Grid sx={{ ...sx, position: 'absolute', left: 0, top: 0, right: 0 }} columns={['1fr', '1fr 1fr 1fr']} gap={4}>
       <CallToActionPlaceholder />
       <CallToActionPlaceholder />
       <CallToActionPlaceholder />

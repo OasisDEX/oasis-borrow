@@ -314,18 +314,22 @@ export function LandingView() {
       }}
     >
       <Hero
-        sx={{
-          position: 'relative',
-          ...slideInAnimation,
-        }}
+        sx={{ ...slideInAnimation, position: 'relative', }}
       />
-      <Box sx={{
-        my: 4,
-        mb: [2, 3, 5],
-        position: 'relative',
-        ...slideInAnimation,
-      }}>
-        <FeaturedIlksPlaceholder />
+      <Box
+        sx={{
+          ...slideInAnimation,
+          position: 'relative',
+          my: 4,
+          mb: [2, 3, 5],
+        }}>
+        <FeaturedIlksPlaceholder
+          sx={landing !== undefined ? {
+            ...fadeInAnimation,
+            animationDirection: 'backwards',
+            animationFillMode: 'backwards'
+          } : {}}
+        />
         {
           landing !== undefined &&
           <FeaturedIlks
@@ -335,8 +339,8 @@ export function LandingView() {
         }
       </Box>
       {
-        landing !== undefined ?
-          <Box sx={{ ...slideInAnimation }}>
+        landing !== undefined
+          ? <Box sx={{ ...slideInAnimation, position: 'relative' }}>
             <Filters
               onSearch={onIlkSearch}
               search={landing.ilks.filters.search}
@@ -353,7 +357,7 @@ export function LandingView() {
               />
             </Box>
           </Box>
-          : <Box sx={{ height: 400 }}></Box>
+          : <Box sx={{ height: 500 }}></Box>
       }
       <FAQ />
     </Grid>
