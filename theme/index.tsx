@@ -1209,6 +1209,15 @@ const oasisBaseTheme = {
       cursor: 'pointer',
       display: 'inline-block',
       fontWeight: 'semiBold',
+      '&, &:visited': {
+        textDecoration: 'none'
+      },
+      '&:focus': {
+        outline: 'none'
+      },
+      '&:focus-visible': {
+        textDecoration: 'underline'
+      }
     },
     outline: {
       variant: 'buttons.outline',

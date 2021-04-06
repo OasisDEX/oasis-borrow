@@ -34,7 +34,7 @@ export function AppLink({
   if (isInternalLink) {
     return (
       <InternalLink
-        {...{ href, sx, variant, onClick, isAppContextAvailable: isAppContextAvailable(), ...rest }}
+        {...{ href, sx, variant, onClick, ...rest }}
       >
         {children}
       </InternalLink>
@@ -54,11 +54,10 @@ function InternalLink({
   children,
   internalInNewTab,
   as,
-  isAppContextAvailable,
   variant,
   onClick,
   ...rest
-}: AppLinkProps & { isAppContextAvailable: boolean }) {
+}: AppLinkProps) {
   const {
     query: { network },
   } = useRouter()
@@ -66,15 +65,15 @@ function InternalLink({
   const readOnlyAs = as
 
   const actualHref =
-    isAppContextAvailable && network ? { pathname: readOnlyHref, query: { network } } : readOnlyHref
+    network ? { pathname: readOnlyHref, query: { network } } : readOnlyHref
 
   const actualAs =
-    readOnlyAs && isAppContextAvailable && network
+    readOnlyAs && network
       ? { pathname: readOnlyAs as string, query: { network } }
       : readOnlyAs
 
   return (
-    <Link href={actualHref} as={actualAs} {...rest}>
+    <Link href={actualHref} as={actualAs} passHref {...rest}>
       <ThemeLink target={internalInNewTab ? '_blank' : '_self'} {...{ sx, variant, onClick }}>
         {children}
       </ThemeLink>
