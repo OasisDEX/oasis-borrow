@@ -7,6 +7,7 @@ import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Card, Grid, Text } from 'theme-ui'
+
 import { OpenVaultState } from './openVault'
 
 const PlusIcon = () => (
