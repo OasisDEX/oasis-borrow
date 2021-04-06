@@ -470,7 +470,6 @@ describe('manageVault', () => {
       expect((state() as ManageVaultState).withdrawAmount!.toString()).to.be.equal(
         withdrawAmount.toString(),
       )
-      expect(state().isEditingStage).to.be.true
     })
 
     it('collateral-editing.updatePayback()', () => {
@@ -496,7 +495,6 @@ describe('manageVault', () => {
       expect((state() as ManageVaultState).generateAmount!.toString()).to.be.equal(
         generateAmount.toString(),
       )
-      expect(state().isEditingStage).to.be.true
     })
 
     it('dai-editing.updateDeposit()', () => {
@@ -522,7 +520,6 @@ describe('manageVault', () => {
       expect((state() as ManageVaultState).paybackAmount!.toString()).to.be.equal(
         paybackAmount.toString(),
       )
-      expect(state().isEditingStage).to.be.true
     })
 
     it('dai-editing.updateWithdraw()', () => {
