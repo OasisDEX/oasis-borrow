@@ -8,6 +8,12 @@ import { ContextConnected, protoContextConnected } from 'blockchain/network'
 import { createVault$, Vault } from 'blockchain/vaults'
 import { expect } from 'chai'
 import { protoTxHelpers, TxHelpers } from 'components/AppContext'
+import { getStateUnpacker } from 'helpers/testHelpers'
+import { one, zero } from 'helpers/zero'
+import { describe, it } from 'mocha'
+import { of } from 'rxjs'
+import { first, switchMap } from 'rxjs/operators'
+
 import { BalanceInfo } from '../shared/balanceInfo'
 import {
   PriceInfo,
@@ -15,12 +21,6 @@ import {
   protoUSDCPriceInfo,
   protoWBTCPriceInfo,
 } from '../shared/priceInfo'
-import { getStateUnpacker } from 'helpers/testHelpers'
-import { one, zero } from 'helpers/zero'
-import { describe, it } from 'mocha'
-import { of } from 'rxjs'
-import { first, switchMap } from 'rxjs/operators'
-
 import {
   applyManageVaultCalculations,
   createManageVault$,
