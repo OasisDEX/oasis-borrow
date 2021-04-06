@@ -211,7 +211,7 @@ describe('openVault', () => {
       ilks$?: Observable<string[]>
       userTokenInfo?: Partial<UserTokenInfo>
       newState?: Partial<OpenVaultState>
-      ilk: string
+      ilk?: string
       txHelpers?: TxHelpers
     }
 
@@ -222,9 +222,9 @@ describe('openVault', () => {
       ilks$,
       userTokenInfo,
       newState,
-      ilk,
+      ilk = 'ETH-A',
       txHelpers,
-    }: FixtureProps) {
+    }: FixtureProps = {}) {
       const defaultState$ = of({ ...defaultOpenVaultState, ...(newState || {}) })
       const context$ = of(context || protoContextConnected)
       const txHelpers$ = of(txHelpers || protoTxHelpers)
@@ -264,7 +264,7 @@ describe('openVault', () => {
     }
 
     it('Should start in an editing stage', () => {
-      const state = getStateUnpacker(createTestFixture({ ilk: 'ETH-A' }))
+      const state = getStateUnpacker(createTestFixture())
       const s = state()
       expect(s.stage).to.be.equal('editing')
       expect(s.isIlkValidationStage).to.be.false
@@ -273,7 +273,7 @@ describe('openVault', () => {
 
     it('editing.change()', () => {
       const depositAmount = new BigNumber(5)
-      const state = getStateUnpacker(createTestFixture({ ilk: 'ETH-A' }))
+      const state = getStateUnpacker(createTestFixture())
       ;(state() as OpenVaultState).change!({ kind: 'depositAmount', depositAmount })
       expect((state() as OpenVaultState).depositAmount!.toString()).to.be.equal(
         depositAmount.toString(),
@@ -283,7 +283,7 @@ describe('openVault', () => {
 
     it('editing.change().reset()', () => {
       const depositAmount = new BigNumber(5)
-      const state = getStateUnpacker(createTestFixture({ ilk: 'ETH-A' }))
+      const state = getStateUnpacker(createTestFixture())
       ;(state() as OpenVaultState).change!({ kind: 'depositAmount', depositAmount })
       expect((state() as OpenVaultState).depositAmount!.toString()).to.be.equal(
         depositAmount.toString(),
@@ -293,25 +293,21 @@ describe('openVault', () => {
     })
 
     it('editing.progress()', () => {
-      const state = getStateUnpacker(createTestFixture({ ilk: 'ETH-A' }))
+      const state = getStateUnpacker(createTestFixture())
       ;(state() as OpenVaultState).progress!()
       expect(state().isProxyStage).to.be.true
       expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
     })
 
     it('editing.progress(proxyAddress)', () => {
-      const state = getStateUnpacker(
-        createTestFixture({ ilk: 'ETH-A', proxyAddress: '0xProxyAddress' }),
-      )
+      const state = getStateUnpacker(createTestFixture({ proxyAddress: '0xProxyAddress' }))
       ;(state() as OpenVaultState).progress!()
       expect(state().isOpenStage).to.be.true
       expect(state().stage).to.be.equal('openWaitingForConfirmation')
     })
 
     it('editing.progress(proxyAddress)', () => {
-      const state = getStateUnpacker(
-        createTestFixture({ ilk: 'ETH-A', proxyAddress: '0xProxyAddress' }),
-      )
+      const state = getStateUnpacker(createTestFixture({ proxyAddress: '0xProxyAddress' }))
       ;(state() as OpenVaultState).progress!()
       expect(state().isOpenStage).to.be.true
       expect(state().stage).to.be.equal('openWaitingForConfirmation')
@@ -320,7 +316,6 @@ describe('openVault', () => {
     it('openWaitingForConfirmation.progress()', () => {
       const state = getStateUnpacker(
         createTestFixture({
-          ilk: 'ETH-A',
           proxyAddress: '0xProxyAddress',
           txHelpers: {
             // @ts-ignore
