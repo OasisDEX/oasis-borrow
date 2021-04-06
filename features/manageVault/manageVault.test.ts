@@ -435,7 +435,6 @@ describe('manageVault', () => {
       const state = getStateUnpacker(createTestFixture())
       const s = state()
       expect(s.stage).to.be.equal('collateralEditing')
-      expect(s.isEditingStage).to.be.true
     })
 
     it('editing.change()', () => {
@@ -445,27 +444,24 @@ describe('manageVault', () => {
       expect((state() as ManageVaultState).depositAmount!.toString()).to.be.equal(
         depositAmount.toString(),
       )
-      expect(state().isEditingStage).to.be.true
+      expect(state().stage).to.be.equal('collateralEditing')
     })
 
     it('editing.progress()', () => {
       const state = getStateUnpacker(createTestFixture())
       ;(state() as ManageVaultState).progress!()
-      expect(state().isProxyStage).to.be.true
       expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
     })
 
     it('editing.progress(proxyAddress)', () => {
       const state = getStateUnpacker(createTestFixture({ proxyAddress: '0xProxyAddress' }))
       ;(state() as ManageVaultState).progress!()
-      expect(state().isManageStage).to.be.true
       expect(state().stage).to.be.equal('manageWaitingForConfirmation')
     })
 
     it('editing.progress(proxyAddress)', () => {
       const state = getStateUnpacker(createTestFixture({ proxyAddress: '0xProxyAddress' }))
       ;(state() as ManageVaultState).progress!()
-      expect(state().isManageStage).to.be.true
       expect(state().stage).to.be.equal('manageWaitingForConfirmation')
     })
 
@@ -497,10 +493,8 @@ describe('manageVault', () => {
         }),
       )
       ;(state() as ManageVaultState).progress!()
-      expect(state().isManageStage).to.be.true
       expect(state().stage).to.be.equal('manageWaitingForConfirmation')
       ;(state() as ManageVaultState).progress!()
-      expect(state().isManageStage).to.be.true
       expect(state().stage).to.be.equal('manageSuccess')
     })
   })
