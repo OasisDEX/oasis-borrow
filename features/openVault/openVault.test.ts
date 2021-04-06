@@ -266,24 +266,44 @@ describe('openVault', () => {
 
     function createMockTxState<T extends TxMeta>(
       meta: T,
+      status: TxStatus = TxStatus.Success,
       receipt: unknown = {},
     ): Observable<TxState<T>> {
-      const txState = {
-        account: '0x',
-        txNo: 0,
-        networkId: '1',
-        meta,
-        start: new Date(),
-        lastChange: new Date(),
-        dismissed: false,
-        status: TxStatus.Success as TxStatus.Success,
-        txHash: '0xhash',
-        blockNumber: 0,
-        receipt,
-        confirmations: 15,
-        safeConfirmations: 15,
+      if (status === TxStatus.Success) {
+        const txState = {
+          account: '0x',
+          txNo: 0,
+          networkId: '1',
+          meta,
+          start: new Date(),
+          lastChange: new Date(),
+          dismissed: false,
+          status,
+          txHash: '0xhash',
+          blockNumber: 0,
+          receipt,
+          confirmations: 15,
+          safeConfirmations: 15,
+        }
+        return of(txState)
+      } else if (status === TxStatus.Failure) {
+        const txState = {
+          account: '0x',
+          txNo: 0,
+          networkId: '1',
+          meta,
+          start: new Date(),
+          lastChange: new Date(),
+          dismissed: false,
+          status,
+          txHash: '0xhash',
+          blockNumber: 0,
+          receipt,
+        }
+        return of(txState)
+      } else {
+        throw new Error('Not implemented yet')
       }
-      return of(txState)
     }
 
     it('Should start in an editing stage', () => {
@@ -329,8 +349,9 @@ describe('openVault', () => {
         createTestFixture({
           proxyAddress$,
           txHelpers: {
-            // @ts-ignore
-            sendWithGasEstimation: <B>(_proxy: any, meta: B) => createMockTxState(meta),
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+              createMockTxState(meta),
           },
         }),
       )
@@ -344,6 +365,26 @@ describe('openVault', () => {
       expect((state() as OpenVaultState).proxyAddress).to.be.equal(proxyAddress)
     })
 
+    it('creating proxy failure', () => {
+      const proxyAddress$ = new Subject<string>()
+      const proxyAddress = '0xProxyAddress'
+      const state = getStateUnpacker(
+        createTestFixture({
+          proxyAddress$,
+          txHelpers: {
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+              createMockTxState(meta, TxStatus.Failure),
+          },
+        }),
+      )
+      proxyAddress$.next()
+      ;(state() as OpenVaultState).progress!()
+      ;(state() as OpenVaultState).progress!()
+      proxyAddress$.next(proxyAddress)
+      expect(state().stage).to.be.equal('proxyFailure')
+    })
+
     it('setting allowance', () => {
       const proxyAddress = '0xProxyAddress'
       const state = getStateUnpacker(
@@ -354,8 +395,9 @@ describe('openVault', () => {
           newState: { depositAmount: new BigNumber(100) },
           userTokenInfo: { collateralBalance: new BigNumber(100) },
           txHelpers: {
-            // @ts-ignore
-            sendWithGasEstimation: <B>(_allowance: any, meta: B) => createMockTxState(meta),
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_allowance: any, meta: B) =>
+              createMockTxState(meta),
           },
         }),
       )
@@ -364,6 +406,27 @@ describe('openVault', () => {
       expect(state().stage).to.be.equal('allowanceWaitingForConfirmation')
       ;(state() as OpenVaultState).progress!()
       expect(state().stage).to.be.equal('allowanceSuccess')
+    })
+
+    it('setting allowance failure', () => {
+      const proxyAddress = '0xProxyAddress'
+      const state = getStateUnpacker(
+        createTestFixture({
+          ilk: 'WBTC-A',
+          proxyAddress,
+          allowance: new BigNumber(99),
+          newState: { depositAmount: new BigNumber(100) },
+          userTokenInfo: { collateralBalance: new BigNumber(100) },
+          txHelpers: {
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_allowance: any, meta: B) =>
+              createMockTxState(meta, TxStatus.Failure),
+          },
+        }),
+      )
+      ;(state() as OpenVaultState).progress!()
+      ;(state() as OpenVaultState).progress!()
+      expect(state().stage).to.be.equal('allowanceFailure')
     })
 
     it('editing.progress(proxyAddress, allowance)', () => {
@@ -378,8 +441,9 @@ describe('openVault', () => {
         createTestFixture({
           proxyAddress: '0xProxyAddress',
           txHelpers: {
-            // @ts-ignore
-            send: <B>(_open: any, meta: B) => createMockTxState(meta, newCDPTxReceipt),
+            ...protoTxHelpers,
+            send: <B extends TxMeta>(_open: any, meta: B) =>
+              createMockTxState(meta, TxStatus.Success, newCDPTxReceipt),
           },
         }),
       )
