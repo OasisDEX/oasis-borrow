@@ -208,14 +208,9 @@ function VaultDetails(props: OpenVaultState) {
   )
 }
 
-function OpenVaultFormTitle({
-  isEditingStage,
-  isProxyStage,
-  isAllowanceStage,
-  reset,
-  stage,
-}: OpenVaultState) {
+function OpenVaultFormTitle({ reset, stage }: OpenVaultState) {
   const canReset = !!reset
+  const { isEditingStage, isProxyStage, isAllowanceStage } = categoriseOpenVaultStage(stage)
 
   function handleReset(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()

@@ -1,10 +1,7 @@
 import { Observable, of } from 'rxjs'
 import { startWith, switchMap } from 'rxjs/operators'
 
-export type IlkValidationStatus =
-  | 'ilkValidationLoading'
-  | 'ilkValidationFailure'
-  | 'ilkValidationSuccess'
+type IlkValidationStatus = 'ilkValidationLoading' | 'ilkValidationFailure' | 'ilkValidationSuccess'
 
 export interface IlkValidationState {
   status: IlkValidationStatus
@@ -29,6 +26,6 @@ export function createIlkValidation$(
         status: 'ilkValidationSuccess',
       })
     }),
-    startWith({ ilk, status: 'ilkValidationLoading' }),
+    startWith(of({ ilk, status: 'ilkValidationLoading' })),
   )
 }
