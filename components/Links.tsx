@@ -1,4 +1,3 @@
-import { isAppContextAvailable } from 'components/AppContextProvider'
 import { WithChildren } from 'helpers/types'
 import { LinkProps } from 'next/dist/client/link'
 import Link from 'next/link'
@@ -32,13 +31,7 @@ export function AppLink({
   if (disabled) return children
 
   if (isInternalLink) {
-    return (
-      <InternalLink
-        {...{ href, sx, variant, onClick, ...rest }}
-      >
-        {children}
-      </InternalLink>
-    )
+    return <InternalLink {...{ href, sx, variant, onClick, ...rest }}>{children}</InternalLink>
   }
 
   return (
@@ -64,13 +57,10 @@ function InternalLink({
   const readOnlyHref = href
   const readOnlyAs = as
 
-  const actualHref =
-    network ? { pathname: readOnlyHref, query: { network } } : readOnlyHref
+  const actualHref = network ? { pathname: readOnlyHref, query: { network } } : readOnlyHref
 
   const actualAs =
-    readOnlyAs && network
-      ? { pathname: readOnlyAs as string, query: { network } }
-      : readOnlyAs
+    readOnlyAs && network ? { pathname: readOnlyAs as string, query: { network } } : readOnlyAs
 
   return (
     <Link href={actualHref} as={actualAs} passHref {...rest}>

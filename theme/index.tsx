@@ -13,7 +13,10 @@ import { tokenIcons } from './tokenIcons'
 const customIcons = {
   chevron: {
     path: (
-      <path d="M9.61862 14.5513C9.81829 14.7864 10.1811 14.7864 10.3808 14.5513L16.0944 7.82366C16.3703 7.49888 16.1394 7 15.7133 7H4.28612C3.86001 7 3.62918 7.49888 3.90501 7.82366L9.61862 14.5513Z" fill="black" />
+      <path
+        d="M9.61862 14.5513C9.81829 14.7864 10.1811 14.7864 10.3808 14.5513L16.0944 7.82366C16.3703 7.49888 16.1394 7 15.7133 7H4.28612C3.86001 7 3.62918 7.49888 3.90501 7.82366L9.61862 14.5513Z"
+        fill="black"
+      />
     ),
     viewBox: '0 0 20 20',
   },
@@ -893,8 +896,8 @@ const oasisBaseTheme = {
     onSuccess: '#1AAB9B',
     warning: '#FFF1CF',
     onWarning: '#D8762D',
-    lavender: "#787A9B",
-    lavender_o25: "#787a9b40",
+    lavender: '#787A9B',
+    lavender_o25: '#787a9b40',
     networks: {
       mainnet: 'rgb(41, 182, 175)',
       kovan: 'rgb(112, 87, 255)',
@@ -1182,8 +1185,8 @@ const oasisBaseTheme = {
         outline: 'none',
       },
       '&:focus-visible': {
-        textDecoration: 'underline'
-      }
+        textDecoration: 'underline',
+      },
     },
     filter: {
       borderRadius: 'round',
@@ -1200,7 +1203,7 @@ const oasisBaseTheme = {
         outline: 'none',
       },
       '&:focus-visible': {
-        textDecoration: 'underline'
+        textDecoration: 'underline',
       },
       '&[data-selected="true"]': {
         border: 'light',
@@ -1222,54 +1225,54 @@ const oasisBaseTheme = {
       display: 'inline-block',
       fontWeight: 'semiBold',
       '&, &:visited': {
-        textDecoration: 'none'
+        textDecoration: 'none',
       },
       '&:focus': {
-        outline: 'none'
+        outline: 'none',
       },
       '&:focus-visible': {
-        textDecoration: 'underline'
-      }
+        textDecoration: 'underline',
+      },
     },
     outline: {
       variant: 'buttons.outline',
       display: 'inline-block',
       '&, &:visited': {
-        textDecoration: 'none'
+        textDecoration: 'none',
       },
       '&:focus': {
-        outline: 'none'
+        outline: 'none',
       },
       '&:focus-visible': {
-        textDecoration: 'underline'
-      }
+        textDecoration: 'underline',
+      },
     },
     primary: {
       variant: 'buttons.primary',
       display: 'inline-block',
       bg: 'primary',
       '&, &:visited': {
-        textDecoration: 'none'
+        textDecoration: 'none',
       },
       '&:focus': {
-        outline: 'none'
+        outline: 'none',
       },
       '&:focus-visible': {
-        textDecoration: 'underline'
-      }
+        textDecoration: 'underline',
+      },
     },
     secondary: {
       variant: 'buttons.secondary',
       display: 'inline-block',
       '&, &:visited': {
-        textDecoration: 'none'
+        textDecoration: 'none',
       },
       '&:focus': {
-        outline: 'none'
+        outline: 'none',
       },
       '&:focus-visible': {
-        textDecoration: 'underline'
-      }
+        textDecoration: 'underline',
+      },
     },
   },
   icons: {

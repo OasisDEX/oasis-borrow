@@ -19,10 +19,10 @@ import { Dictionary } from 'ts-essentials'
 
 import { IlksFilterState, IlksWithFilters } from '../ilks/ilksFilters'
 import { TokenSymbol } from '../landing/LandingView'
+import { Filters } from './Filters'
 import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { FeaturedIlk, VaultsOverview } from './vaultsOverview'
 import { VaultSummary } from './vaultSummary'
-import { Filters } from './Filters'
 
 const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
   {
@@ -227,18 +227,18 @@ function CallToActionPlaceholder() {
         color: 'transparent',
       }}
     >
-      <Box sx={{ gridColumn: '1/3', zIndex: 1, }}>
+      <Box sx={{ gridColumn: '1/3', zIndex: 1 }}>
         <Text variant="caption">title</Text>
       </Box>
       <Box sx={{ gridColumn: '1/3', zIndex: 1 }}>
         <Heading variant="header2" sx={{ color: 'transparent', minHeight: '100px' }}>
           ilk
-          </Heading>
+        </Heading>
       </Box>
       <Flex sx={{ zIndex: 1 }}>
         <Text variant="paragraph3" sx={{ color: 'transparent', mr: 2 }}>
           fee
-          </Text>
+        </Text>
       </Flex>
       <Flex sx={{ zIndex: 1, gridRow: [3, 4, 3] }}>
         <Text variant="paragraph3" sx={{ color: 'transparent', mr: 2 }}>
@@ -390,7 +390,7 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
   )
 }
 
-export function FeaturedIlks({ ilks, sx }: { ilks: FeaturedIlk[], sx?: SxStyleProp }) {
+export function FeaturedIlks({ ilks, sx }: { ilks: FeaturedIlk[]; sx?: SxStyleProp }) {
   return (
     <Grid sx={sx} columns={['1fr', '1fr 1fr 1fr']} gap={4}>
       {ilks.map((ilk) => (
@@ -402,7 +402,11 @@ export function FeaturedIlks({ ilks, sx }: { ilks: FeaturedIlk[], sx?: SxStylePr
 
 export function FeaturedIlksPlaceholder({ sx }: { sx: SxProps }) {
   return (
-    <Grid sx={{ ...sx, position: 'absolute', left: 0, top: 0, right: 0 }} columns={['1fr', '1fr 1fr 1fr']} gap={4}>
+    <Grid
+      sx={{ ...sx, position: 'absolute', left: 0, top: 0, right: 0 }}
+      columns={['1fr', '1fr 1fr 1fr']}
+      gap={4}
+    >
       <CallToActionPlaceholder />
       <CallToActionPlaceholder />
       <CallToActionPlaceholder />
@@ -465,9 +469,9 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
       <Text variant="header3" sx={{ textAlign: 'center', justifySelf: 'center', mb: 4 }}>
         {context.status === 'connected'
           ? t('vaults-overview.message-connected', {
-            address: formatAddress(address),
-            count: vaultSummary?.numberOfVaults || 0,
-          })
+              address: formatAddress(address),
+              count: vaultSummary?.numberOfVaults || 0,
+            })
           : t('vaults-overview.message-not-connected', { address: formatAddress(address) })}
       </Text>
       {displayFeaturedIlks && featuredIlks && <FeaturedIlks ilks={featuredIlks} />}

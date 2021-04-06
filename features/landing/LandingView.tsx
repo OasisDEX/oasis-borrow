@@ -1,3 +1,4 @@
+import { keyframes } from '@emotion/react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
@@ -5,15 +6,13 @@ import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { IlksFilterState } from 'features/ilks/ilksFilters'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
+import { Filters } from 'features/vaultsOverview/Filters'
 import { FeaturedIlks, FeaturedIlksPlaceholder } from 'features/vaultsOverview/VaultsOverviewView'
-import { Filters } from "features/vaultsOverview/Filters"
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservableWithError } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Image, SxProps, Text } from 'theme-ui'
-import { keyframes } from '@emotion/react'
-import { transform } from 'lodash'
 
 const slideIn = keyframes({
   from: {
@@ -23,7 +22,7 @@ const slideIn = keyframes({
   to: {
     top: 0,
     opacity: 1,
-  }
+  },
 })
 
 const fadeIn = keyframes({
@@ -32,7 +31,7 @@ const fadeIn = keyframes({
   },
   to: {
     opacity: 1,
-  }
+  },
 })
 
 export function TokenSymbol({
@@ -121,26 +120,27 @@ export function Hero({ sx }: { sx?: SxProps }) {
   const { t } = useTranslation()
 
   return (
-    <Flex sx={{
-      ...sx,
-      justifySelf: 'center',
-      alignItems: 'center',
-      textAlign: 'center',
-      my: 5,
-      flexDirection: 'column',
-    }}>
+    <Flex
+      sx={{
+        ...sx,
+        justifySelf: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        my: 5,
+        flexDirection: 'column',
+      }}
+    >
       <Heading as="h1" variant="header2" sx={{ fontSize: 40, mb: 3 }}>
         {t('landing.hero.headline')}
       </Heading>
       <Text variant="paragraph1" sx={{ mb: 3, color: 'lavender' }}>
-        <Trans
-          i18nKey="landing.hero.subheader"
-          components={[<br />]}
-        />
+        <Trans i18nKey="landing.hero.subheader" components={[<br />]} />
       </Text>
-      <Box sx={{
-        opacity: 0.08,
-      }}>
+      <Box
+        sx={{
+          opacity: 0.08,
+        }}
+      >
         <Image sx={{ mb: 4 }} src="/static/img/icons_set.svg" />
       </Box>
       <AppLink
@@ -154,8 +154,9 @@ export function Hero({ sx }: { sx?: SxProps }) {
           alignItems: 'center',
           '&:hover svg': {
             transform: 'translateX(10px)',
-          }
-        }}>
+          },
+        }}
+      >
         {t('connect-wallet')}
         <Icon
           name="arrow_right"
@@ -163,7 +164,7 @@ export function Hero({ sx }: { sx?: SxProps }) {
             ml: 2,
             position: 'relative',
             left: 2,
-            transition: '0.2s'
+            transition: '0.2s',
           }}
         />
       </AppLink>
@@ -188,12 +189,14 @@ function Expandable({ question, answer, isOpen, toggle }: ExpandableProps) {
   }, [])
 
   return (
-    <Box sx={{
-      borderBottom: 'light',
-      '&:first-of-type': {
-        borderTop: 'light',
-      }
-    }}>
+    <Box
+      sx={{
+        borderBottom: 'light',
+        '&:first-of-type': {
+          borderTop: 'light',
+        },
+      }}
+    >
       <Button sx={{ position: 'relative' }} variant="expandable" onClick={toggle}>
         {question}
         {
@@ -210,10 +213,7 @@ function Expandable({ question, answer, isOpen, toggle }: ExpandableProps) {
               transition: 'transform 0.2s ease-in-out',
             }}
           >
-            <Icon
-              size={25}
-              name={isOpen ? 'minus' : 'plus'}
-            />
+            <Icon size={25} name={isOpen ? 'minus' : 'plus'} />
           </Box>
         }
       </Button>
@@ -240,28 +240,34 @@ function Expandable({ question, answer, isOpen, toggle }: ExpandableProps) {
 export function FAQ() {
   const { t } = useTranslation()
   const [openEntry, setOpen] = useState<undefined | number>()
-  const entries = t('landing.faq.entries', { returnObjects: true }) as Array<{ question: string, answer: string }>
+  const entries = t('landing.faq.entries', { returnObjects: true }) as Array<{
+    question: string
+    answer: string
+  }>
 
   return (
-    <Flex sx={{ flexDirection: 'column', alignItems: 'center', mt: 4, maxWidth: '762px', mx: 'auto' }}>
-      <Heading variant="header2" sx={{ mb: 4 }}>{t('landing.faq.title')}</Heading>
-      {
-        entries.map(({ question, answer }, idx) => (
-          <Expandable
-            key={idx}
-            question={question}
-            answer={answer}
-            isOpen={openEntry === idx}
-            toggle={() => (openEntry === idx)
-              ? setOpen(undefined)
-              : setOpen(idx)
-            }
-          />
-        ))
-      }
+    <Flex
+      sx={{ flexDirection: 'column', alignItems: 'center', mt: 4, maxWidth: '762px', mx: 'auto' }}
+    >
+      <Heading variant="header2" sx={{ mb: 4 }}>
+        {t('landing.faq.title')}
+      </Heading>
+      {entries.map(({ question, answer }, idx) => (
+        <Expandable
+          key={idx}
+          question={question}
+          answer={answer}
+          isOpen={openEntry === idx}
+          toggle={() => (openEntry === idx ? setOpen(undefined) : setOpen(idx))}
+        />
+      ))}
       <Flex sx={{ width: '100%', justifyContent: 'flex-start', mt: 3 }}>
-        <AppLink sx={{ color: 'lavender' }} href="/faq">{t('landing.link-to-full-faq')}</AppLink>
-        <AppLink sx={{ ml: 4, color: 'lavender' }} href="/privacy">{t('landing.glossary-of-terms')}</AppLink>
+        <AppLink sx={{ color: 'lavender' }} href="/faq">
+          {t('landing.link-to-full-faq')}
+        </AppLink>
+        <AppLink sx={{ ml: 4, color: 'lavender' }} href="/privacy">
+          {t('landing.glossary-of-terms')}
+        </AppLink>
       </Flex>
     </Flex>
   )
@@ -273,7 +279,7 @@ const slideInAnimation = {
   animationDuration: '0.4s',
   animationTimingFunction: 'ease-out',
   animationFillMode: 'forwards',
-  animationDelay: '0.4s'
+  animationDelay: '0.4s',
 }
 
 const fadeInAnimation = {
@@ -313,52 +319,49 @@ export function LandingView() {
         position: 'relative',
       }}
     >
-      <Hero
-        sx={{ ...slideInAnimation, position: 'relative', }}
-      />
+      <Hero sx={{ ...slideInAnimation, position: 'relative' }} />
       <Box
         sx={{
           ...slideInAnimation,
           position: 'relative',
           my: 4,
           mb: [2, 3, 5],
-        }}>
+        }}
+      >
         <FeaturedIlksPlaceholder
-          sx={landing !== undefined ? {
-            ...fadeInAnimation,
-            animationDirection: 'backwards',
-            animationFillMode: 'backwards'
-          } : {}}
+          sx={
+            landing !== undefined
+              ? {
+                  ...fadeInAnimation,
+                  animationDirection: 'backwards',
+                  animationFillMode: 'backwards',
+                }
+              : {}
+          }
         />
-        {
-          landing !== undefined &&
-          <FeaturedIlks
-            sx={fadeInAnimation}
-            ilks={landing.featuredIlks}
-          />
-        }
+        {landing !== undefined && <FeaturedIlks sx={fadeInAnimation} ilks={landing.featuredIlks} />}
       </Box>
-      {
-        landing !== undefined
-          ? <Box sx={{ ...slideInAnimation, position: 'relative' }}>
-            <Filters
-              onSearch={onIlkSearch}
-              search={landing.ilks.filters.search}
-              onTagChange={onIlksTagChange}
-              tagFilter={landing.ilks.filters.tagFilter}
-              defaultTag="all-assets"
+      {landing !== undefined ? (
+        <Box sx={{ ...slideInAnimation, position: 'relative' }}>
+          <Filters
+            onSearch={onIlkSearch}
+            search={landing.ilks.filters.search}
+            onTagChange={onIlksTagChange}
+            tagFilter={landing.ilks.filters.tagFilter}
+            defaultTag="all-assets"
+          />
+          <Box sx={{ overflowX: 'auto', p: '3px' }}>
+            <Table
+              data={landing.ilks.data}
+              primaryKey="ilk"
+              state={landing.ilks.filters}
+              columns={ilksColumns}
             />
-            <Box sx={{ overflowX: 'auto', p: '3px' }}>
-              <Table
-                data={landing.ilks.data}
-                primaryKey="ilk"
-                state={landing.ilks.filters}
-                columns={ilksColumns}
-              />
-            </Box>
           </Box>
-          : <Box sx={{ height: 500 }}></Box>
-      }
+        </Box>
+      ) : (
+        <Box sx={{ height: 500 }}></Box>
+      )}
       <FAQ />
     </Grid>
   )
