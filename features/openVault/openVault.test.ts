@@ -1,5 +1,5 @@
 /* eslint-disable func-style */
-import { TxStatus } from '@oasisdex/transactions'
+import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { protoETHAIlkData, protoUSDCAIlkData, protoWBTCAIlkData } from 'blockchain/ilks'
@@ -16,7 +16,7 @@ import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import _ from 'lodash'
 import { beforeEach, describe, it } from 'mocha'
-import { Observable, of } from 'rxjs'
+import { Observable, of, Subject } from 'rxjs'
 
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
 import {
@@ -207,6 +207,7 @@ describe('openVault', () => {
       title?: string
       context?: ContextConnected
       proxyAddress?: string
+      proxyAddress$?: Observable<string>
       allowance?: BigNumber
       ilks$?: Observable<string[]>
       userTokenInfo?: Partial<UserTokenInfo>
@@ -218,7 +219,8 @@ describe('openVault', () => {
     function createTestFixture({
       context,
       proxyAddress,
-      allowance,
+      proxyAddress$,
+      allowance = maxUint256,
       ilks$,
       userTokenInfo,
       newState,
@@ -228,8 +230,7 @@ describe('openVault', () => {
       const defaultState$ = of({ ...defaultOpenVaultState, ...(newState || {}) })
       const context$ = of(context || protoContextConnected)
       const txHelpers$ = of(txHelpers || protoTxHelpers)
-      const proxyAddress$ = _.constant(of(proxyAddress))
-      const allowance$ = _.constant(of(allowance || maxUint256))
+      const allowance$ = _.constant(of(allowance))
       const userTokenInfo$ = (token: string) =>
         of({
           ...(token === 'ETH'
@@ -252,7 +253,7 @@ describe('openVault', () => {
         defaultState$,
         context$,
         txHelpers$,
-        proxyAddress$,
+        _.constant(proxyAddress$ || of(proxyAddress)),
         allowance$,
         userTokenInfo$,
         ilkData$,
@@ -261,6 +262,28 @@ describe('openVault', () => {
         ilk,
       )
       return openVault$
+    }
+
+    function createMockTxState<T extends TxMeta>(
+      meta: T,
+      receipt: unknown = {},
+    ): Observable<TxState<T>> {
+      const txState = {
+        account: '0x',
+        txNo: 0,
+        networkId: '1',
+        meta,
+        start: new Date(),
+        lastChange: new Date(),
+        dismissed: false,
+        status: TxStatus.Success as TxStatus.Success,
+        txHash: '0xhash',
+        blockNumber: 0,
+        receipt,
+        confirmations: 15,
+        safeConfirmations: 15,
+      }
+      return of(txState)
     }
 
     it('Should start in an editing stage', () => {
@@ -299,44 +322,64 @@ describe('openVault', () => {
       expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
     })
 
-    it('editing.progress(proxyAddress)', () => {
+    it('creating proxy', () => {
+      const proxyAddress$ = new Subject<string>()
+      const proxyAddress = '0xProxyAddress'
+      const state = getStateUnpacker(
+        createTestFixture({
+          proxyAddress$,
+          txHelpers: {
+            // @ts-ignore
+            sendWithGasEstimation: <B>(_proxy: any, meta: B) => createMockTxState(meta),
+          },
+        }),
+      )
+      proxyAddress$.next()
+      ;(state() as OpenVaultState).progress!()
+      expect(state().isProxyStage).to.be.true
+      expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
+      ;(state() as OpenVaultState).progress!()
+      proxyAddress$.next(proxyAddress)
+      expect(state().stage).to.be.equal('proxySuccess')
+      expect((state() as OpenVaultState).proxyAddress).to.be.equal(proxyAddress)
+    })
+
+    it('setting allowance', () => {
+      const proxyAddress = '0xProxyAddress'
+      const state = getStateUnpacker(
+        createTestFixture({
+          ilk: 'WBTC-A',
+          proxyAddress,
+          allowance: new BigNumber(99),
+          newState: { depositAmount: new BigNumber(100) },
+          userTokenInfo: { collateralBalance: new BigNumber(100) },
+          txHelpers: {
+            // @ts-ignore
+            sendWithGasEstimation: <B>(_allowance: any, meta: B) => createMockTxState(meta),
+          },
+        }),
+      )
+      ;(state() as OpenVaultState).progress!()
+      expect(state().isAllowanceStage).to.be.true
+      expect(state().stage).to.be.equal('allowanceWaitingForConfirmation')
+      ;(state() as OpenVaultState).progress!()
+      expect(state().stage).to.be.equal('allowanceSuccess')
+    })
+
+    it('editing.progress(proxyAddress, allowance)', () => {
       const state = getStateUnpacker(createTestFixture({ proxyAddress: '0xProxyAddress' }))
       ;(state() as OpenVaultState).progress!()
       expect(state().isOpenStage).to.be.true
       expect(state().stage).to.be.equal('openWaitingForConfirmation')
     })
 
-    it('editing.progress(proxyAddress)', () => {
-      const state = getStateUnpacker(createTestFixture({ proxyAddress: '0xProxyAddress' }))
-      ;(state() as OpenVaultState).progress!()
-      expect(state().isOpenStage).to.be.true
-      expect(state().stage).to.be.equal('openWaitingForConfirmation')
-    })
-
-    it('openWaitingForConfirmation.progress()', () => {
+    it('opening vault', () => {
       const state = getStateUnpacker(
         createTestFixture({
           proxyAddress: '0xProxyAddress',
           txHelpers: {
             // @ts-ignore
-            send: <B>(_open: any, meta: B) => {
-              const txState = {
-                account: '0x',
-                txNo: 0,
-                networkId: '1',
-                meta,
-                start: Date.now(),
-                lastChange: Date.now(),
-                dismissed: false,
-                status: TxStatus.Success,
-                txHash: '0xhash',
-                blockNumber: 0,
-                receipt: newCDPTxReceipt,
-                confirmations: 15,
-                safeConfirmations: 15,
-              }
-              return of(txState)
-            },
+            send: <B>(_open: any, meta: B) => createMockTxState(meta, newCDPTxReceipt),
           },
         }),
       )
