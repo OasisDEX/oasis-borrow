@@ -215,8 +215,8 @@ describe('manageVault', () => {
       userTokenInfo?: Partial<UserTokenInfo>
       urnAddress?: string
       owner?: string
-      collateral: BigNumber
-      debt: BigNumber
+      collateral?: BigNumber
+      debt?: BigNumber
       unlockedCollateral?: BigNumber
       controller?: string
       depositAmount?: BigNumber
@@ -225,8 +225,8 @@ describe('manageVault', () => {
       paybackAmount?: BigNumber
       stage?: ManageVaultStage
       txHelpers?: TxHelpers
-      ilk: 'ETH-A' | 'WBTC-A' | 'USDC-A'
-      id: BigNumber
+      ilk?: 'ETH-A' | 'WBTC-A' | 'USDC-A'
+      id?: BigNumber
     }
 
     function createTestFixture({
@@ -236,9 +236,9 @@ describe('manageVault', () => {
       userTokenInfo,
       urnAddress,
       owner,
-      ilk,
-      collateral,
-      debt,
+      ilk = 'ETH-A',
+      collateral = new BigNumber(10),
+      debt = new BigNumber(1000),
       unlockedCollateral,
       controller,
       depositAmount,
@@ -247,8 +247,8 @@ describe('manageVault', () => {
       paybackAmount,
       txHelpers,
       stage,
-      id,
-    }: FixtureProps) {
+      id = zero,
+    }: FixtureProps = {}) {
       const protoUserTokenInfo = {
         ...(ilk === 'ETH-A'
           ? protoUserETHTokenInfo
@@ -342,15 +342,8 @@ describe('manageVault', () => {
       return manageVault$
     }
 
-    const defaults = {
-      ilk: 'ETH-A' as 'ETH-A',
-      id: zero,
-      debt: new BigNumber(1000),
-      collateral: new BigNumber(10),
-    }
-
     it('Should start in an editing stage', () => {
-      const state = getStateUnpacker(createTestFixture(defaults))
+      const state = getStateUnpacker(createTestFixture())
       const s = state()
       expect(s.stage).to.be.equal('editing')
       expect(s.isEditingStage).to.be.true
@@ -358,7 +351,7 @@ describe('manageVault', () => {
 
     it('editing.change()', () => {
       const depositAmount = new BigNumber(5)
-      const state = getStateUnpacker(createTestFixture(defaults))
+      const state = getStateUnpacker(createTestFixture())
       ;(state() as ManageVaultState).change!({ kind: 'depositAmount', depositAmount })
       expect((state() as ManageVaultState).depositAmount!.toString()).to.be.equal(
         depositAmount.toString(),
@@ -368,7 +361,7 @@ describe('manageVault', () => {
 
     it('editing.change().reset()', () => {
       const depositAmount = new BigNumber(5)
-      const state = getStateUnpacker(createTestFixture(defaults))
+      const state = getStateUnpacker(createTestFixture())
       ;(state() as ManageVaultState).change!({ kind: 'depositAmount', depositAmount })
       expect((state() as ManageVaultState).depositAmount!.toString()).to.be.equal(
         depositAmount.toString(),
@@ -378,25 +371,21 @@ describe('manageVault', () => {
     })
 
     it('editing.progress()', () => {
-      const state = getStateUnpacker(createTestFixture(defaults))
+      const state = getStateUnpacker(createTestFixture())
       ;(state() as ManageVaultState).progress!()
       expect(state().isProxyStage).to.be.true
       expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
     })
 
     it('editing.progress(proxyAddress)', () => {
-      const state = getStateUnpacker(
-        createTestFixture({ ...defaults, proxyAddress: '0xProxyAddress' }),
-      )
+      const state = getStateUnpacker(createTestFixture({ proxyAddress: '0xProxyAddress' }))
       ;(state() as ManageVaultState).progress!()
       expect(state().isManageStage).to.be.true
       expect(state().stage).to.be.equal('manageWaitingForConfirmation')
     })
 
     it('editing.progress(proxyAddress)', () => {
-      const state = getStateUnpacker(
-        createTestFixture({ ...defaults, proxyAddress: '0xProxyAddress' }),
-      )
+      const state = getStateUnpacker(createTestFixture({ proxyAddress: '0xProxyAddress' }))
       ;(state() as ManageVaultState).progress!()
       expect(state().isManageStage).to.be.true
       expect(state().stage).to.be.equal('manageWaitingForConfirmation')
@@ -405,7 +394,6 @@ describe('manageVault', () => {
     it('openWaitingForConfirmation.progress()', () => {
       const state = getStateUnpacker(
         createTestFixture({
-          ...defaults,
           proxyAddress: '0xProxyAddress',
           txHelpers: {
             // @ts-ignore
