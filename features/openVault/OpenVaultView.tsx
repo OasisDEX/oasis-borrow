@@ -14,7 +14,7 @@ import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
-import { OpenVaultState } from './openVault'
+import { categoriseOpenVaultStage, OpenVaultState } from './openVault'
 
 function OpenVaultDetails(props: OpenVaultState) {
   const {
@@ -722,7 +722,9 @@ function OpenVaultFormConfirmation({
 }
 
 function OpenVaultForm(props: OpenVaultState) {
-  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
+  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = categoriseOpenVaultStage(
+    props.stage,
+  )
 
   return (
     <Box>
@@ -747,24 +749,17 @@ export function OpenVaultContainer(props: OpenVaultState) {
 }
 
 export function OpenVaultView({ ilk }: { ilk: string }) {
-  const { t } = useTranslation()
   const { openVault$ } = useAppContext()
   const openVault = useObservable(openVault$(ilk))
 
   if (!openVault) {
-    return <>loading...</>
-  }
-
-  if (openVault.isIlkValidationStage) {
     return (
       <Grid sx={{ width: '100%', height: '50vh', justifyItems: 'center', alignItems: 'center' }}>
-        {openVault.stage === 'ilkValidationLoading' && <Spinner size={50} />}
-        {openVault.stage === 'ilkValidationFailure' && (
-          <Box>{t('vaults.ilk-does-not-exist', { ilk })}</Box>
-        )}
+        <Spinner size={50} />
       </Grid>
     )
   }
+
   return (
     <Grid>
       <OpenVaultContainer {...(openVault as OpenVaultState)} />
