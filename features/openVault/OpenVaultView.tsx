@@ -4,7 +4,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
-import {  useObservableWithError } from 'helpers/observableHook'
+import { useObservableWithError } from 'helpers/observableHook'
 import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
 import moment from 'moment'
@@ -650,7 +650,7 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
   if (openVaultError) {
     return (
       <Grid sx={{ width: '100%', height: '50vh', justifyItems: 'center', alignItems: 'center' }}>
-        <Box>{openVaultError}</Box>
+        <Box>{openVaultError.message}</Box>
       </Grid>
     )
   }
