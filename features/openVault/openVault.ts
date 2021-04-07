@@ -70,8 +70,6 @@ export function categoriseOpenVaultStage(stage: OpenVaultStage) {
         ...defaultOpenVaultStageCategories,
         isOpenStage: true,
       }
-    default:
-      return defaultOpenVaultStageCategories
   }
 }
 

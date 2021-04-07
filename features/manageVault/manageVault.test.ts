@@ -24,6 +24,7 @@ import {
 } from '../shared/priceInfo'
 import {
   applyManageVaultCalculations,
+  categoriseManageVaultStage,
   createManageVault$,
   defaultPartialManageVaultState,
   ManageVaultStage,
@@ -662,6 +663,56 @@ describe('manageVault', () => {
       expect(state().stage).to.be.equal('manageWaitingForConfirmation')
       ;(state() as ManageVaultState).progress!()
       expect(state().stage).to.be.equal('manageSuccess')
+    })
+  })
+
+  describe('openVault stage categories', () => {
+    it('should identify editing stage correctly', () => {
+      expect(categoriseManageVaultStage('collateralEditing').isEditingStage).to.be.true
+      expect(categoriseManageVaultStage('daiEditing').isEditingStage).to.be.true
+    })
+
+    it('should identify proxy stages correctly', () => {
+      expect(categoriseManageVaultStage('proxyWaitingForConfirmation').isProxyStage).to.be.true
+      expect(categoriseManageVaultStage('proxyWaitingForApproval').isProxyStage).to.be.true
+      expect(categoriseManageVaultStage('proxyInProgress').isProxyStage).to.be.true
+      expect(categoriseManageVaultStage('proxyFailure').isProxyStage).to.be.true
+      expect(categoriseManageVaultStage('proxySuccess').isProxyStage).to.be.true
+    })
+
+    it('should identify collateral allowance stages correctly', () => {
+      expect(
+        categoriseManageVaultStage('collateralAllowanceWaitingForConfirmation')
+          .isCollateralAllowanceStage,
+      ).to.be.true
+      expect(
+        categoriseManageVaultStage('collateralAllowanceWaitingForApproval')
+          .isCollateralAllowanceStage,
+      ).to.be.true
+      expect(categoriseManageVaultStage('collateralAllowanceInProgress').isCollateralAllowanceStage)
+        .to.be.true
+      expect(categoriseManageVaultStage('collateralAllowanceFailure').isCollateralAllowanceStage).to
+        .be.true
+      expect(categoriseManageVaultStage('collateralAllowanceSuccess').isCollateralAllowanceStage).to
+        .be.true
+    })
+
+    it('should identify dai allowance stages correctly', () => {
+      expect(categoriseManageVaultStage('daiAllowanceWaitingForConfirmation').isDaiAllowanceStage)
+        .to.be.true
+      expect(categoriseManageVaultStage('daiAllowanceWaitingForApproval').isDaiAllowanceStage).to.be
+        .true
+      expect(categoriseManageVaultStage('daiAllowanceInProgress').isDaiAllowanceStage).to.be.true
+      expect(categoriseManageVaultStage('daiAllowanceFailure').isDaiAllowanceStage).to.be.true
+      expect(categoriseManageVaultStage('daiAllowanceSuccess').isDaiAllowanceStage).to.be.true
+    })
+
+    it('should identify manage stages correctly', () => {
+      expect(categoriseManageVaultStage('manageWaitingForConfirmation').isManageStage).to.be.true
+      expect(categoriseManageVaultStage('manageWaitingForApproval').isManageStage).to.be.true
+      expect(categoriseManageVaultStage('manageInProgress').isManageStage).to.be.true
+      expect(categoriseManageVaultStage('manageFailure').isManageStage).to.be.true
+      expect(categoriseManageVaultStage('manageSuccess').isManageStage).to.be.true
     })
   })
 })

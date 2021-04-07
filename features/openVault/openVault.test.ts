@@ -23,6 +23,7 @@ import { first } from 'rxjs/operators'
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
 import {
   applyOpenVaultCalculations,
+  categoriseOpenVaultStage,
   createOpenVault$,
   defaultPartialOpenVaultState,
   OpenVaultState,
@@ -553,6 +554,38 @@ describe('openVault', () => {
       ;(state() as OpenVaultState).progress!()
       ;(state() as OpenVaultState).progress!()
       expect(state().stage).to.be.equal('openFailure')
+    })
+  })
+
+  describe('openVault stage categories', () => {
+    it('should identify editing stage correctly', () => {
+      const { isEditingStage } = categoriseOpenVaultStage('editing')
+      expect(isEditingStage).to.be.true
+    })
+
+    it('should identify proxy stages correctly', () => {
+      expect(categoriseOpenVaultStage('proxyWaitingForConfirmation').isProxyStage).to.be.true
+      expect(categoriseOpenVaultStage('proxyWaitingForApproval').isProxyStage).to.be.true
+      expect(categoriseOpenVaultStage('proxyInProgress').isProxyStage).to.be.true
+      expect(categoriseOpenVaultStage('proxyFailure').isProxyStage).to.be.true
+      expect(categoriseOpenVaultStage('proxySuccess').isProxyStage).to.be.true
+    })
+
+    it('should identify allowance stages correctly', () => {
+      expect(categoriseOpenVaultStage('allowanceWaitingForConfirmation').isAllowanceStage).to.be
+        .true
+      expect(categoriseOpenVaultStage('allowanceWaitingForApproval').isAllowanceStage).to.be.true
+      expect(categoriseOpenVaultStage('allowanceInProgress').isAllowanceStage).to.be.true
+      expect(categoriseOpenVaultStage('allowanceFailure').isAllowanceStage).to.be.true
+      expect(categoriseOpenVaultStage('allowanceSuccess').isAllowanceStage).to.be.true
+    })
+
+    it('should identify open stages correctly', () => {
+      expect(categoriseOpenVaultStage('openWaitingForConfirmation').isOpenStage).to.be.true
+      expect(categoriseOpenVaultStage('openWaitingForApproval').isOpenStage).to.be.true
+      expect(categoriseOpenVaultStage('openInProgress').isOpenStage).to.be.true
+      expect(categoriseOpenVaultStage('openFailure').isOpenStage).to.be.true
+      expect(categoriseOpenVaultStage('openSuccess').isOpenStage).to.be.true
     })
   })
 })
