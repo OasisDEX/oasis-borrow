@@ -18,6 +18,14 @@ export type ManageVaultErrorMessage =
   | 'customDaiAllowanceAmountGreaterThanMaxUint256'
   | 'customDaiAllowanceAmountLessThanPaybackAmount'
 
+export type ManageVaultWarningMessage =
+  | 'potentialGenerateAmountLessThanDebtFloor'
+  | 'noProxyAddress'
+  | 'noCollateralAllowance'
+  | 'noDaiAllowance'
+  | 'collateralAllowanceLessThanDepositAmount'
+  | 'daiAllowanceLessThanPaybackAmount'
+
 export function validateErrors(state: ManageVaultState): ManageVaultState {
   const {
     depositAmount,
@@ -100,18 +108,6 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
 
   return { ...state, errorMessages }
 }
-
-export type ManageVaultWarningMessage =
-  | 'potentialGenerateAmountLessThanDebtFloor'
-  | 'depositAmountEmpty'
-  | 'withdrawAmountEmpty'
-  | 'generateAmountEmpty'
-  | 'paybackAmountEmpty'
-  | 'noProxyAddress'
-  | 'noCollateralAllowance'
-  | 'noDaiAllowance'
-  | 'collateralAllowanceLessThanDepositAmount'
-  | 'daiAllowanceLessThanPaybackAmount'
 
 export function validateWarnings(state: ManageVaultState): ManageVaultState {
   const {

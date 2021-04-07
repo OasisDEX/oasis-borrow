@@ -14,8 +14,6 @@ export type OpenVaultErrorMessage =
 
 export type OpenVaultWarningMessage =
   | 'potentialGenerateAmountLessThanDebtFloor'
-  | 'depositAmountEmpty'
-  | 'generateAmountEmpty'
   | 'noProxyAddress'
   | 'noAllowance'
   | 'allowanceLessThanDepositAmount'
