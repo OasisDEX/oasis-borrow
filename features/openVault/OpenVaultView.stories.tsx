@@ -14,7 +14,7 @@ import {
 } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
 import React, { useEffect } from 'react'
-import { of } from 'rxjs'
+import { EMPTY, Observable, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
@@ -22,6 +22,7 @@ import { createOpenVault$, OpenVaultState } from './openVault'
 
 type StoryProps = Partial<OpenVaultState> & {
   title?: string
+  ilks$?: Observable<string[]>
   context?: ContextConnected
   proxyAddress?: string
   allowance?: BigNumber
@@ -33,6 +34,7 @@ type StoryProps = Partial<OpenVaultState> & {
 
 function createStory({
   title,
+  ilks$,
   context,
   proxyAddress,
   allowance,
@@ -78,6 +80,7 @@ function createStory({
       allowance$,
       priceInfo$,
       balanceInfo$,
+      ilks$ || of(['ETH-A', 'WBTC-A', 'USDC-A']),
       ilkData$,
       ilkToToken$,
       ilk,
@@ -130,6 +133,19 @@ const OpenVaultStoryContainer = ({ title, ilk }: { title?: string; ilk: string }
     </Container>
   )
 }
+
+export const WaitingForIlksToBeFetched = createStory({
+  title:
+    'We must first validate and verify that the ilks will be fetched before we can render anything.',
+  ilks$: EMPTY,
+  ilk: 'WBTC-A',
+})
+
+export const InvalidIlk = createStory({
+  title: 'Here, the user would be using a url /vault/open/ETH-Z, should 404',
+  ilks$: of(['ETH-A']),
+  ilk: 'WBTC-A',
+})
 
 export const EmptyEditingStage = createStory({
   proxyAddress: '0xProxyAddress',
