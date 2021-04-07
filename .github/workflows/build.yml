@@ -26,7 +26,7 @@ jobs:
         run: yarn format
 
       - name: Test
-        run: CI=true yarn test
+        run: CI=true yarn coverage
 
       - name: Typecheck
         run: yarn typecheck
