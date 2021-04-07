@@ -7,10 +7,10 @@ import { IlksFilterState } from 'features/ilks/ilksFilters'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { FeaturedIlks, Filters } from 'features/vaultsOverview/VaultsOverviewView'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
+import { useObservableWithError } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback } from 'react'
-import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
+import { Box, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
 export function TokenSymbol({
   token,
@@ -97,7 +97,7 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
 export function LandingView() {
   const { landing$ } = useAppContext()
   const { t } = useTranslation()
-  const landing = useObservable(landing$)
+  const [landing, landingError] = useObservableWithError(landing$)
 
   const onIlkSearch = useCallback(
     (search: string) => {
@@ -112,16 +112,28 @@ export function LandingView() {
     [landing?.ilks.filters],
   )
 
+  if (landingError !== undefined) {
+    console.log(landingError)
+    return <>Error while fetching data!</>
+  }
+
   if (landing === undefined) {
-    return null
+    return <>loading...</>
   }
 
   return (
-    <Grid sx={{ flex: 1 }}>
+    <Grid
+      sx={{
+        flex: 1,
+        position: 'relative',
+      }}
+    >
+      {/* <Background /> */}
       <Box sx={{ width: '600px', justifySelf: 'center', textAlign: 'center', my: 4 }}>
         <Heading as="h1" sx={{ fontSize: 7, my: 3 }}>
           {t('landing.hero.headline')}
         </Heading>
+        <Image sx={{ mixBlendMode: 'overlay', zIndex: 1 }} src="/static/img/icons_set.svg" />
         <Text>{t('landing.hero.subheader')}</Text>
       </Box>
       <Box sx={{ my: 4 }}>

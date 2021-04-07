@@ -1,7 +1,9 @@
 import { CacheProvider, Global } from '@emotion/core'
 // @ts-ignore
 import { MDXProvider } from '@mdx-js/react'
+import { AbstractConnector } from '@web3-react/abstract-connector'
 import { Web3ReactProvider } from '@web3-react/core'
+import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
 import { SetupWeb3Context } from 'blockchain/web3Context'
 import { AppContextProvider } from 'components/AppContextProvider'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
@@ -24,8 +26,10 @@ import { trackingEvents } from '../analytics/analytics'
 import { mixpanelInit } from '../analytics/mixpanel'
 import nextI18NextConfig from '../next-i18next.config.js'
 
-function getLibrary(provider: any): Web3 {
-  return new Web3(provider)
+function getLibrary(provider: any, connector: AbstractConnector | undefined): Web3 {
+  const chainIdPromise = connector!.getChainId()
+  const readOnlyEnhancedProvider = readOnlyEnhanceProvider(provider, chainIdPromise)
+  return new Web3(readOnlyEnhancedProvider)
 }
 
 const FTPolarFontBold = '/static/fonts/FTPolar/FTPolarTrial-Bold'

@@ -4,11 +4,11 @@ import { approve, ApproveData, maxUint256 } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { open, OpenData } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { IlkData } from 'blockchain/ilks'
+import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
-import { ApplyChange, applyChange, Change, Changes, transactionToX } from 'helpers/form'
+import { applyChange, Change, Changes, transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject } from 'rxjs'
@@ -23,6 +23,8 @@ import {
   switchMap,
 } from 'rxjs/operators'
 import Web3 from 'web3'
+
+import { applyOpenVaultEnvironment, OpenVaultEnvironmentChange } from './openVaultEnvironment'
 
 interface Receipt {
   logs: { topics: string[] | undefined }[]
@@ -227,14 +229,18 @@ export function validateWarnings(state: OpenVaultState): OpenVaultState {
   return { ...state, warningMessages }
 }
 
-export type OpenVaultChange = Changes<OpenVaultState>
+export type OpenVaultChange = Changes<OpenVaultState> | OpenVaultEnvironmentChange
 
 export type ManualChange =
   | Change<OpenVaultState, 'depositAmount'>
   | Change<OpenVaultState, 'generateAmount'>
   | Change<OpenVaultState, 'allowanceAmount'>
 
-const apply: ApplyChange<OpenVaultState> = applyChange
+function apply(state: OpenVaultState, change: OpenVaultChange) {
+  if (change.kind === 'ilkData' || change.kind === 'userTokenInfo')
+    return applyOpenVaultEnvironment(change, state)
+  return applyChange(state, change)
+}
 
 type OpenVaultErrorMessage =
   | 'depositAmountGreaterThanMaxDepositAmount'
@@ -595,15 +601,6 @@ function addTransitions(
   return state
 }
 
-function ilkDataChange$<T extends keyof IlkData>(ilkData$: Observable<IlkData>, kind: T) {
-  return ilkData$.pipe(
-    map((ilkData) => ({
-      kind,
-      [kind]: ilkData[kind],
-    })),
-  )
-}
-
 export const defaultOpenVaultState: DefaultOpenVaultState = {
   ...defaultIsStates,
   stage: 'editing',
@@ -714,24 +711,11 @@ export function createOpenVault$(
                         const userTokenInfoChange$ = curry(createUserTokenInfoChange$)(
                           userTokenInfo$,
                         )
-                        const environmentChanges$ = merge(
-                          userTokenInfoChange$(token, account, 'collateralBalance'),
-                          userTokenInfoChange$(token, account, 'ethBalance'),
-                          userTokenInfoChange$(token, account, 'daiBalance'),
-                          userTokenInfoChange$(token, account, 'currentCollateralPrice'),
-                          userTokenInfoChange$(token, account, 'currentEthPrice'),
-                          userTokenInfoChange$(token, account, 'nextCollateralPrice'),
-                          userTokenInfoChange$(token, account, 'nextEthPrice'),
-                          userTokenInfoChange$(token, account, 'dateLastCollateralPrice'),
-                          userTokenInfoChange$(token, account, 'dateNextCollateralPrice'),
-                          userTokenInfoChange$(token, account, 'dateLastEthPrice'),
-                          userTokenInfoChange$(token, account, 'dateNextEthPrice'),
-                          userTokenInfoChange$(token, account, 'isStaticCollateralPrice'),
-                          userTokenInfoChange$(token, account, 'isStaticEthPrice'),
+                        const ilkDataChange$ = curry(createIlkDataChange$)(ilkData$)
 
-                          ilkDataChange$(ilkData$(ilk), 'maxDebtPerUnitCollateral'),
-                          ilkDataChange$(ilkData$(ilk), 'ilkDebtAvailable'),
-                          ilkDataChange$(ilkData$(ilk), 'debtFloor'),
+                        const environmentChanges$ = merge(
+                          userTokenInfoChange$(token, account),
+                          ilkDataChange$(ilk),
                         )
 
                         const connectedProxyAddress$ = proxyAddress$(account)

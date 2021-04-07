@@ -14,7 +14,7 @@ import {
 } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback, useMemo } from 'react'
-import { Box, Button, Card, Flex, Grid, Heading, Input, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Heading, Image, Input, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { IlksFilterState, IlksWithFilters } from '../ilks/ilksFilters'
@@ -36,7 +36,7 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
         {label}
       </TableSortHeader>
     ),
-    cell: ({ id }) => <Text>#{id}</Text>,
+    cell: ({ id }) => <Text>#{id.toString()}</Text>,
   },
   {
     headerLabel: 'system.liquidation-price',
@@ -220,17 +220,29 @@ function CallToAction({ ilk }: CallToActionProps) {
         borderRadius: 'large',
         p: 4,
         color: 'white',
+        position: 'relative',
+        boxShadow: 'surface',
       }}
     >
-      <Box sx={{ gridColumn: '1/3' }}>
+      <Image
+        sx={{
+          maxWidth: '150%',
+          position: 'absolute',
+          userSelect: 'none',
+          transform: 'scale(1.05)',
+          right: 0,
+        }}
+        src={token.bannerIcon}
+      />
+      <Box sx={{ gridColumn: '1/3', zIndex: 1 }}>
         <Text variant="caption">{ilk.title}</Text>
       </Box>
-      <Box sx={{ gridColumn: '1/3' }}>
+      <Box sx={{ gridColumn: '1/3', zIndex: 1 }}>
         <Heading variant="header2" sx={{ color: 'white', mb: 4 }}>
           {ilk.ilk}
         </Heading>
       </Box>
-      <Flex>
+      <Flex sx={{ zIndex: 1 }}>
         <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
           {t('system.stability-fee')}
         </Text>
@@ -238,7 +250,7 @@ function CallToAction({ ilk }: CallToActionProps) {
           {formatPercent(ilk.stabilityFee)}
         </Text>
       </Flex>
-      <Flex>
+      <Flex sx={{ zIndex: 1, gridRow: [3, 4, 3] }}>
         <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
           {t('system.min-coll-ratio')}
         </Text>

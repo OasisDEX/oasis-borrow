@@ -88,16 +88,20 @@ export function createUserTokenInfo$(
   )
 }
 
-export function createUserTokenInfoChange$<T extends keyof UserTokenInfo>(
+export interface UserTokenInfoChange {
+  kind: 'userTokenInfo'
+  userTokenInfo: UserTokenInfo
+}
+
+export function createUserTokenInfoChange$(
   userTokenInfo$: (token: string, account: string) => Observable<UserTokenInfo>,
   token: string,
   account: string,
-  kind: T,
-) {
+): Observable<UserTokenInfoChange> {
   return userTokenInfo$(token, account).pipe(
     map((userTokenInfo) => ({
-      kind,
-      [kind]: userTokenInfo[kind],
+      kind: 'userTokenInfo',
+      userTokenInfo,
     })),
   )
 }

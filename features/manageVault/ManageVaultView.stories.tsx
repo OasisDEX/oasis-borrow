@@ -15,18 +15,12 @@ import {
 } from 'features/shared/userTokenInfo'
 import { one, zero } from 'helpers/zero'
 import { memoize } from 'lodash'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { of } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
+import { first, switchMap } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
-import {
-  createManageVault$,
-  defaultManageVaultState,
-  ManageVaultStage,
-  ManageVaultState,
-} from './manageVault'
-
+import { createManageVault$, ManageVaultStage, ManageVaultState } from './manageVault'
 interface Story {
   title?: string
   context?: ContextConnected
@@ -44,7 +38,7 @@ interface Story {
   withdrawAmount?: BigNumber
   generateAmount?: BigNumber
   paybackAmount?: BigNumber
-  stage?: ManageVaultStage
+  stage: ManageVaultStage
   ilk: 'ETH-A' | 'WBTC-A' | 'USDC-A'
 }
 
@@ -85,6 +79,7 @@ function createStory({
       ilk === 'ETH-A' ? protoETHAIlkData : ilk === 'WBTC-A' ? protoWBTCAIlkData : protoUSDCAIlkData
 
     const newState: Partial<ManageVaultState> = {
+      stage,
       ...(depositAmount && {
         depositAmount,
         depositAmountUSD: depositAmount.times(protoUserTokenInfo.currentCollateralPrice),
@@ -99,10 +94,8 @@ function createStory({
       ...(paybackAmount && {
         paybackAmount,
       }),
-      ...(stage && { stage }),
     }
 
-    const defaultState$ = of({ ...defaultManageVaultState, ...(newState || {}) })
     const context$ = of(context || protoContextConnected)
     const txHelpers$ = of(protoTxHelpers)
     const proxyAddress$ = () => of(proxyAddress)
@@ -150,22 +143,26 @@ function createStory({
       bigNumberTostring,
     )
 
-    const manageVault$ = memoize((id: BigNumber) =>
-      createManageVault$(
-        defaultState$,
-        context$,
-        txHelpers$,
-        proxyAddress$,
-        allowance$,
-        userTokenInfo$,
-        ilkData$,
-        vault$,
-        id,
-      ),
+    const obs$ = createManageVault$(
+      context$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      userTokenInfo$,
+      ilkData$,
+      vault$,
+      VAULT_ID,
     )
 
+    useEffect(() => {
+      const subscription = obs$.pipe(first()).subscribe(({ injectStateOverride }) => {
+        injectStateOverride(newState || {})
+      })
+      return subscription.unsubscribe()
+    }, [])
+
     const ctx = ({
-      manageVault$,
+      manageVault$: () => obs$,
     } as any) as AppContext
 
     return (
@@ -178,7 +175,6 @@ function createStory({
 
 const ManageVaultStoryContainer = ({ title }: { title?: string }) => {
   if (!isAppContextAvailable()) return null
-
   return (
     <Container variant="appContainer">
       <Grid>
@@ -189,14 +185,22 @@ const ManageVaultStoryContainer = ({ title }: { title?: string }) => {
   )
 }
 
-export const EditingStage = createStory({
+export const CollateralEditingStage = createStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
-  depositAmount: new BigNumber('2'),
-  generateAmount: new BigNumber('300'),
+  userTokenInfo: { collateralBalance: new BigNumber('2000') },
+  proxyAddress: '0xProxyAddress',
+  stage: 'collateralEditing',
+})
+
+export const DaiEditingStage = createStory({
+  ilk: 'WBTC-A',
+  collateral: one,
+  debt: new BigNumber('3000'),
   userTokenInfo: { collateralBalance: new BigNumber('200') },
   proxyAddress: '0xProxyAddress',
+  stage: 'daiEditing',
 })
 
 export const ProxyWaitingForConfirmation = createStory({
@@ -412,6 +416,17 @@ export const ManageSuccess = createStory({
   userTokenInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress: '0xProxyAddress',
   stage: 'manageSuccess',
+})
+
+export const VaultAtRisk = createStory({
+  ilk: 'ETH-A',
+  collateral: one,
+  debt: new BigNumber('4000'),
+  withdrawAmount: new BigNumber('0.5'),
+  paybackAmount: new BigNumber('300'),
+  userTokenInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
+  proxyAddress: '0xProxyAddress',
+  stage: 'collateralEditing',
 })
 
 // eslint-disable-next-line import/no-default-export

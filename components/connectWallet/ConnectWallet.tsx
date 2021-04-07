@@ -1,5 +1,6 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
+import { MewConnectConnector } from '@myetherwallet/mewconnect-connector'
 import { LedgerConnector, TrezorConnector } from '@oasisdex/connectors'
 import {
   ConnectionKind,
@@ -10,6 +11,7 @@ import {
 import { UnsupportedChainIdError } from '@web3-react/core'
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { NetworkConnector } from '@web3-react/network-connector'
+import { PortisConnector } from '@web3-react/portis-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { WalletLinkConnector } from '@web3-react/walletlink-connector'
 import { dappName, networksById, pollingInterval } from 'blockchain/config'
@@ -90,6 +92,15 @@ export async function getConnector(
         urls: { [network]: networksById[network].infuraUrl },
         defaultChainId: network,
       })
+    case 'portis':
+      return new PortisConnector({
+        networks: [network],
+        dAppId: 'e0ac7d6b-a19b-4f61-928d-fb97b15c424a',
+      })
+    case 'myetherwallet':
+      return new MewConnectConnector({
+        url: rpcUrls[network],
+      })
     case 'magicLink':
       throw new Error('Magic Link not allowed')
   }
@@ -104,6 +115,8 @@ const SUPPORTED_WALLETS: SupportedWallet[] = [
   { iconName: 'metamask_color', connectionKind: 'injected' },
   { iconName: 'wallet_connect_color', connectionKind: 'walletConnect' },
   { iconName: 'coinbase_color', connectionKind: 'walletLink' },
+  { iconName: 'portis', connectionKind: 'portis' },
+  { iconName: 'myetherwallet', connectionKind: 'myetherwallet' },
   { iconName: 'trezor', connectionKind: 'trezor' },
   { iconName: 'ledger', connectionKind: 'ledger' },
 ]
@@ -190,6 +203,10 @@ export function getConnectionKindMessage(connectionKind: ConnectionKind) {
       return 'WalletConnect'
     case 'walletLink':
       return 'Coinbase wallet'
+    case 'portis':
+      return 'Portis wallet'
+    case 'myetherwallet':
+      return 'My Ether Wallet'
     case 'trezor':
       return 'Trezor'
     case 'ledger':

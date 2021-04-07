@@ -33,13 +33,20 @@ import {
 } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
+import { currentContent } from 'features/content'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createLanding$ } from 'features/landing/landing'
-import { createManageVault$, defaultManageVaultState } from 'features/manageVault/manageVault'
+import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenVault$, defaultOpenVaultState } from 'features/openVault/openVault'
 import { redirectState$ } from 'features/router/redirectState'
 import { createUserTokenInfo$ } from 'features/shared/userTokenInfo'
+import {
+  checkAcceptanceFromApi$,
+  saveAcceptanceFromApi$,
+} from 'features/termsOfService/termsAcceptanceApi'
+import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
@@ -66,6 +73,8 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
+import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { HasGasEstimation } from '../helpers/form'
 
 export type TxData =
@@ -207,6 +216,8 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  const vaultHistory$ = memoize(curry(createVaultHistory$)(context$, onEveryBlock$, vault$))
+
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 
   const vaults$ = memoize(curry(createVaults$)(context$, proxyAddress$, vault$))
@@ -242,7 +253,6 @@ export function setupAppContext() {
 
   const manageVault$ = memoize(
     curry(createManageVault$)(
-      of(defaultManageVaultState),
       connectedContext$,
       txHelpers$,
       proxyAddress$,
@@ -262,8 +272,22 @@ export function setupAppContext() {
   )
   const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
 
+  const termsAcceptance$ = createTermsAcceptance$(
+    web3Context$,
+    currentContent.tos.version,
+    jwtAuthSetupToken$,
+    checkAcceptanceFromApi$,
+    saveAcceptanceFromApi$,
+  )
+
+  const vaultBanners$ = memoize(
+    curry(createVaultsBanners$)(context$, userTokenInfo$, vault$, vaultHistory$),
+    bigNumberTostring,
+  )
+
   return {
     web3Context$,
+    web3ContextConnected$,
     setupWeb3Context$,
     initializedAccount$,
     context$,
@@ -279,9 +303,12 @@ export function setupAppContext() {
     openVault$,
     manageVault$,
     vaultsOverview$,
+    vaultBanners$,
     redirectState$,
     accountBalances$,
+    vaultHistory$,
     collateralPrices$,
+    termsAcceptance$,
   }
 }
 

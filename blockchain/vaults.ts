@@ -3,7 +3,7 @@ import { call } from 'blockchain/calls/callsHelpers'
 import { Context } from 'blockchain/network'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
-import { mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from './calls/cdpManager'
 import { getCdps } from './calls/getCdps'
@@ -366,4 +366,16 @@ export function createVault$(
     }),
     shareReplay(1),
   )
+}
+
+export interface VaultChange {
+  kind: 'vault'
+  vault: Vault
+}
+
+export function createVaultChange$(
+  vault$: (id: BigNumber) => Observable<Vault>,
+  id: BigNumber,
+): Observable<VaultChange> {
+  return vault$(id).pipe(map((vault) => ({ kind: 'vault', vault })))
 }
