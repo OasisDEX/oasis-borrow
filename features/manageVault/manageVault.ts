@@ -503,9 +503,6 @@ export function createManageVault$(
                   const change$ = new Subject<ManageVaultChange>()
 
                   function change(ch: ManageVaultChange) {
-                    if (ch.kind === 'injectStateOverride') {
-                      throw new Error("don't use injected overrides")
-                    }
                     change$.next(ch)
                   }
 

@@ -3,13 +3,13 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
+import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
-import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openVaultAllowances'
 import { applyOpenVaultEnvironment, OpenVaultEnvironmentChange } from './openVaultEnvironment'
 import { applyOpenVaultForm, OpenVaultFormChange } from './openVaultForm'
@@ -355,9 +355,6 @@ export function createOpenVault$(
                 const change$ = new Subject<OpenVaultChange>()
 
                 function change(ch: OpenVaultChange) {
-                  if (ch.kind === 'injectStateOverride') {
-                    throw new Error("don't use injected overrides")
-                  }
                   change$.next(ch)
                 }
 
