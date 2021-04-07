@@ -26,7 +26,6 @@ import {
   applyManageVaultCalculations,
   createManageVault$,
   defaultPartialManageVaultState,
-  ManageVaultEditingStage,
   ManageVaultStage,
   ManageVaultState,
 } from './manageVault'
