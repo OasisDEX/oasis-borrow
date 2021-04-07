@@ -37,7 +37,6 @@ import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
-import { createIlkValidation$ } from 'features/ilks/ilkValidation'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
@@ -236,7 +235,6 @@ export function setupAppContext() {
 
   const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
   const ilksWithBalance$ = createIlkDataListWithBalances$(context$, ilkDataList$, accountBalances$)
-  const ilkValidation$ = curry(createIlkValidation$)(ilks$)
 
   const priceInfo$ = curry(createPriceInfo$)(oraclePriceData$)
   // as (
@@ -257,6 +255,7 @@ export function setupAppContext() {
       allowance$,
       priceInfo$,
       balanceInfo$,
+      ilks$,
       ilkData$,
       ilkToToken$,
     ),
@@ -321,7 +320,6 @@ export function setupAppContext() {
     vaultHistory$,
     collateralPrices$,
     termsAcceptance$,
-    ilkValidation$,
   }
 }
 

@@ -19,6 +19,7 @@ import _ from 'lodash'
 import { beforeEach, describe, it } from 'mocha'
 import { Observable, of, Subject } from 'rxjs'
 import { first } from 'rxjs/operators'
+import { assert } from 'ts-essentials'
 
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
 import {
@@ -300,6 +301,7 @@ describe('openVault', () => {
         allowance$,
         priceInfo$,
         balanceInfo$,
+        ilks$ || of(['ETH-A', 'WBTC-A', 'USDC-A']),
         ilkData$,
         ilkToToken$,
         ilk,
@@ -314,11 +316,14 @@ describe('openVault', () => {
         }),
       }
 
-      openVault$.pipe(first()).subscribe(({ injectStateOverride }: any) => {
-        if (injectStateOverride) {
-          injectStateOverride(newState || {})
-        }
-      })
+      openVault$.pipe(first()).subscribe(
+        ({ injectStateOverride }: any) => {
+          if (injectStateOverride) {
+            injectStateOverride(newState || {})
+          }
+        },
+        () => {},
+      )
       return openVault$
     }
 
@@ -368,6 +373,11 @@ describe('openVault', () => {
       const state = getStateUnpacker(createTestFixture())
       const s = state()
       expect(s.stage).to.be.equal('editing')
+    })
+
+    it('should throw error if ilk is not valid', () => {
+      const state = getStateUnpacker(createTestFixture({ ilk: 'ETH-Z' }))
+      expect(state).to.throw()
     })
 
     it('editing.updateDeposit()', () => {

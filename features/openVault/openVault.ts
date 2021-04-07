@@ -7,7 +7,7 @@ import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
-import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
+import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { distinctUntilChanged, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openVaultAllowances'
@@ -327,95 +327,107 @@ export function createOpenVault$(
   allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
   priceInfo$: (token: string) => Observable<PriceInfo>,
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
+  ilks$: Observable<string[]>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilkToToken$: Observable<(ilk: string) => string>,
   ilk: string,
 ): Observable<OpenVaultState> {
-  return combineLatest(context$, txHelpers$, ilkToToken$).pipe(
-    switchMap(([context, txHelpers, ilkToToken]) => {
-      const account = context.account
-      const token = ilkToToken(ilk)
-      return combineLatest(
-        priceInfo$(token),
-        balanceInfo$(token, account),
-        ilkData$(ilk),
-        proxyAddress$(account),
-      ).pipe(
-        first(),
-        switchMap(
-          ([
-            priceInfo,
-            balanceInfo,
-            { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
-            proxyAddress,
-          ]) =>
-            ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
+  return ilks$.pipe(
+    switchMap((ilks) =>
+      iif(
+        () => !ilks.some((i) => i === ilk),
+        throwError(new Error(`Ilk ${ilk} does not exist`)),
+        combineLatest(context$, txHelpers$, ilkToToken$).pipe(
+          switchMap(([context, txHelpers, ilkToToken]) => {
+            const account = context.account
+            const token = ilkToToken(ilk)
+            return combineLatest(
+              priceInfo$(token),
+              balanceInfo$(token, account),
+              ilkData$(ilk),
+              proxyAddress$(account),
+            ).pipe(
               first(),
-              switchMap((allowance) => {
-                const change$ = new Subject<OpenVaultChange>()
-
-                function change(ch: OpenVaultChange) {
-                  change$.next(ch)
-                }
-
-                // NOTE: Not to be used in production/dev, test only
-                function injectStateOverride(stateToOverride: Partial<OpenVaultState>) {
-                  return change$.next({ kind: 'injectStateOverride', stateToOverride })
-                }
-
-                const initialState: OpenVaultState = {
-                  ...priceInfo,
-                  ...balanceInfo,
-                  ...defaultPartialOpenVaultState,
-                  token,
-                  account,
-                  ilk,
-                  maxDebtPerUnitCollateral,
-                  ilkDebtAvailable,
-                  debtFloor,
-                  liquidationRatio,
+              switchMap(
+                ([
+                  priceInfo,
+                  balanceInfo,
+                  { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
                   proxyAddress,
-                  allowance,
-                  safeConfirmations: context.safeConfirmations,
-                  etherscan: context.etherscan.url,
-                  allowanceAmount: maxUint256,
+                ]) =>
+                  (
+                    (proxyAddress && allowance$(token, account, proxyAddress)) ||
+                    of(undefined)
+                  ).pipe(
+                    first(),
+                    switchMap((allowance) => {
+                      const change$ = new Subject<OpenVaultChange>()
 
-                  injectStateOverride,
-                }
+                      function change(ch: OpenVaultChange) {
+                        change$.next(ch)
+                      }
 
-                const environmentChanges$ = merge(
-                  priceInfoChange$(priceInfo$, token),
-                  balanceInfoChange$(balanceInfo$, token, account),
-                  createIlkDataChange$(ilkData$, ilk),
-                )
+                      // NOTE: Not to be used in production/dev, test only
+                      function injectStateOverride(stateToOverride: Partial<OpenVaultState>) {
+                        return change$.next({ kind: 'injectStateOverride', stateToOverride })
+                      }
 
-                const connectedProxyAddress$ = proxyAddress$(account)
+                      const initialState: OpenVaultState = {
+                        ...priceInfo,
+                        ...balanceInfo,
+                        ...defaultPartialOpenVaultState,
+                        token,
+                        account,
+                        ilk,
+                        maxDebtPerUnitCollateral,
+                        ilkDebtAvailable,
+                        debtFloor,
+                        liquidationRatio,
+                        proxyAddress,
+                        allowance,
+                        safeConfirmations: context.safeConfirmations,
+                        etherscan: context.etherscan.url,
+                        allowanceAmount: maxUint256,
 
-                const connectedAllowance$ = connectedProxyAddress$.pipe(
-                  switchMap((proxyAddress) =>
-                    proxyAddress ? allowance$(token, account, proxyAddress) : of(zero),
+                        injectStateOverride,
+                      }
+
+                      const environmentChanges$ = merge(
+                        priceInfoChange$(priceInfo$, token),
+                        balanceInfoChange$(balanceInfo$, token, account),
+                        createIlkDataChange$(ilkData$, ilk),
+                      )
+
+                      const connectedProxyAddress$ = proxyAddress$(account)
+
+                      const connectedAllowance$ = connectedProxyAddress$.pipe(
+                        switchMap((proxyAddress) =>
+                          proxyAddress ? allowance$(token, account, proxyAddress) : of(zero),
+                        ),
+                        distinctUntilChanged((x, y) => x.eq(y)),
+                      )
+
+                      return merge(change$, environmentChanges$).pipe(
+                        scan(apply, initialState),
+                        map(validateErrors),
+                        map(validateWarnings),
+                        map(
+                          curry(addTransitions)(
+                            txHelpers,
+                            connectedProxyAddress$,
+                            connectedAllowance$,
+                            change,
+                          ),
+                        ),
+                      )
+                    }),
                   ),
-                  distinctUntilChanged((x, y) => x.eq(y)),
-                )
-
-                return merge(change$, environmentChanges$).pipe(
-                  scan(apply, initialState),
-                  map(validateErrors),
-                  map(validateWarnings),
-                  map(
-                    curry(addTransitions)(
-                      txHelpers,
-                      connectedProxyAddress$,
-                      connectedAllowance$,
-                      change,
-                    ),
-                  ),
-                )
-              }),
-            ),
+              ),
+            )
+          }),
         ),
-      )
-    }),
+      ),
+    ),
     shareReplay(1),
   )
 }

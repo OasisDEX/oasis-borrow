@@ -4,7 +4,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
-import { useObservable } from 'helpers/observableHook'
+import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
 import moment from 'moment'
@@ -645,7 +645,15 @@ export function OpenVaultContainer(props: OpenVaultState) {
 
 export function OpenVaultView({ ilk }: { ilk: string }) {
   const { openVault$ } = useAppContext()
-  const openVault = useObservable(openVault$(ilk))
+  const [openVault, openVaultError] = useObservableWithError(openVault$(ilk))
+
+  if (openVaultError) {
+    return (
+      <Grid sx={{ width: '100%', height: '50vh', justifyItems: 'center', alignItems: 'center' }}>
+        <Box>{openVaultError}</Box>
+      </Grid>
+    )
+  }
 
   if (!openVault) {
     return (
