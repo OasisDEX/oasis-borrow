@@ -33,7 +33,7 @@ import {
   validateWarnings,
 } from './manageVaultValidations'
 
-const defaultIsStates = {
+export const defaultIsStates = {
   isEditingStage: false,
   isProxyStage: false,
   isCollateralAllowanceStage: false,
@@ -333,6 +333,7 @@ function addTransitions(
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ): ManageVaultState {
+  console.log('addTransitions', state.stage)
   if (state.stage === 'collateralEditing' || state.stage === 'daiEditing') {
     return {
       ...state,

@@ -16,21 +16,61 @@ import {
 } from 'features/shared/userTokenInfo'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
+import _ from 'lodash'
 import { describe, it } from 'mocha'
 import { of } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
+import { first, switchMap } from 'rxjs/operators'
 
 import {
   createManageVault$,
-  defaultManageVaultState,
+  defaultIsStates,
+  ManageVaultEditingStage,
   ManageVaultStage,
   ManageVaultState,
-  validateErrors,
-  validateWarnings,
 } from './manageVault'
+import { validateErrors, validateWarnings } from './manageVaultValidations'
 
 const SLIGHTLY_LESS_THAN_ONE = 0.99
 const SLIGHTLY_MORE_THAN_ONE = 1.01
+
+const defaultManageVaultState = {
+  stage: 'collateralEditing' as ManageVaultStage,
+  originalEditingStage: 'collateralEditing' as ManageVaultEditingStage,
+  token: '',
+  id: zero,
+  ilk: '',
+  account: '',
+  accountIsController: false,
+  errorMessages: [],
+  warningMessages: [],
+  maxDepositAmount: zero,
+  maxDepositAmountUSD: zero,
+  maxWithdrawAmount: zero,
+  maxWithdrawAmountUSD: zero,
+  generateAmountUSD: zero,
+  maxGenerateAmount: zero,
+  maxPaybackAmount: zero,
+  lockedCollateral: zero,
+  lockedCollateralPrice: zero,
+  debt: zero,
+  liquidationPrice: zero,
+  collateralizationRatio: zero,
+  freeCollateral: zero,
+  afterLiquidationPrice: zero,
+  afterCollateralizationRatio: zero,
+  maxDebtPerUnitCollateral: zero,
+  ilkDebtAvailable: zero,
+  stabilityFee: zero,
+  liquidationPenalty: zero,
+  debtFloor: zero,
+  liquidationRatio: zero,
+  safeConfirmations: 0,
+  collateralAllowanceAmount: maxUint256,
+  daiAllowanceAmount: maxUint256,
+  showDepositAndGenerateOption: false,
+  showPaybackAndWithdrawOption: false,
+  showIlkDetails: false,
+}
 
 describe('manageVault', () => {
   describe('validateWarnings', () => {
@@ -41,6 +81,7 @@ describe('manageVault', () => {
     const withdrawAmount = new BigNumber('10')
     const paybackAmount = new BigNumber('10')
     const manageVaultState = {
+      ...defaultIsStates,
       ...defaultManageVaultState,
       ...protoUserWBTCTokenInfo,
       token: 'WBTC',
@@ -52,6 +93,7 @@ describe('manageVault', () => {
       depositAmountUSD,
       withdrawAmount,
       paybackAmount,
+      injectStateOverride: (_state: Partial<ManageVaultState>) => _.noop(),
     }
     it('Should show no warnings when the state is correct', () => {
       const { warningMessages } = validateWarnings(manageVaultState)
@@ -129,6 +171,7 @@ describe('manageVault', () => {
     const maxPaybackAmount = new BigNumber('10000')
     const debt = new BigNumber(3000)
     const manageVaultState = {
+      ...defaultIsStates,
       ...defaultManageVaultState,
       ...protoUserWBTCTokenInfo,
       token: 'WBTC',
@@ -146,6 +189,7 @@ describe('manageVault', () => {
       maxWithdrawAmount: withdrawAmount,
       maxPaybackAmount,
       debt,
+      injectStateOverride: (_state: Partial<ManageVaultState>) => _.noop(),
     }
     it('Should show no errors when the state is correct', () => {
       const { errorMessages } = validateErrors(manageVaultState)
@@ -229,7 +273,7 @@ describe('manageVault', () => {
       expect(errorMessages).to.deep.equal(['vaultUnderCollateralized'])
     })
   })
-  describe('createManageVault$', () => {
+  describe.only('createManageVault$', () => {
     const protoUrnAddress = '0xEe0b6175705CDFEb824e5092d6547C011EbB46A8'
 
     interface FixtureProps {
@@ -271,7 +315,7 @@ describe('manageVault', () => {
       generateAmount,
       paybackAmount,
       txHelpers,
-      stage,
+      stage = 'collateralEditing',
       id = zero,
     }: FixtureProps = {}) {
       const protoUserTokenInfo = {
@@ -291,6 +335,7 @@ describe('manageVault', () => {
           : protoUSDCAIlkData
 
       const newState: Partial<ManageVaultState> = {
+        stage,
         ...(depositAmount && {
           depositAmount,
           depositAmountUSD: depositAmount.times(protoUserTokenInfo.currentCollateralPrice),
@@ -305,22 +350,21 @@ describe('manageVault', () => {
         ...(paybackAmount && {
           paybackAmount,
         }),
-        ...(stage && { stage }),
       }
 
-      const defaultState$ = of({ ...defaultManageVaultState, ...(newState || {}) })
       const context$ = of(context || protoContextConnected)
       const txHelpers$ = of(txHelpers || protoTxHelpers)
       const proxyAddress$ = () => of(proxyAddress)
       const allowance$ = () => of(allowance || maxUint256)
+      console.log(allowance || maxUint256)
 
       const userTokenInfo$ = () => of(protoUserTokenInfo)
 
       const oraclePriceData$ = () =>
         of(protoUserTokenInfo).pipe(
-          switchMap(({ currentCollateralPrice }) => {
-            return of({ currentPrice: currentCollateralPrice, isStaticPrice: true })
-          }),
+          switchMap(({ currentCollateralPrice }) =>
+            of({ currentPrice: currentCollateralPrice, isStaticPrice: true }),
+          ),
         )
 
       const ilkData$ = () => of(protoIlkData)
@@ -354,7 +398,6 @@ describe('manageVault', () => {
         )
 
       const manageVault$ = createManageVault$(
-        defaultState$,
         context$,
         txHelpers$,
         proxyAddress$,
@@ -364,35 +407,27 @@ describe('manageVault', () => {
         vault$,
         id,
       )
+      manageVault$.pipe(first()).subscribe(({ injectStateOverride }) => {
+        injectStateOverride(newState || {})
+      })
       return manageVault$
     }
 
     it('Should start in an editing stage', () => {
       const state = getStateUnpacker(createTestFixture())
       const s = state()
-      expect(s.stage).to.be.equal('editing')
+      expect(s.stage).to.be.equal('collateralEditing')
       expect(s.isEditingStage).to.be.true
     })
 
     it('editing.change()', () => {
       const depositAmount = new BigNumber(5)
       const state = getStateUnpacker(createTestFixture())
-      ;(state() as ManageVaultState).change!({ kind: 'depositAmount', depositAmount })
+      ;(state() as ManageVaultState).updateDeposit!(depositAmount)
       expect((state() as ManageVaultState).depositAmount!.toString()).to.be.equal(
         depositAmount.toString(),
       )
       expect(state().isEditingStage).to.be.true
-    })
-
-    it('editing.change().reset()', () => {
-      const depositAmount = new BigNumber(5)
-      const state = getStateUnpacker(createTestFixture())
-      ;(state() as ManageVaultState).change!({ kind: 'depositAmount', depositAmount })
-      expect((state() as ManageVaultState).depositAmount!.toString()).to.be.equal(
-        depositAmount.toString(),
-      )
-      ;(state() as ManageVaultState).reset!()
-      expect((state() as ManageVaultState).depositAmount).to.be.undefined
     })
 
     it('editing.progress()', () => {
@@ -443,10 +478,13 @@ describe('manageVault', () => {
           },
         }),
       )
+      console.log(state().stage)
       ;(state() as ManageVaultState).progress!()
+      console.log(state().stage)
       expect(state().isManageStage).to.be.true
       expect(state().stage).to.be.equal('manageWaitingForConfirmation')
       ;(state() as ManageVaultState).progress!()
+      console.log(state().stage)
       expect(state().isManageStage).to.be.true
       expect(state().stage).to.be.equal('manageSuccess')
     })
