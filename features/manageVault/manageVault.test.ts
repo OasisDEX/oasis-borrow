@@ -1,5 +1,5 @@
 /* eslint-disable func-style */
-import { TxStatus } from '@oasisdex/transactions'
+import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
 import { nullAddress } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
@@ -18,7 +18,7 @@ import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import _ from 'lodash'
 import { describe, it } from 'mocha'
-import { of } from 'rxjs'
+import { Observable, of } from 'rxjs'
 import { first, switchMap } from 'rxjs/operators'
 
 import {
@@ -413,6 +413,48 @@ describe('manageVault', () => {
       return manageVault$
     }
 
+    function createMockTxState<T extends TxMeta>(
+      meta: T,
+      status: TxStatus = TxStatus.Success,
+      receipt: unknown = {},
+    ): Observable<TxState<T>> {
+      if (status === TxStatus.Success) {
+        const txState = {
+          account: '0x',
+          txNo: 0,
+          networkId: '1',
+          meta,
+          start: new Date(),
+          lastChange: new Date(),
+          dismissed: false,
+          status,
+          txHash: '0xhash',
+          blockNumber: 0,
+          receipt,
+          confirmations: 15,
+          safeConfirmations: 15,
+        }
+        return of(txState)
+      } else if (status === TxStatus.Failure) {
+        const txState = {
+          account: '0x',
+          txNo: 0,
+          networkId: '1',
+          meta,
+          start: new Date(),
+          lastChange: new Date(),
+          dismissed: false,
+          status,
+          txHash: '0xhash',
+          blockNumber: 0,
+          receipt,
+        }
+        return of(txState)
+      } else {
+        throw new Error('Not implemented yet')
+      }
+    }
+
     it('Should start in an editing stage', () => {
       const state = getStateUnpacker(createTestFixture())
       const s = state()
@@ -456,25 +498,8 @@ describe('manageVault', () => {
         createTestFixture({
           proxyAddress: '0xProxyAddress',
           txHelpers: {
-            // @ts-ignore
-            send: <B>(_open: any, meta: B) => {
-              const txState = {
-                account: '0x',
-                txNo: 0,
-                networkId: '1',
-                meta,
-                start: Date.now(),
-                lastChange: Date.now(),
-                dismissed: false,
-                status: TxStatus.Success,
-                txHash: '0xhash',
-                blockNumber: 0,
-                receipt: { logs: [] },
-                confirmations: 15,
-                safeConfirmations: 15,
-              }
-              return of(txState)
-            },
+            ...protoTxHelpers,
+            send: <B extends TxMeta>(_open: any, meta: B) => createMockTxState(meta),
           },
         }),
       )
