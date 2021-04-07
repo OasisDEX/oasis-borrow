@@ -13,6 +13,7 @@ yarn start
 ```
 
 If you want to serve the web server over HTTPS (required for Ledger) use:
+
 ```sh
 HTTPS=true yarn start
 ```
@@ -34,10 +35,10 @@ yarn storybook
 
 ### Backend
 
-
 #### Prisma
 
-We use [Prisma Client](https://github.com/prisma/prisma-client-js) for type-safe database communication.
+We use [Prisma Client](https://github.com/prisma/prisma-client-js) for type-safe database
+communication.
 
 To regenerate schema based on the current state of a database run:
 
@@ -62,21 +63,24 @@ yarn migrate
 
 ## i18n - Internationalisation
 
-Configuration file `i18n.ts` located in root directory allows to define available languages, default language, translation namespaces
-and language detection methods.
+Configuration file `i18n.ts` located in root directory allows to define available languages, default
+language, translation namespaces and language detection methods.
 
 Currently supported language detection method and they precedence:
-1. `landing-page-language-detection` - Custom detection based on root path with language param, e.g `/en` .
-Used for landing page. Not possible to use with subdirectories like `/en/dashboard`
+
+1. `landing-page-language-detection` - Custom detection based on root path with language param, e.g
+   `/en` . Used for landing page. Not possible to use with subdirectories like `/en/dashboard`
 2. `querystring` - Applicable to any url with `lang` query string param, e.g. `/dashboard?lang=es`
-3. `cookie` - Language param is set by other methods and stored in browser cookies. Any url without lang url param or query param
-will use this method to determine user language if cookie is already set.
-4. `header` - Applicable if none of the above method was applied. Language is determined by `Accept-Language` header,
- which reflects user's default language set in a browser.
+3. `cookie` - Language param is set by other methods and stored in browser cookies. Any url without
+   lang url param or query param will use this method to determine user language if cookie is
+   already set.
+4. `header` - Applicable if none of the above method was applied. Language is determined by
+   `Accept-Language` header, which reflects user's default language set in a browser.
 
 Translation json files are located in `/public/locales/`, in corresponding directories.
 
-Component that is using i18n should instantiate translation method via hook (optionally passing corresponding translation namespace):
+Component that is using i18n should instantiate translation method via hook (optionally passing
+corresponding translation namespace):
 
 `const { t } = useTranslation('dashboard')`
 
