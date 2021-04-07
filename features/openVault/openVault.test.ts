@@ -19,7 +19,6 @@ import _ from 'lodash'
 import { beforeEach, describe, it } from 'mocha'
 import { Observable, of, Subject } from 'rxjs'
 import { first } from 'rxjs/operators'
-import { assert } from 'ts-essentials'
 
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
 import {
