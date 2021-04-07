@@ -18,7 +18,7 @@ const FOOTER_LINKS = [
   { labelKey: 'landing.footer.terms', url: '/terms' },
   { labelKey: 'landing.footer.blog', url: 'https://blog.oasis.app' },
   { labelKey: 'landing.footer.faq', url: '/support' },
-  { labelKey: 'landing.footer.faq', url: 'https://oasis.app/contact' },
+  { labelKey: 'landing.footer.contact', url: 'https://oasis.app/contact', target: '_self' },
 ]
 
 function LanguageSelect() {
