@@ -33,7 +33,7 @@ import {
   validateWarnings,
 } from './manageVaultValidations'
 
-const defaultIsStates = {
+export const defaultIsStates = {
   isEditingStage: false,
   isProxyStage: false,
   isCollateralAllowanceStage: false,

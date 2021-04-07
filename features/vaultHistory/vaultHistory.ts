@@ -2,9 +2,9 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { gql, GraphQLClient } from 'graphql-request'
+import { memoize } from 'lodash'
 import flatten from 'lodash/flatten'
 import pickBy from 'lodash/pickBy'
-import getConfig from 'next/config'
 import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
@@ -93,11 +93,11 @@ export function createVaultHistory$(
   vault$: (id: BigNumber) => Observable<Vault>,
   vaultId: BigNumber,
 ): Observable<VaultHistoryEvent[]> {
-  const client = new GraphQLClient(getConfig().publicRuntimeConfig.apiHost)
+  const makeClient = memoize((url: string) => new GraphQLClient(url))
   return combineLatest(context$, vault$(vaultId)).pipe(
-    switchMap(([{ etherscan }, { address, token }]) =>
+    switchMap(([{ etherscan, cacheApi }, { address, token }]) =>
       onEveryBlock$.pipe(
-        switchMap(() => getVaultHistory(client, address)),
+        switchMap(() => getVaultHistory(makeClient(cacheApi), address)),
         map((returnedEvents) =>
           flatten(
             returnedEvents

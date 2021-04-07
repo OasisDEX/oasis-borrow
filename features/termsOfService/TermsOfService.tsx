@@ -81,6 +81,7 @@ function TOSWaiting4Acceptance({ stage, acceptTOS, updated }: TermsAcceptanceSta
           href="/terms"
           withAccountPrefix={false}
           internalInNewTab
+          passHref
           sx={{
             display: 'flex',
             mt: 2,
