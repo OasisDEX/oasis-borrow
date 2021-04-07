@@ -273,7 +273,7 @@ describe('manageVault', () => {
       expect(errorMessages).to.deep.equal(['vaultUnderCollateralized'])
     })
   })
-  describe.only('createManageVault$', () => {
+  describe('createManageVault$', () => {
     const protoUrnAddress = '0xEe0b6175705CDFEb824e5092d6547C011EbB46A8'
 
     interface FixtureProps {
@@ -356,7 +356,6 @@ describe('manageVault', () => {
       const txHelpers$ = of(txHelpers || protoTxHelpers)
       const proxyAddress$ = () => of(proxyAddress)
       const allowance$ = () => of(allowance || maxUint256)
-      console.log(allowance || maxUint256)
 
       const userTokenInfo$ = () => of(protoUserTokenInfo)
 
@@ -503,13 +502,10 @@ describe('manageVault', () => {
           },
         }),
       )
-      console.log(state().stage)
       ;(state() as ManageVaultState).progress!()
-      console.log(state().stage)
       expect(state().isManageStage).to.be.true
       expect(state().stage).to.be.equal('manageWaitingForConfirmation')
       ;(state() as ManageVaultState).progress!()
-      console.log(state().stage)
       expect(state().isManageStage).to.be.true
       expect(state().stage).to.be.equal('manageSuccess')
     })
