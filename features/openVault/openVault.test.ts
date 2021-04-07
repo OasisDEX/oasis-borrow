@@ -379,6 +379,14 @@ describe('openVault', () => {
       expect(state).to.throw()
     })
 
+    it('should wait for ilks to fetch before propagating', () => {
+      const ilks$ = new Subject<string[]>()
+      const state = getStateUnpacker(createTestFixture({ ilks$ }))
+      expect(state()).to.be.undefined
+      ilks$.next(['ETH-A'])
+      expect(state().stage).to.be.deep.equal('editing')
+    })
+
     it('editing.updateDeposit()', () => {
       const depositAmount = new BigNumber(5)
       const state = getStateUnpacker(createTestFixture())

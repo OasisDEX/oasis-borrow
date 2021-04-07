@@ -12,8 +12,6 @@ export function getStateUnpacker<D>(o$: Observable<D>): () => D {
     },
   )
 
-  // @ts-ignore
-  console.assert(r !== undefined)
   return () => {
     if (r instanceof Error) throw r
     return r
