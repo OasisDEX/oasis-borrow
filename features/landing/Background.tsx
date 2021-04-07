@@ -1,4 +1,4 @@
-import { keyframes } from '@emotion/react'
+import { keyframes } from '@emotion/core'
 import React from 'react'
 import { Box } from 'theme-ui'
 

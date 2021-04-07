@@ -1,4 +1,4 @@
-import { keyframes } from '@emotion/react'
+import { keyframes } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
@@ -332,10 +332,10 @@ export function LandingView() {
           sx={
             landing !== undefined
               ? {
-                  ...fadeInAnimation,
-                  animationDirection: 'backwards',
-                  animationFillMode: 'backwards',
-                }
+                ...fadeInAnimation,
+                animationDirection: 'backwards',
+                animationFillMode: 'backwards',
+              }
               : {}
           }
         />
