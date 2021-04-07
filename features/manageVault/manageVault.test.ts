@@ -493,7 +493,7 @@ describe('manageVault', () => {
       expect(state().stage).to.be.equal('manageWaitingForConfirmation')
     })
 
-    it('openWaitingForConfirmation.progress()', () => {
+    it('manageWaitingForConfirmation.progress()', () => {
       const state = getStateUnpacker(
         createTestFixture({
           proxyAddress: '0xProxyAddress',

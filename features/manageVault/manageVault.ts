@@ -333,7 +333,6 @@ function addTransitions(
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ): ManageVaultState {
-  console.log('addTransitions', state.stage)
   if (state.stage === 'collateralEditing' || state.stage === 'daiEditing') {
     return {
       ...state,

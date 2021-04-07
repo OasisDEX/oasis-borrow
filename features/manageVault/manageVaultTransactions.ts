@@ -216,7 +216,7 @@ export function applyManageVaultTransaction(
   }
 
   if (change.kind === 'manageSuccess') {
-    return { ...state, stage: 'daiAllowanceSuccess' }
+    return { ...state, stage: 'manageSuccess' }
   }
 
   return state
