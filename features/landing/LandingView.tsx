@@ -332,10 +332,10 @@ export function LandingView() {
           sx={
             landing !== undefined
               ? {
-                ...fadeInAnimation,
-                animationDirection: 'backwards',
-                animationFillMode: 'backwards',
-              }
+                  ...fadeInAnimation,
+                  animationDirection: 'backwards',
+                  animationFillMode: 'backwards',
+                }
               : {}
           }
         />
