@@ -1,10 +1,10 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
-import { useAppContext } from 'components/AppContextProvider'
+import { appContext, useAppContext } from 'components/AppContextProvider'
 import { ConnectWallet, getConnectionKindMessage } from 'components/connectWallet/ConnectWallet'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
-import { formatAddress } from 'helpers/formatters/format'
+import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
@@ -23,6 +23,29 @@ import {
 } from './TransactionManagerView'
 import { getTransactionTranslations } from './transactionTranslations'
 
+function DaiIndicator({ address }: { address: string }) {
+  const { balance$ } = useAppContext()
+
+  const balance = useObservable(balance$('DAI', address))
+
+  return (
+    <Flex
+      sx={{
+        position: 'relative',
+        alignItems: 'center',
+        bg: 'warning',
+        borderRadius: 'round',
+        p: 1
+      }}>
+      <Icon sx={{ zIndex: 1 }} name="dai_circle_color" size={30} />
+      <Box sx={{ mx: 2, color: 'onWarning' }}>
+        {
+          balance ? formatCryptoBalance(balance) : '0.00'
+        }
+      </Box>
+    </Flex>
+  )
+}
 export function AccountIndicator({
   chainId,
   address,
@@ -42,10 +65,12 @@ export function AccountIndicator({
   const { icon } = describeTxNotificationStatus(transaction?.tx)
 
   return (
-    <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-      {icon ? <Flex>{icon}</Flex> : <Text sx={{ color, fontSize: '7px' }}>⬤</Text>}
+    <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mx: 3 }}>
+      {/* {icon ? <Flex>{icon}</Flex> : <Text sx={{ color, fontSize: '7px' }}>⬤</Text>} */}
 
-      <Text ml={2}>{formatAddress(address)}</Text>
+      <Text variant="paragraph4" sx={{ fontWeight: 'bold' }}>
+        {formatAddress(address)}
+      </Text>
     </Flex>
   )
 }
@@ -108,7 +133,7 @@ function NotificationContent({
 }
 
 export function AccountButton() {
-  const { transactionManager$, web3Context$ } = useAppContext()
+  const { transactionManager$, web3Context$, } = useAppContext()
   const web3Context = useObservable(web3Context$)
   const { t } = useTranslation('common')
   const transactions = useObservable(transactionManager$)
@@ -128,10 +153,18 @@ export function AccountButton() {
     return (
       <Flex sx={{ justifyContent: 'flex-end', minWidth: 'auto', width: '100%' }}>
         <Flex>
-          <NotificationContent isVisible={isVisible} transaction={transaction?.tx} />
+          {/* <NotificationContent isVisible={isVisible} transaction={transaction?.tx} /> */}
           <Button
-            variant="square"
-            sx={{ fontWeight: 'body', minWidth: buttonMinWidth, zIndex: 1 }}
+            variant="secondary"
+            sx={{
+              minWidth: buttonMinWidth,
+              zIndex: 1,
+              background: 'white',
+              boxShadow: 'surface',
+              p: 1,
+              display: 'flex',
+              alignItems: 'center'
+            }}
             onClick={() => openModal(AccountModal)}
           >
             <AccountIndicator
@@ -139,6 +172,7 @@ export function AccountButton() {
               address={web3Context.account}
               transaction={transaction}
             />
+            <DaiIndicator address={web3Context.account} />
           </Button>
         </Flex>
       </Flex>

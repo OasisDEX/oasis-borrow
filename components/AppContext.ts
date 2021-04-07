@@ -185,7 +185,7 @@ export function setupAppContext() {
   )
 
   const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
-  const balance$ = curry(createBalance$)(onEveryBlock$, context$, tokenBalance$)
+  const balance$ = memoize(curry(createBalance$)(onEveryBlock$, context$, tokenBalance$))
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
@@ -306,6 +306,7 @@ export function setupAppContext() {
     vaultBanners$,
     redirectState$,
     accountBalances$,
+    balance$,
     vaultHistory$,
     collateralPrices$,
     termsAcceptance$,
