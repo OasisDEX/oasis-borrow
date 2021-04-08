@@ -22,4 +22,6 @@ public/worker-*.js.map
 types
 
 storybook-static
+storybook-static/*
+
 

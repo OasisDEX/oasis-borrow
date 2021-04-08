@@ -443,4 +443,9 @@ export const VaultAtRisk = createStory({
 export default {
   title: 'ManageVault',
   component: ManageVaultView,
+  parameters: {
+    controls: {
+      disabled: true,
+    },
+  },
 }
