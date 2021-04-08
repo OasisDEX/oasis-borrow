@@ -4,7 +4,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
-import { useObservable } from 'helpers/observableHook'
+import { useObservableWithError } from 'helpers/observableHook'
 import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
 import moment from 'moment'
@@ -13,7 +13,7 @@ import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
-import { OpenVaultState } from './openVault'
+import { categoriseOpenVaultStage, OpenVaultState } from './openVault'
 import { OpenVaultEditing } from './OpenVaultEditing'
 
 function OpenVaultDetails(props: OpenVaultState) {
@@ -208,14 +208,9 @@ function VaultDetails(props: OpenVaultState) {
   )
 }
 
-function OpenVaultFormTitle({
-  isEditingStage,
-  isProxyStage,
-  isAllowanceStage,
-  reset,
-  stage,
-}: OpenVaultState) {
+function OpenVaultFormTitle({ reset, stage }: OpenVaultState) {
   const canReset = !!reset
+  const { isEditingStage, isProxyStage, isAllowanceStage } = categoriseOpenVaultStage(stage)
 
   function handleReset(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
@@ -622,7 +617,9 @@ function OpenVaultFormConfirmation({
 }
 
 function OpenVaultForm(props: OpenVaultState) {
-  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
+  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = categoriseOpenVaultStage(
+    props.stage,
+  )
 
   return (
     <Box>
@@ -647,24 +644,25 @@ export function OpenVaultContainer(props: OpenVaultState) {
 }
 
 export function OpenVaultView({ ilk }: { ilk: string }) {
-  const { t } = useTranslation()
   const { openVault$ } = useAppContext()
-  const openVault = useObservable(openVault$(ilk))
+  const [openVault, openVaultError] = useObservableWithError(openVault$(ilk))
 
-  if (!openVault) {
-    return <>loading...</>
-  }
-
-  if (openVault.isIlkValidationStage) {
+  if (openVaultError) {
     return (
       <Grid sx={{ width: '100%', height: '50vh', justifyItems: 'center', alignItems: 'center' }}>
-        {openVault.stage === 'ilkValidationLoading' && <Spinner size={50} />}
-        {openVault.stage === 'ilkValidationFailure' && (
-          <Box>{t('vaults.ilk-does-not-exist', { ilk })}</Box>
-        )}
+        <Box>{openVaultError.message}</Box>
       </Grid>
     )
   }
+
+  if (!openVault) {
+    return (
+      <Grid sx={{ width: '100%', height: '50vh', justifyItems: 'center', alignItems: 'center' }}>
+        <Spinner size={50} />
+      </Grid>
+    )
+  }
+
   return (
     <Grid>
       <OpenVaultContainer {...(openVault as OpenVaultState)} />

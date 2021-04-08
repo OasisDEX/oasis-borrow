@@ -23,6 +23,7 @@ import { first } from 'rxjs/operators'
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
 import {
   applyOpenVaultCalculations,
+  categoriseOpenVaultStage,
   createOpenVault$,
   defaultPartialOpenVaultState,
   OpenVaultState,
@@ -300,8 +301,8 @@ describe('openVault', () => {
         allowance$,
         priceInfo$,
         balanceInfo$,
-        ilkData$,
         ilks$ || of(['ETH-A', 'WBTC-A', 'USDC-A']),
+        ilkData$,
         ilkToToken$,
         ilk,
       )
@@ -315,11 +316,14 @@ describe('openVault', () => {
         }),
       }
 
-      openVault$.pipe(first()).subscribe(({ injectStateOverride }: any) => {
-        if (injectStateOverride) {
-          injectStateOverride(newState || {})
-        }
-      })
+      openVault$.pipe(first()).subscribe(
+        ({ injectStateOverride }: any) => {
+          if (injectStateOverride) {
+            injectStateOverride(newState || {})
+          }
+        },
+        () => {},
+      )
       return openVault$
     }
 
@@ -369,52 +373,53 @@ describe('openVault', () => {
       const state = getStateUnpacker(createTestFixture())
       const s = state()
       expect(s.stage).to.be.equal('editing')
-      expect(s.isIlkValidationStage).to.be.false
-      expect(s.isEditingStage).to.be.true
+    })
+
+    it('should throw error if ilk is not valid', () => {
+      const state = getStateUnpacker(createTestFixture({ ilk: 'ETH-Z' }))
+      expect(state).to.throw()
+    })
+
+    it('should wait for ilks to fetch before propagating', () => {
+      const ilks$ = new Subject<string[]>()
+      const state = getStateUnpacker(createTestFixture({ ilks$ }))
+      expect(state()).to.be.undefined
+      ilks$.next(['ETH-A'])
+      expect(state().stage).to.be.deep.equal('editing')
     })
 
     it('editing.updateDeposit()', () => {
       const depositAmount = new BigNumber(5)
       const state = getStateUnpacker(createTestFixture())
-      ;(state() as OpenVaultState).updateDeposit!(depositAmount)
-      expect((state() as OpenVaultState).depositAmount!.toString()).to.be.equal(
-        depositAmount.toString(),
-      )
-      expect(state().isEditingStage).to.be.true
+      state().updateDeposit!(depositAmount)
+      expect(state().depositAmount!.toString()).to.be.equal(depositAmount.toString())
+      expect(state().stage).to.be.equal('editing')
     })
 
     it('editing.updateDepositUSD()', () => {
       const depositAmount = new BigNumber(5)
       const depositAmountUSD = protoETHPriceInfo.currentCollateralPrice.times(depositAmount)
       const state = getStateUnpacker(createTestFixture())
-      ;(state() as OpenVaultState).updateDepositUSD!(depositAmountUSD)
-      expect((state() as OpenVaultState).depositAmount!.toString()).to.be.equal(
-        depositAmount.toString(),
-      )
-      expect((state() as OpenVaultState).depositAmountUSD!.toString()).to.be.equal(
-        depositAmountUSD.toString(),
-      )
-      expect(state().isEditingStage).to.be.true
+      state().updateDepositUSD!(depositAmountUSD)
+      expect(state().depositAmount!.toString()).to.be.equal(depositAmount.toString())
+      expect(state().depositAmountUSD!.toString()).to.be.equal(depositAmountUSD.toString())
     })
 
     it('editing.updateGenerate()', () => {
       const depositAmount = new BigNumber(5)
       const generateAmount = new BigNumber(3000)
       const state = getStateUnpacker(createTestFixture())
-      ;(state() as OpenVaultState).updateDeposit!(depositAmount)
-      ;(state() as OpenVaultState).updateGenerate!(generateAmount)
-      expect((state() as OpenVaultState).generateAmount).to.be.undefined
-      ;(state() as OpenVaultState).toggleGenerateOption!()
-      ;(state() as OpenVaultState).updateGenerate!(generateAmount)
-      expect((state() as OpenVaultState).generateAmount!.toString()).to.be.equal(
-        generateAmount.toString(),
-      )
+      state().updateDeposit!(depositAmount)
+      state().updateGenerate!(generateAmount)
+      expect(state().generateAmount).to.be.undefined
+      state().toggleGenerateOption!()
+      state().updateGenerate!(generateAmount)
+      expect(state().generateAmount!.toString()).to.be.equal(generateAmount.toString())
     })
 
     it('editing.progress()', () => {
       const state = getStateUnpacker(createTestFixture())
-      ;(state() as OpenVaultState).progress!()
-      expect(state().isProxyStage).to.be.true
+      state().progress!()
       expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
     })
 
@@ -432,13 +437,12 @@ describe('openVault', () => {
         }),
       )
       proxyAddress$.next()
-      ;(state() as OpenVaultState).progress!()
-      expect(state().isProxyStage).to.be.true
+      state().progress!()
       expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
-      ;(state() as OpenVaultState).progress!()
+      state().progress!()
       proxyAddress$.next(proxyAddress)
       expect(state().stage).to.be.equal('proxySuccess')
-      expect((state() as OpenVaultState).proxyAddress).to.be.equal(proxyAddress)
+      expect(state().proxyAddress).to.be.equal(proxyAddress)
     })
 
     it('creating proxy failure', () => {
@@ -455,8 +459,8 @@ describe('openVault', () => {
         }),
       )
       proxyAddress$.next()
-      ;(state() as OpenVaultState).progress!()
-      ;(state() as OpenVaultState).progress!()
+      state().progress!()
+      state().progress!()
       proxyAddress$.next(proxyAddress)
       expect(state().stage).to.be.equal('proxyFailure')
     })
@@ -477,10 +481,9 @@ describe('openVault', () => {
           },
         }),
       )
-      ;(state() as OpenVaultState).progress!()
-      expect(state().isAllowanceStage).to.be.true
+      state().progress!()
       expect(state().stage).to.be.equal('allowanceWaitingForConfirmation')
-      ;(state() as OpenVaultState).progress!()
+      state().progress!()
       expect(state().stage).to.be.equal('allowanceSuccess')
     })
 
@@ -500,15 +503,14 @@ describe('openVault', () => {
           },
         }),
       )
-      ;(state() as OpenVaultState).progress!()
-      ;(state() as OpenVaultState).progress!()
+      state().progress!()
+      state().progress!()
       expect(state().stage).to.be.equal('allowanceFailure')
     })
 
     it('editing.progress(proxyAddress, allowance)', () => {
       const state = getStateUnpacker(createTestFixture({ proxyAddress: '0xProxyAddress' }))
-      ;(state() as OpenVaultState).progress!()
-      expect(state().isOpenStage).to.be.true
+      state().progress!()
       expect(state().stage).to.be.equal('openWaitingForConfirmation')
     })
 
@@ -523,13 +525,11 @@ describe('openVault', () => {
           },
         }),
       )
-      ;(state() as OpenVaultState).progress!()
-      expect(state().isOpenStage).to.be.true
+      state().progress!()
       expect(state().stage).to.be.equal('openWaitingForConfirmation')
-      ;(state() as OpenVaultState).progress!()
-      expect(state().isOpenStage).to.be.true
+      state().progress!()
       expect(state().stage).to.be.equal('openSuccess')
-      expect((state() as OpenVaultState).id!.toString()).to.be.equal('3281')
+      expect(state().id!.toString()).to.be.equal('3281')
     })
 
     it('opening vault failure', () => {
@@ -543,9 +543,41 @@ describe('openVault', () => {
           },
         }),
       )
-      ;(state() as OpenVaultState).progress!()
-      ;(state() as OpenVaultState).progress!()
+      state().progress!()
+      state().progress!()
       expect(state().stage).to.be.equal('openFailure')
+    })
+  })
+
+  describe('openVault stage categories', () => {
+    it('should identify editing stage correctly', () => {
+      const { isEditingStage } = categoriseOpenVaultStage('editing')
+      expect(isEditingStage).to.be.true
+    })
+
+    it('should identify proxy stages correctly', () => {
+      expect(categoriseOpenVaultStage('proxyWaitingForConfirmation').isProxyStage).to.be.true
+      expect(categoriseOpenVaultStage('proxyWaitingForApproval').isProxyStage).to.be.true
+      expect(categoriseOpenVaultStage('proxyInProgress').isProxyStage).to.be.true
+      expect(categoriseOpenVaultStage('proxyFailure').isProxyStage).to.be.true
+      expect(categoriseOpenVaultStage('proxySuccess').isProxyStage).to.be.true
+    })
+
+    it('should identify allowance stages correctly', () => {
+      expect(categoriseOpenVaultStage('allowanceWaitingForConfirmation').isAllowanceStage).to.be
+        .true
+      expect(categoriseOpenVaultStage('allowanceWaitingForApproval').isAllowanceStage).to.be.true
+      expect(categoriseOpenVaultStage('allowanceInProgress').isAllowanceStage).to.be.true
+      expect(categoriseOpenVaultStage('allowanceFailure').isAllowanceStage).to.be.true
+      expect(categoriseOpenVaultStage('allowanceSuccess').isAllowanceStage).to.be.true
+    })
+
+    it('should identify open stages correctly', () => {
+      expect(categoriseOpenVaultStage('openWaitingForConfirmation').isOpenStage).to.be.true
+      expect(categoriseOpenVaultStage('openWaitingForApproval').isOpenStage).to.be.true
+      expect(categoriseOpenVaultStage('openInProgress').isOpenStage).to.be.true
+      expect(categoriseOpenVaultStage('openFailure').isOpenStage).to.be.true
+      expect(categoriseOpenVaultStage('openSuccess').isOpenStage).to.be.true
     })
   })
 })

@@ -19,7 +19,7 @@ import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
-import { ManageVaultState } from './manageVault'
+import { categoriseManageVaultStage, ManageVaultState } from './manageVault'
 import { ManageVaultEditing } from './ManageVaultEditing'
 
 function ManageVaultDetails(props: ManageVaultState) {
@@ -707,15 +707,14 @@ function ManageVaultConfirmation({
 }
 
 function ManageVaultForm(props: ManageVaultState) {
+  const { toggleIlkDetails, showIlkDetails, stage } = props
   const {
     isEditingStage,
     isProxyStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
     isManageStage,
-    toggleIlkDetails,
-    showIlkDetails,
-  } = props
+  } = categoriseManageVaultStage(stage)
 
   function handleMouseEnter(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault()

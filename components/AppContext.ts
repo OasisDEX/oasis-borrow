@@ -255,8 +255,8 @@ export function setupAppContext() {
       allowance$,
       priceInfo$,
       balanceInfo$,
-      ilkData$,
       ilks$,
+      ilkData$,
       ilkToToken$,
     ),
   )

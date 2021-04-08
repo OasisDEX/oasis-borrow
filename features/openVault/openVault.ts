@@ -7,16 +7,8 @@ import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
-import { combineLatest, iif, merge, Observable, of, Subject } from 'rxjs'
-import {
-  distinctUntilChanged,
-  first,
-  map,
-  scan,
-  shareReplay,
-  startWith,
-  switchMap,
-} from 'rxjs/operators'
+import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
+import { distinctUntilChanged, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openVaultAllowances'
 import { applyOpenVaultEnvironment, OpenVaultEnvironmentChange } from './openVaultEnvironment'
@@ -37,33 +29,18 @@ import {
   validateWarnings,
 } from './openVaultValidations'
 
-const defaultIsStates = {
-  isIlkValidationStage: false,
+const defaultOpenVaultStageCategories = {
   isEditingStage: false,
   isProxyStage: false,
   isAllowanceStage: false,
   isOpenStage: false,
 }
 
-function applyIsStageStates(
-  state: IlkValidationState | OpenVaultState,
-): IlkValidationState | OpenVaultState {
-  const newState = {
-    ...state,
-    ...defaultIsStates,
-  }
-
-  switch (state.stage) {
-    case 'ilkValidationFailure':
-    case 'ilkValidationLoading':
-    case 'ilkValidationSuccess':
-      return {
-        ...newState,
-        isIlkValidationStage: true,
-      }
+export function categoriseOpenVaultStage(stage: OpenVaultStage) {
+  switch (stage) {
     case 'editing':
       return {
-        ...newState,
+        ...defaultOpenVaultStageCategories,
         isEditingStage: true,
       }
     case 'proxyWaitingForConfirmation':
@@ -72,7 +49,7 @@ function applyIsStageStates(
     case 'proxyFailure':
     case 'proxySuccess':
       return {
-        ...newState,
+        ...defaultOpenVaultStageCategories,
         isProxyStage: true,
       }
     case 'allowanceWaitingForConfirmation':
@@ -81,7 +58,7 @@ function applyIsStageStates(
     case 'allowanceFailure':
     case 'allowanceSuccess':
       return {
-        ...newState,
+        ...defaultOpenVaultStageCategories,
         isAllowanceStage: true,
       }
     case 'openWaitingForConfirmation':
@@ -90,11 +67,9 @@ function applyIsStageStates(
     case 'openFailure':
     case 'openSuccess':
       return {
-        ...newState,
+        ...defaultOpenVaultStageCategories,
         isOpenStage: true,
       }
-    default:
-      return state
   }
 }
 
@@ -168,22 +143,6 @@ function apply(state: OpenVaultState, change: OpenVaultChange) {
   return applyOpenVaultCalculations(s7)
 }
 
-export type IlkValidationStage =
-  | 'ilkValidationLoading'
-  | 'ilkValidationFailure'
-  | 'ilkValidationSuccess'
-
-export interface IlkValidationState {
-  stage: IlkValidationStage
-  ilk: string
-
-  isIlkValidationStage: boolean
-  isEditingStage: boolean
-  isProxyStage: boolean
-  isAllowanceStage: boolean
-  isOpenStage: boolean
-}
-
 export type OpenVaultStage =
   | 'editing'
   | 'proxyWaitingForConfirmation'
@@ -247,12 +206,6 @@ export type DefaultOpenVaultState = {
   ilkDebtAvailable: BigNumber
   debtFloor: BigNumber
   liquidationRatio: BigNumber
-
-  isIlkValidationStage: boolean
-  isEditingStage: boolean
-  isProxyStage: boolean
-  isAllowanceStage: boolean
-  isOpenStage: boolean
 
   allowanceTxHash?: string
   proxyTxHash?: string
@@ -352,27 +305,7 @@ function addTransitions(
   return state
 }
 
-function createIlkValidation$(ilks$: Observable<string[]>, ilk: string) {
-  return ilks$.pipe(
-    switchMap((ilks) => {
-      const isValidIlk = ilks.some((i) => i === ilk)
-      if (!isValidIlk) {
-        return of({
-          ilk,
-          stage: 'ilkValidationFailure',
-        })
-      }
-      return of({
-        ilk,
-        stage: 'ilkValidationSuccess',
-      })
-    }),
-    startWith({ ilk, stage: 'ilkValidationLoading' }),
-  )
-}
-
 export const defaultPartialOpenVaultState = {
-  ...defaultIsStates,
   stage: 'editing' as OpenVaultStage,
   errorMessages: [],
   warningMessages: [],
@@ -392,16 +325,16 @@ export function createOpenVault$(
   allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
   priceInfo$: (token: string) => Observable<PriceInfo>,
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
-  ilkData$: (ilk: string) => Observable<IlkData>,
   ilks$: Observable<string[]>,
+  ilkData$: (ilk: string) => Observable<IlkData>,
   ilkToToken$: Observable<(ilk: string) => string>,
   ilk: string,
-): Observable<IlkValidationState | OpenVaultState> {
-  return createIlkValidation$(ilks$, ilk).pipe(
-    switchMap((state) => {
-      return iif(
-        () => state.stage !== 'ilkValidationSuccess',
-        of(state),
+): Observable<OpenVaultState> {
+  return ilks$.pipe(
+    switchMap((ilks) =>
+      iif(
+        () => !ilks.some((i) => i === ilk),
+        throwError(new Error(`Ilk ${ilk} does not exist`)),
         combineLatest(context$, txHelpers$, ilkToToken$).pipe(
           switchMap(([context, txHelpers, ilkToToken]) => {
             const account = context.account
@@ -409,7 +342,6 @@ export function createOpenVault$(
             return combineLatest(
               priceInfo$(token),
               balanceInfo$(token, account),
-
               ilkData$(ilk),
               proxyAddress$(account),
             ).pipe(
@@ -418,7 +350,6 @@ export function createOpenVault$(
                 ([
                   priceInfo,
                   balanceInfo,
-
                   { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
                   proxyAddress,
                 ]) =>
@@ -493,9 +424,8 @@ export function createOpenVault$(
             )
           }),
         ),
-      )
-    }),
-    map(applyIsStageStates),
+      ),
+    ),
     shareReplay(1),
   )
 }
