@@ -4,6 +4,8 @@ import { zero } from 'helpers/zero'
 import { ManageVaultState } from './manageVault'
 
 export type ManageVaultErrorMessage =
+  | 'depositAmountEmpty'
+  | 'paybackAmountEmpty'
   | 'depositAndWithdrawAmountsEmpty'
   | 'generateAndPaybackAmountsEmpty'
   | 'depositAmountGreaterThanMaxDepositAmount'
@@ -58,11 +60,13 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     collateralAllowanceAmount,
     daiAllowanceAmount,
     collateralizationRatio,
+    accountIsController,
   } = state
 
   const errorMessages: ManageVaultErrorMessage[] = []
 
   if (
+    accountIsController &&
     (!depositAmount || depositAmount.isZero()) &&
     (!withdrawAmount || withdrawAmount.isZero()) &&
     stage === 'collateralEditing'
@@ -71,11 +75,28 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
   }
 
   if (
+    accountIsController &&
     (!generateAmount || generateAmount.isZero()) &&
     (!paybackAmount || paybackAmount.isZero()) &&
     stage === 'daiEditing'
   ) {
     errorMessages.push('generateAndPaybackAmountsEmpty')
+  }
+
+  if (
+    !accountIsController &&
+    (!depositAmount || depositAmount.isZero()) &&
+    stage === 'collateralEditing'
+  ) {
+    errorMessages.push('depositAmountEmpty')
+  }
+
+  if (
+    !accountIsController &&
+    (!paybackAmount || paybackAmount.isZero()) &&
+    stage === 'daiEditing'
+  ) {
+    errorMessages.push('paybackAmountEmpty')
   }
 
   if (depositAmount?.gt(maxDepositAmount)) {
@@ -139,7 +160,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     }
   }
 
-  if (collateralizationRatio.lt(liquidationRatio)) {
+  if (collateralizationRatio.lt(liquidationRatio) && !collateralizationRatio.isZero()) {
     errorMessages.push('vaultUnderCollateralized')
   }
 
@@ -182,7 +203,7 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     warningMessages.push('noProxyAddress')
   }
 
-  if (debt.lt(debtFloor)) {
+  if (debt.lt(debtFloor) && debt.gt(zero)) {
     warningMessages.push('debtIsLessThanDebtFloor')
   }
 

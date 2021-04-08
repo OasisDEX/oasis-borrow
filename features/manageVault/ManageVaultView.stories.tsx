@@ -3,10 +3,18 @@ import { ManageVaultView } from 'features/manageVault/ManageVaultView'
 import { one } from 'helpers/zero'
 import { ManageVaultStory } from './ManageVaultBuilder'
 
+export const Default = ManageVaultStory({
+  title:
+    'Default ManageVault Story. Vault is empty, user has a proxy address and is the vault controller.',
+})
+
 export const CollateralEditingStage = ManageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
+  depositAmount: new BigNumber('2'),
+  generateAmount: new BigNumber('300'),
+  showDepositAndGenerateOption: true,
   balanceInfo: { collateralBalance: new BigNumber('2000') },
   proxyAddress: '0xProxyAddress',
   stage: 'collateralEditing',
@@ -16,6 +24,8 @@ export const DaiEditingStage = ManageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
+  depositAmount: new BigNumber('2'),
+  generateAmount: new BigNumber('300'),
   balanceInfo: { collateralBalance: new BigNumber('200') },
   proxyAddress: '0xProxyAddress',
   stage: 'daiEditing',
@@ -236,19 +246,8 @@ export const ManageSuccess = ManageVaultStory({
   stage: 'manageSuccess',
 })
 
-export const VaultAtRisk = ManageVaultStory({
-  ilk: 'ETH-A',
-  collateral: one,
-  debt: new BigNumber('4000'),
-  withdrawAmount: new BigNumber('0.5'),
-  paybackAmount: new BigNumber('300'),
-  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
-  proxyAddress: '0xProxyAddress',
-  stage: 'collateralEditing',
-})
-
 // eslint-disable-next-line import/no-default-export
 export default {
-  title: 'ManageVault',
+  title: 'ManageVault/Stages',
   component: ManageVaultView,
 }

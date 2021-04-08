@@ -28,48 +28,48 @@ const VAULT_ID = one
 
 const protoUrnAddress = '0xEe0b6175705CDFEb824e5092d6547C011EbB46A8'
 
-interface ManageVaultStory {
+type ManageVaultStory = Partial<ManageVaultState> & {
   title?: string
   context?: ContextConnected
-  proxyAddress?: string
   allowance?: BigNumber
   vault?: Partial<Vault>
   priceInfo?: Partial<PriceInfo>
   balanceInfo?: Partial<BalanceInfo>
   urnAddress?: string
   owner?: string
-  collateral: BigNumber
-  debt: BigNumber
   unlockedCollateral?: BigNumber
   controller?: string
   depositAmount?: BigNumber
   withdrawAmount?: BigNumber
   generateAmount?: BigNumber
   paybackAmount?: BigNumber
-  stage: ManageVaultStage
-  ilk: 'ETH-A' | 'WBTC-A' | 'USDC-A'
+  collateral?: BigNumber
+  debt?: BigNumber
+  stage?: ManageVaultStage
+  ilk?: 'ETH-A' | 'WBTC-A' | 'USDC-A'
 }
 
 export function ManageVaultStory({
   title,
   context,
-  proxyAddress,
   allowance,
   priceInfo,
   balanceInfo,
   urnAddress,
   owner,
-  ilk,
-  collateral,
-  debt,
   unlockedCollateral,
   controller,
   depositAmount,
   withdrawAmount,
   generateAmount,
   paybackAmount,
-  stage,
-}: ManageVaultStory) {
+  ilk = 'ETH-A',
+  proxyAddress = '0xProxyAddress',
+  stage = 'collateralEditing',
+  collateral = zero,
+  debt = zero,
+  ...otherState
+}: ManageVaultStory = {}) {
   return () => {
     const protoPriceInfo = {
       ...(ilk === 'ETH-A'
@@ -91,6 +91,7 @@ export function ManageVaultStory({
     }
 
     const newState: Partial<ManageVaultState> = {
+      ...otherState,
       stage,
       ...(depositAmount && {
         depositAmount,
