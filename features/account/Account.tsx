@@ -1,5 +1,7 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
+import BigNumber from 'bignumber.js'
+import { ContextConnected } from 'blockchain/network'
 import { appContext, useAppContext } from 'components/AppContextProvider'
 import { ConnectWallet, getConnectionKindMessage } from 'components/connectWallet/ConnectWallet'
 import { AppLink } from 'components/Links'
@@ -8,26 +10,20 @@ import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef } from 'react'
 // @ts-ignore
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
 import { animated, useSpring } from 'react-spring'
+import { filter, switchMap, switchMapTo } from 'rxjs/operators'
 import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Flex, Grid, Heading, Text, Textarea } from 'theme-ui'
 
-import { NotificationTransaction, TxMgrTransaction } from './transactionManager'
 import {
-  describeTxNotificationStatus,
   PendingTransactions,
   RecentTransactions,
 } from './TransactionManagerView'
-import { getTransactionTranslations } from './transactionTranslations'
 
-function DaiIndicator({ address }: { address: string }) {
-  const { balance$ } = useAppContext()
-
-  const balance = useObservable(balance$('DAI', address))
-
+function DaiIndicator({ daiBalance }: { daiBalance: BigNumber | undefined }) {
   return (
     <Flex
       sx={{
@@ -40,7 +36,7 @@ function DaiIndicator({ address }: { address: string }) {
       <Icon sx={{ zIndex: 1 }} name="dai_circle_color" size={30} />
       <Box sx={{ mx: 2, color: 'onWarning' }}>
         {
-          balance ? formatCryptoBalance(balance) : '0.00'
+          daiBalance ? formatCryptoBalance(daiBalance) : '0.00'
         }
       </Box>
     </Flex>
@@ -63,27 +59,22 @@ export function AccountIndicator({
 const buttonMinWidth = '150px'
 
 export function AccountButton() {
-  const { transactionManager$, web3Context$, } = useAppContext()
-  const web3Context = useObservable(web3Context$)
+  const { accountData$ } = useAppContext()
+  const accountData = useObservable(accountData$)
   const { t } = useTranslation('common')
-  const transactions = useObservable(transactionManager$)
-  const transaction = transactions?.notificationTransaction
-  const [isVisible, setIsVisible] = useState(false)
   const openModal = useModal()
+  const animatedProps = useSpring({
+    top: accountData?.daiBalance === undefined ? -100 : 0
+  })
 
-  useEffect(() => {
-    if (transaction && !isVisible) {
-      setIsVisible(true)
-    } else if (!transaction && isVisible) {
-      setIsVisible(false)
-    }
-  }, [transaction])
+  if (accountData?.context.status === 'connecting' || accountData === undefined) {
+    return null
+  }
 
-  if (web3Context?.status === 'connected') {
+  if (accountData.context.status === 'connected') {
     return (
-      <Flex sx={{ justifyContent: 'flex-end', minWidth: 'auto', width: '100%' }}>
+      <Flex as={animated.div} style={animatedProps} sx={{ position: 'relative', justifyContent: 'flex-end', minWidth: 'auto', width: '100%' }}>
         <Flex>
-          {/* <NotificationContent isVisible={isVisible} transaction={transaction?.tx} /> */}
           <Button
             variant="secondary"
             sx={{
@@ -97,8 +88,8 @@ export function AccountButton() {
             }}
             onClick={() => openModal(AccountModal)}
           >
-            <AccountIndicator address={web3Context.account} />
-            <DaiIndicator address={web3Context.account} />
+            <AccountIndicator address={accountData.context.account} />
+            <DaiIndicator daiBalance={accountData.daiBalance} />
           </Button>
         </Flex>
       </Flex>

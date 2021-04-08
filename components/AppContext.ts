@@ -33,6 +33,7 @@ import {
 } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import { createAccountData } from 'features/account/AccountData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
@@ -285,6 +286,8 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  const accountData$ = createAccountData(web3Context$, balance$)
+
   return {
     web3Context$,
     web3ContextConnected$,
@@ -306,7 +309,7 @@ export function setupAppContext() {
     vaultBanners$,
     redirectState$,
     accountBalances$,
-    balance$,
+    accountData$,
     vaultHistory$,
     collateralPrices$,
     termsAcceptance$,

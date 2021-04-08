@@ -12,8 +12,7 @@ export const fadeOut = keyframes({
 })
 
 const pathTransform: React.CSSProperties = {
-    transformOrigin: '0% 56%',
-    transform: 'scale(1, -1)'
+    transform: 'scale(1, -1) translateY(-60%)'
 }
 
 export function BackgroundLight() {
@@ -22,7 +21,7 @@ export function BackgroundLight() {
             sx={{
                 position: 'absolute',
                 left: 'calc((100% - 1882px) / 2)',
-                top: '-220px',
+                top: '-300px',
                 userSelect: 'none',
                 pointerEvents: 'none',
                 '&::after': {
@@ -48,16 +47,16 @@ export function BackgroundLight() {
                     right: 0,
                     content: '""',
                     background: 'white',
-                    opacity: 0.2,
+                    opacity: 0.3,
                 },
             }}
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1882"
-                height="1017"
+                height="1517"
                 fill="none"
-                viewBox="0 0 1882 1017"
+                viewBox="0 0 1882 1517"
             >
                 <circle cx="1387" cy="619.782" r="379" fill="url(#paint0_radial)"></circle>
                 <g filter="url(#filter0_f)">
@@ -67,7 +66,7 @@ export function BackgroundLight() {
                     <circle cx="1025" cy="447.782" r="379" fill="url(#paint2_radial)"></circle>
                 </g>
                 <circle cx="979.001" cy="603.783" r="379" fill="url(#paint3_radial)"></circle>
-                <g style={{ mixBlendMode: 'overlay' }} filter="url(#filter2_b)" opacity="0.3">
+                <g style={{ mixBlendMode: 'overlay', transform: 'translateY(250px)' }} filter="url(#filter2_b)" opacity="0.3">
                     <path
                         style={pathTransform}
                         className="layerTop"
@@ -75,15 +74,15 @@ export function BackgroundLight() {
                         d="M1882 557.283c0 195.785-614 530.497-873 354.499-259-176-873-158.714-873-354.499 0-195.785 425-588.5 873-354.5 362 294 873 158.715 873 354.5z"
                     ></path>
                 </g>
-                <g style={{ mixBlendMode: 'overlay' }} filter="url(#filter3_b)" opacity="0.3">
+                <g style={{ mixBlendMode: 'overlay', transform: 'translateY(250px)' }} filter="url(#filter3_b)" opacity="0.3">
                     <path
                         style={pathTransform}
                         className="layerMiddle"
                         fill="url(#paint5_linear)"
-                        d="M1641 612.783c0 195.694-105.19 119.921-386.59 149.907C760.813 815.289 26.996 636.749 54.766 303.404c0-195.695 368.411-266.377 768.293-54.475C1204.43 546.791 1641 417.089 1641 612.783z"
+                        d="M1641 612.783c0 195.694-105.19 119.921-386.59 149.907C760.813 815.289 26.996 636.749 54.766 303.404c0-195.695 368.411-266.377 768.293-54.475C1254.43 546.791 1641 417.089 1641 612.783z"
                     ></path>
                 </g>
-                <g style={{ mixBlendMode: 'overlay' }} filter="url(#filter4_b)" opacity="0.3">
+                <g style={{ mixBlendMode: 'overlay', transform: 'translateY(250px)' }} filter="url(#filter4_b)" opacity="0.3">
                     <path
                         style={pathTransform}
                         className="layerBottom"
