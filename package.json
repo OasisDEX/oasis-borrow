@@ -23,7 +23,7 @@
     "typechain:generate": "typechain --target=web3-v1 'blockchain/abi/*.json'",
     "postinstall": "rm -f node_modules/web3/index.d.ts && yarn prisma:generate && yarn patch-package && yarn typechain:generate",
     "storybook": "start-storybook -p 6006 -s ./public",
-    "build:storybook": "build-storybook",
+    "build:storybook": "build-storybook && cp -R public/locales/ storybook-static/",
     "publish:storybook": "storybook-to-aws-s3"
   },
   "dependencies": {
