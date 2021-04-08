@@ -160,6 +160,8 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     afterLiquidationPrice,
     maxDepositAmountUSD,
     maxPaybackAmount,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
   }
 }
 
