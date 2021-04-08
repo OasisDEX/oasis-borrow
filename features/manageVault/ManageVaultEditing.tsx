@@ -1,11 +1,10 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { VaultActionInput } from 'components/VaultActionInput'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Card, Flex, Grid, Text } from 'theme-ui'
+import { Box,  Card, Flex, Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 
@@ -130,59 +129,6 @@ function PaybackInput({
   )
 }
 
-function ManageVaultIlkDetails({
-  ilkDebtAvailable,
-  liquidationRatio,
-  stabilityFee,
-  liquidationPenalty,
-  debtFloor,
-}: ManageVaultState) {
-  const { t } = useTranslation()
-
-  return (
-    <Card bg="secondaryAlt" sx={{ border: 'none' }}>
-      <Grid columns={'2fr 3fr'}>
-        <>
-          <Text sx={{ fontSize: 2 }}>{t('manage-vault.dai-available')}</Text>
-          <Text sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}>{`${formatAmount(
-            ilkDebtAvailable,
-            'DAI',
-          )} DAI`}</Text>
-        </>
-
-        <>
-          <Text sx={{ fontSize: 2 }}>{t('manage-vault.min-collat-ratio')}</Text>
-          <Text
-            sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}
-          >{`${formatPercent(liquidationRatio.times(100), { precision: 2 })}`}</Text>
-        </>
-
-        <>
-          <Text sx={{ fontSize: 2 }}>{t('manage-vault.stability-fee')}</Text>
-          <Text
-            sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}
-          >{`${formatPercent(stabilityFee.times(100), { precision: 2 })}`}</Text>
-        </>
-
-        <>
-          <Text sx={{ fontSize: 2 }}>{t('manage-vault.liquidation-fee')}</Text>
-          <Text
-            sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}
-          >{`${formatPercent(liquidationPenalty.times(100), { precision: 2 })}`}</Text>
-        </>
-
-        <>
-          <Text sx={{ fontSize: 2 }}>{t('manage-vault.dust-limit')}</Text>
-          <Text sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}>{`${formatAmount(
-            debtFloor,
-            'DAI',
-          )} DAI`}</Text>
-        </>
-      </Grid>
-    </Card>
-  )
-}
-
 export function ManageVaultEditing(props: ManageVaultState) {
   const { t } = useTranslation()
 
@@ -193,20 +139,13 @@ export function ManageVaultEditing(props: ManageVaultState) {
     paybackAmount,
     errorMessages,
     warningMessages,
-    progress,
     stage,
     token,
     toggleDepositAndGenerateOption,
     togglePaybackAndWithdrawOption,
     showDepositAndGenerateOption,
     showPaybackAndWithdrawOption,
-    showIlkDetails,
   } = props
-
-  function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault()
-    progress!()
-  }
 
   const errorString = errorMessages.join(',\n')
   const warningString = warningMessages.join(',\n')
@@ -306,10 +245,6 @@ export function ManageVaultEditing(props: ManageVaultState) {
           <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>
         </Card>
       )}
-      <Button onClick={handleProgress} disabled={hasError}>
-        {t('confirm')}
-      </Button>
-      {showIlkDetails && <ManageVaultIlkDetails {...props} />}
     </Grid>
   )
 }

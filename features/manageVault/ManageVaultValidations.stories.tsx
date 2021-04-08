@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { protoContextConnected } from 'blockchain/network'
 import { one } from 'helpers/zero'
+
 import { ManageVaultStory } from './ManageVaultBuilder'
 import { ManageVaultView } from './ManageVaultView'
 
@@ -8,7 +9,6 @@ export const DepositAndWithdrawAmountsEmpty = ManageVaultStory({
   title:
     'If both the deposit and withdraw input fields are empty when editing "Collateral" then we flag the error and block the flow propagating as no vault change would occur',
   ilk: 'WBTC-A',
-
   collateral: one,
   debt: new BigNumber('3000'),
 })
