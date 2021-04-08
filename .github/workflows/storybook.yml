@@ -40,10 +40,10 @@ jobs:
         run: |
           echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
-    - name: Build and Deploy frontend files to S3
-      run: |
-        npm run build:storybook
-        npm run storybook-to-aws-s3 -- --aws-profile=NONE --existing-output-dir=storybook-static --bucket-path=${{ env.BUCKET_NAME }}/${{ steps.vars.outputs.sha_short }}
+      - name: Build and Deploy frontend files to S3
+        run: |
+          npm run build:storybook
+          npm run storybook-to-aws-s3 -- --aws-profile=NONE --existing-output-dir=storybook-static --bucket-path=${{ env.BUCKET_NAME }}/${{ steps.vars.outputs.sha_short }}
 
       - name: Invalidate CloudFront cache
         run: |
