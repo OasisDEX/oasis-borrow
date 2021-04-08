@@ -1115,6 +1115,13 @@ const oasisBaseTheme = {
       borderRadius: 'round',
       lineHeight: 'buttons',
       color: 'text.contrast',
+      '&:hover': {
+        bg: 'primaryEmphasis',
+      },
+      '&:disabled': {
+        bg: 'primaryAlt',
+        pointerEvents: 'none',
+      },
     },
     outline: {
       variant: 'text.paragraph2',
