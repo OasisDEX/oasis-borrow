@@ -7,7 +7,13 @@ i18n.use(Backend).use(initReactI18next).init({
   fallbackLng: 'en',
   debug: true,
   defaultNS: 'common',
-  loadPath: '/locales/{{lng}}/{{ns}}.json',
+  //loadPath: '/locales/{{lng}}/{{ns}}.json',
+  backend: {
+    loadPath:
+      process.env.NODE_ENV !== "production"
+        ? `./locales/{{lng}}/{{ns}}.json`
+        : `/locales/{{lng}}/{{ns}}.json`,
+  },
 })
 
 export default i18n
