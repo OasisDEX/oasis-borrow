@@ -4,13 +4,17 @@ import { zero } from 'helpers/zero'
 import { ManageVaultState } from './manageVault'
 
 export type ManageVaultErrorMessage =
+  | 'depositAndWithdrawAmountsEmpty'
+  | 'generateAndPaybackAmountsEmpty'
   | 'depositAmountGreaterThanMaxDepositAmount'
   | 'withdrawAmountGreaterThanMaxWithdrawAmount'
+  | 'generateAmountGreaterThanMaxGenerateAmount'
+  | 'paybackAmountGreaterThanMaxPaybackAmount'
   | 'generateAmountLessThanDebtFloor'
   | 'generateAmountGreaterThanDebtCeiling'
-  | 'paybackAmountGreaterThanMaxPaybackAmount'
   | 'paybackAmountLessThanDebtFloor'
-  | 'vaultUnderCollateralized'
+  | 'vaultWillBeUnderCollateralized'
+  | 'vaultIsUnderCollateralized'
   | 'collateralAllowanceAmountEmpty'
   | 'customCollateralAllowanceAmountGreaterThanMaxUint256'
   | 'customCollateralAllowanceAmountLessThanDepositAmount'
@@ -20,17 +24,25 @@ export type ManageVaultErrorMessage =
 
 export type ManageVaultWarningMessage =
   | 'potentialGenerateAmountLessThanDebtFloor'
+  | 'debtIsLessThanDebtFloor'
   | 'noProxyAddress'
   | 'noCollateralAllowance'
   | 'noDaiAllowance'
   | 'collateralAllowanceLessThanDepositAmount'
   | 'daiAllowanceLessThanPaybackAmount'
+  | 'connectedAccountIsNotVaultController'
+  | 'vaultIsAtRiskLevelDanger'
+  | 'vaultWillBeAtRiskLevelDanger'
+  | 'vaultIsPotentiallyAtRiskLevelWarning'
+  | 'vaultWillBePotentiallyBeAtRiskLevelWarning'
 
 export function validateErrors(state: ManageVaultState): ManageVaultState {
   const {
     depositAmount,
     maxDepositAmount,
+
     generateAmount,
+    maxGenerateAmount,
     debtFloor,
     ilkDebtAvailable,
     afterCollateralizationRatio,
@@ -43,11 +55,30 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     stage,
     collateralAllowanceAmount,
     daiAllowanceAmount,
+    collateralizationRatio,
   } = state
 
   const errorMessages: ManageVaultErrorMessage[] = []
 
+  if (
+    (!depositAmount || depositAmount.isZero()) &&
+    (!withdrawAmount || withdrawAmount.isZero()) &&
+    stage === 'collateralEditing'
+  ) {
+    errorMessages.push('depositAndWithdrawAmountsEmpty')
+  }
+
+  if (
+    (!generateAmount || generateAmount.isZero()) &&
+    (!paybackAmount || paybackAmount.isZero()) &&
+    stage === 'daiEditing'
+  ) {
+    errorMessages.push('generateAndPaybackAmountsEmpty')
+  }
+
   if (depositAmount?.gt(maxDepositAmount)) {
+    // maxDepositAmount currently means just the users collateral balance but
+    // could in the future account for gas less the deposit amount
     errorMessages.push('depositAmountGreaterThanMaxDepositAmount')
   }
 
@@ -55,7 +86,11 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     errorMessages.push('withdrawAmountGreaterThanMaxWithdrawAmount')
   }
 
-  if (generateAmount && debt.plus(generateAmount).lt(debtFloor)) {
+  if (generateAmount?.lt(maxGenerateAmount)) {
+    errorMessages.push('generateAmountGreaterThanMaxGenerateAmount')
+  }
+
+  if (generateAmount?.plus(debt).lt(debtFloor)) {
     errorMessages.push('generateAmountLessThanDebtFloor')
   }
 
@@ -102,8 +137,15 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     }
   }
 
-  if (generateAmount?.gt(zero) && afterCollateralizationRatio.lt(liquidationRatio)) {
-    errorMessages.push('vaultUnderCollateralized')
+  if (collateralizationRatio.lt(liquidationRatio)) {
+    errorMessages.push('vaultIsUnderCollateralized')
+  }
+
+  if (
+    (generateAmount?.gt(zero) || withdrawAmount?.gt(zero)) &&
+    afterCollateralizationRatio.lt(liquidationRatio)
+  ) {
+    errorMessages.push('vaultWillBeUnderCollateralized')
   }
 
   return { ...state, errorMessages }
@@ -112,8 +154,6 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
 export function validateWarnings(state: ManageVaultState): ManageVaultState {
   const {
     depositAmount,
-    generateAmount,
-    withdrawAmount,
     paybackAmount,
     depositAmountUSD,
     debtFloor,
@@ -134,20 +174,8 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     warningMessages.push('noProxyAddress')
   }
 
-  if (!depositAmount) {
-    warningMessages.push('depositAmountEmpty')
-  }
-
-  if (!generateAmount) {
-    warningMessages.push('generateAmountEmpty')
-  }
-
-  if (!withdrawAmount) {
-    warningMessages.push('withdrawAmountEmpty')
-  }
-
-  if (!paybackAmount) {
-    warningMessages.push('paybackAmountEmpty')
+  if (debt.lt(debtFloor)) {
+    warningMessages.push('debtIsLessThanDebtFloor')
   }
 
   if (token !== 'ETH') {
@@ -157,6 +185,10 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     if (depositAmount && collateralAllowance && depositAmount.gt(collateralAllowance)) {
       warningMessages.push('collateralAllowanceLessThanDepositAmount')
     }
+  }
+
+  if (!daiAllowance) {
+    warningMessages.push('noDaiAllowance')
   }
 
   if (paybackAmount && daiAllowance && paybackAmount.gt(daiAllowance)) {

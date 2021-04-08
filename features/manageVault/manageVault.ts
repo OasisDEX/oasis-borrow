@@ -105,6 +105,7 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     withdrawAmount,
     paybackAmount,
     debt,
+    ilkDebtAvailable,
   } = state
 
   const maxDepositAmount = collateralBalance
@@ -113,10 +114,14 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
   const maxWithdrawAmount = freeCollateral
   const maxWithdrawAmountUSD = freeCollateral.times(currentCollateralPrice)
 
-  const maxGenerateAmount = lockedCollateral
+  const maxDaiThatCanBeGeneratedFromTotalCollateral = lockedCollateral
     .plus(depositAmount || zero)
     .times(maxDebtPerUnitCollateral)
     .minus(debt)
+
+  const maxGenerateAmount = maxDaiThatCanBeGeneratedFromTotalCollateral.gt(ilkDebtAvailable)
+    ? ilkDebtAvailable
+    : maxDaiThatCanBeGeneratedFromTotalCollateral
 
   const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt
 
