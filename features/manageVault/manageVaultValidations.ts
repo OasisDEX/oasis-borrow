@@ -13,8 +13,9 @@ export type ManageVaultErrorMessage =
   | 'generateAmountLessThanDebtFloor'
   | 'generateAmountGreaterThanDebtCeiling'
   | 'paybackAmountLessThanDebtFloor'
+  | 'vaultWillBeUnderCollateralizedAtNextPrice'
   | 'vaultWillBeUnderCollateralized'
-  | 'vaultIsUnderCollateralized'
+  | 'vaultUnderCollateralized'
   | 'collateralAllowanceAmountEmpty'
   | 'customCollateralAllowanceAmountGreaterThanMaxUint256'
   | 'customCollateralAllowanceAmountLessThanDepositAmount'
@@ -35,6 +36,8 @@ export type ManageVaultWarningMessage =
   | 'vaultAtRiskLevelWarning'
   | 'vaultWillBeAtRiskLevelDanger'
   | 'vaultWillBeAtRiskLevelWarning'
+  | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
+  | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
 
 export function validateErrors(state: ManageVaultState): ManageVaultState {
   const {
@@ -137,7 +140,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
   }
 
   if (collateralizationRatio.lt(liquidationRatio)) {
-    errorMessages.push('vaultIsUnderCollateralized')
+    errorMessages.push('vaultUnderCollateralized')
   }
 
   if (
