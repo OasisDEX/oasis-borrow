@@ -31,6 +31,41 @@ jobs:
       - name: Typecheck
         run: yarn typecheck
 
+  deploy-storybook:
+    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: Deploy storybook
+    runs-on: ubuntu-latest
+    env:
+      REGION: eu-central-1
+      BUCKET_NAME: storybook.staging.oasis.app
+      CLOUDFRONT_ID: E1PL3BMP98DRBZ
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.REGION }}
+
+    - name: Extract commit hash
+      id: vars
+      shell: bash
+      run: |
+        echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+    - name: Build and Deploy frontend files to S3
+      run: |
+        npm run build:storybook
+        npm run storybook-to-aws-s3 -- --aws-profile=NONE --existing-output-dir=storybook-static --bucket-path=${{ env.BUCKET_NAME }}/${{ steps.vars.outputs.sha_short }}
+
+    - name: Invalidate CloudFront cache
+      run: |
+        aws cloudfront create-invalidation --distribution-id ${{ env.CLOUDFRONT_ID }} --paths "/*"
+
 #  test-e2e:
 #    runs-on: ubuntu-latest
 #    steps:
