@@ -47,27 +47,12 @@ function DaiIndicator({ address }: { address: string }) {
   )
 }
 export function AccountIndicator({
-  chainId,
   address,
-  transaction,
 }: {
-  chainId: number
   address: string
-  transaction: NotificationTransaction | undefined
 }) {
-  let color = 'networks.default'
-  if (chainId === 1) {
-    color = 'networks.mainnet'
-  }
-  if (chainId === 42) {
-    color = 'networks.kovan'
-  }
-  const { icon } = describeTxNotificationStatus(transaction?.tx)
-
   return (
     <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mx: 3 }}>
-      {/* {icon ? <Flex>{icon}</Flex> : <Text sx={{ color, fontSize: '7px' }}>⬤</Text>} */}
-
       <Text variant="paragraph4" sx={{ fontWeight: 'bold' }}>
         {formatAddress(address)}
       </Text>
@@ -76,61 +61,6 @@ export function AccountIndicator({
 }
 
 const buttonMinWidth = '150px'
-
-function NotificationContent({
-  isVisible,
-  transaction,
-}: {
-  isVisible: boolean
-  transaction?: TxMgrTransaction
-}) {
-  const props = useSpring({
-    transform: isVisible ? 'translateX(0%)' : 'translateX(105%)',
-  })
-
-  const [tx, setTx] = useState<TxMgrTransaction>()
-
-  useEffect(() => {
-    if (transaction) {
-      setTx(transaction)
-    }
-  }, [transaction])
-
-  return (
-    <animated.div style={{ ...props, display: 'flex', maxWidth: `calc(100% - ${buttonMinWidth})` }}>
-      <Card
-        sx={{
-          p: 2,
-          pl: 3,
-          m: 0,
-          borderRadius: 'round',
-          minWidth: `calc(100% + ${buttonMinWidth})`,
-          alignSelf: 'flex-end',
-          height: '100%',
-          borderColor: 'light',
-          bg: 'txManagerBg',
-          boxShadow: 'txManager',
-        }}
-      >
-        <Text
-          variant="text"
-          sx={{
-            whiteSpace: 'nowrap',
-            maxWidth: `calc(100% - ${buttonMinWidth})`,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            svg: {
-              flexShrink: 0,
-            },
-          }}
-          py={1}
-        >
-          {tx ? getTransactionTranslations(tx).notification : null}
-        </Text>
-      </Card>
-    </animated.div>
-  )
-}
 
 export function AccountButton() {
   const { transactionManager$, web3Context$, } = useAppContext()
@@ -167,11 +97,7 @@ export function AccountButton() {
             }}
             onClick={() => openModal(AccountModal)}
           >
-            <AccountIndicator
-              chainId={web3Context.chainId}
-              address={web3Context.account}
-              transaction={transaction}
-            />
+            <AccountIndicator address={web3Context.account} />
             <DaiIndicator address={web3Context.account} />
           </Button>
         </Flex>

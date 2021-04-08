@@ -1288,6 +1288,7 @@ const oasisBaseTheme = {
       fontWeight: 'semiBold',
     },
     input: {
+      bg: 'white',
       outline: 'none',
       borderRadius: 'large',
       border: 'light',

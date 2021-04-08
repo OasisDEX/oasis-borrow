@@ -48,9 +48,11 @@ export function AppLayout({ children, backLink, CustomLogoWithBack }: AppLayoutP
   }
 
   return (
-    <BasicLayout footer={<Footer />} header={<AppHeader {...{ backLink, CustomLogoWithBack }} />}>
-      {children}
-    </BasicLayout>
+    <>
+      <BasicLayout sx={{ zIndex: 2 }} footer={<Footer />} header={<AppHeader {...{ backLink, CustomLogoWithBack }} />}>
+        {children}
+      </BasicLayout>
+    </>
   )
 }
 

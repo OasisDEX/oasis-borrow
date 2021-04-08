@@ -310,35 +310,35 @@ function CallToAction({ ilk }: CallToActionProps) {
 function Summary({ summary }: { summary: VaultSummary }) {
   const { t } = useTranslation()
   return (
-    <Card>
-      <Grid columns="repeat(4, 1fr)">
+    <Card sx={{ mb: 5 }}>
+      <Grid sx={{ pt: 3 }} columns="repeat(4, 1fr)">
         <Box>
           <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
             {t('vaults-overview.number-of-vaults')}
           </Text>
-          <Text variant="header2">{summary.numberOfVaults}</Text>
+          <Text variant="header2" sx={{ mt: 2 }}>{summary.numberOfVaults}</Text>
         </Box>
         <Box>
           <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
             {t('vaults-overview.total-locked')}
           </Text>
-          <Text variant="header2">${formatCryptoBalance(summary.totalCollateralPrice)}</Text>
+          <Text variant="header2" sx={{ mt: 2 }}>${formatCryptoBalance(summary.totalCollateralPrice)}</Text>
         </Box>
         <Box>
           <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
             {t('vaults-overview.total-debt')}
           </Text>
-          <Text variant="header2">{formatCryptoBalance(summary.totalDaiDebt)} DAI</Text>
+          <Text variant="header2" sx={{ mt: 2 }}>{formatCryptoBalance(summary.totalDaiDebt)} DAI</Text>
         </Box>
         <Box>
           <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
             {t('vaults-overview.vaults-at-risk')}
           </Text>
-          <Text variant="header2">{summary.vaultsAtRisk}</Text>
+          <Text variant="header2" sx={{ mt: 2 }}>{summary.vaultsAtRisk}</Text>
         </Box>
         <Graph assetRatio={summary.depositedAssetRatio} />
       </Grid>
-    </Card>
+    </Card >
   )
 }
 
@@ -457,27 +457,20 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
   )
 
   return (
-    <Grid sx={{ flex: 1 }}>
+    <Grid sx={{ flex: 1, zIndex: 1 }}>
       {readonlyAccount && (
         <Card sx={{ width: 'max-content', p: 3, justifySelf: 'center', m: 3 }}>
           {t('readonly-alert-message')} {formatAddress(readonlyAccount)}
         </Card>
       )}
-      <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
+      <Heading variant="header2" sx={{ textAlign: 'center', my: 4 }} as="h1">
         {t('vaults-overview.header')}
       </Heading>
-      <Text variant="header3" sx={{ textAlign: 'center', justifySelf: 'center', mb: 4 }}>
-        {context.status === 'connected'
-          ? t('vaults-overview.message-connected', {
-              address: formatAddress(address),
-              count: vaultSummary?.numberOfVaults || 0,
-            })
-          : t('vaults-overview.message-not-connected', { address: formatAddress(address) })}
-      </Text>
-      {displayFeaturedIlks && featuredIlks && <FeaturedIlks ilks={featuredIlks} />}
       {displayVaults && vaultSummary && (
         <>
-          <Summary summary={vaultSummary} />
+          <Summary
+            summary={vaultSummary}
+          />
           <Filters
             onSearch={onVaultSearch}
             search={vaults.filters.search}

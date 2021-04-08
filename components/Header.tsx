@@ -13,7 +13,7 @@ function Logo() {
     <AppLink
       withAccountPrefix={false}
       href="/"
-      sx={{ color: 'primary', fontWeight: 'semiBold', fontSize: 5, cursor: 'pointer' }}
+      sx={{ color: 'primary', fontWeight: 'semiBold', fontSize: 5, cursor: 'pointer', zIndex: 1 }}
     >
       <Text sx={{ display: 'inline', mr: 2 }}>Oasis</Text>
     </AppLink>

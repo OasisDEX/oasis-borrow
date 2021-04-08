@@ -387,10 +387,7 @@
     "next-price": "Next {{token}}/USD price: {{amount}}"
   },
   "vaults-overview": {
-    "header": "Vault overview",
-    "message-connected": "Hello {{address}} it looks like you currently have {{count}} Vault open with this wallet. Open a Vault below.",
-    "message-connected_plural": "Hello {{address}} it looks like you currently have {{count}} Vaults open with this wallet. Open a Vault below.",
-    "message-not-connected": "Hello, you are viewing {{address}} it looks like currently this address has no Vaults open.",
+    "header": "Your Vaults",
     "number-of-vaults": "No. of Vaults",
     "total-debt": "Total debt",
     "total-locked": "Total locked",
