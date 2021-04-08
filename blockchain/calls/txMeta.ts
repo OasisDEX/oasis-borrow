@@ -12,4 +12,5 @@ export enum TxMetaKind {
   open = 'open',
   depositAndGenerate = 'depositAndGenerate',
   withdrawAndPayback = 'withdrawAndPayback',
+  reclaim = 'reclaim',
 }

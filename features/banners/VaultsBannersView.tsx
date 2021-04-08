@@ -11,12 +11,14 @@ import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
-import { Box, Flex, Grid, Heading, SxStyleProp, Text, useThemeUI } from 'theme-ui'
+import { Box, Button, Flex, Grid, Heading, Spinner, SxStyleProp, Text, useThemeUI } from 'theme-ui'
 
 type VaultBannerProps = {
   status: JSX.Element
   header: JSX.Element | string
   subheader?: JSX.Element | string | false
+  action?: () => void
+  isLoading?: boolean
 }
 
 function StatusFrame({ children, sx }: WithChildren & { sx?: SxStyleProp }) {
@@ -41,8 +43,11 @@ export function VaultBanner({
   header,
   subheader,
   color,
+  action,
+  isLoading,
 }: VaultBannerProps & { color: string }) {
   const [isVisible, setIsVisible] = useState(true)
+  const { t } = useTranslation()
 
   return (
     <>
@@ -55,6 +60,20 @@ export function VaultBanner({
                 {header}
               </Heading>
               {subheader && <Text variant="subheader">{subheader}</Text>}
+              <Flex sx={{ alignItems: 'right' }}>
+                {action && (
+                  <Button onClick={action} variant="secondary" disabled={isLoading}>
+                    {isLoading ? (
+                      <Flex sx={{ justifyContent: 'center' }}>
+                        <Spinner size={25} color="primary" />
+                        <Text pl={2}>{t('reclaim')}</Text>
+                      </Flex>
+                    ) : (
+                      <Text>{t('reclaim')}</Text>
+                    )}
+                  </Button>
+                )}
+              </Flex>
             </Grid>
           </Flex>
         </Banner>
@@ -162,13 +181,20 @@ export function VaultLiquidatedBanner({
   isVaultController,
   controller,
   token,
+  action,
+  reclaimTxState,
 }: {
   unlockedCollateral: BigNumber
   isVaultController: boolean
   controller: string
   token: string
+  action: () => void
+  reclaimTxState?: string
 }) {
   const { t } = useTranslation()
+
+  const isLoading =
+    reclaimTxState === 'reclaimInProgress' || reclaimTxState === 'reclaimWaitingForApproval'
 
   const header = isVaultController
     ? t('vault-banners.liquidated.header1')
@@ -200,6 +226,8 @@ export function VaultLiquidatedBanner({
       header={header}
       subheader={subheader}
       color="banner.danger"
+      action={unlockedCollateral.gt(zero) ? action : undefined}
+      isLoading={isLoading}
     />
   )
 }
@@ -295,16 +323,35 @@ export function VaultNextPriceUpdateCounter({
 export function VaultBannersView({ id }: { id: BigNumber }) {
   const { vaultBanners$ } = useAppContext()
   const state = useObservable(vaultBanners$(id))
+
   if (!state) return null
 
-  const { token, dateNextCollateralPrice, account, controller, unlockedCollateral, banner } = state
+  const {
+    token,
+    dateNextCollateralPrice,
+    account,
+    controller,
+    unlockedCollateral,
+    banner,
+    reclaim,
+    reclaimTxState,
+  } = state
 
   const isVaultController = !!account && account === controller
 
   switch (banner) {
     case 'liquidated':
       return (
-        <VaultLiquidatedBanner {...{ unlockedCollateral, token, isVaultController, controller }} />
+        <VaultLiquidatedBanner
+          {...{
+            unlockedCollateral,
+            token,
+            isVaultController,
+            controller,
+            action: reclaim,
+            reclaimTxState,
+          }}
+        />
       )
     case 'liquidating':
       return (

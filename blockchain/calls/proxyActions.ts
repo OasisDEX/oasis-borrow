@@ -212,3 +212,33 @@ export const open: TransactionDef<OpenData> = {
   options: ({ token, depositAmount }) =>
     token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
 }
+
+export type ReclaimData = {
+  kind: TxMetaKind.reclaim
+  proxyAddress: string
+  amount: BigNumber
+  token: string
+  id: BigNumber
+}
+
+export const reclaim: TransactionDef<ReclaimData> = {
+  call: ({ proxyAddress }, { contract }) => {
+    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
+  },
+  prepareArgs: (data, context) => {
+    const { dssProxyActions, dssCdpManager } = context
+
+    return [
+      dssProxyActions.address,
+      context
+        .contract<DssProxyActions>(dssProxyActions)
+        .methods.flux(
+          dssCdpManager.address,
+          data.id.toString(),
+          context.account,
+          amountToWei(data.amount, data.token).toFixed(0),
+        )
+        .encodeABI(),
+    ]
+  },
+}

@@ -20,6 +20,7 @@ import {
 import {
   DepositAndGenerateData,
   OpenData,
+  ReclaimData,
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
@@ -86,6 +87,7 @@ export type TxData =
   | DisapproveData
   | CreateDsProxyData
   | SetProxyOwnerData
+  | ReclaimData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -292,7 +294,14 @@ export function setupAppContext() {
   )
 
   const vaultBanners$ = memoize(
-    curry(createVaultsBanners$)(context$, priceInfo$, vault$, vaultHistory$),
+    curry(createVaultsBanners$)(
+      context$,
+      txHelpers$,
+      proxyAddress$,
+      priceInfo$,
+      vault$,
+      vaultHistory$,
+    ),
     bigNumberTostring,
   )
 
