@@ -31,16 +31,15 @@ export type ManageVaultWarningMessage =
   | 'collateralAllowanceLessThanDepositAmount'
   | 'daiAllowanceLessThanPaybackAmount'
   | 'connectedAccountIsNotVaultController'
-  | 'vaultIsAtRiskLevelDanger'
+  | 'vaultAtRiskLevelDanger'
+  | 'vaultAtRiskLevelWarning'
   | 'vaultWillBeAtRiskLevelDanger'
-  | 'vaultIsPotentiallyAtRiskLevelWarning'
-  | 'vaultWillBePotentiallyBeAtRiskLevelWarning'
+  | 'vaultWillBeAtRiskLevelWarning'
 
 export function validateErrors(state: ManageVaultState): ManageVaultState {
   const {
     depositAmount,
     maxDepositAmount,
-
     generateAmount,
     maxGenerateAmount,
     debtFloor,
@@ -162,6 +161,12 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     debt,
     collateralAllowance,
     daiAllowance,
+    accountIsController,
+    collateralizationRatio,
+    afterCollateralizationRatio,
+    collateralizationWarningThreshold,
+    collateralizationDangerThreshold,
+    liquidationRatio,
   } = state
 
   const warningMessages: ManageVaultWarningMessage[] = []
@@ -193,6 +198,38 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
 
   if (paybackAmount && daiAllowance && paybackAmount.gt(daiAllowance)) {
     warningMessages.push('daiAllowanceLessThanPaybackAmount')
+  }
+
+  if (!accountIsController) {
+    warningMessages.push('connectedAccountIsNotVaultController')
+  }
+
+  if (
+    collateralizationRatio.gt(liquidationRatio) &&
+    collateralizationRatio.lte(collateralizationDangerThreshold)
+  ) {
+    warningMessages.push('vaultAtRiskLevelDanger')
+  }
+
+  if (
+    collateralizationRatio.gt(collateralizationDangerThreshold) &&
+    collateralizationRatio.lte(collateralizationWarningThreshold)
+  ) {
+    warningMessages.push('vaultAtRiskLevelWarning')
+  }
+
+  if (
+    afterCollateralizationRatio.gt(liquidationRatio) &&
+    afterCollateralizationRatio.lte(collateralizationDangerThreshold)
+  ) {
+    warningMessages.push('vaultAtRiskLevelDanger')
+  }
+
+  if (
+    afterCollateralizationRatio.gt(collateralizationDangerThreshold) &&
+    afterCollateralizationRatio.lte(collateralizationWarningThreshold)
+  ) {
+    warningMessages.push('vaultAtRiskLevelWarning')
   }
 
   return { ...state, warningMessages }

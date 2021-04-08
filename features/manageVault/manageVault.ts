@@ -148,6 +148,8 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
       ? afterDebt.times(liquidationRatio).div(afterLockedCollateral)
       : zero
 
+  const collateralizationDangerThreshold = liquidationRatio.times(1.1)
+  const collateralizationWarningThreshold = liquidationRatio.times(1.25)
   return {
     ...state,
     maxDepositAmount,
@@ -305,6 +307,8 @@ export type DefaultManageVaultState = {
 
   afterLiquidationPrice: BigNumber
   afterCollateralizationRatio: BigNumber
+  collateralizationDangerThreshold: BigNumber
+  collateralizationWarningThreshold: BigNumber
 
   collateralAllowanceTxHash?: string
   daiAllowanceTxHash?: string
@@ -468,6 +472,8 @@ export const defaultPartialManageVaultState = {
   maxPaybackAmount: zero,
   afterCollateralizationRatio: zero,
   afterLiquidationPrice: zero,
+  collateralizationDangerThreshold: zero,
+  collateralizationWarningThreshold: zero,
 }
 
 export function createManageVault$(
