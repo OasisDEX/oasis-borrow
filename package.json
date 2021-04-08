@@ -164,7 +164,6 @@
     "execa": "^1.0.0",
     "express": "^4.17.1",
     "http-server": "^0.11.1",
-    "i18next-http-backend": "^1.1.1",
     "mocha": "^7.1.2",
     "moment-locales-webpack-plugin": "^1.2.0",
     "nock": "^13.0.3",
