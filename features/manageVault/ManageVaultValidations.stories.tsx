@@ -2,10 +2,10 @@ import { BigNumber } from 'bignumber.js'
 import { protoContextConnected } from 'blockchain/network'
 import { one } from 'helpers/zero'
 
-import { ManageVaultStory } from './ManageVaultBuilder'
+import { manageVaultStory } from './ManageVaultBuilder'
 import { ManageVaultView } from './ManageVaultView'
 
-export const DepositAndWithdrawAmountsEmpty = ManageVaultStory({
+export const DepositAndWithdrawAmountsEmpty = manageVaultStory({
   title:
     'If both the deposit and withdraw input fields are empty when editing "Collateral" then we flag the error and block the flow propagating as no vault change would occur',
   ilk: 'WBTC-A',
@@ -13,7 +13,7 @@ export const DepositAndWithdrawAmountsEmpty = ManageVaultStory({
   debt: new BigNumber('3000'),
 })
 
-export const PaybackAndWithdrawAmountsEmpty = ManageVaultStory({
+export const PaybackAndWithdrawAmountsEmpty = manageVaultStory({
   title:
     'If both the generate and payback input fields are empty when editing "Dai" then we flag the error and block the flow propagating as no vault change would occur',
   ilk: 'WBTC-A',
@@ -22,7 +22,7 @@ export const PaybackAndWithdrawAmountsEmpty = ManageVaultStory({
   stage: 'daiEditing',
 })
 
-export const DepositEmpty = ManageVaultStory({
+export const DepositEmpty = manageVaultStory({
   title:
     'Similar to DepositAndWithdrawAmountsEmpty only that the connected user is not the controller of the vault. At the "Collateral" editing stage they would only be able deposit so we block the flow if no deposit amount is set',
   ilk: 'WBTC-A',
@@ -32,7 +32,7 @@ export const DepositEmpty = ManageVaultStory({
   controller: '0x1',
 })
 
-export const PaybackEmpty = ManageVaultStory({
+export const PaybackEmpty = manageVaultStory({
   title:
     'Similar to PaybackAndWithdrawAmountsEmpty only that the connected user is not the controller of the vault. At the "Daiu" editing stage they would only be able payback so we block the flow if no payback amount is set',
   ilk: 'WBTC-A',

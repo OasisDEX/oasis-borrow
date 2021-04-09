@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
@@ -267,12 +268,12 @@ export type DefaultManageVaultState = {
   maxPaybackAmount: BigNumber
 
   updateDeposit?: (depositAmount?: BigNumber) => void
-  updateDepositUSD?: (depositAmount?: BigNumber) => void
+  updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
   updateGenerate?: (generateAmount?: BigNumber) => void
   updateGenerateMax?: () => void
   updateWithdraw?: (withdrawAmount?: BigNumber) => void
-  updateWithdrawUSD?: (withdrawAmount?: BigNumber) => void
+  updateWithdrawUSD?: (withdrawAmountUSD?: BigNumber) => void
   updateWithdrawMax?: () => void
   updatePayback?: (paybackAmount?: BigNumber) => void
   updatePaybackMax?: () => void
@@ -283,14 +284,14 @@ export type DefaultManageVaultState = {
 
   collateralAllowanceAmount?: BigNumber
   updateCollateralAllowanceAmount?: (amount?: BigNumber) => void
-  setCollateralAllowanceAmountUnlimited?: (amount?: BigNumber) => void
-  setCollateralAllowanceAmountToDepositAmount?: (amount?: BigNumber) => void
+  setCollateralAllowanceAmountUnlimited?: () => void
+  setCollateralAllowanceAmountToDepositAmount?: () => void
   resetCollateralAllowanceAmount?: () => void
 
   daiAllowanceAmount?: BigNumber
   updateDaiAllowanceAmount?: (amount?: BigNumber) => void
-  setDaiAllowanceAmountUnlimited?: (amount?: BigNumber) => void
-  setDaiAllowanceAmountToPaybackAmount?: (amount?: BigNumber) => void
+  setDaiAllowanceAmountUnlimited?: () => void
+  setDaiAllowanceAmountToPaybackAmount?: () => void
   resetDaiAllowanceAmount?: () => void
 
   maxDebtPerUnitCollateral: BigNumber
@@ -476,6 +477,8 @@ export const defaultPartialManageVaultState = {
   afterLiquidationPrice: zero,
   collateralizationDangerThreshold: zero,
   collateralizationWarningThreshold: zero,
+  collateralAllowanceAmount: maxUint256,
+  daiAllowanceAmount: maxUint256,
 }
 
 export function createManageVault$(

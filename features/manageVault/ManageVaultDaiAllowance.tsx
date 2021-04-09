@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
-import {  Card, Flex, Grid, Label, Link, Radio, Spinner, Text } from 'theme-ui'
+import { Card, Flex, Grid, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 
@@ -15,9 +15,7 @@ export function ManageVaultDaiAllowance({
   stage,
   daiAllowanceTxHash,
   etherscan,
-  progress,
   daiAllowanceAmount,
-  errorMessages,
   paybackAmount,
   updateDaiAllowanceAmount,
   setDaiAllowanceAmountUnlimited,
@@ -50,10 +48,7 @@ export function ManageVaultDaiAllowance({
     }
   }
 
-  const errorString = errorMessages.join(',\n')
   const { t } = useTranslation()
-
-  const hasError = !!errorString
 
   return (
     <Grid>
@@ -91,11 +86,6 @@ export function ManageVaultDaiAllowance({
               <Text sx={{ fontSize: 1 }}>DAI</Text>
             </Grid>
           </Label>
-        </>
-      )}
-      {hasError && (
-        <>
-          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
         </>
       )}
       {stage === 'daiAllowanceInProgress' && (

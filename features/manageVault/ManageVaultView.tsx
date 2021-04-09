@@ -17,7 +17,7 @@ import { ManageVaultProxy } from './ManageVaultProxy'
 
 function ManageVaultErrors({ errorMessages }: ManageVaultState) {
   const errorString = errorMessages.join(',\n')
-  if (!!errorString) return null
+  if (!errorString) return null
   return (
     <Card variant="danger">
       <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
@@ -27,7 +27,7 @@ function ManageVaultErrors({ errorMessages }: ManageVaultState) {
 
 function ManageVaultWarnings({ warningMessages }: ManageVaultState) {
   const warningString = warningMessages.join(',\n')
-  if (!!warningString) return null
+  if (!warningString) return null
   return (
     <Card variant="warning">
       <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>

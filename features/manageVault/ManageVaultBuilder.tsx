@@ -49,7 +49,7 @@ type ManageVaultStory = Partial<ManageVaultState> & {
   ilk?: 'ETH-A' | 'WBTC-A' | 'USDC-A'
 }
 
-export function ManageVaultStory({
+export function manageVaultStory({
   title,
   context,
   allowance,

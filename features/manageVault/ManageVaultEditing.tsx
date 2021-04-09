@@ -4,7 +4,7 @@ import { VaultActionInput } from 'components/VaultActionInput'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box,  Card, Flex, Grid, Text } from 'theme-ui'
+import { Box, Flex, Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 
@@ -137,8 +137,6 @@ export function ManageVaultEditing(props: ManageVaultState) {
     withdrawAmount,
     generateAmount,
     paybackAmount,
-    errorMessages,
-    warningMessages,
     stage,
     token,
     toggleDepositAndGenerateOption,
@@ -146,12 +144,6 @@ export function ManageVaultEditing(props: ManageVaultState) {
     showDepositAndGenerateOption,
     showPaybackAndWithdrawOption,
   } = props
-
-  const errorString = errorMessages.join(',\n')
-  const warningString = warningMessages.join(',\n')
-
-  const hasError = !!errorString
-  const hasWarnings = !!warningString
 
   const disableDepositAndGenerate = paybackAmount || withdrawAmount || showPaybackAndWithdrawOption
   const disablePaybackAndWithdraw = depositAmount || generateAmount || showDepositAndGenerateOption
@@ -234,17 +226,6 @@ export function ManageVaultEditing(props: ManageVaultState) {
           (!!paybackAmount || !!withdrawAmount) &&
           (inverted ? <WithdrawInput {...props} /> : <PaybackInput {...props} />)}
       </Box>
-
-      {hasError && (
-        <Card variant="danger">
-          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
-        </Card>
-      )}
-      {hasWarnings && (
-        <Card variant="warning">
-          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>
-        </Card>
-      )}
     </Grid>
   )
 }

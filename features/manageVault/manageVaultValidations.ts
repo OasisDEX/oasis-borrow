@@ -109,7 +109,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     errorMessages.push('withdrawAmountGreaterThanMaxWithdrawAmount')
   }
 
-  if (generateAmount?.lt(maxGenerateAmount)) {
+  if (generateAmount?.gt(maxGenerateAmount)) {
     errorMessages.push('generateAmountGreaterThanMaxGenerateAmount')
   }
 

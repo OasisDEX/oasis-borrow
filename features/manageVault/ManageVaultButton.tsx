@@ -35,7 +35,7 @@ function manageVaultButtonText(stage: ManageVaultStage): string {
     case 'daiAllowanceWaitingForApproval':
       return t('approving-allowance')
     case 'manageWaitingForConfirmation':
-      return t('change-your-vault')
+      return t('confirm')
     case 'manageFailure':
       return t('retry')
     case 'manageSuccess':
@@ -71,7 +71,7 @@ export function ManageVaultButton({ progress, errorMessages, stage }: ManageVaul
   const buttonText = manageVaultButtonText(stage)
 
   return (
-    <Button onClick={handleProgress} disabled={hasError}>
+    <Button onClick={handleProgress} disabled={hasError || isLoading}>
       {isLoading ? (
         <Flex sx={{ justifyContent: 'center' }}>
           <Spinner size={25} color="surface" />

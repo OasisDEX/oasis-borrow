@@ -2,14 +2,14 @@ import { BigNumber } from 'bignumber.js'
 import { ManageVaultView } from 'features/manageVault/ManageVaultView'
 import { one } from 'helpers/zero'
 
-import { ManageVaultStory } from './ManageVaultBuilder'
+import { manageVaultStory } from './ManageVaultBuilder'
 
-export const Default = ManageVaultStory({
+export const Default = manageVaultStory({
   title:
     'Default ManageVault Story. Vault is empty, user has a proxy address and is the vault controller.',
 })
 
-export const CollateralEditingStage = ManageVaultStory({
+export const CollateralEditingStage = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -21,18 +21,19 @@ export const CollateralEditingStage = ManageVaultStory({
   stage: 'collateralEditing',
 })
 
-export const DaiEditingStage = ManageVaultStory({
+export const DaiEditingStage = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
+  showDepositAndGenerateOption: true,
   balanceInfo: { collateralBalance: new BigNumber('200') },
   proxyAddress: '0xProxyAddress',
   stage: 'daiEditing',
 })
 
-export const ProxyWaitingForConfirmation = ManageVaultStory({
+export const ProxyWaitingForConfirmation = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -42,7 +43,7 @@ export const ProxyWaitingForConfirmation = ManageVaultStory({
   stage: 'proxyWaitingForConfirmation',
 })
 
-export const ProxyWaitingForApproval = ManageVaultStory({
+export const ProxyWaitingForApproval = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -52,7 +53,7 @@ export const ProxyWaitingForApproval = ManageVaultStory({
   stage: 'proxyWaitingForApproval',
 })
 
-export const ProxyFailure = ManageVaultStory({
+export const ProxyFailure = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -62,7 +63,7 @@ export const ProxyFailure = ManageVaultStory({
   stage: 'proxyFailure',
 })
 
-export const ProxyInProgress = ManageVaultStory({
+export const ProxyInProgress = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -72,7 +73,7 @@ export const ProxyInProgress = ManageVaultStory({
   stage: 'proxyInProgress',
 })
 
-export const ProxySuccess = ManageVaultStory({
+export const ProxySuccess = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -82,7 +83,7 @@ export const ProxySuccess = ManageVaultStory({
   stage: 'proxySuccess',
 })
 
-export const CollateralAllowanceWaitingForConfirmation = ManageVaultStory({
+export const CollateralAllowanceWaitingForConfirmation = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -93,7 +94,7 @@ export const CollateralAllowanceWaitingForConfirmation = ManageVaultStory({
   stage: 'collateralAllowanceWaitingForConfirmation',
 })
 
-export const CollateralAllowanceWaitingForApproval = ManageVaultStory({
+export const CollateralAllowanceWaitingForApproval = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -104,7 +105,7 @@ export const CollateralAllowanceWaitingForApproval = ManageVaultStory({
   stage: 'collateralAllowanceWaitingForApproval',
 })
 
-export const CollateralAllowanceFailure = ManageVaultStory({
+export const CollateralAllowanceFailure = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -115,7 +116,7 @@ export const CollateralAllowanceFailure = ManageVaultStory({
   stage: 'collateralAllowanceFailure',
 })
 
-export const CollateralAllowanceInProgress = ManageVaultStory({
+export const CollateralAllowanceInProgress = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -126,7 +127,7 @@ export const CollateralAllowanceInProgress = ManageVaultStory({
   stage: 'collateralAllowanceInProgress',
 })
 
-export const CollateralAllowanceSuccess = ManageVaultStory({
+export const CollateralAllowanceSuccess = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -137,7 +138,7 @@ export const CollateralAllowanceSuccess = ManageVaultStory({
   stage: 'collateralAllowanceSuccess',
 })
 
-export const DaiAllowanceWaitingForConfirmation = ManageVaultStory({
+export const DaiAllowanceWaitingForConfirmation = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -148,7 +149,7 @@ export const DaiAllowanceWaitingForConfirmation = ManageVaultStory({
   stage: 'daiAllowanceWaitingForConfirmation',
 })
 
-export const DaiAllowanceWaitingForApproval = ManageVaultStory({
+export const DaiAllowanceWaitingForApproval = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -159,7 +160,7 @@ export const DaiAllowanceWaitingForApproval = ManageVaultStory({
   stage: 'daiAllowanceWaitingForApproval',
 })
 
-export const DaiAllowanceFailure = ManageVaultStory({
+export const DaiAllowanceFailure = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -170,7 +171,7 @@ export const DaiAllowanceFailure = ManageVaultStory({
   stage: 'daiAllowanceFailure',
 })
 
-export const DaiAllowanceInProgress = ManageVaultStory({
+export const DaiAllowanceInProgress = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -181,7 +182,7 @@ export const DaiAllowanceInProgress = ManageVaultStory({
   stage: 'daiAllowanceInProgress',
 })
 
-export const DaiAllowanceSuccess = ManageVaultStory({
+export const DaiAllowanceSuccess = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -192,7 +193,7 @@ export const DaiAllowanceSuccess = ManageVaultStory({
   stage: 'daiAllowanceSuccess',
 })
 
-export const ManageWaitingForConfirmation = ManageVaultStory({
+export const ManageWaitingForConfirmation = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -203,7 +204,7 @@ export const ManageWaitingForConfirmation = ManageVaultStory({
   stage: 'manageWaitingForConfirmation',
 })
 
-export const ManageWaitingForApproval = ManageVaultStory({
+export const ManageWaitingForApproval = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -214,7 +215,7 @@ export const ManageWaitingForApproval = ManageVaultStory({
   stage: 'manageWaitingForApproval',
 })
 
-export const ManageFailure = ManageVaultStory({
+export const ManageFailure = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -225,7 +226,7 @@ export const ManageFailure = ManageVaultStory({
   stage: 'manageFailure',
 })
 
-export const ManageInProgress = ManageVaultStory({
+export const ManageInProgress = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
@@ -236,7 +237,7 @@ export const ManageInProgress = ManageVaultStory({
   stage: 'manageInProgress',
 })
 
-export const ManageSuccess = ManageVaultStory({
+export const ManageSuccess = manageVaultStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),

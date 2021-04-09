@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
-import {  Card, Flex, Grid, Label, Link, Radio, Spinner, Text } from 'theme-ui'
+import { Card, Flex, Grid, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 
@@ -15,10 +15,8 @@ export function ManageVaultCollateralAllowance({
   stage,
   collateralAllowanceTxHash,
   etherscan,
-  progress,
   token,
   collateralAllowanceAmount,
-  errorMessages,
   depositAmount,
   updateCollateralAllowanceAmount,
   setCollateralAllowanceAmountUnlimited,
@@ -30,30 +28,21 @@ export function ManageVaultCollateralAllowance({
     stage === 'collateralAllowanceWaitingForConfirmation' || stage === 'collateralAllowanceFailure'
 
   function handleUnlimited() {
-    if (canSelectRadio) {
-      setIsCustom(false)
-      setCollateralAllowanceAmountUnlimited!()
-    }
+    setIsCustom(false)
+    setCollateralAllowanceAmountUnlimited!()
   }
 
   function handleDeposit() {
-    if (canSelectRadio) {
-      setIsCustom(false)
-      setCollateralAllowanceAmountToDepositAmount!()
-    }
+    setIsCustom(false)
+    setCollateralAllowanceAmountToDepositAmount!()
   }
 
   function handleCustom() {
-    if (canSelectRadio) {
-      resetCollateralAllowanceAmount!()
-      setIsCustom(true)
-    }
+    resetCollateralAllowanceAmount!()
+    setIsCustom(true)
   }
 
   const { t } = useTranslation()
-  const errorString = errorMessages.join(',\n')
-
-  const hasError = !!errorString
 
   return (
     <Grid>
@@ -91,11 +80,6 @@ export function ManageVaultCollateralAllowance({
               <Text sx={{ fontSize: 1 }}>{token}</Text>
             </Grid>
           </Label>
-        </>
-      )}
-      {hasError && (
-        <>
-          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
         </>
       )}
 
