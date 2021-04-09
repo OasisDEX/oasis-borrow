@@ -60,14 +60,16 @@ export function MarketingLayout({ children, variant }: MarketingLayoutProps) {
   }
 
   return (
-    <BasicLayout
-      header={<MarketingHeader />}
-      footer={<Footer />}
-      variant={variant || 'marketingContainer'}
-    >
+    <>
       <Background />
-      {children}
-    </BasicLayout>
+      <BasicLayout
+        header={<MarketingHeader />}
+        footer={<Footer />}
+        variant={variant || 'marketingContainer'}
+      >
+        {children}
+      </BasicLayout>
+    </>
   )
 }
 
