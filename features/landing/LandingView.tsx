@@ -7,12 +7,13 @@ import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { IlksFilterState } from 'features/ilks/ilksFilters'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { Filters } from 'features/vaultsOverview/Filters'
-import { FeaturedIlks, FeaturedIlksPlaceholder } from 'features/vaultsOverview/VaultsOverviewView'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservableWithError } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Image, SxProps, Text } from 'theme-ui'
+
+import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
 
 const slideIn = keyframes({
   from: {
@@ -332,10 +333,10 @@ export function LandingView() {
           sx={
             landing !== undefined
               ? {
-                  ...fadeInAnimation,
-                  animationDirection: 'backwards',
-                  animationFillMode: 'backwards',
-                }
+                ...fadeInAnimation,
+                animationDirection: 'backwards',
+                animationFillMode: 'backwards',
+              }
               : {}
           }
         />

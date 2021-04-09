@@ -1,8 +1,8 @@
 import { Web3Context } from "@oasisdex/web3-context";
-import { filter, switchMap, map, startWith } from "rxjs/operators";
-import { Observable, of } from "rxjs";
-import { ContextConnected } from "blockchain/network";
 import BigNumber from "bignumber.js";
+import { ContextConnected } from "blockchain/network";
+import { Observable, of } from "rxjs";
+import { filter, map, startWith,switchMap } from "rxjs/operators";
 
 export function createAccountData(
     context$: Observable<Web3Context>,

@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { COIN_TAGS, CoinTag } from 'blockchain/tokensMetadata'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback } from 'react'
+import React, { memo, useCallback } from 'react'
 import ReactSelect from 'react-select'
 import { Box, Button, Flex, Input, SxStyleProp } from 'theme-ui'
 
@@ -14,7 +14,7 @@ interface FiltersProps {
   sx?: SxStyleProp
 }
 
-export function Filters({
+function Filters_({
   onSearch,
   search,
   onTagChange,
@@ -127,3 +127,5 @@ export function Filters({
     </Flex>
   )
 }
+
+export const Filters = memo(Filters_)

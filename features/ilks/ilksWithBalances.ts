@@ -2,8 +2,9 @@ import BigNumber from 'bignumber.js'
 import { IlkData, IlkDataList } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { TokenBalances } from 'blockchain/tokens'
+import isEqual from 'lodash/isEqual'
 import { combineLatest, Observable, of } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { map, switchMap, distinctUntilChanged, tap } from 'rxjs/operators'
 
 export interface IlkWithBalance extends IlkData {
   balance?: BigNumber
@@ -25,12 +26,14 @@ export function createIlkDataListWithBalances$(
       ilkData.map((ilk) =>
         ilk.token in balances
           ? {
-              ...ilk,
-              balance: balances[ilk.token].balance,
-              balancePriceInUsd: balances[ilk.token].balance.times(balances[ilk.token].price),
-            }
+            ...ilk,
+            balance: balances[ilk.token].balance,
+            balancePriceInUsd: balances[ilk.token].balance.times(balances[ilk.token].price),
+          }
           : ilk,
       ),
     ),
+    // distinctUntilChanged(isEqual),
+    tap(console.log),
   )
 }

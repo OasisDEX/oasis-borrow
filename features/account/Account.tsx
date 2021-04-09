@@ -1,8 +1,7 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
-import { ContextConnected } from 'blockchain/network'
-import { appContext, useAppContext } from 'components/AppContextProvider'
+import {  useAppContext } from 'components/AppContextProvider'
 import { ConnectWallet, getConnectionKindMessage } from 'components/connectWallet/ConnectWallet'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
@@ -14,7 +13,6 @@ import React, { useRef } from 'react'
 // @ts-ignore
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
 import { animated, useSpring } from 'react-spring'
-import { filter, switchMap, switchMapTo } from 'rxjs/operators'
 import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Flex, Grid, Heading, Text, Textarea } from 'theme-ui'
 

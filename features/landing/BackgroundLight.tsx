@@ -253,5 +253,3 @@ export function BackgroundLight() {
         </Box>
     )
 }
-
-

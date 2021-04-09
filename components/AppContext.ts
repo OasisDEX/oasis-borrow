@@ -38,9 +38,11 @@ import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
+import { createFeaturedIlks$ } from "features/landing/featuredIlksData"
 import { createLanding$ } from 'features/landing/landing'
 import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenVault$, defaultOpenVaultState } from 'features/openVault/openVault'
+import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultData'
 import { redirectState$ } from 'features/router/redirectState'
 import { createUserTokenInfo$ } from 'features/shared/userTokenInfo'
 import {
@@ -48,7 +50,7 @@ import {
   saveAcceptanceFromApi$,
 } from 'features/termsOfService/termsAcceptanceApi'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
-import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
+import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
@@ -269,7 +271,7 @@ export function setupAppContext() {
 
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
   const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(vaults$, ilksWithBalance$, featuredIlks$),
+    curry(createVaultsOverview$)(vaults$, ilksWithBalance$),
   )
   const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
 
@@ -287,6 +289,8 @@ export function setupAppContext() {
   )
 
   const accountData$ = createAccountData(web3Context$, balance$)
+
+  const openVaultOverview$ = createOpenVaultOverview$(ilksWithBalance$)
 
   return {
     web3Context$,
@@ -313,6 +317,7 @@ export function setupAppContext() {
     vaultHistory$,
     collateralPrices$,
     termsAcceptance$,
+    openVaultOverview$,
   }
 }
 
