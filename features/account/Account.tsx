@@ -116,7 +116,8 @@ export function ConnectModal({ close }: ModalProps) {
 }
 
 export function AccountModal({ close }: ModalProps) {
-  const { web3Context$ } = useAppContext()
+  const { web3Context$, accountData$ } = useAppContext()
+  const accountData = useObservable(accountData$)
   const web3Context = useObservable(web3Context$)
   const clipboardContentRef = useRef<HTMLTextAreaElement>(null)
   const { t } = useTranslation('common')
@@ -146,7 +147,7 @@ export function AccountModal({ close }: ModalProps) {
   const { account, connectionKind } = web3Context
 
   return (
-    <Modal>
+    <Modal sx={{ maxWidth: '530px', margin: '0px auto' }}>
       <ModalCloseIcon {...{ close }} />
       <Grid gap={2} pt={3} mt={1}>
         <Box
@@ -204,7 +205,7 @@ export function AccountModal({ close }: ModalProps) {
                   href="/owner/[address]"
                   as={`/owner/${account}`}
                 >
-                  {t('my-page')}
+                  {t('your-vaults')} {accountData?.numberOfVaults !== undefined && `(${accountData.numberOfVaults})`}
                 </AppLink>
                 <Button
                   variant="textual"

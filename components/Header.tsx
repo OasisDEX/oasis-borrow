@@ -72,7 +72,12 @@ export function AppHeader(_: { backLink?: AppLinkProps; CustomLogoWithBack?: () 
         {
           accountData?.context?.status === 'connected' &&
           <Flex sx={{ ml: 'auto', zIndex: 1 }}>
-            <AppLink variant="nav" sx={{ mr: 4 }} href={`/owner/${accountData.context.account}`}>{t('your-vaults')} {accountData.numberOfVaults !== undefined && `(${accountData.numberOfVaults})`}</AppLink>
+            <AppLink
+              variant="nav"
+              sx={{ mr: 4 }}
+              href={`/owner/${accountData.context.account}`}>
+              {t('your-vaults')} {accountData.numberOfVaults !== undefined && `(${accountData.numberOfVaults})`}
+            </AppLink>
             <AppLink variant="nav" sx={{ mr: 4 }} href="/vaults/list">{t('open-new-vault')}</AppLink>
           </Flex>
         }

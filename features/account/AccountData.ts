@@ -22,7 +22,7 @@ export function createAccountData(
                     filter((context): context is ContextConnected => context.status === 'connected'),
                     switchMap(context => vaults$(context.account)),
                     map(vaults => vaults.length),
-                    startWith<undefined | Number>(undefined)
+                    startWith<undefined | number>(undefined)
                 )
             ]).pipe(
                 map(([balance, numberOfVaults]) => ({
