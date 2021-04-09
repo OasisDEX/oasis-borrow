@@ -5,6 +5,7 @@ import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
+import { VaultOverviewOwnershipBanner, VaultOwnershipBanner } from 'features/banners/VaultsBannersView'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import {
   formatAddress,
@@ -423,10 +424,9 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
   const { vaults, vaultSummary, featuredIlks, ilksWithFilters } = vaultsOverview
   const { t } = useTranslation()
 
-  const readonlyAccount = context?.status === 'connectedReadonly' && (address as string)
+  const connectedAccount = context?.status === 'connected' ? context.account : undefined;
   const displayVaults =
     vaultSummary?.numberOfVaults !== undefined && vaultSummary?.numberOfVaults > 0
-  const displayFeaturedIlks = vaults?.data.length === 0 && vaults.filters.tagFilter === undefined
 
   const onVaultSearch = useCallback(
     (search: string) => {
@@ -458,11 +458,10 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
 
   return (
     <Grid sx={{ flex: 1, zIndex: 1 }}>
-      {readonlyAccount && (
-        <Card sx={{ width: 'max-content', p: 3, justifySelf: 'center', m: 3 }}>
-          {t('readonly-alert-message')} {formatAddress(readonlyAccount)}
-        </Card>
-      )}
+      {
+        connectedAccount && address !== connectedAccount &&
+        <VaultOverviewOwnershipBanner account={connectedAccount} controller={address} />
+      }
       <Heading variant="header2" sx={{ textAlign: 'center', my: 4 }} as="h1">
         {t('vaults-overview.header')}
       </Heading>

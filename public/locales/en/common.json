@@ -393,7 +393,9 @@
     "total-locked": "Total locked",
     "vaults": "Vaults",
     "vaults-at-risk": "Vaults at risk",
-    "your-vaults": "Your Vaults"
+    "your-vaults": "Your Vaults",
+    "banner-header": "You are viewing {{address}} Vaults overview",
+    "banner-content": "You can view your vaults"
   },
   "vault-banners": {
     "ownership": {

@@ -105,17 +105,15 @@ export function VaultLiquidatingBanner({
         ),
         [dateNextCollateralPrice!],
       )}
-      header={`${
-        isVaultController
-          ? t('vault-banners.liquidating.header1', headerTranslationOptions)
-          : t('vault-banners.liquidating.header2', headerTranslationOptions)
-      }`}
+      header={`${isVaultController
+        ? t('vault-banners.liquidating.header1', headerTranslationOptions)
+        : t('vault-banners.liquidating.header2', headerTranslationOptions)
+        }`}
       subheader={`
         ${t('vault-banners.liquidating.subheader1')}
-        ${
-          !isVaultController
-            ? t('vault-banners.liquidating.subheader2', { address: formatAddress(controller) })
-            : ''
+        ${!isVaultController
+          ? t('vault-banners.liquidating.subheader2', { address: formatAddress(controller) })
+          : ''
         }
       `}
       color="banner.warning"
@@ -157,6 +155,36 @@ export function VaultOwnershipBanner({
   )
 }
 
+export function VaultOverviewOwnershipBanner({
+  controller,
+  account,
+}: {
+  controller: string
+  account: string
+}) {
+  const { t } = useTranslation()
+
+  return (
+    <VaultBanner
+      status={
+        <StatusFrame>
+          <Icon size="auto" width="24" height="24" name="bannerWallet" />
+        </StatusFrame>
+      }
+      header={t('vaults-overview.banner-header', { address: formatAddress(controller) })}
+      subheader={
+        <Text>
+          {t('vaults-overview.banner-content')}{' '}
+          <AppLink href={`/owner/${account}`} target="_blank">
+            {t('here')}
+          </AppLink>
+        </Text>
+      }
+      color="banner.muted"
+    />
+  )
+}
+
 export function VaultLiquidatedBanner({
   unlockedCollateral,
   isVaultController,
@@ -177,12 +205,12 @@ export function VaultLiquidatedBanner({
     unlockedCollateral.gt(zero) &&
     (isVaultController
       ? `${t('vault-banners.liquidated.subheader1')} ${t('vault-banners.liquidated.subheader2', {
-          amount: formatCryptoBalance(unlockedCollateral),
-          collateral: token.toUpperCase(),
-        })}`
+        amount: formatCryptoBalance(unlockedCollateral),
+        collateral: token.toUpperCase(),
+      })}`
       : `${t('vault-banners.liquidated.subheader1')} ${t('vault-banners.liquidated.subheader3', {
-          address: formatAddress(controller),
-        })}`)
+        address: formatAddress(controller),
+      })}`)
 
   return (
     <VaultBanner
