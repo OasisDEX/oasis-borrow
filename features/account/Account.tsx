@@ -73,7 +73,15 @@ export function AccountButton() {
 
   if (accountData.context.status === 'connected') {
     return (
-      <Flex as={animated.div} style={animatedProps} sx={{ position: 'relative', justifyContent: 'flex-end', minWidth: 'auto', width: '100%' }}>
+      <Flex
+        as={animated.div}
+        style={animatedProps}
+        sx={{
+          position: 'relative',
+          justifyContent: 'flex-end',
+          minWidth: 'auto',
+          width: '100%',
+        }}>
         <Flex>
           <Button
             variant="secondary"
@@ -97,7 +105,7 @@ export function AccountButton() {
   }
 
   return (
-    <AppLink href="/connect" variant="nav">
+    <AppLink sx={{ zIndex: 1 }} href="/connect" variant="nav">
       {t('connect-wallet-button')}
     </AppLink>
   )
