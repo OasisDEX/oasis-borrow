@@ -458,7 +458,7 @@ function ManageVaultDaiAllowance({
   const hasError = !!errorString
   const buttonText =
     stage === 'daiAllowanceSuccess'
-      ? t('view-on-etherscan')
+      ? t('continue')
       : stage === 'daiAllowanceFailure'
       ? t('retry-allowance-approval')
       : stage === 'daiAllowanceWaitingForConfirmation'
