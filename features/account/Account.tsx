@@ -1,7 +1,7 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
-import {  useAppContext } from 'components/AppContextProvider'
+import { useAppContext } from 'components/AppContextProvider'
 import { ConnectWallet, getConnectionKindMessage } from 'components/connectWallet/ConnectWallet'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
@@ -71,16 +71,18 @@ export function AccountButton() {
 
   if (accountData.context.status === 'connected') {
     return (
-      <Flex
-        as={animated.div}
-        style={animatedProps}
-        sx={{
-          position: 'relative',
-          justifyContent: 'flex-end',
-          minWidth: 'auto',
-          width: '100%',
-        }}>
-        <Flex>
+      <Flex sx={{ alignItems: 'center', zIndex: 1 }}>
+        <AppLink variant="nav" sx={{ mr: 4, display: 'block' }} href={`/owner/${accountData.context.account}`}>Your Vaults</AppLink>
+        <AppLink variant="nav" sx={{ mr: 4, display: 'block' }} href="/vaults/list">Open new Vault</AppLink>
+        <Flex
+          as={animated.div}
+          style={animatedProps}
+          sx={{
+            position: 'relative',
+            justifyContent: 'flex-end',
+            minWidth: 'auto',
+            width: '100%',
+          }}>
           <Button
             variant="secondary"
             sx={{

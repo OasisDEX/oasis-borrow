@@ -4,7 +4,7 @@ import { Context } from 'blockchain/network'
 import { TokenBalances } from 'blockchain/tokens'
 import isEqual from 'lodash/isEqual'
 import { combineLatest, Observable, of } from 'rxjs'
-import { map, switchMap, distinctUntilChanged, tap } from 'rxjs/operators'
+import { map, switchMap, distinctUntilChanged, tap, shareReplay } from 'rxjs/operators'
 
 export interface IlkWithBalance extends IlkData {
   balance?: BigNumber
@@ -17,9 +17,10 @@ export function createIlkDataListWithBalances$(
   balances$: (address: string) => Observable<TokenBalances>,
 ): Observable<IlkWithBalance[]> {
   return context.pipe(
+    tap(console.log),
     switchMap((context) =>
       context.status === 'connected'
-        ? combineLatest(ilkDataList$, balances$(context.account))
+        ? combineLatest(ilkDataList$, balances$(context.account).pipe(distinctUntilChanged(isEqual)))
         : combineLatest(ilkDataList$, of({})),
     ),
     map(([ilkData, balances]) =>
@@ -33,7 +34,6 @@ export function createIlkDataListWithBalances$(
           : ilk,
       ),
     ),
-    // distinctUntilChanged(isEqual),
-    tap(console.log),
+    shareReplay(1),
   )
 }
