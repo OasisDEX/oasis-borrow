@@ -42,7 +42,7 @@ function Filters_({
   ]
 
   return (
-    <Flex sx={{ ...sx, flexDirection: ['column', 'column', 'row'] }}>
+    <Flex sx={{ ...sx, flexDirection: ['column', 'column', 'row'], mb: 2 }}>
       <Box
         sx={{
           display: ['none', 'flex', 'flex'],

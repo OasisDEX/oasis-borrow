@@ -104,6 +104,11 @@ interface Props {
     vaultsOverview: OpenVaultOverviewData
     context: Context
 }
+
+function getHeaderTranslationKey(isConnected, hasVaults) {
+    const HEADER_PATH = 'ilks-list.headers'
+    return 'ilks-list.headers.withVaults'
+}
 export function OpenVaultOverview({ vaultsOverview, context }: Props) {
     const { ilksWithFilters } = vaultsOverview
     const { t } = useTranslation()
@@ -122,9 +127,18 @@ export function OpenVaultOverview({ vaultsOverview, context }: Props) {
         [ilksWithFilters.filters],
     )
 
+    const connectedAccount = context.status === 'connected' ? context.account : undefined;
+
+    const headerTranslationKey = getHeaderTranslationKey(true, true)
+
     return (
         <Grid sx={{ flex: 1, zIndex: 1 }}>
-            <Heading>Vaults</Heading>
+            <Heading variant="header2" sx={{ textAlign: 'center', my: 5 }} as="h1">
+                <Trans
+                    i18nKey={headerTranslationKey}
+                    components={[<br />]}
+                />
+            </Heading>
             <Filters
                 onSearch={onIlkSearch}
                 search={ilksWithFilters.filters.search}

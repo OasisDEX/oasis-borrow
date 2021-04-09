@@ -241,7 +241,6 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
         <Trans
           i18nKey={headerTranslationKey}
           components={[<br />]}
-          values={{ address: formatAddress(address) }}
         />
       </Heading>
       <Summary

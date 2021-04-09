@@ -386,14 +386,19 @@
     "ilk-does-not-exist": "Ilk {{ilk}} does not exist",
     "next-price": "Next {{token}}/USD price: {{amount}}"
   },
+  "ilks-list": {
+    "headers": {
+      "withVaults": "Select a collateral type below to create your first Maker Vault,<0/> and generate DAI",
+      "noVaults": "Open a new Maker Vault.<0/> Generate DAI"
+    }
+  },
   "vaults-overview": {
     "headers": {
-      "connected-owner-withVaults": "Your Maker Vault overview",
-      "connected-viewer-withVaults": "Maker Vault overview of {{address}}",
+      "connected-owner-withVaults": "Your Maker Vaults overview",
+      "connected-viewer-withVaults": "Maker Vaults overview of {{address}}",
       "notConnected-noVaults": "{{address}} currently has no Maker Vaults.<0/> Is this yours? Connect your wallet and open a vault.",
-      "notConnected-withVaults": "Maker Vault overview of {{address}}.<0/> Is this yours? Connect your wallet."
+      "notConnected-withVaults": "Maker Vaults overview of {{address}}.<0/> Is this yours? Connect your wallet."
     },
-    "header": "Your Vaults",
     "number-of-vaults": "No. of Vaults",
     "total-debt": "Total debt",
     "total-locked": "Total locked",
