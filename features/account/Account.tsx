@@ -65,40 +65,38 @@ export function AccountButton() {
     top: accountData?.daiBalance === undefined ? -100 : 0
   })
 
+  console.log({ accountData })
+
   if (accountData?.context.status === 'connecting' || accountData === undefined) {
     return null
   }
 
   if (accountData.context.status === 'connected') {
     return (
-      <Flex sx={{ alignItems: 'center', zIndex: 1 }}>
-        <AppLink variant="nav" sx={{ mr: 4, display: 'block' }} href={`/owner/${accountData.context.account}`}>Your Vaults</AppLink>
-        <AppLink variant="nav" sx={{ mr: 4, display: 'block' }} href="/vaults/list">Open new Vault</AppLink>
-        <Flex
-          as={animated.div}
-          style={animatedProps}
+      <Flex
+        as={animated.div}
+        style={animatedProps}
+        sx={{
+          position: 'relative',
+          justifyContent: 'flex-end',
+          minWidth: 'auto',
+        }}>
+        <Button
+          variant="secondary"
           sx={{
-            position: 'relative',
-            justifyContent: 'flex-end',
-            minWidth: 'auto',
-          }}>
-          <Button
-            variant="secondary"
-            sx={{
-              minWidth: buttonMinWidth,
-              zIndex: 1,
-              background: 'white',
-              boxShadow: 'surface',
-              p: 1,
-              display: 'flex',
-              alignItems: 'center'
-            }}
-            onClick={() => openModal(AccountModal)}
-          >
-            <AccountIndicator address={accountData.context.account} />
-            <DaiIndicator daiBalance={accountData.daiBalance} />
-          </Button>
-        </Flex>
+            minWidth: buttonMinWidth,
+            zIndex: 1,
+            background: 'white',
+            boxShadow: 'surface',
+            p: 1,
+            display: 'flex',
+            alignItems: 'center'
+          }}
+          onClick={() => openModal(AccountModal)}
+        >
+          <AccountIndicator address={accountData.context.account} />
+          <DaiIndicator daiBalance={accountData.daiBalance} />
+        </Button>
       </Flex>
     )
   }

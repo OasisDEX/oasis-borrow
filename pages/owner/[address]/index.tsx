@@ -15,6 +15,8 @@ function Summary({ address }: { address: string }) {
   const vaultsOverview = useObservable(vaultsOverview$(address))
   const context = useObservable(context$)
 
+  console.log(address, vaultsOverview)
+
   if (vaultsOverview === undefined || context === undefined) {
     return null
   }
@@ -36,7 +38,7 @@ export default function VaultsSummary({ address }: { address: string }) {
     <WithConnection>
       <WithTermsOfService>
         <BackgroundLight />
-        <Summary {...{ address }} />
+        <Summary address={address} />
       </WithTermsOfService>
     </WithConnection>
   ) : null

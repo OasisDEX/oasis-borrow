@@ -2,11 +2,13 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink, AppLinkProps } from 'components/Links'
 import { AccountButton } from 'features/account/Account'
+import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { TRANSITIONS } from 'theme'
-import { Box, Container, Text } from 'theme-ui'
+import { Box, Container, Flex, Text } from 'theme-ui'
+import { useAppContext } from './AppContextProvider'
 
 function Logo() {
   return (
@@ -60,10 +62,19 @@ export function BackArrow() {
 }
 
 export function AppHeader(_: { backLink?: AppLinkProps; CustomLogoWithBack?: () => JSX.Element }) {
+  const { accountData$ } = useAppContext()
+  const accountData = useObservable(accountData$)
   return (
     <BasicHeader variant="appContainer">
       <>
         <Logo />
+        {
+          accountData?.context?.status === 'connected' &&
+          <Flex sx={{ ml: 'auto', zIndex: 1 }}>
+            <AppLink variant="nav" sx={{ mr: 4, display: 'block' }} href={`/owner/${accountData.context.account}`}>Your Vaults</AppLink>
+            <AppLink variant="nav" sx={{ mr: 4, display: 'block' }} href="/vaults/list">Open new Vault</AppLink>
+          </Flex>
+        }
         <AccountButton />
       </>
     </BasicHeader>
