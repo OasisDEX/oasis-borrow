@@ -62,7 +62,7 @@ export function AccountButton() {
   const { t } = useTranslation('common')
   const openModal = useModal()
   const animatedProps = useSpring({
-    top: accountData?.daiBalance === undefined ? -100 : 0
+    top: accountData === undefined ? -100 : 0
   })
 
   console.log({ accountData })

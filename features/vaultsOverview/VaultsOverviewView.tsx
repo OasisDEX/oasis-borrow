@@ -7,11 +7,12 @@ import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { VaultOverviewOwnershipBanner } from 'features/banners/VaultsBannersView'
 import {
+  formatAddress,
   formatCryptoBalance,
   formatFiatBalance,
   formatPercent,
 } from 'helpers/formatters/format'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
@@ -191,13 +192,22 @@ interface Props {
   context: Context
   address: string
 }
+
+function getHeaderTranslationKey(connectedAccount: string | undefined, address: string, numberOfVaults: number) {
+  const HEADERS_PATH = "vaults-overview.headers"
+  if (connectedAccount === undefined) {
+    return numberOfVaults === 0 ? `${HEADERS_PATH}.notConnected-noVaults` : `${HEADERS_PATH}.notConnected-withVaults`
+  }
+
+  if (address === connectedAccount) {
+    return numberOfVaults === 0 ? `${HEADERS_PATH}.connected-owner-noVaults` : `${HEADERS_PATH}.connected-owner-withVaults`
+  }
+
+  return numberOfVaults === 0 ? `${HEADERS_PATH}.connected-viewer-noVaults` : `${HEADERS_PATH}.connected-viewer-withVaults`
+}
 export function VaultsOverviewView({ vaultsOverview, context, address }: Props) {
   const { vaults, vaultSummary } = vaultsOverview
   const { t } = useTranslation()
-
-  const connectedAccount = context?.status === 'connected' ? context.account : undefined;
-  const displayVaults =
-    vaultSummary?.numberOfVaults !== undefined && vaultSummary?.numberOfVaults > 0
 
   const onVaultSearch = useCallback(
     (search: string) => {
@@ -211,8 +221,15 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
     (tagFilter: CoinTag | undefined) => {
       vaults.filters.change({ kind: 'tagFilter', tagFilter })
     },
-    [vaults.filters],
-  )
+    [vaults.filters])
+
+  if (vaultSummary === undefined) {
+    return null
+  }
+
+  const connectedAccount = context?.status === 'connected' ? context.account : undefined;
+
+  const headerTranslationKey = getHeaderTranslationKey(connectedAccount, address, vaultSummary.numberOfVaults)
 
   return (
     <Grid sx={{ flex: 1, zIndex: 1 }}>
@@ -220,24 +237,24 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
         connectedAccount && address !== connectedAccount &&
         <VaultOverviewOwnershipBanner account={connectedAccount} controller={address} />
       }
-      <Heading variant="header2" sx={{ textAlign: 'center', my: 4 }} as="h1">
-        {t('vaults-overview.header')}
+      <Heading variant="header2" sx={{ textAlign: 'center', my: 5 }} as="h1">
+        <Trans
+          i18nKey={headerTranslationKey}
+          components={[<br />]}
+          values={{ address: formatAddress(address) }}
+        />
       </Heading>
-      {displayVaults && vaultSummary && (
-        <>
-          <Summary
-            summary={vaultSummary}
-          />
-          <Filters
-            onSearch={onVaultSearch}
-            search={vaults.filters.search}
-            onTagChange={onVaultsTagChange}
-            tagFilter={vaults.filters.tagFilter}
-            defaultTag="your-vaults"
-          />
-          <VaultsTable vaults={vaults} />
-        </>
-      )}
+      <Summary
+        summary={vaultSummary}
+      />
+      <Filters
+        onSearch={onVaultSearch}
+        search={vaults.filters.search}
+        onTagChange={onVaultsTagChange}
+        tagFilter={vaults.filters.tagFilter}
+        defaultTag="your-vaults"
+      />
+      <VaultsTable vaults={vaults} />
     </Grid>
   )
 }
