@@ -81,7 +81,6 @@ export function AccountButton() {
             position: 'relative',
             justifyContent: 'flex-end',
             minWidth: 'auto',
-            width: '100%',
           }}>
           <Button
             variant="secondary"
