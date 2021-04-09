@@ -65,8 +65,6 @@ export function AccountButton() {
     top: accountData === undefined ? -100 : 0
   })
 
-  console.log({ accountData })
-
   if (accountData?.context.status === 'connecting' || accountData === undefined) {
     return null
   }

@@ -288,7 +288,7 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  const accountData$ = createAccountData(web3Context$, balance$)
+  const accountData$ = createAccountData(web3Context$, balance$, vaults$)
 
   const openVaultOverview$ = createOpenVaultOverview$(ilksWithBalance$)
 

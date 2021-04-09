@@ -455,5 +455,6 @@
   "withdraw": "Withdraw",
   "withdrawn": "Withdrawn",
   "you-are-sending": "You are sending",
-  "your-vaults": "Your Vaults"
+  "your-vaults": "Your Vaults",
+  "open-new-vault": "Open new Vault"
 }
