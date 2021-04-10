@@ -268,7 +268,15 @@ export function manageVaultDepositAndGenerate(
 export function manageVaultWithdrawAndPayback(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageVaultChange) => void,
-  { withdrawAmount, paybackAmount, proxyAddress, ilk, token, id }: ManageVaultState,
+  {
+    withdrawAmount,
+    paybackAmount,
+    proxyAddress,
+    ilk,
+    token,
+    id,
+    shouldPaybackAll,
+  }: ManageVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -282,6 +290,7 @@ export function manageVaultWithdrawAndPayback(
           ilk,
           token,
           id,
+          shouldPaybackAll,
         }).pipe(
           transactionToX<ManageVaultChange, WithdrawAndPaybackData>(
             { kind: 'manageWaitingForApproval' },

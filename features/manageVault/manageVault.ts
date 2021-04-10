@@ -132,7 +132,8 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     (
       daiBalance.gte(debt) &&
       paybackAmount &&
-      paybackAmount.plus(PAYBACK_ALL_BOUND).gte(roundedDebt)
+      paybackAmount.plus(PAYBACK_ALL_BOUND).gte(roundedDebt) &&
+      !paybackAmount.gt(roundedDebt)
     )
   )
 
