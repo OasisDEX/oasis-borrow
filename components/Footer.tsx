@@ -15,15 +15,11 @@ const {
 
 const FOOTER_LINKS = [
   { labelKey: 'landing.footer.trade', url: 'https://oasis.app/trade', target: '_self' },
-  { labelKey: 'landing.footer.borrow', url: 'https://oasis.app/borrow', target: '_self' },
-  {
-    labelKey: 'landing.footer.privacy',
-    url: '/privacy',
-  },
+  { labelKey: 'landing.footer.privacy', url: '/privacy' },
   { labelKey: 'landing.footer.terms', url: '/terms' },
   { labelKey: 'landing.footer.blog', url: 'https://blog.oasis.app' },
   { labelKey: 'landing.footer.faq', url: '/support' },
-  { labelKey: 'landing.footer.contact', url: '/contact' },
+  { labelKey: 'landing.footer.contact', url: 'https://oasis.app/contact', target: '_self' },
 ]
 
 function LanguageSelect() {
@@ -88,9 +84,9 @@ function LanguageSelect() {
           <Box
             {...innerProps}
             sx={{
-              display: 'inline-flex',
               cursor: 'pointer',
               variant: 'links.nav',
+              display: 'inline-flex',
               justifyContent: 'space-between',
               alignItems: 'center',
             }}
@@ -133,9 +129,8 @@ export function Footer() {
 
   return (
     <Box as="footer">
-      <Container sx={{ maxWidth: '898px', mb: 5, pt: 2 }}>
-        <Grid
-          columns={[3, 3, 4]}
+      <Container sx={{ maxWidth: '761px', mb: 5, pt: 2 }}>
+        <Flex
           as="ul"
           sx={{ pl: 0, justifyContent: 'space-between', textAlign: 'center', alignItems: 'center' }}
         >
@@ -147,7 +142,7 @@ export function Footer() {
             </Box>
           ))}
           <LanguageSelect />
-        </Grid>
+        </Flex>
       </Container>
       <TemporaryFooter />
     </Box>

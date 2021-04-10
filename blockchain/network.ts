@@ -139,7 +139,7 @@ export const protoWeb3Context: Web3Context = {
 }
 
 export const protoContextConnected: ContextConnected = {
-  contract: () => null as any,
+  contract: <T>(c: ContractDesc) => contract(new Web3(), c) as T,
   web3ProviderGetPastLogs: {} as Web3,
   ...networksById['42'],
   ...protoWeb3Context,

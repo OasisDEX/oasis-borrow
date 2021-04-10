@@ -74,7 +74,7 @@ export function createVaultsBanners$(
             liquidationPrice,
             controller,
             unlockedCollateral,
-            hasBeenLiquidated: auctionsStarted.length > 1,
+            hasBeenLiquidated: auctionsStarted.length > 0,
           }
 
           if (context.status !== 'connected') {

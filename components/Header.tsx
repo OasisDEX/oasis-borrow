@@ -16,9 +16,6 @@ function Logo() {
       sx={{ color: 'primary', fontWeight: 'semiBold', fontSize: 5, cursor: 'pointer' }}
     >
       <Text sx={{ display: 'inline', mr: 2 }}>Oasis</Text>
-      <Text sx={{ display: 'inline', fontSize: 1, textTransform: 'uppercase', fontWeight: 500 }}>
-        Borrow
-      </Text>
     </AppLink>
   )
 }

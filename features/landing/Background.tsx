@@ -1,5 +1,15 @@
+import { keyframes } from '@emotion/core'
 import React from 'react'
 import { Box } from 'theme-ui'
+
+const fadeOut = keyframes({
+  from: {
+    opacity: 1,
+  },
+  to: {
+    opacity: 0,
+  },
+})
 
 export function Background() {
   return (
@@ -10,6 +20,21 @@ export function Background() {
         top: '-200px',
         userSelect: 'none',
         pointerEvents: 'none',
+        '&::after': {
+          opacity: 1,
+          content: '""',
+          background: 'white',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          animation: fadeOut,
+          animationDuration: '0.4s',
+          animationDelay: '0.1s',
+          animationTimingFunction: 'ease-out',
+          animationFillMode: 'forwards',
+        },
       }}
     >
       <svg
@@ -29,18 +54,21 @@ export function Background() {
         <circle cx="979.001" cy="603.783" r="379" fill="url(#paint3_radial)"></circle>
         <g style={{ mixBlendMode: 'overlay' }} filter="url(#filter2_b)" opacity="0.3">
           <path
+            className="layerTop"
             fill="url(#paint4_linear)"
             d="M1882 557.283c0 195.785-614 530.497-873 354.499-259-176-873-158.714-873-354.499 0-195.785 425-588.5 873-354.5 362 294 873 158.715 873 354.5z"
           ></path>
         </g>
         <g style={{ mixBlendMode: 'overlay' }} filter="url(#filter3_b)" opacity="0.3">
           <path
+            className="layerMiddle"
             fill="url(#paint5_linear)"
             d="M1641 612.783c0 195.694-105.19 119.921-386.59 149.907C760.813 815.289 26.996 636.749 54.766 303.404c0-195.695 368.411-266.377 768.293-54.475C1204.43 546.791 1641 417.089 1641 612.783z"
           ></path>
         </g>
         <g style={{ mixBlendMode: 'overlay' }} filter="url(#filter4_b)" opacity="0.3">
           <path
+            className="layerBottom"
             fill="url(#paint6_linear)"
             d="M214.428 402.902C56.491 218.35-80.869-16.385 57.428.902c231.148 28.893 288 352 553 338 171.167-9.043 550.432 9.149 885.002 135.881 132 50 229.91 108 197.57 226s-615-77.881-803-23c-209.013 61.015-561-141-675.572-274.881z"
           ></path>
