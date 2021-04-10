@@ -5,6 +5,7 @@ import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
 import { amountToWei } from 'blockchain/utils'
 import { zero } from 'helpers/zero'
+import { UnreachableCaseError } from 'ts-essentials'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import Web3 from 'web3'
@@ -22,7 +23,10 @@ export type WithdrawAndPaybackData = {
   shouldPaybackAll: boolean
 }
 
-function getWithdrawAndPaybackCallData(data: WithdrawAndPaybackData, context: ContextConnected) {
+export function getWithdrawAndPaybackCallData(
+  data: WithdrawAndPaybackData,
+  context: ContextConnected,
+) {
   const { dssProxyActions, dssCdpManager, mcdJoinDai, joins, contract } = context
   const { id, token, withdrawAmount, paybackAmount, ilk, shouldPaybackAll } = data
 
@@ -85,20 +89,24 @@ function getWithdrawAndPaybackCallData(data: WithdrawAndPaybackData, context: Co
     )
   }
 
-  if (shouldPaybackAll) {
-    return contract<DssProxyActions>(dssProxyActions).methods.wipeAll(
+  if (paybackAmount.gt(zero)) {
+    if (shouldPaybackAll) {
+      return contract<DssProxyActions>(dssProxyActions).methods.wipeAll(
+        dssCdpManager.address,
+        mcdJoinDai.address,
+        id.toString(),
+      )
+    }
+
+    return contract<DssProxyActions>(dssProxyActions).methods.wipe(
       dssCdpManager.address,
       mcdJoinDai.address,
       id.toString(),
+      amountToWei(paybackAmount, 'DAI').toFixed(0),
     )
   }
 
-  return contract<DssProxyActions>(dssProxyActions).methods.wipe(
-    dssCdpManager.address,
-    mcdJoinDai.address,
-    id.toString(),
-    amountToWei(paybackAmount, 'DAI').toFixed(0),
-  )
+  throw new Error('Could not make correct proxyActions call')
 }
 
 export const withdrawAndPayback: TransactionDef<WithdrawAndPaybackData> = {
