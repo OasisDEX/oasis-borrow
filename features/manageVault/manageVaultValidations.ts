@@ -8,13 +8,18 @@ export type ManageVaultErrorMessage =
   | 'paybackAmountEmpty'
   | 'depositAndWithdrawAmountsEmpty'
   | 'generateAndPaybackAmountsEmpty'
-  | 'depositAmountGreaterThanMaxDepositAmount'
-  | 'withdrawAmountGreaterThanMaxWithdrawAmount'
-  | 'generateAmountGreaterThanMaxGenerateAmount'
-  | 'paybackAmountGreaterThanMaxPaybackAmount'
+  | 'depositAmountExceedsCollateralBalance'
+  | 'withdrawAmountExceedsFreeCollateral'
+  | 'generateAmountExceedsDebtCeiling'
+  | 'generateAmountExceedsMaxDaiThatCanBeGenerated'
   | 'generateAmountLessThanDebtFloor'
-  | 'generateAmountGreaterThanDebtCeiling'
-  | 'paybackAmountLessThanDebtFloor'
+  | 'paybackAmountExceedsDaiBalance'
+  | 'paybackAmountExceedsVaultDebt'
+  | 'paybackAmountCausesVaultDebtToBeLessThanDebtFloor'
+
+  // | 'depositAmountGreaterThanMaxDepositAmount'
+  // | 'generateAmountGreaterThanMaxGenerateAmount'
+  // | 'paybackAmountGreaterThanMaxPaybackAmount'
   | 'vaultWillBeUnderCollateralizedAtNextPrice'
   | 'vaultWillBeUnderCollateralized'
   | 'collateralAllowanceAmountEmpty'
@@ -23,24 +28,6 @@ export type ManageVaultErrorMessage =
   | 'daiAllowanceAmountEmpty'
   | 'customDaiAllowanceAmountGreaterThanMaxUint256'
   | 'customDaiAllowanceAmountLessThanPaybackAmount'
-
-export type ManageVaultWarningMessage =
-  | 'potentialGenerateAmountLessThanDebtFloor'
-  | 'debtIsLessThanDebtFloor'
-  | 'noProxyAddress'
-  | 'noCollateralAllowance'
-  | 'noDaiAllowance'
-  | 'collateralAllowanceLessThanDepositAmount'
-  | 'daiAllowanceLessThanPaybackAmount'
-  | 'connectedAccountIsNotVaultController'
-  | 'vaultAtRiskLevelDanger'
-  | 'vaultAtRiskLevelWarning'
-  | 'vaultWillBeAtRiskLevelDanger'
-  | 'vaultWillBeAtRiskLevelWarning'
-  | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
-  | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
-  | 'vaultUnderCollateralized'
-  | 'payingBackAllOutstandingDebt'
 
 export function validateErrors(state: ManageVaultState): ManageVaultState {
   const {
@@ -62,6 +49,11 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     daiAllowanceAmount,
     accountIsController,
     shouldPaybackAll,
+    collateralBalance,
+    freeCollateral,
+    daiYieldFromTotalCollateral,
+    daiBalance,
+    roundedDebt,
   } = state
 
   const errorMessages: ManageVaultErrorMessage[] = []
@@ -100,31 +92,32 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     errorMessages.push('paybackAmountEmpty')
   }
 
-  if (depositAmount?.gt(maxDepositAmount)) {
-    // maxDepositAmount currently means just the users collateral balance but
-    // could in the future account for gas less the deposit amount
-    errorMessages.push('depositAmountGreaterThanMaxDepositAmount')
+  if (depositAmount?.gt(collateralBalance)) {
+    errorMessages.push('depositAmountExceedsCollateralBalance')
   }
 
-  if (withdrawAmount?.gt(maxWithdrawAmount)) {
-    errorMessages.push('withdrawAmountGreaterThanMaxWithdrawAmount')
+  if (withdrawAmount?.gt(freeCollateral)) {
+    errorMessages.push('withdrawAmountExceedsFreeCollateral')
   }
 
-  // break down the different categories of errors
-  if (generateAmount?.gt(maxGenerateAmount)) {
-    errorMessages.push('generateAmountGreaterThanMaxGenerateAmount')
+  if (generateAmount?.gt(ilkDebtAvailable)) {
+    errorMessages.push('generateAmountExceedsDebtCeiling')
+  }
+
+  if (generateAmount?.gt(daiYieldFromTotalCollateral)) {
+    errorMessages.push('generateAmountExceedsMaxDaiThatCanBeGenerated')
   }
 
   if (generateAmount?.plus(debt).lt(debtFloor)) {
     errorMessages.push('generateAmountLessThanDebtFloor')
   }
 
-  if (generateAmount?.gt(ilkDebtAvailable)) {
-    errorMessages.push('generateAmountGreaterThanDebtCeiling')
+  if (paybackAmount?.gt(daiBalance)) {
+    errorMessages.push('paybackAmountExceedsDaiBalance')
   }
 
-  if (paybackAmount?.gt(maxPaybackAmount) && !shouldPaybackAll) {
-    errorMessages.push('paybackAmountGreaterThanMaxPaybackAmount')
+  if (paybackAmount?.gt(roundedDebt)) {
+    errorMessages.push('paybackAmountExceedsVaultDebt')
   }
 
   if (
@@ -133,7 +126,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     debt.minus(paybackAmount).gt(zero) &&
     !shouldPaybackAll
   ) {
-    errorMessages.push('paybackAmountLessThanDebtFloor')
+    errorMessages.push('paybackAmountCausesVaultDebtToBeLessThanDebtFloor')
   }
 
   if (
@@ -172,6 +165,24 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
 
   return { ...state, errorMessages }
 }
+
+export type ManageVaultWarningMessage =
+  | 'potentialGenerateAmountLessThanDebtFloor'
+  | 'debtIsLessThanDebtFloor'
+  | 'noProxyAddress'
+  | 'noCollateralAllowance'
+  | 'noDaiAllowance'
+  | 'collateralAllowanceLessThanDepositAmount'
+  | 'daiAllowanceLessThanPaybackAmount'
+  | 'connectedAccountIsNotVaultController'
+  | 'vaultAtRiskLevelDanger'
+  | 'vaultAtRiskLevelWarning'
+  | 'vaultWillBeAtRiskLevelDanger'
+  | 'vaultWillBeAtRiskLevelWarning'
+  | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
+  | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
+  | 'vaultUnderCollateralized'
+  | 'payingBackAllOutstandingDebt'
 
 export function validateWarnings(state: ManageVaultState): ManageVaultState {
   const {

@@ -1,7 +1,7 @@
 import { nullAddress } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
-import { protoETHAIlkData, protoUSDCAIlkData, protoWBTCAIlkData } from 'blockchain/ilks'
+import { IlkData, protoETHAIlkData, protoUSDCAIlkData, protoWBTCAIlkData } from 'blockchain/ilks'
 import { ContextConnected, protoContextConnected } from 'blockchain/network'
 import { createVault$, Vault } from 'blockchain/vaults'
 import { AppContext, bigNumberTostring, protoTxHelpers } from 'components/AppContext'
@@ -33,6 +33,7 @@ type ManageVaultStory = Partial<ManageVaultState> & {
   context?: ContextConnected
   allowance?: BigNumber
   vault?: Partial<Vault>
+  ilkData?: Partial<IlkData>
   priceInfo?: Partial<PriceInfo>
   balanceInfo?: Partial<BalanceInfo>
   urnAddress?: string
@@ -55,6 +56,7 @@ export function manageVaultStory({
   allowance,
   priceInfo,
   balanceInfo,
+  ilkData,
   urnAddress,
   owner,
   unlockedCollateral,
@@ -80,8 +82,14 @@ export function manageVaultStory({
       ...(priceInfo || {}),
     }
 
-    const protoIlkData =
-      ilk === 'ETH-A' ? protoETHAIlkData : ilk === 'WBTC-A' ? protoWBTCAIlkData : protoUSDCAIlkData
+    const protoIlkData = {
+      ...(ilk === 'ETH-A'
+        ? protoETHAIlkData
+        : ilk === 'WBTC-A'
+        ? protoWBTCAIlkData
+        : protoUSDCAIlkData),
+      ...ilkData,
+    }
 
     const protoBalanceInfo: BalanceInfo = {
       collateralBalance: zero,

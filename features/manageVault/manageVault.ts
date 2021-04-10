@@ -117,17 +117,17 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
   const maxWithdrawAmount = freeCollateral
   const maxWithdrawAmountUSD = freeCollateral.times(currentCollateralPrice)
 
-  const maxDaiThatCanBeGeneratedFromTotalCollateral = lockedCollateral
+  const daiYieldFromTotalCollateral = lockedCollateral
     .plus(depositAmount || zero)
     .times(maxDebtPerUnitCollateral)
     .minus(debt)
 
-  const maxGenerateAmount = maxDaiThatCanBeGeneratedFromTotalCollateral.gt(ilkDebtAvailable)
+  const maxGenerateAmount = daiYieldFromTotalCollateral.gt(ilkDebtAvailable)
     ? ilkDebtAvailable
-    : maxDaiThatCanBeGeneratedFromTotalCollateral
+    : daiYieldFromTotalCollateral
 
-  // NOTE Important
-  const roundedDebt = debt.dp(6, BigNumber.ROUND_HALF_UP)
+  // NOTE Move this to vault$
+  const roundedDebt = debt.decimalPlaces(6, BigNumber.ROUND_HALF_UP)
 
   const maxPaybackAmount = daiBalance.lt(roundedDebt) ? daiBalance : roundedDebt
 
@@ -177,6 +177,8 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     collateralizationDangerThreshold,
     collateralizationWarningThreshold,
     shouldPaybackAll,
+    daiYieldFromTotalCollateral,
+    roundedDebt,
   }
 }
 
@@ -275,6 +277,7 @@ export type DefaultManageVaultState = {
   maxWithdrawAmount: BigNumber
   maxWithdrawAmountUSD: BigNumber
 
+  daiYieldFromTotalCollateral: BigNumber
   generateAmount?: BigNumber
   maxGenerateAmount: BigNumber
 
@@ -319,6 +322,7 @@ export type DefaultManageVaultState = {
   lockedCollateral: BigNumber
   lockedCollateralUSD: BigNumber
   debt: BigNumber
+  roundedDebt: BigNumber
   liquidationPrice: BigNumber
   collateralizationRatio: BigNumber
   freeCollateral: BigNumber
@@ -495,6 +499,8 @@ export const defaultPartialManageVaultState = {
   collateralAllowanceAmount: maxUint256,
   daiAllowanceAmount: maxUint256,
   shouldPaybackAll: false,
+  daiYieldFromTotalCollateral: zero,
+  roundedDebt: zero,
 }
 
 export function createManageVault$(
