@@ -59,7 +59,6 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     stage,
     collateralAllowanceAmount,
     daiAllowanceAmount,
-    collateralizationRatio,
     accountIsController,
   } = state
 

@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import {  Card, Flex, Grid, Link, Spinner, Text } from 'theme-ui'
+import { Card, Flex, Grid, Link, Spinner, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 

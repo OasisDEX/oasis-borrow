@@ -65,15 +65,7 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
 }
 
 export function validateWarnings(state: OpenVaultState): OpenVaultState {
-  const {
-    allowance,
-    depositAmount,
-    generateAmount,
-    depositAmountUSD,
-    debtFloor,
-    proxyAddress,
-    token,
-  } = state
+  const { allowance, depositAmount, depositAmountUSD, debtFloor, proxyAddress, token } = state
 
   const warningMessages: OpenVaultWarningMessage[] = []
 
@@ -83,14 +75,6 @@ export function validateWarnings(state: OpenVaultState): OpenVaultState {
 
   if (!proxyAddress) {
     warningMessages.push('noProxyAddress')
-  }
-
-  if (!depositAmount) {
-    warningMessages.push('depositAmountEmpty')
-  }
-
-  if (!generateAmount) {
-    warningMessages.push('generateAmountEmpty')
   }
 
   if (token !== 'ETH') {

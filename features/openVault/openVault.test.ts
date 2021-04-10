@@ -88,20 +88,6 @@ describe('openVault', () => {
       })
       expect(warningMessages).to.deep.equal(['noProxyAddress'])
     })
-    it('Should show depositAmountEmpty warning', () => {
-      const { warningMessages } = validateWarnings({
-        ...openVaultState,
-        depositAmount: undefined,
-      })
-      expect(warningMessages).to.deep.equal(['depositAmountEmpty'])
-    })
-    it('Should show generateAmountEmpty warning', () => {
-      const { warningMessages } = validateWarnings({
-        ...openVaultState,
-        generateAmount: undefined,
-      })
-      expect(warningMessages).to.deep.equal(['generateAmountEmpty'])
-    })
 
     it('Should show potentialGenerateAmountLessThanDebtFloor warning when debtFloor is slightly higher that depositAmountUSD', () => {
       const { warningMessages } = validateWarnings({
