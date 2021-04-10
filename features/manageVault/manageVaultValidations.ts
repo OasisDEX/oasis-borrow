@@ -17,7 +17,6 @@ export type ManageVaultErrorMessage =
   | 'paybackAmountLessThanDebtFloor'
   | 'vaultWillBeUnderCollateralizedAtNextPrice'
   | 'vaultWillBeUnderCollateralized'
-  | 'vaultUnderCollateralized'
   | 'collateralAllowanceAmountEmpty'
   | 'customCollateralAllowanceAmountGreaterThanMaxUint256'
   | 'customCollateralAllowanceAmountLessThanDepositAmount'
@@ -40,6 +39,7 @@ export type ManageVaultWarningMessage =
   | 'vaultWillBeAtRiskLevelWarning'
   | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
   | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
+  | 'vaultUnderCollateralized'
 
 export function validateErrors(state: ManageVaultState): ManageVaultState {
   const {
@@ -109,6 +109,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     errorMessages.push('withdrawAmountGreaterThanMaxWithdrawAmount')
   }
 
+  // break down the different categories of errors
   if (generateAmount?.gt(maxGenerateAmount)) {
     errorMessages.push('generateAmountGreaterThanMaxGenerateAmount')
   }
@@ -158,10 +159,6 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     if (paybackAmount && daiAllowanceAmount && daiAllowanceAmount.lt(paybackAmount)) {
       errorMessages.push('customDaiAllowanceAmountLessThanPaybackAmount')
     }
-  }
-
-  if (collateralizationRatio.lt(liquidationRatio) && !collateralizationRatio.isZero()) {
-    errorMessages.push('vaultUnderCollateralized')
   }
 
   if (
@@ -254,6 +251,10 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     afterCollateralizationRatio.lte(collateralizationWarningThreshold)
   ) {
     warningMessages.push('vaultAtRiskLevelWarning')
+  }
+
+  if (collateralizationRatio.lt(liquidationRatio) && !collateralizationRatio.isZero()) {
+    warningMessages.push('vaultUnderCollateralized')
   }
 
   return { ...state, warningMessages }

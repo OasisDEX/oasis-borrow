@@ -75,20 +75,6 @@ describe('manageVaultValidations', () => {
       })
       expect(warningMessages).to.deep.equal(['noProxyAddress'])
     })
-    it('Should show depositAmountEmpty warning', () => {
-      const { warningMessages } = validateWarnings({
-        ...manageVaultState,
-        depositAmount: undefined,
-      })
-      expect(warningMessages).to.deep.equal(['depositAmountEmpty'])
-    })
-    it('Should show generateAmountEmpty warning', () => {
-      const { warningMessages } = validateWarnings({
-        ...manageVaultState,
-        generateAmount: undefined,
-      })
-      expect(warningMessages).to.deep.equal(['generateAmountEmpty'])
-    })
 
     it('Should show potentialGenerateAmountLessThanDebtFloor warning when debtFloor is slightly higher that depositAmountUSD', () => {
       const { warningMessages } = validateWarnings({
@@ -207,7 +193,10 @@ describe('manageVaultValidations', () => {
         ...manageVaultState,
         generateAmount: ilkDebtAvailable.multipliedBy(SLIGHTLY_MORE_THAN_ONE),
       })
-      expect(errorMessages).to.deep.equal(['generateAmountGreaterThanDebtCeiling'])
+      expect(errorMessages).to.deep.equal([
+        'generateAmountGreaterThanMaxGenerateAmount',
+        'generateAmountGreaterThanDebtCeiling',
+      ])
     })
     it('Should show paybackAmountGreaterThanMaxPaybackAmount error', () => {
       const { errorMessages } = validateErrors({
@@ -249,13 +238,13 @@ describe('manageVaultValidations', () => {
         expect(errorMessages).to.deep.equal(['customDaiAllowanceAmountLessThanPaybackAmount'])
       })
     })
-    it('Should show vaultUnderCollateralized error', () => {
+    it('Should show vaultWillBeUnderCollateralized error', () => {
       const { errorMessages } = validateErrors({
         ...manageVaultState,
         afterCollateralizationRatio: new BigNumber(1.49),
         liquidationRatio: new BigNumber(1.5),
       })
-      expect(errorMessages).to.deep.equal(['vaultUnderCollateralized'])
+      expect(errorMessages).to.deep.equal(['vaultWillBeUnderCollateralized'])
     })
   })
 })
