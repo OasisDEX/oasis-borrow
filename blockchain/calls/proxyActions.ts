@@ -194,6 +194,30 @@ function getOpenCallData(data: OpenData, context: ContextConnected) {
     )
   }
 
+  if (depositAmount.gt(zero) && generateAmount.isZero()) {
+    if (token === 'ETH') {
+      return contract<DssProxyActions>(dssProxyActions).methods.openLockETHAndDraw(
+        dssCdpManager.address,
+        mcdJug.address,
+        joins[ilk],
+        mcdJoinDai.address,
+        Web3.utils.utf8ToHex(ilk),
+        zero.toFixed(0),
+      )
+    }
+
+    return contract<DssProxyActions>(dssProxyActions).methods.openLockGemAndDraw(
+      dssCdpManager.address,
+      mcdJug.address,
+      joins[ilk],
+      mcdJoinDai.address,
+      Web3.utils.utf8ToHex(ilk),
+      amountToWei(depositAmount, token).toFixed(0),
+      zero.toFixed(0),
+      true,
+    )
+  }
+
   return contract<DssProxyActions>(dssProxyActions).methods.open(
     dssCdpManager.address,
     Web3.utils.utf8ToHex(ilk),
