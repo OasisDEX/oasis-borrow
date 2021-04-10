@@ -19,14 +19,25 @@ export type WithdrawAndPaybackData = {
   withdrawAmount: BigNumber
   paybackAmount: BigNumber
   proxyAddress: string
+  shouldPaybackAll: boolean
 }
 
 function getWithdrawAndPaybackCallData(data: WithdrawAndPaybackData, context: ContextConnected) {
   const { dssProxyActions, dssCdpManager, mcdJoinDai, joins, contract } = context
-  const { id, token, withdrawAmount, paybackAmount, ilk } = data
+  const { id, token, withdrawAmount, paybackAmount, ilk, shouldPaybackAll } = data
 
   if (withdrawAmount.gt(zero) && paybackAmount.gt(zero)) {
     if (token === 'ETH') {
+      if (shouldPaybackAll) {
+        return contract<DssProxyActions>(dssProxyActions).methods.wipeAllAndFreeETH(
+          dssCdpManager.address,
+          joins[ilk],
+          mcdJoinDai.address,
+          id.toString(),
+          amountToWei(withdrawAmount, token).toFixed(0),
+        )
+      }
+
       return contract<DssProxyActions>(dssProxyActions).methods.wipeAndFreeETH(
         dssCdpManager.address,
         joins[ilk],
@@ -34,6 +45,16 @@ function getWithdrawAndPaybackCallData(data: WithdrawAndPaybackData, context: Co
         id.toString(),
         amountToWei(withdrawAmount, token).toFixed(0),
         amountToWei(paybackAmount, 'DAI').toFixed(0),
+      )
+    }
+
+    if (shouldPaybackAll) {
+      return contract<DssProxyActions>(dssProxyActions).methods.wipeAllAndFreeGem(
+        dssCdpManager.address,
+        joins[ilk],
+        mcdJoinDai.address,
+        id.toString(),
+        amountToWei(withdrawAmount, token).toFixed(0),
       )
     }
 
@@ -63,6 +84,15 @@ function getWithdrawAndPaybackCallData(data: WithdrawAndPaybackData, context: Co
       amountToWei(withdrawAmount, token).toFixed(0),
     )
   }
+
+  if (shouldPaybackAll) {
+    return contract<DssProxyActions>(dssProxyActions).methods.wipeAll(
+      dssCdpManager.address,
+      mcdJoinDai.address,
+      id.toString(),
+    )
+  }
+
   return contract<DssProxyActions>(dssProxyActions).methods.wipe(
     dssCdpManager.address,
     mcdJoinDai.address,

@@ -4,7 +4,7 @@ import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
@@ -91,6 +91,8 @@ export function categoriseManageVaultStage(stage: ManageVaultStage) {
   }
 }
 
+export const PAYBACK_ALL_BOUND = one
+
 export function applyManageVaultCalculations(state: ManageVaultState): ManageVaultState {
   const {
     collateralBalance,
@@ -118,7 +120,21 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     .times(maxDebtPerUnitCollateral)
     .minus(debt)
 
-  const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt
+  // NOTE Important
+  const roundedDebt = debt.dp(6, BigNumber.ROUND_HALF_UP)
+
+  const maxPaybackAmount = daiBalance.lt(roundedDebt) ? daiBalance : roundedDebt
+
+  const shouldPaybackAll = !!(
+    /*
+     * First checks if user has balance to cover actual debt
+     */
+    (
+      daiBalance.gte(debt) &&
+      paybackAmount &&
+      paybackAmount.plus(PAYBACK_ALL_BOUND).gte(roundedDebt)
+    )
+  )
 
   const afterLockedCollateral = depositAmount
     ? lockedCollateral.plus(depositAmount)
@@ -153,6 +169,7 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     afterLiquidationPrice,
     maxDepositAmountUSD,
     maxPaybackAmount,
+    shouldPaybackAll,
   }
 }
 
@@ -256,6 +273,7 @@ export type DefaultManageVaultState = {
 
   paybackAmount?: BigNumber
   maxPaybackAmount: BigNumber
+  shouldPaybackAll: boolean
 
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmount?: BigNumber) => void
@@ -463,6 +481,7 @@ export const defaultPartialManageVaultState = {
   maxPaybackAmount: zero,
   afterCollateralizationRatio: zero,
   afterLiquidationPrice: zero,
+  shouldPaybackAll: false,
 }
 
 export function createManageVault$(

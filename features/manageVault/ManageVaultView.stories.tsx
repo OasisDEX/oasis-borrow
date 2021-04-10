@@ -21,7 +21,12 @@ import { of } from 'rxjs'
 import { first, switchMap } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
-import { createManageVault$, ManageVaultStage, ManageVaultState } from './manageVault'
+import {
+  createManageVault$,
+  ManageVaultStage,
+  ManageVaultState,
+  PAYBACK_ALL_BOUND,
+} from './manageVault'
 interface Story {
   title?: string
   context?: ContextConnected
@@ -437,6 +442,17 @@ export const VaultAtRisk = createStory({
   balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress: '0xProxyAddress',
   stage: 'collateralEditing',
+})
+
+export const ShouldPaybackAll = createStory({
+  title: `If the amount in the paybackAmount field is between ${PAYBACK_ALL_BOUND} DAI of the outstanding debt in a vault, the shouldPaybackAll flag should be indicated as true. A warning message should also show to indicate to the user that this action should leave their vault with a debt of 0`,
+  ilk: 'WBTC-A',
+  stage: 'daiEditing',
+  collateral: one,
+  debt: new BigNumber('3000'),
+  paybackAmount: new BigNumber('2999'),
+  balanceInfo: { collateralBalance: new BigNumber('2000'), daiBalance: new BigNumber('10000') },
+  proxyAddress: '0xProxyAddress',
 })
 
 // eslint-disable-next-line import/no-default-export
