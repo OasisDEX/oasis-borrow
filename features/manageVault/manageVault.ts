@@ -126,15 +126,10 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
   const maxPaybackAmount = daiBalance.lt(roundedDebt) ? daiBalance : roundedDebt
 
   const shouldPaybackAll = !!(
-    /*
-     * First checks if user has balance to cover actual debt
-     */
-    (
-      daiBalance.gte(debt) &&
-      paybackAmount &&
-      paybackAmount.plus(PAYBACK_ALL_BOUND).gte(roundedDebt) &&
-      !paybackAmount.gt(roundedDebt)
-    )
+    daiBalance.gte(debt) &&
+    paybackAmount &&
+    paybackAmount.plus(PAYBACK_ALL_BOUND).gte(roundedDebt) &&
+    !paybackAmount.gt(roundedDebt)
   )
 
   const afterLockedCollateral = depositAmount
