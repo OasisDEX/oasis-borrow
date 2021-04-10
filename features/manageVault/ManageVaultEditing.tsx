@@ -143,6 +143,7 @@ export function ManageVaultEditing(props: ManageVaultState) {
     togglePaybackAndWithdrawOption,
     showDepositAndGenerateOption,
     showPaybackAndWithdrawOption,
+    accountIsController,
   } = props
 
   const disableDepositAndGenerate = paybackAmount || withdrawAmount || showPaybackAndWithdrawOption
@@ -150,8 +151,10 @@ export function ManageVaultEditing(props: ManageVaultState) {
 
   const inverted = stage === 'daiEditing'
 
-  const showDepositAndGenerateOptionButton = depositAmount || generateAmount
-  const showPaybackAndWithdrawOptionButton = paybackAmount || withdrawAmount
+  const showDepositAndGenerateOptionButton =
+    (depositAmount || generateAmount) && accountIsController
+  const showPaybackAndWithdrawOptionButton =
+    (paybackAmount || withdrawAmount) && accountIsController
 
   return (
     <Grid>

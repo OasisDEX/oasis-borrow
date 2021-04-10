@@ -67,6 +67,7 @@ export function VaultActionInput({
       sx={{
         position: 'relative',
         opacity: disabled ? '0.3' : '1.0',
+        cursor: disabled ? 'not-allowed' : 'default',
       }}
     >
       <Grid columns="1fr 2fr" py={2}>
