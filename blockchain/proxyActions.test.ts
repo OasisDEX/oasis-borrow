@@ -6,7 +6,7 @@ import { getWithdrawAndPaybackCallData } from './calls/proxyActions'
 import { TxMetaKind } from './calls/txMeta'
 import { protoContextConnected } from './network'
 
-describe.only('ProxyActions', () => {
+describe('ProxyActions', () => {
   describe('WithdrawAndPayback', () => {
     interface CallDataProps {
       token: 'ETH' | 'WBTC'
