@@ -54,6 +54,7 @@ export interface Vault {
   availableIlkDebt: BigNumber
   liquidationRatio: BigNumber
   collateralizationRatio: BigNumber
+  nextCollateralizationRatio: BigNumber
   liquidationPrice: BigNumber
   liquidationPenalty: BigNumber
   stabilityFee: BigNumber
@@ -99,7 +100,7 @@ export function createVault$(
           ([
             { collateral, normalizedDebt },
             unlockedCollateral,
-            { currentPrice },
+            { currentPrice, nextPrice },
             {
               normalizedIlkDebt,
               debtFloor,
@@ -111,17 +112,19 @@ export function createVault$(
             },
           ]) => {
             const collateralUSD = collateral.times(currentPrice)
+            const nextCollateralUSD = nextPrice ? collateral.times(nextPrice) : currentPrice
             const debt = debtScalingFactor.times(normalizedDebt)
             const ilkDebt = debtScalingFactor.times(normalizedIlkDebt)
 
             const backingCollateral = debt.times(liquidationRatio).div(currentPrice)
-            const freeCollateral = backingCollateral.gt(collateral)
+            const freeCollateral = backingCollateral.gte(collateral)
               ? zero
               : collateral.minus(backingCollateral)
 
-            const backingCollateralUSD = backingCollateral.div(currentPrice)
-            const freeCollateralUSD = freeCollateral.div(currentPrice)
-            const collateralizationRatio = debt.eq(zero) ? zero : collateralUSD.div(debt)
+            const backingCollateralUSD = backingCollateral.times(currentPrice)
+            const freeCollateralUSD = freeCollateral.times(currentPrice)
+            const collateralizationRatio = debt.isZero() ? zero : collateralUSD.div(debt)
+            const nextCollateralizationRatio = debt.isZero() ? zero : nextCollateralUSD.div(debt)
 
             const maxAvailableDebt = collateralUSD.div(liquidationRatio)
             const availableDebt = debt.lt(maxAvailableDebt) ? maxAvailableDebt.minus(debt) : zero
@@ -147,6 +150,7 @@ export function createVault$(
               unlockedCollateral,
               normalizedDebt,
               collateralizationRatio,
+              nextCollateralizationRatio,
               debt,
               availableDebt,
               availableIlkDebt,

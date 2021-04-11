@@ -102,7 +102,6 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     generateAmount,
     currentCollateralPrice,
     liquidationRatio,
-    freeCollateral,
     lockedCollateral,
     daiBalance,
     withdrawAmount,
@@ -113,9 +112,6 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
 
   const maxDepositAmount = collateralBalance
   const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
-
-  const maxWithdrawAmount = freeCollateral
-  const maxWithdrawAmountUSD = freeCollateral.times(currentCollateralPrice)
 
   const daiYieldFromTotalCollateral = lockedCollateral
     .plus(depositAmount || zero)
@@ -168,8 +164,6 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     ...state,
     maxDepositAmount,
     maxGenerateAmount,
-    maxWithdrawAmount,
-    maxWithdrawAmountUSD,
     afterCollateralizationRatio,
     afterLiquidationPrice,
     maxDepositAmountUSD,
@@ -325,7 +319,7 @@ export type DefaultManageVaultState = {
   roundedDebt: BigNumber
   liquidationPrice: BigNumber
   collateralizationRatio: BigNumber
-  freeCollateral: BigNumber
+  nextCollateralizationRatio: BigNumber
 
   afterLiquidationPrice: BigNumber
   afterCollateralizationRatio: BigNumber
@@ -568,7 +562,8 @@ export function createManageVault$(
                     debt: vault.debt,
                     liquidationPrice: vault.liquidationPrice,
                     collateralizationRatio: vault.collateralizationRatio,
-                    freeCollateral: vault.freeCollateral,
+                    maxWithdrawAmount: vault.freeCollateral,
+                    maxWithdrawAmountUSD: vault.freeCollateralUSD,
                     ilk: vault.ilk,
                     safeConfirmations: context.safeConfirmations,
                     etherscan: context.etherscan.url,
