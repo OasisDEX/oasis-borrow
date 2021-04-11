@@ -45,7 +45,9 @@ describe('manageVaultValidations', () => {
       debt: zero,
       liquidationPrice: zero,
       collateralizationRatio: zero,
+      nextCollateralizationRatio: zero,
       freeCollateral: zero,
+      freeCollateralUSD: zero,
       proxyAddress: '0xProxyAddress',
       ilkDebtAvailable,
       maxDebtPerUnitCollateral,
@@ -232,7 +234,9 @@ describe('manageVaultValidations', () => {
       daiBalance: new BigNumber('10000'),
       liquidationPrice: zero,
       collateralizationRatio: zero,
+      nextCollateralizationRatio: zero,
       freeCollateral: new BigNumber('4000'),
+      freeCollateralUSD: new BigNumber('4000').times(protoWBTCPriceInfo.currentCollateralPrice),
       depositAmountUSD,
       withdrawAmount,
       paybackAmount,
@@ -257,7 +261,7 @@ describe('manageVaultValidations', () => {
     it('Should show withdrawAmountGreaterThanMaxWithdrawAmount error', () => {
       const { errorMessages } = validateErrors({
         ...manageVaultState,
-        maxWithdrawAmount: withdrawAmount.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
+        //maxWithdrawAmount: withdrawAmount.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
       })
       expect(errorMessages).to.deep.equal(['withdrawAmountGreaterThanMaxWithdrawAmount'])
     })

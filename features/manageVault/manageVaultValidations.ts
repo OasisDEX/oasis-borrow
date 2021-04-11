@@ -32,17 +32,13 @@ export type ManageVaultErrorMessage =
 export function validateErrors(state: ManageVaultState): ManageVaultState {
   const {
     depositAmount,
-    maxDepositAmount,
     generateAmount,
-    maxGenerateAmount,
     debtFloor,
     ilkDebtAvailable,
     afterCollateralizationRatio,
     liquidationRatio,
     paybackAmount,
     withdrawAmount,
-    maxWithdrawAmount,
-    maxPaybackAmount,
     debt,
     stage,
     collateralAllowanceAmount,
@@ -50,10 +46,10 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     accountIsController,
     shouldPaybackAll,
     collateralBalance,
-    freeCollateral,
     daiYieldFromTotalCollateral,
     daiBalance,
     roundedDebt,
+    freeCollateral,
   } = state
 
   const errorMessages: ManageVaultErrorMessage[] = []

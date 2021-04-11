@@ -268,8 +268,6 @@ export type DefaultManageVaultState = {
 
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
-  maxWithdrawAmount: BigNumber
-  maxWithdrawAmountUSD: BigNumber
 
   daiYieldFromTotalCollateral: BigNumber
   generateAmount?: BigNumber
@@ -318,6 +316,8 @@ export type DefaultManageVaultState = {
   debt: BigNumber
   roundedDebt: BigNumber
   liquidationPrice: BigNumber
+  freeCollateral: BigNumber
+  freeCollateralUSD: BigNumber
   collateralizationRatio: BigNumber
   nextCollateralizationRatio: BigNumber
 
@@ -483,8 +483,6 @@ export const defaultPartialManageVaultState = {
   maxDepositAmount: zero,
   maxDepositAmountUSD: zero,
   maxGenerateAmount: zero,
-  maxWithdrawAmount: zero,
-  maxWithdrawAmountUSD: zero,
   maxPaybackAmount: zero,
   afterCollateralizationRatio: zero,
   afterLiquidationPrice: zero,
@@ -562,8 +560,9 @@ export function createManageVault$(
                     debt: vault.debt,
                     liquidationPrice: vault.liquidationPrice,
                     collateralizationRatio: vault.collateralizationRatio,
-                    maxWithdrawAmount: vault.freeCollateral,
-                    maxWithdrawAmountUSD: vault.freeCollateralUSD,
+                    nextCollateralizationRatio: vault.nextCollateralizationRatio,
+                    freeCollateral: vault.freeCollateral,
+                    freeCollateralUSD: vault.freeCollateralUSD,
                     ilk: vault.ilk,
                     safeConfirmations: context.safeConfirmations,
                     etherscan: context.etherscan.url,

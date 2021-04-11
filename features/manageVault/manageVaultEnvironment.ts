@@ -65,8 +65,8 @@ export function applyManageVaultEnvironment(
       nextCollateralizationRatio,
       liquidationPrice,
       lockedCollateralUSD,
-      maxWithdrawAmount: freeCollateral,
-      maxWithdrawAmountUSD: freeCollateralUSD,
+      freeCollateral,
+      freeCollateralUSD,
       stabilityFee,
       liquidationPenalty,
     }
