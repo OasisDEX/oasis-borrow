@@ -15,7 +15,7 @@ export function ManageVaultCollateralAllowance({
   stage,
   collateralAllowanceTxHash,
   etherscan,
-  token,
+  vault: { token },
   collateralAllowanceAmount,
   depositAmount,
   updateCollateralAllowanceAmount,

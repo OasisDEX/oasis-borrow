@@ -7,11 +7,7 @@ import { ManageVaultState } from './manageVault'
 
 export function ManageVaultIlkDetails({
   showIlkDetails,
-  ilkDebtAvailable,
-  liquidationRatio,
-  stabilityFee,
-  liquidationPenalty,
-  debtFloor,
+  ilkData: { ilkDebtAvailable, liquidationRatio, stabilityFee, liquidationPenalty, debtFloor },
 }: ManageVaultState) {
   const { t } = useTranslation()
 

@@ -80,8 +80,8 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageVa
 
   if (change.kind === 'deposit' && canDeposit) {
     const { depositAmount } = change
-    const { stage, currentCollateralPrice } = state
-    const depositAmountUSD = depositAmount && currentCollateralPrice.times(depositAmount)
+    const { stage, priceInfo } = state
+    const depositAmountUSD = depositAmount && priceInfo.currentCollateralPrice.times(depositAmount)
 
     return {
       ...state,
@@ -98,8 +98,8 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageVa
 
   if (change.kind === 'depositUSD' && canDeposit) {
     const { depositAmountUSD } = change
-    const { stage, currentCollateralPrice } = state
-    const depositAmount = depositAmountUSD && depositAmountUSD.div(currentCollateralPrice)
+    const { stage, priceInfo } = state
+    const depositAmount = depositAmountUSD && depositAmountUSD.div(priceInfo.currentCollateralPrice)
 
     return {
       ...state,
@@ -163,8 +163,9 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageVa
 
   if (change.kind === 'withdraw' && canWithdraw) {
     const { withdrawAmount } = change
-    const { stage, currentCollateralPrice } = state
-    const withdrawAmountUSD = withdrawAmount && currentCollateralPrice.times(withdrawAmount)
+    const { stage, priceInfo } = state
+    const withdrawAmountUSD =
+      withdrawAmount && priceInfo.currentCollateralPrice.times(withdrawAmount)
 
     return {
       ...state,
@@ -181,10 +182,10 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageVa
 
   if (change.kind === 'withdrawUSD' && canWithdraw) {
     const { withdrawAmountUSD } = change
-    const { stage, currentCollateralPrice } = state
+    const { stage, priceInfo } = state
     const withdrawAmount =
       withdrawAmountUSD && withdrawAmountUSD.gt(zero)
-        ? withdrawAmountUSD.div(currentCollateralPrice)
+        ? withdrawAmountUSD.div(priceInfo.currentCollateralPrice)
         : undefined
 
     return {
@@ -201,11 +202,11 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageVa
   }
 
   if (change.kind === 'withdrawMax' && canWithdraw) {
-    const { freeCollateral, freeCollateralUSD } = state
+    const { vault } = state
     return {
       ...state,
-      withdrawAmount: freeCollateral,
-      withdrawAmountUSD: freeCollateralUSD,
+      withdrawAmount: vault.freeCollateral,
+      withdrawAmountUSD: vault.freeCollateralUSD,
       ...depositAndGenerateDefaults,
     }
   }

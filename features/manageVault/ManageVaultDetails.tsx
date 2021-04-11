@@ -14,7 +14,7 @@ import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 
-function VaultDetailsTable(props: ManageVaultState) {
+function VaultDetailsTable({ vault, maxGenerateAmount, ilkData }: ManageVaultState) {
   const { t } = useTranslation()
   return (
     <Box sx={{ gridColumn: '1/3', mt: 6 }}>
@@ -28,7 +28,7 @@ function VaultDetailsTable(props: ManageVaultState) {
           </Box>
           <Box>
             <Text sx={{ display: 'inline' }} variant="header3">
-              {formatCryptoBalance(props.debt)}
+              {formatCryptoBalance(vault.debt)}
             </Text>
             <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
               DAI
@@ -41,7 +41,7 @@ function VaultDetailsTable(props: ManageVaultState) {
           </Box>
           <Box variant="text.header3">
             <Text sx={{ display: 'inline' }} variant="header3">
-              {formatFiatBalance(props.freeCollateral)}
+              {formatFiatBalance(vault.freeCollateral)}
             </Text>
             <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
               USD
@@ -54,7 +54,7 @@ function VaultDetailsTable(props: ManageVaultState) {
           </Box>
           <Box variant="text.header3">
             <Text sx={{ display: 'inline' }} variant="header3">
-              {formatCryptoBalance(props.maxGenerateAmount)}
+              {formatCryptoBalance(maxGenerateAmount)}
             </Text>
             <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
               USD
@@ -67,20 +67,20 @@ function VaultDetailsTable(props: ManageVaultState) {
             {t('system.liquidation-ratio')}
           </Box>
           <Text sx={{ display: 'inline' }} variant="header3">
-            {formatPercent(props.liquidationRatio.times(100))}
+            {formatPercent(ilkData.liquidationRatio.times(100))}
           </Text>
         </Box>
         <Box>
           <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
             {t('system.stability-fee')}
           </Box>
-          <Box variant="text.header3">{formatPercent(props.stabilityFee.times(100))}</Box>
+          <Box variant="text.header3">{formatPercent(ilkData.stabilityFee.times(100))}</Box>
         </Box>
         <Box>
           <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
             {t('system.liquidation-penalty')}
           </Box>
-          <Box variant="text.header3">{formatPercent(props.liquidationPenalty.times(100))}</Box>
+          <Box variant="text.header3">{formatPercent(ilkData.liquidationPenalty.times(100))}</Box>
         </Box>
       </Grid>
     </Box>
@@ -91,18 +91,22 @@ export function ManageVaultDetails(props: ManageVaultState) {
   const {
     afterCollateralizationRatio,
     afterLiquidationPrice,
-    token,
-    collateralizationRatio,
-    liquidationPrice,
-    lockedCollateral,
-    lockedCollateralUSD,
-    currentCollateralPrice,
-    nextCollateralPrice,
-    isStaticCollateralPrice,
-    dateNextCollateralPrice,
-    liquidationRatio,
-    ilk,
-    id,
+    vault: {
+      id,
+      ilk,
+      token,
+      collateralizationRatio,
+      liquidationPrice,
+      lockedCollateral,
+      lockedCollateralUSD,
+    },
+    priceInfo: {
+      currentCollateralPrice,
+      nextCollateralPrice,
+      isStaticCollateralPrice,
+      dateNextCollateralPrice,
+    },
+    ilkData: { liquidationRatio },
   } = props
   const { t } = useTranslation()
   const collRatio = collateralizationRatio.eq(zero)

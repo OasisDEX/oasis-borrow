@@ -9,12 +9,12 @@ import { ManageVaultState } from './manageVault'
 
 export function ManageVaultConfirmation({
   stage,
-  collateralBalance,
+  balanceInfo: { collateralBalance },
   depositAmount,
   generateAmount,
   paybackAmount,
   withdrawAmount,
-  token,
+  vault: { token },
   afterCollateralizationRatio,
   afterLiquidationPrice,
   etherscan,

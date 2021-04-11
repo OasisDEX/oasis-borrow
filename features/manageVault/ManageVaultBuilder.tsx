@@ -30,12 +30,12 @@ const protoUrnAddress = '0xEe0b6175705CDFEb824e5092d6547C011EbB46A8'
 
 type ManageVaultStory = Partial<ManageVaultState> & {
   title?: string
+  _balanceInfo?: Partial<BalanceInfo>
+  _ilkData?: Partial<IlkData>
+  _priceInfo?: Partial<PriceInfo>
   context?: ContextConnected
   allowance?: BigNumber
   vault?: Partial<Vault>
-  ilkData?: Partial<IlkData>
-  priceInfo?: Partial<PriceInfo>
-  balanceInfo?: Partial<BalanceInfo>
   urnAddress?: string
   owner?: string
   unlockedCollateral?: BigNumber
@@ -55,8 +55,8 @@ export function manageVaultStory({
   context,
   allowance,
   priceInfo,
-  balanceInfo,
-  ilkData,
+  _balanceInfo,
+  _ilkData,
   urnAddress,
   owner,
   unlockedCollateral,
@@ -88,14 +88,14 @@ export function manageVaultStory({
         : ilk === 'WBTC-A'
         ? protoWBTCAIlkData
         : protoUSDCAIlkData),
-      ...ilkData,
+      ..._ilkData,
     }
 
     const protoBalanceInfo: BalanceInfo = {
       collateralBalance: zero,
       ethBalance: zero,
       daiBalance: zero,
-      ...balanceInfo,
+      ..._balanceInfo,
     }
 
     const newState: Partial<ManageVaultState> = {

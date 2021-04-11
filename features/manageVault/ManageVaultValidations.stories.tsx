@@ -50,7 +50,7 @@ export const DepositAmountExceedsCollateralBalance = manageVaultStory({
   collateral: one,
   debt: new BigNumber('3000'),
   stage: 'collateralEditing',
-  balanceInfo: { collateralBalance: new BigNumber('5') },
+  _balanceInfo: { collateralBalance: new BigNumber('5') },
   depositAmount: new BigNumber('6'),
 })
 
@@ -72,7 +72,7 @@ export const GenerateAmountExceedsDebtCeiling = manageVaultStory({
   debt: new BigNumber('3000'),
   stage: 'daiEditing',
   generateAmount: new BigNumber('20000'),
-  ilkData: { ilkDebtAvailable: new BigNumber('15000') },
+  _ilkData: { ilkDebtAvailable: new BigNumber('15000') },
 })
 
 export const GenerateAmountExceedsDaiThatCanBeGenerated = manageVaultStory({
@@ -101,7 +101,7 @@ export const PaybackAmountExceedsDaiBalance = manageVaultStory({
   debt: new BigNumber('20000'),
   stage: 'daiEditing',
   paybackAmount: new BigNumber('6000'),
-  balanceInfo: { daiBalance: new BigNumber('5000') },
+  _balanceInfo: { daiBalance: new BigNumber('5000') },
 })
 
 export const PaybackAmountExceedsVaultDebt = manageVaultStory({
@@ -112,7 +112,7 @@ export const PaybackAmountExceedsVaultDebt = manageVaultStory({
   debt: new BigNumber('5000'),
   stage: 'daiEditing',
   paybackAmount: new BigNumber('6000'),
-  balanceInfo: { daiBalance: new BigNumber('10000') },
+  _balanceInfo: { daiBalance: new BigNumber('10000') },
 })
 
 export const PaybackAmountCausesVaultDebtToBeLessThanDebtFloor = manageVaultStory({
@@ -123,7 +123,7 @@ export const PaybackAmountCausesVaultDebtToBeLessThanDebtFloor = manageVaultStor
   debt: new BigNumber('5000'),
   stage: 'daiEditing',
   paybackAmount: new BigNumber('4000'),
-  balanceInfo: { daiBalance: new BigNumber('10000') },
+  _balanceInfo: { daiBalance: new BigNumber('10000') },
 })
 
 // eslint-disable-next-line import/no-default-export

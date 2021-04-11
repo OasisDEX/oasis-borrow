@@ -98,19 +98,14 @@ export const PAYBACK_ALL_BOUND = one
 
 export function applyManageVaultCalculations(state: ManageVaultState): ManageVaultState {
   const {
-    collateralBalance,
     depositAmount,
-    maxDebtPerUnitCollateral,
     generateAmount,
-    currentCollateralPrice,
-    liquidationRatio,
-    lockedCollateral,
-    daiBalance,
     withdrawAmount,
     paybackAmount,
-    debt,
-    approximateDebt,
-    ilkDebtAvailable,
+    balanceInfo: { collateralBalance, daiBalance },
+    ilkData: { maxDebtPerUnitCollateral, liquidationRatio, ilkDebtAvailable },
+    priceInfo: { currentCollateralPrice },
+    vault: { lockedCollateral, debt, approximateDebt },
   } = state
 
   const maxDepositAmount = collateralBalance
@@ -235,47 +230,48 @@ export type ManageVaultStage =
   | 'manageFailure'
   | 'manageSuccess'
 
-export type DefaultManageVaultState = {
+export type ManageVaultState = {
+  // Pipeline stage
   stage: ManageVaultStage
   originalEditingStage: ManageVaultEditingStage
-  id: BigNumber
-  ilk: string
-  token: string
+
+  // User status
   account: string | undefined
   accountIsController: boolean
+  proxyAddress?: string
+  collateralAllowance?: BigNumber
+  daiAllowance?: BigNumber
+
+  // Core dependencies
+  vault: Vault
+  ilkData: IlkData
+  balanceInfo: BalanceInfo
+  priceInfo: PriceInfo
 
   // validation
   errorMessages: ManageVaultErrorMessage[]
   warningMessages: ManageVaultWarningMessage[]
 
+  // General
   progress?: () => void
   reset?: () => void
   toggle?: () => void
 
+  // Editing Form Behaviour
   showIlkDetails: Boolean
   toggleIlkDetails?: () => void
-
   showDepositAndGenerateOption: Boolean
   showPaybackAndWithdrawOption: Boolean
   toggleDepositAndGenerateOption?: () => void
   togglePaybackAndWithdrawOption?: () => void
 
+  // Editing Inputs
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
-  maxDepositAmount: BigNumber
-  maxDepositAmountUSD: BigNumber
-
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
-
-  daiYieldFromTotalCollateral: BigNumber
   generateAmount?: BigNumber
-  maxGenerateAmount: BigNumber
-
   paybackAmount?: BigNumber
-  maxPaybackAmount: BigNumber
-  shouldPaybackAll: boolean
-
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
@@ -287,44 +283,33 @@ export type DefaultManageVaultState = {
   updatePayback?: (paybackAmount?: BigNumber) => void
   updatePaybackMax?: () => void
 
-  proxyAddress?: string
-  collateralAllowance?: BigNumber
-  daiAllowance?: BigNumber
-
+  // Collateral Allowance
   collateralAllowanceAmount?: BigNumber
   updateCollateralAllowanceAmount?: (amount?: BigNumber) => void
   setCollateralAllowanceAmountUnlimited?: () => void
   setCollateralAllowanceAmountToDepositAmount?: () => void
   resetCollateralAllowanceAmount?: () => void
 
+  // DAI Allowance
   daiAllowanceAmount?: BigNumber
   updateDaiAllowanceAmount?: (amount?: BigNumber) => void
   setDaiAllowanceAmountUnlimited?: () => void
   setDaiAllowanceAmountToPaybackAmount?: () => void
   resetDaiAllowanceAmount?: () => void
 
-  maxDebtPerUnitCollateral: BigNumber
-  ilkDebtAvailable: BigNumber
-  debtFloor: BigNumber
-  liquidationRatio: BigNumber
-  stabilityFee: BigNumber
-  liquidationPenalty: BigNumber
-
-  lockedCollateral: BigNumber
-  lockedCollateralUSD: BigNumber
-  debt: BigNumber
-  approximateDebt: BigNumber
-  liquidationPrice: BigNumber
-  freeCollateral: BigNumber
-  freeCollateralUSD: BigNumber
-  collateralizationRatio: BigNumber
-  nextCollateralizationRatio: BigNumber
-
+  // calculations
+  maxDepositAmount: BigNumber
+  maxDepositAmountUSD: BigNumber
+  maxGenerateAmount: BigNumber
+  maxPaybackAmount: BigNumber
+  shouldPaybackAll: boolean
+  daiYieldFromTotalCollateral: BigNumber
   afterLiquidationPrice: BigNumber
   afterCollateralizationRatio: BigNumber
   collateralizationDangerThreshold: BigNumber
   collateralizationWarningThreshold: BigNumber
 
+  // Transaction Behaviour
   collateralAllowanceTxHash?: string
   daiAllowanceTxHash?: string
   proxyTxHash?: string
@@ -336,8 +321,6 @@ export type DefaultManageVaultState = {
 
   injectStateOverride: (state: Partial<ManageVaultState>) => void
 }
-
-export type ManageVaultState = DefaultManageVaultState & PriceInfo & BalanceInfo
 
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
@@ -540,29 +523,18 @@ export function createManageVault$(
                   }
 
                   const initialState: ManageVaultState = {
-                    ...priceInfo,
-                    ...balanceInfo,
                     ...defaultPartialManageVaultState,
-                    ...ilkData,
                     stage: 'collateralEditing',
                     originalEditingStage: 'collateralEditing',
-                    id,
+                    vault,
+                    priceInfo,
+                    balanceInfo,
+                    ilkData,
                     account,
                     proxyAddress,
                     collateralAllowance,
                     daiAllowance,
                     accountIsController: account === vault.controller,
-                    token: vault.token,
-                    lockedCollateral: vault.lockedCollateral,
-                    lockedCollateralUSD: vault.lockedCollateralUSD,
-                    debt: vault.debt,
-                    approximateDebt: vault.approximateDebt,
-                    liquidationPrice: vault.liquidationPrice,
-                    collateralizationRatio: vault.collateralizationRatio,
-                    nextCollateralizationRatio: vault.nextCollateralizationRatio,
-                    freeCollateral: vault.freeCollateral,
-                    freeCollateralUSD: vault.freeCollateralUSD,
-                    ilk: vault.ilk,
                     safeConfirmations: context.safeConfirmations,
                     etherscan: context.etherscan.url,
                     injectStateOverride,

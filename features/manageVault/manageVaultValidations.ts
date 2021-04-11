@@ -33,23 +33,18 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
   const {
     depositAmount,
     generateAmount,
-    debtFloor,
-    ilkDebtAvailable,
     afterCollateralizationRatio,
-    liquidationRatio,
     paybackAmount,
     withdrawAmount,
-    debt,
     stage,
     collateralAllowanceAmount,
     daiAllowanceAmount,
     accountIsController,
     shouldPaybackAll,
-    collateralBalance,
     daiYieldFromTotalCollateral,
-    daiBalance,
-    freeCollateral,
-    approximateDebt,
+    vault,
+    ilkData,
+    balanceInfo,
   } = state
 
   const errorMessages: ManageVaultErrorMessage[] = []
@@ -88,15 +83,15 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     errorMessages.push('paybackAmountEmpty')
   }
 
-  if (depositAmount?.gt(collateralBalance)) {
+  if (depositAmount?.gt(balanceInfo.collateralBalance)) {
     errorMessages.push('depositAmountExceedsCollateralBalance')
   }
 
-  if (withdrawAmount?.gt(freeCollateral)) {
+  if (withdrawAmount?.gt(vault.freeCollateral)) {
     errorMessages.push('withdrawAmountExceedsFreeCollateral')
   }
 
-  if (generateAmount?.gt(ilkDebtAvailable)) {
+  if (generateAmount?.gt(ilkData.ilkDebtAvailable)) {
     errorMessages.push('generateAmountExceedsDebtCeiling')
   }
 
@@ -104,22 +99,22 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     errorMessages.push('generateAmountExceedsMaxDaiThatCanBeGenerated')
   }
 
-  if (generateAmount?.plus(debt).lt(debtFloor)) {
+  if (generateAmount?.plus(vault.debt).lt(ilkData.debtFloor)) {
     errorMessages.push('generateAmountLessThanDebtFloor')
   }
 
-  if (paybackAmount?.gt(daiBalance)) {
+  if (paybackAmount?.gt(balanceInfo.daiBalance)) {
     errorMessages.push('paybackAmountExceedsDaiBalance')
   }
 
-  if (paybackAmount?.gt(approximateDebt)) {
+  if (paybackAmount?.gt(vault.approximateDebt)) {
     errorMessages.push('paybackAmountExceedsVaultDebt')
   }
 
   if (
     paybackAmount &&
-    debt.minus(paybackAmount).lt(debtFloor) &&
-    debt.minus(paybackAmount).gt(zero) &&
+    vault.debt.minus(paybackAmount).lt(ilkData.debtFloor) &&
+    vault.debt.minus(paybackAmount).gt(zero) &&
     !shouldPaybackAll
   ) {
     errorMessages.push('paybackAmountCausesVaultDebtToBeLessThanDebtFloor')
@@ -154,7 +149,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
 
   if (
     (generateAmount?.gt(zero) || withdrawAmount?.gt(zero)) &&
-    afterCollateralizationRatio.lt(liquidationRatio)
+    afterCollateralizationRatio.lt(ilkData.liquidationRatio)
   ) {
     errorMessages.push('vaultWillBeUnderCollateralized')
   }
@@ -185,24 +180,25 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     depositAmount,
     paybackAmount,
     depositAmountUSD,
-    debtFloor,
     proxyAddress,
-    token,
-    debt,
     collateralAllowance,
     daiAllowance,
     accountIsController,
-    collateralizationRatio,
     afterCollateralizationRatio,
     collateralizationWarningThreshold,
     collateralizationDangerThreshold,
-    liquidationRatio,
     shouldPaybackAll,
+    vault,
+    ilkData,
   } = state
 
   const warningMessages: ManageVaultWarningMessage[] = []
 
-  if (depositAmountUSD && depositAmount?.gt(zero) && debt.plus(depositAmountUSD).lt(debtFloor)) {
+  if (
+    depositAmountUSD &&
+    depositAmount?.gt(zero) &&
+    vault.debt.plus(depositAmountUSD).lt(ilkData.debtFloor)
+  ) {
     warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
   }
 
@@ -210,11 +206,11 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     warningMessages.push('noProxyAddress')
   }
 
-  if (debt.lt(debtFloor) && debt.gt(zero)) {
+  if (vault.debt.lt(ilkData.debtFloor) && vault.debt.gt(zero)) {
     warningMessages.push('debtIsLessThanDebtFloor')
   }
 
-  if (token !== 'ETH') {
+  if (vault.token !== 'ETH') {
     if (!collateralAllowance) {
       warningMessages.push('noCollateralAllowance')
     }
@@ -236,21 +232,21 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
   }
 
   if (
-    collateralizationRatio.gt(liquidationRatio) &&
-    collateralizationRatio.lte(collateralizationDangerThreshold)
+    vault.collateralizationRatio.gt(ilkData.liquidationRatio) &&
+    vault.collateralizationRatio.lte(collateralizationDangerThreshold)
   ) {
     warningMessages.push('vaultAtRiskLevelDanger')
   }
 
   if (
-    collateralizationRatio.gt(collateralizationDangerThreshold) &&
-    collateralizationRatio.lte(collateralizationWarningThreshold)
+    vault.collateralizationRatio.gt(collateralizationDangerThreshold) &&
+    vault.collateralizationRatio.lte(collateralizationWarningThreshold)
   ) {
     warningMessages.push('vaultAtRiskLevelWarning')
   }
 
   if (
-    afterCollateralizationRatio.gt(liquidationRatio) &&
+    afterCollateralizationRatio.gt(ilkData.liquidationRatio) &&
     afterCollateralizationRatio.lte(collateralizationDangerThreshold)
   ) {
     warningMessages.push('vaultAtRiskLevelDanger')
@@ -263,7 +259,10 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     warningMessages.push('vaultAtRiskLevelWarning')
   }
 
-  if (collateralizationRatio.lt(liquidationRatio) && !collateralizationRatio.isZero()) {
+  if (
+    vault.collateralizationRatio.lt(ilkData.liquidationRatio) &&
+    !vault.collateralizationRatio.isZero()
+  ) {
     warningMessages.push('vaultUnderCollateralized')
   }
 
