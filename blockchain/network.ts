@@ -133,12 +133,12 @@ export const protoWeb3Context: Web3Context = {
   chainId: 42,
   status: 'connected',
   deactivate: () => null,
-  account: '0xdA1810f583320Bd25BD30130fD5Db06591bEf915',
+  account: '0xConnectedAccount',
   connectionKind: 'injected',
   web3: {} as Web3,
 }
 
-export const protoContextConnected: ContextConnected = {
+export const protoContext: Context = {
   contract: <T>(c: ContractDesc) => contract(new Web3(), c) as T,
   web3ProviderGetPastLogs: {} as Web3,
   ...networksById['42'],

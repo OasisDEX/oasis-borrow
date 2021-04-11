@@ -106,6 +106,8 @@ export type AddGasEstimationFunction = <S extends HasGasEstimation>(
 
 export type TxHelpers$ = Observable<TxHelpers>
 
+export const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
+
 function createTxHelpers$(
   context$: Observable<ContextConnected>,
   send: SendFunction<TxData>,
@@ -190,8 +192,6 @@ export function setupAppContext() {
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
-
-  const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
 
   const ilkData$ = memoize(
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, catIlks$, ilkToToken$),

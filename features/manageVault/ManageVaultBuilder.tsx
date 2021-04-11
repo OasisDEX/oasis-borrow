@@ -1,184 +1,173 @@
-import { nullAddress } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
-import { IlkData, protoETHAIlkData, protoUSDCAIlkData, protoWBTCAIlkData } from 'blockchain/ilks'
-import { ContextConnected, protoContextConnected } from 'blockchain/network'
-import { createVault$, Vault } from 'blockchain/vaults'
-import { AppContext, bigNumberTostring, protoTxHelpers } from 'components/AppContext'
+import { buildIlkData$, BuildIlkDataProps, IlkData } from 'blockchain/ilks'
+import { Context, protoContext } from 'blockchain/network'
+import { buildVault$, BuildVaultProps, Vault } from 'blockchain/vaults'
+import { AppContext, protoTxHelpers } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
-import { BalanceInfo } from 'features/shared/balanceInfo'
-import {
-  PriceInfo,
-  protoETHPriceInfo,
-  protoUSDCPriceInfo,
-  protoWBTCPriceInfo,
-} from 'features/shared/priceInfo'
-import { one, zero } from 'helpers/zero'
-import { memoize } from 'lodash'
+import { BalanceInfo, buildBalanceInfo$, BuildBalanceInfoProps } from 'features/shared/balanceInfo'
+import { buildPriceInfo$, BuildPriceInfoProps, PriceInfo } from 'features/shared/priceInfo'
+import { one } from 'helpers/zero'
 import React from 'react'
 import { useEffect } from 'react'
-import { of } from 'rxjs'
+import { Observable, of } from 'rxjs'
 import { first, switchMap } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
-import { createManageVault$, ManageVaultStage, ManageVaultState } from './manageVault'
+import { createManageVault$, ManageVaultState } from './manageVault'
 import { ManageVaultView } from './ManageVaultView'
 
 const VAULT_ID = one
 
-const protoUrnAddress = '0xEe0b6175705CDFEb824e5092d6547C011EbB46A8'
+interface BuildManageVaultProps {
+  _context$?: Observable<Context>
+  _ilkData$?: Observable<IlkData>
+  _priceInfo$?: Observable<PriceInfo>
+  _balanceInfo$?: Observable<BalanceInfo>
+  _proxyAddress$?: Observable<string | undefined>
+  _collateralAllowance$?: Observable<BigNumber>
+  _daiAllowance$?: Observable<BigNumber>
+  _vault$?: Observable<Vault>
 
-type ManageVaultStory = Partial<ManageVaultState> & {
-  title?: string
-  _balanceInfo?: Partial<BalanceInfo>
-  _ilkData?: Partial<IlkData>
-  _priceInfo?: Partial<PriceInfo>
-  context?: ContextConnected
-  allowance?: BigNumber
-  vault?: Partial<Vault>
-  urnAddress?: string
-  owner?: string
-  unlockedCollateral?: BigNumber
-  controller?: string
-  depositAmount?: BigNumber
-  withdrawAmount?: BigNumber
-  generateAmount?: BigNumber
-  paybackAmount?: BigNumber
-  collateral?: BigNumber
-  debt?: BigNumber
-  stage?: ManageVaultStage
-  ilk?: 'ETH-A' | 'WBTC-A' | 'USDC-A'
+  ilkData?: BuildIlkDataProps
+  priceInfo: BuildPriceInfoProps
+  balanceInfo: BuildBalanceInfoProps
+  vault: BuildVaultProps
+
+  proxyAddress?: string
+  collateralAllowance?: BigNumber
+  daiAllowance?: BigNumber
+  account?: string
+  ilk?: string
 }
+
+function buildManageVault$({
+  _ilkData$,
+  _priceInfo$,
+  _balanceInfo$,
+  _proxyAddress$,
+  _collateralAllowance$,
+  _daiAllowance$,
+  _vault$,
+  ilkData = {},
+  priceInfo = {},
+  balanceInfo,
+  vault,
+  proxyAddress = '0xProxyAddress',
+  collateralAllowance = maxUint256,
+  daiAllowance = maxUint256,
+  account = '0xVaultController',
+  ilk = 'WBTC-A',
+}: BuildManageVaultProps): Observable<ManageVaultState> {
+  const token = ilk.split('-')[0]
+
+  const context$ = of({
+    ...protoContext,
+    account,
+  })
+  const txHelpers$ = of(protoTxHelpers)
+
+  const priceInfo$ = () => _priceInfo$ || buildPriceInfo$({ ...priceInfo, token })
+  const ilkData$ = () =>
+    _ilkData$ ||
+    buildIlkData$({
+      _priceInfo$: priceInfo$(),
+      ...ilkData,
+    })
+
+  const balanceInfo$ = () =>
+    _balanceInfo$ || buildBalanceInfo$({ ...balanceInfo, address: account })
+
+  const proxyAddress$ = () => _proxyAddress$ || of(proxyAddress)
+  const allowance$ = (_token: string) =>
+    _token === 'DAI'
+      ? _daiAllowance$ || of(daiAllowance)
+      : _collateralAllowance$ || of(collateralAllowance)
+
+  const _oraclePriceData$ = priceInfo$().pipe(
+    switchMap(({ currentCollateralPrice, nextCollateralPrice, isStaticCollateralPrice }) =>
+      of({
+        currentPrice: currentCollateralPrice,
+        nextPrice: nextCollateralPrice || currentCollateralPrice,
+        isStaticPrice: isStaticCollateralPrice,
+      }),
+    ),
+  )
+
+  const vault$ = () =>
+    _vault$ ||
+    buildVault$({
+      _oraclePriceData$,
+      _ilkData$: ilkData$(),
+      ilk,
+      collateral: vault.collateral,
+      debt: vault.debt,
+    })
+  return createManageVault$(
+    context$ as Observable<Context>,
+    txHelpers$,
+    proxyAddress$,
+    allowance$,
+    priceInfo$,
+    balanceInfo$,
+    ilkData$,
+    vault$,
+    VAULT_ID,
+  )
+}
+
+type SharedManageVaultState = Partial<
+  Omit<ManageVaultState, Extract<keyof ManageVaultState, keyof BuildManageVaultProps>>
+>
+type ManageVaultStory = { title?: string } & BuildManageVaultProps & SharedManageVaultState
 
 export function manageVaultStory({
   title,
-  context,
-  allowance,
+  balanceInfo,
   priceInfo,
-  _balanceInfo,
-  _ilkData,
-  urnAddress,
-  owner,
-  unlockedCollateral,
-  controller,
+  vault,
+  ilkData,
   depositAmount,
   withdrawAmount,
   generateAmount,
   paybackAmount,
-  ilk = 'ETH-A',
   proxyAddress = '0xProxyAddress',
   stage = 'collateralEditing',
-  collateral = zero,
-  debt = zero,
   ...otherState
-}: ManageVaultStory = {}) {
+}: ManageVaultStory) {
   return () => {
-    const protoPriceInfo = {
-      ...(ilk === 'ETH-A'
-        ? protoETHPriceInfo
-        : ilk === 'WBTC-A'
-        ? protoWBTCPriceInfo
-        : protoUSDCPriceInfo),
-      ...(priceInfo || {}),
-    }
-
-    const protoIlkData = {
-      ...(ilk === 'ETH-A'
-        ? protoETHAIlkData
-        : ilk === 'WBTC-A'
-        ? protoWBTCAIlkData
-        : protoUSDCAIlkData),
-      ..._ilkData,
-    }
-
-    const protoBalanceInfo: BalanceInfo = {
-      collateralBalance: zero,
-      ethBalance: zero,
-      daiBalance: zero,
-      ..._balanceInfo,
-    }
-
-    const newState: Partial<ManageVaultState> = {
-      ...otherState,
-      stage,
-      ...(depositAmount && {
-        depositAmount,
-        depositAmountUSD: depositAmount.times(protoPriceInfo.currentCollateralPrice),
-      }),
-      ...(withdrawAmount && {
-        withdrawAmount,
-        withdrawAmountUSD: withdrawAmount.times(protoPriceInfo.currentCollateralPrice),
-      }),
-      ...(generateAmount && {
-        generateAmount,
-      }),
-      ...(paybackAmount && {
-        paybackAmount,
-      }),
-    }
-
-    const context$ = of(context || protoContextConnected)
-    const txHelpers$ = of(protoTxHelpers)
-    const proxyAddress$ = () => of(proxyAddress)
-    const allowance$ = () => of(allowance || maxUint256)
-
-    const oraclePriceData$ = () =>
-      of(protoPriceInfo).pipe(
-        switchMap(({ currentCollateralPrice }) =>
-          of({ currentPrice: currentCollateralPrice, isStaticPrice: true }),
-        ),
-      )
-    const priceInfo$ = () => of(protoPriceInfo)
-    const balanceInfo$ = () => of(protoBalanceInfo)
-    const ilkData$ = () => of(protoIlkData)
-
-    const normalizedDebt = debt
-      .div(protoIlkData.debtScalingFactor)
-      .decimalPlaces(18, BigNumber.ROUND_DOWN)
-
-    const cdpManagerUrns$ = () => of(urnAddress || protoUrnAddress)
-    const cdpManagerIlks$ = () => of(ilk || 'ETH-A')
-    const cdpManagerOwner$ = () => of(owner || proxyAddress || nullAddress)
-
-    const vatUrns$ = () => of({ collateral, normalizedDebt })
-    const vatGem$ = () => of(unlockedCollateral || zero)
-
-    const controller$ = () => of(controller || context?.account || protoContextConnected.account)
-    const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
-
-    const vault$ = memoize(
-      (id: BigNumber) =>
-        createVault$(
-          cdpManagerUrns$,
-          cdpManagerIlks$,
-          cdpManagerOwner$,
-          vatUrns$,
-          vatGem$,
-          ilkData$,
-          oraclePriceData$,
-          controller$,
-          ilkToToken$,
-          id,
-        ),
-      bigNumberTostring,
-    )
-
-    const obs$ = createManageVault$(
-      context$,
-      txHelpers$,
-      proxyAddress$,
-      allowance$,
-      priceInfo$,
-      balanceInfo$,
-      ilkData$,
-      vault$,
-      VAULT_ID,
-    )
+    const obs$ = buildManageVault$({
+      balanceInfo,
+      priceInfo,
+      vault,
+      ilkData,
+    })
 
     useEffect(() => {
-      const subscription = obs$.pipe(first()).subscribe(({ injectStateOverride }) => {
-        injectStateOverride(newState || {})
-      })
+      const subscription = obs$
+        .pipe(first())
+        .subscribe(({ injectStateOverride, priceInfo: { currentCollateralPrice } }) => {
+          const newState: Partial<ManageVaultState> = {
+            ...otherState,
+            stage,
+            ...(depositAmount && {
+              depositAmount,
+              depositAmountUSD: depositAmount.times(currentCollateralPrice),
+            }),
+            ...(withdrawAmount && {
+              withdrawAmount,
+              withdrawAmountUSD: withdrawAmount.times(currentCollateralPrice),
+            }),
+            ...(generateAmount && {
+              generateAmount,
+            }),
+            ...(paybackAmount && {
+              paybackAmount,
+            }),
+          }
+
+          injectStateOverride(newState || {})
+        })
       return subscription.unsubscribe()
     }, [])
 

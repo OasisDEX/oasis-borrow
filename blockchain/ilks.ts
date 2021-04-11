@@ -5,6 +5,8 @@ import { CallObservable } from 'blockchain/calls/observe'
 import { SpotIlk, spotIlk } from 'blockchain/calls/spot'
 import { VatIlk, vatIlk } from 'blockchain/calls/vat'
 import { Context } from 'blockchain/network'
+import { ilkToToken$ } from 'components/AppContext'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { now } from 'helpers/time'
 import { zero } from 'helpers/zero'
 import { of } from 'rxjs'
@@ -161,4 +163,78 @@ export const protoUSDCAIlkData: IlkData = {
   priceFeedAddress: '0x77b68899b99b686F415d074278a9a16b336085A0',
   stabilityFee: new BigNumber('0.05'),
   token: 'USDC',
+}
+
+export const DEFAULT_DEBT_SCALING_FACTOR = new BigNumber('1.000000000000000000001')
+
+export interface BuildIlkDataProps {
+  _priceInfo$?: Observable<PriceInfo>
+  _vatIlk$?: Observable<VatIlk>
+  _spotIlk$?: Observable<SpotIlk>
+  _jugIlk$?: Observable<JugIlk>
+  _catIlk$?: Observable<CatIlk>
+  debtFloor?: BigNumber
+  debtCeiling?: BigNumber
+  ilkDebt?: BigNumber
+  liquidationRatio?: BigNumber
+  stabilityFee?: BigNumber
+  currentCollateralPrice?: BigNumber
+  ilk?: string
+}
+
+const defaultDebtFloor = new BigNumber('2000')
+const defaultDebtCeiling = new BigNumber('1000000')
+const defaultIlkDebt = new BigNumber('8000000')
+const defaultLiquidationRatio = new BigNumber('1.5')
+const defaultStabilityFee = new BigNumber('0.045')
+const defaultCollateralPrice = new BigNumber('1000')
+const defaultIlk = 'WBTC-A'
+
+export function buildIlkData$({
+  _priceInfo$,
+  _vatIlk$,
+  _spotIlk$,
+  _jugIlk$,
+  _catIlk$,
+  debtFloor = defaultDebtFloor,
+  debtCeiling = defaultDebtCeiling,
+  ilkDebt = defaultIlkDebt,
+  liquidationRatio = defaultLiquidationRatio,
+  stabilityFee = defaultStabilityFee,
+  currentCollateralPrice = defaultCollateralPrice,
+  ilk = defaultIlk,
+}: BuildIlkDataProps): Observable<IlkData> {
+  const normalizedIlkDebt = ilkDebt.div(DEFAULT_DEBT_SCALING_FACTOR)
+
+  const maxDebtPerUnitCollateral$ = _priceInfo$
+    ? _priceInfo$.pipe(
+        switchMap(({ currentCollateralPrice }) => of(currentCollateralPrice.div(liquidationRatio))),
+      )
+    : of(currentCollateralPrice.div(liquidationRatio))
+
+  const vatIlks$ = () =>
+    _vatIlk$ ||
+    maxDebtPerUnitCollateral$.pipe(
+      switchMap((maxDebtPerUnitCollateral) =>
+        of({
+          normalizedIlkDebt,
+          debtScalingFactor: DEFAULT_DEBT_SCALING_FACTOR,
+          maxDebtPerUnitCollateral,
+          debtCeiling,
+          debtFloor,
+        }),
+      ),
+    )
+
+  const spotIlks$ = () =>
+    _spotIlk$ || of({ priceFeedAddress: '0xPriceFeedAddress', liquidationRatio })
+  const jugIlks$ = () => _jugIlk$ || of({ feeLastLevied: new Date(), stabilityFee })
+  const catIlks$ = () =>
+    _catIlk$ ||
+    of({
+      liquidatorAddress: '0xLiquidatorAddress',
+      liquidationPenalty: new BigNumber('0.13'),
+      maxAuctionLotSize: new BigNumber('50000'),
+    })
+  return createIlkData$(vatIlks$, spotIlks$, jugIlks$, catIlks$, ilkToToken$, ilk)
 }

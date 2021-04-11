@@ -1,7 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
 import { Context } from 'blockchain/network'
-import { zero } from 'helpers/zero'
+import { ilkToToken$ } from 'components/AppContext'
+import { lastHour, nextHour } from 'helpers/time'
+import { one, zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -9,7 +11,7 @@ import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from './calls/cdpMana
 import { getCdps } from './calls/getCdps'
 import { CallObservable } from './calls/observe'
 import { vatGem, vatUrns } from './calls/vat'
-import { IlkData } from './ilks'
+import { buildIlkData$, IlkData } from './ilks'
 import { OraclePriceData } from './prices'
 
 export function createVaults$(
@@ -182,4 +184,72 @@ export function createVaultChange$(
   id: BigNumber,
 ): Observable<VaultChange> {
   return vault$(id).pipe(map((vault) => ({ kind: 'vault', vault })))
+}
+
+export interface BuildVaultProps {
+  _oraclePriceData$: Observable<OraclePriceData>
+  _ilkData$: Observable<IlkData>
+  controller?: string
+  ilk: string
+  collateral: BigNumber
+  debt: BigNumber
+  unlockedCollateral?: BigNumber
+  currentPrice?: BigNumber
+  nextPrice?: BigNumber
+  id?: BigNumber
+}
+
+export function buildVault$({
+  _oraclePriceData$,
+  _ilkData$,
+  currentPrice = zero,
+  nextPrice = zero,
+  unlockedCollateral = zero,
+  id = one,
+  controller = '0xVaultOwner',
+  debt,
+  collateral,
+  ilk,
+}: BuildVaultProps): Observable<Vault> {
+  const oraclePriceData$ = () =>
+    _oraclePriceData$ ||
+    of({
+      currentPrice,
+      isStaticPrice: false,
+      nextPrice,
+    })
+
+  const ilkData$ = () =>
+    _ilkData$ ||
+    oraclePriceData$().pipe(
+      switchMap(({ currentPrice }) => buildIlkData$({ ilk, currentCollateralPrice: currentPrice })),
+    )
+
+  const cdpManagerUrns$ = () => of('urnAddress')
+  const cdpManagerIlks$ = () => of(ilk)
+  const cdpManagerOwner$ = () => of('0xProxyAddress')
+  const controller$ = () => of(controller)
+  const vatGem$ = () => of(unlockedCollateral)
+  const vatUrns$ = () =>
+    ilkData$().pipe(
+      switchMap(({ debtScalingFactor }) =>
+        of({
+          normalizedDebt: debt.div(debtScalingFactor).dp(18, BigNumber.ROUND_DOWN),
+          collateral,
+        }),
+      ),
+    )
+
+  return createVault$(
+    cdpManagerUrns$,
+    cdpManagerIlks$,
+    cdpManagerOwner$,
+    vatUrns$,
+    vatGem$,
+    ilkData$,
+    oraclePriceData$,
+    controller$,
+    ilkToToken$,
+    id,
+  )
 }

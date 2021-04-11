@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { OraclePriceData } from 'blockchain/prices'
-import { nextHour, now } from 'helpers/time'
+import { lastHour, nextHour, now } from 'helpers/time'
+import { one } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -129,4 +130,54 @@ export const protoUSDCPriceInfo: PriceInfo = {
 
   currentCollateralPrice: new BigNumber('56176.76'),
   isStaticCollateralPrice: true,
+}
+
+export interface BuildPriceInfoProps {
+  _oraclePriceData$?: Observable<OraclePriceData>
+  collateralPrice?: BigNumber
+  ethPrice?: BigNumber
+  isStatic?: boolean
+  collateralChangePercentage?: BigNumber // changes next price
+  ethChangePercentage?: BigNumber
+  token?: string
+}
+
+const defaultCollateralPrice = new BigNumber('550')
+const defaultEthPrice = new BigNumber('1350')
+const defaultIsStatic = false
+const defaultCollateralChangePercentage = new BigNumber('0.05125')
+const defaultEthChangePercentage = new BigNumber('0.0221')
+const defaultToken = 'WBTC'
+
+export function buildPriceInfo$({
+  _oraclePriceData$,
+  collateralPrice = defaultCollateralPrice,
+  ethPrice = defaultEthPrice,
+  isStatic = defaultIsStatic,
+  collateralChangePercentage = defaultCollateralChangePercentage,
+  ethChangePercentage = defaultEthChangePercentage,
+  token = defaultToken,
+}: BuildPriceInfoProps): Observable<PriceInfo> {
+  const ethPriceInfo$ = of({
+    currentPrice: ethPrice,
+    isStaticPrice: false,
+    nextPrice: ethPrice.times(one.plus(ethChangePercentage)),
+    currentPriceUpdate: lastHour,
+    nextPriceUpdate: nextHour,
+    percentageChange: ethChangePercentage,
+  })
+  const collateralPriceInfo$ = of({
+    currentPrice: collateralPrice,
+    isStaticPrice: isStatic,
+    ...(!isStatic && {
+      nextPrice: collateralPrice.times(one.plus(collateralChangePercentage)),
+      currentPriceUpdate: lastHour,
+      nextPriceUpdate: nextHour,
+      percentageChange: collateralChangePercentage,
+    }),
+  })
+
+  const oraclePriceData$ = (_token: string) =>
+    _oraclePriceData$ || _token === 'ETH' ? ethPriceInfo$ : collateralPriceInfo$
+  return createPriceInfo$(oraclePriceData$, token)
 }
