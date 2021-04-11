@@ -92,6 +92,8 @@ export function categoriseManageVaultStage(stage: ManageVaultStage) {
   }
 }
 
+// This value ought to be coupled in relation to how much we round the raw debt
+// value in the vault (vault.debt)
 export const PAYBACK_ALL_BOUND = one
 
 export function applyManageVaultCalculations(state: ManageVaultState): ManageVaultState {
@@ -107,6 +109,7 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     withdrawAmount,
     paybackAmount,
     debt,
+    approximateDebt,
     ilkDebtAvailable,
   } = state
 
@@ -122,16 +125,13 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     ? ilkDebtAvailable
     : daiYieldFromTotalCollateral
 
-  // NOTE Move this to vault$
-  const roundedDebt = debt.decimalPlaces(6, BigNumber.ROUND_HALF_UP)
-
-  const maxPaybackAmount = daiBalance.lt(roundedDebt) ? daiBalance : roundedDebt
+  const maxPaybackAmount = daiBalance.lt(approximateDebt) ? daiBalance : approximateDebt
 
   const shouldPaybackAll = !!(
     daiBalance.gte(debt) &&
     paybackAmount &&
-    paybackAmount.plus(PAYBACK_ALL_BOUND).gte(roundedDebt) &&
-    !paybackAmount.gt(roundedDebt)
+    paybackAmount.plus(PAYBACK_ALL_BOUND).gte(approximateDebt) &&
+    !paybackAmount.gt(approximateDebt)
   )
 
   const afterLockedCollateral = depositAmount
@@ -172,7 +172,6 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     collateralizationWarningThreshold,
     shouldPaybackAll,
     daiYieldFromTotalCollateral,
-    roundedDebt,
   }
 }
 
@@ -314,7 +313,7 @@ export type DefaultManageVaultState = {
   lockedCollateral: BigNumber
   lockedCollateralUSD: BigNumber
   debt: BigNumber
-  roundedDebt: BigNumber
+  approximateDebt: BigNumber
   liquidationPrice: BigNumber
   freeCollateral: BigNumber
   freeCollateralUSD: BigNumber
@@ -490,9 +489,8 @@ export const defaultPartialManageVaultState = {
   collateralizationWarningThreshold: zero,
   collateralAllowanceAmount: maxUint256,
   daiAllowanceAmount: maxUint256,
-  shouldPaybackAll: false,
   daiYieldFromTotalCollateral: zero,
-  roundedDebt: zero,
+  shouldPaybackAll: false,
 }
 
 export function createManageVault$(
@@ -558,6 +556,7 @@ export function createManageVault$(
                     lockedCollateral: vault.lockedCollateral,
                     lockedCollateralUSD: vault.lockedCollateralUSD,
                     debt: vault.debt,
+                    approximateDebt: vault.approximateDebt,
                     liquidationPrice: vault.liquidationPrice,
                     collateralizationRatio: vault.collateralizationRatio,
                     nextCollateralizationRatio: vault.nextCollateralizationRatio,

@@ -49,6 +49,7 @@ export interface Vault {
   freeCollateral: BigNumber
   freeCollateralUSD: BigNumber
   debt: BigNumber
+  approximateDebt: BigNumber
   normalizedDebt: BigNumber
   availableDebt: BigNumber
   availableIlkDebt: BigNumber
@@ -114,6 +115,8 @@ export function createVault$(
             const collateralUSD = collateral.times(currentPrice)
             const nextCollateralUSD = nextPrice ? collateral.times(nextPrice) : currentPrice
             const debt = debtScalingFactor.times(normalizedDebt)
+            const approximateDebt = debt.decimalPlaces(6, BigNumber.ROUND_HALF_UP)
+
             const ilkDebt = debtScalingFactor.times(normalizedIlkDebt)
 
             const backingCollateral = debt.times(liquidationRatio).div(currentPrice)
@@ -152,6 +155,7 @@ export function createVault$(
               collateralizationRatio,
               nextCollateralizationRatio,
               debt,
+              approximateDebt,
               availableDebt,
               availableIlkDebt,
               debtFloor,

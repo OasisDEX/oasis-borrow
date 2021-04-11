@@ -48,8 +48,8 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     collateralBalance,
     daiYieldFromTotalCollateral,
     daiBalance,
-    roundedDebt,
     freeCollateral,
+    approximateDebt,
   } = state
 
   const errorMessages: ManageVaultErrorMessage[] = []
@@ -112,7 +112,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     errorMessages.push('paybackAmountExceedsDaiBalance')
   }
 
-  if (paybackAmount?.gt(roundedDebt)) {
+  if (paybackAmount?.gt(approximateDebt)) {
     errorMessages.push('paybackAmountExceedsVaultDebt')
   }
 

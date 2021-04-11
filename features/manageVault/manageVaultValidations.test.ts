@@ -43,6 +43,7 @@ describe('manageVaultValidations', () => {
       lockedCollateral: zero,
       lockedCollateralUSD: zero,
       debt: zero,
+      approximateDebt: zero,
       liquidationPrice: zero,
       collateralizationRatio: zero,
       nextCollateralizationRatio: zero,
@@ -119,7 +120,8 @@ describe('manageVaultValidations', () => {
           applyManageVaultCalculations({
             ...manageVaultState,
             paybackAmount: new BigNumber('2999.5'),
-            debt: new BigNumber('3000'),
+            debt: new BigNumber('2999.9999999999999999999995'),
+            approximateDebt: new BigNumber('3000'),
             daiBalance: new BigNumber('10000'),
             daiAllowance: maxUint256,
           }),
@@ -130,7 +132,8 @@ describe('manageVaultValidations', () => {
           applyManageVaultCalculations({
             ...manageVaultState,
             paybackAmount: new BigNumber('2999'),
-            debt: new BigNumber('3000'),
+            debt: new BigNumber('2999.9999999999999999999995'),
+            approximateDebt: new BigNumber('3000'),
             daiBalance: new BigNumber('10000'),
             daiAllowance: maxUint256,
           }),
@@ -141,7 +144,8 @@ describe('manageVaultValidations', () => {
           applyManageVaultCalculations({
             ...manageVaultState,
             paybackAmount: new BigNumber('3000'),
-            debt: new BigNumber('3000'),
+            debt: new BigNumber('2999.9999999999999999999995'),
+            approximateDebt: new BigNumber('3000'),
             daiBalance: new BigNumber('10000'),
             daiAllowance: maxUint256,
           }),
@@ -152,7 +156,8 @@ describe('manageVaultValidations', () => {
           applyManageVaultCalculations({
             ...manageVaultState,
             paybackAmount: new BigNumber('3000.01'),
-            debt: new BigNumber('3000'),
+            debt: new BigNumber('2999.9999999999999999999995'),
+            approximateDebt: new BigNumber('3000'),
             daiBalance: new BigNumber('10000'),
             daiAllowance: maxUint256,
           }),
@@ -164,7 +169,8 @@ describe('manageVaultValidations', () => {
           applyManageVaultCalculations({
             ...manageVaultState,
             paybackAmount: new BigNumber('3000'),
-            debt: new BigNumber('3000'),
+            debt: new BigNumber('2999.9999999999999999999995'),
+            approximateDebt: new BigNumber('3000'),
             daiBalance: new BigNumber('2999'),
             daiAllowance: maxUint256,
           }),
@@ -177,6 +183,7 @@ describe('manageVaultValidations', () => {
             ...manageVaultState,
             paybackAmount: new BigNumber('3000'),
             debt: new BigNumber('2999.9999995'),
+            approximateDebt: new BigNumber('3000'),
             daiBalance: new BigNumber('10000'),
             daiAllowance: maxUint256,
           }),
@@ -188,6 +195,7 @@ describe('manageVaultValidations', () => {
             ...manageVaultState,
             paybackAmount: new BigNumber('3000'),
             debt: new BigNumber('2999.9999994'),
+            approximateDebt: new BigNumber('2999.999999'),
             daiBalance: new BigNumber('10000'),
             daiAllowance: maxUint256,
           }),
@@ -245,25 +253,26 @@ describe('manageVaultValidations', () => {
       safeConfirmations: 6,
       ethBalance: zero,
       debt,
+      approximateDebt: debt,
       injectStateOverride: (_state: Partial<ManageVaultState>) => _.noop(),
     })
     it('Should show no errors when the state is correct', () => {
       const { errorMessages } = validateErrors(manageVaultState)
       expect(errorMessages).to.be.an('array').that.is.empty
     })
-    it('Should show depositAmountGreaterThanMaxDepositAmount error', () => {
+    it('Should show depositAmountExceedsCollateralBalance error', () => {
       const { errorMessages } = validateErrors({
         ...manageVaultState,
-        maxDepositAmount: depositAmount.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
+        collateralBalance: depositAmount.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
       })
-      expect(errorMessages).to.deep.equal(['depositAmountGreaterThanMaxDepositAmount'])
+      expect(errorMessages).to.deep.equal(['depositAmountExceedsCollateralBalance'])
     })
-    it('Should show withdrawAmountGreaterThanMaxWithdrawAmount error', () => {
+    it('Should show withdrawAmountExceedsFreeCollateral error', () => {
       const { errorMessages } = validateErrors({
         ...manageVaultState,
-        //maxWithdrawAmount: withdrawAmount.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
+        freeCollateral: withdrawAmount.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
       })
-      expect(errorMessages).to.deep.equal(['withdrawAmountGreaterThanMaxWithdrawAmount'])
+      expect(errorMessages).to.deep.equal(['withdrawAmountExceedsFreeCollateral'])
     })
     it('Should show generateAmountLessThanDebtFloor error', () => {
       const { errorMessages } = validateErrors({
@@ -273,29 +282,26 @@ describe('manageVaultValidations', () => {
       })
       expect(errorMessages).to.deep.equal(['generateAmountLessThanDebtFloor'])
     })
-    it('Should show generateAmountGreaterThanDebtCeiling error', () => {
+    it('Should show generateAmountExceedsDebtCeiling error', () => {
       const { errorMessages } = validateErrors({
         ...manageVaultState,
         generateAmount: ilkDebtAvailable.multipliedBy(SLIGHTLY_MORE_THAN_ONE),
       })
-      expect(errorMessages).to.deep.equal([
-        'generateAmountGreaterThanMaxGenerateAmount',
-        'generateAmountGreaterThanDebtCeiling',
-      ])
+      expect(errorMessages).to.deep.equal(['generateAmountExceedsDebtCeiling'])
     })
-    it('Should show paybackAmountGreaterThanMaxPaybackAmount error', () => {
+    it('Should show paybackAmountExceedsVaultDebt error', () => {
       const { errorMessages } = validateErrors({
         ...manageVaultState,
-        maxPaybackAmount: paybackAmount.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
+        approximateDebt: paybackAmount.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
       })
-      expect(errorMessages).to.deep.equal(['paybackAmountGreaterThanMaxPaybackAmount'])
+      expect(errorMessages).to.deep.equal(['paybackAmountExceedsVaultDebt'])
     })
     it('Should show paybackAmountLessThanDebtFloor error', () => {
       const { errorMessages } = validateErrors({
         ...manageVaultState,
         paybackAmount: debt.minus(debtFloor).plus(1),
       })
-      expect(errorMessages).to.deep.equal(['paybackAmountLessThanDebtFloor'])
+      expect(errorMessages).to.deep.equal(['paybackAmountCausesVaultDebtToBeLessThanDebtFloor'])
     })
     describe('Should validate allowance', () => {
       it('Should show daiAllowanceAmountEmpty error', () => {
