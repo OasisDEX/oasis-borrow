@@ -117,6 +117,12 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     .div(liquidationRatio)
     .minus(debt)
 
+  const daiYieldFromTotalCollateralAtNextPrice = lockedCollateral
+    .plus(depositAmount || zero)
+    .times(nextCollateralPrice || currentCollateralPrice)
+    .div(liquidationRatio)
+    .minus(debt)
+
   const maxGenerateAmount = daiYieldFromTotalCollateral.gt(ilkDebtAvailable)
     ? ilkDebtAvailable
     : daiYieldFromTotalCollateral
@@ -173,6 +179,7 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     maxPaybackAmount,
     shouldPaybackAll,
     daiYieldFromTotalCollateral,
+    daiYieldFromTotalCollateralAtNextPrice,
   }
 }
 
@@ -310,6 +317,7 @@ export type ManageVaultState = {
   maxPaybackAmount: BigNumber
   shouldPaybackAll: boolean
   daiYieldFromTotalCollateral: BigNumber
+  daiYieldFromTotalCollateralAtNextPrice: BigNumber
   afterLiquidationPrice: BigNumber
   afterCollateralizationRatio: BigNumber
   afterCollateralizationRatioAtNextPrice: BigNumber
@@ -477,6 +485,7 @@ export const defaultPartialManageVaultState = {
   collateralAllowanceAmount: maxUint256,
   daiAllowanceAmount: maxUint256,
   daiYieldFromTotalCollateral: zero,
+  daiYieldFromTotalCollateralAtNextPrice: zero,
   shouldPaybackAll: false,
 }
 

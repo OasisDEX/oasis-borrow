@@ -65,7 +65,7 @@ export const DepositAmountExceedsCollateralBalance = manageVaultStory({
 
 export const WithdrawAmountExceedsFreeCollateral = manageVaultStory({
   title:
-    'Error is shown when a user is trying to withdraw an amount of collateral from the vault which would cause it to become undercollateralized',
+    'Error is shown when a user is trying to withdraw an amount of collateral from the vault which is greater than the amount of collateral which is "free", not backing the outstanding debt in the vault',
   vault: {
     ilk: 'WBTC-A',
     collateral: new BigNumber('15'),
@@ -73,6 +73,19 @@ export const WithdrawAmountExceedsFreeCollateral = manageVaultStory({
   },
   stage: 'collateralEditing',
   withdrawAmount: new BigNumber('8'),
+})
+
+export const WithdrawAmountExceedsFreeCollateralAtNextPrice = manageVaultStory({
+  title:
+    'Error is shown when a user is trying to withdraw an amount of collateral from the vault which at next price update is greater than the amount of collateral which is "free", not backing the outstanding debt in the vault',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('15'),
+    debt: new BigNumber('3000'),
+  },
+  priceInfo: { collateralChangePercentage: new BigNumber('-0.1') },
+  stage: 'collateralEditing',
+  withdrawAmount: new BigNumber('6'),
 })
 
 export const GenerateAmountExceedsDebtCeiling = manageVaultStory({
@@ -88,15 +101,34 @@ export const GenerateAmountExceedsDebtCeiling = manageVaultStory({
   generateAmount: new BigNumber('2000'),
 })
 
-export const GenerateAmountExceedsDaiThatCanBeGenerated = manageVaultStory({
+export const GenerateAmountExceedsDaiYieldFromTotalCollateral = manageVaultStory({
   title:
-    'Error is shown when a user is trying to generate an amount of DAI that would cause the vault to be undercollateralized',
+    'Error is shown when a user is trying to generate an amount of DAI that is greater than the maximum of dai that can be generated from the collateral already locked in the vault and the amount of collateral the user is also depositing',
   vault: {
     ilk: 'WBTC-A',
     collateral: new BigNumber('15'),
     debt: new BigNumber('3000'),
   },
-  stage: 'daiEditing',
+  stage: 'collateralEditing',
+  showDepositAndGenerateOption: true,
+  depositAmount: new BigNumber('3'),
+  generateAmount: new BigNumber('4000'),
+})
+
+export const GenerateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice = manageVaultStory({
+  title:
+    'Error is shown when a user is trying to generate an amount of DAI that is greater than the maximum of dai at next price update that can be generated from the collateral already locked in the vault and the amount of collateral the user is also depositing',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('15'),
+    debt: new BigNumber('3000'),
+  },
+  priceInfo: {
+    collateralChangePercentage: new BigNumber('-0.6'),
+  },
+  stage: 'collateralEditing',
+  showDepositAndGenerateOption: true,
+  depositAmount: new BigNumber('30'),
   generateAmount: new BigNumber('4000'),
 })
 
@@ -151,7 +183,7 @@ export const PaybackAmountCausesVaultDebtToBeLessThanDebtFloor = manageVaultStor
   balanceInfo: { daiBalance: new BigNumber('10000') },
 })
 
-export const vaultWillBeUnderCollateralizedAtNextPrice = manageVaultStory({
+export const VaultWillBeUnderCollateralizedAtNextPrice = manageVaultStory({
   vault: {
     ilk: 'WBTC-A',
     collateral: new BigNumber('20'),
@@ -164,6 +196,6 @@ export const vaultWillBeUnderCollateralizedAtNextPrice = manageVaultStory({
 
 // eslint-disable-next-line import/no-default-export
 export default {
-  title: 'ManageVault/Validations',
+  title: 'ManageVault/Errors',
   component: ManageVaultView,
 }
