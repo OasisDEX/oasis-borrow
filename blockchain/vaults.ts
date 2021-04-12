@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
 import { Context } from 'blockchain/network'
 import { ilkToToken$ } from 'components/AppContext'
-import { lastHour, nextHour } from 'helpers/time'
 import { one, zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
@@ -46,14 +45,18 @@ export interface Vault {
   lockedCollateral: BigNumber
   unlockedCollateral: BigNumber
   lockedCollateralUSD: BigNumber
+  nextLockedCollateralUSD: BigNumber
   backingCollateral: BigNumber
   backingCollateralUSD: BigNumber
+  nextBackingCollateralUSD: BigNumber
   freeCollateral: BigNumber
   freeCollateralUSD: BigNumber
+  nextFreeCollateralUSD: BigNumber
   debt: BigNumber
   approximateDebt: BigNumber
   normalizedDebt: BigNumber
   availableDebt: BigNumber
+  nextAvailableDebt: BigNumber
   availableIlkDebt: BigNumber
   liquidationRatio: BigNumber
   collateralizationRatio: BigNumber
@@ -105,7 +108,7 @@ export function createVault$(
             unlockedCollateral,
             { currentPrice, nextPrice },
             {
-              normalizedIlkDebt,
+              ilkDebt,
               debtFloor,
               debtScalingFactor,
               debtCeiling,
@@ -116,23 +119,39 @@ export function createVault$(
           ]) => {
             const collateralUSD = collateral.times(currentPrice)
             const nextCollateralUSD = nextPrice ? collateral.times(nextPrice) : currentPrice
+
             const debt = debtScalingFactor.times(normalizedDebt)
             const approximateDebt = debt.decimalPlaces(6, BigNumber.ROUND_HALF_UP)
 
-            const ilkDebt = debtScalingFactor.times(normalizedIlkDebt)
-
             const backingCollateral = debt.times(liquidationRatio).div(currentPrice)
+            const nextBackingCollateral = debt
+              .times(liquidationRatio)
+              .div(nextPrice || currentPrice)
+
             const freeCollateral = backingCollateral.gte(collateral)
               ? zero
               : collateral.minus(backingCollateral)
+            const nextFreeCollateral = nextBackingCollateral.gte(collateral)
+              ? zero
+              : collateral.minus(nextBackingCollateral)
+
             const backingCollateralUSD = backingCollateral.times(currentPrice)
+            const nextBackingCollateralUSD = nextBackingCollateral.times(nextPrice || currentPrice)
+
             const freeCollateralUSD = freeCollateral.times(currentPrice)
+            const nextFreeCollateralUSD = nextFreeCollateral.times(nextPrice || currentPrice)
+
             const collateralizationRatio = debt.isZero() ? zero : collateralUSD.div(debt)
             const nextCollateralizationRatio = debt.isZero() ? zero : nextCollateralUSD.div(debt)
 
             const maxAvailableDebt = collateralUSD.div(liquidationRatio)
+            const nextMaxAvailableDebt = nextCollateralUSD.div(liquidationRatio)
 
             const availableDebt = debt.lt(maxAvailableDebt) ? maxAvailableDebt.minus(debt) : zero
+            const nextAvailableDebt = debt.lt(nextMaxAvailableDebt)
+              ? nextMaxAvailableDebt.minus(debt)
+              : zero
+
             const availableIlkDebt = debtCeiling.minus(ilkDebt)
 
             const liquidationPrice = collateral.eq(zero)
@@ -148,10 +167,13 @@ export function createVault$(
               controller,
               lockedCollateral: collateral,
               lockedCollateralUSD: collateralUSD,
+              nextLockedCollateralUSD: nextCollateralUSD,
               backingCollateral,
               backingCollateralUSD,
+              nextBackingCollateralUSD,
               freeCollateral,
               freeCollateralUSD,
+              nextFreeCollateralUSD,
               unlockedCollateral,
               normalizedDebt,
               collateralizationRatio,
@@ -159,6 +181,7 @@ export function createVault$(
               debt,
               approximateDebt,
               availableDebt,
+              nextAvailableDebt,
               availableIlkDebt,
               debtFloor,
               stabilityFee,
