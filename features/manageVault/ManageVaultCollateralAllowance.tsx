@@ -5,7 +5,6 @@ import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Card, Flex, Grid, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
@@ -22,25 +21,14 @@ export function ManageVaultCollateralAllowance({
   setCollateralAllowanceAmountUnlimited,
   setCollateralAllowanceAmountToDepositAmount,
   resetCollateralAllowanceAmount,
+  selectedCollateralAllowanceRadio,
 }: ManageVaultState) {
-  const [isCustom, setIsCustom] = useState<Boolean>(false)
   const canSelectRadio =
     stage === 'collateralAllowanceWaitingForConfirmation' || stage === 'collateralAllowanceFailure'
 
-  function handleUnlimited() {
-    setIsCustom(false)
-    setCollateralAllowanceAmountUnlimited!()
-  }
-
-  function handleDeposit() {
-    setIsCustom(false)
-    setCollateralAllowanceAmountToDepositAmount!()
-  }
-
-  function handleCustom() {
-    resetCollateralAllowanceAmount!()
-    setIsCustom(true)
-  }
+  const isUnlimited = selectedCollateralAllowanceRadio === 'unlimited'
+  const isDeposit = selectedCollateralAllowanceRadio === 'depositAmount'
+  const isCustom = selectedCollateralAllowanceRadio === 'custom'
 
   const { t } = useTranslation()
 
@@ -48,18 +36,27 @@ export function ManageVaultCollateralAllowance({
     <Grid>
       {canSelectRadio && (
         <>
-          <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleUnlimited}>
-            <Radio name="dark-mode" value="true" defaultChecked={true} />
+          <Label
+            sx={{ border: 'light', p: 2, borderRadius: 'small' }}
+            onClick={setCollateralAllowanceAmountUnlimited!}
+          >
+            <Radio name="dark-mode" value="true" defaultChecked={isUnlimited} />
             <Text sx={{ fontSize: 2 }}>{t('unlimited-allowance')}</Text>
           </Label>
-          <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleDeposit}>
-            <Radio name="dark-mode" value="true" />
+          <Label
+            sx={{ border: 'light', p: 2, borderRadius: 'small' }}
+            onClick={setCollateralAllowanceAmountToDepositAmount!}
+          >
+            <Radio name="dark-mode" value="true" defaultChecked={isDeposit} />
             <Text sx={{ fontSize: 2 }}>
               {t('token-depositing', { token, amount: formatCryptoBalance(depositAmount!) })}
             </Text>
           </Label>
-          <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleCustom}>
-            <Radio name="dark-mode" value="true" />
+          <Label
+            sx={{ border: 'light', p: 2, borderRadius: 'small' }}
+            onClick={resetCollateralAllowanceAmount!}
+          >
+            <Radio name="dark-mode" value="true" defaultChecked={isCustom} />
             <Grid columns="2fr 2fr 1fr" sx={{ alignItems: 'center' }}>
               <Text sx={{ fontSize: 2 }}>{t('custom')}</Text>
               <BigNumberInput

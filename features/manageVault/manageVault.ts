@@ -314,6 +314,7 @@ export type ManageVaultState = {
   setCollateralAllowanceAmountUnlimited?: () => void
   setCollateralAllowanceAmountToDepositAmount?: () => void
   resetCollateralAllowanceAmount?: () => void
+  selectedCollateralAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
 
   // DAI Allowance
   daiAllowanceAmount?: BigNumber
@@ -321,6 +322,7 @@ export type ManageVaultState = {
   setDaiAllowanceAmountUnlimited?: () => void
   setDaiAllowanceAmountToPaybackAmount?: () => void
   resetDaiAllowanceAmount?: () => void
+  selectedDaiAllowanceRadio: 'unlimited' | 'paybackAmount' | 'custom'
 
   // calculations
   maxDepositAmount: BigNumber
@@ -419,10 +421,8 @@ function addTransitions(
         }),
       resetCollateralAllowanceAmount: () =>
         change({
-          kind: 'collateralAllowance',
-          collateralAllowanceAmount: undefined,
+          kind: 'collateralAllowanceReset',
         }),
-
       progress: () => setCollateralAllowance(txHelpers$, collateralAllowance$, change, state),
       reset: () => change({ kind: 'backToEditing' }),
     }
@@ -447,10 +447,8 @@ function addTransitions(
       setDaiAllowanceAmountToPaybackAmount: () => change({ kind: 'daiAllowanceAsPaybackAmount' }),
       resetDaiAllowanceAmount: () =>
         change({
-          kind: 'daiAllowance',
-          daiAllowanceAmount: undefined,
+          kind: 'daiAllowanceReset',
         }),
-
       progress: () => setDaiAllowance(txHelpers$, daiAllowance$, change, state),
       reset: () => change({ kind: 'backToEditing' }),
     }
@@ -503,6 +501,8 @@ export const defaultPartialManageVaultState = {
   daiYieldFromTotalCollateral: zero,
   daiYieldFromTotalCollateralAtNextPrice: zero,
   shouldPaybackAll: false,
+  selectedCollateralAllowanceRadio: 'unlimited' as 'unlimited',
+  selectedDaiAllowanceRadio: 'unlimited' as 'unlimited',
 }
 
 export function createManageVault$(

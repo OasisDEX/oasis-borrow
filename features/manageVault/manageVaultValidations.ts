@@ -4,26 +4,26 @@ import { zero } from 'helpers/zero'
 import { ManageVaultState } from './manageVault'
 
 export type ManageVaultErrorMessage =
-  | 'depositAndWithdrawAmountsEmpty' //
-  | 'generateAndPaybackAmountsEmpty' //
-  | 'depositAmountEmpty' //
-  | 'paybackAmountEmpty' //
-  | 'depositAmountExceedsCollateralBalance' //
-  | 'withdrawAmountExceedsFreeCollateral' //
-  | 'withdrawAmountExceedsFreeCollateralAtNextPrice' //
-  | 'generateAmountExceedsDaiYieldFromTotalCollateral' //
-  | 'generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice' //
-  | 'vaultWillBeUnderCollateralized' //
-  | 'vaultWillBeUnderCollateralizedAtNextPrice' //
-  | 'generateAmountExceedsDebtCeiling' //
-  | 'generateAmountLessThanDebtFloor' //
-  | 'paybackAmountExceedsDaiBalance' //
-  | 'paybackAmountExceedsVaultDebt' //
-  | 'paybackAmountCausesVaultDebtToBeLessThanDebtFloor' //
-  | 'collateralAllowanceAmountEmpty'
+  | 'depositAndWithdrawAmountsEmpty'
+  | 'generateAndPaybackAmountsEmpty'
+  | 'depositAmountEmpty'
+  | 'paybackAmountEmpty'
+  | 'depositAmountExceedsCollateralBalance'
+  | 'withdrawAmountExceedsFreeCollateral'
+  | 'withdrawAmountExceedsFreeCollateralAtNextPrice'
+  | 'generateAmountExceedsDaiYieldFromTotalCollateral'
+  | 'generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice'
+  | 'vaultWillBeUnderCollateralized'
+  | 'vaultWillBeUnderCollateralizedAtNextPrice'
+  | 'generateAmountExceedsDebtCeiling'
+  | 'generateAmountLessThanDebtFloor'
+  | 'paybackAmountExceedsDaiBalance'
+  | 'paybackAmountExceedsVaultDebt'
+  | 'paybackAmountCausesVaultDebtToBeLessThanDebtFloor'
+  | 'customCollateralAllowanceAmountEmpty'
   | 'customCollateralAllowanceAmountGreaterThanMaxUint256'
   | 'customCollateralAllowanceAmountLessThanDepositAmount'
-  | 'daiAllowanceAmountEmpty'
+  | 'customDaiAllowanceAmountEmpty'
   | 'customDaiAllowanceAmountGreaterThanMaxUint256'
   | 'customDaiAllowanceAmountLessThanPaybackAmount'
 
@@ -166,7 +166,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     stage === 'collateralAllowanceFailure'
   ) {
     if (!collateralAllowanceAmount) {
-      errorMessages.push('collateralAllowanceAmountEmpty')
+      errorMessages.push('customCollateralAllowanceAmountEmpty')
     }
     if (collateralAllowanceAmount?.gt(maxUint256)) {
       errorMessages.push('customCollateralAllowanceAmountGreaterThanMaxUint256')
@@ -178,7 +178,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
 
   if (stage === 'daiAllowanceWaitingForConfirmation' || stage === 'daiAllowanceFailure') {
     if (!daiAllowanceAmount) {
-      errorMessages.push('daiAllowanceAmountEmpty')
+      errorMessages.push('customDaiAllowanceAmountEmpty')
     }
     if (daiAllowanceAmount?.gt(maxUint256)) {
       errorMessages.push('customDaiAllowanceAmountGreaterThanMaxUint256')

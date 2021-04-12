@@ -5,7 +5,6 @@ import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Card, Flex, Grid, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
@@ -21,51 +20,42 @@ export function ManageVaultDaiAllowance({
   setDaiAllowanceAmountUnlimited,
   setDaiAllowanceAmountToPaybackAmount,
   resetDaiAllowanceAmount,
+  selectedDaiAllowanceRadio,
 }: ManageVaultState) {
-  const [isCustom, setIsCustom] = useState<Boolean>(false)
-
   const canSelectRadio =
     stage === 'daiAllowanceWaitingForConfirmation' || stage === 'daiAllowanceFailure'
 
-  function handleUnlimited() {
-    if (canSelectRadio) {
-      setIsCustom(false)
-      setDaiAllowanceAmountUnlimited!()
-    }
-  }
-
-  function handlePayback() {
-    if (canSelectRadio) {
-      setIsCustom(false)
-      setDaiAllowanceAmountToPaybackAmount!()
-    }
-  }
-
-  function handleCustom() {
-    if (canSelectRadio) {
-      resetDaiAllowanceAmount!()
-      setIsCustom(true)
-    }
-  }
-
   const { t } = useTranslation()
+
+  const isUnlimited = selectedDaiAllowanceRadio === 'unlimited'
+  const isPayback = selectedDaiAllowanceRadio === 'paybackAmount'
+  const isCustom = selectedDaiAllowanceRadio === 'custom'
 
   return (
     <Grid>
       {canSelectRadio && (
         <>
-          <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleUnlimited}>
-            <Radio name="dark-mode" value="true" defaultChecked={true} />
+          <Label
+            sx={{ border: 'light', p: 2, borderRadius: 'small' }}
+            onClick={setDaiAllowanceAmountUnlimited!}
+          >
+            <Radio name="dark-mode" value="true" defaultChecked={isUnlimited} />
             <Text sx={{ fontSize: 2 }}>{t('unlimited-allowance')}</Text>
           </Label>
-          <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handlePayback}>
-            <Radio name="dark-mode" value="true" />
+          <Label
+            sx={{ border: 'light', p: 2, borderRadius: 'small' }}
+            onClick={setDaiAllowanceAmountToPaybackAmount!}
+          >
+            <Radio name="dark-mode" value="true" defaultChecked={isPayback} />
             <Text sx={{ fontSize: 2 }}>
               {t('dai-paying-back', { amount: formatCryptoBalance(paybackAmount!) })}
             </Text>
           </Label>
-          <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleCustom}>
-            <Radio name="dark-mode" value="true" />
+          <Label
+            sx={{ border: 'light', p: 2, borderRadius: 'small' }}
+            onClick={resetDaiAllowanceAmount!}
+          >
+            <Radio name="dark-mode" value="true" defaultChecked={isCustom} />
             <Grid columns="2fr 2fr 1fr" sx={{ alignItems: 'center' }}>
               <Text sx={{ fontSize: 2 }}>{t('custom')}</Text>
               <BigNumberInput

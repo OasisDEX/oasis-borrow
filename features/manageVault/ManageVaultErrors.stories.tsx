@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { maxUint256 } from 'blockchain/calls/erc20'
 import { one, zero } from 'helpers/zero'
 
 import { manageVaultStory } from './ManageVaultBuilder'
@@ -204,6 +205,96 @@ export const PaybackAmountCausesVaultDebtToBeLessThanDebtFloor = manageVaultStor
   stage: 'daiEditing',
   paybackAmount: new BigNumber('4000'),
   balanceInfo: { daiBalance: new BigNumber('10000') },
+})
+
+export const CustomCollateralAllowanceEmpty = manageVaultStory({
+  title: 'Error should block user if the allowance they wish to set is zero',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('100'),
+    debt: new BigNumber('5000'),
+  },
+  stage: 'collateralAllowanceWaitingForConfirmation',
+  account: '0xNotVaultController',
+  depositAmount: new BigNumber('10'),
+  balanceInfo: { daiBalance: new BigNumber('10000') },
+  selectedCollateralAllowanceRadio: 'custom',
+  collateralAllowanceAmount: undefined,
+})
+
+export const CustomCollateralAllowanceAmountGreaterThanMaxUint256 = manageVaultStory({
+  title: 'Error should block user if the allowance they wish to set a value above maxUint256',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('100'),
+    debt: new BigNumber('5000'),
+  },
+  stage: 'collateralAllowanceWaitingForConfirmation',
+  account: '0xNotVaultController',
+  depositAmount: new BigNumber('10'),
+  balanceInfo: { daiBalance: new BigNumber('10000') },
+  selectedCollateralAllowanceRadio: 'custom',
+  collateralAllowanceAmount: maxUint256.plus(one),
+})
+
+export const CustomCollateralAllowanceAmountLessThanDepositAmount = manageVaultStory({
+  title: 'Error should block user if the allowance they wish to set a value above maxUint256',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('100'),
+    debt: new BigNumber('5000'),
+  },
+  stage: 'collateralAllowanceWaitingForConfirmation',
+  account: '0xNotVaultController',
+  depositAmount: new BigNumber('10'),
+  balanceInfo: { daiBalance: new BigNumber('10000') },
+  collateralAllowanceAmount: new BigNumber('9'),
+  selectedCollateralAllowanceRadio: 'custom',
+})
+
+export const CustomDaiAllowanceEmpty = manageVaultStory({
+  title: 'Error should block user if the allowance they wish to set is zero',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('100'),
+    debt: new BigNumber('5000'),
+  },
+  stage: 'daiAllowanceWaitingForConfirmation',
+  account: '0xNotVaultController',
+  paybackAmount: new BigNumber('500'),
+  balanceInfo: { daiBalance: new BigNumber('10000') },
+  selectedDaiAllowanceRadio: 'custom',
+  daiAllowanceAmount: undefined,
+})
+
+export const CustomDaiAllowanceAmountGreaterThanMaxUint256 = manageVaultStory({
+  title: 'Error should block user if the allowance they wish to set a value above maxUint256',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('100'),
+    debt: new BigNumber('5000'),
+  },
+  stage: 'daiAllowanceWaitingForConfirmation',
+  account: '0xNotVaultController',
+  paybackAmount: new BigNumber('500'),
+  balanceInfo: { daiBalance: new BigNumber('10000') },
+  selectedDaiAllowanceRadio: 'custom',
+  daiAllowanceAmount: maxUint256.plus(one),
+})
+
+export const CustomDaiAllowanceAmountLessThanDepositAmount = manageVaultStory({
+  title: 'Error should block user if the allowance they wish to set a value above maxUint256',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('100'),
+    debt: new BigNumber('5000'),
+  },
+  stage: 'daiAllowanceWaitingForConfirmation',
+  account: '0xNotVaultController',
+  paybackAmount: new BigNumber('500'),
+  balanceInfo: { daiBalance: new BigNumber('10000') },
+  selectedDaiAllowanceRadio: 'custom',
+  daiAllowanceAmount: new BigNumber('9'),
 })
 
 // eslint-disable-next-line import/no-default-export
