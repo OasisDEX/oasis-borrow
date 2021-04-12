@@ -4,247 +4,271 @@ import { one } from 'helpers/zero'
 
 import { manageVaultStory } from './ManageVaultBuilder'
 
-export const Default = manageVaultStory({
-  title:
-    'Default ManageVault Story. Vault is empty, user has a proxy address and is the vault controller.',
-})
-
 export const CollateralEditingStage = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
   showDepositAndGenerateOption: true,
-  _balanceInfo: { collateralBalance: new BigNumber('2000') },
-  proxyAddress: '0xProxyAddress',
+  balanceInfo: { collateralBalance: new BigNumber('2000') },
   stage: 'collateralEditing',
 })
 
 export const DaiEditingStage = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
   showDepositAndGenerateOption: true,
-  _balanceInfo: { collateralBalance: new BigNumber('200') },
-  proxyAddress: '0xProxyAddress',
   stage: 'daiEditing',
 })
 
 export const ProxyWaitingForConfirmation = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200') },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   stage: 'proxyWaitingForConfirmation',
 })
 
 export const ProxyWaitingForApproval = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200') },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   stage: 'proxyWaitingForApproval',
 })
 
 export const ProxyFailure = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200') },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   stage: 'proxyFailure',
 })
 
 export const ProxyInProgress = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200') },
   stage: 'proxyInProgress',
 })
 
 export const ProxySuccess = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200') },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   stage: 'proxySuccess',
 })
 
 export const CollateralAllowanceWaitingForConfirmation = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200') },
   proxyAddress: '0xProxyAddress',
   stage: 'collateralAllowanceWaitingForConfirmation',
 })
 
 export const CollateralAllowanceWaitingForApproval = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200') },
-  proxyAddress: '0xProxyAddress',
   stage: 'collateralAllowanceWaitingForApproval',
 })
 
 export const CollateralAllowanceFailure = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200') },
-  proxyAddress: '0xProxyAddress',
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   stage: 'collateralAllowanceFailure',
 })
 
 export const CollateralAllowanceInProgress = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200') },
-  proxyAddress: '0xProxyAddress',
   stage: 'collateralAllowanceInProgress',
 })
 
 export const CollateralAllowanceSuccess = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200') },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   proxyAddress: '0xProxyAddress',
   stage: 'collateralAllowanceSuccess',
 })
 
 export const DaiAllowanceWaitingForConfirmation = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
-  proxyAddress: '0xProxyAddress',
   stage: 'daiAllowanceWaitingForConfirmation',
 })
 
 export const DaiAllowanceWaitingForApproval = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
-  proxyAddress: '0xProxyAddress',
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   stage: 'daiAllowanceWaitingForApproval',
 })
 
 export const DaiAllowanceFailure = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
-  proxyAddress: '0xProxyAddress',
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   stage: 'daiAllowanceFailure',
 })
 
 export const DaiAllowanceInProgress = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
-  proxyAddress: '0xProxyAddress',
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   stage: 'daiAllowanceInProgress',
 })
 
 export const DaiAllowanceSuccess = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
-  proxyAddress: '0xProxyAddress',
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   stage: 'daiAllowanceSuccess',
 })
 
 export const ManageWaitingForConfirmation = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
-  proxyAddress: '0xProxyAddress',
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   stage: 'manageWaitingForConfirmation',
 })
 
 export const ManageWaitingForApproval = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
-  proxyAddress: '0xProxyAddress',
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   stage: 'manageWaitingForApproval',
 })
 
 export const ManageFailure = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
-  proxyAddress: '0xProxyAddress',
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   stage: 'manageFailure',
 })
 
 export const ManageInProgress = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
-  proxyAddress: '0xProxyAddress',
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   stage: 'manageInProgress',
 })
 
 export const ManageSuccess = manageVaultStory({
-  ilk: 'WBTC-A',
-  collateral: one,
-  debt: new BigNumber('3000'),
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  _balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
-  proxyAddress: '0xProxyAddress',
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   stage: 'manageSuccess',
 })
 
