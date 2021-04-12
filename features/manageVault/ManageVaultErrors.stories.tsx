@@ -207,6 +207,20 @@ export const PaybackAmountCausesVaultDebtToBeLessThanDebtFloor = manageVaultStor
   balanceInfo: { daiBalance: new BigNumber('10000') },
 })
 
+export const DepositingAllEthBalance = manageVaultStory({
+  title: 'Error occurs when a user with an ETH vault tries to deposit all their ETH into the vault',
+  vault: {
+    ilk: 'ETH-A',
+    collateral: new BigNumber('100'),
+    debt: new BigNumber('5000'),
+  },
+  balanceInfo: {
+    collateralBalance: new BigNumber('100'),
+  },
+  stage: 'collateralEditing',
+  depositAmount: new BigNumber('100'),
+})
+
 export const CustomCollateralAllowanceEmpty = manageVaultStory({
   title: 'Error should block user if the allowance they wish to set is zero',
   vault: {

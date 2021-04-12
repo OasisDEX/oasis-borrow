@@ -1,4 +1,5 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { priceInfoChange$ } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
 
 import { ManageVaultState } from './manageVault'
@@ -26,6 +27,7 @@ export type ManageVaultErrorMessage =
   | 'customDaiAllowanceAmountEmpty'
   | 'customDaiAllowanceAmountGreaterThanMaxUint256'
   | 'customDaiAllowanceAmountLessThanPaybackAmount'
+  | 'depositingAllEthBalance'
 
 export function validateErrors(state: ManageVaultState): ManageVaultState {
   const {
@@ -152,6 +154,10 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     errorMessages.push('paybackAmountExceedsVaultDebt')
   }
 
+  if (vault.token === 'ETH' && depositAmount?.eq(balanceInfo.collateralBalance)) {
+    errorMessages.push('depositingAllEthBalance')
+  }
+
   if (
     paybackAmount &&
     vault.debt.minus(paybackAmount).lt(ilkData.debtFloor) &&
@@ -195,10 +201,8 @@ export type ManageVaultWarningMessage =
   | 'potentialGenerateAmountLessThanDebtFloor'
   | 'debtIsLessThanDebtFloor'
   | 'noProxyAddress'
-  | 'noCollateralAllowance'
-  | 'noDaiAllowance'
-  | 'collateralAllowanceLessThanDepositAmount'
-  | 'daiAllowanceLessThanPaybackAmount'
+  | 'insufficientCollateralAllowance'
+  | 'insufficientDaiAllowance'
   | 'connectedAccountIsNotVaultController'
   | 'vaultAtRiskLevelDanger'
   | 'vaultAtRiskLevelWarning'
@@ -207,7 +211,12 @@ export type ManageVaultWarningMessage =
   | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
   | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
   | 'vaultUnderCollateralized'
-  | 'payingBackAllOutstandingDebt'
+  | 'depositingAllCollateralBalance'
+  | 'payingBackAllVaultDebt'
+  | 'payingBackAllDaiBalance'
+  | 'withdrawingAllFreeCollateral'
+  | 'withdrawringAllFreeCollateralAtNextPrice'
+  | ''
 
 export function validateWarnings(state: ManageVaultState): ManageVaultState {
   const {
