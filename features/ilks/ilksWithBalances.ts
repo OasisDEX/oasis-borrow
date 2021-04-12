@@ -4,7 +4,7 @@ import { Context } from 'blockchain/network'
 import { TokenBalances } from 'blockchain/tokens'
 import isEqual from 'lodash/isEqual'
 import { combineLatest, Observable, of } from 'rxjs'
-import { map, switchMap, distinctUntilChanged, tap, shareReplay } from 'rxjs/operators'
+import { distinctUntilChanged, map, shareReplay,switchMap, tap } from 'rxjs/operators'
 
 export interface IlkWithBalance extends IlkData {
   balance?: BigNumber

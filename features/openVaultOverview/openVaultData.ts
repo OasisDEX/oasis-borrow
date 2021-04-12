@@ -1,5 +1,4 @@
 
-import { Vault } from 'blockchain/vaults'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
@@ -20,5 +19,3 @@ export function createOpenVaultOverview$(
         distinctUntilChanged(isEqual),
     )
 }
-
-

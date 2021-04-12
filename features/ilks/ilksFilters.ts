@@ -1,9 +1,8 @@
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { compareBigNumber } from 'helpers/compare'
 import { applyChange, Change, Direction, toggleSort } from 'helpers/form'
-import { isEqual } from 'lodash'
 import { Observable, Subject } from 'rxjs'
-import { distinctUntilChanged, map, scan, startWith, switchMap } from 'rxjs/operators'
+import {  map, scan, startWith, switchMap } from 'rxjs/operators'
 
 import { IlkWithBalance } from './ilksWithBalances'
 

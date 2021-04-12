@@ -8,6 +8,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { TRANSITIONS } from 'theme'
 import { Box, Container, Flex, Text } from 'theme-ui'
+
 import { useAppContext } from './AppContextProvider'
 
 function Logo() {

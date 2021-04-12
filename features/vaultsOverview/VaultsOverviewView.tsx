@@ -7,7 +7,6 @@ import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { VaultOverviewOwnershipBanner } from 'features/banners/VaultsBannersView'
 import {
-  formatAddress,
   formatCryptoBalance,
   formatFiatBalance,
   formatPercent,
@@ -215,7 +214,6 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
     },
     [vaults.filters],
   )
-
 
   const onVaultsTagChange = useCallback(
     (tagFilter: CoinTag | undefined) => {

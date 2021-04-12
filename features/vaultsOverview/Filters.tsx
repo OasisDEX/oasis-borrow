@@ -41,6 +41,8 @@ function Filters_({
     })),
   ]
 
+  const selected = options.find((option) => option.value === tagFilter)
+
   return (
     <Flex sx={{ ...sx, flexDirection: ['column', 'column', 'row'], mb: 2 }}>
       <Box
@@ -67,9 +69,11 @@ function Filters_({
         }}
       >
         <ReactSelect
+          value={selected}
           defaultValue={options[0]}
           options={options}
           isSearchable={false}
+          onChange={(option) => option && 'value' in option && onTagChange(option.value)}
           components={{
             IndicatorsContainer: ({ selectProps: { menuIsOpen } }) => (
               <Flex

@@ -1,8 +1,8 @@
-import { Context } from 'blockchain/network'
 import { CoinTag } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
+import { AccountDetails } from 'features/account/AccountData'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { Filters } from 'features/vaultsOverview/Filters'
 import {
@@ -102,14 +102,15 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState & { isReadonly: boo
 
 interface Props {
     vaultsOverview: OpenVaultOverviewData
-    context: Context
+    accountDetails: AccountDetails
 }
 
-function getHeaderTranslationKey(isConnected, hasVaults) {
+function getHeaderTranslationKey(hasVaults: boolean) {
     const HEADER_PATH = 'ilks-list.headers'
-    return 'ilks-list.headers.withVaults'
+
+    return hasVaults ? `${HEADER_PATH}.withVaults` : `${HEADER_PATH}.noVaults`
 }
-export function OpenVaultOverview({ vaultsOverview, context }: Props) {
+export function OpenVaultOverview({ vaultsOverview, accountDetails }: Props) {
     const { ilksWithFilters } = vaultsOverview
     const { t } = useTranslation()
 
@@ -127,9 +128,9 @@ export function OpenVaultOverview({ vaultsOverview, context }: Props) {
         [ilksWithFilters.filters],
     )
 
-    const connectedAccount = context.status === 'connected' ? context.account : undefined;
+    const connectedAccount = accountDetails.context.status === 'connected' ? accountDetails.context.account : undefined;
 
-    const headerTranslationKey = getHeaderTranslationKey(true, true)
+    const headerTranslationKey = getHeaderTranslationKey(!!accountDetails.numberOfVaults && accountDetails.numberOfVaults > 0)
 
     return (
         <Grid sx={{ flex: 1, zIndex: 1 }}>
@@ -149,21 +150,23 @@ export function OpenVaultOverview({ vaultsOverview, context }: Props) {
             <Table
                 data={ilksWithFilters.data}
                 primaryKey="ilk"
-                state={{ ...ilksWithFilters.filters, isReadonly: false }}
+                state={{ ...ilksWithFilters.filters, isReadonly: connectedAccount === undefined }}
                 columns={ilksColumns}
+                noResults={<Box>{t('no-results')}</Box>}
             />
         </Grid>
     )
 }
 
 export function OpenVaultOverviewView() {
-    const { openVaultOverview$, context$ } = useAppContext()
+    const { openVaultOverview$, context$, accountData$ } = useAppContext()
     const openVaultOverview = useObservable(openVaultOverview$)
+    const accountData = useObservable(accountData$)
     const context = useObservable(context$)
 
-    if (openVaultOverview === undefined || context === undefined) {
+    if (openVaultOverview === undefined || accountData === undefined) {
         return null
     }
 
-    return <OpenVaultOverview vaultsOverview={openVaultOverview} context={context} />
+    return <OpenVaultOverview vaultsOverview={openVaultOverview} accountDetails={accountData} />
 }

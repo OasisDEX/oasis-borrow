@@ -5,14 +5,19 @@ import { Vault } from "blockchain/vaults";
 import { combineLatest, Observable, of } from "rxjs";
 import { filter, map, startWith, switchMap } from "rxjs/operators";
 
+export interface AccountDetails {
+    context: Web3Context,
+    numberOfVaults: number | undefined,
+    daiBalance: BigNumber | undefined
+}
 export function createAccountData(
     context$: Observable<Web3Context>,
     balance$: (token: string, address: string) => Observable<BigNumber>,
     vaults$: (address: string) => Observable<Vault[]>
-) {
+): Observable<AccountDetails> {
     return context$.pipe(
         switchMap(context =>
-            combineLatest([
+            combineLatest(
                 of(context).pipe(
                     filter((context): context is ContextConnected => context.status === 'connected'),
                     switchMap(context => balance$('DAI', context.account)),
@@ -24,7 +29,7 @@ export function createAccountData(
                     map(vaults => vaults.length),
                     startWith<undefined | number>(undefined)
                 )
-            ]).pipe(
+            ).pipe(
                 map(([balance, numberOfVaults]) => ({
                     context,
                     numberOfVaults,
