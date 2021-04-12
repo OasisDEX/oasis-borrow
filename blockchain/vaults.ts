@@ -125,13 +125,13 @@ export function createVault$(
             const freeCollateral = backingCollateral.gte(collateral)
               ? zero
               : collateral.minus(backingCollateral)
-
             const backingCollateralUSD = backingCollateral.times(currentPrice)
             const freeCollateralUSD = freeCollateral.times(currentPrice)
             const collateralizationRatio = debt.isZero() ? zero : collateralUSD.div(debt)
             const nextCollateralizationRatio = debt.isZero() ? zero : nextCollateralUSD.div(debt)
 
             const maxAvailableDebt = collateralUSD.div(liquidationRatio)
+
             const availableDebt = debt.lt(maxAvailableDebt) ? maxAvailableDebt.minus(debt) : zero
             const availableIlkDebt = debtCeiling.minus(ilkDebt)
 
@@ -187,8 +187,8 @@ export function createVaultChange$(
 }
 
 export interface BuildVaultProps {
-  _oraclePriceData$: Observable<OraclePriceData>
-  _ilkData$: Observable<IlkData>
+  _oraclePriceData$?: Observable<OraclePriceData>
+  _ilkData$?: Observable<IlkData>
   controller?: string
   ilk: string
   collateral: BigNumber
@@ -206,7 +206,7 @@ export function buildVault$({
   nextPrice = zero,
   unlockedCollateral = zero,
   id = one,
-  controller = '0xVaultOwner',
+  controller = '0xVaultController',
   debt,
   collateral,
   ilk,

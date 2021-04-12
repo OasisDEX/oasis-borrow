@@ -183,7 +183,6 @@ export interface BuildIlkDataProps {
 }
 
 const defaultDebtFloor = new BigNumber('2000')
-const defaultDebtCeiling = new BigNumber('1000000')
 const defaultIlkDebt = new BigNumber('8000000')
 const defaultLiquidationRatio = new BigNumber('1.5')
 const defaultStabilityFee = new BigNumber('0.045')
@@ -197,7 +196,7 @@ export function buildIlkData$({
   _jugIlk$,
   _catIlk$,
   debtFloor = defaultDebtFloor,
-  debtCeiling = defaultDebtCeiling,
+  debtCeiling,
   ilkDebt = defaultIlkDebt,
   liquidationRatio = defaultLiquidationRatio,
   stabilityFee = defaultStabilityFee,
@@ -220,7 +219,8 @@ export function buildIlkData$({
           normalizedIlkDebt,
           debtScalingFactor: DEFAULT_DEBT_SCALING_FACTOR,
           maxDebtPerUnitCollateral,
-          debtCeiling,
+          debtCeiling:
+            debtCeiling || normalizedIlkDebt.times(DEFAULT_DEBT_SCALING_FACTOR).times(2.5),
           debtFloor,
         }),
       ),

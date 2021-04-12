@@ -47,11 +47,11 @@ export function balanceInfoChange$(
 }
 
 export interface BuildBalanceInfoProps {
-  _balance$: Observable<BalanceInfo>
+  _balance$?: Observable<BalanceInfo>
   collateralBalance?: BigNumber
   ethBalance?: BigNumber
   daiBalance?: BigNumber
-  address: string | undefined
+  address?: string | undefined
 }
 
 const defaultCollateralBalance = new BigNumber('300')
@@ -63,7 +63,7 @@ export function buildBalanceInfo$({
   collateralBalance = defaultCollateralBalance,
   ethBalance = defaultEthBalance,
   daiBalance = defaultDaiBalance,
-  address,
+  address = '0xVaultController',
 }: BuildBalanceInfoProps): Observable<BalanceInfo> {
   return (
     _balance$ ||

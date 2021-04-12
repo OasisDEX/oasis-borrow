@@ -30,15 +30,15 @@ interface BuildManageVaultProps {
   _vault$?: Observable<Vault>
 
   ilkData?: BuildIlkDataProps
-  priceInfo: BuildPriceInfoProps
-  balanceInfo: BuildBalanceInfoProps
+  priceInfo?: BuildPriceInfoProps
+  balanceInfo?: BuildBalanceInfoProps
   vault: BuildVaultProps
 
   proxyAddress?: string
   collateralAllowance?: BigNumber
   daiAllowance?: BigNumber
   account?: string
-  ilk?: string
+  status?: 'connected'
 }
 
 function buildManageVault$({
@@ -49,21 +49,22 @@ function buildManageVault$({
   _collateralAllowance$,
   _daiAllowance$,
   _vault$,
-  ilkData = {},
-  priceInfo = {},
-  balanceInfo,
+  ilkData,
+  priceInfo,
+  balanceInfo = {},
   vault,
   proxyAddress = '0xProxyAddress',
   collateralAllowance = maxUint256,
   daiAllowance = maxUint256,
   account = '0xVaultController',
-  ilk = 'WBTC-A',
+  status = 'connected',
 }: BuildManageVaultProps): Observable<ManageVaultState> {
-  const token = ilk.split('-')[0]
+  const token = vault.ilk.split('-')[0]
 
   const context$ = of({
     ...protoContext,
     account,
+    status,
   })
   const txHelpers$ = of(protoTxHelpers)
 
@@ -99,7 +100,7 @@ function buildManageVault$({
     buildVault$({
       _oraclePriceData$,
       _ilkData$: ilkData$(),
-      ilk,
+      ilk: vault.ilk,
       collateral: vault.collateral,
       debt: vault.debt,
     })
@@ -123,6 +124,7 @@ type ManageVaultStory = { title?: string } & BuildManageVaultProps & SharedManag
 
 export function manageVaultStory({
   title,
+  account,
   balanceInfo,
   priceInfo,
   vault,
@@ -137,6 +139,7 @@ export function manageVaultStory({
 }: ManageVaultStory) {
   return () => {
     const obs$ = buildManageVault$({
+      account,
       balanceInfo,
       priceInfo,
       vault,
