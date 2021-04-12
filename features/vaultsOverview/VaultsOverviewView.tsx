@@ -294,7 +294,7 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
         <VaultOverviewOwnershipBanner account={connectedAccount} controller={address} />
       )}
       <Heading variant="header2" sx={{ textAlign: 'center', my: 5 }} as="h1">
-        <Trans i18nKey={headerTranslationKey} components={[<br />]} />
+        <Trans i18nKey={headerTranslationKey} values={{ address }} components={[<br />]} />
       </Heading>
       <Summary summary={vaultSummary} />
       <Filters
