@@ -151,6 +151,17 @@ export const PaybackAmountCausesVaultDebtToBeLessThanDebtFloor = manageVaultStor
   balanceInfo: { daiBalance: new BigNumber('10000') },
 })
 
+export const vaultWillBeUnderCollateralizedAtNextPrice = manageVaultStory({
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
+  stage: 'daiEditing',
+  generateAmount: new BigNumber('4000'),
+  priceInfo: { collateralChangePercentage: new BigNumber('-0.3') },
+})
+
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'ManageVault/Validations',

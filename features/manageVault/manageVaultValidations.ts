@@ -10,6 +10,7 @@ export type ManageVaultErrorMessage =
   | 'generateAndPaybackAmountsEmpty'
   | 'depositAmountExceedsCollateralBalance'
   | 'withdrawAmountExceedsFreeCollateral'
+  | 'withdrawAmountExceedsNextFreeCollateral'
   | 'generateAmountExceedsDebtCeiling'
   | 'generateAmountExceedsMaxDaiThatCanBeGenerated'
   | 'generateAmountLessThanDebtFloor'
@@ -30,6 +31,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     depositAmount,
     generateAmount,
     afterCollateralizationRatio,
+    afterNextCollateralizationRatio,
     paybackAmount,
     withdrawAmount,
     stage,
@@ -149,6 +151,15 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     !afterCollateralizationRatio.isZero()
   ) {
     errorMessages.push('vaultWillBeUnderCollateralized')
+  }
+
+  if (
+    (generateAmount?.gt(zero) || withdrawAmount?.gt(zero)) &&
+    afterNextCollateralizationRatio.lt(ilkData.liquidationRatio) &&
+    !afterNextCollateralizationRatio.isZero() &&
+    !afterCollateralizationRatio.eq(afterNextCollateralizationRatio)
+  ) {
+    errorMessages.push('vaultWillBeUnderCollateralizedAtNextPrice')
   }
 
   return { ...state, errorMessages }
