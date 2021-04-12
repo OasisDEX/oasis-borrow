@@ -107,26 +107,26 @@ function Summary({ summary }: { summary: VaultSummary }) {
   const { t } = useTranslation()
   return (
     <Card sx={{ mb: 5 }}>
-      <Grid sx={{ pt: 3 }} columns="repeat(4, 1fr)">
-        <Box>
+      <Grid sx={{ pt: 3 }} columns={["1fr", "repeat(4, 1fr)", "repeat(4, 1fr)"]}>
+        <Box sx={{ gridColumn: ['initial', 'span 2', 'initial'] }}>
           <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
             {t('vaults-overview.number-of-vaults')}
           </Text>
           <Text variant="header2" sx={{ mt: 2 }}>{summary.numberOfVaults}</Text>
         </Box>
-        <Box>
+        <Box sx={{ gridColumn: ['initial', 'span 2', 'initial'] }}>
           <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
             {t('vaults-overview.total-locked')}
           </Text>
           <Text variant="header2" sx={{ mt: 2 }}>${formatCryptoBalance(summary.totalCollateralPrice)}</Text>
         </Box>
-        <Box>
+        <Box sx={{ gridRow: ['initial', '2/3', 'auto'], gridColumn: ['initial', 'span 2', 'initial'] }}>
           <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
             {t('vaults-overview.total-debt')}
           </Text>
           <Text variant="header2" sx={{ mt: 2 }}>{formatCryptoBalance(summary.totalDaiDebt)} DAI</Text>
         </Box>
-        <Box>
+        <Box sx={{ gridRow: ['initial', '2/3', 'auto'] }}>
           <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
             {t('vaults-overview.vaults-at-risk')}
           </Text>
@@ -144,8 +144,13 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
   )
 
   return (
-    <Box sx={{ gridColumn: '1/5', my: 3 }}>
-      <Flex sx={{ borderRadius: 'small', overflow: 'hidden', boxShadow: 'medium' }}>
+    <Box sx={{ gridColumn: ['1/2', '1/5', '1/5'], my: 3 }}>
+      <Box sx={{
+        borderRadius: 'small',
+        display: ['none', 'flex', 'flex'],
+        overflow: 'hidden',
+        boxShadow: 'medium'
+      }}>
         {assets.map(([token, ratio]) => (
           <Box
             key={token}
@@ -156,32 +161,33 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
             }}
           />
         ))}
-      </Flex>
-      <Flex>
+      </Box>
+      <Box sx={{ display: 'flex', flexDirection: ['column', 'row', 'row'] }}>
+        <Box as="hr" sx={{ display: ['block', 'none', 'none'], borderColor: 'border', borderWidth: '1px', borderTop: 'none', mb: 3 }} />
         {assets.map(([token, ratio]) => (
           <Box key={token} sx={{ my: 2, flex: ratio.toString() }}>
-            {ratio.gt(0.08) && (
-              <Flex>
-                <Box sx={{ mr: 1 }}>
-                  <Icon
-                    name={getToken(token).iconCircle}
-                    size="26px"
-                    sx={{ verticalAlign: 'sub', mr: 2 }}
-                  />
-                </Box>
-                <Box>
-                  <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
-                    {getToken(token).name}
-                  </Text>
-                  <Text variant="paragraph3" sx={{ color: 'text.muted' }}>
-                    {formatPercent(ratio.times(100), { precision: 2 })}
-                  </Text>
-                </Box>
-              </Flex>
-            )}
+            <Box sx={{
+              display: ['flex', ...(ratio.gt(0.08) ? ['flex', 'flex'] : ['none', 'none'])],
+            }}>
+              <Box sx={{ mr: 1 }}>
+                <Icon
+                  name={getToken(token).iconCircle}
+                  size="26px"
+                  sx={{ verticalAlign: 'sub', mr: 2 }}
+                />
+              </Box>
+              <Box sx={{ display: 'flex', flexDirection: ['row', 'column', 'column'] }}>
+                <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
+                  {getToken(token).name}
+                </Text>
+                <Text variant="paragraph3" sx={{ color: 'text.muted', ml: [2, 0, 0] }}>
+                  {formatPercent(ratio.times(100), { precision: 2 })}
+                </Text>
+              </Box>
+            </Box>
           </Box>
         ))}
-      </Flex>
+      </Box>
     </Box>
   )
 }
