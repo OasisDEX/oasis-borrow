@@ -53,7 +53,7 @@ function buildManageVault$({
   priceInfo,
   balanceInfo = {},
   vault,
-  proxyAddress = '0xProxyAddress',
+  proxyAddress,
   collateralAllowance = maxUint256,
   daiAllowance = maxUint256,
   account = '0xVaultController',
@@ -133,7 +133,7 @@ export function manageVaultStory({
   withdrawAmount,
   generateAmount,
   paybackAmount,
-  proxyAddress = '0xProxyAddress',
+  proxyAddress,
   stage = 'collateralEditing',
   ...otherState
 }: ManageVaultStory) {
@@ -144,6 +144,7 @@ export function manageVaultStory({
       priceInfo,
       vault,
       ilkData,
+      proxyAddress,
     })
 
     useEffect(() => {

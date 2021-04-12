@@ -234,6 +234,7 @@ export interface BuildVaultProps {
   id?: BigNumber
 }
 
+export const DEFAULT_PROXY_ADDRESS = '0xProxyAddress'
 export function buildVault$({
   _cdpManagerUrns$,
   _oraclePriceData$,
@@ -263,7 +264,7 @@ export function buildVault$({
 
   const cdpManagerUrns$ = () => _cdpManagerUrns$ || of('0xUrnAddress')
   const cdpManagerIlks$ = () => of(ilk)
-  const cdpManagerOwner$ = () => of('0xProxyAddress')
+  const cdpManagerOwner$ = () => of(DEFAULT_PROXY_ADDRESS)
   const controller$ = () => of(controller)
   const vatGem$ = () => of(unlockedCollateral)
   const vatUrns$ = () =>

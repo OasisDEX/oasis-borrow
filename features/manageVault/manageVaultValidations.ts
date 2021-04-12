@@ -198,12 +198,12 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
 }
 
 export type ManageVaultWarningMessage =
-  | 'potentialGenerateAmountLessThanDebtFloor'
-  | 'debtIsLessThanDebtFloor'
-  | 'noProxyAddress'
-  | 'insufficientCollateralAllowance'
-  | 'insufficientDaiAllowance'
-  | 'connectedAccountIsNotVaultController'
+  | 'noProxyAddress' //
+  | 'insufficientCollateralAllowance' //
+  | 'insufficientDaiAllowance' //
+  | 'potentialGenerateAmountLessThanDebtFloor' //
+  | 'debtIsLessThanDebtFloor' //
+  | 'connectedAccountIsNotVaultController' //
   | 'vaultAtRiskLevelDanger'
   | 'vaultAtRiskLevelWarning'
   | 'vaultWillBeAtRiskLevelDanger'
@@ -215,8 +215,10 @@ export type ManageVaultWarningMessage =
   | 'payingBackAllVaultDebt'
   | 'payingBackAllDaiBalance'
   | 'withdrawingAllFreeCollateral'
-  | 'withdrawringAllFreeCollateralAtNextPrice'
-  | ''
+  | 'withdrawingAllFreeCollateralAtNextPrice'
+  | 'generatingAllDaiYieldFromTotalCollateral'
+  | 'generatingAllDaiYieldFromTotalCollateralAtNextPrice'
+  | 'generatingAllDaiFromIlkDebtAvailable'
 
 export function validateWarnings(state: ManageVaultState): ManageVaultState {
   const {
@@ -229,16 +231,18 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     accountIsController,
     afterCollateralizationRatio,
     shouldPaybackAll,
+    daiYieldFromTotalCollateral,
     vault,
     ilkData,
+    priceInfo,
   } = state
 
   const warningMessages: ManageVaultWarningMessage[] = []
 
   if (
-    depositAmountUSD &&
-    depositAmount?.gt(zero) &&
-    vault.debt.plus(depositAmountUSD).lt(ilkData.debtFloor)
+    depositAmount &&
+    !depositAmount.isZero() &&
+    daiYieldFromTotalCollateral.lt(ilkData.debtFloor)
   ) {
     warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
   }
@@ -247,69 +251,62 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     warningMessages.push('noProxyAddress')
   }
 
+  if (vault.token !== 'ETH') {
+    if (!collateralAllowance || depositAmount?.gt(collateralAllowance)) {
+      warningMessages.push('insufficientCollateralAllowance')
+    }
+  }
+
+  if (!daiAllowance || paybackAmount?.gt(daiAllowance)) {
+    warningMessages.push('insufficientDaiAllowance')
+  }
+
   if (vault.debt.lt(ilkData.debtFloor) && vault.debt.gt(zero)) {
     warningMessages.push('debtIsLessThanDebtFloor')
-  }
-
-  if (vault.token !== 'ETH') {
-    if (!collateralAllowance) {
-      warningMessages.push('noCollateralAllowance')
-    }
-    if (depositAmount && collateralAllowance && depositAmount.gt(collateralAllowance)) {
-      warningMessages.push('collateralAllowanceLessThanDepositAmount')
-    }
-  }
-
-  if (!daiAllowance) {
-    warningMessages.push('noDaiAllowance')
-  }
-
-  if (paybackAmount && daiAllowance && paybackAmount.gt(daiAllowance)) {
-    warningMessages.push('daiAllowanceLessThanPaybackAmount')
   }
 
   if (!accountIsController) {
     warningMessages.push('connectedAccountIsNotVaultController')
   }
 
-  if (
-    vault.collateralizationRatio.gt(ilkData.liquidationRatio) &&
-    vault.collateralizationRatio.lte(vault.collateralizationDangerThreshold)
-  ) {
-    warningMessages.push('vaultAtRiskLevelDanger')
-  }
+  // if (
+  //   vault.collateralizationRatio.gt(ilkData.liquidationRatio) &&
+  //   vault.collateralizationRatio.lte(vault.collateralizationDangerThreshold)
+  // ) {
+  //   warningMessages.push('vaultAtRiskLevelDanger')
+  // }
 
-  if (
-    vault.collateralizationRatio.gt(vault.collateralizationDangerThreshold) &&
-    vault.collateralizationRatio.lte(vault.collateralizationWarningThreshold)
-  ) {
-    warningMessages.push('vaultAtRiskLevelWarning')
-  }
+  // if (
+  //   vault.collateralizationRatio.gt(vault.collateralizationDangerThreshold) &&
+  //   vault.collateralizationRatio.lte(vault.collateralizationWarningThreshold)
+  // ) {
+  //   warningMessages.push('vaultAtRiskLevelWarning')
+  // }
 
-  if (
-    afterCollateralizationRatio.gt(ilkData.liquidationRatio) &&
-    afterCollateralizationRatio.lte(vault.collateralizationDangerThreshold)
-  ) {
-    warningMessages.push('vaultAtRiskLevelDanger')
-  }
+  // if (
+  //   afterCollateralizationRatio.gt(ilkData.liquidationRatio) &&
+  //   afterCollateralizationRatio.lte(vault.collateralizationDangerThreshold)
+  // ) {
+  //   warningMessages.push('vaultAtRiskLevelDanger')
+  // }
 
-  if (
-    afterCollateralizationRatio.gt(vault.collateralizationDangerThreshold) &&
-    afterCollateralizationRatio.lte(vault.collateralizationWarningThreshold)
-  ) {
-    warningMessages.push('vaultAtRiskLevelWarning')
-  }
+  // if (
+  //   afterCollateralizationRatio.gt(vault.collateralizationDangerThreshold) &&
+  //   afterCollateralizationRatio.lte(vault.collateralizationWarningThreshold)
+  // ) {
+  //   warningMessages.push('vaultAtRiskLevelWarning')
+  // }
 
-  if (
-    vault.collateralizationRatio.lt(ilkData.liquidationRatio) &&
-    !vault.collateralizationRatio.isZero()
-  ) {
-    warningMessages.push('vaultUnderCollateralized')
-  }
+  // if (
+  //   vault.collateralizationRatio.lt(ilkData.liquidationRatio) &&
+  //   !vault.collateralizationRatio.isZero()
+  // ) {
+  //   warningMessages.push('vaultUnderCollateralized')
+  // }
 
-  if (shouldPaybackAll) {
-    warningMessages.push('payingBackAllOutstandingDebt')
-  }
+  // if (shouldPaybackAll) {
+  //   warningMessages.push('payingBackAllOutstandingDebt')
+  // }
 
   return { ...state, warningMessages }
 }

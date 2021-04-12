@@ -1,9 +1,12 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { DEFAULT_PROXY_ADDRESS } from 'blockchain/vaults'
 import { one, zero } from 'helpers/zero'
 
 import { manageVaultStory } from './ManageVaultBuilder'
 import { ManageVaultView } from './ManageVaultView'
+
+const proxyAddress = DEFAULT_PROXY_ADDRESS
 
 export const DepositAndWithdrawAmountsEmpty = manageVaultStory({
   title:
@@ -13,6 +16,7 @@ export const DepositAndWithdrawAmountsEmpty = manageVaultStory({
     collateral: new BigNumber('100'),
     debt: new BigNumber('3000'),
   },
+  proxyAddress,
 })
 
 export const PaybackAndWithdrawAmountsEmpty = manageVaultStory({
@@ -24,6 +28,7 @@ export const PaybackAndWithdrawAmountsEmpty = manageVaultStory({
     debt: new BigNumber('3000'),
   },
   stage: 'daiEditing',
+  proxyAddress,
 })
 
 export const DepositEmpty = manageVaultStory({
@@ -36,6 +41,7 @@ export const DepositEmpty = manageVaultStory({
     controller: '0x1',
   },
   account: '0x0',
+  proxyAddress,
 })
 
 export const PaybackEmpty = manageVaultStory({
@@ -49,6 +55,7 @@ export const PaybackEmpty = manageVaultStory({
   },
   stage: 'daiEditing',
   account: '0x0',
+  proxyAddress,
 })
 
 export const DepositAmountExceedsCollateralBalance = manageVaultStory({
@@ -62,6 +69,7 @@ export const DepositAmountExceedsCollateralBalance = manageVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('5') },
   stage: 'collateralEditing',
   depositAmount: new BigNumber('6'),
+  proxyAddress,
 })
 
 export const WithdrawAmountExceedsFreeCollateral = manageVaultStory({
@@ -74,6 +82,7 @@ export const WithdrawAmountExceedsFreeCollateral = manageVaultStory({
   },
   stage: 'collateralEditing',
   withdrawAmount: new BigNumber('8'),
+  proxyAddress,
 })
 
 export const WithdrawAmountExceedsFreeCollateralAtNextPrice = manageVaultStory({
@@ -87,6 +96,7 @@ export const WithdrawAmountExceedsFreeCollateralAtNextPrice = manageVaultStory({
   priceInfo: { collateralChangePercentage: new BigNumber('-0.1') },
   stage: 'collateralEditing',
   withdrawAmount: new BigNumber('6'),
+  proxyAddress,
 })
 
 export const GenerateAmountExceedsDaiYieldFromTotalCollateral = manageVaultStory({
@@ -101,6 +111,7 @@ export const GenerateAmountExceedsDaiYieldFromTotalCollateral = manageVaultStory
   showDepositAndGenerateOption: true,
   depositAmount: new BigNumber('3'),
   generateAmount: new BigNumber('4000'),
+  proxyAddress,
 })
 
 export const GenerateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice = manageVaultStory({
@@ -118,6 +129,7 @@ export const GenerateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice = manag
   showDepositAndGenerateOption: true,
   depositAmount: new BigNumber('30'),
   generateAmount: new BigNumber('4000'),
+  proxyAddress,
 })
 
 export const VaultWillBeUnderCollateralized = manageVaultStory({
@@ -130,6 +142,7 @@ export const VaultWillBeUnderCollateralized = manageVaultStory({
   },
   stage: 'daiEditing',
   generateAmount: new BigNumber('8000'),
+  proxyAddress,
 })
 
 export const VaultWillBeUnderCollateralizedAtNextPrice = manageVaultStory({
@@ -142,6 +155,7 @@ export const VaultWillBeUnderCollateralizedAtNextPrice = manageVaultStory({
   stage: 'daiEditing',
   generateAmount: new BigNumber('4000'),
   priceInfo: { collateralChangePercentage: new BigNumber('-0.3') },
+  proxyAddress,
 })
 
 export const GenerateAmountExceedsDebtCeiling = manageVaultStory({
@@ -155,6 +169,7 @@ export const GenerateAmountExceedsDebtCeiling = manageVaultStory({
   ilkData: { ilkDebt: new BigNumber('15000'), debtCeiling: new BigNumber('16000') },
   stage: 'daiEditing',
   generateAmount: new BigNumber('2000'),
+  proxyAddress,
 })
 
 export const GenerateAmountLessThanDebtFloor = manageVaultStory({
@@ -168,6 +183,7 @@ export const GenerateAmountLessThanDebtFloor = manageVaultStory({
   ilkData: { debtFloor: new BigNumber('200') },
   stage: 'daiEditing',
   generateAmount: new BigNumber('1'),
+  proxyAddress,
 })
 
 export const PaybackAmountExceedsDaiBalance = manageVaultStory({
@@ -180,6 +196,7 @@ export const PaybackAmountExceedsDaiBalance = manageVaultStory({
   balanceInfo: { daiBalance: new BigNumber('5000') },
   stage: 'daiEditing',
   paybackAmount: new BigNumber('6000'),
+  proxyAddress,
 })
 
 export const PaybackAmountExceedsVaultDebt = manageVaultStory({
@@ -192,6 +209,7 @@ export const PaybackAmountExceedsVaultDebt = manageVaultStory({
   stage: 'daiEditing',
   paybackAmount: new BigNumber('6000'),
   balanceInfo: { daiBalance: new BigNumber('10000') },
+  proxyAddress,
 })
 
 export const PaybackAmountCausesVaultDebtToBeLessThanDebtFloor = manageVaultStory({
@@ -205,6 +223,7 @@ export const PaybackAmountCausesVaultDebtToBeLessThanDebtFloor = manageVaultStor
   stage: 'daiEditing',
   paybackAmount: new BigNumber('4000'),
   balanceInfo: { daiBalance: new BigNumber('10000') },
+  proxyAddress,
 })
 
 export const DepositingAllEthBalance = manageVaultStory({
@@ -219,6 +238,7 @@ export const DepositingAllEthBalance = manageVaultStory({
   },
   stage: 'collateralEditing',
   depositAmount: new BigNumber('100'),
+  proxyAddress,
 })
 
 export const CustomCollateralAllowanceEmpty = manageVaultStory({
@@ -234,6 +254,7 @@ export const CustomCollateralAllowanceEmpty = manageVaultStory({
   balanceInfo: { daiBalance: new BigNumber('10000') },
   selectedCollateralAllowanceRadio: 'custom',
   collateralAllowanceAmount: undefined,
+  proxyAddress,
 })
 
 export const CustomCollateralAllowanceAmountGreaterThanMaxUint256 = manageVaultStory({
@@ -249,6 +270,7 @@ export const CustomCollateralAllowanceAmountGreaterThanMaxUint256 = manageVaultS
   balanceInfo: { daiBalance: new BigNumber('10000') },
   selectedCollateralAllowanceRadio: 'custom',
   collateralAllowanceAmount: maxUint256.plus(one),
+  proxyAddress,
 })
 
 export const CustomCollateralAllowanceAmountLessThanDepositAmount = manageVaultStory({
@@ -264,6 +286,7 @@ export const CustomCollateralAllowanceAmountLessThanDepositAmount = manageVaultS
   balanceInfo: { daiBalance: new BigNumber('10000') },
   collateralAllowanceAmount: new BigNumber('9'),
   selectedCollateralAllowanceRadio: 'custom',
+  proxyAddress,
 })
 
 export const CustomDaiAllowanceEmpty = manageVaultStory({
@@ -279,6 +302,7 @@ export const CustomDaiAllowanceEmpty = manageVaultStory({
   balanceInfo: { daiBalance: new BigNumber('10000') },
   selectedDaiAllowanceRadio: 'custom',
   daiAllowanceAmount: undefined,
+  proxyAddress,
 })
 
 export const CustomDaiAllowanceAmountGreaterThanMaxUint256 = manageVaultStory({
@@ -294,6 +318,7 @@ export const CustomDaiAllowanceAmountGreaterThanMaxUint256 = manageVaultStory({
   balanceInfo: { daiBalance: new BigNumber('10000') },
   selectedDaiAllowanceRadio: 'custom',
   daiAllowanceAmount: maxUint256.plus(one),
+  proxyAddress,
 })
 
 export const CustomDaiAllowanceAmountLessThanDepositAmount = manageVaultStory({
@@ -309,6 +334,7 @@ export const CustomDaiAllowanceAmountLessThanDepositAmount = manageVaultStory({
   balanceInfo: { daiBalance: new BigNumber('10000') },
   selectedDaiAllowanceRadio: 'custom',
   daiAllowanceAmount: new BigNumber('9'),
+  proxyAddress,
 })
 
 // eslint-disable-next-line import/no-default-export
