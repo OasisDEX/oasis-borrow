@@ -108,7 +108,7 @@ export const GenerateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice = manag
   vault: {
     ilk: 'WBTC-A',
     collateral: new BigNumber('15'),
-    debt: new BigNumber('3000'),
+    debt: new BigNumber('3500'),
   },
   priceInfo: {
     collateralChangePercentage: new BigNumber('-0.6'),

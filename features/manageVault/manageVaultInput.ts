@@ -202,11 +202,11 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageVa
   }
 
   if (change.kind === 'withdrawMax' && canWithdraw) {
-    const { vault } = state
+    const { maxWithdrawAmount, maxWithdrawAmountUSD } = state
     return {
       ...state,
-      withdrawAmount: vault.freeCollateral,
-      withdrawAmountUSD: vault.freeCollateralUSD,
+      withdrawAmount: maxWithdrawAmount,
+      withdrawAmountUSD: maxWithdrawAmountUSD,
       ...depositAndGenerateDefaults,
     }
   }

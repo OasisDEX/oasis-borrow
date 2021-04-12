@@ -81,7 +81,9 @@ function WithdrawInput({
   accountIsController,
   withdrawAmount,
   withdrawAmountUSD,
-  vault: { token, freeCollateral, freeCollateralUSD },
+  maxWithdrawAmount,
+  maxWithdrawAmountUSD,
+  vault: { token },
   updateWithdraw,
   updateWithdrawUSD,
   updateWithdrawMax,
@@ -95,9 +97,9 @@ function WithdrawInput({
       disabled={!accountIsController}
       amount={withdrawAmount}
       auxiliaryAmount={withdrawAmountUSD}
-      maxAmount={freeCollateral}
-      maxAmountLabel={'Free'}
-      maxAuxiliaryAmount={freeCollateralUSD}
+      maxAmount={maxWithdrawAmount}
+      maxAmountLabel={'Max'}
+      maxAuxiliaryAmount={maxWithdrawAmountUSD}
       token={token}
       hasError={false}
       onChange={handleNumericInput(updateWithdraw!)}

@@ -105,8 +105,11 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     balanceInfo: { collateralBalance, daiBalance },
     ilkData: { liquidationRatio, ilkDebtAvailable },
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
-    vault: { lockedCollateral, debt, approximateDebt },
+    vault: { lockedCollateral, debt, approximateDebt, freeCollateral, freeCollateralAtNextPrice },
   } = state
+
+  const maxWithdrawAmount = BigNumber.minimum(freeCollateral, freeCollateralAtNextPrice)
+  const maxWithdrawAmountUSD = maxWithdrawAmount.times(currentCollateralPrice)
 
   const maxDepositAmount = collateralBalance
   const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
@@ -123,9 +126,17 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     .div(liquidationRatio)
     .minus(debt)
 
-  const maxGenerateAmount = daiYieldFromTotalCollateral.gt(ilkDebtAvailable)
+  const maxGenerateAmountCurrentPrice = daiYieldFromTotalCollateral.gt(ilkDebtAvailable)
     ? ilkDebtAvailable
     : daiYieldFromTotalCollateral
+  const maxGenerateAmountNextPrice = daiYieldFromTotalCollateralAtNextPrice.gt(ilkDebtAvailable)
+    ? ilkDebtAvailable
+    : daiYieldFromTotalCollateralAtNextPrice
+
+  const maxGenerateAmount = BigNumber.minimum(
+    maxGenerateAmountCurrentPrice,
+    maxGenerateAmountNextPrice,
+  )
 
   const maxPaybackAmount = daiBalance.lt(approximateDebt) ? daiBalance : approximateDebt
 
@@ -163,19 +174,20 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
       ? afterLockedCollateralUSDAtNextPrice.div(afterDebt)
       : zero
 
-  const afterLiquidationPrice =
-    generateAmount && depositAmount && depositAmount.gt(zero)
-      ? afterDebt.times(liquidationRatio).div(afterLockedCollateral)
-      : zero
+  const afterLiquidationPrice = !afterLockedCollateral.isZero()
+    ? afterDebt.times(liquidationRatio).div(afterLockedCollateral)
+    : zero
 
   return {
     ...state,
     maxDepositAmount,
+    maxDepositAmountUSD,
+    maxWithdrawAmount,
+    maxWithdrawAmountUSD,
     maxGenerateAmount,
     afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
     afterLiquidationPrice,
-    maxDepositAmountUSD,
     maxPaybackAmount,
     shouldPaybackAll,
     daiYieldFromTotalCollateral,
@@ -313,6 +325,8 @@ export type ManageVaultState = {
   // calculations
   maxDepositAmount: BigNumber
   maxDepositAmountUSD: BigNumber
+  maxWithdrawAmount: BigNumber
+  maxWithdrawAmountUSD: BigNumber
   maxGenerateAmount: BigNumber
   maxPaybackAmount: BigNumber
   shouldPaybackAll: boolean
@@ -477,6 +491,8 @@ export const defaultPartialManageVaultState = {
   showPaybackAndWithdrawOption: false,
   maxDepositAmount: zero,
   maxDepositAmountUSD: zero,
+  maxWithdrawAmount: zero,
+  maxWithdrawAmountUSD: zero,
   maxGenerateAmount: zero,
   maxPaybackAmount: zero,
   afterCollateralizationRatio: zero,
