@@ -16,10 +16,6 @@ export type ManageVaultErrorMessage =
   | 'paybackAmountExceedsDaiBalance'
   | 'paybackAmountExceedsVaultDebt'
   | 'paybackAmountCausesVaultDebtToBeLessThanDebtFloor'
-
-  // | 'depositAmountGreaterThanMaxDepositAmount'
-  // | 'generateAmountGreaterThanMaxGenerateAmount'
-  // | 'paybackAmountGreaterThanMaxPaybackAmount'
   | 'vaultWillBeUnderCollateralizedAtNextPrice'
   | 'vaultWillBeUnderCollateralized'
   | 'collateralAllowanceAmountEmpty'
@@ -149,7 +145,8 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
 
   if (
     (generateAmount?.gt(zero) || withdrawAmount?.gt(zero)) &&
-    afterCollateralizationRatio.lt(ilkData.liquidationRatio)
+    afterCollateralizationRatio.lt(ilkData.liquidationRatio) &&
+    !afterCollateralizationRatio.isZero()
   ) {
     errorMessages.push('vaultWillBeUnderCollateralized')
   }
