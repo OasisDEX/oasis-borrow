@@ -31,7 +31,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     depositAmount,
     generateAmount,
     afterCollateralizationRatio,
-    afterNextCollateralizationRatio,
+    afterCollateralizationRatioAtNextPrice,
     paybackAmount,
     withdrawAmount,
     stage,
@@ -155,9 +155,9 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
 
   if (
     (generateAmount?.gt(zero) || withdrawAmount?.gt(zero)) &&
-    afterNextCollateralizationRatio.lt(ilkData.liquidationRatio) &&
-    !afterNextCollateralizationRatio.isZero() &&
-    !afterCollateralizationRatio.eq(afterNextCollateralizationRatio)
+    afterCollateralizationRatioAtNextPrice.lt(ilkData.liquidationRatio) &&
+    !afterCollateralizationRatioAtNextPrice.isZero() &&
+    !afterCollateralizationRatio.eq(afterCollateralizationRatioAtNextPrice)
   ) {
     errorMessages.push('vaultWillBeUnderCollateralizedAtNextPrice')
   }
@@ -193,8 +193,6 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     daiAllowance,
     accountIsController,
     afterCollateralizationRatio,
-    collateralizationWarningThreshold,
-    collateralizationDangerThreshold,
     shouldPaybackAll,
     vault,
     ilkData,
@@ -241,28 +239,28 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
 
   if (
     vault.collateralizationRatio.gt(ilkData.liquidationRatio) &&
-    vault.collateralizationRatio.lte(collateralizationDangerThreshold)
+    vault.collateralizationRatio.lte(vault.collateralizationDangerThreshold)
   ) {
     warningMessages.push('vaultAtRiskLevelDanger')
   }
 
   if (
-    vault.collateralizationRatio.gt(collateralizationDangerThreshold) &&
-    vault.collateralizationRatio.lte(collateralizationWarningThreshold)
+    vault.collateralizationRatio.gt(vault.collateralizationDangerThreshold) &&
+    vault.collateralizationRatio.lte(vault.collateralizationWarningThreshold)
   ) {
     warningMessages.push('vaultAtRiskLevelWarning')
   }
 
   if (
     afterCollateralizationRatio.gt(ilkData.liquidationRatio) &&
-    afterCollateralizationRatio.lte(collateralizationDangerThreshold)
+    afterCollateralizationRatio.lte(vault.collateralizationDangerThreshold)
   ) {
     warningMessages.push('vaultAtRiskLevelDanger')
   }
 
   if (
-    afterCollateralizationRatio.gt(collateralizationDangerThreshold) &&
-    afterCollateralizationRatio.lte(collateralizationWarningThreshold)
+    afterCollateralizationRatio.gt(vault.collateralizationDangerThreshold) &&
+    afterCollateralizationRatio.lte(vault.collateralizationWarningThreshold)
   ) {
     warningMessages.push('vaultAtRiskLevelWarning')
   }

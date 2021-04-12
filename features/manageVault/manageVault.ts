@@ -103,7 +103,7 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     withdrawAmount,
     paybackAmount,
     balanceInfo: { collateralBalance, daiBalance },
-    ilkData: { maxDebtPerUnitCollateral, liquidationRatio, ilkDebtAvailable },
+    ilkData: { liquidationRatio, ilkDebtAvailable },
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
     vault: { lockedCollateral, debt, approximateDebt },
   } = state
@@ -113,7 +113,8 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
 
   const daiYieldFromTotalCollateral = lockedCollateral
     .plus(depositAmount || zero)
-    .times(maxDebtPerUnitCollateral)
+    .times(currentCollateralPrice)
+    .div(liquidationRatio)
     .minus(debt)
 
   const maxGenerateAmount = daiYieldFromTotalCollateral.gt(ilkDebtAvailable)
@@ -136,7 +137,7 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     : lockedCollateral
 
   const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
-  const afterNextLockedCollateralUSD = afterLockedCollateral.times(
+  const afterLockedCollateralUSDAtNextPrice = afterLockedCollateral.times(
     nextCollateralPrice || currentCollateralPrice,
   )
 
@@ -151,9 +152,9 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
       ? afterLockedCollateralUSD.div(afterDebt)
       : zero
 
-  const afterNextCollateralizationRatio =
-    afterNextLockedCollateralUSD.gt(zero) && afterDebt.gt(zero)
-      ? afterNextLockedCollateralUSD.div(afterDebt)
+  const afterCollateralizationRatioAtNextPrice =
+    afterLockedCollateralUSDAtNextPrice.gt(zero) && afterDebt.gt(zero)
+      ? afterLockedCollateralUSDAtNextPrice.div(afterDebt)
       : zero
 
   const afterLiquidationPrice =
@@ -161,20 +162,15 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
       ? afterDebt.times(liquidationRatio).div(afterLockedCollateral)
       : zero
 
-  const collateralizationDangerThreshold = liquidationRatio.times(1.1)
-  const collateralizationWarningThreshold = liquidationRatio.times(1.25)
-
   return {
     ...state,
     maxDepositAmount,
     maxGenerateAmount,
     afterCollateralizationRatio,
-    afterNextCollateralizationRatio,
+    afterCollateralizationRatioAtNextPrice,
     afterLiquidationPrice,
     maxDepositAmountUSD,
     maxPaybackAmount,
-    collateralizationDangerThreshold,
-    collateralizationWarningThreshold,
     shouldPaybackAll,
     daiYieldFromTotalCollateral,
   }
@@ -316,9 +312,7 @@ export type ManageVaultState = {
   daiYieldFromTotalCollateral: BigNumber
   afterLiquidationPrice: BigNumber
   afterCollateralizationRatio: BigNumber
-  afterNextCollateralizationRatio: BigNumber
-  collateralizationDangerThreshold: BigNumber
-  collateralizationWarningThreshold: BigNumber
+  afterCollateralizationRatioAtNextPrice: BigNumber
 
   // Transaction Behaviour
   collateralAllowanceTxHash?: string
@@ -478,9 +472,8 @@ export const defaultPartialManageVaultState = {
   maxGenerateAmount: zero,
   maxPaybackAmount: zero,
   afterCollateralizationRatio: zero,
+  afterCollateralizationRatioAtNextPrice: zero,
   afterLiquidationPrice: zero,
-  collateralizationDangerThreshold: zero,
-  collateralizationWarningThreshold: zero,
   collateralAllowanceAmount: maxUint256,
   daiAllowanceAmount: maxUint256,
   daiYieldFromTotalCollateral: zero,

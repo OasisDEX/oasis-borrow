@@ -129,7 +129,7 @@ export function reload(network: string) {
   }
 }
 
-export const protoWeb3Context: Web3Context = {
+export const protoWeb3ContextConnected: Web3Context = {
   chainId: 42,
   status: 'connected',
   deactivate: () => null,
@@ -137,10 +137,24 @@ export const protoWeb3Context: Web3Context = {
   connectionKind: 'injected',
   web3: {} as Web3,
 }
+export const protoWeb3ContextReadOnly: Web3Context = {
+  chainId: 42,
+  status: 'connected',
+  deactivate: () => null,
+  account: '0xReadOnly',
+  connectionKind: 'injected',
+  web3: {} as Web3,
+}
 
+export const protoContextConnected: ContextConnected = {
+  contract: <T>(c: ContractDesc) => contract(new Web3(), c) as T,
+  web3ProviderGetPastLogs: {} as Web3,
+  ...networksById['42'],
+  ...protoWeb3ContextConnected,
+}
 export const protoContext: Context = {
   contract: <T>(c: ContractDesc) => contract(new Web3(), c) as T,
   web3ProviderGetPastLogs: {} as Web3,
   ...networksById['42'],
-  ...protoWeb3Context,
+  ...protoWeb3ContextReadOnly,
 }

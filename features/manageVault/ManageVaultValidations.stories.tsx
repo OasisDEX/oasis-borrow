@@ -39,7 +39,7 @@ export const DepositEmpty = manageVaultStory({
 
 export const PaybackEmpty = manageVaultStory({
   title:
-    'Similar to PaybackAndWithdrawAmountsEmpty only that the connected user is not the controller of the vault. At the "Daiu" editing stage they would only be able payback so we block the flow if no payback amount is set',
+    'Similar to PaybackAndWithdrawAmountsEmpty only that the connected user is not the controller of the vault. At the "Dai" editing stage they would only be able payback so we block the flow if no payback amount is set',
   vault: {
     ilk: 'WBTC-A',
     collateral: new BigNumber('100'),
@@ -63,7 +63,7 @@ export const DepositAmountExceedsCollateralBalance = manageVaultStory({
   depositAmount: new BigNumber('6'),
 })
 
-export const withdrawAmountExceedsFreeCollateral = manageVaultStory({
+export const WithdrawAmountExceedsFreeCollateral = manageVaultStory({
   title:
     'Error is shown when a user is trying to withdraw an amount of collateral from the vault which would cause it to become undercollateralized',
   vault: {

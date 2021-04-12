@@ -1,7 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { OraclePriceData } from 'blockchain/prices'
 import { lastHour, nextHour, now } from 'helpers/time'
-import { one } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -145,7 +144,7 @@ export interface BuildPriceInfoProps {
 const defaultCollateralPrice = new BigNumber('550')
 const defaultEthPrice = new BigNumber('1350')
 const defaultIsStatic = false
-const defaultCollateralChangePercentage = new BigNumber('0.05125')
+const defaultCollateralChangePercentage = new BigNumber('0.1')
 const defaultEthChangePercentage = new BigNumber('0.0221')
 const defaultToken = 'WBTC'
 
@@ -158,10 +157,14 @@ export function buildPriceInfo$({
   ethChangePercentage = defaultEthChangePercentage,
   token = defaultToken,
 }: BuildPriceInfoProps): Observable<PriceInfo> {
+  const nextEthPrice = ethPrice.plus(ethPrice.times(ethChangePercentage))
+  const nextCollateralPrice = collateralPrice.plus(
+    collateralPrice.times(collateralChangePercentage),
+  )
   const ethPriceInfo$ = of({
     currentPrice: ethPrice,
     isStaticPrice: false,
-    nextPrice: ethPrice.times(one.plus(ethChangePercentage)),
+    nextPrice: nextEthPrice,
     currentPriceUpdate: lastHour,
     nextPriceUpdate: nextHour,
     percentageChange: ethChangePercentage,
@@ -170,7 +173,7 @@ export function buildPriceInfo$({
     currentPrice: collateralPrice,
     isStaticPrice: isStatic,
     ...(!isStatic && {
-      nextPrice: collateralPrice.times(one.plus(collateralChangePercentage)),
+      nextPrice: nextCollateralPrice,
       currentPriceUpdate: lastHour,
       nextPriceUpdate: nextHour,
       percentageChange: collateralChangePercentage,

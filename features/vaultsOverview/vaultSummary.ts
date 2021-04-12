@@ -29,9 +29,8 @@ export function isVaultAtRisk(vault: Vault) {
   if (vault.debt.eq(zero)) {
     return false
   }
-  const safetyMargin = 1.2
 
-  return vault.collateralizationRatio?.div(vault.liquidationRatio).lt(safetyMargin)
+  return vault.collateralizationRatio.lt(vault.collateralizationDangerThreshold)
 }
 
 export function getVaultsSummary(vaults: Vault[]): VaultSummary {

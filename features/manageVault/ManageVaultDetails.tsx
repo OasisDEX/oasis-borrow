@@ -132,7 +132,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
 
   const newPriceIn = moment(dateNextCollateralPrice).diff(Date.now(), 'minutes')
   const nextPriceDiff = nextCollateralPrice
-    ? nextCollateralPrice.minus(currentCollateralPrice).div(nextCollateralPrice).times(100)
+    ? nextCollateralPrice.minus(currentCollateralPrice).div(currentCollateralPrice).times(100)
     : zero
 
   const priceChangeColor = nextPriceDiff.isZero()
