@@ -1,4 +1,3 @@
-
 import { Vault } from 'blockchain/vaults'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { isEqual } from 'lodash'

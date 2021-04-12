@@ -6,27 +6,30 @@ import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { VaultOverviewOwnershipBanner } from 'features/banners/VaultsBannersView'
-import {
-  formatCryptoBalance,
-  formatFiatBalance,
-  formatPercent,
-} from 'helpers/formatters/format'
+import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
-import { TokenSymbol } from '../landing/LandingView'
 import { Filters } from './Filters'
 import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { VaultsOverview } from './vaultsOverview'
-import { VaultSummary } from './vaultSummary'
+import { isVaultAtRisk, VaultSummary } from './vaultSummary'
 
 const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
   {
     headerLabel: 'system.asset',
     header: ({ label }) => <Text variant="tableHead">{label}</Text>,
-    cell: ({ token }) => <TokenSymbol token={token} />,
+    cell: ({ ilk, token }) => {
+      const tokenInfo = getToken(token)
+      return (
+        <Flex>
+          <Icon name={tokenInfo.iconCircle} size="26px" sx={{ verticalAlign: 'sub', mr: 2 }} />
+          <Box sx={{ whiteSpace: 'nowrap' }}>{ilk}</Box>
+        </Flex>
+      )
+    },
   },
   {
     headerLabel: 'system.vault-id',
@@ -55,9 +58,14 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
         {label}
       </TableSortHeader>
     ),
-    cell: ({ collateralizationRatio }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatPercent(collateralizationRatio.times(100))}</Text>
-    ),
+    cell: (vault) => {
+      const isAtRisk = isVaultAtRisk(vault)
+      return (
+        <Text sx={{ textAlign: 'right', color: isAtRisk ? 'onError' : 'onSuccess' }}>
+          {formatPercent(vault.collateralizationRatio.times(100))}
+        </Text>
+      )
+    },
   },
   {
     headerLabel: 'system.coll-locked',
@@ -100,41 +108,60 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
 ]
 function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
   const { data, filters } = vaults
-  return <Table data={data} primaryKey="address" state={filters} columns={vaultsColumns} />
+  const { t } = useTranslation()
+  return (
+    <Table
+      data={data}
+      primaryKey="address"
+      state={filters}
+      columns={vaultsColumns}
+      noResults={<Box>{t('no-results')}</Box>}
+    />
+  )
 }
 
 function Summary({ summary }: { summary: VaultSummary }) {
   const { t } = useTranslation()
   return (
     <Card sx={{ mb: 5 }}>
-      <Grid sx={{ pt: 3 }} columns={["1fr", "repeat(4, 1fr)", "repeat(4, 1fr)"]}>
+      <Grid sx={{ pt: 3 }} columns={['1fr', 'repeat(4, 1fr)', 'repeat(4, 1fr)']}>
         <Box sx={{ gridColumn: ['initial', 'span 2', 'initial'] }}>
           <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
             {t('vaults-overview.number-of-vaults')}
           </Text>
-          <Text variant="header2" sx={{ mt: 2 }}>{summary.numberOfVaults}</Text>
+          <Text variant="header2" sx={{ mt: 2 }}>
+            {summary.numberOfVaults}
+          </Text>
         </Box>
         <Box sx={{ gridColumn: ['initial', 'span 2', 'initial'] }}>
           <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
             {t('vaults-overview.total-locked')}
           </Text>
-          <Text variant="header2" sx={{ mt: 2 }}>${formatCryptoBalance(summary.totalCollateralPrice)}</Text>
+          <Text variant="header2" sx={{ mt: 2 }}>
+            ${formatCryptoBalance(summary.totalCollateralPrice)}
+          </Text>
         </Box>
-        <Box sx={{ gridRow: ['initial', '2/3', 'auto'], gridColumn: ['initial', 'span 2', 'initial'] }}>
+        <Box
+          sx={{ gridRow: ['initial', '2/3', 'auto'], gridColumn: ['initial', 'span 2', 'initial'] }}
+        >
           <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
             {t('vaults-overview.total-debt')}
           </Text>
-          <Text variant="header2" sx={{ mt: 2 }}>{formatCryptoBalance(summary.totalDaiDebt)} DAI</Text>
+          <Text variant="header2" sx={{ mt: 2 }}>
+            {formatCryptoBalance(summary.totalDaiDebt)} DAI
+          </Text>
         </Box>
         <Box sx={{ gridRow: ['initial', '2/3', 'auto'] }}>
           <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
             {t('vaults-overview.vaults-at-risk')}
           </Text>
-          <Text variant="header2" sx={{ mt: 2 }}>{summary.vaultsAtRisk}</Text>
+          <Text variant="header2" sx={{ mt: 2 }}>
+            {summary.vaultsAtRisk}
+          </Text>
         </Box>
         <Graph assetRatio={summary.depositedAssetRatio} />
       </Grid>
-    </Card >
+    </Card>
   )
 }
 
@@ -145,12 +172,14 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
 
   return (
     <Box sx={{ gridColumn: ['1/2', '1/5', '1/5'], my: 3 }}>
-      <Box sx={{
-        borderRadius: 'small',
-        display: ['none', 'flex', 'flex'],
-        overflow: 'hidden',
-        boxShadow: 'medium'
-      }}>
+      <Box
+        sx={{
+          borderRadius: 'small',
+          display: ['none', 'flex', 'flex'],
+          overflow: 'hidden',
+          boxShadow: 'medium',
+        }}
+      >
         {assets.map(([token, ratio]) => (
           <Box
             key={token}
@@ -163,12 +192,23 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
         ))}
       </Box>
       <Box sx={{ display: 'flex', flexDirection: ['column', 'row', 'row'] }}>
-        <Box as="hr" sx={{ display: ['block', 'none', 'none'], borderColor: 'border', borderWidth: '1px', borderTop: 'none', mb: 3 }} />
+        <Box
+          as="hr"
+          sx={{
+            display: ['block', 'none', 'none'],
+            borderColor: 'border',
+            borderWidth: '1px',
+            borderTop: 'none',
+            mb: 3,
+          }}
+        />
         {assets.map(([token, ratio]) => (
           <Box key={token} sx={{ my: 2, flex: ratio.toString() }}>
-            <Box sx={{
-              display: ['flex', ...(ratio.gt(0.08) ? ['flex', 'flex'] : ['none', 'none'])],
-            }}>
+            <Box
+              sx={{
+                display: ['flex', ...(ratio.gt(0.08) ? ['flex', 'flex'] : ['none', 'none'])],
+              }}
+            >
               <Box sx={{ mr: 1 }}>
                 <Icon
                   name={getToken(token).iconCircle}
@@ -198,22 +238,30 @@ interface Props {
   address: string
 }
 
-function getHeaderTranslationKey(connectedAccount: string | undefined, address: string, numberOfVaults: number) {
-  const HEADERS_PATH = "vaults-overview.headers"
+function getHeaderTranslationKey(
+  connectedAccount: string | undefined,
+  address: string,
+  numberOfVaults: number,
+) {
+  const HEADERS_PATH = 'vaults-overview.headers'
   if (connectedAccount === undefined) {
-    return numberOfVaults === 0 ? `${HEADERS_PATH}.notConnected-noVaults` : `${HEADERS_PATH}.notConnected-withVaults`
+    return numberOfVaults === 0
+      ? `${HEADERS_PATH}.notConnected-noVaults`
+      : `${HEADERS_PATH}.notConnected-withVaults`
   }
 
   if (address === connectedAccount) {
-    return numberOfVaults === 0 ? `${HEADERS_PATH}.connected-owner-noVaults` : `${HEADERS_PATH}.connected-owner-withVaults`
+    return numberOfVaults === 0
+      ? `${HEADERS_PATH}.connected-owner-noVaults`
+      : `${HEADERS_PATH}.connected-owner-withVaults`
   }
 
-  return numberOfVaults === 0 ? `${HEADERS_PATH}.connected-viewer-noVaults` : `${HEADERS_PATH}.connected-viewer-withVaults`
+  return numberOfVaults === 0
+    ? `${HEADERS_PATH}.connected-viewer-noVaults`
+    : `${HEADERS_PATH}.connected-viewer-withVaults`
 }
 export function VaultsOverviewView({ vaultsOverview, context, address }: Props) {
   const { vaults, vaultSummary } = vaultsOverview
-  const { t } = useTranslation()
-
   const onVaultSearch = useCallback(
     (search: string) => {
       vaults.filters.change({ kind: 'search', search })
@@ -225,31 +273,30 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
     (tagFilter: CoinTag | undefined) => {
       vaults.filters.change({ kind: 'tagFilter', tagFilter })
     },
-    [vaults.filters])
+    [vaults.filters],
+  )
 
   if (vaultSummary === undefined) {
     return null
   }
 
-  const connectedAccount = context?.status === 'connected' ? context.account : undefined;
+  const connectedAccount = context?.status === 'connected' ? context.account : undefined
 
-  const headerTranslationKey = getHeaderTranslationKey(connectedAccount, address, vaultSummary.numberOfVaults)
+  const headerTranslationKey = getHeaderTranslationKey(
+    connectedAccount,
+    address,
+    vaultSummary.numberOfVaults,
+  )
 
   return (
     <Grid sx={{ flex: 1, zIndex: 1 }}>
-      {
-        connectedAccount && address !== connectedAccount &&
+      {connectedAccount && address !== connectedAccount && (
         <VaultOverviewOwnershipBanner account={connectedAccount} controller={address} />
-      }
+      )}
       <Heading variant="header2" sx={{ textAlign: 'center', my: 5 }} as="h1">
-        <Trans
-          i18nKey={headerTranslationKey}
-          components={[<br />]}
-        />
+        <Trans i18nKey={headerTranslationKey} components={[<br />]} />
       </Heading>
-      <Summary
-        summary={vaultSummary}
-      />
+      <Summary summary={vaultSummary} />
       <Filters
         onSearch={onVaultSearch}
         search={vaults.filters.search}

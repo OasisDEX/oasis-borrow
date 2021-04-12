@@ -7,23 +7,34 @@ import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { TRANSITIONS } from 'theme'
-import { Box, Container, Flex, Text } from 'theme-ui'
+import { Box, Container, Flex, SxProps, Text } from 'theme-ui'
 
 import { useAppContext } from './AppContextProvider'
 
-function Logo() {
+function Logo({ sx }: { sx?: SxProps }) {
   return (
     <AppLink
       withAccountPrefix={false}
       href="/"
-      sx={{ color: 'primary', fontWeight: 'semiBold', fontSize: 5, cursor: 'pointer', zIndex: 1 }}
+      sx={{
+        color: 'primary',
+        fontWeight: 'semiBold',
+        fontSize: 5,
+        cursor: 'pointer',
+        zIndex: 1,
+        ...sx,
+      }}
     >
       <Text sx={{ display: 'inline', mr: 2 }}>Oasis</Text>
     </AppLink>
   )
 }
 
-export function BasicHeader({ variant, children }: { variant?: string } & WithChildren) {
+export function BasicHeader({
+  variant,
+  children,
+  sx,
+}: { variant?: string; sx?: SxProps } & WithChildren) {
   return (
     <Box as="header">
       <Container
@@ -36,6 +47,7 @@ export function BasicHeader({ variant, children }: { variant?: string } & WithCh
           p: 3,
           mb: 3,
           minHeight: '83px',
+          ...sx,
         }}
       >
         {children}
@@ -67,21 +79,28 @@ export function AppHeader(_: { backLink?: AppLinkProps; CustomLogoWithBack?: () 
   const { t } = useTranslation()
   const accountData = useObservable(accountData$)
   return (
-    <BasicHeader variant="appContainer">
+    <BasicHeader
+      sx={{
+        position: 'relative',
+        flexDirection: ['column-reverse', 'row', 'row'],
+        alignItems: ['flex-end', 'center', 'center'],
+        zIndex: 1,
+      }}
+      variant="appContainer"
+    >
       <>
-        <Logo />
-        {
-          accountData?.context?.status === 'connected' &&
-          <Flex sx={{ ml: 'auto', zIndex: 1 }}>
-            <AppLink
-              variant="nav"
-              sx={{ mr: 4 }}
-              href={`/owner/${accountData.context.account}`}>
-              {t('your-vaults')} {accountData.numberOfVaults !== undefined && `(${accountData.numberOfVaults})`}
+        <Logo sx={{ position: ['absolute', 'static', 'static'], left: 3, top: 3 }} />
+        {accountData?.context?.status === 'connected' && (
+          <Flex sx={{ ml: 'auto', zIndex: 1, mt: [3, 0, 0] }}>
+            <AppLink variant="nav" sx={{ mr: 4 }} href={`/owner/${accountData.context.account}`}>
+              {t('your-vaults')}{' '}
+              {accountData.numberOfVaults !== undefined && `(${accountData.numberOfVaults})`}
             </AppLink>
-            <AppLink variant="nav" sx={{ mr: 4 }} href="/vaults/list">{t('open-new-vault')}</AppLink>
+            <AppLink variant="nav" sx={{ mr: [0, 4, 4] }} href="/vaults/list">
+              {t('open-new-vault')}
+            </AppLink>
           </Flex>
-        }
+        )}
         <AccountButton />
       </>
     </BasicHeader>

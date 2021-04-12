@@ -14,7 +14,7 @@ interface TableProps<T extends Record<K, string>, K extends keyof T, S> {
   data: T[]
   state: S
   columns: ColumnDef<T, S>[]
-  primaryKey: K,
+  primaryKey: K
   noResults?: React.ReactNode
 }
 
@@ -63,7 +63,11 @@ function Row({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
   )
 }
 
-function Cell({ children, sx, ...props }: React.PropsWithChildren<{ sx?: SxStyleProp } & HTMLProps<HTMLTableCellElement>>) {
+function Cell({
+  children,
+  sx,
+  ...props
+}: React.PropsWithChildren<{ sx?: SxStyleProp } & HTMLProps<HTMLTableCellElement>>) {
   return (
     <Box
       sx={{
@@ -133,7 +137,7 @@ export function Table<T extends Record<K, string>, K extends keyof T, S>({
   columns,
   primaryKey,
   state,
-  noResults
+  noResults,
 }: TableProps<T, K, S>) {
   const { t } = useTranslation()
   return (
@@ -144,20 +148,17 @@ export function Table<T extends Record<K, string>, K extends keyof T, S>({
         </Header>
       ))}
     >
-      {
-        noResults && data.length === 0
-          ? (
-            <Row sx={{ background: 'none' }}>
-              <Cell colSpan={columns.length}>
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  {noResults}
-                </Box>
-              </Cell>
-            </Row>)
-          : data.map((row) => (
-            <TableRow key={row[primaryKey]} row={row} columns={columns} />
-          ))
-      }
+      {noResults && data.length === 0 ? (
+        <Row sx={{ background: 'none' }}>
+          <Cell colSpan={columns.length}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              {noResults}
+            </Box>
+          </Cell>
+        </Row>
+      ) : (
+        data.map((row) => <TableRow key={row[primaryKey]} row={row} columns={columns} />)
+      )}
     </TableContainer>
   )
 }

@@ -14,14 +14,7 @@ interface FiltersProps {
   sx?: SxStyleProp
 }
 
-function Filters_({
-  onSearch,
-  search,
-  onTagChange,
-  tagFilter,
-  defaultTag,
-  sx,
-}: FiltersProps) {
+function Filters_({ onSearch, search, onTagChange, tagFilter, defaultTag, sx }: FiltersProps) {
   const onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onSearch(e.currentTarget.value)

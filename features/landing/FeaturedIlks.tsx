@@ -1,14 +1,14 @@
-import { getToken } from 'blockchain/tokensMetadata';
-import { AppLink } from 'components/Links';
-import { formatPercent } from 'helpers/formatters/format';
-import { useTranslation } from 'next-i18next';
-import React from 'react';
-import { Box, Flex, Grid, Heading, Image, SxProps, SxStyleProp, Text } from 'theme-ui';
+import { getToken } from 'blockchain/tokensMetadata'
+import { AppLink } from 'components/Links'
+import { formatPercent } from 'helpers/formatters/format'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+import { Box, Flex, Grid, Heading, Image, SxProps, SxStyleProp, Text } from 'theme-ui'
 
-import { FeaturedIlk } from './featuredIlksData';
+import { FeaturedIlk } from './featuredIlksData'
 
 interface CallToActionProps {
-  ilk: FeaturedIlk;
+  ilk: FeaturedIlk
 }
 function CallToActionPlaceholder() {
   return (
@@ -48,11 +48,11 @@ function CallToActionPlaceholder() {
         </Text>
       </Flex>
     </Grid>
-  );
+  )
 }
 function CallToAction({ ilk }: CallToActionProps) {
-  const token = getToken(ilk.token);
-  const { t } = useTranslation();
+  const token = getToken(ilk.token)
+  const { t } = useTranslation()
 
   return (
     <AppLink href={`/vaults/open/${ilk.ilk}`}>
@@ -79,7 +79,8 @@ function CallToAction({ ilk }: CallToActionProps) {
             transform: 'scale(1.05)',
             right: 0,
           }}
-          src={token.bannerIcon} />
+          src={token.bannerIcon}
+        />
         <Box sx={{ gridColumn: '1/3', zIndex: 1 }}>
           <Text variant="caption">{ilk.title}</Text>
         </Box>
@@ -106,20 +107,20 @@ function CallToAction({ ilk }: CallToActionProps) {
         </Flex>
       </Grid>
     </AppLink>
-  );
+  )
 }
 
-export function FeaturedIlks({ ilks, sx }: { ilks: FeaturedIlk[]; sx?: SxStyleProp; }) {
+export function FeaturedIlks({ ilks, sx }: { ilks: FeaturedIlk[]; sx?: SxStyleProp }) {
   return (
     <Grid sx={sx} columns={['1fr', '1fr 1fr 1fr']} gap={4}>
       {ilks.map((ilk) => (
         <CallToAction key={ilk.title} ilk={ilk} />
       ))}
     </Grid>
-  );
+  )
 }
 
-export function FeaturedIlksPlaceholder({ sx }: { sx: SxProps; }) {
+export function FeaturedIlksPlaceholder({ sx }: { sx: SxProps }) {
   return (
     <Grid
       sx={{ ...sx, position: 'absolute', left: 0, top: 0, right: 0 }}
@@ -130,5 +131,5 @@ export function FeaturedIlksPlaceholder({ sx }: { sx: SxProps; }) {
       <CallToActionPlaceholder />
       <CallToActionPlaceholder />
     </Grid>
-  );
+  )
 }

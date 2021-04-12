@@ -294,6 +294,7 @@ const fadeInAnimation = {
 export function LandingView() {
   const { landing$ } = useAppContext()
   const [landing, landingError] = useObservableWithError(landing$)
+  const { t } = useTranslation()
 
   const onIlkSearch = useCallback(
     (search: string) => {
@@ -333,10 +334,10 @@ export function LandingView() {
           sx={
             landing !== undefined
               ? {
-                ...fadeInAnimation,
-                animationDirection: 'backwards',
-                animationFillMode: 'backwards',
-              }
+                  ...fadeInAnimation,
+                  animationDirection: 'backwards',
+                  animationFillMode: 'backwards',
+                }
               : {}
           }
         />
@@ -357,6 +358,7 @@ export function LandingView() {
               primaryKey="ilk"
               state={landing.ilks.filters}
               columns={ilksColumns}
+              noResults={<Box>{t('no-results')}</Box>}
             />
           </Box>
         </Box>

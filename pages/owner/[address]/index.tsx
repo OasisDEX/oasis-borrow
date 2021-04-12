@@ -1,7 +1,7 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
-import { BackgroundLight } from "features/landing/BackgroundLight"
+import { BackgroundLight } from 'features/landing/BackgroundLight'
 import { VaultsOverviewView } from 'features/vaultsOverview/VaultsOverviewView'
 import { useObservable } from 'helpers/observableHook'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'

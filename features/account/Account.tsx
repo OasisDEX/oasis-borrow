@@ -16,10 +16,7 @@ import { animated, useSpring } from 'react-spring'
 import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Flex, Grid, Heading, Text, Textarea } from 'theme-ui'
 
-import {
-  PendingTransactions,
-  RecentTransactions,
-} from './TransactionManagerView'
+import { PendingTransactions, RecentTransactions } from './TransactionManagerView'
 
 function DaiIndicator({ daiBalance }: { daiBalance: BigNumber | undefined }) {
   return (
@@ -29,22 +26,17 @@ function DaiIndicator({ daiBalance }: { daiBalance: BigNumber | undefined }) {
         alignItems: 'center',
         bg: 'warning',
         borderRadius: 'round',
-        p: 1
-      }}>
+        p: 1,
+      }}
+    >
       <Icon sx={{ zIndex: 1 }} name="dai_circle_color" size={30} />
       <Box sx={{ mx: 2, color: 'onWarning' }}>
-        {
-          daiBalance ? formatCryptoBalance(daiBalance) : '0.00'
-        }
+        {daiBalance ? formatCryptoBalance(daiBalance) : '0.00'}
       </Box>
     </Flex>
   )
 }
-export function AccountIndicator({
-  address,
-}: {
-  address: string
-}) {
+export function AccountIndicator({ address }: { address: string }) {
   return (
     <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mx: 3 }}>
       <Text variant="paragraph4" sx={{ fontWeight: 'bold' }}>
@@ -62,7 +54,7 @@ export function AccountButton() {
   const { t } = useTranslation('common')
   const openModal = useModal()
   const animatedProps = useSpring({
-    top: accountData === undefined ? -100 : 0
+    top: accountData === undefined ? -100 : 0,
   })
 
   if (accountData?.context.status === 'connecting' || accountData === undefined) {
@@ -78,7 +70,8 @@ export function AccountButton() {
           position: 'relative',
           justifyContent: 'flex-end',
           minWidth: 'auto',
-        }}>
+        }}
+      >
         <Button
           variant="secondary"
           sx={{
@@ -88,7 +81,7 @@ export function AccountButton() {
             boxShadow: 'surface',
             p: 1,
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
           }}
           onClick={() => openModal(AccountModal)}
         >
@@ -205,7 +198,8 @@ export function AccountModal({ close }: ModalProps) {
                   href="/owner/[address]"
                   as={`/owner/${account}`}
                 >
-                  {t('your-vaults')} {accountData?.numberOfVaults !== undefined && `(${accountData.numberOfVaults})`}
+                  {t('your-vaults')}{' '}
+                  {accountData?.numberOfVaults !== undefined && `(${accountData.numberOfVaults})`}
                 </AppLink>
                 <Button
                   variant="textual"
