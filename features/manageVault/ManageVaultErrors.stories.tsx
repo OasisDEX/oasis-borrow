@@ -88,19 +88,6 @@ export const WithdrawAmountExceedsFreeCollateralAtNextPrice = manageVaultStory({
   withdrawAmount: new BigNumber('6'),
 })
 
-export const GenerateAmountExceedsDebtCeiling = manageVaultStory({
-  title:
-    'Error is shown where the total debt generated for an ilk is almost at the debt ceiling and the amount of dai the user wants to generate would be greater than the difference. In this example, the user has plenty of collateral in their vault to generate plenty of DAI but is blocked as there is only 15,000 DAI until the ceiling is reached',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('30'),
-    debt: new BigNumber('3000'),
-  },
-  ilkData: { ilkDebt: new BigNumber('15000'), debtCeiling: new BigNumber('16000') },
-  stage: 'daiEditing',
-  generateAmount: new BigNumber('2000'),
-})
-
 export const GenerateAmountExceedsDaiYieldFromTotalCollateral = manageVaultStory({
   title:
     'Error is shown when a user is trying to generate an amount of DAI that is greater than the maximum of dai that can be generated from the collateral already locked in the vault and the amount of collateral the user is also depositing',
@@ -132,6 +119,43 @@ export const GenerateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice = manag
   generateAmount: new BigNumber('4000'),
 })
 
+export const VaultWillBeUnderCollateralized = manageVaultStory({
+  title:
+    'Error is same as Generate Amount Exceeds Dai Yield From Total Collateral only that this exemplifies that it is coupled with Vault Will Be UnderCollateralized error - we can scrutinize to a lower level of detail if necessary',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
+  stage: 'daiEditing',
+  generateAmount: new BigNumber('8000'),
+})
+
+export const VaultWillBeUnderCollateralizedAtNextPrice = manageVaultStory({
+  title: 'Same as above',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
+  stage: 'daiEditing',
+  generateAmount: new BigNumber('4000'),
+  priceInfo: { collateralChangePercentage: new BigNumber('-0.3') },
+})
+
+export const GenerateAmountExceedsDebtCeiling = manageVaultStory({
+  title:
+    'Error is shown where the total debt generated for an ilk is almost at the debt ceiling and the amount of dai the user wants to generate would be greater than the difference. In this example, the user has plenty of collateral in their vault to generate plenty of DAI but is blocked as there is only 1,000 DAI until the ceiling is reached',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('30'),
+    debt: new BigNumber('3000'),
+  },
+  ilkData: { ilkDebt: new BigNumber('15000'), debtCeiling: new BigNumber('16000') },
+  stage: 'daiEditing',
+  generateAmount: new BigNumber('2000'),
+})
+
 export const GenerateAmountLessThanDebtFloor = manageVaultStory({
   title:
     'Error is shown when a user is generating an amount of DAI that would cause the debt outstanding in the vault to be less than the dust limit/debt floor. In more detail, if this vault has a debt of 1999 DAI and the dust limit was 2000 DAI, were the user to generate 1 DAI, then they could proceed',
@@ -146,7 +170,7 @@ export const GenerateAmountLessThanDebtFloor = manageVaultStory({
 })
 
 export const PaybackAmountExceedsDaiBalance = manageVaultStory({
-  title: 'Error occurs when user is trying to pay back more DAI than they have',
+  title: 'Error occurs when user is trying to pay back more DAI than they have in their wallet',
   vault: {
     ilk: 'WBTC-A',
     collateral: new BigNumber('50'),
@@ -158,8 +182,7 @@ export const PaybackAmountExceedsDaiBalance = manageVaultStory({
 })
 
 export const PaybackAmountExceedsVaultDebt = manageVaultStory({
-  title:
-    'Error occurs when the user tries to payback more DAI than is required to clear vault debt',
+  title: 'Error occurs when the user tries to payback more DAI than exists as debt in their vault',
   vault: {
     ilk: 'WBTC-A',
     collateral: new BigNumber('100'),
@@ -172,7 +195,7 @@ export const PaybackAmountExceedsVaultDebt = manageVaultStory({
 
 export const PaybackAmountCausesVaultDebtToBeLessThanDebtFloor = manageVaultStory({
   title:
-    'Error occurs when the user pays back an amount of DAI which causes the remaining vault debt to be under the dust limit',
+    'Error occurs when the user pays back an amount of DAI which would cause the remaining vault debt to be under the dust limit but not the full amount',
   vault: {
     ilk: 'WBTC-A',
     collateral: new BigNumber('100'),
@@ -181,17 +204,6 @@ export const PaybackAmountCausesVaultDebtToBeLessThanDebtFloor = manageVaultStor
   stage: 'daiEditing',
   paybackAmount: new BigNumber('4000'),
   balanceInfo: { daiBalance: new BigNumber('10000') },
-})
-
-export const VaultWillBeUnderCollateralizedAtNextPrice = manageVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
-  stage: 'daiEditing',
-  generateAmount: new BigNumber('4000'),
-  priceInfo: { collateralChangePercentage: new BigNumber('-0.3') },
 })
 
 // eslint-disable-next-line import/no-default-export

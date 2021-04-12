@@ -8,7 +8,7 @@ import { Context } from 'blockchain/network'
 import { ilkToToken$ } from 'components/AppContext'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { now } from 'helpers/time'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { of } from 'rxjs'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
@@ -165,7 +165,7 @@ export const protoUSDCAIlkData: IlkData = {
   token: 'USDC',
 }
 
-export const DEFAULT_DEBT_SCALING_FACTOR = new BigNumber('1.000000000000000000001')
+export const DEFAULT_DEBT_SCALING_FACTOR = one
 
 export interface BuildIlkDataProps {
   _priceInfo$?: Observable<PriceInfo>

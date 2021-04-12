@@ -11,15 +11,15 @@ export type ManageVaultErrorMessage =
   | 'depositAmountExceedsCollateralBalance' //
   | 'withdrawAmountExceedsFreeCollateral' //
   | 'withdrawAmountExceedsFreeCollateralAtNextPrice' //
-  | 'generateAmountExceedsDebtCeiling' //
   | 'generateAmountExceedsDaiYieldFromTotalCollateral' //
   | 'generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice' //
-  | 'generateAmountLessThanDebtFloor'
-  | 'paybackAmountExceedsDaiBalance'
-  | 'paybackAmountExceedsVaultDebt'
-  | 'paybackAmountCausesVaultDebtToBeLessThanDebtFloor'
-  | 'vaultWillBeUnderCollateralizedAtNextPrice'
-  | 'vaultWillBeUnderCollateralized'
+  | 'vaultWillBeUnderCollateralized' //
+  | 'vaultWillBeUnderCollateralizedAtNextPrice' //
+  | 'generateAmountExceedsDebtCeiling' //
+  | 'generateAmountLessThanDebtFloor' //
+  | 'paybackAmountExceedsDaiBalance' //
+  | 'paybackAmountExceedsVaultDebt' //
+  | 'paybackAmountCausesVaultDebtToBeLessThanDebtFloor' //
   | 'collateralAllowanceAmountEmpty'
   | 'customCollateralAllowanceAmountGreaterThanMaxUint256'
   | 'customCollateralAllowanceAmountLessThanDepositAmount'
@@ -101,10 +101,6 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     errorMessages.push('withdrawAmountExceedsFreeCollateralAtNextPrice')
   }
 
-  if (generateAmount?.gt(ilkData.ilkDebtAvailable)) {
-    errorMessages.push('generateAmountExceedsDebtCeiling')
-  }
-
   const generateAmountExceedsDaiYieldFromTotalCollateral = generateAmount?.gt(
     daiYieldFromTotalCollateral,
   )
@@ -120,6 +116,28 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice
   ) {
     errorMessages.push('generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice')
+  }
+
+  const vaultWillBeUnderCollateralized =
+    (generateAmount?.gt(zero) || withdrawAmount?.gt(zero)) &&
+    afterCollateralizationRatio.lt(ilkData.liquidationRatio) &&
+    !afterCollateralizationRatio.isZero()
+
+  if (vaultWillBeUnderCollateralized) {
+    errorMessages.push('vaultWillBeUnderCollateralized')
+  }
+
+  const vaultWillBeUnderCollateralizedAtNextPrice =
+    (generateAmount?.gt(zero) || withdrawAmount?.gt(zero)) &&
+    afterCollateralizationRatioAtNextPrice.lt(ilkData.liquidationRatio) &&
+    !afterCollateralizationRatioAtNextPrice.isZero()
+
+  if (!vaultWillBeUnderCollateralized && vaultWillBeUnderCollateralizedAtNextPrice) {
+    errorMessages.push('vaultWillBeUnderCollateralizedAtNextPrice')
+  }
+
+  if (generateAmount?.gt(ilkData.ilkDebtAvailable)) {
+    errorMessages.push('generateAmountExceedsDebtCeiling')
   }
 
   if (generateAmount?.plus(vault.debt).lt(ilkData.debtFloor)) {
@@ -168,24 +186,6 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     if (paybackAmount && daiAllowanceAmount && daiAllowanceAmount.lt(paybackAmount)) {
       errorMessages.push('customDaiAllowanceAmountLessThanPaybackAmount')
     }
-  }
-
-  const willBeUnderCollateralized =
-    (generateAmount?.gt(zero) || withdrawAmount?.gt(zero)) &&
-    afterCollateralizationRatio.lt(ilkData.liquidationRatio) &&
-    !afterCollateralizationRatio.isZero()
-
-  if (willBeUnderCollateralized) {
-    errorMessages.push('vaultWillBeUnderCollateralized')
-  }
-
-  const willBeUnderCollateralizedAtNextPrice =
-    (generateAmount?.gt(zero) || withdrawAmount?.gt(zero)) &&
-    afterCollateralizationRatioAtNextPrice.lt(ilkData.liquidationRatio) &&
-    !afterCollateralizationRatioAtNextPrice.isZero()
-
-  if (!willBeUnderCollateralized && willBeUnderCollateralizedAtNextPrice) {
-    errorMessages.push('vaultWillBeUnderCollateralizedAtNextPrice')
   }
 
   return { ...state, errorMessages }
