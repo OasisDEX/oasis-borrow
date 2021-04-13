@@ -35,6 +35,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     stage,
     collateralAllowanceAmount,
     daiAllowanceAmount,
+    shouldPaybackAll,
   } = state
 
   const errorMessages: ManageVaultErrorMessage[] = []
@@ -55,14 +56,15 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     errorMessages.push('generateAmountGreaterThanDebtCeiling')
   }
 
-  if (paybackAmount?.gt(maxPaybackAmount)) {
+  if (paybackAmount?.gt(maxPaybackAmount) && !shouldPaybackAll) {
     errorMessages.push('paybackAmountGreaterThanMaxPaybackAmount')
   }
 
   if (
     paybackAmount &&
     debt.minus(paybackAmount).lt(debtFloor) &&
-    debt.minus(paybackAmount).gt(zero)
+    debt.minus(paybackAmount).gt(zero) &&
+    !shouldPaybackAll
   ) {
     errorMessages.push('paybackAmountLessThanDebtFloor')
   }
@@ -112,6 +114,7 @@ export type ManageVaultWarningMessage =
   | 'noDaiAllowance'
   | 'collateralAllowanceLessThanDepositAmount'
   | 'daiAllowanceLessThanPaybackAmount'
+  | 'payingBackAllOutstandingDebt'
 
 export function validateWarnings(state: ManageVaultState): ManageVaultState {
   const {
@@ -126,6 +129,7 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     debt,
     collateralAllowance,
     daiAllowance,
+    shouldPaybackAll,
   } = state
 
   const warningMessages: ManageVaultWarningMessage[] = []
@@ -165,6 +169,10 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
 
   if (paybackAmount && daiAllowance && paybackAmount.gt(daiAllowance)) {
     warningMessages.push('daiAllowanceLessThanPaybackAmount')
+  }
+
+  if (shouldPaybackAll) {
+    warningMessages.push('payingBackAllOutstandingDebt')
   }
 
   return { ...state, warningMessages }
