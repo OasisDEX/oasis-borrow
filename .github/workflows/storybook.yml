@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REGION: eu-central-1
-      BUCKET_NAME: storybook.staging.oasis.app
+      BUCKET_NAME: storybook.oasis.app
       CLOUDFRONT_ID: E1PL3BMP98DRBZ
 
     steps:
