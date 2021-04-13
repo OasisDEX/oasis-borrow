@@ -3,6 +3,7 @@ import { priceInfoChange$ } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
 
 import { ManageVaultState } from './manageVault'
+import { VaultWillBeUnderCollateralizedAtNextPrice } from './ManageVaultErrors.stories'
 
 export type ManageVaultErrorMessage =
   | 'depositAndWithdrawAmountsEmpty'
@@ -204,13 +205,16 @@ export type ManageVaultWarningMessage =
   | 'potentialGenerateAmountLessThanDebtFloor' //
   | 'debtIsLessThanDebtFloor' //
   | 'connectedAccountIsNotVaultController' //
-  | 'vaultAtRiskLevelDanger'
-  | 'vaultAtRiskLevelWarning'
   | 'vaultWillBeAtRiskLevelDanger'
   | 'vaultWillBeAtRiskLevelWarning'
   | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
   | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
+  | 'vaultAtRiskLevelDanger' //
+  | 'vaultAtRiskLevelDangerAtNextPrice' //
+  | 'vaultAtRiskLevelWarning' //
+  | 'vaultAtRiskLevelWarningAtNextPrice' //
   | 'vaultUnderCollateralized'
+  | 'vaultUnderCollateralizedAtNextPrice'
   | 'depositingAllCollateralBalance'
   | 'payingBackAllVaultDebt'
   | 'payingBackAllDaiBalance'
@@ -223,13 +227,16 @@ export type ManageVaultWarningMessage =
 export function validateWarnings(state: ManageVaultState): ManageVaultState {
   const {
     depositAmount,
+    generateAmount,
     paybackAmount,
+    withdrawAmount,
     depositAmountUSD,
     proxyAddress,
     collateralAllowance,
     daiAllowance,
     accountIsController,
     afterCollateralizationRatio,
+    afterCollateralizationRatioAtNextPrice,
     shouldPaybackAll,
     daiYieldFromTotalCollateral,
     vault,
@@ -252,12 +259,20 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
   }
 
   if (vault.token !== 'ETH') {
-    if (!collateralAllowance || depositAmount?.gt(collateralAllowance)) {
+    if (
+      depositAmount &&
+      !depositAmount.isZero() &&
+      (!collateralAllowance || depositAmount?.gt(collateralAllowance))
+    ) {
       warningMessages.push('insufficientCollateralAllowance')
     }
   }
 
-  if (!daiAllowance || paybackAmount?.gt(daiAllowance)) {
+  if (
+    paybackAmount &&
+    !paybackAmount.isZero() &&
+    (!daiAllowance || paybackAmount?.gt(daiAllowance))
+  ) {
     warningMessages.push('insufficientDaiAllowance')
   }
 
@@ -269,19 +284,95 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     warningMessages.push('connectedAccountIsNotVaultController')
   }
 
-  // if (
-  //   vault.collateralizationRatio.gt(ilkData.liquidationRatio) &&
-  //   vault.collateralizationRatio.lte(vault.collateralizationDangerThreshold)
-  // ) {
-  //   warningMessages.push('vaultAtRiskLevelDanger')
-  // }
+  const inputFieldsAreEmpty = [depositAmount, generateAmount, withdrawAmount, paybackAmount].every(
+    (amount) => !amount,
+  )
 
-  // if (
-  //   vault.collateralizationRatio.gt(vault.collateralizationDangerThreshold) &&
-  //   vault.collateralizationRatio.lte(vault.collateralizationWarningThreshold)
-  // ) {
-  //   warningMessages.push('vaultAtRiskLevelWarning')
-  // }
+  const vaultWillBeAtRiskLevelDanger =
+    !inputFieldsAreEmpty &&
+    afterCollateralizationRatio.gte(ilkData.liquidationRatio) &&
+    afterCollateralizationRatio.lte(vault.collateralizationDangerThreshold)
+
+  if (vaultWillBeAtRiskLevelDanger) {
+    warningMessages.push('vaultWillBeAtRiskLevelDanger')
+  }
+
+  const vaultWillBeAtRiskLevelDangerAtNextPrice =
+    !inputFieldsAreEmpty &&
+    afterCollateralizationRatioAtNextPrice.gte(ilkData.liquidationRatio) &&
+    afterCollateralizationRatioAtNextPrice.lte(vault.collateralizationDangerThreshold)
+
+  if (!vaultWillBeAtRiskLevelDanger && vaultWillBeAtRiskLevelDangerAtNextPrice) {
+    warningMessages.push('vaultWillBeAtRiskLevelDangerAtNextPrice')
+  }
+
+  const vaultWillBeAtRiskLevelWarning =
+    !inputFieldsAreEmpty &&
+    afterCollateralizationRatio.gt(vault.collateralizationDangerThreshold) &&
+    afterCollateralizationRatio.lte(vault.collateralizationWarningThreshold)
+
+  if (!vaultWillBeAtRiskLevelDangerAtNextPrice && vaultWillBeAtRiskLevelWarning) {
+    warningMessages.push('vaultWillBeAtRiskLevelWarning')
+  }
+
+  const vaultWillBeAtRiskLevelWarningNextPrice =
+    !inputFieldsAreEmpty &&
+    afterCollateralizationRatioAtNextPrice.gt(vault.collateralizationDangerThreshold) &&
+    afterCollateralizationRatioAtNextPrice.lte(vault.collateralizationWarningThreshold)
+
+  if (
+    !vaultWillBeAtRiskLevelDanger &&
+    !vaultWillBeAtRiskLevelWarning &&
+    !vaultWillBeAtRiskLevelDangerAtNextPrice &&
+    vaultWillBeAtRiskLevelWarningNextPrice
+  ) {
+    warningMessages.push('vaultWillBeAtRiskLevelWarningAtNextPrice')
+  }
+
+  const isShowingAfterCollateralizationNotice =
+    vaultWillBeAtRiskLevelDanger ||
+    vaultWillBeAtRiskLevelDangerAtNextPrice ||
+    vaultWillBeAtRiskLevelWarning ||
+    vaultWillBeAtRiskLevelWarningNextPrice
+
+  if (!isShowingAfterCollateralizationNotice) {
+    const vaultAtRiskLevelDanger =
+      vault.collateralizationRatio.gte(ilkData.liquidationRatio) &&
+      vault.collateralizationRatio.lte(vault.collateralizationDangerThreshold)
+
+    if (vaultAtRiskLevelDanger) {
+      warningMessages.push('vaultAtRiskLevelDanger')
+    }
+
+    const vaultAtRiskLevelDangerAtNextPrice =
+      vault.collateralizationRatioAtNextPrice.gte(ilkData.liquidationRatio) &&
+      vault.collateralizationRatioAtNextPrice.lte(vault.collateralizationDangerThreshold)
+
+    if (!vaultAtRiskLevelDanger && vaultAtRiskLevelDangerAtNextPrice) {
+      warningMessages.push('vaultAtRiskLevelDangerAtNextPrice')
+    }
+
+    const vaultAtRiskLevelWarning =
+      vault.collateralizationRatio.gt(vault.collateralizationDangerThreshold) &&
+      vault.collateralizationRatio.lte(vault.collateralizationWarningThreshold)
+
+    if (!vaultAtRiskLevelDangerAtNextPrice && vaultAtRiskLevelWarning) {
+      warningMessages.push('vaultAtRiskLevelWarning')
+    }
+
+    const vaultAtRiskLevelWarningAtNextPrice =
+      vault.collateralizationRatioAtNextPrice.gt(vault.collateralizationDangerThreshold) &&
+      vault.collateralizationRatioAtNextPrice.lte(vault.collateralizationWarningThreshold)
+
+    if (
+      !vaultAtRiskLevelDanger &&
+      !vaultAtRiskLevelWarning &&
+      !vaultAtRiskLevelDangerAtNextPrice &&
+      vaultAtRiskLevelWarningAtNextPrice
+    ) {
+      warningMessages.push('vaultAtRiskLevelWarningAtNextPrice')
+    }
+  }
 
   // if (
   //   afterCollateralizationRatio.gt(ilkData.liquidationRatio) &&

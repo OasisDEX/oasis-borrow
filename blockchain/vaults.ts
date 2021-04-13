@@ -74,8 +74,8 @@ export function createController$(
   return cdpManagerOwner$(id).pipe(mergeMap((owner) => proxyOwner$(owner)))
 }
 
-export const COLLATERALIZATION_DANGER_OFFSET = new BigNumber('1.2') // 150% * 1.2 = 180%
-export const COLLATERALIZATION_WARNING_OFFSET = new BigNumber('1.5') // 150% * 1.5 = 225%
+export const COLLATERALIZATION_DANGER_OFFSET = new BigNumber('0.2') // 150% * 1.2 = 180%
+export const COLLATERALIZATION_WARNING_OFFSET = new BigNumber('0.5') // 150% * 1.5 = 225%
 
 export function createVault$(
   cdpManagerUrns$: CallObservable<typeof cdpManagerUrns>,
@@ -159,10 +159,10 @@ export function createVault$(
 
             // Maybe should be in ilkData as they are ilk dependent not vault dependent
             const collateralizationDangerThreshold = liquidationRatio.times(
-              COLLATERALIZATION_DANGER_OFFSET,
+              COLLATERALIZATION_DANGER_OFFSET.plus(one),
             )
             const collateralizationWarningThreshold = liquidationRatio.times(
-              COLLATERALIZATION_WARNING_OFFSET,
+              COLLATERALIZATION_WARNING_OFFSET.plus(one),
             )
 
             return of({

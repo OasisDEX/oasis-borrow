@@ -1,5 +1,9 @@
 import { BigNumber } from 'bignumber.js'
-import { DEFAULT_PROXY_ADDRESS } from 'blockchain/vaults'
+import {
+  COLLATERALIZATION_DANGER_OFFSET,
+  COLLATERALIZATION_WARNING_OFFSET,
+  DEFAULT_PROXY_ADDRESS,
+} from 'blockchain/vaults'
 import { one, zero } from 'helpers/zero'
 import { manageVaultStory } from './ManageVaultBuilder'
 import { ManageVaultView } from './ManageVaultView'
@@ -14,7 +18,6 @@ export const NoProxyAddress = manageVaultStory({
     collateral: new BigNumber('20'),
     debt: new BigNumber('3000'),
   },
-  depositAmount: new BigNumber('10'),
 })
 
 export const InsufficientCollateralAllowance = manageVaultStory({
@@ -82,6 +85,178 @@ export const ConnectedAccountIsNotVaultController = manageVaultStory({
   paybackAmount: new BigNumber('100'),
   stage: 'daiEditing',
   account: '0xNotVaultController',
+  proxyAddress,
+})
+
+export const VaultWillBeAtRiskLevelDanger = manageVaultStory({
+  title: `Warning is shown to indicate to the user that this vault will be near liquidation given the action they are taking and is shown when the vaults new collateralization ratio is within ${COLLATERALIZATION_DANGER_OFFSET.times(
+    100,
+  )}% of the liquidation ratio. So if liquidation ratio is 150%, this would be 150% >= x <= ${new BigNumber(
+    1.5,
+  )
+    .times(COLLATERALIZATION_DANGER_OFFSET.plus(1))
+    .times(100)}%`,
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('10'),
+    debt: new BigNumber('2000'),
+  },
+  priceInfo: {
+    collateralChangePercentage: new BigNumber('0.01'),
+  },
+  generateAmount: new BigNumber('1500'),
+  stage: 'daiEditing',
+  proxyAddress,
+})
+
+export const VaultWillBeAtRiskLevelDangerAtNextPrice = manageVaultStory({
+  title: `Warning is shown to indicate to the user that this vault will be near liquidation at next price update given the action they are taking and is shown when the vaults future collateralization ratio is within ${COLLATERALIZATION_DANGER_OFFSET.times(
+    100,
+  )}% of the liquidation ratio. So if liquidation ratio is 150%, this would be 150% >= x <= ${new BigNumber(
+    1.5,
+  )
+    .times(COLLATERALIZATION_DANGER_OFFSET.plus(1))
+    .times(100)}%`,
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('2000'),
+  },
+  priceInfo: {
+    collateralChangePercentage: new BigNumber('-0.4'),
+  },
+  generateAmount: new BigNumber('2000'),
+  stage: 'daiEditing',
+  proxyAddress,
+})
+
+export const VaultWillBeAtRiskLevelWarning = manageVaultStory({
+  title: `Warning is shown to indicate to the user that this vault is currently near liquidation at next price update given the action they are taking and is shown when the vaults future collateralization ratio is within ${COLLATERALIZATION_WARNING_OFFSET.times(
+    100,
+  )}% of the liquidation ratio but greater than ${COLLATERALIZATION_DANGER_OFFSET.times(
+    100,
+  )}% of the liquidation ratio as that would mean it is at risk level danger. So if liquidation ratio is 150%, this would be ${new BigNumber(
+    1.5,
+  )
+    .times(COLLATERALIZATION_DANGER_OFFSET.plus(1))
+    .times(100)}%
+> x <= ${new BigNumber(1.5).times(COLLATERALIZATION_WARNING_OFFSET.plus(1)).times(100)}%.`,
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('10'),
+    debt: new BigNumber('2000'),
+  },
+  generateAmount: new BigNumber('1000'),
+  stage: 'daiEditing',
+  proxyAddress,
+})
+
+export const VaultWillBeAtRiskLevelWarningAtNextPrice = manageVaultStory({
+  title: `Warning is shown to indicate to the user that this vault is will be near liquidation at next price update given the action they are taking and is shown when the vaults future collateralization ratio is within ${COLLATERALIZATION_WARNING_OFFSET.times(
+    100,
+  )}% of the liquidation ratio but greater than ${COLLATERALIZATION_DANGER_OFFSET.times(
+    100,
+  )}% of the liquidation ratio as that would mean it is at risk level danger. So if liquidation ratio is 150%, this would be ${new BigNumber(
+    1.5,
+  )
+    .times(COLLATERALIZATION_DANGER_OFFSET.plus(1))
+    .times(100)}%
+> x <= ${new BigNumber(1.5).times(COLLATERALIZATION_WARNING_OFFSET.plus(1)).times(100)}%.`,
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('2000'),
+  },
+  priceInfo: {
+    collateralChangePercentage: new BigNumber('-0.3'),
+  },
+  generateAmount: new BigNumber('2000'),
+  stage: 'daiEditing',
+  proxyAddress,
+})
+
+export const VaultAtRiskLevelDanger = manageVaultStory({
+  title: `Warning is shown to indicate to the user that this vault is currently near liquidation and is shown when the vaults collateralization ratio is within ${COLLATERALIZATION_DANGER_OFFSET.times(
+    100,
+  )}% of the liquidation ratio. So if liquidation ratio is 150%, this would be 150% >= x <= ${new BigNumber(
+    1.5,
+  )
+    .times(COLLATERALIZATION_DANGER_OFFSET.plus(1))
+    .times(100)}%`,
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('10'),
+    debt: new BigNumber('3200'),
+  },
+
+  stage: 'collateralEditing',
+  proxyAddress,
+})
+
+export const VaultAtRiskLevelDangerAtNextPrice = manageVaultStory({
+  title: `Warning is shown to indicate to the user that this vault will be near liquidation at next price update and is shown when the vaults  future collateralization ratio is within ${COLLATERALIZATION_DANGER_OFFSET.times(
+    100,
+  )}% of the liquidation ratio. So if liquidation ratio is 150%, this would be 150% >= x <= ${new BigNumber(
+    1.5,
+  )
+    .times(COLLATERALIZATION_DANGER_OFFSET.plus(1))
+    .times(100)}%.`,
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('10'),
+    debt: new BigNumber('2000'),
+  },
+  priceInfo: {
+    collateralChangePercentage: new BigNumber('-0.4'),
+  },
+  stage: 'collateralEditing',
+  proxyAddress,
+})
+
+export const VaultAtRiskLevelWarning = manageVaultStory({
+  title: `Warning is shown to indicate to the user that this vault is currently near liquidation and is shown when the vaults collateralization ratio is within ${COLLATERALIZATION_WARNING_OFFSET.times(
+    100,
+  )}% of the liquidation ratio but greater than ${COLLATERALIZATION_DANGER_OFFSET.times(
+    100,
+  )}% of the liquidation ratio as that would mean it is at risk level danger. So if liquidation ratio is 150%, this would be ${new BigNumber(
+    1.5,
+  )
+    .times(COLLATERALIZATION_DANGER_OFFSET.plus(1))
+    .times(100)}%
+> x <= ${new BigNumber(1.5).times(COLLATERALIZATION_WARNING_OFFSET.plus(1)).times(100)}%.`,
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('10'),
+    debt: new BigNumber('2500'),
+  },
+  stage: 'collateralEditing',
+  proxyAddress,
+})
+
+export const VaultAtRiskLevelWarningAtNextPrice = manageVaultStory({
+  title: `Warning is shown to indicate to the user that this vault is will be near liquidation at next price update and is shown when the vaults future collateralization ratio is within ${COLLATERALIZATION_WARNING_OFFSET.times(
+    100,
+  )}% of the liquidation ratio but greater than ${COLLATERALIZATION_DANGER_OFFSET.times(
+    100,
+  )}% of the liquidation ratio as that would mean it is at risk level danger. So if liquidation ratio is 150%, this would be ${new BigNumber(
+    1.5,
+  )
+    .times(COLLATERALIZATION_DANGER_OFFSET.plus(1))
+    .times(100)}%
+> x <= ${new BigNumber(1.5)
+    .times(COLLATERALIZATION_WARNING_OFFSET.plus(1))
+    .times(
+      100,
+    )}%. Warning will not be shown if vault is already or will be at risk level danger at next price update or already at risk level warning`,
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('15'),
+    debt: new BigNumber('2500'),
+  },
+  priceInfo: {
+    collateralChangePercentage: new BigNumber('-0.4'),
+  },
+  stage: 'collateralEditing',
   proxyAddress,
 })
 
