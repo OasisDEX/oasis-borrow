@@ -29,6 +29,7 @@ We also use interval mining set at 1s, so that we have a new block every second.
 6. One annoying thing to have in mind is that Metamask caches a lot of stuff about the account/network and throws if they change. For example nonces of latest block numbers. So when you restart the hardhat network - you'll need to manually reset the account in Metamask.
 7. In order to do that go to `Settings -> Advanced -> Reset Account`
 8. Now you should be able to see that your account has some ( a lot ) ETH and no CDPs. We'll fix that in the next section
+9. Also keep in mind - that on the first run hardhat will fetch a lot of mainnet state and cache it on disk - so the first run will be significantly slower (UI will not load for a couple of minutes). But this will only happen once unless you change the block number in hardhat config.
 
 ## Generating initial state
 
