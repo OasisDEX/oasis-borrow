@@ -213,12 +213,12 @@ export type ManageVaultWarningMessage =
   | 'vaultAtRiskLevelDangerAtNextPrice' //
   | 'vaultAtRiskLevelWarning' //
   | 'vaultAtRiskLevelWarningAtNextPrice' //
-  | 'vaultUnderCollateralized'
-  | 'vaultUnderCollateralizedAtNextPrice'
-  | 'depositingAllCollateralBalance'
-  | 'payingBackAllVaultDebt'
-  | 'payingBackAllDaiBalance'
-  | 'withdrawingAllFreeCollateral'
+  | 'vaultUnderCollateralized' //
+  | 'vaultUnderCollateralizedAtNextPrice' //
+  | 'payingBackAllDebt' //
+  | 'depositingAllCollateralBalance' //
+  | 'payingBackAllDaiBalance' //
+  | 'withdrawingAllFreeCollateral' //
   | 'withdrawingAllFreeCollateralAtNextPrice'
   | 'generatingAllDaiYieldFromTotalCollateral'
   | 'generatingAllDaiYieldFromTotalCollateralAtNextPrice'
@@ -242,6 +242,7 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     vault,
     ilkData,
     priceInfo,
+    balanceInfo,
   } = state
 
   const warningMessages: ManageVaultWarningMessage[] = []
@@ -374,30 +375,44 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     }
   }
 
-  // if (
-  //   afterCollateralizationRatio.gt(ilkData.liquidationRatio) &&
-  //   afterCollateralizationRatio.lte(vault.collateralizationDangerThreshold)
-  // ) {
-  //   warningMessages.push('vaultAtRiskLevelDanger')
-  // }
+  const vaultUnderCollateralized =
+    vault.collateralizationRatio.lt(ilkData.liquidationRatio) &&
+    !vault.collateralizationRatio.isZero()
 
-  // if (
-  //   afterCollateralizationRatio.gt(vault.collateralizationDangerThreshold) &&
-  //   afterCollateralizationRatio.lte(vault.collateralizationWarningThreshold)
-  // ) {
-  //   warningMessages.push('vaultAtRiskLevelWarning')
-  // }
+  if (vaultUnderCollateralized) {
+    warningMessages.push('vaultUnderCollateralized')
+  }
 
-  // if (
-  //   vault.collateralizationRatio.lt(ilkData.liquidationRatio) &&
-  //   !vault.collateralizationRatio.isZero()
-  // ) {
-  //   warningMessages.push('vaultUnderCollateralized')
-  // }
+  const vaultUnderCollateralizedAtNextPrice =
+    vault.collateralizationRatioAtNextPrice.lt(ilkData.liquidationRatio) &&
+    !vault.collateralizationRatioAtNextPrice.isZero()
 
-  // if (shouldPaybackAll) {
-  //   warningMessages.push('payingBackAllOutstandingDebt')
-  // }
+  if (!vaultUnderCollateralized && vaultUnderCollateralizedAtNextPrice) {
+    warningMessages.push('vaultUnderCollateralizedAtNextPrice')
+  }
+
+  if (shouldPaybackAll) {
+    warningMessages.push('payingBackAllDebt')
+  }
+
+  if (depositAmount?.eq(balanceInfo.collateralBalance)) {
+    warningMessages.push('depositingAllCollateralBalance')
+  }
+
+  if (paybackAmount?.eq(balanceInfo.daiBalance)) {
+    warningMessages.push('payingBackAllDaiBalance')
+  }
+
+  if (withdrawAmount?.eq(vault.freeCollateral)) {
+    warningMessages.push('withdrawingAllFreeCollateral')
+  }
+
+  if (
+    withdrawAmount?.eq(vault.freeCollateralAtNextPrice) &&
+    vault.freeCollateralAtNextPrice.lt(vault.freeCollateral)
+  ) {
+    warningMessages.push('withdrawingAllFreeCollateralAtNextPrice')
+  }
 
   return { ...state, warningMessages }
 }

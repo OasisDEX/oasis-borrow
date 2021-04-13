@@ -260,6 +260,106 @@ export const VaultAtRiskLevelWarningAtNextPrice = manageVaultStory({
   proxyAddress,
 })
 
+export const VaultUnderCollateralized = manageVaultStory({
+  title: 'Warning is shown when the vault collateralization is below the liquidation ratio',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('10000'),
+  },
+  proxyAddress,
+})
+
+export const VaultUnderCollateralizedAtNextPrice = manageVaultStory({
+  title:
+    'Warning is shown when the vault collateralization is below the liquidation ratio after the next price update',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('2000'),
+  },
+  priceInfo: {
+    collateralChangePercentage: new BigNumber('-0.9'),
+  },
+  proxyAddress,
+})
+
+export const PayingBackAllDebt = manageVaultStory({
+  title:
+    'Warning is shown when a user is paying back all outstanding debt in a vault. After this action all debt should be cleared from the vault',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('2000'),
+  },
+  stage: 'daiEditing',
+  paybackAmount: new BigNumber('2000'),
+  balanceInfo: {
+    daiBalance: new BigNumber('5000'),
+  },
+  proxyAddress,
+})
+
+export const DepositingAllCollateralBalance = manageVaultStory({
+  title:
+    'Warning is shown when a user is depositing the balance of collateral for the vault they have in their wallet',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('2000'),
+  },
+  depositAmount: new BigNumber('10'),
+  balanceInfo: {
+    collateralBalance: new BigNumber('10'),
+  },
+  proxyAddress,
+})
+
+export const PayingBackAllDaiBalance = manageVaultStory({
+  title: 'Warning is shown when a user is paying back all dai balance in their wallet',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('3000'),
+  },
+  stage: 'daiEditing',
+  paybackAmount: new BigNumber('500'),
+  balanceInfo: {
+    daiBalance: new BigNumber('500'),
+  },
+  proxyAddress,
+})
+
+export const WithdrawingAllFreeCollateral = manageVaultStory({
+  title: 'Warning is shown when a user is withdrawing all free collateral in their vault',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('2000'),
+  },
+  priceInfo: {
+    collateralPrice: new BigNumber('1000'),
+  },
+  withdrawAmount: new BigNumber('17'),
+  proxyAddress,
+})
+
+export const WithdrawingAllFreeCollateralAtNextPrice = manageVaultStory({
+  title:
+    'Warning is shown when a user is withdrawing all free collateral in their vault at next price update',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('2000'),
+  },
+  priceInfo: {
+    collateralPrice: new BigNumber('1000'),
+    collateralChangePercentage: new BigNumber('-0.25'),
+  },
+  withdrawAmount: new BigNumber('16'),
+  proxyAddress,
+})
+
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'ManageVault/Warnings',
