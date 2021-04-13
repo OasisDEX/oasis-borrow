@@ -360,6 +360,54 @@ export const WithdrawingAllFreeCollateralAtNextPrice = manageVaultStory({
   proxyAddress,
 })
 
+export const GeneratingAllDaiFromIlkDebtAvailable = manageVaultStory({
+  title:
+    'Warning is shown when a user is generating all dai remaining for a given ilk which results in that ilks debt ceiling being reached',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('200'),
+    debt: new BigNumber('2000'),
+  },
+  ilkData: {
+    debtCeiling: new BigNumber('10000'),
+    ilkDebt: new BigNumber('5000'),
+  },
+  stage: 'daiEditing',
+  generateAmount: new BigNumber('5000'),
+  proxyAddress,
+})
+
+export const GeneratingAllDaiFromTotalCollateral = manageVaultStory({
+  title:
+    'Warning is shown when a user is generating the maximum amount of dai for the amount of collateral in the vault and being deposited',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('200'),
+    debt: new BigNumber('2000'),
+  },
+  showDepositAndGenerateOption: true,
+  depositAmount: new BigNumber('1'),
+  generateAmount: new BigNumber('71700'),
+  proxyAddress,
+})
+
+export const GeneratingAllDaiFromTotalCollateralAtNextPrice = manageVaultStory({
+  title:
+    'Warning is shown when a user is generating the maximum amount of dai for the amount of collateral in the vault and being deposited',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('200'),
+    debt: new BigNumber('2000'),
+  },
+  showDepositAndGenerateOption: true,
+  priceInfo: {
+    collateralChangePercentage: new BigNumber('-0.1'),
+  },
+  depositAmount: new BigNumber('1'),
+  generateAmount: new BigNumber('64330'),
+  proxyAddress,
+})
+
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'ManageVault/Warnings',

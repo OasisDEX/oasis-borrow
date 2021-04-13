@@ -11,7 +11,7 @@ import { now } from 'helpers/time'
 import { one, zero } from 'helpers/zero'
 import { of } from 'rxjs'
 import { combineLatest, Observable } from 'rxjs'
-import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 export function createIlks$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(
@@ -236,5 +236,12 @@ export function buildIlkData$({
       liquidationPenalty: new BigNumber('0.13'),
       maxAuctionLotSize: new BigNumber('50000'),
     })
-  return createIlkData$(vatIlks$, spotIlks$, jugIlks$, catIlks$, ilkToToken$, ilk)
+  return createIlkData$(vatIlks$, spotIlks$, jugIlks$, catIlks$, ilkToToken$, ilk).pipe(
+    switchMap((ilkData) =>
+      of({
+        ...ilkData,
+        ...(debtCeiling ? { ilkDebtAvailable: debtCeiling.minus(ilkData.ilkDebt) } : {}),
+      }),
+    ),
+  )
 }

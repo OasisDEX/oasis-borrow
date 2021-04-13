@@ -185,6 +185,8 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     maxWithdrawAmount,
     maxWithdrawAmountUSD,
     maxGenerateAmount,
+    maxGenerateAmountCurrentPrice,
+    maxGenerateAmountNextPrice,
     afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
     afterLiquidationPrice,
@@ -330,6 +332,8 @@ export type ManageVaultState = {
   maxWithdrawAmount: BigNumber
   maxWithdrawAmountUSD: BigNumber
   maxGenerateAmount: BigNumber
+  maxGenerateAmountCurrentPrice: BigNumber
+  maxGenerateAmountNextPrice: BigNumber
   maxPaybackAmount: BigNumber
   shouldPaybackAll: boolean
   daiYieldFromTotalCollateral: BigNumber
@@ -492,6 +496,8 @@ export const defaultPartialManageVaultState = {
   maxWithdrawAmount: zero,
   maxWithdrawAmountUSD: zero,
   maxGenerateAmount: zero,
+  maxGenerateAmountCurrentPrice: zero,
+  maxGenerateAmountNextPrice: zero,
   maxPaybackAmount: zero,
   afterCollateralizationRatio: zero,
   afterCollateralizationRatioAtNextPrice: zero,

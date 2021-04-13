@@ -219,10 +219,10 @@ export type ManageVaultWarningMessage =
   | 'depositingAllCollateralBalance' //
   | 'payingBackAllDaiBalance' //
   | 'withdrawingAllFreeCollateral' //
-  | 'withdrawingAllFreeCollateralAtNextPrice'
-  | 'generatingAllDaiYieldFromTotalCollateral'
+  | 'withdrawingAllFreeCollateralAtNextPrice' //
+  | 'generatingAllDaiFromIlkDebtAvailable' //
+  | 'generatingAllDaiYieldFromTotalCollateral' //
   | 'generatingAllDaiYieldFromTotalCollateralAtNextPrice'
-  | 'generatingAllDaiFromIlkDebtAvailable'
 
 export function validateWarnings(state: ManageVaultState): ManageVaultState {
   const {
@@ -230,7 +230,6 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     generateAmount,
     paybackAmount,
     withdrawAmount,
-    depositAmountUSD,
     proxyAddress,
     collateralAllowance,
     daiAllowance,
@@ -241,8 +240,9 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     daiYieldFromTotalCollateral,
     vault,
     ilkData,
-    priceInfo,
     balanceInfo,
+    maxGenerateAmountCurrentPrice,
+    maxGenerateAmountNextPrice,
   } = state
 
   const warningMessages: ManageVaultWarningMessage[] = []
@@ -412,6 +412,29 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     vault.freeCollateralAtNextPrice.lt(vault.freeCollateral)
   ) {
     warningMessages.push('withdrawingAllFreeCollateralAtNextPrice')
+  }
+
+  if (
+    !ilkData.ilkDebtAvailable.isZero() &&
+    generateAmount?.eq(ilkData.ilkDebtAvailable) &&
+    maxGenerateAmountCurrentPrice.eq(ilkData.ilkDebtAvailable)
+  ) {
+    warningMessages.push('generatingAllDaiFromIlkDebtAvailable')
+  }
+
+  const generatingAllDaiYieldFromTotalCollateral =
+    generateAmount?.eq(maxGenerateAmountCurrentPrice) &&
+    !maxGenerateAmountCurrentPrice.eq(ilkData.ilkDebtAvailable)
+  if (generatingAllDaiYieldFromTotalCollateral) {
+    warningMessages.push('generatingAllDaiYieldFromTotalCollateral')
+  }
+
+  if (
+    !generatingAllDaiYieldFromTotalCollateral &&
+    generateAmount?.eq(maxGenerateAmountNextPrice) &&
+    !maxGenerateAmountNextPrice.eq(ilkData.ilkDebtAvailable)
+  ) {
+    warningMessages.push('generatingAllDaiYieldFromTotalCollateralAtNextPrice')
   }
 
   return { ...state, warningMessages }
