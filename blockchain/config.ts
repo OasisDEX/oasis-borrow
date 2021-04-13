@@ -137,8 +137,17 @@ const kovan: NetworkConfig = {
   cacheApi: 'https://cache-kovan-staging.oasis.app/api/v1',
 }
 
-export const networksById = keyBy([main, kovan], 'id')
-export const networksByName = keyBy([main, kovan], 'name')
+const hardhat: NetworkConfig = {
+  ...protoMain,
+  id: '2137',
+  name: 'hardhat',
+  label: 'Hardhat',
+  infuraUrl: `http://localhost:8545`,
+  infuraUrlWS: `ws://localhost:8545`,
+}
+
+export const networksById = keyBy([main, kovan, hardhat], 'id')
+export const networksByName = keyBy([main, kovan, hardhat], 'name')
 
 export const dappName = 'Oasis'
 export const pollingInterval = 12000
