@@ -9,7 +9,7 @@ import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
-import { filter, switchMap } from 'rxjs/operators'
+import { filter, switchMap, tap } from 'rxjs/operators'
 import Web3 from 'web3'
 
 import { OpenVaultChange, OpenVaultState } from './openVault'
@@ -173,7 +173,6 @@ export function applyOpenVaultTransaction(
 
 export function setAllowance(
   { sendWithGasEstimation }: TxHelpers,
-  allowance$: Observable<BigNumber>,
   change: (ch: OpenVaultChange) => void,
   state: OpenVaultState,
 ) {
@@ -199,11 +198,7 @@ export function setAllowance(
                 ? txState.error
                 : undefined,
           }),
-        (txState) =>
-          allowance$.pipe(
-            takeWhileInclusive(() => txState.status !== TxStatus.Success),
-            switchMap((allowance) => of({ kind: 'allowanceSuccess', allowance })),
-          ),
+        (txState) => of({ kind: 'allowanceSuccess', allowance: txState.meta.amount }),
       ),
     )
     .subscribe((ch) => change(ch))
