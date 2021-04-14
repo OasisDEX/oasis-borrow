@@ -24,7 +24,6 @@ export function createAccountData(
         startWithDefault(vaults$(context.account).pipe(map((vault) => vault.length)), undefined),
       ).pipe(
         map(([balance, numberOfVaults]) => ({
-          context,
           numberOfVaults,
           daiBalance: balance,
         })),
