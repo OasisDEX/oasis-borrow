@@ -1,12 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { BigNumber } from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { VaultActionInput } from 'components/VaultActionInput'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
+import { handleNumericInput } from 'helpers/input'
+import { useObservableWithError } from 'helpers/observableHook'
 import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
 import moment from 'moment'
@@ -15,7 +13,8 @@ import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
-import { ManualChange, OpenVaultState } from './openVault'
+import { categoriseOpenVaultStage, OpenVaultState } from './openVault'
+import { OpenVaultEditing } from './OpenVaultEditing'
 
 function OpenVaultDetails(props: OpenVaultState) {
   const {
@@ -209,14 +208,9 @@ function VaultDetails(props: OpenVaultState) {
   )
 }
 
-function OpenVaultFormTitle({
-  isEditingStage,
-  isProxyStage,
-  isAllowanceStage,
-  reset,
-  stage,
-}: OpenVaultState) {
+function OpenVaultFormTitle({ reset, stage }: OpenVaultState) {
   const canReset = !!reset
+  const { isEditingStage, isProxyStage, isAllowanceStage } = categoriseOpenVaultStage(stage)
 
   function handleReset(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
@@ -244,136 +238,6 @@ function OpenVaultFormTitle({
       <Text sx={{ fontSize: 2 }}>
         Some text here giving a little more context as to what the user is doing
       </Text>
-    </Grid>
-  )
-}
-
-function OpenVaultFormEditing(props: OpenVaultState) {
-  const {
-    token,
-    depositAmount,
-    generateAmount,
-    change,
-    collateralBalance,
-    maxDepositAmount,
-    maxGenerateAmount,
-    errorMessages,
-    warningMessages,
-    ilkDebtAvailable,
-    liquidationRatio,
-    afterCollateralizationRatio,
-    progress,
-  } = props
-
-  function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault()
-    progress!()
-  }
-
-  function handleDepositChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      const depositAmount = value !== '' ? new BigNumber(value) : undefined
-
-      change({
-        kind: 'depositAmount',
-        depositAmount,
-      })
-    }
-  }
-
-  function handleGenerateChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      const generateAmount = value !== '' ? new BigNumber(value) : undefined
-      change({
-        kind: 'generateAmount',
-        generateAmount,
-      })
-    }
-  }
-
-  function handleDepositMax(change: (ch: ManualChange) => void) {
-    return () => {
-      change({
-        kind: 'depositAmount',
-        depositAmount: maxDepositAmount.gt(zero) ? maxDepositAmount : undefined,
-      })
-    }
-  }
-
-  function handleGenerateMax(change: (ch: ManualChange) => void) {
-    return () => {
-      change({
-        kind: 'generateAmount',
-        generateAmount: maxGenerateAmount.gt(zero) ? maxGenerateAmount : undefined,
-      })
-    }
-  }
-
-  const errorString = errorMessages.join(',\n')
-  const warningString = warningMessages.join(',\n')
-
-  const hasError = !!errorString
-  const hasWarnings = !!warningString
-
-  const daiAvailable = ilkDebtAvailable ? `${formatCryptoBalance(ilkDebtAvailable)} DAI` : '--'
-  const minCollRatio = liquidationRatio
-    ? `${formatPercent(liquidationRatio.times(100), { precision: 2 })}`
-    : '--'
-  const afterCollRatio = afterCollateralizationRatio.eq(zero)
-    ? '--'
-    : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
-
-  return (
-    <Grid>
-      <VaultActionInput
-        action="Deposit"
-        token={token}
-        amount={depositAmount}
-        onChange={handleDepositChange(change!)}
-        showMax={true}
-        onSetMax={handleDepositMax(change!)}
-        maxAmount={collateralBalance}
-        maxAmountLabel={'Balance'}
-        hasError={hasError}
-      />
-      <VaultActionInput
-        action="Generate"
-        token={'DAI'}
-        amount={generateAmount}
-        onChange={handleGenerateChange(change!)}
-        showMax={true}
-        onSetMax={handleGenerateMax(change!)}
-        maxAmount={maxGenerateAmount}
-        hasError={hasError}
-      />
-      {hasError && (
-        <>
-          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
-        </>
-      )}
-      {hasWarnings && (
-        <>
-          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>
-        </>
-      )}
-
-      <Card>
-        <Grid columns="5fr 3fr">
-          <Text sx={{ fontSize: 2 }}>Dai Available</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{daiAvailable}</Text>
-
-          <Text sx={{ fontSize: 2 }}>Min. collateral ratio</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{minCollRatio}</Text>
-
-          <Text sx={{ fontSize: 2 }}>Collateralization Ratio</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{afterCollRatio}</Text>
-        </Grid>
-      </Card>
-      <Button onClick={handleProgress} disabled={hasError}>
-        Confirm
-      </Button>
     </Grid>
   )
 }
@@ -469,46 +333,40 @@ function OpenVaultFormAllowance({
   token,
   collateralBalance,
   allowanceAmount,
-  change,
   errorMessages,
+  updateAllowanceAmount,
+  setAllowanceAmountUnlimited,
+  setAllowanceAmountToDepositAmount,
+  resetAllowanceAmount,
 }: OpenVaultState) {
   const [isCustom, setIsCustom] = useState<Boolean>(false)
 
   const isLoading = stage === 'allowanceInProgress' || stage === 'allowanceWaitingForApproval'
   const canSelectRadio = stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFailure'
   const canProgress = !!progress
+
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
     if (canProgress) progress!()
   }
 
-  function handleCustomAllowanceChange(change: (ch: ManualChange) => void) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/,/g, '')
-      change({
-        kind: 'allowanceAmount',
-        allowanceAmount: value !== '' ? new BigNumber(value) : undefined,
-      })
-    }
-  }
-
   function handleUnlimited() {
     if (canSelectRadio) {
       setIsCustom(false)
-      change!({ kind: 'allowanceAmount', allowanceAmount: maxUint256 })
+      setAllowanceAmountUnlimited!()
     }
   }
 
-  function handleWallet() {
+  function handleDeposit() {
     if (canSelectRadio) {
       setIsCustom(false)
-      change!({ kind: 'allowanceAmount', allowanceAmount: collateralBalance })
+      setAllowanceAmountToDepositAmount!()
     }
   }
 
   function handleCustom() {
     if (canSelectRadio) {
-      change!({ kind: 'allowanceAmount', allowanceAmount: undefined })
+      resetAllowanceAmount!()
       setIsCustom(true)
     }
   }
@@ -533,7 +391,7 @@ function OpenVaultFormAllowance({
             <Radio name="dark-mode" value="true" defaultChecked={true} />
             <Text sx={{ fontSize: 2 }}>Unlimited Allowance</Text>
           </Label>
-          <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleWallet}>
+          <Label sx={{ border: 'light', p: 2, borderRadius: 'small' }} onClick={handleDeposit}>
             <Radio name="dark-mode" value="true" />
             <Text sx={{ fontSize: 2 }}>
               {token} in wallet ({formatCryptoBalance(collateralBalance)})
@@ -556,7 +414,7 @@ function OpenVaultFormAllowance({
                   decimalLimit: getToken(token).digits,
                   prefix: '',
                 })}
-                onChange={handleCustomAllowanceChange(change!)}
+                onChange={handleNumericInput(updateAllowanceAmount!)}
               />
               <Text sx={{ fontSize: 1 }}>{token}</Text>
             </Grid>
@@ -739,7 +597,7 @@ function OpenVaultFormConfirmation({
             <Icon name="checkmark" size={25} color="onSuccess" />
             <Grid pl={2} gap={1}>
               <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                Vault #{id} created!
+                Vault #{id?.toString()} created!
               </Text>
               <Link
                 href={`${etherscan}/tx/${openTxHash}`}
@@ -759,13 +617,15 @@ function OpenVaultFormConfirmation({
 }
 
 function OpenVaultForm(props: OpenVaultState) {
-  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
+  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = categoriseOpenVaultStage(
+    props.stage,
+  )
 
   return (
     <Box>
       <Card>
         <OpenVaultFormTitle {...props} />
-        {isEditingStage && <OpenVaultFormEditing {...props} />}
+        {isEditingStage && <OpenVaultEditing {...props} />}
         {isProxyStage && <OpenVaultFormProxy {...props} />}
         {isAllowanceStage && <OpenVaultFormAllowance {...props} />}
         {isOpenStage && <OpenVaultFormConfirmation {...props} />}
@@ -784,24 +644,25 @@ export function OpenVaultContainer(props: OpenVaultState) {
 }
 
 export function OpenVaultView({ ilk }: { ilk: string }) {
-  const { t } = useTranslation()
   const { openVault$ } = useAppContext()
-  const openVault = useObservable(openVault$(ilk))
+  const [openVault, openVaultError] = useObservableWithError(openVault$(ilk))
 
-  if (!openVault) {
-    return <>loading...</>
-  }
-
-  if (openVault.isIlkValidationStage) {
+  if (openVaultError) {
     return (
       <Grid sx={{ width: '100%', height: '50vh', justifyItems: 'center', alignItems: 'center' }}>
-        {openVault.stage === 'ilkValidationLoading' && <Spinner size={50} />}
-        {openVault.stage === 'ilkValidationFailure' && (
-          <Box>{t('vaults.ilk-does-not-exist', { ilk })}</Box>
-        )}
+        <Box>{openVaultError.message}</Box>
       </Grid>
     )
   }
+
+  if (!openVault) {
+    return (
+      <Grid sx={{ width: '100%', height: '50vh', justifyItems: 'center', alignItems: 'center' }}>
+        <Spinner size={50} />
+      </Grid>
+    )
+  }
+
   return (
     <Grid>
       <OpenVaultContainer {...(openVault as OpenVaultState)} />

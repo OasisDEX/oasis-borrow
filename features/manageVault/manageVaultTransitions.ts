@@ -1,5 +1,6 @@
 import { TxHelpers } from 'components/AppContext'
 import { zero } from 'helpers/zero'
+import { Observable } from 'rxjs'
 
 import { ManageVaultChange, ManageVaultEditingStage, ManageVaultState } from './manageVault'
 import { manageVaultFormDefaults } from './manageVaultForm'
@@ -150,7 +151,7 @@ export function applyManageVaultTransition(
 }
 
 export function progressManage(
-  txHelpers: TxHelpers,
+  txHelpers$: Observable<TxHelpers>,
   state: ManageVaultState,
   change: (ch: ManageVaultChange) => void,
 ) {
@@ -158,8 +159,8 @@ export function progressManage(
   const isDepositAndGenerate = depositAmount || generateAmount
 
   if (isDepositAndGenerate) {
-    return manageVaultDepositAndGenerate(txHelpers, change, state)
+    return manageVaultDepositAndGenerate(txHelpers$, change, state)
   } else {
-    return manageVaultWithdrawAndPayback(txHelpers, change, state)
+    return manageVaultWithdrawAndPayback(txHelpers$, change, state)
   }
 }

@@ -1,15 +1,15 @@
 import { BigNumber } from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
-import { ContextConnected } from 'blockchain/network'
+import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
-import { createUserTokenInfoChange$, UserTokenInfo } from 'features/shared/userTokenInfo'
-import { zero } from 'helpers/zero'
+import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { one, zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
+import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
+import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
 import { applyManageVaultEnvironment, ManageVaultEnvironmentChange } from './manageVaultEnvironment'
 import { applyManageVaultForm, ManageVaultFormChange } from './manageVaultForm'
@@ -33,7 +33,7 @@ import {
   validateWarnings,
 } from './manageVaultValidations'
 
-const defaultIsStates = {
+const defaultManageVaultStageCategories = {
   isEditingStage: false,
   isProxyStage: false,
   isCollateralAllowanceStage: false,
@@ -41,17 +41,12 @@ const defaultIsStates = {
   isManageStage: false,
 }
 
-function applyIsStageStates(state: ManageVaultState): ManageVaultState {
-  const newState = {
-    ...state,
-    ...defaultIsStates,
-  }
-
-  switch (state.stage) {
+export function categoriseManageVaultStage(stage: ManageVaultStage) {
+  switch (stage) {
     case 'collateralEditing':
     case 'daiEditing':
       return {
-        ...newState,
+        ...defaultManageVaultStageCategories,
         isEditingStage: true,
       }
     case 'proxyWaitingForConfirmation':
@@ -60,7 +55,7 @@ function applyIsStageStates(state: ManageVaultState): ManageVaultState {
     case 'proxyFailure':
     case 'proxySuccess':
       return {
-        ...newState,
+        ...defaultManageVaultStageCategories,
         isProxyStage: true,
       }
     case 'collateralAllowanceWaitingForConfirmation':
@@ -69,7 +64,7 @@ function applyIsStageStates(state: ManageVaultState): ManageVaultState {
     case 'collateralAllowanceFailure':
     case 'collateralAllowanceSuccess':
       return {
-        ...newState,
+        ...defaultManageVaultStageCategories,
         isCollateralAllowanceStage: true,
       }
     case 'daiAllowanceWaitingForConfirmation':
@@ -78,7 +73,7 @@ function applyIsStageStates(state: ManageVaultState): ManageVaultState {
     case 'daiAllowanceFailure':
     case 'daiAllowanceSuccess':
       return {
-        ...newState,
+        ...defaultManageVaultStageCategories,
         isDaiAllowanceStage: true,
       }
 
@@ -88,15 +83,17 @@ function applyIsStageStates(state: ManageVaultState): ManageVaultState {
     case 'manageFailure':
     case 'manageSuccess':
       return {
-        ...newState,
+        ...defaultManageVaultStageCategories,
         isManageStage: true,
       }
     default:
-      return state
+      return defaultManageVaultStageCategories
   }
 }
 
-function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
+export const PAYBACK_ALL_BOUND = one
+
+export function applyManageVaultCalculations(state: ManageVaultState): ManageVaultState {
   const {
     collateralBalance,
     depositAmount,
@@ -123,7 +120,17 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
     .times(maxDebtPerUnitCollateral)
     .minus(debt)
 
-  const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt
+  // NOTE Important
+  const roundedDebt = debt.dp(6, BigNumber.ROUND_HALF_UP)
+
+  const maxPaybackAmount = daiBalance.lt(roundedDebt) ? daiBalance : roundedDebt
+
+  const shouldPaybackAll = !!(
+    daiBalance.gte(debt) &&
+    paybackAmount &&
+    paybackAmount.plus(PAYBACK_ALL_BOUND).gte(roundedDebt) &&
+    !paybackAmount.gt(roundedDebt)
+  )
 
   const afterLockedCollateral = depositAmount
     ? lockedCollateral.plus(depositAmount)
@@ -158,6 +165,7 @@ function applyVaultCalculations(state: ManageVaultState): ManageVaultState {
     afterLiquidationPrice,
     maxDepositAmountUSD,
     maxPaybackAmount,
+    shouldPaybackAll,
   }
 }
 
@@ -166,7 +174,7 @@ interface ManageVaultInjectedOverrideChange {
   stateToOverride: Partial<ManageVaultState>
 }
 
-function applyInjectedOverride(change: ManageVaultChange, state: ManageVaultState) {
+function applyManageVaultInjectedOverride(change: ManageVaultChange, state: ManageVaultState) {
   if (change.kind === 'injectStateOverride') {
     return {
       ...state,
@@ -192,7 +200,8 @@ function apply(state: ManageVaultState, change: ManageVaultChange) {
   const s4 = applyManageVaultTransition(change, s3)
   const s5 = applyManageVaultTransaction(change, s4)
   const s6 = applyManageVaultEnvironment(change, s5)
-  return applyInjectedOverride(change, s6)
+  const s7 = applyManageVaultInjectedOverride(change, s6)
+  return applyManageVaultCalculations(s7)
 }
 
 export type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
@@ -226,18 +235,12 @@ export type DefaultManageVaultState = {
   id: BigNumber
   ilk: string
   token: string
-  account: string
+  account: string | undefined
   accountIsController: boolean
 
   // validation
   errorMessages: ManageVaultErrorMessage[]
   warningMessages: ManageVaultWarningMessage[]
-
-  isEditingStage: boolean
-  isProxyStage: boolean
-  isCollateralAllowanceStage: boolean
-  isDaiAllowanceStage: boolean
-  isManageStage: boolean
 
   progress?: () => void
   reset?: () => void
@@ -266,6 +269,7 @@ export type DefaultManageVaultState = {
 
   paybackAmount?: BigNumber
   maxPaybackAmount: BigNumber
+  shouldPaybackAll: boolean
 
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmount?: BigNumber) => void
@@ -302,7 +306,7 @@ export type DefaultManageVaultState = {
   liquidationPenalty: BigNumber
 
   lockedCollateral: BigNumber
-  lockedCollateralPrice: BigNumber
+  lockedCollateralUSD: BigNumber
   debt: BigNumber
   liquidationPrice: BigNumber
   collateralizationRatio: BigNumber
@@ -323,13 +327,11 @@ export type DefaultManageVaultState = {
   injectStateOverride: (state: Partial<ManageVaultState>) => void
 }
 
-export type ManageVaultState = DefaultManageVaultState & UserTokenInfo
+export type ManageVaultState = DefaultManageVaultState & PriceInfo & BalanceInfo
 
 function addTransitions(
-  txHelpers: TxHelpers,
+  txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
-  collateralAllowance$: Observable<BigNumber>,
-  daiAllowance$: Observable<BigNumber>,
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ): ManageVaultState {
@@ -365,7 +367,7 @@ function addTransitions(
   if (state.stage === 'proxyWaitingForConfirmation' || state.stage === 'proxyFailure') {
     return {
       ...state,
-      progress: () => createProxy(txHelpers, proxyAddress$, change, state),
+      progress: () => createProxy(txHelpers$, proxyAddress$, change, state),
     }
   }
 
@@ -399,7 +401,7 @@ function addTransitions(
           collateralAllowanceAmount: undefined,
         }),
 
-      progress: () => setCollateralAllowance(txHelpers, collateralAllowance$, change, state),
+      progress: () => setCollateralAllowance(txHelpers$, change, state),
       reset: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -427,7 +429,7 @@ function addTransitions(
           daiAllowanceAmount: undefined,
         }),
 
-      progress: () => setDaiAllowance(txHelpers, daiAllowance$, change, state),
+      progress: () => setDaiAllowance(txHelpers$, change, state),
       reset: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -442,7 +444,7 @@ function addTransitions(
   if (state.stage === 'manageWaitingForConfirmation' || state.stage === 'manageFailure') {
     return {
       ...state,
-      progress: () => progressManage(txHelpers, state, change),
+      progress: () => progressManage(txHelpers$, state, change),
       reset: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -457,33 +459,56 @@ function addTransitions(
   return state
 }
 
+export const defaultPartialManageVaultState = {
+  stage: 'collateralEditing' as ManageVaultStage,
+  originalEditingStage: 'collateralEditing' as ManageVaultEditingStage,
+  errorMessages: [],
+  warningMessages: [],
+  showIlkDetails: false,
+  showDepositAndGenerateOption: false,
+  showPaybackAndWithdrawOption: false,
+  maxDepositAmount: zero,
+  maxDepositAmountUSD: zero,
+  maxGenerateAmount: zero,
+  maxWithdrawAmount: zero,
+  maxWithdrawAmountUSD: zero,
+  maxPaybackAmount: zero,
+  afterCollateralizationRatio: zero,
+  afterLiquidationPrice: zero,
+  shouldPaybackAll: false,
+}
+
 export function createManageVault$(
-  context$: Observable<ContextConnected>,
+  context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
   allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
-  userTokenInfo$: (token: string, account: string) => Observable<UserTokenInfo>,
+  priceInfo$: (token: string) => Observable<PriceInfo>,
+  balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   vault$: (id: BigNumber) => Observable<Vault>,
   id: BigNumber,
 ): Observable<ManageVaultState> {
-  return combineLatest(context$, txHelpers$).pipe(
-    switchMap(([context, txHelpers]) => {
-      const account = context.account
+  return context$.pipe(
+    switchMap((context) => {
+      const account = context.status === 'connected' ? context.account : undefined
       return vault$(id).pipe(
         first(),
         switchMap((vault) => {
           return combineLatest(
-            userTokenInfo$(vault.token, account),
+            priceInfo$(vault.token),
+            balanceInfo$(vault.token, account),
             ilkData$(vault.ilk),
-            proxyAddress$(account),
+            account ? proxyAddress$(account) : of(undefined),
           ).pipe(
             first(),
-            switchMap(([userTokenInfo, ilkData, proxyAddress]) => {
+            switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress]) => {
               const collateralAllowance$ =
-                (proxyAddress && allowance$(vault.token, account, proxyAddress)) || of(undefined)
+                account && proxyAddress
+                  ? allowance$(vault.token, account, proxyAddress)
+                  : of(undefined)
               const daiAllowance$ =
-                (proxyAddress && allowance$('DAI', account, proxyAddress)) || of(undefined)
+                account && proxyAddress ? allowance$('DAI', account, proxyAddress) : of(undefined)
 
               return combineLatest(collateralAllowance$, daiAllowance$).pipe(
                 first(),
@@ -491,9 +516,6 @@ export function createManageVault$(
                   const change$ = new Subject<ManageVaultChange>()
 
                   function change(ch: ManageVaultChange) {
-                    if (ch.kind === 'injectStateOverride') {
-                      throw new Error("don't use injected overrides")
-                    }
                     change$.next(ch)
                   }
 
@@ -503,100 +525,45 @@ export function createManageVault$(
                   }
 
                   const initialState: ManageVaultState = {
-                    ...userTokenInfo,
-                    ...defaultIsStates,
-
+                    ...priceInfo,
+                    ...balanceInfo,
+                    ...defaultPartialManageVaultState,
+                    ...ilkData,
                     stage: 'collateralEditing',
                     originalEditingStage: 'collateralEditing',
-                    errorMessages: [],
-                    warningMessages: [],
-                    showIlkDetails: false,
-                    showDepositAndGenerateOption: false,
-                    showPaybackAndWithdrawOption: false,
-
-                    maxDepositAmount: zero,
-                    maxDepositAmountUSD: zero,
-                    maxGenerateAmount: zero,
-                    maxWithdrawAmount: zero,
-                    maxWithdrawAmountUSD: zero,
-                    maxPaybackAmount: zero,
-                    afterCollateralizationRatio: zero,
-                    afterLiquidationPrice: zero,
-
                     id,
                     account,
                     proxyAddress,
                     collateralAllowance,
                     daiAllowance,
-
                     accountIsController: account === vault.controller,
-
                     token: vault.token,
                     lockedCollateral: vault.lockedCollateral,
-                    lockedCollateralPrice: vault.lockedCollateralPrice,
+                    lockedCollateralUSD: vault.lockedCollateralUSD,
                     debt: vault.debt,
                     liquidationPrice: vault.liquidationPrice,
                     collateralizationRatio: vault.collateralizationRatio,
                     freeCollateral: vault.freeCollateral,
                     ilk: vault.ilk,
-
-                    liquidationPenalty: ilkData.liquidationPenalty,
-                    maxDebtPerUnitCollateral: ilkData.maxDebtPerUnitCollateral,
-                    ilkDebtAvailable: ilkData.ilkDebtAvailable,
-                    debtFloor: ilkData.debtFloor,
-                    stabilityFee: ilkData.stabilityFee,
-                    liquidationRatio: ilkData.liquidationRatio,
-
                     safeConfirmations: context.safeConfirmations,
                     etherscan: context.etherscan.url,
-
-                    collateralAllowanceAmount: maxUint256,
-                    daiAllowanceAmount: maxUint256,
-
                     injectStateOverride,
                   }
 
-                  const userTokenInfoChange$ = curry(createUserTokenInfoChange$)(userTokenInfo$)
-                  const ilkDataChange$ = curry(createIlkDataChange$)(ilkData$)
-                  const vaultChange$ = curry(createVaultChange$)(vault$)
-
                   const environmentChanges$ = merge(
-                    userTokenInfoChange$(vault.token, account),
-                    ilkDataChange$(vault.ilk),
-                    vaultChange$(id),
+                    priceInfoChange$(priceInfo$, vault.token),
+                    balanceInfoChange$(balanceInfo$, vault.token, account),
+                    createIlkDataChange$(ilkData$, vault.ilk),
+                    createVaultChange$(vault$, id),
                   )
 
-                  const connectedProxyAddress$ = proxyAddress$(account)
-
-                  const connectedCollateralAllowance$ = connectedProxyAddress$.pipe(
-                    switchMap((proxyAddress) =>
-                      proxyAddress ? allowance$(vault.token, account, proxyAddress) : of(zero),
-                    ),
-                    distinctUntilChanged((x, y) => x.eq(y)),
-                  )
-
-                  const connectedDaiAllowance$ = connectedProxyAddress$.pipe(
-                    switchMap((proxyAddress) =>
-                      proxyAddress ? allowance$('DAI', account, proxyAddress) : of(zero),
-                    ),
-                    distinctUntilChanged((x, y) => x.eq(y)),
-                  )
+                  const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
 
                   return merge(change$, environmentChanges$).pipe(
                     scan(apply, initialState),
-                    map(applyVaultCalculations),
                     map(validateErrors),
                     map(validateWarnings),
-                    map(
-                      curry(addTransitions)(
-                        txHelpers,
-                        connectedProxyAddress$,
-                        connectedCollateralAllowance$,
-                        connectedDaiAllowance$,
-                        change,
-                      ),
-                    ),
-                    map(applyIsStageStates),
+                    map(curry(addTransitions)(txHelpers$, connectedProxyAddress$, change)),
                   )
                 }),
               )

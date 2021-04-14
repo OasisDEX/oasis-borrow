@@ -7,12 +7,13 @@ import { createVault$, Vault } from 'blockchain/vaults'
 import { AppContext, bigNumberTostring, protoTxHelpers } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { ManageVaultView } from 'features/manageVault/ManageVaultView'
+import { BalanceInfo } from 'features/shared/balanceInfo'
 import {
-  protoUserETHTokenInfo,
-  protoUserUSDCTokenInfo,
-  protoUserWBTCTokenInfo,
-  UserTokenInfo,
-} from 'features/shared/userTokenInfo'
+  PriceInfo,
+  protoETHPriceInfo,
+  protoUSDCPriceInfo,
+  protoWBTCPriceInfo,
+} from 'features/shared/priceInfo'
 import { one, zero } from 'helpers/zero'
 import { memoize } from 'lodash'
 import React, { useEffect } from 'react'
@@ -20,14 +21,20 @@ import { of } from 'rxjs'
 import { first, switchMap } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
-import { createManageVault$, ManageVaultStage, ManageVaultState } from './manageVault'
+import {
+  createManageVault$,
+  ManageVaultStage,
+  ManageVaultState,
+  PAYBACK_ALL_BOUND,
+} from './manageVault'
 interface Story {
   title?: string
   context?: ContextConnected
   proxyAddress?: string
   allowance?: BigNumber
   vault?: Partial<Vault>
-  userTokenInfo?: Partial<UserTokenInfo>
+  priceInfo?: Partial<PriceInfo>
+  balanceInfo?: Partial<BalanceInfo>
   urnAddress?: string
   owner?: string
   collateral: BigNumber
@@ -51,7 +58,8 @@ function createStory({
   context,
   proxyAddress,
   allowance,
-  userTokenInfo,
+  priceInfo,
+  balanceInfo,
   urnAddress,
   owner,
   ilk,
@@ -66,27 +74,34 @@ function createStory({
   stage,
 }: Story) {
   return () => {
-    const protoUserTokenInfo = {
+    const protoPriceInfo = {
       ...(ilk === 'ETH-A'
-        ? protoUserETHTokenInfo
+        ? protoETHPriceInfo
         : ilk === 'WBTC-A'
-        ? protoUserWBTCTokenInfo
-        : protoUserUSDCTokenInfo),
-      ...(userTokenInfo || {}),
+        ? protoWBTCPriceInfo
+        : protoUSDCPriceInfo),
+      ...(priceInfo || {}),
     }
 
     const protoIlkData =
       ilk === 'ETH-A' ? protoETHAIlkData : ilk === 'WBTC-A' ? protoWBTCAIlkData : protoUSDCAIlkData
 
+    const protoBalanceInfo: BalanceInfo = {
+      collateralBalance: zero,
+      ethBalance: zero,
+      daiBalance: zero,
+      ...balanceInfo,
+    }
+
     const newState: Partial<ManageVaultState> = {
       stage,
       ...(depositAmount && {
         depositAmount,
-        depositAmountUSD: depositAmount.times(protoUserTokenInfo.currentCollateralPrice),
+        depositAmountUSD: depositAmount.times(protoPriceInfo.currentCollateralPrice),
       }),
       ...(withdrawAmount && {
         withdrawAmount,
-        withdrawAmountUSD: withdrawAmount.times(protoUserTokenInfo.currentCollateralPrice),
+        withdrawAmountUSD: withdrawAmount.times(protoPriceInfo.currentCollateralPrice),
       }),
       ...(generateAmount && {
         generateAmount,
@@ -101,15 +116,14 @@ function createStory({
     const proxyAddress$ = () => of(proxyAddress)
     const allowance$ = () => of(allowance || maxUint256)
 
-    const userTokenInfo$ = () => of(protoUserTokenInfo)
-
     const oraclePriceData$ = () =>
-      of(protoUserTokenInfo).pipe(
+      of(protoPriceInfo).pipe(
         switchMap(({ currentCollateralPrice }) =>
           of({ currentPrice: currentCollateralPrice, isStaticPrice: true }),
         ),
       )
-
+    const priceInfo$ = () => of(protoPriceInfo)
+    const balanceInfo$ = () => of(protoBalanceInfo)
     const ilkData$ = () => of(protoIlkData)
 
     const normalizedDebt = debt
@@ -148,7 +162,8 @@ function createStory({
       txHelpers$,
       proxyAddress$,
       allowance$,
-      userTokenInfo$,
+      priceInfo$,
+      balanceInfo$,
       ilkData$,
       vault$,
       VAULT_ID,
@@ -189,7 +204,7 @@ export const CollateralEditingStage = createStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
-  userTokenInfo: { collateralBalance: new BigNumber('2000') },
+  balanceInfo: { collateralBalance: new BigNumber('2000') },
   proxyAddress: '0xProxyAddress',
   stage: 'collateralEditing',
 })
@@ -198,7 +213,7 @@ export const DaiEditingStage = createStory({
   ilk: 'WBTC-A',
   collateral: one,
   debt: new BigNumber('3000'),
-  userTokenInfo: { collateralBalance: new BigNumber('200') },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   proxyAddress: '0xProxyAddress',
   stage: 'daiEditing',
 })
@@ -209,7 +224,7 @@ export const ProxyWaitingForConfirmation = createStory({
   debt: new BigNumber('3000'),
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200') },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   stage: 'proxyWaitingForConfirmation',
 })
 
@@ -219,7 +234,7 @@ export const ProxyWaitingForApproval = createStory({
   debt: new BigNumber('3000'),
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200') },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   stage: 'proxyWaitingForApproval',
 })
 
@@ -229,7 +244,7 @@ export const ProxyFailure = createStory({
   debt: new BigNumber('3000'),
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200') },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   stage: 'proxyFailure',
 })
 
@@ -239,7 +254,7 @@ export const ProxyInProgress = createStory({
   debt: new BigNumber('3000'),
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200') },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   stage: 'proxyInProgress',
 })
 
@@ -249,7 +264,7 @@ export const ProxySuccess = createStory({
   debt: new BigNumber('3000'),
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200') },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   stage: 'proxySuccess',
 })
 
@@ -259,7 +274,7 @@ export const CollateralAllowanceWaitingForConfirmation = createStory({
   debt: new BigNumber('3000'),
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200') },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   proxyAddress: '0xProxyAddress',
   stage: 'collateralAllowanceWaitingForConfirmation',
 })
@@ -270,7 +285,7 @@ export const CollateralAllowanceWaitingForApproval = createStory({
   debt: new BigNumber('3000'),
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200') },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   proxyAddress: '0xProxyAddress',
   stage: 'collateralAllowanceWaitingForApproval',
 })
@@ -281,7 +296,7 @@ export const CollateralAllowanceFailure = createStory({
   debt: new BigNumber('3000'),
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200') },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   proxyAddress: '0xProxyAddress',
   stage: 'collateralAllowanceFailure',
 })
@@ -292,7 +307,7 @@ export const CollateralAllowanceInProgress = createStory({
   debt: new BigNumber('3000'),
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200') },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   proxyAddress: '0xProxyAddress',
   stage: 'collateralAllowanceInProgress',
 })
@@ -303,7 +318,7 @@ export const CollateralAllowanceSuccess = createStory({
   debt: new BigNumber('3000'),
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200') },
+  balanceInfo: { collateralBalance: new BigNumber('200') },
   proxyAddress: '0xProxyAddress',
   stage: 'collateralAllowanceSuccess',
 })
@@ -314,7 +329,7 @@ export const DaiAllowanceWaitingForConfirmation = createStory({
   debt: new BigNumber('3000'),
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress: '0xProxyAddress',
   stage: 'daiAllowanceWaitingForConfirmation',
 })
@@ -325,7 +340,7 @@ export const DaiAllowanceWaitingForApproval = createStory({
   debt: new BigNumber('3000'),
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress: '0xProxyAddress',
   stage: 'daiAllowanceWaitingForApproval',
 })
@@ -336,7 +351,7 @@ export const DaiAllowanceFailure = createStory({
   debt: new BigNumber('3000'),
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress: '0xProxyAddress',
   stage: 'daiAllowanceFailure',
 })
@@ -347,7 +362,7 @@ export const DaiAllowanceInProgress = createStory({
   debt: new BigNumber('3000'),
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress: '0xProxyAddress',
   stage: 'daiAllowanceInProgress',
 })
@@ -358,7 +373,7 @@ export const DaiAllowanceSuccess = createStory({
   debt: new BigNumber('3000'),
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress: '0xProxyAddress',
   stage: 'daiAllowanceSuccess',
 })
@@ -369,7 +384,7 @@ export const ManageWaitingForConfirmation = createStory({
   debt: new BigNumber('3000'),
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress: '0xProxyAddress',
   stage: 'manageWaitingForConfirmation',
 })
@@ -380,7 +395,7 @@ export const ManageWaitingForApproval = createStory({
   debt: new BigNumber('3000'),
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress: '0xProxyAddress',
   stage: 'manageWaitingForApproval',
 })
@@ -391,7 +406,7 @@ export const ManageFailure = createStory({
   debt: new BigNumber('3000'),
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress: '0xProxyAddress',
   stage: 'manageFailure',
 })
@@ -402,7 +417,7 @@ export const ManageInProgress = createStory({
   debt: new BigNumber('3000'),
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress: '0xProxyAddress',
   stage: 'manageInProgress',
 })
@@ -413,7 +428,7 @@ export const ManageSuccess = createStory({
   debt: new BigNumber('3000'),
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress: '0xProxyAddress',
   stage: 'manageSuccess',
 })
@@ -424,9 +439,20 @@ export const VaultAtRisk = createStory({
   debt: new BigNumber('4000'),
   withdrawAmount: new BigNumber('0.5'),
   paybackAmount: new BigNumber('300'),
-  userTokenInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress: '0xProxyAddress',
   stage: 'collateralEditing',
+})
+
+export const ShouldPaybackAll = createStory({
+  title: `If the amount in the paybackAmount field is between ${PAYBACK_ALL_BOUND} DAI of the outstanding debt in a vault, the shouldPaybackAll flag should be indicated as true. A warning message should also show to indicate to the user that this action should leave their vault with a debt of 0`,
+  ilk: 'WBTC-A',
+  stage: 'daiEditing',
+  collateral: one,
+  debt: new BigNumber('3000'),
+  paybackAmount: new BigNumber('2999'),
+  balanceInfo: { collateralBalance: new BigNumber('2000'), daiBalance: new BigNumber('10000') },
+  proxyAddress: '0xProxyAddress',
 })
 
 // eslint-disable-next-line import/no-default-export

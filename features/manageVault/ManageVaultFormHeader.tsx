@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Button, Flex, Grid, Text } from 'theme-ui'
 
-import { ManageVaultState } from './manageVault'
+import { categoriseManageVaultStage, ManageVaultState } from './manageVault'
 
 function ManageVaultEditingToggle({ stage, toggle }: ManageVaultState) {
   const collateralVariant = stage === 'collateralEditing' ? 'outline' : 'filter'
@@ -32,8 +32,7 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
     isProxyStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
-    token,
-  } = props
+  } = categoriseManageVaultStage(props.stage)
   return (
     <Box pb={3}>
       {isEditingStage ? (
@@ -43,7 +42,7 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
           {isProxyStage
             ? 'Create Proxy'
             : isCollateralAllowanceStage
-            ? `Set ${token} Allowance`
+            ? `Set ${props.token} Allowance`
             : isDaiAllowanceStage
             ? `Set DAI Allowance`
             : null}

@@ -4,6 +4,7 @@ import { AppLink } from 'components/Links'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
+import { useRouter } from 'next/router'
 import React from 'react'
 import ReactSelect from 'react-select'
 import { Box, Card, Container, Flex, Grid, Link, Text } from 'theme-ui'
@@ -27,8 +28,10 @@ const FOOTER_LINKS = [
 function LanguageSelect() {
   const {
     t,
-    i18n: { language, changeLanguage },
+    i18n: { language },
   } = useTranslation('common')
+
+  const router = useRouter()
 
   const LANGUAGE_OPTIONS = [
     { value: 'en', label: t('landing.footer.language.en') },
@@ -42,7 +45,7 @@ function LanguageSelect() {
       isSearchable={false}
       value={LANGUAGE_OPTIONS.find(({ value }) => value === language)}
       // @ts-ignore
-      onChange={({ value }) => changeLanguage(value)}
+      onChange={({ value }) => router.push(router.query, router.asPath, { locale: value })}
       components={{
         IndicatorsContainer: () => null,
         ValueContainer: ({ children }) => <Flex sx={{ color: 'primary' }}>{children}</Flex>,

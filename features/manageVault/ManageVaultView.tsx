@@ -11,7 +11,7 @@ import {
   formatPercent,
 } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
-import { useObservable } from 'helpers/observableHook'
+import { useObservableWithError } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import moment from 'moment'
 import { Trans, useTranslation } from 'next-i18next'
@@ -19,7 +19,7 @@ import React, { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
-import { ManageVaultState } from './manageVault'
+import { categoriseManageVaultStage, ManageVaultState } from './manageVault'
 import { ManageVaultEditing } from './ManageVaultEditing'
 
 function ManageVaultDetails(props: ManageVaultState) {
@@ -30,7 +30,7 @@ function ManageVaultDetails(props: ManageVaultState) {
     collateralizationRatio,
     liquidationPrice,
     lockedCollateral,
-    lockedCollateralPrice,
+    lockedCollateralUSD,
     currentCollateralPrice,
     nextCollateralPrice,
     isStaticCollateralPrice,
@@ -57,7 +57,7 @@ function ManageVaultDetails(props: ManageVaultState) {
   const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
 
   const locked = formatAmount(lockedCollateral, token)
-  const lockedUSD = formatAmount(lockedCollateralPrice, token)
+  const lockedUSD = formatAmount(lockedCollateralUSD, token)
 
   const tokenInfo = getToken(token)
 
@@ -458,7 +458,7 @@ function ManageVaultDaiAllowance({
   const hasError = !!errorString
   const buttonText =
     stage === 'daiAllowanceSuccess'
-      ? t('view-on-etherscan')
+      ? t('continue')
       : stage === 'daiAllowanceFailure'
       ? t('retry-allowance-approval')
       : stage === 'daiAllowanceWaitingForConfirmation'
@@ -707,15 +707,14 @@ function ManageVaultConfirmation({
 }
 
 function ManageVaultForm(props: ManageVaultState) {
+  const { toggleIlkDetails, showIlkDetails, stage } = props
   const {
     isEditingStage,
     isProxyStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
     isManageStage,
-    toggleIlkDetails,
-    showIlkDetails,
-  } = props
+  } = categoriseManageVaultStage(stage)
 
   function handleMouseEnter(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault()
@@ -829,8 +828,10 @@ export function ManageVaultContainer(props: ManageVaultState) {
 
 export function ManageVaultView({ id }: { id: BigNumber }) {
   const { manageVault$ } = useAppContext()
-  const manageVault = useObservable(manageVault$(id))
-  if (!manageVault) return null
+  const [manageVault, manageVaultError] = useObservableWithError(manageVault$(id))
+
+  if (manageVaultError) return <>Error!</>
+  if (!manageVault) return <>loading...</>
 
   return (
     <Grid gap={4}>
