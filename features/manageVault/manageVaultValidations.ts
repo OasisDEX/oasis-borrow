@@ -1,9 +1,7 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
-import { priceInfoChange$ } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
 
 import { ManageVaultState } from './manageVault'
-import { VaultWillBeUnderCollateralizedAtNextPrice } from './ManageVaultErrors.stories'
 
 export type ManageVaultErrorMessage =
   | 'depositAndWithdrawAmountsEmpty'
@@ -29,6 +27,32 @@ export type ManageVaultErrorMessage =
   | 'customDaiAllowanceAmountGreaterThanMaxUint256'
   | 'customDaiAllowanceAmountLessThanPaybackAmount'
   | 'depositingAllEthBalance'
+
+export type ManageVaultWarningMessage =
+  | 'noProxyAddress'
+  | 'insufficientCollateralAllowance'
+  | 'insufficientDaiAllowance'
+  | 'potentialGenerateAmountLessThanDebtFloor'
+  | 'debtIsLessThanDebtFloor'
+  | 'connectedAccountIsNotVaultController'
+  | 'vaultWillBeAtRiskLevelDanger'
+  | 'vaultWillBeAtRiskLevelWarning'
+  | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
+  | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
+  | 'vaultAtRiskLevelDanger'
+  | 'vaultAtRiskLevelDangerAtNextPrice'
+  | 'vaultAtRiskLevelWarning'
+  | 'vaultAtRiskLevelWarningAtNextPrice'
+  | 'vaultUnderCollateralized'
+  | 'vaultUnderCollateralizedAtNextPrice'
+  | 'payingBackAllDebt'
+  | 'depositingAllCollateralBalance'
+  | 'payingBackAllDaiBalance'
+  | 'withdrawingAllFreeCollateral'
+  | 'withdrawingAllFreeCollateralAtNextPrice'
+  | 'generatingAllDaiFromIlkDebtAvailable'
+  | 'generatingAllDaiYieldFromTotalCollateral'
+  | 'generatingAllDaiYieldFromTotalCollateralAtNextPrice'
 
 export function validateErrors(state: ManageVaultState): ManageVaultState {
   const {
@@ -197,32 +221,6 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
 
   return { ...state, errorMessages }
 }
-
-export type ManageVaultWarningMessage =
-  | 'noProxyAddress' //
-  | 'insufficientCollateralAllowance' //
-  | 'insufficientDaiAllowance' //
-  | 'potentialGenerateAmountLessThanDebtFloor' //
-  | 'debtIsLessThanDebtFloor' //
-  | 'connectedAccountIsNotVaultController' //
-  | 'vaultWillBeAtRiskLevelDanger'
-  | 'vaultWillBeAtRiskLevelWarning'
-  | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
-  | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
-  | 'vaultAtRiskLevelDanger' //
-  | 'vaultAtRiskLevelDangerAtNextPrice' //
-  | 'vaultAtRiskLevelWarning' //
-  | 'vaultAtRiskLevelWarningAtNextPrice' //
-  | 'vaultUnderCollateralized' //
-  | 'vaultUnderCollateralizedAtNextPrice' //
-  | 'payingBackAllDebt' //
-  | 'depositingAllCollateralBalance' //
-  | 'payingBackAllDaiBalance' //
-  | 'withdrawingAllFreeCollateral' //
-  | 'withdrawingAllFreeCollateralAtNextPrice' //
-  | 'generatingAllDaiFromIlkDebtAvailable' //
-  | 'generatingAllDaiYieldFromTotalCollateral' //
-  | 'generatingAllDaiYieldFromTotalCollateralAtNextPrice'
 
 export function validateWarnings(state: ManageVaultState): ManageVaultState {
   const {

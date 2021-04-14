@@ -4,19 +4,32 @@ import { zero } from 'helpers/zero'
 import { OpenVaultState } from './openVault'
 
 export type OpenVaultErrorMessage =
-  | 'depositAmountGreaterThanMaxDepositAmount'
+  | 'vaultWillBeUnderCollateralized'
+  | 'vaultWillBeUnderCollateralizedAtNextPrice'
+  | 'depositAmountExceedsCollateralBalance'
+  | 'generateAmountExceedsDaiYieldFromDepositingCollateral'
+  | 'generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice'
+  | 'generateAmountExceedsDebtCeiling'
   | 'generateAmountLessThanDebtFloor'
-  | 'generateAmountGreaterThanDebtCeiling'
-  | 'vaultUnderCollateralized'
-  | 'allowanceAmountEmpty'
+  | 'customAllowanceAmountEmpty'
   | 'customAllowanceAmountGreaterThanMaxUint256'
   | 'customAllowanceAmountLessThanDepositAmount'
 
 export type OpenVaultWarningMessage =
-  | 'potentialGenerateAmountLessThanDebtFloor'
+  | 'openingEmptyVault'
+  | 'openingVaultWithCollateralOnly'
+  | 'openingVaultWithCollateralAndDebt'
   | 'noProxyAddress'
-  | 'noAllowance'
-  | 'allowanceLessThanDepositAmount'
+  | 'insufficientAllowance'
+  | 'potentialGenerateAmountLessThanDebtFloor'
+  | 'vaultWillBeAtRiskLevelDanger'
+  | 'vaultWillBeAtRiskLevelWarning'
+  | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
+  | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
+  | 'depositingAllCollateralBalance'
+  | 'generatingAllDaiFromIlkDebtAvailable'
+  | 'generatingAllDaiYieldFromDepositingCollateral'
+  | 'generatingAllDaiYieldFromDepositingCollateralAtNextPrice'
 
 export function validateErrors(state: OpenVaultState): OpenVaultState {
   const {
@@ -33,33 +46,33 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
 
   const errorMessages: OpenVaultErrorMessage[] = []
 
-  if (depositAmount?.gt(maxDepositAmount)) {
-    errorMessages.push('depositAmountGreaterThanMaxDepositAmount')
-  }
+  // if (depositAmount?.gt(maxDepositAmount)) {
+  //   errorMessages.push('depositAmountGreaterThanMaxDepositAmount')
+  // }
 
-  if (generateAmount?.lt(debtFloor)) {
-    errorMessages.push('generateAmountLessThanDebtFloor')
-  }
+  // if (generateAmount?.lt(debtFloor)) {
+  //   errorMessages.push('generateAmountLessThanDebtFloor')
+  // }
 
-  if (generateAmount?.gt(ilkDebtAvailable)) {
-    errorMessages.push('generateAmountGreaterThanDebtCeiling')
-  }
+  // if (generateAmount?.gt(ilkDebtAvailable)) {
+  //   errorMessages.push('generateAmountGreaterThanDebtCeiling')
+  // }
 
-  if (stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFailure') {
-    if (!allowanceAmount) {
-      errorMessages.push('allowanceAmountEmpty')
-    }
-    if (allowanceAmount?.gt(maxUint256)) {
-      errorMessages.push('customAllowanceAmountGreaterThanMaxUint256')
-    }
-    if (depositAmount && allowanceAmount && allowanceAmount.lt(depositAmount)) {
-      errorMessages.push('customAllowanceAmountLessThanDepositAmount')
-    }
-  }
+  // if (stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFailure') {
+  //   if (!allowanceAmount) {
+  //     errorMessages.push('allowanceAmountEmpty')
+  //   }
+  //   if (allowanceAmount?.gt(maxUint256)) {
+  //     errorMessages.push('customAllowanceAmountGreaterThanMaxUint256')
+  //   }
+  //   if (depositAmount && allowanceAmount && allowanceAmount.lt(depositAmount)) {
+  //     errorMessages.push('customAllowanceAmountLessThanDepositAmount')
+  //   }
+  // }
 
-  if (generateAmount?.gt(zero) && afterCollateralizationRatio.lt(liquidationRatio)) {
-    errorMessages.push('vaultUnderCollateralized')
-  }
+  // if (generateAmount?.gt(zero) && afterCollateralizationRatio.lt(liquidationRatio)) {
+  //   errorMessages.push('vaultUnderCollateralized')
+  // }
 
   return { ...state, errorMessages }
 }
@@ -69,22 +82,22 @@ export function validateWarnings(state: OpenVaultState): OpenVaultState {
 
   const warningMessages: OpenVaultWarningMessage[] = []
 
-  if (depositAmountUSD && depositAmount?.gt(zero) && depositAmountUSD.lt(debtFloor)) {
-    warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
-  }
+  // if (depositAmountUSD && depositAmount?.gt(zero) && depositAmountUSD.lt(debtFloor)) {
+  //   warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
+  // }
 
-  if (!proxyAddress) {
-    warningMessages.push('noProxyAddress')
-  }
+  // if (!proxyAddress) {
+  //   warningMessages.push('noProxyAddress')
+  // }
 
-  if (token !== 'ETH') {
-    if (!allowance || !allowance.gt(zero)) {
-      warningMessages.push('noAllowance')
-    }
-    if (depositAmount && allowance && depositAmount.gt(allowance)) {
-      warningMessages.push('allowanceLessThanDepositAmount')
-    }
-  }
+  // if (token !== 'ETH') {
+  //   if (!allowance || !allowance.gt(zero)) {
+  //     warningMessages.push('noAllowance')
+  //   }
+  //   if (depositAmount && allowance && depositAmount.gt(allowance)) {
+  //     warningMessages.push('allowanceLessThanDepositAmount')
+  //   }
+  // }
 
   return { ...state, warningMessages }
 }
