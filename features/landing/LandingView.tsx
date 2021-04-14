@@ -11,7 +11,7 @@ import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservableWithError } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
-import { Box, Button, Flex, Grid, Heading, Image, SxProps, Text } from 'theme-ui'
+import { Box, Button, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
 
@@ -117,7 +117,7 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
   },
 ]
 
-export function Hero({ sx }: { sx?: SxProps }) {
+export function Hero({ sx }: { sx?: SxStyleProp }) {
   const { t } = useTranslation()
 
   return (

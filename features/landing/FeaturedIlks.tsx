@@ -3,7 +3,7 @@ import { AppLink } from 'components/Links'
 import { formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Grid, Heading, Image, SxProps, SxStyleProp, Text } from 'theme-ui'
+import { Box, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { FeaturedIlk } from './featuredIlksData'
 
@@ -120,7 +120,7 @@ export function FeaturedIlks({ ilks, sx }: { ilks: FeaturedIlk[]; sx?: SxStylePr
   )
 }
 
-export function FeaturedIlksPlaceholder({ sx }: { sx: SxProps }) {
+export function FeaturedIlksPlaceholder({ sx }: { sx: SxStyleProp }) {
   return (
     <Grid
       sx={{ ...sx, position: 'absolute', left: 0, top: 0, right: 0 }}
