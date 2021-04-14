@@ -11,6 +11,7 @@ function manageVaultButtonText(stage: ManageVaultStage): string {
   switch (stage) {
     case 'daiEditing':
     case 'collateralEditing':
+    case 'manageWaitingForConfirmation':
       return t('confirm')
     case 'proxySuccess':
     case 'daiAllowanceSuccess':
@@ -34,15 +35,13 @@ function manageVaultButtonText(stage: ManageVaultStage): string {
     case 'daiAllowanceInProgress':
     case 'daiAllowanceWaitingForApproval':
       return t('approving-allowance')
-    case 'manageWaitingForConfirmation':
-      return t('confirm')
     case 'manageFailure':
       return t('retry')
     case 'manageSuccess':
       return t('back-to-editing')
     case 'manageWaitingForApproval':
     case 'manageInProgress':
-      return t('creating-vault')
+      return t('changing-vault')
     default:
       throw new UnreachableCaseError(stage)
   }
@@ -50,7 +49,6 @@ function manageVaultButtonText(stage: ManageVaultStage): string {
 
 export function ManageVaultButton({ progress, errorMessages, stage }: ManageVaultState) {
   const isLoading = ([
-    'proxyInProgress',
     'proxyInProgress',
     'proxyWaitingForApproval',
     'collateralAllowanceWaitingForApproval',
@@ -61,17 +59,18 @@ export function ManageVaultButton({ progress, errorMessages, stage }: ManageVaul
     'manageWaitingForApproval',
   ] as ManageVaultStage[]).some((s) => s === stage)
 
+  const hasError = !!errorMessages.length
+  const isDisabled = hasError || isLoading
+
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
-    progress!()
+    !isDisabled && progress!()
   }
-  const errorString = errorMessages.join(',\n')
-  const hasError = !!errorString
 
   const buttonText = manageVaultButtonText(stage)
 
   return (
-    <Button onClick={handleProgress} disabled={hasError || isLoading}>
+    <Button onClick={handleProgress} disabled={!isDisabled}>
       {isLoading ? (
         <Flex sx={{ justifyContent: 'center' }}>
           <Spinner size={25} color="surface" />

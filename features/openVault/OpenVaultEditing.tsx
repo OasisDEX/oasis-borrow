@@ -6,7 +6,7 @@ import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Card, Grid, Text } from 'theme-ui'
+import { Box, Card, Grid, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
 
@@ -50,11 +50,6 @@ export function OpenVaultEditing(props: OpenVaultState) {
     showGenerateOption,
     toggleGenerateOption,
   } = props
-
-  function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault()
-    progress!()
-  }
 
   const hasError = !!errorMessages.length
 
@@ -132,9 +127,6 @@ export function OpenVaultEditing(props: OpenVaultState) {
           <Text sx={{ fontSize: 2, textAlign: 'right' }}>{afterCollRatio}</Text>
         </Grid>
       </Card>
-      <Button onClick={handleProgress} disabled={hasError}>
-        Confirm
-      </Button>
     </Grid>
   )
 }

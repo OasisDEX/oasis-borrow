@@ -48,7 +48,10 @@
   "connect-wallet-button": "Connect wallet",
   "connect-with": "Connect {{ connectionKind }}",
   "connected-with": "Connected with {{ connectionKind }}",
+  "create-vault": "Create Vault",
   "creating-vault": "Creating Vault",
+  "changing-vault": "Changing Vault",
+  "go-to-vault": "Go to Vault #{{id}}",
   "contact": {
     "description": "Send us feedback, questions, or suggestions or below.",
     "label": {
