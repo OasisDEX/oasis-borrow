@@ -8,6 +8,7 @@ import { TxHelpers } from 'components/AppContext'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
+import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { filter, switchMap } from 'rxjs/operators'
 import Web3 from 'web3'
 
@@ -198,8 +199,11 @@ export function setAllowance(
                 ? txState.error
                 : undefined,
           }),
-        () =>
-          allowance$.pipe(switchMap((allowance) => of({ kind: 'allowanceSuccess', allowance }))),
+        (txState) =>
+          allowance$.pipe(
+            takeWhileInclusive(() => txState.status !== TxStatus.Success),
+            switchMap((allowance) => of({ kind: 'allowanceSuccess', allowance })),
+          ),
       ),
     )
     .subscribe((ch) => change(ch))
