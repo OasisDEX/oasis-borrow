@@ -37,7 +37,6 @@ export function OpenVaultEditing(props: OpenVaultState) {
     maxDepositAmount,
     maxGenerateAmount,
     errorMessages,
-    warningMessages,
     ilkData,
     afterCollateralizationRatio,
     progress,
@@ -57,11 +56,7 @@ export function OpenVaultEditing(props: OpenVaultState) {
     progress!()
   }
 
-  const errorString = errorMessages.join(',\n')
-  const warningString = warningMessages.join(',\n')
-
-  const hasError = !!errorString
-  const hasWarnings = !!warningString
+  const hasError = !!errorMessages.length
 
   const daiAvailable = `${formatCryptoBalance(ilkData.ilkDebtAvailable)} DAI`
   const minCollRatio = `${formatPercent(ilkData.liquidationRatio.times(100), { precision: 2 })}`
@@ -124,16 +119,6 @@ export function OpenVaultEditing(props: OpenVaultState) {
           />
         )}
       </Box>
-      {hasError && (
-        <>
-          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
-        </>
-      )}
-      {hasWarnings && (
-        <>
-          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>
-        </>
-      )}
 
       <Card>
         <Grid columns="5fr 3fr">

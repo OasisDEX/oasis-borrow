@@ -16,6 +16,26 @@ import { Box, Button, Card, Flex, Grid, Heading, Label, Link, Radio, Spinner, Te
 import { categoriseOpenVaultStage, OpenVaultState } from './openVault'
 import { OpenVaultEditing } from './OpenVaultEditing'
 
+function OpenVaultErrors({ errorMessages }: OpenVaultState) {
+  const errorString = errorMessages.join(',\n')
+  if (!errorString) return null
+  return (
+    <Card variant="danger">
+      <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
+    </Card>
+  )
+}
+
+function OpenVaultWarnings({ warningMessages }: OpenVaultState) {
+  const warningString = warningMessages.join(',\n')
+  if (!warningString) return null
+  return (
+    <Card variant="warning">
+      <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>
+    </Card>
+  )
+}
+
 function OpenVaultDetails(props: OpenVaultState) {
   const {
     afterCollateralizationRatio,
@@ -376,9 +396,7 @@ function OpenVaultFormAllowance({
     }
   }
 
-  const errorString = errorMessages.join(',\n')
-
-  const hasError = !!errorString
+  const hasError = !!errorMessages.length
   const buttonText =
     stage === 'allowanceSuccess'
       ? 'Continue'
@@ -424,11 +442,6 @@ function OpenVaultFormAllowance({
               <Text sx={{ fontSize: 1 }}>{token}</Text>
             </Grid>
           </Label>
-        </>
-      )}
-      {hasError && (
-        <>
-          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
         </>
       )}
 
@@ -634,6 +647,8 @@ function OpenVaultForm(props: OpenVaultState) {
         {isProxyStage && <OpenVaultFormProxy {...props} />}
         {isAllowanceStage && <OpenVaultFormAllowance {...props} />}
         {isOpenStage && <OpenVaultFormConfirmation {...props} />}
+        <OpenVaultErrors {...props} />
+        <OpenVaultWarnings {...props} />
       </Card>
     </Box>
   )
