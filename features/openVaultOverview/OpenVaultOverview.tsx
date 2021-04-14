@@ -1,3 +1,4 @@
+import { Context } from 'blockchain/network'
 import { CoinTag } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
@@ -98,7 +99,8 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState & { isReadonly: boo
 
 interface Props {
   vaultsOverview: OpenVaultOverviewData
-  accountDetails: AccountDetails
+  accountDetails: AccountDetails | undefined
+  context: Context
 }
 
 function getHeaderTranslationKey(hasVaults: boolean) {
@@ -106,7 +108,7 @@ function getHeaderTranslationKey(hasVaults: boolean) {
 
   return hasVaults ? `${HEADER_PATH}.withVaults` : `${HEADER_PATH}.noVaults`
 }
-export function OpenVaultOverview({ vaultsOverview, accountDetails }: Props) {
+export function OpenVaultOverview({ vaultsOverview, accountDetails, context }: Props) {
   const { ilksWithFilters } = vaultsOverview
   const { t } = useTranslation()
 
@@ -125,10 +127,10 @@ export function OpenVaultOverview({ vaultsOverview, accountDetails }: Props) {
   )
 
   const connectedAccount =
-    accountDetails.context.status === 'connected' ? accountDetails.context.account : undefined
+    context.status === 'connected' ? context.account : undefined
 
   const headerTranslationKey = getHeaderTranslationKey(
-    !!accountDetails.numberOfVaults && accountDetails.numberOfVaults > 0,
+    !!accountDetails?.numberOfVaults && accountDetails.numberOfVaults > 0,
   )
 
   return (
@@ -155,13 +157,14 @@ export function OpenVaultOverview({ vaultsOverview, accountDetails }: Props) {
 }
 
 export function OpenVaultOverviewView() {
-  const { openVaultOverview$, accountData$ } = useAppContext()
+  const { openVaultOverview$, accountData$, context$ } = useAppContext()
   const openVaultOverview = useObservable(openVaultOverview$)
   const accountData = useObservable(accountData$)
+  const context = useObservable(context$)
 
-  if (openVaultOverview === undefined || accountData === undefined) {
+  if (openVaultOverview === undefined || context === undefined) {
     return null
   }
 
-  return <OpenVaultOverview vaultsOverview={openVaultOverview} accountDetails={accountData} />
+  return <OpenVaultOverview vaultsOverview={openVaultOverview} context={context} accountDetails={accountData} />
 }
