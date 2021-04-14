@@ -36,10 +36,6 @@ export function OpenVaultEditing(props: OpenVaultState) {
     generateAmount,
     maxDepositAmount,
     maxGenerateAmount,
-    errorMessages,
-    ilkData,
-    afterCollateralizationRatio,
-    progress,
     updateDeposit,
     updateDepositMax,
     updateDepositUSD,
@@ -51,15 +47,7 @@ export function OpenVaultEditing(props: OpenVaultState) {
     toggleGenerateOption,
   } = props
 
-  const hasError = !!errorMessages.length
-
-  const daiAvailable = `${formatCryptoBalance(ilkData.ilkDebtAvailable)} DAI`
-  const minCollRatio = `${formatPercent(ilkData.liquidationRatio.times(100), { precision: 2 })}`
-  const afterCollRatio = afterCollateralizationRatio.eq(zero)
-    ? '--'
-    : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
-
-  const showGenerateOptionButton = depositAmount
+  const showGenerateOptionButton = depositAmount && !depositAmount.isZero()
 
   return (
     <Grid>
@@ -77,7 +65,7 @@ export function OpenVaultEditing(props: OpenVaultState) {
           maxAmount={maxDepositAmount}
           maxAuxiliaryAmount={maxDepositAmountUSD}
           maxAmountLabel={'Balance'}
-          hasError={hasError}
+          hasError={false}
         />
         {showGenerateOptionButton && (
           <Text
@@ -114,19 +102,6 @@ export function OpenVaultEditing(props: OpenVaultState) {
           />
         )}
       </Box>
-
-      <Card>
-        <Grid columns="5fr 3fr">
-          <Text sx={{ fontSize: 2 }}>Dai Available</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{daiAvailable}</Text>
-
-          <Text sx={{ fontSize: 2 }}>Min. collateral ratio</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{minCollRatio}</Text>
-
-          <Text sx={{ fontSize: 2 }}>Collateralization Ratio</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{afterCollRatio}</Text>
-        </Grid>
-      </Card>
     </Grid>
   )
 }

@@ -2,13 +2,12 @@ import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Text } from 'theme-ui'
+import { OpenVaultState } from './openVault'
 
-import { ManageVaultState } from './manageVault'
-
-export function ManageVaultIlkDetails({
+export function OpenVaultIlkDetails({
   showIlkDetails,
   ilkData: { ilkDebtAvailable, liquidationRatio, stabilityFee, liquidationPenalty, debtFloor },
-}: ManageVaultState) {
+}: OpenVaultState) {
   const { t } = useTranslation()
 
   if (!showIlkDetails) return null

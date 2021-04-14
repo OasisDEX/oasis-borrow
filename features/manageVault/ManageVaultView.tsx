@@ -45,7 +45,6 @@ function ManageVaultForm(props: ManageVaultState) {
     isManageStage,
   } = categoriseManageVaultStage(stage)
 
-  // maybe unneccessary logic in state
   function handleMouseEnter(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault()
     if (isEditingStage && !showIlkDetails) {
@@ -73,7 +72,7 @@ function ManageVaultForm(props: ManageVaultState) {
           <ManageVaultErrors {...props} />
           <ManageVaultWarnings {...props} />
           <ManageVaultButton {...props} />
-          {isEditingStage && <ManageVaultIlkDetails {...props} />}
+          <ManageVaultIlkDetails {...props} />
         </Grid>
       </Card>
     </Box>

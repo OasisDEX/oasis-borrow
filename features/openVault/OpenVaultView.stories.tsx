@@ -6,13 +6,13 @@ import {
   protoUSDCPriceInfo,
   protoWBTCPriceInfo,
 } from 'features/shared/priceInfo'
-import { EMPTY } from 'rxjs'
+import { EMPTY, NEVER } from 'rxjs'
 import { openVaultStory } from './OpenVaultBuilder'
 
 export const WaitingForIlksToBeFetched = openVaultStory({
   title:
     'We must first validate and verify that the ilks will be fetched before we can render anything.',
-  _ilks$: EMPTY,
+  _ilks$: NEVER,
   ilk: 'WBTC-A',
 })
 

@@ -16,6 +16,7 @@ import { OpenVaultDetails } from './OpenVaultDetails'
 import { OpenVaultEditing } from './OpenVaultEditing'
 import { OpenVaultProxy } from './OpenVaultProxy'
 import { OpenVaultAllowance } from './OpenVaultAllowance'
+import { OpenVaultIlkDetails } from './OpenVaultIlkDetails'
 
 function OpenVaultErrors({ errorMessages }: OpenVaultState) {
   const errorString = errorMessages.join(',\n')
@@ -72,12 +73,26 @@ function OpenVaultTitle({ reset, stage }: OpenVaultState) {
 }
 
 function OpenVaultForm(props: OpenVaultState) {
+  const { toggleIlkDetails, showIlkDetails, stage } = props
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = categoriseOpenVaultStage(
-    props.stage,
+    stage,
   )
+  function handleMouseEnter(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.preventDefault()
+    if (isEditingStage && !showIlkDetails) {
+      toggleIlkDetails!()
+    }
+  }
+
+  function handleMouseLeave(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.preventDefault()
+    if (isEditingStage && showIlkDetails) {
+      toggleIlkDetails!()
+    }
+  }
 
   return (
-    <Box>
+    <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <Card>
         <Grid>
           <OpenVaultTitle {...props} />
@@ -88,6 +103,7 @@ function OpenVaultForm(props: OpenVaultState) {
           <OpenVaultErrors {...props} />
           <OpenVaultWarnings {...props} />
           <OpenVaultButton {...props} />
+          <OpenVaultIlkDetails {...props} />
         </Grid>
       </Card>
     </Box>

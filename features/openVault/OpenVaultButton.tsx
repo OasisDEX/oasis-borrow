@@ -55,7 +55,7 @@ export function OpenVaultButton({ stage, errorMessages, progress, id }: OpenVaul
   ] as OpenVaultStage[]).some((s) => s === stage)
 
   const hasError = !!errorMessages.length
-  const isDisabled = hasError || isLoading
+  const isDisabled = hasError || !isLoading
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()

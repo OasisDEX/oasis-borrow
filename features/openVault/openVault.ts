@@ -341,11 +341,14 @@ export const defaultPartialOpenVaultState = {
   warningMessages: [],
   showIlkDetails: false,
   showGenerateOption: false,
-  afterLiquidationPrice: zero,
-  afterCollateralizationRatio: zero,
   maxDepositAmount: zero,
   maxDepositAmountUSD: zero,
   maxGenerateAmount: zero,
+  afterCollateralizationRatio: zero,
+  afterCollateralizationRatioAtNextPrice: zero,
+  daiYieldFromDepositingCollateral: zero,
+  daiYieldFromDepositingCollateralAtNextPrice: zero,
+  afterLiquidationPrice: zero,
 }
 
 export function createOpenVault$(
@@ -360,6 +363,7 @@ export function createOpenVault$(
   ilkToToken$: Observable<(ilk: string) => string>,
   ilk: string,
 ): Observable<OpenVaultState> {
+  ilks$.subscribe(console.log)
   return ilks$.pipe(
     switchMap((ilks) =>
       iif(
