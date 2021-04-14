@@ -20,6 +20,11 @@ export const VaultWillBeUnderCollateralizedtNextPrice = openVaultStory({
   },
 })
 
+export const depositAmountExceedsCollateralBalance = openVaultStory({
+  proxyAddress,
+  depositAmount: new BigNumber('1000'),
+  balanceInfo: { collateralBalance: new BigNumber('999') },
+})
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'OpenVault/Errors',

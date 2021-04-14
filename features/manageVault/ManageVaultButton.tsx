@@ -60,7 +60,7 @@ export function ManageVaultButton({ progress, errorMessages, stage }: ManageVaul
   ] as ManageVaultStage[]).some((s) => s === stage)
 
   const hasError = !!errorMessages.length
-  const isDisabled = hasError || !isLoading
+  const isDisabled = hasError || isLoading
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
@@ -70,7 +70,7 @@ export function ManageVaultButton({ progress, errorMessages, stage }: ManageVaul
   const buttonText = manageVaultButtonText(stage)
 
   return (
-    <Button onClick={handleProgress} disabled={!isDisabled}>
+    <Button onClick={handleProgress} disabled={isDisabled}>
       {isLoading ? (
         <Flex sx={{ justifyContent: 'center' }}>
           <Spinner size={25} color="surface" />

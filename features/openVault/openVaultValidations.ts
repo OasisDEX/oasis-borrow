@@ -21,6 +21,8 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
     afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
     ilkData,
+    depositAmount,
+    balanceInfo,
   } = state
   const errorMessages: OpenVaultErrorMessage[] = []
 
@@ -40,6 +42,10 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
 
   if (!vaultWillBeUnderCollateralized && vaultWillBeUnderCollateralizedAtNextPrice) {
     errorMessages.push('vaultWillBeUnderCollateralizedAtNextPrice')
+  }
+
+  if (depositAmount?.gt(balanceInfo.collateralBalance)) {
+    errorMessages.push('depositAmountExceedsCollateralBalance')
   }
 
   // if (depositAmount?.gt(maxDepositAmount)) {
