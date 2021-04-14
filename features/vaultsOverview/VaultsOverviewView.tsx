@@ -15,7 +15,7 @@ import {
 } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
-import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { Filters } from './Filters'
@@ -268,6 +268,7 @@ function getHeaderTranslationKey(
 }
 export function VaultsOverviewView({ vaultsOverview, context, address }: Props) {
   const { vaults, vaultSummary } = vaultsOverview
+  const { t } = useTranslation()
   const onVaultSearch = useCallback(
     (search: string) => {
       vaults.filters.change({ kind: 'search', search })
@@ -293,6 +294,46 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
     address,
     vaultSummary.numberOfVaults,
   )
+
+  const isOwnerViewing = !!connectedAccount && address === connectedAccount
+
+  if (isOwnerViewing && vaultSummary.numberOfVaults === 0) {
+    return (
+      <Grid sx={{ flex: 1, zIndex: 1, justifyContent: 'center', my: 6, textAlign: 'center' }}>
+        <Heading as="h1" variant="header2" sx={{ fontSize: 40, mb: 3 }}>
+          {t('vaults-overview.header-no-vaults')}
+        </Heading>
+        <Text variant="paragraph1" sx={{ mb: 3, color: 'lavender' }}>
+          <Trans i18nKey="vaults-overview.subheader-no-vaults" components={[<br />]} />
+        </Text>
+        <AppLink
+          href="/vaults/list"
+          variant="primary"
+          sx={{
+            display: 'flex',
+            margin: '0 auto',
+            px: '40px',
+            py: 2,
+            alignItems: 'center',
+            '&:hover svg': {
+              transform: 'translateX(10px)',
+            },
+          }}
+        >
+          {t('open-vault')}
+          <Icon
+            name="arrow_right"
+            sx={{
+              ml: 2,
+              position: 'relative',
+              left: 2,
+              transition: '0.2s',
+            }}
+          />
+        </AppLink>
+      </Grid>
+    )
+  }
 
   return (
     <Grid sx={{ flex: 1, zIndex: 1 }}>
