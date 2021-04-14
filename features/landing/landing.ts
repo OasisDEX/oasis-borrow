@@ -1,8 +1,9 @@
 import { IlkDataList } from 'blockchain/ilks'
 import { ilksWithFilter$, IlksWithFilters } from 'features/ilks/ilksFilters'
-import { FeaturedIlk } from 'features/vaultsOverview/vaultsOverview'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
+
+import { FeaturedIlk } from './featuredIlksData'
 
 export interface Landing {
   ilks: IlksWithFilters

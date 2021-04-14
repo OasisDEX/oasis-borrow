@@ -1,154 +1,106 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
+import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { ConnectWallet, getConnectionKindMessage } from 'components/connectWallet/ConnectWallet'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
-import { formatAddress } from 'helpers/formatters/format'
+import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef } from 'react'
 // @ts-ignore
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
 import { animated, useSpring } from 'react-spring'
 import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Flex, Grid, Heading, Text, Textarea } from 'theme-ui'
 
-import { NotificationTransaction, TxMgrTransaction } from './transactionManager'
-import {
-  describeTxNotificationStatus,
-  PendingTransactions,
-  RecentTransactions,
-} from './TransactionManagerView'
-import { getTransactionTranslations } from './transactionTranslations'
+import { PendingTransactions, RecentTransactions } from './TransactionManagerView'
 
-export function AccountIndicator({
-  chainId,
-  address,
-  transaction,
-}: {
-  chainId: number
-  address: string
-  transaction: NotificationTransaction | undefined
-}) {
-  let color = 'networks.default'
-  if (chainId === 1) {
-    color = 'networks.mainnet'
-  }
-  if (chainId === 42) {
-    color = 'networks.kovan'
-  }
-  const { icon } = describeTxNotificationStatus(transaction?.tx)
-
+function DaiIndicator({ daiBalance }: { daiBalance: BigNumber | undefined }) {
   return (
-    <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-      {icon ? <Flex>{icon}</Flex> : <Text sx={{ color, fontSize: '7px' }}>⬤</Text>}
-
-      <Text ml={2}>{formatAddress(address)}</Text>
+    <Flex
+      sx={{
+        position: 'relative',
+        alignItems: 'center',
+        bg: 'warning',
+        borderRadius: 'round',
+        p: 1,
+      }}
+    >
+      <Icon sx={{ zIndex: 1 }} name="dai_circle_color" size={30} />
+      <Box sx={{ mx: 2, color: 'onWarning' }}>
+        {daiBalance ? formatCryptoBalance(daiBalance) : '0.00'}
+      </Box>
+    </Flex>
+  )
+}
+export function AccountIndicator({ address }: { address: string }) {
+  return (
+    <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mx: 3 }}>
+      <Text variant="paragraph4" sx={{ fontWeight: 'bold' }}>
+        {formatAddress(address)}
+      </Text>
     </Flex>
   )
 }
 
 const buttonMinWidth = '150px'
 
-function NotificationContent({
-  isVisible,
-  transaction,
-}: {
-  isVisible: boolean
-  transaction?: TxMgrTransaction
-}) {
-  const props = useSpring({
-    transform: isVisible ? 'translateX(0%)' : 'translateX(105%)',
+export function AccountButton() {
+  const { accountData$, context$ } = useAppContext()
+  const accountData = useObservable(accountData$)
+  const context = useObservable(context$)
+  const { t } = useTranslation('common')
+  const openModal = useModal()
+  const animatedProps = useSpring({
+    top: accountData === undefined ? -100 : 0,
   })
 
-  const [tx, setTx] = useState<TxMgrTransaction>()
+  if (context === undefined) {
+    return null
+  }
 
-  useEffect(() => {
-    if (transaction) {
-      setTx(transaction)
-    }
-  }, [transaction])
-
-  return (
-    <animated.div style={{ ...props, display: 'flex', maxWidth: `calc(100% - ${buttonMinWidth})` }}>
-      <Card
-        sx={{
-          p: 2,
-          pl: 3,
-          m: 0,
-          borderRadius: 'round',
-          minWidth: `calc(100% + ${buttonMinWidth})`,
-          alignSelf: 'flex-end',
-          height: '100%',
-          borderColor: 'light',
-          bg: 'txManagerBg',
-          boxShadow: 'txManager',
-        }}
-      >
-        <Text
-          variant="text"
-          sx={{
-            whiteSpace: 'nowrap',
-            maxWidth: `calc(100% - ${buttonMinWidth})`,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            svg: {
-              flexShrink: 0,
-            },
-          }}
-          py={1}
-        >
-          {tx ? getTransactionTranslations(tx).notification : null}
-        </Text>
-      </Card>
-    </animated.div>
-  )
-}
-
-export function AccountButton() {
-  const { transactionManager$, web3Context$ } = useAppContext()
-  const web3Context = useObservable(web3Context$)
-  const { t } = useTranslation('common')
-  const transactions = useObservable(transactionManager$)
-  const transaction = transactions?.notificationTransaction
-  const [isVisible, setIsVisible] = useState(false)
-  const openModal = useModal()
-
-  useEffect(() => {
-    if (transaction && !isVisible) {
-      setIsVisible(true)
-    } else if (!transaction && isVisible) {
-      setIsVisible(false)
-    }
-  }, [transaction])
-
-  if (web3Context?.status === 'connected') {
+  if (context?.status === 'connectedReadonly') {
     return (
-      <Flex sx={{ justifyContent: 'flex-end', minWidth: 'auto', width: '100%' }}>
-        <Flex>
-          <NotificationContent isVisible={isVisible} transaction={transaction?.tx} />
-          <Button
-            variant="square"
-            sx={{ fontWeight: 'body', minWidth: buttonMinWidth, zIndex: 1 }}
-            onClick={() => openModal(AccountModal)}
-          >
-            <AccountIndicator
-              chainId={web3Context.chainId}
-              address={web3Context.account}
-              transaction={transaction}
-            />
-          </Button>
-        </Flex>
-      </Flex>
+      <AppLink sx={{ zIndex: 1 }} href="/connect" variant="nav">
+        {t('connect-wallet-button')}
+      </AppLink>
     )
   }
 
+  if (accountData === undefined) {
+    return null
+  }
+
   return (
-    <AppLink href="/connect" variant="nav">
-      {t('connect-wallet-button')}
-    </AppLink>
+    <Flex
+      as={animated.div}
+      style={animatedProps}
+      sx={{
+        position: 'relative',
+        justifyContent: 'flex-end',
+        minWidth: 'auto',
+      }}
+    >
+      <Button
+        variant="secondary"
+        sx={{
+          minWidth: buttonMinWidth,
+          zIndex: 1,
+          background: 'white',
+          boxShadow: 'surface',
+          p: 1,
+          display: 'flex',
+          alignItems: 'center',
+        }}
+        onClick={() => openModal(AccountModal)}
+      >
+        <AccountIndicator address={context.account} />
+        <DaiIndicator daiBalance={accountData.daiBalance} />
+      </Button>
+    </Flex>
   )
 }
 
@@ -162,7 +114,8 @@ export function ConnectModal({ close }: ModalProps) {
 }
 
 export function AccountModal({ close }: ModalProps) {
-  const { web3Context$ } = useAppContext()
+  const { web3Context$, accountData$ } = useAppContext()
+  const accountData = useObservable(accountData$)
   const web3Context = useObservable(web3Context$)
   const clipboardContentRef = useRef<HTMLTextAreaElement>(null)
   const { t } = useTranslation('common')
@@ -192,7 +145,7 @@ export function AccountModal({ close }: ModalProps) {
   const { account, connectionKind } = web3Context
 
   return (
-    <Modal>
+    <Modal sx={{ maxWidth: '530px', margin: '0px auto' }}>
       <ModalCloseIcon {...{ close }} />
       <Grid gap={2} pt={3} mt={1}>
         <Box
@@ -250,7 +203,8 @@ export function AccountModal({ close }: ModalProps) {
                   href="/owner/[address]"
                   as={`/owner/${account}`}
                 >
-                  {t('my-page')}
+                  {t('your-vaults')}{' '}
+                  {accountData?.numberOfVaults !== undefined && `(${accountData.numberOfVaults})`}
                 </AppLink>
                 <Button
                   variant="textual"

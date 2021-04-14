@@ -2,7 +2,7 @@ import { keyframes } from '@emotion/core'
 import React from 'react'
 import { Box } from 'theme-ui'
 
-const fadeOut = keyframes({
+export const fadeOut = keyframes({
   from: {
     opacity: 1,
   },
@@ -21,14 +21,14 @@ export function Background() {
         userSelect: 'none',
         pointerEvents: 'none',
         '&::after': {
-          opacity: 1,
-          content: '""',
-          background: 'white',
           position: 'absolute',
           top: 0,
           left: 0,
           bottom: 0,
           right: 0,
+          content: '""',
+          background: 'white',
+          opacity: 1,
           animation: fadeOut,
           animationDuration: '0.4s',
           animationDelay: '0.1s',

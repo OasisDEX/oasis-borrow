@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Direction } from 'helpers/form'
 import { useTranslation } from 'next-i18next'
-import React, { memo, ReactNode } from 'react'
+import React, { HTMLProps, memo, ReactNode } from 'react'
 import { Box, Button, Container, SxStyleProp } from 'theme-ui'
 
 export interface ColumnDef<T, S> {
@@ -15,6 +15,7 @@ interface TableProps<T extends Record<K, string>, K extends keyof T, S> {
   state: S
   columns: ColumnDef<T, S>[]
   primaryKey: K
+  noResults?: React.ReactNode
 }
 
 export function TableContainer({
@@ -62,7 +63,11 @@ function Row({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
   )
 }
 
-function Cell({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
+function Cell({
+  children,
+  sx,
+  ...props
+}: React.PropsWithChildren<{ sx?: SxStyleProp } & HTMLProps<HTMLTableCellElement>>) {
   return (
     <Box
       sx={{
@@ -75,6 +80,7 @@ function Cell({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
         },
         ...sx,
       }}
+      {...props}
       as="td"
     >
       {children}
@@ -131,8 +137,10 @@ export function Table<T extends Record<K, string>, K extends keyof T, S>({
   columns,
   primaryKey,
   state,
+  noResults,
 }: TableProps<T, K, S>) {
   const { t } = useTranslation()
+
   return (
     <TableContainer
       header={columns.map(({ header: HeaderComponent, headerLabel }) => (
@@ -141,9 +149,17 @@ export function Table<T extends Record<K, string>, K extends keyof T, S>({
         </Header>
       ))}
     >
-      {data.map((row) => (
-        <TableRow key={row[primaryKey]} row={row} columns={columns} />
-      ))}
+      {noResults && data.length === 0 ? (
+        <Row sx={{ background: 'none' }}>
+          <Cell colSpan={columns.length}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              {noResults}
+            </Box>
+          </Cell>
+        </Row>
+      ) : (
+        data.map((row) => <TableRow key={row[primaryKey]} row={row} columns={columns} />)
+      )}
     </TableContainer>
   )
 }

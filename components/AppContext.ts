@@ -33,13 +33,16 @@ import {
 } from 'blockchain/tokens'
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import { createAccountData } from 'features/account/AccountData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
+import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
+import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultData'
 import { redirectState$ } from 'features/router/redirectState'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import {
@@ -47,7 +50,7 @@ import {
   saveAcceptanceFromApi$,
 } from 'features/termsOfService/termsAcceptanceApi'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
-import { createFeaturedIlks$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
+import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
@@ -186,7 +189,7 @@ export function setupAppContext() {
   )
 
   const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
-  const balance$ = curry(createBalance$)(onEveryBlock$, context$, tokenBalance$)
+  const balance$ = memoize(curry(createBalance$)(onEveryBlock$, context$, tokenBalance$))
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
@@ -278,9 +281,7 @@ export function setupAppContext() {
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
-  const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(vaults$, ilksWithBalance$, featuredIlks$),
-  )
+  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(vaults$, ilksWithBalance$))
   const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
 
   const termsAcceptance$ = createTermsAcceptance$(
@@ -295,6 +296,10 @@ export function setupAppContext() {
     curry(createVaultsBanners$)(context$, priceInfo$, vault$, vaultHistory$),
     bigNumberTostring,
   )
+
+  const accountData$ = createAccountData(web3Context$, balance$, vaults$)
+
+  const openVaultOverview$ = createOpenVaultOverview$(ilksWithBalance$)
 
   return {
     web3Context$,
@@ -317,9 +322,11 @@ export function setupAppContext() {
     vaultBanners$,
     redirectState$,
     accountBalances$,
+    accountData$,
     vaultHistory$,
     collateralPrices$,
     termsAcceptance$,
+    openVaultOverview$,
   }
 }
 
