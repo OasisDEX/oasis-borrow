@@ -126,8 +126,7 @@ export function OpenVaultOverview({ vaultsOverview, accountDetails, context }: P
     [ilksWithFilters.filters],
   )
 
-  const connectedAccount =
-    context.status === 'connected' ? context.account : undefined
+  const connectedAccount = context.status === 'connected' ? context.account : undefined
 
   const headerTranslationKey = getHeaderTranslationKey(
     !!accountDetails?.numberOfVaults && accountDetails.numberOfVaults > 0,
@@ -166,5 +165,11 @@ export function OpenVaultOverviewView() {
     return null
   }
 
-  return <OpenVaultOverview vaultsOverview={openVaultOverview} context={context} accountDetails={accountData} />
+  return (
+    <OpenVaultOverview
+      vaultsOverview={openVaultOverview}
+      context={context}
+      accountDetails={accountData}
+    />
+  )
 }

@@ -3,8 +3,8 @@ import BigNumber from 'bignumber.js'
 import { ContextConnected } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { startWithDefault } from 'helpers/operators'
-import { combineLatest, Observable, of } from 'rxjs'
-import { filter, map, startWith, switchMap } from 'rxjs/operators'
+import { combineLatest, Observable } from 'rxjs'
+import { filter, map, switchMap } from 'rxjs/operators'
 
 export interface AccountDetails {
   numberOfVaults: number | undefined
@@ -21,9 +21,7 @@ export function createAccountData(
     switchMap((context) =>
       combineLatest(
         startWithDefault(balance$('DAI', context.account), undefined),
-        startWithDefault(vaults$(context.account).pipe(
-          map(vault => vault.length),
-        ), undefined)
+        startWithDefault(vaults$(context.account).pipe(map((vault) => vault.length)), undefined),
       ).pipe(
         map(([balance, numberOfVaults]) => ({
           context,

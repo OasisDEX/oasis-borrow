@@ -6,7 +6,6 @@ import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { VaultOverviewOwnershipBanner } from 'features/banners/VaultsBannersView'
-import { TokenSymbol } from 'features/landing/LandingView'
 import {
   formatAddress,
   formatCryptoBalance,
@@ -15,7 +14,7 @@ import {
 } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
-import { Box, Button, Card, Flex, Grid, Heading, Text } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { Filters } from './Filters'
@@ -44,7 +43,7 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
         {label}
       </TableSortHeader>
     ),
-    cell: ({ id }) => <Text>#{id.toString()}</Text>,
+    cell: ({ id }) => <Text sx={{ textAlign: 'right' }}>#{id.toString()}</Text>,
   },
   {
     headerLabel: 'system.liquidation-price',

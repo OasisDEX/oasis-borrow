@@ -2,10 +2,10 @@ import { isAppContextAvailable } from 'components/AppContextProvider'
 import { Footer } from 'components/Footer'
 import { AppHeader, ConnectPageHeader, MarketingHeader } from 'components/Header'
 import { AppLinkProps } from 'components/Links'
-import { Background } from 'theme/Background'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
 import { Container, Flex, SxStyleProp } from 'theme-ui'
+import { Background } from 'theme/Background'
 
 interface BasicLayoutProps extends WithChildren {
   header: JSX.Element

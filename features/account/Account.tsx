@@ -71,7 +71,7 @@ export function AccountButton() {
   }
 
   if (accountData === undefined) {
-    return null;
+    return null
   }
 
   return (

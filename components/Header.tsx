@@ -75,9 +75,11 @@ export function BackArrow() {
 }
 
 export function AppHeader(_: { backLink?: AppLinkProps; CustomLogoWithBack?: () => JSX.Element }) {
-  const { accountData$ } = useAppContext()
+  const { accountData$, context$ } = useAppContext()
   const { t } = useTranslation()
   const accountData = useObservable(accountData$)
+  const context = useObservable(context$)
+
   return (
     <BasicHeader
       sx={{
@@ -90,11 +92,11 @@ export function AppHeader(_: { backLink?: AppLinkProps; CustomLogoWithBack?: () 
     >
       <>
         <Logo sx={{ position: ['absolute', 'static', 'static'], left: 3, top: 3 }} />
-        {accountData?.context?.status === 'connected' && (
+        {context?.status === 'connected' && (
           <Flex sx={{ ml: 'auto', zIndex: 1, mt: [3, 0, 0] }}>
-            <AppLink variant="nav" sx={{ mr: 4 }} href={`/owner/${accountData.context.account}`}>
+            <AppLink variant="nav" sx={{ mr: 4 }} href={`/owner/${context.account}`}>
               {t('your-vaults')}{' '}
-              {accountData.numberOfVaults !== undefined && `(${accountData.numberOfVaults})`}
+              {accountData?.numberOfVaults !== undefined && `(${accountData.numberOfVaults})`}
             </AppLink>
             <AppLink variant="nav" sx={{ mr: [0, 4, 4] }} href="/vaults/list">
               {t('open-new-vault')}

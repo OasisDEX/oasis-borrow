@@ -17,7 +17,22 @@ function Summary({ address }: { address: string }) {
   const context = useObservable(context$)
 
   if (vaultsOverview === undefined || context === undefined) {
-    return <Box sx={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Spinner /></Box>
+    return (
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Spinner />
+      </Box>
+    )
   }
 
   return <VaultsOverviewView vaultsOverview={vaultsOverview} context={context} address={address} />
