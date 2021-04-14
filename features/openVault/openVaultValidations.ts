@@ -32,18 +32,6 @@ export type OpenVaultWarningMessage =
   | 'generatingAllDaiYieldFromDepositingCollateralAtNextPrice'
 
 export function validateErrors(state: OpenVaultState): OpenVaultState {
-  const {
-    depositAmount,
-    maxDepositAmount,
-    generateAmount,
-    allowanceAmount,
-    debtFloor,
-    ilkDebtAvailable,
-    afterCollateralizationRatio,
-    liquidationRatio,
-    stage,
-  } = state
-
   const errorMessages: OpenVaultErrorMessage[] = []
 
   // if (depositAmount?.gt(maxDepositAmount)) {
@@ -78,8 +66,6 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
 }
 
 export function validateWarnings(state: OpenVaultState): OpenVaultState {
-  const { allowance, depositAmount, depositAmountUSD, debtFloor, proxyAddress, token } = state
-
   const warningMessages: OpenVaultWarningMessage[] = []
 
   // if (depositAmountUSD && depositAmount?.gt(zero) && depositAmountUSD.lt(debtFloor)) {

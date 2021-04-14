@@ -38,8 +38,7 @@ export function OpenVaultEditing(props: OpenVaultState) {
     maxGenerateAmount,
     errorMessages,
     warningMessages,
-    ilkDebtAvailable,
-    liquidationRatio,
+    ilkData,
     afterCollateralizationRatio,
     progress,
     updateDeposit,
@@ -64,10 +63,8 @@ export function OpenVaultEditing(props: OpenVaultState) {
   const hasError = !!errorString
   const hasWarnings = !!warningString
 
-  const daiAvailable = ilkDebtAvailable ? `${formatCryptoBalance(ilkDebtAvailable)} DAI` : '--'
-  const minCollRatio = liquidationRatio
-    ? `${formatPercent(liquidationRatio.times(100), { precision: 2 })}`
-    : '--'
+  const daiAvailable = `${formatCryptoBalance(ilkData.ilkDebtAvailable)} DAI`
+  const minCollRatio = `${formatPercent(ilkData.liquidationRatio.times(100), { precision: 2 })}`
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
     ? '--'
     : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })

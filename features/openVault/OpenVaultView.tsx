@@ -21,11 +21,12 @@ function OpenVaultDetails(props: OpenVaultState) {
     afterCollateralizationRatio,
     afterLiquidationPrice,
     token,
-
-    currentCollateralPrice,
-    nextCollateralPrice,
-    isStaticCollateralPrice,
-    dateNextCollateralPrice,
+    priceInfo: {
+      currentCollateralPrice,
+      nextCollateralPrice,
+      isStaticCollateralPrice,
+      dateNextCollateralPrice,
+    },
     ilk,
   } = props
 
@@ -101,7 +102,11 @@ function OpenVaultDetails(props: OpenVaultState) {
               <Heading variant="subheader" as="h3">
                 <Box sx={{ mr: 2 }}>
                   {newPriceIn < 2 ? (
-                    <Trans i18nKey="next-price-any-time" count={newPriceIn} components={[<br />]} />
+                    <Trans
+                      i18nKey="vault.next-price-any-time"
+                      count={newPriceIn}
+                      components={[<br />]}
+                    />
                   ) : (
                     <Trans i18nKey="vault.next-price" count={newPriceIn} components={[<br />]} />
                   )}
@@ -188,7 +193,7 @@ function VaultDetails(props: OpenVaultState) {
             {t('system.liquidation-ratio')}
           </Box>
           <Text sx={{ display: 'inline' }} variant="header3">
-            {formatPercent(props.liquidationRatio.times(100))}
+            {formatPercent(props.ilkData.liquidationRatio.times(100))}
           </Text>
         </Box>
         <Box>
@@ -331,7 +336,7 @@ function OpenVaultFormAllowance({
   etherscan,
   progress,
   token,
-  collateralBalance,
+  balanceInfo: { collateralBalance },
   allowanceAmount,
   errorMessages,
   updateAllowanceAmount,
@@ -485,7 +490,7 @@ function OpenVaultFormAllowance({
 
 function OpenVaultFormConfirmation({
   stage,
-  collateralBalance,
+  balanceInfo: { collateralBalance },
   depositAmount,
   generateAmount,
   token,

@@ -1,278 +1,63 @@
 import BigNumber from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
-import { protoETHAIlkData, protoUSDCAIlkData, protoWBTCAIlkData } from 'blockchain/ilks'
-import { ContextConnected, protoContextConnected } from 'blockchain/network'
-import { AppContext, protoTxHelpers } from 'components/AppContext'
-import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { OpenVaultView } from 'features/openVault/OpenVaultView'
-import { BalanceInfo } from 'features/shared/balanceInfo'
 import {
   PriceInfo,
   protoETHPriceInfo,
   protoUSDCPriceInfo,
   protoWBTCPriceInfo,
 } from 'features/shared/priceInfo'
-import { zero } from 'helpers/zero'
-import React, { useEffect } from 'react'
-import { EMPTY, Observable, of } from 'rxjs'
-import { first } from 'rxjs/operators'
-import { Card, Container, Grid } from 'theme-ui'
+import { EMPTY } from 'rxjs'
+import { openVaultStory } from './OpenVaultBuilder'
 
-import { createOpenVault$, OpenVaultState } from './openVault'
-
-type StoryProps = Partial<OpenVaultState> & {
-  title?: string
-  ilks$?: Observable<string[]>
-  context?: ContextConnected
-  proxyAddress?: string
-  allowance?: BigNumber
-  priceInfo?: Partial<PriceInfo>
-  balanceInfo?: Partial<BalanceInfo>
-  newState?: Partial<OpenVaultState>
-  ilk: string
-}
-
-function createStory({
-  title,
-  ilks$,
-  context,
-  proxyAddress,
-  allowance,
-  priceInfo,
-  balanceInfo,
-  ilk,
-  ...otherState
-}: StoryProps) {
-  return () => {
-    const context$ = of(context || protoContextConnected)
-    const txHelpers$ = of(protoTxHelpers)
-    const proxyAddress$ = () => of(proxyAddress)
-    const allowance$ = () => of(allowance || maxUint256)
-
-    const protoBalanceInfo: BalanceInfo = {
-      collateralBalance: zero,
-      ethBalance: zero,
-      daiBalance: zero,
-      ...balanceInfo,
-    }
-
-    const protoPriceInfo = {
-      ...(ilk === 'ETH-A'
-        ? protoETHPriceInfo
-        : ilk === 'WBTC-A'
-        ? protoWBTCPriceInfo
-        : protoUSDCPriceInfo),
-      ...(priceInfo || {}),
-    }
-
-    const protoIlkData =
-      ilk === 'ETH-A' ? protoETHAIlkData : ilk === 'WBTC-A' ? protoWBTCAIlkData : protoUSDCAIlkData
-
-    const balanceInfo$ = () => of(protoBalanceInfo)
-    const priceInfo$ = () => of(protoPriceInfo)
-    const ilkData$ = () => of(protoIlkData)
-
-    const ilkToToken$ = of(() => ilk.split('-')[0])
-    const obs$ = createOpenVault$(
-      context$,
-      txHelpers$,
-      proxyAddress$,
-      allowance$,
-      priceInfo$,
-      balanceInfo$,
-      ilks$ || of(['ETH-A', 'WBTC-A', 'USDC-A']),
-      ilkData$,
-      ilkToToken$,
-      ilk,
-    )
-
-    const { stage, depositAmount, generateAmount } = otherState
-    const newState: Partial<OpenVaultState> = {
-      ...otherState,
-      ...(stage && { stage }),
-      ...(depositAmount && {
-        depositAmount,
-        depositAmountUSD: depositAmount.times(protoPriceInfo.currentCollateralPrice),
-      }),
-      ...(generateAmount && {
-        generateAmount,
-      }),
-    }
-
-    useEffect(() => {
-      const subscription = obs$.pipe(first()).subscribe((state: any) => {
-        if (state.injectStateOverride) {
-          state.injectStateOverride(newState || {})
-        }
-      })
-      return subscription.unsubscribe()
-    }, [])
-
-    const openVault$ = () => obs$
-    const ctx = ({
-      openVault$,
-    } as any) as AppContext
-
-    return (
-      <appContext.Provider value={ctx as any}>
-        <OpenVaultStoryContainer ilk={ilk} title={title} />
-      </appContext.Provider>
-    )
-  }
-}
-
-const OpenVaultStoryContainer = ({ title, ilk }: { title?: string; ilk: string }) => {
-  if (!isAppContextAvailable()) return null
-
-  return (
-    <Container variant="appContainer">
-      <Grid>
-        {title && <Card>{title}</Card>}
-        <OpenVaultView ilk={ilk} />
-      </Grid>
-    </Container>
-  )
-}
-
-export const WaitingForIlksToBeFetched = createStory({
+export const WaitingForIlksToBeFetched = openVaultStory({
   title:
     'We must first validate and verify that the ilks will be fetched before we can render anything.',
-  ilks$: EMPTY,
+  _ilks$: EMPTY,
   ilk: 'WBTC-A',
 })
 
-export const InvalidIlk = createStory({
-  title: 'Here, the user would be using a url /vault/open/ETH-Z, should 404',
-  ilks$: of(['ETH-A']),
-  ilk: 'WBTC-A',
+export const InvalidIlk = openVaultStory({
+  title: 'Here, the user would be using a url /vault/open/WBTC-Z, should 404',
+  ilks: ['WBTC-A'],
+  ilk: 'WBTC-Z',
 })
 
-export const EmptyEditingStage = createStory({
+export const EditingStage = openVaultStory({
   proxyAddress: '0xProxyAddress',
   balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'WBTC-A',
-})
-
-export const EditingStage = createStory({
-  proxyAddress: '0xProxyAddress',
-  balanceInfo: { collateralBalance: new BigNumber('100') },
-  ilk: 'WBTC-A',
-  depositAmount: new BigNumber('5'),
+  depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('2500'),
   showGenerateOption: true,
 })
 
-export const EditingStageWarningGenerateAmountEmpty = createStory({
-  proxyAddress: '0xProxyAddress',
-  balanceInfo: { collateralBalance: new BigNumber('100') },
-  depositAmount: new BigNumber('5'),
-  ilk: 'WBTC-A',
-})
-
-export const EditingStageWarningDepositAndGenerateAmountEmpty = createStory({
-  proxyAddress: '0xProxyAddress',
-  balanceInfo: { collateralBalance: new BigNumber('100') },
-  ilk: 'WBTC-A',
-})
-
-export const EditingStageNoProxyAddress = createStory({
-  title: 'Both warnings are shown as because no proxyAddress exists, no allowance can exist either',
-  balanceInfo: { collateralBalance: new BigNumber('100') },
-  depositAmount: new BigNumber('5'),
-  generateAmount: new BigNumber('2500'),
-  ilk: 'WBTC-A',
-})
-
-export const EditingStageNoAllowance = createStory({
-  proxyAddress: '0xProxyAddress',
-  allowance: zero,
-  balanceInfo: { collateralBalance: new BigNumber('100') },
-  ilk: 'WBTC-A',
-})
-
-export const EditingStageNoProxyAndNoAllowance = createStory({
-  allowance: zero,
-  balanceInfo: { collateralBalance: new BigNumber('100') },
-  depositAmount: new BigNumber('5'),
-  generateAmount: new BigNumber('2500'),
-  ilk: 'WBTC-A',
-})
-
-export const EditingStageAllowanceLessThanDepositAmount = createStory({
-  proxyAddress: '0xProxyAddress',
-  allowance: new BigNumber('4'),
-  balanceInfo: { collateralBalance: new BigNumber('100') },
-  depositAmount: new BigNumber('5'),
-  generateAmount: new BigNumber('2500'),
-  ilk: 'WBTC-A',
-})
-
-export const EditingStagePotentialGenerateAmountLessThanDebtFloor = createStory({
-  proxyAddress: '0xProxyAddress',
-  balanceInfo: { collateralBalance: new BigNumber('100') },
-  depositAmount: new BigNumber('0.001'),
-  ilk: 'WBTC-A',
-})
-
-export const EditingStageDepositAmountGreaterThanMaxDepositAmount = createStory({
-  proxyAddress: '0xProxyAddress',
-  balanceInfo: { collateralBalance: new BigNumber('100') },
-  depositAmount: new BigNumber('101'),
-  generateAmount: new BigNumber('2000'),
-  ilk: 'WBTC-A',
-})
-
-export const EditingStageGenerateAmountLessThanDebtFloor = createStory({
-  proxyAddress: '0xProxyAddress',
-  balanceInfo: { collateralBalance: new BigNumber('100') },
-  depositAmount: new BigNumber('5'),
-  generateAmount: new BigNumber('1999'),
-  ilk: 'WBTC-A',
-})
-
-export const EditingStageGenerateAmountGreaterThanDebtCeiling = createStory({
-  proxyAddress: '0xProxyAddress',
-  balanceInfo: { collateralBalance: new BigNumber('1000000000000') },
-  depositAmount: new BigNumber('10000000000'),
-  generateAmount: new BigNumber('100000000'),
-  ilk: 'WBTC-A',
-})
-
-export const EditingStageVaultUnderCollateralized = createStory({
-  proxyAddress: '0xProxyAddress',
-  balanceInfo: { collateralBalance: new BigNumber('100') },
-  depositAmount: new BigNumber('0.11'),
-  generateAmount: new BigNumber('5000'),
-  ilk: 'WBTC-A',
-})
-
-export const ProxyWaitingForConfirmation = createStory({
+export const ProxyWaitingForConfirmation = openVaultStory({
   stage: 'proxyWaitingForConfirmation',
   ilk: 'ETH-A',
 })
 
-export const ProxyWaitingForApproval = createStory({
+export const ProxyWaitingForApproval = openVaultStory({
   stage: 'proxyWaitingForApproval',
   ilk: 'ETH-A',
 })
 
-export const ProxyFailure = createStory({
+export const ProxyFailure = openVaultStory({
   stage: 'proxyFailure',
   ilk: 'ETH-A',
 })
 
-export const ProxyInProgress = createStory({
+export const ProxyInProgress = openVaultStory({
   stage: 'proxyInProgress',
   proxyConfirmations: 2,
   ilk: 'ETH-A',
 })
 
-export const ProxySuccess = createStory({
+export const ProxySuccess = openVaultStory({
   stage: 'proxySuccess',
   ilk: 'ETH-A',
 })
 
-export const AllowanceWaitingForConfirmation = createStory({
+export const AllowanceWaitingForConfirmation = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   stage: 'allowanceWaitingForConfirmation',
   depositAmount: new BigNumber('10'),
@@ -280,7 +65,7 @@ export const AllowanceWaitingForConfirmation = createStory({
   ilk: 'WBTC-A',
 })
 
-export const AllowanceWaitingForApproval = createStory({
+export const AllowanceWaitingForApproval = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   stage: 'allowanceWaitingForApproval',
   depositAmount: new BigNumber('10'),
@@ -288,7 +73,7 @@ export const AllowanceWaitingForApproval = createStory({
   ilk: 'WBTC-A',
 })
 
-export const AllowanceFailure = createStory({
+export const AllowanceFailure = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   stage: 'allowanceFailure',
   depositAmount: new BigNumber('10'),
@@ -296,12 +81,12 @@ export const AllowanceFailure = createStory({
   ilk: 'WBTC-A',
 })
 
-export const AllowanceInProgress = createStory({
+export const AllowanceInProgress = openVaultStory({
   stage: 'allowanceInProgress',
   ilk: 'WBTC-A',
 })
 
-export const AllowanceSuccess = createStory({
+export const AllowanceSuccess = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   stage: 'allowanceSuccess',
   depositAmount: new BigNumber('10'),
@@ -309,7 +94,7 @@ export const AllowanceSuccess = createStory({
   ilk: 'WBTC-A',
 })
 
-export const OpenWaitingForConfirmation = createStory({
+export const OpenWaitingForConfirmation = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   stage: 'openWaitingForConfirmation',
   depositAmount: new BigNumber('10'),
@@ -317,7 +102,7 @@ export const OpenWaitingForConfirmation = createStory({
   ilk: 'ETH-A',
 })
 
-export const OpenWaitingForApproval = createStory({
+export const OpenWaitingForApproval = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   stage: 'openWaitingForApproval',
   depositAmount: new BigNumber('10'),
@@ -325,7 +110,7 @@ export const OpenWaitingForApproval = createStory({
   ilk: 'ETH-A',
 })
 
-export const OpenFailure = createStory({
+export const OpenFailure = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   stage: 'openFailure',
   depositAmount: new BigNumber('10'),
@@ -333,7 +118,7 @@ export const OpenFailure = createStory({
   ilk: 'ETH-A',
 })
 
-export const OpenInProgress = createStory({
+export const OpenInProgress = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   stage: 'openInProgress',
   depositAmount: new BigNumber('10'),
@@ -341,7 +126,7 @@ export const OpenInProgress = createStory({
   ilk: 'ETH-A',
 })
 
-export const OpenSuccess = createStory({
+export const OpenSuccess = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   stage: 'openSuccess',
   id: new BigNumber('122345'),
@@ -352,6 +137,6 @@ export const OpenSuccess = createStory({
 
 // eslint-disable-next-line import/no-default-export
 export default {
-  title: 'OpenVault',
+  title: 'OpenVault/Stages',
   component: OpenVaultView,
 }

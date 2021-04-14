@@ -75,13 +75,12 @@ export function categoriseOpenVaultStage(stage: OpenVaultStage) {
 
 export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultState {
   const {
-    collateralBalance,
     depositAmount,
-    maxDebtPerUnitCollateral,
     generateAmount,
-    currentCollateralPrice,
-    liquidationRatio,
     depositAmountUSD,
+    balanceInfo: { collateralBalance },
+    priceInfo: { currentCollateralPrice },
+    ilkData: { maxDebtPerUnitCollateral, liquidationRatio },
   } = state
 
   const maxDepositAmount = collateralBalance
@@ -161,11 +160,15 @@ export type OpenVaultStage =
   | 'openFailure'
   | 'openSuccess'
 
-export type DefaultOpenVaultState = {
+export type OpenVaultState = {
   stage: OpenVaultStage
   ilk: string
   account: string
   token: string
+
+  priceInfo: PriceInfo
+  balanceInfo: BalanceInfo
+  ilkData: IlkData
 
   errorMessages: OpenVaultErrorMessage[]
   warningMessages: OpenVaultWarningMessage[]
@@ -202,11 +205,6 @@ export type DefaultOpenVaultState = {
   setAllowanceAmountToDepositAmount?: (amount?: BigNumber) => void
   resetAllowanceAmount?: () => void
 
-  maxDebtPerUnitCollateral: BigNumber
-  ilkDebtAvailable: BigNumber
-  debtFloor: BigNumber
-  liquidationRatio: BigNumber
-
   allowanceTxHash?: string
   proxyTxHash?: string
   openTxHash?: string
@@ -217,8 +215,6 @@ export type DefaultOpenVaultState = {
 
   injectStateOverride: (state: Partial<OpenVaultState>) => void
 }
-
-export type OpenVaultState = PriceInfo & BalanceInfo & DefaultOpenVaultState
 
 function addTransitions(
   txHelpers: TxHelpers,
@@ -346,80 +342,68 @@ export function createOpenVault$(
               proxyAddress$(account),
             ).pipe(
               first(),
-              switchMap(
-                ([
-                  priceInfo,
-                  balanceInfo,
-                  { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
-                  proxyAddress,
-                ]) =>
-                  (
-                    (proxyAddress && allowance$(token, account, proxyAddress)) ||
-                    of(undefined)
-                  ).pipe(
-                    first(),
-                    switchMap((allowance) => {
-                      const change$ = new Subject<OpenVaultChange>()
+              switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress]) =>
+                ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
+                  first(),
+                  switchMap((allowance) => {
+                    const change$ = new Subject<OpenVaultChange>()
 
-                      function change(ch: OpenVaultChange) {
-                        change$.next(ch)
-                      }
+                    function change(ch: OpenVaultChange) {
+                      change$.next(ch)
+                    }
 
-                      // NOTE: Not to be used in production/dev, test only
-                      function injectStateOverride(stateToOverride: Partial<OpenVaultState>) {
-                        return change$.next({ kind: 'injectStateOverride', stateToOverride })
-                      }
+                    // NOTE: Not to be used in production/dev, test only
+                    function injectStateOverride(stateToOverride: Partial<OpenVaultState>) {
+                      return change$.next({ kind: 'injectStateOverride', stateToOverride })
+                    }
 
-                      const initialState: OpenVaultState = {
-                        ...priceInfo,
-                        ...balanceInfo,
-                        ...defaultPartialOpenVaultState,
-                        token,
-                        account,
-                        ilk,
-                        maxDebtPerUnitCollateral,
-                        ilkDebtAvailable,
-                        debtFloor,
-                        liquidationRatio,
-                        proxyAddress,
-                        allowance,
-                        safeConfirmations: context.safeConfirmations,
-                        etherscan: context.etherscan.url,
-                        allowanceAmount: maxUint256,
+                    const initialState: OpenVaultState = {
+                      ...defaultPartialOpenVaultState,
+                      priceInfo,
+                      balanceInfo,
+                      ilkData,
+                      token,
+                      account,
+                      ilk,
+                      proxyAddress,
+                      allowance,
+                      safeConfirmations: context.safeConfirmations,
+                      etherscan: context.etherscan.url,
+                      allowanceAmount: maxUint256,
 
-                        injectStateOverride,
-                      }
+                      injectStateOverride,
+                    }
 
-                      const environmentChanges$ = merge(
-                        priceInfoChange$(priceInfo$, token),
-                        balanceInfoChange$(balanceInfo$, token, account),
-                        createIlkDataChange$(ilkData$, ilk),
-                      )
+                    const environmentChanges$ = merge(
+                      priceInfoChange$(priceInfo$, token),
+                      balanceInfoChange$(balanceInfo$, token, account),
+                      createIlkDataChange$(ilkData$, ilk),
+                    )
 
-                      const connectedProxyAddress$ = proxyAddress$(account)
+                    const connectedProxyAddress$ = proxyAddress$(account)
 
-                      const connectedAllowance$ = connectedProxyAddress$.pipe(
-                        switchMap((proxyAddress) =>
-                          proxyAddress ? allowance$(token, account, proxyAddress) : of(zero),
+                    const connectedAllowance$ = connectedProxyAddress$.pipe(
+                      switchMap((proxyAddress) =>
+                        proxyAddress ? allowance$(token, account, proxyAddress) : of(zero),
+                      ),
+                      distinctUntilChanged((x, y) => x.eq(y)),
+                    )
+
+                    return merge(change$, environmentChanges$).pipe(
+                      scan(apply, initialState),
+                      map(validateErrors),
+                      map(validateWarnings),
+                      map(
+                        curry(addTransitions)(
+                          txHelpers,
+                          connectedProxyAddress$,
+                          connectedAllowance$,
+                          change,
                         ),
-                        distinctUntilChanged((x, y) => x.eq(y)),
-                      )
-
-                      return merge(change$, environmentChanges$).pipe(
-                        scan(apply, initialState),
-                        map(validateErrors),
-                        map(validateWarnings),
-                        map(
-                          curry(addTransitions)(
-                            txHelpers,
-                            connectedProxyAddress$,
-                            connectedAllowance$,
-                            change,
-                          ),
-                        ),
-                      )
-                    }),
-                  ),
+                      ),
+                    )
+                  }),
+                ),
               ),
             )
           }),
