@@ -176,7 +176,10 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
     ratioB.comparedTo(ratioA),
   )
 
-  const totalRatio = assets.reduce((acc, [_, ratio]) => ratio.isNaN() ? acc : acc.plus(ratio), zero)
+  const totalRatio = assets.reduce(
+    (acc, [_, ratio]) => (ratio.isNaN() ? acc : acc.plus(ratio)),
+    zero,
+  )
 
   return (
     <Box sx={{ gridColumn: ['1/2', '1/5', '1/5'], my: 3 }}>
@@ -188,16 +191,17 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
           boxShadow: 'medium',
         }}
       >
-        {totalRatio.gt(zero) && assets.map(([token, ratio]) => (
-          <Box
-            key={token}
-            sx={{
-              flex: ratio.toString(),
-              height: 2,
-              background: getToken(token).color || 'lightGray',
-            }}
-          />
-        ))}
+        {totalRatio.gt(zero) &&
+          assets.map(([token, ratio]) => (
+            <Box
+              key={token}
+              sx={{
+                flex: ratio.toString(),
+                height: 2,
+                background: getToken(token).color || 'lightGray',
+              }}
+            />
+          ))}
       </Box>
       <Box sx={{ display: 'flex', flexDirection: ['column', 'row', 'row'] }}>
         <Box
