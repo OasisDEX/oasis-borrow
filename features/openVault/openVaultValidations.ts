@@ -35,10 +35,6 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
 
   const errorMessages: OpenVaultErrorMessage[] = []
 
-  if (state.stage !== 'editing') {
-    return state
-  }
-
   if (depositAmount?.gt(maxDepositAmount)) {
     errorMessages.push('depositAmountGreaterThanMaxDepositAmount')
   }
@@ -82,10 +78,6 @@ export function validateWarnings(state: OpenVaultState): OpenVaultState {
   } = state
 
   const warningMessages: OpenVaultWarningMessage[] = []
-
-  if (state.stage !== 'editing') {
-    return state
-  }
 
   if (depositAmountUSD && depositAmount?.gt(zero) && depositAmountUSD.lt(debtFloor)) {
     warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
