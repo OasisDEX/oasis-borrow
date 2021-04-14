@@ -12,6 +12,7 @@ import {
   formatFiatBalance,
   formatPercent,
 } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
@@ -175,6 +176,8 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
     ratioB.comparedTo(ratioA),
   )
 
+  const totalRatio = assets.reduce((acc, [_, ratio]) => ratio.isNaN() ? acc : acc.plus(ratio), zero)
+
   return (
     <Box sx={{ gridColumn: ['1/2', '1/5', '1/5'], my: 3 }}>
       <Box
@@ -185,7 +188,7 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
           boxShadow: 'medium',
         }}
       >
-        {assets.map(([token, ratio]) => (
+        {totalRatio.gt(zero) && assets.map(([token, ratio]) => (
           <Box
             key={token}
             sx={{
@@ -226,7 +229,7 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
                   {getToken(token).name}
                 </Text>
                 <Text variant="paragraph3" sx={{ color: 'text.muted', ml: [2, 0, 0] }}>
-                  {formatPercent(ratio.times(100), { precision: 2 })}
+                  {formatPercent(ratio.isNaN() ? zero : ratio.times(100), { precision: 2 })}
                 </Text>
               </Box>
             </Box>
