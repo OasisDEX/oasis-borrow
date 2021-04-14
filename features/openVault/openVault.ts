@@ -77,19 +77,47 @@ export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultStat
   const {
     depositAmount,
     generateAmount,
-    depositAmountUSD,
     balanceInfo: { collateralBalance },
-    priceInfo: { currentCollateralPrice },
-    ilkData: { maxDebtPerUnitCollateral, liquidationRatio },
+    priceInfo: { currentCollateralPrice, nextCollateralPrice },
+    ilkData: { ilkDebtAvailable, liquidationRatio },
   } = state
 
   const maxDepositAmount = collateralBalance
   const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
-  const maxGenerateAmount = depositAmount ? depositAmount.times(maxDebtPerUnitCollateral) : zero
+
+  const daiYieldFromDepositingCollateral = depositAmount
+    ? depositAmount.times(currentCollateralPrice).div(liquidationRatio)
+    : zero
+
+  const daiYieldFromDepositingCollateralAtNextPrice = depositAmount
+    ? depositAmount.times(nextCollateralPrice || currentCollateralPrice).div(liquidationRatio)
+    : zero
+
+  const maxGenerateAmountCurrentPrice = daiYieldFromDepositingCollateral.gt(ilkDebtAvailable)
+    ? ilkDebtAvailable
+    : daiYieldFromDepositingCollateral
+
+  const maxGenerateAmountNextPrice = daiYieldFromDepositingCollateralAtNextPrice.gt(
+    ilkDebtAvailable,
+  )
+    ? ilkDebtAvailable
+    : daiYieldFromDepositingCollateralAtNextPrice
+
+  const maxGenerateAmount = BigNumber.minimum(
+    maxGenerateAmountCurrentPrice,
+    maxGenerateAmountNextPrice,
+  )
 
   const afterCollateralizationRatio =
-    depositAmountUSD && generateAmount && !generateAmount.eq(zero)
-      ? depositAmountUSD.div(generateAmount)
+    generateAmount && !generateAmount.isZero() && !daiYieldFromDepositingCollateral.isZero()
+      ? daiYieldFromDepositingCollateral.div(generateAmount)
+      : zero
+
+  const afterCollateralizationRatioAtNextPrice =
+    generateAmount &&
+    !generateAmount.isZero() &&
+    !daiYieldFromDepositingCollateralAtNextPrice.isZero()
+      ? daiYieldFromDepositingCollateralAtNextPrice.div(generateAmount)
       : zero
 
   const afterLiquidationPrice =
@@ -103,6 +131,9 @@ export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultStat
     maxDepositAmountUSD,
     maxGenerateAmount,
     afterCollateralizationRatio,
+    afterCollateralizationRatioAtNextPrice,
+    daiYieldFromDepositingCollateral,
+    daiYieldFromDepositingCollateralAtNextPrice,
     afterLiquidationPrice,
   }
 }
@@ -186,6 +217,9 @@ export type OpenVaultState = {
 
   afterLiquidationPrice: BigNumber
   afterCollateralizationRatio: BigNumber
+  afterCollateralizationRatioAtNextPrice: BigNumber
+  daiYieldFromDepositingCollateral: BigNumber
+  daiYieldFromDepositingCollateralAtNextPrice: BigNumber
 
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber

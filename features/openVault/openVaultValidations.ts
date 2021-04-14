@@ -15,24 +15,32 @@ export type OpenVaultErrorMessage =
   | 'customAllowanceAmountGreaterThanMaxUint256'
   | 'customAllowanceAmountLessThanDepositAmount'
 
-export type OpenVaultWarningMessage =
-  | 'openingEmptyVault'
-  | 'openingVaultWithCollateralOnly'
-  | 'openingVaultWithCollateralAndDebt'
-  | 'noProxyAddress'
-  | 'insufficientAllowance'
-  | 'potentialGenerateAmountLessThanDebtFloor'
-  | 'vaultWillBeAtRiskLevelDanger'
-  | 'vaultWillBeAtRiskLevelWarning'
-  | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
-  | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
-  | 'depositingAllCollateralBalance'
-  | 'generatingAllDaiFromIlkDebtAvailable'
-  | 'generatingAllDaiYieldFromDepositingCollateral'
-  | 'generatingAllDaiYieldFromDepositingCollateralAtNextPrice'
-
 export function validateErrors(state: OpenVaultState): OpenVaultState {
+  const {
+    generateAmount,
+    afterCollateralizationRatio,
+    afterCollateralizationRatioAtNextPrice,
+    ilkData,
+  } = state
   const errorMessages: OpenVaultErrorMessage[] = []
+
+  const vaultWillBeUnderCollateralized =
+    generateAmount?.gt(zero) &&
+    afterCollateralizationRatio.lt(ilkData.liquidationRatio) &&
+    !afterCollateralizationRatio.isZero()
+
+  if (vaultWillBeUnderCollateralized) {
+    errorMessages.push('vaultWillBeUnderCollateralized')
+  }
+
+  const vaultWillBeUnderCollateralizedAtNextPrice =
+    generateAmount?.gt(zero) &&
+    afterCollateralizationRatioAtNextPrice.lt(ilkData.liquidationRatio) &&
+    !afterCollateralizationRatioAtNextPrice.isZero()
+
+  if (!vaultWillBeUnderCollateralized && vaultWillBeUnderCollateralizedAtNextPrice) {
+    errorMessages.push('vaultWillBeUnderCollateralizedAtNextPrice')
+  }
 
   // if (depositAmount?.gt(maxDepositAmount)) {
   //   errorMessages.push('depositAmountGreaterThanMaxDepositAmount')
@@ -64,6 +72,22 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
 
   return { ...state, errorMessages }
 }
+
+export type OpenVaultWarningMessage =
+  | 'openingEmptyVault'
+  | 'openingVaultWithCollateralOnly'
+  | 'openingVaultWithCollateralAndDebt'
+  | 'noProxyAddress'
+  | 'insufficientAllowance'
+  | 'potentialGenerateAmountLessThanDebtFloor'
+  | 'vaultWillBeAtRiskLevelDanger'
+  | 'vaultWillBeAtRiskLevelWarning'
+  | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
+  | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
+  | 'depositingAllCollateralBalance'
+  | 'generatingAllDaiFromIlkDebtAvailable'
+  | 'generatingAllDaiYieldFromDepositingCollateral'
+  | 'generatingAllDaiYieldFromDepositingCollateralAtNextPrice'
 
 export function validateWarnings(state: OpenVaultState): OpenVaultState {
   const warningMessages: OpenVaultWarningMessage[] = []

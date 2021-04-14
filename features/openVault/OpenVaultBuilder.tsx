@@ -136,6 +136,7 @@ export function openVaultStory({
             }),
             ...(generateAmount && {
               generateAmount,
+              showGenerateOption: true,
             }),
           }
           injectStateOverride(newState || {})
