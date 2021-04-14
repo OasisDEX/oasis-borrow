@@ -86,6 +86,8 @@ export function OpenVaultDetails(props: OpenVaultState) {
     afterCollateralizationRatio,
     afterLiquidationPrice,
     token,
+    depositAmount,
+    depositAmountUSD,
     priceInfo: {
       currentCollateralPrice,
       nextCollateralPrice,
@@ -100,8 +102,6 @@ export function OpenVaultDetails(props: OpenVaultState) {
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
     ? '--'
     : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
-
-  const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
 
   const tokenInfo = getToken(token)
 
@@ -133,10 +133,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
         <Heading variant="subheader" as="h2">
           {t('system.liquidation-price')}
         </Heading>
-        <Text variant="display">$0.00</Text>
-        <Text>
-          <Text>{t('vaults.after', { price: afterLiqPrice })}</Text>
-        </Text>
+        <Text variant="display">${formatAmount(afterLiquidationPrice, 'USD')}</Text>
       </Box>
 
       <Box sx={{ textAlign: 'right', mt: 5 }}>
@@ -158,7 +155,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
           <Box>
             <Heading variant="subheader" as="h2">{`Current ${token}/USD price`}</Heading>
             <Text variant="header2" sx={{ py: 3 }}>
-              ${formatAmount(currentCollateralPrice, 'USD')}
+              $ {formatAmount(currentCollateralPrice, 'USD')}
             </Text>
           </Box>
 
@@ -196,9 +193,9 @@ export function OpenVaultDetails(props: OpenVaultState) {
           {t('system.collateral-locked')}
         </Heading>
         <Text variant="header2" sx={{ py: 3 }}>
-          00.00 {token}
+          {depositAmount ? formatAmount(depositAmount, getToken(token).symbol) : '--'}
         </Text>
-        <Text>$ 00.00</Text>
+        <Text>${depositAmountUSD ? formatAmount(depositAmountUSD, 'USD') : '--'}</Text>
       </Box>
       <VaultDetailsTable {...props} />
     </Grid>
