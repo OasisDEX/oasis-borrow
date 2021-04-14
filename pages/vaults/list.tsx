@@ -1,10 +1,10 @@
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
-import { BackgroundLight } from 'features/landing/BackgroundLight'
 import { OpenVaultOverviewView } from 'features/openVaultOverview/OpenVaultOverview'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
+import { BackgroundLight } from 'theme/BackgroundLight'
 
 export async function getServerSideProps(ctx: any) {
   return {

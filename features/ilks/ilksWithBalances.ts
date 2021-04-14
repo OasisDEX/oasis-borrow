@@ -17,23 +17,22 @@ export function createIlkDataListWithBalances$(
   balances$: (address: string) => Observable<TokenBalances>,
 ): Observable<IlkWithBalance[]> {
   return context.pipe(
-    tap(console.log),
     switchMap((context) =>
       context.status === 'connected'
         ? combineLatest(
-            ilkDataList$,
-            balances$(context.account).pipe(distinctUntilChanged(isEqual)),
-          )
+          ilkDataList$,
+          balances$(context.account).pipe(distinctUntilChanged(isEqual)),
+        )
         : combineLatest(ilkDataList$, of({})),
     ),
     map(([ilkData, balances]) =>
       ilkData.map((ilk) =>
         ilk.token in balances
           ? {
-              ...ilk,
-              balance: balances[ilk.token].balance,
-              balancePriceInUsd: balances[ilk.token].balance.times(balances[ilk.token].price),
-            }
+            ...ilk,
+            balance: balances[ilk.token].balance,
+            balancePriceInUsd: balances[ilk.token].balance.times(balances[ilk.token].price),
+          }
           : ilk,
       ),
     ),

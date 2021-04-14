@@ -49,53 +49,58 @@ export function AccountIndicator({ address }: { address: string }) {
 const buttonMinWidth = '150px'
 
 export function AccountButton() {
-  const { accountData$ } = useAppContext()
+  const { accountData$, context$ } = useAppContext()
   const accountData = useObservable(accountData$)
+  const context = useObservable(context$)
   const { t } = useTranslation('common')
   const openModal = useModal()
   const animatedProps = useSpring({
     top: accountData === undefined ? -100 : 0,
   })
 
-  if (accountData?.context.status === 'connecting' || accountData === undefined) {
+  if (context === undefined) {
     return null
   }
 
-  if (accountData.context.status === 'connected') {
+  if (context?.status === 'connectedReadonly') {
     return (
-      <Flex
-        as={animated.div}
-        style={animatedProps}
-        sx={{
-          position: 'relative',
-          justifyContent: 'flex-end',
-          minWidth: 'auto',
-        }}
-      >
-        <Button
-          variant="secondary"
-          sx={{
-            minWidth: buttonMinWidth,
-            zIndex: 1,
-            background: 'white',
-            boxShadow: 'surface',
-            p: 1,
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          onClick={() => openModal(AccountModal)}
-        >
-          <AccountIndicator address={accountData.context.account} />
-          <DaiIndicator daiBalance={accountData.daiBalance} />
-        </Button>
-      </Flex>
+      <AppLink sx={{ zIndex: 1 }} href="/connect" variant="nav">
+        {t('connect-wallet-button')}
+      </AppLink>
     )
   }
 
+  if (accountData === undefined) {
+    return null;
+  }
+
   return (
-    <AppLink sx={{ zIndex: 1 }} href="/connect" variant="nav">
-      {t('connect-wallet-button')}
-    </AppLink>
+    <Flex
+      as={animated.div}
+      style={animatedProps}
+      sx={{
+        position: 'relative',
+        justifyContent: 'flex-end',
+        minWidth: 'auto',
+      }}
+    >
+      <Button
+        variant="secondary"
+        sx={{
+          minWidth: buttonMinWidth,
+          zIndex: 1,
+          background: 'white',
+          boxShadow: 'surface',
+          p: 1,
+          display: 'flex',
+          alignItems: 'center',
+        }}
+        onClick={() => openModal(AccountModal)}
+      >
+        <AccountIndicator address={context.account} />
+        <DaiIndicator daiBalance={accountData.daiBalance} />
+      </Button>
+    </Flex>
   )
 }
 

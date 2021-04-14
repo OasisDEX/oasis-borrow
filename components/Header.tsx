@@ -7,11 +7,11 @@ import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { TRANSITIONS } from 'theme'
-import { Box, Container, Flex, SxProps, Text } from 'theme-ui'
+import { Box, Container, Flex, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from './AppContextProvider'
 
-function Logo({ sx }: { sx?: SxProps }) {
+function Logo({ sx }: { sx?: SxStyleProp }) {
   return (
     <AppLink
       withAccountPrefix={false}
@@ -34,7 +34,7 @@ export function BasicHeader({
   variant,
   children,
   sx,
-}: { variant?: string; sx?: SxProps } & WithChildren) {
+}: { variant?: string; sx?: SxStyleProp } & WithChildren) {
   return (
     <Box as="header">
       <Container

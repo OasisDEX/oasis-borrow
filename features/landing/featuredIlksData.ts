@@ -26,11 +26,7 @@ function createFeaturedIlk(
 function hasAllMetaInfo(ilk: IlkData) {
   const token = getToken(ilk.token)
 
-  if (token.symbol !== ilk.token) {
-    return false
-  }
-
-  return 'bannerIcon' in token && 'background' in token
+  return typeof token.bannerIcon === 'string' && typeof token.background === 'string'
 }
 
 export function getNewest(ilks: IlkDataList) {

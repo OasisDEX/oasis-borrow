@@ -6,7 +6,13 @@ import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { VaultOverviewOwnershipBanner } from 'features/banners/VaultsBannersView'
-import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import { TokenSymbol } from 'features/landing/LandingView'
+import {
+  formatAddress,
+  formatCryptoBalance,
+  formatFiatBalance,
+  formatPercent,
+} from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
@@ -294,7 +300,11 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
         <VaultOverviewOwnershipBanner account={connectedAccount} controller={address} />
       )}
       <Heading variant="header2" sx={{ textAlign: 'center', my: 5 }} as="h1">
-        <Trans i18nKey={headerTranslationKey} values={{ address }} components={[<br />]} />
+        <Trans
+          i18nKey={headerTranslationKey}
+          values={{ address: formatAddress(address) }}
+          components={[<br />]}
+        />
       </Heading>
       <Summary summary={vaultSummary} />
       <Filters

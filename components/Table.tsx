@@ -140,6 +140,7 @@ export function Table<T extends Record<K, string>, K extends keyof T, S>({
   noResults,
 }: TableProps<T, K, S>) {
   const { t } = useTranslation()
+
   return (
     <TableContainer
       header={columns.map(({ header: HeaderComponent, headerLabel }) => (
