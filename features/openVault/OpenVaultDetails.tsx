@@ -41,7 +41,10 @@ export function VaultDetailsTable({
           </Box>
           <Box variant="text.header3">
             <Text sx={{ display: 'inline' }} variant="header3">
-              {formatAmount(afterFreeCollateral, getToken(token).symbol)}
+              {formatAmount(
+                afterFreeCollateral.isNegative() ? zero : afterFreeCollateral,
+                getToken(token).symbol,
+              )}
             </Text>
             <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
               {token}
@@ -90,10 +93,12 @@ export function VaultDetailsTable({
 export function OpenVaultDetails(props: OpenVaultState) {
   const {
     afterCollateralizationRatio,
+    afterCollateralizationRatioAtNextPrice,
     afterLiquidationPrice,
     token,
     depositAmount,
     depositAmountUSD,
+    generateAmount,
     priceInfo: {
       currentCollateralPrice,
       nextCollateralPrice,
@@ -148,6 +153,12 @@ export function OpenVaultDetails(props: OpenVaultState) {
           {t('system.collateralization-ratio')}
         </Heading>
         <Text variant="display">{afterCollRatio}</Text>
+        {generateAmount && !generateAmount.isZero() && (
+          <Text>
+            {t('next')}:{' '}
+            {formatPercent(afterCollateralizationRatioAtNextPrice.times(100), { precision: 2 })}
+          </Text>
+        )}
       </Box>
 
       {isStaticCollateralPrice ? (

@@ -5,6 +5,7 @@ import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { isNullish } from 'helpers/functions'
 import { one, zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
@@ -195,11 +196,8 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     ? ilkDebtAvailable
     : afterDaiYieldFromTotalCollateral
 
-  const depositAndWithdrawAmountsEmpty =
-    (!depositAmount || depositAmount.isZero()) && (!withdrawAmount || withdrawAmount.isZero())
-
-  const generateAndPaybackAmountsEmpty =
-    (!generateAmount || generateAmount.isZero()) && (!paybackAmount || paybackAmount.isZero())
+  const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
+  const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)
 
   return {
     ...state,

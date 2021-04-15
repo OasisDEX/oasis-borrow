@@ -62,8 +62,6 @@ export interface Vault {
   collateralizationRatio: BigNumber
   collateralizationRatioAtNextPrice: BigNumber
   liquidationPrice: BigNumber
-  collateralizationDangerThreshold: BigNumber
-  collateralizationWarningThreshold: BigNumber
   daiYieldFromLockedCollateral: BigNumber
 }
 
@@ -74,9 +72,6 @@ export function createController$(
 ) {
   return cdpManagerOwner$(id).pipe(mergeMap((owner) => proxyOwner$(owner)))
 }
-
-export const COLLATERALIZATION_DANGER_OFFSET = new BigNumber('0.2') // 150% * 1.2 = 180%
-export const COLLATERALIZATION_WARNING_OFFSET = new BigNumber('0.5') // 150% * 1.5 = 225%
 
 export function createVault$(
   cdpManagerUrns$: CallObservable<typeof cdpManagerUrns>,
@@ -158,14 +153,6 @@ export function createVault$(
               ? zero
               : debt.times(liquidationRatio).div(collateral)
 
-            // Maybe should be in ilkData as they are ilk dependent not vault dependent
-            const collateralizationDangerThreshold = liquidationRatio.times(
-              COLLATERALIZATION_DANGER_OFFSET.plus(one),
-            )
-            const collateralizationWarningThreshold = liquidationRatio.times(
-              COLLATERALIZATION_WARNING_OFFSET.plus(one),
-            )
-
             const daiYieldFromLockedCollateral = collateral
               .times(currentPrice)
               .div(liquidationRatio)
@@ -202,9 +189,6 @@ export function createVault$(
               collateralizationRatio,
               collateralizationRatioAtNextPrice,
               liquidationPrice,
-
-              collateralizationDangerThreshold,
-              collateralizationWarningThreshold,
 
               daiYieldFromLockedCollateral,
             })

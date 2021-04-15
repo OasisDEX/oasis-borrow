@@ -1,4 +1,5 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { isNullish } from 'helpers/functions'
 import { zero } from 'helpers/zero'
 
 import { ManageVaultState } from './manageVault'
@@ -130,7 +131,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
   }
 
   const vaultWillBeUnderCollateralized =
-    (generateAmount?.gt(zero) || withdrawAmount?.gt(zero)) &&
+    (generateAmount?.isPositive() || withdrawAmount?.isPositive()) &&
     afterCollateralizationRatio.lt(ilkData.liquidationRatio) &&
     !afterCollateralizationRatio.isZero()
 
@@ -139,7 +140,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
   }
 
   const vaultWillBeUnderCollateralizedAtNextPrice =
-    (generateAmount?.gt(zero) || withdrawAmount?.gt(zero)) &&
+    (generateAmount?.isPositive() || withdrawAmount?.isPositive()) &&
     afterCollateralizationRatioAtNextPrice.lt(ilkData.liquidationRatio) &&
     !afterCollateralizationRatioAtNextPrice.isZero()
 
@@ -151,7 +152,11 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     errorMessages.push('generateAmountExceedsDebtCeiling')
   }
 
-  if (generateAmount?.plus(vault.debt).lt(ilkData.debtFloor)) {
+  if (
+    generateAmount &&
+    !generateAmount.plus(vault.debt).isZero() &&
+    generateAmount.plus(vault.debt).lt(ilkData.debtFloor)
+  ) {
     errorMessages.push('generateAmountLessThanDebtFloor')
   }
 
@@ -267,14 +272,18 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     warningMessages.push('connectedAccountIsNotVaultController')
   }
 
-  const inputFieldsAreEmpty = [depositAmount, generateAmount, withdrawAmount, paybackAmount].every(
-    (amount) => !amount,
-  )
+  // review
+  const inputFieldsAreEmpty = [
+    depositAmount,
+    generateAmount,
+    withdrawAmount,
+    paybackAmount,
+  ].every((amount) => isNullish(amount))
 
   const vaultWillBeAtRiskLevelDanger =
     !inputFieldsAreEmpty &&
     afterCollateralizationRatio.gte(ilkData.liquidationRatio) &&
-    afterCollateralizationRatio.lte(vault.collateralizationDangerThreshold)
+    afterCollateralizationRatio.lte(ilkData.collateralizationDangerThreshold)
 
   if (vaultWillBeAtRiskLevelDanger) {
     warningMessages.push('vaultWillBeAtRiskLevelDanger')
@@ -283,7 +292,7 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
   const vaultWillBeAtRiskLevelDangerAtNextPrice =
     !inputFieldsAreEmpty &&
     afterCollateralizationRatioAtNextPrice.gte(ilkData.liquidationRatio) &&
-    afterCollateralizationRatioAtNextPrice.lte(vault.collateralizationDangerThreshold)
+    afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationDangerThreshold)
 
   if (!vaultWillBeAtRiskLevelDanger && vaultWillBeAtRiskLevelDangerAtNextPrice) {
     warningMessages.push('vaultWillBeAtRiskLevelDangerAtNextPrice')
@@ -291,8 +300,8 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
 
   const vaultWillBeAtRiskLevelWarning =
     !inputFieldsAreEmpty &&
-    afterCollateralizationRatio.gt(vault.collateralizationDangerThreshold) &&
-    afterCollateralizationRatio.lte(vault.collateralizationWarningThreshold)
+    afterCollateralizationRatio.gt(ilkData.collateralizationDangerThreshold) &&
+    afterCollateralizationRatio.lte(ilkData.collateralizationWarningThreshold)
 
   if (!vaultWillBeAtRiskLevelDangerAtNextPrice && vaultWillBeAtRiskLevelWarning) {
     warningMessages.push('vaultWillBeAtRiskLevelWarning')
@@ -300,8 +309,8 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
 
   const vaultWillBeAtRiskLevelWarningNextPrice =
     !inputFieldsAreEmpty &&
-    afterCollateralizationRatioAtNextPrice.gt(vault.collateralizationDangerThreshold) &&
-    afterCollateralizationRatioAtNextPrice.lte(vault.collateralizationWarningThreshold)
+    afterCollateralizationRatioAtNextPrice.gt(ilkData.collateralizationDangerThreshold) &&
+    afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationWarningThreshold)
 
   if (
     !vaultWillBeAtRiskLevelDanger &&
@@ -321,7 +330,7 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
   if (!isShowingAfterCollateralizationNotice) {
     const vaultAtRiskLevelDanger =
       vault.collateralizationRatio.gte(ilkData.liquidationRatio) &&
-      vault.collateralizationRatio.lte(vault.collateralizationDangerThreshold)
+      vault.collateralizationRatio.lte(ilkData.collateralizationDangerThreshold)
 
     if (vaultAtRiskLevelDanger) {
       warningMessages.push('vaultAtRiskLevelDanger')
@@ -329,23 +338,23 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
 
     const vaultAtRiskLevelDangerAtNextPrice =
       vault.collateralizationRatioAtNextPrice.gte(ilkData.liquidationRatio) &&
-      vault.collateralizationRatioAtNextPrice.lte(vault.collateralizationDangerThreshold)
+      vault.collateralizationRatioAtNextPrice.lte(ilkData.collateralizationDangerThreshold)
 
     if (!vaultAtRiskLevelDanger && vaultAtRiskLevelDangerAtNextPrice) {
       warningMessages.push('vaultAtRiskLevelDangerAtNextPrice')
     }
 
     const vaultAtRiskLevelWarning =
-      vault.collateralizationRatio.gt(vault.collateralizationDangerThreshold) &&
-      vault.collateralizationRatio.lte(vault.collateralizationWarningThreshold)
+      vault.collateralizationRatio.gt(ilkData.collateralizationDangerThreshold) &&
+      vault.collateralizationRatio.lte(ilkData.collateralizationWarningThreshold)
 
     if (!vaultAtRiskLevelDangerAtNextPrice && vaultAtRiskLevelWarning) {
       warningMessages.push('vaultAtRiskLevelWarning')
     }
 
     const vaultAtRiskLevelWarningAtNextPrice =
-      vault.collateralizationRatioAtNextPrice.gt(vault.collateralizationDangerThreshold) &&
-      vault.collateralizationRatioAtNextPrice.lte(vault.collateralizationWarningThreshold)
+      vault.collateralizationRatioAtNextPrice.gt(ilkData.collateralizationDangerThreshold) &&
+      vault.collateralizationRatioAtNextPrice.lte(ilkData.collateralizationWarningThreshold)
 
     if (
       !vaultAtRiskLevelDanger &&

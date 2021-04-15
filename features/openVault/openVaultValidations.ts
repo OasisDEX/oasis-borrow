@@ -1,4 +1,5 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { isNullish } from 'helpers/functions'
 import { zero } from 'helpers/zero'
 
 import { OpenVaultState } from './openVault'
@@ -79,7 +80,7 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
     errorMessages.push('generateAmountExceedsDebtCeiling')
   }
 
-  if (generateAmount?.lt(ilkData.debtFloor)) {
+  if (generateAmount && !generateAmount.isZero() && generateAmount.lt(ilkData.debtFloor)) {
     errorMessages.push('generateAmountLessThanDebtFloor')
   }
 
@@ -115,24 +116,121 @@ export type OpenVaultWarningMessage =
   | 'generatingAllDaiYieldFromDepositingCollateralAtNextPrice'
 
 export function validateWarnings(state: OpenVaultState): OpenVaultState {
+  const {
+    depositAmount,
+    generateAmount,
+    errorMessages,
+    proxyAddress,
+    allowance,
+    daiYieldFromDepositingCollateral,
+    ilkData,
+    afterCollateralizationRatio,
+    afterCollateralizationRatioAtNextPrice,
+    balanceInfo,
+    maxGenerateAmountCurrentPrice,
+    maxGenerateAmountNextPrice,
+  } = state
+
   const warningMessages: OpenVaultWarningMessage[] = []
 
-  // if (depositAmountUSD && depositAmount?.gt(zero) && depositAmountUSD.lt(debtFloor)) {
-  //   warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
-  // }
+  const hasErrors = !!errorMessages.length
+  if (!hasErrors && isNullish(depositAmount) && isNullish(generateAmount)) {
+    warningMessages.push('openingEmptyVault')
+  }
 
-  // if (!proxyAddress) {
-  //   warningMessages.push('noProxyAddress')
-  // }
+  if (!hasErrors && !isNullish(depositAmount) && isNullish(generateAmount)) {
+    warningMessages.push('openingVaultWithCollateralOnly')
+  }
 
-  // if (token !== 'ETH') {
-  //   if (!allowance || !allowance.gt(zero)) {
-  //     warningMessages.push('noAllowance')
-  //   }
-  //   if (depositAmount && allowance && depositAmount.gt(allowance)) {
-  //     warningMessages.push('allowanceLessThanDepositAmount')
-  //   }
-  // }
+  if (!hasErrors && !isNullish(depositAmount) && !isNullish(generateAmount)) {
+    warningMessages.push('openingVaultWithCollateralAndDebt')
+  }
+
+  if (!proxyAddress) {
+    warningMessages.push('noProxyAddress')
+  }
+
+  if (depositAmount && !depositAmount.isZero() && (!allowance || depositAmount.gt(allowance))) {
+    warningMessages.push('insufficientAllowance')
+  }
+
+  if (
+    depositAmount &&
+    !depositAmount.isZero() &&
+    daiYieldFromDepositingCollateral.lt(ilkData.debtFloor)
+  ) {
+    warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
+  }
+
+  const inputFieldsAreEmpty = isNullish(depositAmount) && isNullish(generateAmount)
+
+  const vaultWillBeAtRiskLevelDanger =
+    !inputFieldsAreEmpty &&
+    afterCollateralizationRatio.gte(ilkData.liquidationRatio) &&
+    afterCollateralizationRatio.lte(ilkData.collateralizationDangerThreshold)
+
+  if (vaultWillBeAtRiskLevelDanger) {
+    warningMessages.push('vaultWillBeAtRiskLevelDanger')
+  }
+
+  const vaultWillBeAtRiskLevelDangerAtNextPrice =
+    !inputFieldsAreEmpty &&
+    afterCollateralizationRatioAtNextPrice.gte(ilkData.liquidationRatio) &&
+    afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationDangerThreshold)
+
+  if (!vaultWillBeAtRiskLevelDanger && vaultWillBeAtRiskLevelDangerAtNextPrice) {
+    warningMessages.push('vaultWillBeAtRiskLevelDangerAtNextPrice')
+  }
+
+  const vaultWillBeAtRiskLevelWarning =
+    !inputFieldsAreEmpty &&
+    afterCollateralizationRatio.gt(ilkData.collateralizationDangerThreshold) &&
+    afterCollateralizationRatio.lte(ilkData.collateralizationWarningThreshold)
+
+  if (!vaultWillBeAtRiskLevelDangerAtNextPrice && vaultWillBeAtRiskLevelWarning) {
+    warningMessages.push('vaultWillBeAtRiskLevelWarning')
+  }
+
+  const vaultWillBeAtRiskLevelWarningNextPrice =
+    !inputFieldsAreEmpty &&
+    afterCollateralizationRatioAtNextPrice.gt(ilkData.collateralizationDangerThreshold) &&
+    afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationWarningThreshold)
+
+  if (
+    !vaultWillBeAtRiskLevelDanger &&
+    !vaultWillBeAtRiskLevelWarning &&
+    !vaultWillBeAtRiskLevelDangerAtNextPrice &&
+    vaultWillBeAtRiskLevelWarningNextPrice
+  ) {
+    warningMessages.push('vaultWillBeAtRiskLevelWarningAtNextPrice')
+  }
+
+  if (depositAmount?.eq(balanceInfo.collateralBalance)) {
+    warningMessages.push('depositingAllCollateralBalance')
+  }
+
+  if (
+    !ilkData.ilkDebtAvailable.isZero() &&
+    generateAmount?.eq(ilkData.ilkDebtAvailable) &&
+    maxGenerateAmountCurrentPrice.eq(ilkData.ilkDebtAvailable)
+  ) {
+    warningMessages.push('generatingAllDaiFromIlkDebtAvailable')
+  }
+
+  const generatingAllDaiYieldFromDepositingCollateral =
+    generateAmount?.eq(maxGenerateAmountCurrentPrice) &&
+    !maxGenerateAmountCurrentPrice.eq(ilkData.ilkDebtAvailable)
+  if (generatingAllDaiYieldFromDepositingCollateral) {
+    warningMessages.push('generatingAllDaiYieldFromDepositingCollateral')
+  }
+
+  if (
+    !generatingAllDaiYieldFromDepositingCollateral &&
+    generateAmount?.eq(maxGenerateAmountNextPrice) &&
+    !maxGenerateAmountNextPrice.eq(ilkData.ilkDebtAvailable)
+  ) {
+    warningMessages.push('generatingAllDaiYieldFromDepositingCollateralAtNextPrice')
+  }
 
   return { ...state, warningMessages }
 }

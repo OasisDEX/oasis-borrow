@@ -34,27 +34,37 @@ export const EditingStage = openVaultStory({
 export const ProxyWaitingForConfirmation = openVaultStory({
   stage: 'proxyWaitingForConfirmation',
   ilk: 'ETH-A',
+  depositAmount: new BigNumber('50'),
+  generateAmount: new BigNumber('2500'),
 })
 
 export const ProxyWaitingForApproval = openVaultStory({
   stage: 'proxyWaitingForApproval',
   ilk: 'ETH-A',
+  depositAmount: new BigNumber('50'),
+  generateAmount: new BigNumber('2500'),
 })
 
 export const ProxyFailure = openVaultStory({
   stage: 'proxyFailure',
   ilk: 'ETH-A',
+  depositAmount: new BigNumber('50'),
+  generateAmount: new BigNumber('2500'),
 })
 
 export const ProxyInProgress = openVaultStory({
   stage: 'proxyInProgress',
   proxyConfirmations: 2,
   ilk: 'ETH-A',
+  depositAmount: new BigNumber('50'),
+  generateAmount: new BigNumber('2500'),
 })
 
 export const ProxySuccess = openVaultStory({
   stage: 'proxySuccess',
   ilk: 'ETH-A',
+  depositAmount: new BigNumber('50'),
+  generateAmount: new BigNumber('2500'),
 })
 
 export const AllowanceWaitingForConfirmation = openVaultStory({
@@ -84,6 +94,8 @@ export const AllowanceFailure = openVaultStory({
 export const AllowanceInProgress = openVaultStory({
   stage: 'allowanceInProgress',
   ilk: 'WBTC-A',
+  depositAmount: new BigNumber('50'),
+  generateAmount: new BigNumber('2500'),
 })
 
 export const AllowanceSuccess = openVaultStory({

@@ -1,9 +1,6 @@
 import { BigNumber } from 'bignumber.js'
-import {
-  COLLATERALIZATION_DANGER_OFFSET,
-  COLLATERALIZATION_WARNING_OFFSET,
-  DEFAULT_PROXY_ADDRESS,
-} from 'blockchain/vaults'
+import { COLLATERALIZATION_DANGER_OFFSET, COLLATERALIZATION_WARNING_OFFSET } from 'blockchain/ilks'
+import { DEFAULT_PROXY_ADDRESS } from 'blockchain/vaults'
 import { one, zero } from 'helpers/zero'
 import { manageVaultStory } from './ManageVaultBuilder'
 import { ManageVaultView } from './ManageVaultView'
@@ -131,7 +128,7 @@ export const VaultWillBeAtRiskLevelDangerAtNextPrice = manageVaultStory({
 })
 
 export const VaultWillBeAtRiskLevelWarning = manageVaultStory({
-  title: `Warning is shown to indicate to the user that this vault is currently near liquidation at next price update given the action they are taking and is shown when the vaults future collateralization ratio is within ${COLLATERALIZATION_WARNING_OFFSET.times(
+  title: `Warning is shown to indicate to the user that this vault is will be near liquidation at next price update given the action they are taking and is shown when the vaults new collateralization ratio is within ${COLLATERALIZATION_WARNING_OFFSET.times(
     100,
   )}% of the liquidation ratio but greater than ${COLLATERALIZATION_DANGER_OFFSET.times(
     100,

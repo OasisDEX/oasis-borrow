@@ -134,7 +134,7 @@ export function openVaultStory({
             }),
             ...(generateAmount && {
               generateAmount,
-              showGenerateOption: true,
+              showGenerateOption: !generateAmount.isZero(),
             }),
           }
           injectStateOverride(newState || {})

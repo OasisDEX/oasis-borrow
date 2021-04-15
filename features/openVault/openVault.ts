@@ -140,6 +140,7 @@ export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultStat
     maxDepositAmountUSD,
     maxGenerateAmount,
     maxGenerateAmountCurrentPrice,
+    maxGenerateAmountNextPrice,
     afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
     daiYieldFromDepositingCollateral,
@@ -240,6 +241,7 @@ export type OpenVaultState = {
   generateAmount?: BigNumber
   maxGenerateAmount: BigNumber
   maxGenerateAmountCurrentPrice: BigNumber
+  maxGenerateAmountNextPrice: BigNumber
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
@@ -357,6 +359,7 @@ export const defaultPartialOpenVaultState = {
   maxDepositAmountUSD: zero,
   maxGenerateAmount: zero,
   maxGenerateAmountCurrentPrice: zero,
+  maxGenerateAmountNextPrice: zero,
   afterCollateralizationRatio: zero,
   afterCollateralizationRatioAtNextPrice: zero,
   daiYieldFromDepositingCollateral: zero,
