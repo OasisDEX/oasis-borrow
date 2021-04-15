@@ -1,12 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { OpenVaultView } from 'features/openVault/OpenVaultView'
-import {
-  PriceInfo,
-  protoETHPriceInfo,
-  protoUSDCPriceInfo,
-  protoWBTCPriceInfo,
-} from 'features/shared/priceInfo'
-import { EMPTY, NEVER } from 'rxjs'
+import { NEVER } from 'rxjs'
+
 import { openVaultStory } from './OpenVaultBuilder'
 
 export const WaitingForIlksToBeFetched = openVaultStory({

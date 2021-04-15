@@ -9,8 +9,9 @@ import { buildPriceInfo$, BuildPriceInfoProps, PriceInfo } from 'features/shared
 import React from 'react'
 import { useEffect } from 'react'
 import { Observable, of } from 'rxjs'
-import { first, tap } from 'rxjs/operators'
+import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
+
 import { createOpenVault$, OpenVaultState } from './openVault'
 import { OpenVaultView } from './OpenVaultView'
 
@@ -67,7 +68,7 @@ function buildOpenVault$({
       ...ilkData,
     })
 
-  const ilks$ = _ilks$ ? _ilks$ : ilks && ilks.length ? of(ilks!) : of([ilk])
+  const ilks$ = _ilks$ || (ilks && ilks.length ? of(ilks!) : of([ilk]))
 
   const balanceInfo$ = () =>
     _balanceInfo$ || buildBalanceInfo$({ ...balanceInfo, address: account })

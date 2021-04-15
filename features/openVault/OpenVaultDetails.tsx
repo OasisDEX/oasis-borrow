@@ -1,11 +1,12 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
-import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import moment from 'moment'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Text, Box, Grid, Heading, Flex } from 'theme-ui'
+import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
+
 import { OpenVaultState } from './openVault'
 
 export function VaultDetailsTable({

@@ -63,6 +63,7 @@ export interface Vault {
   collateralizationRatioAtNextPrice: BigNumber
   liquidationPrice: BigNumber
   daiYieldFromLockedCollateral: BigNumber
+  isVaultAtRisk: Boolean
 }
 
 export function createController$(
@@ -105,7 +106,7 @@ export function createVault$(
             { collateral, normalizedDebt },
             unlockedCollateral,
             { currentPrice, nextPrice },
-            { debtScalingFactor, liquidationRatio },
+            { debtScalingFactor, liquidationRatio, collateralizationDangerThreshold },
           ]) => {
             const collateralUSD = collateral.times(currentPrice)
             const collateralUSDAtNextPrice = nextPrice ? collateral.times(nextPrice) : currentPrice
@@ -158,13 +159,17 @@ export function createVault$(
               .div(liquidationRatio)
               .minus(debt)
 
+            const isVaultAtRisk = debt.isZero()
+              ? false
+              : collateralizationRatio.lt(collateralizationDangerThreshold)
+
             return of({
               id,
               ilk,
               token,
               address: urnAddress,
               owner,
-              controller,
+              controller: controller!,
 
               lockedCollateral: collateral,
               lockedCollateralUSD: collateralUSD,
@@ -191,6 +196,7 @@ export function createVault$(
               liquidationPrice,
 
               daiYieldFromLockedCollateral,
+              isVaultAtRisk,
             })
           },
         ),
@@ -240,27 +246,50 @@ export function buildVault$({
   collateral,
   ilk,
 }: BuildVaultProps): Observable<Vault> {
-  const oraclePriceData$ = () =>
-    _oraclePriceData$ ||
-    of({
-      currentPrice,
-      isStaticPrice: false,
-      nextPrice,
-    })
-
-  const ilkData$ = () =>
-    _ilkData$ ||
-    oraclePriceData$().pipe(
-      switchMap(({ currentPrice }) => buildIlkData$({ ilk, currentCollateralPrice: currentPrice })),
+  function oraclePriceData$() {
+    return (
+      _oraclePriceData$ ||
+      of({
+        currentPrice,
+        isStaticPrice: false,
+        nextPrice,
+      })
     )
+  }
 
-  const cdpManagerUrns$ = () => _cdpManagerUrns$ || of('0xUrnAddress')
-  const cdpManagerIlks$ = () => of(ilk)
-  const cdpManagerOwner$ = () => of(DEFAULT_PROXY_ADDRESS)
-  const controller$ = () => of(controller)
-  const vatGem$ = () => of(unlockedCollateral)
-  const vatUrns$ = () =>
-    ilkData$().pipe(
+  function ilkData$() {
+    return (
+      _ilkData$ ||
+      oraclePriceData$().pipe(
+        switchMap(({ currentPrice }) =>
+          buildIlkData$({ ilk, currentCollateralPrice: currentPrice }),
+        ),
+      )
+    )
+  }
+
+  function cdpManagerUrns$() {
+    return _cdpManagerUrns$ || of('0xUrnAddress')
+  }
+
+  function cdpManagerIlks$() {
+    return of(ilk)
+  }
+
+  function cdpManagerOwner$() {
+    return of(DEFAULT_PROXY_ADDRESS)
+  }
+
+  function controller$() {
+    return of(controller)
+  }
+
+  function vatGem$() {
+    return of(unlockedCollateral)
+  }
+
+  function vatUrns$() {
+    return ilkData$().pipe(
       switchMap(({ debtScalingFactor }) =>
         of({
           normalizedDebt: debt.div(debtScalingFactor).dp(18, BigNumber.ROUND_DOWN),
@@ -268,6 +297,7 @@ export function buildVault$({
         }),
       ),
     )
+  }
 
   return createVault$(
     cdpManagerUrns$,

@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { DEFAULT_PROXY_ADDRESS } from 'blockchain/vaults'
 import { one } from 'helpers/zero'
+
 import { openVaultStory } from './OpenVaultBuilder'
 import { OpenVaultView } from './OpenVaultView'
 

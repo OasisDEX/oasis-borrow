@@ -5,9 +5,9 @@ import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Card, Flex, Grid, Label, Link, Radio, Spinner, Text } from 'theme-ui'
+
 import { OpenVaultState } from './openVault'
 
 export function OpenVaultAllowance({
@@ -15,7 +15,6 @@ export function OpenVaultAllowance({
   allowanceTxHash,
   etherscan,
   token,
-  balanceInfo: { collateralBalance },
   depositAmount,
   allowanceAmount,
   updateAllowanceAmount,

@@ -2,6 +2,7 @@ import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Text } from 'theme-ui'
+
 import { OpenVaultState } from './openVault'
 
 export function OpenVaultIlkDetails({

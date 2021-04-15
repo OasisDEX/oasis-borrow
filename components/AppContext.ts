@@ -242,6 +242,7 @@ export function setupAppContext() {
   //   account: string | undefined,
   // ) => Observable<PriceInfo>
 
+  // TODO Don't allow undefined args like this
   const balanceInfo$ = curry(createBalanceInfo$)(balance$) as (
     token: string,
     account: string | undefined,

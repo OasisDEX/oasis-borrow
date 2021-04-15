@@ -1,12 +1,10 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { VaultActionInput } from 'components/VaultActionInput'
-import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Card, Grid, Text } from 'theme-ui'
+import { Box, Grid, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
 

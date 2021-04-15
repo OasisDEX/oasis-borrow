@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { COLLATERALIZATION_DANGER_OFFSET, COLLATERALIZATION_WARNING_OFFSET } from 'blockchain/ilks'
 import { DEFAULT_PROXY_ADDRESS } from 'blockchain/vaults'
 import { zero } from 'helpers/zero'
+
 import { openVaultStory } from './OpenVaultBuilder'
 import { OpenVaultView } from './OpenVaultView'
 

@@ -3,6 +3,7 @@ import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/format
 import { zero } from 'helpers/zero'
 import React from 'react'
 import { Card, Flex, Grid, Link, Spinner, Text } from 'theme-ui'
+
 import { OpenVaultState } from './openVault'
 
 export function OpenVaultConfirmation({

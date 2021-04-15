@@ -1,34 +1,4 @@
 /* eslint-disable func-style */
-import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
-import BigNumber from 'bignumber.js'
-import { maxUint256 } from 'blockchain/calls/erc20'
-import { protoETHAIlkData, protoUSDCAIlkData, protoWBTCAIlkData } from 'blockchain/ilks'
-import { ContextConnected, protoContextConnected } from 'blockchain/network'
-import { expect } from 'chai'
-import { protoTxHelpers, TxHelpers } from 'components/AppContext'
-import { BalanceInfo } from 'features/shared/balanceInfo'
-import {
-  PriceInfo,
-  protoETHPriceInfo,
-  protoUSDCPriceInfo,
-  protoWBTCPriceInfo,
-} from 'features/shared/priceInfo'
-import { getStateUnpacker } from 'helpers/testHelpers'
-import { zero } from 'helpers/zero'
-import _ from 'lodash'
-import { beforeEach, describe, it } from 'mocha'
-import { Observable, of, Subject } from 'rxjs'
-import { first } from 'rxjs/operators'
-
-import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
-import {
-  applyOpenVaultCalculations,
-  categoriseOpenVaultStage,
-  createOpenVault$,
-  defaultPartialOpenVaultState,
-  OpenVaultState,
-} from './openVault'
-import { parseVaultIdFromReceiptLogs } from './openVaultTransactions'
 
 // describe('openVault', () => {
 //   beforeEach(() => {})

@@ -4,6 +4,7 @@ import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Spinner, Text } from 'theme-ui'
+
 import { OpenVaultStage, OpenVaultState } from './openVault'
 
 function openVaultButtonText(stage: OpenVaultStage, id?: BigNumber) {

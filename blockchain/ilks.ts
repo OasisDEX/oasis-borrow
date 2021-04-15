@@ -10,7 +10,7 @@ import { PriceInfo } from 'features/shared/priceInfo'
 import { one, zero } from 'helpers/zero'
 import { of } from 'rxjs'
 import { combineLatest, Observable } from 'rxjs'
-import { distinctUntilChanged, map, shareReplay, switchMap, tap } from 'rxjs/operators'
+import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 export function createIlks$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(
@@ -165,31 +165,42 @@ export function buildIlkData$({
       )
     : of(currentCollateralPrice.div(liquidationRatio))
 
-  const vatIlks$ = () =>
-    _vatIlk$ ||
-    maxDebtPerUnitCollateral$.pipe(
-      switchMap((maxDebtPerUnitCollateral) =>
-        of({
-          normalizedIlkDebt,
-          debtScalingFactor: DEFAULT_DEBT_SCALING_FACTOR,
-          maxDebtPerUnitCollateral,
-          debtCeiling:
-            debtCeiling || normalizedIlkDebt.times(DEFAULT_DEBT_SCALING_FACTOR).times(2.5),
-          debtFloor,
-        }),
-      ),
+  function vatIlks$() {
+    return (
+      _vatIlk$ ||
+      maxDebtPerUnitCollateral$.pipe(
+        switchMap((maxDebtPerUnitCollateral) =>
+          of({
+            normalizedIlkDebt,
+            debtScalingFactor: DEFAULT_DEBT_SCALING_FACTOR,
+            maxDebtPerUnitCollateral,
+            debtCeiling:
+              debtCeiling || normalizedIlkDebt.times(DEFAULT_DEBT_SCALING_FACTOR).times(2.5),
+            debtFloor,
+          }),
+        ),
+      )
     )
+  }
 
-  const spotIlks$ = () =>
-    _spotIlk$ || of({ priceFeedAddress: '0xPriceFeedAddress', liquidationRatio })
-  const jugIlks$ = () => _jugIlk$ || of({ feeLastLevied: new Date(), stabilityFee })
-  const catIlks$ = () =>
-    _catIlk$ ||
-    of({
-      liquidatorAddress: '0xLiquidatorAddress',
-      liquidationPenalty: new BigNumber('0.13'),
-      maxAuctionLotSize: new BigNumber('50000'),
-    })
+  function spotIlks$() {
+    return _spotIlk$ || of({ priceFeedAddress: '0xPriceFeedAddress', liquidationRatio })
+  }
+
+  function jugIlks$() {
+    return _jugIlk$ || of({ feeLastLevied: new Date(), stabilityFee })
+  }
+
+  function catIlks$() {
+    return (
+      _catIlk$ ||
+      of({
+        liquidatorAddress: '0xLiquidatorAddress',
+        liquidationPenalty: new BigNumber('0.13'),
+        maxAuctionLotSize: new BigNumber('50000'),
+      })
+    )
+  }
 
   return createIlkData$(vatIlks$, spotIlks$, jugIlks$, catIlks$, ilkToToken$, ilk).pipe(
     switchMap((ilkData) =>

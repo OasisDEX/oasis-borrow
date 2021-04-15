@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import React from 'react'
 import { Card, Flex, Grid, Link, Spinner, Text } from 'theme-ui'
+
 import { OpenVaultState } from './openVault'
 
 export function OpenVaultProxy({

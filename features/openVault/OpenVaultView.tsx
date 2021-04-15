@@ -1,22 +1,16 @@
-import { Icon } from '@makerdao/dai-ui-icons'
-import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { BigNumberInput } from 'helpers/BigNumberInput'
-import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
-import { handleNumericInput } from 'helpers/input'
 import { useObservableWithError } from 'helpers/observableHook'
-import React, { useState } from 'react'
-import { createNumberMask } from 'text-mask-addons'
-import { Box, Button, Card, Flex, Grid, Label, Link, Radio, Spinner, Text } from 'theme-ui'
+import React from 'react'
+import { Box, Button, Card, Grid, Spinner, Text } from 'theme-ui'
 
 import { categoriseOpenVaultStage, OpenVaultState } from './openVault'
+import { OpenVaultAllowance } from './OpenVaultAllowance'
 import { OpenVaultButton } from './OpenVaultButton'
 import { OpenVaultConfirmation } from './OpenVaultConfirmation'
 import { OpenVaultDetails } from './OpenVaultDetails'
 import { OpenVaultEditing } from './OpenVaultEditing'
-import { OpenVaultProxy } from './OpenVaultProxy'
-import { OpenVaultAllowance } from './OpenVaultAllowance'
 import { OpenVaultIlkDetails } from './OpenVaultIlkDetails'
+import { OpenVaultProxy } from './OpenVaultProxy'
 
 function OpenVaultErrors({ errorMessages }: OpenVaultState) {
   const errorString = errorMessages.join(',\n')

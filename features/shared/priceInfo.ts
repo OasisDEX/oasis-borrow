@@ -180,7 +180,8 @@ export function buildPriceInfo$({
     }),
   })
 
-  const oraclePriceData$ = (_token: string) =>
-    _oraclePriceData$ || _token === 'ETH' ? ethPriceInfo$ : collateralPriceInfo$
+  function oraclePriceData$(_token: string) {
+    return _oraclePriceData$ || _token === 'ETH' ? ethPriceInfo$ : collateralPriceInfo$
+  }
   return createPriceInfo$(oraclePriceData$, token)
 }
