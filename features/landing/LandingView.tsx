@@ -7,12 +7,13 @@ import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { IlksFilterState } from 'features/ilks/ilksFilters'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { Filters } from 'features/vaultsOverview/Filters'
-import { FeaturedIlks, FeaturedIlksPlaceholder } from 'features/vaultsOverview/VaultsOverviewView'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservableWithError } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
-import { Box, Button, Flex, Grid, Heading, Image, SxProps, Text } from 'theme-ui'
+import { Box, Button, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
+
+import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
 
 const slideIn = keyframes({
   from: {
@@ -116,7 +117,7 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
   },
 ]
 
-export function Hero({ sx }: { sx?: SxProps }) {
+export function Hero({ sx }: { sx?: SxStyleProp }) {
   const { t } = useTranslation()
 
   return (
@@ -293,6 +294,7 @@ const fadeInAnimation = {
 export function LandingView() {
   const { landing$ } = useAppContext()
   const [landing, landingError] = useObservableWithError(landing$)
+  const { t } = useTranslation()
 
   const onIlkSearch = useCallback(
     (search: string) => {
@@ -356,6 +358,7 @@ export function LandingView() {
               primaryKey="ilk"
               state={landing.ilks.filters}
               columns={ilksColumns}
+              noResults={<Box>{t('no-results')}</Box>}
             />
           </Box>
         </Box>

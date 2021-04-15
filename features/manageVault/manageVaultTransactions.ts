@@ -317,7 +317,6 @@ export function manageVaultWithdrawAndPayback(
 
 export function setDaiAllowance(
   txHelpers$: Observable<TxHelpers>,
-  daiAllowance$: Observable<BigNumber>,
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ) {
@@ -347,10 +346,7 @@ export function setDaiAllowance(
                     ? txState.error
                     : undefined,
               }),
-            () =>
-              daiAllowance$.pipe(
-                switchMap((daiAllowance) => of({ kind: 'daiAllowanceSuccess', daiAllowance })),
-              ),
+            (txState) => of({ kind: 'daiAllowanceSuccess', daiAllowance: txState.meta.amount }),
           ),
         ),
       ),
@@ -360,7 +356,6 @@ export function setDaiAllowance(
 
 export function setCollateralAllowance(
   txHelpers$: Observable<TxHelpers>,
-  collateralAllowance$: Observable<BigNumber>,
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ) {
@@ -390,15 +385,11 @@ export function setCollateralAllowance(
                     ? txState.error
                     : undefined,
               }),
-            () =>
-              collateralAllowance$.pipe(
-                switchMap((collateralAllowance) =>
-                  of({
-                    kind: 'collateralAllowanceSuccess',
-                    collateralAllowance,
-                  }),
-                ),
-              ),
+            (txState) =>
+              of({
+                kind: 'collateralAllowanceSuccess',
+                collateralAllowance: txState.meta.amount,
+              }),
           ),
         ),
       ),

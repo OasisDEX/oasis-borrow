@@ -15,6 +15,7 @@ module.exports = withBundleAnalyzer(
   withPWA(
     withMDX(
       withSass({
+        basePath: isProduction ? '/borrow' : '',
         typescript: {
           // !! WARN !!
           // Dangerously allow production builds to successfully complete even if

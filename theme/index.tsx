@@ -875,6 +875,7 @@ const oasisBaseTheme = {
 
     ghost: '#F6F6F6',
     light: '#D1DEE6',
+    border: '#DDDEE6',
 
     text: {
       muted: '#708390',

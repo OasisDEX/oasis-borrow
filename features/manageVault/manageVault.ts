@@ -9,7 +9,7 @@ import { isNullish } from 'helpers/functions'
 import { one, zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
+import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
@@ -389,8 +389,6 @@ export type ManageVaultState = {
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
-  collateralAllowance$: Observable<BigNumber>,
-  daiAllowance$: Observable<BigNumber>,
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ): ManageVaultState {
@@ -458,7 +456,7 @@ function addTransitions(
         change({
           kind: 'collateralAllowanceReset',
         }),
-      progress: () => setCollateralAllowance(txHelpers$, collateralAllowance$, change, state),
+      progress: () => setCollateralAllowance(txHelpers$, change, state),
       reset: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -484,7 +482,7 @@ function addTransitions(
         change({
           kind: 'daiAllowanceReset',
         }),
-      progress: () => setDaiAllowance(txHelpers$, daiAllowance$, change, state),
+      progress: () => setDaiAllowance(txHelpers$, change, state),
       reset: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -622,35 +620,11 @@ export function createManageVault$(
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
 
-                  const connectedCollateralAllowance$ = connectedProxyAddress$.pipe(
-                    switchMap((proxyAddress) =>
-                      account && proxyAddress
-                        ? allowance$(vault.token, account, proxyAddress)
-                        : of(zero),
-                    ),
-                    distinctUntilChanged((x, y) => x.eq(y)),
-                  )
-
-                  const connectedDaiAllowance$ = connectedProxyAddress$.pipe(
-                    switchMap((proxyAddress) =>
-                      account && proxyAddress ? allowance$('DAI', account, proxyAddress) : of(zero),
-                    ),
-                    distinctUntilChanged((x, y) => x.eq(y)),
-                  )
-
                   return merge(change$, environmentChanges$).pipe(
                     scan(apply, initialState),
                     map(validateErrors),
                     map(validateWarnings),
-                    map(
-                      curry(addTransitions)(
-                        txHelpers$,
-                        connectedProxyAddress$,
-                        connectedCollateralAllowance$,
-                        connectedDaiAllowance$,
-                        change,
-                      ),
-                    ),
+                    map(curry(addTransitions)(txHelpers$, connectedProxyAddress$, change)),
                   )
                 }),
               )

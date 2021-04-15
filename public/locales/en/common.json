@@ -244,7 +244,6 @@
   "moonpay-purchase-notification-past": "Moonpay purchased",
   "moving-into-vault": "Moving into Vault",
   "moving-out-vault": "Moving out of Vault",
-  "my-page": "My Page",
   "no-activity": "No activity to show",
   "no-camera": "No Camera Available",
   "notice-app-homescreen": "Add Oasis.app to my home screen",
@@ -392,17 +391,30 @@
     "ilk-does-not-exist": "Ilk {{ilk}} does not exist",
     "next-price": "Next {{token}}/USD price: {{amount}}"
   },
+  "ilks-list": {
+    "headers": {
+      "noVaults": "Select a collateral type below to create your first Maker Vault,<0/> and generate DAI",
+      "withVaults": "Open a new Maker Vault.<0/> Generate DAI"
+    }
+  },
   "vaults-overview": {
-    "header": "Vault overview",
-    "message-connected": "Hello {{address}} it looks like you currently have {{count}} Vault open with this wallet. Open a Vault below.",
-    "message-connected_plural": "Hello {{address}} it looks like you currently have {{count}} Vaults open with this wallet. Open a Vault below.",
-    "message-not-connected": "Hello, you are viewing {{address}} it looks like currently this address has no Vaults open.",
+    "headers": {
+      "connected-owner-withVaults": "Your Maker Vaults overview",
+      "connected-viewer-withVaults": "Maker Vaults overview of {{address}}",
+      "connected-viewier-noVaults": "{{address}} currently has no Maker Vaults",
+      "notConnected-noVaults": "{{address}} currently has no Maker Vaults.<0/> Is this yours? Connect your wallet and open a vault.",
+      "notConnected-withVaults": "Maker Vaults overview of {{address}}.<0/> Is this yours? Connect your wallet."
+    },
+    "header-no-vaults": "You have no open Vaults",
+    "subheader-no-vaults": "Open a Maker Vault, deposit your collateral, and generate DAI against it.",
     "number-of-vaults": "No. of Vaults",
     "total-debt": "Total debt",
     "total-locked": "Total locked",
     "vaults": "Vaults",
     "vaults-at-risk": "Vaults at risk",
-    "your-vaults": "Your Vaults"
+    "your-vaults": "Your Vaults",
+    "banner-header": "You are viewing {{address}} Vaults overview",
+    "banner-content": "You can view your vaults"
   },
   "vault-banners": {
     "ownership": {
@@ -451,5 +463,7 @@
   "withdraw": "Withdraw",
   "withdrawn": "Withdrawn",
   "you-are-sending": "You are sending",
-  "your-vaults": "Your Vaults"
+  "your-vaults": "Your Vaults",
+  "open-new-vault": "Open new Vault",
+  "no-results": "No results"
 }

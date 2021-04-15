@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { COIN_TAGS, CoinTag } from 'blockchain/tokensMetadata'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback } from 'react'
+import React, { memo, useCallback } from 'react'
 import ReactSelect from 'react-select'
 import { Box, Button, Flex, Input, SxStyleProp } from 'theme-ui'
 
@@ -14,14 +14,7 @@ interface FiltersProps {
   sx?: SxStyleProp
 }
 
-export function Filters({
-  onSearch,
-  search,
-  onTagChange,
-  tagFilter,
-  defaultTag,
-  sx,
-}: FiltersProps) {
+function Filters_({ onSearch, search, onTagChange, tagFilter, defaultTag, sx }: FiltersProps) {
   const onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onSearch(e.currentTarget.value)
@@ -41,8 +34,10 @@ export function Filters({
     })),
   ]
 
+  const selected = options.find((option) => option.value === tagFilter)
+
   return (
-    <Flex sx={{ ...sx, flexDirection: ['column', 'column', 'row'] }}>
+    <Flex sx={{ ...sx, flexDirection: ['column', 'column', 'row'], mb: 2 }}>
       <Box
         sx={{
           display: ['none', 'flex', 'flex'],
@@ -67,9 +62,11 @@ export function Filters({
         }}
       >
         <ReactSelect
+          value={selected}
           defaultValue={options[0]}
           options={options}
           isSearchable={false}
+          onChange={(option) => option && 'value' in option && onTagChange(option.value)}
           components={{
             IndicatorsContainer: ({ selectProps: { menuIsOpen } }) => (
               <Flex
@@ -127,3 +124,5 @@ export function Filters({
     </Flex>
   )
 }
+
+export const Filters = memo(Filters_)

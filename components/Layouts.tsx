@@ -2,10 +2,10 @@ import { isAppContextAvailable } from 'components/AppContextProvider'
 import { Footer } from 'components/Footer'
 import { AppHeader, ConnectPageHeader, MarketingHeader } from 'components/Header'
 import { AppLinkProps } from 'components/Links'
-import { Background } from 'features/landing/Background'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
 import { Container, Flex, SxStyleProp } from 'theme-ui'
+import { Background } from 'theme/Background'
 
 interface BasicLayoutProps extends WithChildren {
   header: JSX.Element
@@ -48,9 +48,15 @@ export function AppLayout({ children, backLink, CustomLogoWithBack }: AppLayoutP
   }
 
   return (
-    <BasicLayout footer={<Footer />} header={<AppHeader {...{ backLink, CustomLogoWithBack }} />}>
-      {children}
-    </BasicLayout>
+    <>
+      <BasicLayout
+        sx={{ zIndex: 2 }}
+        footer={<Footer />}
+        header={<AppHeader {...{ backLink, CustomLogoWithBack }} />}
+      >
+        {children}
+      </BasicLayout>
+    </>
   )
 }
 

@@ -8,7 +8,7 @@ import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
-import { distinctUntilChanged, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
+import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openVaultAllowances'
 import { applyOpenVaultEnvironment, OpenVaultEnvironmentChange } from './openVaultEnvironment'
@@ -269,7 +269,6 @@ export type OpenVaultState = {
 function addTransitions(
   txHelpers: TxHelpers,
   proxyAddress$: Observable<string | undefined>,
-  allowance$: Observable<BigNumber>,
   change: (ch: OpenVaultChange) => void,
   state: OpenVaultState,
 ): OpenVaultState {
@@ -323,7 +322,7 @@ function addTransitions(
         change({
           kind: 'allowanceReset',
         }),
-      progress: () => setAllowance(txHelpers, allowance$, change, state),
+      progress: () => setAllowance(txHelpers, change, state),
       reset: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -437,25 +436,11 @@ export function createOpenVault$(
 
                     const connectedProxyAddress$ = proxyAddress$(account)
 
-                    const connectedAllowance$ = connectedProxyAddress$.pipe(
-                      switchMap((proxyAddress) =>
-                        proxyAddress ? allowance$(token, account, proxyAddress) : of(zero),
-                      ),
-                      distinctUntilChanged((x, y) => x.eq(y)),
-                    )
-
                     return merge(change$, environmentChanges$).pipe(
                       scan(apply, initialState),
                       map(validateErrors),
                       map(validateWarnings),
-                      map(
-                        curry(addTransitions)(
-                          txHelpers,
-                          connectedProxyAddress$,
-                          connectedAllowance$,
-                          change,
-                        ),
-                      ),
+                      map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
                     )
                   }),
                 ),
