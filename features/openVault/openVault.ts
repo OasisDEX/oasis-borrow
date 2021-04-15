@@ -345,6 +345,16 @@ function addTransitions(
     }
   }
 
+  if (state.stage === 'openSuccess') {
+    return {
+      ...state,
+      progress: () =>
+        change({
+          kind: 'backToEditing',
+        }),
+    }
+  }
+
   return state
 }
 
