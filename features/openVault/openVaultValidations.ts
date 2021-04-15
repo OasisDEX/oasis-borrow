@@ -1,3 +1,4 @@
+import { maxUint256 } from 'blockchain/calls/erc20'
 import { zero } from 'helpers/zero'
 
 import { OpenVaultState } from './openVault'
@@ -26,6 +27,8 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
     daiYieldFromDepositingCollateral,
     daiYieldFromDepositingCollateralAtNextPrice,
     token,
+    stage,
+    allowanceAmount,
   } = state
   const errorMessages: OpenVaultErrorMessage[] = []
 
@@ -80,29 +83,17 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
     errorMessages.push('generateAmountLessThanDebtFloor')
   }
 
-  // if (depositAmount?.gt(maxDepositAmount)) {
-  //   errorMessages.push('depositAmountGreaterThanMaxDepositAmount')
-  // }
-
-  // if (generateAmount?.lt(debtFloor)) {
-  //   errorMessages.push('generateAmountLessThanDebtFloor')
-  // }
-
-  // if (stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFailure') {
-  //   if (!allowanceAmount) {
-  //     errorMessages.push('allowanceAmountEmpty')
-  //   }
-  //   if (allowanceAmount?.gt(maxUint256)) {
-  //     errorMessages.push('customAllowanceAmountGreaterThanMaxUint256')
-  //   }
-  //   if (depositAmount && allowanceAmount && allowanceAmount.lt(depositAmount)) {
-  //     errorMessages.push('customAllowanceAmountLessThanDepositAmount')
-  //   }
-  // }
-
-  // if (generateAmount?.gt(zero) && afterCollateralizationRatio.lt(liquidationRatio)) {
-  //   errorMessages.push('vaultUnderCollateralized')
-  // }
+  if (stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFailure') {
+    if (!allowanceAmount) {
+      errorMessages.push('customAllowanceAmountEmpty')
+    }
+    if (allowanceAmount?.gt(maxUint256)) {
+      errorMessages.push('customAllowanceAmountGreaterThanMaxUint256')
+    }
+    if (depositAmount && allowanceAmount && allowanceAmount.lt(depositAmount)) {
+      errorMessages.push('customAllowanceAmountLessThanDepositAmount')
+    }
+  }
 
   return { ...state, errorMessages }
 }

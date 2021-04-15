@@ -248,9 +248,10 @@ export type OpenVaultState = {
 
   allowanceAmount?: BigNumber
   updateAllowanceAmount?: (amount?: BigNumber) => void
-  setAllowanceAmountUnlimited?: (amount?: BigNumber) => void
-  setAllowanceAmountToDepositAmount?: (amount?: BigNumber) => void
+  setAllowanceAmountUnlimited?: () => void
+  setAllowanceAmountToDepositAmount?: () => void
   resetAllowanceAmount?: () => void
+  selectedAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
 
   allowanceTxHash?: string
   proxyTxHash?: string
@@ -318,10 +319,8 @@ function addTransitions(
         }),
       resetAllowanceAmount: () =>
         change({
-          kind: 'allowance',
-          allowanceAmount: undefined,
+          kind: 'allowanceReset',
         }),
-
       progress: () => setAllowance(txHelpers, allowance$, change, state),
       reset: () => change({ kind: 'backToEditing' }),
     }
@@ -364,6 +363,7 @@ export const defaultPartialOpenVaultState = {
   daiYieldFromDepositingCollateralAtNextPrice: zero,
   afterLiquidationPrice: zero,
   afterFreeCollateral: zero,
+  selectedAllowanceRadio: 'unlimited' as 'unlimited',
 }
 
 export function createOpenVault$(

@@ -1,5 +1,7 @@
 import { BigNumber } from 'bignumber.js'
+import { maxUint256 } from 'blockchain/calls/erc20'
 import { DEFAULT_PROXY_ADDRESS } from 'blockchain/vaults'
+import { one } from 'helpers/zero'
 import { openVaultStory } from './OpenVaultBuilder'
 import { OpenVaultView } from './OpenVaultView'
 
@@ -81,6 +83,36 @@ export const GenerateAmountLessThanDebtFloor = openVaultStory({
   ilkData: { debtFloor: new BigNumber('2000') },
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('1999'),
+  proxyAddress,
+})
+
+export const CustomAllowanceEmpty = openVaultStory({
+  title: 'Error should block user if the allowance they wish to set is zero',
+  stage: 'allowanceWaitingForConfirmation',
+  depositAmount: new BigNumber('10'),
+  balanceInfo: { daiBalance: new BigNumber('10000') },
+  selectedAllowanceRadio: 'custom',
+  allowanceAmount: undefined,
+  proxyAddress,
+})
+
+export const CustomAllowanceAmountGreaterThanMaxUint256 = openVaultStory({
+  title: 'Error should block user if the allowance they wish to set a value above maxUint256',
+  stage: 'allowanceWaitingForConfirmation',
+  depositAmount: new BigNumber('10'),
+  balanceInfo: { daiBalance: new BigNumber('10000') },
+  selectedAllowanceRadio: 'custom',
+  allowanceAmount: maxUint256.plus(one),
+  proxyAddress,
+})
+
+export const CustomAllowanceAmountLessThanDepositAmount = openVaultStory({
+  title: 'Error should block user if the allowance they wish to set a value above maxUint256',
+  stage: 'allowanceWaitingForConfirmation',
+  depositAmount: new BigNumber('10'),
+  balanceInfo: { daiBalance: new BigNumber('10000') },
+  allowanceAmount: new BigNumber('9'),
+  selectedAllowanceRadio: 'custom',
   proxyAddress,
 })
 

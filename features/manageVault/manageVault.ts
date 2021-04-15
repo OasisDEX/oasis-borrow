@@ -106,7 +106,6 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     ilkData: { liquidationRatio, ilkDebtAvailable },
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
     vault: { lockedCollateral, debt, approximateDebt, freeCollateral, freeCollateralAtNextPrice },
-    stage,
   } = state
 
   const maxWithdrawAmount = BigNumber.minimum(freeCollateral, freeCollateralAtNextPrice)

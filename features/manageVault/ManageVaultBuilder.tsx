@@ -134,6 +134,8 @@ export function manageVaultStory({
   generateAmount,
   paybackAmount,
   proxyAddress,
+  collateralAllowance,
+  daiAllowance,
   stage = 'collateralEditing',
   ...otherState
 }: ManageVaultStory) {
@@ -145,6 +147,8 @@ export function manageVaultStory({
       vault,
       ilkData,
       proxyAddress,
+      collateralAllowance,
+      daiAllowance,
     })
 
     useEffect(() => {
