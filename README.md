@@ -91,3 +91,7 @@ From this point translation engine can be used by passing key to `t` method:
 Key needs to exist in every translation json for every language (and namespace).
 
 For detailed i18next documentation please visit [i18n docs](https://www.i18next.com/)
+
+## Hardhat mainnet testing
+
+It might be useful to test an app against an actual mainnet state with some modifications. We use Hardhat node for that. In order to read more about this setup go to the [separate docs page](./HARDHAT.md)

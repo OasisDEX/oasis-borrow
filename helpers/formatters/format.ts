@@ -13,6 +13,7 @@ BigNumber.config({
     fractionGroupSeparator: ' ',
     fractionGroupSize: 0,
   },
+  EXPONENTIAL_AT: 100000,
 })
 
 export function toShorthandNumber(amount: BigNumber, suffix: string = '', precision?: number) {
