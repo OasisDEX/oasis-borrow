@@ -1,6 +1,6 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
-import { AppLink, AppLinkProps } from 'components/Links'
+import { AppLink } from 'components/Links'
 import { AccountButton } from 'features/account/Account'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
