@@ -76,11 +76,16 @@ export function categoriseOpenVaultStage(stage: OpenVaultStage) {
 export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultState {
   const {
     depositAmount,
+    depositAmountUSD,
     generateAmount,
     balanceInfo: { collateralBalance },
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
     ilkData: { ilkDebtAvailable, liquidationRatio },
   } = state
+
+  const depositAmountUSDAtNextPrice = depositAmount
+    ? depositAmount.times(nextCollateralPrice || currentCollateralPrice)
+    : zero
 
   const maxDepositAmount = collateralBalance
   const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
@@ -109,15 +114,13 @@ export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultStat
   )
 
   const afterCollateralizationRatio =
-    generateAmount && !generateAmount.isZero() && !daiYieldFromDepositingCollateral.isZero()
-      ? daiYieldFromDepositingCollateral.div(generateAmount)
+    generateAmount && depositAmountUSD && !generateAmount.isZero()
+      ? depositAmountUSD.div(generateAmount)
       : zero
 
   const afterCollateralizationRatioAtNextPrice =
-    generateAmount &&
-    !generateAmount.isZero() &&
-    !daiYieldFromDepositingCollateralAtNextPrice.isZero()
-      ? daiYieldFromDepositingCollateralAtNextPrice.div(generateAmount)
+    generateAmount && !generateAmount.isZero()
+      ? depositAmountUSDAtNextPrice.div(generateAmount)
       : zero
 
   const afterLiquidationPrice =

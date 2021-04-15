@@ -23,6 +23,8 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
     ilkData,
     depositAmount,
     balanceInfo,
+    daiYieldFromDepositingCollateral,
+    daiYieldFromDepositingCollateralAtNextPrice,
   } = state
   const errorMessages: OpenVaultErrorMessage[] = []
 
@@ -46,6 +48,23 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
 
   if (depositAmount?.gt(balanceInfo.collateralBalance)) {
     errorMessages.push('depositAmountExceedsCollateralBalance')
+  }
+
+  const generateAmountExceedsDaiYieldFromTotalCollateral = generateAmount?.gt(
+    daiYieldFromDepositingCollateral,
+  )
+  if (generateAmountExceedsDaiYieldFromTotalCollateral) {
+    errorMessages.push('generateAmountExceedsDaiYieldFromDepositingCollateral')
+  }
+
+  const generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice = generateAmount?.gt(
+    daiYieldFromDepositingCollateralAtNextPrice,
+  )
+  if (
+    !generateAmountExceedsDaiYieldFromTotalCollateral &&
+    generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice
+  ) {
+    errorMessages.push('generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice')
   }
 
   // if (depositAmount?.gt(maxDepositAmount)) {
