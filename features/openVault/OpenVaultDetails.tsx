@@ -8,7 +8,13 @@ import React from 'react'
 import { Text, Box, Grid, Heading, Flex } from 'theme-ui'
 import { OpenVaultState } from './openVault'
 
-export function VaultDetailsTable(props: OpenVaultState) {
+export function VaultDetailsTable({
+  generateAmount,
+  afterFreeCollateral,
+  token,
+  maxGenerateAmountCurrentPrice,
+  ilkData,
+}: OpenVaultState) {
   const { t } = useTranslation()
   return (
     <Box sx={{ gridColumn: '1/3', mt: 6 }}>
@@ -22,7 +28,7 @@ export function VaultDetailsTable(props: OpenVaultState) {
           </Box>
           <Box>
             <Text sx={{ display: 'inline' }} variant="header3">
-              0.00
+              {formatAmount(generateAmount || zero, 'DAI')}
             </Text>
             <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
               DAI
@@ -35,10 +41,10 @@ export function VaultDetailsTable(props: OpenVaultState) {
           </Box>
           <Box variant="text.header3">
             <Text sx={{ display: 'inline' }} variant="header3">
-              0.00
+              {formatAmount(afterFreeCollateral, getToken(token).symbol)}
             </Text>
             <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
-              USD
+              {token}
             </Text>
           </Box>
         </Box>
@@ -48,7 +54,7 @@ export function VaultDetailsTable(props: OpenVaultState) {
           </Box>
           <Box variant="text.header3">
             <Text sx={{ display: 'inline' }} variant="header3">
-              {formatCryptoBalance(props.maxGenerateAmount)}
+              {formatAmount(maxGenerateAmountCurrentPrice, 'DAI')}
             </Text>
             <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
               USD
@@ -61,7 +67,7 @@ export function VaultDetailsTable(props: OpenVaultState) {
             {t('system.liquidation-ratio')}
           </Box>
           <Text sx={{ display: 'inline' }} variant="header3">
-            {formatPercent(props.ilkData.liquidationRatio.times(100))}
+            {formatPercent(ilkData.liquidationRatio.times(100))}
           </Text>
         </Box>
         <Box>

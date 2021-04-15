@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { DEFAULT_PROXY_ADDRESS } from 'blockchain/vaults'
 import { ManageVaultView } from 'features/manageVault/ManageVaultView'
+import { zero } from 'helpers/zero'
 
 import { manageVaultStory } from './ManageVaultBuilder'
 
@@ -80,7 +81,6 @@ export const ProxyInProgress = manageVaultStory({
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
   stage: 'proxyInProgress',
-  proxyAddress,
   proxyTxHash: '0xProxyTxHash',
   proxyConfirmations: 2,
 })
@@ -109,6 +109,7 @@ export const CollateralAllowanceWaitingForConfirmation = manageVaultStory({
   depositAmount: new BigNumber('2'),
   generateAmount: new BigNumber('300'),
   proxyAddress,
+  collateralAllowance: zero,
   stage: 'collateralAllowanceWaitingForConfirmation',
 })
 
@@ -123,6 +124,7 @@ export const CollateralAllowanceWaitingForApproval = manageVaultStory({
   generateAmount: new BigNumber('300'),
   stage: 'collateralAllowanceWaitingForApproval',
   proxyAddress,
+  collateralAllowance: zero,
 })
 
 export const CollateralAllowanceFailure = manageVaultStory({
@@ -136,6 +138,7 @@ export const CollateralAllowanceFailure = manageVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('200') },
   stage: 'collateralAllowanceFailure',
   proxyAddress,
+  collateralAllowance: zero,
 })
 
 export const CollateralAllowanceInProgress = manageVaultStory({
@@ -149,6 +152,7 @@ export const CollateralAllowanceInProgress = manageVaultStory({
   generateAmount: new BigNumber('300'),
   stage: 'collateralAllowanceInProgress',
   proxyAddress,
+  collateralAllowance: zero,
 })
 
 export const CollateralAllowanceSuccess = manageVaultStory({
@@ -175,6 +179,7 @@ export const DaiAllowanceWaitingForConfirmation = manageVaultStory({
   paybackAmount: new BigNumber('300'),
   stage: 'daiAllowanceWaitingForConfirmation',
   proxyAddress,
+  daiAllowance: zero,
 })
 
 export const DaiAllowanceWaitingForApproval = manageVaultStory({
@@ -188,6 +193,7 @@ export const DaiAllowanceWaitingForApproval = manageVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   stage: 'daiAllowanceWaitingForApproval',
   proxyAddress,
+  daiAllowance: zero,
 })
 
 export const DaiAllowanceFailure = manageVaultStory({
@@ -201,6 +207,7 @@ export const DaiAllowanceFailure = manageVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   stage: 'daiAllowanceFailure',
   proxyAddress,
+  daiAllowance: zero,
 })
 
 export const DaiAllowanceInProgress = manageVaultStory({
@@ -214,6 +221,7 @@ export const DaiAllowanceInProgress = manageVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   stage: 'daiAllowanceInProgress',
   proxyAddress,
+  daiAllowance: zero,
 })
 
 export const DaiAllowanceSuccess = manageVaultStory({

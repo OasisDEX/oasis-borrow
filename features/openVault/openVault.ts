@@ -87,6 +87,12 @@ export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultStat
     ? depositAmount.times(nextCollateralPrice || currentCollateralPrice)
     : zero
 
+  const afterBackingCollateral = generateAmount
+    ? generateAmount.times(liquidationRatio).div(currentCollateralPrice)
+    : zero
+
+  const afterFreeCollateral = depositAmount ? depositAmount.minus(afterBackingCollateral) : zero
+
   const maxDepositAmount = collateralBalance
   const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
 
@@ -133,11 +139,13 @@ export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultStat
     maxDepositAmount,
     maxDepositAmountUSD,
     maxGenerateAmount,
+    maxGenerateAmountCurrentPrice,
     afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
     daiYieldFromDepositingCollateral,
     daiYieldFromDepositingCollateralAtNextPrice,
     afterLiquidationPrice,
+    afterFreeCollateral,
   }
 }
 
@@ -223,6 +231,7 @@ export type OpenVaultState = {
   afterCollateralizationRatioAtNextPrice: BigNumber
   daiYieldFromDepositingCollateral: BigNumber
   daiYieldFromDepositingCollateralAtNextPrice: BigNumber
+  afterFreeCollateral: BigNumber
 
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
@@ -230,6 +239,7 @@ export type OpenVaultState = {
   maxDepositAmountUSD: BigNumber
   generateAmount?: BigNumber
   maxGenerateAmount: BigNumber
+  maxGenerateAmountCurrentPrice: BigNumber
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
@@ -347,11 +357,13 @@ export const defaultPartialOpenVaultState = {
   maxDepositAmount: zero,
   maxDepositAmountUSD: zero,
   maxGenerateAmount: zero,
+  maxGenerateAmountCurrentPrice: zero,
   afterCollateralizationRatio: zero,
   afterCollateralizationRatioAtNextPrice: zero,
   daiYieldFromDepositingCollateral: zero,
   daiYieldFromDepositingCollateralAtNextPrice: zero,
   afterLiquidationPrice: zero,
+  afterFreeCollateral: zero,
 }
 
 export function createOpenVault$(
@@ -366,7 +378,6 @@ export function createOpenVault$(
   ilkToToken$: Observable<(ilk: string) => string>,
   ilk: string,
 ): Observable<OpenVaultState> {
-  ilks$.subscribe(console.log)
   return ilks$.pipe(
     switchMap((ilks) =>
       iif(

@@ -72,41 +72,25 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     vault,
     ilkData,
     balanceInfo,
+    depositAndWithdrawAmountsEmpty,
+    generateAndPaybackAmountsEmpty,
   } = state
 
   const errorMessages: ManageVaultErrorMessage[] = []
 
-  if (
-    accountIsController &&
-    (!depositAmount || depositAmount.isZero()) &&
-    (!withdrawAmount || withdrawAmount.isZero()) &&
-    stage === 'collateralEditing'
-  ) {
+  if (accountIsController && depositAndWithdrawAmountsEmpty && stage === 'collateralEditing') {
     errorMessages.push('depositAndWithdrawAmountsEmpty')
   }
 
-  if (
-    accountIsController &&
-    (!generateAmount || generateAmount.isZero()) &&
-    (!paybackAmount || paybackAmount.isZero()) &&
-    stage === 'daiEditing'
-  ) {
+  if (accountIsController && generateAndPaybackAmountsEmpty && stage === 'daiEditing') {
     errorMessages.push('generateAndPaybackAmountsEmpty')
   }
 
-  if (
-    !accountIsController &&
-    (!depositAmount || depositAmount.isZero()) &&
-    stage === 'collateralEditing'
-  ) {
+  if (!accountIsController && depositAndWithdrawAmountsEmpty && stage === 'collateralEditing') {
     errorMessages.push('depositAmountEmpty')
   }
 
-  if (
-    !accountIsController &&
-    (!paybackAmount || paybackAmount.isZero()) &&
-    stage === 'daiEditing'
-  ) {
+  if (!accountIsController && generateAndPaybackAmountsEmpty && stage === 'daiEditing') {
     errorMessages.push('paybackAmountEmpty')
   }
 

@@ -64,6 +64,7 @@ export interface Vault {
   liquidationPrice: BigNumber
   collateralizationDangerThreshold: BigNumber
   collateralizationWarningThreshold: BigNumber
+  daiYieldFromLockedCollateral: BigNumber
 }
 
 export function createController$(
@@ -165,6 +166,11 @@ export function createVault$(
               COLLATERALIZATION_WARNING_OFFSET.plus(one),
             )
 
+            const daiYieldFromLockedCollateral = collateral
+              .times(currentPrice)
+              .div(liquidationRatio)
+              .minus(debt)
+
             return of({
               id,
               ilk,
@@ -199,6 +205,8 @@ export function createVault$(
 
               collateralizationDangerThreshold,
               collateralizationWarningThreshold,
+
+              daiYieldFromLockedCollateral,
             })
           },
         ),

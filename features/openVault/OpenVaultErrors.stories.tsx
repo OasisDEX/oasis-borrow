@@ -12,7 +12,7 @@ export const VaultWillBeUnderCollateralized = openVaultStory({
   generateAmount: new BigNumber('4000'),
 })
 
-export const VaultWillBeUnderCollateralizedtNextPrice = openVaultStory({
+export const VaultWillBeUnderCollateralizedNextPrice = openVaultStory({
   title:
     'User is generating too much debt for the amount of collateral to be deposited at next price. User can do this action but will be subject to liquidation when price updates',
   proxyAddress,
@@ -23,7 +23,7 @@ export const VaultWillBeUnderCollateralizedtNextPrice = openVaultStory({
   },
 })
 
-export const depositAmountExceedsCollateralBalance = openVaultStory({
+export const DepositAmountExceedsCollateralBalance = openVaultStory({
   title:
     'Amount user is depositing exceeds the balance of collateral they have outstanding in their wallet',
   proxyAddress,
@@ -42,7 +42,7 @@ export const DepositingAllEthBalance = openVaultStory({
   proxyAddress,
 })
 
-export const generateAmountExceedsDaiYieldFromDepositingCollateral = openVaultStory({
+export const GenerateAmountExceedsDaiYieldFromDepositingCollateral = openVaultStory({
   title:
     'Amount of dai user is attempting to generate exceeds the maximum amount of DAI that can be generated given the liquidation ratio of 150% in this case',
   proxyAddress,
@@ -51,16 +51,19 @@ export const generateAmountExceedsDaiYieldFromDepositingCollateral = openVaultSt
   priceInfo: { collateralPrice: new BigNumber('2000') },
 })
 
-export const generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice = openVaultStory({
+export const GenerateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice = openVaultStory({
   title:
     'Amount of dai user is attempting to generate exceeds the maximum amount of DAI that can be generated at next price update, the user could proceed with this transaction but is inadvised as they would be subject to liquidations on next price update',
   proxyAddress,
   depositAmount: new BigNumber('150'),
-  generateAmount: new BigNumber('200000.01'),
-  priceInfo: { collateralPrice: new BigNumber('2000') },
+  generateAmount: new BigNumber('180000'),
+  priceInfo: {
+    collateralPrice: new BigNumber('2000'),
+    collateralChangePercentage: new BigNumber('-0.2'),
+  },
 })
 
-export const generateAmountExceedsDebtCeiling = openVaultStory({
+export const GenerateAmountExceedsDebtCeiling = openVaultStory({
   title:
     'Amount of dai user is trying to generate exceeds the amount of dai available for that ilk',
   proxyAddress,

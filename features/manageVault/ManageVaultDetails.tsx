@@ -14,73 +14,134 @@ import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 
-function VaultDetailsTable({ vault, maxGenerateAmount, ilkData }: ManageVaultState) {
+function VaultDetailsTable({
+  vault,
+  ilkData,
+  afterMaxGenerateAmountCurrentPrice,
+  afterDebt,
+  afterFreeCollateral,
+  errorMessages,
+}: ManageVaultState) {
   const { t } = useTranslation()
+
+  const hasErrors = !!errorMessages.length
   return (
     <Box sx={{ gridColumn: '1/3', mt: 6 }}>
       <Heading variant="header3" mb="4">
         {t('vault.vault-details')}
       </Heading>
       <Grid columns="1fr 1fr 1fr" sx={{ border: 'light', borderRadius: 'medium', p: 4 }}>
-        <Box>
+        <Grid gap={1}>
           <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
             {t('system.vault-dai-debt')}
           </Box>
           <Box>
             <Text sx={{ display: 'inline' }} variant="header3">
-              {formatCryptoBalance(vault.debt)}
+              {formatAmount(vault.approximateDebt, 'DAI')}
             </Text>
             <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
               DAI
             </Text>
           </Box>
-        </Box>
-        <Box>
+          {!hasErrors && (
+            <Flex sx={{ alignItems: 'center' }}>
+              <Icon name="arrow_right" size={12} />
+              <Box pl={1}>
+                <Text sx={{ display: 'inline' }} variant="header4">
+                  {formatAmount(afterDebt, 'DAI')}
+                </Text>
+                <Text
+                  sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }}
+                  variant="paragraph4"
+                >
+                  DAI
+                </Text>
+              </Box>
+            </Flex>
+          )}
+        </Grid>
+        <Grid gap={1}>
           <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
             {t('system.available-to-withdraw')}
           </Box>
           <Box variant="text.header3">
             <Text sx={{ display: 'inline' }} variant="header3">
-              {formatFiatBalance(vault.freeCollateral)}
+              {formatAmount(vault.freeCollateral, getToken(vault.token).symbol)}
             </Text>
             <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
-              USD
+              {vault.token}
             </Text>
           </Box>
-        </Box>
-        <Box>
+          {!hasErrors && (
+            <Flex sx={{ alignItems: 'center' }}>
+              <Icon name="arrow_right" size={12} />
+              <Box pl={1}>
+                <Text sx={{ display: 'inline' }} variant="header4">
+                  {formatAmount(afterFreeCollateral, getToken(vault.token).symbol)}
+                </Text>
+                <Text
+                  sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }}
+                  variant="paragraph4"
+                >
+                  {vault.token}
+                </Text>
+              </Box>
+            </Flex>
+          )}
+        </Grid>
+        <Grid gap={1}>
           <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
             {t('system.available-to-generate')}
           </Box>
           <Box variant="text.header3">
             <Text sx={{ display: 'inline' }} variant="header3">
-              {formatCryptoBalance(maxGenerateAmount)}
+              {formatAmount(vault.daiYieldFromLockedCollateral, 'DAI')}
             </Text>
             <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
-              USD
+              DAI
             </Text>
           </Box>
-        </Box>
+          {!hasErrors && (
+            <Flex sx={{ alignItems: 'center' }}>
+              <Icon name="arrow_right" size={12} />
+              <Box pl={1}>
+                <Text sx={{ display: 'inline' }} variant="header4">
+                  {formatAmount(afterMaxGenerateAmountCurrentPrice, 'DAI')}
+                </Text>
+                <Text
+                  sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }}
+                  variant="paragraph4"
+                >
+                  DAI
+                </Text>
+              </Box>
+            </Flex>
+          )}
+        </Grid>
         <Box sx={{ gridColumn: '1/4', borderBottom: 'light', height: '1px', my: 3 }} />
         <Box>
           <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
             {t('system.liquidation-ratio')}
           </Box>
           <Text sx={{ display: 'inline' }} variant="header3">
-            {formatPercent(ilkData.liquidationRatio.times(100))}
+            {formatPercent(ilkData.liquidationRatio.times(100), { precision: 2 })}
           </Text>
         </Box>
         <Box>
           <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
             {t('system.stability-fee')}
           </Box>
-          <Box variant="text.header3">{formatPercent(ilkData.stabilityFee.times(100))}</Box>
+          <Box variant="text.header3">
+            {formatPercent(ilkData.stabilityFee.times(100), { precision: 2 })}
+          </Box>
         </Box>
         <Box>
           <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
             {t('system.liquidation-penalty')}
           </Box>
-          <Box variant="text.header3">{formatPercent(ilkData.liquidationPenalty.times(100))}</Box>
+          <Box variant="text.header3">
+            {formatPercent(ilkData.liquidationPenalty.times(100), { precision: 2 })}
+          </Box>
         </Box>
       </Grid>
     </Box>
@@ -99,6 +160,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
       liquidationPrice,
       lockedCollateral,
       lockedCollateralUSD,
+      collateralizationRatioAtNextPrice,
     },
     priceInfo: {
       currentCollateralPrice,
@@ -107,23 +169,16 @@ export function ManageVaultDetails(props: ManageVaultState) {
       dateNextCollateralPrice,
     },
     ilkData: { liquidationRatio },
+    depositAndWithdrawAmountsEmpty,
+    generateAndPaybackAmountsEmpty,
+    afterCollateralizationRatioAtNextPrice,
   } = props
   const { t } = useTranslation()
-  const collRatio = collateralizationRatio.eq(zero)
-    ? '--'
-    : formatPercent(collateralizationRatio.times(100), { precision: 2 })
   const collRatioColor = collateralizationRatio.isZero()
     ? 'primary'
     : collateralizationRatio.lte(liquidationRatio.times(1.2))
     ? 'onError'
     : 'onSuccess'
-
-  const afterCollRatio = afterCollateralizationRatio.eq(zero)
-    ? '--'
-    : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
-
-  const liqPrice = formatAmount(liquidationPrice, 'USD')
-  const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
 
   const locked = formatAmount(lockedCollateral, token)
   const lockedUSD = formatAmount(lockedCollateralUSD, token)
@@ -141,6 +196,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
     ? 'onSuccess'
     : 'onError'
 
+  const showAfters = !generateAndPaybackAmountsEmpty || !depositAndWithdrawAmountsEmpty
   return (
     <Grid sx={{ alignSelf: 'flex-start' }} columns="1fr 1fr">
       <Heading
@@ -157,21 +213,36 @@ export function ManageVaultDetails(props: ManageVaultState) {
         <Heading variant="subheader" as="h2">
           {t('system.liquidation-price')}
         </Heading>
-        <Text variant="display">${liqPrice}</Text>
-        <Text>
-          {t('after')}: ${afterLiqPrice}
-        </Text>
+        <Text variant="display">$ {formatAmount(liquidationPrice, 'USD')}</Text>
+        {showAfters && (
+          <Text pl={2}>
+            {t('after')}: ${formatAmount(afterLiquidationPrice, 'USD')}
+          </Text>
+        )}
       </Box>
       <Box sx={{ textAlign: 'right', mt: 5 }}>
         <Heading variant="subheader" as="h2">
           {t('system.collateralization-ratio')}
         </Heading>
         <Text sx={{ color: collRatioColor }} variant="display">
-          {collRatio}
+          {formatPercent(collateralizationRatio.times(100), { precision: 2 })}
         </Text>
         <Text>
-          {t('after')}: {afterCollRatio}
+          {t('next')}:{' '}
+          {formatPercent(collateralizationRatioAtNextPrice.times(100), { precision: 2 })}
         </Text>
+        {showAfters && (
+          <>
+            <Text>
+              {t('after')}:{' '}
+              {formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })}
+            </Text>
+            <Text>
+              {t('after-next')}:{' '}
+              {formatPercent(afterCollateralizationRatioAtNextPrice.times(100), { precision: 2 })}
+            </Text>
+          </>
+        )}
       </Box>
       {isStaticCollateralPrice ? (
         <Box sx={{ mt: 6 }}>
