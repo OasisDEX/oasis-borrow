@@ -1,4 +1,3 @@
-import { maxUint256 } from 'blockchain/calls/erc20'
 import { zero } from 'helpers/zero'
 
 import { OpenVaultState } from './openVault'
@@ -7,6 +6,7 @@ export type OpenVaultErrorMessage =
   | 'vaultWillBeUnderCollateralized'
   | 'vaultWillBeUnderCollateralizedAtNextPrice'
   | 'depositAmountExceedsCollateralBalance'
+  | 'depositingAllEthBalance'
   | 'generateAmountExceedsDaiYieldFromDepositingCollateral'
   | 'generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice'
   | 'generateAmountExceedsDebtCeiling'
@@ -25,6 +25,7 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
     balanceInfo,
     daiYieldFromDepositingCollateral,
     daiYieldFromDepositingCollateralAtNextPrice,
+    token,
   } = state
   const errorMessages: OpenVaultErrorMessage[] = []
 
@@ -50,21 +51,33 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
     errorMessages.push('depositAmountExceedsCollateralBalance')
   }
 
-  const generateAmountExceedsDaiYieldFromTotalCollateral = generateAmount?.gt(
+  if (token === 'ETH' && depositAmount?.eq(balanceInfo.collateralBalance)) {
+    errorMessages.push('depositingAllEthBalance')
+  }
+
+  const generateAmountExceedsDaiYieldFromDepositingCollateral = generateAmount?.gt(
     daiYieldFromDepositingCollateral,
   )
-  if (generateAmountExceedsDaiYieldFromTotalCollateral) {
+  if (generateAmountExceedsDaiYieldFromDepositingCollateral) {
     errorMessages.push('generateAmountExceedsDaiYieldFromDepositingCollateral')
   }
 
-  const generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice = generateAmount?.gt(
+  const generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice = generateAmount?.gt(
     daiYieldFromDepositingCollateralAtNextPrice,
   )
   if (
-    !generateAmountExceedsDaiYieldFromTotalCollateral &&
-    generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice
+    !generateAmountExceedsDaiYieldFromDepositingCollateral &&
+    generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice
   ) {
     errorMessages.push('generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice')
+  }
+
+  if (generateAmount?.gt(ilkData.ilkDebtAvailable)) {
+    errorMessages.push('generateAmountExceedsDebtCeiling')
+  }
+
+  if (generateAmount?.lt(ilkData.debtFloor)) {
+    errorMessages.push('generateAmountLessThanDebtFloor')
   }
 
   // if (depositAmount?.gt(maxDepositAmount)) {
@@ -73,10 +86,6 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
 
   // if (generateAmount?.lt(debtFloor)) {
   //   errorMessages.push('generateAmountLessThanDebtFloor')
-  // }
-
-  // if (generateAmount?.gt(ilkDebtAvailable)) {
-  //   errorMessages.push('generateAmountGreaterThanDebtCeiling')
   // }
 
   // if (stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFailure') {

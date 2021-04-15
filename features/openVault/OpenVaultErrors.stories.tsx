@@ -6,14 +6,17 @@ import { OpenVaultView } from './OpenVaultView'
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
 export const VaultWillBeUnderCollateralized = openVaultStory({
+  title: 'User is generating too much debt for the amount of collateral to be deposited',
   proxyAddress,
   depositAmount: new BigNumber('10'),
-  generateAmount: new BigNumber('3000'),
+  generateAmount: new BigNumber('4000'),
 })
 
 export const VaultWillBeUnderCollateralizedtNextPrice = openVaultStory({
+  title:
+    'User is generating too much debt for the amount of collateral to be deposited at next price. User can do this action but will be subject to liquidation when price updates',
   proxyAddress,
-  depositAmount: new BigNumber('40'),
+  depositAmount: new BigNumber('30'),
   generateAmount: new BigNumber('4000'),
   priceInfo: {
     collateralChangePercentage: new BigNumber('-0.7'),
@@ -21,10 +24,63 @@ export const VaultWillBeUnderCollateralizedtNextPrice = openVaultStory({
 })
 
 export const depositAmountExceedsCollateralBalance = openVaultStory({
+  title:
+    'Amount user is depositing exceeds the balance of collateral they have outstanding in their wallet',
   proxyAddress,
   depositAmount: new BigNumber('1000'),
   balanceInfo: { collateralBalance: new BigNumber('999') },
 })
+
+export const DepositingAllEthBalance = openVaultStory({
+  title:
+    'Error occurs when a user opening an ETH vault tries to deposit all their ETH into the vault',
+  balanceInfo: {
+    collateralBalance: new BigNumber('100'),
+  },
+  ilk: 'ETH-A',
+  depositAmount: new BigNumber('100'),
+  proxyAddress,
+})
+
+export const generateAmountExceedsDaiYieldFromDepositingCollateral = openVaultStory({
+  title:
+    'Amount of dai user is attempting to generate exceeds the maximum amount of DAI that can be generated given the liquidation ratio of 150% in this case',
+  proxyAddress,
+  depositAmount: new BigNumber('150'),
+  generateAmount: new BigNumber('200000.01'),
+  priceInfo: { collateralPrice: new BigNumber('2000') },
+})
+
+export const generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice = openVaultStory({
+  title:
+    'Amount of dai user is attempting to generate exceeds the maximum amount of DAI that can be generated at next price update, the user could proceed with this transaction but is inadvised as they would be subject to liquidations on next price update',
+  proxyAddress,
+  depositAmount: new BigNumber('150'),
+  generateAmount: new BigNumber('200000.01'),
+  priceInfo: { collateralPrice: new BigNumber('2000') },
+})
+
+export const generateAmountExceedsDebtCeiling = openVaultStory({
+  title:
+    'Amount of dai user is trying to generate exceeds the amount of dai available for that ilk',
+  proxyAddress,
+  depositAmount: new BigNumber('20'),
+  generateAmount: new BigNumber('4000'),
+  ilkData: {
+    ilkDebt: new BigNumber('10000'),
+    debtCeiling: new BigNumber('13000'),
+  },
+})
+
+export const GenerateAmountLessThanDebtFloor = openVaultStory({
+  title:
+    'Error is shown when a user is generating an amount of DAI that would cause the debt outstanding in the vault to be less than the dust limit/debt floor.',
+  ilkData: { debtFloor: new BigNumber('2000') },
+  depositAmount: new BigNumber('10'),
+  generateAmount: new BigNumber('1999'),
+  proxyAddress,
+})
+
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'OpenVault/Errors',
