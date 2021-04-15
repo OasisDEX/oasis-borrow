@@ -74,7 +74,7 @@ export function BackArrow() {
   )
 }
 
-export function AppHeader(_: { backLink?: AppLinkProps; CustomLogoWithBack?: () => JSX.Element }) {
+export function AppHeader() {
   const { accountData$, context$ } = useAppContext()
   const { t } = useTranslation()
   const accountData = useObservable(accountData$)
@@ -105,19 +105,6 @@ export function AppHeader(_: { backLink?: AppLinkProps; CustomLogoWithBack?: () 
         )}
         <AccountButton />
       </>
-    </BasicHeader>
-  )
-}
-
-export function MarketingHeader() {
-  const { t } = useTranslation()
-
-  return (
-    <BasicHeader variant="landingContainer">
-      <Logo />
-      <AppLink href="/connect" variant="nav">
-        {t('connect-wallet-button')}
-      </AppLink>
     </BasicHeader>
   )
 }

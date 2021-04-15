@@ -1,6 +1,6 @@
 import { isAppContextAvailable } from 'components/AppContextProvider'
 import { Footer } from 'components/Footer'
-import { AppHeader, ConnectPageHeader, MarketingHeader } from 'components/Header'
+import { AppHeader, ConnectPageHeader } from 'components/Header'
 import { AppLinkProps } from 'components/Links'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
@@ -12,11 +12,6 @@ interface BasicLayoutProps extends WithChildren {
   footer?: JSX.Element
   sx?: SxStyleProp
   variant?: string
-}
-
-export interface AppLayoutProps extends WithChildren {
-  backLink?: AppLinkProps
-  CustomLogoWithBack?: () => JSX.Element
 }
 
 export interface MarketingLayoutProps extends WithChildren {
@@ -42,18 +37,14 @@ export function BasicLayout({ header, footer, children, sx, variant }: BasicLayo
   )
 }
 
-export function AppLayout({ children, backLink, CustomLogoWithBack }: AppLayoutProps) {
+export function AppLayout({ children }: WithChildren) {
   if (!isAppContextAvailable()) {
     return null
   }
 
   return (
     <>
-      <BasicLayout
-        sx={{ zIndex: 2 }}
-        footer={<Footer />}
-        header={<AppHeader {...{ backLink, CustomLogoWithBack }} />}
-      >
+      <BasicLayout sx={{ zIndex: 2 }} footer={<Footer />} header={<AppHeader />}>
         {children}
       </BasicLayout>
     </>
@@ -69,7 +60,7 @@ export function MarketingLayout({ children, variant }: MarketingLayoutProps) {
     <>
       <Background />
       <BasicLayout
-        header={<MarketingHeader />}
+        header={<AppHeader />}
         footer={<Footer />}
         variant={variant || 'marketingContainer'}
       >

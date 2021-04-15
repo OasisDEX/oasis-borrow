@@ -54,7 +54,7 @@ import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
-import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
+import { filter, map, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { catIlk } from '../blockchain/calls/cat'
 import {
