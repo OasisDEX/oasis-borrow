@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - gg/fix-static-files
+      - dev
 
 name: Deploy to Staging
 
