@@ -57,5 +57,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Storybook: https://storybook.oasis.app/' + ${{ steps.vars.outputs.sha_short }} + '/index.html'
+              body: 'Storybook: https://storybook.oasis.app/${{ steps.vars.outputs.sha_short }}/index.html'
             })
