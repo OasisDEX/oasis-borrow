@@ -4,7 +4,6 @@ import express from 'express'
 import basicAuth from 'express-basic-auth'
 import jwt from 'express-jwt'
 import morgan from 'morgan'
-import * as path from 'path'
 
 import { Config } from './config'
 import { jwtAuthMiddleware } from './middleware/signature-auth'
@@ -56,13 +55,6 @@ export function getApp(config: Config, { nextHandler }: Dependencies): express.A
     console.error('Internal error occured!', err)
     res.status(500).send({ name: 'InternalError' })
   })
-
-  // app.all('*', (req, res, next) => {
-  //   if (req.path.startsWith('/static')) {
-  //     return res.sendFile(path.join(__dirname, '../public', req.path))
-  //   }
-  //   next()
-  // })
 
   app.all('*', nextHandler)
 
