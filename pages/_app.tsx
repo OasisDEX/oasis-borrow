@@ -7,7 +7,7 @@ import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProx
 import { SetupWeb3Context } from 'blockchain/web3Context'
 import { AppContextProvider } from 'components/AppContextProvider'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
-import { AppLayout, AppLayoutProps, MarketingLayoutProps } from 'components/Layouts'
+import { AppLayout, MarketingLayoutProps } from 'components/Layouts'
 import { CustomMDXLink } from 'components/Links'
 // @ts-ignore
 import { cache } from 'emotion'
@@ -91,8 +91,8 @@ const globalStyles = `
 interface CustomAppProps {
   Component: {
     theme?: string
-    layoutProps?: AppLayoutProps | MarketingLayoutProps
-    layout?: (props: AppLayoutProps | MarketingLayoutProps) => JSX.Element
+    layoutProps?: MarketingLayoutProps
+    layout?: (props: MarketingLayoutProps) => JSX.Element
     seoTags?: JSX.Element
   }
 }
