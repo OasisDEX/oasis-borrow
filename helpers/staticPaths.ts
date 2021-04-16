@@ -1,7 +1,7 @@
 import getConfig from 'next/config'
 
-const { basePath } = getConfig()
+const config = getConfig()
 
 export function staticFilesRuntimeUrl(filePath: string) {
-  return `${basePath || ''}${filePath}`
+  return `${config?.basePath || ''}${filePath}`
 }
