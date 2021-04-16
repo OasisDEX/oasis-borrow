@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser'
+import * as path from 'path'
 import cookieParser from 'cookie-parser'
 import express from 'express'
 import basicAuth from 'express-basic-auth'
@@ -54,6 +55,13 @@ export function getApp(config: Config, { nextHandler }: Dependencies): express.A
     }
     console.error('Internal error occured!', err)
     res.status(500).send({ name: 'InternalError' })
+  })
+
+  app.all('*', (req, res, next) => {
+    if (req.path.startsWith('/static')) {
+      return res.sendFile(path.join(__dirname, '../public', req.path))
+    }
+    next()
   })
 
   app.all('*', nextHandler)
