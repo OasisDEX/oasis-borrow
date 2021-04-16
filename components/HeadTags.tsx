@@ -11,7 +11,7 @@ export function HeadTags() {
   return (
     <Head>
       {fontLinkHref && <link href={fontLinkHref} rel="stylesheet" />}
-      <link rel="shortcut icon" href="/static/favicon.ico" />
+      <link rel="shortcut icon" href="/borrow/static/favicon.ico" />
     </Head>
   )
 }
@@ -87,17 +87,17 @@ export function PWATags() {
       <link rel="manifest" href="/manifest.json" />
 
       {/* Icons */}
-      <link href="/static/icons/favicon-16.png" rel="icon" type="image/png" sizes="16x16" />
-      <link href="/static/icons/favicon-32.png" rel="icon" type="image/png" sizes="32x32" />
-      <link href="/static/icons/favicon-96.png" rel="icon" type="image/png" sizes="96x96" />
+      <link href="/borrow/static/icons/favicon-16.png" rel="icon" type="image/png" sizes="16x16" />
+      <link href="/borrow/static/icons/favicon-32.png" rel="icon" type="image/png" sizes="32x32" />
+      <link href="/borrow/static/icons/favicon-96.png" rel="icon" type="image/png" sizes="96x96" />
 
       {/* iOS */}
-      <link href="/static/icons/apple-icon-76x76.png" rel="apple-touch-icon" sizes="76x76" />
-      <link href="/static/icons/apple-icon-120x120.png" rel="apple-touch-icon" sizes="120x120" />
-      <link href="/static/icons/apple-icon-152x152.png" rel="apple-touch-icon" sizes="152x152" />
+      <link href="/borrow/static/icons/apple-icon-76x76.png" rel="apple-touch-icon" sizes="76x76" />
+      <link href="/borrow/static/icons/apple-icon-120x120.png" rel="apple-touch-icon" sizes="120x120" />
+      <link href="/borrow/static/icons/apple-icon-152x152.png" rel="apple-touch-icon" sizes="152x152" />
 
       {/* Android */}
-      <link href="/static/icons/android-icon-192x192.png" rel="icon" sizes="192x192" />
+      <link href="/borrow/static/icons/android-icon-192x192.png" rel="icon" sizes="192x192" />
     </>
   )
 }

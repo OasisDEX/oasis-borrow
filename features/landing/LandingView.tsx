@@ -142,7 +142,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
           opacity: 0.08,
         }}
       >
-        <Image sx={{ mb: 4 }} src="/static/img/icons_set.svg" />
+        <Image sx={{ mb: 4 }} src="/borrow/static/img/icons_set.svg" />
       </Box>
       {!isConnected && (
         <AppLink

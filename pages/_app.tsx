@@ -32,8 +32,8 @@ function getLibrary(provider: any, connector: AbstractConnector | undefined): We
   return new Web3(readOnlyEnhancedProvider)
 }
 
-const FTPolarFontBold = '/static/fonts/FTPolar/FTPolarTrial-Bold'
-const FTPolarFontMedium = '/static/fonts/FTPolar/FTPolarTrial-Medium'
+const FTPolarFontBold = '/borrow/static/fonts/FTPolar/FTPolarTrial-Bold'
+const FTPolarFontMedium = '/borrow/static/fonts/FTPolar/FTPolarTrial-Medium'
 
 const globalStyles = `
   html,
