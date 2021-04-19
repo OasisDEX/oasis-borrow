@@ -283,11 +283,21 @@ export type ManageVaultStage =
   | 'manageFailure'
   | 'manageSuccess'
 
-export type ManageVaultState = {
-  // Pipeline stage
+export interface MutableManageVaultState {
   stage: ManageVaultStage
   originalEditingStage: ManageVaultEditingStage
+  showDepositAndGenerateOption: Boolean
+  showPaybackAndWithdrawOption: Boolean
+  showIlkDetails: Boolean
+  depositAmount?: BigNumber
+  depositAmountUSD?: BigNumber
+  withdrawAmount?: BigNumber
+  withdrawAmountUSD?: BigNumber
+  generateAmount?: BigNumber
+  paybackAmount?: BigNumber
+}
 
+export type ManageVaultState = MutableManageVaultState & {
   // User status
   account: string | undefined
   accountIsController: boolean
@@ -311,20 +321,11 @@ export type ManageVaultState = {
   toggle?: () => void
 
   // Editing Form Behaviour
-  showIlkDetails: Boolean
   toggleIlkDetails?: () => void
-  showDepositAndGenerateOption: Boolean
-  showPaybackAndWithdrawOption: Boolean
   toggleDepositAndGenerateOption?: () => void
   togglePaybackAndWithdrawOption?: () => void
 
   // Editing Inputs
-  depositAmount?: BigNumber
-  depositAmountUSD?: BigNumber
-  withdrawAmount?: BigNumber
-  withdrawAmountUSD?: BigNumber
-  generateAmount?: BigNumber
-  paybackAmount?: BigNumber
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
@@ -378,12 +379,12 @@ export type ManageVaultState = {
   daiAllowanceTxHash?: string
   proxyTxHash?: string
   manageTxHash?: string
-  proxyConfirmations?: number
-  safeConfirmations: number
   txError?: any
   etherscan?: string
+  proxyConfirmations?: number
+  safeConfirmations: number
 
-  injectStateOverride: (state: Partial<ManageVaultState>) => void
+  injectStateOverride: (state: Partial<MutableManageVaultState>) => void
 }
 
 function addTransitions(
@@ -589,7 +590,7 @@ export function createManageVault$(
                   }
 
                   // NOTE: Not to be used in production/dev, test only
-                  function injectStateOverride(stateToOverride: Partial<ManageVaultState>) {
+                  function injectStateOverride(stateToOverride: Partial<MutableManageVaultState>) {
                     return change$.next({ kind: 'injectStateOverride', stateToOverride })
                   }
 

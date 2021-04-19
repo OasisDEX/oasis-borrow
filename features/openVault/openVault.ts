@@ -203,8 +203,17 @@ export type OpenVaultStage =
   | 'openFailure'
   | 'openSuccess'
 
-export type OpenVaultState = {
+export interface MutableOpenVaultState {
   stage: OpenVaultStage
+  depositAmount?: BigNumber
+  depositAmountUSD?: BigNumber
+  generateAmount?: BigNumber
+  showGenerateOption: boolean
+  showIlkDetails: boolean
+  selectedAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
+}
+
+export type OpenVaultState = MutableOpenVaultState & {
   ilk: string
   account: string
   token: string
@@ -224,8 +233,6 @@ export type OpenVaultState = {
 
   toggleGenerateOption?: () => void
   toggleIlkDetails?: () => void
-  showGenerateOption: boolean
-  showIlkDetails: boolean
 
   afterLiquidationPrice: BigNumber
   afterCollateralizationRatio: BigNumber
@@ -234,14 +241,12 @@ export type OpenVaultState = {
   daiYieldFromDepositingCollateralAtNextPrice: BigNumber
   afterFreeCollateral: BigNumber
 
-  depositAmount?: BigNumber
-  depositAmountUSD?: BigNumber
   maxDepositAmount: BigNumber
   maxDepositAmountUSD: BigNumber
-  generateAmount?: BigNumber
   maxGenerateAmount: BigNumber
   maxGenerateAmountCurrentPrice: BigNumber
   maxGenerateAmountNextPrice: BigNumber
+
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
@@ -253,17 +258,16 @@ export type OpenVaultState = {
   setAllowanceAmountUnlimited?: () => void
   setAllowanceAmountToDepositAmount?: () => void
   resetAllowanceAmount?: () => void
-  selectedAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
 
   allowanceTxHash?: string
   proxyTxHash?: string
   openTxHash?: string
-  proxyConfirmations?: number
-  safeConfirmations: number
   txError?: any
   etherscan?: string
+  proxyConfirmations?: number
+  safeConfirmations: number
 
-  injectStateOverride: (state: Partial<OpenVaultState>) => void
+  injectStateOverride: (state: Partial<MutableOpenVaultState>) => void
 }
 
 function addTransitions(
@@ -417,7 +421,7 @@ export function createOpenVault$(
                     }
 
                     // NOTE: Not to be used in production/dev, test only
-                    function injectStateOverride(stateToOverride: Partial<OpenVaultState>) {
+                    function injectStateOverride(stateToOverride: Partial<MutableOpenVaultState>) {
                       return change$.next({ kind: 'injectStateOverride', stateToOverride })
                     }
 

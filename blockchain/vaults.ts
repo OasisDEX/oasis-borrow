@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
 import { Context } from 'blockchain/network'
-import { ilkToToken$ } from 'components/AppContext'
 import { one, zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
@@ -10,7 +9,7 @@ import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from './calls/cdpMana
 import { getCdps } from './calls/getCdps'
 import { CallObservable } from './calls/observe'
 import { vatGem, vatUrns } from './calls/vat'
-import { buildIlkData$, IlkData } from './ilks'
+import { IlkData } from './ilks'
 import { OraclePriceData } from './prices'
 
 export function createVaults$(
@@ -216,99 +215,4 @@ export function createVaultChange$(
   id: BigNumber,
 ): Observable<VaultChange> {
   return vault$(id).pipe(map((vault) => ({ kind: 'vault', vault })))
-}
-
-export interface BuildVaultProps {
-  _cdpManagerUrns$?: Observable<string>
-  _oraclePriceData$?: Observable<OraclePriceData>
-  _ilkData$?: Observable<IlkData>
-  controller?: string
-  ilk: string
-  collateral: BigNumber
-  debt: BigNumber
-  unlockedCollateral?: BigNumber
-  currentPrice?: BigNumber
-  nextPrice?: BigNumber
-  id?: BigNumber
-}
-
-export const DEFAULT_PROXY_ADDRESS = '0xProxyAddress'
-export function buildVault$({
-  _cdpManagerUrns$,
-  _oraclePriceData$,
-  _ilkData$,
-  currentPrice = zero,
-  nextPrice = zero,
-  unlockedCollateral = zero,
-  id = one,
-  controller = '0xVaultController',
-  debt,
-  collateral,
-  ilk,
-}: BuildVaultProps): Observable<Vault> {
-  function oraclePriceData$() {
-    return (
-      _oraclePriceData$ ||
-      of({
-        currentPrice,
-        isStaticPrice: false,
-        nextPrice,
-      })
-    )
-  }
-
-  function ilkData$() {
-    return (
-      _ilkData$ ||
-      oraclePriceData$().pipe(
-        switchMap(({ currentPrice }) =>
-          buildIlkData$({ ilk, currentCollateralPrice: currentPrice }),
-        ),
-      )
-    )
-  }
-
-  function cdpManagerUrns$() {
-    return _cdpManagerUrns$ || of('0xUrnAddress')
-  }
-
-  function cdpManagerIlks$() {
-    return of(ilk)
-  }
-
-  function cdpManagerOwner$() {
-    return of(DEFAULT_PROXY_ADDRESS)
-  }
-
-  function controller$() {
-    return of(controller)
-  }
-
-  function vatGem$() {
-    return of(unlockedCollateral)
-  }
-
-  function vatUrns$() {
-    return ilkData$().pipe(
-      switchMap(({ debtScalingFactor }) =>
-        of({
-          normalizedDebt: debt.div(debtScalingFactor).dp(18, BigNumber.ROUND_DOWN),
-          collateral,
-        }),
-      ),
-    )
-  }
-
-  return createVault$(
-    cdpManagerUrns$,
-    cdpManagerIlks$,
-    cdpManagerOwner$,
-    vatUrns$,
-    vatGem$,
-    ilkData$,
-    oraclePriceData$,
-    controller$,
-    ilkToToken$,
-    id,
-  )
 }
