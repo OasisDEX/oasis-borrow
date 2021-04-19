@@ -438,7 +438,10 @@
     "payback": "Payback <0>{{daiAmount}}</0> DAI to Vault",
     "transfer": "Vault given to <0>{{transferTo}}</0> by <0>{{transferFrom}}</0>",
     "migrate": "Vault migrated",
-    "auction_started": "Auction started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} DAI</0>"
+    "auction_started": "Auction started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} DAI</0>",
+    "auction_started_v2": "Auction started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} DAI</0>",
+    "take": "<0>{{collateralTaken}} {{token}}</0> sold for <0>{{coveredDebt}} {{token}}</0>",
+    "auction_finished_v2": "Auction finished, <0>{{remainingCollateral}} {{token}}</0> remained"
   },
   "event": {
     "type": "Type",
