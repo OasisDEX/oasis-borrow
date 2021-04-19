@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
-import { ilkToToken$, protoTxHelpers } from 'components/AppContext'
+import { ilkToToken$, protoTxHelpers, TxHelpers } from 'components/AppContext'
 import { createOpenVault$ } from 'features/openVault/openVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
@@ -15,6 +15,7 @@ import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
 
 export interface MockOpenVaultProps {
   _context$?: Observable<ContextConnected>
+  _txHelpers$?: Observable<TxHelpers>
   _ilkData$?: Observable<IlkData>
   _priceInfo$?: Observable<PriceInfo>
   _balanceInfo$?: Observable<BalanceInfo>
@@ -35,6 +36,7 @@ export interface MockOpenVaultProps {
 
 export function mockOpenVault$({
   _context$,
+  _txHelpers$,
   _ilkData$,
   _priceInfo$,
   _balanceInfo$,
@@ -59,7 +61,7 @@ export function mockOpenVault$({
       status: 'connected',
     })
 
-  const txHelpers$ = of(protoTxHelpers)
+  const txHelpers$ = _txHelpers$ || of(protoTxHelpers)
 
   function priceInfo$() {
     return _priceInfo$ || mockPriceInfo$({ ...priceInfo, token })

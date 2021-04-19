@@ -16,15 +16,15 @@ interface AllowanceDepositChange {
   kind: 'allowanceAsDepositAmount'
 }
 
-interface AllowanceReset {
-  kind: 'allowanceReset'
+interface AllowanceCustom {
+  kind: 'allowanceCustom'
 }
 
 export type OpenVaultAllowanceChange =
   | AllowanceChange
   | AllowanceUnlimitedChange
   | AllowanceDepositChange
-  | AllowanceReset
+  | AllowanceCustom
 
 export function applyOpenVaultAllowance(
   change: OpenVaultChange,
@@ -55,7 +55,7 @@ export function applyOpenVaultAllowance(
     }
   }
 
-  if (change.kind === 'allowanceReset') {
+  if (change.kind === 'allowanceCustom') {
     return {
       ...state,
       selectedAllowanceRadio: 'custom',

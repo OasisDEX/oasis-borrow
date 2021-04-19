@@ -1,13 +1,19 @@
 /* eslint-disable func-style */
 
+import { TxMeta, TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
+import { maxUint256 } from 'blockchain/calls/erc20'
 import { expect } from 'chai'
+import { protoTxHelpers } from 'components/AppContext'
 import { mockOpenVault$ } from 'helpers/mocks/openVault.mock'
+import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
-import { Subject } from 'rxjs'
+import { zero } from 'helpers/zero'
+import { of, Subject } from 'rxjs'
 
 import { parseVaultIdFromReceiptLogs } from '../openVaultTransactions'
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
+import { mockOpenVaultTxState } from './fixtures/openVaultTx'
 
 describe('openVault', () => {
   beforeEach(() => {})
@@ -23,49 +29,7 @@ describe('openVault', () => {
     })
   })
 
-  describe('openVault$', () => {
-    // function createMockTxState<T extends TxMeta>(
-    //   meta: T,
-    //   status: TxStatus = TxStatus.Success,
-    //   receipt: unknown = {},
-    // ): Observable<TxState<T>> {
-    //   if (status === TxStatus.Success) {
-    //     const txState = {
-    //       account: '0x',
-    //       txNo: 0,
-    //       networkId: '1',
-    //       meta,
-    //       start: new Date(),
-    //       lastChange: new Date(),
-    //       dismissed: false,
-    //       status,
-    //       txHash: '0xhash',
-    //       blockNumber: 0,
-    //       receipt,
-    //       confirmations: 15,
-    //       safeConfirmations: 15,
-    //     }
-    //     return of(txState)
-    //   } else if (status === TxStatus.Failure) {
-    //     const txState = {
-    //       account: '0x',
-    //       txNo: 0,
-    //       networkId: '1',
-    //       meta,
-    //       start: new Date(),
-    //       lastChange: new Date(),
-    //       dismissed: false,
-    //       status,
-    //       txHash: '0xhash',
-    //       blockNumber: 0,
-    //       receipt,
-    //     }
-    //     return of(txState)
-    //   } else {
-    //     throw new Error('Not implemented yet')
-    //   }
-    // }
-
+  describe.only('openVault$', () => {
     it('should wait until ilks are fetched before emiitting', () => {
       const _ilks$ = new Subject<string[]>()
       const state = getStateUnpacker(
@@ -140,196 +104,290 @@ describe('openVault', () => {
       expect(state().depositAmount!.toString()).to.deep.equal(collateralBalance.toString())
     })
 
-    //   it('editing.updateDeposit()', () => {
-    //     const depositAmount = new BigNumber(5)
-    //     const state = getStateUnpacker(createTestFixture())
-    //     state().updateDeposit!(depositAmount)
-    //     expect(state().depositAmount!.toString()).to.be.equal(depositAmount.toString())
-    //     expect(state().stage).to.be.equal('editing')
-    //   })
+    it('should update depositAmountUSD', () => {
+      const depositAmountUSD = new BigNumber('5')
+      const state = getStateUnpacker(mockOpenVault$())
+      state().updateDepositUSD!(depositAmountUSD)
+      expect(state().depositAmountUSD!.toString()).to.be.equal(depositAmountUSD.toString())
+    })
 
-    //   it('editing.updateDepositUSD()', () => {
-    //     const depositAmount = new BigNumber(5)
-    //     const depositAmountUSD = protoETHPriceInfo.currentCollateralPrice.times(depositAmount)
-    //     const state = getStateUnpacker(createTestFixture())
-    //     state().updateDepositUSD!(depositAmountUSD)
-    //     expect(state().depositAmount!.toString()).to.be.equal(depositAmount.toString())
-    //     expect(state().depositAmountUSD!.toString()).to.be.equal(depositAmountUSD.toString())
-    //   })
+    it('should calculate depositAmount based on depositAmountUSD', () => {
+      const depositAmountUSD = new BigNumber('5')
+      const collateralPrice = new BigNumber('100')
+      const state = getStateUnpacker(mockOpenVault$({ priceInfo: { collateralPrice } }))
+      state().updateDepositUSD!(depositAmountUSD)
+      expect(state().depositAmount!.toString()).to.deep.equal(
+        depositAmountUSD.div(collateralPrice).toString(),
+      )
+      expect(state().depositAmountUSD!.toString()).to.deep.equal(depositAmountUSD.toString())
+    })
 
-    //   it('editing.updateGenerate()', () => {
-    //     const depositAmount = new BigNumber(5)
-    //     const generateAmount = new BigNumber(3000)
-    //     const state = getStateUnpacker(createTestFixture())
-    //     state().updateDeposit!(depositAmount)
-    //     state().updateGenerate!(generateAmount)
-    //     expect(state().generateAmount).to.be.undefined
-    //     state().toggleGenerateOption!()
-    //     state().updateGenerate!(generateAmount)
-    //     expect(state().generateAmount!.toString()).to.be.equal(generateAmount.toString())
-    //   })
+    it('should progress to proxy flow from editing when without proxy', () => {
+      const depositAmount = new BigNumber('100')
+      const generateAmount = new BigNumber('20000')
 
-    //   it('editing.progress()', () => {
-    //     const state = getStateUnpacker(createTestFixture())
-    //     state().progress!()
-    //     expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
-    //   })
+      const state = getStateUnpacker(mockOpenVault$())
+      state().updateDeposit!(depositAmount)
+      state().updateGenerate!(generateAmount)
 
-    //   it('creating proxy', () => {
-    //     const proxyAddress$ = new Subject<string>()
-    //     const proxyAddress = '0xProxyAddress'
-    //     const state = getStateUnpacker(
-    //       createTestFixture({
-    //         proxyAddress$,
-    //         txHelpers: {
-    //           ...protoTxHelpers,
-    //           sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
-    //             createMockTxState(meta),
-    //         },
-    //       }),
-    //     )
-    //     proxyAddress$.next()
-    //     state().progress!()
-    //     expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
-    //     state().progress!()
-    //     proxyAddress$.next(proxyAddress)
-    //     expect(state().stage).to.be.equal('proxySuccess')
-    //     expect(state().proxyAddress).to.be.equal(proxyAddress)
-    //   })
+      state().progress!()
+      expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
+    })
 
-    //   it('creating proxy failure', () => {
-    //     const proxyAddress$ = new Subject<string>()
-    //     const proxyAddress = '0xProxyAddress'
-    //     const state = getStateUnpacker(
-    //       createTestFixture({
-    //         proxyAddress$,
-    //         txHelpers: {
-    //           ...protoTxHelpers,
-    //           sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
-    //             createMockTxState(meta, TxStatus.Failure),
-    //         },
-    //       }),
-    //     )
-    //     proxyAddress$.next()
-    //     state().progress!()
-    //     state().progress!()
-    //     proxyAddress$.next(proxyAddress)
-    //     expect(state().stage).to.be.equal('proxyFailure')
-    //   })
+    it('should create proxy', () => {
+      const _proxyAddress$ = new Subject<string>()
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          _proxyAddress$,
+          _txHelpers$: of({
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+              mockOpenVaultTxState(meta),
+          }),
+        }),
+      )
 
-    //   it('setting allowance', () => {
-    //     const proxyAddress = '0xProxyAddress'
-    //     const state = getStateUnpacker(
-    //       createTestFixture({
-    //         ilk: 'WBTC-A',
-    //         proxyAddress,
-    //         allowance: new BigNumber(99),
-    //         depositAmount: new BigNumber(100),
-    //         balanceInfo: { collateralBalance: new BigNumber(100) },
-    //         txHelpers: {
-    //           ...protoTxHelpers,
-    //           sendWithGasEstimation: <B extends TxMeta>(_allowance: any, meta: B) =>
-    //             createMockTxState(meta),
-    //         },
-    //       }),
-    //     )
-    //     state().progress!()
-    //     expect(state().stage).to.be.equal('allowanceWaitingForConfirmation')
-    //     state().progress!()
-    //     expect(state().stage).to.be.equal('allowanceSuccess')
-    //   })
+      _proxyAddress$.next()
+      state().progress!()
+      expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
+      state().progress!()
+      _proxyAddress$.next(DEFAULT_PROXY_ADDRESS)
+      expect(state().stage).to.be.equal('proxySuccess')
+      expect(state().proxyAddress).to.be.equal(DEFAULT_PROXY_ADDRESS)
+    })
 
-    //   it('setting allowance failure', () => {
-    //     const proxyAddress = '0xProxyAddress'
-    //     const state = getStateUnpacker(
-    //       createTestFixture({
-    //         ilk: 'WBTC-A',
-    //         proxyAddress,
-    //         allowance: new BigNumber(99),
-    //         depositAmount: new BigNumber(100),
-    //         balanceInfo: { collateralBalance: new BigNumber(100) },
-    //         txHelpers: {
-    //           ...protoTxHelpers,
-    //           sendWithGasEstimation: <B extends TxMeta>(_allowance: any, meta: B) =>
-    //             createMockTxState(meta, TxStatus.Failure),
-    //         },
-    //       }),
-    //     )
-    //     state().progress!()
-    //     state().progress!()
-    //     expect(state().stage).to.be.equal('allowanceFailure')
-    //   })
+    it('should handle proxy failure', () => {
+      const _proxyAddress$ = new Subject<string>()
 
-    //   it('editing.progress(proxyAddress, allowance)', () => {
-    //     const state = getStateUnpacker(createTestFixture({ proxyAddress: '0xProxyAddress' }))
-    //     state().progress!()
-    //     expect(state().stage).to.be.equal('openWaitingForConfirmation')
-    //   })
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          _proxyAddress$,
+          _txHelpers$: of({
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+              mockOpenVaultTxState(meta, TxStatus.Failure),
+          }),
+        }),
+      )
+      _proxyAddress$.next()
+      state().progress!()
+      state().progress!()
+      _proxyAddress$.next(DEFAULT_PROXY_ADDRESS)
+      expect(state().stage).to.be.equal('proxyFailure')
+    })
 
-    //   it('opening vault', () => {
-    //     const state = getStateUnpacker(
-    //       createTestFixture({
-    //         proxyAddress: '0xProxyAddress',
-    //         txHelpers: {
-    //           ...protoTxHelpers,
-    //           send: <B extends TxMeta>(_open: any, meta: B) =>
-    //             createMockTxState(meta, TxStatus.Success, newCDPTxReceipt),
-    //         },
-    //       }),
-    //     )
-    //     state().progress!()
-    //     expect(state().stage).to.be.equal('openWaitingForConfirmation')
-    //     state().progress!()
-    //     expect(state().stage).to.be.equal('openSuccess')
-    //     expect(state().id!.toString()).to.be.equal('3281')
-    //   })
+    it('should skip allowance flow from editing when allowance is insufficent and ilk is ETH-*', () => {
+      const depositAmount = new BigNumber('100')
+      const generateAmount = new BigNumber('20000')
 
-    //   it('opening vault failure', () => {
-    //     const state = getStateUnpacker(
-    //       createTestFixture({
-    //         proxyAddress: '0xProxyAddress',
-    //         txHelpers: {
-    //           ...protoTxHelpers,
-    //           send: <B extends TxMeta>(_open: any, meta: B) =>
-    //             createMockTxState(meta, TxStatus.Failure),
-    //         },
-    //       }),
-    //     )
-    //     state().progress!()
-    //     state().progress!()
-    //     expect(state().stage).to.be.equal('openFailure')
-    //   })
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: zero,
+          ilk: 'ETH-A',
+        }),
+      )
+      state().updateDeposit!(depositAmount)
+      state().updateGenerate!(generateAmount)
+      state().progress!()
+      expect(state().stage).to.not.deep.equal('allowanceWaitingForConfirmation')
+      expect(state().stage).to.deep.equal('openWaitingForConfirmation')
+    })
+
+    it('should progress to allowance flow from editing when allowance is insufficent and ilk is not ETH-*', () => {
+      const depositAmount = new BigNumber('100')
+      const generateAmount = new BigNumber('20000')
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: zero,
+          ilk: 'WBTC-A',
+        }),
+      )
+      state().updateDeposit!(depositAmount)
+      state().updateGenerate!(generateAmount)
+      state().progress!()
+      expect(state().stage).to.be.equal('allowanceWaitingForConfirmation')
+    })
+
+    it('should set allowance to maximum', () => {
+      const depositAmount = new BigNumber('100')
+      const generateAmount = new BigNumber('20000')
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          _txHelpers$: of({
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+              mockOpenVaultTxState(meta),
+          }),
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: zero,
+          ilk: 'WBTC-A',
+        }),
+      )
+
+      state().updateDeposit!(depositAmount)
+      state().updateGenerate!(generateAmount)
+
+      state().progress!()
+      expect(state().stage).to.be.equal('allowanceWaitingForConfirmation')
+      expect(state().allowanceAmount!.toString()).to.deep.equal(maxUint256.toString())
+      state().progress!()
+      expect(state().stage).to.be.equal('allowanceSuccess')
+      expect(state().allowance!.toString()).to.be.deep.equal(maxUint256.toString())
+    })
+
+    it('should set allowance to depositAmount', () => {
+      const depositAmount = new BigNumber('100')
+      const generateAmount = new BigNumber('20000')
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          _txHelpers$: of({
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+              mockOpenVaultTxState(meta),
+          }),
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: zero,
+          ilk: 'WBTC-A',
+        }),
+      )
+
+      state().updateDeposit!(depositAmount)
+      state().updateGenerate!(generateAmount)
+
+      state().progress!()
+      expect(state().stage).to.be.equal('allowanceWaitingForConfirmation')
+      expect(state().allowanceAmount!.toString()).to.deep.equal(maxUint256.toString())
+      state().setAllowanceAmountToDepositAmount!()
+      expect(state().allowanceAmount!.toString()).to.deep.equal(depositAmount.toString())
+      state().progress!()
+      expect(state().stage).to.be.equal('allowanceSuccess')
+      expect(state().allowance!.toString()).to.be.deep.equal(depositAmount.toString())
+    })
+
+    it('should set allowance to custom amount', () => {
+      const depositAmount = new BigNumber('100')
+      const generateAmount = new BigNumber('20000')
+
+      const customAllowanceAmount = new BigNumber('400')
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          _txHelpers$: of({
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+              mockOpenVaultTxState(meta),
+          }),
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: zero,
+          ilk: 'WBTC-A',
+        }),
+      )
+
+      state().updateDeposit!(depositAmount)
+      state().updateGenerate!(generateAmount)
+
+      state().progress!()
+      expect(state().stage).to.be.equal('allowanceWaitingForConfirmation')
+      expect(state().allowanceAmount!.toString()).to.deep.equal(maxUint256.toString())
+      state().setAllowanceAmountCustom!()
+      expect(state().allowanceAmount).to.be.undefined
+      state().updateAllowanceAmount!(customAllowanceAmount)
+      expect(state().allowanceAmount!.toString()).to.deep.equal(customAllowanceAmount.toString())
+      state().progress!()
+      expect(state().stage).to.be.equal('allowanceSuccess')
+      expect(state().allowance!.toString()).to.be.deep.equal(customAllowanceAmount.toString())
+    })
+
+    it('should handle set allowance failure', () => {
+      const depositAmount = new BigNumber('100')
+      const generateAmount = new BigNumber('20000')
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          _txHelpers$: of({
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+              mockOpenVaultTxState(meta, TxStatus.Failure),
+          }),
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: zero,
+          ilk: 'WBTC-A',
+        }),
+      )
+
+      state().updateDeposit!(depositAmount)
+      state().updateGenerate!(generateAmount)
+
+      state().progress!()
+      expect(state().stage).to.be.equal('allowanceWaitingForConfirmation')
+      expect(state().allowanceAmount!.toString()).to.deep.equal(maxUint256.toString())
+      state().progress!()
+      expect(state().stage).to.be.equal('allowanceFailure')
+      expect(state().allowance!.toString()).to.be.deep.eq(zero.toString())
+    })
+
+    it('should progress to open vault tx flow from editing with proxyAddress and validAllowance', () => {
+      const depositAmount = new BigNumber('100')
+      const generateAmount = new BigNumber('20000')
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: maxUint256,
+          ilk: 'WBTC-A',
+        }),
+      )
+      state().updateDeposit!(depositAmount)
+      state().updateGenerate!(generateAmount)
+      state().progress!()
+      expect(state().stage).to.be.equal('openWaitingForConfirmation')
+    })
+
+    it('should open vault successfully', () => {
+      const depositAmount = new BigNumber('100')
+      const generateAmount = new BigNumber('20000')
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          _txHelpers$: of({
+            ...protoTxHelpers,
+            send: <B extends TxMeta>(_proxy: any, meta: B) =>
+              mockOpenVaultTxState(meta, TxStatus.Success, newCDPTxReceipt),
+          }),
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: maxUint256,
+          ilk: 'WBTC-A',
+        }),
+      )
+      state().updateDeposit!(depositAmount)
+      state().updateGenerate!(generateAmount)
+      state().progress!()
+      expect(state().stage).to.be.equal('openWaitingForConfirmation')
+      state().progress!()
+      expect(state().stage).to.be.equal('openSuccess')
+      expect(state().id!.toString()).to.be.equal('3281')
+    })
+
+    it('should handle open vault tx failing', () => {
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          _txHelpers$: of({
+            ...protoTxHelpers,
+            send: <B extends TxMeta>(_proxy: any, meta: B) =>
+              mockOpenVaultTxState(meta, TxStatus.Failure),
+          }),
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: maxUint256,
+          ilk: 'WBTC-A',
+        }),
+      )
+      state().progress!()
+      state().progress!()
+      expect(state().stage).to.be.equal('openFailure')
+    })
   })
-
-  // describe('openVault stage categories', () => {
-  //   it('should identify editing stage correctly', () => {
-  //     const { isEditingStage } = categoriseOpenVaultStage('editing')
-  //     expect(isEditingStage).to.be.true
-  //   })
-
-  //   it('should identify proxy stages correctly', () => {
-  //     expect(categoriseOpenVaultStage('proxyWaitingForConfirmation').isProxyStage).to.be.true
-  //     expect(categoriseOpenVaultStage('proxyWaitingForApproval').isProxyStage).to.be.true
-  //     expect(categoriseOpenVaultStage('proxyInProgress').isProxyStage).to.be.true
-  //     expect(categoriseOpenVaultStage('proxyFailure').isProxyStage).to.be.true
-  //     expect(categoriseOpenVaultStage('proxySuccess').isProxyStage).to.be.true
-  //   })
-
-  //   it('should identify allowance stages correctly', () => {
-  //     expect(categoriseOpenVaultStage('allowanceWaitingForConfirmation').isAllowanceStage).to.be
-  //       .true
-  //     expect(categoriseOpenVaultStage('allowanceWaitingForApproval').isAllowanceStage).to.be.true
-  //     expect(categoriseOpenVaultStage('allowanceInProgress').isAllowanceStage).to.be.true
-  //     expect(categoriseOpenVaultStage('allowanceFailure').isAllowanceStage).to.be.true
-  //     expect(categoriseOpenVaultStage('allowanceSuccess').isAllowanceStage).to.be.true
-  //   })
-
-  //   it('should identify open stages correctly', () => {
-  //     expect(categoriseOpenVaultStage('openWaitingForConfirmation').isOpenStage).to.be.true
-  //     expect(categoriseOpenVaultStage('openWaitingForApproval').isOpenStage).to.be.true
-  //     expect(categoriseOpenVaultStage('openInProgress').isOpenStage).to.be.true
-  //     expect(categoriseOpenVaultStage('openFailure').isOpenStage).to.be.true
-  //     expect(categoriseOpenVaultStage('openSuccess').isOpenStage).to.be.true
-  //   })
-  // })
 })

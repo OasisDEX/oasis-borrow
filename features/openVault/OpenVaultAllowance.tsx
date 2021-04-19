@@ -20,7 +20,7 @@ export function OpenVaultAllowance({
   updateAllowanceAmount,
   setAllowanceAmountUnlimited,
   setAllowanceAmountToDepositAmount,
-  resetAllowanceAmount,
+  setAllowanceAmountCustom,
   selectedAllowanceRadio,
 }: OpenVaultState) {
   const canSelectRadio = stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFailure'
@@ -52,7 +52,7 @@ export function OpenVaultAllowance({
           </Label>
           <Label
             sx={{ border: 'light', p: 2, borderRadius: 'small' }}
-            onClick={resetAllowanceAmount}
+            onClick={setAllowanceAmountCustom}
           >
             <Radio name="dark-mode" value="true" defaultChecked={isCustom} />
             <Grid columns="2fr 2fr 1fr" sx={{ alignItems: 'center' }}>

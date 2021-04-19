@@ -250,7 +250,7 @@ interface OpenVaultFunctions {
   updateAllowanceAmount?: (amount?: BigNumber) => void
   setAllowanceAmountUnlimited?: () => void
   setAllowanceAmountToDepositAmount?: () => void
-  resetAllowanceAmount?: () => void
+  setAllowanceAmountCustom?: () => void
   injectStateOverride: (state: Partial<MutableOpenVaultState>) => void
 }
 
@@ -333,9 +333,9 @@ function addTransitions(
         change({
           kind: 'allowanceAsDepositAmount',
         }),
-      resetAllowanceAmount: () =>
+      setAllowanceAmountCustom: () =>
         change({
-          kind: 'allowanceReset',
+          kind: 'allowanceCustom',
         }),
       progress: () => setAllowance(txHelpers, change, state),
       reset: () => change({ kind: 'backToEditing' }),
