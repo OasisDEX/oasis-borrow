@@ -17,12 +17,11 @@ export function OpenVaultConfirmation({
   id,
   etherscan,
   openTxHash,
+  collateralBalanceRemaining,
 }: OpenVaultState) {
   const walletBalance = formatCryptoBalance(collateralBalance)
   const intoVault = formatCryptoBalance(depositAmount || zero)
-  const remainingInWallet = formatCryptoBalance(
-    depositAmount ? collateralBalance.minus(depositAmount) : collateralBalance,
-  )
+  const remainingInWallet = formatCryptoBalance(collateralBalanceRemaining)
   const daiToBeGenerated = formatCryptoBalance(generateAmount || zero)
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
     ? '--'
