@@ -47,6 +47,14 @@ function assignBanner(state: VaultBannersState): VaultBannersState {
   return state
 }
 
+function onlyAuctionStartedEvents(event: VaultHistoryEvent) {
+  return event.kind === 'AUCTION_STARTED'
+}
+
+function eventsFromLastWeek(event: VaultHistoryEvent) {
+  return moment(event.timestamp).isAfter(moment().subtract(1, 'weeks'))
+}
+
 export function createVaultsBanners$(
   context$: Observable<Context>,
   priceInfo$: (token: string) => Observable<PriceInfo>,
@@ -58,10 +66,9 @@ export function createVaultsBanners$(
     switchMap((context) => {
       return combineLatest(vault$(id), vaultHistory$(id)).pipe(
         switchMap(([{ token, liquidationPrice, controller, unlockedCollateral }, events]) => {
-          // All started auctions in the past week orders in a desc order by timestamp ( recent ones first )
           const auctionsStarted = events
-            .filter((event) => event.kind === 'AUCTION_STARTED')
-            .map((event) => parseInt(event.timestamp) >= moment().subtract(1, 'weeks').unix())
+            .filter((event) => onlyAuctionStartedEvents(event) && eventsFromLastWeek(event))
+            .map((event) => new Date(event.timestamp).getTime())
             .sort((prev, next) => {
               if (prev > next) return -1
               if (prev < next) return 1
