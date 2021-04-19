@@ -53,7 +53,7 @@ export function manageVaultStory({
         .subscribe(({ injectStateOverride, priceInfo: { currentCollateralPrice } }) => {
           const newState: Partial<MutableManageVaultState> = {
             ...otherState,
-            stage,
+            ...(stage && { stage }),
             ...(depositAmount && {
               depositAmount,
               depositAmountUSD: depositAmount.times(currentCollateralPrice),
