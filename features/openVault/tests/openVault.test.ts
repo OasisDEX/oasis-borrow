@@ -6,8 +6,8 @@ import { mockOpenVault$ } from 'helpers/mocks/openVault.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { Subject } from 'rxjs'
 
+import { parseVaultIdFromReceiptLogs } from '../openVaultTransactions'
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
-import { parseVaultIdFromReceiptLogs } from './openVaultTransactions'
 
 describe('openVault', () => {
   beforeEach(() => {})
