@@ -27,7 +27,7 @@ export function manageVaultStory({
   proxyAddress,
   collateralAllowance,
   daiAllowance,
-}: ManageVaultStory) {
+}: ManageVaultStory = {}) {
   return ({
     depositAmount,
     withdrawAmount,

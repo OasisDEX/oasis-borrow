@@ -14,9 +14,9 @@ export interface MockVaultProps {
   _oraclePriceData$?: Observable<OraclePriceData>
   _ilkData$?: Observable<IlkData>
   controller?: string
-  ilk: string
-  collateral: BigNumber
-  debt: BigNumber
+  ilk?: string
+  collateral?: BigNumber
+  debt?: BigNumber
   unlockedCollateral?: BigNumber
   currentPrice?: BigNumber
   nextPrice?: BigNumber
@@ -34,9 +34,9 @@ export function mockVault$({
   unlockedCollateral = zero,
   id = one,
   controller = '0xVaultController',
-  debt,
-  collateral,
-  ilk,
+  debt = zero,
+  collateral = zero,
+  ilk = 'WBTC-A',
 }: MockVaultProps): Observable<Vault> {
   function oraclePriceData$() {
     return (

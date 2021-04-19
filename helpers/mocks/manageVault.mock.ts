@@ -32,7 +32,7 @@ export interface MockManageVaultProps {
   ilkData?: MockIlkDataProps
   priceInfo?: MockPriceInfoProps
   balanceInfo?: MockBalanceInfoProps
-  vault: MockVaultProps
+  vault?: MockVaultProps
 
   proxyAddress?: string
   collateralAllowance?: BigNumber
@@ -52,15 +52,15 @@ export function mockManageVault$({
   _vault$,
   ilkData,
   priceInfo,
-  balanceInfo = {},
+  balanceInfo,
   vault,
   proxyAddress,
   collateralAllowance = maxUint256,
   daiAllowance = maxUint256,
   account = '0xVaultController',
   status = 'connected',
-}: MockManageVaultProps): Observable<ManageVaultState> {
-  const token = vault.ilk.split('-')[0]
+}: MockManageVaultProps = {}): Observable<ManageVaultState> {
+  const token = vault && vault.ilk ? vault.ilk.split('-')[0] : 'WBTC'
 
   const context$ =
     _context$ ||
@@ -115,9 +115,7 @@ export function mockManageVault$({
       mockVault$({
         _oraclePriceData$,
         _ilkData$: ilkData$(),
-        ilk: vault.ilk,
-        collateral: vault.collateral,
-        debt: vault.debt,
+        ...vault,
       })
     )
   }
