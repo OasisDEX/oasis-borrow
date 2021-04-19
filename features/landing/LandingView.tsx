@@ -8,7 +8,8 @@ import { IlksFilterState } from 'features/ilks/ilksFilters'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { Filters } from 'features/vaultsOverview/Filters'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
-import { useObservableWithError } from 'helpers/observableHook'
+import { useObservable, useObservableWithError } from 'helpers/observableHook'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
@@ -117,7 +118,7 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
   },
 ]
 
-export function Hero({ sx }: { sx?: SxStyleProp }) {
+export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boolean }) {
   const { t } = useTranslation()
 
   return (
@@ -142,33 +143,35 @@ export function Hero({ sx }: { sx?: SxStyleProp }) {
           opacity: 0.08,
         }}
       >
-        <Image sx={{ mb: 4 }} src="/static/img/icons_set.svg" />
+        <Image sx={{ mb: 4 }} src={staticFilesRuntimeUrl('/static/img/icons_set.svg')} />
       </Box>
-      <AppLink
-        href="/connect"
-        variant="primary"
-        sx={{
-          display: 'flex',
-          margin: '0 auto',
-          px: '40px',
-          py: 2,
-          alignItems: 'center',
-          '&:hover svg': {
-            transform: 'translateX(10px)',
-          },
-        }}
-      >
-        {t('connect-wallet')}
-        <Icon
-          name="arrow_right"
+      {!isConnected && (
+        <AppLink
+          href="/connect"
+          variant="primary"
           sx={{
-            ml: 2,
-            position: 'relative',
-            left: 2,
-            transition: '0.2s',
+            display: 'flex',
+            margin: '0 auto',
+            px: '40px',
+            py: 2,
+            alignItems: 'center',
+            '&:hover svg': {
+              transform: 'translateX(10px)',
+            },
           }}
-        />
-      </AppLink>
+        >
+          {t('connect-wallet')}
+          <Icon
+            name="arrow_right"
+            sx={{
+              ml: 2,
+              position: 'relative',
+              left: 2,
+              transition: '0.2s',
+            }}
+          />
+        </AppLink>
+      )}
     </Flex>
   )
 }
@@ -292,7 +295,8 @@ const fadeInAnimation = {
 }
 
 export function LandingView() {
-  const { landing$ } = useAppContext()
+  const { landing$, context$ } = useAppContext()
+  const context = useObservable(context$)
   const [landing, landingError] = useObservableWithError(landing$)
   const { t } = useTranslation()
 
@@ -321,7 +325,10 @@ export function LandingView() {
         position: 'relative',
       }}
     >
-      <Hero sx={{ ...slideInAnimation, position: 'relative' }} />
+      <Hero
+        isConnected={context?.status === 'connected'}
+        sx={{ ...slideInAnimation, position: 'relative' }}
+      />
       <Box
         sx={{
           ...slideInAnimation,
