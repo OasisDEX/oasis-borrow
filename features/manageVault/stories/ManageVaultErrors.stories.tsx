@@ -4,7 +4,7 @@ import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { manageVaultStory } from 'helpers/stories/ManageVaultStory'
 import { one, zero } from 'helpers/zero'
 
-import { ManageVaultView } from './ManageVaultView'
+import { ManageVaultView } from '../ManageVaultView'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
