@@ -10,10 +10,11 @@ import { PriceInfo } from 'features/shared/priceInfo'
 import { one } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
-import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo'
-import { mockIlkData$, MockIlkDataProps } from './ilks'
-import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo'
-import { mockVault$, MockVaultProps } from './vaults'
+
+import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
+import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
+import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
+import { mockVault$, MockVaultProps } from './vaults.mock'
 
 export const MOCK_VAULT_ID = one
 
@@ -66,22 +67,6 @@ export function mockManageVault$({
   })
   const txHelpers$ = of(protoTxHelpers)
 
-  const priceInfo$ = () => _priceInfo$ || mockPriceInfo$({ ...priceInfo, token })
-  const ilkData$ = () =>
-    _ilkData$ ||
-    mockIlkData$({
-      _priceInfo$: priceInfo$(),
-      ...ilkData,
-    })
-
-  const balanceInfo$ = () => _balanceInfo$ || mockBalanceInfo$({ ...balanceInfo, address: account })
-
-  const proxyAddress$ = () => _proxyAddress$ || of(proxyAddress)
-  const allowance$ = (_token: string) =>
-    _token === 'DAI'
-      ? _daiAllowance$ || of(daiAllowance)
-      : _collateralAllowance$ || of(collateralAllowance)
-
   const _oraclePriceData$ = priceInfo$().pipe(
     switchMap(({ currentCollateralPrice, nextCollateralPrice, isStaticCollateralPrice }) =>
       of({
@@ -92,15 +77,47 @@ export function mockManageVault$({
     ),
   )
 
-  const vault$ = () =>
-    _vault$ ||
-    mockVault$({
-      _oraclePriceData$,
-      _ilkData$: ilkData$(),
-      ilk: vault.ilk,
-      collateral: vault.collateral,
-      debt: vault.debt,
-    })
+  function priceInfo$() {
+    return _priceInfo$ || mockPriceInfo$({ ...priceInfo, token })
+  }
+
+  function ilkData$() {
+    return (
+      _ilkData$ ||
+      mockIlkData$({
+        _priceInfo$: priceInfo$(),
+        ...ilkData,
+      })
+    )
+  }
+
+  function balanceInfo$() {
+    return _balanceInfo$ || mockBalanceInfo$({ ...balanceInfo, address: account })
+  }
+
+  function proxyAddress$() {
+    return _proxyAddress$ || of(proxyAddress)
+  }
+
+  function allowance$(_token: string) {
+    return _token === 'DAI'
+      ? _daiAllowance$ || of(daiAllowance)
+      : _collateralAllowance$ || of(collateralAllowance)
+  }
+
+  function vault$() {
+    return (
+      _vault$ ||
+      mockVault$({
+        _oraclePriceData$,
+        _ilkData$: ilkData$(),
+        ilk: vault.ilk,
+        collateral: vault.collateral,
+        debt: vault.debt,
+      })
+    )
+  }
+
   return createManageVault$(
     context$ as Observable<Context>,
     txHelpers$,

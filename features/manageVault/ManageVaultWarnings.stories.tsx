@@ -1,9 +1,9 @@
 import { BigNumber } from 'bignumber.js'
 import { COLLATERALIZATION_DANGER_OFFSET, COLLATERALIZATION_WARNING_OFFSET } from 'blockchain/ilks'
-import { DEFAULT_PROXY_ADDRESS } from 'blockchain/vaults'
+import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
+import { manageVaultStory } from 'helpers/stories/ManageVaultStory'
 import { one, zero } from 'helpers/zero'
 
-import { manageVaultStory } from './ManageVaultBuilder'
 import { ManageVaultView } from './ManageVaultView'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
@@ -16,7 +16,7 @@ export const NoProxyAddress = manageVaultStory({
     collateral: new BigNumber('20'),
     debt: new BigNumber('3000'),
   },
-})
+})()
 
 export const InsufficientCollateralAllowance = manageVaultStory({
   title:
@@ -26,9 +26,10 @@ export const InsufficientCollateralAllowance = manageVaultStory({
     collateral: new BigNumber('20'),
     debt: new BigNumber('3000'),
   },
-  depositAmount: new BigNumber('10'),
   collateralAllowance: new BigNumber('9'),
   proxyAddress,
+})({
+  depositAmount: new BigNumber('10'),
 })
 
 export const InsufficientDaiAllowance = manageVaultStory({
@@ -39,10 +40,11 @@ export const InsufficientDaiAllowance = manageVaultStory({
     collateral: new BigNumber('20'),
     debt: new BigNumber('3000'),
   },
-  stage: 'daiEditing',
-  paybackAmount: new BigNumber('1000'),
   daiAllowance: new BigNumber('500'),
   proxyAddress,
+})({
+  stage: 'daiEditing',
+  paybackAmount: new BigNumber('1000'),
 })
 
 export const PotentialGenerateAmountLessThanDebtFloor = manageVaultStory({
@@ -53,8 +55,9 @@ export const PotentialGenerateAmountLessThanDebtFloor = manageVaultStory({
     collateral: one,
     debt: zero,
   },
-  depositAmount: new BigNumber('4'),
   proxyAddress,
+})({
+  depositAmount: new BigNumber('4'),
 })
 
 export const DebtIsLessThanDebtFloor = manageVaultStory({
@@ -68,8 +71,9 @@ export const DebtIsLessThanDebtFloor = manageVaultStory({
   ilkData: {
     debtFloor: new BigNumber('10000'),
   },
-  depositAmount: new BigNumber('1'),
   proxyAddress,
+})({
+  depositAmount: new BigNumber('1'),
 })
 
 export const ConnectedAccountIsNotVaultController = manageVaultStory({
@@ -80,10 +84,11 @@ export const ConnectedAccountIsNotVaultController = manageVaultStory({
     collateral: new BigNumber('100'),
     debt: new BigNumber('4000'),
   },
-  paybackAmount: new BigNumber('100'),
-  stage: 'daiEditing',
   account: '0xNotVaultController',
   proxyAddress,
+})({
+  paybackAmount: new BigNumber('100'),
+  stage: 'daiEditing',
 })
 
 export const VaultWillBeAtRiskLevelDanger = manageVaultStory({
@@ -102,9 +107,10 @@ export const VaultWillBeAtRiskLevelDanger = manageVaultStory({
   priceInfo: {
     collateralChangePercentage: new BigNumber('0.01'),
   },
-  generateAmount: new BigNumber('1500'),
-  stage: 'daiEditing',
   proxyAddress,
+})({
+  stage: 'daiEditing',
+  generateAmount: new BigNumber('1500'),
 })
 
 export const VaultWillBeAtRiskLevelDangerAtNextPrice = manageVaultStory({
@@ -123,9 +129,10 @@ export const VaultWillBeAtRiskLevelDangerAtNextPrice = manageVaultStory({
   priceInfo: {
     collateralChangePercentage: new BigNumber('-0.4'),
   },
-  generateAmount: new BigNumber('2000'),
-  stage: 'daiEditing',
   proxyAddress,
+})({
+  stage: 'daiEditing',
+  generateAmount: new BigNumber('2000'),
 })
 
 export const VaultWillBeAtRiskLevelWarning = manageVaultStory({
@@ -144,9 +151,10 @@ export const VaultWillBeAtRiskLevelWarning = manageVaultStory({
     collateral: new BigNumber('10'),
     debt: new BigNumber('2000'),
   },
-  generateAmount: new BigNumber('1000'),
-  stage: 'daiEditing',
   proxyAddress,
+})({
+  stage: 'daiEditing',
+  generateAmount: new BigNumber('1000'),
 })
 
 export const VaultWillBeAtRiskLevelWarningAtNextPrice = manageVaultStory({
@@ -168,9 +176,10 @@ export const VaultWillBeAtRiskLevelWarningAtNextPrice = manageVaultStory({
   priceInfo: {
     collateralChangePercentage: new BigNumber('-0.3'),
   },
-  generateAmount: new BigNumber('2000'),
-  stage: 'daiEditing',
   proxyAddress,
+})({
+  stage: 'daiEditing',
+  generateAmount: new BigNumber('2000'),
 })
 
 export const VaultAtRiskLevelDanger = manageVaultStory({
@@ -186,10 +195,8 @@ export const VaultAtRiskLevelDanger = manageVaultStory({
     collateral: new BigNumber('10'),
     debt: new BigNumber('3200'),
   },
-
-  stage: 'collateralEditing',
   proxyAddress,
-})
+})()
 
 export const VaultAtRiskLevelDangerAtNextPrice = manageVaultStory({
   title: `Warning is shown to indicate to the user that this vault will be near liquidation at next price update and is shown when the vaults  future collateralization ratio is within ${COLLATERALIZATION_DANGER_OFFSET.times(
@@ -207,9 +214,8 @@ export const VaultAtRiskLevelDangerAtNextPrice = manageVaultStory({
   priceInfo: {
     collateralChangePercentage: new BigNumber('-0.4'),
   },
-  stage: 'collateralEditing',
   proxyAddress,
-})
+})()
 
 export const VaultAtRiskLevelWarning = manageVaultStory({
   title: `Warning is shown to indicate to the user that this vault is currently near liquidation and is shown when the vaults collateralization ratio is within ${COLLATERALIZATION_WARNING_OFFSET.times(
@@ -227,9 +233,8 @@ export const VaultAtRiskLevelWarning = manageVaultStory({
     collateral: new BigNumber('10'),
     debt: new BigNumber('2500'),
   },
-  stage: 'collateralEditing',
   proxyAddress,
-})
+})()
 
 export const VaultAtRiskLevelWarningAtNextPrice = manageVaultStory({
   title: `Warning is shown to indicate to the user that this vault is will be near liquidation at next price update and is shown when the vaults future collateralization ratio is within ${COLLATERALIZATION_WARNING_OFFSET.times(
@@ -254,9 +259,8 @@ export const VaultAtRiskLevelWarningAtNextPrice = manageVaultStory({
   priceInfo: {
     collateralChangePercentage: new BigNumber('-0.4'),
   },
-  stage: 'collateralEditing',
   proxyAddress,
-})
+})()
 
 export const VaultUnderCollateralized = manageVaultStory({
   title: 'Warning is shown when the vault collateralization is below the liquidation ratio',
@@ -266,7 +270,7 @@ export const VaultUnderCollateralized = manageVaultStory({
     debt: new BigNumber('10000'),
   },
   proxyAddress,
-})
+})()
 
 export const VaultUnderCollateralizedAtNextPrice = manageVaultStory({
   title:
@@ -280,7 +284,7 @@ export const VaultUnderCollateralizedAtNextPrice = manageVaultStory({
     collateralChangePercentage: new BigNumber('-0.9'),
   },
   proxyAddress,
-})
+})()
 
 export const PayingBackAllDebt = manageVaultStory({
   title:
@@ -290,12 +294,13 @@ export const PayingBackAllDebt = manageVaultStory({
     collateral: new BigNumber('20'),
     debt: new BigNumber('2000'),
   },
-  stage: 'daiEditing',
-  paybackAmount: new BigNumber('2000'),
   balanceInfo: {
     daiBalance: new BigNumber('5000'),
   },
   proxyAddress,
+})({
+  stage: 'daiEditing',
+  paybackAmount: new BigNumber('2000'),
 })
 
 export const DepositingAllCollateralBalance = manageVaultStory({
@@ -306,11 +311,12 @@ export const DepositingAllCollateralBalance = manageVaultStory({
     collateral: new BigNumber('20'),
     debt: new BigNumber('2000'),
   },
-  depositAmount: new BigNumber('10'),
   balanceInfo: {
     collateralBalance: new BigNumber('10'),
   },
   proxyAddress,
+})({
+  depositAmount: new BigNumber('10'),
 })
 
 export const PayingBackAllDaiBalance = manageVaultStory({
@@ -320,12 +326,13 @@ export const PayingBackAllDaiBalance = manageVaultStory({
     collateral: new BigNumber('20'),
     debt: new BigNumber('3000'),
   },
-  stage: 'daiEditing',
-  paybackAmount: new BigNumber('500'),
   balanceInfo: {
     daiBalance: new BigNumber('500'),
   },
   proxyAddress,
+})({
+  stage: 'daiEditing',
+  paybackAmount: new BigNumber('500'),
 })
 
 export const WithdrawingAllFreeCollateral = manageVaultStory({
@@ -338,8 +345,9 @@ export const WithdrawingAllFreeCollateral = manageVaultStory({
   priceInfo: {
     collateralPrice: new BigNumber('1000'),
   },
-  withdrawAmount: new BigNumber('17'),
   proxyAddress,
+})({
+  withdrawAmount: new BigNumber('17'),
 })
 
 export const WithdrawingAllFreeCollateralAtNextPrice = manageVaultStory({
@@ -354,8 +362,9 @@ export const WithdrawingAllFreeCollateralAtNextPrice = manageVaultStory({
     collateralPrice: new BigNumber('1000'),
     collateralChangePercentage: new BigNumber('-0.25'),
   },
-  withdrawAmount: new BigNumber('16'),
   proxyAddress,
+})({
+  withdrawAmount: new BigNumber('16'),
 })
 
 export const GeneratingAllDaiFromIlkDebtAvailable = manageVaultStory({
@@ -370,9 +379,10 @@ export const GeneratingAllDaiFromIlkDebtAvailable = manageVaultStory({
     debtCeiling: new BigNumber('10000'),
     ilkDebt: new BigNumber('5000'),
   },
-  stage: 'daiEditing',
-  generateAmount: new BigNumber('5000'),
   proxyAddress,
+})({
+  generateAmount: new BigNumber('5000'),
+  stage: 'daiEditing',
 })
 
 export const GeneratingAllDaiFromTotalCollateral = manageVaultStory({
@@ -383,10 +393,10 @@ export const GeneratingAllDaiFromTotalCollateral = manageVaultStory({
     collateral: new BigNumber('200'),
     debt: new BigNumber('2000'),
   },
-  showDepositAndGenerateOption: true,
+  proxyAddress,
+})({
   depositAmount: new BigNumber('1'),
   generateAmount: new BigNumber('71700'),
-  proxyAddress,
 })
 
 export const GeneratingAllDaiFromTotalCollateralAtNextPrice = manageVaultStory({
@@ -397,13 +407,13 @@ export const GeneratingAllDaiFromTotalCollateralAtNextPrice = manageVaultStory({
     collateral: new BigNumber('200'),
     debt: new BigNumber('2000'),
   },
-  showDepositAndGenerateOption: true,
   priceInfo: {
     collateralChangePercentage: new BigNumber('-0.1'),
   },
+  proxyAddress,
+})({
   depositAmount: new BigNumber('1'),
   generateAmount: new BigNumber('64330'),
-  proxyAddress,
 })
 
 // eslint-disable-next-line import/no-default-export

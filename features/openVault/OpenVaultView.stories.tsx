@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { OpenVaultView } from 'features/openVault/OpenVaultView'
+import { openVaultStory } from 'helpers/stories/OpenVaultStory'
 import { NEVER } from 'rxjs'
-
-import { openVaultStory } from './OpenVaultBuilder'
 
 export const WaitingForIlksToBeFetched = openVaultStory({
   title:
@@ -15,131 +14,145 @@ export const InvalidIlk = openVaultStory({
   title: 'Here, the user would be using a url /vault/open/WBTC-Z, should 404',
   ilks: ['WBTC-A'],
   ilk: 'WBTC-Z',
-})
+})()
 
 export const EditingStage = openVaultStory({
   proxyAddress: '0xProxyAddress',
   balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'WBTC-A',
+})({
   depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('2500'),
-  showGenerateOption: true,
 })
 
 export const ProxyWaitingForConfirmation = openVaultStory({
-  stage: 'proxyWaitingForConfirmation',
   ilk: 'ETH-A',
+})({
+  stage: 'proxyWaitingForConfirmation',
   depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('2500'),
 })
 
 export const ProxyWaitingForApproval = openVaultStory({
-  stage: 'proxyWaitingForApproval',
   ilk: 'ETH-A',
+})({
+  stage: 'proxyWaitingForApproval',
   depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('2500'),
 })
 
 export const ProxyFailure = openVaultStory({
-  stage: 'proxyFailure',
   ilk: 'ETH-A',
+})({
+  stage: 'proxyFailure',
   depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('2500'),
 })
 
 export const ProxyInProgress = openVaultStory({
-  stage: 'proxyInProgress',
-  proxyConfirmations: 2,
   ilk: 'ETH-A',
+})({
+  stage: 'proxyInProgress',
   depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('2500'),
 })
 
 export const ProxySuccess = openVaultStory({
-  stage: 'proxySuccess',
   ilk: 'ETH-A',
+})({
+  stage: 'proxySuccess',
   depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('2500'),
 })
 
 export const AllowanceWaitingForConfirmation = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
+  ilk: 'WBTC-A',
+})({
   stage: 'allowanceWaitingForConfirmation',
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('5000'),
-  ilk: 'WBTC-A',
 })
 
 export const AllowanceWaitingForApproval = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
+  ilk: 'WBTC-A',
+})({
   stage: 'allowanceWaitingForApproval',
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('5000'),
-  ilk: 'WBTC-A',
 })
 
 export const AllowanceFailure = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
+  ilk: 'WBTC-A',
+})({
   stage: 'allowanceFailure',
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('5000'),
-  ilk: 'WBTC-A',
 })
 
 export const AllowanceInProgress = openVaultStory({
-  stage: 'allowanceInProgress',
   ilk: 'WBTC-A',
+})({
+  stage: 'allowanceInProgress',
   depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('2500'),
 })
 
 export const AllowanceSuccess = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
+  ilk: 'WBTC-A',
+})({
   stage: 'allowanceSuccess',
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('5000'),
-  ilk: 'WBTC-A',
 })
 
 export const OpenWaitingForConfirmation = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
+  ilk: 'ETH-A',
+})({
   stage: 'openWaitingForConfirmation',
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('5000'),
-  ilk: 'ETH-A',
 })
 
 export const OpenWaitingForApproval = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
+  ilk: 'ETH-A',
+})({
   stage: 'openWaitingForApproval',
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('5000'),
-  ilk: 'ETH-A',
 })
 
 export const OpenFailure = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
+  ilk: 'ETH-A',
+})({
   stage: 'openFailure',
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('5000'),
-  ilk: 'ETH-A',
 })
 
 export const OpenInProgress = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
+  ilk: 'ETH-A',
+})({
   stage: 'openInProgress',
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('5000'),
-  ilk: 'ETH-A',
 })
 
 export const OpenSuccess = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
-  stage: 'openSuccess',
+  ilk: 'ETH-A',
+})({
   id: new BigNumber('122345'),
+  stage: 'openSuccess',
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('5000'),
-  ilk: 'ETH-A',
 })
 
 // eslint-disable-next-line import/no-default-export

@@ -1,7 +1,7 @@
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
-import { MutableOpenVaultState, OpenVaultState } from 'features/openVault/openVault'
+import { defaultMutableOpenVaultState, MutableOpenVaultState } from 'features/openVault/openVault'
 import { OpenVaultView } from 'features/openVault/OpenVaultView'
-import { mockOpenVault$, MockOpenVaultProps } from 'helpers/mocks/openVault'
+import { mockOpenVault$, MockOpenVaultProps } from 'helpers/mocks/openVault.mock'
 import { AppContext } from 'next/app'
 import React from 'react'
 import { useEffect } from 'react'
@@ -21,7 +21,11 @@ export function openVaultStory({
   ilks,
   ilk = 'WBTC-A',
 }: OpenVaultStory) {
-  return ({ depositAmount, generateAmount, ...otherState }: MutableOpenVaultState) => () => {
+  return ({
+    depositAmount,
+    generateAmount,
+    ...otherState
+  }: Partial<MutableOpenVaultState> = defaultMutableOpenVaultState) => () => {
     const obs$ = mockOpenVault$({
       _ilks$,
       balanceInfo,

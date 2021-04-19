@@ -1,9 +1,9 @@
 import { BigNumber } from 'bignumber.js'
 import { COLLATERALIZATION_DANGER_OFFSET, COLLATERALIZATION_WARNING_OFFSET } from 'blockchain/ilks'
-import { DEFAULT_PROXY_ADDRESS } from 'blockchain/vaults'
+import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
+import { openVaultStory } from 'helpers/stories/OpenVaultStory'
 import { zero } from 'helpers/zero'
 
-import { openVaultStory } from './OpenVaultBuilder'
 import { OpenVaultView } from './OpenVaultView'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
@@ -11,19 +11,21 @@ const proxyAddress = DEFAULT_PROXY_ADDRESS
 export const OpeningEmptyVault = openVaultStory({
   title: 'User is opening an empty vault',
   proxyAddress,
-})
+})()
 
 export const OpeningVaultWithCollateralOnly = openVaultStory({
   title: 'User is opening a vault with collateral only',
-  depositAmount: new BigNumber('100'),
   proxyAddress,
+})({
+  depositAmount: new BigNumber('100'),
 })
 
 export const OpeningVaultWithCollateralAndDebt = openVaultStory({
   title: 'User is opening a vault with collateral and debt',
+  proxyAddress,
+})({
   depositAmount: new BigNumber('100'),
   generateAmount: new BigNumber('3000'),
-  proxyAddress,
 })
 
 export const NoProxyAddress = openVaultStory({
@@ -34,16 +36,18 @@ export const InsufficientAllowance = openVaultStory({
   title:
     'User has no allowance for the given collateral and will have to set it before opening a vault',
   proxyAddress,
-  depositAmount: new BigNumber('100'),
   allowance: zero,
+})({
+  depositAmount: new BigNumber('100'),
 })
 
 export const PotentialGenerateAmountLessThanDebtFloor = openVaultStory({
   title:
     'User has no allowance for the given collateral and will have to set it before opening a vault',
   proxyAddress,
-  depositAmount: new BigNumber('3'),
   allowance: zero,
+})({
+  depositAmount: new BigNumber('3'),
 })
 
 export const VaultWillBeAtRiskLevelDanger = openVaultStory({
@@ -57,9 +61,10 @@ export const VaultWillBeAtRiskLevelDanger = openVaultStory({
   priceInfo: {
     collateralChangePercentage: new BigNumber('0.01'),
   },
+  proxyAddress,
+})({
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('3500'),
-  proxyAddress,
 })
 
 export const VaultWillBeAtRiskLevelDangerAtNextPrice = openVaultStory({
@@ -73,9 +78,10 @@ export const VaultWillBeAtRiskLevelDangerAtNextPrice = openVaultStory({
   priceInfo: {
     collateralChangePercentage: new BigNumber('-0.4'),
   },
+  proxyAddress,
+})({
   depositAmount: new BigNumber('10'),
   generateAmount: new BigNumber('2000'),
-  proxyAddress,
 })
 
 export const VaultWillBeAtRiskLevelWarning = openVaultStory({
@@ -89,9 +95,10 @@ export const VaultWillBeAtRiskLevelWarning = openVaultStory({
     .times(COLLATERALIZATION_DANGER_OFFSET.plus(1))
     .times(100)}%
  > x <= ${new BigNumber(1.5).times(COLLATERALIZATION_WARNING_OFFSET.plus(1)).times(100)}%.`,
+  proxyAddress,
+})({
   depositAmount: new BigNumber('200'),
   generateAmount: new BigNumber('50000'),
-  proxyAddress,
 })
 
 export const VaultWillBeAtRiskLevelWarningAtNextPrice = openVaultStory({
@@ -108,19 +115,21 @@ export const VaultWillBeAtRiskLevelWarningAtNextPrice = openVaultStory({
   priceInfo: {
     collateralChangePercentage: new BigNumber('-0.3'),
   },
+  proxyAddress,
+})({
   depositAmount: new BigNumber('100'),
   generateAmount: new BigNumber('20000'),
-  proxyAddress,
 })
 
 export const DepositingAllCollateralBalance = openVaultStory({
   title:
     'Warning is shown when a user is depositing the balance of collateral for the vault they have in their wallet',
-  depositAmount: new BigNumber('10'),
   balanceInfo: {
     collateralBalance: new BigNumber('10'),
   },
   proxyAddress,
+})({
+  depositAmount: new BigNumber('10'),
 })
 
 export const GeneratingAllDaiFromIlkDebtAvailable = openVaultStory({
@@ -130,17 +139,19 @@ export const GeneratingAllDaiFromIlkDebtAvailable = openVaultStory({
     debtCeiling: new BigNumber('10000'),
     ilkDebt: new BigNumber('5000'),
   },
+  proxyAddress,
+})({
   depositAmount: new BigNumber('100'),
   generateAmount: new BigNumber('5000'),
-  proxyAddress,
 })
 
 export const GeneratingAllDaiFromDepositingCollateral = openVaultStory({
   title:
     'Warning is shown when a user is generating the maximum amount of dai for the amount of collateral being deposited',
+  proxyAddress,
+})({
   depositAmount: new BigNumber('150'),
   generateAmount: new BigNumber('55000'),
-  proxyAddress,
 })
 
 export const GeneratingAllDaiFromDepositingCollateralAtNextPrice = openVaultStory({
@@ -149,9 +160,10 @@ export const GeneratingAllDaiFromDepositingCollateralAtNextPrice = openVaultStor
   priceInfo: {
     collateralChangePercentage: new BigNumber('-0.1'),
   },
+  proxyAddress,
+})({
   depositAmount: new BigNumber('100'),
   generateAmount: new BigNumber('33000'),
-  proxyAddress,
 })
 
 // eslint-disable-next-line import/no-default-export

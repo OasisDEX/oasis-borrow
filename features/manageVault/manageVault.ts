@@ -295,65 +295,15 @@ export interface MutableManageVaultState {
   withdrawAmountUSD?: BigNumber
   generateAmount?: BigNumber
   paybackAmount?: BigNumber
+  collateralAllowanceAmount?: BigNumber
+  daiAllowanceAmount?: BigNumber
+  selectedCollateralAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
+  selectedDaiAllowanceRadio: 'unlimited' | 'paybackAmount' | 'custom'
 }
 
-export type ManageVaultState = MutableManageVaultState & {
-  // User status
-  account: string | undefined
-  accountIsController: boolean
-  proxyAddress?: string
-  collateralAllowance?: BigNumber
-  daiAllowance?: BigNumber
-
-  // Core dependencies
-  vault: Vault
-  ilkData: IlkData
-  balanceInfo: BalanceInfo
-  priceInfo: PriceInfo
-
-  // validation
+interface ManageVaultCalculations {
   errorMessages: ManageVaultErrorMessage[]
   warningMessages: ManageVaultWarningMessage[]
-
-  // General
-  progress?: () => void
-  reset?: () => void
-  toggle?: () => void
-
-  // Editing Form Behaviour
-  toggleIlkDetails?: () => void
-  toggleDepositAndGenerateOption?: () => void
-  togglePaybackAndWithdrawOption?: () => void
-
-  // Editing Inputs
-  updateDeposit?: (depositAmount?: BigNumber) => void
-  updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
-  updateDepositMax?: () => void
-  updateGenerate?: (generateAmount?: BigNumber) => void
-  updateGenerateMax?: () => void
-  updateWithdraw?: (withdrawAmount?: BigNumber) => void
-  updateWithdrawUSD?: (withdrawAmountUSD?: BigNumber) => void
-  updateWithdrawMax?: () => void
-  updatePayback?: (paybackAmount?: BigNumber) => void
-  updatePaybackMax?: () => void
-
-  // Collateral Allowance
-  collateralAllowanceAmount?: BigNumber
-  updateCollateralAllowanceAmount?: (amount?: BigNumber) => void
-  setCollateralAllowanceAmountUnlimited?: () => void
-  setCollateralAllowanceAmountToDepositAmount?: () => void
-  resetCollateralAllowanceAmount?: () => void
-  selectedCollateralAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
-
-  // DAI Allowance
-  daiAllowanceAmount?: BigNumber
-  updateDaiAllowanceAmount?: (amount?: BigNumber) => void
-  setDaiAllowanceAmountUnlimited?: () => void
-  setDaiAllowanceAmountToPaybackAmount?: () => void
-  resetDaiAllowanceAmount?: () => void
-  selectedDaiAllowanceRadio: 'unlimited' | 'paybackAmount' | 'custom'
-
-  // calculations
   maxDepositAmount: BigNumber
   maxDepositAmountUSD: BigNumber
   maxWithdrawAmount: BigNumber
@@ -373,8 +323,49 @@ export type ManageVaultState = MutableManageVaultState & {
   afterMaxGenerateAmountCurrentPrice: BigNumber
   depositAndWithdrawAmountsEmpty: Boolean
   generateAndPaybackAmountsEmpty: Boolean
+}
 
-  // Transaction Behaviour
+interface ManageVaultEnvironment {
+  account: string | undefined
+  accountIsController: boolean
+  proxyAddress?: string
+  collateralAllowance?: BigNumber
+  daiAllowance?: BigNumber
+  vault: Vault
+  ilkData: IlkData
+  balanceInfo: BalanceInfo
+  priceInfo: PriceInfo
+}
+
+interface ManageVaultFunctions {
+  progress?: () => void
+  reset?: () => void
+  toggle?: () => void
+  toggleIlkDetails?: () => void
+  toggleDepositAndGenerateOption?: () => void
+  togglePaybackAndWithdrawOption?: () => void
+  updateDeposit?: (depositAmount?: BigNumber) => void
+  updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
+  updateDepositMax?: () => void
+  updateGenerate?: (generateAmount?: BigNumber) => void
+  updateGenerateMax?: () => void
+  updateWithdraw?: (withdrawAmount?: BigNumber) => void
+  updateWithdrawUSD?: (withdrawAmountUSD?: BigNumber) => void
+  updateWithdrawMax?: () => void
+  updatePayback?: (paybackAmount?: BigNumber) => void
+  updatePaybackMax?: () => void
+  updateCollateralAllowanceAmount?: (amount?: BigNumber) => void
+  setCollateralAllowanceAmountUnlimited?: () => void
+  setCollateralAllowanceAmountToDepositAmount?: () => void
+  resetCollateralAllowanceAmount?: () => void
+  updateDaiAllowanceAmount?: (amount?: BigNumber) => void
+  setDaiAllowanceAmountUnlimited?: () => void
+  setDaiAllowanceAmountToPaybackAmount?: () => void
+  resetDaiAllowanceAmount?: () => void
+  injectStateOverride: (state: Partial<MutableManageVaultState>) => void
+}
+
+interface ManageVaultTxInfo {
   collateralAllowanceTxHash?: string
   daiAllowanceTxHash?: string
   proxyTxHash?: string
@@ -383,9 +374,13 @@ export type ManageVaultState = MutableManageVaultState & {
   etherscan?: string
   proxyConfirmations?: number
   safeConfirmations: number
-
-  injectStateOverride: (state: Partial<MutableManageVaultState>) => void
 }
+
+export type ManageVaultState = MutableManageVaultState &
+  ManageVaultCalculations &
+  ManageVaultEnvironment &
+  ManageVaultFunctions &
+  ManageVaultTxInfo
 
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
@@ -513,14 +508,21 @@ function addTransitions(
   return state
 }
 
-export const defaultPartialManageVaultState = {
+export const defaultMutableManageVaultState: MutableManageVaultState = {
   stage: 'collateralEditing' as ManageVaultStage,
   originalEditingStage: 'collateralEditing' as ManageVaultEditingStage,
-  errorMessages: [],
-  warningMessages: [],
   showIlkDetails: false,
   showDepositAndGenerateOption: false,
   showPaybackAndWithdrawOption: false,
+  collateralAllowanceAmount: maxUint256,
+  daiAllowanceAmount: maxUint256,
+  selectedCollateralAllowanceRadio: 'unlimited' as 'unlimited',
+  selectedDaiAllowanceRadio: 'unlimited' as 'unlimited',
+}
+
+export const defaultManageVaultCalculations: ManageVaultCalculations = {
+  errorMessages: [],
+  warningMessages: [],
   maxDepositAmount: zero,
   maxDepositAmountUSD: zero,
   maxWithdrawAmount: zero,
@@ -535,15 +537,9 @@ export const defaultPartialManageVaultState = {
   afterLiquidationPrice: zero,
   afterFreeCollateral: zero,
   afterMaxGenerateAmountCurrentPrice: zero,
-  collateralAllowanceAmount: maxUint256,
-  daiAllowanceAmount: maxUint256,
   daiYieldFromTotalCollateral: zero,
   daiYieldFromTotalCollateralAtNextPrice: zero,
   shouldPaybackAll: false,
-  selectedCollateralAllowanceRadio: 'unlimited' as 'unlimited',
-  selectedDaiAllowanceRadio: 'unlimited' as 'unlimited',
-  collateralEditingEmpty: true,
-  daiEditingEmpty: true,
   depositAndWithdrawAmountsEmpty: true,
   generateAndPaybackAmountsEmpty: true,
 }
@@ -595,9 +591,8 @@ export function createManageVault$(
                   }
 
                   const initialState: ManageVaultState = {
-                    ...defaultPartialManageVaultState,
-                    stage: 'collateralEditing',
-                    originalEditingStage: 'collateralEditing',
+                    ...defaultMutableManageVaultState,
+                    ...defaultManageVaultCalculations,
                     vault,
                     priceInfo,
                     balanceInfo,

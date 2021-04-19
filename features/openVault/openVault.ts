@@ -211,54 +211,55 @@ export interface MutableOpenVaultState {
   showGenerateOption: boolean
   showIlkDetails: boolean
   selectedAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
+  allowanceAmount?: BigNumber
+  id?: BigNumber
 }
 
-export type OpenVaultState = MutableOpenVaultState & {
-  ilk: string
-  account: string
-  token: string
-
-  priceInfo: PriceInfo
-  balanceInfo: BalanceInfo
-  ilkData: IlkData
-
+interface OpenVaultCalculations {
   errorMessages: OpenVaultErrorMessage[]
   warningMessages: OpenVaultWarningMessage[]
-
-  proxyAddress?: string
-  allowance?: BigNumber
-  progress?: () => void
-  reset?: () => void
-  id?: BigNumber
-
-  toggleGenerateOption?: () => void
-  toggleIlkDetails?: () => void
-
   afterLiquidationPrice: BigNumber
   afterCollateralizationRatio: BigNumber
   afterCollateralizationRatioAtNextPrice: BigNumber
   daiYieldFromDepositingCollateral: BigNumber
   daiYieldFromDepositingCollateralAtNextPrice: BigNumber
   afterFreeCollateral: BigNumber
-
   maxDepositAmount: BigNumber
   maxDepositAmountUSD: BigNumber
   maxGenerateAmount: BigNumber
   maxGenerateAmountCurrentPrice: BigNumber
   maxGenerateAmountNextPrice: BigNumber
+}
 
+interface OpenVaultFunctions {
+  progress?: () => void
+  reset?: () => void
+  toggleGenerateOption?: () => void
+  toggleIlkDetails?: () => void
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
   updateGenerate?: (generateAmount?: BigNumber) => void
   updateGenerateMax?: () => void
-
-  allowanceAmount?: BigNumber
   updateAllowanceAmount?: (amount?: BigNumber) => void
   setAllowanceAmountUnlimited?: () => void
   setAllowanceAmountToDepositAmount?: () => void
   resetAllowanceAmount?: () => void
+  injectStateOverride: (state: Partial<MutableOpenVaultState>) => void
+}
 
+interface OpenVaultEnvironment {
+  ilk: string
+  account: string
+  token: string
+  priceInfo: PriceInfo
+  balanceInfo: BalanceInfo
+  ilkData: IlkData
+  proxyAddress?: string
+  allowance?: BigNumber
+}
+
+interface OpenVaultTxInfo {
   allowanceTxHash?: string
   proxyTxHash?: string
   openTxHash?: string
@@ -266,9 +267,13 @@ export type OpenVaultState = MutableOpenVaultState & {
   etherscan?: string
   proxyConfirmations?: number
   safeConfirmations: number
-
-  injectStateOverride: (state: Partial<MutableOpenVaultState>) => void
 }
+
+export type OpenVaultState = MutableOpenVaultState &
+  OpenVaultCalculations &
+  OpenVaultFunctions &
+  OpenVaultEnvironment &
+  OpenVaultTxInfo
 
 function addTransitions(
   txHelpers: TxHelpers,
@@ -362,12 +367,17 @@ function addTransitions(
   return state
 }
 
-export const defaultPartialOpenVaultState = {
+export const defaultMutableOpenVaultState: MutableOpenVaultState = {
   stage: 'editing' as OpenVaultStage,
-  errorMessages: [],
-  warningMessages: [],
   showIlkDetails: false,
   showGenerateOption: false,
+  selectedAllowanceRadio: 'unlimited' as 'unlimited',
+  allowanceAmount: maxUint256,
+}
+
+export const defaultOpenVaultStateCalculations: OpenVaultCalculations = {
+  errorMessages: [],
+  warningMessages: [],
   maxDepositAmount: zero,
   maxDepositAmountUSD: zero,
   maxGenerateAmount: zero,
@@ -379,7 +389,6 @@ export const defaultPartialOpenVaultState = {
   daiYieldFromDepositingCollateralAtNextPrice: zero,
   afterLiquidationPrice: zero,
   afterFreeCollateral: zero,
-  selectedAllowanceRadio: 'unlimited' as 'unlimited',
 }
 
 export function createOpenVault$(
@@ -426,7 +435,8 @@ export function createOpenVault$(
                     }
 
                     const initialState: OpenVaultState = {
-                      ...defaultPartialOpenVaultState,
+                      ...defaultMutableOpenVaultState,
+                      ...defaultOpenVaultStateCalculations,
                       priceInfo,
                       balanceInfo,
                       ilkData,
@@ -437,7 +447,6 @@ export function createOpenVault$(
                       allowance,
                       safeConfirmations: context.safeConfirmations,
                       etherscan: context.etherscan.url,
-                      allowanceAmount: maxUint256,
 
                       injectStateOverride,
                     }

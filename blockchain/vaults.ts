@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
 import { Context } from 'blockchain/network'
-import { one, zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 

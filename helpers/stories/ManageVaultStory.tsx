@@ -1,8 +1,15 @@
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
-import { MutableManageVaultState } from 'features/manageVault/manageVault'
+import {
+  defaultMutableManageVaultState,
+  MutableManageVaultState,
+} from 'features/manageVault/manageVault'
 import { ManageVaultView } from 'features/manageVault/ManageVaultView'
-import { mockManageVault$, MockManageVaultProps, MOCK_VAULT_ID } from 'helpers/mocks/manageVault'
+import {
+  MOCK_VAULT_ID,
+  mockManageVault$,
+  MockManageVaultProps,
+} from 'helpers/mocks/manageVault.mock'
 import React from 'react'
 import { useEffect } from 'react'
 import { first } from 'rxjs/operators'
@@ -26,9 +33,9 @@ export function manageVaultStory({
     withdrawAmount,
     generateAmount,
     paybackAmount,
-    stage = 'collateralEditing',
+    stage,
     ...otherState
-  }: MutableManageVaultState) => () => {
+  }: Partial<MutableManageVaultState> = defaultMutableManageVaultState) => () => {
     const obs$ = mockManageVault$({
       account,
       balanceInfo,

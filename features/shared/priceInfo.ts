@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js'
 import { OraclePriceData } from 'blockchain/prices'
-import { lastHour, nextHour, now } from 'helpers/time'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 

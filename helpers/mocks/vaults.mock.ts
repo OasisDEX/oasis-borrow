@@ -6,7 +6,8 @@ import { ilkToToken$ } from 'components/AppContext'
 import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
-import { mockIlkData$ } from './ilks'
+
+import { mockIlkData$ } from './ilks.mock'
 
 export interface MockVaultProps {
   _cdpManagerUrns$?: Observable<string>

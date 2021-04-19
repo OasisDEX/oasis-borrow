@@ -7,9 +7,10 @@ import { createOpenVault$ } from 'features/openVault/openVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { Observable, of } from 'rxjs'
-import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo'
-import { mockIlkData$, MockIlkDataProps } from './ilks'
-import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo'
+
+import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
+import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
+import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
 
 export interface MockOpenVaultProps {
   _context$?: Observable<Context>
@@ -55,21 +56,34 @@ export function mockOpenVault$({
   })
   const txHelpers$ = of(protoTxHelpers)
 
-  const priceInfo$ = () => _priceInfo$ || mockPriceInfo$({ ...priceInfo, token })
-  const ilkData$ = () =>
-    _ilkData$ ||
-    mockIlkData$({
-      ilk,
-      _priceInfo$: priceInfo$(),
-      ...ilkData,
-    })
+  function priceInfo$() {
+    return _priceInfo$ || mockPriceInfo$({ ...priceInfo, token })
+  }
+
+  function ilkData$() {
+    return (
+      _ilkData$ ||
+      mockIlkData$({
+        ilk,
+        _priceInfo$: priceInfo$(),
+        ...ilkData,
+      })
+    )
+  }
 
   const ilks$ = _ilks$ || (ilks && ilks.length ? of(ilks!) : of([ilk]))
 
-  const balanceInfo$ = () => _balanceInfo$ || mockBalanceInfo$({ ...balanceInfo, address: account })
+  function balanceInfo$() {
+    return _balanceInfo$ || mockBalanceInfo$({ ...balanceInfo, address: account })
+  }
 
-  const proxyAddress$ = () => _proxyAddress$ || of(proxyAddress)
-  const allowance$ = () => _allowance$ || of(allowance)
+  function proxyAddress$() {
+    return _proxyAddress$ || of(proxyAddress)
+  }
+
+  function allowance$() {
+    return _allowance$ || of(allowance)
+  }
 
   return createOpenVault$(
     context$,

@@ -2,11 +2,11 @@
 
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
+import { mockOpenVault$ } from 'helpers/mocks/openVault.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { Subject } from 'rxjs'
 
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
-import { buildOpenVault$ } from './OpenVaultBuilder'
 import { parseVaultIdFromReceiptLogs } from './openVaultTransactions'
 
 describe('openVault', () => {
@@ -69,7 +69,7 @@ describe('openVault', () => {
     it('should wait until ilks are fetched before emiitting', () => {
       const _ilks$ = new Subject<string[]>()
       const state = getStateUnpacker(
-        buildOpenVault$({
+        mockOpenVault$({
           _ilks$,
           ilk: 'WBTC-A',
         }),
@@ -81,7 +81,7 @@ describe('openVault', () => {
 
     it('should throw error if ilk is not valid', () => {
       const state = getStateUnpacker(
-        buildOpenVault$({
+        mockOpenVault$({
           ilks: ['ETH-A'],
           ilk: 'ETH-Z',
         }),
@@ -90,13 +90,13 @@ describe('openVault', () => {
     })
 
     it('should start by default at the editing stage', () => {
-      const state = getStateUnpacker(buildOpenVault$())
+      const state = getStateUnpacker(mockOpenVault$())
       expect(state().stage).to.be.equal('editing')
     })
 
     it('should update depositAmount', () => {
       const depositAmount = new BigNumber('5')
-      const state = getStateUnpacker(buildOpenVault$())
+      const state = getStateUnpacker(mockOpenVault$())
       state().updateDeposit!(depositAmount)
       expect(state().depositAmount!.toString()).to.deep.equal(depositAmount.toString())
     })
@@ -104,7 +104,7 @@ describe('openVault', () => {
     it('should calculate depositAmountUSD based on depositAmount', () => {
       const depositAmount = new BigNumber('5')
       const collateralPrice = new BigNumber('100')
-      const state = getStateUnpacker(buildOpenVault$({ priceInfo: { collateralPrice } }))
+      const state = getStateUnpacker(mockOpenVault$({ priceInfo: { collateralPrice } }))
       state().updateDeposit!(depositAmount)
       expect(state().depositAmount!.toString()).to.deep.equal(depositAmount.toString())
       expect(state().depositAmountUSD!.toString()).to.deep.equal(
@@ -115,7 +115,7 @@ describe('openVault', () => {
     it('should update generate amount only when a depositAmount is specified and the showGenerateOption is toggled', () => {
       const depositAmount = new BigNumber('5')
       const generateAmount = new BigNumber('2000')
-      const state = getStateUnpacker(buildOpenVault$())
+      const state = getStateUnpacker(mockOpenVault$())
       state().updateGenerate!(generateAmount)
       expect(state().generateAmount).to.be.undefined
       state().updateDeposit!(depositAmount)
@@ -130,7 +130,7 @@ describe('openVault', () => {
     it('should deposit the max amount of collateral when updateDepositMax is triggered', () => {
       const collateralBalance = new BigNumber('10')
       const state = getStateUnpacker(
-        buildOpenVault$({
+        mockOpenVault$({
           balanceInfo: {
             collateralBalance,
           },
