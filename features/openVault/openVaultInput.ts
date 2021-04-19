@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { isNullish } from 'helpers/functions'
 
 import { OpenVaultChange, OpenVaultState } from './openVault'
 
@@ -86,7 +87,11 @@ export function applyOpenVaultInput(
     }
   }
 
-  if (change.kind === 'generateMax' && state.showGenerateOption) {
+  if (
+    change.kind === 'generateMax' &&
+    state.showGenerateOption &&
+    !isNullish(state.depositAmount)
+  ) {
     const { maxGenerateAmount } = state
 
     return {

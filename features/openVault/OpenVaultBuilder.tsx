@@ -35,7 +35,7 @@ interface BuildOpenVaultProps {
   ilk?: string
 }
 
-function buildOpenVault$({
+export function buildOpenVault$({
   _ilkData$,
   _priceInfo$,
   _balanceInfo$,
@@ -50,7 +50,7 @@ function buildOpenVault$({
   account = '0xVaultController',
   ilks,
   ilk = 'WBTC-A',
-}: BuildOpenVaultProps) {
+}: BuildOpenVaultProps = {}) {
   const token = ilk.split('-')[0]
 
   const context$ = of({

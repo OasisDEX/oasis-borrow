@@ -1,363 +1,335 @@
 /* eslint-disable func-style */
 
-// describe('openVault', () => {
-//   beforeEach(() => {})
+import BigNumber from 'bignumber.js'
+import { expect } from 'chai'
+import { getStateUnpacker } from 'helpers/testHelpers'
+import { Subject } from 'rxjs'
 
-//   describe('parseVaultIdFromReceiptLogs', () => {
-//     it('should return vaultId', () => {
-//       const vaultId = parseVaultIdFromReceiptLogs(newCDPTxReceipt)
-//       expect(vaultId!.toString()).to.equal('3281')
-//     })
-//     it('should return undefined if NewCdp log is not found', () => {
-//       const vaultId = parseVaultIdFromReceiptLogs({ logs: [] })
-//       expect(vaultId).to.equal(undefined)
-//     })
-//   })
+import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
+import { buildOpenVault$ } from './OpenVaultBuilder'
+import { parseVaultIdFromReceiptLogs } from './openVaultTransactions'
 
-//   describe('createOpenVault$', () => {
-//     type FixtureProps = Partial<OpenVaultState> & {
-//       title?: string
-//       context?: ContextConnected
-//       proxyAddress?: string
-//       proxyAddress$?: Observable<string>
-//       allowance?: BigNumber
-//       ilks$?: Observable<string[]>
-//       priceInfo?: Partial<PriceInfo>
-//       balanceInfo?: Partial<BalanceInfo>
-//       ilk?: string
-//       txHelpers?: TxHelpers
-//     }
+describe('openVault', () => {
+  beforeEach(() => {})
 
-//     function createTestFixture({
-//       context,
-//       proxyAddress,
-//       proxyAddress$,
-//       allowance = maxUint256,
-//       ilks$,
-//       priceInfo,
-//       balanceInfo,
-//       ilk = 'ETH-A',
-//       txHelpers,
-//       stage,
-//       depositAmount,
-//       ...otherState
-//     }: FixtureProps = {}) {
-//       const context$ = of(context || protoContextConnected)
-//       const txHelpers$ = of(txHelpers || protoTxHelpers)
-//       const allowance$ = _.constant(of(allowance || maxUint256))
+  describe('parseVaultIdFromReceiptLogs', () => {
+    it('should return vaultId', () => {
+      const vaultId = parseVaultIdFromReceiptLogs(newCDPTxReceipt)
+      expect(vaultId!.toString()).to.equal('3281')
+    })
+    it('should return undefined if NewCdp log is not found', () => {
+      const vaultId = parseVaultIdFromReceiptLogs({ logs: [] })
+      expect(vaultId).to.equal(undefined)
+    })
+  })
 
-//       const protoBalanceInfo: BalanceInfo = {
-//         collateralBalance: zero,
-//         ethBalance: zero,
-//         daiBalance: zero,
-//         ...balanceInfo,
-//       }
+  describe('openVault$', () => {
+    // function createMockTxState<T extends TxMeta>(
+    //   meta: T,
+    //   status: TxStatus = TxStatus.Success,
+    //   receipt: unknown = {},
+    // ): Observable<TxState<T>> {
+    //   if (status === TxStatus.Success) {
+    //     const txState = {
+    //       account: '0x',
+    //       txNo: 0,
+    //       networkId: '1',
+    //       meta,
+    //       start: new Date(),
+    //       lastChange: new Date(),
+    //       dismissed: false,
+    //       status,
+    //       txHash: '0xhash',
+    //       blockNumber: 0,
+    //       receipt,
+    //       confirmations: 15,
+    //       safeConfirmations: 15,
+    //     }
+    //     return of(txState)
+    //   } else if (status === TxStatus.Failure) {
+    //     const txState = {
+    //       account: '0x',
+    //       txNo: 0,
+    //       networkId: '1',
+    //       meta,
+    //       start: new Date(),
+    //       lastChange: new Date(),
+    //       dismissed: false,
+    //       status,
+    //       txHash: '0xhash',
+    //       blockNumber: 0,
+    //       receipt,
+    //     }
+    //     return of(txState)
+    //   } else {
+    //     throw new Error('Not implemented yet')
+    //   }
+    // }
 
-//       const protoPriceInfo = {
-//         ...(ilk === 'ETH-A'
-//           ? protoETHPriceInfo
-//           : ilk === 'WBTC-A'
-//           ? protoWBTCPriceInfo
-//           : protoUSDCPriceInfo),
-//         ...(priceInfo || {}),
-//       }
+    it('should wait until ilks are fetched before emiitting', () => {
+      const _ilks$ = new Subject<string[]>()
+      const state = getStateUnpacker(
+        buildOpenVault$({
+          _ilks$,
+          ilk: 'WBTC-A',
+        }),
+      )
+      expect(state()).to.be.undefined
+      _ilks$.next(['WBTC-A'])
+      expect(state().ilk).to.deep.equal('WBTC-A')
+    })
 
-//       const protoIlkData =
-//         ilk === 'ETH-A'
-//           ? protoETHAIlkData
-//           : ilk === 'WBTC-A'
-//           ? protoWBTCAIlkData
-//           : protoUSDCAIlkData
+    it('should throw error if ilk is not valid', () => {
+      const state = getStateUnpacker(
+        buildOpenVault$({
+          ilks: ['ETH-A'],
+          ilk: 'ETH-Z',
+        }),
+      )
+      expect(state).to.throw()
+    })
 
-//       const balanceInfo$ = () => of(protoBalanceInfo)
-//       const priceInfo$ = () => of(protoPriceInfo)
-//       const ilkData$ = () => of(protoIlkData)
+    it('should start by default at the editing stage', () => {
+      const state = getStateUnpacker(buildOpenVault$())
+      expect(state().stage).to.be.equal('editing')
+    })
 
-//       const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
-//       const openVault$ = createOpenVault$(
-//         context$,
-//         txHelpers$,
-//         _.constant(proxyAddress$ || of(proxyAddress)),
-//         allowance$,
-//         priceInfo$,
-//         balanceInfo$,
-//         ilks$ || of(['ETH-A', 'WBTC-A', 'USDC-A']),
-//         ilkData$,
-//         ilkToToken$,
-//         ilk,
-//       )
+    it('should update depositAmount', () => {
+      const depositAmount = new BigNumber('5')
+      const state = getStateUnpacker(buildOpenVault$())
+      state().updateDeposit!(depositAmount)
+      expect(state().depositAmount!.toString()).to.deep.equal(depositAmount.toString())
+    })
 
-//       const newState: Partial<OpenVaultState> = {
-//         ...otherState,
-//         ...(stage && { stage }),
-//         ...(depositAmount && {
-//           depositAmount,
-//           depositAmountUSD: depositAmount.times(protoPriceInfo.currentCollateralPrice),
-//         }),
-//       }
+    it('should calculate depositAmountUSD based on depositAmount', () => {
+      const depositAmount = new BigNumber('5')
+      const collateralPrice = new BigNumber('100')
+      const state = getStateUnpacker(buildOpenVault$({ priceInfo: { collateralPrice } }))
+      state().updateDeposit!(depositAmount)
+      expect(state().depositAmount!.toString()).to.deep.equal(depositAmount.toString())
+      expect(state().depositAmountUSD!.toString()).to.deep.equal(
+        depositAmount.times(collateralPrice).toString(),
+      )
+    })
 
-//       openVault$.pipe(first()).subscribe(
-//         ({ injectStateOverride }: any) => {
-//           if (injectStateOverride) {
-//             injectStateOverride(newState || {})
-//           }
-//         },
-//         () => {},
-//       )
-//       return openVault$
-//     }
+    it('should update generate amount only when a depositAmount is specified and the showGenerateOption is toggled', () => {
+      const depositAmount = new BigNumber('5')
+      const generateAmount = new BigNumber('2000')
+      const state = getStateUnpacker(buildOpenVault$())
+      state().updateGenerate!(generateAmount)
+      expect(state().generateAmount).to.be.undefined
+      state().updateDeposit!(depositAmount)
+      state().updateGenerate!(generateAmount)
+      expect(state().generateAmount).to.be.undefined
+      state().toggleGenerateOption!()
+      state().updateGenerate!(generateAmount)
+      expect(state().depositAmount!.toString()).to.deep.equal(depositAmount.toString())
+      expect(state().generateAmount!.toString()).to.deep.equal(generateAmount.toString())
+    })
 
-//     function createMockTxState<T extends TxMeta>(
-//       meta: T,
-//       status: TxStatus = TxStatus.Success,
-//       receipt: unknown = {},
-//     ): Observable<TxState<T>> {
-//       if (status === TxStatus.Success) {
-//         const txState = {
-//           account: '0x',
-//           txNo: 0,
-//           networkId: '1',
-//           meta,
-//           start: new Date(),
-//           lastChange: new Date(),
-//           dismissed: false,
-//           status,
-//           txHash: '0xhash',
-//           blockNumber: 0,
-//           receipt,
-//           confirmations: 15,
-//           safeConfirmations: 15,
-//         }
-//         return of(txState)
-//       } else if (status === TxStatus.Failure) {
-//         const txState = {
-//           account: '0x',
-//           txNo: 0,
-//           networkId: '1',
-//           meta,
-//           start: new Date(),
-//           lastChange: new Date(),
-//           dismissed: false,
-//           status,
-//           txHash: '0xhash',
-//           blockNumber: 0,
-//           receipt,
-//         }
-//         return of(txState)
-//       } else {
-//         throw new Error('Not implemented yet')
-//       }
-//     }
+    it('should deposit the max amount of collateral when updateDepositMax is triggered', () => {
+      const collateralBalance = new BigNumber('10')
+      const state = getStateUnpacker(
+        buildOpenVault$({
+          balanceInfo: {
+            collateralBalance,
+          },
+        }),
+      )
+      state().updateDepositMax!()
+      expect(state().depositAmount!.toString()).to.deep.equal(collateralBalance.toString())
+    })
 
-//     it('Should start in an editing stage', () => {
-//       const state = getStateUnpacker(createTestFixture())
-//       const s = state()
-//       expect(s.stage).to.be.equal('editing')
-//     })
+    //   it('editing.updateDeposit()', () => {
+    //     const depositAmount = new BigNumber(5)
+    //     const state = getStateUnpacker(createTestFixture())
+    //     state().updateDeposit!(depositAmount)
+    //     expect(state().depositAmount!.toString()).to.be.equal(depositAmount.toString())
+    //     expect(state().stage).to.be.equal('editing')
+    //   })
 
-//     it('should throw error if ilk is not valid', () => {
-//       const state = getStateUnpacker(createTestFixture({ ilk: 'ETH-Z' }))
-//       expect(state).to.throw()
-//     })
+    //   it('editing.updateDepositUSD()', () => {
+    //     const depositAmount = new BigNumber(5)
+    //     const depositAmountUSD = protoETHPriceInfo.currentCollateralPrice.times(depositAmount)
+    //     const state = getStateUnpacker(createTestFixture())
+    //     state().updateDepositUSD!(depositAmountUSD)
+    //     expect(state().depositAmount!.toString()).to.be.equal(depositAmount.toString())
+    //     expect(state().depositAmountUSD!.toString()).to.be.equal(depositAmountUSD.toString())
+    //   })
 
-//     it('should wait for ilks to fetch before propagating', () => {
-//       const ilks$ = new Subject<string[]>()
-//       const state = getStateUnpacker(createTestFixture({ ilks$ }))
-//       expect(state()).to.be.undefined
-//       ilks$.next(['ETH-A'])
-//       expect(state().stage).to.be.deep.equal('editing')
-//     })
+    //   it('editing.updateGenerate()', () => {
+    //     const depositAmount = new BigNumber(5)
+    //     const generateAmount = new BigNumber(3000)
+    //     const state = getStateUnpacker(createTestFixture())
+    //     state().updateDeposit!(depositAmount)
+    //     state().updateGenerate!(generateAmount)
+    //     expect(state().generateAmount).to.be.undefined
+    //     state().toggleGenerateOption!()
+    //     state().updateGenerate!(generateAmount)
+    //     expect(state().generateAmount!.toString()).to.be.equal(generateAmount.toString())
+    //   })
 
-//     it('editing.updateDeposit()', () => {
-//       const depositAmount = new BigNumber(5)
-//       const state = getStateUnpacker(createTestFixture())
-//       state().updateDeposit!(depositAmount)
-//       expect(state().depositAmount!.toString()).to.be.equal(depositAmount.toString())
-//       expect(state().stage).to.be.equal('editing')
-//     })
+    //   it('editing.progress()', () => {
+    //     const state = getStateUnpacker(createTestFixture())
+    //     state().progress!()
+    //     expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
+    //   })
 
-//     it('editing.updateDepositUSD()', () => {
-//       const depositAmount = new BigNumber(5)
-//       const depositAmountUSD = protoETHPriceInfo.currentCollateralPrice.times(depositAmount)
-//       const state = getStateUnpacker(createTestFixture())
-//       state().updateDepositUSD!(depositAmountUSD)
-//       expect(state().depositAmount!.toString()).to.be.equal(depositAmount.toString())
-//       expect(state().depositAmountUSD!.toString()).to.be.equal(depositAmountUSD.toString())
-//     })
+    //   it('creating proxy', () => {
+    //     const proxyAddress$ = new Subject<string>()
+    //     const proxyAddress = '0xProxyAddress'
+    //     const state = getStateUnpacker(
+    //       createTestFixture({
+    //         proxyAddress$,
+    //         txHelpers: {
+    //           ...protoTxHelpers,
+    //           sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+    //             createMockTxState(meta),
+    //         },
+    //       }),
+    //     )
+    //     proxyAddress$.next()
+    //     state().progress!()
+    //     expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
+    //     state().progress!()
+    //     proxyAddress$.next(proxyAddress)
+    //     expect(state().stage).to.be.equal('proxySuccess')
+    //     expect(state().proxyAddress).to.be.equal(proxyAddress)
+    //   })
 
-//     it('editing.updateGenerate()', () => {
-//       const depositAmount = new BigNumber(5)
-//       const generateAmount = new BigNumber(3000)
-//       const state = getStateUnpacker(createTestFixture())
-//       state().updateDeposit!(depositAmount)
-//       state().updateGenerate!(generateAmount)
-//       expect(state().generateAmount).to.be.undefined
-//       state().toggleGenerateOption!()
-//       state().updateGenerate!(generateAmount)
-//       expect(state().generateAmount!.toString()).to.be.equal(generateAmount.toString())
-//     })
+    //   it('creating proxy failure', () => {
+    //     const proxyAddress$ = new Subject<string>()
+    //     const proxyAddress = '0xProxyAddress'
+    //     const state = getStateUnpacker(
+    //       createTestFixture({
+    //         proxyAddress$,
+    //         txHelpers: {
+    //           ...protoTxHelpers,
+    //           sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+    //             createMockTxState(meta, TxStatus.Failure),
+    //         },
+    //       }),
+    //     )
+    //     proxyAddress$.next()
+    //     state().progress!()
+    //     state().progress!()
+    //     proxyAddress$.next(proxyAddress)
+    //     expect(state().stage).to.be.equal('proxyFailure')
+    //   })
 
-//     it('editing.progress()', () => {
-//       const state = getStateUnpacker(createTestFixture())
-//       state().progress!()
-//       expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
-//     })
+    //   it('setting allowance', () => {
+    //     const proxyAddress = '0xProxyAddress'
+    //     const state = getStateUnpacker(
+    //       createTestFixture({
+    //         ilk: 'WBTC-A',
+    //         proxyAddress,
+    //         allowance: new BigNumber(99),
+    //         depositAmount: new BigNumber(100),
+    //         balanceInfo: { collateralBalance: new BigNumber(100) },
+    //         txHelpers: {
+    //           ...protoTxHelpers,
+    //           sendWithGasEstimation: <B extends TxMeta>(_allowance: any, meta: B) =>
+    //             createMockTxState(meta),
+    //         },
+    //       }),
+    //     )
+    //     state().progress!()
+    //     expect(state().stage).to.be.equal('allowanceWaitingForConfirmation')
+    //     state().progress!()
+    //     expect(state().stage).to.be.equal('allowanceSuccess')
+    //   })
 
-//     it('creating proxy', () => {
-//       const proxyAddress$ = new Subject<string>()
-//       const proxyAddress = '0xProxyAddress'
-//       const state = getStateUnpacker(
-//         createTestFixture({
-//           proxyAddress$,
-//           txHelpers: {
-//             ...protoTxHelpers,
-//             sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
-//               createMockTxState(meta),
-//           },
-//         }),
-//       )
-//       proxyAddress$.next()
-//       state().progress!()
-//       expect(state().stage).to.be.equal('proxyWaitingForConfirmation')
-//       state().progress!()
-//       proxyAddress$.next(proxyAddress)
-//       expect(state().stage).to.be.equal('proxySuccess')
-//       expect(state().proxyAddress).to.be.equal(proxyAddress)
-//     })
+    //   it('setting allowance failure', () => {
+    //     const proxyAddress = '0xProxyAddress'
+    //     const state = getStateUnpacker(
+    //       createTestFixture({
+    //         ilk: 'WBTC-A',
+    //         proxyAddress,
+    //         allowance: new BigNumber(99),
+    //         depositAmount: new BigNumber(100),
+    //         balanceInfo: { collateralBalance: new BigNumber(100) },
+    //         txHelpers: {
+    //           ...protoTxHelpers,
+    //           sendWithGasEstimation: <B extends TxMeta>(_allowance: any, meta: B) =>
+    //             createMockTxState(meta, TxStatus.Failure),
+    //         },
+    //       }),
+    //     )
+    //     state().progress!()
+    //     state().progress!()
+    //     expect(state().stage).to.be.equal('allowanceFailure')
+    //   })
 
-//     it('creating proxy failure', () => {
-//       const proxyAddress$ = new Subject<string>()
-//       const proxyAddress = '0xProxyAddress'
-//       const state = getStateUnpacker(
-//         createTestFixture({
-//           proxyAddress$,
-//           txHelpers: {
-//             ...protoTxHelpers,
-//             sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
-//               createMockTxState(meta, TxStatus.Failure),
-//           },
-//         }),
-//       )
-//       proxyAddress$.next()
-//       state().progress!()
-//       state().progress!()
-//       proxyAddress$.next(proxyAddress)
-//       expect(state().stage).to.be.equal('proxyFailure')
-//     })
+    //   it('editing.progress(proxyAddress, allowance)', () => {
+    //     const state = getStateUnpacker(createTestFixture({ proxyAddress: '0xProxyAddress' }))
+    //     state().progress!()
+    //     expect(state().stage).to.be.equal('openWaitingForConfirmation')
+    //   })
 
-//     it('setting allowance', () => {
-//       const proxyAddress = '0xProxyAddress'
-//       const state = getStateUnpacker(
-//         createTestFixture({
-//           ilk: 'WBTC-A',
-//           proxyAddress,
-//           allowance: new BigNumber(99),
-//           depositAmount: new BigNumber(100),
-//           balanceInfo: { collateralBalance: new BigNumber(100) },
-//           txHelpers: {
-//             ...protoTxHelpers,
-//             sendWithGasEstimation: <B extends TxMeta>(_allowance: any, meta: B) =>
-//               createMockTxState(meta),
-//           },
-//         }),
-//       )
-//       state().progress!()
-//       expect(state().stage).to.be.equal('allowanceWaitingForConfirmation')
-//       state().progress!()
-//       expect(state().stage).to.be.equal('allowanceSuccess')
-//     })
+    //   it('opening vault', () => {
+    //     const state = getStateUnpacker(
+    //       createTestFixture({
+    //         proxyAddress: '0xProxyAddress',
+    //         txHelpers: {
+    //           ...protoTxHelpers,
+    //           send: <B extends TxMeta>(_open: any, meta: B) =>
+    //             createMockTxState(meta, TxStatus.Success, newCDPTxReceipt),
+    //         },
+    //       }),
+    //     )
+    //     state().progress!()
+    //     expect(state().stage).to.be.equal('openWaitingForConfirmation')
+    //     state().progress!()
+    //     expect(state().stage).to.be.equal('openSuccess')
+    //     expect(state().id!.toString()).to.be.equal('3281')
+    //   })
 
-//     it('setting allowance failure', () => {
-//       const proxyAddress = '0xProxyAddress'
-//       const state = getStateUnpacker(
-//         createTestFixture({
-//           ilk: 'WBTC-A',
-//           proxyAddress,
-//           allowance: new BigNumber(99),
-//           depositAmount: new BigNumber(100),
-//           balanceInfo: { collateralBalance: new BigNumber(100) },
-//           txHelpers: {
-//             ...protoTxHelpers,
-//             sendWithGasEstimation: <B extends TxMeta>(_allowance: any, meta: B) =>
-//               createMockTxState(meta, TxStatus.Failure),
-//           },
-//         }),
-//       )
-//       state().progress!()
-//       state().progress!()
-//       expect(state().stage).to.be.equal('allowanceFailure')
-//     })
+    //   it('opening vault failure', () => {
+    //     const state = getStateUnpacker(
+    //       createTestFixture({
+    //         proxyAddress: '0xProxyAddress',
+    //         txHelpers: {
+    //           ...protoTxHelpers,
+    //           send: <B extends TxMeta>(_open: any, meta: B) =>
+    //             createMockTxState(meta, TxStatus.Failure),
+    //         },
+    //       }),
+    //     )
+    //     state().progress!()
+    //     state().progress!()
+    //     expect(state().stage).to.be.equal('openFailure')
+    //   })
+  })
 
-//     it('editing.progress(proxyAddress, allowance)', () => {
-//       const state = getStateUnpacker(createTestFixture({ proxyAddress: '0xProxyAddress' }))
-//       state().progress!()
-//       expect(state().stage).to.be.equal('openWaitingForConfirmation')
-//     })
+  // describe('openVault stage categories', () => {
+  //   it('should identify editing stage correctly', () => {
+  //     const { isEditingStage } = categoriseOpenVaultStage('editing')
+  //     expect(isEditingStage).to.be.true
+  //   })
 
-//     it('opening vault', () => {
-//       const state = getStateUnpacker(
-//         createTestFixture({
-//           proxyAddress: '0xProxyAddress',
-//           txHelpers: {
-//             ...protoTxHelpers,
-//             send: <B extends TxMeta>(_open: any, meta: B) =>
-//               createMockTxState(meta, TxStatus.Success, newCDPTxReceipt),
-//           },
-//         }),
-//       )
-//       state().progress!()
-//       expect(state().stage).to.be.equal('openWaitingForConfirmation')
-//       state().progress!()
-//       expect(state().stage).to.be.equal('openSuccess')
-//       expect(state().id!.toString()).to.be.equal('3281')
-//     })
+  //   it('should identify proxy stages correctly', () => {
+  //     expect(categoriseOpenVaultStage('proxyWaitingForConfirmation').isProxyStage).to.be.true
+  //     expect(categoriseOpenVaultStage('proxyWaitingForApproval').isProxyStage).to.be.true
+  //     expect(categoriseOpenVaultStage('proxyInProgress').isProxyStage).to.be.true
+  //     expect(categoriseOpenVaultStage('proxyFailure').isProxyStage).to.be.true
+  //     expect(categoriseOpenVaultStage('proxySuccess').isProxyStage).to.be.true
+  //   })
 
-//     it('opening vault failure', () => {
-//       const state = getStateUnpacker(
-//         createTestFixture({
-//           proxyAddress: '0xProxyAddress',
-//           txHelpers: {
-//             ...protoTxHelpers,
-//             send: <B extends TxMeta>(_open: any, meta: B) =>
-//               createMockTxState(meta, TxStatus.Failure),
-//           },
-//         }),
-//       )
-//       state().progress!()
-//       state().progress!()
-//       expect(state().stage).to.be.equal('openFailure')
-//     })
-//   })
+  //   it('should identify allowance stages correctly', () => {
+  //     expect(categoriseOpenVaultStage('allowanceWaitingForConfirmation').isAllowanceStage).to.be
+  //       .true
+  //     expect(categoriseOpenVaultStage('allowanceWaitingForApproval').isAllowanceStage).to.be.true
+  //     expect(categoriseOpenVaultStage('allowanceInProgress').isAllowanceStage).to.be.true
+  //     expect(categoriseOpenVaultStage('allowanceFailure').isAllowanceStage).to.be.true
+  //     expect(categoriseOpenVaultStage('allowanceSuccess').isAllowanceStage).to.be.true
+  //   })
 
-//   describe('openVault stage categories', () => {
-//     it('should identify editing stage correctly', () => {
-//       const { isEditingStage } = categoriseOpenVaultStage('editing')
-//       expect(isEditingStage).to.be.true
-//     })
-
-//     it('should identify proxy stages correctly', () => {
-//       expect(categoriseOpenVaultStage('proxyWaitingForConfirmation').isProxyStage).to.be.true
-//       expect(categoriseOpenVaultStage('proxyWaitingForApproval').isProxyStage).to.be.true
-//       expect(categoriseOpenVaultStage('proxyInProgress').isProxyStage).to.be.true
-//       expect(categoriseOpenVaultStage('proxyFailure').isProxyStage).to.be.true
-//       expect(categoriseOpenVaultStage('proxySuccess').isProxyStage).to.be.true
-//     })
-
-//     it('should identify allowance stages correctly', () => {
-//       expect(categoriseOpenVaultStage('allowanceWaitingForConfirmation').isAllowanceStage).to.be
-//         .true
-//       expect(categoriseOpenVaultStage('allowanceWaitingForApproval').isAllowanceStage).to.be.true
-//       expect(categoriseOpenVaultStage('allowanceInProgress').isAllowanceStage).to.be.true
-//       expect(categoriseOpenVaultStage('allowanceFailure').isAllowanceStage).to.be.true
-//       expect(categoriseOpenVaultStage('allowanceSuccess').isAllowanceStage).to.be.true
-//     })
-
-//     it('should identify open stages correctly', () => {
-//       expect(categoriseOpenVaultStage('openWaitingForConfirmation').isOpenStage).to.be.true
-//       expect(categoriseOpenVaultStage('openWaitingForApproval').isOpenStage).to.be.true
-//       expect(categoriseOpenVaultStage('openInProgress').isOpenStage).to.be.true
-//       expect(categoriseOpenVaultStage('openFailure').isOpenStage).to.be.true
-//       expect(categoriseOpenVaultStage('openSuccess').isOpenStage).to.be.true
-//     })
-//   })
-// })
+  //   it('should identify open stages correctly', () => {
+  //     expect(categoriseOpenVaultStage('openWaitingForConfirmation').isOpenStage).to.be.true
+  //     expect(categoriseOpenVaultStage('openWaitingForApproval').isOpenStage).to.be.true
+  //     expect(categoriseOpenVaultStage('openInProgress').isOpenStage).to.be.true
+  //     expect(categoriseOpenVaultStage('openFailure').isOpenStage).to.be.true
+  //     expect(categoriseOpenVaultStage('openSuccess').isOpenStage).to.be.true
+  //   })
+  // })
+})
