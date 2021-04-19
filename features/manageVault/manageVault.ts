@@ -151,7 +151,7 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
       : zero
 
   const afterLiquidationPrice =
-    generateAmount && depositAmount && depositAmount.gt(zero)
+    afterDebt && afterDebt.gt(zero) && afterLockedCollateral.gt(zero)
       ? afterDebt.times(liquidationRatio).div(afterLockedCollateral)
       : zero
 
