@@ -8,7 +8,7 @@ export const WaitingForIlksToBeFetched = openVaultStory({
     'We must first validate and verify that the ilks will be fetched before we can render anything.',
   _ilks$: NEVER,
   ilk: 'WBTC-A',
-})
+})()
 
 export const InvalidIlk = openVaultStory({
   title: 'Here, the user would be using a url /vault/open/WBTC-Z, should 404',
