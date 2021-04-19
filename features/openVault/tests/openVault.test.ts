@@ -29,7 +29,7 @@ describe('openVault', () => {
     })
   })
 
-  describe.only('openVault$', () => {
+  describe('openVault$', () => {
     it('should wait until ilks are fetched before emiitting', () => {
       const _ilks$ = new Subject<string[]>()
       const state = getStateUnpacker(
