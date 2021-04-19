@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { IlkData } from 'blockchain/ilks'
-import { Context, protoContext } from 'blockchain/network'
+import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { protoTxHelpers } from 'components/AppContext'
 import { createManageVault$, ManageVaultState } from 'features/manageVault/manageVault'
@@ -12,6 +12,7 @@ import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
+import { mockContext$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
 import { mockVault$, MockVaultProps } from './vaults.mock'
@@ -41,6 +42,7 @@ export interface MockManageVaultProps {
 }
 
 export function mockManageVault$({
+  _context$,
   _ilkData$,
   _priceInfo$,
   _balanceInfo$,
@@ -60,11 +62,13 @@ export function mockManageVault$({
 }: MockManageVaultProps): Observable<ManageVaultState> {
   const token = vault.ilk.split('-')[0]
 
-  const context$ = of({
-    ...protoContext,
-    account,
-    status,
-  })
+  const context$ =
+    _context$ ||
+    mockContext$({
+      account,
+      status,
+    })
+
   const txHelpers$ = of(protoTxHelpers)
 
   const _oraclePriceData$ = priceInfo$().pipe(

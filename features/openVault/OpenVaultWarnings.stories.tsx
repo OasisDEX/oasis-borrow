@@ -30,7 +30,7 @@ export const OpeningVaultWithCollateralAndDebt = openVaultStory({
 
 export const NoProxyAddress = openVaultStory({
   title: 'User has no proxyAddress and will have to create one before opening a vault',
-})
+})()
 
 export const InsufficientAllowance = openVaultStory({
   title:

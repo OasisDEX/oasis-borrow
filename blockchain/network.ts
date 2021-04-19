@@ -71,6 +71,15 @@ export function createContext$(
   )
 }
 
+export function createContextConnected$(
+  context$: Observable<Context>,
+): Observable<ContextConnected> {
+  return context$.pipe(
+    filter(({ status }) => status === 'connected'),
+    shareReplay(1),
+  )
+}
+
 export type EveryBlockFunction$ = <O>(
   o$: Observable<O>,
   compare?: (x: O, y: O) => boolean,
@@ -127,34 +136,4 @@ export function reload(network: string) {
   } else {
     document.location.href = document.location.href + '?network=' + network
   }
-}
-
-export const protoWeb3ContextConnected: Web3Context = {
-  chainId: 42,
-  status: 'connected',
-  deactivate: () => null,
-  account: '0xConnectedAccount',
-  connectionKind: 'injected',
-  web3: {} as Web3,
-}
-export const protoWeb3ContextReadOnly: Web3Context = {
-  chainId: 42,
-  status: 'connected',
-  deactivate: () => null,
-  account: '0xReadOnly',
-  connectionKind: 'injected',
-  web3: {} as Web3,
-}
-
-export const protoContextConnected: ContextConnected = {
-  contract: <T>(c: ContractDesc) => contract(new Web3(), c) as T,
-  web3ProviderGetPastLogs: {} as Web3,
-  ...networksById['42'],
-  ...protoWeb3ContextConnected,
-}
-export const protoContext: Context = {
-  contract: <T>(c: ContractDesc) => contract(new Web3(), c) as T,
-  web3ProviderGetPastLogs: {} as Web3,
-  ...networksById['42'],
-  ...protoWeb3ContextReadOnly,
 }

@@ -71,6 +71,7 @@ import {
   ContextConnected,
   createAccount$,
   createContext$,
+  createContextConnected$,
   createInitializedAccount$,
   createOnEveryBlock$,
   createWeb3ContextConnected$,
@@ -145,10 +146,7 @@ export function setupAppContext() {
 
   const context$ = createContext$(web3ContextConnected$)
 
-  const connectedContext$ = context$.pipe(
-    filter(({ status }) => status === 'connected'),
-    shareReplay(1),
-  ) as Observable<ContextConnected>
+  const connectedContext$ = createContextConnected$(context$)
 
   const oracleContext$ = context$.pipe(
     switchMap((ctx) => of({ ...ctx, account: ctx.mcdSpot.address })),
