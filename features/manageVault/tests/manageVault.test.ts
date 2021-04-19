@@ -1,5 +1,6 @@
 /* eslint-disable func-style */
 
+import { BigNumber } from 'bignumber.js'
 import { expect } from 'chai'
 import { mockManageVault$ } from 'helpers/mocks/manageVault.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
@@ -10,7 +11,32 @@ describe('manageVault', () => {
     it('should start in an editing stage', () => {
       const state = getStateUnpacker(mockManageVault$())
       expect(state().stage).to.be.equal('collateralEditing')
-      expect(state().vault.lockedCollateral).to.equal(zero)
+      expect(state().vault.lockedCollateral).to.deep.equal(zero)
+      expect(state().vault.debt).to.deep.equal(zero)
+    })
+
+    it('should update deposit amount in collateral editing stage', () => {
+      const depositAmount = new BigNumber('5')
+      const state = getStateUnpacker(mockManageVault$())
+      state().updateDeposit!(depositAmount)
+      expect(state().depositAmount!).to.be.equal(depositAmount)
+    })
+
+    it('should update generate amount in collateral editing stage ', () => {
+      const depositAmount = new BigNumber('5')
+      const generateAmount = new BigNumber('3000')
+
+      const state = getStateUnpacker(mockManageVault$())
+
+      state().updateGenerate!(generateAmount)
+      expect(state().generateAmount!).to.be.undefined
+      state().updateDeposit!(depositAmount)
+      expect(state().depositAmount!).to.deep.equal(depositAmount)
+      state().updateGenerate!(generateAmount)
+      expect(state().generateAmount!).to.be.undefined
+      state().toggleDepositAndGenerateOption!()
+      state().updateGenerate!(generateAmount)
+      expect(state().generateAmount!).to.deep.equal(generateAmount)
     })
 
     //   it('collateral-editing.updateDeposit()', () => {
