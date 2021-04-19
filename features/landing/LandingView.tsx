@@ -9,6 +9,7 @@ import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { Filters } from 'features/vaultsOverview/Filters'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
@@ -142,7 +143,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
           opacity: 0.08,
         }}
       >
-        <Image sx={{ mb: 4 }} src="/static/img/icons_set.svg" />
+        <Image sx={{ mb: 4 }} src={staticFilesRuntimeUrl('/static/img/icons_set.svg')} />
       </Box>
       {!isConnected && (
         <AppLink
