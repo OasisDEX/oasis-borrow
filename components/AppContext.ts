@@ -41,6 +41,7 @@ import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
+import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import { redirectState$ } from 'features/router/redirectState'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import {
@@ -294,14 +295,12 @@ export function setupAppContext() {
   )
 
   const vaultBanners$ = memoize(
-    curry(createVaultsBanners$)(
-      context$,
-      txHelpers$,
-      proxyAddress$,
-      priceInfo$,
-      vault$,
-      vaultHistory$,
-    ),
+    curry(createVaultsBanners$)(context$, priceInfo$, vault$, vaultHistory$),
+    bigNumberTostring,
+  )
+
+  const reclaimCollateral$ = memoize(
+    curry(createReclaimCollateral$)(context$, txHelpers$, proxyAddress$),
     bigNumberTostring,
   )
 
@@ -329,6 +328,7 @@ export function setupAppContext() {
     vaultHistory$,
     collateralPrices$,
     termsAcceptance$,
+    reclaimCollateral$,
   }
 }
 

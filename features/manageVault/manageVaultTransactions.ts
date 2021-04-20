@@ -5,14 +5,11 @@ import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import {
   depositAndGenerate,
   DepositAndGenerateData,
-  reclaim,
-  ReclaimData,
   withdrawAndPayback,
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxHelpers } from 'components/AppContext'
-import { VaultBannersState } from 'features/banners/vaultsBanners'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
@@ -83,20 +80,6 @@ type ManageChange =
     }
   | {
       kind: 'manageSuccess'
-    }
-
-export type ReclaimChange =
-  | { kind: 'reclaimWaitingForApproval' }
-  | {
-      kind: 'reclaimInProgress'
-      manageTxHash: string
-    }
-  | {
-      kind: 'reclaimFailure'
-      txError?: any
-    }
-  | {
-      kind: 'reclaimSuccess'
     }
 
 export type ManageVaultTransactionChange =
@@ -460,42 +443,6 @@ export function createProxy(
             safeConfirmations,
           ),
         ),
-      ),
-    )
-    .subscribe((ch) => change(ch))
-}
-
-export function manageVaultReclaimCollateral(
-  { send }: TxHelpers,
-  change: (ch: any) => void,
-  proxyAddress: string,
-  { unlockedCollateral, token, id }: VaultBannersState,
-) {
-  send(reclaim, {
-    kind: TxMetaKind.reclaim,
-    proxyAddress: proxyAddress!,
-    amount: unlockedCollateral,
-    token,
-    id,
-  })
-    .pipe(
-      transactionToX<ReclaimChange, ReclaimData>(
-        { kind: 'reclaimWaitingForApproval' },
-        (txState) =>
-          of({
-            kind: 'reclaimInProgress',
-            manageTxHash: (txState as any).txHash as string,
-          }),
-        (txState) => {
-          return of({
-            kind: 'reclaimFailure',
-            txError:
-              txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-                ? txState.error
-                : undefined,
-          })
-        },
-        () => of({ kind: 'reclaimSuccess' }),
       ),
     )
     .subscribe((ch) => change(ch))

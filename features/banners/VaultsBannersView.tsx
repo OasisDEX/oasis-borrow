@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { Banner } from 'components/Banner'
 import { AppLink } from 'components/Links'
+import { ReclaimCollateralButton } from 'features/reclaimCollateral/reclaimCollateralView'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
@@ -11,14 +12,12 @@ import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
-import { Box, Button, Flex, Grid, Heading, Spinner, SxStyleProp, Text, useThemeUI } from 'theme-ui'
+import { Box, Flex, Grid, Heading, SxStyleProp, Text, useThemeUI } from 'theme-ui'
 
 type VaultBannerProps = {
   status: JSX.Element
   header: JSX.Element | string
   subheader?: JSX.Element | string | false
-  action?: () => void
-  isLoading?: boolean
 }
 
 function StatusFrame({ children, sx }: WithChildren & { sx?: SxStyleProp }) {
@@ -43,12 +42,8 @@ export function VaultBanner({
   header,
   subheader,
   color,
-  action,
-  isLoading,
 }: VaultBannerProps & { color: string }) {
   const [isVisible, setIsVisible] = useState(true)
-  const { t } = useTranslation()
-
   return (
     <>
       {isVisible && (
@@ -60,20 +55,6 @@ export function VaultBanner({
                 {header}
               </Heading>
               {subheader && <Text variant="subheader">{subheader}</Text>}
-              <Flex sx={{ alignItems: 'right' }}>
-                {action && (
-                  <Button onClick={action} variant="secondary" disabled={isLoading}>
-                    {isLoading ? (
-                      <Flex sx={{ justifyContent: 'center' }}>
-                        <Spinner size={25} color="primary" />
-                        <Text pl={2}>{t('reclaim')}</Text>
-                      </Flex>
-                    ) : (
-                      <Text>{t('reclaim')}</Text>
-                    )}
-                  </Button>
-                )}
-              </Flex>
             </Grid>
           </Flex>
         </Banner>
@@ -181,34 +162,37 @@ export function VaultLiquidatedBanner({
   isVaultController,
   controller,
   token,
-  action,
-  reclaimTxState,
+  reclaimButton,
 }: {
   unlockedCollateral: BigNumber
   isVaultController: boolean
   controller: string
   token: string
-  action: () => void
-  reclaimTxState?: string
+  reclaimButton: JSX.Element | null
 }) {
   const { t } = useTranslation()
-
-  const isLoading =
-    reclaimTxState === 'reclaimInProgress' || reclaimTxState === 'reclaimWaitingForApproval'
 
   const header = isVaultController
     ? t('vault-banners.liquidated.header1')
     : t('vault-banners.liquidated.header2')
   const subheader =
     unlockedCollateral.gt(zero) &&
-    (isVaultController
-      ? `${t('vault-banners.liquidated.subheader1')} ${t('vault-banners.liquidated.subheader2', {
-          amount: formatCryptoBalance(unlockedCollateral),
-          collateral: token.toUpperCase(),
-        })}`
-      : `${t('vault-banners.liquidated.subheader1')} ${t('vault-banners.liquidated.subheader3', {
-          address: formatAddress(controller),
-        })}`)
+    (isVaultController ? (
+      <>
+        <Text sx={{ mb: 3 }}>
+          {t('vault-banners.liquidated.subheader1')}{' '}
+          {t('vault-banners.liquidated.subheader2', {
+            amount: formatCryptoBalance(unlockedCollateral),
+            collateral: token.toUpperCase(),
+          })}
+        </Text>
+        {reclaimButton}
+      </>
+    ) : (
+      `${t('vault-banners.liquidated.subheader1')} ${t('vault-banners.liquidated.subheader3', {
+        address: formatAddress(controller),
+      })}`
+    ))
 
   return (
     <VaultBanner
@@ -226,8 +210,6 @@ export function VaultLiquidatedBanner({
       header={header}
       subheader={subheader}
       color="banner.danger"
-      action={unlockedCollateral.gt(zero) ? action : undefined}
-      isLoading={isLoading}
     />
   )
 }
@@ -333,11 +315,13 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
     controller,
     unlockedCollateral,
     banner,
-    reclaim,
-    reclaimTxState,
   } = state
 
   const isVaultController = !!account && account === controller
+
+  const reclaimButton = unlockedCollateral.gt(zero) 
+    ? <ReclaimCollateralButton {...{ token, id, amount: unlockedCollateral }} /> 
+    : null
 
   switch (banner) {
     case 'liquidated':
@@ -348,8 +332,7 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
             token,
             isVaultController,
             controller,
-            action: reclaim,
-            reclaimTxState,
+            reclaimButton,
           }}
         />
       )
