@@ -75,6 +75,8 @@ describe('openVault', () => {
       collateralBalance: zero,
       ethBalance: zero,
       daiBalance: zero,
+      stabilityFee: zero,
+      liquidationPenalty: zero,
       injectStateOverride: () => {},
     }
     it('Should show no warnings when the state is correct', () => {
@@ -170,6 +172,8 @@ describe('openVault', () => {
       maxDebtPerUnitCollateral,
       liquidationRatio,
       safeConfirmations: 6,
+      stabilityFee: zero,
+      liquidationPenalty: zero,
       injectStateOverride: () => {},
     })
 

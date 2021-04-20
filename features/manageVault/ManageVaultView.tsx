@@ -804,7 +804,9 @@ function VaultDetails(props: ManageVaultState) {
           <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
             {t('system.stability-fee')}
           </Box>
-          <Box variant="text.header3">{formatPercent(props.stabilityFee.times(100))}</Box>
+          <Box variant="text.header3">
+            {formatPercent(props.stabilityFee.times(100), { precision: 2 })}
+          </Box>
         </Box>
         <Box>
           <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>

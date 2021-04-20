@@ -15,12 +15,12 @@ const {
 
 const FOOTER_LINKS = [
   { labelKey: 'landing.footer.trade', url: 'https://oasis.app/trade', target: '_self' },
-  { labelKey: 'landing.footer.privacy', url: '/privacy' },
+  { labelKey: 'landing.footer.privacy', url: 'https://oasis.app/privacy' },
   { labelKey: 'landing.footer.terms', url: '/terms' },
   { labelKey: 'landing.footer.blog', url: 'https://blog.oasis.app' },
   {
     labelKey: 'landing.footer.faq',
-    url: 'https://community-development.makerdao.com/en/learn/vaults/',
+    url: 'https://oasis.app/support',
   },
   { labelKey: 'landing.footer.contact', url: 'https://oasis.app/contact', target: '_self' },
 ]

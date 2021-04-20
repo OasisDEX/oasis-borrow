@@ -206,6 +206,8 @@ export type DefaultOpenVaultState = {
   ilkDebtAvailable: BigNumber
   debtFloor: BigNumber
   liquidationRatio: BigNumber
+  stabilityFee: BigNumber
+  liquidationPenalty: BigNumber
 
   allowanceTxHash?: string
   proxyTxHash?: string
@@ -349,7 +351,14 @@ export function createOpenVault$(
                 ([
                   priceInfo,
                   balanceInfo,
-                  { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
+                  {
+                    maxDebtPerUnitCollateral,
+                    ilkDebtAvailable,
+                    debtFloor,
+                    liquidationRatio,
+                    stabilityFee,
+                    liquidationPenalty,
+                  },
                   proxyAddress,
                 ]) =>
                   (
@@ -385,6 +394,8 @@ export function createOpenVault$(
                         safeConfirmations: context.safeConfirmations,
                         etherscan: context.etherscan.url,
                         allowanceAmount: maxUint256,
+                        stabilityFee,
+                        liquidationPenalty,
 
                         injectStateOverride,
                       }

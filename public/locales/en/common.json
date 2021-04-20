@@ -320,7 +320,7 @@
     "available-to-withdraw": "Available to withdraw",
     "available-to-generate": "Available to Generate",
     "coll-locked": "Coll. locked",
-    "coll-ratio": "Coll Rato",
+    "coll-ratio": "Coll. Ratio",
     "collateral": "Collateral",
     "collateral-locked": "Collateral locked",
     "collateral-ratio": "Collateral Ratio",
@@ -394,12 +394,12 @@
   "vaults-overview": {
     "headers": {
       "connected-owner-withVaults": "Your Maker Vaults overview",
+      "connected-owner-noVaults": "You have no open Vaults",
       "connected-viewer-withVaults": "Maker Vaults overview of {{address}}",
-      "connected-viewier-noVaults": "{{address}} currently has no Maker Vaults",
+      "connected-viewer-noVaults": "{{address}} currently has no Maker Vaults",
       "notConnected-noVaults": "{{address}} currently has no Maker Vaults.<0/> Is this yours? Connect your wallet and open a vault.",
       "notConnected-withVaults": "Maker Vaults overview of {{address}}.<0/> Is this yours? Connect your wallet."
     },
-    "header-no-vaults": "You have no open Vaults",
     "subheader-no-vaults": "Open a Maker Vault, deposit your collateral, and generate DAI against it.",
     "number-of-vaults": "No. of Vaults",
     "total-debt": "Total debt",
@@ -459,5 +459,8 @@
   "you-are-sending": "You are sending",
   "your-vaults": "Your Vaults",
   "open-new-vault": "Open new Vault",
-  "no-results": "No results"
+  "no-results": "No results",
+  "new-to-ethereum": "New to Ethereum? ",
+  "learn-about-wallets": "Learn more about wallets",
+  "learn-more-link": "https://ethereum.org/en/wallets/find-wallet/"
 }
