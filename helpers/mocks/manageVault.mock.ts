@@ -3,11 +3,11 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
-import { protoTxHelpers } from 'components/AppContext'
+import { protoTxHelpers, TxHelpers } from 'components/AppContext'
 import { createManageVault$, ManageVaultState } from 'features/manageVault/manageVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
@@ -21,6 +21,7 @@ export const MOCK_VAULT_ID = one
 
 export interface MockManageVaultProps {
   _context$?: Observable<Context>
+  _txHelpers$?: Observable<TxHelpers>
   _ilkData$?: Observable<IlkData>
   _priceInfo$?: Observable<PriceInfo>
   _balanceInfo$?: Observable<BalanceInfo>
@@ -43,6 +44,7 @@ export interface MockManageVaultProps {
 
 export function mockManageVault$({
   _context$,
+  _txHelpers$,
   _ilkData$,
   _priceInfo$,
   _balanceInfo$,
@@ -55,8 +57,8 @@ export function mockManageVault$({
   balanceInfo,
   vault,
   proxyAddress,
-  collateralAllowance = maxUint256,
-  daiAllowance = maxUint256,
+  collateralAllowance,
+  daiAllowance,
   account = '0xVaultController',
   status = 'connected',
 }: MockManageVaultProps = {}): Observable<ManageVaultState> {
@@ -68,8 +70,7 @@ export function mockManageVault$({
       account,
       status,
     })
-
-  const txHelpers$ = of(protoTxHelpers)
+  const txHelpers$ = _txHelpers$ || of(protoTxHelpers)
 
   const _oraclePriceData$ = priceInfo$().pipe(
     switchMap(({ currentCollateralPrice, nextCollateralPrice, isStaticCollateralPrice }) =>
@@ -105,8 +106,12 @@ export function mockManageVault$({
 
   function allowance$(_token: string) {
     return _token === 'DAI'
-      ? _daiAllowance$ || of(daiAllowance)
-      : _collateralAllowance$ || of(collateralAllowance)
+      ? _daiAllowance$ || daiAllowance
+        ? of(daiAllowance || zero)
+        : of(maxUint256)
+      : _collateralAllowance$ || collateralAllowance
+      ? of(collateralAllowance || zero)
+      : of(maxUint256)
   }
 
   function vault$() {

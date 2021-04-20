@@ -6,6 +6,7 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { expect } from 'chai'
 import { protoTxHelpers } from 'components/AppContext'
 import { mockOpenVault$ } from 'helpers/mocks/openVault.mock'
+import { mockTxState } from 'helpers/mocks/txHelpers.mock'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
@@ -13,7 +14,6 @@ import { of, Subject } from 'rxjs'
 
 import { parseVaultIdFromReceiptLogs } from '../openVaultTransactions'
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
-import { mockOpenVaultTxState } from './fixtures/openVaultTx'
 
 describe('openVault', () => {
   beforeEach(() => {})
@@ -137,8 +137,7 @@ describe('openVault', () => {
           _proxyAddress$,
           _txHelpers$: of({
             ...protoTxHelpers,
-            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
-              mockOpenVaultTxState(meta),
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) => mockTxState(meta),
           }),
         }),
       )
@@ -161,7 +160,7 @@ describe('openVault', () => {
           _txHelpers$: of({
             ...protoTxHelpers,
             sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
-              mockOpenVaultTxState(meta, TxStatus.Failure),
+              mockTxState(meta, TxStatus.Failure),
           }),
         }),
       )
@@ -215,8 +214,7 @@ describe('openVault', () => {
         mockOpenVault$({
           _txHelpers$: of({
             ...protoTxHelpers,
-            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
-              mockOpenVaultTxState(meta),
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) => mockTxState(meta),
           }),
           proxyAddress: DEFAULT_PROXY_ADDRESS,
           allowance: zero,
@@ -243,8 +241,7 @@ describe('openVault', () => {
         mockOpenVault$({
           _txHelpers$: of({
             ...protoTxHelpers,
-            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
-              mockOpenVaultTxState(meta),
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) => mockTxState(meta),
           }),
           proxyAddress: DEFAULT_PROXY_ADDRESS,
           allowance: zero,
@@ -274,8 +271,7 @@ describe('openVault', () => {
         mockOpenVault$({
           _txHelpers$: of({
             ...protoTxHelpers,
-            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
-              mockOpenVaultTxState(meta),
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) => mockTxState(meta),
           }),
           proxyAddress: DEFAULT_PROXY_ADDRESS,
           allowance: zero,
@@ -307,7 +303,7 @@ describe('openVault', () => {
           _txHelpers$: of({
             ...protoTxHelpers,
             sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
-              mockOpenVaultTxState(meta, TxStatus.Failure),
+              mockTxState(meta, TxStatus.Failure),
           }),
           proxyAddress: DEFAULT_PROXY_ADDRESS,
           allowance: zero,
@@ -352,7 +348,7 @@ describe('openVault', () => {
           _txHelpers$: of({
             ...protoTxHelpers,
             send: <B extends TxMeta>(_proxy: any, meta: B) =>
-              mockOpenVaultTxState(meta, TxStatus.Success, newCDPTxReceipt),
+              mockTxState(meta, TxStatus.Success, newCDPTxReceipt),
           }),
           proxyAddress: DEFAULT_PROXY_ADDRESS,
           allowance: maxUint256,
@@ -373,8 +369,7 @@ describe('openVault', () => {
         mockOpenVault$({
           _txHelpers$: of({
             ...protoTxHelpers,
-            send: <B extends TxMeta>(_proxy: any, meta: B) =>
-              mockOpenVaultTxState(meta, TxStatus.Failure),
+            send: <B extends TxMeta>(_proxy: any, meta: B) => mockTxState(meta, TxStatus.Failure),
           }),
           proxyAddress: DEFAULT_PROXY_ADDRESS,
           allowance: maxUint256,

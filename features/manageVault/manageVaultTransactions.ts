@@ -424,20 +424,21 @@ export function createProxy(
                     ? txState.error
                     : undefined,
               }),
-            (txState) =>
-              proxyAddress$.pipe(
+            (txState) => {
+              return proxyAddress$.pipe(
                 filter((proxyAddress) => !!proxyAddress),
-                switchMap((proxyAddress) =>
-                  iif(
+                switchMap((proxyAddress) => {
+                  return iif(
                     () => (txState as any).confirmations < safeConfirmations,
                     of({
                       kind: 'proxyConfirming',
                       proxyConfirmations: (txState as any).confirmations,
                     }),
                     of({ kind: 'proxySuccess', proxyAddress: proxyAddress! }),
-                  ),
-                ),
-              ),
+                  )
+                }),
+              )
+            },
             safeConfirmations,
           ),
         ),
