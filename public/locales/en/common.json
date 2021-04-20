@@ -394,12 +394,12 @@
   "vaults-overview": {
     "headers": {
       "connected-owner-withVaults": "Your Maker Vaults overview",
+      "connected-owner-noVaults": "You have no open Vaults",
       "connected-viewer-withVaults": "Maker Vaults overview of {{address}}",
-      "connected-viewier-noVaults": "{{address}} currently has no Maker Vaults",
+      "connected-viewer-noVaults": "{{address}} currently has no Maker Vaults",
       "notConnected-noVaults": "{{address}} currently has no Maker Vaults.<0/> Is this yours? Connect your wallet and open a vault.",
       "notConnected-withVaults": "Maker Vaults overview of {{address}}.<0/> Is this yours? Connect your wallet."
     },
-    "header-no-vaults": "You have no open Vaults",
     "subheader-no-vaults": "Open a Maker Vault, deposit your collateral, and generate DAI against it.",
     "number-of-vaults": "No. of Vaults",
     "total-debt": "Total debt",
