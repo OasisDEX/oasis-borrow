@@ -192,13 +192,13 @@ export function VaultLiquidatedBanner({
   isVaultController,
   controller,
   token,
-  reclaimButton,
+  id,
 }: {
   unlockedCollateral: BigNumber
   isVaultController: boolean
   controller: string
   token: string
-  reclaimButton: JSX.Element | null
+  id: BigNumber
 }) {
   const { t } = useTranslation()
 
@@ -216,7 +216,7 @@ export function VaultLiquidatedBanner({
             collateral: token.toUpperCase(),
           })}
         </Text>
-        {reclaimButton}
+        <ReclaimCollateralButton {...{ token, id, amount: unlockedCollateral }} />
       </>
     ) : (
       `${t('vault-banners.liquidated.subheader1')} ${t('vault-banners.liquidated.subheader3', {
@@ -342,10 +342,6 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
 
   const isVaultController = !!account && account === controller
 
-  const reclaimButton = unlockedCollateral.gt(zero) ? (
-    <ReclaimCollateralButton {...{ token, id, amount: unlockedCollateral }} />
-  ) : null
-
   switch (banner) {
     case 'liquidated':
       return (
@@ -355,7 +351,7 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
             token,
             isVaultController,
             controller,
-            reclaimButton,
+            id,
           }}
         />
       )
