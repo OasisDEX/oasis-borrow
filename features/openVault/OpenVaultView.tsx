@@ -47,8 +47,8 @@ function OpenVaultDetails(props: OpenVaultState) {
   const priceChangeColor = nextPriceDiff.isZero()
     ? 'text.muted'
     : nextPriceDiff.gt(zero)
-    ? 'onSuccess'
-    : 'onError'
+      ? 'onSuccess'
+      : 'onError'
 
   return (
     <Grid sx={{ alignSelf: 'flex-start' }} columns="1fr 1fr">
@@ -195,13 +195,13 @@ function VaultDetails(props: OpenVaultState) {
           <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
             {t('system.stability-fee')}
           </Box>
-          <Box variant="text.header3">0%</Box>
+          <Box variant="text.header3">{formatPercent(props.stabilityFee.times(100), { precision: 2 })}</Box>
         </Box>
         <Box>
           <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
             {t('system.liquidation-penalty')}
           </Box>
-          <Box variant="text.header3">0%</Box>
+          <Box variant="text.header3">{formatPercent(props.liquidationPenalty.times(100))}</Box>
         </Box>
       </Grid>
     </Box>
@@ -224,10 +224,10 @@ function OpenVaultFormTitle({ reset, stage }: OpenVaultState) {
           {isEditingStage
             ? 'Configure your Vault'
             : isProxyStage
-            ? 'Create Proxy'
-            : isAllowanceStage
-            ? 'Set Allowance'
-            : 'Create your Vault'}
+              ? 'Create Proxy'
+              : isAllowanceStage
+                ? 'Set Allowance'
+                : 'Create your Vault'}
         </Text>
         {canReset ? (
           <Button onClick={handleReset} disabled={!canReset} sx={{ fontSize: 1, p: 0 }}>
@@ -262,10 +262,10 @@ function OpenVaultFormProxy({
     stage === 'proxySuccess'
       ? 'Continue'
       : stage === 'proxyFailure'
-      ? 'Retry Create Proxy'
-      : stage === 'proxyWaitingForConfirmation'
-      ? 'Create Proxy'
-      : 'Creating Proxy'
+        ? 'Retry Create Proxy'
+        : stage === 'proxyWaitingForConfirmation'
+          ? 'Create Proxy'
+          : 'Creating Proxy'
 
   return (
     <Grid>
@@ -378,10 +378,10 @@ function OpenVaultFormAllowance({
     stage === 'allowanceSuccess'
       ? 'Continue'
       : stage === 'allowanceFailure'
-      ? 'Retry allowance approval'
-      : stage === 'allowanceWaitingForConfirmation'
-      ? 'Approve allowance'
-      : 'Approving allowance'
+        ? 'Retry allowance approval'
+        : stage === 'allowanceWaitingForConfirmation'
+          ? 'Approve allowance'
+          : 'Approving allowance'
 
   return (
     <Grid>
@@ -525,10 +525,10 @@ function OpenVaultFormConfirmation({
     stage === 'openWaitingForConfirmation'
       ? 'Create your Vault'
       : stage === 'openFailure'
-      ? 'Retry'
-      : stage === 'openSuccess'
-      ? `Open Vault #${id!}`
-      : 'Creating your Vault'
+        ? 'Retry'
+        : stage === 'openSuccess'
+          ? `Open Vault #${id!}`
+          : 'Creating your Vault'
 
   return (
     <Grid>

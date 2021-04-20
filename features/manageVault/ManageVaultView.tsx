@@ -46,8 +46,8 @@ function ManageVaultDetails(props: ManageVaultState) {
   const collRatioColor = collateralizationRatio.isZero()
     ? 'primary'
     : collateralizationRatio.lte(liquidationRatio.times(1.2))
-    ? 'onError'
-    : 'onSuccess'
+      ? 'onError'
+      : 'onSuccess'
 
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
     ? '--'
@@ -69,8 +69,8 @@ function ManageVaultDetails(props: ManageVaultState) {
   const priceChangeColor = nextPriceDiff.isZero()
     ? 'text.muted'
     : nextPriceDiff.gt(zero)
-    ? 'onSuccess'
-    : 'onError'
+      ? 'onSuccess'
+      : 'onError'
 
   return (
     <Grid sx={{ alignSelf: 'flex-start' }} columns="1fr 1fr">
@@ -182,10 +182,10 @@ function ManageVaultProxy({
     stage === 'proxySuccess'
       ? t('continue')
       : stage === 'proxyFailure'
-      ? t('retry-create-proxy')
-      : stage === 'proxyWaitingForConfirmation'
-      ? t('create-proxy-btn')
-      : t('creating-proxy')
+        ? t('retry-create-proxy')
+        : stage === 'proxyWaitingForConfirmation'
+          ? t('create-proxy-btn')
+          : t('creating-proxy')
 
   return (
     <Grid>
@@ -302,10 +302,10 @@ function ManageVaultCollateralAllowance({
     stage === 'collateralAllowanceSuccess'
       ? t('continue')
       : stage === 'collateralAllowanceFailure'
-      ? t('retry-allowance-approval')
-      : stage === 'collateralAllowanceWaitingForConfirmation'
-      ? t('approve-allowance')
-      : t('approving-allowance')
+        ? t('retry-allowance-approval')
+        : stage === 'collateralAllowanceWaitingForConfirmation'
+          ? t('approve-allowance')
+          : t('approving-allowance')
 
   return (
     <Grid>
@@ -460,10 +460,10 @@ function ManageVaultDaiAllowance({
     stage === 'daiAllowanceSuccess'
       ? t('continue')
       : stage === 'daiAllowanceFailure'
-      ? t('retry-allowance-approval')
-      : stage === 'daiAllowanceWaitingForConfirmation'
-      ? t('approve-allowance')
-      : t('approving-allowance')
+        ? t('retry-allowance-approval')
+        : stage === 'daiAllowanceWaitingForConfirmation'
+          ? t('approve-allowance')
+          : t('approving-allowance')
 
   return (
     <Grid>
@@ -607,10 +607,10 @@ function ManageVaultConfirmation({
     stage === 'manageWaitingForConfirmation'
       ? t('change-your-vault')
       : stage === 'manageFailure'
-      ? t('retry')
-      : stage === 'manageSuccess'
-      ? t('back-to-editing')
-      : t('change-your-vault')
+        ? t('retry')
+        : stage === 'manageSuccess'
+          ? t('back-to-editing')
+          : t('change-your-vault')
 
   return (
     <Grid>
@@ -804,7 +804,7 @@ function VaultDetails(props: ManageVaultState) {
           <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
             {t('system.stability-fee')}
           </Box>
-          <Box variant="text.header3">{formatPercent(props.stabilityFee.times(100))}</Box>
+          <Box variant="text.header3">{formatPercent(props.stabilityFee.times(100), { precision: 2 })}</Box>
         </Box>
         <Box>
           <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
