@@ -157,6 +157,36 @@ export function VaultOwnershipBanner({
   )
 }
 
+export function VaultOverviewOwnershipBanner({
+  controller,
+  account,
+}: {
+  controller: string
+  account: string
+}) {
+  const { t } = useTranslation()
+
+  return (
+    <VaultBanner
+      status={
+        <StatusFrame>
+          <Icon size="auto" width="24" height="24" name="bannerWallet" />
+        </StatusFrame>
+      }
+      header={t('vaults-overview.banner-header', { address: formatAddress(controller) })}
+      subheader={
+        <Text>
+          {t('vaults-overview.banner-content')}{' '}
+          <AppLink href={`/owner/${account}`} target="_blank">
+            {t('here')}
+          </AppLink>
+        </Text>
+      }
+      color="banner.muted"
+    />
+  )
+}
+
 export function VaultLiquidatedBanner({
   unlockedCollateral,
   isVaultController,

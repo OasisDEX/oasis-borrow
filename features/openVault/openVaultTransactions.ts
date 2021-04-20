@@ -172,7 +172,6 @@ export function applyOpenVaultTransaction(
 
 export function setAllowance(
   { sendWithGasEstimation }: TxHelpers,
-  allowance$: Observable<BigNumber>,
   change: (ch: OpenVaultChange) => void,
   state: OpenVaultState,
 ) {
@@ -198,8 +197,7 @@ export function setAllowance(
                 ? txState.error
                 : undefined,
           }),
-        () =>
-          allowance$.pipe(switchMap((allowance) => of({ kind: 'allowanceSuccess', allowance }))),
+        (txState) => of({ kind: 'allowanceSuccess', allowance: txState.meta.amount }),
       ),
     )
     .subscribe((ch) => change(ch))

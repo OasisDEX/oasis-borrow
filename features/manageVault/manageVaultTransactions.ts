@@ -268,7 +268,15 @@ export function manageVaultDepositAndGenerate(
 export function manageVaultWithdrawAndPayback(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageVaultChange) => void,
-  { withdrawAmount, paybackAmount, proxyAddress, ilk, token, id }: ManageVaultState,
+  {
+    withdrawAmount,
+    paybackAmount,
+    proxyAddress,
+    ilk,
+    token,
+    id,
+    shouldPaybackAll,
+  }: ManageVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -282,6 +290,7 @@ export function manageVaultWithdrawAndPayback(
           ilk,
           token,
           id,
+          shouldPaybackAll,
         }).pipe(
           transactionToX<ManageVaultChange, WithdrawAndPaybackData>(
             { kind: 'manageWaitingForApproval' },
@@ -310,7 +319,6 @@ export function manageVaultWithdrawAndPayback(
 
 export function setDaiAllowance(
   txHelpers$: Observable<TxHelpers>,
-  daiAllowance$: Observable<BigNumber>,
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ) {
@@ -340,10 +348,7 @@ export function setDaiAllowance(
                     ? txState.error
                     : undefined,
               }),
-            () =>
-              daiAllowance$.pipe(
-                switchMap((daiAllowance) => of({ kind: 'daiAllowanceSuccess', daiAllowance })),
-              ),
+            (txState) => of({ kind: 'daiAllowanceSuccess', daiAllowance: txState.meta.amount }),
           ),
         ),
       ),
@@ -353,7 +358,6 @@ export function setDaiAllowance(
 
 export function setCollateralAllowance(
   txHelpers$: Observable<TxHelpers>,
-  collateralAllowance$: Observable<BigNumber>,
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ) {
@@ -383,15 +387,11 @@ export function setCollateralAllowance(
                     ? txState.error
                     : undefined,
               }),
-            () =>
-              collateralAllowance$.pipe(
-                switchMap((collateralAllowance) =>
-                  of({
-                    kind: 'collateralAllowanceSuccess',
-                    collateralAllowance,
-                  }),
-                ),
-              ),
+            (txState) =>
+              of({
+                kind: 'collateralAllowanceSuccess',
+                collateralAllowance: txState.meta.amount,
+              }),
           ),
         ),
       ),

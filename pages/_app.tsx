@@ -7,11 +7,12 @@ import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProx
 import { SetupWeb3Context } from 'blockchain/web3Context'
 import { AppContextProvider } from 'components/AppContextProvider'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
-import { AppLayout, AppLayoutProps, MarketingLayoutProps } from 'components/Layouts'
+import { AppLayout, MarketingLayoutProps } from 'components/Layouts'
 import { CustomMDXLink } from 'components/Links'
 // @ts-ignore
 import { cache } from 'emotion'
 import { ModalProvider } from 'helpers/modalHook'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { appWithTranslation } from 'next-i18next'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
@@ -32,8 +33,8 @@ function getLibrary(provider: any, connector: AbstractConnector | undefined): We
   return new Web3(readOnlyEnhancedProvider)
 }
 
-const FTPolarFontBold = '/static/fonts/FTPolar/FTPolarTrial-Bold'
-const FTPolarFontMedium = '/static/fonts/FTPolar/FTPolarTrial-Medium'
+const FTPolarFontBold = staticFilesRuntimeUrl('/static/fonts/FTPolar/FTPolarTrial-Bold')
+const FTPolarFontMedium = staticFilesRuntimeUrl('/static/fonts/FTPolar/FTPolarTrial-Medium')
 
 const globalStyles = `
   html,
@@ -91,8 +92,8 @@ const globalStyles = `
 interface CustomAppProps {
   Component: {
     theme?: string
-    layoutProps?: AppLayoutProps | MarketingLayoutProps
-    layout?: (props: AppLayoutProps | MarketingLayoutProps) => JSX.Element
+    layoutProps?: MarketingLayoutProps
+    layout?: (props: MarketingLayoutProps) => JSX.Element
     seoTags?: JSX.Element
   }
 }

@@ -5,6 +5,8 @@ import { VaultsOverviewView } from 'features/vaultsOverview/VaultsOverviewView'
 import { useObservable } from 'helpers/observableHook'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
+import { Box, Spinner } from 'theme-ui'
+import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { WithTermsOfService } from '../../../features/termsOfService/TermsOfService'
 
@@ -15,7 +17,22 @@ function Summary({ address }: { address: string }) {
   const context = useObservable(context$)
 
   if (vaultsOverview === undefined || context === undefined) {
-    return null
+    return (
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Spinner />
+      </Box>
+    )
   }
 
   return <VaultsOverviewView vaultsOverview={vaultsOverview} context={context} address={address} />
@@ -34,7 +51,8 @@ export default function VaultsSummary({ address }: { address: string }) {
   return address ? (
     <WithConnection>
       <WithTermsOfService>
-        <Summary {...{ address }} />
+        <BackgroundLight />
+        <Summary address={address} />
       </WithTermsOfService>
     </WithConnection>
   ) : null

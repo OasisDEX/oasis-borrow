@@ -19,14 +19,28 @@ export type WithdrawAndPaybackData = {
   withdrawAmount: BigNumber
   paybackAmount: BigNumber
   proxyAddress: string
+  shouldPaybackAll: boolean
 }
 
-function getWithdrawAndPaybackCallData(data: WithdrawAndPaybackData, context: ContextConnected) {
+export function getWithdrawAndPaybackCallData(
+  data: WithdrawAndPaybackData,
+  context: ContextConnected,
+) {
   const { dssProxyActions, dssCdpManager, mcdJoinDai, joins, contract } = context
-  const { id, token, withdrawAmount, paybackAmount, ilk } = data
+  const { id, token, withdrawAmount, paybackAmount, ilk, shouldPaybackAll } = data
 
   if (withdrawAmount.gt(zero) && paybackAmount.gt(zero)) {
     if (token === 'ETH') {
+      if (shouldPaybackAll) {
+        return contract<DssProxyActions>(dssProxyActions).methods.wipeAllAndFreeETH(
+          dssCdpManager.address,
+          joins[ilk],
+          mcdJoinDai.address,
+          id.toString(),
+          amountToWei(withdrawAmount, token).toFixed(0),
+        )
+      }
+
       return contract<DssProxyActions>(dssProxyActions).methods.wipeAndFreeETH(
         dssCdpManager.address,
         joins[ilk],
@@ -34,6 +48,16 @@ function getWithdrawAndPaybackCallData(data: WithdrawAndPaybackData, context: Co
         id.toString(),
         amountToWei(withdrawAmount, token).toFixed(0),
         amountToWei(paybackAmount, 'DAI').toFixed(0),
+      )
+    }
+
+    if (shouldPaybackAll) {
+      return contract<DssProxyActions>(dssProxyActions).methods.wipeAllAndFreeGem(
+        dssCdpManager.address,
+        joins[ilk],
+        mcdJoinDai.address,
+        id.toString(),
+        amountToWei(withdrawAmount, token).toFixed(0),
       )
     }
 
@@ -63,12 +87,26 @@ function getWithdrawAndPaybackCallData(data: WithdrawAndPaybackData, context: Co
       amountToWei(withdrawAmount, token).toFixed(0),
     )
   }
-  return contract<DssProxyActions>(dssProxyActions).methods.wipe(
-    dssCdpManager.address,
-    mcdJoinDai.address,
-    id.toString(),
-    amountToWei(paybackAmount, 'DAI').toFixed(0),
-  )
+
+  if (paybackAmount.gt(zero)) {
+    if (shouldPaybackAll) {
+      return contract<DssProxyActions>(dssProxyActions).methods.wipeAll(
+        dssCdpManager.address,
+        mcdJoinDai.address,
+        id.toString(),
+      )
+    }
+
+    return contract<DssProxyActions>(dssProxyActions).methods.wipe(
+      dssCdpManager.address,
+      mcdJoinDai.address,
+      id.toString(),
+      amountToWei(paybackAmount, 'DAI').toFixed(0),
+    )
+  }
+
+  // would be nice to remove this for Unreachable error case in the future
+  throw new Error('Could not make correct proxyActions call')
 }
 
 export const withdrawAndPayback: TransactionDef<WithdrawAndPaybackData> = {
@@ -190,6 +228,30 @@ function getOpenCallData(data: OpenData, context: ContextConnected) {
       Web3.utils.utf8ToHex(ilk),
       amountToWei(depositAmount, token).toFixed(0),
       amountToWei(generateAmount, 'DAI').toFixed(0),
+      true,
+    )
+  }
+
+  if (depositAmount.gt(zero) && generateAmount.isZero()) {
+    if (token === 'ETH') {
+      return contract<DssProxyActions>(dssProxyActions).methods.openLockETHAndDraw(
+        dssCdpManager.address,
+        mcdJug.address,
+        joins[ilk],
+        mcdJoinDai.address,
+        Web3.utils.utf8ToHex(ilk),
+        zero.toFixed(0),
+      )
+    }
+
+    return contract<DssProxyActions>(dssProxyActions).methods.openLockGemAndDraw(
+      dssCdpManager.address,
+      mcdJug.address,
+      joins[ilk],
+      mcdJoinDai.address,
+      Web3.utils.utf8ToHex(ilk),
+      amountToWei(depositAmount, token).toFixed(0),
+      zero.toFixed(0),
       true,
     )
   }

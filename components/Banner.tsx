@@ -12,6 +12,7 @@ export function Banner({ children, close }: BannerProps) {
   return (
     <Box
       sx={{
+        bg: 'white',
         width: '100%',
         px: 4,
         py: 3,

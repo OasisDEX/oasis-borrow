@@ -4,10 +4,10 @@ import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
+import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
@@ -91,6 +91,8 @@ export function categoriseManageVaultStage(stage: ManageVaultStage) {
   }
 }
 
+export const PAYBACK_ALL_BOUND = one
+
 export function applyManageVaultCalculations(state: ManageVaultState): ManageVaultState {
   const {
     collateralBalance,
@@ -118,7 +120,17 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     .times(maxDebtPerUnitCollateral)
     .minus(debt)
 
-  const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt
+  // NOTE Important
+  const roundedDebt = debt.dp(6, BigNumber.ROUND_HALF_UP)
+
+  const maxPaybackAmount = daiBalance.lt(roundedDebt) ? daiBalance : roundedDebt
+
+  const shouldPaybackAll = !!(
+    daiBalance.gte(debt) &&
+    paybackAmount &&
+    paybackAmount.plus(PAYBACK_ALL_BOUND).gte(roundedDebt) &&
+    !paybackAmount.gt(roundedDebt)
+  )
 
   const afterLockedCollateral = depositAmount
     ? lockedCollateral.plus(depositAmount)
@@ -139,7 +151,7 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
       : zero
 
   const afterLiquidationPrice =
-    generateAmount && depositAmount && depositAmount.gt(zero)
+    afterDebt && afterDebt.gt(zero) && afterLockedCollateral.gt(zero)
       ? afterDebt.times(liquidationRatio).div(afterLockedCollateral)
       : zero
 
@@ -153,6 +165,7 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     afterLiquidationPrice,
     maxDepositAmountUSD,
     maxPaybackAmount,
+    shouldPaybackAll,
   }
 }
 
@@ -256,6 +269,7 @@ export type DefaultManageVaultState = {
 
   paybackAmount?: BigNumber
   maxPaybackAmount: BigNumber
+  shouldPaybackAll: boolean
 
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmount?: BigNumber) => void
@@ -318,8 +332,6 @@ export type ManageVaultState = DefaultManageVaultState & PriceInfo & BalanceInfo
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
-  collateralAllowance$: Observable<BigNumber>,
-  daiAllowance$: Observable<BigNumber>,
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ): ManageVaultState {
@@ -389,7 +401,7 @@ function addTransitions(
           collateralAllowanceAmount: undefined,
         }),
 
-      progress: () => setCollateralAllowance(txHelpers$, collateralAllowance$, change, state),
+      progress: () => setCollateralAllowance(txHelpers$, change, state),
       reset: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -417,7 +429,7 @@ function addTransitions(
           daiAllowanceAmount: undefined,
         }),
 
-      progress: () => setDaiAllowance(txHelpers$, daiAllowance$, change, state),
+      progress: () => setDaiAllowance(txHelpers$, change, state),
       reset: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -463,6 +475,7 @@ export const defaultPartialManageVaultState = {
   maxPaybackAmount: zero,
   afterCollateralizationRatio: zero,
   afterLiquidationPrice: zero,
+  shouldPaybackAll: false,
 }
 
 export function createManageVault$(
@@ -546,35 +559,11 @@ export function createManageVault$(
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
 
-                  const connectedCollateralAllowance$ = connectedProxyAddress$.pipe(
-                    switchMap((proxyAddress) =>
-                      account && proxyAddress
-                        ? allowance$(vault.token, account, proxyAddress)
-                        : of(zero),
-                    ),
-                    distinctUntilChanged((x, y) => x.eq(y)),
-                  )
-
-                  const connectedDaiAllowance$ = connectedProxyAddress$.pipe(
-                    switchMap((proxyAddress) =>
-                      account && proxyAddress ? allowance$('DAI', account, proxyAddress) : of(zero),
-                    ),
-                    distinctUntilChanged((x, y) => x.eq(y)),
-                  )
-
                   return merge(change$, environmentChanges$).pipe(
                     scan(apply, initialState),
                     map(validateErrors),
                     map(validateWarnings),
-                    map(
-                      curry(addTransitions)(
-                        txHelpers$,
-                        connectedProxyAddress$,
-                        connectedCollateralAllowance$,
-                        connectedDaiAllowance$,
-                        change,
-                      ),
-                    ),
+                    map(curry(addTransitions)(txHelpers$, connectedProxyAddress$, change)),
                   )
                 }),
               )

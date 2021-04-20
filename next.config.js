@@ -15,6 +15,7 @@ module.exports = withBundleAnalyzer(
   withPWA(
     withMDX(
       withSass({
+        basePath: isProduction ? '/borrow' : '',
         typescript: {
           // !! WARN !!
           // Dangerously allow production builds to successfully complete even if
@@ -31,6 +32,7 @@ module.exports = withBundleAnalyzer(
           buildHash: require('child_process').execSync('git rev-parse HEAD').toString().trim(),
           buildDate: Date.now(),
           apiHost: process.env.API_HOST,
+          basePath: isProduction ? '/borrow' : '',
         },
         webpack: function (config, { isServer }) {
           // TODO: Figure out how to disable mangling partially without bresking the aplication.

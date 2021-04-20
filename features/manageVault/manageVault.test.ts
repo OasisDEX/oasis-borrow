@@ -82,6 +82,7 @@ describe('manageVault', () => {
       ethBalance: zero,
       daiBalance: zero,
       injectStateOverride: (_state: Partial<ManageVaultState>) => _.noop(),
+      shouldPaybackAll: false,
     })
     it('Should show no warnings when the state is correct', () => {
       const { warningMessages } = validateWarnings(manageVaultState)
@@ -143,6 +144,87 @@ describe('manageVault', () => {
         daiAllowance: manageVaultState.paybackAmount!.multipliedBy(SLIGHTLY_LESS_THAN_ONE),
       })
       expect(warningMessages).to.deep.equal(['daiAllowanceLessThanPaybackAmount'])
+    })
+    it('should correctly show payingBackAllOutstandingDebt warning when paybackAmount is within one of outstanding debt', () => {
+      expect(
+        validateWarnings(
+          applyManageVaultCalculations({
+            ...manageVaultState,
+            paybackAmount: new BigNumber('2999.5'),
+            debt: new BigNumber('3000'),
+            daiBalance: new BigNumber('10000'),
+            daiAllowance: maxUint256,
+          }),
+        ).warningMessages,
+      ).to.deep.equal(['payingBackAllOutstandingDebt'])
+      expect(
+        validateWarnings(
+          applyManageVaultCalculations({
+            ...manageVaultState,
+            paybackAmount: new BigNumber('2999'),
+            debt: new BigNumber('3000'),
+            daiBalance: new BigNumber('10000'),
+            daiAllowance: maxUint256,
+          }),
+        ).warningMessages,
+      ).to.deep.equal(['payingBackAllOutstandingDebt'])
+      expect(
+        validateWarnings(
+          applyManageVaultCalculations({
+            ...manageVaultState,
+            paybackAmount: new BigNumber('3000'),
+            debt: new BigNumber('3000'),
+            daiBalance: new BigNumber('10000'),
+            daiAllowance: maxUint256,
+          }),
+        ).warningMessages,
+      ).to.deep.equal(['payingBackAllOutstandingDebt'])
+      expect(
+        validateWarnings(
+          applyManageVaultCalculations({
+            ...manageVaultState,
+            paybackAmount: new BigNumber('3000.01'),
+            debt: new BigNumber('3000'),
+            daiBalance: new BigNumber('10000'),
+            daiAllowance: maxUint256,
+          }),
+        ).warningMessages,
+      ).to.deep.equal([])
+
+      expect(
+        validateWarnings(
+          applyManageVaultCalculations({
+            ...manageVaultState,
+            paybackAmount: new BigNumber('3000'),
+            debt: new BigNumber('3000'),
+            daiBalance: new BigNumber('2999'),
+            daiAllowance: maxUint256,
+          }),
+        ).warningMessages,
+      ).to.deep.equal([])
+
+      expect(
+        validateWarnings(
+          applyManageVaultCalculations({
+            ...manageVaultState,
+            paybackAmount: new BigNumber('3000'),
+            debt: new BigNumber('2999.9999995'),
+            daiBalance: new BigNumber('10000'),
+            daiAllowance: maxUint256,
+          }),
+        ).warningMessages,
+      ).to.deep.equal(['payingBackAllOutstandingDebt'])
+      expect(
+        validateWarnings(
+          applyManageVaultCalculations({
+            ...manageVaultState,
+            paybackAmount: new BigNumber('3000'),
+            debt: new BigNumber('2999.9999994'),
+            daiBalance: new BigNumber('10000'),
+            daiAllowance: maxUint256,
+          }),
+        ).warningMessages,
+      ).to.deep.equal([])
     })
   })
 

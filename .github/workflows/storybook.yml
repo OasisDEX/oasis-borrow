@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REGION: eu-central-1
-      BUCKET_NAME: storybook.staging.oasis.app
+      BUCKET_NAME: storybook.oasis.app
       CLOUDFRONT_ID: E1PL3BMP98DRBZ
 
     steps:
@@ -48,3 +48,14 @@ jobs:
       - name: Invalidate CloudFront cache
         run: |
           aws cloudfront create-invalidation --distribution-id ${{ env.CLOUDFRONT_ID }} --paths "/*"
+
+      # - name: Add comment
+      #   uses: actions/github-script@v3
+      #   with:
+      #     script: |
+      #       github.issues.createComment({
+      #         issue_number: context.issue.number,
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         body: 'Storybook: https://storybook.oasis.app/${{ steps.vars.outputs.sha_short }}/index.html'
+      #       })
