@@ -4,11 +4,11 @@ import { Dictionary } from 'ts-essentials'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath
 
-function replaceBasePathIfNeeded(pathname: string, basePath: string) {
+export function replaceBasePathIfNeeded(pathname: string, basePath: string) {
   // basePath could be either an 'empty string' or '/<something>'.
   // '/' is not a valid base path.
   if (basePath && pathname.startsWith(basePath)) {
-    return pathname.replace(basePath, '')
+    return pathname.replace(new RegExp(`^${basePath}`), '')
   }
 
   return pathname
