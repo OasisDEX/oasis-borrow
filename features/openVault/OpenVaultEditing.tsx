@@ -1,12 +1,10 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { VaultActionInput } from 'components/VaultActionInput'
-import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Card, Grid, Text } from 'theme-ui'
+import { Box, Grid, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
 
@@ -36,12 +34,6 @@ export function OpenVaultEditing(props: OpenVaultState) {
     generateAmount,
     maxDepositAmount,
     maxGenerateAmount,
-    errorMessages,
-    warningMessages,
-    ilkDebtAvailable,
-    liquidationRatio,
-    afterCollateralizationRatio,
-    progress,
     updateDeposit,
     updateDepositMax,
     updateDepositUSD,
@@ -53,26 +45,7 @@ export function OpenVaultEditing(props: OpenVaultState) {
     toggleGenerateOption,
   } = props
 
-  function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault()
-    progress!()
-  }
-
-  const errorString = errorMessages.join(',\n')
-  const warningString = warningMessages.join(',\n')
-
-  const hasError = !!errorString
-  const hasWarnings = !!warningString
-
-  const daiAvailable = ilkDebtAvailable ? `${formatCryptoBalance(ilkDebtAvailable)} DAI` : '--'
-  const minCollRatio = liquidationRatio
-    ? `${formatPercent(liquidationRatio.times(100), { precision: 2 })}`
-    : '--'
-  const afterCollRatio = afterCollateralizationRatio.eq(zero)
-    ? '--'
-    : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
-
-  const showGenerateOptionButton = depositAmount
+  const showGenerateOptionButton = depositAmount && !depositAmount.isZero()
 
   return (
     <Grid>
@@ -90,7 +63,7 @@ export function OpenVaultEditing(props: OpenVaultState) {
           maxAmount={maxDepositAmount}
           maxAuxiliaryAmount={maxDepositAmountUSD}
           maxAmountLabel={'Balance'}
-          hasError={hasError}
+          hasError={false}
         />
         {showGenerateOptionButton && (
           <Text
@@ -127,32 +100,6 @@ export function OpenVaultEditing(props: OpenVaultState) {
           />
         )}
       </Box>
-      {hasError && (
-        <>
-          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
-        </>
-      )}
-      {hasWarnings && (
-        <>
-          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>
-        </>
-      )}
-
-      <Card>
-        <Grid columns="5fr 3fr">
-          <Text sx={{ fontSize: 2 }}>Dai Available</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{daiAvailable}</Text>
-
-          <Text sx={{ fontSize: 2 }}>Min. collateral ratio</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{minCollRatio}</Text>
-
-          <Text sx={{ fontSize: 2 }}>Collateralization Ratio</Text>
-          <Text sx={{ fontSize: 2, textAlign: 'right' }}>{afterCollRatio}</Text>
-        </Grid>
-      </Card>
-      <Button onClick={handleProgress} disabled={hasError}>
-        Confirm
-      </Button>
     </Grid>
   )
 }

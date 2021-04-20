@@ -1,5 +1,7 @@
 {
   "404-button": "Go to home",
+  "after-next": "After + Next",
+  "next": "Next",
   "404-message": "Sorry, page not found.",
   "Argentina": "Argentina",
   "Brasil": "Brasil",
@@ -48,6 +50,10 @@
   "connect-wallet-button": "Connect wallet",
   "connect-with": "Connect {{ connectionKind }}",
   "connected-with": "Connected with {{ connectionKind }}",
+  "create-vault": "Create Vault",
+  "creating-vault": "Creating Vault",
+  "changing-vault": "Changing Vault",
+  "go-to-vault": "Go to Vault #{{id}}",
   "contact": {
     "description": "Send us feedback, questions, or suggestions or below.",
     "label": {

@@ -5,8 +5,7 @@ import { CallObservable } from 'blockchain/calls/observe'
 import { SpotIlk, spotIlk } from 'blockchain/calls/spot'
 import { VatIlk, vatIlk } from 'blockchain/calls/vat'
 import { Context } from 'blockchain/network'
-import { now } from 'helpers/time'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { of } from 'rxjs'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
@@ -22,8 +21,14 @@ interface DerivedIlkData {
   ilk: string
   ilkDebt: BigNumber
   ilkDebtAvailable: BigNumber
+  collateralizationDangerThreshold: BigNumber
+  collateralizationWarningThreshold: BigNumber
 }
 export type IlkData = VatIlk & SpotIlk & JugIlk & CatIlk & DerivedIlkData
+
+// TODO Go in some config somewhere?
+export const COLLATERALIZATION_DANGER_OFFSET = new BigNumber('0.2') // 150% * 1.2 = 180%
+export const COLLATERALIZATION_WARNING_OFFSET = new BigNumber('0.5') // 150% * 1.5 = 225%
 
 export function createIlkData$(
   vatIlks$: CallObservable<typeof vatIlk>,
@@ -47,8 +52,18 @@ export function createIlkData$(
         { stabilityFee, feeLastLevied },
         { liquidatorAddress, liquidationPenalty, maxAuctionLotSize },
         ilkToToken,
-      ]) =>
-        of({
+      ]) => {
+        // Maybe should be in ilkData as they are ilk dependent not vault dependent
+        const collateralizationDangerThreshold = liquidationRatio.times(
+          COLLATERALIZATION_DANGER_OFFSET.plus(one),
+        )
+        const collateralizationWarningThreshold = liquidationRatio.times(
+          COLLATERALIZATION_WARNING_OFFSET.plus(one),
+        )
+
+        return of({
+          collateralizationDangerThreshold,
+          collateralizationWarningThreshold,
           normalizedIlkDebt,
           debtScalingFactor,
           maxDebtPerUnitCollateral,
@@ -72,7 +87,8 @@ export function createIlkData$(
               .decimalPlaces(18, BigNumber.ROUND_DOWN),
             zero,
           ),
-        }),
+        })
+      },
     ),
   )
 }
@@ -100,65 +116,4 @@ export function createIlkDataChange$(
   ilk: string,
 ): Observable<IlkDataChange> {
   return ilkData$(ilk).pipe(map((ilkData) => ({ kind: 'ilkData', ilkData })))
-}
-
-export const protoETHAIlkData: IlkData = {
-  debtCeiling: new BigNumber('1482351717.8074963620138921299'),
-  debtFloor: new BigNumber('2000'),
-  debtScalingFactor: new BigNumber('1.03252304318189770482'),
-  feeLastLevied: now,
-  ilk: 'ETH-A',
-  ilkDebt: new BigNumber('1417402362.052916865548128154'),
-  ilkDebtAvailable: new BigNumber('64949355.754579496465763975'),
-  liquidationPenalty: new BigNumber('0.13'),
-  liquidationRatio: new BigNumber('1.5'),
-  liquidatorAddress: '0xF32836B9E1f47a0515c6Ec431592D5EbC276407f',
-  maxAuctionLotSize: new BigNumber('50000'),
-  maxDebtPerUnitCollateral: new BigNumber('1187.13333333333333333333'),
-  normalizedIlkDebt: new BigNumber('1372756154.366247564502420602'),
-  priceFeedAddress: '0x81FE72B5A8d1A857d176C3E7d5Bd2679A9B85763',
-  stabilityFee: new BigNumber(
-    '0.054999999999991559213658976792039293404550595107713042286458478527410020941495574539245120619341733',
-  ),
-  token: 'ETH',
-}
-
-export const protoWBTCAIlkData: IlkData = {
-  debtCeiling: new BigNumber('282897479.11236999035644766557'),
-  debtFloor: new BigNumber('2000'),
-  debtScalingFactor: new BigNumber('1.02360932507235653375'),
-  feeLastLevied: now,
-  ilk: 'WBTC-A',
-  ilkDebt: new BigNumber('269203682.978267290292807367'),
-  ilkDebtAvailable: new BigNumber('13693796.134102700063640297'),
-  liquidationPenalty: new BigNumber('0.13'),
-  liquidationRatio: new BigNumber('1.5'),
-  liquidatorAddress: '0x58CD24ac7322890382eE45A3E4F903a5B22Ee930',
-  maxAuctionLotSize: new BigNumber('50000'),
-  maxDebtPerUnitCollateral: new BigNumber('37451.17333333333333333333'),
-  normalizedIlkDebt: new BigNumber('262994558.943899730116777436'),
-  priceFeedAddress: '0xf185d0682d50819263941e5f4EacC763CC5C6C42',
-  stabilityFee: new BigNumber(
-    '0.044999999999894654754833429952693264878294382475669356753434716561425711705437754164710051744608456',
-  ),
-  token: 'WBTC',
-}
-
-export const protoUSDCAIlkData: IlkData = {
-  debtCeiling: new BigNumber('0'),
-  debtFloor: new BigNumber('2000'),
-  debtScalingFactor: new BigNumber('1.03102744355779205622'),
-  feeLastLevied: now,
-  ilk: 'USDC-A',
-  ilkDebt: new BigNumber('331518098.058419701965172664'),
-  ilkDebtAvailable: new BigNumber('0'),
-  liquidationPenalty: new BigNumber('0.13'),
-  liquidationRatio: new BigNumber('1.01'),
-  liquidatorAddress: '0xbe359e53038E41a1ffA47DAE39645756C80e557a',
-  maxAuctionLotSize: new BigNumber('50000'),
-  maxDebtPerUnitCollateral: new BigNumber('0.99009900990099009901'),
-  normalizedIlkDebt: new BigNumber('321541487.697400130582559103'),
-  priceFeedAddress: '0x77b68899b99b686F415d074278a9a16b336085A0',
-  stabilityFee: new BigNumber('0.05'),
-  token: 'USDC',
 }

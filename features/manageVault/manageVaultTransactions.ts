@@ -225,7 +225,7 @@ export function applyManageVaultTransaction(
 export function manageVaultDepositAndGenerate(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageVaultChange) => void,
-  { generateAmount, depositAmount, proxyAddress, ilk, token, id }: ManageVaultState,
+  { generateAmount, depositAmount, proxyAddress, vault: { ilk, token, id } }: ManageVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -272,9 +272,7 @@ export function manageVaultWithdrawAndPayback(
     withdrawAmount,
     paybackAmount,
     proxyAddress,
-    ilk,
-    token,
-    id,
+    vault: { ilk, token, id },
     shouldPaybackAll,
   }: ManageVaultState,
 ) {
@@ -367,7 +365,7 @@ export function setCollateralAllowance(
       switchMap(({ sendWithGasEstimation }) =>
         sendWithGasEstimation(approve, {
           kind: TxMetaKind.approve,
-          token: state.token,
+          token: state.vault.token,
           spender: state.proxyAddress!,
           amount: state.collateralAllowanceAmount!,
         }).pipe(
@@ -426,20 +424,21 @@ export function createProxy(
                     ? txState.error
                     : undefined,
               }),
-            (txState) =>
-              proxyAddress$.pipe(
+            (txState) => {
+              return proxyAddress$.pipe(
                 filter((proxyAddress) => !!proxyAddress),
-                switchMap((proxyAddress) =>
-                  iif(
+                switchMap((proxyAddress) => {
+                  return iif(
                     () => (txState as any).confirmations < safeConfirmations,
                     of({
                       kind: 'proxyConfirming',
                       proxyConfirmations: (txState as any).confirmations,
                     }),
                     of({ kind: 'proxySuccess', proxyAddress: proxyAddress! }),
-                  ),
-                ),
-              ),
+                  )
+                }),
+              )
+            },
             safeConfirmations,
           ),
         ),

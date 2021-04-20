@@ -21,7 +21,7 @@ import { Dictionary } from 'ts-essentials'
 import { Filters } from './Filters'
 import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { VaultsOverview } from './vaultsOverview'
-import { isVaultAtRisk, VaultSummary } from './vaultSummary'
+import { VaultSummary } from './vaultSummary'
 
 const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
   {
@@ -65,9 +65,8 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
       </TableSortHeader>
     ),
     cell: (vault) => {
-      const isAtRisk = isVaultAtRisk(vault)
       return (
-        <Text sx={{ textAlign: 'right', color: isAtRisk ? 'onError' : 'onSuccess' }}>
+        <Text sx={{ textAlign: 'right', color: vault.isVaultAtRisk ? 'onError' : 'onSuccess' }}>
           {formatPercent(vault.collateralizationRatio.times(100))}
         </Text>
       )

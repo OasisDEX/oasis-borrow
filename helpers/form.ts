@@ -222,11 +222,12 @@ export function transactionToX<X, Y extends TxMeta>(
 ): TxState$ToX$<X, Y> {
   return (txState$: Observable<TxState<Y>>) =>
     txState$.pipe(
-      takeWhileInclusive(
-        (txState: TxState<Y>) =>
+      takeWhileInclusive((txState: TxState<Y>) => {
+        return (
           (txState.status === TxStatus.Success && txState.confirmations < confirmations) ||
-          txState.status !== TxStatus.Success,
-      ),
+          txState.status !== TxStatus.Success
+        )
+      }),
       flatMap(
         (txState: TxState<Y>): Observable<X> => {
           switch (txState.status) {

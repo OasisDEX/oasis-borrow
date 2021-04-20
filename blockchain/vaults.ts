@@ -44,20 +44,25 @@ export interface Vault {
   lockedCollateral: BigNumber
   unlockedCollateral: BigNumber
   lockedCollateralUSD: BigNumber
+  lockedCollateralUSDAtNextPrice: BigNumber
   backingCollateral: BigNumber
+  backingCollateralAtNextPrice: BigNumber
   backingCollateralUSD: BigNumber
+  backingCollateralUSDAtNextPrice: BigNumber
   freeCollateral: BigNumber
+  freeCollateralAtNextPrice: BigNumber
   freeCollateralUSD: BigNumber
+  freeCollateralUSDAtNextPrice: BigNumber
   debt: BigNumber
+  approximateDebt: BigNumber
   normalizedDebt: BigNumber
   availableDebt: BigNumber
-  availableIlkDebt: BigNumber
-  liquidationRatio: BigNumber
+  availableDebtAtNextPrice: BigNumber
   collateralizationRatio: BigNumber
+  collateralizationRatioAtNextPrice: BigNumber
   liquidationPrice: BigNumber
-  liquidationPenalty: BigNumber
-  stabilityFee: BigNumber
-  debtFloor: BigNumber
+  daiYieldFromLockedCollateral: BigNumber
+  isVaultAtRisk: Boolean
 }
 
 export function createController$(
@@ -99,37 +104,63 @@ export function createVault$(
           ([
             { collateral, normalizedDebt },
             unlockedCollateral,
-            { currentPrice },
-            {
-              normalizedIlkDebt,
-              debtFloor,
-              debtScalingFactor,
-              debtCeiling,
-              liquidationRatio,
-              stabilityFee,
-              liquidationPenalty,
-            },
+            { currentPrice, nextPrice },
+            { debtScalingFactor, liquidationRatio, collateralizationDangerThreshold },
           ]) => {
             const collateralUSD = collateral.times(currentPrice)
+            const collateralUSDAtNextPrice = nextPrice ? collateral.times(nextPrice) : currentPrice
+
             const debt = debtScalingFactor.times(normalizedDebt)
-            const ilkDebt = debtScalingFactor.times(normalizedIlkDebt)
+            const approximateDebt = debt.decimalPlaces(6, BigNumber.ROUND_HALF_UP)
 
             const backingCollateral = debt.times(liquidationRatio).div(currentPrice)
-            const freeCollateral = backingCollateral.gt(collateral)
+            const backingCollateralAtNextPrice = debt
+              .times(liquidationRatio)
+              .div(nextPrice || currentPrice)
+            const backingCollateralUSD = backingCollateral.times(currentPrice)
+            const backingCollateralUSDAtNextPrice = backingCollateralAtNextPrice.times(
+              nextPrice || currentPrice,
+            )
+
+            const freeCollateral = backingCollateral.gte(collateral)
               ? zero
               : collateral.minus(backingCollateral)
+            const freeCollateralAtNextPrice = backingCollateralAtNextPrice.gte(collateral)
+              ? zero
+              : collateral.minus(backingCollateralAtNextPrice)
 
-            const backingCollateralUSD = backingCollateral.div(currentPrice)
-            const freeCollateralUSD = freeCollateral.div(currentPrice)
-            const collateralizationRatio = debt.eq(zero) ? zero : collateralUSD.div(debt)
+            const freeCollateralUSD = freeCollateral.times(currentPrice)
+            const freeCollateralUSDAtNextPrice = freeCollateralAtNextPrice.times(
+              nextPrice || currentPrice,
+            )
+
+            const collateralizationRatio = debt.isZero() ? zero : collateralUSD.div(debt)
+            const collateralizationRatioAtNextPrice = debt.isZero()
+              ? zero
+              : collateralUSDAtNextPrice.div(debt)
 
             const maxAvailableDebt = collateralUSD.div(liquidationRatio)
-            const availableDebt = debt.lt(maxAvailableDebt) ? maxAvailableDebt.minus(debt) : zero
-            const availableIlkDebt = debtCeiling.minus(ilkDebt)
+            const maxAvailableDebtAtNextPrice = collateralUSDAtNextPrice.div(liquidationRatio)
+
+            const availableDebt = debt.lt(collateralUSD.div(liquidationRatio))
+              ? maxAvailableDebt.minus(debt)
+              : zero
+            const availableDebtAtNextPrice = debt.lt(maxAvailableDebtAtNextPrice)
+              ? maxAvailableDebtAtNextPrice.minus(debt)
+              : zero
 
             const liquidationPrice = collateral.eq(zero)
               ? zero
               : debt.times(liquidationRatio).div(collateral)
+
+            const daiYieldFromLockedCollateral = collateral
+              .times(currentPrice)
+              .div(liquidationRatio)
+              .minus(debt)
+
+            const isVaultAtRisk = debt.isZero()
+              ? false
+              : collateralizationRatio.lt(collateralizationDangerThreshold)
 
             return of({
               id,
@@ -137,24 +168,34 @@ export function createVault$(
               token,
               address: urnAddress,
               owner,
-              controller,
+              controller: controller!,
+
               lockedCollateral: collateral,
               lockedCollateralUSD: collateralUSD,
               backingCollateral,
               backingCollateralUSD,
               freeCollateral,
               freeCollateralUSD,
-              unlockedCollateral,
+
+              lockedCollateralUSDAtNextPrice: collateralUSDAtNextPrice,
+              backingCollateralAtNextPrice,
+              backingCollateralUSDAtNextPrice,
+              freeCollateralAtNextPrice,
+              freeCollateralUSDAtNextPrice,
+
               normalizedDebt,
-              collateralizationRatio,
               debt,
+              approximateDebt,
               availableDebt,
-              availableIlkDebt,
-              debtFloor,
-              stabilityFee,
+              availableDebtAtNextPrice,
+
+              unlockedCollateral,
+              collateralizationRatio,
+              collateralizationRatioAtNextPrice,
               liquidationPrice,
-              liquidationRatio,
-              liquidationPenalty,
+
+              daiYieldFromLockedCollateral,
+              isVaultAtRisk,
             })
           },
         ),
