@@ -87,7 +87,9 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
       </TableSortHeader>
     ),
     cell: ({ stabilityFee }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee.times(100))}</Text>
+      <Text sx={{ textAlign: 'right' }}>
+        {formatPercent(stabilityFee.times(100), { precision: 2 })}
+      </Text>
     ),
   },
   {

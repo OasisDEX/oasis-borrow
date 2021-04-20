@@ -94,7 +94,7 @@ function CallToAction({ ilk }: CallToActionProps) {
             {t('system.stability-fee')}
           </Text>
           <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
-            {formatPercent(ilk.stabilityFee)}
+            {formatPercent(ilk.stabilityFee.times(100), { precision: 2 })}
           </Text>
         </Flex>
         <Flex sx={{ zIndex: 1, gridRow: [3, 4, 3] }}>

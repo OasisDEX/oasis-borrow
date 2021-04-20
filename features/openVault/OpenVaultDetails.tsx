@@ -48,7 +48,7 @@ export function VaultDetailsTable({
               )}
             </Text>
             <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
-              {token}
+              {getToken(token).symbol}
             </Text>
           </Box>
         </Box>
@@ -78,13 +78,15 @@ export function VaultDetailsTable({
           <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
             {t('system.stability-fee')}
           </Box>
-          <Box variant="text.header3">0%</Box>
+          <Box variant="text.header3">
+            {formatPercent(ilkData.stabilityFee.times(100), { precision: 2 })}
+          </Box>
         </Box>
         <Box>
           <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
             {t('system.liquidation-penalty')}
           </Box>
-          <Box variant="text.header3">0%</Box>
+          <Box variant="text.header3">{formatPercent(ilkData.liquidationPenalty.times(100))}</Box>
         </Box>
       </Grid>
     </Box>

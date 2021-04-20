@@ -176,9 +176,10 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
       ? afterLockedCollateralUSDAtNextPrice.div(afterDebt)
       : zero
 
-  const afterLiquidationPrice = !afterLockedCollateral.isZero()
-    ? afterDebt.times(liquidationRatio).div(afterLockedCollateral)
-    : zero
+  const afterLiquidationPrice =
+    afterDebt && afterDebt.gt(zero) && afterLockedCollateral.gt(zero)
+      ? afterDebt.times(liquidationRatio).div(afterLockedCollateral)
+      : zero
 
   const afterBackingCollateral = afterDebt.isPositive()
     ? afterDebt.times(liquidationRatio).div(currentCollateralPrice)

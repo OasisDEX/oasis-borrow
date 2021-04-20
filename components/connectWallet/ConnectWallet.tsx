@@ -15,9 +15,11 @@ import { PortisConnector } from '@web3-react/portis-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { WalletLinkConnector } from '@web3-react/walletlink-connector'
 import { dappName, networksById, pollingInterval } from 'blockchain/config'
+import browserDetect from 'browser-detect'
 import { useAppContext } from 'components/AppContextProvider'
 import { LedgerAccountSelection } from 'components/connectWallet/LedgerAccountSelection'
 import { TrezorAccountSelection } from 'components/connectWallet/TrezorAccountSelection'
+import { AppLink } from 'components/Links'
 import { redirectState$ } from 'features/router/redirectState'
 import { AppSpinner } from 'helpers/loadingIndicator/LoadingIndicator'
 import { useObservable } from 'helpers/observableHook'
@@ -30,6 +32,7 @@ import { identity, Observable } from 'rxjs'
 import { first, tap } from 'rxjs/operators'
 import { Alert, Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 import { assert } from 'ts-essentials'
+
 export const AUTO_CONNECT = 'autoConnect'
 
 interface AutoConnectLocalStorage {
@@ -118,8 +121,12 @@ const SUPPORTED_WALLETS: SupportedWallet[] = [
   { iconName: 'portis', connectionKind: 'portis' },
   { iconName: 'myetherwallet', connectionKind: 'myetherwallet' },
   { iconName: 'trezor', connectionKind: 'trezor' },
-  { iconName: 'ledger', connectionKind: 'ledger' },
 ]
+
+const isFirefox = browserDetect().name === 'firefox'
+if (!isFirefox) {
+  SUPPORTED_WALLETS.push({ iconName: 'ledger', connectionKind: 'ledger' })
+}
 
 function ConnectWalletButton({
   isConnecting,
@@ -344,6 +351,20 @@ export function ConnectWallet() {
             />
           )
         })}
+        <Box sx={{ mt: 4 }}>
+          <Text sx={{ fontWeight: 'semiBold', mb: 2 }} variant="paragraph2">
+            {t('new-to-ethereum')}
+          </Text>
+          <AppLink
+            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            href={t('learn-more-link')}
+          >
+            <Text variant="paragraph2" sx={{ color: 'inherit', fontWeight: 'semiBold' }}>
+              {t('learn-about-wallets')}
+            </Text>
+            <Icon sx={{ ml: 1 }} name="open_in_new_tab" />
+          </AppLink>
+        </Box>
       </Grid>
     </Grid>
   )
