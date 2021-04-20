@@ -87,7 +87,9 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
       </TableSortHeader>
     ),
     cell: ({ stabilityFee }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatPercent(stabilityFee.times(100), { precision: 2 })}</Text>
+      <Text sx={{ textAlign: 'right' }}>
+        {formatPercent(stabilityFee.times(100), { precision: 2 })}
+      </Text>
     ),
   },
   {
@@ -341,10 +343,10 @@ export function LandingView() {
           sx={
             landing !== undefined
               ? {
-                ...fadeInAnimation,
-                animationDirection: 'backwards',
-                animationFillMode: 'backwards',
-              }
+                  ...fadeInAnimation,
+                  animationDirection: 'backwards',
+                  animationFillMode: 'backwards',
+                }
               : {}
           }
         />

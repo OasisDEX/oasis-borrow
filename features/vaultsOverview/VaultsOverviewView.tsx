@@ -316,13 +316,10 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
             components={[<br />]}
           />
         </Heading>
-        {isOwnerViewing && vaultSummary.numberOfVaults === 0 &&
+        {isOwnerViewing && vaultSummary.numberOfVaults === 0 && (
           <>
             <Text variant="paragraph1" sx={{ mb: 3, color: 'lavender', textAlign: 'center' }}>
-              <Trans
-                i18nKey="vaults-overview.subheader-no-vaults"
-                components={[<br />]}
-              />
+              <Trans i18nKey="vaults-overview.subheader-no-vaults" components={[<br />]} />
             </Text>
             <AppLink
               href="/vaults/list"
@@ -351,9 +348,8 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
               />
             </AppLink>
           </>
-        }
-        {
-          context.status === 'connectedReadonly' && vaultSummary.numberOfVaults === 0 &&
+        )}
+        {context.status === 'connectedReadonly' && vaultSummary.numberOfVaults === 0 && (
           <>
             <AppLink
               href="/connect"
@@ -382,10 +378,10 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
               />
             </AppLink>
           </>
-        }
+        )}
       </Flex>
-      {
-        vaultSummary.numberOfVaults !== 0 && <>
+      {vaultSummary.numberOfVaults !== 0 && (
+        <>
           <Summary summary={vaultSummary} />
           <Filters
             onSearch={onVaultSearch}
@@ -396,7 +392,7 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
           />
           <VaultsTable vaults={vaults} />
         </>
-      }
+      )}
     </Grid>
   )
 }

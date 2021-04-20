@@ -351,7 +351,14 @@ export function createOpenVault$(
                 ([
                   priceInfo,
                   balanceInfo,
-                  { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio, stabilityFee, liquidationPenalty },
+                  {
+                    maxDebtPerUnitCollateral,
+                    ilkDebtAvailable,
+                    debtFloor,
+                    liquidationRatio,
+                    stabilityFee,
+                    liquidationPenalty,
+                  },
                   proxyAddress,
                 ]) =>
                   (

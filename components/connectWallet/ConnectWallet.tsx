@@ -315,10 +315,10 @@ export function ConnectWallet() {
             </Text>
           </Alert>
         )) || (
-            <Alert variant="error" sx={{ fontWeight: 'normal', borderRadius: 'large' }}>
-              <Text sx={{ my: 1, ml: 2, fontSize: 3, lineHeight: 'body' }}>{t('connect-error')}</Text>
-            </Alert>
-          ))}
+          <Alert variant="error" sx={{ fontWeight: 'normal', borderRadius: 'large' }}>
+            <Text sx={{ my: 1, ml: 2, fontSize: 3, lineHeight: 'body' }}>{t('connect-error')}</Text>
+          </Alert>
+        ))}
       <Grid columns={1} sx={{ maxWidth: '280px', width: '100%', mx: 'auto' }}>
         {SUPPORTED_WALLETS.map(({ iconName, connectionKind }) => {
           const isConnecting =
@@ -339,15 +339,20 @@ export function ConnectWallet() {
                   web3Context.status === 'connecting'
                     ? undefined
                     : connectionKind === 'ledger'
-                      ? () => setConnectingLedger(true)
-                      : connect(web3Context, connectionKind, getNetworkId()),
+                    ? () => setConnectingLedger(true)
+                    : connect(web3Context, connectionKind, getNetworkId()),
               }}
             />
           )
         })}
         <Box sx={{ mt: 4 }}>
-          <Text sx={{ fontWeight: 'semiBold', mb: 2 }} variant="paragraph2">{t('new-to-ethereum')}</Text>
-          <AppLink sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} href={t('learn-more-link')}>
+          <Text sx={{ fontWeight: 'semiBold', mb: 2 }} variant="paragraph2">
+            {t('new-to-ethereum')}
+          </Text>
+          <AppLink
+            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            href={t('learn-more-link')}
+          >
             <Text variant="paragraph2" sx={{ color: 'inherit', fontWeight: 'semiBold' }}>
               {t('learn-about-wallets')}
             </Text>

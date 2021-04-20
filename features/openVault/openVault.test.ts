@@ -35,7 +35,7 @@ const SLIGHTLY_LESS_THAN_ONE = 0.99
 const SLIGHTLY_MORE_THAN_ONE = 1.01
 
 describe('openVault', () => {
-  beforeEach(() => {})
+  beforeEach(() => { })
 
   describe('parseVaultIdFromReceiptLogs', () => {
     it('should return vaultId', () => {
@@ -75,7 +75,9 @@ describe('openVault', () => {
       collateralBalance: zero,
       ethBalance: zero,
       daiBalance: zero,
-      injectStateOverride: () => {},
+      stabilityFee: zero,
+      liquidationPenalty: zero,
+      injectStateOverride: () => { },
     }
     it('Should show no warnings when the state is correct', () => {
       const { warningMessages } = validateWarnings(openVaultState)
@@ -170,7 +172,9 @@ describe('openVault', () => {
       maxDebtPerUnitCollateral,
       liquidationRatio,
       safeConfirmations: 6,
-      injectStateOverride: () => {},
+      stabilityFee: zero,
+      liquidationPenalty: zero,
+      injectStateOverride: () => { },
     })
 
     it('Should show no errors when the state is correct', () => {
@@ -277,8 +281,8 @@ describe('openVault', () => {
         ...(ilk === 'ETH-A'
           ? protoETHPriceInfo
           : ilk === 'WBTC-A'
-          ? protoWBTCPriceInfo
-          : protoUSDCPriceInfo),
+            ? protoWBTCPriceInfo
+            : protoUSDCPriceInfo),
         ...(priceInfo || {}),
       }
 
@@ -286,8 +290,8 @@ describe('openVault', () => {
         ilk === 'ETH-A'
           ? protoETHAIlkData
           : ilk === 'WBTC-A'
-          ? protoWBTCAIlkData
-          : protoUSDCAIlkData
+            ? protoWBTCAIlkData
+            : protoUSDCAIlkData
 
       const balanceInfo$ = () => of(protoBalanceInfo)
       const priceInfo$ = () => of(protoPriceInfo)
@@ -322,7 +326,7 @@ describe('openVault', () => {
             injectStateOverride(newState || {})
           }
         },
-        () => {},
+        () => { },
       )
       return openVault$
     }
