@@ -459,5 +459,8 @@
   "you-are-sending": "You are sending",
   "your-vaults": "Your Vaults",
   "open-new-vault": "Open new Vault",
-  "no-results": "No results"
+  "no-results": "No results",
+  "new-to-ethereum": "New to Ethereum? ",
+  "learn-about-wallets": "Learn more about wallets",
+  "learn-more-link": "https://ethereum.org/en/wallets/find-wallet/"
 }
