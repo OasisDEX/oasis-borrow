@@ -338,20 +338,13 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
 
   if (!state) return null
 
-  const {
-    token,
-    dateNextCollateralPrice,
-    account,
-    controller,
-    unlockedCollateral,
-    banner,
-  } = state
+  const { token, dateNextCollateralPrice, account, controller, unlockedCollateral, banner } = state
 
   const isVaultController = !!account && account === controller
 
-  const reclaimButton = unlockedCollateral.gt(zero) 
-    ? <ReclaimCollateralButton {...{ token, id, amount: unlockedCollateral }} /> 
-    : null
+  const reclaimButton = unlockedCollateral.gt(zero) ? (
+    <ReclaimCollateralButton {...{ token, id, amount: unlockedCollateral }} />
+  ) : null
 
   switch (banner) {
     case 'liquidated':
