@@ -6,7 +6,7 @@ import { memoize } from 'lodash'
 import flatten from 'lodash/flatten'
 import pickBy from 'lodash/pickBy'
 import { combineLatest, Observable } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { map, switchMap, tap } from 'rxjs/operators'
 
 import { ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
@@ -21,6 +21,9 @@ const query = gql`
         cdpId
         transferFrom
         transferTo
+        collateralTaken
+        coveredDebt
+        remainingCollateral
         timestamp
         id
         urn
@@ -38,7 +41,13 @@ async function getVaultHistory(client: GraphQLClient, urn: string): Promise<Retu
 }
 
 function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
-  const bigNumberFields = ['collateralAmount', 'daiAmount']
+  const bigNumberFields = [
+    'collateralAmount',
+    'daiAmount',
+    "collateralTaken",
+    "coveredDebt",
+    "remainingCollateral"
+  ]
   return Object.entries(event).reduce(
     (acc, [key, value]) =>
       bigNumberFields.includes(key) && value != null
@@ -107,6 +116,7 @@ export function createVaultHistory$(
           ),
         ),
         map((events) => events.map((event) => ({ etherscan, token, ...event }))),
+        tap(console.log)
       ),
     ),
   )
