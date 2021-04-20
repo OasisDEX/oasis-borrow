@@ -165,7 +165,7 @@ function VaultDetails(props: OpenVaultState) {
               0.00
             </Text>
             <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
-              USD
+              {props.token.toUpperCase()}
             </Text>
           </Box>
         </Box>
@@ -178,7 +178,7 @@ function VaultDetails(props: OpenVaultState) {
               {formatCryptoBalance(props.maxGenerateAmount)}
             </Text>
             <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
-              USD
+              DAI
             </Text>
           </Box>
         </Box>
