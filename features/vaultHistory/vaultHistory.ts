@@ -6,13 +6,13 @@ import { memoize } from 'lodash'
 import flatten from 'lodash/flatten'
 import pickBy from 'lodash/pickBy'
 import { combineLatest, Observable } from 'rxjs'
-import { map, switchMap, tap } from 'rxjs/operators'
+import { map, switchMap } from 'rxjs/operators'
 
 import { ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
 const query = gql`
   query VaultEvents($urn: String) {
-    allVaultEvents(filter: { urn: { equalTo: $urn } }, orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]) {
+    allVaultEvents(filter: { urn: { equalTo: $urn } kind: { notEqualTo: "TAKE" } }, orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]) {
       nodes {
         kind
         collateralAmount
@@ -29,6 +29,7 @@ const query = gql`
         urn
         hash
         logIndex
+        auctionId
       }
     }
   }
@@ -116,7 +117,6 @@ export function createVaultHistory$(
           ),
         ),
         map((events) => events.map((event) => ({ etherscan, token, ...event }))),
-        tap(console.log)
       ),
     ),
   )

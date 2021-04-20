@@ -439,9 +439,9 @@
     "transfer": "Vault given to <0>{{transferTo}}</0> by <0>{{transferFrom}}</0>",
     "migrate": "Vault migrated",
     "auction_started": "Auction started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} DAI</0>",
-    "auction_started_v2": "Auction started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} DAI</0>",
-    "take": "<0>{{collateralTaken}} {{token}}</0> sold for <0>{{coveredDebt}} DAI</0>",
-    "auction_finished_v2": "Auction finished, <0>{{remainingCollateral}} {{token}}</0> remained"
+    "auction_started_v2": "Auction <0>#{{auctionId}}</0> started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} DAI</0>",
+    "take": "{{collateralTaken}} {{token}} sold for {{coveredDebt}} DAI",
+    "auction_finished_v2": "Auction <0>#{{auctionId}}</0> finished, <0>{{remainingCollateral}} {{token}}</0> remained"
   },
   "event": {
     "type": "Type",
