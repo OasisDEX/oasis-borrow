@@ -774,7 +774,7 @@ function VaultDetails(props: ManageVaultState) {
               {formatFiatBalance(props.freeCollateral)}
             </Text>
             <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
-              USD
+              {props.token.toUpperCase()}
             </Text>
           </Box>
         </Box>
@@ -787,7 +787,7 @@ function VaultDetails(props: ManageVaultState) {
               {formatCryptoBalance(props.maxGenerateAmount)}
             </Text>
             <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
-              USD
+              DAI
             </Text>
           </Box>
         </Box>
