@@ -440,7 +440,6 @@
     "migrate": "Vault migrated",
     "auction_started": "Auction started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} DAI</0>",
     "auction_started_v2": "Auction <0>#{{auctionId}}</0> started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} DAI</0>",
-    "take": "{{collateralTaken}} {{token}} sold for {{coveredDebt}} DAI",
     "auction_finished_v2": "Auction <0>#{{auctionId}}</0> finished, <0>{{remainingCollateral}} {{token}}</0> remained"
   },
   "event": {
