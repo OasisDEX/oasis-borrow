@@ -16,7 +16,7 @@ describe('ilkData$', () => {
   it('should produce IlkData state', () => {
     const state = mockIlkData()
 
-    expect(state).to.not.be.undefined
+    expect(state()).to.not.be.undefined
   })
 
   it('should account for accrued debt', () => {

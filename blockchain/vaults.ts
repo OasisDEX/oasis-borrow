@@ -111,7 +111,7 @@ export function createVault$(
             const collateralUSDAtNextPrice = nextPrice ? collateral.times(nextPrice) : currentPrice
 
             const debt = debtScalingFactor.times(normalizedDebt)
-            const approximateDebt = debt.decimalPlaces(6, BigNumber.ROUND_HALF_UP)
+            const approximateDebt = debt.decimalPlaces(6, BigNumber.ROUND_DOWN)
 
             const backingCollateral = debt.times(liquidationRatio).div(currentPrice)
             const backingCollateralAtNextPrice = debt

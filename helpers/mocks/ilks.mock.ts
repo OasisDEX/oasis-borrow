@@ -34,7 +34,7 @@ const defaultIlk = 'WBTC-A'
 
 const DEFAULT_STABILITY_FEE = new BigNumber('0.045')
 export const DEFAULT_DEBT_SCALING_FACTOR = one
-export const RANDOM_DEBT_SCALING_FACTOR = new BigNumber('1000000000000000078474524542').div(RAY)
+export const RANDOM_DEBT_SCALING_FACTOR = new BigNumber('1000000000000000000174524542').div(RAY)
 export const debtScalingFactor$ = new BehaviorSubject<BigNumber>(DEFAULT_DEBT_SCALING_FACTOR)
 
 export function mockIlkData$({

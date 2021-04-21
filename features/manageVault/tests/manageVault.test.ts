@@ -7,7 +7,7 @@ import { expect } from 'chai'
 import { protoTxHelpers } from 'components/AppContext'
 import { mockManageVault$ } from 'helpers/mocks/manageVault.mock'
 import { mockTxState } from 'helpers/mocks/txHelpers.mock'
-import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
+import { defaultCollateral, defaultDebt, DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { of, Subject } from 'rxjs'
@@ -18,8 +18,8 @@ describe('manageVault', () => {
       it('should start by default in an collateral editing stage', () => {
         const state = getStateUnpacker(mockManageVault$())
         expect(state().stage).to.be.equal('collateralEditing')
-        expect(state().vault.lockedCollateral).to.deep.equal(zero)
-        expect(state().vault.debt).to.deep.equal(zero)
+        expect(state().vault.lockedCollateral).to.deep.equal(defaultCollateral)
+        expect(state().vault.debt).to.deep.equal(defaultDebt)
       })
 
       it('should update deposit amount', () => {

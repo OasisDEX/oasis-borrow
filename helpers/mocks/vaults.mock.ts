@@ -3,11 +3,13 @@ import { IlkData } from 'blockchain/ilks'
 import { OraclePriceData } from 'blockchain/prices'
 import { createVault$, Vault } from 'blockchain/vaults'
 import { ilkToToken$ } from 'components/AppContext'
+import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
+import { first, switchMap } from 'rxjs/operators'
 
 import { mockIlkData$ } from './ilks.mock'
+import { mockPriceInfo$ } from './priceInfo.mock'
 
 export interface MockVaultProps {
   _cdpManagerUrns$?: Observable<string>
@@ -17,35 +19,42 @@ export interface MockVaultProps {
   ilk?: string
   collateral?: BigNumber
   debt?: BigNumber
-  unlockedCollateral?: BigNumber
-  currentPrice?: BigNumber
-  nextPrice?: BigNumber
+  priceInfo?: BigNumber
   id?: BigNumber
 }
 
 export const DEFAULT_PROXY_ADDRESS = '0xProxyAddress'
 
+export const defaultCurrentPrice = new BigNumber('5000')
+export const defaultController = '0xVaultController'
+export const defaultDebt = new BigNumber('5000')
+export const defaultCollateral = new BigNumber('500')
+
 export function mockVault$({
   _cdpManagerUrns$,
   _oraclePriceData$,
   _ilkData$,
-  currentPrice = zero,
-  nextPrice = zero,
-  unlockedCollateral = zero,
+  priceInfo,
   id = one,
-  controller = '0xVaultController',
-  debt = zero,
-  collateral = zero,
-  ilk = 'WBTC-A',
+  controller,
+  debt,
+  collateral,
+  ilk,
 }: MockVaultProps): Observable<Vault> {
+  const token = ilk ? ilk.split('-')[0] : 'WBTC'
+
   function oraclePriceData$() {
     return (
       _oraclePriceData$ ||
-      of({
-        currentPrice,
-        isStaticPrice: false,
-        nextPrice,
-      })
+      mockPriceInfo$({ ...priceInfo, token }).pipe(
+        switchMap(({ currentCollateralPrice, nextCollateralPrice }) =>
+          of({
+            currentPrice: currentCollateralPrice,
+            nextPrice: nextCollateralPrice,
+            isStaticPrice: false,
+          }),
+        ),
+      )
     )
   }
 
@@ -65,7 +74,7 @@ export function mockVault$({
   }
 
   function cdpManagerIlks$() {
-    return of(ilk)
+    return of(ilk || 'WBTC-A')
   }
 
   function cdpManagerOwner$() {
@@ -77,15 +86,16 @@ export function mockVault$({
   }
 
   function vatGem$() {
-    return of(unlockedCollateral)
+    return of(zero)
   }
 
   function vatUrns$() {
     return ilkData$().pipe(
+      first(),
       switchMap(({ debtScalingFactor }) =>
         of({
-          normalizedDebt: debt.div(debtScalingFactor).dp(18, BigNumber.ROUND_DOWN),
-          collateral,
+          normalizedDebt: (debt || defaultDebt).div(debtScalingFactor).dp(18, BigNumber.ROUND_DOWN),
+          collateral: collateral || defaultCollateral,
         }),
       ),
     )
@@ -103,4 +113,8 @@ export function mockVault$({
     ilkToToken$,
     id,
   )
+}
+
+export function mockVaults(props: MockVaultProps = {}) {
+  return getStateUnpacker(mockVault$(props))
 }
