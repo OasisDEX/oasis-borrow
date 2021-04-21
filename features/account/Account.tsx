@@ -64,8 +64,26 @@ export function AccountButton() {
 
   if (context?.status === 'connectedReadonly') {
     return (
-      <AppLink sx={{ zIndex: 1 }} href="/connect" variant="nav">
+      <AppLink
+        sx={{
+          zIndex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          px: 3,
+          py: 2,
+          borderRadius: 'mediumLarge',
+          transition: 'background 0.2s',
+          '&:hover': {
+            bg: 'ghost',
+            '& svg': {
+              left: '5px'
+            }
+          }
+        }}
+        href="/connect"
+        variant="nav">
         {t('connect-wallet-button')}
+        <Icon name="arrow_right" size={15} sx={{ ml: 1, position: 'relative', transition: 'ease-in-out 0.2s', left: 0 }} />
       </AppLink>
     )
   }

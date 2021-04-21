@@ -131,7 +131,7 @@ export function Footer() {
   const { t } = useTranslation('common')
 
   return (
-    <Box as="footer">
+    <Box sx={{ zIndex: 1 }} as="footer">
       <Container sx={{ maxWidth: '761px', mb: 5, pt: 2 }}>
         <Flex
           as="ul"
