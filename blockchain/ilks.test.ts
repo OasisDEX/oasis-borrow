@@ -1,10 +1,8 @@
-import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
-import { RAY } from 'components/constants'
 import {
   debtScalingFactor$,
-  defaultIlkDebt,
   DEFAULT_DEBT_SCALING_FACTOR,
+  defaultIlkDebt,
   mockIlkData,
   RANDOM_DEBT_SCALING_FACTOR,
 } from 'helpers/mocks/ilks.mock'

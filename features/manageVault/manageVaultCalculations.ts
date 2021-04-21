@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { isNullish } from 'helpers/functions'
 import { zero } from 'helpers/zero'
+
 import { ManageVaultState, PAYBACK_ALL_BOUND } from './manageVault'
 
 export function applyManageVaultCalculations(state: ManageVaultState): ManageVaultState {
@@ -12,7 +13,7 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     balanceInfo: { collateralBalance, daiBalance },
     ilkData: { liquidationRatio, ilkDebtAvailable },
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
-    vault: { lockedCollateral, debt, approximateDebt, freeCollateral, freeCollateralAtNextPrice },
+    vault: { lockedCollateral, debt, debtOffset, freeCollateral, freeCollateralAtNextPrice },
   } = state
 
   const maxWithdrawAmount = BigNumber.minimum(freeCollateral, freeCollateralAtNextPrice)
@@ -25,13 +26,13 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     .plus(depositAmount || zero)
     .times(currentCollateralPrice)
     .div(liquidationRatio)
-    .minus(debt)
+    .minus(debt.plus(debtOffset))
 
   const daiYieldFromTotalCollateralAtNextPrice = lockedCollateral
     .plus(depositAmount || zero)
     .times(nextCollateralPrice || currentCollateralPrice)
     .div(liquidationRatio)
-    .minus(debt)
+    .minus(debt.plus(debtOffset))
 
   const maxGenerateAmountCurrentPrice = daiYieldFromTotalCollateral.gt(ilkDebtAvailable)
     ? ilkDebtAvailable
@@ -44,15 +45,17 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
   const maxGenerateAmount = BigNumber.minimum(
     maxGenerateAmountCurrentPrice,
     maxGenerateAmountNextPrice,
-  )
+  ).gt(zero)
+    ? BigNumber.minimum(maxGenerateAmountCurrentPrice, maxGenerateAmountNextPrice)
+    : zero
 
-  const maxPaybackAmount = daiBalance.lt(approximateDebt) ? daiBalance : approximateDebt
+  const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt
 
   const shouldPaybackAll = !!(
     daiBalance.gte(debt) &&
     paybackAmount &&
-    paybackAmount.plus(PAYBACK_ALL_BOUND).gte(approximateDebt) &&
-    !paybackAmount.gt(approximateDebt)
+    paybackAmount.plus(PAYBACK_ALL_BOUND).gte(debt) &&
+    !paybackAmount.gt(debt)
   )
 
   const afterLockedCollateral = depositAmount

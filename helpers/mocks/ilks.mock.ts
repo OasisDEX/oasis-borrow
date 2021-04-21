@@ -5,12 +5,15 @@ import { SpotIlk } from 'blockchain/calls/spot'
 import { VatIlk } from 'blockchain/calls/vat'
 import { createIlkData$, IlkData } from 'blockchain/ilks'
 import { ilkToToken$ } from 'components/AppContext'
-import { RAD, RAY } from 'components/constants'
+import { SECONDS_PER_YEAR } from 'components/constants'
+import { Decimal } from 'decimal.js'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { getStateUnpacker } from 'helpers/testHelpers'
-import { one, ten, zero } from 'helpers/zero'
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs'
-import { first, switchMap } from 'rxjs/operators'
+import { one } from 'helpers/zero'
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
+import { switchMap } from 'rxjs/operators'
+
+Decimal.set({ precision: 100 })
 
 export interface MockIlkDataProps {
   _priceInfo$?: Observable<PriceInfo>
@@ -26,6 +29,19 @@ export interface MockIlkDataProps {
   ilk?: string
 }
 
+// stabilityFee :: 8% = 1.08
+// bc -l <<< 'scale=27; e( l(1.08)/(60 * 60 * 24 * 365) )'
+export function calcDebtScalingFactor(stabilityFee: BigNumber, seconds: number) {
+  const duty = new BigNumber(
+    Decimal.exp(Decimal.ln(new Decimal(stabilityFee.toString())).div(SECONDS_PER_YEAR))
+      .toDecimalPlaces(27, Decimal.ROUND_DOWN)
+      .toString(),
+  )
+
+  const r_zero = DEFAULT_DEBT_SCALING_FACTOR
+  return r_zero.times(duty.pow(seconds)).dp(27, BigNumber.ROUND_DOWN)
+}
+
 const defaultDebtFloor = new BigNumber('2000')
 export const defaultIlkDebt = new BigNumber('8000000')
 const defaultLiquidationRatio = new BigNumber('1.5')
@@ -34,7 +50,8 @@ const defaultIlk = 'WBTC-A'
 
 const DEFAULT_STABILITY_FEE = new BigNumber('0.045')
 export const DEFAULT_DEBT_SCALING_FACTOR = one
-export const RANDOM_DEBT_SCALING_FACTOR = new BigNumber('1000000000000000000174524542').div(RAY)
+
+export const RANDOM_DEBT_SCALING_FACTOR = calcDebtScalingFactor(DEFAULT_STABILITY_FEE.plus(one), 15)
 export const debtScalingFactor$ = new BehaviorSubject<BigNumber>(DEFAULT_DEBT_SCALING_FACTOR)
 
 export function mockIlkData$({
@@ -107,14 +124,7 @@ export function mockIlkData$({
     )
   }
 
-  return createIlkData$(
-    vatIlks$,
-    spotIlks$,
-    jugIlks$,
-    catIlks$,
-    ilkToToken$,
-    ilk ? ilk : defaultIlk,
-  )
+  return createIlkData$(vatIlks$, spotIlks$, jugIlks$, catIlks$, ilkToToken$, ilk || defaultIlk)
 }
 
 export function mockIlkData(props: MockIlkDataProps = {}) {

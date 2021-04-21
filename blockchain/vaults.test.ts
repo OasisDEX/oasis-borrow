@@ -5,7 +5,8 @@ import {
   DEFAULT_DEBT_SCALING_FACTOR,
   RANDOM_DEBT_SCALING_FACTOR,
 } from 'helpers/mocks/ilks.mock'
-import { defaultCollateral, defaultDebt, mockVaults } from 'helpers/mocks/vaults.mock'
+import { mockVaults } from 'helpers/mocks/vaults.mock'
+import { one } from 'helpers/zero'
 
 describe('vaults$', () => {
   afterEach(() => {
@@ -17,7 +18,7 @@ describe('vaults$', () => {
     expect(state()).to.not.be.undefined
   })
 
-  it.only('should account for accrued debt', () => {
+  it('should account for accrued debt', () => {
     const hundredThousand = new BigNumber('100000')
     const fiftyMillion = new BigNumber('50000000')
     const state = mockVaults({
@@ -27,9 +28,8 @@ describe('vaults$', () => {
 
     expect(state().lockedCollateral).to.deep.equal(hundredThousand)
     expect(state().debt).to.deep.equal(fiftyMillion)
-    debtScalingFactor$.next(new BigNumber('1.0000005555555555'))
+    debtScalingFactor$.next(RANDOM_DEBT_SCALING_FACTOR)
     expect(state().lockedCollateral).to.deep.equal(hundredThousand)
-    expect(state().debt).to.deep.eq(new BigNumber('50000027.777777775'))
-    expect(state().approximateDebt).to.deep.eq(new BigNumber('50000027.777777'))
+    expect(state().debt.gt(fiftyMillion.plus(one))).to.be.true
   })
 })

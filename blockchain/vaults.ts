@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
 import { Context } from 'blockchain/network'
-import { zero } from 'helpers/zero'
+import { HOUR, SECONDS_PER_YEAR } from 'components/constants'
+import { one, zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -11,6 +12,10 @@ import { CallObservable } from './calls/observe'
 import { vatGem, vatUrns } from './calls/vat'
 import { IlkData } from './ilks'
 import { OraclePriceData } from './prices'
+
+BigNumber.config({
+  POW_PRECISION: 100,
+})
 
 export function createVaults$(
   context$: Observable<Context>,
@@ -54,7 +59,7 @@ export interface Vault {
   freeCollateralUSD: BigNumber
   freeCollateralUSDAtNextPrice: BigNumber
   debt: BigNumber
-  approximateDebt: BigNumber
+  debtOffset: BigNumber
   normalizedDebt: BigNumber
   availableDebt: BigNumber
   availableDebtAtNextPrice: BigNumber
@@ -105,15 +110,23 @@ export function createVault$(
             { collateral, normalizedDebt },
             unlockedCollateral,
             { currentPrice, nextPrice },
-            { debtScalingFactor, liquidationRatio, collateralizationDangerThreshold },
+            { debtScalingFactor, liquidationRatio, collateralizationDangerThreshold, stabilityFee },
           ]) => {
             const collateralUSD = collateral.times(currentPrice)
             const collateralUSDAtNextPrice = nextPrice ? collateral.times(nextPrice) : currentPrice
 
             const debt = debtScalingFactor.times(normalizedDebt)
-            const approximateDebt = debt.decimalPlaces(6, BigNumber.ROUND_DOWN)
 
-            const backingCollateral = debt.times(liquidationRatio).div(currentPrice)
+            const offset = debt
+              .times(one.plus(stabilityFee.div(SECONDS_PER_YEAR)).pow(HOUR * 5))
+              .minus(debt)
+              .dp(18, BigNumber.ROUND_DOWN)
+            const debtOffset = offset.gt(zero) ? offset : zero
+
+            const backingCollateral = debt
+              .plus(debtOffset)
+              .times(liquidationRatio)
+              .div(currentPrice)
             const backingCollateralAtNextPrice = debt
               .times(liquidationRatio)
               .div(nextPrice || currentPrice)
@@ -185,7 +198,7 @@ export function createVault$(
 
               normalizedDebt,
               debt,
-              approximateDebt,
+              debtOffset,
               availableDebt,
               availableDebtAtNextPrice,
 

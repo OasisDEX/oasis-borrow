@@ -32,7 +32,7 @@ function VaultDetailsTable({
           </Box>
           <Box>
             <Text sx={{ display: 'inline' }} variant="header3">
-              {formatAmount(vault.approximateDebt, 'DAI')}
+              {formatAmount(vault.debt, 'DAI')}
             </Text>
             <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
               DAI

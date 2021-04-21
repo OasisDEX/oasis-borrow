@@ -165,7 +165,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
       errorMessages.push('paybackAmountExceedsDaiBalance')
     }
 
-    if (paybackAmount?.gt(vault.approximateDebt)) {
+    if (paybackAmount?.gt(vault.debt)) {
       errorMessages.push('paybackAmountExceedsVaultDebt')
     }
 
