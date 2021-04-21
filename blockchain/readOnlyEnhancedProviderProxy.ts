@@ -4,6 +4,7 @@ import _ from 'lodash'
 import { JsonRpcResponse } from 'web3-core-helpers'
 
 import { networksById } from './config'
+import { JsonRpcBatchProvider } from './jsonRpcBatchProvider'
 
 const readOnlyProviderByChainId: Record<number, providers.JsonRpcProvider> = {}
 
@@ -15,8 +16,8 @@ async function getReadOnlyProviderAsync(
     chainId = parseInt(chainId, 16)
   }
   if (!readOnlyProviderByChainId[chainId]) {
-    readOnlyProviderByChainId[chainId] = new providers.WebSocketProvider(
-      networksById[chainId].infuraUrlWS,
+    readOnlyProviderByChainId[chainId] = new JsonRpcBatchProvider(
+      networksById[chainId].infuraUrl,
       chainId,
     )
   }
