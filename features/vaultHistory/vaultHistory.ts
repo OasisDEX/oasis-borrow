@@ -45,9 +45,9 @@ function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
   const bigNumberFields = [
     'collateralAmount',
     'daiAmount',
-    "collateralTaken",
-    "coveredDebt",
-    "remainingCollateral"
+    'collateralTaken',
+    'coveredDebt',
+    'remainingCollateral'
   ]
   return Object.entries(event).reduce(
     (acc, [key, value]) =>
