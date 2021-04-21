@@ -73,17 +73,17 @@ export function AccountButton() {
           py: 2,
           borderRadius: 'mediumLarge',
           transition: 'background 0.2s',
-          '&:hover': {
+          '&:hover, &:focus ': {
             bg: 'ghost',
             '& svg': {
-              left: '5px'
+              left: '4px'
             }
           }
         }}
         href="/connect"
         variant="nav">
         {t('connect-wallet-button')}
-        <Icon name="arrow_right" size={15} sx={{ ml: 1, position: 'relative', transition: 'ease-in-out 0.2s', left: 0 }} />
+        <Icon name="arrow_right" size={14} sx={{ ml: 1, position: 'relative', transition: 'ease-in-out 0.2s', left: 0 }} />
       </AppLink>
     )
   }

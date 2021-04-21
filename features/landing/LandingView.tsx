@@ -137,16 +137,12 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
       <Heading as="h1" variant="header2" sx={{ fontSize: 40, mb: 3 }}>
         {t('landing.hero.headline')}
       </Heading>
-      <Text variant="paragraph1" sx={{ mb: 3, color: 'lavender' }}>
+      <Text variant="paragraph1" sx={{ mb: 4, color: 'lavender' }}>
         <Trans i18nKey="landing.hero.subheader" components={[<br />]} />
       </Text>
-      <Box
-        sx={{
-          opacity: 0.08,
-        }}
-      >
-        <Image sx={{ mb: 4 }} src={staticFilesRuntimeUrl('/static/img/icons_set.svg')} />
-      </Box>
+
+      <Image sx={{ mb: 4 }} src={staticFilesRuntimeUrl('/static/img/icons_set.svg')} />
+
       {!isConnected && (
         <AppLink
           href="/connect"
@@ -343,10 +339,10 @@ export function LandingView() {
           sx={
             landing !== undefined
               ? {
-                  ...fadeInAnimation,
-                  animationDirection: 'backwards',
-                  animationFillMode: 'backwards',
-                }
+                ...fadeInAnimation,
+                animationDirection: 'backwards',
+                animationFillMode: 'backwards',
+              }
               : {}
           }
         />
