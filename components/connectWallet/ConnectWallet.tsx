@@ -424,6 +424,13 @@ async function connectReadonly(web3Context: Web3ContextNotConnected) {
 
 export function WithConnection({ children }: WithChildren) {
   const { web3Context$ } = useAppContext()
+  const web3Context = useObservable(web3Context$)
+
+  useEffect(() => {
+    if (web3Context && web3Context.status === 'connectedReadonly') {
+      redirectState$.next(window.location.pathname)
+    }
+  }, [web3Context?.status])
 
   useEffect(() => autoConnect(web3Context$, getNetworkId(), connectReadonly), [])
 
