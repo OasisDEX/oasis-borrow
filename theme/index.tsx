@@ -1034,6 +1034,7 @@ const oasisBaseTheme = {
     surface: '0px 0px 8px rgba(0, 0, 0, 0.2)',
     surface_hovered: '0px 8px 8px rgba(0, 0, 0, 0.2)',
     table: '0px 0px 2px rgba(0, 0, 0, 0.2)',
+    table_hovered: '0px 0px 10px rgba(0, 0, 0, 0.15)',
     banner: '0px 0px 10px rgba(0, 0, 0, 0.1)',
   },
   gradients: {

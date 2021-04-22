@@ -54,7 +54,16 @@ function Row({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
         boxShadow: 'table',
         background: 'white',
         borderRadius: '8px',
+        transition: `
+          transform 0.2s ease-in-out,
+          box-shadow 0.2s ease-in-out
+          `,
+        cursor: 'pointer',
         ...sx,
+        '&:hover': {
+          boxShadow: ['table', 'table_hovered'],
+          transform: ['none', 'scaleX(0.99)']
+        }
       }}
       as="tr"
     >
