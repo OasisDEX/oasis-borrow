@@ -199,7 +199,7 @@ function Expandable({ question, answer, isOpen, toggle }: ExpandableProps) {
         },
       }}
     >
-      <Button sx={{ position: 'relative' }} variant="expandable" onClick={toggle}>
+      <Button sx={{ position: 'relative', lineHeight: '1rem' }} variant="expandable" onClick={toggle}>
         {question}
         {
           <Box
@@ -249,7 +249,7 @@ export function FAQ() {
 
   return (
     <Flex
-      sx={{ flexDirection: 'column', alignItems: 'center', mt: 4, maxWidth: '762px', mx: 'auto' }}
+      sx={{ flexDirection: 'column', alignItems: 'center', my: 6, maxWidth: '762px', mx: 'auto' }}
     >
       <Heading variant="header2" sx={{ mb: 4 }}>
         {t('landing.faq.title')}
@@ -356,6 +356,7 @@ export function LandingView() {
             onTagChange={onIlksTagChange}
             tagFilter={landing.ilks.filters.tagFilter}
             defaultTag="all-assets"
+            searchPlaceholder={t('search-token')}
           />
           <Box sx={{ overflowX: 'auto', p: '3px' }}>
             <Table

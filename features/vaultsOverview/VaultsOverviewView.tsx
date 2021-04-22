@@ -389,6 +389,7 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
             onTagChange={onVaultsTagChange}
             tagFilter={vaults.filters.tagFilter}
             defaultTag="your-vaults"
+            searchPlaceholder={t('search-token')}
           />
           <VaultsTable vaults={vaults} />
         </>

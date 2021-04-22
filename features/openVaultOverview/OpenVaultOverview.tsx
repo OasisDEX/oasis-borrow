@@ -145,6 +145,7 @@ export function OpenVaultOverview({ vaultsOverview, accountDetails, context }: P
         onTagChange={onIlksTagChange}
         tagFilter={ilksWithFilters.filters.tagFilter}
         defaultTag="all-assets"
+        searchPlaceholder={t('search-token')}
       />
       <Table
         data={ilksWithFilters.data}

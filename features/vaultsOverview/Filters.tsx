@@ -11,10 +11,11 @@ interface FiltersProps {
   search: string
   defaultTag: string
   tagFilter: CoinTag | undefined
+  searchPlaceholder: string
   sx?: SxStyleProp
 }
 
-function Filters_({ onSearch, search, onTagChange, tagFilter, defaultTag, sx }: FiltersProps) {
+function Filters_({ onSearch, search, onTagChange, tagFilter, defaultTag, searchPlaceholder, sx }: FiltersProps) {
   const onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onSearch(e.currentTarget.value)
@@ -107,6 +108,14 @@ function Filters_({ onSearch, search, onTagChange, tagFilter, defaultTag, sx }: 
           ml: 'auto',
           alignItems: 'center',
           mt: [3, 3, 0],
+          color: 'text.off',
+          '& input::placeholder': {
+            color: 'text.off',
+            fontWeight: 'heading'
+          },
+          '&:focus-within': {
+            color: 'text.focused',
+          }
         }}
       >
         <Icon
@@ -117,9 +126,8 @@ function Filters_({ onSearch, search, onTagChange, tagFilter, defaultTag, sx }: 
           }}
           name="search"
           size="4"
-          color="muted"
         />
-        <Input variant="plain" onChange={onChange} value={search} placeholder="Search" />
+        <Input sx={{ fontWeight: 'heading' }} variant="plain" onChange={onChange} value={search} placeholder={searchPlaceholder} />
       </Flex>
     </Flex>
   )

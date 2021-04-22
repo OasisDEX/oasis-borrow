@@ -878,6 +878,7 @@ const oasisBaseTheme = {
     border: '#DDDEE6',
 
     text: {
+      focused: "#272940",
       muted: '#708390',
       off: '#686986',
       subtitle: '#787A9B',
@@ -1177,13 +1178,12 @@ const oasisBaseTheme = {
       textAlign: 'left',
       cursor: 'pointer',
       p: 0,
-      py: 3,
+      py: 4,
       ':hover': {
         opacity: 0.7,
       },
       ':focus': {
         outline: 'none',
-        textDecoration: 'underline',
       },
     },
     tableHeader: {
