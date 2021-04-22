@@ -37,7 +37,7 @@ function Filters_({ onSearch, search, onTagChange, tagFilter, defaultTag, sx }: 
   const selected = options.find((option) => option.value === tagFilter)
 
   return (
-    <Flex sx={{ ...sx, flexDirection: ['column', 'column', 'row'], mb: 2 }}>
+    <Flex sx={{ ...sx, flexDirection: ['column', 'column', 'row'], mb: 4 }}>
       <Box
         sx={{
           display: ['none', 'flex', 'flex'],
