@@ -1130,6 +1130,7 @@ const oasisBaseTheme = {
       borderRadius: 'round',
       lineHeight: 'buttons',
       color: 'text.contrast',
+      transition: 'background 0.2s ease-in',
       '&:hover': {
         bg: 'primaryEmphasis',
       },
