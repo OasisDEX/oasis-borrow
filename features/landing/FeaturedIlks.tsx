@@ -58,10 +58,18 @@ function CallToAction({ ilk }: CallToActionProps) {
     <AppLink
       sx={{
         overflow: 'hidden',
-        transition: 'transform 0.2s, box-shadow 0.2s',
+        transition: `
+          transform 0.5s cubic-bezier(0, 0.28, 0.45, 0.95),
+          box-shadow 0.5s cubic-bezier(0, 0.28, 0.45, 0.95)
+          `,
         borderRadius: 'large',
         boxShadow: 'surface',
         cursor: 'pointer',
+        '& .featured-ilk-bg-image': {
+          transition: `
+            transform 0.5s cubic-bezier(0, 0.28, 0.45, 0.95)
+          `,
+        },
         '&:hover, &:focus': {
           outline: 'none',
           transform: 'scale(1.02)',
