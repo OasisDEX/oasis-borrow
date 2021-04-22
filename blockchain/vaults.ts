@@ -67,7 +67,7 @@ export interface Vault {
   collateralizationRatioAtNextPrice: BigNumber
   liquidationPrice: BigNumber
   daiYieldFromLockedCollateral: BigNumber
-  isVaultAtRisk: Boolean
+  isVaultAtRisk: boolean
 }
 
 export function createController$(
@@ -123,10 +123,7 @@ export function createVault$(
               .dp(18, BigNumber.ROUND_DOWN)
             const debtOffset = offset.gt(zero) ? offset : zero
 
-            const backingCollateral = debt
-              .plus(debtOffset)
-              .times(liquidationRatio)
-              .div(currentPrice)
+            const backingCollateral = debt.plus(offset).times(liquidationRatio).div(currentPrice)
             const backingCollateralAtNextPrice = debt
               .times(liquidationRatio)
               .div(nextPrice || currentPrice)

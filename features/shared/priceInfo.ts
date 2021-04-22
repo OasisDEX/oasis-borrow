@@ -6,8 +6,8 @@ import { map, shareReplay, switchMap } from 'rxjs/operators'
 export interface PriceInfo {
   currentCollateralPrice: BigNumber
   currentEthPrice: BigNumber
-  nextCollateralPrice?: BigNumber
-  nextEthPrice?: BigNumber
+  nextCollateralPrice: BigNumber
+  nextEthPrice: BigNumber
 
   dateLastCollateralPrice?: Date
   dateNextCollateralPrice?: Date
@@ -48,8 +48,8 @@ export function createPriceInfo$(
         of({
           currentCollateralPrice,
           currentEthPrice,
-          nextCollateralPrice,
-          nextEthPrice,
+          nextCollateralPrice: nextCollateralPrice || currentCollateralPrice,
+          nextEthPrice: nextEthPrice || currentEthPrice,
 
           dateLastCollateralPrice,
           dateNextCollateralPrice,

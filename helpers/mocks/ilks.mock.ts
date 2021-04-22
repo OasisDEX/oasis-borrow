@@ -44,7 +44,7 @@ export function calcDebtScalingFactor(stabilityFee: BigNumber, seconds: number) 
 
 const defaultDebtFloor = new BigNumber('2000')
 export const defaultIlkDebt = new BigNumber('8000000')
-const defaultLiquidationRatio = new BigNumber('1.5')
+export const defaultLiquidationRatio = new BigNumber('1.5')
 const defaultCollateralPrice = new BigNumber('1000')
 const defaultIlk = 'WBTC-A'
 

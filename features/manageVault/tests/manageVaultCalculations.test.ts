@@ -62,4 +62,37 @@ describe('manageVaultCalculations', () => {
     expect(realFreeCollateral().lt(one)).to.be.true
     expect(realFreeCollateral().gt(currentMaxWithdrawAmount)).to.be.true
   })
+
+  it('should calculate maxGenerateAmount and account for accrued debt in system', () => {
+    const collateral = new BigNumber('150')
+    const debt = new BigNumber('5000')
+    const price = new BigNumber('100')
+    const state = mockManageVault({
+      vault: {
+        collateral,
+        debt,
+      },
+      priceInfo: {
+        collateralPrice: price,
+      },
+    })
+
+    expect(state().daiYieldFromTotalCollateral).to.deep.eq(new BigNumber('5000'))
+    const selectedMaxGenerateAmount = state().maxGenerateAmount
+    const originalDebtOffset = state().vault.debtOffset
+    expect(selectedMaxGenerateAmount.lt(state().daiYieldFromTotalCollateral)).to.be.true
+    expect(state().daiYieldFromTotalCollateral.minus(selectedMaxGenerateAmount)).to.deep.eq(
+      originalDebtOffset,
+    )
+
+    debtScalingFactor$.next(calcDebtScalingFactor(new BigNumber('1.045'), HOUR))
+
+    expect(state().daiYieldFromTotalCollateral.lt(new BigNumber('5000'))).to.be.true
+    expect(state().daiYieldFromTotalCollateral.gt(selectedMaxGenerateAmount)).to.be.true
+    expect(state().maxGenerateAmount.lt(selectedMaxGenerateAmount)).to.be.true
+    expect(state().daiYieldFromTotalCollateral.minus(state().maxGenerateAmount)).to.deep.eq(
+      state().vault.debtOffset,
+    )
+    expect(state().vault.debtOffset.gt(originalDebtOffset)).to.be.true
+  })
 })

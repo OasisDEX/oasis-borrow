@@ -4,6 +4,21 @@ import { zero } from 'helpers/zero'
 
 import { ManageVaultState, PAYBACK_ALL_BOUND } from './manageVault'
 
+interface CalcDaiYieldFromTotalCollateralProps {
+  price: BigNumber
+  debt: BigNumber
+  ratio: BigNumber
+  collateral: BigNumber
+}
+export function calcDaiYieldFromCollateral({
+  price,
+  ratio,
+  debt,
+  collateral,
+}: CalcDaiYieldFromTotalCollateralProps) {
+  return collateral.times(price).div(ratio).minus(debt)
+}
+
 export function applyManageVaultCalculations(state: ManageVaultState): ManageVaultState {
   const {
     depositAmount,
@@ -22,17 +37,19 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
   const maxDepositAmount = collateralBalance
   const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
 
-  const daiYieldFromTotalCollateral = lockedCollateral
-    .plus(depositAmount || zero)
-    .times(currentCollateralPrice)
-    .div(liquidationRatio)
-    .minus(debt.plus(debtOffset))
+  const daiYieldFromTotalCollateral = calcDaiYieldFromCollateral({
+    collateral: lockedCollateral.plus(depositAmount || zero),
+    price: currentCollateralPrice,
+    ratio: liquidationRatio,
+    debt: debt,
+  })
 
-  const daiYieldFromTotalCollateralAtNextPrice = lockedCollateral
-    .plus(depositAmount || zero)
-    .times(nextCollateralPrice || currentCollateralPrice)
-    .div(liquidationRatio)
-    .minus(debt.plus(debtOffset))
+  const daiYieldFromTotalCollateralAtNextPrice = calcDaiYieldFromCollateral({
+    collateral: lockedCollateral.plus(depositAmount || zero),
+    price: nextCollateralPrice,
+    ratio: liquidationRatio,
+    debt: debt,
+  })
 
   const maxGenerateAmountCurrentPrice = daiYieldFromTotalCollateral.gt(ilkDebtAvailable)
     ? ilkDebtAvailable
@@ -45,8 +62,10 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
   const maxGenerateAmount = BigNumber.minimum(
     maxGenerateAmountCurrentPrice,
     maxGenerateAmountNextPrice,
-  ).gt(zero)
-    ? BigNumber.minimum(maxGenerateAmountCurrentPrice, maxGenerateAmountNextPrice)
+  )
+    .minus(debtOffset)
+    .gt(zero)
+    ? BigNumber.minimum(maxGenerateAmountCurrentPrice, maxGenerateAmountNextPrice).minus(debtOffset)
     : zero
 
   const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt

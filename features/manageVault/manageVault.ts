@@ -160,9 +160,9 @@ export type ManageVaultStage =
 export interface MutableManageVaultState {
   stage: ManageVaultStage
   originalEditingStage: ManageVaultEditingStage
-  showDepositAndGenerateOption: Boolean
-  showPaybackAndWithdrawOption: Boolean
-  showIlkDetails: Boolean
+  showDepositAndGenerateOption: boolean
+  showPaybackAndWithdrawOption: boolean
+  showIlkDetails: boolean
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
   withdrawAmount?: BigNumber
@@ -195,12 +195,12 @@ interface ManageVaultCalculations {
   afterCollateralizationRatioAtNextPrice: BigNumber
   afterFreeCollateral: BigNumber
   afterMaxGenerateAmountCurrentPrice: BigNumber
-  depositAndWithdrawAmountsEmpty: Boolean
-  generateAndPaybackAmountsEmpty: Boolean
+  depositAndWithdrawAmountsEmpty: boolean
+  generateAndPaybackAmountsEmpty: boolean
 }
 
-interface ManageVaultEnvironment {
-  account: string | undefined
+export interface ManageVaultEnvironment {
+  account?: string
   accountIsController: boolean
   proxyAddress?: string
   collateralAllowance?: BigNumber
