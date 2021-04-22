@@ -144,6 +144,7 @@ const hardhat: NetworkConfig = {
   label: 'Hardhat',
   infuraUrl: `http://localhost:8545`,
   infuraUrlWS: `ws://localhost:8545`,
+  cacheApi: 'http://localhost:3001/v1',
 }
 
 export const networksById = keyBy([main, kovan, hardhat], 'id')
