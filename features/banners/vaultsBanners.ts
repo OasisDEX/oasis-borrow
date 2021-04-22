@@ -5,7 +5,7 @@ import { PriceInfo } from 'features/shared/priceInfo'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import moment from 'moment'
 import { combineLatest, Observable, of } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { map, startWith, switchMap } from 'rxjs/operators'
 
 interface VaultBannersState {
   banner?: 'ownership' | 'liquidating' | 'liquidated'
@@ -64,7 +64,10 @@ export function createVaultsBanners$(
 ): Observable<VaultBannersState> {
   return context$.pipe(
     switchMap((context) => {
-      return combineLatest(vault$(id), vaultHistory$(id)).pipe(
+      return combineLatest(
+        vault$(id),
+        vaultHistory$(id).pipe(startWith([] as VaultHistoryEvent[])),
+      ).pipe(
         switchMap(([{ token, liquidationPrice, controller, unlockedCollateral }, events]) => {
           const auctionsStarted = events
             .filter((event) => onlyAuctionStartedEvents(event) && eventsFromLastWeek(event))
