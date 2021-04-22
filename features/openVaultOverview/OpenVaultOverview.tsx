@@ -152,6 +152,7 @@ export function OpenVaultOverview({ vaultsOverview, accountDetails, context }: P
         state={{ ...ilksWithFilters.filters, isReadonly: connectedAccount === undefined }}
         columns={ilksColumns}
         noResults={<Box>{t('no-results')}</Box>}
+        deriveRowProps={(row) => ({ href: `/vaults/open/${row.ilk}` })}
       />
     </Grid>
   )

@@ -121,6 +121,7 @@ function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
       state={filters}
       columns={vaultsColumns}
       noResults={<Box>{t('no-results')}</Box>}
+      deriveRowProps={(row) => ({ href: `/${row.id}` })}
     />
   )
 }

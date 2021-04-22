@@ -1,7 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Direction } from 'helpers/form'
+import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
-import React, { HTMLProps, memo, ReactNode } from 'react'
+import React, { HTMLProps, memo, ReactNode, useCallback, useContext } from 'react'
 import { Box, Button, Container, SxStyleProp } from 'theme-ui'
 
 export interface ColumnDef<T, S> {
@@ -16,6 +17,7 @@ interface TableProps<T extends Record<K, string>, K extends keyof T, S> {
   columns: ColumnDef<T, S>[]
   primaryKey: K
   noResults?: React.ReactNode
+  deriveRowProps?: (row: T) => RowProps
 }
 
 export function TableContainer({
@@ -44,7 +46,19 @@ export function TableContainer({
   )
 }
 
-function Row({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
+interface RowProps {
+  href?: string
+}
+
+function Row({ children, sx, href }: React.PropsWithChildren<{ sx?: SxStyleProp } & RowProps>) {
+  const { push } = useRedirect()
+
+  const redirect = useCallback(() => {
+    if (href !== undefined) {
+      push(href)
+    }
+  }, [href])
+
   return (
     <Box
       sx={{
@@ -58,14 +72,20 @@ function Row({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
           transform 0.2s ease-in-out,
           box-shadow 0.2s ease-in-out
           `,
-        cursor: 'pointer',
+        cursor: href ? 'pointer' : 'initial',
         ...sx,
-        '&:hover': {
-          boxShadow: ['table', 'table_hovered'],
-          transform: ['none', 'scaleX(0.99)']
-        }
+        ...(
+          href ? {
+            '&:hover': {
+              boxShadow: ['table', 'table_hovered'],
+              transform: ['none', 'scaleX(0.99)']
+            }
+          } : {}
+        )
+
       }}
       as="tr"
+      onClick={redirect}
     >
       {children}
     </Box>
@@ -115,10 +135,11 @@ function Header({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>)
   )
 }
 
-const TableRow = memo(({ row, columns }: { row: any; columns: ColumnDef<any, any>[] }) => {
+const TableRow = memo(<T extends {}>({ row, columns, rowProps }: { row: T; columns: ColumnDef<any, any>[], rowProps?: RowProps }) => {
   const { t } = useTranslation()
+
   return (
-    <Row>
+    <Row {...(rowProps || {})}>
       {columns.map(({ cell: Content, headerLabel }, idx) => (
         <Cell
           sx={{
@@ -147,6 +168,7 @@ export function Table<T extends Record<K, string>, K extends keyof T, S>({
   primaryKey,
   state,
   noResults,
+  deriveRowProps,
 }: TableProps<T, K, S>) {
   const { t } = useTranslation()
 
@@ -167,7 +189,7 @@ export function Table<T extends Record<K, string>, K extends keyof T, S>({
           </Cell>
         </Row>
       ) : (
-        data.map((row) => <TableRow key={row[primaryKey]} row={row} columns={columns} />)
+        data.map((row) => <TableRow rowProps={deriveRowProps ? deriveRowProps(row) : undefined} key={row[primaryKey]} row={row} columns={columns} />)
       )}
     </TableContainer>
   )
