@@ -1,15 +1,6 @@
-import { keyframes } from '@emotion/core'
 import React from 'react'
 import { Box } from 'theme-ui'
-
-export const fadeOut = keyframes({
-  from: {
-    opacity: 1,
-  },
-  to: {
-    opacity: 0,
-  },
-})
+import { fadeOut } from './keyframes'
 
 export function Background() {
   return (

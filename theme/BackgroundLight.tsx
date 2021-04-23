@@ -1,15 +1,7 @@
-import { keyframes } from '@emotion/core'
 import React from 'react'
 import { Box } from 'theme-ui'
+import { fadeOut } from './keyframes'
 
-export const fadeOut = keyframes({
-  from: {
-    opacity: 1,
-  },
-  to: {
-    opacity: 0,
-  },
-})
 
 const pathTransform: React.CSSProperties = {
   transform: 'scale(1, -1) translateY(-60%)',

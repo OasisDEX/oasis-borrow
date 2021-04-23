@@ -1,4 +1,3 @@
-import { keyframes } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
@@ -13,28 +12,9 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
+import { slideIn, fadeIn } from 'theme/keyframes'
 
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
-
-const slideIn = keyframes({
-  from: {
-    top: '60px',
-    opacity: 0,
-  },
-  to: {
-    top: 0,
-    opacity: 1,
-  },
-})
-
-const fadeIn = keyframes({
-  from: {
-    opacity: 0,
-  },
-  to: {
-    opacity: 1,
-  },
-})
 
 export function TokenSymbol({
   token,
