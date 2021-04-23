@@ -72,7 +72,9 @@ export function LedgerAccountSelection({
   if (error || web3Context.status === 'error') {
     return (
       <Grid gap={4} sx={{ textAlign: 'center', margin: '0 auto' }}>
-        <Heading variant="header2" as="h1">{t('ledger-select-address')}</Heading>
+        <Heading variant="header2" as="h1">
+          {t('ledger-select-address')}
+        </Heading>
         <Button onClick={cancel} variant="textual">
           {t('ledger-error')}
         </Button>

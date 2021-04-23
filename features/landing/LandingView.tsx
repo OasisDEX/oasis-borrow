@@ -12,7 +12,7 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
-import { slideIn, fadeIn } from 'theme/keyframes'
+import { fadeIn, slideIn } from 'theme/keyframes'
 
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
 
@@ -179,7 +179,11 @@ function Expandable({ question, answer, isOpen, toggle }: ExpandableProps) {
         },
       }}
     >
-      <Button sx={{ position: 'relative', lineHeight: '1rem' }} variant="expandable" onClick={toggle}>
+      <Button
+        sx={{ position: 'relative', lineHeight: '1rem' }}
+        variant="expandable"
+        onClick={toggle}
+      >
         {question}
         {
           <Box
@@ -319,10 +323,10 @@ export function LandingView() {
           sx={
             landing !== undefined
               ? {
-                ...fadeInAnimation,
-                animationDirection: 'backwards',
-                animationFillMode: 'backwards',
-              }
+                  ...fadeInAnimation,
+                  animationDirection: 'backwards',
+                  animationFillMode: 'backwards',
+                }
               : {}
           }
         />

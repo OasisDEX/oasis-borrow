@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Direction } from 'helpers/form'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
-import React, { HTMLProps, memo, ReactNode, useCallback, useContext } from 'react'
+import React, { HTMLProps, memo, ReactNode, useCallback } from 'react'
 import { Box, Button, Container, SxStyleProp } from 'theme-ui'
 
 export interface ColumnDef<T, S> {
@@ -74,15 +74,14 @@ function Row({ children, sx, href }: React.PropsWithChildren<{ sx?: SxStyleProp 
           `,
         cursor: href ? 'pointer' : 'initial',
         ...sx,
-        ...(
-          href ? {
-            '&:hover': {
-              boxShadow: ['table', 'table_hovered'],
-              transform: ['none', 'scaleX(0.99)']
+        ...(href
+          ? {
+              '&:hover': {
+                boxShadow: ['table', 'table_hovered'],
+                transform: ['none', 'scaleX(0.99)'],
+              },
             }
-          } : {}
-        )
-
+          : {}),
       }}
       as="tr"
       onClick={redirect}
@@ -135,32 +134,42 @@ function Header({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>)
   )
 }
 
-const TableRow = memo(<T extends {}>({ row, columns, rowProps }: { row: T; columns: ColumnDef<any, any>[], rowProps?: RowProps }) => {
-  const { t } = useTranslation()
+const TableRow = memo(
+  <T extends {}>({
+    row,
+    columns,
+    rowProps,
+  }: {
+    row: T
+    columns: ColumnDef<any, any>[]
+    rowProps?: RowProps
+  }) => {
+    const { t } = useTranslation()
 
-  return (
-    <Row {...(rowProps || {})}>
-      {columns.map(({ cell: Content, headerLabel }, idx) => (
-        <Cell
-          sx={{
-            display: ['flex', 'table-cell'],
-            justifyContent: 'space-between',
-            ':before': {
-              variant: 'text.paragraph2',
-              fontWeight: 'semiBold',
-              color: 'text.muted',
-              content: `"${t(headerLabel)}"`,
-              display: ['block', 'none'],
-            },
-          }}
-          key={idx}
-        >
-          <Content {...row} />
-        </Cell>
-      ))}
-    </Row>
-  )
-})
+    return (
+      <Row {...(rowProps || {})}>
+        {columns.map(({ cell: Content, headerLabel }, idx) => (
+          <Cell
+            sx={{
+              display: ['flex', 'table-cell'],
+              justifyContent: 'space-between',
+              ':before': {
+                variant: 'text.paragraph2',
+                fontWeight: 'semiBold',
+                color: 'text.muted',
+                content: `"${t(headerLabel)}"`,
+                display: ['block', 'none'],
+              },
+            }}
+            key={idx}
+          >
+            <Content {...row} />
+          </Cell>
+        ))}
+      </Row>
+    )
+  },
+)
 
 export function Table<T extends Record<K, string>, K extends keyof T, S>({
   data,
@@ -189,7 +198,14 @@ export function Table<T extends Record<K, string>, K extends keyof T, S>({
           </Cell>
         </Row>
       ) : (
-        data.map((row) => <TableRow rowProps={deriveRowProps ? deriveRowProps(row) : undefined} key={row[primaryKey]} row={row} columns={columns} />)
+        data.map((row) => (
+          <TableRow
+            rowProps={deriveRowProps ? deriveRowProps(row) : undefined}
+            key={row[primaryKey]}
+            row={row}
+            columns={columns}
+          />
+        ))
       )}
     </TableContainer>
   )

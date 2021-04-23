@@ -1,5 +1,6 @@
 import React from 'react'
 import { Box } from 'theme-ui'
+
 import { fadeOut } from './keyframes'
 
 export function Background() {

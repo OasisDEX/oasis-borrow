@@ -76,14 +76,19 @@ export function AccountButton() {
           '&:hover, &:focus ': {
             bg: 'ghost',
             '& svg': {
-              left: '4px'
-            }
-          }
+              left: '4px',
+            },
+          },
         }}
         href="/connect"
-        variant="nav">
+        variant="nav"
+      >
         {t('connect-wallet-button')}
-        <Icon name="arrow_right" size={14} sx={{ ml: 1, position: 'relative', transition: 'ease-in-out 0.2s', left: 0 }} />
+        <Icon
+          name="arrow_right"
+          size={14}
+          sx={{ ml: 1, position: 'relative', transition: 'ease-in-out 0.2s', left: 0 }}
+        />
       </AppLink>
     )
   }
@@ -118,11 +123,11 @@ export function AccountButton() {
           borderStyle: 'solid',
           borderColor: '#D8E0E300',
           '&:hover, &:focus-visible': {
-            borderColor: '#D8E0E3FF'
+            borderColor: '#D8E0E3FF',
           },
           ':focus': {
-            outline: 'none'
-          }
+            outline: 'none',
+          },
         }}
         onClick={() => openModal(AccountModal)}
       >

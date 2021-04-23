@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box } from 'theme-ui'
-import { fadeOut } from './keyframes'
 
+import { fadeOut } from './keyframes'
 
 const pathTransform: React.CSSProperties = {
   transform: 'scale(1, -1) translateY(-60%)',

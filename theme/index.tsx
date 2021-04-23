@@ -878,7 +878,7 @@ const oasisBaseTheme = {
     border: '#DDDEE6',
 
     text: {
-      focused: "#272940",
+      focused: '#272940',
       muted: '#708390',
       off: '#686986',
       subtitle: '#787A9B',
@@ -1179,12 +1179,12 @@ const oasisBaseTheme = {
       borderWidth: '1px',
       borderStyle: 'solid',
       borderColor: 'light',
-      "&:focus": {
-        outline: 'none'
+      '&:focus': {
+        outline: 'none',
       },
-      "&:focus-visible": {
-        boxShadow: 'surface'
-      }
+      '&:focus-visible': {
+        boxShadow: 'surface',
+      },
     },
     expandable: {
       variant: 'text.header3',
@@ -1244,7 +1244,7 @@ const oasisBaseTheme = {
       transition: 'opacity ease-in 0.2s',
       '&:hover': {
         opacity: 0.7,
-      }
+      },
     },
   },
   links: {
@@ -1275,7 +1275,7 @@ const oasisBaseTheme = {
         outline: 'none',
       },
       '&:hover, &:focus-visible': {
-        color: 'lavender'
+        color: 'lavender',
       },
     },
     outline: {

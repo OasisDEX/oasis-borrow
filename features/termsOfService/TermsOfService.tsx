@@ -116,7 +116,9 @@ function TOSWaiting4Acceptance({ stage, acceptTOS, updated }: TermsAcceptanceSta
                 }),
               }}
             >
-              {checked && <Icon sx={{ animation: `${fadeIn} 0.2s` }} name="checkmark" color="onSuccess" />}
+              {checked && (
+                <Icon sx={{ animation: `${fadeIn} 0.2s` }} name="checkmark" color="onSuccess" />
+              )}
             </Flex>
             <Text ml={3} sx={{ flex: 1, fontWeight: '400', fontSize: '14px' }}>
               {t('tos-read')}

@@ -75,9 +75,9 @@ function CallToAction({ ilk }: CallToActionProps) {
           transform: 'scale(1.02)',
           boxShadow: 'surface_hovered',
           '& .featured-ilk-bg-image': {
-            transform: 'scale(1.2)'
-          }
-        }
+            transform: 'scale(1.2)',
+          },
+        },
       }}
       href={`/vaults/open/${ilk.ilk}`}
     >
