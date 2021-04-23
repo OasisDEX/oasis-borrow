@@ -1152,6 +1152,14 @@ const oasisBaseTheme = {
       px: 4,
       py: 2,
     },
+    outlineSquare: {
+      variant: 'text.paragraph2',
+      background: 'none',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: 'light',
+      borderRadius: 'mediumLarge',
+    },
     secondary: {
       variant: 'text.paragraph3',
       whiteSpace: 'nowrap',
@@ -1230,9 +1238,13 @@ const oasisBaseTheme = {
     textual: {
       variant: 'text.paragraph3',
       fontWeight: 'semiBold',
-      background: 'none',
       color: 'link',
       cursor: 'pointer',
+      background: 'none',
+      transition: 'opacity ease-in 0.2s',
+      '&:hover': {
+        opacity: 0.7,
+      }
     },
   },
   links: {
