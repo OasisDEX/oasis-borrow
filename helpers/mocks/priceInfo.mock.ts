@@ -37,7 +37,7 @@ export function mockPriceInfo$({
   const ethPriceInfo$ = of({
     currentPrice: ethPrice,
     isStaticPrice: false,
-    nextPrice: nextEthPrice,
+    nextPrice: nextEthPrice || ethPrice,
     currentPriceUpdate: lastHour,
     nextPriceUpdate: nextHour,
     percentageChange: ethChangePercentage,
@@ -45,8 +45,8 @@ export function mockPriceInfo$({
   const collateralPriceInfo$ = of({
     currentPrice: collateralPrice,
     isStaticPrice: isStatic,
+    nextPrice: nextCollateralPrice || collateralPrice,
     ...(!isStatic && {
-      nextPrice: nextCollateralPrice,
       currentPriceUpdate: lastHour,
       nextPriceUpdate: nextHour,
       percentageChange: collateralChangePercentage,
