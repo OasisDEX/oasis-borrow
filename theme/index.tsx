@@ -1223,6 +1223,7 @@ const oasisBaseTheme = {
       boxSizing: 'border-box',
       border: '1px solid transparent',
       px: 4,
+      transition: 'border-color ease-in 0.3s, color ease-in 0.3s',
       font: '',
       ':focus': {
         outline: 'none',
