@@ -48,8 +48,8 @@ export function createPriceInfo$(
         of({
           currentCollateralPrice,
           currentEthPrice,
-          nextCollateralPrice: nextCollateralPrice || currentCollateralPrice,
-          nextEthPrice: nextEthPrice || currentEthPrice,
+          nextCollateralPrice,
+          nextEthPrice,
 
           dateLastCollateralPrice,
           dateNextCollateralPrice,

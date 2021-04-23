@@ -84,9 +84,7 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     : lockedCollateral
 
   const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
-  const afterLockedCollateralUSDAtNextPrice = afterLockedCollateral.times(
-    nextCollateralPrice || currentCollateralPrice,
-  )
+  const afterLockedCollateralUSDAtNextPrice = afterLockedCollateral.times(nextCollateralPrice)
 
   const afterDebt = generateAmount
     ? debt.plus(generateAmount)

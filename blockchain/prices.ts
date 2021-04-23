@@ -65,7 +65,7 @@ export const tokenPricesInUSD$: Observable<Ticker> = every10Seconds$.pipe(
 
 export interface OraclePriceData {
   currentPrice: BigNumber
-  nextPrice?: BigNumber
+  nextPrice: BigNumber
   currentPriceUpdate?: Date
   nextPriceUpdate?: Date
   priceUpdateInterval?: number
@@ -138,7 +138,7 @@ export function createOraclePriceData$(
 
               return of({
                 currentPrice,
-                nextPrice,
+                nextPrice: nextPrice || currentPrice,
                 currentPriceUpdate,
                 nextPriceUpdate,
                 priceUpdateInterval,

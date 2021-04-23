@@ -117,20 +117,18 @@ export function createVault$(
 
             const debt = debtScalingFactor.times(normalizedDebt)
 
-            const offset = debt
+            const debtOffset = debt
               .times(one.plus(stabilityFee.div(SECONDS_PER_YEAR)).pow(HOUR * 5))
               .minus(debt)
               .dp(18, BigNumber.ROUND_DOWN)
-            const debtOffset = offset.gt(zero) ? offset : zero
 
-            const backingCollateral = debt.plus(offset).times(liquidationRatio).div(currentPrice)
-            const backingCollateralAtNextPrice = debt
+            const backingCollateral = debt
+              .plus(debtOffset)
               .times(liquidationRatio)
-              .div(nextPrice || currentPrice)
+              .div(currentPrice)
+            const backingCollateralAtNextPrice = debt.times(liquidationRatio).div(nextPrice)
             const backingCollateralUSD = backingCollateral.times(currentPrice)
-            const backingCollateralUSDAtNextPrice = backingCollateralAtNextPrice.times(
-              nextPrice || currentPrice,
-            )
+            const backingCollateralUSDAtNextPrice = backingCollateralAtNextPrice.times(nextPrice)
 
             const freeCollateral = backingCollateral.gte(collateral)
               ? zero
@@ -140,9 +138,7 @@ export function createVault$(
               : collateral.minus(backingCollateralAtNextPrice)
 
             const freeCollateralUSD = freeCollateral.times(currentPrice)
-            const freeCollateralUSDAtNextPrice = freeCollateralAtNextPrice.times(
-              nextPrice || currentPrice,
-            )
+            const freeCollateralUSDAtNextPrice = freeCollateralAtNextPrice.times(nextPrice)
 
             const collateralizationRatio = debt.isZero() ? zero : collateralUSD.div(debt)
             const collateralizationRatioAtNextPrice = debt.isZero()

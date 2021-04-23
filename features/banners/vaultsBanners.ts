@@ -15,7 +15,7 @@ interface VaultBannersState {
   id: BigNumber
   hasBeenLiquidated: boolean
   liquidationPrice: BigNumber
-  nextCollateralPrice?: BigNumber
+  nextCollateralPrice: BigNumber
   unlockedCollateral: BigNumber
   dateNextCollateralPrice?: Date | undefined
 }
@@ -30,7 +30,7 @@ function assignBanner(state: VaultBannersState): VaultBannersState {
     }
   }
 
-  if (nextCollateralPrice?.lt(liquidationPrice)) {
+  if (nextCollateralPrice.lt(liquidationPrice)) {
     return {
       ...state,
       banner: 'liquidating',
