@@ -7,6 +7,7 @@ import { protoTxHelpers, TxHelpers } from 'components/AppContext'
 import { createManageVault$, ManageVaultState } from 'features/manageVault/manageVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
+import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
@@ -72,16 +73,6 @@ export function mockManageVault$({
     })
   const txHelpers$ = _txHelpers$ || of(protoTxHelpers)
 
-  const _oraclePriceData$ = priceInfo$().pipe(
-    switchMap(({ currentCollateralPrice, nextCollateralPrice, isStaticCollateralPrice }) =>
-      of({
-        currentPrice: currentCollateralPrice,
-        nextPrice: nextCollateralPrice || currentCollateralPrice,
-        isStaticPrice: isStaticCollateralPrice,
-      }),
-    ),
-  )
-
   function priceInfo$() {
     return _priceInfo$ || mockPriceInfo$({ ...priceInfo, token })
   }
@@ -117,11 +108,15 @@ export function mockManageVault$({
   function vault$() {
     return (
       _vault$ ||
-      mockVault$({
-        _oraclePriceData$,
-        _ilkData$: ilkData$(),
-        ...vault,
-      })
+      priceInfo$().pipe(
+        switchMap((priceInfo) => {
+          return mockVault$({
+            _ilkData$: ilkData$(),
+            priceInfo,
+            ...vault,
+          })
+        }),
+      )
     )
   }
 
@@ -136,4 +131,8 @@ export function mockManageVault$({
     vault$,
     MOCK_VAULT_ID,
   )
+}
+
+export function mockManageVault(props: MockManageVaultProps = {}) {
+  return getStateUnpacker(mockManageVault$(props))
 }

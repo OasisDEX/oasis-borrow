@@ -122,8 +122,9 @@ export function OpenVaultDetails(props: OpenVaultState) {
   const newPriceIn = moment(dateNextCollateralPrice).diff(Date.now(), 'minutes')
 
   const nextPriceDiff = nextCollateralPrice
-    ? nextCollateralPrice.minus(currentCollateralPrice).div(currentCollateralPrice).times(100)
-    : zero
+    .minus(currentCollateralPrice)
+    .div(currentCollateralPrice)
+    .times(100)
 
   const priceChangeColor = nextPriceDiff.isZero()
     ? 'text.muted'
@@ -180,33 +181,31 @@ export function OpenVaultDetails(props: OpenVaultState) {
             </Text>
           </Box>
 
-          {nextCollateralPrice && (
-            <Flex sx={{ alignItems: 'flex-start' }}>
-              <Heading variant="subheader" as="h3">
-                <Box sx={{ mr: 2 }}>
-                  {newPriceIn < 2 ? (
-                    <Trans
-                      i18nKey="vault.next-price-any-time"
-                      count={newPriceIn}
-                      components={[<br />]}
-                    />
-                  ) : (
-                    <Trans i18nKey="vault.next-price" count={newPriceIn} components={[<br />]} />
-                  )}
-                </Box>
-              </Heading>
-              <Flex
-                variant="paragraph2"
-                sx={{ fontWeight: 'semiBold', alignItems: 'center', color: priceChangeColor }}
-              >
-                <Text>${formatAmount(nextCollateralPrice || zero, 'USD')}</Text>
-                <Text sx={{ ml: 2 }}>({formatPercent(nextPriceDiff, { precision: 2 })})</Text>
-                {nextPriceDiff.isZero() ? null : (
-                  <Icon sx={{ ml: 2 }} name={nextPriceDiff.gt(zero) ? 'increase' : 'decrease'} />
+          <Flex sx={{ alignItems: 'flex-start' }}>
+            <Heading variant="subheader" as="h3">
+              <Box sx={{ mr: 2 }}>
+                {newPriceIn < 2 ? (
+                  <Trans
+                    i18nKey="vault.next-price-any-time"
+                    count={newPriceIn}
+                    components={[<br />]}
+                  />
+                ) : (
+                  <Trans i18nKey="vault.next-price" count={newPriceIn} components={[<br />]} />
                 )}
-              </Flex>
+              </Box>
+            </Heading>
+            <Flex
+              variant="paragraph2"
+              sx={{ fontWeight: 'semiBold', alignItems: 'center', color: priceChangeColor }}
+            >
+              <Text>${formatAmount(nextCollateralPrice, 'USD')}</Text>
+              <Text sx={{ ml: 2 }}>({formatPercent(nextPriceDiff, { precision: 2 })})</Text>
+              {nextPriceDiff.isZero() ? null : (
+                <Icon sx={{ ml: 2 }} name={nextPriceDiff.gt(zero) ? 'increase' : 'decrease'} />
+              )}
             </Flex>
-          )}
+          </Flex>
         </Box>
       )}
       <Box sx={{ textAlign: 'right', mt: 6 }}>
