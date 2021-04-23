@@ -68,6 +68,7 @@ export interface Vault {
   liquidationPrice: BigNumber
   daiYieldFromLockedCollateral: BigNumber
   isVaultAtRisk: boolean
+  isVaultUnderCollaterilizedAtNextPrice: boolean
 }
 
 export function createController$(
@@ -164,9 +165,12 @@ export function createVault$(
               .div(liquidationRatio)
               .minus(debt)
 
-            const isVaultAtRisk = debt.isZero()
-              ? false
-              : collateralizationRatio.lt(collateralizationDangerThreshold)
+            const isVaultAtRisk =
+              !debt.isZero() && collateralizationRatio.lt(collateralizationDangerThreshold)
+
+            const isVaultUnderCollaterilizedAtNextPrice =
+              !collateralizationRatioAtNextPrice.isZero() &&
+              collateralizationRatioAtNextPrice.lt(liquidationRatio)
 
             return of({
               id,
@@ -202,6 +206,7 @@ export function createVault$(
 
               daiYieldFromLockedCollateral,
               isVaultAtRisk,
+              isVaultUnderCollaterilizedAtNextPrice,
             })
           },
         ),
