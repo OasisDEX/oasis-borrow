@@ -50,32 +50,34 @@ export function manageVaultStory({
     useEffect(() => {
       const subscription = obs$
         .pipe(first())
-        .subscribe(({ injectStateOverride, priceInfo: { currentCollateralPrice } }) => {
-          const newState: Partial<MutableManageVaultState> = {
-            ...otherState,
-            ...(stage && { stage }),
-            ...(depositAmount && {
-              depositAmount,
-              depositAmountUSD: depositAmount.times(currentCollateralPrice),
-              showDepositAndGenerateOption: stage === 'collateralEditing',
-            }),
-            ...(withdrawAmount && {
-              withdrawAmount,
-              withdrawAmountUSD: withdrawAmount.times(currentCollateralPrice),
-              showPaybackAndWithdrawOption: stage === 'daiEditing',
-            }),
-            ...(generateAmount && {
-              generateAmount,
-              showDepositAndGenerateOption: stage === 'collateralEditing',
-            }),
-            ...(paybackAmount && {
-              paybackAmount,
-              showPaybackAndWithdrawOption: stage === 'daiEditing',
-            }),
-          }
+        .subscribe(
+          ({ injectStateOverride, accountIsController, priceInfo: { currentCollateralPrice } }) => {
+            const newState: Partial<MutableManageVaultState> = {
+              ...otherState,
+              ...(stage && { stage }),
+              ...(depositAmount && {
+                depositAmount,
+                depositAmountUSD: depositAmount.times(currentCollateralPrice),
+                showDepositAndGenerateOption: stage === 'collateralEditing',
+              }),
+              ...(withdrawAmount && {
+                withdrawAmount,
+                withdrawAmountUSD: withdrawAmount.times(currentCollateralPrice),
+                showPaybackAndWithdrawOption: stage === 'daiEditing' && accountIsController,
+              }),
+              ...(generateAmount && {
+                generateAmount,
+                showDepositAndGenerateOption: stage === 'collateralEditing',
+              }),
+              ...(paybackAmount && {
+                paybackAmount,
+                showPaybackAndWithdrawOption: stage === 'daiEditing' && accountIsController,
+              }),
+            }
 
-          injectStateOverride(newState || {})
-        })
+            injectStateOverride(newState || {})
+          },
+        )
       return subscription.unsubscribe()
     }, [])
 
