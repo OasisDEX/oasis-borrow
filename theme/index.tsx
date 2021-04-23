@@ -1267,14 +1267,15 @@ const oasisBaseTheme = {
       cursor: 'pointer',
       display: 'inline-block',
       fontWeight: 'semiBold',
+      transition: 'color 0.2s',
       '&, &:visited': {
         textDecoration: 'none',
       },
       '&:focus': {
         outline: 'none',
       },
-      '&:focus-visible': {
-        textDecoration: 'underline',
+      '&:hover, &:focus-visible': {
+        color: 'lavender'
       },
     },
     outline: {

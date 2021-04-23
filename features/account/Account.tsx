@@ -105,13 +105,21 @@ export function AccountButton() {
       <Button
         variant="secondary"
         sx={{
+          boxSizing: 'border-box',
           minWidth: buttonMinWidth,
           zIndex: 1,
           background: 'white',
-          boxShadow: 'surface',
+          boxShadow: 'table_hovered',
           p: 1,
           display: 'flex',
           alignItems: 'center',
+          transition: 'border-color ease-in 0.2s',
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: '#D8E0E300',
+          '&:hover': {
+            borderColor: '#D8E0E3FF'
+          }
         }}
         onClick={() => openModal(AccountModal)}
       >
