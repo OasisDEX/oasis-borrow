@@ -7,21 +7,18 @@ import moment from 'moment'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, startWith, switchMap } from 'rxjs/operators'
 
-interface VaultBannersState {
-  banner?: 'ownership' | 'liquidating' | 'liquidated'
-  controller: string
-  account?: string
-  token: string
-  id: BigNumber
-  hasBeenLiquidated: boolean
-  liquidationPrice: BigNumber
-  nextCollateralPrice: BigNumber
-  unlockedCollateral: BigNumber
-  dateNextCollateralPrice?: Date | undefined
-}
+type VaultBannersState = Pick<
+  Vault,
+  'id' | 'token' | 'controller' | 'isVaultUnderCollaterilizedAtNextPrice' | 'unlockedCollateral'
+> &
+  Pick<PriceInfo, 'dateNextCollateralPrice'> & {
+    account?: string
+    banner?: 'ownership' | 'liquidating' | 'liquidated'
+    hasBeenLiquidated: boolean
+  }
 
 function assignBanner(state: VaultBannersState): VaultBannersState {
-  const { hasBeenLiquidated, nextCollateralPrice, liquidationPrice, account, controller } = state
+  const { hasBeenLiquidated, isVaultUnderCollaterilizedAtNextPrice, account, controller } = state
 
   if (hasBeenLiquidated) {
     return {
@@ -30,7 +27,7 @@ function assignBanner(state: VaultBannersState): VaultBannersState {
     }
   }
 
-  if (nextCollateralPrice.lt(liquidationPrice)) {
+  if (isVaultUnderCollaterilizedAtNextPrice) {
     return {
       ...state,
       banner: 'liquidating',
@@ -68,40 +65,51 @@ export function createVaultsBanners$(
         vault$(id),
         vaultHistory$(id).pipe(startWith([] as VaultHistoryEvent[])),
       ).pipe(
-        switchMap(([{ token, liquidationPrice, controller, unlockedCollateral }, events]) => {
-          const auctionsStarted = events
-            .filter((event) => onlyAuctionStartedEvents(event) && eventsFromLastWeek(event))
-            .map((event) => new Date(event.timestamp).getTime())
-            .sort((prev, next) => {
-              if (prev > next) return -1
-              if (prev < next) return 1
-              return 0
-            })
+        switchMap(
+          ([
+            {
+              token,
+              liquidationPrice,
+              controller,
+              unlockedCollateral,
+              isVaultUnderCollaterilizedAtNextPrice,
+            },
+            events,
+          ]) => {
+            const auctionsStarted = events
+              .filter((event) => onlyAuctionStartedEvents(event) && eventsFromLastWeek(event))
+              .map((event) => new Date(event.timestamp).getTime())
+              .sort((prev, next) => {
+                if (prev > next) return -1
+                if (prev < next) return 1
+                return 0
+              })
 
-          const state = {
-            token,
-            id,
-            liquidationPrice,
-            controller,
-            unlockedCollateral,
-            hasBeenLiquidated: auctionsStarted.length > 0,
-          }
+            const state = {
+              token,
+              id,
+              liquidationPrice,
+              controller,
+              unlockedCollateral,
+              hasBeenLiquidated: auctionsStarted.length > 0,
+              isVaultUnderCollaterilizedAtNextPrice,
+            }
 
-          if (context.status !== 'connected') {
-            return of(state as VaultBannersState)
-          }
+            if (context.status !== 'connected') {
+              return of(state as VaultBannersState)
+            }
 
-          return priceInfo$(token).pipe(
-            map(({ nextCollateralPrice, dateNextCollateralPrice }) => {
-              return {
-                ...state,
-                account: context.account,
-                nextCollateralPrice,
-                dateNextCollateralPrice,
-              }
-            }),
-          )
-        }),
+            return priceInfo$(token).pipe(
+              map(({ dateNextCollateralPrice }) => {
+                return {
+                  ...state,
+                  account: context.account,
+                  dateNextCollateralPrice,
+                }
+              }),
+            )
+          },
+        ),
         map(assignBanner),
       )
     }),
