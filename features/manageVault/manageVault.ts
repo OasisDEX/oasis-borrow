@@ -13,6 +13,7 @@ import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
 import { applyManageVaultCalculations } from './manageVaultCalculations'
+import { applyManageVaultConditions } from './manageVaultConditions'
 import { applyManageVaultEnvironment, ManageVaultEnvironmentChange } from './manageVaultEnvironment'
 import { applyManageVaultForm, ManageVaultFormChange } from './manageVaultForm'
 import { applyManageVaultInput, ManageVaultInputChange } from './manageVaultInput'
@@ -129,7 +130,8 @@ function apply(state: ManageVaultState, change: ManageVaultChange) {
   const s5 = applyManageVaultTransaction(change, s4)
   const s6 = applyManageVaultEnvironment(change, s5)
   const s7 = applyManageVaultInjectedOverride(change, s6)
-  return applyManageVaultCalculations(s7)
+  const s8 = applyManageVaultCalculations(s7)
+  return applyManageVaultConditions(s8)
 }
 
 export type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
@@ -195,8 +197,6 @@ interface ManageVaultCalculations {
   afterCollateralizationRatioAtNextPrice: BigNumber
   afterFreeCollateral: BigNumber
   afterMaxGenerateAmountCurrentPrice: BigNumber
-  depositAndWithdrawAmountsEmpty: boolean
-  generateAndPaybackAmountsEmpty: boolean
 }
 
 export interface ManageVaultEnvironment {
@@ -209,6 +209,10 @@ export interface ManageVaultEnvironment {
   ilkData: IlkData
   balanceInfo: BalanceInfo
   priceInfo: PriceInfo
+}
+
+interface ManageVaultConditions {
+  editingButtonDisabled: boolean
 }
 
 interface ManageVaultFunctions {
@@ -252,6 +256,7 @@ interface ManageVaultTxInfo {
 
 export type ManageVaultState = MutableManageVaultState &
   ManageVaultCalculations &
+  ManageVaultConditions &
   ManageVaultEnvironment &
   ManageVaultFunctions &
   ManageVaultTxInfo
@@ -414,8 +419,10 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
   daiYieldFromTotalCollateral: zero,
   daiYieldFromTotalCollateralAtNextPrice: zero,
   shouldPaybackAll: false,
-  depositAndWithdrawAmountsEmpty: true,
-  generateAndPaybackAmountsEmpty: true,
+}
+
+export const defaultManageVaultConditions: ManageVaultConditions = {
+  editingButtonDisabled: true,
 }
 
 export function createManageVault$(
@@ -467,6 +474,7 @@ export function createManageVault$(
                   const initialState: ManageVaultState = {
                     ...defaultMutableManageVaultState,
                     ...defaultManageVaultCalculations,
+                    ...defaultManageVaultConditions,
                     vault,
                     priceInfo,
                     balanceInfo,

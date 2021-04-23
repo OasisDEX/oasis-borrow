@@ -5,12 +5,18 @@ import { UnreachableCaseError } from 'ts-essentials'
 
 import { ManageVaultStage, ManageVaultState } from './manageVault'
 
-function manageVaultButtonText(stage: ManageVaultStage): string {
+function manageVaultButtonEditingText({ editingButtonDisabled }: ManageVaultState): string {
+  const { t } = useTranslation()
+  return editingButtonDisabled ? t('enter-an-amount') : t('confirm')
+}
+
+function manageVaultButtonText(state: ManageVaultState): string {
   const { t } = useTranslation()
 
-  switch (stage) {
+  switch (state.stage) {
     case 'daiEditing':
     case 'collateralEditing':
+      return manageVaultButtonEditingText(state)
     case 'manageWaitingForConfirmation':
       return t('confirm')
     case 'proxySuccess':
@@ -43,11 +49,13 @@ function manageVaultButtonText(stage: ManageVaultStage): string {
     case 'manageInProgress':
       return t('changing-vault')
     default:
-      throw new UnreachableCaseError(stage)
+      throw new UnreachableCaseError(state.stage)
   }
 }
 
-export function ManageVaultButton({ progress, errorMessages, stage }: ManageVaultState) {
+export function ManageVaultButton(props: ManageVaultState) {
+  const { progress, errorMessages, stage, editingButtonDisabled } = props
+
   const isLoading = ([
     'proxyInProgress',
     'proxyWaitingForApproval',
@@ -60,17 +68,16 @@ export function ManageVaultButton({ progress, errorMessages, stage }: ManageVaul
   ] as ManageVaultStage[]).some((s) => s === stage)
 
   const hasError = !!errorMessages.length
-  const isDisabled = hasError || isLoading
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
-    !isDisabled && progress!()
+    progress!()
   }
 
-  const buttonText = manageVaultButtonText(stage)
+  const buttonText = manageVaultButtonText(props)
 
   return (
-    <Button onClick={handleProgress} disabled={isDisabled}>
+    <Button onClick={handleProgress} disabled={editingButtonDisabled || hasError}>
       {isLoading ? (
         <Flex sx={{ justifyContent: 'center' }}>
           <Spinner size={25} color="surface" />

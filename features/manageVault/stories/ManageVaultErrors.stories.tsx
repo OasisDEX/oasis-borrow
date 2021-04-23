@@ -19,7 +19,7 @@ export const DepositAndWithdrawAmountsEmpty = manageVaultStory({
   proxyAddress,
 })()
 
-export const PaybackAndWithdrawAmountsEmpty = manageVaultStory({
+export const GenerateAndPaybackAmountsEmpty = manageVaultStory({
   title:
     'If both the generate and payback input fields are empty when editing "Dai" then we flag the error and block the flow propagating as no vault change would occur',
   vault: {

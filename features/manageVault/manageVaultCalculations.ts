@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-import { isNullish } from 'helpers/functions'
 import { zero } from 'helpers/zero'
 
 import { ManageVaultState, PAYBACK_ALL_BOUND } from './manageVault'
@@ -123,9 +122,6 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     ? ilkDebtAvailable
     : afterDaiYieldFromTotalCollateral
 
-  const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
-  const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)
-
   return {
     ...state,
     maxDepositAmount,
@@ -145,7 +141,5 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     shouldPaybackAll,
     daiYieldFromTotalCollateral,
     daiYieldFromTotalCollateralAtNextPrice,
-    depositAndWithdrawAmountsEmpty,
-    generateAndPaybackAmountsEmpty,
   }
 }

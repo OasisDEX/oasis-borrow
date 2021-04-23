@@ -5,10 +5,6 @@ import { zero } from 'helpers/zero'
 import { ManageVaultState } from './manageVault'
 
 export type ManageVaultErrorMessage =
-  | 'depositAndWithdrawAmountsEmpty'
-  | 'generateAndPaybackAmountsEmpty'
-  | 'depositAmountEmpty'
-  | 'paybackAmountEmpty'
   | 'depositAmountExceedsCollateralBalance'
   | 'withdrawAmountExceedsFreeCollateral'
   | 'withdrawAmountExceedsFreeCollateralAtNextPrice'
@@ -66,36 +62,17 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     stage,
     collateralAllowanceAmount,
     daiAllowanceAmount,
-    accountIsController,
     shouldPaybackAll,
     daiYieldFromTotalCollateral,
     daiYieldFromTotalCollateralAtNextPrice,
     vault,
     ilkData,
     balanceInfo,
-    depositAndWithdrawAmountsEmpty,
-    generateAndPaybackAmountsEmpty,
   } = state
 
   const errorMessages: ManageVaultErrorMessage[] = []
 
   if (stage === 'collateralEditing' || stage === 'daiEditing') {
-    if (accountIsController && depositAndWithdrawAmountsEmpty && stage === 'collateralEditing') {
-      errorMessages.push('depositAndWithdrawAmountsEmpty')
-    }
-
-    if (accountIsController && generateAndPaybackAmountsEmpty && stage === 'daiEditing') {
-      errorMessages.push('generateAndPaybackAmountsEmpty')
-    }
-
-    if (!accountIsController && depositAndWithdrawAmountsEmpty && stage === 'collateralEditing') {
-      errorMessages.push('depositAmountEmpty')
-    }
-
-    if (!accountIsController && generateAndPaybackAmountsEmpty && stage === 'daiEditing') {
-      errorMessages.push('paybackAmountEmpty')
-    }
-
     if (depositAmount?.gt(balanceInfo.collateralBalance)) {
       errorMessages.push('depositAmountExceedsCollateralBalance')
     }

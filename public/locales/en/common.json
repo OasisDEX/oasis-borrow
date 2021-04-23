@@ -468,5 +468,6 @@
   "no-results": "No results",
   "new-to-ethereum": "New to Ethereum? ",
   "learn-about-wallets": "Learn more about wallets",
-  "learn-more-link": "https://ethereum.org/en/wallets/find-wallet/"
+  "learn-more-link": "https://ethereum.org/en/wallets/find-wallet/",
+  "enter-an-amount": "Enter an amount"
 }
