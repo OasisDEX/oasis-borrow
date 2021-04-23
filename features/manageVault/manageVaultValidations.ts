@@ -10,8 +10,6 @@ export type ManageVaultErrorMessage =
   | 'withdrawAmountExceedsFreeCollateralAtNextPrice'
   | 'generateAmountExceedsDaiYieldFromTotalCollateral'
   | 'generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice'
-  | 'vaultWillBeUnderCollateralized'
-  | 'vaultWillBeUnderCollateralizedAtNextPrice'
   | 'generateAmountExceedsDebtCeiling'
   | 'generateAmountLessThanDebtFloor'
   | 'paybackAmountExceedsDaiBalance'
@@ -55,8 +53,6 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
   const {
     depositAmount,
     generateAmount,
-    afterCollateralizationRatio,
-    afterCollateralizationRatioAtNextPrice,
     paybackAmount,
     withdrawAmount,
     stage,
@@ -106,24 +102,6 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
       generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice
     ) {
       errorMessages.push('generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice')
-    }
-
-    const vaultWillBeUnderCollateralized =
-      (generateAmount?.isPositive() || withdrawAmount?.isPositive()) &&
-      afterCollateralizationRatio.lt(ilkData.liquidationRatio) &&
-      !afterCollateralizationRatio.isZero()
-
-    if (vaultWillBeUnderCollateralized) {
-      errorMessages.push('vaultWillBeUnderCollateralized')
-    }
-
-    const vaultWillBeUnderCollateralizedAtNextPrice =
-      (generateAmount?.isPositive() || withdrawAmount?.isPositive()) &&
-      afterCollateralizationRatioAtNextPrice.lt(ilkData.liquidationRatio) &&
-      !afterCollateralizationRatioAtNextPrice.isZero()
-
-    if (!vaultWillBeUnderCollateralized && vaultWillBeUnderCollateralizedAtNextPrice) {
-      errorMessages.push('vaultWillBeUnderCollateralizedAtNextPrice')
     }
 
     if (generateAmount?.gt(ilkData.ilkDebtAvailable)) {

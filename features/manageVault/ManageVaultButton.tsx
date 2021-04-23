@@ -5,9 +5,14 @@ import { UnreachableCaseError } from 'ts-essentials'
 
 import { ManageVaultStage, ManageVaultState } from './manageVault'
 
-function manageVaultButtonEditingText({ editingButtonDisabled }: ManageVaultState): string {
+function manageVaultButtonEditingText({
+  depositAndWithdrawAmountsEmpty,
+  generateAndPaybackAmountsEmpty,
+}: ManageVaultState): string {
   const { t } = useTranslation()
-  return editingButtonDisabled ? t('enter-an-amount') : t('confirm')
+  return depositAndWithdrawAmountsEmpty && generateAndPaybackAmountsEmpty
+    ? t('enter-an-amount')
+    : t('confirm')
 }
 
 function manageVaultButtonText(state: ManageVaultState): string {
@@ -54,7 +59,7 @@ function manageVaultButtonText(state: ManageVaultState): string {
 }
 
 export function ManageVaultButton(props: ManageVaultState) {
-  const { progress, errorMessages, stage, editingButtonDisabled } = props
+  const { progress, stage, editingButtonDisabled } = props
 
   const isLoading = ([
     'proxyInProgress',
@@ -67,8 +72,6 @@ export function ManageVaultButton(props: ManageVaultState) {
     'manageWaitingForApproval',
   ] as ManageVaultStage[]).some((s) => s === stage)
 
-  const hasError = !!errorMessages.length
-
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
     progress!()
@@ -77,7 +80,7 @@ export function ManageVaultButton(props: ManageVaultState) {
   const buttonText = manageVaultButtonText(props)
 
   return (
-    <Button onClick={handleProgress} disabled={editingButtonDisabled || hasError}>
+    <Button onClick={handleProgress} disabled={editingButtonDisabled}>
       {isLoading ? (
         <Flex sx={{ justifyContent: 'center' }}>
           <Spinner size={25} color="surface" />

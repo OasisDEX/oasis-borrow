@@ -213,6 +213,10 @@ export interface ManageVaultEnvironment {
 
 interface ManageVaultConditions {
   editingButtonDisabled: boolean
+  depositAndWithdrawAmountsEmpty: boolean
+  generateAndPaybackAmountsEmpty: boolean
+  vaultWillBeUnderCollateralizedAtCurrentPrice: boolean
+  vaultWillBeUnderCollateralizedAtNextPrice: boolean
 }
 
 interface ManageVaultFunctions {
@@ -423,6 +427,11 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
 
 export const defaultManageVaultConditions: ManageVaultConditions = {
   editingButtonDisabled: true,
+  vaultWillBeUnderCollateralizedAtCurrentPrice: false,
+  vaultWillBeUnderCollateralizedAtNextPrice: false,
+
+  depositAndWithdrawAmountsEmpty: true,
+  generateAndPaybackAmountsEmpty: true,
 }
 
 export function createManageVault$(
