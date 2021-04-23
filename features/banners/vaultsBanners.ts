@@ -30,7 +30,7 @@ function assignBanner(state: VaultBannersState): VaultBannersState {
     }
   }
 
-  if (nextCollateralPrice.lt(liquidationPrice)) {
+  if (nextCollateralPrice && nextCollateralPrice.lt(liquidationPrice)) {
     return {
       ...state,
       banner: 'liquidating',
