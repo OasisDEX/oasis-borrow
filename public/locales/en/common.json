@@ -47,7 +47,7 @@
   "connect-error": "Please authorize this website to access your Ethereum account.",
   "connect-wallet": "Connect a wallet",
   "connect-wallet-button": "Connect Wallet",
-  "connect-with": "Connect {{ connectionKind }}",
+  "connect-with": "{{ connectionKind }}",
   "connected-with": "Connected with {{ connectionKind }}",
   "create-vault": "Create Vault",
   "creating-vault": "Creating Vault",

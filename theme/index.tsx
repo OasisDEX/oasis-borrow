@@ -1131,7 +1131,7 @@ const oasisBaseTheme = {
       lineHeight: 'buttons',
       color: 'text.contrast',
       transition: 'background 0.2s ease-in',
-      '&:hover': {
+      '&:hover, &:focus-visible': {
         bg: 'primaryEmphasis',
       },
       '&:disabled': {
@@ -1171,6 +1171,12 @@ const oasisBaseTheme = {
       borderWidth: '1px',
       borderStyle: 'solid',
       borderColor: 'light',
+      "&:focus": {
+        outline: 'none'
+      },
+      "&:focus-visible": {
+        boxShadow: 'surface'
+      }
     },
     expandable: {
       variant: 'text.header3',
@@ -1230,6 +1236,20 @@ const oasisBaseTheme = {
     },
   },
   links: {
+    primary: {
+      variant: 'buttons.primary',
+      display: 'inline-block',
+      bg: 'primary',
+      '&, &:visited': {
+        textDecoration: 'none',
+      },
+      '&:focus': {
+        outline: 'none',
+      },
+      '&:focus-visible': {
+        textDecoration: 'underline',
+      },
+    },
     nav: {
       variant: 'text.paragraph3',
       cursor: 'pointer',
@@ -1248,20 +1268,6 @@ const oasisBaseTheme = {
     outline: {
       variant: 'buttons.outline',
       display: 'inline-block',
-      '&, &:visited': {
-        textDecoration: 'none',
-      },
-      '&:focus': {
-        outline: 'none',
-      },
-      '&:focus-visible': {
-        textDecoration: 'underline',
-      },
-    },
-    primary: {
-      variant: 'buttons.primary',
-      display: 'inline-block',
-      bg: 'primary',
       '&, &:visited': {
         textDecoration: 'none',
       },
