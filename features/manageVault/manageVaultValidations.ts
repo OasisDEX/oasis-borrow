@@ -252,10 +252,6 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
       warningMessages.push('debtIsLessThanDebtFloor')
     }
 
-    if (!accountIsController) {
-      warningMessages.push('connectedAccountIsNotVaultController')
-    }
-
     // review
     const inputFieldsAreEmpty = [
       depositAmount,
