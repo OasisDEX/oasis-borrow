@@ -117,8 +117,11 @@ export function AccountButton() {
           borderWidth: '1px',
           borderStyle: 'solid',
           borderColor: '#D8E0E300',
-          '&:hover': {
+          '&:hover, &:focus-visible': {
             borderColor: '#D8E0E3FF'
+          },
+          ':focus': {
+            outline: 'none'
           }
         }}
         onClick={() => openModal(AccountModal)}
