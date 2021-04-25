@@ -203,11 +203,17 @@ async function liquidateCDP(
   await (await vat.hope(flipper.address)).wait()
   // Make a bid
   await (await flipper.tend(bidId, bid.lot, bid.tab)).wait()
+
+  // Deacrease lot size to get some collateral back after auction
+  const newLot = new BigNumber(bid.lot.toString()).multipliedBy(0.9)
+
+  await (await flipper.dent(bidId, newLot.toString(), bid.tab)).wait()
+
   // Disallow flipper to spend our internal DAI
   await (await vat.nope(flipper.address)).wait()
 
   const timestamp = (await provider.getBlock('latest')).timestamp
-  const FOUR_HOURS = 4 * 60 * 60
+  const FOUR_HOURS = 5 * 60 * 60
   await provider.send('evm_setNextBlockTimestamp', [timestamp + FOUR_HOURS])
   // Close the liquidation process
   await (await flipper.deal(bidId)).wait()

@@ -3,6 +3,7 @@ import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import { zero } from 'helpers/zero'
 import moment from 'moment'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
@@ -81,7 +82,7 @@ export function createVaultsBanners$(
             liquidationPrice,
             controller,
             unlockedCollateral,
-            hasBeenLiquidated: auctionsStarted.length > 0,
+            hasBeenLiquidated: auctionsStarted.length > 0 || unlockedCollateral.gt(zero),
           }
 
           if (context.status !== 'connected') {

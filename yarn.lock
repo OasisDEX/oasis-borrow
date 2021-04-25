@@ -22292,10 +22292,10 @@ type@^2.0.0:
   resolved "https://registry.yarnpkg.com/type/-/type-2.1.0.tgz#9bdc22c648cf8cf86dd23d32336a41cfb6475e3f"
   integrity sha512-G9absDWvhAWCV2gmF1zKud3OyC61nZDwWvBL2DApaVFogI07CprggiQAOOjvp2NRjYWFzPyu7vwtDrQFq8jeSA==
 
-typechain@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/typechain/-/typechain-4.0.1.tgz#b40eaf5ede15588d97a4b9a5f85120f7ea1cf262"
-  integrity sha512-H/1VpRmplp1qhCTVLU9PCgzyVCQ7Lth7YvaaI1hTvT31IpWnLLNpDpQD4vXJGr26T9BsZ0ZIceOwieAbcoywXw==
+typechain@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.npmjs.org/typechain/-/typechain-4.0.3.tgz#e8fcd6c984676858c64eeeb155ea783a10b73779"
+  integrity sha512-tmoHQeXZWHxIdeLK+i6dU0CU0vOd9Cndr3jFTZIMzak5/YpFZ8XoiYpTZcngygGBqZo+Z1EUmttLbW9KkFZLgQ==
   dependencies:
     command-line-args "^4.0.7"
     debug "^4.1.1"

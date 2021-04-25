@@ -294,11 +294,11 @@ export const reclaim: TransactionDef<ReclaimData> = {
       dssProxyActions.address,
       context
         .contract<DssProxyActions>(dssProxyActions)
-        .methods.flux(
+        .methods.frob(
           dssCdpManager.address,
           data.id.toString(),
-          context.account,
           amountToWei(data.amount, data.token).toFixed(0),
+          zero.toFixed(0),
         )
         .encodeABI(),
     ]
