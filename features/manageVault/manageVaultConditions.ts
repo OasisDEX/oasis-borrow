@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
@@ -142,7 +143,7 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
 
 // This value ought to be coupled in relation to how much we round the raw debt
 // value in the vault (vault.debt)
-export const PAYBACK_ALL_BOUND = one
+export const PAYBACK_ALL_BOUND = new BigNumber('0.01')
 
 export function applyManageVaultConditions(state: ManageVaultState): ManageVaultState {
   const {
@@ -303,7 +304,8 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     customCollateralAllowanceAmountLessThanDepositAmount ||
     customDaiAllowanceAmountEmpty ||
     customDaiAllowanceAmountExceedsMaxUint256 ||
-    customDaiAllowanceAmountLessThanPaybackAmount
+    customDaiAllowanceAmountLessThanPaybackAmount ||
+    debtWillBeLessThanDebtFloor
 
   return {
     ...state,

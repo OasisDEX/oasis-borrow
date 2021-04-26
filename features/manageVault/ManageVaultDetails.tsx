@@ -167,6 +167,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
     depositAndWithdrawAmountsEmpty,
     generateAndPaybackAmountsEmpty,
     afterCollateralizationRatioAtNextPrice,
+    shouldPaybackAll,
   } = props
   const { t } = useTranslation()
   const collRatioColor = collateralizationRatio.isZero()
@@ -212,7 +213,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
         <Text variant="display">$ {formatAmount(liquidationPrice, 'USD')}</Text>
         {showAfters && (
           <Text pl={2}>
-            {t('after')}: ${formatAmount(afterLiquidationPrice, 'USD')}
+            {t('after')}: ${formatAmount(shouldPaybackAll ? zero : afterLiquidationPrice, 'USD')}
           </Text>
         )}
       </Box>
@@ -231,11 +232,16 @@ export function ManageVaultDetails(props: ManageVaultState) {
           <>
             <Text>
               {t('after')}:{' '}
-              {formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })}
+              {formatPercent(shouldPaybackAll ? zero : afterCollateralizationRatio.times(100), {
+                precision: 2,
+              })}
             </Text>
             <Text>
               {t('after-next')}:{' '}
-              {formatPercent(afterCollateralizationRatioAtNextPrice.times(100), { precision: 2 })}
+              {formatPercent(
+                shouldPaybackAll ? zero : afterCollateralizationRatioAtNextPrice.times(100),
+                { precision: 2 },
+              )}
             </Text>
           </>
         )}
