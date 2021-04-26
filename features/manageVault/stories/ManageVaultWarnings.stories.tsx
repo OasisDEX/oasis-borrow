@@ -46,7 +46,7 @@ export const InsufficientDaiAllowance = manageVaultStory({
   proxyAddress,
 })({
   stage: 'daiEditing',
-  paybackAmount: new BigNumber('1000'),
+  paybackAmount: new BigNumber('600'),
 })
 
 export const PotentialGenerateAmountLessThanDebtFloor = manageVaultStory({

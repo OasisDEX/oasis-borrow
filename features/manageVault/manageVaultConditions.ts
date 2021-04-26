@@ -74,8 +74,15 @@ export interface ManageVaultConditions {
   depositAndWithdrawAmountsEmpty: boolean
   generateAndPaybackAmountsEmpty: boolean
   inputAmountsEmpty: boolean
-  vaultWillBeUnderCollateralizedAtCurrentPrice: boolean
+
+  vaultWillBeAtRiskLevelWarning: boolean
+  vaultWillBeAtRiskLevelDanger: boolean
+  vaultWillBeUnderCollateralized: boolean
+
+  vaultWillBeAtRiskLevelWarningAtNextPrice: boolean
+  vaultWillBeAtRiskLevelDangerAtNextPrice: boolean
   vaultWillBeUnderCollateralizedAtNextPrice: boolean
+
   accountIsController: boolean
   withdrawAmountExceedsFreeCollateral: boolean
   withdrawAmountExceedsFreeCollateralAtNextPrice: boolean
@@ -100,8 +107,15 @@ export interface ManageVaultConditions {
 export const defaultManageVaultConditions: ManageVaultConditions = {
   ...defaultManageVaultStageCategories,
   flowProgressionDisabled: false,
-  vaultWillBeUnderCollateralizedAtCurrentPrice: false,
+
+  vaultWillBeAtRiskLevelWarning: false,
+  vaultWillBeAtRiskLevelDanger: false,
+  vaultWillBeUnderCollateralized: false,
+
+  vaultWillBeAtRiskLevelWarningAtNextPrice: false,
+  vaultWillBeAtRiskLevelDangerAtNextPrice: false,
   vaultWillBeUnderCollateralizedAtNextPrice: false,
+
   depositAndWithdrawAmountsEmpty: true,
   generateAndPaybackAmountsEmpty: true,
   inputAmountsEmpty: true,
@@ -153,22 +167,41 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     daiAllowance,
   } = state
 
-  const changeCouldIncreaseCollateralizationRatio =
-    !isNullish(generateAmount) || !isNullish(withdrawAmount)
-
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
   const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)
 
   const inputAmountsEmpty = depositAndWithdrawAmountsEmpty && generateAndPaybackAmountsEmpty
 
-  const vaultWillBeUnderCollateralizedAtCurrentPrice =
-    changeCouldIncreaseCollateralizationRatio &&
+  const vaultWillBeAtRiskLevelDanger =
+    !inputAmountsEmpty &&
+    afterCollateralizationRatio.gte(ilkData.liquidationRatio) &&
+    afterCollateralizationRatio.lte(ilkData.collateralizationDangerThreshold)
+
+  const vaultWillBeAtRiskLevelDangerAtNextPrice =
+    !vaultWillBeAtRiskLevelDanger &&
+    !inputAmountsEmpty &&
+    afterCollateralizationRatioAtNextPrice.gte(ilkData.liquidationRatio) &&
+    afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationDangerThreshold)
+
+  const vaultWillBeAtRiskLevelWarning =
+    !inputAmountsEmpty &&
+    afterCollateralizationRatio.gt(ilkData.collateralizationDangerThreshold) &&
+    afterCollateralizationRatio.lte(ilkData.collateralizationWarningThreshold)
+
+  const vaultWillBeAtRiskLevelWarningAtNextPrice =
+    !vaultWillBeAtRiskLevelWarning &&
+    !inputAmountsEmpty &&
+    afterCollateralizationRatioAtNextPrice.gt(ilkData.collateralizationDangerThreshold) &&
+    afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationWarningThreshold)
+
+  const vaultWillBeUnderCollateralized =
+    !inputAmountsEmpty &&
     afterCollateralizationRatio.lt(ilkData.liquidationRatio) &&
     !afterCollateralizationRatio.isZero()
 
   const vaultWillBeUnderCollateralizedAtNextPrice =
-    !vaultWillBeUnderCollateralizedAtCurrentPrice &&
-    changeCouldIncreaseCollateralizationRatio &&
+    !vaultWillBeUnderCollateralized &&
+    !inputAmountsEmpty &&
     afterCollateralizationRatioAtNextPrice.lt(ilkData.liquidationRatio) &&
     !afterCollateralizationRatioAtNextPrice.isZero()
 
@@ -263,7 +296,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
   const flowProgressionDisabled =
     isLoadingStage ||
     inputAmountsEmpty ||
-    vaultWillBeUnderCollateralizedAtCurrentPrice ||
+    vaultWillBeUnderCollateralized ||
     vaultWillBeUnderCollateralizedAtNextPrice ||
     customCollateralAllowanceAmountEmpty ||
     customCollateralAllowanceAmountExceedsMaxUint256 ||
@@ -279,8 +312,14 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     depositAndWithdrawAmountsEmpty,
     generateAndPaybackAmountsEmpty,
     inputAmountsEmpty,
-    vaultWillBeUnderCollateralizedAtCurrentPrice,
+
+    vaultWillBeAtRiskLevelWarning,
+    vaultWillBeAtRiskLevelWarningAtNextPrice,
+    vaultWillBeAtRiskLevelDanger,
+    vaultWillBeAtRiskLevelDangerAtNextPrice,
+    vaultWillBeUnderCollateralized,
     vaultWillBeUnderCollateralizedAtNextPrice,
+
     accountIsController,
     withdrawAmountExceedsFreeCollateral,
     withdrawAmountExceedsFreeCollateralAtNextPrice,

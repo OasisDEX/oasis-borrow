@@ -164,6 +164,10 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     stage,
     inputAmountsEmpty,
     isEditingStage,
+    vaultWillBeAtRiskLevelDanger,
+    vaultWillBeAtRiskLevelDangerAtNextPrice,
+    vaultWillBeAtRiskLevelWarning,
+    vaultWillBeAtRiskLevelWarningAtNextPrice,
   } = state
 
   const warningMessages: ManageVaultWarningMessage[] = []
@@ -171,11 +175,7 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
   if (errorMessages.length) return { ...state, warningMessages }
 
   if (isEditingStage) {
-    if (
-      depositAmount &&
-      !depositAmount.isZero() &&
-      daiYieldFromTotalCollateral.lt(ilkData.debtFloor)
-    ) {
+    if (!isNullish(depositAmount) && daiYieldFromTotalCollateral.lt(ilkData.debtFloor)) {
       warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
     }
 
@@ -183,44 +183,19 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
       warningMessages.push('debtIsLessThanDebtFloor')
     }
 
-    const vaultWillBeAtRiskLevelDanger =
-      !inputAmountsEmpty &&
-      afterCollateralizationRatio.gte(ilkData.liquidationRatio) &&
-      afterCollateralizationRatio.lte(ilkData.collateralizationDangerThreshold)
-
     if (vaultWillBeAtRiskLevelDanger) {
       warningMessages.push('vaultWillBeAtRiskLevelDanger')
     }
 
-    const vaultWillBeAtRiskLevelDangerAtNextPrice =
-      !inputAmountsEmpty &&
-      afterCollateralizationRatioAtNextPrice.gte(ilkData.liquidationRatio) &&
-      afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationDangerThreshold)
-
-    if (!vaultWillBeAtRiskLevelDanger && vaultWillBeAtRiskLevelDangerAtNextPrice) {
+    if (vaultWillBeAtRiskLevelDangerAtNextPrice) {
       warningMessages.push('vaultWillBeAtRiskLevelDangerAtNextPrice')
     }
 
-    const vaultWillBeAtRiskLevelWarning =
-      !inputAmountsEmpty &&
-      afterCollateralizationRatio.gt(ilkData.collateralizationDangerThreshold) &&
-      afterCollateralizationRatio.lte(ilkData.collateralizationWarningThreshold)
-
-    if (!vaultWillBeAtRiskLevelDangerAtNextPrice && vaultWillBeAtRiskLevelWarning) {
+    if (vaultWillBeAtRiskLevelWarning) {
       warningMessages.push('vaultWillBeAtRiskLevelWarning')
     }
 
-    const vaultWillBeAtRiskLevelWarningNextPrice =
-      !inputAmountsEmpty &&
-      afterCollateralizationRatioAtNextPrice.gt(ilkData.collateralizationDangerThreshold) &&
-      afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationWarningThreshold)
-
-    if (
-      !vaultWillBeAtRiskLevelDanger &&
-      !vaultWillBeAtRiskLevelWarning &&
-      !vaultWillBeAtRiskLevelDangerAtNextPrice &&
-      vaultWillBeAtRiskLevelWarningNextPrice
-    ) {
+    if (vaultWillBeAtRiskLevelWarningAtNextPrice) {
       warningMessages.push('vaultWillBeAtRiskLevelWarningAtNextPrice')
     }
 
