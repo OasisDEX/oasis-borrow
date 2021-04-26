@@ -1,4 +1,3 @@
-import { maxUint256 } from 'blockchain/calls/erc20'
 import { isNullish } from 'helpers/functions'
 import { zero } from 'helpers/zero'
 
@@ -24,30 +23,14 @@ export type ManageVaultErrorMessage =
   | 'depositingAllEthBalance'
 
 export type ManageVaultWarningMessage =
-  | 'noProxyAddress'
-  | 'insufficientCollateralAllowance'
-  | 'insufficientDaiAllowance'
   | 'potentialGenerateAmountLessThanDebtFloor'
   | 'debtIsLessThanDebtFloor'
-  | 'connectedAccountIsNotVaultController'
   | 'vaultWillBeAtRiskLevelDanger'
   | 'vaultWillBeAtRiskLevelWarning'
   | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
   | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
-  | 'vaultAtRiskLevelDanger'
-  | 'vaultAtRiskLevelDangerAtNextPrice'
-  | 'vaultAtRiskLevelWarning'
-  | 'vaultAtRiskLevelWarningAtNextPrice'
   | 'vaultUnderCollateralized'
   | 'vaultUnderCollateralizedAtNextPrice'
-  | 'payingBackAllDebt'
-  | 'depositingAllCollateralBalance'
-  | 'payingBackAllDaiBalance'
-  | 'withdrawingAllFreeCollateral'
-  | 'withdrawingAllFreeCollateralAtNextPrice'
-  | 'generatingAllDaiFromIlkDebtAvailable'
-  | 'generatingAllDaiYieldFromTotalCollateral'
-  | 'generatingAllDaiYieldFromTotalCollateralAtNextPrice'
 
 export function validateErrors(state: ManageVaultState): ManageVaultState {
   const {
@@ -58,7 +41,6 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     vault,
     ilkData,
     balanceInfo,
-
     withdrawAmountExceedsFreeCollateral,
     withdrawAmountExceedsFreeCollateralAtNextPrice,
     generateAmountExceedsDaiYieldFromTotalCollateral,
@@ -144,25 +126,10 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
 export function validateWarnings(state: ManageVaultState): ManageVaultState {
   const {
     depositAmount,
-    generateAmount,
-    paybackAmount,
-    withdrawAmount,
-    proxyAddress,
-    collateralAllowance,
-    daiAllowance,
-    accountIsController,
-    afterCollateralizationRatio,
-    afterCollateralizationRatioAtNextPrice,
-    shouldPaybackAll,
     daiYieldFromTotalCollateral,
     vault,
     ilkData,
-    balanceInfo,
-    maxGenerateAmountCurrentPrice,
-    maxGenerateAmountNextPrice,
     errorMessages,
-    stage,
-    inputAmountsEmpty,
     isEditingStage,
     vaultWillBeAtRiskLevelDanger,
     vaultWillBeAtRiskLevelDangerAtNextPrice,
@@ -197,44 +164,6 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
 
     if (vaultWillBeAtRiskLevelWarningAtNextPrice) {
       warningMessages.push('vaultWillBeAtRiskLevelWarningAtNextPrice')
-    }
-
-    if (paybackAmount?.eq(balanceInfo.daiBalance)) {
-      warningMessages.push('payingBackAllDaiBalance')
-    }
-
-    if (withdrawAmount?.eq(vault.freeCollateral)) {
-      warningMessages.push('withdrawingAllFreeCollateral')
-    }
-
-    if (
-      withdrawAmount?.eq(vault.freeCollateralAtNextPrice) &&
-      vault.freeCollateralAtNextPrice.lt(vault.freeCollateral)
-    ) {
-      warningMessages.push('withdrawingAllFreeCollateralAtNextPrice')
-    }
-
-    if (
-      !ilkData.ilkDebtAvailable.isZero() &&
-      generateAmount?.eq(ilkData.ilkDebtAvailable) &&
-      maxGenerateAmountCurrentPrice.eq(ilkData.ilkDebtAvailable)
-    ) {
-      warningMessages.push('generatingAllDaiFromIlkDebtAvailable')
-    }
-
-    const generatingAllDaiYieldFromTotalCollateral =
-      generateAmount?.eq(maxGenerateAmountCurrentPrice) &&
-      !maxGenerateAmountCurrentPrice.eq(ilkData.ilkDebtAvailable)
-    if (generatingAllDaiYieldFromTotalCollateral) {
-      warningMessages.push('generatingAllDaiYieldFromTotalCollateral')
-    }
-
-    if (
-      !generatingAllDaiYieldFromTotalCollateral &&
-      generateAmount?.eq(maxGenerateAmountNextPrice) &&
-      !maxGenerateAmountNextPrice.eq(ilkData.ilkDebtAvailable)
-    ) {
-      warningMessages.push('generatingAllDaiYieldFromTotalCollateralAtNextPrice')
     }
   }
   return { ...state, warningMessages }
