@@ -12,12 +12,11 @@ function fixChainId(chainId: string | number) {
 }
 
 function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any> {
-
   const getReadOnlyProviderAsync = (() => {
     let provider: JsonRpcProvider | undefined = undefined
-    return async function(chainIdPromise: Promise<number | string>) {
-      if(!provider) {
-        const chainId = fixChainId(await chainIdPromise);
+    return async function (chainIdPromise: Promise<number | string>) {
+      if (!provider) {
+        const chainId = fixChainId(await chainIdPromise)
         provider = new JsonRpcBatchProvider(networksById[chainId].infuraUrl, chainId)
       }
       return provider
@@ -26,15 +25,15 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
 
   const getRPCProviderAsync = (() => {
     let provider: JsonRpcProvider | undefined = undefined
-    return async function(
+    return async function (
       chainIdPromise: Promise<number | string>,
       web3Provider: providers.ExternalProvider,
     ) {
       if (!provider) {
-        const chainId = fixChainId(await chainIdPromise);
+        const chainId = fixChainId(await chainIdPromise)
         provider = new providers.Web3Provider(web3Provider, chainId)
       }
-      return provider;
+      return provider
     }
   })()
 
