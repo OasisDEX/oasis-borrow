@@ -65,6 +65,7 @@ export interface ManageVaultConditions {
   editingButtonDisabled: boolean
   depositAndWithdrawAmountsEmpty: boolean
   generateAndPaybackAmountsEmpty: boolean
+  inputAmountsEmpty: boolean
   vaultWillBeUnderCollateralizedAtCurrentPrice: boolean
   vaultWillBeUnderCollateralizedAtNextPrice: boolean
   accountIsController: boolean
@@ -89,6 +90,7 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   vaultWillBeUnderCollateralizedAtNextPrice: false,
   depositAndWithdrawAmountsEmpty: true,
   generateAndPaybackAmountsEmpty: true,
+  inputAmountsEmpty: true,
   accountIsController: false,
   withdrawAmountExceedsFreeCollateral: false,
   withdrawAmountExceedsFreeCollateralAtNextPrice: false,
@@ -125,6 +127,8 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
   const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)
 
+  const inputAmountsEmpty = depositAndWithdrawAmountsEmpty && generateAndPaybackAmountsEmpty
+
   const vaultWillBeUnderCollateralizedAtCurrentPrice =
     changeCouldIncreaseCollateralizationRatio &&
     afterCollateralizationRatio.lt(ilkData.liquidationRatio) &&
@@ -137,7 +141,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     !afterCollateralizationRatioAtNextPrice.isZero()
 
   const editingButtonDisabled =
-    (depositAndWithdrawAmountsEmpty && generateAndPaybackAmountsEmpty) ||
+    inputAmountsEmpty ||
     vaultWillBeUnderCollateralizedAtCurrentPrice ||
     vaultWillBeUnderCollateralizedAtNextPrice
 
@@ -182,6 +186,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     editingButtonDisabled,
     depositAndWithdrawAmountsEmpty,
     generateAndPaybackAmountsEmpty,
+    inputAmountsEmpty,
     vaultWillBeUnderCollateralizedAtCurrentPrice,
     vaultWillBeUnderCollateralizedAtNextPrice,
     accountIsController,

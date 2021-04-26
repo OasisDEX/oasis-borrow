@@ -5,23 +5,13 @@ import { UnreachableCaseError } from 'ts-essentials'
 
 import { ManageVaultStage, ManageVaultState } from './manageVault'
 
-function manageVaultButtonEditingText({
-  depositAndWithdrawAmountsEmpty,
-  generateAndPaybackAmountsEmpty,
-}: ManageVaultState): string {
-  const { t } = useTranslation()
-  return depositAndWithdrawAmountsEmpty && generateAndPaybackAmountsEmpty
-    ? t('enter-an-amount')
-    : t('confirm')
-}
-
 function manageVaultButtonText(state: ManageVaultState): string {
   const { t } = useTranslation()
 
   switch (state.stage) {
     case 'daiEditing':
     case 'collateralEditing':
-      return manageVaultButtonEditingText(state)
+      return state.inputAmountsEmpty ? t('enter-an-amount') : t('confirm')
     case 'manageWaitingForConfirmation':
       return t('confirm')
     case 'proxySuccess':
