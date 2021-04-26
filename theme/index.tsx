@@ -941,7 +941,7 @@ const oasisBaseTheme = {
     display: {
       fontFamily: 'heading',
       fontWeight: 'bold',
-      fontSize: 8,
+      fontSize: [7, 8],
     },
     header1: {
       fontFamily: 'heading',
@@ -1415,6 +1415,9 @@ const oasisBaseTheme = {
       textDecoration: 'none',
       cursor: 'pointer',
       color: 'link',
+    },
+    hr: {
+      borderColor: 'light',
     },
   },
 }
