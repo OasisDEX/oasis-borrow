@@ -162,6 +162,7 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     maxGenerateAmountNextPrice,
     errorMessages,
     stage,
+    inputAmountsEmpty,
   } = state
 
   const warningMessages: ManageVaultWarningMessage[] = []
@@ -199,16 +200,8 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
       warningMessages.push('debtIsLessThanDebtFloor')
     }
 
-    // review
-    const inputFieldsAreEmpty = [
-      depositAmount,
-      generateAmount,
-      withdrawAmount,
-      paybackAmount,
-    ].every((amount) => isNullish(amount))
-
     const vaultWillBeAtRiskLevelDanger =
-      !inputFieldsAreEmpty &&
+      !inputAmountsEmpty &&
       afterCollateralizationRatio.gte(ilkData.liquidationRatio) &&
       afterCollateralizationRatio.lte(ilkData.collateralizationDangerThreshold)
 
@@ -217,7 +210,7 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     }
 
     const vaultWillBeAtRiskLevelDangerAtNextPrice =
-      !inputFieldsAreEmpty &&
+      !inputAmountsEmpty &&
       afterCollateralizationRatioAtNextPrice.gte(ilkData.liquidationRatio) &&
       afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationDangerThreshold)
 
@@ -226,7 +219,7 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     }
 
     const vaultWillBeAtRiskLevelWarning =
-      !inputFieldsAreEmpty &&
+      !inputAmountsEmpty &&
       afterCollateralizationRatio.gt(ilkData.collateralizationDangerThreshold) &&
       afterCollateralizationRatio.lte(ilkData.collateralizationWarningThreshold)
 
@@ -235,7 +228,7 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     }
 
     const vaultWillBeAtRiskLevelWarningNextPrice =
-      !inputFieldsAreEmpty &&
+      !inputAmountsEmpty &&
       afterCollateralizationRatioAtNextPrice.gt(ilkData.collateralizationDangerThreshold) &&
       afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationWarningThreshold)
 
