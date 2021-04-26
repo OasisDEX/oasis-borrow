@@ -67,8 +67,14 @@ export interface Vault {
   collateralizationRatioAtNextPrice: BigNumber
   liquidationPrice: BigNumber
   daiYieldFromLockedCollateral: BigNumber
-  isVaultAtRisk: boolean
-  isVaultUnderCollaterilizedAtNextPrice: boolean
+
+  atRiskLevelWarning: boolean
+  atRiskLevelDanger: boolean
+  underCollateralized: boolean
+
+  atRiskLevelWarningAtNextPrice: boolean
+  atRiskLevelDangerAtNextPrice: boolean
+  underCollateralizedAtNextPrice: boolean
 }
 
 export function createController$(
@@ -111,7 +117,13 @@ export function createVault$(
             { collateral, normalizedDebt },
             unlockedCollateral,
             { currentPrice, nextPrice },
-            { debtScalingFactor, liquidationRatio, collateralizationDangerThreshold, stabilityFee },
+            {
+              debtScalingFactor,
+              liquidationRatio,
+              collateralizationDangerThreshold,
+              collateralizationWarningThreshold,
+              stabilityFee,
+            },
           ]) => {
             const collateralUSD = collateral.times(currentPrice)
             const collateralUSDAtNextPrice = nextPrice ? collateral.times(nextPrice) : currentPrice
@@ -165,10 +177,26 @@ export function createVault$(
               .div(liquidationRatio)
               .minus(debt)
 
-            const isVaultAtRisk =
-              !debt.isZero() && collateralizationRatio.lt(collateralizationDangerThreshold)
+            const atRiskLevelWarning =
+              collateralizationRatio.gte(collateralizationDangerThreshold) &&
+              collateralizationRatio.lt(collateralizationWarningThreshold)
 
-            const isVaultUnderCollaterilizedAtNextPrice =
+            const atRiskLevelDanger =
+              collateralizationRatio.gte(liquidationRatio) &&
+              collateralizationRatio.lt(collateralizationDangerThreshold)
+
+            const underCollateralized =
+              !collateralizationRatio.isZero() && collateralizationRatio.lt(liquidationRatio)
+
+            const atRiskLevelWarningAtNextPrice =
+              collateralizationRatioAtNextPrice.gte(collateralizationDangerThreshold) &&
+              collateralizationRatioAtNextPrice.lt(collateralizationWarningThreshold)
+
+            const atRiskLevelDangerAtNextPrice =
+              collateralizationRatioAtNextPrice.gte(liquidationRatio) &&
+              collateralizationRatioAtNextPrice.lt(collateralizationDangerThreshold)
+
+            const underCollateralizedAtNextPrice =
               !collateralizationRatioAtNextPrice.isZero() &&
               collateralizationRatioAtNextPrice.lt(liquidationRatio)
 
@@ -179,34 +207,34 @@ export function createVault$(
               address: urnAddress,
               owner,
               controller: controller!,
-
               lockedCollateral: collateral,
               lockedCollateralUSD: collateralUSD,
               backingCollateral,
               backingCollateralUSD,
               freeCollateral,
               freeCollateralUSD,
-
               lockedCollateralUSDAtNextPrice: collateralUSDAtNextPrice,
               backingCollateralAtNextPrice,
               backingCollateralUSDAtNextPrice,
               freeCollateralAtNextPrice,
               freeCollateralUSDAtNextPrice,
-
               normalizedDebt,
               debt,
               debtOffset,
               availableDebt,
               availableDebtAtNextPrice,
-
               unlockedCollateral,
               collateralizationRatio,
               collateralizationRatioAtNextPrice,
               liquidationPrice,
-
               daiYieldFromLockedCollateral,
-              isVaultAtRisk,
-              isVaultUnderCollaterilizedAtNextPrice,
+
+              atRiskLevelWarning,
+              atRiskLevelDanger,
+              underCollateralized,
+              atRiskLevelWarningAtNextPrice,
+              atRiskLevelDangerAtNextPrice,
+              underCollateralizedAtNextPrice,
             })
           },
         ),

@@ -9,7 +9,12 @@ import { map, startWith, switchMap } from 'rxjs/operators'
 
 type VaultBannersState = Pick<
   Vault,
-  'id' | 'token' | 'controller' | 'isVaultUnderCollaterilizedAtNextPrice' | 'unlockedCollateral'
+  | 'id'
+  | 'token'
+  | 'controller'
+  | 'underCollateralized'
+  | 'underCollateralizedAtNextPrice'
+  | 'unlockedCollateral'
 > &
   Pick<PriceInfo, 'dateNextCollateralPrice'> & {
     account?: string
@@ -18,7 +23,13 @@ type VaultBannersState = Pick<
   }
 
 function assignBanner(state: VaultBannersState): VaultBannersState {
-  const { hasBeenLiquidated, isVaultUnderCollaterilizedAtNextPrice, account, controller } = state
+  const {
+    hasBeenLiquidated,
+    account,
+    controller,
+    underCollateralized,
+    underCollateralizedAtNextPrice,
+  } = state
 
   if (hasBeenLiquidated) {
     return {
@@ -27,7 +38,7 @@ function assignBanner(state: VaultBannersState): VaultBannersState {
     }
   }
 
-  if (isVaultUnderCollaterilizedAtNextPrice) {
+  if (underCollateralized || underCollateralizedAtNextPrice) {
     return {
       ...state,
       banner: 'liquidating',
@@ -72,7 +83,8 @@ export function createVaultsBanners$(
               liquidationPrice,
               controller,
               unlockedCollateral,
-              isVaultUnderCollaterilizedAtNextPrice,
+              underCollateralized,
+              underCollateralizedAtNextPrice,
             },
             events,
           ]) => {
@@ -92,7 +104,8 @@ export function createVaultsBanners$(
               controller,
               unlockedCollateral,
               hasBeenLiquidated: auctionsStarted.length > 0,
-              isVaultUnderCollaterilizedAtNextPrice,
+              underCollateralized,
+              underCollateralizedAtNextPrice,
             }
 
             if (context.status !== 'connected') {

@@ -241,67 +241,6 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
       warningMessages.push('vaultWillBeAtRiskLevelWarningAtNextPrice')
     }
 
-    const isShowingAfterCollateralizationNotice =
-      vaultWillBeAtRiskLevelDanger ||
-      vaultWillBeAtRiskLevelDangerAtNextPrice ||
-      vaultWillBeAtRiskLevelWarning ||
-      vaultWillBeAtRiskLevelWarningNextPrice
-
-    if (!isShowingAfterCollateralizationNotice) {
-      const vaultAtRiskLevelDanger =
-        vault.collateralizationRatio.gte(ilkData.liquidationRatio) &&
-        vault.collateralizationRatio.lte(ilkData.collateralizationDangerThreshold)
-
-      if (vaultAtRiskLevelDanger) {
-        warningMessages.push('vaultAtRiskLevelDanger')
-      }
-
-      const vaultAtRiskLevelDangerAtNextPrice =
-        vault.collateralizationRatioAtNextPrice.gte(ilkData.liquidationRatio) &&
-        vault.collateralizationRatioAtNextPrice.lte(ilkData.collateralizationDangerThreshold)
-
-      if (!vaultAtRiskLevelDanger && vaultAtRiskLevelDangerAtNextPrice) {
-        warningMessages.push('vaultAtRiskLevelDangerAtNextPrice')
-      }
-
-      const vaultAtRiskLevelWarning =
-        vault.collateralizationRatio.gt(ilkData.collateralizationDangerThreshold) &&
-        vault.collateralizationRatio.lte(ilkData.collateralizationWarningThreshold)
-
-      if (!vaultAtRiskLevelDangerAtNextPrice && vaultAtRiskLevelWarning) {
-        warningMessages.push('vaultAtRiskLevelWarning')
-      }
-
-      const vaultAtRiskLevelWarningAtNextPrice =
-        vault.collateralizationRatioAtNextPrice.gt(ilkData.collateralizationDangerThreshold) &&
-        vault.collateralizationRatioAtNextPrice.lte(ilkData.collateralizationWarningThreshold)
-
-      if (
-        !vaultAtRiskLevelDanger &&
-        !vaultAtRiskLevelWarning &&
-        !vaultAtRiskLevelDangerAtNextPrice &&
-        vaultAtRiskLevelWarningAtNextPrice
-      ) {
-        warningMessages.push('vaultAtRiskLevelWarningAtNextPrice')
-      }
-    }
-
-    const vaultUnderCollateralized =
-      vault.collateralizationRatio.lt(ilkData.liquidationRatio) &&
-      !vault.collateralizationRatio.isZero()
-
-    if (vaultUnderCollateralized) {
-      warningMessages.push('vaultUnderCollateralized')
-    }
-
-    const vaultUnderCollateralizedAtNextPrice =
-      vault.collateralizationRatioAtNextPrice.lt(ilkData.liquidationRatio) &&
-      !vault.collateralizationRatioAtNextPrice.isZero()
-
-    if (!vaultUnderCollateralized && vaultUnderCollateralizedAtNextPrice) {
-      warningMessages.push('vaultUnderCollateralizedAtNextPrice')
-    }
-
     if (shouldPaybackAll) {
       warningMessages.push('payingBackAllDebt')
     }
