@@ -34,13 +34,7 @@ export type ManageVaultWarningMessage =
 
 export function validateErrors(state: ManageVaultState): ManageVaultState {
   const {
-    depositAmount,
-    generateAmount,
-    paybackAmount,
     stage,
-    vault,
-    ilkData,
-    balanceInfo,
     withdrawAmountExceedsFreeCollateral,
     withdrawAmountExceedsFreeCollateralAtNextPrice,
     generateAmountExceedsDaiYieldFromTotalCollateral,
