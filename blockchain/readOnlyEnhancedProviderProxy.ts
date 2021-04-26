@@ -1,46 +1,43 @@
+import { JsonRpcProvider } from '@ethersproject/providers'
 import { JSONRPCRequestPayload } from 'ethereum-protocol'
 import { providers } from 'ethers'
-import _ from 'lodash'
 import { JsonRpcResponse } from 'web3-core-helpers'
 
 import { networksById } from './config'
 import { JsonRpcBatchProvider } from './jsonRpcBatchProvider'
 
-const readOnlyProviderByChainId: Record<number, providers.JsonRpcProvider> = {}
-
-async function getReadOnlyProviderAsync(
-  chainIdPromise: Promise<number | string>,
-): Promise<providers.JsonRpcProvider> {
-  let chainId = await chainIdPromise
-  if (_.isString(chainId)) {
-    chainId = parseInt(chainId, 16)
-  }
-  if (!readOnlyProviderByChainId[chainId]) {
-    readOnlyProviderByChainId[chainId] = new JsonRpcBatchProvider(
-      networksById[chainId].infuraUrl,
-      chainId,
-    )
-  }
-  return readOnlyProviderByChainId[chainId]
-}
-
-const web3ProviderByChainId: Record<number, providers.Web3Provider> = {}
-
-async function getRPCProviderAsync(
-  chainIdPromise: Promise<number | string>,
-  web3Provider: providers.ExternalProvider,
-): Promise<providers.Web3Provider> {
-  let chainId = await chainIdPromise
-  if (_.isString(chainId)) {
-    chainId = parseInt(chainId, 16)
-  }
-  if (!web3ProviderByChainId[chainId]) {
-    web3ProviderByChainId[chainId] = new providers.Web3Provider(web3Provider, chainId)
-  }
-  return web3ProviderByChainId[chainId]
+function fixChainId(chainId: string | number) {
+  // eslint-disable-next-line no-new-wrappers
+  return new Number(chainId).valueOf()
 }
 
 function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any> {
+
+  const getReadOnlyProviderAsync = (() => {
+    let provider: JsonRpcProvider | undefined = undefined
+    return async function(chainIdPromise: Promise<number | string>) {
+      if(!provider) {
+        const chainId = fixChainId(await chainIdPromise);
+        provider = new JsonRpcBatchProvider(networksById[chainId].infuraUrl, chainId)
+      }
+      return provider
+    }
+  })()
+
+  const getRPCProviderAsync = (() => {
+    let provider: JsonRpcProvider | undefined = undefined
+    return async function(
+      chainIdPromise: Promise<number | string>,
+      web3Provider: providers.ExternalProvider,
+    ) {
+      if (!provider) {
+        const chainId = fixChainId(await chainIdPromise);
+        provider = new providers.Web3Provider(web3Provider, chainId)
+      }
+      return provider;
+    }
+  })()
+
   const handler = {
     get: (target: any, name: string) => {
       if (name === 'sendAsync') {
