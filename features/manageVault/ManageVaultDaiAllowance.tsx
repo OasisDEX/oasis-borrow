@@ -22,8 +22,7 @@ export function ManageVaultDaiAllowance({
   resetDaiAllowanceAmount,
   selectedDaiAllowanceRadio,
 }: ManageVaultState) {
-  const canSelectRadio =
-    stage === 'daiAllowanceWaitingForConfirmation' || stage === 'daiAllowanceFailure'
+  const canSelectRadio = stage === 'daiAllowanceWaitingForConfirmation'
 
   const { t } = useTranslation()
 

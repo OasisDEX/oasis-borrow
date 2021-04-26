@@ -23,8 +23,7 @@ export function ManageVaultCollateralAllowance({
   resetCollateralAllowanceAmount,
   selectedCollateralAllowanceRadio,
 }: ManageVaultState) {
-  const canSelectRadio =
-    stage === 'collateralAllowanceWaitingForConfirmation' || stage === 'collateralAllowanceFailure'
+  const canSelectRadio = stage === 'collateralAllowanceWaitingForConfirmation'
 
   const isUnlimited = selectedCollateralAllowanceRadio === 'unlimited'
   const isDeposit = selectedCollateralAllowanceRadio === 'depositAmount'
