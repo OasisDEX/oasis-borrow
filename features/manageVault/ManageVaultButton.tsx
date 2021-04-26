@@ -12,8 +12,6 @@ function manageVaultButtonText(state: ManageVaultState): string {
     case 'daiEditing':
     case 'collateralEditing':
       return state.inputAmountsEmpty ? t('enter-an-amount') : t('confirm')
-    case 'manageWaitingForConfirmation':
-      return t('confirm')
     case 'proxySuccess':
     case 'daiAllowanceSuccess':
     case 'collateralAllowanceSuccess':
@@ -36,6 +34,8 @@ function manageVaultButtonText(state: ManageVaultState): string {
     case 'daiAllowanceInProgress':
     case 'daiAllowanceWaitingForApproval':
       return t('approving-allowance')
+    case 'manageWaitingForConfirmation':
+      return t('confirm')
     case 'manageFailure':
       return t('retry')
     case 'manageSuccess':
@@ -49,18 +49,7 @@ function manageVaultButtonText(state: ManageVaultState): string {
 }
 
 export function ManageVaultButton(props: ManageVaultState) {
-  const { progress, stage, editingButtonDisabled } = props
-
-  const isLoading = ([
-    'proxyInProgress',
-    'proxyWaitingForApproval',
-    'collateralAllowanceWaitingForApproval',
-    'collateralAllowanceInProgress',
-    'daiAllowanceWaitingForApproval',
-    'daiAllowanceInProgress',
-    'manageInProgress',
-    'manageWaitingForApproval',
-  ] as ManageVaultStage[]).some((s) => s === stage)
+  const { progress, isLoadingStage, editingButtonDisabled } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
@@ -71,7 +60,7 @@ export function ManageVaultButton(props: ManageVaultState) {
 
   return (
     <Button onClick={handleProgress} disabled={editingButtonDisabled}>
-      {isLoading ? (
+      {isLoadingStage ? (
         <Flex sx={{ justifyContent: 'center' }}>
           <Spinner size={25} color="surface" />
           <Text pl={2}>{buttonText}</Text>

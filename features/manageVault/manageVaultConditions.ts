@@ -3,7 +3,13 @@ import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { one, zero } from 'helpers/zero'
 import { ManageVaultStage, ManageVaultState } from './manageVault'
 
-const defaultManageVaultStageCategories = {}
+const defaultManageVaultStageCategories = {
+  isEditingStage: false,
+  isProxyStage: false,
+  isCollateralAllowanceStage: false,
+  isDaiAllowanceStage: false,
+  isManageStage: false,
+}
 
 export function categoriseManageVaultStages(stage: ManageVaultStage) {
   switch (stage) {
@@ -76,15 +82,11 @@ export interface ManageVaultConditions {
   generateAmountIsLessThanDebtFloor: boolean
   shouldPaybackAll: boolean
   debtWillBeLessThanDebtFloor: boolean
+  isLoadingStage: boolean
 }
 
 export const defaultManageVaultConditions: ManageVaultConditions = {
-  isEditingStage: false,
-  isProxyStage: false,
-  isCollateralAllowanceStage: false,
-  isDaiAllowanceStage: false,
-  isManageStage: false,
-
+  ...defaultManageVaultStageCategories,
   editingButtonDisabled: true,
   vaultWillBeUnderCollateralizedAtCurrentPrice: false,
   vaultWillBeUnderCollateralizedAtNextPrice: false,
@@ -99,6 +101,7 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   generateAmountIsLessThanDebtFloor: false,
   shouldPaybackAll: false,
   debtWillBeLessThanDebtFloor: false,
+  isLoadingStage: false,
 }
 // This value ought to be coupled in relation to how much we round the raw debt
 // value in the vault (vault.debt)
@@ -180,6 +183,17 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     !shouldPaybackAll
   )
 
+  const isLoadingStage = ([
+    'proxyInProgress',
+    'proxyWaitingForApproval',
+    'collateralAllowanceWaitingForApproval',
+    'collateralAllowanceInProgress',
+    'daiAllowanceWaitingForApproval',
+    'daiAllowanceInProgress',
+    'manageInProgress',
+    'manageWaitingForApproval',
+  ] as ManageVaultStage[]).some((s) => s === stage)
+
   return {
     ...state,
     ...categoriseManageVaultStages(stage),
@@ -197,5 +211,6 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     generateAmountIsLessThanDebtFloor,
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,
+    isLoadingStage,
   }
 }
