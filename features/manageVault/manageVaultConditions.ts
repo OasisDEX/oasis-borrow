@@ -85,11 +85,17 @@ export interface ManageVaultConditions {
   vaultWillBeUnderCollateralizedAtNextPrice: boolean
 
   accountIsController: boolean
+  depositingAllEthBalance: boolean
+  depositAmountExceedsCollateralBalance: boolean
   withdrawAmountExceedsFreeCollateral: boolean
   withdrawAmountExceedsFreeCollateralAtNextPrice: boolean
   generateAmountExceedsDaiYieldFromTotalCollateral: boolean
   generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice: boolean
-  generateAmountIsLessThanDebtFloor: boolean
+  generateAmountLessThanDebtFloor: boolean
+  generateAmountExceedsDebtCeiling: boolean
+  paybackAmountExceedsVaultDebt: boolean
+  paybackAmountExceedsDaiBalance: boolean
+
   debtWillBeLessThanDebtFloor: boolean
   isLoadingStage: boolean
 
@@ -120,11 +126,18 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   generateAndPaybackAmountsEmpty: true,
   inputAmountsEmpty: true,
   accountIsController: false,
+
+  depositingAllEthBalance: false,
+  depositAmountExceedsCollateralBalance: false,
   withdrawAmountExceedsFreeCollateral: false,
   withdrawAmountExceedsFreeCollateralAtNextPrice: false,
   generateAmountExceedsDaiYieldFromTotalCollateral: false,
   generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice: false,
-  generateAmountIsLessThanDebtFloor: false,
+  generateAmountLessThanDebtFloor: false,
+  generateAmountExceedsDebtCeiling: false,
+  paybackAmountExceedsVaultDebt: false,
+  paybackAmountExceedsDaiBalance: false,
+
   debtWillBeLessThanDebtFloor: false,
   isLoadingStage: false,
 
@@ -162,6 +175,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     afterFreeCollateral,
     afterFreeCollateralAtNextPrice,
     shouldPaybackAll,
+    balanceInfo: { collateralBalance, daiBalance },
   } = state
 
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
@@ -204,6 +218,10 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
 
   const accountIsController = account === vault.controller
 
+  const depositAmountExceedsCollateralBalance = !!depositAmount?.gt(collateralBalance)
+
+  const depositingAllEthBalance = vault.token === 'ETH' && !!depositAmount?.eq(collateralBalance)
+
   const withdrawAmountExceedsFreeCollateral = !!withdrawAmount?.gt(afterFreeCollateral)
 
   const withdrawAmountExceedsFreeCollateralAtNextPrice =
@@ -217,11 +235,16 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     !generateAmountExceedsDaiYieldFromTotalCollateral &&
     !!generateAmount?.gt(daiYieldFromTotalCollateralAtNextPrice)
 
-  const generateAmountIsLessThanDebtFloor = !!(
+  const generateAmountLessThanDebtFloor = !!(
     generateAmount &&
     !generateAmount.plus(vault.debt).isZero() &&
     generateAmount.plus(vault.debt).lt(ilkData.debtFloor)
   )
+
+  const generateAmountExceedsDebtCeiling = !!generateAmount?.gt(ilkData.ilkDebtAvailable)
+
+  const paybackAmountExceedsDaiBalance = !!paybackAmount?.gt(daiBalance)
+  const paybackAmountExceedsVaultDebt = !!paybackAmount?.gt(vault.debt)
 
   const debtWillBeLessThanDebtFloor = !!(
     paybackAmount &&
@@ -294,7 +317,13 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     customDaiAllowanceAmountEmpty ||
     customDaiAllowanceAmountExceedsMaxUint256 ||
     customDaiAllowanceAmountLessThanPaybackAmount ||
-    debtWillBeLessThanDebtFloor
+    debtWillBeLessThanDebtFloor ||
+    depositAmountExceedsCollateralBalance ||
+    depositingAllEthBalance ||
+    generateAmountExceedsDebtCeiling ||
+    generateAmountLessThanDebtFloor ||
+    paybackAmountExceedsDaiBalance ||
+    paybackAmountExceedsVaultDebt
 
   return {
     ...state,
@@ -312,11 +341,15 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     vaultWillBeUnderCollateralizedAtNextPrice,
 
     accountIsController,
+    depositingAllEthBalance,
+    depositAmountExceedsCollateralBalance,
     withdrawAmountExceedsFreeCollateral,
     withdrawAmountExceedsFreeCollateralAtNextPrice,
     generateAmountExceedsDaiYieldFromTotalCollateral,
     generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice,
-    generateAmountIsLessThanDebtFloor,
+    generateAmountLessThanDebtFloor,
+    paybackAmountExceedsDaiBalance,
+    paybackAmountExceedsVaultDebt,
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,
     isLoadingStage,

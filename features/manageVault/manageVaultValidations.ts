@@ -45,19 +45,24 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     withdrawAmountExceedsFreeCollateralAtNextPrice,
     generateAmountExceedsDaiYieldFromTotalCollateral,
     generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice,
-    generateAmountIsLessThanDebtFloor,
+    generateAmountLessThanDebtFloor,
     debtWillBeLessThanDebtFloor,
     isEditingStage,
     customCollateralAllowanceAmountExceedsMaxUint256,
     customCollateralAllowanceAmountLessThanDepositAmount,
     customDaiAllowanceAmountExceedsMaxUint256,
     customDaiAllowanceAmountLessThanPaybackAmount,
+    depositAmountExceedsCollateralBalance,
+    depositingAllEthBalance,
+    generateAmountExceedsDebtCeiling,
+    paybackAmountExceedsDaiBalance,
+    paybackAmountExceedsVaultDebt,
   } = state
 
   const errorMessages: ManageVaultErrorMessage[] = []
 
   if (isEditingStage) {
-    if (depositAmount?.gt(balanceInfo.collateralBalance)) {
+    if (depositAmountExceedsCollateralBalance) {
       errorMessages.push('depositAmountExceedsCollateralBalance')
     }
 
@@ -77,23 +82,23 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
       errorMessages.push('generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice')
     }
 
-    if (generateAmount?.gt(ilkData.ilkDebtAvailable)) {
+    if (generateAmountExceedsDebtCeiling) {
       errorMessages.push('generateAmountExceedsDebtCeiling')
     }
 
-    if (generateAmountIsLessThanDebtFloor) {
+    if (generateAmountLessThanDebtFloor) {
       errorMessages.push('generateAmountLessThanDebtFloor')
     }
 
-    if (paybackAmount?.gt(balanceInfo.daiBalance)) {
+    if (paybackAmountExceedsDaiBalance) {
       errorMessages.push('paybackAmountExceedsDaiBalance')
     }
 
-    if (paybackAmount?.gt(vault.debt)) {
+    if (paybackAmountExceedsVaultDebt) {
       errorMessages.push('paybackAmountExceedsVaultDebt')
     }
 
-    if (vault.token === 'ETH' && depositAmount?.eq(balanceInfo.collateralBalance)) {
+    if (depositingAllEthBalance) {
       errorMessages.push('depositingAllEthBalance')
     }
 
