@@ -1,11 +1,10 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { VaultActionInput } from 'components/VaultActionInput'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Card, Flex, Grid, Text } from 'theme-ui'
+import { Box, Flex, Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 
@@ -29,7 +28,7 @@ const MinusIcon = () => (
 function DepositInput({
   maxDepositAmount,
   maxDepositAmountUSD,
-  token,
+  vault: { token },
   depositAmount,
   depositAmountUSD,
   updateDeposit,
@@ -84,7 +83,7 @@ function WithdrawInput({
   withdrawAmountUSD,
   maxWithdrawAmount,
   maxWithdrawAmountUSD,
-  token,
+  vault: { token },
   updateWithdraw,
   updateWithdrawUSD,
   updateWithdrawMax,
@@ -99,7 +98,7 @@ function WithdrawInput({
       amount={withdrawAmount}
       auxiliaryAmount={withdrawAmountUSD}
       maxAmount={maxWithdrawAmount}
-      maxAmountLabel={'Free'}
+      maxAmountLabel={'Max'}
       maxAuxiliaryAmount={maxWithdrawAmountUSD}
       token={token}
       hasError={false}
@@ -130,59 +129,6 @@ function PaybackInput({
   )
 }
 
-function ManageVaultIlkDetails({
-  ilkDebtAvailable,
-  liquidationRatio,
-  stabilityFee,
-  liquidationPenalty,
-  debtFloor,
-}: ManageVaultState) {
-  const { t } = useTranslation()
-
-  return (
-    <Card bg="secondaryAlt" sx={{ border: 'none' }}>
-      <Grid columns={'2fr 3fr'}>
-        <>
-          <Text sx={{ fontSize: 2 }}>{t('manage-vault.dai-available')}</Text>
-          <Text sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}>{`${formatAmount(
-            ilkDebtAvailable,
-            'DAI',
-          )} DAI`}</Text>
-        </>
-
-        <>
-          <Text sx={{ fontSize: 2 }}>{t('manage-vault.min-collat-ratio')}</Text>
-          <Text
-            sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}
-          >{`${formatPercent(liquidationRatio.times(100), { precision: 2 })}`}</Text>
-        </>
-
-        <>
-          <Text sx={{ fontSize: 2 }}>{t('manage-vault.stability-fee')}</Text>
-          <Text
-            sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}
-          >{`${formatPercent(stabilityFee.times(100), { precision: 2 })}`}</Text>
-        </>
-
-        <>
-          <Text sx={{ fontSize: 2 }}>{t('manage-vault.liquidation-fee')}</Text>
-          <Text
-            sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}
-          >{`${formatPercent(liquidationPenalty.times(100), { precision: 2 })}`}</Text>
-        </>
-
-        <>
-          <Text sx={{ fontSize: 2 }}>{t('manage-vault.dust-limit')}</Text>
-          <Text sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}>{`${formatAmount(
-            debtFloor,
-            'DAI',
-          )} DAI`}</Text>
-        </>
-      </Grid>
-    </Card>
-  )
-}
-
 export function ManageVaultEditing(props: ManageVaultState) {
   const { t } = useTranslation()
 
@@ -191,36 +137,24 @@ export function ManageVaultEditing(props: ManageVaultState) {
     withdrawAmount,
     generateAmount,
     paybackAmount,
-    errorMessages,
-    warningMessages,
-    progress,
     stage,
-    token,
+    vault: { token },
     toggleDepositAndGenerateOption,
     togglePaybackAndWithdrawOption,
     showDepositAndGenerateOption,
     showPaybackAndWithdrawOption,
-    showIlkDetails,
+    accountIsController,
   } = props
-
-  function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault()
-    progress!()
-  }
-
-  const errorString = errorMessages.join(',\n')
-  const warningString = warningMessages.join(',\n')
-
-  const hasError = !!errorString
-  const hasWarnings = !!warningString
 
   const disableDepositAndGenerate = paybackAmount || withdrawAmount || showPaybackAndWithdrawOption
   const disablePaybackAndWithdraw = depositAmount || generateAmount || showDepositAndGenerateOption
 
   const inverted = stage === 'daiEditing'
 
-  const showDepositAndGenerateOptionButton = depositAmount || generateAmount
-  const showPaybackAndWithdrawOptionButton = paybackAmount || withdrawAmount
+  const showDepositAndGenerateOptionButton =
+    (depositAmount || generateAmount) && accountIsController
+  const showPaybackAndWithdrawOptionButton =
+    (paybackAmount || withdrawAmount) && accountIsController
 
   return (
     <Grid>
@@ -295,21 +229,6 @@ export function ManageVaultEditing(props: ManageVaultState) {
           (!!paybackAmount || !!withdrawAmount) &&
           (inverted ? <WithdrawInput {...props} /> : <PaybackInput {...props} />)}
       </Box>
-
-      {hasError && (
-        <Card variant="danger">
-          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
-        </Card>
-      )}
-      {hasWarnings && (
-        <Card variant="warning">
-          <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>
-        </Card>
-      )}
-      <Button onClick={handleProgress} disabled={hasError}>
-        {t('confirm')}
-      </Button>
-      {showIlkDetails && <ManageVaultIlkDetails {...props} />}
     </Grid>
   )
 }

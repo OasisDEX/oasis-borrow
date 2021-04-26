@@ -73,6 +73,7 @@ import {
   ContextConnected,
   createAccount$,
   createContext$,
+  createContextConnected$,
   createInitializedAccount$,
   createOnEveryBlock$,
   createWeb3ContextConnected$,
@@ -112,6 +113,8 @@ export type AddGasEstimationFunction = <S extends HasGasEstimation>(
 
 export type TxHelpers$ = Observable<TxHelpers>
 
+export const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
+
 function createTxHelpers$(
   context$: Observable<ContextConnected>,
   send: SendFunction<TxData>,
@@ -146,10 +149,7 @@ export function setupAppContext() {
 
   const context$ = createContext$(web3ContextConnected$)
 
-  const connectedContext$ = context$.pipe(
-    filter(({ status }) => status === 'connected'),
-    shareReplay(1),
-  ) as Observable<ContextConnected>
+  const connectedContext$ = createContextConnected$(context$)
 
   const oracleContext$ = context$.pipe(
     switchMap((ctx) => of({ ...ctx, account: ctx.mcdSpot.address })),
@@ -196,8 +196,6 @@ export function setupAppContext() {
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
-
-  const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
 
   const ilkData$ = memoize(
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, catIlks$, ilkToToken$),
@@ -248,6 +246,7 @@ export function setupAppContext() {
   //   account: string | undefined,
   // ) => Observable<PriceInfo>
 
+  // TODO Don't allow undefined args like this
   const balanceInfo$ = curry(createBalanceInfo$)(balance$) as (
     token: string,
     account: string | undefined,

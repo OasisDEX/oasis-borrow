@@ -19,6 +19,7 @@ import browserDetect from 'browser-detect'
 import { useAppContext } from 'components/AppContextProvider'
 import { LedgerAccountSelection } from 'components/connectWallet/LedgerAccountSelection'
 import { TrezorAccountSelection } from 'components/connectWallet/TrezorAccountSelection'
+import { AppLink } from 'components/Links'
 import { redirectState$ } from 'features/router/redirectState'
 import { AppSpinner } from 'helpers/loadingIndicator/LoadingIndicator'
 import { useObservable } from 'helpers/observableHook'
@@ -350,6 +351,20 @@ export function ConnectWallet() {
             />
           )
         })}
+        <Box sx={{ mt: 4 }}>
+          <Text sx={{ fontWeight: 'semiBold', mb: 2 }} variant="paragraph2">
+            {t('new-to-ethereum')}
+          </Text>
+          <AppLink
+            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            href={t('learn-more-link')}
+          >
+            <Text variant="paragraph2" sx={{ color: 'inherit', fontWeight: 'semiBold' }}>
+              {t('learn-about-wallets')}
+            </Text>
+            <Icon sx={{ ml: 1 }} name="open_in_new_tab" />
+          </AppLink>
+        </Box>
       </Grid>
     </Grid>
   )
@@ -409,6 +424,13 @@ async function connectReadonly(web3Context: Web3ContextNotConnected) {
 
 export function WithConnection({ children }: WithChildren) {
   const { web3Context$ } = useAppContext()
+  const web3Context = useObservable(web3Context$)
+
+  useEffect(() => {
+    if (web3Context && web3Context.status === 'connectedReadonly') {
+      redirectState$.next(window.location.pathname)
+    }
+  }, [web3Context?.status])
 
   useEffect(() => autoConnect(web3Context$, getNetworkId(), connectReadonly), [])
 

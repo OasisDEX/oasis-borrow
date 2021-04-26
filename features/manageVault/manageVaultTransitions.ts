@@ -72,7 +72,7 @@ export function applyManageVaultTransition(
       paybackAmount,
       collateralAllowance,
       daiAllowance,
-      token,
+      vault: { token },
     } = state
     const canProgress = !errorMessages.length
     const hasProxy = !!proxyAddress
@@ -112,7 +112,7 @@ export function applyManageVaultTransition(
       paybackAmount,
       collateralAllowance,
       daiAllowance,
-      token,
+      vault: { token },
     } = state
     const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
     const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true

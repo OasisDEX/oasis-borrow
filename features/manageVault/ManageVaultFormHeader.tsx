@@ -42,7 +42,7 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
           {isProxyStage
             ? 'Create Proxy'
             : isCollateralAllowanceStage
-            ? `Set ${props.token} Allowance`
+            ? `Set ${props.vault.token} Allowance`
             : isDaiAllowanceStage
             ? `Set DAI Allowance`
             : null}

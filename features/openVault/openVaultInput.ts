@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { isNullish } from 'helpers/functions'
 
 import { OpenVaultChange, OpenVaultState } from './openVault'
 
@@ -38,8 +39,8 @@ export function applyOpenVaultInput(
 ): OpenVaultState {
   if (change.kind === 'deposit') {
     const { depositAmount } = change
-    const { currentCollateralPrice } = state
-    const depositAmountUSD = depositAmount && currentCollateralPrice.times(depositAmount)
+    const { priceInfo } = state
+    const depositAmountUSD = depositAmount && priceInfo.currentCollateralPrice.times(depositAmount)
 
     return {
       ...state,
@@ -54,8 +55,8 @@ export function applyOpenVaultInput(
 
   if (change.kind === 'depositUSD') {
     const { depositAmountUSD } = change
-    const { currentCollateralPrice } = state
-    const depositAmount = depositAmountUSD && depositAmountUSD.div(currentCollateralPrice)
+    const { priceInfo } = state
+    const depositAmount = depositAmountUSD && depositAmountUSD.div(priceInfo.currentCollateralPrice)
 
     return {
       ...state,
@@ -86,7 +87,11 @@ export function applyOpenVaultInput(
     }
   }
 
-  if (change.kind === 'generateMax' && state.showGenerateOption) {
+  if (
+    change.kind === 'generateMax' &&
+    state.showGenerateOption &&
+    !isNullish(state.depositAmount)
+  ) {
     const { maxGenerateAmount } = state
 
     return {

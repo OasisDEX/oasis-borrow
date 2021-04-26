@@ -18,53 +18,28 @@ export function applyManageVaultEnvironment(
   if (change.kind === 'priceInfo') {
     return {
       ...state,
-      ...change.priceInfo,
+      priceInfo: change.priceInfo,
     }
   }
 
   if (change.kind === 'balanceInfo') {
     return {
       ...state,
-      ...change.balanceInfo,
+      balanceInfo: change.balanceInfo,
     }
   }
 
   if (change.kind === 'ilkData') {
-    const {
-      ilkData: { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor },
-    } = change
     return {
       ...state,
-      maxDebtPerUnitCollateral,
-      ilkDebtAvailable,
-      debtFloor,
+      ilkData: change.ilkData,
     }
   }
 
   if (change.kind === 'vault') {
-    const {
-      vault: {
-        lockedCollateral,
-        debt,
-        collateralizationRatio,
-        liquidationPrice,
-        lockedCollateralUSD,
-        freeCollateral,
-        stabilityFee,
-        liquidationPenalty,
-      },
-    } = change
-
     return {
       ...state,
-      lockedCollateral,
-      debt,
-      collateralizationRatio,
-      liquidationPrice,
-      lockedCollateralUSD,
-      freeCollateral,
-      stabilityFee,
-      liquidationPenalty,
+      vault: change.vault,
     }
   }
 

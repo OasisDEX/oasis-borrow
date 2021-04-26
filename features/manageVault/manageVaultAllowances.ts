@@ -21,6 +21,10 @@ interface DaiAllowancePaybackChange {
   kind: 'daiAllowanceAsPaybackAmount'
 }
 
+interface DaiAllowanceReset {
+  kind: 'daiAllowanceReset'
+}
+
 interface CollateralAllowanceChange {
   kind: 'collateralAllowance'
   collateralAllowanceAmount?: BigNumber
@@ -34,6 +38,10 @@ interface CollateralAllowanceDepositChange {
   kind: 'collateralAllowanceAsDepositAmount'
 }
 
+interface CollateralAllowanceReset {
+  kind: 'collateralAllowanceReset'
+}
+
 interface AllowancesReset {
   kind: 'allowancesReset'
 }
@@ -42,9 +50,11 @@ export type ManageVaultAllowanceChange =
   | DaiAllowanceChange
   | DaiAllowanceUnlimitedChange
   | DaiAllowancePaybackChange
+  | DaiAllowanceReset
   | CollateralAllowanceChange
   | CollateralAllowanceUnlimitedChange
   | CollateralAllowanceDepositChange
+  | CollateralAllowanceReset
   | AllowancesReset
 
 export function applyManageVaultAllowance(
@@ -63,6 +73,7 @@ export function applyManageVaultAllowance(
     const { depositAmount } = state
     return {
       ...state,
+      selectedCollateralAllowanceRadio: 'depositAmount',
       collateralAllowanceAmount: depositAmount,
     }
   }
@@ -70,7 +81,16 @@ export function applyManageVaultAllowance(
   if (change.kind === 'collateralAllowanceUnlimited') {
     return {
       ...state,
+      selectedCollateralAllowanceRadio: 'unlimited',
       collateralAllowanceAmount: maxUint256,
+    }
+  }
+
+  if (change.kind === 'collateralAllowanceReset') {
+    return {
+      ...state,
+      selectedCollateralAllowanceRadio: 'custom',
+      collateralAllowanceAmount: undefined,
     }
   }
 
@@ -83,17 +103,30 @@ export function applyManageVaultAllowance(
   }
 
   if (change.kind === 'daiAllowanceAsPaybackAmount') {
-    const { paybackAmount } = state
+    const {
+      paybackAmount,
+      vault: { debtOffset },
+    } = state
     return {
       ...state,
-      daiAllowanceAmount: paybackAmount,
+      selectedDaiAllowanceRadio: 'paybackAmount',
+      daiAllowanceAmount: paybackAmount!.plus(debtOffset),
     }
   }
 
   if (change.kind === 'daiAllowanceUnlimited') {
     return {
       ...state,
+      selectedDaiAllowanceRadio: 'unlimited',
       daiAllowanceAmount: maxUint256,
+    }
+  }
+
+  if (change.kind === 'daiAllowanceReset') {
+    return {
+      ...state,
+      selectedDaiAllowanceRadio: 'custom',
+      daiAllowanceAmount: undefined,
     }
   }
 

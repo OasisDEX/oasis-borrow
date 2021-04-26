@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
 import { Context } from 'blockchain/network'
-import { zero } from 'helpers/zero'
+import { HOUR, SECONDS_PER_YEAR } from 'components/constants'
+import { one, zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -11,6 +12,10 @@ import { CallObservable } from './calls/observe'
 import { vatGem, vatUrns } from './calls/vat'
 import { IlkData } from './ilks'
 import { OraclePriceData } from './prices'
+
+BigNumber.config({
+  POW_PRECISION: 100,
+})
 
 export function createVaults$(
   context$: Observable<Context>,
@@ -44,20 +49,26 @@ export interface Vault {
   lockedCollateral: BigNumber
   unlockedCollateral: BigNumber
   lockedCollateralUSD: BigNumber
+  lockedCollateralUSDAtNextPrice: BigNumber
   backingCollateral: BigNumber
+  backingCollateralAtNextPrice: BigNumber
   backingCollateralUSD: BigNumber
+  backingCollateralUSDAtNextPrice: BigNumber
   freeCollateral: BigNumber
+  freeCollateralAtNextPrice: BigNumber
   freeCollateralUSD: BigNumber
+  freeCollateralUSDAtNextPrice: BigNumber
   debt: BigNumber
+  debtOffset: BigNumber
   normalizedDebt: BigNumber
   availableDebt: BigNumber
-  availableIlkDebt: BigNumber
-  liquidationRatio: BigNumber
+  availableDebtAtNextPrice: BigNumber
   collateralizationRatio: BigNumber
+  collateralizationRatioAtNextPrice: BigNumber
   liquidationPrice: BigNumber
-  liquidationPenalty: BigNumber
-  stabilityFee: BigNumber
-  debtFloor: BigNumber
+  daiYieldFromLockedCollateral: BigNumber
+  isVaultAtRisk: boolean
+  isVaultUnderCollaterilizedAtNextPrice: boolean
 }
 
 export function createController$(
@@ -99,37 +110,67 @@ export function createVault$(
           ([
             { collateral, normalizedDebt },
             unlockedCollateral,
-            { currentPrice },
-            {
-              normalizedIlkDebt,
-              debtFloor,
-              debtScalingFactor,
-              debtCeiling,
-              liquidationRatio,
-              stabilityFee,
-              liquidationPenalty,
-            },
+            { currentPrice, nextPrice },
+            { debtScalingFactor, liquidationRatio, collateralizationDangerThreshold, stabilityFee },
           ]) => {
             const collateralUSD = collateral.times(currentPrice)
-            const debt = debtScalingFactor.times(normalizedDebt)
-            const ilkDebt = debtScalingFactor.times(normalizedIlkDebt)
+            const collateralUSDAtNextPrice = nextPrice ? collateral.times(nextPrice) : currentPrice
 
-            const backingCollateral = debt.times(liquidationRatio).div(currentPrice)
-            const freeCollateral = backingCollateral.gt(collateral)
+            const debt = debtScalingFactor.times(normalizedDebt)
+
+            const debtOffset = debt
+              .times(one.plus(stabilityFee.div(SECONDS_PER_YEAR)).pow(HOUR * 5))
+              .minus(debt)
+              .dp(18, BigNumber.ROUND_DOWN)
+
+            const backingCollateral = debt
+              .plus(debtOffset)
+              .times(liquidationRatio)
+              .div(currentPrice)
+            const backingCollateralAtNextPrice = debt.times(liquidationRatio).div(nextPrice)
+            const backingCollateralUSD = backingCollateral.times(currentPrice)
+            const backingCollateralUSDAtNextPrice = backingCollateralAtNextPrice.times(nextPrice)
+
+            const freeCollateral = backingCollateral.gte(collateral)
               ? zero
               : collateral.minus(backingCollateral)
+            const freeCollateralAtNextPrice = backingCollateralAtNextPrice.gte(collateral)
+              ? zero
+              : collateral.minus(backingCollateralAtNextPrice)
 
-            const backingCollateralUSD = backingCollateral.div(currentPrice)
-            const freeCollateralUSD = freeCollateral.div(currentPrice)
-            const collateralizationRatio = debt.eq(zero) ? zero : collateralUSD.div(debt)
+            const freeCollateralUSD = freeCollateral.times(currentPrice)
+            const freeCollateralUSDAtNextPrice = freeCollateralAtNextPrice.times(nextPrice)
+
+            const collateralizationRatio = debt.isZero() ? zero : collateralUSD.div(debt)
+            const collateralizationRatioAtNextPrice = debt.isZero()
+              ? zero
+              : collateralUSDAtNextPrice.div(debt)
 
             const maxAvailableDebt = collateralUSD.div(liquidationRatio)
-            const availableDebt = debt.lt(maxAvailableDebt) ? maxAvailableDebt.minus(debt) : zero
-            const availableIlkDebt = debtCeiling.minus(ilkDebt)
+            const maxAvailableDebtAtNextPrice = collateralUSDAtNextPrice.div(liquidationRatio)
+
+            const availableDebt = debt.lt(collateralUSD.div(liquidationRatio))
+              ? maxAvailableDebt.minus(debt)
+              : zero
+            const availableDebtAtNextPrice = debt.lt(maxAvailableDebtAtNextPrice)
+              ? maxAvailableDebtAtNextPrice.minus(debt)
+              : zero
 
             const liquidationPrice = collateral.eq(zero)
               ? zero
               : debt.times(liquidationRatio).div(collateral)
+
+            const daiYieldFromLockedCollateral = collateral
+              .times(currentPrice)
+              .div(liquidationRatio)
+              .minus(debt)
+
+            const isVaultAtRisk =
+              !debt.isZero() && collateralizationRatio.lt(collateralizationDangerThreshold)
+
+            const isVaultUnderCollaterilizedAtNextPrice =
+              !collateralizationRatioAtNextPrice.isZero() &&
+              collateralizationRatioAtNextPrice.lt(liquidationRatio)
 
             return of({
               id,
@@ -137,24 +178,35 @@ export function createVault$(
               token,
               address: urnAddress,
               owner,
-              controller,
+              controller: controller!,
+
               lockedCollateral: collateral,
               lockedCollateralUSD: collateralUSD,
               backingCollateral,
               backingCollateralUSD,
               freeCollateral,
               freeCollateralUSD,
-              unlockedCollateral,
+
+              lockedCollateralUSDAtNextPrice: collateralUSDAtNextPrice,
+              backingCollateralAtNextPrice,
+              backingCollateralUSDAtNextPrice,
+              freeCollateralAtNextPrice,
+              freeCollateralUSDAtNextPrice,
+
               normalizedDebt,
-              collateralizationRatio,
               debt,
+              debtOffset,
               availableDebt,
-              availableIlkDebt,
-              debtFloor,
-              stabilityFee,
+              availableDebtAtNextPrice,
+
+              unlockedCollateral,
+              collateralizationRatio,
+              collateralizationRatioAtNextPrice,
               liquidationPrice,
-              liquidationRatio,
-              liquidationPenalty,
+
+              daiYieldFromLockedCollateral,
+              isVaultAtRisk,
+              isVaultUnderCollaterilizedAtNextPrice,
             })
           },
         ),

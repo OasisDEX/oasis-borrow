@@ -75,22 +75,58 @@ export function categoriseOpenVaultStage(stage: OpenVaultStage) {
 
 export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultState {
   const {
-    collateralBalance,
     depositAmount,
-    maxDebtPerUnitCollateral,
-    generateAmount,
-    currentCollateralPrice,
-    liquidationRatio,
     depositAmountUSD,
+    generateAmount,
+    balanceInfo: { collateralBalance },
+    priceInfo: { currentCollateralPrice, nextCollateralPrice },
+    ilkData: { ilkDebtAvailable, liquidationRatio },
   } = state
+
+  const depositAmountUSDAtNextPrice = depositAmount
+    ? depositAmount.times(nextCollateralPrice)
+    : zero
+
+  const afterBackingCollateral = generateAmount
+    ? generateAmount.times(liquidationRatio).div(currentCollateralPrice)
+    : zero
+
+  const afterFreeCollateral = depositAmount ? depositAmount.minus(afterBackingCollateral) : zero
 
   const maxDepositAmount = collateralBalance
   const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
-  const maxGenerateAmount = depositAmount ? depositAmount.times(maxDebtPerUnitCollateral) : zero
+
+  const daiYieldFromDepositingCollateral = depositAmount
+    ? depositAmount.times(currentCollateralPrice).div(liquidationRatio)
+    : zero
+
+  const daiYieldFromDepositingCollateralAtNextPrice = depositAmount
+    ? depositAmount.times(nextCollateralPrice).div(liquidationRatio)
+    : zero
+
+  const maxGenerateAmountCurrentPrice = daiYieldFromDepositingCollateral.gt(ilkDebtAvailable)
+    ? ilkDebtAvailable
+    : daiYieldFromDepositingCollateral
+
+  const maxGenerateAmountNextPrice = daiYieldFromDepositingCollateralAtNextPrice.gt(
+    ilkDebtAvailable,
+  )
+    ? ilkDebtAvailable
+    : daiYieldFromDepositingCollateralAtNextPrice
+
+  const maxGenerateAmount = BigNumber.minimum(
+    maxGenerateAmountCurrentPrice,
+    maxGenerateAmountNextPrice,
+  )
 
   const afterCollateralizationRatio =
-    depositAmountUSD && generateAmount && !generateAmount.eq(zero)
+    generateAmount && depositAmountUSD && !generateAmount.isZero()
       ? depositAmountUSD.div(generateAmount)
+      : zero
+
+  const afterCollateralizationRatioAtNextPrice =
+    generateAmount && !generateAmount.isZero()
+      ? depositAmountUSDAtNextPrice.div(generateAmount)
       : zero
 
   const afterLiquidationPrice =
@@ -98,13 +134,24 @@ export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultStat
       ? generateAmount.times(liquidationRatio).div(depositAmount)
       : zero
 
+  const collateralBalanceRemaining = depositAmount
+    ? collateralBalance.minus(depositAmount)
+    : collateralBalance
+
   return {
     ...state,
     maxDepositAmount,
     maxDepositAmountUSD,
     maxGenerateAmount,
+    maxGenerateAmountCurrentPrice,
+    maxGenerateAmountNextPrice,
     afterCollateralizationRatio,
+    afterCollateralizationRatioAtNextPrice,
+    daiYieldFromDepositingCollateral,
+    daiYieldFromDepositingCollateralAtNextPrice,
     afterLiquidationPrice,
+    afterFreeCollateral,
+    collateralBalanceRemaining,
   }
 }
 
@@ -161,64 +208,78 @@ export type OpenVaultStage =
   | 'openFailure'
   | 'openSuccess'
 
-export type DefaultOpenVaultState = {
+export interface MutableOpenVaultState {
   stage: OpenVaultStage
-  ilk: string
-  account: string
-  token: string
-
-  errorMessages: OpenVaultErrorMessage[]
-  warningMessages: OpenVaultWarningMessage[]
-
-  proxyAddress?: string
-  allowance?: BigNumber
-  progress?: () => void
-  reset?: () => void
-  id?: BigNumber
-
-  toggleGenerateOption?: () => void
-  toggleIlkDetails?: () => void
-  showGenerateOption: boolean
-  showIlkDetails: boolean
-
-  afterLiquidationPrice: BigNumber
-  afterCollateralizationRatio: BigNumber
-
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
+  generateAmount?: BigNumber
+  showGenerateOption: boolean
+  showIlkDetails: boolean
+  selectedAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
+  allowanceAmount?: BigNumber
+  id?: BigNumber
+}
+
+interface OpenVaultCalculations {
+  errorMessages: OpenVaultErrorMessage[]
+  warningMessages: OpenVaultWarningMessage[]
+  afterLiquidationPrice: BigNumber
+  afterCollateralizationRatio: BigNumber
+  afterCollateralizationRatioAtNextPrice: BigNumber
+  daiYieldFromDepositingCollateral: BigNumber
+  daiYieldFromDepositingCollateralAtNextPrice: BigNumber
+  afterFreeCollateral: BigNumber
   maxDepositAmount: BigNumber
   maxDepositAmountUSD: BigNumber
-  generateAmount?: BigNumber
   maxGenerateAmount: BigNumber
+  maxGenerateAmountCurrentPrice: BigNumber
+  maxGenerateAmountNextPrice: BigNumber
+  collateralBalanceRemaining: BigNumber
+}
+
+interface OpenVaultFunctions {
+  progress?: () => void
+  reset?: () => void
+  toggleGenerateOption?: () => void
+  toggleIlkDetails?: () => void
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
   updateGenerate?: (generateAmount?: BigNumber) => void
   updateGenerateMax?: () => void
-
-  allowanceAmount?: BigNumber
   updateAllowanceAmount?: (amount?: BigNumber) => void
-  setAllowanceAmountUnlimited?: (amount?: BigNumber) => void
-  setAllowanceAmountToDepositAmount?: (amount?: BigNumber) => void
-  resetAllowanceAmount?: () => void
+  setAllowanceAmountUnlimited?: () => void
+  setAllowanceAmountToDepositAmount?: () => void
+  setAllowanceAmountCustom?: () => void
+  injectStateOverride: (state: Partial<MutableOpenVaultState>) => void
+}
 
-  maxDebtPerUnitCollateral: BigNumber
-  ilkDebtAvailable: BigNumber
-  debtFloor: BigNumber
-  liquidationRatio: BigNumber
+interface OpenVaultEnvironment {
+  ilk: string
+  account: string
+  token: string
+  priceInfo: PriceInfo
+  balanceInfo: BalanceInfo
+  ilkData: IlkData
+  proxyAddress?: string
+  allowance?: BigNumber
+}
 
+interface OpenVaultTxInfo {
   allowanceTxHash?: string
   proxyTxHash?: string
   openTxHash?: string
-  proxyConfirmations?: number
-  safeConfirmations: number
   txError?: any
   etherscan?: string
-
-  injectStateOverride: (state: Partial<OpenVaultState>) => void
+  proxyConfirmations?: number
+  safeConfirmations: number
 }
 
-export type OpenVaultState = PriceInfo & BalanceInfo & DefaultOpenVaultState
+export type OpenVaultState = MutableOpenVaultState &
+  OpenVaultCalculations &
+  OpenVaultFunctions &
+  OpenVaultEnvironment &
+  OpenVaultTxInfo
 
 function addTransitions(
   txHelpers: TxHelpers,
@@ -272,12 +333,10 @@ function addTransitions(
         change({
           kind: 'allowanceAsDepositAmount',
         }),
-      resetAllowanceAmount: () =>
+      setAllowanceAmountCustom: () =>
         change({
-          kind: 'allowance',
-          allowanceAmount: undefined,
+          kind: 'allowanceCustom',
         }),
-
       progress: () => setAllowance(txHelpers, change, state),
       reset: () => change({ kind: 'backToEditing' }),
     }
@@ -301,20 +360,42 @@ function addTransitions(
     }
   }
 
+  if (state.stage === 'openSuccess') {
+    return {
+      ...state,
+      progress: () =>
+        change({
+          kind: 'backToEditing',
+        }),
+    }
+  }
+
   return state
 }
 
-export const defaultPartialOpenVaultState = {
+export const defaultMutableOpenVaultState: MutableOpenVaultState = {
   stage: 'editing' as OpenVaultStage,
-  errorMessages: [],
-  warningMessages: [],
   showIlkDetails: false,
   showGenerateOption: false,
-  afterLiquidationPrice: zero,
-  afterCollateralizationRatio: zero,
+  selectedAllowanceRadio: 'unlimited' as 'unlimited',
+  allowanceAmount: maxUint256,
+}
+
+export const defaultOpenVaultStateCalculations: OpenVaultCalculations = {
+  errorMessages: [],
+  warningMessages: [],
   maxDepositAmount: zero,
   maxDepositAmountUSD: zero,
   maxGenerateAmount: zero,
+  maxGenerateAmountCurrentPrice: zero,
+  maxGenerateAmountNextPrice: zero,
+  afterCollateralizationRatio: zero,
+  afterCollateralizationRatioAtNextPrice: zero,
+  daiYieldFromDepositingCollateral: zero,
+  daiYieldFromDepositingCollateralAtNextPrice: zero,
+  afterLiquidationPrice: zero,
+  afterFreeCollateral: zero,
+  collateralBalanceRemaining: zero,
 }
 
 export function createOpenVault$(
@@ -345,66 +426,54 @@ export function createOpenVault$(
               proxyAddress$(account),
             ).pipe(
               first(),
-              switchMap(
-                ([
-                  priceInfo,
-                  balanceInfo,
-                  { maxDebtPerUnitCollateral, ilkDebtAvailable, debtFloor, liquidationRatio },
-                  proxyAddress,
-                ]) =>
-                  (
-                    (proxyAddress && allowance$(token, account, proxyAddress)) ||
-                    of(undefined)
-                  ).pipe(
-                    first(),
-                    switchMap((allowance) => {
-                      const change$ = new Subject<OpenVaultChange>()
+              switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress]) =>
+                ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
+                  first(),
+                  switchMap((allowance) => {
+                    const change$ = new Subject<OpenVaultChange>()
 
-                      function change(ch: OpenVaultChange) {
-                        change$.next(ch)
-                      }
+                    function change(ch: OpenVaultChange) {
+                      change$.next(ch)
+                    }
 
-                      // NOTE: Not to be used in production/dev, test only
-                      function injectStateOverride(stateToOverride: Partial<OpenVaultState>) {
-                        return change$.next({ kind: 'injectStateOverride', stateToOverride })
-                      }
+                    // NOTE: Not to be used in production/dev, test only
+                    function injectStateOverride(stateToOverride: Partial<MutableOpenVaultState>) {
+                      return change$.next({ kind: 'injectStateOverride', stateToOverride })
+                    }
 
-                      const initialState: OpenVaultState = {
-                        ...priceInfo,
-                        ...balanceInfo,
-                        ...defaultPartialOpenVaultState,
-                        token,
-                        account,
-                        ilk,
-                        maxDebtPerUnitCollateral,
-                        ilkDebtAvailable,
-                        debtFloor,
-                        liquidationRatio,
-                        proxyAddress,
-                        allowance,
-                        safeConfirmations: context.safeConfirmations,
-                        etherscan: context.etherscan.url,
-                        allowanceAmount: maxUint256,
+                    const initialState: OpenVaultState = {
+                      ...defaultMutableOpenVaultState,
+                      ...defaultOpenVaultStateCalculations,
+                      priceInfo,
+                      balanceInfo,
+                      ilkData,
+                      token,
+                      account,
+                      ilk,
+                      proxyAddress,
+                      allowance,
+                      safeConfirmations: context.safeConfirmations,
+                      etherscan: context.etherscan.url,
 
-                        injectStateOverride,
-                      }
+                      injectStateOverride,
+                    }
 
-                      const environmentChanges$ = merge(
-                        priceInfoChange$(priceInfo$, token),
-                        balanceInfoChange$(balanceInfo$, token, account),
-                        createIlkDataChange$(ilkData$, ilk),
-                      )
+                    const environmentChanges$ = merge(
+                      priceInfoChange$(priceInfo$, token),
+                      balanceInfoChange$(balanceInfo$, token, account),
+                      createIlkDataChange$(ilkData$, ilk),
+                    )
 
-                      const connectedProxyAddress$ = proxyAddress$(account)
+                    const connectedProxyAddress$ = proxyAddress$(account)
 
-                      return merge(change$, environmentChanges$).pipe(
-                        scan(apply, initialState),
-                        map(validateErrors),
-                        map(validateWarnings),
-                        map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
-                      )
-                    }),
-                  ),
+                    return merge(change$, environmentChanges$).pipe(
+                      scan(apply, initialState),
+                      map(validateErrors),
+                      map(validateWarnings),
+                      map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
+                    )
+                  }),
+                ),
               ),
             )
           }),

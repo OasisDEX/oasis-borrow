@@ -21,7 +21,7 @@ import { Dictionary } from 'ts-essentials'
 import { Filters } from './Filters'
 import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { VaultsOverview } from './vaultsOverview'
-import { isVaultAtRisk, VaultSummary } from './vaultSummary'
+import { VaultSummary } from './vaultSummary'
 
 const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
   {
@@ -65,9 +65,8 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
       </TableSortHeader>
     ),
     cell: (vault) => {
-      const isAtRisk = isVaultAtRisk(vault)
       return (
-        <Text sx={{ textAlign: 'right', color: isAtRisk ? 'onError' : 'onSuccess' }}>
+        <Text sx={{ textAlign: 'right', color: vault.isVaultAtRisk ? 'onError' : 'onSuccess' }}>
           {formatPercent(vault.collateralizationRatio.times(100))}
         </Text>
       )
@@ -303,65 +302,96 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
 
   const isOwnerViewing = !!connectedAccount && address === connectedAccount
 
-  if (isOwnerViewing && vaultSummary.numberOfVaults === 0) {
-    return (
-      <Grid sx={{ flex: 1, zIndex: 1, justifyContent: 'center', my: 6, textAlign: 'center' }}>
-        <Heading as="h1" variant="header2" sx={{ fontSize: 40, mb: 3 }}>
-          {t('vaults-overview.header-no-vaults')}
-        </Heading>
-        <Text variant="paragraph1" sx={{ mb: 3, color: 'lavender' }}>
-          <Trans i18nKey="vaults-overview.subheader-no-vaults" components={[<br />]} />
-        </Text>
-        <AppLink
-          href="/vaults/list"
-          variant="primary"
-          sx={{
-            display: 'flex',
-            margin: '0 auto',
-            px: '40px',
-            py: 2,
-            alignItems: 'center',
-            '&:hover svg': {
-              transform: 'translateX(10px)',
-            },
-          }}
-        >
-          {t('open-vault')}
-          <Icon
-            name="arrow_right"
-            sx={{
-              ml: 2,
-              position: 'relative',
-              left: 2,
-              transition: '0.2s',
-            }}
-          />
-        </AppLink>
-      </Grid>
-    )
-  }
-
   return (
     <Grid sx={{ flex: 1, zIndex: 1 }}>
       {connectedAccount && address !== connectedAccount && (
         <VaultOverviewOwnershipBanner account={connectedAccount} controller={address} />
       )}
-      <Heading variant="header2" sx={{ textAlign: 'center', my: 5 }} as="h1">
-        <Trans
-          i18nKey={headerTranslationKey}
-          values={{ address: formatAddress(address) }}
-          components={[<br />]}
-        />
-      </Heading>
-      <Summary summary={vaultSummary} />
-      <Filters
-        onSearch={onVaultSearch}
-        search={vaults.filters.search}
-        onTagChange={onVaultsTagChange}
-        tagFilter={vaults.filters.tagFilter}
-        defaultTag="your-vaults"
-      />
-      <VaultsTable vaults={vaults} />
+      <Flex sx={{ my: 5, flexDirection: 'column' }}>
+        <Heading variant="header2" sx={{ textAlign: 'center', my: 3 }} as="h1">
+          <Trans
+            i18nKey={headerTranslationKey}
+            values={{ address: formatAddress(address) }}
+            components={[<br />]}
+          />
+        </Heading>
+        {isOwnerViewing && vaultSummary.numberOfVaults === 0 && (
+          <>
+            <Text variant="paragraph1" sx={{ mb: 3, color: 'lavender', textAlign: 'center' }}>
+              <Trans i18nKey="vaults-overview.subheader-no-vaults" components={[<br />]} />
+            </Text>
+            <AppLink
+              href="/vaults/list"
+              variant="primary"
+              sx={{
+                display: 'flex',
+                margin: '0 auto',
+                px: '40px',
+                py: 2,
+                my: 4,
+                alignItems: 'center',
+                '&:hover svg': {
+                  transform: 'translateX(10px)',
+                },
+              }}
+            >
+              {t('open-vault')}
+              <Icon
+                name="arrow_right"
+                sx={{
+                  ml: 2,
+                  position: 'relative',
+                  left: 2,
+                  transition: '0.2s',
+                }}
+              />
+            </AppLink>
+          </>
+        )}
+        {context.status === 'connectedReadonly' && vaultSummary.numberOfVaults === 0 && (
+          <>
+            <AppLink
+              href="/connect"
+              variant="primary"
+              sx={{
+                display: 'flex',
+                margin: '0 auto',
+                px: '40px',
+                py: 2,
+                my: 4,
+                alignItems: 'center',
+                '&:hover svg': {
+                  transform: 'translateX(10px)',
+                },
+              }}
+            >
+              {t('connect-wallet')}
+              <Icon
+                name="arrow_right"
+                sx={{
+                  ml: 2,
+                  position: 'relative',
+                  left: 2,
+                  transition: '0.2s',
+                }}
+              />
+            </AppLink>
+          </>
+        )}
+      </Flex>
+      {vaultSummary.numberOfVaults !== 0 && (
+        <>
+          <Summary summary={vaultSummary} />
+          <Filters
+            onSearch={onVaultSearch}
+            search={vaults.filters.search}
+            onTagChange={onVaultsTagChange}
+            tagFilter={vaults.filters.tagFilter}
+            defaultTag="your-vaults"
+          />
+          <VaultsTable vaults={vaults} />
+        </>
+      )}
     </Grid>
   )
 }
