@@ -31,15 +31,11 @@ function manageVaultButtonText(state: ManageVaultState): string {
     case 'collateralAllowanceWaitingForConfirmation':
       return state.customCollateralAllowanceAmountEmpty
         ? t('enter-allowance-amount')
-        : state.invalidCustomCollateralAllowanceAmount
-        ? t('invalid-allowance-amount')
         : t('set-token-allowance', { token: state.vault.token })
 
     case 'daiAllowanceWaitingForConfirmation':
       return state.customDaiAllowanceAmountEmpty
         ? t('enter-allowance-amount')
-        : state.invalidCustomDaiAllowanceAmount
-        ? t('invalid-allowance-amount')
         : t('set-token-allowance', { token: 'DAI' })
 
     case 'collateralAllowanceFailure':

@@ -16,10 +16,10 @@ export type ManageVaultErrorMessage =
   | 'paybackAmountExceedsVaultDebt'
   | 'debtWillBeLessThanDebtFloor'
   | 'customCollateralAllowanceAmountEmpty'
-  | 'customCollateralAllowanceAmountGreaterThanMaxUint256'
+  | 'customCollateralAllowanceAmountExceedsMaxUint256'
   | 'customCollateralAllowanceAmountLessThanDepositAmount'
   | 'customDaiAllowanceAmountEmpty'
-  | 'customDaiAllowanceAmountGreaterThanMaxUint256'
+  | 'customDaiAllowanceAmountExceedsMaxUint256'
   | 'customDaiAllowanceAmountLessThanPaybackAmount'
   | 'depositingAllEthBalance'
 
@@ -55,9 +55,6 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     generateAmount,
     paybackAmount,
     stage,
-    collateralAllowanceAmount,
-    daiAllowanceAmount,
-    shouldPaybackAll,
     vault,
     ilkData,
     balanceInfo,
@@ -69,6 +66,10 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     generateAmountIsLessThanDebtFloor,
     debtWillBeLessThanDebtFloor,
     isEditingStage,
+    customCollateralAllowanceAmountExceedsMaxUint256,
+    customCollateralAllowanceAmountLessThanDepositAmount,
+    customDaiAllowanceAmountExceedsMaxUint256,
+    customDaiAllowanceAmountLessThanPaybackAmount,
   } = state
 
   const errorMessages: ManageVaultErrorMessage[] = []
@@ -116,6 +117,24 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
 
     if (debtWillBeLessThanDebtFloor) {
       errorMessages.push('debtWillBeLessThanDebtFloor')
+    }
+  }
+
+  if (stage === 'collateralAllowanceWaitingForConfirmation') {
+    if (customCollateralAllowanceAmountExceedsMaxUint256) {
+      errorMessages.push('customCollateralAllowanceAmountExceedsMaxUint256')
+    }
+    if (customCollateralAllowanceAmountLessThanDepositAmount) {
+      errorMessages.push('customCollateralAllowanceAmountLessThanDepositAmount')
+    }
+  }
+
+  if (stage === 'daiAllowanceWaitingForConfirmation') {
+    if (customDaiAllowanceAmountExceedsMaxUint256) {
+      errorMessages.push('customDaiAllowanceAmountExceedsMaxUint256')
+    }
+    if (customDaiAllowanceAmountLessThanPaybackAmount) {
+      errorMessages.push('customDaiAllowanceAmountLessThanPaybackAmount')
     }
   }
 

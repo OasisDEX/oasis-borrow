@@ -85,10 +85,14 @@ export interface ManageVaultConditions {
   shouldPaybackAll: boolean
   debtWillBeLessThanDebtFloor: boolean
   isLoadingStage: boolean
+
   customCollateralAllowanceAmountEmpty: boolean
+  customCollateralAllowanceAmountExceedsMaxUint256: boolean
+  customCollateralAllowanceAmountLessThanDepositAmount: boolean
+
   customDaiAllowanceAmountEmpty: boolean
-  invalidCustomCollateralAllowanceAmount: boolean
-  invalidCustomDaiAllowanceAmount: boolean
+  customDaiAllowanceAmountExceedsMaxUint256: boolean
+  customDaiAllowanceAmountLessThanPaybackAmount: boolean
 }
 
 export const defaultManageVaultConditions: ManageVaultConditions = {
@@ -109,9 +113,12 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   debtWillBeLessThanDebtFloor: false,
   isLoadingStage: false,
   customCollateralAllowanceAmountEmpty: false,
+  customCollateralAllowanceAmountExceedsMaxUint256: false,
+  customCollateralAllowanceAmountLessThanDepositAmount: false,
+
   customDaiAllowanceAmountEmpty: false,
-  invalidCustomCollateralAllowanceAmount: false,
-  invalidCustomDaiAllowanceAmount: false,
+  customDaiAllowanceAmountExceedsMaxUint256: false,
+  customDaiAllowanceAmountLessThanPaybackAmount: false,
 }
 
 // This value ought to be coupled in relation to how much we round the raw debt
@@ -199,18 +206,28 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
   const customDaiAllowanceAmountEmpty =
     selectedDaiAllowanceRadio === 'custom' && !daiAllowanceAmount
 
-  const invalidCustomCollateralAllowanceAmount = !!(
-    selectedCollateralAllowanceRadio === 'custom' &&
-    collateralAllowanceAmount &&
-    (collateralAllowanceAmount.gt(maxUint256) ||
-      (depositAmount && collateralAllowanceAmount.lt(depositAmount)))
+  const customCollateralAllowanceAmountExceedsMaxUint256 = !!(
+    selectedCollateralAllowanceRadio === 'custom' && collateralAllowanceAmount?.gt(maxUint256)
   )
 
-  const invalidCustomDaiAllowanceAmount = !!(
-    selectedDaiAllowanceRadio &&
-    daiAllowanceAmount &&
-    (daiAllowanceAmount.gt(maxUint256) || (paybackAmount && daiAllowanceAmount.lt(paybackAmount)))
+  const customCollateralAllowanceAmountLessThanDepositAmount = !!(
+    selectedCollateralAllowanceRadio === 'custom' &&
+    collateralAllowanceAmount &&
+    depositAmount &&
+    collateralAllowanceAmount.lt(depositAmount)
   )
+
+  const customDaiAllowanceAmountExceedsMaxUint256 = !!(
+    selectedDaiAllowanceRadio === 'custom' && daiAllowanceAmount?.gt(maxUint256)
+  )
+
+  const customDaiAllowanceAmountLessThanPaybackAmount = !!(
+    selectedDaiAllowanceRadio === 'custom' &&
+    daiAllowanceAmount &&
+    paybackAmount &&
+    daiAllowanceAmount.lt(paybackAmount)
+  )
+
   const isLoadingStage = ([
     'proxyInProgress',
     'proxyWaitingForApproval',
@@ -228,9 +245,11 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     vaultWillBeUnderCollateralizedAtCurrentPrice ||
     vaultWillBeUnderCollateralizedAtNextPrice ||
     customCollateralAllowanceAmountEmpty ||
+    customCollateralAllowanceAmountExceedsMaxUint256 ||
+    customCollateralAllowanceAmountLessThanDepositAmount ||
     customDaiAllowanceAmountEmpty ||
-    invalidCustomCollateralAllowanceAmount ||
-    invalidCustomDaiAllowanceAmount
+    customDaiAllowanceAmountExceedsMaxUint256 ||
+    customDaiAllowanceAmountLessThanPaybackAmount
 
   return {
     ...state,
@@ -250,10 +269,13 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,
     isLoadingStage,
-    customCollateralAllowanceAmountEmpty,
-    customDaiAllowanceAmountEmpty,
 
-    invalidCustomCollateralAllowanceAmount,
-    invalidCustomDaiAllowanceAmount,
+    customCollateralAllowanceAmountEmpty,
+    customCollateralAllowanceAmountExceedsMaxUint256,
+    customCollateralAllowanceAmountLessThanDepositAmount,
+
+    customDaiAllowanceAmountEmpty,
+    customDaiAllowanceAmountExceedsMaxUint256,
+    customDaiAllowanceAmountLessThanPaybackAmount,
   }
 }
