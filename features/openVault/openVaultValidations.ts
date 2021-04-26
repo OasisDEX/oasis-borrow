@@ -30,25 +30,23 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
     token,
     stage,
     allowanceAmount,
+    isEditingStage,
+    vaultWillBeUnderCollateralized,
+    vaultWillBeUnderCollateralizedAtNextPrice,
+    depositingAllEthBalance,
+    generateAmountExceedsDaiYieldFromDepositingCollateral,
+    generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice,
+    generateAmountExceedsDebtCeiling,
+    generateAmountLessThanDebtFloor,
   } = state
   const errorMessages: OpenVaultErrorMessage[] = []
 
-  if (stage === 'editing') {
-    const vaultWillBeUnderCollateralized =
-      generateAmount?.gt(zero) &&
-      afterCollateralizationRatio.lt(ilkData.liquidationRatio) &&
-      !afterCollateralizationRatio.isZero()
-
+  if (isEditingStage) {
     if (vaultWillBeUnderCollateralized) {
       errorMessages.push('vaultWillBeUnderCollateralized')
     }
 
-    const vaultWillBeUnderCollateralizedAtNextPrice =
-      generateAmount?.gt(zero) &&
-      afterCollateralizationRatioAtNextPrice.lt(ilkData.liquidationRatio) &&
-      !afterCollateralizationRatioAtNextPrice.isZero()
-
-    if (!vaultWillBeUnderCollateralized && vaultWillBeUnderCollateralizedAtNextPrice) {
+    if (vaultWillBeUnderCollateralizedAtNextPrice) {
       errorMessages.push('vaultWillBeUnderCollateralizedAtNextPrice')
     }
 
@@ -56,35 +54,27 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
       errorMessages.push('depositAmountExceedsCollateralBalance')
     }
 
-    if (token === 'ETH' && depositAmount?.eq(balanceInfo.collateralBalance)) {
+    if (depositingAllEthBalance) {
       errorMessages.push('depositingAllEthBalance')
     }
 
-    const generateAmountExceedsDaiYieldFromDepositingCollateral = generateAmount?.gt(
-      daiYieldFromDepositingCollateral,
-    )
     if (generateAmountExceedsDaiYieldFromDepositingCollateral) {
       errorMessages.push('generateAmountExceedsDaiYieldFromDepositingCollateral')
     }
 
-    const generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice = generateAmount?.gt(
-      daiYieldFromDepositingCollateralAtNextPrice,
-    )
-    if (
-      !generateAmountExceedsDaiYieldFromDepositingCollateral &&
-      generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice
-    ) {
+    if (generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice) {
       errorMessages.push('generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice')
     }
 
-    if (generateAmount?.gt(ilkData.ilkDebtAvailable)) {
+    if (generateAmountExceedsDebtCeiling) {
       errorMessages.push('generateAmountExceedsDebtCeiling')
     }
 
-    if (generateAmount && !generateAmount.isZero() && generateAmount.lt(ilkData.debtFloor)) {
+    if (generateAmountLessThanDebtFloor) {
       errorMessages.push('generateAmountLessThanDebtFloor')
     }
   }
+
   if (stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFailure') {
     if (!allowanceAmount) {
       errorMessages.push('customAllowanceAmountEmpty')

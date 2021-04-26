@@ -13,7 +13,7 @@ const defaultManageVaultStageCategories = {
   isManageStage: false,
 }
 
-export function categoriseManageVaultStages(stage: ManageVaultStage) {
+function categoriseManageVaultStages(stage: ManageVaultStage) {
   switch (stage) {
     case 'collateralEditing':
     case 'daiEditing':

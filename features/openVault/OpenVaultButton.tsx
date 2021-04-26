@@ -7,7 +7,7 @@ import { Button, Flex, Spinner, Text } from 'theme-ui'
 
 import { OpenVaultStage, OpenVaultState } from './openVault'
 
-function openVaultButtonText(stage: OpenVaultStage, id?: BigNumber) {
+function openVaultButtonText({ stage, id }: OpenVaultState) {
   const { t } = useTranslation()
 
   switch (stage) {
@@ -44,35 +44,23 @@ function openVaultButtonText(stage: OpenVaultStage, id?: BigNumber) {
   }
 }
 
-export function OpenVaultButton({ stage, errorMessages, progress, id }: OpenVaultState) {
+export function OpenVaultButton(props: OpenVaultState) {
   const { replace } = useRedirect()
-  const isLoading = ([
-    'proxyInProgress',
-    'proxyWaitingForApproval',
-    'allowanceInProgress',
-    'allowanceWaitingForApproval',
-    'openInProgress',
-    'openWaitingForApproval',
-  ] as OpenVaultStage[]).some((s) => s === stage)
-
-  const hasError = !!errorMessages.length
-  const isDisabled = hasError || isLoading
+  const { stage, progress, id, flowProgressionDisabled, isLoadingStage } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
-    if (!isDisabled) {
-      if (stage === 'openSuccess') {
-        replace(`/${id}`)
-      }
-      progress && progress!()
+    if (stage === 'openSuccess') {
+      replace(`/${id}`)
     }
+    progress!()
   }
 
-  const buttonText = openVaultButtonText(stage, id)
+  const buttonText = openVaultButtonText(props)
 
   return (
-    <Button disabled={isDisabled} onClick={handleProgress}>
-      {isLoading ? (
+    <Button disabled={flowProgressionDisabled} onClick={handleProgress}>
+      {isLoadingStage ? (
         <Flex sx={{ justifyContent: 'center' }}>
           <Spinner size={25} color="surface" />
           <Text pl={2}>{buttonText}</Text>

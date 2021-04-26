@@ -2,7 +2,6 @@ import { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
 
 import { ManageVaultState } from './manageVault'
-import { ManageVaultErrorMessage, ManageVaultWarningMessage } from './manageVaultValidations'
 
 interface CalcDaiYieldFromTotalCollateralProps {
   price: BigNumber
@@ -24,8 +23,6 @@ export function calcDaiYieldFromCollateral({
 export const PAYBACK_ALL_BOUND = new BigNumber('0.01')
 
 export interface ManageVaultCalculations {
-  errorMessages: ManageVaultErrorMessage[]
-  warningMessages: ManageVaultWarningMessage[]
   maxDepositAmount: BigNumber
   maxDepositAmountUSD: BigNumber
   maxWithdrawAmount: BigNumber
@@ -49,8 +46,6 @@ export interface ManageVaultCalculations {
 }
 
 export const defaultManageVaultCalculations: ManageVaultCalculations = {
-  errorMessages: [],
-  warningMessages: [],
   maxDepositAmount: zero,
   maxDepositAmountUSD: zero,
   maxWithdrawAmount: zero,

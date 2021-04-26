@@ -35,9 +35,14 @@ function OpenVaultWarnings({ warningMessages }: OpenVaultState) {
   )
 }
 
-function OpenVaultTitle({ reset, stage }: OpenVaultState) {
+function OpenVaultTitle({
+  reset,
+  stage,
+  isEditingStage,
+  isProxyStage,
+  isAllowanceStage,
+}: OpenVaultState) {
   const canReset = !!reset
-  const { isEditingStage, isProxyStage, isAllowanceStage } = categoriseOpenVaultStage(stage)
 
   function handleReset(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
@@ -70,10 +75,14 @@ function OpenVaultTitle({ reset, stage }: OpenVaultState) {
 }
 
 function OpenVaultForm(props: OpenVaultState) {
-  const { toggleIlkDetails, showIlkDetails, stage } = props
-  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = categoriseOpenVaultStage(
-    stage,
-  )
+  const {
+    toggleIlkDetails,
+    showIlkDetails,
+    isEditingStage,
+    isProxyStage,
+    isAllowanceStage,
+    isOpenStage,
+  } = props
   function handleMouseEnter(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault()
     if (isEditingStage && !showIlkDetails) {

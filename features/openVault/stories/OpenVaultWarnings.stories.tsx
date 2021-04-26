@@ -168,6 +168,6 @@ export const GeneratingAllDaiFromDepositingCollateralAtNextPrice = openVaultStor
 
 // eslint-disable-next-line import/no-default-export
 export default {
-  title: 'OpenVault/Warnings',
+  title: 'OpenVault/Non-Blocking',
   component: OpenVaultView,
 }

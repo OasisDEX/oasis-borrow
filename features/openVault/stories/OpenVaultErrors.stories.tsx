@@ -130,6 +130,6 @@ export const CustomAllowanceAmountLessThanDepositAmount = openVaultStory({
 
 // eslint-disable-next-line import/no-default-export
 export default {
-  title: 'OpenVault/Errors',
+  title: 'OpenVault/Blocking',
   component: OpenVaultView,
 }
