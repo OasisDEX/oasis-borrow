@@ -40,64 +40,6 @@ import {
   validateWarnings,
 } from './manageVaultValidations'
 
-const defaultManageVaultStageCategories = {
-  isEditingStage: false,
-  isProxyStage: false,
-  isCollateralAllowanceStage: false,
-  isDaiAllowanceStage: false,
-  isManageStage: false,
-}
-
-export function categoriseManageVaultStage(stage: ManageVaultStage) {
-  switch (stage) {
-    case 'collateralEditing':
-    case 'daiEditing':
-      return {
-        ...defaultManageVaultStageCategories,
-        isEditingStage: true,
-      }
-    case 'proxyWaitingForConfirmation':
-    case 'proxyWaitingForApproval':
-    case 'proxyInProgress':
-    case 'proxyFailure':
-    case 'proxySuccess':
-      return {
-        ...defaultManageVaultStageCategories,
-        isProxyStage: true,
-      }
-    case 'collateralAllowanceWaitingForConfirmation':
-    case 'collateralAllowanceWaitingForApproval':
-    case 'collateralAllowanceInProgress':
-    case 'collateralAllowanceFailure':
-    case 'collateralAllowanceSuccess':
-      return {
-        ...defaultManageVaultStageCategories,
-        isCollateralAllowanceStage: true,
-      }
-    case 'daiAllowanceWaitingForConfirmation':
-    case 'daiAllowanceWaitingForApproval':
-    case 'daiAllowanceInProgress':
-    case 'daiAllowanceFailure':
-    case 'daiAllowanceSuccess':
-      return {
-        ...defaultManageVaultStageCategories,
-        isDaiAllowanceStage: true,
-      }
-
-    case 'manageWaitingForConfirmation':
-    case 'manageWaitingForApproval':
-    case 'manageInProgress':
-    case 'manageFailure':
-    case 'manageSuccess':
-      return {
-        ...defaultManageVaultStageCategories,
-        isManageStage: true,
-      }
-    default:
-      return defaultManageVaultStageCategories
-  }
-}
-
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
   stateToOverride: Partial<ManageVaultState>

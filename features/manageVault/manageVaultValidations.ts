@@ -68,11 +68,12 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice,
     generateAmountIsLessThanDebtFloor,
     debtWillBeLessThanDebtFloor,
+    isEditingStage,
   } = state
 
   const errorMessages: ManageVaultErrorMessage[] = []
 
-  if (stage === 'collateralEditing' || stage === 'daiEditing') {
+  if (isEditingStage) {
     if (depositAmount?.gt(balanceInfo.collateralBalance)) {
       errorMessages.push('depositAmountExceedsCollateralBalance')
     }
@@ -118,10 +119,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     }
   }
 
-  if (
-    stage === 'collateralAllowanceWaitingForConfirmation' ||
-    stage === 'collateralAllowanceFailure'
-  ) {
+  if (stage === 'collateralAllowanceWaitingForConfirmation') {
     if (!collateralAllowanceAmount) {
       errorMessages.push('customCollateralAllowanceAmountEmpty')
     }
@@ -133,7 +131,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     }
   }
 
-  if (stage === 'daiAllowanceWaitingForConfirmation' || stage === 'daiAllowanceFailure') {
+  if (stage === 'daiAllowanceWaitingForConfirmation') {
     if (!daiAllowanceAmount) {
       errorMessages.push('customDaiAllowanceAmountEmpty')
     }

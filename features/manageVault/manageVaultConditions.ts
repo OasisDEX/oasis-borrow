@@ -1,8 +1,67 @@
 import { isNullish } from 'helpers/functions'
+import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { one, zero } from 'helpers/zero'
-import { ManageVaultState } from './manageVault'
+import { ManageVaultStage, ManageVaultState } from './manageVault'
+
+const defaultManageVaultStageCategories = {}
+
+export function categoriseManageVaultStages(stage: ManageVaultStage) {
+  switch (stage) {
+    case 'collateralEditing':
+    case 'daiEditing':
+      return {
+        ...defaultManageVaultStageCategories,
+        isEditingStage: true,
+      }
+    case 'proxyWaitingForConfirmation':
+    case 'proxyWaitingForApproval':
+    case 'proxyInProgress':
+    case 'proxyFailure':
+    case 'proxySuccess':
+      return {
+        ...defaultManageVaultStageCategories,
+        isProxyStage: true,
+      }
+    case 'collateralAllowanceWaitingForConfirmation':
+    case 'collateralAllowanceWaitingForApproval':
+    case 'collateralAllowanceInProgress':
+    case 'collateralAllowanceFailure':
+    case 'collateralAllowanceSuccess':
+      return {
+        ...defaultManageVaultStageCategories,
+        isCollateralAllowanceStage: true,
+      }
+    case 'daiAllowanceWaitingForConfirmation':
+    case 'daiAllowanceWaitingForApproval':
+    case 'daiAllowanceInProgress':
+    case 'daiAllowanceFailure':
+    case 'daiAllowanceSuccess':
+      return {
+        ...defaultManageVaultStageCategories,
+        isDaiAllowanceStage: true,
+      }
+
+    case 'manageWaitingForConfirmation':
+    case 'manageWaitingForApproval':
+    case 'manageInProgress':
+    case 'manageFailure':
+    case 'manageSuccess':
+      return {
+        ...defaultManageVaultStageCategories,
+        isManageStage: true,
+      }
+    default:
+      throw new UnreachableCaseError(stage)
+  }
+}
 
 export interface ManageVaultConditions {
+  isEditingStage: boolean
+  isProxyStage: boolean
+  isCollateralAllowanceStage: boolean
+  isDaiAllowanceStage: boolean
+  isManageStage: boolean
+
   editingButtonDisabled: boolean
   depositAndWithdrawAmountsEmpty: boolean
   generateAndPaybackAmountsEmpty: boolean
@@ -19,6 +78,12 @@ export interface ManageVaultConditions {
 }
 
 export const defaultManageVaultConditions: ManageVaultConditions = {
+  isEditingStage: false,
+  isProxyStage: false,
+  isCollateralAllowanceStage: false,
+  isDaiAllowanceStage: false,
+  isManageStage: false,
+
   editingButtonDisabled: true,
   vaultWillBeUnderCollateralizedAtCurrentPrice: false,
   vaultWillBeUnderCollateralizedAtNextPrice: false,
@@ -51,6 +116,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     daiYieldFromTotalCollateral,
     daiYieldFromTotalCollateralAtNextPrice,
     balanceInfo: { daiBalance },
+    stage,
   } = state
 
   const changeCouldIncreaseCollateralizationRatio =
@@ -112,6 +178,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
 
   return {
     ...state,
+    ...categoriseManageVaultStages(stage),
     editingButtonDisabled,
     depositAndWithdrawAmountsEmpty,
     generateAndPaybackAmountsEmpty,
