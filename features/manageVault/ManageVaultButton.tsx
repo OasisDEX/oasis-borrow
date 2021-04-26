@@ -12,44 +12,62 @@ function manageVaultButtonText(state: ManageVaultState): string {
     case 'daiEditing':
     case 'collateralEditing':
       return state.inputAmountsEmpty ? t('enter-an-amount') : t('confirm')
+
     case 'proxySuccess':
     case 'daiAllowanceSuccess':
     case 'collateralAllowanceSuccess':
       return t('continue')
+
     case 'proxyFailure':
       return t('retry-create-proxy')
+
     case 'proxyWaitingForConfirmation':
       return t('create-proxy-btn')
+
     case 'proxyWaitingForApproval':
     case 'proxyInProgress':
       return t('creating-proxy')
+
     case 'collateralAllowanceWaitingForConfirmation':
+      return state.customCollateralAllowanceAmountEmpty
+        ? t('enter-custom-allowance-amount')
+        : t('set-token-allowance', { token: state.vault.token })
+
     case 'daiAllowanceWaitingForConfirmation':
-      return t('approve-allowance')
+      return state.customDaiAllowanceAmountEmpty
+        ? t('enter-custom-allowance-amount')
+        : t('set-token-allowance', { token: 'DAI' })
+
     case 'collateralAllowanceFailure':
     case 'daiAllowanceFailure':
       return t('retry-allowance-approval')
+
     case 'collateralAllowanceInProgress':
     case 'collateralAllowanceWaitingForApproval':
     case 'daiAllowanceInProgress':
     case 'daiAllowanceWaitingForApproval':
       return t('approving-allowance')
+
     case 'manageWaitingForConfirmation':
       return t('confirm')
+
     case 'manageFailure':
       return t('retry')
+
     case 'manageSuccess':
       return t('back-to-editing')
+
     case 'manageWaitingForApproval':
     case 'manageInProgress':
       return t('changing-vault')
+
     default:
       throw new UnreachableCaseError(state.stage)
   }
 }
 
 export function ManageVaultButton(props: ManageVaultState) {
-  const { progress, isLoadingStage, editingButtonDisabled } = props
+  const { progress, isLoadingStage, flowProgressionDisabled } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
@@ -59,7 +77,7 @@ export function ManageVaultButton(props: ManageVaultState) {
   const buttonText = manageVaultButtonText(props)
 
   return (
-    <Button onClick={handleProgress} disabled={editingButtonDisabled}>
+    <Button onClick={handleProgress} disabled={flowProgressionDisabled}>
       {isLoadingStage ? (
         <Flex sx={{ justifyContent: 'center' }}>
           <Spinner size={25} color="surface" />

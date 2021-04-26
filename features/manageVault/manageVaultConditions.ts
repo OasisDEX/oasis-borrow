@@ -68,7 +68,8 @@ export interface ManageVaultConditions {
   isDaiAllowanceStage: boolean
   isManageStage: boolean
 
-  editingButtonDisabled: boolean
+  flowProgressionDisabled: boolean
+
   depositAndWithdrawAmountsEmpty: boolean
   generateAndPaybackAmountsEmpty: boolean
   inputAmountsEmpty: boolean
@@ -83,11 +84,13 @@ export interface ManageVaultConditions {
   shouldPaybackAll: boolean
   debtWillBeLessThanDebtFloor: boolean
   isLoadingStage: boolean
+  customCollateralAllowanceAmountEmpty: boolean
+  customDaiAllowanceAmountEmpty: boolean
 }
 
 export const defaultManageVaultConditions: ManageVaultConditions = {
   ...defaultManageVaultStageCategories,
-  editingButtonDisabled: true,
+  flowProgressionDisabled: false,
   vaultWillBeUnderCollateralizedAtCurrentPrice: false,
   vaultWillBeUnderCollateralizedAtNextPrice: false,
   depositAndWithdrawAmountsEmpty: true,
@@ -102,7 +105,10 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   shouldPaybackAll: false,
   debtWillBeLessThanDebtFloor: false,
   isLoadingStage: false,
+  customCollateralAllowanceAmountEmpty: false,
+  customDaiAllowanceAmountEmpty: false,
 }
+
 // This value ought to be coupled in relation to how much we round the raw debt
 // value in the vault (vault.debt)
 export const PAYBACK_ALL_BOUND = one
@@ -122,6 +128,10 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     daiYieldFromTotalCollateralAtNextPrice,
     balanceInfo: { daiBalance },
     stage,
+    selectedCollateralAllowanceRadio,
+    selectedDaiAllowanceRadio,
+    collateralAllowanceAmount,
+    daiAllowanceAmount,
   } = state
 
   const changeCouldIncreaseCollateralizationRatio =
@@ -142,11 +152,6 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     changeCouldIncreaseCollateralizationRatio &&
     afterCollateralizationRatioAtNextPrice.lt(ilkData.liquidationRatio) &&
     !afterCollateralizationRatioAtNextPrice.isZero()
-
-  const editingButtonDisabled =
-    inputAmountsEmpty ||
-    vaultWillBeUnderCollateralizedAtCurrentPrice ||
-    vaultWillBeUnderCollateralizedAtNextPrice
 
   const accountIsController = account === vault.controller
 
@@ -183,6 +188,12 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     !shouldPaybackAll
   )
 
+  const customCollateralAllowanceAmountEmpty =
+    selectedCollateralAllowanceRadio === 'custom' && !collateralAllowanceAmount
+
+  const customDaiAllowanceAmountEmpty =
+    selectedDaiAllowanceRadio === 'custom' && !daiAllowanceAmount
+
   const isLoadingStage = ([
     'proxyInProgress',
     'proxyWaitingForApproval',
@@ -194,10 +205,18 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     'manageWaitingForApproval',
   ] as ManageVaultStage[]).some((s) => s === stage)
 
+  const flowProgressionDisabled =
+    isLoadingStage ||
+    inputAmountsEmpty ||
+    vaultWillBeUnderCollateralizedAtCurrentPrice ||
+    vaultWillBeUnderCollateralizedAtNextPrice ||
+    customCollateralAllowanceAmountEmpty ||
+    customDaiAllowanceAmountEmpty
+
   return {
     ...state,
     ...categoriseManageVaultStages(stage),
-    editingButtonDisabled,
+    flowProgressionDisabled,
     depositAndWithdrawAmountsEmpty,
     generateAndPaybackAmountsEmpty,
     inputAmountsEmpty,
@@ -212,5 +231,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,
     isLoadingStage,
+    customCollateralAllowanceAmountEmpty,
+    customDaiAllowanceAmountEmpty,
   }
 }

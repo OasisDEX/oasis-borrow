@@ -120,9 +120,6 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
   }
 
   if (stage === 'collateralAllowanceWaitingForConfirmation') {
-    if (!collateralAllowanceAmount) {
-      errorMessages.push('customCollateralAllowanceAmountEmpty')
-    }
     if (collateralAllowanceAmount?.gt(maxUint256)) {
       errorMessages.push('customCollateralAllowanceAmountGreaterThanMaxUint256')
     }
@@ -132,9 +129,6 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
   }
 
   if (stage === 'daiAllowanceWaitingForConfirmation') {
-    if (!daiAllowanceAmount) {
-      errorMessages.push('customDaiAllowanceAmountEmpty')
-    }
     if (daiAllowanceAmount?.gt(maxUint256)) {
       errorMessages.push('customDaiAllowanceAmountGreaterThanMaxUint256')
     }
