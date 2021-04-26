@@ -119,24 +119,6 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     }
   }
 
-  if (stage === 'collateralAllowanceWaitingForConfirmation') {
-    if (collateralAllowanceAmount?.gt(maxUint256)) {
-      errorMessages.push('customCollateralAllowanceAmountGreaterThanMaxUint256')
-    }
-    if (depositAmount && collateralAllowanceAmount && collateralAllowanceAmount.lt(depositAmount)) {
-      errorMessages.push('customCollateralAllowanceAmountLessThanDepositAmount')
-    }
-  }
-
-  if (stage === 'daiAllowanceWaitingForConfirmation') {
-    if (daiAllowanceAmount?.gt(maxUint256)) {
-      errorMessages.push('customDaiAllowanceAmountGreaterThanMaxUint256')
-    }
-    if (paybackAmount && daiAllowanceAmount && daiAllowanceAmount.lt(paybackAmount)) {
-      errorMessages.push('customDaiAllowanceAmountLessThanPaybackAmount')
-    }
-  }
-
   return { ...state, errorMessages }
 }
 

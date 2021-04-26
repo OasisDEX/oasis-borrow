@@ -1,3 +1,4 @@
+import { maxUint256 } from 'blockchain/calls/erc20'
 import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { one, zero } from 'helpers/zero'
@@ -86,6 +87,8 @@ export interface ManageVaultConditions {
   isLoadingStage: boolean
   customCollateralAllowanceAmountEmpty: boolean
   customDaiAllowanceAmountEmpty: boolean
+  invalidCustomCollateralAllowanceAmount: boolean
+  invalidCustomDaiAllowanceAmount: boolean
 }
 
 export const defaultManageVaultConditions: ManageVaultConditions = {
@@ -107,6 +110,8 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   isLoadingStage: false,
   customCollateralAllowanceAmountEmpty: false,
   customDaiAllowanceAmountEmpty: false,
+  invalidCustomCollateralAllowanceAmount: false,
+  invalidCustomDaiAllowanceAmount: false,
 }
 
 // This value ought to be coupled in relation to how much we round the raw debt
@@ -194,6 +199,18 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
   const customDaiAllowanceAmountEmpty =
     selectedDaiAllowanceRadio === 'custom' && !daiAllowanceAmount
 
+  const invalidCustomCollateralAllowanceAmount = !!(
+    selectedCollateralAllowanceRadio === 'custom' &&
+    collateralAllowanceAmount &&
+    (collateralAllowanceAmount.gt(maxUint256) ||
+      (depositAmount && collateralAllowanceAmount.lt(depositAmount)))
+  )
+
+  const invalidCustomDaiAllowanceAmount = !!(
+    selectedDaiAllowanceRadio &&
+    daiAllowanceAmount &&
+    (daiAllowanceAmount.gt(maxUint256) || (paybackAmount && daiAllowanceAmount.lt(paybackAmount)))
+  )
   const isLoadingStage = ([
     'proxyInProgress',
     'proxyWaitingForApproval',
@@ -211,7 +228,9 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     vaultWillBeUnderCollateralizedAtCurrentPrice ||
     vaultWillBeUnderCollateralizedAtNextPrice ||
     customCollateralAllowanceAmountEmpty ||
-    customDaiAllowanceAmountEmpty
+    customDaiAllowanceAmountEmpty ||
+    invalidCustomCollateralAllowanceAmount ||
+    invalidCustomDaiAllowanceAmount
 
   return {
     ...state,
@@ -233,5 +252,8 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     isLoadingStage,
     customCollateralAllowanceAmountEmpty,
     customDaiAllowanceAmountEmpty,
+
+    invalidCustomCollateralAllowanceAmount,
+    invalidCustomDaiAllowanceAmount,
   }
 }

@@ -470,6 +470,7 @@
   "learn-about-wallets": "Learn more about wallets",
   "learn-more-link": "https://ethereum.org/en/wallets/find-wallet/",
   "enter-an-amount": "Enter an amount",
-  "enter-custom-allowance-amount": "Enter custom allowance amount",
-  "set-token-allowance": "Set {{token}} allowance"
+  "enter-allowance-amount": "Enter allowance amount",
+  "set-token-allowance": "Set {{token}} allowance",
+  "invalid-allowance-amount": "Invalid allowance amount"
 }
