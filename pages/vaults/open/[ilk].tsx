@@ -3,6 +3,7 @@ import { AppLayout } from 'components/Layouts'
 import { OpenVaultView } from 'features/openVault/OpenVaultView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
+import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { WithTermsOfService } from '../../../features/termsOfService/TermsOfService'
 
@@ -19,6 +20,7 @@ export default function OpenVault({ ilk }: { ilk: string }) {
   return (
     <WithWalletConnection>
       <WithTermsOfService>
+        <BackgroundLight />
         <OpenVaultView ilk={ilk} />
       </WithTermsOfService>
     </WithWalletConnection>

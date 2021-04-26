@@ -164,7 +164,7 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
   }
 
   return (
-    <Grid sx={{ width: '100%' }}>
+    <Grid sx={{ width: '100%', zIndex: 1 }}>
       <OpenVaultContainer {...(openVault as OpenVaultState)} />
     </Grid>
   )
