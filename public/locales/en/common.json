@@ -77,6 +77,7 @@
   "create-dai-savings": "Create Dai Savings",
   "create-proxy": "Create a proxy",
   "create-proxy-btn": "Create Proxy",
+  "setup-proxy": "Setup Proxy",
   "create-proxy-desc": "In order to use Savings and other features, you will need a wallet proxy.",
   "creating-proxy": "Creating Proxy",
   "currency": "Currency",

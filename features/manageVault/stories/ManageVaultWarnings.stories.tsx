@@ -16,7 +16,9 @@ export const NoProxyAddress = manageVaultStory({
     collateral: new BigNumber('20'),
     debt: new BigNumber('3000'),
   },
-})()
+})({
+  depositAmount: one,
+})
 
 export const InsufficientCollateralAllowance = manageVaultStory({
   title:

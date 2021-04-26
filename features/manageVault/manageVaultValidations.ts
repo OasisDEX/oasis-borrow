@@ -177,10 +177,6 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
       warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
     }
 
-    if (!proxyAddress) {
-      warningMessages.push('noProxyAddress')
-    }
-
     if (vault.token !== 'ETH') {
       if (
         depositAmount &&

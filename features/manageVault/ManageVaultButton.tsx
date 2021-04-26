@@ -11,7 +11,11 @@ function manageVaultButtonText(state: ManageVaultState): string {
   switch (state.stage) {
     case 'daiEditing':
     case 'collateralEditing':
-      return state.inputAmountsEmpty ? t('enter-an-amount') : t('confirm')
+      return state.inputAmountsEmpty
+        ? t('enter-an-amount')
+        : !state.proxyAddress
+        ? t('setup-proxy')
+        : t('confirm')
 
     case 'proxySuccess':
     case 'daiAllowanceSuccess':
