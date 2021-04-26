@@ -163,37 +163,20 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     errorMessages,
     stage,
     inputAmountsEmpty,
+    isEditingStage,
   } = state
 
   const warningMessages: ManageVaultWarningMessage[] = []
 
   if (errorMessages.length) return { ...state, warningMessages }
 
-  if (stage === 'collateralEditing' || stage === 'daiEditing') {
+  if (isEditingStage) {
     if (
       depositAmount &&
       !depositAmount.isZero() &&
       daiYieldFromTotalCollateral.lt(ilkData.debtFloor)
     ) {
       warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
-    }
-
-    if (vault.token !== 'ETH') {
-      if (
-        depositAmount &&
-        !depositAmount.isZero() &&
-        (!collateralAllowance || depositAmount?.gt(collateralAllowance))
-      ) {
-        warningMessages.push('insufficientCollateralAllowance')
-      }
-    }
-
-    if (
-      paybackAmount &&
-      !paybackAmount.isZero() &&
-      (!daiAllowance || paybackAmount?.gt(daiAllowance))
-    ) {
-      warningMessages.push('insufficientDaiAllowance')
     }
 
     if (vault.debt.lt(ilkData.debtFloor) && vault.debt.gt(zero)) {

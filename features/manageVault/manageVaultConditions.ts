@@ -86,10 +86,12 @@ export interface ManageVaultConditions {
   debtWillBeLessThanDebtFloor: boolean
   isLoadingStage: boolean
 
+  insufficientCollateralAllowance: boolean
   customCollateralAllowanceAmountEmpty: boolean
   customCollateralAllowanceAmountExceedsMaxUint256: boolean
   customCollateralAllowanceAmountLessThanDepositAmount: boolean
 
+  insufficientDaiAllowance: boolean
   customDaiAllowanceAmountEmpty: boolean
   customDaiAllowanceAmountExceedsMaxUint256: boolean
   customDaiAllowanceAmountLessThanPaybackAmount: boolean
@@ -112,10 +114,13 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   shouldPaybackAll: false,
   debtWillBeLessThanDebtFloor: false,
   isLoadingStage: false,
+
+  insufficientCollateralAllowance: false,
   customCollateralAllowanceAmountEmpty: false,
   customCollateralAllowanceAmountExceedsMaxUint256: false,
   customCollateralAllowanceAmountLessThanDepositAmount: false,
 
+  insufficientDaiAllowance: false,
   customDaiAllowanceAmountEmpty: false,
   customDaiAllowanceAmountExceedsMaxUint256: false,
   customDaiAllowanceAmountLessThanPaybackAmount: false,
@@ -144,6 +149,8 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     selectedDaiAllowanceRadio,
     collateralAllowanceAmount,
     daiAllowanceAmount,
+    collateralAllowance,
+    daiAllowance,
   } = state
 
   const changeCouldIncreaseCollateralizationRatio =
@@ -228,6 +235,20 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     daiAllowanceAmount.lt(paybackAmount)
   )
 
+  const insufficientCollateralAllowance =
+    vault.token !== 'ETH' &&
+    !!(
+      depositAmount &&
+      !depositAmount.isZero() &&
+      (!collateralAllowance || depositAmount.gt(collateralAllowance))
+    )
+
+  const insufficientDaiAllowance = !!(
+    paybackAmount &&
+    !paybackAmount.isZero() &&
+    (!daiAllowance || paybackAmount.gt(daiAllowance))
+  )
+
   const isLoadingStage = ([
     'proxyInProgress',
     'proxyWaitingForApproval',
@@ -270,10 +291,12 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     debtWillBeLessThanDebtFloor,
     isLoadingStage,
 
+    insufficientCollateralAllowance,
     customCollateralAllowanceAmountEmpty,
     customCollateralAllowanceAmountExceedsMaxUint256,
     customCollateralAllowanceAmountLessThanDepositAmount,
 
+    insufficientDaiAllowance,
     customDaiAllowanceAmountEmpty,
     customDaiAllowanceAmountExceedsMaxUint256,
     customDaiAllowanceAmountLessThanPaybackAmount,

@@ -15,11 +15,25 @@ function manageVaultButtonText(state: ManageVaultState): string {
         ? t('enter-an-amount')
         : !state.proxyAddress
         ? t('setup-proxy')
+        : state.insufficientCollateralAllowance
+        ? t('set-token-allowance', { token: state.vault.token })
+        : state.insufficientDaiAllowance
+        ? t('set-token-allowance', { token: 'DAI' })
         : t('confirm')
 
     case 'proxySuccess':
-    case 'daiAllowanceSuccess':
+      return state.insufficientCollateralAllowance
+        ? t('set-token-allowance', { token: state.vault.token })
+        : state.insufficientDaiAllowance
+        ? t('set-token-allowance', { token: 'DAI' })
+        : t('continue')
+
     case 'collateralAllowanceSuccess':
+      return state.insufficientDaiAllowance
+        ? t('set-token-allowance', { token: 'DAI' })
+        : t('continue')
+
+    case 'daiAllowanceSuccess':
       return t('continue')
 
     case 'proxyFailure':
