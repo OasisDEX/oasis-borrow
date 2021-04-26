@@ -18,6 +18,10 @@ export function calcDaiYieldFromCollateral({
   return collateral.times(price).div(ratio).minus(debt)
 }
 
+// This value ought to be coupled in relation to how much we round the raw debt
+// value in the vault (vault.debt)
+export const PAYBACK_ALL_BOUND = new BigNumber('0.01')
+
 export function applyManageVaultCalculations(state: ManageVaultState): ManageVaultState {
   const {
     depositAmount,
@@ -27,10 +31,56 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     balanceInfo: { collateralBalance, daiBalance },
     ilkData: { liquidationRatio, ilkDebtAvailable },
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
-    vault: { lockedCollateral, debt, debtOffset, freeCollateral, freeCollateralAtNextPrice },
+    vault: { lockedCollateral, debt, debtOffset, freeCollateral },
   } = state
 
-  const maxWithdrawAmount = BigNumber.minimum(freeCollateral, freeCollateralAtNextPrice)
+  const shouldPaybackAll = !!(
+    daiBalance.gte(debt) &&
+    paybackAmount &&
+    paybackAmount.plus(PAYBACK_ALL_BOUND).gte(debt) &&
+    !paybackAmount.gt(debt)
+  )
+
+  const afterLockedCollateral = depositAmount
+    ? lockedCollateral.plus(depositAmount)
+    : withdrawAmount
+    ? lockedCollateral.minus(withdrawAmount)
+    : lockedCollateral
+
+  const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
+  const afterLockedCollateralUSDAtNextPrice = afterLockedCollateral.times(nextCollateralPrice)
+
+  const afterDebt = generateAmount
+    ? debt.plus(generateAmount)
+    : paybackAmount
+    ? debt.minus(paybackAmount)
+    : debt
+
+  const afterBackingCollateral = afterDebt.isPositive()
+    ? afterDebt
+        .plus(!shouldPaybackAll ? debtOffset : zero)
+        .times(liquidationRatio)
+        .div(currentCollateralPrice)
+    : zero
+
+  const afterBackingCollateralAtNextPrice = afterDebt.isPositive()
+    ? afterDebt
+        .plus(!shouldPaybackAll ? debtOffset : zero)
+        .times(liquidationRatio)
+        .div(nextCollateralPrice)
+    : zero
+
+  const afterFreeCollateral = lockedCollateral.isPositive()
+    ? lockedCollateral.minus(afterBackingCollateral)
+    : zero
+
+  const afterFreeCollateralAtNextPrice = lockedCollateral.isPositive()
+    ? lockedCollateral.minus(afterBackingCollateralAtNextPrice)
+    : zero
+
+  const collateralAvailableToWithdraw = afterLockedCollateral.minus(afterBackingCollateral)
+
+  const maxWithdrawAmount = BigNumber.minimum(afterFreeCollateral, afterFreeCollateralAtNextPrice)
   const maxWithdrawAmountUSD = maxWithdrawAmount.times(currentCollateralPrice)
 
   const maxDepositAmount = collateralBalance
@@ -69,21 +119,6 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
 
   const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt
 
-  const afterLockedCollateral = depositAmount
-    ? lockedCollateral.plus(depositAmount)
-    : withdrawAmount
-    ? lockedCollateral.minus(withdrawAmount)
-    : lockedCollateral
-
-  const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
-  const afterLockedCollateralUSDAtNextPrice = afterLockedCollateral.times(nextCollateralPrice)
-
-  const afterDebt = generateAmount
-    ? debt.plus(generateAmount)
-    : paybackAmount
-    ? debt.minus(paybackAmount)
-    : debt
-
   const afterCollateralizationRatio =
     afterLockedCollateralUSD.gt(zero) && afterDebt.gt(zero)
       ? afterLockedCollateralUSD.div(afterDebt)
@@ -98,14 +133,6 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     afterDebt && afterDebt.gt(zero) && afterLockedCollateral.gt(zero)
       ? afterDebt.times(liquidationRatio).div(afterLockedCollateral)
       : zero
-
-  const afterBackingCollateral = afterDebt.isPositive()
-    ? afterDebt.times(liquidationRatio).div(currentCollateralPrice)
-    : zero
-
-  const afterFreeCollateral = afterLockedCollateral.isPositive()
-    ? afterLockedCollateral.minus(afterBackingCollateral)
-    : zero
 
   const afterDaiYieldFromTotalCollateral = afterLockedCollateralUSD
     .div(liquidationRatio)
@@ -129,9 +156,13 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     afterCollateralizationRatioAtNextPrice,
     afterLiquidationPrice,
     afterFreeCollateral,
+    afterFreeCollateralAtNextPrice,
     afterDebt,
     maxPaybackAmount,
     daiYieldFromTotalCollateral,
     daiYieldFromTotalCollateralAtNextPrice,
+    collateralAvailableToWithdraw,
+
+    shouldPaybackAll,
   }
 }

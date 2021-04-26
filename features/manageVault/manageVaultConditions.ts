@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
-import { one, zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 import { ManageVaultStage, ManageVaultState } from './manageVault'
 
 const defaultManageVaultStageCategories = {
@@ -90,7 +90,6 @@ export interface ManageVaultConditions {
   generateAmountExceedsDaiYieldFromTotalCollateral: boolean
   generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice: boolean
   generateAmountIsLessThanDebtFloor: boolean
-  shouldPaybackAll: boolean
   debtWillBeLessThanDebtFloor: boolean
   isLoadingStage: boolean
 
@@ -126,7 +125,6 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   generateAmountExceedsDaiYieldFromTotalCollateral: false,
   generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice: false,
   generateAmountIsLessThanDebtFloor: false,
-  shouldPaybackAll: false,
   debtWillBeLessThanDebtFloor: false,
   isLoadingStage: false,
 
@@ -140,10 +138,6 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   customDaiAllowanceAmountExceedsMaxUint256: false,
   customDaiAllowanceAmountLessThanPaybackAmount: false,
 }
-
-// This value ought to be coupled in relation to how much we round the raw debt
-// value in the vault (vault.debt)
-export const PAYBACK_ALL_BOUND = new BigNumber('0.01')
 
 export function applyManageVaultConditions(state: ManageVaultState): ManageVaultState {
   const {
@@ -166,6 +160,9 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     daiAllowanceAmount,
     collateralAllowance,
     daiAllowance,
+    afterFreeCollateral,
+    afterFreeCollateralAtNextPrice,
+    shouldPaybackAll,
   } = state
 
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
@@ -208,10 +205,10 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
 
   const accountIsController = account === vault.controller
 
-  const withdrawAmountExceedsFreeCollateral = !!withdrawAmount?.gt(vault.freeCollateral)
+  const withdrawAmountExceedsFreeCollateral = !!withdrawAmount?.gt(afterFreeCollateral)
 
   const withdrawAmountExceedsFreeCollateralAtNextPrice =
-    !withdrawAmountExceedsFreeCollateral && !!withdrawAmount?.gt(vault.freeCollateralAtNextPrice)
+    !withdrawAmountExceedsFreeCollateral && !!withdrawAmount?.gt(afterFreeCollateralAtNextPrice)
 
   const generateAmountExceedsDaiYieldFromTotalCollateral = !!generateAmount?.gt(
     daiYieldFromTotalCollateral,
@@ -225,13 +222,6 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     generateAmount &&
     !generateAmount.plus(vault.debt).isZero() &&
     generateAmount.plus(vault.debt).lt(ilkData.debtFloor)
-  )
-
-  const shouldPaybackAll = !!(
-    daiBalance.gte(vault.debt) &&
-    paybackAmount &&
-    paybackAmount.plus(PAYBACK_ALL_BOUND).gte(vault.debt) &&
-    !paybackAmount.gt(vault.debt)
   )
 
   const debtWillBeLessThanDebtFloor = !!(

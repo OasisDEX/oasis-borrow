@@ -16,6 +16,7 @@ function VaultDetailsTable({
   afterDebt,
   afterFreeCollateral,
   errorMessages,
+  collateralAvailableToWithdraw,
 }: ManageVaultState) {
   const { t } = useTranslation()
 
@@ -72,7 +73,7 @@ function VaultDetailsTable({
               <Icon name="arrow_right" size={12} />
               <Box pl={1}>
                 <Text sx={{ display: 'inline' }} variant="header4">
-                  {formatAmount(afterFreeCollateral, getToken(vault.token).symbol)}
+                  {formatAmount(collateralAvailableToWithdraw, getToken(vault.token).symbol)}
                 </Text>
                 <Text
                   sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }}

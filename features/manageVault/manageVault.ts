@@ -132,12 +132,16 @@ interface ManageVaultCalculations {
   maxPaybackAmount: BigNumber
   daiYieldFromTotalCollateral: BigNumber
   daiYieldFromTotalCollateralAtNextPrice: BigNumber
+  collateralAvailableToWithdraw: BigNumber
   afterDebt: BigNumber
   afterLiquidationPrice: BigNumber
   afterCollateralizationRatio: BigNumber
   afterCollateralizationRatioAtNextPrice: BigNumber
   afterFreeCollateral: BigNumber
+  afterFreeCollateralAtNextPrice: BigNumber
   afterMaxGenerateAmountCurrentPrice: BigNumber
+
+  shouldPaybackAll: boolean
 }
 
 export interface ManageVaultEnvironment {

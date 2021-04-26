@@ -135,10 +135,8 @@ export function createVault$(
               .minus(debt)
               .dp(18, BigNumber.ROUND_DOWN)
 
-            const backingCollateral = debt
-              .plus(debtOffset)
-              .times(liquidationRatio)
-              .div(currentPrice)
+            const backingCollateral = debt.times(liquidationRatio).div(currentPrice)
+
             const backingCollateralAtNextPrice = debt.times(liquidationRatio).div(nextPrice)
             const backingCollateralUSD = backingCollateral.times(currentPrice)
             const backingCollateralUSDAtNextPrice = backingCollateralAtNextPrice.times(nextPrice)
