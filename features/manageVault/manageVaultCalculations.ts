@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
 
-import { ManageVaultState, PAYBACK_ALL_BOUND } from './manageVault'
+import { ManageVaultState } from './manageVault'
 
 interface CalcDaiYieldFromTotalCollateralProps {
   price: BigNumber
@@ -69,13 +69,6 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
 
   const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt
 
-  const shouldPaybackAll = !!(
-    daiBalance.gte(debt) &&
-    paybackAmount &&
-    paybackAmount.plus(PAYBACK_ALL_BOUND).gte(debt) &&
-    !paybackAmount.gt(debt)
-  )
-
   const afterLockedCollateral = depositAmount
     ? lockedCollateral.plus(depositAmount)
     : withdrawAmount
@@ -138,7 +131,6 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     afterFreeCollateral,
     afterDebt,
     maxPaybackAmount,
-    shouldPaybackAll,
     daiYieldFromTotalCollateral,
     daiYieldFromTotalCollateralAtNextPrice,
   }

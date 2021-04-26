@@ -13,7 +13,11 @@ import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
 import { applyManageVaultCalculations } from './manageVaultCalculations'
-import { applyManageVaultConditions } from './manageVaultConditions'
+import {
+  applyManageVaultConditions,
+  defaultManageVaultConditions,
+  ManageVaultConditions,
+} from './manageVaultConditions'
 import { applyManageVaultEnvironment, ManageVaultEnvironmentChange } from './manageVaultEnvironment'
 import { applyManageVaultForm, ManageVaultFormChange } from './manageVaultForm'
 import { applyManageVaultInput, ManageVaultInputChange } from './manageVaultInput'
@@ -93,10 +97,6 @@ export function categoriseManageVaultStage(stage: ManageVaultStage) {
       return defaultManageVaultStageCategories
   }
 }
-
-// This value ought to be coupled in relation to how much we round the raw debt
-// value in the vault (vault.debt)
-export const PAYBACK_ALL_BOUND = one
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -188,7 +188,6 @@ interface ManageVaultCalculations {
   maxGenerateAmountCurrentPrice: BigNumber
   maxGenerateAmountNextPrice: BigNumber
   maxPaybackAmount: BigNumber
-  shouldPaybackAll: boolean
   daiYieldFromTotalCollateral: BigNumber
   daiYieldFromTotalCollateralAtNextPrice: BigNumber
   afterDebt: BigNumber
@@ -209,15 +208,6 @@ export interface ManageVaultEnvironment {
   ilkData: IlkData
   balanceInfo: BalanceInfo
   priceInfo: PriceInfo
-}
-
-interface ManageVaultConditions {
-  editingButtonDisabled: boolean
-  depositAndWithdrawAmountsEmpty: boolean
-  generateAndPaybackAmountsEmpty: boolean
-  vaultWillBeUnderCollateralizedAtCurrentPrice: boolean
-  vaultWillBeUnderCollateralizedAtNextPrice: boolean
-  accountIsController: boolean
 }
 
 interface ManageVaultFunctions {
@@ -423,18 +413,6 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
   afterMaxGenerateAmountCurrentPrice: zero,
   daiYieldFromTotalCollateral: zero,
   daiYieldFromTotalCollateralAtNextPrice: zero,
-  shouldPaybackAll: false,
-}
-
-export const defaultManageVaultConditions: ManageVaultConditions = {
-  editingButtonDisabled: true,
-  vaultWillBeUnderCollateralizedAtCurrentPrice: false,
-  vaultWillBeUnderCollateralizedAtNextPrice: false,
-
-  depositAndWithdrawAmountsEmpty: true,
-  generateAndPaybackAmountsEmpty: true,
-
-  accountIsController: false,
 }
 
 export function createManageVault$(
