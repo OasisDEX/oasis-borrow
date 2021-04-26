@@ -10,6 +10,8 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
     ilkData,
+    vault,
+    account,
   } = state
 
   const changeCouldIncreaseCollateralizationRatio =
@@ -34,6 +36,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     vaultWillBeUnderCollateralizedAtCurrentPrice ||
     vaultWillBeUnderCollateralizedAtNextPrice
 
+  const accountIsController = account === vault.controller
   return {
     ...state,
     editingButtonDisabled,
@@ -41,5 +44,6 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     generateAndPaybackAmountsEmpty,
     vaultWillBeUnderCollateralizedAtCurrentPrice,
     vaultWillBeUnderCollateralizedAtNextPrice,
+    accountIsController,
   }
 }

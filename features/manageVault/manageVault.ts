@@ -217,6 +217,7 @@ interface ManageVaultConditions {
   generateAndPaybackAmountsEmpty: boolean
   vaultWillBeUnderCollateralizedAtCurrentPrice: boolean
   vaultWillBeUnderCollateralizedAtNextPrice: boolean
+  accountIsController: boolean
 }
 
 interface ManageVaultFunctions {
@@ -432,6 +433,8 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
 
   depositAndWithdrawAmountsEmpty: true,
   generateAndPaybackAmountsEmpty: true,
+
+  accountIsController: false,
 }
 
 export function createManageVault$(
@@ -492,7 +495,6 @@ export function createManageVault$(
                     proxyAddress,
                     collateralAllowance,
                     daiAllowance,
-                    accountIsController: account === vault.controller,
                     safeConfirmations: context.safeConfirmations,
                     etherscan: context.etherscan.url,
                     injectStateOverride,
