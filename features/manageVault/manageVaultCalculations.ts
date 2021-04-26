@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
 
 import { ManageVaultState } from './manageVault'
+import { ManageVaultErrorMessage, ManageVaultWarningMessage } from './manageVaultValidations'
 
 interface CalcDaiYieldFromTotalCollateralProps {
   price: BigNumber
@@ -22,6 +23,55 @@ export function calcDaiYieldFromCollateral({
 // value in the vault (vault.debt)
 export const PAYBACK_ALL_BOUND = new BigNumber('0.01')
 
+export interface ManageVaultCalculations {
+  errorMessages: ManageVaultErrorMessage[]
+  warningMessages: ManageVaultWarningMessage[]
+  maxDepositAmount: BigNumber
+  maxDepositAmountUSD: BigNumber
+  maxWithdrawAmount: BigNumber
+  maxWithdrawAmountUSD: BigNumber
+  maxGenerateAmount: BigNumber
+  maxGenerateAmountCurrentPrice: BigNumber
+  maxGenerateAmountNextPrice: BigNumber
+  maxPaybackAmount: BigNumber
+  daiYieldFromTotalCollateral: BigNumber
+  daiYieldFromTotalCollateralAtNextPrice: BigNumber
+  collateralAvailableToWithdraw: BigNumber
+  afterDebt: BigNumber
+  afterLiquidationPrice: BigNumber
+  afterCollateralizationRatio: BigNumber
+  afterCollateralizationRatioAtNextPrice: BigNumber
+  afterFreeCollateral: BigNumber
+  afterFreeCollateralAtNextPrice: BigNumber
+  afterMaxGenerateAmountCurrentPrice: BigNumber
+
+  shouldPaybackAll: boolean
+}
+
+export const defaultManageVaultCalculations: ManageVaultCalculations = {
+  errorMessages: [],
+  warningMessages: [],
+  maxDepositAmount: zero,
+  maxDepositAmountUSD: zero,
+  maxWithdrawAmount: zero,
+  maxWithdrawAmountUSD: zero,
+  maxGenerateAmount: zero,
+  maxGenerateAmountCurrentPrice: zero,
+  maxGenerateAmountNextPrice: zero,
+  maxPaybackAmount: zero,
+  afterDebt: zero,
+  afterCollateralizationRatio: zero,
+  afterCollateralizationRatioAtNextPrice: zero,
+  afterLiquidationPrice: zero,
+  afterFreeCollateral: zero,
+  afterFreeCollateralAtNextPrice: zero,
+  afterMaxGenerateAmountCurrentPrice: zero,
+  daiYieldFromTotalCollateral: zero,
+  daiYieldFromTotalCollateralAtNextPrice: zero,
+  collateralAvailableToWithdraw: zero,
+  shouldPaybackAll: false,
+}
+
 export function applyManageVaultCalculations(state: ManageVaultState): ManageVaultState {
   const {
     depositAmount,
@@ -31,7 +81,7 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     balanceInfo: { collateralBalance, daiBalance },
     ilkData: { liquidationRatio, ilkDebtAvailable },
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
-    vault: { lockedCollateral, debt, debtOffset, freeCollateral },
+    vault: { lockedCollateral, debt, debtOffset },
   } = state
 
   const shouldPaybackAll = !!(

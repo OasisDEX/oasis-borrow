@@ -14,7 +14,6 @@ function VaultDetailsTable({
   ilkData,
   afterMaxGenerateAmountCurrentPrice,
   afterDebt,
-  afterFreeCollateral,
   errorMessages,
   collateralAvailableToWithdraw,
 }: ManageVaultState) {

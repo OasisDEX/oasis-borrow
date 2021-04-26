@@ -3,7 +3,7 @@ import React from 'react'
 import { Button, Flex, Spinner, Text } from 'theme-ui'
 import { UnreachableCaseError } from 'ts-essentials'
 
-import { ManageVaultStage, ManageVaultState } from './manageVault'
+import { ManageVaultState } from './manageVault'
 
 function manageVaultButtonText(state: ManageVaultState): string {
   const { t } = useTranslation()

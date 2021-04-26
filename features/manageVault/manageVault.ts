@@ -5,14 +5,17 @@ import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { one, zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
-import { applyManageVaultCalculations } from './manageVaultCalculations'
+import {
+  applyManageVaultCalculations,
+  defaultManageVaultCalculations,
+  ManageVaultCalculations,
+} from './manageVaultCalculations'
 import {
   applyManageVaultConditions,
   defaultManageVaultConditions,
@@ -33,12 +36,7 @@ import {
   ManageVaultTransitionChange,
   progressManage,
 } from './manageVaultTransitions'
-import {
-  ManageVaultErrorMessage,
-  ManageVaultWarningMessage,
-  validateErrors,
-  validateWarnings,
-} from './manageVaultValidations'
+import { validateErrors, validateWarnings } from './manageVaultValidations'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -117,31 +115,6 @@ export interface MutableManageVaultState {
   daiAllowanceAmount?: BigNumber
   selectedCollateralAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
   selectedDaiAllowanceRadio: 'unlimited' | 'paybackAmount' | 'custom'
-}
-
-interface ManageVaultCalculations {
-  errorMessages: ManageVaultErrorMessage[]
-  warningMessages: ManageVaultWarningMessage[]
-  maxDepositAmount: BigNumber
-  maxDepositAmountUSD: BigNumber
-  maxWithdrawAmount: BigNumber
-  maxWithdrawAmountUSD: BigNumber
-  maxGenerateAmount: BigNumber
-  maxGenerateAmountCurrentPrice: BigNumber
-  maxGenerateAmountNextPrice: BigNumber
-  maxPaybackAmount: BigNumber
-  daiYieldFromTotalCollateral: BigNumber
-  daiYieldFromTotalCollateralAtNextPrice: BigNumber
-  collateralAvailableToWithdraw: BigNumber
-  afterDebt: BigNumber
-  afterLiquidationPrice: BigNumber
-  afterCollateralizationRatio: BigNumber
-  afterCollateralizationRatioAtNextPrice: BigNumber
-  afterFreeCollateral: BigNumber
-  afterFreeCollateralAtNextPrice: BigNumber
-  afterMaxGenerateAmountCurrentPrice: BigNumber
-
-  shouldPaybackAll: boolean
 }
 
 export interface ManageVaultEnvironment {
@@ -338,27 +311,6 @@ export const defaultMutableManageVaultState: MutableManageVaultState = {
   daiAllowanceAmount: maxUint256,
   selectedCollateralAllowanceRadio: 'unlimited' as 'unlimited',
   selectedDaiAllowanceRadio: 'unlimited' as 'unlimited',
-}
-
-export const defaultManageVaultCalculations: ManageVaultCalculations = {
-  errorMessages: [],
-  warningMessages: [],
-  maxDepositAmount: zero,
-  maxDepositAmountUSD: zero,
-  maxWithdrawAmount: zero,
-  maxWithdrawAmountUSD: zero,
-  maxGenerateAmount: zero,
-  maxGenerateAmountCurrentPrice: zero,
-  maxGenerateAmountNextPrice: zero,
-  maxPaybackAmount: zero,
-  afterDebt: zero,
-  afterCollateralizationRatio: zero,
-  afterCollateralizationRatioAtNextPrice: zero,
-  afterLiquidationPrice: zero,
-  afterFreeCollateral: zero,
-  afterMaxGenerateAmountCurrentPrice: zero,
-  daiYieldFromTotalCollateral: zero,
-  daiYieldFromTotalCollateralAtNextPrice: zero,
 }
 
 export function createManageVault$(

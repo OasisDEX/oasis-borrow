@@ -1,8 +1,8 @@
-import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
+
 import { ManageVaultStage, ManageVaultState } from './manageVault'
 
 const defaultManageVaultStageCategories = {
@@ -152,7 +152,6 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     account,
     daiYieldFromTotalCollateral,
     daiYieldFromTotalCollateralAtNextPrice,
-    balanceInfo: { daiBalance },
     stage,
     selectedCollateralAllowanceRadio,
     selectedDaiAllowanceRadio,
