@@ -241,10 +241,6 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
       warningMessages.push('vaultWillBeAtRiskLevelWarningAtNextPrice')
     }
 
-    if (shouldPaybackAll) {
-      warningMessages.push('payingBackAllDebt')
-    }
-
     if (depositAmount?.eq(balanceInfo.collateralBalance)) {
       warningMessages.push('depositingAllCollateralBalance')
     }
