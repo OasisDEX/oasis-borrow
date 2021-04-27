@@ -33,7 +33,7 @@ export function manageVaultStory({
     withdrawAmount,
     generateAmount,
     paybackAmount,
-    stage,
+    stage = 'collateralEditing',
     ...otherState
   }: Partial<MutableManageVaultState> = defaultMutableManageVaultState) => () => {
     const obs$ = mockManageVault$({
@@ -58,21 +58,24 @@ export function manageVaultStory({
               ...(depositAmount && {
                 depositAmount,
                 depositAmountUSD: depositAmount.times(currentCollateralPrice),
-                showDepositAndGenerateOption: stage === 'collateralEditing',
               }),
               ...(withdrawAmount && {
                 withdrawAmount,
                 withdrawAmountUSD: withdrawAmount.times(currentCollateralPrice),
-                showPaybackAndWithdrawOption: stage === 'daiEditing' && accountIsController,
               }),
               ...(generateAmount && {
                 generateAmount,
-                showDepositAndGenerateOption: stage === 'collateralEditing',
               }),
               ...(paybackAmount && {
                 paybackAmount,
-                showPaybackAndWithdrawOption: stage === 'daiEditing' && accountIsController,
               }),
+              showDepositAndGenerateOption:
+                (stage === 'daiEditing' && !!depositAmount) ||
+                (stage === 'collateralEditing' && !!generateAmount),
+              showPaybackAndWithdrawOption:
+                accountIsController &&
+                ((stage === 'daiEditing' && !!withdrawAmount) ||
+                  (stage === 'collateralEditing' && !!paybackAmount)),
             }
 
             injectStateOverride(newState || {})
