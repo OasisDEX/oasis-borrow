@@ -115,17 +115,29 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
         .div(nextCollateralPrice)
     : zero
 
-  const afterFreeCollateral = lockedCollateral.isPositive()
-    ? lockedCollateral.minus(afterBackingCollateral)
+  const afterFreeCollateral = lockedCollateral
+    .plus(depositAmount || zero)
+    .minus(afterBackingCollateral)
+    .isPositive()
+    ? lockedCollateral.plus(depositAmount || zero).minus(afterBackingCollateral)
     : zero
 
-  const afterFreeCollateralAtNextPrice = lockedCollateral.isPositive()
-    ? lockedCollateral.minus(afterBackingCollateralAtNextPrice)
+  const afterFreeCollateralAtNextPrice = lockedCollateral
+    .plus(depositAmount || zero)
+    .minus(afterBackingCollateral)
+    .isPositive()
+    ? lockedCollateral.plus(depositAmount || zero).minus(afterBackingCollateralAtNextPrice)
     : zero
 
   const collateralAvailableToWithdraw = afterLockedCollateral.minus(afterBackingCollateral)
 
-  const maxWithdrawAmount = BigNumber.minimum(afterFreeCollateral, afterFreeCollateralAtNextPrice)
+  const maxWithdrawAmount = BigNumber.minimum(
+    afterFreeCollateral,
+    afterFreeCollateralAtNextPrice,
+  ).isPositive()
+    ? BigNumber.minimum(afterFreeCollateral, afterFreeCollateralAtNextPrice)
+    : zero
+
   const maxWithdrawAmountUSD = maxWithdrawAmount.times(currentCollateralPrice)
 
   const maxDepositAmount = collateralBalance

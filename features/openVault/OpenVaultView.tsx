@@ -158,7 +158,15 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
 
   if (openVaultError) {
     return (
-      <Grid sx={{ width: '100%', height: '50vh', justifyItems: 'center', alignItems: 'center' }}>
+      <Grid
+        sx={{
+          width: '100%',
+          height: '50vh',
+          justifyItems: 'center',
+          alignItems: 'center',
+          zIndex: 1,
+        }}
+      >
         <Box>{openVaultError.message}</Box>
       </Grid>
     )
@@ -166,7 +174,15 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
 
   if (!openVault) {
     return (
-      <Grid sx={{ width: '100%', height: '50vh', justifyItems: 'center', alignItems: 'center' }}>
+      <Grid
+        sx={{
+          position: 'absolute',
+          width: '100%',
+          height: '50vh',
+          justifyItems: 'center',
+          alignItems: 'center',
+        }}
+      >
         <Spinner size={50} />
       </Grid>
     )
