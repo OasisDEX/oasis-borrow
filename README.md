@@ -95,3 +95,26 @@ For detailed i18next documentation please visit [i18n docs](https://www.i18next.
 ## Hardhat mainnet testing
 
 It might be useful to test an app against an actual mainnet state with some modifications. We use Hardhat node for that. In order to read more about this setup go to the [separate docs page](./HARDHAT.md)
+
+
+## Runnning Oasis Borrow Cache locally with Hardhat
+
+Setup Hardhat following above instructions.
+
+#Local Cache instance
+
+Get Cache from [https://github.com/oasisDEX/oasis-borrow-cache](this repo)
+
+Ensure you are using node 12 for the db (./scripts/dev.sh)
+
+In Cache repo run:
+
+`./scripts/dev.sh`
+
+In other terminal window run:
+
+`yarn start-etl`
+
+In next terminal window run:
+
+`yarn start-api`

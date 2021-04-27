@@ -3,75 +3,100 @@ import React from 'react'
 import { Button, Flex, Spinner, Text } from 'theme-ui'
 import { UnreachableCaseError } from 'ts-essentials'
 
-import { ManageVaultStage, ManageVaultState } from './manageVault'
+import { ManageVaultState } from './manageVault'
 
-function manageVaultButtonText(stage: ManageVaultStage): string {
+function manageVaultButtonText(state: ManageVaultState): string {
   const { t } = useTranslation()
 
-  switch (stage) {
+  switch (state.stage) {
     case 'daiEditing':
     case 'collateralEditing':
-    case 'manageWaitingForConfirmation':
-      return t('confirm')
+      return state.inputAmountsEmpty
+        ? t('enter-an-amount')
+        : !state.proxyAddress
+        ? t('setup-proxy')
+        : state.insufficientCollateralAllowance
+        ? t('set-token-allowance', { token: state.vault.token })
+        : state.insufficientDaiAllowance
+        ? t('set-token-allowance', { token: 'DAI' })
+        : t('confirm')
+
     case 'proxySuccess':
-    case 'daiAllowanceSuccess':
+      return state.insufficientCollateralAllowance
+        ? t('set-token-allowance', { token: state.vault.token })
+        : state.insufficientDaiAllowance
+        ? t('set-token-allowance', { token: 'DAI' })
+        : t('continue')
+
     case 'collateralAllowanceSuccess':
+      return state.insufficientDaiAllowance
+        ? t('set-token-allowance', { token: 'DAI' })
+        : t('continue')
+
+    case 'daiAllowanceSuccess':
       return t('continue')
+
     case 'proxyFailure':
       return t('retry-create-proxy')
+
     case 'proxyWaitingForConfirmation':
       return t('create-proxy-btn')
+
     case 'proxyWaitingForApproval':
     case 'proxyInProgress':
       return t('creating-proxy')
+
     case 'collateralAllowanceWaitingForConfirmation':
+      return state.customCollateralAllowanceAmountEmpty
+        ? t('enter-allowance-amount')
+        : t('set-token-allowance', { token: state.vault.token })
+
     case 'daiAllowanceWaitingForConfirmation':
-      return t('approve-allowance')
+      return state.customDaiAllowanceAmountEmpty
+        ? t('enter-allowance-amount')
+        : t('set-token-allowance', { token: 'DAI' })
+
     case 'collateralAllowanceFailure':
     case 'daiAllowanceFailure':
       return t('retry-allowance-approval')
+
     case 'collateralAllowanceInProgress':
     case 'collateralAllowanceWaitingForApproval':
     case 'daiAllowanceInProgress':
     case 'daiAllowanceWaitingForApproval':
       return t('approving-allowance')
+
+    case 'manageWaitingForConfirmation':
+      return t('confirm')
+
     case 'manageFailure':
       return t('retry')
+
     case 'manageSuccess':
       return t('back-to-editing')
+
     case 'manageWaitingForApproval':
     case 'manageInProgress':
       return t('changing-vault')
+
     default:
-      throw new UnreachableCaseError(stage)
+      throw new UnreachableCaseError(state.stage)
   }
 }
 
-export function ManageVaultButton({ progress, errorMessages, stage }: ManageVaultState) {
-  const isLoading = ([
-    'proxyInProgress',
-    'proxyWaitingForApproval',
-    'collateralAllowanceWaitingForApproval',
-    'collateralAllowanceInProgress',
-    'daiAllowanceWaitingForApproval',
-    'daiAllowanceInProgress',
-    'manageInProgress',
-    'manageWaitingForApproval',
-  ] as ManageVaultStage[]).some((s) => s === stage)
-
-  const hasError = !!errorMessages.length
-  const isDisabled = hasError || isLoading
+export function ManageVaultButton(props: ManageVaultState) {
+  const { progress, isLoadingStage, flowProgressionDisabled } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
-    !isDisabled && progress!()
+    progress!()
   }
 
-  const buttonText = manageVaultButtonText(stage)
+  const buttonText = manageVaultButtonText(props)
 
   return (
-    <Button onClick={handleProgress} disabled={isDisabled}>
-      {isLoading ? (
+    <Button onClick={handleProgress} disabled={flowProgressionDisabled}>
+      {isLoadingStage ? (
         <Flex sx={{ justifyContent: 'center' }}>
           <Spinner size={25} color="surface" />
           <Text pl={2}>{buttonText}</Text>

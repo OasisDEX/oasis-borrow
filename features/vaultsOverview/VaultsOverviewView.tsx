@@ -66,7 +66,7 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
     ),
     cell: (vault) => {
       return (
-        <Text sx={{ textAlign: 'right', color: vault.isVaultAtRisk ? 'onError' : 'onSuccess' }}>
+        <Text sx={{ textAlign: 'right', color: vault.atRiskLevelDanger ? 'onError' : 'onSuccess' }}>
           {formatPercent(vault.collateralizationRatio.times(100))}
         </Text>
       )

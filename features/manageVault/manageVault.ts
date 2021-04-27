@@ -5,14 +5,22 @@ import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { isNullish } from 'helpers/functions'
-import { one, zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
+import {
+  applyManageVaultCalculations,
+  defaultManageVaultCalculations,
+  ManageVaultCalculations,
+} from './manageVaultCalculations'
+import {
+  applyManageVaultConditions,
+  defaultManageVaultConditions,
+  ManageVaultConditions,
+} from './manageVaultConditions'
 import { applyManageVaultEnvironment, ManageVaultEnvironmentChange } from './manageVaultEnvironment'
 import { applyManageVaultForm, ManageVaultFormChange } from './manageVaultForm'
 import { applyManageVaultInput, ManageVaultInputChange } from './manageVaultInput'
@@ -28,201 +36,7 @@ import {
   ManageVaultTransitionChange,
   progressManage,
 } from './manageVaultTransitions'
-import {
-  ManageVaultErrorMessage,
-  ManageVaultWarningMessage,
-  validateErrors,
-  validateWarnings,
-} from './manageVaultValidations'
-
-const defaultManageVaultStageCategories = {
-  isEditingStage: false,
-  isProxyStage: false,
-  isCollateralAllowanceStage: false,
-  isDaiAllowanceStage: false,
-  isManageStage: false,
-}
-
-export function categoriseManageVaultStage(stage: ManageVaultStage) {
-  switch (stage) {
-    case 'collateralEditing':
-    case 'daiEditing':
-      return {
-        ...defaultManageVaultStageCategories,
-        isEditingStage: true,
-      }
-    case 'proxyWaitingForConfirmation':
-    case 'proxyWaitingForApproval':
-    case 'proxyInProgress':
-    case 'proxyFailure':
-    case 'proxySuccess':
-      return {
-        ...defaultManageVaultStageCategories,
-        isProxyStage: true,
-      }
-    case 'collateralAllowanceWaitingForConfirmation':
-    case 'collateralAllowanceWaitingForApproval':
-    case 'collateralAllowanceInProgress':
-    case 'collateralAllowanceFailure':
-    case 'collateralAllowanceSuccess':
-      return {
-        ...defaultManageVaultStageCategories,
-        isCollateralAllowanceStage: true,
-      }
-    case 'daiAllowanceWaitingForConfirmation':
-    case 'daiAllowanceWaitingForApproval':
-    case 'daiAllowanceInProgress':
-    case 'daiAllowanceFailure':
-    case 'daiAllowanceSuccess':
-      return {
-        ...defaultManageVaultStageCategories,
-        isDaiAllowanceStage: true,
-      }
-
-    case 'manageWaitingForConfirmation':
-    case 'manageWaitingForApproval':
-    case 'manageInProgress':
-    case 'manageFailure':
-    case 'manageSuccess':
-      return {
-        ...defaultManageVaultStageCategories,
-        isManageStage: true,
-      }
-    default:
-      return defaultManageVaultStageCategories
-  }
-}
-
-// This value ought to be coupled in relation to how much we round the raw debt
-// value in the vault (vault.debt)
-export const PAYBACK_ALL_BOUND = one
-
-export function applyManageVaultCalculations(state: ManageVaultState): ManageVaultState {
-  const {
-    depositAmount,
-    generateAmount,
-    withdrawAmount,
-    paybackAmount,
-    balanceInfo: { collateralBalance, daiBalance },
-    ilkData: { liquidationRatio, ilkDebtAvailable },
-    priceInfo: { currentCollateralPrice, nextCollateralPrice },
-    vault: { lockedCollateral, debt, approximateDebt, freeCollateral, freeCollateralAtNextPrice },
-  } = state
-
-  const maxWithdrawAmount = BigNumber.minimum(freeCollateral, freeCollateralAtNextPrice)
-  const maxWithdrawAmountUSD = maxWithdrawAmount.times(currentCollateralPrice)
-
-  const maxDepositAmount = collateralBalance
-  const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
-
-  const daiYieldFromTotalCollateral = lockedCollateral
-    .plus(depositAmount || zero)
-    .times(currentCollateralPrice)
-    .div(liquidationRatio)
-    .minus(debt)
-
-  const daiYieldFromTotalCollateralAtNextPrice = lockedCollateral
-    .plus(depositAmount || zero)
-    .times(nextCollateralPrice || currentCollateralPrice)
-    .div(liquidationRatio)
-    .minus(debt)
-
-  const maxGenerateAmountCurrentPrice = daiYieldFromTotalCollateral.gt(ilkDebtAvailable)
-    ? ilkDebtAvailable
-    : daiYieldFromTotalCollateral
-
-  const maxGenerateAmountNextPrice = daiYieldFromTotalCollateralAtNextPrice.gt(ilkDebtAvailable)
-    ? ilkDebtAvailable
-    : daiYieldFromTotalCollateralAtNextPrice
-
-  const maxGenerateAmount = BigNumber.minimum(
-    maxGenerateAmountCurrentPrice,
-    maxGenerateAmountNextPrice,
-  )
-
-  const maxPaybackAmount = daiBalance.lt(approximateDebt) ? daiBalance : approximateDebt
-
-  const shouldPaybackAll = !!(
-    daiBalance.gte(debt) &&
-    paybackAmount &&
-    paybackAmount.plus(PAYBACK_ALL_BOUND).gte(approximateDebt) &&
-    !paybackAmount.gt(approximateDebt)
-  )
-
-  const afterLockedCollateral = depositAmount
-    ? lockedCollateral.plus(depositAmount)
-    : withdrawAmount
-    ? lockedCollateral.minus(withdrawAmount)
-    : lockedCollateral
-
-  const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
-  const afterLockedCollateralUSDAtNextPrice = afterLockedCollateral.times(
-    nextCollateralPrice || currentCollateralPrice,
-  )
-
-  const afterDebt = generateAmount
-    ? debt.plus(generateAmount)
-    : paybackAmount
-    ? debt.minus(paybackAmount)
-    : debt
-
-  const afterCollateralizationRatio =
-    afterLockedCollateralUSD.gt(zero) && afterDebt.gt(zero)
-      ? afterLockedCollateralUSD.div(afterDebt)
-      : zero
-
-  const afterCollateralizationRatioAtNextPrice =
-    afterLockedCollateralUSDAtNextPrice.gt(zero) && afterDebt.gt(zero)
-      ? afterLockedCollateralUSDAtNextPrice.div(afterDebt)
-      : zero
-
-  const afterLiquidationPrice =
-    afterDebt && afterDebt.gt(zero) && afterLockedCollateral.gt(zero)
-      ? afterDebt.times(liquidationRatio).div(afterLockedCollateral)
-      : zero
-
-  const afterBackingCollateral = afterDebt.isPositive()
-    ? afterDebt.times(liquidationRatio).div(currentCollateralPrice)
-    : zero
-
-  const afterFreeCollateral = afterLockedCollateral.isPositive()
-    ? afterLockedCollateral.minus(afterBackingCollateral)
-    : zero
-
-  const afterDaiYieldFromTotalCollateral = afterLockedCollateralUSD
-    .div(liquidationRatio)
-    .minus(afterDebt)
-
-  const afterMaxGenerateAmountCurrentPrice = afterDaiYieldFromTotalCollateral.gt(ilkDebtAvailable)
-    ? ilkDebtAvailable
-    : afterDaiYieldFromTotalCollateral
-
-  const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
-  const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)
-
-  return {
-    ...state,
-    maxDepositAmount,
-    maxDepositAmountUSD,
-    maxWithdrawAmount,
-    maxWithdrawAmountUSD,
-    maxGenerateAmount,
-    maxGenerateAmountCurrentPrice,
-    maxGenerateAmountNextPrice,
-    afterMaxGenerateAmountCurrentPrice,
-    afterCollateralizationRatio,
-    afterCollateralizationRatioAtNextPrice,
-    afterLiquidationPrice,
-    afterFreeCollateral,
-    afterDebt,
-    maxPaybackAmount,
-    shouldPaybackAll,
-    daiYieldFromTotalCollateral,
-    daiYieldFromTotalCollateralAtNextPrice,
-    depositAndWithdrawAmountsEmpty,
-    generateAndPaybackAmountsEmpty,
-  }
-}
+import { validateErrors, validateWarnings } from './manageVaultValidations'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -256,7 +70,8 @@ function apply(state: ManageVaultState, change: ManageVaultChange) {
   const s5 = applyManageVaultTransaction(change, s4)
   const s6 = applyManageVaultEnvironment(change, s5)
   const s7 = applyManageVaultInjectedOverride(change, s6)
-  return applyManageVaultCalculations(s7)
+  const s8 = applyManageVaultCalculations(s7)
+  return applyManageVaultConditions(s8)
 }
 
 export type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
@@ -287,9 +102,9 @@ export type ManageVaultStage =
 export interface MutableManageVaultState {
   stage: ManageVaultStage
   originalEditingStage: ManageVaultEditingStage
-  showDepositAndGenerateOption: Boolean
-  showPaybackAndWithdrawOption: Boolean
-  showIlkDetails: Boolean
+  showDepositAndGenerateOption: boolean
+  showPaybackAndWithdrawOption: boolean
+  showIlkDetails: boolean
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
   withdrawAmount?: BigNumber
@@ -302,32 +117,8 @@ export interface MutableManageVaultState {
   selectedDaiAllowanceRadio: 'unlimited' | 'paybackAmount' | 'custom'
 }
 
-interface ManageVaultCalculations {
-  errorMessages: ManageVaultErrorMessage[]
-  warningMessages: ManageVaultWarningMessage[]
-  maxDepositAmount: BigNumber
-  maxDepositAmountUSD: BigNumber
-  maxWithdrawAmount: BigNumber
-  maxWithdrawAmountUSD: BigNumber
-  maxGenerateAmount: BigNumber
-  maxGenerateAmountCurrentPrice: BigNumber
-  maxGenerateAmountNextPrice: BigNumber
-  maxPaybackAmount: BigNumber
-  shouldPaybackAll: boolean
-  daiYieldFromTotalCollateral: BigNumber
-  daiYieldFromTotalCollateralAtNextPrice: BigNumber
-  afterDebt: BigNumber
-  afterLiquidationPrice: BigNumber
-  afterCollateralizationRatio: BigNumber
-  afterCollateralizationRatioAtNextPrice: BigNumber
-  afterFreeCollateral: BigNumber
-  afterMaxGenerateAmountCurrentPrice: BigNumber
-  depositAndWithdrawAmountsEmpty: Boolean
-  generateAndPaybackAmountsEmpty: Boolean
-}
-
-interface ManageVaultEnvironment {
-  account: string | undefined
+export interface ManageVaultEnvironment {
+  account?: string
   accountIsController: boolean
   proxyAddress?: string
   collateralAllowance?: BigNumber
@@ -379,6 +170,7 @@ interface ManageVaultTxInfo {
 
 export type ManageVaultState = MutableManageVaultState &
   ManageVaultCalculations &
+  ManageVaultConditions &
   ManageVaultEnvironment &
   ManageVaultFunctions &
   ManageVaultTxInfo
@@ -521,30 +313,6 @@ export const defaultMutableManageVaultState: MutableManageVaultState = {
   selectedDaiAllowanceRadio: 'unlimited' as 'unlimited',
 }
 
-export const defaultManageVaultCalculations: ManageVaultCalculations = {
-  errorMessages: [],
-  warningMessages: [],
-  maxDepositAmount: zero,
-  maxDepositAmountUSD: zero,
-  maxWithdrawAmount: zero,
-  maxWithdrawAmountUSD: zero,
-  maxGenerateAmount: zero,
-  maxGenerateAmountCurrentPrice: zero,
-  maxGenerateAmountNextPrice: zero,
-  maxPaybackAmount: zero,
-  afterDebt: zero,
-  afterCollateralizationRatio: zero,
-  afterCollateralizationRatioAtNextPrice: zero,
-  afterLiquidationPrice: zero,
-  afterFreeCollateral: zero,
-  afterMaxGenerateAmountCurrentPrice: zero,
-  daiYieldFromTotalCollateral: zero,
-  daiYieldFromTotalCollateralAtNextPrice: zero,
-  shouldPaybackAll: false,
-  depositAndWithdrawAmountsEmpty: true,
-  generateAndPaybackAmountsEmpty: true,
-}
-
 export function createManageVault$(
   context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
@@ -594,6 +362,7 @@ export function createManageVault$(
                   const initialState: ManageVaultState = {
                     ...defaultMutableManageVaultState,
                     ...defaultManageVaultCalculations,
+                    ...defaultManageVaultConditions,
                     vault,
                     priceInfo,
                     balanceInfo,
@@ -602,7 +371,6 @@ export function createManageVault$(
                     proxyAddress,
                     collateralAllowance,
                     daiAllowance,
-                    accountIsController: account === vault.controller,
                     safeConfirmations: context.safeConfirmations,
                     etherscan: context.etherscan.url,
                     injectStateOverride,

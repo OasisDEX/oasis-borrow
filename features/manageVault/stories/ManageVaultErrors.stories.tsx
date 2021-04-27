@@ -10,7 +10,7 @@ const proxyAddress = DEFAULT_PROXY_ADDRESS
 
 export const DepositAndWithdrawAmountsEmpty = manageVaultStory({
   title:
-    'If both the deposit and withdraw input fields are empty when editing "Collateral" then we flag the error and block the flow propagating as no vault change would occur',
+    'If both the deposit and withdraw input fields are empty when editing "Collateral" then we disable the progress button and suggest user to enter an amount',
   vault: {
     ilk: 'WBTC-A',
     collateral: new BigNumber('100'),
@@ -19,9 +19,9 @@ export const DepositAndWithdrawAmountsEmpty = manageVaultStory({
   proxyAddress,
 })()
 
-export const PaybackAndWithdrawAmountsEmpty = manageVaultStory({
+export const GenerateAndPaybackAmountsEmpty = manageVaultStory({
   title:
-    'If both the generate and payback input fields are empty when editing "Dai" then we flag the error and block the flow propagating as no vault change would occur',
+    'If both the generate and payback input fields are empty when editing "Dai" then we disable the progress button and suggest user to enter an amount',
   vault: {
     ilk: 'WBTC-A',
     collateral: new BigNumber('100'),
@@ -132,34 +132,6 @@ export const GenerateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice = manag
   proxyAddress,
 })({
   depositAmount: new BigNumber('30'),
-  generateAmount: new BigNumber('4000'),
-})
-
-export const VaultWillBeUnderCollateralized = manageVaultStory({
-  title:
-    'Error is same as Generate Amount Exceeds Dai Yield From Total Collateral only that this exemplifies that it is coupled with Vault Will Be UnderCollateralized error - we can scrutinize to a lower level of detail if necessary',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
-  proxyAddress,
-})({
-  stage: 'daiEditing',
-  generateAmount: new BigNumber('8000'),
-})
-
-export const VaultWillBeUnderCollateralizedAtNextPrice = manageVaultStory({
-  title: 'Same as above',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
-  priceInfo: { collateralChangePercentage: new BigNumber('-0.3') },
-  proxyAddress,
-})({
-  stage: 'daiEditing',
   generateAmount: new BigNumber('4000'),
 })
 
@@ -349,6 +321,6 @@ export const CustomDaiAllowanceAmountLessThanDepositAmount = manageVaultStory({
 
 // eslint-disable-next-line import/no-default-export
 export default {
-  title: 'ManageVault/Errors',
+  title: 'ManageVault/Blocking Flow',
   component: ManageVaultView,
 }

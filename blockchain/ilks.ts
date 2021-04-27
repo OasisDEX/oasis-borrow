@@ -78,8 +78,8 @@ export function createIlkData$(
           maxAuctionLotSize,
           token: ilkToToken(ilk),
           ilk,
-          ilkDebt: debtScalingFactor
-            .times(normalizedIlkDebt)
+          ilkDebt: normalizedIlkDebt
+            .times(debtScalingFactor)
             .decimalPlaces(18, BigNumber.ROUND_DOWN),
           ilkDebtAvailable: BigNumber.max(
             debtCeiling

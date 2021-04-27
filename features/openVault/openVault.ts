@@ -84,7 +84,7 @@ export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultStat
   } = state
 
   const depositAmountUSDAtNextPrice = depositAmount
-    ? depositAmount.times(nextCollateralPrice || currentCollateralPrice)
+    ? depositAmount.times(nextCollateralPrice)
     : zero
 
   const afterBackingCollateral = generateAmount
@@ -101,7 +101,7 @@ export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultStat
     : zero
 
   const daiYieldFromDepositingCollateralAtNextPrice = depositAmount
-    ? depositAmount.times(nextCollateralPrice || currentCollateralPrice).div(liquidationRatio)
+    ? depositAmount.times(nextCollateralPrice).div(liquidationRatio)
     : zero
 
   const maxGenerateAmountCurrentPrice = daiYieldFromDepositingCollateral.gt(ilkDebtAvailable)

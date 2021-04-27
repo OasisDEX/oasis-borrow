@@ -76,6 +76,7 @@
   "create-dai-savings": "Create Dai Savings",
   "create-proxy": "Create a proxy",
   "create-proxy-btn": "Create Proxy",
+  "setup-proxy": "Setup Proxy",
   "create-proxy-desc": "In order to use Savings and other features, you will need a wallet proxy.",
   "creating-proxy": "Creating Proxy",
   "currency": "Currency",
@@ -275,6 +276,7 @@
   "receive": "Receive",
   "received": "Received",
   "recent-transactions": "Recent Transactions",
+  "reclaim": "Reclaim collateral",
   "remaining-in-wallet": "Remaining in Wallet",
   "retry": "Retry",
   "retry-allowance-approval": "Retry Allowance approval",
@@ -371,9 +373,9 @@
   "vault": {
     "current-price": "Current {{token}}/USD Price in {{time}}",
     "header": "{{ilk}} Vault #{{id}}",
-    "next-price": "Next price in<0/>{{count}} minute",
-    "next-price_plural": "Next price in<0/>{{count}} minutes",
-    "next-price-any-time": "Next price in<0/><2 minutes",
+    "next-price": "Next price in {{count}} minute",
+    "next-price_plural": "Next price in {{count}} minutes",
+    "next-price-any-time": "Next price in <2 minutes",
     "vault-details": "Vault Details",
     "open-vault": "Open {{ilk}} Vault"
   },
@@ -467,5 +469,9 @@
   "no-results": "No results",
   "new-to-ethereum": "New to Ethereum? ",
   "learn-about-wallets": "Learn more about wallets",
-  "learn-more-link": "https://ethereum.org/en/wallets/find-wallet/"
+  "learn-more-link": "https://ethereum.org/en/wallets/find-wallet/",
+  "enter-an-amount": "Enter an amount",
+  "enter-allowance-amount": "Enter allowance amount",
+  "set-token-allowance": "Set {{token}} allowance",
+  "invalid-allowance-amount": "Invalid allowance amount"
 }

@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { Banner } from 'components/Banner'
 import { AppLink } from 'components/Links'
+import { ReclaimCollateralButton } from 'features/reclaimCollateral/reclaimCollateralView'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
@@ -43,7 +44,6 @@ export function VaultBanner({
   color,
 }: VaultBannerProps & { color: string }) {
   const [isVisible, setIsVisible] = useState(true)
-
   return (
     <>
       {isVisible && (
@@ -192,11 +192,13 @@ export function VaultLiquidatedBanner({
   isVaultController,
   controller,
   token,
+  id,
 }: {
   unlockedCollateral: BigNumber
   isVaultController: boolean
   controller: string
   token: string
+  id: BigNumber
 }) {
   const { t } = useTranslation()
 
@@ -205,14 +207,22 @@ export function VaultLiquidatedBanner({
     : t('vault-banners.liquidated.header2')
   const subheader =
     unlockedCollateral.gt(zero) &&
-    (isVaultController
-      ? `${t('vault-banners.liquidated.subheader1')} ${t('vault-banners.liquidated.subheader2', {
-          amount: formatCryptoBalance(unlockedCollateral),
-          collateral: token.toUpperCase(),
-        })}`
-      : `${t('vault-banners.liquidated.subheader1')} ${t('vault-banners.liquidated.subheader3', {
-          address: formatAddress(controller),
-        })}`)
+    (isVaultController ? (
+      <>
+        <Text sx={{ mb: 3 }}>
+          {t('vault-banners.liquidated.subheader1')}{' '}
+          {t('vault-banners.liquidated.subheader2', {
+            amount: formatCryptoBalance(unlockedCollateral),
+            collateral: token.toUpperCase(),
+          })}
+        </Text>
+        <ReclaimCollateralButton {...{ token, id, amount: unlockedCollateral }} />
+      </>
+    ) : (
+      `${t('vault-banners.liquidated.subheader1')} ${t('vault-banners.liquidated.subheader3', {
+        address: formatAddress(controller),
+      })}`
+    ))
 
   return (
     <VaultBanner
@@ -325,6 +335,7 @@ export function VaultNextPriceUpdateCounter({
 export function VaultBannersView({ id }: { id: BigNumber }) {
   const { vaultBanners$ } = useAppContext()
   const state = useObservable(vaultBanners$(id))
+
   if (!state) return null
 
   const { token, dateNextCollateralPrice, account, controller, unlockedCollateral, banner } = state
@@ -334,7 +345,15 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
   switch (banner) {
     case 'liquidated':
       return (
-        <VaultLiquidatedBanner {...{ unlockedCollateral, token, isVaultController, controller }} />
+        <VaultLiquidatedBanner
+          {...{
+            unlockedCollateral,
+            token,
+            isVaultController,
+            controller,
+            id,
+          }}
+        />
       )
     case 'liquidating':
       return (

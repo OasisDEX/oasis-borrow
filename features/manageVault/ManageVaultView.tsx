@@ -5,7 +5,7 @@ import { useObservableWithError } from 'helpers/observableHook'
 import React from 'react'
 import { Box, Card, Grid, Text } from 'theme-ui'
 
-import { categoriseManageVaultStage, ManageVaultState } from './manageVault'
+import { ManageVaultState } from './manageVault'
 import { ManageVaultButton } from './ManageVaultButton'
 import { ManageVaultCollateralAllowance } from './ManageVaultCollateralAllowance'
 import { ManageVaultConfirmation } from './ManageVaultConfirmation'
@@ -36,14 +36,15 @@ function ManageVaultWarnings({ warningMessages }: ManageVaultState) {
 }
 
 function ManageVaultForm(props: ManageVaultState) {
-  const { toggleIlkDetails, showIlkDetails, stage } = props
   const {
+    toggleIlkDetails,
+    showIlkDetails,
     isEditingStage,
     isProxyStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
     isManageStage,
-  } = categoriseManageVaultStage(stage)
+  } = props
 
   function handleMouseEnter(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault()
