@@ -12,7 +12,10 @@ import { ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
 const query = gql`
   query VaultEvents($urn: String) {
-    allVaultEvents(filter: { urn: { equalTo: $urn } kind: { notEqualTo: "TAKE" } }, orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]) {
+    allVaultEvents(
+      filter: { urn: { equalTo: $urn }, kind: { notEqualTo: "TAKE" } }
+      orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
+    ) {
       nodes {
         kind
         collateralAmount
@@ -47,7 +50,7 @@ function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
     'daiAmount',
     'collateralTaken',
     'coveredDebt',
-    'remainingCollateral'
+    'remainingCollateral',
   ]
   return Object.entries(event).reduce(
     (acc, [key, value]) =>

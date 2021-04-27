@@ -5,7 +5,6 @@ import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import moment from 'moment'
 import { Trans, useTranslation } from 'next-i18next'
-import { T } from 'ramda'
 import React from 'react'
 import { Box, Heading, Link, Text } from 'theme-ui'
 
@@ -19,7 +18,6 @@ const columns: ColumnDef<VaultHistoryEvent, {}>[] = [
       return (
         <Trans
           i18nKey={`history.${event.kind.toLowerCase()}`}
-
           values={{
             transferTo: 'transferTo' in event && formatAddress(event.transferTo),
             transferFrom: 'transferFrom' in event && formatAddress(event.transferFrom),
@@ -32,12 +30,14 @@ const columns: ColumnDef<VaultHistoryEvent, {}>[] = [
               'remainingCollateral' in event && event.remainingCollateral
                 ? formatCryptoBalance(event.remainingCollateral)
                 : 0,
-            collateralTaken: 'collateralTaken' in event && event.collateralTaken
-              ? formatCryptoBalance(event.collateralTaken)
-              : 0,
-            coveredDebt: 'coveredDebt' in event && event.coveredDebt
-              ? formatCryptoBalance(event.coveredDebt)
-              : 0,
+            collateralTaken:
+              'collateralTaken' in event && event.collateralTaken
+                ? formatCryptoBalance(event.collateralTaken)
+                : 0,
+            coveredDebt:
+              'coveredDebt' in event && event.coveredDebt
+                ? formatCryptoBalance(event.coveredDebt)
+                : 0,
             cdpId: 'cdpId' in event ? event.cdpId : undefined,
             auctionId: 'auctionId' in event ? event.auctionId : undefined,
             token: event.token,

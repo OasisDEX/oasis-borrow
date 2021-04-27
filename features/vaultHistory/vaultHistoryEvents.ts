@@ -48,12 +48,12 @@ interface AuctionStartedEvent extends HistoryEventBase {
   kind: 'AUCTION_STARTED'
   collateralAmount: BigNumber
   daiAmount: BigNumber
-  auctionId: string,
+  auctionId: string
 }
 
 interface AuctionStartedV2Event extends HistoryEventBase {
   kind: 'AUCTION_STARTED_V2'
-  auctionId: string,
+  auctionId: string
   collateralAmount: BigNumber
   daiAmount: BigNumber
   liqPenalty: BigNumber
@@ -61,25 +61,41 @@ interface AuctionStartedV2Event extends HistoryEventBase {
 
 interface AuctionFinishedV2Event extends HistoryEventBase {
   kind: 'AUCTION_FINISHED_V2'
-  auctionId: string,
+  auctionId: string
   remainingDebt: BigNumber
   remainingCollateral: BigNumber
 }
 
 interface TakeEvent extends HistoryEventBase {
   kind: 'TAKE'
-  auctionId: string,
+  auctionId: string
   remainingDebt: BigNumber
   remainingCollateral: BigNumber
-  collateralPrice: BigNumber,
-  coveredDebt: BigNumber,
-  collateralTaken: BigNumber,
+  collateralPrice: BigNumber
+  coveredDebt: BigNumber
+  collateralTaken: BigNumber
 }
 
 interface VaultTransferredEvent extends HistoryEventBase {
   kind: 'TRANSFER'
   transferFrom: string
   transferTo: string
+}
+
+interface MoveSrcEvent extends HistoryEventBase {
+  kind: 'MOVE_SRC'
+  transferFrom: string
+  transferTo: string
+  collateralAmount: BigNumber
+  daiAmount: BigNumber
+}
+
+interface MoveDestEvent extends HistoryEventBase {
+  kind: 'MOVE_DESC'
+  transferFrom: string
+  transferTo: string
+  collateralAmount: BigNumber
+  daiAmount: BigNumber
 }
 
 interface MigrateEvent extends HistoryEventBase {
@@ -113,5 +129,7 @@ export type VaultEvent =
   | AuctionStartedV2Event
   | TakeEvent
   | AuctionFinishedV2Event
+  | MoveSrcEvent
+  | MoveDestEvent
 
 export type EventType = VaultEvent['kind']
