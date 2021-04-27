@@ -14,12 +14,11 @@ function VaultDetailsTable({
   ilkData,
   afterMaxGenerateAmountCurrentPrice,
   afterDebt,
-  errorMessages,
   collateralAvailableToWithdraw,
+  inputAmountsEmpty,
 }: ManageVaultState) {
   const { t } = useTranslation()
 
-  const hasErrors = !!errorMessages.length
   return (
     <Box sx={{ gridColumn: '1/3', mt: 6 }}>
       <Heading variant="header3" mb="4">
@@ -38,7 +37,7 @@ function VaultDetailsTable({
               DAI
             </Text>
           </Box>
-          {!hasErrors && (
+          {!inputAmountsEmpty && (
             <Flex sx={{ alignItems: 'center' }}>
               <Icon name="arrow_right" size={12} />
               <Box pl={1}>
@@ -67,7 +66,7 @@ function VaultDetailsTable({
               {vault.token}
             </Text>
           </Box>
-          {!hasErrors && (
+          {!inputAmountsEmpty && (
             <Flex sx={{ alignItems: 'center' }}>
               <Icon name="arrow_right" size={12} />
               <Box pl={1}>
@@ -96,7 +95,7 @@ function VaultDetailsTable({
               DAI
             </Text>
           </Box>
-          {!hasErrors && (
+          {!inputAmountsEmpty && (
             <Flex sx={{ alignItems: 'center' }}>
               <Icon name="arrow_right" size={12} />
               <Box pl={1}>

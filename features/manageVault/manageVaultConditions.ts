@@ -176,6 +176,9 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     afterFreeCollateralAtNextPrice,
     shouldPaybackAll,
     balanceInfo: { collateralBalance, daiBalance },
+    isEditingStage,
+    isCollateralAllowanceStage,
+    isDaiAllowanceStage,
   } = state
 
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
@@ -306,24 +309,36 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     'manageWaitingForApproval',
   ] as ManageVaultStage[]).some((s) => s === stage)
 
+  const editingProgressionDisabled =
+    isEditingStage &&
+    (inputAmountsEmpty ||
+      vaultWillBeUnderCollateralized ||
+      vaultWillBeUnderCollateralizedAtNextPrice ||
+      debtWillBeLessThanDebtFloor ||
+      depositAmountExceedsCollateralBalance ||
+      depositingAllEthBalance ||
+      generateAmountExceedsDebtCeiling ||
+      generateAmountLessThanDebtFloor ||
+      paybackAmountExceedsDaiBalance ||
+      paybackAmountExceedsVaultDebt)
+
+  const collateralAllowanceProgressionDisabled =
+    isCollateralAllowanceStage &&
+    (customCollateralAllowanceAmountEmpty ||
+      customCollateralAllowanceAmountExceedsMaxUint256 ||
+      customCollateralAllowanceAmountLessThanDepositAmount)
+
+  const daiAllowanceProgressionDisabled =
+    isDaiAllowanceStage &&
+    (customDaiAllowanceAmountEmpty ||
+      customDaiAllowanceAmountExceedsMaxUint256 ||
+      customDaiAllowanceAmountLessThanPaybackAmount)
+
   const flowProgressionDisabled =
     isLoadingStage ||
-    inputAmountsEmpty ||
-    vaultWillBeUnderCollateralized ||
-    vaultWillBeUnderCollateralizedAtNextPrice ||
-    customCollateralAllowanceAmountEmpty ||
-    customCollateralAllowanceAmountExceedsMaxUint256 ||
-    customCollateralAllowanceAmountLessThanDepositAmount ||
-    customDaiAllowanceAmountEmpty ||
-    customDaiAllowanceAmountExceedsMaxUint256 ||
-    customDaiAllowanceAmountLessThanPaybackAmount ||
-    debtWillBeLessThanDebtFloor ||
-    depositAmountExceedsCollateralBalance ||
-    depositingAllEthBalance ||
-    generateAmountExceedsDebtCeiling ||
-    generateAmountLessThanDebtFloor ||
-    paybackAmountExceedsDaiBalance ||
-    paybackAmountExceedsVaultDebt
+    editingProgressionDisabled ||
+    collateralAllowanceProgressionDisabled ||
+    daiAllowanceProgressionDisabled
 
   return {
     ...state,
