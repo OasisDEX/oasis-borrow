@@ -124,7 +124,7 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     allowance,
   } = state
 
-  const inputAmountsEmpty = isNullish(depositAmount) && isNullish(generateAmount)
+  const inputAmountsEmpty = !depositAmount && !generateAmount
 
   const vaultWillBeAtRiskLevelDanger =
     !inputAmountsEmpty &&
@@ -208,6 +208,7 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     !!(depositAmount && !depositAmount.isZero() && (!allowance || depositAmount.gt(allowance)))
 
   const flowProgressionDisabled =
+    inputAmountsEmpty ||
     isLoadingStage ||
     vaultWillBeUnderCollateralized ||
     vaultWillBeUnderCollateralizedAtNextPrice ||
