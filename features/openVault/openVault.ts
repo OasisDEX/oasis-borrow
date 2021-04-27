@@ -38,50 +38,6 @@ import {
   validateWarnings,
 } from './openVaultValidations'
 
-const defaultOpenVaultStageCategories = {
-  isEditingStage: false,
-  isProxyStage: false,
-  isAllowanceStage: false,
-  isOpenStage: false,
-}
-
-export function categoriseOpenVaultStage(stage: OpenVaultStage) {
-  switch (stage) {
-    case 'editing':
-      return {
-        ...defaultOpenVaultStageCategories,
-        isEditingStage: true,
-      }
-    case 'proxyWaitingForConfirmation':
-    case 'proxyWaitingForApproval':
-    case 'proxyInProgress':
-    case 'proxyFailure':
-    case 'proxySuccess':
-      return {
-        ...defaultOpenVaultStageCategories,
-        isProxyStage: true,
-      }
-    case 'allowanceWaitingForConfirmation':
-    case 'allowanceWaitingForApproval':
-    case 'allowanceInProgress':
-    case 'allowanceFailure':
-    case 'allowanceSuccess':
-      return {
-        ...defaultOpenVaultStageCategories,
-        isAllowanceStage: true,
-      }
-    case 'openWaitingForConfirmation':
-    case 'openWaitingForApproval':
-    case 'openInProgress':
-    case 'openFailure':
-    case 'openSuccess':
-      return {
-        ...defaultOpenVaultStageCategories,
-        isOpenStage: true,
-      }
-  }
-}
-
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
   stateToOverride: Partial<OpenVaultState>

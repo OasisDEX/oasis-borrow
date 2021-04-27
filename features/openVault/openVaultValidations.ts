@@ -19,15 +19,8 @@ export type OpenVaultErrorMessage =
 
 export function validateErrors(state: OpenVaultState): OpenVaultState {
   const {
-    generateAmount,
-    afterCollateralizationRatio,
-    afterCollateralizationRatioAtNextPrice,
-    ilkData,
     depositAmount,
     balanceInfo,
-    daiYieldFromDepositingCollateral,
-    daiYieldFromDepositingCollateralAtNextPrice,
-    token,
     stage,
     allowanceAmount,
     isEditingStage,
@@ -42,14 +35,6 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
   const errorMessages: OpenVaultErrorMessage[] = []
 
   if (isEditingStage) {
-    if (vaultWillBeUnderCollateralized) {
-      errorMessages.push('vaultWillBeUnderCollateralized')
-    }
-
-    if (vaultWillBeUnderCollateralizedAtNextPrice) {
-      errorMessages.push('vaultWillBeUnderCollateralizedAtNextPrice')
-    }
-
     if (depositAmount?.gt(balanceInfo.collateralBalance)) {
       errorMessages.push('depositAmountExceedsCollateralBalance')
     }
@@ -75,7 +60,7 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
     }
   }
 
-  if (stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFailure') {
+  if (stage === 'allowanceWaitingForConfirmation') {
     if (!allowanceAmount) {
       errorMessages.push('customAllowanceAmountEmpty')
     }
