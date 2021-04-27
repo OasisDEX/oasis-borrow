@@ -276,6 +276,7 @@
   "receive": "Receive",
   "received": "Received",
   "recent-transactions": "Recent Transactions",
+  "reclaim": "Reclaim collateral",
   "remaining-in-wallet": "Remaining in Wallet",
   "retry": "Retry",
   "retry-allowance-approval": "Retry Allowance approval",

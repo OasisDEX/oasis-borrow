@@ -59,7 +59,7 @@ export const vatGem: CallDef<VatGemArgs, BigNumber> = {
     return contract<Vat>(vat).methods.gem
   },
   prepareArgs: ({ ilk, urnAddress }) => [Web3.utils.utf8ToHex(ilk), urnAddress],
-  postprocess: (gem) => new BigNumber(gem),
+  postprocess: (gem) => amountFromWei(new BigNumber(gem)),
 }
 
 export const vatLine: CallDef<{}, BigNumber> = {

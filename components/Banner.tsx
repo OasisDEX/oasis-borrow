@@ -19,6 +19,7 @@ export function Banner({ children, close }: BannerProps) {
         borderRadius: 'mediumLarge',
         boxShadow: 'banner',
         position: 'relative',
+        background: 'white',
       }}
     >
       <IconButton
