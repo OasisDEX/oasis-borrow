@@ -35,20 +35,7 @@ function OpenVaultWarnings({ warningMessages }: OpenVaultState) {
   )
 }
 
-function OpenVaultTitle({
-  reset,
-  stage,
-  isEditingStage,
-  isProxyStage,
-  isAllowanceStage,
-}: OpenVaultState) {
-  const canReset = !!reset
-
-  function handleReset(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault()
-    if (canReset) reset!()
-  }
-
+function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage }: OpenVaultState) {
   return (
     <Grid>
       <Grid columns="2fr 1fr">
@@ -61,15 +48,7 @@ function OpenVaultTitle({
             ? 'Set Allowance'
             : 'Create your Vault'}
         </Text>
-        {canReset ? (
-          <Button onClick={handleReset} disabled={!canReset} sx={{ fontSize: 1, p: 0 }}>
-            {stage === 'editing' ? 'Reset' : 'Back'}
-          </Button>
-        ) : null}
       </Grid>
-      <Text sx={{ fontSize: 2 }}>
-        Some text here giving a little more context as to what the user is doing
-      </Text>
     </Grid>
   )
 }
