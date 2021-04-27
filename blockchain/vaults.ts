@@ -130,10 +130,12 @@ export function createVault$(
 
             const debt = debtScalingFactor.times(normalizedDebt)
 
-            const debtOffset = debt
-              .times(one.plus(stabilityFee.div(SECONDS_PER_YEAR)).pow(HOUR * 5))
-              .minus(debt)
-              .dp(18, BigNumber.ROUND_DOWN)
+            const debtOffset = !debt.isZero()
+              ? debt
+                  .times(one.plus(stabilityFee.div(SECONDS_PER_YEAR)).pow(HOUR * 5))
+                  .minus(debt)
+                  .dp(18, BigNumber.ROUND_DOWN)
+              : new BigNumber('1e-18')
 
             const backingCollateral = debt.times(liquidationRatio).div(currentPrice)
 

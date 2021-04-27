@@ -7,11 +7,12 @@ import { ManageVaultState } from './manageVault'
 
 export function ManageVaultIlkDetails({
   showIlkDetails,
+  isEditingStage,
   ilkData: { ilkDebtAvailable, liquidationRatio, stabilityFee, liquidationPenalty, debtFloor },
 }: ManageVaultState) {
   const { t } = useTranslation()
 
-  if (!showIlkDetails) return null
+  if (!showIlkDetails || !isEditingStage) return null
   return (
     <Card bg="secondaryAlt" sx={{ border: 'none' }}>
       <Grid columns={'2fr 3fr'}>

@@ -36,7 +36,12 @@ import {
   ManageVaultTransitionChange,
   progressManage,
 } from './manageVaultTransitions'
-import { validateErrors, validateWarnings } from './manageVaultValidations'
+import {
+  ManageVaultErrorMessage,
+  ManageVaultWarningMessage,
+  validateErrors,
+  validateWarnings,
+} from './manageVaultValidations'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -173,7 +178,10 @@ export type ManageVaultState = MutableManageVaultState &
   ManageVaultConditions &
   ManageVaultEnvironment &
   ManageVaultFunctions &
-  ManageVaultTxInfo
+  ManageVaultTxInfo & {
+    errorMessages: ManageVaultErrorMessage[]
+    warningMessages: ManageVaultWarningMessage[]
+  }
 
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
@@ -373,6 +381,8 @@ export function createManageVault$(
                     daiAllowance,
                     safeConfirmations: context.safeConfirmations,
                     etherscan: context.etherscan.url,
+                    errorMessages: [],
+                    warningMessages: [],
                     injectStateOverride,
                   }
 

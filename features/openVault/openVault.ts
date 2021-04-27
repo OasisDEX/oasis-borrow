@@ -5,12 +5,21 @@ import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openVaultAllowances'
+import {
+  applyOpenVaultCalculations,
+  defaultOpenVaultStateCalculations,
+  OpenVaultCalculations,
+} from './openVaultCalculations'
+import {
+  applyOpenVaultConditions,
+  defaultOpenVaultConditions,
+  OpenVaultConditions,
+} from './openVaultConditions'
 import { applyOpenVaultEnvironment, OpenVaultEnvironmentChange } from './openVaultEnvironment'
 import { applyOpenVaultForm, OpenVaultFormChange } from './openVaultForm'
 import { applyOpenVaultInput, OpenVaultInputChange } from './openVaultInput'
@@ -28,132 +37,6 @@ import {
   validateErrors,
   validateWarnings,
 } from './openVaultValidations'
-
-const defaultOpenVaultStageCategories = {
-  isEditingStage: false,
-  isProxyStage: false,
-  isAllowanceStage: false,
-  isOpenStage: false,
-}
-
-export function categoriseOpenVaultStage(stage: OpenVaultStage) {
-  switch (stage) {
-    case 'editing':
-      return {
-        ...defaultOpenVaultStageCategories,
-        isEditingStage: true,
-      }
-    case 'proxyWaitingForConfirmation':
-    case 'proxyWaitingForApproval':
-    case 'proxyInProgress':
-    case 'proxyFailure':
-    case 'proxySuccess':
-      return {
-        ...defaultOpenVaultStageCategories,
-        isProxyStage: true,
-      }
-    case 'allowanceWaitingForConfirmation':
-    case 'allowanceWaitingForApproval':
-    case 'allowanceInProgress':
-    case 'allowanceFailure':
-    case 'allowanceSuccess':
-      return {
-        ...defaultOpenVaultStageCategories,
-        isAllowanceStage: true,
-      }
-    case 'openWaitingForConfirmation':
-    case 'openWaitingForApproval':
-    case 'openInProgress':
-    case 'openFailure':
-    case 'openSuccess':
-      return {
-        ...defaultOpenVaultStageCategories,
-        isOpenStage: true,
-      }
-  }
-}
-
-export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultState {
-  const {
-    depositAmount,
-    depositAmountUSD,
-    generateAmount,
-    balanceInfo: { collateralBalance },
-    priceInfo: { currentCollateralPrice, nextCollateralPrice },
-    ilkData: { ilkDebtAvailable, liquidationRatio },
-  } = state
-
-  const depositAmountUSDAtNextPrice = depositAmount
-    ? depositAmount.times(nextCollateralPrice)
-    : zero
-
-  const afterBackingCollateral = generateAmount
-    ? generateAmount.times(liquidationRatio).div(currentCollateralPrice)
-    : zero
-
-  const afterFreeCollateral = depositAmount ? depositAmount.minus(afterBackingCollateral) : zero
-
-  const maxDepositAmount = collateralBalance
-  const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
-
-  const daiYieldFromDepositingCollateral = depositAmount
-    ? depositAmount.times(currentCollateralPrice).div(liquidationRatio)
-    : zero
-
-  const daiYieldFromDepositingCollateralAtNextPrice = depositAmount
-    ? depositAmount.times(nextCollateralPrice).div(liquidationRatio)
-    : zero
-
-  const maxGenerateAmountCurrentPrice = daiYieldFromDepositingCollateral.gt(ilkDebtAvailable)
-    ? ilkDebtAvailable
-    : daiYieldFromDepositingCollateral
-
-  const maxGenerateAmountNextPrice = daiYieldFromDepositingCollateralAtNextPrice.gt(
-    ilkDebtAvailable,
-  )
-    ? ilkDebtAvailable
-    : daiYieldFromDepositingCollateralAtNextPrice
-
-  const maxGenerateAmount = BigNumber.minimum(
-    maxGenerateAmountCurrentPrice,
-    maxGenerateAmountNextPrice,
-  )
-
-  const afterCollateralizationRatio =
-    generateAmount && depositAmountUSD && !generateAmount.isZero()
-      ? depositAmountUSD.div(generateAmount)
-      : zero
-
-  const afterCollateralizationRatioAtNextPrice =
-    generateAmount && !generateAmount.isZero()
-      ? depositAmountUSDAtNextPrice.div(generateAmount)
-      : zero
-
-  const afterLiquidationPrice =
-    generateAmount && depositAmount && depositAmount.gt(zero)
-      ? generateAmount.times(liquidationRatio).div(depositAmount)
-      : zero
-
-  const collateralBalanceRemaining = depositAmount
-    ? collateralBalance.minus(depositAmount)
-    : collateralBalance
-
-  return {
-    ...state,
-    maxDepositAmount,
-    maxDepositAmountUSD,
-    maxGenerateAmount,
-    maxGenerateAmountCurrentPrice,
-    maxGenerateAmountNextPrice,
-    afterCollateralizationRatio,
-    afterCollateralizationRatioAtNextPrice,
-    daiYieldFromDepositingCollateral,
-    daiYieldFromDepositingCollateralAtNextPrice,
-    afterLiquidationPrice,
-    afterFreeCollateral,
-    collateralBalanceRemaining,
-  }
-}
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -187,7 +70,8 @@ function apply(state: OpenVaultState, change: OpenVaultChange) {
   const s5 = applyOpenVaultAllowance(change, s4)
   const s6 = applyOpenVaultEnvironment(change, s5)
   const s7 = applyOpenVaultInjectedOverride(change, s6)
-  return applyOpenVaultCalculations(s7)
+  const s8 = applyOpenVaultCalculations(s7)
+  return applyOpenVaultConditions(s8)
 }
 
 export type OpenVaultStage =
@@ -218,23 +102,6 @@ export interface MutableOpenVaultState {
   selectedAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
   allowanceAmount?: BigNumber
   id?: BigNumber
-}
-
-interface OpenVaultCalculations {
-  errorMessages: OpenVaultErrorMessage[]
-  warningMessages: OpenVaultWarningMessage[]
-  afterLiquidationPrice: BigNumber
-  afterCollateralizationRatio: BigNumber
-  afterCollateralizationRatioAtNextPrice: BigNumber
-  daiYieldFromDepositingCollateral: BigNumber
-  daiYieldFromDepositingCollateralAtNextPrice: BigNumber
-  afterFreeCollateral: BigNumber
-  maxDepositAmount: BigNumber
-  maxDepositAmountUSD: BigNumber
-  maxGenerateAmount: BigNumber
-  maxGenerateAmountCurrentPrice: BigNumber
-  maxGenerateAmountNextPrice: BigNumber
-  collateralBalanceRemaining: BigNumber
 }
 
 interface OpenVaultFunctions {
@@ -279,7 +146,11 @@ export type OpenVaultState = MutableOpenVaultState &
   OpenVaultCalculations &
   OpenVaultFunctions &
   OpenVaultEnvironment &
-  OpenVaultTxInfo
+  OpenVaultConditions &
+  OpenVaultTxInfo & {
+    errorMessages: OpenVaultErrorMessage[]
+    warningMessages: OpenVaultWarningMessage[]
+  }
 
 function addTransitions(
   txHelpers: TxHelpers,
@@ -381,23 +252,6 @@ export const defaultMutableOpenVaultState: MutableOpenVaultState = {
   allowanceAmount: maxUint256,
 }
 
-export const defaultOpenVaultStateCalculations: OpenVaultCalculations = {
-  errorMessages: [],
-  warningMessages: [],
-  maxDepositAmount: zero,
-  maxDepositAmountUSD: zero,
-  maxGenerateAmount: zero,
-  maxGenerateAmountCurrentPrice: zero,
-  maxGenerateAmountNextPrice: zero,
-  afterCollateralizationRatio: zero,
-  afterCollateralizationRatioAtNextPrice: zero,
-  daiYieldFromDepositingCollateral: zero,
-  daiYieldFromDepositingCollateralAtNextPrice: zero,
-  afterLiquidationPrice: zero,
-  afterFreeCollateral: zero,
-  collateralBalanceRemaining: zero,
-}
-
 export function createOpenVault$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
@@ -444,6 +298,7 @@ export function createOpenVault$(
                     const initialState: OpenVaultState = {
                       ...defaultMutableOpenVaultState,
                       ...defaultOpenVaultStateCalculations,
+                      ...defaultOpenVaultConditions,
                       priceInfo,
                       balanceInfo,
                       ilkData,
@@ -454,6 +309,8 @@ export function createOpenVault$(
                       allowance,
                       safeConfirmations: context.safeConfirmations,
                       etherscan: context.etherscan.url,
+                      errorMessages: [],
+                      warningMessages: [],
 
                       injectStateOverride,
                     }

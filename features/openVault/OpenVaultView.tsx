@@ -4,9 +4,9 @@ import { useAppContext } from 'components/AppContextProvider'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Card, Divider, Flex, Grid, Heading, Spinner, SxProps, Text } from 'theme-ui'
+import { Box, Card, Divider, Flex, Grid, Heading, Spinner, SxProps, Text } from 'theme-ui'
 
-import { categoriseOpenVaultStage, OpenVaultState } from './openVault'
+import { OpenVaultState } from './openVault'
 import { OpenVaultAllowance } from './OpenVaultAllowance'
 import { OpenVaultButton } from './OpenVaultButton'
 import { OpenVaultConfirmation } from './OpenVaultConfirmation'
@@ -35,15 +35,7 @@ function OpenVaultWarnings({ warningMessages }: OpenVaultState) {
   )
 }
 
-function OpenVaultTitle({ reset, stage }: OpenVaultState) {
-  const canReset = !!reset
-  const { isEditingStage, isProxyStage, isAllowanceStage } = categoriseOpenVaultStage(stage)
-
-  function handleReset(e: React.SyntheticEvent<HTMLButtonElement>) {
-    e.preventDefault()
-    if (canReset) reset!()
-  }
-
+function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage }: OpenVaultState) {
   return (
     <Grid>
       <Grid columns="2fr 1fr">
@@ -56,24 +48,20 @@ function OpenVaultTitle({ reset, stage }: OpenVaultState) {
             ? 'Set Allowance'
             : 'Create your Vault'}
         </Text>
-        {canReset ? (
-          <Button onClick={handleReset} disabled={!canReset} sx={{ fontSize: 1, p: 0 }}>
-            {stage === 'editing' ? 'Reset' : 'Back'}
-          </Button>
-        ) : null}
       </Grid>
-      <Text sx={{ fontSize: 2 }}>
-        Some text here giving a little more context as to what the user is doing
-      </Text>
     </Grid>
   )
 }
 
 function OpenVaultForm(props: OpenVaultState) {
-  const { toggleIlkDetails, showIlkDetails, stage } = props
-  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = categoriseOpenVaultStage(
-    stage,
-  )
+  const {
+    toggleIlkDetails,
+    showIlkDetails,
+    isEditingStage,
+    isProxyStage,
+    isAllowanceStage,
+    isOpenStage,
+  } = props
   function handleMouseEnter(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault()
     if (isEditingStage && !showIlkDetails) {

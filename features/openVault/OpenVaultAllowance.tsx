@@ -23,7 +23,7 @@ export function OpenVaultAllowance({
   setAllowanceAmountCustom,
   selectedAllowanceRadio,
 }: OpenVaultState) {
-  const canSelectRadio = stage === 'allowanceWaitingForConfirmation' || stage === 'allowanceFailure'
+  const canSelectRadio = stage === 'allowanceWaitingForConfirmation'
 
   const isUnlimited = selectedAllowanceRadio === 'unlimited'
   const isDeposit = selectedAllowanceRadio === 'depositAmount'
