@@ -145,7 +145,6 @@ function VaultDetailsTable({
 
 export function ManageVaultDetails(props: ManageVaultState) {
   const {
-    afterCollateralizationRatio,
     afterLiquidationPrice,
     vault: {
       id,
@@ -166,7 +165,6 @@ export function ManageVaultDetails(props: ManageVaultState) {
     ilkData: { liquidationRatio },
     depositAndWithdrawAmountsEmpty,
     generateAndPaybackAmountsEmpty,
-    afterCollateralizationRatioAtNextPrice,
     shouldPaybackAll,
   } = props
   const { t } = useTranslation()
@@ -193,7 +191,6 @@ export function ManageVaultDetails(props: ManageVaultState) {
     ? 'onSuccess'
     : 'onError'
 
-  const showAfters = !generateAndPaybackAmountsEmpty || !depositAndWithdrawAmountsEmpty
   return (
     <Grid sx={{ alignSelf: 'flex-start' }} columns="1fr 1fr">
       <Heading
@@ -211,11 +208,9 @@ export function ManageVaultDetails(props: ManageVaultState) {
           {t('system.liquidation-price')}
         </Heading>
         <Text variant="display">$ {formatAmount(liquidationPrice, 'USD')}</Text>
-        {showAfters && (
-          <Text pl={2}>
-            {t('after')}: ${formatAmount(shouldPaybackAll ? zero : afterLiquidationPrice, 'USD')}
-          </Text>
-        )}
+        <Text pl={2}>
+          {t('after')}: ${formatAmount(shouldPaybackAll ? zero : afterLiquidationPrice, 'USD')}
+        </Text>
       </Box>
       <Box sx={{ textAlign: 'right', mt: 5 }}>
         <Heading variant="subheader" as="h2">
@@ -228,23 +223,6 @@ export function ManageVaultDetails(props: ManageVaultState) {
           {t('next')}:{' '}
           {formatPercent(collateralizationRatioAtNextPrice.times(100), { precision: 2 })}
         </Text>
-        {showAfters && (
-          <>
-            <Text>
-              {t('after')}:{' '}
-              {formatPercent(shouldPaybackAll ? zero : afterCollateralizationRatio.times(100), {
-                precision: 2,
-              })}
-            </Text>
-            <Text>
-              {t('after-next')}:{' '}
-              {formatPercent(
-                shouldPaybackAll ? zero : afterCollateralizationRatioAtNextPrice.times(100),
-                { precision: 2 },
-              )}
-            </Text>
-          </>
-        )}
       </Box>
       {isStaticCollateralPrice ? (
         <Box sx={{ mt: 6 }}>
