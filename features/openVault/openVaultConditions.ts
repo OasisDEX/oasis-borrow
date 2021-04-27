@@ -54,7 +54,13 @@ export interface OpenVaultConditions {
   isOpenStage: boolean
 
   inputAmountsEmpty: boolean
+
+  vaultWillBeAtRiskLevelWarning: boolean
+  vaultWillBeAtRiskLevelDanger: boolean
   vaultWillBeUnderCollateralized: boolean
+
+  vaultWillBeAtRiskLevelWarningAtNextPrice: boolean
+  vaultWillBeAtRiskLevelDangerAtNextPrice: boolean
   vaultWillBeUnderCollateralizedAtNextPrice: boolean
 
   depositingAllEthBalance: boolean
@@ -77,7 +83,12 @@ export const defaultOpenVaultConditions: OpenVaultConditions = {
   ...defaultOpenVaultStageCategories,
   inputAmountsEmpty: true,
 
+  vaultWillBeAtRiskLevelWarning: false,
+  vaultWillBeAtRiskLevelDanger: false,
   vaultWillBeUnderCollateralized: false,
+
+  vaultWillBeAtRiskLevelWarningAtNextPrice: false,
+  vaultWillBeAtRiskLevelDangerAtNextPrice: false,
   vaultWillBeUnderCollateralizedAtNextPrice: false,
 
   depositingAllEthBalance: false,
@@ -114,6 +125,28 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
   } = state
 
   const inputAmountsEmpty = isNullish(depositAmount) && isNullish(generateAmount)
+
+  const vaultWillBeAtRiskLevelDanger =
+    !inputAmountsEmpty &&
+    afterCollateralizationRatio.gte(ilkData.liquidationRatio) &&
+    afterCollateralizationRatio.lte(ilkData.collateralizationDangerThreshold)
+
+  const vaultWillBeAtRiskLevelDangerAtNextPrice =
+    !vaultWillBeAtRiskLevelDanger &&
+    !inputAmountsEmpty &&
+    afterCollateralizationRatioAtNextPrice.gte(ilkData.liquidationRatio) &&
+    afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationDangerThreshold)
+
+  const vaultWillBeAtRiskLevelWarning =
+    !inputAmountsEmpty &&
+    afterCollateralizationRatio.gt(ilkData.collateralizationDangerThreshold) &&
+    afterCollateralizationRatio.lte(ilkData.collateralizationWarningThreshold)
+
+  const vaultWillBeAtRiskLevelWarningAtNextPrice =
+    !vaultWillBeAtRiskLevelWarning &&
+    !inputAmountsEmpty &&
+    afterCollateralizationRatioAtNextPrice.gt(ilkData.collateralizationDangerThreshold) &&
+    afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationWarningThreshold)
 
   const vaultWillBeUnderCollateralized = !!(
     generateAmount?.gt(zero) &&
@@ -192,8 +225,13 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
 
     inputAmountsEmpty,
 
+    vaultWillBeAtRiskLevelWarning,
+    vaultWillBeAtRiskLevelWarningAtNextPrice,
+    vaultWillBeAtRiskLevelDanger,
+    vaultWillBeAtRiskLevelDangerAtNextPrice,
     vaultWillBeUnderCollateralized,
     vaultWillBeUnderCollateralizedAtNextPrice,
+
     depositingAllEthBalance,
     depositAmountExceedsCollateralBalance,
     generateAmountExceedsDaiYieldFromDepositingCollateral,
