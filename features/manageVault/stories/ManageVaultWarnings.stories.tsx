@@ -16,7 +16,9 @@ export const NoProxyAddress = manageVaultStory({
     collateral: new BigNumber('20'),
     debt: new BigNumber('3000'),
   },
-})()
+})({
+  depositAmount: one,
+})
 
 export const InsufficientCollateralAllowance = manageVaultStory({
   title:
@@ -44,7 +46,7 @@ export const InsufficientDaiAllowance = manageVaultStory({
   proxyAddress,
 })({
   stage: 'daiEditing',
-  paybackAmount: new BigNumber('1000'),
+  paybackAmount: new BigNumber('600'),
 })
 
 export const PotentialGenerateAmountLessThanDebtFloor = manageVaultStory({
@@ -77,8 +79,7 @@ export const DebtIsLessThanDebtFloor = manageVaultStory({
 })
 
 export const ConnectedAccountIsNotVaultController = manageVaultStory({
-  title:
-    'Warning is shown when the "owner" of the proxy corresponding to the vault does not match the connected account',
+  title: 'We disable the form when the connected account does not match the owner of the vault',
   vault: {
     ilk: 'WBTC-A',
     collateral: new BigNumber('100'),
@@ -418,6 +419,6 @@ export const GeneratingAllDaiFromTotalCollateralAtNextPrice = manageVaultStory({
 
 // eslint-disable-next-line import/no-default-export
 export default {
-  title: 'ManageVault/Warnings',
+  title: 'ManageVault/Non-Blocking',
   component: ManageVaultView,
 }
