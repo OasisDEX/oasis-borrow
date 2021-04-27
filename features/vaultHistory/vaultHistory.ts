@@ -12,7 +12,10 @@ import { ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
 const query = gql`
   query VaultEvents($urn: String) {
-    allVaultEvents(filter: { urn: { equalTo: $urn } }, orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]) {
+    allVaultEvents(
+      filter: { urn: { equalTo: $urn }, kind: { notEqualTo: "TAKE" } }
+      orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
+    ) {
       nodes {
         kind
         collateralAmount
@@ -21,11 +24,15 @@ const query = gql`
         cdpId
         transferFrom
         transferTo
+        collateralTaken
+        coveredDebt
+        remainingCollateral
         timestamp
         id
         urn
         hash
         logIndex
+        auctionId
       }
     }
   }
@@ -38,7 +45,13 @@ async function getVaultHistory(client: GraphQLClient, urn: string): Promise<Retu
 }
 
 function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
-  const bigNumberFields = ['collateralAmount', 'daiAmount']
+  const bigNumberFields = [
+    'collateralAmount',
+    'daiAmount',
+    'collateralTaken',
+    'coveredDebt',
+    'remainingCollateral',
+  ]
   return Object.entries(event).reduce(
     (acc, [key, value]) =>
       bigNumberFields.includes(key) && value != null

@@ -26,7 +26,20 @@ const columns: ColumnDef<VaultHistoryEvent, {}>[] = [
                 ? formatCryptoBalance(event.collateralAmount.abs())
                 : 0,
             daiAmount: 'daiAmount' in event ? formatCryptoBalance(event.daiAmount.abs()) : 0,
+            remainingCollateral:
+              'remainingCollateral' in event && event.remainingCollateral
+                ? formatCryptoBalance(event.remainingCollateral)
+                : 0,
+            collateralTaken:
+              'collateralTaken' in event && event.collateralTaken
+                ? formatCryptoBalance(event.collateralTaken)
+                : 0,
+            coveredDebt:
+              'coveredDebt' in event && event.coveredDebt
+                ? formatCryptoBalance(event.coveredDebt)
+                : 0,
             cdpId: 'cdpId' in event ? event.cdpId : undefined,
+            auctionId: 'auctionId' in event ? event.auctionId : undefined,
             token: event.token,
           }}
           components={[<Text as="strong" variant="strong" />]}
