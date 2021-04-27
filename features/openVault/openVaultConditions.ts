@@ -1,6 +1,6 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
-import { isNullish } from 'helpers/functions'
 import { zero } from 'helpers/zero'
+
 import { OpenVaultStage, OpenVaultState } from './openVault'
 
 const defaultOpenVaultStageCategories = {

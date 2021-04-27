@@ -4,7 +4,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Card, Divider, Flex, Grid, Heading, Spinner, SxProps, Text } from 'theme-ui'
+import { Box, Card, Divider, Flex, Grid, Heading, Spinner, SxProps, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
 import { OpenVaultAllowance } from './OpenVaultAllowance'

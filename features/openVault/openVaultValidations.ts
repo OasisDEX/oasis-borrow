@@ -1,6 +1,4 @@
-import { maxUint256 } from 'blockchain/calls/erc20'
 import { isNullish } from 'helpers/functions'
-import { zero } from 'helpers/zero'
 
 import { OpenVaultState } from './openVault'
 
@@ -22,15 +20,12 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
     depositAmount,
     balanceInfo,
     stage,
-    allowanceAmount,
     isEditingStage,
     depositingAllEthBalance,
     generateAmountExceedsDaiYieldFromDepositingCollateral,
     generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice,
     generateAmountExceedsDebtCeiling,
     generateAmountLessThanDebtFloor,
-
-    customAllowanceAmountEmpty,
     customAllowanceAmountExceedsMaxUint256,
     customAllowanceAmountLessThanDepositAmount,
   } = state
@@ -93,18 +88,9 @@ export type OpenVaultWarningMessage =
 export function validateWarnings(state: OpenVaultState): OpenVaultState {
   const {
     depositAmount,
-    generateAmount,
     errorMessages,
-    proxyAddress,
-    allowance,
     daiYieldFromDepositingCollateral,
     ilkData,
-    afterCollateralizationRatio,
-    afterCollateralizationRatioAtNextPrice,
-    balanceInfo,
-    maxGenerateAmountCurrentPrice,
-    maxGenerateAmountNextPrice,
-    stage,
     isEditingStage,
     vaultWillBeAtRiskLevelDanger,
     vaultWillBeAtRiskLevelDangerAtNextPrice,

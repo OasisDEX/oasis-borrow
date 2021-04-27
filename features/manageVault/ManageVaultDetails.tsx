@@ -163,8 +163,6 @@ export function ManageVaultDetails(props: ManageVaultState) {
       dateNextCollateralPrice,
     },
     ilkData: { liquidationRatio },
-    depositAndWithdrawAmountsEmpty,
-    generateAndPaybackAmountsEmpty,
     shouldPaybackAll,
   } = props
   const { t } = useTranslation()
