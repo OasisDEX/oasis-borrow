@@ -12,7 +12,6 @@ import { useTranslation } from 'next-i18next'
 import React, { useRef } from 'react'
 // @ts-ignore
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
-import { animated, useSpring } from 'react-spring'
 import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Flex, Grid, Heading, Text, Textarea } from 'theme-ui'
 
@@ -54,9 +53,6 @@ export function AccountButton() {
   const context = useObservable(context$)
   const { t } = useTranslation('common')
   const openModal = useModal()
-  const animatedProps = useSpring({
-    top: accountData === undefined ? -100 : 0,
-  })
 
   if (context === undefined) {
     return null
@@ -100,8 +96,6 @@ export function AccountButton() {
 
   return (
     <Flex
-      as={animated.div}
-      style={animatedProps}
       sx={{
         position: 'relative',
         justifyContent: 'flex-end',
