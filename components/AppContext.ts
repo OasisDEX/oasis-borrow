@@ -20,6 +20,7 @@ import {
 import {
   DepositAndGenerateData,
   OpenData,
+  ReclaimData,
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
@@ -43,6 +44,7 @@ import { createLanding$ } from 'features/landing/landing'
 import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
 import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultData'
+import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import { redirectState$ } from 'features/router/redirectState'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import {
@@ -90,6 +92,7 @@ export type TxData =
   | DisapproveData
   | CreateDsProxyData
   | SetProxyOwnerData
+  | ReclaimData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -296,6 +299,10 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  const reclaimCollateral$ = memoize(
+    curry(createReclaimCollateral$)(context$, txHelpers$, proxyAddress$),
+    bigNumberTostring,
+  )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$)
 
   const openVaultOverview$ = createOpenVaultOverview$(ilksWithBalance$)
@@ -325,6 +332,7 @@ export function setupAppContext() {
     vaultHistory$,
     collateralPrices$,
     termsAcceptance$,
+    reclaimCollateral$,
     openVaultOverview$,
   }
 }
