@@ -7,36 +7,57 @@ import { Button, Flex, Spinner, Text } from 'theme-ui'
 
 import { OpenVaultStage, OpenVaultState } from './openVault'
 
-function openVaultButtonText({ stage, id }: OpenVaultState) {
+function openVaultButtonText({
+  stage,
+  id,
+  token,
+  proxyAddress,
+  insufficientAllowance,
+  inputAmountsEmpty,
+  customAllowanceAmountEmpty,
+}: OpenVaultState) {
   const { t } = useTranslation()
 
   switch (stage) {
     case 'editing':
-      return t('confirm')
-    case 'allowanceSuccess':
-    case 'proxySuccess':
-      return t('continue')
-    case 'proxyFailure':
-      return t('retry-create-proxy')
+      return inputAmountsEmpty
+        ? t('enter-an-amount')
+        : !proxyAddress
+        ? t('setup-proxy')
+        : insufficientAllowance
+        ? t('set-token-allowance', { token })
+        : t('confirm')
+
     case 'proxyWaitingForConfirmation':
       return t('create-proxy-btn')
     case 'proxyWaitingForApproval':
     case 'proxyInProgress':
       return t('creating-proxy')
+    case 'proxyFailure':
+      return t('retry-create-proxy')
+    case 'proxySuccess':
+      return insufficientAllowance ? t('set-token-allowance', { token }) : t('continue')
+
     case 'allowanceWaitingForConfirmation':
-      return t('approve-allowance')
+      return customAllowanceAmountEmpty
+        ? t('enter-allowance-amount')
+        : t('set-token-allowance', { token: token })
+
+    case 'allowanceWaitingForApproval':
+    case 'allowanceInProgress':
+      return t('approving-allowance')
     case 'allowanceFailure':
       return t('retry-allowance-approval')
-    case 'allowanceInProgress':
-    case 'allowanceWaitingForApproval':
-      return t('approving-allowance')
+    case 'allowanceSuccess':
+      return t('continue')
+
     case 'openFailure':
       return t('retry')
+    case 'openInProgress':
+      return t('creating-vault')
     case 'openSuccess':
       return t('go-to-vault', { id })
     case 'openWaitingForApproval':
-    case 'openInProgress':
-      return t('creating-vault')
     case 'openWaitingForConfirmation':
       return t('create-vault')
     default:

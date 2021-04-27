@@ -1,5 +1,6 @@
+import { maxUint256 } from 'blockchain/calls/erc20'
+import { isNullish } from 'helpers/functions'
 import { zero } from 'helpers/zero'
-import { generate } from 'rxjs'
 import { OpenVaultStage, OpenVaultState } from './openVault'
 
 const defaultOpenVaultStageCategories = {
@@ -52,6 +53,7 @@ export interface OpenVaultConditions {
   isAllowanceStage: boolean
   isOpenStage: boolean
 
+  inputAmountsEmpty: boolean
   vaultWillBeUnderCollateralized: boolean
   vaultWillBeUnderCollateralizedAtNextPrice: boolean
 
@@ -62,12 +64,18 @@ export interface OpenVaultConditions {
   generateAmountExceedsDebtCeiling: boolean
   generateAmountLessThanDebtFloor: boolean
 
+  customAllowanceAmountEmpty: boolean
+  customAllowanceAmountExceedsMaxUint256: boolean
+  customAllowanceAmountLessThanDepositAmount: boolean
+  insufficientAllowance: boolean
+
   isLoadingStage: boolean
   flowProgressionDisabled: boolean
 }
 
 export const defaultOpenVaultConditions: OpenVaultConditions = {
   ...defaultOpenVaultStageCategories,
+  inputAmountsEmpty: true,
 
   vaultWillBeUnderCollateralized: false,
   vaultWillBeUnderCollateralizedAtNextPrice: false,
@@ -78,6 +86,11 @@ export const defaultOpenVaultConditions: OpenVaultConditions = {
   generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice: false,
   generateAmountExceedsDebtCeiling: false,
   generateAmountLessThanDebtFloor: false,
+
+  customAllowanceAmountEmpty: false,
+  customAllowanceAmountExceedsMaxUint256: false,
+  customAllowanceAmountLessThanDepositAmount: false,
+  insufficientAllowance: false,
 
   isLoadingStage: false,
   flowProgressionDisabled: false,
@@ -95,7 +108,12 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     depositAmount,
     daiYieldFromDepositingCollateral,
     daiYieldFromDepositingCollateralAtNextPrice,
+    selectedAllowanceRadio,
+    allowanceAmount,
+    allowance,
   } = state
+
+  const inputAmountsEmpty = isNullish(depositAmount) && isNullish(generateAmount)
 
   const vaultWillBeUnderCollateralized = !!(
     generateAmount?.gt(zero) &&
@@ -139,6 +157,23 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     'openWaitingForApproval',
   ] as OpenVaultStage[]).some((s) => s === stage)
 
+  const customAllowanceAmountEmpty = selectedAllowanceRadio === 'custom' && !allowanceAmount
+
+  const customAllowanceAmountExceedsMaxUint256 = !!(
+    selectedAllowanceRadio === 'custom' && allowanceAmount?.gt(maxUint256)
+  )
+
+  const customAllowanceAmountLessThanDepositAmount = !!(
+    selectedAllowanceRadio === 'custom' &&
+    allowanceAmount &&
+    depositAmount &&
+    allowanceAmount.lt(depositAmount)
+  )
+
+  const insufficientAllowance =
+    token !== 'ETH' &&
+    !!(depositAmount && !depositAmount.isZero() && (!allowance || depositAmount.gt(allowance)))
+
   const flowProgressionDisabled =
     isLoadingStage ||
     vaultWillBeUnderCollateralized ||
@@ -146,11 +181,16 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     depositingAllEthBalance ||
     depositAmountExceedsCollateralBalance ||
     generateAmountExceedsDebtCeiling ||
-    generateAmountLessThanDebtFloor
+    generateAmountLessThanDebtFloor ||
+    customAllowanceAmountEmpty ||
+    customAllowanceAmountExceedsMaxUint256 ||
+    customAllowanceAmountLessThanDepositAmount
 
   return {
     ...state,
     ...categoriseOpenVaultStage(stage),
+
+    inputAmountsEmpty,
 
     vaultWillBeUnderCollateralized,
     vaultWillBeUnderCollateralizedAtNextPrice,
@@ -160,6 +200,11 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice,
     generateAmountExceedsDebtCeiling,
     generateAmountLessThanDebtFloor,
+
+    customAllowanceAmountEmpty,
+    customAllowanceAmountExceedsMaxUint256,
+    customAllowanceAmountLessThanDepositAmount,
+    insufficientAllowance,
 
     isLoadingStage,
     flowProgressionDisabled,

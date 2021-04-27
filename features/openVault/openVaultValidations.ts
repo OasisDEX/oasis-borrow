@@ -24,13 +24,15 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
     stage,
     allowanceAmount,
     isEditingStage,
-    vaultWillBeUnderCollateralized,
-    vaultWillBeUnderCollateralizedAtNextPrice,
     depositingAllEthBalance,
     generateAmountExceedsDaiYieldFromDepositingCollateral,
     generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice,
     generateAmountExceedsDebtCeiling,
     generateAmountLessThanDebtFloor,
+
+    customAllowanceAmountEmpty,
+    customAllowanceAmountExceedsMaxUint256,
+    customAllowanceAmountLessThanDepositAmount,
   } = state
   const errorMessages: OpenVaultErrorMessage[] = []
 
@@ -61,13 +63,10 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
   }
 
   if (stage === 'allowanceWaitingForConfirmation') {
-    if (!allowanceAmount) {
-      errorMessages.push('customAllowanceAmountEmpty')
-    }
-    if (allowanceAmount?.gt(maxUint256)) {
+    if (customAllowanceAmountExceedsMaxUint256) {
       errorMessages.push('customAllowanceAmountGreaterThanMaxUint256')
     }
-    if (depositAmount && allowanceAmount && allowanceAmount.lt(depositAmount)) {
+    if (customAllowanceAmountLessThanDepositAmount) {
       errorMessages.push('customAllowanceAmountLessThanDepositAmount')
     }
   }

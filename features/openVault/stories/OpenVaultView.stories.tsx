@@ -70,7 +70,7 @@ export const AllowanceWaitingForConfirmation = openVaultStory({
   ilk: 'WBTC-A',
 })({
   stage: 'allowanceWaitingForConfirmation',
-  depositAmount: new BigNumber('10'),
+  depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('5000'),
 })
 
@@ -79,7 +79,7 @@ export const AllowanceWaitingForApproval = openVaultStory({
   ilk: 'WBTC-A',
 })({
   stage: 'allowanceWaitingForApproval',
-  depositAmount: new BigNumber('10'),
+  depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('5000'),
 })
 
@@ -88,7 +88,7 @@ export const AllowanceFailure = openVaultStory({
   ilk: 'WBTC-A',
 })({
   stage: 'allowanceFailure',
-  depositAmount: new BigNumber('10'),
+  depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('5000'),
 })
 
@@ -105,7 +105,7 @@ export const AllowanceSuccess = openVaultStory({
   ilk: 'WBTC-A',
 })({
   stage: 'allowanceSuccess',
-  depositAmount: new BigNumber('10'),
+  depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('5000'),
 })
 
@@ -114,7 +114,7 @@ export const OpenWaitingForConfirmation = openVaultStory({
   ilk: 'ETH-A',
 })({
   stage: 'openWaitingForConfirmation',
-  depositAmount: new BigNumber('10'),
+  depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('5000'),
 })
 
@@ -123,7 +123,7 @@ export const OpenWaitingForApproval = openVaultStory({
   ilk: 'ETH-A',
 })({
   stage: 'openWaitingForApproval',
-  depositAmount: new BigNumber('10'),
+  depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('5000'),
 })
 
@@ -132,7 +132,7 @@ export const OpenFailure = openVaultStory({
   ilk: 'ETH-A',
 })({
   stage: 'openFailure',
-  depositAmount: new BigNumber('10'),
+  depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('5000'),
 })
 
@@ -141,7 +141,7 @@ export const OpenInProgress = openVaultStory({
   ilk: 'ETH-A',
 })({
   stage: 'openInProgress',
-  depositAmount: new BigNumber('10'),
+  depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('5000'),
 })
 
@@ -151,7 +151,7 @@ export const OpenSuccess = openVaultStory({
 })({
   id: new BigNumber('122345'),
   stage: 'openSuccess',
-  depositAmount: new BigNumber('10'),
+  depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('5000'),
 })
 
