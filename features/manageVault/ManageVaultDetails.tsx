@@ -42,9 +42,9 @@ function VaultDetailsTableItem({
 function VaultDetailsTable({
   vault,
   ilkData,
-  afterMaxGenerateAmountCurrentPrice,
+  daiYieldFromTotalCollateral,
   afterDebt,
-  collateralAvailableToWithdraw,
+  afterFreeCollateral,
   inputAmountsEmpty,
 }: ManageVaultState) {
   const { t } = useTranslation()
@@ -96,7 +96,7 @@ function VaultDetailsTable({
           subValue={
             !inputAmountsEmpty && (
               <>
-                {formatAmount(collateralAvailableToWithdraw, getToken(vault.token).symbol)}
+                {formatAmount(afterFreeCollateral, getToken(vault.token).symbol)}
                 <Text
                   sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }}
                   variant="paragraph4"
@@ -120,7 +120,7 @@ function VaultDetailsTable({
           subValue={
             !inputAmountsEmpty && (
               <>
-                {formatAmount(afterMaxGenerateAmountCurrentPrice, 'DAI')}
+                {formatAmount(daiYieldFromTotalCollateral, 'DAI')}
                 <Text
                   sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }}
                   variant="paragraph4"

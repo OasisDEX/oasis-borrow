@@ -123,6 +123,7 @@ export function createVault$(
               collateralizationDangerThreshold,
               collateralizationWarningThreshold,
               stabilityFee,
+              ilkDebtAvailable,
             },
           ]) => {
             const collateralUSD = collateral.times(currentPrice)
@@ -164,6 +165,7 @@ export function createVault$(
             const availableDebt = debt.lt(collateralUSD.div(liquidationRatio))
               ? maxAvailableDebt.minus(debt)
               : zero
+
             const availableDebtAtNextPrice = debt.lt(maxAvailableDebtAtNextPrice)
               ? maxAvailableDebtAtNextPrice.minus(debt)
               : zero
@@ -172,11 +174,11 @@ export function createVault$(
               ? zero
               : debt.times(liquidationRatio).div(collateral)
 
-            const daiYieldFromLockedCollateral = collateral
-              .times(currentPrice)
-              .div(liquidationRatio)
-              .minus(debt)
-
+            const daiYieldFromLockedCollateral = availableDebt.lt(ilkDebtAvailable)
+              ? availableDebt
+              : ilkDebtAvailable.isPositive()
+              ? ilkDebtAvailable
+              : zero
             const atRiskLevelWarning =
               collateralizationRatio.gte(collateralizationDangerThreshold) &&
               collateralizationRatio.lt(collateralizationWarningThreshold)

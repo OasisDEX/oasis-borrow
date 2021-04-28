@@ -134,6 +134,7 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     vaultWillBeAtRiskLevelDangerAtNextPrice,
     vaultWillBeAtRiskLevelWarning,
     vaultWillBeAtRiskLevelWarningAtNextPrice,
+    maxGenerateAmountAtCurrentPrice,
   } = state
 
   const warningMessages: ManageVaultWarningMessage[] = []
@@ -141,7 +142,7 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
   if (errorMessages.length) return { ...state, warningMessages }
 
   if (isEditingStage) {
-    if (!isNullish(depositAmount) && daiYieldFromTotalCollateral.lt(ilkData.debtFloor)) {
+    if (!isNullish(depositAmount) && maxGenerateAmountAtCurrentPrice.lt(ilkData.debtFloor)) {
       warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
     }
 
