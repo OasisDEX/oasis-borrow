@@ -3,11 +3,41 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import moment from 'moment'
-import { Trans, useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
+import { ManageVaultHeading } from './ManageVaultView'
+
+function VaultDetailsTableItem({
+  label,
+  value,
+  subValue,
+}: {
+  label: string | JSX.Element
+  value: string | JSX.Element
+  subValue?: string | JSX.Element | false
+}) {
+  return (
+    <Grid sx={{ gridTemplateRows: '1fr 1fr' }} gap={1}>
+      <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
+        {label}
+      </Box>
+      <Box variant="text.header3">
+        <Text sx={{ display: 'inline' }} variant="header3">
+          {value}
+        </Text>
+      </Box>
+      {subValue && (
+        <Flex sx={{ alignItems: 'center' }}>
+          <Icon name="arrow_right" size={12} />
+          <Box pl={1}>{subValue}</Box>
+        </Flex>
+      )}
+    </Grid>
+  )
+}
 
 function VaultDetailsTable({
   vault,
@@ -20,123 +50,108 @@ function VaultDetailsTable({
   const { t } = useTranslation()
 
   return (
-    <Box sx={{ gridColumn: '1/3', mt: 6 }}>
+    <Box sx={{ gridColumn: ['1', '1/3'], mt: [4, 6] }}>
       <Heading variant="header3" mb="4">
         {t('vault.vault-details')}
       </Heading>
-      <Grid columns="1fr 1fr 1fr" sx={{ border: 'light', borderRadius: 'medium', p: 4 }}>
-        <Grid gap={1}>
-          <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
-            {t('system.vault-dai-debt')}
-          </Box>
-          <Box>
-            <Text sx={{ display: 'inline' }} variant="header3">
+      <Grid
+        columns={['1fr 1fr', '1fr 1fr 1fr']}
+        sx={{ border: 'light', borderRadius: 'medium', p: [3, 4] }}
+      >
+        <VaultDetailsTableItem
+          label={t('system.vault-dai-debt')}
+          value={
+            <>
               {formatAmount(vault.debt, 'DAI')}
-            </Text>
-            <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
-              DAI
-            </Text>
-          </Box>
-          {!inputAmountsEmpty && (
-            <Flex sx={{ alignItems: 'center' }}>
-              <Icon name="arrow_right" size={12} />
-              <Box pl={1}>
-                <Text sx={{ display: 'inline' }} variant="header4">
-                  {formatAmount(afterDebt, 'DAI')}
-                </Text>
+              <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
+                DAI
+              </Text>
+            </>
+          }
+          subValue={
+            !inputAmountsEmpty && (
+              <>
+                {formatAmount(afterDebt, 'DAI')}
                 <Text
                   sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }}
                   variant="paragraph4"
                 >
                   DAI
                 </Text>
-              </Box>
-            </Flex>
-          )}
-        </Grid>
-        <Grid gap={1}>
-          <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
-            {t('system.available-to-withdraw')}
-          </Box>
-          <Box variant="text.header3">
-            <Text sx={{ display: 'inline' }} variant="header3">
+              </>
+            )
+          }
+        />
+
+        <VaultDetailsTableItem
+          label={t('system.available-to-withdraw')}
+          value={
+            <>
               {formatAmount(vault.freeCollateral, getToken(vault.token).symbol)}
-            </Text>
-            <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
-              {vault.token}
-            </Text>
-          </Box>
-          {!inputAmountsEmpty && (
-            <Flex sx={{ alignItems: 'center' }}>
-              <Icon name="arrow_right" size={12} />
-              <Box pl={1}>
-                <Text sx={{ display: 'inline' }} variant="header4">
-                  {formatAmount(collateralAvailableToWithdraw, getToken(vault.token).symbol)}
-                </Text>
+              <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
+                {vault.token}
+              </Text>
+            </>
+          }
+          subValue={
+            !inputAmountsEmpty && (
+              <>
+                {formatAmount(collateralAvailableToWithdraw, getToken(vault.token).symbol)}
                 <Text
                   sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }}
                   variant="paragraph4"
                 >
                   {vault.token}
                 </Text>
-              </Box>
-            </Flex>
-          )}
-        </Grid>
-        <Grid gap={1}>
-          <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
-            {t('system.available-to-generate')}
-          </Box>
-          <Box variant="text.header3">
-            <Text sx={{ display: 'inline' }} variant="header3">
+              </>
+            )
+          }
+        />
+        <VaultDetailsTableItem
+          label={t('system.available-to-generate')}
+          value={
+            <>
               {formatAmount(vault.daiYieldFromLockedCollateral, 'DAI')}
-            </Text>
-            <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
-              DAI
-            </Text>
-          </Box>
-          {!inputAmountsEmpty && (
-            <Flex sx={{ alignItems: 'center' }}>
-              <Icon name="arrow_right" size={12} />
-              <Box pl={1}>
-                <Text sx={{ display: 'inline' }} variant="header4">
-                  {formatAmount(afterMaxGenerateAmountCurrentPrice, 'DAI')}
-                </Text>
+              <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
+                DAI
+              </Text>
+            </>
+          }
+          subValue={
+            !inputAmountsEmpty && (
+              <>
+                {formatAmount(afterMaxGenerateAmountCurrentPrice, 'DAI')}
                 <Text
                   sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }}
                   variant="paragraph4"
                 >
                   DAI
                 </Text>
-              </Box>
-            </Flex>
-          )}
-        </Grid>
-        <Box sx={{ gridColumn: '1/4', borderBottom: 'light', height: '1px', my: 3 }} />
-        <Box>
-          <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
-            {t('system.liquidation-ratio')}
-          </Box>
-          <Text sx={{ display: 'inline' }} variant="header3">
-            {formatPercent(ilkData.liquidationRatio.times(100), { precision: 2 })}
-          </Text>
-        </Box>
-        <Box>
-          <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
-            {t('system.stability-fee')}
-          </Box>
-          <Box variant="text.header3">
-            {formatPercent(ilkData.stabilityFee.times(100), { precision: 2 })}
-          </Box>
-        </Box>
-        <Box>
-          <Box variant="text.paragraph3" sx={{ color: 'text.off', mb: 2 }}>
-            {t('system.liquidation-penalty')}
-          </Box>
-          <Box variant="text.header3">
-            {formatPercent(ilkData.liquidationPenalty.times(100), { precision: 2 })}
-          </Box>
-        </Box>
+              </>
+            )
+          }
+        />
+        <Box
+          sx={{
+            display: ['none', 'block'],
+            gridColumn: '1/4',
+            borderBottom: 'light',
+            height: '1px',
+            my: 3,
+          }}
+        />
+        <VaultDetailsTableItem
+          label={t('system.liquidation-ratio')}
+          value={formatPercent(ilkData.liquidationRatio.times(100), { precision: 2 })}
+        />
+        <VaultDetailsTableItem
+          label={t('system.stability-fee')}
+          value={formatPercent(ilkData.stabilityFee.times(100), { precision: 2 })}
+        />
+        <VaultDetailsTableItem
+          label={t('system.liquidation-penalty')}
+          value={formatPercent(ilkData.liquidationPenalty.times(100), { precision: 2 })}
+        />
       </Grid>
     </Box>
   )
@@ -146,8 +161,6 @@ export function ManageVaultDetails(props: ManageVaultState) {
   const {
     afterLiquidationPrice,
     vault: {
-      id,
-      ilk,
       token,
       collateralizationRatio,
       liquidationPrice,
@@ -174,8 +187,6 @@ export function ManageVaultDetails(props: ManageVaultState) {
   const locked = formatAmount(lockedCollateral, token)
   const lockedUSD = formatAmount(lockedCollateralUSD, token)
 
-  const tokenInfo = getToken(token)
-
   const newPriceIn = moment(dateNextCollateralPrice).diff(Date.now(), 'minutes')
   const nextPriceDiff = nextCollateralPrice
     .minus(currentCollateralPrice)
@@ -189,18 +200,11 @@ export function ManageVaultDetails(props: ManageVaultState) {
     : 'onError'
 
   return (
-    <Grid sx={{ alignSelf: 'flex-start' }} columns="1fr 1fr">
-      <Heading
-        as="h1"
-        variant="paragraph2"
-        sx={{ gridColumn: '1/3', fontWeight: 'semiBold', borderBottom: 'light', pb: 3 }}
-      >
-        <Flex>
-          <Icon name={tokenInfo.iconCircle} size="26px" sx={{ verticalAlign: 'sub', mr: 2 }} />
-          <Text>{t('vault.header', { ilk, id })}</Text>
-        </Flex>
-      </Heading>
-      <Box sx={{ mt: 5 }}>
+    <Grid sx={{ alignSelf: 'flex-start' }} columns={[1, '1fr 1fr']}>
+      <ManageVaultHeading {...props} sx={{ display: ['none', 'block'] }} />
+
+      {/* Liquidation Price  */}
+      <Box sx={{ mt: [3, 5], textAlign: ['center', 'left'] }}>
         <Heading variant="subheader" as="h2">
           {t('system.liquidation-price')}
         </Heading>
@@ -209,7 +213,9 @@ export function ManageVaultDetails(props: ManageVaultState) {
           {t('after')}: ${formatAmount(shouldPaybackAll ? zero : afterLiquidationPrice, 'USD')}
         </Text>
       </Box>
-      <Box sx={{ textAlign: 'right', mt: 5 }}>
+
+      {/* Collaterization  */}
+      <Box sx={{ mt: [3, 5], textAlign: ['center', 'right'] }}>
         <Heading variant="subheader" as="h2">
           {t('system.collateralization-ratio')}
         </Heading>
@@ -220,13 +226,15 @@ export function ManageVaultDetails(props: ManageVaultState) {
           {t('after')}: {formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })}
         </Text>
       </Box>
+
+      {/* Current Price */}
       {isStaticCollateralPrice ? (
-        <Box sx={{ mt: 6 }}>
+        <Box sx={{ mt: [3, 6], textAlign: ['center', 'left'] }}>
           <Heading variant="subheader" as="h2">{`${token}/USD price`}</Heading>
           <Text variant="header2">${formatAmount(currentCollateralPrice, 'USD')}</Text>
         </Box>
       ) : (
-        <Box sx={{ mt: 6 }}>
+        <Box sx={{ mt: [3, 6], textAlign: ['center', 'left'] }}>
           <Box>
             <Heading variant="subheader" as="h2">{`Current ${token}/USD price`}</Heading>
             <Text variant="header2" sx={{ py: 3 }}>
@@ -234,18 +242,12 @@ export function ManageVaultDetails(props: ManageVaultState) {
             </Text>
           </Box>
 
-          <Flex sx={{ alignItems: 'flex-start' }}>
+          <Flex sx={{ alignItems: ['center', 'flex-start'], flexDirection: 'column' }}>
             <Heading variant="subheader" as="h3">
               <Box sx={{ mr: 2 }}>
-                {newPriceIn < 2 ? (
-                  <Trans
-                    i18nKey="vault.next-price-any-time"
-                    count={newPriceIn}
-                    components={[<br />]}
-                  />
-                ) : (
-                  <Trans i18nKey="vault.next-price" count={newPriceIn} components={[<br />]} />
-                )}
+                {newPriceIn < 2
+                  ? t('vault.next-price-any-time', { count: newPriceIn })
+                  : t('vault.next-price', { count: newPriceIn })}
               </Box>
             </Heading>
             <Flex
@@ -261,7 +263,9 @@ export function ManageVaultDetails(props: ManageVaultState) {
           </Flex>
         </Box>
       )}
-      <Box sx={{ textAlign: 'right', mt: 6 }}>
+
+      {/* Collateral Locked */}
+      <Box sx={{ mt: [3, 6], textAlign: ['center', 'right'] }}>
         <Heading variant="subheader" as="h2">
           {t('system.collateral-locked')}
         </Heading>
@@ -270,6 +274,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
         </Text>
         <Text>$ {lockedUSD}</Text>
       </Box>
+
       <VaultDetailsTable {...props} />
     </Grid>
   )

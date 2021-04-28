@@ -145,6 +145,7 @@ export function OpenVaultOverview({ vaultsOverview, accountDetails, context }: P
         onTagChange={onIlksTagChange}
         tagFilter={ilksWithFilters.filters.tagFilter}
         defaultTag="all-assets"
+        searchPlaceholder={t('search-token')}
       />
       <Table
         data={ilksWithFilters.data}
@@ -152,6 +153,7 @@ export function OpenVaultOverview({ vaultsOverview, accountDetails, context }: P
         state={{ ...ilksWithFilters.filters, isReadonly: connectedAccount === undefined }}
         columns={ilksColumns}
         noResults={<Box>{t('no-results')}</Box>}
+        deriveRowProps={(row) => ({ href: `/vaults/open/${row.ilk}` })}
       />
     </Grid>
   )

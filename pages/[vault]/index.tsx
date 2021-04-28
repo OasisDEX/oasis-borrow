@@ -7,6 +7,7 @@ import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { Grid } from 'theme-ui'
+import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { WithTermsOfService } from '../../features/termsOfService/TermsOfService'
 
@@ -24,6 +25,7 @@ export default function Vault({ id }: { id: string }) {
     <WithConnection>
       <WithTermsOfService>
         <Grid gap={4} sx={{ width: '100%' }}>
+          <BackgroundLight />
           <VaultBannersView id={new BigNumber(id)} />
           <ManageVaultView id={new BigNumber(id)} />
           <VaultHistoryView id={new BigNumber(id)} />

@@ -7,6 +7,7 @@ import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useState } from 'react'
 import { Box, Button, Flex, Heading, Label, Text } from 'theme-ui'
+import { fadeIn } from 'theme/keyframes'
 
 import { TermsAcceptanceStage, TermsAcceptanceState } from './termsAcceptance'
 
@@ -105,16 +106,19 @@ function TOSWaiting4Acceptance({ stage, acceptTOS, updated }: TermsAcceptanceSta
                 width: '25px',
                 height: '25px',
                 border: 'light',
-                borderColor: 'primary',
+                borderColor: 'onSuccess',
                 borderRadius: 'small',
                 alignItems: 'center',
                 justifyContent: 'center',
+                transition: 'background ease-in 0.2s',
                 ...(checked && {
-                  bg: 'primary',
+                  bg: 'success',
                 }),
               }}
             >
-              {checked && <Icon name="checkmark" color="surface" />}
+              {checked && (
+                <Icon sx={{ animation: `${fadeIn} 0.2s` }} name="checkmark" color="onSuccess" />
+              )}
             </Flex>
             <Text ml={3} sx={{ flex: 1, fontWeight: '400', fontSize: '14px' }}>
               {t('tos-read')}

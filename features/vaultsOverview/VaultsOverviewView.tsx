@@ -121,6 +121,7 @@ function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
       state={filters}
       columns={vaultsColumns}
       noResults={<Box>{t('no-results')}</Box>}
+      deriveRowProps={(row) => ({ href: `/${row.id}` })}
     />
   )
 }
@@ -388,6 +389,7 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
             onTagChange={onVaultsTagChange}
             tagFilter={vaults.filters.tagFilter}
             defaultTag="your-vaults"
+            searchPlaceholder={t('search-token')}
           />
           <VaultsTable vaults={vaults} />
         </>

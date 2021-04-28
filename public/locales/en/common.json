@@ -33,8 +33,6 @@
   "buy-with": "Buy {{token}} with {{onramp}}",
   "change-locale": "Change locale",
   "change-your-vault": "Change your vault",
-  "changing-vault": "Changing vault!",
-  "changing-vault": "Changing Vault",
   "choose-provider": "Choose a provider",
   "close": "Close",
   "coming-soon": "Coming soon",
@@ -47,8 +45,8 @@
   "connect-email": "Connect with email",
   "connect-error": "Please authorize this website to access your Ethereum account.",
   "connect-wallet": "Connect a wallet",
-  "connect-wallet-button": "Connect wallet",
-  "connect-with": "Connect {{ connectionKind }}",
+  "connect-wallet-button": "Connect Wallet",
+  "connect-with": "{{ connectionKind }}",
   "connected-with": "Connected with {{ connectionKind }}",
   "contact": {
     "description": "Send us feedback, questions, or suggestions or below.",
@@ -480,5 +478,14 @@
   "withdraw": "Withdraw",
   "withdrawn": "Withdrawn",
   "you-are-sending": "You are sending",
-  "your-vaults": "Your Vaults"
+  "your-vaults": "Your Vaults",
+  "open-new-vault": "Open new Vault",
+  "no-results": "No results",
+  "new-to-ethereum": "New to Ethereum? ",
+  "learn-about-wallets": "Learn more about wallets",
+  "learn-more-link": "https://ethereum.org/en/wallets/find-wallet/",
+  "enter-an-amount": "Enter an amount",
+  "enter-allowance-amount": "Enter allowance amount",
+  "set-token-allowance": "Set {{token}} allowance",
+  "invalid-allowance-amount": "Invalid allowance amount"
 }

@@ -55,28 +55,53 @@ function CallToAction({ ilk }: CallToActionProps) {
   const { t } = useTranslation()
 
   return (
-    <AppLink href={`/vaults/open/${ilk.ilk}`}>
+    <AppLink
+      sx={{
+        overflow: 'hidden',
+        transition: `
+          transform 0.5s cubic-bezier(0, 0.28, 0.45, 0.95),
+          box-shadow 0.5s cubic-bezier(0, 0.28, 0.45, 0.95)
+          `,
+        borderRadius: 'large',
+        boxShadow: 'surface',
+        cursor: 'pointer',
+        '& .featured-ilk-bg-image': {
+          transition: `
+            transform 0.5s cubic-bezier(0, 0.28, 0.45, 0.95)
+          `,
+        },
+        '&:hover, &:focus': {
+          outline: 'none',
+          transform: 'scale(1.02)',
+          boxShadow: 'surface_hovered',
+          '& .featured-ilk-bg-image': {
+            transform: 'scale(1.2)',
+          },
+        },
+      }}
+      href={`/vaults/open/${ilk.ilk}`}
+    >
       <Grid
         columns="1fr 1fr"
         gap={0}
         sx={{
           flex: 1,
-          cursor: 'pointer',
           background: token.background,
-          borderRadius: 'large',
           p: 4,
           color: 'white',
           position: 'relative',
-          boxShadow: 'surface',
           gridTemplateRows: 'auto 1fr auto',
         }}
       >
         <Image
+          className="featured-ilk-bg-image"
           sx={{
+            transformOrigin: '50% 50%',
+            transition: 'transform 0.2s',
             maxWidth: '150%',
             position: 'absolute',
             userSelect: 'none',
-            transform: 'scale(1.05)',
+            transform: 'translateX(10px)',
             right: 0,
           }}
           src={token.bannerIcon}

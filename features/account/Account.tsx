@@ -12,7 +12,6 @@ import { useTranslation } from 'next-i18next'
 import React, { useRef } from 'react'
 // @ts-ignore
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
-import { animated, useSpring } from 'react-spring'
 import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Flex, Grid, Heading, Text, Textarea } from 'theme-ui'
 
@@ -54,9 +53,6 @@ export function AccountButton() {
   const context = useObservable(context$)
   const { t } = useTranslation('common')
   const openModal = useModal()
-  const animatedProps = useSpring({
-    top: accountData === undefined ? -100 : 0,
-  })
 
   if (context === undefined) {
     return null
@@ -64,8 +60,32 @@ export function AccountButton() {
 
   if (context?.status === 'connectedReadonly') {
     return (
-      <AppLink sx={{ zIndex: 1 }} href="/connect" variant="nav">
+      <AppLink
+        sx={{
+          zIndex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          px: 3,
+          py: 2,
+          borderRadius: 'mediumLarge',
+          transition: 'background 0.2s',
+          '&:hover, &:focus ': {
+            color: 'initial',
+            bg: 'ghost',
+            '& svg': {
+              left: '4px',
+            },
+          },
+        }}
+        href="/connect"
+        variant="nav"
+      >
         {t('connect-wallet-button')}
+        <Icon
+          name="arrow_right"
+          size={14}
+          sx={{ ml: 1, position: 'relative', transition: 'ease-in-out 0.2s', left: 0 }}
+        />
       </AppLink>
     )
   }
@@ -76,8 +96,6 @@ export function AccountButton() {
 
   return (
     <Flex
-      as={animated.div}
-      style={animatedProps}
       sx={{
         position: 'relative',
         justifyContent: 'flex-end',
@@ -87,13 +105,24 @@ export function AccountButton() {
       <Button
         variant="secondary"
         sx={{
+          boxSizing: 'border-box',
           minWidth: buttonMinWidth,
           zIndex: 1,
           background: 'white',
-          boxShadow: 'surface',
+          boxShadow: 'table_hovered',
           p: 1,
           display: 'flex',
           alignItems: 'center',
+          transition: 'border-color ease-in 0.2s',
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: '#D8E0E300',
+          '&:hover, &:focus-visible': {
+            borderColor: '#D8E0E3FF',
+          },
+          ':focus': {
+            outline: 'none',
+          },
         }}
         onClick={() => openModal(AccountModal)}
       >

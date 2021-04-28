@@ -147,7 +147,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
     : 'onError'
 
   return (
-    <Grid sx={{ alignSelf: 'flex-start', order: [3, 1] }} columns={[1, '1fr 1fr']}>
+    <Grid sx={{ alignSelf: 'flex-start' }} columns={[1, '1fr 1fr']}>
       <OpenVaultHeading {...props} sx={{ display: ['none', 'block'] }} />
 
       {/* Liquidation Price */}
