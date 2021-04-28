@@ -77,7 +77,7 @@ function OpenVaultForm(props: OpenVaultState) {
   }
 
   return (
-    <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} sx={{ order: [1, 2] }}>
+    <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <Card sx={{ border: ['none', '1px solid'], borderColor: ['none', 'light'] }}>
         <Grid>
           <OpenVaultTitle {...props} />
@@ -124,9 +124,13 @@ export function OpenVaultContainer(props: OpenVaultState) {
   return (
     <Grid columns={['1fr', '2fr 1fr']} gap={4}>
       <OpenVaultHeading {...props} sx={{ display: ['block', 'none'] }} />
-      <OpenVaultDetails {...props} />
+      <Box sx={{ order: [3, 1] }}>
+        <OpenVaultDetails {...props} />
+      </Box>
       <Divider sx={{ display: ['block', 'none'], order: [2, 0] }} />
-      <OpenVaultForm {...props} />
+      <Box sx={{ order: [1, 2] }}>
+        <OpenVaultForm {...props} />
+      </Box>
     </Grid>
   )
 }
