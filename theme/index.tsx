@@ -878,6 +878,7 @@ const oasisBaseTheme = {
     border: '#DDDEE6',
 
     text: {
+      focused: '#272940',
       muted: '#708390',
       off: '#686986',
       subtitle: '#787A9B',
@@ -1032,7 +1033,9 @@ const oasisBaseTheme = {
     medium: '0 2px 8px rgba(0, 0, 0, 0.17)',
     light: '0 2px 8px rgba(0, 0, 0, 0.13)',
     surface: '0px 0px 8px rgba(0, 0, 0, 0.2)',
+    surface_hovered: '0px 8px 8px rgba(0, 0, 0, 0.2)',
     table: '0px 0px 2px rgba(0, 0, 0, 0.2)',
+    table_hovered: '0px 0px 10px rgba(0, 0, 0, 0.15)',
     banner: '0px 0px 10px rgba(0, 0, 0, 0.1)',
   },
   gradients: {
@@ -1127,7 +1130,8 @@ const oasisBaseTheme = {
       borderRadius: 'round',
       lineHeight: 'buttons',
       color: 'text.contrast',
-      '&:hover': {
+      transition: 'background 0.2s ease-in',
+      '&:hover, &:focus-visible': {
         bg: 'primaryEmphasis',
       },
       '&:disabled': {
@@ -1148,6 +1152,14 @@ const oasisBaseTheme = {
       px: 4,
       py: 2,
     },
+    outlineSquare: {
+      variant: 'text.paragraph2',
+      background: 'none',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: 'light',
+      borderRadius: 'mediumLarge',
+    },
     secondary: {
       variant: 'text.paragraph3',
       whiteSpace: 'nowrap',
@@ -1167,6 +1179,12 @@ const oasisBaseTheme = {
       borderWidth: '1px',
       borderStyle: 'solid',
       borderColor: 'light',
+      '&:focus': {
+        outline: 'none',
+      },
+      '&:focus-visible': {
+        boxShadow: 'surface',
+      },
     },
     expandable: {
       variant: 'text.header3',
@@ -1175,13 +1193,12 @@ const oasisBaseTheme = {
       textAlign: 'left',
       cursor: 'pointer',
       p: 0,
-      py: 3,
+      py: 4,
       ':hover': {
         opacity: 0.7,
       },
       ':focus': {
         outline: 'none',
-        textDecoration: 'underline',
       },
     },
     tableHeader: {
@@ -1206,6 +1223,7 @@ const oasisBaseTheme = {
       boxSizing: 'border-box',
       border: '1px solid transparent',
       px: 4,
+      transition: 'border-color ease-in 0.3s, color ease-in 0.3s',
       font: '',
       ':focus': {
         outline: 'none',
@@ -1221,44 +1239,49 @@ const oasisBaseTheme = {
     textual: {
       variant: 'text.paragraph3',
       fontWeight: 'semiBold',
-      background: 'none',
       color: 'link',
       cursor: 'pointer',
+      background: 'none',
+      transition: 'opacity ease-in 0.2s',
+      '&:hover': {
+        opacity: 0.7,
+      },
     },
   },
   links: {
+    primary: {
+      variant: 'buttons.primary',
+      display: 'inline-block',
+      bg: 'primary',
+      '&, &:visited': {
+        textDecoration: 'none',
+      },
+      '&:focus': {
+        outline: 'none',
+      },
+      '&:focus-visible': {
+        textDecoration: 'underline',
+      },
+    },
     nav: {
       variant: 'text.paragraph3',
       cursor: 'pointer',
       display: 'inline-block',
       fontWeight: 'semiBold',
+      transition: 'color 0.2s',
       '&, &:visited': {
         textDecoration: 'none',
       },
       '&:focus': {
         outline: 'none',
       },
-      '&:focus-visible': {
-        textDecoration: 'underline',
+      '&:hover, &:focus-visible': {
+        color: 'lavender',
       },
     },
     outline: {
       variant: 'buttons.outline',
       display: 'inline-block',
-      '&, &:visited': {
-        textDecoration: 'none',
-      },
-      '&:focus': {
-        outline: 'none',
-      },
-      '&:focus-visible': {
-        textDecoration: 'underline',
-      },
-    },
-    primary: {
-      variant: 'buttons.primary',
-      display: 'inline-block',
-      bg: 'primary',
       '&, &:visited': {
         textDecoration: 'none',
       },

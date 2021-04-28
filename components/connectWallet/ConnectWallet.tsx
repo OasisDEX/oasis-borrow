@@ -140,12 +140,36 @@ function ConnectWalletButton({
   connect?: () => void
 }) {
   return (
-    <Button variant="square" sx={{ textAlign: 'left' }} onClick={connect}>
+    <Button
+      variant="square"
+      sx={{
+        cursor: 'pointer',
+        textAlign: 'center',
+        '&:hover .connect-wallet-arrow': {
+          transform: 'translateX(5px)',
+          opacity: '1',
+        },
+      }}
+      onClick={connect}
+    >
       <Flex sx={{ alignItems: 'center' }}>
         <Flex sx={{ ml: 1, mr: 3, alignItems: 'center' }}>
           {isConnecting ? <AppSpinner size={22} /> : <Icon name={iconName} size={22} />}
         </Flex>
-        {description}
+        <Flex sx={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Box>{description}</Box>
+          <Box
+            className="connect-wallet-arrow"
+            sx={{
+              ml: 1,
+              opacity: '0',
+              transform: 'translateX(0px)',
+              transition: 'opacity ease-in 0.2s, transform ease-in 0.3s',
+            }}
+          >
+            <Icon sx={{ position: 'relative', top: '3px' }} name="arrow_right" />
+          </Box>
+        </Flex>
       </Flex>
     </Button>
   )
@@ -328,7 +352,8 @@ export function ConnectWallet() {
       <Grid columns={1} sx={{ maxWidth: '280px', width: '100%', mx: 'auto' }}>
         {SUPPORTED_WALLETS.map(({ iconName, connectionKind }) => {
           const isConnecting =
-            web3Context.status === 'connecting' && web3Context.connectionKind === connectionKind
+            (web3Context.status === 'connecting' || web3Context.status === 'connected') &&
+            web3Context.connectionKind === connectionKind
           const connectionKindMsg = getConnectionKindMessage(connectionKind)
           const descriptionTranslation = isConnecting ? 'connect-confirm' : 'connect-with'
 
@@ -356,7 +381,15 @@ export function ConnectWallet() {
             {t('new-to-ethereum')}
           </Text>
           <AppLink
-            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              transition: 'opacity ease-in 0.2s',
+              '&:hover': {
+                opacity: 0.7,
+              },
+            }}
             href={t('learn-more-link')}
           >
             <Text variant="paragraph2" sx={{ color: 'inherit', fontWeight: 'semiBold' }}>
