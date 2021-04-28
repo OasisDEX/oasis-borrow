@@ -6,6 +6,7 @@ import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { AccountDetails } from 'features/account/AccountData'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { Filters } from 'features/vaultsOverview/Filters'
+import { AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
@@ -164,7 +165,7 @@ export function OpenVaultOverviewView() {
   const context = useObservable(context$)
 
   if (openVaultOverview === undefined || context === undefined) {
-    return null
+    return <AppSpinnerWholePage />
   }
 
   return (

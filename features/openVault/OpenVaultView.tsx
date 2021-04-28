@@ -1,10 +1,11 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
+import { AppSpinnerWholePage } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Card, Divider, Flex, Grid, Heading, Spinner, SxProps, Text } from 'theme-ui'
+import { Box, Card, Divider, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
 import { OpenVaultAllowance } from './OpenVaultAllowance'
@@ -152,19 +153,7 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
   }
 
   if (!openVault) {
-    return (
-      <Grid
-        sx={{
-          position: 'absolute',
-          width: '100%',
-          height: '50vh',
-          justifyItems: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Spinner size={50} />
-      </Grid>
-    )
+    return <AppSpinnerWholePage />
   }
 
   return (

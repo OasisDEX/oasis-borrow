@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { ColumnDef, Table } from 'components/Table'
+import { AppSpinner } from 'helpers/AppSpinner'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import moment from 'moment'
@@ -79,18 +80,17 @@ const columns: ColumnDef<VaultHistoryEvent, {}>[] = [
 
 export function VaultHistoryView({ id }: { id: BigNumber }) {
   const { vaultHistory$ } = useAppContext()
-  const { t } = useTranslation()
-
   const vaultHistory = useObservable(vaultHistory$(id))
-
-  if (vaultHistory === undefined) {
-    return null
-  }
+  const { t } = useTranslation()
 
   return (
     <Box sx={{ gridColumn: '1/2' }}>
       <Heading sx={{ mb: 4 }}>{t('vault-history')}</Heading>
-      <Table data={vaultHistory} primaryKey="id" state={{}} columns={columns} />
+      {vaultHistory ? (
+        <Table data={vaultHistory} primaryKey="id" state={{}} columns={columns} />
+      ) : (
+        <AppSpinner sx={{ mx: 'auto', display: 'block' }} variant="styles.spinner.large" />
+      )}
     </Box>
   )
 }

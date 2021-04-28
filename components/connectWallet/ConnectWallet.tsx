@@ -21,7 +21,7 @@ import { LedgerAccountSelection } from 'components/connectWallet/LedgerAccountSe
 import { TrezorAccountSelection } from 'components/connectWallet/TrezorAccountSelection'
 import { AppLink } from 'components/Links'
 import { redirectState$ } from 'features/router/redirectState'
-import { AppSpinner } from 'helpers/loadingIndicator/LoadingIndicator'
+import { AppSpinner } from 'helpers/AppSpinner'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { useRedirect } from 'helpers/useRedirect'
