@@ -17,6 +17,7 @@ import {
 } from './openVaultCalculations'
 import {
   applyOpenVaultConditions,
+  applyOpenVaultStageCategorisation,
   defaultOpenVaultConditions,
   OpenVaultConditions,
 } from './openVaultConditions'
@@ -71,7 +72,8 @@ function apply(state: OpenVaultState, change: OpenVaultChange) {
   const s6 = applyOpenVaultEnvironment(change, s5)
   const s7 = applyOpenVaultInjectedOverride(change, s6)
   const s8 = applyOpenVaultCalculations(s7)
-  return applyOpenVaultConditions(s8)
+  const s9 = applyOpenVaultStageCategorisation(s8)
+  return applyOpenVaultConditions(s9)
 }
 
 export type OpenVaultStage =

@@ -13,11 +13,12 @@ const defaultManageVaultStageCategories = {
   isManageStage: false,
 }
 
-function categoriseManageVaultStages(stage: ManageVaultStage) {
-  switch (stage) {
+export function applyManageVaultStageCategorisation(state: ManageVaultState) {
+  switch (state.stage) {
     case 'collateralEditing':
     case 'daiEditing':
       return {
+        ...state,
         ...defaultManageVaultStageCategories,
         isEditingStage: true,
       }
@@ -27,6 +28,7 @@ function categoriseManageVaultStages(stage: ManageVaultStage) {
     case 'proxyFailure':
     case 'proxySuccess':
       return {
+        ...state,
         ...defaultManageVaultStageCategories,
         isProxyStage: true,
       }
@@ -36,6 +38,7 @@ function categoriseManageVaultStages(stage: ManageVaultStage) {
     case 'collateralAllowanceFailure':
     case 'collateralAllowanceSuccess':
       return {
+        ...state,
         ...defaultManageVaultStageCategories,
         isCollateralAllowanceStage: true,
       }
@@ -45,6 +48,7 @@ function categoriseManageVaultStages(stage: ManageVaultStage) {
     case 'daiAllowanceFailure':
     case 'daiAllowanceSuccess':
       return {
+        ...state,
         ...defaultManageVaultStageCategories,
         isDaiAllowanceStage: true,
       }
@@ -55,11 +59,12 @@ function categoriseManageVaultStages(stage: ManageVaultStage) {
     case 'manageFailure':
     case 'manageSuccess':
       return {
+        ...state,
         ...defaultManageVaultStageCategories,
         isManageStage: true,
       }
     default:
-      throw new UnreachableCaseError(stage)
+      throw new UnreachableCaseError(state.stage)
   }
 }
 
@@ -70,7 +75,8 @@ export interface ManageVaultConditions {
   isDaiAllowanceStage: boolean
   isManageStage: boolean
 
-  flowProgressionDisabled: boolean
+  canProgress: boolean
+  canRegress: boolean
 
   depositAndWithdrawAmountsEmpty: boolean
   generateAndPaybackAmountsEmpty: boolean
@@ -112,7 +118,8 @@ export interface ManageVaultConditions {
 
 export const defaultManageVaultConditions: ManageVaultConditions = {
   ...defaultManageVaultStageCategories,
-  flowProgressionDisabled: false,
+  canProgress: false,
+  canRegress: false,
 
   vaultWillBeAtRiskLevelWarning: false,
   vaultWillBeAtRiskLevelDanger: false,
@@ -334,16 +341,29 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
       customDaiAllowanceAmountExceedsMaxUint256 ||
       customDaiAllowanceAmountLessThanPaybackAmount)
 
-  const flowProgressionDisabled =
+  const canProgress = !(
     isLoadingStage ||
     editingProgressionDisabled ||
     collateralAllowanceProgressionDisabled ||
     daiAllowanceProgressionDisabled
+  )
+
+  const canRegress = ([
+    'proxyWaitingForConfirmation',
+    'proxyFailure',
+    'collateralAllowanceWaitingForConfirmation',
+    'collateralAllowanceFailure',
+    'daiAllowanceWaitingForConfirmation',
+    'daiAllowanceFailure',
+    'manageWaitingForConfirmation',
+    'manageFailure',
+  ] as ManageVaultStage[]).some((s) => s === stage)
 
   return {
     ...state,
-    ...categoriseManageVaultStages(stage),
-    flowProgressionDisabled,
+    canProgress,
+    canRegress,
+
     depositAndWithdrawAmountsEmpty,
     generateAndPaybackAmountsEmpty,
     inputAmountsEmpty,

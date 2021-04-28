@@ -1,4 +1,5 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
 import { OpenVaultStage, OpenVaultState } from './openVault'
@@ -10,10 +11,11 @@ const defaultOpenVaultStageCategories = {
   isOpenStage: false,
 }
 
-function categoriseOpenVaultStage(stage: OpenVaultStage) {
-  switch (stage) {
+export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
+  switch (state.stage) {
     case 'editing':
       return {
+        ...state,
         ...defaultOpenVaultStageCategories,
         isEditingStage: true,
       }
@@ -23,6 +25,7 @@ function categoriseOpenVaultStage(stage: OpenVaultStage) {
     case 'proxyFailure':
     case 'proxySuccess':
       return {
+        ...state,
         ...defaultOpenVaultStageCategories,
         isProxyStage: true,
       }
@@ -32,6 +35,7 @@ function categoriseOpenVaultStage(stage: OpenVaultStage) {
     case 'allowanceFailure':
     case 'allowanceSuccess':
       return {
+        ...state,
         ...defaultOpenVaultStageCategories,
         isAllowanceStage: true,
       }
@@ -41,9 +45,12 @@ function categoriseOpenVaultStage(stage: OpenVaultStage) {
     case 'openFailure':
     case 'openSuccess':
       return {
+        ...state,
         ...defaultOpenVaultStageCategories,
         isOpenStage: true,
       }
+    default:
+      throw new UnreachableCaseError(state.stage)
   }
 }
 
@@ -76,7 +83,7 @@ export interface OpenVaultConditions {
   insufficientAllowance: boolean
 
   isLoadingStage: boolean
-  flowProgressionDisabled: boolean
+  canProgress: boolean
   canRegress: boolean
 }
 
@@ -105,7 +112,7 @@ export const defaultOpenVaultConditions: OpenVaultConditions = {
   insufficientAllowance: false,
 
   isLoadingStage: false,
-  flowProgressionDisabled: false,
+  canProgress: false,
   canRegress: false,
 }
 
@@ -209,7 +216,7 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     token !== 'ETH' &&
     !!(depositAmount && !depositAmount.isZero() && (!allowance || depositAmount.gt(allowance)))
 
-  const flowProgressionDisabled =
+  const canProgress = !(
     inputAmountsEmpty ||
     isLoadingStage ||
     vaultWillBeUnderCollateralized ||
@@ -221,6 +228,7 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     customAllowanceAmountEmpty ||
     customAllowanceAmountExceedsMaxUint256 ||
     customAllowanceAmountLessThanDepositAmount
+  )
 
   const canRegress = ([
     'proxyWaitingForConfirmation',
@@ -230,10 +238,9 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     'openWaitingForConfirmation',
     'openFailure',
   ] as OpenVaultStage[]).some((s) => s === stage)
+
   return {
     ...state,
-    ...categoriseOpenVaultStage(stage),
-
     inputAmountsEmpty,
 
     vaultWillBeAtRiskLevelWarning,
@@ -256,7 +263,7 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     insufficientAllowance,
 
     isLoadingStage,
-    flowProgressionDisabled,
+    canProgress,
     canRegress,
   }
 }

@@ -65,27 +65,10 @@ function openVaultPrimaryButtonText({
   }
 }
 
-function openVaultSecondaryButtonText({ stage }: OpenVaultState) {
-  const { t } = useTranslation()
-  switch (stage) {
-    case 'allowanceFailure':
-      return t('change-allowance')
-    default:
-      return t('back-to-editing')
-  }
-}
-
 export function OpenVaultButton(props: OpenVaultState) {
+  const { t } = useTranslation()
   const { replace } = useRedirect()
-  const {
-    stage,
-    progress,
-    regress,
-    canRegress,
-    id,
-    flowProgressionDisabled,
-    isLoadingStage,
-  } = props
+  const { stage, progress, regress, canRegress, id, canProgress, isLoadingStage, token } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
@@ -101,11 +84,12 @@ export function OpenVaultButton(props: OpenVaultState) {
   }
 
   const primaryButtonText = openVaultPrimaryButtonText(props)
-  const secondaryButtonText = openVaultSecondaryButtonText(props)
+  const secondaryButtonText =
+    stage === 'allowanceFailure' ? t('edit-token-allowance', { token }) : t('edit-vault-details')
 
   return (
     <>
-      <Button disabled={flowProgressionDisabled} onClick={handleProgress}>
+      <Button disabled={!canProgress} onClick={handleProgress}>
         {isLoadingStage ? (
           <Flex sx={{ justifyContent: 'center' }}>
             <Spinner size={25} color="surface" />

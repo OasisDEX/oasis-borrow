@@ -164,12 +164,6 @@ export function OpenVaultDetails(props: OpenVaultState) {
           {t('system.collateralization-ratio')}
         </Heading>
         <Text variant="display">{afterCollRatio}</Text>
-        {generateAmount && !generateAmount.isZero() && (
-          <Text>
-            {t('next')}:{' '}
-            {formatPercent(afterCollateralizationRatioAtNextPrice.times(100), { precision: 2 })}
-          </Text>
-        )}
       </Box>
 
       {/* Current Price */}
