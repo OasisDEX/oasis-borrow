@@ -1,3 +1,4 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
@@ -6,7 +7,7 @@ import { Button, Flex, Spinner, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
 
-function openVaultButtonText({
+function openVaultPrimaryButtonText({
   stage,
   id,
   token,
@@ -64,9 +65,27 @@ function openVaultButtonText({
   }
 }
 
+function openVaultSecondaryButtonText({ stage }: OpenVaultState) {
+  const { t } = useTranslation()
+  switch (stage) {
+    case 'allowanceFailure':
+      return t('change-allowance')
+    default:
+      return t('back-to-editing')
+  }
+}
+
 export function OpenVaultButton(props: OpenVaultState) {
   const { replace } = useRedirect()
-  const { stage, progress, id, flowProgressionDisabled, isLoadingStage } = props
+  const {
+    stage,
+    progress,
+    regress,
+    canRegress,
+    id,
+    flowProgressionDisabled,
+    isLoadingStage,
+  } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
@@ -76,18 +95,31 @@ export function OpenVaultButton(props: OpenVaultState) {
     progress!()
   }
 
-  const buttonText = openVaultButtonText(props)
+  function handleRegress(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault()
+    regress!()
+  }
+
+  const primaryButtonText = openVaultPrimaryButtonText(props)
+  const secondaryButtonText = openVaultSecondaryButtonText(props)
 
   return (
-    <Button disabled={flowProgressionDisabled} onClick={handleProgress}>
-      {isLoadingStage ? (
-        <Flex sx={{ justifyContent: 'center' }}>
-          <Spinner size={25} color="surface" />
-          <Text pl={2}>{buttonText}</Text>
-        </Flex>
-      ) : (
-        <Text>{buttonText}</Text>
+    <>
+      <Button disabled={flowProgressionDisabled} onClick={handleProgress}>
+        {isLoadingStage ? (
+          <Flex sx={{ justifyContent: 'center' }}>
+            <Spinner size={25} color="surface" />
+            <Text pl={2}>{primaryButtonText}</Text>
+          </Flex>
+        ) : (
+          <Text>{primaryButtonText}</Text>
+        )}
+      </Button>
+      {canRegress && (
+        <Button variant="textual" onClick={handleRegress} sx={{ fontSize: 4 }}>
+          <Icon name="arrow_right" sx={{ transform: 'rotate(180deg)' }} /> {secondaryButtonText}
+        </Button>
       )}
-    </Button>
+    </>
   )
 }

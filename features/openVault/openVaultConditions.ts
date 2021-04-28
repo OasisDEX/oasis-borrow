@@ -77,6 +77,7 @@ export interface OpenVaultConditions {
 
   isLoadingStage: boolean
   flowProgressionDisabled: boolean
+  canRegress: boolean
 }
 
 export const defaultOpenVaultConditions: OpenVaultConditions = {
@@ -105,6 +106,7 @@ export const defaultOpenVaultConditions: OpenVaultConditions = {
 
   isLoadingStage: false,
   flowProgressionDisabled: false,
+  canRegress: false,
 }
 
 export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState {
@@ -220,6 +222,14 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     customAllowanceAmountExceedsMaxUint256 ||
     customAllowanceAmountLessThanDepositAmount
 
+  const canRegress = ([
+    'proxyWaitingForConfirmation',
+    'proxyFailure',
+    'allowanceWaitingForConfirmation',
+    'allowanceFailure',
+    'openWaitingForConfirmation',
+    'openFailure',
+  ] as OpenVaultStage[]).some((s) => s === stage)
   return {
     ...state,
     ...categoriseOpenVaultStage(stage),
@@ -247,5 +257,6 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
 
     isLoadingStage,
     flowProgressionDisabled,
+    canRegress,
   }
 }

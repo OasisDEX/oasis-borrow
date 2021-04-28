@@ -12,6 +12,9 @@ export type OpenVaultTransitionChange =
   | {
       kind: 'backToEditing'
     }
+  | {
+      kind: 'regressAllowance'
+    }
 
 export function applyOpenVaultTransition(
   change: OpenVaultChange,
@@ -53,6 +56,13 @@ export function applyOpenVaultTransition(
     return {
       ...state,
       stage: 'editing',
+    }
+  }
+
+  if (change.kind === 'regressAllowance') {
+    return {
+      ...state,
+      stage: state.stage === 'allowanceFailure' ? 'allowanceWaitingForConfirmation' : 'editing',
     }
   }
 
