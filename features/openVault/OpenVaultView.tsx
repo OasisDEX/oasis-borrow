@@ -49,7 +49,7 @@ function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage }: Open
           : t('vault-form.header.confirm')
         }
       </Text>
-      <Text variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+      <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px'}}>
       {isEditingStage
           ? t('vault-form.subtext.edit')
           : isProxyStage
@@ -88,8 +88,8 @@ function OpenVaultForm(props: OpenVaultState) {
 
   return (
     <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <Card sx={{ boxShadow: 'card', borderRadius: 'mediumLarge'}}>
-        <Grid>
+      <Card sx={{ boxShadow: 'card', borderRadius: 'mediumLarge', px: 4, py: 3}}>
+        <Grid sx={{my: 2}}>
           <OpenVaultTitle {...props} />
           {isEditingStage && <OpenVaultEditing {...props} />}
           {isProxyStage && <OpenVaultProxy {...props} />}
