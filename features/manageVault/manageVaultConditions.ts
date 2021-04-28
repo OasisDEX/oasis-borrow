@@ -90,7 +90,9 @@ export interface ManageVaultConditions {
   vaultWillBeAtRiskLevelDangerAtNextPrice: boolean
   vaultWillBeUnderCollateralizedAtNextPrice: boolean
 
+  accountIsConnected: boolean
   accountIsController: boolean
+
   depositingAllEthBalance: boolean
   depositAmountExceedsCollateralBalance: boolean
   withdrawAmountExceedsFreeCollateral: boolean
@@ -132,6 +134,8 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   depositAndWithdrawAmountsEmpty: true,
   generateAndPaybackAmountsEmpty: true,
   inputAmountsEmpty: true,
+
+  accountIsConnected: false,
   accountIsController: false,
 
   depositingAllEthBalance: false,
@@ -226,7 +230,8 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     afterCollateralizationRatioAtNextPrice.lt(ilkData.liquidationRatio) &&
     !afterCollateralizationRatioAtNextPrice.isZero()
 
-  const accountIsController = account === vault.controller
+  const accountIsConnected = !!account
+  const accountIsController = accountIsConnected ? account === vault.controller : true
 
   const depositAmountExceedsCollateralBalance = !!depositAmount?.gt(collateralBalance)
 
@@ -319,6 +324,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
   const editingProgressionDisabled =
     isEditingStage &&
     (inputAmountsEmpty ||
+      !accountIsConnected ||
       vaultWillBeUnderCollateralized ||
       vaultWillBeUnderCollateralizedAtNextPrice ||
       debtWillBeLessThanDebtFloor ||
@@ -375,6 +381,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     vaultWillBeUnderCollateralized,
     vaultWillBeUnderCollateralizedAtNextPrice,
 
+    accountIsConnected,
     accountIsController,
     depositingAllEthBalance,
     depositAmountExceedsCollateralBalance,
