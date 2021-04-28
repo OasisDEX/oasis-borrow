@@ -125,7 +125,6 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
 export function validateWarnings(state: ManageVaultState): ManageVaultState {
   const {
     depositAmount,
-    daiYieldFromTotalCollateral,
     vault,
     ilkData,
     errorMessages,
