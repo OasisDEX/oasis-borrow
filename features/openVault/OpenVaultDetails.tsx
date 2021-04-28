@@ -113,12 +113,10 @@ export function VaultDetailsTable({
 export function OpenVaultDetails(props: OpenVaultState) {
   const {
     afterCollateralizationRatio,
-    afterCollateralizationRatioAtNextPrice,
     afterLiquidationPrice,
     token,
     depositAmount,
     depositAmountUSD,
-    generateAmount,
     priceInfo: {
       currentCollateralPrice,
       nextCollateralPrice,

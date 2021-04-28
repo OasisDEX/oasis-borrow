@@ -62,6 +62,7 @@ export function applyOpenVaultTransition(
 
   if (change.kind === 'regressAllowance') {
     return {
+      ...state,
       ...(state.stage === 'allowanceFailure'
         ? { stage: 'allowanceWaitingForConfirmation' }
         : {
