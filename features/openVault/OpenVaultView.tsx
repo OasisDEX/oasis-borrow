@@ -36,20 +36,30 @@ function OpenVaultWarnings({ warningMessages }: OpenVaultState) {
 }
 
 function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage }: OpenVaultState) {
+  const { t } = useTranslation();
   return (
-    <Grid>
-      <Grid columns="2fr 1fr">
-        <Text>
-          {isEditingStage
-            ? 'Configure your Vault'
-            : isProxyStage
-            ? 'Create Proxy'
-            : isAllowanceStage
-            ? 'Set Allowance'
-            : 'Create your Vault'}
-        </Text>
-      </Grid>
-    </Grid>
+    <Box>
+      <Text variant="paragraph2" sx={{fontWeight: 'semiBold', mb: 1}}>
+        {isEditingStage
+          ? t('vault-form.header.edit')
+          : isProxyStage
+          ? t('vault-form.header.proxy')
+          : isAllowanceStage
+          ? t('vault-form.header.allowance')
+          : t('vault-form.header.confirm')
+        }
+      </Text>
+      <Text variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+      {isEditingStage
+          ? t('vault-form.subtext.edit')
+          : isProxyStage
+          ? t('vault-form.subtext.proxy')
+          : isAllowanceStage
+          ? t('vault-form.subtext.allowance')
+          : t('vault-form.subtext.confirm')
+        }
+      </Text>
+    </Box>
   )
 }
 
@@ -78,7 +88,7 @@ function OpenVaultForm(props: OpenVaultState) {
 
   return (
     <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <Card sx={{ border: ['none', '1px solid'], borderColor: ['none', 'light'] }}>
+      <Card sx={{ boxShadow: 'card', borderRadius: 'mediumLarge'}}>
         <Grid>
           <OpenVaultTitle {...props} />
           {isEditingStage && <OpenVaultEditing {...props} />}

@@ -477,5 +477,19 @@
   "enter-an-amount": "Enter an amount",
   "enter-allowance-amount": "Enter allowance amount",
   "set-token-allowance": "Set {{token}} allowance",
-  "invalid-allowance-amount": "Invalid allowance amount"
+  "invalid-allowance-amount": "Invalid allowance amount",
+  "vault-form": {
+    "header": {
+      "edit": "Configure your Vault",
+      "proxy": "Create your smart Proxy ",
+      "allowance": "Set Allowance",
+      "confirm": "Confirm vault creation"
+    },
+    "subtext": {
+      "edit": "Simulate your vault by configuring the amount of collateral to deposit, and DAI to generate.",
+      "proxy": "With your smart proxy we can perform multiple actions in one transaction for your Vault. This proxy only needs to be set up once.",
+      "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
+      "confirm": "Review and verify details of your vault."
+    }
+  }
 }
