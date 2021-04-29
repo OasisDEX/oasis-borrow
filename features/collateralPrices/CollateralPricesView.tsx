@@ -20,13 +20,12 @@ function CollateralPricesRow({
     <>
       <Text>{token} </Text>
       <Text>${formatAmount(currentPrice, 'USD')}</Text>
-      <Text>{isStaticPrice ? `$${formatAmount(nextPrice, 'USD')}` : '--'}</Text>
+      <Text>${formatAmount(nextPrice, 'USD')}</Text>
       <Text>
-        {percentageChange
-          ? `${percentageChange.gt(zero) ? '+' : ''}${formatPercent(percentageChange, {
-              precision: 4,
-            })}`
-          : '--'}
+        {formatPercent(percentageChange.times(100), {
+          precision: 4,
+          plus: true,
+        })}
       </Text>
       <Text>
         {currentPriceUpdate
