@@ -1,10 +1,8 @@
 import { OpenVaultChange, OpenVaultState } from './openVault'
 
-export type OpenVaultFormChange =
-  | {
-      kind: 'toggleGenerateOption'
-    }
-  | { kind: 'toggleIlkDetails' }
+export type OpenVaultFormChange = {
+  kind: 'toggleGenerateOption'
+}
 
 export function applyOpenVaultForm(change: OpenVaultChange, state: OpenVaultState): OpenVaultState {
   if (change.kind === 'toggleGenerateOption' && state.depositAmount) {
@@ -12,13 +10,6 @@ export function applyOpenVaultForm(change: OpenVaultChange, state: OpenVaultStat
       ...state,
       showGenerateOption: !state.showGenerateOption,
       ...(state.showGenerateOption && { generateAmount: undefined }),
-    }
-  }
-
-  if (change.kind === 'toggleIlkDetails') {
-    return {
-      ...state,
-      showIlkDetails: !state.showIlkDetails,
     }
   }
 
