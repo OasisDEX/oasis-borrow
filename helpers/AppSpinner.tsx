@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 import { Box, Flex, Spinner, SxStyleProp } from 'theme-ui'
 
 // wrapper for <Spinner /> component from theme-ui implemented because <Spinner /> is not mapped to any default variant
@@ -48,4 +48,37 @@ export function AppSpinnerWholePage() {
       </Box>
     </Flex>
   )
+}
+
+type WithLoadingIndicatorChildren<T> = (loadable: T) => ReactElement<any>
+
+interface WithLoadingIndicatorProps<T> {
+  value: T | undefined
+  error: any
+  children: WithLoadingIndicatorChildren<T>
+  variant?: string
+  customError?: (error: any) => ReactElement<any>
+}
+
+export function WithLoadingIndicator<T>(props: WithLoadingIndicatorProps<T>) {
+  const { value, error, children, customError } = props
+
+  if (
+    value === undefined &&
+    (error || (Array.isArray(error) && error.some((el) => el !== undefined)))
+  ) {
+    console.info('Error:', error)
+
+    return customError || <Box>Error</Box>
+  }
+
+  if (value === undefined || (Array.isArray(value) && value.some((el) => el === undefined))) {
+    return <AppSpinnerWholePage />
+  }
+
+  if (Array.isArray(children)) {
+    return children[0](value)
+  }
+
+  return children(value)
 }

@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { AppSpinnerWholePage } from 'helpers/AppSpinner'
+import { AppSpinnerWholePage, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -134,31 +134,13 @@ export function OpenVaultContainer(props: OpenVaultState) {
 
 export function OpenVaultView({ ilk }: { ilk: string }) {
   const { openVault$ } = useAppContext()
-  const [openVault, openVaultError] = useObservableWithError(openVault$(ilk))
-
-  if (openVaultError) {
-    return (
-      <Grid
-        sx={{
-          width: '100%',
-          height: '50vh',
-          justifyItems: 'center',
-          alignItems: 'center',
-          zIndex: 1,
-        }}
-      >
-        <Box>{openVaultError.message}</Box>
-      </Grid>
-    )
-  }
-
-  if (!openVault) {
-    return <AppSpinnerWholePage />
-  }
+  const openVault = useObservableWithError(openVault$(ilk))
 
   return (
     <Grid sx={{ width: '100%', zIndex: 1 }}>
-      <OpenVaultContainer {...(openVault as OpenVaultState)} />
+      <WithLoadingIndicator {...openVault}>
+        {(openVault) => <OpenVaultContainer {...openVault} />}
+      </WithLoadingIndicator>
     </Grid>
   )
 }

@@ -1366,8 +1366,10 @@ const oasisBaseTheme = {
     },
   },
   zIndices: {
-    modal: 2,
-    cookie: 3,
+    menu: 2,
+    footer: 2,
+    modal: 3,
+    cookie: 4,
   },
   sizingsCustom: {
     pxModalBottom: '22px',

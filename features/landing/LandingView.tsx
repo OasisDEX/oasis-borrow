@@ -299,7 +299,7 @@ const fadeInAnimation = {
 export function LandingView() {
   const { landing$, context$ } = useAppContext()
   const context = useObservable(context$)
-  const [landing, landingError] = useObservableWithError(landing$)
+  const { value: landing, error: landingError } = useObservableWithError(landing$)
   const { t } = useTranslation()
 
   const onIlkSearch = useCallback(
