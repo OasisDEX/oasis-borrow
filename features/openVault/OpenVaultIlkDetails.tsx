@@ -1,4 +1,4 @@
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Text } from 'theme-ui'
@@ -14,13 +14,12 @@ export function OpenVaultIlkDetails({
   if (!showIlkDetails) return null
   return (
     <Card bg="secondaryAlt" sx={{ border: 'none' }}>
-      <Grid columns={'2fr 3fr'}>
+      <Grid columns={'auto 1fr'}>
         <>
           <Text sx={{ fontSize: 2 }}>{t('manage-vault.dai-available')}</Text>
-          <Text sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}>{`${formatAmount(
-            ilkDebtAvailable,
-            'DAI',
-          )} DAI`}</Text>
+          <Text
+            sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}
+          >{`${formatCryptoBalance(ilkDebtAvailable)} DAI`}</Text>
         </>
 
         <>
@@ -46,10 +45,9 @@ export function OpenVaultIlkDetails({
 
         <>
           <Text sx={{ fontSize: 2 }}>{t('manage-vault.dust-limit')}</Text>
-          <Text sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}>{`${formatAmount(
-            debtFloor,
-            'DAI',
-          )} DAI`}</Text>
+          <Text sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}>
+            {`${formatCryptoBalance(debtFloor)} DAI`}
+          </Text>
         </>
       </Grid>
     </Card>
