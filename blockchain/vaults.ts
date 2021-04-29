@@ -176,7 +176,7 @@ export function createVault$(
 
             const daiYieldFromLockedCollateral = availableDebt.lt(ilkDebtAvailable)
               ? availableDebt
-              : ilkDebtAvailable.isPositive()
+              : ilkDebtAvailable.gt(zero)
               ? ilkDebtAvailable
               : zero
             const atRiskLevelWarning =

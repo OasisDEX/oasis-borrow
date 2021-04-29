@@ -73,7 +73,7 @@ function determineShouldPaybackAll({
   Pick<Vault, 'debt' | 'debtOffset'> &
   Pick<BalanceInfo, 'daiBalance'>): boolean {
   return (
-    debt.isPositive() &&
+    debt.gt(zero) &&
     daiBalance.gte(debt.plus(debtOffset)) &&
     !!(paybackAmount && paybackAmount.plus(PAYBACK_ALL_BOUND).gte(debt) && !paybackAmount.gt(debt))
   )
@@ -134,7 +134,7 @@ function calculateAfterBackingCollateral({
   liquidationRatio,
   price,
 }: Pick<ManageVaultState, 'afterDebt'> & Pick<IlkData, 'liquidationRatio'> & { price: BigNumber }) {
-  if (!afterDebt.isPositive()) return zero
+  if (!afterDebt.gt(zero)) return zero
 
   return afterDebt.times(liquidationRatio).div(price)
 }
@@ -179,7 +179,7 @@ function calculateMaxWithdrawAmount({
   Pick<Vault, 'lockedCollateral' | 'debt' | 'debtOffset'> &
   Pick<IlkData, 'liquidationRatio'> & { price: BigNumber }) {
   const afterDebt = calculateAfterDebt({ shouldPaybackAll, debt, paybackAmount })
-  const afterDebtWithOffset = afterDebt.isPositive() ? afterDebt.plus(debtOffset) : afterDebt
+  const afterDebtWithOffset = afterDebt.gt(zero) ? afterDebt.plus(debtOffset) : afterDebt
 
   const backingCollateral = calculateAfterBackingCollateral({
     afterDebt: afterDebtWithOffset,
@@ -191,6 +191,18 @@ function calculateMaxWithdrawAmount({
     lockedCollateral,
     backingCollateral,
   })
+}
+
+function calculateAfterIlkDebtAvailable({
+  ilkDebtAvailable,
+  paybackAmount,
+  generateAmount,
+}: Pick<IlkData, 'ilkDebtAvailable'> & Pick<ManageVaultState, 'generateAmount' | 'paybackAmount'>) {
+  if (ilkDebtAvailable.gt(zero)) {
+    const amount = ilkDebtAvailable.plus(paybackAmount || zero).minus(generateAmount || zero)
+    return amount.gte(zero) ? amount : zero
+  }
+  return zero
 }
 
 /*
@@ -213,14 +225,14 @@ function calculateDaiYieldFromCollateral({
   }) {
   const daiYield = collateral.times(price).div(liquidationRatio).minus(debt)
 
-  if (!daiYield.isPositive()) return zero
+  if (!daiYield.gt(zero)) return zero
 
   if (daiYield.gt(ilkDebtAvailable)) {
-    if (ilkDebtAvailable.isPositive()) {
-      const amount = ilkDebtAvailable.plus(paybackAmount || zero).minus(generateAmount || zero)
-      return amount.gte(zero) ? amount : zero
-    }
-    return zero
+    return calculateAfterIlkDebtAvailable({
+      generateAmount,
+      paybackAmount,
+      ilkDebtAvailable,
+    })
   }
 
   return daiYield
@@ -389,17 +401,17 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
   const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt
 
   const afterCollateralizationRatio =
-    afterLockedCollateralUSD.isPositive() && afterDebt.isPositive()
+    afterLockedCollateralUSD.gt(zero) && afterDebt.gt(zero)
       ? afterLockedCollateralUSD.div(afterDebt)
       : zero
 
   const afterCollateralizationRatioAtNextPrice =
-    afterLockedCollateralUSDAtNextPrice.isPositive() && afterDebt.isPositive()
+    afterLockedCollateralUSDAtNextPrice.gt(zero) && afterDebt.gt(zero)
       ? afterLockedCollateralUSDAtNextPrice.div(afterDebt)
       : zero
 
   const afterLiquidationPrice =
-    afterDebt.isPositive() && afterLockedCollateral.isPositive()
+    afterDebt.gt(zero) && afterLockedCollateral.gt(zero)
       ? afterDebt.times(liquidationRatio).div(afterLockedCollateral)
       : zero
 
