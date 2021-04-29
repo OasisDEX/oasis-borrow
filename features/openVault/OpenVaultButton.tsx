@@ -84,7 +84,7 @@ export function OpenVaultButton(props: OpenVaultState) {
         {isLoadingStage ? (
           <>
             <Spinner size={25} color="surface" />
-            <Text pl={2}>{buttonText}</Text>
+            <Text ml={2}>{buttonText}</Text>
           </>
         ) : (
           <Text>{buttonText}</Text>

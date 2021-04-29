@@ -87,7 +87,7 @@ function OpenVaultForm(props: OpenVaultState) {
   return (
     <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <Card sx={{ boxShadow: 'card', borderRadius: 'mediumLarge', px: 4, py: 3 }}>
-        <Grid sx={{ my: 2 }}>
+        <Grid sx={{ mt: 2 }}>
           <OpenVaultTitle {...props} />
           {isEditingStage && <OpenVaultEditing {...props} />}
           {isAllowanceStage && <OpenVaultAllowance {...props} />}
