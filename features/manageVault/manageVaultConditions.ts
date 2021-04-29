@@ -163,8 +163,6 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     ilkData,
     vault,
     account,
-    daiYieldFromTotalCollateral,
-    daiYieldFromTotalCollateralAtNextPrice,
     stage,
     selectedCollateralAllowanceRadio,
     selectedDaiAllowanceRadio,
@@ -172,13 +170,15 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     daiAllowanceAmount,
     collateralAllowance,
     daiAllowance,
-    afterFreeCollateral,
-    afterFreeCollateralAtNextPrice,
     shouldPaybackAll,
     balanceInfo: { collateralBalance, daiBalance },
     isEditingStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
+    maxWithdrawAmountAtCurrentPrice,
+    maxWithdrawAmountAtNextPrice,
+    maxGenerateAmountAtCurrentPrice,
+    maxGenerateAmountAtNextPrice,
   } = state
 
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
@@ -225,26 +225,26 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
 
   const depositingAllEthBalance = vault.token === 'ETH' && !!depositAmount?.eq(collateralBalance)
 
-  const withdrawAmountExceedsFreeCollateral = !!withdrawAmount?.gt(afterFreeCollateral)
+  const withdrawAmountExceedsFreeCollateral = !!withdrawAmount?.gt(maxWithdrawAmountAtCurrentPrice)
 
   const withdrawAmountExceedsFreeCollateralAtNextPrice =
-    !withdrawAmountExceedsFreeCollateral && !!withdrawAmount?.gt(afterFreeCollateralAtNextPrice)
+    !withdrawAmountExceedsFreeCollateral && !!withdrawAmount?.gt(maxWithdrawAmountAtNextPrice)
 
-  const generateAmountExceedsDaiYieldFromTotalCollateral = !!generateAmount?.gt(
-    daiYieldFromTotalCollateral,
-  )
+  const generateAmountExceedsDebtCeiling = !!generateAmount?.gt(ilkData.ilkDebtAvailable)
+
+  const generateAmountExceedsDaiYieldFromTotalCollateral =
+    !generateAmountExceedsDebtCeiling && !!generateAmount?.gt(maxGenerateAmountAtCurrentPrice)
 
   const generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice =
+    !generateAmountExceedsDebtCeiling &&
     !generateAmountExceedsDaiYieldFromTotalCollateral &&
-    !!generateAmount?.gt(daiYieldFromTotalCollateralAtNextPrice)
+    !!generateAmount?.gt(maxGenerateAmountAtNextPrice)
 
   const generateAmountLessThanDebtFloor = !!(
     generateAmount &&
     !generateAmount.plus(vault.debt).isZero() &&
     generateAmount.plus(vault.debt).lt(ilkData.debtFloor)
   )
-
-  const generateAmountExceedsDebtCeiling = !!generateAmount?.gt(ilkData.ilkDebtAvailable)
 
   const paybackAmountExceedsDaiBalance = !!paybackAmount?.gt(daiBalance)
   const paybackAmountExceedsVaultDebt = !!paybackAmount?.gt(vault.debt)
@@ -357,6 +357,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
 
     accountIsController,
     depositingAllEthBalance,
+    generateAmountExceedsDebtCeiling,
     depositAmountExceedsCollateralBalance,
     withdrawAmountExceedsFreeCollateral,
     withdrawAmountExceedsFreeCollateralAtNextPrice,
