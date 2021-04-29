@@ -251,9 +251,6 @@ export function FAQ() {
         <AppLink sx={{ color: 'lavender' }} href="/faq">
           {t('landing.link-to-full-faq')}
         </AppLink>
-        <AppLink sx={{ ml: 4, color: 'lavender' }} href="/privacy">
-          {t('landing.glossary-of-terms')}
-        </AppLink>
       </Flex>
     </Flex>
   )
