@@ -4,9 +4,10 @@ import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { Modal, ModalErrorMessage } from 'components/Modal'
 import { useObservable } from 'helpers/observableHook'
+import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useState } from 'react'
-import { Box, Button, Flex, Heading, Label, Text } from 'theme-ui'
+import { Box, Button, Flex, Grid, Heading, Label, Text } from 'theme-ui'
 import { fadeIn } from 'theme/keyframes'
 
 import { TermsAcceptanceStage, TermsAcceptanceState } from './termsAcceptance'
@@ -41,11 +42,16 @@ function getButtonMessage(stage: TermsAcceptanceStage) {
   }
 }
 
-function TOSWaiting4Signature({ stage, acceptJwtAuth, updated }: TermsAcceptanceState) {
+function TOSWaiting4Signature({
+  stage,
+  acceptJwtAuth,
+  updated,
+  disconnect,
+}: TermsAcceptanceState & { disconnect: () => void }) {
   const { t } = useTranslation('common')
 
   return (
-    <>
+    <Grid gap={3}>
       <Box px={2}>
         <Heading sx={{ textAlign: 'center', pb: 1, pt: 3, fontSize: 7 }}>
           {t(`tos-welcome${updated ? '-updated' : ''}`)}
@@ -55,13 +61,16 @@ function TOSWaiting4Signature({ stage, acceptJwtAuth, updated }: TermsAcceptance
         </Text>
       </Box>
       <Button
-        sx={{ width: '80%' }}
+        sx={{ width: '80%', justifySelf: 'center' }}
         disabled={stage !== 'jwtAuthWaiting4Acceptance'}
         onClick={acceptJwtAuth}
       >
         {t(getButtonMessage(stage))}
       </Button>
-    </>
+      <Button sx={{ width: '80%', justifySelf: 'center' }} onClick={disconnect}>
+        {t('disconnect')}
+      </Button>
+    </Grid>
   )
 }
 
@@ -162,8 +171,17 @@ const hiddenStages: TermsAcceptanceStage[] = [
 ]
 
 export function TermsOfService() {
-  const { termsAcceptance$ } = useAppContext()
+  const { web3Context$, termsAcceptance$ } = useAppContext()
   const termsAcceptance = useObservable(termsAcceptance$)
+  const web3Context = useObservable(web3Context$)
+  const { replace } = useRedirect()
+
+  function disconnect() {
+    if (web3Context?.status === 'connected') {
+      web3Context.deactivate()
+      replace(`/connect`)
+    }
+  }
 
   if (!termsAcceptance || hiddenStages.includes(termsAcceptance.stage)) return null
 
@@ -186,7 +204,7 @@ export function TermsOfService() {
             case 'jwtAuthWaiting4Acceptance':
             case 'jwtAuthInProgress':
             case 'acceptanceSaveInProgress':
-              return <TOSWaiting4Signature {...termsAcceptance} />
+              return <TOSWaiting4Signature {...{ ...termsAcceptance, disconnect }} />
             case 'acceptanceCheckFailed':
             case 'jwtAuthFailed':
             case 'jwtAuthRejected':
