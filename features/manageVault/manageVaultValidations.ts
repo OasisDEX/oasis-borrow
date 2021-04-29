@@ -14,10 +14,8 @@ export type ManageVaultErrorMessage =
   | 'paybackAmountExceedsDaiBalance'
   | 'paybackAmountExceedsVaultDebt'
   | 'debtWillBeLessThanDebtFloor'
-  | 'customCollateralAllowanceAmountEmpty'
   | 'customCollateralAllowanceAmountExceedsMaxUint256'
   | 'customCollateralAllowanceAmountLessThanDepositAmount'
-  | 'customDaiAllowanceAmountEmpty'
   | 'customDaiAllowanceAmountExceedsMaxUint256'
   | 'customDaiAllowanceAmountLessThanPaybackAmount'
   | 'depositingAllEthBalance'
@@ -29,8 +27,6 @@ export type ManageVaultWarningMessage =
   | 'vaultWillBeAtRiskLevelWarning'
   | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
   | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
-  | 'vaultUnderCollateralized'
-  | 'vaultUnderCollateralizedAtNextPrice'
 
 export function validateErrors(state: ManageVaultState): ManageVaultState {
   const {

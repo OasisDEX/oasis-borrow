@@ -65,19 +65,19 @@
   "creating-vault": "Creating Vault",
   "currency": "Currency",
   "custom": "Custom",
-  "dai-being-generated": "Dai being generated",
+  "dai-being-generated": "DAI being generated",
   "dai-paying-back": "DAI paying back ({{amount}})",
-  "dai-savings-rate": "Dai Savings Rate",
+  "dai-savings-rate": "DAI Savings Rate",
   "deposit": "Deposit",
   "disconnect": "Disconnect",
   "disconnect-magic": "Log out",
   "dsr-available-withdraw": "Available to withdraw",
   "dsr-deposit-depositing": "You are depositing",
-  "dsr-deposit-depositing-to": "to Dai Savings Rate",
+  "dsr-deposit-depositing-to": "to DAI Savings Rate",
   "dsr-deposit-error-allowance": "Setting permissions failed",
   "dsr-deposit-error-deposit": "Depositing to DSR Failed",
   "dsr-deposit-error-greater-than-balance": "Not enough DAI",
-  "dsr-deposit-permissions": "This permission allows Oasis to interact with the Dai in your wallet.",
+  "dsr-deposit-permissions": "This permission allows Oasis to interact with the DAI in your wallet.",
   "dsr-product": "Lock your DAI in the DSR and earn interest.",
   "dsr-proxy-create-description-pending": "Creating proxy",
   "dsr-proxy-create-description-recent": "Created proxy",
@@ -100,7 +100,7 @@
   "dsr-proxy-withdraw-notification": "Withdraw {{ amount }} DAI",
   "dsr-proxy-withdraw-notification-past": "Withdrawn {{ amount }} DAI",
   "dsr-warning-continue": "Continue anyway",
-  "dsr-warning-message": "The current APY on this product is 0% and it will incur a cost to setup and add Dai to. You are advised not to continue until the APY is above 0%.",
+  "dsr-warning-message": "The current APY on this product is 0% and it will incur a cost to setup and add DAI to. You are advised not to continue until the APY is above 0%.",
   "dsr-warning-setup": "Setup later",
   "dsr-withdraw-error-empty-amount": "Amount cannot be zero",
   "dsr-withdraw-error-greater-than-deposit": "Amount is greater than DAI deposited",
@@ -154,7 +154,7 @@
     "stablecoin": "Stablecoins"
   },
   "gas-estimation-error": "Error",
-  "get-dai": "Get Dai",
+  "get-dai": "Get DAI",
   "get-started": "Get Started",
   "go-to-vault": "Go to Vault #{{id}}",
   "here": "here",
@@ -219,7 +219,7 @@
     },
     "glossary-of-terms": "Glossary of terms",
     "hero": {
-      "headline": "Generate Dai using crypto as your collateral",
+      "headline": "Generate DAI using crypto as your collateral",
       "subheader": "Open a Maker Vault, deposit your collateral, and generate DAI against it.<0/> Connect a wallet to start."
     },
     "link-to-full-faq": "Full list of Oasis Vault FAQs"
@@ -238,7 +238,32 @@
     "min-collat-ratio": "Min. collateral ratio",
     "or": "OR",
     "stability-fee": "Stability Fee",
-    "title": "Manage Vault"
+    "title": "Manage Vault",
+    "warnings": {
+      "potential-generate-amount-less-than-debt-floor": "Minimum DAI required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} DAI",
+      "debt-is-less-than-debt-floor": "Your current DAI debt is below the minimum of {{debtFloor}}. You cannot generate more DAI unless you go over this minimum",
+      "vault-will-be-at-risk-level-danger": "With this action your vault will be at a collaterization ratio very close to the minimum required",
+      "vault-will-be-at-risk-level-danger-at-next-price": "With this action your vault will be at a collaterization ratio very close to the minimum required at the next price update",
+      "vault-will-be-at-risk-level-warning": "With this action your vault will be at a collaterization ratio near the minimum required",
+      "vault-will-be-at-risk-level-warning-at-next-price": "With this action your vault will be at a collaterization ratio near the minimum required at the next price update"
+    },
+    "errors": {
+      "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet",
+      "withdraw-amount-exceeds-free-collateral": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
+      "withdraw-amount-exceeds-free-collateral-at-next-price": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
+      "generate-amount-exceeds-dai-yield-from-total-collateral": "The collaterization ratio for this Maker Vault is too low. Please generate less Dai",
+      "generate-amount-exceeds-dai-yield-from-total-collateral-at-next-price": "The collaterization ratio for this Maker Vault is too low at the next price update. Please generate less Dai",
+      "generate-amount-exceeds-debt-ceiling": "You are trying to generate more than the current debt ceiling allows. The amount of DAI that can be generated is {{maxGenerateAmount}} {{token}}",
+      "generate-amount-less-than-debt-floor": "This vault type requires a minimum of {{debtFloor}} DAI to be generated. Read more about the Dust Limit here: {{link}}",
+      "payback-amount-exceeds-dai-balance": "You cannot payback more DAI than the amount in your wallet",
+      "payback-amount-exceeds-vault-debt": "You are trying to payback more than your DAI debt for this Maker Vault",
+      "debt-will-be-less-than-debt-floor": "The Maker Vault debt amount either must be 0 or exceed {{debtFloor}} amount of DAI. Please change your payback amount",
+      "custom-collateral-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
+      "custom-collateral-allowance-amount-less-than-deposit-amount": "You need at least an allowance of your deposit amount to continue",
+      "custom-dai-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
+      "custom-dai-allowance-amount-less-than-payback-amount": "You need at least an allowance of your payback amount to continue",
+      "depositing-all-eth-balance": "You need some ETH to pay for the gas fees. Lower your deposit amount"
+    }
   },
   "max": "Max",
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",
@@ -267,7 +292,7 @@
   "pending-transactions": "Pending Transactions",
   "permissions": "Set permissions",
   "permissions-btn": "Set permissions",
-  "permissions-desc": "This permission allows Oasis to interact with the Dai in your wallet.",
+  "permissions-desc": "This permission allows Oasis to interact with the DAI in your wallet.",
   "powered-by": "Powered by",
   "proceed": "Proceed",
   "readonly-alert-message": "You’re currently viewing",
@@ -297,15 +322,15 @@
       "title": "Contact"
     },
     "dai": {
-      "description": "A short introduction to Dai, the smarter digital currency.",
-      "title": "Dai"
+      "description": "A short introduction to DAI, the smarter digital currency.",
+      "title": "DAI"
     },
     "default": {
-      "description": "Dai is a smarter digital currency for everyone. Buy, send and manage it all on Oasis.app.",
-      "title": "Oasis.app is the home for your smarter digital currency, Dai"
+      "description": "DAI is a smarter digital currency for everyone. Buy, send and manage it all on Oasis.app.",
+      "title": "Oasis.app is the home for your smarter digital currency, DAI"
     },
     "latam500": {
-      "description": "Buy Dai through Latamex on Oasis.app and get $10 of ETH a month for 3 months.",
+      "description": "Buy DAI through Latamex on Oasis.app and get $10 of ETH a month for 3 months.",
       "title": "LATAM500"
     },
     "support": {

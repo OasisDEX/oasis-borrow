@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { one, zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

@@ -1,7 +1,6 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { zero } from 'helpers/zero'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
