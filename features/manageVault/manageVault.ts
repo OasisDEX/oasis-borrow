@@ -111,7 +111,6 @@ export interface MutableManageVaultState {
   originalEditingStage: ManageVaultEditingStage
   showDepositAndGenerateOption: boolean
   showPaybackAndWithdrawOption: boolean
-  showIlkDetails: boolean
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
   withdrawAmount?: BigNumber
@@ -140,7 +139,6 @@ interface ManageVaultFunctions {
   progress?: () => void
   regress?: () => void
   toggle?: () => void
-  toggleIlkDetails?: () => void
   toggleDepositAndGenerateOption?: () => void
   togglePaybackAndWithdrawOption?: () => void
   updateDeposit?: (depositAmount?: BigNumber) => void
@@ -214,7 +212,6 @@ function addTransitions(
         change({
           kind: 'togglePaybackAndWithdrawOption',
         }),
-      toggleIlkDetails: () => change({ kind: 'toggleIlkDetails' }),
       toggle: () => change({ kind: 'toggleEditing' }),
       progress: () => change({ kind: 'progressEditing' }),
     }
@@ -314,7 +311,6 @@ function addTransitions(
 export const defaultMutableManageVaultState: MutableManageVaultState = {
   stage: 'collateralEditing' as ManageVaultStage,
   originalEditingStage: 'collateralEditing' as ManageVaultEditingStage,
-  showIlkDetails: false,
   showDepositAndGenerateOption: false,
   showPaybackAndWithdrawOption: false,
   collateralAllowanceAmount: maxUint256,
