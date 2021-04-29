@@ -1,3 +1,4 @@
+import { maxUint256 } from 'blockchain/calls/erc20'
 import { TxHelpers } from 'components/AppContext'
 import { zero } from 'helpers/zero'
 import { Observable } from 'rxjs'
@@ -28,6 +29,12 @@ export type ManageVaultTransitionChange =
   | {
       kind: 'resetToEditing'
     }
+  | {
+      kind: 'regressCollateralAllowance'
+    }
+  | {
+      kind: 'regressDaiAllowance'
+    }
 
 export function applyManageVaultTransition(
   change: ManageVaultChange,
@@ -52,6 +59,36 @@ export function applyManageVaultTransition(
     return {
       ...state,
       stage: originalEditingStage,
+    }
+  }
+
+  if (change.kind === 'regressCollateralAllowance') {
+    const { originalEditingStage, stage } = state
+
+    return {
+      ...state,
+      ...(stage === 'collateralAllowanceFailure'
+        ? { stage: 'collateralAllowanceWaitingForConfirmation' }
+        : {
+            stage: originalEditingStage,
+            collateralAllowanceAmount: maxUint256,
+            selectedCollateralAllowanceRadio: 'unlimited',
+          }),
+    }
+  }
+
+  if (change.kind === 'regressDaiAllowance') {
+    const { originalEditingStage, stage } = state
+
+    return {
+      ...state,
+      ...(stage === 'daiAllowanceFailure'
+        ? { stage: 'daiAllowanceWaitingForConfirmation' }
+        : {
+            stage: originalEditingStage,
+            daiAllowanceAmount: maxUint256,
+            selectedDaiAllowanceRadio: 'unlimited',
+          }),
     }
   }
 

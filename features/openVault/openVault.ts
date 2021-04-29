@@ -17,6 +17,7 @@ import {
 } from './openVaultCalculations'
 import {
   applyOpenVaultConditions,
+  applyOpenVaultStageCategorisation,
   defaultOpenVaultConditions,
   OpenVaultConditions,
 } from './openVaultConditions'
@@ -71,7 +72,8 @@ function apply(state: OpenVaultState, change: OpenVaultChange) {
   const s6 = applyOpenVaultEnvironment(change, s5)
   const s7 = applyOpenVaultInjectedOverride(change, s6)
   const s8 = applyOpenVaultCalculations(s7)
-  return applyOpenVaultConditions(s8)
+  const s9 = applyOpenVaultStageCategorisation(s8)
+  return applyOpenVaultConditions(s9)
 }
 
 export type OpenVaultStage =
@@ -106,7 +108,7 @@ export interface MutableOpenVaultState {
 
 interface OpenVaultFunctions {
   progress?: () => void
-  reset?: () => void
+  regress?: () => void
   toggleGenerateOption?: () => void
   toggleIlkDetails?: () => void
   updateDeposit?: (depositAmount?: BigNumber) => void
@@ -177,6 +179,7 @@ function addTransitions(
     return {
       ...state,
       progress: () => createProxy(txHelpers, proxyAddress$, change, state),
+      regress: () => change({ kind: 'backToEditing' }),
     }
   }
 
@@ -187,7 +190,6 @@ function addTransitions(
         change({
           kind: 'progressProxy',
         }),
-      reset: () => change({ kind: 'backToEditing' }),
     }
   }
 
@@ -209,7 +211,7 @@ function addTransitions(
           kind: 'allowanceCustom',
         }),
       progress: () => setAllowance(txHelpers, change, state),
-      reset: () => change({ kind: 'backToEditing' }),
+      regress: () => change({ kind: 'regressAllowance' }),
     }
   }
 
@@ -227,7 +229,7 @@ function addTransitions(
     return {
       ...state,
       progress: () => openVault(txHelpers, change, state),
-      reset: () => change({ kind: 'backToEditing' }),
+      regress: () => change({ kind: 'backToEditing' }),
     }
   }
 

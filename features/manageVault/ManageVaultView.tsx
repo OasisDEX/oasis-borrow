@@ -47,6 +47,7 @@ function ManageVaultForm(props: ManageVaultState) {
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
     isManageStage,
+    accountIsConnected,
   } = props
 
   function handleMouseEnter(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
@@ -67,15 +68,19 @@ function ManageVaultForm(props: ManageVaultState) {
     <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <Card>
         <ManageVaultFormHeader {...props} />
-        <Grid>
+        <Grid pb={3}>
           {isEditingStage && <ManageVaultEditing {...props} />}
           {isProxyStage && <ManageVaultProxy {...props} />}
           {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
           {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}
           {isManageStage && <ManageVaultConfirmation {...props} />}
-          <ManageVaultErrors {...props} />
-          <ManageVaultWarnings {...props} />
-          <ManageVaultButton {...props} />
+          {accountIsConnected && (
+            <>
+              <ManageVaultErrors {...props} />
+              <ManageVaultWarnings {...props} />
+              <ManageVaultButton {...props} />
+            </>
+          )}
           <ManageVaultIlkDetails {...props} />
         </Grid>
       </Card>

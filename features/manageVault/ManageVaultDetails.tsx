@@ -166,7 +166,6 @@ export function ManageVaultDetails(props: ManageVaultState) {
       liquidationPrice,
       lockedCollateral,
       lockedCollateralUSD,
-      collateralizationRatioAtNextPrice,
     },
     priceInfo: {
       currentCollateralPrice,
@@ -176,6 +175,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
     },
     ilkData: { liquidationRatio },
     shouldPaybackAll,
+    afterCollateralizationRatio,
   } = props
   const { t } = useTranslation()
   const collRatioColor = collateralizationRatio.isZero()
@@ -223,8 +223,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
           {formatPercent(collateralizationRatio.times(100), { precision: 2 })}
         </Text>
         <Text>
-          {t('next')}:{' '}
-          {formatPercent(collateralizationRatioAtNextPrice.times(100), { precision: 2 })}
+          {t('after')}: {formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })}
         </Text>
       </Box>
 

@@ -1,7 +1,5 @@
 {
   "404-button": "Go to home",
-  "after-next": "After + Next",
-  "next": "Next",
   "404-message": "Sorry, page not found.",
   "acceptance-check-failed": "Acceptance check failed",
   "acceptance-save-failed": "Acceptance save failed",
@@ -14,6 +12,7 @@
   "address": "Address",
   "address-invalid": "Address not found",
   "after": "After",
+  "after-next": "After + Next",
   "all-assets": "All Assets",
   "amount": "Amount",
   "approve-allowance": "Approve Allowance",
@@ -38,10 +37,6 @@
   "connect-wallet-button": "Connect Wallet",
   "connect-with": "{{ connectionKind }}",
   "connected-with": "Connected with {{ connectionKind }}",
-  "create-vault": "Create Vault",
-  "creating-vault": "Creating Vault",
-  "changing-vault": "Changing Vault",
-  "go-to-vault": "Go to Vault #{{id}}",
   "contact": {
     "description": "Send us feedback, questions, or suggestions or below.",
     "label": {
@@ -64,9 +59,10 @@
   "country": "Country",
   "create-proxy": "Create a proxy",
   "create-proxy-btn": "Create Proxy",
-  "setup-proxy": "Setup Proxy",
   "create-proxy-desc": "In order to use Savings and other features, you will need a wallet proxy.",
+  "create-vault": "Create Vault",
   "creating-proxy": "Creating Proxy",
+  "creating-vault": "Creating Vault",
   "currency": "Currency",
   "custom": "Custom",
   "dai-being-generated": "Dai being generated",
@@ -112,9 +108,13 @@
   "dsrDeposit": "DSR Deposited",
   "dsrWithdrawal": "DSR Withdrew",
   "earning": "Earning",
+  "edit-token-allowance": "Edit {{token}} allowance",
+  "edit-vault-details": "Edit Vault details",
   "email": "Email",
   "email-invalid": "Provided email is invalid",
   "email-required": "Email address is required",
+  "enter-allowance-amount": "Enter allowance amount",
+  "enter-an-amount": "Enter an amount",
   "erc20-approve-description-pending": "Unlocking transfer of {{ token }}",
   "erc20-approve-description-recent": "Unlocked transfer of {{ token }}",
   "erc20-approve-description-recent-failed": "Failed to unlock transfer of {{ token }}",
@@ -135,6 +135,13 @@
   "eth-send-description-recent-failed": "Failed to send {{ amount }} ETH",
   "eth-send-notification": "Sending ETH",
   "eth-send-notification-past": "Sent ETH",
+  "event": {
+    "activity": "Activity",
+    "deposit": "Deposited",
+    "time": "Time",
+    "type": "Type",
+    "vault-opened": "Vault Opened"
+  },
   "exchange-rate": "Exchange rate",
   "failed": "Failed",
   "featured": {
@@ -142,10 +149,36 @@
     "most-popular": "most popular",
     "new": "new"
   },
+  "filters": {
+    "lp-token": "LP tokens",
+    "stablecoin": "Stablecoins"
+  },
   "gas-estimation-error": "Error",
   "get-dai": "Get Dai",
   "get-started": "Get Started",
+  "go-to-vault": "Go to Vault #{{id}}",
   "here": "here",
+  "history": {
+    "auction_finished_v2": "Auction <0>#{{auctionId}}</0> finished, <0>{{remainingCollateral}} {{token}}</0> remained",
+    "auction_started": "Auction started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} DAI</0>",
+    "auction_started_v2": "Auction <0>#{{auctionId}}</0> started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} DAI</0>",
+    "deposit": "Deposited <0>{{collateralAmount}} {{token}}</0> into Vault",
+    "generate": "Generated <0>{{daiAmount}}</0> DAI from Vault",
+    "migrate": "Vault migrated",
+    "move_dest": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> DAI debt to the vault",
+    "move_src": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> DAI debt from the vault",
+    "open": "Opened a new Vault with id <0>#{{cdpId}}</0>",
+    "payback": "Payback <0>{{daiAmount}}</0> DAI to Vault",
+    "transfer": "Vault given to <0>{{transferTo}}</0> by <0>{{transferFrom}}</0>",
+    "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault"
+  },
+  "ilks-list": {
+    "headers": {
+      "noVaults": "Select a collateral type below to create your first Maker Vault,<0/> and generate DAI",
+      "withVaults": "Open a new Maker Vault.<0/> Generate DAI"
+    }
+  },
+  "invalid-allowance-amount": "Invalid allowance amount",
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",
   "jwt-auth-rejected": "Signature rejected",
@@ -154,21 +187,21 @@
   "keyWithCount_plural": "{{count}} items",
   "landing": {
     "faq": {
-      "title": "Borrow FAQ's",
       "entries": [
         {
-          "question": "What assets can I use as collateral?",
-          "answer": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora."
+          "answer": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora.",
+          "question": "What assets can I use as collateral?"
         },
         {
-          "question": "How much does it cost?",
-          "answer": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora."
+          "answer": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora.",
+          "question": "How much does it cost?"
         },
         {
-          "question": "How much does it cost?",
-          "answer": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora."
+          "answer": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora.",
+          "question": "How much does it cost?"
         }
-      ]
+      ],
+      "title": "Borrow FAQ's"
     },
     "link-to-full-faq": "Full list of Oasis Vault FAQs",
     "footer": {
@@ -184,10 +217,12 @@
       "terms": "Terms",
       "trade": "Trade"
     },
+    "glossary-of-terms": "Glossary of terms",
     "hero": {
       "headline": "Generate Dai using crypto as your collateral",
       "subheader": "Open a Maker Vault, deposit your collateral, and generate DAI against it.<0/> Connect a wallet to start."
-    }
+    },
+    "link-to-full-faq": "Full list of Oasis Vault FAQs"
   },
   "ledger-cancel": "Select another wallet",
   "ledger-error": "There was an error, please reset",
@@ -197,18 +232,20 @@
   "ledger-select-title": "Select Ledger Live or Legacy",
   "manage-vault": {
     "action-option": "{{action}} {{token}} with this transaction",
-    "or": "OR",
-    "title": "Manage Vault",
     "dai-available": "DAI available",
-    "min-collat-ratio": "Min. collateral ratio",
-    "stability-fee": "Stability Fee",
+    "dust-limit": "Dust Limit",
     "liquidation-fee": "Liquidation Fee",
-    "dust-limit": "Dust Limit"
+    "min-collat-ratio": "Min. collateral ratio",
+    "or": "OR",
+    "stability-fee": "Stability Fee",
+    "title": "Manage Vault"
   },
   "max": "Max",
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",
   "moving-into-vault": "Moving into Vault",
   "moving-out-vault": "Moving out of Vault",
+  "new-to-ethereum": "New to Ethereum? ",
+  "next": "Next",
   "no-activity": "No activity to show",
   "notice-privacy": "By using our site you agree to our <0>Cookie Policy</0>.",
   "notification-status-complete": "Complete",
@@ -223,6 +260,7 @@
   "of": "of",
   "one-of-some": "{{one}} of {{some}}",
   "onramp-leave-message": "By clicking buy, you will leave Oasis and be redirected to a third party website where you will complete the buy process.",
+  "open-new-vault": "Open new Vault",
   "open-vault": "Open Vault",
   "or": "or",
   "paste": "Paste",
@@ -276,15 +314,13 @@
     }
   },
   "set-allowance-for": "Set Allowance fro {{token}}",
+  "set-token-allowance": "Set {{token}} allowance",
   "setting-allowance-for": "Setting Allowance for {{token}}",
+  "setup-proxy": "Setup Proxy",
   "setup-wallet": "Setup your wallet",
   "show-more": "Show more",
   "spots-remaining": "{{ spots }} spots remaining",
   "start-saving": "Start Saving",
-  "filters": {
-    "lp-token": "LP tokens",
-    "stablecoin": "Stablecoins"
-  },
   "system": {
     "asset": "Asset",
     "available-to-withdraw": "Available to Withdraw",
@@ -307,8 +343,8 @@
     "min-coll-ratio": "Min Coll. Ratio",
     "stability-fee": "Stability Fee",
     "type": "Type",
-    "vault-id": "Vault ID",
-    "vault-dai-debt": "Vault DAI Debt"
+    "vault-dai-debt": "Vault DAI Debt",
+    "vault-id": "Vault ID"
   },
   "to-the-following-address": "to the following address",
   "token-balance": "{{token}} balance",
@@ -337,10 +373,10 @@
     "current-price": "Current {{token}}/USD Price in {{time}}",
     "header": "{{ilk}} Vault #{{id}}",
     "next-price": "Next price in {{count}} minute",
-    "next-price_plural": "Next price in {{count}} minutes",
     "next-price-any-time": "Next price in <2 minutes",
-    "vault-details": "Vault Details",
-    "open-vault": "Open {{ilk}} Vault"
+    "next-price_plural": "Next price in {{count}} minutes",
+    "open-vault": "Open {{ilk}} Vault",
+    "vault-details": "Vault Details"
   },
   "vault-actions": {
     "deposit": "Deposit",
@@ -348,7 +384,28 @@
     "payback": "Payback",
     "withdraw": "Withdraw"
   },
+  "vault-banners": {
+    "liquidated": {
+      "header1": "Your Maker Vault got liquidated",
+      "header2": "This Maker Vault got liquidated",
+      "subheader1": "This Maker Vault has been liquidated. A portion of your collateral has been auctioned to pay back your DAI debt.",
+      "subheader2": "You can reclaim {{ amount }} {{ collateral }}",
+      "subheader3": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
+    },
+    "liquidating": {
+      "header1": "Your {{ collateral }} Maker Vault {{ id }} is about to get liquidated.",
+      "header2": "{{ collateral }} Maker Vault {{ id }} is about to get liquidated.",
+      "subheader1": "The next price will cause a liquidation on this Maker Vault. You can still save your Maker Vault from liquidation by adding collateral or pay back DAI.",
+      "subheader2": "Is this your Maker Vault? Please connect with address: {{ address }} and save your Maker Vault from liquidation."
+    },
+    "ownership": {
+      "header": "You are viewing {{address}} Vault",
+      "subheader1": "Please connect your wallet to open, manage or view your Vaults.",
+      "subheader2": "You can view your vaults"
+    }
+  },
   "vault-changed": "Vault changed!",
+  "vault-history": "Vault History",
   "vaults": {
     "after": "After ${{price}}",
     "current-price": "Current {{token}}/USD price",
@@ -362,16 +419,17 @@
     }
   },
   "vaults-overview": {
+    "banner-content": "You can view your vaults",
+    "banner-header": "You are viewing {{address}} Vaults overview",
     "headers": {
-      "connected-owner-withVaults": "Your Maker Vaults overview",
       "connected-owner-noVaults": "You have no open Vaults",
-      "connected-viewer-withVaults": "Maker Vaults overview of {{address}}",
+      "connected-owner-withVaults": "Your Maker Vaults overview",
       "connected-viewer-noVaults": "{{address}} currently has no Maker Vaults",
       "notConnected-noVaults": "{{address}} currently has no Maker Vaults.<0/> Connect your wallet and open a vault.",
       "notConnected-withVaults": "Maker Vaults overview of {{address}}.<0/> Connect your wallet."
     },
-    "subheader-no-vaults": "Open a Maker Vault, deposit your collateral, and generate DAI against it.",
     "number-of-vaults": "No. of Vaults",
+    "subheader-no-vaults": "Open a Maker Vault, deposit your collateral, and generate DAI against it.",
     "total-debt": "Total debt",
     "total-locked": "Total locked",
     "vaults": "Vaults",
@@ -421,7 +479,6 @@
     "vault-opened": "Vault Opened",
     "deposit": "Deposited"
   },
-  "vault-history": "Vault History",
   "view": "View",
   "view-more": "View more",
   "view-on-etherscan": "View on Etherscan",
