@@ -36,28 +36,26 @@ function OpenVaultWarnings({ warningMessages }: OpenVaultState) {
 }
 
 function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage }: OpenVaultState) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <Box>
-      <Text variant="paragraph2" sx={{fontWeight: 'semiBold', mb: 1}}>
+      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
         {isEditingStage
           ? t('vault-form.header.edit')
           : isProxyStage
           ? t('vault-form.header.proxy')
           : isAllowanceStage
           ? t('vault-form.header.allowance')
-          : t('vault-form.header.confirm')
-        }
+          : t('vault-form.header.confirm')}
       </Text>
-      <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px'}}>
-      {isEditingStage
+      <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
+        {isEditingStage
           ? t('vault-form.subtext.edit')
           : isProxyStage
           ? t('vault-form.subtext.proxy')
           : isAllowanceStage
           ? t('vault-form.subtext.allowance')
-          : t('vault-form.subtext.confirm')
-        }
+          : t('vault-form.subtext.confirm')}
       </Text>
     </Box>
   )
@@ -88,16 +86,16 @@ function OpenVaultForm(props: OpenVaultState) {
 
   return (
     <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <Card sx={{ boxShadow: 'card', borderRadius: 'mediumLarge', px: 4, py: 3}}>
-        <Grid sx={{my: 2}}>
+      <Card sx={{ boxShadow: 'card', borderRadius: 'mediumLarge', px: 4, py: 3 }}>
+        <Grid sx={{ my: 2 }}>
           <OpenVaultTitle {...props} />
           {isEditingStage && <OpenVaultEditing {...props} />}
-          {isProxyStage && <OpenVaultProxy {...props} />}
           {isAllowanceStage && <OpenVaultAllowance {...props} />}
           {isOpenStage && <OpenVaultConfirmation {...props} />}
           <OpenVaultErrors {...props} />
           <OpenVaultWarnings {...props} />
           <OpenVaultButton {...props} />
+          {isProxyStage && <OpenVaultProxy {...props} />}
           <OpenVaultIlkDetails {...props} />
         </Grid>
       </Card>
@@ -132,7 +130,7 @@ export function OpenVaultHeading(props: OpenVaultState & SxProps) {
 
 export function OpenVaultContainer(props: OpenVaultState) {
   return (
-    <Grid columns={['1fr', '2fr 1fr']} gap={4}>
+    <Grid columns={['1fr', '2fr minmax(380px, 1fr)']} gap={4}>
       <OpenVaultHeading {...props} sx={{ display: ['block', 'none'] }} />
       <Box sx={{ order: [3, 1] }}>
         <OpenVaultDetails {...props} />
