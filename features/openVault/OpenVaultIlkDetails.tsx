@@ -6,12 +6,13 @@ import { Card, Grid, Text } from 'theme-ui'
 import { OpenVaultState } from './openVault'
 
 export function OpenVaultIlkDetails({
-  showIlkDetails,
+  inputAmountsEmpty,
+  isEditingStage,
   ilkData: { ilkDebtAvailable, liquidationRatio, stabilityFee, liquidationPenalty, debtFloor },
 }: OpenVaultState) {
   const { t } = useTranslation()
 
-  if (!showIlkDetails) return null
+  if (inputAmountsEmpty || !isEditingStage) return null
   return (
     <Card bg="secondaryAlt" sx={{ border: 'none' }}>
       <Grid columns={'2fr 3fr'}>

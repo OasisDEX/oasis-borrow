@@ -40,8 +40,6 @@ function ManageVaultWarnings({ warningMessages }: ManageVaultState) {
 
 function ManageVaultForm(props: ManageVaultState) {
   const {
-    toggleIlkDetails,
-    showIlkDetails,
     isEditingStage,
     isProxyStage,
     isCollateralAllowanceStage,
@@ -50,22 +48,8 @@ function ManageVaultForm(props: ManageVaultState) {
     accountIsConnected,
   } = props
 
-  function handleMouseEnter(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    e.preventDefault()
-    if (isEditingStage && !showIlkDetails) {
-      toggleIlkDetails!()
-    }
-  }
-
-  function handleMouseLeave(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    e.preventDefault()
-    if (isEditingStage && showIlkDetails) {
-      toggleIlkDetails!()
-    }
-  }
-
   return (
-    <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <Box>
       <Card>
         <ManageVaultFormHeader {...props} />
         <Grid pb={3}>

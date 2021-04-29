@@ -54,30 +54,10 @@ function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage }: Open
 }
 
 function OpenVaultForm(props: OpenVaultState) {
-  const {
-    toggleIlkDetails,
-    showIlkDetails,
-    isEditingStage,
-    isProxyStage,
-    isAllowanceStage,
-    isOpenStage,
-  } = props
-  function handleMouseEnter(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    e.preventDefault()
-    if (isEditingStage && !showIlkDetails) {
-      toggleIlkDetails!()
-    }
-  }
-
-  function handleMouseLeave(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    e.preventDefault()
-    if (isEditingStage && showIlkDetails) {
-      toggleIlkDetails!()
-    }
-  }
+  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
 
   return (
-    <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <Box>
       <Card sx={{ border: ['none', '1px solid'], borderColor: ['none', 'light'] }}>
         <Grid>
           <OpenVaultTitle {...props} />

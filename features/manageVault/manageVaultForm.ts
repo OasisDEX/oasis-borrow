@@ -18,9 +18,6 @@ export type ManageVaultFormChange =
       kind: 'togglePaybackAndWithdrawOption'
     }
   | {
-      kind: 'toggleIlkDetails'
-    }
-  | {
       kind: 'resetDefaults'
     }
 
@@ -65,13 +62,6 @@ export function applyManageVaultForm(
       showPaybackAndWithdrawOption: !showPaybackAndWithdrawOption,
       ...(shouldClearPaybackAmount && { paybackAmount: undefined }),
       ...(shouldClearWithdrawAmount && { withdrawAmount: undefined }),
-    }
-  }
-
-  if (kind === 'toggleIlkDetails') {
-    return {
-      ...state,
-      showIlkDetails: !state.showIlkDetails,
     }
   }
 
