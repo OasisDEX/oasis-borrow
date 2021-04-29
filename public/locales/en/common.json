@@ -465,6 +465,7 @@
   "waiting-approval": "Waiting for approval",
   "waiting-confirmation": "Waiting for transaction confirmation",
   "waiting-proxy-deployment": "Proxy deployment confirming",
+  "proxy-deployment-confirming": "{{proxyConfirmations}} of {{safeConfirmations}}: Proxy deployment confirmed",
   "withdraw": "Withdraw",
   "withdrawn": "Withdrawn",
   "you-are-sending": "You are sending",
