@@ -80,14 +80,16 @@ export function OpenVaultButton(props: OpenVaultState) {
 
   return (
     <Button disabled={flowProgressionDisabled} onClick={handleProgress}>
-      {isLoadingStage ? (
-        <Flex sx={{ justifyContent: 'center' }}>
-          <Spinner size={25} color="surface" />
-          <Text pl={2}>{buttonText}</Text>
-        </Flex>
-      ) : (
-        <Text>{buttonText}</Text>
-      )}
+      <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
+        {isLoadingStage ? (
+          <>
+            <Spinner size={25} color="surface" />
+            <Text pl={2}>{buttonText}</Text>
+          </>
+        ) : (
+          <Text>{buttonText}</Text>
+        )}
+      </Flex>
     </Button>
   )
 }
