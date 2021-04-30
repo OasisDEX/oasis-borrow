@@ -68,6 +68,7 @@ export function OpenVaultEditing(props: OpenVaultState) {
         {showGenerateOptionButton && (
           <Text
             mt={3}
+            mb={2}
             sx={{
               cursor: 'pointer',
               fontSize: 3,

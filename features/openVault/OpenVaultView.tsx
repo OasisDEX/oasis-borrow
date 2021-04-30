@@ -70,6 +70,7 @@ function OpenVaultForm(props: OpenVaultState) {
     isAllowanceStage,
     isOpenStage,
   } = props
+
   function handleMouseEnter(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault()
     if (isEditingStage && !showIlkDetails) {
