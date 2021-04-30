@@ -10,6 +10,24 @@ import { Card, Flex, Grid, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
 
+function Option(props: React.PropsWithChildren<{ onClick?: () => void }>) {
+  return (
+    <Label
+      sx={{
+        border: 'light',
+        borderRadius: 'mediumLarge',
+        display: 'flex',
+        alignItems: 'center',
+        px: 3,
+        boxSizing: 'border-box',
+      }}
+      onClick={props.onClick}
+    >
+      {props.children}
+    </Label>
+  )
+}
+
 export function OpenVaultAllowance({
   stage,
   allowanceTxHash,
@@ -34,47 +52,67 @@ export function OpenVaultAllowance({
     <Grid>
       {canSelectRadio && (
         <>
-          <Label
-            sx={{ border: 'light', p: 2, borderRadius: 'small' }}
-            onClick={setAllowanceAmountUnlimited!}
-          >
-            <Radio name="dark-mode" value="true" defaultChecked={isUnlimited} />
-            <Text sx={{ fontSize: 2 }}>Unlimited Allowance</Text>
-          </Label>
-          <Label
-            sx={{ border: 'light', p: 2, borderRadius: 'small' }}
-            onClick={setAllowanceAmountToDepositAmount}
-          >
-            <Radio name="dark-mode" value="true" defaultChecked={isDeposit} />
-            <Text sx={{ fontSize: 2 }}>
+          <Option onClick={setAllowanceAmountUnlimited!}>
+            <Radio
+              sx={{ mr: 3 }}
+              name="allowance-open-form"
+              value="true"
+              defaultChecked={isUnlimited}
+            />
+            <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: '18px' }}>
+              {t('unlimited-allowance')}
+            </Text>
+          </Option>
+          <Option onClick={setAllowanceAmountToDepositAmount}>
+            <Radio
+              sx={{ mr: 3 }}
+              name="allowance-open-form"
+              value="true"
+              defaultChecked={isDeposit}
+            />
+            <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: '18px' }}>
               {t('token-depositing', { token, amount: formatCryptoBalance(depositAmount!) })}
             </Text>
-          </Label>
-          <Label
-            sx={{ border: 'light', p: 2, borderRadius: 'small' }}
-            onClick={setAllowanceAmountCustom}
-          >
-            <Radio name="dark-mode" value="true" defaultChecked={isCustom} />
-            <Grid columns="2fr 2fr 1fr" sx={{ alignItems: 'center' }}>
-              <Text sx={{ fontSize: 2 }}>Custom</Text>
-              <BigNumberInput
-                sx={{ p: 1, borderRadius: 'small', width: '100px', fontSize: 1 }}
-                disabled={!isCustom}
-                value={
-                  allowanceAmount && isCustom
-                    ? formatAmount(allowanceAmount, getToken(token).symbol)
-                    : null
-                }
-                mask={createNumberMask({
-                  allowDecimal: true,
-                  decimalLimit: getToken(token).digits,
-                  prefix: '',
-                })}
-                onChange={handleNumericInput(updateAllowanceAmount!)}
+          </Option>
+          <Option onClick={setAllowanceAmountCustom}>
+            <Flex sx={{ alignItems: 'center', justifyContent: 'center', py: 2 }}>
+              <Radio
+                sx={{ mr: 3 }}
+                name="allowance-open-form"
+                value="true"
+                defaultChecked={isCustom}
               />
-              <Text sx={{ fontSize: 1 }}>{token}</Text>
-            </Grid>
-          </Label>
+              <Grid columns="2fr 2fr 1fr" sx={{ alignItems: 'center' }}>
+                <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
+                  {t('custom')}
+                </Text>
+                <BigNumberInput
+                  sx={{
+                    p: 1,
+                    borderRadius: 'small',
+                    borderColor: 'light',
+                    width: '100px',
+                    fontSize: 1,
+                    px: 3,
+                    py: '12px',
+                  }}
+                  disabled={!isCustom}
+                  value={
+                    allowanceAmount && isCustom
+                      ? formatAmount(allowanceAmount, getToken(token).symbol)
+                      : null
+                  }
+                  mask={createNumberMask({
+                    allowDecimal: true,
+                    decimalLimit: getToken(token).digits,
+                    prefix: '',
+                  })}
+                  onChange={handleNumericInput(updateAllowanceAmount!)}
+                />
+                <Text sx={{ fontSize: 1 }}>{token}</Text>
+              </Grid>
+            </Flex>
+          </Option>
         </>
       )}
 

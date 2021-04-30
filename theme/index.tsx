@@ -1,5 +1,5 @@
-// @ts-ignore
 import { icons } from '@makerdao/dai-ui-icons'
+// @ts-ignore
 // @ts-ignore
 import { icons as brandingIcons } from '@makerdao/dai-ui-icons-branding'
 // @ts-ignore
@@ -1338,6 +1338,15 @@ const oasisBaseTheme = {
     ...customIcons,
     ...customLandingIcons,
     ...tokenIcons,
+  },
+  radio: {
+    color: '#CAD6DB',
+    'input:checked ~ &': {
+      color: 'onSuccess',
+    },
+    'input:focus ~ &': {
+      color: 'onSuccess',
+    },
   },
   forms: {
     label: {
