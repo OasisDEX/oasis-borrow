@@ -1,3 +1,4 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Spinner, Text } from 'theme-ui'
@@ -85,25 +86,52 @@ function manageVaultButtonText(state: ManageVaultState): string {
 }
 
 export function ManageVaultButton(props: ManageVaultState) {
-  const { progress, isLoadingStage, flowProgressionDisabled } = props
+  const { t } = useTranslation()
+
+  const {
+    progress,
+    stage,
+    isLoadingStage,
+    canProgress,
+    canRegress,
+    regress,
+    vault: { token },
+    isCollateralAllowanceStage,
+  } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
     progress!()
   }
 
+  function handleRegress(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault()
+    regress!()
+  }
+
   const buttonText = manageVaultButtonText(props)
+  const secondaryButtonText =
+    stage === 'daiAllowanceFailure' || stage === 'collateralAllowanceFailure'
+      ? t('edit-token-allowance', { token: isCollateralAllowanceStage ? token : 'DAI' })
+      : t('edit-vault-details')
 
   return (
-    <Button onClick={handleProgress} disabled={flowProgressionDisabled}>
-      {isLoadingStage ? (
-        <Flex sx={{ justifyContent: 'center' }}>
-          <Spinner size={25} color="surface" />
-          <Text pl={2}>{buttonText}</Text>
-        </Flex>
-      ) : (
-        <Text>{buttonText}</Text>
+    <>
+      <Button onClick={handleProgress} disabled={!canProgress}>
+        {isLoadingStage ? (
+          <Flex sx={{ justifyContent: 'center' }}>
+            <Spinner size={25} color="surface" />
+            <Text pl={2}>{buttonText}</Text>
+          </Flex>
+        ) : (
+          <Text>{buttonText}</Text>
+        )}
+      </Button>
+      {canRegress && (
+        <Button variant="textual" onClick={handleRegress} sx={{ fontSize: 4 }}>
+          <Icon name="arrow_right" sx={{ transform: 'rotate(180deg)' }} /> {secondaryButtonText}
+        </Button>
       )}
-    </Button>
+    </>
   )
 }

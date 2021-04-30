@@ -111,7 +111,7 @@ export function VaultLiquidatingBanner({
           : t('vault-banners.liquidating.header2', headerTranslationOptions)
       }`}
       subheader={`
-        ${t('vault-banners.liquidating.subheader1')}
+        ${t('vault-banners.liquidating.subheader1', { collateral: token.toUpperCase() })}
         ${
           !isVaultController
             ? t('vault-banners.liquidating.subheader2', { address: formatAddress(controller) })

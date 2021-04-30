@@ -13,11 +13,12 @@ const defaultManageVaultStageCategories = {
   isManageStage: false,
 }
 
-function categoriseManageVaultStages(stage: ManageVaultStage) {
-  switch (stage) {
+export function applyManageVaultStageCategorisation(state: ManageVaultState) {
+  switch (state.stage) {
     case 'collateralEditing':
     case 'daiEditing':
       return {
+        ...state,
         ...defaultManageVaultStageCategories,
         isEditingStage: true,
       }
@@ -27,6 +28,7 @@ function categoriseManageVaultStages(stage: ManageVaultStage) {
     case 'proxyFailure':
     case 'proxySuccess':
       return {
+        ...state,
         ...defaultManageVaultStageCategories,
         isProxyStage: true,
       }
@@ -36,6 +38,7 @@ function categoriseManageVaultStages(stage: ManageVaultStage) {
     case 'collateralAllowanceFailure':
     case 'collateralAllowanceSuccess':
       return {
+        ...state,
         ...defaultManageVaultStageCategories,
         isCollateralAllowanceStage: true,
       }
@@ -45,6 +48,7 @@ function categoriseManageVaultStages(stage: ManageVaultStage) {
     case 'daiAllowanceFailure':
     case 'daiAllowanceSuccess':
       return {
+        ...state,
         ...defaultManageVaultStageCategories,
         isDaiAllowanceStage: true,
       }
@@ -55,11 +59,12 @@ function categoriseManageVaultStages(stage: ManageVaultStage) {
     case 'manageFailure':
     case 'manageSuccess':
       return {
+        ...state,
         ...defaultManageVaultStageCategories,
         isManageStage: true,
       }
     default:
-      throw new UnreachableCaseError(stage)
+      throw new UnreachableCaseError(state.stage)
   }
 }
 
@@ -70,7 +75,8 @@ export interface ManageVaultConditions {
   isDaiAllowanceStage: boolean
   isManageStage: boolean
 
-  flowProgressionDisabled: boolean
+  canProgress: boolean
+  canRegress: boolean
 
   depositAndWithdrawAmountsEmpty: boolean
   generateAndPaybackAmountsEmpty: boolean
@@ -84,7 +90,9 @@ export interface ManageVaultConditions {
   vaultWillBeAtRiskLevelDangerAtNextPrice: boolean
   vaultWillBeUnderCollateralizedAtNextPrice: boolean
 
+  accountIsConnected: boolean
   accountIsController: boolean
+
   depositingAllEthBalance: boolean
   depositAmountExceedsCollateralBalance: boolean
   withdrawAmountExceedsFreeCollateral: boolean
@@ -112,7 +120,8 @@ export interface ManageVaultConditions {
 
 export const defaultManageVaultConditions: ManageVaultConditions = {
   ...defaultManageVaultStageCategories,
-  flowProgressionDisabled: false,
+  canProgress: false,
+  canRegress: false,
 
   vaultWillBeAtRiskLevelWarning: false,
   vaultWillBeAtRiskLevelDanger: false,
@@ -125,6 +134,8 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   depositAndWithdrawAmountsEmpty: true,
   generateAndPaybackAmountsEmpty: true,
   inputAmountsEmpty: true,
+
+  accountIsConnected: false,
   accountIsController: false,
 
   depositingAllEthBalance: false,
@@ -163,8 +174,6 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     ilkData,
     vault,
     account,
-    daiYieldFromTotalCollateral,
-    daiYieldFromTotalCollateralAtNextPrice,
     stage,
     selectedCollateralAllowanceRadio,
     selectedDaiAllowanceRadio,
@@ -172,13 +181,15 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     daiAllowanceAmount,
     collateralAllowance,
     daiAllowance,
-    afterFreeCollateral,
-    afterFreeCollateralAtNextPrice,
     shouldPaybackAll,
     balanceInfo: { collateralBalance, daiBalance },
     isEditingStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
+    maxWithdrawAmountAtCurrentPrice,
+    maxWithdrawAmountAtNextPrice,
+    maxGenerateAmountAtCurrentPrice,
+    maxGenerateAmountAtNextPrice,
   } = state
 
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
@@ -219,32 +230,33 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     afterCollateralizationRatioAtNextPrice.lt(ilkData.liquidationRatio) &&
     !afterCollateralizationRatioAtNextPrice.isZero()
 
-  const accountIsController = account === vault.controller
+  const accountIsConnected = !!account
+  const accountIsController = accountIsConnected ? account === vault.controller : true
 
   const depositAmountExceedsCollateralBalance = !!depositAmount?.gt(collateralBalance)
 
   const depositingAllEthBalance = vault.token === 'ETH' && !!depositAmount?.eq(collateralBalance)
 
-  const withdrawAmountExceedsFreeCollateral = !!withdrawAmount?.gt(afterFreeCollateral)
+  const withdrawAmountExceedsFreeCollateral = !!withdrawAmount?.gt(maxWithdrawAmountAtCurrentPrice)
 
   const withdrawAmountExceedsFreeCollateralAtNextPrice =
-    !withdrawAmountExceedsFreeCollateral && !!withdrawAmount?.gt(afterFreeCollateralAtNextPrice)
+    !withdrawAmountExceedsFreeCollateral && !!withdrawAmount?.gt(maxWithdrawAmountAtNextPrice)
 
-  const generateAmountExceedsDaiYieldFromTotalCollateral = !!generateAmount?.gt(
-    daiYieldFromTotalCollateral,
-  )
+  const generateAmountExceedsDebtCeiling = !!generateAmount?.gt(ilkData.ilkDebtAvailable)
+
+  const generateAmountExceedsDaiYieldFromTotalCollateral =
+    !generateAmountExceedsDebtCeiling && !!generateAmount?.gt(maxGenerateAmountAtCurrentPrice)
 
   const generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice =
+    !generateAmountExceedsDebtCeiling &&
     !generateAmountExceedsDaiYieldFromTotalCollateral &&
-    !!generateAmount?.gt(daiYieldFromTotalCollateralAtNextPrice)
+    !!generateAmount?.gt(maxGenerateAmountAtNextPrice)
 
   const generateAmountLessThanDebtFloor = !!(
     generateAmount &&
     !generateAmount.plus(vault.debt).isZero() &&
     generateAmount.plus(vault.debt).lt(ilkData.debtFloor)
   )
-
-  const generateAmountExceedsDebtCeiling = !!generateAmount?.gt(ilkData.ilkDebtAvailable)
 
   const paybackAmountExceedsDaiBalance = !!paybackAmount?.gt(daiBalance)
   const paybackAmountExceedsVaultDebt = !!paybackAmount?.gt(vault.debt)
@@ -312,6 +324,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
   const editingProgressionDisabled =
     isEditingStage &&
     (inputAmountsEmpty ||
+      !accountIsConnected ||
       vaultWillBeUnderCollateralized ||
       vaultWillBeUnderCollateralizedAtNextPrice ||
       debtWillBeLessThanDebtFloor ||
@@ -334,16 +347,29 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
       customDaiAllowanceAmountExceedsMaxUint256 ||
       customDaiAllowanceAmountLessThanPaybackAmount)
 
-  const flowProgressionDisabled =
+  const canProgress = !(
     isLoadingStage ||
     editingProgressionDisabled ||
     collateralAllowanceProgressionDisabled ||
     daiAllowanceProgressionDisabled
+  )
+
+  const canRegress = ([
+    'proxyWaitingForConfirmation',
+    'proxyFailure',
+    'collateralAllowanceWaitingForConfirmation',
+    'collateralAllowanceFailure',
+    'daiAllowanceWaitingForConfirmation',
+    'daiAllowanceFailure',
+    'manageWaitingForConfirmation',
+    'manageFailure',
+  ] as ManageVaultStage[]).some((s) => s === stage)
 
   return {
     ...state,
-    ...categoriseManageVaultStages(stage),
-    flowProgressionDisabled,
+    canProgress,
+    canRegress,
+
     depositAndWithdrawAmountsEmpty,
     generateAndPaybackAmountsEmpty,
     inputAmountsEmpty,
@@ -355,8 +381,10 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     vaultWillBeUnderCollateralized,
     vaultWillBeUnderCollateralizedAtNextPrice,
 
+    accountIsConnected,
     accountIsController,
     depositingAllEthBalance,
+    generateAmountExceedsDebtCeiling,
     depositAmountExceedsCollateralBalance,
     withdrawAmountExceedsFreeCollateral,
     withdrawAmountExceedsFreeCollateralAtNextPrice,

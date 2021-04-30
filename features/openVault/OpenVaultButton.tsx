@@ -6,7 +6,7 @@ import { Button, Flex, Spinner, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
 
-function openVaultButtonText({
+function openVaultPrimaryButtonText({
   stage,
   id,
   token,
@@ -65,8 +65,9 @@ function openVaultButtonText({
 }
 
 export function OpenVaultButton(props: OpenVaultState) {
+  const { t } = useTranslation()
   const { replace } = useRedirect()
-  const { stage, progress, id, flowProgressionDisabled, isLoadingStage } = props
+  const { stage, progress, regress, canRegress, id, canProgress, isLoadingStage, token } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
@@ -76,20 +77,32 @@ export function OpenVaultButton(props: OpenVaultState) {
     progress!()
   }
 
-  const buttonText = openVaultButtonText(props)
+  function handleRegress(e: React.SyntheticEvent<HTMLButtonElement>) {
+    e.preventDefault()
+    regress!()
+  }
+
+  const primaryButtonText = openVaultPrimaryButtonText(props)
+  const secondaryButtonText =
+    stage === 'allowanceFailure' ? t('edit-token-allowance', { token }) : t('edit-vault-details')
 
   return (
-    <Button disabled={flowProgressionDisabled} onClick={handleProgress}>
-      <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
+    <>
+      <Button disabled={!canProgress} onClick={handleProgress}>
         {isLoadingStage ? (
-          <>
+          <Flex sx={{ justifyContent: 'center' }}>
             <Spinner size={25} color="surface" />
-            <Text ml={2}>{buttonText}</Text>
-          </>
+            <Text pl={2}>{primaryButtonText}</Text>
+          </Flex>
         ) : (
-          <Text>{buttonText}</Text>
+          <Text>{primaryButtonText}</Text>
         )}
-      </Flex>
-    </Button>
+      </Button>
+      {canRegress && (
+        <Button variant="textual" onClick={handleRegress} sx={{ fontSize: 3 }}>
+          {secondaryButtonText}
+        </Button>
+      )}
+    </>
   )
 }

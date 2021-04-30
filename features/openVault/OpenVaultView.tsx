@@ -35,7 +35,7 @@ function OpenVaultWarnings({ warningMessages }: OpenVaultState) {
   )
 }
 
-function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage }: OpenVaultState) {
+function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage, token }: OpenVaultState) {
   const { t } = useTranslation()
   return (
     <Box>
@@ -45,7 +45,7 @@ function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage }: Open
           : isProxyStage
           ? t('vault-form.header.proxy')
           : isAllowanceStage
-          ? t('vault-form.header.allowance')
+          ? t('vault-form.header.allowance', { token: token.toUpperCase() })
           : t('vault-form.header.confirm')}
       </Text>
       <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
@@ -62,31 +62,10 @@ function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage }: Open
 }
 
 function OpenVaultForm(props: OpenVaultState) {
-  const {
-    toggleIlkDetails,
-    showIlkDetails,
-    isEditingStage,
-    isProxyStage,
-    isAllowanceStage,
-    isOpenStage,
-  } = props
-
-  function handleMouseEnter(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    e.preventDefault()
-    if (isEditingStage && !showIlkDetails) {
-      toggleIlkDetails!()
-    }
-  }
-
-  function handleMouseLeave(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    e.preventDefault()
-    if (isEditingStage && showIlkDetails) {
-      toggleIlkDetails!()
-    }
-  }
+  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
 
   return (
-    <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <Box>
       <Card sx={{ boxShadow: 'card', borderRadius: 'mediumLarge', px: 4, py: 3 }}>
         <Grid sx={{ mt: 2 }}>
           <OpenVaultTitle {...props} />

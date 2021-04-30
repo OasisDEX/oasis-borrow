@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
+import { Announcement } from 'components/Announcement'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
@@ -114,6 +115,34 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
         flexDirection: 'column',
       }}
     >
+      <Announcement sx={{ mb: 3, textAlign: 'left' }}>
+        <Flex sx={{ flexDirection: ['column', 'row'] }}>
+          <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', fontSize: [1, 2] }}>
+            Welcome to the new Oasis.app. &nbsp;
+          </Text>
+          <Flex sx={{ flexDirection: ['column', 'row'] }}>
+            <AppLink href="https://blog.oasis.app">
+              <Text
+                variant="paragraph3"
+                sx={{ fontWeight: 'semiBold', display: 'inline-block', fontSize: [1, 2] }}
+              >
+                Read the blog post →
+              </Text>
+            </AppLink>
+            <Text
+              variant="paragraph3"
+              sx={{ fontWeight: 'semiBold', color: 'muted', mx: 3, display: ['none', 'block'] }}
+            >
+              |
+            </Text>
+            <AppLink href={`${window.location.origin}/borrow-old`}>
+              <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', fontSize: [1, 2] }}>
+                Visit the old Oasis →
+              </Text>
+            </AppLink>
+          </Flex>
+        </Flex>
+      </Announcement>
       <Heading as="h1" variant="header2" sx={{ fontSize: 40, mb: 3 }}>
         {t('landing.hero.headline')}
       </Heading>
@@ -250,9 +279,6 @@ export function FAQ() {
       <Flex sx={{ width: '100%', justifyContent: 'flex-start', mt: 3 }}>
         <AppLink sx={{ color: 'lavender' }} href="/faq">
           {t('landing.link-to-full-faq')}
-        </AppLink>
-        <AppLink sx={{ ml: 4, color: 'lavender' }} href="/privacy">
-          {t('landing.glossary-of-terms')}
         </AppLink>
       </Flex>
     </Flex>
