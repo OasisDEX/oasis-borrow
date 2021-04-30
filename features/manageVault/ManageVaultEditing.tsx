@@ -34,11 +34,13 @@ function DepositInput({
   updateDeposit,
   updateDepositUSD,
   updateDepositMax,
+  priceInfo: { currentCollateralPrice },
 }: ManageVaultState) {
   return (
     <VaultActionInput
       action="Deposit"
       token={token}
+      tokenUsdPrice={currentCollateralPrice}
       showMax={true}
       hasAuxiliary={true}
       onSetMax={updateDepositMax!}
@@ -87,12 +89,14 @@ function WithdrawInput({
   updateWithdraw,
   updateWithdrawUSD,
   updateWithdrawMax,
+  priceInfo: { currentCollateralPrice },
 }: ManageVaultState) {
   return (
     <VaultActionInput
       action="Withdraw"
       showMax={true}
       hasAuxiliary={true}
+      tokenUsdPrice={currentCollateralPrice}
       onSetMax={updateWithdrawMax}
       disabled={!accountIsController}
       amount={withdrawAmount}

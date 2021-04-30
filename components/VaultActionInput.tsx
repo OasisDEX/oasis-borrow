@@ -3,7 +3,8 @@ import { BigNumber } from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount } from 'helpers/formatters/format'
-import { zero } from 'helpers/zero'
+import { calculateTokenPrecisionByValue } from 'helpers/tokens'
+import { one, zero } from 'helpers/zero'
 import React, { ChangeEvent, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Grid, Text } from 'theme-ui'
@@ -13,6 +14,7 @@ type VaultAction = 'Deposit' | 'Withdraw' | 'Generate' | 'Payback'
 interface VaultActionInputProps {
   action: VaultAction
   token: string
+  tokenUsdPrice?: BigNumber
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
   disabled?: boolean
   amount?: BigNumber
@@ -20,6 +22,7 @@ interface VaultActionInputProps {
   hasAuxiliary?: boolean
   auxiliaryAmount?: BigNumber
   auxiliaryToken?: string
+  auxiliaryUsdPrice?: BigNumber
   onAuxiliaryChange?: (e: ChangeEvent<HTMLInputElement>) => void
   maxAuxiliaryAmount?: BigNumber
 
@@ -34,6 +37,7 @@ interface VaultActionInputProps {
 export function VaultActionInput({
   action,
   token,
+  tokenUsdPrice = one,
   amount,
   onChange,
   disabled,
@@ -46,6 +50,7 @@ export function VaultActionInput({
   hasAuxiliary,
   auxiliaryAmount,
   auxiliaryToken,
+  auxiliaryUsdPrice,
   onAuxiliaryChange,
   maxAuxiliaryAmount,
 
@@ -53,10 +58,21 @@ export function VaultActionInput({
 }: VaultActionInputProps) {
   const [auxiliaryFlag, setAuxiliaryFlag] = useState<boolean>(false)
 
-  const { symbol: tokenSymbol, digits: tokenDigits } = getToken(token)
-  const { symbol: auxiliarySymbol, digits: auxiliaryDigits } = auxiliaryToken
-    ? getToken(auxiliaryToken)
-    : { symbol: 'USD', digits: 2 }
+  const { symbol: tokenSymbol } = getToken(token)
+  const { symbol: auxiliarySymbol } = auxiliaryToken ? getToken(auxiliaryToken) : { symbol: 'USD' }
+
+  const tokenDigits = calculateTokenPrecisionByValue({
+    token: token,
+    usdPrice: tokenUsdPrice,
+  })
+
+  console.log(tokenDigits)
+  const auxiliaryDigits = auxiliaryToken
+    ? calculateTokenPrecisionByValue({
+        token: auxiliaryToken,
+        usdPrice: auxiliaryUsdPrice!,
+      })
+    : 2
 
   function handleAuxiliarySwitch() {
     setAuxiliaryFlag(!auxiliaryFlag)

@@ -1,4 +1,6 @@
 import BigNumber from 'bignumber.js'
+import { getToken } from 'blockchain/tokensMetadata'
+import { Decimal } from 'decimal.js'
 
 /*
  * Should return a precision amount, no greater than 18 or the max precision
@@ -9,8 +11,17 @@ import BigNumber from 'bignumber.js'
  */
 export function calculateTokenPrecisionByValue({
   token,
-  unitPrice,
+  usdPrice,
 }: {
   token: string
-  unitPrice: BigNumber
-}) {}
+  usdPrice: BigNumber
+}) {
+  const ten = new Decimal(10)
+  const price = new Decimal(usdPrice.toString())
+  const tokenPrecision = getToken(token).precision
+  const tokenPricePerDollar = price.pow(-1)
+  const tokenPricePerCent = tokenPricePerDollar.times(new Decimal(10).pow(-2))
+
+  const magnitude = tokenPricePerCent.logarithm(ten).times(-1).floor()
+  return magnitude.gt(tokenPrecision) ? tokenPrecision : magnitude.gt(0) ? magnitude.toNumber() : 0
+}
