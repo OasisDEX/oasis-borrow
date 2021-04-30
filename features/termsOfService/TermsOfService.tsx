@@ -67,7 +67,7 @@ function TOSWaiting4Signature({
       >
         {t(getButtonMessage(stage))}
       </Button>
-      <Button sx={{ width: '80%', justifySelf: 'center' }} onClick={disconnect}>
+      <Button variant="textual" sx={{ width: '80%', justifySelf: 'center' }} onClick={disconnect}>
         {t('disconnect')}
       </Button>
     </Grid>
