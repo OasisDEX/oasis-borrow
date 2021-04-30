@@ -51,9 +51,11 @@ export function AppSpinnerWholePage() {
 }
 
 // By specifing P you may also omit other types in tuple
-type OmitInTuple<T, P = undefined> = T extends [infer U, ...(infer Y)]
-  ? [...(Exclude<U, P> extends never ? [] : [Exclude<U, undefined>]), ...OmitInTuple<Y>]
-  : T
+// type OmitInTuple<T, P = undefined> = T extends [infer U, ...(infer Y)]
+//   ? [...(Exclude<U, P> extends never ? [] : [Exclude<U, undefined>]), ...OmitInTuple<Y>]
+//   : T
+
+type OmitInTuple<T> = { [entry in keyof T]: Exclude<T[entry], undefined> }
 
 interface WithLoadingIndicatorProps<T> {
   value: T | undefined
