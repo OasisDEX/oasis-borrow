@@ -204,7 +204,7 @@ export function TermsOfService() {
             case 'jwtAuthWaiting4Acceptance':
             case 'jwtAuthInProgress':
             case 'acceptanceSaveInProgress':
-              return <TOSWaiting4Signature {...{ ...termsAcceptance, disconnect }} />
+              return <TOSWaiting4Signature {...termsAcceptance} disconnect={disconnect} />
             case 'acceptanceCheckFailed':
             case 'jwtAuthFailed':
             case 'jwtAuthRejected':
