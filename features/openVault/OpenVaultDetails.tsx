@@ -113,12 +113,10 @@ export function VaultDetailsTable({
 export function OpenVaultDetails(props: OpenVaultState) {
   const {
     afterCollateralizationRatio,
-    afterCollateralizationRatioAtNextPrice,
     afterLiquidationPrice,
     token,
     depositAmount,
     depositAmountUSD,
-    generateAmount,
     priceInfo: {
       currentCollateralPrice,
       nextCollateralPrice,
@@ -147,7 +145,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
     : 'onError'
 
   return (
-    <Grid sx={{ alignSelf: 'flex-start', order: [3, 1] }} columns={[1, '1fr 1fr']}>
+    <Grid sx={{ alignSelf: 'flex-start' }} columns={[1, '1fr 1fr']}>
       <OpenVaultHeading {...props} sx={{ display: ['none', 'block'] }} />
 
       {/* Liquidation Price */}
@@ -164,12 +162,6 @@ export function OpenVaultDetails(props: OpenVaultState) {
           {t('system.collateralization-ratio')}
         </Heading>
         <Text variant="display">{afterCollRatio}</Text>
-        {generateAmount && !generateAmount.isZero() && (
-          <Text>
-            {t('next')}:{' '}
-            {formatPercent(afterCollateralizationRatioAtNextPrice.times(100), { precision: 2 })}
-          </Text>
-        )}
       </Box>
 
       {/* Current Price */}

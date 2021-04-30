@@ -1,6 +1,6 @@
-import { keyframes } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
+import { Announcement } from 'components/Announcement'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
@@ -14,28 +14,9 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
+import { fadeIn, slideIn } from 'theme/keyframes'
 
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
-
-const slideIn = keyframes({
-  from: {
-    top: '60px',
-    opacity: 0,
-  },
-  to: {
-    top: 0,
-    opacity: 1,
-  },
-})
-
-const fadeIn = keyframes({
-  from: {
-    opacity: 0,
-  },
-  to: {
-    opacity: 1,
-  },
-})
 
 export function TokenSymbol({
   token,
@@ -135,19 +116,43 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
         flexDirection: 'column',
       }}
     >
+      <Announcement sx={{ mb: 3, textAlign: 'left' }}>
+        <Flex sx={{ flexDirection: ['column', 'row'] }}>
+          <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', fontSize: [1, 2] }}>
+            Welcome to the new Oasis.app. &nbsp;
+          </Text>
+          <Flex sx={{ flexDirection: ['column', 'row'] }}>
+            <AppLink href="https://blog.oasis.app">
+              <Text
+                variant="paragraph3"
+                sx={{ fontWeight: 'semiBold', display: 'inline-block', fontSize: [1, 2] }}
+              >
+                Read the blog post →
+              </Text>
+            </AppLink>
+            <Text
+              variant="paragraph3"
+              sx={{ fontWeight: 'semiBold', color: 'muted', mx: 3, display: ['none', 'block'] }}
+            >
+              |
+            </Text>
+            <AppLink href={`${window.location.origin}/borrow-old`}>
+              <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', fontSize: [1, 2] }}>
+                Visit the old Oasis →
+              </Text>
+            </AppLink>
+          </Flex>
+        </Flex>
+      </Announcement>
       <Heading as="h1" variant="header2" sx={{ fontSize: 40, mb: 3 }}>
         {t('landing.hero.headline')}
       </Heading>
-      <Text variant="paragraph1" sx={{ mb: 3, color: 'lavender' }}>
+      <Text variant="paragraph1" sx={{ mb: 4, color: 'lavender' }}>
         <Trans i18nKey="landing.hero.subheader" components={[<br />]} />
       </Text>
-      <Box
-        sx={{
-          opacity: 0.08,
-        }}
-      >
-        <Image sx={{ mb: 4 }} src={staticFilesRuntimeUrl('/static/img/icons_set.svg')} />
-      </Box>
+
+      <Image sx={{ mb: 4 }} src={staticFilesRuntimeUrl('/static/img/icons_set.svg')} />
+
       {!isConnected && (
         <AppLink
           href="/connect"
@@ -204,7 +209,11 @@ function Expandable({ question, answer, isOpen, toggle }: ExpandableProps) {
         },
       }}
     >
-      <Button sx={{ position: 'relative' }} variant="expandable" onClick={toggle}>
+      <Button
+        sx={{ position: 'relative', lineHeight: '1rem' }}
+        variant="expandable"
+        onClick={toggle}
+      >
         {question}
         {
           <Box
@@ -254,7 +263,7 @@ export function FAQ() {
 
   return (
     <Flex
-      sx={{ flexDirection: 'column', alignItems: 'center', mt: 4, maxWidth: '762px', mx: 'auto' }}
+      sx={{ flexDirection: 'column', alignItems: 'center', my: 6, maxWidth: '762px', mx: 'auto' }}
     >
       <Heading variant="header2" sx={{ mb: 4 }}>
         {t('landing.faq.title')}
@@ -271,9 +280,6 @@ export function FAQ() {
       <Flex sx={{ width: '100%', justifyContent: 'flex-start', mt: 3 }}>
         <AppLink sx={{ color: 'lavender' }} href="/faq">
           {t('landing.link-to-full-faq')}
-        </AppLink>
-        <AppLink sx={{ ml: 4, color: 'lavender' }} href="/privacy">
-          {t('landing.glossary-of-terms')}
         </AppLink>
       </Flex>
     </Flex>
@@ -365,6 +371,7 @@ export function LandingView() {
               onTagChange={onIlksTagChange}
               tagFilter={landing.ilks.filters.tagFilter}
               defaultTag="all-assets"
+              searchPlaceholder={t('search-token')}
             />
             <Box sx={{ overflowX: 'auto', p: '3px' }}>
               <Table
@@ -373,7 +380,17 @@ export function LandingView() {
                 state={landing.ilks.filters}
                 columns={ilksColumns}
                 noResults={<Box>{t('no-results')}</Box>}
+                deriveRowProps={(row) => ({ href: `/vaults/open/${row.ilk}` })}
               />
+              <Box sx={{ overflowX: 'auto', p: '3px' }}>
+                <Table
+                  data={landing.ilks.data}
+                  primaryKey="ilk"
+                  state={landing.ilks.filters}
+                  columns={ilksColumns}
+                  noResults={<Box>{t('no-results')}</Box>}
+                />
+              </Box>
             </Box>
           </Box>
         )}

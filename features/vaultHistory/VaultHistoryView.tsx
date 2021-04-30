@@ -84,7 +84,7 @@ export function VaultHistoryView({ id }: { id: BigNumber }) {
   const { t } = useTranslation()
 
   return (
-    <Box sx={{ gridColumn: '1/2' }}>
+    <Box sx={{ gridColumn: '1/2', zIndex: 1 }}>
       <Heading sx={{ mb: 4 }}>{t('vault-history')}</Heading>
       <WithLoadingIndicator
         {...vaultHistory}

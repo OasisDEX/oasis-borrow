@@ -1,13 +1,6 @@
 {
   "404-button": "Go to home",
-  "after-next": "After + Next",
-  "next": "Next",
   "404-message": "Sorry, page not found.",
-  "Argentina": "Argentina",
-  "Brasil": "Brasil",
-  "Mexico": "Mexico",
-  "aave": "Aave",
-  "aave-product": "Lend your Dai on Aave markets and earn on it.",
   "acceptance-check-failed": "Acceptance check failed",
   "acceptance-save-failed": "Acceptance save failed",
   "acceptance-save-in-progress": "Saving acceptance...",
@@ -19,41 +12,31 @@
   "address": "Address",
   "address-invalid": "Address not found",
   "after": "After",
+  "after-next": "After + Next",
   "all-assets": "All Assets",
   "amount": "Amount",
   "approve-allowance": "Approve Allowance",
   "approving-allowance": "Approving Allowance",
-  "apy": "APY",
   "back": "Back",
   "back-to-editing": "Back to editing",
-  "balance": "balance",
+  "balance": "Balance",
   "balance-insufficient": "Not enough DAI in your wallet",
   "balances": "Balances",
   "buy": "Buy",
-  "buy-dai": "Buy Dai",
-  "buy-with": "Buy {{token}} with {{onramp}}",
-  "change-locale": "Change locale",
   "change-your-vault": "Change your vault",
-  "changing-vault": "Changing vault!",
-  "choose-provider": "Choose a provider",
   "close": "Close",
   "coming-soon": "Coming soon",
   "completed": "Completed",
   "compound": "Compound",
-  "compound-product": "Lend your Dai on Compound markets and earn on it.",
   "confirm": "Confirm",
   "confirmed-proxy-deployment": "Proxy deployment confirmed",
   "connect-confirm": "Confirm in {{ connectionKind }}",
   "connect-email": "Connect with email",
   "connect-error": "Please authorize this website to access your Ethereum account.",
   "connect-wallet": "Connect a wallet",
-  "connect-wallet-button": "Connect wallet",
-  "connect-with": "Connect {{ connectionKind }}",
+  "connect-wallet-button": "Connect Wallet",
+  "connect-with": "{{ connectionKind }}",
   "connected-with": "Connected with {{ connectionKind }}",
-  "create-vault": "Create Vault",
-  "creating-vault": "Creating Vault",
-  "changing-vault": "Changing Vault",
-  "go-to-vault": "Go to Vault #{{id}}",
   "contact": {
     "description": "Send us feedback, questions, or suggestions or below.",
     "label": {
@@ -74,12 +57,14 @@
   "copied": "Copied",
   "copy-address": "Copy address",
   "country": "Country",
-  "create-dai-savings": "Create Dai Savings",
+  "configure-your-vault":"Configure your vault",
   "create-proxy": "Create a proxy",
   "create-proxy-btn": "Create Proxy",
-  "setup-proxy": "Setup Proxy",
   "create-proxy-desc": "In order to use Savings and other features, you will need a wallet proxy.",
+  "create-vault": "Create Vault",
+  "create-your-vault": "Create your vault",
   "creating-proxy": "Creating Proxy",
+  "creating-vault": "Creating Vault",
   "currency": "Currency",
   "custom": "Custom",
   "dai-being-generated": "Dai being generated",
@@ -125,9 +110,13 @@
   "dsrDeposit": "DSR Deposited",
   "dsrWithdrawal": "DSR Withdrew",
   "earning": "Earning",
+  "edit-token-allowance": "Edit {{token}} allowance",
+  "edit-vault-details": "Edit Vault details",
   "email": "Email",
   "email-invalid": "Provided email is invalid",
   "email-required": "Email address is required",
+  "enter-allowance-amount": "Enter allowance amount",
+  "enter-an-amount": "Enter an amount",
   "erc20-approve-description-pending": "Unlocking transfer of {{ token }}",
   "erc20-approve-description-recent": "Unlocked transfer of {{ token }}",
   "erc20-approve-description-recent-failed": "Failed to unlock transfer of {{ token }}",
@@ -148,6 +137,13 @@
   "eth-send-description-recent-failed": "Failed to send {{ amount }} ETH",
   "eth-send-notification": "Sending ETH",
   "eth-send-notification-past": "Sent ETH",
+  "event": {
+    "activity": "Activity",
+    "deposit": "Deposited",
+    "time": "Time",
+    "type": "Type",
+    "vault-opened": "Vault Opened"
+  },
   "exchange-rate": "Exchange rate",
   "failed": "Failed",
   "featured": {
@@ -155,10 +151,30 @@
     "most-popular": "most popular",
     "new": "new"
   },
+  "filters": {
+    "lp-token": "LP tokens",
+    "stablecoin": "Stablecoins"
+  },
   "gas-estimation-error": "Error",
   "get-dai": "Get Dai",
   "get-started": "Get Started",
+  "go-to-vault": "Go to Vault #{{id}}",
   "here": "here",
+  "history": {
+    "auction_finished_v2": "Auction <0>#{{auctionId}}</0> finished, <0>{{remainingCollateral}} {{token}}</0> remained",
+    "auction_started": "Auction started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} DAI</0>",
+    "auction_started_v2": "Auction <0>#{{auctionId}}</0> started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} DAI</0>",
+    "deposit": "Deposited <0>{{collateralAmount}} {{token}}</0> into Vault",
+    "generate": "Generated <0>{{daiAmount}}</0> DAI from Vault",
+    "migrate": "Vault migrated",
+    "move_dest": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> DAI debt to the vault",
+    "move_src": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> DAI debt from the vault",
+    "open": "Opened a new Vault with id <0>#{{cdpId}}</0>",
+    "payback": "Payback <0>{{daiAmount}}</0> DAI to Vault",
+    "transfer": "Vault given to <0>{{transferTo}}</0> by <0>{{transferFrom}}</0>",
+    "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault"
+  },
+  "invalid-allowance-amount": "Invalid allowance amount",
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",
   "jwt-auth-rejected": "Signature rejected",
@@ -167,24 +183,22 @@
   "keyWithCount_plural": "{{count}} items",
   "landing": {
     "faq": {
-      "title": "Borrow FAQ's",
       "entries": [
         {
-          "question": "What assets can I use as collateral?",
-          "answer": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora."
+          "answer": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora.",
+          "question": "What assets can I use as collateral?"
         },
         {
-          "question": "How much does it cost?",
-          "answer": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora."
+          "answer": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora.",
+          "question": "How much does it cost?"
         },
         {
-          "question": "How much does it cost?",
-          "answer": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora."
+          "answer": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora.",
+          "question": "How much does it cost?"
         }
-      ]
+      ],
+      "title": "Borrow FAQ's"
     },
-    "link-to-full-faq": "Full list of Oasis Vault FAQs",
-    "glossary-of-terms": "Glossary of terms",
     "footer": {
       "blog": "Blog",
       "contact": "Contact",
@@ -198,24 +212,13 @@
       "terms": "Terms",
       "trade": "Trade"
     },
+    "glossary-of-terms": "Glossary of terms",
     "hero": {
-      "headline": "Borrow against your collateral and generate DAI",
+      "headline": "Generate Dai using crypto as your collateral",
       "subheader": "Open a Maker Vault, deposit your collateral, and generate DAI against it.<0/> Connect a wallet to start."
-    }
+    },
+    "link-to-full-faq": "Full list of Oasis Vault FAQs"
   },
-  "latamex-badge-fees": "Fees 1%-1.7%",
-  "latamex-calc-buy": "I want to buy",
-  "latamex-calc-spend": "I want to spend",
-  "latamex-desc": "The easiest and fastest way to buy Dai in Argentina, Brazil and Mexico.",
-  "latamex-fees-included": "{{ fees }} DAI fees included",
-  "latamex-promotion": "The first 500 users to buy DAI through Latamex will receive $10 worth of ETH a month towards transaction fees, for 3 months.",
-  "latamex-promotion-headline": "LatAM500 offer",
-  "latamex-purchase-description-pending": "Buying {{ order }} with Latamex",
-  "latamex-purchase-description-recent": "Purchased {{ order }} with Latamex",
-  "latamex-purchase-description-recent-failed": "Failed to purchase {{ order }} with Latamex",
-  "latamex-purchase-notification": "Latamex purchase",
-  "latamex-purchase-notification-past": "Latamex purchased",
-  "latamex-summary": "The easiest and fastest way to buy Dai in Argentina, Brazil and Mexico with your local currency",
   "ledger-cancel": "Select another wallet",
   "ledger-error": "There was an error, please reset",
   "ledger-legacy": "Ledger Legacy",
@@ -224,30 +227,21 @@
   "ledger-select-title": "Select Ledger Live or Legacy",
   "manage-vault": {
     "action-option": "{{action}} {{token}} with this transaction",
-    "or": "OR",
-    "title": "Manage Vault",
     "dai-available": "DAI available",
-    "min-collat-ratio": "Min. collateral ratio",
-    "stability-fee": "Stability Fee",
+    "dust-limit": "Dust Limit",
     "liquidation-fee": "Liquidation Fee",
-    "dust-limit": "Dust Limit"
+    "min-collat-ratio": "Min. collateral ratio",
+    "or": "OR",
+    "stability-fee": "Stability Fee",
+    "title": "Manage Vault"
   },
   "max": "Max",
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",
-  "miner-fee": "Miner fee",
-  "moonpay-badge-country": "US & Europe",
-  "moonpay-badge-fees": "Fees 1%-4.5%",
-  "moonpay-desc": "The new standard for fiat to crypto.",
-  "moonpay-purchase-description-pending": "Buying {{ order }} with Moonpay",
-  "moonpay-purchase-description-recent": "Purchased {{ order }} with Moonpay",
-  "moonpay-purchase-description-recent-failed": "Failed to purchase {{ order }} with Moonpay",
-  "moonpay-purchase-notification": "Moonpay purchase",
-  "moonpay-purchase-notification-past": "Moonpay purchased",
   "moving-into-vault": "Moving into Vault",
   "moving-out-vault": "Moving out of Vault",
+  "new-to-ethereum": "New to Ethereum? ",
+  "next": "Next",
   "no-activity": "No activity to show",
-  "no-camera": "No Camera Available",
-  "notice-app-homescreen": "Add Oasis.app to my home screen",
   "notice-privacy": "By using our site you agree to our <0>Cookie Policy</0>.",
   "notification-status-complete": "Complete",
   "notification-status-completed": "Complete",
@@ -261,6 +255,7 @@
   "of": "of",
   "one-of-some": "{{one}} of {{some}}",
   "onramp-leave-message": "By clicking buy, you will leave Oasis and be redirected to a third party website where you will complete the buy process.",
+  "open-new-vault": "Open new Vault",
   "open-vault": "Open Vault",
   "or": "or",
   "paste": "Paste",
@@ -313,40 +308,38 @@
       "title": "FAQs"
     }
   },
-  "set-allowance-for": "Set Allowance fro {{token}}",
+  "set-allowance-for": "Set Allowance for {{token}}",
+  "set-token-allowance": "Set {{token}} allowance",
   "setting-allowance-for": "Setting Allowance for {{token}}",
+  "setup-proxy": "Setup Proxy",
   "setup-wallet": "Setup your wallet",
   "show-more": "Show more",
   "spots-remaining": "{{ spots }} spots remaining",
   "start-saving": "Start Saving",
-  "filters": {
-    "lp-token": "LP tokens",
-    "stablecoin": "Stablecoins"
-  },
   "system": {
     "asset": "Asset",
-    "available-to-withdraw": "Available to withdraw",
+    "available-to-withdraw": "Available to Withdraw",
     "available-to-generate": "Available to Generate",
-    "coll-locked": "Coll. locked",
+    "coll-locked": "Coll. Locked",
     "coll-ratio": "Coll. Ratio",
     "collateral": "Collateral",
-    "collateral-locked": "Collateral locked",
+    "collateral-locked": "Collateral Locked",
     "collateral-ratio": "Collateral Ratio",
     "collateralization-ratio": "Collateralization Ratio",
     "dai": "DAI",
     "dai-available": "DAI Available",
-    "dai-debt": "DAI debt",
+    "dai-debt": "DAI Debt",
     "deposited": "Deposited",
-    "in-my-wallet": "In my wallet",
-    "in-your-wallet": "In Your wallet",
+    "in-my-wallet": "In My Wallet",
+    "in-your-wallet": "In Your Wallet",
     "liquidation-penalty": "Liquidation Penalty",
     "liquidation-price": "Liquidation Price",
     "liquidation-ratio": "Liquidation Ratio",
-    "min-coll-ratio": "Min coll. ratio",
-    "stability-fee": "Stability fee",
+    "min-coll-ratio": "Min Coll. Ratio",
+    "stability-fee": "Stability Fee",
     "type": "Type",
-    "vault-id": "Vault ID",
-    "vault-dai-debt": "Vault DAI Debt"
+    "vault-dai-debt": "Vault DAI Debt",
+    "vault-id": "Vault ID"
   },
   "to-the-following-address": "to the following address",
   "token-balance": "{{token}} balance",
@@ -375,10 +368,10 @@
     "current-price": "Current {{token}}/USD Price in {{time}}",
     "header": "{{ilk}} Vault #{{id}}",
     "next-price": "Next price in {{count}} minute",
-    "next-price_plural": "Next price in {{count}} minutes",
     "next-price-any-time": "Next price in <2 minutes",
-    "vault-details": "Vault Details",
-    "open-vault": "Open {{ilk}} Vault"
+    "next-price_plural": "Next price in {{count}} minutes",
+    "open-vault": "Open {{ilk}} Vault",
+    "vault-details": "Vault Details"
   },
   "vault-actions": {
     "deposit": "Deposit",
@@ -387,6 +380,7 @@
     "withdraw": "Withdraw"
   },
   "vault-changed": "Vault changed!",
+  "vault-history": "Vault History",
   "vaults": {
     "after": "After ${{price}}",
     "current-price": "Current {{token}}/USD price",
@@ -395,28 +389,27 @@
   },
   "ilks-list": {
     "headers": {
-      "noVaults": "Select a collateral type below to create your first Maker Vault,<0/> and generate DAI",
+      "noVaults": "Select a collateral type to create a Maker Vault and generate DAI",
       "withVaults": "Open a new Maker Vault.<0/> Generate DAI"
     }
   },
   "vaults-overview": {
+    "banner-content": "You can view your vaults",
+    "banner-header": "You are viewing {{address}} Vaults overview",
     "headers": {
-      "connected-owner-withVaults": "Your Maker Vaults overview",
       "connected-owner-noVaults": "You have no open Vaults",
-      "connected-viewer-withVaults": "Maker Vaults overview of {{address}}",
+      "connected-owner-withVaults": "Your Maker Vaults overview",
       "connected-viewer-noVaults": "{{address}} currently has no Maker Vaults",
-      "notConnected-noVaults": "{{address}} currently has no Maker Vaults.<0/> Is this yours? Connect your wallet and open a vault.",
-      "notConnected-withVaults": "Maker Vaults overview of {{address}}.<0/> Is this yours? Connect your wallet."
+      "notConnected-noVaults": "{{address}} currently has no Maker Vaults.<0/> Connect your wallet and open a vault.",
+      "notConnected-withVaults": "Maker Vaults overview of {{address}}.<0/> Connect your wallet."
     },
-    "subheader-no-vaults": "Open a Maker Vault, deposit your collateral, and generate DAI against it.",
     "number-of-vaults": "No. of Vaults",
+    "subheader-no-vaults": "Open a Maker Vault, deposit your collateral, and generate DAI against it.",
     "total-debt": "Total debt",
     "total-locked": "Total locked",
     "vaults": "Vaults",
     "vaults-at-risk": "Vaults at risk",
-    "your-vaults": "Your Vaults",
-    "banner-header": "You are viewing {{address}} Vaults overview",
-    "banner-content": "You can view your vaults"
+    "your-vaults": "Your Vaults"
   },
   "vault-banners": {
     "ownership": {
@@ -427,7 +420,7 @@
     "liquidating": {
       "header1": "Your {{ collateral }} Maker Vault {{ id }} is about to get liquidated.",
       "header2": "{{ collateral }} Maker Vault {{ id }} is about to get liquidated.",
-      "subheader1": "The next price will cause a liquidation on this Maker Vault. You can still save your Maker Vault from liquidation by adding collateral or pay back DAI.",
+      "subheader1": "The next price update of {{ collateral }} will cause a liquidation on this Maker Vault unless collateral is added, or DAI is paid back.",
       "subheader2": "Is this your Maker Vault? Please connect with address: {{ address }} and save your Maker Vault from liquidation."
     },
     "liquidated": {
@@ -438,31 +431,9 @@
       "subheader3": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
     }
   },
-  "history": {
-    "open": "Opened a new Vault with id <0>#{{cdpId}}</0>",
-    "deposit": "Deposited <0>{{collateralAmount}} {{token}}</0> into Vault",
-    "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault",
-    "generate": "Generated <0>{{daiAmount}}</0> DAI from Vault",
-    "payback": "Payback <0>{{daiAmount}}</0> DAI to Vault",
-    "transfer": "Vault given to <0>{{transferTo}}</0> by <0>{{transferFrom}}</0>",
-    "migrate": "Vault migrated",
-    "auction_started": "Auction started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} DAI</0>",
-    "auction_started_v2": "Auction <0>#{{auctionId}}</0> started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} DAI</0>",
-    "auction_finished_v2": "Auction <0>#{{auctionId}}</0> finished, <0>{{remainingCollateral}} {{token}}</0> remained",
-    "move_dest": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> DAI debt to the vault",
-    "move_src": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> DAI debt from the vault"
-  },
-  "event": {
-    "type": "Type",
-    "activity": "Activity",
-    "time": "Time",
-    "vault-opened": "Vault Opened",
-    "deposit": "Deposited"
-  },
-  "vault-history": "Vault History",
   "view": "View",
   "view-more": "View more",
-  "view-on-etherscan": "View on etherscan",
+  "view-on-etherscan": "View on Etherscan",
   "waiting-approval": "Waiting for approval",
   "waiting-confirmation": "Waiting for transaction confirmation",
   "waiting-proxy-deployment": "Proxy deployment confirming",
@@ -470,13 +441,7 @@
   "withdrawn": "Withdrawn",
   "you-are-sending": "You are sending",
   "your-vaults": "Your Vaults",
-  "open-new-vault": "Open new Vault",
   "no-results": "No results",
-  "new-to-ethereum": "New to Ethereum? ",
   "learn-about-wallets": "Learn more about wallets",
-  "learn-more-link": "https://ethereum.org/en/wallets/find-wallet/",
-  "enter-an-amount": "Enter an amount",
-  "enter-allowance-amount": "Enter allowance amount",
-  "set-token-allowance": "Set {{token}} allowance",
-  "invalid-allowance-amount": "Invalid allowance amount"
+  "learn-more-link": "https://ethereum.org/en/wallets/find-wallet/"
 }

@@ -2,6 +2,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservableWithError } from 'helpers/observableHook'
+import { zero } from 'helpers/zero'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
@@ -23,7 +24,7 @@ function CollateralPricesRow({
       <Text>{isStaticPrice ? `$${formatAmount(nextPrice, 'USD')}` : '--'}</Text>
       <Text>
         {percentageChange
-          ? `${percentageChange.isPositive() ? '+' : ''}${formatPercent(percentageChange, {
+          ? `${percentageChange.gt(zero) ? '+' : ''}${formatPercent(percentageChange, {
               precision: 4,
             })}`
           : '--'}

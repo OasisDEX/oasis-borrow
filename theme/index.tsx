@@ -858,6 +858,15 @@ const customLandingIcons = {
     ),
     viewBox: '0 0 6 24',
   },
+  announcement: {
+    path: (
+      <path
+        d="M21.5725 11.1185C21.5725 10.4553 21.5655 10.4132 21.5717 9.42297V5.78125C21.5717 4.65943 20.667 3.75 19.551 3.75C17.4991 5.52735 15.0665 7.81251 10.9629 7.81251H5.91105C5.07403 7.81251 4.39551 8.49456 4.39551 9.33595V12.3828C4.39551 13.2242 5.07403 13.9063 5.91105 13.9063H7.27704C6.68528 15.9581 7.35531 17.5999 7.87107 19.2205C7.92481 19.3894 8.03535 19.5345 8.18434 19.6293C8.84045 20.0468 10.3426 20.1262 11.1451 19.7928C11.6518 19.5823 11.7753 18.9224 11.3826 18.538C10.7983 17.9659 10.4311 17.3665 10.7576 16.6064C10.7833 16.5468 10.7937 16.4817 10.7879 16.417C10.7822 16.3523 10.7604 16.29 10.7246 16.236C10.2097 15.4527 10.6116 14.2648 11.625 13.9269C15.3328 14.1566 17.6121 16.2892 19.551 17.9688C20.667 17.9688 21.5717 17.0593 21.5717 15.9375V12.2958C21.5725 11.1185 21.5717 12.2958 21.5725 11.5346V11.1185ZM19.551 15.2982C17.8268 13.8706 15.6032 12.3484 12.4784 11.9662V9.75254C15.6032 9.37035 17.8268 7.84818 19.551 6.42059V15.2982Z"
+        fill="#25273D"
+      />
+    ),
+    viewBox: '0 0 25 25',
+  },
 }
 
 const oasisBaseTheme = {
@@ -878,6 +887,7 @@ const oasisBaseTheme = {
     border: '#DDDEE6',
 
     text: {
+      focused: '#272940',
       muted: '#708390',
       off: '#686986',
       subtitle: '#787A9B',
@@ -1032,7 +1042,9 @@ const oasisBaseTheme = {
     medium: '0 2px 8px rgba(0, 0, 0, 0.17)',
     light: '0 2px 8px rgba(0, 0, 0, 0.13)',
     surface: '0px 0px 8px rgba(0, 0, 0, 0.2)',
+    surface_hovered: '0px 8px 8px rgba(0, 0, 0, 0.2)',
     table: '0px 0px 2px rgba(0, 0, 0, 0.2)',
+    table_hovered: '0px 0px 10px rgba(0, 0, 0, 0.15)',
     banner: '0px 0px 10px rgba(0, 0, 0, 0.1)',
   },
   gradients: {
@@ -1127,7 +1139,8 @@ const oasisBaseTheme = {
       borderRadius: 'round',
       lineHeight: 'buttons',
       color: 'text.contrast',
-      '&:hover': {
+      transition: 'background 0.2s ease-in',
+      '&:hover, &:focus-visible': {
         bg: 'primaryEmphasis',
       },
       '&:disabled': {
@@ -1148,6 +1161,14 @@ const oasisBaseTheme = {
       px: 4,
       py: 2,
     },
+    outlineSquare: {
+      variant: 'text.paragraph2',
+      background: 'none',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: 'light',
+      borderRadius: 'mediumLarge',
+    },
     secondary: {
       variant: 'text.paragraph3',
       whiteSpace: 'nowrap',
@@ -1167,6 +1188,12 @@ const oasisBaseTheme = {
       borderWidth: '1px',
       borderStyle: 'solid',
       borderColor: 'light',
+      '&:focus': {
+        outline: 'none',
+      },
+      '&:focus-visible': {
+        boxShadow: 'surface',
+      },
     },
     expandable: {
       variant: 'text.header3',
@@ -1175,13 +1202,12 @@ const oasisBaseTheme = {
       textAlign: 'left',
       cursor: 'pointer',
       p: 0,
-      py: 3,
+      py: 4,
       ':hover': {
         opacity: 0.7,
       },
       ':focus': {
         outline: 'none',
-        textDecoration: 'underline',
       },
     },
     tableHeader: {
@@ -1206,6 +1232,7 @@ const oasisBaseTheme = {
       boxSizing: 'border-box',
       border: '1px solid transparent',
       px: 4,
+      transition: 'border-color ease-in 0.3s, color ease-in 0.3s',
       font: '',
       ':focus': {
         outline: 'none',
@@ -1221,44 +1248,49 @@ const oasisBaseTheme = {
     textual: {
       variant: 'text.paragraph3',
       fontWeight: 'semiBold',
-      background: 'none',
       color: 'link',
       cursor: 'pointer',
+      background: 'none',
+      transition: 'opacity ease-in 0.2s',
+      '&:hover': {
+        opacity: 0.7,
+      },
     },
   },
   links: {
+    primary: {
+      variant: 'buttons.primary',
+      display: 'inline-block',
+      bg: 'primary',
+      '&, &:visited': {
+        textDecoration: 'none',
+      },
+      '&:focus': {
+        outline: 'none',
+      },
+      '&:focus-visible': {
+        textDecoration: 'underline',
+      },
+    },
     nav: {
       variant: 'text.paragraph3',
       cursor: 'pointer',
       display: 'inline-block',
       fontWeight: 'semiBold',
+      transition: 'color 0.2s',
       '&, &:visited': {
         textDecoration: 'none',
       },
       '&:focus': {
         outline: 'none',
       },
-      '&:focus-visible': {
-        textDecoration: 'underline',
+      '&:hover, &:focus-visible': {
+        color: 'lavender',
       },
     },
     outline: {
       variant: 'buttons.outline',
       display: 'inline-block',
-      '&, &:visited': {
-        textDecoration: 'none',
-      },
-      '&:focus': {
-        outline: 'none',
-      },
-      '&:focus-visible': {
-        textDecoration: 'underline',
-      },
-    },
-    primary: {
-      variant: 'buttons.primary',
-      display: 'inline-block',
-      bg: 'primary',
       '&, &:visited': {
         textDecoration: 'none',
       },

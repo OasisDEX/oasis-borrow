@@ -36,18 +36,19 @@ function OpenVaultWarnings({ warningMessages }: OpenVaultState) {
   )
 }
 
-function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage }: OpenVaultState) {
+function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage, token }: OpenVaultState) {
+  const { t } = useTranslation()
   return (
     <Grid>
       <Grid columns="2fr 1fr">
         <Text>
           {isEditingStage
-            ? 'Configure your Vault'
+            ? t('configure-your-vault')
             : isProxyStage
-            ? 'Create Proxy'
+            ? t('create-proxy')
             : isAllowanceStage
-            ? 'Set Allowance'
-            : 'Create your Vault'}
+            ? t('set-token-allownace', { token: token.toUpperCase() })
+            : t('create-your-vault')}
         </Text>
       </Grid>
     </Grid>
@@ -55,30 +56,10 @@ function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage }: Open
 }
 
 function OpenVaultForm(props: OpenVaultState) {
-  const {
-    toggleIlkDetails,
-    showIlkDetails,
-    isEditingStage,
-    isProxyStage,
-    isAllowanceStage,
-    isOpenStage,
-  } = props
-  function handleMouseEnter(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    e.preventDefault()
-    if (isEditingStage && !showIlkDetails) {
-      toggleIlkDetails!()
-    }
-  }
-
-  function handleMouseLeave(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    e.preventDefault()
-    if (isEditingStage && showIlkDetails) {
-      toggleIlkDetails!()
-    }
-  }
+  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
 
   return (
-    <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} sx={{ order: [1, 2] }}>
+    <Box>
       <Card sx={{ border: ['none', '1px solid'], borderColor: ['none', 'light'] }}>
         <Grid>
           <OpenVaultTitle {...props} />
@@ -125,9 +106,13 @@ export function OpenVaultContainer(props: OpenVaultState) {
   return (
     <Grid columns={['1fr', '2fr 1fr']} gap={4}>
       <OpenVaultHeading {...props} sx={{ display: ['block', 'none'] }} />
-      <OpenVaultDetails {...props} />
+      <Box sx={{ order: [3, 1] }}>
+        <OpenVaultDetails {...props} />
+      </Box>
       <Divider sx={{ display: ['block', 'none'], order: [2, 0] }} />
-      <OpenVaultForm {...props} />
+      <Box sx={{ order: [1, 2] }}>
+        <OpenVaultForm {...props} />
+      </Box>
     </Grid>
   )
 }

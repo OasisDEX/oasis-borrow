@@ -17,6 +17,7 @@ import {
 } from './openVaultCalculations'
 import {
   applyOpenVaultConditions,
+  applyOpenVaultStageCategorisation,
   defaultOpenVaultConditions,
   OpenVaultConditions,
 } from './openVaultConditions'
@@ -71,7 +72,8 @@ function apply(state: OpenVaultState, change: OpenVaultChange) {
   const s6 = applyOpenVaultEnvironment(change, s5)
   const s7 = applyOpenVaultInjectedOverride(change, s6)
   const s8 = applyOpenVaultCalculations(s7)
-  return applyOpenVaultConditions(s8)
+  const s9 = applyOpenVaultStageCategorisation(s8)
+  return applyOpenVaultConditions(s9)
 }
 
 export type OpenVaultStage =
@@ -98,7 +100,6 @@ export interface MutableOpenVaultState {
   depositAmountUSD?: BigNumber
   generateAmount?: BigNumber
   showGenerateOption: boolean
-  showIlkDetails: boolean
   selectedAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
   allowanceAmount?: BigNumber
   id?: BigNumber
@@ -106,9 +107,8 @@ export interface MutableOpenVaultState {
 
 interface OpenVaultFunctions {
   progress?: () => void
-  reset?: () => void
+  regress?: () => void
   toggleGenerateOption?: () => void
-  toggleIlkDetails?: () => void
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
@@ -168,7 +168,6 @@ function addTransitions(
       updateGenerate: (generateAmount?: BigNumber) => change({ kind: 'generate', generateAmount }),
       updateGenerateMax: () => change({ kind: 'generateMax' }),
       toggleGenerateOption: () => change({ kind: 'toggleGenerateOption' }),
-      toggleIlkDetails: () => change({ kind: 'toggleIlkDetails' }),
       progress: () => change({ kind: 'progressEditing' }),
     }
   }
@@ -177,6 +176,7 @@ function addTransitions(
     return {
       ...state,
       progress: () => createProxy(txHelpers, proxyAddress$, change, state),
+      regress: () => change({ kind: 'backToEditing' }),
     }
   }
 
@@ -187,7 +187,6 @@ function addTransitions(
         change({
           kind: 'progressProxy',
         }),
-      reset: () => change({ kind: 'backToEditing' }),
     }
   }
 
@@ -209,7 +208,7 @@ function addTransitions(
           kind: 'allowanceCustom',
         }),
       progress: () => setAllowance(txHelpers, change, state),
-      reset: () => change({ kind: 'backToEditing' }),
+      regress: () => change({ kind: 'regressAllowance' }),
     }
   }
 
@@ -227,7 +226,7 @@ function addTransitions(
     return {
       ...state,
       progress: () => openVault(txHelpers, change, state),
-      reset: () => change({ kind: 'backToEditing' }),
+      regress: () => change({ kind: 'backToEditing' }),
     }
   }
 
@@ -246,7 +245,6 @@ function addTransitions(
 
 export const defaultMutableOpenVaultState: MutableOpenVaultState = {
   stage: 'editing' as OpenVaultStage,
-  showIlkDetails: false,
   showGenerateOption: false,
   selectedAllowanceRadio: 'unlimited' as 'unlimited',
   allowanceAmount: maxUint256,

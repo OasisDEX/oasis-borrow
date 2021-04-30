@@ -18,6 +18,7 @@ import {
 } from './manageVaultCalculations'
 import {
   applyManageVaultConditions,
+  applyManageVaultStageCategorisation,
   defaultManageVaultConditions,
   ManageVaultConditions,
 } from './manageVaultConditions'
@@ -76,7 +77,8 @@ function apply(state: ManageVaultState, change: ManageVaultChange) {
   const s6 = applyManageVaultEnvironment(change, s5)
   const s7 = applyManageVaultInjectedOverride(change, s6)
   const s8 = applyManageVaultCalculations(s7)
-  return applyManageVaultConditions(s8)
+  const s9 = applyManageVaultStageCategorisation(s8)
+  return applyManageVaultConditions(s9)
 }
 
 export type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
@@ -109,7 +111,6 @@ export interface MutableManageVaultState {
   originalEditingStage: ManageVaultEditingStage
   showDepositAndGenerateOption: boolean
   showPaybackAndWithdrawOption: boolean
-  showIlkDetails: boolean
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
   withdrawAmount?: BigNumber
@@ -136,9 +137,8 @@ export interface ManageVaultEnvironment {
 
 interface ManageVaultFunctions {
   progress?: () => void
-  reset?: () => void
+  regress?: () => void
   toggle?: () => void
-  toggleIlkDetails?: () => void
   toggleDepositAndGenerateOption?: () => void
   togglePaybackAndWithdrawOption?: () => void
   updateDeposit?: (depositAmount?: BigNumber) => void
@@ -212,7 +212,6 @@ function addTransitions(
         change({
           kind: 'togglePaybackAndWithdrawOption',
         }),
-      toggleIlkDetails: () => change({ kind: 'toggleIlkDetails' }),
       toggle: () => change({ kind: 'toggleEditing' }),
       progress: () => change({ kind: 'progressEditing' }),
     }
@@ -222,6 +221,7 @@ function addTransitions(
     return {
       ...state,
       progress: () => createProxy(txHelpers$, proxyAddress$, change, state),
+      regress: () => change({ kind: 'backToEditing' }),
     }
   }
 
@@ -229,7 +229,6 @@ function addTransitions(
     return {
       ...state,
       progress: () => change({ kind: 'progressProxy' }),
-      reset: () => change({ kind: 'backToEditing' }),
     }
   }
 
@@ -254,7 +253,7 @@ function addTransitions(
           kind: 'collateralAllowanceReset',
         }),
       progress: () => setCollateralAllowance(txHelpers$, change, state),
-      reset: () => change({ kind: 'backToEditing' }),
+      regress: () => change({ kind: 'regressCollateralAllowance' }),
     }
   }
 
@@ -280,7 +279,7 @@ function addTransitions(
           kind: 'daiAllowanceReset',
         }),
       progress: () => setDaiAllowance(txHelpers$, change, state),
-      reset: () => change({ kind: 'backToEditing' }),
+      regress: () => change({ kind: 'regressDaiAllowance' }),
     }
   }
 
@@ -295,7 +294,7 @@ function addTransitions(
     return {
       ...state,
       progress: () => progressManage(txHelpers$, state, change),
-      reset: () => change({ kind: 'backToEditing' }),
+      regress: () => change({ kind: 'backToEditing' }),
     }
   }
 
@@ -312,7 +311,6 @@ function addTransitions(
 export const defaultMutableManageVaultState: MutableManageVaultState = {
   stage: 'collateralEditing' as ManageVaultStage,
   originalEditingStage: 'collateralEditing' as ManageVaultEditingStage,
-  showIlkDetails: false,
   showDepositAndGenerateOption: false,
   showPaybackAndWithdrawOption: false,
   collateralAllowanceAmount: maxUint256,
