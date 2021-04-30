@@ -64,12 +64,3 @@ jobs:
         cluster: ${{ env.CLUSTER_NAME }}
         wait-for-service-stability: true
 
-    # Invalidate Cloudfront (this action)
-    - name: Invalidate Cloudfront
-      uses: awact/cloudfront-action@master
-      env:
-        SOURCE_PATH: './borrow'
-        AWS_REGION: 'us-east-1'
-        AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
-        DISTRIBUTION_ID: ${{ secrets.PROD_CF_DISTRIBUTION_ID }}
