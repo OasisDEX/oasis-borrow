@@ -17,18 +17,19 @@ import { OpenVaultIlkDetails } from './OpenVaultIlkDetails'
 import { OpenVaultProxy } from './OpenVaultProxy'
 import { OpenVaultWarnings } from './OpenVaultWarnings'
 
-function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage }: OpenVaultState) {
+function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage, token }: OpenVaultState) {
+  const { t } = useTranslation()
   return (
     <Grid>
       <Grid columns="2fr 1fr">
         <Text>
           {isEditingStage
-            ? 'Configure your Vault'
+            ? t('configure-your-vault')
             : isProxyStage
-            ? 'Create Proxy'
+            ? t('create-proxy')
             : isAllowanceStage
-            ? 'Set Allowance'
-            : 'Create your Vault'}
+            ? t('set-token-allownace', { token: token.toUpperCase() })
+            : t('create-your-vault')}
         </Text>
       </Grid>
     </Grid>

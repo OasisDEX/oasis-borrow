@@ -1,3 +1,4 @@
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Grid, Text } from 'theme-ui'
 
@@ -6,6 +7,7 @@ import { ManageVaultState } from './manageVault'
 function ManageVaultEditingToggle({ stage, toggle }: ManageVaultState) {
   const collateralVariant = stage === 'collateralEditing' ? 'outline' : 'filter'
   const daiVariant = stage === 'daiEditing' ? 'outline' : 'filter'
+  const { t } = useTranslation()
 
   function handleToggle(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault()
@@ -16,10 +18,10 @@ function ManageVaultEditingToggle({ stage, toggle }: ManageVaultState) {
     <Grid sx={{ justifyContent: 'center' }}>
       <Flex onClick={handleToggle}>
         <Button variant={collateralVariant} sx={{ py: 1 }}>
-          Collateral
+          {t('system.collateral')}
         </Button>
         <Button variant={daiVariant} sx={{ py: 1 }}>
-          Dai
+          {t('system.dai')}
         </Button>
       </Flex>
     </Grid>
@@ -27,6 +29,7 @@ function ManageVaultEditingToggle({ stage, toggle }: ManageVaultState) {
 }
 
 export function ManageVaultFormHeader(props: ManageVaultState) {
+  const { t } = useTranslation()
   const { isEditingStage, isProxyStage, isCollateralAllowanceStage, isDaiAllowanceStage } = props
 
   return (
@@ -36,11 +39,11 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
       ) : (
         <Text>
           {isProxyStage
-            ? 'Create Proxy'
+            ? t('create-proxy')
             : isCollateralAllowanceStage
-            ? `Set ${props.vault.token} Allowance`
+            ? t('set-token-allownace', { token: props.vault.token.toUpperCase() })
             : isDaiAllowanceStage
-            ? `Set DAI Allowance`
+            ? t('set-token-allownace', 'DAI')
             : null}
         </Text>
       )}
