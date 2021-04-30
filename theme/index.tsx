@@ -1149,6 +1149,9 @@ const oasisBaseTheme = {
         bg: 'primaryAlt',
         pointerEvents: 'none',
       },
+      '&:focus': {
+        outline: 'none',
+      },
     },
     outline: {
       variant: 'text.paragraph2',
@@ -1162,6 +1165,9 @@ const oasisBaseTheme = {
       fontWeight: 'semiBold',
       px: 4,
       py: 2,
+      '&:focus': {
+        outline: 'none',
+      },
     },
     outlineSquare: {
       variant: 'text.paragraph2',
@@ -1170,6 +1176,9 @@ const oasisBaseTheme = {
       borderStyle: 'solid',
       borderColor: 'light',
       borderRadius: 'mediumLarge',
+      '&:focus': {
+        outline: 'none',
+      },
     },
     secondary: {
       variant: 'text.paragraph3',
@@ -1181,6 +1190,9 @@ const oasisBaseTheme = {
       borderRadius: 'round',
       px: 4,
       py: 2,
+      '&:focus': {
+        outline: 'none',
+      },
     },
     square: {
       variant: 'text.paragraph2',
@@ -1254,8 +1266,11 @@ const oasisBaseTheme = {
       cursor: 'pointer',
       background: 'none',
       transition: 'opacity ease-in 0.2s',
-      '&:hover': {
+      '&:hover, &:focus-visible': {
         opacity: 0.7,
+      },
+      '&:focus': {
+        outline: 'none',
       },
     },
   },
