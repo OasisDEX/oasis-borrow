@@ -14,6 +14,7 @@ import { OpenVaultDetails } from './OpenVaultDetails'
 import { OpenVaultEditing } from './OpenVaultEditing'
 import { OpenVaultIlkDetails } from './OpenVaultIlkDetails'
 import { OpenVaultProxy } from './OpenVaultProxy'
+import { OpenVaultWarnings } from './OpenVaultWarnings'
 
 function OpenVaultErrors({ errorMessages }: OpenVaultState) {
   const errorString = errorMessages.join(',\n')
@@ -21,16 +22,6 @@ function OpenVaultErrors({ errorMessages }: OpenVaultState) {
   return (
     <Card variant="danger">
       <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
-    </Card>
-  )
-}
-
-function OpenVaultWarnings({ warningMessages }: OpenVaultState) {
-  const warningString = warningMessages.join(',\n')
-  if (!warningString) return null
-  return (
-    <Card variant="warning">
-      <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>
     </Card>
   )
 }

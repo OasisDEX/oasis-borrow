@@ -70,20 +70,11 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
 }
 
 export type OpenVaultWarningMessage =
-  | 'openingEmptyVault'
-  | 'openingVaultWithCollateralOnly'
-  | 'openingVaultWithCollateralAndDebt'
-  | 'noProxyAddress'
-  | 'insufficientAllowance'
   | 'potentialGenerateAmountLessThanDebtFloor'
   | 'vaultWillBeAtRiskLevelDanger'
   | 'vaultWillBeAtRiskLevelWarning'
   | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
   | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
-  | 'depositingAllCollateralBalance'
-  | 'generatingAllDaiFromIlkDebtAvailable'
-  | 'generatingAllDaiYieldFromDepositingCollateral'
-  | 'generatingAllDaiYieldFromDepositingCollateralAtNextPrice'
 
 export function validateWarnings(state: OpenVaultState): OpenVaultState {
   const {

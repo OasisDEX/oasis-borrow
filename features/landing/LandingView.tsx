@@ -94,7 +94,7 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
           variant="secondary"
           href={`/vaults/open/${ilk}`}
         >
-          <Trans i18nKey="open-vault" />
+          <Trans i18nKey="open-vault.title" />
         </AppLink>
       </Box>
     ),
