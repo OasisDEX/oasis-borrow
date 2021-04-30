@@ -69,7 +69,7 @@ function GenerateInput({
       showMax={true}
       disabled={!accountIsController}
       maxAmount={maxGenerateAmount}
-      maxAmountLabel={'Maximum'}
+      maxAmountLabel={'Max'}
       onSetMax={updateGenerateMax}
       onChange={handleNumericInput(updateGenerate!)}
       hasError={false}
@@ -121,7 +121,7 @@ function PaybackInput({
       token={'DAI'}
       showMax={true}
       maxAmount={maxPaybackAmount}
-      maxAmountLabel={'Maximum'}
+      maxAmountLabel={'Max'}
       onSetMax={updatePaybackMax}
       onChange={handleNumericInput(updatePayback!)}
       hasError={false}
