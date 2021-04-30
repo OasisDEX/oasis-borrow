@@ -6,13 +6,13 @@ import { Card, Grid, Text } from 'theme-ui'
 import { ManageVaultState } from './manageVault'
 
 export function ManageVaultIlkDetails({
-  showIlkDetails,
+  inputAmountsEmpty,
   isEditingStage,
   ilkData: { ilkDebtAvailable, liquidationRatio, stabilityFee, liquidationPenalty, debtFloor },
 }: ManageVaultState) {
   const { t } = useTranslation()
 
-  if (!showIlkDetails || !isEditingStage) return null
+  if (inputAmountsEmpty || !isEditingStage) return null
   return (
     <Card bg="secondaryAlt" sx={{ border: 'none' }}>
       <Grid columns={'2fr 3fr'}>

@@ -100,7 +100,6 @@ export interface MutableOpenVaultState {
   depositAmountUSD?: BigNumber
   generateAmount?: BigNumber
   showGenerateOption: boolean
-  showIlkDetails: boolean
   selectedAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
   allowanceAmount?: BigNumber
   id?: BigNumber
@@ -110,7 +109,6 @@ interface OpenVaultFunctions {
   progress?: () => void
   regress?: () => void
   toggleGenerateOption?: () => void
-  toggleIlkDetails?: () => void
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
@@ -170,7 +168,6 @@ function addTransitions(
       updateGenerate: (generateAmount?: BigNumber) => change({ kind: 'generate', generateAmount }),
       updateGenerateMax: () => change({ kind: 'generateMax' }),
       toggleGenerateOption: () => change({ kind: 'toggleGenerateOption' }),
-      toggleIlkDetails: () => change({ kind: 'toggleIlkDetails' }),
       progress: () => change({ kind: 'progressEditing' }),
     }
   }
@@ -248,7 +245,6 @@ function addTransitions(
 
 export const defaultMutableOpenVaultState: MutableOpenVaultState = {
   stage: 'editing' as OpenVaultStage,
-  showIlkDetails: false,
   showGenerateOption: false,
   selectedAllowanceRadio: 'unlimited' as 'unlimited',
   allowanceAmount: maxUint256,
