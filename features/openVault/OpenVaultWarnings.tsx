@@ -14,8 +14,7 @@ export function openVaultWarningMessageTranslations({
   const { t } = useTranslation()
 
   function applyWarningMessageTranslation(message: OpenVaultWarningMessage) {
-    const translate = (key: string, args?: Dictionary<any>) =>
-      t(`manage-vault.warnings.${key}`, args)
+    const translate = (key: string, args?: Dictionary<any>) => t(`open-vault.warnings.${key}`, args)
     switch (message) {
       case 'potentialGenerateAmountLessThanDebtFloor':
         return translate('potential-generate-amount-less-than-debt-floor', {

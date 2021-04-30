@@ -78,11 +78,11 @@ export function ManageVaultErrors(props: ManageVaultState) {
   const { errorMessages } = props
   if (!errorMessages.length) return null
 
-  const warningMessagesTranslations = manageVaultErrorMessageTranslations(props)
+  const errorMessagesTranslations = manageVaultErrorMessageTranslations(props)
   return (
     <Card variant="danger">
       <Grid>
-        {warningMessagesTranslations.map((message) => (
+        {errorMessagesTranslations.map((message) => (
           <Flex>
             <Text pr={2} sx={{ fontSize: 2, color: 'onError' }}>
               •
