@@ -82,7 +82,7 @@ export function VaultActionInput({
               fontWeight: 'semiBold',
               textAlign: 'right',
               cursor: 'pointer',
-              color: 'text.subtitle',
+              color: 'text.muted',
             }}
           >
             {maxAmountLabel} {formatAmount(maxAmount, tokenSymbol)} {tokenSymbol}
