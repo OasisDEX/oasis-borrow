@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { AppSpinnerWholePage, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -138,7 +138,7 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
 
   return (
     <Grid sx={{ width: '100%', zIndex: 1 }}>
-      <WithLoadingIndicator {...openVault}>
+      <WithLoadingIndicator {...openVault} customError={<Box>{openVault.error?.message}</Box>}>
         {(openVault) => <OpenVaultContainer {...openVault} />}
       </WithLoadingIndicator>
     </Grid>

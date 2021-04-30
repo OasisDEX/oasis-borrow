@@ -7,6 +7,7 @@ import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { IlksFilterState } from 'features/ilks/ilksFilters'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { Filters } from 'features/vaultsOverview/Filters'
+import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -315,11 +316,6 @@ export function LandingView() {
     [landing?.ilks.filters],
   )
 
-  if (landingError !== undefined) {
-    console.log(landingError)
-    return <>Error while fetching data!</>
-  }
-
   return (
     <Grid
       sx={{
@@ -352,28 +348,36 @@ export function LandingView() {
         />
         {landing !== undefined && <FeaturedIlks sx={fadeInAnimation} ilks={landing.featuredIlks} />}
       </Box>
-      {landing !== undefined ? (
-        <Box sx={{ ...slideInAnimation, position: 'relative' }}>
-          <Filters
-            onSearch={onIlkSearch}
-            search={landing.ilks.filters.search}
-            onTagChange={onIlksTagChange}
-            tagFilter={landing.ilks.filters.tagFilter}
-            defaultTag="all-assets"
-          />
-          <Box sx={{ overflowX: 'auto', p: '3px' }}>
-            <Table
-              data={landing.ilks.data}
-              primaryKey="ilk"
-              state={landing.ilks.filters}
-              columns={ilksColumns}
-              noResults={<Box>{t('no-results')}</Box>}
+      <WithLoadingIndicator
+        value={landing}
+        error={landingError}
+        customLoader={
+          <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
+            <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
+          </Flex>
+        }
+      >
+        {(landing) => (
+          <Box sx={{ ...slideInAnimation, position: 'relative' }}>
+            <Filters
+              onSearch={onIlkSearch}
+              search={landing.ilks.filters.search}
+              onTagChange={onIlksTagChange}
+              tagFilter={landing.ilks.filters.tagFilter}
+              defaultTag="all-assets"
             />
+            <Box sx={{ overflowX: 'auto', p: '3px' }}>
+              <Table
+                data={landing.ilks.data}
+                primaryKey="ilk"
+                state={landing.ilks.filters}
+                columns={ilksColumns}
+                noResults={<Box>{t('no-results')}</Box>}
+              />
+            </Box>
           </Box>
-        </Box>
-      ) : (
-        <Box sx={{ height: 500 }}></Box>
-      )}
+        )}
+      </WithLoadingIndicator>
       <FAQ />
     </Grid>
   )

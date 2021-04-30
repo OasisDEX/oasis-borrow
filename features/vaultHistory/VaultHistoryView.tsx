@@ -3,7 +3,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { ColumnDef, Table } from 'components/Table'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
-import { useObservable, useObservableWithError } from 'helpers/observableHook'
+import { useObservableWithError } from 'helpers/observableHook'
 import moment from 'moment'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
@@ -86,7 +86,12 @@ export function VaultHistoryView({ id }: { id: BigNumber }) {
   return (
     <Box sx={{ gridColumn: '1/2' }}>
       <Heading sx={{ mb: 4 }}>{t('vault-history')}</Heading>
-      <WithLoadingIndicator {...vaultHistory}>
+      <WithLoadingIndicator
+        {...vaultHistory}
+        customLoader={
+          <AppSpinner sx={{ mx: 'auto', display: 'block' }} variant="styles.spinner.large" />
+        }
+      >
         {(vaultHistory) => (
           <Table data={vaultHistory} primaryKey="id" state={{}} columns={columns} />
         )}

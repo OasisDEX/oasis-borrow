@@ -50,18 +50,24 @@ export function AppSpinnerWholePage() {
   )
 }
 
-type WithLoadingIndicatorChildren<T> = (loadable: T) => ReactElement<any>
+// By specifing P you may also omit other types in tuple
+type OmitInTuple<T, P = undefined> = T extends [infer U, ...(infer Y)]
+  ? [...(Exclude<U, P> extends never ? [] : [Exclude<U, undefined>]), ...OmitInTuple<Y>]
+  : T
 
 interface WithLoadingIndicatorProps<T> {
   value: T | undefined
   error: any
-  children: WithLoadingIndicatorChildren<T>
+  children: (loadable: OmitInTuple<T>) => ReactElement
   variant?: string
-  customError?: (error: any) => ReactElement<any>
+  customError?: ReactElement
+  customLoader?: ReactElement
 }
 
-export function WithLoadingIndicator<T>(props: WithLoadingIndicatorProps<T>) {
-  const { value, error, children, customError } = props
+export function WithLoadingIndicator<T extends readonly [any, ...any[]] | object>(
+  props: WithLoadingIndicatorProps<T>,
+) {
+  const { value, error, children, customError, customLoader } = props
 
   if (
     value === undefined &&
@@ -69,16 +75,24 @@ export function WithLoadingIndicator<T>(props: WithLoadingIndicatorProps<T>) {
   ) {
     console.info('Error:', error)
 
-    return customError || <Box>Error</Box>
+    return (
+      customError || (
+        <Box>
+          {Array.isArray(error)
+            ? error.map((el, i) => <Box key={i}>{el?.message || 'Error'}</Box>)
+            : error?.message || 'Error'}
+        </Box>
+      )
+    )
   }
 
   if (value === undefined || (Array.isArray(value) && value.some((el) => el === undefined))) {
-    return <AppSpinnerWholePage />
+    return customLoader || <AppSpinnerWholePage />
   }
 
   if (Array.isArray(children)) {
     return children[0](value)
   }
 
-  return children(value)
+  return children(value as OmitInTuple<T>)
 }

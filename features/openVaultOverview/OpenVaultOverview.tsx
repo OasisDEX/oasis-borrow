@@ -6,9 +6,9 @@ import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { AccountDetails } from 'features/account/AccountData'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { Filters } from 'features/vaultsOverview/Filters'
-import { AppSpinnerWholePage } from 'helpers/AppSpinner'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
+import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
@@ -160,19 +160,22 @@ export function OpenVaultOverview({ vaultsOverview, accountDetails, context }: P
 
 export function OpenVaultOverviewView() {
   const { openVaultOverview$, accountData$, context$ } = useAppContext()
-  const openVaultOverview = useObservable(openVaultOverview$)
+  const openVaultOverview = useObservableWithError(openVaultOverview$)
+  const context = useObservableWithError(context$)
   const accountData = useObservable(accountData$)
-  const context = useObservable(context$)
-
-  if (openVaultOverview === undefined || context === undefined) {
-    return <AppSpinnerWholePage />
-  }
 
   return (
-    <OpenVaultOverview
-      vaultsOverview={openVaultOverview}
-      context={context}
-      accountDetails={accountData}
-    />
+    <WithLoadingIndicator
+      value={[openVaultOverview.value, context.value]}
+      error={[openVaultOverview.error, context.error]}
+    >
+      {([openVaultOverview, context]) => (
+        <OpenVaultOverview
+          vaultsOverview={openVaultOverview}
+          context={context}
+          accountDetails={accountData}
+        />
+      )}
+    </WithLoadingIndicator>
   )
 }

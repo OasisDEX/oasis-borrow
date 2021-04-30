@@ -2,8 +2,8 @@ import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { VaultsOverviewView } from 'features/vaultsOverview/VaultsOverviewView'
-import { AppSpinnerWholePage, WithLoadingIndicator } from 'helpers/AppSpinner'
-import { useObservable, useObservableWithError } from 'helpers/observableHook'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { useObservableWithError } from 'helpers/observableHook'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
@@ -16,42 +16,14 @@ function Summary({ address }: { address: string }) {
   const vaultsOverview = useObservableWithError(vaultsOverview$(address))
   const context = useObservableWithError(context$)
 
-  // if (vaultsOverview === undefined || context === undefined) {
-  // return <AppSpinnerWholePage />
-  // }
-
-  // if (!context) {
-  //   return <div>loading context</div>
-  // }
-
-  // return (
-  //   <WithLoadingIndicator {...vaultsOverview}>
-  //     {(vaultsOverview) => (
-  //       <WithLoadingIndicator {...context}>
-  //         {(context) => (
-  //           <VaultsOverviewView
-  //             vaultsOverview={vaultsOverview}
-  //             context={context}
-  //             address={address}
-  //           />
-  //         )}
-  //       </WithLoadingIndicator>
-  //     )}
-  //   </WithLoadingIndicator>
-  // )
-
   return (
     <WithLoadingIndicator
       value={[vaultsOverview.value, context.value]}
       error={[vaultsOverview.error, context.error]}
     >
-      {([vaultsOverview, context]) => {
-        console.log(vaultsOverview, context)
-
-        return (
-          <VaultsOverviewView vaultsOverview={vaultsOverview} context={context} address={address} />
-        )
-      }}
+      {([vaultsOverview, context]) => (
+        <VaultsOverviewView vaultsOverview={vaultsOverview} context={context} address={address} />
+      )}
     </WithLoadingIndicator>
   )
 }
