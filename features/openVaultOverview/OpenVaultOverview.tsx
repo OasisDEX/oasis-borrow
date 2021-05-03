@@ -1,3 +1,4 @@
+import { trackingEvents } from 'analytics/analytics'
 import { Context } from 'blockchain/network'
 import { CoinTag } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
@@ -91,6 +92,7 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState & { isReadonly: boo
           sx={{ width: ['100%', 'inherit'], textAlign: 'center' }}
           variant="secondary"
           href={`/vaults/open/${ilk}`}
+          onClick={() => trackingEvents.openVault()}
         >
           <Trans i18nKey="open-vault" />
         </AppLink>

@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { trackingEvents } from 'analytics/analytics'
 import { COIN_TAGS, CoinTag } from 'blockchain/tokensMetadata'
 import { useTranslation } from 'next-i18next'
 import React, { memo, useCallback } from 'react'
@@ -119,7 +120,13 @@ function Filters_({ onSearch, search, onTagChange, tagFilter, defaultTag, sx }: 
           size="4"
           color="muted"
         />
-        <Input variant="plain" onChange={onChange} value={search} placeholder="Search" />
+        <Input
+          variant="plain"
+          onChange={onChange}
+          onBlur={() => trackingEvents.searchToken()}
+          value={search}
+          placeholder="Search"
+        />
       </Flex>
     </Flex>
   )

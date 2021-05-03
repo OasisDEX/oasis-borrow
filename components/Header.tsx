@@ -1,5 +1,6 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
+import { trackingEvents } from 'analytics/analytics'
 import { AppLink } from 'components/Links'
 import { AccountButton } from 'features/account/Account'
 import { useObservable } from 'helpers/observableHook'
@@ -80,6 +81,7 @@ export function AppHeader() {
   const accountData = useObservable(accountData$)
   const context = useObservable(context$)
 
+  const numberOfVaults = accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : 0
   return (
     <BasicHeader
       sx={{
@@ -94,11 +96,20 @@ export function AppHeader() {
         <Logo sx={{ position: ['absolute', 'static', 'static'], left: 3, top: 3 }} />
         {context?.status === 'connected' && (
           <Flex sx={{ ml: 'auto', zIndex: 1, mt: [3, 0, 0] }}>
-            <AppLink variant="nav" sx={{ mr: 4 }} href={`/owner/${context.account}`}>
-              {t('your-vaults')}{' '}
-              {accountData?.numberOfVaults !== undefined && `(${accountData.numberOfVaults})`}
+            <AppLink
+              variant="nav"
+              sx={{ mr: 4 }}
+              href={`/owner/${context.account}`}
+              onClick={() => trackingEvents.yourVaults(numberOfVaults)}
+            >
+              {t('your-vaults')} {numberOfVaults > 0 && `(${numberOfVaults})`}
             </AppLink>
-            <AppLink variant="nav" sx={{ mr: [0, 4, 4] }} href="/vaults/list">
+            <AppLink
+              variant="nav"
+              sx={{ mr: [0, 4, 4] }}
+              href="/vaults/list"
+              onClick={() => trackingEvents.createNewVault()}
+            >
               {t('open-new-vault')}
             </AppLink>
           </Flex>

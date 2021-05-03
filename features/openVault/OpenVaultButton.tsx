@@ -1,3 +1,4 @@
+import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useRedirect } from 'helpers/useRedirect'
@@ -45,6 +46,7 @@ function openVaultButtonText(stage: OpenVaultStage, id?: BigNumber) {
 }
 
 export function OpenVaultButton({ stage, errorMessages, progress, id }: OpenVaultState) {
+  const { t } = useTranslation()
   const { replace } = useRedirect()
   const isLoading = ([
     'proxyInProgress',
@@ -70,8 +72,20 @@ export function OpenVaultButton({ stage, errorMessages, progress, id }: OpenVaul
 
   const buttonText = openVaultButtonText(stage, id)
 
+  let trackingEvent: () => void | null
+  if (buttonText === t('confirm')) trackingEvent = trackingEvents.createVaultConfirm
+  if (buttonText === t('create-vault')) trackingEvent = trackingEvents.confirmVaultConfirm
+  if (buttonText === t('create-proxy-btn')) trackingEvent = trackingEvents.createProxy
+  if (buttonText === t('approve-allowance')) trackingEvent = trackingEvents.approveAllowance
+
   return (
-    <Button disabled={isDisabled} onClick={handleProgress}>
+    <Button
+      disabled={isDisabled}
+      onClick={(e: React.SyntheticEvent<HTMLButtonElement>) => {
+        trackingEvent && trackingEvent()
+        handleProgress(e)
+      }}
+    >
       {isLoading ? (
         <Flex sx={{ justifyContent: 'center' }}>
           <Spinner size={25} color="surface" />

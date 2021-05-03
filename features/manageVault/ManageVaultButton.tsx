@@ -1,3 +1,4 @@
+import { trackingEvents } from 'analytics/analytics'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Spinner, Text } from 'theme-ui'
@@ -85,7 +86,16 @@ function manageVaultButtonText(state: ManageVaultState): string {
 }
 
 export function ManageVaultButton(props: ManageVaultState) {
-  const { progress, isLoadingStage, flowProgressionDisabled } = props
+  const {
+    progress,
+    isLoadingStage,
+    flowProgressionDisabled,
+    stage,
+    depositAmount,
+    generateAmount,
+    paybackAmount,
+    withdrawAmount,
+  } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
@@ -94,8 +104,41 @@ export function ManageVaultButton(props: ManageVaultState) {
 
   const buttonText = manageVaultButtonText(props)
 
+  function trackEvents() {
+    if (stage === 'daiEditing' && generateAmount && generateAmount.gt(0)) {
+      trackingEvents.manageDaiGenerateConfirm()
+    }
+    if (stage === 'daiEditing' && paybackAmount && paybackAmount.gt(0)) {
+      trackingEvents.manageDaiPaybackConfirm()
+    }
+    if (stage === 'manageWaitingForConfirmation' && generateAmount && generateAmount.gt(0)) {
+      trackingEvents.manageDaiConfirm()
+    }
+    if (stage === 'manageWaitingForConfirmation' && paybackAmount && paybackAmount.gt(0)) {
+      trackingEvents.manageDaiConfirm()
+    }
+    if (stage === 'collateralEditing' && depositAmount && depositAmount.gt(0)) {
+      trackingEvents.manageCollateralDepositConfirm()
+    }
+    if (stage === 'collateralEditing' && withdrawAmount && withdrawAmount.gt(0)) {
+      trackingEvents.manageCollateralWithdrawConfirm()
+    }
+    if (stage === 'manageWaitingForConfirmation' && depositAmount && depositAmount.gt(0)) {
+      trackingEvents.manageCollateralConfirm()
+    }
+    if (stage === 'manageWaitingForConfirmation' && withdrawAmount && withdrawAmount.gt(0)) {
+      trackingEvents.manageCollateralConfirm()
+    }
+  }
+
   return (
-    <Button onClick={handleProgress} disabled={flowProgressionDisabled}>
+    <Button
+      onClick={(e: React.SyntheticEvent<HTMLButtonElement>) => {
+        trackEvents()
+        handleProgress(e)
+      }}
+      disabled={flowProgressionDisabled}
+    >
       {isLoadingStage ? (
         <Flex sx={{ justifyContent: 'center' }}>
           <Spinner size={25} color="surface" />

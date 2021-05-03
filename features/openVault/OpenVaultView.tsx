@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { trackingEvents } from 'analytics/analytics'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { useObservableWithError } from 'helpers/observableHook'
@@ -57,7 +58,14 @@ function OpenVaultTitle({ reset, stage }: OpenVaultState) {
             : 'Create your Vault'}
         </Text>
         {canReset ? (
-          <Button onClick={handleReset} disabled={!canReset} sx={{ fontSize: 1, p: 0 }}>
+          <Button
+            onClick={(e: React.SyntheticEvent<HTMLButtonElement>) => {
+              handleReset(e)
+              trackingEvents.confirmVaultEdit()
+            }}
+            disabled={!canReset}
+            sx={{ fontSize: 1, p: 0 }}
+          >
             {stage === 'editing' ? 'Reset' : 'Back'}
           </Button>
         ) : null}
