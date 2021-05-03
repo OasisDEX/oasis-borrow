@@ -9,7 +9,7 @@ import { Box, Card, Divider, Flex, Grid, Heading, Spinner, SxProps, Text } from 
 import { OpenVaultState } from './openVault'
 import { OpenVaultAllowance, OpenVaultAllowanceStatus } from './OpenVaultAllowance'
 import { OpenVaultButton } from './OpenVaultButton'
-import { OpenVaultConfirmation } from './OpenVaultConfirmation'
+import { OpenVaultConfirmation, OpenVaultStatus } from './OpenVaultConfirmation'
 import { OpenVaultDetails } from './OpenVaultDetails'
 import { OpenVaultEditing } from './OpenVaultEditing'
 import { OpenVaultIlkDetails } from './OpenVaultIlkDetails'
@@ -77,6 +77,7 @@ function OpenVaultForm(props: OpenVaultState) {
           <OpenVaultButton {...props} />
           {isProxyStage && <OpenVaultProxy {...props} />}
           {isAllowanceStage && <OpenVaultAllowanceStatus {...props} />}
+          {isOpenStage && <OpenVaultStatus {...props} />}
           <OpenVaultIlkDetails {...props} />
         </Grid>
       </Card>

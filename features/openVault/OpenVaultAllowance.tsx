@@ -31,8 +31,6 @@ function Option(props: React.PropsWithChildren<{ onClick?: () => void }>) {
 
 export function OpenVaultAllowance({
   stage,
-  allowanceTxHash,
-  etherscan,
   token,
   depositAmount,
   allowanceAmount,

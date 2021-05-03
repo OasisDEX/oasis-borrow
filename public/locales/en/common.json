@@ -230,7 +230,8 @@
     "min-collat-ratio": "Min. collateral ratio",
     "or": "OR",
     "stability-fee": "Stability Fee",
-    "title": "Manage Vault"
+    "title": "Manage Vault",
+    "header": "Manage Vault"
   },
   "max": "Max",
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",
@@ -458,5 +459,7 @@
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "confirm": "Review and verify details of your vault."
     }
-  }
+  },
+  "creating-your-vault": "Creating your {{token}} Vault!",
+  "vault-created": "Vault #{{id}} created!"
 }

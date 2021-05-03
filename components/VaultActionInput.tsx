@@ -160,7 +160,7 @@ export function VaultActionInput({
               variant="paragraph4"
               sx={{
                 fontWeight: 'semiBold',
-                color: 'text.subtitle',
+                color: 'text.muted',
                 px: 3,
                 pb: 2,
                 pt: 1,
