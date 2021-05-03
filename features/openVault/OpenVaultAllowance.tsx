@@ -9,6 +9,7 @@ import { createNumberMask } from 'text-mask-addons'
 import { Card, Flex, Grid, Label, Link, Radio, Spinner, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
+import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
 function Option(props: React.PropsWithChildren<{ onClick?: () => void }>) {
   return (
@@ -115,49 +116,35 @@ export function OpenVaultAllowance({
           </Option>
         </>
       )}
-
-      {stage === 'allowanceInProgress' && (
-        <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Spinner size={25} color="onWarning" />
-            <Grid pl={2} gap={1}>
-              <Text color="onWarning" sx={{ fontSize: 1 }}>
-                Setting Allowance for {token}
-              </Text>
-              <Link
-                href={`${etherscan}/tx/${allowanceTxHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Text color="onWarning" sx={{ fontSize: 1 }}>
-                  View on etherscan -{'>'}
-                </Text>
-              </Link>
-            </Grid>
-          </Flex>
-        </Card>
-      )}
-      {stage === 'allowanceSuccess' && (
-        <Card sx={{ backgroundColor: 'success', border: 'none' }}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Icon name="checkmark" size={25} color="onSuccess" />
-            <Grid pl={2} gap={1}>
-              <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                Set Allowance for {token}
-              </Text>
-              <Link
-                href={`${etherscan}/tx/${allowanceTxHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                  View on etherscan -{'>'}
-                </Text>
-              </Link>
-            </Grid>
-          </Flex>
-        </Card>
-      )}
     </Grid>
   )
+}
+
+export function OpenVaultAllowanceStatus({
+  stage,
+  allowanceTxHash,
+  etherscan,
+  token,
+}: OpenVaultState) {
+  const { t } = useTranslation()
+
+  if (stage === 'allowanceInProgress') {
+    return (
+      <TxStatusCardProgress
+        text={t('setting-allowance-for', { token })}
+        etherscan={etherscan!}
+        txHash={allowanceTxHash!}
+      />
+    )
+  }
+  if (stage === 'allowanceSuccess') {
+    return (
+      <TxStatusCardSuccess
+        text={t('setting-allowance-for', { token })}
+        etherscan={etherscan!}
+        txHash={allowanceTxHash!}
+      />
+    )
+  }
+  return null
 }

@@ -7,7 +7,7 @@ import React from 'react'
 import { Box, Card, Divider, Flex, Grid, Heading, Spinner, SxProps, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
-import { OpenVaultAllowance } from './OpenVaultAllowance'
+import { OpenVaultAllowance, OpenVaultAllowanceStatus } from './OpenVaultAllowance'
 import { OpenVaultButton } from './OpenVaultButton'
 import { OpenVaultConfirmation } from './OpenVaultConfirmation'
 import { OpenVaultDetails } from './OpenVaultDetails'
@@ -76,6 +76,7 @@ function OpenVaultForm(props: OpenVaultState) {
           <OpenVaultWarnings {...props} />
           <OpenVaultButton {...props} />
           {isProxyStage && <OpenVaultProxy {...props} />}
+          {isAllowanceStage && <OpenVaultAllowanceStatus {...props} />}
           <OpenVaultIlkDetails {...props} />
         </Grid>
       </Card>
