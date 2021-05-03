@@ -1,3 +1,4 @@
+import { trackingEvents } from 'analytics/analytics'
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
@@ -192,17 +193,29 @@ function addTransitions(
   if (state.stage === 'collateralEditing' || state.stage === 'daiEditing') {
     return {
       ...state,
-      updateDeposit: (depositAmount?: BigNumber) => change({ kind: 'deposit', depositAmount }),
+      updateDeposit: (depositAmount?: BigNumber) => {
+        change({ kind: 'deposit', depositAmount })
+        trackingEvents.manageCollateralDepositAmount(depositAmount)
+      },
       updateDepositUSD: (depositAmountUSD?: BigNumber) =>
         change({ kind: 'depositUSD', depositAmountUSD }),
       updateDepositMax: () => change({ kind: 'depositMax' }),
-      updateGenerate: (generateAmount?: BigNumber) => change({ kind: 'generate', generateAmount }),
+      updateGenerate: (generateAmount?: BigNumber) => {
+        change({ kind: 'generate', generateAmount })
+        trackingEvents.manageDaiGenerateAmount(generateAmount)
+      },
       updateGenerateMax: () => change({ kind: 'generateMax' }),
-      updateWithdraw: (withdrawAmount?: BigNumber) => change({ kind: 'withdraw', withdrawAmount }),
+      updateWithdraw: (withdrawAmount?: BigNumber) => {
+        change({ kind: 'withdraw', withdrawAmount })
+        trackingEvents.manageCollateralGenerateAmount(withdrawAmount)
+      },
       updateWithdrawUSD: (withdrawAmountUSD?: BigNumber) =>
         change({ kind: 'withdrawUSD', withdrawAmountUSD }),
       updateWithdrawMax: () => change({ kind: 'withdrawMax' }),
-      updatePayback: (paybackAmount?: BigNumber) => change({ kind: 'payback', paybackAmount }),
+      updatePayback: (paybackAmount?: BigNumber) => {
+        change({ kind: 'payback', paybackAmount })
+        trackingEvents.manageDaiPaybackAmount(paybackAmount)
+      },
       updatePaybackMax: () => change({ kind: 'paybackMax' }),
       toggleDepositAndGenerateOption: () =>
         change({

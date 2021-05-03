@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { trackingEvents } from 'analytics/analytics'
 import { COIN_TAGS, CoinTag } from 'blockchain/tokensMetadata'
 import { useTranslation } from 'next-i18next'
 import React, { memo, useCallback } from 'react'
@@ -139,6 +140,7 @@ function Filters_({
           sx={{ fontWeight: 'heading' }}
           variant="plain"
           onChange={onChange}
+          onBlur={() => trackingEvents.searchToken()}
           value={search}
           placeholder={searchPlaceholder}
         />
