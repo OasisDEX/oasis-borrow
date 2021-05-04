@@ -1,21 +1,22 @@
+import { MessageCard } from 'components/MessageCard'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Card, Flex, Grid, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { ManageVaultState } from './manageVault'
 import { ManageVaultErrorMessage } from './manageVaultValidations'
 
-function manageVaultErrorMessageTranslations({
+export function ManageVaultErrors({
   errorMessages,
-  ilkData: { debtFloor },
   maxWithdrawAmount,
   maxGenerateAmount,
+  ilkData: { debtFloor },
   vault: { token },
 }: ManageVaultState) {
   const { t } = useTranslation()
+  if (!errorMessages.length) return null
 
   function applyErrorMessageTranslation(message: ManageVaultErrorMessage) {
     const translate = (key: string, args?: Dictionary<any>) => t(`manage-vault.errors.${key}`, args)
@@ -69,29 +70,10 @@ function manageVaultErrorMessageTranslations({
     }
   }
 
-  return errorMessages.reduce(
+  const messages = errorMessages.reduce(
     (acc, message) => [...acc, applyErrorMessageTranslation(message)],
     [] as string[],
   )
-}
 
-export function ManageVaultErrors(props: ManageVaultState) {
-  const { errorMessages } = props
-  if (!errorMessages.length) return null
-
-  const errorMessagesTranslations = manageVaultErrorMessageTranslations(props)
-  return (
-    <Card variant="danger">
-      <Grid>
-        {errorMessagesTranslations.map((message) => (
-          <Flex>
-            <Text pr={2} sx={{ fontSize: 2, color: 'onError' }}>
-              •
-            </Text>
-            <Text sx={{ fontSize: 2, color: 'onError' }}>{message}</Text>
-          </Flex>
-        ))}
-      </Grid>
-    </Card>
-  )
+  return <MessageCard {...{ messages, type: 'error' }} />
 }

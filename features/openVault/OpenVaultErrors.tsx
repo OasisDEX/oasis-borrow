@@ -1,20 +1,21 @@
+import { MessageCard } from 'components/MessageCard'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Card, Flex, Grid, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { OpenVaultState } from './openVault'
 import { OpenVaultErrorMessage } from './openVaultValidations'
 
-function openVaultErrorMessageTranslations({
+export function OpenVaultErrors({
   errorMessages,
-  ilkData: { debtFloor },
   maxGenerateAmount,
+  ilkData: { debtFloor },
   token,
 }: OpenVaultState) {
   const { t } = useTranslation()
+  if (!errorMessages.length) return null
 
   function applyErrorMessageTranslation(message: OpenVaultErrorMessage) {
     const translate = (key: string, args?: Dictionary<any>) => t(`open-vault.errors.${key}`, args)
@@ -48,29 +49,10 @@ function openVaultErrorMessageTranslations({
     }
   }
 
-  return errorMessages.reduce(
+  const messages = errorMessages.reduce(
     (acc, message) => [...acc, applyErrorMessageTranslation(message)],
     [] as string[],
   )
-}
 
-export function OpenVaultErrors(props: OpenVaultState) {
-  const { errorMessages } = props
-  if (!errorMessages.length) return null
-
-  const errorMessagesTranslations = openVaultErrorMessageTranslations(props)
-  return (
-    <Card variant="danger">
-      <Grid>
-        {errorMessagesTranslations.map((message) => (
-          <Flex>
-            <Text pr={2} sx={{ fontSize: 2, color: 'onError' }}>
-              •
-            </Text>
-            <Text sx={{ fontSize: 2, color: 'onError' }}>{message}</Text>
-          </Flex>
-        ))}
-      </Grid>
-    </Card>
-  )
+  return <MessageCard {...{ messages, type: 'error' }} />
 }
