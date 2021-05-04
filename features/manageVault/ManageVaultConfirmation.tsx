@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { DetailsItem } from 'components/forms/DetailsItem'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -19,6 +20,8 @@ export function ManageVaultConfirmation({
   afterLiquidationPrice,
   etherscan,
   manageTxHash,
+  vaultWillBeAtRiskLevelDanger,
+  vaultWillBeAtRiskLevelWarning,
 }: ManageVaultState) {
   const { t } = useTranslation()
   const walletBalance = formatCryptoBalance(collateralBalance)
@@ -36,41 +39,39 @@ export function ManageVaultConfirmation({
 
   const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
 
+  const vaultRiskColor = vaultWillBeAtRiskLevelDanger
+    ? 'banner.danger'
+    : vaultWillBeAtRiskLevelWarning
+    ? 'banner.warning'
+    : 'onSuccess'
+
   return (
     <Grid>
-      <Card backgroundColor="Success">
+      <Card backgroundColor="secondaryAlt" sx={{ border: 'none' }}>
         <Grid columns="1fr 1fr">
-          <Text sx={{ fontSize: 1 }}>{t('system.in-your-wallet')}</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
-            {walletBalance} {token}
-          </Text>
+          <DetailsItem header={t('system.in-your-wallet')} value={`${walletBalance} ${token}`} />
 
-          <Text sx={{ fontSize: 1 }}>{t('moving-into-vault')}</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
-            {depositCollateral} {token}
-          </Text>
-
-          <Text sx={{ fontSize: 1 }}>{t('moving-out-vault')}</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
-            {withdrawingCollateral} {token}
-          </Text>
-
-          <Text sx={{ fontSize: 1 }}>{t('remaining-in-wallet')}</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
-            {remainingInWallet} {token}
-          </Text>
-
-          <Text sx={{ fontSize: 1 }}>{t('dai-being-generated')}</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>{daiToBeGenerated} DAI</Text>
-
-          <Text sx={{ fontSize: 1 }}>{t('dai-paying-back')}</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>{daiPayingBack} DAI</Text>
-
-          <Text sx={{ fontSize: 1 }}>{t('system.collateral-ratio')}</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>{afterCollRatio}</Text>
-
-          <Text sx={{ fontSize: 1 }}>{t('system.liquidation-price')}</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>${afterLiqPrice}</Text>
+          {depositAmount?.gt(zero) && (
+            <DetailsItem header={t('moving-into-vault')} value={`${depositCollateral} ${token}`} />
+          )}
+          {withdrawAmount?.gt(zero) && (
+            <DetailsItem
+              header={t('moving-out-vault')}
+              value={`${withdrawingCollateral} ${token}`}
+            />
+          )}
+          <DetailsItem header={t('remaining-in-wallet')} value={`${remainingInWallet} ${token}`} />
+          {generateAmount?.gt(zero) && (
+            <DetailsItem header={t('dai-being-generated')} value={`${daiToBeGenerated} DAI`} />
+          )}
+          {paybackAmount?.gt(zero) && (
+            <DetailsItem header={t('dai-paying-back-label')} value={`${daiPayingBack} DAI`} />
+          )}
+          <DetailsItem
+            header={t('system.collateral-ratio')}
+            value={<Text sx={{ color: vaultRiskColor }}>{afterCollRatio}</Text>}
+          />
+          <DetailsItem header={t('system.liquidation-price')} value={`$${afterLiqPrice}`} />
         </Grid>
       </Card>
 

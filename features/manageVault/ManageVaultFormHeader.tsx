@@ -43,7 +43,13 @@ function Header({ header, subtext }: { header: string; subtext: string }) {
 
 export function ManageVaultFormHeader(props: ManageVaultState) {
   const { t } = useTranslation()
-  const { isEditingStage, isProxyStage, isCollateralAllowanceStage, isDaiAllowanceStage } = props
+  const {
+    isEditingStage,
+    isProxyStage,
+    isCollateralAllowanceStage,
+    isDaiAllowanceStage,
+    isManageStage,
+  } = props
 
   return (
     <Box pb={3}>
@@ -62,6 +68,11 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
             <Header
               header={t('vault-form.header.daiAllowance')}
               subtext={t('vault-form.subtext.daiAllowance')}
+            />
+          ) : isManageStage ? (
+            <Header
+              header={t('vault-form.header.confirm')}
+              subtext={t('vault-form.subtext.confirm')}
             />
           ) : null}
         </Text>

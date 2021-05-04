@@ -1,20 +1,18 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AllowanceOption } from 'features/openVault/OpenVaultAllowance'
+import { TxStatusCardProgress, TxStatusCardSuccess } from 'features/openVault/TxStatusCard'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
-import { Card, Flex, Grid, Link, Radio, Spinner, Text } from 'theme-ui'
+import { Flex, Grid, Radio, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 
 export function ManageVaultDaiAllowance({
   stage,
-  daiAllowanceTxHash,
-  etherscan,
   daiAllowanceAmount,
   paybackAmount,
   updateDaiAllowanceAmount,
@@ -83,48 +81,34 @@ export function ManageVaultDaiAllowance({
           </AllowanceOption>
         </>
       )}
-      {stage === 'daiAllowanceInProgress' && (
-        <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Spinner size={25} color="onWarning" />
-            <Grid pl={2} gap={1}>
-              <Text color="onWarning" sx={{ fontSize: 1 }}>
-                {t('setting-allowance-for', { token: 'DAI' })}
-              </Text>
-              <Link
-                href={`${etherscan}/tx/${daiAllowanceTxHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Text color="onWarning" sx={{ fontSize: 1 }}>
-                  {t('view-on-etherscan')} -{'>'}
-                </Text>
-              </Link>
-            </Grid>
-          </Flex>
-        </Card>
-      )}
-      {stage === 'daiAllowanceSuccess' && (
-        <Card sx={{ backgroundColor: 'success', border: 'none' }}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Icon name="checkmark" size={25} color="onSuccess" />
-            <Grid pl={2} gap={1}>
-              <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                {t('set-allowance-for', { token: 'DAI' })}
-              </Text>
-              <Link
-                href={`${etherscan}/tx/${daiAllowanceTxHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                  {t('view-on-etherscan')} -{'>'}
-                </Text>
-              </Link>
-            </Grid>
-          </Flex>
-        </Card>
-      )}
     </Grid>
   )
+}
+
+export function ManageVaultDaiAllowanceStatus({
+  stage,
+  daiAllowanceTxHash,
+  etherscan,
+}: ManageVaultState) {
+  const { t } = useTranslation()
+
+  if (stage === 'daiAllowanceInProgress') {
+    return (
+      <TxStatusCardProgress
+        text={t('setting-allowance-for', { token: 'DAI' })}
+        etherscan={etherscan!}
+        txHash={daiAllowanceTxHash!}
+      />
+    )
+  }
+  if (stage === 'daiAllowanceSuccess') {
+    return (
+      <TxStatusCardSuccess
+        text={t('set-allowance-for', { token: 'DAI' })}
+        etherscan={etherscan!}
+        txHash={daiAllowanceTxHash!}
+      />
+    )
+  }
+  return null
 }

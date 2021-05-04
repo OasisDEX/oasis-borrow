@@ -1,8 +1,7 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'features/openVault/TxStatusCard'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Card, Flex, Grid, Link, Spinner, Text } from 'theme-ui'
+import { Grid } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 

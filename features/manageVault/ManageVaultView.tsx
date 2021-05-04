@@ -11,9 +11,12 @@ import { Box, Card, Divider, Flex, Grid, Heading, SxProps, Text } from 'theme-ui
 
 import { ManageVaultState } from './manageVault'
 import { ManageVaultButton } from './ManageVaultButton'
-import { ManageVaultCollateralAllowance } from './ManageVaultCollateralAllowance'
+import {
+  ManageVaultCollateralAllowance,
+  ManageVaultCollateralAllowanceStatus,
+} from './ManageVaultCollateralAllowance'
 import { ManageVaultConfirmation } from './ManageVaultConfirmation'
-import { ManageVaultDaiAllowance } from './ManageVaultDaiAllowance'
+import { ManageVaultDaiAllowance, ManageVaultDaiAllowanceStatus } from './ManageVaultDaiAllowance'
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultEditing } from './ManageVaultEditing'
 import { ManageVaultErrors } from './ManageVaultErrors'
@@ -48,6 +51,8 @@ function ManageVaultForm(props: ManageVaultState) {
             </>
           )}
           {isProxyStage && <ManageVaultProxy {...props} />}
+          {isCollateralAllowanceStage && <ManageVaultCollateralAllowanceStatus {...props} />}
+          {isDaiAllowanceStage && <ManageVaultDaiAllowanceStatus {...props} />}
           <ManageVaultIlkDetails {...props} />
         </Grid>
       </Card>

@@ -69,6 +69,7 @@
   "custom": "Custom",
   "dai-being-generated": "Dai being generated",
   "dai-paying-back": "Dai paying back ({{amount}})",
+  "dai-paying-back-label": "Dai paying back",
   "dai-savings-rate": "Dai Savings Rate",
   "deposit": "Deposit",
   "disconnect": "Disconnect",
@@ -472,5 +473,6 @@
     }
   },
   "creating-your-vault": "Creating your {{token}} Vault!",
-  "vault-created": "Vault #{{id}} created!"
+  "vault-created": "Vault #{{id}} created!",
+  "changing-vault": "Changing Vault"
 }
