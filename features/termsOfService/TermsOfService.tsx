@@ -4,7 +4,6 @@ import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { Modal, ModalErrorMessage } from 'components/Modal'
 import { useObservable } from 'helpers/observableHook'
-import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Label, Text } from 'theme-ui'
@@ -174,12 +173,12 @@ export function TermsOfService() {
   const { web3Context$, termsAcceptance$ } = useAppContext()
   const termsAcceptance = useObservable(termsAcceptance$)
   const web3Context = useObservable(web3Context$)
-  const { replace } = useRedirect()
+  // const { replace } = useRedirect()
 
   function disconnect() {
     if (web3Context?.status === 'connected') {
       web3Context.deactivate()
-      replace(`/connect`)
+      // replace(`/connect`)
     }
   }
 
