@@ -52,7 +52,7 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
   } = props
 
   return (
-    <Box pb={3}>
+    <Box>
       {isEditingStage ? (
         <ManageVaultEditingToggle {...props} />
       ) : (

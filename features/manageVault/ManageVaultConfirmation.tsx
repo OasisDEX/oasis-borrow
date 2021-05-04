@@ -1,16 +1,14 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { DetailsItem } from 'components/forms/DetailsItem'
 import { TxStatusCardProgress } from 'features/openVault/TxStatusCard'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Card, Flex, Grid, Link, Spinner, Text } from 'theme-ui'
+import { Card, Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 
 export function ManageVaultConfirmation({
-  stage,
   balanceInfo: { collateralBalance },
   depositAmount,
   generateAmount,
@@ -19,8 +17,6 @@ export function ManageVaultConfirmation({
   vault: { token },
   afterCollateralizationRatio,
   afterLiquidationPrice,
-  etherscan,
-  manageTxHash,
   vaultWillBeAtRiskLevelDanger,
   vaultWillBeAtRiskLevelWarning,
 }: ManageVaultState) {
