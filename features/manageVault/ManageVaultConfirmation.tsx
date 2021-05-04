@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { DetailsItem } from 'components/forms/DetailsItem'
+import { TxStatusCardProgress } from 'features/openVault/TxStatusCard'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -74,50 +75,34 @@ export function ManageVaultConfirmation({
           <DetailsItem header={t('system.liquidation-price')} value={`$${afterLiqPrice}`} />
         </Grid>
       </Card>
-
-      {stage === 'manageInProgress' && (
-        <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Spinner size={25} color="onWarning" />
-            <Grid pl={2} gap={1}>
-              <Text color="onWarning" sx={{ fontSize: 1 }}>
-                {t('changing-vault')}
-              </Text>
-              <Link
-                href={`${etherscan}/tx/${manageTxHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Text color="onWarning" sx={{ fontSize: 1 }}>
-                  {t('view-on-etherscan')} -{'>'}
-                </Text>
-              </Link>
-            </Grid>
-          </Flex>
-        </Card>
-      )}
-
-      {stage === 'manageSuccess' && (
-        <Card sx={{ backgroundColor: 'success', border: 'none' }}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Icon name="checkmark" size={25} color="onSuccess" />
-            <Grid pl={2} gap={1}>
-              <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                {t('vault-changed')}
-              </Text>
-              <Link
-                href={`${etherscan}/tx/${manageTxHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                  {t('view-on-etherscan')} -{'>'}
-                </Text>
-              </Link>
-            </Grid>
-          </Flex>
-        </Card>
-      )}
     </Grid>
   )
+}
+
+export function ManageVaultConfirmationStatus({
+  stage,
+  etherscan,
+  manageTxHash,
+}: ManageVaultState) {
+  const { t } = useTranslation()
+
+  if (stage === 'manageInProgress') {
+    return (
+      <TxStatusCardProgress
+        text={t('changing-vault')}
+        etherscan={etherscan!}
+        txHash={manageTxHash!}
+      />
+    )
+  }
+  if (stage === 'manageSuccess') {
+    return (
+      <TxStatusCardProgress
+        text={t('vault-changed')}
+        etherscan={etherscan!}
+        txHash={manageTxHash!}
+      />
+    )
+  }
+  return null
 }

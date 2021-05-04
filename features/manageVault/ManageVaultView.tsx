@@ -15,7 +15,7 @@ import {
   ManageVaultCollateralAllowance,
   ManageVaultCollateralAllowanceStatus,
 } from './ManageVaultCollateralAllowance'
-import { ManageVaultConfirmation } from './ManageVaultConfirmation'
+import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './ManageVaultConfirmation'
 import { ManageVaultDaiAllowance, ManageVaultDaiAllowanceStatus } from './ManageVaultDaiAllowance'
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultEditing } from './ManageVaultEditing'
@@ -53,6 +53,7 @@ function ManageVaultForm(props: ManageVaultState) {
           {isProxyStage && <ManageVaultProxy {...props} />}
           {isCollateralAllowanceStage && <ManageVaultCollateralAllowanceStatus {...props} />}
           {isDaiAllowanceStage && <ManageVaultDaiAllowanceStatus {...props} />}
+          {isManageStage && <ManageVaultConfirmationStatus {...props} />}
           <ManageVaultIlkDetails {...props} />
         </Grid>
       </Card>
