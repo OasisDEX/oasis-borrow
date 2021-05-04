@@ -8,4 +8,6 @@ declare module '@makerdao/dai-ui-icons' {
     height?: string | number
     onClick?(): void
   }>
+
+  export const icons = {}
 }

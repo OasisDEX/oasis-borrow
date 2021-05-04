@@ -97,18 +97,21 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
   {
     headerLabel: '',
     header: () => <Text />,
-    cell: ({ id }) => (
-      <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
-        <AppLink
-          sx={{ width: ['100%', 'inherit'], textAlign: 'center' }}
-          variant="secondary"
-          as={`/${id}`}
-          href={`/[vault]`}
-        >
-          Manage Vault
-        </AppLink>
-      </Box>
-    ),
+    cell: ({ id }) => {
+      const { t } = useTranslation()
+      return (
+        <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
+          <AppLink
+            sx={{ width: ['100%', 'inherit'], textAlign: 'center' }}
+            variant="secondary"
+            as={`/${id}`}
+            href={`/[vault]`}
+          >
+            {t('manage-vault.action')}
+          </AppLink>
+        </Box>
+      )
+    },
   },
 ]
 function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {

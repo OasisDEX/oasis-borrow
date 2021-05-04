@@ -1,5 +1,5 @@
-// @ts-ignore
 import { icons } from '@makerdao/dai-ui-icons'
+// @ts-ignore
 // @ts-ignore
 import { icons as brandingIcons } from '@makerdao/dai-ui-icons-branding'
 // @ts-ignore
@@ -884,7 +884,9 @@ const oasisBaseTheme = {
 
     ghost: '#F6F6F6',
     light: '#D1DEE6',
+    lightIcon: '#BEC9D0',
     border: '#DDDEE6',
+    offBlue: '#CAD6DB',
 
     text: {
       focused: '#272940',
@@ -1039,6 +1041,7 @@ const oasisBaseTheme = {
     circle: 50,
   },
   shadows: {
+    card: '0px 0px 8px rgba(37, 39, 61, 0.1)',
     medium: '0 2px 8px rgba(0, 0, 0, 0.17)',
     light: '0 2px 8px rgba(0, 0, 0, 0.13)',
     surface: '0px 0px 8px rgba(0, 0, 0, 0.2)',
@@ -1147,6 +1150,9 @@ const oasisBaseTheme = {
         bg: 'primaryAlt',
         pointerEvents: 'none',
       },
+      '&:focus': {
+        outline: 'none',
+      },
     },
     outline: {
       variant: 'text.paragraph2',
@@ -1160,6 +1166,9 @@ const oasisBaseTheme = {
       fontWeight: 'semiBold',
       px: 4,
       py: 2,
+      '&:focus': {
+        outline: 'none',
+      },
     },
     outlineSquare: {
       variant: 'text.paragraph2',
@@ -1168,6 +1177,9 @@ const oasisBaseTheme = {
       borderStyle: 'solid',
       borderColor: 'light',
       borderRadius: 'mediumLarge',
+      '&:focus': {
+        outline: 'none',
+      },
     },
     secondary: {
       variant: 'text.paragraph3',
@@ -1179,6 +1191,9 @@ const oasisBaseTheme = {
       borderRadius: 'round',
       px: 4,
       py: 2,
+      '&:focus': {
+        outline: 'none',
+      },
     },
     square: {
       variant: 'text.paragraph2',
@@ -1252,8 +1267,11 @@ const oasisBaseTheme = {
       cursor: 'pointer',
       background: 'none',
       transition: 'opacity ease-in 0.2s',
-      '&:hover': {
+      '&:hover, &:focus-visible': {
         opacity: 0.7,
+      },
+      '&:focus': {
+        outline: 'none',
       },
     },
   },
@@ -1321,6 +1339,15 @@ const oasisBaseTheme = {
     ...customIcons,
     ...customLandingIcons,
     ...tokenIcons,
+  },
+  radio: {
+    color: 'offBlue',
+    'input:checked ~ &': {
+      color: 'onSuccess',
+    },
+    'input:focus ~ &': {
+      color: 'onSuccess',
+    },
   },
   forms: {
     label: {

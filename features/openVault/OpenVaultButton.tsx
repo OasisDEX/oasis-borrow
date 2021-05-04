@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
@@ -91,7 +90,7 @@ export function OpenVaultButton(props: OpenVaultState) {
     <>
       <Button disabled={!canProgress} onClick={handleProgress}>
         {isLoadingStage ? (
-          <Flex sx={{ justifyContent: 'center' }}>
+          <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
             <Spinner size={25} color="surface" />
             <Text pl={2}>{primaryButtonText}</Text>
           </Flex>
@@ -100,8 +99,8 @@ export function OpenVaultButton(props: OpenVaultState) {
         )}
       </Button>
       {canRegress && (
-        <Button variant="textual" onClick={handleRegress} sx={{ fontSize: 4 }}>
-          <Icon name="arrow_right" sx={{ transform: 'rotate(180deg)' }} /> {secondaryButtonText}
+        <Button variant="textual" onClick={handleRegress} sx={{ fontSize: 3 }}>
+          {secondaryButtonText}
         </Button>
       )}
     </>

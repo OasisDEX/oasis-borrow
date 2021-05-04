@@ -71,13 +71,19 @@ export function VaultActionInput({
       }}
     >
       <Grid columns="1fr 2fr" py={2}>
-        <Text sx={{ fontSize: 1 }}>
+        <Text variant="paragraph4" sx={{ fontWeight: 'semiBold' }}>
           {action} {token}
         </Text>
         {!auxiliaryFlag && BigNumber.isBigNumber(maxAmount) && showMax ? (
           <Text
             onClick={!disabled ? onSetMax : () => null}
-            sx={{ fontSize: 1, textAlign: 'right', cursor: 'pointer' }}
+            variant="paragraph4"
+            sx={{
+              fontWeight: 'semiBold',
+              textAlign: 'right',
+              cursor: 'pointer',
+              color: 'text.subtitle',
+            }}
           >
             {maxAmountLabel} {formatAmount(maxAmount, tokenSymbol)} {tokenSymbol}
           </Text>
@@ -85,7 +91,13 @@ export function VaultActionInput({
         {auxiliaryFlag && BigNumber.isBigNumber(maxAuxiliaryAmount) && showMax ? (
           <Text
             onClick={!disabled ? onSetMax : () => null}
-            sx={{ fontSize: 1, textAlign: 'right', cursor: 'pointer' }}
+            variant="paragraph4"
+            sx={{
+              fontWeight: 'semiBold',
+              textAlign: 'right',
+              cursor: 'pointer',
+              color: 'text.subtitle',
+            }}
           >
             {maxAmountLabel} ~{formatAmount(maxAuxiliaryAmount, auxiliarySymbol)} {auxiliarySymbol}
           </Text>
@@ -99,6 +111,18 @@ export function VaultActionInput({
           borderRadius: 'medium',
           alignItems: 'center',
           borderColor: hasError ? 'onError' : 'primaryAlt',
+          transition: `
+            box-shadow ease-in 0.2s,
+            border-color ease-in 0.2s
+          `,
+          ...(disabled
+            ? {}
+            : {
+                '&:hover, &:focus-within': {
+                  boxShadow: 'surface',
+                  borderColor: hasError ? 'onError' : 'primary',
+                },
+              }),
         }}
       >
         <Grid gap={0}>
@@ -132,7 +156,16 @@ export function VaultActionInput({
             />
           )}
           {hasAuxiliary && (
-            <Text sx={{ fontSize: 2, px: 3, pb: 2, pt: 1 }}>
+            <Text
+              variant="paragraph4"
+              sx={{
+                fontWeight: 'semiBold',
+                color: 'text.subtitle',
+                px: 3,
+                pb: 2,
+                pt: 1,
+              }}
+            >
               {!auxiliaryFlag
                 ? `~${formatAmount(auxiliaryAmount || zero, auxiliarySymbol)} ${auxiliarySymbol}`
                 : `~${formatAmount(amount || zero, tokenSymbol)} ${tokenSymbol}`}
@@ -140,8 +173,21 @@ export function VaultActionInput({
           )}
         </Grid>
         {!disabled && hasAuxiliary && !!onAuxiliaryChange ? (
-          <Box onClick={handleAuxiliarySwitch} sx={{ cursor: 'pointer' }}>
-            <Icon name="exchange" size={25} sx={{ transform: 'rotate(90deg)' }} />
+          <Box
+            onClick={handleAuxiliarySwitch}
+            sx={{
+              cursor: 'pointer',
+              '& svg': {
+                transform: 'rotate(90deg)',
+                transition: 'color 0.2s ease-in',
+                color: 'lightIcon',
+                '&:hover': {
+                  color: 'lavender',
+                },
+              },
+            }}
+          >
+            <Icon name="exchange" size={25} />
           </Box>
         ) : undefined}
       </Grid>
