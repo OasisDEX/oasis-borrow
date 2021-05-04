@@ -33,11 +33,10 @@ function ManageVaultForm(props: ManageVaultState) {
 
   return (
     <Box>
-      <Card>
-        <ManageVaultFormHeader {...props} />
-        <Grid pb={3}>
+      <Card sx={{ boxShadow: 'card', borderRadius: 'mediumLarge', px: 4, py: 3 }}>
+        <Grid sx={{ mt: 2 }}>
+          <ManageVaultFormHeader {...props} />
           {isEditingStage && <ManageVaultEditing {...props} />}
-          {isProxyStage && <ManageVaultProxy {...props} />}
           {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
           {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}
           {isManageStage && <ManageVaultConfirmation {...props} />}
@@ -48,6 +47,7 @@ function ManageVaultForm(props: ManageVaultState) {
               <ManageVaultButton {...props} />
             </>
           )}
+          {isProxyStage && <ManageVaultProxy {...props} />}
           <ManageVaultIlkDetails {...props} />
         </Grid>
       </Card>
@@ -78,7 +78,7 @@ export function ManageVaultHeading(props: ManageVaultState & SxProps) {
 
 export function ManageVaultContainer(props: ManageVaultState) {
   return (
-    <Grid columns={['1fr', '2fr 1fr']} gap={4}>
+    <Grid columns={['1fr', '2fr minmax(380px, 1fr)']} gap={4}>
       <ManageVaultHeading {...props} sx={{ display: ['block', 'none'] }} />
       <Box sx={{ order: [3, 1] }}>
         <ManageVaultDetails {...props} />
