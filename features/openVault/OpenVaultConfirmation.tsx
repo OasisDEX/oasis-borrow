@@ -30,6 +30,7 @@ export function OpenVaultConfirmation({
   afterLiquidationPrice,
   collateralBalanceRemaining,
   vaultWillBeAtRiskLevelWarning,
+  vaultWillBeAtRiskLevelDanger,
 }: OpenVaultState) {
   const walletBalance = formatCryptoBalance(collateralBalance)
   const intoVault = formatCryptoBalance(depositAmount || zero)
@@ -41,6 +42,12 @@ export function OpenVaultConfirmation({
 
   const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
   const { t } = useTranslation()
+
+  const vaultRiskColor = vaultWillBeAtRiskLevelDanger
+    ? 'banner.danger'
+    : vaultWillBeAtRiskLevelWarning
+    ? 'banner.warning'
+    : 'onSuccess'
 
   return (
     <Grid>
@@ -65,9 +72,7 @@ export function OpenVaultConfirmation({
           <Value>{daiToBeGenerated} DAI</Value>
 
           <Label>{t('system.collateral-ratio')}</Label>
-          <Value sx={{ color: vaultWillBeAtRiskLevelWarning ? 'onWarning' : 'onSuccess' }}>
-            {afterCollRatio}
-          </Value>
+          <Value sx={{ color: vaultRiskColor }}>{afterCollRatio}</Value>
 
           <Label>{t('system.liquidation-price')}</Label>
           <Value>${afterLiqPrice}</Value>
