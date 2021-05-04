@@ -6,8 +6,8 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Flex, Grid, Radio, Text } from 'theme-ui'
-import { AllowanceOption } from '../../components/forms/AllowanceOption'
 
+import { AllowanceOption } from '../../components/forms/AllowanceOption'
 import { OpenVaultState } from './openVault'
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
