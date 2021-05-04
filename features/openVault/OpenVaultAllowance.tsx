@@ -20,6 +20,14 @@ function Option(props: React.PropsWithChildren<{ onClick?: () => void }>) {
         alignItems: 'center',
         px: 3,
         boxSizing: 'border-box',
+        cursor: 'pointer',
+        transition: `
+          border-color ease-in 0.2s,
+          box-shadow ease-in 0.2s`,
+        '&:hover': {
+          borderColor: 'primary',
+          boxShadow: 'medium',
+        },
       }}
       onClick={props.onClick}
     >
@@ -93,14 +101,6 @@ export function OpenVaultAllowance({
                     fontSize: 1,
                     px: 3,
                     py: '12px',
-                    transform: `
-                      borderColor ease-in 0.2s,
-                      box-shadow ease-in 0.2s
-                      `,
-                    '&:focus-within, &:hover': {
-                      borderColor: 'primary',
-                      boxShadow: 'medium',
-                    },
                   }}
                   disabled={!isCustom}
                   value={
