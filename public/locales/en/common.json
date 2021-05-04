@@ -461,28 +461,18 @@
       "edit": "Configure your Vault",
       "proxy": "Create your smart Proxy ",
       "allowance": "Set {{token}} allowance",
-<<<<<<< HEAD
       "daiAllowance": "Set DAI allowance",
-=======
->>>>>>> 9f040df81570dcf2116fdeae549ccf0234a3a36d
       "confirm": "Confirm vault creation"
     },
     "subtext": {
       "edit": "Simulate your vault by configuring the amount of collateral to deposit, and DAI to generate.",
       "proxy": "With your smart proxy we can perform multiple actions in one transaction for your Vault. This proxy only needs to be set up once.",
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
-<<<<<<< HEAD
       "daiAllowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
-=======
->>>>>>> 9f040df81570dcf2116fdeae549ccf0234a3a36d
       "confirm": "Review and verify details of your vault."
     }
   },
   "creating-your-vault": "Creating your {{token}} Vault!",
-<<<<<<< HEAD
   "vault-created": "Vault #{{id}} created!",
   "changing-vault": "Changing Vault"
-=======
-  "vault-created": "Vault #{{id}} created!"
->>>>>>> 9f040df81570dcf2116fdeae549ccf0234a3a36d
 }
