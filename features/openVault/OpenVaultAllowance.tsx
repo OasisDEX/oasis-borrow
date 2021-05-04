@@ -10,7 +10,7 @@ import { Flex, Grid, Label, Radio, Text } from 'theme-ui'
 import { OpenVaultState } from './openVault'
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
-function Option(props: React.PropsWithChildren<{ onClick?: () => void }>) {
+export function AllowanceOption(props: React.PropsWithChildren<{ onClick?: () => void }>) {
   return (
     <Label
       sx={{
@@ -58,36 +58,21 @@ export function OpenVaultAllowance({
     <Grid>
       {canSelectRadio && (
         <>
-          <Option onClick={setAllowanceAmountUnlimited!}>
-            <Radio
-              sx={{ mr: 3 }}
-              name="allowance-open-form"
-              value="true"
-              defaultChecked={isUnlimited}
-            />
+          <AllowanceOption onClick={setAllowanceAmountUnlimited!}>
+            <Radio sx={{ mr: 3 }} name="allowance-open-form" defaultChecked checked={isUnlimited} />
             <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: '18px' }}>
               {t('unlimited-allowance')}
             </Text>
-          </Option>
-          <Option onClick={setAllowanceAmountToDepositAmount}>
-            <Radio
-              sx={{ mr: 3 }}
-              name="allowance-open-form"
-              value="true"
-              defaultChecked={isDeposit}
-            />
+          </AllowanceOption>
+          <AllowanceOption onClick={setAllowanceAmountToDepositAmount}>
+            <Radio sx={{ mr: 3 }} name="allowance-open-form" checked={isDeposit} />
             <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: '18px' }}>
               {t('token-depositing', { token, amount: formatCryptoBalance(depositAmount!) })}
             </Text>
-          </Option>
-          <Option onClick={setAllowanceAmountCustom}>
+          </AllowanceOption>
+          <AllowanceOption onClick={setAllowanceAmountCustom}>
             <Flex sx={{ alignItems: 'center', justifyContent: 'center', py: 2 }}>
-              <Radio
-                sx={{ mr: 3 }}
-                name="allowance-open-form"
-                value="true"
-                defaultChecked={isCustom}
-              />
+              <Radio sx={{ mr: 3 }} name="allowance-open-form" checked={isCustom} />
               <Grid columns="2fr 2fr 1fr" sx={{ alignItems: 'center' }}>
                 <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
                   {t('custom')}
@@ -118,7 +103,7 @@ export function OpenVaultAllowance({
                 <Text sx={{ fontSize: 1 }}>{token}</Text>
               </Grid>
             </Flex>
-          </Option>
+          </AllowanceOption>
         </>
       )}
     </Grid>
