@@ -14,8 +14,8 @@ export function MessageCard({ messages, type }: NoticeCardProps) {
   return (
     <Card variant={cardColor}>
       <Grid>
-        {messages.map((message) => (
-          <Flex>
+        {messages.map((message, idx) => (
+          <Flex key={idx}>
             <Text pr={2} sx={{ fontSize: 2, color: textColor }}>
               •
             </Text>
