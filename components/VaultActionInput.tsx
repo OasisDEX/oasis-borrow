@@ -6,7 +6,6 @@ import {
   formatAmount,
   formatBigNumber,
   formatCryptoBalance,
-  formatFiatBalance,
 } from 'helpers/formatters/format'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 import { one, zero } from 'helpers/zero'
