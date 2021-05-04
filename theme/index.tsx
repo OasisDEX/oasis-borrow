@@ -886,6 +886,7 @@ const oasisBaseTheme = {
     light: '#D1DEE6',
     lightIcon: '#BEC9D0',
     border: '#DDDEE6',
+    offBlue: '#CAD6DB',
 
     text: {
       focused: '#272940',
@@ -1340,7 +1341,7 @@ const oasisBaseTheme = {
     ...tokenIcons,
   },
   radio: {
-    color: '#CAD6DB',
+    color: 'offBlue',
     'input:checked ~ &': {
       color: 'onSuccess',
     },
