@@ -82,7 +82,7 @@ export function VaultActionInput({
               fontWeight: 'semiBold',
               textAlign: 'right',
               cursor: 'pointer',
-              color: 'text.muted',
+              color: 'text.subtitle',
             }}
           >
             {maxAmountLabel} {formatAmount(maxAmount, tokenSymbol)} {tokenSymbol}
@@ -160,7 +160,7 @@ export function VaultActionInput({
               variant="paragraph4"
               sx={{
                 fontWeight: 'semiBold',
-                color: 'text.muted',
+                color: 'text.subtitle',
                 px: 3,
                 pb: 2,
                 pt: 1,
