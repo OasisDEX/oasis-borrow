@@ -1,10 +1,11 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Card, Divider, Flex, Grid, Heading, Spinner, SxProps, Text } from 'theme-ui'
+import { Box, Card, Divider, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
 import { OpenVaultAllowance } from './OpenVaultAllowance'
@@ -118,43 +119,16 @@ export function OpenVaultContainer(props: OpenVaultState) {
 
 export function OpenVaultView({ ilk }: { ilk: string }) {
   const { openVault$ } = useAppContext()
-  const [openVault, openVaultError] = useObservableWithError(openVault$(ilk))
-
-  if (openVaultError) {
-    return (
-      <Grid
-        sx={{
-          width: '100%',
-          height: '50vh',
-          justifyItems: 'center',
-          alignItems: 'center',
-          zIndex: 1,
-        }}
-      >
-        <Box>{openVaultError.message}</Box>
-      </Grid>
-    )
-  }
-
-  if (!openVault) {
-    return (
-      <Grid
-        sx={{
-          position: 'absolute',
-          width: '100%',
-          height: '50vh',
-          justifyItems: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Spinner size={50} />
-      </Grid>
-    )
-  }
+  const openVaultWithError = useObservableWithError(openVault$(ilk))
 
   return (
     <Grid sx={{ width: '100%', zIndex: 1 }}>
-      <OpenVaultContainer {...(openVault as OpenVaultState)} />
+      <WithLoadingIndicator
+        {...openVaultWithError}
+        customError={<Box>{openVaultWithError.error?.message}</Box>}
+      >
+        {(openVault) => <OpenVaultContainer {...openVault} />}
+      </WithLoadingIndicator>
     </Grid>
   )
 }
