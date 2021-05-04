@@ -1,5 +1,5 @@
 import { getToken } from 'blockchain/tokensMetadata'
-import { AllowanceOption } from 'features/openVault/OpenVaultAllowance'
+import { AllowanceOption } from 'components/forms/AllowanceOption'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'features/openVault/TxStatusCard'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
