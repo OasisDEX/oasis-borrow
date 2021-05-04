@@ -43,6 +43,7 @@ export function OpenVaultEditing(props: OpenVaultState) {
     updateGenerateMax,
     showGenerateOption,
     toggleGenerateOption,
+    priceInfo: { currentCollateralPrice },
   } = props
 
   const showGenerateOptionButton = depositAmount && !depositAmount.isZero()
@@ -53,6 +54,7 @@ export function OpenVaultEditing(props: OpenVaultState) {
         <VaultActionInput
           action="Deposit"
           token={token}
+          tokenUsdPrice={currentCollateralPrice}
           showMax={true}
           hasAuxiliary={true}
           onSetMax={updateDepositMax!}

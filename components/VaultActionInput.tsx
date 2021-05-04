@@ -6,7 +6,7 @@ import {
   formatAmount,
   formatBigNumber,
   formatCryptoBalance,
-  formatNumber,
+  formatFiatBalance,
 } from 'helpers/formatters/format'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 import { one, zero } from 'helpers/zero'
@@ -186,8 +186,12 @@ export function VaultActionInput({
               }}
             >
               {!auxiliaryFlag
-                ? `${formatBigNumber(auxiliaryAmount || zero, auxiliaryDigits)} ${auxiliarySymbol}`
-                : `${formatBigNumber(amount || zero, tokenDigits)} ${tokenSymbol}`}
+                ? `${
+                    auxiliarySymbol === 'USD'
+                      ? formatAmount(auxiliaryAmount || zero, 'USD')
+                      : formatCryptoBalance(auxiliaryAmount || zero)
+                  } ${auxiliarySymbol}`
+                : `${formatCryptoBalance(amount || zero)} ${tokenSymbol}`}
             </Text>
           )}
         </Grid>
