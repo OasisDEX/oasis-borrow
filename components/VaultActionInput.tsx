@@ -2,11 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { BigNumberInput } from 'helpers/BigNumberInput'
-import {
-  formatAmount,
-  formatBigNumber,
-  formatCryptoBalance,
-} from 'helpers/formatters/format'
+import { formatAmount, formatBigNumber, formatCryptoBalance } from 'helpers/formatters/format'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 import { one, zero } from 'helpers/zero'
 import React, { ChangeEvent, useState } from 'react'

@@ -3,7 +3,7 @@ import { expect } from 'chai'
 
 import { calculateTokenPrecisionByValue } from './tokens'
 
-describe.only('token input precision calculation', () => {
+describe('token input precision calculation', () => {
   it('if token price is between to 1-9.99 USD, than precision should be 2', () => {
     expect(
       calculateTokenPrecisionByValue({
