@@ -1,6 +1,7 @@
 import { useAppContext } from 'components/AppContextProvider'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
+import { useObservableWithError } from 'helpers/observableHook'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
@@ -74,11 +75,11 @@ function CollateralPricesTable({ collateralPrices }: { collateralPrices: Collate
 
 export function CollateralPricesView() {
   const { collateralPrices$ } = useAppContext()
-  const collateralPrices = useObservable(collateralPrices$)
+  const collateralPricesWithError = useObservableWithError(collateralPrices$)
 
-  if (!collateralPrices) {
-    return null
-  }
-
-  return <CollateralPricesTable {...{ collateralPrices }} />
+  return (
+    <WithLoadingIndicator {...collateralPricesWithError}>
+      {(collateralPrices) => <CollateralPricesTable {...{ collateralPrices }} />}
+    </WithLoadingIndicator>
+  )
 }

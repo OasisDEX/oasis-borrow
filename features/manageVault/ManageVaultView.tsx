@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
+import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -92,14 +93,18 @@ export function ManageVaultContainer(props: ManageVaultState) {
 
 export function ManageVaultView({ id }: { id: BigNumber }) {
   const { manageVault$ } = useAppContext()
-  const [manageVault, manageVaultError] = useObservableWithError(manageVault$(id))
-
-  if (manageVaultError) return <>Error!</>
-  if (!manageVault) return <>loading...</>
+  const manageVaultWithError = useObservableWithError(manageVault$(id))
 
   return (
-    <Grid sx={{ width: '100%', zIndex: 1 }}>
-      <ManageVaultContainer {...manageVault} />
-    </Grid>
+    <WithLoadingIndicator
+      {...manageVaultWithError}
+      customLoader={<AppSpinner sx={{ mx: 'auto' }} variant="styles.spinner.large" />}
+    >
+      {(manageVault) => (
+        <Grid sx={{ width: '100%', zIndex: 1 }}>
+          <ManageVaultContainer {...manageVault} />
+        </Grid>
+      )}
+    </WithLoadingIndicator>
   )
 }
