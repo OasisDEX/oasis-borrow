@@ -57,7 +57,7 @@
   "copied": "Copied",
   "copy-address": "Copy address",
   "country": "Country",
-  "configure-your-vault":"Configure your vault",
+  "configure-your-vault": "Configure your vault",
   "create-proxy": "Create a proxy",
   "create-proxy-btn": "Create Proxy",
   "create-proxy-desc": "In order to use Savings and other features, you will need a wallet proxy.",
@@ -79,8 +79,6 @@
   "email": "Email",
   "email-invalid": "Provided email is invalid",
   "email-required": "Email address is required",
-  "enter-allowance-amount": "Enter allowance amount",
-  "enter-an-amount": "Enter an amount",
   "erc20-approve-description-pending": "Unlocking transfer of {{ token }}",
   "erc20-approve-description-recent": "Unlocked transfer of {{ token }}",
   "erc20-approve-description-recent-failed": "Failed to unlock transfer of {{ token }}",
@@ -138,7 +136,6 @@
     "transfer": "Vault given to <0>{{transferTo}}</0> by <0>{{transferFrom}}</0>",
     "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault"
   },
-  "invalid-allowance-amount": "Invalid allowance amount",
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",
   "jwt-auth-rejected": "Signature rejected",
@@ -198,6 +195,7 @@
     "or": "OR",
     "stability-fee": "Stability Fee",
     "title": "Manage Vault",
+    "action": "Manage Vault",
     "warnings": {
       "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
       "debt-is-less-than-debt-floor": "Your current Dai debt is below the minimum of {{debtFloor}}. You cannot generate more Dai unless you go over this minimum",
@@ -318,7 +316,6 @@
     }
   },
   "set-allowance-for": "Set Allowance for {{token}}",
-  "set-token-allowance": "Set {{token}} allowance",
   "setting-allowance-for": "Setting Allowance for {{token}}",
   "setup-proxy": "Setup Proxy",
   "setup-wallet": "Setup your wallet",
@@ -446,11 +443,32 @@
   "waiting-approval": "Waiting for approval",
   "waiting-confirmation": "Waiting for transaction confirmation",
   "waiting-proxy-deployment": "Proxy deployment confirming",
+  "proxy-deployment-confirming": "{{proxyConfirmations}} of {{safeConfirmations}}: Proxy deployment confirmed",
   "withdraw": "Withdraw",
   "withdrawn": "Withdrawn",
   "you-are-sending": "You are sending",
   "your-vaults": "Your Vaults",
   "no-results": "No results",
   "learn-about-wallets": "Learn more about wallets",
-  "learn-more-link": "https://ethereum.org/en/wallets/find-wallet/"
+  "learn-more-link": "https://ethereum.org/en/wallets/find-wallet/",
+  "enter-an-amount": "Enter an amount",
+  "enter-allowance-amount": "Enter allowance amount",
+  "set-token-allowance": "Set {{token}} allowance",
+  "invalid-allowance-amount": "Invalid allowance amount",
+  "vault-form": {
+    "header": {
+      "edit": "Configure your Vault",
+      "proxy": "Create your smart Proxy ",
+      "allowance": "Set {{token}} allowance",
+      "confirm": "Confirm vault creation"
+    },
+    "subtext": {
+      "edit": "Simulate your vault by configuring the amount of collateral to deposit, and DAI to generate.",
+      "proxy": "With your smart proxy we can perform multiple actions in one transaction for your Vault. This proxy only needs to be set up once.",
+      "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
+      "confirm": "Review and verify details of your vault."
+    }
+  },
+  "creating-your-vault": "Creating your {{token}} Vault!",
+  "vault-created": "Vault #{{id}} created!"
 }

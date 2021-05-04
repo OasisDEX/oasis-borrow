@@ -382,15 +382,6 @@ export function LandingView() {
                 noResults={<Box>{t('no-results')}</Box>}
                 deriveRowProps={(row) => ({ href: `/vaults/open/${row.ilk}` })}
               />
-              <Box sx={{ overflowX: 'auto', p: '3px' }}>
-                <Table
-                  data={landing.ilks.data}
-                  primaryKey="ilk"
-                  state={landing.ilks.filters}
-                  columns={ilksColumns}
-                  noResults={<Box>{t('no-results')}</Box>}
-                />
-              </Box>
             </Box>
           </Box>
         )}

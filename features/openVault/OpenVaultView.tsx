@@ -8,9 +8,9 @@ import React from 'react'
 import { Box, Card, Divider, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
-import { OpenVaultAllowance } from './OpenVaultAllowance'
+import { OpenVaultAllowance, OpenVaultAllowanceStatus } from './OpenVaultAllowance'
 import { OpenVaultButton } from './OpenVaultButton'
-import { OpenVaultConfirmation } from './OpenVaultConfirmation'
+import { OpenVaultConfirmation, OpenVaultStatus } from './OpenVaultConfirmation'
 import { OpenVaultDetails } from './OpenVaultDetails'
 import { OpenVaultEditing } from './OpenVaultEditing'
 import { OpenVaultErrors } from './OpenVaultErrors'
@@ -21,19 +21,26 @@ import { OpenVaultWarnings } from './OpenVaultWarnings'
 function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage, token }: OpenVaultState) {
   const { t } = useTranslation()
   return (
-    <Grid>
-      <Grid columns="2fr 1fr">
-        <Text>
-          {isEditingStage
-            ? t('configure-your-vault')
-            : isProxyStage
-            ? t('create-proxy')
-            : isAllowanceStage
-            ? t('set-token-allownace', { token: token.toUpperCase() })
-            : t('create-your-vault')}
-        </Text>
-      </Grid>
-    </Grid>
+    <Box>
+      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
+        {isEditingStage
+          ? t('vault-form.header.edit')
+          : isProxyStage
+          ? t('vault-form.header.proxy')
+          : isAllowanceStage
+          ? t('vault-form.header.allowance', { token: token.toUpperCase() })
+          : t('vault-form.header.confirm')}
+      </Text>
+      <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
+        {isEditingStage
+          ? t('vault-form.subtext.edit')
+          : isProxyStage
+          ? t('vault-form.subtext.proxy')
+          : isAllowanceStage
+          ? t('vault-form.subtext.allowance')
+          : t('vault-form.subtext.confirm')}
+      </Text>
+    </Box>
   )
 }
 
@@ -42,16 +49,18 @@ function OpenVaultForm(props: OpenVaultState) {
 
   return (
     <Box>
-      <Card sx={{ border: ['none', '1px solid'], borderColor: ['none', 'light'] }}>
-        <Grid>
+      <Card sx={{ boxShadow: 'card', borderRadius: 'mediumLarge', px: 4, py: 3 }}>
+        <Grid sx={{ mt: 2 }}>
           <OpenVaultTitle {...props} />
           {isEditingStage && <OpenVaultEditing {...props} />}
-          {isProxyStage && <OpenVaultProxy {...props} />}
           {isAllowanceStage && <OpenVaultAllowance {...props} />}
           {isOpenStage && <OpenVaultConfirmation {...props} />}
           <OpenVaultErrors {...props} />
           <OpenVaultWarnings {...props} />
           <OpenVaultButton {...props} />
+          {isProxyStage && <OpenVaultProxy {...props} />}
+          {isAllowanceStage && <OpenVaultAllowanceStatus {...props} />}
+          {isOpenStage && <OpenVaultStatus {...props} />}
           <OpenVaultIlkDetails {...props} />
         </Grid>
       </Card>
@@ -86,7 +95,7 @@ export function OpenVaultHeading(props: OpenVaultState & SxProps) {
 
 export function OpenVaultContainer(props: OpenVaultState) {
   return (
-    <Grid columns={['1fr', '2fr 1fr']} gap={4}>
+    <Grid columns={['1fr', '2fr minmax(380px, 1fr)']} gap={4}>
       <OpenVaultHeading {...props} sx={{ display: ['block', 'none'] }} />
       <Box sx={{ order: [3, 1] }}>
         <OpenVaultDetails {...props} />

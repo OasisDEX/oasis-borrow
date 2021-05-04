@@ -1,23 +1,36 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React from 'react'
-import { Card, Flex, Grid, Link, Spinner, Text } from 'theme-ui'
+import { useTranslation } from 'react-i18next'
+import { Card, Grid, SxStyleProp, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
+import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
+export function Label({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
+  return (
+    <Text variant="paragraph3" sx={{ color: 'mutedAlt', whiteSpace: 'nowrap', ...sx }}>
+      {children}
+    </Text>
+  )
+}
+export function Value({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
+  return (
+    <Text variant="paragraph3" sx={{ textAlign: 'right', fontWeight: 'semiBold', ...sx }}>
+      {children}
+    </Text>
+  )
+}
 export function OpenVaultConfirmation({
-  stage,
   balanceInfo: { collateralBalance },
   depositAmount,
   generateAmount,
   token,
   afterCollateralizationRatio,
   afterLiquidationPrice,
-  id,
-  etherscan,
-  openTxHash,
   collateralBalanceRemaining,
+  vaultWillBeAtRiskLevelWarning,
+  vaultWillBeAtRiskLevelDanger,
 }: OpenVaultState) {
   const walletBalance = formatCryptoBalance(collateralBalance)
   const intoVault = formatCryptoBalance(depositAmount || zero)
@@ -28,79 +41,66 @@ export function OpenVaultConfirmation({
     : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
 
   const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
+  const { t } = useTranslation()
+
+  const vaultRiskColor = vaultWillBeAtRiskLevelDanger
+    ? 'banner.danger'
+    : vaultWillBeAtRiskLevelWarning
+    ? 'banner.warning'
+    : 'onSuccess'
 
   return (
     <Grid>
-      <Card backgroundColor="Success">
+      <Card bg="secondaryAlt" sx={{ border: 'none' }}>
         <Grid columns="1fr 1fr">
-          <Text sx={{ fontSize: 1 }}>In your wallet</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
+          <Label>{t('system.in-your-wallet')}</Label>
+          <Value>
             {walletBalance} {token}
-          </Text>
+          </Value>
 
-          <Text sx={{ fontSize: 1 }}>Moving into Vault</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
+          <Label>{t('moving-into-vault')}</Label>
+          <Value>
             {intoVault} {token}
-          </Text>
+          </Value>
 
-          <Text sx={{ fontSize: 1 }}>Remaining in Wallet</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
+          <Label>{t('remaining-in-wallet')}</Label>
+          <Value>
             {remainingInWallet} {token}
-          </Text>
+          </Value>
 
-          <Text sx={{ fontSize: 1 }}>Dai being generated</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>{daiToBeGenerated} DAI</Text>
+          <Label>{t('dai-being-generated')}</Label>
+          <Value>{daiToBeGenerated} DAI</Value>
 
-          <Text sx={{ fontSize: 1 }}>Collateral Ratio</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>{afterCollRatio}</Text>
+          <Label>{t('system.collateral-ratio')}</Label>
+          <Value sx={{ color: vaultRiskColor }}>{afterCollRatio}</Value>
 
-          <Text sx={{ fontSize: 1 }}>Liquidation Price</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>${afterLiqPrice}</Text>
+          <Label>{t('system.liquidation-price')}</Label>
+          <Value>${afterLiqPrice}</Value>
         </Grid>
       </Card>
-
-      {stage === 'openInProgress' && (
-        <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Spinner size={25} color="onWarning" />
-            <Grid pl={2} gap={1}>
-              <Text color="onWarning" sx={{ fontSize: 1 }}>
-                Creating your {token} Vault!
-              </Text>
-              <Link
-                href={`${etherscan}/tx/${openTxHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Text color="onWarning" sx={{ fontSize: 1 }}>
-                  View on etherscan -{'>'}
-                </Text>
-              </Link>
-            </Grid>
-          </Flex>
-        </Card>
-      )}
-      {stage === 'openSuccess' && (
-        <Card sx={{ backgroundColor: 'success', border: 'none' }}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Icon name="checkmark" size={25} color="onSuccess" />
-            <Grid pl={2} gap={1}>
-              <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                Vault #{id?.toString()} created!
-              </Text>
-              <Link
-                href={`${etherscan}/tx/${openTxHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                  View on etherscan -{'>'}
-                </Text>
-              </Link>
-            </Grid>
-          </Flex>
-        </Card>
-      )}
     </Grid>
   )
+}
+
+export function OpenVaultStatus({ stage, id, etherscan, openTxHash }: OpenVaultState) {
+  const { t } = useTranslation()
+  if (stage === 'openInProgress') {
+    return (
+      <TxStatusCardProgress
+        text={t('creating-your-vault')}
+        etherscan={etherscan!}
+        txHash={openTxHash!}
+      />
+    )
+  }
+  if (stage === 'openSuccess') {
+    return (
+      <TxStatusCardSuccess
+        text={t('vault-created', { id: id?.toString() })}
+        etherscan={etherscan!}
+        txHash={openTxHash!}
+      />
+    )
+  }
+  return null
 }
