@@ -80,14 +80,14 @@ const columns: ColumnDef<VaultHistoryEvent, {}>[] = [
 
 export function VaultHistoryView({ id }: { id: BigNumber }) {
   const { vaultHistory$ } = useAppContext()
-  const vaultHistory = useObservableWithError(vaultHistory$(id))
+  const vaultHistoryWithError = useObservableWithError(vaultHistory$(id))
   const { t } = useTranslation()
 
   return (
     <Box sx={{ gridColumn: '1/2', zIndex: 1 }}>
       <Heading sx={{ mb: 4 }}>{t('vault-history')}</Heading>
       <WithLoadingIndicator
-        {...vaultHistory}
+        {...vaultHistoryWithError}
         customLoader={
           <AppSpinner sx={{ mx: 'auto', display: 'block' }} variant="styles.spinner.large" />
         }

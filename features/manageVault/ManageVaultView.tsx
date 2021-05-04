@@ -111,11 +111,11 @@ export function ManageVaultContainer(props: ManageVaultState) {
 
 export function ManageVaultView({ id }: { id: BigNumber }) {
   const { manageVault$ } = useAppContext()
-  const manageVault = useObservableWithError(manageVault$(id))
+  const manageVaultWithError = useObservableWithError(manageVault$(id))
 
   return (
     <WithLoadingIndicator
-      {...manageVault}
+      {...manageVaultWithError}
       customLoader={<AppSpinner sx={{ mx: 'auto' }} variant="styles.spinner.large" />}
     >
       {(manageVault) => (

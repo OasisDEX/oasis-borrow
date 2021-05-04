@@ -119,11 +119,14 @@ export function OpenVaultContainer(props: OpenVaultState) {
 
 export function OpenVaultView({ ilk }: { ilk: string }) {
   const { openVault$ } = useAppContext()
-  const openVault = useObservableWithError(openVault$(ilk))
+  const openVaultWithError = useObservableWithError(openVault$(ilk))
 
   return (
     <Grid sx={{ width: '100%', zIndex: 1 }}>
-      <WithLoadingIndicator {...openVault} customError={<Box>{openVault.error?.message}</Box>}>
+      <WithLoadingIndicator
+        {...openVaultWithError}
+        customError={<Box>{openVaultWithError.error?.message}</Box>}
+      >
         {(openVault) => <OpenVaultContainer {...openVault} />}
       </WithLoadingIndicator>
     </Grid>

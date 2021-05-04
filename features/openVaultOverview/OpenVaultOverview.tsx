@@ -162,14 +162,14 @@ export function OpenVaultOverview({ vaultsOverview, accountDetails, context }: P
 
 export function OpenVaultOverviewView() {
   const { openVaultOverview$, accountData$, context$ } = useAppContext()
-  const openVaultOverview = useObservableWithError(openVaultOverview$)
-  const context = useObservableWithError(context$)
+  const openVaultOverviewWithError = useObservableWithError(openVaultOverview$)
+  const contextWithError = useObservableWithError(context$)
   const accountData = useObservable(accountData$)
 
   return (
     <WithLoadingIndicator
-      value={[openVaultOverview.value, context.value]}
-      error={[openVaultOverview.error, context.error]}
+      value={[openVaultOverviewWithError.value, contextWithError.value]}
+      error={[openVaultOverviewWithError.error, contextWithError.error]}
     >
       {([openVaultOverview, context]) => (
         <OpenVaultOverview

@@ -77,10 +77,10 @@ function CollateralPricesTable({ collateralPrices }: { collateralPrices: Collate
 
 export function CollateralPricesView() {
   const { collateralPrices$ } = useAppContext()
-  const collateralPrices = useObservableWithError(collateralPrices$)
+  const collateralPricesWithError = useObservableWithError(collateralPrices$)
 
   return (
-    <WithLoadingIndicator {...collateralPrices}>
+    <WithLoadingIndicator {...collateralPricesWithError}>
       {(collateralPrices) => <CollateralPricesTable {...{ collateralPrices }} />}
     </WithLoadingIndicator>
   )

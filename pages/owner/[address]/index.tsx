@@ -13,13 +13,13 @@ import { WithTermsOfService } from '../../../features/termsOfService/TermsOfServ
 // TODO Move this to /features
 function Summary({ address }: { address: string }) {
   const { vaultsOverview$, context$ } = useAppContext()
-  const vaultsOverview = useObservableWithError(vaultsOverview$(address))
-  const context = useObservableWithError(context$)
+  const vaultsOverviewWithError = useObservableWithError(vaultsOverview$(address))
+  const contextWithError = useObservableWithError(context$)
 
   return (
     <WithLoadingIndicator
-      value={[vaultsOverview.value, context.value]}
-      error={[vaultsOverview.error, context.error]}
+      value={[vaultsOverviewWithError.value, contextWithError.value]}
+      error={[vaultsOverviewWithError.error, contextWithError.error]}
     >
       {([vaultsOverview, context]) => (
         <VaultsOverviewView vaultsOverview={vaultsOverview} context={context} address={address} />
