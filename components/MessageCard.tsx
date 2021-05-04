@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, Flex, Grid, Text } from 'theme-ui'
 
 interface NoticeCardProps {
-  messages: string[]
+  messages: (string | JSX.Element)[]
   type: 'error' | 'warning'
 }
 

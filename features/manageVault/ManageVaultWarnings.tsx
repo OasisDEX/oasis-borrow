@@ -39,7 +39,7 @@ export function ManageVaultWarnings({ warningMessages, ilkData: { debtFloor } }:
 
   const messages = warningMessages.reduce(
     (acc, message) => [...acc, applyWarningMessageTranslation(message)],
-    [] as string[],
+    [] as (string | JSX.Element)[],
   )
 
   return <MessageCard {...{ messages, type: 'warning' }} />

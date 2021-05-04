@@ -1,7 +1,8 @@
+import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
@@ -34,10 +35,18 @@ export function OpenVaultErrors({
           token,
         })
       case 'generateAmountLessThanDebtFloor':
-        return translate('generate-amount-less-than-debt-floor', {
-          debtFloor: formatCryptoBalance(debtFloor),
-          link: 'xx INSERT LINK HERE xx',
-        })
+        return (
+          <Trans
+            i18nKey="open-vault.errors.generate-amount-less-than-debt-floor"
+            values={{ debtFloor: formatCryptoBalance(debtFloor) }}
+            components={[
+              <AppLink
+                sx={{ color: 'onError' }}
+                href="https://community-development.makerdao.com/en/learn/governance/param-debt-floor/"
+              />,
+            ]}
+          />
+        )
       case 'customAllowanceAmountExceedsMaxUint256':
         return translate('custom-allowance-amount-exceeds-maxuint256')
       case 'customAllowanceAmountLessThanDepositAmount':
@@ -51,7 +60,7 @@ export function OpenVaultErrors({
 
   const messages = errorMessages.reduce(
     (acc, message) => [...acc, applyErrorMessageTranslation(message)],
-    [] as string[],
+    [] as (string | JSX.Element)[],
   )
 
   return <MessageCard {...{ messages, type: 'error' }} />
