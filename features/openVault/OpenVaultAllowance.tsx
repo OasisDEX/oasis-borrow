@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
@@ -6,7 +5,7 @@ import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
-import { Card, Flex, Grid, Label, Link, Radio, Spinner, Text } from 'theme-ui'
+import { Flex, Grid, Label, Radio, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
