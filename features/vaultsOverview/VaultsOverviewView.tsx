@@ -336,7 +336,7 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
                 },
               }}
             >
-              {t('open-vault')}
+              {t('open-vault.title')}
               <Icon
                 name="arrow_right"
                 sx={{

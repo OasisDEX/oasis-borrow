@@ -166,36 +166,37 @@ export function ManageVaultDetails(props: ManageVaultState) {
       liquidationPrice,
       lockedCollateral,
       lockedCollateralUSD,
+      underCollateralized,
+      atRiskLevelDanger,
+      atRiskLevelWarning,
     },
     priceInfo: {
       currentCollateralPrice,
       nextCollateralPrice,
       isStaticCollateralPrice,
       dateNextCollateralPrice,
+      collateralPricePercentageChange,
     },
-    ilkData: { liquidationRatio },
     shouldPaybackAll,
     afterCollateralizationRatio,
   } = props
   const { t } = useTranslation()
   const collRatioColor = collateralizationRatio.isZero()
     ? 'primary'
-    : collateralizationRatio.lte(liquidationRatio.times(1.2))
+    : atRiskLevelDanger || underCollateralized
     ? 'onError'
+    : atRiskLevelWarning
+    ? 'onWarning'
     : 'onSuccess'
 
   const locked = formatAmount(lockedCollateral, token)
   const lockedUSD = formatAmount(lockedCollateralUSD, token)
 
   const newPriceIn = moment(dateNextCollateralPrice).diff(Date.now(), 'minutes')
-  const nextPriceDiff = nextCollateralPrice
-    .minus(currentCollateralPrice)
-    .div(currentCollateralPrice)
-    .times(100)
 
-  const priceChangeColor = nextPriceDiff.isZero()
+  const priceChangeColor = collateralPricePercentageChange.isZero()
     ? 'text.muted'
-    : nextPriceDiff.gt(zero)
+    : collateralPricePercentageChange.gt(zero)
     ? 'onSuccess'
     : 'onError'
 
@@ -255,9 +256,14 @@ export function ManageVaultDetails(props: ManageVaultState) {
               sx={{ fontWeight: 'semiBold', alignItems: 'center', color: priceChangeColor }}
             >
               <Text>${formatAmount(nextCollateralPrice, 'USD')}</Text>
-              <Text sx={{ ml: 2 }}>({formatPercent(nextPriceDiff, { precision: 2 })})</Text>
-              {nextPriceDiff.isZero() ? null : (
-                <Icon sx={{ ml: 2 }} name={nextPriceDiff.gt(zero) ? 'increase' : 'decrease'} />
+              <Text sx={{ ml: 2 }}>
+                ({formatPercent(collateralPricePercentageChange.times(100), { precision: 2 })})
+              </Text>
+              {collateralPricePercentageChange.isZero() ? null : (
+                <Icon
+                  sx={{ ml: 2 }}
+                  name={collateralPricePercentageChange.gt(zero) ? 'increase' : 'decrease'}
+                />
               )}
             </Flex>
           </Flex>

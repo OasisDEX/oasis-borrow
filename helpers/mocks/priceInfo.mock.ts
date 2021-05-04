@@ -46,10 +46,10 @@ export function mockPriceInfo$({
     currentPrice: collateralPrice,
     isStaticPrice: isStatic,
     nextPrice: nextCollateralPrice || collateralPrice,
+    percentageChange: collateralChangePercentage,
     ...(!isStatic && {
       currentPriceUpdate: lastHour,
       nextPriceUpdate: nextHour,
-      percentageChange: collateralChangePercentage,
     }),
   })
 

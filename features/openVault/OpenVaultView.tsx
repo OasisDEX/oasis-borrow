@@ -13,28 +13,10 @@ import { OpenVaultButton } from './OpenVaultButton'
 import { OpenVaultConfirmation } from './OpenVaultConfirmation'
 import { OpenVaultDetails } from './OpenVaultDetails'
 import { OpenVaultEditing } from './OpenVaultEditing'
+import { OpenVaultErrors } from './OpenVaultErrors'
 import { OpenVaultIlkDetails } from './OpenVaultIlkDetails'
 import { OpenVaultProxy } from './OpenVaultProxy'
-
-function OpenVaultErrors({ errorMessages }: OpenVaultState) {
-  const errorString = errorMessages.join(',\n')
-  if (!errorString) return null
-  return (
-    <Card variant="danger">
-      <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
-    </Card>
-  )
-}
-
-function OpenVaultWarnings({ warningMessages }: OpenVaultState) {
-  const warningString = warningMessages.join(',\n')
-  if (!warningString) return null
-  return (
-    <Card variant="warning">
-      <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>
-    </Card>
-  )
-}
+import { OpenVaultWarnings } from './OpenVaultWarnings'
 
 function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage, token }: OpenVaultState) {
   const { t } = useTranslation()

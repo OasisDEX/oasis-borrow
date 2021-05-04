@@ -3,16 +3,13 @@ import { isNullish } from 'helpers/functions'
 import { OpenVaultState } from './openVault'
 
 export type OpenVaultErrorMessage =
-  | 'vaultWillBeUnderCollateralized'
-  | 'vaultWillBeUnderCollateralizedAtNextPrice'
   | 'depositAmountExceedsCollateralBalance'
   | 'depositingAllEthBalance'
   | 'generateAmountExceedsDaiYieldFromDepositingCollateral'
   | 'generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice'
   | 'generateAmountExceedsDebtCeiling'
   | 'generateAmountLessThanDebtFloor'
-  | 'customAllowanceAmountEmpty'
-  | 'customAllowanceAmountGreaterThanMaxUint256'
+  | 'customAllowanceAmountExceedsMaxUint256'
   | 'customAllowanceAmountLessThanDepositAmount'
 
 export function validateErrors(state: OpenVaultState): OpenVaultState {
@@ -59,7 +56,7 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
 
   if (stage === 'allowanceWaitingForConfirmation') {
     if (customAllowanceAmountExceedsMaxUint256) {
-      errorMessages.push('customAllowanceAmountGreaterThanMaxUint256')
+      errorMessages.push('customAllowanceAmountExceedsMaxUint256')
     }
     if (customAllowanceAmountLessThanDepositAmount) {
       errorMessages.push('customAllowanceAmountLessThanDepositAmount')
@@ -70,20 +67,11 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
 }
 
 export type OpenVaultWarningMessage =
-  | 'openingEmptyVault'
-  | 'openingVaultWithCollateralOnly'
-  | 'openingVaultWithCollateralAndDebt'
-  | 'noProxyAddress'
-  | 'insufficientAllowance'
   | 'potentialGenerateAmountLessThanDebtFloor'
   | 'vaultWillBeAtRiskLevelDanger'
   | 'vaultWillBeAtRiskLevelWarning'
   | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
   | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
-  | 'depositingAllCollateralBalance'
-  | 'generatingAllDaiFromIlkDebtAvailable'
-  | 'generatingAllDaiYieldFromDepositingCollateral'
-  | 'generatingAllDaiYieldFromDepositingCollateralAtNextPrice'
 
 export function validateWarnings(state: OpenVaultState): OpenVaultState {
   const {

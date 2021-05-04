@@ -16,28 +16,10 @@ import { ManageVaultConfirmation } from './ManageVaultConfirmation'
 import { ManageVaultDaiAllowance } from './ManageVaultDaiAllowance'
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultEditing } from './ManageVaultEditing'
+import { ManageVaultErrors } from './ManageVaultErrors'
 import { ManageVaultIlkDetails } from './ManageVaultIlkDetails'
 import { ManageVaultProxy } from './ManageVaultProxy'
-
-function ManageVaultErrors({ errorMessages }: ManageVaultState) {
-  const errorString = errorMessages.join(',\n')
-  if (!errorString) return null
-  return (
-    <Card variant="danger">
-      <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
-    </Card>
-  )
-}
-
-function ManageVaultWarnings({ warningMessages }: ManageVaultState) {
-  const warningString = warningMessages.join(',\n')
-  if (!warningString) return null
-  return (
-    <Card variant="warning">
-      <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>
-    </Card>
-  )
-}
+import { ManageVaultWarnings } from './ManageVaultWarnings'
 
 function ManageVaultForm(props: ManageVaultState) {
   const {

@@ -197,7 +197,32 @@
     "min-collat-ratio": "Min. collateral ratio",
     "or": "OR",
     "stability-fee": "Stability Fee",
-    "title": "Manage Vault"
+    "title": "Manage Vault",
+    "warnings": {
+      "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
+      "debt-is-less-than-debt-floor": "Your current Dai debt is below the minimum of {{debtFloor}}. You cannot generate more Dai unless you go over this minimum",
+      "vault-will-be-at-risk-level-danger": "With this action your vault will be at a collaterization ratio very close to the minimum required",
+      "vault-will-be-at-risk-level-danger-at-next-price": "With this action your vault will be at a collaterization ratio very close to the minimum required at the next price update",
+      "vault-will-be-at-risk-level-warning": "With this action your vault will be at a collaterization ratio near the minimum required",
+      "vault-will-be-at-risk-level-warning-at-next-price": "With this action your vault will be at a collaterization ratio near the minimum required at the next price update"
+    },
+    "errors": {
+      "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet",
+      "withdraw-amount-exceeds-free-collateral": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
+      "withdraw-amount-exceeds-free-collateral-at-next-price": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
+      "generate-amount-exceeds-dai-yield-from-total-collateral": "The collaterization ratio for this Maker Vault is too low. Please generate less Dai",
+      "generate-amount-exceeds-dai-yield-from-total-collateral-at-next-price": "The collaterization ratio for this Maker Vault is too low at the next price update. Please generate less Dai",
+      "generate-amount-exceeds-debt-ceiling": "You are trying to generate more than the current debt ceiling allows. The amount of Dai that can be generated is {{maxGenerateAmount}} {{token}}",
+      "generate-amount-less-than-debt-floor": "This vault type requires a minimum of {{debtFloor}} Dai to be generated. Read more about the Dust Limit <0>here</0>.",
+      "payback-amount-exceeds-dai-balance": "You cannot payback more Dai than the amount in your wallet",
+      "payback-amount-exceeds-vault-debt": "You are trying to payback more than your Dai debt for this Maker Vault",
+      "debt-will-be-less-than-debt-floor": "The Maker Vault debt amount either must be 0 or exceed {{debtFloor}} amount of Dai. Please change your payback amount",
+      "custom-collateral-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
+      "custom-collateral-allowance-amount-less-than-deposit-amount": "You need at least an allowance of your deposit amount to continue",
+      "custom-dai-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
+      "custom-dai-allowance-amount-less-than-payback-amount": "You need at least an allowance of your payback amount to continue",
+      "depositing-all-eth-balance": "You need some ETH to pay for the gas fees. Lower your deposit amount"
+    }
   },
   "max": "Max",
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",
@@ -220,7 +245,27 @@
   "one-of-some": "{{one}} of {{some}}",
   "onramp-leave-message": "By clicking buy, you will leave Oasis and be redirected to a third party website where you will complete the buy process.",
   "open-new-vault": "Open new Vault",
-  "open-vault": "Open Vault",
+  "open-vault": {
+    "title": "Open Vault",
+    "warnings": {
+      "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
+      "vault-will-be-at-risk-level-danger": "With this action your vault will be at a collaterization ratio very close to the minimum required",
+      "vault-will-be-at-risk-level-danger-at-next-price": "With this action your vault will be at a collaterization ratio very close to the minimum required at the next price update",
+      "vault-will-be-at-risk-level-warning": "With this action your vault will be at a collaterization ratio near the minimum required",
+      "vault-will-be-at-risk-level-warning-at-next-price": "With this action your vault will be at a collaterization ratio near the minimum required at the next price update"
+    },
+    "errors": {
+      "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet",
+      "generate-amount-exceeds-dai-yield-from-depositing-collateral": "The collaterization ratio for this Maker Vault will be too low. Please generate less Dai",
+      "generate-amount-exceeds-dai-yield-from-depositing-collateral-at-next-price": "The collaterization ratio for this Maker Vault will be too low at the next price update. Please generate less Dai",
+      "generate-amount-exceeds-debt-ceiling": "You are trying to generate more than the current debt ceiling allows. The amount of Dai that can be generated is {{maxGenerateAmount}} {{token}}",
+      "generate-amount-less-than-debt-floor": "This vault type requires a minimum of {{debtFloor}} Dai to be generated. Read more about the Dust Limit <0>here</0>.",
+      "debt-will-be-less-than-debt-floor": "The Maker Vault debt amount either must be 0 or exceed {{debtFloor}} amount of Dai. Please change your payback amount",
+      "custom-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
+      "custom-allowance-amount-less-than-deposit-amount": "You need at least an allowance of your deposit amount to continue",
+      "depositing-all-eth-balance": "You need some ETH to pay for the gas fees. Lower your deposit amount"
+    }
+  },
   "or": "or",
   "paste": "Paste",
   "pending-transactions": "Pending Transactions",
