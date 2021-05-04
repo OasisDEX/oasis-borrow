@@ -28,6 +28,19 @@ function ManageVaultEditingToggle({ stage, toggle }: ManageVaultState) {
   )
 }
 
+function Header({ header, subtext }: { header: string; subtext: string }) {
+  return (
+    <>
+      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
+        {header}
+      </Text>
+      <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
+        {subtext}
+      </Text>
+    </>
+  )
+}
+
 export function ManageVaultFormHeader(props: ManageVaultState) {
   const { t } = useTranslation()
   const { isEditingStage, isProxyStage, isCollateralAllowanceStage, isDaiAllowanceStage } = props
@@ -37,14 +50,20 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
       {isEditingStage ? (
         <ManageVaultEditingToggle {...props} />
       ) : (
-        <Text>
-          {isProxyStage
-            ? t('create-proxy')
-            : isCollateralAllowanceStage
-            ? t('set-token-allownace', { token: props.vault.token.toUpperCase() })
-            : isDaiAllowanceStage
-            ? t('set-token-allownace', 'DAI')
-            : null}
+        <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
+          {isProxyStage ? (
+            <Header header={t('vault-form.header.proxy')} subtext={t('vault-form.subtext.proxy')} />
+          ) : isCollateralAllowanceStage ? (
+            <Header
+              header={t('vault-form.header.allowance', { token: props.vault.token.toUpperCase() })}
+              subtext={t('vault-form.subtext.allowance')}
+            />
+          ) : isDaiAllowanceStage ? (
+            <Header
+              header={t('vault-form.header.daiAllowance')}
+              subtext={t('vault-form.subtext.daiAllowance')}
+            />
+          ) : null}
         </Text>
       )}
     </Box>
