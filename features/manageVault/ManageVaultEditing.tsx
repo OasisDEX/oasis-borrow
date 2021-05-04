@@ -69,7 +69,7 @@ function GenerateInput({
       showMax={true}
       disabled={!accountIsController}
       maxAmount={maxGenerateAmount}
-      maxAmountLabel={'Maximum'}
+      maxAmountLabel={'Max'}
       onSetMax={updateGenerateMax}
       onChange={handleNumericInput(updateGenerate!)}
       hasError={false}
@@ -121,7 +121,7 @@ function PaybackInput({
       token={'DAI'}
       showMax={true}
       maxAmount={maxPaybackAmount}
-      maxAmountLabel={'Maximum'}
+      maxAmountLabel={'Max'}
       onSetMax={updatePaybackMax}
       onChange={handleNumericInput(updatePayback!)}
       hasError={false}
@@ -192,7 +192,10 @@ export function ManageVaultEditing(props: ManageVaultState) {
 
       <Flex sx={{ alignItems: 'center', justifyContent: 'space-evenly' }}>
         <Box sx={{ borderBottom: 'light', height: '0px', width: '100%' }} />
-        <Text mx={3} sx={{ minWidth: 'fit-content' }}>
+        <Text
+          mx={3}
+          sx={{ color: 'muted', minWidth: 'fit-content', fontWeight: 'semiBold', fontSize: '1' }}
+        >
           {t('manage-vault.or')}
         </Text>
         <Box sx={{ borderBottom: 'light', height: '0px', width: '100%' }} />

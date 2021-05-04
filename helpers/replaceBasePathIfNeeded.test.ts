@@ -23,4 +23,11 @@ describe('Replace base path in the beginning of each path', () => {
 
     expect(replaceBasePathIfNeeded(path, basePath)).to.be.eq('/new/path/borrow')
   })
+
+  it('should default to "/" if the replaced path becomes empty', () => {
+    const basePath = '/borrow'
+    const path = '/borrow'
+
+    expect(replaceBasePathIfNeeded(path, basePath)).to.be.eq('/')
+  })
 })

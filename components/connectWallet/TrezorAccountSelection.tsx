@@ -5,8 +5,8 @@ import {
   Web3ContextConnecting,
   Web3ContextConnectingHWSelectAccount,
 } from '@oasisdex/web3-context'
+import { AppSpinner } from 'helpers/AppSpinner'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
-import { AppSpinner } from 'helpers/loadingIndicator/LoadingIndicator'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useRef, useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'

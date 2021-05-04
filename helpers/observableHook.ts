@@ -22,7 +22,7 @@ export function useObservable<O extends Observable<any>>(o$: O): Unpack<O> | und
 
 export function useObservableWithError<O extends Observable<any>>(
   o$: O,
-): [Unpack<O> | undefined, any] {
+): { value: Unpack<O> | undefined; error: any } {
   const [value, setValue] = useState<Unpack<O> | undefined>(undefined)
   const [error, setError] = useState<any>(undefined)
 
@@ -34,5 +34,5 @@ export function useObservableWithError<O extends Observable<any>>(
     return () => subscription.unsubscribe()
   }, [o$])
 
-  return [value, error]
+  return { value, error }
 }

@@ -1425,8 +1425,10 @@ const oasisBaseTheme = {
     },
   },
   zIndices: {
-    modal: 2,
-    cookie: 3,
+    menu: 2,
+    footer: 2,
+    modal: 3,
+    cookie: 4,
   },
   sizingsCustom: {
     pxModalBottom: '22px',
@@ -1443,9 +1445,11 @@ const oasisBaseTheme = {
     },
     spinner: {
       default: {
-        color: 'mutedAlt',
+        color: 'primary',
         strokeWidth: 3,
         size: 16,
+        opacity: 1,
+        zIndex: 1,
       },
       small: {
         variant: 'styles.spinner.default',
@@ -1453,7 +1457,11 @@ const oasisBaseTheme = {
       },
       large: {
         variant: 'styles.spinner.default',
-        size: 25,
+        size: 24,
+      },
+      extraLarge: {
+        variant: 'styles.spinner.default',
+        size: 50,
       },
     },
     h1: {

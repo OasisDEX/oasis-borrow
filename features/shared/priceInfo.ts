@@ -17,8 +17,8 @@ export interface PriceInfo {
   isStaticCollateralPrice: boolean
   isStaticEthPrice: boolean
 
-  collateralPricePercentageChange?: BigNumber
-  ethPricePercentageChange?: BigNumber
+  collateralPricePercentageChange: BigNumber
+  ethPricePercentageChange: BigNumber
 }
 
 export function createPriceInfo$(

@@ -18,10 +18,10 @@ function ManageVaultEditingToggle({ stage, toggle }: ManageVaultState) {
     <Grid sx={{ justifyContent: 'center' }}>
       <Flex onClick={handleToggle}>
         <Button variant={collateralVariant} sx={{ py: 1 }}>
-          {t('collateral')}
+          {t('system.collateral')}
         </Button>
         <Button variant={daiVariant} sx={{ py: 1 }}>
-          {t('dai')}
+          {t('system.dai')}
         </Button>
       </Flex>
     </Grid>

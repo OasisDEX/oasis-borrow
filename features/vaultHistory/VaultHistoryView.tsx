@@ -1,8 +1,9 @@
 import { BigNumber } from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { ColumnDef, Table } from 'components/Table'
+import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
+import { useObservableWithError } from 'helpers/observableHook'
 import moment from 'moment'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
@@ -79,18 +80,22 @@ const columns: ColumnDef<VaultHistoryEvent, {}>[] = [
 
 export function VaultHistoryView({ id }: { id: BigNumber }) {
   const { vaultHistory$ } = useAppContext()
+  const vaultHistoryWithError = useObservableWithError(vaultHistory$(id))
   const { t } = useTranslation()
-
-  const vaultHistory = useObservable(vaultHistory$(id))
-
-  if (vaultHistory === undefined) {
-    return null
-  }
 
   return (
     <Box sx={{ gridColumn: '1/2', zIndex: 1 }}>
       <Heading sx={{ mb: 4 }}>{t('vault-history')}</Heading>
-      <Table data={vaultHistory} primaryKey="id" state={{}} columns={columns} />
+      <WithLoadingIndicator
+        {...vaultHistoryWithError}
+        customLoader={
+          <AppSpinner sx={{ mx: 'auto', display: 'block' }} variant="styles.spinner.large" />
+        }
+      >
+        {(vaultHistory) => (
+          <Table data={vaultHistory} primaryKey="id" state={{}} columns={columns} />
+        )}
+      </WithLoadingIndicator>
     </Box>
   )
 }

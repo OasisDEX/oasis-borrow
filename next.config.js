@@ -10,12 +10,13 @@ const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const { i18n } = require('./next-i18next.config')
 
 const isProduction = process.env.NODE_ENV === 'production'
+const basePath = isProduction ? '/borrow' : ''
 
 module.exports = withBundleAnalyzer(
   withPWA(
     withMDX(
       withSass({
-        basePath: isProduction ? '/borrow' : '',
+        basePath,
         typescript: {
           // !! WARN !!
           // Dangerously allow production builds to successfully complete even if
@@ -32,7 +33,7 @@ module.exports = withBundleAnalyzer(
           buildHash: require('child_process').execSync('git rev-parse HEAD').toString().trim(),
           buildDate: Date.now(),
           apiHost: process.env.API_HOST,
-          basePath: isProduction ? '/borrow' : '',
+          basePath,
         },
         webpack: function (config, { isServer }) {
           // TODO: Figure out how to disable mangling partially without bresking the aplication.

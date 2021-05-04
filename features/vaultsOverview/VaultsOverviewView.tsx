@@ -107,7 +107,7 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
             as={`/${id}`}
             href={`/[vault]`}
           >
-            {t('manage-vault.header')}
+            {t('manage-vault.action')}
           </AppLink>
         </Box>
       )
@@ -339,7 +339,7 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
                 },
               }}
             >
-              {t('open-vault')}
+              {t('open-vault.title')}
               <Icon
                 name="arrow_right"
                 sx={{

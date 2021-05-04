@@ -122,25 +122,27 @@ export function OpenVaultDetails(props: OpenVaultState) {
       nextCollateralPrice,
       isStaticCollateralPrice,
       dateNextCollateralPrice,
+      collateralPricePercentageChange,
     },
+    vaultWillBeAtRiskLevelDanger,
+    vaultWillBeUnderCollateralized,
+    vaultWillBeAtRiskLevelWarning,
   } = props
+  const collRatioColor = afterCollateralizationRatio.isZero()
+    ? 'primary'
+    : vaultWillBeAtRiskLevelDanger || vaultWillBeUnderCollateralized
+    ? 'onError'
+    : vaultWillBeAtRiskLevelWarning
+    ? 'onWarning'
+    : 'onSuccess'
 
   const { t } = useTranslation()
 
-  const afterCollRatio = afterCollateralizationRatio.eq(zero)
-    ? '--'
-    : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
-
   const newPriceIn = moment(dateNextCollateralPrice).diff(Date.now(), 'minutes')
 
-  const nextPriceDiff = nextCollateralPrice
-    .minus(currentCollateralPrice)
-    .div(currentCollateralPrice)
-    .times(100)
-
-  const priceChangeColor = nextPriceDiff.isZero()
+  const priceChangeColor = collateralPricePercentageChange.isZero()
     ? 'text.muted'
-    : nextPriceDiff.gt(zero)
+    : collateralPricePercentageChange.gt(zero)
     ? 'onSuccess'
     : 'onError'
 
@@ -161,7 +163,9 @@ export function OpenVaultDetails(props: OpenVaultState) {
         <Heading variant="subheader" as="h2">
           {t('system.collateralization-ratio')}
         </Heading>
-        <Text variant="display">{afterCollRatio}</Text>
+        <Text sx={{ color: collRatioColor }} variant="display">
+          {formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })}
+        </Text>
       </Box>
 
       {/* Current Price */}
@@ -194,9 +198,14 @@ export function OpenVaultDetails(props: OpenVaultState) {
               sx={{ fontWeight: 'semiBold', alignItems: 'center', color: priceChangeColor }}
             >
               <Text>${formatAmount(nextCollateralPrice, 'USD')}</Text>
-              <Text sx={{ ml: 2 }}>({formatPercent(nextPriceDiff, { precision: 2 })})</Text>
-              {nextPriceDiff.isZero() ? null : (
-                <Icon sx={{ ml: 2 }} name={nextPriceDiff.gt(zero) ? 'increase' : 'decrease'} />
+              <Text sx={{ ml: 2 }}>
+                ({formatPercent(collateralPricePercentageChange.times(100), { precision: 2 })})
+              </Text>
+              {collateralPricePercentageChange.isZero() ? null : (
+                <Icon
+                  sx={{ ml: 2 }}
+                  name={collateralPricePercentageChange.gt(zero) ? 'increase' : 'decrease'}
+                />
               )}
             </Flex>
           </Flex>

@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
+import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -15,28 +16,10 @@ import { ManageVaultConfirmation } from './ManageVaultConfirmation'
 import { ManageVaultDaiAllowance } from './ManageVaultDaiAllowance'
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultEditing } from './ManageVaultEditing'
+import { ManageVaultErrors } from './ManageVaultErrors'
 import { ManageVaultIlkDetails } from './ManageVaultIlkDetails'
 import { ManageVaultProxy } from './ManageVaultProxy'
-
-function ManageVaultErrors({ errorMessages }: ManageVaultState) {
-  const errorString = errorMessages.join(',\n')
-  if (!errorString) return null
-  return (
-    <Card variant="danger">
-      <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onError' }}>{errorString}</Text>
-    </Card>
-  )
-}
-
-function ManageVaultWarnings({ warningMessages }: ManageVaultState) {
-  const warningString = warningMessages.join(',\n')
-  if (!warningString) return null
-  return (
-    <Card variant="warning">
-      <Text sx={{ flexWrap: 'wrap', fontSize: 2, color: 'onWarning' }}>{warningString}</Text>
-    </Card>
-  )
-}
+import { ManageVaultWarnings } from './ManageVaultWarnings'
 
 function ManageVaultForm(props: ManageVaultState) {
   const {
@@ -110,14 +93,18 @@ export function ManageVaultContainer(props: ManageVaultState) {
 
 export function ManageVaultView({ id }: { id: BigNumber }) {
   const { manageVault$ } = useAppContext()
-  const [manageVault, manageVaultError] = useObservableWithError(manageVault$(id))
-
-  if (manageVaultError) return <>Error!</>
-  if (!manageVault) return <>loading...</>
+  const manageVaultWithError = useObservableWithError(manageVault$(id))
 
   return (
-    <Grid sx={{ width: '100%', zIndex: 1 }}>
-      <ManageVaultContainer {...manageVault} />
-    </Grid>
+    <WithLoadingIndicator
+      {...manageVaultWithError}
+      customLoader={<AppSpinner sx={{ mx: 'auto' }} variant="styles.spinner.large" />}
+    >
+      {(manageVault) => (
+        <Grid sx={{ width: '100%', zIndex: 1 }}>
+          <ManageVaultContainer {...manageVault} />
+        </Grid>
+      )}
+    </WithLoadingIndicator>
   )
 }
