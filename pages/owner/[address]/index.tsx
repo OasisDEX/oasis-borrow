@@ -2,10 +2,10 @@ import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { VaultsOverviewView } from 'features/vaultsOverview/VaultsOverviewView'
-import { useObservable } from 'helpers/observableHook'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { useObservableWithError } from 'helpers/observableHook'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { Box, Spinner } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { WithTermsOfService } from '../../../features/termsOfService/TermsOfService'
@@ -13,29 +13,19 @@ import { WithTermsOfService } from '../../../features/termsOfService/TermsOfServ
 // TODO Move this to /features
 function Summary({ address }: { address: string }) {
   const { vaultsOverview$, context$ } = useAppContext()
-  const vaultsOverview = useObservable(vaultsOverview$(address))
-  const context = useObservable(context$)
+  const vaultsOverviewWithError = useObservableWithError(vaultsOverview$(address))
+  const contextWithError = useObservableWithError(context$)
 
-  if (vaultsOverview === undefined || context === undefined) {
-    return (
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Spinner />
-      </Box>
-    )
-  }
-
-  return <VaultsOverviewView vaultsOverview={vaultsOverview} context={context} address={address} />
+  return (
+    <WithLoadingIndicator
+      value={[vaultsOverviewWithError.value, contextWithError.value]}
+      error={[vaultsOverviewWithError.error, contextWithError.error]}
+    >
+      {([vaultsOverview, context]) => (
+        <VaultsOverviewView vaultsOverview={vaultsOverview} context={context} address={address} />
+      )}
+    </WithLoadingIndicator>
+  )
 }
 
 export async function getServerSideProps(ctx: any) {

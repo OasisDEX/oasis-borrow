@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { Context, every10Seconds$ } from 'blockchain/network'
+import { zero } from 'helpers/zero'
 import { bindNodeCallback, combineLatest, forkJoin, iif, Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import {
@@ -70,7 +71,7 @@ export interface OraclePriceData {
   nextPriceUpdate?: Date
   priceUpdateInterval?: number
   isStaticPrice: boolean
-  percentageChange?: BigNumber
+  percentageChange: BigNumber
 }
 
 const DSVALUE_APPROX_SIZE = 6000
@@ -91,14 +92,10 @@ function transformOraclePrice({
   return new BigNumber(rawPrice)
 }
 
-function calculatePricePercentageChange(
-  current: BigNumber,
-  next: BigNumber | undefined,
-): BigNumber | undefined {
-  if (!next) return undefined
-
+function calculatePricePercentageChange(current: BigNumber, next: BigNumber): BigNumber {
   const rawPriceChange = current.div(next)
-  return rawPriceChange.gte(1) ? rawPriceChange.minus(1).times(-1) : rawPriceChange
+  if (rawPriceChange.isZero()) return zero
+  return current.minus(next).div(current).times(-1)
 }
 
 export function createOraclePriceData$(
@@ -132,13 +129,13 @@ export function createOraclePriceData$(
               const currentPrice = transformOraclePrice({ token, oraclePrice: peek })
               const nextPrice = peep
                 ? transformOraclePrice({ token, oraclePrice: peep })
-                : undefined
+                : currentPrice
 
               const percentageChange = calculatePricePercentageChange(currentPrice, nextPrice)
 
               return of({
                 currentPrice,
-                nextPrice: nextPrice || currentPrice,
+                nextPrice: nextPrice,
                 currentPriceUpdate,
                 nextPriceUpdate,
                 priceUpdateInterval,

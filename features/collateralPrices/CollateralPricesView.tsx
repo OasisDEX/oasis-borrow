@@ -1,7 +1,7 @@
 import { useAppContext } from 'components/AppContextProvider'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
-import { zero } from 'helpers/zero'
+import { useObservableWithError } from 'helpers/observableHook'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
@@ -20,13 +20,12 @@ function CollateralPricesRow({
     <>
       <Text>{token} </Text>
       <Text>${formatAmount(currentPrice, 'USD')}</Text>
-      <Text>{isStaticPrice ? `$${formatAmount(nextPrice, 'USD')}` : '--'}</Text>
+      <Text>${formatAmount(nextPrice, 'USD')}</Text>
       <Text>
-        {percentageChange
-          ? `${percentageChange.gt(zero) ? '+' : ''}${formatPercent(percentageChange, {
-              precision: 4,
-            })}`
-          : '--'}
+        {formatPercent(percentageChange.times(100), {
+          precision: 4,
+          plus: true,
+        })}
       </Text>
       <Text>
         {currentPriceUpdate
@@ -76,11 +75,11 @@ function CollateralPricesTable({ collateralPrices }: { collateralPrices: Collate
 
 export function CollateralPricesView() {
   const { collateralPrices$ } = useAppContext()
-  const collateralPrices = useObservable(collateralPrices$)
+  const collateralPricesWithError = useObservableWithError(collateralPrices$)
 
-  if (!collateralPrices) {
-    return null
-  }
-
-  return <CollateralPricesTable {...{ collateralPrices }} />
+  return (
+    <WithLoadingIndicator {...collateralPricesWithError}>
+      {(collateralPrices) => <CollateralPricesTable {...{ collateralPrices }} />}
+    </WithLoadingIndicator>
+  )
 }

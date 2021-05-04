@@ -36,7 +36,7 @@ export function BasicHeader({
   sx,
 }: { variant?: string; sx?: SxStyleProp } & WithChildren) {
   return (
-    <Box as="header">
+    <Box as="header" sx={{ position: 'relative', zIndex: 'menu' }}>
       <Container
         variant={variant}
         sx={{

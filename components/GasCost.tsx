@@ -1,8 +1,8 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
+import { AppSpinner } from 'helpers/AppSpinner'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { formatPrice } from 'helpers/formatters/format'
-import { LoadingIndicator } from 'helpers/loadingIndicator/LoadingIndicator'
 import { useTranslation } from 'next-i18next'
 import { TFunction } from 'next-i18next'
 import React from 'react'
@@ -18,7 +18,7 @@ function getGasText({
 }: HasGasEstimation & { t: TFunction }) {
   switch (gasEstimationStatus) {
     case GasEstimationStatus.calculating:
-      return <LoadingIndicator />
+      return <AppSpinner />
     case GasEstimationStatus.error:
       return <Text variant="error">{t('gas-estimation-error')}</Text>
     case GasEstimationStatus.unknown:
