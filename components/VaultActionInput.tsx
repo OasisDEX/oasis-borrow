@@ -181,7 +181,7 @@ export function VaultActionInput({
               }}
             >
               {!auxiliaryFlag
-                ? `${
+                ? `~ ${
                     auxiliarySymbol === 'USD'
                       ? formatAmount(auxiliaryAmount || zero, 'USD')
                       : formatCryptoBalance(auxiliaryAmount || zero)
