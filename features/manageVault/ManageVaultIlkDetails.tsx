@@ -1,8 +1,8 @@
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Card, Grid, Text } from 'theme-ui'
 
+import { Details } from '../../components/forms/Details'
 import { ManageVaultState } from './manageVault'
 
 export function ManageVaultIlkDetails({
@@ -14,45 +14,27 @@ export function ManageVaultIlkDetails({
 
   if (inputAmountsEmpty || !isEditingStage) return null
   return (
-    <Card bg="secondaryAlt" sx={{ border: 'none' }}>
-      <Grid columns={'2fr 3fr'}>
-        <>
-          <Text sx={{ fontSize: 2 }}>{t('manage-vault.dai-available')}</Text>
-          <Text sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}>{`${formatAmount(
-            ilkDebtAvailable,
-            'DAI',
-          )} DAI`}</Text>
-        </>
-
-        <>
-          <Text sx={{ fontSize: 2 }}>{t('manage-vault.min-collat-ratio')}</Text>
-          <Text
-            sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}
-          >{`${formatPercent(liquidationRatio.times(100), { precision: 2 })}`}</Text>
-        </>
-
-        <>
-          <Text sx={{ fontSize: 2 }}>{t('manage-vault.stability-fee')}</Text>
-          <Text
-            sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}
-          >{`${formatPercent(stabilityFee.times(100), { precision: 2 })}`}</Text>
-        </>
-
-        <>
-          <Text sx={{ fontSize: 2 }}>{t('manage-vault.liquidation-fee')}</Text>
-          <Text
-            sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}
-          >{`${formatPercent(liquidationPenalty.times(100), { precision: 2 })}`}</Text>
-        </>
-
-        <>
-          <Text sx={{ fontSize: 2 }}>{t('manage-vault.dust-limit')}</Text>
-          <Text sx={{ fontSize: 2, fontWeight: 'semiBold', textAlign: 'end' }}>{`${formatAmount(
-            debtFloor,
-            'DAI',
-          )} DAI`}</Text>
-        </>
-      </Grid>
-    </Card>
+    <Details>
+      <Details.Item
+        label={t('manage-vault.dai-available')}
+        value={`${formatCryptoBalance(ilkDebtAvailable)} DAI`}
+      />
+      <Details.Item
+        label={t('manage-vault.min-collat-ratio')}
+        value={`${formatPercent(liquidationRatio.times(100), { precision: 2 })}`}
+      />
+      <Details.Item
+        label={t('manage-vault.stability-fee')}
+        value={`${formatPercent(stabilityFee.times(100), { precision: 2 })}`}
+      />
+      <Details.Item
+        label={t('manage-vault.liquidation-fee')}
+        value={`${formatPercent(liquidationPenalty.times(100), { precision: 2 })}`}
+      />
+      <Details.Item
+        label={t('manage-vault.dust-limit')}
+        value={`${formatCryptoBalance(debtFloor)} DAI`}
+      />
+    </Details>
   )
 }

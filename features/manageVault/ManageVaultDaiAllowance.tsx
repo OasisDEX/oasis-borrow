@@ -1,19 +1,18 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
+import { Radio } from 'components/forms/Radio'
+import { TxStatusCardProgress, TxStatusCardSuccess } from 'features/openVault/TxStatusCard'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
-import { Card, Flex, Grid, Label, Link, Radio, Spinner, Text } from 'theme-ui'
+import { Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 
 export function ManageVaultDaiAllowance({
   stage,
-  daiAllowanceTxHash,
-  etherscan,
   daiAllowanceAmount,
   paybackAmount,
   updateDaiAllowanceAmount,
@@ -34,31 +33,39 @@ export function ManageVaultDaiAllowance({
     <Grid>
       {canSelectRadio && (
         <>
-          <Label
-            sx={{ border: 'light', p: 2, borderRadius: 'small' }}
-            onClick={setDaiAllowanceAmountUnlimited!}
+          <Radio
+            onChange={setDaiAllowanceAmountUnlimited!}
+            name="manage-vault-dai-allowance"
+            checked={isUnlimited}
           >
-            <Radio name="dark-mode" value="true" defaultChecked={isUnlimited} />
-            <Text sx={{ fontSize: 2 }}>{t('unlimited-allowance')}</Text>
-          </Label>
-          <Label
-            sx={{ border: 'light', p: 2, borderRadius: 'small' }}
-            onClick={setDaiAllowanceAmountToPaybackAmount!}
+            <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: '18px' }}>
+              {t('unlimited-allowance')}
+            </Text>
+          </Radio>
+          <Radio
+            onChange={setDaiAllowanceAmountToPaybackAmount!}
+            name="manage-vault-dai-allowance"
+            checked={isPayback}
           >
-            <Radio name="dark-mode" value="true" defaultChecked={isPayback} />
-            <Text sx={{ fontSize: 2 }}>
+            <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: '18px' }}>
               {t('dai-paying-back', { amount: formatCryptoBalance(paybackAmount!) })}
             </Text>
-          </Label>
-          <Label
-            sx={{ border: 'light', p: 2, borderRadius: 'small' }}
-            onClick={resetDaiAllowanceAmount!}
-          >
-            <Radio name="dark-mode" value="true" defaultChecked={isCustom} />
-            <Grid columns="2fr 2fr 1fr" sx={{ alignItems: 'center' }}>
-              <Text sx={{ fontSize: 2 }}>{t('custom')}</Text>
+          </Radio>
+          <Radio onChange={resetDaiAllowanceAmount!} name="allowance-open-form" checked={isCustom}>
+            <Grid columns="2fr 2fr 1fr" sx={{ alignItems: 'center', my: 2 }}>
+              <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
+                {t('custom')}
+              </Text>
               <BigNumberInput
-                sx={{ p: 1, borderRadius: 'small', width: '100px', fontSize: 1 }}
+                sx={{
+                  p: 1,
+                  borderRadius: 'small',
+                  borderColor: 'light',
+                  width: '100px',
+                  fontSize: 1,
+                  px: 3,
+                  py: '12px',
+                }}
                 disabled={!isCustom}
                 value={
                   daiAllowanceAmount && isCustom
@@ -74,51 +81,37 @@ export function ManageVaultDaiAllowance({
               />
               <Text sx={{ fontSize: 1 }}>DAI</Text>
             </Grid>
-          </Label>
+          </Radio>
         </>
-      )}
-      {stage === 'daiAllowanceInProgress' && (
-        <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Spinner size={25} color="onWarning" />
-            <Grid pl={2} gap={1}>
-              <Text color="onWarning" sx={{ fontSize: 1 }}>
-                {t('setting-allowance-for', { token: 'DAI' })}
-              </Text>
-              <Link
-                href={`${etherscan}/tx/${daiAllowanceTxHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Text color="onWarning" sx={{ fontSize: 1 }}>
-                  {t('view-on-etherscan')} -{'>'}
-                </Text>
-              </Link>
-            </Grid>
-          </Flex>
-        </Card>
-      )}
-      {stage === 'daiAllowanceSuccess' && (
-        <Card sx={{ backgroundColor: 'success', border: 'none' }}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Icon name="checkmark" size={25} color="onSuccess" />
-            <Grid pl={2} gap={1}>
-              <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                {t('set-allowance-for', { token: 'DAI' })}
-              </Text>
-              <Link
-                href={`${etherscan}/tx/${daiAllowanceTxHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                  {t('view-on-etherscan')} -{'>'}
-                </Text>
-              </Link>
-            </Grid>
-          </Flex>
-        </Card>
       )}
     </Grid>
   )
+}
+
+export function ManageVaultDaiAllowanceStatus({
+  stage,
+  daiAllowanceTxHash,
+  etherscan,
+}: ManageVaultState) {
+  const { t } = useTranslation()
+
+  if (stage === 'daiAllowanceInProgress') {
+    return (
+      <TxStatusCardProgress
+        text={t('setting-allowance-for', { token: 'DAI' })}
+        etherscan={etherscan!}
+        txHash={daiAllowanceTxHash!}
+      />
+    )
+  }
+  if (stage === 'daiAllowanceSuccess') {
+    return (
+      <TxStatusCardSuccess
+        text={t('set-allowance-for', { token: 'DAI' })}
+        etherscan={etherscan!}
+        txHash={daiAllowanceTxHash!}
+      />
+    )
+  }
+  return null
 }

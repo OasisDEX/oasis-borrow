@@ -1,14 +1,14 @@
-import { Icon } from '@makerdao/dai-ui-icons'
+import { Details } from 'components/forms/Details'
+import { TxStatusCardProgress, TxStatusCardSuccess } from 'features/openVault/TxStatusCard'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Card, Flex, Grid, Link, Spinner, Text } from 'theme-ui'
+import { Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 
 export function ManageVaultConfirmation({
-  stage,
   balanceInfo: { collateralBalance },
   depositAmount,
   generateAmount,
@@ -17,8 +17,8 @@ export function ManageVaultConfirmation({
   vault: { token },
   afterCollateralizationRatio,
   afterLiquidationPrice,
-  etherscan,
-  manageTxHash,
+  vaultWillBeAtRiskLevelDanger,
+  vaultWillBeAtRiskLevelWarning,
 }: ManageVaultState) {
   const { t } = useTranslation()
   const walletBalance = formatCryptoBalance(collateralBalance)
@@ -36,87 +36,64 @@ export function ManageVaultConfirmation({
 
   const afterLiqPrice = formatAmount(afterLiquidationPrice, 'USD')
 
+  const vaultRiskColor = vaultWillBeAtRiskLevelDanger
+    ? 'banner.danger'
+    : vaultWillBeAtRiskLevelWarning
+    ? 'banner.warning'
+    : 'onSuccess'
+
   return (
     <Grid>
-      <Card backgroundColor="Success">
-        <Grid columns="1fr 1fr">
-          <Text sx={{ fontSize: 1 }}>{t('system.in-your-wallet')}</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
-            {walletBalance} {token}
-          </Text>
+      <Details>
+        <Details.Item label={t('system.in-your-wallet')} value={`${walletBalance} ${token}`} />
 
-          <Text sx={{ fontSize: 1 }}>{t('moving-into-vault')}</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
-            {depositCollateral} {token}
-          </Text>
-
-          <Text sx={{ fontSize: 1 }}>{t('moving-out-vault')}</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
-            {withdrawingCollateral} {token}
-          </Text>
-
-          <Text sx={{ fontSize: 1 }}>{t('remaining-in-wallet')}</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>
-            {remainingInWallet} {token}
-          </Text>
-
-          <Text sx={{ fontSize: 1 }}>{t('dai-being-generated')}</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>{daiToBeGenerated} DAI</Text>
-
-          <Text sx={{ fontSize: 1 }}>{t('dai-paying-back')}</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>{daiPayingBack} DAI</Text>
-
-          <Text sx={{ fontSize: 1 }}>{t('system.collateral-ratio')}</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>{afterCollRatio}</Text>
-
-          <Text sx={{ fontSize: 1 }}>{t('system.liquidation-price')}</Text>
-          <Text sx={{ fontSize: 1, textAlign: 'right' }}>${afterLiqPrice}</Text>
-        </Grid>
-      </Card>
-
-      {stage === 'manageInProgress' && (
-        <Card sx={{ backgroundColor: 'warning', border: 'none' }}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Spinner size={25} color="onWarning" />
-            <Grid pl={2} gap={1}>
-              <Text color="onWarning" sx={{ fontSize: 1 }}>
-                {t('changing-vault')}
-              </Text>
-              <Link
-                href={`${etherscan}/tx/${manageTxHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Text color="onWarning" sx={{ fontSize: 1 }}>
-                  {t('view-on-etherscan')} -{'>'}
-                </Text>
-              </Link>
-            </Grid>
-          </Flex>
-        </Card>
-      )}
-
-      {stage === 'manageSuccess' && (
-        <Card sx={{ backgroundColor: 'success', border: 'none' }}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Icon name="checkmark" size={25} color="onSuccess" />
-            <Grid pl={2} gap={1}>
-              <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                {t('vault-changed')}
-              </Text>
-              <Link
-                href={`${etherscan}/tx/${manageTxHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Text color="onSuccess" sx={{ fontSize: 1 }}>
-                  {t('view-on-etherscan')} -{'>'}
-                </Text>
-              </Link>
-            </Grid>
-          </Flex>
-        </Card>
-      )}
+        {depositAmount?.gt(zero) && (
+          <Details.Item label={t('moving-into-vault')} value={`${depositCollateral} ${token}`} />
+        )}
+        {withdrawAmount?.gt(zero) && (
+          <Details.Item label={t('moving-out-vault')} value={`${withdrawingCollateral} ${token}`} />
+        )}
+        <Details.Item label={t('remaining-in-wallet')} value={`${remainingInWallet} ${token}`} />
+        {generateAmount?.gt(zero) && (
+          <Details.Item label={t('dai-being-generated')} value={`${daiToBeGenerated} DAI`} />
+        )}
+        {paybackAmount?.gt(zero) && (
+          <Details.Item label={t('dai-paying-back-label')} value={`${daiPayingBack} DAI`} />
+        )}
+        <Details.Item
+          label={t('system.collateral-ratio')}
+          value={<Text sx={{ color: vaultRiskColor }}>{afterCollRatio}</Text>}
+        />
+        <Details.Item label={t('system.liquidation-price')} value={`$${afterLiqPrice}`} />
+      </Details>
     </Grid>
   )
+}
+
+export function ManageVaultConfirmationStatus({
+  stage,
+  etherscan,
+  manageTxHash,
+}: ManageVaultState) {
+  const { t } = useTranslation()
+
+  if (stage === 'manageInProgress') {
+    return (
+      <TxStatusCardProgress
+        text={t('changing-vault')}
+        etherscan={etherscan!}
+        txHash={manageTxHash!}
+      />
+    )
+  }
+  if (stage === 'manageSuccess') {
+    return (
+      <TxStatusCardSuccess
+        text={t('vault-changed')}
+        etherscan={etherscan!}
+        txHash={manageTxHash!}
+      />
+    )
+  }
+  return null
 }

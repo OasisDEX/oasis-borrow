@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Spinner, Text } from 'theme-ui'
@@ -119,17 +118,28 @@ export function ManageVaultButton(props: ManageVaultState) {
     <>
       <Button onClick={handleProgress} disabled={!canProgress}>
         {isLoadingStage ? (
-          <Flex sx={{ justifyContent: 'center' }}>
-            <Spinner size={25} color="surface" />
-            <Text pl={2}>{buttonText}</Text>
+          <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
+            <Text sx={{ position: 'relative' }} pl={2}>
+              <Spinner
+                size={25}
+                color="surface"
+                sx={{
+                  position: 'absolute',
+                  left: 0,
+                  top: '50%',
+                  transform: 'translate(-105%, -50%)',
+                }}
+              />
+              {buttonText}
+            </Text>
           </Flex>
         ) : (
           <Text>{buttonText}</Text>
         )}
       </Button>
       {canRegress && (
-        <Button variant="textual" onClick={handleRegress} sx={{ fontSize: 4 }}>
-          <Icon name="arrow_right" sx={{ transform: 'rotate(180deg)' }} /> {secondaryButtonText}
+        <Button variant="textual" onClick={handleRegress} sx={{ fontSize: 3 }}>
+          {secondaryButtonText}
         </Button>
       )}
     </>
