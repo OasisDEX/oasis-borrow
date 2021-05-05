@@ -53,30 +53,30 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
 
   return (
     <Box>
-      {isEditingStage ? (
-        <ManageVaultEditingToggle {...props} />
-      ) : (
-        <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
-          {isProxyStage ? (
-            <Header header={t('vault-form.header.proxy')} subtext={t('vault-form.subtext.proxy')} />
-          ) : isCollateralAllowanceStage ? (
-            <Header
-              header={t('vault-form.header.allowance', { token: props.vault.token.toUpperCase() })}
-              subtext={t('vault-form.subtext.allowance')}
-            />
-          ) : isDaiAllowanceStage ? (
-            <Header
-              header={t('vault-form.header.daiAllowance')}
-              subtext={t('vault-form.subtext.daiAllowance')}
-            />
-          ) : isManageStage ? (
-            <Header
-              header={t('vault-form.header.confirm')}
-              subtext={t('vault-form.subtext.confirm')}
-            />
-          ) : null}
-        </Text>
-      )}
+      {isEditingStage && <ManageVaultEditingToggle {...props} />}
+      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
+        {isProxyStage && (
+          <Header header={t('vault-form.header.proxy')} subtext={t('vault-form.subtext.proxy')} />
+        )}
+        {isCollateralAllowanceStage && (
+          <Header
+            header={t('vault-form.header.allowance', { token: props.vault.token.toUpperCase() })}
+            subtext={t('vault-form.subtext.allowance')}
+          />
+        )}
+        {isDaiAllowanceStage && (
+          <Header
+            header={t('vault-form.header.daiAllowance')}
+            subtext={t('vault-form.subtext.daiAllowance')}
+          />
+        )}
+        {isManageStage && (
+          <Header
+            header={t('vault-form.header.confirm')}
+            subtext={t('vault-form.subtext.confirm')}
+          />
+        )}
+      </Text>
     </Box>
   )
 }

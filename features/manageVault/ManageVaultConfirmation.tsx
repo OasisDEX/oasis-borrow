@@ -1,4 +1,4 @@
-import { DetailsItem } from 'components/forms/DetailsItem'
+import { Details } from 'components/forms/Details'
 import { TxStatusCardProgress } from 'features/openVault/TxStatusCard'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
@@ -44,33 +44,31 @@ export function ManageVaultConfirmation({
 
   return (
     <Grid>
-      <Card backgroundColor="secondaryAlt" sx={{ border: 'none' }}>
-        <Grid columns="1fr 1fr">
-          <DetailsItem header={t('system.in-your-wallet')} value={`${walletBalance} ${token}`} />
+      <Details>
+        <Details.Item header={t('system.in-your-wallet')} value={`${walletBalance} ${token}`} />
 
-          {depositAmount?.gt(zero) && (
-            <DetailsItem header={t('moving-into-vault')} value={`${depositCollateral} ${token}`} />
-          )}
-          {withdrawAmount?.gt(zero) && (
-            <DetailsItem
-              header={t('moving-out-vault')}
-              value={`${withdrawingCollateral} ${token}`}
-            />
-          )}
-          <DetailsItem header={t('remaining-in-wallet')} value={`${remainingInWallet} ${token}`} />
-          {generateAmount?.gt(zero) && (
-            <DetailsItem header={t('dai-being-generated')} value={`${daiToBeGenerated} DAI`} />
-          )}
-          {paybackAmount?.gt(zero) && (
-            <DetailsItem header={t('dai-paying-back-label')} value={`${daiPayingBack} DAI`} />
-          )}
-          <DetailsItem
-            header={t('system.collateral-ratio')}
-            value={<Text sx={{ color: vaultRiskColor }}>{afterCollRatio}</Text>}
+        {depositAmount?.gt(zero) && (
+          <Details.Item header={t('moving-into-vault')} value={`${depositCollateral} ${token}`} />
+        )}
+        {withdrawAmount?.gt(zero) && (
+          <Details.Item
+            header={t('moving-out-vault')}
+            value={`${withdrawingCollateral} ${token}`}
           />
-          <DetailsItem header={t('system.liquidation-price')} value={`$${afterLiqPrice}`} />
-        </Grid>
-      </Card>
+        )}
+        <Details.Item header={t('remaining-in-wallet')} value={`${remainingInWallet} ${token}`} />
+        {generateAmount?.gt(zero) && (
+          <Details.Item header={t('dai-being-generated')} value={`${daiToBeGenerated} DAI`} />
+        )}
+        {paybackAmount?.gt(zero) && (
+          <Details.Item header={t('dai-paying-back-label')} value={`${daiPayingBack} DAI`} />
+        )}
+        <Details.Item
+          header={t('system.collateral-ratio')}
+          value={<Text sx={{ color: vaultRiskColor }}>{afterCollRatio}</Text>}
+        />
+        <Details.Item header={t('system.liquidation-price')} value={`$${afterLiqPrice}`} />
+      </Details>
     </Grid>
   )
 }
