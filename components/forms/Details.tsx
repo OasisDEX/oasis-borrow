@@ -1,5 +1,5 @@
 import React from 'react'
-import { SxStyleProp, Text } from 'theme-ui'
+import { Card, Grid, SxStyleProp, Text } from 'theme-ui'
 
 export function Label({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
   return (
@@ -30,3 +30,13 @@ export function DetailsItem({
     </>
   )
 }
+
+export function Details({ children }: React.PropsWithChildren<{}>) {
+  return (
+    <Card bg="secondaryAlt" sx={{ border: 'none' }}>
+      <Grid columns={'auto 1fr'}>{children}</Grid>
+    </Card>
+  )
+}
+
+Details.Item = DetailsItem
