@@ -1,6 +1,6 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { Radio } from 'components/forms/Radio'
-import { TxStatusCardProgress } from 'features/openVault/TxStatusCard'
+import { TxStatusCardProgress, TxStatusCardSuccess } from 'features/openVault/TxStatusCard'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
@@ -113,7 +113,7 @@ export function ManageVaultCollateralAllowanceStatus({
 
   if (stage === 'collateralAllowanceSuccess') {
     return (
-      <TxStatusCardProgress
+      <TxStatusCardSuccess
         text={t('set-allowance-for', { token })}
         etherscan={etherscan!}
         txHash={collateralAllowanceTxHash!}
