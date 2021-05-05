@@ -1,5 +1,5 @@
 import { Details } from 'components/forms/Details'
-import { TxStatusCardProgress } from 'features/openVault/TxStatusCard'
+import { TxStatusCardProgress, TxStatusCardSuccess } from 'features/openVault/TxStatusCard'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -88,7 +88,7 @@ export function ManageVaultConfirmationStatus({
   }
   if (stage === 'manageSuccess') {
     return (
-      <TxStatusCardProgress
+      <TxStatusCardSuccess
         text={t('vault-changed')}
         etherscan={etherscan!}
         txHash={manageTxHash!}
