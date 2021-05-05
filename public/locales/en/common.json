@@ -463,7 +463,7 @@
       "allowance": "Set {{token}} allowance",
       "daiAllowance": "Set DAI allowance",
       "confirm": "Confirm vault creation",
-      "confirm-manage": "Confirm vault creation"
+      "confirm-manage": "Confirm vault changes"
     },
     "subtext": {
       "edit": "Simulate your vault by configuring the amount of collateral to deposit, and DAI to generate.",
