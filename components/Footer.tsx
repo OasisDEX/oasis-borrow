@@ -109,8 +109,11 @@ function LanguageSelect() {
 }
 
 export function TemporaryFooter() {
+  const commit = buildHash.substring(0, 10)
+  const date = moment(buildDate).format('DD.MM.YYYY HH:MM')
+  console.debug(`Build commit: ${commit} Build date: ${date}`)
   return (
-    <Container sx={{ maxWidth: '898px' }}>
+    <Container sx={{ maxWidth: '898px', visibility: 'hidden' }}>
       <Grid sx={{ color: 'text', fontSize: 2 }} columns={2}>
         <Text>
           Commit:{' '}
@@ -118,10 +121,10 @@ export function TemporaryFooter() {
             href={`https://github.com/OasisDex/oasis-borrow/commit/${buildHash}`}
             target="_blank"
           >
-            {buildHash.substring(0, 10)}
+            {commit}
           </Link>
         </Text>
-        <Text>Build Date: {moment(buildDate).format('DD.MM.YYYY HH:MM')}</Text>
+        <Text>Build Date: {date}</Text>
       </Grid>
     </Container>
   )
