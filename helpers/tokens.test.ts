@@ -4,7 +4,7 @@ import { expect } from 'chai'
 import { calculateTokenPrecisionByValue } from './tokens'
 
 describe('token input precision calculation', () => {
-  it('if token price is between to 1-9.99 USD, than precision should be 2', () => {
+  it('when token price is between to 1-9.99 USD', () => {
     expect(
       calculateTokenPrecisionByValue({
         token: 'ETH',
@@ -18,7 +18,7 @@ describe('token input precision calculation', () => {
       }),
     ).to.deep.equal(2)
   })
-  it('if token price is between to <1 USD, than precision should be 2', () => {
+  it('when token price is <1 USD', () => {
     expect(
       calculateTokenPrecisionByValue({
         token: 'ETH',
@@ -40,7 +40,7 @@ describe('token input precision calculation', () => {
     ).to.deep.equal(0)
   })
 
-  it('calculated precision for enormous numbers', () => {
+  it('when token price is >1 USD', () => {
     expect(
       calculateTokenPrecisionByValue({
         token: 'ETH',
@@ -56,7 +56,7 @@ describe('token input precision calculation', () => {
     ).to.deep.equal(11)
   })
 
-  it('calculated precision should be floored by token precision', () => {
+  it('should prefer token precision if magnitude exceeds it', () => {
     expect(
       calculateTokenPrecisionByValue({
         token: 'WBTC',
