@@ -110,3 +110,7 @@ export function formatDateTime(time: Date, showMs?: boolean): string {
 export function formatAddress(address: string) {
   return `${address.slice(0, 4)}...${address.slice(-5)}`
 }
+
+export function formatBigNumber(amount: BigNumber, digits: number) {
+  return amount.dp(digits, BigNumber.ROUND_DOWN).toString()
+}
