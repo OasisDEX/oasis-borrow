@@ -72,7 +72,7 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
         )}
         {isManageStage && (
           <Header
-            header={t('vault-form.header.confirm')}
+            header={t('vault-form.header.confirm-manage')}
             subtext={t('vault-form.subtext.confirm')}
           />
         )}
