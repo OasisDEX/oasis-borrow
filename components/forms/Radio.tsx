@@ -1,7 +1,19 @@
 import React from 'react'
-import { Label } from 'theme-ui'
+import { Label, Radio as ThemeRadio } from 'theme-ui'
 
-export function AllowanceOption(props: React.PropsWithChildren<{ onClick?: () => void }>) {
+interface Props {
+  onClick?: () => void
+  checked: boolean
+  defaultChecked?: boolean
+  name: string
+}
+export function Radio({
+  children,
+  checked,
+  onClick,
+  defaultChecked,
+  name,
+}: React.PropsWithChildren<Props>) {
   return (
     <Label
       sx={{
@@ -20,9 +32,10 @@ export function AllowanceOption(props: React.PropsWithChildren<{ onClick?: () =>
           boxShadow: 'medium',
         },
       }}
-      onClick={props.onClick}
+      onClick={onClick}
     >
-      {props.children}
+      <ThemeRadio name={name} defaultChecked={!!defaultChecked} checked={checked} />
+      {children}
     </Label>
   )
 }
