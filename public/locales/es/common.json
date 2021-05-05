@@ -304,7 +304,7 @@
     "action-option": "{{action}} {{token}} con esta transacción",
     "dai-available": "Dai disponible",
     "dust-limit": "Monto mínimo de deuda",
-    "liquidation-fee": "tarifa de liquidación",
+    "liquidation-fee": "Tarifa de liquidación",
     "min-collat-ratio": "Ratio de colateral mínimo",
     "or": "o",
     "stability-fee": "Tasa de estabilidad",
