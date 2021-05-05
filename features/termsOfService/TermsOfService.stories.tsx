@@ -32,6 +32,7 @@ const StoryContainer = ({ children, title }: { title: string } & WithChildren) =
 function MockContextProvider({ children, title, termsAcceptance }: MockContextProviderProps) {
   const ctx = ({
     termsAcceptance$: of(termsAcceptance),
+    web3Context$: of({ deactivate: () => false }),
   } as any) as AppContext
   return (
     <appContext.Provider value={ctx as any}>
