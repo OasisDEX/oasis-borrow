@@ -4,7 +4,7 @@ import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/format
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Card, Grid, Text } from 'theme-ui'
+import { Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 

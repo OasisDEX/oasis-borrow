@@ -5,7 +5,7 @@ import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
-import { Flex, Grid, Text } from 'theme-ui'
+import { Grid, Text } from 'theme-ui'
 
 import { Radio } from '../../components/forms/Radio'
 import { OpenVaultState } from './openVault'
