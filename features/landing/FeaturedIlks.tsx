@@ -82,7 +82,6 @@ function CallToAction({ ilk }: CallToActionProps) {
       href={`/vaults/open/${ilk.ilk}`}
     >
       <Grid
-        columns="1fr 1fr"
         gap={0}
         sx={{
           flex: 1,
@@ -106,30 +105,30 @@ function CallToAction({ ilk }: CallToActionProps) {
           }}
           src={token.bannerIcon}
         />
-        <Box sx={{ gridColumn: '1/3', zIndex: 1 }}>
+        <Box sx={{ zIndex: 1 }}>
           <Text variant="caption">{ilk.title}</Text>
-        </Box>
-        <Box sx={{ gridColumn: '1/3', zIndex: 1 }}>
           <Heading variant="header2" sx={{ color: 'white', minHeight: '100px' }}>
             {ilk.ilk}
           </Heading>
+          <Flex sx={{ justifyContent: 'space-between' }}>
+            <Flex sx={{ flexDirection: ['column', 'row'] }}>
+              <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
+                {t('system.stability-fee')}
+              </Text>
+              <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
+                {formatPercent(ilk.stabilityFee.times(100), { precision: 2 })}
+              </Text>
+            </Flex>
+            <Flex sx={{ flexDirection: ['column', 'row'] }}>
+              <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
+                {t('system.min-coll-ratio')}
+              </Text>
+              <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
+                {formatPercent(ilk.liquidationRatio.times(100), { precision: 2 })}
+              </Text>
+            </Flex>
+          </Flex>
         </Box>
-        <Flex sx={{ zIndex: 1 }}>
-          <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
-            {t('system.stability-fee')}
-          </Text>
-          <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
-            {formatPercent(ilk.stabilityFee.times(100), { precision: 2 })}
-          </Text>
-        </Flex>
-        <Flex sx={{ zIndex: 1, gridRow: [3, 4, 3] }}>
-          <Text variant="paragraph3" sx={{ color: 'white', mr: 2 }}>
-            {t('system.min-coll-ratio')}
-          </Text>
-          <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
-            {formatPercent(ilk.liquidationRatio)}
-          </Text>
-        </Flex>
       </Grid>
     </AppLink>
   )
