@@ -16,16 +16,10 @@ export function Value({ children, sx }: React.PropsWithChildren<{ sx?: SxStylePr
   )
 }
 
-export function DetailsItem({
-  header,
-  value,
-}: {
-  header: React.ReactNode
-  value: React.ReactNode
-}) {
+export function DetailsItem({ label, value }: { label: React.ReactNode; value: React.ReactNode }) {
   return (
     <>
-      <Label>{header}</Label>
+      <Label>{label}</Label>
       <Value>{value}</Value>
     </>
   )

@@ -39,15 +39,15 @@ export function OpenVaultConfirmation({
   return (
     <Grid>
       <Details>
-        <Details.Item header={t('system.in-your-wallet')} value={`${walletBalance} ${token}`} />
-        <Details.Item header={t('moving-into-vault')} value={`${intoVault} ${token}`} />
-        <Details.Item header={t('remaining-in-wallet')} value={`${remainingInWallet} ${token}`} />
-        <Details.Item header={t('dai-being-generated')} value={`${daiToBeGenerated} DAI`} />
+        <Details.Item label={t('system.in-your-wallet')} value={`${walletBalance} ${token}`} />
+        <Details.Item label={t('moving-into-vault')} value={`${intoVault} ${token}`} />
+        <Details.Item label={t('remaining-in-wallet')} value={`${remainingInWallet} ${token}`} />
+        <Details.Item label={t('dai-being-generated')} value={`${daiToBeGenerated} DAI`} />
         <Details.Item
-          header={t('system.collateral-ratio')}
+          label={t('system.collateral-ratio')}
           value={<Text sx={{ color: vaultRiskColor }}>{afterCollRatio}</Text>}
         />
-        <Details.Item header={t('system.liquidation-price')} value={`$${afterLiqPrice}`} />
+        <Details.Item label={t('system.liquidation-price')} value={`$${afterLiqPrice}`} />
       </Details>
     </Grid>
   )

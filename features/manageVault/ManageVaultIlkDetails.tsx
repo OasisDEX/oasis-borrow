@@ -16,23 +16,23 @@ export function ManageVaultIlkDetails({
   return (
     <Details>
       <Details.Item
-        header={t('manage-vault.dai-available')}
+        label={t('manage-vault.dai-available')}
         value={`${formatCryptoBalance(ilkDebtAvailable)} DAI`}
       />
       <Details.Item
-        header={t('manage-vault.min-collat-ratio')}
+        label={t('manage-vault.min-collat-ratio')}
         value={`${formatPercent(liquidationRatio.times(100), { precision: 2 })}`}
       />
       <Details.Item
-        header={t('manage-vault.stability-fee')}
+        label={t('manage-vault.stability-fee')}
         value={`${formatPercent(stabilityFee.times(100), { precision: 2 })}`}
       />
       <Details.Item
-        header={t('manage-vault.liquidation-fee')}
+        label={t('manage-vault.liquidation-fee')}
         value={`${formatPercent(liquidationPenalty.times(100), { precision: 2 })}`}
       />
       <Details.Item
-        header={t('manage-vault.dust-limit')}
+        label={t('manage-vault.dust-limit')}
         value={`${formatCryptoBalance(debtFloor)} DAI`}
       />
     </Details>
