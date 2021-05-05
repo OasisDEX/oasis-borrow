@@ -109,9 +109,9 @@
   "exchange-rate": "Exchange rate",
   "failed": "Failed",
   "featured": {
-    "cheapest": "cheapest",
-    "most-popular": "most popular",
-    "new": "new"
+    "cheapest": "Cheapest",
+    "most-popular": "Most popular",
+    "new": "New"
   },
   "filters": {
     "lp-token": "LP tokens",
