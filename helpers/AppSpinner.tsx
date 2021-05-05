@@ -41,6 +41,7 @@ export function AppSpinnerWholePage() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        zIndex: 1,
       }}
     >
       <Box sx={{ transform: 'translateY(-50%)' }}>
