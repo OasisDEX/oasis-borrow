@@ -1,6 +1,6 @@
 {
   "404-button": "Ir a la página principal",
-  "404-message": "lo siento, página no encontrada.",
+  "404-message": "Lo siento, página no encontrada.",
   "Argentina": "Argentina",
   "Brasil": "Brasil",
   "Mexico": "Mexico",
@@ -20,7 +20,7 @@
   "all-assets": "Todos los activos",
   "amount": "Cantidad",
   "approve-allowance": "Aprobar permiso",
-  "approving-allowance": "aprobando permiso",
+  "approving-allowance": "Aprobando permiso",
   "apy": "APY",
   "back": "Regresar",
   "back-to-editing": "Regresar a edición",
@@ -87,7 +87,7 @@
   "disconnect-magic": "Cerrar sesión",
   "dsr-available-withdraw": "Disponible para retirar",
   "dsr-deposit-depositing": "Estás depositando",
-  "dsr-deposit-depositing-to": "en Dai Savings Rate",
+  "dsr-deposit-depositing-to": "En Dai Savings Rate",
   "dsr-deposit-error-allowance": "Falló la configuración de permisos",
   "dsr-deposit-error-deposit": "Depósito a DSR fallido",
   "dsr-deposit-error-greater-than-balance": "DAI insuficiente",
@@ -214,7 +214,7 @@
     "transfer": "Vault transferido a <0>{{transferTo}}</0> por <0>{{transferFrom}}</0>",
     "withdraw": "Retirado <0>{{collateralAmount}} {{token}}</0> Del Vault"
   },
-  "invalid-allowance-amount": "monto permitido inválido",
+  "invalid-allowance-amount": "Monto permitido inválido",
   "introduction": {
     "step-1": "Ingresa con tu correo electrónico",
     "step-2": "Compra Dai",
@@ -402,7 +402,6 @@
     "vault-dai-debt": "Deuda de Dai del Vault",
     "vault-id": "Número de Vault"
   },
-  "to-the-following-address": "a la siguiente dirección",
   "token-balance": "Saldo de {{token}} ",
   "token-depositing": "Depositando {{token}} {{amount}}",
   "tos": "Términos del servicio",
@@ -460,7 +459,7 @@
     "headers": {
       "connected-owner-noVaults": "No tienes Vaults abiertos",
       "connected-owner-withVaults": "Resumen de tus Vaults de Maker",
-      "connected-viewer-noVaults": "{{address}} no tiene Vaults de Maker actualmente",
+      "connected-viewer-noVaults": "{{address}} actualmente no tiene Vaults de Maker.",
       "notConnected-noVaults": "{{address}} actualmente no tiene Vaults de Maker.<0/> Conecta tu billetera y abre un Vault",
       "notConnected-withVaults": "Resumen de Vaults de Maker de {{address}}.<0/> Conecta tu billetera"
     },
