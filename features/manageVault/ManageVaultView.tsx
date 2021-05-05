@@ -8,6 +8,7 @@ import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Card, Divider, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
+import { slideInAnimation } from 'theme/animations'
 
 import { ManageVaultState } from './manageVault'
 import { ManageVaultButton } from './ManageVaultButton'
@@ -98,10 +99,23 @@ export function ManageVaultView({ id }: { id: BigNumber }) {
   return (
     <WithLoadingIndicator
       {...manageVaultWithError}
-      customLoader={<AppSpinner sx={{ mx: 'auto' }} variant="styles.spinner.large" />}
+      customLoader={
+        <Box
+          sx={{
+            position: 'relative',
+            height: 600,
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <AppSpinner sx={{ mx: 'auto', display: 'block' }} variant="styles.spinner.extraLarge" />
+        </Box>
+      }
     >
       {(manageVault) => (
-        <Grid sx={{ width: '100%', zIndex: 1 }}>
+        <Grid sx={{ width: '100%', zIndex: 1, ...slideInAnimation, position: 'relative' }}>
           <ManageVaultContainer {...manageVault} />
         </Grid>
       )}

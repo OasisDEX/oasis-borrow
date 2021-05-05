@@ -7,7 +7,8 @@ import { useObservableWithError } from 'helpers/observableHook'
 import moment from 'moment'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Heading, Link, Text } from 'theme-ui'
+import { Box, Flex, Heading, Link, Text } from 'theme-ui'
+import { slideInAnimation } from 'theme/animations'
 
 import { VaultHistoryEvent } from './vaultHistory'
 
@@ -89,11 +90,15 @@ export function VaultHistoryView({ id }: { id: BigNumber }) {
       <WithLoadingIndicator
         {...vaultHistoryWithError}
         customLoader={
-          <AppSpinner sx={{ mx: 'auto', display: 'block' }} variant="styles.spinner.large" />
+          <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
+            <AppSpinner sx={{ mx: 'auto', display: 'block' }} variant="styles.spinner.large" />
+          </Flex>
         }
       >
         {(vaultHistory) => (
-          <Table data={vaultHistory} primaryKey="id" state={{}} columns={columns} />
+          <Box sx={{ ...slideInAnimation, position: 'relative' }}>
+            <Table data={vaultHistory} primaryKey="id" state={{}} columns={columns} />
+          </Box>
         )}
       </WithLoadingIndicator>
     </Box>

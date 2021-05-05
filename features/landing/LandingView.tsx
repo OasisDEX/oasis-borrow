@@ -14,7 +14,7 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
-import { fadeIn, slideIn } from 'theme/keyframes'
+import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
 
@@ -284,23 +284,6 @@ export function FAQ() {
       </Flex>
     </Flex>
   )
-}
-
-const slideInAnimation = {
-  opacity: 0,
-  animation: slideIn,
-  animationDuration: '0.4s',
-  animationTimingFunction: 'ease-out',
-  animationFillMode: 'forwards',
-  animationDelay: '0.4s',
-}
-
-const fadeInAnimation = {
-  opacity: 0,
-  animation: fadeIn,
-  animationDuration: '0.4s',
-  animationTimingFunction: 'ease-out',
-  animationFillMode: 'forwards',
 }
 
 export function LandingView() {
