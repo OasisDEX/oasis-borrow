@@ -34,9 +34,8 @@ export function OpenVaultAllowance({
       {canSelectRadio && (
         <>
           <Radio
-            onClick={setAllowanceAmountUnlimited!}
+            onChange={setAllowanceAmountUnlimited!}
             name="allowance-open-form"
-            defaultChecked
             checked={isUnlimited}
           >
             <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: '18px' }}>
@@ -44,7 +43,7 @@ export function OpenVaultAllowance({
             </Text>
           </Radio>
           <Radio
-            onClick={setAllowanceAmountToDepositAmount}
+            onChange={setAllowanceAmountToDepositAmount}
             name="allowance-open-form"
             checked={isDeposit}
           >
@@ -52,7 +51,7 @@ export function OpenVaultAllowance({
               {t('token-depositing', { token, amount: formatCryptoBalance(depositAmount!) })}
             </Text>
           </Radio>
-          <Radio onClick={setAllowanceAmountCustom} name="allowance-open-form" checked={isCustom}>
+          <Radio onChange={setAllowanceAmountCustom} name="allowance-open-form" checked={isCustom}>
             <Grid columns="2fr 2fr 1fr" sx={{ alignItems: 'center', my: 2 }}>
               <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
                 {t('custom')}

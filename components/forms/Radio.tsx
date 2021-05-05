@@ -2,18 +2,11 @@ import React from 'react'
 import { Label, Radio as ThemeRadio } from 'theme-ui'
 
 interface Props {
-  onClick?: () => void
+  onChange?: () => void
   checked: boolean
-  defaultChecked?: boolean
   name: string
 }
-export function Radio({
-  children,
-  checked,
-  onClick,
-  defaultChecked,
-  name,
-}: React.PropsWithChildren<Props>) {
+export function Radio({ children, checked, onChange, name }: React.PropsWithChildren<Props>) {
   return (
     <Label
       sx={{
@@ -32,9 +25,8 @@ export function Radio({
           boxShadow: 'medium',
         },
       }}
-      onClick={onClick}
     >
-      <ThemeRadio name={name} defaultChecked={!!defaultChecked} checked={checked} />
+      <ThemeRadio onChange={onChange} name={name} checked={checked} />
       {children}
     </Label>
   )

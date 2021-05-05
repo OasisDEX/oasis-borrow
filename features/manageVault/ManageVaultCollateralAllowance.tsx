@@ -35,9 +35,8 @@ export function ManageVaultCollateralAllowance({
       {canSelectRadio && (
         <>
           <Radio
-            onClick={setCollateralAllowanceAmountUnlimited!}
+            onChange={setCollateralAllowanceAmountUnlimited!}
             name="manage-vault-allowance"
-            defaultChecked
             checked={isUnlimited}
           >
             <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: '18px' }}>
@@ -47,14 +46,14 @@ export function ManageVaultCollateralAllowance({
           <Radio
             name="manage-vault-allowance"
             checked={isDeposit}
-            onClick={setCollateralAllowanceAmountToDepositAmount!}
+            onChange={setCollateralAllowanceAmountToDepositAmount!}
           >
             <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: '18px' }}>
               {t('token-depositing', { token, amount: formatCryptoBalance(depositAmount!) })}
             </Text>
           </Radio>
           <Radio
-            onClick={resetCollateralAllowanceAmount!}
+            onChange={resetCollateralAllowanceAmount!}
             name="allowance-open-form"
             checked={isCustom}
           >

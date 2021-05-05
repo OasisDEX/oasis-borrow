@@ -272,7 +272,7 @@ function addTransitions(
       ...state,
       updateDaiAllowanceAmount: (daiAllowanceAmount?: BigNumber) =>
         change({ kind: 'daiAllowance', daiAllowanceAmount }),
-      setDaiAllowanceAmountUnlimited: () => change({ kind: 'collateralAllowanceUnlimited' }),
+      setDaiAllowanceAmountUnlimited: () => change({ kind: 'daiAllowanceUnlimited' }),
       setDaiAllowanceAmountToPaybackAmount: () => change({ kind: 'daiAllowanceAsPaybackAmount' }),
       resetDaiAllowanceAmount: () =>
         change({

@@ -34,9 +34,8 @@ export function ManageVaultDaiAllowance({
       {canSelectRadio && (
         <>
           <Radio
-            onClick={setDaiAllowanceAmountUnlimited!}
+            onChange={setDaiAllowanceAmountUnlimited!}
             name="manage-vault-dai-allowance"
-            defaultChecked
             checked={isUnlimited}
           >
             <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: '18px' }}>
@@ -44,7 +43,7 @@ export function ManageVaultDaiAllowance({
             </Text>
           </Radio>
           <Radio
-            onClick={setDaiAllowanceAmountToPaybackAmount!}
+            onChange={setDaiAllowanceAmountToPaybackAmount!}
             name="manage-vault-dai-allowance"
             checked={isPayback}
           >
@@ -52,7 +51,7 @@ export function ManageVaultDaiAllowance({
               {t('dai-paying-back', { amount: formatCryptoBalance(paybackAmount!) })}
             </Text>
           </Radio>
-          <Radio onClick={resetDaiAllowanceAmount!} name="allowance-open-form" checked={isCustom}>
+          <Radio onChange={resetDaiAllowanceAmount!} name="allowance-open-form" checked={isCustom}>
             <Grid columns="2fr 2fr 1fr" sx={{ alignItems: 'center', my: 2 }}>
               <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
                 {t('custom')}
