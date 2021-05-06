@@ -219,7 +219,7 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
           }}
         />
         {assets.map(([token, ratio]) => (
-          <Box key={token} sx={{ my: 2, flex: ratio.toString() }}>
+          <Box key={token} sx={{ my: 3, flex: ratio.toString() }}>
             <Box
               sx={{
                 display: ['flex', ...(ratio.gt(0.08) ? ['flex', 'flex'] : ['none', 'none'])],
@@ -228,7 +228,7 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
               <Box sx={{ mr: 1 }}>
                 <Icon
                   name={getToken(token).iconCircle}
-                  size="26px"
+                  size="32px"
                   sx={{ verticalAlign: 'sub', mr: 2 }}
                 />
               </Box>
