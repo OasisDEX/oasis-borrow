@@ -222,6 +222,7 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
           <Box key={token} sx={{ my: 3, flex: ratio.toString() }}>
             <Box
               sx={{
+                alignItems: 'center',
                 display: ['flex', ...(ratio.gt(0.08) ? ['flex', 'flex'] : ['none', 'none'])],
               }}
             >
@@ -232,11 +233,17 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
                   sx={{ verticalAlign: 'sub', mr: 2 }}
                 />
               </Box>
-              <Box sx={{ display: 'flex', flexDirection: ['row', 'column', 'column'] }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'baseline',
+                  flexDirection: 'row',
+                }}
+              >
                 <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
                   {getToken(token).name}
                 </Text>
-                <Text variant="paragraph3" sx={{ color: 'text.muted', ml: [2, 0, 0] }}>
+                <Text variant="paragraph3" sx={{ color: 'text.muted', ml: 2 }}>
                   {formatPercent(ratio.isNaN() ? zero : ratio.times(100), { precision: 2 })}
                 </Text>
               </Box>
