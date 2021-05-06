@@ -24,7 +24,7 @@ export default function Vault({ id }: { id: string }) {
   return (
     <WithConnection>
       <WithTermsOfService>
-        <Grid gap={4} sx={{ width: '100%' }}>
+        <Grid gap={0} sx={{ width: '100%' }}>
           <BackgroundLight />
           <VaultBannersView id={new BigNumber(id)} />
           <ManageVaultView id={new BigNumber(id)} />

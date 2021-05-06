@@ -86,7 +86,7 @@ export function VaultHistoryView({ id }: { id: BigNumber }) {
 
   return (
     <Box sx={{ gridColumn: '1/2', zIndex: 1 }}>
-      <Heading variant="header3" sx={{ mb: 4 }}>
+      <Heading variant="header3" sx={{ mb: '24px' }}>
         {t('vault-history')}
       </Heading>
       <WithLoadingIndicator

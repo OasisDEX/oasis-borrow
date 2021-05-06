@@ -51,7 +51,7 @@ function VaultDetailsTable({
 
   return (
     <Box sx={{ gridColumn: ['1', '1/3'], mt: [4, 6] }}>
-      <Heading variant="header3" mb="4">
+      <Heading variant="header3" mb="24px">
         {t('vault.vault-details')}
       </Heading>
       <Grid
@@ -232,7 +232,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
       {isStaticCollateralPrice ? (
         <Box sx={{ mt: [3, 6], textAlign: ['center', 'left'] }}>
           <Heading variant="subheader" as="h2">
-            {t('token-uds-price', { token })}
+            {t('vault.token-uds-price', { token })}
           </Heading>
           <Text variant="header2">${formatAmount(currentCollateralPrice, 'USD')}</Text>
         </Box>
@@ -240,7 +240,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
         <Box sx={{ mt: [3, 6], textAlign: ['center', 'left'] }}>
           <Box>
             <Heading variant="subheader" as="h2">
-              {t('token-uds-price', { token })}
+              {t('vault.token-uds-price', { token })}
             </Heading>
             <Text variant="header2" sx={{ py: 3 }}>
               ${formatAmount(currentCollateralPrice, 'USD')}
