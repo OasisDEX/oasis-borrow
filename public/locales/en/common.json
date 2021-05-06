@@ -475,5 +475,6 @@
   },
   "creating-your-vault": "Creating your {{token}} Vault!",
   "vault-created": "Vault #{{id}} created!",
-  "changing-vault": "Changing Vault"
+  "changing-vault": "Changing Vault",
+  "your-wallet": "Your wallet"
 }

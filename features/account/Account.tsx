@@ -178,7 +178,7 @@ export function AccountModal({ close }: ModalProps) {
             },
           }}
         >
-          <Heading mb={3}>{t('account')}</Heading>
+          <Heading mb={3}>{t('your-wallet')}</Heading>
           <Card variant="secondary">
             <Grid>
               <Flex sx={{ justifyContent: 'space-between' }}>
@@ -245,7 +245,8 @@ export function AccountModal({ close }: ModalProps) {
           sx={{
             fontWeight: 'semiBold',
             px: 3,
-            my: 2,
+            my: 3,
+            py: 1,
             mx: 1,
           }}
         >

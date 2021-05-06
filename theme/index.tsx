@@ -887,6 +887,7 @@ const oasisBaseTheme = {
     lightIcon: '#BEC9D0',
     border: '#DDDEE6',
     offBlue: '#CAD6DB',
+    offWhite: '#F6F8F9',
 
     text: {
       focused: '#272940',
@@ -1093,6 +1094,12 @@ const oasisBaseTheme = {
       borderRadius: 'roundish',
       bg: 'surface',
     },
+    surface: {
+      p: 3,
+      borderRadius: 'roundish',
+      bg: 'surface',
+      boxShadow: 'surface',
+    },
     primaryWithHover: {
       variant: 'cards.primary',
       cursor: 'pointer',
@@ -1103,9 +1110,10 @@ const oasisBaseTheme = {
       },
     },
     secondary: {
-      variant: 'cards.primary',
+      p: 3,
+      borderRadius: 'roundish',
       border: 'none',
-      bg: 'background',
+      bg: 'offWhite',
     },
     secondaryRounded: {
       variant: 'cards.secondary',
