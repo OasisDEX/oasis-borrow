@@ -210,7 +210,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
           {t('system.liquidation-price')}
         </Heading>
         <Text variant="display">$ {formatAmount(liquidationPrice, 'USD')}</Text>
-        <Text pl={2}>
+        <Text>
           {t('after')}: ${formatAmount(shouldPaybackAll ? zero : afterLiquidationPrice, 'USD')}
         </Text>
       </Box>
