@@ -16,6 +16,10 @@ export interface AppLinkProps extends WithChildren, LinkProps {
   target?: string
 }
 
+export function getIsInternalLink(href: string) {
+  return href.startsWith('/') || href.startsWith('#')
+}
+
 export function AppLink({
   href,
   children,
@@ -26,7 +30,7 @@ export function AppLink({
   target,
   ...rest
 }: AppLinkProps) {
-  const isInternalLink = href && (href.startsWith('/') || href.startsWith('#'))
+  const isInternalLink = href && getIsInternalLink(href)
 
   if (disabled) return children
 
