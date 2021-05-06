@@ -265,6 +265,8 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
           <Box key={token} sx={{ mb: 3, flex: ratio.toString() }}>
             <Box
               sx={{
+                position: 'relative',
+                top: '-14px',
                 alignItems: 'center',
                 display: ['flex', ...(ratio.gt(0.08) ? ['flex', 'flex'] : ['none', 'none'])],
               }}
