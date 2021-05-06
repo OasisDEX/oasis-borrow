@@ -3,6 +3,7 @@ import { ColorPalette, TypeScale } from '@theme-ui/style-guide'
 import React from 'react'
 import { theme } from 'theme'
 import { Box, Button, Container, Flex, Grid, Heading, Link, Text } from 'theme-ui'
+
 import { InjectTokenIconsDefs } from './tokenIcons'
 
 export const Typography = () => {

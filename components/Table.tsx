@@ -4,6 +4,7 @@ import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React, { HTMLProps, memo, ReactNode, useCallback } from 'react'
 import { Box, Button, Container, SxStyleProp } from 'theme-ui'
+
 import { getIsInternalLink } from './Links'
 
 export interface ColumnDef<T, S> {
