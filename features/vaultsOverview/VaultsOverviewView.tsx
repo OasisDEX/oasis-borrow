@@ -132,7 +132,7 @@ function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
 function Summary({ summary }: { summary: VaultSummary }) {
   const { t } = useTranslation()
   return (
-    <Card variant="surface" sx={{ mb: 5 }}>
+    <Card variant="surface" sx={{ mb: 5, px: 4 }}>
       <Grid sx={{ pt: 3 }} columns={['1fr', 'repeat(4, 1fr)', 'repeat(4, 1fr)']}>
         <Box sx={{ gridColumn: ['initial', 'span 2', 'initial'] }}>
           <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
