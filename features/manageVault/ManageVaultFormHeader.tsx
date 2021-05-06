@@ -1,5 +1,5 @@
-import { useTranslation } from 'next-i18next'
 import { trackingEvents } from 'analytics/analytics'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Grid, Text } from 'theme-ui'
 

@@ -1,5 +1,4 @@
 import { trackingEvents } from 'analytics/analytics'
-import BigNumber from 'bignumber.js'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
