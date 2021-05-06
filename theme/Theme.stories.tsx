@@ -3,6 +3,7 @@ import { ColorPalette, TypeScale } from '@theme-ui/style-guide'
 import React from 'react'
 import { theme } from 'theme'
 import { Box, Button, Container, Flex, Grid, Heading, Link, Text } from 'theme-ui'
+import { InjectTokenIconsDefs } from './tokenIcons'
 
 export const Typography = () => {
   const textStyles = Object.keys(theme.text)
@@ -137,6 +138,7 @@ export const Icons = () => {
       <Heading as="h1" sx={{ my: 4, fontSize: 7 }}>
         Icons
       </Heading>
+      <InjectTokenIconsDefs />
       <Flex sx={{ my: 3, flexWrap: 'wrap' }}>
         {icons.map((icon) => (
           <Box sx={{ position: 'relative', bg: 'white', m: 3, p: 3 }} key={icon}>

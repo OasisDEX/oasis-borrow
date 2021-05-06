@@ -129,7 +129,7 @@ function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
   )
 }
 
-function Summary({ summary }: { summary: VaultSummary }) {
+export function Summary({ summary }: { summary: VaultSummary }) {
   const { t } = useTranslation()
   return (
     <Card variant="surface" sx={{ mb: 5, px: 4 }}>
@@ -237,13 +237,13 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
                 sx={{
                   display: 'flex',
                   alignItems: 'baseline',
-                  flexDirection: 'row',
+                  flexDirection: ['row', 'column', 'column'],
                 }}
               >
                 <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
                   {getToken(token).name}
                 </Text>
-                <Text variant="paragraph3" sx={{ color: 'text.muted', ml: 2 }}>
+                <Text variant="paragraph3" sx={{ color: 'text.muted', ml: [2, 0, 0] }}>
                   {formatPercent(ratio.isNaN() ? zero : ratio.times(100), { precision: 2 })}
                 </Text>
               </Box>
