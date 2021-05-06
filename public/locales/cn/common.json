@@ -143,20 +143,20 @@
   "keyWithCount_plural": "{{count}} 项",
   "landing": {
     "faq": {
-      "entries": {
-        "0": {
+      "entries": [
+        {
           "answer": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora.",
           "question": "哪些资产可以作为抵押品？"
         },
-        "1": {
+        {
           "answer": "\t Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora.",
           "question": "会花费多少费用？"
         },
-        "2": {
+        {
           "answer": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora.",
           "question": "会花费多少费用？"
         }
-      },
+      ],
       "title": "借款常见问题"
     },
     "footer": {
