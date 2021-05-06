@@ -311,8 +311,8 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
       {connectedAccount && address !== connectedAccount && (
         <VaultOverviewOwnershipBanner account={connectedAccount} controller={address} />
       )}
-      <Flex sx={{ my: 5, flexDirection: 'column' }}>
-        <Heading variant="header2" sx={{ textAlign: 'center', my: 3 }} as="h1">
+      <Flex sx={{ mt: 5, mb: 4, flexDirection: 'column' }}>
+        <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
           <Trans
             i18nKey={headerTranslationKey}
             values={{ address: formatAddress(address) }}
