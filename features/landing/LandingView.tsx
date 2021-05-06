@@ -278,7 +278,7 @@ export function FAQ() {
         />
       ))}
       <Flex sx={{ width: '100%', justifyContent: 'flex-start', mt: 3 }}>
-        <AppLink sx={{ color: 'lavender' }} href="/faq">
+        <AppLink sx={{ color: 'lavender' }} href="https://oasis.app/support">
           {t('landing.link-to-full-faq')}
         </AppLink>
       </Flex>
