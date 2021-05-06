@@ -157,7 +157,8 @@ function Summary({ summary }: { summary: VaultSummary }) {
             {t('vaults-overview.total-debt')}
           </Text>
           <Text variant="header2" sx={{ mt: 2 }}>
-            {formatCryptoBalance(summary.totalDaiDebt)} DAI
+            {formatCryptoBalance(summary.totalDaiDebt)}
+            <Text sx={{ fontSize: '20px', display: 'inline', ml: 2 }}>DAI</Text>
           </Text>
         </Box>
         <Box sx={{ gridRow: ['initial', '2/3', 'auto'] }}>
