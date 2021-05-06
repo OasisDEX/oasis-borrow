@@ -119,7 +119,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
       <Announcement sx={{ mb: 3, textAlign: 'left' }}>
         <Flex sx={{ flexDirection: ['column', 'row'] }}>
           <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', fontSize: [1, 2] }}>
-            Welcome to the new Oasis.app. &nbsp;
+            {t('welcome')}
           </Text>
           <Flex sx={{ flexDirection: ['column', 'row'] }}>
             <AppLink href="https://blog.oasis.app">
