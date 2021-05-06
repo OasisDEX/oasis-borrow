@@ -189,10 +189,9 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
     <Box sx={{ gridColumn: ['1/2', '1/5', '1/5'], my: 3 }}>
       <Box
         sx={{
+          position: 'relative',
           borderRadius: 'small',
           display: ['none', 'flex', 'flex'],
-          overflow: 'hidden',
-          boxShadow: 'medium',
         }}
       >
         {totalRatio.gt(zero) &&
@@ -200,9 +199,51 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
             <Box
               key={token}
               sx={{
+                position: 'relative',
                 flex: ratio.toString(),
-                height: 2,
-                background: getToken(token).color || 'lightGray',
+                height: 4,
+                '&:before': {
+                  boxShadow: 'medium',
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  content: `''`,
+                  height: 2,
+                  background: getToken(token).color || 'lightGray',
+                },
+                '&:first-of-type:before': {
+                  borderTopLeftRadius: 'small',
+                  borderBottomLeftRadius: 'small',
+                },
+                '&:last-of-type:before': {
+                  borderTopRightRadius: 'small',
+                  borderBottomRightRadius: 'small',
+                },
+                ...(ratio.lt(0.08)
+                  ? {
+                      '&:hover:after': {
+                        opacity: 1,
+                        transform: 'translate(-50%, -40px)',
+                      },
+                      '&:after': {
+                        transition: 'ease-in-out 0.2s',
+                        opacity: 0,
+                        content: `'${token}'`,
+                        position: 'absolute',
+                        left: '50%',
+                        background: 'white',
+                        padding: 2,
+                        borderRadius: 'small',
+                        transform: 'translate(-50%, 0)',
+                        boxShadow: 'surface',
+                        fontFamily: 'body',
+                        fontWeight: 'body',
+                        lineHeight: 'body',
+                        fontSize: 1,
+                        color: 'primary',
+                      },
+                    }
+                  : {}),
               }}
             />
           ))}
@@ -219,7 +260,7 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
           }}
         />
         {assets.map(([token, ratio]) => (
-          <Box key={token} sx={{ my: 3, flex: ratio.toString() }}>
+          <Box key={token} sx={{ mb: 3, flex: ratio.toString() }}>
             <Box
               sx={{
                 alignItems: 'center',
