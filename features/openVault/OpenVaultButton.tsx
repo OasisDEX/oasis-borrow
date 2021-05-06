@@ -73,6 +73,8 @@ export function OpenVaultButton(props: OpenVaultState) {
     e.preventDefault()
     if (stage === 'openSuccess') {
       replace(`/${id}`)
+
+      return
     }
     progress!()
   }
