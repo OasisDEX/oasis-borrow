@@ -228,7 +228,7 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     customAllowanceAmountEmpty ||
     customAllowanceAmountExceedsMaxUint256 ||
     customAllowanceAmountLessThanDepositAmount
-  )
+  ) || stage === 'openSuccess'
 
   const canRegress = ([
     'proxyWaitingForConfirmation',
