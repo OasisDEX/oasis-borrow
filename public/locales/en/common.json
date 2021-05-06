@@ -378,7 +378,8 @@
     "next-price-any-time": "Next price in <2 minutes",
     "next-price_plural": "Next price in {{count}} minutes",
     "open-vault": "Open {{ilk}} Vault",
-    "vault-details": "Vault Details"
+    "vault-details": "Vault Details",
+    "token-uds-price": "{{token}}/USD price"
   },
   "vault-actions": {
     "deposit": "Deposit",
@@ -478,6 +479,5 @@
   "creating-your-vault": "Creating your {{token}} Vault!",
   "vault-created": "Vault #{{id}} created!",
   "changing-vault": "Changing Vault",
-  "your-wallet": "Your wallet",
-  "token-uds-price": "{{token}}/USD price"
+  "your-wallet": "Your wallet"
 }

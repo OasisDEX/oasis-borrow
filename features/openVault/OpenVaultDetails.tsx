@@ -179,7 +179,9 @@ export function OpenVaultDetails(props: OpenVaultState) {
       ) : (
         <Box sx={{ mt: [3, 6], textAlign: ['center', 'left'] }}>
           <Box>
-            <Heading variant="subheader" as="h2">{`Current ${token}/USD price`}</Heading>
+            <Heading variant="subheader" as="h2">
+              {t('vaults.current-price', { token })}
+            </Heading>
             <Text variant="header2" sx={{ py: 3 }}>
               $ {formatAmount(currentCollateralPrice, 'USD')}
             </Text>
