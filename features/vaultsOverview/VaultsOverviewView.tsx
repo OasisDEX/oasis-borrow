@@ -228,7 +228,8 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
                       '&:after': {
                         transition: 'ease-in-out 0.2s',
                         opacity: 0,
-                        content: `'${token}'`,
+                        whiteSpace: 'nowrap',
+                        content: `'${token}: ${formatPercent(ratio.times(100), { precision: 2 })}'`,
                         position: 'absolute',
                         left: '50%',
                         background: 'white',
@@ -282,7 +283,7 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
                 }}
               >
                 <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
-                  {getToken(token).name}
+                  {token}
                 </Text>
                 <Text variant="paragraph3" sx={{ color: 'text.muted', ml: [2, 0, 0] }}>
                   {formatPercent(ratio.isNaN() ? zero : ratio.times(100), { precision: 2 })}
