@@ -86,7 +86,9 @@ export function VaultHistoryView({ id }: { id: BigNumber }) {
 
   return (
     <Box sx={{ gridColumn: '1/2', zIndex: 1 }}>
-      <Heading sx={{ mb: 4 }}>{t('vault-history')}</Heading>
+      <Heading variant="header3" sx={{ mb: 4 }}>
+        {t('vault-history')}
+      </Heading>
       <WithLoadingIndicator
         {...vaultHistoryWithError}
         customLoader={
