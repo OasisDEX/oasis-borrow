@@ -241,7 +241,8 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
                         fontWeight: 'body',
                         lineHeight: 'body',
                         fontSize: 1,
-                        color: 'primary',
+                        color: 'white',
+                        bg: 'primary',
                       },
                     }
                   : {}),
