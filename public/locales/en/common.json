@@ -488,5 +488,8 @@
   "creating-your-vault": "Creating your {{token}} Vault!",
   "vault-created": "Vault #{{id}} created!",
   "changing-vault": "Changing Vault",
-  "your-wallet": "Your wallet"
+  "your-wallet": "Your wallet",
+  "welcome": "Welcome to the new Oasis.app.",
+  "read-blog-post": "Read the blog post",
+  "visit-old-oasis": "Visit the old Oasis"
 }
