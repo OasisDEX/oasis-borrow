@@ -231,13 +231,17 @@ export function ManageVaultDetails(props: ManageVaultState) {
       {/* Current Price */}
       {isStaticCollateralPrice ? (
         <Box sx={{ mt: [3, 6], textAlign: ['center', 'left'] }}>
-          <Heading variant="subheader" as="h2">{`${token}/USD price`}</Heading>
+          <Heading variant="subheader" as="h2">
+            {t('token-uds-price', { token })}
+          </Heading>
           <Text variant="header2">${formatAmount(currentCollateralPrice, 'USD')}</Text>
         </Box>
       ) : (
         <Box sx={{ mt: [3, 6], textAlign: ['center', 'left'] }}>
           <Box>
-            <Heading variant="subheader" as="h2">{`Current ${token}/USD price`}</Heading>
+            <Heading variant="subheader" as="h2">
+              {t('token-uds-price', { token })}
+            </Heading>
             <Text variant="header2" sx={{ py: 3 }}>
               ${formatAmount(currentCollateralPrice, 'USD')}
             </Text>
