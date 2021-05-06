@@ -16,7 +16,7 @@ function ManageVaultEditingToggle({ stage, toggle }: ManageVaultState) {
 
   return (
     <Grid sx={{ justifyContent: 'center' }}>
-      <Flex onClick={handleToggle}>
+      <Flex onClick={handleToggle} sx={{ justifyContent: 'center' }}>
         <Button variant={collateralVariant} sx={{ py: 1 }}>
           {t('system.collateral')}
         </Button>
@@ -24,6 +24,11 @@ function ManageVaultEditingToggle({ stage, toggle }: ManageVaultState) {
           {t('system.dai')}
         </Button>
       </Flex>
+      <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
+        {stage === 'collateralEditing'
+          ? t('vault-form.subtext.collateral')
+          : t('vault-form.subtext.dai')}
+      </Text>
     </Grid>
   )
 }
