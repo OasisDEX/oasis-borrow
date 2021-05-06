@@ -85,7 +85,7 @@ export function ManageVaultHeading(props: ManageVaultState & SxProps) {
 
 export function ManageVaultContainer(props: ManageVaultState) {
   return (
-    <Grid columns={['1fr', '2fr minmax(380px, 1fr)']} gap={4}>
+    <Grid columns={['1fr', '2fr minmax(380px, 1fr)']} gap={5}>
       <ManageVaultHeading {...props} sx={{ display: ['block', 'none'] }} />
       <Box sx={{ order: [3, 1] }}>
         <ManageVaultDetails {...props} />
