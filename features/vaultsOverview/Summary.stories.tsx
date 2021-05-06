@@ -65,7 +65,7 @@ stories.add('Hidden collateral type', () => {
     totalDaiDebt: new BigNumber(1),
     vaultsAtRisk: 0,
     depositedAssetRatio: {
-      ETH: new BigNumber(0.5),
+      UNIV2ETHUSDT: new BigNumber(0.5),
       BAT: new BigNumber(0.3),
       LINK: new BigNumber(0.1),
       COMP: new BigNumber(0.05),
