@@ -1,4 +1,3 @@
-import { trackingEvents } from 'analytics/analytics'
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
@@ -164,14 +163,12 @@ function addTransitions(
       ...state,
       updateDeposit: (depositAmount?: BigNumber) => {
         change({ kind: 'deposit', depositAmount })
-        trackingEvents.deposit()
       },
       updateDepositUSD: (depositAmountUSD?: BigNumber) =>
         change({ kind: 'depositUSD', depositAmountUSD }),
       updateDepositMax: () => change({ kind: 'depositMax' }),
       updateGenerate: (generateAmount?: BigNumber) => {
         change({ kind: 'generate', generateAmount })
-        trackingEvents.createVaultGenerate()
       },
       updateGenerateMax: () => change({ kind: 'generateMax' }),
       toggleGenerateOption: () => change({ kind: 'toggleGenerateOption' }),

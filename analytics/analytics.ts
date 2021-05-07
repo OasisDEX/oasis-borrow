@@ -1,11 +1,25 @@
-import BigNumber from 'bignumber.js'
-import * as mixpanel from 'mixpanel-browser'
+import * as mixpanelBrowser from 'mixpanel-browser'
+
+type MixpanelType = { track: (eventType: string, payload: any) => void } | typeof mixpanelBrowser
+let mixpanel: MixpanelType = mixpanelBrowser
+
+if (process.env.NODE_ENV !== 'production') {
+  mixpanel = {
+    track: function (eventType: string, payload: any) {
+      console.info('Mixpanel Event: ', eventType, payload)
+    },
+  }
+}
 
 const product = 'borrow'
+export const INPUT_DEBOUNCE_TIME = 800
 
 export enum Pages {
-  vaultCreate = 'vaultCreate',
-  Overview = 'Overview',
+  VaultCreate = 'VaultCreate',
+  IlksList = 'IlksList',
+  LandingPage = 'LandingPage',
+  OpenVaultOverview = 'OpenVaultOverview',
+  VaultsOverview = 'VaultsOverview',
   ManageCollateral = 'ManageCollateral',
   ManageDai = 'ManageDai',
 }
@@ -27,126 +41,134 @@ export const trackingEvents = {
     })
   },
 
-  searchToken: () => {
+  searchToken: (
+    page: Pages.LandingPage | Pages.OpenVaultOverview | Pages.VaultsOverview,
+    query: string,
+  ) => {
     mixpanel.track('input-change', {
       id: 'SearchToken',
       product,
-      page: Pages.vaultCreate,
+      page,
+      query,
       section: 'SelectCollateral',
     })
   },
-  openVault: () => {
+
+  openVault: (ilk: string) => {
     mixpanel.track('btn-click', {
-      id: 'openVault',
+      id: 'OpenVault',
       product,
-      page: Pages.vaultCreate,
+      ilk,
+      page: Pages.VaultCreate,
       section: 'SelectCollateral',
     })
   },
-  deposit: () => {
+
+  createVaultDeposit: (amount: string) => {
     mixpanel.track('input-change', {
       id: 'Deposit',
       product,
-      page: Pages.vaultCreate,
-      section: 'Configure',
+      amount,
+      page: Pages.VaultCreate,
+      section: 'CreateVault',
     })
   },
-  generate: () => {
-    mixpanel.track('btn-click', {
+
+  createVaultGenerate: (amount: string) => {
+    mixpanel.track('input-change', {
       id: 'Generate',
       product,
-      page: Pages.vaultCreate,
-      section: 'Configure',
+      amount,
+      page: Pages.VaultCreate,
+      section: 'CreateVault',
     })
   },
-  confirm: () => {
+
+  createVaultSetupProxy: () => {
     mixpanel.track('btn-click', {
-      id: 'Confirm',
+      id: 'SetupProxy',
       product,
-      page: Pages.vaultCreate,
+      page: Pages.VaultCreate,
       section: 'Configure',
     })
   },
+
   createProxy: () => {
     mixpanel.track('btn-click', {
       id: 'CreateProxy',
       product,
-      page: Pages.vaultCreate,
+      page: Pages.VaultCreate,
       section: 'ProxyDeploy',
     })
   },
-  pickAllowance: () => {
+
+  pickAllowance: (type: string, amount: string) => {
     mixpanel.track('input-change', {
       id: 'PickAllowance',
       product,
-      page: Pages.vaultCreate,
+      type,
+      amount,
+      page: Pages.VaultCreate,
       section: 'Allowance',
     })
   },
+
+  setTokenAllowance: () => {
+    mixpanel.track('btn-click', {
+      id: 'SetAllowance',
+      product,
+      page: Pages.VaultCreate,
+      section: 'Configure',
+    })
+  },
+
   approveAllowance: () => {
     mixpanel.track('btn-click', {
       id: 'ApproveAllowance',
       product,
-      page: Pages.vaultCreate,
+      page: Pages.VaultCreate,
       section: 'Allowance',
     })
   },
-  createVaultDeposit: () => {
-    mixpanel.track('input-change', {
-      id: 'Deposit',
-      product,
-      page: Pages.vaultCreate,
-      section: 'CreateVault',
-    })
-  },
-  createVaultGenerate: () => {
-    mixpanel.track('input-change', {
-      id: 'Generate',
-      product,
-      page: Pages.vaultCreate,
-      section: 'CreateVault',
-    })
-  },
+
   createVaultConfirm: () => {
     mixpanel.track('btn-click', {
       id: 'Confirm',
       product,
-      page: Pages.vaultCreate,
+      page: Pages.VaultCreate,
       section: 'CreateVault',
     })
   },
+
   confirmVaultConfirm: () => {
     mixpanel.track('btn-click', {
       id: 'Confirm',
       product,
-      page: Pages.vaultCreate,
+      page: Pages.VaultCreate,
       section: 'ConfirmVault',
     })
   },
+
   confirmVaultEdit: () => {
     mixpanel.track('btn-click', {
       id: 'EditVault',
       product,
-      page: Pages.vaultCreate,
+      page: Pages.VaultCreate,
       section: 'ConfirmVault',
     })
   },
-  overviewSearchToken: () => {
-    mixpanel.track('input-change', {
-      id: 'SearchToken',
-      product,
-      page: Pages.Overview,
-      section: 'Table',
-    })
-  },
-  overviewManage: () => {
+
+  overviewManage: (vaultId: string, ilk: string) => {
     mixpanel.track('btn-click', {
       id: 'Manage',
       product,
-      page: Pages.Overview,
+      vaultId,
+      ilk,
+      page: Pages.VaultsOverview,
       section: 'Table',
     })
   },
+
   createNewVault: () => {
     mixpanel.track('btn-click', {
       id: 'createNewVault',
@@ -155,6 +177,7 @@ export const trackingEvents = {
       section: 'NavBar',
     })
   },
+
   yourVaults: (numberOfVaults: number) => {
     mixpanel.track('btn-click', {
       id: 'YourVaults',
@@ -174,6 +197,7 @@ export const trackingEvents = {
       section: 'Dai',
     })
   },
+
   switchToCollateral: (ControllerIsConnected: boolean) => {
     mixpanel.track('btn-click', {
       id: 'SwitchToCollateral',
@@ -184,60 +208,61 @@ export const trackingEvents = {
     })
   },
 
-  manageCollateralDepositAmount: (amount?: BigNumber) => {
-    if (amount && amount.gt(0)) {
-      mixpanel.track('input-change', {
-        id: 'DepositAmount',
-        product,
-        page: Pages.ManageCollateral,
-        section: 'Deposit',
-        amount: amount.toNumber(),
-      })
-    }
-  },
-  manageCollateralAddGeneration: () => {
-    mixpanel.track('btn-click', {
-      id: 'AddGeneration',
+  manageVaultDepositAmount: (page: Pages.ManageCollateral | Pages.ManageDai, amount: string) => {
+    mixpanel.track('input-change', {
+      id: 'DepositAmount',
       product,
-      page: Pages.ManageCollateral,
-      section: 'Deposit',
+      page,
+      amount,
     })
   },
-  manageCollateralGenerateAmount: (amount?: BigNumber) => {
-    if (amount && amount.gt(0)) {
-      mixpanel.track('input-change', {
-        id: 'GenerateAmount',
-        product,
-        page: Pages.ManageCollateral,
-        section: 'Deposit',
-        amount: amount.toNumber(),
-      })
-    }
-  },
-  manageCollateralRemoveGeneration: () => {
-    mixpanel.track('btn-click', {
-      id: 'RemoveGeneration',
-      product,
-      page: Pages.ManageCollateral,
-      section: 'Deposit',
-    })
-  },
-  manageCollateralDepositConfirm: () => {
-    mixpanel.track('btn-click', {
-      id: 'Confirm',
-      product,
-      page: Pages.ManageCollateral,
-      section: 'Deposit',
-    })
-  },
-  manageCollateralPickAllowance: () => {
+
+  manageVaultGenerateAmount: (page: Pages.ManageCollateral | Pages.ManageDai, amount: string) => {
     mixpanel.track('input-change', {
       id: 'GenerateAmount',
       product,
+      page,
+      amount,
+    })
+  },
+
+  manageVaultWithdrawAmount: (page: Pages.ManageCollateral | Pages.ManageDai, amount: string) => {
+    mixpanel.track('input-change', {
+      id: 'WithdrawAmount',
+      product,
+      page,
+      amount,
+    })
+  },
+
+  manageVaultPaybackAmount: (page: Pages.ManageCollateral | Pages.ManageDai, amount: string) => {
+    mixpanel.track('input-change', {
+      id: 'PaybackAmount',
+      product,
+      page,
+      amount,
+    })
+  },
+
+  manageVaultConfirmVaultEdit: () => {
+    mixpanel.track('btn-click', {
+      id: 'EditVault',
+      product,
+      section: 'ConfirmVault',
+    })
+  },
+
+  manageCollateralPickAllowance: (type: string, amount: string) => {
+    mixpanel.track('input-change', {
+      id: 'PickAllowance',
+      product,
+      type,
+      amount,
       page: Pages.ManageCollateral,
       section: 'Allowance',
     })
   },
+
   manageCollateralApproveAllowance: () => {
     mixpanel.track('btn-click', {
       id: 'ApproveAllowance',
@@ -246,127 +271,18 @@ export const trackingEvents = {
       section: 'Allowance',
     })
   },
-  manageCollateralConfirm: () => {
-    mixpanel.track('btn-click', {
-      id: 'Confirm',
-      product,
-      page: Pages.ManageCollateral,
-      section: 'ConfirmVault',
-    })
-  },
-  manageCollateralEdit: () => {
-    mixpanel.track('btn-click', {
-      id: 'EditVault',
-      product,
-      page: Pages.ManageCollateral,
-      section: 'ConfirmVault',
-    })
-  },
-  manageCollateralWithdrawAmount: (amount?: BigNumber) => {
-    if (amount && amount.gt(0)) {
-      mixpanel.track('input-change', {
-        id: 'WithdrawAmount',
-        product,
-        page: Pages.ManageCollateral,
-        section: 'Withdraw',
-        amount: amount.toNumber(),
-      })
-    }
-  },
-  manageCollateralAddPayback: () => {
-    mixpanel.track('btn-click', {
-      id: 'AddPayback',
-      product,
-      page: Pages.ManageCollateral,
-      section: 'Withdraw',
-    })
-  },
-  manageCollateralPaybackAmount: (amount?: BigNumber) => {
-    if (amount && amount.gt(0)) {
-      mixpanel.track('input-change', {
-        id: 'PaybackAmount',
-        product,
-        page: Pages.ManageCollateral,
-        section: 'Withdraw',
-      })
-    }
-  },
-  manageCollateralRemovePayback: () => {
-    mixpanel.track('btn-click', {
-      id: 'RemovePayback',
-      product,
-      page: Pages.ManageCollateral,
-      section: 'Withdraw',
-    })
-  },
-  manageCollateralWithdrawConfirm: () => {
-    mixpanel.track('btn-click', {
-      id: 'Confirm',
-      product,
-      page: Pages.ManageCollateral,
-      section: 'Withdraw',
-    })
-  },
 
-  manageDaiPaybackAmount: (amount?: BigNumber) => {
-    if (amount && amount.gt(0)) {
-      mixpanel.track('input-change', {
-        id: 'PaybackAmount',
-        product,
-        page: Pages.ManageDai,
-        section: 'Payback',
-        amount: amount.toNumber(),
-      })
-    }
-  },
-
-  manageDaiAddWithdraw: () => {
-    mixpanel.track('btn-click', {
-      id: 'AddWithdraw',
-      product,
-      page: Pages.ManageDai,
-      section: 'Payback',
-    })
-  },
-
-  manageDaiWithdrawAmount: (amount?: BigNumber) => {
-    if (amount && amount.gt(0)) {
-      mixpanel.track('input-change', {
-        id: 'WithdrawAmount',
-        product,
-        page: Pages.ManageDai,
-        section: 'Payback',
-        amount: amount.toNumber(),
-      })
-    }
-  },
-
-  manageDaiRemoveWithdraw: () => {
-    mixpanel.track('btn-click', {
-      id: 'RemoveWithdraw',
-      product,
-      page: Pages.ManageDai,
-      section: 'Payback',
-    })
-  },
-
-  manageDaiPaybackConfirm: () => {
-    mixpanel.track('btn-click', {
-      id: 'Confirm',
-      product,
-      page: Pages.ManageDai,
-      section: 'Payback',
-    })
-  },
-
-  manageDaiPickAllowance: () => {
+  manageDaiPickAllowance: (type: string, amount: string) => {
     mixpanel.track('input-change', {
       id: 'PickAllowance',
       product,
+      type,
+      amount,
       page: Pages.ManageDai,
       section: 'Allowance',
     })
   },
+
   manageDaiApproveAllowance: () => {
     mixpanel.track('btn-click', {
       id: 'ApproveAllowance',
@@ -376,65 +292,37 @@ export const trackingEvents = {
     })
   },
 
-  manageDaiConfirm: () => {
+  // First Confirm button when the user is on Collateral and type into Deposit
+  manageCollateralDepositConfirm: () => {
     mixpanel.track('btn-click', {
       id: 'Confirm',
       product,
-      page: Pages.ManageDai,
+      page: Pages.ManageCollateral,
+      section: 'Deposit',
+    })
+  },
+
+  // Confirm button when the user is on Collateral and type into Withdraw
+  manageCollateralWithdrawConfirm: () => {
+    mixpanel.track('btn-click', {
+      id: 'Confirm',
+      product,
+      page: Pages.ManageCollateral,
+      section: 'Withdraw',
+    })
+  },
+
+  // Second Confirm when the user is on Collateral and typed into Deposit or Withdraw
+  manageCollateralConfirm: () => {
+    mixpanel.track('btn-click', {
+      id: 'Confirm',
+      product,
+      page: Pages.ManageCollateral,
       section: 'ConfirmVault',
     })
   },
-  manageDaiEdit: () => {
-    mixpanel.track('btn-click', {
-      id: 'EditVault',
-      product,
-      page: Pages.ManageDai,
-      section: 'ConfirmVault',
-    })
-  },
 
-  manageDaiGenerateAmount: (amount?: BigNumber) => {
-    if (amount && amount.gt(0)) {
-      mixpanel.track('input-change', {
-        id: 'GenerateAmount',
-        product,
-        page: Pages.ManageDai,
-        section: 'Generate',
-        amount: amount.toNumber(),
-      })
-    }
-  },
-
-  manageDaiAddDeposit: () => {
-    mixpanel.track('btn-click', {
-      id: 'AddDeposit',
-      product,
-      page: Pages.ManageDai,
-      section: 'Generate',
-    })
-  },
-
-  manageDaiDepositAmount: (amount?: BigNumber) => {
-    if (amount && amount.gt(0)) {
-      mixpanel.track('input-change', {
-        id: 'DepositAmount',
-        product,
-        page: Pages.ManageDai,
-        section: 'Generate',
-        amount: amount.toNumber(),
-      })
-    }
-  },
-
-  manageDaiRemoveDeposit: () => {
-    mixpanel.track('btn-click', {
-      id: 'RemoveDeposit',
-      product,
-      page: Pages.ManageDai,
-      section: 'Generate',
-    })
-  },
-
+  // First Confirm button when the user is on Dai and type into Generate
   manageDaiGenerateConfirm: () => {
     mixpanel.track('btn-click', {
       id: 'Confirm',
@@ -443,4 +331,26 @@ export const trackingEvents = {
       section: 'Generate',
     })
   },
+
+  // Confirm button when the user is on Dai and type into Payback
+  manageDaiPaybackConfirm: () => {
+    mixpanel.track('btn-click', {
+      id: 'Confirm',
+      product,
+      page: Pages.ManageDai,
+      section: 'Payback',
+    })
+  },
+
+  // Second Confirm when the user is on Dai and typed into Generate or Payback
+  manageDaiConfirm: () => {
+    mixpanel.track('btn-click', {
+      id: 'Confirm',
+      product,
+      page: Pages.ManageDai,
+      section: 'ConfirmVault',
+    })
+  },
 }
+
+export type Tracker = typeof trackingEvents

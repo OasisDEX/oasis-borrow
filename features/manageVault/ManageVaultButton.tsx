@@ -123,11 +123,11 @@ export function ManageVaultButton(props: ManageVaultState) {
     if (stage === 'daiEditing' && generateAmount && generateAmount.gt(0)) {
       trackingEvents.manageDaiGenerateConfirm()
     }
-    if (stage === 'daiEditing' && paybackAmount && paybackAmount.gt(0)) {
-      trackingEvents.manageDaiPaybackConfirm()
-    }
     if (stage === 'manageWaitingForConfirmation' && generateAmount && generateAmount.gt(0)) {
       trackingEvents.manageDaiConfirm()
+    }
+    if (stage === 'daiEditing' && paybackAmount && paybackAmount.gt(0)) {
+      trackingEvents.manageDaiPaybackConfirm()
     }
     if (stage === 'manageWaitingForConfirmation' && paybackAmount && paybackAmount.gt(0)) {
       trackingEvents.manageDaiConfirm()
@@ -135,14 +135,20 @@ export function ManageVaultButton(props: ManageVaultState) {
     if (stage === 'collateralEditing' && depositAmount && depositAmount.gt(0)) {
       trackingEvents.manageCollateralDepositConfirm()
     }
-    if (stage === 'collateralEditing' && withdrawAmount && withdrawAmount.gt(0)) {
-      trackingEvents.manageCollateralWithdrawConfirm()
-    }
     if (stage === 'manageWaitingForConfirmation' && depositAmount && depositAmount.gt(0)) {
       trackingEvents.manageCollateralConfirm()
     }
+    if (stage === 'collateralEditing' && withdrawAmount && withdrawAmount.gt(0)) {
+      trackingEvents.manageCollateralWithdrawConfirm()
+    }
     if (stage === 'manageWaitingForConfirmation' && withdrawAmount && withdrawAmount.gt(0)) {
       trackingEvents.manageCollateralConfirm()
+    }
+    if (stage === 'collateralAllowanceWaitingForConfirmation') {
+      trackingEvents.manageCollateralApproveAllowance()
+    }
+    if (stage === 'daiAllowanceWaitingForConfirmation') {
+      trackingEvents.manageDaiApproveAllowance()
     }
   }
 
@@ -176,7 +182,17 @@ export function ManageVaultButton(props: ManageVaultState) {
         )}
       </Button>
       {canRegress && (
-        <Button variant="textual" onClick={handleRegress} sx={{ fontSize: 3 }}>
+        <Button
+          variant="textual"
+          onClick={(e: React.SyntheticEvent<HTMLButtonElement>) => {
+            if (stage !== 'daiAllowanceFailure' && stage !== 'collateralAllowanceFailure') {
+              trackingEvents.manageVaultConfirmVaultEdit()
+            }
+
+            handleRegress(e)
+          }}
+          sx={{ fontSize: 3 }}
+        >
           {secondaryButtonText}
         </Button>
       )}

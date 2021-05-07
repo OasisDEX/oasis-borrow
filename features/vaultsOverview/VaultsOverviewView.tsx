@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { Pages, trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
@@ -124,7 +125,10 @@ function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
       state={filters}
       columns={vaultsColumns}
       noResults={<Box>{t('no-results')}</Box>}
-      deriveRowProps={(row) => ({ href: `/${row.id}` })}
+      deriveRowProps={(row) => {
+        trackingEvents.overviewManage(row.id.toString(), row.ilk)
+        return { href: `/${row.id}` }
+      }}
     />
   )
 }
@@ -445,6 +449,7 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
             onTagChange={onVaultsTagChange}
             tagFilter={vaults.filters.tagFilter}
             defaultTag="your-vaults"
+            page={Pages.VaultsOverview}
             searchPlaceholder={t('search-token')}
           />
           <VaultsTable vaults={vaults} />

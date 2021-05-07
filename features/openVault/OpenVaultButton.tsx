@@ -90,10 +90,21 @@ export function OpenVaultButton(props: OpenVaultState) {
     stage === 'allowanceFailure' ? t('edit-token-allowance', { token }) : t('edit-vault-details')
 
   let trackingEvent: () => void | null
+
+  if (primaryButtonText === t('setup-proxy')) trackingEvent = trackingEvents.createVaultSetupProxy
   if (primaryButtonText === t('confirm')) trackingEvent = trackingEvents.createVaultConfirm
   if (primaryButtonText === t('create-vault')) trackingEvent = trackingEvents.confirmVaultConfirm
   if (primaryButtonText === t('create-proxy-btn')) trackingEvent = trackingEvents.createProxy
-  if (primaryButtonText === t('approve-allowance')) trackingEvent = trackingEvents.approveAllowance
+  if (stage === 'editing' && primaryButtonText === t('set-token-allowance', { token })) {
+    trackingEvent = trackingEvents.setTokenAllowance
+  }
+  if (
+    (stage === 'allowanceWaitingForConfirmation' &&
+      primaryButtonText === t('set-token-allowance', { token })) ||
+    primaryButtonText === t('retry-allowance-approval')
+  ) {
+    trackingEvent = trackingEvents.approveAllowance
+  }
 
   return (
     <>

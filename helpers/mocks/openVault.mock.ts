@@ -3,7 +3,7 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { ilkToToken$, protoTxHelpers, TxHelpers } from 'components/AppContext'
-import { OpenVaultState } from 'features/openVault/openVault'
+import { createOpenVault$ } from 'features/openVault/openVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { Observable, of } from 'rxjs'
@@ -12,16 +12,6 @@ import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContextConnected$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
-
-var proxyquire = require('proxyquire')
-
-const mixpanelStub = {
-  track: () => true,
-}
-
-const { createOpenVault$ } = proxyquire('features/openVault/openVault', {
-  'analytics/analytics': proxyquire('analytics/analytics', { 'mixpanel-browser': mixpanelStub }),
-})
 
 export interface MockOpenVaultProps {
   _context$?: Observable<ContextConnected>
@@ -61,7 +51,7 @@ export function mockOpenVault$({
   account = '0xVaultController',
   ilks,
   ilk = 'WBTC-A',
-}: MockOpenVaultProps = {}): Observable<OpenVaultState> {
+}: MockOpenVaultProps = {}) {
   const token = ilk.split('-')[0]
 
   const context$ =

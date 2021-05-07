@@ -4,7 +4,7 @@ import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { protoTxHelpers, TxHelpers } from 'components/AppContext'
-import { ManageVaultState } from 'features/manageVault/manageVault'
+import { createManageVault$, ManageVaultState } from 'features/manageVault/manageVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { getStateUnpacker } from 'helpers/testHelpers'
@@ -17,16 +17,6 @@ import { mockContext$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
 import { mockVault$, MockVaultProps } from './vaults.mock'
-
-var proxyquire = require('proxyquire')
-
-const mixpanelStub = {
-  track: () => true,
-}
-
-const { createManageVault$ } = proxyquire('features/manageVault/manageVault', {
-  'analytics/analytics': proxyquire('analytics/analytics', { 'mixpanel-browser': mixpanelStub }),
-})
 
 export const MOCK_VAULT_ID = one
 

@@ -1,6 +1,5 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
-import { trackingEvents } from 'analytics/analytics'
 import { VaultActionInput } from 'components/VaultActionInput'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
@@ -84,7 +83,6 @@ export function OpenVaultEditing(props: OpenVaultState) {
             }}
             onClick={() => {
               toggleGenerateOption!()
-              trackingEvents.generate()
             }}
           >
             {showGenerateOption ? <MinusIcon /> : <PlusIcon />}
