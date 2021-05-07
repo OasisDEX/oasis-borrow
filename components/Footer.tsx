@@ -113,7 +113,7 @@ export function TemporaryFooter() {
   const date = moment(buildDate).format('DD.MM.YYYY HH:MM')
   console.debug(`Build commit: ${commit} Build date: ${date}`)
   return (
-    <Container sx={{ maxWidth: '898px', visibility: 'hidden' }}>
+    <Container sx={{ maxWidth: '898px', display: 'none' }}>
       <Grid sx={{ color: 'text', fontSize: 2 }} columns={2}>
         <Text>
           Commit:{' '}
