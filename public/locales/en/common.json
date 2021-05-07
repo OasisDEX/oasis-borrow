@@ -349,7 +349,6 @@
     "vault-dai-debt": "Vault Dai Debt",
     "vault-id": "Vault ID"
   },
-  "to-the-following-address": "to the following address",
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
   "tos": "Terms of Service",

@@ -1,6 +1,6 @@
 {
   "404-button": "Ir a la página principal",
-  "404-message": "lo siento, pagina no encontrada.",
+  "404-message": "Lo siento, página no encontrada.",
   "Argentina": "Argentina",
   "Brasil": "Brasil",
   "Mexico": "Mexico",
@@ -16,13 +16,19 @@
   "activity": "Actividad",
   "address": "Dirección",
   "address-invalid": "Dirección no encontrada",
+  "after": "Después",
+  "all-assets": "Todos los activos",
   "amount": "Cantidad",
+  "approve-allowance": "Aprobar permiso",
+  "approving-allowance": "Aprobando permiso",
   "apy": "APY",
   "back": "Regresar",
+  "back-to-editing": "Regresar a edición",
   "balance": "Saldo",
   "balance-insufficient": "El saldo de Dai es insuficiente",
   "balances": "Saldos",
   "buy": "Comprar",
+  "change-your-vault": "Cambiar tu Vault",
   "buy-dai": "Compra Dai",
   "buy-with": "Comprar {{token}} con {{onramp}}",
   "change-locale": "Cambiar localidad",
@@ -33,15 +39,16 @@
   "compound": "Compound",
   "compound-product": "Presta tus Dai en Compound y genera ahorros.",
   "confirm": "Confirmar",
+  "confirmed-proxy-deployment": "Despliegue del Proxy confirmado",
   "connect-confirm": "Confirme en {{ connectionKind }}",
   "connect-email": "Conectar con correo electrónico",
   "connect-error": "Por favor, autorice a este sitio web a acceder a su cuenta Ethereum.",
-  "connect-wallet": "Conectar la wallet",
-  "connect-wallet-button": "Conectar Wallet",
+  "connect-wallet": "Conectar la billetera",
+  "connect-wallet-button": "Conectar billetera",
   "connect-with": "Conecta {{ connectionKind }}",
   "connected-with": "Conectado con {{ connectionKind }}",
   "contact": {
-    "description": "Nuestro equipo está listo para responder sus preguntas o comentarios. Comuníquese a continuación.",
+    "description": "Envíanos tus sugerencias, preguntas o comentarios a continuación.",
     "label": {
       "email": "Correo electrónico",
       "message": "Mensaje",
@@ -53,18 +60,26 @@
       "success": "Gracias por ponerte en contacto, nos comunicaremos contigo en breve."
     },
     "submit": "Enviar",
-    "title": "Contacta con Oasis"
+    "title": "Contactarnos "
   },
   "continue": " Continuar",
   "conversion-fee": "Comisión por intercambio",
   "copied": "Copiado",
   "copy-address": "Copiar dirección",
   "country": "País",
+  "configure-your-vault": "Configurar tu Vault",
   "create-dai-savings": "Crear Ahorros en Dai",
   "create-proxy": "Crea un Proxy",
   "create-proxy-btn": "Crear Proxy",
-  "create-proxy-desc": "Para poder usar los ahorros y otras características, necesitarás crear un proxy para su wallet.",
+  "create-proxy-desc": "Para poder usar los ahorros y otras características, necesitarás crear un proxy para su billetera.",
+  "create-vault": "Crear Vault",
+  "create-your-vault": "Crear tu Vault",
+  "creating-proxy": "Creando Proxy",
+  "creating-vault": "Creando Vault",
   "currency": "Moneda",
+  "custom": "Personalizado",
+  "dai-being-generated": "Dai siendo generado",
+  "dai-paying-back": "Pagando ({{amount}}) Dai",
   "dai-savings-rate": " Tasa de Ahorro de Dai",
   "deposit": "Depositar",
   "deposited": "Depositado",
@@ -72,7 +87,7 @@
   "disconnect-magic": "Cerrar sesión",
   "dsr-available-withdraw": "Disponible para retirar",
   "dsr-deposit-depositing": "Estás depositando",
-  "dsr-deposit-depositing-to": "en Dai Savings Rate",
+  "dsr-deposit-depositing-to": "En Dai Savings Rate",
   "dsr-deposit-error-allowance": "Falló la configuración de permisos",
   "dsr-deposit-error-deposit": "Depósito a DSR fallido",
   "dsr-deposit-error-greater-than-balance": "DAI insuficiente",
@@ -107,9 +122,13 @@
   "dsrDeposit": "Depositado en DSR",
   "dsrWithdrawal": "Retirado de DSR ",
   "earning": "Ganancias",
+  "edit-token-allowance": "Editar permiso de {{token}}",
+  "edit-vault-details": "Editar información del Vault",
   "email": "Correo Electrónico",
   "email-invalid": "El correo electrónico proporcionado no es válido",
   "email-required": "Se requiere una dirección de correo electrónico",
+  "enter-allowance-amount": "Ingresa un monto permitido",
+  "enter-an-amount": "Ingresa un monto",
   "erc20-approve-description-pending": "Desbloqueo de la transferencia de {{ token }}",
   "erc20-approve-description-recent": "Transferencia desbloqueada de {{ token }}",
   "erc20-approve-description-recent-failed": "No se desbloqueó la transferencia de {{ token }}",
@@ -130,11 +149,28 @@
   "eth-send-description-recent-failed": "Fallo al enviar {{ amount }} ETH",
   "eth-send-notification": "Enviando ETH",
   "eth-send-notification-past": "Enviado ETH",
+  "event": {
+    "activity": "Actividad",
+    "deposit": "Depositado",
+    "time": "Tiempo",
+    "type": "Tipo",
+    "vault-opened": "Vault abierto"
+  },
   "exchange-rate": "Tasa de Cambio",
   "failed": "Fallido",
+  "featured": {
+    "cheapest": "Más barato",
+    "most-popular": "Más popular",
+    "new": "Nuevo"
+  },
+  "filters": {
+    "lp-token": "LP tokens",
+    "stablecoin": "Stablecoins"
+  },
   "gas-estimation-error": "Error",
   "get-dai": "Obtén Dai",
   "get-started": "Comenzar",
+  "go-to-vault": "Ir al Vault #{{id}}",
   "guides": {
     "guide": {
       "choose-wallet": {
@@ -163,7 +199,22 @@
       }
     }
   },
-  "here": "here",
+  "here": "aquí",
+  "history": {
+    "auction_finished_v2": "Subasta <0>#{{auctionId}}</0> finalizada, <0>{{remainingCollateral}} {{token}}</0> restantes",
+    "auction_started": "Subasta iniciada, <0>{{collateralAmount}} {{token}}</0> tomado para cubrir <0>{{daiAmount}} Dai</0>",
+    "auction_started_v2": "\t Subasta iniciada, <0>{{collateralAmount}} {{token}}</0> tomado para cubrir <0>{{daiAmount}} Dai</0>",
+    "deposit": "Depositado <0>{{collateralAmount}} {{token}}</0> en el Vault",
+    "generate": "<0>{{daiAmount}}</0> Dai generado desde el Vault",
+    "migrate": "Vault migrado",
+    "move_dest": "Se ha movido <0>{{collateralAmount}} {{token}}</0> y <0>{{daiAmount}}</0> deuda de Dai al Vault",
+    "move_src": "\t Se ha movido <0>{{collateralAmount}} {{token}}</0> y <0>{{daiAmount}}</0> deuda de Dai desde el Vault",
+    "open": "Se ha abierto un nuevo Vault número <0>#{{cdpId}}</0>",
+    "payback": "Pagado <0>{{daiAmount}}</0> Dai al Vault",
+    "transfer": "Vault transferido a <0>{{transferTo}}</0> por <0>{{transferFrom}}</0>",
+    "withdraw": "Retirado <0>{{collateralAmount}} {{token}}</0> Del Vault"
+  },
+  "invalid-allowance-amount": "Monto permitido inválido",
   "introduction": {
     "step-1": "Ingresa con tu correo electrónico",
     "step-2": "Compra Dai",
@@ -175,6 +226,9 @@
   "jwt-auth-rejected": "Firma rechazada",
   "jwt-auth-waiting-acceptance": "Firmar mensaje",
   "landing": {
+    "faq": {
+      "title": "Preguntas Frecuentes de pedir un préstamo"
+    },
     "cards": {
       "borrow": {
         "description": "Depositar colateral y generar Dai.",
@@ -191,7 +245,7 @@
       "contact": "Soporte",
       "faq": "Preguntas Frecuentes",
       "language": {
-        "en": "English",
+        "en": "Inglés",
         "es": "Español",
         "pt": "Português",
         "cn": "中文"
@@ -200,11 +254,14 @@
       "terms": "Condiciones",
       "trade": "Intercambia"
     },
+    "glossary-of-terms": "Glosario de términos",
     "hero": {
       "button1": "Comenzar ahora",
       "button2": "Aprender sobre Dai",
-      "headline": "Dai es una moneda digital más inteligente para todas. Compra, envía y administra  en un solo lugar."
+      "headline": "Genera Dai usando cripto como colateral",
+      "subheader": "Abre un Vault de Maker y genera Dai depositando tu colateral. Conecta tu billetera para comenzar"
     },
+    "link-to-full-faq": "Lista completa de las preguntas frecuentes de los Vaults de Oasis",
     "notification-save": " Oasis Save se ha movido y ahora es parte de la experiencia integrada de Oasis.app. Todo el Dai utilizado en la Tasa de Interés de Dai (DSR) se encontrará disponible aquí. Si tienes algún problema por favor <0>contáctanos.</0>",
     "section-title": "Oasis es el hogar de su moneda digital más inteligente, Dai",
     "sections": {
@@ -239,14 +296,28 @@
   "latamex-purchase-notification": "Compra con Latamex",
   "latamex-purchase-notification-past": "Comprado con Latamex",
   "latamex-summary": "La forma más fácil y rápida de comprar Dai en Argentina, Brasil y México con su moneda local",
-  "ledger-cancel": "Selecciona otra wallet",
+  "ledger-cancel": "Selecciona otra billetera",
   "ledger-error": "Hubo un error, por favor reinicia",
   "ledger-legacy": "Ledger Legacy",
   "ledger-live": "Ledger Live",
   "ledger-select-title": "Seleccione Ledger Live o Legacy",
+  "manage-vault": {
+    "action-option": "{{action}} {{token}} con esta transacción",
+    "dai-available": "Dai disponible",
+    "dust-limit": "Monto mínimo de deuda",
+    "liquidation-fee": "Tarifa de liquidación",
+    "min-collat-ratio": "Ratio de colateral mínimo",
+    "or": "o",
+    "stability-fee": "Tasa de estabilidad",
+    "title": "Administrar Vault"
+  },
   "ledger-select-address": "Selecciona una dirección",
   "max": "Max",
   "min-amount": "La cantidad mínima es de {{minAmount}} {{token}}",
+  "moving-into-vault": "Moviendo al Vault",
+  "moving-out-vault": "Moviendo fuera del Vault",
+  "new-to-ethereum": "¿Nuevo en Ethereum? ",
+  "next": "Siguiente",
   "miner-fee": "Fee de minero",
   "moonpay-badge-country": "EEUU. y Europa",
   "moonpay-badge-fees": "Comisiones 1%-4.5%",
@@ -270,13 +341,16 @@
   "notification-status-rejected": "Rechazado",
   "notification-status-sign": "Firmar Tx",
   "of": "De",
+  "one-of-some": "{{one}} de {{some}}",
   "onramp-leave-message": "Al hacer clic en comprar, saldrás de Oasis y serás redirigido a un sitio web de terceros donde completarás el proceso de compra.",
+  "open-new-vault": "Abrir un nuevo Vault",
+  "open-vault": "Abrir Vault",
   "or": "o",
   "paste": "Pegar",
   "pending-transactions": "Transacciones pendientes",
   "permissions": "Conceder permisos",
   "permissions-btn": " Conceder permisos",
-  "permissions-desc": " Este permiso permite a Oasis interactuar con el Dai de su wallet.",
+  "permissions-desc": " Este permiso permite a Oasis interactuar con el Dai de su billetera.",
   "powered-by": "Impulsado por",
   "proceed": "Proceder",
   "readonly-alert-message": "Estás viendo actualmente",
@@ -286,21 +360,51 @@
   "receive": "Recibir",
   "received": "Recibido",
   "recent-transactions": "Transacciones recientes",
-  "reclaim": "Reclaim collateral",
+  "reclaim": "Recuperar colateral",
+  "remaining-in-wallet": "Restante en billetera",
+  "retry": "Reintentar",
+  "retry-allowance-approval": "Reintentar aprobación de permiso",
+  "retry-create-proxy": "Reintentar crear Proxy",
   "savings": "Ahorros",
   "savings-earned": "Ahorros Generados",
+  "search-token": "Buscar token",
   "select-product": "Selecciona un producto",
   "send": "Enviar",
   "send-amount-empty": "No puede enviar 0 {{ token }}",
   "send-amount-exceed-balance": "Cantidad insuficiente {{ token }}",
   "send-to": "Enviar a",
   "sent": "Enviado",
-  "setup-wallet": "Configura tu wallet",
+  "setup-wallet": "Configura tu billetera",
   "show-more": "Mostrar más",
   "spots-remaining": "{{ spots }} lugares restantes",
   "start-saving": "Empieza a ahorrar",
-  "to-the-following-address": "a la siguiente dirección",
+  "system": {
+    "asset": "Activo",
+    "available-to-withdraw": "Disponible para retirar",
+    "available-to-generate": "Disponible para generar",
+    "coll-locked": "Colateral bloqueado",
+    "coll-ratio": "Ratio de colateral",
+    "collateral": "Colateral",
+    "collateral-locked": "Colateral bloqueado",
+    "collateral-ratio": "Ratio de colateral",
+    "collateralization-ratio": "Ratio de colateralización",
+    "dai": "Dai",
+    "dai-available": "Dai disponible",
+    "dai-debt": "Deuda de Dai",
+    "deposited": "Depositado",
+    "in-my-wallet": "En mi billetera",
+    "in-your-wallet": "En tu billetera",
+    "liquidation-penalty": "Penalidad por liquidación",
+    "liquidation-price": "Precio de liquidación",
+    "liquidation-ratio": "Ratio de liquidación",
+    "min-coll-ratio": "Ratio mínimo de colateral",
+    "stability-fee": "Tasa de estabilidad",
+    "type": "Tipo",
+    "vault-dai-debt": "Deuda de Dai del Vault",
+    "vault-id": "Número de Vault"
+  },
   "token-balance": "Saldo de {{token}} ",
+  "token-depositing": "Depositando {{token}} {{amount}}",
   "tos": "Términos del servicio",
   "tos-accept-message": "Antes de comenzar, deberás leer y aceptar nuestras condiciones de servicio.",
   "tos-accept-message-updated": "Antes de poder continuar, deberás leer y aceptar nuestras condiciones de servicio actualizadas.",
@@ -309,42 +413,91 @@
   "tos-jwt-signature-message": "Por favor firma un mensaje con su dirección de Ethereum para registrar su aceptación de los términos de servicio.",
   "tos-read": "He leído y acepto las Condiciones de servicio.",
   "tos-view": "Ver condiciones de servicio",
-  "tos-wallet-connection-in-progress": "Conección de wallet en progreso...",
+  "tos-wallet-connection-in-progress": "Conección de billetera en progreso...",
   "tos-welcome": "Bienvenido",
   "tos-welcome-updated": "Actualizamos nuestras condiciones ",
   "transaction-failed": "Transacción Fallida",
   "transaction-fee": "Tarifa de red",
   "transaction-fee-tooltip-desc": "Las tarifas de la red actualmente se pagan en ETH. El costo estimado de esta acción es",
-  "trezor-cancel": "Selecciona otra wallet",
+  "trezor-cancel": "Selecciona otra billetera",
   "trezor-error": "Hubo un error, por favor reinicia",
   "trezor-loading-accounts": "Cargando cuentas de Trezor...",
   "trezor-select-address": "Selecciona una dirección",
   "try-again": "Inténtalo de nuevo. ",
-  "view": "Ver",
-  "view-more": "Ver más",
-  "vault-banners": {
-    "ownership": {
-      "header": "You are viewing {{address}} Vault",
-      "subheader1": "Please connect your wallet to open, manage or view your Vaults.",
-      "subheader2": "You can view your vaults"
-    },
-    "liquidating": {
-      "header1":"Your {{ collateral }} Maker Vault {{ id }} is about to get liquidated.",
-      "header2":"{{ collateral }} Maker Vault {{ id }} is about to get liquidated.",
-      "subheader1":"The next price will cause a liquidation on this Maker Vault. You can still save your Maker Vault from liquidation by adding collateral or pay back DAI.",
-      "subheader2":"Is this your Maker Vault? Please connect with address: {{ address }} and save your Maker Vault from liquidation."
-    },
-    "liquidated": {
-      "header1":"Your Maker Vault got liquidated",
-      "header2":"This Maker Vault got liquidated",
-      "subheader1":"This Maker Vault has been liquidated. A portion of your collateral has been auctioned to pay back your DAI debt.",
-      "subheader2":"You can reclaim {{ amount }} {{ collateral }}",
-      "subheader3":"If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
+  "unlimited-allowance": "Permiso ilimitado",
+  "vault": {
+    "current-price": " Precio actual {{token}}/USD en {{time}}",
+    "header": "{{ilk}} Vault #{{id}}",
+    "next-price": "Próximo precio en {{count}} minuto",
+    "next-price-any-time": "Próximo precio en <2 minutos",
+    "next-price_plural": "Próximo precio en {{count}} minutos",
+    "open-vault": "Abrir {{ilk}} Vault",
+    "vault-details": "Datos del Vault"
+  },
+  "vault-actions": {
+    "deposit": "Deposita",
+    "generate": "Genera",
+    "payback": "Paga",
+    "withdraw": "Retira"
+  },
+  "vault-changed": "Vault modificado",
+  "vault-history": "Historia del Vault",
+  "vaults": {
+    "after": "Después ${{price}}",
+    "current-price": "{{token}}/USD precio actual",
+    "ilk-does-not-exist": "Ilk {{ilk}} no existe",
+    "next-price": "Próximo precio de {{token}}/USD: {{amount}}"
+  },
+  "ilks-list": {
+    "headers": {
+      "noVaults": "Seleciona un tipo de colateral para crear un Vault de Maker y generar Dai",
+      "withVaults": "Abre un nuevo Vault de Maker.<0/> Genera Dai"
     }
   },
-  "waiting-approval": "Esperando Aprobación",
+  "vaults-overview": {
+    "banner-content": "Puedes ver tus Vaults",
+    "banner-header": "Estas viendo el resumen de los Vaults de {{address}}",
+    "headers": {
+      "connected-owner-noVaults": "No tienes Vaults abiertos",
+      "connected-owner-withVaults": "Resumen de tus Vaults de Maker",
+      "connected-viewer-noVaults": "{{address}} actualmente no tiene Vaults de Maker.",
+      "notConnected-noVaults": "{{address}} actualmente no tiene Vaults de Maker.<0/> Conecta tu billetera y abre un Vault",
+      "notConnected-withVaults": "Resumen de Vaults de Maker de {{address}}.<0/> Conecta tu billetera"
+    },
+    "number-of-vaults": "Número de Vaults",
+    "subheader-no-vaults": "Abre un Vault de Maker y genera Dai depositando colateral.",
+    "total-debt": "Deuda Total",
+    "total-locked": "Total bloqueado",
+    "vaults": "Vaults",
+    "vaults-at-risk": "Vaults en riesgo",
+    "your-vaults": "Tus Vaults"
+  },
+  "view": "Ver",
+  "view-more": "Ver más",
+  "view-on-etherscan": "Ver en Etherscan",
+  "vault-banners": {
+    "ownership": {
+      "header": "Estas viendo el Vault de {{address}}",
+      "subheader1": "Por favor conecta tu billetera para abrir, manejar o ver tus Vaults",
+      "subheader2": "Puedes ver tus Vaults"
+    },
+    "liquidating": {
+      "header1": "Tu {{ collateral }} Vault de Maker {{ id }} está por ser liquidado",
+      "header2": "{{ collateral }} Vault de Maker {{ id }} está por ser liquidado",
+      "subheader1": "La próxima actualización del precio de {{ collateral }} provocará una liquidación de este Vault a menos que más colateral sea añadido o se pague la deuda de Dai.",
+      "subheader2": "Es este tu Vault de Maker? Por favor conecta con la dirección {{ address }} y salva a tu Vault de Maker de ser liquidado"
+    },
+    "liquidated": {
+      "header1": "Tu Vault de Maker fue liquidado",
+      "header2": "Este Vault de Maker fue liquidado",
+      "subheader1": "Este Vault ha sido liquidado. Una parte de tu colateral ha sido subastada para pagar tu deuda de Dai.",
+      "subheader2": "Puedes recuperar {{ amount }} {{ collateral }}",
+      "subheader3": "Si este es tu Vault, conectate con la dirección {{ address }} para recuperar el colateral restante"
+    }
+  },
+  "waiting-approval": "Esperando aprobación",
   "waiting-confirmation": "Esperando la confirmación de la transacción",
-  "waiting-proxy-deployment": "Despliegue de Proxy confirmado",
+  "waiting-proxy-deployment": "Despliegue de Proxy confirmandose",
   "withdraw": "Retirar",
   "withdrawn": "Retirado",
   "wyre-badge-country": "EEUU. y Europa",
@@ -355,14 +508,18 @@
   "wyre-purchase-description-recent-failed": "Fallo la compra {{ order }} con Wyre",
   "wyre-purchase-notification": "Compra con Wyre",
   "wyre-purchase-notification-past": "Comprado con Wyre",
-  "you-are-sending": "Usted está enviando",
+  "you-are-sending": "Estás enviando",
+  "your-vaults": "Tus Vaults",
+  "no-results": "Sin resultados",
+  "learn-about-wallets": "Aprende más sobre billeteras",
+  "learn-more-link": "https://ethereum.org/es/wallets/find-wallet/",
   "seo": {
     "default": {
       "title": "Oasis.app es el lugar para Dai tu moneda digital inteligente",
       "description": "Dai es una moneda digital más inteligente para todos. Compra, envia y gestiona Dai en Oasis.app."
     },
     "support": {
-      "title": "FAQs",
+      "title": "Preguntas Frecuentes",
       "description": "Todas las respuestas para las preguntas más frecuentes."
     },
     "contact": {
@@ -377,5 +534,9 @@
       "title": "Dai",
       "description": "Una breve introducción a Dai, la moneda digital inteligente."
     }
-  }
+  },
+  "set-allowance-for": "Establecer permiso para {{token}}",
+  "set-token-allowance": "Establecer permiso de {{token}} ",
+  "setting-allowance-for": "Estableciendo permiso para {{token}}",
+  "setup-proxy": "Configurar Proxy"
 }
