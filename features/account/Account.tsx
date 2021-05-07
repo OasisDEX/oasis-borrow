@@ -2,7 +2,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { ConnectWallet, getConnectionKindMessage } from 'components/connectWallet/ConnectWallet'
+import { getConnectionKindMessage } from 'components/connectWallet/ConnectWallet'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
@@ -133,15 +133,6 @@ export function AccountButton() {
   )
 }
 
-export function ConnectModal({ close }: ModalProps) {
-  return (
-    <Modal sx={{ width: 'max-content' }} variant="container">
-      <ModalCloseIcon {...{ close }} />
-      <ConnectWallet />
-    </Modal>
-  )
-}
-
 export function AccountModal({ close }: ModalProps) {
   const { web3Context$, accountData$ } = useAppContext()
   const accountData = useObservable(accountData$)
@@ -174,7 +165,7 @@ export function AccountModal({ close }: ModalProps) {
   const { account, connectionKind } = web3Context
 
   return (
-    <Modal sx={{ maxWidth: '530px', margin: '0px auto' }}>
+    <Modal close={close} sx={{ maxWidth: '530px', margin: '0px auto' }}>
       <ModalCloseIcon {...{ close }} />
       <Grid gap={2} pt={3} mt={1}>
         <Box
@@ -187,7 +178,7 @@ export function AccountModal({ close }: ModalProps) {
             },
           }}
         >
-          <Heading mb={3}>{t('account')}</Heading>
+          <Heading mb={3}>{t('your-wallet')}</Heading>
           <Card variant="secondary">
             <Grid>
               <Flex sx={{ justifyContent: 'space-between' }}>
@@ -254,7 +245,8 @@ export function AccountModal({ close }: ModalProps) {
           sx={{
             fontWeight: 'semiBold',
             px: 3,
-            my: 2,
+            my: 3,
+            py: 1,
             mx: 1,
           }}
         >

@@ -5,6 +5,8 @@ import { useTranslation } from 'next-i18next'
 import React, { HTMLProps, memo, ReactNode, useCallback } from 'react'
 import { Box, Button, Container, SxStyleProp } from 'theme-ui'
 
+import { getIsInternalLink } from './Links'
+
 export interface ColumnDef<T, S> {
   headerLabel: string
   header: React.ComponentType<S & { label: string }>
@@ -48,14 +50,17 @@ export function TableContainer({
 
 interface RowProps {
   href?: string
+  target?: string
 }
 
 function Row({ children, sx, href }: React.PropsWithChildren<{ sx?: SxStyleProp } & RowProps>) {
   const { push } = useRedirect()
 
   const redirect = useCallback(() => {
-    if (href !== undefined) {
+    if (href !== undefined && getIsInternalLink(href)) {
       push(href)
+    } else if (href !== undefined) {
+      window.open(href, '_blank')
     }
   }, [href])
 

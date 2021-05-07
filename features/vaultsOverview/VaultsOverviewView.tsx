@@ -129,10 +129,10 @@ function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
   )
 }
 
-function Summary({ summary }: { summary: VaultSummary }) {
+export function Summary({ summary }: { summary: VaultSummary }) {
   const { t } = useTranslation()
   return (
-    <Card sx={{ mb: 5 }}>
+    <Card variant="surface" sx={{ mb: 5, px: 4 }}>
       <Grid sx={{ pt: 3 }} columns={['1fr', 'repeat(4, 1fr)', 'repeat(4, 1fr)']}>
         <Box sx={{ gridColumn: ['initial', 'span 2', 'initial'] }}>
           <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
@@ -157,7 +157,8 @@ function Summary({ summary }: { summary: VaultSummary }) {
             {t('vaults-overview.total-debt')}
           </Text>
           <Text variant="header2" sx={{ mt: 2 }}>
-            {formatCryptoBalance(summary.totalDaiDebt)} DAI
+            {formatCryptoBalance(summary.totalDaiDebt)}
+            <Text sx={{ fontSize: '20px', display: 'inline', ml: 2 }}>DAI</Text>
           </Text>
         </Box>
         <Box sx={{ gridRow: ['initial', '2/3', 'auto'] }}>
@@ -188,10 +189,9 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
     <Box sx={{ gridColumn: ['1/2', '1/5', '1/5'], my: 3 }}>
       <Box
         sx={{
+          position: 'relative',
           borderRadius: 'small',
           display: ['none', 'flex', 'flex'],
-          overflow: 'hidden',
-          boxShadow: 'medium',
         }}
       >
         {totalRatio.gt(zero) &&
@@ -199,9 +199,53 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
             <Box
               key={token}
               sx={{
+                position: 'relative',
                 flex: ratio.toString(),
-                height: 2,
-                background: getToken(token).color || 'lightGray',
+                height: 4,
+                '&:before': {
+                  boxShadow: 'medium',
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  content: `''`,
+                  height: 2,
+                  background: getToken(token).color || 'lightGray',
+                },
+                '&:first-of-type:before': {
+                  borderTopLeftRadius: 'small',
+                  borderBottomLeftRadius: 'small',
+                },
+                '&:last-of-type:before': {
+                  borderTopRightRadius: 'small',
+                  borderBottomRightRadius: 'small',
+                },
+                ...(ratio.lt(0.08)
+                  ? {
+                      '&:hover:after': {
+                        opacity: 1,
+                        transform: 'translate(-50%, -40px)',
+                      },
+                      '&:after': {
+                        transition: 'ease-in-out 0.2s',
+                        opacity: 0,
+                        whiteSpace: 'nowrap',
+                        content: `'${token}: ${formatPercent(ratio.times(100), { precision: 2 })}'`,
+                        position: 'absolute',
+                        left: '50%',
+                        background: 'white',
+                        padding: 2,
+                        borderRadius: 'small',
+                        transform: 'translate(-50%, 0)',
+                        boxShadow: 'surface',
+                        fontFamily: 'body',
+                        fontWeight: 'body',
+                        lineHeight: 'body',
+                        fontSize: 1,
+                        color: 'white',
+                        bg: 'primary',
+                      },
+                    }
+                  : {}),
               }}
             />
           ))}
@@ -218,22 +262,31 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
           }}
         />
         {assets.map(([token, ratio]) => (
-          <Box key={token} sx={{ my: 2, flex: ratio.toString() }}>
+          <Box key={token} sx={{ mb: 3, flex: ratio.toString() }}>
             <Box
               sx={{
+                position: 'relative',
+                top: '-14px',
+                alignItems: 'center',
                 display: ['flex', ...(ratio.gt(0.08) ? ['flex', 'flex'] : ['none', 'none'])],
               }}
             >
               <Box sx={{ mr: 1 }}>
                 <Icon
                   name={getToken(token).iconCircle}
-                  size="26px"
+                  size="32px"
                   sx={{ verticalAlign: 'sub', mr: 2 }}
                 />
               </Box>
-              <Box sx={{ display: 'flex', flexDirection: ['row', 'column', 'column'] }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'baseline',
+                  flexDirection: ['row', 'column', 'column'],
+                }}
+              >
                 <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
-                  {getToken(token).name}
+                  {token}
                 </Text>
                 <Text variant="paragraph3" sx={{ color: 'text.muted', ml: [2, 0, 0] }}>
                   {formatPercent(ratio.isNaN() ? zero : ratio.times(100), { precision: 2 })}
@@ -311,8 +364,8 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
       {connectedAccount && address !== connectedAccount && (
         <VaultOverviewOwnershipBanner account={connectedAccount} controller={address} />
       )}
-      <Flex sx={{ my: 5, flexDirection: 'column' }}>
-        <Heading variant="header2" sx={{ textAlign: 'center', my: 3 }} as="h1">
+      <Flex sx={{ mt: 5, mb: 4, flexDirection: 'column' }}>
+        <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
           <Trans
             i18nKey={headerTranslationKey}
             values={{ address: formatAddress(address) }}

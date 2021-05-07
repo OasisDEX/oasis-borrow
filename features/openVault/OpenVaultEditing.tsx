@@ -72,8 +72,10 @@ export function OpenVaultEditing(props: OpenVaultState) {
             mt={3}
             mb={2}
             sx={{
+              display: 'flex',
+              alignItems: 'center',
               cursor: 'pointer',
-              fontSize: 3,
+              fontSize: 2,
               fontWeight: 'semiBold',
               color: 'onSuccess',
               userSelect: 'none',

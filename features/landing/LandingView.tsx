@@ -102,6 +102,31 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
   },
 ]
 
+function WithArrow({ children }: React.PropsWithChildren<{}>) {
+  return (
+    <Text
+      variant="paragraph3"
+      sx={{
+        fontWeight: 'semiBold',
+        fontSize: [1, 2],
+        position: 'relative',
+        '& .arrow': {
+          transition: 'ease-in-out 0.2s',
+          transform: 'translateX(0px)',
+        },
+        '&:hover .arrow': {
+          transform: 'translateX(5px)',
+        },
+      }}
+    >
+      <Box sx={{ display: 'inline', mr: 2 }}>{children}</Box>
+      <Box className="arrow" sx={{ display: 'inline', position: 'absolute' }}>
+        →
+      </Box>
+    </Text>
+  )
+}
+
 export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boolean }) {
   const { t } = useTranslation()
 
@@ -118,28 +143,27 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
     >
       <Announcement sx={{ mb: 3, textAlign: 'left' }}>
         <Flex sx={{ flexDirection: ['column', 'row'] }}>
-          <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', fontSize: [1, 2] }}>
-            Welcome to the new Oasis.app. &nbsp;
+          <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', fontSize: [1, 2], mr: 3 }}>
+            {t('welcome')}
           </Text>
           <Flex sx={{ flexDirection: ['column', 'row'] }}>
             <AppLink href="https://blog.oasis.app">
-              <Text
-                variant="paragraph3"
-                sx={{ fontWeight: 'semiBold', display: 'inline-block', fontSize: [1, 2] }}
-              >
-                Read the blog post →
-              </Text>
+              <WithArrow>{t('read-blog-post')}</WithArrow>
             </AppLink>
             <Text
               variant="paragraph3"
-              sx={{ fontWeight: 'semiBold', color: 'muted', mx: 3, display: ['none', 'block'] }}
+              sx={{
+                fontWeight: 'semiBold',
+                color: 'muted',
+                mx: 3,
+                ml: 4,
+                display: ['none', 'block'],
+              }}
             >
               |
             </Text>
             <AppLink href={`${window.location.origin}/borrow-old`}>
-              <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', fontSize: [1, 2] }}>
-                Visit the old Oasis →
-              </Text>
+              <WithArrow>{t('visit-old-oasis')}</WithArrow>
             </AppLink>
           </Flex>
         </Flex>

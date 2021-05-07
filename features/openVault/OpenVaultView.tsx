@@ -95,7 +95,7 @@ export function OpenVaultHeading(props: OpenVaultState & SxProps) {
 
 export function OpenVaultContainer(props: OpenVaultState) {
   return (
-    <Grid columns={['1fr', '2fr minmax(380px, 1fr)']} gap={4}>
+    <Grid columns={['1fr', '2fr minmax(380px, 1fr)']} gap={5}>
       <OpenVaultHeading {...props} sx={{ display: ['block', 'none'] }} />
       <Box sx={{ order: [3, 1] }}>
         <OpenVaultDetails {...props} />
