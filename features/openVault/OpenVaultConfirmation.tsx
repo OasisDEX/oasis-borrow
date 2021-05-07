@@ -1,26 +1,13 @@
+import { Details } from 'components/forms/Details'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Card, Grid, SxStyleProp, Text } from 'theme-ui'
+import { Grid, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
-export function Label({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
-  return (
-    <Text variant="paragraph3" sx={{ color: 'mutedAlt', whiteSpace: 'nowrap', ...sx }}>
-      {children}
-    </Text>
-  )
-}
-export function Value({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
-  return (
-    <Text variant="paragraph3" sx={{ textAlign: 'right', fontWeight: 'semiBold', ...sx }}>
-      {children}
-    </Text>
-  )
-}
 export function OpenVaultConfirmation({
   balanceInfo: { collateralBalance },
   depositAmount,
@@ -51,33 +38,17 @@ export function OpenVaultConfirmation({
 
   return (
     <Grid>
-      <Card bg="secondaryAlt" sx={{ border: 'none' }}>
-        <Grid columns="1fr 1fr">
-          <Label>{t('system.in-your-wallet')}</Label>
-          <Value>
-            {walletBalance} {token}
-          </Value>
-
-          <Label>{t('moving-into-vault')}</Label>
-          <Value>
-            {intoVault} {token}
-          </Value>
-
-          <Label>{t('remaining-in-wallet')}</Label>
-          <Value>
-            {remainingInWallet} {token}
-          </Value>
-
-          <Label>{t('dai-being-generated')}</Label>
-          <Value>{daiToBeGenerated} DAI</Value>
-
-          <Label>{t('system.collateral-ratio')}</Label>
-          <Value sx={{ color: vaultRiskColor }}>{afterCollRatio}</Value>
-
-          <Label>{t('system.liquidation-price')}</Label>
-          <Value>${afterLiqPrice}</Value>
-        </Grid>
-      </Card>
+      <Details>
+        <Details.Item label={t('system.in-your-wallet')} value={`${walletBalance} ${token}`} />
+        <Details.Item label={t('moving-into-vault')} value={`${intoVault} ${token}`} />
+        <Details.Item label={t('remaining-in-wallet')} value={`${remainingInWallet} ${token}`} />
+        <Details.Item label={t('dai-being-generated')} value={`${daiToBeGenerated} DAI`} />
+        <Details.Item
+          label={t('system.collateral-ratio')}
+          value={<Text sx={{ color: vaultRiskColor }}>{afterCollRatio}</Text>}
+        />
+        <Details.Item label={t('system.liquidation-price')} value={`$${afterLiqPrice}`} />
+      </Details>
     </Grid>
   )
 }

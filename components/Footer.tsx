@@ -37,6 +37,7 @@ function LanguageSelect() {
     { value: 'en', label: t('landing.footer.language.en') },
     { value: 'es', label: t('landing.footer.language.es') },
     { value: 'pt', label: t('landing.footer.language.pt') },
+    { value: 'cn', label: t('landing.footer.language.cn') },
   ]
 
   return (

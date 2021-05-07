@@ -8,12 +8,16 @@ import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Card, Divider, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
+import { slideInAnimation } from 'theme/animations'
 
 import { ManageVaultState } from './manageVault'
 import { ManageVaultButton } from './ManageVaultButton'
-import { ManageVaultCollateralAllowance } from './ManageVaultCollateralAllowance'
-import { ManageVaultConfirmation } from './ManageVaultConfirmation'
-import { ManageVaultDaiAllowance } from './ManageVaultDaiAllowance'
+import {
+  ManageVaultCollateralAllowance,
+  ManageVaultCollateralAllowanceStatus,
+} from './ManageVaultCollateralAllowance'
+import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './ManageVaultConfirmation'
+import { ManageVaultDaiAllowance, ManageVaultDaiAllowanceStatus } from './ManageVaultDaiAllowance'
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultEditing } from './ManageVaultEditing'
 import { ManageVaultErrors } from './ManageVaultErrors'
@@ -33,11 +37,10 @@ function ManageVaultForm(props: ManageVaultState) {
 
   return (
     <Box>
-      <Card>
-        <ManageVaultFormHeader {...props} />
-        <Grid pb={3}>
+      <Card sx={{ boxShadow: 'card', borderRadius: 'mediumLarge', px: 4, py: 3 }}>
+        <Grid sx={{ mt: 2 }}>
+          <ManageVaultFormHeader {...props} />
           {isEditingStage && <ManageVaultEditing {...props} />}
-          {isProxyStage && <ManageVaultProxy {...props} />}
           {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
           {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}
           {isManageStage && <ManageVaultConfirmation {...props} />}
@@ -48,6 +51,10 @@ function ManageVaultForm(props: ManageVaultState) {
               <ManageVaultButton {...props} />
             </>
           )}
+          {isProxyStage && <ManageVaultProxy {...props} />}
+          {isCollateralAllowanceStage && <ManageVaultCollateralAllowanceStatus {...props} />}
+          {isDaiAllowanceStage && <ManageVaultDaiAllowanceStatus {...props} />}
+          {isManageStage && <ManageVaultConfirmationStatus {...props} />}
           <ManageVaultIlkDetails {...props} />
         </Grid>
       </Card>
@@ -78,7 +85,7 @@ export function ManageVaultHeading(props: ManageVaultState & SxProps) {
 
 export function ManageVaultContainer(props: ManageVaultState) {
   return (
-    <Grid columns={['1fr', '2fr 1fr']} gap={4}>
+    <Grid columns={['1fr', '2fr minmax(380px, 1fr)']} gap={4}>
       <ManageVaultHeading {...props} sx={{ display: ['block', 'none'] }} />
       <Box sx={{ order: [3, 1] }}>
         <ManageVaultDetails {...props} />
@@ -98,10 +105,23 @@ export function ManageVaultView({ id }: { id: BigNumber }) {
   return (
     <WithLoadingIndicator
       {...manageVaultWithError}
-      customLoader={<AppSpinner sx={{ mx: 'auto' }} variant="styles.spinner.large" />}
+      customLoader={
+        <Box
+          sx={{
+            position: 'relative',
+            height: 600,
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <AppSpinner sx={{ mx: 'auto', display: 'block' }} variant="styles.spinner.extraLarge" />
+        </Box>
+      }
     >
       {(manageVault) => (
-        <Grid sx={{ width: '100%', zIndex: 1 }}>
+        <Grid sx={{ width: '100%', zIndex: 1, ...slideInAnimation, position: 'relative' }}>
           <ManageVaultContainer {...manageVault} />
         </Grid>
       )}

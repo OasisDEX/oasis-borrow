@@ -216,19 +216,20 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     token !== 'ETH' &&
     !!(depositAmount && !depositAmount.isZero() && (!allowance || depositAmount.gt(allowance)))
 
-  const canProgress = !(
-    inputAmountsEmpty ||
-    isLoadingStage ||
-    vaultWillBeUnderCollateralized ||
-    vaultWillBeUnderCollateralizedAtNextPrice ||
-    depositingAllEthBalance ||
-    depositAmountExceedsCollateralBalance ||
-    generateAmountExceedsDebtCeiling ||
-    generateAmountLessThanDebtFloor ||
-    customAllowanceAmountEmpty ||
-    customAllowanceAmountExceedsMaxUint256 ||
-    customAllowanceAmountLessThanDepositAmount
-  )
+  const canProgress =
+    !(
+      inputAmountsEmpty ||
+      isLoadingStage ||
+      vaultWillBeUnderCollateralized ||
+      vaultWillBeUnderCollateralizedAtNextPrice ||
+      depositingAllEthBalance ||
+      depositAmountExceedsCollateralBalance ||
+      generateAmountExceedsDebtCeiling ||
+      generateAmountLessThanDebtFloor ||
+      customAllowanceAmountEmpty ||
+      customAllowanceAmountExceedsMaxUint256 ||
+      customAllowanceAmountLessThanDepositAmount
+    ) || stage === 'openSuccess'
 
   const canRegress = ([
     'proxyWaitingForConfirmation',

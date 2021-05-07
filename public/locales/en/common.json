@@ -69,6 +69,7 @@
   "custom": "Custom",
   "dai-being-generated": "Dai being generated",
   "dai-paying-back": "Dai paying back ({{amount}})",
+  "dai-paying-back-label": "Dai paying back",
   "dai-savings-rate": "Dai Savings Rate",
   "deposit": "Deposit",
   "disconnect": "Disconnect",
@@ -109,9 +110,9 @@
   "exchange-rate": "Exchange rate",
   "failed": "Failed",
   "featured": {
-    "cheapest": "cheapest",
-    "most-popular": "most popular",
-    "new": "new"
+    "cheapest": "Cheapest",
+    "most-popular": "Most popular",
+    "new": "New"
   },
   "filters": {
     "lp-token": "LP tokens",
@@ -167,7 +168,8 @@
       "language": {
         "en": "English",
         "es": "Español",
-        "pt": "Português"
+        "pt": "Português",
+        "cn": "中文"
       },
       "privacy": "Privacy",
       "terms": "Terms",
@@ -459,15 +461,19 @@
       "edit": "Configure your Vault",
       "proxy": "Create your smart Proxy ",
       "allowance": "Set {{token}} allowance",
-      "confirm": "Confirm vault creation"
+      "daiAllowance": "Set DAI allowance",
+      "confirm": "Confirm vault creation",
+      "confirm-manage": "Confirm vault changes"
     },
     "subtext": {
       "edit": "Simulate your vault by configuring the amount of collateral to deposit, and DAI to generate.",
       "proxy": "With your smart proxy we can perform multiple actions in one transaction for your Vault. This proxy only needs to be set up once.",
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
+      "daiAllowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "confirm": "Review and verify details of your vault."
     }
   },
   "creating-your-vault": "Creating your {{token}} Vault!",
-  "vault-created": "Vault #{{id}} created!"
+  "vault-created": "Vault #{{id}} created!",
+  "changing-vault": "Changing Vault"
 }

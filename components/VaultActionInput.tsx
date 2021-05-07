@@ -2,8 +2,9 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { BigNumberInput } from 'helpers/BigNumberInput'
-import { formatAmount } from 'helpers/formatters/format'
-import { zero } from 'helpers/zero'
+import { formatAmount, formatBigNumber, formatCryptoBalance } from 'helpers/formatters/format'
+import { calculateTokenPrecisionByValue } from 'helpers/tokens'
+import { one, zero } from 'helpers/zero'
 import React, { ChangeEvent, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Grid, Text } from 'theme-ui'
@@ -13,6 +14,7 @@ type VaultAction = 'Deposit' | 'Withdraw' | 'Generate' | 'Payback'
 interface VaultActionInputProps {
   action: VaultAction
   token: string
+  tokenUsdPrice?: BigNumber
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
   disabled?: boolean
   amount?: BigNumber
@@ -22,6 +24,7 @@ interface VaultActionInputProps {
   auxiliaryToken?: string
   onAuxiliaryChange?: (e: ChangeEvent<HTMLInputElement>) => void
   maxAuxiliaryAmount?: BigNumber
+  auxiliaryUsdPrice?: BigNumber
 
   showMax?: boolean
   onSetMax?: () => void
@@ -34,6 +37,7 @@ interface VaultActionInputProps {
 export function VaultActionInput({
   action,
   token,
+  tokenUsdPrice = one,
   amount,
   onChange,
   disabled,
@@ -48,15 +52,25 @@ export function VaultActionInput({
   auxiliaryToken,
   onAuxiliaryChange,
   maxAuxiliaryAmount,
+  auxiliaryUsdPrice,
 
   hasError,
 }: VaultActionInputProps) {
   const [auxiliaryFlag, setAuxiliaryFlag] = useState<boolean>(false)
+  const { symbol: tokenSymbol } = getToken(token)
+  const { symbol: auxiliarySymbol } = auxiliaryToken ? getToken(auxiliaryToken) : { symbol: 'USD' }
 
-  const { symbol: tokenSymbol, digits: tokenDigits } = getToken(token)
-  const { symbol: auxiliarySymbol, digits: auxiliaryDigits } = auxiliaryToken
-    ? getToken(auxiliaryToken)
-    : { symbol: 'USD', digits: 2 }
+  const tokenDigits = calculateTokenPrecisionByValue({
+    token: token,
+    usdPrice: tokenUsdPrice,
+  })
+
+  const auxiliaryDigits = auxiliaryToken
+    ? calculateTokenPrecisionByValue({
+        token: auxiliaryToken,
+        usdPrice: auxiliaryUsdPrice!,
+      })
+    : 2
 
   function handleAuxiliarySwitch() {
     setAuxiliaryFlag(!auxiliaryFlag)
@@ -85,7 +99,7 @@ export function VaultActionInput({
               color: 'text.subtitle',
             }}
           >
-            {maxAmountLabel} {formatAmount(maxAmount, tokenSymbol)} {tokenSymbol}
+            {maxAmountLabel} {formatCryptoBalance(maxAmount)} {tokenSymbol}
           </Text>
         ) : null}
         {auxiliaryFlag && BigNumber.isBigNumber(maxAuxiliaryAmount) && showMax ? (
@@ -99,7 +113,7 @@ export function VaultActionInput({
               color: 'text.subtitle',
             }}
           >
-            {maxAmountLabel} ~{formatAmount(maxAuxiliaryAmount, auxiliarySymbol)} {auxiliarySymbol}
+            {maxAmountLabel} {formatCryptoBalance(maxAuxiliaryAmount)} {auxiliarySymbol}
           </Text>
         ) : null}
       </Grid>
@@ -136,7 +150,7 @@ export function VaultActionInput({
                 prefix: '',
               })}
               onChange={onChange}
-              value={amount ? formatAmount(amount, tokenSymbol) : null}
+              value={amount ? formatBigNumber(amount, tokenDigits) : null}
               placeholder={`0 ${tokenSymbol}`}
               sx={hasAuxiliary ? { border: 'none', px: 3, pt: 3, pb: 1 } : { border: 'none', p: 3 }}
             />
@@ -150,7 +164,7 @@ export function VaultActionInput({
                 prefix: '',
               })}
               onChange={onAuxiliaryChange}
-              value={auxiliaryAmount ? formatAmount(auxiliaryAmount, auxiliarySymbol) : null}
+              value={auxiliaryAmount ? formatBigNumber(auxiliaryAmount, auxiliaryDigits) : null}
               placeholder={`0 ${auxiliarySymbol}`}
               sx={hasAuxiliary ? { border: 'none', px: 3, pt: 3, pb: 1 } : { border: 'none', p: 3 }}
             />
@@ -167,8 +181,12 @@ export function VaultActionInput({
               }}
             >
               {!auxiliaryFlag
-                ? `~${formatAmount(auxiliaryAmount || zero, auxiliarySymbol)} ${auxiliarySymbol}`
-                : `~${formatAmount(amount || zero, tokenSymbol)} ${tokenSymbol}`}
+                ? `~ ${
+                    auxiliarySymbol === 'USD'
+                      ? formatAmount(auxiliaryAmount || zero, 'USD')
+                      : formatCryptoBalance(auxiliaryAmount || zero)
+                  } ${auxiliarySymbol}`
+                : `${formatCryptoBalance(amount || zero)} ${tokenSymbol}`}
             </Text>
           )}
         </Grid>
