@@ -112,10 +112,10 @@ function WithArrow({ children }: React.PropsWithChildren<{}>) {
         position: 'relative',
         '& .arrow': {
           transition: 'ease-in-out 0.2s',
-          right: '-10px',
+          transform: 'translateX(0px)',
         },
         '&:hover .arrow': {
-          right: '-15px',
+          transform: 'translateX(5px)',
         },
       }}
     >
