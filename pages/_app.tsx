@@ -98,9 +98,7 @@ interface CustomAppProps {
   }
 }
 
-if (process.env.NODE_ENV === 'production') {
-  mixpanelInit()
-}
+mixpanelInit()
 
 // script for disabling Next.js overlay for particular event errors
 // currently there is no option to configure error overlay in development mode

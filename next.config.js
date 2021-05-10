@@ -34,6 +34,8 @@ module.exports = withBundleAnalyzer(
           buildDate: Date.now(),
           apiHost: process.env.API_HOST,
           basePath,
+          mixpanelEnv: process.env.MIXPANEL_ENV,
+          mixpanelAPIKey: process.env.MIXPANEL_KEY,
         },
         webpack: function (config, { isServer }) {
           // TODO: Figure out how to disable mangling partially without bresking the aplication.

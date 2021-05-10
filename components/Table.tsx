@@ -51,9 +51,15 @@ export function TableContainer({
 interface RowProps {
   href?: string
   target?: string
+  onClick?: (e: React.MouseEvent<any>) => void
 }
 
-function Row({ children, sx, href }: React.PropsWithChildren<{ sx?: SxStyleProp } & RowProps>) {
+function Row({
+  children,
+  sx,
+  href,
+  onClick,
+}: React.PropsWithChildren<{ sx?: SxStyleProp } & RowProps>) {
   const { push } = useRedirect()
 
   const redirect = useCallback(() => {
@@ -89,7 +95,10 @@ function Row({ children, sx, href }: React.PropsWithChildren<{ sx?: SxStyleProp 
           : {}),
       }}
       as="tr"
-      onClick={redirect}
+      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+        if (onClick) onClick(e)
+        redirect()
+      }}
     >
       {children}
     </Box>

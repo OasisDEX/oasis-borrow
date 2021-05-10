@@ -126,8 +126,12 @@ function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
       columns={vaultsColumns}
       noResults={<Box>{t('no-results')}</Box>}
       deriveRowProps={(row) => {
-        trackingEvents.overviewManage(row.id.toString(), row.ilk)
-        return { href: `/${row.id}` }
+        return {
+          href: `/${row.id}`,
+          onClick: () => {
+            trackingEvents.overviewManage(row.id.toString(), row.ilk)
+          },
+        }
       }}
     />
   )

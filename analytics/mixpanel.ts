@@ -3,20 +3,26 @@
  */
 
 import * as mixpanel from 'mixpanel-browser'
+import getConfig from 'next/config'
 
-const env = process.env.NODE_ENV === 'production' ? 'prod' : 'test'
+const env =
+  getConfig()?.publicRuntimeConfig.mixpanelEnv === 'production' ||
+  process.env.MIXPANEL_ENV === 'production'
+    ? 'prod'
+    : 'test'
+const token = getConfig()?.publicRuntimeConfig.mixpanelAPIKey || process.env.MIXPANEL_KEY || ''
 
 const config = {
   test: {
     mixpanel: {
-      token: 'b7fbf14dd6a6c58feb29161f3c0fec23', // TODO: Update these once we create Borrow New Project
-      config: { debug: false, ip: false, api_host: 'https://api-eu.mixpanel.com' },
+      token,
+      config: { debug: false, ip: false, api_host: 'https://mpp.makerfoundation.com' },
     },
   },
   prod: {
     mixpanel: {
-      token: 'b7fbf14dd6a6c58feb29161f3c0fec23', // TODO: Update these once we create Borrow New Project
-      config: { ip: false, api_host: 'https://api-eu.mixpanel.com' },
+      token,
+      config: { ip: false, api_host: 'https://mpp.makerfoundation.com' },
     },
   },
 }[env]

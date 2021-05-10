@@ -1,9 +1,12 @@
 import * as mixpanelBrowser from 'mixpanel-browser'
+import getConfig from 'next/config'
 
 type MixpanelType = { track: (eventType: string, payload: any) => void } | typeof mixpanelBrowser
 let mixpanel: MixpanelType = mixpanelBrowser
 
-if (process.env.NODE_ENV !== 'production') {
+const env = getConfig()?.publicRuntimeConfig.mixpanelEnv || process.env.MIXPANEL_ENV
+
+if (env !== 'production') {
   mixpanel = {
     track: function (eventType: string, payload: any) {
       console.info('Mixpanel Event: ', eventType, payload)
