@@ -329,6 +329,8 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
       vaultWillBeUnderCollateralizedAtNextPrice ||
       debtWillBeLessThanDebtFloor ||
       depositAmountExceedsCollateralBalance ||
+      withdrawAmountExceedsFreeCollateral ||
+      withdrawAmountExceedsFreeCollateralAtNextPrice ||
       depositingAllEthBalance ||
       generateAmountExceedsDebtCeiling ||
       generateAmountLessThanDebtFloor ||
