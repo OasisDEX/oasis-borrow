@@ -313,8 +313,8 @@
       "title": "Dai"
     },
     "default": {
-      "description": "Dai is a smarter digital currency for everyone. Buy, send and manage it all on Oasis.app.",
-      "title": "Oasis.app is the home for your smarter digital currency, Dai"
+      "description": "Generate Dai using crypto as your collateral",
+      "title": "Oasis Borrow"
     },
     "latam500": {
       "description": "Buy Dai through Latamex on Oasis.app and get $10 of ETH a month for 3 months.",
