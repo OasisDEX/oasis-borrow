@@ -515,8 +515,8 @@
   "learn-more-link": "https://ethereum.org/es/wallets/find-wallet/",
   "seo": {
     "default": {
-      "title": "Oasis.app es el lugar para Dai tu moneda digital inteligente",
-      "description": "Dai es una moneda digital más inteligente para todos. Compra, envia y gestiona Dai en Oasis.app."
+      "description": "Generate Dai using crypto as your collateral",
+      "title": "Oasis Borrow"
     },
     "support": {
       "title": "Preguntas Frecuentes",
@@ -525,10 +525,6 @@
     "contact": {
       "title": "Contacto",
       "description": "Envianos comentarios, preguntas o sugerencias."
-    },
-    "latam500": {
-      "title": "LATAM500",
-      "description": "Compra Dai a través de Ltamex en Oasis.app y obtiene ETH por $10 por mes durante 3 meses."
     },
     "dai": {
       "title": "Dai",

@@ -316,10 +316,7 @@
       "description": "Generate Dai using crypto as your collateral",
       "title": "Oasis Borrow"
     },
-    "latam500": {
-      "description": "Buy Dai through Latamex on Oasis.app and get $10 of ETH a month for 3 months.",
-      "title": "LATAM500"
-    },
+
     "support": {
       "description": "All the answers to the most common questions.",
       "title": "FAQs"

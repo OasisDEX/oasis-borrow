@@ -302,8 +302,8 @@
       "title": "Dai"
     },
     "default": {
-      "description": "Dai 是一种人人可用的智能数字货币。在 Oasis.app 上购买、发送和管理 Dai。",
-      "title": "Oasis：智能数字货币 Dai 的门户主页"
+      "description": "Generate Dai using crypto as your collateral",
+      "title": "Oasis Borrow"
     },
     "latam500": {
       "description": "通过 Oasis.app 上的 Latamex 购买 Dai。每月可获得价值 10 美元的 ETH，为期三个月。",
