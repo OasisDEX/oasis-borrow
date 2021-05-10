@@ -3,29 +3,44 @@ import { TxStatusCardProgress, TxStatusCardSuccess } from 'features/openVault/Tx
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 
-export function ManageVaultConfirmation({
-  balanceInfo: { collateralBalance },
-  depositAmount,
-  generateAmount,
-  paybackAmount,
-  withdrawAmount,
-  vault: { token },
-  afterCollateralizationRatio,
-  afterLiquidationPrice,
-  vaultWillBeAtRiskLevelDanger,
-  vaultWillBeAtRiskLevelWarning,
-}: ManageVaultState) {
+export function ManageVaultConfirmation(props: ManageVaultState) {
+  const [snapshot, setSnapshot] = useState<ManageVaultState | undefined>(undefined)
+  useEffect(() => {
+    if (props.stage === 'manageWaitingForApproval') {
+      setSnapshot(props)
+    }
+  }, [props.stage])
+
+  const state = snapshot && props.stage === 'manageSuccess' ? snapshot : props
+
+  const {
+    balanceInfo: { collateralBalance },
+    depositAmount,
+    generateAmount,
+    paybackAmount,
+    withdrawAmount,
+    vault: { token },
+    afterCollateralizationRatio,
+    afterLiquidationPrice,
+    vaultWillBeAtRiskLevelDanger,
+    vaultWillBeAtRiskLevelWarning,
+  } = state
+
   const { t } = useTranslation()
   const walletBalance = formatCryptoBalance(collateralBalance)
   const depositCollateral = formatCryptoBalance(depositAmount || zero)
   const withdrawingCollateral = formatCryptoBalance(withdrawAmount || zero)
   const remainingInWallet = formatCryptoBalance(
-    depositAmount ? collateralBalance.minus(depositAmount) : collateralBalance,
+    depositAmount
+      ? collateralBalance.minus(depositAmount)
+      : withdrawAmount
+      ? collateralBalance.plus(withdrawAmount)
+      : collateralBalance,
   )
   const daiToBeGenerated = formatCryptoBalance(generateAmount || zero)
   const daiPayingBack = formatCryptoBalance(paybackAmount || zero)

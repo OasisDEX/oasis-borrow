@@ -49,7 +49,7 @@ function OpenVaultForm(props: OpenVaultState) {
 
   return (
     <Box>
-      <Card sx={{ boxShadow: 'card', borderRadius: 'mediumLarge', px: 4, py: 3 }}>
+      <Card variant="surface" sx={{ boxShadow: 'card', borderRadius: 'mediumLarge', px: 4, py: 3 }}>
         <Grid sx={{ mt: 2 }}>
           <OpenVaultTitle {...props} />
           {isEditingStage && <OpenVaultEditing {...props} />}
