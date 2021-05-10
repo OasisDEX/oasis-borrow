@@ -160,6 +160,7 @@ function VaultDetailsTable({
 export function ManageVaultDetails(props: ManageVaultState) {
   const {
     afterLiquidationPrice,
+    inputAmountsEmpty,
     vault: {
       token,
       collateralizationRatio,
@@ -210,9 +211,11 @@ export function ManageVaultDetails(props: ManageVaultState) {
           {t('system.liquidation-price')}
         </Heading>
         <Text variant="display">$ {formatAmount(liquidationPrice, 'USD')}</Text>
-        <Text>
-          {t('after')}: ${formatAmount(shouldPaybackAll ? zero : afterLiquidationPrice, 'USD')}
-        </Text>
+        {!inputAmountsEmpty && (
+          <Text>
+            {t('after')}: ${formatAmount(shouldPaybackAll ? zero : afterLiquidationPrice, 'USD')}
+          </Text>
+        )}
       </Box>
 
       {/* Collaterization  */}
@@ -223,9 +226,11 @@ export function ManageVaultDetails(props: ManageVaultState) {
         <Text sx={{ color: collRatioColor }} variant="display">
           {formatPercent(collateralizationRatio.times(100), { precision: 2 })}
         </Text>
-        <Text>
-          {t('after')}: {formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })}
-        </Text>
+        {!inputAmountsEmpty && (
+          <Text>
+            {t('after')}: {formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })}
+          </Text>
+        )}
       </Box>
 
       {/* Current Price */}
