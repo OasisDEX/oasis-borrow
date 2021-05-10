@@ -240,7 +240,7 @@ export function setupAppContext() {
 
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 
-  const vaults$ = memoize(curry(createVaults$)(context$, proxyAddress$, vault$))
+  const vaults$ = memoize(curry(createVaults$)(onEveryBlock$, context$, proxyAddress$, vault$))
 
   const ilks$ = createIlks$(context$)
 
