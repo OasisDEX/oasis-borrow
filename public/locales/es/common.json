@@ -515,8 +515,8 @@
   "learn-more-link": "https://ethereum.org/es/wallets/find-wallet/",
   "seo": {
     "default": {
-      "title": "Oasis.app es el lugar para Dai tu moneda digital inteligente",
-      "description": "Dai es una moneda digital más inteligente para todos. Compra, envia y gestiona Dai en Oasis.app."
+      "description": "Generate Dai using crypto as your collateral.",
+      "title": "Oasis Borrow"
     },
     "support": {
       "title": "Preguntas Frecuentes",

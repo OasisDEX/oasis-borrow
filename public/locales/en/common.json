@@ -313,7 +313,7 @@
       "title": "Dai"
     },
     "default": {
-      "description": "Generate Dai using crypto as your collateral",
+      "description": "Generate Dai using crypto as your collateral.",
       "title": "Oasis Borrow"
     },
     "latam500": {

@@ -358,8 +358,8 @@
   "you-are-sending": "Você esta enviando",
   "seo": {
     "default": {
-      "title": "Oasis.app é o lar do Dai, uma moeda digital melhor e mais inteligente.",
-      "description": "Dai é uma nova forma de moeda digital. Melhor e feito para todos. Compre, venda e faça a gestão de seu Dai no Oasis.app."
+      "description": "Generate Dai using crypto as your collateral.",
+      "title": "Oasis Borrow"
     },
     "support": {
       "title": "FAQs",
