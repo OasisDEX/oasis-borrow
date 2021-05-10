@@ -9,6 +9,8 @@ import { Config } from './config'
 import { jwtAuthMiddleware } from './middleware/signature-auth'
 import { tosRoutes } from './middleware/tos'
 
+const path = process.env.NODE_ENV === 'production' ? '/borrow' : ''
+
 export interface Dependencies {
   nextHandler: express.Handler
 }
@@ -39,8 +41,12 @@ export function getApp(config: Config, { nextHandler }: Dependencies): express.A
     app.use('/api', morgan('tiny'))
   }
 
-  app.use('/api/auth', jwtAuthMiddleware(config))
-  app.use('/api/tos', jwt({ secret: config.userJWTSecret, algorithms: ['HS512'] }), tosRoutes())
+  app.use(`${path}/api/auth`, jwtAuthMiddleware(config))
+  app.use(
+    `${path}/api/tos`,
+    jwt({ secret: config.userJWTSecret, algorithms: ['HS512'] }),
+    tosRoutes(),
+  )
 
   app.use((err: any, _req: any, res: any, _next: any) => {
     // is there a better way to detect zod validation error?

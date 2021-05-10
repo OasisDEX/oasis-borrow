@@ -1,9 +1,12 @@
 import { decode } from 'jsonwebtoken'
+import getConfig from 'next/config'
 import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { fromPromise } from 'rxjs/internal-compatibility'
 import { map } from 'rxjs/operators'
 import Web3 from 'web3'
+
+const basePath = getConfig()?.publicRuntimeConfig.basePath || ''
 
 export type JWToken = string
 
@@ -42,7 +45,7 @@ async function signTypedPayload(challenge: string, web3: Web3, account: string):
 
 function requestChallenge(address: string): Observable<string> {
   return ajax({
-    url: '/api/auth/challenge',
+    url: `${basePath}/api/auth/challenge`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -59,7 +62,7 @@ function requestSignin({
   challenge: string
 }): Observable<string> {
   return ajax({
-    url: '/api/auth/signin',
+    url: `${basePath}/api/auth/signin`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

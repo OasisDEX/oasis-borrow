@@ -3,8 +3,9 @@ import { call } from 'blockchain/calls/callsHelpers'
 import { Context } from 'blockchain/network'
 import { HOUR, SECONDS_PER_YEAR } from 'components/constants'
 import { one, zero } from 'helpers/zero'
+import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
-import { map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from './calls/cdpManager'
 import { getCdps } from './calls/getCdps'
@@ -18,6 +19,7 @@ BigNumber.config({
 })
 
 export function createVaults$(
+  onEveryBlock$: Observable<number>,
   context$: Observable<Context>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
   vault$: (id: BigNumber) => Observable<Vault>,
@@ -26,11 +28,23 @@ export function createVaults$(
   return combineLatest(context$, proxyAddress$(address)).pipe(
     switchMap(([context, proxyAddress]) => {
       if (!proxyAddress) return of([])
-      return call(
-        context,
-        getCdps,
-      )({ proxyAddress, descending: true }).pipe(
-        switchMap(({ ids }) =>
+
+      function fetchVaultIds(): Observable<string[]> {
+        return onEveryBlock$.pipe(
+          switchMap(() =>
+            call(
+              context,
+              getCdps,
+            )({ proxyAddress: proxyAddress!, descending: true }).pipe(
+              switchMap(({ ids }) => of(ids)),
+            ),
+          ),
+          distinctUntilChanged(isEqual),
+        )
+      }
+
+      return fetchVaultIds().pipe(
+        switchMap((ids) =>
           ids.length === 0 ? of([]) : combineLatest(ids.map((id) => vault$(new BigNumber(id)))),
         ),
       )
