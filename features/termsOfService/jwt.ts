@@ -6,7 +6,7 @@ import { fromPromise } from 'rxjs/internal-compatibility'
 import { map } from 'rxjs/operators'
 import Web3 from 'web3'
 
-const basePath = getConfig()?.publicRuntimeConfig.basePath
+const basePath = getConfig()?.publicRuntimeConfig.basePath || ''
 
 export type JWToken = string
 

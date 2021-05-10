@@ -4,7 +4,7 @@ import { Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, map } from 'rxjs/operators'
 
-const basePath = getConfig()?.publicRuntimeConfig?.basePath
+const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 
 export function checkAcceptanceFromApi$(
   token: string,
