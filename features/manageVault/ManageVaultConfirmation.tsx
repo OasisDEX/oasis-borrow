@@ -36,7 +36,11 @@ export function ManageVaultConfirmation(props: ManageVaultState) {
   const depositCollateral = formatCryptoBalance(depositAmount || zero)
   const withdrawingCollateral = formatCryptoBalance(withdrawAmount || zero)
   const remainingInWallet = formatCryptoBalance(
-    depositAmount ? collateralBalance.minus(depositAmount) : collateralBalance,
+    depositAmount
+      ? collateralBalance.minus(depositAmount)
+      : withdrawAmount
+      ? collateralBalance.plus(withdrawAmount)
+      : collateralBalance,
   )
   const daiToBeGenerated = formatCryptoBalance(generateAmount || zero)
   const daiPayingBack = formatCryptoBalance(paybackAmount || zero)
