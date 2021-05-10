@@ -1,6 +1,7 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
+import { useRedirect } from 'helpers/useRedirect'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
@@ -26,12 +27,10 @@ const FOOTER_LINKS = [
 ]
 
 function LanguageSelect() {
-  const {
-    t,
-    i18n: { language },
-  } = useTranslation('common')
-
+  const { t, i18n } = useTranslation('common')
   const router = useRouter()
+
+  console.log(router)
 
   const LANGUAGE_OPTIONS = [
     { value: 'en', label: t('landing.footer.language.en') },
@@ -42,11 +41,11 @@ function LanguageSelect() {
 
   return (
     <ReactSelect
-      options={LANGUAGE_OPTIONS.filter(({ value }) => value !== language)}
+      options={LANGUAGE_OPTIONS.filter(({ value }) => value !== i18n.language)}
       isSearchable={false}
-      value={LANGUAGE_OPTIONS.find(({ value }) => value === language)}
+      value={LANGUAGE_OPTIONS.find(({ value }) => value === i18n.language)}
       // @ts-ignore
-      onChange={({ value }) => router.push(router.query, router.asPath, { locale: value })}
+      onChange={async ({ value }) => router.push(router.asPath, router.asPath, { locale: value })}
       components={{
         IndicatorsContainer: () => null,
         ValueContainer: ({ children }) => <Flex sx={{ color: 'primary' }}>{children}</Flex>,
