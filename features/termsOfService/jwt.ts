@@ -11,7 +11,7 @@ const basePath = getConfig()?.publicRuntimeConfig.basePath || ''
 export type JWToken = string
 
 export function jwtAuthGetToken(address: string): JWToken | undefined {
-  const token = localStorage.getItem(`token/${address}`)
+  const token = localStorage.getItem(`token-b/${address}`)
   return token === null ? undefined : token
 }
 
@@ -31,7 +31,7 @@ async function requestJWT(web3: Web3, account: string): Promise<string> {
   const signature = await signTypedPayload(challenge, web3, account)
   const jwt = await requestSignin({ challenge, signature }).toPromise()
 
-  localStorage.setItem(`token/${account}`, jwt)
+  localStorage.setItem(`token-b/${account}`, jwt)
 
   return jwt
 }
