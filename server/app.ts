@@ -4,26 +4,17 @@ import express from 'express'
 import basicAuth from 'express-basic-auth'
 import jwt from 'express-jwt'
 import morgan from 'morgan'
-import nextI18NextMiddleware from 'next-i18next/middleware'
 
-import nextI18next from '../i18n'
 import { Config } from './config'
-import { contactFormMiddleware } from './middleware/emails'
-import { EmailProvider } from './middleware/emails/types'
 import { jwtAuthMiddleware } from './middleware/signature-auth'
 import { tosRoutes } from './middleware/tos'
 
 export interface Dependencies {
   nextHandler: express.Handler
-  emailProvider: EmailProvider
 }
 
-export function getApp(
-  config: Config,
-  { nextHandler, emailProvider }: Dependencies,
-): express.Application {
+export function getApp(config: Config, { nextHandler }: Dependencies): express.Application {
   const app = express()
-  app.use(nextI18NextMiddleware(nextI18next))
   app.enable('trust proxy')
 
   if (config.httpPassword) {
@@ -50,7 +41,6 @@ export function getApp(
 
   app.use('/api/auth', jwtAuthMiddleware(config))
   app.use('/api/tos', jwt({ secret: config.userJWTSecret, algorithms: ['HS512'] }), tosRoutes())
-  app.use('/api/contact', contactFormMiddleware(emailProvider))
 
   app.use((err: any, _req: any, res: any, _next: any) => {
     // is there a better way to detect zod validation error?

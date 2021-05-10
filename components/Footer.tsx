@@ -1,12 +1,13 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
-import { useTranslation } from 'i18n'
 import moment from 'moment'
+import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
+import { useRouter } from 'next/router'
 import React from 'react'
 import ReactSelect from 'react-select'
-import { Box, Button, Card, Container, Flex, Grid, Link, Text } from 'theme-ui'
+import { Box, Card, Container, Flex, Grid, Link, Text } from 'theme-ui'
 
 const {
   publicRuntimeConfig: { buildHash, buildDate },
@@ -14,27 +15,29 @@ const {
 
 const FOOTER_LINKS = [
   { labelKey: 'landing.footer.trade', url: 'https://oasis.app/trade', target: '_self' },
-  { labelKey: 'landing.footer.borrow', url: 'https://oasis.app/borrow', target: '_self' },
-  {
-    labelKey: 'landing.footer.privacy',
-    url: '/privacy',
-  },
+  { labelKey: 'landing.footer.privacy', url: 'https://oasis.app/privacy' },
   { labelKey: 'landing.footer.terms', url: '/terms' },
   { labelKey: 'landing.footer.blog', url: 'https://blog.oasis.app' },
-  { labelKey: 'landing.footer.faq', url: '/support' },
-  { labelKey: 'landing.footer.contact', url: '/contact' },
+  {
+    labelKey: 'landing.footer.faq',
+    url: 'https://oasis.app/support',
+  },
+  { labelKey: 'landing.footer.contact', url: 'https://oasis.app/contact', target: '_self' },
 ]
 
 function LanguageSelect() {
   const {
     t,
-    i18n: { language, changeLanguage },
+    i18n: { language },
   } = useTranslation('common')
+
+  const router = useRouter()
 
   const LANGUAGE_OPTIONS = [
     { value: 'en', label: t('landing.footer.language.en') },
     { value: 'es', label: t('landing.footer.language.es') },
     { value: 'pt', label: t('landing.footer.language.pt') },
+    { value: 'cn', label: t('landing.footer.language.cn') },
   ]
 
   return (
@@ -43,7 +46,7 @@ function LanguageSelect() {
       isSearchable={false}
       value={LANGUAGE_OPTIONS.find(({ value }) => value === language)}
       // @ts-ignore
-      onChange={({ value }) => changeLanguage(value)}
+      onChange={({ value }) => router.push(router.query, router.asPath, { locale: value })}
       components={{
         IndicatorsContainer: () => null,
         ValueContainer: ({ children }) => <Flex sx={{ color: 'primary' }}>{children}</Flex>,
@@ -85,9 +88,9 @@ function LanguageSelect() {
           <Box
             {...innerProps}
             sx={{
-              display: 'inline-flex',
               cursor: 'pointer',
               variant: 'links.nav',
+              display: 'inline-flex',
               justifyContent: 'space-between',
               alignItems: 'center',
             }}
@@ -107,24 +110,22 @@ function LanguageSelect() {
 }
 
 export function TemporaryFooter() {
-  const { t, i18n } = useTranslation('common')
-
+  const commit = buildHash.substring(0, 10)
+  const date = moment(buildDate).format('DD.MM.YYYY HH:MM')
+  console.debug(`Build commit: ${commit} Build date: ${date}`)
   return (
-    <Container my={2} sx={{ display: 'none' }}>
-      <Grid sx={{ color: 'text', fontSize: 2 }} columns={3}>
-        <Text>
-          {/* Temporary for debugging locale */}
-          <Button onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'es' : 'en')}>
-            {t('change-locale')}
-          </Button>
-        </Text>
+    <Container sx={{ maxWidth: '898px', display: 'none' }}>
+      <Grid sx={{ color: 'text', fontSize: 2 }} columns={2}>
         <Text>
           Commit:{' '}
-          <Link href={`https://github.com/OasisDex/oasis-app/commit/${buildHash}`} target="_blank">
-            {buildHash.substring(0, 10)}
+          <Link
+            href={`https://github.com/OasisDex/oasis-borrow/commit/${buildHash}`}
+            target="_blank"
+          >
+            {commit}
           </Link>
         </Text>
-        <Text>Build Date: {moment(buildDate).format('DD.MM.YYYY HH:MM')}</Text>
+        <Text>Build Date: {date}</Text>
       </Grid>
     </Container>
   )
@@ -134,10 +135,9 @@ export function Footer() {
   const { t } = useTranslation('common')
 
   return (
-    <Box as="footer">
-      <Container sx={{ maxWidth: '898px', mb: 5, pt: 2 }}>
-        <Grid
-          columns={[3, 3, 4]}
+    <Box as="footer" sx={{ position: 'relative', zIndex: 'footer' }}>
+      <Container sx={{ maxWidth: '761px', mb: 5, pt: 2 }}>
+        <Flex
           as="ul"
           sx={{ pl: 0, justifyContent: 'space-between', textAlign: 'center', alignItems: 'center' }}
         >
@@ -149,7 +149,7 @@ export function Footer() {
             </Box>
           ))}
           <LanguageSelect />
-        </Grid>
+        </Flex>
       </Container>
       <TemporaryFooter />
     </Box>

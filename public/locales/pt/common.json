@@ -163,6 +163,7 @@
       }
     }
   },
+  "here": "here",
   "introduction": {
     "step-1": "Faça o login com seu email",
     "step-2": "Compre Dai",
@@ -192,7 +193,8 @@
       "language": {
         "en": "English",
         "es": "Español",
-        "pt": "Português"
+        "pt": "Português",
+        "cn": "中文"
       },
       "privacy": "Privacidade",
       "terms": "Termos",
@@ -285,6 +287,7 @@
   "receive": "Receber",
   "received": "Recebido",
   "recent-transactions": "Transações recentes",
+  "reclaim": "Reclaim collateral",
   "savings": "Economias",
   "savings-earned": "Ganhos recebidos",
   "select-product": "Selecione um produto",
@@ -297,7 +300,6 @@
   "show-more": "Mostrar mais",
   "spots-remaining": "{{ spots }} locais restantes",
   "start-saving": "Iniciar economia",
-  "to-the-following-address": "para o seguinte endereço",
   "token-balance": "Saldo {{token}}",
   "tos": "Termos de Serviço da Oasis",
   "tos-accept-message": "Antes de começar, você precisará ler e aceitar nossos termos de serviço.",
@@ -320,6 +322,26 @@
   "try-again": "Tente novamente",
   "view": "Ver",
   "view-more": "Ver mais",
+  "vault-banners": {
+    "ownership": {
+      "header": "You are viewing {{address}} Vault",
+      "subheader1": "Please connect your wallet to open, manage or view your Vaults.",
+      "subheader2": "You can view your vaults"
+    },
+    "liquidating": {
+      "header1":"Your {{ collateral }} Maker Vault {{ id }} is about to get liquidated.",
+      "header2":"{{ collateral }} Maker Vault {{ id }} is about to get liquidated.",
+      "subheader1":"The next price will cause a liquidation on this Maker Vault. You can still save your Maker Vault from liquidation by adding collateral or pay back DAI.",
+      "subheader2":"Is this your Maker Vault? Please connect with address: {{ address }} and save your Maker Vault from liquidation."
+    },
+    "liquidated": {
+      "header1":"Your Maker Vault got liquidated",
+      "header2":"This Maker Vault got liquidated",
+      "subheader1":"This Maker Vault has been liquidated. A portion of your collateral has been auctioned to pay back your DAI debt.",
+      "subheader2":"You can reclaim {{ amount }} {{ collateral }}",
+      "subheader3":"If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
+    }
+  },
   "waiting-approval": "Aguardando aprovação",
   "waiting-confirmation": "Aguardando confirmação da transação",
   "waiting-proxy-deployment": "Aguardando Deploy do Proxy",

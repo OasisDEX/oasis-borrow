@@ -5,15 +5,6 @@ export const configSchema = z.object({
   disableRequestLogging: z.boolean().optional(),
   challengeJWTSecret: z.string(),
   userJWTSecret: z.string(),
-  smtpSecret: z.object({
-    host: z.string(),
-    port: z.string(),
-    user: z.string(),
-    pass: z.string(),
-  }),
-
-  contactEmailsSender: z.string(),
-  contactEmailsReceiver: z.string(),
 })
 
 export type Config = z.infer<typeof configSchema>

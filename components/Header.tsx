@@ -1,30 +1,43 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
-import { AccountButton } from 'components/account/Account'
-import { useAppContext } from 'components/AppContextProvider'
-import { AppLink, AppLinkProps } from 'components/Links'
+import { trackingEvents } from 'analytics/analytics'
+import { AppLink } from 'components/Links'
+import { AccountButton } from 'features/account/Account'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
-import { useTranslation } from 'i18n'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { TRANSITIONS } from 'theme'
-import { Box, Container } from 'theme-ui'
+import { Box, Container, Flex, SxStyleProp, Text } from 'theme-ui'
 
-function Logo() {
+import { useAppContext } from './AppContextProvider'
+
+function Logo({ sx }: { sx?: SxStyleProp }) {
   return (
     <AppLink
       withAccountPrefix={false}
       href="/"
-      sx={{ color: 'primary', fontWeight: 'semiBold', fontSize: 5 }}
+      sx={{
+        color: 'primary',
+        fontWeight: 'semiBold',
+        fontSize: 5,
+        cursor: 'pointer',
+        zIndex: 1,
+        ...sx,
+      }}
     >
-      Oasis
+      <Text sx={{ display: 'inline', mr: 2 }}>Oasis</Text>
     </AppLink>
   )
 }
 
-export function BasicHeader({ variant, children }: { variant?: string } & WithChildren) {
+export function BasicHeader({
+  variant,
+  children,
+  sx,
+}: { variant?: string; sx?: SxStyleProp } & WithChildren) {
   return (
-    <Box as="header">
+    <Box as="header" sx={{ position: 'relative', zIndex: 'menu' }}>
       <Container
         variant={variant}
         sx={{
@@ -35,6 +48,7 @@ export function BasicHeader({ variant, children }: { variant?: string } & WithCh
           p: 3,
           mb: 3,
           minHeight: '83px',
+          ...sx,
         }}
       >
         {children}
@@ -61,68 +75,55 @@ export function BackArrow() {
   )
 }
 
-export function LogoWithBack({
-  backLink,
-  onClick,
-}: {
-  backLink?: AppLinkProps
-  onClick?: () => void
-}) {
-  return onClick ? (
-    <Box onClick={onClick}>
-      <BackArrow />
-    </Box>
-  ) : backLink ? (
-    <AppLink {...backLink}>
-      <BackArrow />
-    </AppLink>
-  ) : (
-    <Logo />
-  )
-}
-
-export function AppHeader({
-  backLink,
-  CustomLogoWithBack,
-}: {
-  backLink?: AppLinkProps
-  CustomLogoWithBack?: () => JSX.Element
-}) {
-  const { web3Context$ } = useAppContext()
-  const web3Context = useObservable(web3Context$)
-  //const { readonlyAccount, account } = useReadonlyAccount()
+export function AppHeader() {
+  const { accountData$, context$ } = useAppContext()
   const { t } = useTranslation()
+  const accountData = useObservable(accountData$)
+  const context = useObservable(context$)
 
-  console.log(web3Context)
+  const numberOfVaults = accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : 0
   return (
-    <BasicHeader variant="appContainer">
+    <BasicHeader
+      sx={{
+        position: 'relative',
+        flexDirection: ['column-reverse', 'row', 'row'],
+        alignItems: ['flex-end', 'center', 'center'],
+        zIndex: 1,
+      }}
+      variant="appContainer"
+    >
       <>
-        {CustomLogoWithBack ? <CustomLogoWithBack /> : <LogoWithBack {...{ backLink }} />}
+        <Logo sx={{ position: ['absolute', 'static', 'static'], left: 3, top: 3 }} />
+        {context?.status === 'connected' && (
+          <Flex sx={{ ml: 'auto', zIndex: 1, mt: [3, 0, 0] }}>
+            <AppLink
+              variant="nav"
+              sx={{ mr: 4 }}
+              href={`/owner/${context.account}`}
+              onClick={() => trackingEvents.yourVaults(numberOfVaults)}
+            >
+              {t('your-vaults')} {numberOfVaults > 0 && `(${numberOfVaults})`}
+            </AppLink>
+            <AppLink
+              variant="nav"
+              sx={{ mr: [0, 4, 4] }}
+              href="/vaults/list"
+              onClick={() => trackingEvents.createNewVault()}
+            >
+              {t('open-new-vault')}
+            </AppLink>
+          </Flex>
+        )}
         <AccountButton />
       </>
     </BasicHeader>
   )
 }
 
-export function MarketingHeader() {
-  const { t } = useTranslation()
-
-  return (
-    <BasicHeader variant="landingContainer">
-      <Logo />
-      <AppLink href="/connect" variant="nav">
-        {t('connect-wallet-button')}
-      </AppLink>
-    </BasicHeader>
-  )
-}
-
-export function ConnectPageHeader({ backLink }: { backLink: AppLinkProps }) {
+export function ConnectPageHeader() {
   return (
     <BasicHeader>
-      <AppLink {...backLink}>
-        <BackArrow />
-      </AppLink>
+      <Logo />
     </BasicHeader>
   )
 }

@@ -4,3 +4,4 @@ package.json
 **/dist/**
 .next/
 types
+storybook-static

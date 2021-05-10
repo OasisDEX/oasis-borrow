@@ -1,9 +1,9 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AccountWithBalances, Web3Context } from '@oasisdex/web3-context'
+import { AppSpinner } from 'helpers/AppSpinner'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
-import { AppSpinner } from 'helpers/loadingIndicator/LoadingIndicator'
-import { useTranslation } from 'i18n'
+import { useTranslation } from 'next-i18next'
 import React, { useEffect, useRef, useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 
@@ -71,8 +71,10 @@ export function LedgerAccountSelection({
 
   if (error || web3Context.status === 'error') {
     return (
-      <Grid gap={4} sx={{ textAlign: 'center' }}>
-        <Heading as="h1">{t('ledger-select-address')}</Heading>
+      <Grid gap={4} sx={{ textAlign: 'center', margin: '0 auto' }}>
+        <Heading variant="header2" as="h1">
+          {t('ledger-select-address')}
+        </Heading>
         <Button onClick={cancel} variant="textual">
           {t('ledger-error')}
         </Button>
@@ -81,7 +83,7 @@ export function LedgerAccountSelection({
   }
 
   return accountsLoaded ? (
-    <Grid gap={4} sx={{ textAlign: 'center' }}>
+    <Grid gap={4} sx={{ textAlign: 'center', margin: '0 auto' }}>
       <Heading as="h1">{t('ledger-select-address')}</Heading>
       <Grid gap={3}>
         {accounts!.map(({ address, ethAmount, daiAmount }, i) => (
@@ -162,7 +164,7 @@ function DerivationPathSelection({
 }) {
   const { t } = useTranslation('common')
   return (
-    <Grid gap={4} sx={{ textAlign: 'center' }}>
+    <Grid gap={4} sx={{ textAlign: 'center', margin: '0 auto' }}>
       <Heading as="h1">{t('ledger-select-title')}</Heading>
       <Grid gap={3} mx={3}>
         <Button

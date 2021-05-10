@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import moment from 'moment'
 
-import { getToken } from '../../components/blockchain/config'
+import { getToken } from '../../blockchain/tokensMetadata'
 import { billion, million, one, oneThousandth, ten, thousand, zero } from '../zero'
 
 BigNumber.config({
@@ -13,10 +13,11 @@ BigNumber.config({
     fractionGroupSeparator: ' ',
     fractionGroupSize: 0,
   },
+  EXPONENTIAL_AT: 100000,
 })
 
 export function toShorthandNumber(amount: BigNumber, suffix: string = '', precision?: number) {
-  return new BigNumber(
+  const sh = new BigNumber(
     amount
       .toString()
       .split('.')
@@ -27,8 +28,10 @@ export function toShorthandNumber(amount: BigNumber, suffix: string = '', precis
       .filter((el) => el)
       .join('.'),
   )
-    .toFixed(precision)
-    .concat(suffix)
+  if (precision) {
+    return sh.toFixed(precision).concat(suffix)
+  }
+  return sh.toFixed().concat(suffix)
 }
 
 export function formatAsShorthandNumbers(amount: BigNumber, precision?: number): string {
@@ -106,4 +109,8 @@ export function formatDateTime(time: Date, showMs?: boolean): string {
 
 export function formatAddress(address: string) {
   return `${address.slice(0, 4)}...${address.slice(-5)}`
+}
+
+export function formatBigNumber(amount: BigNumber, digits: number) {
+  return amount.dp(digits, BigNumber.ROUND_DOWN).toString()
 }

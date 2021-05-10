@@ -1,5 +1,7 @@
 import { createSend, SendFunction } from '@oasisdex/transactions'
 import { createWeb3Context$ } from '@oasisdex/web3-context'
+import { trackingEvents } from 'analytics/analytics'
+import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
 import {
   createSendTransaction,
@@ -8,54 +10,102 @@ import {
   EstimateGasFunction,
   SendTransactionFunction,
   TransactionDef,
-} from 'components/blockchain/calls/callsHelpers'
-import { createGasPrice$ } from 'components/blockchain/prices'
-import { createReadonlyAccount$ } from 'components/connectWallet/readonlyAccount'
-import { createCdpManagerIlks$, createCdpManagerUrns$ } from 'features/vaults/cdpManager'
-import { createProxyAddress$, createProxyOwner$ } from 'features/vaults/proxy'
-import { createVatGem$, createVatIlks$, createVatLine$, createVatUrns$ } from 'features/vaults/vat'
-import { createVault$ } from 'features/vaults/vault'
-import { createVaults$ } from 'features/vaults/vaults'
-import { mapValues } from 'lodash'
+} from 'blockchain/calls/callsHelpers'
+import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
+import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
+import {
+  CreateDsProxyData,
+  createProxyAddress$,
+  createProxyOwner$,
+  SetProxyOwnerData,
+} from 'blockchain/calls/proxy'
+import {
+  DepositAndGenerateData,
+  OpenData,
+  ReclaimData,
+  WithdrawAndPaybackData,
+} from 'blockchain/calls/proxyActions'
+import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
+import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
+import { createGasPrice$, createOraclePriceData$ } from 'blockchain/prices'
+import {
+  createAccountBalance$,
+  createAllowance$,
+  createBalance$,
+  createCollateralTokens$,
+} from 'blockchain/tokens'
+import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
+import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import { createAccountData } from 'features/account/AccountData'
+import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
+import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
+import { currentContent } from 'features/content'
+import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
+import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
+import { createLanding$ } from 'features/landing/landing'
+import { createManageVault$ } from 'features/manageVault/manageVault'
+import { createOpenVault$ } from 'features/openVault/openVault'
+import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultData'
+import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
+import { redirectState$ } from 'features/router/redirectState'
+import { createPriceInfo$ } from 'features/shared/priceInfo'
+import {
+  checkAcceptanceFromApi$,
+  saveAcceptanceFromApi$,
+} from 'features/termsOfService/termsAcceptanceApi'
+import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
+import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
+import { mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
-import { Observable } from 'rxjs'
-import { filter, map, shareReplay } from 'rxjs/operators'
+import { combineLatest, Observable, of } from 'rxjs'
+import { filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
-import { HasGasEstimation } from '../helpers/form'
-import { createTransactionManager } from './account/transactionManager'
-import { networksById } from './blockchain/config'
+import { catIlk } from '../blockchain/calls/cat'
+import {
+  ApproveData,
+  DisapproveData,
+  tokenAllowance,
+  tokenBalance,
+} from '../blockchain/calls/erc20'
+import { jugIlk } from '../blockchain/calls/jug'
+import { observe } from '../blockchain/calls/observe'
+import { spotIlk } from '../blockchain/calls/spot'
+import { networksById } from '../blockchain/config'
 import {
   ContextConnected,
   createAccount$,
   createContext$,
+  createContextConnected$,
   createInitializedAccount$,
   createOnEveryBlock$,
   createWeb3ContextConnected$,
-} from './blockchain/network'
-import { SetOwnerData, SetupDSProxyData } from './dashboard/dsrPot/dsProxyCalls'
-import {
-  ApproveData,
-  DisapproveData,
-  TransferErc20Data,
-  TransferEthData,
-} from './dashboard/dsrPot/erc20Calls'
-import { DsrExitAllData, DsrExitData, DsrJoinData } from './dashboard/dsrPot/potCalls'
+} from '../blockchain/network'
+import { createTransactionManager } from '../features/account/transactionManager'
+import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
+import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
+import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
+import { HasGasEstimation } from '../helpers/form'
 
 export type TxData =
+  | OpenData
+  | DepositAndGenerateData
+  | WithdrawAndPaybackData
   | ApproveData
   | DisapproveData
-  | SetupDSProxyData
-  | SetOwnerData
-  | DsrJoinData
-  | DsrExitData
-  | DsrExitAllData
-  | TransferEthData
-  | TransferErc20Data
+  | CreateDsProxyData
+  | SetProxyOwnerData
+  | ReclaimData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
   sendWithGasEstimation: SendTransactionFunction<TxData>
   estimateGas: EstimateGasFunction<TxData>
+}
+
+export const protoTxHelpers: TxHelpers = {
+  send: () => null as any,
+  sendWithGasEstimation: () => null as any,
+  estimateGas: () => null as any,
 }
 
 export type AddGasEstimationFunction = <S extends HasGasEstimation>(
@@ -64,6 +114,8 @@ export type AddGasEstimationFunction = <S extends HasGasEstimation>(
 ) => Observable<S>
 
 export type TxHelpers$ = Observable<TxHelpers>
+
+export const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
 
 function createTxHelpers$(
   context$: Observable<ContextConnected>,
@@ -83,8 +135,6 @@ function createTxHelpers$(
 }
 
 export function setupAppContext() {
-  const readonlyAccount$ = createReadonlyAccount$()
-
   const chainIdToRpcUrl = mapValues(networksById, (network) => network.infuraUrl)
   const chainIdToDAIContractDesc = mapValues(networksById, (network) => network.tokens.DAI)
   const [web3Context$, setupWeb3Context$] = createWeb3Context$(
@@ -95,23 +145,29 @@ export function setupAppContext() {
   const account$ = createAccount$(web3Context$)
   const initializedAccount$ = createInitializedAccount$(account$)
 
-  web3Context$.subscribe((web3Context) =>
-    console.log(
-      'web3Context:',
-      web3Context.status,
-      (web3Context as any).chainId,
-      (web3Context as any).account,
-    ),
-  )
-
   const web3ContextConnected$ = createWeb3ContextConnected$(web3Context$)
 
   const [onEveryBlock$] = createOnEveryBlock$(web3ContextConnected$)
 
-  const context$ = createContext$(web3ContextConnected$, readonlyAccount$)
+  const context$ = createContext$(web3ContextConnected$)
 
-  const connectedContext$ = context$.pipe(
-    filter(({ status }) => status === 'connected'),
+  const connectedContext$ = createContextConnected$(context$)
+
+  combineLatest(account$, connectedContext$)
+    .pipe(
+      mergeMap(([account, network]) => {
+        return of({ network, account: account?.toLowerCase() })
+      }),
+    )
+    .subscribe(({ account, network }) => {
+      if (account && network) {
+        mixpanelIdentify(account, { walletType: network.connectionKind })
+        trackingEvents.accountChange(account, network.name, network.connectionKind)
+      }
+    })
+
+  const oracleContext$ = context$.pipe(
+    switchMap((ctx) => of({ ...ctx, account: ctx.mcdSpot.address })),
     shareReplay(1),
   ) as Observable<ContextConnected>
 
@@ -128,40 +184,180 @@ export function setupAppContext() {
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
 
-  const proxyAddress$ = curry(createProxyAddress$)(connectedContext$)
-  const proxyOwner$ = curry(createProxyOwner$)(connectedContext$)
+  // base
+  const proxyAddress$ = memoize(curry(createProxyAddress$)(onEveryBlock$, context$))
+  const proxyOwner$ = memoize(curry(createProxyOwner$)(onEveryBlock$, context$))
+  const cdpManagerUrns$ = observe(onEveryBlock$, context$, cdpManagerUrns, bigNumberTostring)
+  const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
+  const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumberTostring)
+  const vatIlks$ = observe(onEveryBlock$, context$, vatIlk)
+  const vatUrns$ = observe(onEveryBlock$, context$, vatUrns, ilkUrnAddressToString)
+  const vatGem$ = observe(onEveryBlock$, context$, vatGem, ilkUrnAddressToString)
+  const spotIlks$ = observe(onEveryBlock$, context$, spotIlk)
+  const jugIlks$ = observe(onEveryBlock$, context$, jugIlk)
+  const catIlks$ = observe(onEveryBlock$, context$, catIlk)
 
-  const cdpManagerUrns$ = curry(createCdpManagerUrns$)(connectedContext$)
-  const cdpManagerIlks$ = curry(createCdpManagerIlks$)(connectedContext$)
-  const vatUrns$ = curry(createVatUrns$)(connectedContext$, cdpManagerUrns$, cdpManagerIlks$)
-  const vatIlks$ = curry(createVatIlks$)(connectedContext$)
-  const vatGem$ = curry(createVatGem$)(connectedContext$, cdpManagerUrns$, cdpManagerIlks$)
-  const vatLine$ = curry(createVatLine$)(connectedContext$)
+  const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
+  const pipHop$ = observe(onEveryBlock$, context$, pipHop)
+  const pipPeek$ = observe(onEveryBlock$, oracleContext$, pipPeek)
+  const pipPeep$ = observe(onEveryBlock$, oracleContext$, pipPeep)
 
-  const vault$ = curry(createVault$)(
-    connectedContext$,
-    cdpManagerUrns$,
-    cdpManagerIlks$,
-    vatUrns$,
-    vatIlks$,
-    vatGem$,
+  const oraclePriceData$ = memoize(
+    curry(createOraclePriceData$)(context$, pipPeek$, pipPeep$, pipZzz$, pipHop$),
   )
-  const vaults$ = curry(createVaults$)(connectedContext$, proxyAddress$, vault$)
+
+  const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
+  const balance$ = memoize(curry(createBalance$)(onEveryBlock$, context$, tokenBalance$))
+
+  const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
+  const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
+
+  const ilkData$ = memoize(
+    curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, catIlks$, ilkToToken$),
+  )
+
+  const controller$ = memoize(
+    curry(createController$)(proxyOwner$, cdpManagerOwner$),
+    bigNumberTostring,
+  )
+
+  const vault$ = memoize(
+    curry(createVault$)(
+      cdpManagerUrns$,
+      cdpManagerIlks$,
+      cdpManagerOwner$,
+      vatUrns$,
+      vatGem$,
+      ilkData$,
+      oraclePriceData$,
+      controller$,
+      ilkToToken$,
+    ),
+    bigNumberTostring,
+  )
+
+  const vaultHistory$ = memoize(curry(createVaultHistory$)(context$, onEveryBlock$, vault$))
+
+  pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
+
+  const vaults$ = memoize(curry(createVaults$)(context$, proxyAddress$, vault$))
+
+  const ilks$ = createIlks$(context$)
+
+  const collateralTokens$ = createCollateralTokens$(ilks$, ilkToToken$)
+
+  const accountBalances$ = curry(createAccountBalance$)(
+    balance$,
+    collateralTokens$,
+    oraclePriceData$,
+  )
+
+  const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
+  const ilksWithBalance$ = createIlkDataListWithBalances$(context$, ilkDataList$, accountBalances$)
+
+  const priceInfo$ = curry(createPriceInfo$)(oraclePriceData$)
+  // as (
+  //   token: string,
+  //   account: string | undefined,
+  // ) => Observable<PriceInfo>
+
+  // TODO Don't allow undefined args like this
+  const balanceInfo$ = curry(createBalanceInfo$)(balance$) as (
+    token: string,
+    account: string | undefined,
+  ) => Observable<BalanceInfo>
+
+  const openVault$ = memoize(
+    curry(createOpenVault$)(
+      connectedContext$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      priceInfo$,
+      balanceInfo$,
+      ilks$,
+      ilkData$,
+      ilkToToken$,
+    ),
+  )
+
+  const manageVault$ = memoize(
+    curry(createManageVault$)(
+      context$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      priceInfo$,
+      balanceInfo$,
+      ilkData$,
+      vault$,
+    ),
+    bigNumberTostring,
+  )
+
+  const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
+
+  const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
+  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(vaults$, ilksWithBalance$))
+  const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
+
+  const termsAcceptance$ = createTermsAcceptance$(
+    web3Context$,
+    currentContent.tos.version,
+    jwtAuthSetupToken$,
+    checkAcceptanceFromApi$,
+    saveAcceptanceFromApi$,
+  )
+
+  const vaultBanners$ = memoize(
+    curry(createVaultsBanners$)(context$, priceInfo$, vault$, vaultHistory$),
+    bigNumberTostring,
+  )
+
+  const reclaimCollateral$ = memoize(
+    curry(createReclaimCollateral$)(context$, txHelpers$, proxyAddress$),
+    bigNumberTostring,
+  )
+  const accountData$ = createAccountData(web3Context$, balance$, vaults$)
+
+  const openVaultOverview$ = createOpenVaultOverview$(ilksWithBalance$)
 
   return {
     web3Context$,
+    web3ContextConnected$,
     setupWeb3Context$,
     initializedAccount$,
     context$,
     onEveryBlock$,
     txHelpers$,
-    readonlyAccount$,
     transactionManager$,
     proxyAddress$,
     proxyOwner$,
     vaults$,
     vault$,
+    ilks$,
+    landing$,
+    openVault$,
+    manageVault$,
+    vaultsOverview$,
+    vaultBanners$,
+    redirectState$,
+    accountBalances$,
+    accountData$,
+    vaultHistory$,
+    collateralPrices$,
+    termsAcceptance$,
+    reclaimCollateral$,
+    openVaultOverview$,
   }
+}
+
+export function bigNumberTostring(v: BigNumber): string {
+  return v.toString()
+}
+
+function ilkUrnAddressToString({ ilk, urnAddress }: { ilk: string; urnAddress: string }): string {
+  return `${ilk}-${urnAddress}`
 }
 
 export type AppContext = ReturnType<typeof setupAppContext>

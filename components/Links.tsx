@@ -1,5 +1,3 @@
-import { isAppContextAvailable, useAppContext } from 'components/AppContextProvider'
-import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { LinkProps } from 'next/dist/client/link'
 import Link from 'next/link'
@@ -18,6 +16,10 @@ export interface AppLinkProps extends WithChildren, LinkProps {
   target?: string
 }
 
+export function getIsInternalLink(href: string) {
+  return href.startsWith('/') || href.startsWith('#')
+}
+
 export function AppLink({
   href,
   children,
@@ -28,18 +30,12 @@ export function AppLink({
   target,
   ...rest
 }: AppLinkProps) {
-  const isInternalLink = href && (href.startsWith('/') || href.startsWith('#'))
+  const isInternalLink = href && getIsInternalLink(href)
 
   if (disabled) return children
 
   if (isInternalLink) {
-    return (
-      <InternalLink
-        {...{ href, sx, variant, onClick, isAppContextAvailable: isAppContextAvailable(), ...rest }}
-      >
-        {children}
-      </InternalLink>
-    )
+    return <InternalLink {...{ href, sx, variant, onClick, ...rest }}>{children}</InternalLink>
   }
 
   return (
@@ -55,37 +51,19 @@ function InternalLink({
   children,
   internalInNewTab,
   as,
-  isAppContextAvailable,
-  withAccountPrefix = true,
   variant,
   onClick,
   ...rest
-}: AppLinkProps & { isAppContextAvailable: boolean }) {
-  const {
-    query: { network },
-  } = useRouter()
-  let readOnlyHref = href
-  let readOnlyAs = as
+}: AppLinkProps) {
+  // useRouter cannot be used with storybook. The router is undefined.
+  const network = useRouter()?.query.network
+  const readOnlyHref = href
+  const readOnlyAs = as
 
-  if (isAppContextAvailable && withAccountPrefix) {
-    const { readonlyAccount$ } = useAppContext()
-    const readonlyAccount = useObservable(readonlyAccount$)
-
-    if (readonlyAccount && href.startsWith('/')) {
-      readOnlyHref = `/[address]${href}`
-      readOnlyAs = `/${readonlyAccount}${as || href}`
-    }
-  }
-
-  const actualHref =
-    isAppContextAvailable && network
-      ? { pathname: readOnlyHref as string, query: { network } }
-      : readOnlyHref
+  const actualHref = network ? { pathname: readOnlyHref, query: { network } } : readOnlyHref
 
   const actualAs =
-    readOnlyAs && isAppContextAvailable && network
-      ? { pathname: readOnlyAs as string, query: { network } }
-      : readOnlyAs
+    readOnlyAs && network ? { pathname: readOnlyAs as string, query: { network } } : readOnlyAs
 
   return (
     <Link href={actualHref} as={actualAs} passHref {...rest}>

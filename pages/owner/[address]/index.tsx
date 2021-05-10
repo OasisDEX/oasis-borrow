@@ -1,63 +1,54 @@
 import { useAppContext } from 'components/AppContextProvider'
+import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
-import { Vault } from 'features/vaults/vault'
-import { useObservable } from 'helpers/observableHook'
-import { Box, Grid, Text } from 'theme-ui'
+import { VaultsOverviewView } from 'features/vaultsOverview/VaultsOverviewView'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { useObservableWithError } from 'helpers/observableHook'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import React from 'react'
+import { BackgroundLight } from 'theme/BackgroundLight'
 
-function ProxyOwner({ proxyAddress }: { proxyAddress: string }) {
-  const { proxyOwner$ } = useAppContext()
+import { WithTermsOfService } from '../../../features/termsOfService/TermsOfService'
 
-  const proxyOwner = useObservable(proxyOwner$(proxyAddress))
-
-  return <Text>{proxyOwner}</Text>
-}
-
-function VaultsTable({ vaults }: { vaults: Vault[] }) {
-  return (
-    <Box>
-      <Text sx={{ fontSize: 4 }}>Vaults ::</Text>
-      <Grid columns={[2]} pt={3}>
-        <Text>VaultId</Text>
-        <Text>VaultType</Text>
-
-        {vaults.map((vault) => (
-          <>
-            <Text>{vault.id}</Text>
-            <Text>{vault.ilk}</Text>
-          </>
-        ))}
-      </Grid>
-    </Box>
-  )
-}
-
+// TODO Move this to /features
 function Summary({ address }: { address: string }) {
-  const { web3Context$, proxyAddress$, vaults$ } = useAppContext()
-  const web3Context = useObservable(web3Context$)
-  const proxyAddress = useObservable(proxyAddress$(address))
-  const vaults = useObservable(vaults$(address))
+  const { vaultsOverview$, context$ } = useAppContext()
+  const vaultsOverviewWithError = useObservableWithError(vaultsOverview$(address))
+  const contextWithError = useObservableWithError(context$)
 
   return (
-    <Grid>
-      <Text>Connected Address :: {(web3Context as any)?.account}</Text>
-      <Text>Viewing Address :: {address}</Text>
-      <Text>ProxyAddress :: {proxyAddress}</Text>
-      <Text>ProxyOwner :: {proxyAddress ? <ProxyOwner {...{ proxyAddress }} /> : null}</Text>
-      {vaults ? <VaultsTable {...{ vaults }} /> : null}
-    </Grid>
+    <WithLoadingIndicator
+      value={[vaultsOverviewWithError.value, contextWithError.value]}
+      error={[vaultsOverviewWithError.error, contextWithError.error]}
+    >
+      {([vaultsOverview, context]) => (
+        <VaultsOverviewView vaultsOverview={vaultsOverview} context={context} address={address} />
+      )}
+    </WithLoadingIndicator>
   )
 }
 
-export default function VaultsSummary() {
-  const { readonlyAccount$ } = useAppContext()
+export async function getServerSideProps(ctx: any) {
+  return {
+    props: {
+      ...(await serverSideTranslations(ctx.locale, ['common'])),
+      address: ctx.query?.address || null,
+    },
+  }
+}
 
-  const address = useObservable(readonlyAccount$)
-  return address ? <Summary {...{ address }} /> : null
+export default function VaultsSummary({ address }: { address: string }) {
+  return address ? (
+    <WithConnection>
+      <WithTermsOfService>
+        <BackgroundLight />
+        <Summary address={address} />
+      </WithTermsOfService>
+    </WithConnection>
+  ) : null
 }
 
 VaultsSummary.layout = AppLayout
 VaultsSummary.layoutProps = {
-  backLink: {
-    href: '/',
-  },
+  variant: 'daiContainer',
 }

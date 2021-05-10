@@ -2,10 +2,12 @@ import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
 import { amountFromWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
 import { TxHelpers, TxHelpers$ } from 'components/AppContext'
-import { Ticker } from 'components/blockchain/prices'
 import { combineLatest, Observable, of } from 'rxjs'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { catchError, first, flatMap, map, startWith, switchMap } from 'rxjs/operators'
+import { OmitProperties, ValueOf } from 'ts-essentials'
+
+import { Ticker } from '../blockchain/prices'
 
 export enum FormStage {
   idle = 'idle',
@@ -220,11 +222,12 @@ export function transactionToX<X, Y extends TxMeta>(
 ): TxState$ToX$<X, Y> {
   return (txState$: Observable<TxState<Y>>) =>
     txState$.pipe(
-      takeWhileInclusive(
-        (txState: TxState<Y>) =>
+      takeWhileInclusive((txState: TxState<Y>) => {
+        return (
           (txState.status === TxStatus.Success && txState.confirmations < confirmations) ||
-          txState.status !== TxStatus.Success,
-      ),
+          txState.status !== TxStatus.Success
+        )
+      }),
       flatMap(
         (txState: TxState<Y>): Observable<X> => {
           switch (txState.status) {
@@ -324,4 +327,47 @@ export function doGasEstimation<S extends HasGasEstimation>(
       gasEstimationStatus: GasEstimationStatus.calculating,
     } as S),
   )
+}
+
+type OmitFunctions<S> = OmitProperties<Required<S>, (...arg: any[]) => any>
+
+export type Change<S, K extends keyof S> = {
+  kind: K
+} & {
+  [value in K]: S[K]
+}
+
+export type Changes<S> = ValueOf<{ [K in keyof OmitFunctions<S>]-?: Change<S, K> }>
+
+export type ApplyChange<S extends {}, C extends Change<any, any> = Changes<S>> = (
+  state: S,
+  changes: C,
+) => S
+
+export function applyChange<S extends {}, C extends Change<any, any>>(state: S, change: C): S {
+  return { ...state, [change.kind]: change[change.kind] }
+}
+
+export type Direction = 'ASC' | 'DESC' | undefined
+
+export function toggleSort<T extends string | undefined>(
+  current: T,
+  currentDirection: Direction,
+  next: T,
+): [T | undefined, Direction] {
+  if (current === undefined || current !== next) {
+    return [next, 'DESC']
+  }
+
+  if (currentDirection === 'DESC') {
+    return [next, 'ASC']
+  }
+
+  return [undefined, undefined]
+}
+
+export interface SortFilters<T extends string> {
+  sortBy: T | undefined
+  direction: Direction
+  change: (ch: { kind: 'sortBy'; sortBy: T | undefined }) => void
 }

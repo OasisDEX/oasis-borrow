@@ -1,37 +1,40 @@
+import getConfig from 'next/config'
 import { useRouter } from 'next/router'
-import { ParsedUrlQuery } from 'querystring'
+import { Dictionary } from 'ts-essentials'
 
-// getting query params which should be persisted across page transitions
-// url can already have some query params so we have to set initial prefix
-// ommiting redirectUrl and address so it is not persisted
-export function getQueryParams(query: ParsedUrlQuery, url?: string) {
-  const initialPrefix = url && url.includes('?') ? '&' : '?'
-  let queryParams = initialPrefix
+const basePath = getConfig()?.publicRuntimeConfig?.basePath
 
-  Object.entries(query).forEach(([key, value]) => {
-    // connect route is used for catching all app routes without address and it gets appended to query object
-    if (key !== 'connect' && key !== 'address' && !url?.includes(key)) {
-      const prefix = queryParams.length === 1 ? '' : '&'
-      queryParams += `${prefix}${key}=${value}`
-    }
-  })
+export function replaceBasePathIfNeeded(pathname: string, basePath: string) {
+  // basePath could be either an 'empty string' or '/<something>'.
+  // '/' is not a valid base path.
+  if (basePath && pathname.startsWith(basePath)) {
+    return pathname.replace(new RegExp(`^${basePath}`), '') || '/'
+  }
 
-  return queryParams === initialPrefix ? '' : queryParams
+  return pathname
 }
 
 export function useRedirect() {
   const router = useRouter()
 
-  function push(url: string, as?: string) {
-    const queryParams = getQueryParams(router.query, url)
-    /* eslint-disable-next-line */
-    router.push(`${url}${queryParams}`, `${as || url}${queryParams}`)
+  function push(pathname: string, query: Dictionary<string> = {}) {
+    const network = router.query.network
+    const queryParams = network ? { ...query, network } : query
+
+    void router.push({
+      pathname: replaceBasePathIfNeeded(pathname, basePath),
+      query: queryParams,
+    })
   }
 
-  function replace(url: string, as?: string) {
-    const queryParams = getQueryParams(router.query, url)
-    /* eslint-disable-next-line */
-    router.replace(`${url}${queryParams}`, `${as || url}${queryParams}`)
+  function replace(pathname: string, query: Dictionary<string> = {}) {
+    const network = router.query.network
+    const queryParams = network ? { ...query, network } : query
+
+    void router.replace({
+      pathname: replaceBasePathIfNeeded(pathname, basePath),
+      query: queryParams,
+    })
   }
 
   return { push, replace }
