@@ -57,7 +57,7 @@ interface RowProps {
 function Row({
   children,
   sx,
-  href,
+  href, // TODO: remove this and somehow handle it into the onClick function
   onClick,
 }: React.PropsWithChildren<{ sx?: SxStyleProp } & RowProps>) {
   const { push } = useRedirect()
