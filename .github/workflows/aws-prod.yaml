@@ -38,7 +38,7 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker build -t $ECR_REGISTRY/$SERVICE_NAME:$IMAGE_TAG .
+        docker build --build-arg MIXPANEL_ENV=production --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_PROD_KEY }} -t $ECR_REGISTRY/$SERVICE_NAME:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$SERVICE_NAME:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$SERVICE_NAME:$IMAGE_TAG"
 
