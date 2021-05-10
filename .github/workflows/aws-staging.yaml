@@ -1,8 +1,7 @@
 on:
   push:
     branches:
-      - fix-api-endpoints
-
+      - dev
 name: Deploy to Staging
 
 jobs:
