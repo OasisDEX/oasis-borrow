@@ -70,13 +70,13 @@ describe('termsAcceptance', () => {
   })
 
   it('Acceptance lookup: when signature exists locally, checks db', () => {
-    localStorage.setItem('token/0x123', 'xxx')
+    localStorage.setItem('token-b/0x123', 'xxx')
     const state = getStateUnpacker(createState$({}))
     expect(state().stage).to.be.deep.eq('acceptanceCheckInProgress')
   })
 
   it('Acceptance lookup: when a signature exists locally and matches db, end of flow', () => {
-    localStorage.setItem('token/0x123', 'xxx')
+    localStorage.setItem('token-b/0x123', 'xxx')
     const state = getStateUnpacker(
       createState$({
         checkAcceptance$: () => of({ acceptance: true }),
@@ -87,7 +87,7 @@ describe('termsAcceptance', () => {
   })
 
   it('Acceptance lookup: no signature exists in db', () => {
-    localStorage.setItem('token/0x123', 'xxx')
+    localStorage.setItem('token-b/0x123', 'xxx')
     const state = getStateUnpacker(
       createState$({
         checkAcceptance$: () => of({ acceptance: false }),
@@ -101,7 +101,7 @@ describe('termsAcceptance', () => {
   })
 
   it('Acceptance lookup: signature exists in db but terms are updated', () => {
-    localStorage.setItem('token/0x123', 'xxx')
+    localStorage.setItem('token-b/0x123', 'xxx')
     const state = getStateUnpacker(
       createState$({
         checkAcceptance$: () => of({ acceptance: false, updated: true }),
@@ -160,7 +160,7 @@ describe('termsAcceptance', () => {
   })
 
   it('Acceptance signing: checking db returned error with existing JWT', () => {
-    localStorage.setItem('token/0x123', 'xxx')
+    localStorage.setItem('token-b/0x123', 'xxx')
     const state = getStateUnpacker(
       createState$({
         checkAcceptance$: () => throwError('error'),
