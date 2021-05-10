@@ -29,8 +29,6 @@ function LanguageSelect() {
   const { t, i18n } = useTranslation('common')
   const router = useRouter()
 
-  console.log(router)
-
   const LANGUAGE_OPTIONS = [
     { value: 'en', label: t('landing.footer.language.en') },
     { value: 'es', label: t('landing.footer.language.es') },
