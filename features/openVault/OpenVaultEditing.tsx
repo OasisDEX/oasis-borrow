@@ -81,7 +81,9 @@ export function OpenVaultEditing(props: OpenVaultState) {
               userSelect: 'none',
               lineHeight: 1.25,
             }}
-            onClick={toggleGenerateOption!}
+            onClick={() => {
+              toggleGenerateOption!()
+            }}
           >
             {showGenerateOption ? <MinusIcon /> : <PlusIcon />}
             {t('manage-vault.action-option', {

@@ -1,10 +1,11 @@
+import { trackingEvents } from 'analytics/analytics'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 
-function ManageVaultEditingToggle({ stage, toggle }: ManageVaultState) {
+function ManageVaultEditingToggle({ stage, toggle, accountIsController }: ManageVaultState) {
   const collateralVariant = stage === 'collateralEditing' ? 'outline' : 'filter'
   const daiVariant = stage === 'daiEditing' ? 'outline' : 'filter'
   const { t } = useTranslation()
@@ -12,6 +13,11 @@ function ManageVaultEditingToggle({ stage, toggle }: ManageVaultState) {
   function handleToggle(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault()
     toggle!()
+    if (stage === 'collateralEditing') {
+      trackingEvents.switchToDai(accountIsController)
+    } else {
+      trackingEvents.switchToCollateral(accountIsController)
+    }
   }
 
   return (

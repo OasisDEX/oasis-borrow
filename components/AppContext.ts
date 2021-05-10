@@ -1,5 +1,7 @@
 import { createSend, SendFunction } from '@oasisdex/transactions'
 import { createWeb3Context$ } from '@oasisdex/web3-context'
+import { trackingEvents } from 'analytics/analytics'
+import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
 import {
   createSendTransaction,
@@ -55,8 +57,8 @@ import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
-import { Observable, of } from 'rxjs'
-import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
+import { combineLatest, Observable, of } from 'rxjs'
+import { filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { catIlk } from '../blockchain/calls/cat'
 import {
@@ -150,6 +152,19 @@ export function setupAppContext() {
   const context$ = createContext$(web3ContextConnected$)
 
   const connectedContext$ = createContextConnected$(context$)
+
+  combineLatest(account$, connectedContext$)
+    .pipe(
+      mergeMap(([account, network]) => {
+        return of({ network, account: account?.toLowerCase() })
+      }),
+    )
+    .subscribe(({ account, network }) => {
+      if (account && network) {
+        mixpanelIdentify(account, { walletType: network.connectionKind })
+        trackingEvents.accountChange(account, network.name, network.connectionKind)
+      }
+    })
 
   const oracleContext$ = context$.pipe(
     switchMap((ctx) => of({ ...ctx, account: ctx.mcdSpot.address })),

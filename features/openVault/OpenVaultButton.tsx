@@ -1,3 +1,4 @@
+import { trackingEvents } from 'analytics/analytics'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
@@ -88,9 +89,32 @@ export function OpenVaultButton(props: OpenVaultState) {
   const secondaryButtonText =
     stage === 'allowanceFailure' ? t('edit-token-allowance', { token }) : t('edit-vault-details')
 
+  let trackingEvent: () => void | null
+
+  if (primaryButtonText === t('setup-proxy')) trackingEvent = trackingEvents.createVaultSetupProxy
+  if (primaryButtonText === t('confirm')) trackingEvent = trackingEvents.createVaultConfirm
+  if (primaryButtonText === t('create-vault')) trackingEvent = trackingEvents.confirmVaultConfirm
+  if (primaryButtonText === t('create-proxy-btn')) trackingEvent = trackingEvents.createProxy
+  if (stage === 'editing' && primaryButtonText === t('set-token-allowance', { token })) {
+    trackingEvent = trackingEvents.setTokenAllowance
+  }
+  if (
+    (stage === 'allowanceWaitingForConfirmation' &&
+      primaryButtonText === t('set-token-allowance', { token })) ||
+    primaryButtonText === t('retry-allowance-approval')
+  ) {
+    trackingEvent = trackingEvents.approveAllowance
+  }
+
   return (
     <>
-      <Button disabled={!canProgress} onClick={handleProgress}>
+      <Button
+        disabled={!canProgress}
+        onClick={(e: React.SyntheticEvent<HTMLButtonElement>) => {
+          trackingEvent && trackingEvent()
+          handleProgress(e)
+        }}
+      >
         {isLoadingStage ? (
           <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
             <Text sx={{ position: 'relative' }} pl={2}>
@@ -112,7 +136,17 @@ export function OpenVaultButton(props: OpenVaultState) {
         )}
       </Button>
       {canRegress && (
-        <Button variant="textual" onClick={handleRegress} sx={{ fontSize: 3 }}>
+        <Button
+          variant="textual"
+          onClick={(e: React.SyntheticEvent<HTMLButtonElement>) => {
+            if (stage !== 'allowanceFailure') {
+              trackingEvents.confirmVaultEdit()
+            }
+
+            handleRegress(e)
+          }}
+          sx={{ fontSize: 3 }}
+        >
           {secondaryButtonText}
         </Button>
       )}

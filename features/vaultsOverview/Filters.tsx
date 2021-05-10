@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { Pages, trackingEvents } from 'analytics/analytics'
 import { COIN_TAGS, CoinTag } from 'blockchain/tokensMetadata'
 import { useTranslation } from 'next-i18next'
 import React, { memo, useCallback } from 'react'
@@ -9,7 +10,8 @@ interface FiltersProps {
   onSearch: (search: string) => void
   onTagChange: (tag: CoinTag | undefined) => void
   search: string
-  defaultTag: string
+  defaultTag: 'your-vaults' | 'all-assets'
+  page: Pages.LandingPage | Pages.OpenVaultOverview | Pages.VaultsOverview
   tagFilter: CoinTag | undefined
   searchPlaceholder: string
   sx?: SxStyleProp
@@ -21,6 +23,7 @@ function Filters_({
   onTagChange,
   tagFilter,
   defaultTag,
+  page,
   searchPlaceholder,
   sx,
 }: FiltersProps) {
@@ -139,6 +142,7 @@ function Filters_({
           sx={{ fontWeight: 'heading' }}
           variant="plain"
           onChange={onChange}
+          onBlur={() => trackingEvents.searchToken(page, search)}
           value={search}
           placeholder={searchPlaceholder}
         />

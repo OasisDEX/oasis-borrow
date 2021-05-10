@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
@@ -6,11 +7,12 @@ import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeade
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Card, Divider, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
 
 import { ManageVaultState } from './manageVault'
+import { createManageVaultAnalytics$ } from './manageVaultAnalytics'
 import { ManageVaultButton } from './ManageVaultButton'
 import {
   ManageVaultCollateralAllowance,
@@ -100,7 +102,16 @@ export function ManageVaultContainer(props: ManageVaultState) {
 
 export function ManageVaultView({ id }: { id: BigNumber }) {
   const { manageVault$ } = useAppContext()
-  const manageVaultWithError = useObservableWithError(manageVault$(id))
+  const manageVaultWithId$ = manageVault$(id)
+  const manageVaultWithError = useObservableWithError(manageVaultWithId$)
+
+  useEffect(() => {
+    const subscription = createManageVaultAnalytics$(manageVaultWithId$, trackingEvents).subscribe()
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
 
   return (
     <WithLoadingIndicator

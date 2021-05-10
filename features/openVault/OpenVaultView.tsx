@@ -1,14 +1,16 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { trackingEvents } from 'analytics/analytics'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Card, Divider, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
 import { OpenVaultAllowance, OpenVaultAllowanceStatus } from './OpenVaultAllowance'
+import { createOpenVaultAnalytics$ } from './openVaultAnalytics'
 import { OpenVaultButton } from './OpenVaultButton'
 import { OpenVaultConfirmation, OpenVaultStatus } from './OpenVaultConfirmation'
 import { OpenVaultDetails } from './OpenVaultDetails'
@@ -110,7 +112,17 @@ export function OpenVaultContainer(props: OpenVaultState) {
 
 export function OpenVaultView({ ilk }: { ilk: string }) {
   const { openVault$ } = useAppContext()
+  const openVaultWithIlk$ = openVault$(ilk)
+
   const openVaultWithError = useObservableWithError(openVault$(ilk))
+
+  useEffect(() => {
+    const subscription = createOpenVaultAnalytics$(openVaultWithIlk$, trackingEvents).subscribe()
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
 
   return (
     <Grid sx={{ width: '100%', zIndex: 1 }}>

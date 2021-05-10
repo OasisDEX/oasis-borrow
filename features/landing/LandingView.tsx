@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { Pages } from 'analytics/analytics'
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { Announcement } from 'components/Announcement'
 import { useAppContext } from 'components/AppContextProvider'
@@ -378,6 +379,7 @@ export function LandingView() {
               onTagChange={onIlksTagChange}
               tagFilter={landing.ilks.filters.tagFilter}
               defaultTag="all-assets"
+              page={Pages.LandingPage}
               searchPlaceholder={t('search-token')}
             />
             <Box sx={{ overflowX: 'auto', p: '3px' }}>
