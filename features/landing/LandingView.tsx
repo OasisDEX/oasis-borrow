@@ -148,7 +148,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
             {t('welcome')}
           </Text>
           <Flex sx={{ flexDirection: ['column', 'row'] }}>
-            <AppLink href="https://blog.oasis.app">
+            <AppLink href="https://blog.oasis.app/introducing-the-redesigned-oasis-borrow/">
               <WithArrow>{t('read-blog-post')}</WithArrow>
             </AppLink>
             <Text
