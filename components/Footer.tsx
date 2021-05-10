@@ -1,7 +1,6 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
-import { useRedirect } from 'helpers/useRedirect'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
