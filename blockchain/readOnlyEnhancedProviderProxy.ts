@@ -1,6 +1,7 @@
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { JSONRPCRequestPayload } from 'ethereum-protocol'
 import { providers } from 'ethers'
+import _ from 'lodash'
 import { JsonRpcResponse } from 'web3-core-helpers'
 
 import { networksById } from './config'
@@ -10,6 +11,8 @@ function fixChainId(chainId: string | number) {
   // eslint-disable-next-line no-new-wrappers
   return new Number(chainId).valueOf()
 }
+
+const READ_ONLY_RPC_CALLS = ['eth_call', 'eth_getTransactionReceipt', 'eth_getTransactionByHash']
 
 function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any> {
   const getReadOnlyProviderAsync = (() => {
@@ -47,7 +50,9 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
         ) => {
           const readOnlyProvider = await getReadOnlyProviderAsync(chainIdPromise)
           const rpcProvider = await getRPCProviderAsync(chainIdPromise, target)
-          const provider = payload.method === 'eth_call' ? readOnlyProvider : rpcProvider
+          const provider = _.includes(READ_ONLY_RPC_CALLS, payload.method)
+            ? readOnlyProvider
+            : rpcProvider
           try {
             const result = await provider.send(payload.method, payload.params)
             callback(null, { jsonrpc: payload.jsonrpc, id: payload.id, result })
@@ -61,7 +66,9 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
         const requestMaybeReadOnly = async (payload: JSONRPCRequestPayload) => {
           const readOnlyProvider = await getReadOnlyProviderAsync(chainIdPromise)
           const rpcProvider = await getRPCProviderAsync(chainIdPromise, target)
-          const provider = payload.method === 'eth_call' ? readOnlyProvider : rpcProvider
+          const provider = _.includes(READ_ONLY_RPC_CALLS, payload.method)
+            ? readOnlyProvider
+            : rpcProvider
           const result = await provider.send(payload.method, payload.params)
           return result
         }
