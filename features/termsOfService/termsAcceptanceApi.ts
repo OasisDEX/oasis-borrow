@@ -1,14 +1,17 @@
+import getConfig from 'next/config'
 import { of } from 'ramda'
 import { Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, map } from 'rxjs/operators'
+
+const basePath = getConfig()?.publicRuntimeConfig?.basePath
 
 export function checkAcceptanceFromApi$(
   token: string,
   version: string,
 ): Observable<{ acceptance: boolean; updated?: boolean }> {
   return ajax({
-    url: `/api/tos/${version}`,
+    url: `${basePath}/api/tos/${version}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -35,7 +38,7 @@ export function saveAcceptanceFromApi$(
   email?: string,
 ): Observable<void> {
   return ajax({
-    url: `/api/tos`,
+    url: `${basePath}/api/tos`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
