@@ -3,45 +3,33 @@ import { TxStatusCardProgress, TxStatusCardSuccess } from 'features/openVault/Tx
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 
-export function ManageVaultConfirmation(props: ManageVaultState) {
-  const [snapshot, setSnapshot] = useState<ManageVaultState | undefined>(undefined)
-  useEffect(() => {
-    if (props.stage === 'manageWaitingForApproval') {
-      setSnapshot(props)
-    }
-  }, [props.stage])
-
-  const state = snapshot && props.stage === 'manageSuccess' ? snapshot : props
-
+export function ManageVaultConfirmation(state: ManageVaultState) {
   const {
-    balanceInfo: { collateralBalance },
     depositAmount,
     generateAmount,
     paybackAmount,
     withdrawAmount,
     vault: { token },
-    afterCollateralizationRatio,
-    afterLiquidationPrice,
-    vaultWillBeAtRiskLevelDanger,
-    vaultWillBeAtRiskLevelWarning,
+    summary: {
+      vaultWillBeAtRiskLevelDanger,
+      vaultWillBeAtRiskLevelWarning,
+      afterCollateralBalance,
+      afterCollateralizationRatio,
+      afterLiquidationPrice,
+      collateralBalance,
+    },
   } = state
 
   const { t } = useTranslation()
-  const walletBalance = formatCryptoBalance(collateralBalance)
+  const balance = formatCryptoBalance(collateralBalance)
+  const afterBalance = formatCryptoBalance(afterCollateralBalance)
   const depositCollateral = formatCryptoBalance(depositAmount || zero)
   const withdrawingCollateral = formatCryptoBalance(withdrawAmount || zero)
-  const remainingInWallet = formatCryptoBalance(
-    depositAmount
-      ? collateralBalance.minus(depositAmount)
-      : withdrawAmount
-      ? collateralBalance.plus(withdrawAmount)
-      : collateralBalance,
-  )
   const daiToBeGenerated = formatCryptoBalance(generateAmount || zero)
   const daiPayingBack = formatCryptoBalance(paybackAmount || zero)
 
@@ -60,7 +48,7 @@ export function ManageVaultConfirmation(props: ManageVaultState) {
   return (
     <Grid>
       <Details>
-        <Details.Item label={t('system.in-your-wallet')} value={`${walletBalance} ${token}`} />
+        <Details.Item label={t('system.in-your-wallet')} value={`${balance} ${token}`} />
 
         {depositAmount?.gt(zero) && (
           <Details.Item label={t('moving-into-vault')} value={`${depositCollateral} ${token}`} />
@@ -68,7 +56,7 @@ export function ManageVaultConfirmation(props: ManageVaultState) {
         {withdrawAmount?.gt(zero) && (
           <Details.Item label={t('moving-out-vault')} value={`${withdrawingCollateral} ${token}`} />
         )}
-        <Details.Item label={t('remaining-in-wallet')} value={`${remainingInWallet} ${token}`} />
+        <Details.Item label={t('remaining-in-wallet')} value={`${afterBalance} ${token}`} />
         {generateAmount?.gt(zero) && (
           <Details.Item label={t('dai-being-generated')} value={`${daiToBeGenerated} DAI`} />
         )}
