@@ -1,14 +1,17 @@
 import { decode } from 'jsonwebtoken'
+import getConfig from 'next/config'
 import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { fromPromise } from 'rxjs/internal-compatibility'
 import { map } from 'rxjs/operators'
 import Web3 from 'web3'
 
+const basePath = getConfig()?.publicRuntimeConfig.basePath || ''
+
 export type JWToken = string
 
 export function jwtAuthGetToken(address: string): JWToken | undefined {
-  const token = localStorage.getItem(`token/${address}`)
+  const token = localStorage.getItem(`token-b/${address}`)
   return token === null ? undefined : token
 }
 
@@ -28,7 +31,7 @@ async function requestJWT(web3: Web3, account: string): Promise<string> {
   const signature = await signTypedPayload(challenge, web3, account)
   const jwt = await requestSignin({ challenge, signature }).toPromise()
 
-  localStorage.setItem(`token/${account}`, jwt)
+  localStorage.setItem(`token-b/${account}`, jwt)
 
   return jwt
 }
@@ -42,7 +45,7 @@ async function signTypedPayload(challenge: string, web3: Web3, account: string):
 
 function requestChallenge(address: string): Observable<string> {
   return ajax({
-    url: '/api/auth/challenge',
+    url: `${basePath}/api/auth/challenge`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -59,7 +62,7 @@ function requestSignin({
   challenge: string
 }): Observable<string> {
   return ajax({
-    url: '/api/auth/signin',
+    url: `${basePath}/api/auth/signin`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
