@@ -25,8 +25,7 @@ import { AppSpinner } from 'helpers/AppSpinner'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { useRedirect } from 'helpers/useRedirect'
-import _ from 'lodash'
-import { mapValues } from 'lodash'
+import { isNumber, mapValues } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { identity, Observable } from 'rxjs'
@@ -185,7 +184,7 @@ function connect(
       try {
         const connector = await getConnector(connectorKind, chainId, options)
         const connectorChainIdNumberOrString = await connector.getChainId()
-        const connectorChainId = _.isNumber(connectorChainIdNumberOrString)
+        const connectorChainId = isNumber(connectorChainIdNumberOrString)
           ? connectorChainIdNumberOrString
           : Number.parseInt(connectorChainIdNumberOrString as string)
         if (chainId !== connectorChainId) {
