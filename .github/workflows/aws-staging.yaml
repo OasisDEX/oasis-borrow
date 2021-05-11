@@ -2,14 +2,15 @@ on:
   push:
     branches:
       - dev
-name: Deploy to Staging
+name: Deploy to AWS Staging
 
 jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     env:
-      REGION: eu-central-1
+      AWS_REGION: eu-central-1
+      ECR_REPO_NAME: oasis-borrow-staging
       SERVICE_NAME: oasis-borrow-staging
       CLUSTER_NAME: oasis-borrow-staging
 
@@ -22,43 +23,39 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.REGION }}
+        aws-region: ${{ env.AWS_REGION }}
 
-    - name: Login to container registry
+    - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Build, tag, and push image to container registry
+    - name: Extract commit hash
+      id: vars
+      shell: bash
+      run: |
+        echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+    - name: Build, tag, and push image to Amazon ECR
       id: build-image
       env:
+        SHA_TAG: ${{ steps.vars.outputs.sha_short }}
+        LATEST_TAG: latest
+        ENVIRONMENT_TAG: staging
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: latest
       run: |
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker build --build-arg MIXPANEL_ENV=staging --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_STAGING_KEY }} -t $ECR_REGISTRY/$SERVICE_NAME:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$SERVICE_NAME:$IMAGE_TAG
-        echo "::set-output name=image::$ECR_REGISTRY/$SERVICE_NAME:$IMAGE_TAG"
+        docker build --build-arg MIXPANEL_ENV=staging --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_STAGING_KEY }} -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG -t $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPO_NAME --all-tags
 
-    - name: Download task definition
+    - name: Update ECS service with latest Docker image
+      id: service-update
       run: |
-        aws ecs describe-task-definition --task-definition ${SERVICE_NAME} --query taskDefinition > task-definition.json
- 
-    # At the moment we are always on "latest" tag anyway
-    # but going to render a new task definition anyway
-    - name: Render task definition
-      id: render
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: task-definition.json
-        container-name: ${{ env.SERVICE_NAME }}
-        image: ${{ steps.build-image.outputs.image }}
+        aws ecs update-service --cluster $CLUSTER_NAME --service ${{ env.SERVICE_NAME }} --force-new-deployment --region $AWS_REGION
 
-    - name: Deploy service
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+    - name: Wait for all services to become stable
+      uses: oryanmoshe/ecs-wait-action@v1.3
       with:
-        task-definition: ${{ steps.render.outputs.task-definition }}
-        service: ${{ env.SERVICE_NAME }}
-        cluster: ${{ env.CLUSTER_NAME }}
-        wait-for-service-stability: true
+        ecs-cluster: ${{ env.CLUSTER_NAME }}
+        ecs-services: '["${{ env.SERVICE_NAME }}"]'
