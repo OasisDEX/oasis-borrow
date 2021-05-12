@@ -9,19 +9,19 @@ import { OpenVaultState } from './openVault'
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
 export function OpenVaultConfirmation({
-  balanceInfo: { collateralBalance },
   depositAmount,
   generateAmount,
   token,
   afterCollateralizationRatio,
   afterLiquidationPrice,
-  collateralBalanceRemaining,
   vaultWillBeAtRiskLevelWarning,
   vaultWillBeAtRiskLevelDanger,
+  summary: { collateralBalance, afterCollateralBalance },
 }: OpenVaultState) {
-  const walletBalance = formatCryptoBalance(collateralBalance)
+  const balance = formatCryptoBalance(collateralBalance)
+  const afterBalance = formatCryptoBalance(afterCollateralBalance)
+
   const intoVault = formatCryptoBalance(depositAmount || zero)
-  const remainingInWallet = formatCryptoBalance(collateralBalanceRemaining)
   const daiToBeGenerated = formatCryptoBalance(generateAmount || zero)
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
     ? '--'
@@ -39,9 +39,9 @@ export function OpenVaultConfirmation({
   return (
     <Grid>
       <Details>
-        <Details.Item label={t('system.in-your-wallet')} value={`${walletBalance} ${token}`} />
+        <Details.Item label={t('system.in-your-wallet')} value={`${balance} ${token}`} />
         <Details.Item label={t('moving-into-vault')} value={`${intoVault} ${token}`} />
-        <Details.Item label={t('remaining-in-wallet')} value={`${remainingInWallet} ${token}`} />
+        <Details.Item label={t('remaining-in-wallet')} value={`${afterBalance} ${token}`} />
         <Details.Item label={t('dai-being-generated')} value={`${daiToBeGenerated} DAI`} />
         <Details.Item
           label={t('system.collateral-ratio')}

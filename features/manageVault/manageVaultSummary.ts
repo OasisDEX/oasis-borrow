@@ -15,10 +15,10 @@ export type ManageVaultSummary = Pick<
 export const defaultManageVaultSummary: ManageVaultSummary = {
   vaultWillBeAtRiskLevelDanger: false,
   vaultWillBeAtRiskLevelWarning: false,
-  afterCollateralBalance: zero,
   afterCollateralizationRatio: zero,
   afterLiquidationPrice: zero,
   collateralBalance: zero,
+  afterCollateralBalance: zero,
 }
 
 export function applyManageVaultSummary(state: ManageVaultState) {
