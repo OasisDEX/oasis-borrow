@@ -52,7 +52,7 @@ export async function getConnector(
 ) {
   assert(rpcUrls[network], 'Unsupported chainId!')
   switch (connectorKind) {
-    case 'injected':
+    case 'injected': {
       const connector = new InjectedConnector({
         supportedChainIds: Object.values(networksById).map(({ id }) => Number.parseInt(id)),
       })
@@ -62,11 +62,19 @@ export async function getConnector(
         throw new Error('Browser ethereum provider and URL network param do not match!')
       }
       return connector
-    case 'walletLink':
-      return new WalletLinkConnector({
+    }
+    case 'walletLink': {
+      if (network !== 1) {
+        const message = `Wallet link only supports mainnet and your network is ${network}. Please switch`
+        alert(message)
+        throw new Error(message)
+      }
+      const connector = new WalletLinkConnector({
         url: rpcUrls[network],
         appName: dappName,
       })
+      return connector
+    }
     case 'walletConnect':
       return new WalletConnectConnector({
         rpc: { [network]: rpcUrls[network] },
@@ -188,7 +196,8 @@ function connect(
       web3Context?.status === 'connectedReadonly'
     ) {
       try {
-        web3Context.connect(await getConnector(connectorKind, chainId, options), connectorKind)
+        const connector = await getConnector(connectorKind, chainId, options)
+        web3Context.connect(connector, connectorKind)
       } catch (e) {
         console.log(e)
       }

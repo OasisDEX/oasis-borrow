@@ -15,7 +15,7 @@ export interface OpenVaultCalculations {
   maxGenerateAmount: BigNumber
   maxGenerateAmountCurrentPrice: BigNumber
   maxGenerateAmountNextPrice: BigNumber
-  collateralBalanceRemaining: BigNumber
+  afterCollateralBalance: BigNumber
 }
 
 export const defaultOpenVaultStateCalculations: OpenVaultCalculations = {
@@ -30,7 +30,7 @@ export const defaultOpenVaultStateCalculations: OpenVaultCalculations = {
   daiYieldFromDepositingCollateralAtNextPrice: zero,
   afterLiquidationPrice: zero,
   afterFreeCollateral: zero,
-  collateralBalanceRemaining: zero,
+  afterCollateralBalance: zero,
 }
 
 export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultState {
@@ -94,7 +94,7 @@ export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultStat
       ? generateAmount.times(liquidationRatio).div(depositAmount)
       : zero
 
-  const collateralBalanceRemaining = depositAmount
+  const afterCollateralBalance = depositAmount
     ? collateralBalance.minus(depositAmount)
     : collateralBalance
 
@@ -111,6 +111,6 @@ export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultStat
     daiYieldFromDepositingCollateralAtNextPrice,
     afterLiquidationPrice,
     afterFreeCollateral,
-    collateralBalanceRemaining,
+    afterCollateralBalance,
   }
 }

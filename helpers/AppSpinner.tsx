@@ -75,24 +75,21 @@ export function WithLoadingIndicator<T extends readonly [any, ...any[]] | object
 ) {
   const { value, error, children, customError, customLoader } = props
 
-  if (
-    value === undefined &&
-    (error || (Array.isArray(error) && error.some((el) => el !== undefined)))
-  ) {
+  if (Array.isArray(error) ? error.some((el) => el !== undefined) : error !== undefined) {
     console.info('Error:', error)
 
     return (
       customError || (
         <Box>
           {Array.isArray(error)
-            ? error.map((el, i) => <Box key={i}>{el?.message || 'Error'}</Box>)
+            ? error.map((el, i) => <Box key={i}>{el ? el.message || 'Error' : null}</Box>)
             : error?.message || 'Error'}
         </Box>
       )
     )
   }
 
-  if (value === undefined || (Array.isArray(value) && value.some((el) => el === undefined))) {
+  if (Array.isArray(value) ? value.some((el) => el === undefined) : value === undefined) {
     return customLoader || <AppSpinnerWholePage />
   }
 
