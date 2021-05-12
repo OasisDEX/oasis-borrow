@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - dev
+      
 name: Deploy to AWS Staging
 
 jobs:
