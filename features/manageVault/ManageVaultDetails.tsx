@@ -46,8 +46,10 @@ function VaultDetailsTable({
   afterDebt,
   afterFreeCollateral,
   inputAmountsEmpty,
+  stage,
 }: ManageVaultState) {
   const { t } = useTranslation()
+  const showAfterCalculations = !inputAmountsEmpty && stage !== 'manageSuccess'
 
   return (
     <Box sx={{ gridColumn: ['1', '1/3'], mt: [4, 6] }}>
@@ -69,7 +71,7 @@ function VaultDetailsTable({
             </>
           }
           subValue={
-            !inputAmountsEmpty && (
+            showAfterCalculations && (
               <>
                 {formatAmount(afterDebt, 'DAI')}
                 <Text
@@ -94,7 +96,7 @@ function VaultDetailsTable({
             </>
           }
           subValue={
-            !inputAmountsEmpty && (
+            showAfterCalculations && (
               <>
                 {formatAmount(afterFreeCollateral, getToken(vault.token).symbol)}
                 <Text
@@ -118,7 +120,7 @@ function VaultDetailsTable({
             </>
           }
           subValue={
-            !inputAmountsEmpty && (
+            showAfterCalculations && (
               <>
                 {formatAmount(daiYieldFromTotalCollateral, 'DAI')}
                 <Text
@@ -180,6 +182,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
     },
     shouldPaybackAll,
     afterCollateralizationRatio,
+    stage,
   } = props
   const { t } = useTranslation()
   const collRatioColor = collateralizationRatio.isZero()
@@ -201,6 +204,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
     ? 'onSuccess'
     : 'onError'
 
+  const showAfterCalculations = !inputAmountsEmpty && stage !== 'manageSuccess'
   return (
     <Grid sx={{ alignSelf: 'flex-start' }} columns={[1, '1fr 1fr']}>
       <ManageVaultHeading {...props} sx={{ display: ['none', 'block'] }} />
@@ -211,7 +215,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
           {t('system.liquidation-price')}
         </Heading>
         <Text variant="display">$ {formatAmount(liquidationPrice, 'USD')}</Text>
-        {!inputAmountsEmpty && (
+        {showAfterCalculations && (
           <Text>
             {t('after')}: ${formatAmount(shouldPaybackAll ? zero : afterLiquidationPrice, 'USD')}
           </Text>
@@ -226,7 +230,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
         <Text sx={{ color: collRatioColor }} variant="display">
           {formatPercent(collateralizationRatio.times(100), { precision: 2 })}
         </Text>
-        {!inputAmountsEmpty && (
+        {showAfterCalculations && (
           <Text>
             {t('after')}: {formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })}
           </Text>

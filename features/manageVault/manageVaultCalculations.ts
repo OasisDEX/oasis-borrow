@@ -32,6 +32,7 @@ export interface ManageVaultCalculations {
   afterBackingCollateral: BigNumber
   afterBackingCollateralAtNextPrice: BigNumber
   afterLockedCollateral: BigNumber
+  afterCollateralBalance: BigNumber
   shouldPaybackAll: boolean
 }
 
@@ -55,6 +56,7 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
   afterBackingCollateral: zero,
   afterBackingCollateralAtNextPrice: zero,
   afterLockedCollateral: zero,
+  afterCollateralBalance: zero,
   daiYieldFromTotalCollateral: zero,
   daiYieldFromTotalCollateralAtNextPrice: zero,
   shouldPaybackAll: false,
@@ -415,6 +417,12 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
       ? afterDebt.times(liquidationRatio).div(afterLockedCollateral)
       : zero
 
+  const afterCollateralBalance = depositAmount
+    ? collateralBalance.minus(depositAmount)
+    : withdrawAmount
+    ? collateralBalance.plus(withdrawAmount)
+    : collateralBalance
+
   return {
     ...state,
     maxDepositAmount,
@@ -435,6 +443,7 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     afterBackingCollateral,
     afterBackingCollateralAtNextPrice,
     afterDebt,
+    afterCollateralBalance,
     maxPaybackAmount,
     daiYieldFromTotalCollateral,
     daiYieldFromTotalCollateralAtNextPrice,

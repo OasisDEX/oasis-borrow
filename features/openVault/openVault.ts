@@ -25,6 +25,11 @@ import { applyOpenVaultEnvironment, OpenVaultEnvironmentChange } from './openVau
 import { applyOpenVaultForm, OpenVaultFormChange } from './openVaultForm'
 import { applyOpenVaultInput, OpenVaultInputChange } from './openVaultInput'
 import {
+  applyOpenVaultSummary,
+  defaultOpenVaultSummary,
+  OpenVaultSummary,
+} from './openVaultSummary'
+import {
   applyOpenVaultTransaction,
   createProxy,
   openVault,
@@ -73,7 +78,8 @@ function apply(state: OpenVaultState, change: OpenVaultChange) {
   const s7 = applyOpenVaultInjectedOverride(change, s6)
   const s8 = applyOpenVaultCalculations(s7)
   const s9 = applyOpenVaultStageCategorisation(s8)
-  return applyOpenVaultConditions(s9)
+  const s10 = applyOpenVaultConditions(s9)
+  return applyOpenVaultSummary(s10)
 }
 
 export type OpenVaultStage =
@@ -150,6 +156,7 @@ export type OpenVaultState = MutableOpenVaultState &
   OpenVaultTxInfo & {
     errorMessages: OpenVaultErrorMessage[]
     warningMessages: OpenVaultWarningMessage[]
+    summary: OpenVaultSummary
   }
 
 function addTransitions(
@@ -313,7 +320,7 @@ export function createOpenVault$(
                       etherscan: context.etherscan.url,
                       errorMessages: [],
                       warningMessages: [],
-
+                      summary: defaultOpenVaultSummary,
                       injectStateOverride,
                     }
 

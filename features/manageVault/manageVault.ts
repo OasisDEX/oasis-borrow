@@ -26,6 +26,11 @@ import { applyManageVaultEnvironment, ManageVaultEnvironmentChange } from './man
 import { applyManageVaultForm, ManageVaultFormChange } from './manageVaultForm'
 import { applyManageVaultInput, ManageVaultInputChange } from './manageVaultInput'
 import {
+  applyManageVaultSummary,
+  defaultManageVaultSummary,
+  ManageVaultSummary,
+} from './manageVaultSummary'
+import {
   applyManageVaultTransaction,
   createProxy,
   ManageVaultTransactionChange,
@@ -78,7 +83,8 @@ function apply(state: ManageVaultState, change: ManageVaultChange) {
   const s7 = applyManageVaultInjectedOverride(change, s6)
   const s8 = applyManageVaultCalculations(s7)
   const s9 = applyManageVaultStageCategorisation(s8)
-  return applyManageVaultConditions(s9)
+  const s10 = applyManageVaultConditions(s9)
+  return applyManageVaultSummary(s10)
 }
 
 export type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
@@ -181,6 +187,7 @@ export type ManageVaultState = MutableManageVaultState &
   ManageVaultTxInfo & {
     errorMessages: ManageVaultErrorMessage[]
     warningMessages: ManageVaultWarningMessage[]
+    summary: ManageVaultSummary
   }
 
 function addTransitions(
@@ -389,6 +396,7 @@ export function createManageVault$(
                     etherscan: context.etherscan.url,
                     errorMessages: [],
                     warningMessages: [],
+                    summary: defaultManageVaultSummary,
                     injectStateOverride,
                   }
 
