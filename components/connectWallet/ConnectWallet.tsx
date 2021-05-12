@@ -52,15 +52,29 @@ export async function getConnector(
 ) {
   assert(rpcUrls[network], 'Unsupported chainId!')
   switch (connectorKind) {
-    case 'injected':
-      return new InjectedConnector({
+    case 'injected': {
+      const connector = new InjectedConnector({
         supportedChainIds: Object.values(networksById).map(({ id }) => Number.parseInt(id)),
       })
-    case 'walletLink':
-      return new WalletLinkConnector({
+      const connectorChainId = Number.parseInt((await connector.getChainId()) as string)
+      if (network !== connectorChainId) {
+        alert('Browser ethereum provider and URL network param do not match!')
+        throw new Error('Browser ethereum provider and URL network param do not match!')
+      }
+      return connector
+    }
+    case 'walletLink': {
+      if (network !== 1) {
+        const message = `Wallet link only supports mainnet and your network is ${network}. Please switch`
+        alert(message)
+        throw new Error(message)
+      }
+      const connector = new WalletLinkConnector({
         url: rpcUrls[network],
         appName: dappName,
       })
+      return connector
+    }
     case 'walletConnect':
       return new WalletConnectConnector({
         rpc: { [network]: rpcUrls[network] },
@@ -183,15 +197,6 @@ function connect(
     ) {
       try {
         const connector = await getConnector(connectorKind, chainId, options)
-        const connectorChainIdNumberOrString = await connector.getChainId()
-        const connectorChainId = isNumber(connectorChainIdNumberOrString)
-          ? connectorChainIdNumberOrString
-          : Number.parseInt(connectorChainIdNumberOrString as string)
-        if (chainId !== connectorChainId) {
-          const message = `Your wallet is connected to a different network than specified in the URL param. URL: ${chainId} Wallet: ${connectorChainId}`
-          alert(message)
-          throw new Error(message)
-        }
         web3Context.connect(connector, connectorKind)
       } catch (e) {
         console.log(e)
