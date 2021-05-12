@@ -25,7 +25,7 @@ import { AppSpinner } from 'helpers/AppSpinner'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { useRedirect } from 'helpers/useRedirect'
-import { mapValues } from 'lodash'
+import { isNumber, mapValues } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { identity, Observable } from 'rxjs'
@@ -53,15 +53,9 @@ export async function getConnector(
   assert(rpcUrls[network], 'Unsupported chainId!')
   switch (connectorKind) {
     case 'injected':
-      const connector = new InjectedConnector({
+      return new InjectedConnector({
         supportedChainIds: Object.values(networksById).map(({ id }) => Number.parseInt(id)),
       })
-      const connectorChainId = Number.parseInt((await connector.getChainId()) as string)
-      if (network !== connectorChainId) {
-        alert('Browser ethereum provider and URL network param do not match!')
-        throw new Error('Browser ethereum provider and URL network param do not match!')
-      }
-      return connector
     case 'walletLink':
       return new WalletLinkConnector({
         url: rpcUrls[network],
@@ -188,7 +182,17 @@ function connect(
       web3Context?.status === 'connectedReadonly'
     ) {
       try {
-        web3Context.connect(await getConnector(connectorKind, chainId, options), connectorKind)
+        const connector = await getConnector(connectorKind, chainId, options)
+        const connectorChainIdNumberOrString = await connector.getChainId()
+        const connectorChainId = isNumber(connectorChainIdNumberOrString)
+          ? connectorChainIdNumberOrString
+          : Number.parseInt(connectorChainIdNumberOrString as string)
+        if (chainId !== connectorChainId) {
+          const message = `Your wallet is connected to a different network than specified in the URL param. URL: ${chainId} Wallet: ${connectorChainId}`
+          alert(message)
+          throw new Error(message)
+        }
+        web3Context.connect(connector, connectorKind)
       } catch (e) {
         console.log(e)
       }
