@@ -30,7 +30,7 @@ module.exports = withBundleAnalyzer(
         pageExtensions: ['mdx', 'tsx'],
         publicRuntimeConfig: {
           // Will be available on both server and client
-          buildHash: require('child_process').execSync('git rev-parse HEAD').toString().trim(),
+          buildHash: process.env.COMMIT_SHA,
           buildDate: Date.now(),
           apiHost: process.env.API_HOST,
           basePath,

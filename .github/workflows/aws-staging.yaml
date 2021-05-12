@@ -46,7 +46,7 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker build --build-arg MIXPANEL_ENV=staging --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_STAGING_KEY }} -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG -t $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG .
+        docker build --build-arg COMMIT_SHA=${{ env.SHA_TAG }} --build-arg MIXPANEL_ENV=staging --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_STAGING_KEY }} -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG -t $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG .
         docker push $ECR_REGISTRY/$ECR_REPO_NAME --all-tags
 
     - name: Update ECS service with latest Docker image
