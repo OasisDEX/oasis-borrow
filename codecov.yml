@@ -1,5 +1,5 @@
 codecov:
-  token: 0a383105-ab80-49e4-b603-5b9235012b20
+  token: c7679830-5199-4b3f-bb77-fd34916c14e3
 
 ignore:
   - "**/*.tsx"
