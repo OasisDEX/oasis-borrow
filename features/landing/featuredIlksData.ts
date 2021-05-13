@@ -1,5 +1,6 @@
 import { IlkData, IlkDataList } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
+import { zero } from 'helpers/zero'
 import maxBy from 'lodash/maxBy'
 import minBy from 'lodash/minBy'
 import { Observable } from 'rxjs'
@@ -43,12 +44,13 @@ export function getCheapest(ilks: IlkDataList) {
 
 export function createFeaturedIlks$(ilkDataList$: Observable<IlkDataList>) {
   return ilkDataList$.pipe(
-    map((ilks) =>
-      [
-        createFeaturedIlk(ilks, getNewest, 'New'),
-        createFeaturedIlk(ilks, getMostPopular, 'Most Popular'),
-        createFeaturedIlk(ilks, getCheapest, 'Cheapest'),
-      ].filter((featured): featured is FeaturedIlk => featured !== undefined),
-    ),
+    map((ilks) => {
+      const filteredIlks = ilks.filter(({ ilkDebtAvailable }) => ilkDebtAvailable.gt(zero))
+      return [
+        createFeaturedIlk(filteredIlks, getNewest, 'New'),
+        createFeaturedIlk(filteredIlks, getMostPopular, 'Most Popular'),
+        createFeaturedIlk(filteredIlks, getCheapest, 'Cheapest'),
+      ].filter((featured): featured is FeaturedIlk => featured !== undefined)
+    }),
   )
 }
