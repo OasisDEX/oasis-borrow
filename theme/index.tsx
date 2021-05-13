@@ -1202,6 +1202,10 @@ const oasisBaseTheme = {
       '&:focus': {
         outline: 'none',
       },
+      '&:disabled': {
+        pointerEvents: 'none',
+        opacity: 0.5,
+      },
     },
     square: {
       variant: 'text.paragraph2',
