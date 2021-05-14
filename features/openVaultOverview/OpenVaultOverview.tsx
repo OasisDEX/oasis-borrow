@@ -1,4 +1,4 @@
-import { Pages, trackingEvents } from 'analytics/analytics'
+import { Pages } from 'analytics/analytics'
 import { Context } from 'blockchain/network'
 import { CoinTag } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
