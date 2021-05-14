@@ -347,7 +347,7 @@ describe('openVault', () => {
         mockOpenVault$({
           _txHelpers$: of({
             ...protoTxHelpers,
-            send: <B extends TxMeta>(_proxy: any, meta: B) =>
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
               mockTxState(meta, TxStatus.Success, newCDPTxReceipt),
           }),
           proxyAddress: DEFAULT_PROXY_ADDRESS,
@@ -369,7 +369,8 @@ describe('openVault', () => {
         mockOpenVault$({
           _txHelpers$: of({
             ...protoTxHelpers,
-            send: <B extends TxMeta>(_proxy: any, meta: B) => mockTxState(meta, TxStatus.Failure),
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+              mockTxState(meta, TxStatus.Failure),
           }),
           proxyAddress: DEFAULT_PROXY_ADDRESS,
           allowance: maxUint256,
