@@ -230,8 +230,8 @@ export function manageVaultDepositAndGenerate(
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ send }) =>
-        send(depositAndGenerate, {
+      switchMap(({ sendWithGasEstimation }) =>
+        sendWithGasEstimation(depositAndGenerate, {
           kind: TxMetaKind.depositAndGenerate,
           generateAmount: generateAmount || zero,
           depositAmount: depositAmount || zero,
@@ -279,8 +279,8 @@ export function manageVaultWithdrawAndPayback(
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ send }) =>
-        send(withdrawAndPayback, {
+      switchMap(({ sendWithGasEstimation }) =>
+        sendWithGasEstimation(withdrawAndPayback, {
           kind: TxMetaKind.withdrawAndPayback,
           withdrawAmount: withdrawAmount || zero,
           paybackAmount: paybackAmount || zero,

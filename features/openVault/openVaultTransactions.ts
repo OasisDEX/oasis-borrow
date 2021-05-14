@@ -262,11 +262,11 @@ export function parseVaultIdFromReceiptLogs({ logs }: Receipt): BigNumber | unde
 }
 
 export function openVault(
-  { send }: TxHelpers,
+  { sendWithGasEstimation }: TxHelpers,
   change: (ch: OpenVaultChange) => void,
   { generateAmount, depositAmount, proxyAddress, ilk, token }: OpenVaultState,
 ) {
-  send(open, {
+  sendWithGasEstimation(open, {
     kind: TxMetaKind.open,
     generateAmount: generateAmount || zero,
     depositAmount: depositAmount || zero,

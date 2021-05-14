@@ -383,7 +383,7 @@ describe('manageVault', () => {
           mockManageVault$({
             _txHelpers$: of({
               ...protoTxHelpers,
-              send: <B extends TxMeta>(_proxy: any, meta: B) =>
+              sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
                 mockTxState(meta, TxStatus.WaitingForApproval),
             }),
             vault: {
@@ -406,7 +406,7 @@ describe('manageVault', () => {
           mockManageVault$({
             _txHelpers$: of({
               ...protoTxHelpers,
-              send: <B extends TxMeta>(_proxy: any, meta: B) =>
+              sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
                 mockTxState(meta, TxStatus.WaitingForConfirmation),
             }),
             vault: {
@@ -429,7 +429,8 @@ describe('manageVault', () => {
           mockManageVault$({
             _txHelpers$: of({
               ...protoTxHelpers,
-              send: <B extends TxMeta>(_proxy: any, meta: B) => mockTxState(meta, TxStatus.Failure),
+              sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+                mockTxState(meta, TxStatus.Failure),
             }),
             vault: {
               collateral: new BigNumber('400'),
@@ -451,7 +452,8 @@ describe('manageVault', () => {
           mockManageVault$({
             _txHelpers$: of({
               ...protoTxHelpers,
-              send: <B extends TxMeta>(_proxy: any, meta: B) => mockTxState(meta, TxStatus.Success),
+              sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+                mockTxState(meta, TxStatus.Success),
             }),
             vault: {
               collateral: new BigNumber('400'),
