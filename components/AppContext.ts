@@ -207,7 +207,10 @@ export function setupAppContext() {
   )
 
   const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
-  const balance$ = memoize(curry(createBalance$)(onEveryBlock$, context$, tokenBalance$))
+  const balance$ = memoize(
+    curry(createBalance$)(onEveryBlock$, context$, tokenBalance$),
+    (token, address) => `${token}_${address}`,
+  )
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)

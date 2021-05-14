@@ -4,7 +4,7 @@ import { ContextConnected } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { startWithDefault } from 'helpers/operators'
 import { combineLatest, Observable } from 'rxjs'
-import { filter, map, switchMap } from 'rxjs/operators'
+import { filter, map, switchMap, tap } from 'rxjs/operators'
 
 export interface AccountDetails {
   numberOfVaults: number | undefined
