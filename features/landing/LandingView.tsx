@@ -402,7 +402,9 @@ export function LandingView() {
                 state={landing.ilks.filters}
                 columns={ilksColumns}
                 noResults={<Box>{t('no-results')}</Box>}
-                deriveRowProps={(row) => ({ href: `/vaults/open/${row.ilk}` })}
+                deriveRowProps={(row) => ({
+                  href: row.ilkDebtAvailable.isZero() ? undefined : `/vaults/open/${row.ilk}`,
+                })}
               />
             </Box>
           </Box>
