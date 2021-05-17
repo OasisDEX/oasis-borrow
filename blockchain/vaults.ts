@@ -5,7 +5,7 @@ import { HOUR, SECONDS_PER_YEAR } from 'components/constants'
 import { one, zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
-import { distinctUntilChanged, map, mergeMap, shareReplay, switchMap, tap } from 'rxjs/operators'
+import { distinctUntilChanged, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from './calls/cdpManager'
 import { getCdps } from './calls/getCdps'

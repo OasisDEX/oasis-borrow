@@ -13,6 +13,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { Box, Flex, Grid, Heading, SxStyleProp, Text, useThemeUI } from 'theme-ui'
+
 import { VaultBannersState } from './vaultsBanners'
 
 type VaultBannerProps = {
