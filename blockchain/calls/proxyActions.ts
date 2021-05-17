@@ -3,7 +3,7 @@ import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
-import { amountToWei } from 'blockchain/utils'
+import { amountToWad, amountToWei } from 'blockchain/utils'
 import { zero } from 'helpers/zero'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
@@ -297,7 +297,7 @@ export const reclaim: TransactionDef<ReclaimData> = {
         .methods.frob(
           dssCdpManager.address,
           data.id.toString(),
-          amountToWei(data.amount, data.token).toFixed(0),
+          amountToWad(data.amount).toFixed(0),
           zero.toFixed(0),
         )
         .encodeABI(),
