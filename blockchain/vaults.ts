@@ -5,7 +5,7 @@ import { HOUR, SECONDS_PER_YEAR } from 'components/constants'
 import { one, zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
-import { distinctUntilChanged, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, map, mergeMap, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from './calls/cdpManager'
 import { getCdps } from './calls/getCdps'
@@ -55,8 +55,8 @@ export function createVaults$(
 
 export interface Vault {
   id: BigNumber
-  owner: string // cdpManager.owns -> proxy
-  controller: string // proxy -> EOA
+  owner: string
+  controller?: string
   token: string
   ilk: string
   address: string
@@ -222,7 +222,7 @@ export function createVault$(
               token,
               address: urnAddress,
               owner,
-              controller: controller!,
+              controller,
               lockedCollateral: collateral,
               lockedCollateralUSD: collateralUSD,
               backingCollateral,

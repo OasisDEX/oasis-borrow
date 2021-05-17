@@ -13,6 +13,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { Box, Flex, Grid, Heading, SxStyleProp, Text, useThemeUI } from 'theme-ui'
+import { VaultBannersState } from './vaultsBanners'
 
 type VaultBannerProps = {
   status: JSX.Element
@@ -69,18 +70,15 @@ export function VaultLiquidatingBanner({
   isVaultController,
   controller,
   dateNextCollateralPrice,
-}: {
-  id: string
-  token: string
-  isVaultController: boolean
-  controller: string
-  dateNextCollateralPrice: Date | undefined
-}) {
+}: Pick<
+  VaultBannersState,
+  'id' | 'token' | 'isVaultController' | 'controller' | 'dateNextCollateralPrice'
+>) {
   const { t } = useTranslation()
 
   const headerTranslationOptions = {
     collateral: token.toUpperCase(),
-    id,
+    id: id.toString(),
   }
 
   return (
@@ -113,9 +111,9 @@ export function VaultLiquidatingBanner({
       subheader={`
         ${t('vault-banners.liquidating.subheader1', { collateral: token.toUpperCase() })}
         ${
-          !isVaultController
+          !isVaultController && controller
             ? t('vault-banners.liquidating.subheader2', { address: formatAddress(controller) })
-            : ''
+            : t('vault-banners.liquidation.subheader1')
         }
       `}
       color="banner.warning"
@@ -126,12 +124,10 @@ export function VaultLiquidatingBanner({
 export function VaultOwnershipBanner({
   controller,
   account,
-}: {
-  controller: string
-  account?: string
-}) {
+}: Pick<VaultBannersState, 'controller' | 'account'>) {
   const { t } = useTranslation()
 
+  if (!controller) return null
   return (
     <VaultBanner
       status={
@@ -193,13 +189,10 @@ export function VaultLiquidatedBanner({
   controller,
   token,
   id,
-}: {
-  unlockedCollateral: BigNumber
-  isVaultController: boolean
-  controller: string
-  token: string
-  id: BigNumber
-}) {
+}: Pick<
+  VaultBannersState,
+  'unlockedCollateral' | 'controller' | 'token' | 'id' | 'isVaultController'
+>) {
   const { t } = useTranslation()
 
   const header = isVaultController
@@ -218,10 +211,12 @@ export function VaultLiquidatedBanner({
         </Text>
         <ReclaimCollateralButton {...{ token, id, amount: unlockedCollateral }} />
       </>
-    ) : (
-      `${t('vault-banners.liquidated.subheader1')} ${t('vault-banners.liquidated.subheader3', {
+    ) : controller ? (
+      `${t('vault-banners.liquidated.subheader3')} ${t('vault-banners.liquidated.subheader4', {
         address: formatAddress(controller),
       })}`
+    ) : (
+      t('vault-banners.liquidated.subheader3')
     ))
 
   return (
@@ -338,9 +333,15 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
 
   if (!state) return null
 
-  const { token, dateNextCollateralPrice, account, controller, unlockedCollateral, banner } = state
-
-  const isVaultController = !!account && account === controller
+  const {
+    token,
+    dateNextCollateralPrice,
+    account,
+    controller,
+    unlockedCollateral,
+    banner,
+    isVaultController,
+  } = state
 
   switch (banner) {
     case 'liquidated':
@@ -358,7 +359,7 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
     case 'liquidating':
       return (
         <VaultLiquidatingBanner
-          {...{ token, id: id.toString(), dateNextCollateralPrice, isVaultController, controller }}
+          {...{ token, id, dateNextCollateralPrice, isVaultController, controller }}
         />
       )
     case 'ownership':
