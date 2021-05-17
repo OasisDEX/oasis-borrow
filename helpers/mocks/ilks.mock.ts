@@ -3,13 +3,13 @@ import { CatIlk } from 'blockchain/calls/cat'
 import { JugIlk } from 'blockchain/calls/jug'
 import { SpotIlk } from 'blockchain/calls/spot'
 import { VatIlk } from 'blockchain/calls/vat'
-import { createIlkData$, IlkData } from 'blockchain/ilks'
+import { createIlkData$, IlkData, IlkDataList } from 'blockchain/ilks'
 import { ilkToToken$ } from 'components/AppContext'
 import { SECONDS_PER_YEAR } from 'components/constants'
 import { Decimal } from 'decimal.js'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { getStateUnpacker } from 'helpers/testHelpers'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
@@ -21,6 +21,7 @@ export interface MockIlkDataProps {
   _spotIlk$?: Observable<SpotIlk>
   _jugIlk$?: Observable<JugIlk>
   _catIlk$?: Observable<CatIlk>
+  stabilityFee?: BigNumber
   debtFloor?: BigNumber
   debtCeiling?: BigNumber
   ilkDebt?: BigNumber
@@ -48,10 +49,10 @@ export const defaultLiquidationRatio = new BigNumber('1.5')
 const defaultCollateralPrice = new BigNumber('1000')
 const defaultIlk = 'WBTC-A'
 
-const DEFAULT_STABILITY_FEE = new BigNumber('0.045')
+const defaultStabilityFee = new BigNumber('0.045')
 export const DEFAULT_DEBT_SCALING_FACTOR = one
 
-export const RANDOM_DEBT_SCALING_FACTOR = calcDebtScalingFactor(DEFAULT_STABILITY_FEE.plus(one), 15)
+export const RANDOM_DEBT_SCALING_FACTOR = calcDebtScalingFactor(defaultStabilityFee.plus(one), 15)
 export const debtScalingFactor$ = new BehaviorSubject<BigNumber>(DEFAULT_DEBT_SCALING_FACTOR)
 
 export function mockIlkData$({
@@ -60,6 +61,7 @@ export function mockIlkData$({
   _spotIlk$,
   _jugIlk$,
   _catIlk$,
+  stabilityFee,
   debtFloor,
   debtCeiling,
   ilkDebt,
@@ -67,7 +69,9 @@ export function mockIlkData$({
   currentCollateralPrice,
   ilk,
 }: MockIlkDataProps = {}): Observable<IlkData> {
-  const normalizedIlkDebt = (ilkDebt || defaultIlkDebt).div(DEFAULT_DEBT_SCALING_FACTOR)
+  const normalizedIlkDebt = (ilkDebt || defaultIlkDebt).div(
+    stabilityFee ? calcDebtScalingFactor(stabilityFee, 1) : DEFAULT_DEBT_SCALING_FACTOR,
+  )
 
   const maxDebtPerUnitCollateral$ = _priceInfo$
     ? _priceInfo$.pipe(
@@ -81,10 +85,13 @@ export function mockIlkData$({
         ),
       )
 
+  const _debtScalingFactor$ = stabilityFee
+    ? of(calcDebtScalingFactor(stabilityFee, 1))
+    : debtScalingFactor$
   function vatIlks$() {
     return (
       _vatIlk$ ||
-      combineLatest(maxDebtPerUnitCollateral$, debtScalingFactor$).pipe(
+      combineLatest(maxDebtPerUnitCollateral$, _debtScalingFactor$).pipe(
         switchMap(([maxDebtPerUnitCollateral, debtScalingFactor]) =>
           of({
             normalizedIlkDebt,
@@ -110,7 +117,10 @@ export function mockIlkData$({
   }
 
   function jugIlks$() {
-    return _jugIlk$ || of({ feeLastLevied: new Date(), stabilityFee: DEFAULT_STABILITY_FEE })
+    return (
+      _jugIlk$ ||
+      of({ feeLastLevied: new Date(), stabilityFee: stabilityFee || defaultStabilityFee })
+    )
   }
 
   function catIlks$() {
@@ -129,4 +139,27 @@ export function mockIlkData$({
 
 export function mockIlkData(props: MockIlkDataProps = {}) {
   return getStateUnpacker(mockIlkData$(props))
+}
+
+export function mockIlkDataList() {
+  const cheapest = mockIlkData({
+    ilk: 'WBTC-A',
+    stabilityFee: new BigNumber('0.045'),
+  })
+  const zeroDebt = mockIlkData({
+    ilk: 'USDC-A',
+    ilkDebt: new BigNumber('10000'),
+    debtCeiling: new BigNumber('10001'),
+    stabilityFee: zero,
+  })
+  const popular = mockIlkData({
+    ilk: 'ETH-A',
+    ilkDebt: new BigNumber('10000000'),
+  })
+  const newest = mockIlkData({
+    ilk: 'LINK-A',
+    stabilityFee: new BigNumber('0.08'),
+  })
+
+  return [cheapest, zeroDebt, popular, newest].map((mockIlkData) => mockIlkData()) as IlkDataList
 }

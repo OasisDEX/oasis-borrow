@@ -53,7 +53,6 @@ export function createIlkData$(
         { liquidatorAddress, liquidationPenalty, maxAuctionLotSize },
         ilkToToken,
       ]) => {
-        // Maybe should be in ilkData as they are ilk dependent not vault dependent
         const collateralizationDangerThreshold = liquidationRatio.times(
           COLLATERALIZATION_DANGER_OFFSET.plus(one),
         )
