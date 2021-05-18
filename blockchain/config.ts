@@ -1,5 +1,6 @@
 import { ContractDesc } from '@oasisdex/web3-context'
 import { keyBy } from 'lodash'
+import getConfig from 'next/config'
 import { Dictionary } from 'ts-essentials'
 
 import * as eth from './abi/ds-eth-token.json'
@@ -32,9 +33,8 @@ export function contractDesc(abi: any, address: string): ContractDesc {
   return { abi, address }
 }
 
-// const infuraProjectId = 'd96fcc7c667e4a03abf1cecd266ade2d'
-const infuraProjectId = '58073b4a32df4105906c702f167b91d2'
-// https://kovan.infura.io/v3/58073b4a32df4105906c702f167b91d2
+const infuraProjectId = getConfig()?.publicRuntimeConfig?.infuraAPIKey
+const etherscanAPIKey = getConfig()?.publicRuntimeConfig?.etherscanAPIKey
 
 const protoMain = {
   id: '1',
@@ -73,7 +73,7 @@ const protoMain = {
   etherscan: {
     url: 'https://etherscan.io',
     apiUrl: 'https://api.etherscan.io/api',
-    apiKey: '34JVYM6RPM3J1SK8QXQFRNSHD9XG4UHXVU',
+    apiKey: etherscanAPIKey || '',
   },
   taxProxyRegistries: ['0xaa63c8683647ef91b3fdab4b4989ee9588da297b'],
   dssProxyActionsDsr: contractDesc(
@@ -81,7 +81,7 @@ const protoMain = {
     '0x07ee93aEEa0a36FfF2A9B95dd22Bd6049EE54f26',
   ),
   magicLink: {
-    apiKey: 'pk_live_3256343D62443CE6',
+    apiKey: process.env.MAGICLINK_MAIN_API_KEY || '',
   },
   cacheApi: 'https://stagingcache.oasis.app/api/v1',
 }
@@ -127,12 +127,12 @@ const kovan: NetworkConfig = {
   etherscan: {
     url: 'https://kovan.etherscan.io',
     apiUrl: 'https://api-kovan.etherscan.io/api',
-    apiKey: '34JVYM6RPM3J1SK8QXQFRNSHD9XG4UHXVU',
+    apiKey: process.env.ETHERSCAN_API_KEY || '',
   },
   taxProxyRegistries: [kovanAddresses.PROXY_REGISTRY],
   dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, kovanAddresses.PROXY_ACTIONS_DSR),
   magicLink: {
-    apiKey: 'pk_test_E72F1844D7C09A07',
+    apiKey: process.env.MAGICLINK_KOVAN_API_KEY || '',
   },
   cacheApi: 'https://cache-kovan-staging.oasis.app/api/v1',
 }

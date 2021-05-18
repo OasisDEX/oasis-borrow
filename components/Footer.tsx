@@ -10,7 +10,7 @@ import ReactSelect from 'react-select'
 import { Box, Card, Container, Flex, Grid, Link, Text } from 'theme-ui'
 
 const {
-  publicRuntimeConfig: { buildHash, buildDate },
+  publicRuntimeConfig: { buildHash, buildDate, showBuildInfo },
 } = getConfig()
 
 const FOOTER_LINKS = [
@@ -110,20 +110,22 @@ export function TemporaryFooter() {
   const date = moment(buildDate).format('DD.MM.YYYY HH:MM')
   console.debug(`Build commit: ${commit} Build date: ${date}`)
   return (
-    <Container sx={{ maxWidth: '898px', display: 'none' }}>
-      <Grid sx={{ color: 'text', fontSize: 2 }} columns={2}>
-        <Text>
-          Commit:{' '}
-          <Link
-            href={`https://github.com/OasisDex/oasis-borrow/commit/${buildHash}`}
-            target="_blank"
-          >
-            {commit}
-          </Link>
-        </Text>
-        <Text>Build Date: {date}</Text>
-      </Grid>
-    </Container>
+    showBuildInfo && (
+      <Container sx={{ maxWidth: '898px' }}>
+        <Grid sx={{ color: 'text', fontSize: 2 }} columns={2}>
+          <Text>
+            Commit:{' '}
+            <Link
+              href={`https://github.com/OasisDex/oasis-borrow/commit/${buildHash}`}
+              target="_blank"
+            >
+              {commit}
+            </Link>
+          </Text>
+          <Text>Build Date: {date}</Text>
+        </Grid>
+      </Container>
+    )
   )
 }
 
