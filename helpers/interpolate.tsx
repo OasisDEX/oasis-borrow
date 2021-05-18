@@ -25,7 +25,6 @@ export function interpolate(
           <React.Fragment key={idx}>
             {match.groups?.before}
             <Comp>{match.groups?.content}</Comp>
-            {match.groups?.after}
           </React.Fragment>
         )
       })}
