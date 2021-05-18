@@ -5,12 +5,12 @@ import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import moment from 'moment'
-import { Trans, useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Heading, Link, Text } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
-import { interpolate } from '../../helpers/interpolate'
 
+import { interpolate } from '../../helpers/interpolate'
 import { VaultHistoryEvent } from './vaultHistory'
 
 const columns: ColumnDef<VaultHistoryEvent, {}>[] = [

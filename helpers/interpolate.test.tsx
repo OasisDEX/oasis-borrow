@@ -1,6 +1,6 @@
-import React from 'react'
 import { expect } from 'chai'
 import { render } from 'enzyme'
+import React from 'react'
 
 import { interpolate } from './interpolate'
 
