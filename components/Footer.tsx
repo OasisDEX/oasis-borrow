@@ -23,6 +23,7 @@ const FOOTER_LINKS = [
     url: 'https://oasis.app/support',
   },
   { labelKey: 'landing.footer.contact', url: 'https://oasis.app/contact', target: '_self' },
+  { labelKey: 'landing.footer.oracles', url: '/oracles' },
 ]
 
 function LanguageSelect() {
@@ -135,7 +136,17 @@ export function Footer() {
       <Container sx={{ maxWidth: '761px', mb: 5, pt: 2 }}>
         <Flex
           as="ul"
-          sx={{ pl: 0, justifyContent: 'space-between', textAlign: 'center', alignItems: 'center' }}
+          sx={{
+            pl: 0,
+            justifyContent: ['flex-start', 'space-between'],
+            textAlign: 'center',
+            alignItems: 'center',
+            flexWrap: ['wrap', 'no-wrap'],
+            rowGap: [3, 0],
+            '> *': {
+              width: ['33.33%', 'auto'],
+            },
+          }}
         >
           {FOOTER_LINKS.map(({ labelKey, url, target }) => (
             <Box key={labelKey} as="li" sx={{ listStyle: 'none', fontWeight: 'semiBold' }}>

@@ -927,6 +927,8 @@ const oasisBaseTheme = {
       secondary: '#FEB343',
       surface: '#FFDBC7',
     },
+    bull: '#1AAB9B',
+    bear: '#F75524',
   },
   fonts: {
     body: '"Inter", "Helvetica Neue", sans-serif',
@@ -1055,9 +1057,12 @@ const oasisBaseTheme = {
     app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
   },
   layout: {
-    appContainer: {
+    container: {
       maxWidth: '1200px',
       px: 3,
+    },
+    appContainer: {
+      variant: 'layout.container',
     },
     marketingContainer: {
       variant: 'layout.appContainer',
