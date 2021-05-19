@@ -3,7 +3,7 @@ import {
   CallDef as CallDefAbstractContext,
   createSendTransaction as createSendTransactionAbstractContext,
   createSendWithGasConstraints as createSendWithGasConstraintsAbstractContext,
-  estimateGas as estimateGasAbstractContext,
+  //estimateGas as estimateGasAbstractContext,
   EstimateGasFunction as EstimateGasFunctionAbstractContext,
   SendTransactionFunction as SendTransactionFunctionAbstractContext,
   TransactionDef as TransactionDefAbstractContext,
@@ -50,12 +50,42 @@ export function call<D, R>(context: Context, callDef: CallDef<D, R>) {
   return callAbstractContext<D, R, Context>(context, callDef)
 }
 
-export function estimateGas<A extends TxMeta>(
-  context: ContextConnected,
-  txDef: TransactionDef<A>,
+// export function estimateGas<A extends TxMeta>(
+//   context: ContextConnected,
+//   txDef: TransactionDef<A>,
+//   args: A,
+// ) {
+//   return estimateGasAbstractContext<A, ContextConnected>(context, txDef, args)
+// }
+
+// we accommodate for the fact that blockchain state
+// can be different when tx execute and it can take more gas
+const GAS_ESTIMATION_MULTIPLIER = 1.5
+
+export function estimateGas<A extends TxMeta, CC extends ContextConnected>(
+  context: CC,
+  { call, prepareArgs, options }: TransactionDefAbstractContext<A, CC>,
   args: A,
-) {
-  return estimateGasAbstractContext<A, ContextConnected>(context, txDef, args)
+): Observable<number> {
+  const result = from<number>(
+    (call
+      ? call(
+          args,
+          context,
+          context.status === 'connected' ? context.account : undefined,
+        )(...prepareArgs(args, context, context.account))
+      : context.web3.eth
+    ).estimateGas({
+      from: context.account,
+      ...(options ? options(args) : {}),
+    }),
+  ).pipe(
+    map((e: number) => {
+      return Math.floor(e * GAS_ESTIMATION_MULTIPLIER)
+    }),
+  )
+
+  return result
 }
 
 export function createSendTransaction<A extends TxMeta>(
