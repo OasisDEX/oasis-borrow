@@ -1,4 +1,9 @@
 import { SendFunction, TxMeta } from '@oasisdex/transactions'
+import { from, Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
+
+import { Context, ContextConnected } from '../network'
+import { GasPrice$ } from '../prices'
 import {
   CallDef as CallDefAbstractContext,
   createSendTransaction as createSendTransactionAbstractContext,
@@ -7,12 +12,7 @@ import {
   EstimateGasFunction as EstimateGasFunctionAbstractContext,
   SendTransactionFunction as SendTransactionFunctionAbstractContext,
   TransactionDef as TransactionDefAbstractContext,
-} from '@oasisdex/transactions'
-import { from, Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
-
-import { Context, ContextConnected } from '../network'
-import { GasPrice$ } from '../prices'
+} from './callsHelpersContextParameterized'
 
 export type CallDef<A, R> = CallDefAbstractContext<A, R, Context>
 
