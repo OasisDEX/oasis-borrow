@@ -71,4 +71,10 @@ describe('Interpolate', () => {
     // <Trans /> from i18n do not handle > < characters when interpolating components
     expect(wrapper.html()).to.eq('start <div>&lt;0.001 WBTC</div> out <div>inside</div> end')
   })
+
+  it('should handle undefined components', () => {
+    const result = interpolate('<0> in </0>', {})
+    const wrapper = render(<div>{result}</div>)
+    expect(wrapper.html()).to.eq('<span> in </span>')
+  })
 })

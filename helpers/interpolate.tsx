@@ -1,5 +1,9 @@
 import React from 'react'
 
+// Does not support nested components like:
+// <0>
+//   <1>sth</1>
+// </0>
 export function interpolate(
   str: string,
   Components: Record<string, React.ComponentType>,
