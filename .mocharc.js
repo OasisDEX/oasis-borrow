@@ -1,5 +1,7 @@
 const { join } = require('path')
 const { existsSync } = require('fs')
+const Enzyme = require('enzyme')
+const Adapter = require('enzyme-adapter-react-16')
 process.env.NODE_ENV = 'test'
 
 // if test config exists in cwd prefer this one
@@ -18,12 +20,15 @@ module.exports = {
   watchExtensions: ['ts'],
   spec: [
     './helpers/**/*.test.ts',
+    './helpers/**/*.test.tsx',
     './components/**/*.test.ts',
     './features/**/*.test.ts',
     './blockchain/**/*.test.ts',
   ],
   timeout: 1000,
 }
+
+Enzyme.configure({ adapter: new Adapter() })
 
 // do not import files that we don't care about
 function noop() {
