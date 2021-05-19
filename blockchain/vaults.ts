@@ -55,8 +55,8 @@ export function createVaults$(
 
 export interface Vault {
   id: BigNumber
-  owner: string // cdpManager.owns -> proxy
-  controller: string // proxy -> EOA
+  owner: string
+  controller?: string
   token: string
   ilk: string
   address: string
@@ -222,7 +222,7 @@ export function createVault$(
               token,
               address: urnAddress,
               owner,
-              controller: controller!,
+              controller,
               lockedCollateral: collateral,
               lockedCollateralUSD: collateralUSD,
               backingCollateral,

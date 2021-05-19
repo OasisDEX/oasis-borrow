@@ -181,7 +181,8 @@
       },
       "privacy": "Privacy",
       "terms": "Terms",
-      "trade": "Trade"
+      "trade": "Trade",
+      "oracles": "Oracles"
     },
     "glossary-of-terms": "Glossary of terms",
     "hero": {
@@ -238,6 +239,7 @@
   "moving-out-vault": "Moving out of Vault",
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
+  "no-dai": "No Dai",
   "no-activity": "No activity to show",
   "notice-privacy": "By using our site you agree to our <0>Cookie Policy</0>.",
   "notification-status-complete": "Complete",
@@ -441,7 +443,8 @@
       "header2": "This Maker Vault got liquidated",
       "subheader1": "This Maker Vault has been liquidated. A portion of your collateral has been auctioned to pay back your Dai debt.",
       "subheader2": "You can reclaim {{ amount }} {{ collateral }}",
-      "subheader3": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
+      "subheader3": "This Maker Vault has been liquidated. A portion of collateral has been auctioned to pay back the Dai debt.",
+      "subheader4": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
     }
   },
   "view": "View",
@@ -487,5 +490,16 @@
   "your-wallet": "Your wallet",
   "welcome": "Welcome to the new Oasis.app.",
   "read-blog-post": "Read the blog post",
-  "visit-old-oasis": "Visit the old Oasis"
+  "visit-old-oasis": "Visit the old Oasis",
+  "oracles": {
+    "header": "Oracles",
+    "description": "Below the current and next prices of the collateral types that are accepted for Maker vaults can be viewed. Most use the Oracle Stability Module (OSM). This module updates the price just once every hour. Therefore, when a crash is happening, users still have an hour to react to the new price.",
+    "token": "Token",
+    "current-price": "Current Price",
+    "next-price": "Next Price",
+    "change": "% Change",
+    "last-update": "Last Update",
+    "next-update": "Next Update",
+    "oracle-type": "Oracle Type"
+  }
 }

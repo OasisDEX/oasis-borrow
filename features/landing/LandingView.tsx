@@ -21,8 +21,9 @@ import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
 
 export function TokenSymbol({
   token,
+  displaySymbol,
   ...props
-}: { token: string } & Omit<ComponentProps<typeof Icon>, 'name'>) {
+}: { token: string; displaySymbol?: boolean } & Omit<ComponentProps<typeof Icon>, 'name'>) {
   const tokenInfo = getToken(token)
 
   return (
@@ -34,7 +35,7 @@ export function TokenSymbol({
         {...props}
       />
       <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', whiteSpace: 'nowrap' }}>
-        {tokenInfo.name}
+        {tokenInfo[displaySymbol ? 'symbol' : 'name']}
       </Text>
     </Flex>
   )
@@ -89,14 +90,27 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
   {
     headerLabel: '',
     header: () => null,
-    cell: ({ ilk }) => (
+    cell: ({ ilk, ilkDebtAvailable }) => (
       <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
         <AppLink
-          sx={{ width: ['100%', 'inherit'], textAlign: 'center' }}
+          sx={{ width: ['100%', 'inherit'], textAlign: 'center', maxWidth: ['100%', '150px'] }}
           variant="secondary"
           href={`/vaults/open/${ilk}`}
+          disabled={ilkDebtAvailable.isZero()}
         >
-          <Trans i18nKey="open-vault.title" />
+          {!ilkDebtAvailable.isZero() ? (
+            <Trans i18nKey="open-vault.title" />
+          ) : (
+            <Button
+              variant="secondary"
+              disabled={true}
+              sx={{ width: '100%', maxWidth: ['100%', '150px'] }}
+            >
+              <Text>
+                <Trans i18nKey="no-dai" />
+              </Text>
+            </Button>
+          )}
         </AppLink>
       </Box>
     ),
@@ -389,7 +403,9 @@ export function LandingView() {
                 state={landing.ilks.filters}
                 columns={ilksColumns}
                 noResults={<Box>{t('no-results')}</Box>}
-                deriveRowProps={(row) => ({ href: `/vaults/open/${row.ilk}` })}
+                deriveRowProps={(row) => ({
+                  href: row.ilkDebtAvailable.isZero() ? undefined : `/vaults/open/${row.ilk}`,
+                })}
               />
             </Box>
           </Box>

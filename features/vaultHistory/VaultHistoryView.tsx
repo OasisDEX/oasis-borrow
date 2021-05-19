@@ -5,11 +5,12 @@ import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import moment from 'moment'
-import { Trans, useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Heading, Link, Text } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
 
+import { interpolate } from '../../helpers/interpolate'
 import { VaultHistoryEvent } from './vaultHistory'
 
 const columns: ColumnDef<VaultHistoryEvent, {}>[] = [
@@ -17,35 +18,40 @@ const columns: ColumnDef<VaultHistoryEvent, {}>[] = [
     headerLabel: 'event.activity',
     header: ({ label }) => <Text>{label}</Text>,
     cell: (event) => {
+      const { t } = useTranslation()
+      const translation = t(`history.${event.kind.toLowerCase()}`, {
+        transferTo: 'transferTo' in event && formatAddress(event.transferTo),
+        transferFrom: 'transferFrom' in event && formatAddress(event.transferFrom),
+        collateralAmount:
+          'collateralAmount' in event && event.collateralAmount
+            ? formatCryptoBalance(event.collateralAmount.abs())
+            : 0,
+        daiAmount: 'daiAmount' in event ? formatCryptoBalance(event.daiAmount.abs()) : 0,
+        remainingCollateral:
+          'remainingCollateral' in event && event.remainingCollateral
+            ? formatCryptoBalance(event.remainingCollateral)
+            : 0,
+        collateralTaken:
+          'collateralTaken' in event && event.collateralTaken
+            ? formatCryptoBalance(event.collateralTaken)
+            : 0,
+        coveredDebt:
+          'coveredDebt' in event && event.coveredDebt ? formatCryptoBalance(event.coveredDebt) : 0,
+        cdpId: 'cdpId' in event ? event.cdpId : undefined,
+        auctionId: 'auctionId' in event ? event.auctionId : undefined,
+        token: event.token,
+      })
+
       return (
-        <Trans
-          i18nKey={`history.${event.kind.toLowerCase()}`}
-          values={{
-            transferTo: 'transferTo' in event && formatAddress(event.transferTo),
-            transferFrom: 'transferFrom' in event && formatAddress(event.transferFrom),
-            collateralAmount:
-              'collateralAmount' in event && event.collateralAmount
-                ? formatCryptoBalance(event.collateralAmount.abs())
-                : 0,
-            daiAmount: 'daiAmount' in event ? formatCryptoBalance(event.daiAmount.abs()) : 0,
-            remainingCollateral:
-              'remainingCollateral' in event && event.remainingCollateral
-                ? formatCryptoBalance(event.remainingCollateral)
-                : 0,
-            collateralTaken:
-              'collateralTaken' in event && event.collateralTaken
-                ? formatCryptoBalance(event.collateralTaken)
-                : 0,
-            coveredDebt:
-              'coveredDebt' in event && event.coveredDebt
-                ? formatCryptoBalance(event.coveredDebt)
-                : 0,
-            cdpId: 'cdpId' in event ? event.cdpId : undefined,
-            auctionId: 'auctionId' in event ? event.auctionId : undefined,
-            token: event.token,
-          }}
-          components={[<Text as="strong" variant="strong" />]}
-        />
+        <>
+          {interpolate(translation, {
+            0: ({ children }) => (
+              <Text as="strong" variant="strong">
+                {children}
+              </Text>
+            ),
+          })}
+        </>
       )
     },
   },

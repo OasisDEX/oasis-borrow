@@ -1,4 +1,4 @@
-import { Pages, trackingEvents } from 'analytics/analytics'
+import { Pages } from 'analytics/analytics'
 import { Context } from 'blockchain/network'
 import { CoinTag } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
@@ -12,7 +12,7 @@ import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/f
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
-import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
+import { Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { IlksFilterState } from '../ilks/ilksFilters'
 import { TokenSymbol } from '../landing/LandingView'
@@ -87,15 +87,27 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState & { isReadonly: boo
   {
     headerLabel: '',
     header: () => null,
-    cell: ({ ilk }) => (
+    cell: ({ ilk, ilkDebtAvailable }) => (
       <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
         <AppLink
-          sx={{ width: ['100%', 'inherit'], textAlign: 'center' }}
+          sx={{ width: ['100%', 'inherit'], textAlign: 'center', maxWidth: ['100%', '150px'] }}
           variant="secondary"
           href={`/vaults/open/${ilk}`}
-          onClick={() => trackingEvents.openVault(ilk)}
+          disabled={ilkDebtAvailable.isZero()}
         >
-          <Trans i18nKey="open-vault.title" />
+          {!ilkDebtAvailable.isZero() ? (
+            <Trans i18nKey="open-vault.title" />
+          ) : (
+            <Button
+              variant="secondary"
+              disabled={true}
+              sx={{ width: '100%', maxWidth: ['100%', '150px'] }}
+            >
+              <Text>
+                <Trans i18nKey="no-dai" />
+              </Text>
+            </Button>
+          )}
         </AppLink>
       </Box>
     ),
@@ -157,7 +169,9 @@ export function OpenVaultOverview({ vaultsOverview, accountDetails, context }: P
         state={{ ...ilksWithFilters.filters, isReadonly: connectedAccount === undefined }}
         columns={ilksColumns}
         noResults={<Box>{t('no-results')}</Box>}
-        deriveRowProps={(row) => ({ href: `/vaults/open/${row.ilk}` })}
+        deriveRowProps={(row) => ({
+          href: row.ilkDebtAvailable.isZero() ? undefined : `/vaults/open/${row.ilk}`,
+        })}
       />
     </Grid>
   )

@@ -39,7 +39,7 @@ export function mockVault$({
   debt,
   collateral,
   ilk,
-}: MockVaultProps): Observable<Vault> {
+}: MockVaultProps = {}): Observable<Vault> {
   const token = ilk ? ilk.split('-')[0] : 'WBTC'
 
   function oraclePriceData$() {
