@@ -50,7 +50,7 @@ jobs:
         docker build --build-arg COMMIT_SHA=${{ env.SHA_TAG }} \
                      --build-arg MIXPANEL_ENV=staging \
                      --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_STAGING_KEY }} \
-                     --build-arg SHOW_BUILD_INFO=1 \
+                     --build-arg SHOW_BUILD_INFO=1
                      -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
                      -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
                      -t $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
