@@ -12,6 +12,9 @@ const { i18n } = require('./next-i18next.config')
 const isProduction = process.env.NODE_ENV === 'production'
 const basePath = isProduction ? '/borrow' : ''
 
+const ETHERSCAN_API_KEY = '34JVYM6RPM3J1SK8QXQFRNSHD9XG4UHXVU'
+const INFURA_PROJECT_ID = '58073b4a32df4105906c702f167b91d2'
+
 module.exports = withBundleAnalyzer(
   withPWA(
     withMDX(
@@ -38,8 +41,8 @@ module.exports = withBundleAnalyzer(
           mixpanelAPIKey: process.env.MIXPANEL_KEY,
           useTermsOfService: process.env.USE_TERMS_OF_SERVICE === '1',
           showBuildInfo: process.env.SHOW_BUILD_INFO === '1',
-          infuraAPIKey: process.env.INFURA_PROJECT_ID,
-          etherscanAPIKey: process.env.ETHERSCAN_API_KEY,
+          infuraAPIKey: INFURA_PROJECT_ID,
+          etherscanAPIKey: ETHERSCAN_API_KEY,
         },
         webpack: function (config, { isServer }) {
           // TODO: Figure out how to disable mangling partially without bresking the aplication.
