@@ -243,8 +243,8 @@ export function InjectTokenIconsDefs() {
           y2="26.5003"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#87888C" />
-          <stop offset="1" stopColor="#BFC0C4" />
+          <stop stop-color="#87888C" />
+          <stop offset="1" stop-color="#BFC0C4" />
         </linearGradient>
       </defs>
     </svg>
