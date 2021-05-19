@@ -29,7 +29,7 @@ export function mockPriceInfo$({
   collateralChangePercentage = defaultCollateralChangePercentage,
   ethChangePercentage = defaultEthChangePercentage,
   token = defaultToken,
-}: MockPriceInfoProps): Observable<PriceInfo> {
+}: MockPriceInfoProps = {}): Observable<PriceInfo> {
   const nextEthPrice = ethPrice.plus(ethPrice.times(ethChangePercentage))
   const nextCollateralPrice = collateralPrice.plus(
     collateralPrice.times(collateralChangePercentage),

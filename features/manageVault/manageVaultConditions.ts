@@ -324,6 +324,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
   const editingProgressionDisabled =
     isEditingStage &&
     (inputAmountsEmpty ||
+      !vault.controller ||
       !accountIsConnected ||
       vaultWillBeUnderCollateralized ||
       vaultWillBeUnderCollateralizedAtNextPrice ||

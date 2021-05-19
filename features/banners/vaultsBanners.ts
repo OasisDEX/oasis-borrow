@@ -8,7 +8,7 @@ import moment from 'moment'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, startWith, switchMap } from 'rxjs/operators'
 
-type VaultBannersState = Pick<
+export type VaultBannersState = Pick<
   Vault,
   | 'id'
   | 'token'
@@ -21,6 +21,7 @@ type VaultBannersState = Pick<
     account?: string
     banner?: 'ownership' | 'liquidating' | 'liquidated'
     hasBeenLiquidated: boolean
+    isVaultController: boolean
   }
 
 function assignBanner(state: VaultBannersState): VaultBannersState {
@@ -98,6 +99,9 @@ export function createVaultsBanners$(
                 return 0
               })
 
+            const isVaultController =
+              context.status === 'connected' ? context.account === controller : false
+
             const state = {
               token,
               id,
@@ -107,6 +111,7 @@ export function createVaultsBanners$(
               underCollateralized,
               underCollateralizedAtNextPrice,
               hasBeenLiquidated: auctionsStarted.length > 0 || unlockedCollateral.gt(zero),
+              isVaultController,
             }
 
             if (context.status !== 'connected') {

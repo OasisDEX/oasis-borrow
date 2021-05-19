@@ -442,7 +442,8 @@
       "header2": "This Maker Vault got liquidated",
       "subheader1": "This Maker Vault has been liquidated. A portion of your collateral has been auctioned to pay back your Dai debt.",
       "subheader2": "You can reclaim {{ amount }} {{ collateral }}",
-      "subheader3": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
+      "subheader3": "This Maker Vault has been liquidated. A portion of collateral has been auctioned to pay back the Dai debt.",
+      "subheader4": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
     }
   },
   "view": "View",
