@@ -21,8 +21,9 @@ import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
 
 export function TokenSymbol({
   token,
+  displaySymbol,
   ...props
-}: { token: string } & Omit<ComponentProps<typeof Icon>, 'name'>) {
+}: { token: string; displaySymbol?: boolean } & Omit<ComponentProps<typeof Icon>, 'name'>) {
   const tokenInfo = getToken(token)
 
   return (
@@ -34,7 +35,7 @@ export function TokenSymbol({
         {...props}
       />
       <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', whiteSpace: 'nowrap' }}>
-        {tokenInfo.name}
+        {tokenInfo[displaySymbol ? 'symbol' : 'name']}
       </Text>
     </Flex>
   )

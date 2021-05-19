@@ -1,85 +1,157 @@
+import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { ColumnDef, Table, TableSortHeader } from 'components/Table'
+import { TokenSymbol } from 'features/landing/LandingView'
+import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservableWithError } from 'helpers/observableHook'
+import { zero } from 'helpers/zero'
 import React from 'react'
-import { Grid, Text } from 'theme-ui'
+import { useTranslation } from 'react-i18next'
+import { Box, Grid, Heading, Text } from 'theme-ui'
 
-import { CollateralPrice, CollateralPrices } from './collateralPrices'
+import { CollateralPrice } from './collateralPrices'
+import {
+  CollateralPricesWithFilters,
+  CollateralPricesWithFiltersState,
+} from './collateralPricesWithFilters'
 
-function CollateralPricesRow({
-  token,
-  currentPrice,
-  nextPrice,
-  percentageChange,
-  currentPriceUpdate,
-  nextPriceUpdate,
-  isStaticPrice,
-}: CollateralPrice) {
+function getPercentageColor(percentageChange: BigNumber) {
+  return percentageChange.isEqualTo(zero) ? 'text' : percentageChange.gt(zero) ? 'bull' : 'bear'
+}
+
+function CellOracleUpdate({ update }: { update?: Date }) {
   return (
-    <>
-      <Text>{token} </Text>
-      <Text>${formatAmount(currentPrice, 'USD')}</Text>
-      <Text>${formatAmount(nextPrice, 'USD')}</Text>
-      <Text>
+    <Text>
+      {update
+        ? `${update.toLocaleDateString()} ${update.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          })}`
+        : '--'}
+    </Text>
+  )
+}
+
+const COLLATERAL_COLUMNS: ColumnDef<CollateralPrice, CollateralPricesWithFiltersState>[] = [
+  {
+    headerLabel: 'oracles.token',
+    header: ({ label }) => <Text variant="tableHead">{label}</Text>,
+    cell: ({ token }) => <TokenSymbol token={token} displaySymbol />,
+  },
+  {
+    headerLabel: 'oracles.current-price',
+    header: ({ label, ...filters }) => (
+      <TableSortHeader filters={filters} sortBy="currentPrice">
+        {label}
+      </TableSortHeader>
+    ),
+    cell: ({ currentPrice }) => <Text>${formatAmount(currentPrice, 'USD')}</Text>,
+  },
+  {
+    headerLabel: 'oracles.next-price',
+    header: ({ label, ...filters }) => (
+      <TableSortHeader filters={filters} sortBy="nextPrice">
+        {label}
+      </TableSortHeader>
+    ),
+    cell: ({ nextPrice, percentageChange }) => (
+      <Text
+        sx={{
+          color: getPercentageColor(percentageChange),
+        }}
+      >
+        ${formatAmount(nextPrice, 'USD')}
+      </Text>
+    ),
+  },
+  {
+    headerLabel: 'oracles.change',
+    header: ({ label }) => <Text variant="tableHead">{label}</Text>,
+    cell: ({ percentageChange }) => (
+      <Text
+        sx={{
+          color: getPercentageColor(percentageChange),
+        }}
+      >
         {formatPercent(percentageChange.times(100), {
           precision: 4,
           plus: true,
         })}
       </Text>
-      <Text>
-        {currentPriceUpdate
-          ? `${currentPriceUpdate.toLocaleDateString()} ${currentPriceUpdate.toLocaleTimeString()}`
-          : '--'}
-      </Text>
-      <Text>
-        {nextPriceUpdate
-          ? `${nextPriceUpdate.toLocaleDateString()} ${nextPriceUpdate.toLocaleTimeString()}`
-          : '--'}
-      </Text>
-      <Text>{isStaticPrice ? 'DSvalue' : 'OSM'}</Text>
-    </>
-  )
-}
+    ),
+  },
+  {
+    headerLabel: 'oracles.last-update',
+    header: ({ label, ...filters }) => (
+      <TableSortHeader filters={filters} sortBy="currentPriceUpdate">
+        {label}
+      </TableSortHeader>
+    ),
+    cell: ({ currentPriceUpdate }) => <CellOracleUpdate update={currentPriceUpdate} />,
+  },
+  {
+    headerLabel: 'oracles.next-update',
+    header: ({ label, ...filters }) => (
+      <TableSortHeader filters={filters} sortBy="nextPriceUpdate">
+        {label}
+      </TableSortHeader>
+    ),
+    cell: ({ nextPriceUpdate }) => <CellOracleUpdate update={nextPriceUpdate} />,
+  },
+  {
+    headerLabel: 'oracles.oracle-type',
+    header: ({ label }) => <Text variant="tableHead">{label}</Text>,
+    cell: ({ isStaticPrice }) => <Text>{isStaticPrice ? 'DSvalue' : 'OSM'}</Text>,
+  },
+]
 
-function CollateralPricesHeader() {
-  return (
-    <>
-      {[
-        'Token',
-        'Current Price',
-        'Next Price',
-        '% Change',
-        'Last Update',
-        'Next Update',
-        'Oracle Type',
-      ].map((colHeader, idx) => (
-        <Text key={`collateralPricesHeader-${idx}`} mb={4}>
-          {colHeader}
-        </Text>
-      ))}
-    </>
-  )
-}
+function CollateralPricesTable({
+  collateralPrices,
+}: {
+  collateralPrices: CollateralPricesWithFilters
+}) {
+  const { t } = useTranslation()
 
-function CollateralPricesTable({ collateralPrices }: { collateralPrices: CollateralPrices }) {
   return (
-    <Grid columns="auto auto auto auto auto auto auto" sx={{ width: '100%' }}>
-      <CollateralPricesHeader />
-      {collateralPrices.map((collateralPrice, idx) => (
-        <CollateralPricesRow key={`collateralPricesRow-${idx}`} {...collateralPrice} />
-      ))}
-    </Grid>
+    <Box>
+      <Table
+        data={collateralPrices.data}
+        primaryKey="token"
+        state={collateralPrices.filters}
+        columns={COLLATERAL_COLUMNS}
+        noResults={<Box>{t('no-results')}</Box>}
+      />
+    </Box>
   )
 }
 
 export function CollateralPricesView() {
   const { collateralPrices$ } = useAppContext()
   const collateralPricesWithError = useObservableWithError(collateralPrices$)
+  const { t } = useTranslation()
 
   return (
-    <WithLoadingIndicator {...collateralPricesWithError}>
-      {(collateralPrices) => <CollateralPricesTable {...{ collateralPrices }} />}
-    </WithLoadingIndicator>
+    <Grid sx={{ position: 'relative', zIndex: 1, width: '100%' }} gap={5}>
+      <Grid pt={5} pb={4}>
+        <Heading variant="header2">{t('oracles.header')}</Heading>
+        <Box sx={{ maxWidth: '55.5em', color: 'text.subtitle' }}>{t('oracles.description')}</Box>
+      </Grid>
+      <WithLoadingIndicator
+        {...collateralPricesWithError}
+        customLoader={
+          <Box
+            sx={{
+              position: 'relative',
+              width: '100%',
+            }}
+          >
+            <AppSpinner sx={{ mx: 'auto', display: 'block' }} variant="styles.spinner.extraLarge" />
+          </Box>
+        }
+      >
+        {(collateralPrices) => <CollateralPricesTable {...{ collateralPrices }} />}
+      </WithLoadingIndicator>
+    </Grid>
   )
 }

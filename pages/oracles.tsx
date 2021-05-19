@@ -1,6 +1,7 @@
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
-import { AppLayout } from 'components/Layouts'
+import { MarketingLayout } from 'components/Layouts'
 import { CollateralPricesView } from 'features/collateralPrices/CollateralPricesView'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
 export default function OraclesPage() {
@@ -11,7 +12,13 @@ export default function OraclesPage() {
   )
 }
 
-OraclesPage.layout = AppLayout
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['common'])),
+  },
+})
+
+OraclesPage.layout = MarketingLayout
 OraclesPage.layoutProps = {
-  variant: 'daiContainer',
+  variant: 'landingContainer',
 }
