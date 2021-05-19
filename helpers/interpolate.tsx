@@ -15,8 +15,8 @@ export function interpolate(
     return str
   }
 
-  const latMatch = matches[matches.length - 1]
-  const endString = latMatch.input?.replace(splitRegex, '')
+  const lastMatch = matches[matches.length - 1]
+  const endString = lastMatch.input?.replace(splitRegex, '')
 
   return (
     <>

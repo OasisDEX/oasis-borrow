@@ -55,7 +55,6 @@ describe('Interpolate', () => {
     })
     const wrapper = render(<div>{result}</div>)
 
-    console.log('---->', wrapper.html())
     expect(wrapper.html()).to.eq(
       'start <div class="test_0">inside</div> out <div class="test_1">inside</div>',
     )
