@@ -51,6 +51,8 @@ jobs:
                      --build-arg MIXPANEL_ENV=production \
                      --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_PROD_KEY }} \
                      --build-arg SHOW_BUILD_INFO=0 \
+                     --build-arg ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }} \
+                     --build-arg INFURA_PROJECT_ID=${{ secrets.INFURA_PROJECT_ID }} \
                      -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
                      -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
                      -t $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
