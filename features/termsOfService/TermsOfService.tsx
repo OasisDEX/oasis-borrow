@@ -5,7 +5,6 @@ import { AppLink } from 'components/Links'
 import { Modal, ModalErrorMessage } from 'components/Modal'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
-import getConfig from 'next/config'
 import React, { ReactNode, useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Label, Text } from 'theme-ui'
 import { fadeIn } from 'theme/keyframes'
@@ -227,13 +226,12 @@ export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
   const { termsAcceptance$, web3ContextConnected$ } = useAppContext()
   const web3ContextConnected = useObservable(web3ContextConnected$)
   const termsAcceptance = useObservable(termsAcceptance$)
-  const useTermsOfService = getConfig()?.publicRuntimeConfig.useTermsOfService
 
   if (!termsAcceptance || !web3ContextConnected) {
     return null
   }
 
-  if (web3ContextConnected.status === 'connectedReadonly' || !useTermsOfService) {
+  if (web3ContextConnected.status === 'connectedReadonly') {
     return <>{children}</>
   }
 
