@@ -1,3 +1,11 @@
+<br>
+<br>
+<div align="center"> 
+  <img src="https://github.com/OasisDEX/oasis-borrow/blob/pm/readme-updates/public/static/img/new-logo.svg" width="500">
+</div>
+<br>
+<br>
+
 # Oasis Borrow [![codecov](https://codecov.io/gh/OasisDEX/oasis-borrow/branch/dev/graph/badge.svg?token=KMXTAUFL48)](https://codecov.io/gh/OasisDEX/oasis-borrow)
 
 - TypeScript
