@@ -1,14 +1,14 @@
-<br>
-<br>
+[![codecov](https://codecov.io/gh/OasisDEX/oasis-borrow/branch/dev/graph/badge.svg?token=KMXTAUFL48)](https://codecov.io/gh/OasisDEX/oasis-borrow)
+
+<br> <br>
+
 <div align="center">
-  <img src="https://github.com/OasisDEX/oasis-borrow/blob/pm/readme-updates/public/static/img/new-logo.svg" width="500">
+  <img src="https://github.com/OasisDEX/oasis-borrow/blob/pm/readme-updates/public/static/img/new-logo.svg" width="500" height="500">
 </div>
 <br>
 <br>
 
 # Oasis Borrow
-
-[![codecov](https://codecov.io/gh/OasisDEX/oasis-borrow/branch/dev/graph/badge.svg?token=KMXTAUFL48)](https://codecov.io/gh/OasisDEX/oasis-borrow)
 
 > Generate Dai using your crypto as collateral
 
@@ -68,8 +68,6 @@ Our stories can then be viewed on http://localhost:6006
 
 In addition, we make use of hardhat in order to test the application in a controlled mainnet-like
 environment. More details can be found [here](./HARDHAT.md)
-
-<br>
 
 ### Deployments
 
