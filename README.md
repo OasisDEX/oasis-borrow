@@ -75,8 +75,14 @@ environment. More details can be found [here](./HARDHAT.md)
 
 Oasis Borrow has two deployment environments:
 
-- staging -> [https://staging.oasis.app/borrow](https://staging.oasis.app/borrow){:target="\_blank"}
-- production -> [https://oasis.app/borrow](https://oasis.app/borrow){:target="\_blank"}
+- Staging
+
+  - Branch :: `dev`
+  - Deployed :: [https://staging.oasis.app/borrow](https://staging.oasis.app/borrow)
+
+- Production
+  - Branch :: `main`
+  - Deployed :: [https://oasis.app/borrow](https://oasis.app/borrow)
 
 <br>
 <br>
