@@ -75,9 +75,8 @@ environment. More details can be found [here](./HARDHAT.md)
 
 Oasis Borrow has two deployment environments:
 
-- staging ->
-  <a href="https://staging.oasis.app/borrow" target="_blank">https://staging.oasis.app/borrow</a>
-- production -> <a href="https://oasis.app/borrow" target="_blank">https://oasis.app/borrow</a>
+- staging -> [https://staging.oasis.app/borrow](https://staging.oasis.app/borrow){:target="\_blank"}
+- production -> [https://oasis.app/borrow](https://oasis.app/borrow){:target="\_blank"}
 
 <br>
 <br>
