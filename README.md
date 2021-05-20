@@ -1,6 +1,6 @@
 <br>
 <br>
-<div align="center"> 
+<div align="center">
   <img src="https://github.com/OasisDEX/oasis-borrow/blob/pm/readme-updates/public/static/img/new-logo.svg" width="500">
 </div>
 <br>
@@ -8,10 +8,46 @@
 
 # Oasis Borrow [![codecov](https://codecov.io/gh/OasisDEX/oasis-borrow/branch/dev/graph/badge.svg?token=KMXTAUFL48)](https://codecov.io/gh/OasisDEX/oasis-borrow)
 
-- TypeScript
-- Next.js
-- Eslint with TypeSTRICT
-- Prettier
+Summary here of the project
+
+<br>
+
+### Getting Started
+
+In order to start developing locally, please clone the repository
+
+```sh
+git clone https://github.com/OasisDEX/oasis-borrow.git
+```
+
+Navigate to the project folder and install all dependencies
+
+```sh
+yarn
+```
+
+To create up a local development instance we must first spin up the database prior before starting
+the web server.
+
+```sh
+# Open one terminal and run:
+./scripts/dev.sh
+```
+
+Monitor the logs and wait for the migrations to complete. This should be evident by a log equivalent
+to `Migrations DONE`
+
+In a second terminal we can then serve the web server instance over http or https (https is required
+for some wallets):
+
+```sh
+yarn start
+
+# Optionally
+HTTPS=true yarn start
+```
+
+<br>
 
 ### Frontend
 
@@ -102,8 +138,9 @@ For detailed i18next documentation please visit [i18n docs](https://www.i18next.
 
 ## Hardhat mainnet testing
 
-It might be useful to test an app against an actual mainnet state with some modifications. We use Hardhat node for that. In order to read more about this setup go to the [separate docs page](./HARDHAT.md)
-
+It might be useful to test an app against an actual mainnet state with some modifications. We use
+Hardhat node for that. In order to read more about this setup go to the
+[separate docs page](./HARDHAT.md)
 
 ## Runnning Oasis Borrow Cache locally with Hardhat
 
