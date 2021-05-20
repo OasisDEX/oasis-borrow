@@ -1,3 +1,6 @@
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![codecov](https://codecov.io/gh/OasisDEX/oasis-borrow/branch/main/graph/badge.svg?token=KMXTAUFL48)](https://app.codecov.io/gh/OasisDEX/oasis-borrow/branch/main)
+
 <br> <br>
 
 <div align="center">
@@ -5,16 +8,17 @@
 </div>
 <br>
 <br>
-| Environment | URL                                                          | Branch |                                     Build Status                                     |                                                                      Coverage                                                                       |
-| ----------- | ------------------------------------------------------------ | :----: | :----------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------: |
-| Production  | [oasis.app/borrow](https://oasis.app/borrow)                 | `main` | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=main) | [![codecov](https://codecov.io/gh/OasisDEX/oasis-borrow/branch/main/graph/badge.svg?token=KMXTAUFL48)](https://app.codecov.io/gh/OasisDEX/oasis-borrow/branch/main) |
-| Staging     | [staging.oasis.app/borrow](https://staging.oasis.app/borrow) | `dev`  | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=dev)  | [![codecov](https://codecov.io/gh/OasisDEX/oasis-borrow/branch/dev/graph/badge.svg?token=KMXTAUFL48)](https://app.codecov.io/gh/OasisDEX/oasis-borrow/branch/dev)  |
+
+| Environment | URL                                                          | Branch |                                     Build Status                                     |
+| ----------- | ------------------------------------------------------------ | :----: | :----------------------------------------------------------------------------------: |
+| Production  | [oasis.app/borrow](https://oasis.app/borrow)                 | `main` | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=main) |
+| Staging     | [staging.oasis.app/borrow](https://staging.oasis.app/borrow) | `dev`  | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=dev)  |
 
 # Oasis Borrow
 
 [Oasis Borrow](https://oasis.app/borrow) is the most popular user-interface to interact with the
-Maker protocol. It enables users to generate Dai, the most used and decentralized stablecoin, using
-a variety of crypto assets as collateral.
+[Maker protocol](https://docs.makerdao.com/). It enables users to generate Dai, the most used and
+decentralized stablecoin, using a variety of crypto assets as collateral.
 
 ### Getting Started
 
