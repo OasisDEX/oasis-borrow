@@ -47,7 +47,7 @@ function TOSWaiting4Signature({
   updated,
   disconnect,
 }: TermsAcceptanceState & { disconnect: () => void }) {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation()
 
   return (
     <Grid gap={3}>
@@ -75,7 +75,7 @@ function TOSWaiting4Signature({
 
 function TOSWaiting4Acceptance({ stage, acceptTOS, updated }: TermsAcceptanceState) {
   const [checked, setChecked] = useState(false)
-  const { t } = useTranslation('common')
+  const { t } = useTranslation()
 
   return (
     <>
@@ -151,7 +151,7 @@ function TOSErrorScreen({
 }: TermsAcceptanceState & {
   message: string
 }) {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation()
 
   return (
     <>

@@ -261,7 +261,7 @@ export function getConnectionKindMessage(connectionKind: ConnectionKind) {
 export function ConnectWallet() {
   const { web3Context$, redirectState$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
-  const { t } = useTranslation('common')
+  const { t } = useTranslation()
   const { replace } = useRedirect()
   const [connectingLedger, setConnectingLedger] = React.useState(false)
 

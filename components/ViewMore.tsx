@@ -7,7 +7,7 @@ interface ViewMoreProps {
 }
 
 export function ViewMore({ viewMore }: ViewMoreProps) {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation()
 
   return (
     <Box sx={{ borderTop: 'light', borderColor: 'muted', textAlign: 'center', py: 2 }}>

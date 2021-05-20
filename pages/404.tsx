@@ -12,7 +12,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 })
 
 export default function NotFoundPage() {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation()
 
   return (
     <Container>

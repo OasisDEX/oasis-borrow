@@ -107,7 +107,7 @@ export function Modal({ children, variant, sx, close }: ModalProps) {
 }
 
 export function ModalErrorMessage({ message }: { message: string }) {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation()
 
   return (
     <Box my={4}>
