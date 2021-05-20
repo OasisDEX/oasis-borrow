@@ -8,17 +8,20 @@
 <br>
 <br>
 
+| Environment | URL                                                          | Branch |                                        Status                                        |
+| ----------- | ------------------------------------------------------------ | :----: | :----------------------------------------------------------------------------------: |
+| Production  | [oasis.app/borrow](https://oasis.app/borrow)                 | `main` | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=main) |
+| Staging     | [staging.oasis.app/borrow](https://staging.oasis.app/borrow) | `dev`  | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=dev)  |
+
 # Oasis Borrow
 
-> Generate Dai using your crypto as collateral
-
-Oasis Borrow is the most popular user-interface to interact with the Maker protocol. It enables
-users to generate Dai, the most used and decentralized stablecoin, using a variety of crypto assets
-as collateral.
+[Oasis Borrow](https://oasis.app/borrow) is the most popular user-interface to interact with the
+Maker protocol. It enables users to generate Dai, the most used and decentralized stablecoin, using
+a variety of crypto assets as collateral.
 
 ### Getting Started
 
-In order to start developing locally, please clone the repository
+In order to start developing locally, clone the repository
 
 ```sh
 git clone https://github.com/OasisDEX/oasis-borrow.git
@@ -53,19 +56,6 @@ HTTPS=true yarn start
 
 Site is viewable on http://localhost:3000 or https://localhost:3443 respectively
 
-### Deployments
-
-Oasis Borrow has two deployment environments:
-
-- Staging
-
-  - Branch :: `dev`
-  - Deployed :: [https://staging.oasis.app/borrow](https://staging.oasis.app/borrow)
-
-- Production
-  - Branch :: `main`
-  - Deployed :: [https://oasis.app/borrow](https://oasis.app/borrow)
-
 ### Storybook
 
 We utilise storybook for visualising some of our ui components in isolation.
@@ -86,81 +76,14 @@ where the `<COMMIT_HASH>` is the shortened commit hash of the branch/commit that
 In addition, we make use of hardhat in order to test the application in a controlled mainnet-like
 environment. More details can be found [here](./HARDHAT.md)
 
-#### Contribuitions
+#### Contributing
 
-Please feel free to open issues or PR's to improve Oasis Borrow. We are always open to suggestions
-on how best to improve the application to give the optimal user experience.
+Cotributions are welcome. Feel free to open issues or PR's to improve Oasis Borrow. We are always
+open to suggestions on how best to improve the application to give the optimal user experience.
 
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+Please ensure that the tests pass, typechecks and conforms to the linting rules. The most convenient
+way to do this is by calling:
 
-#### Prisma
-
-We use [Prisma Client](https://github.com/prisma/prisma-client-js) for type-safe database
-communication.
-
-To regenerate schema based on the current state of a database run:
-
+```sh
+yarn test:fix
 ```
-yarn prisma:introspect
-```
-
-To generate client based on schema run (it runs automatically after postinstall):
-
-```
-yarn prisma:generate
-```
-
-#### Migrations
-
-We use raw SQLs for migrations. They are stored in `server/database/migrations`. We use
-[`postgres-migrations`](https://www.npmjs.com/package/postgres-migrations).
-
-```
-yarn migrate
-```
-
-## i18n - Internationalisation
-
-Configuration file `i18n.ts` located in root directory allows to define available languages, default
-language, translation namespaces and language detection methods.
-
-Currently supported language detection method and they precedence:
-
-1. `landing-page-language-detection` - Custom detection based on root path with language param, e.g
-   `/en` . Used for landing page. Not possible to use with subdirectories like `/en/dashboard`
-2. `querystring` - Applicable to any url with `lang` query string param, e.g. `/dashboard?lang=es`
-3. `cookie` - Language param is set by other methods and stored in browser cookies. Any url without
-   lang url param or query param will use this method to determine user language if cookie is
-   already set.
-4. `header` - Applicable if none of the above method was applied. Language is determined by
-   `Accept-Language` header, which reflects user's default language set in a browser.
-
-Translation json files are located in `/public/locales/`, in corresponding directories.
-
-Component that is using i18n should instantiate translation method via hook (optionally passing
-corresponding translation namespace):
-
-`const { t } = useTranslation('dashboard')`
-
-From this point translation engine can be used by passing key to `t` method:
-
-`<Heading>{t('buy')}</Heading>`
-
-Key needs to exist in every translation json for every language (and namespace).
-
-For detailed i18next documentation please visit [i18n docs](https://www.i18next.com/)
-
-## Hardhat mainnet testing
-
-It might be useful to test an app against an actual mainnet state with some modifications. We use
-Hardhat node for that. In order to read more about this setup go to the
-[separate docs page](./HARDHAT.md)
