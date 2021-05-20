@@ -12,7 +12,7 @@ import { Box, Container, Flex, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from './AppContextProvider'
 
-function Logo({ sx }: { sx?: SxStyleProp }) {
+export function Logo({ sx }: { sx?: SxStyleProp }) {
   return (
     <AppLink
       withAccountPrefix={false}
