@@ -140,9 +140,8 @@ function ConnectWalletButtonWrapper({
   children,
   missingInjectedWallet,
 }: {
-  children: ReactNode
   missingInjectedWallet?: boolean
-}) {
+} & WithChildren) {
   return missingInjectedWallet ? (
     <AppLink href="https://metamask.io/">{children}</AppLink>
   ) : (
