@@ -53,7 +53,20 @@ HTTPS=true yarn start
 
 Site is viewable on http://localhost:3000 or https://localhost:3443 respectively
 
-#### Storybook
+### Deployments
+
+Oasis Borrow has two deployment environments:
+
+- Staging
+
+  - Branch :: `dev`
+  - Deployed :: [https://staging.oasis.app/borrow](https://staging.oasis.app/borrow)
+
+- Production
+  - Branch :: `main`
+  - Deployed :: [https://oasis.app/borrow](https://oasis.app/borrow)
+
+### Storybook
 
 We utilise storybook for visualising some of our ui components in isolation.
 
@@ -68,23 +81,10 @@ For specific deployments, users can navigate to
 [https://storybook.oasis.app/<COMMIT_HASH>/index.html](https://storybook.oasis.app/<COMMIT_HASH>/index.html])
 where the `<COMMIT_HASH>` is the shortened commit hash of the branch/commit that has been pushed.
 
-#### Hardhat
+### Hardhat
 
 In addition, we make use of hardhat in order to test the application in a controlled mainnet-like
 environment. More details can be found [here](./HARDHAT.md)
-
-### Deployments
-
-Oasis Borrow has two deployment environments:
-
-- Staging
-
-  - Branch :: `dev`
-  - Deployed :: [https://staging.oasis.app/borrow](https://staging.oasis.app/borrow)
-
-- Production
-  - Branch :: `main`
-  - Deployed :: [https://oasis.app/borrow](https://oasis.app/borrow)
 
 #### Contribuitions
 
