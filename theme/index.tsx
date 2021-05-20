@@ -1291,6 +1291,24 @@ const oasisBaseTheme = {
         outline: 'none',
       },
     },
+    actionOption: {
+      display: 'flex',
+      alignItems: 'center',
+      cursor: 'pointer',
+      fontSize: 2,
+      fontWeight: 'semiBold',
+      color: 'onSuccess',
+      userSelect: 'none',
+      bg: 'transparent',
+      px: 2,
+      borderRadius: 'mediumLarge',
+      lineHeight: 1.25,
+      position: 'relative',
+      left: -2,
+      '&:hover': {
+        bg: 'ghost',
+      },
+    },
   },
   links: {
     primary: {
