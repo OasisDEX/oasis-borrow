@@ -36,6 +36,7 @@
   "connect-wallet": "Connect a wallet",
   "connect-wallet-button": "Connect Wallet",
   "connect-with": "{{ connectionKind }}",
+  "connect-install-metamask": "Install Metamask",
   "connected-with": "Connected with {{ connectionKind }}",
   "contact": {
     "description": "Send us feedback, questions, or suggestions or below.",

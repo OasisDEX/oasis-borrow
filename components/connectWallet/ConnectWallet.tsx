@@ -27,7 +27,7 @@ import { WithChildren } from 'helpers/types'
 import { useRedirect } from 'helpers/useRedirect'
 import { mapValues } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { identity, Observable } from 'rxjs'
 import { first, tap } from 'rxjs/operators'
 import { Alert, Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
@@ -136,50 +136,68 @@ if (!isFirefox) {
   SUPPORTED_WALLETS.push({ iconName: 'ledger', connectionKind: 'ledger' })
 }
 
+function ConnectWalletButtonWrapper({
+  children,
+  missingInjectedWallet,
+}: {
+  children: ReactNode
+  missingInjectedWallet?: boolean
+}) {
+  return missingInjectedWallet ? (
+    <AppLink href="https://metamask.io/">{children}</AppLink>
+  ) : (
+    <>{children}</>
+  )
+}
+
 function ConnectWalletButton({
   isConnecting,
   iconName,
   connect,
   description,
+  missingInjectedWallet,
 }: {
   isConnecting: boolean
   iconName: string
   description: string
   connect?: () => void
+  missingInjectedWallet: boolean
 }) {
+  const [hover, setHover] = useState(false)
+
   return (
-    <Button
-      variant="square"
-      sx={{
-        cursor: 'pointer',
-        textAlign: 'center',
-        '&:hover .connect-wallet-arrow': {
-          transform: 'translateX(5px)',
-          opacity: '1',
-        },
-      }}
-      onClick={connect}
-    >
-      <Flex sx={{ alignItems: 'center' }}>
-        <Flex sx={{ ml: 1, mr: 3, alignItems: 'center' }}>
-          {isConnecting ? <AppSpinner size={22} /> : <Icon name={iconName} size={22} />}
+    <ConnectWalletButtonWrapper {...{ missingInjectedWallet }}>
+      <Button
+        variant="square"
+        sx={{
+          cursor: 'pointer',
+          textAlign: 'center',
+          width: '100%',
+        }}
+        onClick={connect}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
+        <Flex sx={{ alignItems: 'center' }}>
+          <Flex sx={{ ml: 1, mr: 3, alignItems: 'center' }}>
+            {isConnecting ? <AppSpinner size={22} /> : <Icon name={iconName} size={22} />}
+          </Flex>
+          <Flex sx={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Box>{description}</Box>
+            <Box
+              sx={{
+                ml: 1,
+                opacity: hover ? 1 : 0,
+                transform: `translateX(${hover ? 5 : 0}px)`,
+                transition: 'opacity ease-in 0.2s, transform ease-in 0.3s',
+              }}
+            >
+              <Icon sx={{ position: 'relative', top: '3px' }} name="arrow_right" />
+            </Box>
+          </Flex>
         </Flex>
-        <Flex sx={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Box>{description}</Box>
-          <Box
-            className="connect-wallet-arrow"
-            sx={{
-              ml: 1,
-              opacity: '0',
-              transform: 'translateX(0px)',
-              transition: 'opacity ease-in 0.2s, transform ease-in 0.3s',
-            }}
-          >
-            <Icon sx={{ position: 'relative', top: '3px' }} name="arrow_right" />
-          </Box>
-        </Flex>
-      </Flex>
-    </Button>
+      </Button>
+    </ConnectWalletButtonWrapper>
   )
 }
 
@@ -365,6 +383,12 @@ export function ConnectWallet() {
             web3Context.connectionKind === connectionKind
           const connectionKindMsg = getConnectionKindMessage(connectionKind)
           const descriptionTranslation = isConnecting ? 'connect-confirm' : 'connect-with'
+          const missingInjectedWallet = connectionKindMsg === undefined
+          const description = missingInjectedWallet
+            ? t('connect-install-metamask')
+            : t(descriptionTranslation, {
+                connectionKind: connectionKindMsg,
+              })
 
           return (
             <ConnectWalletButton
@@ -372,15 +396,14 @@ export function ConnectWallet() {
                 key: connectionKind,
                 isConnecting,
                 iconName,
-                description: t(descriptionTranslation, {
-                  connectionKind: connectionKindMsg,
-                }),
+                description,
                 connect:
                   web3Context.status === 'connecting'
                     ? undefined
                     : connectionKind === 'ledger'
                     ? () => setConnectingLedger(true)
                     : connect(web3Context, connectionKind, getNetworkId()),
+                missingInjectedWallet,
               }}
             />
           )
