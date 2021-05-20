@@ -109,11 +109,9 @@ export function formatPercent(
   number: BigNumber,
   { precision = 0, plus = false, roundMode = undefined }: FormatPercentOptions = {},
 ) {
-  return (
-    (plus && number.isGreaterThan(0) ? '+' : '') +
-    String(number.toFixed(precision, roundMode)) +
-    '%'
-  )
+  const sign = plus && number.isGreaterThan(0) ? '+' : ''
+
+  return `${sign}${number.toFixed(precision, roundMode)}%`
 }
 
 export function formatDateTime(time: Date, showMs?: boolean): string {
