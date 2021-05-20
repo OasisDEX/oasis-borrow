@@ -12,9 +12,9 @@
 
 > Generate Dai using your crypto as collateral
 
-Oasis Borrow is the most popular interface to interact with the Maker protocol. It enables our users
-to generate Dai, the most used and decentralized stablecoin, using a variety of crypto assets as
-collateral.
+Oasis Borrow is the most popular user-interface to interact with the Maker protocol. It enables
+users to generate Dai, the most used and decentralized stablecoin, using a variety of crypto assets
+as collateral.
 
 ### Getting Started
 
@@ -51,8 +51,7 @@ yarn start
 HTTPS=true yarn start
 ```
 
-Site is viewable on [http://localhost:3000](http://localhost:3000) or
-[https://localhost:3443](https://localhost:3443) respectively
+Site is viewable on http://localhost:3000 or https://localhost:3443 respectively
 
 #### Storybook
 
@@ -62,7 +61,12 @@ We utilise storybook for visualising some of our ui components in isolation.
 yarn storybook
 ```
 
-Our stories can then be viewed on http://localhost:6006
+Stories should be viewable at http://localhost:6006 A live version of storybook on parity with the
+staging environment can be found by navigating to https://storybook.oasis.app.
+
+For specific deployments, users can navigate to
+[https://storybook.oasis.app/<COMMIT_HASH>/index.html](https://storybook.oasis.app/<COMMIT_HASH>/index.html])
+where the `<COMMIT_HASH>` is the shortened commit hash of the branch/commit that has been pushed.
 
 #### Hardhat
 
@@ -81,6 +85,11 @@ Oasis Borrow has two deployment environments:
 - Production
   - Branch :: `main`
   - Deployed :: [https://oasis.app/borrow](https://oasis.app/borrow)
+
+#### Contribuitions
+
+Please feel free to open issues or PR's to improve Oasis Borrow. We are always open to suggestions
+on how best to improve the application to give the optimal user experience.
 
 <br>
 <br>
