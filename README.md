@@ -26,7 +26,7 @@ decentralized stablecoin, using a variety of crypto assets as collateral.
 
 ### Getting Started
 
-In order to start developing locally, clone the repository
+Clone the repository
 
 ```sh
 git clone https://github.com/OasisDEX/oasis-borrow.git
@@ -38,19 +38,19 @@ Navigate to the project folder and install all dependencies
 yarn
 ```
 
-To create up a local development instance we must first spin up the database prior before starting
-the web server.
+To create a local development instance we must first spin up the database prior to starting the web
+server.
 
 ```sh
 # Open one terminal and run:
 ./scripts/dev.sh
 ```
 
-Monitor the logs and wait for the migrations to complete. This should be evident by a log equivalent
-to `Migrations DONE`
+Monitor the logs and wait for the migrations to complete. This should be evident by a log message
+`Migrations DONE`
 
-In a second terminal we can then serve the web server instance over http or https (https is required
-for some wallets):
+In a second terminal we can then begin the web server instance over http or https (https is required
+for testing hardware wallets):
 
 ```sh
 yarn start
@@ -59,13 +59,14 @@ yarn start
 HTTPS=true yarn start
 ```
 
-Site is viewable on http://localhost:3000 or https://localhost:3443 respectively
+The application will be viewable on http://localhost:3000 or https://localhost:3443 respectively
 
 <br>
 
 ### Storybook
 
-We utilise storybook for visualising some of our ui components in isolation.
+We utilise storybook for visualising some of our UI components in isolation. This makes development
+easier for UI work as next.js is very compute heavy when re-rendering changes in development mode.
 
 ```sh
 yarn storybook
@@ -89,7 +90,7 @@ environment. More details can be found [here](./HARDHAT.md)
 
 ## Contributing
 
-Cotributions are welcome. Feel free to open issues or PR's to improve Oasis Borrow. We are always
+Contributions are welcome. Feel free to open issues or PR's to improve Oasis Borrow. We are always
 open to suggestions on how best to improve the application to give the optimal user experience.
 
 Please ensure that the tests pass, typechecks and conforms to the linting rules. The most convenient
