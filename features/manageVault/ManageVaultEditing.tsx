@@ -4,7 +4,7 @@ import { VaultActionInput } from 'components/VaultActionInput'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Grid, Text } from 'theme-ui'
+import { Box, Button, Flex, Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 
@@ -170,24 +170,15 @@ export function ManageVaultEditing(props: ManageVaultState) {
       >
         {inverted ? <GenerateInput {...props} /> : <DepositInput {...props} />}
         {showDepositAndGenerateOptionButton && (
-          <Text
-            mt={3}
-            sx={{
-              cursor: 'pointer',
-              fontSize: 3,
-              fontWeight: 'semiBold',
-              color: 'onSuccess',
-              userSelect: 'none',
-              lineHeight: 1.25,
-            }}
-            onClick={toggleDepositAndGenerateOption!}
-          >
+          <Button variant="actionOption" mt={3} onClick={toggleDepositAndGenerateOption!}>
             {showDepositAndGenerateOption ? <MinusIcon /> : <PlusIcon />}
-            {t('manage-vault.action-option', {
-              action: inverted ? t('vault-actions.deposit') : t('vault-actions.generate'),
-              token: inverted ? token : 'DAI',
-            })}
-          </Text>
+            <Text pr={1}>
+              {t('manage-vault.action-option', {
+                action: inverted ? t('vault-actions.deposit') : t('vault-actions.generate'),
+                token: inverted ? token : 'DAI',
+              })}
+            </Text>
+          </Button>
         )}
         {showDepositAndGenerateOption &&
           (!!depositAmount || !!generateAmount) &&
@@ -213,26 +204,15 @@ export function ManageVaultEditing(props: ManageVaultState) {
       >
         {inverted ? <PaybackInput {...props} /> : <WithdrawInput {...props} />}
         {showPaybackAndWithdrawOptionButton && (
-          <Text
-            mt={3}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              cursor: 'pointer',
-              fontSize: 2,
-              fontWeight: 'semiBold',
-              color: 'onSuccess',
-              userSelect: 'none',
-              lineHeight: 1.25,
-            }}
-            onClick={togglePaybackAndWithdrawOption!}
-          >
+          <Button variant="actionOption" mt={3} onClick={togglePaybackAndWithdrawOption!}>
             {showPaybackAndWithdrawOption ? <MinusIcon /> : <PlusIcon />}
-            {t('manage-vault.action-option', {
-              action: inverted ? t('vault-actions.withdraw') : t('vault-actions.payback'),
-              token: inverted ? token : 'DAI',
-            })}
-          </Text>
+            <Text pr={1}>
+              {t('manage-vault.action-option', {
+                action: inverted ? t('vault-actions.withdraw') : t('vault-actions.payback'),
+                token: inverted ? token : 'DAI',
+              })}
+            </Text>
+          </Button>
         )}
         {showPaybackAndWithdrawOption &&
           (!!paybackAmount || !!withdrawAmount) &&
