@@ -6,11 +6,15 @@
 <br>
 <br>
 
-# Oasis Borrow [![codecov](https://codecov.io/gh/OasisDEX/oasis-borrow/branch/dev/graph/badge.svg?token=KMXTAUFL48)](https://codecov.io/gh/OasisDEX/oasis-borrow)
+# Oasis Borrow
 
-Summary here of the project
+[![codecov](https://codecov.io/gh/OasisDEX/oasis-borrow/branch/dev/graph/badge.svg?token=KMXTAUFL48)](https://codecov.io/gh/OasisDEX/oasis-borrow)
 
-<br>
+> Generate Dai using your crypto as collateral
+
+Oasis Borrow is the most popular interface to interact with the Maker protocol. It enables our users
+to generate Dai, the most used and decentralized stablecoin, using a variety of crypto assets as
+collateral.
 
 ### Getting Started
 
@@ -47,37 +51,32 @@ yarn start
 HTTPS=true yarn start
 ```
 
-<br>
-
-### Frontend
-
-```sh
-yarn
-yarn start
-```
-
-If you want to serve the web server over HTTPS (required for Ledger) use:
-
-```sh
-HTTPS=true yarn start
-```
-
-### Backend dependencies
-
-```sh
-# this will block terminal window so please use another one
-./scripts/dev.sh
-```
-
-## Development
+Site is viewable on [http://localhost:3000](http://localhost:3000) or
+[https://localhost:3443](https://localhost:3443) respectively
 
 #### Storybook
+
+We also utilise storybook for visualising some of our ui components in isolation.
 
 ```sh
 yarn storybook
 ```
 
-### Backend
+Our stories can then be viewed on http://localhost:6006
+
+#### Hardhat
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 #### Prisma
 
