@@ -64,25 +64,10 @@ Now if you go back to the UI you will be able to see your 3 CDPs in different st
 
 If you later want to change this scenario - it lives in [here](./scripts/hardhat_setup.ts)
 
-## Running Oasis Borrow Cache with Hardhat
-
-In order to utilise events it is required to run a local instance of
-[Oasis Borrow Cache](https://github.com/oasisDEX/oasis-borrow-cache). History will be produced if in
-the cache repository the following steps are completed:
-
-`./scripts/dev.sh`
-
-In other terminal window run:
-
-`yarn start-etl`
-
-In next terminal window run:
-
-`yarn start-api`
-
-Please ensure you are using at least node 12 for the database (./scripts/dev.sh)
-
 ## Misc
+
+The history will not work as the state of your CDP on your forked network will not match the state
+of mainnet that the cache is tracking. TODO later
 
 You are able to submit the transactions and they will be executed on the fork, so you can play with
 mainnet state with no mainnet ETH
