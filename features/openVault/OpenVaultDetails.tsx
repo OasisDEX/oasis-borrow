@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
@@ -164,7 +165,10 @@ export function OpenVaultDetails(props: OpenVaultState) {
           {t('system.collateralization-ratio')}
         </Heading>
         <Text sx={{ color: collRatioColor }} variant="display">
-          {formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })}
+          {formatPercent(afterCollateralizationRatio.times(100), {
+            precision: 2,
+            roundMode: BigNumber.ROUND_DOWN,
+          })}
         </Text>
       </Box>
 
