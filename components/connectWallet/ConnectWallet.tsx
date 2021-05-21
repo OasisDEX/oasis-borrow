@@ -27,7 +27,7 @@ import { WithChildren } from 'helpers/types'
 import { useRedirect } from 'helpers/useRedirect'
 import { mapValues } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { identity, Observable } from 'rxjs'
 import { first, tap } from 'rxjs/operators'
 import { Alert, Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
@@ -162,8 +162,6 @@ function ConnectWalletButton({
   connect?: () => void
   missingInjectedWallet: boolean
 }) {
-  const [hover, setHover] = useState(false)
-
   return (
     <ConnectWalletButtonWrapper {...{ missingInjectedWallet }}>
       <Button
@@ -172,10 +170,12 @@ function ConnectWalletButton({
           cursor: 'pointer',
           textAlign: 'center',
           width: '100%',
+          '&:hover .connect-wallet-arrow': {
+            transform: 'translateX(5px)',
+            opacity: '1',
+          },
         }}
         onClick={connect}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
       >
         <Flex sx={{ alignItems: 'center' }}>
           <Flex sx={{ ml: 1, mr: 3, alignItems: 'center' }}>
@@ -184,10 +184,11 @@ function ConnectWalletButton({
           <Flex sx={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <Box>{description}</Box>
             <Box
+              className="connect-wallet-arrow"
               sx={{
                 ml: 1,
-                opacity: hover ? 1 : 0,
-                transform: `translateX(${hover ? 5 : 0}px)`,
+                opacity: '0',
+                transform: 'translateX(0px)',
                 transition: 'opacity ease-in 0.2s, transform ease-in 0.3s',
               }}
             >
