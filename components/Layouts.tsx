@@ -25,7 +25,6 @@ export function BasicLayout({ header, footer, children, sx, variant }: BasicLayo
         bg: 'none',
         flexDirection: 'column',
         minHeight: '100%',
-        position: 'relative',
         ...sx,
       }}
     >
@@ -64,6 +63,7 @@ export function MarketingLayout({ children, variant }: MarketingLayoutProps) {
         header={<AppHeader />}
         footer={<Footer />}
         variant={variant || 'marketingContainer'}
+        sx={{ position: 'relative' }}
       >
         {children}
       </BasicLayout>
