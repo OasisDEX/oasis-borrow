@@ -25,6 +25,7 @@ export function BasicLayout({ header, footer, children, sx, variant }: BasicLayo
         bg: 'none',
         flexDirection: 'column',
         minHeight: '100%',
+        position: 'relative',
         ...sx,
       }}
     >
