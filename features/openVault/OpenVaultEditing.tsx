@@ -1,14 +1,13 @@
-// @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { VaultActionInput } from 'components/VaultActionInput'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Grid, Text } from 'theme-ui'
+import { Box, Button, Grid, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
 
-const PlusIcon = () => (
+export const PlusIcon = () => (
   <Icon
     name="plus"
     color="onSuccess"
@@ -16,7 +15,8 @@ const PlusIcon = () => (
     sx={{ display: 'inline', verticalAlign: 'bottom', marginRight: 1 }}
   />
 )
-const MinusIcon = () => (
+
+export const MinusIcon = () => (
   <Icon
     name="minus"
     color="onSuccess"
@@ -68,29 +68,21 @@ export function OpenVaultEditing(props: OpenVaultState) {
           hasError={false}
         />
         {showGenerateOptionButton && (
-          <Text
+          <Button
+            variant="actionOption"
             mt={3}
-            mb={2}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              cursor: 'pointer',
-              fontSize: 2,
-              fontWeight: 'semiBold',
-              color: 'onSuccess',
-              userSelect: 'none',
-              lineHeight: 1.25,
-            }}
             onClick={() => {
               toggleGenerateOption!()
             }}
           >
             {showGenerateOption ? <MinusIcon /> : <PlusIcon />}
-            {t('manage-vault.action-option', {
-              action: t('vault-actions.generate'),
-              token: 'DAI',
-            })}
-          </Text>
+            <Text pr={1}>
+              {t('manage-vault.action-option', {
+                action: t('vault-actions.generate'),
+                token: 'DAI',
+              })}
+            </Text>
+          </Button>
         )}
 
         {showGenerateOption && (
