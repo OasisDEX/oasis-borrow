@@ -65,7 +65,7 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
   }
 
   if (stage === 'openFailure' || stage === 'proxyFailure' || stage === 'allowanceFailure') {
-    if (state.txError.name === 'EthAppPleaseEnableContractData') {
+    if (state.txError?.name === 'EthAppPleaseEnableContractData') {
       errorMessages.push('ethAppPleaseEnableContractData')
     }
   }

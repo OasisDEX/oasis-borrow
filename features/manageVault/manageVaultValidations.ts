@@ -122,7 +122,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     stage === 'daiAllowanceFailure' ||
     stage === 'collateralAllowanceFailure'
   ) {
-    if (state.txError.name === 'EthAppPleaseEnableContractData') {
+    if (state.txError?.name === 'EthAppPleaseEnableContractData') {
       errorMessages.push('ethAppPleaseEnableContractData')
     }
   }
