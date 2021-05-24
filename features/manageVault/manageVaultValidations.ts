@@ -19,6 +19,7 @@ export type ManageVaultErrorMessage =
   | 'customDaiAllowanceAmountExceedsMaxUint256'
   | 'customDaiAllowanceAmountLessThanPaybackAmount'
   | 'depositingAllEthBalance'
+  | 'ethAppPleaseEnableContractData'
 
 export type ManageVaultWarningMessage =
   | 'potentialGenerateAmountLessThanDebtFloor'
@@ -112,6 +113,17 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     }
     if (customDaiAllowanceAmountLessThanPaybackAmount) {
       errorMessages.push('customDaiAllowanceAmountLessThanPaybackAmount')
+    }
+  }
+
+  if (
+    stage === 'manageFailure' ||
+    stage === 'proxyFailure' ||
+    stage === 'daiAllowanceFailure' ||
+    stage === 'collateralAllowanceFailure'
+  ) {
+    if (state.txError.name === 'EthAppPleaseEnableContractData') {
+      errorMessages.push('ethAppPleaseEnableContractData')
     }
   }
 
