@@ -11,6 +11,7 @@ export type OpenVaultErrorMessage =
   | 'generateAmountLessThanDebtFloor'
   | 'customAllowanceAmountExceedsMaxUint256'
   | 'customAllowanceAmountLessThanDepositAmount'
+  | 'ethAppPleaseEnableContractData'
 
 export function validateErrors(state: OpenVaultState): OpenVaultState {
   const {
@@ -60,6 +61,12 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
     }
     if (customAllowanceAmountLessThanDepositAmount) {
       errorMessages.push('customAllowanceAmountLessThanDepositAmount')
+    }
+  }
+
+  if (stage === 'openFailure' || stage === 'proxyFailure' || stage === 'allowanceFailure') {
+    if (state.txError.name === 'EthAppPleaseEnableContractData') {
+      errorMessages.push('ethAppPleaseEnableContractData')
     }
   }
 
