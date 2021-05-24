@@ -36,6 +36,10 @@ module.exports = withBundleAnalyzer(
           basePath,
           mixpanelEnv: process.env.MIXPANEL_ENV,
           mixpanelAPIKey: process.env.MIXPANEL_KEY,
+          useTermsOfService: process.env.USE_TERMS_OF_SERVICE === '1',
+          showBuildInfo: process.env.SHOW_BUILD_INFO === '1',
+          infuraProjectId: process.env.INFURA_PROJECT_ID,
+          etherscanAPIKey: process.env.ETHERSCAN_API_KEY,
         },
         webpack: function (config, { isServer }) {
           // TODO: Figure out how to disable mangling partially without bresking the aplication.
