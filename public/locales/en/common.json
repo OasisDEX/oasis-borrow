@@ -231,7 +231,8 @@
       "custom-collateral-allowance-amount-less-than-deposit-amount": "You need at least an allowance of your deposit amount to continue",
       "custom-dai-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
       "custom-dai-allowance-amount-less-than-payback-amount": "You need at least an allowance of your payback amount to continue",
-      "depositing-all-eth-balance": "You need some ETH to pay for the gas fees. Lower your deposit amount"
+      "depositing-all-eth-balance": "You need some ETH to pay for the gas fees. Lower your deposit amount",
+      "ledger-enable-contract-data": "Please enable Contract data on the Ledgers Ethereum app Settings"
     }
   },
   "max": "Max",
@@ -274,7 +275,8 @@
       "debt-will-be-less-than-debt-floor": "The Maker Vault debt amount either must be 0 or exceed {{debtFloor}} amount of Dai. Please change your payback amount",
       "custom-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
       "custom-allowance-amount-less-than-deposit-amount": "You need at least an allowance of your deposit amount to continue",
-      "depositing-all-eth-balance": "You need some ETH to pay for the gas fees. Lower your deposit amount"
+      "depositing-all-eth-balance": "You need some ETH to pay for the gas fees. Lower your deposit amount",
+      "ledger-enable-contract-data": "Please enable Contract data on the Ledgers Ethereum app Settings"
     }
   },
   "or": "or",
