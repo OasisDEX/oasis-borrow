@@ -184,7 +184,7 @@ export function VaultOverviewOwnershipBanner({
   )
 }
 
-export function VaultLiquidating({
+export function VaultLiquidatingBanner({
   id,
   token,
   isVaultController,
@@ -399,7 +399,7 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
         />
       )
     case 'liquidating':
-      return <VaultLiquidating {...{ token, id, controller, isVaultController }} />
+      return <VaultLiquidatingBanner {...{ token, id, controller, isVaultController }} />
     case 'ownership':
       return <VaultOwnershipBanner {...{ account, controller }} />
     case 'liquidatingNextPrice':
