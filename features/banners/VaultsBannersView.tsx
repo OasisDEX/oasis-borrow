@@ -65,7 +65,7 @@ export function VaultBanner({
   )
 }
 
-export function VaultLiquidatingBanner({
+export function VaultLiquidatingNextPriceBanner({
   id,
   token,
   isVaultController,
@@ -180,6 +180,47 @@ export function VaultOverviewOwnershipBanner({
         </Text>
       }
       color="banner.muted"
+    />
+  )
+}
+
+export function VaultLiquidating({
+  id,
+  token,
+  isVaultController,
+  controller,
+}: Pick<VaultBannersState, 'id' | 'token' | 'isVaultController' | 'controller'>) {
+  const { t } = useTranslation()
+
+  const headerTranslationOptions = {
+    collateral: token.toUpperCase(),
+    id: id.toString(),
+  }
+
+  const header = isVaultController
+    ? t('vault-banners.liquidating.header1', headerTranslationOptions)
+    : t('vault-banners.liquidating.header2', headerTranslationOptions)
+
+  const subheader = isVaultController
+    ? t('vault-banners.liquidating.subheader3')
+    : t('vault-banners.liquidating.subheader2', { address: controller })
+
+  return (
+    <VaultBanner
+      status={
+        <>
+          <StatusFrame
+            sx={{
+              borderColor: '#FBE1D9',
+            }}
+          >
+            <Icon size="auto" height="24" width="6" name="exclamationMark" color="banner.danger" />
+          </StatusFrame>
+        </>
+      }
+      header={header}
+      subheader={subheader}
+      color="banner.danger"
     />
   )
 }
@@ -358,13 +399,15 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
         />
       )
     case 'liquidating':
+      return <VaultLiquidating {...{ token, id, controller, isVaultController }} />
+    case 'ownership':
+      return <VaultOwnershipBanner {...{ account, controller }} />
+    case 'liquidatingNextPrice':
       return (
-        <VaultLiquidatingBanner
+        <VaultLiquidatingNextPriceBanner
           {...{ token, id, dateNextCollateralPrice, isVaultController, controller }}
         />
       )
-    case 'ownership':
-      return <VaultOwnershipBanner {...{ account, controller }} />
     default:
       return null
   }

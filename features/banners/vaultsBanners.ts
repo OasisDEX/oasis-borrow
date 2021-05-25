@@ -8,6 +8,8 @@ import moment from 'moment'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, startWith, switchMap } from 'rxjs/operators'
 
+type BannerTypes = 'ownership' | 'liquidating' | 'liquidated' | 'liquidatingNextPrice'
+
 export type VaultBannersState = Pick<
   Vault,
   | 'id'
@@ -19,7 +21,7 @@ export type VaultBannersState = Pick<
 > &
   Pick<PriceInfo, 'dateNextCollateralPrice'> & {
     account?: string
-    banner?: 'ownership' | 'liquidating' | 'liquidated'
+    banner?: BannerTypes
     hasBeenLiquidated: boolean
     isVaultController: boolean
   }
@@ -40,10 +42,17 @@ function assignBanner(state: VaultBannersState): VaultBannersState {
     }
   }
 
-  if (underCollateralized || underCollateralizedAtNextPrice) {
+  if (underCollateralized) {
     return {
       ...state,
       banner: 'liquidating',
+    }
+  }
+
+  if (underCollateralizedAtNextPrice) {
+    return {
+      ...state,
+      banner: 'liquidatingNextPrice',
     }
   }
 
