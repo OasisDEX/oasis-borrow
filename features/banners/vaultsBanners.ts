@@ -35,13 +35,6 @@ function assignBanner(state: VaultBannersState): VaultBannersState {
     underCollateralizedAtNextPrice,
   } = state
 
-  if (hasBeenLiquidated) {
-    return {
-      ...state,
-      banner: 'liquidated',
-    }
-  }
-
   if (underCollateralized) {
     return {
       ...state,
@@ -56,6 +49,13 @@ function assignBanner(state: VaultBannersState): VaultBannersState {
     }
   }
 
+  if (hasBeenLiquidated) {
+    return {
+      ...state,
+      banner: 'liquidated',
+    }
+  }
+
   if (!account || account !== controller) {
     return {
       ...state,
@@ -67,7 +67,7 @@ function assignBanner(state: VaultBannersState): VaultBannersState {
 }
 
 function onlyAuctionStartedEvents(event: VaultHistoryEvent) {
-  return event.kind === 'AUCTION_STARTED'
+  return event.kind === 'AUCTION_STARTED' || event.kind === 'AUCTION_STARTED_V2'
 }
 
 function eventsFromLastWeek(event: VaultHistoryEvent) {
