@@ -114,7 +114,7 @@ export function VaultLiquidatingNextPriceBanner({
         ${
           !isVaultController && controller
             ? t('vault-banners.liquidating.subheader2', { address: formatAddress(controller) })
-            : t('vault-banners.liquidation.subheader1')
+            : t('vault-banners.liquidating.subheader1')
         }
       `}
       color="banner.warning"
