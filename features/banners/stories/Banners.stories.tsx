@@ -52,6 +52,7 @@ export const VaultLiquidatingNextPrice = () => (
   <appContext.Provider value={{ reclaimCollateral$: mockedReclaimCollateral } as any}>
     <Container>
       <Box sx={{ mb: 3 }}>
+        <Text>Owner viewing vault</Text>
         <VaultLiquidatingNextPriceBanner
           token="ETH"
           controller="0x00"
@@ -61,11 +62,12 @@ export const VaultLiquidatingNextPrice = () => (
         />
       </Box>
       <Box sx={{ mb: 3 }}>
+        <Text>Other user viewing vault</Text>
         <VaultLiquidatingNextPriceBanner
           token="ETH"
           controller="0x00"
           id={new BigNumber(1)}
-          isVaultController={true}
+          isVaultController={false}
           dateNextCollateralPrice={new Date(Date.now())}
         />
       </Box>
