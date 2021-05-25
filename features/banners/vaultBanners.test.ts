@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-import { VaultEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { mockPriceInfo$ } from 'helpers/mocks/priceInfo.mock'
 import { mockVault$ } from 'helpers/mocks/vaults.mock'

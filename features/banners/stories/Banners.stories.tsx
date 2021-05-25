@@ -6,9 +6,9 @@ import { Box, Container, Text } from 'theme-ui'
 
 import {
   VaultLiquidatedBanner,
-  VaultOwnershipBanner,
-  VaultLiquidatingNextPriceBanner,
   VaultLiquidatingBanner,
+  VaultLiquidatingNextPriceBanner,
+  VaultOwnershipBanner,
 } from '../VaultsBannersView'
 
 const mockedReclaimCollateral = () => of({})
