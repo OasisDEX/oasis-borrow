@@ -1,7 +1,7 @@
 {
   "name": "oasis-borrow",
   "version": "1.0.0",
-  "private": true,
+  "license": "Apache-2.0",
   "scripts": {
     "start": "ts-node --project ./tsconfig.dev.json -r tsconfig-paths/register -r dotenv-flow/config ./server/server.ts",
     "start:prod": "yarn migrate && TS_NODE_PROJECT=tsconfig.dev.json node -r ts-node/register --max-old-space-size=3049 -r tsconfig-paths/register -r dotenv-flow/config ./server/server.ts",
