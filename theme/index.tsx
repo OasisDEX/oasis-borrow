@@ -1292,6 +1292,7 @@ const oasisBaseTheme = {
       },
     },
     actionOption: {
+      fontFamily: 'body',
       display: 'flex',
       alignItems: 'center',
       cursor: 'pointer',

@@ -99,8 +99,19 @@ export function formatPrecision(amount: BigNumber, precision: number): string {
   return amount.toFormat(precision, BigNumber.ROUND_DOWN)
 }
 
-export function formatPercent(number: BigNumber, { precision = 0, plus = false } = {}) {
-  return (plus && number.isGreaterThan(0) ? '+' : '') + String(number.toFixed(precision)) + '%'
+interface FormatPercentOptions {
+  precision?: number
+  plus?: boolean
+  roundMode?: BigNumber.RoundingMode
+}
+
+export function formatPercent(
+  number: BigNumber,
+  { precision = 0, plus = false, roundMode = undefined }: FormatPercentOptions = {},
+) {
+  const sign = plus && number.isGreaterThan(0) ? '+' : ''
+
+  return `${sign}${number.toFixed(precision, roundMode)}%`
 }
 
 export function formatDateTime(time: Date, showMs?: boolean): string {

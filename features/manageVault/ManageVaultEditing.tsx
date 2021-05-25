@@ -1,29 +1,11 @@
-// @ts-ignore
-import { Icon } from '@makerdao/dai-ui-icons'
 import { VaultActionInput } from 'components/VaultActionInput'
+import { MinusIcon, PlusIcon } from 'features/openVault/OpenVaultEditing'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
-
-const PlusIcon = () => (
-  <Icon
-    name="plus"
-    color="onSuccess"
-    size={20}
-    sx={{ display: 'inline', verticalAlign: 'bottom', marginRight: 1 }}
-  />
-)
-const MinusIcon = () => (
-  <Icon
-    name="minus"
-    color="onSuccess"
-    size={20}
-    sx={{ display: 'inline', verticalAlign: 'bottom', marginRight: 1 }}
-  />
-)
 
 function DepositInput({
   maxDepositAmount,

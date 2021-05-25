@@ -27,7 +27,7 @@ const FOOTER_LINKS = [
 ]
 
 function LanguageSelect() {
-  const { t, i18n } = useTranslation('common')
+  const { t, i18n } = useTranslation()
   const router = useRouter()
 
   const LANGUAGE_OPTIONS = [
@@ -129,7 +129,7 @@ export function TemporaryFooter() {
 }
 
 export function Footer() {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation()
 
   return (
     <Box as="footer" sx={{ position: 'relative', zIndex: 'footer' }}>

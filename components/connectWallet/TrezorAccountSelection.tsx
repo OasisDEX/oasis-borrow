@@ -17,7 +17,7 @@ type TrezorAccountSelectionProps = {
 }
 
 export function TrezorAccountSelection({ web3Context, cancel }: TrezorAccountSelectionProps) {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation()
   const PageLength = 5
   const [page, setPage] = useState(1)
   const [accounts, setAccounts] = useState<AccountWithBalances[]>()
