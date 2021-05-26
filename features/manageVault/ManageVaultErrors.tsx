@@ -74,7 +74,7 @@ export function ManageVaultErrors({
         return translate('custom-dai-allowance-amount-less-than-payback-amount')
       case 'depositingAllEthBalance':
         return translate('depositing-all-eth-balance')
-      case 'ethAppPleaseEnableContractData':
+      case 'ledgerWalletContractDataDisabled':
         return translate('ledger-enable-contract-data')
       default:
         throw new UnreachableCaseError(message)

@@ -19,7 +19,7 @@ export type ManageVaultErrorMessage =
   | 'customDaiAllowanceAmountExceedsMaxUint256'
   | 'customDaiAllowanceAmountLessThanPaybackAmount'
   | 'depositingAllEthBalance'
-  | 'ethAppPleaseEnableContractData'
+  | 'ledgerWalletContractDataDisabled'
 
 export type ManageVaultWarningMessage =
   | 'potentialGenerateAmountLessThanDebtFloor'
@@ -123,7 +123,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     stage === 'collateralAllowanceFailure'
   ) {
     if (state.txError?.name === 'EthAppPleaseEnableContractData') {
-      errorMessages.push('ethAppPleaseEnableContractData')
+      errorMessages.push('ledgerWalletContractDataDisabled')
     }
   }
 
