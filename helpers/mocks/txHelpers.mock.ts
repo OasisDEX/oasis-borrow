@@ -38,6 +38,22 @@ export function mockTxState<T extends TxMeta>(
       receipt,
     })
   }
+  if (status === TxStatus.Error) {
+    return of({
+      account: '0x',
+      txNo: 0,
+      networkId: '1',
+      meta,
+      start: new Date(),
+      lastChange: new Date(),
+      dismissed: false,
+      status,
+      txHash: '0xhash',
+      blockNumber: 0,
+      receipt,
+      error: undefined,
+    })
+  }
   if (status === TxStatus.WaitingForApproval) {
     return of({
       account: '0x',

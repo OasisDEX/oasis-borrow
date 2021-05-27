@@ -11,6 +11,7 @@ import { DEFAULT_PROXY_ADDRESS, defaultCollateral, defaultDebt } from 'helpers/m
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { of, Subject } from 'rxjs'
+import { map } from 'rxjs/internal/operators'
 
 describe('manageVault', () => {
   describe('createManageVault$', () => {
@@ -469,5 +470,28 @@ describe('manageVault', () => {
         expect(state().stage).to.deep.equal('manageSuccess')
       })
     })
+  })
+
+  it('should add meaningful message when ledger throws error with disabled contract data', () => {
+    const state = getStateUnpacker(
+      mockManageVault$({
+        _txHelpers$: of({
+          ...protoTxHelpers,
+          sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+            mockTxState(meta, TxStatus.Error).pipe(
+              map((txState) => ({ ...txState, error: { name: 'EthAppPleaseEnableContractData' } })),
+            ),
+        }),
+        vault: {
+          collateral: new BigNumber('400'),
+          debt: new BigNumber('3000'),
+        },
+        proxyAddress: DEFAULT_PROXY_ADDRESS,
+      }),
+    )
+
+    state().progress!()
+    state().progress!()
+    expect(state().errorMessages).to.deep.equal(['ledgerWalletContractDataDisabled'])
   })
 })
