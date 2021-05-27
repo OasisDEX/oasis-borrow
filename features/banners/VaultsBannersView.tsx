@@ -211,7 +211,7 @@ export function VaultLiquidatingBanner({
         <>
           <StatusFrame
             sx={{
-              borderColor: '#FBE1D9',
+              borderColor: 'banner.dangerBorder',
             }}
           >
             <Icon size="auto" height="24" width="6" name="exclamationMark" color="banner.danger" />
@@ -267,7 +267,7 @@ export function VaultLiquidatedBanner({
         <>
           <StatusFrame
             sx={{
-              borderColor: '#FBE1D9',
+              borderColor: 'banner.dangerBorder',
             }}
           >
             <Icon size="auto" height="24" width="6" name="exclamationMark" color="banner.danger" />
