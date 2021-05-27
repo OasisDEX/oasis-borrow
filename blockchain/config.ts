@@ -1,5 +1,6 @@
 import { ContractDesc } from '@oasisdex/web3-context'
 import { keyBy } from 'lodash'
+import getConfig from 'next/config'
 import { Dictionary } from 'ts-essentials'
 
 import * as eth from './abi/ds-eth-token.json'
@@ -32,9 +33,10 @@ export function contractDesc(abi: any, address: string): ContractDesc {
   return { abi, address }
 }
 
-// const infuraProjectId = 'd96fcc7c667e4a03abf1cecd266ade2d'
-const infuraProjectId = '58073b4a32df4105906c702f167b91d2'
-// https://kovan.infura.io/v3/58073b4a32df4105906c702f167b91d2
+const infuraProjectId =
+  process.env.INFURA_PROJECT_ID || getConfig()?.publicRuntimeConfig?.infuraProjectId || ''
+const etherscanAPIKey =
+  process.env.ETHERSCAN_API_KEY || getConfig()?.publicRuntimeConfig?.etherscan || ''
 
 const protoMain = {
   id: '1',
@@ -127,7 +129,7 @@ const kovan: NetworkConfig = {
   etherscan: {
     url: 'https://kovan.etherscan.io',
     apiUrl: 'https://api-kovan.etherscan.io/api',
-    apiKey: '34JVYM6RPM3J1SK8QXQFRNSHD9XG4UHXVU',
+    apiKey: etherscanAPIKey || '',
   },
   taxProxyRegistries: [kovanAddresses.PROXY_REGISTRY],
   dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, kovanAddresses.PROXY_ACTIONS_DSR),

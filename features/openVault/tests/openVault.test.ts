@@ -11,6 +11,7 @@ import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { of, Subject } from 'rxjs'
+import { map } from 'rxjs/operators'
 
 import { parseVaultIdFromReceiptLogs } from '../openVaultTransactions'
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
@@ -381,5 +382,26 @@ describe('openVault', () => {
       state().progress!()
       expect(state().stage).to.deep.equal('openFailure')
     })
+  })
+
+  it('should add meaningful message when ledger throws error with disabled contract data', () => {
+    const _proxyAddress$ = new Subject<string>()
+    const state = getStateUnpacker(
+      mockOpenVault$({
+        _proxyAddress$,
+        _txHelpers$: of({
+          ...protoTxHelpers,
+          sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+            mockTxState(meta, TxStatus.Error).pipe(
+              map((txState) => ({ ...txState, error: { name: 'EthAppPleaseEnableContractData' } })),
+            ),
+        }),
+      }),
+    )
+
+    _proxyAddress$.next()
+    state().progress!()
+    state().progress!()
+    expect(state().errorMessages).to.deep.equal(['ledgerWalletContractDataDisabled'])
   })
 })
