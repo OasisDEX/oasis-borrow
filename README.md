@@ -52,6 +52,8 @@ Monitor the logs and wait for the migrations to complete. This should be evident
 In a second terminal we can then begin the web server instance over http or https (https is required
 for testing hardware wallets):
 
+*Note: Make sure you have everything setup correctly according to the configuration explain [here](#Configuration)
+
 ```sh
 yarn start
 
@@ -78,6 +80,49 @@ staging environment can be found by navigating to https://storybook.oasis.app.
 For specific deployments, users can navigate to
 [https://storybook.oasis.app/<COMMIT_HASH>/index.html](https://storybook.oasis.app/<COMMIT_HASH>/index.html])
 where the `<COMMIT_HASH>` is the shortened commit hash of the branch/commit that has been pushed.
+
+<br>
+
+### Configuration
+
+The application consists of two parts
+
+- `next.js`
+
+- custom `express` server
+
+There is the `next.config.js` which contains the configuration for `next.js`.
+This configuration is created during build time thus The env variables that are used in this file will be evaluated during *build time*.
+
+Some of the values that are used you can check in the `.env` file.
+
+#### List of the `build-time` env vars:
+
+- `COMMIT_SHA` - The value is used together with `SHOW_BUILD_INFO`. Main usages is to display a commit in the footer. This targets build deployments to staging environments so that the team can see which version the UI reflects. The value could be a branch name or specific commit.
+
+- `MIXPANEL_ENV` - The value could be either `production` or anything else you'd like to use to denote that it's NOT production. The difference is where the events are sent. For "development" environments the events will be displayed in the dev console within the browser. If the env is set to `production` then all the events will be actually sent to Mixpanel.
+
+- `MIXPANEL_KEY` - The value will be used for `production` environments. This is the project key that is generated from Mixpanel.
+
+- `USE_TERMS_OF_SERVICE` - In order to use some functionalities the user should read and accept Terms of Service. For development purposes, this feature can be disabled. You can disable this feature if you'd like to remove that functionality at all. The values are either `0` (disabled)  or `1` (enabled).
+
+- `SHOW_BUILD_INFO` - The value will determine whether an information about the build is diplayed in the footer. Currently we display only the build time and commit from which it is built. This targets deployments to staging environments so that the tam can see which version the UI reflects. The value is either `0` (disabled) or `1` (enabled)
+
+- `INFURA_PROJECT_ID` - This is used in cases where the user hasn't authorized the application to access their wallet ( hasn't connected their wallet - `read-only` mode) or when the application is accessed with a specific provider injected.
+
+- `ETHERSCAN_API_KEY` - The value is used to create the corresponding etherscan endpoint. For each transaction, there is a url that leads to that TX details in etherscan.
+
+As mentioned previously, there is also the custom express server part which uses the env variables at *run time*
+
+#### List of the `run-time` env vars:
+
+- `INFURA_PROJECT_ID_BACKEND` - This is used mainly together with the `<build_time>.USE_TERM_OF_SERVICE`. It is related with Argent internals. On the backend we need to connect to a node in order to verify the wallet that is signing the Terms of Service.
+
+- `CHALLENGE_JWT_SECRET` - Could be any value. This is used on the server to sign JWT message.
+
+- `USER_JWT_SECRET` - Could be any value different from `CHALLENGE_JWT_SECRET`. This is used when the user signs the Terms of Service.
+
+*Note: Make sure that you call the process that build the project with the `build-time` vars and make sure that you call the proces that runs the application with the `run-time` vars.*
 
 <br>
 
