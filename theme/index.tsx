@@ -921,6 +921,7 @@ const oasisBaseTheme = {
       warning: '#FF6A16',
       danger: '#FE4343',
       muted: 'primary',
+      dangerBorder: '#FBE1D9',
     },
     counter: {
       primary: '#FF7B31',

@@ -53,6 +53,8 @@ export function OpenVaultErrors({
         return translate('custom-allowance-amount-less-than-deposit-amount')
       case 'depositingAllEthBalance':
         return translate('depositing-all-eth-balance')
+      case 'ledgerWalletContractDataDisabled':
+        return translate('ledger-enable-contract-data')
       default:
         throw new UnreachableCaseError(message)
     }
