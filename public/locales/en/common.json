@@ -439,7 +439,8 @@
       "header1": "Your {{ collateral }} Maker Vault {{ id }} is about to get liquidated.",
       "header2": "{{ collateral }} Maker Vault {{ id }} is about to get liquidated.",
       "subheader1": "The next price update of {{ collateral }} will cause a liquidation on this Maker Vault unless collateral is added, or Dai is paid back.",
-      "subheader2": "Is this your Maker Vault? Please connect with address: {{ address }} and save your Maker Vault from liquidation."
+      "subheader2": "Is this your Maker Vault? Please connect with address: {{ address }} and save your Maker Vault from liquidation.",
+      "subheader3": "This Vault is now available for liquidation and can be liquidated at anytime."
     },
     "liquidated": {
       "header1": "Your Maker Vault got liquidated",
