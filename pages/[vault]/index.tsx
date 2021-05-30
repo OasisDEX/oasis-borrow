@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { UrgentAnnouncement } from 'components/Announcement'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { VaultBannersView } from 'features/banners/VaultsBannersView'
@@ -26,6 +27,7 @@ export default function Vault({ id }: { id: string }) {
       <WithTermsOfService>
         <Grid gap={0} sx={{ width: '100%' }}>
           <BackgroundLight />
+          <UrgentAnnouncement />
           <VaultBannersView id={new BigNumber(id)} />
           <ManageVaultView id={new BigNumber(id)} />
           <VaultHistoryView id={new BigNumber(id)} />
