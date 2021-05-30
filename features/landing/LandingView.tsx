@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Pages } from 'analytics/analytics'
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
-import { Announcement } from 'components/Announcement'
+import { Announcement, UrgentAnnouncement } from 'components/Announcement'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
@@ -117,7 +117,7 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
   },
 ]
 
-function WithArrow({ children }: React.PropsWithChildren<{}>) {
+export function WithArrow({ children }: React.PropsWithChildren<{}>) {
   return (
     <Text
       variant="paragraph3"
@@ -156,6 +156,9 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
         flexDirection: 'column',
       }}
     >
+      {/* TODO: DELETE IT EVERYWHERE */}
+      <UrgentAnnouncement />
+
       <Announcement sx={{ mb: 3, textAlign: 'left' }}>
         <Flex sx={{ flexDirection: ['column', 'row'] }}>
           <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', fontSize: [1, 2], mr: 3 }}>
@@ -189,9 +192,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
       <Text variant="paragraph1" sx={{ mb: 4, color: 'lavender' }}>
         <Trans i18nKey="landing.hero.subheader" components={[<br />]} />
       </Text>
-
       <Image sx={{ mb: 4 }} src={staticFilesRuntimeUrl('/static/img/icons_set.svg')} />
-
       {!isConnected && (
         <AppLink
           href="/connect"
