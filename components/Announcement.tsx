@@ -1,10 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { WithArrow } from 'features/landing/LandingView'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
 import { Flex, Grid, SxProps, Text } from 'theme-ui'
-
-import { AppLink } from './Links'
 
 export function Announcement({ children, sx }: WithChildren & SxProps) {
   return (
@@ -45,12 +42,11 @@ export function UrgentAnnouncement() {
       <Grid gap={2}>
         <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', fontSize: [1, 2], mr: 3 }}>
           NOTE: You may currently experience issues if trying to generate Dai due to the Maker
-          Protocol being over its Global Debt Ceiling. <br /> There is a Governance Vote out for
-          raising the debt ceiling. Please try again later.
+          Protocol being over its Global Debt Ceiling.
+          <br /> A governance vote that raises the debt ceiling has passed and is available for
+          execution on Jun 2, 2021, 04:31 UTC.
+          <br /> Please try again at that time.
         </Text>
-        <AppLink href="https://vote.makerdao.com/executive/urgent-changes-oracle-whitelisting-liquidations-2-0-activations?network=mainnet#proposal-detail">
-          <WithArrow>Vote on Executive Proposal</WithArrow>
-        </AppLink>
       </Grid>
     </Announcement>
   )
