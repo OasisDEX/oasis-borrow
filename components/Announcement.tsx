@@ -44,7 +44,7 @@ export function UrgentAnnouncement() {
           NOTE: You may currently experience issues if trying to generate Dai due to the Maker
           Protocol being over its Global Debt Ceiling.
           <br /> A governance vote that raises the debt ceiling has passed and is available for
-          execution on Jun 2, 2021, 04:31 UTC.
+          execution on Jun 2, 2021, 14:00 UTC.
           <br /> Please try again at that time.
         </Text>
       </Grid>
