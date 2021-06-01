@@ -17,7 +17,6 @@ import {
 } from './openVaultCalculations'
 import {
   applyOpenVaultConditions,
-  applyOpenVaultStageCategorisation,
   defaultOpenVaultConditions,
   OpenVaultConditions,
 } from './openVaultConditions'
@@ -77,12 +76,12 @@ function apply(state: OpenVaultState, change: OpenVaultChange) {
   const s6 = applyOpenVaultEnvironment(change, s5)
   const s7 = applyOpenVaultInjectedOverride(change, s6)
   const s8 = applyOpenVaultCalculations(s7)
-  const s9 = applyOpenVaultStageCategorisation(s8)
-  const s10 = applyOpenVaultConditions(s9)
-  return applyOpenVaultSummary(s10)
+  const s9 = applyOpenVaultConditions(s8)
+  return applyOpenVaultSummary(s9)
 }
 
 export type OpenVaultStage =
+  | 'chooseVaultType'
   | 'editing'
   | 'proxyWaitingForConfirmation'
   | 'proxyWaitingForApproval'
@@ -110,6 +109,8 @@ export interface MutableOpenVaultState {
   allowanceAmount?: BigNumber
   id?: BigNumber
 }
+
+export const ALLOWED_LEVERAGE_TOKENS = ['ETH']
 
 interface OpenVaultFunctions {
   progress?: () => void
@@ -257,8 +258,15 @@ function addTransitions(
 export const defaultMutableOpenVaultState: MutableOpenVaultState = {
   stage: 'editing' as OpenVaultStage,
   showGenerateOption: false,
-  selectedAllowanceRadio: 'unlimited' as 'unlimited',
+  selectedAllowanceRadio: 'unlimited',
   allowanceAmount: maxUint256,
+}
+
+function getInitialStage({ token }: { token: string }): OpenVaultStage {
+  if (ALLOWED_LEVERAGE_TOKENS.includes(token)) {
+    return 'chooseVaultType'
+  }
+  return 'editing'
 }
 
 export function createOpenVault$(
@@ -308,6 +316,7 @@ export function createOpenVault$(
                       ...defaultMutableOpenVaultState,
                       ...defaultOpenVaultStateCalculations,
                       ...defaultOpenVaultConditions,
+                      stage: getInitialStage({ token }),
                       priceInfo,
                       balanceInfo,
                       ilkData,

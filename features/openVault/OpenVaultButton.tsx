@@ -19,6 +19,8 @@ function openVaultPrimaryButtonText({
   const { t } = useTranslation()
 
   switch (stage) {
+    case 'chooseVaultType':
+      return 'CHOOSE'
     case 'editing':
       return inputAmountsEmpty
         ? t('enter-an-amount')

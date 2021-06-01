@@ -1,5 +1,5 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
-import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { unhandledCaseError, UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
 import { OpenVaultStage, OpenVaultState } from './openVault'
@@ -9,13 +9,56 @@ const defaultOpenVaultStageCategories = {
   isProxyStage: false,
   isAllowanceStage: false,
   isOpenStage: false,
+  isChooseStage: false,
+}
+// NOTE: it's derived from state, should it be added to state?
+
+export enum FormStage {
+  CHOOSE_VAULT_TYPE,
+  EDITING,
+  PROXY,
+  ALLOWANCE,
+  RECEIPT,
+}
+export function getFormStage_(state: OpenVaultState) {
+  switch (state.stage) {
+    case 'chooseVaultType':
+      return FormStage.CHOOSE_VAULT_TYPE
+    case 'editing':
+      return FormStage.EDITING
+    case 'proxyWaitingForConfirmation':
+    case 'proxyWaitingForApproval':
+    case 'proxyInProgress':
+    case 'proxyFailure':
+    case 'proxySuccess':
+      return FormStage.PROXY
+    case 'allowanceWaitingForConfirmation':
+    case 'allowanceWaitingForApproval':
+    case 'allowanceInProgress':
+    case 'allowanceFailure':
+    case 'allowanceSuccess':
+      return FormStage.ALLOWANCE
+    case 'openWaitingForConfirmation':
+    case 'openWaitingForApproval':
+    case 'openInProgress':
+    case 'openFailure':
+    case 'openSuccess':
+      return FormStage.RECEIPT
+    default:
+      return unhandledCaseError(state.stage)
+  }
 }
 
-export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
+// NOTE: such solutions is open for invalid stages, eg. where editing and proxy is true or all are false.
+export function getFormStage(state: OpenVaultState) {
   switch (state.stage) {
+    case 'chooseVaultType':
+      return {
+        ...defaultOpenVaultStageCategories,
+        isChooseStage: true,
+      }
     case 'editing':
       return {
-        ...state,
         ...defaultOpenVaultStageCategories,
         isEditingStage: true,
       }
@@ -25,7 +68,6 @@ export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
     case 'proxyFailure':
     case 'proxySuccess':
       return {
-        ...state,
         ...defaultOpenVaultStageCategories,
         isProxyStage: true,
       }
@@ -35,7 +77,6 @@ export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
     case 'allowanceFailure':
     case 'allowanceSuccess':
       return {
-        ...state,
         ...defaultOpenVaultStageCategories,
         isAllowanceStage: true,
       }
@@ -45,7 +86,6 @@ export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
     case 'openFailure':
     case 'openSuccess':
       return {
-        ...state,
         ...defaultOpenVaultStageCategories,
         isOpenStage: true,
       }
@@ -55,10 +95,11 @@ export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
 }
 
 export interface OpenVaultConditions {
-  isEditingStage: boolean
-  isProxyStage: boolean
-  isAllowanceStage: boolean
-  isOpenStage: boolean
+  // isEditingStage: boolean
+  // isProxyStage: boolean
+  // isAllowanceStage: boolean
+  // isOpenStage: boolean
+  // isChooseStage: boolean
 
   inputAmountsEmpty: boolean
 

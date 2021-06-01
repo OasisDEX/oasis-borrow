@@ -5,6 +5,7 @@ import { UrgentAnnouncement } from 'components/Announcement'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
+import { unhandledCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Card, Divider, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
@@ -13,6 +14,7 @@ import { OpenVaultState } from './openVault'
 import { OpenVaultAllowance, OpenVaultAllowanceStatus } from './OpenVaultAllowance'
 import { createOpenVaultAnalytics$ } from './openVaultAnalytics'
 import { OpenVaultButton } from './OpenVaultButton'
+import { FormStage, getFormStage, getFormStage_ } from './openVaultConditions'
 import { OpenVaultConfirmation, OpenVaultStatus } from './OpenVaultConfirmation'
 import { OpenVaultDetails } from './OpenVaultDetails'
 import { OpenVaultEditing } from './OpenVaultEditing'
@@ -21,34 +23,63 @@ import { OpenVaultIlkDetails } from './OpenVaultIlkDetails'
 import { OpenVaultProxy } from './OpenVaultProxy'
 import { OpenVaultWarnings } from './OpenVaultWarnings'
 
-function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage, token }: OpenVaultState) {
+function getTitle(state: OpenVaultState) {
   const { t } = useTranslation()
+  const stage = getFormStage_(state)
+
+  switch (stage) {
+    case FormStage.CHOOSE_VAULT_TYPE:
+      return 'CHOOSE'
+    case FormStage.EDITING:
+      return t('vault-form.header.edit')
+    case FormStage.ALLOWANCE:
+      return t('vault-form.header.allowance', { token: state.token.toUpperCase() })
+    case FormStage.PROXY:
+      return t('vault-form.header.proxy')
+    case FormStage.RECEIPT:
+      return t('vault-form.header.confirm')
+    default:
+      return unhandledCaseError(stage)
+  }
+}
+
+function getSubtext(state: OpenVaultState) {
+  const { t } = useTranslation()
+  const stage = getFormStage_(state)
+
+  switch (stage) {
+    case FormStage.CHOOSE_VAULT_TYPE:
+      return 'Choose subtext'
+    case FormStage.EDITING:
+      return t('vault-form.subtext.edit')
+    case FormStage.ALLOWANCE:
+      return t('vault-form.subtext.allowance', { token: state.token.toUpperCase() })
+    case FormStage.PROXY:
+      return t('vault-form.subtext.proxy')
+    case FormStage.RECEIPT:
+      return t('vault-form.subtext.confirm')
+    default:
+      return unhandledCaseError(stage)
+  }
+}
+function OpenVaultTitle(props: OpenVaultState) {
+  const title = getTitle(props)
+  const subtext = getSubtext(props)
+
   return (
     <Box>
       <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
-        {isEditingStage
-          ? t('vault-form.header.edit')
-          : isProxyStage
-          ? t('vault-form.header.proxy')
-          : isAllowanceStage
-          ? t('vault-form.header.allowance', { token: token.toUpperCase() })
-          : t('vault-form.header.confirm')}
+        {title}
       </Text>
       <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
-        {isEditingStage
-          ? t('vault-form.subtext.edit')
-          : isProxyStage
-          ? t('vault-form.subtext.proxy')
-          : isAllowanceStage
-          ? t('vault-form.subtext.allowance')
-          : t('vault-form.subtext.confirm')}
+        {subtext}
       </Text>
     </Box>
   )
 }
 
 function OpenVaultForm(props: OpenVaultState) {
-  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
+  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = getFormStage(props)
 
   return (
     <Box>
