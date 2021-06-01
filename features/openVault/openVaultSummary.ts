@@ -14,12 +14,11 @@ export const defaultOpenVaultSummary: OpenVaultSummary = {
 
 export function applyOpenVaultSummary(state: OpenVaultState) {
   const {
-    isOpenStage,
     balanceInfo: { collateralBalance },
     afterCollateralBalance,
   } = state
 
-  if (isOpenStage) return state
+  if (state.stage === 'openSuccess') return state
 
   return {
     ...state,

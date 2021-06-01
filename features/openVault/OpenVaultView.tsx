@@ -7,14 +7,14 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { unhandledCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
-import { Box, Card, Divider, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
+import React, { useCallback, useEffect } from 'react'
+import { Box, Button, Card, Divider, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
 import { OpenVaultAllowance, OpenVaultAllowanceStatus } from './OpenVaultAllowance'
 import { createOpenVaultAnalytics$ } from './openVaultAnalytics'
 import { OpenVaultButton } from './OpenVaultButton'
-import { FormStage, getFormStage, getFormStage_ } from './openVaultConditions'
+import { FormStage, getFormStage_ } from './openVaultConditions'
 import { OpenVaultConfirmation, OpenVaultStatus } from './OpenVaultConfirmation'
 import { OpenVaultDetails } from './OpenVaultDetails'
 import { OpenVaultEditing } from './OpenVaultEditing'
@@ -23,49 +23,7 @@ import { OpenVaultIlkDetails } from './OpenVaultIlkDetails'
 import { OpenVaultProxy } from './OpenVaultProxy'
 import { OpenVaultWarnings } from './OpenVaultWarnings'
 
-function getTitle(state: OpenVaultState) {
-  const { t } = useTranslation()
-  const stage = getFormStage_(state)
-
-  switch (stage) {
-    case FormStage.CHOOSE_VAULT_TYPE:
-      return 'CHOOSE'
-    case FormStage.EDITING:
-      return t('vault-form.header.edit')
-    case FormStage.ALLOWANCE:
-      return t('vault-form.header.allowance', { token: state.token.toUpperCase() })
-    case FormStage.PROXY:
-      return t('vault-form.header.proxy')
-    case FormStage.RECEIPT:
-      return t('vault-form.header.confirm')
-    default:
-      return unhandledCaseError(stage)
-  }
-}
-
-function getSubtext(state: OpenVaultState) {
-  const { t } = useTranslation()
-  const stage = getFormStage_(state)
-
-  switch (stage) {
-    case FormStage.CHOOSE_VAULT_TYPE:
-      return 'Choose subtext'
-    case FormStage.EDITING:
-      return t('vault-form.subtext.edit')
-    case FormStage.ALLOWANCE:
-      return t('vault-form.subtext.allowance', { token: state.token.toUpperCase() })
-    case FormStage.PROXY:
-      return t('vault-form.subtext.proxy')
-    case FormStage.RECEIPT:
-      return t('vault-form.subtext.confirm')
-    default:
-      return unhandledCaseError(stage)
-  }
-}
-function OpenVaultTitle(props: OpenVaultState) {
-  const title = getTitle(props)
-  const subtext = getSubtext(props)
-
+function VaultTitle({ title, subtext }: { title: string; subtext?: string }) {
   return (
     <Box>
       <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
@@ -78,24 +36,138 @@ function OpenVaultTitle(props: OpenVaultState) {
   )
 }
 
-function OpenVaultForm(props: OpenVaultState) {
-  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = getFormStage(props)
+function ChooseStage(props: OpenVaultState) {
+  const { t } = useTranslation()
+  const chooseBorrow = () => props.setVaultType && props.setVaultType('borrow')
+  const chooseLeverage = () => props.setVaultType && props.setVaultType('leverage')
 
+  return (
+    <>
+      <VaultTitle title={t('vault-form.header.edit')} />
+      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
+        {t('vault-form.header.leverage')}
+      </Text>
+      <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
+        {t('vault-form.subtext.leverage')}
+      </Text>
+      <Button onClick={chooseLeverage}>Leverage ETH</Button>
+      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
+        {t('vault-form.header.borrow')}
+      </Text>
+      <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
+        {t('vault-form.subtext.borrow')}
+      </Text>
+      <Button onClick={chooseBorrow}>Borrow against {props.token}</Button>
+    </>
+  )
+}
+
+function LeverageStage(props: OpenVaultState) {
+  const { t } = useTranslation()
+  const chooseBorrow = useCallback(() => props.setVaultType && props.setVaultType('borrow'), [
+    props,
+  ])
+  return (
+    <>
+      <Button variant="textual" onClick={chooseBorrow}>
+        Switch to borrow
+      </Button>
+      <Button>Leverage stage</Button>
+    </>
+  )
+}
+
+function EditingStage(props: OpenVaultState) {
+  const { t } = useTranslation()
+  return (
+    <>
+      <VaultTitle title={t('vault-form.header.edit')} subtext={t('vault-form.subtext.edit')} />
+      <OpenVaultEditing {...props} />
+      <OpenVaultErrors {...props} />
+      <OpenVaultWarnings {...props} />
+      <OpenVaultButton {...props} />
+      <OpenVaultIlkDetails {...props} />
+    </>
+  )
+}
+
+function AllowanceStage(props: OpenVaultState) {
+  const { t } = useTranslation()
+  return (
+    <>
+      <VaultTitle
+        title={t('vault-form.header.allowance')}
+        subtext={t('vault-form.subtext.allowance')}
+      />
+      <OpenVaultAllowance {...props} />
+      <OpenVaultErrors {...props} />
+      <OpenVaultWarnings {...props} />
+      <OpenVaultButton {...props} />
+      <OpenVaultAllowanceStatus {...props} />
+      <OpenVaultIlkDetails {...props} />
+    </>
+  )
+}
+
+function ProxyStage(props: OpenVaultState) {
+  const { t } = useTranslation()
+  return (
+    <>
+      <VaultTitle
+        title={t('vault-form.header.confirm')}
+        subtext={t('vault-form.subtext.confirm')}
+      />
+      <OpenVaultErrors {...props} />
+      <OpenVaultWarnings {...props} />
+      <OpenVaultButton {...props} />
+      <OpenVaultProxy {...props} />
+      <OpenVaultIlkDetails {...props} />
+    </>
+  )
+}
+
+function ReceiptStage(props: OpenVaultState) {
+  const { t } = useTranslation()
+  return (
+    <>
+      <VaultTitle title={t('vault-form.header.proxy')} subtext={t('vault-form.subtext.proxy')} />
+      <OpenVaultConfirmation {...props} />
+      <OpenVaultErrors {...props} />
+      <OpenVaultWarnings {...props} />
+      <OpenVaultButton {...props} />
+      <OpenVaultStatus {...props} />
+      <OpenVaultIlkDetails {...props} />
+    </>
+  )
+}
+
+function FormComponent(props: OpenVaultState) {
+  const stage = getFormStage_(props)
+
+  switch (stage) {
+    case FormStage.CHOOSE_VAULT_TYPE:
+      return <ChooseStage {...props} />
+    case FormStage.EDITING:
+      return <EditingStage {...props} />
+    case FormStage.EDITING_LEVERAGE:
+      return <LeverageStage {...props} />
+    case FormStage.ALLOWANCE:
+      return <AllowanceStage {...props} />
+    case FormStage.PROXY:
+      return <ProxyStage {...props} />
+    case FormStage.RECEIPT:
+      return <ReceiptStage {...props} />
+    default:
+      return unhandledCaseError(stage)
+  }
+}
+
+function OpenVaultForm(props: OpenVaultState) {
   return (
     <Box>
       <Card variant="surface" sx={{ boxShadow: 'card', borderRadius: 'mediumLarge', px: 4, py: 3 }}>
         <Grid sx={{ mt: 2 }}>
-          <OpenVaultTitle {...props} />
-          {isEditingStage && <OpenVaultEditing {...props} />}
-          {isAllowanceStage && <OpenVaultAllowance {...props} />}
-          {isOpenStage && <OpenVaultConfirmation {...props} />}
-          <OpenVaultErrors {...props} />
-          <OpenVaultWarnings {...props} />
-          <OpenVaultButton {...props} />
-          {isProxyStage && <OpenVaultProxy {...props} />}
-          {isAllowanceStage && <OpenVaultAllowanceStatus {...props} />}
-          {isOpenStage && <OpenVaultStatus {...props} />}
-          <OpenVaultIlkDetails {...props} />
+          <FormComponent {...props} />
         </Grid>
       </Card>
     </Box>

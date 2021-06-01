@@ -471,6 +471,9 @@
   "invalid-allowance-amount": "Invalid allowance amount",
   "vault-form": {
     "header": {
+      "choose": "What do you want to do with your ETH?",
+      "leverage": "Leverage my ETH",
+      "borrow": "Borrow against my ETH",
       "edit": "Configure your Vault",
       "proxy": "Create your smart Proxy ",
       "allowance": "Set {{token}} allowance",
@@ -485,7 +488,9 @@
       "proxy": "With your smart proxy we can perform multiple actions in one transaction for your Vault. This proxy only needs to be set up once.",
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "daiAllowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
-      "confirm": "Review and verify details of your vault."
+      "confirm": "Review and verify details of your vault.",
+      "leverage": "Use your {{balance}} {{token}} to get a up to {{exposure}} {{token}} exposure.",
+      "borrow": "Use your {{balance}} {{token}} to borrow up to {{maxDebt}} DAI"
     }
   },
   "creating-your-vault": "Creating your {{token}} Vault!",

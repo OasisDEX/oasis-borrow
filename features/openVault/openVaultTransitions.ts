@@ -73,5 +73,13 @@ export function applyOpenVaultTransition(
     }
   }
 
+  if (change.kind === 'chooseVaultType') {
+    console.log(change)
+    return {
+      ...state,
+      stage: change.type === 'borrow' ? 'editing' : 'editingLeverage',
+    }
+  }
+
   return state
 }

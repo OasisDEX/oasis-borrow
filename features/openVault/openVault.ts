@@ -58,6 +58,11 @@ function applyOpenVaultInjectedOverride(change: OpenVaultChange, state: OpenVaul
   return state
 }
 
+interface OpenVaultChooseVaultTypeChange {
+  kind: 'chooseVaultType'
+  type: VaultType
+}
+
 export type OpenVaultChange =
   | OpenVaultInputChange
   | OpenVaultFormChange
@@ -66,6 +71,7 @@ export type OpenVaultChange =
   | OpenVaultAllowanceChange
   | OpenVaultEnvironmentChange
   | OpenVaultInjectedOverrideChange
+  | OpenVaultChooseVaultTypeChange
 
 function apply(state: OpenVaultState, change: OpenVaultChange) {
   const s1 = applyOpenVaultInput(change, state)
@@ -83,6 +89,7 @@ function apply(state: OpenVaultState, change: OpenVaultChange) {
 export type OpenVaultStage =
   | 'chooseVaultType'
   | 'editing'
+  | 'editingLeverage'
   | 'proxyWaitingForConfirmation'
   | 'proxyWaitingForApproval'
   | 'proxyInProgress'
@@ -110,12 +117,14 @@ export interface MutableOpenVaultState {
   id?: BigNumber
 }
 
+type VaultType = 'borrow' | 'leverage'
 export const ALLOWED_LEVERAGE_TOKENS = ['ETH']
 
 interface OpenVaultFunctions {
   progress?: () => void
   regress?: () => void
   toggleGenerateOption?: () => void
+  setVaultType?: (type: VaultType) => void
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
@@ -330,6 +339,7 @@ export function createOpenVault$(
                       errorMessages: [],
                       warningMessages: [],
                       summary: defaultOpenVaultSummary,
+                      setVaultType: (type) => change({ kind: 'chooseVaultType', type }),
                       injectStateOverride,
                     }
 

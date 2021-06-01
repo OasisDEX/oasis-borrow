@@ -1,5 +1,5 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
-import { unhandledCaseError, UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { unhandledCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
 import { OpenVaultStage, OpenVaultState } from './openVault'
@@ -16,6 +16,7 @@ const defaultOpenVaultStageCategories = {
 export enum FormStage {
   CHOOSE_VAULT_TYPE,
   EDITING,
+  EDITING_LEVERAGE,
   PROXY,
   ALLOWANCE,
   RECEIPT,
@@ -26,6 +27,8 @@ export function getFormStage_(state: OpenVaultState) {
       return FormStage.CHOOSE_VAULT_TYPE
     case 'editing':
       return FormStage.EDITING
+    case 'editingLeverage':
+      return FormStage.EDITING_LEVERAGE
     case 'proxyWaitingForConfirmation':
     case 'proxyWaitingForApproval':
     case 'proxyInProgress':
@@ -50,49 +53,50 @@ export function getFormStage_(state: OpenVaultState) {
 }
 
 // NOTE: such solutions is open for invalid stages, eg. where editing and proxy is true or all are false.
-export function getFormStage(state: OpenVaultState) {
-  switch (state.stage) {
-    case 'chooseVaultType':
-      return {
-        ...defaultOpenVaultStageCategories,
-        isChooseStage: true,
-      }
-    case 'editing':
-      return {
-        ...defaultOpenVaultStageCategories,
-        isEditingStage: true,
-      }
-    case 'proxyWaitingForConfirmation':
-    case 'proxyWaitingForApproval':
-    case 'proxyInProgress':
-    case 'proxyFailure':
-    case 'proxySuccess':
-      return {
-        ...defaultOpenVaultStageCategories,
-        isProxyStage: true,
-      }
-    case 'allowanceWaitingForConfirmation':
-    case 'allowanceWaitingForApproval':
-    case 'allowanceInProgress':
-    case 'allowanceFailure':
-    case 'allowanceSuccess':
-      return {
-        ...defaultOpenVaultStageCategories,
-        isAllowanceStage: true,
-      }
-    case 'openWaitingForConfirmation':
-    case 'openWaitingForApproval':
-    case 'openInProgress':
-    case 'openFailure':
-    case 'openSuccess':
-      return {
-        ...defaultOpenVaultStageCategories,
-        isOpenStage: true,
-      }
-    default:
-      throw new UnreachableCaseError(state.stage)
-  }
-}
+// export function getFormStage(state: OpenVaultState) {
+//   switch (state.stage) {
+//     case 'chooseVaultType':
+//       return {
+//         ...defaultOpenVaultStageCategories,
+//         isChooseStage: true,
+//       }
+//     case 'editing':
+//     case 'editingLeverage':
+//       return {
+//         ...defaultOpenVaultStageCategories,
+//         isEditingStage: true,
+//       }
+//     case 'proxyWaitingForConfirmation':
+//     case 'proxyWaitingForApproval':
+//     case 'proxyInProgress':
+//     case 'proxyFailure':
+//     case 'proxySuccess':
+//       return {
+//         ...defaultOpenVaultStageCategories,
+//         isProxyStage: true,
+//       }
+//     case 'allowanceWaitingForConfirmation':
+//     case 'allowanceWaitingForApproval':
+//     case 'allowanceInProgress':
+//     case 'allowanceFailure':
+//     case 'allowanceSuccess':
+//       return {
+//         ...defaultOpenVaultStageCategories,
+//         isAllowanceStage: true,
+//       }
+//     case 'openWaitingForConfirmation':
+//     case 'openWaitingForApproval':
+//     case 'openInProgress':
+//     case 'openFailure':
+//     case 'openSuccess':
+//       return {
+//         ...defaultOpenVaultStageCategories,
+//         isOpenStage: true,
+//       }
+//     default:
+//       throw new UnreachableCaseError(state.stage)
+//   }
+// }
 
 export interface OpenVaultConditions {
   // isEditingStage: boolean
