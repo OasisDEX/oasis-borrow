@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators'
 
 import { Context, ContextConnected } from '../network'
 import { GasPrice$ } from '../prices'
+
 import {
   CallDef as CallDefAbstractContext,
   createSendTransaction as createSendTransactionAbstractContext,
@@ -12,7 +13,7 @@ import {
   EstimateGasFunction as EstimateGasFunctionAbstractContext,
   SendTransactionFunction as SendTransactionFunctionAbstractContext,
   TransactionDef as TransactionDefAbstractContext,
-} from './callsHelpersContextParameterized'
+} from '@oasisdex/transactions'
 
 export type CallDef<A, R> = CallDefAbstractContext<A, R, Context>
 
