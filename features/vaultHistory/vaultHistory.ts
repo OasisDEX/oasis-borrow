@@ -11,7 +11,7 @@ import { map, switchMap } from 'rxjs/operators'
 import { ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
 const query = gql`
-  query VaultEvents($urn: String) {
+  query vaultEvents($urn: String) {
     allVaultEvents(
       filter: { urn: { equalTo: $urn }, kind: { notEqualTo: "TAKE" } }
       orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
@@ -99,6 +99,16 @@ export type VaultHistoryEvent = VaultEvent & {
     apiKey: string
   }
 }
+function fetchWithOperationId(url: string, options?: RequestInit) {
+  const operationNameRegex = /query (?<operationName>[a-zA-Z0-9]+)\(/gm
+
+  const body = typeof options?.body === 'string' ? options?.body : ''
+  const parsedBody: { query: string } = JSON.parse(body)
+  const result = operationNameRegex.exec(parsedBody.query)
+  const operationName = result ? result.groups?.operationName : undefined
+
+  return fetch(url, { ...options, body: JSON.stringify({ ...parsedBody, operationName }) })
+}
 
 export function createVaultHistory$(
   context$: Observable<Context>,
@@ -106,7 +116,10 @@ export function createVaultHistory$(
   vault$: (id: BigNumber) => Observable<Vault>,
   vaultId: BigNumber,
 ): Observable<VaultHistoryEvent[]> {
-  const makeClient = memoize((url: string) => new GraphQLClient(url))
+  const makeClient = memoize(
+    (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
+  )
+
   return combineLatest(context$, vault$(vaultId)).pipe(
     switchMap(([{ etherscan, cacheApi }, { address, token }]) =>
       onEveryBlock$.pipe(

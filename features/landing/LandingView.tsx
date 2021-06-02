@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Pages } from 'analytics/analytics'
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
-import { Announcement, UrgentAnnouncement } from 'components/Announcement'
+import { Announcement } from 'components/Announcement'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
@@ -156,9 +156,6 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
         flexDirection: 'column',
       }}
     >
-      {/* TODO: DELETE IT EVERYWHERE */}
-      <UrgentAnnouncement />
-
       <Announcement sx={{ mb: 3, textAlign: 'left' }}>
         <Flex sx={{ flexDirection: ['column', 'row'] }}>
           <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', fontSize: [1, 2], mr: 3 }}>
