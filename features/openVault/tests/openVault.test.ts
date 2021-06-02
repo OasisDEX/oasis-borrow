@@ -89,6 +89,22 @@ describe('openVault', () => {
       expect(state().generateAmount!).to.deep.equal(generateAmount)
     })
 
+    it('should update generate max only when a depositAmount is specified and the showGenerateOption is toggled', () => {
+      const depositAmount = new BigNumber('5')
+
+      const state = getStateUnpacker(mockOpenVault$())
+
+      state().updateGenerateMax!()
+      expect(state().generateAmount).to.be.undefined
+      state().updateDeposit!(depositAmount)
+      state().updateGenerateMax!()
+      expect(state().generateAmount).to.be.undefined
+      state().toggleGenerateOption!()
+      state().updateGenerateMax!()
+      expect(state().depositAmount!).to.deep.equal(depositAmount)
+      expect(state().generateAmount!).to.deep.equal(state().maxGenerateAmount)
+    })
+
     it('should deposit the max amount of collateral when updateDepositMax is triggered', () => {
       const collateralBalance = new BigNumber('10')
       const state = getStateUnpacker(
@@ -130,7 +146,7 @@ describe('openVault', () => {
       expect(state().stage).to.deep.equal('proxyWaitingForConfirmation')
     })
 
-    it('should create proxy', () => {
+    it('should create proxy and progress for non ETH ilk', () => {
       const _proxyAddress$ = new Subject<string>()
       const state = getStateUnpacker(
         mockOpenVault$({
@@ -149,9 +165,11 @@ describe('openVault', () => {
       _proxyAddress$.next(DEFAULT_PROXY_ADDRESS)
       expect(state().stage).to.deep.equal('proxySuccess')
       expect(state().proxyAddress).to.deep.equal(DEFAULT_PROXY_ADDRESS)
+      state().progress!()
+      expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
     })
 
-    it('should handle proxy failure', () => {
+    it('should handle proxy failure and back to editing after', () => {
       const _proxyAddress$ = new Subject<string>()
 
       const state = getStateUnpacker(
@@ -169,6 +187,8 @@ describe('openVault', () => {
       state().progress!()
       _proxyAddress$.next(DEFAULT_PROXY_ADDRESS)
       expect(state().stage).to.deep.equal('proxyFailure')
+      state().regress!()
+      expect(state().stage).to.deep.equal('editing')
     })
 
     it('should skip allowance flow from editing when allowance is insufficent and ilk is ETH-*', () => {
@@ -206,7 +226,7 @@ describe('openVault', () => {
       expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
     })
 
-    it('should set allowance to maximum', () => {
+    it('should handle set allowance to maximum and progress to editing', () => {
       const depositAmount = new BigNumber('100')
       const generateAmount = new BigNumber('20000')
 
@@ -228,9 +248,12 @@ describe('openVault', () => {
       state().progress!()
       expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
       expect(state().allowanceAmount!).to.deep.equal(maxUint256)
+      state().setAllowanceAmountUnlimited!()
       state().progress!()
       expect(state().stage).to.deep.equal('allowanceSuccess')
       expect(state().allowance!).to.be.deep.equal(maxUint256)
+      state().progress!()
+      expect(state().stage).to.deep.equal('editing')
     })
 
     it('should set allowance to depositAmount', () => {
@@ -294,7 +317,7 @@ describe('openVault', () => {
       expect(state().allowance!).to.be.deep.equal(customAllowanceAmount)
     })
 
-    it('should handle set allowance failure', () => {
+    it('should handle set allowance failure and regress allowance', () => {
       const depositAmount = new BigNumber('100')
       const generateAmount = new BigNumber('20000')
 
@@ -320,6 +343,8 @@ describe('openVault', () => {
       state().progress!()
       expect(state().stage).to.deep.equal('allowanceFailure')
       expect(state().allowance!).to.be.deep.eq(zero)
+      state().regress!()
+      expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
     })
 
     it('should progress to open vault tx flow from editing with proxyAddress and validAllowance', () => {
@@ -339,7 +364,7 @@ describe('openVault', () => {
       expect(state().stage).to.deep.equal('openWaitingForConfirmation')
     })
 
-    it('should open vault successfully', () => {
+    it('should open vault successfully and progress to editing', () => {
       const depositAmount = new BigNumber('100')
       const generateAmount = new BigNumber('20000')
 
@@ -362,9 +387,11 @@ describe('openVault', () => {
       state().progress!()
       expect(state().stage).to.deep.equal('openSuccess')
       expect(state().id!).to.deep.equal(new BigNumber('3281'))
+      state().progress!()
+      expect(state().stage).to.deep.equal('editing')
     })
 
-    it('should handle open vault tx failing', () => {
+    it('should handle open vault tx failing and back to editing', () => {
       const state = getStateUnpacker(
         mockOpenVault$({
           _txHelpers$: of({
@@ -380,6 +407,8 @@ describe('openVault', () => {
       state().progress!()
       state().progress!()
       expect(state().stage).to.deep.equal('openFailure')
+      state().regress!()
+      expect(state().stage).to.deep.equal('editing')
     })
   })
 })
