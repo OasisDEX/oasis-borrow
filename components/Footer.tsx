@@ -1,6 +1,5 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Logo } from 'components/Header'
 import { AppLink } from 'components/Links'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
@@ -8,7 +7,7 @@ import getConfig from 'next/config'
 import { useRouter } from 'next/router'
 import React from 'react'
 import ReactSelect from 'react-select'
-import { Box, Card, Container, Flex, Grid, Link, Text } from 'theme-ui'
+import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
 
 const {
   publicRuntimeConfig: { buildHash, buildDate, showBuildInfo },
@@ -19,9 +18,9 @@ const FOOTER_SECTIONS = [
     titleKey: 'landing.footer.about',
     links: [
       // add link
-      { labelKey: 'landing.footer.team', url: '/' },
+      // { labelKey: 'landing.footer.team', url: '/' },
       // add link
-      { labelKey: 'landing.footer.careers', url: '/' },
+      // { labelKey: 'landing.footer.careers', url: '/' },
       { labelKey: 'landing.footer.privacy', url: 'https://oasis.app/privacy' },
       { labelKey: 'landing.footer.terms', url: '/terms' },
       { labelKey: 'landing.footer.contact', url: 'https://oasis.app/contact', target: '_self' },
@@ -36,7 +35,7 @@ const FOOTER_SECTIONS = [
         url: 'https://oasis.app/support',
       },
       // add link
-      { labelKey: 'landing.footer.knowledge-centre', url: '/' },
+      // { labelKey: 'landing.footer.knowledge-centre', url: '/' },
       { labelKey: 'landing.footer.oracles', url: '/oracles' },
     ],
   },
@@ -171,7 +170,7 @@ export function Footer() {
           gap={[4, null, 5]}
         >
           <Grid gap={4}>
-            <Logo />
+            <Image src="/static/img/logo_footer.svg" />
             <Flex
               sx={{
                 alignItems: 'center',

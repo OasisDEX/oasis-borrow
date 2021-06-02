@@ -8,7 +8,7 @@ import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { TRANSITIONS } from 'theme'
-import { Box, Container, Flex, SxStyleProp, Text } from 'theme-ui'
+import { Box, Container, Flex, Image, SxStyleProp } from 'theme-ui'
 
 import { useAppContext } from './AppContextProvider'
 
@@ -26,7 +26,7 @@ export function Logo({ sx }: { sx?: SxStyleProp }) {
         ...sx,
       }}
     >
-      <Text sx={{ display: 'inline', mr: 2 }}>Oasis</Text>
+      <Image src="/static/img/logo.svg" />
     </AppLink>
   )
 }
