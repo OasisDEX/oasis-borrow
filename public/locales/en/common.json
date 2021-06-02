@@ -171,19 +171,27 @@
       "title": "Borrow FAQ's"
     },
     "footer": {
-      "blog": "Blog",
-      "contact": "Contact",
-      "faq": "FAQ",
       "language": {
         "en": "English",
         "es": "Español",
         "pt": "Português",
         "cn": "中文"
       },
+      "about": "About",
+      "team": "Team",
+      "careers": "Careers",
       "privacy": "Privacy",
       "terms": "Terms",
-      "trade": "Trade",
-      "oracles": "Oracles"
+      "contact": "Contact",
+      "resources": "Resources",
+      "blog": "Blog",
+      "faq": "FAQ",
+      "knowledge-centre": "Knowledge Centre",
+      "oracles": "Oracles",
+      "products": "Products",
+      "dai-wallet": "Dai Wallet",
+      "borrow": "Borrow",
+      "trade": "Trade"
     },
     "glossary-of-terms": "Glossary of terms",
     "hero": {

@@ -1,29 +1,53 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import { useRouter } from 'next/router'
 import React from 'react'
 import ReactSelect from 'react-select'
-import { Box, Card, Container, Flex, Grid, Link, Text } from 'theme-ui'
+import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
 
 const {
   publicRuntimeConfig: { buildHash, buildDate, showBuildInfo },
 } = getConfig()
 
-const FOOTER_LINKS = [
-  { labelKey: 'landing.footer.trade', url: 'https://oasis.app/trade', target: '_self' },
-  { labelKey: 'landing.footer.privacy', url: 'https://oasis.app/privacy' },
-  { labelKey: 'landing.footer.terms', url: '/terms' },
-  { labelKey: 'landing.footer.blog', url: 'https://blog.oasis.app' },
+const FOOTER_SECTIONS = [
   {
-    labelKey: 'landing.footer.faq',
-    url: 'https://oasis.app/support',
+    titleKey: 'landing.footer.about',
+    links: [
+      // add link
+      // { labelKey: 'landing.footer.team', url: '/' },
+      // add link
+      // { labelKey: 'landing.footer.careers', url: '/' },
+      { labelKey: 'landing.footer.privacy', url: 'https://oasis.app/privacy' },
+      { labelKey: 'landing.footer.terms', url: '/terms' },
+      { labelKey: 'landing.footer.contact', url: 'https://oasis.app/contact', target: '_self' },
+    ],
   },
-  { labelKey: 'landing.footer.contact', url: 'https://oasis.app/contact', target: '_self' },
-  { labelKey: 'landing.footer.oracles', url: '/oracles' },
+  {
+    titleKey: 'landing.footer.resources',
+    links: [
+      { labelKey: 'landing.footer.blog', url: 'https://blog.oasis.app' },
+      {
+        labelKey: 'landing.footer.faq',
+        url: 'https://oasis.app/support',
+      },
+      // add link
+      // { labelKey: 'landing.footer.knowledge-centre', url: '/' },
+      { labelKey: 'landing.footer.oracles', url: '/oracles' },
+    ],
+  },
+  {
+    titleKey: 'landing.footer.products',
+    links: [
+      { labelKey: 'landing.footer.dai-wallet', url: 'https://oasis.app/contact', target: '_self' },
+      { labelKey: 'landing.footer.borrow', url: '/' },
+      { labelKey: 'landing.footer.trade', url: 'https://oasis.app/trade', target: '_self' },
+    ],
+  },
 ]
 
 function LanguageSelect() {
@@ -90,14 +114,16 @@ function LanguageSelect() {
               display: 'inline-flex',
               justifyContent: 'space-between',
               alignItems: 'center',
+              fontSize: 3,
             }}
           >
             {children}
             <Icon
               name={menuIsOpen ? 'chevron_up' : 'chevron_down'}
               size="auto"
-              width="12px"
-              sx={{ ml: 2 }}
+              width="10px"
+              height="7px"
+              sx={{ ml: 1, position: 'relative', top: '1px' }}
             />
           </Box>
         ),
@@ -135,30 +161,52 @@ export function Footer() {
 
   return (
     <Box as="footer" sx={{ position: 'relative', zIndex: 'footer' }}>
-      <Container sx={{ maxWidth: '761px', mb: 5, pt: 2 }}>
-        <Flex
-          as="ul"
+      <Container sx={{ maxWidth: '824px', mb: 5, pb: 4, pt: 2 }}>
+        <Grid
           sx={{
             pl: 0,
-            justifyContent: ['flex-start', 'space-between'],
-            textAlign: 'center',
-            alignItems: 'center',
-            flexWrap: ['wrap', 'no-wrap'],
-            rowGap: [3, 0],
-            '> *': {
-              width: ['33.33%', 'auto'],
-            },
+            alignItems: 'flex-start',
           }}
+          columns={[2, '150px 1fr 1fr 1fr']}
+          gap={[4, null, 5]}
         >
-          {FOOTER_LINKS.map(({ labelKey, url, target }) => (
-            <Box key={labelKey} as="li" sx={{ listStyle: 'none', fontWeight: 'semiBold' }}>
-              <AppLink variant="nav" href={url} target={target}>
-                {t(labelKey)}
-              </AppLink>
-            </Box>
+          <Grid gap={4}>
+            <Image src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')} />
+            <Flex
+              sx={{
+                alignItems: 'center',
+                justifyContent: ['flex-start', 'space-between'],
+                a: {
+                  fontSize: '0px',
+                },
+              }}
+            >
+              <Flex sx={{ alignItems: 'center' }}>
+                {/* add link */}
+                <AppLink href="/">
+                  <Icon name="twitter" size="auto" width="18px" height="16px" />
+                </AppLink>
+                {/* add link */}
+                <AppLink href="/" sx={{ mx: 3 }}>
+                  <Icon name="discord" size="auto" width="20px" height="23px" />
+                </AppLink>
+              </Flex>
+              <LanguageSelect />
+            </Flex>
+          </Grid>
+          {FOOTER_SECTIONS.map(({ titleKey, links }) => (
+            <Grid key={titleKey} as="ul" pl={0}>
+              <Text sx={{ fontSize: 4, fontWeight: 'semiBold' }}>{t(titleKey)}</Text>
+              {links.map(({ labelKey, url, target }) => (
+                <Box key={labelKey} as="li" sx={{ listStyle: 'none' }}>
+                  <AppLink variant="navFooter" href={url} target={target}>
+                    {t(labelKey)}
+                  </AppLink>
+                </Box>
+              ))}
+            </Grid>
           ))}
-          <LanguageSelect />
-        </Flex>
+        </Grid>
       </Container>
       <TemporaryFooter />
     </Box>

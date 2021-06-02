@@ -1,7 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { getToken } from 'blockchain/tokensMetadata'
-import { UrgentAnnouncement } from 'components/Announcement'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
@@ -127,7 +126,6 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
 
   return (
     <Grid sx={{ width: '100%', zIndex: 1 }}>
-      <UrgentAnnouncement />
       <WithLoadingIndicator
         {...openVaultWithError}
         customError={<Box>{openVaultWithError.error?.message}</Box>}
