@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
-import { Flex, Grid, SxProps, Text } from 'theme-ui'
+import { Flex, SxProps } from 'theme-ui'
 
 export function Announcement({ children, sx }: WithChildren & SxProps) {
   return (
@@ -33,21 +33,5 @@ export function Announcement({ children, sx }: WithChildren & SxProps) {
       </Flex>
       {children}
     </Flex>
-  )
-}
-
-export function UrgentAnnouncement() {
-  return (
-    <Announcement sx={{ mb: 3, textAlign: 'left', zIndex: 1 }}>
-      <Grid gap={2}>
-        <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', fontSize: [1, 2], mr: 3 }}>
-          NOTE: You may currently experience issues if trying to generate Dai due to the Maker
-          Protocol being over its Global Debt Ceiling.
-          <br /> A governance vote that raises the debt ceiling has passed and is available for
-          execution on Jun 2, 2021, 14:00 UTC.
-          <br /> Please try again at that time.
-        </Text>
-      </Grid>
-    </Announcement>
   )
 }
