@@ -15,7 +15,7 @@ export interface Content {
 
 const v1: Content = {
   tos: {
-    version: 'version-1.03.2021',
+    version: 'version-1.06.2021',
     content: tosContent,
   },
 }

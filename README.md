@@ -171,9 +171,9 @@ yarn test:fix
 
 ## License
 
-Copyright (C) 2021 Maker Ecosystem Growth Holdings, INC Licensed under the Apache License, Version
-2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain
-a copy of the License at
+Copyright (C) 2021 Oazo Apps Limited, Licensed under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance with the License. You may obtain a copy
+of the License at
 
 > [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
