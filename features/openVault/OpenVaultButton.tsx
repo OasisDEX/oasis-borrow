@@ -21,6 +21,7 @@ function openVaultPrimaryButtonText({
   switch (stage) {
     case 'chooseVaultType':
       return 'CHOOSE'
+    case 'editingLeverage':
     case 'editing':
       return inputAmountsEmpty
         ? t('enter-an-amount')

@@ -1,14 +1,29 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
+import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { UrgentAnnouncement } from 'components/Announcement'
 import { useAppContext } from 'components/AppContextProvider'
+import { VaultActionInput } from 'components/VaultActionInput'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { handleNumericInput } from 'helpers/input'
 import { useObservableWithError } from 'helpers/observableHook'
 import { unhandledCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback, useEffect } from 'react'
-import { Box, Button, Card, Divider, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
+import React, { useEffect } from 'react'
+import {
+  Box,
+  Button,
+  Card,
+  Divider,
+  Flex,
+  Grid,
+  Heading,
+  Label,
+  Slider,
+  SxProps,
+  Text,
+} from 'theme-ui'
 
 import { OpenVaultState } from './openVault'
 import { OpenVaultAllowance, OpenVaultAllowanceStatus } from './OpenVaultAllowance'
@@ -62,17 +77,47 @@ function ChooseStage(props: OpenVaultState) {
   )
 }
 
+function TypeSwitch(props: OpenVaultState) {
+  const toggle = () =>
+    props.setVaultType &&
+    props.setVaultType(props.stage === 'editingLeverage' ? 'borrow' : 'leverage')
+  return (
+    <Button variant="textual" onClick={toggle}>
+      Switch to {props.stage === 'editingLeverage' ? 'borrow' : 'leverage'}
+    </Button>
+  )
+}
+
 function LeverageStage(props: OpenVaultState) {
   const { t } = useTranslation()
-  const chooseBorrow = useCallback(() => props.setVaultType && props.setVaultType('borrow'), [
-    props,
-  ])
+  console.log({ props })
   return (
     <>
-      <Button variant="textual" onClick={chooseBorrow}>
-        Switch to borrow
-      </Button>
-      <Button>Leverage stage</Button>
+      <TypeSwitch {...props} />
+      <Label>
+        <VaultActionInput
+          action="Deposit"
+          token={props.token}
+          tokenUsdPrice={props.priceInfo.currentCollateralPrice}
+          showMax={true}
+          hasAuxiliary={true}
+          onSetMax={props.updateLeverageDepositMax}
+          amount={props.leverageDepositAmount}
+          auxiliaryAmount={props.leverageDepositAmountUSD}
+          onChange={handleNumericInput(props.updateLeverageDeposit!)}
+          onAuxiliaryChange={handleNumericInput(props.updateLeverageDepositUSD!)}
+          maxAmount={props.maxDepositAmount}
+          maxAuxiliaryAmount={props.maxDepositAmountUSD}
+          maxAmountLabel={'Balance'}
+          hasError={false}
+        />
+      </Label>
+      <Label>
+        <Box>Multiple</Box>
+        <Slider onChange={(e) => props.updateLeverage!(new BigNumber(e.target.value))} />
+      </Label>
+
+      <OpenVaultButton {...props} />
     </>
   )
 }
@@ -81,6 +126,7 @@ function EditingStage(props: OpenVaultState) {
   const { t } = useTranslation()
   return (
     <>
+      <TypeSwitch {...props} />
       <VaultTitle title={t('vault-form.header.edit')} subtext={t('vault-form.subtext.edit')} />
       <OpenVaultEditing {...props} />
       <OpenVaultErrors {...props} />
@@ -113,10 +159,7 @@ function ProxyStage(props: OpenVaultState) {
   const { t } = useTranslation()
   return (
     <>
-      <VaultTitle
-        title={t('vault-form.header.confirm')}
-        subtext={t('vault-form.subtext.confirm')}
-      />
+      <VaultTitle title={t('vault-form.header.proxy')} subtext={t('vault-form.subtext.proxy')} />
       <OpenVaultErrors {...props} />
       <OpenVaultWarnings {...props} />
       <OpenVaultButton {...props} />

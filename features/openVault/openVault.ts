@@ -7,7 +7,7 @@ import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
-import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
+import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openVaultAllowances'
 import {
@@ -22,7 +22,11 @@ import {
 } from './openVaultConditions'
 import { applyOpenVaultEnvironment, OpenVaultEnvironmentChange } from './openVaultEnvironment'
 import { applyOpenVaultForm, OpenVaultFormChange } from './openVaultForm'
-import { applyOpenVaultInput, OpenVaultInputChange } from './openVaultInput'
+import {
+  applyOpenLeverageVaultInput,
+  applyOpenVaultInput,
+  OpenVaultInputChange,
+} from './openVaultInput'
 import {
   applyOpenVaultSummary,
   defaultOpenVaultSummary,
@@ -63,6 +67,36 @@ interface OpenVaultChooseVaultTypeChange {
   type: VaultType
 }
 
+interface LeverageDepositChange {
+  kind: 'leverageDeposit'
+  leverageDepositAmount?: BigNumber
+}
+
+interface LeverageDepositUSDChange {
+  kind: 'leverageDepositUSD'
+  leverageDepositAmountUSD?: BigNumber
+}
+
+interface LeverageDepositMaxChange {
+  kind: 'leverageDepositMax'
+}
+
+interface LeverageChange {
+  kind: 'leverage'
+  leverage: BigNumber
+}
+
+interface LeverageProgress {
+  kind: 'progressLeverageEditing'
+}
+
+type LeverageFormChange =
+  | LeverageDepositChange
+  | LeverageDepositUSDChange
+  | LeverageDepositMaxChange
+  | LeverageChange
+  | LeverageProgress
+
 export type OpenVaultChange =
   | OpenVaultInputChange
   | OpenVaultFormChange
@@ -72,10 +106,12 @@ export type OpenVaultChange =
   | OpenVaultEnvironmentChange
   | OpenVaultInjectedOverrideChange
   | OpenVaultChooseVaultTypeChange
+  | LeverageFormChange
 
 function apply(state: OpenVaultState, change: OpenVaultChange) {
   const s1 = applyOpenVaultInput(change, state)
-  const s2 = applyOpenVaultForm(change, s1)
+  const s1a = applyOpenLeverageVaultInput(change, s1)
+  const s2 = applyOpenVaultForm(change, s1a)
   const s3 = applyOpenVaultTransition(change, s2)
   const s4 = applyOpenVaultTransaction(change, s3)
   const s5 = applyOpenVaultAllowance(change, s4)
@@ -115,6 +151,11 @@ export interface MutableOpenVaultState {
   selectedAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
   allowanceAmount?: BigNumber
   id?: BigNumber
+
+  vaultType?: VaultType
+  leverageDepositAmount?: BigNumber
+  leverageDepositAmountUSD?: BigNumber
+  leverage?: BigNumber
 }
 
 type VaultType = 'borrow' | 'leverage'
@@ -124,7 +165,6 @@ interface OpenVaultFunctions {
   progress?: () => void
   regress?: () => void
   toggleGenerateOption?: () => void
-  setVaultType?: (type: VaultType) => void
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
@@ -135,6 +175,11 @@ interface OpenVaultFunctions {
   setAllowanceAmountToDepositAmount?: () => void
   setAllowanceAmountCustom?: () => void
   injectStateOverride: (state: Partial<MutableOpenVaultState>) => void
+  setVaultType?: (type: VaultType) => void
+  updateLeverageDeposit?: (depositAmount?: BigNumber) => void
+  updateLeverageDepositUSD?: (depositAmountUSD?: BigNumber) => void
+  updateLeverageDepositMax?: () => void
+  updateLeverage?: (leverage: BigNumber) => void
 }
 
 interface OpenVaultEnvironment {
@@ -190,6 +235,20 @@ function addTransitions(
       updateGenerateMax: () => change({ kind: 'generateMax' }),
       toggleGenerateOption: () => change({ kind: 'toggleGenerateOption' }),
       progress: () => change({ kind: 'progressEditing' }),
+    }
+  }
+
+  if (state.stage === 'editingLeverage') {
+    return {
+      ...state,
+      updateLeverageDeposit: (leverageDepositAmount?: BigNumber) => {
+        change({ kind: 'leverageDeposit', leverageDepositAmount })
+      },
+      updateLeverageDepositUSD: (leverageDepositAmountUSD?: BigNumber) =>
+        change({ kind: 'leverageDepositUSD', leverageDepositAmountUSD }),
+      updateLeverageDepositMax: () => change({ kind: 'leverageDepositMax' }),
+      updateLeverage: (leverage: BigNumber) => change({ kind: 'leverage', leverage }),
+      progress: () => change({ kind: 'progressLeverageEditing' }),
     }
   }
 
@@ -265,7 +324,7 @@ function addTransitions(
 }
 
 export const defaultMutableOpenVaultState: MutableOpenVaultState = {
-  stage: 'editing' as OpenVaultStage,
+  stage: 'editing',
   showGenerateOption: false,
   selectedAllowanceRadio: 'unlimited',
   allowanceAmount: maxUint256,
@@ -356,6 +415,7 @@ export function createOpenVault$(
                       map(validateErrors),
                       map(validateWarnings),
                       map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
+                      tap((state) => console.log({ state })),
                     )
                   }),
                 ),

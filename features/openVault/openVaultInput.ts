@@ -102,3 +102,46 @@ export function applyOpenVaultInput(
 
   return state
 }
+
+export function applyOpenLeverageVaultInput(
+  change: OpenVaultChange,
+  state: OpenVaultState,
+): OpenVaultState {
+  if (change.kind === 'leverageDeposit') {
+    const { leverageDepositAmount } = change
+    const { priceInfo } = state
+    const leverageDepositAmountUSD =
+      leverageDepositAmount && priceInfo.currentCollateralPrice.times(leverageDepositAmount)
+
+    return {
+      ...state,
+      leverageDepositAmount,
+      leverageDepositAmountUSD,
+    }
+  }
+
+  if (change.kind === 'leverageDepositUSD') {
+    const { leverageDepositAmountUSD } = change
+    const { priceInfo } = state
+    const leverageDepositAmount =
+      leverageDepositAmountUSD && leverageDepositAmountUSD.div(priceInfo.currentCollateralPrice)
+
+    return {
+      ...state,
+      leverageDepositAmount,
+      leverageDepositAmountUSD,
+    }
+  }
+
+  if (change.kind === 'leverageDepositMax') {
+    const { maxDepositAmount, maxDepositAmountUSD } = state
+
+    return {
+      ...state,
+      leverageDepositAmount: maxDepositAmount,
+      leverageDepositAmountUSD: maxDepositAmountUSD,
+    }
+  }
+
+  return state
+}
