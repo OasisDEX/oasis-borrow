@@ -1,6 +1,7 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
@@ -170,7 +171,7 @@ export function Footer() {
           gap={[4, null, 5]}
         >
           <Grid gap={4}>
-            <Image src="/static/img/logo_footer.svg" />
+            <Image src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')} />
             <Flex
               sx={{
                 alignItems: 'center',
