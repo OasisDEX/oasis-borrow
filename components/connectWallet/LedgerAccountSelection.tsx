@@ -18,7 +18,7 @@ export function LedgerAccountSelection({
   web3Context,
   cancel,
 }: LedgerAccountSelectionProps) {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation()
   const [derivPath, setDerivPath] = useState<string>()
   const PageLength = 5
   const [page, setPage] = useState(1)
@@ -162,7 +162,7 @@ function DerivationPathSelection({
   liveLoading: boolean
   legacyLoading: boolean
 }) {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation()
   return (
     <Grid gap={4} sx={{ textAlign: 'center', margin: '0 auto' }}>
       <Heading as="h1">{t('ledger-select-title')}</Heading>

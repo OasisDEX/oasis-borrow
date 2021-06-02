@@ -949,6 +949,7 @@ const oasisBaseTheme = {
       warning: '#FF6A16',
       danger: '#FE4343',
       muted: 'primary',
+      dangerBorder: '#FBE1D9',
     },
     counter: {
       primary: '#FF7B31',
@@ -1317,6 +1318,25 @@ const oasisBaseTheme = {
       },
       '&:focus': {
         outline: 'none',
+      },
+    },
+    actionOption: {
+      fontFamily: 'body',
+      display: 'flex',
+      alignItems: 'center',
+      cursor: 'pointer',
+      fontSize: 2,
+      fontWeight: 'semiBold',
+      color: 'onSuccess',
+      userSelect: 'none',
+      bg: 'transparent',
+      px: 2,
+      borderRadius: 'mediumLarge',
+      lineHeight: 1.25,
+      position: 'relative',
+      left: -2,
+      '&:hover': {
+        bg: 'ghost',
       },
     },
   },

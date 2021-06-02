@@ -51,7 +51,7 @@ export function AccountButton() {
   const { accountData$, context$ } = useAppContext()
   const accountData = useObservable(accountData$)
   const context = useObservable(context$)
-  const { t } = useTranslation('common')
+  const { t } = useTranslation()
   const openModal = useModal()
 
   if (context === undefined) {
@@ -138,7 +138,7 @@ export function AccountModal({ close }: ModalProps) {
   const accountData = useObservable(accountData$)
   const web3Context = useObservable(web3Context$)
   const clipboardContentRef = useRef<HTMLTextAreaElement>(null)
-  const { t } = useTranslation('common')
+  const { t } = useTranslation()
 
   function disconnect() {
     if (web3Context?.status === 'connected') {

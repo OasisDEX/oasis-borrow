@@ -5,3 +5,4 @@
 codecov.yml
 node_modules
 .env
+.env*.local

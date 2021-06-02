@@ -1,4 +1,3 @@
-import { networksById } from 'blockchain/config'
 import { recoverPersonalSignature } from 'eth-sig-util'
 import { Handler } from 'express'
 import jwt from 'jsonwebtoken'
@@ -40,7 +39,8 @@ export function makeSignIn(options: signInOptions): Handler {
       throw new SignatureAuthError('Challenge not correct')
     }
 
-    const web3 = new Web3(new Web3.providers.HttpProvider(networksById['1'].infuraUrl))
+    const infuraUrlBackend = `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID_BACKEND}`
+    const web3 = new Web3(new Web3.providers.HttpProvider(infuraUrlBackend))
     const message = recreateSignedMessage(challenge)
 
     if (await isArgentWallet(web3, challenge.address)) {

@@ -1,120 +1,161 @@
-# Oasis Borrow [![codecov](https://codecov.io/gh/OasisDEX/oasis-borrow/branch/dev/graph/badge.svg?token=KMXTAUFL48)](https://codecov.io/gh/OasisDEX/oasis-borrow)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![codecov](https://codecov.io/gh/OasisDEX/oasis-borrow/branch/main/graph/badge.svg?token=KMXTAUFL48)](https://app.codecov.io/gh/OasisDEX/oasis-borrow/branch/main)
 
-- TypeScript
-- Next.js
-- Eslint with TypeSTRICT
-- Prettier
+<br> <br>
 
-### Frontend
+<div align="center">
+  <img src="https://github.com/OasisDEX/oasis-borrow/blob/pm/readme-updates/public/static/img/new-logo.svg" width="500" height="500">
+</div>
+<br>
+<br>
+
+| Environment | URL                                                          | Branch |                                     Build Status                                     |
+| ----------- | ------------------------------------------------------------ | :----: | :----------------------------------------------------------------------------------: |
+| Production  | [oasis.app/borrow](https://oasis.app/borrow)                 | `main` | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=main) |
+| Staging     | [staging.oasis.app/borrow](https://staging.oasis.app/borrow) | `dev`  | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=dev)  |
+
+<br>
+
+# Oasis Borrow
+
+[Oasis Borrow](https://oasis.app/borrow) is the most popular user-interface to interact with the
+[Maker protocol](https://docs.makerdao.com/). It enables users to generate Dai, the most used and
+decentralized stablecoin, using a variety of crypto assets as collateral.
+
+<br>
+
+### Getting Started
+
+Clone the repository
+
+```sh
+git clone https://github.com/OasisDEX/oasis-borrow.git
+```
+
+Navigate to the project folder and install all dependencies
 
 ```sh
 yarn
-yarn start
 ```
 
-If you want to serve the web server over HTTPS (required for Ledger) use:
+To create a local development instance we must first spin up the database prior to starting the web
+server.
 
 ```sh
-HTTPS=true yarn start
-```
-
-### Backend dependencies
-
-```sh
-# this will block terminal window so please use another one
+# Open one terminal and run:
 ./scripts/dev.sh
 ```
 
-## Development
+Monitor the logs and wait for the migrations to complete. This should be evident by a log message
+`Migrations DONE`
 
-#### Storybook
+In a second terminal we can then begin the web server instance over http or https (https is required
+for testing hardware wallets):
+
+*Note: Make sure you have everything setup correctly according to the configuration explain [here](#Configuration)
+
+```sh
+yarn start
+
+# Optionally
+HTTPS=true yarn start
+```
+
+The application will be viewable on http://localhost:3000 or https://localhost:3443 respectively
+
+<br>
+
+### Storybook
+
+We utilise storybook for visualising some of our UI components in isolation. This makes development
+easier for UI work as next.js is very compute heavy when re-rendering changes in development mode.
 
 ```sh
 yarn storybook
 ```
 
-### Backend
+Stories should be viewable at http://localhost:6006 A live version of storybook on parity with the
+staging environment can be found by navigating to https://storybook.oasis.app.
 
-#### Prisma
+For specific deployments, users can navigate to
+[https://storybook.oasis.app/<COMMIT_HASH>/index.html](https://storybook.oasis.app/<COMMIT_HASH>/index.html])
+where the `<COMMIT_HASH>` is the shortened commit hash of the branch/commit that has been pushed.
 
-We use [Prisma Client](https://github.com/prisma/prisma-client-js) for type-safe database
-communication.
+<br>
 
-To regenerate schema based on the current state of a database run:
+### Configuration
 
+The application consists of two parts
+
+- `next.js`
+
+- custom `express` server
+
+There is the `next.config.js` which contains the configuration for `next.js`.
+This configuration is created during build time thus The env variables that are used in this file will be evaluated during *build time*.
+
+Some of the values that are used you can check in the `.env` file.
+
+#### List of the `build-time` env vars:
+
+- `COMMIT_SHA` - The value is used together with `SHOW_BUILD_INFO`. Main usages is to display a commit in the footer. This targets build deployments to staging environments so that the team can see which version the UI reflects. The value could be a branch name or specific commit.
+
+- `MIXPANEL_ENV` - The value could be either `production` or anything else you'd like to use to denote that it's NOT production. The difference is where the events are sent. For "development" environments the events will be displayed in the dev console within the browser. If the env is set to `production` then all the events will be actually sent to Mixpanel.
+
+- `MIXPANEL_KEY` - The value will be used for `production` environments. This is the project key that is generated from Mixpanel.
+
+- `USE_TERMS_OF_SERVICE` - In order to use some functionalities the user should read and accept Terms of Service. For development purposes, this feature can be disabled. You can disable this feature if you'd like to remove that functionality at all. The values are either `0` (disabled)  or `1` (enabled).
+
+- `SHOW_BUILD_INFO` - The value will determine whether an information about the build is diplayed in the footer. Currently we display only the build time and commit from which it is built. This targets deployments to staging environments so that the tam can see which version the UI reflects. The value is either `0` (disabled) or `1` (enabled)
+
+- `INFURA_PROJECT_ID` - This is used in cases where the user hasn't authorized the application to access their wallet ( hasn't connected their wallet - `read-only` mode) or when the application is accessed with a specific provider injected.
+
+- `ETHERSCAN_API_KEY` - The value is used to create the corresponding etherscan endpoint. For each transaction, there is a url that leads to that TX details in etherscan.
+
+As mentioned previously, there is also the custom express server part which uses the env variables at *run time*
+
+#### List of the `run-time` env vars:
+
+- `INFURA_PROJECT_ID_BACKEND` - This is used mainly together with the `<build_time>.USE_TERM_OF_SERVICE`. It is related with Argent internals. On the backend we need to connect to a node in order to verify the wallet that is signing the Terms of Service.
+
+- `CHALLENGE_JWT_SECRET` - Could be any value. This is used on the server to sign JWT message.
+
+- `USER_JWT_SECRET` - Could be any value different from `CHALLENGE_JWT_SECRET`. This is used when the user signs the Terms of Service.
+
+*Note: Make sure that you call the process that build the project with the `build-time` vars and make sure that you call the proces that runs the application with the `run-time` vars.*
+
+<br>
+
+### Hardhat
+
+In addition, we make use of hardhat in order to test the application in a controlled mainnet-like
+environment. More details can be found [here](./HARDHAT.md)
+
+<br>
+
+## Contributing
+
+Contributions are welcome. Feel free to open issues or PR's to improve Oasis Borrow. We are always
+open to suggestions on how best to improve the application to give the optimal user experience.
+
+Please ensure that the tests pass, typechecks and conforms to the linting rules. The most convenient
+way to do this is by calling:
+
+```sh
+yarn test:fix
 ```
-yarn prisma:introspect
-```
 
-To generate client based on schema run (it runs automatically after postinstall):
+<br>
 
-```
-yarn prisma:generate
-```
+## License
 
-#### Migrations
+Copyright (C) 2021 Maker Ecosystem Growth Holdings, INC Licensed under the Apache License, Version
+2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain
+a copy of the License at
 
-We use raw SQLs for migrations. They are stored in `server/database/migrations`. We use
-[`postgres-migrations`](https://www.npmjs.com/package/postgres-migrations).
+> [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-```
-yarn migrate
-```
-
-## i18n - Internationalisation
-
-Configuration file `i18n.ts` located in root directory allows to define available languages, default
-language, translation namespaces and language detection methods.
-
-Currently supported language detection method and they precedence:
-
-1. `landing-page-language-detection` - Custom detection based on root path with language param, e.g
-   `/en` . Used for landing page. Not possible to use with subdirectories like `/en/dashboard`
-2. `querystring` - Applicable to any url with `lang` query string param, e.g. `/dashboard?lang=es`
-3. `cookie` - Language param is set by other methods and stored in browser cookies. Any url without
-   lang url param or query param will use this method to determine user language if cookie is
-   already set.
-4. `header` - Applicable if none of the above method was applied. Language is determined by
-   `Accept-Language` header, which reflects user's default language set in a browser.
-
-Translation json files are located in `/public/locales/`, in corresponding directories.
-
-Component that is using i18n should instantiate translation method via hook (optionally passing
-corresponding translation namespace):
-
-`const { t } = useTranslation('dashboard')`
-
-From this point translation engine can be used by passing key to `t` method:
-
-`<Heading>{t('buy')}</Heading>`
-
-Key needs to exist in every translation json for every language (and namespace).
-
-For detailed i18next documentation please visit [i18n docs](https://www.i18next.com/)
-
-## Hardhat mainnet testing
-
-It might be useful to test an app against an actual mainnet state with some modifications. We use Hardhat node for that. In order to read more about this setup go to the [separate docs page](./HARDHAT.md)
-
-
-## Runnning Oasis Borrow Cache locally with Hardhat
-
-Setup Hardhat following above instructions.
-
-#Local Cache instance
-
-Get Cache from [https://github.com/oasisDEX/oasis-borrow-cache](this repo)
-
-Ensure you are using node 12 for the db (./scripts/dev.sh)
-
-In Cache repo run:
-
-`./scripts/dev.sh`
-
-In other terminal window run:
-
-`yarn start-etl`
-
-In next terminal window run:
-
-`yarn start-api`
+Unless required by applicable law or agreed to in writing, software distributed under the License is
+distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+implied. See the License for the specific language governing permissions and limitations under the
+License.

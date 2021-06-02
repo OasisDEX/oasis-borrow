@@ -1,7 +1,7 @@
 {
   "name": "oasis-borrow",
   "version": "1.0.0",
-  "private": true,
+  "license": "Apache-2.0",
   "scripts": {
     "start": "ts-node --project ./tsconfig.dev.json -r tsconfig-paths/register -r dotenv-flow/config ./server/server.ts",
     "start:prod": "yarn migrate && TS_NODE_PROJECT=tsconfig.dev.json node -r ts-node/register --max-old-space-size=3049 -r tsconfig-paths/register -r dotenv-flow/config ./server/server.ts",
@@ -58,7 +58,7 @@
     "@web3-react/network-connector": "^6.1.5",
     "@web3-react/portis-connector": "^6.1.9",
     "@web3-react/types": "^6.0.7",
-    "@web3-react/walletconnect-connector": "^6.1.4",
+    "@web3-react/walletconnect-connector": "^6.2.0",
     "@web3-react/walletlink-connector": "^6.2.0",
     "@zeit/next-sass": "^1.0.1",
     "babel-plugin-module-resolver": "^4.0.0",

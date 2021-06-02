@@ -117,7 +117,7 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
   },
 ]
 
-function WithArrow({ children }: React.PropsWithChildren<{}>) {
+export function WithArrow({ children }: React.PropsWithChildren<{}>) {
   return (
     <Text
       variant="paragraph3"
@@ -189,9 +189,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
       <Text variant="paragraph1" sx={{ mb: 4, color: 'lavender' }}>
         <Trans i18nKey="landing.hero.subheader" components={[<br />]} />
       </Text>
-
       <Image sx={{ mb: 4 }} src={staticFilesRuntimeUrl('/static/img/icons_set.svg')} />
-
       {!isConnected && (
         <AppLink
           href="/connect"

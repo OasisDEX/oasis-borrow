@@ -23,7 +23,7 @@ interface CardProductProps {
 }
 
 export function CardBalance({ token, icon, balance, customText }: CardBalanceProps) {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation()
 
   return (
     <Card variant="secondaryRounded" sx={{ my: 2, px: 4 }}>
