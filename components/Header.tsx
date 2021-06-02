@@ -4,6 +4,7 @@ import { trackingEvents } from 'analytics/analytics'
 import { AppLink } from 'components/Links'
 import { AccountButton } from 'features/account/Account'
 import { useObservable } from 'helpers/observableHook'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -26,7 +27,7 @@ export function Logo({ sx }: { sx?: SxStyleProp }) {
         ...sx,
       }}
     >
-      <Image src="/static/img/logo.svg" />
+      <Image src={staticFilesRuntimeUrl('/static/img/logo.svg')} />
     </AppLink>
   )
 }
