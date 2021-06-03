@@ -182,12 +182,10 @@ export function Footer() {
               }}
             >
               <Flex sx={{ alignItems: 'center' }}>
-                {/* add link */}
-                <AppLink href="/">
+                <AppLink href="https://twitter.com/oasisdotapp">
                   <Icon name="twitter" size="auto" width="18px" height="16px" />
                 </AppLink>
-                {/* add link */}
-                <AppLink href="/" sx={{ mx: 3 }}>
+                <AppLink href="https://discord.gg/Kc2bBB59GC" sx={{ mx: 3 }}>
                   <Icon name="discord" size="auto" width="20px" height="23px" />
                 </AppLink>
               </Flex>
