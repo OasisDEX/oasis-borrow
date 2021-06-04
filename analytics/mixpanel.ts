@@ -16,13 +16,13 @@ const config = {
   test: {
     mixpanel: {
       token,
-      config: { debug: false, ip: false, api_host: 'https://mpp.makerfoundation.com' },
+      config: { debug: false, ip: false, api_host: 'mpp.oazolabs.xyz' },
     },
   },
   prod: {
     mixpanel: {
       token,
-      config: { ip: false, api_host: 'https://mpp.makerfoundation.com' },
+      config: { ip: false, api_host: 'mpp.oazolabs.xyz' },
     },
   },
 }[env]
