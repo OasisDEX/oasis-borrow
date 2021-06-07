@@ -6,8 +6,8 @@ import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
-import { OpenVaultState } from './openVault'
-import { OpenVaultErrorMessage } from './openVaultValidations'
+import { OpenVaultState } from '../openVault'
+import { OpenVaultErrorMessage } from '../openVaultValidations'
 
 export function OpenVaultErrors({
   errorMessages,

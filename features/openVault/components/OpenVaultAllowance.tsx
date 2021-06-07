@@ -7,8 +7,8 @@ import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 
-import { Radio } from '../../components/forms/Radio'
-import { OpenVaultState } from './openVault'
+import { Radio } from '../../../components/forms/Radio'
+import { OpenVaultState } from '../openVault'
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
 export function OpenVaultAllowance({
