@@ -1,7 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { getToken } from 'blockchain/tokensMetadata'
-import { UrgentAnnouncement } from 'components/Announcement'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
@@ -112,10 +111,12 @@ export function OpenVaultContainer(props: OpenVaultState) {
 }
 
 export function OpenVaultView({ ilk }: { ilk: string }) {
-  const { openVault$ } = useAppContext()
+  const { openVault$, selectOpenVault$ } = useAppContext()
   const openVaultWithIlk$ = openVault$(ilk)
+  const selectOpenVaultWithIlk$ = selectOpenVault$(ilk)
 
   const openVaultWithError = useObservableWithError(openVault$(ilk))
+  const selectOpenVaultWithError = useObservableWithError(selectOpenVault$(ilk))
 
   useEffect(() => {
     const subscription = createOpenVaultAnalytics$(openVaultWithIlk$, trackingEvents).subscribe()
@@ -127,12 +128,36 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
 
   return (
     <Grid sx={{ width: '100%', zIndex: 1 }}>
-      <UrgentAnnouncement />
       <WithLoadingIndicator
-        {...openVaultWithError}
+        {...selectOpenVaultWithError}
         customError={<Box>{openVaultWithError.error?.message}</Box>}
       >
-        {(openVault) => <OpenVaultContainer {...openVault} />}
+        {(openVault) => {
+          switch (openVault.vaultType) {
+            case 'borrow':
+              return (
+                <Box>
+                  <button onClick={() => openVault.setVaultType('leverage')}>set leverage</button>
+                  <OpenVaultContainer {...openVault.state} />
+                </Box>
+              )
+            case 'leverage':
+              return (
+                <Box>
+                  Leverage
+                  <button onClick={() => openVault.setVaultType('borrow')}>set borrow</button>
+                </Box>
+              )
+            default:
+              return (
+                <Box>
+                  SELECT
+                  <button onClick={() => openVault.setVaultType('leverage')}>set leverage</button>
+                  <button onClick={() => openVault.setVaultType('borrow')}>set borrow</button>
+                </Box>
+              )
+          }
+        }}
       </WithLoadingIndicator>
     </Grid>
   )

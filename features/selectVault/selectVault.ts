@@ -48,10 +48,11 @@ export function createSelectVault$(
   openVault$: (ilk: string) => Observable<OpenVaultState>,
   openLeverageVault$: (ilk: string) => Observable<OpenVaultState>,
   ilk: string,
-) {
+): Observable<SelectVaultTypeState> {
   const change$ = new Subject<Changes>()
 
   function setVaultType(vaultType: VaultType) {
+    console.log({ vaultType })
     change$.next({
       kind: 'vaultType',
       vaultType,
@@ -70,11 +71,11 @@ export function createSelectVault$(
       const { vaultType } = state
       switch (vaultType) {
         case 'borrow':
-          return openVault$(ilk).pipe(map((state) => ({ vaultType, state })))
+          return openVault$(ilk).pipe(map((state) => ({ vaultType, state, setVaultType })))
         case 'leverage':
-          return openLeverageVault$(ilk).pipe(map((state) => ({ vaultType, state })))
+          return openLeverageVault$(ilk).pipe(map((state) => ({ vaultType, state, setVaultType })))
         default:
-          return of(undefined).pipe(map((state) => ({ vaultType, state })))
+          return of(undefined).pipe(map((state) => ({ vaultType, state, setVaultType })))
       }
     }),
     shareReplay(1),

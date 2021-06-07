@@ -285,7 +285,7 @@ export function setupAppContext() {
     ),
   )
 
-  const selectVault$ = curry(createSelectVault$)(openVault$, openVault$)
+  const selectOpenVault$ = memoize(curry(createSelectVault$)(openVault$, openVault$))
 
   const manageVault$ = memoize(
     curry(createManageVault$)(
@@ -355,6 +355,7 @@ export function setupAppContext() {
     termsAcceptance$,
     reclaimCollateral$,
     openVaultOverview$,
+    selectOpenVault$,
   }
 }
 
