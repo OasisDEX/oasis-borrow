@@ -413,24 +413,140 @@ describe('openVault', () => {
     })
   })
 
-  it('should add meaningful message when ledger throws error with disabled contract data', () => {
-    const _proxyAddress$ = new Subject<string>()
-    const state = getStateUnpacker(
-      mockOpenVault$({
-        _proxyAddress$,
-        _txHelpers$: of({
-          ...protoTxHelpers,
-          sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
-            mockTxState(meta, TxStatus.Error).pipe(
-              map((txState) => ({ ...txState, error: { name: 'EthAppPleaseEnableContractData' } })),
-            ),
+  describe('validation and errors', () => {
+    it('should add meaningful message when ledger throws error with disabled contract data', () => {
+      const _proxyAddress$ = new Subject<string>()
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          _proxyAddress$,
+          _txHelpers$: of({
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+              mockTxState(meta, TxStatus.Error).pipe(
+                map((txState) => ({
+                  ...txState,
+                  error: { name: 'EthAppPleaseEnableContractData' },
+                })),
+              ),
+          }),
         }),
-      }),
-    )
+      )
 
-    _proxyAddress$.next()
-    state().progress!()
-    state().progress!()
-    expect(state().errorMessages).to.deep.equal(['ledgerWalletContractDataDisabled'])
+      _proxyAddress$.next()
+      state().progress!()
+      state().progress!()
+      expect(state().errorMessages).to.deep.equal(['ledgerWalletContractDataDisabled'])
+    })
+
+    it('validates if deposit amount exceeds collateral balance or depositing all ETH', () => {
+      const depositAmountExceeds = new BigNumber('2')
+      const depositAmountAll = new BigNumber('1')
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          ilks: ['ETH-A'],
+          ilk: 'ETH-A',
+          balanceInfo: {
+            collateralBalance: new BigNumber('1'),
+          },
+        }),
+      )
+
+      state().updateDeposit!(depositAmountExceeds)
+      expect(state().errorMessages).to.deep.equal(['depositAmountExceedsCollateralBalance'])
+      state().updateDeposit!(depositAmountAll)
+      expect(state().errorMessages).to.deep.equal(['depositingAllEthBalance'])
+    })
+
+    it(`validates if generate doesn't exceeds debt ceiling and debt floor`, () => {
+      const depositAmount = new BigNumber('2')
+      const generateAmountAboveCeiling = new BigNumber('30')
+      const generateAmountBelowFloor = new BigNumber('9')
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          ilkData: {
+            debtCeiling: new BigNumber('8000025'),
+            debtFloor: new BigNumber('10'),
+          },
+        }),
+      )
+
+      state().updateDeposit!(depositAmount)
+      state().toggleGenerateOption!()
+      state().updateGenerate!(generateAmountAboveCeiling)
+      expect(state().errorMessages).to.deep.equal(['generateAmountExceedsDebtCeiling'])
+
+      state().updateGenerate!(generateAmountBelowFloor)
+      expect(state().errorMessages).to.deep.equal(['generateAmountLessThanDebtFloor'])
+    })
+
+    it('validates custom allowance setting', () => {
+      const depositAmount = new BigNumber('100')
+      const customAllowanceAmount = new BigNumber('99')
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: zero,
+          ilk: 'WBTC-A',
+        }),
+      )
+
+      state().updateDeposit!(depositAmount)
+
+      state().progress!()
+      expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
+      state().setAllowanceAmountCustom!()
+      state().updateAllowanceAmount!(customAllowanceAmount)
+      expect(state().allowanceAmount!).to.deep.equal(customAllowanceAmount)
+      expect(state().errorMessages).to.deep.equal(['customAllowanceAmountLessThanDepositAmount'])
+
+      state().updateAllowanceAmount!(maxUint256.plus(new BigNumber('1')))
+      expect(state().errorMessages).to.deep.equal(['customAllowanceAmountExceedsMaxUint256'])
+    })
+
+    it('validates vault risk warnings and exceeding liquidation ratio on next price', () => {
+      const depositAmount = new BigNumber('6')
+      const generateAmountCurrentPriceDanger = new BigNumber('4700')
+      const generateAmountCurrentPriceWarning = new BigNumber('4300')
+
+      const generateAmountNextPriceDanger = new BigNumber('4470')
+      const generateAmountNextPriceWarning = new BigNumber('3570')
+
+      const generateAmountNextPriceDangerTest = new BigNumber('5370')
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          ilks: ['ETH-A'],
+          ilk: 'ETH-A',
+          priceInfo: {
+            ethChangePercentage: new BigNumber(-0.01),
+          },
+        }),
+      )
+
+      state().updateDeposit!(depositAmount)
+      state().toggleGenerateOption!()
+      state().updateGenerate!(generateAmountCurrentPriceWarning)
+      expect(state().warningMessages).to.deep.equal(['vaultWillBeAtRiskLevelWarning'])
+
+      state().updateGenerate!(generateAmountCurrentPriceDanger)
+      expect(state().warningMessages).to.deep.equal(['vaultWillBeAtRiskLevelDanger'])
+
+      state().updateGenerate!(generateAmountNextPriceWarning)
+      expect(state().warningMessages).to.deep.equal(['vaultWillBeAtRiskLevelWarningAtNextPrice'])
+
+      state().updateGenerate!(generateAmountNextPriceDanger)
+      expect(state().warningMessages).to.deep.equal([
+        'vaultWillBeAtRiskLevelDangerAtNextPrice',
+        'vaultWillBeAtRiskLevelWarning',
+      ])
+
+      state().updateGenerate!(generateAmountNextPriceDangerTest)
+      expect(state().errorMessages).to.deep.equal([
+        'generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice',
+      ])
+    })
   })
 })
