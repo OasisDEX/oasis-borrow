@@ -1,11 +1,10 @@
 import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
-import { OpenVaultView } from 'features/openVault/components/OpenVaultView'
+import { LeverageVaultView } from 'features/leverageVault/components/LeverageVaultView'
+import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
-
-import { WithTermsOfService } from '../../../features/termsOfService/TermsOfService'
 
 export async function getServerSideProps(ctx: any) {
   return {
@@ -21,7 +20,7 @@ export default function OpenVault({ ilk }: { ilk: string }) {
     <WithWalletConnection>
       <WithTermsOfService>
         <BackgroundLight />
-        <OpenVaultView ilk={ilk} />
+        <LeverageVaultView ilk={ilk} />
       </WithTermsOfService>
     </WithWalletConnection>
   )
