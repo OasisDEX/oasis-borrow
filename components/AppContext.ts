@@ -48,6 +48,7 @@ import { createOpenVault$ } from 'features/openVault/openVault'
 import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultData'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import { redirectState$ } from 'features/router/redirectState'
+import { createSelectVault$ } from 'features/selectVault/selectVault'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import {
   checkAcceptanceFromApi$,
@@ -283,6 +284,8 @@ export function setupAppContext() {
       ilkToToken$,
     ),
   )
+
+  const selectVault$ = curry(createSelectVault$)(openVault$, openVault$)
 
   const manageVault$ = memoize(
     curry(createManageVault$)(
