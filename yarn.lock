@@ -3517,10 +3517,10 @@
     web3 "^1.3.3"
     web3-provider-engine "^14.0.1"
 
-"@oasisdex/transactions@^0.0.22":
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/@oasisdex/transactions/-/transactions-0.0.22.tgz#ca43ad1c0dd60cff46e38f83a0540821a10705af"
-  integrity sha512-kHxnE+uSOsVes0OLo97ZjiOnLdFG/Mi3HmkoUx+k/MKqEitLAoCzXG2aKHEOrOrhQGd05Ea646UTibUEsY3OYQ==
+"@oasisdex/transactions@^0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@oasisdex/transactions/-/transactions-0.0.23.tgz#5e9357ed926d55a7ebb4286049f8ee9fd47c5e9d"
+  integrity sha512-QjFs6H4gmq/Uk10jX+Ib44ujqUTuxu57Bmwc43sRqhDVdh8fNbHUmiZj+FosSq1v2OPxNVFU3nf0ywIcf972OA==
   dependencies:
     "@types/ramda" "^0.25.38"
     bignumber.js "^9.0.1"
