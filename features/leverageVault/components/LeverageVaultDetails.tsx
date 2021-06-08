@@ -33,9 +33,9 @@ function VaultDetailsTableItem({
 }
 
 export function VaultDetailsTable({
-  afterFreeCollateral,
+  // afterFreeCollateral,
   token,
-  maxGenerateAmountCurrentPrice,
+  // maxGenerateAmountCurrentPrice,
   ilkData,
 }: LeverageVaultState) {
   const { t } = useTranslation()
@@ -63,10 +63,7 @@ export function VaultDetailsTable({
           label={t('system.available-to-withdraw')}
           value={
             <>
-              {formatAmount(
-                afterFreeCollateral.isNegative() ? zero : afterFreeCollateral,
-                getToken(token).symbol,
-              )}
+              {formatAmount(zero, getToken(token).symbol)}
               <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
                 {getToken(token).symbol}
               </Text>
@@ -77,7 +74,7 @@ export function VaultDetailsTable({
           label={t('system.available-to-generate')}
           value={
             <>
-              {formatAmount(maxGenerateAmountCurrentPrice, 'DAI')}
+              {/* {formatAmount(maxGenerateAmountCurrentPrice, 'DAI')} */}
               <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
                 USD
               </Text>
@@ -149,6 +146,55 @@ export function LeverageVaultDetails(props: LeverageVaultState) {
   return (
     <Grid sx={{ alignSelf: 'flex-start' }} columns={[1, '1fr 1fr']}>
       <LeverageVaultHeading {...props} sx={{ display: ['none', 'block'] }} />
+
+      <Box sx={{ mt: [3, 5], textAlign: ['center', 'left'] }}>
+        <Box as="dl" sx={{ dt: { fontWeight: 'bold' } }}>
+          <dt>multiple</dt>
+          <dd>{props.multiply?.toString()}x</dd>
+
+          <dt>Collateralization ratio</dt>
+          <dd>{props.afterCollateralizationRatio?.times(100).toString()}%</dd>
+
+          <dt>after liquidation price</dt>
+          <dd>{props.afterLiquidationPrice.toString()}</dd>
+
+          <dt>current {props.token} price</dt>
+          <dd>{props.priceInfo.currentCollateralPrice.toString()}</dd>
+
+          <dt>buying power</dt>
+          <dd>
+            {props.afterBuyingPower.toString()}
+            {props.token}
+          </dd>
+          <dd>
+            {props.afterBuyingPowerUSD.toString()}
+            USD
+          </dd>
+
+          <dt>Net value</dt>
+          <dd>
+            {props.afterNetValue.toString()}
+            {props.token}
+          </dd>
+          <dd>{props.afterNetValueUSD.toString()}USD</dd>
+
+          <dt>buying collateral</dt>
+          <dd>
+            {props.buyingCollateral.toString()}
+            {props.token}
+          </dd>
+          <dd>{props.buyingCollateralUSD.toString()}USD</dd>
+
+          <dt>total exposure</dt>
+          <dd>{props.totalExposure?.toString()}</dd>
+
+          <dt>After debt</dt>
+          <dd>{props.afterOutstandingDebt?.toString()}DAI</dd>
+
+          <dt>Fees</dt>
+          <dd>{props.txFees?.toString()}USD</dd>
+        </Box>
+      </Box>
 
       {/* Liquidation Price */}
       <Box sx={{ mt: [3, 5], textAlign: ['center', 'left'] }}>

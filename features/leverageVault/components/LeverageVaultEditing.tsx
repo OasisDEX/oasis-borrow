@@ -60,11 +60,13 @@ export function LeverageVaultEditing(props: LeverageVaultState) {
           onAuxiliaryChange={handleNumericInput(updateDepositUSD!)}
           maxAmount={maxDepositAmount}
           maxAuxiliaryAmount={maxDepositAmountUSD}
-          maxAmountLabel={'Balance'}
+          maxAmountLabel={'Balance'} // TODO add translation
           hasError={false}
         />
+        <Box>leverage: {leverage?.toString()}</Box>
         <Slider
           disabled={!canAdjustRisk}
+          step={10}
           value={leverage?.toNumber() || 0}
           onChange={(e) => {
             updateLeverage && updateLeverage(new BigNumber(e.target.value))

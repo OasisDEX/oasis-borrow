@@ -1,4 +1,3 @@
-import { isNullish } from 'helpers/functions'
 
 import { LeverageVaultState } from './leverageVault'
 
@@ -84,7 +83,7 @@ export function validateWarnings(state: LeverageVaultState): LeverageVaultState 
   const {
     depositAmount,
     errorMessages,
-    daiYieldFromDepositingCollateral,
+    // daiYieldFromDepositingCollateral,
     ilkData,
     isEditingStage,
     vaultWillBeAtRiskLevelDanger,
@@ -98,9 +97,9 @@ export function validateWarnings(state: LeverageVaultState): LeverageVaultState 
   if (errorMessages.length) return { ...state, warningMessages }
 
   if (isEditingStage) {
-    if (!isNullish(depositAmount) && daiYieldFromDepositingCollateral.lt(ilkData.debtFloor)) {
-      warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
-    }
+    // if (!isNullish(depositAmount) && daiYieldFromDepositingCollateral.lt(ilkData.debtFloor)) {
+    //   warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
+    // }
 
     if (vaultWillBeAtRiskLevelDanger) {
       warningMessages.push('vaultWillBeAtRiskLevelDanger')

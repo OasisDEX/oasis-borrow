@@ -11,7 +11,7 @@ import { LeverageVaultErrorMessage } from '../leverageVaultValidations'
 
 export function LeverageVaultErrors({
   errorMessages,
-  maxGenerateAmount,
+  // maxGenerateAmount,
   ilkData: { debtFloor },
   token,
 }: LeverageVaultState) {
@@ -31,7 +31,7 @@ export function LeverageVaultErrors({
         )
       case 'generateAmountExceedsDebtCeiling':
         return translate('generate-amount-exceeds-debt-ceiling', {
-          maxGenerateAmount: formatCryptoBalance(maxGenerateAmount),
+          // maxGenerateAmount: formatCryptoBalance(maxGenerateAmount),
           token,
         })
       case 'generateAmountLessThanDebtFloor':

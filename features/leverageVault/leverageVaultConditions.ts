@@ -121,13 +121,12 @@ export function applyOpenVaultConditions(state: LeverageVaultState): LeverageVau
   const {
     stage,
     afterCollateralizationRatio,
-    afterCollateralizationRatioAtNextPrice,
+
     ilkData,
     token,
     balanceInfo: { collateralBalance },
     depositAmount,
-    daiYieldFromDepositingCollateral,
-    daiYieldFromDepositingCollateralAtNextPrice,
+
     selectedAllowanceRadio,
     allowanceAmount,
     allowance,
@@ -142,22 +141,22 @@ export function applyOpenVaultConditions(state: LeverageVaultState): LeverageVau
     afterCollateralizationRatio.gte(ilkData.liquidationRatio) &&
     afterCollateralizationRatio.lte(ilkData.collateralizationDangerThreshold)
 
-  const vaultWillBeAtRiskLevelDangerAtNextPrice =
-    !vaultWillBeAtRiskLevelDanger &&
-    !inputAmountsEmpty &&
-    afterCollateralizationRatioAtNextPrice.gte(ilkData.liquidationRatio) &&
-    afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationDangerThreshold)
+  // const vaultWillBeAtRiskLevelDangerAtNextPrice =
+  //   !vaultWillBeAtRiskLevelDanger &&
+  //   !inputAmountsEmpty &&
+  //   afterCollateralizationRatioAtNextPrice.gte(ilkData.liquidationRatio) &&
+  //   afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationDangerThreshold)
 
   const vaultWillBeAtRiskLevelWarning =
     !inputAmountsEmpty &&
     afterCollateralizationRatio.gt(ilkData.collateralizationDangerThreshold) &&
     afterCollateralizationRatio.lte(ilkData.collateralizationWarningThreshold)
 
-  const vaultWillBeAtRiskLevelWarningAtNextPrice =
-    !vaultWillBeAtRiskLevelWarning &&
-    !inputAmountsEmpty &&
-    afterCollateralizationRatioAtNextPrice.gt(ilkData.collateralizationDangerThreshold) &&
-    afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationWarningThreshold)
+  // const vaultWillBeAtRiskLevelWarningAtNextPrice =
+  //   !vaultWillBeAtRiskLevelWarning &&
+  //   !inputAmountsEmpty &&
+  //   afterCollateralizationRatioAtNextPrice.gt(ilkData.collateralizationDangerThreshold) &&
+  //   afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationWarningThreshold)
 
   const vaultWillBeUnderCollateralized = false // TODO remove
 
@@ -230,9 +229,9 @@ export function applyOpenVaultConditions(state: LeverageVaultState): LeverageVau
     canAdjustRisk,
 
     vaultWillBeAtRiskLevelWarning,
-    vaultWillBeAtRiskLevelWarningAtNextPrice,
+    // vaultWillBeAtRiskLevelWarningAtNextPrice,
     vaultWillBeAtRiskLevelDanger,
-    vaultWillBeAtRiskLevelDangerAtNextPrice,
+    // vaultWillBeAtRiskLevelDangerAtNextPrice,
     vaultWillBeUnderCollateralized,
     vaultWillBeUnderCollateralizedAtNextPrice,
 
