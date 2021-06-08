@@ -64,35 +64,8 @@ export function applyOpenVaultCalculations(state: LeverageVaultState): LeverageV
     leverage,
   } = state
 
-  const depositAmountUSDAtNextPrice = depositAmount
-    ? depositAmount.times(nextCollateralPrice)
-    : zero
-
   const maxDepositAmount = collateralBalance
   const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
-
-  const daiYieldFromDepositingCollateral = depositAmount
-    ? depositAmount.times(currentCollateralPrice).div(liquidationRatio)
-    : zero
-
-  const daiYieldFromDepositingCollateralAtNextPrice = depositAmount
-    ? depositAmount.times(nextCollateralPrice).div(liquidationRatio)
-    : zero
-
-  const maxGenerateAmountCurrentPrice = daiYieldFromDepositingCollateral.gt(ilkDebtAvailable)
-    ? ilkDebtAvailable
-    : daiYieldFromDepositingCollateral
-
-  const maxGenerateAmountNextPrice = daiYieldFromDepositingCollateralAtNextPrice.gt(
-    ilkDebtAvailable,
-  )
-    ? ilkDebtAvailable
-    : daiYieldFromDepositingCollateralAtNextPrice
-
-  const maxGenerateAmount = BigNumber.minimum(
-    maxGenerateAmountCurrentPrice,
-    maxGenerateAmountNextPrice,
-  )
 
   // const afterCollateralizationRatioAtNextPrice = zero // TODO
 
@@ -109,7 +82,7 @@ export function applyOpenVaultCalculations(state: LeverageVaultState): LeverageV
     depositAmount && totalExposure ? totalExposure.minus(depositAmount) : zero // USE EXCHANGE PRICE
   const buyingCollateralUSD = buyingCollateral.times(currentCollateralPrice)
 
-  const fees = buyingCollateral.times(TOTAL_FEES) // USE FEES
+  const fees = buyingCollateralUSD.times(TOTAL_FEES) // USE FEES
   const afterOutstandingDebt = buyingCollateralUSD.plus(fees)
   const totalExposureUSD = totalExposure?.times(currentCollateralPrice)
 
