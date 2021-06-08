@@ -4,15 +4,16 @@ import { trackingEvents } from 'analytics/analytics'
 import { AppLink } from 'components/Links'
 import { AccountButton } from 'features/account/Account'
 import { useObservable } from 'helpers/observableHook'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { TRANSITIONS } from 'theme'
-import { Box, Container, Flex, SxStyleProp, Text } from 'theme-ui'
+import { Box, Container, Flex, Image, SxStyleProp } from 'theme-ui'
 
 import { useAppContext } from './AppContextProvider'
 
-function Logo({ sx }: { sx?: SxStyleProp }) {
+export function Logo({ sx }: { sx?: SxStyleProp }) {
   return (
     <AppLink
       withAccountPrefix={false}
@@ -26,7 +27,7 @@ function Logo({ sx }: { sx?: SxStyleProp }) {
         ...sx,
       }}
     >
-      <Text sx={{ display: 'inline', mr: 2 }}>Oasis</Text>
+      <Image src={staticFilesRuntimeUrl('/static/img/logo.svg')} />
     </AppLink>
   )
 }
