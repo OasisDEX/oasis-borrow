@@ -1,9 +1,7 @@
 name: Deploy Storybook
 
-on:
-  push:
-    branches:
-      - move-storybook
+on: [push]
+
 jobs:
   deploy-storybook:
     # if: ${{ github.event.workflow_run.conclusion == 'success' }}
