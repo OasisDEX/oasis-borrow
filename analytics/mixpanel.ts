@@ -11,11 +11,7 @@ const env =
     ? 'prod'
     : 'test'
 
-const token =
-  process.env.MIXPANEL_PROD_KEY ||
-  process.env.MIXPANEL_STAGING_KEY ||
-  getConfig()?.publicRuntimeConfig.mixpanelAPIKey ||
-  process.env.MIXPANEL_KEY
+const token = getConfig()?.publicRuntimeConfig.mixpanelAPIKey || process.env.MIXPANEL_KEY
 
 const config = {
   test: {
