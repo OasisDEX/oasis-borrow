@@ -59,7 +59,7 @@ describe('manageVaultValidations', () => {
     expect(state().errorMessages).to.deep.equal(['generateAmountLessThanDebtFloor'])
   })
 
-  it(`validates if generate or withdraw amounts are putting vault at risk, danger or excdeeing day yield`, () => {
+  it(`validates if generate or withdraw amounts are putting vault at risk, danger or exceeding day yield`, () => {
     const withdrawAmount = new BigNumber('0.1')
     const generateAmountExceedsYield = new BigNumber(60)
     const generateAmountWarnings = new BigNumber(20)
