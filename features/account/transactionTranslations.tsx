@@ -1,4 +1,3 @@
-// @ts-ignore
 import { TxState } from '@oasisdex/transactions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxData } from 'components/AppContext'
@@ -6,88 +5,52 @@ import React from 'react'
 
 import { TxMgrTransaction, TxTranslator } from './transactionManager'
 
+const MISSING_TRANSLATIONS = {
+  pending: 'missing translation description pending',
+  recent: 'missing translation description recent',
+  recentFailed: 'missing translation description recent failed',
+  notification: 'missing translation notification',
+  notificationPast: 'missing translation notification past',
+}
+
+function getTranslations(txPrefix: string, params: { [key: string]: any }) {
+  return {
+    pending: <TxTranslator i18nKey={`${txPrefix}-description-pending`} params={params} />,
+    recent: <TxTranslator i18nKey={`${txPrefix}-description-recent`} params={params} />,
+    recentFailed: (
+      <TxTranslator i18nKey={`${txPrefix}-description-recent-failed`} params={params} />
+    ),
+    notification: <TxTranslator i18nKey={`${txPrefix}-notification`} params={params} />,
+    notificationPast: <TxTranslator i18nKey={`${txPrefix}-notification-past`} params={params} />,
+  }
+}
+
 export function getTransactionTranslations(tx: TxMgrTransaction) {
   const { kind, raw } = tx
   if (kind === 'blockchain') {
     const { meta } = raw as TxState<TxData>
 
     switch (meta.kind) {
+      case TxMetaKind.createDsProxy:
+        return getTranslations('create-ds-proxy', meta)
+      case TxMetaKind.setProxyOwner:
+        return getTranslations('set-proxy-owner', meta)
       case TxMetaKind.approve:
-        return {
-          pending: (
-            <TxTranslator
-              i18nKey="erc20-approve-description-pending"
-              params={{ token: meta.token }}
-            />
-          ),
-          recent: (
-            <TxTranslator
-              i18nKey="erc20-approve-description-recent"
-              params={{ token: meta.token }}
-            />
-          ),
-          recentFailed: (
-            <TxTranslator
-              i18nKey="erc20-approve-description-recent-failed"
-              params={{ token: meta.token }}
-            />
-          ),
-          notification: (
-            <TxTranslator i18nKey="erc20-approve-notification" params={{ token: meta.token }} />
-          ),
-          notificationPast: (
-            <TxTranslator
-              i18nKey="erc20-approve-notification-past"
-              params={{ token: meta.token }}
-            />
-          ),
-        }
+        return getTranslations('erc20-approve', meta)
       case TxMetaKind.disapprove:
-        return {
-          pending: (
-            <TxTranslator
-              i18nKey="erc20-disapprove-description-pending"
-              params={{ token: meta.token }}
-            />
-          ),
-          recent: (
-            <TxTranslator
-              i18nKey="erc20-disapprove-description-recent"
-              params={{ token: meta.token }}
-            />
-          ),
-          recentFailed: (
-            <TxTranslator
-              i18nKey="erc20-disapprove-description-recent-failed"
-              params={{ token: meta.token }}
-            />
-          ),
-          notification: (
-            <TxTranslator i18nKey="erc20-disapprove-notification" params={{ token: meta.token }} />
-          ),
-          notificationPast: (
-            <TxTranslator
-              i18nKey="erc20-disapprove-notification-past"
-              params={{ token: meta.token }}
-            />
-          ),
-        }
+        return getTranslations('erc20-disapprove', meta)
+      case TxMetaKind.open:
+        return getTranslations('open-vault', meta)
+      case TxMetaKind.depositAndGenerate:
+        return getTranslations('deposit-generate', meta)
+      case TxMetaKind.withdrawAndPayback:
+        return getTranslations('withdraw-payback', meta)
+      case TxMetaKind.reclaim:
+        return getTranslations('reclaim-collateral', meta)
       default:
-        return {
-          pending: 'missing translation description pending',
-          recent: 'missing translation description recent',
-          recentFailed: 'missing translation description recent failed',
-          notification: 'missing translation notification',
-          notificationPast: 'missing translation notification past',
-        }
+        return MISSING_TRANSLATIONS
     }
   }
 
-  return {
-    pending: 'missing translation description pending',
-    recent: 'missing translation description recent',
-    recentFailed: 'missing translation description recent failed',
-    notification: 'missing translation notification',
-    notificationPast: 'missing translation notification past',
-  }
+  return MISSING_TRANSLATIONS
 }

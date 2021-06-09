@@ -10,19 +10,20 @@ const env =
   process.env.MIXPANEL_ENV === 'production'
     ? 'prod'
     : 'test'
-const token = getConfig()?.publicRuntimeConfig.mixpanelAPIKey || process.env.MIXPANEL_KEY || ''
+
+const token = getConfig()?.publicRuntimeConfig.mixpanelAPIKey || process.env.MIXPANEL_KEY
 
 const config = {
   test: {
     mixpanel: {
       token,
-      config: { debug: false, ip: false, api_host: 'https://mpp.makerfoundation.com' },
+      config: { debug: false, ip: false, api_host: 'https://mpp.oazolabs.xyz' },
     },
   },
   prod: {
     mixpanel: {
       token,
-      config: { ip: false, api_host: 'https://mpp.makerfoundation.com' },
+      config: { ip: false, api_host: 'https://mpp.oazolabs.xyz' },
     },
   },
 }[env]
