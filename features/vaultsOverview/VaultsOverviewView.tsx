@@ -13,6 +13,7 @@ import {
   formatFiatBalance,
   formatPercent,
 } from 'helpers/formatters/format'
+import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
@@ -118,6 +119,8 @@ const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
 function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
   const { data, filters } = vaults
   const { t } = useTranslation()
+  const { push } = useRedirect()
+
   return (
     <Table
       data={data}
@@ -127,9 +130,9 @@ function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
       noResults={<Box>{t('no-results')}</Box>}
       deriveRowProps={(row) => {
         return {
-          href: `/${row.id}`,
           onClick: () => {
             trackingEvents.overviewManage(row.id.toString(), row.ilk)
+            push(`/${row.id}`)
           },
         }
       }}

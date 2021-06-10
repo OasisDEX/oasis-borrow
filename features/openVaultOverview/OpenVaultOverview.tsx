@@ -9,14 +9,17 @@ import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { Filters } from 'features/vaultsOverview/Filters'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import { useModal } from 'helpers/modalHook'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
+import { useRedirect } from 'helpers/useRedirect'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { useCallback } from 'react'
+import React, { useCallback, useReducer } from 'react'
 import { Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { IlksFilterState } from '../ilks/ilksFilters'
 import { TokenSymbol } from '../landing/LandingView'
 import { OpenVaultOverview as OpenVaultOverviewData } from './openVaultData'
+import { SelectVaultTypeModal } from './SelectVaultTypeModal'
 
 const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState & { isReadonly: boolean }>[] = [
   {
@@ -125,6 +128,9 @@ function getHeaderTranslationKey(hasVaults: boolean) {
 
   return hasVaults ? `${HEADER_PATH}.withVaults` : `${HEADER_PATH}.noVaults`
 }
+
+const ALLOWED_LEVERAGE_TOKENS = ['ETH']
+
 export function OpenVaultOverview({ vaultsOverview, accountDetails, context }: Props) {
   const { ilksWithFilters } = vaultsOverview
   const { t } = useTranslation()
@@ -149,6 +155,10 @@ export function OpenVaultOverview({ vaultsOverview, accountDetails, context }: P
     !!accountDetails?.numberOfVaults && accountDetails.numberOfVaults > 0,
   )
 
+  const openModal = useModal()
+
+  const { push } = useRedirect()
+
   return (
     <Grid sx={{ flex: 1, zIndex: 1 }}>
       <Heading variant="header2" sx={{ textAlign: 'center', my: 5 }} as="h1">
@@ -170,7 +180,12 @@ export function OpenVaultOverview({ vaultsOverview, accountDetails, context }: P
         columns={ilksColumns}
         noResults={<Box>{t('no-results')}</Box>}
         deriveRowProps={(row) => ({
-          href: row.ilkDebtAvailable.isZero() ? undefined : `/vaults/open/${row.ilk}`,
+          onClick: row.ilkDebtAvailable.isZero()
+            ? undefined
+            : () =>
+                ALLOWED_LEVERAGE_TOKENS.includes(row.token)
+                  ? openModal(SelectVaultTypeModal, { ilk: row.ilk })
+                  : push(`/vaults/open/${row.ilk}`),
         })}
       />
     </Grid>

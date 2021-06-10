@@ -12,6 +12,7 @@ import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { useRedirect } from 'helpers/useRedirect'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
@@ -328,6 +329,7 @@ export function LandingView() {
   const context = useObservable(context$)
   const { value: landing, error: landingError } = useObservableWithError(landing$)
   const { t } = useTranslation()
+  const { push } = useRedirect()
 
   const onIlkSearch = useCallback(
     (search: string) => {
@@ -402,7 +404,9 @@ export function LandingView() {
                 columns={ilksColumns}
                 noResults={<Box>{t('no-results')}</Box>}
                 deriveRowProps={(row) => ({
-                  href: row.ilkDebtAvailable.isZero() ? undefined : `/vaults/open/${row.ilk}`,
+                  onClick: row.ilkDebtAvailable.isZero()
+                    ? undefined
+                    : () => push(`/vaults/open/${row.ilk}`),
                 })}
               />
             </Box>
