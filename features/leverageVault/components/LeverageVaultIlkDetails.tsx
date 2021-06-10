@@ -1,4 +1,4 @@
-import { Box,  Text } from '@theme-ui/components'
+import { Box, Text } from '@theme-ui/components'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -35,7 +35,7 @@ export function LeverageVaultIlkDetails({
   return (
     <Box
       sx={{
-        mb: 4,
+        mb: 3,
         fontSize: 1,
         fontWeight: 'semiBold',
         color: 'text.subtitle',
