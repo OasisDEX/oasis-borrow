@@ -9,47 +9,46 @@ import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
-import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openVaultAllowances'
+import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './leverageVaultAllowances'
 import {
   applyOpenVaultCalculations,
   defaultOpenVaultStateCalculations,
-  OpenVaultCalculations,
-} from './openVaultCalculations'
+  LeverageVaultCalculations,
+} from './leverageVaultCalculations'
 import {
   applyOpenVaultConditions,
   applyOpenVaultStageCategorisation,
   defaultOpenVaultConditions,
-  OpenVaultConditions,
-} from './openVaultConditions'
-import { applyOpenVaultEnvironment, OpenVaultEnvironmentChange } from './openVaultEnvironment'
-import { applyOpenVaultForm, OpenVaultFormChange } from './openVaultForm'
-import { applyOpenVaultInput, OpenVaultInputChange } from './openVaultInput'
+  LeverageVaultConditions,
+} from './leverageVaultConditions'
+import { applyOpenVaultEnvironment, OpenVaultEnvironmentChange } from './leverageVaultEnvironment'
+import { applyOpenVaultInput, OpenVaultInputChange } from './leverageVaultInput'
 import {
   applyOpenVaultSummary,
   defaultOpenVaultSummary,
   OpenVaultSummary,
-} from './openVaultSummary'
+} from './leverageVaultSummary'
 import {
-  applyOpenVaultTransaction,
+  applyLeverageVaultTransaction,
   createProxy,
-  openVault,
+  leverageVault,
   OpenVaultTransactionChange,
   setAllowance,
-} from './openVaultTransactions'
-import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openVaultTransitions'
+} from './leverageVaultTransactions'
+import { applyOpenVaultTransition, OpenVaultTransitionChange } from './leverageVaultTransitions'
 import {
-  OpenVaultErrorMessage,
-  OpenVaultWarningMessage,
+  LeverageVaultErrorMessage,
+  LeverageVaultWarningMessage,
   validateErrors,
   validateWarnings,
-} from './openVaultValidations'
+} from './leverageVaultValidations'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
-  stateToOverride: Partial<OpenVaultState>
+  stateToOverride: Partial<LeverageVaultState>
 }
 
-function applyOpenVaultInjectedOverride(change: OpenVaultChange, state: OpenVaultState) {
+function applyOpenVaultInjectedOverride(change: LeverageVaultChange, state: LeverageVaultState) {
   if (change.kind === 'injectStateOverride') {
     return {
       ...state,
@@ -59,20 +58,19 @@ function applyOpenVaultInjectedOverride(change: OpenVaultChange, state: OpenVaul
   return state
 }
 
-export type OpenVaultChange =
+export type LeverageVaultChange =
   | OpenVaultInputChange
-  | OpenVaultFormChange
   | OpenVaultTransitionChange
   | OpenVaultTransactionChange
   | OpenVaultAllowanceChange
   | OpenVaultEnvironmentChange
   | OpenVaultInjectedOverrideChange
 
-function apply(state: OpenVaultState, change: OpenVaultChange) {
+function apply(state: LeverageVaultState, change: LeverageVaultChange) {
   const s1 = applyOpenVaultInput(change, state)
-  const s2 = applyOpenVaultForm(change, s1)
-  const s3 = applyOpenVaultTransition(change, s2)
-  const s4 = applyOpenVaultTransaction(change, s3)
+
+  const s3 = applyOpenVaultTransition(change, s1)
+  const s4 = applyLeverageVaultTransaction(change, s3)
   const s5 = applyOpenVaultAllowance(change, s4)
   const s6 = applyOpenVaultEnvironment(change, s5)
   const s7 = applyOpenVaultInjectedOverride(change, s6)
@@ -82,7 +80,7 @@ function apply(state: OpenVaultState, change: OpenVaultChange) {
   return applyOpenVaultSummary(s10)
 }
 
-export type OpenVaultStage =
+export type LeverageVaultStage =
   | 'editing'
   | 'proxyWaitingForConfirmation'
   | 'proxyWaitingForApproval'
@@ -100,34 +98,31 @@ export type OpenVaultStage =
   | 'openFailure'
   | 'openSuccess'
 
-export interface MutableOpenVaultState {
-  stage: OpenVaultStage
+export interface MutableLeverageVaultState {
+  stage: LeverageVaultStage
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
-  generateAmount?: BigNumber
-  showGenerateOption: boolean
+  leverage?: BigNumber
   selectedAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
   allowanceAmount?: BigNumber
   id?: BigNumber
 }
 
-interface OpenVaultFunctions {
+interface LeverageVaultFunctions {
   progress?: () => void
   regress?: () => void
-  toggleGenerateOption?: () => void
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
-  updateGenerate?: (generateAmount?: BigNumber) => void
-  updateGenerateMax?: () => void
+  updateLeverage?: (leverage?: BigNumber) => void
   updateAllowanceAmount?: (amount?: BigNumber) => void
   setAllowanceAmountUnlimited?: () => void
   setAllowanceAmountToDepositAmount?: () => void
   setAllowanceAmountCustom?: () => void
-  injectStateOverride: (state: Partial<MutableOpenVaultState>) => void
+  injectStateOverride: (state: Partial<MutableLeverageVaultState>) => void
 }
 
-interface OpenVaultEnvironment {
+interface LeverageVaultEnvironment {
   ilk: string
   account: string
   token: string
@@ -138,7 +133,7 @@ interface OpenVaultEnvironment {
   allowance?: BigNumber
 }
 
-interface OpenVaultTxInfo {
+interface LeverageVaultTxInfo {
   allowanceTxHash?: string
   proxyTxHash?: string
   openTxHash?: string
@@ -148,23 +143,23 @@ interface OpenVaultTxInfo {
   safeConfirmations: number
 }
 
-export type OpenVaultState = MutableOpenVaultState &
-  OpenVaultCalculations &
-  OpenVaultFunctions &
-  OpenVaultEnvironment &
-  OpenVaultConditions &
-  OpenVaultTxInfo & {
-    errorMessages: OpenVaultErrorMessage[]
-    warningMessages: OpenVaultWarningMessage[]
+export type LeverageVaultState = MutableLeverageVaultState &
+  LeverageVaultCalculations &
+  LeverageVaultFunctions &
+  LeverageVaultEnvironment &
+  LeverageVaultConditions &
+  LeverageVaultTxInfo & {
+    errorMessages: LeverageVaultErrorMessage[]
+    warningMessages: LeverageVaultWarningMessage[]
     summary: OpenVaultSummary
   }
 
 function addTransitions(
   txHelpers: TxHelpers,
   proxyAddress$: Observable<string | undefined>,
-  change: (ch: OpenVaultChange) => void,
-  state: OpenVaultState,
-): OpenVaultState {
+  change: (ch: LeverageVaultChange) => void,
+  state: LeverageVaultState,
+): LeverageVaultState {
   if (state.stage === 'editing') {
     return {
       ...state,
@@ -174,11 +169,9 @@ function addTransitions(
       updateDepositUSD: (depositAmountUSD?: BigNumber) =>
         change({ kind: 'depositUSD', depositAmountUSD }),
       updateDepositMax: () => change({ kind: 'depositMax' }),
-      updateGenerate: (generateAmount?: BigNumber) => {
-        change({ kind: 'generate', generateAmount })
+      updateLeverage: (leverage?: BigNumber) => {
+        change({ kind: 'leverage', leverage })
       },
-      updateGenerateMax: () => change({ kind: 'generateMax' }),
-      toggleGenerateOption: () => change({ kind: 'toggleGenerateOption' }),
       progress: () => change({ kind: 'progressEditing' }),
     }
   }
@@ -236,7 +229,7 @@ function addTransitions(
   if (state.stage === 'openWaitingForConfirmation' || state.stage === 'openFailure') {
     return {
       ...state,
-      progress: () => openVault(txHelpers, change, state),
+      progress: () => leverageVault(txHelpers, change, state),
       regress: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -254,15 +247,13 @@ function addTransitions(
   return state
 }
 
-export const defaultMutableOpenVaultState: MutableOpenVaultState = {
-  stage: 'editing' as OpenVaultStage,
-  showGenerateOption: false,
+export const defaultMutableOpenVaultState: MutableLeverageVaultState = {
+  stage: 'editing' as LeverageVaultStage,
   selectedAllowanceRadio: 'unlimited' as 'unlimited',
   allowanceAmount: maxUint256,
 }
 
-
-export function createOpenVault$(
+export function createLeverageVault$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
@@ -273,7 +264,7 @@ export function createOpenVault$(
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilkToToken$: Observable<(ilk: string) => string>,
   ilk: string,
-): Observable<OpenVaultState> {
+): Observable<LeverageVaultState> {
   return ilks$.pipe(
     switchMap((ilks) =>
       iif(
@@ -294,18 +285,20 @@ export function createOpenVault$(
                 ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
                   first(),
                   switchMap((allowance) => {
-                    const change$ = new Subject<OpenVaultChange>()
+                    const change$ = new Subject<LeverageVaultChange>()
 
-                    function change(ch: OpenVaultChange) {
+                    function change(ch: LeverageVaultChange) {
                       change$.next(ch)
                     }
 
                     // NOTE: Not to be used in production/dev, test only
-                    function injectStateOverride(stateToOverride: Partial<MutableOpenVaultState>) {
+                    function injectStateOverride(
+                      stateToOverride: Partial<MutableLeverageVaultState>,
+                    ) {
                       return change$.next({ kind: 'injectStateOverride', stateToOverride })
                     }
 
-                    const initialState: OpenVaultState = {
+                    const initialState: LeverageVaultState = {
                       ...defaultMutableOpenVaultState,
                       ...defaultOpenVaultStateCalculations,
                       ...defaultOpenVaultConditions,

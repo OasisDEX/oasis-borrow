@@ -5,24 +5,23 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Grid, Text } from 'theme-ui'
 
-import { OpenVaultState } from './openVault'
+import { LeverageVaultState } from '../leverageVault'
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
-export function OpenVaultConfirmation({
+export function LeverageVaultConfirmation({
   depositAmount,
-  generateAmount,
   token,
   afterCollateralizationRatio,
   afterLiquidationPrice,
   vaultWillBeAtRiskLevelWarning,
   vaultWillBeAtRiskLevelDanger,
   summary: { collateralBalance, afterCollateralBalance },
-}: OpenVaultState) {
+}: LeverageVaultState) {
   const balance = formatCryptoBalance(collateralBalance)
   const afterBalance = formatCryptoBalance(afterCollateralBalance)
 
   const intoVault = formatCryptoBalance(depositAmount || zero)
-  const daiToBeGenerated = formatCryptoBalance(generateAmount || zero)
+  const daiToBeGenerated = formatCryptoBalance(zero) // TODO verify
   const afterCollRatio = afterCollateralizationRatio.eq(zero)
     ? '--'
     : formatPercent(afterCollateralizationRatio.times(100), { precision: 2 })
@@ -53,7 +52,7 @@ export function OpenVaultConfirmation({
   )
 }
 
-export function OpenVaultStatus({ stage, id, etherscan, openTxHash }: OpenVaultState) {
+export function LeverageVaultStatus({ stage, id, etherscan, openTxHash }: LeverageVaultState) {
   const { t } = useTranslation()
   if (stage === 'openInProgress') {
     return (

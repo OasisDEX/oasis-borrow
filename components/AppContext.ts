@@ -43,11 +43,13 @@ import { currentContent } from 'features/content'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
+import { createLeverageVault$ } from 'features/leverageVault/leverageVault'
 import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
 import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultData'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import { redirectState$ } from 'features/router/redirectState'
+import { createSelectVault$ } from 'features/selectVault/selectVault'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import {
   checkAcceptanceFromApi$,
@@ -284,6 +286,22 @@ export function setupAppContext() {
     ),
   )
 
+  const leverageVault$ = memoize(
+    curry(createLeverageVault$)(
+      connectedContext$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      priceInfo$,
+      balanceInfo$,
+      ilks$,
+      ilkData$,
+      ilkToToken$,
+    ),
+  )
+
+  const selectOpenVault$ = memoize(curry(createSelectVault$)(openVault$, openVault$))
+
   const manageVault$ = memoize(
     curry(createManageVault$)(
       context$,
@@ -352,6 +370,7 @@ export function setupAppContext() {
     termsAcceptance$,
     reclaimCollateral$,
     openVaultOverview$,
+    leverageVault$,
   }
 }
 

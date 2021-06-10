@@ -6,19 +6,19 @@ import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
-import { OpenVaultState } from './openVault'
-import { OpenVaultErrorMessage } from './openVaultValidations'
+import { LeverageVaultState } from '../leverageVault'
+import { LeverageVaultErrorMessage } from '../leverageVaultValidations'
 
-export function OpenVaultErrors({
+export function LeverageVaultErrors({
   errorMessages,
-  maxGenerateAmount,
+  // maxGenerateAmount,
   ilkData: { debtFloor },
   token,
-}: OpenVaultState) {
+}: LeverageVaultState) {
   const { t } = useTranslation()
   if (!errorMessages.length) return null
 
-  function applyErrorMessageTranslation(message: OpenVaultErrorMessage) {
+  function applyErrorMessageTranslation(message: LeverageVaultErrorMessage) {
     const translate = (key: string, args?: Dictionary<any>) => t(`open-vault.errors.${key}`, args)
     switch (message) {
       case 'depositAmountExceedsCollateralBalance':
@@ -31,7 +31,7 @@ export function OpenVaultErrors({
         )
       case 'generateAmountExceedsDebtCeiling':
         return translate('generate-amount-exceeds-debt-ceiling', {
-          maxGenerateAmount: formatCryptoBalance(maxGenerateAmount),
+          // maxGenerateAmount: formatCryptoBalance(maxGenerateAmount),
           token,
         })
       case 'generateAmountLessThanDebtFloor':

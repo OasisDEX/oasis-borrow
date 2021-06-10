@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Spinner, Text } from 'theme-ui'
 
-import { OpenVaultState } from './openVault'
+import { OpenVaultState } from '../openVault'
 
 function openVaultPrimaryButtonText({
   stage,

@@ -7,6 +7,7 @@ import { amountToWad, amountToWei } from 'blockchain/utils'
 import { zero } from 'helpers/zero'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
+import { PayableTransactionObject } from 'types/web3-v1-contracts/types'
 import Web3 from 'web3'
 
 import { TxMetaKind } from './txMeta'
@@ -270,6 +271,39 @@ export const open: TransactionDef<OpenData> = {
   prepareArgs: (data, context) => {
     const { dssProxyActions } = context
     return [dssProxyActions.address, getOpenCallData(data, context).encodeABI()]
+  },
+  options: ({ token, depositAmount }) =>
+    token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
+}
+
+// todo
+
+export type LeverageData = {
+  kind: TxMetaKind.leverage
+  token: string
+  ilk: string
+  depositAmount: BigNumber
+  multiply: BigNumber
+  proxyAddress: string
+}
+function getLeverageCallData(
+  data: LeverageData,
+  context: ContextConnected,
+): PayableTransactionObject<string> {
+  const { contract, dssProxyActions } = context
+  console.log('CALLING LEVERAGE')
+  throw new Error('NOT IMPLEMENTED!')
+
+  // return contract<DssProxyActions>(dssProxyActions).methods.leverage(dssCdpManager.address)
+}
+
+export const leverage: TransactionDef<LeverageData> = {
+  call: ({ proxyAddress }, { contract }) => {
+    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
+  },
+  prepareArgs: (data, context) => {
+    const { dssProxyActions } = context
+    return [dssProxyActions.address, getLeverageCallData(data, context).encodeABI()]
   },
   options: ({ token, depositAmount }) =>
     token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
