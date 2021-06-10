@@ -1,11 +1,12 @@
-
+import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
+import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
-import { Box, Card,   Grid, Heading, SxProps, Text } from 'theme-ui'
+import { Box, Card, Divider, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
 
 import { LeverageVaultState } from '../leverageVault'
 import { createOpenVaultAnalytics$ } from '../leverageVaultAnalytics'
@@ -67,6 +68,7 @@ function LeverageVaultForm(props: LeverageVaultState) {
           {isProxyStage && <LeverageVaultProxy {...props} />}
           {isAllowanceStage && <LeverageVaultAllowanceStatus {...props} />}
           {isOpenStage && <LeverageVaultStatus {...props} />}
+          <LeverageVaultIlkDetails {...props} />
         </Grid>
       </Card>
     </Box>
@@ -74,41 +76,42 @@ function LeverageVaultForm(props: LeverageVaultState) {
 }
 
 export function LeverageVaultHeading(props: LeverageVaultState & SxProps) {
-  const { ilk, sx } = props
+  const { token, ilk, sx } = props
+  const tokenInfo = getToken(token)
   const { t } = useTranslation()
 
   return (
-    <Grid mt={4}>
-      <Heading
-        as="h1"
-        variant="heading1"
-        sx={{
-          fontWeight: 'semiBold',
-          pb: 2,
-          ...sx,
-        }}
-      >
-        {t('vault.open-vault', { ilk })}
-      </Heading>
-      <LeverageVaultIlkDetails {...props} />
-    </Grid>
+    <Heading
+      as="h1"
+      variant="paragraph2"
+      sx={{
+        gridColumn: ['1', '1/3'],
+        fontWeight: 'semiBold',
+        borderBottom: 'light',
+        pb: 3,
+        ...sx,
+      }}
+    >
+      <Flex sx={{ justifyContent: ['center', 'left'] }}>
+        <Icon name={tokenInfo.iconCircle} size="26px" sx={{ verticalAlign: 'sub', mr: 2 }} />
+        <Text>{t('vault.open-vault', { ilk })}</Text>
+      </Flex>
+    </Heading>
   )
 }
 
 export function LeverageVaultContainer(props: LeverageVaultState) {
   return (
-    <>
-      <LeverageVaultHeading {...props} />
-      <Grid columns={['1fr', '2fr minmax(480px, 1fr)']} gap={4}>
-        <Box sx={{ order: [3, 1] }}>
-          <LeverageVaultDetails {...props} />
-        </Box>
-        {/* <Divider sx={{ display: ['block', 'none'], order: [2, 0] }} /> */}
-        <Box sx={{ order: [1, 2], pl: [0, 3] }}>
-          <LeverageVaultForm {...props} />
-        </Box>
-      </Grid>
-    </>
+    <Grid columns={['1fr', '2fr minmax(380px, 1fr)']} gap={5}>
+      <LeverageVaultHeading {...props} sx={{ display: ['block', 'none'] }} />
+      <Box sx={{ order: [3, 1] }}>
+        <LeverageVaultDetails {...props} />
+      </Box>
+      <Divider sx={{ display: ['block', 'none'], order: [2, 0] }} />
+      <Box sx={{ order: [1, 2] }}>
+        <LeverageVaultForm {...props} />
+      </Box>
+    </Grid>
   )
 }
 
