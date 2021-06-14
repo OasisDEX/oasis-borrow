@@ -5,8 +5,8 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
-import { OpenVaultState } from './openVault'
-import { OpenVaultWarningMessage } from './openVaultValidations'
+import { OpenVaultState } from '../openVault'
+import { OpenVaultWarningMessage } from '../openVaultValidations'
 
 export function OpenVaultWarnings({ warningMessages, ilkData: { debtFloor } }: OpenVaultState) {
   const { t } = useTranslation()

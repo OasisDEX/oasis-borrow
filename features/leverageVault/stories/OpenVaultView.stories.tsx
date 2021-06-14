@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { OpenVaultView } from 'features/openVault/OpenVaultView'
+import { OpenVaultView } from 'features/openVault/components/OpenVaultView'
 import { openVaultStory } from 'helpers/stories/OpenVaultStory'
 import { NEVER } from 'rxjs'
 

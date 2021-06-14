@@ -1,6 +1,6 @@
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
+import { OpenVaultView } from 'features/openVault/components/OpenVaultView'
 import { defaultMutableOpenVaultState, MutableOpenVaultState } from 'features/openVault/openVault'
-import { OpenVaultView } from 'features/openVault/OpenVaultView'
 import { mockOpenVault$, MockOpenVaultProps } from 'helpers/mocks/openVault.mock'
 import { AppContext } from 'next/app'
 import React from 'react'
