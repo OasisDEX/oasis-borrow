@@ -1,4 +1,5 @@
 import { Pages } from 'analytics/analytics'
+import { BigNumber } from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { CoinTag } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
@@ -184,7 +185,11 @@ export function OpenVaultOverview({ vaultsOverview, accountDetails, context }: P
             ? undefined
             : () =>
                 ALLOWED_LEVERAGE_TOKENS.includes(row.token)
-                  ? openModal(SelectVaultTypeModal, { ilk: row.ilk })
+                  ? openModal(SelectVaultTypeModal, {
+                      ilk: row.ilk,
+                      token: row.token,
+                      balance: new BigNumber(1),
+                    })
                   : push(`/vaults/open/${row.ilk}`),
         })}
       />
