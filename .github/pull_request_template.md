@@ -1,7 +1,7 @@
 # [Title](https://clubhouseLink) 
 <please insert a clubhouse link abowe>
   
-## Chnages 👷‍♀️
+## Changes 👷‍♀️
   <Please add short list of changes>
 - item 1
   
