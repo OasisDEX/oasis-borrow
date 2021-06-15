@@ -57,10 +57,9 @@ export const defaultOpenVaultStateCalculations: LeverageVaultCalculations = {
 export function applyOpenVaultCalculations(state: LeverageVaultState): LeverageVaultState {
   const {
     depositAmount,
-    depositAmountUSD,
     balanceInfo: { collateralBalance },
-    priceInfo: { currentCollateralPrice, nextCollateralPrice },
-    ilkData: { ilkDebtAvailable, liquidationRatio },
+    priceInfo: { currentCollateralPrice },
+    ilkData: { liquidationRatio },
     leverage,
   } = state
 

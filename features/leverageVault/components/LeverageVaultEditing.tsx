@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js'
 import { VaultActionInput } from 'components/VaultActionInput'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
-// import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Slider, Text } from 'theme-ui'
 
@@ -30,8 +29,6 @@ export const MinusIcon = () => (
 )
 
 export function LeverageVaultEditing(props: LeverageVaultState) {
-  // const { t } = useTranslation()
-
   const {
     token,
     depositAmount,
