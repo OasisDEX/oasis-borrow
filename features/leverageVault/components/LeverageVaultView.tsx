@@ -88,7 +88,10 @@ function LeverageVaultForm(props: LeverageVaultState) {
 
   return (
     <Box>
-      <Card variant="surface" sx={{ boxShadow: 'card', borderRadius: 'mediumLarge', p: 3 }}>
+      <Card
+        variant="surface"
+        sx={{ boxShadow: 'card', borderRadius: 'mediumLarge', p: 3, overflow: 'hidden' }}
+      >
         <Grid gap={4} p={2}>
           <LeverageVaultTitle {...props} />
           {isEditingStage && <LeverageVaultEditing {...props} />}
