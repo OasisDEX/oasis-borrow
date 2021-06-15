@@ -261,7 +261,6 @@ export const defaultMutableOpenVaultState: MutableOpenVaultState = {
   allowanceAmount: maxUint256,
 }
 
-
 export function createOpenVault$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,

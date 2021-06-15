@@ -287,10 +287,10 @@ export type LeverageData = {
   proxyAddress: string
 }
 function getLeverageCallData(
-  data: LeverageData,
-  context: ContextConnected,
+  _data: LeverageData,
+  _context: ContextConnected,
 ): PayableTransactionObject<string> {
-  const { contract, dssProxyActions } = context
+  // const { contract, dssProxyActions } = context
   console.log('CALLING LEVERAGE')
   throw new Error('NOT IMPLEMENTED!')
 
