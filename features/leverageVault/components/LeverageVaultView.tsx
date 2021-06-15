@@ -25,6 +25,7 @@ function LeverageVaultTitle({
   isProxyStage,
   isAllowanceStage,
   token,
+  ilk,
 }: LeverageVaultState) {
   const { t } = useTranslation()
   return (
@@ -42,7 +43,7 @@ function LeverageVaultTitle({
             }}
           >
             <AppLink
-              href="/"
+              href={`/vaults/open/${ilk}`}
               sx={{
                 color: 'primary',
                 fontWeight: 'semiBold',
