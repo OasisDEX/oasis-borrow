@@ -7,8 +7,8 @@ import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
+import { OpenVaultState } from '../openVault'
 
-import { OpenVaultState } from './openVault'
 import { OpenVaultHeading } from './OpenVaultView'
 
 function VaultDetailsTableItem({

@@ -266,6 +266,8 @@ export function leverageVault(
   change: (ch: LeverageVaultChange) => void,
   { depositAmount, proxyAddress, ilk, token, leverage: multiply }: LeverageVaultState,
 ) {
+  // @ts-ignore
+  // REMOVE IT ONCE MULTIPLY CALL IS IMPLEMENTED
   sendWithGasEstimation(leverage, {
     kind: TxMetaKind.leverage,
     depositAmount: depositAmount || zero,
@@ -295,5 +297,7 @@ export function leverageVault(
           }),
       ),
     )
+    // @ts-ignore
+    // REMOVE IT ONCE MULTIPLY CALL IS IMPLEMENTED
     .subscribe((ch) => change(ch))
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Grid } from 'theme-ui'
 
-import { OpenVaultState } from './openVault'
+import { OpenVaultState } from '../openVault'
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
 export function OpenVaultProxy({
