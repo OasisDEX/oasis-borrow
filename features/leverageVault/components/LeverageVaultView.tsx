@@ -1,11 +1,10 @@
-
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
-import { Box, Card,   Grid, Heading, SxProps, Text } from 'theme-ui'
+import { Box, Card, Grid, Heading, SxProps, Text } from 'theme-ui'
 
 import { LeverageVaultState } from '../leverageVault'
 import { createOpenVaultAnalytics$ } from '../leverageVaultAnalytics'

@@ -4,7 +4,7 @@ import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { openVaultStory } from 'helpers/stories/OpenVaultStory'
 import { zero } from 'helpers/zero'
 
-import { OpenVaultView } from '../OpenVaultView'
+import { OpenVaultView } from '../components/OpenVaultView'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
