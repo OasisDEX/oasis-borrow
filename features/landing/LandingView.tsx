@@ -7,12 +7,12 @@ import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { IlksFilterState } from 'features/ilks/ilksFilters'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
+import { useRedirectToOpenVault } from 'features/openVaultOverview/useRedirectToOpenVault'
 import { Filters } from 'features/vaultsOverview/Filters'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { useRedirect } from 'helpers/useRedirect'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
@@ -329,7 +329,7 @@ export function LandingView() {
   const context = useObservable(context$)
   const { value: landing, error: landingError } = useObservableWithError(landing$)
   const { t } = useTranslation()
-  const { push } = useRedirect()
+  const redirectToOpenVault = useRedirectToOpenVault()
 
   const onIlkSearch = useCallback(
     (search: string) => {
@@ -406,7 +406,7 @@ export function LandingView() {
                 deriveRowProps={(row) => ({
                   onClick: row.ilkDebtAvailable.isZero()
                     ? undefined
-                    : () => push(`/vaults/open/${row.ilk}`),
+                    : () => redirectToOpenVault(row.ilk, row.token),
                 })}
               />
             </Box>
