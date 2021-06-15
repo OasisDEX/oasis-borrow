@@ -1,4 +1,3 @@
-
 import { LeverageVaultState } from './leverageVault'
 
 export type LeverageVaultErrorMessage =
@@ -81,10 +80,7 @@ export type LeverageVaultWarningMessage =
 
 export function validateWarnings(state: LeverageVaultState): LeverageVaultState {
   const {
-    depositAmount,
     errorMessages,
-    // daiYieldFromDepositingCollateral,
-    ilkData,
     isEditingStage,
     vaultWillBeAtRiskLevelDanger,
     vaultWillBeAtRiskLevelDangerAtNextPrice,

@@ -2,7 +2,6 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { VaultActionInput } from 'components/VaultActionInput'
 import { handleNumericInput } from 'helpers/input'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Slider } from 'theme-ui'
 
@@ -27,8 +26,6 @@ export const MinusIcon = () => (
 )
 
 export function LeverageVaultEditing(props: LeverageVaultState) {
-  const { t } = useTranslation()
-
   const {
     token,
     depositAmount,

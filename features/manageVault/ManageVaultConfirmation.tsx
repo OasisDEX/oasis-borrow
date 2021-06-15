@@ -1,5 +1,8 @@
 import { Details } from 'components/forms/Details'
-import { TxStatusCardProgress, TxStatusCardSuccess } from 'features/openVault/TxStatusCard'
+import {
+  TxStatusCardProgress,
+  TxStatusCardSuccess,
+} from 'features/openVault/components/TxStatusCard'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'

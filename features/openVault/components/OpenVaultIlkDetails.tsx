@@ -3,7 +3,7 @@ import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { OpenVaultState } from './openVault'
+import { OpenVaultState } from '../openVault'
 export function OpenVaultIlkDetails({
   inputAmountsEmpty,
   isEditingStage,

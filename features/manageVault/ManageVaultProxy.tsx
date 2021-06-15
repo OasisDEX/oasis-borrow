@@ -1,4 +1,7 @@
-import { TxStatusCardProgress, TxStatusCardSuccess } from 'features/openVault/TxStatusCard'
+import {
+  TxStatusCardProgress,
+  TxStatusCardSuccess,
+} from 'features/openVault/components/TxStatusCard'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'

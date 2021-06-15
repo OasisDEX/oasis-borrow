@@ -4,7 +4,7 @@ import { isEqual } from 'lodash'
 import { merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators'
 
-import { LeverageVaultState,MutableLeverageVaultState } from './leverageVault'
+import { LeverageVaultState, MutableLeverageVaultState } from './leverageVault'
 
 type DepositAmountChange = {
   kind: 'depositAmountChange'
