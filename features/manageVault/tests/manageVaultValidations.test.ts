@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { maxUint256 } from 'blockchain/calls/erc20'
 import { expect } from 'chai'
 import { mockManageVault, mockManageVault$ } from 'helpers/mocks/manageVault.mock'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
@@ -196,7 +197,7 @@ describe('manageVaultValidations', () => {
     expect(state().errorMessages).to.deep.equal(['debtWillBeLessThanDebtFloor'])
   })
 
-  it('validates if dai allowance is enought to payback whole amount and account debt offset', () => {
+  it('validates if dai allowance is enough to payback whole amount and account debt offset', () => {
     const paybackAmount = new BigNumber('500')
 
     const state = mockManageVault({
