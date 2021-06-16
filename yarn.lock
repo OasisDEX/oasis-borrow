@@ -3517,6 +3517,30 @@
     web3 "^1.3.3"
     web3-provider-engine "^14.0.1"
 
+"@oasisdex/connectors@^0.0.24":
+  version "0.0.24"
+  resolved "https://registry.yarnpkg.com/@oasisdex/connectors/-/connectors-0.0.24.tgz#3da56368ac0531b57bf67e8c1e4bf012ef9563e6"
+  integrity sha512-K++gJIx5phTfCZmuDYX4iiEtu37oVeBjOHN0gTDve645I6Zjq6LZ8AQgs1zro0uG2TIVdYVYPcB1Vshn+uufeQ==
+  dependencies:
+    "@0x/assert" "^3.0.17"
+    "@0x/subproviders" "^6.1.9"
+    "@0x/utils" "^6.1.0"
+    "@ledgerhq/hw-app-eth" "^5.27.1"
+    "@ledgerhq/hw-transport-webusb" "^5.45.0"
+    "@web3-react/abstract-connector" "^6.0.7"
+    "@web3-react/types" "^6.0.7"
+    ethereumjs-tx "^2.1.2"
+    ethereumjs-util "^7.0.7"
+    ethjs-util "^0.1.6"
+    hdkey "^2.0.1"
+    lodash "^4.17.10"
+    magic-sdk "^3.0.1"
+    semaphore-async-await "^1.5.1"
+    trezor-connect "^8.1.27"
+    ts-essentials "^7.0.1"
+    web3 "^1.3.3"
+    web3-provider-engine "^14.0.1"
+
 "@oasisdex/transactions@^0.0.23":
   version "0.0.23"
   resolved "https://registry.yarnpkg.com/@oasisdex/transactions/-/transactions-0.0.23.tgz#5e9357ed926d55a7ebb4286049f8ee9fd47c5e9d"
@@ -22522,6 +22546,15 @@ trezor-connect@^8.1.17-extended:
     trezor-link "1.7.0"
     whatwg-fetch "^3.4.1"
 
+trezor-connect@^8.1.27:
+  version "8.1.27"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.27.tgz#7e45839d26e4c859a3ddd69213e8c7f00ba5525e"
+  integrity sha512-U6vP8kehQ5enCTY0k01R6jR3EORC+GIzTl4pM80lu9gJB5e988sM5YwK1hED6KZx7LJvFjWuOxB2J3W0pwv7lw==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    events "^3.2.0"
+    whatwg-fetch "^3.5.0"
+
 trezor-link@1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/trezor-link/-/trezor-link-1.7.0.tgz#6119de00f4fc57fff0cd4d4d214353c761fad896"
@@ -24650,6 +24683,11 @@ whatwg-fetch@^3.0.0, whatwg-fetch@^3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.4.1.tgz#e5f871572d6879663fa5674c8f833f15a8425ab3"
   integrity sha512-sofZVzE1wKwO+EYPbWfiwzaKovWiZXf4coEzjGP9b2GBVgQRLQUZ2QcuPpQExGDAW5GItpEm6Tl4OU5mywnAoQ==
+
+whatwg-fetch@^3.5.0:
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.6.2.tgz#dced24f37f2624ed0281725d51d0e2e3fe677f8c"
+  integrity sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==
 
 whatwg-url@^7.0.0:
   version "7.1.0"
