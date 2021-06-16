@@ -1,13 +1,13 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Pages } from 'analytics/analytics'
-import { CoinTag, getToken } from 'blockchain/tokensMetadata'
+import { getToken } from 'blockchain/tokensMetadata'
 import { Announcement } from 'components/Announcement'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
-import { IlksFilterState } from 'features/ilks/ilksFilters'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
-import { Filters } from 'features/vaultsOverview/Filters'
+import { IlksFilterState, TagFilter } from 'features/ilks/popularIlksFilters'
+import { FiltersWithPopular } from 'features/landing/FiltersWithPopular'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
@@ -336,7 +336,7 @@ export function LandingView() {
     [landing?.ilks.filters],
   )
   const onIlksTagChange = useCallback(
-    (tagFilter: CoinTag | undefined) => {
+    (tagFilter: TagFilter) => {
       landing?.ilks.filters.change({ kind: 'tagFilter', tagFilter })
     },
     [landing?.ilks.filters],
@@ -385,7 +385,7 @@ export function LandingView() {
       >
         {(landing) => (
           <Box sx={{ ...slideInAnimation, position: 'relative' }}>
-            <Filters
+            <FiltersWithPopular
               onSearch={onIlkSearch}
               search={landing.ilks.filters.search}
               onTagChange={onIlksTagChange}
