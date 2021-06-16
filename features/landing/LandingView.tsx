@@ -91,30 +91,40 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
   {
     headerLabel: '',
     header: () => null,
-    cell: ({ ilk, ilkDebtAvailable }) => (
-      <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
-        <AppLink
-          sx={{ width: ['100%', 'inherit'], textAlign: 'center', maxWidth: ['100%', '150px'] }}
-          variant="secondary"
-          href={`/vaults/open/${ilk}`}
-          disabled={ilkDebtAvailable.isZero()}
-        >
-          {!ilkDebtAvailable.isZero() ? (
-            <Trans i18nKey="open-vault.title" />
-          ) : (
-            <Button
-              variant="secondary"
-              disabled={true}
-              sx={{ width: '100%', maxWidth: ['100%', '150px'] }}
-            >
-              <Text>
-                <Trans i18nKey="no-dai" />
-              </Text>
-            </Button>
-          )}
-        </AppLink>
-      </Box>
-    ),
+    cell: ({ ilk, ilkDebtAvailable, token }) => {
+      const redirectToOpenVault = useRedirectToOpenVault()
+      return (
+        <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
+          <AppLink
+            sx={{ width: ['100%', 'inherit'], textAlign: 'center', maxWidth: ['100%', '150px'] }}
+            variant="secondary"
+            href={`/vaults/open/${ilk}`}
+            disabled={ilkDebtAvailable.isZero()}
+            onClick={(e) => {
+              e.preventDefault()
+              if (ilkDebtAvailable.isZero()) {
+                return
+              }
+              redirectToOpenVault(ilk, token)
+            }}
+          >
+            {!ilkDebtAvailable.isZero() ? (
+              <Trans i18nKey="open-vault.title" />
+            ) : (
+              <Button
+                variant="secondary"
+                disabled={true}
+                sx={{ width: '100%', maxWidth: ['100%', '150px'] }}
+              >
+                <Text>
+                  <Trans i18nKey="no-dai" />
+                </Text>
+              </Button>
+            )}
+          </AppLink>
+        </Box>
+      )
+    },
   },
 ]
 
