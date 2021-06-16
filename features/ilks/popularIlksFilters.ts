@@ -1,10 +1,11 @@
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { compareBigNumber } from 'helpers/compare'
 import { applyChange, Change, Direction, toggleSort } from 'helpers/form'
+import { zero } from 'helpers/zero'
 import { Observable, Subject } from 'rxjs'
 import { map, scan, startWith, switchMap } from 'rxjs/operators'
-import { search, sortIlks } from './ilksFilters'
 
+import { search, sortIlks } from './ilksFilters'
 import { IlkWithBalance } from './ilksWithBalances'
 
 export type IlkSortBy =
@@ -49,6 +50,9 @@ function filterByTag(ilks: IlkWithBalance[], tag: TagFilter) {
 
   if (tag === 'popular') {
     return ilks
+      .filter((ilk) => ilk.ilkDebtAvailable.gt(zero))
+      .sort((ilk1, ilk2) => compareBigNumber(ilk2.ilkDebt, ilk1.ilkDebt))
+      .slice(0, 12)
   }
   return ilks.filter((ilk) => {
     const tokenMeta = getToken(ilk.token)
@@ -57,12 +61,14 @@ function filterByTag(ilks: IlkWithBalance[], tag: TagFilter) {
   })
 }
 
-export interface IlksWithFilters {
+export interface PopularIlksWithFilters {
   data: IlkWithBalance[]
   filters: IlksFilterState
 }
 
-export function ilksWithFilter$(ilks$: Observable<IlkWithBalance[]>): Observable<IlksWithFilters> {
+export function popularIlksWithFilter$(
+  ilks$: Observable<IlkWithBalance[]>,
+): Observable<PopularIlksWithFilters> {
   const change$ = new Subject<Changes>()
   function change(ch: Changes) {
     change$.next(ch)
@@ -81,8 +87,8 @@ export function ilksWithFilter$(ilks$: Observable<IlkWithBalance[]>): Observable
     startWith(initialState),
     switchMap((filters) =>
       ilks$.pipe(
-        map((ilks) => sortIlks(ilks, filters.sortBy, filters.direction)),
         map((ilks) => filterByTag(ilks, filters.tagFilter)),
+        map((ilks) => sortIlks(ilks, filters.sortBy, filters.direction)),
         map((ilks) => search(ilks, filters.search)),
         map((ilks) => ({ filters, data: ilks })),
       ),
