@@ -3,6 +3,7 @@ import { compareBigNumber } from 'helpers/compare'
 import { applyChange, Change, Direction, toggleSort } from 'helpers/form'
 import { Observable, Subject } from 'rxjs'
 import { map, scan, startWith, switchMap } from 'rxjs/operators'
+import { search, sortIlks } from './ilksFilters'
 
 import { IlkWithBalance } from './ilksWithBalances'
 
@@ -13,11 +14,13 @@ export type IlkSortBy =
   | 'balance'
   | undefined
 
+export type TagFilter = CoinTag | 'popular' | undefined
+
 export interface IlksFilterState {
   sortBy: IlkSortBy
   direction: Direction
   search: string
-  tagFilter: CoinTag | undefined
+  tagFilter: TagFilter
   change: (ch: Changes) => void
 }
 
@@ -39,54 +42,18 @@ function applyFilter(state: IlksFilterState, change: Changes): IlksFilterState {
       return applyChange<IlksFilterState, Changes>(state, change)
   }
 }
-
-export function sortIlks(
-  ilks: IlkWithBalance[],
-  sortBy: IlkSortBy,
-  direction: Direction,
-): IlkWithBalance[] {
-  const filter = `${sortBy}_${direction}`
-  switch (filter) {
-    case 'ilkDebtAvailable_ASC':
-      return ilks.sort((a, b) => compareBigNumber(a.ilkDebtAvailable, b.ilkDebtAvailable))
-    case 'ilkDebtAvailable_DESC':
-      return ilks.sort((a, b) => compareBigNumber(b.ilkDebtAvailable, a.ilkDebtAvailable))
-    case 'stabilityFee_ASC':
-      return ilks.sort((a, b) => compareBigNumber(a.stabilityFee, b.stabilityFee))
-    case 'stabilityFee_DESC':
-      return ilks.sort((a, b) => compareBigNumber(b.stabilityFee, a.stabilityFee))
-    case 'liquidationRatio_ASC':
-      return ilks.sort((a, b) => compareBigNumber(a.liquidationRatio, b.liquidationRatio))
-    case 'liquidationRatio_DESC':
-      return ilks.sort((a, b) => compareBigNumber(b.liquidationRatio, a.liquidationRatio))
-    case 'balance_ASC':
-      return ilks.sort((a, b) => compareBigNumber(a.balance, b.balance))
-    case 'balance_DESC':
-      return ilks.sort((a, b) => compareBigNumber(b.balance, a.balance))
-    default:
-      return ilks.sort((a, b) => compareBigNumber(b.ilkDebt, a.ilkDebt))
-  }
-}
-function filterByTag(ilks: IlkWithBalance[], tag: CoinTag | undefined) {
+function filterByTag(ilks: IlkWithBalance[], tag: TagFilter) {
   if (tag === undefined) {
+    return ilks
+  }
+
+  if (tag === 'popular') {
     return ilks
   }
   return ilks.filter((ilk) => {
     const tokenMeta = getToken(ilk.token)
 
     return (tokenMeta.tags as CoinTag[]).includes(tag)
-  })
-}
-
-export function search(ilks: IlkWithBalance[], search: string) {
-  return ilks.filter((ilk) => {
-    const tokenMeta = getToken(ilk.token)
-
-    return (
-      ilk.token.toLowerCase().includes(search.toLowerCase()) ||
-      tokenMeta.name.toLowerCase().includes(search.toLowerCase()) ||
-      ilk.ilk.toLowerCase().includes(search.toLowerCase())
-    )
   })
 }
 
@@ -105,7 +72,7 @@ export function ilksWithFilter$(ilks$: Observable<IlkWithBalance[]>): Observable
     sortBy: undefined,
     direction: undefined,
     search: '',
-    tagFilter: undefined,
+    tagFilter: 'popular',
     change,
   }
 
