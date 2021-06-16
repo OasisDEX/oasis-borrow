@@ -10,7 +10,8 @@ const env =
   process.env.MIXPANEL_ENV === 'production'
     ? 'prod'
     : 'test'
-const token = getConfig()?.publicRuntimeConfig.mixpanelAPIKey || process.env.MIXPANEL_KEY || ''
+
+const token = getConfig()?.publicRuntimeConfig.mixpanelAPIKey || process.env.MIXPANEL_KEY
 
 const config = {
   test: {

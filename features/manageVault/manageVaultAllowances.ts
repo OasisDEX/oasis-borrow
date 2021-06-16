@@ -42,10 +42,6 @@ interface CollateralAllowanceReset {
   kind: 'collateralAllowanceReset'
 }
 
-interface AllowancesReset {
-  kind: 'allowancesReset'
-}
-
 export type ManageVaultAllowanceChange =
   | DaiAllowanceChange
   | DaiAllowanceUnlimitedChange
@@ -55,7 +51,6 @@ export type ManageVaultAllowanceChange =
   | CollateralAllowanceUnlimitedChange
   | CollateralAllowanceDepositChange
   | CollateralAllowanceReset
-  | AllowancesReset
 
 export function applyManageVaultAllowance(
   change: ManageVaultChange,
@@ -130,11 +125,5 @@ export function applyManageVaultAllowance(
     }
   }
 
-  if (change.kind === 'allowancesReset') {
-    return {
-      ...state,
-      ...allowanceDefaults,
-    }
-  }
   return state
 }

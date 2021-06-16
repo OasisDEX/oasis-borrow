@@ -18,10 +18,8 @@ const FOOTER_SECTIONS = [
   {
     titleKey: 'landing.footer.about',
     links: [
-      // add link
-      // { labelKey: 'landing.footer.team', url: '/' },
-      // add link
-      // { labelKey: 'landing.footer.careers', url: '/' },
+      { labelKey: 'landing.footer.team', url: 'https://oasis.app/about' },
+      { labelKey: 'landing.footer.careers', url: 'https://oasis.app/careers' },
       { labelKey: 'landing.footer.privacy', url: 'https://oasis.app/privacy' },
       { labelKey: 'landing.footer.terms', url: '/terms' },
       { labelKey: 'landing.footer.contact', url: 'https://oasis.app/contact', target: '_self' },
