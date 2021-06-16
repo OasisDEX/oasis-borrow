@@ -10,7 +10,7 @@ import { createFeaturedIlks$ } from '../featuredIlksData'
 import { createLanding$ } from '../landing'
 
 describe('Landing', () => {
-  it.only('should return popular assets by default', () => {
+  it('should return popular assets by default', () => {
     const ilkDataList$ = of(
       new Array(20).fill(
         mockIlkData({
