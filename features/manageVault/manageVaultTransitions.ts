@@ -109,7 +109,7 @@ export function applyManageVaultTransition(
       paybackAmount,
       collateralAllowance,
       daiAllowance,
-      vault: { token },
+      vault: { token, debtOffset },
     } = state
     const canProgress = !errorMessages.length
     const hasProxy = !!proxyAddress
@@ -121,7 +121,7 @@ export function applyManageVaultTransition(
       collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
 
     const paybackAmountLessThanDaiAllowance =
-      daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount)
+      daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
 
     const hasCollateralAllowance =
       token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
@@ -149,7 +149,7 @@ export function applyManageVaultTransition(
       paybackAmount,
       collateralAllowance,
       daiAllowance,
-      vault: { token },
+      vault: { token, debtOffset },
     } = state
     const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
     const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
@@ -157,7 +157,7 @@ export function applyManageVaultTransition(
     const depositAmountLessThanCollateralAllowance =
       collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
     const paybackAmountLessThanDaiAllowance =
-      daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount)
+      daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
     const hasCollateralAllowance =
       token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
     const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
@@ -172,10 +172,15 @@ export function applyManageVaultTransition(
   }
 
   if (change.kind === 'progressCollateralAllowance') {
-    const { originalEditingStage, paybackAmount, daiAllowance } = state
+    const {
+      originalEditingStage,
+      paybackAmount,
+      daiAllowance,
+      vault: { debtOffset },
+    } = state
     const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
     const paybackAmountLessThanDaiAllowance =
-      daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount)
+      daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
     const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
 
     if (!hasDaiAllowance) {
