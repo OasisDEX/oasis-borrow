@@ -226,7 +226,7 @@ function LandingCard({ href, cardKey }: { href: string; cardKey: 'dai' | 'faq' }
 
   return (
     <AppLink href={href} sx={{ display: 'flex' }} target="_self">
-      <Card sx={{ p: [3, 4], boxShadow: 'card_landing', border: 'none' }}>
+      <Card sx={{ p: [3, 4], boxShadow: 'cardLanding', border: 'none', borderRadius: 'large' }}>
         <Flex sx={{ py: 3, px: [2, 0] }}>
           <Flex sx={{ mr: [3, 4], width: ['70px', '88px'], height: ['70px', '88px'] }}>
             <Icon name={`landing_card_${cardKey}`} size="auto" width="100%" height="100%" />
