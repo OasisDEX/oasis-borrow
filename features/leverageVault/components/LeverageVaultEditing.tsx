@@ -50,6 +50,13 @@ export function LeverageVaultEditing(props: LeverageVaultState) {
   } = props
 
   const collRatioColor = getCollRatioColor(props)
+  const sliderBackground = leverage
+    ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
+        colors?.sliderTrackFill
+      } ${leverage.toNumber()}%, ${colors?.primaryAlt} ${leverage.toNumber()}%, ${
+        colors?.primaryAlt
+      } 100%)`
+    : 'primaryAlt'
 
   return (
     <Grid gap={4}>
@@ -108,13 +115,7 @@ export function LeverageVaultEditing(props: LeverageVaultState) {
         <Box my={1}>
           <Slider
             sx={{
-              background: leverage
-                ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
-                    colors?.sliderTrackFill
-                  } ${leverage.toNumber()}%, ${colors?.primaryAlt} ${leverage.toNumber()}%, ${
-                    colors?.primaryAlt
-                  } 100%)`
-                : 'primaryAlt',
+              background: sliderBackground,
             }}
             disabled={!canAdjustRisk}
             step={3}
