@@ -4,7 +4,7 @@ import { VaultActionInput } from 'components/VaultActionInput'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import React from 'react'
-import { Box, Flex, Grid, Slider, Text } from 'theme-ui'
+import { Box, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
 import { LeverageVaultState } from '../leverageVault'
 import { getCollRatioColor } from './LeverageVaultDetails'
@@ -29,6 +29,9 @@ export const MinusIcon = () => (
 )
 
 export function LeverageVaultEditing(props: LeverageVaultState) {
+  const {
+    theme: { colors },
+  } = useThemeUI()
   const {
     token,
     depositAmount,
@@ -104,8 +107,17 @@ export function LeverageVaultEditing(props: LeverageVaultState) {
         </Box>
         <Box my={1}>
           <Slider
+            sx={{
+              background: leverage
+                ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
+                    colors?.sliderTrackFill
+                  } ${leverage.toNumber()}%, ${colors?.primaryAlt} ${leverage.toNumber()}%, ${
+                    colors?.primaryAlt
+                  } 100%)`
+                : 'primaryAlt',
+            }}
             disabled={!canAdjustRisk}
-            step={10}
+            step={3}
             value={leverage?.toNumber() || 0}
             onChange={(e) => {
               updateLeverage && updateLeverage(new BigNumber(e.target.value))
@@ -125,7 +137,7 @@ export function LeverageVaultEditing(props: LeverageVaultState) {
           </Flex>
         </Box>
       </Grid>
-      <Box sx={{ borderBottom: 'light' }} />
+      <Box sx={{ borderBottom: 'lightMuted' }} />
       <LeverageVaultOrderInformation {...props} />
     </Grid>
   )

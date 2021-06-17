@@ -34,7 +34,7 @@ function LeverageVaultTitle({
         <>
           <Box
             sx={{
-              borderBottom: 'light',
+              borderBottom: 'lightMuted',
               pb: 3,
               mb: 3,
               position: 'relative',
@@ -52,7 +52,14 @@ function LeverageVaultTitle({
                 display: 'block',
               }}
             >
-              <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+              <Flex
+                sx={{
+                  variant: 'links.nav',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 3,
+                }}
+              >
                 <Text mr={2}>Switch to Borrow</Text>
                 <Icon sx={{ ml: 1 }} name="arrow_right" />
               </Flex>
@@ -91,7 +98,13 @@ function LeverageVaultForm(props: LeverageVaultState) {
     <Box>
       <Card
         variant="surface"
-        sx={{ boxShadow: 'card', borderRadius: 'mediumLarge', p: 3, overflow: 'hidden' }}
+        sx={{
+          boxShadow: 'card',
+          borderRadius: 'mediumLarge',
+          p: 3,
+          overflow: 'hidden',
+          border: 'lightMuted',
+        }}
       >
         <Grid gap={4} p={2}>
           <LeverageVaultTitle {...props} />

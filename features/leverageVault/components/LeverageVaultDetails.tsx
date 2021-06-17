@@ -115,7 +115,7 @@ function LeverageVaultDetailsCard({
   valueBottom: ReactNode
 }) {
   return (
-    <Card>
+    <Card sx={{ border: 'lightMuted' }}>
       <Box p={2} sx={{ fontSize: 2 }}>
         <Text variant="subheader" sx={{ fontWeight: 'semiBold', fontSize: 'inherit' }}>
           {title}
