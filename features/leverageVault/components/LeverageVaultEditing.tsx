@@ -118,7 +118,7 @@ export function LeverageVaultEditing(props: LeverageVaultState) {
               background: sliderBackground,
             }}
             disabled={!canAdjustRisk}
-            step={3}
+            step={2}
             value={leverage?.toNumber() || 0}
             onChange={(e) => {
               updateLeverage && updateLeverage(new BigNumber(e.target.value))
