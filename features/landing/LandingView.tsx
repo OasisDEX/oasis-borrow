@@ -13,8 +13,8 @@ import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { ComponentProps, useCallback, useEffect, useRef, useState } from 'react'
-import { Box, Button, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
+import React, { ComponentProps, useCallback } from 'react'
+import { Box, Button, Card, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
@@ -220,106 +220,44 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
     </Flex>
   )
 }
-interface ExpandableProps {
-  question: string
-  answer: string
-  isOpen: boolean
-  toggle(): void
-}
-function Expandable({ question, answer, isOpen, toggle }: ExpandableProps) {
-  const contentRef = useRef<HTMLDivElement | null>(null)
-  const [rect, setRect] = useState<DOMRect | null>(null)
-  useEffect(() => {
-    if (contentRef.current === null) {
-      return
-    }
 
-    setRect(contentRef.current.getBoundingClientRect())
-  }, [])
+function LandingCard({ href, cardKey }: { href: string; cardKey: 'dai' | 'faq' }) {
+  const { t } = useTranslation()
 
   return (
-    <Box
-      sx={{
-        borderBottom: 'light',
-        '&:first-of-type': {
-          borderTop: 'light',
-        },
-      }}
-    >
-      <Button
-        sx={{ position: 'relative', lineHeight: '1rem' }}
-        variant="expandable"
-        onClick={toggle}
-      >
-        {question}
-        {
-          <Box
-            sx={{
-              width: 25,
-              height: 25,
-              marginLeft: 'auto',
-              position: 'absolute',
-              right: 0,
-              top: '50%',
-              transform: `translateY(-50%) rotate(${isOpen ? 0 : 180}deg)`,
-              transformOrigin: '50% 50%',
-              transition: 'transform 0.2s ease-in-out',
-            }}
-          >
-            <Icon size={25} name={isOpen ? 'minus' : 'plus'} />
+    <AppLink href={href} sx={{ display: 'flex' }} target="_self">
+      <Card sx={{ p: [3, 4], boxShadow: 'cardLanding', border: 'none', borderRadius: 'large' }}>
+        <Flex sx={{ py: 3, px: [2, 0] }}>
+          <Flex sx={{ mr: [3, 4], width: ['70px', '88px'], height: ['70px', '88px'] }}>
+            <Icon name={`landing_card_${cardKey}`} size="auto" width="100%" height="100%" />
+          </Flex>
+          <Box sx={{ color: 'primary', flex: 1 }}>
+            <Heading mb={3} sx={{ fontWeight: 'semiBold' }}>
+              {t(`landing.cards.${cardKey}.title`)}
+            </Heading>
+            <Text variant="paragraph2">{t(`landing.cards.${cardKey}.description`)}</Text>
           </Box>
-        }
-      </Button>
-      <Box
-        sx={{
-          overflow: 'hidden',
-          height: isOpen && rect ? `${rect.height}px` : 0,
-          transition: 'height 0.3s',
-        }}
-      >
-        <Box
-          ref={contentRef}
-          sx={{
-            pb: 3,
-          }}
-        >
-          {answer}
-        </Box>
-      </Box>
-    </Box>
+        </Flex>
+      </Card>
+    </AppLink>
   )
 }
 
-export function FAQ() {
-  const { t } = useTranslation()
-  const [openEntry, setOpen] = useState<undefined | number>()
-  const entries = t('landing.faq.entries', { returnObjects: true }) as Array<{
-    question: string
-    answer: string
-  }>
-
+function LandingCards() {
   return (
-    <Flex
-      sx={{ flexDirection: 'column', alignItems: 'center', my: 6, maxWidth: '762px', mx: 'auto' }}
+    <Grid
+      columns={[1, null, 2]}
+      gap={4}
+      sx={{
+        maxWidth: ['460px', null, '992px'],
+        mx: 'auto',
+        my: 5,
+        py: 4,
+      }}
     >
-      <Heading variant="header2" sx={{ mb: 4 }}>
-        {t('landing.faq.title')}
-      </Heading>
-      {entries.map(({ question, answer }, idx) => (
-        <Expandable
-          key={idx}
-          question={question}
-          answer={answer}
-          isOpen={openEntry === idx}
-          toggle={() => (openEntry === idx ? setOpen(undefined) : setOpen(idx))}
-        />
-      ))}
-      <Flex sx={{ width: '100%', justifyContent: 'flex-start', mt: 3 }}>
-        <AppLink sx={{ color: 'lavender' }} href="https://oasis.app/support">
-          {t('landing.link-to-full-faq')}
-        </AppLink>
-      </Flex>
-    </Flex>
+      <LandingCard href="https://oasis.app/dashboard" cardKey="dai" />
+      <LandingCard href="https://oasis.app/support" cardKey="faq" />
+    </Grid>
   )
 }
 
@@ -409,7 +347,7 @@ export function LandingView() {
           </Box>
         )}
       </WithLoadingIndicator>
-      <FAQ />
+      <LandingCards />
     </Grid>
   )
 }

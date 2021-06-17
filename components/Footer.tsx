@@ -41,7 +41,11 @@ const FOOTER_SECTIONS = [
   {
     titleKey: 'landing.footer.products',
     links: [
-      { labelKey: 'landing.footer.dai-wallet', url: 'https://oasis.app/contact', target: '_self' },
+      {
+        labelKey: 'landing.footer.dai-wallet',
+        url: 'https://oasis.app/dashboard',
+        target: '_self',
+      },
       { labelKey: 'landing.footer.borrow', url: '/' },
       { labelKey: 'landing.footer.trade', url: 'https://oasis.app/trade', target: '_self' },
     ],
