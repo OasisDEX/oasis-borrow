@@ -1346,6 +1346,8 @@ const oasisBaseTheme = {
   },
   links: {
     primary: {
+      px: 3,
+      py: 2,
       variant: 'buttons.primary',
       display: 'inline-block',
       bg: 'primary',

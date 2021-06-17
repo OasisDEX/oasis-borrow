@@ -12,7 +12,7 @@ export interface AppLinkProps extends WithChildren, LinkProps {
   variant?: string
   internalInNewTab?: boolean
   withAccountPrefix?: boolean
-  onClick?: () => void
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>
   target?: string
 }
 
