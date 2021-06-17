@@ -31,6 +31,8 @@ export function makeSignIn(options: signInOptions): Handler {
 
     let challenge: ChallengeJWT
 
+    console.log('start sign in')
+
     try {
       challenge = jwt.verify(body.challenge, options.challengeJWTSecret, {
         algorithms: ['HS512'],
@@ -43,13 +45,20 @@ export function makeSignIn(options: signInOptions): Handler {
     const web3 = new Web3(new Web3.providers.HttpProvider(infuraUrlBackend))
     const message = recreateSignedMessage(challenge)
 
+    console.log(challenge.address)
+
     if (await isArgentWallet(web3, challenge.address)) {
+      console.log('isArgent')
+
       if (!(await isValidSignature(web3, challenge.address, message, body.signature))) {
         throw new SignatureAuthError('Signature not correct')
       }
     } else {
       const signedAddress = recoverPersonalSignature({ data: message, sig: body.signature })
 
+      console.log('normal')
+      console.log(signedAddress.toLowerCase())
+      console.log(challenge.address)
       if (signedAddress.toLowerCase() !== challenge.address) {
         throw new SignatureAuthError('Signature not correct')
       }

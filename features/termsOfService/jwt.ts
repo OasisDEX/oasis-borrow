@@ -29,8 +29,10 @@ async function requestJWT(web3: Web3, account: string): Promise<string> {
   console.log('Signing challenge: ', challenge)
 
   const signature = await signTypedPayload(challenge, web3, account)
+  console.log(signature)
   const jwt = await requestSignin({ challenge, signature }).toPromise()
 
+  console.log(jwt)
   localStorage.setItem(`token-b/${account}`, jwt)
 
   return jwt
@@ -38,9 +40,21 @@ async function requestJWT(web3: Web3, account: string): Promise<string> {
 
 async function signTypedPayload(challenge: string, web3: Web3, account: string): Promise<string> {
   const data = getDataToSignFromChallenge(challenge)
+  let test
 
+  console.log('pre sign')
+  console.log(web3.eth.personal)
   // @ts-ignore
-  return web3.eth.personal.sign(data, account)
+  try {
+    test = await web3.eth.sign(data, account)
+    // const test = web3.eth.personal.sign(data, account)
+  } catch (err) {
+    console.log(err)
+  }
+
+  console.log(test)
+  // return web3.eth.personal.sign(data, account)
+  return test
 }
 
 function requestChallenge(address: string): Observable<string> {
