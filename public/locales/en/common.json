@@ -125,7 +125,8 @@
   },
   "filters": {
     "lp-token": "LP tokens",
-    "stablecoin": "Stablecoins"
+    "stablecoin": "Stablecoins",
+    "popular": "Popular assets"
   },
   "gas-estimation-error": "Error",
   "get-dai": "Get Dai",
