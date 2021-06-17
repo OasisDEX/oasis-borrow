@@ -521,5 +521,18 @@
     "last-update": "Last Update",
     "next-update": "Next Update",
     "oracle-type": "Oracle Type"
+  },
+  "select-vault-type": {
+    "header": "What do you want to do with your {{token}}?",
+    "leverage": {
+      "header": "Leverage my {{token}}",
+      "subtext": "Use your {{balance}} {{token}} to get a up to {{exposure}} {{token}} exposure.",
+      "button": "Leverage {{token}}"
+    },
+    "borrow": {
+      "header": "Borrow against my {{token}}",
+      "subtext": "Use your {{balance}} {{token}} to borrow up to {{maxBorrow}} DAI",
+      "button": "Borrow against {{token}}"
+    }
   }
 }

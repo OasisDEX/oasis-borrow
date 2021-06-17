@@ -17,6 +17,7 @@ import { Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 import { IlksFilterState } from '../ilks/ilksFilters'
 import { TokenSymbol } from '../landing/LandingView'
 import { OpenVaultOverview as OpenVaultOverviewData } from './openVaultData'
+import { useRedirectToOpenVault } from './useRedirectToOpenVault'
 
 const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState & { isReadonly: boolean }>[] = [
   {
@@ -87,30 +88,40 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState & { isReadonly: boo
   {
     headerLabel: '',
     header: () => null,
-    cell: ({ ilk, ilkDebtAvailable }) => (
-      <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
-        <AppLink
-          sx={{ width: ['100%', 'inherit'], textAlign: 'center', maxWidth: ['100%', '150px'] }}
-          variant="secondary"
-          href={`/vaults/open/${ilk}`}
-          disabled={ilkDebtAvailable.isZero()}
-        >
-          {!ilkDebtAvailable.isZero() ? (
-            <Trans i18nKey="open-vault.title" />
-          ) : (
-            <Button
-              variant="secondary"
-              disabled={true}
-              sx={{ width: '100%', maxWidth: ['100%', '150px'] }}
-            >
-              <Text>
-                <Trans i18nKey="no-dai" />
-              </Text>
-            </Button>
-          )}
-        </AppLink>
-      </Box>
-    ),
+    cell: ({ ilk, ilkDebtAvailable, token }) => {
+      const redirectToOpenVault = useRedirectToOpenVault()
+      return (
+        <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
+          <AppLink
+            sx={{ width: ['100%', 'inherit'], textAlign: 'center', maxWidth: ['100%', '150px'] }}
+            variant="secondary"
+            href={`/vaults/open/${ilk}`}
+            disabled={ilkDebtAvailable.isZero()}
+            onClick={(e) => {
+              e.preventDefault()
+              if (ilkDebtAvailable.isZero()) {
+                return
+              }
+              redirectToOpenVault(ilk, token)
+            }}
+          >
+            {!ilkDebtAvailable.isZero() ? (
+              <Trans i18nKey="open-vault.title" />
+            ) : (
+              <Button
+                variant="secondary"
+                disabled={true}
+                sx={{ width: '100%', maxWidth: ['100%', '150px'] }}
+              >
+                <Text>
+                  <Trans i18nKey="no-dai" />
+                </Text>
+              </Button>
+            )}
+          </AppLink>
+        </Box>
+      )
+    },
   },
 ]
 
@@ -125,6 +136,7 @@ function getHeaderTranslationKey(hasVaults: boolean) {
 
   return hasVaults ? `${HEADER_PATH}.withVaults` : `${HEADER_PATH}.noVaults`
 }
+
 export function OpenVaultOverview({ vaultsOverview, accountDetails, context }: Props) {
   const { ilksWithFilters } = vaultsOverview
   const { t } = useTranslation()
@@ -149,6 +161,8 @@ export function OpenVaultOverview({ vaultsOverview, accountDetails, context }: P
     !!accountDetails?.numberOfVaults && accountDetails.numberOfVaults > 0,
   )
 
+  const redirectToOpenVault = useRedirectToOpenVault()
+
   return (
     <Grid sx={{ flex: 1, zIndex: 1 }}>
       <Heading variant="header2" sx={{ textAlign: 'center', my: 5 }} as="h1">
@@ -170,7 +184,9 @@ export function OpenVaultOverview({ vaultsOverview, accountDetails, context }: P
         columns={ilksColumns}
         noResults={<Box>{t('no-results')}</Box>}
         deriveRowProps={(row) => ({
-          href: row.ilkDebtAvailable.isZero() ? undefined : `/vaults/open/${row.ilk}`,
+          onClick: row.ilkDebtAvailable.isZero()
+            ? undefined
+            : () => redirectToOpenVault(row.ilk, row.token),
         })}
       />
     </Grid>

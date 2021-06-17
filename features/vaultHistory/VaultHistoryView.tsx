@@ -112,8 +112,7 @@ export function VaultHistoryView({ id }: { id: BigNumber }) {
               state={{}}
               columns={columns}
               deriveRowProps={(row) => ({
-                href: `${context?.etherscan.url}/tx/${row.hash}`,
-                target: '_blank',
+                onClick: () => window.open(`${context?.etherscan.url}/tx/${row.hash}`, '_blank'),
               })}
             />
           </Box>
