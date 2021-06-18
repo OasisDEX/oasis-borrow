@@ -509,9 +509,9 @@
   "select-vault-type": {
     "header": "What do you want to do with your {{token}}?",
     "multiply": {
-      "header": "OpenMultiply my {{token}}",
+      "header": "Multiply my {{token}}",
       "subtext": "Use your {{balance}} {{token}} to get a up to {{exposure}} {{token}} exposure.",
-      "button": "OpenMultiply {{token}}"
+      "button": "Multiply {{token}}"
     },
     "borrow": {
       "header": "Borrow against my {{token}}",
