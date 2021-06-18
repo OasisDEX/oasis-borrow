@@ -1,6 +1,6 @@
-import { LeverageVaultState } from './leverageVault'
+import { OpenMultiplyVaultState } from './openMultiplyVault'
 
-export type LeverageVaultErrorMessage =
+export type OpenMultiplyVaultErrorMessage =
   | 'depositAmountExceedsCollateralBalance'
   | 'depositingAllEthBalance'
   | 'generateAmountExceedsDaiYieldFromDepositingCollateral'
@@ -11,7 +11,7 @@ export type LeverageVaultErrorMessage =
   | 'customAllowanceAmountLessThanDepositAmount'
   | 'ledgerWalletContractDataDisabled'
 
-export function validateErrors(state: LeverageVaultState): LeverageVaultState {
+export function validateErrors(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
   const {
     depositAmount,
     balanceInfo,
@@ -25,7 +25,7 @@ export function validateErrors(state: LeverageVaultState): LeverageVaultState {
     customAllowanceAmountExceedsMaxUint256,
     customAllowanceAmountLessThanDepositAmount,
   } = state
-  const errorMessages: LeverageVaultErrorMessage[] = []
+  const errorMessages: OpenMultiplyVaultErrorMessage[] = []
 
   if (isEditingStage) {
     if (depositAmount?.gt(balanceInfo.collateralBalance)) {
@@ -71,14 +71,14 @@ export function validateErrors(state: LeverageVaultState): LeverageVaultState {
   return { ...state, errorMessages }
 }
 
-export type LeverageVaultWarningMessage =
+export type OpenMultiplyVaultWarningMessage =
   | 'potentialGenerateAmountLessThanDebtFloor'
   | 'vaultWillBeAtRiskLevelDanger'
   | 'vaultWillBeAtRiskLevelWarning'
   | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
   | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
 
-export function validateWarnings(state: LeverageVaultState): LeverageVaultState {
+export function validateWarnings(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
   const {
     errorMessages,
     isEditingStage,
@@ -88,7 +88,7 @@ export function validateWarnings(state: LeverageVaultState): LeverageVaultState 
     vaultWillBeAtRiskLevelWarningAtNextPrice,
   } = state
 
-  const warningMessages: LeverageVaultWarningMessage[] = []
+  const warningMessages: OpenMultiplyVaultWarningMessage[] = []
 
   if (errorMessages.length) return { ...state, warningMessages }
 

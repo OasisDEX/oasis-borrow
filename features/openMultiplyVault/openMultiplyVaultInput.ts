@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 
-import { LeverageVaultChange, LeverageVaultState } from './leverageVault'
+import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
 interface DepositChange {
   kind: 'deposit'
@@ -16,21 +16,21 @@ interface DepositMaxChange {
   kind: 'depositMax'
 }
 
-interface LeverageChange {
-  kind: 'leverage'
-  leverage?: BigNumber
+interface MultiplyChange {
+  kind: 'multiply'
+  multiply?: BigNumber
 }
 
 export type OpenVaultInputChange =
   | DepositChange
   | DepositUSDChange
   | DepositMaxChange
-  | LeverageChange
+  | MultiplyChange
 
 export function applyOpenVaultInput(
-  change: LeverageVaultChange,
-  state: LeverageVaultState,
-): LeverageVaultState {
+  change: OpenMultiplyVaultChange,
+  state: OpenMultiplyVaultState,
+): OpenMultiplyVaultState {
   if (change.kind === 'deposit') {
     const { depositAmount } = change
     const { priceInfo } = state
@@ -40,7 +40,7 @@ export function applyOpenVaultInput(
       ...state,
       depositAmount,
       depositAmountUSD,
-      leverage: undefined,
+      multiply: undefined,
     }
   }
 
@@ -53,7 +53,7 @@ export function applyOpenVaultInput(
       ...state,
       depositAmount,
       depositAmountUSD,
-      leverage: undefined,
+      multiply: undefined,
     }
   }
 
@@ -67,10 +67,10 @@ export function applyOpenVaultInput(
     }
   }
 
-  if (change.kind === 'leverage') {
+  if (change.kind === 'multiply') {
     return {
       ...state,
-      leverage: change.leverage,
+      multiply: change.multiply,
     }
   }
 

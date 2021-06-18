@@ -1,10 +1,10 @@
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { zero } from 'helpers/zero'
 
-import { LeverageVaultState } from './leverageVault'
-import { LeverageVaultCalculations } from './leverageVaultCalculations'
+import { OpenMultiplyVaultState } from './openMultiplyVault'
+import { OpenMultiplyVaultCalculations } from './openMultiplyVaultCalculations'
 
-export type OpenVaultSummary = Pick<LeverageVaultCalculations, 'afterCollateralBalance'> &
+export type OpenVaultSummary = Pick<OpenMultiplyVaultCalculations, 'afterCollateralBalance'> &
   Pick<BalanceInfo, 'collateralBalance'>
 
 export const defaultOpenVaultSummary: OpenVaultSummary = {
@@ -12,7 +12,7 @@ export const defaultOpenVaultSummary: OpenVaultSummary = {
   afterCollateralBalance: zero,
 }
 
-export function applyOpenVaultSummary(state: LeverageVaultState) {
+export function applyOpenVaultSummary(state: OpenMultiplyVaultState) {
   const {
     isOpenStage,
     balanceInfo: { collateralBalance },

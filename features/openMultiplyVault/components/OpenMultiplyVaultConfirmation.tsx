@@ -2,20 +2,25 @@ import { Box } from '@theme-ui/components'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { LeverageVaultState } from '../leverageVault'
-import { LeverageVaultOrderInformation } from './LeverageVaultOrderInformation'
+import { OpenMultiplyVaultState } from '../openMultiplyVault'
+import { OpenMultiplyVaultOrderInformation } from './OpenMultiplyVaultOrderInformation'
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
-export function LeverageVaultConfirmation(props: LeverageVaultState) {
+export function OpenMultiplyVaultConfirmation(props: OpenMultiplyVaultState) {
   return (
     <>
       <Box sx={{ borderBottom: 'light' }} />
-      <LeverageVaultOrderInformation {...props} />
+      <OpenMultiplyVaultOrderInformation {...props} />
     </>
   )
 }
 
-export function LeverageVaultStatus({ stage, id, etherscan, openTxHash }: LeverageVaultState) {
+export function OpenMultiplyVaultStatus({
+  stage,
+  id,
+  etherscan,
+  openTxHash,
+}: OpenMultiplyVaultState) {
   const { t } = useTranslation()
   if (stage === 'openInProgress') {
     return (

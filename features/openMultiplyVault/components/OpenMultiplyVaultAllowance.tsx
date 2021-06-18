@@ -8,10 +8,10 @@ import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 
 import { Radio } from '../../../components/forms/Radio'
-import { LeverageVaultState } from '../leverageVault'
+import { OpenMultiplyVaultState } from '../openMultiplyVault'
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
-export function LeverageVaultAllowance({
+export function OpenMultiplyVaultAllowance({
   stage,
   token,
   depositAmount,
@@ -21,7 +21,7 @@ export function LeverageVaultAllowance({
   setAllowanceAmountToDepositAmount,
   setAllowanceAmountCustom,
   selectedAllowanceRadio,
-}: LeverageVaultState) {
+}: OpenMultiplyVaultState) {
   const canSelectRadio = stage === 'allowanceWaitingForConfirmation'
 
   const isUnlimited = selectedAllowanceRadio === 'unlimited'
@@ -88,12 +88,12 @@ export function LeverageVaultAllowance({
   )
 }
 
-export function LeverageVaultAllowanceStatus({
+export function OpenMultiplyVaultAllowanceStatus({
   stage,
   allowanceTxHash,
   etherscan,
   token,
-}: LeverageVaultState) {
+}: OpenMultiplyVaultState) {
   const { t } = useTranslation()
 
   if (stage === 'allowanceInProgress') {

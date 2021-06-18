@@ -4,10 +4,16 @@ import BigNumber from 'bignumber.js'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import React, { ReactNode, useState } from 'react'
 
-import { LeverageVaultState } from '../leverageVault'
-import { getCollRatioColor } from './LeverageVaultDetails'
+import { OpenMultiplyVaultState } from '../openMultiplyVault'
+import { getCollRatioColor } from './OpenMultiplyVaultDetails'
 
-function LeverageVaultOrderInformationItem({ label, value }: { label: string; value: ReactNode }) {
+function OpenMultiplyVaultOrderInformationItem({
+  label,
+  value,
+}: {
+  label: string
+  value: ReactNode
+}) {
   return (
     <Flex
       sx={{
@@ -23,7 +29,7 @@ function LeverageVaultOrderInformationItem({ label, value }: { label: string; va
   )
 }
 
-export function LeverageVaultOrderInformation(props: LeverageVaultState) {
+export function OpenMultiplyVaultOrderInformation(props: OpenMultiplyVaultState) {
   const [showFees, setShowFees] = useState(false)
   const {
     multiply,
@@ -42,7 +48,7 @@ export function LeverageVaultOrderInformation(props: LeverageVaultState) {
       <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
         Order information
       </Text>
-      <LeverageVaultOrderInformationItem
+      <OpenMultiplyVaultOrderInformationItem
         label={`Buying ${token}`}
         value={
           <Text>
@@ -54,11 +60,11 @@ export function LeverageVaultOrderInformation(props: LeverageVaultState) {
           </Text>
         }
       />
-      <LeverageVaultOrderInformationItem
+      <OpenMultiplyVaultOrderInformationItem
         label={`Total ${token} exposure`}
         value={`${formatCryptoBalance(totalExposure || new BigNumber(0))} ${token}`}
       />
-      <LeverageVaultOrderInformationItem
+      <OpenMultiplyVaultOrderInformationItem
         label={`${token} Price (impact)`}
         value={
           <Text>
@@ -69,13 +75,16 @@ export function LeverageVaultOrderInformation(props: LeverageVaultState) {
           </Text>
         }
       />
-      <LeverageVaultOrderInformationItem label={'Slippage Limit'} value={'5.00 %'} />
-      <LeverageVaultOrderInformationItem label={'Multiply'} value={`${multiply?.toString()}x`} />
-      <LeverageVaultOrderInformationItem
+      <OpenMultiplyVaultOrderInformationItem label={'Slippage Limit'} value={'5.00 %'} />
+      <OpenMultiplyVaultOrderInformationItem
+        label={'Multiply'}
+        value={`${multiply?.toString()}x`}
+      />
+      <OpenMultiplyVaultOrderInformationItem
         label={'Outstanding Debt'}
         value={`${formatCryptoBalance(afterOutstandingDebt)} DAI`}
       />
-      <LeverageVaultOrderInformationItem
+      <OpenMultiplyVaultOrderInformationItem
         label={'Collateral Ratio'}
         value={
           <Text sx={{ color: collRatioColor }}>
@@ -86,7 +95,7 @@ export function LeverageVaultOrderInformation(props: LeverageVaultState) {
           </Text>
         }
       />
-      <LeverageVaultOrderInformationItem
+      <OpenMultiplyVaultOrderInformationItem
         label={'Transaction Fee'}
         value={
           <Flex
@@ -105,11 +114,11 @@ export function LeverageVaultOrderInformation(props: LeverageVaultState) {
       />
       {showFees && (
         <Grid pl={3} gap={2}>
-          <LeverageVaultOrderInformationItem
+          <OpenMultiplyVaultOrderInformationItem
             label={'3rd party protocol fees'}
             value={`$${formatAmount(txFees, 'USD')}`}
           />
-          <LeverageVaultOrderInformationItem
+          <OpenMultiplyVaultOrderInformationItem
             label={'Oasis fee'}
             value={`$${formatAmount(txFees, 'USD')}`}
           />

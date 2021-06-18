@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
 
-import { LeverageVaultState } from './leverageVault'
+import { OpenMultiplyVaultState } from './openMultiplyVault'
 
 const MULTIPLY_FEE = new BigNumber(0.01)
 const LOAN_FEE = new BigNumber(0.009)
@@ -9,7 +9,7 @@ const TOTAL_FEES = MULTIPLY_FEE.plus(LOAN_FEE)
 
 const MAX_MULTIPLY = new BigNumber(2)
 
-export interface LeverageVaultCalculations {
+export interface OpenMultiplyVaultCalculations {
   afterLiquidationPrice: BigNumber
   afterBuyingPower: BigNumber // ??
   afterBuyingPowerUSD: BigNumber // ??
@@ -34,7 +34,7 @@ export interface LeverageVaultCalculations {
   // afterFreeCollateral: BigNumber
 }
 
-export const defaultOpenVaultStateCalculations: LeverageVaultCalculations = {
+export const defaultOpenVaultStateCalculations: OpenMultiplyVaultCalculations = {
   afterLiquidationPrice: zero,
   afterBuyingPower: zero,
   afterBuyingPowerUSD: zero,
@@ -54,13 +54,13 @@ export const defaultOpenVaultStateCalculations: LeverageVaultCalculations = {
   afterCollateralizationRatio: zero,
 }
 
-export function applyOpenVaultCalculations(state: LeverageVaultState): LeverageVaultState {
+export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
   const {
     depositAmount,
     balanceInfo: { collateralBalance },
     priceInfo: { currentCollateralPrice },
     ilkData: { liquidationRatio },
-    leverage,
+    multiply,
   } = state
 
   const maxDepositAmount = collateralBalance
@@ -74,8 +74,9 @@ export function applyOpenVaultCalculations(state: LeverageVaultState): LeverageV
     ? collateralBalance.minus(depositAmount)
     : collateralBalance
 
-  const multiply = leverage ? leverage.div(100).times(MAX_MULTIPLY.minus(1)).plus(1) : undefined
-  const totalExposure = multiply && depositAmount ? multiply.times(depositAmount) : undefined
+  const multiplyCalc = multiply ? multiply.div(100).times(MAX_MULTIPLY.minus(1)).plus(1) : undefined
+  const totalExposure =
+    multiplyCalc && depositAmount ? multiplyCalc.times(depositAmount) : undefined
 
   const buyingCollateral =
     depositAmount && totalExposure ? totalExposure.minus(depositAmount) : zero // USE EXCHANGE PRICE

@@ -8,25 +8,31 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Card, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
 
-import { LeverageVaultState } from '../leverageVault'
-import { createOpenVaultAnalytics$ } from '../leverageVaultAnalytics'
-import { LeverageVaultAllowance, LeverageVaultAllowanceStatus } from './LeverageVaultAllowance'
-import { LeverageVaultButton } from './LeverageVaultButton'
-import { LeverageVaultConfirmation, LeverageVaultStatus } from './LeverageVaultConfirmation'
-import { LeverageVaultDetails } from './LeverageVaultDetails'
-import { LeverageVaultEditing } from './LeverageVaultEditing'
-import { LeverageVaultErrors } from './LeverageVaultErrors'
-import { LeverageVaultIlkDetails } from './LeverageVaultIlkDetails'
-import { LeverageVaultProxy } from './LeverageVaultProxy'
-import { LeverageVaultWarnings } from './LeverageVaultWarnings'
+import { OpenMultiplyVaultState } from '../openMultiplyVault'
+import { createOpenVaultAnalytics$ } from '../openMultiplyVaultAnalytics'
+import {
+  OpenMultiplyVaultAllowance,
+  OpenMultiplyVaultAllowanceStatus,
+} from './OpenMultiplyVaultAllowance'
+import { OpenMultiplyVaultButton } from './OpenMultiplyVaultButton'
+import {
+  OpenMultiplyVaultConfirmation,
+  OpenMultiplyVaultStatus,
+} from './OpenMultiplyVaultConfirmation'
+import { OpenMultiplyVaultDetails } from './OpenMultiplyVaultDetails'
+import { OpenMultiplyVaultEditing } from './OpenMultiplyVaultEditing'
+import { OpenMultiplyVaultErrors } from './OpenMultiplyVaultErrors'
+import { OpenMultiplyVaultIlkDetails } from './OpenMultiplyVaultIlkDetails'
+import { OpenMultiplyVaultProxy } from './OpenMultiplyVaultProxy'
+import { OpenMultiplyVaultWarnings } from './OpenMultiplyVaultWarnings'
 
-function LeverageVaultTitle({
+function OpenMultiplyVaultTitle({
   isEditingStage,
   isProxyStage,
   isAllowanceStage,
   token,
   ilk,
-}: LeverageVaultState) {
+}: OpenMultiplyVaultState) {
   const { t } = useTranslation()
   return (
     <Box>
@@ -91,7 +97,7 @@ function LeverageVaultTitle({
   )
 }
 
-function LeverageVaultForm(props: LeverageVaultState) {
+function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
 
   return (
@@ -107,23 +113,23 @@ function LeverageVaultForm(props: LeverageVaultState) {
         }}
       >
         <Grid gap={4} p={2}>
-          <LeverageVaultTitle {...props} />
-          {isEditingStage && <LeverageVaultEditing {...props} />}
-          {isAllowanceStage && <LeverageVaultAllowance {...props} />}
-          {isOpenStage && <LeverageVaultConfirmation {...props} />}
-          <LeverageVaultErrors {...props} />
-          <LeverageVaultWarnings {...props} />
-          <LeverageVaultButton {...props} />
-          {isProxyStage && <LeverageVaultProxy {...props} />}
-          {isAllowanceStage && <LeverageVaultAllowanceStatus {...props} />}
-          {isOpenStage && <LeverageVaultStatus {...props} />}
+          <OpenMultiplyVaultTitle {...props} />
+          {isEditingStage && <OpenMultiplyVaultEditing {...props} />}
+          {isAllowanceStage && <OpenMultiplyVaultAllowance {...props} />}
+          {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
+          <OpenMultiplyVaultErrors {...props} />
+          <OpenMultiplyVaultWarnings {...props} />
+          <OpenMultiplyVaultButton {...props} />
+          {isProxyStage && <OpenMultiplyVaultProxy {...props} />}
+          {isAllowanceStage && <OpenMultiplyVaultAllowanceStatus {...props} />}
+          {isOpenStage && <OpenMultiplyVaultStatus {...props} />}
         </Grid>
       </Card>
     </Box>
   )
 }
 
-export function LeverageVaultHeading(props: LeverageVaultState & SxProps) {
+export function OpenMultiplyVaultHeading(props: OpenMultiplyVaultState & SxProps) {
   const { ilk, sx } = props
   const { t } = useTranslation()
 
@@ -140,37 +146,37 @@ export function LeverageVaultHeading(props: LeverageVaultState & SxProps) {
       >
         {t('vault.open-vault', { ilk })}
       </Heading>
-      <LeverageVaultIlkDetails {...props} />
+      <OpenMultiplyVaultIlkDetails {...props} />
     </Grid>
   )
 }
 
-export function LeverageVaultContainer(props: LeverageVaultState) {
+export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultState) {
   return (
     <>
-      <LeverageVaultHeading {...props} />
+      <OpenMultiplyVaultHeading {...props} />
       <Grid columns={['1fr', '2fr minmax(480px, 1fr)']} gap={4}>
         <Box sx={{ order: [3, 1] }}>
-          <LeverageVaultDetails {...props} />
+          <OpenMultiplyVaultDetails {...props} />
         </Box>
         {/* <Divider sx={{ display: ['block', 'none'], order: [2, 0] }} /> */}
         <Box sx={{ order: [1, 2], pl: [0, 3] }}>
-          <LeverageVaultForm {...props} />
+          <OpenMultiplyVaultForm {...props} />
         </Box>
       </Grid>
     </>
   )
 }
 
-export function LeverageVaultView({ ilk }: { ilk: string }) {
-  const { leverageVault$ } = useAppContext()
-  const leverageVaultWithIlk$ = leverageVault$(ilk)
+export function OpenMultiplyVaultView({ ilk }: { ilk: string }) {
+  const { multiplyVault$ } = useAppContext()
+  const multiplyVaultWithIlk$ = multiplyVault$(ilk)
 
-  const openVaultWithError = useObservableWithError(leverageVault$(ilk))
+  const openVaultWithError = useObservableWithError(multiplyVault$(ilk))
 
   useEffect(() => {
     const subscription = createOpenVaultAnalytics$(
-      leverageVaultWithIlk$,
+      multiplyVaultWithIlk$,
       trackingEvents,
     ).subscribe()
 
@@ -185,7 +191,7 @@ export function LeverageVaultView({ ilk }: { ilk: string }) {
         {...openVaultWithError}
         customError={<Box>{openVaultWithError.error?.message}</Box>}
       >
-        {(openVault) => <LeverageVaultContainer {...openVault} />}
+        {(openVault) => <OpenMultiplyVaultContainer {...openVault} />}
       </WithLoadingIndicator>
     </Grid>
   )

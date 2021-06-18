@@ -3,7 +3,7 @@ import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { LeverageVaultState } from '../leverageVault'
+import { OpenMultiplyVaultState } from '../openMultiplyVault'
 
 function VaultIlkDetailsItem({ label, value }: { label: string; value: string }) {
   return (
@@ -27,9 +27,9 @@ function VaultIlkDetailsItem({ label, value }: { label: string; value: string })
   )
 }
 
-export function LeverageVaultIlkDetails({
+export function OpenMultiplyVaultIlkDetails({
   ilkData: { liquidationRatio, stabilityFee, liquidationPenalty, debtFloor },
-}: LeverageVaultState) {
+}: OpenMultiplyVaultState) {
   const { t } = useTranslation()
 
   return (

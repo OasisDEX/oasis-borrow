@@ -508,10 +508,10 @@
   },
   "select-vault-type": {
     "header": "What do you want to do with your {{token}}?",
-    "leverage": {
-      "header": "Leverage my {{token}}",
+    "multiply": {
+      "header": "OpenMultiply my {{token}}",
       "subtext": "Use your {{balance}} {{token}} to get a up to {{exposure}} {{token}} exposure.",
-      "button": "Leverage {{token}}"
+      "button": "OpenMultiply {{token}}"
     },
     "borrow": {
       "header": "Borrow against my {{token}}",
