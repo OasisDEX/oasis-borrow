@@ -18,20 +18,21 @@ const FOOTER_SECTIONS = [
   {
     titleKey: 'landing.footer.about',
     links: [
-      { labelKey: 'landing.footer.team', url: 'https://oasis.app/about' },
-      { labelKey: 'landing.footer.careers', url: 'https://oasis.app/careers' },
-      { labelKey: 'landing.footer.privacy', url: 'https://oasis.app/privacy' },
+      { labelKey: 'landing.footer.team', url: 'https://oasis.app/about', target: '_self' },
+      { labelKey: 'landing.footer.careers', url: 'https://oasis.app/careers', target: '_self' },
+      { labelKey: 'landing.footer.privacy', url: 'https://oasis.app/privacy', target: '_self' },
       { labelKey: 'landing.footer.terms', url: '/terms' },
-      { labelKey: 'landing.footer.contact', url: 'https://oasis.app/contact', target: '_self' },
+      { labelKey: 'landing.footer.contact', url: 'https://oasis.app/contact' },
     ],
   },
   {
     titleKey: 'landing.footer.resources',
     links: [
-      { labelKey: 'landing.footer.blog', url: 'https://blog.oasis.app' },
+      { labelKey: 'landing.footer.blog', url: 'https://blog.oasis.app', target: '_self' },
       {
         labelKey: 'landing.footer.faq',
         url: 'https://oasis.app/support',
+        target: '_self',
       },
       // add link
       // { labelKey: 'landing.footer.knowledge-centre', url: '/' },
@@ -41,7 +42,11 @@ const FOOTER_SECTIONS = [
   {
     titleKey: 'landing.footer.products',
     links: [
-      { labelKey: 'landing.footer.dai-wallet', url: 'https://oasis.app/contact', target: '_self' },
+      {
+        labelKey: 'landing.footer.dai-wallet',
+        url: 'https://oasis.app/dashboard',
+        target: '_self',
+      },
       { labelKey: 'landing.footer.borrow', url: '/' },
       { labelKey: 'landing.footer.trade', url: 'https://oasis.app/trade', target: '_self' },
     ],

@@ -40,7 +40,7 @@
     "@myetherwallet/mewconnect-connector": "^0.1.8",
     "@next/bundle-analyzer": "^10.0.7",
     "@next/mdx": "^9.4.0",
-    "@oasisdex/connectors": "^0.0.23",
+    "@oasisdex/connectors": "^0.0.24",
     "@oasisdex/transactions": "^0.0.23",
     "@oasisdex/utils": "^0.0.8",
     "@oasisdex/web3-context": "^0.0.21",

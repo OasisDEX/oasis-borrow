@@ -40,7 +40,7 @@ function applyFilter(state: IlksFilterState, change: Changes): IlksFilterState {
   }
 }
 
-function sortIlks(
+export function sortIlks(
   ilks: IlkWithBalance[],
   sortBy: IlkSortBy,
   direction: Direction,
@@ -78,7 +78,7 @@ function filterByTag(ilks: IlkWithBalance[], tag: CoinTag | undefined) {
   })
 }
 
-function search(ilks: IlkWithBalance[], search: string) {
+export function search(ilks: IlkWithBalance[], search: string) {
   return ilks.filter((ilk) => {
     const tokenMeta = getToken(ilk.token)
 
