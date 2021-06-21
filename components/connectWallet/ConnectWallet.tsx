@@ -483,6 +483,17 @@ function autoConnect(
   }
 }
 
+export function disconnect(web3Context: Web3Context | undefined) {
+  if (web3Context?.status === 'connected') {
+    web3Context.deactivate()
+
+    // WalletConnect places this in LS and tries to reconnect without asking for QR
+    if (web3Context.connectionKind === 'walletConnect') {
+      localStorage.removeItem('walletconnect')
+    }
+  }
+}
+
 async function connectReadonly(web3Context: Web3ContextNotConnected) {
   web3Context.connect(await getConnector('network', getNetworkId()), 'network')
 }
