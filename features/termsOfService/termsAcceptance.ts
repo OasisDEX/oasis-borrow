@@ -134,7 +134,6 @@ function verifyAcceptance$(
     isGnosisSafe = true
   }
 
-  console.log('Is gnosis, connection', isGnosisSafe, connectionKind)
   if (isGnosisSafe) {
     // temporary ToS flow for Gnosis until they implement off chain signatures
     // saving and checking from Local storage and skipping JWT token set up
