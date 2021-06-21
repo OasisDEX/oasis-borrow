@@ -2,7 +2,7 @@ import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
-import { multiply, MultiplyData } from 'blockchain/calls/proxyActions'
+import { MultiplyData } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxHelpers } from 'components/AppContext'
 import { transactionToX } from 'helpers/form'
@@ -264,7 +264,7 @@ export function parseVaultIdFromReceiptLogs({ logs }: Receipt): BigNumber | unde
 export function multiplyVault(
   { sendWithGasEstimation }: TxHelpers,
   change: (ch: OpenMultiplyVaultChange) => void,
-  { depositAmount, proxyAddress, ilk, token, multiply: multiply }: OpenMultiplyVaultState,
+  { depositAmount, proxyAddress, ilk, token, multiply }: OpenMultiplyVaultState,
 ) {
   // @ts-ignore
   // REMOVE IT ONCE MULTIPLY CALL IS IMPLEMENTED
