@@ -142,23 +142,6 @@
   "keyWithCount": "{{count}} 项",
   "keyWithCount_plural": "{{count}} 项",
   "landing": {
-    "faq": {
-      "entries": [
-        {
-          "answer": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora.",
-          "question": "哪些资产可以作为抵押品？"
-        },
-        {
-          "answer": "\t Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora.",
-          "question": "会花费多少费用？"
-        },
-        {
-          "answer": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus, quam illum eveniet explicabo perspiciatis eaque eius quaerat, expedita minima vel facilis itaque, nihil reprehenderit voluptates quidem facere rem dolorem tempora.",
-          "question": "会花费多少费用？"
-        }
-      ],
-      "title": "借款常见问题"
-    },
     "footer": {
       "blog": "博客",
       "contact": "联系方式",
@@ -173,12 +156,20 @@
       "terms": "条款",
       "trade": "交易"
     },
-    "glossary-of-terms": "术语",
     "hero": {
       "headline": "抵押数字资产，生成 Dai",
       "subheader": "开启 Maker 金库，存入抵押品，生成 Dai。<0/> 连接钱包以开始。"
     },
-    "link-to-full-faq": "所有 Oasis 金库常见问题"
+    "cards": {
+      "dai": {
+        "title": "Dai Wallet",
+        "description": "Buy, send and manage Dai all in one place. Grow your Dai, access plenty of providers"
+      },
+      "faq": {
+        "title": "Have a question?",
+        "description": "Learn more about Oasis, Dai and DeFi at our FAQ’s page"
+      }
+    }
   },
   "ledger-cancel": "选择另一个钱包",
   "ledger-error": "遇到错误，请重试。",

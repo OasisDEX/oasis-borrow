@@ -307,7 +307,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
   const insufficientDaiAllowance = !!(
     paybackAmount &&
     !paybackAmount.isZero() &&
-    (!daiAllowance || paybackAmount.gt(daiAllowance))
+    (!daiAllowance || paybackAmount.plus(vault.debtOffset).gt(daiAllowance))
   )
 
   const isLoadingStage = ([

@@ -226,19 +226,6 @@
   "jwt-auth-rejected": "Firma rechazada",
   "jwt-auth-waiting-acceptance": "Firmar mensaje",
   "landing": {
-    "faq": {
-      "title": "Preguntas Frecuentes de pedir un préstamo"
-    },
-    "cards": {
-      "borrow": {
-        "description": "Depositar colateral y generar Dai.",
-        "title": "Abrir un Vault de Maker"
-      },
-      "introduction": {
-        "description": "Lee una breve introducción a Dai.",
-        "title": "Introducción a Dai"
-      }
-    },
     "footer": {
       "blog": "Blog",
       "borrow": "Pide prestado",
@@ -254,32 +241,18 @@
       "terms": "Condiciones",
       "trade": "Intercambia"
     },
-    "glossary-of-terms": "Glosario de términos",
     "hero": {
-      "button1": "Comenzar ahora",
-      "button2": "Aprender sobre Dai",
       "headline": "Genera Dai usando cripto como colateral",
       "subheader": "Abre un Vault de Maker y genera Dai depositando tu colateral. Conecta tu billetera para comenzar"
     },
-    "link-to-full-faq": "Lista completa de las preguntas frecuentes de los Vaults de Oasis",
-    "notification-save": " Oasis Save se ha movido y ahora es parte de la experiencia integrada de Oasis.app. Todo el Dai utilizado en la Tasa de Interés de Dai (DSR) se encontrará disponible aquí. Si tienes algún problema por favor <0>contáctanos.</0>",
-    "section-title": "Oasis es el hogar de su moneda digital más inteligente, Dai",
-    "sections": {
-      "1": {
-        "description": "Dai es una moneda digital cuyo valor sigue constantemente al dólar estadounidense ",
-        "title": "Dai sigue al USD"
+    "cards": {
+      "dai": {
+        "title": "Dai Wallet",
+        "description": "Buy, send and manage Dai all in one place. Grow your Dai, access plenty of providers"
       },
-      "2": {
-        "description": "Elija entre una variedad de proveedores, sin mínimos ni retiros en cualquier momento.",
-        "title": "Haga crecer sus ahorros"
-      },
-      "3": {
-        "description": "Transfiere fondos o gasta Dai tan rápido y tan fácil como enviar un mensaje.",
-        "title": "Envía a cualquier persona al instante"
-      },
-      "4": {
-        "description": "Sólo tú puedes acceder y transferir los fondos en tu billetera digital.",
-        "title": "Tú tienes el control total"
+      "faq": {
+        "title": "Have a question?",
+        "description": "Learn more about Oasis, Dai and DeFi at our FAQ’s page"
       }
     }
   },
