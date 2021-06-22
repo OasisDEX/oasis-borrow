@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Pages } from 'analytics/analytics'
 import { getToken } from 'blockchain/tokensMetadata'
+import { Announcement } from 'components/Announcement'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
@@ -155,6 +156,33 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
         flexDirection: 'column',
       }}
     >
+      <Announcement sx={{ mb: 3, textAlign: 'left' }}>
+        <Flex sx={{ flexDirection: ['column', 'row'] }}>
+          <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', fontSize: [1, 2], mr: 3 }}>
+            {t('welcome')}
+          </Text>
+          <Flex sx={{ flexDirection: ['column', 'row'] }}>
+            <AppLink href="https://blog.oasis.app/introducing-the-redesigned-oasis-borrow/">
+              <WithArrow>{t('read-blog-post')}</WithArrow>
+            </AppLink>
+            <Text
+              variant="paragraph3"
+              sx={{
+                fontWeight: 'semiBold',
+                color: 'muted',
+                mx: 3,
+                ml: 4,
+                display: ['none', 'block'],
+              }}
+            >
+              |
+            </Text>
+            <AppLink href={`${window.location.origin}/borrow-old`}>
+              <WithArrow>{t('visit-old-oasis')}</WithArrow>
+            </AppLink>
+          </Flex>
+        </Flex>
+      </Announcement>
       <Heading as="h1" variant="header2" sx={{ fontSize: 40, mb: 3 }}>
         {t('landing.hero.headline')}
       </Heading>
