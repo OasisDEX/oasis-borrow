@@ -69,25 +69,27 @@ export function InfrastructureAnnouncement() {
   const { t } = useTranslation()
 
   return (
-    <Announcement sx={{ mb: 3, textAlign: 'left', zIndex: 1, mx: 'auto' }}>
-      <Grid gap={2} sx={{ flex: 1 }}>
-        <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', fontSize: [1, 2], mr: 3 }}>
-          Our team will be performing maintenance on Oasis.app servers on Wednesday June 23rd.
-          <br />
-          To avoid downtime, we have set-up a back-up version at{' '}
-          <AppLink href="https://oazo.app/">Oazo.app</AppLink> and{' '}
-          <AppLink href="https://oazo.io/">Oazo.io</AppLink>. <br />
-          Check{' '}
-          <AppLink href="https://twitter.com/oasisdotapp">
-            https://twitter.com/oasisdotapp
-          </AppLink>{' '}
-          for updates.
-        </Text>
-        <AppLink href={`${window.location.origin}/borrow-old`}>
-          <WithArrow>{t('visit-old-oasis')}</WithArrow>
-        </AppLink>
-      </Grid>
-    </Announcement>
+    <Box sx={{ px: 3 }}>
+      <Announcement sx={{ mb: 3, textAlign: 'left', zIndex: 1, mx: 'auto', boxShadow: 'banner' }}>
+        <Grid gap={2} sx={{ flex: 1 }}>
+          <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', fontSize: [1, 2], mr: 3 }}>
+            Our team will be performing maintenance on Oasis.app servers on Wednesday June 23rd.
+            <br />
+            To avoid downtime, we have set-up a back-up version at{' '}
+            <AppLink href="https://oazo.app/">Oazo.app</AppLink> and{' '}
+            <AppLink href="https://oazo.io/">Oazo.io</AppLink>. <br />
+            Check{' '}
+            <AppLink href="https://twitter.com/oasisdotapp">
+              https://twitter.com/oasisdotapp
+            </AppLink>{' '}
+            for updates.
+          </Text>
+          <AppLink href={`${window.location.origin}/borrow-old`}>
+            <WithArrow>{t('visit-old-oasis')}</WithArrow>
+          </AppLink>
+        </Grid>
+      </Announcement>
+    </Box>
   )
 }
 
