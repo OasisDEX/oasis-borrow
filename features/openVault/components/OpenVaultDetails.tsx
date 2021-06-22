@@ -9,7 +9,6 @@ import React from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { OpenVaultState } from '../openVault'
-import { OpenVaultHeading } from './OpenVaultView'
 
 function VaultDetailsTableItem({
   label,
@@ -149,8 +148,6 @@ export function OpenVaultDetails(props: OpenVaultState) {
 
   return (
     <Grid sx={{ alignSelf: 'flex-start' }} columns={[1, '1fr 1fr']}>
-      <OpenVaultHeading {...props} sx={{ display: ['none', 'block'] }} />
-
       {/* Liquidation Price */}
       <Box sx={{ mt: [3, 5], textAlign: ['center', 'left'] }}>
         <Heading variant="subheader" as="h2">

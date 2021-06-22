@@ -6,8 +6,9 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
-import { Box, Card, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
+import { Box, Card, Flex, Grid, Text } from 'theme-ui'
 
+import { VaultHeader } from '../../../components/vault/VaultHeader'
 import { OpenMultiplyVaultState } from '../openMultiplyVault'
 import { createOpenVaultAnalytics$ } from '../openMultiplyVaultAnalytics'
 import {
@@ -22,7 +23,6 @@ import {
 import { OpenMultiplyVaultDetails } from './OpenMultiplyVaultDetails'
 import { OpenMultiplyVaultEditing } from './OpenMultiplyVaultEditing'
 import { OpenMultiplyVaultErrors } from './OpenMultiplyVaultErrors'
-import { OpenMultiplyVaultIlkDetails } from './OpenMultiplyVaultIlkDetails'
 import { OpenMultiplyVaultProxy } from './OpenMultiplyVaultProxy'
 import { OpenMultiplyVaultWarnings } from './OpenMultiplyVaultWarnings'
 
@@ -129,32 +129,13 @@ function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
   )
 }
 
-export function OpenMultiplyVaultHeading(props: OpenMultiplyVaultState & SxProps) {
-  const { ilk, sx } = props
+export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultState) {
+  const { ilk } = props
   const { t } = useTranslation()
 
   return (
-    <Grid mt={4}>
-      <Heading
-        as="h1"
-        variant="heading1"
-        sx={{
-          fontWeight: 'semiBold',
-          pb: 2,
-          ...sx,
-        }}
-      >
-        {t('vault.open-vault', { ilk })}
-      </Heading>
-      <OpenMultiplyVaultIlkDetails {...props} />
-    </Grid>
-  )
-}
-
-export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultState) {
-  return (
     <>
-      <OpenMultiplyVaultHeading {...props} />
+      <VaultHeader {...{ ...props, header: t('vault.open-vault', { ilk }) }} />
       <Grid columns={['1fr', '2fr minmax(480px, 1fr)']} gap={4}>
         <Box sx={{ order: [3, 1] }}>
           <OpenMultiplyVaultDetails {...props} />

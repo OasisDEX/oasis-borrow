@@ -1,4 +1,4 @@
-import { VaultActionInput } from 'components/VaultActionInput'
+import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { MinusIcon, PlusIcon } from 'features/openVault/components/OpenVaultEditing'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'

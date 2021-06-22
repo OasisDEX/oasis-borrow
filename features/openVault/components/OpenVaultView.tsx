@@ -1,12 +1,11 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
-import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
+import { VaultHeader } from 'components/vault/VaultHeader'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
-import { Box, Card, Divider, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
+import { Box, Card, Divider, Grid, Text } from 'theme-ui'
 
 import { OpenVaultAllowance, OpenVaultAllowanceStatus } from '../components/OpenVaultAllowance'
 import { OpenVaultButton } from '../components/OpenVaultButton'
@@ -70,43 +69,23 @@ function OpenVaultForm(props: OpenVaultState) {
   )
 }
 
-export function OpenVaultHeading(props: OpenVaultState & SxProps) {
-  const { token, ilk, sx } = props
-  const tokenInfo = getToken(token)
+export function OpenVaultContainer(props: OpenVaultState) {
+  const { ilk } = props
   const { t } = useTranslation()
 
   return (
-    <Heading
-      as="h1"
-      variant="paragraph2"
-      sx={{
-        gridColumn: ['1', '1/3'],
-        fontWeight: 'semiBold',
-        borderBottom: 'light',
-        pb: 3,
-        ...sx,
-      }}
-    >
-      <Flex sx={{ justifyContent: ['center', 'left'] }}>
-        <Icon name={tokenInfo.iconCircle} size="26px" sx={{ verticalAlign: 'sub', mr: 2 }} />
-        <Text>{t('vault.open-vault', { ilk })}</Text>
-      </Flex>
-    </Heading>
-  )
-}
-
-export function OpenVaultContainer(props: OpenVaultState) {
-  return (
-    <Grid columns={['1fr', '2fr minmax(380px, 1fr)']} gap={5}>
-      <OpenVaultHeading {...props} sx={{ display: ['block', 'none'] }} />
-      <Box sx={{ order: [3, 1] }}>
-        <OpenVaultDetails {...props} />
-      </Box>
-      <Divider sx={{ display: ['block', 'none'], order: [2, 0] }} />
-      <Box sx={{ order: [1, 2] }}>
-        <OpenVaultForm {...props} />
-      </Box>
-    </Grid>
+    <>
+      <VaultHeader {...{ ...props, header: t('vault.open-vault', { ilk }) }} />
+      <Grid columns={['1fr', '2fr minmax(380px, 1fr)']} gap={5}>
+        <Box sx={{ order: [3, 1] }}>
+          <OpenVaultDetails {...props} />
+        </Box>
+        <Divider sx={{ display: ['block', 'none'], order: [2, 0] }} />
+        <Box sx={{ order: [1, 2] }}>
+          <OpenVaultForm {...props} />
+        </Box>
+      </Grid>
+    </>
   )
 }
 

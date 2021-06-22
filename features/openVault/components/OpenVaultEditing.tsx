@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { VaultActionInput } from 'components/VaultActionInput'
+import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
