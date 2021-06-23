@@ -69,8 +69,8 @@ export function InfrastructureAnnouncement() {
   const { t } = useTranslation()
 
   return (
-    <Box sx={{ px: 3 }}>
-      <Announcement sx={{ mb: 3, textAlign: 'left', zIndex: 1, mx: 'auto', boxShadow: 'banner' }}>
+    <Box sx={{ px: 3, position: 'relative', zIndex: 1 }}>
+      <Announcement sx={{ mb: 3, textAlign: 'left', mx: 'auto', boxShadow: 'banner' }}>
         <Grid gap={2} sx={{ flex: 1 }}>
           <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', fontSize: [1, 2], mr: 3 }}>
             Our team will be performing maintenance on Oasis.app servers on Thursday June 24th.
