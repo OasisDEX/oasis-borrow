@@ -175,16 +175,6 @@
   "jwt-auth-rejected": "Assinatura rejeitada",
   "jwt-auth-waiting-acceptance": "Assinar mensagem",
   "landing": {
-    "cards": {
-      "borrow": {
-        "description": "Deposite Collateral e gere Dai.",
-        "title": "Abra um Maker Vault"
-      },
-      "introduction": {
-        "description": "Leia uma breve introdução sobre Dai",
-        "title": "Introdução sobre Dai"
-      }
-    },
     "footer": {
       "blog": "Blog",
       "borrow": "Empreste",
@@ -201,28 +191,16 @@
       "trade": "Trade"
     },
     "hero": {
-      "button1": "Comece agora",
-      "button2": "Aprenda sobre Dai",
       "headline": "Dai é uma moeda digital inteligente feita para todos. Compre, envie e gerencie em um só lugar."
     },
-    "notification-save": "Oasis Save migrou e se tornou parte da experiência do Oasis.app. O Dai utilizado no Poupança Dai (Dai Savings Rate - DSR) através do Oasis Save ficará disponível aqui. Se você tiver alguma dificuldade, por favor <0>nos contate.</0>",
-    "section-title": "Oasis é o lar da sua moeda digital inteligente, Dai",
-    "sections": {
-      "1": {
-        "description": "Dai é uma moeda digital cujo valor acompanha consistentemente o dólar americano",
-        "title": "Dai acompanha o Dollar"
+    "cards": {
+      "dai": {
+        "title": "Dai Wallet",
+        "description": "Buy, send and manage Dai all in one place. Grow your Dai, access plenty of providers"
       },
-      "2": {
-        "description": "Escolha entre uma variedade de fornecedores, sem mínimos e retiradas a qualquer momento.",
-        "title": "Aumente suas economias"
-      },
-      "3": {
-        "description": "Transfira fundos ou gaste Dai, tão rápido e fácil quanto enviar uma mensagem.",
-        "title": "Envie para qualquer pessoa instantaneamente"
-      },
-      "4": {
-        "description": "Somente você pode acessar e transferir os fundos de sua carteira digital.",
-        "title": "Você está no controle total"
+      "faq": {
+        "title": "Have a question?",
+        "description": "Learn more about Oasis, Dai and DeFi at our FAQ’s page"
       }
     }
   },

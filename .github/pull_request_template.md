@@ -1,5 +1,6 @@
-# [Title](https://clubhouseLink) 
-<please insert a clubhouse link abowe>
+# [Title](https://clubhouseLink)
+
+<please insert a clubhouse link above>
   
 ## Changes 👷‍♀️
   <Please add short list of changes>
@@ -17,6 +18,6 @@
 - [ ] Documentation updated <When applicable>
 - [ ] Project builds without errors
 - [ ] Non-functional requirements met
-- [ ] Code reviewed and functionality tested by the reviewer (locally, Heroku, etc.) 
+- [ ] Code reviewed and functionality tested by the reviewer (locally, Heroku, etc.)
 - [ ] Feature verified and accepted by Product Owner
 - [ ] Project deployed to production environment

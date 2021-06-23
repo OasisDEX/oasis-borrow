@@ -2,7 +2,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { getConnectionKindMessage } from 'components/connectWallet/ConnectWallet'
+import { disconnect, getConnectionKindMessage } from 'components/connectWallet/ConnectWallet'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
@@ -140,15 +140,9 @@ export function AccountModal({ close }: ModalProps) {
   const clipboardContentRef = useRef<HTMLTextAreaElement>(null)
   const { t } = useTranslation()
 
-  function disconnect() {
-    if (web3Context?.status === 'connected') {
-      web3Context.deactivate()
-    }
+  function disconnectHandler() {
+    disconnect(web3Context)
     close()
-    // for some reason queueing redirect is necessary
-    setTimeout(() => {
-      //replace(`/dashboard`)
-    }, 0)
   }
 
   function copyToClipboard() {
@@ -233,7 +227,7 @@ export function AccountModal({ close }: ModalProps) {
                     p: 0,
                     verticalAlign: 'baseline',
                   }}
-                  onClick={disconnect}
+                  onClick={disconnectHandler}
                 >
                   {t(`disconnect${connectionKind === 'magicLink' ? '-magic' : ''}`)}
                 </Button>
