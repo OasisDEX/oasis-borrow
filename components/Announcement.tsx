@@ -73,10 +73,9 @@ export function InfrastructureAnnouncement() {
       <Announcement sx={{ mb: 3, textAlign: 'left', zIndex: 1, mx: 'auto', boxShadow: 'banner' }}>
         <Grid gap={2} sx={{ flex: 1 }}>
           <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', fontSize: [1, 2], mr: 3 }}>
-            Our team will be performing maintenance on Oasis.app servers on Wednesday June 23rd.
+            Our team will be performing maintenance on Oasis.app servers on Thursday June 24th.
             <br />
             To avoid downtime, we have set-up a back-up version at{' '}
-            <AppLink href="https://oazo.app/">Oazo.app</AppLink> and{' '}
             <AppLink href="https://oazo.io/">Oazo.io</AppLink>. <br />
             Check{' '}
             <AppLink href="https://twitter.com/oasisdotapp">
