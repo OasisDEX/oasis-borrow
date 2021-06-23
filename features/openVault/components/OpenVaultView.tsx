@@ -2,6 +2,10 @@ import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
+import {
+  OpenVaultAllowance,
+  OpenVaultAllowanceStatus,
+} from 'features/openVault/components/OpenVaultAllowance'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
@@ -10,7 +14,6 @@ import { Box, Card, Divider, Grid, Text } from 'theme-ui'
 
 import { OpenVaultState } from '../openVault'
 import { createOpenVaultAnalytics$ } from '../openVaultAnalytics'
-import { OpenVaultAllowance, OpenVaultAllowanceStatus } from './OpenVaultAllowance'
 import { OpenVaultButton } from './OpenVaultButton'
 import { OpenVaultConfirmation, OpenVaultStatus } from './OpenVaultConfirmation'
 import { OpenVaultDetails } from './OpenVaultDetails'

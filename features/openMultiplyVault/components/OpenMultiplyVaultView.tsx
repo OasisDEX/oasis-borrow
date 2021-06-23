@@ -4,6 +4,10 @@ import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
+import {
+  OpenVaultAllowance,
+  OpenVaultAllowanceStatus,
+} from 'features/openVault/components/OpenVaultAllowance'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
@@ -12,10 +16,6 @@ import { Box, Card, Flex, Grid, Text } from 'theme-ui'
 
 import { OpenMultiplyVaultState } from '../openMultiplyVault'
 import { createOpenVaultAnalytics$ } from '../openMultiplyVaultAnalytics'
-import {
-  OpenMultiplyVaultAllowance,
-  OpenMultiplyVaultAllowanceStatus,
-} from './OpenMultiplyVaultAllowance'
 import { OpenMultiplyVaultButton } from './OpenMultiplyVaultButton'
 import {
   OpenMultiplyVaultConfirmation,
@@ -115,13 +115,13 @@ function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
         <Grid gap={4} p={2}>
           <OpenMultiplyVaultTitle {...props} />
           {isEditingStage && <OpenMultiplyVaultEditing {...props} />}
-          {isAllowanceStage && <OpenMultiplyVaultAllowance {...props} />}
+          {isAllowanceStage && <OpenVaultAllowance {...props} />}
           {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
           <OpenMultiplyVaultErrors {...props} />
           <OpenMultiplyVaultWarnings {...props} />
           <OpenMultiplyVaultButton {...props} />
           {isProxyStage && <VaultProxyStatusCard {...props} />}
-          {isAllowanceStage && <OpenMultiplyVaultAllowanceStatus {...props} />}
+          {isAllowanceStage && <OpenVaultAllowanceStatus {...props} />}
           {isOpenStage && <OpenMultiplyVaultStatus {...props} />}
         </Grid>
       </Card>

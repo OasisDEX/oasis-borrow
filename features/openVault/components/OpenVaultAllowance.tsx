@@ -1,6 +1,8 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { Radio } from 'components/forms/Radio'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
+import { OpenMultiplyVaultState } from 'features/openMultiplyVault/openMultiplyVault'
+import { OpenVaultState } from 'features/openVault/openVault'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
@@ -8,8 +10,6 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
-
-import { OpenVaultState } from '../openVault'
 
 export function OpenVaultAllowance({
   stage,
@@ -21,7 +21,7 @@ export function OpenVaultAllowance({
   setAllowanceAmountToDepositAmount,
   setAllowanceAmountCustom,
   selectedAllowanceRadio,
-}: OpenVaultState) {
+}: OpenVaultState | OpenMultiplyVaultState) {
   const canSelectRadio = stage === 'allowanceWaitingForConfirmation'
 
   const isUnlimited = selectedAllowanceRadio === 'unlimited'
@@ -93,7 +93,7 @@ export function OpenVaultAllowanceStatus({
   allowanceTxHash,
   etherscan,
   token,
-}: OpenVaultState) {
+}: OpenVaultState | OpenMultiplyVaultState) {
   const { t } = useTranslation()
 
   if (stage === 'allowanceInProgress') {
