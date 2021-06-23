@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
-import { LeverageVaultState } from '../leverageVault'
+import { OpenMultiplyVaultState } from '../openMultiplyVault'
 
 function VaultDetailsTableItem({
   label,
@@ -35,7 +35,7 @@ export function VaultDetailsTable({
   token,
   // maxGenerateAmountCurrentPrice,
   ilkData,
-}: LeverageVaultState) {
+}: OpenMultiplyVaultState) {
   const { t } = useTranslation()
   return (
     <Box sx={{ gridColumn: ['1', '1/3'], mt: [4, 6] }}>
@@ -105,7 +105,7 @@ export function VaultDetailsTable({
   )
 }
 
-function LeverageVaultDetailsCard({
+function OpenMultiplyVaultDetailsCard({
   title,
   value,
   valueBottom,
@@ -134,7 +134,7 @@ export function getCollRatioColor({
   vaultWillBeAtRiskLevelDanger,
   vaultWillBeUnderCollateralized,
   vaultWillBeAtRiskLevelWarning,
-}: LeverageVaultState) {
+}: OpenMultiplyVaultState) {
   const collRatioColor = afterCollateralizationRatio.isZero()
     ? 'primary'
     : vaultWillBeAtRiskLevelDanger || vaultWillBeUnderCollateralized
@@ -146,7 +146,7 @@ export function getCollRatioColor({
   return collRatioColor
 }
 
-export function LeverageVaultDetails(props: LeverageVaultState) {
+export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
   const {
     afterCollateralizationRatio,
     afterLiquidationPrice,
@@ -170,7 +170,7 @@ export function LeverageVaultDetails(props: LeverageVaultState) {
 
   return (
     <Grid sx={{ alignSelf: 'flex-start' }} columns={[1, '1fr 1fr']}>
-      <LeverageVaultDetailsCard
+      <OpenMultiplyVaultDetailsCard
         title={`${t('system.liquidation-price')}`}
         value={`$${formatAmount(afterLiquidationPrice, 'USD')}`}
         valueBottom={
@@ -188,13 +188,13 @@ export function LeverageVaultDetails(props: LeverageVaultState) {
         }
       />
 
-      <LeverageVaultDetailsCard
+      <OpenMultiplyVaultDetailsCard
         title={`Buying Power`}
         value={`$${formatAmount(props.afterBuyingPower, 'USD')}`}
         valueBottom={`${formatAmount(props.afterBuyingPower, 'USD')}`}
       />
 
-      <LeverageVaultDetailsCard
+      <OpenMultiplyVaultDetailsCard
         title={`Current Price`}
         value={`$${formatAmount(currentCollateralPrice, 'USD')}`}
         valueBottom={
@@ -215,7 +215,7 @@ export function LeverageVaultDetails(props: LeverageVaultState) {
         }
       />
 
-      <LeverageVaultDetailsCard
+      <OpenMultiplyVaultDetailsCard
         title={`Net Value`}
         value={`$${formatAmount(props.afterNetValueUSD, 'USD')}`}
         valueBottom={`Unrealised P&L 0%`}

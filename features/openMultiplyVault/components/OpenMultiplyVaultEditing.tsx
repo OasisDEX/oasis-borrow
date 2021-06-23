@@ -6,9 +6,9 @@ import { handleNumericInput } from 'helpers/input'
 import React from 'react'
 import { Box, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
-import { LeverageVaultState } from '../leverageVault'
-import { getCollRatioColor } from './LeverageVaultDetails'
-import { LeverageVaultOrderInformation } from './LeverageVaultOrderInformation'
+import { OpenMultiplyVaultState } from '../openMultiplyVault'
+import { getCollRatioColor } from './OpenMultiplyVaultDetails'
+import { OpenMultiplyVaultOrderInformation } from './OpenMultiplyVaultOrderInformation'
 
 export const PlusIcon = () => (
   <Icon
@@ -28,7 +28,7 @@ export const MinusIcon = () => (
   />
 )
 
-export function LeverageVaultEditing(props: LeverageVaultState) {
+export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
   const {
     theme: { colors },
   } = useThemeUI()
@@ -41,8 +41,8 @@ export function LeverageVaultEditing(props: LeverageVaultState) {
     updateDepositUSD,
     depositAmountUSD,
     maxDepositAmountUSD,
-    updateLeverage,
-    leverage, // TODO improve leverage editing
+    updateMultiply,
+    multiply, // TODO improve multiply editing
     priceInfo: { currentCollateralPrice },
     canAdjustRisk,
     afterLiquidationPrice,
@@ -50,10 +50,10 @@ export function LeverageVaultEditing(props: LeverageVaultState) {
   } = props
 
   const collRatioColor = getCollRatioColor(props)
-  const sliderBackground = leverage
+  const sliderBackground = multiply
     ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
         colors?.sliderTrackFill
-      } ${leverage.toNumber()}%, ${colors?.primaryAlt} ${leverage.toNumber()}%, ${
+      } ${multiply.toNumber()}%, ${colors?.primaryAlt} ${multiply.toNumber()}%, ${
         colors?.primaryAlt
       } 100%)`
     : 'primaryAlt'
@@ -81,7 +81,7 @@ export function LeverageVaultEditing(props: LeverageVaultState) {
       </Grid>
       <Grid gap={2}>
         <Text variant="strong" mb={2}>
-          Step 2 - Adjust your leverage
+          Step 2 - Adjust your multiply
         </Text>
         <Box>
           <Flex
@@ -119,9 +119,9 @@ export function LeverageVaultEditing(props: LeverageVaultState) {
             }}
             disabled={!canAdjustRisk}
             step={2}
-            value={leverage?.toNumber() || 0}
+            value={multiply?.toNumber() || 0}
             onChange={(e) => {
-              updateLeverage && updateLeverage(new BigNumber(e.target.value))
+              updateMultiply && updateMultiply(new BigNumber(e.target.value))
             }}
           />
         </Box>
@@ -139,7 +139,7 @@ export function LeverageVaultEditing(props: LeverageVaultState) {
         </Box>
       </Grid>
       <Box sx={{ borderBottom: 'lightMuted' }} />
-      <LeverageVaultOrderInformation {...props} />
+      <OpenMultiplyVaultOrderInformation {...props} />
     </Grid>
   )
 }

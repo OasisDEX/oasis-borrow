@@ -1,7 +1,7 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { zero } from 'helpers/zero'
 
-import { LeverageVaultChange, LeverageVaultState } from './leverageVault'
+import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
 export type OpenVaultTransitionChange =
   | {
@@ -18,9 +18,9 @@ export type OpenVaultTransitionChange =
     }
 
 export function applyOpenVaultTransition(
-  change: LeverageVaultChange,
-  state: LeverageVaultState,
-): LeverageVaultState {
+  change: OpenMultiplyVaultChange,
+  state: OpenMultiplyVaultState,
+): OpenMultiplyVaultState {
   if (change.kind === 'progressEditing') {
     const { errorMessages, proxyAddress, depositAmount, allowance } = state
     const canProgress = !errorMessages.length

@@ -2,14 +2,14 @@ import { IlkDataChange } from 'blockchain/ilks'
 import { BalanceInfoChange } from 'features/shared/balanceInfo'
 import { PriceInfoChange } from 'features/shared/priceInfo'
 
-import { LeverageVaultChange, LeverageVaultState } from './leverageVault'
+import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
 export type OpenVaultEnvironmentChange = PriceInfoChange | BalanceInfoChange | IlkDataChange
 
 export function applyOpenVaultEnvironment(
-  change: LeverageVaultChange,
-  state: LeverageVaultState,
-): LeverageVaultState {
+  change: OpenMultiplyVaultChange,
+  state: OpenMultiplyVaultState,
+): OpenMultiplyVaultState {
   if (change.kind === 'priceInfo') {
     return {
       ...state,

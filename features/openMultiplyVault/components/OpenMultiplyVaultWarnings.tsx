@@ -5,17 +5,17 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
-import { LeverageVaultState } from '../leverageVault'
-import { LeverageVaultWarningMessage } from '../leverageVaultValidations'
+import { OpenMultiplyVaultState } from '../openMultiplyVault'
+import { OpenMultiplyVaultWarningMessage } from '../openMultiplyVaultValidations'
 
-export function LeverageVaultWarnings({
+export function OpenMultiplyVaultWarnings({
   warningMessages,
   ilkData: { debtFloor },
-}: LeverageVaultState) {
+}: OpenMultiplyVaultState) {
   const { t } = useTranslation()
   if (!warningMessages.length) return null
 
-  function applyWarningMessageTranslation(message: LeverageVaultWarningMessage) {
+  function applyWarningMessageTranslation(message: OpenMultiplyVaultWarningMessage) {
     const translate = (key: string, args?: Dictionary<any>) => t(`open-vault.warnings.${key}`, args)
     switch (message) {
       case 'potentialGenerateAmountLessThanDebtFloor':

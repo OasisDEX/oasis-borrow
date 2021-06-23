@@ -1,7 +1,7 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 
-import { LeverageVaultStage, LeverageVaultState } from './leverageVault'
+import { OpenMultiplyVaultStage, OpenMultiplyVaultState } from './openMultiplyVault'
 
 const defaultOpenVaultStageCategories = {
   isEditingStage: false,
@@ -10,7 +10,7 @@ const defaultOpenVaultStageCategories = {
   isOpenStage: false,
 }
 
-export function applyOpenVaultStageCategorisation(state: LeverageVaultState) {
+export function applyOpenVaultStageCategorisation(state: OpenMultiplyVaultState) {
   switch (state.stage) {
     case 'editing':
       return {
@@ -53,7 +53,7 @@ export function applyOpenVaultStageCategorisation(state: LeverageVaultState) {
   }
 }
 
-export interface LeverageVaultConditions {
+export interface OpenMultiplyVaultConditions {
   isEditingStage: boolean
   isProxyStage: boolean
   isAllowanceStage: boolean
@@ -87,7 +87,7 @@ export interface LeverageVaultConditions {
   canRegress: boolean
 }
 
-export const defaultOpenVaultConditions: LeverageVaultConditions = {
+export const defaultOpenVaultConditions: OpenMultiplyVaultConditions = {
   ...defaultOpenVaultStageCategories,
   inputAmountsEmpty: true,
   canAdjustRisk: false,
@@ -117,7 +117,7 @@ export const defaultOpenVaultConditions: LeverageVaultConditions = {
   canRegress: false,
 }
 
-export function applyOpenVaultConditions(state: LeverageVaultState): LeverageVaultState {
+export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
   const {
     stage,
     afterCollateralizationRatio,
@@ -130,10 +130,10 @@ export function applyOpenVaultConditions(state: LeverageVaultState): LeverageVau
     selectedAllowanceRadio,
     allowanceAmount,
     allowance,
-    leverage,
+    multiply,
   } = state
 
-  const inputAmountsEmpty = !depositAmount && !leverage
+  const inputAmountsEmpty = !depositAmount && !multiply
   const canAdjustRisk = depositAmount !== undefined && depositAmount.gt(0)
 
   const vaultWillBeAtRiskLevelDanger =
@@ -180,7 +180,7 @@ export function applyOpenVaultConditions(state: LeverageVaultState): LeverageVau
     'allowanceWaitingForApproval',
     'openInProgress',
     'openWaitingForApproval',
-  ] as LeverageVaultStage[]).some((s) => s === stage)
+  ] as OpenMultiplyVaultStage[]).some((s) => s === stage)
 
   const customAllowanceAmountEmpty = selectedAllowanceRadio === 'custom' && !allowanceAmount
 
@@ -221,7 +221,7 @@ export function applyOpenVaultConditions(state: LeverageVaultState): LeverageVau
     'allowanceFailure',
     'openWaitingForConfirmation',
     'openFailure',
-  ] as LeverageVaultStage[]).some((s) => s === stage)
+  ] as OpenMultiplyVaultStage[]).some((s) => s === stage)
 
   return {
     ...state,

@@ -278,32 +278,32 @@ export const open: TransactionDef<OpenData> = {
 
 // todo
 
-export type LeverageData = {
-  kind: TxMetaKind.leverage
+export type MultiplyData = {
+  kind: TxMetaKind.multiply
   token: string
   ilk: string
   depositAmount: BigNumber
   multiply: BigNumber
   proxyAddress: string
 }
-function getLeverageCallData(
-  _data: LeverageData,
+function getMultiplyCallData(
+  _data: MultiplyData,
   _context: ContextConnected,
 ): PayableTransactionObject<string> {
   // const { contract, dssProxyActions } = context
-  console.log('CALLING LEVERAGE')
+  console.log('CALLING MULTIPLY')
   throw new Error('NOT IMPLEMENTED!')
 
-  // return contract<DssProxyActions>(dssProxyActions).methods.leverage(dssCdpManager.address)
+  // return contract<DssProxyActions>(dssProxyActions).methods.multiply(dssCdpManager.address)
 }
 
-export const leverage: TransactionDef<LeverageData> = {
+export const multiply: TransactionDef<MultiplyData> = {
   call: ({ proxyAddress }, { contract }) => {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => {
     const { dssProxyActions } = context
-    return [dssProxyActions.address, getLeverageCallData(data, context).encodeABI()]
+    return [dssProxyActions.address, getMultiplyCallData(data, context).encodeABI()]
   },
   options: ({ token, depositAmount }) =>
     token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},

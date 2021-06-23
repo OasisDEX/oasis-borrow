@@ -5,9 +5,9 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Spinner, Text } from 'theme-ui'
 
-import { LeverageVaultState } from '../leverageVault'
+import { OpenMultiplyVaultState } from '../openMultiplyVault'
 
-function leverageVaultPrimaryButtonText({
+function multiplyVaultPrimaryButtonText({
   stage,
   id,
   token,
@@ -15,7 +15,7 @@ function leverageVaultPrimaryButtonText({
   insufficientAllowance,
   inputAmountsEmpty,
   customAllowanceAmountEmpty,
-}: LeverageVaultState) {
+}: OpenMultiplyVaultState) {
   const { t } = useTranslation()
 
   switch (stage) {
@@ -65,7 +65,7 @@ function leverageVaultPrimaryButtonText({
   }
 }
 
-export function LeverageVaultButton(props: LeverageVaultState) {
+export function OpenMultiplyVaultButton(props: OpenMultiplyVaultState) {
   const { t } = useTranslation()
   const { replace } = useRedirect()
   const { stage, progress, regress, canRegress, id, canProgress, isLoadingStage, token } = props
@@ -85,7 +85,7 @@ export function LeverageVaultButton(props: LeverageVaultState) {
     regress!()
   }
 
-  const primaryButtonText = leverageVaultPrimaryButtonText(props)
+  const primaryButtonText = multiplyVaultPrimaryButtonText(props)
   const secondaryButtonText =
     stage === 'allowanceFailure' ? t('edit-token-allowance', { token }) : t('edit-vault-details')
 

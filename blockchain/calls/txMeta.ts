@@ -7,5 +7,5 @@ export enum TxMetaKind {
   depositAndGenerate = 'depositAndGenerate',
   withdrawAndPayback = 'withdrawAndPayback',
   reclaim = 'reclaim',
-  leverage = 'leverage',
+  multiply = 'multiply',
 }

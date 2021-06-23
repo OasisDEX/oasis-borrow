@@ -6,19 +6,19 @@ import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
-import { LeverageVaultState } from '../leverageVault'
-import { LeverageVaultErrorMessage } from '../leverageVaultValidations'
+import { OpenMultiplyVaultState } from '../openMultiplyVault'
+import { OpenMultiplyVaultErrorMessage } from '../openMultiplyVaultValidations'
 
-export function LeverageVaultErrors({
+export function OpenMultiplyVaultErrors({
   errorMessages,
   // maxGenerateAmount,
   ilkData: { debtFloor },
   token,
-}: LeverageVaultState) {
+}: OpenMultiplyVaultState) {
   const { t } = useTranslation()
   if (!errorMessages.length) return null
 
-  function applyErrorMessageTranslation(message: LeverageVaultErrorMessage) {
+  function applyErrorMessageTranslation(message: OpenMultiplyVaultErrorMessage) {
     const translate = (key: string, args?: Dictionary<any>) => t(`open-vault.errors.${key}`, args)
     switch (message) {
       case 'depositAmountExceedsCollateralBalance':

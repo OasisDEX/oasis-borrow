@@ -1,6 +1,6 @@
 import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
-import { LeverageVaultView } from 'features/leverageVault/components/LeverageVaultView'
+import { OpenMultiplyVaultView } from 'features/openMultiplyVault/components/OpenMultiplyVaultView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -20,7 +20,7 @@ export default function OpenVault({ ilk }: { ilk: string }) {
     <WithWalletConnection>
       <WithTermsOfService>
         <BackgroundLight />
-        <LeverageVaultView ilk={ilk} />
+        <OpenMultiplyVaultView ilk={ilk} />
       </WithTermsOfService>
     </WithWalletConnection>
   )
