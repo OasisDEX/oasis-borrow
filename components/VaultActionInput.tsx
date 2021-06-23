@@ -195,6 +195,8 @@ export function VaultActionInput({
             onClick={handleAuxiliarySwitch}
             sx={{
               cursor: 'pointer',
+              textAlign: 'right',
+              pr: 3,
               '& svg': {
                 transform: 'rotate(90deg)',
                 transition: 'color 0.2s ease-in',

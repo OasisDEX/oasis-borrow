@@ -3,7 +3,7 @@ import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Button, Flex, Spinner, Text } from 'theme-ui'
+import { Box, Button, Flex, Spinner, Text } from 'theme-ui'
 
 import { LeverageVaultState } from '../leverageVault'
 
@@ -136,19 +136,30 @@ export function LeverageVaultButton(props: LeverageVaultState) {
         )}
       </Button>
       {canRegress && (
-        <Button
-          variant="textual"
-          onClick={(e: React.SyntheticEvent<HTMLButtonElement>) => {
-            if (stage !== 'allowanceFailure') {
-              trackingEvents.confirmVaultEdit()
-            }
+        <>
+          <Box
+            sx={{
+              borderBottom: 'light',
+              mb: -2,
+              position: 'relative',
+              width: 'calc(100% + 64px)',
+              left: -4,
+            }}
+          />
+          <Button
+            variant="textual"
+            onClick={(e: React.SyntheticEvent<HTMLButtonElement>) => {
+              if (stage !== 'allowanceFailure') {
+                trackingEvents.confirmVaultEdit()
+              }
 
-            handleRegress(e)
-          }}
-          sx={{ fontSize: 3 }}
-        >
-          {secondaryButtonText}
-        </Button>
+              handleRegress(e)
+            }}
+            sx={{ fontSize: 1, color: 'primary', py: 0 }}
+          >
+            {secondaryButtonText}
+          </Button>
+        </>
       )}
     </>
   )

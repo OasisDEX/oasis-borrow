@@ -1,10 +1,12 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
+import { AppLink } from 'components/Links'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
-import { Box, Card, Grid, Heading, SxProps, Text } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
 
 import { LeverageVaultState } from '../leverageVault'
 import { createOpenVaultAnalytics$ } from '../leverageVaultAnalytics'
@@ -23,10 +25,50 @@ function LeverageVaultTitle({
   isProxyStage,
   isAllowanceStage,
   token,
+  ilk,
 }: LeverageVaultState) {
   const { t } = useTranslation()
   return (
     <Box>
+      {isEditingStage ? (
+        <>
+          <Box
+            sx={{
+              borderBottom: 'lightMuted',
+              pb: 3,
+              mb: 3,
+              position: 'relative',
+              width: 'calc(100% + 64px)',
+              left: -4,
+            }}
+          >
+            <AppLink
+              href={`/vaults/open/${ilk}`}
+              sx={{
+                color: 'primary',
+                fontWeight: 'semiBold',
+                fontSize: 3,
+                pb: 2,
+                display: 'block',
+              }}
+            >
+              <Flex
+                sx={{
+                  variant: 'links.nav',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 3,
+                }}
+              >
+                <Text mr={2}>Switch to Borrow</Text>
+                <Icon sx={{ ml: 1 }} name="arrow_right" />
+              </Flex>
+            </AppLink>
+          </Box>
+          {/* divider */}
+          <Box sx={{ pb: 2 }} />
+        </>
+      ) : null}
       <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
         {isEditingStage
           ? t('vault-form.header.edit')
@@ -54,8 +96,17 @@ function LeverageVaultForm(props: LeverageVaultState) {
 
   return (
     <Box>
-      <Card variant="surface" sx={{ boxShadow: 'card', borderRadius: 'mediumLarge', px: 4, py: 3 }}>
-        <Grid sx={{ mt: 2 }}>
+      <Card
+        variant="surface"
+        sx={{
+          boxShadow: 'card',
+          borderRadius: 'mediumLarge',
+          p: 3,
+          overflow: 'hidden',
+          border: 'lightMuted',
+        }}
+      >
+        <Grid gap={4} p={2}>
           <LeverageVaultTitle {...props} />
           {isEditingStage && <LeverageVaultEditing {...props} />}
           {isAllowanceStage && <LeverageVaultAllowance {...props} />}

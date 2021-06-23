@@ -115,7 +115,7 @@ function LeverageVaultDetailsCard({
   valueBottom: ReactNode
 }) {
   return (
-    <Card>
+    <Card sx={{ border: 'lightMuted' }}>
       <Box p={2} sx={{ fontSize: 2 }}>
         <Text variant="subheader" sx={{ fontWeight: 'semiBold', fontSize: 'inherit' }}>
           {title}
@@ -129,35 +129,38 @@ function LeverageVaultDetailsCard({
   )
 }
 
+export function getCollRatioColor({
+  afterCollateralizationRatio,
+  vaultWillBeAtRiskLevelDanger,
+  vaultWillBeUnderCollateralized,
+  vaultWillBeAtRiskLevelWarning,
+}: LeverageVaultState) {
+  const collRatioColor = afterCollateralizationRatio.isZero()
+    ? 'primary'
+    : vaultWillBeAtRiskLevelDanger || vaultWillBeUnderCollateralized
+    ? 'onError'
+    : vaultWillBeAtRiskLevelWarning
+    ? 'onWarning'
+    : 'onSuccess'
+
+  return collRatioColor
+}
+
 export function LeverageVaultDetails(props: LeverageVaultState) {
   const {
     afterCollateralizationRatio,
     afterLiquidationPrice,
-    // token,
-    // depositAmount,
-    // depositAmountUSD,
     priceInfo: {
       currentCollateralPrice,
       nextCollateralPrice,
       isStaticCollateralPrice,
-      // dateNextCollateralPrice,
       collateralPricePercentageChange,
     },
-    // vaultWillBeAtRiskLevelDanger,
-    // vaultWillBeUnderCollateralized,
-    // vaultWillBeAtRiskLevelWarning,
   } = props
-  // const collRatioColor = afterCollateralizationRatio.isZero()
-  //   ? 'primary'
-  //   : vaultWillBeAtRiskLevelDanger || vaultWillBeUnderCollateralized
-  //   ? 'onError'
-  //   : vaultWillBeAtRiskLevelWarning
-  //   ? 'onWarning'
-  //   : 'onSuccess'
+
+  const collRatioColor = getCollRatioColor(props)
 
   const { t } = useTranslation()
-
-  // const newPriceIn = moment(dateNextCollateralPrice).diff(Date.now(), 'minutes')
 
   const priceChangeColor = collateralPricePercentageChange.isZero()
     ? 'text.muted'
@@ -172,10 +175,12 @@ export function LeverageVaultDetails(props: LeverageVaultState) {
         value={`$${formatAmount(afterLiquidationPrice, 'USD')}`}
         valueBottom={
           <>
-            {formatPercent(afterCollateralizationRatio.times(100), {
-              precision: 2,
-              roundMode: BigNumber.ROUND_DOWN,
-            })}
+            <Text as="span" sx={{ color: collRatioColor }}>
+              {formatPercent(afterCollateralizationRatio.times(100), {
+                precision: 2,
+                roundMode: BigNumber.ROUND_DOWN,
+              })}
+            </Text>
             <Text as="span" sx={{ color: 'text.subtitle' }}>
               {` ${t('system.collateralization-ratio')}`}
             </Text>
@@ -215,56 +220,6 @@ export function LeverageVaultDetails(props: LeverageVaultState) {
         value={`$${formatAmount(props.afterNetValueUSD, 'USD')}`}
         valueBottom={`Unrealised P&L 0%`}
       />
-
-      <Box>
-        <Box as="dl" sx={{ dt: { fontWeight: 'bold' } }}>
-          <dt>multiple</dt>
-          <dd>{props.multiply?.toString()}x</dd>
-
-          <dt>Collateralization ratio</dt>
-          <dd>{props.afterCollateralizationRatio?.times(100).toString()}%</dd>
-
-          <dt>after liquidation price</dt>
-          <dd>{props.afterLiquidationPrice.toString()}</dd>
-
-          <dt>current {props.token} price</dt>
-          <dd>{props.priceInfo.currentCollateralPrice.toString()}</dd>
-
-          <dt>buying power</dt>
-          <dd>
-            {props.afterBuyingPower.toString()}
-            {props.token}
-          </dd>
-          <dd>
-            {props.afterBuyingPowerUSD.toString()}
-            USD
-          </dd>
-
-          <dt>Net value</dt>
-          <dd>
-            {props.afterNetValue.toString()}
-            {props.token}
-          </dd>
-          <dd>{props.afterNetValueUSD.toString()}USD</dd>
-
-          <dt>buying collateral</dt>
-          <dd>
-            {props.buyingCollateral.toString()}
-            {props.token}
-          </dd>
-          <dd>{props.buyingCollateralUSD.toString()}USD</dd>
-
-          <dt>total exposure</dt>
-          <dd>{props.totalExposure?.toString()}</dd>
-
-          <dt>After debt</dt>
-          <dd>{props.afterOutstandingDebt?.toString()}DAI</dd>
-
-          <dt>Fees</dt>
-          <dd>{props.txFees?.toString()}USD</dd>
-        </Box>
-      </Box>
-      {/* <VaultDetailsTable {...props} /> */}
     </Grid>
   )
 }
