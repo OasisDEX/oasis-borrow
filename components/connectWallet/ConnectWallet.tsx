@@ -131,7 +131,7 @@ const SUPPORTED_WALLETS: SupportedWallet[] = [
   { iconName: 'portis', connectionKind: 'portis' },
   { iconName: 'myetherwallet', connectionKind: 'myetherwallet' },
   { iconName: 'trezor', connectionKind: 'trezor' },
-  { iconName: 'trezor', connectionKind: 'gnosisSafe' },
+  { iconName: 'gnosis_safe', connectionKind: 'gnosisSafe' },
 ]
 
 const isFirefox = browserDetect().name === 'firefox'
