@@ -40,6 +40,7 @@ import { createAccountData } from 'features/account/AccountData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
+import { createExchangeQuote$ } from 'features/exchange/exchange'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
@@ -283,6 +284,11 @@ export function setupAppContext() {
       ilkData$,
       ilkToToken$,
     ),
+  )
+
+  const exchangeQuote$ = memoize(
+    curry(createExchangeQuote$)(context$),
+    (token, slippage, amount) => `${token}${slippage.toString()}${amount.toString()}`,
   )
 
   const leverageVault$ = memoize(

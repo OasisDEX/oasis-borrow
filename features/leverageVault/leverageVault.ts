@@ -3,6 +3,7 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
+import { Quote } from 'features/exchange/exchange'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { curry } from 'lodash'
@@ -131,6 +132,7 @@ interface LeverageVaultEnvironment {
   ilkData: IlkData
   proxyAddress?: string
   allowance?: BigNumber
+  quote?: Quote
 }
 
 interface LeverageVaultTxInfo {
@@ -253,6 +255,22 @@ export const defaultMutableOpenVaultState: MutableLeverageVaultState = {
   allowanceAmount: maxUint256,
 }
 
+function applyQuote(
+  exchangeQuote$: (token: string, slippage: BigNumber, amount: BigNumber) => Observable<Quote>,
+  state: LeverageVaultState,
+  context: ContextConnected,
+): Observable<LeverageVaultState> {
+  return of(state).pipe(
+    switchMap((state) =>
+      state.depositAmount
+        ? exchangeQuote$(state.token, new BigNumber(0.05), state.depositAmount).pipe(
+            map((quote) => ({ ...state, quote })),
+          )
+        : of(state),
+    ),
+  )
+}
+
 export function createLeverageVault$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
@@ -263,6 +281,7 @@ export function createLeverageVault$(
   ilks$: Observable<string[]>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilkToToken$: Observable<(ilk: string) => string>,
+  // exchangeQuote$: (token: string, slippage: BigNumber, amount: BigNumber) => Observable<Quote>,
   ilk: string,
 ): Observable<LeverageVaultState> {
   return ilks$.pipe(
@@ -328,6 +347,7 @@ export function createLeverageVault$(
 
                     return merge(change$, environmentChanges$).pipe(
                       scan(apply, initialState),
+                      switchMap((state) => applyQuote(exchangeQuote$, state, context)),
                       map(validateErrors),
                       map(validateWarnings),
                       map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),

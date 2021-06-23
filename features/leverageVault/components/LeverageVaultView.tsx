@@ -95,6 +95,7 @@ export function LeverageVaultHeading(props: LeverageVaultState & SxProps) {
 }
 
 export function LeverageVaultContainer(props: LeverageVaultState) {
+  console.log({ props })
   return (
     <>
       <LeverageVaultHeading {...props} />
@@ -134,7 +135,7 @@ export function LeverageVaultView({ ilk }: { ilk: string }) {
         {...openVaultWithError}
         customError={<Box>{openVaultWithError.error?.message}</Box>}
       >
-        {(openVault) => <LeverageVaultContainer {...openVault} />}
+        {(leverageVault) => <LeverageVaultContainer {...leverageVault} />}
       </WithLoadingIndicator>
     </Grid>
   )
