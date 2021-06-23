@@ -361,7 +361,7 @@
   "unlimited-allowance": "永久许可",
   "vault": {
     "current-price": "当前 {{token}}/USD 价格 时间 {{time}}",
-    "header": "{{ilk}} 金库 #{{id}}",
+    "header": "{{ilk}} 金库 {{id}}",
     "next-price": "下一次喂价更新: {{count}} 分钟后",
     "next-price-any-time": "下一次喂价更新: 2 分钟内",
     "next-price_plural": "下一次喂价更新: {{count}} 分钟后",
@@ -431,7 +431,6 @@
   "view-on-etherscan": "在 Etherscan 上查看",
   "waiting-approval": "等待许可",
   "waiting-confirmation": "等待交易确认",
-  "waiting-proxy-deployment": "代理部署确认中",
   "proxy-deployment-confirming": "{{proxyConfirmations}} of {{safeConfirmations}}: 代理部署已确认",
   "withdraw": "取回",
   "withdrawn": "已取回",

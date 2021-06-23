@@ -1,22 +1,21 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultHeader } from 'components/vault/VaultHeader'
+import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Card, Divider, Grid, Text } from 'theme-ui'
 
-import { OpenVaultAllowance, OpenVaultAllowanceStatus } from '../components/OpenVaultAllowance'
-import { OpenVaultButton } from '../components/OpenVaultButton'
-import { OpenVaultConfirmation, OpenVaultStatus } from '../components/OpenVaultConfirmation'
 import { OpenVaultState } from '../openVault'
 import { createOpenVaultAnalytics$ } from '../openVaultAnalytics'
+import { OpenVaultAllowance, OpenVaultAllowanceStatus } from './OpenVaultAllowance'
+import { OpenVaultButton } from './OpenVaultButton'
+import { OpenVaultConfirmation, OpenVaultStatus } from './OpenVaultConfirmation'
 import { OpenVaultDetails } from './OpenVaultDetails'
 import { OpenVaultEditing } from './OpenVaultEditing'
 import { OpenVaultErrors } from './OpenVaultErrors'
-import { OpenVaultIlkDetails } from './OpenVaultIlkDetails'
-import { OpenVaultProxy } from './OpenVaultProxy'
 import { OpenVaultWarnings } from './OpenVaultWarnings'
 
 function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage, token }: OpenVaultState) {
@@ -59,10 +58,9 @@ function OpenVaultForm(props: OpenVaultState) {
           <OpenVaultErrors {...props} />
           <OpenVaultWarnings {...props} />
           <OpenVaultButton {...props} />
-          {isProxyStage && <OpenVaultProxy {...props} />}
+          {isProxyStage && <VaultProxyStatusCard {...props} />}
           {isAllowanceStage && <OpenVaultAllowanceStatus {...props} />}
           {isOpenStage && <OpenVaultStatus {...props} />}
-          <OpenVaultIlkDetails {...props} />
         </Grid>
       </Card>
     </Box>

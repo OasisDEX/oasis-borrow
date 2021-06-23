@@ -1,9 +1,6 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { Radio } from 'components/forms/Radio'
-import {
-  TxStatusCardProgress,
-  TxStatusCardSuccess,
-} from 'features/openVault/components/TxStatusCard'
+import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'

@@ -1,17 +1,17 @@
+import { CommonVaultState } from 'helpers/types'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Grid } from 'theme-ui'
 
-import { OpenMultiplyVaultState } from '../openMultiplyVault'
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
-export function OpenMultiplyVaultProxy({
+export function VaultProxyStatusCard({
   stage,
   proxyConfirmations,
   safeConfirmations,
   proxyTxHash,
   etherscan,
-}: OpenMultiplyVaultState) {
+}: CommonVaultState) {
   const { t } = useTranslation()
   return (
     <Grid>

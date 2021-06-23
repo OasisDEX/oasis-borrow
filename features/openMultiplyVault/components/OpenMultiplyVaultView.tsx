@@ -2,13 +2,14 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
+import { VaultHeader } from 'components/vault/VaultHeader'
+import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Card, Flex, Grid, Text } from 'theme-ui'
 
-import { VaultHeader } from '../../../components/vault/VaultHeader'
 import { OpenMultiplyVaultState } from '../openMultiplyVault'
 import { createOpenVaultAnalytics$ } from '../openMultiplyVaultAnalytics'
 import {
@@ -23,7 +24,6 @@ import {
 import { OpenMultiplyVaultDetails } from './OpenMultiplyVaultDetails'
 import { OpenMultiplyVaultEditing } from './OpenMultiplyVaultEditing'
 import { OpenMultiplyVaultErrors } from './OpenMultiplyVaultErrors'
-import { OpenMultiplyVaultProxy } from './OpenMultiplyVaultProxy'
 import { OpenMultiplyVaultWarnings } from './OpenMultiplyVaultWarnings'
 
 function OpenMultiplyVaultTitle({
@@ -120,7 +120,7 @@ function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
           <OpenMultiplyVaultErrors {...props} />
           <OpenMultiplyVaultWarnings {...props} />
           <OpenMultiplyVaultButton {...props} />
-          {isProxyStage && <OpenMultiplyVaultProxy {...props} />}
+          {isProxyStage && <VaultProxyStatusCard {...props} />}
           {isAllowanceStage && <OpenMultiplyVaultAllowanceStatus {...props} />}
           {isOpenStage && <OpenMultiplyVaultStatus {...props} />}
         </Grid>

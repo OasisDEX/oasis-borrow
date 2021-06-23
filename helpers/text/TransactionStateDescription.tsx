@@ -1,6 +1,6 @@
+import { Timer } from 'components/Timer'
 import * as React from 'react'
 
-import { Timer } from '../../components/Timer'
 import { ProgressStage } from '../form'
 
 export const TransactionStateDescription = ({ progress }: { progress: ProgressStage } | any) => {

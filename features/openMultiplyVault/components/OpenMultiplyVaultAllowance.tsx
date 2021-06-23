@@ -1,4 +1,6 @@
 import { getToken } from 'blockchain/tokensMetadata'
+import { Radio } from 'components/forms/Radio'
+import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
@@ -7,9 +9,7 @@ import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 
-import { Radio } from '../../../components/forms/Radio'
 import { OpenMultiplyVaultState } from '../openMultiplyVault'
-import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
 export function OpenMultiplyVaultAllowance({
   stage,

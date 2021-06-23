@@ -2,6 +2,7 @@ import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultHeader } from 'components/vault/VaultHeader'
+import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
@@ -22,8 +23,6 @@ import { ManageVaultDaiAllowance, ManageVaultDaiAllowanceStatus } from './Manage
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultEditing } from './ManageVaultEditing'
 import { ManageVaultErrors } from './ManageVaultErrors'
-import { ManageVaultIlkDetails } from './ManageVaultIlkDetails'
-import { ManageVaultProxy } from './ManageVaultProxy'
 import { ManageVaultWarnings } from './ManageVaultWarnings'
 
 function ManageVaultForm(props: ManageVaultState) {
@@ -52,11 +51,10 @@ function ManageVaultForm(props: ManageVaultState) {
               <ManageVaultButton {...props} />
             </>
           )}
-          {isProxyStage && <ManageVaultProxy {...props} />}
+          {isProxyStage && <VaultProxyStatusCard {...props} />}
           {isCollateralAllowanceStage && <ManageVaultCollateralAllowanceStatus {...props} />}
           {isDaiAllowanceStage && <ManageVaultDaiAllowanceStatus {...props} />}
           {isManageStage && <ManageVaultConfirmationStatus {...props} />}
-          <ManageVaultIlkDetails {...props} />
         </Grid>
       </Card>
     </Box>
