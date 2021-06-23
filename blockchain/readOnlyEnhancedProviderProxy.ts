@@ -69,6 +69,18 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
           const provider = _.includes(READ_ONLY_RPC_CALLS, payload.method)
             ? readOnlyProvider
             : rpcProvider
+
+          // Gnosis Safe web3-react provider doesn't implement eth_gasPrice call
+          if (payload.method === 'eth_gasPrice') {
+            try {
+              const result = await provider.send(payload.method, payload.params)
+              return result
+            } catch (err) {
+              console.log(err)
+              return 0
+            }
+          }
+
           const result = await provider.send(payload.method, payload.params)
           return result
         }
