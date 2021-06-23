@@ -1,6 +1,7 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAppContext } from 'components/AppContextProvider'
+import { disconnect } from 'components/connectWallet/ConnectWallet'
 import { AppLink } from 'components/Links'
 import { Modal, ModalErrorMessage } from 'components/Modal'
 import { useObservable } from 'helpers/observableHook'
@@ -174,13 +175,9 @@ export function TermsOfService() {
   const { web3Context$, termsAcceptance$ } = useAppContext()
   const termsAcceptance = useObservable(termsAcceptance$)
   const web3Context = useObservable(web3Context$)
-  // const { replace } = useRedirect()
 
-  function disconnect() {
-    if (web3Context?.status === 'connected') {
-      web3Context.deactivate()
-      // replace(`/connect`)
-    }
+  function disconnectHandler() {
+    disconnect(web3Context)
   }
 
   if (!termsAcceptance || hiddenStages.includes(termsAcceptance.stage)) return null
@@ -204,7 +201,7 @@ export function TermsOfService() {
             case 'jwtAuthWaiting4Acceptance':
             case 'jwtAuthInProgress':
             case 'acceptanceSaveInProgress':
-              return <TOSWaiting4Signature {...termsAcceptance} disconnect={disconnect} />
+              return <TOSWaiting4Signature {...termsAcceptance} disconnect={disconnectHandler} />
             case 'acceptanceCheckFailed':
             case 'jwtAuthFailed':
             case 'jwtAuthRejected':
