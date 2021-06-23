@@ -134,11 +134,7 @@ export function getCollRatioColor({
   vaultWillBeAtRiskLevelDanger,
   vaultWillBeUnderCollateralized,
   vaultWillBeAtRiskLevelWarning,
-<<<<<<< HEAD:features/openMultiplyVault/components/OpenMultiplyVaultDetails.tsx
 }: OpenMultiplyVaultState) {
-=======
-}: LeverageVaultState) {
->>>>>>> c5d8675f6b6630fa1d35c8a7bba9feceb86487ef:features/leverageVault/components/LeverageVaultDetails.tsx
   const collRatioColor = afterCollateralizationRatio.isZero()
     ? 'primary'
     : vaultWillBeAtRiskLevelDanger || vaultWillBeUnderCollateralized
@@ -150,11 +146,7 @@ export function getCollRatioColor({
   return collRatioColor
 }
 
-<<<<<<< HEAD:features/openMultiplyVault/components/OpenMultiplyVaultDetails.tsx
 export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
-=======
-export function LeverageVaultDetails(props: LeverageVaultState) {
->>>>>>> c5d8675f6b6630fa1d35c8a7bba9feceb86487ef:features/leverageVault/components/LeverageVaultDetails.tsx
   const {
     afterCollateralizationRatio,
     afterLiquidationPrice,
