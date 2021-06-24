@@ -2,7 +2,7 @@ import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
-import { leverage, LeverageData } from 'blockchain/calls/proxyActions'
+import { MultiplyData } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxHelpers } from 'components/AppContext'
 import { transactionToX } from 'helpers/form'
@@ -11,7 +11,7 @@ import { iif, Observable, of } from 'rxjs'
 import { filter, switchMap } from 'rxjs/operators'
 import Web3 from 'web3'
 
-import { LeverageVaultChange, LeverageVaultState } from './leverageVault'
+import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
 type ProxyChange =
   | {
@@ -66,10 +66,10 @@ type OpenChange =
 
 export type OpenVaultTransactionChange = ProxyChange | AllowanceChange | OpenChange
 
-export function applyLeverageVaultTransaction(
-  change: LeverageVaultChange,
-  state: LeverageVaultState,
-): LeverageVaultState {
+export function applyOpenMultiplyVaultTransaction(
+  change: OpenMultiplyVaultChange,
+  state: OpenMultiplyVaultState,
+): OpenMultiplyVaultState {
   if (change.kind === 'proxyWaitingForApproval') {
     return {
       ...state,
@@ -172,8 +172,8 @@ export function applyLeverageVaultTransaction(
 
 export function setAllowance(
   { sendWithGasEstimation }: TxHelpers,
-  change: (ch: LeverageVaultChange) => void,
-  state: LeverageVaultState,
+  change: (ch: OpenMultiplyVaultChange) => void,
+  state: OpenMultiplyVaultState,
 ) {
   sendWithGasEstimation(approve, {
     kind: TxMetaKind.approve,
@@ -182,7 +182,7 @@ export function setAllowance(
     amount: state.allowanceAmount!,
   })
     .pipe(
-      transactionToX<LeverageVaultChange, ApproveData>(
+      transactionToX<OpenMultiplyVaultChange, ApproveData>(
         { kind: 'allowanceWaitingForApproval' },
         (txState) =>
           of({
@@ -206,12 +206,12 @@ export function setAllowance(
 export function createProxy(
   { sendWithGasEstimation }: TxHelpers,
   proxyAddress$: Observable<string | undefined>,
-  change: (ch: LeverageVaultChange) => void,
-  { safeConfirmations }: LeverageVaultState,
+  change: (ch: OpenMultiplyVaultChange) => void,
+  { safeConfirmations }: OpenMultiplyVaultState,
 ) {
   sendWithGasEstimation(createDsProxy, { kind: TxMetaKind.createDsProxy })
     .pipe(
-      transactionToX<LeverageVaultChange, CreateDsProxyData>(
+      transactionToX<OpenMultiplyVaultChange, CreateDsProxyData>(
         { kind: 'proxyWaitingForApproval' },
         (txState) =>
           of({ kind: 'proxyInProgress', proxyTxHash: (txState as any).txHash as string }),
@@ -261,15 +261,15 @@ export function parseVaultIdFromReceiptLogs({ logs }: Receipt): BigNumber | unde
     })[0]
 }
 
-export function leverageVault(
+export function multiplyVault(
   { sendWithGasEstimation }: TxHelpers,
-  change: (ch: LeverageVaultChange) => void,
-  { depositAmount, proxyAddress, ilk, token, leverage: multiply }: LeverageVaultState,
+  change: (ch: OpenMultiplyVaultChange) => void,
+  { depositAmount, proxyAddress, ilk, token, multiply }: OpenMultiplyVaultState,
 ) {
   // @ts-ignore
   // REMOVE IT ONCE MULTIPLY CALL IS IMPLEMENTED
-  sendWithGasEstimation(leverage, {
-    kind: TxMetaKind.leverage,
+  sendWithGasEstimation(multiply, {
+    kind: TxMetaKind.multiply,
     depositAmount: depositAmount || zero,
     proxyAddress: proxyAddress!,
     ilk,
@@ -277,7 +277,7 @@ export function leverageVault(
     multiply: multiply || one,
   })
     .pipe(
-      transactionToX<LeverageVaultChange, LeverageData>(
+      transactionToX<OpenMultiplyVaultChange, MultiplyData>(
         { kind: 'openWaitingForApproval' },
         (txState) => of({ kind: 'openInProgress', openTxHash: (txState as any).txHash as string }),
         (txState) =>

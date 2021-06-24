@@ -125,7 +125,8 @@
   },
   "filters": {
     "lp-token": "LP tokens",
-    "stablecoin": "Stablecoins"
+    "stablecoin": "Stablecoins",
+    "popular": "Popular assets"
   },
   "gas-estimation-error": "Error",
   "get-dai": "Get Dai",
@@ -153,31 +154,6 @@
   "keyWithCount": "{{count}} item",
   "keyWithCount_plural": "{{count}} items",
   "landing": {
-    "faq": {
-      "entries": [
-        {
-          "question": "What assets can I use as collateral?",
-          "answer": "Currently, Oasis Borrow supports ETH, BAT, USDC, WBTC and many others. There are plans for more types of collateral, and in some cases there can be multiple versions of the same collateral type with different risk parameters. You can read the Collateral On-boarding Guide for the Maker Protocol to find out more."
-        },
-        {
-          "answer": "The costs of generating Dai against collateral varies depending on the collateral, and the risk profile. When generating Dai against collateral, you will be charged a Stability Fee, which is shown as an annualised rate against your outstanding debt. This is calculated per second, and is automatically added to your total debt amount. There are also other fees associated with the Maker Protocol, including a Liquidation Penalty added in the event of a liquidation and each the user will have to pay Gas Fees with each transaction submitted.",
-          "question": "How much does it cost?"
-        },
-        {
-          "answer": "If your Vault falls below your stated Liquidation Price, meaning it is now below the Minimum Collateralisation Ratio, then your Vault becomes at risk of liquidation. This means that keepers of the system can put your collateral up for auction and sell it to cover your outstanding debt, stability fees, and the Liquidation Penalty. If your vault has any collateral remaining at the end of auction (i.e., the auction proceeds covered your debt and fees and collateral remains), this will be returned to you. Please note that there is no guarantee that your collateral will be sold for the current market price and the amount of collateral, if any, that may revert back to you cannot be known until the auction has ended.",
-          "question": "What happens if my Vault goes below the Liquidation Price?"
-        },
-        {
-          "answer": "If you don't have any of the supported collateral types, then you cannot use Oasis Borrow to generate Dai. You can still get Dai, but you would need to use an exchange to trade your collateral for Dai. You can check Oasis Trade which supports more collateral types.",
-          "question": "What if I don't have a supported collateral, how can I get Dai?"
-        },
-        {
-          "answer": "Yes, the fees, including Stability Fees and Liquidation Penalties are set by Maker Governance. These can be changed at any time due to continuous governance nature of the Maker Protocol. You can see more about Governance of the Maker Protocol at vote.makerdao.com. For Gas Fee's, these are determined by the activity on the Ethereum Network. In most cases, you have the option to set your Gas Fee, but if the network is busy, you will have to pay more for your transactions to go through in a timely manner.",
-          "question": "Do the rates and fees change, and if so how often?"
-        }
-      ],
-      "title": "Borrow FAQ's"
-    },
     "footer": {
       "language": {
         "en": "English",
@@ -201,12 +177,20 @@
       "borrow": "Borrow",
       "trade": "Trade"
     },
-    "glossary-of-terms": "Glossary of terms",
     "hero": {
       "headline": "Generate Dai using crypto as your collateral",
       "subheader": "Open a Maker Vault, deposit your collateral, and generate Dai against it.<0/> Connect a wallet to start."
     },
-    "link-to-full-faq": "Full list of Oasis Vault FAQs"
+    "cards": {
+      "dai": {
+        "title": "Dai Wallet",
+        "description": "Buy, send and manage Dai all in one place. Grow your Dai, access plenty of providers"
+      },
+      "faq": {
+        "title": "Have a question?",
+        "description": "Learn more about Oasis, Dai and DeFi at our FAQ’s page"
+      }
+    }
   },
   "ledger-cancel": "Select another wallet",
   "ledger-error": "There was an error, please reset",
@@ -524,10 +508,10 @@
   },
   "select-vault-type": {
     "header": "What do you want to do with your {{token}}?",
-    "leverage": {
-      "header": "Leverage my {{token}}",
+    "multiply": {
+      "header": "Multiply my {{token}}",
       "subtext": "Use your {{balance}} {{token}} to get a up to {{exposure}} {{token}} exposure.",
-      "button": "Leverage {{token}}"
+      "button": "Multiply {{token}}"
     },
     "borrow": {
       "header": "Borrow against my {{token}}",

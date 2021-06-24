@@ -4,7 +4,7 @@ import { isEqual } from 'lodash'
 import { merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators'
 
-import { LeverageVaultState, MutableLeverageVaultState } from './leverageVault'
+import { MutableOpenMultiplyVaultState, OpenMultiplyVaultState } from './openMultiplyVault'
 
 type DepositAmountChange = {
   kind: 'depositAmountChange'
@@ -14,13 +14,13 @@ type DepositAmountChange = {
 type AllowanceChange = {
   kind: 'allowanceChange'
   value: {
-    type: Pick<MutableLeverageVaultState, 'selectedAllowanceRadio'>
+    type: Pick<MutableOpenMultiplyVaultState, 'selectedAllowanceRadio'>
     amount: BigNumber
   }
 }
 
 export function createOpenVaultAnalytics$(
-  openVaultState$: Observable<LeverageVaultState>,
+  openVaultState$: Observable<OpenMultiplyVaultState>,
   tracker: Tracker,
 ) {
   const depositAmountChanges: Observable<DepositAmountChange> = openVaultState$.pipe(
@@ -35,7 +35,7 @@ export function createOpenVaultAnalytics$(
   )
 
   const allowanceTypeChanges: Observable<Pick<
-    MutableLeverageVaultState,
+    MutableOpenMultiplyVaultState,
     'selectedAllowanceRadio'
   >> = openVaultState$.pipe(
     map((state) => state.selectedAllowanceRadio),

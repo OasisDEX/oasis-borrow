@@ -2,16 +2,16 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Grid } from 'theme-ui'
 
-import { LeverageVaultState } from '../leverageVault'
+import { OpenMultiplyVaultState } from '../openMultiplyVault'
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
-export function LeverageVaultProxy({
+export function OpenMultiplyVaultProxy({
   stage,
   proxyConfirmations,
   safeConfirmations,
   proxyTxHash,
   etherscan,
-}: LeverageVaultState) {
+}: OpenMultiplyVaultState) {
   const { t } = useTranslation()
   return (
     <Grid>

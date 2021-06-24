@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { expect } from 'chai'
-import { mockManageVault$ } from 'helpers/mocks/manageVault.mock'
+import { mockManageVault, mockManageVault$ } from 'helpers/mocks/manageVault.mock'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
@@ -195,5 +195,34 @@ describe('manageVaultValidations', () => {
 
     state().updatePayback!(paybackAmountNotEnough)
     expect(state().errorMessages).to.deep.equal(['debtWillBeLessThanDebtFloor'])
+  })
+
+  it('validates if dai allowance is enough to payback whole amount and account debt offset', () => {
+    const paybackAmount = new BigNumber('500')
+
+    const state = mockManageVault({
+      proxyAddress: DEFAULT_PROXY_ADDRESS,
+      vault: {
+        collateral: new BigNumber('31'),
+        debt: new BigNumber('2000'),
+      },
+      daiAllowance: paybackAmount,
+      priceInfo: {
+        collateralPrice: new BigNumber('100'),
+      },
+    })
+
+    state().toggle!()
+    state().updatePayback!(paybackAmount.plus(state().vault.debtOffset))
+    expect(state().insufficientDaiAllowance).to.be.true
+
+    state().updatePayback!(paybackAmount.minus(state().vault.debtOffset))
+    expect(state().insufficientDaiAllowance).to.be.false
+
+    state().updatePayback!(paybackAmount)
+    expect(state().insufficientDaiAllowance).to.be.true
+
+    state().progress!()
+    expect(state().stage).to.deep.equal('daiAllowanceWaitingForConfirmation')
   })
 })

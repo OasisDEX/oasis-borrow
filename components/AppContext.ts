@@ -44,8 +44,8 @@ import { createExchangeQuote$ } from 'features/exchange/exchange'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
-import { createLeverageVault$ } from 'features/leverageVault/leverageVault'
 import { createManageVault$ } from 'features/manageVault/manageVault'
+import { createOpenMultiplyVault$ } from 'features/openMultiplyVault/openMultiplyVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
 import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultData'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
@@ -291,8 +291,8 @@ export function setupAppContext() {
     (token, slippage, amount) => `${token}${slippage.toString()}${amount.toString()}`,
   )
 
-  const leverageVault$ = memoize(
-    curry(createLeverageVault$)(
+  const multiplyVault$ = memoize(
+    curry(createOpenMultiplyVault$)(
       connectedContext$,
       txHelpers$,
       proxyAddress$,
@@ -373,7 +373,7 @@ export function setupAppContext() {
     termsAcceptance$,
     reclaimCollateral$,
     openVaultOverview$,
-    leverageVault$,
+    multiplyVault$,
   }
 }
 

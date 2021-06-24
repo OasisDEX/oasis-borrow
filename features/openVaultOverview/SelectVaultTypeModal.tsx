@@ -25,10 +25,10 @@ export function SelectVaultTypeModal({ ilk, token, close, balance }: ModalProps<
         </Box>
         <Box>
           <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 2 }}>
-            {t('select-vault-type.leverage.header', { token })}
+            {t('select-vault-type.multiply.header', { token })}
           </Text>
           <Text variant="paragraph3" sx={{ color: 'text.muted', mb: '24px' }}>
-            {t('select-vault-type.leverage.subtext', {
+            {t('select-vault-type.multiply.subtext', {
               token,
               balance,
               exposure: balance.times(2),
@@ -36,10 +36,10 @@ export function SelectVaultTypeModal({ ilk, token, close, balance }: ModalProps<
           </Text>
           <AppLink
             variant="primary"
-            href={`/vaults/leverage/${ilk}`}
+            href={`/vaults/open-multiply/${ilk}`}
             sx={{ display: 'block', textAlign: 'center', mb: 3 }}
           >
-            {t('select-vault-type.leverage.button', { token })}
+            {t('select-vault-type.multiply.button', { token })}
           </AppLink>
         </Box>
         <Divider />

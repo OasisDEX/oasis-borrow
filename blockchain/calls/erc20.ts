@@ -45,7 +45,7 @@ export type ApproveData = {
 
 export const approve: TransactionDef<ApproveData> = {
   call: ({ token }, { tokens, contract }) => contract<Erc20>(tokens[token]).methods.approve,
-  prepareArgs: ({ spender, amount }) => [spender, amountToWei(amount).toFixed()],
+  prepareArgs: ({ spender, amount }) => [spender, amountToWei(amount).toFixed(0)],
 }
 
 export type DisapproveData = {
