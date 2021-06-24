@@ -48,22 +48,20 @@ function OpenVaultForm(props: OpenVaultState) {
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
 
   return (
-    <Box>
-      <Card variant="surface" sx={{ boxShadow: 'card', borderRadius: 'mediumLarge', px: 4, py: 3 }}>
-        <Grid sx={{ mt: 2 }}>
-          <OpenVaultTitle {...props} />
-          {isEditingStage && <OpenVaultEditing {...props} />}
-          {isAllowanceStage && <VaultAllowance {...props} />}
-          {isOpenStage && <OpenVaultConfirmation {...props} />}
-          <OpenVaultErrors {...props} />
-          <OpenVaultWarnings {...props} />
-          <OpenVaultButton {...props} />
-          {isProxyStage && <VaultProxyStatusCard {...props} />}
-          {isAllowanceStage && <VaultAllowanceStatus {...props} />}
-          {isOpenStage && <OpenVaultStatus {...props} />}
-        </Grid>
-      </Card>
-    </Box>
+    <Card variant="vaultFormContainer">
+      <Grid gap={4} p={2}>
+        <OpenVaultTitle {...props} />
+        {isEditingStage && <OpenVaultEditing {...props} />}
+        {isAllowanceStage && <VaultAllowance {...props} />}
+        {isOpenStage && <OpenVaultConfirmation {...props} />}
+        <OpenVaultErrors {...props} />
+        <OpenVaultWarnings {...props} />
+        <OpenVaultButton {...props} />
+        {isProxyStage && <VaultProxyStatusCard {...props} />}
+        {isAllowanceStage && <VaultAllowanceStatus {...props} />}
+        {isOpenStage && <OpenVaultStatus {...props} />}
+      </Grid>
+    </Card>
   )
 }
 
@@ -74,7 +72,7 @@ export function OpenVaultContainer(props: OpenVaultState) {
   return (
     <>
       <VaultHeader {...props} header={t('vault.open-vault', { ilk })} />
-      <Grid columns={['1fr', '2fr minmax(380px, 1fr)']} gap={5}>
+      <Grid variant="vaultContainer">
         <Box sx={{ order: [3, 1] }}>
           <OpenVaultDetails {...props} />
         </Box>

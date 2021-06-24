@@ -1,11 +1,11 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Box, Flex, Grid, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
+import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import React, { ReactNode, useState } from 'react'
 
 import { OpenMultiplyVaultState } from '../openMultiplyVault'
-import { getCollRatioColor } from './OpenMultiplyVaultDetails'
 
 function OpenMultiplyVaultOrderInformationItem({
   label,

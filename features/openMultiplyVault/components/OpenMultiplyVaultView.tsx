@@ -98,31 +98,20 @@ function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
 
   return (
-    <Box>
-      <Card
-        variant="surface"
-        sx={{
-          boxShadow: 'card',
-          borderRadius: 'mediumLarge',
-          p: 3,
-          overflow: 'hidden',
-          border: 'lightMuted',
-        }}
-      >
-        <Grid gap={4} p={2}>
-          <OpenMultiplyVaultTitle {...props} />
-          {isEditingStage && <OpenMultiplyVaultEditing {...props} />}
-          {isAllowanceStage && <VaultAllowance {...props} />}
-          {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
-          <OpenMultiplyVaultErrors {...props} />
-          <OpenMultiplyVaultWarnings {...props} />
-          <OpenMultiplyVaultButton {...props} />
-          {isProxyStage && <VaultProxyStatusCard {...props} />}
-          {isAllowanceStage && <VaultAllowanceStatus {...props} />}
-          {isOpenStage && <OpenMultiplyVaultStatus {...props} />}
-        </Grid>
-      </Card>
-    </Box>
+    <Card variant="vaultFormContainer">
+      <Grid gap={4} p={2}>
+        <OpenMultiplyVaultTitle {...props} />
+        {isEditingStage && <OpenMultiplyVaultEditing {...props} />}
+        {isAllowanceStage && <VaultAllowance {...props} />}
+        {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
+        <OpenMultiplyVaultErrors {...props} />
+        <OpenMultiplyVaultWarnings {...props} />
+        <OpenMultiplyVaultButton {...props} />
+        {isProxyStage && <VaultProxyStatusCard {...props} />}
+        {isAllowanceStage && <VaultAllowanceStatus {...props} />}
+        {isOpenStage && <OpenMultiplyVaultStatus {...props} />}
+      </Grid>
+    </Card>
   )
 }
 
@@ -133,7 +122,7 @@ export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultState) {
   return (
     <>
       <VaultHeader {...props} header={t('vault.open-vault', { ilk })} />
-      <Grid columns={['1fr', '2fr minmax(480px, 1fr)']} gap={4}>
+      <Grid variant="vaultContainer">
         <Box sx={{ order: [3, 1] }}>
           <OpenMultiplyVaultDetails {...props} />
         </Box>

@@ -898,7 +898,7 @@ const oasisBaseTheme = {
   },
   layout: {
     container: {
-      maxWidth: '1200px',
+      maxWidth: '1232px',
       px: 3,
     },
     appContainer: {
@@ -973,6 +973,14 @@ const oasisBaseTheme = {
       variant: 'cards.primary',
       borderColor: 'onWarning',
       bg: 'warning',
+    },
+    vaultFormContainer: {
+      variant: 'cards.primary',
+      boxShadow: 'card',
+      borderRadius: 'mediumLarge',
+      p: 3,
+      overflow: 'hidden',
+      border: 'lightMuted',
     },
   },
   badges: {
@@ -1328,11 +1336,11 @@ const oasisBaseTheme = {
     modal: 3,
     cookie: 4,
   },
-  sizingsCustom: {
-    pxModalBottom: '22px',
-    mlDashboardToken: '12px',
-    mbDashboardTokenAmount: '6px',
-    gapCardProduct: '12px',
+  grids: {
+    vaultContainer: {
+      gap: 5,
+      gridTemplateColumns: ['1fr', '2fr minmax(465px, 1fr)'],
+    },
   },
   styles: {
     root: {
