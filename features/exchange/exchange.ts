@@ -1,4 +1,4 @@
-import { amountToWei } from '@oasisdex/utils'
+import { amountFromWei, amountToWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { Context, ContextConnected, every5Seconds$ } from 'blockchain/network'
 import { from, Observable, of } from 'rxjs'
@@ -31,18 +31,25 @@ interface Tx {
   gasPrice: string
   gas: number
 }
+
+export type ExchangeAction = 'BUY' | 'SELL'
 function getQuote$(
-  fromTokenAddress: string,
+  daiAddress: string,
   collateralAddress: string,
   account: string,
   amount: BigNumber,
   slippage: BigNumber,
+  action: ExchangeAction,
 ) {
   return every5Seconds$.pipe(
-    switchMap(() =>
+    map(() => ({
+      fromTokenAddress: action === 'BUY' ? daiAddress : collateralAddress,
+      toTokenAddress: action === 'BUY' ? collateralAddress : daiAddress,
+    })),
+    switchMap(({ fromTokenAddress, toTokenAddress }) =>
       from(
         fetch(
-          `${API_ENDPOINT}?fromTokenAddress=${fromTokenAddress}&toTokenAddress=${collateralAddress}&amount=${amountToWei(
+          `${API_ENDPOINT}?fromTokenAddress=${fromTokenAddress}&toTokenAddress=${toTokenAddress}&amount=${amountToWei(
             amount,
           ).toString()}&fromAddress=${account}&slippage=${slippage.toString()}&disableEstimate=true`,
         ),
@@ -53,11 +60,18 @@ function getQuote$(
         switchMap((response): Promise<Response> => response.json()),
         map(({ fromToken, toToken, toTokenAmount, fromTokenAmount, tx }) => ({
           status: 'SUCCESS' as const,
-          fromTokenAddress: fromToken,
+          fromToken,
           toToken,
-          toTokenAmount: new BigNumber(toTokenAmount),
-          daiAmount: new BigNumber(fromTokenAmount),
-          tokenPrice: new BigNumber(fromTokenAmount).div(new BigNumber(toTokenAmount)),
+          collateralAmount: amountFromWei(
+            action === 'BUY' ? new BigNumber(toTokenAmount) : new BigNumber(fromTokenAmount),
+          ),
+          daiAmount: amountFromWei(
+            action === 'BUY' ? new BigNumber(fromTokenAmount) : new BigNumber(toTokenAmount),
+          ),
+          tokenPrice:
+            action === 'BUY'
+              ? new BigNumber(fromTokenAmount).div(new BigNumber(toTokenAmount))
+              : new BigNumber(toTokenAmount).div(new BigNumber(fromTokenAddress)),
           tx,
         })),
         catchError(() => of({ status: 'ERROR' as const })),
@@ -74,16 +88,17 @@ export function createExchangeQuote$(
   token: string,
   slippage: BigNumber,
   amount: BigNumber,
+  action: ExchangeAction,
 ) {
   return context$.pipe(
     filter((ctx): ctx is ContextConnected => ctx.status === 'connected'),
     switchMap((context) => {
-      const DAI = context.tokens['DAI']
+      const daiAddress = context.tokens['DAI'].address
       const collateralAddress =
         token === 'ETH'
           ? '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
           : context.tokens[token].address
-      return getQuote$(DAI.address, collateralAddress, context.account, amount, slippage)
+      return getQuote$(daiAddress, collateralAddress, context.account, amount, slippage, action)
     }),
     shareReplay(1),
   )
