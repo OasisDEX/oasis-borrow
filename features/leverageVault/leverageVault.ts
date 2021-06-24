@@ -3,12 +3,12 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
-import { Quote } from 'features/exchange/exchange'
+import { createExchangeQuote$, Quote } from 'features/exchange/exchange'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
-import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
+import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './leverageVaultAllowances'
 import {
@@ -255,15 +255,22 @@ export const defaultMutableOpenVaultState: MutableLeverageVaultState = {
   allowanceAmount: maxUint256,
 }
 
+const SLIPPAGE = new BigNumber(0.05)
+
 function applyQuote(
-  exchangeQuote$: (token: string, slippage: BigNumber, amount: BigNumber) => Observable<Quote>,
+  exchangeQuote$: (
+    context: Observable<ContextConnected>,
+    token: string,
+    slippage: BigNumber,
+    amount: BigNumber,
+  ) => Observable<Quote>,
   state: LeverageVaultState,
-  context: ContextConnected,
+  context: Observable<ContextConnected>,
 ): Observable<LeverageVaultState> {
   return of(state).pipe(
     switchMap((state) =>
       state.depositAmount
-        ? exchangeQuote$(state.token, new BigNumber(0.05), state.depositAmount).pipe(
+        ? exchangeQuote$(context, state.token, SLIPPAGE, state.depositAmount).pipe(
             map((quote) => ({ ...state, quote })),
           )
         : of(state),
@@ -281,7 +288,6 @@ export function createLeverageVault$(
   ilks$: Observable<string[]>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilkToToken$: Observable<(ilk: string) => string>,
-  // exchangeQuote$: (token: string, slippage: BigNumber, amount: BigNumber) => Observable<Quote>,
   ilk: string,
 ): Observable<LeverageVaultState> {
   return ilks$.pipe(
@@ -347,10 +353,11 @@ export function createLeverageVault$(
 
                     return merge(change$, environmentChanges$).pipe(
                       scan(apply, initialState),
-                      switchMap((state) => applyQuote(exchangeQuote$, state, context)),
+                      switchMap((state) => applyQuote(createExchangeQuote$, state, context$)),
                       map(validateErrors),
                       map(validateWarnings),
                       map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
+                      tap((s) => console.log(s)),
                     )
                   }),
                 ),
