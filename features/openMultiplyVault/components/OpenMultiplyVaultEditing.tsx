@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
-import { VaultActionInput } from 'components/VaultActionInput'
+import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import React from 'react'

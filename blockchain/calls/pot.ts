@@ -1,9 +1,9 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
+import { SECONDS_PER_YEAR } from 'components/constants'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { SECONDS_PER_YEAR } from '../../components/constants'
 import { McdPot } from '../../types/web3-v1-contracts/mcd-pot'
 import { amountFromRay } from '../utils'
 import { CallDef } from './callsHelpers'

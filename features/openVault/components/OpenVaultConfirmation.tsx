@@ -1,4 +1,5 @@
 import { Details } from 'components/forms/Details'
+import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React from 'react'
@@ -6,7 +7,6 @@ import { useTranslation } from 'react-i18next'
 import { Grid, Text } from 'theme-ui'
 
 import { OpenVaultState } from '../openVault'
-import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
 export function OpenVaultConfirmation({
   depositAmount,

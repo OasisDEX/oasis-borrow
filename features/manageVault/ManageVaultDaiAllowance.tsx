@@ -1,9 +1,5 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { Radio } from 'components/forms/Radio'
-import {
-  TxStatusCardProgress,
-  TxStatusCardSuccess,
-} from 'features/openVault/components/TxStatusCard'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
@@ -89,32 +85,4 @@ export function ManageVaultDaiAllowance({
       )}
     </Grid>
   )
-}
-
-export function ManageVaultDaiAllowanceStatus({
-  stage,
-  daiAllowanceTxHash,
-  etherscan,
-}: ManageVaultState) {
-  const { t } = useTranslation()
-
-  if (stage === 'daiAllowanceInProgress') {
-    return (
-      <TxStatusCardProgress
-        text={t('setting-allowance-for', { token: 'DAI' })}
-        etherscan={etherscan!}
-        txHash={daiAllowanceTxHash!}
-      />
-    )
-  }
-  if (stage === 'daiAllowanceSuccess') {
-    return (
-      <TxStatusCardSuccess
-        text={t('set-allowance-for', { token: 'DAI' })}
-        etherscan={etherscan!}
-        txHash={daiAllowanceTxHash!}
-      />
-    )
-  }
-  return null
 }

@@ -1,30 +1,26 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
+import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
+import { VaultHeader } from 'components/vault/VaultHeader'
+import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
-import { Box, Card, Divider, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
+import { Box, Card, Divider, Grid } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
 
 import { ManageVaultState } from './manageVault'
 import { createManageVaultAnalytics$ } from './manageVaultAnalytics'
 import { ManageVaultButton } from './ManageVaultButton'
-import {
-  ManageVaultCollateralAllowance,
-  ManageVaultCollateralAllowanceStatus,
-} from './ManageVaultCollateralAllowance'
+import { ManageVaultCollateralAllowance } from './ManageVaultCollateralAllowance'
 import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './ManageVaultConfirmation'
-import { ManageVaultDaiAllowance, ManageVaultDaiAllowanceStatus } from './ManageVaultDaiAllowance'
+import { ManageVaultDaiAllowance } from './ManageVaultDaiAllowance'
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultEditing } from './ManageVaultEditing'
 import { ManageVaultErrors } from './ManageVaultErrors'
-import { ManageVaultIlkDetails } from './ManageVaultIlkDetails'
-import { ManageVaultProxy } from './ManageVaultProxy'
 import { ManageVaultWarnings } from './ManageVaultWarnings'
 
 function ManageVaultForm(props: ManageVaultState) {
@@ -35,6 +31,9 @@ function ManageVaultForm(props: ManageVaultState) {
     isDaiAllowanceStage,
     isManageStage,
     accountIsConnected,
+    daiAllowanceTxHash,
+    collateralAllowanceTxHash,
+    vault: { token },
   } = props
 
   return (
@@ -53,50 +52,43 @@ function ManageVaultForm(props: ManageVaultState) {
               <ManageVaultButton {...props} />
             </>
           )}
-          {isProxyStage && <ManageVaultProxy {...props} />}
-          {isCollateralAllowanceStage && <ManageVaultCollateralAllowanceStatus {...props} />}
-          {isDaiAllowanceStage && <ManageVaultDaiAllowanceStatus {...props} />}
+          {isProxyStage && <VaultProxyStatusCard {...props} />}
+          {isCollateralAllowanceStage && (
+            <VaultAllowanceStatus
+              {...props}
+              allowanceTxHash={collateralAllowanceTxHash}
+              token={token}
+            />
+          )}
+          {isDaiAllowanceStage && (
+            <VaultAllowanceStatus {...props} allowanceTxHash={daiAllowanceTxHash} token={'DAI'} />
+          )}
           {isManageStage && <ManageVaultConfirmationStatus {...props} />}
-          <ManageVaultIlkDetails {...props} />
         </Grid>
       </Card>
     </Box>
   )
 }
 
-export function ManageVaultHeading(props: ManageVaultState & SxProps) {
-  const {
-    vault: { id, ilk, token },
-    sx,
-  } = props
-  const tokenInfo = getToken(token)
-  const { t } = useTranslation()
-  return (
-    <Heading
-      as="h1"
-      variant="paragraph2"
-      sx={{ gridColumn: ['1', '1/3'], fontWeight: 'semiBold', borderBottom: 'light', pb: 3, ...sx }}
-    >
-      <Flex sx={{ justifyContent: ['center', 'left'] }}>
-        <Icon name={tokenInfo.iconCircle} size="26px" sx={{ verticalAlign: 'sub', mr: 2 }} />
-        <Text>{t('vault.header', { ilk, id })}</Text>
-      </Flex>
-    </Heading>
-  )
-}
-
 export function ManageVaultContainer(props: ManageVaultState) {
+  const {
+    vault: { id, ilk },
+  } = props
+  const { t } = useTranslation()
+
   return (
-    <Grid mt={4} columns={['1fr', '2fr minmax(380px, 1fr)']} gap={5}>
-      <ManageVaultHeading {...props} sx={{ display: ['block', 'none'] }} />
-      <Box mb={6} sx={{ order: [3, 1] }}>
-        <ManageVaultDetails {...props} />
-      </Box>
-      <Divider sx={{ display: ['block', 'none'], order: [2, 0] }} />
-      <Box sx={{ order: [1, 2] }}>
-        <ManageVaultForm {...props} />
-      </Box>
-    </Grid>
+    <>
+      <VaultHeader {...props} header={t('vault.header', { ilk, id })} id={id} />
+      <Grid mt={4} columns={['1fr', '2fr minmax(380px, 1fr)']} gap={5}>
+        <Box mb={6} sx={{ order: [3, 1] }}>
+          <ManageVaultDetails {...props} />
+        </Box>
+        <Divider sx={{ display: ['block', 'none'], order: [2, 0] }} />
+        <Box sx={{ order: [1, 2] }}>
+          <ManageVaultForm {...props} />
+        </Box>
+      </Grid>
+    </>
   )
 }
 

@@ -2,18 +2,17 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
+import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
+import { VaultHeader } from 'components/vault/VaultHeader'
+import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
-import { Box, Card, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
+import { Box, Card, Flex, Grid, Text } from 'theme-ui'
 
 import { OpenMultiplyVaultState } from '../openMultiplyVault'
 import { createOpenVaultAnalytics$ } from '../openMultiplyVaultAnalytics'
-import {
-  OpenMultiplyVaultAllowance,
-  OpenMultiplyVaultAllowanceStatus,
-} from './OpenMultiplyVaultAllowance'
 import { OpenMultiplyVaultButton } from './OpenMultiplyVaultButton'
 import {
   OpenMultiplyVaultConfirmation,
@@ -22,8 +21,6 @@ import {
 import { OpenMultiplyVaultDetails } from './OpenMultiplyVaultDetails'
 import { OpenMultiplyVaultEditing } from './OpenMultiplyVaultEditing'
 import { OpenMultiplyVaultErrors } from './OpenMultiplyVaultErrors'
-import { OpenMultiplyVaultIlkDetails } from './OpenMultiplyVaultIlkDetails'
-import { OpenMultiplyVaultProxy } from './OpenMultiplyVaultProxy'
 import { OpenMultiplyVaultWarnings } from './OpenMultiplyVaultWarnings'
 
 function OpenMultiplyVaultTitle({
@@ -115,13 +112,13 @@ function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
         <Grid gap={4} p={2}>
           <OpenMultiplyVaultTitle {...props} />
           {isEditingStage && <OpenMultiplyVaultEditing {...props} />}
-          {isAllowanceStage && <OpenMultiplyVaultAllowance {...props} />}
+          {isAllowanceStage && <VaultAllowance {...props} />}
           {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
           <OpenMultiplyVaultErrors {...props} />
           <OpenMultiplyVaultWarnings {...props} />
           <OpenMultiplyVaultButton {...props} />
-          {isProxyStage && <OpenMultiplyVaultProxy {...props} />}
-          {isAllowanceStage && <OpenMultiplyVaultAllowanceStatus {...props} />}
+          {isProxyStage && <VaultProxyStatusCard {...props} />}
+          {isAllowanceStage && <VaultAllowanceStatus {...props} />}
           {isOpenStage && <OpenMultiplyVaultStatus {...props} />}
         </Grid>
       </Card>
@@ -129,32 +126,13 @@ function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
   )
 }
 
-export function OpenMultiplyVaultHeading(props: OpenMultiplyVaultState & SxProps) {
-  const { ilk, sx } = props
+export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultState) {
+  const { ilk } = props
   const { t } = useTranslation()
 
   return (
-    <Grid mt={4}>
-      <Heading
-        as="h1"
-        variant="heading1"
-        sx={{
-          fontWeight: 'semiBold',
-          pb: 2,
-          ...sx,
-        }}
-      >
-        {t('vault.open-vault', { ilk })}
-      </Heading>
-      <OpenMultiplyVaultIlkDetails {...props} />
-    </Grid>
-  )
-}
-
-export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultState) {
-  return (
     <>
-      <OpenMultiplyVaultHeading {...props} />
+      <VaultHeader {...props} header={t('vault.open-vault', { ilk })} />
       <Grid columns={['1fr', '2fr minmax(480px, 1fr)']} gap={4}>
         <Box sx={{ order: [3, 1] }}>
           <OpenMultiplyVaultDetails {...props} />

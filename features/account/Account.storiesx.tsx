@@ -2,7 +2,9 @@ import { TxState } from '@oasisdex/transactions'
 import { Web3Context } from '@oasisdex/web3-context'
 import { storiesOf } from '@storybook/react'
 import { AppContext } from 'components/AppContext'
+import { TxData } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
+import { AppHeader } from 'components/Header'
 import { ModalProvider } from 'helpers/modalHook'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
@@ -10,8 +12,6 @@ import { of } from 'rxjs'
 import { Container, Heading } from 'theme-ui'
 import Web3 from 'web3'
 
-import { TxData } from '../../components/AppContext'
-import { AppHeader } from '../../components/Header'
 import { createTransactionManager } from './transactionManager'
 
 interface MockContextProviderProps extends WithChildren {

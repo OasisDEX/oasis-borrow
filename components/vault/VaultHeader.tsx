@@ -1,9 +1,9 @@
-import { Box, Text } from '@theme-ui/components'
+import { Box, Grid, Heading, Text } from '@theme-ui/components'
+import BigNumber from 'bignumber.js'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { CommonVaultState } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-import { OpenMultiplyVaultState } from '../openMultiplyVault'
 
 function VaultIlkDetailsItem({ label, value }: { label: string; value: string }) {
   return (
@@ -27,9 +27,11 @@ function VaultIlkDetailsItem({ label, value }: { label: string; value: string })
   )
 }
 
-export function OpenMultiplyVaultIlkDetails({
-  ilkData: { liquidationRatio, stabilityFee, liquidationPenalty, debtFloor },
-}: OpenMultiplyVaultState) {
+export function VaultIlkDetails(props: CommonVaultState & { id?: BigNumber }) {
+  const {
+    ilkData: { liquidationRatio, stabilityFee, liquidationPenalty, debtFloor },
+    id,
+  } = props
   const { t } = useTranslation()
 
   return (
@@ -44,7 +46,7 @@ export function OpenMultiplyVaultIlkDetails({
         gap: [3, 0],
       }}
     >
-      <VaultIlkDetailsItem label={'VaultID'} value={'T.B.D'} />
+      <VaultIlkDetailsItem label={'VaultID'} value={id ? id.toFixed(0) : 'T.B.D'} />
       <VaultIlkDetailsItem
         label={t('manage-vault.stability-fee')}
         value={`${formatPercent(stabilityFee.times(100), { precision: 2 })}`}
@@ -62,5 +64,23 @@ export function OpenMultiplyVaultIlkDetails({
         value={`$${formatCryptoBalance(debtFloor)}`}
       />
     </Box>
+  )
+}
+
+export function VaultHeader(props: CommonVaultState & { header: string; id?: BigNumber }) {
+  return (
+    <Grid mt={4}>
+      <Heading
+        as="h1"
+        variant="heading1"
+        sx={{
+          fontWeight: 'semiBold',
+          pb: 2,
+        }}
+      >
+        {props.header}
+      </Heading>
+      <VaultIlkDetails {...props} />
+    </Grid>
   )
 }

@@ -1,9 +1,9 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
+import { WAD } from 'components/constants'
 import { McdCat } from 'types/web3-v1-contracts/mcd-cat'
 import Web3 from 'web3'
 
-import { WAD } from '../../components/constants'
 import { amountFromRad } from '../utils'
 import { CallDef } from './callsHelpers'
 
