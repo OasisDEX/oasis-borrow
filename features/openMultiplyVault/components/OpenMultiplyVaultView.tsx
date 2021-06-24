@@ -2,12 +2,9 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
+import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
-import {
-  OpenVaultAllowance,
-  OpenVaultAllowanceStatus,
-} from 'features/openVault/components/OpenVaultAllowance'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
@@ -115,13 +112,13 @@ function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
         <Grid gap={4} p={2}>
           <OpenMultiplyVaultTitle {...props} />
           {isEditingStage && <OpenMultiplyVaultEditing {...props} />}
-          {isAllowanceStage && <OpenVaultAllowance {...props} />}
+          {isAllowanceStage && <VaultAllowance {...props} />}
           {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
           <OpenMultiplyVaultErrors {...props} />
           <OpenMultiplyVaultWarnings {...props} />
           <OpenMultiplyVaultButton {...props} />
           {isProxyStage && <VaultProxyStatusCard {...props} />}
-          {isAllowanceStage && <OpenVaultAllowanceStatus {...props} />}
+          {isAllowanceStage && <VaultAllowanceStatus {...props} />}
           {isOpenStage && <OpenMultiplyVaultStatus {...props} />}
         </Grid>
       </Card>
@@ -135,7 +132,7 @@ export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultState) {
 
   return (
     <>
-      <VaultHeader {...{ ...props, header: t('vault.open-vault', { ilk }) }} />
+      <VaultHeader {...props} header={t('vault.open-vault', { ilk })} />
       <Grid columns={['1fr', '2fr minmax(480px, 1fr)']} gap={4}>
         <Box sx={{ order: [3, 1] }}>
           <OpenMultiplyVaultDetails {...props} />

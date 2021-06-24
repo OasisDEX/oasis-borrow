@@ -6,12 +6,13 @@ import { OpenVaultState } from 'features/openVault/openVault'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
+import { CommonVaultState } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 
-export function OpenVaultAllowance({
+export function VaultAllowance({
   stage,
   token,
   depositAmount,
@@ -88,15 +89,19 @@ export function OpenVaultAllowance({
   )
 }
 
-export function OpenVaultAllowanceStatus({
+export function VaultAllowanceStatus({
   stage,
   allowanceTxHash,
   etherscan,
   token,
-}: OpenVaultState | OpenMultiplyVaultState) {
+}: CommonVaultState & { allowanceTxHash?: string; token: string }) {
   const { t } = useTranslation()
 
-  if (stage === 'allowanceInProgress') {
+  if (
+    stage === 'allowanceInProgress' ||
+    stage === 'daiAllowanceInProgress' ||
+    stage === 'collateralAllowanceInProgress'
+  ) {
     return (
       <TxStatusCardProgress
         text={t('setting-allowance-for', { token })}
@@ -105,7 +110,12 @@ export function OpenVaultAllowanceStatus({
       />
     )
   }
-  if (stage === 'allowanceSuccess') {
+
+  if (
+    stage === 'allowanceSuccess' ||
+    stage === 'daiAllowanceSuccess' ||
+    stage === 'collateralAllowanceSuccess'
+  ) {
     return (
       <TxStatusCardSuccess
         text={t('setting-allowance-for', { token })}

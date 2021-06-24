@@ -1,11 +1,8 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
+import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
-import {
-  OpenVaultAllowance,
-  OpenVaultAllowanceStatus,
-} from 'features/openVault/components/OpenVaultAllowance'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
@@ -56,13 +53,13 @@ function OpenVaultForm(props: OpenVaultState) {
         <Grid sx={{ mt: 2 }}>
           <OpenVaultTitle {...props} />
           {isEditingStage && <OpenVaultEditing {...props} />}
-          {isAllowanceStage && <OpenVaultAllowance {...props} />}
+          {isAllowanceStage && <VaultAllowance {...props} />}
           {isOpenStage && <OpenVaultConfirmation {...props} />}
           <OpenVaultErrors {...props} />
           <OpenVaultWarnings {...props} />
           <OpenVaultButton {...props} />
           {isProxyStage && <VaultProxyStatusCard {...props} />}
-          {isAllowanceStage && <OpenVaultAllowanceStatus {...props} />}
+          {isAllowanceStage && <VaultAllowanceStatus {...props} />}
           {isOpenStage && <OpenVaultStatus {...props} />}
         </Grid>
       </Card>
@@ -76,7 +73,7 @@ export function OpenVaultContainer(props: OpenVaultState) {
 
   return (
     <>
-      <VaultHeader {...{ ...props, header: t('vault.open-vault', { ilk }) }} />
+      <VaultHeader {...props} header={t('vault.open-vault', { ilk })} />
       <Grid columns={['1fr', '2fr minmax(380px, 1fr)']} gap={5}>
         <Box sx={{ order: [3, 1] }}>
           <OpenVaultDetails {...props} />

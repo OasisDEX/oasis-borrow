@@ -1,6 +1,7 @@
 import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
@@ -14,12 +15,9 @@ import { slideInAnimation } from 'theme/animations'
 import { ManageVaultState } from './manageVault'
 import { createManageVaultAnalytics$ } from './manageVaultAnalytics'
 import { ManageVaultButton } from './ManageVaultButton'
-import {
-  ManageVaultCollateralAllowance,
-  ManageVaultCollateralAllowanceStatus,
-} from './ManageVaultCollateralAllowance'
+import { ManageVaultCollateralAllowance } from './ManageVaultCollateralAllowance'
 import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './ManageVaultConfirmation'
-import { ManageVaultDaiAllowance, ManageVaultDaiAllowanceStatus } from './ManageVaultDaiAllowance'
+import { ManageVaultDaiAllowance } from './ManageVaultDaiAllowance'
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultEditing } from './ManageVaultEditing'
 import { ManageVaultErrors } from './ManageVaultErrors'
@@ -33,6 +31,9 @@ function ManageVaultForm(props: ManageVaultState) {
     isDaiAllowanceStage,
     isManageStage,
     accountIsConnected,
+    daiAllowanceTxHash,
+    collateralAllowanceTxHash,
+    vault: { token },
   } = props
 
   return (
@@ -52,8 +53,16 @@ function ManageVaultForm(props: ManageVaultState) {
             </>
           )}
           {isProxyStage && <VaultProxyStatusCard {...props} />}
-          {isCollateralAllowanceStage && <ManageVaultCollateralAllowanceStatus {...props} />}
-          {isDaiAllowanceStage && <ManageVaultDaiAllowanceStatus {...props} />}
+          {isCollateralAllowanceStage && (
+            <VaultAllowanceStatus
+              {...props}
+              allowanceTxHash={collateralAllowanceTxHash}
+              token={token}
+            />
+          )}
+          {isDaiAllowanceStage && (
+            <VaultAllowanceStatus {...props} allowanceTxHash={daiAllowanceTxHash} token={'DAI'} />
+          )}
           {isManageStage && <ManageVaultConfirmationStatus {...props} />}
         </Grid>
       </Card>
@@ -69,7 +78,7 @@ export function ManageVaultContainer(props: ManageVaultState) {
 
   return (
     <>
-      <VaultHeader {...{ ...props, header: t('vault.header', { ilk, id }), id }} />
+      <VaultHeader {...props} header={t('vault.header', { ilk, id })} id={id} />
       <Grid mt={4} columns={['1fr', '2fr minmax(380px, 1fr)']} gap={5}>
         <Box mb={6} sx={{ order: [3, 1] }}>
           <ManageVaultDetails {...props} />
