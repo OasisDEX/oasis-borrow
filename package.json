@@ -32,6 +32,7 @@
     "publish:storybook": "storybook-to-aws-s3"
   },
   "dependencies": {
+    "@gnosis.pm/safe-apps-web3-react": "^0.5.0",
     "@makerdao/dai-ui-icons": "^0.0.59",
     "@makerdao/dai-ui-icons-branding": "^0.0.66",
     "@makerdao/dai-ui-theme-casual": "^0.0.60",
@@ -43,7 +44,7 @@
     "@oasisdex/connectors": "^0.0.24",
     "@oasisdex/transactions": "^0.0.23",
     "@oasisdex/utils": "^0.0.8",
-    "@oasisdex/web3-context": "^0.0.21",
+    "@oasisdex/web3-context": "^0.0.22",
     "@prisma/client": "^2.14.0",
     "@storybook/storybook-deployer": "^2.8.7",
     "@theme-ui/style-guide": "^0.3.5",
