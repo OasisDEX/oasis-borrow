@@ -3,7 +3,7 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
-import { createExchangeQuote$, Quote } from 'features/exchange/exchange'
+import { createExchangeQuote$, ExchangeAction, Quote } from 'features/exchange/exchange'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { curry } from 'lodash'
@@ -263,6 +263,7 @@ function applyQuote(
     token: string,
     slippage: BigNumber,
     amount: BigNumber,
+    action: ExchangeAction,
   ) => Observable<Quote>,
   state: LeverageVaultState,
   context: Observable<ContextConnected>,
@@ -270,7 +271,7 @@ function applyQuote(
   return of(state).pipe(
     switchMap((state) =>
       state.depositAmount
-        ? exchangeQuote$(context, state.token, SLIPPAGE, state.depositAmount).pipe(
+        ? exchangeQuote$(context, state.token, SLIPPAGE, state.buyingCollateral, 'BUY').pipe(
             map((quote) => ({ ...state, quote })),
           )
         : of(state),

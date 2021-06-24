@@ -262,6 +262,16 @@ export function LeverageVaultDetails(props: LeverageVaultState) {
 
           <dt>Fees</dt>
           <dd>{props.txFees?.toString()}USD</dd>
+
+          <dt>Quote</dt>
+
+          {props.quote?.status === 'SUCCESS' && (
+            <>
+              <dd>Collateral: {props.quote.collateralAmount.toString()}</dd>
+              <dd>DAI: {props.quote.daiAmount.toString()}</dd>
+              <dd>Collateral price: {props.quote.tokenPrice.toString()}</dd>
+            </>
+          )}
         </Box>
       </Box>
       {/* <VaultDetailsTable {...props} /> */}
