@@ -7,8 +7,6 @@ import React from 'react'
 import { Container, Flex, SxStyleProp } from 'theme-ui'
 import { Background } from 'theme/Background'
 
-import { InfrastructureAnnouncement } from './Announcement'
-
 interface BasicLayoutProps extends WithChildren {
   header: JSX.Element
   footer?: JSX.Element
@@ -31,7 +29,6 @@ export function BasicLayout({ header, footer, children, sx, variant }: BasicLayo
       }}
     >
       {header}
-      <InfrastructureAnnouncement />
       <Container variant={variant || 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
         <Flex sx={{ width: '100%', height: '100%' }}>{children}</Flex>
       </Container>
