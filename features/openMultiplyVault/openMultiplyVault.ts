@@ -3,22 +3,12 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
-import { createExchangeQuote$, ExchangeAction, Quote } from 'features/exchange/exchange'
+import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { curry, memoize } from 'lodash'
-import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
-import {
-  distinctUntilChanged,
-  filter,
-  first,
-  map,
-  scan,
-  shareReplay,
-  startWith,
-  switchMap,
-  tap,
-} from 'rxjs/operators'
+import { curry } from 'lodash'
+import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
+import { debounceTime, first, map, mergeMap, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openMultiplyVaultAllowances'
 import {
@@ -75,10 +65,22 @@ function applyOpenVaultInjectedOverride(
   return state
 }
 
-type ExchangeQuoteChanges = {
+type ExchangeQuoteSuccessChange = {
   kind: 'quote'
   quote: Quote
 }
+
+type ExchangeQuoteFailureChange = {
+  kind: 'quoteError'
+}
+
+type ExchangeQuoteResetChange = {
+  kind: 'quoteReset'
+}
+type ExchangeQuoteChanges =
+  | ExchangeQuoteSuccessChange
+  | ExchangeQuoteFailureChange
+  | ExchangeQuoteResetChange
 
 function applyExchange(change: OpenMultiplyVaultChange, state: OpenMultiplyVaultState) {
   if (change.kind === 'quote') {
@@ -86,6 +88,11 @@ function applyExchange(change: OpenMultiplyVaultChange, state: OpenMultiplyVault
       ...state,
       quote: change.quote,
     }
+  }
+
+  if (change.kind === 'quoteReset') {
+    const { quote: _quote, ...rest } = state
+    return rest
   }
   return state
 }
@@ -296,20 +303,22 @@ function applyQuote(
     amount: BigNumber,
     action: ExchangeAction,
   ) => Observable<Quote>,
-  state: OpenMultiplyVaultState,
-  change: (change: OpenMultiplyVaultChange) => void,
-): Observable<OpenMultiplyVaultState> {
-  return of(state).pipe(
-    filter((state) => state.buyingCollateral.gt(0)),
-    tap(() => console.log('***************** RUN ')),
-    switchMap((state) => exchangeQuote$(state.token, SLIPPAGE, state.buyingCollateral, 'BUY')),
-    distinctUntilChanged((s1, s2) => {
-      return JSON.stringify(s1) === JSON.stringify(s2)
-    }),
-    tap((quote) => change({ kind: 'quote', quote })),
+  state$: Observable<OpenMultiplyVaultState>,
+): Observable<OpenMultiplyVaultChange> {
+  return state$.pipe(
+    debounceTime(500),
+    switchMap((state) =>
+      iif(
+        () => state.buyingCollateral.gt(0),
 
-    map(() => state),
-    startWith(state),
+        exchangeQuote$(state.token, state.slippage, state.buyingCollateral, 'BUY').pipe(
+          mergeMap((quote) =>
+            quote.status === 'SUCCESS' ? of({ kind: 'quote', quote }) : of({ kind: 'quoteError' }),
+          ),
+        ),
+        EMPTY,
+      ),
+    ),
   )
 }
 
@@ -322,7 +331,7 @@ export function createOpenMultiplyVault$(
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilks$: Observable<string[]>,
   ilkData$: (ilk: string) => Observable<IlkData>,
-  ilkToToken$: Observable<(ilk: string) => string>,
+  exchangeQuote$: any,
   ilk: string,
 ): Observable<OpenMultiplyVaultState> {
   return ilks$.pipe(
@@ -330,18 +339,17 @@ export function createOpenMultiplyVault$(
       iif(
         () => !ilks.some((i) => i === ilk),
         throwError(new Error(`Ilk ${ilk} does not exist`)),
-        combineLatest(context$, txHelpers$, ilkToToken$).pipe(
-          switchMap(([context, txHelpers, ilkToToken]) => {
+        combineLatest(context$, txHelpers$, ilkData$(ilk)).pipe(
+          switchMap(([context, txHelpers, ilkData]) => {
+            const { token } = ilkData
             const account = context.account
-            const token = ilkToToken(ilk)
             return combineLatest(
               priceInfo$(token),
               balanceInfo$(token, account),
-              ilkData$(ilk),
               proxyAddress$(account),
             ).pipe(
               first(),
-              switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress]) =>
+              switchMap(([priceInfo, balanceInfo, proxyAddress]) =>
                 ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
                   first(),
                   switchMap((allowance) => {
@@ -350,12 +358,6 @@ export function createOpenMultiplyVault$(
                     function change(ch: OpenMultiplyVaultChange) {
                       change$.next(ch)
                     }
-
-                    const exchangeQuote$ = memoize(
-                      curry(createExchangeQuote$)(context$),
-                      (token: string, slippage: BigNumber, amount: BigNumber, action: string) =>
-                        `${token}_${slippage.toString()}_${amount.toString}_${action}`,
-                    )
 
                     // NOTE: Not to be used in production/dev, test only
                     function injectStateOverride(
@@ -381,6 +383,7 @@ export function createOpenMultiplyVault$(
                       errorMessages: [],
                       warningMessages: [],
                       summary: defaultOpenVaultSummary,
+                      slippage: SLIPPAGE,
                       injectStateOverride,
                     }
 
@@ -392,14 +395,16 @@ export function createOpenMultiplyVault$(
 
                     const connectedProxyAddress$ = proxyAddress$(account)
 
-                    return merge(change$, environmentChanges$).pipe(
+                    const state$ = merge(change$, environmentChanges$).pipe(
                       scan(apply, initialState),
-                      switchMap((state) => applyQuote(exchangeQuote$, state, change)),
                       map(validateErrors),
                       map(validateWarnings),
                       map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
-                      // tap((s) => console.log(s)),
                     )
+
+                    applyQuote(exchangeQuote$, state$).subscribe(change)
+
+                    return state$
                   }),
                 ),
               ),

@@ -1,9 +1,17 @@
 import { amountFromWei, amountToWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { Context, ContextConnected, every10Seconds$ } from 'blockchain/network'
+import { Context, ContextConnected, every5Seconds$ } from 'blockchain/network'
 import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
-import { catchError, filter, map, shareReplay, switchMap, tap } from 'rxjs/operators'
+import {
+  catchError,
+  distinctUntilChanged,
+  filter,
+  map,
+  shareReplay,
+  switchMap,
+  tap,
+} from 'rxjs/operators'
 
 const API_ENDPOINT = `https://api.1inch.exchange/v3.0/1/swap`
 
@@ -42,40 +50,36 @@ function getQuote$(
   slippage: BigNumber,
   action: ExchangeAction,
 ) {
-  return every10Seconds$.pipe(
-    map(() => ({
-      fromTokenAddress: action === 'BUY' ? daiAddress : collateralAddress,
-      toTokenAddress: action === 'BUY' ? collateralAddress : daiAddress,
-    })),
-    switchMap(({ fromTokenAddress, toTokenAddress }) =>
-      ajax(
-        `${API_ENDPOINT}?fromTokenAddress=${fromTokenAddress}&toTokenAddress=${toTokenAddress}&amount=${amountToWei(
-          amount,
-        ).toString()}&fromAddress=${account}&slippage=${slippage.toString()}&disableEstimate=true`,
-      ).pipe(
-        tap((response) => {
-          if (response.status !== 200) throw new Error(response.responseText)
-        }),
-        map((response): Response => response.response()),
-        map(({ fromToken, toToken, toTokenAmount, fromTokenAmount, tx }) => ({
-          status: 'SUCCESS' as const,
-          fromToken,
-          toToken,
-          collateralAmount: amountFromWei(
-            action === 'BUY' ? new BigNumber(toTokenAmount) : new BigNumber(fromTokenAmount),
-          ),
-          daiAmount: amountFromWei(
-            action === 'BUY' ? new BigNumber(fromTokenAmount) : new BigNumber(toTokenAmount),
-          ),
-          tokenPrice:
-            action === 'BUY'
-              ? new BigNumber(fromTokenAmount).div(new BigNumber(toTokenAmount))
-              : new BigNumber(toTokenAmount).div(new BigNumber(fromTokenAddress)),
-          tx,
-        })),
-        catchError(() => of({ status: 'ERROR' as const })),
+  const fromTokenAddress = action === 'BUY' ? daiAddress : collateralAddress
+  const toTokenAddress = action === 'BUY' ? collateralAddress : daiAddress
+  return ajax(
+    `${API_ENDPOINT}?fromTokenAddress=${fromTokenAddress}&toTokenAddress=${toTokenAddress}&amount=${amountToWei(
+      amount,
+    ).toString()}&fromAddress=${account}&slippage=${slippage
+      .times(100)
+      .toString()}&disableEstimate=true`,
+  ).pipe(
+    tap((response) => {
+      if (response.status !== 200) throw new Error(response.responseText)
+    }),
+    map((response): Response => response.response()),
+    map(({ fromToken, toToken, toTokenAmount, fromTokenAmount, tx }) => ({
+      status: 'SUCCESS' as const,
+      fromToken,
+      toToken,
+      collateralAmount: amountFromWei(
+        action === 'BUY' ? new BigNumber(toTokenAmount) : new BigNumber(fromTokenAmount),
       ),
-    ),
+      daiAmount: amountFromWei(
+        action === 'BUY' ? new BigNumber(fromTokenAmount) : new BigNumber(toTokenAmount),
+      ),
+      tokenPrice:
+        action === 'BUY'
+          ? new BigNumber(fromTokenAmount).div(new BigNumber(toTokenAmount))
+          : new BigNumber(toTokenAmount).div(new BigNumber(fromTokenAddress)),
+      tx,
+    })),
+    catchError(() => of({ status: 'ERROR' as const })),
     shareReplay(1),
   )
 }
@@ -97,7 +101,14 @@ export function createExchangeQuote$(
         token === 'ETH'
           ? '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
           : context.tokens[token].address
-      return getQuote$(daiAddress, collateralAddress, context.account, amount, slippage, action)
+      return every5Seconds$.pipe(
+        switchMap(() =>
+          getQuote$(daiAddress, collateralAddress, context.account, amount, slippage, action),
+        ),
+        distinctUntilChanged((s1, s2) => {
+          return JSON.stringify(s1) === JSON.stringify(s2)
+        }),
+      )
     }),
     shareReplay(1),
   )

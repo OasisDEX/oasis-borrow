@@ -288,7 +288,8 @@ export function setupAppContext() {
 
   const exchangeQuote$ = memoize(
     curry(createExchangeQuote$)(context$),
-    (token, slippage, amount) => `${token}${slippage.toString()}${amount.toString()}`,
+    (token: string, slippage: BigNumber, amount: BigNumber, action: string) =>
+      `${token}_${slippage.toString()}_${amount.toString()}_${action}`,
   )
 
   const multiplyVault$ = memoize(
@@ -301,7 +302,7 @@ export function setupAppContext() {
       balanceInfo$,
       ilks$,
       ilkData$,
-      ilkToToken$,
+      exchangeQuote$,
     ),
   )
 
