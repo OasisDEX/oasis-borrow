@@ -6,9 +6,19 @@ import { TxHelpers } from 'components/AppContext'
 import { createExchangeQuote$, ExchangeAction, Quote } from 'features/exchange/exchange'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { curry } from 'lodash'
+import { curry, memoize } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
-import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  filter,
+  first,
+  map,
+  scan,
+  shareReplay,
+  startWith,
+  switchMap,
+  tap,
+} from 'rxjs/operators'
 
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openMultiplyVaultAllowances'
 import {
@@ -65,6 +75,21 @@ function applyOpenVaultInjectedOverride(
   return state
 }
 
+type ExchangeQuoteChanges = {
+  kind: 'quote'
+  quote: Quote
+}
+
+function applyExchange(change: OpenMultiplyVaultChange, state: OpenMultiplyVaultState) {
+  if (change.kind === 'quote') {
+    return {
+      ...state,
+      quote: change.quote,
+    }
+  }
+  return state
+}
+
 export type OpenMultiplyVaultChange =
   | OpenVaultInputChange
   | OpenVaultTransitionChange
@@ -72,11 +97,12 @@ export type OpenMultiplyVaultChange =
   | OpenVaultAllowanceChange
   | OpenVaultEnvironmentChange
   | OpenVaultInjectedOverrideChange
+  | ExchangeQuoteChanges
 
 function apply(state: OpenMultiplyVaultState, change: OpenMultiplyVaultChange) {
   const s1 = applyOpenVaultInput(change, state)
-
-  const s3 = applyOpenVaultTransition(change, s1)
+  const s2 = applyExchange(change, s1)
+  const s3 = applyOpenVaultTransition(change, s2)
   const s4 = applyOpenMultiplyVaultTransaction(change, s3)
   const s5 = applyOpenVaultAllowance(change, s4)
   const s6 = applyOpenVaultEnvironment(change, s5)
@@ -265,23 +291,25 @@ const SLIPPAGE = new BigNumber(0.05)
 
 function applyQuote(
   exchangeQuote$: (
-    context: Observable<ContextConnected>,
     token: string,
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
   ) => Observable<Quote>,
   state: OpenMultiplyVaultState,
-  context: Observable<ContextConnected>,
+  change: (change: OpenMultiplyVaultChange) => void,
 ): Observable<OpenMultiplyVaultState> {
   return of(state).pipe(
-    switchMap((state) =>
-      state.depositAmount
-        ? exchangeQuote$(context, state.token, SLIPPAGE, state.buyingCollateral, 'BUY').pipe(
-            map((quote) => ({ ...state, quote })),
-          )
-        : of(state),
-    ),
+    filter((state) => state.buyingCollateral.gt(0)),
+    tap(() => console.log('***************** RUN ')),
+    switchMap((state) => exchangeQuote$(state.token, SLIPPAGE, state.buyingCollateral, 'BUY')),
+    distinctUntilChanged((s1, s2) => {
+      return JSON.stringify(s1) === JSON.stringify(s2)
+    }),
+    tap((quote) => change({ kind: 'quote', quote })),
+
+    map(() => state),
+    startWith(state),
   )
 }
 
@@ -323,6 +351,12 @@ export function createOpenMultiplyVault$(
                       change$.next(ch)
                     }
 
+                    const exchangeQuote$ = memoize(
+                      curry(createExchangeQuote$)(context$),
+                      (token: string, slippage: BigNumber, amount: BigNumber, action: string) =>
+                        `${token}_${slippage.toString()}_${amount.toString}_${action}`,
+                    )
+
                     // NOTE: Not to be used in production/dev, test only
                     function injectStateOverride(
                       stateToOverride: Partial<MutableOpenMultiplyVaultState>,
@@ -360,11 +394,11 @@ export function createOpenMultiplyVault$(
 
                     return merge(change$, environmentChanges$).pipe(
                       scan(apply, initialState),
-                      switchMap((state) => applyQuote(createExchangeQuote$, state, context$)),
+                      switchMap((state) => applyQuote(exchangeQuote$, state, change)),
                       map(validateErrors),
                       map(validateWarnings),
                       map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
-                      tap((s) => console.log(s)),
+                      // tap((s) => console.log(s)),
                     )
                   }),
                 ),

@@ -1,7 +1,8 @@
 import { amountFromWei, amountToWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { Context, ContextConnected, every5Seconds$ } from 'blockchain/network'
-import { from, Observable, of } from 'rxjs'
+import { Context, ContextConnected, every10Seconds$ } from 'blockchain/network'
+import { Observable, of } from 'rxjs'
+import { ajax } from 'rxjs/ajax'
 import { catchError, filter, map, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 const API_ENDPOINT = `https://api.1inch.exchange/v3.0/1/swap`
@@ -41,23 +42,21 @@ function getQuote$(
   slippage: BigNumber,
   action: ExchangeAction,
 ) {
-  return every5Seconds$.pipe(
+  return every10Seconds$.pipe(
     map(() => ({
       fromTokenAddress: action === 'BUY' ? daiAddress : collateralAddress,
       toTokenAddress: action === 'BUY' ? collateralAddress : daiAddress,
     })),
     switchMap(({ fromTokenAddress, toTokenAddress }) =>
-      from(
-        fetch(
-          `${API_ENDPOINT}?fromTokenAddress=${fromTokenAddress}&toTokenAddress=${toTokenAddress}&amount=${amountToWei(
-            amount,
-          ).toString()}&fromAddress=${account}&slippage=${slippage.toString()}&disableEstimate=true`,
-        ),
+      ajax(
+        `${API_ENDPOINT}?fromTokenAddress=${fromTokenAddress}&toTokenAddress=${toTokenAddress}&amount=${amountToWei(
+          amount,
+        ).toString()}&fromAddress=${account}&slippage=${slippage.toString()}&disableEstimate=true`,
       ).pipe(
         tap((response) => {
-          if (!response.ok) throw new Error(response.statusText)
+          if (response.status !== 200) throw new Error(response.responseText)
         }),
-        switchMap((response): Promise<Response> => response.json()),
+        map((response): Response => response.response()),
         map(({ fromToken, toToken, toTokenAmount, fromTokenAmount, tx }) => ({
           status: 'SUCCESS' as const,
           fromToken,
