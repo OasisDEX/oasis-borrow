@@ -1,4 +1,4 @@
-// @ts-ignore
+import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { MewConnectConnector } from '@myetherwallet/mewconnect-connector'
 import { LedgerConnector, TrezorConnector } from '@oasisdex/connectors'
@@ -112,6 +112,8 @@ export async function getConnector(
       return new MewConnectConnector({
         url: rpcUrls[network],
       })
+    case 'gnosisSafe':
+      return new SafeAppConnector()
     case 'magicLink':
       throw new Error('Magic Link not allowed')
   }
@@ -129,6 +131,7 @@ const SUPPORTED_WALLETS: SupportedWallet[] = [
   { iconName: 'portis', connectionKind: 'portis' },
   { iconName: 'myetherwallet', connectionKind: 'myetherwallet' },
   { iconName: 'trezor', connectionKind: 'trezor' },
+  { iconName: 'gnosis_safe', connectionKind: 'gnosisSafe' },
 ]
 
 const isFirefox = browserDetect().name === 'firefox'
@@ -271,6 +274,8 @@ export function getConnectionKindMessage(connectionKind: ConnectionKind) {
       return 'Ledger'
     case 'network':
       return 'Network'
+    case 'gnosisSafe':
+      return 'Gnosis Safe'
     case 'magicLink':
       return 'MagicLink'
   }
