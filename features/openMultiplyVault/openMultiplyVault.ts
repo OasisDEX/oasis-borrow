@@ -8,7 +8,16 @@ import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { curry } from 'lodash'
 import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
-import { debounceTime, first, map, mergeMap, scan, shareReplay, switchMap } from 'rxjs/operators'
+import {
+  debounceTime,
+  distinctUntilChanged,
+  first,
+  map,
+  mergeMap,
+  scan,
+  shareReplay,
+  switchMap,
+} from 'rxjs/operators'
 
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openMultiplyVaultAllowances'
 import {
@@ -94,6 +103,7 @@ function applyExchange(change: OpenMultiplyVaultChange, state: OpenMultiplyVault
     const { quote: _quote, ...rest } = state
     return rest
   }
+
   return state
 }
 
@@ -307,6 +317,12 @@ function applyQuote(
 ): Observable<OpenMultiplyVaultChange> {
   return state$.pipe(
     debounceTime(500),
+    distinctUntilChanged(
+      (s1, s2) =>
+        s1.token === s2.token &&
+        s1.slippage.eq(s2.slippage) &&
+        s1.buyingCollateral.eq(s2.buyingCollateral),
+    ),
     switchMap((state) =>
       iif(
         () => state.buyingCollateral.gt(0),
@@ -316,7 +332,7 @@ function applyQuote(
             quote.status === 'SUCCESS' ? of({ kind: 'quote', quote }) : of({ kind: 'quoteError' }),
           ),
         ),
-        EMPTY,
+        state.quote === undefined ? EMPTY : of({ kind: 'quoteReset' }),
       ),
     ),
   )

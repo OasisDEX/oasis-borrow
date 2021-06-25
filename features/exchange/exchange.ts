@@ -62,7 +62,7 @@ function getQuote$(
     tap((response) => {
       if (response.status !== 200) throw new Error(response.responseText)
     }),
-    map((response): Response => response.response()),
+    map((response): Response => response.response),
     map(({ fromToken, toToken, toTokenAmount, fromTokenAmount, tx }) => ({
       status: 'SUCCESS' as const,
       fromToken,

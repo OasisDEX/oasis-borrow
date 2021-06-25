@@ -61,6 +61,7 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
     priceInfo: { currentCollateralPrice },
     ilkData: { liquidationRatio },
     multiply,
+    quote,
   } = state
 
   const maxDepositAmount = collateralBalance
@@ -80,7 +81,9 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
 
   const buyingCollateral =
     depositAmount && totalExposure ? totalExposure.minus(depositAmount) : zero // USE EXCHANGE PRICE
-  const buyingCollateralUSD = buyingCollateral.times(currentCollateralPrice)
+
+  const buyingCollateralUSD =
+    quote?.status === 'SUCCESS' ? buyingCollateral.times(quote.tokenPrice) : zero
 
   const fees = buyingCollateralUSD.times(TOTAL_FEES) // USE FEES
   const afterOutstandingDebt = buyingCollateralUSD.plus(fees)
