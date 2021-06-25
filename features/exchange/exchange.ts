@@ -52,6 +52,7 @@ function getQuote$(
 ) {
   const fromTokenAddress = action === 'BUY' ? daiAddress : collateralAddress
   const toTokenAddress = action === 'BUY' ? collateralAddress : daiAddress
+
   return ajax(
     `${API_ENDPOINT}?fromTokenAddress=${fromTokenAddress}&toTokenAddress=${toTokenAddress}&amount=${amountToWei(
       amount,

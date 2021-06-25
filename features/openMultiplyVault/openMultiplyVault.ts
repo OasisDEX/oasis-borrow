@@ -338,6 +338,25 @@ function applyQuote(
   )
 }
 
+function applyQuote_(
+  exchangeQuote$: (
+    token: string,
+    slippage: BigNumber,
+    amount: BigNumber,
+    action: ExchangeAction,
+  ) => Observable<Quote>,
+  state: OpenMultiplyVaultState,
+): Observable<OpenMultiplyVaultChange> {
+  if (state.buyingCollateral.gt(0)) {
+    return exchangeQuote$(state.token, state.slippage, state.buyingCollateral, 'BUY').pipe(
+      mergeMap((quote) =>
+        quote.status === 'SUCCESS' ? of({ kind: 'quote', quote }) : of({ kind: 'quoteError' }),
+      ),
+    )
+  }
+  return state.quote === undefined ? EMPTY : of({ kind: 'quoteReset' })
+}
+
 export function createOpenMultiplyVault$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
@@ -413,12 +432,24 @@ export function createOpenMultiplyVault$(
 
                     const state$ = merge(change$, environmentChanges$).pipe(
                       scan(apply, initialState),
+
                       map(validateErrors),
                       map(validateWarnings),
                       map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
                     )
 
-                    applyQuote(exchangeQuote$, state$).subscribe(change)
+                    state$
+                      .pipe(
+                        debounceTime(500),
+                        distinctUntilChanged(
+                          (s1, s2) =>
+                            s1.token === s2.token &&
+                            s1.slippage.eq(s2.slippage) &&
+                            s1.buyingCollateral.eq(s2.buyingCollateral),
+                        ),
+                        switchMap((state) => applyQuote_(exchangeQuote$, state)),
+                      )
+                      .subscribe(change)
 
                     return state$
                   }),
