@@ -47,6 +47,9 @@ export function OpenMultiplyVaultOrderInformation(props: OpenMultiplyVaultState)
     token,
     txFees,
     quote,
+    impact,
+    loanFees,
+    multiplyFee,
   } = props
   const collRatioColor = getCollRatioColor(props)
 
@@ -80,7 +83,7 @@ export function OpenMultiplyVaultOrderInformation(props: OpenMultiplyVaultState)
               ? formatFiatBalance(quote.tokenPrice)
               : formatFiatBalance(zero)}{' '}
             <Text as="span" sx={{ color: 'onError' }}>
-              (-0.25%)
+              ({formatPercent(impact, { precision: 2 })})
             </Text>
           </Text>
         }
@@ -88,7 +91,7 @@ export function OpenMultiplyVaultOrderInformation(props: OpenMultiplyVaultState)
       <OpenMultiplyVaultOrderInformationItem label={'Slippage Limit'} value={'5.00 %'} />
       <OpenMultiplyVaultOrderInformationItem
         label={'Multiply'}
-        value={`${multiply?.toString()}x`}
+        value={`${multiply?.toFixed(2).toString()}x`}
       />
       <OpenMultiplyVaultOrderInformationItem
         label={'Outstanding Debt'}
@@ -126,11 +129,11 @@ export function OpenMultiplyVaultOrderInformation(props: OpenMultiplyVaultState)
         <Grid pl={3} gap={2}>
           <OpenMultiplyVaultOrderInformationItem
             label={'3rd party protocol fees'}
-            value={`$${formatAmount(txFees, 'USD')}`}
+            value={`$${formatAmount(loanFees, 'USD')}`}
           />
           <OpenMultiplyVaultOrderInformationItem
             label={'Oasis fee'}
-            value={`$${formatAmount(txFees, 'USD')}`}
+            value={`$${formatAmount(multiplyFee, 'USD')}`}
           />
         </Grid>
       )}

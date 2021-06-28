@@ -156,6 +156,7 @@ export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
       isStaticCollateralPrice,
       collateralPricePercentageChange,
     },
+    token,
   } = props
 
   const collRatioColor = getCollRatioColor(props)
@@ -190,8 +191,8 @@ export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
 
       <OpenMultiplyVaultDetailsCard
         title={`Buying Power`}
-        value={`$${formatAmount(props.afterBuyingPower, 'USD')}`}
-        valueBottom={`${formatAmount(props.afterBuyingPower, 'USD')}`}
+        value={`$${formatAmount(props.afterBuyingPowerUSD, 'USD')}`}
+        valueBottom={`${formatAmount(props.afterBuyingPower, token)}`}
       />
 
       <OpenMultiplyVaultDetailsCard

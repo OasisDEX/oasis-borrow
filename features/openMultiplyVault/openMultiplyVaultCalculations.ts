@@ -24,6 +24,8 @@ export interface OpenMultiplyVaultCalculations {
   maxDepositAmount: BigNumber
   maxDepositAmountUSD: BigNumber
   afterCollateralBalance: BigNumber
+  loanFees: BigNumber
+  multiplyFee: BigNumber
 
   // afterCollateralizationRatioAtNextPrice: BigNumber
   // daiYieldFromDepositingCollateral: BigNumber
@@ -48,6 +50,8 @@ export const defaultOpenVaultStateCalculations: OpenMultiplyVaultCalculations = 
   maxDepositAmountUSD: zero,
   afterCollateralBalance: zero,
   afterCollateralizationRatio: zero,
+  loanFees: zero,
+  multiplyFee: zero,
 }
 
 export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
@@ -64,18 +68,8 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
   const maxDepositAmount = collateralBalance
   const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
 
-  // const afterCollateralizationRatioAtNextPrice = zero // TODO
-
-  // const afterFreeCollateral = zero // TODO
-
-  const theoreticMaxMultiple = liquidationRatio.div(liquidationRatio.minus(1))
   const marketPriceMaxSlippage =
     quote?.status === 'SUCCESS' ? quote.tokenPrice.times(slippage.plus(1)) : currentCollateralPrice
-
-  const maxDebt = depositAmount
-    ? depositAmount.div(liquidationRatio).times(currentCollateralPrice)
-    : undefined
-  const minDebt = debtFloor
 
   const minPossibleCollRatio = depositAmount
     ? depositAmount.times(currentCollateralPrice).div(debtFloor)
@@ -86,7 +80,7 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
     slider &&
     minPossibleCollRatio.minus(minPossibleCollRatio.minus(liquidationRatio).times(slider.div(100)))
 
-  const debtToDraw =
+  const afterOutstandingDebt =
     depositAmount && marketPriceMaxSlippage && requiredCollRatio
       ? depositAmount
           .times(currentCollateralPrice)
@@ -98,64 +92,69 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
               .minus(currentCollateralPrice)
               .plus(currentCollateralPrice.times(MULTIPLY_FEE)),
           )
-      : undefined
+      : zero
 
-  const totalExposureUSD = requiredCollRatio && debtToDraw?.times(requiredCollRatio)
-  const totalExposure = depositAmount && totalExposureUSD?.div(currentCollateralPrice)
-  const borrowedCollateral = depositAmount && totalExposure?.minus(depositAmount)
-
-  console.log('max multiple:', theoreticMaxMultiple.toString())
-  console.log('max debt:', maxDebt?.toString())
-  console.log('min debt:', minDebt?.toString())
-  console.log('minPossibleCollRatio:', minPossibleCollRatio?.toString())
-  console.log('debt to draw:', debtToDraw?.toString())
-  console.log('total coll usd', totalExposureUSD?.toString())
-  console.log('borrowedCollateral', borrowedCollateral?.toString())
-  console.log('required', requiredCollRatio?.toString())
+  const totalExposureUSD =
+    afterOutstandingDebt.gt(0) && requiredCollRatio
+      ? afterOutstandingDebt.times(requiredCollRatio)
+      : zero
+  const totalExposure = depositAmount?.gt(0) ? totalExposureUSD.div(currentCollateralPrice) : zero
+  const buyingCollateral =
+    depositAmount && totalExposure ? totalExposure.minus(depositAmount) : zero
 
   const afterCollateralBalance = depositAmount
     ? collateralBalance.minus(depositAmount)
     : collateralBalance
 
   const multiply =
-    totalExposureUSD && debtToDraw && totalExposureUSD?.div(totalExposureUSD.minus(debtToDraw))
-
-  const buyingCollateral =
-    depositAmount && totalExposure ? totalExposure.minus(depositAmount) : zero // USE EXCHANGE PRICE
+    totalExposureUSD && afterOutstandingDebt
+      ? totalExposureUSD.div(totalExposureUSD.minus(afterOutstandingDebt))
+      : zero
 
   const buyingCollateralUSD =
-    quote?.status === 'SUCCESS' ? buyingCollateral.times(quote.tokenPrice) : zero
+    quote?.status === 'SUCCESS' && buyingCollateral
+      ? buyingCollateral.times(quote.tokenPrice)
+      : zero
 
-  const fees = buyingCollateralUSD.times(TOTAL_FEES) // USE FEES
-  const afterOutstandingDebt = buyingCollateralUSD.plus(fees)
+  const loanFees = buyingCollateralUSD.times(LOAN_FEE)
+  const multiplyFee = afterOutstandingDebt?.times(MULTIPLY_FEE)
+  const fees = multiplyFee?.plus(loanFees)
 
   const afterCollateralizationRatio =
-    afterOutstandingDebt.gt(0) && totalExposureUSD
+    afterOutstandingDebt?.gt(0) && totalExposureUSD
       ? totalExposureUSD.div(afterOutstandingDebt)
       : requiredCollRatio || zero
 
-  const afterNetValueUSD = totalExposureUSD?.minus(afterOutstandingDebt) || zero
+  const afterNetValueUSD =
+    (afterOutstandingDebt && totalExposureUSD?.minus(afterOutstandingDebt)) || zero
+
   const afterNetValue = afterNetValueUSD.div(currentCollateralPrice)
 
   const afterLiquidationPrice = afterCollateralizationRatio.gt(0)
     ? currentCollateralPrice.times(liquidationRatio).div(afterCollateralizationRatio)
     : zero
 
-  const buyPrice = quote?.status === 'SUCCESS' ? quote.tokenPrice : undefined
-  const sellPrice = quote?.status === 'SUCCESS' ? new BigNumber(1).div(quote.tokenPrice) : undefined
-  const daiSwapped = quote?.status === 'SUCCESS' ? quote.daiAmount : undefined
-
   const impact =
-    buyPrice && sellPrice && depositAmount?.gt(0) && daiSwapped
-      ? depositAmount
-          .times(buyPrice)
-          .minus(daiSwapped.times(sellPrice))
-          .div(depositAmount.times(buyPrice))
+    quote?.status === 'SUCCESS'
+      ? new BigNumber(quote.daiAmount.minus(quote.collateralAmount)).div(quote.daiAmount)
       : zero
 
-  // console.log('buy price', buyPrice?.toString())
-  // console.log('sell price', sellPrice?.toString())
-  // console.log('impact', impact.toString())
+  const afterBuyingPowerUSD =
+    depositAmount && marketPriceMaxSlippage
+      ? depositAmount
+          .times(currentCollateralPrice)
+          .times(marketPriceMaxSlippage)
+          .div(
+            liquidationRatio
+              .times(marketPriceMaxSlippage)
+              .plus(liquidationRatio.times(marketPriceMaxSlippage).times(LOAN_FEE))
+              .minus(currentCollateralPrice)
+              .plus(currentCollateralPrice.times(MULTIPLY_FEE)),
+          )
+      : zero
+
+  const afterBuyingPower =
+    quote?.status === 'SUCCESS' ? afterBuyingPowerUSD.div(quote.tokenPrice) : zero
 
   return {
     ...state,
@@ -172,6 +171,11 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
     afterNetValueUSD,
     afterNetValue,
     txFees: fees,
+    impact,
+    loanFees,
+    multiplyFee,
+    afterBuyingPower,
+    afterBuyingPowerUSD,
 
     // maxDepositAmount,
     // maxDepositAmountUSD,
