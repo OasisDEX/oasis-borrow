@@ -6,6 +6,7 @@ import { TxHelpers } from 'components/AppContext'
 import { Quote } from 'features/exchange/exchange'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import {
@@ -119,7 +120,7 @@ export interface MutableOpenMultiplyVaultState {
   stage: OpenMultiplyVaultStage
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
-  multiply?: BigNumber
+  slider?: BigNumber
   selectedAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
   allowanceAmount?: BigNumber
   id?: BigNumber
@@ -131,7 +132,7 @@ interface OpenMultiplyVaultFunctions {
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
-  updateMultiply?: (multiply?: BigNumber) => void
+  updateMultiply?: (slider?: BigNumber) => void
   updateAllowanceAmount?: (amount?: BigNumber) => void
   setAllowanceAmountUnlimited?: () => void
   setAllowanceAmountToDepositAmount?: () => void
@@ -149,6 +150,7 @@ interface OpenMultiplyVaultEnvironment {
   proxyAddress?: string
   allowance?: BigNumber
   quote?: Quote
+  slippage: BigNumber
 }
 
 interface OpenMultiplyVaultTxInfo {
@@ -187,8 +189,8 @@ function addTransitions(
       updateDepositUSD: (depositAmountUSD?: BigNumber) =>
         change({ kind: 'depositUSD', depositAmountUSD }),
       updateDepositMax: () => change({ kind: 'depositMax' }),
-      updateMultiply: (multiply?: BigNumber) => {
-        change({ kind: 'multiply', multiply })
+      updateMultiply: (slider?: BigNumber) => {
+        change({ kind: 'slider', slider })
       },
       progress: () => change({ kind: 'progressEditing' }),
     }
@@ -269,6 +271,7 @@ export const defaultMutableOpenVaultState: MutableOpenMultiplyVaultState = {
   stage: 'editing' as OpenMultiplyVaultStage,
   selectedAllowanceRadio: 'unlimited' as 'unlimited',
   allowanceAmount: maxUint256,
+  slider: zero,
 }
 
 export function createOpenMultiplyVault$(

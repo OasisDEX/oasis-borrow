@@ -7,8 +7,6 @@ const MULTIPLY_FEE = new BigNumber(0.01)
 const LOAN_FEE = new BigNumber(0.009)
 const TOTAL_FEES = MULTIPLY_FEE.plus(LOAN_FEE)
 
-const MAX_MULTIPLY = new BigNumber(2)
-
 export interface OpenMultiplyVaultCalculations {
   afterLiquidationPrice: BigNumber
   afterBuyingPower: BigNumber // ??
@@ -18,8 +16,7 @@ export interface OpenMultiplyVaultCalculations {
   buyingCollateral: BigNumber
   buyingCollateralUSD: BigNumber
   totalExposure?: BigNumber
-  impact: BigNumber // ??
-  slippage: BigNumber // ??
+  impact: BigNumber
   multiply?: BigNumber
   afterOutstandingDebt: BigNumber
   afterCollateralizationRatio: BigNumber
@@ -43,8 +40,7 @@ export const defaultOpenVaultStateCalculations: OpenMultiplyVaultCalculations = 
   buyingCollateral: zero,
   buyingCollateralUSD: zero,
   totalExposure: zero,
-  slippage: zero,
-  impact: zero, // ??
+  impact: zero,
   multiply: zero,
   afterOutstandingDebt: zero,
   txFees: zero,
@@ -60,7 +56,7 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
     balanceInfo: { collateralBalance },
     priceInfo: { currentCollateralPrice },
     ilkData: { liquidationRatio },
-    multiply,
+    slider,
     quote,
   } = state
 
@@ -71,13 +67,16 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
 
   // const afterFreeCollateral = zero // TODO
 
+  const theoreticMaxMultiple = liquidationRatio.div(liquidationRatio.minus(1))
+
+  console.log('max multiple:', theoreticMaxMultiple.toString())
+
   const afterCollateralBalance = depositAmount
     ? collateralBalance.minus(depositAmount)
     : collateralBalance
 
-  const multiplyCalc = multiply ? multiply.div(100).times(MAX_MULTIPLY.minus(1)).plus(1) : undefined
-  const totalExposure =
-    multiplyCalc && depositAmount ? multiplyCalc.times(depositAmount) : undefined
+  const multiply = slider ? slider.div(100).times(theoreticMaxMultiple.minus(1)).plus(1) : undefined
+  const totalExposure = multiply && depositAmount ? multiply.times(depositAmount) : undefined
 
   const buyingCollateral =
     depositAmount && totalExposure ? totalExposure.minus(depositAmount) : zero // USE EXCHANGE PRICE
@@ -100,6 +99,22 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
   const afterLiquidationPrice = afterCollateralizationRatio.gt(0)
     ? currentCollateralPrice.times(liquidationRatio).div(afterCollateralizationRatio)
     : zero
+
+  const buyPrice = quote?.status === 'SUCCESS' ? quote.tokenPrice : undefined
+  const sellPrice = quote?.status === 'SUCCESS' ? new BigNumber(1).div(quote.tokenPrice) : undefined
+  const daiSwapped = quote?.status === 'SUCCESS' ? quote.daiAmount : undefined
+
+  const impact =
+    buyPrice && sellPrice && depositAmount?.gt(0) && daiSwapped
+      ? depositAmount
+          .times(buyPrice)
+          .minus(daiSwapped.times(sellPrice))
+          .div(depositAmount.times(buyPrice))
+      : zero
+
+  console.log('buy price', buyPrice?.toString())
+  console.log('sell price', sellPrice?.toString())
+  console.log('impact', impact.toString())
 
   return {
     ...state,

@@ -47,15 +47,14 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
     canAdjustRisk,
     afterLiquidationPrice,
     afterCollateralizationRatio,
+    slider,
   } = props
 
   const collRatioColor = getCollRatioColor(props)
   const sliderBackground = multiply
-    ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
-        colors?.sliderTrackFill
-      } ${multiply.toNumber()}%, ${colors?.primaryAlt} ${multiply.toNumber()}%, ${
-        colors?.primaryAlt
-      } 100%)`
+    ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
+        slider?.toNumber() || 0
+      }%, ${colors?.primaryAlt} ${slider?.toNumber() || 0}%, ${colors?.primaryAlt} 100%)`
     : 'primaryAlt'
 
   return (
@@ -119,7 +118,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
             }}
             disabled={!canAdjustRisk}
             step={2}
-            value={multiply?.toNumber() || 0}
+            value={slider?.toNumber() || 0}
             onChange={(e) => {
               updateMultiply && updateMultiply(new BigNumber(e.target.value))
             }}

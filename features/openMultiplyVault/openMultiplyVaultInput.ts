@@ -17,8 +17,8 @@ interface DepositMaxChange {
 }
 
 interface MultiplyChange {
-  kind: 'multiply'
-  multiply?: BigNumber
+  kind: 'slider'
+  slider?: BigNumber
 }
 
 export type OpenVaultInputChange =
@@ -67,10 +67,10 @@ export function applyOpenVaultInput(
     }
   }
 
-  if (change.kind === 'multiply') {
+  if (change.kind === 'slider') {
     return {
       ...state,
-      multiply: change.multiply,
+      slider: change.slider,
     }
   }
 
