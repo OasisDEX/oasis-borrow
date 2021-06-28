@@ -1,7 +1,13 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Box, Flex, Grid, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
-import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import {
+  formatAmount,
+  formatCryptoBalance,
+  formatFiatBalance,
+  formatPercent,
+} from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import React, { ReactNode, useState } from 'react'
 
 import { OpenMultiplyVaultState } from '../openMultiplyVault'
@@ -40,6 +46,7 @@ export function OpenMultiplyVaultOrderInformation(props: OpenMultiplyVaultState)
     buyingCollateralUSD,
     token,
     txFees,
+    quote,
   } = props
   const collRatioColor = getCollRatioColor(props)
 
@@ -68,7 +75,10 @@ export function OpenMultiplyVaultOrderInformation(props: OpenMultiplyVaultState)
         label={`${token} Price (impact)`}
         value={
           <Text>
-            $1,925.00{' '}
+            $
+            {quote?.status === 'SUCCESS'
+              ? formatFiatBalance(quote.tokenPrice)
+              : formatFiatBalance(zero)}{' '}
             <Text as="span" sx={{ color: 'onError' }}>
               (-0.25%)
             </Text>

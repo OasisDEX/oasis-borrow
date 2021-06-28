@@ -1,6 +1,6 @@
 import { amountFromWei, amountToWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { Context, ContextConnected, every5Seconds$ } from 'blockchain/network'
+import { Context, ContextConnected } from 'blockchain/network'
 import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import {
@@ -102,15 +102,10 @@ export function createExchangeQuote$(
         token === 'ETH'
           ? '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
           : context.tokens[token].address
-      return every5Seconds$.pipe(
-        switchMap(() =>
-          getQuote$(daiAddress, collateralAddress, context.account, amount, slippage, action),
-        ),
-        distinctUntilChanged((s1, s2) => {
-          return JSON.stringify(s1) === JSON.stringify(s2)
-        }),
-      )
+      return getQuote$(daiAddress, collateralAddress, context.account, amount, slippage, action)
     }),
-    shareReplay(1),
+    distinctUntilChanged((s1, s2) => {
+      return JSON.stringify(s1) === JSON.stringify(s2)
+    }),
   )
 }
