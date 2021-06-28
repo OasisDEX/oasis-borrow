@@ -5,7 +5,6 @@ import { OpenMultiplyVaultState } from './openMultiplyVault'
 
 const MULTIPLY_FEE = new BigNumber(0.01)
 const LOAN_FEE = new BigNumber(0.009)
-const TOTAL_FEES = MULTIPLY_FEE.plus(LOAN_FEE)
 
 export interface OpenMultiplyVaultCalculations {
   afterLiquidationPrice: BigNumber
