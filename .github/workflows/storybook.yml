@@ -8,9 +8,9 @@ jobs:
     name: Deploy storybook
     runs-on: ubuntu-latest
     env:
-      REGION: eu-central-1
+      REGION: us-east-1
       BUCKET_NAME: storybook.oasis.app
-      CLOUDFRONT_ID: E1PL3BMP98DRBZ
+      CLOUDFRONT_ID: E3EJMOEAF32S4K
 
     steps:
       - name: Checkout
@@ -30,8 +30,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.STORYBOOK_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.STORYBOOK_SECRET_KEY }}
           aws-region: ${{ env.REGION }}
 
       - name: Extract commit hash
