@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REGION: us-east-1
-      BUCKET_NAME: storybook.oazolabs.xyz
+      BUCKET_NAME: storybook.oasis.app
       CLOUDFRONT_ID: E3EJMOEAF32S4K
 
     steps:
