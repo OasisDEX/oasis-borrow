@@ -55,9 +55,10 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
     depositAmount,
     balanceInfo: { collateralBalance },
     priceInfo: { currentCollateralPrice },
-    ilkData: { liquidationRatio },
+    ilkData: { liquidationRatio, debtFloor },
     slider,
     quote,
+    slippage,
   } = state
 
   const maxDepositAmount = collateralBalance
@@ -68,15 +69,56 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
   // const afterFreeCollateral = zero // TODO
 
   const theoreticMaxMultiple = liquidationRatio.div(liquidationRatio.minus(1))
+  const marketPriceMaxSlippage =
+    quote?.status === 'SUCCESS' ? quote.tokenPrice.times(slippage.plus(1)) : currentCollateralPrice
+
+  const maxDebt = depositAmount
+    ? depositAmount.div(liquidationRatio).times(currentCollateralPrice)
+    : undefined
+  const minDebt = debtFloor
+
+  const minPossibleCollRatio = depositAmount
+    ? depositAmount.times(currentCollateralPrice).div(debtFloor)
+    : undefined
+
+  const requiredCollRatio =
+    minPossibleCollRatio &&
+    slider &&
+    minPossibleCollRatio.minus(minPossibleCollRatio.minus(liquidationRatio).times(slider.div(100)))
+
+  const debtToDraw =
+    depositAmount && marketPriceMaxSlippage && requiredCollRatio
+      ? depositAmount
+          .times(currentCollateralPrice)
+          .times(marketPriceMaxSlippage)
+          .div(
+            requiredCollRatio
+              .times(marketPriceMaxSlippage)
+              .plus(requiredCollRatio.times(marketPriceMaxSlippage).times(LOAN_FEE))
+              .minus(currentCollateralPrice)
+              .plus(currentCollateralPrice.times(MULTIPLY_FEE)),
+          )
+      : undefined
+
+  const totalExposureUSD = requiredCollRatio && debtToDraw?.times(requiredCollRatio)
+  const totalExposure = depositAmount && totalExposureUSD?.div(currentCollateralPrice)
+  const borrowedCollateral = depositAmount && totalExposure?.minus(depositAmount)
 
   console.log('max multiple:', theoreticMaxMultiple.toString())
+  console.log('max debt:', maxDebt?.toString())
+  console.log('min debt:', minDebt?.toString())
+  console.log('minPossibleCollRatio:', minPossibleCollRatio?.toString())
+  console.log('debt to draw:', debtToDraw?.toString())
+  console.log('total coll usd', totalExposureUSD?.toString())
+  console.log('borrowedCollateral', borrowedCollateral?.toString())
+  console.log('required', requiredCollRatio?.toString())
 
   const afterCollateralBalance = depositAmount
     ? collateralBalance.minus(depositAmount)
     : collateralBalance
 
-  const multiply = slider ? slider.div(100).times(theoreticMaxMultiple.minus(1)).plus(1) : undefined
-  const totalExposure = multiply && depositAmount ? multiply.times(depositAmount) : undefined
+  const multiply =
+    totalExposureUSD && debtToDraw && totalExposureUSD?.div(totalExposureUSD.minus(debtToDraw))
 
   const buyingCollateral =
     depositAmount && totalExposure ? totalExposure.minus(depositAmount) : zero // USE EXCHANGE PRICE
@@ -86,12 +128,11 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
 
   const fees = buyingCollateralUSD.times(TOTAL_FEES) // USE FEES
   const afterOutstandingDebt = buyingCollateralUSD.plus(fees)
-  const totalExposureUSD = totalExposure?.times(currentCollateralPrice)
 
   const afterCollateralizationRatio =
     afterOutstandingDebt.gt(0) && totalExposureUSD
       ? totalExposureUSD.div(afterOutstandingDebt)
-      : zero
+      : requiredCollRatio || zero
 
   const afterNetValueUSD = totalExposureUSD?.minus(afterOutstandingDebt) || zero
   const afterNetValue = afterNetValueUSD.div(currentCollateralPrice)
@@ -112,9 +153,9 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
           .div(depositAmount.times(buyPrice))
       : zero
 
-  console.log('buy price', buyPrice?.toString())
-  console.log('sell price', sellPrice?.toString())
-  console.log('impact', impact.toString())
+  // console.log('buy price', buyPrice?.toString())
+  // console.log('sell price', sellPrice?.toString())
+  // console.log('impact', impact.toString())
 
   return {
     ...state,

@@ -55,7 +55,7 @@ function getQuote$(
 
   return ajax(
     `${API_ENDPOINT}?fromTokenAddress=${fromTokenAddress}&toTokenAddress=${toTokenAddress}&amount=${amountToWei(
-      amount,
+      new BigNumber(amount.toFixed(18)),
     ).toString()}&fromAddress=${account}&slippage=${slippage
       .times(100)
       .toString()}&disableEstimate=true`,
