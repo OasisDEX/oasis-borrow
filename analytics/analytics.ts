@@ -57,12 +57,12 @@ export const trackingEvents = {
     })
   },
 
-  openVault: (ilk: string) => {
+  openVault: (page: Pages.LandingPage | Pages.OpenVaultOverview, ilk: string) => {
     mixpanel.track('btn-click', {
       id: 'OpenVault',
       product,
       ilk,
-      page: Pages.VaultCreate,
+      page,
       section: 'SelectCollateral',
     })
   },

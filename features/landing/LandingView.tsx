@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Pages } from 'analytics/analytics'
+import { Pages, trackingEvents } from 'analytics/analytics'
 import { getToken } from 'blockchain/tokensMetadata'
 import { WelcomeAnnouncement } from 'components/Announcement'
 import { useAppContext } from 'components/AppContextProvider'
@@ -290,6 +290,7 @@ export function LandingView() {
                 noResults={<Box>{t('no-results')}</Box>}
                 deriveRowProps={(row) => ({
                   href: row.ilkDebtAvailable.isZero() ? undefined : `/vaults/open/${row.ilk}`,
+                  onClick: () => trackingEvents.openVault(Pages.OpenVaultOverview, row.ilk),
                 })}
               />
             </Box>
