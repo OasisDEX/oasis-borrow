@@ -8,22 +8,22 @@ import { ManageVaultState } from './manageVault'
 
 type GenerateAmountChange = {
   kind: 'generateAmountChange'
-  value: BigNumber
+  value: { amount: BigNumber; setMax: boolean }
 }
 
 type DepositAmountChange = {
   kind: 'depositAmountChange'
-  value: BigNumber
+  value: { amount: BigNumber; setMax: boolean }
 }
 
 type PaybackAmountChange = {
   kind: 'paybackAmountChange'
-  value: BigNumber
+  value: { amount: BigNumber; setMax: boolean }
 }
 
 type WithdrawAmountChange = {
   kind: 'withdrawAmountChange'
-  value: BigNumber
+  value: { amount: BigNumber; setMax: boolean }
 }
 
 type AllowanceChange = {
@@ -66,46 +66,58 @@ export function createManageVaultAnalytics$(
   )
 
   const depositAmountChanges: Observable<DepositAmountChange> = manageVaultState$.pipe(
-    map((state) => state.depositAmount),
-    filter((amount) => !!amount),
+    map(({ depositAmount, maxDepositAmount }) => ({
+      amount: depositAmount,
+      setMax: depositAmount?.eq(maxDepositAmount),
+    })),
+    filter((value) => !!value.amount),
     distinctUntilChanged(isEqual),
     debounceTime(INPUT_DEBOUNCE_TIME),
-    map((amount) => ({
+    map((value) => ({
       kind: 'depositAmountChange',
-      value: amount,
+      value,
     })),
   )
 
   const generateAmountChanges: Observable<GenerateAmountChange> = manageVaultState$.pipe(
-    map((state) => state.generateAmount),
-    filter((amount) => !!amount),
+    map(({ generateAmount, maxGenerateAmount }) => ({
+      amount: generateAmount,
+      setMax: generateAmount?.eq(maxGenerateAmount),
+    })),
+    filter((value) => !!value.amount),
     distinctUntilChanged(isEqual),
     debounceTime(INPUT_DEBOUNCE_TIME),
-    map((amount) => ({
+    map((value) => ({
       kind: 'generateAmountChange',
-      value: amount,
+      value,
     })),
   )
 
   const paybackAmountChanges: Observable<PaybackAmountChange> = manageVaultState$.pipe(
-    map((state) => state.paybackAmount),
-    filter((amount) => !!amount),
+    map(({ paybackAmount, maxPaybackAmount }) => ({
+      amount: paybackAmount,
+      setMax: paybackAmount?.eq(maxPaybackAmount),
+    })),
+    filter((value) => !!value.amount),
     distinctUntilChanged(isEqual),
     debounceTime(INPUT_DEBOUNCE_TIME),
-    map((amount) => ({
+    map((value) => ({
       kind: 'paybackAmountChange',
-      value: amount,
+      value,
     })),
   )
 
   const withdrawAmountChanges: Observable<WithdrawAmountChange> = manageVaultState$.pipe(
-    map((state) => state.withdrawAmount),
-    filter((amount) => !!amount),
+    map(({ withdrawAmount, maxWithdrawAmount }) => ({
+      amount: withdrawAmount,
+      setMax: withdrawAmount?.eq(maxWithdrawAmount),
+    })),
+    filter((value) => !!value.amount),
     distinctUntilChanged(isEqual),
     debounceTime(INPUT_DEBOUNCE_TIME),
-    map((amount) => ({
+    map((value) => ({
       kind: 'withdrawAmountChange',
-      value: amount,
+      value,
     })),
   )
 
@@ -227,16 +239,32 @@ export function createManageVaultAnalytics$(
             const page = stage === 'daiEditing' ? Pages.ManageDai : Pages.ManageCollateral
             switch (event.kind) {
               case 'depositAmountChange':
-                tracker.manageVaultDepositAmount(page, event.value.toString())
+                tracker.manageVaultDepositAmount(
+                  page,
+                  event.value.amount.toString(),
+                  event.value.setMax,
+                )
                 break
               case 'generateAmountChange':
-                tracker.manageVaultGenerateAmount(page, event.value.toString())
+                tracker.manageVaultGenerateAmount(
+                  page,
+                  event.value.amount.toString(),
+                  event.value.setMax,
+                )
                 break
               case 'paybackAmountChange':
-                tracker.manageVaultPaybackAmount(page, event.value.toString())
+                tracker.manageVaultPaybackAmount(
+                  page,
+                  event.value.amount.toString(),
+                  event.value.setMax,
+                )
                 break
               case 'withdrawAmountChange':
-                tracker.manageVaultWithdrawAmount(page, event.value.toString())
+                tracker.manageVaultWithdrawAmount(
+                  page,
+                  event.value.amount.toString(),
+                  event.value.setMax,
+                )
                 break
               case 'collateralAllowanceChange':
                 tracker.manageCollateralPickAllowance(

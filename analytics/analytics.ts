@@ -241,39 +241,59 @@ export const trackingEvents = {
     })
   },
 
-  manageVaultDepositAmount: (page: Pages.ManageCollateral | Pages.ManageDai, amount: string) => {
+  manageVaultDepositAmount: (
+    page: Pages.ManageCollateral | Pages.ManageDai,
+    amount: string,
+    setMax: boolean,
+  ) => {
     mixpanel.track('input-change', {
       id: 'DepositAmount',
       product,
       page,
       amount,
+      setMax,
     })
   },
 
-  manageVaultGenerateAmount: (page: Pages.ManageCollateral | Pages.ManageDai, amount: string) => {
+  manageVaultGenerateAmount: (
+    page: Pages.ManageCollateral | Pages.ManageDai,
+    amount: string,
+    setMax: boolean,
+  ) => {
     mixpanel.track('input-change', {
       id: 'GenerateAmount',
       product,
       page,
       amount,
+      setMax,
     })
   },
 
-  manageVaultWithdrawAmount: (page: Pages.ManageCollateral | Pages.ManageDai, amount: string) => {
+  manageVaultWithdrawAmount: (
+    page: Pages.ManageCollateral | Pages.ManageDai,
+    amount: string,
+    setMax: boolean,
+  ) => {
     mixpanel.track('input-change', {
       id: 'WithdrawAmount',
       product,
       page,
       amount,
+      setMax,
     })
   },
 
-  manageVaultPaybackAmount: (page: Pages.ManageCollateral | Pages.ManageDai, amount: string) => {
+  manageVaultPaybackAmount: (
+    page: Pages.ManageCollateral | Pages.ManageDai,
+    amount: string,
+    setMax: boolean,
+  ) => {
     mixpanel.track('input-change', {
       id: 'PaybackAmount',
       product,
       page,
       amount,
+      setMax,
     })
   },
 
