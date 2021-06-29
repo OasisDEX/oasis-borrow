@@ -143,10 +143,39 @@ export const trackingEvents = {
     })
   },
 
-  confirmVaultConfirm: () => {
+  confirmVaultConfirm: (
+    ilk: string,
+    collateralAmount: string,
+    daiAmount: string,
+    firstCDP: boolean,
+  ) => {
     mixpanel.track('btn-click', {
       id: 'Confirm',
       product,
+      ilk,
+      collateralAmount,
+      daiAmount,
+      firstCDP,
+      page: Pages.VaultCreate,
+      section: 'ConfirmVault',
+    })
+  },
+
+  confirmVaultConfirmTransaction: (
+    ilk: string,
+    collateralAmount: string,
+    daiAmount: string,
+    firstCDP: boolean,
+    txHash: string,
+  ) => {
+    mixpanel.track('btn-click', {
+      id: 'ConfirmTransaction',
+      product,
+      ilk,
+      collateralAmount,
+      daiAmount,
+      firstCDP,
+      txHash,
       page: Pages.VaultCreate,
       section: 'ConfirmVault',
     })

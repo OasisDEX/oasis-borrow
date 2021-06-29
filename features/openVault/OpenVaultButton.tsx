@@ -93,7 +93,6 @@ export function OpenVaultButton(props: OpenVaultState) {
 
   if (primaryButtonText === t('setup-proxy')) trackingEvent = trackingEvents.createVaultSetupProxy
   if (primaryButtonText === t('confirm')) trackingEvent = trackingEvents.createVaultConfirm
-  if (primaryButtonText === t('create-vault')) trackingEvent = trackingEvents.confirmVaultConfirm
   if (primaryButtonText === t('create-proxy-btn')) trackingEvent = trackingEvents.createProxy
   if (stage === 'editing' && primaryButtonText === t('set-token-allowance', { token })) {
     trackingEvent = trackingEvents.setTokenAllowance

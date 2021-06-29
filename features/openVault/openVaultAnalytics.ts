@@ -1,7 +1,8 @@
 import { INPUT_DEBOUNCE_TIME, Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
+import { VaultsOverview } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual } from 'lodash'
-import { merge, Observable, zip } from 'rxjs'
+import { combineLatest, merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators'
 
 import { MutableOpenVaultState, OpenVaultState } from './openVault'
@@ -24,7 +25,29 @@ type AllowanceChange = {
   }
 }
 
+type OpenVaultConfirm = {
+  kind: 'openVaultConfirm'
+  value: {
+    ilk: string
+    collateralAmount: BigNumber
+    daiAmount: BigNumber
+    firstCDP: boolean
+  }
+}
+
+type OpenVaultConfirmTransaction = {
+  kind: 'openVaultConfirmTransaction'
+  value: {
+    ilk: string
+    collateralAmount: BigNumber
+    daiAmount: BigNumber
+    firstCDP: boolean
+    txHash: string
+  }
+}
+
 export function createOpenVaultAnalytics$(
+  vaultsOverview$: Observable<VaultsOverview>,
   openVaultState$: Observable<OpenVaultState>,
   tracker: Tracker,
 ) {
@@ -78,7 +101,48 @@ export function createOpenVaultAnalytics$(
     })),
   )
 
-  return merge(depositAmountChanges, generateAmountChanges, allowanceChanges).pipe(
+  const openVaultConfirm: Observable<OpenVaultConfirm> = combineLatest(
+    openVaultState$,
+    vaultsOverview$,
+  ).pipe(
+    filter(([state]) => state.stage === 'openWaitingForApproval'),
+    map(([{ ilk, depositAmount, generateAmount }, { vaultSummary }]) => ({
+      kind: 'openVaultConfirm',
+      value: {
+        ilk: ilk,
+        collateralAmount: depositAmount,
+        daiAmount: generateAmount,
+        firstCDP: vaultSummary ? vaultSummary.numberOfVaults === 0 : false,
+      },
+    })),
+    distinctUntilChanged(isEqual),
+  )
+
+  const openVaultConfirmTransaction: Observable<OpenVaultConfirmTransaction> = combineLatest(
+    openVaultState$,
+    vaultsOverview$,
+  ).pipe(
+    filter(([state]) => state.stage === 'openInProgress'),
+    map(([{ ilk, depositAmount, generateAmount, openTxHash }, { vaultSummary }]) => ({
+      kind: 'openVaultConfirmTransaction',
+      value: {
+        ilk: ilk,
+        collateralAmount: depositAmount,
+        daiAmount: generateAmount,
+        firstCDP: vaultSummary ? vaultSummary.numberOfVaults === 0 : false,
+        txHash: openTxHash,
+      },
+    })),
+    distinctUntilChanged(isEqual),
+  )
+
+  return merge(
+    depositAmountChanges,
+    generateAmountChanges,
+    allowanceChanges,
+    openVaultConfirm,
+    openVaultConfirmTransaction,
+  ).pipe(
     tap((event) => {
       switch (event.kind) {
         case 'depositAmountChange':
@@ -89,6 +153,23 @@ export function createOpenVaultAnalytics$(
           break
         case 'allowanceChange':
           tracker.pickAllowance(event.value.type.toString(), event.value.amount.toString())
+          break
+        case 'openVaultConfirm':
+          tracker.confirmVaultConfirm(
+            event.value.ilk,
+            event.value.collateralAmount.toString(),
+            event.value.daiAmount.toString(),
+            event.value.firstCDP,
+          )
+          break
+        case 'openVaultConfirmTransaction':
+          tracker.confirmVaultConfirmTransaction(
+            event.value.ilk,
+            event.value.collateralAmount.toString(),
+            event.value.daiAmount.toString(),
+            event.value.firstCDP,
+            event.value.txHash,
+          )
           break
         default:
           throw new Error('Unhandled Scenario')
