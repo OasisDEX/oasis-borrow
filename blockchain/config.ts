@@ -85,7 +85,7 @@ const protoMain = {
   magicLink: {
     apiKey: 'pk_live_3256343D62443CE6',
   },
-  cacheApi: 'https://stagingcache.oasis.app/api/v1',
+  cacheApi: 'https://oazo-bcache.new.oasis.app/api/v1',
 }
 
 export type NetworkConfig = typeof protoMain
