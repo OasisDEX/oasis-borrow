@@ -104,7 +104,7 @@ export function OpenVaultButton(props: OpenVaultState) {
   const secondaryButtonText =
     stage === 'allowanceFailure' ? t('edit-token-allowance', { token }) : t('edit-vault-details')
 
-  const firstCDP = accountData?.numberOfVaults ? accountData.numberOfVaults === 0 : false
+  const firstCDP = accountData?.numberOfVaults ? accountData.numberOfVaults === 0 : true
   let trackingEvent: () => void | null
 
   if (primaryButtonText === t('setup-proxy'))

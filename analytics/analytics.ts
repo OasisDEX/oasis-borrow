@@ -212,21 +212,19 @@ export const trackingEvents = {
     })
   },
 
-  createNewVault: () => {
+  createNewVault: (firstCDP: boolean) => {
     mixpanel.track('btn-click', {
       id: 'createNewVault',
       product,
-      // page: Pages.Overview,
+      firstCDP,
       section: 'NavBar',
     })
   },
 
-  yourVaults: (numberOfVaults: number) => {
+  yourVaults: () => {
     mixpanel.track('btn-click', {
       id: 'YourVaults',
       product,
-      firstCdp: numberOfVaults > 0,
-      // page: Pages.Overview,
       section: 'NavBar',
     })
   },
