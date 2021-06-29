@@ -128,7 +128,7 @@ export function createOpenVaultAnalytics$(
       value: {
         ilk: ilk,
         collateralAmount: depositAmount,
-        daiAmount: generateAmount,
+        daiAmount: generateAmount || new BigNumber(0),
         firstCDP: vaultSummary ? vaultSummary.numberOfVaults === 0 : false,
         txHash: openTxHash,
       },

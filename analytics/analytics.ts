@@ -25,6 +25,7 @@ export enum Pages {
   VaultsOverview = 'VaultsOverview',
   ManageCollateral = 'ManageCollateral',
   ManageDai = 'ManageDai',
+  ManageVault = 'ManageVault',
 }
 
 export const trackingEvents = {
@@ -280,6 +281,37 @@ export const trackingEvents = {
     mixpanel.track('btn-click', {
       id: 'EditVault',
       product,
+      page: Pages.ManageVault,
+      section: 'ConfirmVault',
+    })
+  },
+
+  manageVaultConfirm: (ilk: string, collateralAmount: string, daiAmount: string) => {
+    mixpanel.track('btn-click', {
+      id: 'Confirm',
+      product,
+      ilk,
+      collateralAmount,
+      daiAmount,
+      page: Pages.ManageVault,
+      section: 'ConfirmVault',
+    })
+  },
+
+  manageVaultConfirmTransaction: (
+    ilk: string,
+    collateralAmount: string,
+    daiAmount: string,
+    txHash: string,
+  ) => {
+    mixpanel.track('btn-click', {
+      id: 'ConfirmTransaction',
+      product,
+      ilk,
+      collateralAmount,
+      daiAmount,
+      txHash,
+      page: Pages.ManageVault,
       section: 'ConfirmVault',
     })
   },
@@ -344,16 +376,6 @@ export const trackingEvents = {
     })
   },
 
-  // Second Confirm when the user is on Collateral and typed into Deposit or Withdraw
-  manageCollateralConfirm: () => {
-    mixpanel.track('btn-click', {
-      id: 'Confirm',
-      product,
-      page: Pages.ManageCollateral,
-      section: 'ConfirmVault',
-    })
-  },
-
   // First Confirm button when the user is on Dai and type into Generate
   manageDaiGenerateConfirm: () => {
     mixpanel.track('btn-click', {
@@ -371,16 +393,6 @@ export const trackingEvents = {
       product,
       page: Pages.ManageDai,
       section: 'Payback',
-    })
-  },
-
-  // Second Confirm when the user is on Dai and typed into Generate or Payback
-  manageDaiConfirm: () => {
-    mixpanel.track('btn-click', {
-      id: 'Confirm',
-      product,
-      page: Pages.ManageDai,
-      section: 'ConfirmVault',
     })
   },
 }

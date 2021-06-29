@@ -36,6 +36,25 @@ type AllowanceChange = {
   }
 }
 
+type ManageVaultConfirm = {
+  kind: 'manageVaultConfirm'
+  value: {
+    ilk: string
+    collateralAmount: BigNumber
+    daiAmount: BigNumber
+  }
+}
+
+type ManageVaultConfirmTransaction = {
+  kind: 'manageVaultConfirmTransaction'
+  value: {
+    ilk: string
+    collateralAmount: BigNumber
+    daiAmount: BigNumber
+    txHash: string
+  }
+}
+
 export function createManageVaultAnalytics$(
   manageVaultState$: Observable<ManageVaultState>,
   tracker: Tracker,
@@ -68,7 +87,7 @@ export function createManageVaultAnalytics$(
     })),
   )
 
-  const patbackAmountChanges: Observable<PaybackAmountChange> = manageVaultState$.pipe(
+  const paybackAmountChanges: Observable<PaybackAmountChange> = manageVaultState$.pipe(
     map((state) => state.paybackAmount),
     filter((amount) => !!amount),
     distinctUntilChanged(isEqual),
@@ -146,16 +165,63 @@ export function createManageVaultAnalytics$(
     })),
   )
 
+  const manageVaultConfirm: Observable<ManageVaultConfirm> = manageVaultState$.pipe(
+    filter((state) => state.stage === 'manageWaitingForApproval'),
+    map(({ vault: { ilk }, depositAmount, withdrawAmount, generateAmount, paybackAmount }) => ({
+      kind: 'manageVaultConfirm',
+      value: {
+        ilk: ilk,
+        collateralAmount:
+          depositAmount ||
+          (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : new BigNumber(0)),
+        daiAmount:
+          generateAmount ||
+          (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : new BigNumber(0)),
+      },
+    })),
+    distinctUntilChanged(isEqual),
+  )
+
+  const manageVaultConfirmTransaction: Observable<ManageVaultConfirmTransaction> = manageVaultState$.pipe(
+    filter((state) => state.stage === 'manageInProgress'),
+    map(
+      ({
+        vault: { ilk },
+        depositAmount,
+        withdrawAmount,
+        generateAmount,
+        paybackAmount,
+        manageTxHash,
+      }) => ({
+        kind: 'manageVaultConfirmTransaction',
+        value: {
+          ilk: ilk,
+          collateralAmount:
+            depositAmount ||
+            (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : new BigNumber(0)),
+          daiAmount:
+            generateAmount ||
+            (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : new BigNumber(0)),
+          txHash: manageTxHash,
+        },
+      }),
+    ),
+    distinctUntilChanged(isEqual),
+  )
+
   return stageChanges
     .pipe(
       switchMap((stage) =>
         merge(
-          depositAmountChanges,
-          generateAmountChanges,
-          patbackAmountChanges,
-          withdrawAmountChanges,
-          collateralAllowanceChanges,
-          daiAllowanceChanges,
+          merge(
+            depositAmountChanges,
+            generateAmountChanges,
+            paybackAmountChanges,
+            withdrawAmountChanges,
+            collateralAllowanceChanges,
+            daiAllowanceChanges,
+          ),
+          merge(manageVaultConfirm, manageVaultConfirmTransaction),
         ).pipe(
           tap((event) => {
             const page = stage === 'daiEditing' ? Pages.ManageDai : Pages.ManageCollateral
@@ -182,6 +248,21 @@ export function createManageVaultAnalytics$(
                 tracker.manageDaiPickAllowance(
                   event.value.type.toString(),
                   event.value.amount.toString(),
+                )
+                break
+              case 'manageVaultConfirm':
+                tracker.manageVaultConfirm(
+                  event.value.ilk,
+                  event.value.collateralAmount.toString(),
+                  event.value.daiAmount.toString(),
+                )
+                break
+              case 'manageVaultConfirmTransaction':
+                tracker.manageVaultConfirmTransaction(
+                  event.value.ilk,
+                  event.value.collateralAmount.toString(),
+                  event.value.daiAmount.toString(),
+                  event.value.txHash,
                 )
                 break
               default:
