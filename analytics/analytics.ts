@@ -25,7 +25,6 @@ export enum Pages {
   VaultsOverview = 'VaultsOverview',
   ManageCollateral = 'ManageCollateral',
   ManageDai = 'ManageDai',
-  ManageVault = 'ManageVault',
 }
 
 export const trackingEvents = {
@@ -68,48 +67,55 @@ export const trackingEvents = {
     })
   },
 
-  createVaultDeposit: (amount: string) => {
+  createVaultDeposit: (firstCDP: boolean, amount: string) => {
     mixpanel.track('input-change', {
       id: 'Deposit',
       product,
+      firstCDP,
       amount,
       page: Pages.VaultCreate,
       section: 'CreateVault',
     })
   },
 
-  createVaultGenerate: (amount: string) => {
+  createVaultGenerate: (firstCDP: boolean, amount: string) => {
     mixpanel.track('input-change', {
       id: 'Generate',
       product,
+      firstCDP,
       amount,
       page: Pages.VaultCreate,
       section: 'CreateVault',
     })
   },
 
-  createVaultSetupProxy: () => {
+  createVaultSetupProxy: (firstCDP: boolean, depositAmount: string, generateAmount: string) => {
     mixpanel.track('btn-click', {
       id: 'SetupProxy',
       product,
+      firstCDP,
+      depositAmount,
+      generateAmount,
       page: Pages.VaultCreate,
       section: 'Configure',
     })
   },
 
-  createProxy: () => {
+  createProxy: (firstCDP: boolean) => {
     mixpanel.track('btn-click', {
       id: 'CreateProxy',
       product,
+      firstCDP,
       page: Pages.VaultCreate,
       section: 'ProxyDeploy',
     })
   },
 
-  pickAllowance: (type: string, amount: string) => {
+  pickAllowance: (firstCDP: boolean, type: string, amount: string) => {
     mixpanel.track('input-change', {
       id: 'PickAllowance',
       product,
+      firstCDP,
       type,
       amount,
       page: Pages.VaultCreate,
@@ -117,28 +123,31 @@ export const trackingEvents = {
     })
   },
 
-  setTokenAllowance: () => {
+  setTokenAllowance: (firstCDP: boolean) => {
     mixpanel.track('btn-click', {
       id: 'SetAllowance',
       product,
+      firstCDP,
       page: Pages.VaultCreate,
       section: 'Configure',
     })
   },
 
-  approveAllowance: () => {
+  approveAllowance: (firstCDP: boolean) => {
     mixpanel.track('btn-click', {
       id: 'ApproveAllowance',
       product,
+      firstCDP,
       page: Pages.VaultCreate,
       section: 'Allowance',
     })
   },
 
-  createVaultConfirm: () => {
+  createVaultConfirm: (firstCDP: boolean) => {
     mixpanel.track('btn-click', {
       id: 'Confirm',
       product,
+      firstCDP,
       page: Pages.VaultCreate,
       section: 'CreateVault',
     })
@@ -182,10 +191,11 @@ export const trackingEvents = {
     })
   },
 
-  confirmVaultEdit: () => {
+  confirmVaultEdit: (firstCDP: boolean) => {
     mixpanel.track('btn-click', {
       id: 'EditVault',
       product,
+      firstCDP,
       page: Pages.VaultCreate,
       section: 'ConfirmVault',
     })
@@ -301,24 +311,30 @@ export const trackingEvents = {
     mixpanel.track('btn-click', {
       id: 'EditVault',
       product,
-      page: Pages.ManageVault,
       section: 'ConfirmVault',
     })
   },
 
-  manageVaultConfirm: (ilk: string, collateralAmount: string, daiAmount: string) => {
+  // Can we distinguish if went through collateral/daiEditing?
+  manageVaultConfirm: (
+    page: Pages.ManageCollateral | Pages.ManageDai,
+    ilk: string,
+    collateralAmount: string,
+    daiAmount: string,
+  ) => {
     mixpanel.track('btn-click', {
       id: 'Confirm',
       product,
       ilk,
       collateralAmount,
       daiAmount,
-      page: Pages.ManageVault,
+      page,
       section: 'ConfirmVault',
     })
   },
 
   manageVaultConfirmTransaction: (
+    page: Pages.ManageCollateral | Pages.ManageDai,
     ilk: string,
     collateralAmount: string,
     daiAmount: string,
@@ -331,7 +347,7 @@ export const trackingEvents = {
       collateralAmount,
       daiAmount,
       txHash,
-      page: Pages.ManageVault,
+      page,
       section: 'ConfirmVault',
     })
   },

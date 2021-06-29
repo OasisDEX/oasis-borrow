@@ -280,6 +280,7 @@ export function createManageVaultAnalytics$(
                 break
               case 'manageVaultConfirm':
                 tracker.manageVaultConfirm(
+                  page,
                   event.value.ilk,
                   event.value.collateralAmount.toString(),
                   event.value.daiAmount.toString(),
@@ -287,6 +288,7 @@ export function createManageVaultAnalytics$(
                 break
               case 'manageVaultConfirmTransaction':
                 tracker.manageVaultConfirmTransaction(
+                  page,
                   event.value.ilk,
                   event.value.collateralAmount.toString(),
                   event.value.daiAmount.toString(),
