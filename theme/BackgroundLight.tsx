@@ -1,5 +1,5 @@
 import React from 'react'
-import {Box, SxStyleProp} from 'theme-ui'
+import { Box } from 'theme-ui'
 
 import { fadeOut } from './keyframes'
 
@@ -7,7 +7,7 @@ const pathTransform: React.CSSProperties = {
   transform: 'scale(1, -1) translateY(-60%)',
 }
 
-export function BackgroundLight({ sx }: { sx?: SxStyleProp }) {
+export function BackgroundLight() {
   return (
     <Box
       sx={{
@@ -41,7 +41,6 @@ export function BackgroundLight({ sx }: { sx?: SxStyleProp }) {
           background: 'white',
           opacity: 0.3,
         },
-        ...sx
       }}
     >
       <Box

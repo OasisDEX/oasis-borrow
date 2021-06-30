@@ -7,6 +7,7 @@ import React from 'react'
 import { Container, Flex, SxStyleProp } from 'theme-ui'
 import { Background } from 'theme/Background'
 import { BackgroundLight } from 'theme/BackgroundLight'
+import { BackgroundLighter } from 'theme/BackgroundLighter'
 
 interface BasicLayoutProps extends WithChildren {
   header: JSX.Element
@@ -56,7 +57,7 @@ export function AppLayout({ children }: WithChildren) {
 const marketingBackgrounds = {
   'default': <Background />,
   'light': <BackgroundLight />,
-  'lighter': <BackgroundLight sx={{opacity: 0.5}} />,
+  'lighter': <BackgroundLighter />,
   'none': null,
 }
 
