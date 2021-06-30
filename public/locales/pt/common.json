@@ -25,6 +25,15 @@
   "buy": "Comprar",
   "buy-dai": "Compre Dai",
   "buy-with": "Comprar {{token}} com {{onramp}}",
+  "careers": {
+    "heading": "Open Roles",
+    "intro": "We believe in talent. Join us to build the next generation of DeFi.",
+    "cta-button": "Apply",
+    "back-link": "Back to Careers",
+    "no-open-positions": "There are currently no roles available at this time, but we are always looking for the best talents to join us.",
+    "no-positions-you-like": "You haven't found something that you like? Show us your interest, we are always looking for the best talents to join us!",
+    "write-us": "Send us your CV to "
+  },
   "change-locale": "Alterar localidade",
   "choose-provider": "Escolha um provedor",
   "close": "Fechar",
@@ -350,6 +359,14 @@
     "dai": {
       "title": "Dai",
       "description": "Uma breve introdução ao Dai, uma forma mais inteligente de moeda digital"
+    },
+    "careers": {
+      "title": "Careers",
+      "description": "We believe in talent. Join us to build the next generation of DeFi."
+    },
+    "about": {
+      "title": "About Us",
+      "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital."
     }
   }
 }
