@@ -290,7 +290,7 @@ export function LandingView() {
                 noResults={<Box>{t('no-results')}</Box>}
                 deriveRowProps={(row) => ({
                   href: row.ilkDebtAvailable.isZero() ? undefined : `/vaults/open/${row.ilk}`,
-                  onClick: () => trackingEvents.openVault(Pages.OpenVaultOverview, row.ilk),
+                  onClick: () => trackingEvents.openVault(Pages.LandingPage, row.ilk),
                 })}
               />
             </Box>
