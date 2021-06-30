@@ -3,7 +3,7 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected, every5Seconds$ } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
-import { Quote } from 'features/exchange/exchange'
+import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
@@ -17,9 +17,16 @@ import {
   scan,
   shareReplay,
   switchMap,
+  take,
 } from 'rxjs/operators'
 
-import { applyExchange, applyQuote, ExchangeQuoteChanges, SLIPPAGE } from './openMultiplyQuote'
+import {
+  applyExchange,
+  applyQuote,
+  ExchangeQuoteChanges,
+  quoteToChange,
+  SLIPPAGE,
+} from './openMultiplyQuote'
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openMultiplyVaultAllowances'
 import {
   applyOpenVaultCalculations,
@@ -283,7 +290,12 @@ export function createOpenMultiplyVault$(
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilks$: Observable<string[]>,
   ilkData$: (ilk: string) => Observable<IlkData>,
-  exchangeQuote$: any,
+  exchangeQuote$: (
+    token: string,
+    slippage: BigNumber,
+    amount: BigNumber,
+    action: ExchangeAction,
+  ) => Observable<Quote>,
   ilk: string,
 ): Observable<OpenMultiplyVaultState> {
   return ilks$.pipe(
@@ -367,6 +379,10 @@ export function createOpenMultiplyVault$(
                           every5Seconds$.pipe(switchMap(() => applyQuote(exchangeQuote$, state))),
                         ),
                       )
+                      .subscribe(change)
+
+                    exchangeQuote$(token, SLIPPAGE, new BigNumber(10), 'BUY')
+                      .pipe(map(quoteToChange), take(1))
                       .subscribe(change)
 
                     return state$

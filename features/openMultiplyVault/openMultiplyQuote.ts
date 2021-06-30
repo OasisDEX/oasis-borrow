@@ -39,6 +39,12 @@ export function applyExchange(change: OpenMultiplyVaultChange, state: OpenMultip
 }
 
 export const SLIPPAGE = new BigNumber(0.05)
+
+export function quoteToChange(quote: Quote) {
+  return quote.status === 'SUCCESS'
+    ? { kind: 'quote' as const, quote }
+    : { kind: 'quoteError' as const }
+}
 export function applyQuote(
   exchangeQuote$: (
     token: string,
@@ -50,9 +56,7 @@ export function applyQuote(
 ): Observable<ExchangeQuoteChanges> {
   if (state.buyingCollateral.gt(0)) {
     return exchangeQuote$(state.token, state.slippage, state.buyingCollateral, 'BUY').pipe(
-      map((quote) =>
-        quote.status === 'SUCCESS' ? { kind: 'quote', quote } : { kind: 'quoteError' },
-      ),
+      map(quoteToChange),
     )
   }
   return state.quote === undefined ? EMPTY : of({ kind: 'quoteReset' })
