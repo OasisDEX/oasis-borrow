@@ -83,6 +83,8 @@ export function AppHeader() {
   const context = useObservable(context$)
 
   const numberOfVaults = accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : 0
+  const firstCDP = numberOfVaults === 0
+
   return (
     <BasicHeader
       sx={{
@@ -101,7 +103,7 @@ export function AppHeader() {
               variant="nav"
               sx={{ mr: 4 }}
               href={`/owner/${context.account}`}
-              onClick={() => trackingEvents.yourVaults(numberOfVaults)}
+              onClick={() => trackingEvents.yourVaults()}
             >
               {t('your-vaults')} {numberOfVaults > 0 && `(${numberOfVaults})`}
             </AppLink>
@@ -109,7 +111,7 @@ export function AppHeader() {
               variant="nav"
               sx={{ mr: [0, 4, 4] }}
               href="/vaults/list"
-              onClick={() => trackingEvents.createNewVault()}
+              onClick={() => trackingEvents.createNewVault(firstCDP)}
             >
               {t('open-new-vault')}
             </AppLink>
