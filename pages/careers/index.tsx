@@ -17,7 +17,7 @@ export default function CareersPage({ careers }: { careers: Career[] }) {
   return (
     <Box sx={{ width: '100%', pb: 6, mt: 5 }}>
       <Heading
-        variant="largeHeadingPolar"
+        variant="header1-5"
         sx={{
           textAlign: 'center',
           mb: 4,
@@ -143,6 +143,7 @@ CareersPage.seoTags = (
 )
 CareersPage.layoutProps = {
   topBackground: 'lighter',
+  variant: 'marketingSmallContainer',
 }
 
 export const getStaticProps = async ({ locale }: { locale: string }) => {

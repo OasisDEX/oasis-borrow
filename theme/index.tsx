@@ -770,6 +770,11 @@ const oasisBaseTheme = {
       fontSize: 8,
       color: 'primary',
     },
+    "header1-5": {
+      variant: 'text.header1',
+      fontSize: '40px',
+      fontWeight: 'heading',
+    },
     header2: {
       fontFamily: 'heading',
       fontWeight: 'heading',
@@ -832,6 +837,11 @@ const oasisBaseTheme = {
       variant: 'text.paragraph2',
       fontWeight: 'semiBold',
     },
+    light: {
+      color: 'lavender',
+      fontSize: 4,
+      lineHeight: 'body',
+    }
   },
   borders: {
     light: '1px solid #787a9b40',
@@ -872,6 +882,10 @@ const oasisBaseTheme = {
     },
     marketingContainer: {
       variant: 'layout.appContainer',
+    },
+    marketingSmallContainer: {
+      variant: 'layout.appContainer',
+      maxWidth: '804px',
     },
     landingContainer: {
       variant: 'layout.appContainer',
