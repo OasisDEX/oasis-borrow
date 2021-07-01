@@ -7,7 +7,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Button, Flex, Grid, Heading, Link, SxStyleProp, Text } from 'theme-ui'
 
-import { PageSEOTags } from '../../components/HeadTags'
+import { PageSEOTags } from 'components/HeadTags'
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 
 export default function CareersPage({ careers }: { careers: Career[] }) {
@@ -47,18 +47,15 @@ export default function CareersPage({ careers }: { careers: Career[] }) {
                       justifyContent: 'space-between',
                       alignItems: 'center',
                       backgroundColor: 'background',
-                      boxShadow: '0px 0px 2px rgba(0, 0, 0, 0.2)',
+                      boxShadow: 'table',
                       borderRadius: 8,
                       p: 3,
                       color: 'primary',
-                      transition: 'transform 0.2s ease-in-out 0s, box-shadow 0.2s ease-in-out 0s',
-                      ':hover': {
-                        boxShadow: 'rgb(0 0 0 / 15%) 0px 0px 10px',
-                        transform: 'scaleX(0.99)',
-                        '.apply-btn': {
-                          bg: '#EEE',
-                        },
-                      },
+                      transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+                      '&:hover': {
+                        boxShadow: ['table', 'table_hovered'],
+                        transform: ['none', 'scaleX(0.99)'],
+                      }
                     }}
                   >
                     <Text sx={{ fontWeight: '600', width: '35%' }}>{career.title}</Text>
@@ -66,18 +63,8 @@ export default function CareersPage({ careers }: { careers: Career[] }) {
                       <Text>{career.location}</Text>
                     </Box>
                     <Button
-                      className="apply-btn"
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        bg: '#F6F6F6',
-                        color: 'link',
-                        fontSize: 2,
-                        fontWeight: '600',
-                        transition: 'background-color 0.2s ease-in-out 0s',
-                        py: 2,
-                        whiteSpace: 'nowrap',
-                      }}
+                      sx={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap'}}
+                      variant="secondary"
                     >
                       {t('careers.cta-button')}{' '}
                       <Icon name="arrow_right" size="12px" sx={{ ml: 1 }} />
