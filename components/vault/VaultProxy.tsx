@@ -1,7 +1,6 @@
 import { CommonVaultState } from 'helpers/types'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Grid } from 'theme-ui'
 
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
