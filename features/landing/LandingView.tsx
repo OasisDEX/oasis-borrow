@@ -132,7 +132,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
       }}
     >
       <WelcomeAnnouncement />
-      <Heading as="h1" variant="header2" sx={{ fontSize: 40, mb: 3 }}>
+      <Heading as="h1" variant="header1s" sx={{ mb: 3 }}>
         {t('landing.hero.headline')}
       </Heading>
       <Text variant="paragraph1" sx={{ mb: 4, color: 'lavender' }}>

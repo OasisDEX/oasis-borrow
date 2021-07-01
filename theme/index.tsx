@@ -740,6 +740,7 @@ const oasisBaseTheme = {
     heading: '"FT Polar Trial", "Helvetica Neue", sans-serif',
     monospace: 'monospace',
   },
+  //           0   1   2   3   4   5   6   7   8   9  10
   fontSizes: [10, 12, 14, 16, 18, 20, 24, 32, 52, 64, 96],
   fontWeights: {
     body: 400,
@@ -770,10 +771,9 @@ const oasisBaseTheme = {
       fontSize: 8,
       color: 'primary',
     },
-    "header1-5": {
-      variant: 'text.header1',
+    header1s: {
+      variant: 'text.header2',
       fontSize: '40px',
-      fontWeight: 'heading',
     },
     header2: {
       fontFamily: 'heading',

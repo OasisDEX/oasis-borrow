@@ -17,7 +17,7 @@ export default function CareersPage({ careers }: { careers: Career[] }) {
   return (
     <Box sx={{ width: '100%', pb: 6, mt: 5 }}>
       <Heading
-        variant="header1-5"
+        variant="header1s"
         sx={{
           textAlign: 'center',
           mb: 4,
@@ -31,7 +31,7 @@ export default function CareersPage({ careers }: { careers: Career[] }) {
           {Object.entries(careersByArea).map(([area, careers]) => (
             <Box key={area} sx={{ mt: 5 }}>
               <Flex sx={{ mb: 4, pl: 1 }}>
-                <Heading variant="headingPolar">{area}</Heading>
+                <Heading variant="header2">{area}</Heading>
                 <RoleCount
                   count={careers.length}
                   sx={{ ml: 2, position: 'relative', top: '12px' }}
