@@ -1,6 +1,7 @@
 /* eslint-disable func-style */
 
 import BigNumber from 'bignumber.js'
+import { expect } from 'chai'
 import { protoTxHelpers } from 'components/AppContext'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { mockBalanceInfo$, MockBalanceInfoProps } from 'helpers/mocks/balanceInfo.mock'
@@ -87,7 +88,7 @@ function mockOpenMultiplyVault({
 describe('open multiply vault', () => {
   beforeEach(() => {})
 
-  it.only('should return vaultId', () => {
+  it('should return vaultId', () => {
     const multiplyVault$ = mockOpenMultiplyVault({
       priceInfo: {
         collateralPrice: new BigNumber(2000),
@@ -102,17 +103,16 @@ describe('open multiply vault', () => {
     const state = getStateUnpacker(multiplyVault$)
 
     state().updateDeposit!(new BigNumber(10))
-    state().updateMultiply!(new BigNumber(50))
+    state().updateMultiply!(new BigNumber(0))
 
     const stateSnap = state()
-
-    const x = stateSnap.afterCollateralizationRatio.toString()
 
     console.log(stateSnap.afterCollateralizationRatio.toString(), 'COLL RATIO')
     console.log(stateSnap.afterOutstandingDebt.toString(), 'DEBT')
     console.log(stateSnap.buyingCollateral.toString(), 'BUYING COLLATERAL')
     console.log(stateSnap.multiply?.toString(), 'MULTIPLY')
+    console.log(stateSnap.slider?.toString(), 'slider')
 
-    return undefined
+    expect(true).to.eq(false)
   })
 })
