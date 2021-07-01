@@ -117,7 +117,9 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
               background: sliderBackground,
             }}
             disabled={!canAdjustRisk}
-            step={2}
+            step={5}
+            min={0}
+            max={100}
             value={slider?.toNumber() || 0}
             onChange={(e) => {
               updateMultiply && updateMultiply(new BigNumber(e.target.value))

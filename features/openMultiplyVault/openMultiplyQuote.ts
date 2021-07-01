@@ -59,5 +59,6 @@ export function applyQuote(
       map(quoteToChange),
     )
   }
+  return EMPTY
   return state.quote === undefined ? EMPTY : of({ kind: 'quoteReset' })
 }
