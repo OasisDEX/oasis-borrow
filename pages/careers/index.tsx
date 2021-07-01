@@ -58,9 +58,9 @@ export default function CareersPage({ careers }: { careers: Career[] }) {
                       }
                     }}
                   >
-                    <Text sx={{ fontWeight: '600', width: '35%' }}>{career.title}</Text>
+                    <Text variant="paragraph2" sx={{ fontWeight: '600', width: '35%' }}>{career.title}</Text>
                     <Box sx={{ pr: [0, '12.5%', '12.5%'] }}>
-                      <Text>{career.location}</Text>
+                      <Text variant="paragraph2">{career.location}</Text>
                     </Box>
                     <Button
                       sx={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap'}}
