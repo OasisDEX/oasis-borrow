@@ -119,14 +119,6 @@ function collRatioToSlider(
   return requiredCollRatio.minus(maxCollRatio).div(liquidationRatio.minus(maxCollRatio))
 }
 
-function logStore(store: any) {
-  Object.entries(store).map(([key, value]) =>
-    typeof value === 'function'
-      ? {}
-      : console.log(key, BigNumber.isBigNumber(value) ? value.toString() : value),
-  )
-}
-
 export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
   const {
     depositAmount,
@@ -229,6 +221,12 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
   const afterBuyingPower = marketPriceMaxSlippage
     ? afterBuyingPowerUSD.div(marketPriceMaxSlippage)
     : zero
+
+  console.log('*********************************************')
+  console.log('coll ratio', afterCollateralizationRatio.toString())
+  console.log('debt', afterOutstandingDebt.toString())
+  console.log('oracle price', oraclePrice.toString())
+  console.log('market price', marketPriceMaxSlippage?.toString())
 
   return {
     ...state,

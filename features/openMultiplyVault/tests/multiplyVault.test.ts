@@ -61,12 +61,14 @@ function mockOpenMultiplyVault({
   ilks = ['ETH-A'],
   allowance = new BigNumber(0),
   ilkData = {},
+  exchangeQuote = {},
 }: {
   priceInfo?: MockPriceInfoProps
   balanceInfo?: MockBalanceInfoProps
   ilks?: string[]
   allowance?: BigNumber
   ilkData?: MockIlkDataProps
+  exchangeQuote?: MockExchangeQuote
 } = {}) {
   return createOpenMultiplyVault$(
     of(mockContextConnected),
@@ -77,7 +79,7 @@ function mockOpenMultiplyVault({
     () => mockBalanceInfo$(balanceInfo),
     of(ilks),
     () => mockIlkData$(ilkData),
-    mockExchangeQuote$({}),
+    mockExchangeQuote$(exchangeQuote),
     'ETH-A',
   )
 }
@@ -85,19 +87,32 @@ function mockOpenMultiplyVault({
 describe('open multiply vault', () => {
   beforeEach(() => {})
 
-  describe('parseVaultIdFromReceiptLogs', () => {
-    it.only('should return vaultId', () => {
-      const multiplyVault$ = mockOpenMultiplyVault()
-      const state = getStateUnpacker(multiplyVault$)
-
-      state().updateDeposit!(new BigNumber(10))
-      state().updateMultiply!(new BigNumber(50))
-
-      const stateSnap = state()
-
-      const x = stateSnap.afterCollateralizationRatio.toString()
-
-      console.log(state())
+  it.only('should return vaultId', () => {
+    const multiplyVault$ = mockOpenMultiplyVault({
+      priceInfo: {
+        collateralPrice: new BigNumber(2000),
+      },
+      exchangeQuote: {
+        marketPrice: new BigNumber(2100),
+      },
+      ilkData: {
+        debtFloor: new BigNumber(5000),
+      },
     })
+    const state = getStateUnpacker(multiplyVault$)
+
+    state().updateDeposit!(new BigNumber(10))
+    state().updateMultiply!(new BigNumber(50))
+
+    const stateSnap = state()
+
+    const x = stateSnap.afterCollateralizationRatio.toString()
+
+    console.log(stateSnap.afterCollateralizationRatio.toString(), 'COLL RATIO')
+    console.log(stateSnap.afterOutstandingDebt.toString(), 'DEBT')
+    console.log(stateSnap.buyingCollateral.toString(), 'BUYING COLLATERAL')
+    console.log(stateSnap.multiply?.toString(), 'MULTIPLY')
+
+    return undefined
   })
 })
