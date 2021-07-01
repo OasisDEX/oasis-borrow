@@ -125,6 +125,7 @@ export function createManageVaultAnalytics$(
     ManageVaultState,
     'selectedCollateralAllowanceRadio'
   >> = manageVaultState$.pipe(
+    filter((state) => state.stage === 'collateralAllowanceWaitingForConfirmation'),
     map((state) => state.selectedCollateralAllowanceRadio),
     distinctUntilChanged(isEqual),
   )
@@ -151,9 +152,10 @@ export function createManageVaultAnalytics$(
 
   const daiAllowanceTypeChanges: Observable<Pick<
     ManageVaultState,
-    'selectedCollateralAllowanceRadio'
+    'selectedDaiAllowanceRadio'
   >> = manageVaultState$.pipe(
-    map((state) => state.selectedCollateralAllowanceRadio),
+    filter((state) => state.stage === 'daiAllowanceWaitingForConfirmation'),
+    map((state) => state.selectedDaiAllowanceRadio),
     distinctUntilChanged(isEqual),
   )
 

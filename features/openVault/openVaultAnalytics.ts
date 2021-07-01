@@ -51,7 +51,7 @@ export function createOpenVaultAnalytics$(
 ) {
   return accountDetails$.pipe(
     switchMap(({ numberOfVaults }) => {
-      const firstCDP = numberOfVaults ? numberOfVaults === 0 : true
+      const firstCDP = numberOfVaults ? numberOfVaults === 0 : undefined
 
       const depositAmountChanges: Observable<DepositAmountChange> = openVaultState$.pipe(
         map((state) => state.depositAmount),
@@ -79,6 +79,7 @@ export function createOpenVaultAnalytics$(
         MutableOpenVaultState,
         'selectedAllowanceRadio'
       >> = openVaultState$.pipe(
+        filter((state) => state.stage === 'allowanceWaitingForConfirmation'),
         map((state) => state.selectedAllowanceRadio),
         distinctUntilChanged(isEqual),
       )

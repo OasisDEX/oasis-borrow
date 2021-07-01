@@ -6,7 +6,7 @@ let mixpanel: MixpanelType = mixpanelBrowser
 
 const env = getConfig()?.publicRuntimeConfig.mixpanelEnv || process.env.MIXPANEL_ENV
 
-if (env !== 'production') {
+if (env !== 'production' && env !== 'staging') {
   mixpanel = {
     track: function (eventType: string, payload: any) {
       console.info('Mixpanel Event: ', eventType, payload)
@@ -67,7 +67,7 @@ export const trackingEvents = {
     })
   },
 
-  createVaultDeposit: (firstCDP: boolean, amount: string) => {
+  createVaultDeposit: (firstCDP: boolean | undefined, amount: string) => {
     mixpanel.track('input-change', {
       id: 'Deposit',
       product,
@@ -78,7 +78,7 @@ export const trackingEvents = {
     })
   },
 
-  createVaultGenerate: (firstCDP: boolean, amount: string) => {
+  createVaultGenerate: (firstCDP: boolean | undefined, amount: string) => {
     mixpanel.track('input-change', {
       id: 'Generate',
       product,
@@ -89,7 +89,11 @@ export const trackingEvents = {
     })
   },
 
-  createVaultSetupProxy: (firstCDP: boolean, depositAmount: string, generateAmount: string) => {
+  createVaultSetupProxy: (
+    firstCDP: boolean | undefined,
+    depositAmount: string,
+    generateAmount: string,
+  ) => {
     mixpanel.track('btn-click', {
       id: 'SetupProxy',
       product,
@@ -101,7 +105,7 @@ export const trackingEvents = {
     })
   },
 
-  createProxy: (firstCDP: boolean) => {
+  createProxy: (firstCDP: boolean | undefined) => {
     mixpanel.track('btn-click', {
       id: 'CreateProxy',
       product,
@@ -111,7 +115,7 @@ export const trackingEvents = {
     })
   },
 
-  pickAllowance: (firstCDP: boolean, type: string, amount: string) => {
+  pickAllowance: (firstCDP: boolean | undefined, type: string, amount: string) => {
     mixpanel.track('input-change', {
       id: 'PickAllowance',
       product,
@@ -123,7 +127,7 @@ export const trackingEvents = {
     })
   },
 
-  setTokenAllowance: (firstCDP: boolean) => {
+  setTokenAllowance: (firstCDP: boolean | undefined) => {
     mixpanel.track('btn-click', {
       id: 'SetAllowance',
       product,
@@ -133,7 +137,7 @@ export const trackingEvents = {
     })
   },
 
-  approveAllowance: (firstCDP: boolean) => {
+  approveAllowance: (firstCDP: boolean | undefined) => {
     mixpanel.track('btn-click', {
       id: 'ApproveAllowance',
       product,
@@ -143,7 +147,7 @@ export const trackingEvents = {
     })
   },
 
-  createVaultConfirm: (firstCDP: boolean) => {
+  createVaultConfirm: (firstCDP: boolean | undefined) => {
     mixpanel.track('btn-click', {
       id: 'Confirm',
       product,
@@ -157,7 +161,7 @@ export const trackingEvents = {
     ilk: string,
     collateralAmount: string,
     daiAmount: string,
-    firstCDP: boolean,
+    firstCDP: boolean | undefined,
   ) => {
     mixpanel.track('btn-click', {
       id: 'Confirm',
@@ -175,7 +179,7 @@ export const trackingEvents = {
     ilk: string,
     collateralAmount: string,
     daiAmount: string,
-    firstCDP: boolean,
+    firstCDP: boolean | undefined,
     txHash: string,
   ) => {
     mixpanel.track('btn-click', {
@@ -191,7 +195,7 @@ export const trackingEvents = {
     })
   },
 
-  confirmVaultEdit: (firstCDP: boolean) => {
+  confirmVaultEdit: (firstCDP: boolean | undefined) => {
     mixpanel.track('btn-click', {
       id: 'EditVault',
       product,
@@ -212,7 +216,7 @@ export const trackingEvents = {
     })
   },
 
-  createNewVault: (firstCDP: boolean) => {
+  createNewVault: (firstCDP: boolean | undefined) => {
     mixpanel.track('btn-click', {
       id: 'createNewVault',
       product,
