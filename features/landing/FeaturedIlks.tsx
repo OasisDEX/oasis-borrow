@@ -18,7 +18,7 @@ function CallToActionPlaceholder() {
       sx={{
         flex: 1,
         cursor: 'progress',
-        bg: 'ghost',
+        bg: 'backgroundAlt',
         borderRadius: 'large',
         p: 4,
         position: 'relative',

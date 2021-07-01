@@ -1,6 +1,7 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
+import { VaultFormHeaderSwitch } from 'components/vault/VaultFormHeader'
 import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -18,10 +19,19 @@ import { OpenVaultEditing } from './OpenVaultEditing'
 import { OpenVaultErrors } from './OpenVaultErrors'
 import { OpenVaultWarnings } from './OpenVaultWarnings'
 
-function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage, token }: OpenVaultState) {
+function OpenVaultTitle({
+  isEditingStage,
+  isProxyStage,
+  isAllowanceStage,
+  token,
+  ilk,
+}: OpenVaultState) {
   const { t } = useTranslation()
   return (
     <Box>
+      {isEditingStage ? (
+        <VaultFormHeaderSwitch href={`/vaults/open-multiply/${ilk}`} title="Switch to Multiply" />
+      ) : null}
       <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
         {isEditingStage
           ? t('vault-form.header.edit')

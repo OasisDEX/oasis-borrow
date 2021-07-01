@@ -3,7 +3,7 @@ import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Button, Flex, Spinner, Text } from 'theme-ui'
+import { Button, Divider, Flex, Spinner, Text } from 'theme-ui'
 
 import { OpenVaultState } from '../openVault'
 
@@ -136,19 +136,21 @@ export function OpenVaultButton(props: OpenVaultState) {
         )}
       </Button>
       {canRegress && (
-        <Button
-          variant="textual"
-          onClick={(e: React.SyntheticEvent<HTMLButtonElement>) => {
-            if (stage !== 'allowanceFailure') {
-              trackingEvents.confirmVaultEdit()
-            }
+        <>
+          <Divider variant="styles.hrVaultFormBottom" />
+          <Button
+            variant="textualSmall"
+            onClick={(e: React.SyntheticEvent<HTMLButtonElement>) => {
+              if (stage !== 'allowanceFailure') {
+                trackingEvents.confirmVaultEdit()
+              }
 
-            handleRegress(e)
-          }}
-          sx={{ fontSize: 3 }}
-        >
-          {secondaryButtonText}
-        </Button>
+              handleRegress(e)
+            }}
+          >
+            {secondaryButtonText}
+          </Button>
+        </>
       )}
     </>
   )

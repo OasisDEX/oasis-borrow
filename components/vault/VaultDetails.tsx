@@ -1,16 +1,32 @@
+import BigNumber from 'bignumber.js'
+import { getToken } from 'blockchain/tokensMetadata'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { CommonVaultState } from 'helpers/types'
+import { CommonVaultState, WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import React, { ReactNode } from 'react'
-import { Box, Card, Flex, Heading, Text } from 'theme-ui'
+import { useTranslation } from 'react-i18next'
+import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
-export function getCollRatioColor({
-  afterCollateralizationRatio,
-  vaultWillBeAtRiskLevelDanger,
-  vaultWillBeUnderCollateralized,
-  vaultWillBeAtRiskLevelWarning,
-}: CommonVaultState) {
-  const collRatioColor = afterCollateralizationRatio.isZero()
+export function getCollRatioColor(
+  { inputAmountsEmpty, ilkData }: CommonVaultState,
+  collateralizationRatio: BigNumber,
+) {
+  const vaultWillBeAtRiskLevelDanger =
+    !inputAmountsEmpty &&
+    collateralizationRatio.gte(ilkData.liquidationRatio) &&
+    collateralizationRatio.lte(ilkData.collateralizationDangerThreshold)
+
+  const vaultWillBeAtRiskLevelWarning =
+    !inputAmountsEmpty &&
+    collateralizationRatio.gt(ilkData.collateralizationDangerThreshold) &&
+    collateralizationRatio.lte(ilkData.collateralizationWarningThreshold)
+
+  const vaultWillBeUnderCollateralized =
+    !inputAmountsEmpty &&
+    collateralizationRatio.lt(ilkData.liquidationRatio) &&
+    !collateralizationRatio.isZero()
+
+  const collRatioColor = collateralizationRatio.isZero()
     ? 'primary'
     : vaultWillBeAtRiskLevelDanger || vaultWillBeUnderCollateralized
     ? 'onError'
@@ -90,5 +106,55 @@ export function VaultDetailsCardCurrentPrice(props: CommonVaultState) {
         )
       }
     />
+  )
+}
+
+export function VaultDetailsCardCollateralLocked({
+  depositAmountUSD,
+  depositAmount,
+  token,
+}: {
+  depositAmountUSD?: BigNumber
+  depositAmount?: BigNumber
+  token: string
+}) {
+  const { t } = useTranslation()
+
+  return (
+    <VaultDetailsCard
+      title={`${t('system.collateral-locked')}`}
+      value={`$${formatAmount(depositAmountUSD || zero, 'USD')}`}
+      valueBottom={
+        <>
+          {formatAmount(depositAmount || zero, getToken(token).symbol)}
+          <Text as="span" sx={{ color: 'text.subtitle' }}>
+            {` ${getToken(token).symbol}`}
+          </Text>
+        </>
+      }
+    />
+  )
+}
+
+export function VaultDetailsSummaryContainer({ children }: WithChildren) {
+  return (
+    <Card sx={{ borderRadius: 'large', border: 'lightMuted' }}>
+      <Grid columns={3} sx={{ py: 3, px: 2 }}>
+        {children}
+      </Grid>
+    </Card>
+  )
+}
+
+export function VaultDetailsSummaryItem({ label, value }: { label: ReactNode; value: ReactNode }) {
+  return (
+    <Grid gap={1}>
+      <Text variant="paragraph3" sx={{ color: 'text.subtitle', fontWeight: 'semiBold' }}>
+        {label}
+      </Text>
+      <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
+        {value}
+      </Text>
+    </Grid>
   )
 }

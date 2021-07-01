@@ -3,90 +3,70 @@ import { getToken } from 'blockchain/tokensMetadata'
 import {
   getCollRatioColor,
   VaultDetailsCard,
+  VaultDetailsCardCollateralLocked,
   VaultDetailsCardCurrentPrice,
+  VaultDetailsSummaryContainer,
+  VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
-import { Card, Grid, Text } from 'theme-ui'
+import React from 'react'
+import { Grid, Text } from 'theme-ui'
 
 import { OpenVaultState } from '../openVault'
 
-function VaultDetailsSummaryItem({ label, value }: { label: ReactNode; value: ReactNode }) {
-  return (
-    <Grid gap={1}>
-      <Text variant="paragraph3" sx={{ color: 'text.subtitle', fontWeight: 'semiBold' }}>
-        {label}
-      </Text>
-      <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
-        {value}
-      </Text>
-    </Grid>
-  )
-}
-
-export function VaultDetailsSummary({
+export function OpenVaultDetailsSummary({
   generateAmount,
   afterFreeCollateral,
   token,
   maxGenerateAmountCurrentPrice,
 }: OpenVaultState) {
   const { t } = useTranslation()
+  const { symbol } = getToken(token)
 
   return (
-    <Card sx={{ borderRadius: 'large', border: 'lightMuted' }}>
-      <Grid columns={3} sx={{ py: 3, px: 2 }}>
-        <VaultDetailsSummaryItem
-          label={t('system.vault-dai-debt')}
-          value={
-            <>
-              {formatAmount(generateAmount || zero, 'DAI')}
-              {` DAI`}
-            </>
-          }
-        />
-        <VaultDetailsSummaryItem
-          label={t('system.available-to-withdraw')}
-          value={
-            <>
-              {formatAmount(
-                afterFreeCollateral.isNegative() ? zero : afterFreeCollateral,
-                getToken(token).symbol,
-              )}
-              {` ${getToken(token).symbol}`}
-            </>
-          }
-        />
-        <VaultDetailsSummaryItem
-          label={t('system.available-to-generate')}
-          value={
-            <>
-              {formatAmount(maxGenerateAmountCurrentPrice, 'DAI')}
-              {` USD`}
-            </>
-          }
-        />
-      </Grid>
-    </Card>
+    <VaultDetailsSummaryContainer>
+      <VaultDetailsSummaryItem
+        label={t('system.vault-dai-debt')}
+        value={
+          <>
+            {formatAmount(generateAmount || zero, 'DAI')}
+            {` DAI`}
+          </>
+        }
+      />
+      <VaultDetailsSummaryItem
+        label={t('system.available-to-withdraw')}
+        value={
+          <>
+            {formatAmount(afterFreeCollateral.isNegative() ? zero : afterFreeCollateral, symbol)}
+            {` ${symbol}`}
+          </>
+        }
+      />
+      <VaultDetailsSummaryItem
+        label={t('system.available-to-generate')}
+        value={
+          <>
+            {formatAmount(maxGenerateAmountCurrentPrice, 'DAI')}
+            {` DAI`}
+          </>
+        }
+      />
+    </VaultDetailsSummaryContainer>
   )
 }
 
 export function OpenVaultDetails(props: OpenVaultState) {
-  const {
-    afterCollateralizationRatio,
-    afterLiquidationPrice,
-    token,
-    depositAmount,
-    depositAmountUSD,
-  } = props
-  const collRatioColor = getCollRatioColor(props)
+  const { afterCollateralizationRatio, afterLiquidationPrice } = props
+  const collRatioColor = getCollRatioColor(props, props.afterCollateralizationRatio)
 
   const { t } = useTranslation()
 
   return (
     <>
-      <Grid sx={{ alignSelf: 'flex-start' }} columns={[1, '1fr 1fr']} mb={3}>
+      <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCard
           title={`${t('system.liquidation-price')}`}
           value={`$${formatAmount(afterLiquidationPrice, 'USD')}`}
@@ -105,22 +85,9 @@ export function OpenVaultDetails(props: OpenVaultState) {
         />
 
         <VaultDetailsCardCurrentPrice {...props} />
-
-        {/* Collateral Locked */}
-        <VaultDetailsCard
-          title={`${t('system.collateral-locked')}`}
-          value={`$${depositAmountUSD ? formatAmount(depositAmountUSD, 'USD') : '--'}`}
-          valueBottom={
-            <>
-              {depositAmount ? formatAmount(depositAmount, getToken(token).symbol) : '--'}
-              <Text as="span" sx={{ color: 'text.subtitle' }}>
-                {` ${getToken(token).symbol}`}
-              </Text>
-            </>
-          }
-        />
+        <VaultDetailsCardCollateralLocked {...props} />
       </Grid>
-      <VaultDetailsSummary {...props} />
+      <OpenVaultDetailsSummary {...props} />
     </>
   )
 }

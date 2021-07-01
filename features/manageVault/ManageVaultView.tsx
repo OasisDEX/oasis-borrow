@@ -78,7 +78,7 @@ export function ManageVaultContainer(props: ManageVaultState) {
     <>
       <VaultHeader {...props} header={t('vault.header', { ilk, id })} id={id} />
       <Grid variant="vaultContainer">
-        <Box mb={6} sx={{ order: [3, 1] }}>
+        <Box mb={5} sx={{ order: [3, 1] }}>
           <ManageVaultDetails {...props} />
         </Box>
         <Divider sx={{ display: ['block', 'none'], order: [2, 0] }} />

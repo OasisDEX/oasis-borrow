@@ -57,14 +57,16 @@ const customIcons = {
     ),
     viewBox: '0 0 29 23',
   },
-  minus: {
+  arrow_right_light: {
     path: (
       <path
-        d="M3 10C3 9.44772 3.44772 9 4 9H16C16.5523 9 17 9.44772 17 10C17 10.5523 16.5523 11 16 11H4C3.44772 11 3 10.5523 3 10Z"
-        fill="currentColor"
+        d="M1 4.5H11M11 4.5L8 8M11 4.5L8 1"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     ),
-    viewBox: '0 0 20 20',
+    viewBox: '0 0 12 9',
   },
   wyre: {
     path: (
@@ -525,6 +527,37 @@ const customIcons = {
       <path d="M137,9.84A128.75,128.75,0,1,0,265.7,138.59,128.76,128.76,0,0,0,137,9.84Zm94.23,135.78H171.44a36.38,36.38,0,1,1,.28-12.66h59.46a6.33,6.33,0,0,1,0,12.66Z" />
     ),
   },
+  plus: {
+    path: (
+      <>
+        <rect x="9" y="6" width="2" height="8" rx="1" fill="currentColor" />
+        <rect
+          x="14"
+          y="9"
+          width="2"
+          height="8"
+          rx="1"
+          transform="rotate(90 14 9)"
+          fill="currentColor"
+        />
+      </>
+    ),
+    viewBox: '0 0 20 20',
+  },
+  minus: {
+    path: (
+      <rect
+        x="14"
+        y="9"
+        width="2"
+        height="8"
+        rx="1"
+        transform="rotate(90 14 9)"
+        fill="currentColor"
+      />
+    ),
+    viewBox: '0 0 20 20',
+  },
 }
 
 const customLandingIcons = {
@@ -712,12 +745,14 @@ const oasisBaseTheme = {
     primary: '#25273D',
     primaryAlt: '#D3D4D8',
     primaryEmphasis: '#626472',
+
     secondary: '#ECEFF9',
     secondaryAlt: '#F3F7F9',
-    background: '#FFFFFF',
+
+    background: '#FFF',
+    backgroundAlt: '#F1F3F4',
     surface: '#FFF',
 
-    ghost: '#F6F6F6',
     light: '#D1DEE6',
     lightIcon: '#BEC9D0',
     border: '#DDDEE6',
@@ -735,7 +770,7 @@ const oasisBaseTheme = {
     link: '#575CFE',
     textAlt: 'rgba(37, 39, 61, 0.67)',
     onBackground: '#9FAFB9',
-    onPrimary: '#FFFFFF',
+    onPrimary: '#FFF',
     onSurface: '#708390',
     muted: '#708390',
     mutedAlt: '#656F75',
@@ -892,6 +927,7 @@ const oasisBaseTheme = {
     table_hovered: '0px 0px 10px rgba(0, 0, 0, 0.15)',
     banner: '0px 0px 10px rgba(0, 0, 0, 0.1)',
     sliderThumb: '0px 1px 6px rgba(0, 0, 0, 0.15)',
+    vaultEditingController: '0px 1px 6px rgba(37, 39, 61, 0.15)',
   },
   gradients: {
     app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
@@ -1047,7 +1083,7 @@ const oasisBaseTheme = {
       whiteSpace: 'nowrap',
       cursor: 'pointer',
       fontWeight: 'semiBold',
-      bg: 'ghost',
+      bg: 'backgroundAlt',
       color: 'primary',
       borderRadius: 'round',
       px: 4,
@@ -1139,23 +1175,52 @@ const oasisBaseTheme = {
         outline: 'none',
       },
     },
+    textualSmall: {
+      variant: 'buttons.textual',
+      fontSize: 1,
+      color: 'primary',
+      py: 0,
+    },
     actionOption: {
       fontFamily: 'body',
+      width: '100%',
       display: 'flex',
+      justifyContent: 'center',
       alignItems: 'center',
       cursor: 'pointer',
-      fontSize: 2,
+      fontSize: 1,
       fontWeight: 'semiBold',
-      color: 'onSuccess',
+      color: 'primary',
       userSelect: 'none',
-      bg: 'transparent',
+      bg: 'backgroundAlt',
       px: 2,
-      borderRadius: 'mediumLarge',
+      py: 1,
+      borderRadius: 'round',
       lineHeight: 1.25,
       position: 'relative',
-      left: -2,
+    },
+    vaultEditingController: {
+      fontFamily: 'body',
+      fontSize: 3,
+      fontWeight: 'semiBold',
+      lineHeight: 'body',
+      bg: 'background',
+      p: 3,
+      color: 'primary',
+      boxShadow: 'vaultEditingController',
+      borderRadius: 'inherit',
+      cursor: 'pointer',
+    },
+    vaultEditingControllerInactive: {
+      fontFamily: 'body',
+      fontSize: 3,
+      fontWeight: 'semiBold',
+      bg: 'transparent',
+      color: 'text.subtitle',
+      cursor: 'ponter',
+      transition: TRANSITIONS.global,
       '&:hover': {
-        bg: 'ghost',
+        variant: 'buttons.vaultEditingController',
       },
     },
   },
@@ -1341,6 +1406,16 @@ const oasisBaseTheme = {
       gap: 5,
       gridTemplateColumns: ['1fr', '2fr minmax(465px, 1fr)'],
     },
+    vaultEditingControllerContainer: {
+      bg: 'backgroundAlt',
+      borderRadius: '2em',
+      gap: '0px',
+    },
+    vaultDetailsCardsContainer: {
+      gridTemplateColumns: ['1fr', '1fr 1fr'],
+      alignSelf: 'flex-start',
+      mb: 3,
+    },
   },
   styles: {
     root: {
@@ -1390,7 +1465,24 @@ const oasisBaseTheme = {
       color: 'link',
     },
     hr: {
-      borderColor: 'light',
+      borderBottom: 'lightMuted',
+      m: 0,
+    },
+    hrVaultFormBottom: {
+      borderBottom: 'lightMuted',
+      mb: -2,
+      position: 'relative',
+      width: 'calc(100% + 64px)',
+      left: -4,
+    },
+    hrVaultFormTop: {
+      borderBottom: 'lightMuted',
+      pt: 2,
+      mt: 3,
+      mb: 4,
+      position: 'relative',
+      width: 'calc(100% + 64px)',
+      left: -4,
     },
   },
 }

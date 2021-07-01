@@ -3,7 +3,7 @@ import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Flex, Spinner, Text } from 'theme-ui'
+import { Button, Divider, Flex, Spinner, Text } from 'theme-ui'
 
 import { OpenMultiplyVaultState } from '../openMultiplyVault'
 
@@ -137,17 +137,9 @@ export function OpenMultiplyVaultButton(props: OpenMultiplyVaultState) {
       </Button>
       {canRegress && (
         <>
-          <Box
-            sx={{
-              borderBottom: 'light',
-              mb: -2,
-              position: 'relative',
-              width: 'calc(100% + 64px)',
-              left: -4,
-            }}
-          />
+          <Divider variant="styles.hrVaultFormBottom" />
           <Button
-            variant="textual"
+            variant="textualSmall"
             onClick={(e: React.SyntheticEvent<HTMLButtonElement>) => {
               if (stage !== 'allowanceFailure') {
                 trackingEvents.confirmVaultEdit()
@@ -155,7 +147,6 @@ export function OpenMultiplyVaultButton(props: OpenMultiplyVaultState) {
 
               handleRegress(e)
             }}
-            sx={{ fontSize: 1, color: 'primary', py: 0 }}
           >
             {secondaryButtonText}
           </Button>

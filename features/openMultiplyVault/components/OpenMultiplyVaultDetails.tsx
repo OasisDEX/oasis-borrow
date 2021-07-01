@@ -14,7 +14,7 @@ import { OpenMultiplyVaultState } from '../openMultiplyVault'
 export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
   const { afterCollateralizationRatio, afterLiquidationPrice } = props
 
-  const collRatioColor = getCollRatioColor(props)
+  const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
   const { t } = useTranslation()
 

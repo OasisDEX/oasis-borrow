@@ -13,8 +13,9 @@ export function VaultProxyStatusCard({
   etherscan,
 }: CommonVaultState) {
   const { t } = useTranslation()
+
   return (
-    <Grid>
+    <>
       {stage === 'proxyInProgress' && (
         <TxStatusCardProgress
           etherscan={etherscan!}
@@ -35,6 +36,6 @@ export function VaultProxyStatusCard({
           txHash={proxyTxHash!}
         />
       )}
-    </Grid>
+    </>
   )
 }

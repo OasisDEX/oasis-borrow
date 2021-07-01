@@ -71,7 +71,7 @@ export function AccountButton() {
           transition: 'background 0.2s',
           '&:hover, &:focus ': {
             color: 'initial',
-            bg: 'ghost',
+            bg: 'backgroundAlt',
             '& svg': {
               left: '4px',
             },

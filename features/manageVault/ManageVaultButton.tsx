@@ -1,7 +1,7 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Button, Flex, Spinner, Text } from 'theme-ui'
+import { Button, Divider, Flex, Spinner, Text } from 'theme-ui'
 import { UnreachableCaseError } from 'ts-essentials'
 
 import { ManageVaultState } from './manageVault'
@@ -182,19 +182,21 @@ export function ManageVaultButton(props: ManageVaultState) {
         )}
       </Button>
       {canRegress && (
-        <Button
-          variant="textual"
-          onClick={(e: React.SyntheticEvent<HTMLButtonElement>) => {
-            if (stage !== 'daiAllowanceFailure' && stage !== 'collateralAllowanceFailure') {
-              trackingEvents.manageVaultConfirmVaultEdit()
-            }
+        <>
+          <Divider variant="styles.hrVaultFormBottom" />
+          <Button
+            variant="textualSmall"
+            onClick={(e: React.SyntheticEvent<HTMLButtonElement>) => {
+              if (stage !== 'daiAllowanceFailure' && stage !== 'collateralAllowanceFailure') {
+                trackingEvents.manageVaultConfirmVaultEdit()
+              }
 
-            handleRegress(e)
-          }}
-          sx={{ fontSize: 3 }}
-        >
-          {secondaryButtonText}
-        </Button>
+              handleRegress(e)
+            }}
+          >
+            {secondaryButtonText}
+          </Button>
+        </>
       )}
     </>
   )
