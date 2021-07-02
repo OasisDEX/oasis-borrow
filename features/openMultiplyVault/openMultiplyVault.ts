@@ -9,14 +9,7 @@ import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
-import {
-  first,
-  map,
-  scan,
-  shareReplay,
-  switchMap,
-  tap,
-} from 'rxjs/operators'
+import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import {
   applyExchange,
@@ -366,7 +359,6 @@ export function createOpenMultiplyVault$(
                       map(validateErrors),
                       map(validateWarnings),
                       map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
-                      tap((state) => stateSubject$.next(state)),
                     )
                   }),
                 ),

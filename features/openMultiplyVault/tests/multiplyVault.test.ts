@@ -86,35 +86,34 @@ function mockOpenMultiplyVault({
 }
 
 describe('open multiply vault', () => {
-  beforeEach(() => {})
-
-  describe('test', () => {
-    it.only('should return vaultId', () => {
-      const multiplyVault$ = mockOpenMultiplyVault({
-        priceInfo: {
-          collateralPrice: new BigNumber(2000),
-        },
-        exchangeQuote: {
-          marketPrice: new BigNumber(2100),
-        },
-        ilkData: {
-          debtFloor: new BigNumber(5000),
-        },
-      })
-      const state = getStateUnpacker(multiplyVault$)
-
-      state().updateDeposit!(new BigNumber(10))
-      state().updateMultiply!(new BigNumber(0))
-
-      const stateSnap = state()
-
-      console.log(stateSnap.afterCollateralizationRatio.toString(), 'COLL RATIO')
-      console.log(stateSnap.afterOutstandingDebt.toString(), 'DEBT')
-      console.log(stateSnap.buyingCollateral.toString(), 'BUYING COLLATERAL')
-      console.log(stateSnap.multiply?.toString(), 'MULTIPLY')
-      console.log(stateSnap.slider?.toString(), 'slider')
-
-      expect(true).to.eq(true)
+  it.only('should calculate vault state for minimum possible vault', () => {
+    const multiplyVault$ = mockOpenMultiplyVault({
+      priceInfo: {
+        collateralPrice: new BigNumber(2000),
+      },
+      exchangeQuote: {
+        marketPrice: new BigNumber(2100),
+      },
+      ilkData: {
+        debtFloor: new BigNumber(5000),
+        liquidationRatio: new BigNumber(1.5),
+      },
     })
+    const state = getStateUnpacker(multiplyVault$)
+
+    state().updateDeposit!(new BigNumber(10))
+    state().updateMultiply!(new BigNumber(0))
+
+    const stateSnap = state()
+
+    console.log(stateSnap.afterCollateralizationRatio.toString(), 'COLL RATIO')
+    console.log(stateSnap.afterOutstandingDebt.toString(), 'DEBT')
+    console.log(stateSnap.buyingCollateral.toString(), 'BUYING COLLATERAL')
+    console.log(stateSnap.multiply?.toString(), 'MULTIPLY')
+    console.log(stateSnap.slider?.toString(), 'slider')
+    console.log(stateSnap.maxPossibleCollRatio?.toString(), 'MAX POSSIBLE COLL RATIO')
+
+    expect(stateSnap.afterCollateralizationRatio.toString()).to.eq('4.85427074695091118707')
+    expect(stateSnap.multiply?.toString()).to.eq('1.25945245304603823488')
   })
 })

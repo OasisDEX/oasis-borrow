@@ -95,14 +95,6 @@ function getCollRatioByDebt(
     .div(marketPriceMaxSlippage.plus(marketPriceMaxSlippage.times(loanFee)))
 }
 
-function getTotalCollateralUSD(debt: BigNumber, collateralRatio: BigNumber) {
-  return debt.times(collateralRatio)
-}
-
-function getCollateralAmount(collateralUSD: BigNumber, collateralPrice: BigNumber) {
-  return collateralUSD.div(collateralPrice)
-}
-
 function sliderToCollRatio(
   maxCollRatio: BigNumber,
   liquidationRatio: BigNumber,
@@ -111,7 +103,7 @@ function sliderToCollRatio(
   return liquidationRatio.minus(maxCollRatio).times(slider).plus(maxCollRatio)
 }
 
-function collRatioToSlider(
+export function collRatioToSlider(
   maxCollRatio: BigNumber,
   liquidationRatio: BigNumber,
   requiredCollRatio: BigNumber,
@@ -221,12 +213,6 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
   const afterBuyingPower = marketPriceMaxSlippage
     ? afterBuyingPowerUSD.div(marketPriceMaxSlippage)
     : zero
-
-  console.log('*********************************************')
-  console.log('coll ratio', afterCollateralizationRatio.toString())
-  console.log('debt', afterOutstandingDebt.toString())
-  console.log('oracle price', oraclePrice.toString())
-  console.log('market price', marketPriceMaxSlippage?.toString())
 
   return {
     ...state,
