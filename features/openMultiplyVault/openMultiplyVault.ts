@@ -12,6 +12,7 @@ import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError }
 import {
   debounceTime,
   distinctUntilChanged,
+  filter,
   first,
   map,
   scan,
@@ -356,6 +357,10 @@ export function createOpenMultiplyVault$(
                       priceInfoChange$(priceInfo$, token),
                       balanceInfoChange$(balanceInfo$, token, account),
                       createIlkDataChange$(ilkData$, ilk),
+                      exchangeQuote$(token, SLIPPAGE, new BigNumber(0.01), 'BUY').pipe(
+                        map(quoteToChange),
+                        take(1),
+                      ),
                     )
 
                     const connectedProxyAddress$ = proxyAddress$(account)
@@ -367,13 +372,10 @@ export function createOpenMultiplyVault$(
                       map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
                     )
 
-                    exchangeQuote$(token, SLIPPAGE, new BigNumber(0.01), 'BUY')
-                      .pipe(map(quoteToChange), take(1))
-                      .subscribe(change)
-
                     return merge(
                       state$,
                       state$.pipe(
+                        filter((state) => state.depositAmount !== undefined),
                         distinctUntilChanged(
                           (s1, s2) =>
                             s1.token === s2.token &&
