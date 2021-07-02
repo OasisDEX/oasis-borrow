@@ -25,16 +25,16 @@ export default function CareerPage({ career }: { career: Career }) {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          color: 'link',
+          color: 'text.focused',
         }}
       >
         <Icon name="arrow_left" size="16px" sx={{ mr: 1 }} />
-        <Text variant="microHeading" sx={{ color: 'link', fontWeight: 600 }}>
+        <Text variant="paragraph2" sx={{ color: 'text.focused', fontWeight: 600 }}>
           {t('careers.back-link')}
         </Text>
       </AppLink>
       <Text
-        variant="headingPolar"
+        variant="header2"
         sx={{
           mt: 5,
           mb: 2,
@@ -42,11 +42,11 @@ export default function CareerPage({ career }: { career: Career }) {
       >
         {career.title}
       </Text>
-      <Text sx={{ mb: 5 }}>{career.location}</Text>
+      <Text sx={{ mb: 5, color: 'primary' }}>{career.location}</Text>
       <Box
         sx={{
           h2: {
-            variant: 'text.smallHeadingPolar',
+            variant: 'text.header3',
             mb: 3,
             mt: 5,
           },

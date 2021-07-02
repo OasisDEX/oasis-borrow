@@ -750,6 +750,7 @@ const oasisBaseTheme = {
   },
   lineHeights: {
     body: 1.5,
+    bodyLoose: 1.7,
     heading: 1.2,
     tight: 1.05,
     loose: 1.35,
@@ -840,7 +841,7 @@ const oasisBaseTheme = {
     light: {
       color: 'lavender',
       fontSize: 4,
-      lineHeight: 'body',
+      lineHeight: 'bodyLoose',
       a: {
         variant: 'text.paragraph1',
         color: 'text.focused'
