@@ -2,19 +2,20 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 // @ts-ignore
 import MDX from '@mdx-js/runtime'
-import { currentContent } from 'components/content'
+import { currentContent } from 'features/content'
 import {
   ContentNavigation,
   ContentQuestion,
   ContentTypeSupport,
-} from 'components/content/support/support'
+} from 'features/content/support/support'
 import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
-import { useTranslation } from 'i18n'
+import { useTranslation } from 'react-i18next'
 import React, { useState } from 'react'
 import { TRANSITIONS } from 'theme'
 import { Box, Flex, Heading } from 'theme-ui'
+import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 
 function Question({ question, answer }: ContentQuestion) {
   const [opened, setOpened] = useState(false)
@@ -109,6 +110,12 @@ function Navigation({ navigation }: { navigation: ContentNavigation[] }) {
   )
 }
 
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['common'])),
+  },
+})
+
 function SupportPage() {
   const {
     i18n: { language },
@@ -149,8 +156,8 @@ export default SupportPage
 SupportPage.layout = MarketingLayout
 SupportPage.layoutProps = {
   variant: 'termsContainer',
+  topBackground: 'none',
 }
-SupportPage.theme = 'Landing'
 SupportPage.seoTags = (
   <PageSEOTags title="seo.support.title" description="seo.support.description" url="/support" />
 )

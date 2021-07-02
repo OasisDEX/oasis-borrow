@@ -1,8 +1,9 @@
 import { content as tosContent } from './tos/tos'
 import { content as privacyContent } from './privacy/privacy'
+import { content as supportContent, ContentTypeSupport } from './support/support'
 
 export interface ContentType {
-  [key: string]: any
+  [key: string]: any | ContentTypeSupport
 }
 
 interface ContentVersioned {
@@ -13,6 +14,7 @@ interface ContentVersioned {
 export interface Content {
   tos: ContentVersioned
   privacy: ContentVersioned
+  support: ContentVersioned
 }
 
 const v1: Content = {
@@ -23,6 +25,10 @@ const v1: Content = {
   privacy: {
     version: 'ver-1.6.2021',
     content: privacyContent,
+  },
+  support: {
+    version: 'ver-4.11.2020',
+    content: supportContent,
   },
 }
 
