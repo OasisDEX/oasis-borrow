@@ -2,20 +2,20 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 // @ts-ignore
 import MDX from '@mdx-js/runtime'
+import { PageSEOTags } from 'components/HeadTags'
+import { MarketingLayout } from 'components/Layouts'
+import { AppLink } from 'components/Links'
 import { currentContent } from 'features/content'
 import {
   ContentNavigation,
   ContentQuestion,
   ContentTypeSupport,
 } from 'features/content/support/support'
-import { PageSEOTags } from 'components/HeadTags'
-import { MarketingLayout } from 'components/Layouts'
-import { AppLink } from 'components/Links'
-import { useTranslation } from 'react-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { TRANSITIONS } from 'theme'
-import { Box, Flex, Heading, Text } from 'theme-ui'
-import {serverSideTranslations} from "next-i18next/serverSideTranslations";
+import { Box, Flex, Heading } from 'theme-ui'
 
 function Question({ question, answer }: ContentQuestion) {
   const [opened, setOpened] = useState(false)
@@ -58,8 +58,8 @@ function Question({ question, answer }: ContentQuestion) {
               textDecoration: 'underline',
             },
             p: {
-              color: 'primary'
-            }
+              color: 'primary',
+            },
           }}
         >
           <MDX>{answer}</MDX>

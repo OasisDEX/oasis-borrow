@@ -55,13 +55,17 @@ export function AppLayout({ children }: WithChildren) {
 }
 
 const marketingBackgrounds = {
-  'default': <Background />,
-  'light': <BackgroundLight />,
-  'lighter': <BackgroundLighter />,
-  'none': null,
+  default: <Background />,
+  light: <BackgroundLight />,
+  lighter: <BackgroundLighter />,
+  none: null,
 }
 
-export function MarketingLayout({ children, variant, topBackground = 'default' }: MarketingLayoutProps) {
+export function MarketingLayout({
+  children,
+  variant,
+  topBackground = 'default',
+}: MarketingLayoutProps) {
   if (!isAppContextAvailable()) {
     return null
   }

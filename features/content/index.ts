@@ -1,6 +1,6 @@
-import { content as tosContent } from './tos/tos'
 import { content as privacyContent } from './privacy/privacy'
 import { content as supportContent, ContentTypeSupport } from './support/support'
+import { content as tosContent } from './tos/tos'
 
 export interface ContentType {
   [key: string]: any | ContentTypeSupport

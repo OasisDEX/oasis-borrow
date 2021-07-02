@@ -1,14 +1,13 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { getTeamPicsFileNames, parseMemberInfo, TeamMember } from 'features/about/about'
+import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
+import { getTeamPicsFileNames, parseMemberInfo, TeamMember } from 'features/about/about'
 import { sortBy } from 'lodash'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Grid, Heading, Image, Text } from 'theme-ui'
-
-import { PageSEOTags } from 'components/HeadTags'
-import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 
 export default function AboutPage({ members }: { members: TeamMember[] }) {
   const { t } = useTranslation()
@@ -27,7 +26,10 @@ export default function AboutPage({ members }: { members: TeamMember[] }) {
         </Heading>
         <Text variant="light">{t('about.description')}</Text>
       </Box>
-      <AppLink href="/careers" sx={{ color: 'text.focused', display: 'flex', alignItems: 'center', mt: 3 }}>
+      <AppLink
+        href="/careers"
+        sx={{ color: 'text.focused', display: 'flex', alignItems: 'center', mt: 3 }}
+      >
         <Text variant="paragraph1" sx={{ color: 'text.focused', fontWeight: 600 }}>
           {t('about.careers-link')}
         </Text>

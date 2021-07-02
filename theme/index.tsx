@@ -862,9 +862,9 @@ const oasisBaseTheme = {
       lineHeight: 'bodyLoose',
       a: {
         variant: 'text.paragraph1',
-        color: 'text.focused'
-      }
-    }
+        color: 'text.focused',
+      },
+    },
   },
   borders: {
     light: '1px solid #787a9b40',

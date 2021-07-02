@@ -1,14 +1,13 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Career, getCareerByFileName, getCareerFileNames } from 'features/careers/careers'
+import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
+import { Career, getCareerByFileName, getCareerFileNames } from 'features/careers/careers'
 import { groupBy } from 'lodash'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Button, Flex, Grid, Heading, Link, SxStyleProp, Text } from 'theme-ui'
-
-import { PageSEOTags } from 'components/HeadTags'
-import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 
 export default function CareersPage({ careers }: { careers: Career[] }) {
   const { t } = useTranslation()
@@ -55,15 +54,17 @@ export default function CareersPage({ careers }: { careers: Career[] }) {
                       '&:hover': {
                         boxShadow: ['table', 'table_hovered'],
                         transform: ['none', 'scaleX(0.99)'],
-                      }
+                      },
                     }}
                   >
-                    <Text variant="paragraph2" sx={{ fontWeight: '600', width: '35%' }}>{career.title}</Text>
+                    <Text variant="paragraph2" sx={{ fontWeight: '600', width: '35%' }}>
+                      {career.title}
+                    </Text>
                     <Box sx={{ pr: [0, '12.5%', '12.5%'] }}>
                       <Text variant="paragraph2">{career.location}</Text>
                     </Box>
                     <Button
-                      sx={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap'}}
+                      sx={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}
                       variant="secondary"
                     >
                       {t('careers.cta-button')}{' '}
@@ -81,11 +82,7 @@ export default function CareersPage({ careers }: { careers: Career[] }) {
           <Text variant="light">{t('careers.no-positions-you-like')}</Text>
           <br />
           <Text variant="light">
-            {t('careers.write-us')}{' '}
-            <Link href="mailto:work@oasis.app">
-              work@oasis.app
-            </Link>{' '}
-            .
+            {t('careers.write-us')} <Link href="mailto:work@oasis.app">work@oasis.app</Link> .
           </Text>
         </Box>
       ) : (
@@ -93,11 +90,7 @@ export default function CareersPage({ careers }: { careers: Career[] }) {
           <Text variant="light">{t('careers.no-open-positions')}</Text>
           <br />
           <Text variant="light">
-            {t('careers.write-us')}{' '}
-            <Link href="mailto:work@oasis.app">
-              work@oasis.app
-            </Link>{' '}
-            .
+            {t('careers.write-us')} <Link href="mailto:work@oasis.app">work@oasis.app</Link> .
           </Text>
         </Box>
       )}
@@ -141,5 +134,5 @@ export const getStaticProps = async ({ locale }: { locale: string }) => {
       careers,
       ...(await serverSideTranslations(locale, ['common'])),
     },
-  };
+  }
 }

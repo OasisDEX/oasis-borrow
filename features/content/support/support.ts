@@ -1,8 +1,8 @@
 import { ContentType } from '..'
+import { content as cn } from './cn'
 import { content as en } from './en'
 import { content as es } from './es'
 import { content as pt } from './pt'
-import { content as cn } from './cn'
 
 export type ContentSectionId = 'buying-dai' | 'saving-lending-dai' | 'using-oasis' | 'security'
 

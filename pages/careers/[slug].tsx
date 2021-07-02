@@ -1,18 +1,13 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import {
-  Career,
-  getCareerByFileName,
-  getCareerFileNames,
-  slugify,
-} from 'features/careers/careers'
+import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
+import { Career, getCareerByFileName, getCareerFileNames, slugify } from 'features/careers/careers'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import dynamic from 'next/dynamic'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Text } from 'theme-ui'
-import {PageSEOTags} from "components/HeadTags";
-import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 
 export default function CareerPage({ career }: { career: Career }) {
   const { t } = useTranslation()
@@ -53,8 +48,11 @@ export default function CareerPage({ career }: { career: Career }) {
           'p, ul': { variant: 'text.light', my: 2 },
           ul: { pl: 4 },
           li: { mb: 3 },
-          strong: { fontWeight: 400, color: 'primary', a: {
-            fontWeight: 600,
+          strong: {
+            fontWeight: 400,
+            color: 'primary',
+            a: {
+              fontWeight: 600,
             },
           },
         }}
@@ -74,7 +72,7 @@ CareerPage.layoutProps = {
   variant: 'marketingSmallContainer',
 }
 
-export async function getStaticProps({ params, locale }: {params: any, locale: string}) {
+export async function getStaticProps({ params, locale }: { params: any; locale: string }) {
   const career = await getCareerByFileName(`${params.slug}.mdx`)
 
   return {
