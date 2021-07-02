@@ -4,17 +4,19 @@ import {
   getCareerByFileName,
   getCareerFileNames,
   slugify,
-} from 'components/careers/careers'
-import { BorrowMarketingLayout } from 'components/Layouts'
+} from 'features/careers/careers'
+import { MarketingLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
 import dynamic from 'next/dynamic'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Text } from 'theme-ui'
+import {PageSEOTags} from "components/HeadTags";
+import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 
 export default function CareerPage({ career }: { career: Career }) {
   const { t } = useTranslation()
-  const Markdown = dynamic(() => import(`components/careers/listings/${career.slug}.mdx`))
+  const Markdown = dynamic(() => import(`features/careers/listings/${career.slug}.mdx`))
 
   return (
     <Box sx={{ width: '100%', mt: 4 }}>
@@ -61,15 +63,22 @@ export default function CareerPage({ career }: { career: Career }) {
   )
 }
 
-CareerPage.layout = BorrowMarketingLayout
-CareerPage.theme = 'Landing'
+CareerPage.layout = MarketingLayout
+CareerPage.seoTags = (
+  <PageSEOTags title="seo.careers.title" description="seo.careers.description" url="/careers" />
+)
+CareerPage.layoutProps = {
+  topBackground: 'lighter',
+  variant: 'marketingSmallContainer',
+}
 
-export async function getStaticProps({ params }: any) {
+export async function getStaticProps({ params, locale }: {params: any, locale: string}) {
   const career = await getCareerByFileName(`${params.slug}.mdx`)
 
   return {
     props: {
       career,
+      ...(await serverSideTranslations(locale, ['common'])),
     },
   }
 }
