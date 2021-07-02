@@ -1,32 +1,28 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
-import { ContextConnected, every5Seconds$ } from 'blockchain/network'
+import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
-import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
+import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
   first,
   map,
   scan,
   shareReplay,
   switchMap,
-  take,
   tap,
 } from 'rxjs/operators'
 
 import {
   applyExchange,
-  applyQuote,
+  createExchangeChange$,
+  createInitialQuoteChange,
   ExchangeQuoteChanges,
-  quoteToChange,
   SLIPPAGE,
 } from './openMultiplyQuote'
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openMultiplyVaultAllowances'
@@ -353,42 +349,24 @@ export function createOpenMultiplyVault$(
                       injectStateOverride,
                     }
 
+                    const stateSubject$ = new Subject<OpenMultiplyVaultState>()
+
                     const environmentChanges$ = merge(
                       priceInfoChange$(priceInfo$, token),
                       balanceInfoChange$(balanceInfo$, token, account),
                       createIlkDataChange$(ilkData$, ilk),
-                      exchangeQuote$(token, SLIPPAGE, new BigNumber(0.01), 'BUY').pipe(
-                        map(quoteToChange),
-                        take(1),
-                      ),
+                      createInitialQuoteChange(exchangeQuote$, token),
+                      createExchangeChange$(exchangeQuote$, stateSubject$),
                     )
 
                     const connectedProxyAddress$ = proxyAddress$(account)
 
-                    const state$ = merge(change$, environmentChanges$).pipe(
+                    return merge(change$, environmentChanges$).pipe(
                       scan(apply, initialState),
                       map(validateErrors),
                       map(validateWarnings),
                       map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
-                    )
-
-                    return merge(
-                      state$,
-                      state$.pipe(
-                        filter((state) => state.depositAmount !== undefined),
-                        distinctUntilChanged(
-                          (s1, s2) =>
-                            s1.token === s2.token &&
-                            s1.slippage.eq(s2.slippage) &&
-                            !!s1.depositAmount?.eq(s2.depositAmount || ''),
-                        ),
-                        debounceTime(500),
-                        switchMap((state) =>
-                          every5Seconds$.pipe(switchMap(() => applyQuote(exchangeQuote$, state))),
-                        ),
-                        tap(change),
-                        switchMap(() => EMPTY),
-                      ),
+                      tap((state) => stateSubject$.next(state)),
                     )
                   }),
                 ),

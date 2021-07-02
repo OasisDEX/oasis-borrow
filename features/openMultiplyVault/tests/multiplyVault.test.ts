@@ -85,38 +85,36 @@ function mockOpenMultiplyVault({
   )
 }
 
-function delay(t: number) {
-  return new Promise((resolve) => setTimeout(() => resolve(undefined), t))
-}
-
 describe('open multiply vault', () => {
   beforeEach(() => {})
 
-  it.only('should return vaultId', () => {
-    const multiplyVault$ = mockOpenMultiplyVault({
-      priceInfo: {
-        collateralPrice: new BigNumber(2000),
-      },
-      exchangeQuote: {
-        marketPrice: new BigNumber(2100),
-      },
-      ilkData: {
-        debtFloor: new BigNumber(5000),
-      },
+  describe('test', () => {
+    it.only('should return vaultId', () => {
+      const multiplyVault$ = mockOpenMultiplyVault({
+        priceInfo: {
+          collateralPrice: new BigNumber(2000),
+        },
+        exchangeQuote: {
+          marketPrice: new BigNumber(2100),
+        },
+        ilkData: {
+          debtFloor: new BigNumber(5000),
+        },
+      })
+      const state = getStateUnpacker(multiplyVault$)
+
+      state().updateDeposit!(new BigNumber(10))
+      state().updateMultiply!(new BigNumber(0))
+
+      const stateSnap = state()
+
+      console.log(stateSnap.afterCollateralizationRatio.toString(), 'COLL RATIO')
+      console.log(stateSnap.afterOutstandingDebt.toString(), 'DEBT')
+      console.log(stateSnap.buyingCollateral.toString(), 'BUYING COLLATERAL')
+      console.log(stateSnap.multiply?.toString(), 'MULTIPLY')
+      console.log(stateSnap.slider?.toString(), 'slider')
+
+      expect(true).to.eq(true)
     })
-    const state = getStateUnpacker(multiplyVault$)
-
-    state().updateDeposit!(new BigNumber(10))
-    state().updateMultiply!(new BigNumber(0))
-
-    const stateSnap = state()
-
-    console.log(stateSnap.afterCollateralizationRatio.toString(), 'COLL RATIO')
-    console.log(stateSnap.afterOutstandingDebt.toString(), 'DEBT')
-    console.log(stateSnap.buyingCollateral.toString(), 'BUYING COLLATERAL')
-    console.log(stateSnap.multiply?.toString(), 'MULTIPLY')
-    console.log(stateSnap.slider?.toString(), 'slider')
-
-    expect(true).to.eq(true)
   })
 })

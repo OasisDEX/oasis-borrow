@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
+import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { EMPTY, Observable, of } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { debounceTime, distinctUntilChanged, filter, map, switchMap, take } from 'rxjs/operators'
 
 import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
@@ -61,4 +62,41 @@ export function applyQuote(
   }
   return EMPTY
   return state.quote === undefined ? EMPTY : of({ kind: 'quoteReset' })
+}
+
+export function createExchangeChange$(
+  exchangeQuote$: (
+    token: string,
+    slippage: BigNumber,
+    amount: BigNumber,
+    action: ExchangeAction,
+  ) => Observable<Quote>,
+  state$: Observable<OpenMultiplyVaultState>,
+) {
+  return state$.pipe(
+    filter((state) => state.depositAmount !== undefined),
+    distinctUntilChanged(
+      (s1, s2) =>
+        s1.token === s2.token &&
+        s1.slippage.eq(s2.slippage) &&
+        !!s1.depositAmount?.eq(s2.depositAmount || ''),
+    ),
+    debounceTime(500),
+    switchMap((state) => every5Seconds$.pipe(switchMap(() => applyQuote(exchangeQuote$, state)))),
+  )
+}
+
+export function createInitialQuoteChange(
+  exchangeQuote$: (
+    token: string,
+    slippage: BigNumber,
+    amount: BigNumber,
+    action: ExchangeAction,
+  ) => Observable<Quote>,
+  token: string,
+) {
+  return exchangeQuote$(token, SLIPPAGE, new BigNumber(0.01), 'BUY').pipe(
+    map(quoteToChange),
+    take(1),
+  )
 }
