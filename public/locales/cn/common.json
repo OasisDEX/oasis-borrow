@@ -1,6 +1,12 @@
 {
   "404-button": "返回主页",
   "404-message": "抱歉，页面不存在。",
+  "about": {
+    "heading": "About us",
+    "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital. We are building Oasis.app to let our users benefit from all of the potential in DeFi.\n\n Our team is made of passionate thinkers and builders.",
+    "careers-link": "Join Us",
+    "pics-title": "Meet the team"
+  },
   "acceptance-check-failed": "授权检查失败",
   "acceptance-save-failed": "授权保存失败",
   "acceptance-save-in-progress": "授权保存进行中...",

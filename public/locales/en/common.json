@@ -1,6 +1,12 @@
 {
   "404-button": "Go to home",
   "404-message": "Sorry, page not found.",
+  "about": {
+    "heading": "About us",
+    "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital. We are building Oasis.app to let our users benefit from all of the potential in DeFi.\n\n Our team is made of passionate thinkers and builders.",
+    "careers-link": "Join Us",
+    "pics-title": "Meet the team"
+  },
   "acceptance-check-failed": "Acceptance check failed",
   "acceptance-save-failed": "Acceptance save failed",
   "acceptance-save-in-progress": "Saving acceptance...",

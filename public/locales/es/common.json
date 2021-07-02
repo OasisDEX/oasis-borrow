@@ -6,6 +6,12 @@
   "Mexico": "Mexico",
   "aave": "Aave",
   "aave-product": "Presta tus Dai en Aave y genera ahorros.",
+  "about": {
+    "heading": "About us",
+    "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital. We are building Oasis.app to let our users benefit from all of the potential in DeFi.\n\n Our team is made of passionate thinkers and builders.",
+    "careers-link": "Join Us",
+    "pics-title": "Meet the team"
+  },
   "acceptance-check-failed": "La verificación de aceptación falló",
   "acceptance-save-failed": "No se pudo guardar la aceptación",
   "acceptance-save-in-progress": "Guardando aceptación...",

@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { Box, Grid, Heading, Image, Text } from 'theme-ui'
 
 import { PageSEOTags } from 'components/HeadTags'
+import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 
 export default function AboutPage({ members }: { members: TeamMember[] }) {
   const { t } = useTranslation()
@@ -81,10 +82,13 @@ function PortraitsGrid({ members }: { members: TeamMember[] }) {
   )
 }
 
-export async function getStaticProps() {
+export async function getStaticProps({ locale }: { locale: string }) {
   const members = getTeamPicsFileNames().map(parseMemberInfo)
 
   return {
-    props: { members: sortBy(members, 'order') },
+    props: {
+      members: sortBy(members, 'order'),
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
   }
 }
