@@ -8,7 +8,7 @@ import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
-import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
+import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import {
   debounceTime,
   distinctUntilChanged,
@@ -18,6 +18,7 @@ import {
   shareReplay,
   switchMap,
   take,
+  tap,
 } from 'rxjs/operators'
 
 import {
@@ -366,26 +367,27 @@ export function createOpenMultiplyVault$(
                       map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
                     )
 
-                    state$
-                      .pipe(
-                        debounceTime(500),
+                    exchangeQuote$(token, SLIPPAGE, new BigNumber(0.01), 'BUY')
+                      .pipe(map(quoteToChange), take(1))
+                      .subscribe(change)
+
+                    return merge(
+                      state$,
+                      state$.pipe(
                         distinctUntilChanged(
                           (s1, s2) =>
                             s1.token === s2.token &&
                             s1.slippage.eq(s2.slippage) &&
-                            s1.buyingCollateral.eq(s2.buyingCollateral),
+                            !!s1.depositAmount?.eq(s2.depositAmount || ''),
                         ),
+                        debounceTime(500),
                         switchMap((state) =>
                           every5Seconds$.pipe(switchMap(() => applyQuote(exchangeQuote$, state))),
                         ),
-                      )
-                      .subscribe(change)
-
-                    exchangeQuote$(token, SLIPPAGE, new BigNumber(10), 'BUY')
-                      .pipe(map(quoteToChange), take(1))
-                      .subscribe(change)
-
-                    return state$
+                        tap(change),
+                        switchMap(() => EMPTY),
+                      ),
+                    )
                   }),
                 ),
               ),

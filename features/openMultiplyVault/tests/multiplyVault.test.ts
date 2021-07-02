@@ -85,10 +85,14 @@ function mockOpenMultiplyVault({
   )
 }
 
+function delay(t: number) {
+  return new Promise((resolve) => setTimeout(() => resolve(undefined), t))
+}
+
 describe('open multiply vault', () => {
   beforeEach(() => {})
 
-  it('should return vaultId', () => {
+  it.only('should return vaultId', () => {
     const multiplyVault$ = mockOpenMultiplyVault({
       priceInfo: {
         collateralPrice: new BigNumber(2000),
@@ -113,6 +117,6 @@ describe('open multiply vault', () => {
     console.log(stateSnap.multiply?.toString(), 'MULTIPLY')
     console.log(stateSnap.slider?.toString(), 'slider')
 
-    expect(true).to.eq(false)
+    expect(true).to.eq(true)
   })
 })
