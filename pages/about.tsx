@@ -17,7 +17,7 @@ export default function AboutPage({ members }: { members: TeamMember[] }) {
     <Box sx={{ width: '100%', pb: 6 }}>
       <Box sx={{ mt: 5, pb: 5 }}>
         <Heading
-          variant="largeHeadingPolar"
+          variant="header1s"
           sx={{
             textAlign: 'center',
             mb: 4,
@@ -27,14 +27,14 @@ export default function AboutPage({ members }: { members: TeamMember[] }) {
         </Heading>
         <Text variant="light">{t('about.description')}</Text>
       </Box>
-      <AppLink href="/careers" sx={{ color: 'link', display: 'flex', alignItems: 'center', mt: 3 }}>
-        <Text variant="smallHeading" sx={{ color: 'link', fontWeight: 600 }}>
+      <AppLink href="/careers" sx={{ color: 'text.focused', display: 'flex', alignItems: 'center', mt: 3 }}>
+        <Text variant="paragraph1" sx={{ color: 'text.focused', fontWeight: 600 }}>
           {t('about.careers-link')}
         </Text>
         <Icon name="arrow_right" size="16px" sx={{ ml: 1 }} />
       </AppLink>
       <Box sx={{ mt: 4 }}>
-        <Heading variant="headingPolar">{t('about.pics-title')}</Heading>
+        <Heading variant="header2">{t('about.pics-title')}</Heading>
         <PortraitsGrid members={members} />
       </Box>
     </Box>
@@ -45,6 +45,10 @@ AboutPage.layout = MarketingLayout
 AboutPage.seoTags = (
   <PageSEOTags title="seo.about.title" description="seo.about.description" url="/about" />
 )
+AboutPage.layoutProps = {
+  topBackground: 'lighter',
+  variant: 'marketingSmallContainer',
+}
 
 function PortraitsGrid({ members }: { members: TeamMember[] }) {
   const PORTRAIT_SIZE = '169px'
@@ -71,8 +75,8 @@ function PortraitsGrid({ members }: { members: TeamMember[] }) {
             <Image src={`/static/img/team/${member.picFileName}`} sx={{ width: PORTRAIT_SIZE }} />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <Text sx={{ mb: 1 }}>{member.name}</Text>
-            <Text variant="small" sx={{ color: 'borrowText' }}>
+            <Text sx={{ color: 'primary', mb: 1 }}>{member.name}</Text>
+            <Text variant="paragraph3" sx={{ color: 'lavender' }}>
               {member.title}
             </Text>
           </Box>
