@@ -841,6 +841,10 @@ const oasisBaseTheme = {
       color: 'lavender',
       fontSize: 4,
       lineHeight: 'body',
+      a: {
+        variant: 'text.paragraph1',
+        color: 'text.focused'
+      }
     }
   },
   borders: {

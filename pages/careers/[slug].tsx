@@ -53,8 +53,10 @@ export default function CareerPage({ career }: { career: Career }) {
           'p, ul': { variant: 'text.light', my: 2 },
           ul: { pl: 4 },
           li: { mb: 3 },
-          strong: { fontWeight: 400, color: 'text' },
-          a: { fontWeight: 600, color: 'link' },
+          strong: { fontWeight: 400, color: 'primary', a: {
+            fontWeight: 600,
+            },
+          },
         }}
       >
         <Markdown />

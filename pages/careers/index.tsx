@@ -13,9 +13,6 @@ import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 export default function CareersPage({ careers }: { careers: Career[] }) {
   const { t } = useTranslation()
   const careersByArea = groupBy(careers, 'area')
-  const contactMail = <Link variant="text.paragraph1" sx={{ textDecoration: 'none' }} href="mailto:work@oasis.app">
-    work@oasis.app
-  </Link>
 
   return (
     <Box sx={{ width: '100%', pb: 6, mt: 5 }}>
@@ -85,7 +82,9 @@ export default function CareersPage({ careers }: { careers: Career[] }) {
           <br />
           <Text variant="light">
             {t('careers.write-us')}{' '}
-            {contactMail}{' '}
+            <Link href="mailto:work@oasis.app">
+              work@oasis.app
+            </Link>{' '}
             .
           </Text>
         </Box>
@@ -95,7 +94,9 @@ export default function CareersPage({ careers }: { careers: Career[] }) {
           <br />
           <Text variant="light">
             {t('careers.write-us')}{' '}
-            {contactMail}{' '}
+            <Link href="mailto:work@oasis.app">
+              work@oasis.app
+            </Link>{' '}
             .
           </Text>
         </Box>
