@@ -14,7 +14,7 @@ import { AppLink } from 'components/Links'
 import { useTranslation } from 'react-i18next'
 import React, { useState } from 'react'
 import { TRANSITIONS } from 'theme'
-import { Box, Flex, Heading } from 'theme-ui'
+import { Box, Flex, Heading, Text } from 'theme-ui'
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 
 function Question({ question, answer }: ContentQuestion) {
@@ -24,7 +24,6 @@ function Question({ question, answer }: ContentQuestion) {
     <Box
       sx={{
         borderBottom: 'light',
-        borderColor: 'muted',
         mb: 3,
         py: 1,
         '&:last-child': {
@@ -45,7 +44,7 @@ function Question({ question, answer }: ContentQuestion) {
         }}
         onClick={() => setOpened(!opened)}
       >
-        <Heading variant="smallHeading" sx={{ fontWeight: 'semiBold', color: 'primary' }}>
+        <Heading variant="paragraph1" sx={{ color: 'primary', fontWeight: 'heading' }}>
           {question}
         </Heading>
         <Icon name={opened ? 'support_minus' : 'support_plus'} size="auto" width="21px" />
@@ -58,6 +57,9 @@ function Question({ question, answer }: ContentQuestion) {
               color: 'primary',
               textDecoration: 'underline',
             },
+            p: {
+              color: 'primary'
+            }
           }}
         >
           <MDX>{answer}</MDX>
@@ -76,7 +78,9 @@ function Navigation({ navigation }: { navigation: ContentNavigation[] }) {
           key={id}
           sx={{
             mr: [0, 4],
-            fontWeight: 'semiBold',
+            textDecoration: 'none',
+            fontSize: 3,
+            fontWeight: 'heading',
             color: 'primaryEmphasis',
             cursor: 'pointer',
             position: 'relative',
@@ -89,7 +93,7 @@ function Navigation({ navigation }: { navigation: ContentNavigation[] }) {
               position: 'absolute',
               width: '4px',
               height: '4px',
-              bg: 'muted',
+              bg: 'light',
               right: -3,
               top: '50%',
               borderRadius: '50%',
@@ -127,13 +131,13 @@ function SupportPage() {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Heading variant="largeHeading" sx={{ textAlign: 'center', mb: 4 }}>
+      <Heading variant="header2" sx={{ textAlign: 'center', mb: 4 }}>
         {title}
       </Heading>
       <Navigation {...{ navigation }} />
       {sections.map(({ title, id, questions }) => (
         <Box key={id} sx={{ mt: 5, pt: 3 }} id={id}>
-          <Heading variant="largeHeading" sx={{ mb: 4 }}>
+          <Heading variant="header2" sx={{ mb: 4 }}>
             {title}
           </Heading>
           {questions.map((question, i) => (
