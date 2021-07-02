@@ -106,7 +106,7 @@ export function AppHeader() {
               href={`/owner/${context.account}`}
               onClick={() => trackingEvents.yourVaults()}
             >
-              {t('your-vaults')} {numberOfVaults && numberOfVaults > 0 && `(${numberOfVaults})`}
+              {t('your-vaults')} {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
             </AppLink>
             <AppLink
               variant="nav"
