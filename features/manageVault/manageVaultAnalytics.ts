@@ -1,5 +1,6 @@
 import { INPUT_DEBOUNCE_TIME, Pages, Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
+import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
@@ -125,6 +126,7 @@ export function createManageVaultAnalytics$(
     ManageVaultState,
     'selectedCollateralAllowanceRadio'
   >> = manageVaultState$.pipe(
+    filter((state) => state.stage === 'collateralAllowanceWaitingForConfirmation'),
     map((state) => state.selectedCollateralAllowanceRadio),
     distinctUntilChanged(isEqual),
   )
@@ -151,9 +153,10 @@ export function createManageVaultAnalytics$(
 
   const daiAllowanceTypeChanges: Observable<Pick<
     ManageVaultState,
-    'selectedCollateralAllowanceRadio'
+    'selectedDaiAllowanceRadio'
   >> = manageVaultState$.pipe(
-    map((state) => state.selectedCollateralAllowanceRadio),
+    filter((state) => state.stage === 'daiAllowanceWaitingForConfirmation'),
+    map((state) => state.selectedDaiAllowanceRadio),
     distinctUntilChanged(isEqual),
   )
 
@@ -184,11 +187,9 @@ export function createManageVaultAnalytics$(
       value: {
         ilk: ilk,
         collateralAmount:
-          depositAmount ||
-          (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : new BigNumber(0)),
+          depositAmount || (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : zero),
         daiAmount:
-          generateAmount ||
-          (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : new BigNumber(0)),
+          generateAmount || (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : zero),
       },
     })),
     distinctUntilChanged(isEqual),
@@ -209,11 +210,9 @@ export function createManageVaultAnalytics$(
         value: {
           ilk: ilk,
           collateralAmount:
-            depositAmount ||
-            (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : new BigNumber(0)),
+            depositAmount || (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : zero),
           daiAmount:
-            generateAmount ||
-            (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : new BigNumber(0)),
+            generateAmount || (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : zero),
           txHash: manageTxHash,
         },
       }),

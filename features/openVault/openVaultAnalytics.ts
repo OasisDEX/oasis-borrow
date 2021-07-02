@@ -1,6 +1,7 @@
 import { INPUT_DEBOUNCE_TIME, Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { AccountDetails } from 'features/account/AccountData'
+import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
@@ -49,88 +50,92 @@ export function createOpenVaultAnalytics$(
   openVaultState$: Observable<OpenVaultState>,
   tracker: Tracker,
 ) {
-  return accountDetails$.pipe(
-    switchMap(({ numberOfVaults }) => {
-      const firstCDP = numberOfVaults ? numberOfVaults === 0 : true
+  const firstCDPChange: Observable<boolean | undefined> = accountDetails$.pipe(
+    map(({ numberOfVaults }) => (numberOfVaults ? numberOfVaults === 0 : undefined)),
+    distinctUntilChanged(isEqual),
+  )
 
-      const depositAmountChanges: Observable<DepositAmountChange> = openVaultState$.pipe(
-        map((state) => state.depositAmount),
-        filter((amount) => !!amount),
-        distinctUntilChanged(isEqual),
-        debounceTime(INPUT_DEBOUNCE_TIME),
-        map((amount) => ({
-          kind: 'depositAmountChange',
-          value: amount,
-        })),
-      )
+  const depositAmountChanges: Observable<DepositAmountChange> = openVaultState$.pipe(
+    map((state) => state.depositAmount),
+    filter((amount) => !!amount),
+    distinctUntilChanged(isEqual),
+    debounceTime(INPUT_DEBOUNCE_TIME),
+    map((amount) => ({
+      kind: 'depositAmountChange',
+      value: amount,
+    })),
+  )
 
-      const generateAmountChanges: Observable<GenerateAmountChange> = openVaultState$.pipe(
-        map((state) => state.generateAmount),
-        filter((amount) => !!amount),
-        distinctUntilChanged(isEqual),
-        debounceTime(INPUT_DEBOUNCE_TIME),
-        map((amount) => ({
-          kind: 'generateAmountChange',
-          value: amount,
-        })),
-      )
+  const generateAmountChanges: Observable<GenerateAmountChange> = openVaultState$.pipe(
+    map((state) => state.generateAmount),
+    filter((amount) => !!amount),
+    distinctUntilChanged(isEqual),
+    debounceTime(INPUT_DEBOUNCE_TIME),
+    map((amount) => ({
+      kind: 'generateAmountChange',
+      value: amount,
+    })),
+  )
 
-      const allowanceTypeChanges: Observable<Pick<
-        MutableOpenVaultState,
-        'selectedAllowanceRadio'
-      >> = openVaultState$.pipe(
-        map((state) => state.selectedAllowanceRadio),
-        distinctUntilChanged(isEqual),
-      )
+  const allowanceTypeChanges: Observable<Pick<
+    MutableOpenVaultState,
+    'selectedAllowanceRadio'
+  >> = openVaultState$.pipe(
+    filter((state) => state.stage === 'allowanceWaitingForConfirmation'),
+    map((state) => state.selectedAllowanceRadio),
+    distinctUntilChanged(isEqual),
+  )
 
-      const allowanceAmountChanges: Observable<BigNumber> = openVaultState$.pipe(
-        map((state) => state.allowanceAmount),
-        filter((amount) => !!amount),
-        distinctUntilChanged(isEqual),
-        debounceTime(INPUT_DEBOUNCE_TIME),
-      )
+  const allowanceAmountChanges: Observable<BigNumber> = openVaultState$.pipe(
+    map((state) => state.allowanceAmount),
+    filter((amount) => !!amount),
+    distinctUntilChanged(isEqual),
+    debounceTime(INPUT_DEBOUNCE_TIME),
+  )
 
-      const allowanceChanges: Observable<AllowanceChange> = zip(
-        allowanceTypeChanges,
-        allowanceAmountChanges,
-      ).pipe(
-        map(([type, amount]) => ({
-          kind: 'allowanceChange',
-          value: {
-            type,
-            amount,
-          },
-        })),
-      )
+  const allowanceChanges: Observable<AllowanceChange> = zip(
+    allowanceTypeChanges,
+    allowanceAmountChanges,
+  ).pipe(
+    map(([type, amount]) => ({
+      kind: 'allowanceChange',
+      value: {
+        type,
+        amount,
+      },
+    })),
+  )
 
-      const openVaultConfirm: Observable<OpenVaultConfirm> = openVaultState$.pipe(
-        filter((state) => state.stage === 'openWaitingForApproval'),
-        map(({ ilk, depositAmount, generateAmount }) => ({
-          kind: 'openVaultConfirm',
-          value: {
-            ilk: ilk,
-            collateralAmount: depositAmount,
-            daiAmount: generateAmount || new BigNumber(0),
-          },
-        })),
-        distinctUntilChanged(isEqual),
-      )
+  const openVaultConfirm: Observable<OpenVaultConfirm> = openVaultState$.pipe(
+    filter((state) => state.stage === 'openWaitingForApproval'),
+    map(({ ilk, depositAmount, generateAmount }) => ({
+      kind: 'openVaultConfirm',
+      value: {
+        ilk: ilk,
+        collateralAmount: depositAmount,
+        daiAmount: generateAmount || zero,
+      },
+    })),
+    distinctUntilChanged(isEqual),
+  )
 
-      const openVaultConfirmTransaction: Observable<OpenVaultConfirmTransaction> = openVaultState$.pipe(
-        filter((state) => state.stage === 'openInProgress'),
-        map(({ ilk, depositAmount, generateAmount, openTxHash }) => ({
-          kind: 'openVaultConfirmTransaction',
-          value: {
-            ilk: ilk,
-            collateralAmount: depositAmount,
-            daiAmount: generateAmount || new BigNumber(0),
-            txHash: openTxHash,
-          },
-        })),
-        distinctUntilChanged(isEqual),
-      )
+  const openVaultConfirmTransaction: Observable<OpenVaultConfirmTransaction> = openVaultState$.pipe(
+    filter((state) => state.stage === 'openInProgress'),
+    map(({ ilk, depositAmount, generateAmount, openTxHash }) => ({
+      kind: 'openVaultConfirmTransaction',
+      value: {
+        ilk: ilk,
+        collateralAmount: depositAmount,
+        daiAmount: generateAmount || zero,
+        txHash: openTxHash,
+      },
+    })),
+    distinctUntilChanged(isEqual),
+  )
 
-      return merge(
+  return firstCDPChange.pipe(
+    switchMap((firstCDP) =>
+      merge(
         depositAmountChanges,
         generateAmountChanges,
         allowanceChanges,
@@ -173,7 +178,7 @@ export function createOpenVaultAnalytics$(
               throw new Error('Unhandled Scenario')
           }
         }),
-      )
-    }),
+      ),
+    ),
   )
 }
