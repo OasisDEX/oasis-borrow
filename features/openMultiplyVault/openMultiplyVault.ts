@@ -130,7 +130,7 @@ interface OpenMultiplyVaultFunctions {
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
-  updateMultiply?: (slider?: BigNumber) => void
+  updateRisk?: (slider?: BigNumber) => void
   updateAllowanceAmount?: (amount?: BigNumber) => void
   setAllowanceAmountUnlimited?: () => void
   setAllowanceAmountToDepositAmount?: () => void
@@ -187,7 +187,7 @@ function addTransitions(
       updateDepositUSD: (depositAmountUSD?: BigNumber) =>
         change({ kind: 'depositUSD', depositAmountUSD }),
       updateDepositMax: () => change({ kind: 'depositMax' }),
-      updateMultiply: (slider?: BigNumber) => {
+      updateRisk: (slider?: BigNumber) => {
         change({ kind: 'slider', slider })
       },
       progress: () => change({ kind: 'progressEditing' }),

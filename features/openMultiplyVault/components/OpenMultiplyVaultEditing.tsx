@@ -41,8 +41,8 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
     updateDepositUSD,
     depositAmountUSD,
     maxDepositAmountUSD,
-    updateMultiply,
-    multiply, // TODO improve multiply editing
+    updateRisk,
+    multiply,
     priceInfo: { currentCollateralPrice },
     canAdjustRisk,
     afterLiquidationPrice,
@@ -122,7 +122,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
             max={100}
             value={slider?.toNumber() || 0}
             onChange={(e) => {
-              updateMultiply && updateMultiply(new BigNumber(e.target.value))
+              updateRisk && updateRisk(new BigNumber(e.target.value))
             }}
           />
         </Box>

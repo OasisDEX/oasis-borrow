@@ -27,8 +27,7 @@ export interface OpenMultiplyVaultCalculations {
   afterCollateralBalance: BigNumber
   loanFees: BigNumber
   multiplyFee: BigNumber
-
-  maxPossibleCollRatio?: BigNumber
+  maxCollRatio?: BigNumber
   totalExposureUSD: BigNumber
 
   // afterCollateralizationRatioAtNextPrice: BigNumber
@@ -108,7 +107,7 @@ export function collRatioToSlider(
   liquidationRatio: BigNumber,
   requiredCollRatio: BigNumber,
 ) {
-  return requiredCollRatio.minus(maxCollRatio).div(liquidationRatio.minus(maxCollRatio))
+  return requiredCollRatio.minus(maxCollRatio).div(liquidationRatio.minus(maxCollRatio)).times(100)
 }
 
 export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
@@ -234,7 +233,7 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
     multiplyFee,
     afterBuyingPower,
     afterBuyingPowerUSD,
-    maxPossibleCollRatio,
+    maxCollRatio,
     totalExposureUSD,
 
     // maxDepositAmount,
