@@ -76,6 +76,8 @@ export function ManageVaultErrors({
         return translate('depositing-all-eth-balance')
       case 'ledgerWalletContractDataDisabled':
         return translate('ledger-enable-contract-data')
+      case 'withdrawCollateralOnVaultUnderDebtFloor':
+        return translate('withdraw-collateral-on-vault-under-debt-floor')
       default:
         throw new UnreachableCaseError(message)
     }
