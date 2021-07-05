@@ -1,13 +1,15 @@
+import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
+import { sortBy } from 'lodash'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { Box, Grid, Heading, Image, Text } from 'theme-ui'
+import { useTranslation } from 'react-i18next'
+
 import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
 import { getTeamPicsFileNames, parseMemberInfo, TeamMember } from 'features/about/about'
-import { sortBy } from 'lodash'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { Box, Grid, Heading, Image, Text } from 'theme-ui'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 
 export default function AboutPage({ members }: { members: TeamMember[] }) {
   const { t } = useTranslation()
@@ -74,7 +76,7 @@ function PortraitsGrid({ members }: { members: TeamMember[] }) {
               overflow: 'hidden',
             }}
           >
-            <Image src={`/static/img/team/${member.picFileName}`} sx={{ width: PORTRAIT_SIZE }} />
+            <Image src={staticFilesRuntimeUrl(`/static/img/team/${member.picFileName}`)} sx={{ width: PORTRAIT_SIZE }} />
           </Box>
           <Box sx={{ pt: 3 }}>
             <Text sx={{ color: 'primary', mb: 1 }}>{member.name}</Text>
