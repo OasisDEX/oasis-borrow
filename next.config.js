@@ -10,7 +10,7 @@ const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const { i18n } = require('./next-i18next.config')
 
 const isProduction = process.env.NODE_ENV === 'production'
-const basePath = isProduction ? '/borrow' : ''
+const basePath = ''
 
 module.exports = withBundleAnalyzer(
   withPWA(
