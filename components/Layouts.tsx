@@ -16,11 +16,6 @@ interface BasicLayoutProps extends WithChildren {
   variant?: string
 }
 
-export interface MarketingLayoutProps extends WithChildren {
-  variant?: string
-  topBackground?: 'default' | 'light' | 'lighter' | 'none'
-}
-
 export function BasicLayout({ header, footer, children, sx, variant }: BasicLayoutProps) {
   return (
     <Flex
@@ -59,6 +54,11 @@ const marketingBackgrounds = {
   light: <BackgroundLight />,
   lighter: <BackgroundLighter />,
   none: null,
+}
+
+export interface MarketingLayoutProps extends WithChildren {
+  variant?: string
+  topBackground?: keyof typeof marketingBackgrounds
 }
 
 export function MarketingLayout({
