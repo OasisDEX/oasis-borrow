@@ -18,7 +18,7 @@ export default function AboutPage({ members }: { members: TeamMember[] }) {
     <Box sx={{ width: '100%', pb: 6 }}>
       <Box sx={{ mt: 5, pb: 5 }}>
         <Heading
-          variant="header1s"
+          variant="header1"
           sx={{
             textAlign: 'center',
             mb: 4,

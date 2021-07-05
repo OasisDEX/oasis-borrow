@@ -16,7 +16,7 @@ export default function CareersPage({ careers }: { careers: Career[] }) {
   return (
     <Box sx={{ width: '100%', pb: 6, mt: 5 }}>
       <Heading
-        variant="header1s"
+        variant="header1"
         sx={{
           textAlign: 'center',
           mb: 4,

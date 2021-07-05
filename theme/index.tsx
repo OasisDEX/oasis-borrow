@@ -785,14 +785,10 @@ const oasisBaseTheme = {
     },
     header1: {
       fontFamily: 'heading',
-      fontWeight: 'bold',
+      fontWeight: 'heading',
       lineHeight: 'heading',
-      fontSize: 8,
-      color: 'primary',
-    },
-    header1s: {
-      variant: 'text.header2',
       fontSize: '40px',
+      color: 'primary',
     },
     header2: {
       fontFamily: 'heading',
