@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
@@ -65,7 +65,7 @@ function VaultDetailsTable({
           label={t('system.vault-dai-debt')}
           value={
             <>
-              {formatAmount(vault.debt, 'DAI')}
+              {formatCryptoBalance(vault.debt)}
               <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
                 DAI
               </Text>
@@ -74,7 +74,7 @@ function VaultDetailsTable({
           subValue={
             showAfterCalculations && (
               <>
-                {formatAmount(afterDebt, 'DAI')}
+                {formatCryptoBalance(afterDebt)}
                 <Text
                   sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }}
                   variant="paragraph4"
@@ -114,7 +114,7 @@ function VaultDetailsTable({
           label={t('system.available-to-generate')}
           value={
             <>
-              {formatAmount(vault.daiYieldFromLockedCollateral, 'DAI')}
+              {formatCryptoBalance(vault.daiYieldFromLockedCollateral)}
               <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
                 DAI
               </Text>
@@ -123,7 +123,7 @@ function VaultDetailsTable({
           subValue={
             showAfterCalculations && (
               <>
-                {formatAmount(daiYieldFromTotalCollateral, 'DAI')}
+                {formatCryptoBalance(daiYieldFromTotalCollateral)}
                 <Text
                   sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }}
                   variant="paragraph4"
@@ -145,7 +145,7 @@ function VaultDetailsTable({
         />
         <VaultDetailsTableItem
           label={t('system.liquidation-ratio')}
-          value={formatPercent(ilkData.liquidationRatio.times(100), { precision: 2 })}
+          value={formatPercent(ilkData.liquidationRatio.times(100))}
         />
         <VaultDetailsTableItem
           label={t('system.stability-fee')}
@@ -153,7 +153,7 @@ function VaultDetailsTable({
         />
         <VaultDetailsTableItem
           label={t('system.liquidation-penalty')}
-          value={formatPercent(ilkData.liquidationPenalty.times(100), { precision: 2 })}
+          value={formatPercent(ilkData.liquidationPenalty.times(100))}
         />
       </Grid>
     </Box>
@@ -195,7 +195,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
     : 'onSuccess'
 
   const locked = formatAmount(lockedCollateral, token)
-  const lockedUSD = formatAmount(lockedCollateralUSD, token)
+  const lockedUSD = formatAmount(lockedCollateralUSD, 'USD')
 
   const newPriceIn = moment(dateNextCollateralPrice).diff(Date.now(), 'minutes')
 
