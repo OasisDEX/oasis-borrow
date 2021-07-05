@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
-import { EMPTY, Observable, of } from 'rxjs'
+import { EMPTY, Observable } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, take } from 'rxjs/operators'
 
 import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
@@ -60,8 +60,7 @@ export function applyQuote(
       map(quoteToChange),
     )
   }
-  // return EMPTY
-  return state.quote === undefined ? EMPTY : of({ kind: 'quoteReset' })
+  return EMPTY
 }
 
 export function createExchangeChange$(
