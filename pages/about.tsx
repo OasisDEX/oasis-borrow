@@ -31,7 +31,7 @@ export default function AboutPage({ members }: { members: TeamMember[] }) {
         href="/careers"
         sx={{ color: 'text.focused', display: 'flex', alignItems: 'center', mt: 3 }}
       >
-        <Text variant="paragraph1" sx={{ color: 'text.focused', fontWeight: 600 }}>
+        <Text variant="paragraph1" sx={{ color: 'text.focused', fontWeight: 'semiBold' }}>
           {t('about.careers-link')}
         </Text>
         <Icon name="arrow_right" size="16px" sx={{ ml: 1 }} />

@@ -23,8 +23,8 @@ export default function CareerPage({ career }: { career: Career }) {
           color: 'text.focused',
         }}
       >
-        <Icon name="arrow_left" size="16px" sx={{ mr: 1 }} />
-        <Text variant="paragraph2" sx={{ color: 'text.focused', fontWeight: 600 }}>
+        <Icon name="arrow_left" size={3} sx={{ mr: 1 }} />
+        <Text variant="paragraph2" sx={{ color: 'text.focused', fontWeight: 'semiBold' }}>
           {t('careers.back-link')}
         </Text>
       </AppLink>
@@ -49,10 +49,10 @@ export default function CareerPage({ career }: { career: Career }) {
           ul: { pl: 4 },
           li: { mb: 3 },
           strong: {
-            fontWeight: 400,
+            fontWeight: 'body',
             color: 'primary',
             a: {
-              fontWeight: 600,
+              fontWeight: 'semiBold',
             },
           },
         }}

@@ -104,7 +104,7 @@ function RoleCount({ count, sx }: { count: number; sx?: SxStyleProp }) {
       sx={{
         width: '26px',
         height: '26px',
-        borderRadius: '13px',
+        borderRadius: 'large',
         backgroundColor: 'primary',
         alignItems: 'center',
         justifyContent: 'center',
@@ -112,7 +112,7 @@ function RoleCount({ count, sx }: { count: number; sx?: SxStyleProp }) {
         ...sx,
       }}
     >
-      <Text sx={{ fontSize: 1, fontWeight: 600, color: '#FFF' }}>{count}</Text>
+      <Text sx={{ fontSize: 1, fontWeight: 'semiBold', color: 'onPrimary' }}>{count}</Text>
     </Flex>
   )
 }
