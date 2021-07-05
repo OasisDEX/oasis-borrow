@@ -131,15 +131,15 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     allowanceAmount,
     allowance,
     multiply,
-    maxPossibleCollRatio,
+    maxCollRatio,
   } = state
 
   const inputAmountsEmpty = !depositAmount && !multiply
   const canAdjustRisk =
     depositAmount !== undefined &&
-    maxPossibleCollRatio !== undefined &&
+    maxCollRatio !== undefined &&
     depositAmount.gt(0) &&
-    maxPossibleCollRatio.gt(ilkData.liquidationRatio)
+    maxCollRatio.gt(ilkData.liquidationRatio)
 
   const vaultWillBeAtRiskLevelDanger =
     !inputAmountsEmpty &&
