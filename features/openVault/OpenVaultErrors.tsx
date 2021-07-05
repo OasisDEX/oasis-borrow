@@ -42,7 +42,7 @@ export function OpenVaultErrors({
             components={[
               <AppLink
                 sx={{ color: 'onError' }}
-                href="https://community-development.makerdao.com/en/learn/governance/param-debt-floor/"
+                href="https://kb.oasis.app/help/minimum-vault-debt-dust"
               />,
             ]}
           />

@@ -51,7 +51,7 @@ export function ManageVaultErrors({
             components={[
               <AppLink
                 sx={{ color: 'onError' }}
-                href="https://community-development.makerdao.com/en/learn/governance/param-debt-floor/"
+                href="https://kb.oasis.app/help/minimum-vault-debt-dust"
               />,
             ]}
           />
@@ -77,7 +77,19 @@ export function ManageVaultErrors({
       case 'ledgerWalletContractDataDisabled':
         return translate('ledger-enable-contract-data')
       case 'withdrawCollateralOnVaultUnderDebtFloor':
-        return translate('withdraw-collateral-on-vault-under-debt-floor')
+        return (
+          <Trans
+            i18nKey="manage-vault.errors.withdraw-collateral-on-vault-under-debt-floor"
+            values={{ debtFloor: formatCryptoBalance(debtFloor) }}
+            components={[
+              <AppLink
+                sx={{ color: 'onError' }}
+                href="https://kb.oasis.app/help/minimum-vault-debt-dust"
+              />,
+            ]}
+          />
+        )
+
       default:
         throw new UnreachableCaseError(message)
     }
