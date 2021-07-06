@@ -103,7 +103,7 @@ module.exports = withBundleAnalyzer(
               source: '/(0x[a-fA-F0-9]{40}.*)',
               destination: '/daiwallet/dashboard',
               permanent: true,
-            }
+            },
           ]
         },
       }),
