@@ -209,7 +209,7 @@ function LandingCards() {
         py: 4,
       }}
     >
-      <LandingCard href={`${apiHost}/daiwallet`} cardKey="dai" target="_self" />
+      <LandingCard href={`${apiHost}/daiwallet`} cardKey="dai" />
       <LandingCard href="/support" cardKey="faq" />
     </Grid>
   )
