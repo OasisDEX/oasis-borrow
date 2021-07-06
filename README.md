@@ -104,6 +104,8 @@ Some of the values that are used you can check in the `.env` file.
   commit in the footer. This targets build deployments to staging environments so that the team can
   see which version the UI reflects. The value could be a branch name or specific commit.
 
+- `API_HOST` - The value is used to construct links based on root domain.
+
 - `MIXPANEL_ENV` - The value could be either `production` or anything else you'd like to use to
   denote that it's NOT production. The difference is where the events are sent. For "development"
   environments the events will be displayed in the dev console within the browser. If the env is set
