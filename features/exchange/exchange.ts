@@ -41,17 +41,17 @@ interface Tx {
   gas: number
 }
 
-export type ExchangeAction = 'BUY' | 'SELL'
+export type ExchangeAction = 'BUY_COLLATERAL' | 'SELL_COLLATERAL'
 function getQuote$(
   daiAddress: string,
   collateralAddress: string,
   account: string,
-  amount: BigNumber,
+  amount: BigNumber, // This is always the amount of tokens we want to exchange from
   slippage: BigNumber,
   action: ExchangeAction,
 ) {
-  const fromTokenAddress = action === 'BUY' ? daiAddress : collateralAddress
-  const toTokenAddress = action === 'BUY' ? collateralAddress : daiAddress
+  const fromTokenAddress = action === 'BUY_COLLATERAL' ? daiAddress : collateralAddress
+  const toTokenAddress = action === 'BUY_COLLATERAL' ? collateralAddress : daiAddress
 
   return ajax(
     `${API_ENDPOINT}?fromTokenAddress=${fromTokenAddress}&toTokenAddress=${toTokenAddress}&amount=${amountToWei(
@@ -69,13 +69,13 @@ function getQuote$(
       fromToken,
       toToken,
       collateralAmount: amountFromWei(
-        action === 'BUY' ? new BigNumber(toTokenAmount) : new BigNumber(fromTokenAmount),
+        action === 'BUY_COLLATERAL' ? new BigNumber(toTokenAmount) : new BigNumber(fromTokenAmount),
       ),
       daiAmount: amountFromWei(
-        action === 'BUY' ? new BigNumber(fromTokenAmount) : new BigNumber(toTokenAmount),
+        action === 'BUY_COLLATERAL' ? new BigNumber(fromTokenAmount) : new BigNumber(toTokenAmount),
       ),
       tokenPrice:
-        action === 'BUY'
+        action === 'BUY_COLLATERAL'
           ? new BigNumber(fromTokenAmount).div(new BigNumber(toTokenAmount))
           : new BigNumber(toTokenAmount).div(new BigNumber(fromTokenAddress)),
       tx,
