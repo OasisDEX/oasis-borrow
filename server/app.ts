@@ -9,7 +9,7 @@ import { Config } from './config'
 import { jwtAuthMiddleware } from './middleware/signature-auth'
 import { tosRoutes } from './middleware/tos'
 
-const path = process.env.NODE_ENV === 'production' ? '/borrow' : ''
+const path = ''
 
 export interface Dependencies {
   nextHandler: express.Handler
