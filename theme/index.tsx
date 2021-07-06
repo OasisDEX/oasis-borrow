@@ -671,6 +671,24 @@ const customLandingIcons = {
     ),
     viewBox: '0 0 88 88',
   },
+  support_plus: {
+    path: (
+      <path
+        d="M9.42857 19.7143C9.42857 20.1877 9.81233 20.5714 10.2857 20.5714C10.7591 20.5714 11.1429 20.1877 11.1429 19.7143V11.1429H19.7143C20.1877 11.1429 20.5714 10.7591 20.5714 10.2857C20.5714 9.81233 20.1877 9.42857 19.7143 9.42857H11.1429V0.857143C11.1429 0.383756 10.7591 0 10.2857 0C9.81232 0 9.42857 0.383756 9.42857 0.857143V9.42857H0.857143C0.383756 9.42857 0 9.81233 0 10.2857C0 10.7591 0.383756 11.1429 0.857143 11.1429H9.42857V19.7143Z"
+        fill="currentColor"
+      />
+    ),
+    viewBox: '0 0 21 21',
+  },
+  support_minus: {
+    path: (
+      <path
+        d="M9.42857 2.64295C9.42857 3.11634 9.81232 2.64295 10.2857 2.64295C10.7591 2.64295 11.1429 3.11634 11.1429 2.64295H19.7143C20.1877 2.64295 20.5714 2.2592 20.5714 1.78581C20.5714 1.31242 20.1877 0.928667 19.7143 0.928667H11.1429L14.5 1.49993C14.5 1.02654 10.7591 0.928406 10.2857 0.928406C10.2857 0.928406 6 1.02655 6 1.49994L9.42857 0.928667H0.857143C0.383756 0.928667 0 1.31242 0 1.78581C0 2.2592 0.383756 2.64295 0.857143 2.64295H9.42857Z"
+        fill="currentColor"
+      />
+    ),
+    viewBox: '0 0 21 3',
+  },
 }
 
 const oasisBaseTheme = {
@@ -740,6 +758,7 @@ const oasisBaseTheme = {
     heading: '"FT Polar Trial", "Helvetica Neue", sans-serif',
     monospace: 'monospace',
   },
+  //           0   1   2   3   4   5   6   7   8   9  10
   fontSizes: [10, 12, 14, 16, 18, 20, 24, 32, 52, 64, 96],
   fontWeights: {
     body: 400,
@@ -749,6 +768,7 @@ const oasisBaseTheme = {
   },
   lineHeights: {
     body: 1.5,
+    bodyLoose: 1.7,
     heading: 1.2,
     tight: 1.05,
     loose: 1.35,
@@ -765,9 +785,9 @@ const oasisBaseTheme = {
     },
     header1: {
       fontFamily: 'heading',
-      fontWeight: 'bold',
+      fontWeight: 'heading',
       lineHeight: 'heading',
-      fontSize: 8,
+      fontSize: '40px',
       color: 'primary',
     },
     header2: {
@@ -832,6 +852,15 @@ const oasisBaseTheme = {
       variant: 'text.paragraph2',
       fontWeight: 'semiBold',
     },
+    light: {
+      color: 'lavender',
+      fontSize: 4,
+      lineHeight: 'bodyLoose',
+      a: {
+        variant: 'text.paragraph1',
+        color: 'text.focused',
+      },
+    },
   },
   borders: {
     light: '1px solid #787a9b40',
@@ -872,6 +901,10 @@ const oasisBaseTheme = {
     },
     marketingContainer: {
       variant: 'layout.appContainer',
+    },
+    marketingSmallContainer: {
+      variant: 'layout.appContainer',
+      maxWidth: '804px',
     },
     landingContainer: {
       variant: 'layout.appContainer',
