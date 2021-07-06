@@ -1,7 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Pages, trackingEvents } from 'analytics/analytics'
 import { getToken } from 'blockchain/tokensMetadata'
-import { WelcomeAnnouncement } from 'components/Announcement'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
@@ -136,7 +135,6 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
         flexDirection: 'column',
       }}
     >
-      <WelcomeAnnouncement />
       <Heading as="h1" variant="header1" sx={{ mb: 3 }}>
         {t('landing.hero.headline')}
       </Heading>

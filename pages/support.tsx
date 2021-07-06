@@ -12,10 +12,15 @@ import {
   ContentTypeSupport,
 } from 'features/content/support/support'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import getConfig from 'next/config'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TRANSITIONS } from 'theme'
 import { Box, Flex, Heading } from 'theme-ui'
+
+const {
+  publicRuntimeConfig: { apiHost },
+} = getConfig()
 
 function Question({ question, answer }: ContentQuestion) {
   const [opened, setOpened] = useState(false)
@@ -147,7 +152,10 @@ function SupportPage() {
       ))}
       <Box mt={6} mb={5} sx={{ textAlign: 'center' }}>
         {cantFind}
-        <AppLink href="/contact" sx={{ color: 'primary', textDecoration: 'underline', ml: 1 }}>
+        <AppLink
+          href={`${apiHost}/daiwallet/contact`}
+          sx={{ color: 'primary', textDecoration: 'underline', ml: 1 }}
+        >
           {contactLink}
         </AppLink>
       </Box>
