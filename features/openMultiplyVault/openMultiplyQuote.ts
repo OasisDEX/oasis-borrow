@@ -46,22 +46,6 @@ export function quoteToChange(quote: Quote) {
     ? { kind: 'quote' as const, quote }
     : { kind: 'quoteError' as const }
 }
-export function applyQuote(
-  exchangeQuote$: (
-    token: string,
-    slippage: BigNumber,
-    amount: BigNumber,
-    action: ExchangeAction,
-  ) => Observable<Quote>,
-  state: OpenMultiplyVaultState,
-): Observable<ExchangeQuoteChanges> {
-  if (state.buyingCollateral.gt(0)) {
-    return exchangeQuote$(state.token, state.slippage, state.buyingCollateral, 'BUY').pipe(
-      map(quoteToChange),
-    )
-  }
-  return EMPTY
-}
 
 export function createExchangeChange$(
   exchangeQuote$: (
@@ -81,7 +65,21 @@ export function createExchangeChange$(
         !!s1.depositAmount?.eq(s2.depositAmount || ''),
     ),
     debounceTime(500),
-    switchMap((state) => every5Seconds$.pipe(switchMap(() => applyQuote(exchangeQuote$, state)))),
+    switchMap((state) =>
+      every5Seconds$.pipe(
+        switchMap(() => {
+          if (state.buyingCollateral.gt(0) && state.quote?.status === 'SUCCESS') {
+            return exchangeQuote$(
+              state.token,
+              state.slippage,
+              state.buyingCollateral.times(state.quote.tokenPrice),
+              'BUY_COLLATERAL',
+            )
+          }
+          return EMPTY
+        }),
+      ),
+    ),
   )
 }
 
@@ -94,5 +92,8 @@ export function createInitialQuoteChange(
   ) => Observable<Quote>,
   token: string,
 ) {
-  return exchangeQuote$(token, SLIPPAGE, new BigNumber(1), 'BUY').pipe(map(quoteToChange), take(1))
+  return exchangeQuote$(token, SLIPPAGE, new BigNumber(1), 'BUY_COLLATERAL').pipe(
+    map(quoteToChange),
+    take(1),
+  )
 }
