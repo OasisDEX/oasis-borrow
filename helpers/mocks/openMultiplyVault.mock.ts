@@ -51,6 +51,16 @@ function mockExchangeQuote$({ marketPrice = new BigNumber(2000) }: MockExchangeQ
       },
     })
 }
+
+export interface MockOpenMultiplyVaultProps {
+  priceInfo?: MockPriceInfoProps
+  balanceInfo?: MockBalanceInfoProps
+  ilks?: string[]
+  allowance?: BigNumber
+  ilkData?: MockIlkDataProps
+  exchangeQuote?: MockExchangeQuote
+}
+
 export function mockOpenMultiplyVault({
   priceInfo = {},
   balanceInfo = {},
@@ -58,14 +68,7 @@ export function mockOpenMultiplyVault({
   allowance = new BigNumber(0),
   ilkData = {},
   exchangeQuote = {},
-}: {
-  priceInfo?: MockPriceInfoProps
-  balanceInfo?: MockBalanceInfoProps
-  ilks?: string[]
-  allowance?: BigNumber
-  ilkData?: MockIlkDataProps
-  exchangeQuote?: MockExchangeQuote
-} = {}) {
+}: MockOpenMultiplyVaultProps = {}) {
   return createOpenMultiplyVault$(
     of(mockContextConnected),
     of(protoTxHelpers),
