@@ -11,7 +11,7 @@ import ReactSelect from 'react-select'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
 
 const {
-  publicRuntimeConfig: { buildHash, buildDate, showBuildInfo },
+  publicRuntimeConfig: { buildHash, buildDate, showBuildInfo, apiHost },
 } = getConfig()
 
 const FOOTER_SECTIONS = [
@@ -22,7 +22,7 @@ const FOOTER_SECTIONS = [
       { labelKey: 'landing.footer.careers', url: '/careers' },
       { labelKey: 'landing.footer.privacy', url: '/privacy' },
       { labelKey: 'landing.footer.terms', url: '/terms' },
-      { labelKey: 'landing.footer.contact', url: 'https://oasis.app/contact' },
+      { labelKey: 'landing.footer.contact', url: `${apiHost}/daiwallet/contact` },
     ],
   },
   {
@@ -43,11 +43,11 @@ const FOOTER_SECTIONS = [
     links: [
       {
         labelKey: 'landing.footer.dai-wallet',
-        url: 'https://oasis.app/dashboard',
+        url: `${apiHost}/daiwallet`,
         target: '_self',
       },
       { labelKey: 'landing.footer.borrow', url: '/' },
-      { labelKey: 'landing.footer.trade', url: 'https://oasis.app/trade', target: '_self' },
+      { labelKey: 'landing.footer.trade', url: `${apiHost}/trade`, target: '_self' },
     ],
   },
 ]

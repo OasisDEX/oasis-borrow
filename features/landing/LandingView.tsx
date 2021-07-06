@@ -13,11 +13,16 @@ import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
+import getConfig from 'next/config'
 import React, { ComponentProps, useCallback } from 'react'
 import { Box, Button, Card, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
+
+const {
+  publicRuntimeConfig: { apiHost },
+} = getConfig()
 
 export function TokenSymbol({
   token,
@@ -204,8 +209,8 @@ function LandingCards() {
         py: 4,
       }}
     >
-      <LandingCard href="https://oasis.app/dashboard" cardKey="dai" />
-      <LandingCard href="https://oasis.app/support" cardKey="faq" />
+      <LandingCard href={`${apiHost}/daiwallet`} cardKey="dai" target="_self" />
+      <LandingCard href="/support" cardKey="faq" />
     </Grid>
   )
 }
