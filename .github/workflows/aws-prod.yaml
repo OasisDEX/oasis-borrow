@@ -16,57 +16,57 @@ jobs:
       CLUSTER_NAME: oasis-borrow-prod
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Extract commit hash
-        id: vars
-        shell: bash
-        run: |
-          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+    - name: Extract commit hash
+      id: vars
+      shell: bash
+      run: |
+        echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
-        env:
-          SHA_TAG: ${{ steps.vars.outputs.sha_short }}
-          LATEST_TAG: latest
-          ENVIRONMENT_TAG: prod
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        run: |
-          # Build a docker container and
-          # push it to ECR so that it can
-          # be deployed to ECS.
-          docker build --build-arg COMMIT_SHA=${{ env.SHA_TAG }} \
-                       --build-arg API_HOST=${{ secrets.API_HOST }} \
-                       --build-arg MIXPANEL_ENV=production \
-                       --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_PROD_KEY }} \
-                       --build-arg INFURA_PROJECT_ID=${{ secrets.INFURA_PROJECT_ID }} \
-                       --build-arg ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }} \
-                       --build-arg SHOW_BUILD_INFO=0 \
-                       -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
-                       -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
-                       -t $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
-                       .
-          docker push $ECR_REGISTRY/$ECR_REPO_NAME --all-tags
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        SHA_TAG: ${{ steps.vars.outputs.sha_short }}
+        LATEST_TAG: latest
+        ENVIRONMENT_TAG: prod
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      run: |
+        # Build a docker container and
+        # push it to ECR so that it can
+        # be deployed to ECS.
+        docker build --build-arg COMMIT_SHA=${{ env.SHA_TAG }} \
+                     --build-arg API_HOST=${{ secrets.API_HOST }} \
+                     --build-arg MIXPANEL_ENV=production \
+                     --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_PROD_KEY }} \
+                     --build-arg INFURA_PROJECT_ID=${{ secrets.INFURA_PROJECT_ID }} \
+                     --build-arg ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }} \
+                     --build-arg SHOW_BUILD_INFO=0 \
+                     -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
+                     -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
+                     -t $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
+                     .
+        docker push $ECR_REGISTRY/$ECR_REPO_NAME --all-tags
 
-      - name: Update ECS service with latest Docker image
-        id: service-update
-        run: |
-          aws ecs update-service --cluster $CLUSTER_NAME --service ${{ env.SERVICE_NAME }} --force-new-deployment --region $AWS_REGION
+    - name: Update ECS service with latest Docker image
+      id: service-update
+      run: |
+        aws ecs update-service --cluster $CLUSTER_NAME --service ${{ env.SERVICE_NAME }} --force-new-deployment --region $AWS_REGION
 
-      - name: Wait for all services to become stable
-        uses: oryanmoshe/ecs-wait-action@v1.3
-        with:
-          ecs-cluster: ${{ env.CLUSTER_NAME }}
-          ecs-services: '["${{ env.SERVICE_NAME }}"]'
+    - name: Wait for all services to become stable
+      uses: oryanmoshe/ecs-wait-action@v1.3
+      with:
+        ecs-cluster: ${{ env.CLUSTER_NAME }}
+        ecs-services: '["${{ env.SERVICE_NAME }}"]'
