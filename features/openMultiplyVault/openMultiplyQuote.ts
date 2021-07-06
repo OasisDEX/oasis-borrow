@@ -94,8 +94,5 @@ export function createInitialQuoteChange(
   ) => Observable<Quote>,
   token: string,
 ) {
-  return exchangeQuote$(token, SLIPPAGE, new BigNumber(0.01), 'BUY').pipe(
-    map(quoteToChange),
-    take(1),
-  )
+  return exchangeQuote$(token, SLIPPAGE, new BigNumber(1), 'BUY').pipe(map(quoteToChange), take(1))
 }
