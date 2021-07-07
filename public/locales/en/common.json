@@ -238,7 +238,7 @@
       "generate-amount-exceeds-dai-yield-from-total-collateral": "The collateralization ratio for this Maker Vault is too low. Please generate less Dai",
       "generate-amount-exceeds-dai-yield-from-total-collateral-at-next-price": "The collateralization ratio for this Maker Vault is too low at the next price update. Please generate less Dai",
       "generate-amount-exceeds-debt-ceiling": "You are trying to generate more than the current debt ceiling allows. The amount of Dai that can be generated is {{maxGenerateAmount}} {{token}}",
-      "generate-amount-less-than-debt-floor": "This vault type requires a minimum of {{debtFloor}} Dai to be generated. Read more about the Dust Limit <0>here</0>.",
+      "generate-amount-less-than-debt-floor": "This vault type requires a minimum of {{debtFloor}} Dai to be generated. Read more about the Minimum Vault Debt <0>here</0>.",
       "payback-amount-exceeds-dai-balance": "You cannot payback more Dai than the amount in your wallet",
       "payback-amount-exceeds-vault-debt": "You are trying to payback more than your Dai debt for this Maker Vault",
       "debt-will-be-less-than-debt-floor": "The Maker Vault debt amount either must be 0 or exceed {{debtFloor}} amount of Dai. Please change your payback amount",
@@ -247,7 +247,8 @@
       "custom-dai-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
       "custom-dai-allowance-amount-less-than-payback-amount": "You need at least an allowance of your payback amount to continue",
       "depositing-all-eth-balance": "You need some ETH to pay for the gas fees. Lower your deposit amount",
-      "ledger-enable-contract-data": "Please enable Contract data on the Ledgers Ethereum app Settings"
+      "ledger-enable-contract-data": "Please enable Contract data on the Ledgers Ethereum app Settings",
+      "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, payback your debt fully. Learn more about the Minimum Vault Debt <0>here</0>."
     }
   },
   "max": "Max",
@@ -286,7 +287,7 @@
       "generate-amount-exceeds-dai-yield-from-depositing-collateral": "The collateralization ratio for this Maker Vault will be too low. Please generate less Dai",
       "generate-amount-exceeds-dai-yield-from-depositing-collateral-at-next-price": "The collateralization ratio for this Maker Vault will be too low at the next price update. Please generate less Dai",
       "generate-amount-exceeds-debt-ceiling": "You are trying to generate more than the current debt ceiling allows. The amount of Dai that can be generated is {{maxGenerateAmount}} {{token}}",
-      "generate-amount-less-than-debt-floor": "This vault type requires a minimum of {{debtFloor}} Dai to be generated. Read more about the Dust Limit <0>here</0>.",
+      "generate-amount-less-than-debt-floor": "This vault type requires a minimum of {{debtFloor}} Dai to be generated. Read more about the Minimum Vault Debt <0>here</0>.",
       "debt-will-be-less-than-debt-floor": "The Maker Vault debt amount either must be 0 or exceed {{debtFloor}} amount of Dai. Please change your payback amount",
       "custom-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
       "custom-allowance-amount-less-than-deposit-amount": "You need at least an allowance of your deposit amount to continue",
