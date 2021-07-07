@@ -6,9 +6,9 @@ import { SpotIlk, spotIlk } from 'blockchain/calls/spot'
 import { VatIlk, vatIlk } from 'blockchain/calls/vat'
 import { Context } from 'blockchain/network'
 import { one, zero } from 'helpers/zero'
-import { of } from 'rxjs'
+import { EMPTY, empty, of } from 'rxjs'
 import { combineLatest, Observable } from 'rxjs'
-import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
+import { catchError, distinctUntilChanged, map, retry, shareReplay, switchMap } from 'rxjs/operators'
 
 export function createIlks$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(
@@ -101,6 +101,7 @@ export function createIlkDataList$(
   return ilks$.pipe(
     switchMap((ilks) => combineLatest(ilks.map((ilk) => ilkData$(ilk)))),
     distinctUntilChanged(),
+    retry(3),
     shareReplay(1),
   )
 }

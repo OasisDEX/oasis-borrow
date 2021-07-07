@@ -1,3 +1,4 @@
+import Error from 'next/error'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Pages, trackingEvents } from 'analytics/analytics'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -12,8 +13,10 @@ import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { useRedirect } from 'helpers/useRedirect'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback } from 'react'
+import { useEffect } from 'react'
 import { Box, Button, Card, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
@@ -210,6 +213,18 @@ function LandingCards() {
   )
 }
 
+function WithCustomError(error: any) {
+  const { push } = useRedirect()
+  useEffect(() => {
+    push('/error')
+    return () => {
+      console.log(error)
+    }
+
+   }, [error])
+  return null
+}
+
 export function LandingView() {
   const { landing$, context$ } = useAppContext()
   const context = useObservable(context$)
@@ -269,8 +284,14 @@ export function LandingView() {
             <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
           </Flex>
         }
+        customError={
+          <WithCustomError>
+
+          </WithCustomError>
+        }
       >
-        {(landing) => (
+      {(landing) => (
+     
           <Box sx={{ ...slideInAnimation, position: 'relative' }}>
             <FiltersWithPopular
               onSearch={onIlkSearch}
@@ -295,7 +316,8 @@ export function LandingView() {
               />
             </Box>
           </Box>
-        )}
+  
+                  )}
       </WithLoadingIndicator>
       <LandingCards />
     </Grid>
