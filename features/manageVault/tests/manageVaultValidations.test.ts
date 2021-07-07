@@ -226,7 +226,7 @@ describe('manageVaultValidations', () => {
     expect(state().stage).to.deep.equal('daiAllowanceWaitingForConfirmation')
   })
 
-  it.only('should show meaningful message when trying to withdraw collateral on dusty vault', () => {
+  it('should show meaningful message when trying to withdraw collateral on dusty vault', () => {
     const withdrawAmount = new BigNumber('5')
 
     const state = getStateUnpacker(
