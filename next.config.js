@@ -87,6 +87,30 @@ module.exports = withBundleAnalyzer(
           dest: 'public',
         },
         i18n,
+        async redirects() {
+          return [
+            {
+              source: '/borrow',
+              destination: '/',
+              permanent: true,
+            },
+            {
+              source: '/borrow/:slug*',
+              destination: '/:slug*',
+              permanent: true,
+            },
+            {
+              source: '/dashboard',
+              destination: '/daiwallet/dashboard',
+              permanent: true,
+            },
+            {
+              source: '/(0x[a-fA-F0-9]{40}.*)',
+              destination: '/daiwallet/dashboard',
+              permanent: true,
+            },
+          ]
+        },
       }),
     ),
   ),
