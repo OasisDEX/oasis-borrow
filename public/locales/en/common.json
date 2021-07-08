@@ -442,6 +442,7 @@
       "connected-owner-noVaults": "You have no open Vaults",
       "connected-owner-withVaults": "Your Vaults",
       "connected-viewer-noVaults": "{{address}} currently has no Maker Vaults",
+      "connected-viewer-withVaults": "Maker Vaults overview of {{address}}",
       "notConnected-noVaults": "{{address}} currently has no Maker Vaults.<0/> Connect your wallet and open a vault.",
       "notConnected-withVaults": "Maker Vaults overview of {{address}}.<0/> Connect your wallet."
     },

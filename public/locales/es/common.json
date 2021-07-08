@@ -449,6 +449,7 @@
       "connected-owner-noVaults": "No tienes Vaults abiertos",
       "connected-owner-withVaults": "Resumen de tus Vaults de Maker",
       "connected-viewer-noVaults": "{{address}} actualmente no tiene Vaults de Maker.",
+      "connected-viewer-withVaults": "Resumen de Vaults de Maker de {{address}}",
       "notConnected-noVaults": "{{address}} actualmente no tiene Vaults de Maker.<0/> Conecta tu billetera y abre un Vault",
       "notConnected-withVaults": "Resumen de Vaults de Maker de {{address}}.<0/> Conecta tu billetera"
     },
