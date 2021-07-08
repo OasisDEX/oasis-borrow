@@ -5,7 +5,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { Button, Container, Grid, Heading, Flex } from 'theme-ui'
 import { Icon } from '@makerdao/dai-ui-icons'
-import { padLeft } from '@oasisdex/utils/lib/src/utils'
+
+import { withRouter } from 'next/router'
 
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
@@ -14,9 +15,10 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-export default function NotFoundPage() {
+ function ErrorPage() {
   const { t } = useTranslation()
-
+    // this.props.router.query.name
+   
   return (
     <Container>
       <Grid gap={4} sx={{ justifyContent: 'center', textAlign: 'center', mt: 5 , mx: 'auto '}}>
@@ -25,13 +27,11 @@ export default function NotFoundPage() {
           <Icon name="close" color="onError" size="auto" height="15px"/>
           </AppLink>
         </Heading>
-  
-        <AppLink href="/">
-          <Button>{t('error-button')}</Button>
-        </AppLink>
+            <Button>{t('error-button')}</Button>
       </Grid>
     </Container>
   )
 }
 
-NotFoundPage.layout = MarketingLayout
+ErrorPage.layout = MarketingLayout
+export default withRouter(ErrorPage)

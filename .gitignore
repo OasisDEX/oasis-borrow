@@ -10,6 +10,7 @@ yalc.lock
 .vscode
 .log
 .DS_Store
+.history
 
 public/precache.*.*.js
 public/sw.js
@@ -25,3 +26,4 @@ storybook-static
 storybook-static/*
 cache
 
+workspace.code-workspace

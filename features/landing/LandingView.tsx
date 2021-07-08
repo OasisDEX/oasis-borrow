@@ -1,4 +1,3 @@
-import Error from 'next/error'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Pages, trackingEvents } from 'analytics/analytics'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -21,6 +20,8 @@ import { Box, Button, Card, Flex, Grid, Heading, Image, SxStyleProp, Text } from
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
+import ErrorPage from 'pages';
+
 
 export function TokenSymbol({
   token,
@@ -216,9 +217,12 @@ function LandingCards() {
 function WithCustomError(error: any) {
   const { push } = useRedirect()
   useEffect(() => {
-    push('/error')
+    push('/error', { errors: error[0] })
+
     return () => {
       console.log(error)
+
+      
     }
 
    }, [error])
