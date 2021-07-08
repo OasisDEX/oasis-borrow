@@ -418,6 +418,7 @@
       "connected-owner-noVaults": "你没有开启任何金库。",
       "connected-owner-withVaults": "你的 Maker 金库概览",
       "connected-viewer-noVaults": "{{address}} 地址下当前没有 Maker 金库",
+      "connected-viewer-withVaults": "{{address}} 地址下的 Maker 金库",
       "notConnected-noVaults": "{{address}} 地址下当前没有 Maker 金库。<0/> 连接你的钱包开启金库。",
       "notConnected-withVaults": "{{address}} 地址下的 Maker 金库。<0/> 连接你的钱包。"
     },
