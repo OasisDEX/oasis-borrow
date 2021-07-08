@@ -20,6 +20,7 @@ export type ManageVaultErrorMessage =
   | 'customDaiAllowanceAmountLessThanPaybackAmount'
   | 'depositingAllEthBalance'
   | 'ledgerWalletContractDataDisabled'
+  | 'withdrawCollateralOnVaultUnderDebtFloor'
 
 export type ManageVaultWarningMessage =
   | 'potentialGenerateAmountLessThanDebtFloor'
@@ -48,6 +49,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     generateAmountExceedsDebtCeiling,
     paybackAmountExceedsDaiBalance,
     paybackAmountExceedsVaultDebt,
+    withdrawCollateralOnVaultUnderDebtFloor,
   } = state
 
   const errorMessages: ManageVaultErrorMessage[] = []
@@ -95,6 +97,10 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
 
     if (debtWillBeLessThanDebtFloor) {
       errorMessages.push('debtWillBeLessThanDebtFloor')
+    }
+
+    if (withdrawCollateralOnVaultUnderDebtFloor) {
+      errorMessages.push('withdrawCollateralOnVaultUnderDebtFloor')
     }
   }
 

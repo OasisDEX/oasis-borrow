@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
@@ -53,7 +53,7 @@ export function VaultDetailsTable({
           label={t('system.vault-dai-debt')}
           value={
             <>
-              {formatAmount(generateAmount || zero, 'DAI')}
+              {formatCryptoBalance(generateAmount || zero)}
               <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
                 DAI
               </Text>
@@ -78,7 +78,7 @@ export function VaultDetailsTable({
           label={t('system.available-to-generate')}
           value={
             <>
-              {formatAmount(maxGenerateAmountCurrentPrice, 'DAI')}
+              {formatCryptoBalance(maxGenerateAmountCurrentPrice)}
               <Text sx={{ display: 'inline', ml: 2, fontWeight: 'semiBold' }} variant="paragraph3">
                 USD
               </Text>
@@ -96,7 +96,7 @@ export function VaultDetailsTable({
         />
         <VaultDetailsTableItem
           label={t('system.liquidation-ratio')}
-          value={formatPercent(ilkData.liquidationRatio.times(100), { precision: 2 })}
+          value={formatPercent(ilkData.liquidationRatio.times(100))}
         />
         <VaultDetailsTableItem
           label={t('system.stability-fee')}
@@ -104,7 +104,7 @@ export function VaultDetailsTable({
         />
         <VaultDetailsTableItem
           label={t('system.liquidation-penalty')}
-          value={formatPercent(ilkData.liquidationPenalty.times(100), { precision: 2 })}
+          value={formatPercent(ilkData.liquidationPenalty.times(100))}
         />
       </Grid>
     </Box>

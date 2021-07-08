@@ -1,5 +1,6 @@
 import { INPUT_DEBOUNCE_TIME, Pages, Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
+import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
@@ -8,22 +9,22 @@ import { ManageVaultState } from './manageVault'
 
 type GenerateAmountChange = {
   kind: 'generateAmountChange'
-  value: BigNumber
+  value: { amount: BigNumber; setMax: boolean }
 }
 
 type DepositAmountChange = {
   kind: 'depositAmountChange'
-  value: BigNumber
+  value: { amount: BigNumber; setMax: boolean }
 }
 
 type PaybackAmountChange = {
   kind: 'paybackAmountChange'
-  value: BigNumber
+  value: { amount: BigNumber; setMax: boolean }
 }
 
 type WithdrawAmountChange = {
   kind: 'withdrawAmountChange'
-  value: BigNumber
+  value: { amount: BigNumber; setMax: boolean }
 }
 
 type AllowanceChange = {
@@ -33,6 +34,25 @@ type AllowanceChange = {
       | Pick<ManageVaultState, 'selectedDaiAllowanceRadio'>
       | Pick<ManageVaultState, 'selectedCollateralAllowanceRadio'>
     amount: BigNumber
+  }
+}
+
+type ManageVaultConfirm = {
+  kind: 'manageVaultConfirm'
+  value: {
+    ilk: string
+    collateralAmount: BigNumber
+    daiAmount: BigNumber
+  }
+}
+
+type ManageVaultConfirmTransaction = {
+  kind: 'manageVaultConfirmTransaction'
+  value: {
+    ilk: string
+    collateralAmount: BigNumber
+    daiAmount: BigNumber
+    txHash: string
   }
 }
 
@@ -47,46 +67,58 @@ export function createManageVaultAnalytics$(
   )
 
   const depositAmountChanges: Observable<DepositAmountChange> = manageVaultState$.pipe(
-    map((state) => state.depositAmount),
-    filter((amount) => !!amount),
+    map(({ depositAmount, maxDepositAmount }) => ({
+      amount: depositAmount,
+      setMax: depositAmount?.eq(maxDepositAmount),
+    })),
+    filter((value) => !!value.amount),
     distinctUntilChanged(isEqual),
     debounceTime(INPUT_DEBOUNCE_TIME),
-    map((amount) => ({
+    map((value) => ({
       kind: 'depositAmountChange',
-      value: amount,
+      value,
     })),
   )
 
   const generateAmountChanges: Observable<GenerateAmountChange> = manageVaultState$.pipe(
-    map((state) => state.generateAmount),
-    filter((amount) => !!amount),
+    map(({ generateAmount, maxGenerateAmount }) => ({
+      amount: generateAmount,
+      setMax: generateAmount?.eq(maxGenerateAmount),
+    })),
+    filter((value) => !!value.amount),
     distinctUntilChanged(isEqual),
     debounceTime(INPUT_DEBOUNCE_TIME),
-    map((amount) => ({
+    map((value) => ({
       kind: 'generateAmountChange',
-      value: amount,
+      value,
     })),
   )
 
-  const patbackAmountChanges: Observable<PaybackAmountChange> = manageVaultState$.pipe(
-    map((state) => state.paybackAmount),
-    filter((amount) => !!amount),
+  const paybackAmountChanges: Observable<PaybackAmountChange> = manageVaultState$.pipe(
+    map(({ paybackAmount, maxPaybackAmount }) => ({
+      amount: paybackAmount,
+      setMax: paybackAmount?.eq(maxPaybackAmount),
+    })),
+    filter((value) => !!value.amount),
     distinctUntilChanged(isEqual),
     debounceTime(INPUT_DEBOUNCE_TIME),
-    map((amount) => ({
+    map((value) => ({
       kind: 'paybackAmountChange',
-      value: amount,
+      value,
     })),
   )
 
   const withdrawAmountChanges: Observable<WithdrawAmountChange> = manageVaultState$.pipe(
-    map((state) => state.withdrawAmount),
-    filter((amount) => !!amount),
+    map(({ withdrawAmount, maxWithdrawAmount }) => ({
+      amount: withdrawAmount,
+      setMax: withdrawAmount?.eq(maxWithdrawAmount),
+    })),
+    filter((value) => !!value.amount),
     distinctUntilChanged(isEqual),
     debounceTime(INPUT_DEBOUNCE_TIME),
-    map((amount) => ({
+    map((value) => ({
       kind: 'withdrawAmountChange',
-      value: amount,
+      value,
     })),
   )
 
@@ -94,6 +126,7 @@ export function createManageVaultAnalytics$(
     ManageVaultState,
     'selectedCollateralAllowanceRadio'
   >> = manageVaultState$.pipe(
+    filter((state) => state.stage === 'collateralAllowanceWaitingForConfirmation'),
     map((state) => state.selectedCollateralAllowanceRadio),
     distinctUntilChanged(isEqual),
   )
@@ -120,9 +153,10 @@ export function createManageVaultAnalytics$(
 
   const daiAllowanceTypeChanges: Observable<Pick<
     ManageVaultState,
-    'selectedCollateralAllowanceRadio'
+    'selectedDaiAllowanceRadio'
   >> = manageVaultState$.pipe(
-    map((state) => state.selectedCollateralAllowanceRadio),
+    filter((state) => state.stage === 'daiAllowanceWaitingForConfirmation'),
+    map((state) => state.selectedDaiAllowanceRadio),
     distinctUntilChanged(isEqual),
   )
 
@@ -146,31 +180,90 @@ export function createManageVaultAnalytics$(
     })),
   )
 
+  const manageVaultConfirm: Observable<ManageVaultConfirm> = manageVaultState$.pipe(
+    filter((state) => state.stage === 'manageWaitingForApproval'),
+    map(({ vault: { ilk }, depositAmount, withdrawAmount, generateAmount, paybackAmount }) => ({
+      kind: 'manageVaultConfirm',
+      value: {
+        ilk: ilk,
+        collateralAmount:
+          depositAmount || (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : zero),
+        daiAmount:
+          generateAmount || (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : zero),
+      },
+    })),
+    distinctUntilChanged(isEqual),
+  )
+
+  const manageVaultConfirmTransaction: Observable<ManageVaultConfirmTransaction> = manageVaultState$.pipe(
+    filter((state) => state.stage === 'manageInProgress'),
+    map(
+      ({
+        vault: { ilk },
+        depositAmount,
+        withdrawAmount,
+        generateAmount,
+        paybackAmount,
+        manageTxHash,
+      }) => ({
+        kind: 'manageVaultConfirmTransaction',
+        value: {
+          ilk: ilk,
+          collateralAmount:
+            depositAmount || (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : zero),
+          daiAmount:
+            generateAmount || (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : zero),
+          txHash: manageTxHash,
+        },
+      }),
+    ),
+    distinctUntilChanged(isEqual),
+  )
+
   return stageChanges
     .pipe(
       switchMap((stage) =>
         merge(
-          depositAmountChanges,
-          generateAmountChanges,
-          patbackAmountChanges,
-          withdrawAmountChanges,
-          collateralAllowanceChanges,
-          daiAllowanceChanges,
+          merge(
+            depositAmountChanges,
+            generateAmountChanges,
+            paybackAmountChanges,
+            withdrawAmountChanges,
+            collateralAllowanceChanges,
+            daiAllowanceChanges,
+          ),
+          merge(manageVaultConfirm, manageVaultConfirmTransaction),
         ).pipe(
           tap((event) => {
             const page = stage === 'daiEditing' ? Pages.ManageDai : Pages.ManageCollateral
             switch (event.kind) {
               case 'depositAmountChange':
-                tracker.manageVaultDepositAmount(page, event.value.toString())
+                tracker.manageVaultDepositAmount(
+                  page,
+                  event.value.amount.toString(),
+                  event.value.setMax,
+                )
                 break
               case 'generateAmountChange':
-                tracker.manageVaultGenerateAmount(page, event.value.toString())
+                tracker.manageVaultGenerateAmount(
+                  page,
+                  event.value.amount.toString(),
+                  event.value.setMax,
+                )
                 break
               case 'paybackAmountChange':
-                tracker.manageVaultPaybackAmount(page, event.value.toString())
+                tracker.manageVaultPaybackAmount(
+                  page,
+                  event.value.amount.toString(),
+                  event.value.setMax,
+                )
                 break
               case 'withdrawAmountChange':
-                tracker.manageVaultWithdrawAmount(page, event.value.toString())
+                tracker.manageVaultWithdrawAmount(
+                  page,
+                  event.value.amount.toString(),
+                  event.value.setMax,
+                )
                 break
               case 'collateralAllowanceChange':
                 tracker.manageCollateralPickAllowance(
@@ -182,6 +275,23 @@ export function createManageVaultAnalytics$(
                 tracker.manageDaiPickAllowance(
                   event.value.type.toString(),
                   event.value.amount.toString(),
+                )
+                break
+              case 'manageVaultConfirm':
+                tracker.manageVaultConfirm(
+                  page,
+                  event.value.ilk,
+                  event.value.collateralAmount.toString(),
+                  event.value.daiAmount.toString(),
+                )
+                break
+              case 'manageVaultConfirmTransaction':
+                tracker.manageVaultConfirmTransaction(
+                  page,
+                  event.value.ilk,
+                  event.value.collateralAmount.toString(),
+                  event.value.daiAmount.toString(),
+                  event.value.txHash,
                 )
                 break
               default:

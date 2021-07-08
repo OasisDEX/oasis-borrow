@@ -225,4 +225,31 @@ describe('manageVaultValidations', () => {
     state().progress!()
     expect(state().stage).to.deep.equal('daiAllowanceWaitingForConfirmation')
   })
+
+  it('should show meaningful message when trying to withdraw collateral on dusty vault', () => {
+    const withdrawAmount = new BigNumber('5')
+
+    const state = getStateUnpacker(
+      mockManageVault$({
+        ilkData: {
+          debtFloor: new BigNumber(1000),
+        },
+        vault: {
+          debt: new BigNumber(100),
+          collateral: new BigNumber(10),
+        },
+        balanceInfo: {
+          daiBalance: new BigNumber(1000),
+        },
+        proxyAddress: DEFAULT_PROXY_ADDRESS,
+        daiAllowance: zero,
+      }),
+    )
+
+    state().updateWithdraw!(withdrawAmount)
+    expect(state().errorMessages).to.deep.eq(['withdrawCollateralOnVaultUnderDebtFloor'])
+    state().toggle!()
+    state().updatePaybackMax!()
+    expect(state().errorMessages).to.deep.eq([])
+  })
 })

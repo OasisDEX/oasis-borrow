@@ -11,18 +11,18 @@ import ReactSelect from 'react-select'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
 
 const {
-  publicRuntimeConfig: { buildHash, buildDate, showBuildInfo },
+  publicRuntimeConfig: { buildHash, buildDate, showBuildInfo, apiHost },
 } = getConfig()
 
 const FOOTER_SECTIONS = [
   {
     titleKey: 'landing.footer.about',
     links: [
-      { labelKey: 'landing.footer.team', url: 'https://oasis.app/about', target: '_self' },
-      { labelKey: 'landing.footer.careers', url: 'https://oasis.app/careers', target: '_self' },
-      { labelKey: 'landing.footer.privacy', url: 'https://oasis.app/privacy', target: '_self' },
+      { labelKey: 'landing.footer.team', url: '/about' },
+      { labelKey: 'landing.footer.careers', url: '/careers' },
+      { labelKey: 'landing.footer.privacy', url: '/privacy' },
       { labelKey: 'landing.footer.terms', url: '/terms' },
-      { labelKey: 'landing.footer.contact', url: 'https://oasis.app/contact' },
+      { labelKey: 'landing.footer.contact', url: `${apiHost}/daiwallet/contact` },
     ],
   },
   {
@@ -31,8 +31,7 @@ const FOOTER_SECTIONS = [
       { labelKey: 'landing.footer.blog', url: 'https://blog.oasis.app', target: '_self' },
       {
         labelKey: 'landing.footer.faq',
-        url: 'https://oasis.app/support',
-        target: '_self',
+        url: '/support',
       },
       // add link
       // { labelKey: 'landing.footer.knowledge-centre', url: '/' },
@@ -44,11 +43,11 @@ const FOOTER_SECTIONS = [
     links: [
       {
         labelKey: 'landing.footer.dai-wallet',
-        url: 'https://oasis.app/dashboard',
+        url: `${apiHost}/daiwallet`,
         target: '_self',
       },
       { labelKey: 'landing.footer.borrow', url: '/' },
-      { labelKey: 'landing.footer.trade', url: 'https://oasis.app/trade', target: '_self' },
+      { labelKey: 'landing.footer.trade', url: `${apiHost}/trade`, target: '_self' },
     ],
   },
 ]

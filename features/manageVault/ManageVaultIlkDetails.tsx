@@ -21,7 +21,7 @@ export function ManageVaultIlkDetails({
       />
       <Details.Item
         label={t('manage-vault.min-collat-ratio')}
-        value={`${formatPercent(liquidationRatio.times(100), { precision: 2 })}`}
+        value={`${formatPercent(liquidationRatio.times(100))}`}
       />
       <Details.Item
         label={t('manage-vault.stability-fee')}
@@ -29,7 +29,7 @@ export function ManageVaultIlkDetails({
       />
       <Details.Item
         label={t('manage-vault.liquidation-fee')}
-        value={`${formatPercent(liquidationPenalty.times(100), { precision: 2 })}`}
+        value={`${formatPercent(liquidationPenalty.times(100))}`}
       />
       <Details.Item
         label={t('manage-vault.dust-limit')}

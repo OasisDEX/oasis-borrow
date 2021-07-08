@@ -1,6 +1,12 @@
 {
   "404-button": "返回主页",
   "404-message": "抱歉，页面不存在。",
+  "about": {
+    "heading": "About us",
+    "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital. We are building Oasis.app to let our users benefit from all of the potential in DeFi.\n\n Our team is made of passionate thinkers and builders.",
+    "careers-link": "Join Us",
+    "pics-title": "Meet the team"
+  },
   "acceptance-check-failed": "授权检查失败",
   "acceptance-save-failed": "授权保存失败",
   "acceptance-save-in-progress": "授权保存进行中...",
@@ -23,6 +29,15 @@
   "balance-insufficient": "你钱包中的 Dai 余额不足",
   "balances": "余额",
   "buy": "购买",
+  "careers": {
+    "heading": "Open Roles",
+    "intro": "We believe in talent. Join us to build the next generation of DeFi.",
+    "cta-button": "Apply",
+    "back-link": "Back to Careers",
+    "no-open-positions": "There are currently no roles available at this time, but we are always looking for the best talents to join us.",
+    "no-positions-you-like": "You haven't found something that you like? Show us your interest, we are always looking for the best talents to join us!",
+    "write-us": "Send us your CV to "
+  },
   "change-your-vault": "切换金库",
   "close": "关闭",
   "coming-soon": "即将上线",
@@ -303,6 +318,14 @@
     "support": {
       "description": "所有常见问题回答",
       "title": "常见问题"
+    },
+    "careers": {
+      "title": "Careers",
+      "description": "We believe in talent. Join us to build the next generation of DeFi."
+    },
+    "about": {
+      "title": "About Us",
+      "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital."
     }
   },
   "set-allowance-for": "设置 {{token}} 许可额度",

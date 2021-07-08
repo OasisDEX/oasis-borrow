@@ -1,7 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Pages } from 'analytics/analytics'
+import { Pages, trackingEvents } from 'analytics/analytics'
 import { getToken } from 'blockchain/tokensMetadata'
-import { WelcomeAnnouncement } from 'components/Announcement'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
@@ -13,11 +12,16 @@ import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
+import getConfig from 'next/config'
 import React, { ComponentProps, useCallback } from 'react'
 import { Box, Button, Card, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
+
+const {
+  publicRuntimeConfig: { apiHost },
+} = getConfig()
 
 export function TokenSymbol({
   token,
@@ -131,8 +135,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
         flexDirection: 'column',
       }}
     >
-      <WelcomeAnnouncement />
-      <Heading as="h1" variant="header2" sx={{ fontSize: 40, mb: 3 }}>
+      <Heading as="h1" variant="header1" sx={{ mb: 3 }}>
         {t('landing.hero.headline')}
       </Heading>
       <Text variant="paragraph1" sx={{ mb: 4, color: 'lavender' }}>
@@ -204,8 +207,8 @@ function LandingCards() {
         py: 4,
       }}
     >
-      <LandingCard href="https://oasis.app/dashboard" cardKey="dai" />
-      <LandingCard href="https://oasis.app/support" cardKey="faq" />
+      <LandingCard href={`${apiHost}/daiwallet`} cardKey="dai" />
+      <LandingCard href="/support" cardKey="faq" />
     </Grid>
   )
 }
@@ -290,6 +293,7 @@ export function LandingView() {
                 noResults={<Box>{t('no-results')}</Box>}
                 deriveRowProps={(row) => ({
                   href: row.ilkDebtAvailable.isZero() ? undefined : `/vaults/open/${row.ilk}`,
+                  onClick: () => trackingEvents.openVault(Pages.LandingPage, row.ilk),
                 })}
               />
             </Box>
