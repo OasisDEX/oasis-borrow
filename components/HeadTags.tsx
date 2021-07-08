@@ -32,7 +32,7 @@ export function PageSEONoFollow() {
   )
 }
 
-const APP_URL = 'https://oasis.app/'
+const APP_URL = 'https://oasis.app'
 
 export function PageSEOTags({ title, description, url = '/', ogImage = 'og.png' }: SEOTagsType) {
   const { t } = useTranslation()
