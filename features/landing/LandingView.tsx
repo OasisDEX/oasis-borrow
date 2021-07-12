@@ -12,15 +12,14 @@ import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { useRedirect } from 'helpers/useRedirect'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { ComponentProps, useCallback } from 'react'
-import { useEffect } from 'react'
 import { Box, Button, Card, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
-import ErrorPage from 'pages';
+import { ErrorRedirect } from 'helpers/errorHandlers/ErrorRedirect'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 
 
 export function TokenSymbol({
@@ -214,21 +213,6 @@ function LandingCards() {
   )
 }
 
-function WithCustomError(error: any) {
-  const { push } = useRedirect()
-  useEffect(() => {
-    push('/error', { errors: error[0] })
-
-    return () => {
-      console.log(error)
-
-      
-    }
-
-   }, [error])
-  return null
-}
-
 export function LandingView() {
   const { landing$, context$ } = useAppContext()
   const context = useObservable(context$)
@@ -280,6 +264,7 @@ export function LandingView() {
         />
         {landing !== undefined && <FeaturedIlks sx={fadeInAnimation} ilks={landing.featuredIlks} />}
       </Box>
+      <WithErrorHandler error={landingError} customError= {ErrorRedirect}>
       <WithLoadingIndicator
         value={landing}
         error={landingError}
@@ -287,11 +272,6 @@ export function LandingView() {
           <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
             <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
           </Flex>
-        }
-        customError={
-          <WithCustomError>
-
-          </WithCustomError>
         }
       >
       {(landing) => (
@@ -323,6 +303,7 @@ export function LandingView() {
   
                   )}
       </WithLoadingIndicator>
+      </WithErrorHandler>
       <LandingCards />
     </Grid>
   )

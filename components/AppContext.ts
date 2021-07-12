@@ -48,6 +48,7 @@ import { createOpenVault$ } from 'features/openVault/openVault'
 import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultData'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import { redirectState$ } from 'features/router/redirectState'
+import { errorState$ } from 'features/router/errorState'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import {
   checkAcceptanceFromApi$,
@@ -345,6 +346,7 @@ export function setupAppContext() {
     vaultsOverview$,
     vaultBanners$,
     redirectState$,
+    errorState$,
     accountBalances$,
     accountData$,
     vaultHistory$,
