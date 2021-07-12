@@ -56,20 +56,20 @@ OpenMultiplyVaultStory) {
       return subscription.unsubscribe()
     }, [])
 
-    const openVault$ = () => obs$
+    const openMultiplyVault$ = () => obs$
     const ctx = ({
-      openVault$,
+      multiplyVault$: openMultiplyVault$,
     } as any) as AppContext
 
     return (
       <appContext.Provider value={ctx as any}>
-        <OpenVaultStoryContainer ilk={'WBTC-A'} title={title} />
+        <OpenMultiplyVaultStoryContainer ilk={'WBTC-A'} title={title} />
       </appContext.Provider>
     )
   }
 }
 
-const OpenVaultStoryContainer = ({ title, ilk }: { title?: string; ilk: string }) => {
+const OpenMultiplyVaultStoryContainer = ({ title, ilk }: { title?: string; ilk: string }) => {
   if (!isAppContextAvailable()) return null
 
   return (
