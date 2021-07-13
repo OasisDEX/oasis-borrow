@@ -309,7 +309,7 @@
     },
     "default": {
       "description": "Generate Dai using crypto as your collateral",
-      "title": "Oasis Borrow"
+      "title": "Oasis"
     },
     "latam500": {
       "description": "通过 Oasis.app 上的 Latamex 购买 Dai。每月可获得价值 10 美元的 ETH，为期三个月。",
