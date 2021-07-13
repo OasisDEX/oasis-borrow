@@ -47,8 +47,8 @@ import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
 import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultData'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
-import { redirectState$ } from 'features/router/redirectState'
 import { errorState$ } from 'features/router/errorState'
+import { redirectState$ } from 'features/router/redirectState'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import {
   checkAcceptanceFromApi$,

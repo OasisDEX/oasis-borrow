@@ -9,7 +9,7 @@ import { of } from 'rxjs'
 import { createFeaturedIlks$ } from '../featuredIlksData'
 import { createLanding$ } from '../landing'
 
-describe.only('Landing', () => {
+describe('Landing', () => {
   function prepareIlkDataList$() {
     return of([
       mockIlkData({
