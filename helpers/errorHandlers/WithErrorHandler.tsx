@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import React from 'react'
 
 export function WithErrorHandler({
   error,
@@ -7,7 +7,7 @@ export function WithErrorHandler({
 }: {
   error: string
   customError: React.ComponentType<{ error: string }>
-  children: ReactNode
+  children: React.ReactNode
 }) {
   if (Array.isArray(error) ? error.some((el) => el !== undefined) : error !== undefined) {
     console.info('Error:', error)
