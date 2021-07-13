@@ -1,8 +1,9 @@
 import { INPUT_DEBOUNCE_TIME, Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
+import { AccountDetails } from 'features/account/AccountData'
 import { isEqual } from 'lodash'
 import { merge, Observable, zip } from 'rxjs'
-import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs/operators'
+import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 
 import { MutableOpenMultiplyVaultState, OpenMultiplyVaultState } from './openMultiplyVault'
 
@@ -19,10 +20,16 @@ type AllowanceChange = {
   }
 }
 
-export function createOpenVaultAnalytics$(
+export function createOpenMultiplyVaultAnalytics$(
+  accountDetails$: Observable<AccountDetails>,
   openVaultState$: Observable<OpenMultiplyVaultState>,
   tracker: Tracker,
 ) {
+  const firstCDPChange: Observable<boolean | undefined> = accountDetails$.pipe(
+    map(({ numberOfVaults }) => (numberOfVaults ? numberOfVaults === 0 : undefined)),
+    distinctUntilChanged(isEqual),
+  )
+
   const depositAmountChanges: Observable<DepositAmountChange> = openVaultState$.pipe(
     map((state) => state.depositAmount),
     filter((amount) => !!amount),
@@ -62,18 +69,26 @@ export function createOpenVaultAnalytics$(
     })),
   )
 
-  return merge(depositAmountChanges, allowanceChanges).pipe(
-    tap((event) => {
-      switch (event.kind) {
-        case 'depositAmountChange':
-          tracker.createVaultDeposit(event.value.toString())
-          break
-        case 'allowanceChange':
-          tracker.pickAllowance(event.value.type.toString(), event.value.amount.toString())
-          break
-        default:
-          throw new Error('Unhandled Scenario')
-      }
-    }),
+  return firstCDPChange.pipe(
+    switchMap((firstCDP) =>
+      merge(depositAmountChanges, allowanceChanges).pipe(
+        tap((event) => {
+          switch (event.kind) {
+            case 'depositAmountChange':
+              tracker.createVaultDeposit(firstCDP, event.value.toString())
+              break
+            case 'allowanceChange':
+              tracker.pickAllowance(
+                firstCDP,
+                event.value.type.toString(),
+                event.value.amount.toString(),
+              )
+              break
+            default:
+              throw new Error('Unhandled Scenario')
+          }
+        }),
+      ),
+    ),
   )
 }

@@ -11,7 +11,7 @@ import React, { useEffect } from 'react'
 import { Box, Card, Grid, Text } from 'theme-ui'
 
 import { OpenMultiplyVaultState } from '../openMultiplyVault'
-import { createOpenVaultAnalytics$ } from '../openMultiplyVaultAnalytics'
+import { createOpenMultiplyVaultAnalytics$ } from '../openMultiplyVaultAnalytics'
 import { OpenMultiplyVaultButton } from './OpenMultiplyVaultButton'
 import {
   OpenMultiplyVaultConfirmation,
@@ -99,13 +99,14 @@ export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultState) {
 }
 
 export function OpenMultiplyVaultView({ ilk }: { ilk: string }) {
-  const { multiplyVault$ } = useAppContext()
+  const { multiplyVault$, accountData$ } = useAppContext()
   const multiplyVaultWithIlk$ = multiplyVault$(ilk)
 
   const openVaultWithError = useObservableWithError(multiplyVault$(ilk))
 
   useEffect(() => {
-    const subscription = createOpenVaultAnalytics$(
+    const subscription = createOpenMultiplyVaultAnalytics$(
+      accountData$,
       multiplyVaultWithIlk$,
       trackingEvents,
     ).subscribe()

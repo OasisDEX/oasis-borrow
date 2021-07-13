@@ -1,4 +1,6 @@
 import { trackingEvents } from 'analytics/analytics'
+import { useAppContext } from 'components/AppContextProvider'
+import { useObservable } from 'helpers/observableHook'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
@@ -66,9 +68,21 @@ function multiplyVaultPrimaryButtonText({
 }
 
 export function OpenMultiplyVaultButton(props: OpenMultiplyVaultState) {
+  const { accountData$ } = useAppContext()
+  const accountData = useObservable(accountData$)
   const { t } = useTranslation()
   const { replace } = useRedirect()
-  const { stage, progress, regress, canRegress, id, canProgress, isLoadingStage, token } = props
+  const {
+    stage,
+    progress,
+    regress,
+    canRegress,
+    id,
+    canProgress,
+    isLoadingStage,
+    token,
+    depositAmount,
+  } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
@@ -89,21 +103,25 @@ export function OpenMultiplyVaultButton(props: OpenMultiplyVaultState) {
   const secondaryButtonText =
     stage === 'allowanceFailure' ? t('edit-token-allowance', { token }) : t('edit-vault-details')
 
+  const firstCDP = accountData?.numberOfVaults ? accountData.numberOfVaults === 0 : undefined
   let trackingEvent: () => void | null
 
-  if (primaryButtonText === t('setup-proxy')) trackingEvent = trackingEvents.createVaultSetupProxy
-  if (primaryButtonText === t('confirm')) trackingEvent = trackingEvents.createVaultConfirm
-  if (primaryButtonText === t('create-vault')) trackingEvent = trackingEvents.confirmVaultConfirm
-  if (primaryButtonText === t('create-proxy-btn')) trackingEvent = trackingEvents.createProxy
+  if (primaryButtonText === t('setup-proxy'))
+    trackingEvent = () =>
+      trackingEvents.createVaultSetupProxy(firstCDP, depositAmount?.toString() || '0', '0')
+  if (primaryButtonText === t('confirm'))
+    trackingEvent = () => trackingEvents.createVaultConfirm(firstCDP)
+  if (primaryButtonText === t('create-proxy-btn'))
+    trackingEvent = () => trackingEvents.createProxy(firstCDP)
   if (stage === 'editing' && primaryButtonText === t('set-token-allowance', { token })) {
-    trackingEvent = trackingEvents.setTokenAllowance
+    trackingEvent = () => trackingEvents.setTokenAllowance(firstCDP)
   }
   if (
     (stage === 'allowanceWaitingForConfirmation' &&
       primaryButtonText === t('set-token-allowance', { token })) ||
     primaryButtonText === t('retry-allowance-approval')
   ) {
-    trackingEvent = trackingEvents.approveAllowance
+    trackingEvent = () => trackingEvents.approveAllowance(firstCDP)
   }
 
   return (
@@ -142,7 +160,7 @@ export function OpenMultiplyVaultButton(props: OpenMultiplyVaultState) {
             variant="textualSmall"
             onClick={(e: React.SyntheticEvent<HTMLButtonElement>) => {
               if (stage !== 'allowanceFailure') {
-                trackingEvents.confirmVaultEdit()
+                trackingEvents.confirmVaultEdit(firstCDP)
               }
 
               handleRegress(e)
