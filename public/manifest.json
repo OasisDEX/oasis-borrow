@@ -1,5 +1,7 @@
 {
   "name": "Oasis Borrow",
+  "description": "Oasis Borrow description",
+  "iconPath": "static/img/logo.svg",
   "short_name": "Oasis.Borrow",
   "display": "standalone",
   "orientation": "portrait",

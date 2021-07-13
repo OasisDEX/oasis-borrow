@@ -1,10 +1,9 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { OpenVaultView } from 'features/openVault/components/OpenVaultView'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { openVaultStory } from 'helpers/stories/OpenVaultStory'
 import { one } from 'helpers/zero'
-
-import { OpenVaultView } from '../components/OpenVaultView'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 

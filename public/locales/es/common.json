@@ -400,7 +400,7 @@
   "unlimited-allowance": "Permiso ilimitado",
   "vault": {
     "current-price": " Precio actual {{token}}/USD en {{time}}",
-    "header": "{{ilk}} Vault #{{id}}",
+    "header": "{{ilk}} Vault {{id}}",
     "next-price": "Próximo precio en {{count}} minuto",
     "next-price-any-time": "Próximo precio en <2 minutos",
     "next-price_plural": "Próximo precio en {{count}} minutos",
@@ -470,7 +470,6 @@
   },
   "waiting-approval": "Esperando aprobación",
   "waiting-confirmation": "Esperando la confirmación de la transacción",
-  "waiting-proxy-deployment": "Despliegue de Proxy confirmandose",
   "withdraw": "Retirar",
   "withdrawn": "Retirado",
   "wyre-badge-country": "EEUU. y Europa",

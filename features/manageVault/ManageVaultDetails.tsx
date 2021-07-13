@@ -9,7 +9,6 @@ import React from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
-import { ManageVaultHeading } from './ManageVaultView'
 
 function VaultDetailsTableItem({
   label,
@@ -208,8 +207,6 @@ export function ManageVaultDetails(props: ManageVaultState) {
   const showAfterCalculations = !inputAmountsEmpty && stage !== 'manageSuccess'
   return (
     <Grid sx={{ alignSelf: 'flex-start' }} columns={[1, '1fr 1fr']}>
-      <ManageVaultHeading {...props} sx={{ display: ['none', 'block'] }} />
-
       {/* Liquidation Price  */}
       <Box sx={{ mt: [3, 5], textAlign: ['center', 'left'] }}>
         <Heading variant="subheader" as="h2">

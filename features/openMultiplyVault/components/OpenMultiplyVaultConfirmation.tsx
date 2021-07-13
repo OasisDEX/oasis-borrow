@@ -1,10 +1,10 @@
 import { Box } from '@theme-ui/components'
+import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { OpenMultiplyVaultState } from '../openMultiplyVault'
 import { OpenMultiplyVaultOrderInformation } from './OpenMultiplyVaultOrderInformation'
-import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
 export function OpenMultiplyVaultConfirmation(props: OpenMultiplyVaultState) {
   return (
