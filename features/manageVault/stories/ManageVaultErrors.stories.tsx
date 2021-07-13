@@ -165,6 +165,21 @@ export const GenerateAmountLessThanDebtFloor = manageVaultStory({
   generateAmount: new BigNumber('1'),
 })
 
+export const WithdrawOnVaultUnderDebtFloor = manageVaultStory({
+  title:
+    'Error is shown when a user is trying to withdraw collateral on a vault that is under debt floor. In this case user should first payback all debt in order to withdraw any collateral.',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('10'),
+    debt: new BigNumber(100),
+  },
+  ilkData: { debtFloor: new BigNumber('200') },
+  proxyAddress,
+})({
+  stage: 'daiEditing',
+  withdrawAmount: new BigNumber('1'),
+})
+
 export const PaybackAmountExceedsDaiBalance = manageVaultStory({
   title: 'Error occurs when user is trying to pay back more DAI than they have in their wallet',
   vault: {

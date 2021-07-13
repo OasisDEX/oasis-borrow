@@ -74,11 +74,6 @@ function InternalLink({
   )
 }
 
-// repeatable links to external resources
-export const EXTERNAL_LINKS = {
-  borrow: 'https://oasis.app/borrow',
-}
-
 export function CustomMDXLink(props: AppLinkProps) {
   return <AppLink {...props} />
 }

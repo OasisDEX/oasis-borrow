@@ -6,6 +6,12 @@
   "Mexico": "Mexico",
   "aave": "Aave",
   "aave-product": "Presta tus Dai en Aave y genera ahorros.",
+  "about": {
+    "heading": "About us",
+    "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital. We are building Oasis.app to let our users benefit from all of the potential in DeFi.\n\n Our team is made of passionate thinkers and builders.",
+    "careers-link": "Join Us",
+    "pics-title": "Meet the team"
+  },
   "acceptance-check-failed": "La verificación de aceptación falló",
   "acceptance-save-failed": "No se pudo guardar la aceptación",
   "acceptance-save-in-progress": "Guardando aceptación...",
@@ -28,6 +34,15 @@
   "balance-insufficient": "El saldo de Dai es insuficiente",
   "balances": "Saldos",
   "buy": "Comprar",
+  "careers": {
+    "heading": "Open Roles",
+    "intro": "We believe in talent. Join us to build the next generation of DeFi.",
+    "cta-button": "Apply",
+    "back-link": "Back to Careers",
+    "no-open-positions": "There are currently no roles available at this time, but we are always looking for the best talents to join us.",
+    "no-positions-you-like": "You haven't found something that you like? Show us your interest, we are always looking for the best talents to join us!",
+    "write-us": "Send us your CV to "
+  },
   "change-your-vault": "Cambiar tu Vault",
   "buy-dai": "Compra Dai",
   "buy-with": "Comprar {{token}} con {{onramp}}",
@@ -434,6 +449,7 @@
       "connected-owner-noVaults": "No tienes Vaults abiertos",
       "connected-owner-withVaults": "Resumen de tus Vaults de Maker",
       "connected-viewer-noVaults": "{{address}} actualmente no tiene Vaults de Maker.",
+      "connected-viewer-withVaults": "Resumen de Vaults de Maker de {{address}}",
       "notConnected-noVaults": "{{address}} actualmente no tiene Vaults de Maker.<0/> Conecta tu billetera y abre un Vault",
       "notConnected-withVaults": "Resumen de Vaults de Maker de {{address}}.<0/> Conecta tu billetera"
     },
@@ -501,6 +517,14 @@
     "dai": {
       "title": "Dai",
       "description": "Una breve introducción a Dai, la moneda digital inteligente."
+    },
+    "careers": {
+      "title": "Careers",
+      "description": "We believe in talent. Join us to build the next generation of DeFi."
+    },
+    "about": {
+      "title": "About Us",
+      "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital."
     }
   },
   "set-allowance-for": "Establecer permiso para {{token}}",

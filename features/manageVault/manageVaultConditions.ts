@@ -116,6 +116,7 @@ export interface ManageVaultConditions {
   customDaiAllowanceAmountEmpty: boolean
   customDaiAllowanceAmountExceedsMaxUint256: boolean
   customDaiAllowanceAmountLessThanPaybackAmount: boolean
+  withdrawCollateralOnVaultUnderDebtFloor: boolean
 }
 
 export const defaultManageVaultConditions: ManageVaultConditions = {
@@ -161,6 +162,8 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   customDaiAllowanceAmountEmpty: false,
   customDaiAllowanceAmountExceedsMaxUint256: false,
   customDaiAllowanceAmountLessThanPaybackAmount: false,
+
+  withdrawCollateralOnVaultUnderDebtFloor: false,
 }
 
 export function applyManageVaultConditions(state: ManageVaultState): ManageVaultState {
@@ -321,6 +324,12 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     'manageWaitingForApproval',
   ] as ManageVaultStage[]).some((s) => s === stage)
 
+  const withdrawCollateralOnVaultUnderDebtFloor =
+    vault.debt.lt(ilkData.debtFloor) &&
+    withdrawAmount !== undefined &&
+    withdrawAmount.gt(zero) &&
+    (paybackAmount === undefined || paybackAmount.lt(vault.debt))
+
   const editingProgressionDisabled =
     isEditingStage &&
     (inputAmountsEmpty ||
@@ -336,7 +345,8 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
       generateAmountExceedsDebtCeiling ||
       generateAmountLessThanDebtFloor ||
       paybackAmountExceedsDaiBalance ||
-      paybackAmountExceedsVaultDebt)
+      paybackAmountExceedsVaultDebt ||
+      withdrawCollateralOnVaultUnderDebtFloor)
 
   const collateralAllowanceProgressionDisabled =
     isCollateralAllowanceStage &&
@@ -409,5 +419,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     customDaiAllowanceAmountEmpty,
     customDaiAllowanceAmountExceedsMaxUint256,
     customDaiAllowanceAmountLessThanPaybackAmount,
+
+    withdrawCollateralOnVaultUnderDebtFloor,
   }
 }
