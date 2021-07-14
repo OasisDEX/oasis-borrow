@@ -55,7 +55,6 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
         }
       />
       <VaultChangesInformationItem label={'Slippage Limit'} value={'5.00 %'} />
-      VaultOrderInformationItem
       <VaultChangesInformationItem label={'Multiply'} value={`${multiply?.toString()}x`} />
       <VaultChangesInformationItem
         label={'Outstanding Debt'}
