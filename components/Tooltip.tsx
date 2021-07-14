@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback, useEffect, useState } from 'react'
-import { Box, Card, SxStyleProp } from 'theme-ui'
+import { Card, SxStyleProp } from 'theme-ui'
 
 export function useTooltip() {
   const [tooltipOpen, setTooltipOpen] = useState(false)
@@ -22,18 +22,11 @@ export function Tooltip({ children, sx }: { children: ReactNode; sx?: SxStylePro
   return (
     <Card
       sx={{
-        position: 'absolute',
-        top: '-15px',
-        right: '0px',
-        transform: 'translateY(-100%)',
-        boxShadow: 'surface',
-        borderRadius: 'large',
-        color: 'primary',
-        width: ['250px'],
+        variant: 'cards.tooltip',
         ...sx,
       }}
     >
-      <Box px={1}>{children}</Box>
+      {children}
     </Card>
   )
 }

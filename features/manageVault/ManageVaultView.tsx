@@ -5,6 +5,8 @@ import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
+import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
@@ -68,22 +70,29 @@ function ManageVaultForm(props: ManageVaultState) {
   )
 }
 
-export function ManageVaultContainer(props: ManageVaultState) {
+export function ManageVaultContainer({
+  manageVault,
+  vaultHistory,
+}: {
+  manageVault: ManageVaultState
+  vaultHistory: VaultHistoryEvent[]
+}) {
   const {
     vault: { id, ilk },
-  } = props
+  } = manageVault
   const { t } = useTranslation()
 
   return (
     <>
-      <VaultHeader {...props} header={t('vault.header', { ilk, id })} id={id} />
+      <VaultHeader {...manageVault} header={t('vault.header', { ilk, id })} id={id} />
       <Grid variant="vaultContainer">
-        <Box mb={5} sx={{ order: [3, 1] }}>
-          <ManageVaultDetails {...props} />
-        </Box>
+        <Grid gap={5} mb={5} sx={{ order: [3, 1] }}>
+          <ManageVaultDetails {...manageVault} />
+          <VaultHistoryView vaultHistory={vaultHistory} />
+        </Grid>
         <Divider sx={{ display: ['block', 'none'], order: [2, 0] }} />
         <Box sx={{ order: [1, 2] }}>
-          <ManageVaultForm {...props} />
+          <ManageVaultForm {...manageVault} />
         </Box>
       </Grid>
     </>
@@ -91,9 +100,10 @@ export function ManageVaultContainer(props: ManageVaultState) {
 }
 
 export function ManageVaultView({ id }: { id: BigNumber }) {
-  const { manageVault$ } = useAppContext()
+  const { manageVault$, vaultHistory$ } = useAppContext()
   const manageVaultWithId$ = manageVault$(id)
   const manageVaultWithError = useObservableWithError(manageVaultWithId$)
+  const vaultHistoryWithError = useObservableWithError(vaultHistory$(id))
 
   useEffect(() => {
     const subscription = createManageVaultAnalytics$(manageVaultWithId$, trackingEvents).subscribe()
@@ -105,7 +115,8 @@ export function ManageVaultView({ id }: { id: BigNumber }) {
 
   return (
     <WithLoadingIndicator
-      {...manageVaultWithError}
+      value={[manageVaultWithError.value, vaultHistoryWithError.value]}
+      error={[manageVaultWithError.error, vaultHistoryWithError.error]}
       customLoader={
         <Box
           sx={{
@@ -121,9 +132,9 @@ export function ManageVaultView({ id }: { id: BigNumber }) {
         </Box>
       }
     >
-      {(manageVault) => (
+      {([manageVault, vaultHistory]) => (
         <Grid sx={{ width: '100%', zIndex: 1, ...slideInAnimation, position: 'relative' }}>
-          <ManageVaultContainer {...manageVault} />
+          <ManageVaultContainer {...{ manageVault, vaultHistory }} />
         </Grid>
       )}
     </WithLoadingIndicator>
