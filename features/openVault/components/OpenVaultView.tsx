@@ -1,6 +1,7 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
+import { VaultFormHeaderSwitch } from 'components/vault/VaultFormHeader'
 import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -18,10 +19,19 @@ import { OpenVaultEditing } from './OpenVaultEditing'
 import { OpenVaultErrors } from './OpenVaultErrors'
 import { OpenVaultWarnings } from './OpenVaultWarnings'
 
-function OpenVaultTitle({ isEditingStage, isProxyStage, isAllowanceStage, token }: OpenVaultState) {
+function OpenVaultTitle({
+  isEditingStage,
+  isProxyStage,
+  isAllowanceStage,
+  token,
+  ilk,
+}: OpenVaultState) {
   const { t } = useTranslation()
   return (
     <Box>
+      {isEditingStage ? (
+        <VaultFormHeaderSwitch href={`/vaults/open-multiply/${ilk}`} title="Switch to Multiply" />
+      ) : null}
       <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
         {isEditingStage
           ? t('vault-form.header.edit')
@@ -48,22 +58,20 @@ function OpenVaultForm(props: OpenVaultState) {
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
 
   return (
-    <Box>
-      <Card variant="surface" sx={{ boxShadow: 'card', borderRadius: 'mediumLarge', px: 4, py: 3 }}>
-        <Grid sx={{ mt: 2 }}>
-          <OpenVaultTitle {...props} />
-          {isEditingStage && <OpenVaultEditing {...props} />}
-          {isAllowanceStage && <VaultAllowance {...props} />}
-          {isOpenStage && <OpenVaultConfirmation {...props} />}
-          <OpenVaultErrors {...props} />
-          <OpenVaultWarnings {...props} />
-          <OpenVaultButton {...props} />
-          {isProxyStage && <VaultProxyStatusCard {...props} />}
-          {isAllowanceStage && <VaultAllowanceStatus {...props} />}
-          {isOpenStage && <OpenVaultStatus {...props} />}
-        </Grid>
-      </Card>
-    </Box>
+    <Card variant="vaultFormContainer">
+      <Grid gap={4} p={2}>
+        <OpenVaultTitle {...props} />
+        {isEditingStage && <OpenVaultEditing {...props} />}
+        {isAllowanceStage && <VaultAllowance {...props} />}
+        {isOpenStage && <OpenVaultConfirmation {...props} />}
+        <OpenVaultErrors {...props} />
+        <OpenVaultWarnings {...props} />
+        <OpenVaultButton {...props} />
+        {isProxyStage && <VaultProxyStatusCard {...props} />}
+        {isAllowanceStage && <VaultAllowanceStatus {...props} />}
+        {isOpenStage && <OpenVaultStatus {...props} />}
+      </Grid>
+    </Card>
   )
 }
 
@@ -74,7 +82,7 @@ export function OpenVaultContainer(props: OpenVaultState) {
   return (
     <>
       <VaultHeader {...props} header={t('vault.open-vault', { ilk })} />
-      <Grid columns={['1fr', '2fr minmax(380px, 1fr)']} gap={5}>
+      <Grid variant="vaultContainer">
         <Box sx={{ order: [3, 1] }}>
           <OpenVaultDetails {...props} />
         </Box>
@@ -88,13 +96,17 @@ export function OpenVaultContainer(props: OpenVaultState) {
 }
 
 export function OpenVaultView({ ilk }: { ilk: string }) {
-  const { openVault$ } = useAppContext()
+  const { openVault$, accountData$ } = useAppContext()
   const openVaultWithIlk$ = openVault$(ilk)
 
   const openVaultWithError = useObservableWithError(openVault$(ilk))
 
   useEffect(() => {
-    const subscription = createOpenVaultAnalytics$(openVaultWithIlk$, trackingEvents).subscribe()
+    const subscription = createOpenVaultAnalytics$(
+      accountData$,
+      openVaultWithIlk$,
+      trackingEvents,
+    ).subscribe()
 
     return () => {
       subscription.unsubscribe()

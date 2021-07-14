@@ -1,29 +1,11 @@
-import { Icon } from '@makerdao/dai-ui-icons'
-import { VaultActionInput } from 'components/vault/VaultActionInput'
+import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Grid, Text } from 'theme-ui'
+import { Box, Button, Divider, Grid, Text } from 'theme-ui'
 
 import { OpenVaultState } from '../openVault'
-
-export const PlusIcon = () => (
-  <Icon
-    name="plus"
-    color="onSuccess"
-    size={20}
-    sx={{ display: 'inline', verticalAlign: 'bottom', marginRight: 1 }}
-  />
-)
-
-export const MinusIcon = () => (
-  <Icon
-    name="minus"
-    color="onSuccess"
-    size={20}
-    sx={{ display: 'inline', verticalAlign: 'bottom', marginRight: 1 }}
-  />
-)
+import { OpenVaultChangesInformation } from './OpenVaultChangesInformation'
 
 export function OpenVaultEditing(props: OpenVaultState) {
   const { t } = useTranslation()
@@ -49,7 +31,7 @@ export function OpenVaultEditing(props: OpenVaultState) {
   const showGenerateOptionButton = depositAmount && !depositAmount.isZero()
 
   return (
-    <Grid>
+    <Grid gap={4}>
       <Box>
         <VaultActionInput
           action="Deposit"
@@ -99,6 +81,8 @@ export function OpenVaultEditing(props: OpenVaultState) {
           />
         )}
       </Box>
+      <Divider />
+      <OpenVaultChangesInformation {...props} />
     </Grid>
   )
 }

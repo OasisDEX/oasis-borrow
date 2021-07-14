@@ -11,6 +11,24 @@ import { Box, Grid, Text } from 'theme-ui'
 
 type VaultAction = 'Deposit' | 'Withdraw' | 'Generate' | 'Payback'
 
+export const PlusIcon = () => (
+  <Icon
+    name="plus"
+    color="inherit"
+    size={20}
+    sx={{ display: 'inline', verticalAlign: 'bottom', marginRight: 1 }}
+  />
+)
+
+export const MinusIcon = () => (
+  <Icon
+    name="minus"
+    color="inherit"
+    size={20}
+    sx={{ display: 'inline', verticalAlign: 'bottom', marginRight: 1 }}
+  />
+)
+
 interface VaultActionInputProps {
   action: VaultAction
   token: string

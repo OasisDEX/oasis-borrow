@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Grid, SxProps, Text } from 'theme-ui'
+import { Box, Flex, SxProps, Text } from 'theme-ui'
 
 import { AppLink } from './Links'
 
@@ -61,34 +61,6 @@ function WithArrow({ children }: React.PropsWithChildren<{}>) {
         →
       </Box>
     </Text>
-  )
-}
-
-// To be removed after we migrate infrastructure
-export function InfrastructureAnnouncement() {
-  const { t } = useTranslation()
-
-  return (
-    <Box sx={{ px: 3, position: 'relative', zIndex: 1 }}>
-      <Announcement sx={{ mb: 3, textAlign: 'left', mx: 'auto', boxShadow: 'banner' }}>
-        <Grid gap={2} sx={{ flex: 1 }}>
-          <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', fontSize: [1, 2], mr: 3 }}>
-            Our team will be performing maintenance on Oasis.app servers on Thursday June 24th.
-            <br />
-            To avoid downtime, we have set-up a back-up version at{' '}
-            <AppLink href="https://oazo.io/">Oazo.io</AppLink>. <br />
-            Check{' '}
-            <AppLink href="https://twitter.com/oasisdotapp">
-              https://twitter.com/oasisdotapp
-            </AppLink>{' '}
-            for updates.
-          </Text>
-          <AppLink href={`${window.location.origin}/borrow-old`}>
-            <WithArrow>{t('visit-old-oasis')}</WithArrow>
-          </AppLink>
-        </Grid>
-      </Announcement>
-    </Box>
   )
 }
 

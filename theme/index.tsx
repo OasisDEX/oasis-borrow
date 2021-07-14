@@ -57,14 +57,16 @@ const customIcons = {
     ),
     viewBox: '0 0 29 23',
   },
-  minus: {
+  arrow_right_light: {
     path: (
       <path
-        d="M3 10C3 9.44772 3.44772 9 4 9H16C16.5523 9 17 9.44772 17 10C17 10.5523 16.5523 11 16 11H4C3.44772 11 3 10.5523 3 10Z"
-        fill="currentColor"
+        d="M1 4.5H11M11 4.5L8 8M11 4.5L8 1"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     ),
-    viewBox: '0 0 20 20',
+    viewBox: '0 0 12 9',
   },
   wyre: {
     path: (
@@ -525,6 +527,37 @@ const customIcons = {
       <path d="M137,9.84A128.75,128.75,0,1,0,265.7,138.59,128.76,128.76,0,0,0,137,9.84Zm94.23,135.78H171.44a36.38,36.38,0,1,1,.28-12.66h59.46a6.33,6.33,0,0,1,0,12.66Z" />
     ),
   },
+  plus: {
+    path: (
+      <>
+        <rect x="9" y="6" width="2" height="8" rx="1" fill="currentColor" />
+        <rect
+          x="14"
+          y="9"
+          width="2"
+          height="8"
+          rx="1"
+          transform="rotate(90 14 9)"
+          fill="currentColor"
+        />
+      </>
+    ),
+    viewBox: '0 0 20 20',
+  },
+  minus: {
+    path: (
+      <rect
+        x="14"
+        y="9"
+        width="2"
+        height="8"
+        rx="1"
+        transform="rotate(90 14 9)"
+        fill="currentColor"
+      />
+    ),
+    viewBox: '0 0 20 20',
+  },
 }
 
 const customLandingIcons = {
@@ -612,61 +645,36 @@ const customLandingIcons = {
   landing_card_dai: {
     path: (
       <>
-        <circle cx="44" cy="44" r="44" fill="url(#paint0_card_dai)" />
-        <circle cx="43.9999" cy="43.9997" r="36.6667" fill="url(#paint1_card_dai)" />
+        <circle cx="44" cy="44" r="44" fill="url(#paint0_linear_landing_card_dai)" />
+        <circle cx="43.9999" cy="43.9997" r="36.6667" fill="url(#paint1_linear_landing_card_dai)" />
         <path
-          fillRule="evenodd"
-          clipRule="evenodd"
+          fill-rule="evenodd"
+          clip-rule="evenodd"
           d="M30.0938 26.7324H44.0613C52.5572 26.7324 58.9973 31.299 61.3932 37.9438H65.7441V41.9601H62.3094C62.3767 42.5947 62.4109 43.2413 62.4109 43.8983V43.9969C62.4109 44.7365 62.3675 45.4636 62.2826 46.1756H65.7441V50.1919H61.3103C58.8514 56.7443 52.4612 61.2673 44.0613 61.2673H30.0938V50.1919H25.2402V46.1756H30.0938V41.9601H25.2402V37.9438H30.0938V26.7324ZM33.9985 50.1919V57.6645H44.0613C50.2709 57.6645 54.8843 54.6716 57.0319 50.1919H33.9985ZM58.2282 46.1756H33.9985V41.9601H58.2344C58.3242 42.6235 58.3701 43.3035 58.3701 43.9969V44.0956C58.3701 44.8049 58.3221 45.4994 58.2282 46.1756ZM44.0613 30.3294C50.2995 30.3294 54.9268 33.4012 57.0614 37.9438H33.9985V30.3294H44.0613Z"
           fill="white"
         />
-        <mask
-          id="mask0"
-          mask-type="alpha"
-          maskUnits="userSpaceOnUse"
-          x="0"
-          y="0"
-          width="88"
-          height="88"
-        >
-          <circle cx="44" cy="44" r="44" fill="url(#paint2_card_dai)" />
-        </mask>
-        <g mask="url(#mask0)">
-          <path opacity="0.2" d="M-1.0603 -1.06006H88L-1.0603 88.0002V-1.06006Z" fill="#FFF1CF" />
-        </g>
         <defs>
           <linearGradient
-            id="paint0_card_dai"
+            id="paint0_linear_landing_card_dai"
             x1="44"
             y1="0"
             x2="44"
             y2="88"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stopColor="#FEDB88" />
-            <stop offset="1" stopColor="#FDC134" />
+            <stop stop-color="#FEDB88" />
+            <stop offset="1" stop-color="#FDC134" />
           </linearGradient>
           <linearGradient
-            id="paint1_card_dai"
+            id="paint1_linear_landing_card_dai"
             x1="43.9999"
             y1="-3.05588"
             x2="43.9999"
             y2="88.3663"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stopColor="#F9A606" />
-            <stop offset="1" stopColor="#FBCC5F" />
-          </linearGradient>
-          <linearGradient
-            id="paint2_card_dai"
-            x1="44"
-            y1="0"
-            x2="44"
-            y2="88"
-            gradientUnits="userSpaceOnUse"
-          >
-            <stop stopColor="#FEDB88" />
-            <stop offset="1" stopColor="#FDC134" />
+            <stop stop-color="#F9A606" />
+            <stop offset="1" stop-color="#FBCC5F" />
           </linearGradient>
         </defs>
       </>
@@ -702,6 +710,24 @@ const customLandingIcons = {
     ),
     viewBox: '0 0 88 88',
   },
+  support_plus: {
+    path: (
+      <path
+        d="M9.42857 19.7143C9.42857 20.1877 9.81233 20.5714 10.2857 20.5714C10.7591 20.5714 11.1429 20.1877 11.1429 19.7143V11.1429H19.7143C20.1877 11.1429 20.5714 10.7591 20.5714 10.2857C20.5714 9.81233 20.1877 9.42857 19.7143 9.42857H11.1429V0.857143C11.1429 0.383756 10.7591 0 10.2857 0C9.81232 0 9.42857 0.383756 9.42857 0.857143V9.42857H0.857143C0.383756 9.42857 0 9.81233 0 10.2857C0 10.7591 0.383756 11.1429 0.857143 11.1429H9.42857V19.7143Z"
+        fill="currentColor"
+      />
+    ),
+    viewBox: '0 0 21 21',
+  },
+  support_minus: {
+    path: (
+      <path
+        d="M9.42857 2.64295C9.42857 3.11634 9.81232 2.64295 10.2857 2.64295C10.7591 2.64295 11.1429 3.11634 11.1429 2.64295H19.7143C20.1877 2.64295 20.5714 2.2592 20.5714 1.78581C20.5714 1.31242 20.1877 0.928667 19.7143 0.928667H11.1429L14.5 1.49993C14.5 1.02654 10.7591 0.928406 10.2857 0.928406C10.2857 0.928406 6 1.02655 6 1.49994L9.42857 0.928667H0.857143C0.383756 0.928667 0 1.31242 0 1.78581C0 2.2592 0.383756 2.64295 0.857143 2.64295H9.42857Z"
+        fill="currentColor"
+      />
+    ),
+    viewBox: '0 0 21 3',
+  },
 }
 
 const oasisBaseTheme = {
@@ -712,12 +738,14 @@ const oasisBaseTheme = {
     primary: '#25273D',
     primaryAlt: '#D3D4D8',
     primaryEmphasis: '#626472',
+
     secondary: '#ECEFF9',
     secondaryAlt: '#F3F7F9',
-    background: '#FFFFFF',
+
+    background: '#FFF',
+    backgroundAlt: '#F1F3F4',
     surface: '#FFF',
 
-    ghost: '#F6F6F6',
     light: '#D1DEE6',
     lightIcon: '#BEC9D0',
     border: '#DDDEE6',
@@ -735,7 +763,7 @@ const oasisBaseTheme = {
     link: '#575CFE',
     textAlt: 'rgba(37, 39, 61, 0.67)',
     onBackground: '#9FAFB9',
-    onPrimary: '#FFFFFF',
+    onPrimary: '#FFF',
     onSurface: '#708390',
     muted: '#708390',
     mutedAlt: '#656F75',
@@ -772,6 +800,7 @@ const oasisBaseTheme = {
     heading: '"FT Polar Trial", "Helvetica Neue", sans-serif',
     monospace: 'monospace',
   },
+  //           0   1   2   3   4   5   6   7   8   9  10
   fontSizes: [10, 12, 14, 16, 18, 20, 24, 32, 52, 64, 96],
   fontWeights: {
     body: 400,
@@ -781,6 +810,7 @@ const oasisBaseTheme = {
   },
   lineHeights: {
     body: 1.5,
+    bodyLoose: 1.7,
     heading: 1.2,
     tight: 1.05,
     loose: 1.35,
@@ -797,9 +827,9 @@ const oasisBaseTheme = {
     },
     header1: {
       fontFamily: 'heading',
-      fontWeight: 'bold',
+      fontWeight: 'heading',
       lineHeight: 'heading',
-      fontSize: 8,
+      fontSize: '40px',
       color: 'primary',
     },
     header2: {
@@ -864,6 +894,15 @@ const oasisBaseTheme = {
       variant: 'text.paragraph2',
       fontWeight: 'semiBold',
     },
+    light: {
+      color: 'lavender',
+      fontSize: 4,
+      lineHeight: 'bodyLoose',
+      a: {
+        variant: 'text.paragraph1',
+        color: 'text.focused',
+      },
+    },
   },
   borders: {
     light: '1px solid #787a9b40',
@@ -892,13 +931,14 @@ const oasisBaseTheme = {
     table_hovered: '0px 0px 10px rgba(0, 0, 0, 0.15)',
     banner: '0px 0px 10px rgba(0, 0, 0, 0.1)',
     sliderThumb: '0px 1px 6px rgba(0, 0, 0, 0.15)',
+    vaultEditingController: '0px 1px 6px rgba(37, 39, 61, 0.15)',
   },
   gradients: {
     app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
   },
   layout: {
     container: {
-      maxWidth: '1200px',
+      maxWidth: '1232px',
       px: 3,
     },
     appContainer: {
@@ -906,6 +946,10 @@ const oasisBaseTheme = {
     },
     marketingContainer: {
       variant: 'layout.appContainer',
+    },
+    marketingSmallContainer: {
+      variant: 'layout.appContainer',
+      maxWidth: '804px',
     },
     landingContainer: {
       variant: 'layout.appContainer',
@@ -974,6 +1018,14 @@ const oasisBaseTheme = {
       borderColor: 'onWarning',
       bg: 'warning',
     },
+    vaultFormContainer: {
+      variant: 'cards.primary',
+      boxShadow: 'card',
+      borderRadius: 'mediumLarge',
+      p: 3,
+      overflow: 'hidden',
+      border: 'lightMuted',
+    },
   },
   badges: {
     dsr: {
@@ -1039,7 +1091,7 @@ const oasisBaseTheme = {
       whiteSpace: 'nowrap',
       cursor: 'pointer',
       fontWeight: 'semiBold',
-      bg: 'ghost',
+      bg: 'backgroundAlt',
       color: 'primary',
       borderRadius: 'round',
       px: 4,
@@ -1131,23 +1183,52 @@ const oasisBaseTheme = {
         outline: 'none',
       },
     },
+    textualSmall: {
+      variant: 'buttons.textual',
+      fontSize: 1,
+      color: 'primary',
+      py: 0,
+    },
     actionOption: {
       fontFamily: 'body',
+      width: '100%',
       display: 'flex',
+      justifyContent: 'center',
       alignItems: 'center',
       cursor: 'pointer',
-      fontSize: 2,
+      fontSize: 1,
       fontWeight: 'semiBold',
-      color: 'onSuccess',
+      color: 'primary',
       userSelect: 'none',
-      bg: 'transparent',
+      bg: 'backgroundAlt',
       px: 2,
-      borderRadius: 'mediumLarge',
+      py: 1,
+      borderRadius: 'round',
       lineHeight: 1.25,
       position: 'relative',
-      left: -2,
+    },
+    vaultEditingController: {
+      fontFamily: 'body',
+      fontSize: 3,
+      fontWeight: 'semiBold',
+      lineHeight: 'body',
+      bg: 'background',
+      p: 3,
+      color: 'primary',
+      boxShadow: 'vaultEditingController',
+      borderRadius: 'inherit',
+      cursor: 'pointer',
+    },
+    vaultEditingControllerInactive: {
+      fontFamily: 'body',
+      fontSize: 3,
+      fontWeight: 'semiBold',
+      bg: 'transparent',
+      color: 'text.subtitle',
+      cursor: 'ponter',
+      transition: TRANSITIONS.global,
       '&:hover': {
-        bg: 'ghost',
+        variant: 'buttons.vaultEditingController',
       },
     },
   },
@@ -1328,11 +1409,21 @@ const oasisBaseTheme = {
     modal: 3,
     cookie: 4,
   },
-  sizingsCustom: {
-    pxModalBottom: '22px',
-    mlDashboardToken: '12px',
-    mbDashboardTokenAmount: '6px',
-    gapCardProduct: '12px',
+  grids: {
+    vaultContainer: {
+      gap: 5,
+      gridTemplateColumns: ['1fr', '2fr minmax(465px, 1fr)'],
+    },
+    vaultEditingControllerContainer: {
+      bg: 'backgroundAlt',
+      borderRadius: '2em',
+      gap: '0px',
+    },
+    vaultDetailsCardsContainer: {
+      gridTemplateColumns: ['1fr', '1fr 1fr'],
+      alignSelf: 'flex-start',
+      mb: 3,
+    },
   },
   styles: {
     root: {
@@ -1382,7 +1473,24 @@ const oasisBaseTheme = {
       color: 'link',
     },
     hr: {
-      borderColor: 'light',
+      borderBottom: 'lightMuted',
+      m: 0,
+    },
+    hrVaultFormBottom: {
+      borderBottom: 'lightMuted',
+      mb: -2,
+      position: 'relative',
+      width: 'calc(100% + 64px)',
+      left: -4,
+    },
+    hrVaultFormTop: {
+      borderBottom: 'lightMuted',
+      pt: 2,
+      mt: 3,
+      mb: 4,
+      position: 'relative',
+      width: 'calc(100% + 64px)',
+      left: -4,
     },
   },
 }

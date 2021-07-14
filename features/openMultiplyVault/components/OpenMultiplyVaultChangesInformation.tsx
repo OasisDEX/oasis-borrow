@@ -1,35 +1,17 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Box, Flex, Grid, Text } from '@theme-ui/components'
+import { Flex, Grid, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
+import {
+  VaultChangesInformationContainer,
+  VaultChangesInformationItem,
+} from 'components/vault/VaultChangesInformation'
+import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
-import React, { ReactNode, useState } from 'react'
+import React, { useState } from 'react'
 
 import { OpenMultiplyVaultState } from '../openMultiplyVault'
-import { getCollRatioColor } from './OpenMultiplyVaultDetails'
 
-function OpenMultiplyVaultOrderInformationItem({
-  label,
-  value,
-}: {
-  label: string
-  value: ReactNode
-}) {
-  return (
-    <Flex
-      sx={{
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        fontSize: 1,
-        fontWeight: 'semiBold',
-      }}
-    >
-      <Box sx={{ color: 'text.subtitle' }}>{label}</Box>
-      <Box>{value}</Box>
-    </Flex>
-  )
-}
-
-export function OpenMultiplyVaultOrderInformation(props: OpenMultiplyVaultState) {
+export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultState) {
   const [showFees, setShowFees] = useState(false)
   const {
     multiply,
@@ -41,14 +23,11 @@ export function OpenMultiplyVaultOrderInformation(props: OpenMultiplyVaultState)
     token,
     txFees,
   } = props
-  const collRatioColor = getCollRatioColor(props)
+  const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
   return (
-    <Grid>
-      <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
-        Order information
-      </Text>
-      <OpenMultiplyVaultOrderInformationItem
+    <VaultChangesInformationContainer title="Order information">
+      <VaultChangesInformationItem
         label={`Buying ${token}`}
         value={
           <Text>
@@ -60,11 +39,11 @@ export function OpenMultiplyVaultOrderInformation(props: OpenMultiplyVaultState)
           </Text>
         }
       />
-      <OpenMultiplyVaultOrderInformationItem
+      <VaultChangesInformationItem
         label={`Total ${token} exposure`}
         value={`${formatCryptoBalance(totalExposure || new BigNumber(0))} ${token}`}
       />
-      <OpenMultiplyVaultOrderInformationItem
+      <VaultChangesInformationItem
         label={`${token} Price (impact)`}
         value={
           <Text>
@@ -75,16 +54,13 @@ export function OpenMultiplyVaultOrderInformation(props: OpenMultiplyVaultState)
           </Text>
         }
       />
-      <OpenMultiplyVaultOrderInformationItem label={'Slippage Limit'} value={'5.00 %'} />
-      <OpenMultiplyVaultOrderInformationItem
-        label={'Multiply'}
-        value={`${multiply?.toString()}x`}
-      />
-      <OpenMultiplyVaultOrderInformationItem
+      <VaultChangesInformationItem label={'Slippage Limit'} value={'5.00 %'} />
+      <VaultChangesInformationItem label={'Multiply'} value={`${multiply?.toString()}x`} />
+      <VaultChangesInformationItem
         label={'Outstanding Debt'}
         value={`${formatCryptoBalance(afterOutstandingDebt)} DAI`}
       />
-      <OpenMultiplyVaultOrderInformationItem
+      <VaultChangesInformationItem
         label={'Collateral Ratio'}
         value={
           <Text sx={{ color: collRatioColor }}>
@@ -95,7 +71,7 @@ export function OpenMultiplyVaultOrderInformation(props: OpenMultiplyVaultState)
           </Text>
         }
       />
-      <OpenMultiplyVaultOrderInformationItem
+      <VaultChangesInformationItem
         label={'Transaction Fee'}
         value={
           <Flex
@@ -114,16 +90,16 @@ export function OpenMultiplyVaultOrderInformation(props: OpenMultiplyVaultState)
       />
       {showFees && (
         <Grid pl={3} gap={2}>
-          <OpenMultiplyVaultOrderInformationItem
+          <VaultChangesInformationItem
             label={'3rd party protocol fees'}
             value={`$${formatAmount(txFees, 'USD')}`}
           />
-          <OpenMultiplyVaultOrderInformationItem
+          <VaultChangesInformationItem
             label={'Oasis fee'}
             value={`$${formatAmount(txFees, 'USD')}`}
           />
         </Grid>
       )}
-    </Grid>
+    </VaultChangesInformationContainer>
   )
 }
