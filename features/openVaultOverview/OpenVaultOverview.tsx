@@ -1,4 +1,4 @@
-import { Pages } from 'analytics/analytics'
+import { Pages, trackingEvents } from 'analytics/analytics'
 import { Context } from 'blockchain/network'
 import { CoinTag } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
@@ -186,7 +186,10 @@ export function OpenVaultOverview({ vaultsOverview, accountDetails, context }: P
         deriveRowProps={(row) => ({
           onClick: row.ilkDebtAvailable.isZero()
             ? undefined
-            : () => redirectToOpenVault(row.ilk, row.token),
+            : () => {
+                trackingEvents.openVault(Pages.OpenVaultOverview, row.ilk)
+                redirectToOpenVault(row.ilk, row.token)
+              },
         })}
       />
     </Grid>

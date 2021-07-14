@@ -6,7 +6,7 @@ let mixpanel: MixpanelType = mixpanelBrowser
 
 const env = getConfig()?.publicRuntimeConfig.mixpanelEnv || process.env.MIXPANEL_ENV
 
-if (env !== 'production') {
+if (env !== 'production' && env !== 'staging') {
   mixpanel = {
     track: function (eventType: string, payload: any) {
       console.info('Mixpanel Event: ', eventType, payload)
@@ -57,58 +57,69 @@ export const trackingEvents = {
     })
   },
 
-  openVault: (ilk: string) => {
+  openVault: (page: Pages.LandingPage | Pages.OpenVaultOverview, ilk: string) => {
     mixpanel.track('btn-click', {
       id: 'OpenVault',
       product,
       ilk,
-      page: Pages.VaultCreate,
+      page,
       section: 'SelectCollateral',
     })
   },
 
-  createVaultDeposit: (amount: string) => {
+  createVaultDeposit: (firstCDP: boolean | undefined, amount: string) => {
     mixpanel.track('input-change', {
       id: 'Deposit',
       product,
+      firstCDP,
       amount,
       page: Pages.VaultCreate,
       section: 'CreateVault',
     })
   },
 
-  createVaultGenerate: (amount: string) => {
+  createVaultGenerate: (firstCDP: boolean | undefined, amount: string) => {
     mixpanel.track('input-change', {
       id: 'Generate',
       product,
+      firstCDP,
       amount,
       page: Pages.VaultCreate,
       section: 'CreateVault',
     })
   },
 
-  createVaultSetupProxy: () => {
+  createVaultSetupProxy: (
+    firstCDP: boolean | undefined,
+    depositAmount: string,
+    generateAmount: string,
+  ) => {
     mixpanel.track('btn-click', {
       id: 'SetupProxy',
       product,
+      firstCDP,
+      depositAmount,
+      generateAmount,
       page: Pages.VaultCreate,
       section: 'Configure',
     })
   },
 
-  createProxy: () => {
+  createProxy: (firstCDP: boolean | undefined) => {
     mixpanel.track('btn-click', {
       id: 'CreateProxy',
       product,
+      firstCDP,
       page: Pages.VaultCreate,
       section: 'ProxyDeploy',
     })
   },
 
-  pickAllowance: (type: string, amount: string) => {
+  pickAllowance: (firstCDP: boolean | undefined, type: string, amount: string) => {
     mixpanel.track('input-change', {
       id: 'PickAllowance',
       product,
+      firstCDP,
       type,
       amount,
       page: Pages.VaultCreate,
@@ -116,46 +127,79 @@ export const trackingEvents = {
     })
   },
 
-  setTokenAllowance: () => {
+  setTokenAllowance: (firstCDP: boolean | undefined) => {
     mixpanel.track('btn-click', {
       id: 'SetAllowance',
       product,
+      firstCDP,
       page: Pages.VaultCreate,
       section: 'Configure',
     })
   },
 
-  approveAllowance: () => {
+  approveAllowance: (firstCDP: boolean | undefined) => {
     mixpanel.track('btn-click', {
       id: 'ApproveAllowance',
       product,
+      firstCDP,
       page: Pages.VaultCreate,
       section: 'Allowance',
     })
   },
 
-  createVaultConfirm: () => {
+  createVaultConfirm: (firstCDP: boolean | undefined) => {
     mixpanel.track('btn-click', {
       id: 'Confirm',
       product,
+      firstCDP,
       page: Pages.VaultCreate,
       section: 'CreateVault',
     })
   },
 
-  confirmVaultConfirm: () => {
+  confirmVaultConfirm: (
+    ilk: string,
+    collateralAmount: string,
+    daiAmount: string,
+    firstCDP: boolean | undefined,
+  ) => {
     mixpanel.track('btn-click', {
       id: 'Confirm',
       product,
+      ilk,
+      collateralAmount,
+      daiAmount,
+      firstCDP,
       page: Pages.VaultCreate,
       section: 'ConfirmVault',
     })
   },
 
-  confirmVaultEdit: () => {
+  confirmVaultConfirmTransaction: (
+    ilk: string,
+    collateralAmount: string,
+    daiAmount: string,
+    firstCDP: boolean | undefined,
+    txHash: string,
+  ) => {
+    mixpanel.track('btn-click', {
+      id: 'ConfirmTransaction',
+      product,
+      ilk,
+      collateralAmount,
+      daiAmount,
+      firstCDP,
+      txHash,
+      page: Pages.VaultCreate,
+      section: 'ConfirmVault',
+    })
+  },
+
+  confirmVaultEdit: (firstCDP: boolean | undefined) => {
     mixpanel.track('btn-click', {
       id: 'EditVault',
       product,
+      firstCDP,
       page: Pages.VaultCreate,
       section: 'ConfirmVault',
     })
@@ -172,21 +216,19 @@ export const trackingEvents = {
     })
   },
 
-  createNewVault: () => {
+  createNewVault: (firstCDP: boolean | undefined) => {
     mixpanel.track('btn-click', {
       id: 'createNewVault',
       product,
-      // page: Pages.Overview,
+      firstCDP,
       section: 'NavBar',
     })
   },
 
-  yourVaults: (numberOfVaults: number) => {
+  yourVaults: () => {
     mixpanel.track('btn-click', {
       id: 'YourVaults',
       product,
-      firstCdp: numberOfVaults > 0,
-      // page: Pages.Overview,
       section: 'NavBar',
     })
   },
@@ -211,39 +253,59 @@ export const trackingEvents = {
     })
   },
 
-  manageVaultDepositAmount: (page: Pages.ManageCollateral | Pages.ManageDai, amount: string) => {
+  manageVaultDepositAmount: (
+    page: Pages.ManageCollateral | Pages.ManageDai,
+    amount: string,
+    setMax: boolean,
+  ) => {
     mixpanel.track('input-change', {
       id: 'DepositAmount',
       product,
       page,
       amount,
+      setMax,
     })
   },
 
-  manageVaultGenerateAmount: (page: Pages.ManageCollateral | Pages.ManageDai, amount: string) => {
+  manageVaultGenerateAmount: (
+    page: Pages.ManageCollateral | Pages.ManageDai,
+    amount: string,
+    setMax: boolean,
+  ) => {
     mixpanel.track('input-change', {
       id: 'GenerateAmount',
       product,
       page,
       amount,
+      setMax,
     })
   },
 
-  manageVaultWithdrawAmount: (page: Pages.ManageCollateral | Pages.ManageDai, amount: string) => {
+  manageVaultWithdrawAmount: (
+    page: Pages.ManageCollateral | Pages.ManageDai,
+    amount: string,
+    setMax: boolean,
+  ) => {
     mixpanel.track('input-change', {
       id: 'WithdrawAmount',
       product,
       page,
       amount,
+      setMax,
     })
   },
 
-  manageVaultPaybackAmount: (page: Pages.ManageCollateral | Pages.ManageDai, amount: string) => {
+  manageVaultPaybackAmount: (
+    page: Pages.ManageCollateral | Pages.ManageDai,
+    amount: string,
+    setMax: boolean,
+  ) => {
     mixpanel.track('input-change', {
       id: 'PaybackAmount',
       product,
       page,
       amount,
+      setMax,
     })
   },
 
@@ -251,6 +313,43 @@ export const trackingEvents = {
     mixpanel.track('btn-click', {
       id: 'EditVault',
       product,
+      section: 'ConfirmVault',
+    })
+  },
+
+  // Can we distinguish if went through collateral/daiEditing?
+  manageVaultConfirm: (
+    page: Pages.ManageCollateral | Pages.ManageDai,
+    ilk: string,
+    collateralAmount: string,
+    daiAmount: string,
+  ) => {
+    mixpanel.track('btn-click', {
+      id: 'Confirm',
+      product,
+      ilk,
+      collateralAmount,
+      daiAmount,
+      page,
+      section: 'ConfirmVault',
+    })
+  },
+
+  manageVaultConfirmTransaction: (
+    page: Pages.ManageCollateral | Pages.ManageDai,
+    ilk: string,
+    collateralAmount: string,
+    daiAmount: string,
+    txHash: string,
+  ) => {
+    mixpanel.track('btn-click', {
+      id: 'ConfirmTransaction',
+      product,
+      ilk,
+      collateralAmount,
+      daiAmount,
+      txHash,
+      page,
       section: 'ConfirmVault',
     })
   },
@@ -315,16 +414,6 @@ export const trackingEvents = {
     })
   },
 
-  // Second Confirm when the user is on Collateral and typed into Deposit or Withdraw
-  manageCollateralConfirm: () => {
-    mixpanel.track('btn-click', {
-      id: 'Confirm',
-      product,
-      page: Pages.ManageCollateral,
-      section: 'ConfirmVault',
-    })
-  },
-
   // First Confirm button when the user is on Dai and type into Generate
   manageDaiGenerateConfirm: () => {
     mixpanel.track('btn-click', {
@@ -342,16 +431,6 @@ export const trackingEvents = {
       product,
       page: Pages.ManageDai,
       section: 'Payback',
-    })
-  },
-
-  // Second Confirm when the user is on Dai and typed into Generate or Payback
-  manageDaiConfirm: () => {
-    mixpanel.track('btn-click', {
-      id: 'Confirm',
-      product,
-      page: Pages.ManageDai,
-      section: 'ConfirmVault',
     })
   },
 }

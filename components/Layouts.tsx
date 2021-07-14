@@ -6,17 +6,13 @@ import { WithChildren } from 'helpers/types'
 import React from 'react'
 import { Container, Flex, SxStyleProp } from 'theme-ui'
 import { Background } from 'theme/Background'
-
-import { InfrastructureAnnouncement } from './Announcement'
+import { BackgroundLight } from 'theme/BackgroundLight'
+import { BackgroundLighter } from 'theme/BackgroundLighter'
 
 interface BasicLayoutProps extends WithChildren {
   header: JSX.Element
   footer?: JSX.Element
   sx?: SxStyleProp
-  variant?: string
-}
-
-export interface MarketingLayoutProps extends WithChildren {
   variant?: string
 }
 
@@ -31,7 +27,6 @@ export function BasicLayout({ header, footer, children, sx, variant }: BasicLayo
       }}
     >
       {header}
-      <InfrastructureAnnouncement />
       <Container variant={variant || 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
         <Flex sx={{ width: '100%', height: '100%' }}>{children}</Flex>
       </Container>
@@ -54,14 +49,30 @@ export function AppLayout({ children }: WithChildren) {
   )
 }
 
-export function MarketingLayout({ children, variant }: MarketingLayoutProps) {
+const marketingBackgrounds = {
+  default: <Background />,
+  light: <BackgroundLight />,
+  lighter: <BackgroundLighter />,
+  none: null,
+}
+
+export interface MarketingLayoutProps extends WithChildren {
+  variant?: string
+  topBackground?: keyof typeof marketingBackgrounds
+}
+
+export function MarketingLayout({
+  children,
+  variant,
+  topBackground = 'default',
+}: MarketingLayoutProps) {
   if (!isAppContextAvailable()) {
     return null
   }
 
   return (
     <>
-      <Background />
+      {marketingBackgrounds[topBackground]}
       <BasicLayout
         header={<AppHeader />}
         footer={<Footer />}
