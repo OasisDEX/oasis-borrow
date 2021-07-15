@@ -6,7 +6,7 @@ import { UnreachableCaseError } from 'ts-essentials'
 
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 
-function manageVaultButtonText(state: ManageMultiplyVaultState): string {
+function manageMultiplyVaultButtonText(state: ManageMultiplyVaultState): string {
   const { t } = useTranslation()
 
   switch (state.stage) {
@@ -85,7 +85,7 @@ function manageVaultButtonText(state: ManageMultiplyVaultState): string {
   }
 }
 
-export function ManageVaultButton(props: ManageMultiplyVaultState) {
+export function ManageMultiplyVaultButton(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
 
   const {
@@ -113,7 +113,7 @@ export function ManageVaultButton(props: ManageMultiplyVaultState) {
     regress!()
   }
 
-  const buttonText = manageVaultButtonText(props)
+  const buttonText = manageMultiplyVaultButtonText(props)
   const secondaryButtonText =
     stage === 'daiAllowanceFailure' || stage === 'collateralAllowanceFailure'
       ? t('edit-token-allowance', { token: isCollateralAllowanceStage ? token : 'DAI' })

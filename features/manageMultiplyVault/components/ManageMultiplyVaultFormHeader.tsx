@@ -5,7 +5,7 @@ import { Box, Button, Grid, Text } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 
-function ManageVaultEditingController({
+function ManageMultiplyVaultEditingController({
   stage,
   toggle,
   accountIsController,
@@ -63,7 +63,7 @@ function Header({ header, subtext }: { header: string; subtext: string }) {
   )
 }
 
-export function ManageVaultFormHeader(props: ManageMultiplyVaultState) {
+export function ManageMultiplyVaultFormHeader(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
   const {
     isEditingStage,
@@ -75,7 +75,7 @@ export function ManageVaultFormHeader(props: ManageMultiplyVaultState) {
 
   return (
     <Box>
-      {isEditingStage && <ManageVaultEditingController {...props} />}
+      {isEditingStage && <ManageMultiplyVaultEditingController {...props} />}
       <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
         {isProxyStage && (
           <Header header={t('vault-form.header.proxy')} subtext={t('vault-form.subtext.proxy')} />

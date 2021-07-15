@@ -14,7 +14,7 @@ import { Box, Grid, Text } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 
-function ManageVaultDetailsSummary({
+function ManageMultiplyVaultDetailsSummary({
   vault: { debt, token, freeCollateral, daiYieldFromLockedCollateral },
 }: ManageMultiplyVaultState) {
   const { t } = useTranslation()
@@ -54,7 +54,7 @@ function ManageVaultDetailsSummary({
   )
 }
 
-export function ManageVaultDetails(props: ManageMultiplyVaultState) {
+export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const {
     vault: {
       token,
@@ -126,7 +126,7 @@ export function ManageVaultDetails(props: ManageMultiplyVaultState) {
           token={token}
         />
       </Grid>
-      <ManageVaultDetailsSummary {...props} />
+      <ManageMultiplyVaultDetailsSummary {...props} />
     </Box>
   )
 }

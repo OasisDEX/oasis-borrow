@@ -5,7 +5,7 @@ import React from 'react'
 import { Box, Button, Divider, Flex, Grid, Text } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
-import { ManageVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
+import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
 
 function DepositInput({
   maxDepositAmount,
@@ -115,7 +115,7 @@ function PaybackInput({
   )
 }
 
-export function ManageVaultEditing(props: ManageMultiplyVaultState) {
+export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
 
   const {
@@ -201,7 +201,7 @@ export function ManageVaultEditing(props: ManageMultiplyVaultState) {
           (inverted ? <WithdrawInput {...props} /> : <PaybackInput {...props} />)}
       </Box>
       <Divider />
-      <ManageVaultChangesInformation {...props} />
+      <ManageMultiplyVaultChangesInformation {...props} />
     </Grid>
   )
 }

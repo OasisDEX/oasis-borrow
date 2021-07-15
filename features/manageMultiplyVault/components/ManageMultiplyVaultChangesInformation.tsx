@@ -13,7 +13,7 @@ import { zero } from 'helpers/zero'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-export function ManageVaultChangesInformation(props: ManageVaultState) {
+export function ManageMultiplyVaultChangesInformation(props: ManageVaultState) {
   const { t } = useTranslation()
   const [showFees, setShowFees] = useState(false)
   const {

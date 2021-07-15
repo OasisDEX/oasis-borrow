@@ -10,7 +10,7 @@ import { Grid, Text } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 
-export function ManageVaultCollateralAllowance({
+export function ManageMultiplyVaultCollateralAllowance({
   stage,
   vault: { token },
   collateralAllowanceAmount,

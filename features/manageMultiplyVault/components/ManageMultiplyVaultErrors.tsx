@@ -9,7 +9,7 @@ import { Dictionary } from 'ts-essentials'
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 import { ManageVaultErrorMessage } from '../manageMultiplyVaultValidations'
 
-export function ManageVaultErrors({
+export function ManageMultiplyVaultErrors({
   errorMessages,
   maxWithdrawAmount,
   maxGenerateAmount,

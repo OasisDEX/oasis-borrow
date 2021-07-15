@@ -8,7 +8,7 @@ import { Dictionary } from 'ts-essentials'
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 import { ManageVaultWarningMessage } from '../manageMultiplyVaultValidations'
 
-export function ManageVaultWarnings({
+export function ManageMultiplyVaultWarnings({
   warningMessages,
   ilkData: { debtFloor },
 }: ManageMultiplyVaultState) {

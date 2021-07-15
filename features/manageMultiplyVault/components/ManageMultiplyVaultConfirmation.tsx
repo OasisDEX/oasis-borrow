@@ -4,18 +4,18 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
-import { ManageVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
+import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
 
-export function ManageVaultConfirmation(props: ManageMultiplyVaultState) {
+export function ManageMultiplyVaultConfirmation(props: ManageMultiplyVaultState) {
   return (
     <>
       <Divider />
-      <ManageVaultChangesInformation {...props} />
+      <ManageMultiplyVaultChangesInformation {...props} />
     </>
   )
 }
 
-export function ManageVaultConfirmationStatus({
+export function ManageMultiplyVaultConfirmationStatus({
   stage,
   etherscan,
   manageTxHash,

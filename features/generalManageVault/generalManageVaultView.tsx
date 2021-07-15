@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { ManageMultiplyVaultContainer } from 'features/manageMultiplyVault/ManageVaultView'
+import { ManageMultiplyVaultContainer } from 'features/manageMultiplyVault/components/ManageMultiplyVaultView'
 import { ManageVaultContainer } from 'features/manageVault/ManageVaultView'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'

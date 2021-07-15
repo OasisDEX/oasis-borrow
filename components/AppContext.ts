@@ -61,6 +61,7 @@ import {
 } from 'features/termsOfService/termsAcceptanceApi'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
+import { zero } from 'helpers/zero'
 import { mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
 import { combineLatest, Observable, of } from 'rxjs'
@@ -332,7 +333,8 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  const vaultTypeMock$ = (id: BigNumber) => of(VaultType.Multiply)
+  const vaultTypeMock$ = (id: BigNumber) =>
+    id.modulo(2).eq(zero) ? of(VaultType.Multiply) : of(VaultType.Borrow)
 
   const generalManageVault$ = memoize(
     curry(createGeneralManageVault$)(manageMultiplyVault$, manageVault$, vaultTypeMock$),
