@@ -3,11 +3,93 @@ import { ContentTypeSupport } from './support'
 export const content: ContentTypeSupport = {
   title: 'FAQ',
   navigation: [
+    { title: 'Using Oasis Borrow', id: 'using-borrow' },
     { title: 'Using Oasis.app', id: 'using-oasis' },
     { title: 'Security', id: 'security' },
     { title: 'Buying Dai', id: 'buying-dai' },
   ],
   sections: [
+
+    title: 'Using Oasis Borrow',
+      id: 'using-borrow',
+      questions: [
+        {
+          question: 'What assets can I use as collateral?',
+          answer: `You can use many different collateral types which are voted in by Maker Governance to the Maker Protocol, including ETH and wrapped BTC. You can see each one by visiting oasis.app/borrow with the corresponding Stability Fees and Minimum Collateralization Ratios.`,
+        },
+
+        {
+          question: 'How much does it cost?',
+          answer: `Opening and managing a Vault is free on Oasis.app except for gas costs and Stability Fees. The Stability Fee is charged on the amount of Dai you have generated and goes directly to the Maker Protocol.`,
+        },
+
+        {
+          question: 'How do I open a Vault?',
+          answer: `To open a Vault, select the relevant Collateral and sub-type (e.g. ETH-A) from the homepage (Oasis.app/borrow) and connect your preferred wallet and follow the on screen instructions that will guide you through.`,
+        },
+
+        {
+          question: 'What is the Stability Fee?',
+          answer: `The Stability Fee is the variable annual rate (shown as a percentage) added to your debt that you will need to pay back. This can be seen as the cost to generate Dai, which is paid directly to the Maker Protocol. To read more about the Stability Fee check the [Knowledge Base](https://kb.oasis.app/help/the-stability-fee).`,
+        },
+
+        {
+          question: 'What is the difference between -A/-B/-C collateral Vaults?',
+          answer: `There are multiple Vault types for some collaterals. Each type indicated by a letter has its own Collateralization Ratio, and Stability Fee. You can pick whatever type of Vault you want according to your needs and risk profile.`,
+        },
+
+        {
+          question: 'What is a Proxy? Why do I need to generate one?',
+          answer: `A Proxy is a smart contract that allows you to easily interact with supported protocols, including the Maker Protocol, to manage your Vaults, generate Dai and so on. You will only need to do this once per wallet and all your Vaults will be managed through this single Proxy. Please never send any funds to this Proxy address though.`,
+        },
+
+        {
+          question: 'Why do I need to approve tokens? What is allowance?',
+          answer: `Token allowances let you control how much the proxy contract can do with the token balance in your wallet. To allow the Proxy contract to pay back Dai, or interact with the collaterals in your wallet, you will need to authorize it by setting an allowance with each token that you want to use with Oasis.app. You can set the allowance to the amount you want to use each time or you can set a higher allowance for future interactions with Oasis.app. This will all be presented to you within the flows inside Oasis.app, and you won’t have to do anything extra if you don’t see any prompts.`,
+        },
+
+        {
+          question: 'What is the Liquidation Ratio?',
+          answer: `The Liquidation Ratio is the Minimum Collateralization Ratio which you must keep your Vault at to not put it at risk of being liquidated. If your Vault goes below this Minimum Collateralization Ratio, your Vault could be liquidated and your collateral sold off to cover your debt. To understand more about [collateralization ratio](https://kb.oasis.app/help/collateralization-ratio) and [liquidations](https://kb.oasis.app/help/liquidations) follow the links to the Knowledge Base.`,
+        },
+
+        {
+          question: 'What is the Liquidation Price?',
+          answer: `The Liquidation Price is the price that your Vault will be at risk of liquidation based on the ‘Current Price’ from the Oracle Security Module of the Maker Procol. It is a helpful indicator to allow you to know when you could get liquidated. Please note however that if your Vault has a positive Stability Fee (i.e. >0) then your liquidation price will continually increase as more debt is added to your Vault. You can read more about Liquidation [here](https://kb.oasis.app/help/liquidations).`,
+        },
+
+        {
+          question: 'What is the Liquidation Penalty?',
+          answer: `The Liquidation Penalty is the amount added to your debt once your Vault is liquidated. Each collateral and sub-type (e.g. ETH-A and ETH-B) can have their own liquidation penalties set by Maker Governance. This penalty is also paid directly to the Maker Protocol, and Oasis.app does not charge you any additional fees for being liquidated. `,
+        },
+
+        {
+          question: 'What is the minimum Vault Debt?',
+          answer: `The minimum Vault Debt, also called Dust, is the minimum amount of Dai you must generate to open a new Vault, and maintain. This minimum Vault Debt value is set and can be adjusted at any time by Maker Governance. If the minimum is increased to a value above your current Debt, then you will experience reduced functionality of your Vault until you increase it to above the minimum again. Read more about minimum Vaul Debt [here](https://kb.oasis.app/help/minimum-vault-debt-dust).`,
+        },
+
+        {
+          question: 'What is the next price and how do you know?',
+          answer: `Within the Maker Protocol, there are always two prices for the collateral, the current price and the next price. To protect the system and users from ‘bad actors’ and flash crashes, the Maker Protocol uses an ‘Oracle Security Module’. This means that all prices that go into the system are delayed by one hour, and only updated once per hour - roughly on the hour. The next price is the price that will come into the system as the ‘Current Price’. It is the Current Price that your Vault is always measured against, so you can only be liquidated once the ‘Current Price’ goes below your  ‘Liquidation Price’. This also means you have up to one hour to react if there is a big price drop and the next price is below your Liquidation Price. You can read more about the Oracle Security Module [here](https://kb.oasis.app/help/the-oracle-security-module).`,
+        },
+
+        {
+          question: 'What is gas?',
+          answer: `Gas is the unit of measure for paying for transactions on the Ethereum Blockchain. Gas prices are charged in ETH and you will always need to have ETH in your wallet to be able to interact with Oasis.app. This Gas fee goes directly to Ethereum Miners who keep Ethereum running. Oasis.app does not charge any fees for basic Vault management.`,
+        },
+
+        {
+          question: 'Why would I change the transaction speed?',
+          answer: `Transaction speed allows you to pay more gas to get your transactions mined faster. In case you are in a hurry, for example to increase your Collateralization Ratio to avoid liquidation, you can set a fast speed for your transactions.`,
+        },
+
+        {
+            question: 'How can I contact the Oasis team?',
+            answer:
+              'If you have any questions, reach out to us through our [Contact page](/contact) or on [Twitter](https://twitter.com/oasisdotapp).',
+          },
+
+
     {
       title: 'Using Oasis.app',
       id: 'using-oasis',
