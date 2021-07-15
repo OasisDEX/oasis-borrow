@@ -1,4 +1,4 @@
-import { ManageVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
+import { ManageVaultChange, ManageMultiplyVaultState, MainAction } from './manageMultiplyVault'
 import { allowanceDefaults } from './manageMultiplyVaultAllowances'
 import { depositAndGenerateDefaults, paybackAndWithdrawDefaults } from './manageMultiplyVaultInput'
 
@@ -23,9 +23,13 @@ export type ManageVaultFormChange =
   | {
       kind: 'toggleSliderController'
     }
+  | {
+      kind: 'mainAction'
+      mainAction: MainAction
+    }
 
 export function applyManageVaultForm(
-  { kind }: ManageVaultChange,
+  change: ManageVaultChange,
   state: ManageMultiplyVaultState,
 ): ManageMultiplyVaultState {
   const {
@@ -69,10 +73,17 @@ export function applyManageVaultForm(
   //   }
   // }
 
-  if (kind === 'toggleSliderController') {
+  if (change.kind === 'toggleSliderController') {
     return {
       ...state,
       showSliderController: !state.showSliderController,
+    }
+  }
+
+  if (change.kind === 'mainAction') {
+    return {
+      ...state,
+      mainAction: change.mainAction,
     }
   }
 

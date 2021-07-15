@@ -122,6 +122,7 @@ export type ManageMultiplyVaultStage =
   | 'manageFailure'
   | 'manageSuccess'
 
+export type MainAction = 'buy' | 'sell'
 export interface MutableManageVaultState {
   stage: ManageMultiplyVaultStage
   originalEditingStage: ManageMultiplyVaultEditingStage
@@ -138,6 +139,7 @@ export interface MutableManageVaultState {
   selectedCollateralAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
   selectedDaiAllowanceRadio: 'unlimited' | 'paybackAmount' | 'custom'
 
+  mainAction: MainAction
   showSliderController: boolean
   slider?: BigNumber
 }
@@ -182,6 +184,7 @@ interface ManageVaultFunctions {
 
   toggleSliderController?: () => void
   adjustSlider?: (value: BigNumber) => void
+  setMainAction?: (mainAction: MainAction) => void
 }
 
 interface ManageVaultTxInfo {
@@ -247,6 +250,7 @@ function addTransitions(
       progress: () => change({ kind: 'progressEditing' }),
       toggleSliderController: () => change({ kind: 'toggleSliderController' }),
       adjustSlider: (slider: BigNumber) => change({ kind: 'slider', slider }),
+      setMainAction: (mainAction: MainAction) => change({ kind: 'mainAction', mainAction }),
     }
   }
 
@@ -352,6 +356,7 @@ export const defaultMutableManageVaultState: MutableManageVaultState = {
   selectedDaiAllowanceRadio: 'unlimited' as const,
   showSliderController: true,
   slider: zero,
+  mainAction: 'buy',
 }
 
 export function createManageMultiplyVault$(

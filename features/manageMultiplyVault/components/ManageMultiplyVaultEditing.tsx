@@ -5,6 +5,7 @@ import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/f
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { useCallback } from 'react'
 import { Box, Button, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
@@ -47,12 +48,13 @@ function SellTokenInput({
   maxGenerateAmount,
   updateGenerate,
   updateGenerateMax,
+  vault: { token },
 }: ManageMultiplyVaultState) {
   return (
     <VaultActionInput
       action="Sell"
       amount={generateAmount}
-      token={'DAI'}
+      token={token}
       showMax={true}
       disabled={!accountIsController}
       maxAmount={maxGenerateAmount}
@@ -71,12 +73,15 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
   } = useThemeUI()
 
   const {
+    vault: { token },
     afterCollateralizationRatio,
     afterLiquidationPrice,
     showSliderController,
     toggleSliderController,
     adjustSlider,
     slider,
+    mainAction,
+    setMainAction,
   } = props
 
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -146,12 +151,29 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
         </Grid>
       ) : (
         <Box>
-          <BuyTokenInput {...props} />
+          <Flex>
+            <Button
+              onClick={() => setMainAction!('buy')}
+              variant={mainAction === 'buy' ? 'beanActive' : 'bean'}
+              sx={{ mr: 2 }}
+            >
+              Buy {token}
+            </Button>
+            <Button
+              onClick={() => setMainAction!('sell')}
+              variant={mainAction === 'sell' ? 'beanActive' : 'bean'}
+            >
+              Sell {token}
+            </Button>
+          </Flex>
+          {mainAction === 'buy' ? <BuyTokenInput {...props} /> : <SellTokenInput {...props} />}
         </Box>
       )}
 
       <Button sx={{ py: 2 }} variant="actionOption" mt={3} onClick={toggleSliderController!}>
-        <Text pr={1}>Or enter an amount of ETH</Text>
+        <Text pr={1}>
+          {showSliderController ? 'Or enter an amount of ETH' : 'Or use the risk slider'}
+        </Text>
       </Button>
 
       <Divider sx={{ width: '100%' }} />
