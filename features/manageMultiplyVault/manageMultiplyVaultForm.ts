@@ -69,5 +69,12 @@ export function applyManageVaultForm(
   //   }
   // }
 
+  if (kind === 'toggleSliderController') {
+    return {
+      ...state,
+      showSliderController: !state.showSliderController,
+    }
+  }
+
   return state
 }

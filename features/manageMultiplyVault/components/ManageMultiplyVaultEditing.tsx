@@ -138,6 +138,8 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
     accountIsController,
     afterCollateralizationRatio,
     afterLiquidationPrice,
+    showSliderController,
+    toggleSliderController,
   } = props
 
   const disableDepositAndGenerate = paybackAmount || withdrawAmount || showPaybackAndWithdrawOption
@@ -183,65 +185,64 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
           (inverted ? <DepositInput {...props} /> : <GenerateInput {...props} />)}
       </Box> */}
 
-      <Grid gap={2}>
-        <Box>
-          <Flex
-            sx={{
-              variant: 'text.paragraph4',
-              justifyContent: 'space-between',
-              fontWeight: 'semiBold',
-              color: 'text.subtitle',
-            }}
-          >
-            <Grid gap={2}>
-              <Text>Liquidation Price</Text>
-              <Text variant="paragraph1" sx={{ fontWeight: 'semiBold' }}>
-                ${formatFiatBalance(afterLiquidationPrice)}
-              </Text>
-            </Grid>
-            <Grid gap={2}>
-              <Text>Collateral Ratio</Text>
-              <Text
-                variant="paragraph1"
-                sx={{ fontWeight: 'semiBold', textAlign: 'right', color: collRatioColor }}
-              >
-                {formatPercent(afterCollateralizationRatio.times(100))}
-              </Text>
-            </Grid>
-          </Flex>
-        </Box>
-        <Box my={1}>
-          <Slider
-            sx={{
-              background: sliderBackground,
-            }}
-            step={2}
-            value={multiply?.toNumber() || 0}
-            onChange={(e) => {
-              console.log('update multiply')
-            }}
-          />
-        </Box>
-        <Box>
-          <Flex
-            sx={{
-              variant: 'text.paragraph4',
-              justifyContent: 'space-between',
-              color: 'text.subtitle',
-            }}
-          >
-            <Text>Decrease risk</Text>
-            <Text>Increase risk</Text>
-          </Flex>
-        </Box>
-      </Grid>
+      {showSliderController ? (
+        <Grid gap={2}>
+          <Box>
+            <Flex
+              sx={{
+                variant: 'text.paragraph4',
+                justifyContent: 'space-between',
+                fontWeight: 'semiBold',
+                color: 'text.subtitle',
+              }}
+            >
+              <Grid gap={2}>
+                <Text>Liquidation Price</Text>
+                <Text variant="paragraph1" sx={{ fontWeight: 'semiBold' }}>
+                  ${formatFiatBalance(afterLiquidationPrice)}
+                </Text>
+              </Grid>
+              <Grid gap={2}>
+                <Text>Collateral Ratio</Text>
+                <Text
+                  variant="paragraph1"
+                  sx={{ fontWeight: 'semiBold', textAlign: 'right', color: collRatioColor }}
+                >
+                  {formatPercent(afterCollateralizationRatio.times(100))}
+                </Text>
+              </Grid>
+            </Flex>
+          </Box>
+          <Box my={1}>
+            <Slider
+              sx={{
+                background: sliderBackground,
+              }}
+              step={2}
+              value={multiply?.toNumber() || 0}
+              onChange={(e) => {
+                console.log('update multiply')
+              }}
+            />
+          </Box>
+          <Box>
+            <Flex
+              sx={{
+                variant: 'text.paragraph4',
+                justifyContent: 'space-between',
+                color: 'text.subtitle',
+              }}
+            >
+              <Text>Decrease risk</Text>
+              <Text>Increase risk</Text>
+            </Flex>
+          </Box>
+        </Grid>
+      ) : (
+        <Box>input</Box>
+      )}
 
-      <Button
-        sx={{ py: 2 }}
-        variant="actionOption"
-        mt={3}
-        onClick={toggleDepositAndGenerateOption!}
-      >
+      <Button sx={{ py: 2 }} variant="actionOption" mt={3} onClick={toggleSliderController!}>
         <Text pr={1}>Or enter an amount of ETH</Text>
       </Button>
 
