@@ -25,7 +25,7 @@ export const content: ContentTypeSupport = {
 
         {
           question: 'How do I open a Vault?',
-          answer: `To open a Vault, select the relevant Collateral and sub-type (e.g. ETH-A) from the homepage (Oasis.app/borrow) and connect your preferred wallet and follow the on screen instructions that will guide you through.`,
+          answer: `To open a Vault, select the relevant Collateral and sub-type (e.g. ETH-A) from the homepage (Oasis.app) and connect your preferred wallet and follow the on screen instructions that will guide you through.`,
         },
 
         {
@@ -60,7 +60,7 @@ export const content: ContentTypeSupport = {
 
         {
           question: 'What is the Liquidation Penalty?',
-          answer: `The Liquidation Penalty is the amount added to your debt once your Vault is liquidated. Each collateral and sub-type (e.g. ETH-A and ETH-B) can have their own liquidation penalties set by Maker Governance. This penalty is also paid directly to the Maker Protocol, and Oasis.app does not charge you any additional fees for being liquidated. `,
+          answer: `The Liquidation Penalty is the amount added to your debt once your Vault is liquidated. Each collateral and sub-type (e.g. ETH-A and ETH-B) can have their own liquidation penalties set by Maker Governance. This penalty is also paid directly to the Maker Protocol, and Oasis.app does not charge you any additional fees for being liquidated.`,
         },
 
         {
@@ -86,12 +86,12 @@ export const content: ContentTypeSupport = {
         {
             question: 'How can I contact the Oasis team?',
             answer:
-              'If you have any questions, reach out to us through our [Contact page](/contact) or on [Twitter](https://twitter.com/oasisdotapp).',
+              'If you have any questions, reach out to us through our [Contact page](/daiwallet/contact) or on [Twitter](https://twitter.com/oasisdotapp).',
           },
 
 
     {
-      title: 'Using Daiwallet',
+      title: 'Using Dai Wallet',
       id: 'using-daiwallet',
       questions: [
         {
@@ -100,7 +100,7 @@ export const content: ContentTypeSupport = {
         },
         {
           question: 'What is Dai?',
-          answer: `Dai is a better, smarter digital currency for everyone. It is the world’s first unbiased currency and its value consistently tracks the US Dollar, which means it doesn't suffer from the volatility associated with many other digital currencies. To learn more about Dai, read our [short primer](/dai).`,
+          answer: `Dai is a better, smarter digital currency for everyone. It is the world’s first unbiased currency and its value consistently tracks the US Dollar, which means it doesn't suffer from the volatility associated with many other digital currencies. To learn more about Dai, read our [short primer](/daiwallet/dai).`,
         },
         {
           question: 'Do I need an account?',
@@ -109,7 +109,7 @@ export const content: ContentTypeSupport = {
         {
           question: 'Will I be charged fees?',
           answer:
-            'Oasis is currently free to use. However, you will have to pay transaction fees and, depending on the features you use, fees associated with Maker and other protocols, such as Stability or exchange fees.',
+            'Our Dai Wallet is currently free to use. However, you will have to pay transaction fees and, depending on the features you use, fees associated with Maker and other protocols, such as Stability or exchange fees.',
         },
         {
           question: 'Why do I need ETH to send or save my Dai?',
@@ -118,7 +118,7 @@ export const content: ContentTypeSupport = {
         {
           question: 'How can I contact the Oasis team?',
           answer:
-            'If you have any questions, reach out to us through our [Contact page](/contact) or on [Twitter](https://twitter.com/oasisdotapp).',
+            'If you have any questions, reach out to us through our [Contact page](/daiwallet/contact) or on [Twitter](https://twitter.com/oasisdotapp).',
         },
       ],
     },
