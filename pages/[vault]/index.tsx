@@ -3,7 +3,6 @@ import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { VaultBannersView } from 'features/banners/VaultsBannersView'
 import { ManageVaultView } from 'features/manageVault/ManageVaultView'
-import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -28,7 +27,6 @@ export default function Vault({ id }: { id: string }) {
           <BackgroundLight />
           <VaultBannersView id={new BigNumber(id)} />
           <ManageVaultView id={new BigNumber(id)} />
-          <VaultHistoryView id={new BigNumber(id)} />
         </Grid>
       </WithTermsOfService>
     </WithConnection>

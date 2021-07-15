@@ -18,7 +18,7 @@ function CallToActionPlaceholder() {
       sx={{
         flex: 1,
         cursor: 'progress',
-        bg: 'ghost',
+        bg: 'backgroundAlt',
         borderRadius: 'large',
         p: 4,
         position: 'relative',
@@ -126,7 +126,7 @@ function CallToAction({ ilk }: CallToActionProps) {
                 {t('system.min-coll-ratio')}
               </Text>
               <Text variant="paragraph3" sx={{ color: 'white', fontWeight: 'semiBold' }}>
-                {formatPercent(ilk.liquidationRatio.times(100), { precision: 2 })}
+                {formatPercent(ilk.liquidationRatio.times(100))}
               </Text>
             </Flex>
           </Flex>

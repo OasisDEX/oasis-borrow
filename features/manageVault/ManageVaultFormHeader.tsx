@@ -1,17 +1,18 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Flex, Grid, Text } from 'theme-ui'
+import { Box, Button, Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 
-function ManageVaultEditingToggle({ stage, toggle, accountIsController }: ManageVaultState) {
-  const collateralVariant = stage === 'collateralEditing' ? 'outline' : 'filter'
-  const daiVariant = stage === 'daiEditing' ? 'outline' : 'filter'
+function ManageVaultEditingController({ stage, toggle, accountIsController }: ManageVaultState) {
   const { t } = useTranslation()
+  const collateralVariant = `vaultEditingController${
+    stage !== 'collateralEditing' ? 'Inactive' : ''
+  }`
+  const daiVariant = `vaultEditingController${stage !== 'daiEditing' ? 'Inactive' : ''}`
 
-  function handleToggle(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    e.preventDefault()
+  function handleToggle() {
     toggle!()
     if (stage === 'collateralEditing') {
       trackingEvents.switchToDai(accountIsController)
@@ -21,21 +22,27 @@ function ManageVaultEditingToggle({ stage, toggle, accountIsController }: Manage
   }
 
   return (
-    <Grid sx={{ justifyContent: 'center' }}>
-      <Flex onClick={handleToggle} sx={{ justifyContent: 'center' }}>
-        <Button variant={collateralVariant} sx={{ py: 1 }}>
+    <Box sx={{ justifyContent: 'center' }}>
+      <Grid columns={3} variant="vaultEditingControllerContainer">
+        <Button onClick={handleToggle} variant={collateralVariant}>
           {t('system.collateral')}
         </Button>
-        <Button variant={daiVariant} sx={{ py: 1 }}>
+        <Button onClick={handleToggle} variant={daiVariant}>
           {t('system.dai')}
         </Button>
-      </Flex>
-      <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
+        <Button
+          onClick={() => window.alert('Switch to multiply')}
+          variant="vaultEditingControllerInactive"
+        >
+          Multiply
+        </Button>
+      </Grid>
+      {/* <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
         {stage === 'collateralEditing'
           ? t('vault-form.subtext.collateral')
           : t('vault-form.subtext.dai')}
-      </Text>
-    </Grid>
+      </Text> */}
+    </Box>
   )
 }
 
@@ -64,8 +71,8 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
 
   return (
     <Box>
-      {isEditingStage && <ManageVaultEditingToggle {...props} />}
-      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
+      {isEditingStage && <ManageVaultEditingController {...props} />}
+      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
         {isProxyStage && (
           <Header header={t('vault-form.header.proxy')} subtext={t('vault-form.subtext.proxy')} />
         )}

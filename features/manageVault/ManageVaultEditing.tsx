@@ -1,11 +1,11 @@
-import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { MinusIcon, PlusIcon } from 'features/openVault/components/OpenVaultEditing'
+import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Flex, Grid, Text } from 'theme-ui'
+import { Box, Button, Divider, Flex, Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
+import { ManageVaultChangesInformation } from './ManageVaultChangesInformation'
 
 function DepositInput({
   maxDepositAmount,
@@ -143,7 +143,7 @@ export function ManageVaultEditing(props: ManageVaultState) {
     (paybackAmount || withdrawAmount) && accountIsController
 
   return (
-    <Grid>
+    <Grid gap={4}>
       <Box
         sx={{
           opacity: disableDepositAndGenerate ? 0.5 : 1,
@@ -168,14 +168,14 @@ export function ManageVaultEditing(props: ManageVaultState) {
       </Box>
 
       <Flex sx={{ alignItems: 'center', justifyContent: 'space-evenly' }}>
-        <Box sx={{ borderBottom: 'light', height: '0px', width: '100%' }} />
+        <Divider sx={{ width: '100%' }} />
         <Text
           mx={3}
           sx={{ color: 'muted', minWidth: 'fit-content', fontWeight: 'semiBold', fontSize: '1' }}
         >
           {t('manage-vault.or')}
         </Text>
-        <Box sx={{ borderBottom: 'light', height: '0px', width: '100%' }} />
+        <Divider sx={{ width: '100%' }} />
       </Flex>
 
       <Box
@@ -200,6 +200,8 @@ export function ManageVaultEditing(props: ManageVaultState) {
           (!!paybackAmount || !!withdrawAmount) &&
           (inverted ? <WithdrawInput {...props} /> : <PaybackInput {...props} />)}
       </Box>
+      <Divider />
+      <ManageVaultChangesInformation {...props} />
     </Grid>
   )
 }

@@ -9,16 +9,16 @@
 <br>
 <br>
 
-| Environment | URL                                                          | Branch |                                     Build Status                                     |
-| ----------- | ------------------------------------------------------------ | :----: | :----------------------------------------------------------------------------------: |
-| Production  | [oasis.app/borrow](https://oasis.app/borrow)                 | `main` | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=main) |
-| Staging     | [staging.oasis.app/borrow](https://staging.oasis.app/borrow) | `dev`  | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=dev)  |
+| Environment | URL                                            | Branch |                                     Build Status                                     |
+| ----------- | ---------------------------------------------- | :----: | :----------------------------------------------------------------------------------: |
+| Production  | [oasis.app](https://oasis.app)                 | `main` | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=main) |
+| Staging     | [staging.oasis.app](https://staging.oasis.app) | `dev`  | ![](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=dev)  |
 
 <br>
 
 # Oasis Borrow
 
-[Oasis Borrow](https://oasis.app/borrow) is the most popular user-interface to interact with the
+[Oasis Borrow](https://oasis.app) is the most popular user-interface to interact with the
 [Maker protocol](https://docs.makerdao.com/). It enables users to generate Dai, the most used and
 decentralized stablecoin, using a variety of crypto assets as collateral.
 
@@ -103,6 +103,8 @@ Some of the values that are used you can check in the `.env` file.
 - `COMMIT_SHA` - The value is used together with `SHOW_BUILD_INFO`. Main usages is to display a
   commit in the footer. This targets build deployments to staging environments so that the team can
   see which version the UI reflects. The value could be a branch name or specific commit.
+
+- `API_HOST` - The value is used to construct links based on root domain.
 
 - `MIXPANEL_ENV` - The value could be either `production` or anything else you'd like to use to
   denote that it's NOT production. The difference is where the events are sent. For "development"

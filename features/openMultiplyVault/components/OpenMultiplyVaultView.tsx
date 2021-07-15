@@ -1,18 +1,17 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
-import { AppLink } from 'components/Links'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
+import { VaultFormHeaderSwitch } from 'components/vault/VaultFormHeader'
 import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
-import { Box, Card, Flex, Grid, Text } from 'theme-ui'
+import { Box, Card, Grid, Text } from 'theme-ui'
 
 import { OpenMultiplyVaultState } from '../openMultiplyVault'
-import { createOpenVaultAnalytics$ } from '../openMultiplyVaultAnalytics'
+import { createOpenMultiplyVaultAnalytics$ } from '../openMultiplyVaultAnalytics'
 import { OpenMultiplyVaultButton } from './OpenMultiplyVaultButton'
 import {
   OpenMultiplyVaultConfirmation,
@@ -34,43 +33,7 @@ function OpenMultiplyVaultTitle({
   return (
     <Box>
       {isEditingStage ? (
-        <>
-          <Box
-            sx={{
-              borderBottom: 'lightMuted',
-              pb: 3,
-              mb: 3,
-              position: 'relative',
-              width: 'calc(100% + 64px)',
-              left: -4,
-            }}
-          >
-            <AppLink
-              href={`/vaults/open/${ilk}`}
-              sx={{
-                color: 'primary',
-                fontWeight: 'semiBold',
-                fontSize: 3,
-                pb: 2,
-                display: 'block',
-              }}
-            >
-              <Flex
-                sx={{
-                  variant: 'links.nav',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 3,
-                }}
-              >
-                <Text mr={2}>Switch to Borrow</Text>
-                <Icon sx={{ ml: 1 }} name="arrow_right" />
-              </Flex>
-            </AppLink>
-          </Box>
-          {/* divider */}
-          <Box sx={{ pb: 2 }} />
-        </>
+        <VaultFormHeaderSwitch href={`/vaults/open/${ilk}`} title="Switch to Borrow" />
       ) : null}
       <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
         {isEditingStage
@@ -98,31 +61,20 @@ function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
 
   return (
-    <Box>
-      <Card
-        variant="surface"
-        sx={{
-          boxShadow: 'card',
-          borderRadius: 'mediumLarge',
-          p: 3,
-          overflow: 'hidden',
-          border: 'lightMuted',
-        }}
-      >
-        <Grid gap={4} p={2}>
-          <OpenMultiplyVaultTitle {...props} />
-          {isEditingStage && <OpenMultiplyVaultEditing {...props} />}
-          {isAllowanceStage && <VaultAllowance {...props} />}
-          {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
-          <OpenMultiplyVaultErrors {...props} />
-          <OpenMultiplyVaultWarnings {...props} />
-          <OpenMultiplyVaultButton {...props} />
-          {isProxyStage && <VaultProxyStatusCard {...props} />}
-          {isAllowanceStage && <VaultAllowanceStatus {...props} />}
-          {isOpenStage && <OpenMultiplyVaultStatus {...props} />}
-        </Grid>
-      </Card>
-    </Box>
+    <Card variant="vaultFormContainer">
+      <Grid gap={4} p={2}>
+        <OpenMultiplyVaultTitle {...props} />
+        {isEditingStage && <OpenMultiplyVaultEditing {...props} />}
+        {isAllowanceStage && <VaultAllowance {...props} />}
+        {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
+        <OpenMultiplyVaultErrors {...props} />
+        <OpenMultiplyVaultWarnings {...props} />
+        <OpenMultiplyVaultButton {...props} />
+        {isProxyStage && <VaultProxyStatusCard {...props} />}
+        {isAllowanceStage && <VaultAllowanceStatus {...props} />}
+        {isOpenStage && <OpenMultiplyVaultStatus {...props} />}
+      </Grid>
+    </Card>
   )
 }
 
@@ -133,7 +85,7 @@ export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultState) {
   return (
     <>
       <VaultHeader {...props} header={t('vault.open-vault', { ilk })} />
-      <Grid columns={['1fr', '2fr minmax(480px, 1fr)']} gap={4}>
+      <Grid variant="vaultContainer">
         <Box sx={{ order: [3, 1] }}>
           <OpenMultiplyVaultDetails {...props} />
         </Box>
@@ -147,13 +99,14 @@ export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultState) {
 }
 
 export function OpenMultiplyVaultView({ ilk }: { ilk: string }) {
-  const { multiplyVault$ } = useAppContext()
+  const { multiplyVault$, accountData$ } = useAppContext()
   const multiplyVaultWithIlk$ = multiplyVault$(ilk)
 
   const openVaultWithError = useObservableWithError(multiplyVault$(ilk))
 
   useEffect(() => {
-    const subscription = createOpenVaultAnalytics$(
+    const subscription = createOpenMultiplyVaultAnalytics$(
+      accountData$,
       multiplyVaultWithIlk$,
       trackingEvents,
     ).subscribe()
