@@ -4,7 +4,7 @@ import { Vault } from 'blockchain/vaults'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { zero } from 'helpers/zero'
 
-import { ManageVaultState } from './manageMultiplyVault'
+import { ManageMultiplyVaultState } from './manageMultiplyVault'
 
 // This value ought to be coupled in relation to how much we round the raw debt
 // value in the vault (vault.debt)
@@ -71,7 +71,7 @@ function determineShouldPaybackAll({
   debt,
   debtOffset,
   daiBalance,
-}: Pick<ManageVaultState, 'paybackAmount'> &
+}: Pick<ManageMultiplyVaultState, 'paybackAmount'> &
   Pick<Vault, 'debt' | 'debtOffset'> &
   Pick<BalanceInfo, 'daiBalance'>): boolean {
   return (
@@ -90,7 +90,8 @@ function calculateAfterLockedCollateral({
   lockedCollateral,
   depositAmount,
   withdrawAmount,
-}: Pick<ManageVaultState, 'depositAmount' | 'withdrawAmount'> & Pick<Vault, 'lockedCollateral'>) {
+}: Pick<ManageMultiplyVaultState, 'depositAmount' | 'withdrawAmount'> &
+  Pick<Vault, 'lockedCollateral'>) {
   const amount = depositAmount
     ? lockedCollateral.plus(depositAmount)
     : withdrawAmount
@@ -112,7 +113,7 @@ function calculateAfterDebt({
   generateAmount,
   paybackAmount,
   debt,
-}: Pick<ManageVaultState, 'shouldPaybackAll' | 'generateAmount' | 'paybackAmount'> &
+}: Pick<ManageMultiplyVaultState, 'shouldPaybackAll' | 'generateAmount' | 'paybackAmount'> &
   Pick<Vault, 'debt'>) {
   if (shouldPaybackAll) return zero
 
@@ -135,7 +136,8 @@ function calculateAfterBackingCollateral({
   afterDebt,
   liquidationRatio,
   price,
-}: Pick<ManageVaultState, 'afterDebt'> & Pick<IlkData, 'liquidationRatio'> & { price: BigNumber }) {
+}: Pick<ManageMultiplyVaultState, 'afterDebt'> &
+  Pick<IlkData, 'liquidationRatio'> & { price: BigNumber }) {
   if (!afterDebt.gt(zero)) return zero
 
   return afterDebt.times(liquidationRatio).div(price)
@@ -177,7 +179,7 @@ function calculateMaxWithdrawAmount({
   debtOffset,
   liquidationRatio,
   price,
-}: Pick<ManageVaultState, 'paybackAmount' | 'shouldPaybackAll'> &
+}: Pick<ManageMultiplyVaultState, 'paybackAmount' | 'shouldPaybackAll'> &
   Pick<Vault, 'lockedCollateral' | 'debt' | 'debtOffset'> &
   Pick<IlkData, 'liquidationRatio'> & { price: BigNumber }) {
   const afterDebt = calculateAfterDebt({ shouldPaybackAll, debt, paybackAmount })
@@ -199,7 +201,8 @@ function calculateAfterIlkDebtAvailable({
   ilkDebtAvailable,
   paybackAmount,
   generateAmount,
-}: Pick<IlkData, 'ilkDebtAvailable'> & Pick<ManageVaultState, 'generateAmount' | 'paybackAmount'>) {
+}: Pick<IlkData, 'ilkDebtAvailable'> &
+  Pick<ManageMultiplyVaultState, 'generateAmount' | 'paybackAmount'>) {
   if (ilkDebtAvailable.gt(zero)) {
     const amount = ilkDebtAvailable.plus(paybackAmount || zero).minus(generateAmount || zero)
     return amount.gte(zero) ? amount : zero
@@ -219,7 +222,7 @@ function calculateDaiYieldFromCollateral({
   price,
   collateral,
   ilkDebtAvailable,
-}: Pick<ManageVaultState, 'generateAmount' | 'paybackAmount'> &
+}: Pick<ManageMultiplyVaultState, 'generateAmount' | 'paybackAmount'> &
   Pick<Vault, 'debt'> &
   Pick<IlkData, 'liquidationRatio' | 'ilkDebtAvailable'> & {
     price: BigNumber
@@ -257,7 +260,7 @@ function calculateMaxGenerateAmount({
   liquidationRatio,
   price,
   ilkDebtAvailable,
-}: Pick<ManageVaultState, 'depositAmount' | 'generateAmount'> &
+}: Pick<ManageMultiplyVaultState, 'depositAmount' | 'generateAmount'> &
   Pick<Vault, 'debtOffset' | 'debt' | 'lockedCollateral'> &
   Pick<IlkData, 'liquidationRatio' | 'ilkDebtAvailable'> & {
     price: BigNumber
@@ -277,7 +280,9 @@ function calculateMaxGenerateAmount({
   })
 }
 
-export function applyManageVaultCalculations(state: ManageVaultState): ManageVaultState {
+export function applyManageVaultCalculations(
+  state: ManageMultiplyVaultState,
+): ManageMultiplyVaultState {
   const {
     depositAmount,
     generateAmount,

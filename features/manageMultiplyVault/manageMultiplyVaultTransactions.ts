@@ -15,7 +15,7 @@ import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { filter, first, switchMap } from 'rxjs/operators'
 
-import { ManageVaultChange, ManageVaultState } from './manageMultiplyVault'
+import { ManageVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 type ProxyChange =
   | {
@@ -90,8 +90,8 @@ export type ManageVaultTransactionChange =
 
 export function applyManageVaultTransaction(
   change: ManageVaultChange,
-  state: ManageVaultState,
-): ManageVaultState {
+  state: ManageMultiplyVaultState,
+): ManageMultiplyVaultState {
   if (change.kind === 'proxyWaitingForApproval') {
     return {
       ...state,
@@ -225,7 +225,12 @@ export function applyManageVaultTransaction(
 export function manageVaultDepositAndGenerate(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageVaultChange) => void,
-  { generateAmount, depositAmount, proxyAddress, vault: { ilk, token, id } }: ManageVaultState,
+  {
+    generateAmount,
+    depositAmount,
+    proxyAddress,
+    vault: { ilk, token, id },
+  }: ManageMultiplyVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -274,7 +279,7 @@ export function manageVaultWithdrawAndPayback(
     proxyAddress,
     vault: { ilk, token, id },
     shouldPaybackAll,
-  }: ManageVaultState,
+  }: ManageMultiplyVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -318,7 +323,7 @@ export function manageVaultWithdrawAndPayback(
 export function setDaiAllowance(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageVaultChange) => void,
-  state: ManageVaultState,
+  state: ManageMultiplyVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -357,7 +362,7 @@ export function setDaiAllowance(
 export function setCollateralAllowance(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageVaultChange) => void,
-  state: ManageVaultState,
+  state: ManageMultiplyVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -401,7 +406,7 @@ export function createProxy(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
   change: (ch: ManageVaultChange) => void,
-  { safeConfirmations }: ManageVaultState,
+  { safeConfirmations }: ManageMultiplyVaultState,
 ) {
   txHelpers$
     .pipe(

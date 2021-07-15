@@ -3,9 +3,13 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Grid, Text } from 'theme-ui'
 
-import { ManageVaultState } from '../manageVault'
+import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 
-function ManageVaultEditingController({ stage, toggle, accountIsController }: ManageVaultState) {
+function ManageVaultEditingController({
+  stage,
+  toggle,
+  accountIsController,
+}: ManageMultiplyVaultState) {
   const { t } = useTranslation()
   const collateralVariant = `vaultEditingController${
     stage !== 'collateralEditing' ? 'Inactive' : ''
@@ -59,7 +63,7 @@ function Header({ header, subtext }: { header: string; subtext: string }) {
   )
 }
 
-export function ManageVaultFormHeader(props: ManageVaultState) {
+export function ManageVaultFormHeader(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
   const {
     isEditingStage,

@@ -40,9 +40,14 @@ import { createAccountData } from 'features/account/AccountData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
+import {
+  createGeneralManageVault$,
+  VaultType,
+} from 'features/generalManageVault/generalManageVault'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
+import { createManageMultiplyVault$ } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenMultiplyVault$ } from 'features/openMultiplyVault/openMultiplyVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
@@ -313,6 +318,27 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  const manageMultiplyVault$ = memoize(
+    curry(createManageMultiplyVault$)(
+      context$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      priceInfo$,
+      balanceInfo$,
+      ilkData$,
+      vault$,
+    ),
+    bigNumberTostring,
+  )
+
+  const vaultTypeMock$ = (id: BigNumber) => of(VaultType.Multiply)
+
+  const generalManageVault$ = memoize(
+    curry(createGeneralManageVault$)(manageMultiplyVault$, manageVault$, vaultTypeMock$),
+    bigNumberTostring,
+  )
+
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
@@ -368,6 +394,7 @@ export function setupAppContext() {
     reclaimCollateral$,
     openVaultOverview$,
     multiplyVault$,
+    generalManageVault$,
   }
 }
 

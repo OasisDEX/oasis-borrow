@@ -5,7 +5,7 @@ import { isEqual } from 'lodash'
 import { merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 
-import { ManageVaultState } from './manageMultiplyVault'
+import { ManageMultiplyVaultState } from './manageMultiplyVault'
 
 type GenerateAmountChange = {
   kind: 'generateAmountChange'
@@ -31,8 +31,8 @@ type AllowanceChange = {
   kind: 'collateralAllowanceChange' | 'daiAllowanceChange'
   value: {
     type:
-      | Pick<ManageVaultState, 'selectedDaiAllowanceRadio'>
-      | Pick<ManageVaultState, 'selectedCollateralAllowanceRadio'>
+      | Pick<ManageMultiplyVaultState, 'selectedDaiAllowanceRadio'>
+      | Pick<ManageMultiplyVaultState, 'selectedCollateralAllowanceRadio'>
     amount: BigNumber
   }
 }
@@ -57,7 +57,7 @@ type ManageVaultConfirmTransaction = {
 }
 
 export function createManageVaultAnalytics$(
-  manageVaultState$: Observable<ManageVaultState>,
+  manageVaultState$: Observable<ManageMultiplyVaultState>,
   tracker: Tracker,
 ) {
   const stageChanges = manageVaultState$.pipe(
@@ -123,7 +123,7 @@ export function createManageVaultAnalytics$(
   )
 
   const collateralAllowanceTypeChanges: Observable<Pick<
-    ManageVaultState,
+    ManageMultiplyVaultState,
     'selectedCollateralAllowanceRadio'
   >> = manageVaultState$.pipe(
     filter((state) => state.stage === 'collateralAllowanceWaitingForConfirmation'),
@@ -152,7 +152,7 @@ export function createManageVaultAnalytics$(
   )
 
   const daiAllowanceTypeChanges: Observable<Pick<
-    ManageVaultState,
+    ManageMultiplyVaultState,
     'selectedDaiAllowanceRadio'
   >> = manageVaultState$.pipe(
     filter((state) => state.stage === 'daiAllowanceWaitingForConfirmation'),

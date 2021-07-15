@@ -3,10 +3,10 @@ import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxSt
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { ManageVaultState } from '../manageVault'
+import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 import { ManageVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
 
-export function ManageVaultConfirmation(props: ManageVaultState) {
+export function ManageVaultConfirmation(props: ManageMultiplyVaultState) {
   return (
     <>
       <Divider />
@@ -19,7 +19,7 @@ export function ManageVaultConfirmationStatus({
   stage,
   etherscan,
   manageTxHash,
-}: ManageVaultState) {
+}: ManageMultiplyVaultState) {
   const { t } = useTranslation()
 
   if (stage === 'manageInProgress') {

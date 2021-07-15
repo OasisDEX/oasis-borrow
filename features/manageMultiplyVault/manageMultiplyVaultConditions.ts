@@ -3,7 +3,7 @@ import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
-import { ManageVaultStage, ManageVaultState } from './manageMultiplyVault'
+import { ManageVaultStage, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 const defaultManageVaultStageCategories = {
   isEditingStage: false,
@@ -13,7 +13,7 @@ const defaultManageVaultStageCategories = {
   isManageStage: false,
 }
 
-export function applyManageVaultStageCategorisation(state: ManageVaultState) {
+export function applyManageVaultStageCategorisation(state: ManageMultiplyVaultState) {
   switch (state.stage) {
     case 'collateralEditing':
     case 'daiEditing':
@@ -166,7 +166,9 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   withdrawCollateralOnVaultUnderDebtFloor: false,
 }
 
-export function applyManageVaultConditions(state: ManageVaultState): ManageVaultState {
+export function applyManageVaultConditions(
+  state: ManageMultiplyVaultState,
+): ManageMultiplyVaultState {
   const {
     depositAmount,
     generateAmount,

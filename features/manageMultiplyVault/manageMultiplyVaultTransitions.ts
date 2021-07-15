@@ -3,7 +3,11 @@ import { TxHelpers } from 'components/AppContext'
 import { zero } from 'helpers/zero'
 import { Observable } from 'rxjs'
 
-import { ManageVaultChange, ManageVaultEditingStage, ManageVaultState } from './manageMultiplyVault'
+import {
+  ManageVaultChange,
+  ManageVaultEditingStage,
+  ManageMultiplyVaultState,
+} from './manageMultiplyVault'
 import { manageVaultFormDefaults } from './manageMultiplyVaultForm'
 import {
   manageVaultDepositAndGenerate,
@@ -38,8 +42,8 @@ export type ManageVaultTransitionChange =
 
 export function applyManageVaultTransition(
   change: ManageVaultChange,
-  state: ManageVaultState,
-): ManageVaultState {
+  state: ManageMultiplyVaultState,
+): ManageMultiplyVaultState {
   if (change.kind === 'toggleEditing') {
     const { stage } = state
     const currentEditing = stage
@@ -194,7 +198,7 @@ export function applyManageVaultTransition(
 
 export function progressManage(
   txHelpers$: Observable<TxHelpers>,
-  state: ManageVaultState,
+  state: ManageMultiplyVaultState,
   change: (ch: ManageVaultChange) => void,
 ) {
   const { depositAmount, generateAmount } = state

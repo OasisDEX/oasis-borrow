@@ -5,10 +5,13 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
-import { ManageVaultState } from '../manageVault'
-import { ManageVaultWarningMessage } from '../manageVaultValidations'
+import { ManageMultiplyVaultState } from '../manageMultiplyVault'
+import { ManageVaultWarningMessage } from '../manageMultiplyVaultValidations'
 
-export function ManageVaultWarnings({ warningMessages, ilkData: { debtFloor } }: ManageVaultState) {
+export function ManageVaultWarnings({
+  warningMessages,
+  ilkData: { debtFloor },
+}: ManageMultiplyVaultState) {
   const { t } = useTranslation()
   if (!warningMessages.length) return null
 

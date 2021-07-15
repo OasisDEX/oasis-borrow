@@ -14,19 +14,19 @@ import React, { useEffect } from 'react'
 import { Box, Card, Divider, Grid } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
 
-import { ManageMultiplyVaultState } from '../manageMultiplyVault'
-import { createManageVaultAnalytics$ } from '../manageMultiplyVaultAnalytics'
-import { ManageVaultButton } from './ManageMultiplyVaultButton'
-import { ManageVaultCollateralAllowance } from './ManageMultiplyVaultCollateralAllowance'
+import { ManageMultiplyVaultState } from './manageMultiplyVault'
+import { createManageVaultAnalytics$ } from './manageMultiplyVaultAnalytics'
+import { ManageVaultButton } from './components/ManageMultiplyVaultButton'
+import { ManageVaultEditing } from './components/ManageMultiplyVaultEditing'
+import { ManageVaultCollateralAllowance } from './components/ManageMultiplyVaultCollateralAllowance'
+import { ManageVaultDaiAllowance } from './components/ManageMultiplyVaultDaiAllowance'
 import {
   ManageVaultConfirmation,
   ManageVaultConfirmationStatus,
-} from './ManageMultiplyVaultConfirmation'
-import { ManageVaultDaiAllowance } from './ManageMultiplyVaultDaiAllowance'
-import { ManageVaultDetails } from './ManageMultiplyVaultDetails'
-import { ManageVaultEditing } from './ManageMultiplyVaultEditing'
-import { ManageVaultErrors } from './ManageMultiplyVaultErrors'
-import { ManageVaultWarnings } from './ManageMultiplyVaultWarnings'
+} from './components/ManageMultiplyVaultConfirmation'
+import { ManageVaultErrors } from './components/ManageMultiplyVaultErrors'
+import { ManageVaultWarnings } from './components/ManageMultiplyVaultWarnings'
+import { ManageVaultDetails } from './components/ManageMultiplyVaultDetails'
 
 function ManageVaultForm(props: ManageMultiplyVaultState) {
   const {

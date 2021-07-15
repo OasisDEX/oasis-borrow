@@ -1,7 +1,7 @@
 import { isNullish } from 'helpers/functions'
 import { zero } from 'helpers/zero'
 
-import { ManageVaultState } from './manageMultiplyVault'
+import { ManageMultiplyVaultState } from './manageMultiplyVault'
 
 export type ManageVaultErrorMessage =
   | 'depositAmountExceedsCollateralBalance'
@@ -30,7 +30,7 @@ export type ManageVaultWarningMessage =
   | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
   | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
 
-export function validateErrors(state: ManageVaultState): ManageVaultState {
+export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyVaultState {
   const {
     stage,
     withdrawAmountExceedsFreeCollateral,
@@ -136,7 +136,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
   return { ...state, errorMessages }
 }
 
-export function validateWarnings(state: ManageVaultState): ManageVaultState {
+export function validateWarnings(state: ManageMultiplyVaultState): ManageMultiplyVaultState {
   const {
     depositAmount,
     vault,

@@ -1,7 +1,7 @@
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { zero } from 'helpers/zero'
 
-import { ManageVaultState } from './manageMultiplyVault'
+import { ManageMultiplyVaultState } from './manageMultiplyVault'
 import { ManageVaultCalculations } from './manageMultiplyVaultCalculations'
 import { ManageVaultConditions } from './manageMultiplyVaultConditions'
 
@@ -21,7 +21,7 @@ export const defaultManageVaultSummary: ManageVaultSummary = {
   afterCollateralBalance: zero,
 }
 
-export function applyManageVaultSummary(state: ManageVaultState) {
+export function applyManageVaultSummary(state: ManageMultiplyVaultState) {
   const {
     isManageStage,
     balanceInfo: { collateralBalance },

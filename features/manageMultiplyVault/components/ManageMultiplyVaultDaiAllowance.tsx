@@ -8,7 +8,7 @@ import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 
-import { ManageVaultState } from '../manageVault'
+import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 
 export function ManageVaultDaiAllowance({
   stage,
@@ -19,7 +19,7 @@ export function ManageVaultDaiAllowance({
   setDaiAllowanceAmountToPaybackAmount,
   resetDaiAllowanceAmount,
   selectedDaiAllowanceRadio,
-}: ManageVaultState) {
+}: ManageMultiplyVaultState) {
   const canSelectRadio = stage === 'daiAllowanceWaitingForConfirmation'
 
   const { t } = useTranslation()

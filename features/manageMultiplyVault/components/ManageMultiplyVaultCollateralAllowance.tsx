@@ -8,7 +8,7 @@ import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 
-import { ManageVaultState } from '../manageVault'
+import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 
 export function ManageVaultCollateralAllowance({
   stage,
@@ -20,7 +20,7 @@ export function ManageVaultCollateralAllowance({
   setCollateralAllowanceAmountToDepositAmount,
   resetCollateralAllowanceAmount,
   selectedCollateralAllowanceRadio,
-}: ManageVaultState) {
+}: ManageMultiplyVaultState) {
   const canSelectRadio = stage === 'collateralAllowanceWaitingForConfirmation'
 
   const isUnlimited = selectedCollateralAllowanceRadio === 'unlimited'

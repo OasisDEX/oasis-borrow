@@ -10,51 +10,60 @@ import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
-import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
+import {
+  applyManageVaultAllowance,
+  ManageVaultAllowanceChange,
+} from './manageMultiplyVaultAllowances'
 import {
   applyManageVaultCalculations,
   defaultManageVaultCalculations,
   ManageVaultCalculations,
-} from './manageVaultCalculations'
+} from './manageMultiplyVaultCalculations'
 import {
   applyManageVaultConditions,
   applyManageVaultStageCategorisation,
   defaultManageVaultConditions,
   ManageVaultConditions,
-} from './manageVaultConditions'
-import { applyManageVaultEnvironment, ManageVaultEnvironmentChange } from './manageVaultEnvironment'
-import { applyManageVaultForm, ManageVaultFormChange } from './manageVaultForm'
-import { applyManageVaultInput, ManageVaultInputChange } from './manageVaultInput'
+} from './manageMultiplyVaultConditions'
+import {
+  applyManageVaultEnvironment,
+  ManageVaultEnvironmentChange,
+} from './manageMultiplyVaultEnvironment'
+import { applyManageVaultForm, ManageVaultFormChange } from './manageMultiplyVaultForm'
+import { applyManageVaultInput, ManageVaultInputChange } from './manageMultiplyVaultInput'
 import {
   applyManageVaultSummary,
   defaultManageVaultSummary,
   ManageVaultSummary,
-} from './manageVaultSummary'
+} from './manageMultiplyVaultSummary'
 import {
   applyManageVaultTransaction,
   createProxy,
   ManageVaultTransactionChange,
   setCollateralAllowance,
   setDaiAllowance,
-} from './manageVaultTransactions'
+} from './manageMultiplyVaultTransactions'
 import {
   applyManageVaultTransition,
   ManageVaultTransitionChange,
   progressManage,
-} from './manageVaultTransitions'
+} from './manageMultiplyVaultTransitions'
 import {
   ManageVaultErrorMessage,
   ManageVaultWarningMessage,
   validateErrors,
   validateWarnings,
-} from './manageVaultValidations'
+} from './manageMultiplyVaultValidations'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
-  stateToOverride: Partial<ManageVaultState>
+  stateToOverride: Partial<ManageMultiplyVaultState>
 }
 
-function applyManageVaultInjectedOverride(change: ManageVaultChange, state: ManageVaultState) {
+function applyManageVaultInjectedOverride(
+  change: ManageVaultChange,
+  state: ManageMultiplyVaultState,
+) {
   if (change.kind === 'injectStateOverride') {
     return {
       ...state,
@@ -73,7 +82,7 @@ export type ManageVaultChange =
   | ManageVaultEnvironmentChange
   | ManageVaultInjectedOverrideChange
 
-function apply(state: ManageVaultState, change: ManageVaultChange) {
+function apply(state: ManageMultiplyVaultState, change: ManageVaultChange) {
   const s1 = applyManageVaultInput(change, state)
   const s2 = applyManageVaultForm(change, s1)
   const s3 = applyManageVaultAllowance(change, s2)
@@ -179,7 +188,7 @@ interface ManageVaultTxInfo {
   safeConfirmations: number
 }
 
-export type ManageVaultState = MutableManageVaultState &
+export type ManageMultiplyVaultState = MutableManageVaultState &
   ManageVaultCalculations &
   ManageVaultConditions &
   ManageVaultEnvironment &
@@ -194,8 +203,8 @@ function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
   change: (ch: ManageVaultChange) => void,
-  state: ManageVaultState,
-): ManageVaultState {
+  state: ManageMultiplyVaultState,
+): ManageMultiplyVaultState {
   if (state.stage === 'collateralEditing' || state.stage === 'daiEditing') {
     return {
       ...state,
@@ -334,7 +343,7 @@ export const defaultMutableManageVaultState: MutableManageVaultState = {
   selectedDaiAllowanceRadio: 'unlimited' as 'unlimited',
 }
 
-export function createManageVault$(
+export function createManageMultiplyVault$(
   context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
@@ -344,7 +353,7 @@ export function createManageVault$(
   ilkData$: (ilk: string) => Observable<IlkData>,
   vault$: (id: BigNumber) => Observable<Vault>,
   id: BigNumber,
-): Observable<ManageVaultState> {
+): Observable<ManageMultiplyVaultState> {
   return context$.pipe(
     switchMap((context) => {
       const account = context.status === 'connected' ? context.account : undefined
@@ -380,7 +389,7 @@ export function createManageVault$(
                     return change$.next({ kind: 'injectStateOverride', stateToOverride })
                   }
 
-                  const initialState: ManageVaultState = {
+                  const initialState: ManageMultiplyVaultState = {
                     ...defaultMutableManageVaultState,
                     ...defaultManageVaultCalculations,
                     ...defaultManageVaultConditions,

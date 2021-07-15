@@ -4,9 +4,9 @@ import React from 'react'
 import { Button, Divider, Flex, Spinner, Text } from 'theme-ui'
 import { UnreachableCaseError } from 'ts-essentials'
 
-import { ManageVaultState } from '../manageVault'
+import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 
-function manageVaultButtonText(state: ManageVaultState): string {
+function manageVaultButtonText(state: ManageMultiplyVaultState): string {
   const { t } = useTranslation()
 
   switch (state.stage) {
@@ -85,7 +85,7 @@ function manageVaultButtonText(state: ManageVaultState): string {
   }
 }
 
-export function ManageVaultButton(props: ManageVaultState) {
+export function ManageVaultButton(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
 
   const {

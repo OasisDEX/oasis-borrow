@@ -12,11 +12,11 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
-import { ManageVaultState } from '../manageVault'
+import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 
 function ManageVaultDetailsSummary({
   vault: { debt, token, freeCollateral, daiYieldFromLockedCollateral },
-}: ManageVaultState) {
+}: ManageMultiplyVaultState) {
   const { t } = useTranslation()
   const { symbol } = getToken(token)
 
@@ -54,7 +54,7 @@ function ManageVaultDetailsSummary({
   )
 }
 
-export function ManageVaultDetails(props: ManageVaultState) {
+export function ManageVaultDetails(props: ManageMultiplyVaultState) {
   const {
     vault: {
       token,

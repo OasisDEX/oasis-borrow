@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
 
-import { ManageVaultChange, ManageVaultState } from './manageMultiplyVault'
+import { ManageVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 interface DepositChange {
   kind: 'deposit'
@@ -61,19 +61,19 @@ export type ManageVaultInputChange =
   | PaybackChange
   | PaybackMaxChange
 
-export const depositAndGenerateDefaults: Partial<ManageVaultState> = {
+export const depositAndGenerateDefaults: Partial<ManageMultiplyVaultState> = {
   depositAmount: undefined,
   depositAmountUSD: undefined,
   generateAmount: undefined,
 }
 
-export const paybackAndWithdrawDefaults: Partial<ManageVaultState> = {
+export const paybackAndWithdrawDefaults: Partial<ManageMultiplyVaultState> = {
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
   paybackAmount: undefined,
 }
 
-export function applyManageVaultInput(change: ManageVaultChange, state: ManageVaultState) {
+export function applyManageVaultInput(change: ManageVaultChange, state: ManageMultiplyVaultState) {
   const canDeposit =
     (state.stage === 'daiEditing' && state.generateAmount && state.showDepositAndGenerateOption) ||
     state.stage === 'collateralEditing'

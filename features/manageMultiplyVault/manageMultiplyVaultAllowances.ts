@@ -1,9 +1,9 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 
-import { ManageVaultChange, ManageVaultState } from './manageMultiplyVault'
+import { ManageVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
-export const allowanceDefaults: Partial<ManageVaultState> = {
+export const allowanceDefaults: Partial<ManageMultiplyVaultState> = {
   collateralAllowanceAmount: maxUint256,
   daiAllowanceAmount: maxUint256,
 }
@@ -54,8 +54,8 @@ export type ManageVaultAllowanceChange =
 
 export function applyManageVaultAllowance(
   change: ManageVaultChange,
-  state: ManageVaultState,
-): ManageVaultState {
+  state: ManageMultiplyVaultState,
+): ManageMultiplyVaultState {
   if (change.kind === 'collateralAllowance') {
     const { collateralAllowanceAmount } = change
     return {

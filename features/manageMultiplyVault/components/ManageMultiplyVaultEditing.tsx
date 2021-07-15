@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Divider, Flex, Grid, Text } from 'theme-ui'
 
-import { ManageVaultState } from '../manageVault'
+import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 import { ManageVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
 
 function DepositInput({
@@ -17,7 +17,7 @@ function DepositInput({
   updateDepositUSD,
   updateDepositMax,
   priceInfo: { currentCollateralPrice },
-}: ManageVaultState) {
+}: ManageMultiplyVaultState) {
   return (
     <VaultActionInput
       action="Deposit"
@@ -44,7 +44,7 @@ function GenerateInput({
   maxGenerateAmount,
   updateGenerate,
   updateGenerateMax,
-}: ManageVaultState) {
+}: ManageMultiplyVaultState) {
   return (
     <VaultActionInput
       action="Generate"
@@ -72,7 +72,7 @@ function WithdrawInput({
   updateWithdrawUSD,
   updateWithdrawMax,
   priceInfo: { currentCollateralPrice },
-}: ManageVaultState) {
+}: ManageMultiplyVaultState) {
   return (
     <VaultActionInput
       action="Withdraw"
@@ -99,7 +99,7 @@ function PaybackInput({
   maxPaybackAmount,
   updatePayback,
   updatePaybackMax,
-}: ManageVaultState) {
+}: ManageMultiplyVaultState) {
   return (
     <VaultActionInput
       action="Payback"
@@ -115,7 +115,7 @@ function PaybackInput({
   )
 }
 
-export function ManageVaultEditing(props: ManageVaultState) {
+export function ManageVaultEditing(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
 
   const {

@@ -6,8 +6,8 @@ import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
-import { ManageVaultState } from '../manageVault'
-import { ManageVaultErrorMessage } from '../manageVaultValidations'
+import { ManageMultiplyVaultState } from '../manageMultiplyVault'
+import { ManageVaultErrorMessage } from '../manageMultiplyVaultValidations'
 
 export function ManageVaultErrors({
   errorMessages,
@@ -15,7 +15,7 @@ export function ManageVaultErrors({
   maxGenerateAmount,
   ilkData: { debtFloor },
   vault: { token },
-}: ManageVaultState) {
+}: ManageMultiplyVaultState) {
   const { t } = useTranslation()
   if (!errorMessages.length) return null
 

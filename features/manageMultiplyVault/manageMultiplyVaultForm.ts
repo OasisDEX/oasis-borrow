@@ -1,8 +1,8 @@
-import { ManageVaultChange, ManageVaultState } from './manageMultiplyVault'
+import { ManageVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 import { allowanceDefaults } from './manageMultiplyVaultAllowances'
-import { depositAndGenerateDefaults, paybackAndWithdrawDefaults } from './manageVaultInput'
+import { depositAndGenerateDefaults, paybackAndWithdrawDefaults } from './manageMultiplyVaultInput'
 
-export const manageVaultFormDefaults: Partial<ManageVaultState> = {
+export const manageVaultFormDefaults: Partial<ManageMultiplyVaultState> = {
   ...allowanceDefaults,
   ...depositAndGenerateDefaults,
   ...paybackAndWithdrawDefaults,
@@ -23,8 +23,8 @@ export type ManageVaultFormChange =
 
 export function applyManageVaultForm(
   { kind }: ManageVaultChange,
-  state: ManageVaultState,
-): ManageVaultState {
+  state: ManageMultiplyVaultState,
+): ManageMultiplyVaultState {
   const {
     showDepositAndGenerateOption,
     showPaybackAndWithdrawOption,
