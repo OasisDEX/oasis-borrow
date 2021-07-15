@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { VaultBannersView } from 'features/banners/VaultsBannersView'
-import { ManageVaultView } from 'features/manageVault/ManageVaultView'
+import { GeneralManageVaultView } from 'features/generalManageVault/generalManageVaultView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -26,7 +26,7 @@ export default function Vault({ id }: { id: string }) {
         <Grid gap={0} sx={{ width: '100%' }}>
           <BackgroundLight />
           <VaultBannersView id={new BigNumber(id)} />
-          <ManageVaultView id={new BigNumber(id)} />
+          <GeneralManageVaultView id={new BigNumber(id)} />
         </Grid>
       </WithTermsOfService>
     </WithConnection>

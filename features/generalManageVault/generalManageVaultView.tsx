@@ -1,5 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { ManageMultiplyVaultContainer } from 'features/manageMultiplyVault/ManageVaultView'
+import { ManageVaultContainer } from 'features/manageVault/ManageVaultView'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import React from 'react'
@@ -43,9 +45,23 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
       {([generalManageVault, vaultHistory]) => {
         switch (generalManageVault.type) {
           case VaultType.Borrow:
-            return
+            return (
+              <Grid sx={{ width: '100%', zIndex: 1, ...slideInAnimation, position: 'relative' }}>
+                <ManageVaultContainer
+                  vaultHistory={vaultHistory}
+                  manageVault={generalManageVault.state}
+                />
+              </Grid>
+            )
           case VaultType.Multiply:
-            return <ManageVaultView />
+            return (
+              <Grid sx={{ width: '100%', zIndex: 1, ...slideInAnimation, position: 'relative' }}>
+                <ManageMultiplyVaultContainer
+                  vaultHistory={vaultHistory}
+                  manageVault={generalManageVault.state}
+                />
+              </Grid>
+            )
         }
       }}
     </WithLoadingIndicator>

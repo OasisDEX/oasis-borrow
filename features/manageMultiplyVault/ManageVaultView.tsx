@@ -73,7 +73,7 @@ function ManageVaultForm(props: ManageMultiplyVaultState) {
   )
 }
 
-export function ManageVaultContainer({
+export function ManageMultiplyVaultContainer({
   manageVault,
   vaultHistory,
 }: {
@@ -90,6 +90,7 @@ export function ManageVaultContainer({
       <VaultHeader {...manageVault} header={t('vault.header', { ilk, id })} id={id} />
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={5} sx={{ order: [3, 1] }}>
+          <Box>HELLO FROM MULTIPLY</Box>
           <ManageVaultDetails {...manageVault} />
           <VaultHistoryView vaultHistory={vaultHistory} />
         </Grid>
@@ -102,7 +103,7 @@ export function ManageVaultContainer({
   )
 }
 
-export function ManageVaultView({ id }: { id: BigNumber }) {
+export function ManageMultiplyVaultView({ id }: { id: BigNumber }) {
   const { manageVault$, vaultHistory$ } = useAppContext()
   const manageVaultWithId$ = manageVault$(id)
   const manageVaultWithError = useObservableWithError(manageVaultWithId$)
@@ -137,7 +138,7 @@ export function ManageVaultView({ id }: { id: BigNumber }) {
     >
       {([manageVault, vaultHistory]) => (
         <Grid sx={{ width: '100%', zIndex: 1, ...slideInAnimation, position: 'relative' }}>
-          <ManageVaultContainer {...{ manageVault, vaultHistory }} />
+          <ManageMultiplyVaultContainer {...{ manageVault, vaultHistory }} />
         </Grid>
       )}
     </WithLoadingIndicator>
