@@ -3,7 +3,7 @@ import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
-import { ManageVaultStage, ManageMultiplyVaultState } from './manageMultiplyVault'
+import { ManageMultiplyVaultStage, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 const defaultManageVaultStageCategories = {
   isEditingStage: false,
@@ -15,8 +15,8 @@ const defaultManageVaultStageCategories = {
 
 export function applyManageVaultStageCategorisation(state: ManageMultiplyVaultState) {
   switch (state.stage) {
-    case 'collateralEditing':
-    case 'daiEditing':
+    case 'adjustPosition':
+    case 'otherActions':
       return {
         ...state,
         ...defaultManageVaultStageCategories,
@@ -324,7 +324,7 @@ export function applyManageVaultConditions(
     'daiAllowanceInProgress',
     'manageInProgress',
     'manageWaitingForApproval',
-  ] as ManageVaultStage[]).some((s) => s === stage)
+  ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
 
   const withdrawCollateralOnVaultUnderDebtFloor =
     vault.debt.lt(ilkData.debtFloor) &&
@@ -378,7 +378,7 @@ export function applyManageVaultConditions(
     'daiAllowanceFailure',
     'manageWaitingForConfirmation',
     'manageFailure',
-  ] as ManageVaultStage[]).some((s) => s === stage)
+  ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
 
   return {
     ...state,

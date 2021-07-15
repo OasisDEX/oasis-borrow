@@ -62,7 +62,7 @@ export function createManageVaultAnalytics$(
 ) {
   const stageChanges = manageVaultState$.pipe(
     map((state) => state.stage),
-    filter((stage) => stage === 'daiEditing' || stage === 'collateralEditing'),
+    filter((stage) => stage === 'otherActions' || stage === 'adjustPosition'),
     distinctUntilChanged(isEqual),
   )
 

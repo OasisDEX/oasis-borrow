@@ -5,7 +5,7 @@ import { Observable } from 'rxjs'
 
 import {
   ManageVaultChange,
-  ManageVaultEditingStage,
+  ManageMultiplyVaultEditingStage,
   ManageMultiplyVaultState,
 } from './manageMultiplyVault'
 import { manageVaultFormDefaults } from './manageMultiplyVaultForm'
@@ -47,9 +47,12 @@ export function applyManageVaultTransition(
   if (change.kind === 'toggleEditing') {
     const { stage } = state
     const currentEditing = stage
-    const otherEditing = (['collateralEditing', 'daiEditing'] as ManageVaultEditingStage[]).find(
+    const otherEditing = ([
+      'adjustPosition',
+      'otherActions',
+    ] as ManageMultiplyVaultEditingStage[]).find(
       (editingStage) => editingStage !== currentEditing,
-    ) as ManageVaultEditingStage
+    ) as ManageMultiplyVaultEditingStage
     return {
       ...state,
       ...manageVaultFormDefaults,

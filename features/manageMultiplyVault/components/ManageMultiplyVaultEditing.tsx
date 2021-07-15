@@ -1,8 +1,11 @@
+import BigNumber from 'bignumber.js'
 import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
+import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Divider, Flex, Grid, Text } from 'theme-ui'
+import { Box, Button, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
@@ -117,6 +120,9 @@ function PaybackInput({
 
 export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
+  const {
+    theme: { colors },
+  } = useThemeUI()
 
   const {
     depositAmount,
@@ -130,27 +136,37 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
     showDepositAndGenerateOption,
     showPaybackAndWithdrawOption,
     accountIsController,
+    afterCollateralizationRatio,
+    afterLiquidationPrice,
   } = props
 
   const disableDepositAndGenerate = paybackAmount || withdrawAmount || showPaybackAndWithdrawOption
   const disablePaybackAndWithdraw = depositAmount || generateAmount || showDepositAndGenerateOption
-
-  const inverted = stage === 'daiEditing'
 
   const showDepositAndGenerateOptionButton =
     (depositAmount || generateAmount) && accountIsController
   const showPaybackAndWithdrawOptionButton =
     (paybackAmount || withdrawAmount) && accountIsController
 
+  const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const multiply = new BigNumber(1)
+  const sliderBackground = 1
+    ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
+        colors?.sliderTrackFill
+      } ${multiply.toNumber()}%, ${colors?.primaryAlt} ${multiply.toNumber()}%, ${
+        colors?.primaryAlt
+      } 100%)`
+    : 'primaryAlt'
+
   return (
     <Grid gap={4}>
-      <Box
+      {/* <Box
         sx={{
           opacity: disableDepositAndGenerate ? 0.5 : 1,
           pointerEvents: disableDepositAndGenerate ? 'none' : 'auto',
         }}
-      >
-        {inverted ? <GenerateInput {...props} /> : <DepositInput {...props} />}
+      > */}
+      {/* {inverted ? <GenerateInput {...props} /> : <DepositInput {...props} />}
         {showDepositAndGenerateOptionButton && (
           <Button variant="actionOption" mt={3} onClick={toggleDepositAndGenerateOption!}>
             {showDepositAndGenerateOption ? <MinusIcon /> : <PlusIcon />}
@@ -165,42 +181,71 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
         {showDepositAndGenerateOption &&
           (!!depositAmount || !!generateAmount) &&
           (inverted ? <DepositInput {...props} /> : <GenerateInput {...props} />)}
-      </Box>
+      </Box> */}
 
-      <Flex sx={{ alignItems: 'center', justifyContent: 'space-evenly' }}>
-        <Divider sx={{ width: '100%' }} />
-        <Text
-          mx={3}
-          sx={{ color: 'muted', minWidth: 'fit-content', fontWeight: 'semiBold', fontSize: '1' }}
-        >
-          {t('manage-vault.or')}
-        </Text>
-        <Divider sx={{ width: '100%' }} />
-      </Flex>
+      <Grid gap={2}>
+        <Box>
+          <Flex
+            sx={{
+              variant: 'text.paragraph4',
+              justifyContent: 'space-between',
+              fontWeight: 'semiBold',
+              color: 'text.subtitle',
+            }}
+          >
+            <Grid gap={2}>
+              <Text>Liquidation Price</Text>
+              <Text variant="paragraph1" sx={{ fontWeight: 'semiBold' }}>
+                ${formatFiatBalance(afterLiquidationPrice)}
+              </Text>
+            </Grid>
+            <Grid gap={2}>
+              <Text>Collateral Ratio</Text>
+              <Text
+                variant="paragraph1"
+                sx={{ fontWeight: 'semiBold', textAlign: 'right', color: collRatioColor }}
+              >
+                {formatPercent(afterCollateralizationRatio.times(100))}
+              </Text>
+            </Grid>
+          </Flex>
+        </Box>
+        <Box my={1}>
+          <Slider
+            sx={{
+              background: sliderBackground,
+            }}
+            step={2}
+            value={multiply?.toNumber() || 0}
+            onChange={(e) => {
+              console.log('update multiply')
+            }}
+          />
+        </Box>
+        <Box>
+          <Flex
+            sx={{
+              variant: 'text.paragraph4',
+              justifyContent: 'space-between',
+              color: 'text.subtitle',
+            }}
+          >
+            <Text>Decrease risk</Text>
+            <Text>Increase risk</Text>
+          </Flex>
+        </Box>
+      </Grid>
 
-      <Box
-        sx={{
-          opacity: disablePaybackAndWithdraw ? 0.5 : 1,
-          pointerEvents: disablePaybackAndWithdraw ? 'none' : 'auto',
-        }}
+      <Button
+        sx={{ py: 2 }}
+        variant="actionOption"
+        mt={3}
+        onClick={toggleDepositAndGenerateOption!}
       >
-        {inverted ? <PaybackInput {...props} /> : <WithdrawInput {...props} />}
-        {showPaybackAndWithdrawOptionButton && (
-          <Button variant="actionOption" mt={3} onClick={togglePaybackAndWithdrawOption!}>
-            {showPaybackAndWithdrawOption ? <MinusIcon /> : <PlusIcon />}
-            <Text pr={1}>
-              {t('manage-vault.action-option', {
-                action: inverted ? t('vault-actions.withdraw') : t('vault-actions.payback'),
-                token: inverted ? token : 'DAI',
-              })}
-            </Text>
-          </Button>
-        )}
-        {showPaybackAndWithdrawOption &&
-          (!!paybackAmount || !!withdrawAmount) &&
-          (inverted ? <WithdrawInput {...props} /> : <PaybackInput {...props} />)}
-      </Box>
-      <Divider />
+        <Text pr={1}>Or enter an amount of ETH</Text>
+      </Button>
+
+      <Divider sx={{ width: '100%' }} />
       <ManageMultiplyVaultChangesInformation {...props} />
     </Grid>
   )

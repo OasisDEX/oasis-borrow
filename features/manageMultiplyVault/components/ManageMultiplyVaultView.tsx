@@ -1,7 +1,6 @@
 import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
-import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 
@@ -21,6 +20,7 @@ import {
 import { ManageMultiplyVaultErrors } from './ManageMultiplyVaultErrors'
 import { ManageMultiplyVaultWarnings } from './ManageMultiplyVaultWarnings'
 import { ManageMultiplyVaultDetails } from './ManageMultiplyVaultDetails'
+import { ManageMultiplyVaultFormHeader } from './ManageMultiplyVaultFormHeader'
 
 function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
   const {
@@ -38,7 +38,7 @@ function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
   return (
     <Card variant="vaultFormContainer">
       <Grid gap={4} p={2}>
-        <ManageVaultFormHeader {...props} />
+        <ManageMultiplyVaultFormHeader {...props} />
         {isEditingStage && <ManageMultiplyVaultEditing {...props} />}
         {isCollateralAllowanceStage && <ManageMultiplyVaultCollateralAllowance {...props} />}
         {isDaiAllowanceStage && <ManageMultiplyVaultDaiAllowance {...props} />}
@@ -84,7 +84,6 @@ export function ManageMultiplyVaultContainer({
       <VaultHeader {...manageVault} header={t('vault.header', { ilk, id })} id={id} />
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={5} sx={{ order: [3, 1] }}>
-          <Box>HELLO FROM MULTIPLY</Box>
           <ManageMultiplyVaultDetails {...manageVault} />
           <VaultHistoryView vaultHistory={vaultHistory} />
         </Grid>

@@ -20,6 +20,9 @@ export type ManageVaultFormChange =
   | {
       kind: 'resetDefaults'
     }
+  | {
+      kind: 'toggleSliderController'
+    }
 
 export function applyManageVaultForm(
   { kind }: ManageVaultChange,
@@ -34,36 +37,37 @@ export function applyManageVaultForm(
     withdrawAmount,
     paybackAmount,
   } = state
-  const isCollateralStage = stage === 'collateralEditing'
-  const isDaiStage = stage === 'daiEditing'
+  const isCollateralStage = stage === 'adjustPosition'
+  const isDaiStage = stage === 'otherActions'
 
-  const shouldClearGenerateAmount = showDepositAndGenerateOption && isCollateralStage
-  const shouldClearDepositAmount = showDepositAndGenerateOption && isDaiStage
-  const shouldClearPaybackAmount = showPaybackAndWithdrawOption && isCollateralStage
-  const shouldClearWithdrawAmount = showPaybackAndWithdrawOption && isDaiStage
+  // TODO adjust this to manage multiply vault
+  // const shouldClearGenerateAmount = showDepositAndGenerateOption && isCollateralStage
+  // const shouldClearDepositAmount = showDepositAndGenerateOption && isDaiStage
+  // const shouldClearPaybackAmount = showPaybackAndWithdrawOption && isCollateralStage
+  // const shouldClearWithdrawAmount = showPaybackAndWithdrawOption && isDaiStage
 
-  const canToggleDepositAndGenerate =
-    (isCollateralStage && depositAmount) || (isDaiStage && generateAmount)
-  const canTogglePaybackAndWithdraw =
-    (isCollateralStage && withdrawAmount) || (isDaiStage && paybackAmount)
+  // const canToggleDepositAndGenerate =
+  //   (isCollateralStage && depositAmount) || (isDaiStage && generateAmount)
+  // const canTogglePaybackAndWithdraw =
+  //   (isCollateralStage && withdrawAmount) || (isDaiStage && paybackAmount)
 
-  if (kind === 'toggleDepositAndGenerateOption' && canToggleDepositAndGenerate) {
-    return {
-      ...state,
-      showDepositAndGenerateOption: !showDepositAndGenerateOption,
-      ...(shouldClearGenerateAmount && { generateAmount: undefined }),
-      ...(shouldClearDepositAmount && { depositAmount: undefined }),
-    }
-  }
+  // if (kind === 'toggleDepositAndGenerateOption' && canToggleDepositAndGenerate) {
+  //   return {
+  //     ...state,
+  //     showDepositAndGenerateOption: !showDepositAndGenerateOption,
+  //     ...(shouldClearGenerateAmount && { generateAmount: undefined }),
+  //     ...(shouldClearDepositAmount && { depositAmount: undefined }),
+  //   }
+  // }
 
-  if (kind === 'togglePaybackAndWithdrawOption' && canTogglePaybackAndWithdraw) {
-    return {
-      ...state,
-      showPaybackAndWithdrawOption: !showPaybackAndWithdrawOption,
-      ...(shouldClearPaybackAmount && { paybackAmount: undefined }),
-      ...(shouldClearWithdrawAmount && { withdrawAmount: undefined }),
-    }
-  }
+  // if (kind === 'togglePaybackAndWithdrawOption' && canTogglePaybackAndWithdraw) {
+  //   return {
+  //     ...state,
+  //     showPaybackAndWithdrawOption: !showPaybackAndWithdrawOption,
+  //     ...(shouldClearPaybackAmount && { paybackAmount: undefined }),
+  //     ...(shouldClearWithdrawAmount && { withdrawAmount: undefined }),
+  //   }
+  // }
 
   return state
 }

@@ -96,10 +96,10 @@ function apply(state: ManageMultiplyVaultState, change: ManageVaultChange) {
   return applyManageVaultSummary(s10)
 }
 
-export type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
+export type ManageMultiplyVaultEditingStage = 'adjustPosition' | 'otherActions'
 
-export type ManageVaultStage =
-  | ManageVaultEditingStage
+export type ManageMultiplyVaultStage =
+  | ManageMultiplyVaultEditingStage
   | 'proxyWaitingForConfirmation'
   | 'proxyWaitingForApproval'
   | 'proxyInProgress'
@@ -122,8 +122,8 @@ export type ManageVaultStage =
   | 'manageSuccess'
 
 export interface MutableManageVaultState {
-  stage: ManageVaultStage
-  originalEditingStage: ManageVaultEditingStage
+  stage: ManageMultiplyVaultStage
+  originalEditingStage: ManageMultiplyVaultEditingStage
   showDepositAndGenerateOption: boolean
   showPaybackAndWithdrawOption: boolean
   depositAmount?: BigNumber
@@ -136,6 +136,8 @@ export interface MutableManageVaultState {
   daiAllowanceAmount?: BigNumber
   selectedCollateralAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
   selectedDaiAllowanceRadio: 'unlimited' | 'paybackAmount' | 'custom'
+
+  showSliderController: boolean
 }
 
 export interface ManageVaultEnvironment {
@@ -175,6 +177,8 @@ interface ManageVaultFunctions {
   setDaiAllowanceAmountToPaybackAmount?: () => void
   resetDaiAllowanceAmount?: () => void
   injectStateOverride: (state: Partial<MutableManageVaultState>) => void
+
+  toggleSliderController?: () => void
 }
 
 interface ManageVaultTxInfo {
@@ -205,7 +209,7 @@ function addTransitions(
   change: (ch: ManageVaultChange) => void,
   state: ManageMultiplyVaultState,
 ): ManageMultiplyVaultState {
-  if (state.stage === 'collateralEditing' || state.stage === 'daiEditing') {
+  if (state.stage === 'adjustPosition' || state.stage === 'otherActions') {
     return {
       ...state,
       updateDeposit: (depositAmount?: BigNumber) => {
@@ -238,6 +242,7 @@ function addTransitions(
         }),
       toggle: () => change({ kind: 'toggleEditing' }),
       progress: () => change({ kind: 'progressEditing' }),
+      toggleSliderController: () => change({ kind: 'toggleSliderController' }),
     }
   }
 
@@ -333,14 +338,15 @@ function addTransitions(
 }
 
 export const defaultMutableManageVaultState: MutableManageVaultState = {
-  stage: 'collateralEditing' as ManageVaultStage,
-  originalEditingStage: 'collateralEditing' as ManageVaultEditingStage,
+  stage: 'adjustPosition' as const,
+  originalEditingStage: 'adjustPosition' as const,
   showDepositAndGenerateOption: false,
   showPaybackAndWithdrawOption: false,
   collateralAllowanceAmount: maxUint256,
   daiAllowanceAmount: maxUint256,
-  selectedCollateralAllowanceRadio: 'unlimited' as 'unlimited',
-  selectedDaiAllowanceRadio: 'unlimited' as 'unlimited',
+  selectedCollateralAllowanceRadio: 'unlimited' as const,
+  selectedDaiAllowanceRadio: 'unlimited' as const,
+  showSliderController: true,
 }
 
 export function createManageMultiplyVault$(

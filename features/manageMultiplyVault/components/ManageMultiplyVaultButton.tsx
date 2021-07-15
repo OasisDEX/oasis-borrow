@@ -10,8 +10,8 @@ function manageMultiplyVaultButtonText(state: ManageMultiplyVaultState): string 
   const { t } = useTranslation()
 
   switch (state.stage) {
-    case 'daiEditing':
-    case 'collateralEditing':
+    case 'adjustPosition':
+    case 'otherActions':
       return state.inputAmountsEmpty
         ? t('enter-an-amount')
         : !state.proxyAddress
@@ -120,18 +120,18 @@ export function ManageMultiplyVaultButton(props: ManageMultiplyVaultState) {
       : t('edit-vault-details')
 
   function trackEvents() {
-    if (stage === 'daiEditing' && generateAmount && generateAmount.gt(0)) {
-      trackingEvents.manageDaiGenerateConfirm()
-    }
-    if (stage === 'daiEditing' && paybackAmount && paybackAmount.gt(0)) {
-      trackingEvents.manageDaiPaybackConfirm()
-    }
-    if (stage === 'collateralEditing' && depositAmount && depositAmount.gt(0)) {
-      trackingEvents.manageCollateralDepositConfirm()
-    }
-    if (stage === 'collateralEditing' && withdrawAmount && withdrawAmount.gt(0)) {
-      trackingEvents.manageCollateralWithdrawConfirm()
-    }
+    // if (stage === 'daiEditing' && generateAmount && generateAmount.gt(0)) {
+    //   trackingEvents.manageDaiGenerateConfirm()
+    // }
+    // if (stage === 'daiEditing' && paybackAmount && paybackAmount.gt(0)) {
+    //   trackingEvents.manageDaiPaybackConfirm()
+    // }
+    // if (stage === 'collateralEditing' && depositAmount && depositAmount.gt(0)) {
+    //   trackingEvents.manageCollateralDepositConfirm()
+    // }
+    // if (stage === 'collateralEditing' && withdrawAmount && withdrawAmount.gt(0)) {
+    //   trackingEvents.manageCollateralWithdrawConfirm()
+    // }
     if (stage === 'collateralAllowanceWaitingForConfirmation') {
       trackingEvents.manageCollateralApproveAllowance()
     }

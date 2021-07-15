@@ -11,41 +11,29 @@ function ManageMultiplyVaultEditingController({
   accountIsController,
 }: ManageMultiplyVaultState) {
   const { t } = useTranslation()
-  const collateralVariant = `vaultEditingController${
-    stage !== 'collateralEditing' ? 'Inactive' : ''
-  }`
-  const daiVariant = `vaultEditingController${stage !== 'daiEditing' ? 'Inactive' : ''}`
+  const adjustPosition = `vaultEditingController${stage !== 'adjustPosition' ? 'Inactive' : ''}`
+  const otherActions = `vaultEditingController${stage !== 'otherActions' ? 'Inactive' : ''}`
 
   function handleToggle() {
     toggle!()
-    if (stage === 'collateralEditing') {
-      trackingEvents.switchToDai(accountIsController)
-    } else {
-      trackingEvents.switchToCollateral(accountIsController)
-    }
+    // TODO add analytics
+    // if (stage === 'collateralEditing') {
+    //   trackingEvents.switchToDai(accountIsController)
+    // } else {
+    //   trackingEvents.switchToCollateral(accountIsController)
+    // }
   }
 
   return (
     <Box sx={{ justifyContent: 'center' }}>
-      <Grid columns={3} variant="vaultEditingControllerContainer">
-        <Button onClick={handleToggle} variant={collateralVariant}>
-          {t('system.collateral')}
+      <Grid columns={2} variant="vaultEditingControllerContainer">
+        <Button onClick={handleToggle} variant={adjustPosition}>
+          Adjust Position
         </Button>
-        <Button onClick={handleToggle} variant={daiVariant}>
-          {t('system.dai')}
-        </Button>
-        <Button
-          onClick={() => window.alert('Switch to multiply')}
-          variant="vaultEditingControllerInactive"
-        >
-          Multiply
+        <Button onClick={handleToggle} variant={otherActions}>
+          Other Actions
         </Button>
       </Grid>
-      {/* <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
-        {stage === 'collateralEditing'
-          ? t('vault-form.subtext.collateral')
-          : t('vault-form.subtext.dai')}
-      </Text> */}
     </Box>
   )
 }

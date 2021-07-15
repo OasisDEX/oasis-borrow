@@ -7,13 +7,14 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import { ManageVaultState } from 'features/manageVault/manageVault'
+
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 
-export function ManageMultiplyVaultChangesInformation(props: ManageVaultState) {
+export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
   const [showFees, setShowFees] = useState(false)
   const {
@@ -40,7 +41,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageVaultState) {
   // mock txFees
   const txFees = new BigNumber(0.11)
 
-  return !inputAmountsEmpty ? (
+  return inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Vault Changes">
       <VaultChangesInformationItem
         label={`${t('system.collateral-locked')}`}
