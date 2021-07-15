@@ -49,17 +49,21 @@ function VaultHistoryItem({
   const date = moment(item.timestamp)
 
   return (
-    <Card sx={{ borderRadius: 'mediumLarge', border: 'lightMuted', boxShadow: 'vaultHistoryItem' }}>
-      <Box sx={{ p: 2, fontSize: 2 }}>
+    <Card
+      sx={{
+        borderRadius: 'mediumLarge',
+        border: 'lightMuted',
+        boxShadow: 'vaultHistoryItem',
+        fontSize: 2,
+      }}
+    >
+      <Box sx={{ p: 2, cursor: 'pointer' }} onClick={() => setOpened(!opened)}>
         <Flex
           sx={{
             justifyContent: 'space-between',
             alignItems: 'center',
-
             width: '100%',
-            cursor: 'pointer',
           }}
-          onClick={() => setOpened(!opened)}
         >
           <Text sx={{ fontWeight: 'semiBold' }}>
             {interpolate(translation, {
@@ -78,18 +82,18 @@ function VaultHistoryItem({
             />
           </Flex>
         </Flex>
-        {opened && (
-          <Box pt={3}>
-            <AppLink
-              variant="links.navFooter"
-              sx={{ fontSize: 2 }}
-              href={`${etherscan?.url}/tx/${item.hash}`}
-            >
-              {t('view-on-etherscan')}
-            </AppLink>
-          </Box>
-        )}
       </Box>
+      {opened && (
+        <Box p={2}>
+          <AppLink
+            variant="links.navFooter"
+            sx={{ fontSize: 2 }}
+            href={`${etherscan?.url}/tx/${item.hash}`}
+          >
+            {t('view-on-etherscan')}
+          </AppLink>
+        </Box>
+      )}
     </Card>
   )
 }
@@ -106,7 +110,7 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
       </Heading>
       <Grid gap={2}>
         {vaultHistory.map((item) => (
-          <VaultHistoryItem item={item} etherscan={context?.etherscan} key={item.hash} />
+          <VaultHistoryItem item={item} etherscan={context?.etherscan} key={item.id} />
         ))}
       </Grid>
     </Box>

@@ -41,7 +41,10 @@ function VaultIlkDetailsItem({
           name="tooltip"
           color="primary"
           sx={{ cursor: 'pointer' }}
-          onClick={() => setTooltipOpen(true)}
+          onClick={() => {
+            console.log('clicked', tooltipOpen)
+            setTooltipOpen(true)
+          }}
           size="auto"
           width="14px"
           height="14px"
