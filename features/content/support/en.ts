@@ -3,19 +3,19 @@ import { ContentTypeSupport } from './support'
 export const content: ContentTypeSupport = {
   title: 'FAQ',
   navigation: [
-    { title: 'Using Oasis Borrow', id: 'using-borrow' },
-    { title: 'Using Oasis.app', id: 'using-oasis' },
+    { title: 'Using Oasis Borrow', id: 'using-oasis' },
+    { title: 'Using Oasis.app', id: 'using-daiwallet' },
     { title: 'Security', id: 'security' },
     { title: 'Buying Dai', id: 'buying-dai' },
   ],
   sections: [
 
-    title: 'Using Oasis Borrow',
-      id: 'using-borrow',
+    title: 'Using Oasis.app',
+      id: 'using-oasis',
       questions: [
         {
           question: 'What assets can I use as collateral?',
-          answer: `You can use many different collateral types which are voted in by Maker Governance to the Maker Protocol, including ETH and wrapped BTC. You can see each one by visiting oasis.app/borrow with the corresponding Stability Fees and Minimum Collateralization Ratios.`,
+          answer: `You can use many different collateral types which are voted in by Maker Governance to the Maker Protocol, including ETH and wrapped BTC. You can see each one by visiting oasis.app with the corresponding Stability Fees and Minimum Collateralization Ratios.`,
         },
 
         {
@@ -91,12 +91,12 @@ export const content: ContentTypeSupport = {
 
 
     {
-      title: 'Using Oasis.app',
-      id: 'using-oasis',
+      title: 'Using Daiwallet',
+      id: 'using-daiwallet',
       questions: [
         {
-          question: 'What is Oasis.app?',
-          answer: `Oasis.app is the home for everything you want to accomplish with Dai. A decentralized application that runs on the Ethereum blockchain, Oasis enables you to Buy, Send, and Manage your Dai all in one place.`,
+          question: 'What is Dai Wallet?',
+          answer: `Dai Wallet is the home for everything you want to accomplish with Dai. A decentralized application that runs on the Ethereum blockchain, Oasis Dai Wallet enables you to Buy, Send, and Manage your Dai all in one place.`,
         },
         {
           question: 'What is Dai?',
@@ -104,7 +104,7 @@ export const content: ContentTypeSupport = {
         },
         {
           question: 'Do I need an account?',
-          answer: `No. You do not need to create a new account to use oasis.app. You can get started with almost any Ethereum wallet, including Metamask or Coinbase Wallet, or you can use our new Magic.Link feature -- where you provide an email address, click a link in the email we send you in response, and you're logged in.`,
+          answer: `No. You do not need to create a new account to use Dai Wallet. You can get started with almost any Ethereum wallet, including Metamask or Coinbase Wallet, or you can use our new Magic.Link feature -- where you provide an email address, click a link in the email we send you in response, and you're logged in.`,
         },
         {
           question: 'Will I be charged fees?',
@@ -143,7 +143,7 @@ export const content: ContentTypeSupport = {
       id: 'buying-dai',
       questions: [
         {
-          question: 'Can I buy Dai while using Oasis.app?',
+          question: 'Can I buy Dai while using Dai Wallet?',
           answer: `Yes! Through connections with our partners, you can buy Dai in over 100 countries around the world, including Europe, the US, parts of Latin America. We have partnered with three registered third-party providers - Latamex, Wyre and Moonpay - to facilitate user purchases of  Dai using a range of debit or credit cards or bank transfers. Just connect to the app and hit the 'Buy Dai' button to see applicable providers for you.`,
         },
         {
@@ -160,7 +160,7 @@ export const content: ContentTypeSupport = {
           answer: `Oasis.app doesn't take any of the fees when you buy Dai or ETH through one of our partner providers. The fee you pay goes solely and directly to the third-party provider.`,
         },
         {
-          question: 'Can I buy ETH on Oasis to pay for my transaction fees?',
+          question: 'Can I buy ETH on Dai Wallet to pay for my transaction fees?',
           answer:
             'Yes. Just like buying Dai, you can start the same process as you would to buy Dai, choose your third-party provider, and each offers an option to change Dai for ETH when you start the process.',
         },
