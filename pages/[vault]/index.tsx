@@ -23,7 +23,7 @@ export async function getServerSideProps(ctx: any) {
 
 export default function Vault({ id }: { id: string }) {
   const vaultId = new BigNumber(id)
-  const isValidVaultId = vaultId.isInteger()
+  const isValidVaultId = vaultId.isInteger() && vaultId.gt(0)
 
   return (
     <WithConnection>
