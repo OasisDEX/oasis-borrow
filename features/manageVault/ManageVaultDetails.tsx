@@ -10,7 +10,7 @@ import {
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid, Text } from 'theme-ui'
+import { Box, Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 
@@ -77,7 +77,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
     : 'onSuccess'
 
   return (
-    <>
+    <Box>
       <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCard
           title={`${t('system.liquidation-price')}`}
@@ -127,6 +127,6 @@ export function ManageVaultDetails(props: ManageVaultState) {
         />
       </Grid>
       <ManageVaultDetailsSummary {...props} />
-    </>
+    </Box>
   )
 }

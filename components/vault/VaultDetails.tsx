@@ -1,11 +1,13 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { Modal, ModalCloseIcon } from 'components/Modal'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { ModalProps, useModal } from 'helpers/modalHook'
 import { CommonVaultState, WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import React, { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
 export function getCollRatioColor(
   { inputAmountsEmpty, ilkData }: CommonVaultState,
@@ -53,23 +55,85 @@ export function VaultDetailsCard({
   title,
   value,
   valueBottom,
+  openModal,
 }: {
   title: string
   value: ReactNode
   valueBottom?: ReactNode
+  openModal?: () => void
 }) {
   return (
     <Card sx={{ border: 'lightMuted', overflow: 'hidden' }}>
       <Box p={2} sx={{ fontSize: 2 }}>
-        <Text variant="subheader" sx={{ fontWeight: 'semiBold', fontSize: 'inherit' }}>
-          {title}
-        </Text>
+        <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text variant="subheader" sx={{ fontWeight: 'semiBold', fontSize: 'inherit' }}>
+            {title}
+          </Text>
+          {openModal && (
+            <Button
+              variant="secondary"
+              onClick={openModal}
+              sx={{
+                py: 1,
+                px: 3,
+                fontSize: 1,
+                lineHeight: 'bodyLoose',
+                minWidth: '138px',
+                cursor: 'pointer',
+              }}
+            >
+              See breakdown
+            </Button>
+          )}
+        </Flex>
         <Heading variant="header2" sx={{ fontWeight: 'semiBold', mt: 1 }}>
           {value}
         </Heading>
         <Box sx={{ mt: 5, fontWeight: 'semiBold', minHeight: '1em' }}>{valueBottom}</Box>
       </Box>
     </Card>
+  )
+}
+
+function VaultDetailsCardModal({ close, children }: { close: () => void; children: ReactNode }) {
+  return (
+    <Modal close={close} sx={{ maxWidth: '530px', margin: '0 auto' }}>
+      <ModalCloseIcon {...{ close }} />
+      <Grid gap={4} p={4}>
+        {children}
+      </Grid>
+    </Modal>
+  )
+}
+
+function VaultDetailsCardCurrentPriceModal({
+  close,
+  currentPrice,
+  nextPriceWithChange,
+}: ModalProps<{ currentPrice: ReactNode; nextPriceWithChange: ReactNode }>) {
+  return (
+    <VaultDetailsCardModal close={close}>
+      <Grid gap={2}>
+        <Heading variant="header3">Current Price</Heading>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tempor auctor eget magna ac enim
+          lorem tincidunt.
+        </Text>
+        <Card variant="vaultDetailsModal">
+          <Heading variant="header3">{currentPrice}</Heading>
+        </Card>
+      </Grid>
+      <Grid gap={2}>
+        <Heading variant="header3">Next Price</Heading>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tempor auctor eget magna ac enim
+          lorem tincidunt.
+        </Text>
+        <Card variant="vaultDetailsModal">
+          <Heading variant="header3">{nextPriceWithChange}</Heading>
+        </Card>
+      </Grid>
+    </VaultDetailsCardModal>
   )
 }
 
@@ -82,13 +146,23 @@ export function VaultDetailsCardCurrentPrice(props: CommonVaultState) {
       collateralPricePercentageChange,
     },
   } = props
-
+  const openModal = useModal()
   const priceChangeColor = getPriceChangeColor(props)
+
+  const currentPrice = `$${formatAmount(currentCollateralPrice, 'USD')}`
+  const nextPriceWithChange = (
+    <>
+      <Text>${formatAmount(nextCollateralPrice, 'USD')}</Text>
+      <Text sx={{ ml: 2, fontSize: 1 }}>
+        {formatPercent(collateralPricePercentageChange.times(100), { precision: 2 })}
+      </Text>
+    </>
+  )
 
   return (
     <VaultDetailsCard
       title={`Current Price`}
-      value={`$${formatAmount(currentCollateralPrice, 'USD')}`}
+      value={currentPrice}
       valueBottom={
         isStaticCollateralPrice ? null : (
           <Flex sx={{ whiteSpace: 'pre-wrap' }}>
@@ -97,13 +171,20 @@ export function VaultDetailsCardCurrentPrice(props: CommonVaultState) {
               variant="paragraph2"
               sx={{ fontWeight: 'semiBold', alignItems: 'center', color: priceChangeColor }}
             >
-              <Text>${formatAmount(nextCollateralPrice, 'USD')}</Text>
-              <Text sx={{ ml: 2, fontSize: 1 }}>
-                {formatPercent(collateralPricePercentageChange.times(100), { precision: 2 })}
-              </Text>
+              {nextPriceWithChange}
             </Flex>
           </Flex>
         )
+      }
+      openModal={() =>
+        openModal(VaultDetailsCardCurrentPriceModal, {
+          currentPrice,
+          nextPriceWithChange: (
+            <Flex sx={{ alignItems: 'center', color: priceChangeColor }}>
+              {nextPriceWithChange}
+            </Flex>
+          ),
+        })
       }
     />
   )

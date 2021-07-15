@@ -558,6 +558,18 @@ const customIcons = {
     ),
     viewBox: '0 0 20 20',
   },
+  tooltip: {
+    path: (
+      <>
+        <circle cx="7" cy="7" r="6.3" stroke="currentColor" strokeWidth="1.4" fill="none" />
+        <path
+          d="M6.12953 11H7.86603V5.54545H6.12953V11ZM6.99956 4.9098C7.49316 4.9098 7.89089 4.53693 7.89089 4.07884C7.89089 3.62074 7.49316 3.25142 6.99956 3.25142C6.5095 3.25142 6.10822 3.62074 6.10822 4.07884C6.10822 4.53693 6.5095 4.9098 6.99956 4.9098Z"
+          fill="currentColor"
+        />
+      </>
+    ),
+    viewBox: '0 0 14 14',
+  },
 }
 
 const customLandingIcons = {
@@ -805,8 +817,10 @@ const oasisBaseTheme = {
   fontWeights: {
     body: 400,
     heading: 500,
+    medium: 500,
     semiBold: 600,
     bold: 700,
+    heavy: 900,
   },
   lineHeights: {
     body: 1.5,
@@ -932,6 +946,8 @@ const oasisBaseTheme = {
     banner: '0px 0px 10px rgba(0, 0, 0, 0.1)',
     sliderThumb: '0px 1px 6px rgba(0, 0, 0, 0.15)',
     vaultEditingController: '0px 1px 6px rgba(37, 39, 61, 0.15)',
+    vaultHistoryItem: '0px 1px 4px rgba(37, 39, 61, 0.12)',
+    tooltipVaultHeader: '0px 4px 8px rgba(0, 0, 0, 0.15)',
   },
   gradients: {
     app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
@@ -1025,6 +1041,28 @@ const oasisBaseTheme = {
       p: 3,
       overflow: 'hidden',
       border: 'lightMuted',
+    },
+    tooltip: {
+      variant: 'cards.primary',
+      position: 'absolute',
+      boxShadow: 'surface',
+      borderRadius: 'small',
+      color: 'primary',
+      zIndex: 1,
+    },
+    tooltipVaultHeader: {
+      variant: 'cards.tooltip',
+      boxShadow: 'tooltipVaultHeader',
+      p: 2,
+      bottom: '-10px',
+      left: '-40px',
+      transform: 'translateY(100%)',
+      width: ['250px', '352px'],
+    },
+    vaultDetailsModal: {
+      p: 3,
+      bg: 'secondaryAlt',
+      borderRadius: 'large',
     },
   },
   badges: {
