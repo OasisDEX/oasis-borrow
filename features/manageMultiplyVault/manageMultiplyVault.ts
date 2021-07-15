@@ -5,6 +5,7 @@ import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
@@ -138,6 +139,7 @@ export interface MutableManageVaultState {
   selectedDaiAllowanceRadio: 'unlimited' | 'paybackAmount' | 'custom'
 
   showSliderController: boolean
+  slider?: BigNumber
 }
 
 export interface ManageVaultEnvironment {
@@ -179,6 +181,7 @@ interface ManageVaultFunctions {
   injectStateOverride: (state: Partial<MutableManageVaultState>) => void
 
   toggleSliderController?: () => void
+  adjustSlider?: (value: BigNumber) => void
 }
 
 interface ManageVaultTxInfo {
@@ -243,6 +246,7 @@ function addTransitions(
       toggle: () => change({ kind: 'toggleEditing' }),
       progress: () => change({ kind: 'progressEditing' }),
       toggleSliderController: () => change({ kind: 'toggleSliderController' }),
+      adjustSlider: (slider: BigNumber) => change({ kind: 'slider', slider }),
     }
   }
 
@@ -347,6 +351,7 @@ export const defaultMutableManageVaultState: MutableManageVaultState = {
   selectedCollateralAllowanceRadio: 'unlimited' as const,
   selectedDaiAllowanceRadio: 'unlimited' as const,
   showSliderController: true,
+  slider: zero,
 }
 
 export function createManageMultiplyVault$(

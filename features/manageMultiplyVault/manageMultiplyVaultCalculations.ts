@@ -34,6 +34,9 @@ export interface ManageVaultCalculations {
   afterLockedCollateral: BigNumber
   afterCollateralBalance: BigNumber
   shouldPaybackAll: boolean
+
+  multiply: BigNumber
+  afterMultiply: BigNumber
 }
 
 export const defaultManageVaultCalculations: ManageVaultCalculations = {
@@ -60,6 +63,9 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
   daiYieldFromTotalCollateral: zero,
   daiYieldFromTotalCollateralAtNextPrice: zero,
   shouldPaybackAll: false,
+
+  multiply: zero,
+  afterMultiply: zero,
 }
 
 /*
@@ -291,7 +297,7 @@ export function applyManageVaultCalculations(
     balanceInfo: { collateralBalance, daiBalance },
     ilkData: { liquidationRatio, ilkDebtAvailable },
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
-    vault: { lockedCollateral, debt, debtOffset },
+    vault: { lockedCollateral, debt, debtOffset, lockedCollateralUSD },
   } = state
 
   const shouldPaybackAll = determineShouldPaybackAll({
@@ -428,6 +434,9 @@ export function applyManageVaultCalculations(
     ? collateralBalance.plus(withdrawAmount)
     : collateralBalance
 
+  const multiply = lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
+  const afterMultiply = afterLockedCollateralUSD.div(afterLockedCollateralUSD.div(afterDebt))
+
   return {
     ...state,
     maxDepositAmount,
@@ -453,5 +462,8 @@ export function applyManageVaultCalculations(
     daiYieldFromTotalCollateral,
     daiYieldFromTotalCollateralAtNextPrice,
     shouldPaybackAll,
+
+    multiply,
+    afterMultiply,
   }
 }

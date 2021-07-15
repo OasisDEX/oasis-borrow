@@ -10,7 +10,7 @@ import { Box, Button, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'them
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
 
-function DepositInput({
+function BuyTokenInput({
   maxDepositAmount,
   maxDepositAmountUSD,
   vault: { token },
@@ -23,13 +23,13 @@ function DepositInput({
 }: ManageMultiplyVaultState) {
   return (
     <VaultActionInput
-      action="Deposit"
+      action="Buy"
       token={token}
       tokenUsdPrice={currentCollateralPrice}
       showMax={true}
       hasAuxiliary={true}
       onSetMax={updateDepositMax!}
-      maxAmountLabel={'Balance'}
+      maxAmountLabel={'Buying power'}
       amount={depositAmount}
       auxiliaryAmount={depositAmountUSD}
       maxAmount={maxDepositAmount}
@@ -41,7 +41,7 @@ function DepositInput({
   )
 }
 
-function GenerateInput({
+function SellTokenInput({
   generateAmount,
   accountIsController,
   maxGenerateAmount,
@@ -50,7 +50,7 @@ function GenerateInput({
 }: ManageMultiplyVaultState) {
   return (
     <VaultActionInput
-      action="Generate"
+      action="Sell"
       amount={generateAmount}
       token={'DAI'}
       showMax={true}
@@ -64,60 +64,6 @@ function GenerateInput({
   )
 }
 
-function WithdrawInput({
-  accountIsController,
-  withdrawAmount,
-  withdrawAmountUSD,
-  maxWithdrawAmount,
-  maxWithdrawAmountUSD,
-  vault: { token },
-  updateWithdraw,
-  updateWithdrawUSD,
-  updateWithdrawMax,
-  priceInfo: { currentCollateralPrice },
-}: ManageMultiplyVaultState) {
-  return (
-    <VaultActionInput
-      action="Withdraw"
-      showMax={true}
-      hasAuxiliary={true}
-      tokenUsdPrice={currentCollateralPrice}
-      onSetMax={updateWithdrawMax}
-      disabled={!accountIsController}
-      amount={withdrawAmount}
-      auxiliaryAmount={withdrawAmountUSD}
-      maxAmount={maxWithdrawAmount}
-      maxAmountLabel={'Max'}
-      maxAuxiliaryAmount={maxWithdrawAmountUSD}
-      token={token}
-      hasError={false}
-      onChange={handleNumericInput(updateWithdraw!)}
-      onAuxiliaryChange={handleNumericInput(updateWithdrawUSD!)}
-    />
-  )
-}
-
-function PaybackInput({
-  paybackAmount,
-  maxPaybackAmount,
-  updatePayback,
-  updatePaybackMax,
-}: ManageMultiplyVaultState) {
-  return (
-    <VaultActionInput
-      action="Payback"
-      amount={paybackAmount}
-      token={'DAI'}
-      showMax={true}
-      maxAmount={maxPaybackAmount}
-      maxAmountLabel={'Max'}
-      onSetMax={updatePaybackMax}
-      onChange={handleNumericInput(updatePayback!)}
-      hasError={false}
-    />
-  )
-}
-
 export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
   const {
@@ -125,66 +71,25 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
   } = useThemeUI()
 
   const {
-    depositAmount,
-    withdrawAmount,
-    generateAmount,
-    paybackAmount,
-    stage,
-    vault: { token },
-    toggleDepositAndGenerateOption,
-    togglePaybackAndWithdrawOption,
-    showDepositAndGenerateOption,
-    showPaybackAndWithdrawOption,
-    accountIsController,
     afterCollateralizationRatio,
     afterLiquidationPrice,
     showSliderController,
     toggleSliderController,
+    adjustSlider,
+    slider,
   } = props
 
-  const disableDepositAndGenerate = paybackAmount || withdrawAmount || showPaybackAndWithdrawOption
-  const disablePaybackAndWithdraw = depositAmount || generateAmount || showDepositAndGenerateOption
-
-  const showDepositAndGenerateOptionButton =
-    (depositAmount || generateAmount) && accountIsController
-  const showPaybackAndWithdrawOptionButton =
-    (paybackAmount || withdrawAmount) && accountIsController
-
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
-  const multiply = new BigNumber(1)
   const sliderBackground = 1
     ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
         colors?.sliderTrackFill
-      } ${multiply.toNumber()}%, ${colors?.primaryAlt} ${multiply.toNumber()}%, ${
+      } ${slider?.toNumber()}%, ${colors?.primaryAlt} ${slider?.toNumber()}%, ${
         colors?.primaryAlt
       } 100%)`
     : 'primaryAlt'
 
   return (
     <Grid gap={4}>
-      {/* <Box
-        sx={{
-          opacity: disableDepositAndGenerate ? 0.5 : 1,
-          pointerEvents: disableDepositAndGenerate ? 'none' : 'auto',
-        }}
-      > */}
-      {/* {inverted ? <GenerateInput {...props} /> : <DepositInput {...props} />}
-        {showDepositAndGenerateOptionButton && (
-          <Button variant="actionOption" mt={3} onClick={toggleDepositAndGenerateOption!}>
-            {showDepositAndGenerateOption ? <MinusIcon /> : <PlusIcon />}
-            <Text pr={1}>
-              {t('manage-vault.action-option', {
-                action: inverted ? t('vault-actions.deposit') : t('vault-actions.generate'),
-                token: inverted ? token : 'DAI',
-              })}
-            </Text>
-          </Button>
-        )}
-        {showDepositAndGenerateOption &&
-          (!!depositAmount || !!generateAmount) &&
-          (inverted ? <DepositInput {...props} /> : <GenerateInput {...props} />)}
-      </Box> */}
-
       {showSliderController ? (
         <Grid gap={2}>
           <Box>
@@ -219,9 +124,10 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
                 background: sliderBackground,
               }}
               step={2}
-              value={multiply?.toNumber() || 0}
+              value={slider?.toNumber() || 0}
+              max={100}
               onChange={(e) => {
-                console.log('update multiply')
+                adjustSlider!(new BigNumber(e.target.value))
               }}
             />
           </Box>
@@ -239,7 +145,9 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
           </Box>
         </Grid>
       ) : (
-        <Box>input</Box>
+        <Box>
+          <BuyTokenInput {...props} />
+        </Box>
       )}
 
       <Button sx={{ py: 2 }} variant="actionOption" mt={3} onClick={toggleSliderController!}>

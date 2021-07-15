@@ -49,6 +49,11 @@ interface PaybackMaxChange {
   kind: 'paybackMax'
 }
 
+interface SliderChange {
+  kind: 'slider'
+  slider?: BigNumber
+}
+
 export type ManageVaultInputChange =
   | DepositChange
   | DepositUSDChange
@@ -60,6 +65,7 @@ export type ManageVaultInputChange =
   | WithdrawMaxChange
   | PaybackChange
   | PaybackMaxChange
+  | SliderChange
 
 export const depositAndGenerateDefaults: Partial<ManageMultiplyVaultState> = {
   depositAmount: undefined,
@@ -242,6 +248,13 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
   //     ...depositAndGenerateDefaults,
   //   }
   // }
+
+  if (change.kind === 'slider') {
+    return {
+      ...state,
+      slider: change.slider,
+    }
+  }
 
   return state
 }

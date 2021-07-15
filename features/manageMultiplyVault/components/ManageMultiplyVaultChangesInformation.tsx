@@ -25,6 +25,8 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
     afterFreeCollateral,
     daiYieldFromTotalCollateral,
     inputAmountsEmpty,
+    multiply,
+    afterMultiply,
     vault: {
       collateralizationRatio,
       lockedCollateral,
@@ -50,6 +52,16 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
             {formatCryptoBalance(lockedCollateral || zero)} {token}
             <VaultChangesInformationArrow />
             {formatCryptoBalance(afterLockedCollateral || zero)} {token}
+          </Flex>
+        }
+      />
+      <VaultChangesInformationItem
+        label={'Multiply'}
+        value={
+          <Flex>
+            {multiply.toFixed(1)}x
+            <VaultChangesInformationArrow />
+            {afterMultiply.toFixed(1)}x
           </Flex>
         }
       />
