@@ -15,11 +15,11 @@ function BuyTokenInput({
   maxDepositAmount,
   maxDepositAmountUSD,
   vault: { token },
-  depositAmount,
-  depositAmountUSD,
-  updateDeposit,
-  updateDepositUSD,
-  updateDepositMax,
+  updateBuy,
+  updateBuyUSD,
+  updateBuyMax,
+  buyAmountUSD,
+  buyAmount,
   priceInfo: { currentCollateralPrice },
 }: ManageMultiplyVaultState) {
   return (
@@ -29,38 +29,46 @@ function BuyTokenInput({
       tokenUsdPrice={currentCollateralPrice}
       showMax={true}
       hasAuxiliary={true}
-      onSetMax={updateDepositMax!}
+      onSetMax={updateBuyMax!}
       maxAmountLabel={'Buying power'}
-      amount={depositAmount}
-      auxiliaryAmount={depositAmountUSD}
+      amount={buyAmount}
+      auxiliaryAmount={buyAmountUSD}
       maxAmount={maxDepositAmount}
       maxAuxiliaryAmount={maxDepositAmountUSD}
-      onChange={handleNumericInput(updateDeposit!)}
-      onAuxiliaryChange={handleNumericInput(updateDepositUSD!)}
+      onChange={handleNumericInput(updateBuy!)}
+      onAuxiliaryChange={handleNumericInput(updateBuyUSD!)}
       hasError={false}
     />
   )
 }
 
 function SellTokenInput({
-  generateAmount,
   accountIsController,
   maxGenerateAmount,
-  updateGenerate,
-  updateGenerateMax,
+  updateSell,
+  updateSellUSD,
+  updateSellMax,
+  sellAmount,
+  sellAmountUSD,
   vault: { token },
+  priceInfo: { currentCollateralPrice },
 }: ManageMultiplyVaultState) {
   return (
     <VaultActionInput
       action="Sell"
-      amount={generateAmount}
+      amount={sellAmount}
+      tokenUsdPrice={currentCollateralPrice}
       token={token}
       showMax={true}
+      hasAuxiliary={true}
       disabled={!accountIsController}
       maxAmount={maxGenerateAmount}
       maxAmountLabel={'Max'}
-      onSetMax={updateGenerateMax}
-      onChange={handleNumericInput(updateGenerate!)}
+      onSetMax={updateSellMax}
+      onChange={handleNumericInput(updateSell!)}
+      auxiliaryAmount={sellAmountUSD}
+      maxAuxiliaryAmount={new BigNumber(10)}
+      onAuxiliaryChange={handleNumericInput(updateSellUSD!)}
       hasError={false}
     />
   )

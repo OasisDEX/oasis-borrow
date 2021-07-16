@@ -142,6 +142,10 @@ export interface MutableManageVaultState {
   mainAction: MainAction
   showSliderController: boolean
   slider?: BigNumber
+  buyAmount?: BigNumber
+  buyAmountUSD?: BigNumber
+  sellAmount?: BigNumber
+  sellAmountUSD?: BigNumber
 }
 
 export interface ManageVaultEnvironment {
@@ -185,6 +189,12 @@ interface ManageVaultFunctions {
   toggleSliderController?: () => void
   adjustSlider?: (value: BigNumber) => void
   setMainAction?: (mainAction: MainAction) => void
+  updateBuy?: (buyAmount?: BigNumber) => void
+  updateBuyUSD?: (buyAmountUSD?: BigNumber) => void
+  updateBuyMax?: () => void
+  updateSell?: (sellAmount?: BigNumber) => void
+  updateSellUSD?: (sellAmountUSD?: BigNumber) => void
+  updateSellMax?: () => void
 }
 
 interface ManageVaultTxInfo {
@@ -251,6 +261,13 @@ function addTransitions(
       toggleSliderController: () => change({ kind: 'toggleSliderController' }),
       adjustSlider: (slider: BigNumber) => change({ kind: 'slider', slider }),
       setMainAction: (mainAction: MainAction) => change({ kind: 'mainAction', mainAction }),
+      updateBuy: (buyAmount?: BigNumber) => change({ kind: 'buyAmount', buyAmount }),
+      updateBuyUSD: (buyAmountUSD?: BigNumber) => change({ kind: 'buyAmountUSD', buyAmountUSD }),
+      updateBuyMax: () => change({ kind: 'buyMax' }),
+      updateSell: (sellAmount?: BigNumber) => change({ kind: 'sellAmount', sellAmount }),
+      updateSellUSD: (sellAmountUSD?: BigNumber) =>
+        change({ kind: 'sellAmountUSD', sellAmountUSD }),
+      updateSellMax: () => change({ kind: 'sellMax' }),
     }
   }
 

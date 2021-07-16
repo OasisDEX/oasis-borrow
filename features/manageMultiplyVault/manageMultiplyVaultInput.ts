@@ -54,6 +54,34 @@ interface SliderChange {
   slider?: BigNumber
 }
 
+interface BuyChange {
+  kind: 'buyAmount'
+  buyAmount?: BigNumber
+}
+
+interface BuyUSDChange {
+  kind: 'buyAmountUSD'
+  buyAmountUSD?: BigNumber
+}
+
+interface BuyMaxChange {
+  kind: 'buyMax'
+}
+
+interface SellChange {
+  kind: 'sellAmount'
+  sellAmount?: BigNumber
+}
+
+interface SellUSDChange {
+  kind: 'sellAmountUSD'
+  sellAmountUSD?: BigNumber
+}
+
+interface SellMaxChange {
+  kind: 'sellMax'
+}
+
 export type ManageVaultInputChange =
   | DepositChange
   | DepositUSDChange
@@ -66,6 +94,12 @@ export type ManageVaultInputChange =
   | PaybackChange
   | PaybackMaxChange
   | SliderChange
+  | BuyChange
+  | BuyUSDChange
+  | BuyMaxChange
+  | SellChange
+  | SellUSDChange
+  | SellMaxChange
 
 export const depositAndGenerateDefaults: Partial<ManageMultiplyVaultState> = {
   depositAmount: undefined,
@@ -253,6 +287,96 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
     return {
       ...state,
       slider: change.slider,
+    }
+  }
+
+  if (change.kind === 'buyAmount') {
+    const { buyAmount } = change
+    const { priceInfo } = state
+    const buyAmountUSD = buyAmount?.times(priceInfo.currentCollateralPrice)
+
+    return {
+      ...state,
+      buyAmount,
+      buyAmountUSD,
+
+      sellAmount: undefined,
+      sellAmountUSD: undefined,
+    }
+  }
+
+  if (change.kind === 'buyAmountUSD') {
+    const { buyAmountUSD } = change
+    const { priceInfo } = state
+    const buyAmount = buyAmountUSD?.div(priceInfo.currentCollateralPrice)
+
+    return {
+      ...state,
+      buyAmount,
+      buyAmountUSD,
+
+      sellAmount: undefined,
+      sellAmountUSD: undefined,
+    }
+  }
+
+  if (change.kind === 'buyMax') {
+    const { priceInfo } = state
+    // TODO use buying power here or debt ceiling
+
+    return {
+      ...state,
+      buyAmount: zero,
+      buyAmountUSD: zero,
+
+      sellAmount: undefined,
+      sellAmountUSD: undefined,
+    }
+  }
+
+  if (change.kind === 'sellAmount') {
+    const { sellAmount } = change
+    const { priceInfo } = state
+    const sellAmountUSD = sellAmount?.times(priceInfo.currentCollateralPrice)
+
+    return {
+      ...state,
+      sellAmount,
+      sellAmountUSD,
+
+      buyAmount: undefined,
+      buyAmountUSD: undefined,
+    }
+  }
+
+  if (change.kind === 'sellAmountUSD') {
+    const { sellAmountUSD } = change
+    const { priceInfo } = state
+    const sellAmount = sellAmountUSD?.div(priceInfo.currentCollateralPrice)
+
+    return {
+      ...state,
+      sellAmount,
+      sellAmountUSD,
+
+      buyAmount: undefined,
+      buyAmountUSD: undefined,
+    }
+  }
+
+  if (change.kind === 'sellMax') {
+    // const { sellAmountUSD } = change
+    // const { priceInfo } = state
+    // const sellAmount = sellAmountUSD?.div(priceInfo.currentCollateralPrice)
+    // TO DO: figure out what is the sell max amount
+
+    return {
+      ...state,
+      sellAmount: zero,
+      sellAmountUSD: zero,
+
+      buyAmount: undefined,
+      buyAmountUSD: undefined,
     }
   }
 
