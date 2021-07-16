@@ -9,8 +9,8 @@ export const content: ContentTypeSupport = {
     { title: 'Buying Dai', id: 'buying-dai' },
   ],
   sections: [
-   {
-    title: 'Using Oasis.app',
+    {
+      title: 'Using Oasis.app',
       id: 'using-oasis',
       questions: [
         {
@@ -84,11 +84,11 @@ export const content: ContentTypeSupport = {
         },
 
         {
-            question: 'How can I contact the Oasis team?',
-            answer:
-              'If you have any questions, reach out to us through our [Contact page](/daiwallet/contact) or on [Twitter](https://twitter.com/oasisdotapp).',
-          },
-        ],
+          question: 'How can I contact the Oasis team?',
+          answer:
+            'If you have any questions, reach out to us through our [Contact page](/daiwallet/contact) or on [Twitter](https://twitter.com/oasisdotapp).',
+        },
+      ],
     },
     {
       title: 'Using Dai Wallet',
