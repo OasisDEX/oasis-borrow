@@ -5,8 +5,9 @@ import { VaultBannersView } from 'features/banners/VaultsBannersView'
 import { ManageVaultView } from 'features/manageVault/ManageVaultView'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import NotFoundPage from 'pages/404'
 import React from 'react'
-import { Grid } from 'theme-ui'
+import { Box, Grid } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { WithTermsOfService } from '../../features/termsOfService/TermsOfService'
@@ -21,14 +22,25 @@ export async function getServerSideProps(ctx: any) {
 }
 
 export default function Vault({ id }: { id: string }) {
+  const vaultId = new BigNumber(id)
+  const isValidVaultId = vaultId.isInteger() && vaultId.gt(0)
+
   return (
     <WithConnection>
       <WithTermsOfService>
         <Grid gap={0} sx={{ width: '100%' }}>
           <BackgroundLight />
-          <VaultBannersView id={new BigNumber(id)} />
-          <ManageVaultView id={new BigNumber(id)} />
-          <VaultHistoryView id={new BigNumber(id)} />
+          {isValidVaultId ? (
+            <>
+              <VaultBannersView id={vaultId} />
+              <ManageVaultView id={vaultId} />
+              <VaultHistoryView id={vaultId} />
+            </>
+          ) : (
+            <Box sx={{ position: 'relative', zIndex: 1 }}>
+              <NotFoundPage />
+            </Box>
+          )}
         </Grid>
       </WithTermsOfService>
     </WithConnection>
