@@ -70,11 +70,12 @@ export const content: ContentTypeSupport = {
           answer: `La velocidad de la transacción te permite pagar más gas para que tu transacción sea minada más rápidamente. En caso de que estés apurado, por ejemplo para incrementar tu ratio de colateralización para evitar la liquidación, puedes seleccionar velocidad rápida para tus transacciones.`,
         },
         {
-            question: '¿Cómo puedo contactar al equipo de Oasis?',
-            answer: 'Si tienes preguntas, puedes comunicarte con nosotros a través de la [página de contacto](/daiwallet/contact) o en [Twitter](https://twitter.com/oasisdotapp).',
-          },
-        ],
-      },
+          question: '¿Cómo puedo contactar al equipo de Oasis?',
+          answer:
+            'Si tienes preguntas, puedes comunicarte con nosotros a través de la [página de contacto](/daiwallet/contact) o en [Twitter](https://twitter.com/oasisdotapp).',
+        },
+      ],
+    },
     {
       title: 'Usando Dai Wallet',
       id: 'using-daiwallet',
@@ -103,7 +104,7 @@ export const content: ContentTypeSupport = {
           question: '¿Por qué necesito ETH para enviar o ahorrar mi Dai?',
           answer:
             'Para completar cualquier transacción en la blockchain de Ethereum, necesitas pagar una tarifa de transacción utilizando ETH, la criptomoneda por defecto de la red. Está tarifa se conoce como "gas", y es similar al combustible que da energía a tu automóvil, el gas impulsa tu transacción.',
-          },
+        },
         {
           question: '¿Cómo puedo contactar al equipo de Oasis?',
           answer:
@@ -154,10 +155,10 @@ export const content: ContentTypeSupport = {
           question: '¿Puedo comprar ETH en Oasis para pagar por las tarifas de la red?',
           answer:
             'Sí. Para comprar ETH puedes iniciar el mismo proceso que para comprar Dai. Luego de elegir el proveedor de terceros cada uno ofrece la opción de cambiar de Dai a ETH al inicio del proceso.',
-          },
-        ],
-      },
-    ],
+        },
+      ],
+    },
+  ],
   cantFind: '¿No puedes encontrar lo que estás buscando?',
   contactLink: 'Contactanos aquí.',
 }
