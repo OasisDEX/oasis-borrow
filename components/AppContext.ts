@@ -40,6 +40,7 @@ import { createAccountData } from 'features/account/AccountData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
+import { createExchangeQuote$ } from 'features/exchange/exchange'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
@@ -285,6 +286,12 @@ export function setupAppContext() {
     ),
   )
 
+  const exchangeQuote$ = memoize(
+    curry(createExchangeQuote$)(context$),
+    (token: string, slippage: BigNumber, amount: BigNumber, action: string) =>
+      `${token}_${slippage.toString()}_${amount.toString()}_${action}`,
+  )
+
   const multiplyVault$ = memoize(
     curry(createOpenMultiplyVault$)(
       connectedContext$,
@@ -295,7 +302,7 @@ export function setupAppContext() {
       balanceInfo$,
       ilks$,
       ilkData$,
-      ilkToToken$,
+      exchangeQuote$,
     ),
   )
 

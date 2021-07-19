@@ -12,7 +12,7 @@ import { Grid, Text } from 'theme-ui'
 import { OpenMultiplyVaultState } from '../openMultiplyVault'
 
 export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
-  const { afterCollateralizationRatio, afterLiquidationPrice } = props
+  const { afterCollateralizationRatio, afterLiquidationPrice, token } = props
 
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
@@ -40,8 +40,8 @@ export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
 
       <VaultDetailsCard
         title={`Buying Power`}
-        value={`$${formatAmount(props.afterBuyingPower, 'USD')}`}
-        valueBottom={`${formatAmount(props.afterBuyingPower, 'USD')}`}
+        value={`$${formatAmount(props.afterBuyingPowerUSD, 'USD')}`}
+        valueBottom={`${formatAmount(props.afterBuyingPower, token)}`}
       />
 
       <VaultDetailsCardCurrentPrice {...props} />

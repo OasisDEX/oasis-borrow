@@ -6,7 +6,13 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import {
+  formatAmount,
+  formatCryptoBalance,
+  formatFiatBalance,
+  formatPercent,
+} from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import React, { useState } from 'react'
 
 import { OpenMultiplyVaultState } from '../openMultiplyVault'
@@ -22,6 +28,10 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
     buyingCollateralUSD,
     token,
     txFees,
+    quote,
+    impact,
+    loanFees,
+    multiplyFee,
   } = props
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
@@ -47,9 +57,12 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
         label={`${token} Price (impact)`}
         value={
           <Text>
-            $1,925.00{' '}
+            $
+            {quote?.status === 'SUCCESS'
+              ? formatFiatBalance(quote.tokenPrice)
+              : formatFiatBalance(zero)}{' '}
             <Text as="span" sx={{ color: 'onError' }}>
-              (-0.25%)
+              ({formatPercent(impact, { precision: 2 })})
             </Text>
           </Text>
         }
@@ -92,11 +105,11 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
         <Grid pl={3} gap={2}>
           <VaultChangesInformationItem
             label={'3rd party protocol fees'}
-            value={`$${formatAmount(txFees, 'USD')}`}
+            value={`$${formatAmount(loanFees, 'USD')}`}
           />
           <VaultChangesInformationItem
             label={'Oasis fee'}
-            value={`$${formatAmount(txFees, 'USD')}`}
+            value={`$${formatAmount(multiplyFee, 'USD')}`}
           />
         </Grid>
       )}
