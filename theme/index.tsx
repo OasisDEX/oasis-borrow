@@ -1245,6 +1245,17 @@ const oasisBaseTheme = {
       lineHeight: 1.25,
       position: 'relative',
     },
+    bean: {
+      variant: 'buttons.actionOption',
+      px: 3,
+      py: 2,
+      width: 'initial',
+    },
+    beanActive: {
+      variant: 'buttons.bean',
+      color: 'white',
+      bg: 'primary',
+    },
     vaultEditingController: {
       fontFamily: 'body',
       fontSize: 3,
