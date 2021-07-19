@@ -60,7 +60,6 @@ export interface OpenMultiplyVaultConditions {
   isOpenStage: boolean
 
   inputAmountsEmpty: boolean
-  canAdjustRisk: boolean
 
   vaultWillBeAtRiskLevelWarning: boolean
   vaultWillBeAtRiskLevelDanger: boolean
@@ -85,6 +84,7 @@ export interface OpenMultiplyVaultConditions {
   isLoadingStage: boolean
   canProgress: boolean
   canRegress: boolean
+  canAdjustRisk: boolean
 }
 
 export const defaultOpenVaultConditions: OpenMultiplyVaultConditions = {
@@ -131,10 +131,15 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     allowanceAmount,
     allowance,
     multiply,
+    maxCollRatio,
   } = state
 
   const inputAmountsEmpty = !depositAmount && !multiply
-  const canAdjustRisk = depositAmount !== undefined && depositAmount.gt(0)
+  const canAdjustRisk =
+    depositAmount !== undefined &&
+    maxCollRatio !== undefined &&
+    depositAmount.gt(0) &&
+    maxCollRatio.gt(ilkData.liquidationRatio)
 
   const vaultWillBeAtRiskLevelDanger =
     !inputAmountsEmpty &&

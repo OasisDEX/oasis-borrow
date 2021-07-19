@@ -40,9 +40,15 @@ import { createAccountData } from 'features/account/AccountData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
+import { createExchangeQuote$ } from 'features/exchange/exchange'
+import {
+  createGeneralManageVault$,
+  VaultType,
+} from 'features/generalManageVault/generalManageVault'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
+import { createManageMultiplyVault$ } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { createManageVault$ } from 'features/manageVault/manageVault'
 import { createOpenMultiplyVault$ } from 'features/openMultiplyVault/openMultiplyVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
@@ -56,6 +62,7 @@ import {
 } from 'features/termsOfService/termsAcceptanceApi'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
+import { zero } from 'helpers/zero'
 import { mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
 import { combineLatest, Observable, of } from 'rxjs'
@@ -285,6 +292,12 @@ export function setupAppContext() {
     ),
   )
 
+  const exchangeQuote$ = memoize(
+    curry(createExchangeQuote$)(context$),
+    (token: string, slippage: BigNumber, amount: BigNumber, action: string) =>
+      `${token}_${slippage.toString()}_${amount.toString()}_${action}`,
+  )
+
   const multiplyVault$ = memoize(
     curry(createOpenMultiplyVault$)(
       connectedContext$,
@@ -295,7 +308,7 @@ export function setupAppContext() {
       balanceInfo$,
       ilks$,
       ilkData$,
-      ilkToToken$,
+      exchangeQuote$,
     ),
   )
 
@@ -310,6 +323,29 @@ export function setupAppContext() {
       ilkData$,
       vault$,
     ),
+    bigNumberTostring,
+  )
+
+  const manageMultiplyVault$ = memoize(
+    curry(createManageMultiplyVault$)(
+      context$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      priceInfo$,
+      balanceInfo$,
+      ilkData$,
+      vault$,
+    ),
+    bigNumberTostring,
+  )
+
+  function vaultTypeMock$(id: BigNumber) {
+    return id.modulo(2).eq(zero) ? of(VaultType.Multiply) : of(VaultType.Borrow)
+  }
+
+  const generalManageVault$ = memoize(
+    curry(createGeneralManageVault$)(manageMultiplyVault$, manageVault$, vaultTypeMock$),
     bigNumberTostring,
   )
 
@@ -368,6 +404,7 @@ export function setupAppContext() {
     reclaimCollateral$,
     openVaultOverview$,
     multiplyVault$,
+    generalManageVault$,
   }
 }
 

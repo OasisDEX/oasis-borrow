@@ -22,21 +22,20 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
     updateDepositUSD,
     depositAmountUSD,
     maxDepositAmountUSD,
-    updateMultiply,
-    multiply, // TODO improve multiply editing
+    updateRisk,
+    multiply,
     priceInfo: { currentCollateralPrice },
     canAdjustRisk,
     afterLiquidationPrice,
     afterCollateralizationRatio,
+    slider,
   } = props
 
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const sliderBackground = multiply
-    ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
-        colors?.sliderTrackFill
-      } ${multiply.toNumber()}%, ${colors?.primaryAlt} ${multiply.toNumber()}%, ${
-        colors?.primaryAlt
-      } 100%)`
+    ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
+        slider?.toNumber() || 0
+      }%, ${colors?.primaryAlt} ${slider?.toNumber() || 0}%, ${colors?.primaryAlt} 100%)`
     : 'primaryAlt'
 
   return (
@@ -99,10 +98,12 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
               background: sliderBackground,
             }}
             disabled={!canAdjustRisk}
-            step={2}
-            value={multiply?.toNumber() || 0}
+            step={5}
+            min={0}
+            max={100}
+            value={slider?.toNumber() || 0}
             onChange={(e) => {
-              updateMultiply && updateMultiply(new BigNumber(e.target.value))
+              updateRisk && updateRisk(new BigNumber(e.target.value))
             }}
           />
         </Box>
