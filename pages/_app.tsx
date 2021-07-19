@@ -9,6 +9,7 @@ import { AppContextProvider } from 'components/AppContextProvider'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
 import { AppLayout, MarketingLayoutProps } from 'components/Layouts'
 import { CustomMDXLink } from 'components/Links'
+import { SharedUIProvider } from 'components/SharedUIProvider'
 // @ts-ignore
 import { cache } from 'emotion'
 import { ModalProvider } from 'helpers/modalHook'
@@ -45,7 +46,6 @@ const globalStyles = `
   }
 
   html {
-    width: 100vw;
     overflow-x: hidden;
   }
 
@@ -153,9 +153,11 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                   <HeadTags />
                   {seoTags}
                   <SetupWeb3Context>
-                    <Layout {...layoutProps}>
-                      <Component {...pageProps} />
-                    </Layout>
+                    <SharedUIProvider>
+                      <Layout {...layoutProps}>
+                        <Component {...pageProps} />
+                      </Layout>
+                    </SharedUIProvider>
                   </SetupWeb3Context>
                 </ModalProvider>
               </AppContextProvider>

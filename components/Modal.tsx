@@ -69,11 +69,12 @@ function ModalWrapper({ children, close }: WithChildren & { close: () => void })
         bottom: 0,
         display: 'block',
         bg: '#00000080',
+        overflow: 'auto',
       }}
     >
       <Global
         styles={{
-          body: {
+          html: {
             overflow: 'hidden',
           },
         }}
@@ -92,7 +93,6 @@ export function Modal({ children, variant, sx, close }: ModalProps) {
           alignItems: 'center',
           height: '100%',
           width: '100%',
-          overflow: 'auto',
           ...sx,
         }}
       >
