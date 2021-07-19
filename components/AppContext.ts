@@ -40,11 +40,11 @@ import { createAccountData } from 'features/account/AccountData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
+import { createExchangeQuote$ } from 'features/exchange/exchange'
 import {
   createGeneralManageVault$,
   VaultType,
 } from 'features/generalManageVault/generalManageVault'
-import { createExchangeQuote$ } from 'features/exchange/exchange'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
