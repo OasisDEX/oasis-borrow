@@ -4,7 +4,12 @@ import { content as en } from './en'
 import { content as es } from './es'
 import { content as pt } from './pt'
 
-export type ContentSectionId = 'buying-dai' | 'saving-lending-dai' | 'using-oasis' | 'security'
+export type ContentSectionId =
+  | 'buying-dai'
+  | 'saving-lending-dai'
+  | 'using-oasis'
+  | 'security'
+  | 'using-daiwallet'
 
 export interface ContentQuestion {
   question: string
