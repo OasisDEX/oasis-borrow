@@ -1,4 +1,3 @@
-import { trackingEvents } from 'analytics/analytics'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Grid, Text } from 'theme-ui'
@@ -8,9 +7,8 @@ import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 function ManageMultiplyVaultEditingController({
   stage,
   toggle,
-  accountIsController,
-}: ManageMultiplyVaultState) {
-  const { t } = useTranslation()
+}: // accountIsController,
+ManageMultiplyVaultState) {
   const adjustPosition = `vaultEditingController${stage !== 'adjustPosition' ? 'Inactive' : ''}`
   const otherActions = `vaultEditingController${stage !== 'otherActions' ? 'Inactive' : ''}`
 

@@ -1,4 +1,4 @@
-import { ManageVaultChange, ManageMultiplyVaultState, MainAction } from './manageMultiplyVault'
+import { MainAction, ManageMultiplyVaultState, ManageVaultChange } from './manageMultiplyVault'
 import { allowanceDefaults } from './manageMultiplyVaultAllowances'
 import { depositAndGenerateDefaults, paybackAndWithdrawDefaults } from './manageMultiplyVaultInput'
 
@@ -32,17 +32,17 @@ export function applyManageVaultForm(
   change: ManageVaultChange,
   state: ManageMultiplyVaultState,
 ): ManageMultiplyVaultState {
-  const {
-    showDepositAndGenerateOption,
-    showPaybackAndWithdrawOption,
-    stage,
-    depositAmount,
-    generateAmount,
-    withdrawAmount,
-    paybackAmount,
-  } = state
-  const isCollateralStage = stage === 'adjustPosition'
-  const isDaiStage = stage === 'otherActions'
+  // const {
+  // showDepositAndGenerateOption,
+  // showPaybackAndWithdrawOption,
+  // stage,
+  // depositAmount,
+  // generateAmount,
+  // withdrawAmount,
+  // paybackAmount,
+  // } = state
+  // const isCollateralStage = stage === 'adjustPosition'
+  // const isDaiStage = stage === 'otherActions'
 
   // TODO adjust this to manage multiply vault
   // const shouldClearGenerateAmount = showDepositAndGenerateOption && isCollateralStage

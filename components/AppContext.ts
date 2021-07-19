@@ -333,8 +333,9 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  const vaultTypeMock$ = (id: BigNumber) =>
-    id.modulo(2).eq(zero) ? of(VaultType.Multiply) : of(VaultType.Borrow)
+  function vaultTypeMock$(id: BigNumber) {
+    return id.modulo(2).eq(zero) ? of(VaultType.Multiply) : of(VaultType.Borrow)
+  }
 
   const generalManageVault$ = memoize(
     curry(createGeneralManageVault$)(manageMultiplyVault$, manageVault$, vaultTypeMock$),

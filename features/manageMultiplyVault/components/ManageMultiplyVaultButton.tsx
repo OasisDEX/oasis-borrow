@@ -96,10 +96,10 @@ export function ManageMultiplyVaultButton(props: ManageMultiplyVaultState) {
     canRegress,
     regress,
     vault: { token },
-    depositAmount,
-    generateAmount,
-    paybackAmount,
-    withdrawAmount,
+    // depositAmount,
+    // generateAmount,
+    // paybackAmount,
+    // withdrawAmount,
     isCollateralAllowanceStage,
   } = props
 

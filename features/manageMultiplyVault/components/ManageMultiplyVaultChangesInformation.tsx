@@ -7,11 +7,11 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 
 export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVaultState) {

@@ -3,24 +3,23 @@ import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
-
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Card, Divider, Grid } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 import { ManageMultiplyVaultButton } from './ManageMultiplyVaultButton'
-import { ManageMultiplyVaultEditing } from './ManageMultiplyVaultEditing'
 import { ManageMultiplyVaultCollateralAllowance } from './ManageMultiplyVaultCollateralAllowance'
-import { ManageMultiplyVaultDaiAllowance } from './ManageMultiplyVaultDaiAllowance'
 import {
   ManageMultiplyVaultConfirmation,
   ManageMultiplyVaultConfirmationStatus,
 } from './ManageMultiplyVaultConfirmation'
-import { ManageMultiplyVaultErrors } from './ManageMultiplyVaultErrors'
-import { ManageMultiplyVaultWarnings } from './ManageMultiplyVaultWarnings'
+import { ManageMultiplyVaultDaiAllowance } from './ManageMultiplyVaultDaiAllowance'
 import { ManageMultiplyVaultDetails } from './ManageMultiplyVaultDetails'
+import { ManageMultiplyVaultEditing } from './ManageMultiplyVaultEditing'
+import { ManageMultiplyVaultErrors } from './ManageMultiplyVaultErrors'
 import { ManageMultiplyVaultFormHeader } from './ManageMultiplyVaultFormHeader'
+import { ManageMultiplyVaultWarnings } from './ManageMultiplyVaultWarnings'
 
 function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
   const {

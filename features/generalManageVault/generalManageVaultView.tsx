@@ -7,6 +7,7 @@ import { useObservableWithError } from 'helpers/observableHook'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
+
 import { VaultType } from './generalManageVault'
 
 export function GeneralManageVaultView({ id }: { id: BigNumber }) {

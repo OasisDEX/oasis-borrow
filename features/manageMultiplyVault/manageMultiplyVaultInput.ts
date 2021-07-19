@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
 
-import { ManageVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
+import { ManageMultiplyVaultState, ManageVaultChange } from './manageMultiplyVault'
 
 interface DepositChange {
   kind: 'deposit'
@@ -321,7 +321,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
   }
 
   if (change.kind === 'buyMax') {
-    const { priceInfo } = state
+    // const { priceInfo } = state
     // TODO use buying power here or debt ceiling
 
     return {

@@ -1,11 +1,9 @@
 import BigNumber from 'bignumber.js'
-import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
+import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { useCallback } from 'react'
 import { Box, Button, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
@@ -75,7 +73,6 @@ function SellTokenInput({
 }
 
 export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
-  const { t } = useTranslation()
   const {
     theme: { colors },
   } = useThemeUI()
@@ -93,13 +90,11 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
   } = props
 
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
-  const sliderBackground = 1
-    ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
-        colors?.sliderTrackFill
-      } ${slider?.toNumber()}%, ${colors?.primaryAlt} ${slider?.toNumber()}%, ${
-        colors?.primaryAlt
-      } 100%)`
-    : 'primaryAlt'
+  const sliderBackground = `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
+    colors?.sliderTrackFill
+  } ${slider?.toNumber()}%, ${colors?.primaryAlt} ${slider?.toNumber()}%, ${
+    colors?.primaryAlt
+  } 100%)`
 
   return (
     <Grid gap={4}>

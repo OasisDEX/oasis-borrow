@@ -4,9 +4,9 @@ import { zero } from 'helpers/zero'
 import { Observable } from 'rxjs'
 
 import {
-  ManageVaultChange,
   ManageMultiplyVaultEditingStage,
   ManageMultiplyVaultState,
+  ManageVaultChange,
 } from './manageMultiplyVault'
 import { manageVaultFormDefaults } from './manageMultiplyVaultForm'
 import {
