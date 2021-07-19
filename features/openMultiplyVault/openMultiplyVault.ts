@@ -3,12 +3,21 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
+import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
-import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
+import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
+import {
+  applyExchange,
+  createExchangeChange$,
+  createInitialQuoteChange,
+  ExchangeQuoteChanges,
+  SLIPPAGE,
+} from './openMultiplyQuote'
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openMultiplyVaultAllowances'
 import {
   applyOpenVaultCalculations,
@@ -71,11 +80,12 @@ export type OpenMultiplyVaultChange =
   | OpenVaultAllowanceChange
   | OpenVaultEnvironmentChange
   | OpenVaultInjectedOverrideChange
+  | ExchangeQuoteChanges
 
 function apply(state: OpenMultiplyVaultState, change: OpenMultiplyVaultChange) {
   const s1 = applyOpenVaultInput(change, state)
-
-  const s3 = applyOpenVaultTransition(change, s1)
+  const s2 = applyExchange(change, s1)
+  const s3 = applyOpenVaultTransition(change, s2)
   const s4 = applyOpenMultiplyVaultTransaction(change, s3)
   const s5 = applyOpenVaultAllowance(change, s4)
   const s6 = applyOpenVaultEnvironment(change, s5)
@@ -108,7 +118,7 @@ export interface MutableOpenMultiplyVaultState {
   stage: OpenMultiplyVaultStage
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
-  multiply?: BigNumber
+  slider?: BigNumber
   selectedAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
   allowanceAmount?: BigNumber
   id?: BigNumber
@@ -120,7 +130,7 @@ interface OpenMultiplyVaultFunctions {
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
-  updateMultiply?: (multiply?: BigNumber) => void
+  updateRisk?: (slider?: BigNumber) => void
   updateAllowanceAmount?: (amount?: BigNumber) => void
   setAllowanceAmountUnlimited?: () => void
   setAllowanceAmountToDepositAmount?: () => void
@@ -137,6 +147,8 @@ interface OpenMultiplyVaultEnvironment {
   ilkData: IlkData
   proxyAddress?: string
   allowance?: BigNumber
+  quote?: Quote
+  slippage: BigNumber
 }
 
 interface OpenMultiplyVaultTxInfo {
@@ -175,8 +187,8 @@ function addTransitions(
       updateDepositUSD: (depositAmountUSD?: BigNumber) =>
         change({ kind: 'depositUSD', depositAmountUSD }),
       updateDepositMax: () => change({ kind: 'depositMax' }),
-      updateMultiply: (multiply?: BigNumber) => {
-        change({ kind: 'multiply', multiply })
+      updateRisk: (slider?: BigNumber) => {
+        change({ kind: 'slider', slider })
       },
       progress: () => change({ kind: 'progressEditing' }),
     }
@@ -257,6 +269,7 @@ export const defaultMutableOpenVaultState: MutableOpenMultiplyVaultState = {
   stage: 'editing' as OpenMultiplyVaultStage,
   selectedAllowanceRadio: 'unlimited' as 'unlimited',
   allowanceAmount: maxUint256,
+  slider: zero,
 }
 
 export function createOpenMultiplyVault$(
@@ -268,7 +281,12 @@ export function createOpenMultiplyVault$(
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilks$: Observable<string[]>,
   ilkData$: (ilk: string) => Observable<IlkData>,
-  ilkToToken$: Observable<(ilk: string) => string>,
+  exchangeQuote$: (
+    token: string,
+    slippage: BigNumber,
+    amount: BigNumber,
+    action: ExchangeAction,
+  ) => Observable<Quote>,
   ilk: string,
 ): Observable<OpenMultiplyVaultState> {
   return ilks$.pipe(
@@ -276,18 +294,17 @@ export function createOpenMultiplyVault$(
       iif(
         () => !ilks.some((i) => i === ilk),
         throwError(new Error(`Ilk ${ilk} does not exist`)),
-        combineLatest(context$, txHelpers$, ilkToToken$).pipe(
-          switchMap(([context, txHelpers, ilkToToken]) => {
+        combineLatest(context$, txHelpers$, ilkData$(ilk)).pipe(
+          switchMap(([context, txHelpers, ilkData]) => {
+            const { token } = ilkData
             const account = context.account
-            const token = ilkToToken(ilk)
             return combineLatest(
               priceInfo$(token),
               balanceInfo$(token, account),
-              ilkData$(ilk),
               proxyAddress$(account),
             ).pipe(
               first(),
-              switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress]) =>
+              switchMap(([priceInfo, balanceInfo, proxyAddress]) =>
                 ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
                   first(),
                   switchMap((allowance) => {
@@ -321,13 +338,18 @@ export function createOpenMultiplyVault$(
                       errorMessages: [],
                       warningMessages: [],
                       summary: defaultOpenVaultSummary,
+                      slippage: SLIPPAGE,
                       injectStateOverride,
                     }
+
+                    const stateSubject$ = new Subject<OpenMultiplyVaultState>()
 
                     const environmentChanges$ = merge(
                       priceInfoChange$(priceInfo$, token),
                       balanceInfoChange$(balanceInfo$, token, account),
                       createIlkDataChange$(ilkData$, ilk),
+                      createInitialQuoteChange(exchangeQuote$, token),
+                      createExchangeChange$(exchangeQuote$, stateSubject$),
                     )
 
                     const connectedProxyAddress$ = proxyAddress$(account)
@@ -337,6 +359,7 @@ export function createOpenMultiplyVault$(
                       map(validateErrors),
                       map(validateWarnings),
                       map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
+                      tap((state) => stateSubject$.next(state)),
                     )
                   }),
                 ),

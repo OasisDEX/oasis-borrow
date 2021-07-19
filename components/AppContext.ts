@@ -44,6 +44,7 @@ import {
   createGeneralManageVault$,
   VaultType,
 } from 'features/generalManageVault/generalManageVault'
+import { createExchangeQuote$ } from 'features/exchange/exchange'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
@@ -291,6 +292,12 @@ export function setupAppContext() {
     ),
   )
 
+  const exchangeQuote$ = memoize(
+    curry(createExchangeQuote$)(context$),
+    (token: string, slippage: BigNumber, amount: BigNumber, action: string) =>
+      `${token}_${slippage.toString()}_${amount.toString()}_${action}`,
+  )
+
   const multiplyVault$ = memoize(
     curry(createOpenMultiplyVault$)(
       connectedContext$,
@@ -301,7 +308,7 @@ export function setupAppContext() {
       balanceInfo$,
       ilks$,
       ilkData$,
-      ilkToToken$,
+      exchangeQuote$,
     ),
   )
 
