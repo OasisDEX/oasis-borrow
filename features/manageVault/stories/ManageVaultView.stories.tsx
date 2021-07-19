@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-import { ManageVaultView } from 'features/manageVault/ManageVaultView'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { manageVaultStory } from 'helpers/stories/ManageVaultStory'
 import { zero } from 'helpers/zero'
@@ -320,5 +319,4 @@ export const ManageSuccess = manageVaultStory({
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'ManageVault/Stages',
-  component: ManageVaultView,
 }

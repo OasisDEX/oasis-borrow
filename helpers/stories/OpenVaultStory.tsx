@@ -1,10 +1,12 @@
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
+import { SharedUIProvider } from 'components/SharedUIProvider'
 import { OpenVaultView } from 'features/openVault/components/OpenVaultView'
 import { defaultMutableOpenVaultState, MutableOpenVaultState } from 'features/openVault/openVault'
 import { mockOpenVault$, MockOpenVaultProps } from 'helpers/mocks/openVault.mock'
 import { AppContext } from 'next/app'
 import React from 'react'
 import { useEffect } from 'react'
+import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
@@ -60,11 +62,14 @@ export function openVaultStory({
     const openVault$ = () => obs$
     const ctx = ({
       openVault$,
+      accountData$: of(EMPTY),
     } as any) as AppContext
 
     return (
       <appContext.Provider value={ctx as any}>
-        <OpenVaultStoryContainer ilk={ilk} title={title} />
+        <SharedUIProvider>
+          <OpenVaultStoryContainer ilk={ilk} title={title} />
+        </SharedUIProvider>
       </appContext.Provider>
     )
   }
