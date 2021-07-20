@@ -275,7 +275,7 @@ export function multiplyVault(
     account,
   }: OpenMultiplyVaultState,
 ) {
-  send(openMultiplyVault, {
+  sendWithGasEstimation(openMultiplyVault, {
     kind: TxMetaKind.multiply,
     depositCollateral: depositAmount || zero,
     userAddress: account,
