@@ -21,6 +21,7 @@ import {
 } from 'blockchain/calls/proxy'
 import {
   DepositAndGenerateData,
+  MultiplyData,
   OpenData,
   ReclaimData,
   WithdrawAndPaybackData,
@@ -103,6 +104,7 @@ export type TxData =
   | CreateDsProxyData
   | SetProxyOwnerData
   | ReclaimData
+  | MultiplyData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>

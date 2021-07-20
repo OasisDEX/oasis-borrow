@@ -5,8 +5,8 @@ import { gql, GraphQLClient } from 'graphql-request'
 import { memoize } from 'lodash'
 import flatten from 'lodash/flatten'
 import pickBy from 'lodash/pickBy'
-import { combineLatest, Observable } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { combineLatest, Observable, of } from 'rxjs'
+import { catchError, map, switchMap } from 'rxjs/operators'
 
 import { ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
@@ -133,6 +133,7 @@ export function createVaultHistory$(
           ),
         ),
         map((events) => events.map((event) => ({ etherscan, token, ...event }))),
+        catchError(() => of([])),
       ),
     ),
   )

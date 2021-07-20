@@ -2,7 +2,7 @@ import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
-import { MultiplyData } from 'blockchain/calls/proxyActions'
+import { MultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxHelpers } from 'components/AppContext'
 import { transactionToX } from 'helpers/form'
@@ -262,19 +262,30 @@ export function parseVaultIdFromReceiptLogs({ logs }: Receipt): BigNumber | unde
 }
 
 export function multiplyVault(
-  { sendWithGasEstimation }: TxHelpers,
+  { sendWithGasEstimation, send }: TxHelpers,
   change: (ch: OpenMultiplyVaultChange) => void,
-  { depositAmount, proxyAddress, ilk, token, multiply }: OpenMultiplyVaultState,
+  {
+    depositAmount,
+    proxyAddress,
+    ilk,
+    token,
+    quote,
+    buyingCollateral,
+    afterOutstandingDebt,
+    account,
+  }: OpenMultiplyVaultState,
 ) {
-  // @ts-ignore
-  // REMOVE IT ONCE MULTIPLY CALL IS IMPLEMENTED
-  sendWithGasEstimation(multiply, {
+  send(openMultiplyVault, {
     kind: TxMetaKind.multiply,
-    depositAmount: depositAmount || zero,
+    depositCollateral: depositAmount || zero,
+    userAddress: account,
     proxyAddress: proxyAddress!,
     ilk,
     token,
-    multiply: multiply || one,
+    exchangeAddress: quote?.status === 'SUCCESS' ? quote.tx.to : '0x',
+    exchangeData: quote?.status === 'SUCCESS' ? quote.tx.data : '0x',
+    borrowedCollateral: buyingCollateral,
+    requiredDebt: afterOutstandingDebt,
   })
     .pipe(
       transactionToX<OpenMultiplyVaultChange, MultiplyData>(
@@ -297,7 +308,5 @@ export function multiplyVault(
           }),
       ),
     )
-    // @ts-ignore
-    // REMOVE IT ONCE MULTIPLY CALL IS IMPLEMENTED
     .subscribe((ch) => change(ch))
 }

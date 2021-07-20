@@ -9,6 +9,7 @@ import * as dsProxyRegistry from './abi/ds-proxy-registry.json'
 import * as dssCdpManager from './abi/dss-cdp-manager.json'
 import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
 import * as dssProxyActions from './abi/dss-proxy-actions.json'
+import * as dssMultiplyProxyActions from './abi/multiply-proxy-actions.json'
 import * as erc20 from './abi/erc20.json'
 import * as getCdps from './abi/get-cdps.json'
 import * as otc from './abi/matching-market.json'
@@ -72,6 +73,10 @@ const protoMain = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, mainnetAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, mainnetAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
+  dssMultiplyProxyActions: contractDesc(
+    dssMultiplyProxyActions,
+    '0x4826533B4897376654Bb4d4AD88B7faFD0C98528',
+  ), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
   etherscan: {
     url: 'https://etherscan.io',
     apiUrl: 'https://api.etherscan.io/api',
@@ -126,6 +131,10 @@ const kovan: NetworkConfig = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, kovanAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, kovanAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, kovanAddresses.PROXY_ACTIONS),
+  dssMultiplyProxyActions: contractDesc(
+    dssMultiplyProxyActions,
+    '0x4826533B4897376654Bb4d4AD88B7faFD0C98528',
+  ), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
   etherscan: {
     url: 'https://kovan.etherscan.io',
     apiUrl: 'https://api-kovan.etherscan.io/api',

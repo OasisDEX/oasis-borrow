@@ -7,10 +7,12 @@ import { amountToWad, amountToWei } from 'blockchain/utils'
 import { zero } from 'helpers/zero'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
-import { PayableTransactionObject } from 'types/web3-v1-contracts/types'
+import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-actions'
+import multiplyProxyActions from 'blockchain/abi/multiply-proxy-actions.json'
 import Web3 from 'web3'
 
 import { TxMetaKind } from './txMeta'
+import { Quote } from 'features/exchange/exchange'
 
 export type WithdrawAndPaybackData = {
   kind: TxMetaKind.withdrawAndPayback
@@ -281,23 +283,61 @@ export const open: TransactionDef<OpenData> = {
 export type MultiplyData = {
   kind: TxMetaKind.multiply
   token: string
-  ilk: string
-  depositAmount: BigNumber
-  multiply: BigNumber
+  depositCollateral: BigNumber
+  requiredDebt: BigNumber
+  borrowedCollateral: BigNumber
   proxyAddress: string
-}
-function getMultiplyCallData(
-  _data: MultiplyData,
-  _context: ContextConnected,
-): PayableTransactionObject<string> {
-  // const { contract, dssProxyActions } = context
-  console.log('CALLING MULTIPLY')
-  throw new Error('NOT IMPLEMENTED!')
+  userAddress: string
 
-  // return contract<DssProxyActions>(dssProxyActions).methods.multiply(dssCdpManager.address)
+  ilk: string
+
+  exchangeAddress: string
+  exchangeData: string
+}
+function getMultiplyCallData(data: MultiplyData, context: ContextConnected) {
+  const { contract, joins, mcdJug, dssCdpManager, dssMultiplyProxyActions, tokens } = context
+  const multiplyProxyActionsAddress = '0x4826533B4897376654Bb4d4AD88B7faFD0C98528'
+  const AAVELendingPool = '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5'
+  const OAZO_WALLET = '0x34314adbfBb5d239bb67f0265c9c45EB8b834412'
+  const EXCHANGE_WRAPPER = '0x9d4454b023096f34b160d6b654540c56a1f81688'
+  const DSProxy = '0xc77ce2b678bfcc5ab898822397ed4fb359862ba6'
+  const MCDView = '0x5eb3bc0a489c5a8288765d2336659ebca68fcd00'
+  const MultiplyProxyActions = '0x8f86403a4de0bb5791fa46b8e795c547942fe4cf'
+
+  return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.openMultiplyVault(
+    {
+      fromTokenAddress: tokens['DAI'].address, //fromTokenAddress,
+      toTokenAddress: tokens[data.token].address, // toTokenAddress
+      fromTokenAmount: amountToWei(zero, 'DAI').toFixed(0), // fromTokenAmount
+      toTokenAmount: amountToWei(zero, data.token).toFixed(0), // toTokenAmount
+      minToTokenAmount: amountToWei(zero, data.token).toFixed(0), // minToTokenAmount
+      exchangeAddress: data.exchangeAddress, // exchangeAddress
+      _exchangeCalldata: data.exchangeData, // _exchangeCalldata
+    },
+    {
+      gemJoin: joins[data.ilk], // gemJoin
+      cdpId: '0', // cdpId
+      ilk: '0x0000000000000000000000000000000000000000000000000000000000000000', // ilk
+      fundsReceiver: data.userAddress, // fundsReceiver -> userAddress,
+      borrowCollateral: amountToWei(data.borrowedCollateral, data.token).toFixed(0), // borrowCollateral
+      requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0), // requiredDebt
+      depositDai: amountToWei(zero, 'DAI').toFixed(0), // depositDai
+      depositCollateral: amountToWei(data.depositCollateral, data.token).toFixed(0), // depositCollateral
+      withdrawDai: amountToWei(zero, 'DAI').toFixed(0), // withdrawDai
+      withdrawCollateral: amountToWei(zero, data.token).toFixed(0), // withdrawCollateral
+    },
+    {
+      jug: mcdJug.address, // jug
+      manager: dssCdpManager.address, // manager
+      multiplyProxyActions: MultiplyProxyActions, //dssMultiplyProxyActions.address, // multiplyProxyActions,
+      aaveLendingPoolProvider: AAVELendingPool, // aaveLendingPoolProvider: ,
+      feeRecepient: OAZO_WALLET, // feeRecepient: ,
+      exchange: EXCHANGE_WRAPPER, // exchange: exchangeInstanceAddress,
+    },
+  )
 }
 
-export const multiply: TransactionDef<MultiplyData> = {
+export const openMultiplyVault: TransactionDef<MultiplyData> = {
   call: ({ proxyAddress }, { contract }) => {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
@@ -305,8 +345,8 @@ export const multiply: TransactionDef<MultiplyData> = {
     const { dssProxyActions } = context
     return [dssProxyActions.address, getMultiplyCallData(data, context).encodeABI()]
   },
-  options: ({ token, depositAmount }) =>
-    token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
+  options: ({ token, depositCollateral }) =>
+    token === 'ETH' ? { value: amountToWei(depositCollateral, 'ETH').toString() } : {},
 }
 
 export type ReclaimData = {
