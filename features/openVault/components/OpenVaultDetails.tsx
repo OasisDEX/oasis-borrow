@@ -6,10 +6,12 @@ import {
   VaultDetailsCardCollateralLocked,
   VaultDetailsCardCurrentPrice,
   VaultDetailsCardLiquidationPrice,
+  VaultDetailsCardMockedModal,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { useModal } from 'helpers/modalHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -65,9 +67,10 @@ export function OpenVaultDetails(props: OpenVaultState) {
     afterLiquidationPrice,
     afterLiquidationPriceCurrentPriceDifference,
   } = props
-  const collRatioColor = getCollRatioColor(props, props.afterCollateralizationRatio)
-
   const { t } = useTranslation()
+  const openModal = useModal()
+
+  const collRatioColor = getCollRatioColor(props, props.afterCollateralizationRatio)
 
   return (
     <>
@@ -87,6 +90,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
               })}
             </Text>
           }
+          openModal={() => openModal(VaultDetailsCardMockedModal)}
         />
 
         <VaultDetailsCardCurrentPrice {...props} />
