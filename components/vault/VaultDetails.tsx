@@ -55,47 +55,82 @@ export function VaultDetailsCard({
   title,
   value,
   valueBottom,
+  valueAfter,
   openModal,
 }: {
   title: string
   value: ReactNode
   valueBottom?: ReactNode
+  valueAfter?: ReactNode
   openModal?: () => void
 }) {
   return (
-    <Card sx={{ border: 'lightMuted', overflow: 'hidden' }}>
-      <Box p={2} sx={{ fontSize: 2 }}>
-        <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text variant="subheader" sx={{ fontWeight: 'semiBold', fontSize: 'inherit' }}>
-            {title}
-          </Text>
-          {openModal && (
-            <Button
-              variant="secondary"
-              onClick={openModal}
+    <Card sx={{ border: 'lightMuted', overflow: 'hidden', minHeight: '194px', display: 'flex' }}>
+      <Flex
+        p={2}
+        sx={{
+          fontSize: 2,
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          width: '100%',
+        }}
+      >
+        <Box>
+          <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+            <Text variant="subheader" sx={{ fontWeight: 'semiBold', fontSize: 'inherit' }}>
+              {title}
+            </Text>
+            {openModal && (
+              <Button
+                variant="secondary"
+                onClick={openModal}
+                sx={{
+                  py: 1,
+                  px: 3,
+                  fontSize: 1,
+                  lineHeight: 'bodyLoose',
+                  minWidth: '138px',
+                  cursor: 'pointer',
+                }}
+              >
+                See breakdown
+              </Button>
+            )}
+          </Flex>
+          <Heading variant="header2" sx={{ fontWeight: 'semiBold', mt: openModal ? 0 : 1 }}>
+            {value}
+          </Heading>
+          {valueAfter && (
+            <Card
               sx={{
-                py: 1,
-                px: 3,
-                fontSize: 1,
+                bg: 'success',
+                color: 'onSuccess',
+                fontWeight: 'semiBold',
+                border: 'none',
+                px: 2,
+                py: 0,
+                mt: 2,
+                display: 'inline-block',
                 lineHeight: 'bodyLoose',
-                minWidth: '138px',
-                cursor: 'pointer',
               }}
             >
-              See breakdown
-            </Button>
+              <Box sx={{ px: 1 }}>{valueAfter} After</Box>
+            </Card>
           )}
-        </Flex>
-        <Heading variant="header2" sx={{ fontWeight: 'semiBold', mt: 1 }}>
-          {value}
-        </Heading>
-        <Box sx={{ mt: 5, fontWeight: 'semiBold', minHeight: '1em' }}>{valueBottom}</Box>
-      </Box>
+        </Box>
+        <Box sx={{ fontWeight: 'semiBold', minHeight: '1em' }}>{valueBottom}</Box>
+      </Flex>
     </Card>
   )
 }
 
-function VaultDetailsCardModal({ close, children }: { close: () => void; children: ReactNode }) {
+export function VaultDetailsCardModal({
+  close,
+  children,
+}: {
+  close: () => void
+  children: ReactNode
+}) {
   return (
     <Modal close={close} sx={{ maxWidth: '530px', margin: '0 auto' }}>
       <ModalCloseIcon {...{ close }} />
@@ -119,7 +154,7 @@ function VaultDetailsCardCurrentPriceModal({
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tempor auctor eget magna ac enim
           lorem tincidunt.
         </Text>
-        <Card variant="vaultDetailsModal">
+        <Card variant="vaultDetailsCardModal">
           <Heading variant="header3">{currentPrice}</Heading>
         </Card>
       </Grid>
@@ -129,11 +164,69 @@ function VaultDetailsCardCurrentPriceModal({
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tempor auctor eget magna ac enim
           lorem tincidunt.
         </Text>
-        <Card variant="vaultDetailsModal">
+        <Card variant="vaultDetailsCardModal">
           <Heading variant="header3">{nextPriceWithChange}</Heading>
         </Card>
       </Grid>
     </VaultDetailsCardModal>
+  )
+}
+
+export function VaultDetailsCardMockedModal({ close }: ModalProps) {
+  return (
+    <VaultDetailsCardModal close={close}>
+      <Grid gap={2}>
+        <Heading variant="header3">Mocked Modal</Heading>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tempor auctor eget magna ac enim
+          lorem tincidunt.
+        </Text>
+        <Card variant="vaultDetailsCardModal">
+          <Heading variant="header3">Some Mocked card</Heading>
+        </Card>
+      </Grid>
+    </VaultDetailsCardModal>
+  )
+}
+
+export function VaultDetailsCardLiquidationPrice({
+  liquidationPrice,
+  liquidationPriceCurrentPriceDifference,
+  afterLiquidationPrice,
+}: {
+  liquidationPrice: BigNumber
+  liquidationPriceCurrentPriceDifference?: BigNumber
+  afterLiquidationPrice?: BigNumber
+}) {
+  const openModal = useModal()
+  const { t } = useTranslation()
+
+  return (
+    <VaultDetailsCard
+      title={`${t('system.liquidation-price')}`}
+      value={`$${formatAmount(liquidationPrice, 'USD')}`}
+      valueAfter={
+        afterLiquidationPrice &&
+        !liquidationPrice.eq(afterLiquidationPrice) &&
+        `$${formatAmount(afterLiquidationPrice, 'USD')}`
+      }
+      valueBottom={
+        liquidationPriceCurrentPriceDifference && (
+          <>
+            {formatPercent(liquidationPriceCurrentPriceDifference.times(100).absoluteValue(), {
+              precision: 2,
+              roundMode: BigNumber.ROUND_DOWN,
+            })}
+            <Text as="span" sx={{ color: 'text.subtitle' }}>
+              {` ${
+                liquidationPriceCurrentPriceDifference.lt(zero) ? 'above' : 'below'
+              } current price`}
+            </Text>
+          </>
+        )
+      }
+      openModal={() => openModal(VaultDetailsCardMockedModal)}
+    />
   )
 }
 
@@ -193,18 +286,27 @@ export function VaultDetailsCardCurrentPrice(props: CommonVaultState) {
 export function VaultDetailsCardCollateralLocked({
   depositAmountUSD,
   depositAmount,
+  afterDepositAmountUSD,
   token,
 }: {
   depositAmountUSD?: BigNumber
   depositAmount?: BigNumber
+  afterDepositAmountUSD?: BigNumber
   token: string
 }) {
+  const openModal = useModal()
   const { t } = useTranslation()
 
   return (
     <VaultDetailsCard
       title={`${t('system.collateral-locked')}`}
       value={`$${formatAmount(depositAmountUSD || zero, 'USD')}`}
+      valueAfter={
+        depositAmountUSD &&
+        afterDepositAmountUSD &&
+        !depositAmountUSD.eq(afterDepositAmountUSD) &&
+        `$${formatAmount(afterDepositAmountUSD, 'USD')}`
+      }
       valueBottom={
         <>
           {formatAmount(depositAmount || zero, getToken(token).symbol)}
@@ -213,6 +315,7 @@ export function VaultDetailsCardCollateralLocked({
           </Text>
         </>
       }
+      openModal={() => openModal(VaultDetailsCardMockedModal)}
     />
   )
 }

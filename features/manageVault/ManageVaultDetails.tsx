@@ -1,13 +1,17 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import {
+  getCollRatioColor,
   VaultDetailsCard,
   VaultDetailsCardCollateralLocked,
   VaultDetailsCardCurrentPrice,
+  VaultDetailsCardLiquidationPrice,
+  VaultDetailsCardMockedModal,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { useModal } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
@@ -62,35 +66,25 @@ export function ManageVaultDetails(props: ManageVaultState) {
       liquidationPrice,
       lockedCollateral,
       lockedCollateralUSD,
-      underCollateralized,
-      atRiskLevelDanger,
-      atRiskLevelWarning,
     },
+    liquidationPriceCurrentPriceDifference,
+    afterLiquidationPrice,
+    afterCollateralizationRatio,
+    afterLockedCollateralUSD,
+    collateralizationRatioAtNextPrice,
   } = props
   const { t } = useTranslation()
-  const collRatioColor = collateralizationRatio.isZero()
-    ? 'primary'
-    : atRiskLevelDanger || underCollateralized
-    ? 'onError'
-    : atRiskLevelWarning
-    ? 'onWarning'
-    : 'onSuccess'
+  const openModal = useModal()
+  const collRatioColor = getCollRatioColor(props, collateralizationRatio)
+  const collRatioNextPriceColor = getCollRatioColor(props, collateralizationRatioAtNextPrice)
 
   return (
     <Box>
       <Grid variant="vaultDetailsCardsContainer">
-        <VaultDetailsCard
-          title={`${t('system.liquidation-price')}`}
-          value={`$${formatAmount(liquidationPrice, 'USD')}`}
-          // TO DO liquidationPriceNextPrice!
-          valueBottom={
-            <>
-              ${formatAmount(liquidationPrice, 'USD')}
-              <Text as="span" sx={{ color: 'text.subtitle' }}>
-                {` on next price`}
-              </Text>
-            </>
-          }
+        <VaultDetailsCardLiquidationPrice
+          liquidationPrice={liquidationPrice}
+          liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
+          afterLiquidationPrice={afterLiquidationPrice}
         />
 
         <VaultDetailsCard
@@ -103,11 +97,17 @@ export function ManageVaultDetails(props: ManageVaultState) {
               })}
             </Text>
           }
-          // TO DO collateralizationRatioNextPrice!
+          valueAfter={
+            !collateralizationRatio.eq(afterCollateralizationRatio) &&
+            formatPercent(afterCollateralizationRatio.times(100), {
+              precision: 2,
+              roundMode: BigNumber.ROUND_DOWN,
+            })
+          }
           valueBottom={
             <>
-              <Text as="span" sx={{ color: collRatioColor }}>
-                {formatPercent(collateralizationRatio.times(100), {
+              <Text as="span" sx={{ color: collRatioNextPriceColor }}>
+                {formatPercent(collateralizationRatioAtNextPrice.times(100), {
                   precision: 2,
                   roundMode: BigNumber.ROUND_DOWN,
                 })}
@@ -117,11 +117,13 @@ export function ManageVaultDetails(props: ManageVaultState) {
               </Text>
             </>
           }
+          openModal={() => openModal(VaultDetailsCardMockedModal)}
         />
 
         <VaultDetailsCardCurrentPrice {...props} />
         <VaultDetailsCardCollateralLocked
           depositAmountUSD={lockedCollateralUSD}
+          afterDepositAmountUSD={afterLockedCollateralUSD}
           depositAmount={lockedCollateral}
           token={token}
         />

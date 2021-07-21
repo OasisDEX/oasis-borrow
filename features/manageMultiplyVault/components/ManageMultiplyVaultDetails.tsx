@@ -4,6 +4,7 @@ import {
   VaultDetailsCard,
   VaultDetailsCardCollateralLocked,
   VaultDetailsCardCurrentPrice,
+  VaultDetailsCardLiquidationPrice,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -66,6 +67,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
       atRiskLevelDanger,
       atRiskLevelWarning,
     },
+    liquidationPriceCurrentPriceDifference,
   } = props
   const { t } = useTranslation()
   const collRatioColor = collateralizationRatio.isZero()
@@ -79,18 +81,9 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   return (
     <Box>
       <Grid variant="vaultDetailsCardsContainer">
-        <VaultDetailsCard
-          title={`${t('system.liquidation-price')}`}
-          value={`$${formatAmount(liquidationPrice, 'USD')}`}
-          // TO DO liquidationPriceNextPrice!
-          valueBottom={
-            <>
-              ${formatAmount(liquidationPrice, 'USD')}
-              <Text as="span" sx={{ color: 'text.subtitle' }}>
-                {` on next price`}
-              </Text>
-            </>
-          }
+        <VaultDetailsCardLiquidationPrice
+          liquidationPrice={liquidationPrice}
+          liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
         />
 
         <VaultDetailsCard

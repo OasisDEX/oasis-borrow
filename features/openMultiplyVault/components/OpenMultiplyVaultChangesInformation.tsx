@@ -32,10 +32,11 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
     impact,
     loanFees,
     multiplyFee,
+    inputAmountsEmpty,
   } = props
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
-  return (
+  return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Order information">
       <VaultChangesInformationItem
         label={`Buying ${token}`}
@@ -114,5 +115,5 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
         </Grid>
       )}
     </VaultChangesInformationContainer>
-  )
+  ) : null
 }

@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 
 import { OpenMultiplyVaultState } from './openMultiplyVault'
 
@@ -10,6 +10,7 @@ const MAX_COLL_RATIO = new BigNumber(5)
 
 export interface OpenMultiplyVaultCalculations {
   afterLiquidationPrice: BigNumber
+  afterLiquidationPriceCurrentPriceDifference: BigNumber | undefined
   afterBuyingPower: BigNumber // ??
   afterBuyingPowerUSD: BigNumber // ??
   afterNetValue: BigNumber // ??
@@ -38,6 +39,7 @@ export interface OpenMultiplyVaultCalculations {
 
 export const defaultOpenVaultStateCalculations: OpenMultiplyVaultCalculations = {
   afterLiquidationPrice: zero,
+  afterLiquidationPriceCurrentPriceDifference: undefined,
   afterBuyingPower: zero,
   afterBuyingPowerUSD: zero,
   afterNetValue: zero,
@@ -199,6 +201,10 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
     ? currentCollateralPrice.times(liquidationRatio).div(afterCollateralizationRatio)
     : zero
 
+  const afterLiquidationPriceCurrentPriceDifference = !afterLiquidationPrice.isZero()
+    ? one.minus(afterLiquidationPrice.div(currentCollateralPrice))
+    : undefined
+
   const impact =
     quote?.status === 'SUCCESS'
       ? new BigNumber(quote.daiAmount.minus(quote.collateralAmount)).div(quote.daiAmount)
@@ -220,6 +226,7 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
     afterCollateralBalance,
     afterCollateralizationRatio,
     afterLiquidationPrice,
+    afterLiquidationPriceCurrentPriceDifference,
     buyingCollateral,
     buyingCollateralUSD,
     multiply,

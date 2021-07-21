@@ -25,14 +25,11 @@ function OpenVaultTitle({
   isProxyStage,
   isAllowanceStage,
   token,
-  ilk,
+  stage,
 }: OpenVaultState) {
   const { t } = useTranslation()
   return (
     <Box>
-      {isEditingStage ? (
-        <VaultFormHeaderSwitch href={`/vaults/open-multiply/${ilk}`} title="Switch to Multiply" />
-      ) : null}
       <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
         {isEditingStage
           ? t('vault-form.header.edit')
@@ -40,6 +37,8 @@ function OpenVaultTitle({
           ? t('vault-form.header.proxy')
           : isAllowanceStage
           ? t('vault-form.header.allowance', { token: token.toUpperCase() })
+          : stage === 'openInProgress'
+          ? t('vault-form.header.confirm-in-progress')
           : t('vault-form.header.confirm')}
       </Text>
       <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
@@ -49,6 +48,8 @@ function OpenVaultTitle({
           ? t('vault-form.subtext.proxy')
           : isAllowanceStage
           ? t('vault-form.subtext.allowance')
+          : stage === 'openInProgress'
+          ? t('vault-form.subtext.confirm-in-progress')
           : t('vault-form.subtext.confirm')}
       </Text>
     </Box>
@@ -56,7 +57,7 @@ function OpenVaultTitle({
 }
 
 function OpenVaultForm(props: OpenVaultState) {
-  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
+  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, ilk } = props
 
   return (
     <VaultFormContainer toggleTitle="Open Vault">
@@ -70,6 +71,9 @@ function OpenVaultForm(props: OpenVaultState) {
       {isProxyStage && <VaultProxyStatusCard {...props} />}
       {isAllowanceStage && <VaultAllowanceStatus {...props} />}
       {isOpenStage && <OpenVaultStatus {...props} />}
+      {isEditingStage ? (
+        <VaultFormHeaderSwitch href={`/vaults/open-multiply/${ilk}`} title="Switch to Multiply" />
+      ) : null}
     </VaultFormContainer>
   )
 }

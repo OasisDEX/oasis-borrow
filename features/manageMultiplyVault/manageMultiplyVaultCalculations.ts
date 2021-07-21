@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 
 import { ManageMultiplyVaultState } from './manageMultiplyVault'
 
@@ -37,6 +37,7 @@ export interface ManageVaultCalculations {
 
   multiply: BigNumber
   afterMultiply: BigNumber
+  liquidationPriceCurrentPriceDifference: BigNumber
 }
 
 export const defaultManageVaultCalculations: ManageVaultCalculations = {
@@ -66,6 +67,7 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
 
   multiply: zero,
   afterMultiply: zero,
+  liquidationPriceCurrentPriceDifference: zero,
 }
 
 /*
@@ -297,7 +299,7 @@ export function applyManageVaultCalculations(
     balanceInfo: { collateralBalance, daiBalance },
     ilkData: { liquidationRatio, ilkDebtAvailable },
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
-    vault: { lockedCollateral, debt, debtOffset, lockedCollateralUSD },
+    vault: { lockedCollateral, debt, debtOffset, lockedCollateralUSD, liquidationPrice },
   } = state
 
   const shouldPaybackAll = determineShouldPaybackAll({
@@ -437,6 +439,10 @@ export function applyManageVaultCalculations(
   const multiply = lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
   const afterMultiply = afterLockedCollateralUSD.div(afterLockedCollateralUSD.div(afterDebt))
 
+  const liquidationPriceCurrentPriceDifference = one.minus(
+    liquidationPrice.div(currentCollateralPrice),
+  )
+
   return {
     ...state,
     maxDepositAmount,
@@ -465,5 +471,6 @@ export function applyManageVaultCalculations(
 
     multiply,
     afterMultiply,
+    liquidationPriceCurrentPriceDifference,
   }
 }

@@ -816,6 +816,7 @@ const oasisBaseTheme = {
     bull: '#1AAB9B',
     bear: '#F75524',
     sliderTrackFill: '#9DA3DA',
+    actionInputHover: '#E5E7E8',
   },
   fonts: {
     body: '"Inter", "Helvetica Neue", sans-serif',
@@ -1071,7 +1072,7 @@ const oasisBaseTheme = {
       transform: 'translateY(100%)',
       width: ['250px', '352px'],
     },
-    vaultDetailsModal: {
+    vaultDetailsCardModal: {
       p: 3,
       bg: 'secondaryAlt',
       borderRadius: 'large',
@@ -1256,6 +1257,15 @@ const oasisBaseTheme = {
       borderRadius: 'round',
       lineHeight: 1.25,
       position: 'relative',
+      '&:hover': {
+        bg: 'actionInputHover',
+      },
+    },
+    actionOptionOpened: {
+      variant: 'buttons.actionOption',
+      borderRadius: 'mediumLarge',
+      borderBottomLeftRadius: '0px',
+      borderBottomRightRadius: '0px',
     },
     bean: {
       variant: 'buttons.actionOption',
@@ -1450,6 +1460,10 @@ const oasisBaseTheme = {
       '&:not([disabled]):active::-webkit-slider-thumb': {
         transform: 'scale(1.1)',
       },
+      '&:disabled': {
+        cursor: 'not-allowed',
+        opacity: 0.5,
+      },
     },
   },
   alerts: {
@@ -1478,7 +1492,7 @@ const oasisBaseTheme = {
   },
   grids: {
     vaultContainer: {
-      gap: 5,
+      gap: '48px',
       gridTemplateColumns: ['1fr', '2fr minmax(465px, 1fr)'],
     },
     vaultEditingControllerContainer: {

@@ -5,6 +5,7 @@ import {
   VaultDetailsCard,
   VaultDetailsCardCollateralLocked,
   VaultDetailsCardCurrentPrice,
+  VaultDetailsCardLiquidationPrice,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -59,7 +60,11 @@ export function OpenVaultDetailsSummary({
 }
 
 export function OpenVaultDetails(props: OpenVaultState) {
-  const { afterCollateralizationRatio, afterLiquidationPrice } = props
+  const {
+    afterCollateralizationRatio,
+    afterLiquidationPrice,
+    afterLiquidationPriceCurrentPriceDifference,
+  } = props
   const collRatioColor = getCollRatioColor(props, props.afterCollateralizationRatio)
 
   const { t } = useTranslation()
@@ -67,9 +72,9 @@ export function OpenVaultDetails(props: OpenVaultState) {
   return (
     <>
       <Grid variant="vaultDetailsCardsContainer">
-        <VaultDetailsCard
-          title={`${t('system.liquidation-price')}`}
-          value={`$${formatAmount(afterLiquidationPrice, 'USD')}`}
+        <VaultDetailsCardLiquidationPrice
+          liquidationPrice={afterLiquidationPrice}
+          liquidationPriceCurrentPriceDifference={afterLiquidationPriceCurrentPriceDifference}
         />
 
         <VaultDetailsCard

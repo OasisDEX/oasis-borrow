@@ -75,7 +75,7 @@ export function VaultIlkDetails(props: CommonVaultState & { id?: BigNumber }) {
   return (
     <Box
       sx={{
-        mb: 3,
+        mb: 4,
         fontSize: 1,
         fontWeight: 'semiBold',
         color: 'text.subtitle',
