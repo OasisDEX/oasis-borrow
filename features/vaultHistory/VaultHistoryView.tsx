@@ -61,7 +61,7 @@ function VaultHistoryItem({
         <Flex
           sx={{
             justifyContent: 'space-between',
-            alignItems: ['flex-start', 'center'],
+            alignItems: ['flex-start', null, null, 'center'],
             width: '100%',
           }}
         >
@@ -70,7 +70,7 @@ function VaultHistoryItem({
               justifyContent: 'space-between',
               flex: 1,
               gap: [1, 3],
-              flexDirection: ['column', 'row'],
+              flexDirection: ['column', null, null, 'row'],
             }}
           >
             <Text sx={{ fontWeight: 'semiBold' }}>
@@ -90,7 +90,7 @@ function VaultHistoryItem({
             width="12px"
             height="7px"
             color="text.subtitle"
-            sx={{ position: 'relative', top: ['5px', '0px'] }}
+            sx={{ position: 'relative', top: ['5px', null, null, '0px'] }}
           />
         </Flex>
       </Box>

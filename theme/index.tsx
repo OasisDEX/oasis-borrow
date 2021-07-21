@@ -755,7 +755,7 @@ const customLandingIcons = {
 const oasisBaseTheme = {
   useBorderBox: true,
   useBodyStyles: true,
-  breakpoints: ['40em', '52em', '64em'],
+  breakpoints: ['48em', '56em', '64em'],
   colors: {
     primary: '#25273D',
     primaryAlt: '#D3D4D8',
@@ -1054,6 +1054,7 @@ const oasisBaseTheme = {
       borderRadius: 'mediumLarge',
       p: [0, 3],
       border: ['none', 'lightMuted'],
+      overflowX: ['visible', 'hidden'],
     },
     tooltip: {
       variant: 'cards.primary',
@@ -1492,8 +1493,8 @@ const oasisBaseTheme = {
   },
   grids: {
     vaultContainer: {
-      gap: '48px',
-      gridTemplateColumns: ['1fr', '2fr minmax(465px, 1fr)'],
+      gap: [3, null, 4, '48px'],
+      gridTemplateColumns: ['1fr', '2fr minmax(425px, 1fr)', '2fr minmax(465px, 1fr)'],
     },
     vaultEditingControllerContainer: {
       bg: 'backgroundAlt',
@@ -1501,7 +1502,7 @@ const oasisBaseTheme = {
       gap: '0px',
     },
     vaultDetailsCardsContainer: {
-      gridTemplateColumns: ['1fr', '1fr 1fr'],
+      gridTemplateColumns: ['1fr', null, null, '1fr 1fr'],
       alignSelf: 'flex-start',
       mb: 3,
     },

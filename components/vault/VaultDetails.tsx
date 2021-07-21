@@ -323,7 +323,7 @@ export function VaultDetailsCardCollateralLocked({
 export function VaultDetailsSummaryContainer({ children }: WithChildren) {
   return (
     <Card sx={{ borderRadius: 'large', border: 'lightMuted' }}>
-      <Grid columns={[1, 3]} sx={{ py: 3, px: 2 }} gap={[4, 3]}>
+      <Grid columns={[1, null, null, 3]} sx={{ py: 3, px: 2 }} gap={[4, null, null, 3]}>
         {children}
       </Grid>
     </Card>

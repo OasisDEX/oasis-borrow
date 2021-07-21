@@ -37,10 +37,12 @@ function VaultIlkDetailsItem({
         },
       }}
     >
-      {`${label} `}
-      <Text as="span" sx={{ color: 'primary', ml: 1, mr: 2 }}>
-        {value}
-      </Text>
+      <Box sx={{ flex: 1 }}>
+        {`${label} `}
+        <Text as="span" sx={{ color: 'primary', ml: 1, mr: 2 }}>
+          {value}
+        </Text>
+      </Box>
       <Flex sx={{ position: 'relative' }}>
         <Icon
           name="tooltip"
