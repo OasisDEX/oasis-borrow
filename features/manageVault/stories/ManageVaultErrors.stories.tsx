@@ -180,6 +180,21 @@ export const WithdrawOnVaultUnderDebtFloor = manageVaultStory({
   withdrawAmount: new BigNumber('1'),
 })
 
+export const DepositToVaultUnderDebtFloor = manageVaultStory({
+  title:
+    'Error is shown when a user is trying to deposit more collateral on a vault that is under debt floor. In this case user should first either payback all debt in order to withdraw any collateral or by depositing more collateral in order to generate this additional Dai - which must be done in the same transaction.',
+  vault: {
+    ilk: 'ETH-A',
+    collateral: new BigNumber('6'),
+    debt: new BigNumber(5000),
+  },
+  ilkData: { debtFloor: new BigNumber('10000') },
+  proxyAddress,
+})({
+  depositAmount: new BigNumber('6'),
+  stage: 'collateralEditing',
+})
+
 export const PaybackAmountExceedsDaiBalance = manageVaultStory({
   title: 'Error occurs when user is trying to pay back more DAI than they have in their wallet',
   vault: {
