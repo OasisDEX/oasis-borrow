@@ -31,7 +31,7 @@ export function VaultFormContainer({
         bg: ['background', 'transparent'],
         p: [3, 0],
         pt: [0, 0],
-        overflowX: 'hidden',
+        overflowX: ['hidden', 'visible'],
       }}
     >
       {breakpoint === 0 && vaultFormOpened && (

@@ -1053,6 +1053,7 @@ const oasisBaseTheme = {
       borderRadius: 'mediumLarge',
       p: [0, 3],
       border: ['none', 'lightMuted'],
+      overflowX: ['visible', 'hidden'],
     },
     tooltip: {
       variant: 'cards.primary',
