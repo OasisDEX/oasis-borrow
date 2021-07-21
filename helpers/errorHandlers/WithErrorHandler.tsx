@@ -13,14 +13,18 @@ export function WithErrorHandler({
 }) {
   const openModal = useModal()
   useEffect(() => {
-    if (Array.isArray(error) ? error.some((el) => el !== undefined) : error !== undefined) {
+    if (isArrayOfErrorsWithoutUndefinedElements(error)) {
       openModal(ErrorModal, { error: error.toString() })
     }
   }, [error])
 
-  if (Array.isArray(error) ? error.some((el) => el !== undefined) : error !== undefined) {
+  if (isArrayOfErrorsWithoutUndefinedElements(error)) {
     return null
   } else {
     return <>{children}</>
+  }
+
+  function isArrayOfErrorsWithoutUndefinedElements(error: any) {
+    return Array.isArray(error) ? error.some((el) => el !== undefined) : error !== undefined
   }
 }
