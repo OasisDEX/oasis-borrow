@@ -2,15 +2,7 @@ import BigNumber from 'bignumber.js'
 import { Context, ContextConnected } from 'blockchain/network'
 import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
-import {
-  catchError,
-  distinctUntilChanged,
-  filter,
-  map,
-  shareReplay,
-  switchMap,
-  tap,
-} from 'rxjs/operators'
+import { catchError, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 
 import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 
@@ -55,13 +47,17 @@ function getQuote$(
   const toTokenAddress = action === 'BUY_COLLATERAL' ? collateralAddress : daiAddress
 
   //TODO: set proper precision depending on token
-  return ajax(
-    `${API_ENDPOINT}?fromTokenAddress=${fromTokenAddress}&toTokenAddress=${toTokenAddress}&amount=${amountToWei(
-      amount,
-    ).toFixed(0)}&fromAddress=${account}&slippage=${slippage
-      .times(100)
-      .toString()}&disableEstimate=true&allowPartial=false`,
-  ).pipe(
+  const searchParams = new URLSearchParams({
+    fromTokenAddress,
+    toTokenAddress,
+    amount: amountToWei(amount).toFixed(0),
+    fromAddress: account,
+    slippage: slippage.times(100).toString(),
+    disableEstimate: 'true',
+    allowPartial: 'false',
+  })
+
+  return ajax(`${API_ENDPOINT}?${searchParams.toString()}`).pipe(
     tap((response) => {
       if (response.status !== 200) throw new Error(response.responseText)
     }),
@@ -98,14 +94,11 @@ export function createExchangeQuote$(
   return context$.pipe(
     filter((ctx): ctx is ContextConnected => ctx.status === 'connected'),
     switchMap((context) => {
-      const daiAddress = context.tokens['DAI'].address
-      // TODO: this should not be necessary any way we need WETH address
-      const collateralAddress =
-        token === 'ETH'
-          ? '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
-          : context.tokens[token].address
-      const ExchangeAddress = '0x0E801D84Fa97b50751Dbf25036d067dCf18858bF'
-      return getQuote$(daiAddress, collateralAddress, ExchangeAddress, amount, slippage, action)
+      const { tokens, exchange } = context
+      const daiAddress = tokens['DAI'].address
+      const collateralAddress = tokens[token].address
+
+      return getQuote$(daiAddress, collateralAddress, exchange.address, amount, slippage, action)
     }),
     distinctUntilChanged((s1, s2) => {
       return JSON.stringify(s1) === JSON.stringify(s2)
