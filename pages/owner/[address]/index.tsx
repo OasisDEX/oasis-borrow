@@ -3,6 +3,7 @@ import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { VaultsOverviewView } from 'features/vaultsOverview/VaultsOverviewView'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -17,14 +18,13 @@ function Summary({ address }: { address: string }) {
   const contextWithError = useObservableWithError(context$)
 
   return (
-    <WithLoadingIndicator
-      value={[vaultsOverviewWithError.value, contextWithError.value]}
-      error={[vaultsOverviewWithError.error, contextWithError.error]}
-    >
-      {([vaultsOverview, context]) => (
-        <VaultsOverviewView vaultsOverview={vaultsOverview} context={context} address={address} />
-      )}
-    </WithLoadingIndicator>
+    <WithErrorHandler error={[vaultsOverviewWithError.error, contextWithError.error]}>
+      <WithLoadingIndicator value={[vaultsOverviewWithError.value, contextWithError.value]}>
+        {([vaultsOverview, context]) => (
+          <VaultsOverviewView vaultsOverview={vaultsOverview} context={context} address={address} />
+        )}
+      </WithLoadingIndicator>
+    </WithErrorHandler>
   )
 }
 

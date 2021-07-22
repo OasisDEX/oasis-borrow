@@ -5,6 +5,7 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
@@ -103,7 +104,9 @@ export function ManageVaultContainer(props: ManageVaultState) {
 export function ManageVaultView({ id }: { id: BigNumber }) {
   const { manageVault$ } = useAppContext()
   const manageVaultWithId$ = manageVault$(id)
-  const manageVaultWithError = useObservableWithError(manageVaultWithId$)
+  const { value: manageVault, error: manageVaultWithError } = useObservableWithError(
+    manageVaultWithId$,
+  )
 
   useEffect(() => {
     const subscription = createManageVaultAnalytics$(manageVaultWithId$, trackingEvents).subscribe()
@@ -114,28 +117,30 @@ export function ManageVaultView({ id }: { id: BigNumber }) {
   }, [])
 
   return (
-    <WithLoadingIndicator
-      {...manageVaultWithError}
-      customLoader={
-        <Box
-          sx={{
-            position: 'relative',
-            height: 600,
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <AppSpinner sx={{ mx: 'auto', display: 'block' }} variant="styles.spinner.extraLarge" />
-        </Box>
-      }
-    >
-      {(manageVault) => (
-        <Grid sx={{ width: '100%', zIndex: 1, ...slideInAnimation, position: 'relative' }}>
-          <ManageVaultContainer {...manageVault} />
-        </Grid>
-      )}
-    </WithLoadingIndicator>
+    <WithErrorHandler error={manageVaultWithError}>
+      <WithLoadingIndicator
+        value={manageVault}
+        customLoader={
+          <Box
+            sx={{
+              position: 'relative',
+              height: 600,
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <AppSpinner sx={{ mx: 'auto', display: 'block' }} variant="styles.spinner.extraLarge" />
+          </Box>
+        }
+      >
+        {(manageVault) => (
+          <Grid sx={{ width: '100%', zIndex: 1, ...slideInAnimation, position: 'relative' }}>
+            <ManageVaultContainer {...manageVault} />
+          </Grid>
+        )}
+      </WithLoadingIndicator>
+    </WithErrorHandler>
   )
 }

@@ -106,6 +106,8 @@
   "erc20-disapprove-description-recent-failed": "Failed to lock transfer of {{ token }}",
   "erc20-disapprove-notification": "Locking {{ token }}",
   "erc20-disapprove-notification-past": "Locked {{ token }}",
+  "error-message": "Something went wrong",
+  "error-button": "See details",
   "create-ds-proxy-description-pending": "Creating proxy",
   "create-ds-proxy-description-recent": "Created proxy",
   "create-ds-proxy-description-recent-failed": "Failed to create proxy",

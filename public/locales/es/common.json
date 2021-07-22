@@ -164,6 +164,8 @@
   "eth-send-description-recent-failed": "Fallo al enviar {{ amount }} ETH",
   "eth-send-notification": "Enviando ETH",
   "eth-send-notification-past": "Enviado ETH",
+  "error-message": "Algo salió mal",
+  "error-button": "Ver detalles",
   "event": {
     "activity": "Actividad",
     "deposit": "Depositado",

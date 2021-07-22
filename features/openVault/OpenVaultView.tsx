@@ -3,6 +3,7 @@ import { trackingEvents } from 'analytics/analytics'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
@@ -114,7 +115,7 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
   const { openVault$, accountData$ } = useAppContext()
   const openVaultWithIlk$ = openVault$(ilk)
 
-  const openVaultWithError = useObservableWithError(openVault$(ilk))
+  const { value: openVault, error: openVaultWithError } = useObservableWithError(openVault$(ilk))
 
   useEffect(() => {
     const subscription = createOpenVaultAnalytics$(
@@ -130,12 +131,11 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
 
   return (
     <Grid sx={{ width: '100%', zIndex: 1 }}>
-      <WithLoadingIndicator
-        {...openVaultWithError}
-        customError={<Box>{openVaultWithError.error?.message}</Box>}
-      >
-        {(openVault) => <OpenVaultContainer {...openVault} />}
-      </WithLoadingIndicator>
+      <WithErrorHandler error={openVaultWithError}>
+        <WithLoadingIndicator value={openVault}>
+          {(openVault) => <OpenVaultContainer {...openVault} />}
+        </WithLoadingIndicator>
+      </WithErrorHandler>
     </Grid>
   )
 }

@@ -146,6 +146,8 @@
   "eth-send-notification": "Enviando ETH",
   "eth-send-notification-past": "ETH enviado",
   "exchange-rate": "Taxa de câmbio",
+  "error-message": "Algo deu errado",
+  "error-button": "Veja detalhes",
   "failed": "Falhou",
   "gas-estimation-error": "Erro",
   "get-dai": "Obtenha Dai",
