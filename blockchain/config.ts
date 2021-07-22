@@ -20,6 +20,7 @@ import * as mcdJug from './abi/mcd-jug.json'
 import * as mcdPot from './abi/mcd-pot.json'
 import * as mcdSpot from './abi/mcd-spot.json'
 import * as otcSupport from './abi/otc-support-methods.json'
+import * as exchange from './abi/exchange.json'
 import * as vat from './abi/vat.json'
 import {
   getCollateralJoinContracts,
@@ -75,8 +76,9 @@ const protoMain = {
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
-    '0x4826533B4897376654Bb4d4AD88B7faFD0C98528',
+    '0x99bbA657f2BbC93c02D617f8bA121cB8Fc104Acf',
   ), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  exchange: contractDesc(exchange, '0x0E801D84Fa97b50751Dbf25036d067dCf18858b'), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
   etherscan: {
     url: 'https://etherscan.io',
     apiUrl: 'https://api.etherscan.io/api',
@@ -133,8 +135,9 @@ const kovan: NetworkConfig = {
   dssProxyActions: contractDesc(dssProxyActions, kovanAddresses.PROXY_ACTIONS),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
-    '0x4826533B4897376654Bb4d4AD88B7faFD0C98528',
+    '0x99bbA657f2BbC93c02D617f8bA121cB8Fc104Acf',
   ), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  exchange: contractDesc(exchange, '0x0E801D84Fa97b50751Dbf25036d067dCf18858b'), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
   etherscan: {
     url: 'https://kovan.etherscan.io',
     apiUrl: 'https://api-kovan.etherscan.io/api',
