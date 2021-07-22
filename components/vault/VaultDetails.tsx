@@ -1,3 +1,4 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Modal, ModalCloseIcon } from 'components/Modal'
@@ -7,7 +8,7 @@ import { CommonVaultState, WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import React, { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Button, Card, Flex, Grid, Heading, Text } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
 export function getCollRatioColor(
   { inputAmountsEmpty, ilkData }: CommonVaultState,
@@ -65,7 +66,27 @@ export function VaultDetailsCard({
   openModal?: () => void
 }) {
   return (
-    <Card sx={{ border: 'lightMuted', overflow: 'hidden', minHeight: '194px', display: 'flex' }}>
+    <Card
+      onClick={openModal}
+      sx={{
+        border: 'lightMuted',
+        overflow: 'hidden',
+        minHeight: '194px',
+        display: 'flex',
+        svg: {
+          color: 'text.subtitle',
+        },
+        ...(openModal && {
+          cursor: 'pointer',
+          '&:hover': {
+            boxShadow: 'vaultDetailsCard',
+            svg: {
+              color: 'primary',
+            },
+          },
+        }),
+      }}
+    >
       <Flex
         p={2}
         sx={{
@@ -80,22 +101,7 @@ export function VaultDetailsCard({
             <Text variant="subheader" sx={{ fontWeight: 'semiBold', fontSize: 'inherit' }}>
               {title}
             </Text>
-            {openModal && (
-              <Button
-                variant="secondary"
-                onClick={openModal}
-                sx={{
-                  py: 1,
-                  px: 3,
-                  fontSize: 1,
-                  lineHeight: 'bodyLoose',
-                  minWidth: '138px',
-                  cursor: 'pointer',
-                }}
-              >
-                See breakdown
-              </Button>
-            )}
+            {openModal && <Icon name="question_o" size="auto" width="20px" height="20px" />}
           </Flex>
           <Heading variant="header2" sx={{ fontWeight: 'semiBold', mt: openModal ? 0 : 1 }}>
             {value}

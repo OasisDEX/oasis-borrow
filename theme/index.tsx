@@ -960,6 +960,7 @@ const oasisBaseTheme = {
     vaultHistoryItem: '0px 1px 4px rgba(37, 39, 61, 0.12)',
     tooltipVaultHeader: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     buttonMenu: '0px 0px 8px rgba(0, 0, 0, 0.1)',
+    vaultDetailsCard: '0px 1px 8px rgba(37, 39, 61, 0.1)',
   },
   gradients: {
     app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
@@ -1297,10 +1298,10 @@ const oasisBaseTheme = {
       fontWeight: 'semiBold',
       bg: 'transparent',
       color: 'text.subtitle',
-      cursor: 'ponter',
+      cursor: 'pointer',
       transition: TRANSITIONS.global,
       '&:hover': {
-        variant: 'buttons.vaultEditingController',
+        color: 'primary',
       },
     },
     mobileBottomMenu: {
@@ -1495,6 +1496,7 @@ const oasisBaseTheme = {
     vaultContainer: {
       gap: [3, null, 4, '48px'],
       gridTemplateColumns: ['1fr', '2fr minmax(425px, 1fr)', '2fr minmax(465px, 1fr)'],
+      alignItems: 'flex-start',
     },
     vaultEditingControllerContainer: {
       bg: 'backgroundAlt',

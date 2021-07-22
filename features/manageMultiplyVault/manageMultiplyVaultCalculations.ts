@@ -37,7 +37,7 @@ export interface ManageVaultCalculations {
 
   multiply: BigNumber
   afterMultiply: BigNumber
-  liquidationPriceCurrentPriceDifference: BigNumber
+  liquidationPriceCurrentPriceDifference: BigNumber | undefined
 }
 
 export const defaultManageVaultCalculations: ManageVaultCalculations = {
@@ -67,7 +67,7 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
 
   multiply: zero,
   afterMultiply: zero,
-  liquidationPriceCurrentPriceDifference: zero,
+  liquidationPriceCurrentPriceDifference: undefined,
 }
 
 /*
@@ -439,9 +439,9 @@ export function applyManageVaultCalculations(
   const multiply = lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
   const afterMultiply = afterLockedCollateralUSD.div(afterLockedCollateralUSD.div(afterDebt))
 
-  const liquidationPriceCurrentPriceDifference = one.minus(
-    liquidationPrice.div(currentCollateralPrice),
-  )
+  const liquidationPriceCurrentPriceDifference = !liquidationPrice.isZero()
+    ? one.minus(liquidationPrice.div(currentCollateralPrice))
+    : undefined
 
   return {
     ...state,

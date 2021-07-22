@@ -36,7 +36,7 @@ export interface ManageVaultCalculations {
   afterLockedCollateralUSD: BigNumber
   afterCollateralBalance: BigNumber
   shouldPaybackAll: boolean
-  liquidationPriceCurrentPriceDifference: BigNumber
+  liquidationPriceCurrentPriceDifference: BigNumber | undefined
 }
 
 export const defaultManageVaultCalculations: ManageVaultCalculations = {
@@ -65,7 +65,7 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
   daiYieldFromTotalCollateral: zero,
   daiYieldFromTotalCollateralAtNextPrice: zero,
   shouldPaybackAll: false,
-  liquidationPriceCurrentPriceDifference: zero,
+  liquidationPriceCurrentPriceDifference: undefined,
 }
 
 /*
@@ -429,9 +429,9 @@ export function applyManageVaultCalculations(state: ManageVaultState): ManageVau
     ? collateralBalance.plus(withdrawAmount)
     : collateralBalance
 
-  const liquidationPriceCurrentPriceDifference = one.minus(
-    liquidationPrice.div(currentCollateralPrice),
-  )
+  const liquidationPriceCurrentPriceDifference = !liquidationPrice.isZero()
+    ? one.minus(liquidationPrice.div(currentCollateralPrice))
+    : undefined
 
   const collateralizationRatioAtNextPrice =
     lockedCollateral.gt(zero) && debt.gt(zero)
