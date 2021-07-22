@@ -6,7 +6,7 @@ import { MultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxHelpers } from 'components/AppContext'
 import { transactionToX } from 'helpers/form'
-import { one, zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { filter, switchMap } from 'rxjs/operators'
 import Web3 from 'web3'
@@ -275,7 +275,7 @@ export function multiplyVault(
     account,
   }: OpenMultiplyVaultState,
 ) {
-  sendWithGasEstimation(openMultiplyVault, {
+  return send(openMultiplyVault, {
     kind: TxMetaKind.multiply,
     depositCollateral: depositAmount || zero,
     userAddress: account,

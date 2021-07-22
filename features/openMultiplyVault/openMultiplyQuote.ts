@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { EMPTY, Observable } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, take } from 'rxjs/operators'
@@ -31,6 +30,8 @@ export function applyExchange(change: OpenMultiplyVaultChange, state: OpenMultip
     }
   }
 
+  // TODO: implement QuoteProbe
+
   if (change.kind === 'quoteReset') {
     const { quote: _quote, ...rest } = state
     return rest
@@ -58,28 +59,20 @@ export function createExchangeChange$(
 ) {
   return state$.pipe(
     filter((state) => state.depositAmount !== undefined),
-    distinctUntilChanged(
-      (s1, s2) =>
-        s1.token === s2.token &&
-        s1.slippage.eq(s2.slippage) &&
-        !!s1.depositAmount?.eq(s2.depositAmount || ''),
-    ),
+    distinctUntilChanged((s1, s2) => !!s1.depositAmount?.eq(s2.depositAmount || '')),
     debounceTime(500),
-    switchMap((state) =>
-      every5Seconds$.pipe(
-        switchMap(() => {
-          if (state.buyingCollateral.gt(0) && state.quote?.status === 'SUCCESS') {
-            return exchangeQuote$(
-              state.token,
-              state.slippage,
-              state.buyingCollateral.times(state.quote.tokenPrice),
-              'BUY_COLLATERAL',
-            )
-          }
-          return EMPTY
-        }),
-      ),
-    ),
+    switchMap((state) => {
+      if (state.buyingCollateral.gt(0) && state.quote?.status === 'SUCCESS') {
+        return exchangeQuote$(
+          state.token,
+          state.slippage,
+          state.afterOutstandingDebt,
+          'BUY_COLLATERAL',
+        )
+      }
+      return EMPTY
+    }),
+    map(quoteToChange),
   )
 }
 
@@ -93,6 +86,7 @@ export function createInitialQuoteChange(
   token: string,
 ) {
   return exchangeQuote$(token, SLIPPAGE, new BigNumber(1), 'BUY_COLLATERAL').pipe(
+    // TODO: map to quoteProbe
     map(quoteToChange),
     take(1),
   )

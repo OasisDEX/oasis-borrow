@@ -1,4 +1,3 @@
-import { amountFromWei, amountToWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { Context, ContextConnected } from 'blockchain/network'
 import { Observable, of } from 'rxjs'
@@ -12,6 +11,8 @@ import {
   switchMap,
   tap,
 } from 'rxjs/operators'
+
+import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 
 const API_ENDPOINT = `https://api.1inch.exchange/v3.0/1/swap`
 
@@ -46,19 +47,20 @@ function getQuote$(
   daiAddress: string,
   collateralAddress: string,
   account: string,
-  amount: BigNumber, // This is always the amount of tokens we want to exchange from
+  amount: BigNumber, // This is always the receiveAtLeast amount of tokens we want to exchange from
   slippage: BigNumber,
   action: ExchangeAction,
 ) {
   const fromTokenAddress = action === 'BUY_COLLATERAL' ? daiAddress : collateralAddress
   const toTokenAddress = action === 'BUY_COLLATERAL' ? collateralAddress : daiAddress
 
+  //TODO: set proper precision depending on token
   return ajax(
     `${API_ENDPOINT}?fromTokenAddress=${fromTokenAddress}&toTokenAddress=${toTokenAddress}&amount=${amountToWei(
-      new BigNumber(amount.toFixed(18)),
-    ).toString()}&fromAddress=${account}&slippage=${slippage
+      amount,
+    ).toFixed(0)}&fromAddress=${account}&slippage=${slippage
       .times(100)
-      .toString()}&disableEstimate=true`,
+      .toString()}&disableEstimate=true&allowPartial=false`,
   ).pipe(
     tap((response) => {
       if (response.status !== 200) throw new Error(response.responseText)
@@ -81,7 +83,6 @@ function getQuote$(
       tx,
     })),
     catchError(() => of({ status: 'ERROR' as const })),
-    shareReplay(1),
   )
 }
 
@@ -98,11 +99,13 @@ export function createExchangeQuote$(
     filter((ctx): ctx is ContextConnected => ctx.status === 'connected'),
     switchMap((context) => {
       const daiAddress = context.tokens['DAI'].address
+      // TODO: this should not be necessary any way we need WETH address
       const collateralAddress =
         token === 'ETH'
-          ? '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+          ? '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
           : context.tokens[token].address
-      return getQuote$(daiAddress, collateralAddress, context.account, amount, slippage, action)
+      const ExchangeAddress = '0x0E801D84Fa97b50751Dbf25036d067dCf18858bF'
+      return getQuote$(daiAddress, collateralAddress, ExchangeAddress, amount, slippage, action)
     }),
     distinctUntilChanged((s1, s2) => {
       return JSON.stringify(s1) === JSON.stringify(s2)
