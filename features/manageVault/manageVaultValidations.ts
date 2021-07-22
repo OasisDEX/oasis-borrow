@@ -21,6 +21,7 @@ export type ManageVaultErrorMessage =
   | 'depositingAllEthBalance'
   | 'ledgerWalletContractDataDisabled'
   | 'withdrawCollateralOnVaultUnderDebtFloor'
+  | 'depositCollateralOnVaultUnderDebtFloor'
 
 export type ManageVaultWarningMessage =
   | 'potentialGenerateAmountLessThanDebtFloor'
@@ -50,6 +51,7 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
     paybackAmountExceedsDaiBalance,
     paybackAmountExceedsVaultDebt,
     withdrawCollateralOnVaultUnderDebtFloor,
+    depositCollateralOnVaultUnderDebtFloor,
   } = state
 
   const errorMessages: ManageVaultErrorMessage[] = []
@@ -101,6 +103,9 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
 
     if (withdrawCollateralOnVaultUnderDebtFloor) {
       errorMessages.push('withdrawCollateralOnVaultUnderDebtFloor')
+    }
+    if (depositCollateralOnVaultUnderDebtFloor) {
+      errorMessages.push('depositCollateralOnVaultUnderDebtFloor')
     }
   }
 
