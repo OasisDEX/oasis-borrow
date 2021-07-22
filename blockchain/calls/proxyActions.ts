@@ -8,11 +8,9 @@ import { zero } from 'helpers/zero'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-actions'
-import multiplyProxyActions from 'blockchain/abi/multiply-proxy-actions.json'
 import Web3 from 'web3'
 
 import { TxMetaKind } from './txMeta'
-import { Quote } from 'features/exchange/exchange'
 
 export type WithdrawAndPaybackData = {
   kind: TxMetaKind.withdrawAndPayback
@@ -278,8 +276,6 @@ export const open: TransactionDef<OpenData> = {
     token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
 }
 
-// todo
-
 export type MultiplyData = {
   kind: TxMetaKind.multiply
   token: string
@@ -296,10 +292,11 @@ export type MultiplyData = {
 }
 function getMultiplyCallData(data: MultiplyData, context: ContextConnected) {
   const { contract, joins, mcdJug, dssCdpManager, dssMultiplyProxyActions, tokens } = context
-  const multiplyProxyActionsAddress = '0x4826533B4897376654Bb4d4AD88B7faFD0C98528'
   const AAVELendingPool = '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5'
   const OAZO_WALLET = '0x34314adbfBb5d239bb67f0265c9c45EB8b834412'
-  const EXCHANGE_WRAPPER = '0x9d4454b023096f34b160d6b654540c56a1f81688'
+
+  const multiplyProxyActionsAddress = '0x99bbA657f2BbC93c02D617f8bA121cB8Fc104Acf'
+  const EXCHANGE_WRAPPER = '0x0E801D84Fa97b50751Dbf25036d067dCf18858bF'
   const DSProxy = '0xc77ce2b678bfcc5ab898822397ed4fb359862ba6'
   const MCDView = '0x5eb3bc0a489c5a8288765d2336659ebca68fcd00'
   const MultiplyProxyActions = '0x8f86403a4de0bb5791fa46b8e795c547942fe4cf'
@@ -308,9 +305,9 @@ function getMultiplyCallData(data: MultiplyData, context: ContextConnected) {
     {
       fromTokenAddress: tokens['DAI'].address, //fromTokenAddress,
       toTokenAddress: tokens[data.token].address, // toTokenAddress
-      fromTokenAmount: amountToWei(zero, 'DAI').toFixed(0), // fromTokenAmount
-      toTokenAmount: amountToWei(zero, data.token).toFixed(0), // toTokenAmount
-      minToTokenAmount: amountToWei(zero, data.token).toFixed(0), // minToTokenAmount
+      fromTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0), // fromTokenAmount
+      toTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0), // toTokenAmount
+      minToTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0), // minToTokenAmount
       exchangeAddress: data.exchangeAddress, // exchangeAddress
       _exchangeCalldata: data.exchangeData, // _exchangeCalldata
     },
@@ -329,7 +326,7 @@ function getMultiplyCallData(data: MultiplyData, context: ContextConnected) {
     {
       jug: mcdJug.address, // jug
       manager: dssCdpManager.address, // manager
-      multiplyProxyActions: MultiplyProxyActions, //dssMultiplyProxyActions.address, // multiplyProxyActions,
+      multiplyProxyActions: multiplyProxyActionsAddress, //dssMultiplyProxyActions.address, // multiplyProxyActions,
       aaveLendingPoolProvider: AAVELendingPool, // aaveLendingPoolProvider: ,
       feeRecepient: OAZO_WALLET, // feeRecepient: ,
       exchange: EXCHANGE_WRAPPER, // exchange: exchangeInstanceAddress,
@@ -342,8 +339,9 @@ export const openMultiplyVault: TransactionDef<MultiplyData> = {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => {
+    const multiplyProxyActionsAddress = '0x99bbA657f2BbC93c02D617f8bA121cB8Fc104Acf'
     const { dssProxyActions } = context
-    return [dssProxyActions.address, getMultiplyCallData(data, context).encodeABI()]
+    return [multiplyProxyActionsAddress, getMultiplyCallData(data, context).encodeABI()]
   },
   options: ({ token, depositCollateral }) =>
     token === 'ETH' ? { value: amountToWei(depositCollateral, 'ETH').toString() } : {},
