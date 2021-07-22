@@ -506,7 +506,7 @@
   "learn-more-link": "https://ethereum.org/es/wallets/find-wallet/",
   "seo": {
     "default": {
-      "description": "Generate Dai using crypto as your collateral",
+      "description": "Borrow Dai, a USD pegged Stablecoin, using crypto as your collateral",
       "title": "Oasis.app"
     },
     "support": {
