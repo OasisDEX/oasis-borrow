@@ -195,6 +195,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     maxWithdrawAmountAtNextPrice,
     maxGenerateAmountAtCurrentPrice,
     maxGenerateAmountAtNextPrice,
+    afterDebt,
   } = state
 
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
@@ -338,7 +339,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     vault.debt.lt(ilkData.debtFloor) &&
     depositAmount !== undefined &&
     depositAmount.lt(ilkData.debtFloor) &&
-    (paybackAmount === undefined || paybackAmount.lt(vault.debt))
+    afterDebt.lt(ilkData.debtFloor)
 
   const editingProgressionDisabled =
     isEditingStage &&
