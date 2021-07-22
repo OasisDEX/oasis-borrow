@@ -308,8 +308,8 @@
       "title": "Dai"
     },
     "default": {
-      "description": "Generate Dai using crypto as your collateral",
-      "title": "Oasis"
+      "description": "Borrow Dai, a USD pegged Stablecoin, using crypto as your collateral",
+      "title": "Oasis.app"
     },
     "latam500": {
       "description": "通过 Oasis.app 上的 Latamex 购买 Dai。每月可获得价值 10 美元的 ETH，为期三个月。",
