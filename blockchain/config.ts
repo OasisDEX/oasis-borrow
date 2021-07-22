@@ -79,6 +79,8 @@ const protoMain = {
     '0x99bbA657f2BbC93c02D617f8bA121cB8Fc104Acf',
   ), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
   exchange: contractDesc(exchange, '0x0E801D84Fa97b50751Dbf25036d067dCf18858b'), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  feeRecipient: '0x34314adbfBb5d239bb67f0265c9c45EB8b834412', // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  aaveLendingPool: '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5',
   etherscan: {
     url: 'https://etherscan.io',
     apiUrl: 'https://api.etherscan.io/api',
@@ -138,6 +140,8 @@ const kovan: NetworkConfig = {
     '0x99bbA657f2BbC93c02D617f8bA121cB8Fc104Acf',
   ), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
   exchange: contractDesc(exchange, '0x0E801D84Fa97b50751Dbf25036d067dCf18858b'), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  feeRecipient: '0x34314adbfBb5d239bb67f0265c9c45EB8b834412', // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  aaveLendingPool: '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5',
   etherscan: {
     url: 'https://kovan.etherscan.io',
     apiUrl: 'https://api-kovan.etherscan.io/api',
