@@ -146,6 +146,8 @@
   "eth-send-notification": "Enviando ETH",
   "eth-send-notification-past": "ETH enviado",
   "exchange-rate": "Taxa de câmbio",
+  "error-message": "Algo deu errado",
+  "error-button": "Veja detalhes",
   "failed": "Falhou",
   "gas-estimation-error": "Erro",
   "get-dai": "Obtenha Dai",
@@ -351,8 +353,8 @@
   "you-are-sending": "Você esta enviando",
   "seo": {
     "default": {
-      "description": "Generate Dai using crypto as your collateral",
-      "title": "Oasis"
+      "description": "Borrow Dai, a USD pegged Stablecoin, using crypto as your collateral",
+      "title": "Oasis.app"
     },
     "support": {
       "title": "FAQs",

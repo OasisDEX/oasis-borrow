@@ -106,6 +106,8 @@
   "erc20-disapprove-description-recent-failed": "Failed to lock transfer of {{ token }}",
   "erc20-disapprove-notification": "Locking {{ token }}",
   "erc20-disapprove-notification-past": "Locked {{ token }}",
+  "error-message": "Something went wrong",
+  "error-button": "See details",
   "create-ds-proxy-description-pending": "Creating proxy",
   "create-ds-proxy-description-recent": "Created proxy",
   "create-ds-proxy-description-recent-failed": "Failed to create proxy",
@@ -225,7 +227,7 @@
     "action": "Manage Vault",
     "warnings": {
       "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
-      "debt-is-less-than-debt-floor": "Your current Dai debt is below the minimum of {{debtFloor}}. You cannot generate more Dai unless you go over this minimum",
+      "debt-is-less-than-debt-floor": "Your current Dai debt is below the minimum of {{debtFloor}}. Because of this some Vault actions are not possible. Please generate more Dai to take you above the minimum or payback all your debt",
       "vault-will-be-at-risk-level-danger": "With this action your vault will be at a collateralization ratio very close to the minimum required",
       "vault-will-be-at-risk-level-danger-at-next-price": "With this action your vault will be at a collateralization ratio very close to the minimum required at the next price update",
       "vault-will-be-at-risk-level-warning": "With this action your vault will be at a collateralization ratio near the minimum required",
@@ -248,7 +250,8 @@
       "custom-dai-allowance-amount-less-than-payback-amount": "You need at least an allowance of your payback amount to continue",
       "depositing-all-eth-balance": "You need some ETH to pay for the gas fees. Lower your deposit amount",
       "ledger-enable-contract-data": "Please enable Contract data on the Ledgers Ethereum app Settings",
-      "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, payback your debt fully. Learn more about the Minimum Vault Debt <0>here</0>."
+      "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, payback your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
+      "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
     }
   },
   "max": "Max",
@@ -334,8 +337,8 @@
       "title": "Dai"
     },
     "default": {
-      "description": "Generate Dai using crypto as your collateral",
-      "title": "Oasis"
+      "description": "Borrow Dai, a USD pegged Stablecoin, using crypto as your collateral",
+      "title": "Oasis.app"
     },
 
     "support": {
