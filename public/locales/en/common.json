@@ -337,8 +337,8 @@
       "title": "Dai"
     },
     "default": {
-      "description": "Generate Dai using crypto as your collateral",
-      "title": "Oasis"
+      "description": "Borrow Dai, a USD pegged Stablecoin, using crypto as your collateral",
+      "title": "Oasis.app"
     },
 
     "support": {
