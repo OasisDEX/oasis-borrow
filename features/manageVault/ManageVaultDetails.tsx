@@ -82,9 +82,11 @@ export function ManageVaultDetails(props: ManageVaultState) {
     <Box>
       <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCardLiquidationPrice
-          liquidationPrice={liquidationPrice}
-          liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
-          afterLiquidationPrice={afterLiquidationPrice}
+          {...{
+            liquidationPrice,
+            liquidationPriceCurrentPriceDifference,
+            afterLiquidationPrice,
+          }}
         />
 
         <VaultDetailsCard

@@ -62,39 +62,61 @@ export function OpenVaultDetailsSummary({
 }
 
 export function OpenVaultDetails(props: OpenVaultState) {
-  const {
-    afterCollateralizationRatio,
-    afterLiquidationPrice,
-    afterLiquidationPriceCurrentPriceDifference,
-  } = props
+  const { afterCollateralizationRatio, afterLiquidationPrice, token } = props
   const { t } = useTranslation()
   const openModal = useModal()
 
-  const collRatioColor = getCollRatioColor(props, props.afterCollateralizationRatio)
+  // initial values only to show in UI as starting parameters
+  const liquidationPrice = zero
+  const liquidationPriceCurrentPriceDifference = undefined
+  const collateralizationRatio = zero
+
+  const afterDepositAmountUSD = props.depositAmountUSD
+  const depositAmountUSD = zero
+  const depositAmount = zero
+
+  const collRatioColor = getCollRatioColor(props, collateralizationRatio)
 
   return (
     <>
       <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCardLiquidationPrice
-          liquidationPrice={afterLiquidationPrice}
-          liquidationPriceCurrentPriceDifference={afterLiquidationPriceCurrentPriceDifference}
+          {...{
+            liquidationPrice,
+            liquidationPriceCurrentPriceDifference,
+            afterLiquidationPrice,
+          }}
         />
 
         <VaultDetailsCard
           title={`${t('system.collateralization-ratio')}`}
           value={
             <Text as="span" sx={{ color: collRatioColor }}>
-              {formatPercent(afterCollateralizationRatio.times(100), {
+              {formatPercent(collateralizationRatio.times(100), {
                 precision: 2,
                 roundMode: BigNumber.ROUND_DOWN,
               })}
             </Text>
           }
+          valueAfter={
+            !collateralizationRatio.eq(afterCollateralizationRatio) &&
+            formatPercent(afterCollateralizationRatio.times(100), {
+              precision: 2,
+              roundMode: BigNumber.ROUND_DOWN,
+            })
+          }
           openModal={() => openModal(VaultDetailsCardMockedModal)}
         />
 
         <VaultDetailsCardCurrentPrice {...props} />
-        <VaultDetailsCardCollateralLocked {...props} />
+        <VaultDetailsCardCollateralLocked
+          {...{
+            depositAmount,
+            depositAmountUSD,
+            afterDepositAmountUSD,
+            token,
+          }}
+        />
       </Grid>
       <OpenVaultDetailsSummary {...props} />
     </>

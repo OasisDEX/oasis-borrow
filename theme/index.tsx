@@ -1279,6 +1279,10 @@ const oasisBaseTheme = {
       variant: 'buttons.bean',
       color: 'white',
       bg: 'primary',
+      '&:hover': {
+        color: 'white',
+        bg: 'primary',
+      },
     },
     vaultEditingController: {
       fontFamily: 'body',
