@@ -1,6 +1,6 @@
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
-import { SharedUIProvider } from 'components/SharedUIProvider'
+import { SharedUIContext } from 'components/SharedUIProvider'
 import {
   createGeneralManageVault$,
   VaultType,
@@ -108,9 +108,15 @@ export function manageVaultStory({
 
     return (
       <appContext.Provider value={ctx as any}>
-        <SharedUIProvider>
+        <SharedUIContext.Provider
+          value={{
+            vaultFormOpened: true,
+            setVaultFormOpened: () => null,
+            setVaultFormToggleTitle: () => null,
+          }}
+        >
           <ManageVaultStoryContainer title={title} />
-        </SharedUIProvider>
+        </SharedUIContext.Provider>
       </appContext.Provider>
     )
   }

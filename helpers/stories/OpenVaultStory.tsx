@@ -1,5 +1,5 @@
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
-import { SharedUIProvider } from 'components/SharedUIProvider'
+import { SharedUIContext } from 'components/SharedUIProvider'
 import { OpenVaultView } from 'features/openVault/components/OpenVaultView'
 import { defaultMutableOpenVaultState, MutableOpenVaultState } from 'features/openVault/openVault'
 import { mockOpenVault$, MockOpenVaultProps } from 'helpers/mocks/openVault.mock'
@@ -67,9 +67,15 @@ export function openVaultStory({
 
     return (
       <appContext.Provider value={ctx as any}>
-        <SharedUIProvider>
+        <SharedUIContext.Provider
+          value={{
+            vaultFormOpened: true,
+            setVaultFormOpened: () => null,
+            setVaultFormToggleTitle: () => null,
+          }}
+        >
           <OpenVaultStoryContainer ilk={ilk} title={title} />
-        </SharedUIProvider>
+        </SharedUIContext.Provider>
       </appContext.Provider>
     )
   }

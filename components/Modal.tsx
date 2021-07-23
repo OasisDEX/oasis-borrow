@@ -4,7 +4,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { ModalProps } from 'helpers/modalHook'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { TRANSITIONS } from 'theme'
 import { Box, Card, Container, Flex, IconButton, SxStyleProp, Text } from 'theme-ui'
 
@@ -54,6 +54,29 @@ export function ModalCloseIcon({ close, sx, size = 26, color = 'onSurface' }: Mo
   )
 }
 
+// Helper component to compensate jumping of window upon opening Modal
+export function ModalHTMLOverflow() {
+  const [compensateWidth, setCompensateWidth] = useState(false)
+  useEffect(() => {
+    document.body.style.width = `${document.body.clientWidth}px`
+    setCompensateWidth(true)
+
+    return () => {
+      document.body.removeAttribute('style')
+    }
+  }, [])
+
+  return compensateWidth ? (
+    <Global
+      styles={{
+        html: {
+          overflow: 'hidden',
+        },
+      }}
+    />
+  ) : null
+}
+
 function ModalWrapper({ children, close }: WithChildren & { close: () => void }) {
   return (
     <Box
@@ -72,13 +95,7 @@ function ModalWrapper({ children, close }: WithChildren & { close: () => void })
         overflow: 'auto',
       }}
     >
-      <Global
-        styles={{
-          html: {
-            overflow: 'hidden',
-          },
-        }}
-      />
+      <ModalHTMLOverflow />
       {children}
     </Box>
   )
