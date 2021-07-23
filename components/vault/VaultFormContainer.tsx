@@ -1,5 +1,4 @@
-import { Global } from '@emotion/core'
-import { ModalCloseIcon } from 'components/Modal'
+import { ModalCloseIcon, ModalHTMLOverflow } from 'components/Modal'
 import { useSharedUI } from 'components/SharedUIProvider'
 import { WithChildren } from 'helpers/types'
 import React, { useEffect } from 'react'
@@ -45,15 +44,7 @@ export function VaultFormContainer({
       >
         {breakpoint === 0 && (
           <Box>
-            {vaultFormOpened && (
-              <Global
-                styles={{
-                  html: {
-                    overflow: 'hidden',
-                  },
-                }}
-              />
-            )}
+            {vaultFormOpened && <ModalHTMLOverflow />}
             <Box
               sx={{
                 display: ['flex', 'none'],

@@ -1070,7 +1070,7 @@ const oasisBaseTheme = {
       boxShadow: 'tooltipVaultHeader',
       p: 2,
       bottom: '-10px',
-      left: '-40px',
+      left: ['-80px', '-40px'],
       transform: 'translateY(100%)',
       width: ['250px', '352px'],
     },

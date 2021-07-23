@@ -55,16 +55,9 @@ function VaultIlkDetailsItem({
                 }
               : undefined
           }
-          sx={{ fontSize: '0px' }}
+          sx={{ fontSize: '0px', cursor: 'pointer' }}
         >
-          <Icon
-            name="tooltip"
-            color="primary"
-            sx={{ cursor: 'pointer' }}
-            size="auto"
-            width="14px"
-            height="14px"
-          />
+          <Icon name="tooltip" color="primary" size="auto" width="14px" height="14px" />
         </Box>
         {tooltipOpen && (
           <Tooltip sx={{ variant: 'cards.tooltipVaultHeader', ...styles?.tooltip }}>
@@ -109,7 +102,7 @@ export function VaultIlkDetails(props: CommonVaultState & { id?: BigNumber }) {
         styles={{
           tooltip: {
             left: ['auto', '-20px'],
-            right: ['-20px', 'auto'],
+            right: ['-0px', 'auto'],
           },
         }}
       />
@@ -125,7 +118,7 @@ export function VaultIlkDetails(props: CommonVaultState & { id?: BigNumber }) {
         styles={{
           tooltip: {
             left: 'auto',
-            right: ['-4px', '-154px'],
+            right: ['10px', '-154px'],
           },
         }}
       />
@@ -135,7 +128,7 @@ export function VaultIlkDetails(props: CommonVaultState & { id?: BigNumber }) {
         tooltipContent="Dust Limit tooltip content"
         styles={{
           tooltip: {
-            left: ['-20px', 'auto'],
+            left: ['-80px', 'auto'],
             right: ['auto', '-32px'],
           },
         }}

@@ -8,7 +8,7 @@ interface SharedUIState {
   setVaultFormOpened: (opened: boolean) => void
 }
 
-const SharedUIContext = createContext({})
+export const SharedUIContext = createContext<SharedUIState | {}>({})
 
 export const useSharedUI = () => useContext(SharedUIContext) as SharedUIState
 

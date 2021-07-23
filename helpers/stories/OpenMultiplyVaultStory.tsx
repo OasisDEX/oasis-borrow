@@ -1,5 +1,5 @@
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
-import { SharedUIProvider } from 'components/SharedUIProvider'
+import { SharedUIContext } from 'components/SharedUIProvider'
 import { OpenMultiplyVaultView } from 'features/openMultiplyVault/components/OpenMultiplyVaultView'
 import { defaultMutableOpenVaultState, MutableOpenVaultState } from 'features/openVault/openVault'
 import {
@@ -66,9 +66,15 @@ OpenMultiplyVaultStory) {
 
     return (
       <appContext.Provider value={ctx as any}>
-        <SharedUIProvider>
+        <SharedUIContext.Provider
+          value={{
+            vaultFormOpened: true,
+            setVaultFormOpened: () => null,
+            setVaultFormToggleTitle: () => null,
+          }}
+        >
           <OpenMultiplyVaultStoryContainer ilk={'WBTC-A'} title={title} />
-        </SharedUIProvider>
+        </SharedUIContext.Provider>
       </appContext.Provider>
     )
   }
