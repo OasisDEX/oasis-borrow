@@ -22,6 +22,7 @@ function VaultIlkDetailsItem({
   }
 }) {
   const { tooltipOpen, setTooltipOpen } = useTooltip()
+  const isTouchDevice = window && 'ontouchstart' in window
 
   return (
     <Flex
@@ -44,17 +45,20 @@ function VaultIlkDetailsItem({
         </Text>
       </Box>
       <Flex sx={{ position: 'relative' }}>
-        <Icon
-          name="tooltip"
-          color="primary"
-          sx={{ cursor: 'pointer' }}
-          onClick={() => {
-            setTooltipOpen(!tooltipOpen)
-          }}
-          size="auto"
-          width="14px"
-          height="14px"
-        />
+        <Box
+          onMouseEnter={!isTouchDevice ? () => setTooltipOpen(true) : undefined}
+          onMouseLeave={!isTouchDevice ? () => setTooltipOpen(false) : undefined}
+          onClick={
+            isTouchDevice
+              ? () => {
+                  setTooltipOpen(!tooltipOpen)
+                }
+              : undefined
+          }
+          sx={{ fontSize: '0px', cursor: 'pointer' }}
+        >
+          <Icon name="tooltip" color="primary" size="auto" width="14px" height="14px" />
+        </Box>
         {tooltipOpen && (
           <Tooltip sx={{ variant: 'cards.tooltipVaultHeader', ...styles?.tooltip }}>
             <Box p={1} sx={{ fontWeight: 'semiBold', fontSize: 1 }}>
@@ -77,7 +81,7 @@ export function VaultIlkDetails(props: CommonVaultState & { id?: BigNumber }) {
   return (
     <Box
       sx={{
-        mb: 3,
+        mb: 4,
         fontSize: 1,
         fontWeight: 'semiBold',
         color: 'text.subtitle',
@@ -98,7 +102,7 @@ export function VaultIlkDetails(props: CommonVaultState & { id?: BigNumber }) {
         styles={{
           tooltip: {
             left: ['auto', '-20px'],
-            right: ['-20px', 'auto'],
+            right: ['-0px', 'auto'],
           },
         }}
       />
@@ -114,7 +118,7 @@ export function VaultIlkDetails(props: CommonVaultState & { id?: BigNumber }) {
         styles={{
           tooltip: {
             left: 'auto',
-            right: ['-4px', '-154px'],
+            right: ['10px', '-154px'],
           },
         }}
       />
@@ -124,7 +128,7 @@ export function VaultIlkDetails(props: CommonVaultState & { id?: BigNumber }) {
         tooltipContent="Dust Limit tooltip content"
         styles={{
           tooltip: {
-            left: ['-20px', 'auto'],
+            left: ['-80px', 'auto'],
             right: ['auto', '-32px'],
           },
         }}
