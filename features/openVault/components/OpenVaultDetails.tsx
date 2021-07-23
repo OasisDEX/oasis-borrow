@@ -68,7 +68,6 @@ export function OpenVaultDetails(props: OpenVaultState) {
 
   // initial values only to show in UI as starting parameters
   const liquidationPrice = zero
-  const liquidationPriceCurrentPriceDifference = undefined
   const collateralizationRatio = zero
 
   const afterDepositAmountUSD = props.depositAmountUSD
@@ -83,7 +82,6 @@ export function OpenVaultDetails(props: OpenVaultState) {
         <VaultDetailsCardLiquidationPrice
           {...{
             liquidationPrice,
-            liquidationPriceCurrentPriceDifference,
             afterLiquidationPrice,
           }}
         />
