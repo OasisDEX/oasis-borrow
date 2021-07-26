@@ -59,7 +59,8 @@ export function createExchangeChange$(
 ) {
   return state$.pipe(
     filter((state) => state.depositAmount !== undefined),
-    distinctUntilChanged((s1, s2) => !!s1.depositAmount?.eq(s2.depositAmount || '')),
+    // TODO: improve dinstinct until changed
+    distinctUntilChanged((s1, s2) => s1.afterOutstandingDebt.eq(s2.afterOutstandingDebt)),
     debounceTime(500),
     switchMap((state) => {
       if (state.buyingCollateral.gt(0) && state.quote?.status === 'SUCCESS') {
