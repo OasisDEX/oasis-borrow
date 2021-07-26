@@ -1,6 +1,7 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
+import { getAddress } from 'ethers/lib/utils'
 import { VaultsOverviewView } from 'features/vaultsOverview/VaultsOverviewView'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -14,6 +15,7 @@ import { WithTermsOfService } from '../../../features/termsOfService/TermsOfServ
 // TODO Move this to /features
 function Summary({ address }: { address: string }) {
   const { vaultsOverview$, context$ } = useAppContext()
+  address = convertToAddressWithCorrectChecksum(address)
   const vaultsOverviewWithError = useObservableWithError(vaultsOverview$(address))
   const contextWithError = useObservableWithError(context$)
 
@@ -26,6 +28,10 @@ function Summary({ address }: { address: string }) {
       </WithLoadingIndicator>
     </WithErrorHandler>
   )
+
+  function convertToAddressWithCorrectChecksum(address: string) {
+    return getAddress(address.toLocaleLowerCase())
+  }
 }
 
 export async function getServerSideProps(ctx: any) {
