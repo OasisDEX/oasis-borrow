@@ -23,7 +23,11 @@ function Summary({ address }: { address: string }) {
     <WithErrorHandler error={[vaultsOverviewWithError.error, contextWithError.error]}>
       <WithLoadingIndicator value={[vaultsOverviewWithError.value, contextWithError.value]}>
         {([vaultsOverview, context]) => (
-          <VaultsOverviewView vaultsOverview={vaultsOverview} context={context} address={checksumAddress} />
+          <VaultsOverviewView
+            vaultsOverview={vaultsOverview}
+            context={context}
+            address={checksumAddress}
+          />
         )}
       </WithLoadingIndicator>
     </WithErrorHandler>
