@@ -10,10 +10,17 @@ import React, { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
+type CollRatioColor = 'primary' | 'onError' | 'onWarning' | 'onSuccess'
+
+export type AfterPillProps = {
+  showAfterPill?: boolean
+  afterPillColors?: { color: string; bg: string }
+}
+
 export function getCollRatioColor(
   { inputAmountsEmpty, ilkData }: CommonVaultState,
   collateralizationRatio: BigNumber,
-) {
+): CollRatioColor {
   const vaultWillBeAtRiskLevelDanger =
     !inputAmountsEmpty &&
     collateralizationRatio.gte(ilkData.liquidationRatio) &&
@@ -52,11 +59,48 @@ export function getPriceChangeColor({
   return priceChangeColor
 }
 
+export function getAfterPillColors(collRatioColor: CollRatioColor) {
+  if (collRatioColor === 'primary') {
+    return {
+      color: 'onSuccess',
+      bg: 'success',
+    }
+  }
+
+  return {
+    color: collRatioColor,
+    bg: collRatioColor.split('on')[1].toLowerCase(),
+  }
+}
+
+function VaultDetailsAfterPill({ children, afterPillColors }: WithChildren & AfterPillProps) {
+  return (
+    <Card
+      sx={{
+        bg: 'success',
+        color: 'onSuccess',
+        fontWeight: 'semiBold',
+        border: 'none',
+        px: 2,
+        py: 0,
+        mt: 2,
+        display: 'inline-block',
+        lineHeight: 2,
+        fontSize: 1,
+        ...afterPillColors,
+      }}
+    >
+      <Box sx={{ px: 1 }}>{children}</Box>
+    </Card>
+  )
+}
+
 export function VaultDetailsCard({
   title,
   value,
   valueBottom,
   valueAfter,
+  afterPillColors,
   openModal,
 }: {
   title: string
@@ -64,7 +108,7 @@ export function VaultDetailsCard({
   valueBottom?: ReactNode
   valueAfter?: ReactNode
   openModal?: () => void
-}) {
+} & AfterPillProps) {
   return (
     <Card
       onClick={openModal}
@@ -107,21 +151,9 @@ export function VaultDetailsCard({
             {value}
           </Heading>
           {valueAfter && (
-            <Card
-              sx={{
-                bg: 'success',
-                color: 'onSuccess',
-                fontWeight: 'semiBold',
-                border: 'none',
-                px: 2,
-                py: 0,
-                mt: 2,
-                display: 'inline-block',
-                lineHeight: 'bodyLoose',
-              }}
-            >
-              <Box sx={{ px: 1 }}>{valueAfter} After</Box>
-            </Card>
+            <VaultDetailsAfterPill afterPillColors={afterPillColors}>
+              {valueAfter} after
+            </VaultDetailsAfterPill>
           )}
         </Box>
         <Box sx={{ fontWeight: 'semiBold', minHeight: '1em' }}>{valueBottom}</Box>
@@ -199,11 +231,13 @@ export function VaultDetailsCardLiquidationPrice({
   liquidationPrice,
   liquidationPriceCurrentPriceDifference,
   afterLiquidationPrice,
+  afterPillColors,
+  showAfterPill,
 }: {
   liquidationPrice: BigNumber
   liquidationPriceCurrentPriceDifference?: BigNumber
   afterLiquidationPrice?: BigNumber
-}) {
+} & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
 
@@ -211,11 +245,7 @@ export function VaultDetailsCardLiquidationPrice({
     <VaultDetailsCard
       title={`${t('system.liquidation-price')}`}
       value={`$${formatAmount(liquidationPrice, 'USD')}`}
-      valueAfter={
-        afterLiquidationPrice &&
-        !liquidationPrice.eq(afterLiquidationPrice) &&
-        `$${formatAmount(afterLiquidationPrice, 'USD')}`
-      }
+      valueAfter={showAfterPill && `$${formatAmount(afterLiquidationPrice || zero, 'USD')}`}
       valueBottom={
         liquidationPriceCurrentPriceDifference && (
           <>
@@ -232,6 +262,7 @@ export function VaultDetailsCardLiquidationPrice({
         )
       }
       openModal={() => openModal(VaultDetailsCardMockedModal)}
+      afterPillColors={afterPillColors}
     />
   )
 }
@@ -294,12 +325,14 @@ export function VaultDetailsCardCollateralLocked({
   depositAmount,
   afterDepositAmountUSD,
   token,
+  afterPillColors,
+  showAfterPill,
 }: {
   depositAmountUSD?: BigNumber
   depositAmount?: BigNumber
   afterDepositAmountUSD?: BigNumber
   token: string
-}) {
+} & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
 
@@ -307,12 +340,7 @@ export function VaultDetailsCardCollateralLocked({
     <VaultDetailsCard
       title={`${t('system.collateral-locked')}`}
       value={`$${formatAmount(depositAmountUSD || zero, 'USD')}`}
-      valueAfter={
-        depositAmountUSD &&
-        afterDepositAmountUSD &&
-        !depositAmountUSD.eq(afterDepositAmountUSD) &&
-        `$${formatAmount(afterDepositAmountUSD, 'USD')}`
-      }
+      valueAfter={showAfterPill && `$${formatAmount(afterDepositAmountUSD || zero, 'USD')}`}
       valueBottom={
         <>
           {formatAmount(depositAmount || zero, getToken(token).symbol)}
@@ -322,6 +350,7 @@ export function VaultDetailsCardCollateralLocked({
         </>
       }
       openModal={() => openModal(VaultDetailsCardMockedModal)}
+      afterPillColors={afterPillColors}
     />
   )
 }
@@ -329,14 +358,23 @@ export function VaultDetailsCardCollateralLocked({
 export function VaultDetailsSummaryContainer({ children }: WithChildren) {
   return (
     <Card sx={{ borderRadius: 'large', border: 'lightMuted' }}>
-      <Grid columns={[1, null, null, 3]} sx={{ py: 3, px: 2 }} gap={[4, null, null, 3]}>
+      <Grid
+        columns={[1, null, null, 3]}
+        sx={{ py: 3, px: 2, alignItems: 'flex-start' }}
+        gap={[4, null, null, 3]}
+      >
         {children}
       </Grid>
     </Card>
   )
 }
 
-export function VaultDetailsSummaryItem({ label, value }: { label: ReactNode; value: ReactNode }) {
+export function VaultDetailsSummaryItem({
+  label,
+  value,
+  valueAfter,
+  afterPillColors,
+}: { label: ReactNode; value: ReactNode; valueAfter?: ReactNode } & AfterPillProps) {
   return (
     <Grid gap={1}>
       <Text variant="paragraph3" sx={{ color: 'text.subtitle', fontWeight: 'semiBold' }}>
@@ -345,6 +383,13 @@ export function VaultDetailsSummaryItem({ label, value }: { label: ReactNode; va
       <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
         {value}
       </Text>
+      {valueAfter && (
+        <Box>
+          <VaultDetailsAfterPill afterPillColors={afterPillColors}>
+            {valueAfter} after
+          </VaultDetailsAfterPill>
+        </Box>
+      )}
     </Grid>
   )
 }

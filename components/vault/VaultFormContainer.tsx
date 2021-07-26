@@ -20,7 +20,10 @@ export function VaultFormContainer({
   useEffect(() => {
     setVaultFormToggleTitle(toggleTitle)
 
-    return () => setVaultFormToggleTitle(undefined)
+    return () => {
+      setVaultFormToggleTitle(undefined)
+      setVaultFormOpened(false)
+    }
   }, [])
 
   return (

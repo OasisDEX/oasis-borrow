@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import {
+  AfterPillProps,
+  getAfterPillColors,
   getCollRatioColor,
   VaultDetailsCard,
   VaultDetailsCardCollateralLocked,
@@ -20,7 +22,12 @@ import { ManageVaultState } from './manageVault'
 
 function ManageVaultDetailsSummary({
   vault: { debt, token, freeCollateral, daiYieldFromLockedCollateral },
-}: ManageVaultState) {
+  afterDebt,
+  afterFreeCollateral,
+  daiYieldFromTotalCollateral,
+  afterPillColors,
+  showAfterPill,
+}: ManageVaultState & AfterPillProps) {
   const { t } = useTranslation()
   const { symbol } = getToken(token)
 
@@ -34,6 +41,15 @@ function ManageVaultDetailsSummary({
             {` DAI`}
           </>
         }
+        valueAfter={
+          showAfterPill && (
+            <>
+              {formatAmount(afterDebt, 'DAI')}
+              {` DAI`}
+            </>
+          )
+        }
+        afterPillColors={afterPillColors}
       />
 
       <VaultDetailsSummaryItem
@@ -44,6 +60,15 @@ function ManageVaultDetailsSummary({
             {` ${symbol}`}
           </>
         }
+        valueAfter={
+          showAfterPill && (
+            <>
+              {formatAmount(afterFreeCollateral, symbol)}
+              {` ${symbol}`}
+            </>
+          )
+        }
+        afterPillColors={afterPillColors}
       />
       <VaultDetailsSummaryItem
         label={t('system.available-to-generate')}
@@ -53,6 +78,15 @@ function ManageVaultDetailsSummary({
             {` DAI`}
           </>
         }
+        valueAfter={
+          showAfterPill && (
+            <>
+              {formatAmount(daiYieldFromTotalCollateral, 'DAI')}
+              {` DAI`}
+            </>
+          )
+        }
+        afterPillColors={afterPillColors}
       />
     </VaultDetailsSummaryContainer>
   )
@@ -72,11 +106,16 @@ export function ManageVaultDetails(props: ManageVaultState) {
     afterCollateralizationRatio,
     afterLockedCollateralUSD,
     collateralizationRatioAtNextPrice,
+    inputAmountsEmpty,
+    stage,
   } = props
   const { t } = useTranslation()
   const openModal = useModal()
   const collRatioColor = getCollRatioColor(props, collateralizationRatio)
   const collRatioNextPriceColor = getCollRatioColor(props, collateralizationRatioAtNextPrice)
+  const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const afterPillColors = getAfterPillColors(afterCollRatioColor)
+  const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
 
   return (
     <Box>
@@ -86,6 +125,8 @@ export function ManageVaultDetails(props: ManageVaultState) {
             liquidationPrice,
             liquidationPriceCurrentPriceDifference,
             afterLiquidationPrice,
+            afterPillColors,
+            showAfterPill,
           }}
         />
 
@@ -100,7 +141,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
             </Text>
           }
           valueAfter={
-            !collateralizationRatio.eq(afterCollateralizationRatio) &&
+            showAfterPill &&
             formatPercent(afterCollateralizationRatio.times(100), {
               precision: 2,
               roundMode: BigNumber.ROUND_DOWN,
@@ -120,6 +161,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
             </>
           }
           openModal={() => openModal(VaultDetailsCardMockedModal)}
+          afterPillColors={afterPillColors}
         />
 
         <VaultDetailsCardCurrentPrice {...props} />
@@ -128,9 +170,15 @@ export function ManageVaultDetails(props: ManageVaultState) {
           afterDepositAmountUSD={afterLockedCollateralUSD}
           depositAmount={lockedCollateral}
           token={token}
+          afterPillColors={afterPillColors}
+          showAfterPill={showAfterPill}
         />
       </Grid>
-      <ManageVaultDetailsSummary {...props} />
+      <ManageVaultDetailsSummary
+        {...props}
+        afterPillColors={afterPillColors}
+        showAfterPill={showAfterPill}
+      />
     </Box>
   )
 }

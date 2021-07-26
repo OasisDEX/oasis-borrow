@@ -1,11 +1,10 @@
 import { BigNumber } from 'bignumber.js'
-import { one, zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 
 import { OpenVaultState } from './openVault'
 
 export interface OpenVaultCalculations {
   afterLiquidationPrice: BigNumber
-  afterLiquidationPriceCurrentPriceDifference: BigNumber | undefined
   afterCollateralizationRatio: BigNumber
   afterCollateralizationRatioAtNextPrice: BigNumber
   daiYieldFromDepositingCollateral: BigNumber
@@ -30,7 +29,6 @@ export const defaultOpenVaultStateCalculations: OpenVaultCalculations = {
   daiYieldFromDepositingCollateral: zero,
   daiYieldFromDepositingCollateralAtNextPrice: zero,
   afterLiquidationPrice: zero,
-  afterLiquidationPriceCurrentPriceDifference: undefined,
   afterFreeCollateral: zero,
   afterCollateralBalance: zero,
 }
@@ -96,10 +94,6 @@ export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultStat
       ? generateAmount.times(liquidationRatio).div(depositAmount)
       : zero
 
-  const afterLiquidationPriceCurrentPriceDifference = !afterLiquidationPrice.isZero()
-    ? one.minus(afterLiquidationPrice.div(currentCollateralPrice))
-    : undefined
-
   const afterCollateralBalance = depositAmount
     ? collateralBalance.minus(depositAmount)
     : collateralBalance
@@ -116,7 +110,6 @@ export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultStat
     daiYieldFromDepositingCollateral,
     daiYieldFromDepositingCollateralAtNextPrice,
     afterLiquidationPrice,
-    afterLiquidationPriceCurrentPriceDifference,
     afterFreeCollateral,
     afterCollateralBalance,
   }

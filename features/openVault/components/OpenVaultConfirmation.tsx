@@ -1,27 +1,15 @@
 import { TxStatusCardSuccess } from 'components/vault/TxStatusCard'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import Lottie from 'react-lottie'
-import { Box, Divider } from 'theme-ui'
-import animationData from 'theme/lottie/openVault.json'
+import { Divider } from 'theme-ui'
+import { OpenVaultAnimation } from 'theme/animations'
 
 import { OpenVaultState } from '../openVault'
 import { OpenVaultChangesInformation } from './OpenVaultChangesInformation'
 
-const defaultOptions = {
-  loop: true,
-  autoplay: true,
-  animationData,
-  rendererSettings: {
-    preserveAspectRatio: 'xMidYMid slice',
-  },
-}
-
 export function OpenVaultConfirmation(props: OpenVaultState) {
   return props.stage === 'openInProgress' ? (
-    <Box mb={2}>
-      <Lottie options={defaultOptions} height={160} width={160} />
-    </Box>
+    <OpenVaultAnimation />
   ) : (
     <>
       <Divider />

@@ -26,12 +26,14 @@ export interface ManageVaultCalculations {
   afterDebt: BigNumber
   afterLiquidationPrice: BigNumber
   afterCollateralizationRatio: BigNumber
+  collateralizationRatioAtNextPrice: BigNumber
   afterCollateralizationRatioAtNextPrice: BigNumber
   afterFreeCollateral: BigNumber
   afterFreeCollateralAtNextPrice: BigNumber
   afterBackingCollateral: BigNumber
   afterBackingCollateralAtNextPrice: BigNumber
   afterLockedCollateral: BigNumber
+  afterLockedCollateralUSD: BigNumber
   afterCollateralBalance: BigNumber
   shouldPaybackAll: boolean
 
@@ -53,6 +55,7 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
   maxPaybackAmount: zero,
   afterDebt: zero,
   afterCollateralizationRatio: zero,
+  collateralizationRatioAtNextPrice: zero,
   afterCollateralizationRatioAtNextPrice: zero,
   afterLiquidationPrice: zero,
   afterFreeCollateral: zero,
@@ -60,6 +63,7 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
   afterBackingCollateral: zero,
   afterBackingCollateralAtNextPrice: zero,
   afterLockedCollateral: zero,
+  afterLockedCollateralUSD: zero,
   afterCollateralBalance: zero,
   daiYieldFromTotalCollateral: zero,
   daiYieldFromTotalCollateralAtNextPrice: zero,
@@ -443,6 +447,11 @@ export function applyManageVaultCalculations(
     ? one.minus(liquidationPrice.div(currentCollateralPrice))
     : undefined
 
+  const collateralizationRatioAtNextPrice =
+    lockedCollateral.gt(zero) && debt.gt(zero)
+      ? lockedCollateral.times(nextCollateralPrice).div(debt)
+      : zero
+
   return {
     ...state,
     maxDepositAmount,
@@ -455,11 +464,13 @@ export function applyManageVaultCalculations(
     maxGenerateAmountAtCurrentPrice,
     maxGenerateAmountAtNextPrice,
     afterCollateralizationRatio,
+    collateralizationRatioAtNextPrice,
     afterCollateralizationRatioAtNextPrice,
     afterLiquidationPrice,
     afterFreeCollateral,
     afterFreeCollateralAtNextPrice,
     afterLockedCollateral,
+    afterLockedCollateralUSD,
     afterBackingCollateral,
     afterBackingCollateralAtNextPrice,
     afterDebt,

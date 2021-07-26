@@ -140,6 +140,10 @@ export function ManageVaultButton(props: ManageVaultState) {
     }
   }
 
+  if (stage === 'manageInProgress') {
+    return null
+  }
+
   return (
     <>
       <Button
