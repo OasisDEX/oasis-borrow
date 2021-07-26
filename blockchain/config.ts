@@ -40,6 +40,12 @@ const infuraProjectId =
 const etherscanAPIKey =
   process.env.ETHERSCAN_API_KEY || getConfig()?.publicRuntimeConfig?.etherscan || ''
 
+const TEMPORARY_MULTIPLY_CONTRACTS = {
+  ACTIONS: '0x99bbA657f2BbC93c02D617f8bA121cB8Fc104Acf',
+  EXCHANGE: '0x0E801D84Fa97b50751Dbf25036d067dCf18858bF',
+  FEE_RECIPIENT: '0x34314adbfBb5d239bb67f0265c9c45EB8b834412',
+}
+
 const protoMain = {
   id: '1',
   name: 'main',
@@ -76,10 +82,10 @@ const protoMain = {
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
-    '0x99bbA657f2BbC93c02D617f8bA121cB8Fc104Acf',
+    TEMPORARY_MULTIPLY_CONTRACTS.ACTIONS,
   ), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
-  exchange: contractDesc(exchange, '0x0E801D84Fa97b50751Dbf25036d067dCf18858b'), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
-  feeRecipient: '0x34314adbfBb5d239bb67f0265c9c45EB8b834412', // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  exchange: contractDesc(exchange, TEMPORARY_MULTIPLY_CONTRACTS.EXCHANGE), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  feeRecipient: TEMPORARY_MULTIPLY_CONTRACTS.FEE_RECIPIENT, // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
   aaveLendingPool: '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5',
   etherscan: {
     url: 'https://etherscan.io',
@@ -137,10 +143,10 @@ const kovan: NetworkConfig = {
   dssProxyActions: contractDesc(dssProxyActions, kovanAddresses.PROXY_ACTIONS),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
-    '0x99bbA657f2BbC93c02D617f8bA121cB8Fc104Acf',
+    TEMPORARY_MULTIPLY_CONTRACTS.ACTIONS,
   ), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
-  exchange: contractDesc(exchange, '0x0E801D84Fa97b50751Dbf25036d067dCf18858b'), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
-  feeRecipient: '0x34314adbfBb5d239bb67f0265c9c45EB8b834412', // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  exchange: contractDesc(exchange, TEMPORARY_MULTIPLY_CONTRACTS.EXCHANGE), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  feeRecipient: TEMPORARY_MULTIPLY_CONTRACTS.FEE_RECIPIENT, // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
   aaveLendingPool: '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5',
   etherscan: {
     url: 'https://kovan.etherscan.io',
