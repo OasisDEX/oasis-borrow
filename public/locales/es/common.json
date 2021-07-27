@@ -2,10 +2,10 @@
   "404-button": "Ir a la página principal",
   "404-message": "Lo siento, página no encontrada.",
   "about": {
-      "heading": "Sobre nosotros",
-      "description": "La misión de Oasis es proveer el mejor y más confiable punto de entrada para deplegar tu capital. Estamos construyendo Oasis.app para permitir a nuestros usuarios beneficiarse de todo el potencial en DeFi.\n\n Nuestro equipo está compuesto de pensadores y desarrolladores apasionados.",
-      "careers-link": "Únete a nosotros",
-      "pics-title": "Conoce al equipo"
+    "heading": "Sobre nosotros",
+    "description": "La misión de Oasis es proveer el mejor y más confiable punto de entrada para deplegar tu capital. Estamos construyendo Oasis.app para permitir a nuestros usuarios beneficiarse de todo el potencial en DeFi.\n\n Nuestro equipo está compuesto de pensadores y desarrolladores apasionados.",
+    "careers-link": "Únete a nosotros",
+    "pics-title": "Conoce al equipo"
   },
   "acceptance-check-failed": "La verificación de aceptación falló",
   "acceptance-save-failed": "No se pudo guardar la aceptación",
@@ -133,8 +133,16 @@
   },
   "exchange-rate": "Tasa de Cambio",
   "failed": "Fallido",
-  "featured": { "cheapest": "Más barato", "most-popular": "Más popular", "new": "Nuevo" },
-  "filters": { "lp-token": "LP tokens", "stablecoin": "Stablecoins", "popular": "Popular assets" },
+  "featured": {
+    "cheapest": "Más barato",
+    "most-popular": "Más popular",
+    "new": "Nuevo"
+  },
+  "filters": {
+    "lp-token": "LP tokens",
+    "stablecoin": "Stablecoins",
+    "popular": "Popular assets"
+  },
   "gas-estimation-error": "Error",
   "get-dai": "Obtén Dai",
   "get-started": "Comenzar",
@@ -162,7 +170,12 @@
   "keyWithCount_plural": "{{count}} items",
   "landing": {
     "footer": {
-      "language": { "en": "Inglés", "es": "Español", "pt": "Português", "cn": "中文" },
+      "language": {
+        "en": "Inglés",
+        "es": "Español",
+        "pt": "Português",
+        "cn": "中文"
+      },
       "about": "Acerca de ",
       "team": "Equipo",
       "careers": "Carreras",
