@@ -136,7 +136,7 @@ const kovan: NetworkConfig = {
   magicLink: {
     apiKey: 'pk_test_E72F1844D7C09A07',
   },
-  cacheApi: 'https://cache-kovan-staging.oasis.app/api/v1',
+  cacheApi: 'https://oazo-bcache-kovan-staging.new.oasis.app/api/v1',
 }
 
 const hardhat: NetworkConfig = {
