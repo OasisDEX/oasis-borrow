@@ -9,7 +9,6 @@ import {
   map,
   switchMap,
   take,
-  tap,
 } from 'rxjs/operators'
 
 import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
