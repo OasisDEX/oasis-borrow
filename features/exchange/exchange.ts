@@ -2,7 +2,15 @@ import BigNumber from 'bignumber.js'
 import { Context, ContextConnected } from 'blockchain/network'
 import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
-import { catchError, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
+import {
+  catchError,
+  distinctUntilChanged,
+  filter,
+  map,
+  retry,
+  switchMap,
+  tap,
+} from 'rxjs/operators'
 
 import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 
@@ -35,6 +43,7 @@ interface Tx {
 }
 
 export type ExchangeAction = 'BUY_COLLATERAL' | 'SELL_COLLATERAL'
+
 function getQuote$(
   daiAddress: string,
   collateralAddress: string,
@@ -78,6 +87,7 @@ function getQuote$(
           : new BigNumber(toTokenAmount).div(new BigNumber(fromTokenAddress)),
       tx,
     })),
+    retry(3),
     catchError(() => of({ status: 'ERROR' as const })),
   )
 }

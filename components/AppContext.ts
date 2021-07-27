@@ -300,7 +300,7 @@ export function setupAppContext() {
       `${token}_${slippage.toString()}_${amount.toString()}_${action}`,
   )
 
-  const multiplyVault$ = memoize(
+  const openMultiplyVault$ = memoize(
     curry(createOpenMultiplyVault$)(
       connectedContext$,
       txHelpers$,
@@ -405,7 +405,7 @@ export function setupAppContext() {
     termsAcceptance$,
     reclaimCollateral$,
     openVaultOverview$,
-    multiplyVault$,
+    openMultiplyVault$,
     generalManageVault$,
   }
 }

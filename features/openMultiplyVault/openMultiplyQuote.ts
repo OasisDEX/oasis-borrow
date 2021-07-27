@@ -1,7 +1,16 @@
 import BigNumber from 'bignumber.js'
+import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { EMPTY, Observable } from 'rxjs'
-import { debounceTime, distinctUntilChanged, filter, map, switchMap, take } from 'rxjs/operators'
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs/operators'
 
 import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
@@ -14,6 +23,15 @@ type ExchangeQuoteFailureChange = {
   kind: 'quoteError'
 }
 
+type ExchangeSwapSuccessChange = {
+  kind: 'swap'
+  swap: Quote
+}
+
+type ExchangeSwapFailureChange = {
+  kind: 'swapError'
+}
+
 type ExchangeQuoteResetChange = {
   kind: 'quoteReset'
 }
@@ -21,6 +39,8 @@ export type ExchangeQuoteChanges =
   | ExchangeQuoteSuccessChange
   | ExchangeQuoteFailureChange
   | ExchangeQuoteResetChange
+  | ExchangeSwapSuccessChange
+  | ExchangeSwapFailureChange
 
 export function applyExchange(change: OpenMultiplyVaultChange, state: OpenMultiplyVaultState) {
   if (change.kind === 'quote') {
@@ -30,7 +50,12 @@ export function applyExchange(change: OpenMultiplyVaultChange, state: OpenMultip
     }
   }
 
-  // TODO: implement QuoteProbe
+  if (change.kind === 'swap') {
+    return {
+      ...state,
+      swap: change.swap,
+    }
+  }
 
   if (change.kind === 'quoteReset') {
     const { quote: _quote, ...rest } = state
@@ -48,6 +73,12 @@ export function quoteToChange(quote: Quote) {
     : { kind: 'quoteError' as const }
 }
 
+export function swapToChange(swap: Quote) {
+  return swap.status === 'SUCCESS'
+    ? { kind: 'swap' as const, swap }
+    : { kind: 'swapError' as const }
+}
+
 export function createExchangeChange$(
   exchangeQuote$: (
     token: string,
@@ -59,21 +90,32 @@ export function createExchangeChange$(
 ) {
   return state$.pipe(
     filter((state) => state.depositAmount !== undefined),
-    // TODO: improve dinstinct until changed
-    distinctUntilChanged((s1, s2) => s1.afterOutstandingDebt.eq(s2.afterOutstandingDebt)),
+    distinctUntilChanged(
+      (s1, s2) =>
+        !!s1.depositAmount &&
+        !!s2.depositAmount &&
+        s1.depositAmount.eq(s2.depositAmount) &&
+        !!s1.slider &&
+        !!s2.slider &&
+        s1.slider.eq(s2.slider),
+    ),
     debounceTime(500),
-    switchMap((state) => {
-      if (state.buyingCollateral.gt(0) && state.quote?.status === 'SUCCESS') {
-        return exchangeQuote$(
-          state.token,
-          state.slippage,
-          state.afterOutstandingDebt,
-          'BUY_COLLATERAL',
-        )
-      }
-      return EMPTY
-    }),
-    map(quoteToChange),
+    switchMap((state) =>
+      every5Seconds$.pipe(
+        switchMap(() => {
+          if (state.buyingCollateral.gt(0) && state.quote?.status === 'SUCCESS') {
+            return exchangeQuote$(
+              state.token,
+              state.slippage,
+              state.afterOutstandingDebt,
+              'BUY_COLLATERAL',
+            )
+          }
+          return EMPTY
+        }),
+      ),
+    ),
+    map(swapToChange),
   )
 }
 
@@ -87,7 +129,6 @@ export function createInitialQuoteChange(
   token: string,
 ) {
   return exchangeQuote$(token, SLIPPAGE, new BigNumber(1), 'BUY_COLLATERAL').pipe(
-    // TODO: map to quoteProbe
     map(quoteToChange),
     take(1),
   )

@@ -85,6 +85,8 @@ export interface OpenMultiplyVaultConditions {
   canProgress: boolean
   canRegress: boolean
   canAdjustRisk: boolean
+
+  hasLatestPrice: boolean
 }
 
 export const defaultOpenVaultConditions: OpenMultiplyVaultConditions = {
@@ -115,6 +117,8 @@ export const defaultOpenVaultConditions: OpenMultiplyVaultConditions = {
   isLoadingStage: false,
   canProgress: false,
   canRegress: false,
+
+  hasLatestPrice: false,
 }
 
 export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
@@ -130,11 +134,12 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     selectedAllowanceRadio,
     allowanceAmount,
     allowance,
-    multiply,
     maxCollRatio,
+    swap,
+    afterOutstandingDebt,
   } = state
 
-  const inputAmountsEmpty = !depositAmount && !multiply
+  const inputAmountsEmpty = !depositAmount
   const canAdjustRisk =
     depositAmount !== undefined &&
     maxCollRatio !== undefined &&
@@ -228,6 +233,17 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     'openFailure',
   ] as OpenMultiplyVaultStage[]).some((s) => s === stage)
 
+  const hasLatestPrice =
+    swap?.status === 'SUCCESS'
+      ? swap.daiAmount.toFixed(18) === afterOutstandingDebt.toFixed(18)
+      : false
+
+  console.log(`
+          ${hasLatestPrice},
+    swap: ${swap?.status === 'SUCCESS' ? swap.daiAmount.toFixed(18) : '0'},
+    debt: ${afterOutstandingDebt.toFixed(18)},
+    `)
+
   return {
     ...state,
     inputAmountsEmpty,
@@ -255,5 +271,7 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     isLoadingStage,
     canProgress,
     canRegress,
+
+    hasLatestPrice,
   }
 }
