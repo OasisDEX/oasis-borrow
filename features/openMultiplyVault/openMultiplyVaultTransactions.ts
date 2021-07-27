@@ -269,10 +269,10 @@ export function multiplyVault(
     proxyAddress,
     ilk,
     token,
-    quote,
     buyingCollateral,
     afterOutstandingDebt,
     account,
+    swap,
   }: OpenMultiplyVaultState,
 ) {
   return sendWithGasEstimation(openMultiplyVault, {
@@ -282,8 +282,8 @@ export function multiplyVault(
     proxyAddress: proxyAddress!,
     ilk,
     token,
-    exchangeAddress: quote?.status === 'SUCCESS' ? quote.tx.to : '0x',
-    exchangeData: quote?.status === 'SUCCESS' ? quote.tx.data : '0x',
+    exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '0x',
+    exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '0x',
     borrowedCollateral: buyingCollateral,
     requiredDebt: afterOutstandingDebt,
   })
