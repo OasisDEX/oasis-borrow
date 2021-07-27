@@ -473,7 +473,7 @@
       "edit": "Simula tu Vault configurando el monto de colateral a depositar y Dai a generar.",
       "proxy": "Con tu proxy inteligente podemos realizar multiples acciones en una transacción para tu Vault. Este proxy solo necesita ser configurado una vez.",
       "allowance": "Especifica un permiso para configurar la cantidad máxima de tokens con la que el Vault puede interactuar.",
-      "daiAllowance": "allowance": "Especifica un permiso para configurar la cantidad máxima de tokens con la que el Vault puede interactuar.",
+      "daiAllowance": "Especifica un permiso para configurar la cantidad máxima de tokens con la que el Vault puede interactuar.",
       "confirm": "Revisa y verifica los detalles de tu Vault."
     }
   },
