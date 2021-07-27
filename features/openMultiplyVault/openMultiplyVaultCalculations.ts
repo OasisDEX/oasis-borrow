@@ -17,6 +17,7 @@ export interface OpenMultiplyVaultCalculations {
   buyingCollateral: BigNumber
   buyingCollateralUSD: BigNumber
   totalExposure?: BigNumber
+  totalExposureUSD?: BigNumber
   impact: BigNumber
   multiply?: BigNumber
   afterOutstandingDebt: BigNumber
@@ -28,7 +29,6 @@ export interface OpenMultiplyVaultCalculations {
   loanFees: BigNumber
   multiplyFee: BigNumber
   maxCollRatio?: BigNumber
-  totalExposureUSD: BigNumber
   marketPrice?: BigNumber
 
   // afterCollateralizationRatioAtNextPrice: BigNumber
@@ -191,9 +191,7 @@ export function applyOpenMultiplyVaultCalculations(
       : zero
 
   const buyingCollateralUSD =
-    quote?.status === 'SUCCESS' && buyingCollateral
-      ? buyingCollateral.times(quote.tokenPrice)
-      : zero
+    marketPrice && buyingCollateral ? buyingCollateral.times(marketPrice) : zero
 
   const loanFees = buyingCollateralUSD.times(LOAN_FEE)
   const multiplyFee = afterOutstandingDebt?.times(MULTIPLY_FEE)
@@ -213,15 +211,8 @@ export function applyOpenMultiplyVaultCalculations(
     ? currentCollateralPrice.times(liquidationRatio).div(afterCollateralizationRatio)
     : zero
 
-  const impact =
-    quote?.status === 'SUCCESS'
-      ? new BigNumber(quote.daiAmount.minus(quote.collateralAmount)).div(quote.daiAmount)
-      : zero
-
-  // const afterBuyingPowerUSD =
-  //   depositAmount && marketPriceMaxSlippage
-  //     ? getDebtByCollRatio(liquidationRatio, depositAmount, oraclePrice, marketPriceMaxSlippage)
-  //     : zero
+  // TODO fix impact
+  const impact = zero
 
   const [afterBuyingPowerUSD, afterBuyingPower] = marketPrice
     ? calculateParamsIncreaseMP(
