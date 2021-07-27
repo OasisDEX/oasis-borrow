@@ -8,6 +8,7 @@ import {
 import { AppContext } from 'next/app'
 import React from 'react'
 import { useEffect } from 'react'
+import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
@@ -58,7 +59,8 @@ OpenMultiplyVaultStory) {
 
     const openMultiplyVault$ = () => obs$
     const ctx = ({
-      multiplyVault$: openMultiplyVault$,
+      openMultiplyVault$,
+      accountData$: of(EMPTY),
     } as any) as AppContext
 
     return (
