@@ -106,7 +106,6 @@
   "erc20-disapprove-description-recent-failed": "No se pudo bloquear la transferencia de {{ token }}",
   "erc20-disapprove-notification": "Bloqueando {{ token }}",
   "erc20-disapprove-notification-past": "Bloqueado {{ token }}",
-<<<<<<< HEAD
   "create-ds-proxy-description-pending": "Creando proxy",
   "create-ds-proxy-description-recent": "Proxy creado",
   "create-ds-proxy-description-recent-failed": "Falló al crear proxy",
@@ -125,20 +124,6 @@
   "reclaim-collateral-description-pending": "Reclamando {{ amount }} {{ token }} del Vault {{ id }}",
   "reclaim-collateral-description-recent": "Reclamado {{ amount }} {{ token }} del Vault {{ id }}",
   "reclaim-collateral-description-recent-failed": "Falló al reclamar colateral del Vault {{ id }}",
-=======
-  "erc20-send-description-pending": "Enviando {{ amount }} {{ token }}",
-  "erc20-send-description-recent": "Enviado {{ amount }} {{ token }}",
-  "erc20-send-description-recent-failed": "Fallo al enviar {{ amount }} {{ token }}",
-  "erc20-send-notification": "Enviando {{ token }}",
-  "erc20-send-notification-past": "Enviado {{ token }}",
-  "eth-send-description-pending": "Enviando {{ amount }} ETH",
-  "eth-send-description-recent": "Enviado {{ amount }} ETH",
-  "eth-send-description-recent-failed": "Fallo al enviar {{ amount }} ETH",
-  "eth-send-notification": "Enviando ETH",
-  "eth-send-notification-past": "Enviado ETH",
-  "error-message": "Algo salió mal",
-  "error-button": "Ver detalles",
->>>>>>> origin/dev
   "event": {
     "activity": "Actividad",
     "deposit": "Depositado",
@@ -482,7 +467,6 @@
   "no-results": "Sin resultados",
   "learn-about-wallets": "Aprende más sobre carteras",
   "learn-more-link": "https://ethereum.org/es/wallets/find-wallet/",
-<<<<<<< HEAD
   "enter-an-amount": "Ingresa un monto",
   "enter-allowance-amount": "Ingresa un monto permitido",
   "set-token-allowance": "Establecer permiso de {{token}} ",
@@ -495,20 +479,6 @@
       "daiAllowance": "Configurar permiso de DAI",
       "confirm": "Confirma creación de Vault",
       "confirm-manage": "Confirma cambios al Vault"
-=======
-  "seo": {
-    "default": {
-      "description": "Borrow Dai, a USD pegged Stablecoin, using crypto as your collateral",
-      "title": "Oasis.app"
-    },
-    "support": {
-      "title": "Preguntas Frecuentes",
-      "description": "Todas las respuestas para las preguntas más frecuentes."
-    },
-    "contact": {
-      "title": "Contacto",
-      "description": "Envianos comentarios, preguntas o sugerencias."
->>>>>>> origin/dev
     },
     "subtext": {
       "collateral": "Deposita o retira de tu Vault. Ahorra gas combinando transacciones.",
