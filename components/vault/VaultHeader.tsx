@@ -26,10 +26,20 @@ function VaultIlkDetailsItem({
 
   return (
     <Flex
+      onMouseEnter={!isTouchDevice ? () => setTooltipOpen(true) : undefined}
+      onMouseLeave={!isTouchDevice ? () => setTooltipOpen(false) : undefined}
+      onClick={
+        isTouchDevice
+          ? () => {
+              setTooltipOpen(!tooltipOpen)
+            }
+          : undefined
+      }
       sx={{
         px: [0, 4],
         alignItems: 'center',
         borderRight: ['none', 'light'],
+        cursor: 'pointer',
         '&:first-child': {
           pl: 0,
         },
@@ -45,18 +55,7 @@ function VaultIlkDetailsItem({
         </Text>
       </Box>
       <Flex sx={{ position: 'relative' }}>
-        <Box
-          onMouseEnter={!isTouchDevice ? () => setTooltipOpen(true) : undefined}
-          onMouseLeave={!isTouchDevice ? () => setTooltipOpen(false) : undefined}
-          onClick={
-            isTouchDevice
-              ? () => {
-                  setTooltipOpen(!tooltipOpen)
-                }
-              : undefined
-          }
-          sx={{ fontSize: '0px', cursor: 'pointer' }}
-        >
+        <Box sx={{ fontSize: '0px' }}>
           <Icon name="tooltip" color="primary" size="auto" width="14px" height="14px" />
         </Box>
         {tooltipOpen && (
