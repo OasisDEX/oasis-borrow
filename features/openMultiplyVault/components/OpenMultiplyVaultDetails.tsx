@@ -24,6 +24,7 @@ function OpenMultiplyVaultDetailsSummary({
   token,
   afterPillColors,
   showAfterPill,
+  afterOutstandingDebt,
 }: OpenMultiplyVaultState & AfterPillProps) {
   const { t } = useTranslation()
   const { symbol } = getToken(token)
@@ -34,16 +35,14 @@ function OpenMultiplyVaultDetailsSummary({
         label={t('system.vault-dai-debt')}
         value={
           <>
-            {/* TO DO calculations */}
-            {formatAmount(new BigNumber(1), 'DAI')}
+            {formatAmount(zero, 'DAI')}
             {` DAI`}
           </>
         }
         valueAfter={
           showAfterPill && (
             <>
-              {/* TO DO calculations */}
-              {formatAmount(new BigNumber(2), 'DAI')}
+              {formatAmount(afterOutstandingDebt, 'DAI')}
               {` DAI`}
             </>
           )
