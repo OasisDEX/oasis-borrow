@@ -61,26 +61,37 @@ function VaultHistoryItem({
         <Flex
           sx={{
             justifyContent: 'space-between',
-            alignItems: 'center',
+            alignItems: ['flex-start', null, null, 'center'],
             width: '100%',
           }}
         >
-          <Text sx={{ fontWeight: 'semiBold' }}>
-            {interpolate(translation, {
-              0: ({ children }) => <Text as="span">{children}</Text>,
-            })}
-          </Text>
-          <Flex sx={{ color: 'text.subtitle', alignItems: ' center' }}>
-            <Text sx={{ whiteSpace: 'nowrap', mr: 2, fontWeight: 'medium' }}>
+          <Flex
+            sx={{
+              justifyContent: 'space-between',
+              flex: 1,
+              gap: [1, 3],
+              flexDirection: ['column', null, null, 'row'],
+            }}
+          >
+            <Text sx={{ fontWeight: 'semiBold' }}>
+              {interpolate(translation, {
+                0: ({ children }) => <Text as="span">{children}</Text>,
+              })}
+            </Text>
+            <Text
+              sx={{ color: 'text.subtitle', whiteSpace: 'nowrap', mr: 2, fontWeight: 'medium' }}
+            >
               {date.format('MMM DD, YYYY, h:mma')}
             </Text>
-            <Icon
-              name={`chevron_${opened ? 'up' : 'down'}`}
-              size="auto"
-              width="12px"
-              height="7px"
-            />
           </Flex>
+          <Icon
+            name={`chevron_${opened ? 'up' : 'down'}`}
+            size="auto"
+            width="12px"
+            height="7px"
+            color="text.subtitle"
+            sx={{ position: 'relative', top: ['5px', null, null, '0px'] }}
+          />
         </Flex>
       </Box>
       {opened && (
@@ -105,7 +116,7 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
 
   return (
     <Box>
-      <Heading variant="header3" sx={{ mb: 3 }}>
+      <Heading variant="header3" sx={{ mb: [4, 3] }}>
         {t('vault-history')}
       </Heading>
       <Grid gap={2}>

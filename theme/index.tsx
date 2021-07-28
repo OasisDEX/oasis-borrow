@@ -3,6 +3,7 @@ import { icons } from '@makerdao/dai-ui-icons'
 import { icons as brandingIcons } from '@makerdao/dai-ui-icons-branding'
 import React from 'react'
 
+import { slideInAnimation } from './animations'
 import { tokenIcons } from './tokenIcons'
 
 // Duplication from theme as exporting const from package library is breaking dai-ui website and theme-ui doesn't support yet transitions tokens :(
@@ -544,6 +545,15 @@ const customIcons = {
     ),
     viewBox: '0 0 20 20',
   },
+  plus_header: {
+    path: (
+      <path
+        d="M10 1C10 0.447715 9.55229 5.96046e-08 9 0C8.44771 0 8 0.447716 8 1V8H1C0.447715 8 0 8.44771 0 9C0 9.55229 0.447716 10 1 10H8V17C8 17.5523 8.44771 18 9 18C9.55228 18 10 17.5523 10 17V10H17C17.5523 10 18 9.55229 18 9C18 8.44771 17.5523 8 17 8H10V1Z"
+        fill="currentColor"
+      />
+    ),
+    viewBox: '0 0 18 18',
+  },
   minus: {
     path: (
       <rect
@@ -660,8 +670,8 @@ const customLandingIcons = {
         <circle cx="44" cy="44" r="44" fill="url(#paint0_linear_landing_card_dai)" />
         <circle cx="43.9999" cy="43.9997" r="36.6667" fill="url(#paint1_linear_landing_card_dai)" />
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M30.0938 26.7324H44.0613C52.5572 26.7324 58.9973 31.299 61.3932 37.9438H65.7441V41.9601H62.3094C62.3767 42.5947 62.4109 43.2413 62.4109 43.8983V43.9969C62.4109 44.7365 62.3675 45.4636 62.2826 46.1756H65.7441V50.1919H61.3103C58.8514 56.7443 52.4612 61.2673 44.0613 61.2673H30.0938V50.1919H25.2402V46.1756H30.0938V41.9601H25.2402V37.9438H30.0938V26.7324ZM33.9985 50.1919V57.6645H44.0613C50.2709 57.6645 54.8843 54.6716 57.0319 50.1919H33.9985ZM58.2282 46.1756H33.9985V41.9601H58.2344C58.3242 42.6235 58.3701 43.3035 58.3701 43.9969V44.0956C58.3701 44.8049 58.3221 45.4994 58.2282 46.1756ZM44.0613 30.3294C50.2995 30.3294 54.9268 33.4012 57.0614 37.9438H33.9985V30.3294H44.0613Z"
           fill="white"
         />
@@ -674,8 +684,8 @@ const customLandingIcons = {
             y2="88"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#FEDB88" />
-            <stop offset="1" stop-color="#FDC134" />
+            <stop stopColor="#FEDB88" />
+            <stop offset="1" stopColor="#FDC134" />
           </linearGradient>
           <linearGradient
             id="paint1_linear_landing_card_dai"
@@ -685,8 +695,8 @@ const customLandingIcons = {
             y2="88.3663"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#F9A606" />
-            <stop offset="1" stop-color="#FBCC5F" />
+            <stop stopColor="#F9A606" />
+            <stop offset="1" stopColor="#FBCC5F" />
           </linearGradient>
         </defs>
       </>
@@ -745,7 +755,7 @@ const customLandingIcons = {
 const oasisBaseTheme = {
   useBorderBox: true,
   useBodyStyles: true,
-  breakpoints: ['40em', '52em', '64em'],
+  breakpoints: ['48em', '56em', '64em'],
   colors: {
     primary: '#25273D',
     primaryAlt: '#D3D4D8',
@@ -948,6 +958,7 @@ const oasisBaseTheme = {
     vaultEditingController: '0px 1px 6px rgba(37, 39, 61, 0.15)',
     vaultHistoryItem: '0px 1px 4px rgba(37, 39, 61, 0.12)',
     tooltipVaultHeader: '0px 4px 8px rgba(0, 0, 0, 0.15)',
+    buttonMenu: '0px 0px 8px rgba(0, 0, 0, 0.1)',
   },
   gradients: {
     app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
@@ -976,16 +987,18 @@ const oasisBaseTheme = {
       maxWidth: '712px',
       mt: 5,
     },
-    daiContainer: {
-      variant: 'layout.appContainer',
-      maxWidth: '818px',
-    },
     modal: {
       variant: 'layout.appContainer',
     },
     modalHalf: {
       variant: 'layout.modal',
       minHeight: '50vh',
+    },
+    vaultPageContainer: {
+      maxWidth: ['400px', '1232px'],
+      zIndex: 1,
+      position: 'relative',
+      ...slideInAnimation,
     },
   },
   metadata: {
@@ -1036,11 +1049,11 @@ const oasisBaseTheme = {
     },
     vaultFormContainer: {
       variant: 'cards.primary',
-      boxShadow: 'card',
+      boxShadow: ['none', 'card'],
       borderRadius: 'mediumLarge',
-      p: 3,
-      overflow: 'hidden',
-      border: 'lightMuted',
+      p: [0, 3],
+      border: ['none', 'lightMuted'],
+      overflowX: ['visible', 'hidden'],
     },
     tooltip: {
       variant: 'cards.primary',
@@ -1055,7 +1068,7 @@ const oasisBaseTheme = {
       boxShadow: 'tooltipVaultHeader',
       p: 2,
       bottom: '-10px',
-      left: '-40px',
+      left: ['-80px', '-40px'],
       transform: 'translateY(100%)',
       width: ['250px', '352px'],
     },
@@ -1280,6 +1293,12 @@ const oasisBaseTheme = {
         variant: 'buttons.vaultEditingController',
       },
     },
+    mobileBottomMenu: {
+      variant: 'buttons.secondary',
+      bg: 'background',
+      boxShadow: 'buttonMenu',
+      fontSize: [1, 2],
+    },
   },
   links: {
     primary: {
@@ -1453,15 +1472,15 @@ const oasisBaseTheme = {
     },
   },
   zIndices: {
-    menu: 2,
+    menu: 3,
     footer: 2,
-    modal: 3,
-    cookie: 4,
+    modal: 4,
+    cookie: 5,
   },
   grids: {
     vaultContainer: {
-      gap: 5,
-      gridTemplateColumns: ['1fr', '2fr minmax(465px, 1fr)'],
+      gap: [3, null, 4, '48px'],
+      gridTemplateColumns: ['1fr', '2fr minmax(425px, 1fr)', '2fr minmax(465px, 1fr)'],
     },
     vaultEditingControllerContainer: {
       bg: 'backgroundAlt',
@@ -1469,7 +1488,7 @@ const oasisBaseTheme = {
       gap: '0px',
     },
     vaultDetailsCardsContainer: {
-      gridTemplateColumns: ['1fr', '1fr 1fr'],
+      gridTemplateColumns: ['1fr', null, null, '1fr 1fr'],
       alignSelf: 'flex-start',
       mb: 3,
     },

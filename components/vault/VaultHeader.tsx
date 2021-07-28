@@ -6,24 +6,40 @@ import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { CommonVaultState } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { SxStyleProp } from 'theme-ui'
 
 function VaultIlkDetailsItem({
   label,
   value,
   tooltipContent,
+  styles,
 }: {
   label: string
   value: string
   tooltipContent: string
+  styles?: {
+    tooltip?: SxStyleProp
+  }
 }) {
   const { tooltipOpen, setTooltipOpen } = useTooltip()
+  const isTouchDevice = window && 'ontouchstart' in window
 
   return (
     <Flex
+      onMouseEnter={!isTouchDevice ? () => setTooltipOpen(true) : undefined}
+      onMouseLeave={!isTouchDevice ? () => setTooltipOpen(false) : undefined}
+      onClick={
+        isTouchDevice
+          ? () => {
+              setTooltipOpen(!tooltipOpen)
+            }
+          : undefined
+      }
       sx={{
         px: [0, 4],
         alignItems: 'center',
         borderRight: ['none', 'light'],
+        cursor: 'pointer',
         '&:first-child': {
           pl: 0,
         },
@@ -32,25 +48,18 @@ function VaultIlkDetailsItem({
         },
       }}
     >
-      {`${label} `}
-      <Text as="span" sx={{ color: 'primary', ml: 1, mr: 2 }}>
-        {value}
-      </Text>
+      <Box sx={{ flex: 1 }}>
+        {`${label} `}
+        <Text as="span" sx={{ color: 'primary', ml: 1, mr: 2 }}>
+          {value}
+        </Text>
+      </Box>
       <Flex sx={{ position: 'relative' }}>
-        <Icon
-          name="tooltip"
-          color="primary"
-          sx={{ cursor: 'pointer' }}
-          onClick={() => {
-            console.log('clicked', tooltipOpen)
-            setTooltipOpen(true)
-          }}
-          size="auto"
-          width="14px"
-          height="14px"
-        />
+        <Box sx={{ fontSize: '0px' }}>
+          <Icon name="tooltip" color="primary" size="auto" width="14px" height="14px" />
+        </Box>
         {tooltipOpen && (
-          <Tooltip sx={{ variant: 'cards.tooltipVaultHeader' }}>
+          <Tooltip sx={{ variant: 'cards.tooltipVaultHeader', ...styles?.tooltip }}>
             <Box p={1} sx={{ fontWeight: 'semiBold', fontSize: 1 }}>
               {tooltipContent}
             </Box>
@@ -71,7 +80,7 @@ export function VaultIlkDetails(props: CommonVaultState & { id?: BigNumber }) {
   return (
     <Box
       sx={{
-        mb: 3,
+        mb: 4,
         fontSize: 1,
         fontWeight: 'semiBold',
         color: 'text.subtitle',
@@ -89,6 +98,12 @@ export function VaultIlkDetails(props: CommonVaultState & { id?: BigNumber }) {
         label={t('manage-vault.stability-fee')}
         value={`${formatPercent(stabilityFee.times(100), { precision: 2 })}`}
         tooltipContent="Stability fee tooltip content"
+        styles={{
+          tooltip: {
+            left: ['auto', '-20px'],
+            right: ['-0px', 'auto'],
+          },
+        }}
       />
       <VaultIlkDetailsItem
         label={t('manage-vault.liquidation-fee')}
@@ -99,11 +114,23 @@ export function VaultIlkDetails(props: CommonVaultState & { id?: BigNumber }) {
         label={t('manage-vault.min-collat-ratio')}
         value={`${formatPercent(liquidationRatio.times(100))}`}
         tooltipContent="Min Coll Ratio tooltip content"
+        styles={{
+          tooltip: {
+            left: 'auto',
+            right: ['10px', '-154px'],
+          },
+        }}
       />
       <VaultIlkDetailsItem
         label={t('manage-vault.dust-limit')}
         value={`$${formatCryptoBalance(debtFloor)}`}
         tooltipContent="Dust Limit tooltip content"
+        styles={{
+          tooltip: {
+            left: ['-80px', 'auto'],
+            right: ['auto', '-32px'],
+          },
+        }}
       />
     </Box>
   )

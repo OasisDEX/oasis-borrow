@@ -1,14 +1,15 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
+import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultFormHeaderSwitch } from 'components/vault/VaultFormHeader'
 import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
-import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
-import { Box, Card, Grid, Text } from 'theme-ui'
+import { Box, Container, Grid, Text } from 'theme-ui'
 
 import { OpenMultiplyVaultState } from '../openMultiplyVault'
 import { createOpenMultiplyVaultAnalytics$ } from '../openMultiplyVaultAnalytics'
@@ -61,20 +62,18 @@ function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
 
   return (
-    <Card variant="vaultFormContainer">
-      <Grid gap={4} p={2}>
-        <OpenMultiplyVaultTitle {...props} />
-        {isEditingStage && <OpenMultiplyVaultEditing {...props} />}
-        {isAllowanceStage && <VaultAllowance {...props} />}
-        {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
-        <OpenMultiplyVaultErrors {...props} />
-        <OpenMultiplyVaultWarnings {...props} />
-        <OpenMultiplyVaultButton {...props} />
-        {isProxyStage && <VaultProxyStatusCard {...props} />}
-        {isAllowanceStage && <VaultAllowanceStatus {...props} />}
-        {isOpenStage && <OpenMultiplyVaultStatus {...props} />}
-      </Grid>
-    </Card>
+    <VaultFormContainer toggleTitle="Open Vault">
+      <OpenMultiplyVaultTitle {...props} />
+      {isEditingStage && <OpenMultiplyVaultEditing {...props} />}
+      {isAllowanceStage && <VaultAllowance {...props} />}
+      {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
+      <OpenMultiplyVaultErrors {...props} />
+      <OpenMultiplyVaultWarnings {...props} />
+      <OpenMultiplyVaultButton {...props} />
+      {isProxyStage && <VaultProxyStatusCard {...props} />}
+      {isAllowanceStage && <VaultAllowanceStatus {...props} />}
+      {isOpenStage && <OpenMultiplyVaultStatus {...props} />}
+    </VaultFormContainer>
   )
 }
 
@@ -86,11 +85,10 @@ export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultState) {
     <>
       <VaultHeader {...props} header={t('vault.open-vault', { ilk })} />
       <Grid variant="vaultContainer">
-        <Box sx={{ order: [3, 1] }}>
+        <Box>
           <OpenMultiplyVaultDetails {...props} />
         </Box>
-        {/* <Divider sx={{ display: ['block', 'none'], order: [2, 0] }} /> */}
-        <Box sx={{ order: [1, 2], pl: [0, 3] }}>
+        <Box>
           <OpenMultiplyVaultForm {...props} />
         </Box>
       </Grid>
@@ -101,8 +99,7 @@ export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultState) {
 export function OpenMultiplyVaultView({ ilk }: { ilk: string }) {
   const { multiplyVault$, accountData$ } = useAppContext()
   const multiplyVaultWithIlk$ = multiplyVault$(ilk)
-
-  const openVaultWithError = useObservableWithError(multiplyVault$(ilk))
+  const openVaultWithError = useObservableWithError(multiplyVaultWithIlk$)
 
   useEffect(() => {
     const subscription = createOpenMultiplyVaultAnalytics$(
@@ -117,13 +114,16 @@ export function OpenMultiplyVaultView({ ilk }: { ilk: string }) {
   }, [])
 
   return (
-    <Grid sx={{ width: '100%', zIndex: 1 }}>
-      <WithLoadingIndicator
-        {...openVaultWithError}
-        customError={<Box>{openVaultWithError.error?.message}</Box>}
-      >
-        {(openVault) => <OpenMultiplyVaultContainer {...openVault} />}
-      </WithLoadingIndicator>
-    </Grid>
+    <WithLoadingIndicator
+      {...openVaultWithError}
+      customError={<Box>{openVaultWithError.error?.message}</Box>}
+      customLoader={<VaultContainerSpinner />}
+    >
+      {(openVault) => (
+        <Container variant="vaultPageContainer">
+          <OpenMultiplyVaultContainer {...openVault} />
+        </Container>
+      )}
+    </WithLoadingIndicator>
   )
 }
