@@ -34,8 +34,8 @@ describe('open multiply vault', () => {
     const stateSnap = state()
 
     expect(stateSnap.afterCollateralizationRatio.toPrecision(18)).to.eq('2.00000000000000000')
-    expect(stateSnap.buyingCollateral.toPrecision(18)).to.eq('7.85649211034583288')
-    expect(stateSnap.afterOutstandingDebt.toPrecision(18)).to.eq('17856.4921103458329')
+    expect(stateSnap.buyingCollateral.toPrecision(18)).to.eq('8.13486120817479598')
+    expect(stateSnap.afterOutstandingDebt.toPrecision(18)).to.eq('18118.5545091165910')
   })
 
   it('should not allow to update risk when deposited not enough collateral', () => {
