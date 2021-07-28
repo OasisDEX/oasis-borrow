@@ -2,6 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex, Grid, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import {
+  VaultChangesInformationArrow,
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
@@ -32,26 +33,40 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
     impact,
     loanFees,
     multiplyFee,
+    inputAmountsEmpty,
   } = props
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
-  return (
+  // starting zero balance for UI to show arrows
+  const zeroBalance = formatCryptoBalance(zero)
+
+  return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Order information">
       <VaultChangesInformationItem
         label={`Buying ${token}`}
         value={
-          <Text>
-            {formatCryptoBalance(buyingCollateral)} {token}
-            {` `}
-            <Text as="span" sx={{ color: 'text.subtitle' }}>
-              (${formatAmount(buyingCollateralUSD, 'USD')})
+          <Flex>
+            {zeroBalance} {token}
+            <VaultChangesInformationArrow />
+            <Text>
+              {formatCryptoBalance(buyingCollateral)} {token}
+              {` `}
+              <Text as="span" sx={{ color: 'text.subtitle' }}>
+                (${formatAmount(buyingCollateralUSD, 'USD')})
+              </Text>
             </Text>
-          </Text>
+          </Flex>
         }
       />
       <VaultChangesInformationItem
         label={`Total ${token} exposure`}
-        value={`${formatCryptoBalance(totalExposure || new BigNumber(0))} ${token}`}
+        value={
+          <Flex>
+            {zeroBalance} {token}
+            <VaultChangesInformationArrow />
+            {formatCryptoBalance(totalExposure || zero)} {token}
+          </Flex>
+        }
       />
       <VaultChangesInformationItem
         label={`${token} Price (impact)`}
@@ -68,20 +83,42 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
         }
       />
       <VaultChangesInformationItem label={'Slippage Limit'} value={'5.00 %'} />
-      <VaultChangesInformationItem label={'Multiply'} value={`${multiply?.toString()}x`} />
+      <VaultChangesInformationItem
+        label={'Multiply'}
+        value={
+          <Flex>
+            {zeroBalance}x
+            <VaultChangesInformationArrow />
+            {multiply?.toFixed(2)}x
+          </Flex>
+        }
+      />
       <VaultChangesInformationItem
         label={'Outstanding Debt'}
-        value={`${formatCryptoBalance(afterOutstandingDebt)} DAI`}
+        value={
+          <Flex>
+            {zeroBalance} DAI
+            <VaultChangesInformationArrow />
+            {formatCryptoBalance(afterOutstandingDebt || zero)} DAI
+          </Flex>
+        }
       />
       <VaultChangesInformationItem
         label={'Collateral Ratio'}
         value={
-          <Text sx={{ color: collRatioColor }}>
-            {formatPercent(afterCollateralizationRatio.times(100), {
+          <Flex>
+            {formatPercent(zero.times(100), {
               precision: 2,
               roundMode: BigNumber.ROUND_DOWN,
             })}
-          </Text>
+            <VaultChangesInformationArrow />
+            <Text sx={{ color: collRatioColor }}>
+              {formatPercent(afterCollateralizationRatio.times(100), {
+                precision: 2,
+                roundMode: BigNumber.ROUND_DOWN,
+              })}
+            </Text>
+          </Flex>
         }
       />
       <VaultChangesInformationItem
@@ -114,5 +151,5 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
         </Grid>
       )}
     </VaultChangesInformationContainer>
-  )
+  ) : null
 }

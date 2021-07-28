@@ -29,6 +29,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
     afterLiquidationPrice,
     afterCollateralizationRatio,
     slider,
+    inputAmountsEmpty,
   } = props
 
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -41,7 +42,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
   return (
     <Grid gap={4}>
       <Grid gap={2}>
-        <Text variant="strong">Step 1 - Deposit your ETH</Text>
+        <Text variant="strong">Deposit your ETH</Text>
         <VaultActionInput
           action="Deposit"
           token={token}
@@ -61,7 +62,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
       </Grid>
       <Grid gap={2}>
         <Text variant="strong" mb={2}>
-          Step 2 - Adjust your multiply
+          Adjust your multiply
         </Text>
         <Box>
           <Flex
@@ -120,7 +121,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
           </Flex>
         </Box>
       </Grid>
-      <Divider />
+      {!inputAmountsEmpty && <Divider />}
       <OpenMultiplyVaultChangesInformation {...props} />
     </Grid>
   )

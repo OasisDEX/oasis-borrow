@@ -28,14 +28,10 @@ function OpenMultiplyVaultTitle({
   isProxyStage,
   isAllowanceStage,
   token,
-  ilk,
 }: OpenMultiplyVaultState) {
   const { t } = useTranslation()
   return (
     <Box>
-      {isEditingStage ? (
-        <VaultFormHeaderSwitch href={`/vaults/open/${ilk}`} title="Switch to Borrow" />
-      ) : null}
       <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
         {isEditingStage
           ? t('vault-form.header.edit')
@@ -59,7 +55,7 @@ function OpenMultiplyVaultTitle({
 }
 
 function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
-  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage } = props
+  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, ilk } = props
 
   return (
     <VaultFormContainer toggleTitle="Open Vault">
@@ -73,6 +69,9 @@ function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
       {isProxyStage && <VaultProxyStatusCard {...props} />}
       {isAllowanceStage && <VaultAllowanceStatus {...props} />}
       {isOpenStage && <OpenMultiplyVaultStatus {...props} />}
+      {isEditingStage ? (
+        <VaultFormHeaderSwitch href={`/vaults/open/${ilk}`} title="Switch to Borrow" />
+      ) : null}
     </VaultFormContainer>
   )
 }
