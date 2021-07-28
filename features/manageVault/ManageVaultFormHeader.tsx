@@ -3,20 +3,27 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Grid, Text } from 'theme-ui'
 
-import { ManageVaultState } from './manageVault'
+import { ManageVaultEditingStage, ManageVaultState } from './manageVault'
 
-function ManageVaultEditingController({ stage, toggle, accountIsController }: ManageVaultState) {
+function ManageVaultEditingController({
+  stage,
+  toggle,
+  accountIsController,
+  isMultiplyTransitionStage,
+}: ManageVaultState) {
   const { t } = useTranslation()
   const collateralVariant = `vaultEditingController${
-    stage !== 'collateralEditing' ? 'Inactive' : ''
+    stage === 'collateralEditing' ? '' : 'Inactive'
   }`
-  const daiVariant = `vaultEditingController${stage !== 'daiEditing' ? 'Inactive' : ''}`
+  const daiVariant = `vaultEditingController${stage === 'daiEditing' ? '' : 'Inactive'}`
+  const multiplyVariant = `vaultEditingController${isMultiplyTransitionStage ? '' : 'Inactive'}`
 
-  function handleToggle() {
-    toggle!()
+  function handleToggle(stage: ManageVaultEditingStage) {
+    toggle!(stage)
+
     if (stage === 'collateralEditing') {
       trackingEvents.switchToDai(accountIsController)
-    } else {
+    } else if (stage === 'daiEditing') {
       trackingEvents.switchToCollateral(accountIsController)
     }
   }
@@ -24,37 +31,31 @@ function ManageVaultEditingController({ stage, toggle, accountIsController }: Ma
   return (
     <Box sx={{ justifyContent: 'center' }}>
       <Grid columns={3} variant="vaultEditingControllerContainer">
-        <Button onClick={handleToggle} variant={collateralVariant}>
+        <Button onClick={() => handleToggle('collateralEditing')} variant={collateralVariant}>
           {t('system.collateral')}
         </Button>
-        <Button onClick={handleToggle} variant={daiVariant}>
+        <Button onClick={() => handleToggle('daiEditing')} variant={daiVariant}>
           {t('system.dai')}
         </Button>
-        <Button
-          onClick={() => window.alert('Switch to multiply')}
-          variant="vaultEditingControllerInactive"
-        >
+        <Button onClick={() => handleToggle('multiplyTransitionEditing')} variant={multiplyVariant}>
           Multiply
         </Button>
       </Grid>
-      {/* <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
-        {stage === 'collateralEditing'
-          ? t('vault-form.subtext.collateral')
-          : t('vault-form.subtext.dai')}
-      </Text> */}
     </Box>
   )
 }
 
-function Header({ header, subtext }: { header: string; subtext: string }) {
+function Header({ header, subtext }: { header: string; subtext?: string }) {
   return (
     <>
       <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
         {header}
       </Text>
-      <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
-        {subtext}
-      </Text>
+      {subtext && (
+        <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
+          {subtext}
+        </Text>
+      )}
     </>
   )
 }
@@ -62,16 +63,18 @@ function Header({ header, subtext }: { header: string; subtext: string }) {
 export function ManageVaultFormHeader(props: ManageVaultState) {
   const { t } = useTranslation()
   const {
+    isMultiplyTransitionStage,
     isEditingStage,
     isProxyStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
     isManageStage,
+    stage,
   } = props
 
   return (
     <Box>
-      {isEditingStage && <ManageVaultEditingController {...props} />}
+      {(isEditingStage || isMultiplyTransitionStage) && <ManageVaultEditingController {...props} />}
       <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
         {isProxyStage && (
           <Header header={t('vault-form.header.proxy')} subtext={t('vault-form.subtext.proxy')} />
@@ -93,6 +96,17 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
             header={t('vault-form.header.confirm-manage')}
             subtext={t('vault-form.subtext.confirm')}
           />
+        )}
+        {isMultiplyTransitionStage && (
+          <Box mt={4}>
+            <Header
+              header={
+                stage === 'multiplyTransitionEditing'
+                  ? 'Get up to [x] ETH exposure from your Vault'
+                  : 'Great, now you will go the new Mutiply interface'
+              }
+            />
+          </Box>
         )}
       </Text>
     </Box>
