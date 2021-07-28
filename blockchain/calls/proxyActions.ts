@@ -4,7 +4,7 @@ import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
 import { amountToWad, amountToWei } from 'blockchain/utils'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-actions'
@@ -289,6 +289,7 @@ export type MultiplyData = {
 
   exchangeAddress: string
   exchangeData: string
+  slippage: BigNumber
 }
 function getMultiplyCallData(data: MultiplyData, context: ContextConnected) {
   const {
@@ -308,7 +309,9 @@ function getMultiplyCallData(data: MultiplyData, context: ContextConnected) {
       fromTokenAddress: tokens['DAI'].address,
       toTokenAddress: tokens[data.token].address,
       fromTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
-      toTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
+      toTokenAmount: amountToWei(data.borrowedCollateral, data.token)
+        .div(one.minus(data.slippage))
+        .toFixed(0),
       minToTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
       exchangeAddress: data.exchangeAddress,
       _exchangeCalldata: data.exchangeData,

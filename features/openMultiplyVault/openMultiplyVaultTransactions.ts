@@ -273,6 +273,7 @@ export function multiplyVault(
     afterOutstandingDebt,
     account,
     swap,
+    slippage,
   }: OpenMultiplyVaultState,
 ) {
   return sendWithGasEstimation(openMultiplyVault, {
@@ -286,6 +287,7 @@ export function multiplyVault(
     exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '0x',
     borrowedCollateral: buyingCollateral,
     requiredDebt: afterOutstandingDebt,
+    slippage: slippage,
   })
     .pipe(
       transactionToX<OpenMultiplyVaultChange, MultiplyData>(
