@@ -1,12 +1,13 @@
 import { BigNumber } from 'bignumber.js'
-import { one, zero } from 'helpers/zero'
+import { calculateParamsIncreaseMP } from 'helpers/multiply/calculations'
+import { zero } from 'helpers/zero'
 
 import { OpenMultiplyVaultState } from './openMultiplyVault'
 
 const MULTIPLY_FEE = new BigNumber(0.01)
 const LOAN_FEE = new BigNumber(0.0009)
 
-const MAX_COLL_RATIO = new BigNumber(5)
+export const MAX_COLL_RATIO = new BigNumber(5)
 
 export interface OpenMultiplyVaultCalculations {
   afterLiquidationPrice: BigNumber
@@ -59,31 +60,6 @@ export const defaultOpenVaultStateCalculations: OpenMultiplyVaultCalculations = 
   totalExposureUSD: zero,
 }
 
-function calculateParamsIncreaseMP(
-  oraclePrice: BigNumber,
-  marketPrice: BigNumber,
-  OF: BigNumber,
-  FF: BigNumber,
-  currentColl: BigNumber,
-  currentDebt: BigNumber,
-  requiredCollRatio: BigNumber,
-  slippage: BigNumber,
-  depositDai = new BigNumber(0),
-) {
-  const marketPriceSlippage = marketPrice.times(one.plus(slippage))
-  const debt = marketPriceSlippage
-    .times(currentColl.times(oraclePrice).minus(requiredCollRatio.times(currentDebt)))
-    .plus(oraclePrice.times(depositDai).minus(oraclePrice.times(depositDai).times(OF)))
-    .div(
-      marketPriceSlippage
-        .times(requiredCollRatio)
-        .times(one.plus(FF))
-        .minus(oraclePrice.times(one.minus(OF))),
-    )
-  const collateral = debt.times(one.minus(OF)).div(marketPriceSlippage)
-  return [debt, collateral]
-}
-
 function getCollRatioByDebt(
   requiredDebt: BigNumber,
   depositAmount: BigNumber,
@@ -100,7 +76,7 @@ function getCollRatioByDebt(
     .div(marketPriceMaxSlippage.plus(marketPriceMaxSlippage.times(loanFee)))
 }
 
-function sliderToCollRatio(
+export function sliderToCollRatio(
   maxCollRatio: BigNumber,
   liquidationRatio: BigNumber,
   slider: BigNumber,
@@ -152,7 +128,7 @@ export function applyOpenMultiplyVaultCalculations(
   const maxCollRatio = BigNumber.max(
     BigNumber.min(maxPossibleCollRatio, MAX_COLL_RATIO),
     liquidationRatio,
-  )
+  ).integerValue(BigNumber.ROUND_DOWN)
 
   const requiredCollRatio =
     maxPossibleCollRatio &&
@@ -255,8 +231,6 @@ export function applyOpenMultiplyVaultCalculations(
     totalExposureUSD,
     marketPrice,
 
-    // maxDepositAmount,
-    // maxDepositAmountUSD,
     // maxGenerateAmount,
     // maxGenerateAmountCurrentPrice,
     // maxGenerateAmountNextPrice,
@@ -264,7 +238,6 @@ export function applyOpenMultiplyVaultCalculations(
     // afterCollateralizationRatioAtNextPrice,
     // daiYieldFromDepositingCollateral,
     // daiYieldFromDepositingCollateralAtNextPrice,
-    // afterLiquidationPrice,
     // afterFreeCollateral,
   }
 }
