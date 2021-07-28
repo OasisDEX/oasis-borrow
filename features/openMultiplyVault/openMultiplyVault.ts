@@ -361,7 +361,6 @@ export function createOpenMultiplyVault$(
                       map(validateWarnings),
                       map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
                       tap((state) => stateSubject$.next(state)),
-                      tap(console.log),
                     )
                   }),
                 ),
