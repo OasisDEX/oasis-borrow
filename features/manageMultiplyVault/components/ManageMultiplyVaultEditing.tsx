@@ -48,7 +48,7 @@ function SellTokenInput({
   updateSellMax,
   sellAmount,
   sellAmountUSD,
-  vault: { token },
+  vault: { token, freeCollateral, freeCollateralUSD },
   priceInfo: { currentCollateralPrice },
 }: ManageMultiplyVaultState) {
   return (
@@ -60,12 +60,12 @@ function SellTokenInput({
       showMax={true}
       hasAuxiliary={true}
       disabled={!accountIsController}
-      maxAmount={maxGenerateAmount}
+      maxAmount={freeCollateral}
       maxAmountLabel={'Max'}
       onSetMax={updateSellMax}
       onChange={handleNumericInput(updateSell!)}
       auxiliaryAmount={sellAmountUSD}
-      maxAuxiliaryAmount={new BigNumber(10)}
+      maxAuxiliaryAmount={freeCollateralUSD}
       onAuxiliaryChange={handleNumericInput(updateSellUSD!)}
       hasError={false}
     />

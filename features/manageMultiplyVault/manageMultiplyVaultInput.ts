@@ -366,14 +366,16 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
 
   if (change.kind === 'sellMax') {
     // const { sellAmountUSD } = change
-    // const { priceInfo } = state
+    const {
+      vault: { freeCollateral, freeCollateralUSD },
+    } = state
     // const sellAmount = sellAmountUSD?.div(priceInfo.currentCollateralPrice)
     // TO DO: figure out what is the sell max amount
 
     return {
       ...state,
-      sellAmount: zero,
-      sellAmountUSD: zero,
+      sellAmount: freeCollateral,
+      sellAmountUSD: freeCollateralUSD,
 
       buyAmount: undefined,
       buyAmountUSD: undefined,
