@@ -659,6 +659,26 @@ describe('manageVault', () => {
         expect(state().stage).to.deep.equal('daiEditing')
       })
     })
+
+    describe('multiply transitions', () => {
+      it('should handle previously selected editing stage when going back and forth from multiply transition stages', () => {
+        const state = getStateUnpacker(mockManageVault$())
+        expect(state().stage).to.be.equal('collateralEditing')
+
+        state().toggle!('multiplyTransitionEditing')
+        expect(state().stage).to.be.equal('multiplyTransitionEditing')
+        state().progress!()
+        expect(state().stage).to.be.equal('multiplyTransitionConfirmation')
+        state().regress!()
+        expect(state().stage).to.be.equal('collateralEditing')
+        state().toggle!('daiEditing')
+        expect(state().stage).to.be.equal('daiEditing')
+        state().toggle!('multiplyTransitionEditing')
+        expect(state().stage).to.be.equal('multiplyTransitionEditing')
+        state().regress!()
+        expect(state().stage).to.be.equal('daiEditing')
+      })
+    })
   })
 
   it('should add meaningful message when ledger throws error with disabled contract data', () => {

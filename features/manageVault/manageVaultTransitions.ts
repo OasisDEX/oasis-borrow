@@ -52,11 +52,16 @@ export function applyManageVaultTransition(
   }
 
   if (change.kind === 'toggleEditing') {
+    const { stage } = state
+
     return {
       ...state,
       ...manageVaultFormDefaults,
       stage: change.stage,
-      originalEditingStage: change.stage,
+      originalEditingStage:
+        change.stage === 'multiplyTransitionEditing'
+          ? (stage as ManageVaultEditingStage)
+          : change.stage,
     }
   }
 

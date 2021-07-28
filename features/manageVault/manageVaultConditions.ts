@@ -202,6 +202,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     maxWithdrawAmountAtNextPrice,
     maxGenerateAmountAtCurrentPrice,
     maxGenerateAmountAtNextPrice,
+    isMultiplyTransitionStage,
   } = state
 
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
@@ -369,11 +370,14 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
       customDaiAllowanceAmountExceedsMaxUint256 ||
       customDaiAllowanceAmountLessThanPaybackAmount)
 
+  const multiplyTransitionDisabled = isMultiplyTransitionStage && !accountIsController
+
   const canProgress = !(
     isLoadingStage ||
     editingProgressionDisabled ||
     collateralAllowanceProgressionDisabled ||
-    daiAllowanceProgressionDisabled
+    daiAllowanceProgressionDisabled ||
+    multiplyTransitionDisabled
   )
 
   const canRegress = ([
