@@ -4,6 +4,7 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
@@ -170,6 +171,8 @@ export type OpenMultiplyVaultState = MutableOpenMultiplyVaultState &
     errorMessages: OpenMultiplyVaultErrorMessage[]
     warningMessages: OpenMultiplyVaultWarningMessage[]
     summary: OpenVaultSummary
+    totalSteps: number
+    currentStep: number
   }
 
 function addTransitions(
@@ -321,6 +324,8 @@ export function createOpenMultiplyVault$(
                       return change$.next({ kind: 'injectStateOverride', stateToOverride })
                     }
 
+                    const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
+
                     const initialState: OpenMultiplyVaultState = {
                       ...defaultMutableOpenVaultState,
                       ...defaultOpenVaultStateCalculations,
@@ -339,6 +344,8 @@ export function createOpenMultiplyVault$(
                       warningMessages: [],
                       summary: defaultOpenVaultSummary,
                       slippage: SLIPPAGE,
+                      totalSteps,
+                      currentStep: 1,
                       injectStateOverride,
                     }
 

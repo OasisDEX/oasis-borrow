@@ -18,6 +18,7 @@ import {
 import {
   applyOpenVaultConditions,
   applyOpenVaultStageCategorisation,
+  calculateInitialTotalSteps,
   defaultOpenVaultConditions,
   OpenVaultConditions,
 } from './openVaultConditions'
@@ -157,6 +158,8 @@ export type OpenVaultState = MutableOpenVaultState &
     errorMessages: OpenVaultErrorMessage[]
     warningMessages: OpenVaultWarningMessage[]
     summary: OpenVaultSummary
+    totalSteps: number
+    currentStep: number
   }
 
 function addTransitions(
@@ -304,6 +307,8 @@ export function createOpenVault$(
                       return change$.next({ kind: 'injectStateOverride', stateToOverride })
                     }
 
+                    const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
+
                     const initialState: OpenVaultState = {
                       ...defaultMutableOpenVaultState,
                       ...defaultOpenVaultStateCalculations,
@@ -321,6 +326,8 @@ export function createOpenVault$(
                       errorMessages: [],
                       warningMessages: [],
                       summary: defaultOpenVaultSummary,
+                      totalSteps,
+                      currentStep: 1,
                       injectStateOverride,
                     }
 

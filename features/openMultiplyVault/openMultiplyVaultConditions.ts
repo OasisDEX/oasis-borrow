@@ -1,5 +1,6 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { zero } from 'helpers/zero'
 
 import { OpenMultiplyVaultStage, OpenMultiplyVaultState } from './openMultiplyVault'
 
@@ -11,12 +12,22 @@ const defaultOpenVaultStageCategories = {
 }
 
 export function applyOpenVaultStageCategorisation(state: OpenMultiplyVaultState) {
-  switch (state.stage) {
+  const { stage, token, depositAmount, allowance } = state
+  const openingEmptyVault = depositAmount ? depositAmount.eq(zero) : true
+  const depositAmountLessThanAllowance = allowance && depositAmount && allowance.gte(depositAmount)
+
+  const hasAllowance = token === 'ETH' ? true : depositAmountLessThanAllowance || openingEmptyVault
+
+  const totalSteps = !hasAllowance && state.totalSteps < 3 ? state.totalSteps + 1 : state.totalSteps
+
+  switch (stage) {
     case 'editing':
       return {
         ...state,
         ...defaultOpenVaultStageCategories,
         isEditingStage: true,
+        totalSteps,
+        currentStep: 1,
       }
     case 'proxyWaitingForConfirmation':
     case 'proxyWaitingForApproval':
@@ -27,6 +38,8 @@ export function applyOpenVaultStageCategorisation(state: OpenMultiplyVaultState)
         ...state,
         ...defaultOpenVaultStageCategories,
         isProxyStage: true,
+        totalSteps,
+        currentStep: totalSteps - (token === 'ETH' ? 1 : 2),
       }
     case 'allowanceWaitingForConfirmation':
     case 'allowanceWaitingForApproval':
@@ -37,6 +50,8 @@ export function applyOpenVaultStageCategorisation(state: OpenMultiplyVaultState)
         ...state,
         ...defaultOpenVaultStageCategories,
         isAllowanceStage: true,
+        totalSteps,
+        currentStep: totalSteps - 1,
       }
     case 'openWaitingForConfirmation':
     case 'openWaitingForApproval':
@@ -47,9 +62,11 @@ export function applyOpenVaultStageCategorisation(state: OpenMultiplyVaultState)
         ...state,
         ...defaultOpenVaultStageCategories,
         isOpenStage: true,
+        totalSteps,
+        currentStep: totalSteps,
       }
     default:
-      throw new UnreachableCaseError(state.stage)
+      throw new UnreachableCaseError(stage)
   }
 }
 

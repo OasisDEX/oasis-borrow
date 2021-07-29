@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
@@ -11,13 +12,41 @@ const defaultOpenVaultStageCategories = {
   isOpenStage: false,
 }
 
+export function calculateInitialTotalSteps(
+  proxyAddress: string | undefined,
+  token: string,
+  allowance: BigNumber | undefined,
+) {
+  let totalSteps = 2
+
+  if (!proxyAddress) {
+    totalSteps += 1
+  }
+
+  if (token !== 'ETH' && (!allowance || allowance.lte(zero))) {
+    totalSteps += 1
+  }
+
+  return totalSteps
+}
+
 export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
-  switch (state.stage) {
+  const { stage, token, depositAmount, allowance } = state
+  const openingEmptyVault = depositAmount ? depositAmount.eq(zero) : true
+  const depositAmountLessThanAllowance = allowance && depositAmount && allowance.gte(depositAmount)
+
+  const hasAllowance = token === 'ETH' ? true : depositAmountLessThanAllowance || openingEmptyVault
+
+  const totalSteps = !hasAllowance && state.totalSteps === 2 ? 3 : state.totalSteps
+
+  switch (stage) {
     case 'editing':
       return {
         ...state,
         ...defaultOpenVaultStageCategories,
         isEditingStage: true,
+        totalSteps,
+        currentStep: 1,
       }
     case 'proxyWaitingForConfirmation':
     case 'proxyWaitingForApproval':
@@ -28,6 +57,8 @@ export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
         ...state,
         ...defaultOpenVaultStageCategories,
         isProxyStage: true,
+        totalSteps,
+        currentStep: totalSteps - (token === 'ETH' ? 1 : 2),
       }
     case 'allowanceWaitingForConfirmation':
     case 'allowanceWaitingForApproval':
@@ -38,6 +69,8 @@ export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
         ...state,
         ...defaultOpenVaultStageCategories,
         isAllowanceStage: true,
+        totalSteps,
+        currentStep: totalSteps - 1,
       }
     case 'openWaitingForConfirmation':
     case 'openWaitingForApproval':
@@ -48,9 +81,11 @@ export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
         ...state,
         ...defaultOpenVaultStageCategories,
         isOpenStage: true,
+        totalSteps,
+        currentStep: totalSteps,
       }
     default:
-      throw new UnreachableCaseError(state.stage)
+      throw new UnreachableCaseError(stage)
   }
 }
 

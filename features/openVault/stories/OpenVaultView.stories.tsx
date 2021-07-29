@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { OpenVaultView } from 'features/openVault/components/OpenVaultView'
 import { openVaultStory } from 'helpers/stories/OpenVaultStory'
+import { zero } from 'helpers/zero'
 import { NEVER } from 'rxjs'
 
 export const WaitingForIlksToBeFetched = openVaultStory({
@@ -27,6 +28,7 @@ export const EditingStage = openVaultStory({
 
 export const ProxyWaitingForConfirmation = openVaultStory({
   ilk: 'ETH-A',
+  allowance: zero,
 })({
   stage: 'proxyWaitingForConfirmation',
   depositAmount: new BigNumber('50'),
