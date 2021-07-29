@@ -4,7 +4,6 @@ import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
-import { divide } from 'lodash'
 import React from 'react'
 import { Box, Button, Divider, Flex, Grid, Select, Slider, Text, useThemeUI } from 'theme-ui'
 
