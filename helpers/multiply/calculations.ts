@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { one, zero } from 'helpers/zero'
+import { one } from 'helpers/zero'
 
 const MULTIPLY_FEE = new BigNumber(0.01)
 const LOAN_FEE = new BigNumber(0.009)
@@ -37,7 +37,7 @@ export function calculateParamsDecreaseMP(
   currentDebt: BigNumber,
   requiredCollRatio: BigNumber,
   slippage: BigNumber,
-  depositDai: BigNumber = zero,
+  // depositDai: BigNumber = zero,
 ) {
   const marketPriceSlippage = marketPrice.times(one.minus(slippage))
   const debt = currentColl
@@ -53,7 +53,7 @@ export function calculateParamsDecreaseMP(
   return [debt, collateral]
 }
 
-interface MultiplyParams {
+export interface MultiplyParams {
   buyingCollateral: BigNumber
   buyingCollateralUSD: BigNumber
   totalExposure: BigNumber
@@ -71,12 +71,12 @@ export function getMultiplyParams(
 
   currentDebt: BigNumber,
   currentCollateral: BigNumber,
-  currentCollRatio: BigNumber,
+  currentCollRatio: BigNumber, // calculate
+
+  requiredCollRatio: BigNumber,
 
   providedCollateral: BigNumber,
   providedDai: BigNumber,
-  requiredCollRatio: BigNumber,
-
   withdrawDai: BigNumber,
   withdrawColl: BigNumber,
 
