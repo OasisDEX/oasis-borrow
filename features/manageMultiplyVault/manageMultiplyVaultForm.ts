@@ -1,13 +1,14 @@
-import { MainAction, ManageMultiplyVaultState, ManageVaultChange } from './manageMultiplyVault'
+import {
+  CloseVaultTo,
+  MainAction,
+  ManageMultiplyVaultState,
+  ManageVaultChange,
+  OtherAction,
+} from './manageMultiplyVault'
 import { allowanceDefaults } from './manageMultiplyVaultAllowances'
-import { depositAndGenerateDefaults, paybackAndWithdrawDefaults } from './manageMultiplyVaultInput'
 
 export const manageVaultFormDefaults: Partial<ManageMultiplyVaultState> = {
   ...allowanceDefaults,
-  ...depositAndGenerateDefaults,
-  ...paybackAndWithdrawDefaults,
-  showDepositAndGenerateOption: false,
-  showPaybackAndWithdrawOption: false,
 }
 
 export type ManageVaultFormChange =
@@ -26,6 +27,14 @@ export type ManageVaultFormChange =
   | {
       kind: 'mainAction'
       mainAction: MainAction
+    }
+  | {
+      kind: 'otherAction'
+      otherAction: OtherAction
+    }
+  | {
+      kind: 'closeVaultTo'
+      closeVaultTo: CloseVaultTo
     }
 
 export function applyManageVaultForm(
@@ -84,6 +93,28 @@ export function applyManageVaultForm(
     return {
       ...state,
       mainAction: change.mainAction,
+    }
+  }
+
+  if (change.kind === 'otherAction') {
+    return {
+      ...state,
+      otherAction: change.otherAction,
+    }
+  }
+
+  if (change.kind === 'closeVaultTo') {
+    return {
+      ...state,
+      closeVaultTo: change.closeVaultTo,
+    }
+  }
+
+  if (change.kind === 'requiredCollRatio') {
+    console.log(change.requiredCollRatio?.toString())
+    return {
+      ...state,
+      requiredCollRatio: change.requiredCollRatio,
     }
   }
 

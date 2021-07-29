@@ -3,10 +3,13 @@ import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
+import { zero } from 'helpers/zero'
+import { divide } from 'lodash'
 import React from 'react'
-import { Box, Button, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
+import { Box, Button, Divider, Flex, Grid, Select, Slider, Text, useThemeUI } from 'theme-ui'
 
-import { ManageMultiplyVaultState } from '../manageMultiplyVault'
+import { ManageMultiplyVaultState, OtherAction } from '../manageMultiplyVault'
+import { MAX_COLL_RATIO } from '../manageMultiplyVaultCalculations'
 import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
 
 function BuyTokenInput({
@@ -42,7 +45,6 @@ function BuyTokenInput({
 
 function SellTokenInput({
   accountIsController,
-  maxGenerateAmount,
   updateSell,
   updateSellUSD,
   updateSellMax,
@@ -72,33 +74,41 @@ function SellTokenInput({
   )
 }
 
-export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
+function AdjustPositionForm(props: ManageMultiplyVaultState) {
   const {
     theme: { colors },
   } = useThemeUI()
 
   const {
-    vault: { token },
+    vault: { token, collateralizationRatio },
     afterCollateralizationRatio,
     afterLiquidationPrice,
     showSliderController,
     toggleSliderController,
-    adjustSlider,
-    slider,
     mainAction,
     setMainAction,
+    ilkData: { liquidationRatio },
+    requiredCollRatio,
+    updateRequiredCollRatio,
+    maxCollRatio,
   } = props
 
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const slider =
+    (requiredCollRatio || collateralizationRatio)
+      .minus(liquidationRatio)
+      .div(maxCollRatio.minus(liquidationRatio))
+      .times(100) || zero
+
   const sliderBackground = `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
     colors?.sliderTrackFill
   } ${slider?.toNumber()}%, ${colors?.primaryAlt} ${slider?.toNumber()}%, ${
     colors?.primaryAlt
   } 100%)`
 
-  return (
-    <Grid gap={4}>
-      {showSliderController ? (
+  if (showSliderController) {
+    return (
+      <>
         <Grid gap={2}>
           <Box>
             <Flex
@@ -131,11 +141,15 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
               sx={{
                 background: sliderBackground,
               }}
-              step={2}
-              value={slider?.toNumber() || 0}
-              max={100}
+              step={5}
+              min={liquidationRatio.times(100).toNumber()}
+              max={MAX_COLL_RATIO.times(100).toNumber()}
+              value={
+                requiredCollRatio?.times(100).toNumber() ||
+                collateralizationRatio.times(100).toNumber()
+              }
               onChange={(e) => {
-                adjustSlider!(new BigNumber(e.target.value))
+                updateRequiredCollRatio!(new BigNumber(e.target.value).div(100))
               }}
             />
           </Box>
@@ -152,33 +166,67 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
             </Flex>
           </Box>
         </Grid>
-      ) : (
-        <Box>
-          <Flex>
-            <Button
-              onClick={() => setMainAction!('buy')}
-              variant={mainAction === 'buy' ? 'beanActive' : 'bean'}
-              sx={{ mr: 2 }}
-            >
-              Buy {token}
-            </Button>
-            <Button
-              onClick={() => setMainAction!('sell')}
-              variant={mainAction === 'sell' ? 'beanActive' : 'bean'}
-            >
-              Sell {token}
-            </Button>
-          </Flex>
-          {mainAction === 'buy' ? <BuyTokenInput {...props} /> : <SellTokenInput {...props} />}
-        </Box>
-      )}
+        <Button sx={{ py: 2 }} variant="actionOption" mt={3} onClick={toggleSliderController!}>
+          <Text pr={1}>Or enter an amount of ETH</Text>
+        </Button>
+      </>
+    )
+  }
 
+  return (
+    <Box>
+      <Flex>
+        <Button
+          onClick={() => setMainAction!('buy')}
+          variant={mainAction === 'buy' ? 'beanActive' : 'bean'}
+          sx={{ mr: 2 }}
+        >
+          Buy {token}
+        </Button>
+        <Button
+          onClick={() => setMainAction!('sell')}
+          variant={mainAction === 'sell' ? 'beanActive' : 'bean'}
+        >
+          Sell {token}
+        </Button>
+      </Flex>
+      {mainAction === 'buy' ? <BuyTokenInput {...props} /> : <SellTokenInput {...props} />}
       <Button sx={{ py: 2 }} variant="actionOption" mt={3} onClick={toggleSliderController!}>
-        <Text pr={1}>
-          {showSliderController ? 'Or enter an amount of ETH' : 'Or use the risk slider'}
-        </Text>
+        <Text pr={1}>Or use the risk slider</Text>
       </Button>
+    </Box>
+  )
+}
 
+function OtherActionsForm(props: ManageMultiplyVaultState) {
+  return (
+    <Grid>
+      <Select
+        value={props.otherAction}
+        onChange={(e) => props.setOtherAction!(e.target.value as OtherAction)}
+      >
+        <option value="depositCollateral">Deposit Collateral</option>
+        <option value="depositDai">Deposit Dai</option>
+        <option value="withdrawCollateral">Withdraw Collateral</option>
+        <option value="withdrawDai">Withdraw Dai</option>
+        <option value="closeVault">Close Vault</option>
+      </Select>
+      {props.otherAction}
+    </Grid>
+  )
+}
+
+export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
+  const {
+    theme: { colors },
+  } = useThemeUI()
+
+  const { stage } = props
+
+  return (
+    <Grid gap={4}>
+      {stage === 'adjustPosition' && <AdjustPositionForm {...props} />}
+      {stage === 'otherActions' && <OtherActionsForm {...props} />}
       <Divider sx={{ width: '100%' }} />
       <ManageMultiplyVaultChangesInformation {...props} />
     </Grid>

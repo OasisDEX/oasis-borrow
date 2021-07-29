@@ -112,8 +112,6 @@ export function applyManageVaultTransition(
     const {
       errorMessages,
       proxyAddress,
-      depositAmount,
-      paybackAmount,
       collateralAllowance,
       daiAllowance,
       vault: { token, debtOffset },
@@ -121,79 +119,77 @@ export function applyManageVaultTransition(
     const canProgress = !errorMessages.length
     const hasProxy = !!proxyAddress
 
-    const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
-    const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
+    // const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
+    // const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
 
-    const depositAmountLessThanCollateralAllowance =
-      collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
+    // const depositAmountLessThanCollateralAllowance =
+    //   collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
 
-    const paybackAmountLessThanDaiAllowance =
-      daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
+    // const paybackAmountLessThanDaiAllowance =
+    //   daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
 
-    const hasCollateralAllowance =
-      token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
+    // const hasCollateralAllowance =
+    //   token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
 
-    const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+    // const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
 
-    if (canProgress) {
-      if (!hasProxy) {
-        return { ...state, stage: 'proxyWaitingForConfirmation' }
-      }
-      if (!hasCollateralAllowance) {
-        return { ...state, stage: 'collateralAllowanceWaitingForConfirmation' }
-      }
-      if (!hasDaiAllowance) {
-        return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
-      }
-      return { ...state, stage: 'manageWaitingForConfirmation' }
-    }
+    // if (canProgress) {
+    //   if (!hasProxy) {
+    //     return { ...state, stage: 'proxyWaitingForConfirmation' }
+    //   }
+    //   if (!hasCollateralAllowance) {
+    //     return { ...state, stage: 'collateralAllowanceWaitingForConfirmation' }
+    //   }
+    //   if (!hasDaiAllowance) {
+    //     return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
+    //   }
+    //   return { ...state, stage: 'manageWaitingForConfirmation' }
+    // }
   }
 
   if (change.kind === 'progressProxy') {
     const {
       originalEditingStage,
-      depositAmount,
-      paybackAmount,
       collateralAllowance,
       daiAllowance,
       vault: { token, debtOffset },
     } = state
-    const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
-    const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
+    //   const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
+    //   const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
 
-    const depositAmountLessThanCollateralAllowance =
-      collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
-    const paybackAmountLessThanDaiAllowance =
-      daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
-    const hasCollateralAllowance =
-      token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
-    const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+    //   const depositAmountLessThanCollateralAllowance =
+    //     collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
+    //   const paybackAmountLessThanDaiAllowance =
+    //     daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
+    //   const hasCollateralAllowance =
+    //     token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
+    //   const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
 
-    if (!hasCollateralAllowance) {
-      return { ...state, stage: 'collateralAllowanceWaitingForConfirmation' }
-    }
-    if (!hasDaiAllowance) {
-      return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
-    }
-    return { ...state, stage: originalEditingStage }
-  }
+    //   if (!hasCollateralAllowance) {
+    //     return { ...state, stage: 'collateralAllowanceWaitingForConfirmation' }
+    //   }
+    //   if (!hasDaiAllowance) {
+    //     return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
+    //   }
+    //   return { ...state, stage: originalEditingStage }
+    // }
 
-  if (change.kind === 'progressCollateralAllowance') {
-    const {
-      originalEditingStage,
-      paybackAmount,
-      daiAllowance,
-      vault: { debtOffset },
-    } = state
-    const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
-    const paybackAmountLessThanDaiAllowance =
-      daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
-    const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+    // if (change.kind === 'progressCollateralAllowance') {
+    //   const {
+    //     originalEditingStage,
+    //     paybackAmount,
+    //     daiAllowance,
+    //     vault: { debtOffset },
+    //   } = state
+    //   const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
+    //   const paybackAmountLessThanDaiAllowance =
+    //     daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
+    //   const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
 
-    if (!hasDaiAllowance) {
-      return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
-    }
-    return { ...state, stage: originalEditingStage }
+    //   if (!hasDaiAllowance) {
+    //     return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
+    //   }
+    //   return { ...state, stage: originalEditingStage }
   }
 
   return state
@@ -204,10 +200,10 @@ export function progressManage(
   state: ManageMultiplyVaultState,
   change: (ch: ManageVaultChange) => void,
 ) {
-  const { depositAmount, generateAmount } = state
-  const isDepositAndGenerate = depositAmount || generateAmount
+  // const { depositAmount, generateAmount } = state
+  // const isDepositAndGenerate = depositAmount || generateAmount
 
-  if (isDepositAndGenerate) {
+  if (true) {
     return manageVaultDepositAndGenerate(txHelpers$, change, state)
   } else {
     return manageVaultWithdrawAndPayback(txHelpers$, change, state)
