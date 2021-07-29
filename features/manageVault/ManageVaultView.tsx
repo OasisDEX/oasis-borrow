@@ -1,3 +1,4 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultHeader } from 'components/vault/VaultHeader'
@@ -5,9 +6,10 @@ import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
+import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Grid } from 'theme-ui'
+import { Box, Divider, Flex, Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
 import { ManageVaultButton } from './ManageVaultButton'
@@ -19,6 +21,57 @@ import { ManageVaultEditing } from './ManageVaultEditing'
 import { ManageVaultErrors } from './ManageVaultErrors'
 import { ManageVaultWarnings } from './ManageVaultWarnings'
 
+function TextWithCheckmark({ children }: WithChildren) {
+  return (
+    <Flex sx={{ alignItems: 'center' }}>
+      <Flex
+        sx={{
+          width: '20px',
+          height: '20px',
+          border: '2px solid',
+          borderColor: 'onSuccess',
+          borderRadius: '50%',
+          mr: 3,
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'onSuccess',
+        }}
+      >
+        <Icon name="checkmark" size="auto" width="11px" sx={{ position: 'relative', top: '1px' }} />
+      </Flex>
+      <Text>{children}</Text>
+    </Flex>
+  )
+}
+
+function ManageVaultMultiplyTransition({ stage }: ManageVaultState) {
+  return stage === 'multiplyTransitionEditing' ? (
+    <Grid mt={-3}>
+      <Grid variant="text.paragraph3" sx={{ color: 'text.subtitle' }}>
+        <TextWithCheckmark>Get up to 3x exposure with your ETH </TextWithCheckmark>
+        <TextWithCheckmark>
+          A new UI specifically designed for multiplying your Vault
+        </TextWithCheckmark>
+        <TextWithCheckmark>Grouped transactions for greater efficacy and saving</TextWithCheckmark>
+        <TextWithCheckmark>Adjust risk and exposure in 1 click</TextWithCheckmark>
+      </Grid>
+      <Divider />
+      <Grid gap={2}>
+        <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
+          Important
+        </Text>
+        <Text variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+          Better copy needed.
+        </Text>
+      </Grid>
+    </Grid>
+  ) : (
+    <Box>
+      <Icon name="multiply_transition" size="auto" width="420" height="219" />
+    </Box>
+  )
+}
+
 function ManageVaultForm(props: ManageVaultState) {
   const {
     isEditingStage,
@@ -26,6 +79,7 @@ function ManageVaultForm(props: ManageVaultState) {
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
     isManageStage,
+    isMultiplyTransitionStage,
     accountIsConnected,
     daiAllowanceTxHash,
     collateralAllowanceTxHash,
@@ -39,6 +93,7 @@ function ManageVaultForm(props: ManageVaultState) {
       {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
       {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}
       {isManageStage && <ManageVaultConfirmation {...props} />}
+      {isMultiplyTransitionStage && <ManageVaultMultiplyTransition {...props} />}
       {accountIsConnected && (
         <>
           <ManageVaultErrors {...props} />

@@ -157,7 +157,7 @@ describe('manageVault', () => {
       it('should toggle to daiEditing stage', () => {
         const state = getStateUnpacker(mockManageVault$())
         expect(state().stage).to.deep.equal('collateralEditing')
-        state().toggle!()
+        state().toggle!('daiEditing')
         expect(state().stage).to.deep.equal('daiEditing')
       })
 
@@ -171,7 +171,7 @@ describe('manageVault', () => {
             },
           }),
         )
-        state().toggle!()
+        state().toggle!('daiEditing')
         state().updateGenerate!(generateAmount)
         expect(state().generateAmount!).to.deep.equal(generateAmount)
       })
@@ -188,7 +188,7 @@ describe('manageVault', () => {
             },
           }),
         )
-        state().toggle!()
+        state().toggle!('daiEditing')
         state().updateDeposit!(depositAmount)
         expect(state().depositAmount!).to.be.undefined
         state().updateGenerate!(generateAmount)
@@ -211,7 +211,7 @@ describe('manageVault', () => {
             },
           }),
         )
-        state().toggle!()
+        state().toggle!('daiEditing')
         state().updatePayback!(paybackAmount)
         expect(state().paybackAmount).to.deep.equal(paybackAmount)
       })
@@ -228,7 +228,7 @@ describe('manageVault', () => {
             },
           }),
         )
-        state().toggle!()
+        state().toggle!('daiEditing')
         state().updateWithdraw!(withdrawAmount)
         expect(state().withdrawAmount!).to.be.undefined
         state().updatePayback!(paybackAmount)
@@ -278,7 +278,7 @@ describe('manageVault', () => {
             collateralAllowance: maxUint256,
           }),
         )
-        state().toggle!()
+        state().toggle!('daiEditing')
         state().updateGenerate!(generateAmount)
         state().toggleDepositAndGenerateOption!()
         state().updateDeposit!(depositAmount)
@@ -339,7 +339,7 @@ describe('manageVault', () => {
             daiAllowance: zero,
           }),
         )
-        state().toggle!()
+        state().toggle!('daiEditing')
         state().updatePayback!(paybackAmount)
         state().progress!()
         expect(state().stage).to.deep.equal('daiAllowanceWaitingForConfirmation')
@@ -465,7 +465,7 @@ describe('manageVault', () => {
 
         _proxyAddress$.next()
         expect(state().proxyAddress).to.be.undefined
-        state().toggle!()
+        state().toggle!('daiEditing')
         state().updatePayback!(paybackAmount)
         state().progress!()
         expect(state().stage).to.deep.equal('proxyWaitingForConfirmation')
@@ -631,7 +631,7 @@ describe('manageVault', () => {
           }),
         )
 
-        state().toggle!()
+        state().toggle!('daiEditing')
         expect(state().stage).to.deep.equal('daiEditing')
         state().updatePayback!(paybackAmount)
         state().progress!()
@@ -657,6 +657,26 @@ describe('manageVault', () => {
         expect(state().stage).to.deep.equal('daiAllowanceSuccess')
         state().progress!()
         expect(state().stage).to.deep.equal('daiEditing')
+      })
+    })
+
+    describe('multiply transitions', () => {
+      it('should handle previously selected editing stage when going back and forth from multiply transition stages', () => {
+        const state = getStateUnpacker(mockManageVault$())
+        expect(state().stage).to.be.equal('collateralEditing')
+
+        state().toggle!('multiplyTransitionEditing')
+        expect(state().stage).to.be.equal('multiplyTransitionEditing')
+        state().progress!()
+        expect(state().stage).to.be.equal('multiplyTransitionConfirmation')
+        state().regress!()
+        expect(state().stage).to.be.equal('collateralEditing')
+        state().toggle!('daiEditing')
+        expect(state().stage).to.be.equal('daiEditing')
+        state().toggle!('multiplyTransitionEditing')
+        expect(state().stage).to.be.equal('multiplyTransitionEditing')
+        state().regress!()
+        expect(state().stage).to.be.equal('daiEditing')
       })
     })
   })
