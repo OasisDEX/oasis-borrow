@@ -27,9 +27,7 @@ describe('open multiply vault', () => {
     state().updateDeposit!(new BigNumber(10))
     const maxPossibleCollRatio = state().maxCollRatio
 
-    const risk = collRatioToSlider(maxPossibleCollRatio!, new BigNumber(1.5), new BigNumber(2))
-
-    state().updateRisk!(risk)
+    state().updateRequiredCollRatio!(new BigNumber(2))
 
     const stateSnap = state()
 

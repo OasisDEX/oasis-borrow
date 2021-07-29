@@ -16,16 +16,16 @@ interface DepositMaxChange {
   kind: 'depositMax'
 }
 
-interface MultiplyChange {
-  kind: 'slider'
-  slider?: BigNumber
+interface RequiredCollRatioChange {
+  kind: 'requiredCollRatio'
+  requiredCollRatio?: BigNumber
 }
 
 export type OpenVaultInputChange =
   | DepositChange
   | DepositUSDChange
   | DepositMaxChange
-  | MultiplyChange
+  | RequiredCollRatioChange
 
 export function applyOpenVaultInput(
   change: OpenMultiplyVaultChange,
@@ -40,7 +40,7 @@ export function applyOpenVaultInput(
       ...state,
       depositAmount,
       depositAmountUSD,
-      multiply: undefined,
+      requiredCollRatio: undefined,
     }
   }
 
@@ -53,7 +53,7 @@ export function applyOpenVaultInput(
       ...state,
       depositAmount,
       depositAmountUSD,
-      multiply: undefined,
+      requiredCollRatio: undefined,
     }
   }
 
@@ -64,13 +64,14 @@ export function applyOpenVaultInput(
       ...state,
       depositAmount: maxDepositAmount,
       depositAmountUSD: maxDepositAmountUSD,
+      requiredCollRatio: undefined,
     }
   }
 
-  if (change.kind === 'slider') {
+  if (change.kind === 'requiredCollRatio') {
     return {
       ...state,
-      slider: change.slider,
+      requiredCollRatio: change.requiredCollRatio,
     }
   }
 
