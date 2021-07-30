@@ -138,7 +138,6 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
 
 export function validateWarnings(state: ManageMultiplyVaultState): ManageMultiplyVaultState {
   const {
-    depositAmount,
     vault,
     ilkData,
     errorMessages,
@@ -149,6 +148,8 @@ export function validateWarnings(state: ManageMultiplyVaultState): ManageMultipl
     vaultWillBeAtRiskLevelWarningAtNextPrice,
     maxGenerateAmountAtCurrentPrice,
   } = state
+  //TODO
+  const depositAmount = zero
 
   const warningMessages: ManageVaultWarningMessage[] = []
 
