@@ -94,14 +94,6 @@ function getCollRatioByDebt(
     .div(marketPriceMaxSlippage.plus(marketPriceMaxSlippage.times(loanFee)))
 }
 
-function sliderToCollRatio(
-  maxCollRatio: BigNumber,
-  liquidationRatio: BigNumber,
-  slider: BigNumber,
-) {
-  return liquidationRatio.minus(maxCollRatio).times(slider).plus(maxCollRatio)
-}
-
 export function collRatioToSlider(
   maxCollRatio: BigNumber,
   liquidationRatio: BigNumber,
@@ -132,7 +124,7 @@ function getMaxPossibleCollRatioOrMax(
     .integerValue(BigNumber.ROUND_DOWN)
     .div(100)
 
-  const maxCollRatio = maxCollRatioPrecise.minus(maxCollRatioPrecise.times(100).mod(5).div(100))
+  return maxCollRatioPrecise.minus(maxCollRatioPrecise.times(100).mod(5).div(100))
 }
 
 export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
@@ -158,22 +150,13 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
   const maxDepositAmount = collateralBalance
   const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
 
-  const maxPossibleCollRatio = getCollRatioByDebt(
+  const maxCollRatio = getMaxPossibleCollRatioOrMax(
     debtFloor,
     depositAmount,
     oraclePrice,
     marketPriceMaxSlippage,
-  )
-
-  const maxCollRatioPrecise = BigNumber.max(
-    BigNumber.min(maxPossibleCollRatio, MAX_COLL_RATIO),
     liquidationRatio,
   )
-    .times(100)
-    .integerValue(BigNumber.ROUND_DOWN)
-    .div(100)
-
-  const maxCollRatio = maxCollRatioPrecise.minus(maxCollRatioPrecise.times(100).mod(5).div(100))
   const requiredCollRatioSafe = requiredCollRatio || maxCollRatio
 
   const afterOutstandingDebt = getDebtByCollRatio(

@@ -216,10 +216,6 @@ function OtherActionsForm(props: ManageMultiplyVaultState) {
 }
 
 export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
-  const {
-    theme: { colors },
-  } = useThemeUI()
-
   const { stage } = props
 
   return (

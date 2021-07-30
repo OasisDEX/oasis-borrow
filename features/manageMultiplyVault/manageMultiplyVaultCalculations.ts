@@ -1,8 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
-import { Vault } from 'blockchain/vaults'
-import { BalanceInfo } from 'features/shared/balanceInfo'
-import { one, zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 
 import { ManageMultiplyVaultState } from './manageMultiplyVault'
 
@@ -150,16 +147,16 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
  * generating or paying back
  *
  */
-function calculateAfterBackingCollateral({
-  afterDebt,
-  liquidationRatio,
-  price,
-}: Pick<ManageMultiplyVaultState, 'afterDebt'> &
-  Pick<IlkData, 'liquidationRatio'> & { price: BigNumber }) {
-  if (!afterDebt.gt(zero)) return zero
+// function calculateAfterBackingCollateral({
+//   afterDebt,
+//   liquidationRatio,
+//   price,
+// }: Pick<ManageMultiplyVaultState, 'afterDebt'> &
+//   Pick<IlkData, 'liquidationRatio'> & { price: BigNumber }) {
+//   if (!afterDebt.gt(zero)) return zero
 
-  return afterDebt.times(liquidationRatio).div(price)
-}
+//   return afterDebt.times(liquidationRatio).div(price)
+// }
 
 /*
  * Should return the maximum amount of collateral that can be possibly
@@ -167,16 +164,16 @@ function calculateAfterBackingCollateral({
  * the amount of dai being generated or payed back. It should return a
  * non-negative value
  */
-function calculateAfterFreeCollateral({
-  lockedCollateral,
-  backingCollateral,
-}: {
-  lockedCollateral: BigNumber
-  backingCollateral: BigNumber
-}) {
-  const amount = lockedCollateral.minus(backingCollateral)
-  return amount.gte(zero) ? amount : zero
-}
+// function calculateAfterFreeCollateral({
+//   lockedCollateral,
+//   backingCollateral,
+// }: {
+//   lockedCollateral: BigNumber
+//   backingCollateral: BigNumber
+// }) {
+//   const amount = lockedCollateral.minus(backingCollateral)
+//   return amount.gte(zero) ? amount : zero
+// }
 
 /*
  * Should return the maximum amount of collateral that can be withdrawn given
@@ -301,12 +298,18 @@ function calculateAfterFreeCollateral({
 export function applyManageVaultCalculations(
   state: ManageMultiplyVaultState,
 ): ManageMultiplyVaultState {
-  const {
-    balanceInfo: { collateralBalance, daiBalance },
-    ilkData: { liquidationRatio, ilkDebtAvailable },
-    priceInfo: { currentCollateralPrice, nextCollateralPrice },
-    vault: { lockedCollateral, debt, debtOffset, lockedCollateralUSD, liquidationPrice },
-  } = state
+  // const {
+  // balanceInfo: { collateralBalance, daiBalance },
+  // ilkData: { liquidationRatio, ilkDebtAvailable },
+  // priceInfo: { currentCollateralPrice, nextCollateralPrice },
+  // vault: {
+  // lockedCollateral,
+  // debt,
+  // debtOffset,
+  // lockedCollateralUSD,
+  // liquidationPrice,
+  // },
+  // } = state
 
   // const shouldPaybackAll = determineShouldPaybackAll({
   //   paybackAmount,
@@ -445,14 +448,14 @@ export function applyManageVaultCalculations(
   // const multiply = lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
   // const afterMultiply = afterLockedCollateralUSD.div(afterLockedCollateralUSD.div(afterDebt))
 
-  const liquidationPriceCurrentPriceDifference = !liquidationPrice.isZero()
-    ? one.minus(liquidationPrice.div(currentCollateralPrice))
-    : undefined
+  // const liquidationPriceCurrentPriceDifference = !liquidationPrice.isZero()
+  //   ? one.minus(liquidationPrice.div(currentCollateralPrice))
+  //   : undefined
 
-  const collateralizationRatioAtNextPrice =
-    lockedCollateral.gt(zero) && debt.gt(zero)
-      ? lockedCollateral.times(nextCollateralPrice).div(debt)
-      : zero
+  // const collateralizationRatioAtNextPrice =
+  //   lockedCollateral.gt(zero) && debt.gt(zero)
+  //     ? lockedCollateral.times(nextCollateralPrice).div(debt)
+  //     : zero
 
   return {
     ...state,
