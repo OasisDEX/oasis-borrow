@@ -15,7 +15,7 @@ export function SelectVaultTypeModal({ ilk, token, close, balance }: ModalProps<
   const { t } = useTranslation()
 
   return (
-    <Modal close={close} sx={{ width: '500px', margin: '0 auto', p: 0 }}>
+    <Modal close={close} sx={{ maxWidth: '500px', margin: '0 auto', p: 0 }}>
       <ModalCloseIcon sx={{ top: '30px' }} close={close} />
       <Grid sx={{ px: 3, py: 4, mx: 1 }}>
         <Box>

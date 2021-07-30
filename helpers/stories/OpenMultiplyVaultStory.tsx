@@ -1,4 +1,5 @@
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
+import { SharedUIContext } from 'components/SharedUIProvider'
 import { OpenMultiplyVaultView } from 'features/openMultiplyVault/components/OpenMultiplyVaultView'
 import { defaultMutableOpenVaultState, MutableOpenVaultState } from 'features/openVault/openVault'
 import {
@@ -8,6 +9,7 @@ import {
 import { AppContext } from 'next/app'
 import React from 'react'
 import { useEffect } from 'react'
+import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
@@ -59,11 +61,20 @@ OpenMultiplyVaultStory) {
     const openMultiplyVault$ = () => obs$
     const ctx = ({
       multiplyVault$: openMultiplyVault$,
+      accountData$: of(EMPTY),
     } as any) as AppContext
 
     return (
       <appContext.Provider value={ctx as any}>
-        <OpenMultiplyVaultStoryContainer ilk={'WBTC-A'} title={title} />
+        <SharedUIContext.Provider
+          value={{
+            vaultFormOpened: true,
+            setVaultFormOpened: () => null,
+            setVaultFormToggleTitle: () => null,
+          }}
+        >
+          <OpenMultiplyVaultStoryContainer ilk={'WBTC-A'} title={title} />
+        </SharedUIContext.Provider>
       </appContext.Provider>
     )
   }

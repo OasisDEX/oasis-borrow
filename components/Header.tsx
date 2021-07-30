@@ -21,7 +21,7 @@ export function Logo({ sx }: { sx?: SxStyleProp }) {
       sx={{
         color: 'primary',
         fontWeight: 'semiBold',
-        fontSize: 5,
+        fontSize: '0px',
         cursor: 'pointer',
         zIndex: 1,
         ...sx,
@@ -90,16 +90,15 @@ export function AppHeader() {
     <BasicHeader
       sx={{
         position: 'relative',
-        flexDirection: ['column-reverse', 'row', 'row'],
-        alignItems: ['flex-end', 'center', 'center'],
+        alignItems: 'center',
         zIndex: 1,
       }}
       variant="appContainer"
     >
       <>
-        <Logo sx={{ position: ['absolute', 'static', 'static'], left: 3, top: 3 }} />
+        <Logo />
         {context?.status === 'connected' && (
-          <Flex sx={{ ml: 'auto', zIndex: 1, mt: [3, 0, 0] }}>
+          <Flex sx={{ alignItems: 'center', ml: 'auto', zIndex: 1 }}>
             <AppLink
               variant="nav"
               sx={{ mr: 4 }}
@@ -110,11 +109,14 @@ export function AppHeader() {
             </AppLink>
             <AppLink
               variant="nav"
-              sx={{ mr: [0, 4, 4] }}
+              sx={{ mr: [0, 4] }}
               href="/vaults/list"
               onClick={() => trackingEvents.createNewVault(firstCDP)}
             >
-              {t('open-new-vault')}
+              <Box sx={{ display: ['none', 'block'] }}>{t('open-new-vault')}</Box>
+              <Box sx={{ display: ['block', 'none'], fontSize: '0px' }}>
+                <Icon name="plus_header" size="auto" width="18px" height="18px" />
+              </Box>
             </AppLink>
           </Flex>
         )}

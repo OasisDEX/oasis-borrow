@@ -163,7 +163,7 @@ describe('manageVaultValidations', () => {
       }),
     )
 
-    state().toggle!()
+    state().toggle!('daiEditing')
     state().updatePayback!(paybackAmount)
 
     state().progress!()
@@ -189,7 +189,7 @@ describe('manageVaultValidations', () => {
       }),
     )
 
-    state().toggle!()
+    state().toggle!('daiEditing')
     state().updatePayback!(paybackAmountExceedsVaultDebt)
     expect(state().errorMessages).to.deep.equal(['paybackAmountExceedsVaultDebt'])
 
@@ -212,7 +212,7 @@ describe('manageVaultValidations', () => {
       },
     })
 
-    state().toggle!()
+    state().toggle!('daiEditing')
     state().updatePayback!(paybackAmount.plus(state().vault.debtOffset))
     expect(state().insufficientDaiAllowance).to.be.true
 
@@ -248,7 +248,7 @@ describe('manageVaultValidations', () => {
 
     state().updateWithdraw!(withdrawAmount)
     expect(state().errorMessages).to.deep.eq(['withdrawCollateralOnVaultUnderDebtFloor'])
-    state().toggle!()
+    state().toggle!('daiEditing')
     state().updatePaybackMax!()
     expect(state().errorMessages).to.deep.eq([])
   })

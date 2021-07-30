@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 
 import { ManageMultiplyVaultState } from './manageMultiplyVault'
 
@@ -26,12 +26,14 @@ export interface ManageVaultCalculations {
   afterDebt: BigNumber
   afterLiquidationPrice: BigNumber
   afterCollateralizationRatio: BigNumber
+  collateralizationRatioAtNextPrice: BigNumber
   afterCollateralizationRatioAtNextPrice: BigNumber
   afterFreeCollateral: BigNumber
   afterFreeCollateralAtNextPrice: BigNumber
   afterBackingCollateral: BigNumber
   afterBackingCollateralAtNextPrice: BigNumber
   afterLockedCollateral: BigNumber
+  afterLockedCollateralUSD: BigNumber
   afterCollateralBalance: BigNumber
   shouldPaybackAll: boolean
 
@@ -39,6 +41,7 @@ export interface ManageVaultCalculations {
   afterMultiply: BigNumber
 
   maxCollRatio: BigNumber
+  liquidationPriceCurrentPriceDifference: BigNumber | undefined
 }
 
 export const MAX_COLL_RATIO = new BigNumber(5)
@@ -56,6 +59,7 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
   maxPaybackAmount: zero,
   afterDebt: zero,
   afterCollateralizationRatio: zero,
+  collateralizationRatioAtNextPrice: zero,
   afterCollateralizationRatioAtNextPrice: zero,
   afterLiquidationPrice: zero,
   afterFreeCollateral: zero,
@@ -63,6 +67,7 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
   afterBackingCollateral: zero,
   afterBackingCollateralAtNextPrice: zero,
   afterLockedCollateral: zero,
+  afterLockedCollateralUSD: zero,
   afterCollateralBalance: zero,
   daiYieldFromTotalCollateral: zero,
   daiYieldFromTotalCollateralAtNextPrice: zero,
@@ -72,6 +77,7 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
   afterMultiply: zero,
 
   maxCollRatio: MAX_COLL_RATIO,
+  liquidationPriceCurrentPriceDifference: undefined,
 }
 
 /*
@@ -299,7 +305,7 @@ export function applyManageVaultCalculations(
     balanceInfo: { collateralBalance, daiBalance },
     ilkData: { liquidationRatio, ilkDebtAvailable },
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
-    vault: { lockedCollateral, debt, debtOffset, lockedCollateralUSD },
+    vault: { lockedCollateral, debt, debtOffset, lockedCollateralUSD, liquidationPrice },
   } = state
 
   // const shouldPaybackAll = determineShouldPaybackAll({
@@ -438,6 +444,15 @@ export function applyManageVaultCalculations(
 
   // const multiply = lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
   // const afterMultiply = afterLockedCollateralUSD.div(afterLockedCollateralUSD.div(afterDebt))
+
+  const liquidationPriceCurrentPriceDifference = !liquidationPrice.isZero()
+    ? one.minus(liquidationPrice.div(currentCollateralPrice))
+    : undefined
+
+  const collateralizationRatioAtNextPrice =
+    lockedCollateral.gt(zero) && debt.gt(zero)
+      ? lockedCollateral.times(nextCollateralPrice).div(debt)
+      : zero
 
   return {
     ...state,

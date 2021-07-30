@@ -130,11 +130,11 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     selectedAllowanceRadio,
     allowanceAmount,
     allowance,
-    multiply,
     maxCollRatio,
   } = state
 
-  const inputAmountsEmpty = !depositAmount && !multiply
+  const inputAmountsEmpty = !depositAmount
+
   const canAdjustRisk =
     depositAmount !== undefined &&
     maxCollRatio !== undefined &&

@@ -50,38 +50,41 @@ export function OpenVaultEditing(props: OpenVaultState) {
           hasError={false}
         />
         {showGenerateOptionButton && (
-          <Button
-            variant="actionOption"
-            mt={3}
-            onClick={() => {
-              toggleGenerateOption!()
-            }}
-          >
-            {showGenerateOption ? <MinusIcon /> : <PlusIcon />}
-            <Text pr={1}>
-              {t('manage-vault.action-option', {
-                action: t('vault-actions.generate'),
-                token: 'DAI',
-              })}
-            </Text>
-          </Button>
-        )}
+          <Box>
+            <Button
+              variant={`actionOption${showGenerateOption ? 'Opened' : ''}`}
+              mt={3}
+              onClick={() => {
+                toggleGenerateOption!()
+              }}
+            >
+              {showGenerateOption ? <MinusIcon /> : <PlusIcon />}
+              <Text pr={1}>
+                {t('manage-vault.action-option', {
+                  action: t('vault-actions.generate'),
+                  token: 'DAI',
+                })}
+              </Text>
+            </Button>
 
-        {showGenerateOption && (
-          <VaultActionInput
-            action="Generate"
-            amount={generateAmount}
-            token={'DAI'}
-            showMax={true}
-            maxAmount={maxGenerateAmount}
-            maxAmountLabel={'Max'}
-            onSetMax={updateGenerateMax}
-            onChange={handleNumericInput(updateGenerate!)}
-            hasError={false}
-          />
+            {showGenerateOption && (
+              <VaultActionInput
+                collapsed
+                action="Generate"
+                amount={generateAmount}
+                token={'DAI'}
+                showMax={true}
+                maxAmount={maxGenerateAmount}
+                maxAmountLabel={'Max'}
+                onSetMax={updateGenerateMax}
+                onChange={handleNumericInput(updateGenerate!)}
+                hasError={false}
+              />
+            )}
+          </Box>
         )}
       </Box>
-      <Divider />
+      {showGenerateOptionButton && <Divider />}
       <OpenVaultChangesInformation {...props} />
     </Grid>
   )

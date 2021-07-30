@@ -1,13 +1,19 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import {
+  AfterPillProps,
+  getAfterPillColors,
+  getCollRatioColor,
   VaultDetailsCard,
   VaultDetailsCardCollateralLocked,
   VaultDetailsCardCurrentPrice,
+  VaultDetailsCardLiquidationPrice,
+  VaultDetailsCardMockedModal,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { useModal } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
@@ -16,7 +22,12 @@ import { ManageVaultState } from './manageVault'
 
 function ManageVaultDetailsSummary({
   vault: { debt, token, freeCollateral, daiYieldFromLockedCollateral },
-}: ManageVaultState) {
+  afterDebt,
+  afterFreeCollateral,
+  daiYieldFromTotalCollateral,
+  afterPillColors,
+  showAfterPill,
+}: ManageVaultState & AfterPillProps) {
   const { t } = useTranslation()
   const { symbol } = getToken(token)
 
@@ -30,6 +41,15 @@ function ManageVaultDetailsSummary({
             {` DAI`}
           </>
         }
+        valueAfter={
+          showAfterPill && (
+            <>
+              {formatAmount(afterDebt, 'DAI')}
+              {` DAI`}
+            </>
+          )
+        }
+        afterPillColors={afterPillColors}
       />
 
       <VaultDetailsSummaryItem
@@ -40,6 +60,15 @@ function ManageVaultDetailsSummary({
             {` ${symbol}`}
           </>
         }
+        valueAfter={
+          showAfterPill && (
+            <>
+              {formatAmount(afterFreeCollateral, symbol)}
+              {` ${symbol}`}
+            </>
+          )
+        }
+        afterPillColors={afterPillColors}
       />
       <VaultDetailsSummaryItem
         label={t('system.available-to-generate')}
@@ -49,6 +78,15 @@ function ManageVaultDetailsSummary({
             {` DAI`}
           </>
         }
+        valueAfter={
+          showAfterPill && (
+            <>
+              {formatAmount(daiYieldFromTotalCollateral, 'DAI')}
+              {` DAI`}
+            </>
+          )
+        }
+        afterPillColors={afterPillColors}
       />
     </VaultDetailsSummaryContainer>
   )
@@ -62,35 +100,34 @@ export function ManageVaultDetails(props: ManageVaultState) {
       liquidationPrice,
       lockedCollateral,
       lockedCollateralUSD,
-      underCollateralized,
-      atRiskLevelDanger,
-      atRiskLevelWarning,
     },
+    liquidationPriceCurrentPriceDifference,
+    afterLiquidationPrice,
+    afterCollateralizationRatio,
+    afterLockedCollateralUSD,
+    collateralizationRatioAtNextPrice,
+    inputAmountsEmpty,
+    stage,
   } = props
   const { t } = useTranslation()
-  const collRatioColor = collateralizationRatio.isZero()
-    ? 'primary'
-    : atRiskLevelDanger || underCollateralized
-    ? 'onError'
-    : atRiskLevelWarning
-    ? 'onWarning'
-    : 'onSuccess'
+  const openModal = useModal()
+  const collRatioColor = getCollRatioColor(props, collateralizationRatio)
+  const collRatioNextPriceColor = getCollRatioColor(props, collateralizationRatioAtNextPrice)
+  const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const afterPillColors = getAfterPillColors(afterCollRatioColor)
+  const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
 
   return (
     <Box>
       <Grid variant="vaultDetailsCardsContainer">
-        <VaultDetailsCard
-          title={`${t('system.liquidation-price')}`}
-          value={`$${formatAmount(liquidationPrice, 'USD')}`}
-          // TO DO liquidationPriceNextPrice!
-          valueBottom={
-            <>
-              ${formatAmount(liquidationPrice, 'USD')}
-              <Text as="span" sx={{ color: 'text.subtitle' }}>
-                {` on next price`}
-              </Text>
-            </>
-          }
+        <VaultDetailsCardLiquidationPrice
+          {...{
+            liquidationPrice,
+            liquidationPriceCurrentPriceDifference,
+            afterLiquidationPrice,
+            afterPillColors,
+            showAfterPill,
+          }}
         />
 
         <VaultDetailsCard
@@ -103,11 +140,17 @@ export function ManageVaultDetails(props: ManageVaultState) {
               })}
             </Text>
           }
-          // TO DO collateralizationRatioNextPrice!
+          valueAfter={
+            showAfterPill &&
+            formatPercent(afterCollateralizationRatio.times(100), {
+              precision: 2,
+              roundMode: BigNumber.ROUND_DOWN,
+            })
+          }
           valueBottom={
             <>
-              <Text as="span" sx={{ color: collRatioColor }}>
-                {formatPercent(collateralizationRatio.times(100), {
+              <Text as="span" sx={{ color: collRatioNextPriceColor }}>
+                {formatPercent(collateralizationRatioAtNextPrice.times(100), {
                   precision: 2,
                   roundMode: BigNumber.ROUND_DOWN,
                 })}
@@ -117,16 +160,25 @@ export function ManageVaultDetails(props: ManageVaultState) {
               </Text>
             </>
           }
+          openModal={() => openModal(VaultDetailsCardMockedModal)}
+          afterPillColors={afterPillColors}
         />
 
         <VaultDetailsCardCurrentPrice {...props} />
         <VaultDetailsCardCollateralLocked
           depositAmountUSD={lockedCollateralUSD}
+          afterDepositAmountUSD={afterLockedCollateralUSD}
           depositAmount={lockedCollateral}
           token={token}
+          afterPillColors={afterPillColors}
+          showAfterPill={showAfterPill}
         />
       </Grid>
-      <ManageVaultDetailsSummary {...props} />
+      <ManageVaultDetailsSummary
+        {...props}
+        afterPillColors={afterPillColors}
+        showAfterPill={showAfterPill}
+      />
     </Box>
   )
 }

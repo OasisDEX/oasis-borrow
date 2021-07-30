@@ -11,6 +11,7 @@ const defaultManageVaultStageCategories = {
   isCollateralAllowanceStage: false,
   isDaiAllowanceStage: false,
   isManageStage: false,
+  isMultiplyTransitionStage: false,
 }
 
 export function applyManageVaultStageCategorisation(state: ManageVaultState) {
@@ -63,6 +64,13 @@ export function applyManageVaultStageCategorisation(state: ManageVaultState) {
         ...defaultManageVaultStageCategories,
         isManageStage: true,
       }
+    case 'multiplyTransitionEditing':
+    case 'multiplyTransitionConfirmation':
+      return {
+        ...state,
+        ...defaultManageVaultStageCategories,
+        isMultiplyTransitionStage: true,
+      }
     default:
       throw new UnreachableCaseError(state.stage)
   }
@@ -74,6 +82,7 @@ export interface ManageVaultConditions {
   isCollateralAllowanceStage: boolean
   isDaiAllowanceStage: boolean
   isManageStage: boolean
+  isMultiplyTransitionStage: boolean
 
   canProgress: boolean
   canRegress: boolean
@@ -193,6 +202,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     maxWithdrawAmountAtNextPrice,
     maxGenerateAmountAtCurrentPrice,
     maxGenerateAmountAtNextPrice,
+    isMultiplyTransitionStage,
   } = state
 
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
@@ -360,11 +370,14 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
       customDaiAllowanceAmountExceedsMaxUint256 ||
       customDaiAllowanceAmountLessThanPaybackAmount)
 
+  const multiplyTransitionDisabled = isMultiplyTransitionStage && !accountIsController
+
   const canProgress = !(
     isLoadingStage ||
     editingProgressionDisabled ||
     collateralAllowanceProgressionDisabled ||
-    daiAllowanceProgressionDisabled
+    daiAllowanceProgressionDisabled ||
+    multiplyTransitionDisabled
   )
 
   const canRegress = ([
@@ -376,6 +389,8 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     'daiAllowanceFailure',
     'manageWaitingForConfirmation',
     'manageFailure',
+    'multiplyTransitionEditing',
+    'multiplyTransitionConfirmation',
   ] as ManageVaultStage[]).some((s) => s === stage)
 
   return {

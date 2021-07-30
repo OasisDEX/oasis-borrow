@@ -17,9 +17,11 @@ function DepositInput({
   updateDepositUSD,
   updateDepositMax,
   priceInfo: { currentCollateralPrice },
-}: ManageVaultState) {
+  collapsed,
+}: ManageVaultState & { collapsed?: boolean }) {
   return (
     <VaultActionInput
+      collapsed={collapsed}
       action="Deposit"
       token={token}
       tokenUsdPrice={currentCollateralPrice}
@@ -44,9 +46,11 @@ function GenerateInput({
   maxGenerateAmount,
   updateGenerate,
   updateGenerateMax,
-}: ManageVaultState) {
+  collapsed,
+}: ManageVaultState & { collapsed?: boolean }) {
   return (
     <VaultActionInput
+      collapsed={collapsed}
       action="Generate"
       amount={generateAmount}
       token={'DAI'}
@@ -72,9 +76,11 @@ function WithdrawInput({
   updateWithdrawUSD,
   updateWithdrawMax,
   priceInfo: { currentCollateralPrice },
-}: ManageVaultState) {
+  collapsed,
+}: ManageVaultState & { collapsed?: boolean }) {
   return (
     <VaultActionInput
+      collapsed={collapsed}
       action="Withdraw"
       showMax={true}
       hasAuxiliary={true}
@@ -99,9 +105,11 @@ function PaybackInput({
   maxPaybackAmount,
   updatePayback,
   updatePaybackMax,
-}: ManageVaultState) {
+  collapsed,
+}: ManageVaultState & { collapsed?: boolean }) {
   return (
     <VaultActionInput
+      collapsed={collapsed}
       action="Payback"
       amount={paybackAmount}
       token={'DAI'}
@@ -130,6 +138,7 @@ export function ManageVaultEditing(props: ManageVaultState) {
     showDepositAndGenerateOption,
     showPaybackAndWithdrawOption,
     accountIsController,
+    inputAmountsEmpty,
   } = props
 
   const disableDepositAndGenerate = paybackAmount || withdrawAmount || showPaybackAndWithdrawOption
@@ -152,19 +161,29 @@ export function ManageVaultEditing(props: ManageVaultState) {
       >
         {inverted ? <GenerateInput {...props} /> : <DepositInput {...props} />}
         {showDepositAndGenerateOptionButton && (
-          <Button variant="actionOption" mt={3} onClick={toggleDepositAndGenerateOption!}>
-            {showDepositAndGenerateOption ? <MinusIcon /> : <PlusIcon />}
-            <Text pr={1}>
-              {t('manage-vault.action-option', {
-                action: inverted ? t('vault-actions.deposit') : t('vault-actions.generate'),
-                token: inverted ? token : 'DAI',
-              })}
-            </Text>
-          </Button>
+          <Box>
+            <Button
+              variant={`actionOption${showDepositAndGenerateOption ? 'Opened' : ''}`}
+              mt={3}
+              onClick={toggleDepositAndGenerateOption!}
+            >
+              {showDepositAndGenerateOption ? <MinusIcon /> : <PlusIcon />}
+              <Text pr={1}>
+                {t('manage-vault.action-option', {
+                  action: inverted ? t('vault-actions.deposit') : t('vault-actions.generate'),
+                  token: inverted ? token : 'DAI',
+                })}
+              </Text>
+            </Button>
+            {showDepositAndGenerateOption &&
+              (!!depositAmount || !!generateAmount) &&
+              (inverted ? (
+                <DepositInput {...props} collapsed />
+              ) : (
+                <GenerateInput {...props} collapsed />
+              ))}
+          </Box>
         )}
-        {showDepositAndGenerateOption &&
-          (!!depositAmount || !!generateAmount) &&
-          (inverted ? <DepositInput {...props} /> : <GenerateInput {...props} />)}
       </Box>
 
       <Flex sx={{ alignItems: 'center', justifyContent: 'space-evenly' }}>
@@ -186,21 +205,31 @@ export function ManageVaultEditing(props: ManageVaultState) {
       >
         {inverted ? <PaybackInput {...props} /> : <WithdrawInput {...props} />}
         {showPaybackAndWithdrawOptionButton && (
-          <Button variant="actionOption" mt={3} onClick={togglePaybackAndWithdrawOption!}>
-            {showPaybackAndWithdrawOption ? <MinusIcon /> : <PlusIcon />}
-            <Text pr={1}>
-              {t('manage-vault.action-option', {
-                action: inverted ? t('vault-actions.withdraw') : t('vault-actions.payback'),
-                token: inverted ? token : 'DAI',
-              })}
-            </Text>
-          </Button>
+          <Box>
+            <Button
+              variant={`actionOption${showPaybackAndWithdrawOption ? 'Opened' : ''}`}
+              mt={3}
+              onClick={togglePaybackAndWithdrawOption!}
+            >
+              {showPaybackAndWithdrawOption ? <MinusIcon /> : <PlusIcon />}
+              <Text pr={1}>
+                {t('manage-vault.action-option', {
+                  action: inverted ? t('vault-actions.withdraw') : t('vault-actions.payback'),
+                  token: inverted ? token : 'DAI',
+                })}
+              </Text>
+            </Button>
+            {showPaybackAndWithdrawOption &&
+              (!!paybackAmount || !!withdrawAmount) &&
+              (inverted ? (
+                <WithdrawInput {...props} collapsed />
+              ) : (
+                <PaybackInput {...props} collapsed />
+              ))}
+          </Box>
         )}
-        {showPaybackAndWithdrawOption &&
-          (!!paybackAmount || !!withdrawAmount) &&
-          (inverted ? <WithdrawInput {...props} /> : <PaybackInput {...props} />)}
       </Box>
-      <Divider />
+      {!inputAmountsEmpty && <Divider />}
       <ManageVaultChangesInformation {...props} />
     </Grid>
   )
