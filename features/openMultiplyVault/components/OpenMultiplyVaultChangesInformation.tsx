@@ -29,10 +29,10 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
     buyingCollateralUSD,
     token,
     txFees,
-    quote,
     impact,
     loanFees,
     multiplyFee,
+    marketPrice,
     inputAmountsEmpty,
   } = props
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -72,10 +72,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
         label={`${token} Price (impact)`}
         value={
           <Text>
-            $
-            {quote?.status === 'SUCCESS'
-              ? formatFiatBalance(quote.tokenPrice)
-              : formatFiatBalance(zero)}{' '}
+            ${marketPrice ? formatFiatBalance(marketPrice) : formatFiatBalance(zero)}{' '}
             <Text as="span" sx={{ color: 'onError' }}>
               ({formatPercent(impact, { precision: 2 })})
             </Text>

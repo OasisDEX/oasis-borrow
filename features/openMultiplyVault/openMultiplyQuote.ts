@@ -15,6 +15,15 @@ type ExchangeQuoteFailureChange = {
   kind: 'quoteError'
 }
 
+type ExchangeSwapSuccessChange = {
+  kind: 'swap'
+  swap: Quote
+}
+
+type ExchangeSwapFailureChange = {
+  kind: 'swapError'
+}
+
 type ExchangeQuoteResetChange = {
   kind: 'quoteReset'
 }
@@ -22,12 +31,21 @@ export type ExchangeQuoteChanges =
   | ExchangeQuoteSuccessChange
   | ExchangeQuoteFailureChange
   | ExchangeQuoteResetChange
+  | ExchangeSwapSuccessChange
+  | ExchangeSwapFailureChange
 
 export function applyExchange(change: OpenMultiplyVaultChange, state: OpenMultiplyVaultState) {
   if (change.kind === 'quote') {
     return {
       ...state,
       quote: change.quote,
+    }
+  }
+
+  if (change.kind === 'swap') {
+    return {
+      ...state,
+      swap: change.swap,
     }
   }
 
@@ -47,6 +65,12 @@ export function quoteToChange(quote: Quote) {
     : { kind: 'quoteError' as const }
 }
 
+export function swapToChange(swap: Quote) {
+  return swap.status === 'SUCCESS'
+    ? { kind: 'swap' as const, swap }
+    : { kind: 'swapError' as const }
+}
+
 export function createExchangeChange$(
   exchangeQuote$: (
     token: string,
@@ -60,9 +84,12 @@ export function createExchangeChange$(
     filter((state) => state.depositAmount !== undefined),
     distinctUntilChanged(
       (s1, s2) =>
-        s1.token === s2.token &&
-        s1.slippage.eq(s2.slippage) &&
-        !!s1.depositAmount?.eq(s2.depositAmount || ''),
+        !!s1.depositAmount &&
+        !!s2.depositAmount &&
+        s1.depositAmount.eq(s2.depositAmount) &&
+        !!s1.slider &&
+        !!s2.slider &&
+        s1.slider.eq(s2.slider),
     ),
     debounceTime(500),
     switchMap((state) =>
@@ -72,7 +99,7 @@ export function createExchangeChange$(
             return exchangeQuote$(
               state.token,
               state.slippage,
-              state.buyingCollateral.times(state.quote.tokenPrice),
+              state.afterOutstandingDebt,
               'BUY_COLLATERAL',
             )
           }
@@ -80,6 +107,7 @@ export function createExchangeChange$(
         }),
       ),
     ),
+    map(swapToChange),
   )
 }
 

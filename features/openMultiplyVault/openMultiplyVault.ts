@@ -19,7 +19,7 @@ import {
 } from './openMultiplyQuote'
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openMultiplyVaultAllowances'
 import {
-  applyOpenVaultCalculations,
+  applyOpenMultiplyVaultCalculations,
   defaultOpenVaultStateCalculations,
   OpenMultiplyVaultCalculations,
 } from './openMultiplyVaultCalculations'
@@ -89,7 +89,7 @@ function apply(state: OpenMultiplyVaultState, change: OpenMultiplyVaultChange) {
   const s5 = applyOpenVaultAllowance(change, s4)
   const s6 = applyOpenVaultEnvironment(change, s5)
   const s7 = applyOpenVaultInjectedOverride(change, s6)
-  const s8 = applyOpenVaultCalculations(s7)
+  const s8 = applyOpenMultiplyVaultCalculations(s7)
   const s9 = applyOpenVaultStageCategorisation(s8)
   const s10 = applyOpenVaultConditions(s9)
   return applyOpenVaultSummary(s10)
@@ -147,6 +147,7 @@ interface OpenMultiplyVaultEnvironment {
   proxyAddress?: string
   allowance?: BigNumber
   quote?: Quote
+  swap?: Quote
   slippage: BigNumber
 }
 

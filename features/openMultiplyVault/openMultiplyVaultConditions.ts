@@ -134,7 +134,6 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
   } = state
 
   const inputAmountsEmpty = !depositAmount
-
   const canAdjustRisk =
     depositAmount !== undefined &&
     maxCollRatio !== undefined &&

@@ -2,11 +2,11 @@ import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
-import { MultiplyData } from 'blockchain/calls/proxyActions'
+import { MultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxHelpers } from 'components/AppContext'
 import { transactionToX } from 'helpers/form'
-import { one, zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { filter, switchMap } from 'rxjs/operators'
 import Web3 from 'web3'
@@ -264,17 +264,30 @@ export function parseVaultIdFromReceiptLogs({ logs }: Receipt): BigNumber | unde
 export function multiplyVault(
   { sendWithGasEstimation }: TxHelpers,
   change: (ch: OpenMultiplyVaultChange) => void,
-  { depositAmount, proxyAddress, ilk, token, multiply }: OpenMultiplyVaultState,
+  {
+    depositAmount,
+    proxyAddress,
+    ilk,
+    token,
+    buyingCollateral,
+    afterOutstandingDebt,
+    account,
+    swap,
+    slippage,
+  }: OpenMultiplyVaultState,
 ) {
-  // @ts-ignore
-  // REMOVE IT ONCE MULTIPLY CALL IS IMPLEMENTED
-  sendWithGasEstimation(multiply, {
+  return sendWithGasEstimation(openMultiplyVault, {
     kind: TxMetaKind.multiply,
-    depositAmount: depositAmount || zero,
+    depositCollateral: depositAmount || zero,
+    userAddress: account,
     proxyAddress: proxyAddress!,
     ilk,
     token,
-    multiply: multiply || one,
+    exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '0x',
+    exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '0x',
+    borrowedCollateral: buyingCollateral,
+    requiredDebt: afterOutstandingDebt,
+    slippage: slippage,
   })
     .pipe(
       transactionToX<OpenMultiplyVaultChange, MultiplyData>(
@@ -297,7 +310,5 @@ export function multiplyVault(
           }),
       ),
     )
-    // @ts-ignore
-    // REMOVE IT ONCE MULTIPLY CALL IS IMPLEMENTED
     .subscribe((ch) => change(ch))
 }

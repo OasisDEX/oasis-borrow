@@ -1,12 +1,13 @@
 import { BigNumber } from 'bignumber.js'
+import { calculateParamsIncreaseMP } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
 
 import { OpenMultiplyVaultState } from './openMultiplyVault'
 
 const MULTIPLY_FEE = new BigNumber(0.01)
-const LOAN_FEE = new BigNumber(0.009)
+const LOAN_FEE = new BigNumber(0.0009)
 
-const MAX_COLL_RATIO = new BigNumber(5)
+export const MAX_COLL_RATIO = new BigNumber(5)
 
 export interface OpenMultiplyVaultCalculations {
   afterLiquidationPrice: BigNumber
@@ -17,6 +18,7 @@ export interface OpenMultiplyVaultCalculations {
   buyingCollateral: BigNumber
   buyingCollateralUSD: BigNumber
   totalExposure?: BigNumber
+  totalExposureUSD?: BigNumber
   impact: BigNumber
   multiply?: BigNumber
   afterOutstandingDebt: BigNumber
@@ -28,7 +30,7 @@ export interface OpenMultiplyVaultCalculations {
   loanFees: BigNumber
   multiplyFee: BigNumber
   maxCollRatio?: BigNumber
-  totalExposureUSD: BigNumber
+  marketPrice?: BigNumber
 
   // afterCollateralizationRatioAtNextPrice: BigNumber
   // daiYieldFromDepositingCollateral: BigNumber
@@ -58,26 +60,6 @@ export const defaultOpenVaultStateCalculations: OpenMultiplyVaultCalculations = 
   totalExposureUSD: zero,
 }
 
-function getDebtByCollRatio(
-  requiredCollRatio: BigNumber,
-  depositAmount: BigNumber,
-  oraclePrice: BigNumber,
-  marketPriceMaxSlippage: BigNumber, // market price in worst case (marketPrice * slippage)
-  loanFee: BigNumber = LOAN_FEE,
-  multiplyFee: BigNumber = MULTIPLY_FEE,
-) {
-  return depositAmount
-    .times(oraclePrice)
-    .times(marketPriceMaxSlippage)
-    .div(
-      requiredCollRatio
-        .times(marketPriceMaxSlippage)
-        .plus(requiredCollRatio.times(marketPriceMaxSlippage).times(loanFee))
-        .minus(oraclePrice)
-        .plus(oraclePrice.times(multiplyFee)),
-    )
-}
-
 function getCollRatioByDebt(
   requiredDebt: BigNumber,
   depositAmount: BigNumber,
@@ -92,14 +74,6 @@ function getCollRatioByDebt(
     .plus(oraclePrice)
     .minus(oraclePrice.times(multiplyFee))
     .div(marketPriceMaxSlippage.plus(marketPriceMaxSlippage.times(loanFee)))
-}
-
-export function collRatioToSlider(
-  maxCollRatio: BigNumber,
-  liquidationRatio: BigNumber,
-  requiredCollRatio: BigNumber,
-) {
-  return requiredCollRatio.minus(maxCollRatio).div(liquidationRatio.minus(maxCollRatio)).times(100)
 }
 
 function getMaxPossibleCollRatioOrMax(
@@ -127,21 +101,29 @@ function getMaxPossibleCollRatioOrMax(
   return maxCollRatioPrecise.minus(maxCollRatioPrecise.times(100).mod(5).div(100))
 }
 
-export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
+export function applyOpenMultiplyVaultCalculations(
+  state: OpenMultiplyVaultState,
+): OpenMultiplyVaultState {
   const {
     depositAmount,
     balanceInfo: { collateralBalance },
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
     ilkData: { liquidationRatio, debtFloor },
     quote,
+    swap,
     slippage,
     requiredCollRatio,
   } = state
 
+  const marketPrice = quote?.status === 'SUCCESS' ? quote.tokenPrice : undefined
   const marketPriceMaxSlippage =
     quote?.status === 'SUCCESS' ? quote.tokenPrice.times(slippage.plus(1)) : undefined
 
-  if (depositAmount === undefined || marketPriceMaxSlippage === undefined) {
+  if (
+    depositAmount === undefined ||
+    marketPrice === undefined ||
+    marketPriceMaxSlippage === undefined
+  ) {
     return { ...state, ...defaultOpenVaultStateCalculations }
   }
 
@@ -157,22 +139,30 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
     marketPriceMaxSlippage,
     liquidationRatio,
   )
+  //.integerValue(BigNumber.ROUND_DOWN)
+
   const requiredCollRatioSafe = requiredCollRatio || maxCollRatio
 
-  const afterOutstandingDebt = getDebtByCollRatio(
-    requiredCollRatioSafe,
-    depositAmount,
-    currentCollateralPrice,
-    marketPriceMaxSlippage,
-  )
+  const [afterOutstandingDebt, buyingCollateral] =
+    depositAmount && marketPriceMaxSlippage && requiredCollRatio && marketPrice
+      ? calculateParamsIncreaseMP(
+          oraclePrice,
+          marketPrice,
+          MULTIPLY_FEE,
+          LOAN_FEE,
+          depositAmount,
+          zero,
+          requiredCollRatio,
+          state.slippage,
+          zero,
+        )
+      : [zero, zero]
 
   const totalExposureUSD = afterOutstandingDebt.gt(0)
     ? afterOutstandingDebt.times(requiredCollRatioSafe)
     : zero
 
   const totalExposure = depositAmount?.gt(0) ? totalExposureUSD.div(currentCollateralPrice) : zero
-
-  const buyingCollateral = depositAmount ? totalExposure.minus(depositAmount) : zero
 
   const afterCollateralBalance = depositAmount
     ? collateralBalance.minus(depositAmount)
@@ -184,9 +174,7 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
       : zero
 
   const buyingCollateralUSD =
-    quote?.status === 'SUCCESS' && buyingCollateral
-      ? buyingCollateral.times(quote.tokenPrice)
-      : zero
+    marketPrice && buyingCollateral ? buyingCollateral.times(marketPrice) : zero
 
   const loanFees = buyingCollateralUSD.times(LOAN_FEE)
   const multiplyFee = afterOutstandingDebt?.times(MULTIPLY_FEE)
@@ -206,19 +194,25 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
     ? currentCollateralPrice.times(liquidationRatio).div(afterCollateralizationRatio)
     : zero
 
-  const impact =
-    quote?.status === 'SUCCESS'
-      ? new BigNumber(quote.daiAmount.minus(quote.collateralAmount)).div(quote.daiAmount)
-      : zero
+  // TODO fix impact
+  const impact = zero
 
-  const afterBuyingPowerUSD =
-    depositAmount && marketPriceMaxSlippage
-      ? getDebtByCollRatio(liquidationRatio, depositAmount, oraclePrice, marketPriceMaxSlippage)
-      : zero
+  const [afterBuyingPowerUSD, afterBuyingPower] = marketPrice
+    ? calculateParamsIncreaseMP(
+        oraclePrice,
+        marketPrice,
+        MULTIPLY_FEE,
+        LOAN_FEE,
+        depositAmount,
+        zero,
+        liquidationRatio,
+        state.slippage,
+      )
+    : [zero, zero]
 
-  const afterBuyingPower = marketPriceMaxSlippage
-    ? afterBuyingPowerUSD.div(marketPriceMaxSlippage)
-    : zero
+  // const afterBuyingPower = marketPriceMaxSlippage
+  //   ? afterBuyingPowerUSD.div(marketPriceMaxSlippage)
+  //   : zero
 
   return {
     ...state,
@@ -242,9 +236,8 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
     afterBuyingPowerUSD,
     maxCollRatio,
     totalExposureUSD,
+    marketPrice,
 
-    // maxDepositAmount,
-    // maxDepositAmountUSD,
     // maxGenerateAmount,
     // maxGenerateAmountCurrentPrice,
     // maxGenerateAmountNextPrice,
@@ -252,7 +245,6 @@ export function applyOpenVaultCalculations(state: OpenMultiplyVaultState): OpenM
     // afterCollateralizationRatioAtNextPrice,
     // daiYieldFromDepositingCollateral,
     // daiYieldFromDepositingCollateralAtNextPrice,
-    // afterLiquidationPrice,
     // afterFreeCollateral,
   }
 }

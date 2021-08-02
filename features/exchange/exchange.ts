@@ -1,4 +1,3 @@
-import { amountFromWei, amountToWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { Context, ContextConnected } from 'blockchain/network'
 import { Observable, of } from 'rxjs'
@@ -8,10 +7,12 @@ import {
   distinctUntilChanged,
   filter,
   map,
-  shareReplay,
+  retry,
   switchMap,
   tap,
 } from 'rxjs/operators'
+
+import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 
 const API_ENDPOINT = `https://api.1inch.exchange/v3.0/1/swap`
 
@@ -42,24 +43,30 @@ interface Tx {
 }
 
 export type ExchangeAction = 'BUY_COLLATERAL' | 'SELL_COLLATERAL'
+
 function getQuote$(
   daiAddress: string,
   collateralAddress: string,
   account: string,
-  amount: BigNumber, // This is always the amount of tokens we want to exchange from
+  amount: BigNumber, // This is always the receiveAtLeast amount of tokens we want to exchange from
   slippage: BigNumber,
   action: ExchangeAction,
 ) {
   const fromTokenAddress = action === 'BUY_COLLATERAL' ? daiAddress : collateralAddress
   const toTokenAddress = action === 'BUY_COLLATERAL' ? collateralAddress : daiAddress
 
-  return ajax(
-    `${API_ENDPOINT}?fromTokenAddress=${fromTokenAddress}&toTokenAddress=${toTokenAddress}&amount=${amountToWei(
-      new BigNumber(amount.toFixed(18)),
-    ).toString()}&fromAddress=${account}&slippage=${slippage
-      .times(100)
-      .toString()}&disableEstimate=true`,
-  ).pipe(
+  //TODO: set proper precision depending on token
+  const searchParams = new URLSearchParams({
+    fromTokenAddress,
+    toTokenAddress,
+    amount: amountToWei(amount).toFixed(0),
+    fromAddress: account,
+    slippage: slippage.times(100).toString(),
+    disableEstimate: 'true',
+    allowPartial: 'false',
+  })
+
+  return ajax(`${API_ENDPOINT}?${searchParams.toString()}`).pipe(
     tap((response) => {
       if (response.status !== 200) throw new Error(response.responseText)
     }),
@@ -80,8 +87,8 @@ function getQuote$(
           : new BigNumber(toTokenAmount).div(new BigNumber(fromTokenAddress)),
       tx,
     })),
+    retry(3),
     catchError(() => of({ status: 'ERROR' as const })),
-    shareReplay(1),
   )
 }
 
@@ -97,12 +104,11 @@ export function createExchangeQuote$(
   return context$.pipe(
     filter((ctx): ctx is ContextConnected => ctx.status === 'connected'),
     switchMap((context) => {
-      const daiAddress = context.tokens['DAI'].address
-      const collateralAddress =
-        token === 'ETH'
-          ? '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-          : context.tokens[token].address
-      return getQuote$(daiAddress, collateralAddress, context.account, amount, slippage, action)
+      const { tokens, exchange } = context
+      const daiAddress = tokens['DAI'].address
+      const collateralAddress = tokens[token].address
+
+      return getQuote$(daiAddress, collateralAddress, exchange.address, amount, slippage, action)
     }),
     distinctUntilChanged((s1, s2) => {
       return JSON.stringify(s1) === JSON.stringify(s2)
