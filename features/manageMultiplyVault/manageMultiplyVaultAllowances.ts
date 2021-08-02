@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { zero } from 'helpers/zero'
 
 import { ManageMultiplyVaultState, ManageVaultChange } from './manageMultiplyVault'
 
@@ -65,11 +66,12 @@ export function applyManageVaultAllowance(
   }
 
   if (change.kind === 'collateralAllowanceAsDepositAmount') {
-    const { depositAmount } = state
+    // TODO
+    // const { depositAmount } = state
     return {
       ...state,
       selectedCollateralAllowanceRadio: 'depositAmount',
-      collateralAllowanceAmount: depositAmount,
+      collateralAllowanceAmount: zero,
     }
   }
 
@@ -98,14 +100,16 @@ export function applyManageVaultAllowance(
   }
 
   if (change.kind === 'daiAllowanceAsPaybackAmount') {
-    const {
-      paybackAmount,
-      vault: { debtOffset },
-    } = state
+    //TODO
+    // const {
+    // paybackAmount,
+    //   vault: { debtOffset },
+    // } = state
     return {
       ...state,
       selectedDaiAllowanceRadio: 'paybackAmount',
-      daiAllowanceAmount: paybackAmount!.plus(debtOffset),
+      daiAllowanceAmount: zero,
+      // daiAllowanceAmount: paybackAmount!.plus(debtOffset),
     }
   }
 

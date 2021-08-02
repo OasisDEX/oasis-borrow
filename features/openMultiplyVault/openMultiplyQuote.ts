@@ -87,9 +87,9 @@ export function createExchangeChange$(
         !!s1.depositAmount &&
         !!s2.depositAmount &&
         s1.depositAmount.eq(s2.depositAmount) &&
-        !!s1.slider &&
-        !!s2.slider &&
-        s1.slider.eq(s2.slider),
+        !!s1.requiredCollRatio &&
+        !!s2.requiredCollRatio &&
+        s1.requiredCollRatio.eq(s2.requiredCollRatio),
     ),
     debounceTime(500),
     switchMap((state) =>

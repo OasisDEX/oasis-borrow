@@ -22,15 +22,23 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
     updateDepositUSD,
     depositAmountUSD,
     maxDepositAmountUSD,
-    updateRisk,
+    updateRequiredCollRatio,
     multiply,
     priceInfo: { currentCollateralPrice },
     canAdjustRisk,
     afterLiquidationPrice,
     afterCollateralizationRatio,
-    slider,
+    requiredCollRatio,
+
+    ilkData: { liquidationRatio },
+    maxCollRatio,
     inputAmountsEmpty,
   } = props
+
+  const slider = maxCollRatio
+    ?.minus(requiredCollRatio || liquidationRatio)
+    ?.div(maxCollRatio.minus(liquidationRatio))
+    .times(100)
 
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const sliderBackground = multiply
@@ -97,14 +105,15 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
           <Slider
             sx={{
               background: sliderBackground,
+              direction: 'rtl',
             }}
             disabled={!canAdjustRisk}
-            step={5}
-            min={0}
-            max={100}
-            value={slider?.toNumber() || 0}
+            step={0.05}
+            min={liquidationRatio.toNumber()}
+            max={maxCollRatio?.toNumber()}
+            value={requiredCollRatio?.toNumber() || maxCollRatio?.toNumber()}
             onChange={(e) => {
-              updateRisk && updateRisk(new BigNumber(e.target.value))
+              updateRequiredCollRatio && updateRequiredCollRatio(new BigNumber(e.target.value))
             }}
           />
         </Box>
