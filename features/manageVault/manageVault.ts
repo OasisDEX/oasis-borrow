@@ -4,6 +4,7 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
+import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
@@ -193,6 +194,9 @@ export type ManageVaultState = MutableManageVaultState &
     errorMessages: ManageVaultErrorMessage[]
     warningMessages: ManageVaultWarningMessage[]
     summary: ManageVaultSummary
+    initialTotalSteps: number
+    totalSteps: number
+    currentStep: number
   }
 
 function addTransitions(
@@ -404,6 +408,12 @@ export function createManageVault$(
                     return change$.next({ kind: 'injectStateOverride', stateToOverride })
                   }
 
+                  const initialTotalSteps = calculateInitialTotalSteps(
+                    proxyAddress,
+                    vault.token,
+                    collateralAllowance,
+                  )
+
                   const initialState: ManageVaultState = {
                     ...defaultMutableManageVaultState,
                     ...defaultManageVaultCalculations,
@@ -421,6 +431,9 @@ export function createManageVault$(
                     errorMessages: [],
                     warningMessages: [],
                     summary: defaultManageVaultSummary,
+                    initialTotalSteps,
+                    totalSteps: initialTotalSteps,
+                    currentStep: 1,
                     injectStateOverride,
                   }
 

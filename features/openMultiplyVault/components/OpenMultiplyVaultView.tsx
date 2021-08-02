@@ -1,8 +1,8 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
+import { VaultFormVaultTypeSwitch, WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultFormHeaderSwitch } from 'components/vault/VaultFormHeader'
 import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -28,19 +28,23 @@ function OpenMultiplyVaultTitle({
   isProxyStage,
   isAllowanceStage,
   token,
+  totalSteps,
+  currentStep,
 }: OpenMultiplyVaultState) {
   const { t } = useTranslation()
   return (
     <Box>
-      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
-        {isEditingStage
-          ? t('vault-form.header.edit')
-          : isProxyStage
-          ? t('vault-form.header.proxy')
-          : isAllowanceStage
-          ? t('vault-form.header.allowance', { token: token.toUpperCase() })
-          : t('vault-form.header.confirm')}
-      </Text>
+      <WithVaultFormStepIndicator {...{ totalSteps, currentStep }}>
+        <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
+          {isEditingStage
+            ? t('vault-form.header.edit')
+            : isProxyStage
+            ? t('vault-form.header.proxy')
+            : isAllowanceStage
+            ? t('vault-form.header.allowance', { token: token.toUpperCase() })
+            : t('vault-form.header.confirm')}
+        </Text>
+      </WithVaultFormStepIndicator>
       <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
         {isEditingStage
           ? t('vault-form.subtext.edit')
@@ -70,7 +74,7 @@ function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
       {isAllowanceStage && <VaultAllowanceStatus {...props} />}
       {isOpenStage && <OpenMultiplyVaultStatus {...props} />}
       {isEditingStage ? (
-        <VaultFormHeaderSwitch href={`/vaults/open/${ilk}`} title="Switch to Borrow" />
+        <VaultFormVaultTypeSwitch href={`/vaults/open/${ilk}`} title="Switch to Borrow" />
       ) : null}
     </VaultFormContainer>
   )

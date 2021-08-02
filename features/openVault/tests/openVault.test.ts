@@ -42,6 +42,7 @@ describe('openVault', () => {
       expect(state()).to.be.undefined
       _ilks$.next(['WBTC-A'])
       expect(state().ilk).to.deep.equal('WBTC-A')
+      expect(state().totalSteps).to.deep.equal(4)
     })
 
     it('should throw error if ilk is not valid', () => {
@@ -57,6 +58,7 @@ describe('openVault', () => {
     it('should start by default at the editing stage', () => {
       const state = getStateUnpacker(mockOpenVault$())
       expect(state().stage).to.deep.equal('editing')
+      expect(state().totalSteps).to.deep.equal(4)
     })
 
     it('should update depositAmount', () => {
@@ -160,14 +162,18 @@ describe('openVault', () => {
       )
 
       _proxyAddress$.next()
+      expect(state().totalSteps).to.deep.equal(4)
       state().progress!()
       expect(state().stage).to.deep.equal('proxyWaitingForConfirmation')
       state().progress!()
       _proxyAddress$.next(DEFAULT_PROXY_ADDRESS)
+      expect(state().currentStep).to.deep.equal(2)
       expect(state().stage).to.deep.equal('proxySuccess')
       expect(state().proxyAddress).to.deep.equal(DEFAULT_PROXY_ADDRESS)
       state().progress!()
       expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
+      expect(state().currentStep).to.deep.equal(3)
+      expect(state().totalSteps).to.deep.equal(4)
     })
 
     it('should handle proxy failure and back to editing after', () => {
@@ -304,10 +310,12 @@ describe('openVault', () => {
       )
 
       state().updateDeposit!(depositAmount)
+      expect(state().totalSteps).to.deep.equal(3)
       state().updateGenerate!(generateAmount)
 
       state().progress!()
       expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
+      expect(state().currentStep).to.deep.equal(2)
       expect(state().allowanceAmount!).to.deep.equal(maxUint256)
       state().setAllowanceAmountCustom!()
       expect(state().allowanceAmount).to.be.undefined
@@ -316,6 +324,7 @@ describe('openVault', () => {
       state().progress!()
       expect(state().stage).to.deep.equal('allowanceSuccess')
       expect(state().allowance!).to.be.deep.equal(customAllowanceAmount)
+      expect(state().totalSteps).to.deep.equal(3)
     })
 
     it('should handle set allowance failure and regress allowance', () => {
@@ -359,6 +368,8 @@ describe('openVault', () => {
           ilk: 'WBTC-A',
         }),
       )
+
+      expect(state().totalSteps).to.deep.equal(2)
       state().updateDeposit!(depositAmount)
       state().updateGenerate!(generateAmount)
       state().progress!()
@@ -410,6 +421,24 @@ describe('openVault', () => {
       expect(state().stage).to.deep.equal('openFailure')
       state().regress!()
       expect(state().stage).to.deep.equal('editing')
+    })
+
+    it('shold update totalSteps if allowance amount is less than deposit amount', () => {
+      const depositAmount = new BigNumber('100')
+      const startingAllowanceAmount = new BigNumber('99')
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: startingAllowanceAmount,
+          ilk: 'WBTC-A',
+        }),
+      )
+
+      expect(state().totalSteps).to.deep.equal(2)
+
+      state().updateDeposit!(depositAmount)
+      expect(state().totalSteps).to.deep.equal(3)
     })
   })
 

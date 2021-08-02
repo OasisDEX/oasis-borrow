@@ -21,6 +21,8 @@ describe('manageVault', () => {
         expect(state().stage).to.be.equal('collateralEditing')
         expect(state().vault.lockedCollateral).to.deep.equal(defaultCollateral)
         expect(state().vault.debt).to.deep.equal(defaultDebt)
+
+        expect(state().totalSteps).to.deep.equal(4)
       })
 
       it('should update deposit amount, deposit amount USD and deposit max with collateral balance', () => {
@@ -257,6 +259,8 @@ describe('manageVault', () => {
             collateralAllowance: maxUint256,
           }),
         )
+
+        expect(state().totalSteps).to.deep.equal(2)
         state().updateDeposit!(depositAmount)
         state().toggleDepositAndGenerateOption!()
         state().updateGenerate!(generateAmount)
@@ -319,11 +323,14 @@ describe('manageVault', () => {
             collateralAllowance: zero,
           }),
         )
+
+        expect(state().totalSteps).to.deep.equal(3)
         state().updateDeposit!(depositAmount)
         state().toggleDepositAndGenerateOption!()
         state().updateGenerate!(generateAmount)
         state().progress!()
         expect(state().stage).to.deep.equal('collateralAllowanceWaitingForConfirmation')
+        expect(state().currentStep).to.deep.equal(2)
       })
 
       it('should progress from editing to daiAllowance flow if user has proxy but insufficent allowance for payback amount', () => {
@@ -339,10 +346,73 @@ describe('manageVault', () => {
             daiAllowance: zero,
           }),
         )
+
         state().toggle!('daiEditing')
         state().updatePayback!(paybackAmount)
         state().progress!()
         expect(state().stage).to.deep.equal('daiAllowanceWaitingForConfirmation')
+      })
+
+      it('shold update totalSteps if allowances amount are less than deposit or payback amount', () => {
+        const daiAllowance = new BigNumber('1000')
+        const collateralAllowance = new BigNumber('1000')
+
+        const paybackAmount = new BigNumber('5000')
+        const depositAmount = new BigNumber('5000')
+        const withdrawAmount = new BigNumber('5000')
+
+        const state = getStateUnpacker(
+          mockManageVault$({
+            vault: {
+              collateral: new BigNumber('400'),
+              debt: new BigNumber('10000'),
+            },
+            proxyAddress: DEFAULT_PROXY_ADDRESS,
+            daiAllowance,
+            collateralAllowance,
+          }),
+        )
+
+        expect(state().totalSteps).to.deep.equal(2)
+        state().updateDeposit!(depositAmount)
+        expect(state().totalSteps).to.deep.equal(3)
+        state().updateDeposit!(undefined)
+        state().updateWithdraw!(withdrawAmount)
+        expect(state().totalSteps).to.deep.equal(2)
+        state().togglePaybackAndWithdrawOption!()
+        state().updatePayback!(paybackAmount)
+        expect(state().totalSteps).to.deep.equal(3)
+
+        state().toggle!('daiEditing')
+        expect(state().totalSteps).to.deep.equal(2)
+        state().updatePayback!(paybackAmount)
+        expect(state().totalSteps).to.deep.equal(3)
+      })
+
+      it('shold decrease totalSteps if user skips collateral deposit and has enough dai allowance to payack', () => {
+        const daiAllowance = new BigNumber('1000')
+
+        const paybackAmount = new BigNumber('500')
+        const depositAmount = new BigNumber('5000')
+
+        const state = getStateUnpacker(
+          mockManageVault$({
+            vault: {
+              collateral: new BigNumber('400'),
+              debt: new BigNumber('10000'),
+            },
+            proxyAddress: DEFAULT_PROXY_ADDRESS,
+            daiAllowance,
+            collateralAllowance: zero,
+          }),
+        )
+
+        expect(state().totalSteps).to.deep.equal(3)
+        state().updateDeposit!(depositAmount)
+        expect(state().totalSteps).to.deep.equal(3)
+        state().toggle!('daiEditing')
+        state().updatePayback!(paybackAmount)
+        expect(state().totalSteps).to.deep.equal(2)
       })
     })
 
