@@ -101,10 +101,10 @@ export function applyManageVaultAllowance(
 
   if (change.kind === 'daiAllowanceAsPaybackAmount') {
     //TODO
-    const {
-      // paybackAmount,
-      vault: { debtOffset },
-    } = state
+    // const {
+    // paybackAmount,
+    //   vault: { debtOffset },
+    // } = state
     return {
       ...state,
       selectedDaiAllowanceRadio: 'paybackAmount',

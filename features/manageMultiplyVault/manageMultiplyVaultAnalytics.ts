@@ -1,9 +1,8 @@
-import { INPUT_DEBOUNCE_TIME, Pages, Tracker } from 'analytics/analytics'
+import { INPUT_DEBOUNCE_TIME } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { merge, Observable, zip } from 'rxjs'
-import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
+import { debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
 import { ManageMultiplyVaultState } from './manageMultiplyVault'
 
@@ -58,7 +57,7 @@ type AllowanceChange = {
 
 export function createManageVaultAnalytics$(
   manageVaultState$: Observable<ManageMultiplyVaultState>,
-  tracker: Tracker,
+  // tracker: Tracker,
 ) {
   const stageChanges = manageVaultState$.pipe(
     map((state) => state.stage),
