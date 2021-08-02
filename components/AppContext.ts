@@ -21,6 +21,7 @@ import {
 } from 'blockchain/calls/proxy'
 import {
   DepositAndGenerateData,
+  MultiplyData,
   OpenData,
   ReclaimData,
   WithdrawAndPaybackData,
@@ -103,6 +104,7 @@ export type TxData =
   | CreateDsProxyData
   | SetProxyOwnerData
   | ReclaimData
+  | MultiplyData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -298,7 +300,7 @@ export function setupAppContext() {
       `${token}_${slippage.toString()}_${amount.toString()}_${action}`,
   )
 
-  const multiplyVault$ = memoize(
+  const openMultiplyVault$ = memoize(
     curry(createOpenMultiplyVault$)(
       connectedContext$,
       txHelpers$,
@@ -403,7 +405,7 @@ export function setupAppContext() {
     termsAcceptance$,
     reclaimCollateral$,
     openVaultOverview$,
-    multiplyVault$,
+    openMultiplyVault$,
     generalManageVault$,
   }
 }

@@ -10,6 +10,7 @@ import * as dssCdpManager from './abi/dss-cdp-manager.json'
 import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
 import * as dssProxyActions from './abi/dss-proxy-actions.json'
 import * as erc20 from './abi/erc20.json'
+import * as exchange from './abi/exchange.json'
 import * as getCdps from './abi/get-cdps.json'
 import * as otc from './abi/matching-market.json'
 import * as mcdCat from './abi/mcd-cat.json'
@@ -18,6 +19,7 @@ import * as mcdJoinDai from './abi/mcd-join-dai.json'
 import * as mcdJug from './abi/mcd-jug.json'
 import * as mcdPot from './abi/mcd-pot.json'
 import * as mcdSpot from './abi/mcd-spot.json'
+import * as dssMultiplyProxyActions from './abi/multiply-proxy-actions.json'
 import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
 import {
@@ -37,6 +39,12 @@ const infuraProjectId =
   process.env.INFURA_PROJECT_ID || getConfig()?.publicRuntimeConfig?.infuraProjectId || ''
 const etherscanAPIKey =
   process.env.ETHERSCAN_API_KEY || getConfig()?.publicRuntimeConfig?.etherscan || ''
+
+const TEMPORARY_MULTIPLY_CONTRACTS = {
+  ACTIONS: '0x0E801D84Fa97b50751Dbf25036d067dCf18858bF',
+  EXCHANGE: '0x8f86403A4DE0BB5791fa46B8e795C547942fE4Cf',
+  FEE_RECIPIENT: '0x34314adbfBb5d239bb67f0265c9c45EB8b834412',
+}
 
 const protoMain = {
   id: '1',
@@ -72,6 +80,13 @@ const protoMain = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, mainnetAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, mainnetAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
+  dssMultiplyProxyActions: contractDesc(
+    dssMultiplyProxyActions,
+    TEMPORARY_MULTIPLY_CONTRACTS.ACTIONS,
+  ), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  exchange: contractDesc(exchange, TEMPORARY_MULTIPLY_CONTRACTS.EXCHANGE), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  feeRecipient: TEMPORARY_MULTIPLY_CONTRACTS.FEE_RECIPIENT, // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  aaveLendingPool: '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5',
   etherscan: {
     url: 'https://etherscan.io',
     apiUrl: 'https://api.etherscan.io/api',
@@ -126,6 +141,13 @@ const kovan: NetworkConfig = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, kovanAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, kovanAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, kovanAddresses.PROXY_ACTIONS),
+  dssMultiplyProxyActions: contractDesc(
+    dssMultiplyProxyActions,
+    TEMPORARY_MULTIPLY_CONTRACTS.ACTIONS,
+  ), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  exchange: contractDesc(exchange, TEMPORARY_MULTIPLY_CONTRACTS.EXCHANGE), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  feeRecipient: TEMPORARY_MULTIPLY_CONTRACTS.FEE_RECIPIENT, // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  aaveLendingPool: '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5',
   etherscan: {
     url: 'https://kovan.etherscan.io',
     apiUrl: 'https://api-kovan.etherscan.io/api',
