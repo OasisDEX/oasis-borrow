@@ -50,6 +50,7 @@ interface VaultActionInputProps {
   maxAmountLabel?: string
 
   hasError: boolean
+  collapsed?: boolean
 }
 
 export function VaultActionInput({
@@ -73,6 +74,7 @@ export function VaultActionInput({
   auxiliaryUsdPrice,
 
   hasError,
+  collapsed,
 }: VaultActionInputProps) {
   const [auxiliaryFlag, setAuxiliaryFlag] = useState<boolean>(false)
   const { symbol: tokenSymbol } = getToken(token)
@@ -100,6 +102,14 @@ export function VaultActionInput({
         position: 'relative',
         opacity: disabled ? '0.3' : '1.0',
         cursor: disabled ? 'not-allowed' : 'default',
+        ...(collapsed && {
+          p: 2,
+          pb: 3,
+          border: 'lightMuted',
+          borderTop: 'none',
+          borderBottomLeftRadius: 'mediumLarge',
+          borderBottomRightRadius: 'mediumLarge',
+        }),
       }}
     >
       <Grid columns="1fr 2fr" py={2}>

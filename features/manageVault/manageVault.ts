@@ -87,7 +87,10 @@ function apply(state: ManageVaultState, change: ManageVaultChange) {
   return applyManageVaultSummary(s10)
 }
 
-export type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
+export type ManageVaultEditingStage =
+  | 'collateralEditing'
+  | 'daiEditing'
+  | 'multiplyTransitionEditing'
 
 export type ManageVaultStage =
   | ManageVaultEditingStage
@@ -111,6 +114,7 @@ export type ManageVaultStage =
   | 'manageInProgress'
   | 'manageFailure'
   | 'manageSuccess'
+  | 'multiplyTransitionConfirmation'
 
 export interface MutableManageVaultState {
   stage: ManageVaultStage
@@ -144,7 +148,7 @@ export interface ManageVaultEnvironment {
 interface ManageVaultFunctions {
   progress?: () => void
   regress?: () => void
-  toggle?: () => void
+  toggle?: (stage: ManageVaultEditingStage) => void
   toggleDepositAndGenerateOption?: () => void
   togglePaybackAndWithdrawOption?: () => void
   updateDeposit?: (depositAmount?: BigNumber) => void
@@ -166,6 +170,7 @@ interface ManageVaultFunctions {
   setDaiAllowanceAmountToPaybackAmount?: () => void
   resetDaiAllowanceAmount?: () => void
   injectStateOverride: (state: Partial<MutableManageVaultState>) => void
+  toggleMultiplyTransition?: () => void
 }
 
 interface ManageVaultTxInfo {
@@ -196,6 +201,25 @@ function addTransitions(
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ): ManageVaultState {
+  if (state.stage === 'multiplyTransitionEditing') {
+    return {
+      ...state,
+      toggle: (stage) => change({ kind: 'toggleEditing', stage }),
+      progress: () => change({ kind: 'progressMultiplyTransition' }),
+      regress: () => change({ kind: 'backToEditing' }),
+    }
+  }
+
+  if (state.stage === 'multiplyTransitionConfirmation') {
+    return {
+      ...state,
+      toggle: (stage) => change({ kind: 'toggleEditing', stage }),
+      // TO DO save to DB + redirect
+      progress: () => window.alert('Switch/Save UI'),
+      regress: () => change({ kind: 'backToEditing' }),
+    }
+  }
+
   if (state.stage === 'collateralEditing' || state.stage === 'daiEditing') {
     return {
       ...state,
@@ -227,7 +251,7 @@ function addTransitions(
         change({
           kind: 'togglePaybackAndWithdrawOption',
         }),
-      toggle: () => change({ kind: 'toggleEditing' }),
+      toggle: (stage) => change({ kind: 'toggleEditing', stage }),
       progress: () => change({ kind: 'progressEditing' }),
     }
   }

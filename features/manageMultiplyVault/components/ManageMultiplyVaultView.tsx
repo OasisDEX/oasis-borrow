@@ -1,11 +1,12 @@
 import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
+import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Card, Divider, Grid } from 'theme-ui'
+import { Box, Grid } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 import { ManageMultiplyVaultButton } from './ManageMultiplyVaultButton'
@@ -35,34 +36,32 @@ function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
   } = props
 
   return (
-    <Card variant="vaultFormContainer">
-      <Grid gap={4} p={2}>
-        <ManageMultiplyVaultFormHeader {...props} />
-        {isEditingStage && <ManageMultiplyVaultEditing {...props} />}
-        {isCollateralAllowanceStage && <ManageMultiplyVaultCollateralAllowance {...props} />}
-        {isDaiAllowanceStage && <ManageMultiplyVaultDaiAllowance {...props} />}
-        {isManageStage && <ManageMultiplyVaultConfirmation {...props} />}
-        {accountIsConnected && (
-          <>
-            <ManageMultiplyVaultErrors {...props} />
-            <ManageMultiplyVaultWarnings {...props} />
-            <ManageMultiplyVaultButton {...props} />
-          </>
-        )}
-        {isProxyStage && <VaultProxyStatusCard {...props} />}
-        {isCollateralAllowanceStage && (
-          <VaultAllowanceStatus
-            {...props}
-            allowanceTxHash={collateralAllowanceTxHash}
-            token={token}
-          />
-        )}
-        {isDaiAllowanceStage && (
-          <VaultAllowanceStatus {...props} allowanceTxHash={daiAllowanceTxHash} token={'DAI'} />
-        )}
-        {isManageStage && <ManageMultiplyVaultConfirmationStatus {...props} />}
-      </Grid>
-    </Card>
+    <VaultFormContainer toggleTitle="Edit Vault">
+      <ManageMultiplyVaultFormHeader {...props} />
+      {isEditingStage && <ManageMultiplyVaultEditing {...props} />}
+      {isCollateralAllowanceStage && <ManageMultiplyVaultCollateralAllowance {...props} />}
+      {isDaiAllowanceStage && <ManageMultiplyVaultDaiAllowance {...props} />}
+      {isManageStage && <ManageMultiplyVaultConfirmation {...props} />}
+      {accountIsConnected && (
+        <>
+          <ManageMultiplyVaultErrors {...props} />
+          <ManageMultiplyVaultWarnings {...props} />
+          <ManageMultiplyVaultButton {...props} />
+        </>
+      )}
+      {isProxyStage && <VaultProxyStatusCard {...props} />}
+      {isCollateralAllowanceStage && (
+        <VaultAllowanceStatus
+          {...props}
+          allowanceTxHash={collateralAllowanceTxHash}
+          token={token}
+        />
+      )}
+      {isDaiAllowanceStage && (
+        <VaultAllowanceStatus {...props} allowanceTxHash={daiAllowanceTxHash} token={'DAI'} />
+      )}
+      {isManageStage && <ManageMultiplyVaultConfirmationStatus {...props} />}
+    </VaultFormContainer>
   )
 }
 
@@ -82,12 +81,11 @@ export function ManageMultiplyVaultContainer({
     <>
       <VaultHeader {...manageVault} header={t('vault.header', { ilk, id })} id={id} />
       <Grid variant="vaultContainer">
-        <Grid gap={5} mb={5} sx={{ order: [3, 1] }}>
+        <Grid gap={5} mb={[0, 5]}>
           <ManageMultiplyVaultDetails {...manageVault} />
           <VaultHistoryView vaultHistory={vaultHistory} />
         </Grid>
-        <Divider sx={{ display: ['block', 'none'], order: [2, 0] }} />
-        <Box sx={{ order: [1, 2] }}>
+        <Box>
           <ManageMultiplyVaultForm {...manageVault} />
         </Box>
       </Grid>

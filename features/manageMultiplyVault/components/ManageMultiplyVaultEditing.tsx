@@ -153,7 +153,7 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
           </Box>
         </Grid>
       ) : (
-        <Box>
+        <Grid>
           <Flex>
             <Button
               onClick={() => setMainAction!('buy')}
@@ -170,7 +170,7 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
             </Button>
           </Flex>
           {mainAction === 'buy' ? <BuyTokenInput {...props} /> : <SellTokenInput {...props} />}
-        </Box>
+        </Grid>
       )}
 
       <Button sx={{ py: 2 }} variant="actionOption" mt={3} onClick={toggleSliderController!}>

@@ -1,18 +1,23 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import {
+  AfterPillProps,
+  getAfterPillColors,
   getCollRatioColor,
   VaultDetailsCard,
   VaultDetailsCardCollateralLocked,
   VaultDetailsCardCurrentPrice,
+  VaultDetailsCardLiquidationPrice,
+  VaultDetailsCardMockedModal,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { useModal } from 'helpers/modalHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid, Text } from 'theme-ui'
+import { Grid } from 'theme-ui'
 
 import { OpenVaultState } from '../openVault'
 
@@ -21,7 +26,9 @@ export function OpenVaultDetailsSummary({
   afterFreeCollateral,
   token,
   maxGenerateAmountCurrentPrice,
-}: OpenVaultState) {
+  afterPillColors,
+  showAfterPill,
+}: OpenVaultState & AfterPillProps) {
   const { t } = useTranslation()
   const { symbol } = getToken(token)
 
@@ -31,63 +38,129 @@ export function OpenVaultDetailsSummary({
         label={t('system.vault-dai-debt')}
         value={
           <>
-            {formatAmount(generateAmount || zero, 'DAI')}
+            {formatAmount(zero, 'DAI')}
             {` DAI`}
           </>
         }
+        valueAfter={
+          showAfterPill && (
+            <>
+              {formatAmount(generateAmount || zero, 'DAI')}
+              {` DAI`}
+            </>
+          )
+        }
+        afterPillColors={afterPillColors}
       />
       <VaultDetailsSummaryItem
         label={t('system.available-to-withdraw')}
         value={
           <>
-            {formatAmount(afterFreeCollateral.isNegative() ? zero : afterFreeCollateral, symbol)}
+            {formatAmount(zero, symbol)}
             {` ${symbol}`}
           </>
         }
+        valueAfter={
+          showAfterPill && (
+            <>
+              {formatAmount(afterFreeCollateral.isNegative() ? zero : afterFreeCollateral, symbol)}
+              {` ${symbol}`}
+            </>
+          )
+        }
+        afterPillColors={afterPillColors}
       />
       <VaultDetailsSummaryItem
         label={t('system.available-to-generate')}
         value={
           <>
-            {formatAmount(maxGenerateAmountCurrentPrice, 'DAI')}
+            {formatAmount(zero, 'DAI')}
             {` DAI`}
           </>
         }
+        valueAfter={
+          showAfterPill && (
+            <>
+              {formatAmount(maxGenerateAmountCurrentPrice, 'DAI')}
+              {` DAI`}
+            </>
+          )
+        }
+        afterPillColors={afterPillColors}
       />
     </VaultDetailsSummaryContainer>
   )
 }
 
 export function OpenVaultDetails(props: OpenVaultState) {
-  const { afterCollateralizationRatio, afterLiquidationPrice } = props
-  const collRatioColor = getCollRatioColor(props, props.afterCollateralizationRatio)
-
+  const {
+    afterCollateralizationRatio,
+    afterLiquidationPrice,
+    token,
+    inputAmountsEmpty,
+    stage,
+  } = props
   const { t } = useTranslation()
+  const openModal = useModal()
+
+  // initial values only to show in UI as starting parameters
+  const liquidationPrice = zero
+  const collateralizationRatio = zero
+
+  const afterDepositAmountUSD = props.depositAmountUSD
+  const depositAmountUSD = zero
+  const depositAmount = zero
+
+  const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const afterPillColors = getAfterPillColors(afterCollRatioColor)
+  const showAfterPill = !inputAmountsEmpty && stage !== 'openSuccess'
 
   return (
     <>
       <Grid variant="vaultDetailsCardsContainer">
-        <VaultDetailsCard
-          title={`${t('system.liquidation-price')}`}
-          value={`$${formatAmount(afterLiquidationPrice, 'USD')}`}
+        <VaultDetailsCardLiquidationPrice
+          {...{
+            liquidationPrice,
+            afterLiquidationPrice,
+            afterPillColors,
+            showAfterPill,
+          }}
         />
 
         <VaultDetailsCard
           title={`${t('system.collateralization-ratio')}`}
-          value={
-            <Text as="span" sx={{ color: collRatioColor }}>
-              {formatPercent(afterCollateralizationRatio.times(100), {
-                precision: 2,
-                roundMode: BigNumber.ROUND_DOWN,
-              })}
-            </Text>
+          value={formatPercent(collateralizationRatio.times(100), {
+            precision: 2,
+            roundMode: BigNumber.ROUND_DOWN,
+          })}
+          valueAfter={
+            showAfterPill &&
+            formatPercent(afterCollateralizationRatio.times(100), {
+              precision: 2,
+              roundMode: BigNumber.ROUND_DOWN,
+            })
           }
+          openModal={() => openModal(VaultDetailsCardMockedModal)}
+          afterPillColors={afterPillColors}
         />
 
         <VaultDetailsCardCurrentPrice {...props} />
-        <VaultDetailsCardCollateralLocked {...props} />
+        <VaultDetailsCardCollateralLocked
+          {...{
+            depositAmount,
+            depositAmountUSD,
+            afterDepositAmountUSD,
+            token,
+            afterPillColors,
+            showAfterPill,
+          }}
+        />
       </Grid>
-      <OpenVaultDetailsSummary {...props} />
+      <OpenVaultDetailsSummary
+        {...props}
+        afterPillColors={afterPillColors}
+        showAfterPill={showAfterPill}
+      />
     </>
   )
 }

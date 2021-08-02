@@ -4,8 +4,6 @@ import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { manageVaultStory } from 'helpers/stories/ManageVaultStory'
 import { one, zero } from 'helpers/zero'
 
-import { ManageVaultView } from '../ManageVaultView'
-
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
 export const DepositAndWithdrawAmountsEmpty = manageVaultStory({
@@ -337,5 +335,4 @@ export const CustomDaiAllowanceAmountLessThanDepositAmount = manageVaultStory({
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'ManageVault/Blocking Flow',
-  component: ManageVaultView,
 }

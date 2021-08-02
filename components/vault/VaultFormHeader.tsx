@@ -6,6 +6,7 @@ import React, { ReactNode } from 'react'
 export function VaultFormHeaderSwitch({ href, title }: { href: string; title: ReactNode }) {
   return (
     <>
+      <Divider variant="styles.hrVaultFormBottom" />
       <Box>
         <AppLink
           href={href}
@@ -29,7 +30,6 @@ export function VaultFormHeaderSwitch({ href, title }: { href: string; title: Re
           </Flex>
         </AppLink>
       </Box>
-      <Divider variant="styles.hrVaultFormTop" />
     </>
   )
 }

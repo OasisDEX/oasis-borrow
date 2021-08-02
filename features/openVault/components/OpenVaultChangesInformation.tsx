@@ -2,6 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex, Grid, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import {
+  VaultChangesInformationArrow,
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
@@ -30,39 +31,78 @@ export function OpenVaultChangesInformation(props: OpenVaultState) {
 
   // mock txFees
   const txFees = new BigNumber(0.123)
+  // starting zero balance for UI to show arrows
+  const zeroBalance = formatCryptoBalance(zero)
 
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Vault changes">
       <VaultChangesInformationItem
         label={`${t('system.collateral-locked')}`}
-        value={`${formatCryptoBalance(depositAmount || zero)} ${token}`}
+        value={
+          <Flex>
+            {zeroBalance} {token}
+            <VaultChangesInformationArrow />
+            {formatCryptoBalance(depositAmount || zero)} {token}
+          </Flex>
+        }
       />
       <VaultChangesInformationItem
         label={`${t('system.collateralization-ratio')}`}
         value={
-          <Text sx={{ color: collRatioColor }}>
-            {formatPercent(afterCollateralizationRatio.times(100), {
+          <Flex>
+            {formatPercent(zero.times(100), {
               precision: 2,
               roundMode: BigNumber.ROUND_DOWN,
             })}
-          </Text>
+            <VaultChangesInformationArrow />
+            <Text sx={{ color: collRatioColor }}>
+              {formatPercent(afterCollateralizationRatio.times(100), {
+                precision: 2,
+                roundMode: BigNumber.ROUND_DOWN,
+              })}
+            </Text>
+          </Flex>
         }
       />
       <VaultChangesInformationItem
         label={`${t('system.liquidation-price')}`}
-        value={`$${formatCryptoBalance(afterLiquidationPrice || zero)}`}
+        value={
+          <Flex>
+            {`$${zeroBalance}`}
+            <VaultChangesInformationArrow />
+            {`$${formatCryptoBalance(afterLiquidationPrice || zero)}`}
+          </Flex>
+        }
       />
       <VaultChangesInformationItem
         label={`${t('system.vault-dai-debt')}`}
-        value={`${formatCryptoBalance(generateAmount || zero)} DAI`}
+        value={
+          <Flex>
+            {zeroBalance} DAI
+            <VaultChangesInformationArrow />
+            {formatCryptoBalance(generateAmount || zero)} DAI
+          </Flex>
+        }
       />
       <VaultChangesInformationItem
         label={`${t('system.available-to-withdraw')}`}
-        value={`${formatCryptoBalance(afterFreeCollateral || zero)} ${token}`}
+        value={
+          <Flex>
+            {zeroBalance} {token}
+            <VaultChangesInformationArrow />
+            {formatCryptoBalance(afterFreeCollateral || zero)} {token}
+          </Flex>
+        }
       />
       <VaultChangesInformationItem
         label={`${t('system.available-to-generate')}`}
-        value={`${formatCryptoBalance(maxGenerateAmountCurrentPrice || zero)} DAI`}
+        value={
+          <Flex>
+            {zeroBalance} DAI
+            <VaultChangesInformationArrow />
+            {formatCryptoBalance(maxGenerateAmountCurrentPrice || zero)} DAI
+          </Flex>
+        }
       />
       <VaultChangesInformationItem
         label={'Transaction Fee'}

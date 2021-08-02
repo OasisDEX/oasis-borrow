@@ -500,6 +500,7 @@
       "allowance": "Set {{token}} allowance",
       "daiAllowance": "Set DAI allowance",
       "confirm": "Confirm vault creation",
+      "confirm-in-progress": "Vault being created",
       "confirm-manage": "Confirm vault changes"
     },
     "subtext": {
@@ -509,7 +510,8 @@
       "proxy": "With your smart proxy we can perform multiple actions in one transaction for your Vault. This proxy only needs to be set up once.",
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "daiAllowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
-      "confirm": "Review and verify details of your vault."
+      "confirm": "Review and verify details of your vault.",
+      "confirm-in-progress": "Your Vault is currently being. Transaction can take up to 5 minutes"
     }
   },
   "creating-your-vault": "Creating your {{token}} Vault!",
