@@ -110,7 +110,7 @@ export function applyOpenMultiplyVaultCalculations(
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
     ilkData: { liquidationRatio, debtFloor },
     quote,
-    swap,
+    // swap, TODO use swap price
     slippage,
     requiredCollRatio,
   } = state
