@@ -47,7 +47,7 @@ export function applyManageVaultTransition(
   if (change.kind === 'progressMultiplyTransition') {
     return {
       ...state,
-      stage: 'multiplyTransitionConfirmation',
+      stage: 'multiplyTransitionWaitingForConfirmation',
     }
   }
 

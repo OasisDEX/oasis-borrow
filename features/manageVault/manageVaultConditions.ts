@@ -65,7 +65,7 @@ export function applyManageVaultStageCategorisation(state: ManageVaultState) {
         isManageStage: true,
       }
     case 'multiplyTransitionEditing':
-    case 'multiplyTransitionConfirmation':
+    case 'multiplyTransitionWaitingForConfirmation':
       return {
         ...state,
         ...defaultManageVaultStageCategories,
@@ -390,7 +390,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     'manageWaitingForConfirmation',
     'manageFailure',
     'multiplyTransitionEditing',
-    'multiplyTransitionConfirmation',
+    'multiplyTransitionWaitingForConfirmation',
   ] as ManageVaultStage[]).some((s) => s === stage)
 
   return {

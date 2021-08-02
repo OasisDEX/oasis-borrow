@@ -668,7 +668,7 @@ describe('manageVault', () => {
         state().toggle!('multiplyTransitionEditing')
         expect(state().stage).to.be.equal('multiplyTransitionEditing')
         state().progress!()
-        expect(state().stage).to.be.equal('multiplyTransitionConfirmation')
+        expect(state().stage).to.be.equal('multiplyTransitionWaitingForConfirmation')
         state().regress!()
         expect(state().stage).to.be.equal('collateralEditing')
         state().toggle!('daiEditing')

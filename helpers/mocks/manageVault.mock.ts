@@ -120,6 +120,10 @@ export function mockManageVault$({
     )
   }
 
+  function saveVaultType$() {
+    return of(undefined)
+  }
+
   return createManageVault$(
     context$ as Observable<Context>,
     txHelpers$,
@@ -129,6 +133,7 @@ export function mockManageVault$({
     balanceInfo$,
     ilkData$,
     vault$,
+    saveVaultType$,
     MOCK_VAULT_ID,
   )
 }
