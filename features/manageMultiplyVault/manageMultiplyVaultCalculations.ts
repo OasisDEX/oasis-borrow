@@ -1,5 +1,7 @@
 import { BigNumber } from 'bignumber.js'
+import { getMaxPossibleCollRatioOrMax, getMultiplyParams } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
+import { SLIPPAGE } from './manageMultiplyQuote'
 
 import { ManageMultiplyVaultState } from './manageMultiplyVault'
 
@@ -17,9 +19,17 @@ export interface ManageVaultCalculations {
   maxGenerateAmount: BigNumber
   maxGenerateAmountAtCurrentPrice: BigNumber
   maxGenerateAmountAtNextPrice: BigNumber
-  maxPaybackAmount: BigNumber
   daiYieldFromTotalCollateral: BigNumber
   daiYieldFromTotalCollateralAtNextPrice: BigNumber
+
+  //maxDepositCollateral
+  //maxDepositDai
+  //maxWithdrawCollateral
+  //maxWithdrawDai
+  //maxCollateralizationRatio
+  //exchangeAction: 'buy' || 'sell'
+
+  maxPaybackAmount: BigNumber
   afterDebt: BigNumber
   afterLiquidationPrice: BigNumber
   afterCollateralizationRatio: BigNumber
@@ -295,21 +305,108 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
 //   })
 // }
 
+/*
+
+Buying ETH 0.00 ETH -> 6.3821 ETH ($15,852.75)
+Total ETH exposure 0.00 ETH -> 16.36 ETH
+ETH Price (impact)
+$2,483.91 (0.00%)
+Slippage Limit
+5.00 %
+Multiply 0.00x ->1.71x
+Outstanding Debt
+0.00 DAI16,813.52 DAI
+Collateral Ratio
+0.00%
+240.00%
+Transaction Fee
+$182.40
+*/
+
 export function applyManageVaultCalculations(
   state: ManageMultiplyVaultState,
 ): ManageMultiplyVaultState {
-  // const {
-  // balanceInfo: { collateralBalance, daiBalance },
-  // ilkData: { liquidationRatio, ilkDebtAvailable },
-  // priceInfo: { currentCollateralPrice, nextCollateralPrice },
-  // vault: {
-  // lockedCollateral,
-  // debt,
-  // debtOffset,
-  // lockedCollateralUSD,
-  // liquidationPrice,
-  // },
-  // } = state
+  const {
+    balanceInfo: { collateralBalance, daiBalance },
+    ilkData: { liquidationRatio, ilkDebtAvailable, debtFloor },
+    priceInfo: { currentCollateralPrice, nextCollateralPrice },
+    vault: {
+      lockedCollateral,
+      debt,
+      debtOffset,
+      lockedCollateralUSD,
+      liquidationPrice,
+      collateralizationRatio,
+    },
+    requiredCollRatio,
+    inputAmountsEmpty,
+    quote,
+    swap,
+    slippage,
+  } = state
+
+  const marketPrice =
+    swap?.status === 'SUCCESS'
+      ? swap.tokenPrice
+      : quote?.status === 'SUCCESS'
+      ? quote.tokenPrice
+      : undefined
+  const marketPriceMaxSlippage = marketPrice ? marketPrice.times(slippage.plus(1)) : undefined
+
+  // getMaxPossibleCollRatioOrMax(
+  //   debtFloor,
+  //   zero)
+
+  if (!marketPrice || !marketPriceMaxSlippage || !requiredCollRatio) {
+    return state
+  }
+
+  const [debtDelta, collateralDelta] = getMultiplyParams(
+    currentCollateralPrice,
+    marketPrice,
+    SLIPPAGE,
+    debt,
+    lockedCollateral,
+    requiredCollRatio,
+    zero,
+    zero,
+    zero,
+    zero,
+  )
+
+  const afterDebt = debt.plus(debtDelta)
+  const afterLockedCollateral = lockedCollateral.plus(collateralDelta)
+
+  const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
+  const afterCollateralizationRatio = requiredCollRatio
+
+  const multiply = lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
+  const afterMultiply = afterLockedCollateralUSD.div(afterLockedCollateralUSD.minus(afterDebt))
+
+  console.log(`
+  
+      REQUIRED COLL RATO:${requiredCollRatio}
+      CURRENT COLL RATIO:${collateralizationRatio}
+
+      MARKET PRICE: ${marketPrice}
+      MARKET PRICE MAX SLIPPAGE: ${marketPriceMaxSlippage}
+
+
+      DEBT delta: ${debtDelta} 
+      COLLATERAL Delta: ${collateralDelta}
+
+
+      currentCollateralPrice, ${currentCollateralPrice}
+      marketPrice, ${marketPrice}
+      SLIPPAGE, ${SLIPPAGE}
+      debt, ${debt}
+      lockedCollateral, ${lockedCollateral}
+      requiredCollRatio, ${requiredCollRatio}
+
+      afterLockedCollateral: ${afterLockedCollateral}
+      afterDebt: ${afterDebt}
+      
+  `)
 
   // const shouldPaybackAll = determineShouldPaybackAll({
   //   paybackAmount,
@@ -322,7 +419,6 @@ export function applyManageVaultCalculations(
   //   depositAmount,
   //   withdrawAmount,
   // })
-  // const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
   // const afterLockedCollateralUSDAtNextPrice = afterLockedCollateral.times(nextCollateralPrice)
   // const afterDebt = calculateAfterDebt({ shouldPaybackAll, debt, generateAmount, paybackAmount })
 
@@ -459,6 +555,13 @@ export function applyManageVaultCalculations(
 
   return {
     ...state,
+    afterDebt,
+    afterLockedCollateral,
+    afterLockedCollateralUSD,
+    afterCollateralizationRatio,
+
+    multiply,
+    afterMultiply,
 
     // maxDepositAmount,
     // maxDepositAmountUSD,

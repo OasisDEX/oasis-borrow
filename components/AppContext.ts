@@ -338,6 +338,7 @@ export function setupAppContext() {
       balanceInfo$,
       ilkData$,
       vault$,
+      exchangeQuote$,
     ),
     bigNumberTostring,
   )

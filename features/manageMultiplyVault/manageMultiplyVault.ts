@@ -4,12 +4,19 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
+import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
-import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
+import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
+import {
+  applyExchange,
+  createInitialQuoteChange,
+  ExchangeQuoteChanges,
+  SLIPPAGE,
+} from './manageMultiplyQuote'
 import {
   applyManageVaultAllowance,
   ManageVaultAllowanceChange,
@@ -81,10 +88,12 @@ export type ManageVaultChange =
   | ManageVaultTransactionChange
   | ManageVaultEnvironmentChange
   | ManageVaultInjectedOverrideChange
+  | ExchangeQuoteChanges
 
 function apply(state: ManageMultiplyVaultState, change: ManageVaultChange) {
   const s1 = applyManageVaultInput(change, state)
-  const s2 = applyManageVaultForm(change, s1)
+  const s1_ = applyExchange(change, s1)
+  const s2 = applyManageVaultForm(change, s1_)
   const s3 = applyManageVaultAllowance(change, s2)
   const s4 = applyManageVaultTransition(change, s3)
   const s5 = applyManageVaultTransaction(change, s4)
@@ -168,6 +177,9 @@ export interface ManageVaultEnvironment {
   ilkData: IlkData
   balanceInfo: BalanceInfo
   priceInfo: PriceInfo
+  quote?: Quote
+  swap?: Quote
+  slippage: BigNumber
 }
 
 interface ManageVaultFunctions {
@@ -405,6 +417,12 @@ export function createManageMultiplyVault$(
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   vault$: (id: BigNumber) => Observable<Vault>,
+  exchangeQuote$: (
+    token: string,
+    slippage: BigNumber,
+    amount: BigNumber,
+    action: ExchangeAction,
+  ) => Observable<Quote>,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
   return context$.pipe(
@@ -461,14 +479,18 @@ export function createManageMultiplyVault$(
                     errorMessages: [],
                     warningMessages: [],
                     summary: defaultManageVaultSummary,
+                    slippage: SLIPPAGE,
                     injectStateOverride,
                   }
+
+                  const stateSubject$ = new Subject<ManageMultiplyVaultState>()
 
                   const environmentChanges$ = merge(
                     priceInfoChange$(priceInfo$, vault.token),
                     balanceInfoChange$(balanceInfo$, vault.token, account),
                     createIlkDataChange$(ilkData$, vault.ilk),
                     createVaultChange$(vault$, id),
+                    createInitialQuoteChange(exchangeQuote$, vault.token),
                   )
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
@@ -478,6 +500,7 @@ export function createManageMultiplyVault$(
                     map(validateErrors),
                     map(validateWarnings),
                     map(curry(addTransitions)(txHelpers$, connectedProxyAddress$, change)),
+                    // tap(stateSubject$.next),
                   )
                 }),
               )

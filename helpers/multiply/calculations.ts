@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { MAX_COLL_RATIO } from 'features/openMultiplyVault/openMultiplyVaultCalculations'
 import { one } from 'helpers/zero'
 
 const MULTIPLY_FEE = new BigNumber(0.01)
@@ -71,22 +72,23 @@ export function getMultiplyParams(
 
   currentDebt: BigNumber,
   currentCollateral: BigNumber,
-  currentCollRatio: BigNumber, // calculate
 
   requiredCollRatio: BigNumber,
 
-  providedCollateral: BigNumber,
-  providedDai: BigNumber,
-  withdrawDai: BigNumber,
-  withdrawColl: BigNumber,
+  providedCollateral: BigNumber, // increase
+  providedDai: BigNumber, // increase
+  withdrawDai: BigNumber, // decrease
+  withdrawColl: BigNumber, // decrease
+  // if both zero then collateralization ratio change
 
   LF: BigNumber = LOAN_FEE,
   OF: BigNumber = MULTIPLY_FEE,
 ) {
   const afterCollateral = currentCollateral.plus(providedCollateral).minus(withdrawColl)
-  const afterDebt = currentDebt.plus(withdrawDai)
-  // Increase coll ratio
-  if (currentCollRatio.lt(requiredCollRatio)) {
+  const afterDebt = currentDebt.plus(withdrawDai).minus(providedDai)
+  const currentCollateralizationRatio = currentCollateral.times(oraclePrice).div(currentDebt)
+  // Increase coll ratio 300% -> 200% = increase multiple
+  if (currentCollateralizationRatio.gt(requiredCollRatio)) {
     return calculateParamsIncreaseMP(
       oraclePrice,
       marketPrice,
@@ -94,6 +96,7 @@ export function getMultiplyParams(
       LF,
       afterCollateral,
       afterDebt,
+      requiredCollRatio,
       slippage,
       providedDai,
     )
@@ -105,8 +108,51 @@ export function getMultiplyParams(
       LF,
       afterCollateral,
       afterDebt,
+      requiredCollRatio,
       slippage,
-      providedDai,
-    )
+    ).map((value) => value.times(-1))
   }
+}
+
+function getCollRatioByDebt(
+  requiredDebt: BigNumber,
+  depositAmount: BigNumber,
+  oraclePrice: BigNumber,
+  marketPriceMaxSlippage: BigNumber, // market price in worst case (marketPrice * slippage)
+  loanFee: BigNumber = LOAN_FEE,
+  multiplyFee: BigNumber = MULTIPLY_FEE,
+) {
+  return new BigNumber(
+    depositAmount.times(oraclePrice).times(marketPriceMaxSlippage).div(requiredDebt),
+  )
+    .plus(oraclePrice)
+    .minus(oraclePrice.times(multiplyFee))
+    .div(marketPriceMaxSlippage.plus(marketPriceMaxSlippage.times(loanFee)))
+}
+
+export function getMaxPossibleCollRatioOrMax(
+  debtFloor: BigNumber,
+  depositAmount: BigNumber,
+  oraclePrice: BigNumber,
+  marketPriceMaxSlippage: BigNumber,
+  liquidationRatio: BigNumber,
+  currentCollRatio: BigNumber,
+) {
+  const maxPossibleCollRatio = getCollRatioByDebt(
+    debtFloor,
+    depositAmount,
+    oraclePrice,
+    marketPriceMaxSlippage,
+  )
+
+  const maxCollRatioPrecise = BigNumber.max(
+    BigNumber.min(maxPossibleCollRatio, MAX_COLL_RATIO),
+    liquidationRatio,
+    currentCollRatio,
+  )
+    .times(100)
+    .integerValue(BigNumber.ROUND_DOWN)
+    .div(100)
+
+  return maxCollRatioPrecise.minus(maxCollRatioPrecise.times(100).mod(5).div(100))
 }

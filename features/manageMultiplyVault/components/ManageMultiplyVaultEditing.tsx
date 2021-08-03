@@ -93,17 +93,15 @@ function AdjustPositionForm(props: ManageMultiplyVaultState) {
   } = props
 
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const sliderValue = requiredCollRatio || collateralizationRatio || maxCollRatio
   const slider =
-    (requiredCollRatio || collateralizationRatio)
-      .minus(liquidationRatio)
-      .div(maxCollRatio.minus(liquidationRatio))
-      .times(100) || zero
+    sliderValue.minus(liquidationRatio).div(maxCollRatio.minus(liquidationRatio)).times(100) || zero
 
   const sliderBackground = `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
     colors?.sliderTrackFill
-  } ${slider?.toNumber()}%, ${colors?.primaryAlt} ${slider?.toNumber()}%, ${
-    colors?.primaryAlt
-  } 100%)`
+  } ${new BigNumber(100).minus(slider).toNumber()}%, ${colors?.primaryAlt} ${new BigNumber(100)
+    .minus(slider)
+    .toNumber()}%, ${colors?.primaryAlt} 100%)`
 
   if (showSliderController) {
     return (
@@ -139,14 +137,12 @@ function AdjustPositionForm(props: ManageMultiplyVaultState) {
             <Slider
               sx={{
                 background: sliderBackground,
+                direction: 'rtl',
               }}
               step={5}
               min={liquidationRatio.times(100).toNumber()}
-              max={MAX_COLL_RATIO.times(100).toNumber()}
-              value={
-                requiredCollRatio?.times(100).toNumber() ||
-                collateralizationRatio.times(100).toNumber()
-              }
+              max={maxCollRatio.times(100).toNumber()}
+              value={sliderValue.times(100).toNumber()}
               onChange={(e) => {
                 updateRequiredCollRatio!(new BigNumber(e.target.value).div(100))
               }}
@@ -165,9 +161,9 @@ function AdjustPositionForm(props: ManageMultiplyVaultState) {
             </Flex>
           </Box>
         </Grid>
-        <Button sx={{ py: 2 }} variant="actionOption" mt={3} onClick={toggleSliderController!}>
+        {/* <Button sx={{ py: 2 }} variant="actionOption" mt={3} onClick={toggleSliderController!}>
           <Text pr={1}>Or enter an amount of ETH</Text>
-        </Button>
+        </Button> */}
       </>
     )
   }
