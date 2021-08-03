@@ -103,12 +103,7 @@ export function VaultActionInput({
         opacity: disabled ? '0.3' : '1.0',
         cursor: disabled ? 'not-allowed' : 'default',
         ...(collapsed && {
-          p: 2,
-          pb: 3,
-          border: 'lightMuted',
-          borderTop: 'none',
-          borderBottomLeftRadius: 'mediumLarge',
-          borderBottomRightRadius: 'mediumLarge',
+          variant: 'styles.collapsedContentContainer',
         }),
       }}
     >

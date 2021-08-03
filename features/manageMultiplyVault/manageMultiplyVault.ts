@@ -125,10 +125,11 @@ export type MainAction = 'buy' | 'sell'
 export type CloseVaultTo = 'collateral' | 'dai'
 export type OtherAction =
   | 'depositCollateral'
-  | 'depositDAi'
+  | 'depositDai'
   | 'withdrawCollateral'
   | 'withdrawDai'
   | 'closeVault'
+
 export interface MutableManageMultiplyVaultState {
   stage: ManageMultiplyVaultStage
   originalEditingStage: ManageMultiplyVaultEditingStage

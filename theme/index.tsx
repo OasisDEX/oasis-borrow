@@ -829,6 +829,14 @@ const oasisBaseTheme = {
       width: 'calc(100% + 64px)',
       left: -4,
     },
+    collapsedContentContainer: {
+      p: 2,
+      pb: 3,
+      border: 'lightMuted',
+      borderTop: 'none',
+      borderBottomLeftRadius: 'mediumLarge',
+      borderBottomRightRadius: 'mediumLarge',
+    },
   },
 }
 
