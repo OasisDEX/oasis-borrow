@@ -161,9 +161,9 @@ function AdjustPositionForm(props: ManageMultiplyVaultState) {
             </Flex>
           </Box>
         </Grid>
-        {/* <Button sx={{ py: 2 }} variant="actionOption" mt={3} onClick={toggleSliderController!}>
+        <Button sx={{ py: 2 }} variant="actionOption" mt={3} onClick={toggleSliderController!}>
           <Text pr={1}>Or enter an amount of ETH</Text>
-        </Button> */}
+        </Button>
       </>
     )
   }
