@@ -5,7 +5,6 @@ import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
@@ -123,25 +122,36 @@ export type ManageMultiplyVaultStage =
   | 'manageSuccess'
 
 export type MainAction = 'buy' | 'sell'
-export interface MutableManageVaultState {
+export type CloseVaultTo = 'collateral' | 'dai'
+export type OtherAction =
+  | 'depositCollateral'
+  | 'depositDAi'
+  | 'withdrawCollateral'
+  | 'withdrawDai'
+  | 'closeVault'
+export interface MutableManageMultiplyVaultState {
   stage: ManageMultiplyVaultStage
   originalEditingStage: ManageMultiplyVaultEditingStage
-  showDepositAndGenerateOption: boolean
-  showPaybackAndWithdrawOption: boolean
-  depositAmount?: BigNumber
-  depositAmountUSD?: BigNumber
-  withdrawAmount?: BigNumber
-  withdrawAmountUSD?: BigNumber
-  generateAmount?: BigNumber
-  paybackAmount?: BigNumber
+  mainAction: MainAction
+  otherAction: OtherAction
+  showSliderController: boolean
+
+  depositCollateralAmount?: BigNumber
+  depositCollateralAmountUSD?: BigNumber
+  withdrawCollateralAmount?: BigNumber
+  withdrawCollateralAmountUSD?: BigNumber
+  depositDaiAmount?: BigNumber
+  depositDaiAmountUSD?: BigNumber
+  withdrawDaiAmount?: BigNumber
+  withdrawDaiAmountUSD?: BigNumber
+  closeVaultTo: CloseVaultTo
+
   collateralAllowanceAmount?: BigNumber
   daiAllowanceAmount?: BigNumber
   selectedCollateralAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
   selectedDaiAllowanceRadio: 'unlimited' | 'paybackAmount' | 'custom'
 
-  mainAction: MainAction
-  showSliderController: boolean
-  slider?: BigNumber
+  requiredCollRatio?: BigNumber
   buyAmount?: BigNumber
   buyAmountUSD?: BigNumber
   sellAmount?: BigNumber
@@ -164,18 +174,22 @@ interface ManageVaultFunctions {
   progress?: () => void
   regress?: () => void
   toggle?: () => void
-  toggleDepositAndGenerateOption?: () => void
-  togglePaybackAndWithdrawOption?: () => void
-  updateDeposit?: (depositAmount?: BigNumber) => void
-  updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
-  updateDepositMax?: () => void
-  updateGenerate?: (generateAmount?: BigNumber) => void
-  updateGenerateMax?: () => void
-  updateWithdraw?: (withdrawAmount?: BigNumber) => void
-  updateWithdrawUSD?: (withdrawAmountUSD?: BigNumber) => void
-  updateWithdrawMax?: () => void
-  updatePayback?: (paybackAmount?: BigNumber) => void
-  updatePaybackMax?: () => void
+
+  updateDepositCollateral?: (depositCollateral?: BigNumber) => void
+  updateDepositCollateralUSD?: (depositCollateralUSD?: BigNumber) => void
+  updateDepositCollateralMax?: () => void
+  updateDepositDai?: (depositDai?: BigNumber) => void
+  updateDepositDaiUSD?: (depositDaiUSD?: BigNumber) => void
+  updateDepositDaiMax?: () => void
+
+  updateWithdrawCollateral?: (withdrawCollateral?: BigNumber) => void
+  updateWithdrawCollateralUSD?: (withdrawCollateralUSD?: BigNumber) => void
+  updateWithdrawCollateralMax?: () => void
+  updateWithdrawDai?: (withdrawDai?: BigNumber) => void
+  updateWithdrawDaiUSD?: (withdrawDaiUSD?: BigNumber) => void
+  updateWithdrawDaiMax?: () => void
+  setCloseVaultTo?: (closeVaultTo: CloseVaultTo) => void
+
   updateCollateralAllowanceAmount?: (amount?: BigNumber) => void
   setCollateralAllowanceAmountUnlimited?: () => void
   setCollateralAllowanceAmountToDepositAmount?: () => void
@@ -184,11 +198,13 @@ interface ManageVaultFunctions {
   setDaiAllowanceAmountUnlimited?: () => void
   setDaiAllowanceAmountToPaybackAmount?: () => void
   resetDaiAllowanceAmount?: () => void
-  injectStateOverride: (state: Partial<MutableManageVaultState>) => void
+
+  injectStateOverride: (state: Partial<MutableManageMultiplyVaultState>) => void
 
   toggleSliderController?: () => void
-  adjustSlider?: (value: BigNumber) => void
+  updateRequiredCollRatio?: (value: BigNumber) => void
   setMainAction?: (mainAction: MainAction) => void
+  setOtherAction?: (otherAction: OtherAction) => void
   updateBuy?: (buyAmount?: BigNumber) => void
   updateBuyUSD?: (buyAmountUSD?: BigNumber) => void
   updateBuyMax?: () => void
@@ -208,7 +224,7 @@ interface ManageVaultTxInfo {
   safeConfirmations: number
 }
 
-export type ManageMultiplyVaultState = MutableManageVaultState &
+export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
   ManageVaultCalculations &
   ManageVaultConditions &
   ManageVaultEnvironment &
@@ -228,38 +244,42 @@ function addTransitions(
   if (state.stage === 'adjustPosition' || state.stage === 'otherActions') {
     return {
       ...state,
-      updateDeposit: (depositAmount?: BigNumber) => {
-        change({ kind: 'deposit', depositAmount })
+      updateDepositCollateral: (depositCollateralAmount?: BigNumber) => {
+        change({ kind: 'depositCollateral', depositCollateralAmount })
       },
-      updateDepositUSD: (depositAmountUSD?: BigNumber) =>
-        change({ kind: 'depositUSD', depositAmountUSD }),
-      updateDepositMax: () => change({ kind: 'depositMax' }),
-      updateGenerate: (generateAmount?: BigNumber) => {
-        change({ kind: 'generate', generateAmount })
+      updateDepositCollateralUSD: (depositCollateralAmountUSD?: BigNumber) =>
+        change({ kind: 'depositCollateralUSD', depositCollateralAmountUSD }),
+      updateDepositCollateralMax: () => change({ kind: 'depositCollateralMax' }),
+
+      updateDepositDai: (depositDaiAmount?: BigNumber) => {
+        change({ kind: 'depositDai', depositDaiAmount })
       },
-      updateGenerateMax: () => change({ kind: 'generateMax' }),
-      updateWithdraw: (withdrawAmount?: BigNumber) => {
-        change({ kind: 'withdraw', withdrawAmount })
+      updateDepositDaiUSD: (depositDaiAmountUSD?: BigNumber) =>
+        change({ kind: 'depositDaiUSD', depositDaiAmountUSD }),
+      updateDepositDaiMax: () => change({ kind: 'depositDaiMax' }),
+
+      updateWithdrawCollateral: (withdrawCollateralAmount?: BigNumber) => {
+        change({ kind: 'WithdrawCollateral', withdrawCollateralAmount })
       },
-      updateWithdrawUSD: (withdrawAmountUSD?: BigNumber) =>
-        change({ kind: 'withdrawUSD', withdrawAmountUSD }),
-      updateWithdrawMax: () => change({ kind: 'withdrawMax' }),
-      updatePayback: (paybackAmount?: BigNumber) => {
-        change({ kind: 'payback', paybackAmount })
+      updateWithdrawCollateralUSD: (withdrawCollateralAmountUSD?: BigNumber) =>
+        change({ kind: 'WithdrawCollateralUSD', withdrawCollateralAmountUSD }),
+      updateWithdrawCollateralMax: () => change({ kind: 'WithdrawCollateralMax' }),
+
+      updateWithdrawDai: (withdrawDaiAmount?: BigNumber) => {
+        change({ kind: 'WithdrawDai', withdrawDaiAmount })
       },
-      updatePaybackMax: () => change({ kind: 'paybackMax' }),
-      toggleDepositAndGenerateOption: () =>
-        change({
-          kind: 'toggleDepositAndGenerateOption',
-        }),
-      togglePaybackAndWithdrawOption: () =>
-        change({
-          kind: 'togglePaybackAndWithdrawOption',
-        }),
+      updateWithdrawDaiUSD: (withdrawDaiAmountUSD?: BigNumber) =>
+        change({ kind: 'WithdrawDaiUSD', withdrawDaiAmountUSD }),
+      updateWithdrawDaiMax: () => change({ kind: 'WithdrawDaiMax' }),
+
+      setCloseVaultTo: (closeVaultTo: CloseVaultTo) =>
+        change({ kind: 'closeVaultTo', closeVaultTo }),
+
       toggle: () => change({ kind: 'toggleEditing' }),
       progress: () => change({ kind: 'progressEditing' }),
       toggleSliderController: () => change({ kind: 'toggleSliderController' }),
-      adjustSlider: (slider: BigNumber) => change({ kind: 'slider', slider }),
+      updateRequiredCollRatio: (requiredCollRatio: BigNumber) =>
+        change({ kind: 'requiredCollRatio', requiredCollRatio }),
       setMainAction: (mainAction: MainAction) => change({ kind: 'mainAction', mainAction }),
       updateBuy: (buyAmount?: BigNumber) => change({ kind: 'buyAmount', buyAmount }),
       updateBuyUSD: (buyAmountUSD?: BigNumber) => change({ kind: 'buyAmountUSD', buyAmountUSD }),
@@ -268,6 +288,7 @@ function addTransitions(
       updateSellUSD: (sellAmountUSD?: BigNumber) =>
         change({ kind: 'sellAmountUSD', sellAmountUSD }),
       updateSellMax: () => change({ kind: 'sellMax' }),
+      setOtherAction: (otherAction: OtherAction) => change({ kind: 'otherAction', otherAction }),
     }
   }
 
@@ -362,18 +383,17 @@ function addTransitions(
   return state
 }
 
-export const defaultMutableManageVaultState: MutableManageVaultState = {
-  stage: 'adjustPosition' as const,
-  originalEditingStage: 'adjustPosition' as const,
-  showDepositAndGenerateOption: false,
-  showPaybackAndWithdrawOption: false,
+export const defaultMutableManageVaultState: MutableManageMultiplyVaultState = {
+  stage: 'adjustPosition',
+  originalEditingStage: 'adjustPosition',
   collateralAllowanceAmount: maxUint256,
   daiAllowanceAmount: maxUint256,
-  selectedCollateralAllowanceRadio: 'unlimited' as const,
-  selectedDaiAllowanceRadio: 'unlimited' as const,
+  selectedCollateralAllowanceRadio: 'unlimited',
+  selectedDaiAllowanceRadio: 'unlimited',
   showSliderController: true,
-  slider: zero,
+  closeVaultTo: 'collateral',
   mainAction: 'buy',
+  otherAction: 'depositCollateral',
 }
 
 export function createManageMultiplyVault$(
@@ -418,7 +438,9 @@ export function createManageMultiplyVault$(
                   }
 
                   // NOTE: Not to be used in production/dev, test only
-                  function injectStateOverride(stateToOverride: Partial<MutableManageVaultState>) {
+                  function injectStateOverride(
+                    stateToOverride: Partial<MutableManageMultiplyVaultState>,
+                  ) {
                     return change$.next({ kind: 'injectStateOverride', stateToOverride })
                   }
 

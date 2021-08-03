@@ -1,7 +1,8 @@
 import { trackingEvents } from 'analytics/analytics'
+import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Grid, Text } from 'theme-ui'
+import { Box, Button, Flex, Grid, Text } from 'theme-ui'
 
 import { ManageVaultEditingStage, ManageVaultState } from './manageVault'
 
@@ -9,7 +10,10 @@ function ManageVaultEditingController({
   stage,
   toggle,
   accountIsController,
+  isEditingStage,
   isMultiplyTransitionStage,
+  totalSteps,
+  currentStep,
 }: ManageVaultState) {
   const { t } = useTranslation()
   const collateralVariant = `vaultEditingController${
@@ -29,7 +33,7 @@ function ManageVaultEditingController({
   }
 
   return (
-    <Box sx={{ justifyContent: 'center' }}>
+    <Grid gap={4}>
       <Grid columns={3} variant="vaultEditingControllerContainer">
         <Button onClick={() => handleToggle('collateralEditing')} variant={collateralVariant}>
           {t('system.collateral')}
@@ -41,22 +45,18 @@ function ManageVaultEditingController({
           Multiply
         </Button>
       </Grid>
-    </Box>
-  )
-}
-
-function Header({ header, subtext }: { header: string; subtext?: string }) {
-  return (
-    <>
-      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
-        {header}
-      </Text>
-      {subtext && (
-        <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
-          {subtext}
-        </Text>
+      {/* TO DO, refactor main action buy/sell as for multiply for manage */}
+      {isEditingStage && (
+        <WithVaultFormStepIndicator {...{ totalSteps, currentStep }}>
+          <Flex>
+            <Button variant="beanActive">Mock Deposit ETH</Button>
+            <Button variant="bean" sx={{ ml: 3 }}>
+              Mock Withdraw ETH
+            </Button>
+          </Flex>
+        </WithVaultFormStepIndicator>
       )}
-    </>
+    </Grid>
   )
 }
 
@@ -70,45 +70,45 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
     isDaiAllowanceStage,
     isManageStage,
     stage,
+    currentStep,
+    totalSteps,
   } = props
 
   return (
     <Box>
       {(isEditingStage || isMultiplyTransitionStage) && <ManageVaultEditingController {...props} />}
-      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
-        {isProxyStage && (
-          <Header header={t('vault-form.header.proxy')} subtext={t('vault-form.subtext.proxy')} />
-        )}
-        {isCollateralAllowanceStage && (
-          <Header
-            header={t('vault-form.header.allowance', { token: props.vault.token.toUpperCase() })}
-            subtext={t('vault-form.subtext.allowance')}
-          />
-        )}
-        {isDaiAllowanceStage && (
-          <Header
-            header={t('vault-form.header.daiAllowance')}
-            subtext={t('vault-form.subtext.daiAllowance')}
-          />
-        )}
-        {isManageStage && (
-          <Header
-            header={t('vault-form.header.confirm-manage')}
-            subtext={t('vault-form.subtext.confirm')}
-          />
-        )}
-        {isMultiplyTransitionStage && (
-          <Box mt={4}>
-            <Header
-              header={
-                stage === 'multiplyTransitionEditing'
-                  ? 'Get up to [x] ETH exposure from your Vault'
-                  : 'Great, now you will go the new Mutiply interface'
-              }
-            />
-          </Box>
-        )}
-      </Text>
+      {!isEditingStage && (
+        <Box mt={isMultiplyTransitionStage ? 4 : 0}>
+          <WithVaultFormStepIndicator {...{ totalSteps, currentStep }}>
+            <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
+              {isProxyStage
+                ? t('vault-form.header.proxy')
+                : isCollateralAllowanceStage
+                ? t('vault-form.header.allowance', { token: props.vault.token.toUpperCase() })
+                : isDaiAllowanceStage
+                ? t('vault-form.header.daiAllowance')
+                : isManageStage
+                ? stage === 'manageInProgress'
+                  ? t('vault-form.header.confirm-in-progress')
+                  : t('vault-form.header.confirm-manage')
+                : stage === 'multiplyTransitionEditing'
+                ? 'Get up to [x] ETH exposure from your Vault'
+                : 'Great, now you will go the new Mutiply interface'}
+            </Text>
+          </WithVaultFormStepIndicator>
+          <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
+            {isProxyStage
+              ? t('vault-form.subtext.proxy')
+              : isCollateralAllowanceStage
+              ? t('vault-form.subtext.allowance', { token: props.vault.token.toUpperCase() })
+              : isDaiAllowanceStage
+              ? t('vault-form.subtext.daiAllowance')
+              : stage === 'manageInProgress'
+              ? t('vault-form.subtext.confirm-in-progress')
+              : t('vault-form.subtext.confirm')}
+          </Text>
+        </Box>
+      )}
     </Box>
   )
 }

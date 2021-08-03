@@ -6,6 +6,7 @@ import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { VaultType } from 'features/generalManageVault/generalManageVault'
 import { SaveVaultType } from 'features/generalManageVault/vaultTypeLocalStorage'
+import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { curry } from 'lodash'
@@ -199,6 +200,9 @@ export type ManageVaultState = MutableManageVaultState &
     errorMessages: ManageVaultErrorMessage[]
     warningMessages: ManageVaultWarningMessage[]
     summary: ManageVaultSummary
+    initialTotalSteps: number
+    totalSteps: number
+    currentStep: number
   }
 
 function saveVaultType(
@@ -434,6 +438,12 @@ export function createManageVault$(
                     return change$.next({ kind: 'injectStateOverride', stateToOverride })
                   }
 
+                  const initialTotalSteps = calculateInitialTotalSteps(
+                    proxyAddress,
+                    vault.token,
+                    collateralAllowance,
+                  )
+
                   const initialState: ManageVaultState = {
                     ...defaultMutableManageVaultState,
                     ...defaultManageVaultCalculations,
@@ -451,6 +461,9 @@ export function createManageVault$(
                     errorMessages: [],
                     warningMessages: [],
                     summary: defaultManageVaultSummary,
+                    initialTotalSteps,
+                    totalSteps: initialTotalSteps,
+                    currentStep: 1,
                     injectStateOverride,
                   }
 

@@ -225,12 +225,7 @@ export function applyManageVaultTransaction(
 export function manageVaultDepositAndGenerate(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageVaultChange) => void,
-  {
-    generateAmount,
-    depositAmount,
-    proxyAddress,
-    vault: { ilk, token, id },
-  }: ManageMultiplyVaultState,
+  { proxyAddress, vault: { ilk, token, id } }: ManageMultiplyVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -238,8 +233,8 @@ export function manageVaultDepositAndGenerate(
       switchMap(({ sendWithGasEstimation }) =>
         sendWithGasEstimation(depositAndGenerate, {
           kind: TxMetaKind.depositAndGenerate,
-          generateAmount: generateAmount || zero,
-          depositAmount: depositAmount || zero,
+          generateAmount: zero,
+          depositAmount: zero,
           proxyAddress: proxyAddress!,
           ilk,
           token,
@@ -273,13 +268,7 @@ export function manageVaultDepositAndGenerate(
 export function manageVaultWithdrawAndPayback(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageVaultChange) => void,
-  {
-    withdrawAmount,
-    paybackAmount,
-    proxyAddress,
-    vault: { ilk, token, id },
-    shouldPaybackAll,
-  }: ManageMultiplyVaultState,
+  { proxyAddress, vault: { ilk, token, id }, shouldPaybackAll }: ManageMultiplyVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -287,8 +276,8 @@ export function manageVaultWithdrawAndPayback(
       switchMap(({ sendWithGasEstimation }) =>
         sendWithGasEstimation(withdrawAndPayback, {
           kind: TxMetaKind.withdrawAndPayback,
-          withdrawAmount: withdrawAmount || zero,
-          paybackAmount: paybackAmount || zero,
+          withdrawAmount: zero,
+          paybackAmount: zero,
           proxyAddress: proxyAddress!,
           ilk,
           token,

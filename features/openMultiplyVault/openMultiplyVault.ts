@@ -4,9 +4,9 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
@@ -20,7 +20,7 @@ import {
 } from './openMultiplyQuote'
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openMultiplyVaultAllowances'
 import {
-  applyOpenVaultCalculations,
+  applyOpenMultiplyVaultCalculations,
   defaultOpenVaultStateCalculations,
   OpenMultiplyVaultCalculations,
 } from './openMultiplyVaultCalculations'
@@ -90,7 +90,7 @@ function apply(state: OpenMultiplyVaultState, change: OpenMultiplyVaultChange) {
   const s5 = applyOpenVaultAllowance(change, s4)
   const s6 = applyOpenVaultEnvironment(change, s5)
   const s7 = applyOpenVaultInjectedOverride(change, s6)
-  const s8 = applyOpenVaultCalculations(s7)
+  const s8 = applyOpenMultiplyVaultCalculations(s7)
   const s9 = applyOpenVaultStageCategorisation(s8)
   const s10 = applyOpenVaultConditions(s9)
   return applyOpenVaultSummary(s10)
@@ -118,10 +118,10 @@ export interface MutableOpenMultiplyVaultState {
   stage: OpenMultiplyVaultStage
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
-  slider?: BigNumber
   selectedAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
   allowanceAmount?: BigNumber
   id?: BigNumber
+  requiredCollRatio?: BigNumber
 }
 
 interface OpenMultiplyVaultFunctions {
@@ -130,7 +130,7 @@ interface OpenMultiplyVaultFunctions {
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
-  updateRisk?: (slider?: BigNumber) => void
+  updateRequiredCollRatio?: (requiredCollRatio?: BigNumber) => void
   updateAllowanceAmount?: (amount?: BigNumber) => void
   setAllowanceAmountUnlimited?: () => void
   setAllowanceAmountToDepositAmount?: () => void
@@ -148,6 +148,7 @@ interface OpenMultiplyVaultEnvironment {
   proxyAddress?: string
   allowance?: BigNumber
   quote?: Quote
+  swap?: Quote
   slippage: BigNumber
 }
 
@@ -170,6 +171,8 @@ export type OpenMultiplyVaultState = MutableOpenMultiplyVaultState &
     errorMessages: OpenMultiplyVaultErrorMessage[]
     warningMessages: OpenMultiplyVaultWarningMessage[]
     summary: OpenVaultSummary
+    totalSteps: number
+    currentStep: number
   }
 
 function addTransitions(
@@ -187,8 +190,8 @@ function addTransitions(
       updateDepositUSD: (depositAmountUSD?: BigNumber) =>
         change({ kind: 'depositUSD', depositAmountUSD }),
       updateDepositMax: () => change({ kind: 'depositMax' }),
-      updateRisk: (slider?: BigNumber) => {
-        change({ kind: 'slider', slider })
+      updateRequiredCollRatio: (requiredCollRatio?: BigNumber) => {
+        change({ kind: 'requiredCollRatio', requiredCollRatio })
       },
       progress: () => change({ kind: 'progressEditing' }),
     }
@@ -269,7 +272,6 @@ export const defaultMutableOpenVaultState: MutableOpenMultiplyVaultState = {
   stage: 'editing' as OpenMultiplyVaultStage,
   selectedAllowanceRadio: 'unlimited' as 'unlimited',
   allowanceAmount: maxUint256,
-  slider: zero,
 }
 
 export function createOpenMultiplyVault$(
@@ -321,6 +323,8 @@ export function createOpenMultiplyVault$(
                       return change$.next({ kind: 'injectStateOverride', stateToOverride })
                     }
 
+                    const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
+
                     const initialState: OpenMultiplyVaultState = {
                       ...defaultMutableOpenVaultState,
                       ...defaultOpenVaultStateCalculations,
@@ -339,6 +343,8 @@ export function createOpenMultiplyVault$(
                       warningMessages: [],
                       summary: defaultOpenVaultSummary,
                       slippage: SLIPPAGE,
+                      totalSteps,
+                      currentStep: 1,
                       injectStateOverride,
                     }
 

@@ -60,7 +60,7 @@ OpenMultiplyVaultStory) {
 
     const openMultiplyVault$ = () => obs$
     const ctx = ({
-      multiplyVault$: openMultiplyVault$,
+      openMultiplyVault$,
       accountData$: of(EMPTY),
     } as any) as AppContext
 

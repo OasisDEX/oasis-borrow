@@ -91,7 +91,6 @@ export const ProxySuccess = manageVaultStory({
     debt: new BigNumber('3000'),
   },
   balanceInfo: { collateralBalance: new BigNumber('200') },
-  proxyAddress,
 })({
   stage: 'proxySuccess',
   generateAmount: new BigNumber('300'),

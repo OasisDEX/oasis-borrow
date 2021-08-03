@@ -5,8 +5,6 @@ import { expect } from 'chai'
 import { mockOpenMultiplyVault } from 'helpers/mocks/openMultiplyVault.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 
-import { collRatioToSlider } from '../openMultiplyVaultCalculations'
-
 describe('open multiply vault', () => {
   // https://docs.google.com/spreadsheets/d/11fihiG_2DHiwtfHKXznLQXewP30ckB0umyqgY6Qqyf0/edit#gid=101951580
   it('should calculate vault state according spread sheet', () => {
@@ -25,17 +23,14 @@ describe('open multiply vault', () => {
     const state = getStateUnpacker(multiplyVault$)
 
     state().updateDeposit!(new BigNumber(10))
-    const maxPossibleCollRatio = state().maxCollRatio
 
-    const risk = collRatioToSlider(maxPossibleCollRatio!, new BigNumber(1.5), new BigNumber(2))
-
-    state().updateRisk!(risk)
+    state().updateRequiredCollRatio!(new BigNumber(2))
 
     const stateSnap = state()
 
     expect(stateSnap.afterCollateralizationRatio.toPrecision(18)).to.eq('2.00000000000000000')
-    expect(stateSnap.buyingCollateral.toPrecision(18)).to.eq('7.85649211034583288')
-    expect(stateSnap.afterOutstandingDebt.toPrecision(18)).to.eq('17856.4921103458329')
+    expect(stateSnap.buyingCollateral.toPrecision(18)).to.eq('8.13486120817479598')
+    expect(stateSnap.afterOutstandingDebt.toPrecision(18)).to.eq('18118.5545091165910')
   })
 
   it('should not allow to update risk when deposited not enough collateral', () => {

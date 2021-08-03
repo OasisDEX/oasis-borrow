@@ -1,0 +1,1445 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "borrowed",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "due",
+        "type": "uint256"
+      }
+    ],
+    "name": "FLData",
+    "type": "event"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "fallback"
+  },
+  {
+    "inputs": [],
+    "name": "DAI",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "DAIJOIN",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ETH_ADDR",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "WETH",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "fromTokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "toTokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fromTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "toTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minToTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "exchangeAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes",
+            "name": "_exchangeCalldata",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct ExchangeData",
+        "name": "exchangeData",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "gemJoin",
+            "type": "address"
+          },
+          {
+            "internalType": "address payable",
+            "name": "fundsReceiver",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cdpId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "ilk",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "requiredDebt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "borrowCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawDai",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositDai",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositCollateral",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct CdpData",
+        "name": "cdpData",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "jug",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "manager",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "multiplyProxyActions",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "aaveLendingPoolProvider",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "feeRecepient",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "exchange",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct AddressRegistry",
+        "name": "addressRegistry",
+        "type": "tuple"
+      }
+    ],
+    "name": "closeVaultExitCollateral",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "fromTokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "toTokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fromTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "toTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minToTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "exchangeAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes",
+            "name": "_exchangeCalldata",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct ExchangeData",
+        "name": "exchangeData",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "gemJoin",
+            "type": "address"
+          },
+          {
+            "internalType": "address payable",
+            "name": "fundsReceiver",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cdpId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "ilk",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "requiredDebt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "borrowCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawDai",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositDai",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositCollateral",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct CdpData",
+        "name": "cdpData",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "jug",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "manager",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "multiplyProxyActions",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "aaveLendingPoolProvider",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "feeRecepient",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "exchange",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct AddressRegistry",
+        "name": "addressRegistry",
+        "type": "tuple"
+      }
+    ],
+    "name": "closeVaultExitDai",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "fromTokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "toTokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fromTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "toTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minToTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "exchangeAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes",
+            "name": "_exchangeCalldata",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct ExchangeData",
+        "name": "exchangeData",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "gemJoin",
+            "type": "address"
+          },
+          {
+            "internalType": "address payable",
+            "name": "fundsReceiver",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cdpId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "ilk",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "requiredDebt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "borrowCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawDai",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositDai",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositCollateral",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct CdpData",
+        "name": "cdpData",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "jug",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "manager",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "multiplyProxyActions",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "aaveLendingPoolProvider",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "feeRecepient",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "exchange",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct AddressRegistry",
+        "name": "addressRegistry",
+        "type": "tuple"
+      }
+    ],
+    "name": "decreaseMultiple",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "fromTokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "toTokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fromTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "toTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minToTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "exchangeAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes",
+            "name": "_exchangeCalldata",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct ExchangeData",
+        "name": "exchangeData",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "gemJoin",
+            "type": "address"
+          },
+          {
+            "internalType": "address payable",
+            "name": "fundsReceiver",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cdpId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "ilk",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "requiredDebt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "borrowCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawDai",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositDai",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositCollateral",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct CdpData",
+        "name": "cdpData",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "jug",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "manager",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "multiplyProxyActions",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "aaveLendingPoolProvider",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "feeRecepient",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "exchange",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct AddressRegistry",
+        "name": "addressRegistry",
+        "type": "tuple"
+      }
+    ],
+    "name": "decreaseMultipleWithdrawCollateral",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "fromTokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "toTokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fromTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "toTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minToTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "exchangeAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes",
+            "name": "_exchangeCalldata",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct ExchangeData",
+        "name": "exchangeData",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "gemJoin",
+            "type": "address"
+          },
+          {
+            "internalType": "address payable",
+            "name": "fundsReceiver",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cdpId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "ilk",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "requiredDebt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "borrowCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawDai",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositDai",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositCollateral",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct CdpData",
+        "name": "cdpData",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "jug",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "manager",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "multiplyProxyActions",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "aaveLendingPoolProvider",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "feeRecepient",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "exchange",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct AddressRegistry",
+        "name": "addressRegistry",
+        "type": "tuple"
+      }
+    ],
+    "name": "decreaseMultipleWithdrawDai",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "assets",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "amounts",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "premiums",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "address",
+        "name": "initiator",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "params",
+        "type": "bytes"
+      }
+    ],
+    "name": "executeOperation",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "fromTokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "toTokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fromTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "toTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minToTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "exchangeAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes",
+            "name": "_exchangeCalldata",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct ExchangeData",
+        "name": "exchangeData",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "gemJoin",
+            "type": "address"
+          },
+          {
+            "internalType": "address payable",
+            "name": "fundsReceiver",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cdpId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "ilk",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "requiredDebt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "borrowCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawDai",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositDai",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositCollateral",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct CdpData",
+        "name": "cdpData",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "jug",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "manager",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "multiplyProxyActions",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "aaveLendingPoolProvider",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "feeRecepient",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "exchange",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct AddressRegistry",
+        "name": "addressRegistry",
+        "type": "tuple"
+      }
+    ],
+    "name": "increaseMultiple",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "fromTokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "toTokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fromTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "toTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minToTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "exchangeAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes",
+            "name": "_exchangeCalldata",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct ExchangeData",
+        "name": "exchangeData",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "gemJoin",
+            "type": "address"
+          },
+          {
+            "internalType": "address payable",
+            "name": "fundsReceiver",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cdpId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "ilk",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "requiredDebt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "borrowCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawDai",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositDai",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositCollateral",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct CdpData",
+        "name": "cdpData",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "jug",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "manager",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "multiplyProxyActions",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "aaveLendingPoolProvider",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "feeRecepient",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "exchange",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct AddressRegistry",
+        "name": "addressRegistry",
+        "type": "tuple"
+      }
+    ],
+    "name": "increaseMultipleDepositCollateral",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "fromTokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "toTokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fromTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "toTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minToTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "exchangeAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes",
+            "name": "_exchangeCalldata",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct ExchangeData",
+        "name": "exchangeData",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "gemJoin",
+            "type": "address"
+          },
+          {
+            "internalType": "address payable",
+            "name": "fundsReceiver",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cdpId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "ilk",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "requiredDebt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "borrowCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawDai",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositDai",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositCollateral",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct CdpData",
+        "name": "cdpData",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "jug",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "manager",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "multiplyProxyActions",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "aaveLendingPoolProvider",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "feeRecepient",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "exchange",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct AddressRegistry",
+        "name": "addressRegistry",
+        "type": "tuple"
+      }
+    ],
+    "name": "increaseMultipleDepositDai",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "fromTokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "toTokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fromTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "toTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minToTokenAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "exchangeAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes",
+            "name": "_exchangeCalldata",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct ExchangeData",
+        "name": "exchangeData",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "gemJoin",
+            "type": "address"
+          },
+          {
+            "internalType": "address payable",
+            "name": "fundsReceiver",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cdpId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "ilk",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "requiredDebt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "borrowCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawCollateral",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "withdrawDai",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositDai",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositCollateral",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct CdpData",
+        "name": "cdpData",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "jug",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "manager",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "multiplyProxyActions",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "aaveLendingPoolProvider",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "feeRecepient",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "exchange",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct AddressRegistry",
+        "name": "addressRegistry",
+        "type": "tuple"
+      }
+    ],
+    "name": "openMultiplyVault",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "manager",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "gemJoin",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "cdp",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "borrowedDai",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "collateralDraw",
+        "type": "uint256"
+      }
+    ],
+    "name": "wipeAndFreeGem",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

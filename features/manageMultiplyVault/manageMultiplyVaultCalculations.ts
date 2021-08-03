@@ -1,8 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
-import { Vault } from 'blockchain/vaults'
-import { BalanceInfo } from 'features/shared/balanceInfo'
-import { one, zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 
 import { ManageMultiplyVaultState } from './manageMultiplyVault'
 
@@ -39,8 +36,12 @@ export interface ManageVaultCalculations {
 
   multiply: BigNumber
   afterMultiply: BigNumber
+
+  maxCollRatio: BigNumber
   liquidationPriceCurrentPriceDifference: BigNumber | undefined
 }
+
+export const MAX_COLL_RATIO = new BigNumber(5)
 
 export const defaultManageVaultCalculations: ManageVaultCalculations = {
   maxDepositAmount: zero,
@@ -71,6 +72,8 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
 
   multiply: zero,
   afterMultiply: zero,
+
+  maxCollRatio: MAX_COLL_RATIO,
   liquidationPriceCurrentPriceDifference: undefined,
 }
 
@@ -78,40 +81,40 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
  * Determines if on the basis of the user input the users intention to pay back
  * all of their debt.
  */
-function determineShouldPaybackAll({
-  paybackAmount,
-  debt,
-  debtOffset,
-  daiBalance,
-}: Pick<ManageMultiplyVaultState, 'paybackAmount'> &
-  Pick<Vault, 'debt' | 'debtOffset'> &
-  Pick<BalanceInfo, 'daiBalance'>): boolean {
-  return (
-    debt.gt(zero) &&
-    daiBalance.gte(debt.plus(debtOffset)) &&
-    !!(paybackAmount && paybackAmount.plus(PAYBACK_ALL_BOUND).gte(debt) && !paybackAmount.gt(debt))
-  )
-}
+// function determineShouldPaybackAll({
+//   paybackAmount,
+//   debt,
+//   debtOffset,
+//   daiBalance,
+// }: Pick<ManageMultiplyVaultState, 'paybackAmount'> &
+//   Pick<Vault, 'debt' | 'debtOffset'> &
+//   Pick<BalanceInfo, 'daiBalance'>): boolean {
+//   return (
+//     debt.gt(zero) &&
+//     daiBalance.gte(debt.plus(debtOffset)) &&
+//     !!(paybackAmount && paybackAmount.plus(PAYBACK_ALL_BOUND).gte(debt) && !paybackAmount.gt(debt))
+//   )
+// }
 
 /*
  * Should return the expected lockedCollateral on the basis of the amount
  * of collateral that is being deposited or withdrawn. Must return a
  * non-negative value
  */
-function calculateAfterLockedCollateral({
-  lockedCollateral,
-  depositAmount,
-  withdrawAmount,
-}: Pick<ManageMultiplyVaultState, 'depositAmount' | 'withdrawAmount'> &
-  Pick<Vault, 'lockedCollateral'>) {
-  const amount = depositAmount
-    ? lockedCollateral.plus(depositAmount)
-    : withdrawAmount
-    ? lockedCollateral.minus(withdrawAmount)
-    : lockedCollateral
+// function calculateAfterLockedCollateral({
+//   lockedCollateral,
+//   depositAmount,
+//   withdrawAmount,
+// }: Pick<ManageMultiplyVaultState, 'depositAmount' | 'withdrawAmount'> &
+//   Pick<Vault, 'lockedCollateral'>) {
+//   const amount = depositAmount
+//     ? lockedCollateral.plus(depositAmount)
+//     : withdrawAmount
+//     ? lockedCollateral.minus(withdrawAmount)
+//     : lockedCollateral
 
-  return amount.gte(zero) ? amount : zero
-}
+//   return amount.gte(zero) ? amount : zero
+// }
 
 /*
  * Should return the expected debt in the vault on the basis of the amount of
@@ -120,23 +123,23 @@ function calculateAfterLockedCollateral({
  * If the shouldPaybackAll flag is true than we assume that the debt after
  * the transaction will be 0
  */
-function calculateAfterDebt({
-  shouldPaybackAll,
-  generateAmount,
-  paybackAmount,
-  debt,
-}: Pick<ManageMultiplyVaultState, 'shouldPaybackAll' | 'generateAmount' | 'paybackAmount'> &
-  Pick<Vault, 'debt'>) {
-  if (shouldPaybackAll) return zero
+// function calculateAfterDebt({
+//   shouldPaybackAll,
+//   generateAmount,
+//   paybackAmount,
+//   debt,
+// }: Pick<ManageMultiplyVaultState, 'shouldPaybackAll' | 'generateAmount' | 'paybackAmount'> &
+//   Pick<Vault, 'debt'>) {
+//   if (shouldPaybackAll) return zero
 
-  const amount = generateAmount
-    ? debt.plus(generateAmount)
-    : paybackAmount
-    ? debt.minus(paybackAmount)
-    : debt
+//   const amount = generateAmount
+//     ? debt.plus(generateAmount)
+//     : paybackAmount
+//     ? debt.minus(paybackAmount)
+//     : debt
 
-  return amount.gte(zero) ? amount : zero
-}
+//   return amount.gte(zero) ? amount : zero
+// }
 
 /*
  * Should return the minimum amount of collateral necessary to back the
@@ -144,16 +147,16 @@ function calculateAfterDebt({
  * generating or paying back
  *
  */
-function calculateAfterBackingCollateral({
-  afterDebt,
-  liquidationRatio,
-  price,
-}: Pick<ManageMultiplyVaultState, 'afterDebt'> &
-  Pick<IlkData, 'liquidationRatio'> & { price: BigNumber }) {
-  if (!afterDebt.gt(zero)) return zero
+// function calculateAfterBackingCollateral({
+//   afterDebt,
+//   liquidationRatio,
+//   price,
+// }: Pick<ManageMultiplyVaultState, 'afterDebt'> &
+//   Pick<IlkData, 'liquidationRatio'> & { price: BigNumber }) {
+//   if (!afterDebt.gt(zero)) return zero
 
-  return afterDebt.times(liquidationRatio).div(price)
-}
+//   return afterDebt.times(liquidationRatio).div(price)
+// }
 
 /*
  * Should return the maximum amount of collateral that can be possibly
@@ -161,16 +164,16 @@ function calculateAfterBackingCollateral({
  * the amount of dai being generated or payed back. It should return a
  * non-negative value
  */
-function calculateAfterFreeCollateral({
-  lockedCollateral,
-  backingCollateral,
-}: {
-  lockedCollateral: BigNumber
-  backingCollateral: BigNumber
-}) {
-  const amount = lockedCollateral.minus(backingCollateral)
-  return amount.gte(zero) ? amount : zero
-}
+// function calculateAfterFreeCollateral({
+//   lockedCollateral,
+//   backingCollateral,
+// }: {
+//   lockedCollateral: BigNumber
+//   backingCollateral: BigNumber
+// }) {
+//   const amount = lockedCollateral.minus(backingCollateral)
+//   return amount.gte(zero) ? amount : zero
+// }
 
 /*
  * Should return the maximum amount of collateral that can be withdrawn given
@@ -183,77 +186,77 @@ function calculateAfterFreeCollateral({
  * with a small offset amount.
  *
  */
-function calculateMaxWithdrawAmount({
-  paybackAmount,
-  shouldPaybackAll,
-  lockedCollateral,
-  debt,
-  debtOffset,
-  liquidationRatio,
-  price,
-}: Pick<ManageMultiplyVaultState, 'paybackAmount' | 'shouldPaybackAll'> &
-  Pick<Vault, 'lockedCollateral' | 'debt' | 'debtOffset'> &
-  Pick<IlkData, 'liquidationRatio'> & { price: BigNumber }) {
-  const afterDebt = calculateAfterDebt({ shouldPaybackAll, debt, paybackAmount })
-  const afterDebtWithOffset = afterDebt.gt(zero) ? afterDebt.plus(debtOffset) : afterDebt
+// function calculateMaxWithdrawAmount({
+//   paybackAmount,
+//   shouldPaybackAll,
+//   lockedCollateral,
+//   debt,
+//   debtOffset,
+//   liquidationRatio,
+//   price,
+// }: Pick<ManageMultiplyVaultState, 'paybackAmount' | 'shouldPaybackAll'> &
+//   Pick<Vault, 'lockedCollateral' | 'debt' | 'debtOffset'> &
+//   Pick<IlkData, 'liquidationRatio'> & { price: BigNumber }) {
+//   const afterDebt = calculateAfterDebt({ shouldPaybackAll, debt, paybackAmount })
+//   const afterDebtWithOffset = afterDebt.gt(zero) ? afterDebt.plus(debtOffset) : afterDebt
 
-  const backingCollateral = calculateAfterBackingCollateral({
-    afterDebt: afterDebtWithOffset,
-    liquidationRatio,
-    price,
-  })
+//   const backingCollateral = calculateAfterBackingCollateral({
+//     afterDebt: afterDebtWithOffset,
+//     liquidationRatio,
+//     price,
+//   })
 
-  return calculateAfterFreeCollateral({
-    lockedCollateral,
-    backingCollateral,
-  })
-}
+//   return calculateAfterFreeCollateral({
+//     lockedCollateral,
+//     backingCollateral,
+//   })
+// }
 
-function calculateAfterIlkDebtAvailable({
-  ilkDebtAvailable,
-  paybackAmount,
-  generateAmount,
-}: Pick<IlkData, 'ilkDebtAvailable'> &
-  Pick<ManageMultiplyVaultState, 'generateAmount' | 'paybackAmount'>) {
-  if (ilkDebtAvailable.gt(zero)) {
-    const amount = ilkDebtAvailable.plus(paybackAmount || zero).minus(generateAmount || zero)
-    return amount.gte(zero) ? amount : zero
-  }
-  return zero
-}
+// function calculateAfterIlkDebtAvailable({
+//   ilkDebtAvailable,
+//   paybackAmount,
+//   generateAmount,
+// }: Pick<IlkData, 'ilkDebtAvailable'> &
+//   Pick<ManageMultiplyVaultState, 'generateAmount' | 'paybackAmount'>) {
+//   if (ilkDebtAvailable.gt(zero)) {
+//     const amount = ilkDebtAvailable.plus(paybackAmount || zero).minus(generateAmount || zero)
+//     return amount.gte(zero) ? amount : zero
+//   }
+//   return zero
+// }
 
 /*
  * Should return the amount of dai that can be generated given the amount of
  * potential collateral and debt in the vault
  */
-function calculateDaiYieldFromCollateral({
-  debt,
-  liquidationRatio,
-  generateAmount,
-  paybackAmount,
-  price,
-  collateral,
-  ilkDebtAvailable,
-}: Pick<ManageMultiplyVaultState, 'generateAmount' | 'paybackAmount'> &
-  Pick<Vault, 'debt'> &
-  Pick<IlkData, 'liquidationRatio' | 'ilkDebtAvailable'> & {
-    price: BigNumber
-    collateral: BigNumber
-  }) {
-  const daiYield = collateral.times(price).div(liquidationRatio).minus(debt)
+// function calculateDaiYieldFromCollateral({
+//   debt,
+//   liquidationRatio,
+//   generateAmount,
+//   paybackAmount,
+//   price,
+//   collateral,
+//   ilkDebtAvailable,
+// }: Pick<ManageMultiplyVaultState, 'generateAmount' | 'paybackAmount'> &
+//   Pick<Vault, 'debt'> &
+//   Pick<IlkData, 'liquidationRatio' | 'ilkDebtAvailable'> & {
+//     price: BigNumber
+//     collateral: BigNumber
+//   }) {
+//   const daiYield = collateral.times(price).div(liquidationRatio).minus(debt)
 
-  if (!daiYield.gt(zero)) return zero
+//   if (!daiYield.gt(zero)) return zero
 
-  if (daiYield.gt(ilkDebtAvailable)) {
-    return calculateAfterIlkDebtAvailable({
-      generateAmount,
-      paybackAmount,
-      ilkDebtAvailable,
-    })
-  }
+//   if (daiYield.gt(ilkDebtAvailable)) {
+//     return calculateAfterIlkDebtAvailable({
+//       generateAmount,
+//       paybackAmount,
+//       ilkDebtAvailable,
+//     })
+//   }
 
-  return daiYield
-}
+//   return daiYield
+// }
 
 /*
  * Should return the maximum amount of dai that can be generated in context
@@ -263,225 +266,225 @@ function calculateDaiYieldFromCollateral({
  * It should also not exceed the debt ceiling for that ilk and also account
  * for the accrued interest should the vault debt be non-zero
  */
-function calculateMaxGenerateAmount({
-  depositAmount,
-  generateAmount,
-  debt,
-  debtOffset,
-  lockedCollateral,
-  liquidationRatio,
-  price,
-  ilkDebtAvailable,
-}: Pick<ManageMultiplyVaultState, 'depositAmount' | 'generateAmount'> &
-  Pick<Vault, 'debtOffset' | 'debt' | 'lockedCollateral'> &
-  Pick<IlkData, 'liquidationRatio' | 'ilkDebtAvailable'> & {
-    price: BigNumber
-  }) {
-  const afterLockedCollateral = calculateAfterLockedCollateral({
-    lockedCollateral,
-    depositAmount,
-  })
+// function calculateMaxGenerateAmount({
+//   depositAmount,
+//   generateAmount,
+//   debt,
+//   debtOffset,
+//   lockedCollateral,
+//   liquidationRatio,
+//   price,
+//   ilkDebtAvailable,
+// }: Pick<ManageMultiplyVaultState, 'depositAmount' | 'generateAmount'> &
+//   Pick<Vault, 'debtOffset' | 'debt' | 'lockedCollateral'> &
+//   Pick<IlkData, 'liquidationRatio' | 'ilkDebtAvailable'> & {
+//     price: BigNumber
+//   }) {
+//   const afterLockedCollateral = calculateAfterLockedCollateral({
+//     lockedCollateral,
+//     depositAmount,
+//   })
 
-  return calculateDaiYieldFromCollateral({
-    ilkDebtAvailable,
-    collateral: afterLockedCollateral,
-    price,
-    liquidationRatio,
-    debt: debt.plus(debtOffset),
-    generateAmount,
-  })
-}
+//   return calculateDaiYieldFromCollateral({
+//     ilkDebtAvailable,
+//     collateral: afterLockedCollateral,
+//     price,
+//     liquidationRatio,
+//     debt: debt.plus(debtOffset),
+//     generateAmount,
+//   })
+// }
 
 export function applyManageVaultCalculations(
   state: ManageMultiplyVaultState,
 ): ManageMultiplyVaultState {
-  const {
-    depositAmount,
-    generateAmount,
-    withdrawAmount,
-    paybackAmount,
-    balanceInfo: { collateralBalance, daiBalance },
-    ilkData: { liquidationRatio, ilkDebtAvailable },
-    priceInfo: { currentCollateralPrice, nextCollateralPrice },
-    vault: { lockedCollateral, debt, debtOffset, lockedCollateralUSD, liquidationPrice },
-  } = state
+  // const {
+  // balanceInfo: { collateralBalance, daiBalance },
+  // ilkData: { liquidationRatio, ilkDebtAvailable },
+  // priceInfo: { currentCollateralPrice, nextCollateralPrice },
+  // vault: {
+  // lockedCollateral,
+  // debt,
+  // debtOffset,
+  // lockedCollateralUSD,
+  // liquidationPrice,
+  // },
+  // } = state
 
-  const shouldPaybackAll = determineShouldPaybackAll({
-    paybackAmount,
-    debt,
-    daiBalance,
-    debtOffset,
-  })
-  const afterLockedCollateral = calculateAfterLockedCollateral({
-    lockedCollateral,
-    depositAmount,
-    withdrawAmount,
-  })
-  const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
-  const afterLockedCollateralUSDAtNextPrice = afterLockedCollateral.times(nextCollateralPrice)
-  const afterDebt = calculateAfterDebt({ shouldPaybackAll, debt, generateAmount, paybackAmount })
+  // const shouldPaybackAll = determineShouldPaybackAll({
+  //   paybackAmount,
+  //   debt,
+  //   daiBalance,
+  //   debtOffset,
+  // })
+  // const afterLockedCollateral = calculateAfterLockedCollateral({
+  //   lockedCollateral,
+  //   depositAmount,
+  //   withdrawAmount,
+  // })
+  // const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
+  // const afterLockedCollateralUSDAtNextPrice = afterLockedCollateral.times(nextCollateralPrice)
+  // const afterDebt = calculateAfterDebt({ shouldPaybackAll, debt, generateAmount, paybackAmount })
 
-  const afterBackingCollateral = calculateAfterBackingCollateral({
-    afterDebt,
-    liquidationRatio,
-    price: currentCollateralPrice,
-  })
+  // const afterBackingCollateral = calculateAfterBackingCollateral({
+  //   afterDebt,
+  //   liquidationRatio,
+  //   price: currentCollateralPrice,
+  // })
 
-  const afterBackingCollateralAtNextPrice = calculateAfterBackingCollateral({
-    afterDebt,
-    liquidationRatio,
-    price: nextCollateralPrice,
-  })
+  // const afterBackingCollateralAtNextPrice = calculateAfterBackingCollateral({
+  //   afterDebt,
+  //   liquidationRatio,
+  //   price: nextCollateralPrice,
+  // })
 
-  const afterFreeCollateral = calculateAfterFreeCollateral({
-    lockedCollateral: afterLockedCollateral,
-    backingCollateral: afterBackingCollateral,
-  })
+  // const afterFreeCollateral = calculateAfterFreeCollateral({
+  //   lockedCollateral: afterLockedCollateral,
+  //   backingCollateral: afterBackingCollateral,
+  // })
 
-  const afterFreeCollateralAtNextPrice = calculateAfterFreeCollateral({
-    lockedCollateral: afterLockedCollateral,
-    backingCollateral: afterBackingCollateralAtNextPrice,
-  })
+  // const afterFreeCollateralAtNextPrice = calculateAfterFreeCollateral({
+  //   lockedCollateral: afterLockedCollateral,
+  //   backingCollateral: afterBackingCollateralAtNextPrice,
+  // })
 
-  const maxWithdrawAmountAtCurrentPrice = calculateMaxWithdrawAmount({
-    paybackAmount,
-    shouldPaybackAll,
-    lockedCollateral,
-    debt,
-    debtOffset,
-    liquidationRatio,
-    price: currentCollateralPrice,
-  })
+  // const maxWithdrawAmountAtCurrentPrice = calculateMaxWithdrawAmount({
+  //   paybackAmount,
+  //   shouldPaybackAll,
+  //   lockedCollateral,
+  //   debt,
+  //   debtOffset,
+  //   liquidationRatio,
+  //   price: currentCollateralPrice,
+  // })
 
-  const maxWithdrawAmountAtNextPrice = calculateMaxWithdrawAmount({
-    paybackAmount,
-    shouldPaybackAll,
-    lockedCollateral,
-    debt,
-    debtOffset,
-    liquidationRatio,
-    price: nextCollateralPrice,
-  })
+  // const maxWithdrawAmountAtNextPrice = calculateMaxWithdrawAmount({
+  //   paybackAmount,
+  //   shouldPaybackAll,
+  //   lockedCollateral,
+  //   debt,
+  //   debtOffset,
+  //   liquidationRatio,
+  //   price: nextCollateralPrice,
+  // })
 
-  const maxWithdrawAmount = BigNumber.minimum(
-    maxWithdrawAmountAtCurrentPrice,
-    maxWithdrawAmountAtNextPrice,
-  )
-  const maxWithdrawAmountUSD = maxWithdrawAmount.times(currentCollateralPrice)
+  // const maxWithdrawAmount = BigNumber.minimum(
+  //   maxWithdrawAmountAtCurrentPrice,
+  //   maxWithdrawAmountAtNextPrice,
+  // )
+  // const maxWithdrawAmountUSD = maxWithdrawAmount.times(currentCollateralPrice)
 
-  const maxDepositAmount = collateralBalance
-  const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
+  // const maxDepositAmount = collateralBalance
+  // const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
 
-  const daiYieldFromTotalCollateral = calculateDaiYieldFromCollateral({
-    ilkDebtAvailable,
-    collateral: afterLockedCollateral,
-    price: currentCollateralPrice,
-    liquidationRatio,
-    debt: afterDebt,
-    generateAmount,
-    paybackAmount,
-  })
+  // const daiYieldFromTotalCollateral = calculateDaiYieldFromCollateral({
+  //   ilkDebtAvailable,
+  //   collateral: afterLockedCollateral,
+  //   price: currentCollateralPrice,
+  //   liquidationRatio,
+  //   debt: afterDebt,
+  //   generateAmount,
+  //   paybackAmount,
+  // })
 
-  const daiYieldFromTotalCollateralAtNextPrice = calculateDaiYieldFromCollateral({
-    ilkDebtAvailable,
-    collateral: afterLockedCollateral,
-    price: nextCollateralPrice,
-    liquidationRatio,
-    debt: afterDebt,
-    generateAmount,
-    paybackAmount,
-  })
+  // const daiYieldFromTotalCollateralAtNextPrice = calculateDaiYieldFromCollateral({
+  //   ilkDebtAvailable,
+  //   collateral: afterLockedCollateral,
+  //   price: nextCollateralPrice,
+  //   liquidationRatio,
+  //   debt: afterDebt,
+  //   generateAmount,
+  //   paybackAmount,
+  // })
 
-  const maxGenerateAmountAtCurrentPrice = calculateMaxGenerateAmount({
-    depositAmount,
-    debt,
-    debtOffset,
-    ilkDebtAvailable,
-    liquidationRatio,
-    lockedCollateral,
-    price: currentCollateralPrice,
-  })
+  // const maxGenerateAmountAtCurrentPrice = calculateMaxGenerateAmount({
+  //   depositAmount,
+  //   debt,
+  //   debtOffset,
+  //   ilkDebtAvailable,
+  //   liquidationRatio,
+  //   lockedCollateral,
+  //   price: currentCollateralPrice,
+  // })
 
-  const maxGenerateAmountAtNextPrice = calculateMaxGenerateAmount({
-    depositAmount,
-    debt,
-    debtOffset,
-    ilkDebtAvailable,
-    liquidationRatio,
-    lockedCollateral,
-    price: nextCollateralPrice,
-  })
+  // const maxGenerateAmountAtNextPrice = calculateMaxGenerateAmount({
+  //   depositAmount,
+  //   debt,
+  //   debtOffset,
+  //   ilkDebtAvailable,
+  //   liquidationRatio,
+  //   lockedCollateral,
+  //   price: nextCollateralPrice,
+  // })
 
-  const maxGenerateAmount = BigNumber.minimum(
-    maxGenerateAmountAtCurrentPrice,
-    maxGenerateAmountAtNextPrice,
-  )
+  // const maxGenerateAmount = BigNumber.minimum(
+  //   maxGenerateAmountAtCurrentPrice,
+  //   maxGenerateAmountAtNextPrice,
+  // )
 
-  const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt
+  // const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt
 
-  const afterCollateralizationRatio =
-    afterLockedCollateralUSD.gt(zero) && afterDebt.gt(zero)
-      ? afterLockedCollateralUSD.div(afterDebt)
-      : zero
+  // const afterCollateralizationRatio =
+  //   afterLockedCollateralUSD.gt(zero) && afterDebt.gt(zero)
+  //     ? afterLockedCollateralUSD.div(afterDebt)
+  //     : zero
 
-  const afterCollateralizationRatioAtNextPrice =
-    afterLockedCollateralUSDAtNextPrice.gt(zero) && afterDebt.gt(zero)
-      ? afterLockedCollateralUSDAtNextPrice.div(afterDebt)
-      : zero
+  // const afterCollateralizationRatioAtNextPrice =
+  //   afterLockedCollateralUSDAtNextPrice.gt(zero) && afterDebt.gt(zero)
+  //     ? afterLockedCollateralUSDAtNextPrice.div(afterDebt)
+  //     : zero
 
-  const afterLiquidationPrice =
-    afterDebt.gt(zero) && afterLockedCollateral.gt(zero)
-      ? afterDebt.times(liquidationRatio).div(afterLockedCollateral)
-      : zero
+  // const afterLiquidationPrice =
+  //   afterDebt.gt(zero) && afterLockedCollateral.gt(zero)
+  //     ? afterDebt.times(liquidationRatio).div(afterLockedCollateral)
+  //     : zero
 
-  const afterCollateralBalance = depositAmount
-    ? collateralBalance.minus(depositAmount)
-    : withdrawAmount
-    ? collateralBalance.plus(withdrawAmount)
-    : collateralBalance
+  // const afterCollateralBalance = depositAmount
+  //   ? collateralBalance.minus(depositAmount)
+  //   : withdrawAmount
+  //   ? collateralBalance.plus(withdrawAmount)
+  //   : collateralBalance
 
-  const multiply = lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
-  const afterMultiply = afterLockedCollateralUSD.div(afterLockedCollateralUSD.div(afterDebt))
+  // const multiply = lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
+  // const afterMultiply = afterLockedCollateralUSD.div(afterLockedCollateralUSD.div(afterDebt))
 
-  const liquidationPriceCurrentPriceDifference = !liquidationPrice.isZero()
-    ? one.minus(liquidationPrice.div(currentCollateralPrice))
-    : undefined
+  // const liquidationPriceCurrentPriceDifference = !liquidationPrice.isZero()
+  //   ? one.minus(liquidationPrice.div(currentCollateralPrice))
+  //   : undefined
 
-  const collateralizationRatioAtNextPrice =
-    lockedCollateral.gt(zero) && debt.gt(zero)
-      ? lockedCollateral.times(nextCollateralPrice).div(debt)
-      : zero
+  // const collateralizationRatioAtNextPrice =
+  //   lockedCollateral.gt(zero) && debt.gt(zero)
+  //     ? lockedCollateral.times(nextCollateralPrice).div(debt)
+  //     : zero
 
   return {
     ...state,
-    maxDepositAmount,
-    maxDepositAmountUSD,
-    maxWithdrawAmountAtCurrentPrice,
-    maxWithdrawAmountAtNextPrice,
-    maxWithdrawAmount,
-    maxWithdrawAmountUSD,
-    maxGenerateAmount,
-    maxGenerateAmountAtCurrentPrice,
-    maxGenerateAmountAtNextPrice,
-    afterCollateralizationRatio,
-    collateralizationRatioAtNextPrice,
-    afterCollateralizationRatioAtNextPrice,
-    afterLiquidationPrice,
-    afterFreeCollateral,
-    afterFreeCollateralAtNextPrice,
-    afterLockedCollateral,
-    afterLockedCollateralUSD,
-    afterBackingCollateral,
-    afterBackingCollateralAtNextPrice,
-    afterDebt,
-    afterCollateralBalance,
-    maxPaybackAmount,
-    daiYieldFromTotalCollateral,
-    daiYieldFromTotalCollateralAtNextPrice,
-    shouldPaybackAll,
 
-    multiply,
-    afterMultiply,
-    liquidationPriceCurrentPriceDifference,
+    // maxDepositAmount,
+    // maxDepositAmountUSD,
+    // maxWithdrawAmountAtCurrentPrice,
+    // maxWithdrawAmountAtNextPrice,
+    // maxWithdrawAmount,
+    // maxWithdrawAmountUSD,
+    // maxGenerateAmount,
+    // maxGenerateAmountAtCurrentPrice,
+    // maxGenerateAmountAtNextPrice,
+    // afterCollateralizationRatio,
+    // afterCollateralizationRatioAtNextPrice,
+    // afterLiquidationPrice,
+    // afterFreeCollateral,
+    // afterFreeCollateralAtNextPrice,
+    // afterLockedCollateral,
+    // afterBackingCollateral,
+    // afterBackingCollateralAtNextPrice,
+    // afterDebt,
+    // afterCollateralBalance,
+    // maxPaybackAmount,
+    // daiYieldFromTotalCollateral,
+    // daiYieldFromTotalCollateralAtNextPrice,
+    // shouldPaybackAll,
+
+    // multiply,
+    // afterMultiply,
   }
 }

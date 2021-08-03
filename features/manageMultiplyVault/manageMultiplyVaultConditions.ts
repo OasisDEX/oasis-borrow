@@ -170,10 +170,6 @@ export function applyManageVaultConditions(
   state: ManageMultiplyVaultState,
 ): ManageMultiplyVaultState {
   const {
-    depositAmount,
-    generateAmount,
-    withdrawAmount,
-    paybackAmount,
     afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
     ilkData,
@@ -196,6 +192,11 @@ export function applyManageVaultConditions(
     maxGenerateAmountAtCurrentPrice,
     maxGenerateAmountAtNextPrice,
   } = state
+  //TODO
+  const depositAmount = zero
+  const generateAmount = zero
+  const withdrawAmount = zero
+  const paybackAmount = zero
 
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
   const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)
