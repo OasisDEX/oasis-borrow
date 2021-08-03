@@ -23,7 +23,7 @@ const config = {
   prod: {
     mixpanel: {
       token,
-      config: { ip: false, api_host: 'https://mpp.oazolabs.xyz' },
+      config: { ip: false, api_host: 'https://mpp.oasis.app' },
     },
   },
 }[env]
