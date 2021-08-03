@@ -216,7 +216,6 @@ export function applyManageVaultTransition(
     return {
       ...state,
       stage: 'multiplyTransitionInProgress',
-      canProgress: false,
     }
   }
 
@@ -224,7 +223,6 @@ export function applyManageVaultTransition(
     return {
       ...state,
       stage: 'multiplyTransitionFailure',
-      canRegress: true,
     }
   }
 
@@ -232,7 +230,6 @@ export function applyManageVaultTransition(
     return {
       ...state,
       stage: 'multiplyTransitionSuccess',
-      canProgress: false,
     }
   }
 

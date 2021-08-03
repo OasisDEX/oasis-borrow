@@ -30,6 +30,7 @@ export interface MockManageVaultProps {
   _collateralAllowance$?: Observable<BigNumber>
   _daiAllowance$?: Observable<BigNumber>
   _vault$?: Observable<Vault>
+  _saveVaultType$?: Observable<void>
 
   ilkData?: MockIlkDataProps
   priceInfo?: MockPriceInfoProps
@@ -53,6 +54,7 @@ export function mockManageVault$({
   _collateralAllowance$,
   _daiAllowance$,
   _vault$,
+  _saveVaultType$,
   ilkData,
   priceInfo,
   balanceInfo,
@@ -121,7 +123,7 @@ export function mockManageVault$({
   }
 
   function saveVaultType$() {
-    return of(undefined)
+    return _saveVaultType$ || of(undefined)
   }
 
   return createManageVault$(

@@ -211,18 +211,22 @@ function saveVaultType(
   state: ManageVaultState,
 ) {
   // assume that user went through ToS flow and can interact with application
-  const token = jwtAuthGetToken(state.account as string) as string
+  const token = jwtAuthGetToken(state.account as string)
 
-  saveVaultType$(state.vault.id, token, VaultType.Multiply)
-    .pipe<ManageVaultChange>(
-      map(() => {
-        window.location.reload()
-        return of({ kind: 'multiplyTransitionSuccess' } as ManageVaultChange)
-      }),
-      catchError(() => of({ kind: 'multiplyTransitionFailure' } as ManageVaultChange)),
-      startWith({ kind: 'multiplyTransitionInProgress' } as ManageVaultChange),
-    )
-    .subscribe((ch) => change(ch))
+  if (token) {
+    saveVaultType$(state.vault.id, token, VaultType.Multiply)
+      .pipe<ManageVaultChange>(
+        map(() => {
+          window.location.reload()
+          return { kind: 'multiplyTransitionSuccess' } as ManageVaultChange
+        }),
+        catchError(() => of({ kind: 'multiplyTransitionFailure' } as ManageVaultChange)),
+        startWith({ kind: 'multiplyTransitionInProgress' } as ManageVaultChange),
+      )
+      .subscribe((ch) => change(ch))
+  } else {
+    change({ kind: 'multiplyTransitionFailure' })
+  }
 }
 
 function addTransitions(
