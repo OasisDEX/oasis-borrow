@@ -10,7 +10,7 @@ import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
-import { first, map, scan, shareReplay, startWith, switchMap } from 'rxjs/operators'
+import { catchError, first, map, scan, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
@@ -118,9 +118,9 @@ export type ManageVaultStage =
   | 'manageFailure'
   | 'manageSuccess'
   | 'multiplyTransitionWaitingForConfirmation'
-// | 'multiplyTransitionInProgress'
-// | 'multiplyTransitionFailure'
-// | 'multiplyTransitionSuccess'
+  | 'multiplyTransitionInProgress'
+  | 'multiplyTransitionFailure'
+  | 'multiplyTransitionSuccess'
 
 export interface MutableManageVaultState {
   stage: ManageVaultStage
@@ -213,9 +213,10 @@ function saveVaultType(
     .pipe<ManageVaultChange>(
       map(() => {
         window.location.reload()
-        // return of({ stage: 'multiplyTransitionSuccess' })
+        return of({ kind: 'multiplyTransitionSuccess' } as ManageVaultChange)
       }),
-      startWith({}),
+      catchError(() => of({ kind: 'multiplyTransitionFailure' } as ManageVaultChange)),
+      startWith({ kind: 'multiplyTransitionInProgress' } as ManageVaultChange),
     )
     .subscribe((ch) => change(ch))
 }
@@ -236,7 +237,10 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'multiplyTransitionWaitingForConfirmation') {
+  if (
+    state.stage === 'multiplyTransitionWaitingForConfirmation' ||
+    state.stage === 'multiplyTransitionFailure'
+  ) {
     return {
       ...state,
       toggle: (stage) => change({ kind: 'toggleEditing', stage }),

@@ -86,6 +86,15 @@ function manageVaultButtonText(state: ManageVaultState): string {
     case 'multiplyTransitionWaitingForConfirmation':
       return 'Take me to the Multiply interface'
 
+    case 'multiplyTransitionInProgress':
+      return 'Transition in progress...'
+
+    case 'multiplyTransitionFailure':
+      return 'Something went wrong, try again'
+
+    case 'multiplyTransitionSuccess':
+      return 'Transition completed, refreshing...'
+
     default:
       throw new UnreachableCaseError(state.stage)
   }
@@ -104,6 +113,7 @@ function manageVaultSecondaryButtonText(state: ManageVaultState): string {
       return t('edit-token-allowance', { token: isCollateralAllowanceStage ? token : 'DAI' })
     case 'multiplyTransitionEditing':
     case 'multiplyTransitionWaitingForConfirmation':
+    case 'multiplyTransitionFailure':
       return 'Decide later'
     default:
       return t('edit-vault-details')
@@ -200,7 +210,8 @@ export function ManageVaultButton(props: ManageVaultState) {
                 stage !== 'daiAllowanceFailure' &&
                 stage !== 'collateralAllowanceFailure' &&
                 stage !== 'multiplyTransitionEditing' &&
-                stage !== 'multiplyTransitionWaitingForConfirmation'
+                stage !== 'multiplyTransitionWaitingForConfirmation' &&
+                stage !== 'multiplyTransitionFailure'
               ) {
                 trackingEvents.manageVaultConfirmVaultEdit()
               }

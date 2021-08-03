@@ -21,5 +21,5 @@ export function saveVaultTypeLocalStorage$(
 
   localStorage.setItem(`vault-type/${id.toFixed(0)}`, vaultType)
 
-  return of(undefined).pipe(delay(500))
+  return of(undefined).pipe(delay(2000))
 }
