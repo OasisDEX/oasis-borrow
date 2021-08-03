@@ -383,6 +383,10 @@ export function applyManageVaultCalculations(
   const multiply = lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
   const afterMultiply = afterLockedCollateralUSD.div(afterLockedCollateralUSD.minus(afterDebt))
 
+  const afterLiquidationPrice = currentCollateralPrice
+    .times(liquidationRatio)
+    .div(afterCollateralizationRatio)
+
   console.log(`
   
       REQUIRED COLL RATO:${requiredCollRatio}
@@ -405,6 +409,9 @@ export function applyManageVaultCalculations(
 
       afterLockedCollateral: ${afterLockedCollateral}
       afterDebt: ${afterDebt}
+
+
+      afterLiquidationPrice: ${afterLiquidationPrice}
       
   `)
 
@@ -562,6 +569,7 @@ export function applyManageVaultCalculations(
 
     multiply,
     afterMultiply,
+    afterLiquidationPrice,
 
     // maxDepositAmount,
     // maxDepositAmountUSD,
