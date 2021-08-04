@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
 
 import { ManageMultiplyVaultState, ManageVaultChange } from './manageMultiplyVault'
+import { otherActionsDefaults } from './manageMultiplyVaultForm'
 
 interface DepositCollateralChange {
   kind: 'depositCollateral'
@@ -20,11 +21,6 @@ interface DepositCollateralMaxChange {
 interface DepositDaiChange {
   kind: 'depositDai'
   depositDaiAmount?: BigNumber
-}
-
-interface DepositDaiUSDChange {
-  kind: 'depositDaiUSD'
-  depositDaiAmountUSD?: BigNumber
 }
 
 interface DepositDaiMaxChange {
@@ -47,11 +43,6 @@ interface WithdrawCollateralMaxChange {
 interface WithdrawDaiChange {
   kind: 'WithdrawDai'
   withdrawDaiAmount?: BigNumber
-}
-
-interface WithdrawDaiUSDChange {
-  kind: 'WithdrawDaiUSD'
-  withdrawDaiAmountUSD?: BigNumber
 }
 
 interface WithdrawDaiMaxChange {
@@ -94,13 +85,11 @@ export type ManageVaultInputChange =
   | DepositCollateralUSDChange
   | DepositCollateralMaxChange
   | DepositDaiChange
-  | DepositDaiUSDChange
   | DepositDaiMaxChange
   | WithdrawCollateralChange
   | WithdrawCollateralUSDChange
   | WithdrawCollateralMaxChange
   | WithdrawDaiChange
-  | WithdrawDaiUSDChange
   | WithdrawDaiMaxChange
   | BuyChange
   | BuyUSDChange
@@ -109,12 +98,6 @@ export type ManageVaultInputChange =
   | SellUSDChange
   | SellMaxChange
   | RequiredCollRatioChange
-
-// export const depositAndGenerateDefaults: Partial<ManageMultiplyVaultState> = {
-//   depositCAmount: undefined,
-//   depositAmountUSD: undefined,
-//   generateAmount: undefined,
-// }
 
 // export const paybackAndWithdrawDefaults: Partial<ManageMultiplyVaultState> = {
 //   withdrawAmount: undefined,
@@ -295,7 +278,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
   if (change.kind === 'requiredCollRatio') {
     return {
       ...state,
-      slider: change.requiredCollRatio,
+      requiredCollRatio: change.requiredCollRatio,
     }
   }
 
@@ -388,6 +371,46 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
 
       buyAmount: undefined,
       buyAmountUSD: undefined,
+    }
+  }
+
+  if (change.kind === 'depositCollateral') {
+    const {
+      priceInfo: { currentCollateralPrice },
+    } = state
+
+    return {
+      ...state,
+      ...otherActionsDefaults,
+      depositCollateralAmount: change.depositCollateralAmount,
+      depositCollateralAmountUSD: change.depositCollateralAmount?.times(currentCollateralPrice),
+    }
+  }
+
+  if (change.kind === 'depositCollateralUSD') {
+    const {
+      priceInfo: { currentCollateralPrice },
+    } = state
+
+    return {
+      ...state,
+      ...otherActionsDefaults,
+      depositCollateralAmountUSD: change.depositCollateralAmountUSD,
+      depositCollateralAmount: change.depositCollateralAmountUSD?.div(currentCollateralPrice),
+    }
+  }
+
+  if (change.kind === 'depositCollateralMax') {
+    const {
+      balanceInfo: { collateralBalance },
+      priceInfo: { currentCollateralPrice },
+    } = state
+
+    return {
+      ...state,
+      ...otherActionsDefaults,
+      depositCollateralAmount: collateralBalance,
+      depositCollateralAmountUSD: collateralBalance?.times(currentCollateralPrice),
     }
   }
 

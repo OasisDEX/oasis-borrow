@@ -2,8 +2,8 @@ import BigNumber from 'bignumber.js'
 import { MAX_COLL_RATIO } from 'features/openMultiplyVault/openMultiplyVaultCalculations'
 import { one } from 'helpers/zero'
 
-const MULTIPLY_FEE = new BigNumber(0.01)
-const LOAN_FEE = new BigNumber(0.009)
+export const MULTIPLY_FEE = new BigNumber(0.01)
+export const LOAN_FEE = new BigNumber(0.009)
 export function calculateParamsIncreaseMP(
   oraclePrice: BigNumber,
   marketPrice: BigNumber,
@@ -51,6 +51,7 @@ export function calculateParamsDecreaseMP(
         .minus(marketPriceSlippage.times(requiredCollRatio)),
     )
   const collateral = debt.times(one.plus(OF).plus(FF)).div(marketPriceSlippage)
+
   return [debt, collateral]
 }
 
@@ -64,7 +65,6 @@ export interface MultiplyParams {
   oazoFee: BigNumber
 }
 
-// TODO: finish generic function
 export function getMultiplyParams(
   oraclePrice: BigNumber,
   marketPrice: BigNumber,
@@ -75,11 +75,10 @@ export function getMultiplyParams(
 
   requiredCollRatio: BigNumber,
 
-  providedCollateral: BigNumber, // increase
-  providedDai: BigNumber, // increase
-  withdrawDai: BigNumber, // decrease
-  withdrawColl: BigNumber, // decrease
-  // if both zero then collateralization ratio change
+  providedCollateral: BigNumber,
+  providedDai: BigNumber,
+  withdrawDai: BigNumber,
+  withdrawColl: BigNumber,
 
   LF: BigNumber = LOAN_FEE,
   OF: BigNumber = MULTIPLY_FEE,
@@ -87,8 +86,13 @@ export function getMultiplyParams(
   const afterCollateral = currentCollateral.plus(providedCollateral).minus(withdrawColl)
   const afterDebt = currentDebt.plus(withdrawDai).minus(providedDai)
   const currentCollateralizationRatio = currentCollateral.times(oraclePrice).div(currentDebt)
-  // Increase coll ratio 300% -> 200% = increase multiple
-  if (currentCollateralizationRatio.gt(requiredCollRatio)) {
+
+  const isIncreasingMultiple =
+    providedCollateral.gt(0) ||
+    providedDai.gt(0) ||
+    currentCollateralizationRatio.gt(requiredCollRatio)
+
+  if (isIncreasingMultiple) {
     return calculateParamsIncreaseMP(
       oraclePrice,
       marketPrice,

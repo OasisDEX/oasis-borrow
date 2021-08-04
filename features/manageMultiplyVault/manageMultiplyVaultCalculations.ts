@@ -2,7 +2,12 @@ import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { ExchangeAction } from 'features/exchange/exchange'
-import { getMaxPossibleCollRatioOrMax, getMultiplyParams } from 'helpers/multiply/calculations'
+import {
+  getMaxPossibleCollRatioOrMax,
+  getMultiplyParams,
+  LOAN_FEE,
+  MULTIPLY_FEE,
+} from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { SLIPPAGE } from './manageMultiplyQuote'
 
@@ -296,23 +301,65 @@ function calculateDaiYieldFromCollateral({
 //   })
 // }
 
-/*
+export function getVaultChange({
+  requiredCollRatio,
+  depositCollateralAmount,
+  depositDaiAmount,
+  withdrawDaiAmount,
+  withdrawCollateralAmount,
+  slippage,
 
-Buying ETH 0.00 ETH -> 6.3821 ETH ($15,852.75)
-Total ETH exposure 0.00 ETH -> 16.36 ETH
-ETH Price (impact)
-$2,483.91 (0.00%)
-Slippage Limit
-5.00 %
-Multiply 0.00x ->1.71x
-Outstanding Debt
-0.00 DAI16,813.52 DAI
-Collateral Ratio
-0.00%
-240.00%
-Transaction Fee
-$182.40
-*/
+  currentCollateralPrice,
+  marketPrice,
+  debt,
+  lockedCollateral,
+
+  OF,
+  FF,
+}: {
+  requiredCollRatio: BigNumber | undefined
+  depositCollateralAmount: BigNumber
+  depositDaiAmount: BigNumber
+  withdrawDaiAmount: BigNumber
+  withdrawCollateralAmount: BigNumber
+
+  currentCollateralPrice: BigNumber
+  marketPrice: BigNumber
+  debt: BigNumber
+  lockedCollateral: BigNumber
+  slippage: BigNumber
+
+  FF: BigNumber
+  OF: BigNumber
+}) {
+  if (requiredCollRatio) {
+    const [debtDelta, collateralDelta] = getMultiplyParams(
+      currentCollateralPrice,
+      marketPrice,
+      slippage,
+      debt,
+      lockedCollateral,
+      requiredCollRatio,
+      depositCollateralAmount,
+      depositDaiAmount,
+      withdrawDaiAmount,
+      withdrawCollateralAmount,
+    )
+    return {
+      debtDelta,
+      collateralDelta,
+      flashLoanFee: debtDelta.times(FF),
+      oazoFee: debtDelta.times(OF),
+    }
+  }
+
+  return {
+    debtDelta: withdrawDaiAmount.minus(depositDaiAmount),
+    collateralDelta: depositCollateralAmount.minus(withdrawCollateralAmount),
+    flashLoanFee: zero,
+    oazoFee: zero,
+  }
+}
 
 export function applyManageVaultCalculations(
   state: ManageMultiplyVaultState,
@@ -334,6 +381,10 @@ export function applyManageVaultCalculations(
     quote,
     swap,
     slippage,
+    depositCollateralAmount = zero,
+    depositDaiAmount = zero,
+    withdrawDaiAmount = zero,
+    withdrawCollateralAmount = zero,
   } = state
 
   const marketPrice =
@@ -347,29 +398,42 @@ export function applyManageVaultCalculations(
   // getMaxPossibleCollRatioOrMax(
   //   debtFloor,
   //   zero)
+  const inputsEmpty =
+    requiredCollRatio === undefined &&
+    BigNumber.sum(
+      depositCollateralAmount,
+      depositDaiAmount,
+      withdrawDaiAmount,
+      withdrawCollateralAmount,
+    ).eq(0)
 
-  if (!marketPrice || !marketPriceMaxSlippage || !requiredCollRatio) {
-    return state
+  console.log({ inputsEmpty, requiredCollRatio })
+
+  if (!marketPrice || !marketPriceMaxSlippage || inputsEmpty) {
+    return { ...state, ...defaultManageVaultCalculations }
   }
 
-  const [debtDelta, collateralDelta] = getMultiplyParams(
+  const { debtDelta, collateralDelta, flashLoanFee, oazoFee } = getVaultChange({
     currentCollateralPrice,
     marketPrice,
-    SLIPPAGE,
+    slippage: SLIPPAGE,
     debt,
     lockedCollateral,
     requiredCollRatio,
-    zero,
-    zero,
-    zero,
-    zero,
-  )
+    depositCollateralAmount,
+    depositDaiAmount,
+    withdrawDaiAmount,
+    withdrawCollateralAmount,
+    OF: MULTIPLY_FEE,
+    FF: LOAN_FEE,
+  })
 
-  const afterDebt = debt.plus(debtDelta)
+  const afterDebt = debt.plus(debtDelta).plus(flashLoanFee)
+
   const afterLockedCollateral = lockedCollateral.plus(collateralDelta)
-
   const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
-  const afterCollateralizationRatio = requiredCollRatio
+
+  const afterCollateralizationRatio = afterLockedCollateralUSD.div(afterDebt)
 
   const multiply = lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
   const afterMultiply = afterLockedCollateralUSD.div(afterLockedCollateralUSD.minus(afterDebt))
@@ -382,6 +446,10 @@ export function applyManageVaultCalculations(
 
   console.log(`
   
+      AFTER COLL RATIO : ${afterCollateralizationRatio}
+      REQUIRED COLL RATO: ${requiredCollRatio}
+
+
       REQUIRED COLL RATO:${requiredCollRatio}
       CURRENT COLL RATIO:${collateralizationRatio}
 
@@ -405,6 +473,12 @@ export function applyManageVaultCalculations(
 
 
       afterLiquidationPrice: ${afterLiquidationPrice}
+
+
+      depositCollateralAmount,: ${depositCollateralAmount}
+      depositDaiAmount,: ${depositDaiAmount}
+      withdrawDaiAmount,: ${withdrawDaiAmount}
+      withdrawCollateralAmount,: ${withdrawCollateralAmount}
       
   `)
 

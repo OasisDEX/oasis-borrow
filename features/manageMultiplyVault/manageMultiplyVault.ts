@@ -151,9 +151,7 @@ export interface MutableManageMultiplyVaultState {
   withdrawCollateralAmount?: BigNumber
   withdrawCollateralAmountUSD?: BigNumber
   depositDaiAmount?: BigNumber
-  depositDaiAmountUSD?: BigNumber
   withdrawDaiAmount?: BigNumber
-  withdrawDaiAmountUSD?: BigNumber
   closeVaultTo: CloseVaultTo
 
   collateralAllowanceAmount?: BigNumber
@@ -192,14 +190,12 @@ interface ManageVaultFunctions {
   updateDepositCollateralUSD?: (depositCollateralUSD?: BigNumber) => void
   updateDepositCollateralMax?: () => void
   updateDepositDai?: (depositDai?: BigNumber) => void
-  updateDepositDaiUSD?: (depositDaiUSD?: BigNumber) => void
   updateDepositDaiMax?: () => void
 
   updateWithdrawCollateral?: (withdrawCollateral?: BigNumber) => void
   updateWithdrawCollateralUSD?: (withdrawCollateralUSD?: BigNumber) => void
   updateWithdrawCollateralMax?: () => void
   updateWithdrawDai?: (withdrawDai?: BigNumber) => void
-  updateWithdrawDaiUSD?: (withdrawDaiUSD?: BigNumber) => void
   updateWithdrawDaiMax?: () => void
   setCloseVaultTo?: (closeVaultTo: CloseVaultTo) => void
 
@@ -267,10 +263,7 @@ function addTransitions(
       updateDepositDai: (depositDaiAmount?: BigNumber) => {
         change({ kind: 'depositDai', depositDaiAmount })
       },
-      updateDepositDaiUSD: (depositDaiAmountUSD?: BigNumber) =>
-        change({ kind: 'depositDaiUSD', depositDaiAmountUSD }),
       updateDepositDaiMax: () => change({ kind: 'depositDaiMax' }),
-
       updateWithdrawCollateral: (withdrawCollateralAmount?: BigNumber) => {
         change({ kind: 'WithdrawCollateral', withdrawCollateralAmount })
       },
@@ -281,8 +274,6 @@ function addTransitions(
       updateWithdrawDai: (withdrawDaiAmount?: BigNumber) => {
         change({ kind: 'WithdrawDai', withdrawDaiAmount })
       },
-      updateWithdrawDaiUSD: (withdrawDaiAmountUSD?: BigNumber) =>
-        change({ kind: 'WithdrawDaiUSD', withdrawDaiAmountUSD }),
       updateWithdrawDaiMax: () => change({ kind: 'WithdrawDaiMax' }),
 
       setCloseVaultTo: (closeVaultTo: CloseVaultTo) =>
