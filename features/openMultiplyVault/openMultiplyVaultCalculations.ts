@@ -23,6 +23,7 @@ export interface OpenMultiplyVaultCalculations {
   multiply?: BigNumber
   afterOutstandingDebt: BigNumber
   afterCollateralizationRatio: BigNumber
+  afterCollateralizationRatioAtNextPrice: BigNumber
   txFees: BigNumber
   maxDepositAmount: BigNumber
   maxDepositAmountUSD: BigNumber
@@ -31,10 +32,9 @@ export interface OpenMultiplyVaultCalculations {
   multiplyFee: BigNumber
   maxCollRatio?: BigNumber
   marketPrice?: BigNumber
+  daiYieldFromDepositingCollateral: BigNumber
+  daiYieldFromDepositingCollateralAtNextPrice: BigNumber
 
-  // afterCollateralizationRatioAtNextPrice: BigNumber
-  // daiYieldFromDepositingCollateral: BigNumber
-  // daiYieldFromDepositingCollateralAtNextPrice: BigNumber
   // afterFreeCollateral: BigNumber
 }
 
@@ -55,9 +55,12 @@ export const defaultOpenVaultStateCalculations: OpenMultiplyVaultCalculations = 
   maxDepositAmountUSD: zero,
   afterCollateralBalance: zero,
   afterCollateralizationRatio: zero,
+  afterCollateralizationRatioAtNextPrice: zero,
   loanFees: zero,
   multiplyFee: zero,
   totalExposureUSD: zero,
+  daiYieldFromDepositingCollateral: zero,
+  daiYieldFromDepositingCollateralAtNextPrice: zero,
 }
 
 function getCollRatioByDebt(
@@ -164,6 +167,8 @@ export function applyOpenMultiplyVaultCalculations(
 
   const totalExposure = depositAmount?.gt(0) ? totalExposureUSD.div(currentCollateralPrice) : zero
 
+  const totalExposureUSDAtNextPrice = totalExposure.times(nextCollateralPrice)
+
   const afterCollateralBalance = depositAmount
     ? collateralBalance.minus(depositAmount)
     : collateralBalance
@@ -183,6 +188,11 @@ export function applyOpenMultiplyVaultCalculations(
   const afterCollateralizationRatio =
     afterOutstandingDebt?.gt(0) && totalExposureUSD
       ? totalExposureUSD.div(afterOutstandingDebt)
+      : requiredCollRatioSafe || zero
+
+  const afterCollateralizationRatioAtNextPrice =
+    afterOutstandingDebt?.gt(0) && totalExposureUSDAtNextPrice
+      ? totalExposureUSDAtNextPrice.div(afterOutstandingDebt)
       : requiredCollRatioSafe || zero
 
   const afterNetValueUSD =
@@ -214,6 +224,14 @@ export function applyOpenMultiplyVaultCalculations(
   //   ? afterBuyingPowerUSD.div(marketPriceMaxSlippage)
   //   : zero
 
+  const daiYieldFromDepositingCollateral = totalExposure
+    ? totalExposure.times(currentCollateralPrice).div(liquidationRatio)
+    : zero
+
+  const daiYieldFromDepositingCollateralAtNextPrice = totalExposure
+    ? totalExposure.times(nextCollateralPrice).div(liquidationRatio)
+    : zero
+
   return {
     ...state,
     maxDepositAmount,
@@ -242,9 +260,9 @@ export function applyOpenMultiplyVaultCalculations(
     // maxGenerateAmountCurrentPrice,
     // maxGenerateAmountNextPrice,
     // afterCollateralizationRatio,
-    // afterCollateralizationRatioAtNextPrice,
-    // daiYieldFromDepositingCollateral,
-    // daiYieldFromDepositingCollateralAtNextPrice,
+    afterCollateralizationRatioAtNextPrice,
+    daiYieldFromDepositingCollateral,
+    daiYieldFromDepositingCollateralAtNextPrice,
     // afterFreeCollateral,
   }
 }

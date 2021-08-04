@@ -13,7 +13,6 @@ export function OpenVaultErrors({
   errorMessages,
   maxGenerateAmount,
   ilkData: { debtFloor },
-  token,
 }: OpenVaultState) {
   const { t } = useTranslation()
   if (!errorMessages.length) return null
@@ -32,7 +31,6 @@ export function OpenVaultErrors({
       case 'generateAmountExceedsDebtCeiling':
         return translate('generate-amount-exceeds-debt-ceiling', {
           maxGenerateAmount: formatCryptoBalance(maxGenerateAmount),
-          token,
         })
       case 'generateAmountLessThanDebtFloor':
         return (
