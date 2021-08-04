@@ -27,6 +27,7 @@ export interface OpenMultiplyVaultCalculations {
   txFees: BigNumber
   maxDepositAmount: BigNumber
   maxDepositAmountUSD: BigNumber
+  maxGenerateAmount: BigNumber
   afterCollateralBalance: BigNumber
   loanFees: BigNumber
   multiplyFee: BigNumber
@@ -53,6 +54,7 @@ export const defaultOpenVaultStateCalculations: OpenMultiplyVaultCalculations = 
   txFees: zero,
   maxDepositAmount: zero,
   maxDepositAmountUSD: zero,
+  maxGenerateAmount: zero,
   afterCollateralBalance: zero,
   afterCollateralizationRatio: zero,
   afterCollateralizationRatioAtNextPrice: zero,
@@ -111,7 +113,7 @@ export function applyOpenMultiplyVaultCalculations(
     depositAmount,
     balanceInfo: { collateralBalance },
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
-    ilkData: { liquidationRatio, debtFloor },
+    ilkData: { liquidationRatio, debtFloor, ilkDebtAvailable },
     quote,
     // swap, TODO use swap price
     slippage,
@@ -232,6 +234,21 @@ export function applyOpenMultiplyVaultCalculations(
     ? totalExposure.times(nextCollateralPrice).div(liquidationRatio)
     : zero
 
+  const maxGenerateAmountCurrentPrice = daiYieldFromDepositingCollateral.gt(ilkDebtAvailable)
+    ? ilkDebtAvailable
+    : daiYieldFromDepositingCollateral
+
+  const maxGenerateAmountNextPrice = daiYieldFromDepositingCollateralAtNextPrice.gt(
+    ilkDebtAvailable,
+  )
+    ? ilkDebtAvailable
+    : daiYieldFromDepositingCollateralAtNextPrice
+
+  const maxGenerateAmount = BigNumber.minimum(
+    maxGenerateAmountCurrentPrice,
+    maxGenerateAmountNextPrice,
+  )
+
   return {
     ...state,
     maxDepositAmount,
@@ -256,7 +273,7 @@ export function applyOpenMultiplyVaultCalculations(
     totalExposureUSD,
     marketPrice,
 
-    // maxGenerateAmount,
+    maxGenerateAmount,
     // maxGenerateAmountCurrentPrice,
     // maxGenerateAmountNextPrice,
     // afterCollateralizationRatio,
