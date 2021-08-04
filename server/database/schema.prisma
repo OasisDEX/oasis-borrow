@@ -23,3 +23,13 @@ model TosApproval {
   @@unique([address, doc_version], name: "tos_approval_unique_signature")
   @@map(name: "tos_approval")
 }
+
+model Vault {
+  vaultId Int @unique
+  type VaultType
+}
+
+enum VaultType {
+  REGULAR
+  MULTIPLY
+}
