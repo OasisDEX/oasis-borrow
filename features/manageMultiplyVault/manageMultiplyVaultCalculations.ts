@@ -413,14 +413,6 @@ export function applyManageVaultCalculations(
   // getMaxPossibleCollRatioOrMax(
   //   debtFloor,
   //   zero)
-  const inputsEmpty =
-    requiredCollRatio === undefined &&
-    BigNumber.sum(
-      depositCollateralAmount,
-      depositDaiAmount,
-      withdrawDaiAmount,
-      withdrawCollateralAmount,
-    ).eq(0)
 
   const maxDepositCollateral = collateralBalance
   const maxDepositCollateralUSD = collateralBalance.times(currentCollateralPrice)
@@ -455,7 +447,9 @@ export function applyManageVaultCalculations(
     maxWithdrawDai,
   }
 
-  if (!marketPrice || !marketPriceMaxSlippage || inputsEmpty) {
+  console.log({ inputAmountsEmpty })
+
+  if (!marketPrice || !marketPriceMaxSlippage || inputAmountsEmpty) {
     return { ...state, ...defaultManageVaultCalculations, ...maxInputAmounts }
   }
 

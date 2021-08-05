@@ -2,7 +2,16 @@ import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { EMPTY, Observable } from 'rxjs'
-import { debounceTime, distinctUntilChanged, filter, map, switchMap, take } from 'rxjs/operators'
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  ignoreElements,
+  map,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs/operators'
 import { ManageMultiplyVaultState, ManageVaultChange } from './manageMultiplyVault'
 
 type ExchangeQuoteSuccessChange = {
@@ -80,16 +89,16 @@ export function createExchangeChange$(
   state$: Observable<ManageMultiplyVaultState>,
 ) {
   return state$.pipe(
-    // filter((state) => state.depositAmount !== undefined),
-    // distinctUntilChanged(
-    //   (s1, s2) =>
-    //     !!s1.depositAmount &&
-    //     !!s2.depositAmount &&
-    //     s1.depositAmount.eq(s2.depositAmount) &&
-    //     !!s1.requiredCollRatio &&
-    //     !!s2.requiredCollRatio &&
-    //     s1.requiredCollRatio.eq(s2.requiredCollRatio),
-    // ),
+    filter((state) => state.depositAmount !== undefined),
+    distinctUntilChanged(
+      (s1, s2) =>
+        !!s1.depositAmount &&
+        !!s2.depositAmount &&
+        s1.depositAmount.eq(s2.depositAmount) &&
+        !!s1.requiredCollRatio &&
+        !!s2.requiredCollRatio &&
+        s1.requiredCollRatio.eq(s2.requiredCollRatio),
+    ),
     debounceTime(500),
     // switchMap((state) =>
     //   every5Seconds$.pipe(
@@ -107,6 +116,8 @@ export function createExchangeChange$(
     //   ),
     // ),
     map(swapToChange),
+    tap(console.log),
+    ignoreElements(),
   )
 }
 
