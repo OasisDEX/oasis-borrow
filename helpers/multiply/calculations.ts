@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { MAX_COLL_RATIO } from 'features/openMultiplyVault/openMultiplyVaultCalculations'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 
 export const MULTIPLY_FEE = new BigNumber(0.01)
 export const LOAN_FEE = new BigNumber(0.009)
@@ -80,8 +80,8 @@ export function getMultiplyParams(
   withdrawDai: BigNumber,
   withdrawColl: BigNumber,
 
-  LF: BigNumber = LOAN_FEE,
-  OF: BigNumber = MULTIPLY_FEE,
+  FF: BigNumber,
+  OF: BigNumber,
 ) {
   const afterCollateral = currentCollateral.plus(providedCollateral).minus(withdrawColl)
   const afterDebt = currentDebt.plus(withdrawDai).minus(providedDai)
@@ -93,28 +93,41 @@ export function getMultiplyParams(
     currentCollateralizationRatio.gt(requiredCollRatio)
 
   if (isIncreasingMultiple) {
-    return calculateParamsIncreaseMP(
+    const [debtDelta, collateralDelta] = calculateParamsIncreaseMP(
       oraclePrice,
       marketPrice,
       OF,
-      LF,
+      FF,
       afterCollateral,
       afterDebt,
       requiredCollRatio,
       slippage,
       providedDai,
     )
+    return {
+      debtDelta,
+      collateralDelta,
+      flashLoanFee: debtDelta.times(FF),
+      oazoFee: zero,
+    }
   } else {
-    return calculateParamsDecreaseMP(
+    const [debtDelta, collateralDelta] = calculateParamsDecreaseMP(
       oraclePrice,
       marketPrice,
       OF,
-      LF,
+      FF,
       afterCollateral,
       afterDebt,
       requiredCollRatio,
       slippage,
-    ).map((value) => value.times(-1))
+    )
+
+    return {
+      debtDelta: debtDelta.negated(),
+      collateralDelta: collateralDelta.negated(),
+      flashLoanFee: zero,
+      oazoFee: zero,
+    }
   }
 }
 

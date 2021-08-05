@@ -314,8 +314,8 @@ export function getVaultChange({
   debt,
   lockedCollateral,
 
-  OF,
   FF,
+  OF,
 }: {
   requiredCollRatio: BigNumber | undefined
   depositCollateralAmount: BigNumber
@@ -333,7 +333,7 @@ export function getVaultChange({
   OF: BigNumber
 }) {
   if (requiredCollRatio) {
-    const [debtDelta, collateralDelta] = getMultiplyParams(
+    return getMultiplyParams(
       currentCollateralPrice,
       marketPrice,
       slippage,
@@ -344,13 +344,9 @@ export function getVaultChange({
       depositDaiAmount,
       withdrawDaiAmount,
       withdrawCollateralAmount,
+      FF,
+      OF,
     )
-    return {
-      debtDelta,
-      collateralDelta,
-      flashLoanFee: debtDelta.times(FF),
-      oazoFee: debtDelta.times(OF),
-    }
   }
 
   return {
@@ -406,8 +402,6 @@ export function applyManageVaultCalculations(
       withdrawDaiAmount,
       withdrawCollateralAmount,
     ).eq(0)
-
-  console.log({ inputsEmpty, requiredCollRatio })
 
   if (!marketPrice || !marketPriceMaxSlippage || inputsEmpty) {
     return { ...state, ...defaultManageVaultCalculations }
