@@ -9,7 +9,7 @@ export function calculateParamsIncreaseMP(
   marketPrice: BigNumber,
   OF: BigNumber,
   FF: BigNumber,
-  currentColl: BigNumber,
+  currentCollateral: BigNumber,
   currentDebt: BigNumber,
   requiredCollRatio: BigNumber,
   slippage: BigNumber,
@@ -17,7 +17,7 @@ export function calculateParamsIncreaseMP(
 ) {
   const marketPriceSlippage = marketPrice.times(one.plus(slippage))
   const debt = marketPriceSlippage
-    .times(currentColl.times(oraclePrice).minus(requiredCollRatio.times(currentDebt)))
+    .times(currentCollateral.times(oraclePrice).minus(requiredCollRatio.times(currentDebt)))
     .plus(oraclePrice.times(depositDai).minus(oraclePrice.times(depositDai).times(OF)))
     .div(
       marketPriceSlippage
@@ -29,19 +29,59 @@ export function calculateParamsIncreaseMP(
   return [debt, collateral]
 }
 
+export function calculateParamsIncreaseMP_(
+  oraclePrice: BigNumber,
+  marketPrice: BigNumber,
+  OF: BigNumber,
+  FF: BigNumber,
+  currentCollateral: BigNumber,
+  currentDebt: BigNumber,
+  requiredCollRatio: BigNumber,
+  slippage: BigNumber,
+  depositDai = new BigNumber(0),
+) {
+  const marketPriceSlippage = marketPrice.times(one.plus(slippage))
+  const debt = marketPriceSlippage
+    .times(currentCollateral.times(oraclePrice).minus(requiredCollRatio.times(currentDebt)))
+    .plus(oraclePrice.times(depositDai).minus(oraclePrice.times(depositDai).times(OF)))
+    .div(
+      marketPriceSlippage
+        .times(requiredCollRatio)
+        .times(one.plus(FF))
+        .minus(oraclePrice.times(one.minus(OF))),
+    )
+  const collateral = debt.times(one.minus(OF)).div(marketPriceSlippage)
+
+  return [debt, collateral]
+}
+
+export function getRequiredCollRatioByCollateral({
+  collateral,
+  marketPriceSlippage,
+  OF,
+}: {
+  collateral: BigNumber
+  marketPriceSlippage: BigNumber
+  OF: BigNumber
+}) {
+  const debt = collateral.times(marketPriceSlippage).div(one.minus(OF))
+
+  const x = debt.times(marketPriceSlippage)
+}
+
 export function calculateParamsDecreaseMP(
   oraclePrice: BigNumber,
   marketPrice: BigNumber,
   OF: BigNumber,
   FF: BigNumber,
-  currentColl: BigNumber,
+  currentCollateral: BigNumber,
   currentDebt: BigNumber,
   requiredCollRatio: BigNumber,
   slippage: BigNumber,
   // depositDai: BigNumber = zero,
 ) {
   const marketPriceSlippage = marketPrice.times(one.minus(slippage))
-  const debt = currentColl
+  const debt = currentCollateral
     .times(oraclePrice)
     .times(marketPriceSlippage)
     .minus(requiredCollRatio.times(currentDebt).times(marketPriceSlippage))
@@ -82,6 +122,8 @@ export function getMultiplyParams(
 
   FF: BigNumber,
   OF: BigNumber,
+
+  useFlashLoan: boolean = true,
 ) {
   const afterCollateral = currentCollateral.plus(providedCollateral).minus(withdrawColl)
   const afterDebt = currentDebt.plus(withdrawDai).minus(providedDai)
@@ -107,8 +149,8 @@ export function getMultiplyParams(
     return {
       debtDelta,
       collateralDelta,
-      flashLoanFee: debtDelta.times(FF),
-      oazoFee: zero,
+      loanFee: useFlashLoan ? debtDelta.times(FF) : zero,
+      oazoFee: debtDelta.times(OF),
     }
   } else {
     const [debtDelta, collateralDelta] = calculateParamsDecreaseMP(
@@ -125,8 +167,8 @@ export function getMultiplyParams(
     return {
       debtDelta: debtDelta.negated(),
       collateralDelta: collateralDelta.negated(),
-      flashLoanFee: zero,
-      oazoFee: zero,
+      loanFee: useFlashLoan ? debtDelta.times(FF) : zero,
+      oazoFee: debtDelta.div(one.minus(slippage)).times(OF),
     }
   }
 }

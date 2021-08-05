@@ -27,26 +27,26 @@ interface DepositDaiMaxChange {
   kind: 'depositDaiMax'
 }
 interface WithdrawCollateralChange {
-  kind: 'WithdrawCollateral'
+  kind: 'withdrawCollateral'
   withdrawCollateralAmount?: BigNumber
 }
 
 interface WithdrawCollateralUSDChange {
-  kind: 'WithdrawCollateralUSD'
+  kind: 'withdrawCollateralUSD'
   withdrawCollateralAmountUSD?: BigNumber
 }
 
 interface WithdrawCollateralMaxChange {
-  kind: 'WithdrawCollateralMax'
+  kind: 'withdrawCollateralMax'
 }
 
 interface WithdrawDaiChange {
-  kind: 'WithdrawDai'
+  kind: 'withdrawDai'
   withdrawDaiAmount?: BigNumber
 }
 
 interface WithdrawDaiMaxChange {
-  kind: 'WithdrawDaiMax'
+  kind: 'withdrawDaiMax'
 }
 
 interface RequiredCollRatioChange {
@@ -278,6 +278,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
   if (change.kind === 'requiredCollRatio') {
     return {
       ...state,
+      ...otherActionsDefaults,
       requiredCollRatio: change.requiredCollRatio,
     }
   }
@@ -289,6 +290,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
 
     return {
       ...state,
+      ...otherActionsDefaults,
       buyAmount,
       buyAmountUSD,
 
@@ -304,6 +306,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
 
     return {
       ...state,
+      ...otherActionsDefaults,
       buyAmount,
       buyAmountUSD,
 
@@ -318,6 +321,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
 
     return {
       ...state,
+      ...otherActionsDefaults,
       buyAmount: zero,
       buyAmountUSD: zero,
 
@@ -333,6 +337,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
 
     return {
       ...state,
+      ...otherActionsDefaults,
       sellAmount,
       sellAmountUSD,
 
@@ -348,6 +353,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
 
     return {
       ...state,
+      ...otherActionsDefaults,
       sellAmount,
       sellAmountUSD,
 
@@ -366,6 +372,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
 
     return {
       ...state,
+      ...otherActionsDefaults,
       sellAmount: freeCollateral,
       sellAmountUSD: freeCollateralUSD,
 
@@ -411,6 +418,81 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
       ...otherActionsDefaults,
       depositCollateralAmount: collateralBalance,
       depositCollateralAmountUSD: collateralBalance?.times(currentCollateralPrice),
+    }
+  }
+
+  if (change.kind === 'depositDai') {
+    return {
+      ...state,
+      ...otherActionsDefaults,
+      depositDaiAmount: change.depositDaiAmount,
+    }
+  }
+
+  if (change.kind === 'depositDaiMax') {
+    const {
+      balanceInfo: { daiBalance },
+    } = state
+    //TODO calculate deposit max
+
+    return {
+      ...state,
+      ...otherActionsDefaults,
+      depositDaiAmount: zero,
+    }
+  }
+
+  if (change.kind === 'withdrawCollateral') {
+    const { priceInfo } = state
+    return {
+      ...state,
+      ...otherActionsDefaults,
+      withdrawCollateralAmount: change.withdrawCollateralAmount,
+      withdrawCollateralAmountUSD: change.withdrawCollateralAmount?.times(
+        priceInfo.currentCollateralPrice,
+      ),
+    }
+  }
+
+  if (change.kind === 'withdrawCollateralUSD') {
+    const { priceInfo } = state
+    return {
+      ...state,
+      ...otherActionsDefaults,
+      withdrawCollateralAmountUSD: change.withdrawCollateralAmountUSD,
+      withdrawCollateralAmount: change.withdrawCollateralAmountUSD?.div(
+        priceInfo.currentCollateralPrice,
+      ),
+    }
+  }
+
+  if (change.kind === 'withdrawCollateralMax') {
+    const { priceInfo } = state
+    //calculate max withdraw amount
+    //TODO
+    return {
+      ...state,
+      ...otherActionsDefaults,
+      withdrawCollateralAmount: zero,
+      withdrawCollateralAmountUSD: zero.times(priceInfo.currentCollateralPrice),
+    }
+  }
+
+  if (change.kind === 'withdrawDai') {
+    return {
+      ...state,
+      ...otherActionsDefaults,
+      withdrawDaiAmount: change.withdrawDaiAmount,
+    }
+  }
+
+  if (change.kind === 'withdrawDaiMax') {
+    //calculate max withdraw amount
+    //TODO
+    return {
+      ...state,
+      ...otherActionsDefaults,
+      withdrawDaiAmount: zero,
     }
   }
 

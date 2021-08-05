@@ -265,16 +265,16 @@ function addTransitions(
       },
       updateDepositDaiMax: () => change({ kind: 'depositDaiMax' }),
       updateWithdrawCollateral: (withdrawCollateralAmount?: BigNumber) => {
-        change({ kind: 'WithdrawCollateral', withdrawCollateralAmount })
+        change({ kind: 'withdrawCollateral', withdrawCollateralAmount })
       },
       updateWithdrawCollateralUSD: (withdrawCollateralAmountUSD?: BigNumber) =>
-        change({ kind: 'WithdrawCollateralUSD', withdrawCollateralAmountUSD }),
-      updateWithdrawCollateralMax: () => change({ kind: 'WithdrawCollateralMax' }),
+        change({ kind: 'withdrawCollateralUSD', withdrawCollateralAmountUSD }),
+      updateWithdrawCollateralMax: () => change({ kind: 'withdrawCollateralMax' }),
 
       updateWithdrawDai: (withdrawDaiAmount?: BigNumber) => {
-        change({ kind: 'WithdrawDai', withdrawDaiAmount })
+        change({ kind: 'withdrawDai', withdrawDaiAmount })
       },
-      updateWithdrawDaiMax: () => change({ kind: 'WithdrawDaiMax' }),
+      updateWithdrawDaiMax: () => change({ kind: 'withdrawDaiMax' }),
 
       setCloseVaultTo: (closeVaultTo: CloseVaultTo) =>
         change({ kind: 'closeVaultTo', closeVaultTo }),

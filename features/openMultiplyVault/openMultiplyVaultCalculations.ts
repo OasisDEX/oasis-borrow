@@ -31,7 +31,7 @@ export interface OpenMultiplyVaultCalculations {
   maxDepositAmountUSD: BigNumber
   afterCollateralBalance: BigNumber
   loanFees: BigNumber
-  multiplyFee: BigNumber
+  oazoFee: BigNumber
   maxCollRatio?: BigNumber
   marketPrice?: BigNumber
 
@@ -59,7 +59,7 @@ export const defaultOpenVaultStateCalculations: OpenMultiplyVaultCalculations = 
   afterCollateralBalance: zero,
   afterCollateralizationRatio: zero,
   loanFees: zero,
-  multiplyFee: zero,
+  oazoFee: zero,
   totalExposureUSD: zero,
 }
 
@@ -139,8 +139,8 @@ export function applyOpenMultiplyVaultCalculations(
     marketPrice && buyingCollateral ? buyingCollateral.times(marketPrice) : zero
 
   const loanFees = buyingCollateralUSD.times(LOAN_FEE)
-  const multiplyFee = afterOutstandingDebt?.times(MULTIPLY_FEE)
-  const fees = multiplyFee?.plus(loanFees)
+  const oazoFee = afterOutstandingDebt?.times(MULTIPLY_FEE)
+  const fees = oazoFee?.plus(loanFees)
 
   const afterCollateralizationRatio =
     afterOutstandingDebt?.gt(0) && totalExposureUSD
@@ -193,7 +193,7 @@ export function applyOpenMultiplyVaultCalculations(
     txFees: fees,
     impact,
     loanFees,
-    multiplyFee,
+    oazoFee,
     afterBuyingPower,
     afterBuyingPowerUSD,
     maxCollRatio,

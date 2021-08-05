@@ -31,7 +31,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
     txFees,
     impact,
     loanFees,
-    multiplyFee,
+    oazoFee: multiplyFee,
     marketPrice,
     inputAmountsEmpty,
   } = props
