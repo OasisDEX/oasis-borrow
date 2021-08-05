@@ -408,16 +408,13 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
   }
 
   if (change.kind === 'depositCollateralMax') {
-    const {
-      balanceInfo: { collateralBalance },
-      priceInfo: { currentCollateralPrice },
-    } = state
+    const { maxDepositCollateral, maxDepositCollateralUSD } = state
 
     return {
       ...state,
       ...otherActionsDefaults,
-      depositCollateralAmount: collateralBalance,
-      depositCollateralAmountUSD: collateralBalance?.times(currentCollateralPrice),
+      depositCollateralAmount: maxDepositCollateral,
+      depositCollateralAmountUSD: maxDepositCollateralUSD,
     }
   }
 
@@ -430,15 +427,12 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
   }
 
   if (change.kind === 'depositDaiMax') {
-    const {
-      balanceInfo: { daiBalance },
-    } = state
-    //TODO calculate deposit max
+    const { maxDepositDai } = state
 
     return {
       ...state,
       ...otherActionsDefaults,
-      depositDaiAmount: zero,
+      depositDaiAmount: maxDepositDai,
     }
   }
 
@@ -467,14 +461,13 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
   }
 
   if (change.kind === 'withdrawCollateralMax') {
-    const { priceInfo } = state
-    //calculate max withdraw amount
-    //TODO
+    const { maxWithdrawCollateral, maxWithdrawCollateralUSD } = state
+
     return {
       ...state,
       ...otherActionsDefaults,
-      withdrawCollateralAmount: zero,
-      withdrawCollateralAmountUSD: zero.times(priceInfo.currentCollateralPrice),
+      withdrawCollateralAmount: maxWithdrawCollateral,
+      withdrawCollateralAmountUSD: maxWithdrawCollateralUSD,
     }
   }
 
@@ -487,12 +480,11 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
   }
 
   if (change.kind === 'withdrawDaiMax') {
-    //calculate max withdraw amount
-    //TODO
+    const { maxWithdrawDai } = state
     return {
       ...state,
       ...otherActionsDefaults,
-      withdrawDaiAmount: zero,
+      withdrawDaiAmount: maxWithdrawDai,
     }
   }
 

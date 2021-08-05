@@ -13,6 +13,7 @@ import { ManageMultiplyVaultState, OtherAction } from '../manageMultiplyVault'
 import { MAX_COLL_RATIO } from '../manageMultiplyVaultCalculations'
 import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
 
+//TODO max buy token
 function BuyTokenInput({
   maxDepositAmount,
   maxDepositAmountUSD,
@@ -44,6 +45,7 @@ function BuyTokenInput({
   )
 }
 
+//TODO max sell token
 function SellTokenInput({
   accountIsController,
   updateSell,
@@ -76,8 +78,8 @@ function SellTokenInput({
 }
 
 function DepositTokenInput({
-  maxDepositAmount,
-  maxDepositAmountUSD,
+  maxDepositCollateral,
+  maxDepositCollateralUSD,
   vault: { token },
   priceInfo: { currentCollateralPrice },
   depositCollateralAmount,
@@ -97,8 +99,8 @@ function DepositTokenInput({
       maxAmountLabel={'Max'}
       amount={depositCollateralAmount}
       auxiliaryAmount={depositCollateralAmountUSD}
-      maxAmount={maxDepositAmount}
-      maxAuxiliaryAmount={maxDepositAmountUSD}
+      maxAmount={maxDepositCollateral}
+      maxAuxiliaryAmount={maxDepositCollateralUSD}
       onChange={handleNumericInput(updateDepositCollateral!)}
       onAuxiliaryChange={handleNumericInput(updateDepositCollateralUSD!)}
       hasError={false}
@@ -107,8 +109,8 @@ function DepositTokenInput({
 }
 
 function WithdrawTokenInput({
-  maxWithdrawAmount,
-  maxWithdrawAmountUSD,
+  maxWithdrawCollateral,
+  maxWithdrawCollateralUSD,
   vault: { token },
   priceInfo: { currentCollateralPrice },
   withdrawCollateralAmount,
@@ -128,8 +130,8 @@ function WithdrawTokenInput({
       maxAmountLabel={'Max'}
       amount={withdrawCollateralAmount}
       auxiliaryAmount={withdrawCollateralAmountUSD}
-      maxAmount={maxWithdrawAmount}
-      maxAuxiliaryAmount={maxWithdrawAmountUSD}
+      maxAmount={maxWithdrawCollateral}
+      maxAuxiliaryAmount={maxWithdrawCollateralUSD}
       onChange={handleNumericInput(updateWithdrawCollateral!)}
       onAuxiliaryChange={handleNumericInput(updateWithdrawCollateralUSD!)}
       hasError={false}
@@ -141,7 +143,7 @@ function DepositDAIInput({
   depositDaiAmount,
   updateDepositDai,
   updateDepositDaiMax,
-  maxPaybackAmount,
+  maxDepositDai,
 }: ManageMultiplyVaultState) {
   return (
     <VaultActionInput
@@ -149,7 +151,7 @@ function DepositDAIInput({
       amount={depositDaiAmount}
       token="DAI"
       showMax={true}
-      maxAmount={maxPaybackAmount}
+      maxAmount={maxDepositDai}
       maxAmountLabel={'Max'}
       onSetMax={updateDepositDaiMax}
       onChange={handleNumericInput(updateDepositDai!)}
@@ -162,7 +164,7 @@ function WithdrawDAIInput({
   withdrawDaiAmount,
   updateWithdrawDai,
   updateWithdrawDaiMax,
-  maxGenerateAmount,
+  maxWithdrawDai,
 }: ManageMultiplyVaultState) {
   return (
     <VaultActionInput
@@ -170,7 +172,7 @@ function WithdrawDAIInput({
       amount={withdrawDaiAmount}
       token="DAI"
       showMax={true}
-      maxAmount={maxGenerateAmount}
+      maxAmount={maxWithdrawDai}
       maxAmountLabel={'Max'}
       onSetMax={updateWithdrawDaiMax}
       onChange={handleNumericInput(updateWithdrawDai!)}
@@ -468,7 +470,7 @@ function DepositCollateralAction(props: ManageMultiplyVaultState) {
   return (
     <Grid gap={2}>
       <DepositTokenInput {...props} />
-      <Box>
+      {/* <Box>
         <Button
           variant={`actionOption${showSliderController ? 'Opened' : ''}`}
           mt={3}
@@ -485,7 +487,7 @@ function DepositCollateralAction(props: ManageMultiplyVaultState) {
             <SliderInput {...props} collapsed={true} />
           </Box>
         )}
-      </Box>
+      </Box> */}
     </Grid>
   )
 }
@@ -496,7 +498,7 @@ function WithdrawCollateralAction(props: ManageMultiplyVaultState) {
   return (
     <Grid gap={2}>
       <WithdrawTokenInput {...props} />
-      <Box>
+      {/* <Box>
         <Button
           variant={`actionOption${showSliderController ? 'Opened' : ''}`}
           mt={3}
@@ -513,7 +515,7 @@ function WithdrawCollateralAction(props: ManageMultiplyVaultState) {
             <SliderInput {...props} collapsed={true} />
           </Box>
         )}
-      </Box>
+      </Box> */}
     </Grid>
   )
 }
@@ -524,7 +526,7 @@ function DepositDAIAction(props: ManageMultiplyVaultState) {
   return (
     <Grid gap={2}>
       <DepositDAIInput {...props} />
-      <Box>
+      {/* <Box>
         <Button
           variant={`actionOption${showSliderController ? 'Opened' : ''}`}
           mt={3}
@@ -541,7 +543,7 @@ function DepositDAIAction(props: ManageMultiplyVaultState) {
             <SliderInput {...props} collapsed={true} />
           </Box>
         )}
-      </Box>
+      </Box> */}
     </Grid>
   )
 }
@@ -552,7 +554,7 @@ function WithdrawDAIAction(props: ManageMultiplyVaultState) {
   return (
     <Grid gap={2}>
       <WithdrawDAIInput {...props} />
-      <Box>
+      {/* <Box>
         <Button
           variant={`actionOption${showSliderController ? 'Opened' : ''}`}
           mt={3}
@@ -569,7 +571,7 @@ function WithdrawDAIAction(props: ManageMultiplyVaultState) {
             <SliderInput {...props} collapsed={true} />
           </Box>
         )}
-      </Box>
+      </Box> */}
     </Grid>
   )
 }
