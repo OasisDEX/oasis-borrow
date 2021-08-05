@@ -447,7 +447,7 @@ export function applyManageVaultCalculations(
     maxWithdrawDai,
   }
 
-  console.log({ inputAmountsEmpty })
+  console.log({ inputAmountsEmpty, swap })
 
   if (!marketPrice || !marketPriceMaxSlippage || inputAmountsEmpty) {
     return { ...state, ...defaultManageVaultCalculations, ...maxInputAmounts }

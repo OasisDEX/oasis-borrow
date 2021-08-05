@@ -102,7 +102,6 @@ export function createExchangeQuote$(
   action: ExchangeAction,
 ) {
   return context$.pipe(
-    filter((ctx): ctx is ContextConnected => ctx.status === 'connected'),
     switchMap((context) => {
       const { tokens, exchange } = context
       const daiAddress = tokens['DAI'].address
