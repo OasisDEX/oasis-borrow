@@ -199,7 +199,7 @@ export function applyManageVaultConditions(
     requiredCollRatio,
   } = state
   //TODO
-  const depositAmount = zero
+  const depositAmount = depositCollateralAmount
   const generateAmount = zero
   const withdrawAmount = zero
   const paybackAmount = zero

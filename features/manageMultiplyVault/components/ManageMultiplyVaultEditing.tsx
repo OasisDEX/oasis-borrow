@@ -195,18 +195,22 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
     updateRequiredCollRatio,
     maxCollRatio,
     collapsed,
+    multiply,
   } = props
 
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const sliderValue = requiredCollRatio || collateralizationRatio || maxCollRatio
-  const slider =
-    sliderValue.minus(liquidationRatio).div(maxCollRatio.minus(liquidationRatio)).times(100) || zero
+  const slider = new BigNumber(100).minus(
+    sliderValue.minus(liquidationRatio).div(maxCollRatio.minus(liquidationRatio)).times(100) ||
+      zero,
+  )
 
-  const sliderBackground = `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
-    colors?.sliderTrackFill
-  } ${new BigNumber(100).minus(slider).toNumber()}%, ${colors?.primaryAlt} ${new BigNumber(100)
-    .minus(slider)
-    .toNumber()}%, ${colors?.primaryAlt} 100%)`
+  const sliderBackground =
+    multiply && !multiply.isNaN() && slider
+      ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
+          slider.toNumber() || 0
+        }%, ${colors?.primaryAlt} ${slider.toNumber() || 0}%, ${colors?.primaryAlt} 100%)`
+      : 'primaryAlt'
 
   return (
     <Grid
@@ -245,6 +249,7 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
         <Slider
           sx={{
             background: sliderBackground,
+            direction: 'rtl',
           }}
           step={5}
           min={liquidationRatio.times(100).toNumber()}
@@ -465,7 +470,7 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
 }
 
 function DepositCollateralAction(props: ManageMultiplyVaultState) {
-  const { showSliderController, toggleSliderController } = props
+  // const { showSliderController, toggleSliderController } = props
 
   return (
     <Grid gap={2}>
@@ -493,7 +498,7 @@ function DepositCollateralAction(props: ManageMultiplyVaultState) {
 }
 
 function WithdrawCollateralAction(props: ManageMultiplyVaultState) {
-  const { showSliderController, toggleSliderController } = props
+  // const { showSliderController, toggleSliderController } = props
 
   return (
     <Grid gap={2}>
@@ -521,7 +526,7 @@ function WithdrawCollateralAction(props: ManageMultiplyVaultState) {
 }
 
 function DepositDAIAction(props: ManageMultiplyVaultState) {
-  const { showSliderController, toggleSliderController } = props
+  // const { showSliderController, toggleSliderController } = props
 
   return (
     <Grid gap={2}>
@@ -549,7 +554,7 @@ function DepositDAIAction(props: ManageMultiplyVaultState) {
 }
 
 function WithdrawDAIAction(props: ManageMultiplyVaultState) {
-  const { showSliderController, toggleSliderController } = props
+  // const { showSliderController, toggleSliderController } = props
 
   return (
     <Grid gap={2}>
