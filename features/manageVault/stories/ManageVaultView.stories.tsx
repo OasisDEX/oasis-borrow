@@ -315,6 +315,26 @@ export const ManageSuccess = manageVaultStory({
   paybackAmount: new BigNumber('300'),
 })
 
+export const MultiplyTransitionEditing = manageVaultStory()({
+  stage: 'multiplyTransitionEditing',
+})
+
+export const MultiplyTransitionWaitingForConfirmation = manageVaultStory()({
+  stage: 'multiplyTransitionWaitingForConfirmation',
+})
+
+export const MultiplyTransitionInProgress = manageVaultStory()({
+  stage: 'multiplyTransitionInProgress',
+})
+
+export const MultiplyTransitionFailure = manageVaultStory()({
+  stage: 'multiplyTransitionFailure',
+})
+
+export const MultiplyTransitionSuccess = manageVaultStory()({
+  stage: 'multiplyTransitionSuccess',
+})
+
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'ManageVault/Stages',
