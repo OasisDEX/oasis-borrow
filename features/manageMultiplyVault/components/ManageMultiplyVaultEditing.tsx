@@ -15,8 +15,6 @@ import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChan
 
 //TODO max buy token
 function BuyTokenInput({
-  maxDepositAmount,
-  maxDepositAmountUSD,
   vault: { token },
   updateBuy,
   updateBuyUSD,
@@ -25,6 +23,9 @@ function BuyTokenInput({
   buyAmount,
   priceInfo: { currentCollateralPrice },
 }: ManageMultiplyVaultState) {
+  const maxDepositAmount = zero
+  const maxDepositAmountUSD = zero
+
   return (
     <VaultActionInput
       action="Buy"

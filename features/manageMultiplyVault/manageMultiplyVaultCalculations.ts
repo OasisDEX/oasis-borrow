@@ -60,6 +60,12 @@ export interface ManageVaultCalculations {
   loanFee: BigNumber
   oazoFee: BigNumber
   fees: BigNumber
+
+  debtDelta?: BigNumber
+  collateralDelta?: BigNumber
+
+  marketPrice?: BigNumber
+  marketPriceMaxSlippage?: BigNumber
 }
 
 export const MAX_COLL_RATIO = new BigNumber(5)
@@ -410,6 +416,12 @@ export function applyManageVaultCalculations(
       : undefined
   const marketPriceMaxSlippage = marketPrice ? marketPrice.times(slippage.plus(1)) : undefined
 
+  const prices = {
+    marketPrice,
+    marketPriceMaxSlippage,
+  }
+
+  // TODO implement slider bounds for adjust position
   // getMaxPossibleCollRatioOrMax(
   //   debtFloor,
   //   zero)
@@ -425,6 +437,7 @@ export function applyManageVaultCalculations(
   )
   const maxWithdrawCollateralUSD = maxWithdrawCollateral.times(currentCollateralPrice)
 
+  //TODO implement max values for other actions
   const maxDepositDai = zero
 
   const maxWithdrawDaiAtCurrentPrice = zero
@@ -447,10 +460,8 @@ export function applyManageVaultCalculations(
     maxWithdrawDai,
   }
 
-  console.log({ inputAmountsEmpty, swap })
-
   if (!marketPrice || !marketPriceMaxSlippage || inputAmountsEmpty) {
-    return { ...state, ...defaultManageVaultCalculations, ...maxInputAmounts }
+    return { ...state, ...defaultManageVaultCalculations, ...maxInputAmounts, ...prices }
   }
 
   const { debtDelta, collateralDelta, loanFee, oazoFee } = getVaultChange({
@@ -639,11 +650,16 @@ export function applyManageVaultCalculations(
       depositDaiAmount,: ${depositDaiAmount}
       withdrawDaiAmount,: ${withdrawDaiAmount}
       withdrawCollateralAmount,: ${withdrawCollateralAmount}
+
+      
+      marketPrice: ${marketPrice}
       
   `)
   return {
     ...state,
     ...maxInputAmounts,
+    ...prices,
+
     afterDebt,
     afterLockedCollateral,
     afterLockedCollateralUSD,
@@ -669,6 +685,8 @@ export function applyManageVaultCalculations(
     oazoFee,
     fees,
 
+    debtDelta,
+    collateralDelta,
     // maxDepositAmount,
     // maxDepositAmountUSD,
     // maxWithdrawAmountAtCurrentPrice,

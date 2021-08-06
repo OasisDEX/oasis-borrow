@@ -3,7 +3,6 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
 import { zero } from 'helpers/zero'
-import { SLIPPAGE } from '../manageMultiplyQuote'
 
 import { getVaultChange } from '../manageMultiplyVaultCalculations'
 
@@ -13,6 +12,7 @@ describe('Adjust multiply calculations', () => {
     const lockedCollateral = new BigNumber(5)
     const oraclePrice = new BigNumber(1000)
     const marketPrice = new BigNumber(1010)
+    const slippage = new BigNumber(0.05)
 
     const requiredCollRatio = new BigNumber(2)
 
@@ -25,7 +25,7 @@ describe('Adjust multiply calculations', () => {
       lockedCollateral,
       currentCollateralPrice: oraclePrice,
       marketPrice,
-      slippage: SLIPPAGE,
+      slippage,
       depositCollateralAmount: zero,
       depositDaiAmount: zero,
       withdrawCollateralAmount: zero,
@@ -47,8 +47,9 @@ describe('Adjust multiply calculations', () => {
     const lockedCollateral = new BigNumber(5)
     const oraclePrice = new BigNumber(1000)
     const marketPrice = new BigNumber(1010)
+    const slippage = new BigNumber(0.05)
 
-    const requiredCollRatio = new BigNumber(4)
+    const requiredCollRatio = new BigNumber(5)
 
     const MULTIPLY_FEE = new BigNumber(0.01)
     const LOAN_FEE = new BigNumber(0.009)
@@ -61,7 +62,7 @@ describe('Adjust multiply calculations', () => {
       lockedCollateral,
       currentCollateralPrice: oraclePrice,
       marketPrice,
-      slippage: SLIPPAGE,
+      slippage,
       depositCollateralAmount: zero,
       depositDaiAmount: zero,
       withdrawCollateralAmount: zero,
@@ -73,7 +74,7 @@ describe('Adjust multiply calculations', () => {
     const afterCollateralizationRatio = lockedCollateral
       .plus(collateralDelta)
       .times(oraclePrice)
-      .div(debt.plus(debtDelta).plus(loanFee).plus(oazoFee))
+      .div(debt.plus(debtDelta))
 
     console.log(`
       currentCollRatio ${currentCollRatio}
@@ -95,6 +96,7 @@ describe('Adjust multiply calculations', () => {
     const oraclePrice = new BigNumber(1000)
     const marketPrice = new BigNumber(1010)
     const depositCollateralAmount = new BigNumber(1)
+    const slippage = new BigNumber(0.05)
 
     const requiredCollRatio = new BigNumber(2)
 
@@ -107,7 +109,7 @@ describe('Adjust multiply calculations', () => {
       lockedCollateral,
       currentCollateralPrice: oraclePrice,
       marketPrice,
-      slippage: SLIPPAGE,
+      slippage,
       depositCollateralAmount,
       depositDaiAmount: zero,
       withdrawCollateralAmount: zero,
