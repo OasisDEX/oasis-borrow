@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
-import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
+import {   VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
@@ -83,8 +83,8 @@ function DepositTokenInput({
   maxDepositCollateralUSD,
   vault: { token },
   priceInfo: { currentCollateralPrice },
-  depositCollateralAmount,
-  depositCollateralAmountUSD,
+  depositAmount,
+  depositAmountUSD,
   updateDepositCollateral,
   updateDepositCollateralUSD,
   updateDepositCollateralMax,
@@ -98,8 +98,8 @@ function DepositTokenInput({
       hasAuxiliary={true}
       onSetMax={updateDepositCollateralMax!}
       maxAmountLabel={'Max'}
-      amount={depositCollateralAmount}
-      auxiliaryAmount={depositCollateralAmountUSD}
+      amount={depositAmount}
+      auxiliaryAmount={depositAmountUSD}
       maxAmount={maxDepositCollateral}
       maxAuxiliaryAmount={maxDepositCollateralUSD}
       onChange={handleNumericInput(updateDepositCollateral!)}
@@ -114,8 +114,8 @@ function WithdrawTokenInput({
   maxWithdrawCollateralUSD,
   vault: { token },
   priceInfo: { currentCollateralPrice },
-  withdrawCollateralAmount,
-  withdrawCollateralAmountUSD,
+  withdrawAmount,
+  withdrawAmountUSD,
   updateWithdrawCollateral,
   updateWithdrawCollateralUSD,
   updateWithdrawCollateralMax,
@@ -129,8 +129,8 @@ function WithdrawTokenInput({
       hasAuxiliary={true}
       onSetMax={updateWithdrawCollateralMax!}
       maxAmountLabel={'Max'}
-      amount={withdrawCollateralAmount}
-      auxiliaryAmount={withdrawCollateralAmountUSD}
+      amount={withdrawAmount}
+      auxiliaryAmount={withdrawAmountUSD}
       maxAmount={maxWithdrawCollateral}
       maxAuxiliaryAmount={maxWithdrawCollateralUSD}
       onChange={handleNumericInput(updateWithdrawCollateral!)}
@@ -141,7 +141,7 @@ function WithdrawTokenInput({
 }
 
 function DepositDAIInput({
-  depositDaiAmount,
+  paybackAmount,
   updateDepositDai,
   updateDepositDaiMax,
   maxDepositDai,
@@ -149,7 +149,7 @@ function DepositDAIInput({
   return (
     <VaultActionInput
       action="Deposit"
-      amount={depositDaiAmount}
+      amount={paybackAmount}
       token="DAI"
       showMax={true}
       maxAmount={maxDepositDai}
@@ -162,7 +162,7 @@ function DepositDAIInput({
 }
 
 function WithdrawDAIInput({
-  withdrawDaiAmount,
+  generateAmount,
   updateWithdrawDai,
   updateWithdrawDaiMax,
   maxWithdrawDai,
@@ -170,7 +170,7 @@ function WithdrawDAIInput({
   return (
     <VaultActionInput
       action="Withdraw"
-      amount={withdrawDaiAmount}
+      amount={generateAmount}
       token="DAI"
       showMax={true}
       maxAmount={maxWithdrawDai}

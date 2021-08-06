@@ -4,14 +4,13 @@ import { Vault } from 'blockchain/vaults'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import {
-  getMaxPossibleCollRatioOrMax,
   getMultiplyParams,
   LOAN_FEE,
   MULTIPLY_FEE,
 } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
-import { SLIPPAGE } from './manageMultiplyQuote'
 
+import { SLIPPAGE } from './manageMultiplyQuote'
 import { ManageMultiplyVaultState } from './manageMultiplyVault'
 
 // This value ought to be coupled in relation to how much we round the raw debt
@@ -119,21 +118,17 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
  * all of their debt.
  */
 function determineShouldPaybackAll({
-  depositDaiAmount,
+  paybackAmount,
   debt,
   debtOffset,
   daiBalance,
-}: Pick<ManageMultiplyVaultState, 'depositDaiAmount'> &
+}: Pick<ManageMultiplyVaultState, 'paybackAmount'> &
   Pick<Vault, 'debt' | 'debtOffset'> &
   Pick<BalanceInfo, 'daiBalance'>): boolean {
   return (
     debt.gt(zero) &&
     daiBalance.gte(debt.plus(debtOffset)) &&
-    !!(
-      depositDaiAmount &&
-      depositDaiAmount.plus(PAYBACK_ALL_BOUND).gte(debt) &&
-      !depositDaiAmount.gt(debt)
-    )
+    !!(paybackAmount && paybackAmount.plus(PAYBACK_ALL_BOUND).gte(debt) && !paybackAmount.gt(debt))
   )
 }
 
@@ -144,14 +139,14 @@ function determineShouldPaybackAll({
  */
 function calculateAfterLockedCollateral({
   lockedCollateral,
-  depositDaiAmount,
-  withdrawDaiAmount,
-}: Pick<ManageMultiplyVaultState, 'depositDaiAmount' | 'withdrawDaiAmount'> &
+  paybackAmount,
+  generateAmount,
+}: Pick<ManageMultiplyVaultState, 'paybackAmount' | 'generateAmount'> &
   Pick<Vault, 'lockedCollateral'>) {
-  const amount = depositDaiAmount
-    ? lockedCollateral.plus(depositDaiAmount)
-    : withdrawDaiAmount
-    ? lockedCollateral.minus(withdrawDaiAmount)
+  const amount = paybackAmount
+    ? lockedCollateral.plus(paybackAmount)
+    : generateAmount
+    ? lockedCollateral.minus(generateAmount)
     : lockedCollateral
 
   return amount.gte(zero) ? amount : zero
@@ -166,17 +161,17 @@ function calculateAfterLockedCollateral({
  */
 function calculateAfterDebt({
   shouldPaybackAll,
-  withdrawDaiAmount,
-  depositDaiAmount,
+  generateAmount,
+  paybackAmount,
   debt,
-}: Pick<ManageMultiplyVaultState, 'shouldPaybackAll' | 'withdrawDaiAmount' | 'depositDaiAmount'> &
+}: Pick<ManageMultiplyVaultState, 'shouldPaybackAll' | 'generateAmount' | 'paybackAmount'> &
   Pick<Vault, 'debt'>) {
   if (shouldPaybackAll) return zero
 
-  const amount = withdrawDaiAmount
-    ? debt.plus(withdrawDaiAmount)
-    : depositDaiAmount
-    ? debt.minus(depositDaiAmount)
+  const amount = generateAmount
+    ? debt.plus(generateAmount)
+    : paybackAmount
+    ? debt.minus(paybackAmount)
     : debt
 
   return amount.gte(zero) ? amount : zero
@@ -228,17 +223,17 @@ function calculateAfterFreeCollateral({
  *
  */
 function calculateMaxWithdrawAmount({
-  depositDaiAmount,
+  paybackAmount,
   shouldPaybackAll,
   lockedCollateral,
   debt,
   debtOffset,
   liquidationRatio,
   price,
-}: Pick<ManageMultiplyVaultState, 'depositDaiAmount' | 'shouldPaybackAll' | 'requiredCollRatio'> &
+}: Pick<ManageMultiplyVaultState, 'paybackAmount' | 'shouldPaybackAll' | 'requiredCollRatio'> &
   Pick<Vault, 'lockedCollateral' | 'debt' | 'debtOffset'> &
   Pick<IlkData, 'liquidationRatio'> & { price: BigNumber }) {
-  const afterDebt = calculateAfterDebt({ shouldPaybackAll, debt, depositDaiAmount })
+  const afterDebt = calculateAfterDebt({ shouldPaybackAll, debt, paybackAmount })
   const afterDebtWithOffset = afterDebt.gt(zero) ? afterDebt.plus(debtOffset) : afterDebt
 
   const backingCollateral = calculateAfterBackingCollateral({
@@ -296,22 +291,22 @@ function calculateDaiYieldFromCollateral({
  * It should also not exceed the debt ceiling for that ilk and also account
  * for the accrued interest should the vault debt be non-zero
  */
-function calculateMaxWithdrawDaiAmount({
-  depositDaiAmount,
+function calculateMaxgenerateAmount({
+  paybackAmount,
   debt,
   debtOffset,
   lockedCollateral,
   liquidationRatio,
   price,
   ilkDebtAvailable,
-}: Pick<ManageMultiplyVaultState, 'depositDaiAmount'> &
+}: Pick<ManageMultiplyVaultState, 'paybackAmount'> &
   Pick<Vault, 'debtOffset' | 'debt' | 'lockedCollateral'> &
   Pick<IlkData, 'liquidationRatio' | 'ilkDebtAvailable'> & {
     price: BigNumber
   }) {
   const afterLockedCollateral = calculateAfterLockedCollateral({
     lockedCollateral,
-    depositDaiAmount,
+    paybackAmount,
   })
 
   return calculateDaiYieldFromCollateral({
@@ -325,10 +320,10 @@ function calculateMaxWithdrawDaiAmount({
 
 export function getVaultChange({
   requiredCollRatio,
-  depositCollateralAmount,
-  depositDaiAmount,
-  withdrawDaiAmount,
-  withdrawCollateralAmount,
+  depositAmount,
+  paybackAmount,
+  generateAmount,
+  withdrawAmount,
   slippage,
 
   currentCollateralPrice,
@@ -340,10 +335,10 @@ export function getVaultChange({
   OF,
 }: {
   requiredCollRatio: BigNumber | undefined
-  depositCollateralAmount: BigNumber
-  depositDaiAmount: BigNumber
-  withdrawDaiAmount: BigNumber
-  withdrawCollateralAmount: BigNumber
+  depositAmount: BigNumber
+  paybackAmount: BigNumber
+  generateAmount: BigNumber
+  withdrawAmount: BigNumber
 
   currentCollateralPrice: BigNumber
   marketPrice: BigNumber
@@ -362,18 +357,18 @@ export function getVaultChange({
       debt,
       lockedCollateral,
       requiredCollRatio,
-      depositCollateralAmount,
-      depositDaiAmount,
-      withdrawDaiAmount,
-      withdrawCollateralAmount,
+      depositAmount,
+      paybackAmount,
+      generateAmount,
+      withdrawAmount,
       FF,
       OF,
     )
   }
 
   return {
-    debtDelta: withdrawDaiAmount.minus(depositDaiAmount),
-    collateralDelta: depositCollateralAmount.minus(withdrawCollateralAmount),
+    debtDelta: generateAmount.minus(paybackAmount),
+    collateralDelta: depositAmount.minus(withdrawAmount),
     loanFee: zero,
     oazoFee: zero,
   }
@@ -402,10 +397,10 @@ export function applyManageVaultCalculations(
     quote,
     swap,
     slippage,
-    depositCollateralAmount = zero,
-    depositDaiAmount = zero,
-    withdrawDaiAmount = zero,
-    withdrawCollateralAmount = zero,
+    depositAmount = zero,
+    paybackAmount = zero,
+    generateAmount = zero,
+    withdrawAmount = zero,
   } = state
 
   const marketPrice =
@@ -471,10 +466,10 @@ export function applyManageVaultCalculations(
     debt,
     lockedCollateral,
     requiredCollRatio,
-    depositCollateralAmount,
-    depositDaiAmount,
-    withdrawDaiAmount,
-    withdrawCollateralAmount,
+    depositAmount,
+    paybackAmount,
+    generateAmount,
+    withdrawAmount,
     OF: MULTIPLY_FEE,
     FF: LOAN_FEE,
   })
@@ -498,7 +493,7 @@ export function applyManageVaultCalculations(
   const exchangeAction = collateralDelta.isNegative() ? 'SELL_COLLATERAL' : 'BUY_COLLATERAL'
 
   const shouldPaybackAll = determineShouldPaybackAll({
-    depositDaiAmount,
+    paybackAmount,
     debt,
     daiBalance,
     debtOffset,
@@ -528,7 +523,7 @@ export function applyManageVaultCalculations(
   })
 
   // const maxWithdrawAmountAtCurrentPrice = calculateMaxWithdrawAmount({
-  //   depositDaiAmount,
+  //   paybackAmount,
   //   shouldPaybackAll,
   //   lockedCollateral,
   //   debt,
@@ -646,10 +641,10 @@ export function applyManageVaultCalculations(
       afterLiquidationPrice: ${afterLiquidationPrice}
 
 
-      depositCollateralAmount,: ${depositCollateralAmount}
-      depositDaiAmount,: ${depositDaiAmount}
-      withdrawDaiAmount,: ${withdrawDaiAmount}
-      withdrawCollateralAmount,: ${withdrawCollateralAmount}
+      depositAmount,: ${depositAmount}
+      paybackAmount,: ${paybackAmount}
+      generateAmount,: ${generateAmount}
+      withdrawAmount,: ${withdrawAmount}
 
       
       marketPrice: ${marketPrice}

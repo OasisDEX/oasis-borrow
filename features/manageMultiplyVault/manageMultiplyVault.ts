@@ -13,10 +13,10 @@ import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import {
   applyExchange,
+  createExchangeChange$,
   createInitialQuoteChange,
   ExchangeQuoteChanges,
   SLIPPAGE,
-  createExchangeChange$,
 } from './manageMultiplyQuote'
 import {
   applyManageVaultAllowance,
@@ -147,12 +147,12 @@ export interface MutableManageMultiplyVaultState {
   otherAction: OtherAction
   showSliderController: boolean
 
-  depositCollateralAmount?: BigNumber
-  depositCollateralAmountUSD?: BigNumber
-  withdrawCollateralAmount?: BigNumber
-  withdrawCollateralAmountUSD?: BigNumber
-  depositDaiAmount?: BigNumber
-  withdrawDaiAmount?: BigNumber
+  depositAmount?: BigNumber
+  depositAmountUSD?: BigNumber
+  withdrawAmount?: BigNumber
+  withdrawAmountUSD?: BigNumber
+  paybackAmount?: BigNumber
+  generateAmount?: BigNumber
   closeVaultTo: CloseVaultTo
 
   collateralAllowanceAmount?: BigNumber
@@ -254,26 +254,26 @@ function addTransitions(
   if (state.stage === 'adjustPosition' || state.stage === 'otherActions') {
     return {
       ...state,
-      updateDepositCollateral: (depositCollateralAmount?: BigNumber) => {
-        change({ kind: 'depositCollateral', depositCollateralAmount })
+      updateDepositCollateral: (depositAmount?: BigNumber) => {
+        change({ kind: 'depositCollateral', depositAmount })
       },
-      updateDepositCollateralUSD: (depositCollateralAmountUSD?: BigNumber) =>
-        change({ kind: 'depositCollateralUSD', depositCollateralAmountUSD }),
+      updateDepositCollateralUSD: (depositAmountUSD?: BigNumber) =>
+        change({ kind: 'depositCollateralUSD', depositAmountUSD }),
       updateDepositCollateralMax: () => change({ kind: 'depositCollateralMax' }),
 
-      updateDepositDai: (depositDaiAmount?: BigNumber) => {
-        change({ kind: 'depositDai', depositDaiAmount })
+      updateDepositDai: (paybackAmount?: BigNumber) => {
+        change({ kind: 'depositDai', paybackAmount })
       },
       updateDepositDaiMax: () => change({ kind: 'depositDaiMax' }),
-      updateWithdrawCollateral: (withdrawCollateralAmount?: BigNumber) => {
-        change({ kind: 'withdrawCollateral', withdrawCollateralAmount })
+      updateWithdrawCollateral: (withdrawAmount?: BigNumber) => {
+        change({ kind: 'withdrawCollateral', withdrawAmount })
       },
-      updateWithdrawCollateralUSD: (withdrawCollateralAmountUSD?: BigNumber) =>
-        change({ kind: 'withdrawCollateralUSD', withdrawCollateralAmountUSD }),
+      updateWithdrawCollateralUSD: (withdrawAmountUSD?: BigNumber) =>
+        change({ kind: 'withdrawCollateralUSD', withdrawAmountUSD }),
       updateWithdrawCollateralMax: () => change({ kind: 'withdrawCollateralMax' }),
 
-      updateWithdrawDai: (withdrawDaiAmount?: BigNumber) => {
-        change({ kind: 'withdrawDai', withdrawDaiAmount })
+      updateWithdrawDai: (generateAmount?: BigNumber) => {
+        change({ kind: 'withdrawDai', generateAmount })
       },
       updateWithdrawDaiMax: () => change({ kind: 'withdrawDaiMax' }),
 

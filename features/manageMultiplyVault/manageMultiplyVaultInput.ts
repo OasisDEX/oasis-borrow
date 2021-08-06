@@ -6,12 +6,12 @@ import { otherActionsDefaults } from './manageMultiplyVaultForm'
 
 interface DepositCollateralChange {
   kind: 'depositCollateral'
-  depositCollateralAmount?: BigNumber
+  depositAmount?: BigNumber
 }
 
 interface DepositCollateralUSDChange {
   kind: 'depositCollateralUSD'
-  depositCollateralAmountUSD?: BigNumber
+  depositAmountUSD?: BigNumber
 }
 
 interface DepositCollateralMaxChange {
@@ -20,7 +20,7 @@ interface DepositCollateralMaxChange {
 
 interface DepositDaiChange {
   kind: 'depositDai'
-  depositDaiAmount?: BigNumber
+  paybackAmount?: BigNumber
 }
 
 interface DepositDaiMaxChange {
@@ -28,12 +28,12 @@ interface DepositDaiMaxChange {
 }
 interface WithdrawCollateralChange {
   kind: 'withdrawCollateral'
-  withdrawCollateralAmount?: BigNumber
+  withdrawAmount?: BigNumber
 }
 
 interface WithdrawCollateralUSDChange {
   kind: 'withdrawCollateralUSD'
-  withdrawCollateralAmountUSD?: BigNumber
+  withdrawAmountUSD?: BigNumber
 }
 
 interface WithdrawCollateralMaxChange {
@@ -42,7 +42,7 @@ interface WithdrawCollateralMaxChange {
 
 interface WithdrawDaiChange {
   kind: 'withdrawDai'
-  withdrawDaiAmount?: BigNumber
+  generateAmount?: BigNumber
 }
 
 interface WithdrawDaiMaxChange {
@@ -389,8 +389,8 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
     return {
       ...state,
       ...otherActionsDefaults,
-      depositCollateralAmount: change.depositCollateralAmount,
-      depositCollateralAmountUSD: change.depositCollateralAmount?.times(currentCollateralPrice),
+      depositAmount: change.depositAmount,
+      depositAmountUSD: change.depositAmount?.times(currentCollateralPrice),
     }
   }
 
@@ -402,8 +402,8 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
     return {
       ...state,
       ...otherActionsDefaults,
-      depositCollateralAmountUSD: change.depositCollateralAmountUSD,
-      depositCollateralAmount: change.depositCollateralAmountUSD?.div(currentCollateralPrice),
+      depositAmountUSD: change.depositAmountUSD,
+      depositAmount: change.depositAmountUSD?.div(currentCollateralPrice),
     }
   }
 
@@ -413,8 +413,8 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
     return {
       ...state,
       ...otherActionsDefaults,
-      depositCollateralAmount: maxDepositCollateral,
-      depositCollateralAmountUSD: maxDepositCollateralUSD,
+      depositAmount: maxDepositCollateral,
+      depositAmountUSD: maxDepositCollateralUSD,
     }
   }
 
@@ -422,7 +422,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
     return {
       ...state,
       ...otherActionsDefaults,
-      depositDaiAmount: change.depositDaiAmount,
+      paybackAmount: change.paybackAmount,
     }
   }
 
@@ -432,7 +432,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
     return {
       ...state,
       ...otherActionsDefaults,
-      depositDaiAmount: maxDepositDai,
+      paybackAmount: maxDepositDai,
     }
   }
 
@@ -441,10 +441,8 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
     return {
       ...state,
       ...otherActionsDefaults,
-      withdrawCollateralAmount: change.withdrawCollateralAmount,
-      withdrawCollateralAmountUSD: change.withdrawCollateralAmount?.times(
-        priceInfo.currentCollateralPrice,
-      ),
+      withdrawAmount: change.withdrawAmount,
+      withdrawAmountUSD: change.withdrawAmount?.times(priceInfo.currentCollateralPrice),
     }
   }
 
@@ -453,10 +451,8 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
     return {
       ...state,
       ...otherActionsDefaults,
-      withdrawCollateralAmountUSD: change.withdrawCollateralAmountUSD,
-      withdrawCollateralAmount: change.withdrawCollateralAmountUSD?.div(
-        priceInfo.currentCollateralPrice,
-      ),
+      withdrawAmountUSD: change.withdrawAmountUSD,
+      withdrawAmount: change.withdrawAmountUSD?.div(priceInfo.currentCollateralPrice),
     }
   }
 
@@ -466,8 +462,8 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
     return {
       ...state,
       ...otherActionsDefaults,
-      withdrawCollateralAmount: maxWithdrawCollateral,
-      withdrawCollateralAmountUSD: maxWithdrawCollateralUSD,
+      withdrawAmount: maxWithdrawCollateral,
+      withdrawAmountUSD: maxWithdrawCollateralUSD,
     }
   }
 
@@ -475,7 +471,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
     return {
       ...state,
       ...otherActionsDefaults,
-      withdrawDaiAmount: change.withdrawDaiAmount,
+      generateAmount: change.generateAmount,
     }
   }
 
@@ -484,7 +480,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
     return {
       ...state,
       ...otherActionsDefaults,
-      withdrawDaiAmount: maxWithdrawDai,
+      generateAmount: maxWithdrawDai,
     }
   }
 

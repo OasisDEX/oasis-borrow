@@ -34,12 +34,12 @@ export type ManageVaultFormChange =
     }
 
 export const otherActionsDefaults: Partial<ManageMultiplyVaultState> = {
-  depositCollateralAmount: undefined,
-  depositCollateralAmountUSD: undefined,
-  depositDaiAmount: undefined,
-  withdrawCollateralAmount: undefined,
-  withdrawCollateralAmountUSD: undefined,
-  withdrawDaiAmount: undefined,
+  depositAmount: undefined,
+  depositAmountUSD: undefined,
+  paybackAmount: undefined,
+  withdrawAmount: undefined,
+  withdrawAmountUSD: undefined,
+  generateAmount: undefined,
 
   requiredCollRatio: undefined,
 }
