@@ -16,6 +16,7 @@ import {
   createInitialQuoteChange,
   ExchangeQuoteChanges,
   SLIPPAGE,
+  createExchangeChange$,
 } from './manageMultiplyQuote'
 import {
   applyManageVaultAllowance,
@@ -483,6 +484,7 @@ export function createManageMultiplyVault$(
                     createIlkDataChange$(ilkData$, vault.ilk),
                     createVaultChange$(vault$, id),
                     createInitialQuoteChange(exchangeQuote$, vault.token),
+                    createExchangeChange$(exchangeQuote$, stateSubject$),
                   )
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
@@ -492,7 +494,7 @@ export function createManageMultiplyVault$(
                     map(validateErrors),
                     map(validateWarnings),
                     map(curry(addTransitions)(txHelpers$, connectedProxyAddress$, change)),
-                    // tap(stateSubject$.next),
+                    tap((state) => stateSubject$.next(state)),
                   )
                 }),
               )
