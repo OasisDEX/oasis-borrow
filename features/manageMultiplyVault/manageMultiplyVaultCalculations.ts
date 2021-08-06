@@ -3,11 +3,7 @@ import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import {
-  getMultiplyParams,
-  LOAN_FEE,
-  MULTIPLY_FEE,
-} from 'helpers/multiply/calculations'
+import { getMultiplyParams, LOAN_FEE, MULTIPLY_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 
 import { SLIPPAGE } from './manageMultiplyQuote'
@@ -18,19 +14,19 @@ import { ManageMultiplyVaultState } from './manageMultiplyVault'
 export const PAYBACK_ALL_BOUND = new BigNumber('0.01')
 
 export interface ManageVaultCalculations {
-  maxDepositCollateral: BigNumber
-  maxDepositCollateralUSD: BigNumber
+  maxDepositAmount: BigNumber
+  maxDepositAmountUSD: BigNumber
 
-  maxDepositDai: BigNumber
+  maxPaybackAmount: BigNumber
 
-  maxWithdrawCollateralAtCurrentPrice: BigNumber
-  maxWithdrawCollateralAtNextPrice: BigNumber
-  maxWithdrawCollateral: BigNumber
-  maxWithdrawCollateralUSD: BigNumber
+  maxWithdrawAmountAtCurrentPrice: BigNumber
+  maxWithdrawAmountAtNextPrice: BigNumber
+  maxWithdrawAmount: BigNumber
+  maxWithdrawAmountUSD: BigNumber
 
-  maxWithdrawDaiAtCurrentPrice: BigNumber
-  maxWithdrawDaiAtNextPrice: BigNumber
-  maxWithdrawDai: BigNumber
+  maxGenerateAmountAtCurrentPrice: BigNumber
+  maxGenerateAmountAtNextPrice: BigNumber
+  maxGenerateAmount: BigNumber
 
   maxLegalCollateralizationRatio: BigNumber
 
@@ -70,19 +66,19 @@ export interface ManageVaultCalculations {
 export const MAX_COLL_RATIO = new BigNumber(5)
 
 export const defaultManageVaultCalculations: ManageVaultCalculations = {
-  maxDepositCollateral: zero,
-  maxDepositCollateralUSD: zero,
+  maxDepositAmount: zero,
+  maxDepositAmountUSD: zero,
 
-  maxDepositDai: zero,
+  maxPaybackAmount: zero,
 
-  maxWithdrawCollateralAtCurrentPrice: zero,
-  maxWithdrawCollateralAtNextPrice: zero,
-  maxWithdrawCollateral: zero,
-  maxWithdrawCollateralUSD: zero,
+  maxWithdrawAmountAtCurrentPrice: zero,
+  maxWithdrawAmountAtNextPrice: zero,
+  maxWithdrawAmount: zero,
+  maxWithdrawAmountUSD: zero,
 
-  maxWithdrawDaiAtCurrentPrice: zero,
-  maxWithdrawDaiAtNextPrice: zero,
-  maxWithdrawDai: zero,
+  maxGenerateAmountAtCurrentPrice: zero,
+  maxGenerateAmountAtNextPrice: zero,
+  maxGenerateAmount: zero,
 
   maxLegalCollateralizationRatio: MAX_COLL_RATIO,
 
@@ -421,38 +417,38 @@ export function applyManageVaultCalculations(
   //   debtFloor,
   //   zero)
 
-  const maxDepositCollateral = collateralBalance
-  const maxDepositCollateralUSD = collateralBalance.times(currentCollateralPrice)
+  const maxDepositAmount = collateralBalance
+  const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
 
-  const maxWithdrawCollateralAtCurrentPrice = freeCollateral
-  const maxWithdrawCollateralAtNextPrice = freeCollateralAtNextPrice
-  const maxWithdrawCollateral = BigNumber.min(
-    maxWithdrawCollateralAtCurrentPrice,
-    maxWithdrawCollateralAtNextPrice,
+  const maxWithdrawAmountAtCurrentPrice = freeCollateral
+  const maxWithdrawAmountAtNextPrice = freeCollateralAtNextPrice
+  const maxWithdrawAmount = BigNumber.min(
+    maxWithdrawAmountAtCurrentPrice,
+    maxWithdrawAmountAtNextPrice,
   )
-  const maxWithdrawCollateralUSD = maxWithdrawCollateral.times(currentCollateralPrice)
+  const maxWithdrawAmountUSD = maxWithdrawAmount.times(currentCollateralPrice)
 
   //TODO implement max values for other actions
-  const maxDepositDai = zero
+  const maxPaybackAmount = zero
 
-  const maxWithdrawDaiAtCurrentPrice = zero
-  const maxWithdrawDaiAtNextPrice = zero
-  const maxWithdrawDai = daiYieldFromLockedCollateral.minus(debtOffset)
+  const maxGenerateAmountAtCurrentPrice = zero
+  const maxGenerateAmountAtNextPrice = zero
+  const maxGenerateAmount = daiYieldFromLockedCollateral.minus(debtOffset)
 
   const maxInputAmounts = {
-    maxDepositCollateral,
-    maxDepositCollateralUSD,
+    maxDepositAmount,
+    maxDepositAmountUSD,
 
-    maxWithdrawCollateralAtCurrentPrice,
-    maxWithdrawCollateralAtNextPrice,
-    maxWithdrawCollateral,
-    maxWithdrawCollateralUSD,
+    maxWithdrawAmountAtCurrentPrice,
+    maxWithdrawAmountAtNextPrice,
+    maxWithdrawAmount,
+    maxWithdrawAmountUSD,
 
-    maxDepositDai,
+    maxPaybackAmount,
 
-    maxWithdrawDaiAtCurrentPrice,
-    maxWithdrawDaiAtNextPrice,
-    maxWithdrawDai,
+    maxGenerateAmountAtCurrentPrice,
+    maxGenerateAmountAtNextPrice,
+    maxGenerateAmount,
   }
 
   if (!marketPrice || !marketPriceMaxSlippage || inputAmountsEmpty) {

@@ -187,17 +187,18 @@ interface ManageVaultFunctions {
   regress?: () => void
   toggle?: () => void
 
-  updateDepositCollateral?: (depositCollateral?: BigNumber) => void
-  updateDepositCollateralUSD?: (depositCollateralUSD?: BigNumber) => void
-  updateDepositCollateralMax?: () => void
-  updateDepositDai?: (depositDai?: BigNumber) => void
-  updateDepositDaiMax?: () => void
+  updateDepositAmount?: (depositAmount?: BigNumber) => void
+  updateDepositAmountUSD?: (depositAmountUSD?: BigNumber) => void
+  updateDepositAmountMax?: () => void
+  updatePaybackAmount?: (paybackAmount?: BigNumber) => void
+  updatePaybackAmountMax?: () => void
 
-  updateWithdrawCollateral?: (withdrawCollateral?: BigNumber) => void
-  updateWithdrawCollateralUSD?: (withdrawCollateralUSD?: BigNumber) => void
-  updateWithdrawCollateralMax?: () => void
-  updateWithdrawDai?: (withdrawDai?: BigNumber) => void
-  updateWithdrawDaiMax?: () => void
+  updateWithdrawAmount?: (withdrawAmount?: BigNumber) => void
+  updateWithdrawAmountUSD?: (withdrawAmountUSD?: BigNumber) => void
+  updateWithdrawAmountMax?: () => void
+  updateGenerateAmount?: (generateAmount?: BigNumber) => void
+  updateGenerateAmountMax?: () => void
+
   setCloseVaultTo?: (closeVaultTo: CloseVaultTo) => void
 
   updateCollateralAllowanceAmount?: (amount?: BigNumber) => void
@@ -254,28 +255,28 @@ function addTransitions(
   if (state.stage === 'adjustPosition' || state.stage === 'otherActions') {
     return {
       ...state,
-      updateDepositCollateral: (depositAmount?: BigNumber) => {
-        change({ kind: 'depositCollateral', depositAmount })
+      updateDepositAmount: (depositAmount?: BigNumber) => {
+        change({ kind: 'depositAmount', depositAmount })
       },
-      updateDepositCollateralUSD: (depositAmountUSD?: BigNumber) =>
-        change({ kind: 'depositCollateralUSD', depositAmountUSD }),
-      updateDepositCollateralMax: () => change({ kind: 'depositCollateralMax' }),
+      updateDepositAmountUSD: (depositAmountUSD?: BigNumber) =>
+        change({ kind: 'depositAmountUSD', depositAmountUSD }),
+      updateDepositAmountMax: () => change({ kind: 'depositAmountMax' }),
 
-      updateDepositDai: (paybackAmount?: BigNumber) => {
-        change({ kind: 'depositDai', paybackAmount })
+      updatePaybackAmount: (paybackAmount?: BigNumber) => {
+        change({ kind: 'paybackAmount', paybackAmount })
       },
-      updateDepositDaiMax: () => change({ kind: 'depositDaiMax' }),
-      updateWithdrawCollateral: (withdrawAmount?: BigNumber) => {
-        change({ kind: 'withdrawCollateral', withdrawAmount })
+      updatePaybackAmountMax: () => change({ kind: 'paybackAmountMax' }),
+      updateWithdrawAmount: (withdrawAmount?: BigNumber) => {
+        change({ kind: 'withdrawAmount', withdrawAmount })
       },
-      updateWithdrawCollateralUSD: (withdrawAmountUSD?: BigNumber) =>
-        change({ kind: 'withdrawCollateralUSD', withdrawAmountUSD }),
-      updateWithdrawCollateralMax: () => change({ kind: 'withdrawCollateralMax' }),
+      updateWithdrawAmountUSD: (withdrawAmountUSD?: BigNumber) =>
+        change({ kind: 'withdrawAmountUSD', withdrawAmountUSD }),
+      updateWithdrawAmountMax: () => change({ kind: 'withdrawAmountMax' }),
 
-      updateWithdrawDai: (generateAmount?: BigNumber) => {
-        change({ kind: 'withdrawDai', generateAmount })
+      updateGenerateAmount: (generateAmount?: BigNumber) => {
+        change({ kind: 'generateAmount', generateAmount })
       },
-      updateWithdrawDaiMax: () => change({ kind: 'withdrawDaiMax' }),
+      updateGenerateAmountMax: () => change({ kind: 'generateAmountMax' }),
 
       setCloseVaultTo: (closeVaultTo: CloseVaultTo) =>
         change({ kind: 'closeVaultTo', closeVaultTo }),
