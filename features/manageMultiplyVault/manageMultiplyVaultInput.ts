@@ -18,7 +18,7 @@ interface DepositAmountMaxChange {
   kind: 'depositAmountMax'
 }
 
-interface PaybackAmountChange {
+interface paybackAmountChange {
   kind: 'paybackAmount'
   paybackAmount?: BigNumber
 }
@@ -85,7 +85,7 @@ export type ManageVaultInputChange =
   | DepositAmountChange
   | DepositAmountUSDChange
   | DepositAmountMaxChange
-  | PaybackAmountChange
+  | paybackAmountChange
   | PaybackAmountMaxChange
   | WithdrawAmountChange
   | WithdrawAmountUSDChange
@@ -419,7 +419,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
     }
   }
 
-  if (change.kind === 'PaybackAmountChange') {
+  if (change.kind === 'paybackAmount') {
     return {
       ...state,
       ...otherActionsDefaults,
@@ -427,7 +427,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
     }
   }
 
-  if (change.kind === 'PaybackAmountChangeMax') {
+  if (change.kind === 'paybackAmountMax') {
     const { maxPaybackAmount } = state
 
     return {
@@ -468,7 +468,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
     }
   }
 
-  if (change.kind === 'GenerateAmount') {
+  if (change.kind === 'generateAmount') {
     return {
       ...state,
       ...otherActionsDefaults,
@@ -476,7 +476,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
     }
   }
 
-  if (change.kind === 'GenerateAmountMax') {
+  if (change.kind === 'generateAmountMax') {
     const { maxGenerateAmount } = state
     return {
       ...state,
