@@ -8,4 +8,5 @@ export enum TxMetaKind {
   withdrawAndPayback = 'withdrawAndPayback',
   reclaim = 'reclaim',
   multiply = 'multiply',
+  adjustPosition = 'adjustPosition',
 }

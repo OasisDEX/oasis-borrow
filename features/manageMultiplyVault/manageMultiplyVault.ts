@@ -69,7 +69,7 @@ interface ManageVaultInjectedOverrideChange {
 }
 
 function applyManageVaultInjectedOverride(
-  change: ManageVaultChange,
+  change: ManageMultiplyVaultChange,
   state: ManageMultiplyVaultState,
 ) {
   if (change.kind === 'injectStateOverride') {
@@ -81,7 +81,7 @@ function applyManageVaultInjectedOverride(
   return state
 }
 
-export type ManageVaultChange =
+export type ManageMultiplyVaultChange =
   | ManageVaultInputChange
   | ManageVaultFormChange
   | ManageVaultAllowanceChange
@@ -91,7 +91,7 @@ export type ManageVaultChange =
   | ManageVaultInjectedOverrideChange
   | ExchangeQuoteChanges
 
-function apply(state: ManageMultiplyVaultState, change: ManageVaultChange) {
+function apply(state: ManageMultiplyVaultState, change: ManageMultiplyVaultChange) {
   const s1 = applyManageVaultInput(change, state)
   const s1_ = applyExchange(change, s1)
   const s2 = applyManageVaultForm(change, s1_)
@@ -248,7 +248,7 @@ export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
-  change: (ch: ManageVaultChange) => void,
+  change: (ch: ManageMultiplyVaultChange) => void,
   state: ManageMultiplyVaultState,
 ): ManageMultiplyVaultState {
   if (state.stage === 'adjustPosition' || state.stage === 'otherActions') {
@@ -442,9 +442,9 @@ export function createManageMultiplyVault$(
               return combineLatest(collateralAllowance$, daiAllowance$).pipe(
                 first(),
                 switchMap(([collateralAllowance, daiAllowance]) => {
-                  const change$ = new Subject<ManageVaultChange>()
+                  const change$ = new Subject<ManageMultiplyVaultChange>()
 
-                  function change(ch: ManageVaultChange) {
+                  function change(ch: ManageMultiplyVaultChange) {
                     change$.next(ch)
                   }
 
