@@ -1,8 +1,8 @@
 import {
   CloseVaultTo,
   MainAction,
-  ManageMultiplyVaultState,
   ManageMultiplyVaultChange,
+  ManageMultiplyVaultState,
   OtherAction,
 } from './manageMultiplyVault'
 import { allowanceDefaults } from './manageMultiplyVaultAllowances'

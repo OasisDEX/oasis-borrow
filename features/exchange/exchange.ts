@@ -2,14 +2,7 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
-import {
-  catchError,
-  distinctUntilChanged,
-  map,
-  retry,
-  switchMap,
-  tap,
-} from 'rxjs/operators'
+import { catchError, distinctUntilChanged, map, retry, switchMap, tap } from 'rxjs/operators'
 
 import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 

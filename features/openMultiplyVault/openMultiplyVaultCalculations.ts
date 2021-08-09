@@ -69,7 +69,7 @@ export function applyOpenMultiplyVaultCalculations(
   const {
     depositAmount,
     balanceInfo: { collateralBalance },
-    priceInfo: { currentCollateralPrice, nextCollateralPrice },
+    priceInfo: { currentCollateralPrice },
     ilkData: { liquidationRatio, debtFloor },
     quote,
     // swap, TODO use swap price

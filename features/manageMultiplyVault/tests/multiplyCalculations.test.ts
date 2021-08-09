@@ -19,7 +19,7 @@ describe('Adjust multiply calculations', () => {
     const MULTIPLY_FEE = new BigNumber(0.01)
     const LOAN_FEE = new BigNumber(0.009)
 
-    const { debtDelta, collateralDelta, loanFee, oazoFee } = getVaultChange({
+    const { debtDelta, collateralDelta, loanFee } = getVaultChange({
       requiredCollRatio,
       debt,
       lockedCollateral,
@@ -42,7 +42,7 @@ describe('Adjust multiply calculations', () => {
     expect(afterCollateralizationRatio).to.deep.eq(requiredCollRatio)
   })
 
-  it.only('Decrease multiply', () => {
+  it('Decrease multiply', () => {
     const debt = new BigNumber(2000)
     const lockedCollateral = new BigNumber(5)
     const oraclePrice = new BigNumber(1000)

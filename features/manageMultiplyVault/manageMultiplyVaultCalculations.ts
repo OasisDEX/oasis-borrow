@@ -375,16 +375,9 @@ export function applyManageVaultCalculations(
 ): ManageMultiplyVaultState {
   const {
     balanceInfo: { collateralBalance, daiBalance },
-    ilkData: { liquidationRatio, ilkDebtAvailable, debtFloor },
+    ilkData: { liquidationRatio, ilkDebtAvailable },
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
-    vault: {
-      lockedCollateral,
-      debt,
-      debtOffset,
-      lockedCollateralUSD,
-      liquidationPrice,
-      collateralizationRatio,
-    },
+    vault: { lockedCollateral, debt, debtOffset, lockedCollateralUSD, liquidationPrice },
     requiredCollRatio,
     inputAmountsEmpty,
     quote,
