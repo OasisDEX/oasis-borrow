@@ -61,6 +61,9 @@ export interface ManageVaultCalculations {
 
   marketPrice?: BigNumber
   marketPriceMaxSlippage?: BigNumber
+
+  netValue: BigNumber
+  afterNetValue: BigNumber
 }
 
 export const MAX_COLL_RATIO = new BigNumber(5)
@@ -107,6 +110,9 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
   loanFee: zero,
   oazoFee: zero,
   fees: zero,
+
+  netValue: zero,
+  afterNetValue: zero,
 }
 
 /*
@@ -575,6 +581,9 @@ export function applyManageVaultCalculations(
 
   const afterCollateralBalance = collateralBalance.minus(depositAmount)
 
+  const netValue = lockedCollateral.times(currentCollateralPrice).minus(debt)
+  const afterNetValue = afterLockedCollateral.times(currentCollateralPrice).minus(debt)
+
   return {
     ...state,
     ...maxInputAmounts,
@@ -610,5 +619,8 @@ export function applyManageVaultCalculations(
 
     afterCollateralBalance,
     shouldPaybackAll,
+
+    netValue,
+    afterNetValue,
   }
 }
