@@ -21,6 +21,7 @@ import {
 } from 'blockchain/calls/proxy'
 import {
   DepositAndGenerateData,
+  MultiplyAdjustData,
   MultiplyData,
   OpenData,
   ReclaimData,
@@ -105,6 +106,7 @@ export type TxData =
   | SetProxyOwnerData
   | ReclaimData
   | MultiplyData
+  | MultiplyAdjustData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -339,6 +341,7 @@ export function setupAppContext() {
       balanceInfo$,
       ilkData$,
       vault$,
+      exchangeQuote$,
     ),
     bigNumberTostring,
   )

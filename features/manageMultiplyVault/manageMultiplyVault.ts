@@ -4,12 +4,20 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
+import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
-import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
+import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
+import {
+  applyExchange,
+  createExchangeChange$,
+  createInitialQuoteChange,
+  ExchangeQuoteChanges,
+  SLIPPAGE,
+} from './manageMultiplyQuote'
 import {
   applyManageVaultAllowance,
   ManageVaultAllowanceChange,
@@ -61,7 +69,7 @@ interface ManageVaultInjectedOverrideChange {
 }
 
 function applyManageVaultInjectedOverride(
-  change: ManageVaultChange,
+  change: ManageMultiplyVaultChange,
   state: ManageMultiplyVaultState,
 ) {
   if (change.kind === 'injectStateOverride') {
@@ -73,7 +81,7 @@ function applyManageVaultInjectedOverride(
   return state
 }
 
-export type ManageVaultChange =
+export type ManageMultiplyVaultChange =
   | ManageVaultInputChange
   | ManageVaultFormChange
   | ManageVaultAllowanceChange
@@ -81,10 +89,12 @@ export type ManageVaultChange =
   | ManageVaultTransactionChange
   | ManageVaultEnvironmentChange
   | ManageVaultInjectedOverrideChange
+  | ExchangeQuoteChanges
 
-function apply(state: ManageMultiplyVaultState, change: ManageVaultChange) {
+function apply(state: ManageMultiplyVaultState, change: ManageMultiplyVaultChange) {
   const s1 = applyManageVaultInput(change, state)
-  const s2 = applyManageVaultForm(change, s1)
+  const s1_ = applyExchange(change, s1)
+  const s2 = applyManageVaultForm(change, s1_)
   const s3 = applyManageVaultAllowance(change, s2)
   const s4 = applyManageVaultTransition(change, s3)
   const s5 = applyManageVaultTransaction(change, s4)
@@ -137,14 +147,12 @@ export interface MutableManageMultiplyVaultState {
   otherAction: OtherAction
   showSliderController: boolean
 
-  depositCollateralAmount?: BigNumber
-  depositCollateralAmountUSD?: BigNumber
-  withdrawCollateralAmount?: BigNumber
-  withdrawCollateralAmountUSD?: BigNumber
-  depositDaiAmount?: BigNumber
-  depositDaiAmountUSD?: BigNumber
-  withdrawDaiAmount?: BigNumber
-  withdrawDaiAmountUSD?: BigNumber
+  depositAmount?: BigNumber
+  depositAmountUSD?: BigNumber
+  withdrawAmount?: BigNumber
+  withdrawAmountUSD?: BigNumber
+  paybackAmount?: BigNumber
+  generateAmount?: BigNumber
   closeVaultTo: CloseVaultTo
 
   collateralAllowanceAmount?: BigNumber
@@ -169,6 +177,9 @@ export interface ManageVaultEnvironment {
   ilkData: IlkData
   balanceInfo: BalanceInfo
   priceInfo: PriceInfo
+  quote?: Quote
+  swap?: Quote
+  slippage: BigNumber
 }
 
 interface ManageVaultFunctions {
@@ -176,19 +187,18 @@ interface ManageVaultFunctions {
   regress?: () => void
   toggle?: () => void
 
-  updateDepositCollateral?: (depositCollateral?: BigNumber) => void
-  updateDepositCollateralUSD?: (depositCollateralUSD?: BigNumber) => void
-  updateDepositCollateralMax?: () => void
-  updateDepositDai?: (depositDai?: BigNumber) => void
-  updateDepositDaiUSD?: (depositDaiUSD?: BigNumber) => void
-  updateDepositDaiMax?: () => void
+  updateDepositAmount?: (depositAmount?: BigNumber) => void
+  updateDepositAmountUSD?: (depositAmountUSD?: BigNumber) => void
+  updateDepositAmountMax?: () => void
+  updatePaybackAmount?: (paybackAmount?: BigNumber) => void
+  updatePaybackAmountMax?: () => void
 
-  updateWithdrawCollateral?: (withdrawCollateral?: BigNumber) => void
-  updateWithdrawCollateralUSD?: (withdrawCollateralUSD?: BigNumber) => void
-  updateWithdrawCollateralMax?: () => void
-  updateWithdrawDai?: (withdrawDai?: BigNumber) => void
-  updateWithdrawDaiUSD?: (withdrawDaiUSD?: BigNumber) => void
-  updateWithdrawDaiMax?: () => void
+  updateWithdrawAmount?: (withdrawAmount?: BigNumber) => void
+  updateWithdrawAmountUSD?: (withdrawAmountUSD?: BigNumber) => void
+  updateWithdrawAmountMax?: () => void
+  updateGenerateAmount?: (generateAmount?: BigNumber) => void
+  updateGenerateAmountMax?: () => void
+
   setCloseVaultTo?: (closeVaultTo: CloseVaultTo) => void
 
   updateCollateralAllowanceAmount?: (amount?: BigNumber) => void
@@ -239,39 +249,34 @@ export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
-  change: (ch: ManageVaultChange) => void,
+  change: (ch: ManageMultiplyVaultChange) => void,
   state: ManageMultiplyVaultState,
 ): ManageMultiplyVaultState {
   if (state.stage === 'adjustPosition' || state.stage === 'otherActions') {
     return {
       ...state,
-      updateDepositCollateral: (depositCollateralAmount?: BigNumber) => {
-        change({ kind: 'depositCollateral', depositCollateralAmount })
+      updateDepositAmount: (depositAmount?: BigNumber) => {
+        change({ kind: 'depositAmount', depositAmount })
       },
-      updateDepositCollateralUSD: (depositCollateralAmountUSD?: BigNumber) =>
-        change({ kind: 'depositCollateralUSD', depositCollateralAmountUSD }),
-      updateDepositCollateralMax: () => change({ kind: 'depositCollateralMax' }),
+      updateDepositAmountUSD: (depositAmountUSD?: BigNumber) =>
+        change({ kind: 'depositAmountUSD', depositAmountUSD }),
+      updateDepositAmountMax: () => change({ kind: 'depositAmountMax' }),
 
-      updateDepositDai: (depositDaiAmount?: BigNumber) => {
-        change({ kind: 'depositDai', depositDaiAmount })
+      updatePaybackAmount: (paybackAmount?: BigNumber) => {
+        change({ kind: 'paybackAmount', paybackAmount })
       },
-      updateDepositDaiUSD: (depositDaiAmountUSD?: BigNumber) =>
-        change({ kind: 'depositDaiUSD', depositDaiAmountUSD }),
-      updateDepositDaiMax: () => change({ kind: 'depositDaiMax' }),
+      updatePaybackAmountMax: () => change({ kind: 'paybackAmountMax' }),
+      updateWithdrawAmount: (withdrawAmount?: BigNumber) => {
+        change({ kind: 'withdrawAmount', withdrawAmount })
+      },
+      updateWithdrawAmountUSD: (withdrawAmountUSD?: BigNumber) =>
+        change({ kind: 'withdrawAmountUSD', withdrawAmountUSD }),
+      updateWithdrawAmountMax: () => change({ kind: 'withdrawAmountMax' }),
 
-      updateWithdrawCollateral: (withdrawCollateralAmount?: BigNumber) => {
-        change({ kind: 'WithdrawCollateral', withdrawCollateralAmount })
+      updateGenerateAmount: (generateAmount?: BigNumber) => {
+        change({ kind: 'generateAmount', generateAmount })
       },
-      updateWithdrawCollateralUSD: (withdrawCollateralAmountUSD?: BigNumber) =>
-        change({ kind: 'WithdrawCollateralUSD', withdrawCollateralAmountUSD }),
-      updateWithdrawCollateralMax: () => change({ kind: 'WithdrawCollateralMax' }),
-
-      updateWithdrawDai: (withdrawDaiAmount?: BigNumber) => {
-        change({ kind: 'WithdrawDai', withdrawDaiAmount })
-      },
-      updateWithdrawDaiUSD: (withdrawDaiAmountUSD?: BigNumber) =>
-        change({ kind: 'WithdrawDaiUSD', withdrawDaiAmountUSD }),
-      updateWithdrawDaiMax: () => change({ kind: 'WithdrawDaiMax' }),
+      updateGenerateAmountMax: () => change({ kind: 'generateAmountMax' }),
 
       setCloseVaultTo: (closeVaultTo: CloseVaultTo) =>
         change({ kind: 'closeVaultTo', closeVaultTo }),
@@ -406,6 +411,12 @@ export function createManageMultiplyVault$(
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   vault$: (id: BigNumber) => Observable<Vault>,
+  exchangeQuote$: (
+    token: string,
+    slippage: BigNumber,
+    amount: BigNumber,
+    action: ExchangeAction,
+  ) => Observable<Quote>,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
   return context$.pipe(
@@ -432,9 +443,9 @@ export function createManageMultiplyVault$(
               return combineLatest(collateralAllowance$, daiAllowance$).pipe(
                 first(),
                 switchMap(([collateralAllowance, daiAllowance]) => {
-                  const change$ = new Subject<ManageVaultChange>()
+                  const change$ = new Subject<ManageMultiplyVaultChange>()
 
-                  function change(ch: ManageVaultChange) {
+                  function change(ch: ManageMultiplyVaultChange) {
                     change$.next(ch)
                   }
 
@@ -462,14 +473,19 @@ export function createManageMultiplyVault$(
                     errorMessages: [],
                     warningMessages: [],
                     summary: defaultManageVaultSummary,
+                    slippage: SLIPPAGE,
                     injectStateOverride,
                   }
+
+                  const stateSubject$ = new Subject<ManageMultiplyVaultState>()
 
                   const environmentChanges$ = merge(
                     priceInfoChange$(priceInfo$, vault.token),
                     balanceInfoChange$(balanceInfo$, vault.token, account),
                     createIlkDataChange$(ilkData$, vault.ilk),
                     createVaultChange$(vault$, id),
+                    createInitialQuoteChange(exchangeQuote$, vault.token),
+                    createExchangeChange$(exchangeQuote$, stateSubject$),
                   )
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
@@ -479,6 +495,7 @@ export function createManageMultiplyVault$(
                     map(validateErrors),
                     map(validateWarnings),
                     map(curry(addTransitions)(txHelpers$, connectedProxyAddress$, change)),
+                    tap((state) => stateSubject$.next(state)),
                   )
                 }),
               )

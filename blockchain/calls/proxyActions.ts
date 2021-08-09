@@ -4,6 +4,7 @@ import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
 import { amountToWad, amountToWei } from 'blockchain/utils'
+import { ExchangeAction } from 'features/exchange/exchange'
 import { one, zero } from 'helpers/zero'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
@@ -379,4 +380,117 @@ export const reclaim: TransactionDef<ReclaimData> = {
         .encodeABI(),
     ]
   },
+}
+
+export type MultiplyAdjustData = {
+  kind: TxMetaKind.adjustPosition
+  token: string
+  depositCollateral: BigNumber
+  requiredDebt: BigNumber
+  borrowedCollateral: BigNumber
+  proxyAddress: string
+  userAddress: string
+
+  ilk: string
+
+  exchangeAddress: string
+  exchangeData: string
+  slippage: BigNumber
+
+  action: ExchangeAction
+  id: BigNumber
+}
+function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextConnected) {
+  const {
+    contract,
+    joins,
+    mcdJug,
+    dssCdpManager,
+    dssMultiplyProxyActions,
+    tokens,
+    exchange,
+    feeRecipient,
+    aaveLendingPool,
+  } = context
+
+  if (data.action === 'BUY_COLLATERAL') {
+    return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.increaseMultiple(
+      {
+        fromTokenAddress: tokens['DAI'].address,
+        toTokenAddress: tokens[data.token].address,
+        fromTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
+        toTokenAmount: amountToWei(data.borrowedCollateral, data.token)
+          .div(one.minus(data.slippage))
+          .toFixed(0),
+        minToTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
+        exchangeAddress: data.exchangeAddress,
+        _exchangeCalldata: data.exchangeData,
+      } as any, //TODO: figure out why Typechain is generating arguments as arrays
+      {
+        gemJoin: joins[data.ilk],
+        cdpId: data.id.toString(),
+        ilk: Web3.utils.utf8ToHex(data.ilk),
+        fundsReceiver: data.userAddress,
+        borrowCollateral: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
+        requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
+        depositCollateral: amountToWei(data.depositCollateral, data.token).toFixed(0),
+        withdrawDai: amountToWei(zero, 'DAI').toFixed(0),
+        depositDai: amountToWei(zero, 'DAI').toFixed(0),
+        withdrawCollateral: amountToWei(zero, data.token).toFixed(0),
+      } as any,
+      {
+        jug: mcdJug.address,
+        manager: dssCdpManager.address,
+        multiplyProxyActions: dssMultiplyProxyActions.address,
+        aaveLendingPoolProvider: aaveLendingPool,
+        feeRecepient: feeRecipient, // TODO: fix typo after smart contract team fixes it,
+        exchange: exchange.address,
+      } as any,
+    )
+  } else {
+    return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.decreaseMultiple(
+      {
+        fromTokenAddress: tokens['DAI'].address,
+        toTokenAddress: tokens[data.token].address,
+        fromTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
+        toTokenAmount: amountToWei(data.borrowedCollateral, data.token)
+          .div(one.minus(data.slippage))
+          .toFixed(0),
+        minToTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
+        exchangeAddress: data.exchangeAddress,
+        _exchangeCalldata: data.exchangeData,
+      } as any, //TODO: figure out why Typechain is generating arguments as arrays
+      {
+        gemJoin: joins[data.ilk],
+        cdpId: data.id.toString(),
+        ilk: Web3.utils.utf8ToHex(data.ilk),
+        fundsReceiver: data.userAddress,
+        borrowCollateral: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
+        requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
+        depositCollateral: amountToWei(data.depositCollateral, data.token).toFixed(0),
+        withdrawDai: amountToWei(zero, 'DAI').toFixed(0),
+        depositDai: amountToWei(zero, 'DAI').toFixed(0),
+        withdrawCollateral: amountToWei(zero, data.token).toFixed(0),
+      } as any,
+      {
+        jug: mcdJug.address,
+        manager: dssCdpManager.address,
+        multiplyProxyActions: dssMultiplyProxyActions.address,
+        aaveLendingPoolProvider: aaveLendingPool,
+        feeRecepient: feeRecipient, // TODO: fix typo after smart contract team fixes it,
+        exchange: exchange.address,
+      } as any,
+    )
+  }
+}
+
+export const adjustMultiplyVault: TransactionDef<MultiplyAdjustData> = {
+  call: ({ proxyAddress }, { contract }) => {
+    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
+  },
+  prepareArgs: (data, context) => {
+    const { dssMultiplyProxyActions } = context
+    return [dssMultiplyProxyActions.address, getMultiplyAdjustCallData(data, context).encodeABI()]
+  },
+  options: ({ token }) => (token === 'ETH' ? { value: '0' /* deposit amount */ } : {}),
 }

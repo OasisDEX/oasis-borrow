@@ -3,8 +3,10 @@ import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import {
+  adjustMultiplyVault,
   depositAndGenerate,
   DepositAndGenerateData,
+  MultiplyAdjustData,
   withdrawAndPayback,
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions'
@@ -15,7 +17,7 @@ import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { filter, first, switchMap } from 'rxjs/operators'
 
-import { ManageMultiplyVaultState, ManageVaultChange } from './manageMultiplyVault'
+import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 type ProxyChange =
   | {
@@ -89,7 +91,7 @@ export type ManageVaultTransactionChange =
   | ManageChange
 
 export function applyManageVaultTransaction(
-  change: ManageVaultChange,
+  change: ManageMultiplyVaultChange,
   state: ManageMultiplyVaultState,
 ): ManageMultiplyVaultState {
   if (change.kind === 'proxyWaitingForApproval') {
@@ -222,9 +224,58 @@ export function applyManageVaultTransaction(
   return state
 }
 
+export function adjustPosition(
+  txHelpers$: Observable<TxHelpers>,
+  change: (ch: ManageMultiplyVaultChange) => void,
+  { proxyAddress, vault: { ilk, token, id }, exchangeAction }: ManageMultiplyVaultState,
+) {
+  txHelpers$
+    .pipe(
+      first(),
+      switchMap(({ sendWithGasEstimation }) =>
+        sendWithGasEstimation(adjustMultiplyVault, {
+          kind: TxMetaKind.adjustPosition,
+          depositCollateral: zero,
+          requiredDebt: zero,
+          borrowedCollateral: zero,
+          userAddress: '0x',
+          proxyAddress: proxyAddress!,
+          exchangeAddress: '0x',
+          exchangeData: '0x',
+          slippage: zero,
+          action: exchangeAction!, // TODO make sure it's defined
+          token,
+          id,
+          ilk,
+        }).pipe(
+          transactionToX<ManageMultiplyVaultChange, MultiplyAdjustData>(
+            { kind: 'manageWaitingForApproval' },
+            (txState) =>
+              of({
+                kind: 'manageInProgress',
+                manageTxHash: (txState as any).txHash as string,
+              }),
+            (txState) => {
+              return of({
+                kind: 'manageFailure',
+                txError:
+                  txState.status === TxStatus.Error ||
+                  txState.status === TxStatus.CancelledByTheUser
+                    ? txState.error
+                    : undefined,
+              })
+            },
+            () => of({ kind: 'manageSuccess' }),
+          ),
+        ),
+      ),
+    )
+    .subscribe((ch) => change(ch))
+}
+
 export function manageVaultDepositAndGenerate(
   txHelpers$: Observable<TxHelpers>,
-  change: (ch: ManageVaultChange) => void,
+  change: (ch: ManageMultiplyVaultChange) => void,
   { proxyAddress, vault: { ilk, token, id } }: ManageMultiplyVaultState,
 ) {
   txHelpers$
@@ -240,7 +291,7 @@ export function manageVaultDepositAndGenerate(
           token,
           id,
         }).pipe(
-          transactionToX<ManageVaultChange, DepositAndGenerateData>(
+          transactionToX<ManageMultiplyVaultChange, DepositAndGenerateData>(
             { kind: 'manageWaitingForApproval' },
             (txState) =>
               of({
@@ -267,7 +318,7 @@ export function manageVaultDepositAndGenerate(
 
 export function manageVaultWithdrawAndPayback(
   txHelpers$: Observable<TxHelpers>,
-  change: (ch: ManageVaultChange) => void,
+  change: (ch: ManageMultiplyVaultChange) => void,
   { proxyAddress, vault: { ilk, token, id }, shouldPaybackAll }: ManageMultiplyVaultState,
 ) {
   txHelpers$
@@ -284,7 +335,7 @@ export function manageVaultWithdrawAndPayback(
           id,
           shouldPaybackAll,
         }).pipe(
-          transactionToX<ManageVaultChange, WithdrawAndPaybackData>(
+          transactionToX<ManageMultiplyVaultChange, WithdrawAndPaybackData>(
             { kind: 'manageWaitingForApproval' },
             (txState) =>
               of({
@@ -311,7 +362,7 @@ export function manageVaultWithdrawAndPayback(
 
 export function setDaiAllowance(
   txHelpers$: Observable<TxHelpers>,
-  change: (ch: ManageVaultChange) => void,
+  change: (ch: ManageMultiplyVaultChange) => void,
   state: ManageMultiplyVaultState,
 ) {
   txHelpers$
@@ -324,7 +375,7 @@ export function setDaiAllowance(
           spender: state.proxyAddress!,
           amount: state.daiAllowanceAmount!,
         }).pipe(
-          transactionToX<ManageVaultChange, ApproveData>(
+          transactionToX<ManageMultiplyVaultChange, ApproveData>(
             { kind: 'daiAllowanceWaitingForApproval' },
             (txState) =>
               of({
@@ -350,7 +401,7 @@ export function setDaiAllowance(
 
 export function setCollateralAllowance(
   txHelpers$: Observable<TxHelpers>,
-  change: (ch: ManageVaultChange) => void,
+  change: (ch: ManageMultiplyVaultChange) => void,
   state: ManageMultiplyVaultState,
 ) {
   txHelpers$
@@ -363,7 +414,7 @@ export function setCollateralAllowance(
           spender: state.proxyAddress!,
           amount: state.collateralAllowanceAmount!,
         }).pipe(
-          transactionToX<ManageVaultChange, ApproveData>(
+          transactionToX<ManageMultiplyVaultChange, ApproveData>(
             { kind: 'collateralAllowanceWaitingForApproval' },
             (txState) =>
               of({
@@ -394,7 +445,7 @@ export function setCollateralAllowance(
 export function createProxy(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
-  change: (ch: ManageVaultChange) => void,
+  change: (ch: ManageMultiplyVaultChange) => void,
   { safeConfirmations }: ManageMultiplyVaultState,
 ) {
   txHelpers$
@@ -402,7 +453,7 @@ export function createProxy(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
         sendWithGasEstimation(createDsProxy, { kind: TxMetaKind.createDsProxy }).pipe(
-          transactionToX<ManageVaultChange, CreateDsProxyData>(
+          transactionToX<ManageMultiplyVaultChange, CreateDsProxyData>(
             { kind: 'proxyWaitingForApproval' },
             (txState) =>
               of({
