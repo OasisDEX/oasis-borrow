@@ -492,6 +492,5 @@ export const adjustMultiplyVault: TransactionDef<MultiplyAdjustData> = {
     const { dssMultiplyProxyActions } = context
     return [dssMultiplyProxyActions.address, getMultiplyAdjustCallData(data, context).encodeABI()]
   },
-  options: ({ token, depositCollateral }) =>
-    token === 'ETH' ? { value: '0' /* deposit amount */ } : {},
+  options: ({ token }) => (token === 'ETH' ? { value: '0' /* deposit amount */ } : {}),
 }

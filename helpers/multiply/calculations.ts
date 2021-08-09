@@ -55,20 +55,6 @@ export function calculateParamsIncreaseMP_(
   return [debt, collateral]
 }
 
-export function getRequiredCollRatioByCollateral({
-  collateral,
-  marketPriceSlippage,
-  OF,
-}: {
-  collateral: BigNumber
-  marketPriceSlippage: BigNumber
-  OF: BigNumber
-}) {
-  const debt = collateral.times(marketPriceSlippage).div(one.minus(OF))
-
-  const x = debt.times(marketPriceSlippage)
-}
-
 export function calculateParamsDecreaseMP(
   oraclePrice: BigNumber,
   marketPrice: BigNumber,

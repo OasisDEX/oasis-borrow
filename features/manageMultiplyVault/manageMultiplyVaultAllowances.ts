@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { zero } from 'helpers/zero'
 
-import { ManageMultiplyVaultState, ManageMultiplyVaultChange } from './manageMultiplyVault'
+import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 export const allowanceDefaults: Partial<ManageMultiplyVaultState> = {
   collateralAllowanceAmount: maxUint256,

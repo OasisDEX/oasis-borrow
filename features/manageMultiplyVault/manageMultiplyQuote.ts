@@ -2,17 +2,9 @@ import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { EMPTY, Observable } from 'rxjs'
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  map,
-  switchMap,
-  take,
-  tap,
-} from 'rxjs/operators'
+import { debounceTime, distinctUntilChanged, filter, map, switchMap, take } from 'rxjs/operators'
 
-import { ManageMultiplyVaultState, ManageMultiplyVaultChange } from './manageMultiplyVault'
+import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 type ExchangeQuoteSuccessChange = {
   kind: 'quote'

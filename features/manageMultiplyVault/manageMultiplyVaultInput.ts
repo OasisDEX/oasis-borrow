@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
 
-import { ManageMultiplyVaultState, ManageMultiplyVaultChange } from './manageMultiplyVault'
+import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 import { otherActionsDefaults } from './manageMultiplyVaultForm'
 
 interface DepositAmountChange {

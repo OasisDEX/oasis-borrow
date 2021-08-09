@@ -3,9 +3,9 @@ import { TxHelpers } from 'components/AppContext'
 import { Observable } from 'rxjs'
 
 import {
+  ManageMultiplyVaultChange,
   ManageMultiplyVaultEditingStage,
   ManageMultiplyVaultState,
-  ManageMultiplyVaultChange,
 } from './manageMultiplyVault'
 import { manageVaultFormDefaults } from './manageMultiplyVaultForm'
 import { manageVaultDepositAndGenerate } from './manageMultiplyVaultTransactions'
@@ -108,9 +108,9 @@ export function applyManageVaultTransition(
     const {
       errorMessages,
       proxyAddress,
-      collateralAllowance,
-      daiAllowance,
-      vault: { token, debtOffset },
+      // collateralAllowance,
+      // daiAllowance,
+      vault: { token /* debtOffset */ },
     } = state
     const canProgress = !errorMessages.length
     const hasProxy = !!proxyAddress
