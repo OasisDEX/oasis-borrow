@@ -26,10 +26,10 @@ describe('Adjust multiply calculations', () => {
       currentCollateralPrice: oraclePrice,
       marketPrice,
       slippage,
-      depositCollateralAmount: zero,
-      depositDaiAmount: zero,
-      withdrawCollateralAmount: zero,
-      withdrawDaiAmount: zero,
+      depositAmount: zero,
+      paybackAmount: zero,
+      withdrawAmount: zero,
+      generateAmount: zero,
       OF: MULTIPLY_FEE,
       FF: LOAN_FEE,
     })
@@ -63,10 +63,10 @@ describe('Adjust multiply calculations', () => {
       currentCollateralPrice: oraclePrice,
       marketPrice,
       slippage,
-      depositCollateralAmount: zero,
-      depositDaiAmount: zero,
-      withdrawCollateralAmount: zero,
-      withdrawDaiAmount: zero,
+      depositAmount: zero,
+      paybackAmount: zero,
+      withdrawAmount: zero,
+      generateAmount: zero,
       OF: MULTIPLY_FEE,
       FF: LOAN_FEE,
     })
@@ -95,7 +95,7 @@ describe('Adjust multiply calculations', () => {
     const lockedCollateral = new BigNumber(5)
     const oraclePrice = new BigNumber(1000)
     const marketPrice = new BigNumber(1010)
-    const depositCollateralAmount = new BigNumber(1)
+    const depositAmount = new BigNumber(1)
     const slippage = new BigNumber(0.05)
 
     const requiredCollRatio = new BigNumber(2)
@@ -110,10 +110,10 @@ describe('Adjust multiply calculations', () => {
       currentCollateralPrice: oraclePrice,
       marketPrice,
       slippage,
-      depositCollateralAmount,
-      depositDaiAmount: zero,
-      withdrawCollateralAmount: zero,
-      withdrawDaiAmount: zero,
+      depositAmount,
+      paybackAmount: zero,
+      withdrawAmount: zero,
+      generateAmount: zero,
       OF: MULTIPLY_FEE,
       FF: LOAN_FEE,
     })

@@ -1,11 +1,10 @@
 import BigNumber from 'bignumber.js'
-import { Context, ContextConnected } from 'blockchain/network'
+import { Context } from 'blockchain/network'
 import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import {
   catchError,
   distinctUntilChanged,
-  filter,
   map,
   retry,
   switchMap,

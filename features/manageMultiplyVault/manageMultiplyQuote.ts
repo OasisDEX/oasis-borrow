@@ -6,12 +6,12 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
-  ignoreElements,
   map,
   switchMap,
   take,
   tap,
 } from 'rxjs/operators'
+
 import { ManageMultiplyVaultState, ManageMultiplyVaultChange } from './manageMultiplyVault'
 
 type ExchangeQuoteSuccessChange = {
@@ -98,10 +98,10 @@ export function createExchangeChange$(
       (s1, s2) =>
         !(
           compareBigNumber(s1.requiredCollRatio, s2.requiredCollRatio) &&
-          compareBigNumber(s1.depositCollateralAmount, s2.depositCollateralAmount) &&
-          compareBigNumber(s1.withdrawCollateralAmount, s2.withdrawCollateralAmount) &&
-          compareBigNumber(s1.withdrawDaiAmount, s2.withdrawDaiAmount) &&
-          compareBigNumber(s1.depositDaiAmount, s2.depositDaiAmount)
+          compareBigNumber(s1.depositAmount, s2.depositAmount) &&
+          compareBigNumber(s1.withdrawAmount, s2.withdrawAmount) &&
+          compareBigNumber(s1.generateAmount, s2.generateAmount) &&
+          compareBigNumber(s1.paybackAmount, s2.paybackAmount)
         ),
     ),
     debounceTime(500),
