@@ -29,7 +29,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
     afterMultiply,
     afterCollateralizationRatio,
     afterDebt,
-    // totalExposure,
+    afterLockedCollateral,
     buyAmount,
     buyAmountUSD,
     // impact,
@@ -46,7 +46,6 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
   // starting zero balance for UI to show arrows
   const zeroBalance = formatCryptoBalance(zero)
   const impact = new BigNumber(0.25)
-  const totalExposure = new BigNumber(0.25)
 
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Vault Changes">
@@ -72,7 +71,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
           <Flex>
             {formatCryptoBalance(lockedCollateral)} {token}
             <VaultChangesInformationArrow />
-            {formatCryptoBalance(totalExposure || zero)} {token}
+            {formatCryptoBalance(afterLockedCollateral)} {token}
           </Flex>
         }
       />

@@ -385,7 +385,6 @@ export function applyManageVaultCalculations(
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
     vault: { lockedCollateral, debt, debtOffset, lockedCollateralUSD, liquidationPrice },
     requiredCollRatio,
-    inputAmountsEmpty,
     quote,
     swap,
     slippage,
@@ -488,7 +487,7 @@ export function applyManageVaultCalculations(
     maxGenerateAmount,
   }
 
-  if (!marketPrice || !marketPriceMaxSlippage || inputAmountsEmpty) {
+  if (!marketPrice || !marketPriceMaxSlippage) {
     return { ...state, ...defaultManageVaultCalculations, ...maxInputAmounts, ...prices }
   }
 
@@ -518,6 +517,12 @@ export function applyManageVaultCalculations(
 
   const multiply = lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
   const afterMultiply = afterLockedCollateralUSD.div(afterLockedCollateralUSD.minus(afterDebt))
+
+  console.log(`
+    multiply: ${multiply}
+    afterMultiply: ${afterMultiply}
+  
+  `)
 
   const afterLiquidationPrice = currentCollateralPrice
     .times(liquidationRatio)

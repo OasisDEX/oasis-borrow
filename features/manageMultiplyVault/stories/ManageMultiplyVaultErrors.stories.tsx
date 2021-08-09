@@ -77,71 +77,71 @@ export const DepositAmountExceedsCollateralBalance = manageMultiplyVaultStory({
   depositAmount: new BigNumber('6'),
 })
 
-// export const WithdrawAmountExceedsFreeCollateral = manageMultiplyVaultStory({
-//   title:
-//     'Error is shown when a user is trying to withdraw an amount of collateral from the vault which is greater than the amount of collateral which is "free", not backing the outstanding debt in the vault',
-//   vault: {
-//     ilk: 'WBTC-A',
-//     collateral: new BigNumber('15'),
-//     debt: new BigNumber('3000'),
-//   },
-//   proxyAddress,
-// })({
-//   stage: 'otherActions',
-//   otherAction: 'withdrawCollateral',
-//   withdrawAmount: new BigNumber('8'),
-// })
+export const WithdrawAmountExceedsFreeCollateral = manageMultiplyVaultStory({
+  title:
+    'Error is shown when a user is trying to withdraw an amount of collateral from the vault which is greater than the amount of collateral which is "free", not backing the outstanding debt in the vault',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('15'),
+    debt: new BigNumber('3000'),
+  },
+  proxyAddress,
+})({
+  stage: 'otherActions',
+  otherAction: 'withdrawCollateral',
+  withdrawAmount: new BigNumber('8'),
+})
 
-// export const WithdrawAmountExceedsFreeCollateralAtNextPrice = manageMultiplyVaultStory({
-//   title:
-//     'Error is shown when a user is trying to withdraw an amount of collateral from the vault which at next price update is greater than the amount of collateral which is "free", not backing the outstanding debt in the vault',
-//   vault: {
-//     ilk: 'WBTC-A',
-//     collateral: new BigNumber('15'),
-//     debt: new BigNumber('3000'),
-//   },
-//   priceInfo: { collateralChangePercentage: new BigNumber('-0.1') },
-//   proxyAddress,
-// })({
-//   stage: 'otherActions',
-//   otherAction: 'withdrawCollateral',
-//   withdrawAmount: new BigNumber('6'),
-// })
+export const WithdrawAmountExceedsFreeCollateralAtNextPrice = manageMultiplyVaultStory({
+  title:
+    'Error is shown when a user is trying to withdraw an amount of collateral from the vault which at next price update is greater than the amount of collateral which is "free", not backing the outstanding debt in the vault',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('15'),
+    debt: new BigNumber('3000'),
+  },
+  priceInfo: { collateralChangePercentage: new BigNumber('-0.2') },
+  proxyAddress,
+})({
+  stage: 'otherActions',
+  otherAction: 'withdrawCollateral',
+  withdrawAmount: new BigNumber('5'),
+})
 
-// export const GenerateAmountExceedsDaiYieldFromTotalCollateral = manageMultiplyVaultStory({
-//   title:
-//     'Error is shown when a user is trying to generate an amount of DAI that is greater than the maximum of dai that can be generated from the collateral already locked in the vault and the amount of collateral the user is also depositing',
-//   vault: {
-//     ilk: 'WBTC-A',
-//     collateral: new BigNumber('15'),
-//     debt: new BigNumber('3000'),
-//   },
-//   proxyAddress,
-// })({
-//   stage: 'otherActions',
-//   otherAction: 'withdrawDai',
-//   generateAmount: new BigNumber('4000'),
-// })
+export const GenerateAmountExceedsDaiYieldFromTotalCollateral = manageMultiplyVaultStory({
+  title:
+    'Error is shown when a user is trying to generate an amount of DAI that is greater than the maximum of dai that can be generated from the collateral already locked in the vault and the amount of collateral the user is also depositing',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('15'),
+    debt: new BigNumber('3000'),
+  },
+  proxyAddress,
+})({
+  stage: 'otherActions',
+  otherAction: 'withdrawDai',
+  generateAmount: new BigNumber('4000'),
+})
 
-// export const GenerateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice = manageMultiplyVaultStory(
-//   {
-//     title:
-//       'Error is shown when a user is trying to generate an amount of DAI that is greater than the maximum of dai at next price update that can be generated from the collateral already locked in the vault and the amount of collateral the user is also depositing',
-//     vault: {
-//       ilk: 'WBTC-A',
-//       collateral: new BigNumber('15'),
-//       debt: new BigNumber('3500'),
-//     },
-//     priceInfo: {
-//       collateralChangePercentage: new BigNumber('-0.6'),
-//     },
-//     proxyAddress,
-//   },
-// )({
-//   stage: 'otherActions',
-//   otherAction: 'withdrawDai',
-//   generateAmount: new BigNumber('4000'),
-// })
+export const GenerateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice = manageMultiplyVaultStory(
+  {
+    title:
+      'Error is shown when a user is trying to generate an amount of DAI that is greater than the maximum of dai at next price update that can be generated from the collateral already locked in the vault and the amount of collateral the user is also depositing',
+    vault: {
+      ilk: 'WBTC-A',
+      collateral: new BigNumber('15'),
+      debt: new BigNumber('3500'),
+    },
+    priceInfo: {
+      collateralChangePercentage: new BigNumber('-0.6'),
+    },
+    proxyAddress,
+  },
+)({
+  stage: 'otherActions',
+  otherAction: 'withdrawDai',
+  generateAmount: new BigNumber('400'),
+})
 
 export const GenerateAmountExceedsDebtCeiling = manageMultiplyVaultStory({
   title:

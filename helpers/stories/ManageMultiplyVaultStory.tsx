@@ -57,37 +57,35 @@ export function manageMultiplyVaultStory({
     useEffect(() => {
       const subscription = obs$
         .pipe(first())
-        .subscribe(
-          ({ injectStateOverride, accountIsController, priceInfo: { currentCollateralPrice } }) => {
-            const newState: Partial<MutableManageMultiplyVaultState> = {
-              ...otherState,
-              ...(stage && { stage }),
-              ...(depositAmount && {
-                depositAmount,
-                depositAmountUSD: depositAmount.times(currentCollateralPrice),
-              }),
-              ...(withdrawAmount && {
-                withdrawAmount,
-                withdrawAmountUSD: withdrawAmount.times(currentCollateralPrice),
-              }),
-              ...(generateAmount && {
-                generateAmount,
-              }),
-              ...(paybackAmount && {
-                paybackAmount,
-              }),
-              // showDepositAndGenerateOption:
-              //   (stage === 'daiEditing' && !!depositAmount) ||
-              //   (stage === 'collateralEditing' && !!generateAmount),
-              // showPaybackAndWithdrawOption:
-              //   accountIsController &&
-              //   ((stage === 'daiEditing' && !!withdrawAmount) ||
-              //     (stage === 'collateralEditing' && !!paybackAmount)),
-            }
+        .subscribe(({ injectStateOverride, priceInfo: { currentCollateralPrice } }) => {
+          const newState: Partial<MutableManageMultiplyVaultState> = {
+            ...otherState,
+            ...(stage && { stage }),
+            ...(depositAmount && {
+              depositAmount,
+              depositAmountUSD: depositAmount.times(currentCollateralPrice),
+            }),
+            ...(withdrawAmount && {
+              withdrawAmount,
+              withdrawAmountUSD: withdrawAmount.times(currentCollateralPrice),
+            }),
+            ...(generateAmount && {
+              generateAmount,
+            }),
+            ...(paybackAmount && {
+              paybackAmount,
+            }),
+            // showDepositAndGenerateOption:
+            //   (stage === 'daiEditing' && !!depositAmount) ||
+            //   (stage === 'collateralEditing' && !!generateAmount),
+            // showPaybackAndWithdrawOption:
+            //   accountIsController &&
+            //   ((stage === 'daiEditing' && !!withdrawAmount) ||
+            //     (stage === 'collateralEditing' && !!paybackAmount)),
+          }
 
-            injectStateOverride(newState || {})
-          },
-        )
+          injectStateOverride(newState || {})
+        })
 
       return subscription.unsubscribe()
     }, [])

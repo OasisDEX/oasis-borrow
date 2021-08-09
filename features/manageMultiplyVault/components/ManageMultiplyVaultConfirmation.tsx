@@ -1,5 +1,5 @@
 import { Divider } from '@theme-ui/components'
-import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
+import { TxStatusCardSuccess } from 'components/vault/TxStatusCard'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { OpenVaultAnimation } from 'theme/animations'

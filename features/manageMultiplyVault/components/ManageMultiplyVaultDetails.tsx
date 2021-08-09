@@ -1,23 +1,21 @@
-import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import {
   AfterPillProps,
   getAfterPillColors,
   getCollRatioColor,
   VaultDetailsCard,
-  VaultDetailsCardCollateralLocked,
   VaultDetailsCardCurrentPrice,
   VaultDetailsCardLiquidationPrice,
   VaultDetailsCardMockedModal,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatAmount } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Grid, Text } from 'theme-ui'
+import { Box, Grid } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 

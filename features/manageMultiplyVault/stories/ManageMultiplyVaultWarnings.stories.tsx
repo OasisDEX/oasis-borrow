@@ -2,7 +2,6 @@ import { BigNumber } from 'bignumber.js'
 import { COLLATERALIZATION_DANGER_OFFSET, COLLATERALIZATION_WARNING_OFFSET } from 'blockchain/ilks'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { manageMultiplyVaultStory } from 'helpers/stories/ManageMultiplyVaultStory'
-import { one, zero } from 'helpers/zero'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
@@ -16,9 +15,7 @@ export const NoProxyAddress = manageMultiplyVaultStory({
   title:
     'Warning is shown that the connected account has no proxy address and prior to executing the proposed transaction will have to set their proxy and make applicable allowances given the context of their action',
   vault: vaultERC20,
-})({
-  depositAmount: one,
-})
+})()
 
 export const InsufficientCollateralAllowance = manageMultiplyVaultStory({
   title:
@@ -27,6 +24,8 @@ export const InsufficientCollateralAllowance = manageMultiplyVaultStory({
   collateralAllowance: new BigNumber('9'),
   proxyAddress,
 })({
+  stage: 'otherActions',
+  otherAction: 'depositCollateral',
   depositAmount: new BigNumber('10'),
 })
 
@@ -37,22 +36,25 @@ export const InsufficientDaiAllowance = manageMultiplyVaultStory({
   daiAllowance: new BigNumber('500'),
   proxyAddress,
 })({
-  stage: 'daiEditing',
+  stage: 'otherActions',
+  otherAction: 'depositDai',
   paybackAmount: new BigNumber('600'),
 })
 
-export const PotentialGenerateAmountLessThanDebtFloor = manageMultiplyVaultStory({
-  title:
-    'Warning is shown when the amount of collateral in the vault plus the amount a user is depositing does not satisfy the amount of debt necessary to exceed the debt floor',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: one,
-    debt: zero,
-  },
-  proxyAddress,
-})({
-  depositAmount: new BigNumber('4'),
-})
+// export const PotentialGenerateAmountLessThanDebtFloor = manageMultiplyVaultStory({
+//   title:
+//     'Warning is shown when the amount of collateral in the vault plus the amount a user is depositing does not satisfy the amount of debt necessary to exceed the debt floor',
+//   vault: {
+//     ilk: 'WBTC-A',
+//     collateral: one,
+//     debt: zero,
+//   },
+//   proxyAddress,
+// })({
+//   stage: 'otherActions',
+//   otherAction: 'depositCollateral',
+//   depositAmount: new BigNumber('4'),
+// })
 
 export const DebtIsLessThanDebtFloor = manageMultiplyVaultStory({
   title:
@@ -67,22 +69,24 @@ export const DebtIsLessThanDebtFloor = manageMultiplyVaultStory({
   },
   proxyAddress,
 })({
+  stage: 'otherActions',
+  otherAction: 'depositCollateral',
   depositAmount: new BigNumber('1'),
 })
 
-export const ConnectedAccountIsNotVaultController = manageMultiplyVaultStory({
-  title: 'We disable the form when the connected account does not match the owner of the vault',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('100'),
-    debt: new BigNumber('4000'),
-  },
-  account: '0xNotVaultController',
-  proxyAddress,
-})({
-  paybackAmount: new BigNumber('100'),
-  stage: 'daiEditing',
-})
+// export const ConnectedAccountIsNotVaultController = manageMultiplyVaultStory({
+//   title: 'We disable the form when the connected account does not match the owner of the vault',
+//   vault: {
+//     ilk: 'WBTC-A',
+//     collateral: new BigNumber('100'),
+//     debt: new BigNumber('4000'),
+//   },
+//   account: '0xNotVaultController',
+//   proxyAddress,
+// })({
+//   paybackAmount: new BigNumber('100'),
+//   stage: 'daiEditing',
+// })
 
 export const VaultWillBeAtRiskLevelDanger = manageMultiplyVaultStory({
   title: `Warning is shown to indicate to the user that this vault will be near liquidation given the action they are taking and is shown when the vaults new collateralization ratio is within ${COLLATERALIZATION_DANGER_OFFSET.times(
@@ -102,7 +106,8 @@ export const VaultWillBeAtRiskLevelDanger = manageMultiplyVaultStory({
   },
   proxyAddress,
 })({
-  stage: 'daiEditing',
+  stage: 'otherActions',
+  otherAction: 'withdrawDai',
   generateAmount: new BigNumber('1500'),
 })
 
@@ -124,7 +129,8 @@ export const VaultWillBeAtRiskLevelDangerAtNextPrice = manageMultiplyVaultStory(
   },
   proxyAddress,
 })({
-  stage: 'daiEditing',
+  stage: 'otherActions',
+  otherAction: 'withdrawDai',
   generateAmount: new BigNumber('2000'),
 })
 
@@ -146,7 +152,8 @@ export const VaultWillBeAtRiskLevelWarning = manageMultiplyVaultStory({
   },
   proxyAddress,
 })({
-  stage: 'daiEditing',
+  stage: 'otherActions',
+  otherAction: 'withdrawDai',
   generateAmount: new BigNumber('1000'),
 })
 
@@ -171,89 +178,10 @@ export const VaultWillBeAtRiskLevelWarningAtNextPrice = manageMultiplyVaultStory
   },
   proxyAddress,
 })({
-  stage: 'daiEditing',
+  stage: 'otherActions',
+  otherAction: 'withdrawDai',
   generateAmount: new BigNumber('2000'),
 })
-
-export const VaultAtRiskLevelDanger = manageMultiplyVaultStory({
-  title: `Warning is shown to indicate to the user that this vault is currently near liquidation and is shown when the vaults collateralization ratio is within ${COLLATERALIZATION_DANGER_OFFSET.times(
-    100,
-  )}% of the liquidation ratio. So if liquidation ratio is 150%, this would be 150% >= x <= ${new BigNumber(
-    1.5,
-  )
-    .times(COLLATERALIZATION_DANGER_OFFSET.plus(1))
-    .times(100)}%`,
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('10'),
-    debt: new BigNumber('3200'),
-  },
-  proxyAddress,
-})()
-
-export const VaultAtRiskLevelDangerAtNextPrice = manageMultiplyVaultStory({
-  title: `Warning is shown to indicate to the user that this vault will be near liquidation at next price update and is shown when the vaults  future collateralization ratio is within ${COLLATERALIZATION_DANGER_OFFSET.times(
-    100,
-  )}% of the liquidation ratio. So if liquidation ratio is 150%, this would be 150% >= x <= ${new BigNumber(
-    1.5,
-  )
-    .times(COLLATERALIZATION_DANGER_OFFSET.plus(1))
-    .times(100)}%.`,
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('10'),
-    debt: new BigNumber('2000'),
-  },
-  priceInfo: {
-    collateralChangePercentage: new BigNumber('-0.4'),
-  },
-  proxyAddress,
-})()
-
-export const VaultAtRiskLevelWarning = manageMultiplyVaultStory({
-  title: `Warning is shown to indicate to the user that this vault is currently near liquidation and is shown when the vaults collateralization ratio is within ${COLLATERALIZATION_WARNING_OFFSET.times(
-    100,
-  )}% of the liquidation ratio but greater than ${COLLATERALIZATION_DANGER_OFFSET.times(
-    100,
-  )}% of the liquidation ratio as that would mean it is at risk level danger. So if liquidation ratio is 150%, this would be ${new BigNumber(
-    1.5,
-  )
-    .times(COLLATERALIZATION_DANGER_OFFSET.plus(1))
-    .times(100)}%
-> x <= ${new BigNumber(1.5).times(COLLATERALIZATION_WARNING_OFFSET.plus(1)).times(100)}%.`,
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('10'),
-    debt: new BigNumber('2500'),
-  },
-  proxyAddress,
-})()
-
-export const VaultAtRiskLevelWarningAtNextPrice = manageMultiplyVaultStory({
-  title: `Warning is shown to indicate to the user that this vault is will be near liquidation at next price update and is shown when the vaults future collateralization ratio is within ${COLLATERALIZATION_WARNING_OFFSET.times(
-    100,
-  )}% of the liquidation ratio but greater than ${COLLATERALIZATION_DANGER_OFFSET.times(
-    100,
-  )}% of the liquidation ratio as that would mean it is at risk level danger. So if liquidation ratio is 150%, this would be ${new BigNumber(
-    1.5,
-  )
-    .times(COLLATERALIZATION_DANGER_OFFSET.plus(1))
-    .times(100)}%
-> x <= ${new BigNumber(1.5)
-    .times(COLLATERALIZATION_WARNING_OFFSET.plus(1))
-    .times(
-      100,
-    )}%. Warning will not be shown if vault is already or will be at risk level danger at next price update or already at risk level warning`,
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('15'),
-    debt: new BigNumber('2500'),
-  },
-  priceInfo: {
-    collateralChangePercentage: new BigNumber('-0.4'),
-  },
-  proxyAddress,
-})()
 
 export const VaultUnderCollateralized = manageMultiplyVaultStory({
   title: 'Warning is shown when the vault collateralization is below the liquidation ratio',
@@ -265,19 +193,19 @@ export const VaultUnderCollateralized = manageMultiplyVaultStory({
   proxyAddress,
 })()
 
-export const VaultUnderCollateralizedAtNextPrice = manageMultiplyVaultStory({
-  title:
-    'Warning is shown when the vault collateralization is below the liquidation ratio after the next price update',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('2000'),
-  },
-  priceInfo: {
-    collateralChangePercentage: new BigNumber('-0.9'),
-  },
-  proxyAddress,
-})()
+// export const VaultUnderCollateralizedAtNextPrice = manageMultiplyVaultStory({
+//   title:
+//     'Warning is shown when the vault collateralization is below the liquidation ratio after the next price update',
+//   vault: {
+//     ilk: 'WBTC-A',
+//     collateral: new BigNumber('20'),
+//     debt: new BigNumber('2000'),
+//   },
+//   priceInfo: {
+//     collateralChangePercentage: new BigNumber('-0.9'),
+//   },
+//   proxyAddress,
+// })()
 
 export const PayingBackAllDebt = manageMultiplyVaultStory({
   title:
@@ -292,7 +220,8 @@ export const PayingBackAllDebt = manageMultiplyVaultStory({
   },
   proxyAddress,
 })({
-  stage: 'daiEditing',
+  stage: 'otherActions',
+  otherAction: 'depositDai',
   paybackAmount: new BigNumber('2000'),
 })
 
@@ -309,6 +238,8 @@ export const DepositingAllCollateralBalance = manageMultiplyVaultStory({
   },
   proxyAddress,
 })({
+  stage: 'otherActions',
+  otherAction: 'depositCollateral',
   depositAmount: new BigNumber('10'),
 })
 
@@ -320,7 +251,8 @@ export const PayingBackAllDaiBalance = manageMultiplyVaultStory({
   },
   proxyAddress,
 })({
-  stage: 'daiEditing',
+  stage: 'otherActions',
+  otherAction: 'depositDai',
   paybackAmount: new BigNumber('500'),
 })
 
@@ -336,7 +268,9 @@ export const WithdrawingAllFreeCollateral = manageMultiplyVaultStory({
   },
   proxyAddress,
 })({
-  withdrawAmount: new BigNumber('17'),
+  stage: 'otherActions',
+  otherAction: 'withdrawCollateral',
+  withdrawAmount: new BigNumber('16.99'),
 })
 
 export const WithdrawingAllFreeCollateralAtNextPrice = manageMultiplyVaultStory({
@@ -353,7 +287,9 @@ export const WithdrawingAllFreeCollateralAtNextPrice = manageMultiplyVaultStory(
   },
   proxyAddress,
 })({
-  withdrawAmount: new BigNumber('16'),
+  stage: 'otherActions',
+  otherAction: 'withdrawCollateral',
+  withdrawAmount: new BigNumber('14'),
 })
 
 export const GeneratingAllDaiFromIlkDebtAvailable = manageMultiplyVaultStory({
@@ -370,8 +306,9 @@ export const GeneratingAllDaiFromIlkDebtAvailable = manageMultiplyVaultStory({
   },
   proxyAddress,
 })({
+  stage: 'otherActions',
+  otherAction: 'withdrawDai',
   generateAmount: new BigNumber('5000'),
-  stage: 'daiEditing',
 })
 
 export const GeneratingAllDaiFromTotalCollateral = manageMultiplyVaultStory({
@@ -384,8 +321,9 @@ export const GeneratingAllDaiFromTotalCollateral = manageMultiplyVaultStory({
   },
   proxyAddress,
 })({
-  depositAmount: new BigNumber('1'),
-  generateAmount: new BigNumber('71700'),
+  stage: 'otherActions',
+  otherAction: 'withdrawDai',
+  generateAmount: new BigNumber('71333.28'),
 })
 
 export const GeneratingAllDaiFromTotalCollateralAtNextPrice = manageMultiplyVaultStory({
@@ -401,7 +339,8 @@ export const GeneratingAllDaiFromTotalCollateralAtNextPrice = manageMultiplyVaul
   },
   proxyAddress,
 })({
-  depositAmount: new BigNumber('1'),
+  stage: 'otherActions',
+  otherAction: 'withdrawDai',
   generateAmount: new BigNumber('64330'),
 })
 

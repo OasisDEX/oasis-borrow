@@ -193,13 +193,12 @@ export function applyManageVaultConditions(
     generateAmount,
     withdrawAmount,
     requiredCollRatio,
-  } = state
-  //TODO
-  const maxWithdrawAmountAtCurrentPrice = zero
-  const maxWithdrawAmountAtNextPrice = zero
-  const maxGenerateAmountAtCurrentPrice = zero
-  const maxGenerateAmountAtNextPrice = zero
 
+    maxWithdrawAmountAtCurrentPrice,
+    maxWithdrawAmountAtNextPrice,
+    maxGenerateAmountAtCurrentPrice,
+    maxGenerateAmountAtNextPrice,
+  } = state
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
   const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)
 
