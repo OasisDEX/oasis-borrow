@@ -45,8 +45,8 @@ import { createExchangeQuote$ } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import {
   checkVaultTypeLocalStorage$,
-  saveVaultTypeLocalStorage$,
-} from 'features/generalManageVault/vaultTypeLocalStorage'
+  saveVault$,
+} from 'features/generalManageVault/vaultTypeApi'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
@@ -324,7 +324,7 @@ export function setupAppContext() {
       balanceInfo$,
       ilkData$,
       vault$,
-      saveVaultTypeLocalStorage$,
+      saveVault$,
     ),
     bigNumberTostring,
   )
