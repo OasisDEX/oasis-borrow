@@ -598,13 +598,13 @@ function OtherActionsForm(props: ManageMultiplyVaultState) {
 }
 
 export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
-  const { stage } = props
+  const { stage, inputAmountsEmpty } = props
 
   return (
     <Grid gap={4}>
       {stage === 'adjustPosition' && <AdjustPositionForm {...props} />}
       {stage === 'otherActions' && <OtherActionsForm {...props} />}
-      <Divider sx={{ width: '100%' }} />
+      {!inputAmountsEmpty && <Divider />}
       <ManageMultiplyVaultChangesInformation {...props} />
     </Grid>
   )

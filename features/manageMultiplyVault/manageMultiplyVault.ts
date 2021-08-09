@@ -457,7 +457,7 @@ export function createManageMultiplyVault$(
                   }
 
                   const initialState: ManageMultiplyVaultState = {
-                    ...defaultMutableManageVaultState,
+                    ...defaultMutableManageMultiplyVaultState,
                     ...defaultManageVaultCalculations,
                     ...defaultManageVaultConditions,
                     vault,

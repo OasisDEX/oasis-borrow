@@ -6,134 +6,142 @@ import { one, zero } from 'helpers/zero'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
-export const DepositAndWithdrawAmountsEmpty = manageMultiplyVaultStory({
-  title:
-    'If both the deposit and withdraw input fields are empty when editing "Collateral" then we disable the progress button and suggest user to enter an amount',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('100'),
-    debt: new BigNumber('3000'),
-  },
-  proxyAddress,
-})()
+const vaultERC20 = {
+  ilk: 'WBTC-A',
+  collateral: new BigNumber('100'),
+  debt: new BigNumber('3000'),
+}
 
-export const GenerateAndPaybackAmountsEmpty = manageMultiplyVaultStory({
+export const DepositAmountEmpty = manageMultiplyVaultStory({
   title:
-    'If both the generate and payback input fields are empty when editing "Dai" then we disable the progress button and suggest user to enter an amount',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('100'),
-    debt: new BigNumber('3000'),
-  },
+    'If deposit input field is empty when in "Other Actions" then we disable the progress button and suggest user to enter an amount',
+  vault: vaultERC20,
   proxyAddress,
 })({
-  stage: 'daiEditing',
+  stage: 'otherActions',
+  otherAction: 'depositCollateral',
 })
 
-export const DepositEmpty = manageMultiplyVaultStory({
+export const WithdrawAmountEmpty = manageMultiplyVaultStory({
   title:
-    'Similar to DepositAndWithdrawAmountsEmpty only that the connected user is not the controller of the vault. At the "Collateral" editing stage they would only be able deposit so we block the flow if no deposit amount is set',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('100'),
-    debt: new BigNumber('3000'),
-    controller: '0x1',
-  },
-  account: '0x0',
-  proxyAddress,
-})()
-
-export const PaybackEmpty = manageMultiplyVaultStory({
-  title:
-    'Similar to PaybackAndWithdrawAmountsEmpty only that the connected user is not the controller of the vault. At the "Dai" editing stage they would only be able payback so we block the flow if no payback amount is set',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('100'),
-    debt: new BigNumber('3000'),
-    controller: '0x1',
-  },
-  account: '0x0',
+    'If withdraw input field is empty when in "Other Actions" then we disable the progress button and suggest user to enter an amount',
+  vault: vaultERC20,
   proxyAddress,
 })({
-  stage: 'daiEditing',
+  stage: 'otherActions',
+  otherAction: 'withdrawCollateral',
 })
+
+export const PaybackAmountEmpty = manageMultiplyVaultStory({
+  title:
+    'If payback input field is empty when in "Other Actions" then we disable the progress button and suggest user to enter an amount',
+  vault: vaultERC20,
+  proxyAddress,
+})({
+  stage: 'otherActions',
+  otherAction: 'depositDai',
+})
+
+export const GenerateAmountEmpty = manageMultiplyVaultStory({
+  title:
+    'If generate input field is empty when in "Other Actions" then we disable the progress button and suggest user to enter an amount',
+  vault: vaultERC20,
+  proxyAddress,
+})({
+  stage: 'otherActions',
+  otherAction: 'withdrawDai',
+})
+
+// export const DepositEmpty = manageMultiplyVaultStory({
+//   title:
+//     'Similar to DepositAndWithdrawAmountsEmpty only that the connected user is not the controller of the vault. At the "Collateral" editing stage they would only be able deposit so we block the flow if no deposit amount is set',
+//   vault: {
+//     ilk: 'WBTC-A',
+//     collateral: new BigNumber('100'),
+//     debt: new BigNumber('3000'),
+//     controller: '0x1',
+//   },
+//   account: '0x0',
+//   proxyAddress,
+// })()
 
 export const DepositAmountExceedsCollateralBalance = manageMultiplyVaultStory({
   title:
     'Error is shown where a user is trying to deposit more collateral than they have as balance in their account',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('100'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultERC20,
   balanceInfo: { collateralBalance: new BigNumber('5') },
   proxyAddress,
 })({
+  stage: 'otherActions',
+  otherAction: 'depositCollateral',
   depositAmount: new BigNumber('6'),
-  stage: 'collateralEditing',
 })
 
-export const WithdrawAmountExceedsFreeCollateral = manageMultiplyVaultStory({
-  title:
-    'Error is shown when a user is trying to withdraw an amount of collateral from the vault which is greater than the amount of collateral which is "free", not backing the outstanding debt in the vault',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('15'),
-    debt: new BigNumber('3000'),
-  },
-  proxyAddress,
-})({
-  stage: 'collateralEditing',
-  withdrawAmount: new BigNumber('8'),
-})
+// export const WithdrawAmountExceedsFreeCollateral = manageMultiplyVaultStory({
+//   title:
+//     'Error is shown when a user is trying to withdraw an amount of collateral from the vault which is greater than the amount of collateral which is "free", not backing the outstanding debt in the vault',
+//   vault: {
+//     ilk: 'WBTC-A',
+//     collateral: new BigNumber('15'),
+//     debt: new BigNumber('3000'),
+//   },
+//   proxyAddress,
+// })({
+//   stage: 'otherActions',
+//   otherAction: 'withdrawCollateral',
+//   withdrawAmount: new BigNumber('8'),
+// })
 
-export const WithdrawAmountExceedsFreeCollateralAtNextPrice = manageMultiplyVaultStory({
-  title:
-    'Error is shown when a user is trying to withdraw an amount of collateral from the vault which at next price update is greater than the amount of collateral which is "free", not backing the outstanding debt in the vault',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('15'),
-    debt: new BigNumber('3000'),
-  },
-  priceInfo: { collateralChangePercentage: new BigNumber('-0.1') },
-  proxyAddress,
-})({
-  stage: 'collateralEditing',
-  withdrawAmount: new BigNumber('6'),
-})
+// export const WithdrawAmountExceedsFreeCollateralAtNextPrice = manageMultiplyVaultStory({
+//   title:
+//     'Error is shown when a user is trying to withdraw an amount of collateral from the vault which at next price update is greater than the amount of collateral which is "free", not backing the outstanding debt in the vault',
+//   vault: {
+//     ilk: 'WBTC-A',
+//     collateral: new BigNumber('15'),
+//     debt: new BigNumber('3000'),
+//   },
+//   priceInfo: { collateralChangePercentage: new BigNumber('-0.1') },
+//   proxyAddress,
+// })({
+//   stage: 'otherActions',
+//   otherAction: 'withdrawCollateral',
+//   withdrawAmount: new BigNumber('6'),
+// })
 
-export const GenerateAmountExceedsDaiYieldFromTotalCollateral = manageMultiplyVaultStory({
-  title:
-    'Error is shown when a user is trying to generate an amount of DAI that is greater than the maximum of dai that can be generated from the collateral already locked in the vault and the amount of collateral the user is also depositing',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('15'),
-    debt: new BigNumber('3000'),
-  },
-  proxyAddress,
-})({
-  depositAmount: new BigNumber('3'),
-  generateAmount: new BigNumber('4000'),
-})
+// export const GenerateAmountExceedsDaiYieldFromTotalCollateral = manageMultiplyVaultStory({
+//   title:
+//     'Error is shown when a user is trying to generate an amount of DAI that is greater than the maximum of dai that can be generated from the collateral already locked in the vault and the amount of collateral the user is also depositing',
+//   vault: {
+//     ilk: 'WBTC-A',
+//     collateral: new BigNumber('15'),
+//     debt: new BigNumber('3000'),
+//   },
+//   proxyAddress,
+// })({
+//   stage: 'otherActions',
+//   otherAction: 'withdrawDai',
+//   generateAmount: new BigNumber('4000'),
+// })
 
-export const GenerateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice = manageMultiplyVaultStory(
-  {
-    title:
-      'Error is shown when a user is trying to generate an amount of DAI that is greater than the maximum of dai at next price update that can be generated from the collateral already locked in the vault and the amount of collateral the user is also depositing',
-    vault: {
-      ilk: 'WBTC-A',
-      collateral: new BigNumber('15'),
-      debt: new BigNumber('3500'),
-    },
-    priceInfo: {
-      collateralChangePercentage: new BigNumber('-0.6'),
-    },
-    proxyAddress,
-  },
-)({
-  depositAmount: new BigNumber('30'),
-  generateAmount: new BigNumber('4000'),
-})
+// export const GenerateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice = manageMultiplyVaultStory(
+//   {
+//     title:
+//       'Error is shown when a user is trying to generate an amount of DAI that is greater than the maximum of dai at next price update that can be generated from the collateral already locked in the vault and the amount of collateral the user is also depositing',
+//     vault: {
+//       ilk: 'WBTC-A',
+//       collateral: new BigNumber('15'),
+//       debt: new BigNumber('3500'),
+//     },
+//     priceInfo: {
+//       collateralChangePercentage: new BigNumber('-0.6'),
+//     },
+//     proxyAddress,
+//   },
+// )({
+//   stage: 'otherActions',
+//   otherAction: 'withdrawDai',
+//   generateAmount: new BigNumber('4000'),
+// })
 
 export const GenerateAmountExceedsDebtCeiling = manageMultiplyVaultStory({
   title:
@@ -146,7 +154,8 @@ export const GenerateAmountExceedsDebtCeiling = manageMultiplyVaultStory({
   ilkData: { ilkDebt: new BigNumber('15000'), debtCeiling: new BigNumber('16000') },
   proxyAddress,
 })({
-  stage: 'daiEditing',
+  stage: 'otherActions',
+  otherAction: 'withdrawDai',
   generateAmount: new BigNumber('2000'),
 })
 
@@ -161,7 +170,8 @@ export const GenerateAmountLessThanDebtFloor = manageMultiplyVaultStory({
   ilkData: { debtFloor: new BigNumber('200') },
   proxyAddress,
 })({
-  stage: 'daiEditing',
+  stage: 'otherActions',
+  otherAction: 'withdrawDai',
   generateAmount: new BigNumber('1'),
 })
 
@@ -176,7 +186,8 @@ export const WithdrawOnVaultUnderDebtFloor = manageMultiplyVaultStory({
   ilkData: { debtFloor: new BigNumber('200') },
   proxyAddress,
 })({
-  stage: 'daiEditing',
+  stage: 'otherActions',
+  otherAction: 'withdrawCollateral',
   withdrawAmount: new BigNumber('1'),
 })
 
@@ -190,7 +201,8 @@ export const PaybackAmountExceedsDaiBalance = manageMultiplyVaultStory({
   balanceInfo: { daiBalance: new BigNumber('5000') },
   proxyAddress,
 })({
-  stage: 'daiEditing',
+  stage: 'otherActions',
+  otherAction: 'depositDai',
   paybackAmount: new BigNumber('6000'),
 })
 
@@ -204,7 +216,8 @@ export const PaybackAmountExceedsVaultDebt = manageMultiplyVaultStory({
   balanceInfo: { daiBalance: new BigNumber('10000') },
   proxyAddress,
 })({
-  stage: 'daiEditing',
+  stage: 'otherActions',
+  otherAction: 'depositDai',
   paybackAmount: new BigNumber('6000'),
 })
 
@@ -219,7 +232,8 @@ export const PaybackAmountCausesVaultDebtToBeLessThanDebtFloor = manageMultiplyV
   balanceInfo: { daiBalance: new BigNumber('10000') },
   proxyAddress,
 })({
-  stage: 'daiEditing',
+  stage: 'otherActions',
+  otherAction: 'depositDai',
   paybackAmount: new BigNumber('4000'),
 })
 
@@ -235,56 +249,58 @@ export const DepositingAllEthBalance = manageMultiplyVaultStory({
   },
   proxyAddress,
 })({
+  stage: 'otherActions',
+  otherAction: 'depositCollateral',
   depositAmount: new BigNumber('100'),
 })
 
-export const CustomCollateralAllowanceEmpty = manageMultiplyVaultStory({
-  title: 'Error should block user if the allowance they wish to set is zero',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('100'),
-    debt: new BigNumber('5000'),
-  },
-  balanceInfo: { daiBalance: new BigNumber('10000') },
-  proxyAddress,
-})({
-  stage: 'collateralAllowanceWaitingForConfirmation',
-  depositAmount: new BigNumber('10'),
-  collateralAllowanceAmount: undefined,
-  selectedCollateralAllowanceRadio: 'custom',
-})
+// export const CustomCollateralAllowanceEmpty = manageMultiplyVaultStory({
+//   title: 'Error should block user if the allowance they wish to set is zero',
+//   vault: {
+//     ilk: 'WBTC-A',
+//     collateral: new BigNumber('100'),
+//     debt: new BigNumber('5000'),
+//   },
+//   balanceInfo: { daiBalance: new BigNumber('10000') },
+//   proxyAddress,
+// })({
+//   stage: 'collateralAllowanceWaitingForConfirmation',
+//   depositAmount: new BigNumber('10'),
+//   collateralAllowanceAmount: undefined,
+//   selectedCollateralAllowanceRadio: 'custom',
+// })
 
-export const CustomCollateralAllowanceAmountGreaterThanMaxUint256 = manageMultiplyVaultStory({
-  title: 'Error should block user if the allowance they wish to set a value above maxUint256',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('100'),
-    debt: new BigNumber('5000'),
-  },
-  balanceInfo: { daiBalance: new BigNumber('10000') },
-  proxyAddress,
-})({
-  stage: 'collateralAllowanceWaitingForConfirmation',
-  depositAmount: new BigNumber('10'),
-  selectedCollateralAllowanceRadio: 'custom',
-  collateralAllowanceAmount: maxUint256.plus(one),
-})
+// export const CustomCollateralAllowanceAmountGreaterThanMaxUint256 = manageMultiplyVaultStory({
+//   title: 'Error should block user if the allowance they wish to set a value above maxUint256',
+//   vault: {
+//     ilk: 'WBTC-A',
+//     collateral: new BigNumber('100'),
+//     debt: new BigNumber('5000'),
+//   },
+//   balanceInfo: { daiBalance: new BigNumber('10000') },
+//   proxyAddress,
+// })({
+//   stage: 'collateralAllowanceWaitingForConfirmation',
+//   depositAmount: new BigNumber('10'),
+//   selectedCollateralAllowanceRadio: 'custom',
+//   collateralAllowanceAmount: maxUint256.plus(one),
+// })
 
-export const CustomCollateralAllowanceAmountLessThanDepositAmount = manageMultiplyVaultStory({
-  title: 'Error should block user if the allowance they wish to set a value above maxUint256',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('100'),
-    debt: new BigNumber('5000'),
-  },
-  balanceInfo: { daiBalance: new BigNumber('10000') },
-  proxyAddress,
-})({
-  stage: 'collateralAllowanceWaitingForConfirmation',
-  depositAmount: new BigNumber('10'),
-  collateralAllowanceAmount: new BigNumber('9'),
-  selectedCollateralAllowanceRadio: 'custom',
-})
+// export const CustomCollateralAllowanceAmountLessThanDepositAmount = manageMultiplyVaultStory({
+//   title: 'Error should block user if the allowance they wish to set a value above maxUint256',
+//   vault: {
+//     ilk: 'WBTC-A',
+//     collateral: new BigNumber('100'),
+//     debt: new BigNumber('5000'),
+//   },
+//   balanceInfo: { daiBalance: new BigNumber('10000') },
+//   proxyAddress,
+// })({
+//   stage: 'collateralAllowanceWaitingForConfirmation',
+//   depositAmount: new BigNumber('10'),
+//   collateralAllowanceAmount: new BigNumber('9'),
+//   selectedCollateralAllowanceRadio: 'custom',
+// })
 
 export const CustomDaiAllowanceEmpty = manageMultiplyVaultStory({
   title: 'Error should block user if the allowance they wish to set is zero',

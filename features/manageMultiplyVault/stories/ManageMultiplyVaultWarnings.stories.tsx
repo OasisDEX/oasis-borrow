@@ -6,14 +6,16 @@ import { one, zero } from 'helpers/zero'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
+const vaultERC20 = {
+  ilk: 'WBTC-A',
+  collateral: new BigNumber('20'),
+  debt: new BigNumber('3000'),
+}
+
 export const NoProxyAddress = manageMultiplyVaultStory({
   title:
     'Warning is shown that the connected account has no proxy address and prior to executing the proposed transaction will have to set their proxy and make applicable allowances given the context of their action',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultERC20,
 })({
   depositAmount: one,
 })
@@ -21,11 +23,7 @@ export const NoProxyAddress = manageMultiplyVaultStory({
 export const InsufficientCollateralAllowance = manageMultiplyVaultStory({
   title:
     'Warning is shown when the user is depositing an amount of collateral and the allowance they have set on their proxy is less than that amount, the flow will direct the user to set the correct collateral allowance before depositing',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultERC20,
   collateralAllowance: new BigNumber('9'),
   proxyAddress,
 })({
@@ -35,11 +33,7 @@ export const InsufficientCollateralAllowance = manageMultiplyVaultStory({
 export const InsufficientDaiAllowance = manageMultiplyVaultStory({
   title:
     'Warning is shown when the user is paying back some of the debt in their vault and the allowance they have set on their proxy is less than that amount, the flow will direct the user to set the correct dai allowance before paying back',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultERC20,
   daiAllowance: new BigNumber('500'),
   proxyAddress,
 })({
@@ -320,11 +314,7 @@ export const DepositingAllCollateralBalance = manageMultiplyVaultStory({
 
 export const PayingBackAllDaiBalance = manageMultiplyVaultStory({
   title: 'Warning is shown when a user is paying back all dai balance in their wallet',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultERC20,
   balanceInfo: {
     daiBalance: new BigNumber('500'),
   },

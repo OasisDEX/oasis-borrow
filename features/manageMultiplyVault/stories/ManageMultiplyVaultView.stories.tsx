@@ -5,39 +5,62 @@ import { zero } from 'helpers/zero'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
-export const CollateralEditingStage = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+const vaultETH = {
+  ilk: 'ETH-A',
+  collateral: new BigNumber('20'),
+  debt: new BigNumber('3000'),
+}
+
+export const AdjustPositionStage = manageMultiplyVaultStory({
+  vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('2000') },
   proxyAddress,
 })({
   depositAmount: new BigNumber('2'),
-  generateAmount: new BigNumber('300'),
 })
 
-export const DaiEditingStage = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+export const OtherActionDepositStage = manageMultiplyVaultStory({
+  vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200') },
   proxyAddress,
 })({
-  stage: 'daiEditing',
+  stage: 'otherActions',
+  otherAction: 'depositCollateral',
   depositAmount: new BigNumber('2'),
+})
+
+export const OtherActionWithdrawStage = manageMultiplyVaultStory({
+  vault: vaultETH,
+  balanceInfo: { collateralBalance: new BigNumber('200') },
+  proxyAddress,
+})({
+  stage: 'otherActions',
+  otherAction: 'withdrawCollateral',
+  withdrawAmount: new BigNumber('2'),
+})
+
+export const OtherActionPaybackStage = manageMultiplyVaultStory({
+  vault: vaultETH,
+  balanceInfo: { collateralBalance: new BigNumber('200') },
+  proxyAddress,
+})({
+  stage: 'otherActions',
+  otherAction: 'depositDai',
+  paybackAmount: new BigNumber('300'),
+})
+
+export const OtherActionGenerateStage = manageMultiplyVaultStory({
+  vault: vaultETH,
+  balanceInfo: { collateralBalance: new BigNumber('200') },
+  proxyAddress,
+})({
+  stage: 'otherActions',
+  otherAction: 'withdrawDai',
   generateAmount: new BigNumber('300'),
 })
 
 export const ProxyWaitingForConfirmation = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200') },
 })({
   stage: 'proxyWaitingForConfirmation',
@@ -46,11 +69,7 @@ export const ProxyWaitingForConfirmation = manageMultiplyVaultStory({
 })
 
 export const ProxyWaitingForApproval = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200') },
 })({
   stage: 'proxyWaitingForApproval',
@@ -59,11 +78,7 @@ export const ProxyWaitingForApproval = manageMultiplyVaultStory({
 })
 
 export const ProxyFailure = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200') },
 })({
   stage: 'proxyFailure',
@@ -72,11 +87,7 @@ export const ProxyFailure = manageMultiplyVaultStory({
 })
 
 export const ProxyInProgress = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200') },
 })({
   stage: 'proxyInProgress',
@@ -85,11 +96,7 @@ export const ProxyInProgress = manageMultiplyVaultStory({
 })
 
 export const ProxySuccess = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200') },
 })({
   stage: 'proxySuccess',
@@ -97,86 +104,62 @@ export const ProxySuccess = manageMultiplyVaultStory({
   depositAmount: new BigNumber('2'),
 })
 
-export const CollateralAllowanceWaitingForConfirmation = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
-  balanceInfo: { collateralBalance: new BigNumber('200') },
-  proxyAddress,
-  collateralAllowance: zero,
-})({
-  stage: 'collateralAllowanceWaitingForConfirmation',
-  generateAmount: new BigNumber('300'),
-  depositAmount: new BigNumber('2'),
-})
+// export const CollateralAllowanceWaitingForConfirmation = manageMultiplyVaultStory({
+//   vault: vaultETH,
+//   balanceInfo: { collateralBalance: new BigNumber('200') },
+//   proxyAddress,
+//   collateralAllowance: zero,
+// })({
+//   stage: 'collateralAllowanceWaitingForConfirmation',
+//   generateAmount: new BigNumber('300'),
+//   depositAmount: new BigNumber('2'),
+// })
 
-export const CollateralAllowanceWaitingForApproval = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
-  balanceInfo: { collateralBalance: new BigNumber('200') },
-  proxyAddress,
-  collateralAllowance: zero,
-})({
-  stage: 'collateralAllowanceWaitingForApproval',
-  depositAmount: new BigNumber('2'),
-  generateAmount: new BigNumber('300'),
-})
+// export const CollateralAllowanceWaitingForApproval = manageMultiplyVaultStory({
+//   vault: vaultETH,
+//   balanceInfo: { collateralBalance: new BigNumber('200') },
+//   proxyAddress,
+//   collateralAllowance: zero,
+// })({
+//   stage: 'collateralAllowanceWaitingForApproval',
+//   depositAmount: new BigNumber('2'),
+//   generateAmount: new BigNumber('300'),
+// })
 
-export const CollateralAllowanceFailure = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
-  balanceInfo: { collateralBalance: new BigNumber('200') },
-  proxyAddress,
-  collateralAllowance: zero,
-})({
-  depositAmount: new BigNumber('2'),
-  generateAmount: new BigNumber('300'),
-  stage: 'collateralAllowanceFailure',
-})
+// export const CollateralAllowanceFailure = manageMultiplyVaultStory({
+//   vault: vaultETH,
+//   balanceInfo: { collateralBalance: new BigNumber('200') },
+//   proxyAddress,
+//   collateralAllowance: zero,
+// })({
+//   depositAmount: new BigNumber('2'),
+//   generateAmount: new BigNumber('300'),
+//   stage: 'collateralAllowanceFailure',
+// })
 
-export const CollateralAllowanceInProgress = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
-  balanceInfo: { collateralBalance: new BigNumber('200') },
-  proxyAddress,
-  collateralAllowance: zero,
-})({
-  stage: 'collateralAllowanceInProgress',
-  depositAmount: new BigNumber('2'),
-  generateAmount: new BigNumber('300'),
-})
+// export const CollateralAllowanceInProgress = manageMultiplyVaultStory({
+//   vault: vaultETH,
+//   balanceInfo: { collateralBalance: new BigNumber('200') },
+//   proxyAddress,
+//   collateralAllowance: zero,
+// })({
+//   stage: 'collateralAllowanceInProgress',
+//   depositAmount: new BigNumber('2'),
+//   generateAmount: new BigNumber('300'),
+// })
 
-export const CollateralAllowanceSuccess = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
-  balanceInfo: { collateralBalance: new BigNumber('200') },
-  proxyAddress,
-})({
-  depositAmount: new BigNumber('2'),
-  generateAmount: new BigNumber('300'),
-  stage: 'collateralAllowanceSuccess',
-})
+// export const CollateralAllowanceSuccess = manageMultiplyVaultStory({
+//   vault: vaultETH,
+//   balanceInfo: { collateralBalance: new BigNumber('200') },
+//   proxyAddress,
+// })({
+//   depositAmount: new BigNumber('2'),
+//   generateAmount: new BigNumber('300'),
+//   stage: 'collateralAllowanceSuccess',
+// })
 
 export const DaiAllowanceWaitingForConfirmation = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress,
   daiAllowance: zero,
@@ -187,11 +170,7 @@ export const DaiAllowanceWaitingForConfirmation = manageMultiplyVaultStory({
 })
 
 export const DaiAllowanceWaitingForApproval = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress,
   daiAllowance: zero,
@@ -202,11 +181,7 @@ export const DaiAllowanceWaitingForApproval = manageMultiplyVaultStory({
 })
 
 export const DaiAllowanceFailure = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress,
   daiAllowance: zero,
@@ -217,11 +192,7 @@ export const DaiAllowanceFailure = manageMultiplyVaultStory({
 })
 
 export const DaiAllowanceInProgress = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress,
   daiAllowance: zero,
@@ -232,11 +203,7 @@ export const DaiAllowanceInProgress = manageMultiplyVaultStory({
 })
 
 export const DaiAllowanceSuccess = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress,
 })({
@@ -246,11 +213,7 @@ export const DaiAllowanceSuccess = manageMultiplyVaultStory({
 })
 
 export const ManageWaitingForConfirmation = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress,
 })({
@@ -260,11 +223,7 @@ export const ManageWaitingForConfirmation = manageMultiplyVaultStory({
 })
 
 export const ManageWaitingForApproval = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress,
 })({
@@ -274,11 +233,7 @@ export const ManageWaitingForApproval = manageMultiplyVaultStory({
 })
 
 export const ManageFailure = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress,
 })({
@@ -288,11 +243,7 @@ export const ManageFailure = manageMultiplyVaultStory({
 })
 
 export const ManageInProgress = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress,
 })({
@@ -302,11 +253,7 @@ export const ManageInProgress = manageMultiplyVaultStory({
 })
 
 export const ManageSuccess = manageMultiplyVaultStory({
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('3000'),
-  },
+  vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress,
 })({

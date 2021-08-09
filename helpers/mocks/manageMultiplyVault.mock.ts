@@ -58,6 +58,7 @@ export function mockManageMultiplyVault$({
   _collateralAllowance$,
   _daiAllowance$,
   _vault$,
+
   ilkData,
   priceInfo,
   balanceInfo,

@@ -97,9 +97,9 @@ export function manageMultiplyVaultStory({
       context$: of({ etherscan: 'url' }),
       generalManageVault$: memoize(() =>
         createGeneralManageVault$(
-          // @ts-ignore, don't need to mock Multiply here
-          () => of(EMPTY),
           () => obs$,
+          // @ts-ignore, don't need to mock regular here
+          () => of(EMPTY),
           () => of(VaultType.Multiply),
           MOCK_VAULT_ID,
         ),
