@@ -1,16 +1,8 @@
 import BigNumber from 'bignumber.js'
-import { Context, ContextConnected } from 'blockchain/network'
+import { Context } from 'blockchain/network'
 import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
-import {
-  catchError,
-  distinctUntilChanged,
-  filter,
-  map,
-  retry,
-  switchMap,
-  tap,
-} from 'rxjs/operators'
+import { catchError, distinctUntilChanged, map, retry, switchMap, tap } from 'rxjs/operators'
 
 import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 
@@ -102,7 +94,6 @@ export function createExchangeQuote$(
   action: ExchangeAction,
 ) {
   return context$.pipe(
-    filter((ctx): ctx is ContextConnected => ctx.status === 'connected'),
     switchMap((context) => {
       const { tokens, exchange } = context
       const daiAddress = tokens['DAI'].address

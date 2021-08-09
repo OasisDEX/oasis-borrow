@@ -10,7 +10,22 @@ import {
   manageVaultWithdrawAndPayback,
 } from './manageVaultTransactions'
 
+type ManageVaultMultiplyTransitionChange =
+  | {
+      kind: 'progressMultiplyTransition'
+    }
+  | {
+      kind: 'multiplyTransitionInProgress'
+    }
+  | {
+      kind: 'multiplyTransitionFailure'
+    }
+  | {
+      kind: 'multiplyTransitionSuccess'
+    }
+
 export type ManageVaultTransitionChange =
+  | ManageVaultMultiplyTransitionChange
   | {
       kind: 'toggleEditing'
       stage: ManageVaultEditingStage
@@ -23,9 +38,6 @@ export type ManageVaultTransitionChange =
     }
   | {
       kind: 'progressCollateralAllowance'
-    }
-  | {
-      kind: 'progressMultiplyTransition'
     }
   | {
       kind: 'backToEditing'
@@ -44,13 +56,6 @@ export function applyManageVaultTransition(
   change: ManageVaultChange,
   state: ManageVaultState,
 ): ManageVaultState {
-  if (change.kind === 'progressMultiplyTransition') {
-    return {
-      ...state,
-      stage: 'multiplyTransitionConfirmation',
-    }
-  }
-
   if (change.kind === 'toggleEditing') {
     const { stage } = state
 
@@ -198,6 +203,34 @@ export function applyManageVaultTransition(
       return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
     }
     return { ...state, stage: originalEditingStage }
+  }
+
+  if (change.kind === 'progressMultiplyTransition') {
+    return {
+      ...state,
+      stage: 'multiplyTransitionWaitingForConfirmation',
+    }
+  }
+
+  if (change.kind === 'multiplyTransitionInProgress') {
+    return {
+      ...state,
+      stage: 'multiplyTransitionInProgress',
+    }
+  }
+
+  if (change.kind === 'multiplyTransitionFailure') {
+    return {
+      ...state,
+      stage: 'multiplyTransitionFailure',
+    }
+  }
+
+  if (change.kind === 'multiplyTransitionSuccess') {
+    return {
+      ...state,
+      stage: 'multiplyTransitionSuccess',
+    }
   }
 
   return state

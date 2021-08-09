@@ -21,6 +21,7 @@ import {
 } from 'blockchain/calls/proxy'
 import {
   DepositAndGenerateData,
+  MultiplyAdjustData,
   MultiplyData,
   OpenData,
   ReclaimData,
@@ -42,10 +43,11 @@ import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
 import { createExchangeQuote$ } from 'features/exchange/exchange'
+import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import {
-  createGeneralManageVault$,
-  VaultType,
-} from 'features/generalManageVault/generalManageVault'
+  checkVaultTypeLocalStorage$,
+  saveVaultTypeLocalStorage$,
+} from 'features/generalManageVault/vaultTypeLocalStorage'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
@@ -63,7 +65,6 @@ import {
 } from 'features/termsOfService/termsAcceptanceApi'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
-import { zero } from 'helpers/zero'
 import { mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
 import { combineLatest, Observable, of } from 'rxjs'
@@ -105,6 +106,7 @@ export type TxData =
   | SetProxyOwnerData
   | ReclaimData
   | MultiplyData
+  | MultiplyAdjustData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -324,6 +326,7 @@ export function setupAppContext() {
       balanceInfo$,
       ilkData$,
       vault$,
+      saveVaultTypeLocalStorage$,
     ),
     bigNumberTostring,
   )
@@ -338,16 +341,17 @@ export function setupAppContext() {
       balanceInfo$,
       ilkData$,
       vault$,
+      exchangeQuote$,
     ),
     bigNumberTostring,
   )
 
-  function vaultTypeMock$(id: BigNumber) {
-    return id.modulo(2).eq(zero) ? of(VaultType.Multiply) : of(VaultType.Borrow)
-  }
-
   const generalManageVault$ = memoize(
-    curry(createGeneralManageVault$)(manageMultiplyVault$, manageVault$, vaultTypeMock$),
+    curry(createGeneralManageVault$)(
+      manageMultiplyVault$,
+      manageVault$,
+      checkVaultTypeLocalStorage$,
+    ),
     bigNumberTostring,
   )
 

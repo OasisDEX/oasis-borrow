@@ -13,6 +13,11 @@ import { zero } from 'helpers/zero'
 import { of, Subject } from 'rxjs'
 import { map } from 'rxjs/internal/operators'
 
+// @ts-ignore
+global.window = {
+  location: { reload: () => null },
+}
+
 describe('manageVault', () => {
   describe('createManageVault$', () => {
     describe('editing collateral', () => {
@@ -731,6 +736,8 @@ describe('manageVault', () => {
     })
 
     describe('multiply transitions', () => {
+      beforeEach(() => localStorage.clear())
+
       it('should handle previously selected editing stage when going back and forth from multiply transition stages', () => {
         const state = getStateUnpacker(mockManageVault$())
         expect(state().stage).to.be.equal('collateralEditing')
@@ -738,7 +745,7 @@ describe('manageVault', () => {
         state().toggle!('multiplyTransitionEditing')
         expect(state().stage).to.be.equal('multiplyTransitionEditing')
         state().progress!()
-        expect(state().stage).to.be.equal('multiplyTransitionConfirmation')
+        expect(state().stage).to.be.equal('multiplyTransitionWaitingForConfirmation')
         state().regress!()
         expect(state().stage).to.be.equal('collateralEditing')
         state().toggle!('daiEditing')
@@ -747,6 +754,56 @@ describe('manageVault', () => {
         expect(state().stage).to.be.equal('multiplyTransitionEditing')
         state().regress!()
         expect(state().stage).to.be.equal('daiEditing')
+      })
+
+      it('should fail when JWT token is not present', () => {
+        const state = getStateUnpacker(mockManageVault$())
+
+        state().toggle!('multiplyTransitionEditing')
+        state().progress!()
+        expect(state().stage).to.be.equal('multiplyTransitionWaitingForConfirmation')
+        state().progress!()
+        expect(state().stage).to.be.equal('multiplyTransitionFailure')
+      })
+
+      it('should handle multiply transition error', () => {
+        localStorage.setItem('token-b/0x123', 'xxx')
+        const _saveVaultType$ = new Subject<void>()
+
+        const state = getStateUnpacker(
+          mockManageVault$({
+            _saveVaultType$,
+            account: '0x123',
+          }),
+        )
+
+        state().toggle!('multiplyTransitionEditing')
+        state().progress!()
+        expect(state().stage).to.be.equal('multiplyTransitionWaitingForConfirmation')
+        state().progress!()
+        expect(state().stage).to.be.equal('multiplyTransitionInProgress')
+        _saveVaultType$.error('error')
+        expect(state().stage).to.be.equal('multiplyTransitionFailure')
+      })
+
+      it('should handle multiply transition success', () => {
+        localStorage.setItem('token-b/0x123', 'xxx')
+        const _saveVaultType$ = new Subject<void>()
+
+        const state = getStateUnpacker(
+          mockManageVault$({
+            _saveVaultType$,
+            account: '0x123',
+          }),
+        )
+
+        state().toggle!('multiplyTransitionEditing')
+        state().progress!()
+        expect(state().stage).to.be.equal('multiplyTransitionWaitingForConfirmation')
+        state().progress!()
+        expect(state().stage).to.be.equal('multiplyTransitionInProgress')
+        _saveVaultType$.next()
+        expect(state().stage).to.be.equal('multiplyTransitionSuccess')
       })
     })
   })
