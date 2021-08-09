@@ -1,6 +1,9 @@
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
 import { protoTxHelpers } from 'components/AppContext'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { BalanceInfo } from 'features/shared/balanceInfo'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { mockBalanceInfo$, MockBalanceInfoProps } from 'helpers/mocks/balanceInfo.mock'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { mockIlkData$, MockIlkDataProps } from 'helpers/mocks/ilks.mock'
@@ -12,6 +15,7 @@ import { createOpenMultiplyVault$ } from '../../features/openMultiplyVault/openM
 interface MockExchangeQuote {
   marketPrice?: BigNumber
 }
+
 function mockExchangeQuote$({ marketPrice = new BigNumber(2000) }: MockExchangeQuote = {}): (
   token: string,
   slippage: BigNumber,
@@ -53,32 +57,84 @@ function mockExchangeQuote$({ marketPrice = new BigNumber(2000) }: MockExchangeQ
 }
 
 export interface MockOpenMultiplyVaultProps {
+  _ilkData$?: Observable<IlkData>
+  _priceInfo$?: Observable<PriceInfo>
+  _balanceInfo$?: Observable<BalanceInfo>
+  _proxyAddress$?: Observable<string | undefined>
+  _allowance$?: Observable<BigNumber>
+  _ilks$?: Observable<string[]>
+
+  ilkData?: MockIlkDataProps
   priceInfo?: MockPriceInfoProps
   balanceInfo?: MockBalanceInfoProps
-  ilks?: string[]
+  proxyAddress?: string
   allowance?: BigNumber
-  ilkData?: MockIlkDataProps
+  account?: string
+  status?: 'connected'
+  ilks?: string[]
+  ilk?: string
   exchangeQuote?: MockExchangeQuote
 }
 
 export function mockOpenMultiplyVault({
-  priceInfo = {},
-  balanceInfo = {},
-  ilks = ['ETH-A'],
+  _ilkData$,
+  _priceInfo$,
+  _balanceInfo$,
+  _proxyAddress$,
+  _allowance$,
+  _ilks$,
+
+  ilkData,
+  priceInfo,
+  balanceInfo,
+  proxyAddress,
   allowance = new BigNumber(0),
-  ilkData = {},
-  exchangeQuote = {},
+  account = '0xVaultController',
+  ilks = ['ETH-A'],
+  ilk = 'ETH-A',
+  exchangeQuote,
 }: MockOpenMultiplyVaultProps = {}) {
+  const token = ilk.split('-')[0]
+
+  const ilks$ = _ilks$ || (ilks && ilks.length ? of(ilks!) : of([ilk]))
+
+  function ilkData$() {
+    return (
+      _ilkData$ ||
+      mockIlkData$({
+        ilk,
+        _priceInfo$: priceInfo$(),
+        ...ilkData,
+      })
+    )
+  }
+
+  function priceInfo$() {
+    return _priceInfo$ || mockPriceInfo$({ ...priceInfo, token })
+  }
+
+  function balanceInfo$() {
+    return _balanceInfo$ || mockBalanceInfo$({ ...balanceInfo, address: account })
+  }
+
+  function proxyAddress$() {
+    return _proxyAddress$ || of(proxyAddress)
+  }
+
+  function allowance$() {
+    return _allowance$ || of(allowance)
+  }
+
   return createOpenMultiplyVault$(
     of(mockContextConnected),
     of(protoTxHelpers),
-    () => of('0xProxyAddress'),
-    () => of(allowance),
-    () => mockPriceInfo$(priceInfo),
-    () => mockBalanceInfo$(balanceInfo),
-    of(ilks),
-    () => mockIlkData$(ilkData),
+    proxyAddress$,
+    allowance$,
+    priceInfo$,
+    balanceInfo$,
+    ilks$,
+    ilkData$,
     mockExchangeQuote$(exchangeQuote),
-    'ETH-A',
+    ilk,
   )
 }

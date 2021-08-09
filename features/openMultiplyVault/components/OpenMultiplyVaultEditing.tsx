@@ -41,11 +41,12 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
     .times(100)
 
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
-  const sliderBackground = multiply
-    ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
-        slider?.toNumber() || 0
-      }%, ${colors?.primaryAlt} ${slider?.toNumber() || 0}%, ${colors?.primaryAlt} 100%)`
-    : 'primaryAlt'
+  const sliderBackground =
+    multiply && !multiply.isNaN() && slider
+      ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
+          slider.toNumber() || 0
+        }%, ${colors?.primaryAlt} ${slider.toNumber() || 0}%, ${colors?.primaryAlt} 100%)`
+      : 'primaryAlt'
 
   return (
     <Grid gap={4}>

@@ -10,7 +10,8 @@ describe('open multiply vault', () => {
   it('should calculate vault state according spread sheet', () => {
     const multiplyVault$ = mockOpenMultiplyVault({
       priceInfo: {
-        collateralPrice: new BigNumber(2000),
+        // collateralPrice: new BigNumber(2000),
+        ethPrice: new BigNumber(2000),
       },
       exchangeQuote: {
         marketPrice: new BigNumber(2100),
@@ -36,7 +37,8 @@ describe('open multiply vault', () => {
   it('should not allow to update risk when deposited not enough collateral', () => {
     const multiplyVault$ = mockOpenMultiplyVault({
       priceInfo: {
-        collateralPrice: new BigNumber(2000),
+        // collateralPrice: new BigNumber(2000),
+        ethPrice: new BigNumber(2000),
       },
       exchangeQuote: {
         marketPrice: new BigNumber(2100),
@@ -58,7 +60,8 @@ describe('open multiply vault', () => {
   it('should allow to set maximum 500% collaterization ratio when depositing enough collateral', () => {
     const multiplyVault$ = mockOpenMultiplyVault({
       priceInfo: {
-        collateralPrice: new BigNumber(2000),
+        // collateralPrice: new BigNumber(2000),
+        ethPrice: new BigNumber(2000),
       },
       exchangeQuote: {
         marketPrice: new BigNumber(2100),

@@ -11,9 +11,8 @@ import { OpenMultiplyVaultErrorMessage } from '../openMultiplyVaultValidations'
 
 export function OpenMultiplyVaultErrors({
   errorMessages,
-  // maxGenerateAmount,
+  maxGenerateAmount,
   ilkData: { debtFloor },
-  token,
 }: OpenMultiplyVaultState) {
   const { t } = useTranslation()
   if (!errorMessages.length) return null
@@ -31,8 +30,7 @@ export function OpenMultiplyVaultErrors({
         )
       case 'generateAmountExceedsDebtCeiling':
         return translate('generate-amount-exceeds-debt-ceiling', {
-          // maxGenerateAmount: formatCryptoBalance(maxGenerateAmount),
-          token,
+          maxGenerateAmount: formatCryptoBalance(maxGenerateAmount),
         })
       case 'generateAmountLessThanDebtFloor':
         return (
