@@ -1,7 +1,10 @@
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { OpenMultiplyVaultView } from 'features/openMultiplyVault/components/OpenMultiplyVaultView'
-import { defaultMutableOpenVaultState, MutableOpenVaultState } from 'features/openVault/openVault'
+import {
+  defaultMutableOpenVaultState,
+  MutableOpenMultiplyVaultState,
+} from 'features/openMultiplyVault/openMultiplyVault'
 import {
   mockOpenMultiplyVault,
   MockOpenMultiplyVaultProps,
@@ -16,26 +19,30 @@ import { Card, Container, Grid } from 'theme-ui'
 type OpenMultiplyVaultStory = { title?: string } & MockOpenMultiplyVaultProps
 
 export function openMultiplyVaultStory({
-  title,
+  _ilks$,
 
+  title,
+  proxyAddress,
   priceInfo,
   balanceInfo,
   ilkData,
   allowance,
   ilks,
-}: // ilk = 'WBTC-A',
-OpenMultiplyVaultStory) {
+  ilk = 'ETH-A',
+}: OpenMultiplyVaultStory) {
   return ({
     depositAmount,
-    generateAmount,
     ...otherState
-  }: Partial<MutableOpenVaultState> = defaultMutableOpenVaultState) => () => {
+  }: Partial<MutableOpenMultiplyVaultState> = defaultMutableOpenVaultState) => () => {
     const obs$ = mockOpenMultiplyVault({
+      _ilks$,
       balanceInfo,
       priceInfo,
       ilkData,
+      proxyAddress,
       allowance,
       ilks,
+      ilk,
     })
 
     useEffect(() => {
@@ -47,10 +54,6 @@ OpenMultiplyVaultStory) {
             ...(depositAmount && {
               depositAmount,
               depositAmountUSD: depositAmount.times(currentCollateralPrice),
-            }),
-            ...(generateAmount && {
-              generateAmount,
-              showGenerateOption: !generateAmount.isZero(),
             }),
           }
           injectStateOverride(newState || {})

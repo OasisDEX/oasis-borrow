@@ -26,18 +26,19 @@ export interface OpenMultiplyVaultCalculations {
   multiply?: BigNumber
   afterOutstandingDebt: BigNumber
   afterCollateralizationRatio: BigNumber
+  afterCollateralizationRatioAtNextPrice: BigNumber
   txFees: BigNumber
   maxDepositAmount: BigNumber
   maxDepositAmountUSD: BigNumber
+  maxGenerateAmount: BigNumber
   afterCollateralBalance: BigNumber
   loanFees: BigNumber
   oazoFee: BigNumber
   maxCollRatio?: BigNumber
   marketPrice?: BigNumber
+  daiYieldFromDepositingCollateral: BigNumber
+  daiYieldFromDepositingCollateralAtNextPrice: BigNumber
 
-  // afterCollateralizationRatioAtNextPrice: BigNumber
-  // daiYieldFromDepositingCollateral: BigNumber
-  // daiYieldFromDepositingCollateralAtNextPrice: BigNumber
   // afterFreeCollateral: BigNumber
 }
 
@@ -56,11 +57,15 @@ export const defaultOpenVaultStateCalculations: OpenMultiplyVaultCalculations = 
   txFees: zero,
   maxDepositAmount: zero,
   maxDepositAmountUSD: zero,
+  maxGenerateAmount: zero,
   afterCollateralBalance: zero,
   afterCollateralizationRatio: zero,
+  afterCollateralizationRatioAtNextPrice: zero,
   loanFees: zero,
   oazoFee: zero,
   totalExposureUSD: zero,
+  daiYieldFromDepositingCollateral: zero,
+  daiYieldFromDepositingCollateralAtNextPrice: zero,
 }
 
 export function applyOpenMultiplyVaultCalculations(
@@ -69,8 +74,8 @@ export function applyOpenMultiplyVaultCalculations(
   const {
     depositAmount,
     balanceInfo: { collateralBalance },
-    priceInfo: { currentCollateralPrice },
-    ilkData: { liquidationRatio, debtFloor },
+    priceInfo: { currentCollateralPrice, nextCollateralPrice },
+    ilkData: { liquidationRatio, debtFloor, ilkDebtAvailable },
     quote,
     // swap, TODO use swap price
     slippage,
@@ -126,6 +131,8 @@ export function applyOpenMultiplyVaultCalculations(
 
   const totalExposure = depositAmount?.gt(0) ? totalExposureUSD.div(currentCollateralPrice) : zero
 
+  const totalExposureUSDAtNextPrice = totalExposure.times(nextCollateralPrice)
+
   const afterCollateralBalance = depositAmount
     ? collateralBalance.minus(depositAmount)
     : collateralBalance
@@ -145,6 +152,11 @@ export function applyOpenMultiplyVaultCalculations(
   const afterCollateralizationRatio =
     afterOutstandingDebt?.gt(0) && totalExposureUSD
       ? totalExposureUSD.div(afterOutstandingDebt)
+      : requiredCollRatioSafe || zero
+
+  const afterCollateralizationRatioAtNextPrice =
+    afterOutstandingDebt?.gt(0) && totalExposureUSDAtNextPrice
+      ? totalExposureUSDAtNextPrice.div(afterOutstandingDebt)
       : requiredCollRatioSafe || zero
 
   const afterNetValueUSD =
@@ -176,6 +188,29 @@ export function applyOpenMultiplyVaultCalculations(
   //   ? afterBuyingPowerUSD.div(marketPriceMaxSlippage)
   //   : zero
 
+  const daiYieldFromDepositingCollateral = totalExposure
+    ? totalExposure.times(currentCollateralPrice).div(liquidationRatio)
+    : zero
+
+  const daiYieldFromDepositingCollateralAtNextPrice = totalExposure
+    ? totalExposure.times(nextCollateralPrice).div(liquidationRatio)
+    : zero
+
+  const maxGenerateAmountCurrentPrice = daiYieldFromDepositingCollateral.gt(ilkDebtAvailable)
+    ? ilkDebtAvailable
+    : daiYieldFromDepositingCollateral
+
+  const maxGenerateAmountNextPrice = daiYieldFromDepositingCollateralAtNextPrice.gt(
+    ilkDebtAvailable,
+  )
+    ? ilkDebtAvailable
+    : daiYieldFromDepositingCollateralAtNextPrice
+
+  const maxGenerateAmount = BigNumber.minimum(
+    maxGenerateAmountCurrentPrice,
+    maxGenerateAmountNextPrice,
+  )
+
   return {
     ...state,
     maxDepositAmount,
@@ -200,13 +235,13 @@ export function applyOpenMultiplyVaultCalculations(
     totalExposureUSD,
     marketPrice,
 
-    // maxGenerateAmount,
+    maxGenerateAmount,
     // maxGenerateAmountCurrentPrice,
     // maxGenerateAmountNextPrice,
     // afterCollateralizationRatio,
-    // afterCollateralizationRatioAtNextPrice,
-    // daiYieldFromDepositingCollateral,
-    // daiYieldFromDepositingCollateralAtNextPrice,
+    afterCollateralizationRatioAtNextPrice,
+    daiYieldFromDepositingCollateral,
+    daiYieldFromDepositingCollateralAtNextPrice,
     // afterFreeCollateral,
   }
 }
