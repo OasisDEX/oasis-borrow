@@ -4,11 +4,14 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
+import { VaultType } from 'features/generalManageVault/generalManageVault'
+import { SaveVaultType } from 'features/generalManageVault/vaultTypeLocalStorage'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
-import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
+import { catchError, first, map, scan, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
@@ -115,7 +118,10 @@ export type ManageVaultStage =
   | 'manageInProgress'
   | 'manageFailure'
   | 'manageSuccess'
-  | 'multiplyTransitionConfirmation'
+  | 'multiplyTransitionWaitingForConfirmation'
+  | 'multiplyTransitionInProgress'
+  | 'multiplyTransitionFailure'
+  | 'multiplyTransitionSuccess'
 
 export interface MutableManageVaultState {
   stage: ManageVaultStage
@@ -199,9 +205,34 @@ export type ManageVaultState = MutableManageVaultState &
     currentStep: number
   }
 
+function saveVaultType(
+  saveVaultType$: SaveVaultType,
+  change: (ch: ManageVaultChange) => void,
+  state: ManageVaultState,
+) {
+  // assume that user went through ToS flow and can interact with application
+  const token = jwtAuthGetToken(state.account as string)
+
+  if (token) {
+    saveVaultType$(state.vault.id, token, VaultType.Multiply)
+      .pipe<ManageVaultChange>(
+        map(() => {
+          window.location.reload()
+          return { kind: 'multiplyTransitionSuccess' } as ManageVaultChange
+        }),
+        catchError(() => of({ kind: 'multiplyTransitionFailure' } as ManageVaultChange)),
+        startWith({ kind: 'multiplyTransitionInProgress' } as ManageVaultChange),
+      )
+      .subscribe((ch) => change(ch))
+  } else {
+    change({ kind: 'multiplyTransitionFailure' })
+  }
+}
+
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
+  saveVaultType$: SaveVaultType,
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ): ManageVaultState {
@@ -214,12 +245,14 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'multiplyTransitionConfirmation') {
+  if (
+    state.stage === 'multiplyTransitionWaitingForConfirmation' ||
+    state.stage === 'multiplyTransitionFailure'
+  ) {
     return {
       ...state,
       toggle: (stage) => change({ kind: 'toggleEditing', stage }),
-      // TO DO save to DB + redirect
-      progress: () => window.alert('Switch/Save UI'),
+      progress: () => saveVaultType(saveVaultType$, change, state),
       regress: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -371,6 +404,7 @@ export function createManageVault$(
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   vault$: (id: BigNumber) => Observable<Vault>,
+  saveVaultType$: SaveVaultType,
   id: BigNumber,
 ): Observable<ManageVaultState> {
   return context$.pipe(
@@ -450,7 +484,14 @@ export function createManageVault$(
                     scan(apply, initialState),
                     map(validateErrors),
                     map(validateWarnings),
-                    map(curry(addTransitions)(txHelpers$, connectedProxyAddress$, change)),
+                    map(
+                      curry(addTransitions)(
+                        txHelpers$,
+                        connectedProxyAddress$,
+                        saveVaultType$,
+                        change,
+                      ),
+                    ),
                   )
                 }),
               )

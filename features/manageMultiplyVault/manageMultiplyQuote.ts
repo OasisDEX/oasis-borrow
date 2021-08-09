@@ -12,7 +12,7 @@ import {
   tap,
 } from 'rxjs/operators'
 
-import { ManageMultiplyVaultState, ManageVaultChange } from './manageMultiplyVault'
+import { ManageMultiplyVaultState, ManageMultiplyVaultChange } from './manageMultiplyVault'
 
 type ExchangeQuoteSuccessChange = {
   kind: 'quote'
@@ -42,7 +42,7 @@ export type ExchangeQuoteChanges =
   | ExchangeSwapSuccessChange
   | ExchangeSwapFailureChange
 
-export function applyExchange(change: ManageVaultChange, state: ManageMultiplyVaultState) {
+export function applyExchange(change: ManageMultiplyVaultChange, state: ManageMultiplyVaultState) {
   if (change.kind === 'quote') {
     return {
       ...state,
@@ -104,11 +104,9 @@ export function createExchangeChange$(
           compareBigNumber(s1.paybackAmount, s2.paybackAmount)
         ),
     ),
-    tap((s) => console.log('NEW PARAMS')),
     debounceTime(500),
     switchMap((state) =>
       every5Seconds$.pipe(
-        tap((s) => console.log(`GETTING PRICE ${state.requiredCollRatio}`)),
         switchMap(() => {
           if (state.quote?.status === 'SUCCESS' && state.exchangeAction && state.collateralDelta) {
             return exchangeQuote$(

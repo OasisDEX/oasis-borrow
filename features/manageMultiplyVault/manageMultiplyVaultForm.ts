@@ -2,7 +2,7 @@ import {
   CloseVaultTo,
   MainAction,
   ManageMultiplyVaultState,
-  ManageVaultChange,
+  ManageMultiplyVaultChange,
   OtherAction,
 } from './manageMultiplyVault'
 import { allowanceDefaults } from './manageMultiplyVaultAllowances'
@@ -50,7 +50,7 @@ export const manageVaultFormDefaults: Partial<ManageMultiplyVaultState> = {
 }
 
 export function applyManageVaultForm(
-  change: ManageVaultChange,
+  change: ManageMultiplyVaultChange,
   state: ManageMultiplyVaultState,
 ): ManageMultiplyVaultState {
   // const {
