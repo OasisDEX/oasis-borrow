@@ -286,13 +286,20 @@ export function openVault(
                 ? txState.error
                 : undefined,
           }),
-        (txState) =>
-          of({
+        (txState) => {
+          const id = parseVaultIdFromReceiptLogs(
+            txState.status === TxStatus.Success && txState.receipt,
+          )
+
+          if (id) {
+            console.log('Here we should save "in the background" to DB, vault type regular vault')
+          }
+
+          return of({
             kind: 'openSuccess',
-            id: parseVaultIdFromReceiptLogs(
-              txState.status === TxStatus.Success && txState.receipt,
-            )!,
-          }),
+            id: id!,
+          })
+        },
       ),
     )
     .subscribe((ch) => change(ch))

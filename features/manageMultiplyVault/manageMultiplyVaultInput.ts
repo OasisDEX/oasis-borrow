@@ -1,52 +1,53 @@
 import { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
 
-import { ManageMultiplyVaultState, ManageVaultChange } from './manageMultiplyVault'
+import { ManageMultiplyVaultState, ManageMultiplyVaultChange } from './manageMultiplyVault'
 import { otherActionsDefaults } from './manageMultiplyVaultForm'
 
-interface DepositCollateralChange {
-  kind: 'depositCollateral'
-  depositCollateralAmount?: BigNumber
+interface DepositAmountChange {
+  kind: 'depositAmount'
+  depositAmount?: BigNumber
 }
 
-interface DepositCollateralUSDChange {
-  kind: 'depositCollateralUSD'
-  depositCollateralAmountUSD?: BigNumber
+interface DepositAmountUSDChange {
+  kind: 'depositAmountUSD'
+  depositAmountUSD?: BigNumber
 }
 
-interface DepositCollateralMaxChange {
-  kind: 'depositCollateralMax'
+interface DepositAmountMaxChange {
+  kind: 'depositAmountMax'
 }
 
-interface DepositDaiChange {
-  kind: 'depositDai'
-  depositDaiAmount?: BigNumber
+interface paybackAmountChange {
+  kind: 'paybackAmount'
+  paybackAmount?: BigNumber
 }
 
-interface DepositDaiMaxChange {
-  kind: 'depositDaiMax'
-}
-interface WithdrawCollateralChange {
-  kind: 'withdrawCollateral'
-  withdrawCollateralAmount?: BigNumber
+interface PaybackAmountMaxChange {
+  kind: 'paybackAmountMax'
 }
 
-interface WithdrawCollateralUSDChange {
-  kind: 'withdrawCollateralUSD'
-  withdrawCollateralAmountUSD?: BigNumber
+interface WithdrawAmountChange {
+  kind: 'withdrawAmount'
+  withdrawAmount?: BigNumber
 }
 
-interface WithdrawCollateralMaxChange {
-  kind: 'withdrawCollateralMax'
+interface WithdrawAmountUSDChange {
+  kind: 'withdrawAmountUSD'
+  withdrawAmountUSD?: BigNumber
 }
 
-interface WithdrawDaiChange {
-  kind: 'withdrawDai'
-  withdrawDaiAmount?: BigNumber
+interface WithdrawAmountMaxChange {
+  kind: 'withdrawAmountMax'
 }
 
-interface WithdrawDaiMaxChange {
-  kind: 'withdrawDaiMax'
+interface GenerateAmountChange {
+  kind: 'generateAmount'
+  generateAmount?: BigNumber
+}
+
+interface GenerateAmountMaxChange {
+  kind: 'generateAmountMax'
 }
 
 interface RequiredCollRatioChange {
@@ -81,16 +82,16 @@ interface SellMaxChange {
 }
 
 export type ManageVaultInputChange =
-  | DepositCollateralChange
-  | DepositCollateralUSDChange
-  | DepositCollateralMaxChange
-  | DepositDaiChange
-  | DepositDaiMaxChange
-  | WithdrawCollateralChange
-  | WithdrawCollateralUSDChange
-  | WithdrawCollateralMaxChange
-  | WithdrawDaiChange
-  | WithdrawDaiMaxChange
+  | DepositAmountChange
+  | DepositAmountUSDChange
+  | DepositAmountMaxChange
+  | paybackAmountChange
+  | PaybackAmountMaxChange
+  | WithdrawAmountChange
+  | WithdrawAmountUSDChange
+  | WithdrawAmountMaxChange
+  | GenerateAmountChange
+  | GenerateAmountMaxChange
   | BuyChange
   | BuyUSDChange
   | BuyMaxChange
@@ -105,7 +106,10 @@ export type ManageVaultInputChange =
 //   paybackAmount: undefined,
 // }
 
-export function applyManageVaultInput(change: ManageVaultChange, state: ManageMultiplyVaultState) {
+export function applyManageVaultInput(
+  change: ManageMultiplyVaultChange,
+  state: ManageMultiplyVaultState,
+) {
   // const canDeposit =
   //   (state.stage === 'daiEditing' && state.generateAmount && state.showDepositAndGenerateOption) ||
   //   state.stage === 'collateralEditing'
@@ -381,7 +385,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
     }
   }
 
-  if (change.kind === 'depositCollateral') {
+  if (change.kind === 'depositAmount') {
     const {
       priceInfo: { currentCollateralPrice },
     } = state
@@ -389,12 +393,12 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
     return {
       ...state,
       ...otherActionsDefaults,
-      depositCollateralAmount: change.depositCollateralAmount,
-      depositCollateralAmountUSD: change.depositCollateralAmount?.times(currentCollateralPrice),
+      depositAmount: change.depositAmount,
+      depositAmountUSD: change.depositAmount?.times(currentCollateralPrice),
     }
   }
 
-  if (change.kind === 'depositCollateralUSD') {
+  if (change.kind === 'depositAmountUSD') {
     const {
       priceInfo: { currentCollateralPrice },
     } = state
@@ -402,89 +406,85 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageMu
     return {
       ...state,
       ...otherActionsDefaults,
-      depositCollateralAmountUSD: change.depositCollateralAmountUSD,
-      depositCollateralAmount: change.depositCollateralAmountUSD?.div(currentCollateralPrice),
+      depositAmountUSD: change.depositAmountUSD,
+      depositAmount: change.depositAmountUSD?.div(currentCollateralPrice),
     }
   }
 
-  if (change.kind === 'depositCollateralMax') {
-    const { maxDepositCollateral, maxDepositCollateralUSD } = state
+  if (change.kind === 'depositAmountMax') {
+    const { maxDepositAmount, maxDepositAmountUSD } = state
 
     return {
       ...state,
       ...otherActionsDefaults,
-      depositCollateralAmount: maxDepositCollateral,
-      depositCollateralAmountUSD: maxDepositCollateralUSD,
+      depositAmount: maxDepositAmount,
+      depositAmountUSD: maxDepositAmountUSD,
     }
   }
 
-  if (change.kind === 'depositDai') {
+  if (change.kind === 'paybackAmount') {
     return {
       ...state,
       ...otherActionsDefaults,
-      depositDaiAmount: change.depositDaiAmount,
+      paybackAmount: change.paybackAmount,
     }
   }
 
-  if (change.kind === 'depositDaiMax') {
-    const { maxDepositDai } = state
+  if (change.kind === 'paybackAmountMax') {
+    const { maxPaybackAmount } = state
 
     return {
       ...state,
       ...otherActionsDefaults,
-      depositDaiAmount: maxDepositDai,
+      paybackAmount: maxPaybackAmount,
     }
   }
 
-  if (change.kind === 'withdrawCollateral') {
+  if (change.kind === 'withdrawAmount') {
     const { priceInfo } = state
     return {
       ...state,
       ...otherActionsDefaults,
-      withdrawCollateralAmount: change.withdrawCollateralAmount,
-      withdrawCollateralAmountUSD: change.withdrawCollateralAmount?.times(
-        priceInfo.currentCollateralPrice,
-      ),
+      withdrawAmount: change.withdrawAmount,
+      withdrawAmountUSD: change.withdrawAmount?.times(priceInfo.currentCollateralPrice),
     }
   }
 
-  if (change.kind === 'withdrawCollateralUSD') {
+  if (change.kind === 'withdrawAmountUSD') {
     const { priceInfo } = state
     return {
       ...state,
       ...otherActionsDefaults,
-      withdrawCollateralAmountUSD: change.withdrawCollateralAmountUSD,
-      withdrawCollateralAmount: change.withdrawCollateralAmountUSD?.div(
-        priceInfo.currentCollateralPrice,
-      ),
+      withdrawAmountUSD: change.withdrawAmountUSD,
+      withdrawAmount: change.withdrawAmountUSD?.div(priceInfo.currentCollateralPrice),
     }
   }
 
-  if (change.kind === 'withdrawCollateralMax') {
-    const { maxWithdrawCollateral, maxWithdrawCollateralUSD } = state
+  if (change.kind === 'withdrawAmountMax') {
+    const { maxWithdrawAmount, maxWithdrawAmountUSD } = state
 
     return {
       ...state,
       ...otherActionsDefaults,
-      withdrawCollateralAmount: maxWithdrawCollateral,
-      withdrawCollateralAmountUSD: maxWithdrawCollateralUSD,
+      withdrawAmount: maxWithdrawAmount,
+      withdrawAmountUSD: maxWithdrawAmountUSD,
     }
   }
 
-  if (change.kind === 'withdrawDai') {
+  if (change.kind === 'generateAmount') {
     return {
       ...state,
       ...otherActionsDefaults,
-      withdrawDaiAmount: change.withdrawDaiAmount,
+      generateAmount: change.generateAmount,
     }
   }
 
-  if (change.kind === 'withdrawDaiMax') {
-    const { maxWithdrawDai } = state
+  if (change.kind === 'generateAmountMax') {
+    const { maxGenerateAmount } = state
     return {
       ...state,
       ...otherActionsDefaults,
-      withdrawDaiAmount: maxWithdrawDai,
+      generateAmount: maxGenerateAmount,
     }
   }
 

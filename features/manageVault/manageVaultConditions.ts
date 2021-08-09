@@ -108,7 +108,10 @@ export function applyManageVaultStageCategorisation(state: ManageVaultState) {
         currentStep: totalSteps,
       }
     case 'multiplyTransitionEditing':
-    case 'multiplyTransitionConfirmation':
+    case 'multiplyTransitionWaitingForConfirmation':
+    case 'multiplyTransitionInProgress':
+    case 'multiplyTransitionFailure':
+    case 'multiplyTransitionSuccess':
       return {
         ...state,
         ...defaultManageVaultStageCategories,
@@ -377,6 +380,8 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     'daiAllowanceInProgress',
     'manageInProgress',
     'manageWaitingForApproval',
+    'multiplyTransitionInProgress',
+    'multiplyTransitionSuccess',
   ] as ManageVaultStage[]).some((s) => s === stage)
 
   const withdrawCollateralOnVaultUnderDebtFloor =
@@ -435,7 +440,8 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     'manageWaitingForConfirmation',
     'manageFailure',
     'multiplyTransitionEditing',
-    'multiplyTransitionConfirmation',
+    'multiplyTransitionWaitingForConfirmation',
+    'multiplyTransitionFailure',
   ] as ManageVaultStage[]).some((s) => s === stage)
 
   return {

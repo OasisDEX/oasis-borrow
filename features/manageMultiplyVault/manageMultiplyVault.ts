@@ -13,10 +13,10 @@ import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import {
   applyExchange,
+  createExchangeChange$,
   createInitialQuoteChange,
   ExchangeQuoteChanges,
   SLIPPAGE,
-  createExchangeChange$,
 } from './manageMultiplyQuote'
 import {
   applyManageVaultAllowance,
@@ -69,7 +69,7 @@ interface ManageVaultInjectedOverrideChange {
 }
 
 function applyManageVaultInjectedOverride(
-  change: ManageVaultChange,
+  change: ManageMultiplyVaultChange,
   state: ManageMultiplyVaultState,
 ) {
   if (change.kind === 'injectStateOverride') {
@@ -81,7 +81,7 @@ function applyManageVaultInjectedOverride(
   return state
 }
 
-export type ManageVaultChange =
+export type ManageMultiplyVaultChange =
   | ManageVaultInputChange
   | ManageVaultFormChange
   | ManageVaultAllowanceChange
@@ -91,7 +91,7 @@ export type ManageVaultChange =
   | ManageVaultInjectedOverrideChange
   | ExchangeQuoteChanges
 
-function apply(state: ManageMultiplyVaultState, change: ManageVaultChange) {
+function apply(state: ManageMultiplyVaultState, change: ManageMultiplyVaultChange) {
   const s1 = applyManageVaultInput(change, state)
   const s1_ = applyExchange(change, s1)
   const s2 = applyManageVaultForm(change, s1_)
@@ -147,12 +147,12 @@ export interface MutableManageMultiplyVaultState {
   otherAction: OtherAction
   showSliderController: boolean
 
-  depositCollateralAmount?: BigNumber
-  depositCollateralAmountUSD?: BigNumber
-  withdrawCollateralAmount?: BigNumber
-  withdrawCollateralAmountUSD?: BigNumber
-  depositDaiAmount?: BigNumber
-  withdrawDaiAmount?: BigNumber
+  depositAmount?: BigNumber
+  depositAmountUSD?: BigNumber
+  withdrawAmount?: BigNumber
+  withdrawAmountUSD?: BigNumber
+  paybackAmount?: BigNumber
+  generateAmount?: BigNumber
   closeVaultTo: CloseVaultTo
 
   collateralAllowanceAmount?: BigNumber
@@ -187,17 +187,18 @@ interface ManageVaultFunctions {
   regress?: () => void
   toggle?: () => void
 
-  updateDepositCollateral?: (depositCollateral?: BigNumber) => void
-  updateDepositCollateralUSD?: (depositCollateralUSD?: BigNumber) => void
-  updateDepositCollateralMax?: () => void
-  updateDepositDai?: (depositDai?: BigNumber) => void
-  updateDepositDaiMax?: () => void
+  updateDepositAmount?: (depositAmount?: BigNumber) => void
+  updateDepositAmountUSD?: (depositAmountUSD?: BigNumber) => void
+  updateDepositAmountMax?: () => void
+  updatePaybackAmount?: (paybackAmount?: BigNumber) => void
+  updatePaybackAmountMax?: () => void
 
-  updateWithdrawCollateral?: (withdrawCollateral?: BigNumber) => void
-  updateWithdrawCollateralUSD?: (withdrawCollateralUSD?: BigNumber) => void
-  updateWithdrawCollateralMax?: () => void
-  updateWithdrawDai?: (withdrawDai?: BigNumber) => void
-  updateWithdrawDaiMax?: () => void
+  updateWithdrawAmount?: (withdrawAmount?: BigNumber) => void
+  updateWithdrawAmountUSD?: (withdrawAmountUSD?: BigNumber) => void
+  updateWithdrawAmountMax?: () => void
+  updateGenerateAmount?: (generateAmount?: BigNumber) => void
+  updateGenerateAmountMax?: () => void
+
   setCloseVaultTo?: (closeVaultTo: CloseVaultTo) => void
 
   updateCollateralAllowanceAmount?: (amount?: BigNumber) => void
@@ -248,34 +249,34 @@ export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
-  change: (ch: ManageVaultChange) => void,
+  change: (ch: ManageMultiplyVaultChange) => void,
   state: ManageMultiplyVaultState,
 ): ManageMultiplyVaultState {
   if (state.stage === 'adjustPosition' || state.stage === 'otherActions') {
     return {
       ...state,
-      updateDepositCollateral: (depositCollateralAmount?: BigNumber) => {
-        change({ kind: 'depositCollateral', depositCollateralAmount })
+      updateDepositAmount: (depositAmount?: BigNumber) => {
+        change({ kind: 'depositAmount', depositAmount })
       },
-      updateDepositCollateralUSD: (depositCollateralAmountUSD?: BigNumber) =>
-        change({ kind: 'depositCollateralUSD', depositCollateralAmountUSD }),
-      updateDepositCollateralMax: () => change({ kind: 'depositCollateralMax' }),
+      updateDepositAmountUSD: (depositAmountUSD?: BigNumber) =>
+        change({ kind: 'depositAmountUSD', depositAmountUSD }),
+      updateDepositAmountMax: () => change({ kind: 'depositAmountMax' }),
 
-      updateDepositDai: (depositDaiAmount?: BigNumber) => {
-        change({ kind: 'depositDai', depositDaiAmount })
+      updatePaybackAmount: (paybackAmount?: BigNumber) => {
+        change({ kind: 'paybackAmount', paybackAmount })
       },
-      updateDepositDaiMax: () => change({ kind: 'depositDaiMax' }),
-      updateWithdrawCollateral: (withdrawCollateralAmount?: BigNumber) => {
-        change({ kind: 'withdrawCollateral', withdrawCollateralAmount })
+      updatePaybackAmountMax: () => change({ kind: 'paybackAmountMax' }),
+      updateWithdrawAmount: (withdrawAmount?: BigNumber) => {
+        change({ kind: 'withdrawAmount', withdrawAmount })
       },
-      updateWithdrawCollateralUSD: (withdrawCollateralAmountUSD?: BigNumber) =>
-        change({ kind: 'withdrawCollateralUSD', withdrawCollateralAmountUSD }),
-      updateWithdrawCollateralMax: () => change({ kind: 'withdrawCollateralMax' }),
+      updateWithdrawAmountUSD: (withdrawAmountUSD?: BigNumber) =>
+        change({ kind: 'withdrawAmountUSD', withdrawAmountUSD }),
+      updateWithdrawAmountMax: () => change({ kind: 'withdrawAmountMax' }),
 
-      updateWithdrawDai: (withdrawDaiAmount?: BigNumber) => {
-        change({ kind: 'withdrawDai', withdrawDaiAmount })
+      updateGenerateAmount: (generateAmount?: BigNumber) => {
+        change({ kind: 'generateAmount', generateAmount })
       },
-      updateWithdrawDaiMax: () => change({ kind: 'withdrawDaiMax' }),
+      updateGenerateAmountMax: () => change({ kind: 'generateAmountMax' }),
 
       setCloseVaultTo: (closeVaultTo: CloseVaultTo) =>
         change({ kind: 'closeVaultTo', closeVaultTo }),
@@ -442,9 +443,9 @@ export function createManageMultiplyVault$(
               return combineLatest(collateralAllowance$, daiAllowance$).pipe(
                 first(),
                 switchMap(([collateralAllowance, daiAllowance]) => {
-                  const change$ = new Subject<ManageVaultChange>()
+                  const change$ = new Subject<ManageMultiplyVaultChange>()
 
-                  function change(ch: ManageVaultChange) {
+                  function change(ch: ManageMultiplyVaultChange) {
                     change$.next(ch)
                   }
 

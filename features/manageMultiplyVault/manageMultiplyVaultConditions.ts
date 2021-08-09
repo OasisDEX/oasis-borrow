@@ -188,17 +188,13 @@ export function applyManageVaultConditions(
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
 
-    depositDaiAmount,
-    depositCollateralAmount,
-    withdrawDaiAmount,
-    withdrawCollateralAmount,
+    paybackAmount,
+    depositAmount,
+    generateAmount,
+    withdrawAmount,
     requiredCollRatio,
   } = state
   //TODO
-  const depositAmount = depositCollateralAmount
-  const generateAmount = zero
-  const withdrawAmount = zero
-  const paybackAmount = zero
   const maxWithdrawAmountAtCurrentPrice = zero
   const maxWithdrawAmountAtNextPrice = zero
   const maxGenerateAmountAtCurrentPrice = zero
@@ -208,10 +204,10 @@ export function applyManageVaultConditions(
   const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)
 
   const inputAmountsEmpty =
-    depositDaiAmount === undefined &&
-    depositCollateralAmount === undefined &&
-    withdrawDaiAmount === undefined &&
-    withdrawCollateralAmount === undefined &&
+    paybackAmount === undefined &&
+    depositAmount === undefined &&
+    generateAmount === undefined &&
+    withdrawAmount === undefined &&
     requiredCollRatio === undefined
 
   const vaultWillBeAtRiskLevelDanger =

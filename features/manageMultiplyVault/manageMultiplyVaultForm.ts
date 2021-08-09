@@ -2,7 +2,7 @@ import {
   CloseVaultTo,
   MainAction,
   ManageMultiplyVaultState,
-  ManageVaultChange,
+  ManageMultiplyVaultChange,
   OtherAction,
 } from './manageMultiplyVault'
 import { allowanceDefaults } from './manageMultiplyVaultAllowances'
@@ -34,12 +34,12 @@ export type ManageVaultFormChange =
     }
 
 export const otherActionsDefaults: Partial<ManageMultiplyVaultState> = {
-  depositCollateralAmount: undefined,
-  depositCollateralAmountUSD: undefined,
-  depositDaiAmount: undefined,
-  withdrawCollateralAmount: undefined,
-  withdrawCollateralAmountUSD: undefined,
-  withdrawDaiAmount: undefined,
+  depositAmount: undefined,
+  depositAmountUSD: undefined,
+  paybackAmount: undefined,
+  withdrawAmount: undefined,
+  withdrawAmountUSD: undefined,
+  generateAmount: undefined,
 
   requiredCollRatio: undefined,
 }
@@ -50,7 +50,7 @@ export const manageVaultFormDefaults: Partial<ManageMultiplyVaultState> = {
 }
 
 export function applyManageVaultForm(
-  change: ManageVaultChange,
+  change: ManageMultiplyVaultChange,
   state: ManageMultiplyVaultState,
 ): ManageMultiplyVaultState {
   // const {
