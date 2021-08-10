@@ -27,6 +27,9 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
     inputAmountsEmpty,
     multiply,
     afterMultiply,
+    fees,
+    loanFee,
+    oazoFee,
     vault: {
       collateralizationRatio,
       lockedCollateral,
@@ -40,10 +43,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
   const collRatioColor = getCollRatioColor(props, collateralizationRatio)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
-  // mock txFees
-  const txFees = new BigNumber(0.11)
-
-  return inputAmountsEmpty ? (
+  return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Vault Changes">
       <VaultChangesInformationItem
         label={`${t('system.collateral-locked')}`}
@@ -132,7 +132,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
             sx={{ alignItems: 'center', cursor: 'pointer' }}
             onClick={() => setShowFees(!showFees)}
           >
-            ${formatAmount(txFees, 'USD')}{' '}
+            ${formatAmount(fees, 'USD')}{' '}
             <Icon
               name={`chevron_${showFees ? 'up' : 'down'}`}
               size="auto"
@@ -146,11 +146,11 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
         <Grid pl={3} gap={2}>
           <VaultChangesInformationItem
             label={'3rd party protocol fees'}
-            value={`$${formatAmount(txFees, 'USD')}`}
+            value={`$${formatAmount(loanFee, 'USD')}`}
           />
           <VaultChangesInformationItem
             label={'Oasis fee'}
-            value={`$${formatAmount(txFees, 'USD')}`}
+            value={`$${formatAmount(oazoFee, 'USD')}`}
           />
         </Grid>
       )}

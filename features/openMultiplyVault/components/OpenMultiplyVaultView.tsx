@@ -30,6 +30,7 @@ function OpenMultiplyVaultTitle({
   token,
   totalSteps,
   currentStep,
+  stage,
 }: OpenMultiplyVaultState) {
   const { t } = useTranslation()
   return (
@@ -42,6 +43,8 @@ function OpenMultiplyVaultTitle({
             ? t('vault-form.header.proxy')
             : isAllowanceStage
             ? t('vault-form.header.allowance', { token: token.toUpperCase() })
+            : stage === 'openInProgress'
+            ? t('vault-form.header.confirm-in-progress')
             : t('vault-form.header.confirm')}
         </Text>
       </WithVaultFormStepIndicator>
@@ -52,6 +55,8 @@ function OpenMultiplyVaultTitle({
           ? t('vault-form.subtext.proxy')
           : isAllowanceStage
           ? t('vault-form.subtext.allowance')
+          : stage === 'openInProgress'
+          ? t('vault-form.subtext.confirm-in-progress')
           : t('vault-form.subtext.confirm')}
       </Text>
     </Box>

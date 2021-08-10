@@ -124,6 +124,10 @@ export function OpenMultiplyVaultButton(props: OpenMultiplyVaultState) {
     trackingEvent = () => trackingEvents.approveAllowance(firstCDP)
   }
 
+  if (stage === 'openInProgress') {
+    return null
+  }
+
   return (
     <>
       <Button
