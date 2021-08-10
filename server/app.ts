@@ -66,3 +66,26 @@ export function getApp(config: Config, { nextHandler }: Dependencies): express.A
 
   return app
 }
+
+export function postVault() {
+  // TODO: ŁW tbd add all possible req/res scenarios
+
+  // const vault = await selectVaultById(prisma, {
+  //   vaultId: params.id,
+  // })
+
+  // if (vault==null){
+  //   console.log('vault doesnt exist')
+  // }
+//   TODO LW: add an updating existing vault action do it here or other method maybe ?
+  // else {
+  //   prisma.vault.create({
+  //     data: {
+  //       vaultId: vault.vaultId,
+  //       type: vault.type
+  //     }
+  //   })
+  // }
+
+  // }
+}

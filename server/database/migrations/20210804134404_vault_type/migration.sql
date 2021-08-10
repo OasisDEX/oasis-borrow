@@ -4,7 +4,8 @@ CREATE TYPE "VaultType" AS ENUM ('REGULAR', 'MULTIPLY');
 -- CreateTable
 CREATE TABLE "Vault" (
     "vaultId" INTEGER NOT NULL,
-    "type" "VaultType" NOT NULL
+    "type" "VaultType" NOT NULL,
+    "proxyAddres" TEXT NOT NULL
 );
 
 -- CreateIndex

@@ -27,6 +27,7 @@ model TosApproval {
 model Vault {
   vaultId Int @unique
   type VaultType
+  proxyAddres String
 }
 
 enum VaultType {
