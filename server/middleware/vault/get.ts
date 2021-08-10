@@ -1,7 +1,7 @@
+import { PrismaClient, Vault } from '@prisma/client'
+import { prisma } from 'server/prisma'
 import express from 'express'
-import { PrismaClient, Vault, VaultType } from '@prisma/client'
 import * as z from 'zod'
-
 
 const paramsSchema = z.object({
     id: z.number(),
@@ -11,13 +11,28 @@ const paramsSchema = z.object({
 export async function get(req: express.Request, res: express.Response) {
 
   const params = paramsSchema.parse(req.params)
+
+  const vault = await selectVaultById(prisma, {
+    vaultId: params.id
+  })
+
+  if (vault === undefined || vault == null) {
+    return res.sendStatus(404)
+  } else {
+    return res
+    .status(200)
+    .json(
+      {
+        vaultId: vault.vaultId,
+        type: vault.type,
+        proxyAddress: vault.proxyAddres
+      }
+    )
+  }
    
 }
 
-
-
-
-export async function selectVaultById(
+async function selectVaultById(
     prisma: PrismaClient,
     { vaultId }: { vaultId: number },
   ): Promise<Vault | null> {
@@ -26,3 +41,5 @@ export async function selectVaultById(
     })
     return result
   }
+
+// function serializeVault(vault: Vault)

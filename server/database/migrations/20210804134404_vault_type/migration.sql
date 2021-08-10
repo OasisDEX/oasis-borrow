@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "VaultType" AS ENUM ('REGULAR', 'MULTIPLY');
+CREATE TYPE "VaultType" AS ENUM ('BORROW', 'MULTIPLY');
 
 -- CreateTable
 CREATE TABLE "Vault" (
