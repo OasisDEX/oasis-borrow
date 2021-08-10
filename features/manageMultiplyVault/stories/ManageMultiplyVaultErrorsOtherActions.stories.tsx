@@ -12,6 +12,30 @@ const vaultERC20 = {
   debt: new BigNumber('3000'),
 }
 
+export const VaultUnderCollateralized = manageMultiplyVaultStory({
+  title: 'Warning is shown when the vault collateralization is below the liquidation ratio',
+  vault: vaultERC20,
+  proxyAddress,
+})({
+  stage: 'otherActions',
+  otherAction: 'withdrawDai',
+  generateAmount: new BigNumber(34000),
+})
+
+export const VaultUnderCollateralizedAtNextPrice = manageMultiplyVaultStory({
+  title:
+    'Warning is shown when the vault collateralization is below the liquidation ratio after the next price update',
+  vault: vaultERC20,
+  priceInfo: {
+    collateralChangePercentage: new BigNumber('-0.9'),
+  },
+  proxyAddress,
+})({
+  stage: 'otherActions',
+  otherAction: 'withdrawDai',
+  generateAmount: new BigNumber(700),
+})
+
 export const DepositAmountEmpty = manageMultiplyVaultStory({
   title:
     'If deposit input field is empty when in "Other Actions" then we disable the progress button and suggest user to enter an amount',
@@ -352,5 +376,5 @@ export const CustomDaiAllowanceAmountLessThanDepositAmount = manageMultiplyVault
 
 // eslint-disable-next-line import/no-default-export
 export default {
-  title: 'ManageMultiplyVault/Blocking Flow',
+  title: 'ManageMultiplyVault/Blocking-Flow-Other-Actions',
 }

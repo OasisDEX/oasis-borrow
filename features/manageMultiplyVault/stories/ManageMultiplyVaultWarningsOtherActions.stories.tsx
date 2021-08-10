@@ -15,7 +15,11 @@ export const NoProxyAddress = manageMultiplyVaultStory({
   title:
     'Warning is shown that the connected account has no proxy address and prior to executing the proposed transaction will have to set their proxy and make applicable allowances given the context of their action',
   vault: vaultERC20,
-})()
+})({
+  stage: 'otherActions',
+  otherAction: 'depositCollateral',
+  depositAmount: new BigNumber('1'),
+})
 
 export const InsufficientCollateralAllowance = manageMultiplyVaultStory({
   title:
@@ -183,30 +187,6 @@ export const VaultWillBeAtRiskLevelWarningAtNextPrice = manageMultiplyVaultStory
   generateAmount: new BigNumber('2000'),
 })
 
-export const VaultUnderCollateralized = manageMultiplyVaultStory({
-  title: 'Warning is shown when the vault collateralization is below the liquidation ratio',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('10000'),
-  },
-  proxyAddress,
-})()
-
-// export const VaultUnderCollateralizedAtNextPrice = manageMultiplyVaultStory({
-//   title:
-//     'Warning is shown when the vault collateralization is below the liquidation ratio after the next price update',
-//   vault: {
-//     ilk: 'WBTC-A',
-//     collateral: new BigNumber('20'),
-//     debt: new BigNumber('2000'),
-//   },
-//   priceInfo: {
-//     collateralChangePercentage: new BigNumber('-0.9'),
-//   },
-//   proxyAddress,
-// })()
-
 export const PayingBackAllDebt = manageMultiplyVaultStory({
   title:
     'Warning is shown when a user is paying back all outstanding debt in a vault. After this action all debt should be cleared from the vault',
@@ -341,10 +321,10 @@ export const GeneratingAllDaiFromTotalCollateralAtNextPrice = manageMultiplyVaul
 })({
   stage: 'otherActions',
   otherAction: 'withdrawDai',
-  generateAmount: new BigNumber('64330'),
+  generateAmount: new BigNumber(63999.94),
 })
 
 // eslint-disable-next-line import/no-default-export
 export default {
-  title: 'ManageMultiplyVault/Non-Blocking',
+  title: 'ManageMultiplyVault/Non-Blocking-Other-Actions',
 }

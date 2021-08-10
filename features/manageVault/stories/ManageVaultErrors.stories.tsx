@@ -6,6 +6,36 @@ import { one, zero } from 'helpers/zero'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
+export const VaultUnderCollateralized = manageVaultStory({
+  title: 'Warning is shown when the vault collateralization is below the liquidation ratio',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('10000'),
+  },
+  proxyAddress,
+})({
+  stage: 'daiEditing',
+  generateAmount: new BigNumber(111),
+})
+
+export const VaultUnderCollateralizedAtNextPrice = manageVaultStory({
+  title:
+    'Warning is shown when the vault collateralization is below the liquidation ratio after the next price update',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('2000'),
+  },
+  priceInfo: {
+    collateralChangePercentage: new BigNumber('-0.9'),
+  },
+  proxyAddress,
+})({
+  stage: 'daiEditing',
+  generateAmount: new BigNumber(111),
+})
+
 export const DepositAndWithdrawAmountsEmpty = manageVaultStory({
   title:
     'If both the deposit and withdraw input fields are empty when editing "Collateral" then we disable the progress button and suggest user to enter an amount',

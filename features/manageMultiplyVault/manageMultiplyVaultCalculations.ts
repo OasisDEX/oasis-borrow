@@ -518,12 +518,6 @@ export function applyManageVaultCalculations(
   const multiply = lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
   const afterMultiply = afterLockedCollateralUSD.div(afterLockedCollateralUSD.minus(afterDebt))
 
-  console.log(`
-    multiply: ${multiply}
-    afterMultiply: ${afterMultiply}
-  
-  `)
-
   const afterLiquidationPrice = currentCollateralPrice
     .times(liquidationRatio)
     .div(afterCollateralizationRatio)

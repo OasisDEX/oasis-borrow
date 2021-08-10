@@ -181,30 +181,6 @@ export const VaultWillBeAtRiskLevelWarningAtNextPrice = manageVaultStory({
   generateAmount: new BigNumber('2000'),
 })
 
-export const VaultUnderCollateralized = manageVaultStory({
-  title: 'Warning is shown when the vault collateralization is below the liquidation ratio',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('10000'),
-  },
-  proxyAddress,
-})()
-
-export const VaultUnderCollateralizedAtNextPrice = manageVaultStory({
-  title:
-    'Warning is shown when the vault collateralization is below the liquidation ratio after the next price update',
-  vault: {
-    ilk: 'WBTC-A',
-    collateral: new BigNumber('20'),
-    debt: new BigNumber('2000'),
-  },
-  priceInfo: {
-    collateralChangePercentage: new BigNumber('-0.9'),
-  },
-  proxyAddress,
-})()
-
 export const PayingBackAllDebt = manageVaultStory({
   title:
     'Warning is shown when a user is paying back all outstanding debt in a vault. After this action all debt should be cleared from the vault',
