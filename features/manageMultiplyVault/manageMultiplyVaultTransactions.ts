@@ -227,7 +227,17 @@ export function applyManageVaultTransaction(
 export function adjustPosition(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageMultiplyVaultChange) => void,
-  { proxyAddress, vault: { ilk, token, id }, exchangeAction }: ManageMultiplyVaultState,
+  {
+    account,
+    proxyAddress,
+    vault: { ilk, token, id },
+    exchangeAction,
+    debtDelta,
+    depositAmount,
+    collateralDelta,
+    swap,
+    slippage,
+  }: ManageMultiplyVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -235,15 +245,15 @@ export function adjustPosition(
       switchMap(({ sendWithGasEstimation }) =>
         sendWithGasEstimation(adjustMultiplyVault, {
           kind: TxMetaKind.adjustPosition,
-          depositCollateral: zero,
-          requiredDebt: zero,
-          borrowedCollateral: zero,
-          userAddress: '0x',
+          depositCollateral: depositAmount || zero,
+          requiredDebt: debtDelta?.abs() || zero,
+          borrowedCollateral: collateralDelta?.abs() || zero,
+          userAddress: account!,
           proxyAddress: proxyAddress!,
-          exchangeAddress: '0x',
-          exchangeData: '0x',
-          slippage: zero,
-          action: exchangeAction!, // TODO make sure it's defined
+          exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
+          exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
+          slippage: slippage,
+          action: exchangeAction!,
           token,
           id,
           ilk,

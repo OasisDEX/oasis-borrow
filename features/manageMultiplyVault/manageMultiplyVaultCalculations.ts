@@ -55,15 +55,16 @@ export interface ManageVaultCalculations {
   loanFee: BigNumber
   oazoFee: BigNumber
   fees: BigNumber
+  netValue: BigNumber
+  afterNetValue: BigNumber
+  buyingPower: BigNumber
+  afterBuyingPower: BigNumber
 
   debtDelta?: BigNumber
   collateralDelta?: BigNumber
 
   marketPrice?: BigNumber
   marketPriceMaxSlippage?: BigNumber
-
-  netValue: BigNumber
-  afterNetValue: BigNumber
 }
 
 export const MAX_COLL_RATIO = new BigNumber(5)
@@ -113,6 +114,8 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
 
   netValue: zero,
   afterNetValue: zero,
+  buyingPower: zero,
+  afterBuyingPower: zero,
 }
 
 /*

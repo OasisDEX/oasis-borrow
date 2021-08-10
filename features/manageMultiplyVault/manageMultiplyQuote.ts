@@ -2,7 +2,15 @@ import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { EMPTY, Observable } from 'rxjs'
-import { debounceTime, distinctUntilChanged, filter, map, switchMap, take } from 'rxjs/operators'
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  retry,
+  switchMap,
+  take,
+} from 'rxjs/operators'
 
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
@@ -72,7 +80,15 @@ export function swapToChange(swap: Quote) {
 }
 
 function compareBigNumber(a: BigNumber | undefined, b: BigNumber | undefined) {
-  return !!a && !!b && a.eq(b)
+  if (a === undefined && b === undefined) {
+    return true
+  }
+
+  if (a === undefined || b === undefined) {
+    return false
+  }
+
+  return a.eq(b)
 }
 
 export function createExchangeChange$(
@@ -85,16 +101,19 @@ export function createExchangeChange$(
   state$: Observable<ManageMultiplyVaultState>,
 ) {
   return state$.pipe(
-    filter((state) => !state.inputAmountsEmpty),
+    filter(
+      (state) =>
+        !state.inputAmountsEmpty &&
+        state.quote?.status === 'SUCCESS' &&
+        state.collateralDelta !== undefined,
+    ),
     distinctUntilChanged(
       (s1, s2) =>
-        !(
-          compareBigNumber(s1.requiredCollRatio, s2.requiredCollRatio) &&
-          compareBigNumber(s1.depositAmount, s2.depositAmount) &&
-          compareBigNumber(s1.withdrawAmount, s2.withdrawAmount) &&
-          compareBigNumber(s1.generateAmount, s2.generateAmount) &&
-          compareBigNumber(s1.paybackAmount, s2.paybackAmount)
-        ),
+        compareBigNumber(s1.requiredCollRatio, s2.requiredCollRatio) &&
+        compareBigNumber(s1.depositAmount, s2.depositAmount) &&
+        compareBigNumber(s1.withdrawAmount, s2.withdrawAmount) &&
+        compareBigNumber(s1.generateAmount, s2.generateAmount) &&
+        compareBigNumber(s1.paybackAmount, s2.paybackAmount),
     ),
     debounceTime(500),
     switchMap((state) =>
@@ -110,6 +129,7 @@ export function createExchangeChange$(
           }
           return EMPTY
         }),
+        retry(3),
       ),
     ),
     map(swapToChange),
