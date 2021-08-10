@@ -644,13 +644,6 @@ export function applyManageVaultCalculations(
   const buyingPowerUSD = buyingPower.times(currentCollateralPrice)
   const afterBuyingPowerUSD = afterBuyingPower.times(currentCollateralPrice)
 
-  console.log(`
-  
-  buyingPower: ${buyingPower}
-  afterBuyingPower ${afterBuyingPower}
-  
-  `)
-
   return {
     ...state,
     ...maxInputAmounts,
