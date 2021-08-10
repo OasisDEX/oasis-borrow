@@ -3,7 +3,7 @@ import { VaultChange } from 'blockchain/vaults'
 import { PriceInfoChange } from 'features/shared/priceInfo'
 
 import { BalanceInfoChange } from '../shared/balanceInfo'
-import { ManageMultiplyVaultState, ManageVaultChange } from './manageMultiplyVault'
+import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 export type ManageVaultEnvironmentChange =
   | PriceInfoChange
@@ -12,7 +12,7 @@ export type ManageVaultEnvironmentChange =
   | VaultChange
 
 export function applyManageVaultEnvironment(
-  change: ManageVaultChange,
+  change: ManageMultiplyVaultChange,
   state: ManageMultiplyVaultState,
 ): ManageMultiplyVaultState {
   if (change.kind === 'priceInfo') {

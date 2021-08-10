@@ -138,6 +138,10 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
   const {
     stage,
     afterCollateralizationRatio,
+    afterCollateralizationRatioAtNextPrice,
+    afterOutstandingDebt,
+    daiYieldFromDepositingCollateral,
+    daiYieldFromDepositingCollateralAtNextPrice,
 
     ilkData,
     token,
@@ -162,37 +166,53 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     afterCollateralizationRatio.gte(ilkData.liquidationRatio) &&
     afterCollateralizationRatio.lte(ilkData.collateralizationDangerThreshold)
 
-  // const vaultWillBeAtRiskLevelDangerAtNextPrice =
-  //   !vaultWillBeAtRiskLevelDanger &&
-  //   !inputAmountsEmpty &&
-  //   afterCollateralizationRatioAtNextPrice.gte(ilkData.liquidationRatio) &&
-  //   afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationDangerThreshold)
+  const vaultWillBeAtRiskLevelDangerAtNextPrice =
+    !vaultWillBeAtRiskLevelDanger &&
+    !inputAmountsEmpty &&
+    afterCollateralizationRatioAtNextPrice.gte(ilkData.liquidationRatio) &&
+    afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationDangerThreshold)
 
   const vaultWillBeAtRiskLevelWarning =
     !inputAmountsEmpty &&
     afterCollateralizationRatio.gt(ilkData.collateralizationDangerThreshold) &&
     afterCollateralizationRatio.lte(ilkData.collateralizationWarningThreshold)
 
-  // const vaultWillBeAtRiskLevelWarningAtNextPrice =
-  //   !vaultWillBeAtRiskLevelWarning &&
-  //   !inputAmountsEmpty &&
-  //   afterCollateralizationRatioAtNextPrice.gt(ilkData.collateralizationDangerThreshold) &&
-  //   afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationWarningThreshold)
+  const vaultWillBeAtRiskLevelWarningAtNextPrice =
+    !vaultWillBeAtRiskLevelWarning &&
+    !inputAmountsEmpty &&
+    afterCollateralizationRatioAtNextPrice.gt(ilkData.collateralizationDangerThreshold) &&
+    afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationWarningThreshold)
 
-  const vaultWillBeUnderCollateralized = false // TODO remove
+  const vaultWillBeUnderCollateralized =
+    afterOutstandingDebt?.gt(zero) &&
+    afterCollateralizationRatio.lt(ilkData.liquidationRatio) &&
+    !afterCollateralizationRatio.isZero()
 
-  const vaultWillBeUnderCollateralizedAtNextPrice = false // TODO remove
+  const vaultWillBeUnderCollateralizedAtNextPrice =
+    !vaultWillBeUnderCollateralized &&
+    !!(
+      afterOutstandingDebt?.gt(zero) &&
+      afterCollateralizationRatioAtNextPrice.lt(ilkData.liquidationRatio) &&
+      !afterCollateralizationRatioAtNextPrice.isZero()
+    )
 
   const depositingAllEthBalance = token === 'ETH' && !!depositAmount?.eq(collateralBalance)
   const depositAmountExceedsCollateralBalance = !!depositAmount?.gt(collateralBalance)
 
-  const generateAmountExceedsDaiYieldFromDepositingCollateral = false // TODO remove
+  const generateAmountExceedsDaiYieldFromDepositingCollateral = !!afterOutstandingDebt?.gt(
+    daiYieldFromDepositingCollateral,
+  )
 
-  const generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice = false // TODO remove
+  const generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice =
+    !generateAmountExceedsDaiYieldFromDepositingCollateral &&
+    !!afterOutstandingDebt?.gt(daiYieldFromDepositingCollateralAtNextPrice)
 
-  const generateAmountExceedsDebtCeiling = false // TODO calculate
+  const generateAmountExceedsDebtCeiling = !!afterOutstandingDebt?.gt(ilkData.ilkDebtAvailable)
 
-  const generateAmountLessThanDebtFloor = false // TODO calculate
+  const generateAmountLessThanDebtFloor =
+    afterOutstandingDebt &&
+    !afterOutstandingDebt.isZero() &&
+    afterOutstandingDebt.lt(ilkData.debtFloor)
 
   const isLoadingStage = ([
     'proxyInProgress',
@@ -250,9 +270,9 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     canAdjustRisk,
 
     vaultWillBeAtRiskLevelWarning,
-    // vaultWillBeAtRiskLevelWarningAtNextPrice,
+    vaultWillBeAtRiskLevelWarningAtNextPrice,
     vaultWillBeAtRiskLevelDanger,
-    // vaultWillBeAtRiskLevelDangerAtNextPrice,
+    vaultWillBeAtRiskLevelDangerAtNextPrice,
     vaultWillBeUnderCollateralized,
     vaultWillBeUnderCollateralizedAtNextPrice,
 

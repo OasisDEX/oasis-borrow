@@ -1,3 +1,5 @@
+import { isNullish } from 'helpers/functions'
+
 import { OpenMultiplyVaultState } from './openMultiplyVault'
 
 export type OpenMultiplyVaultErrorMessage =
@@ -86,6 +88,9 @@ export function validateWarnings(state: OpenMultiplyVaultState): OpenMultiplyVau
     vaultWillBeAtRiskLevelDangerAtNextPrice,
     vaultWillBeAtRiskLevelWarning,
     vaultWillBeAtRiskLevelWarningAtNextPrice,
+    depositAmount,
+    ilkData,
+    afterOutstandingDebt,
   } = state
 
   const warningMessages: OpenMultiplyVaultWarningMessage[] = []
@@ -93,9 +98,9 @@ export function validateWarnings(state: OpenMultiplyVaultState): OpenMultiplyVau
   if (errorMessages.length) return { ...state, warningMessages }
 
   if (isEditingStage) {
-    // if (!isNullish(depositAmount) && daiYieldFromDepositingCollateral.lt(ilkData.debtFloor)) {
-    //   warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
-    // }
+    if (!isNullish(depositAmount) && afterOutstandingDebt.lt(ilkData.debtFloor)) {
+      warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
+    }
 
     if (vaultWillBeAtRiskLevelDanger) {
       warningMessages.push('vaultWillBeAtRiskLevelDanger')

@@ -21,6 +21,7 @@ import {
 } from 'blockchain/calls/proxy'
 import {
   DepositAndGenerateData,
+  MultiplyAdjustData,
   MultiplyData,
   OpenData,
   ReclaimData,
@@ -43,10 +44,7 @@ import { createCollateralPrices$ } from 'features/collateralPrices/collateralPri
 import { currentContent } from 'features/content'
 import { createExchangeQuote$ } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
-import {
-  checkVaultTypeLocalStorage$,
-  saveVault$,
-} from 'features/generalManageVault/vaultTypeApi'
+import { checkVaultTypeLocalStorage$, saveVault$ } from 'features/generalManageVault/vaultTypeApi'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
@@ -105,6 +103,7 @@ export type TxData =
   | SetProxyOwnerData
   | ReclaimData
   | MultiplyData
+  | MultiplyAdjustData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -339,6 +338,7 @@ export function setupAppContext() {
       balanceInfo$,
       ilkData$,
       vault$,
+      exchangeQuote$,
     ),
     bigNumberTostring,
   )
