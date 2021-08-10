@@ -58,7 +58,9 @@ export interface ManageVaultCalculations {
   netValue: BigNumber
   afterNetValue: BigNumber
   buyingPower: BigNumber
+  buyingPowerUSD: BigNumber
   afterBuyingPower: BigNumber
+  afterBuyingPowerUSD: BigNumber
 
   debtDelta?: BigNumber
   collateralDelta?: BigNumber
@@ -115,7 +117,9 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
   netValue: zero,
   afterNetValue: zero,
   buyingPower: zero,
+  buyingPowerUSD: zero,
   afterBuyingPower: zero,
+  afterBuyingPowerUSD: zero,
 }
 
 /*
@@ -323,6 +327,16 @@ function calculateMaxGenerateAmount({
   })
 }
 
+function calculateMultiply({
+  debt,
+  lockedCollateralUSD,
+}: {
+  debt: BigNumber
+  lockedCollateralUSD: BigNumber
+}) {
+  return lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
+}
+
 export function getVaultChange({
   requiredCollRatio,
   depositAmount,
@@ -386,7 +400,14 @@ export function applyManageVaultCalculations(
     balanceInfo: { collateralBalance, daiBalance },
     ilkData: { liquidationRatio, ilkDebtAvailable },
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
-    vault: { lockedCollateral, debt, debtOffset, lockedCollateralUSD, liquidationPrice },
+    vault: {
+      lockedCollateral,
+      debt,
+      debtOffset,
+      lockedCollateralUSD,
+      liquidationPrice,
+      freeCollateral,
+    },
     requiredCollRatio,
     inputAmountsEmpty,
     quote,
@@ -519,8 +540,11 @@ export function applyManageVaultCalculations(
 
   const afterCollateralizationRatio = afterLockedCollateralUSD.div(afterDebt)
 
-  const multiply = lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
-  const afterMultiply = afterLockedCollateralUSD.div(afterLockedCollateralUSD.minus(afterDebt))
+  const multiply = calculateMultiply({ debt, lockedCollateralUSD })
+  const afterMultiply = calculateMultiply({
+    debt: afterDebt,
+    lockedCollateralUSD: afterLockedCollateralUSD,
+  })
 
   const afterLiquidationPrice = currentCollateralPrice
     .times(liquidationRatio)
@@ -587,6 +611,46 @@ export function applyManageVaultCalculations(
   const netValue = lockedCollateral.times(currentCollateralPrice).minus(debt)
   const afterNetValue = afterLockedCollateral.times(currentCollateralPrice).minus(debt)
 
+  const { collateralDelta: buyingPower } = getVaultChange({
+    currentCollateralPrice,
+    marketPrice,
+    slippage: SLIPPAGE,
+    debt,
+    lockedCollateral,
+    requiredCollRatio: liquidationRatio,
+    depositAmount: zero,
+    paybackAmount: zero,
+    generateAmount: zero,
+    withdrawAmount: zero,
+    OF: MULTIPLY_FEE,
+    FF: LOAN_FEE,
+  })
+
+  const { collateralDelta: afterBuyingPower } = getVaultChange({
+    currentCollateralPrice,
+    marketPrice,
+    slippage: SLIPPAGE,
+    debt: afterDebt,
+    lockedCollateral: afterLockedCollateral,
+    requiredCollRatio: liquidationRatio,
+    depositAmount: zero,
+    paybackAmount: zero,
+    generateAmount: zero,
+    withdrawAmount: zero,
+    OF: MULTIPLY_FEE,
+    FF: LOAN_FEE,
+  })
+
+  const buyingPowerUSD = buyingPower.times(currentCollateralPrice)
+  const afterBuyingPowerUSD = afterBuyingPower.times(currentCollateralPrice)
+
+  console.log(`
+  
+  buyingPower: ${buyingPower}
+  afterBuyingPower ${afterBuyingPower}
+  
+  `)
+
   return {
     ...state,
     ...maxInputAmounts,
@@ -625,5 +689,9 @@ export function applyManageVaultCalculations(
 
     netValue,
     afterNetValue,
+    buyingPower,
+    buyingPowerUSD,
+    afterBuyingPower,
+    afterBuyingPowerUSD,
   }
 }
