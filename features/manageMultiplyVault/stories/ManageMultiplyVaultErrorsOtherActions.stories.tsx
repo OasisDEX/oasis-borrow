@@ -278,53 +278,53 @@ export const DepositingAllEthBalance = manageMultiplyVaultStory({
   depositAmount: new BigNumber('100'),
 })
 
-// export const CustomCollateralAllowanceEmpty = manageMultiplyVaultStory({
-//   title: 'Error should block user if the allowance they wish to set is zero',
-//   vault: {
-//     ilk: 'WBTC-A',
-//     collateral: new BigNumber('100'),
-//     debt: new BigNumber('5000'),
-//   },
-//   balanceInfo: { daiBalance: new BigNumber('10000') },
-//   proxyAddress,
-// })({
-//   stage: 'collateralAllowanceWaitingForConfirmation',
-//   depositAmount: new BigNumber('10'),
-//   collateralAllowanceAmount: undefined,
-//   selectedCollateralAllowanceRadio: 'custom',
-// })
+export const CustomCollateralAllowanceEmpty = manageMultiplyVaultStory({
+  title: 'Error should block user if the allowance they wish to set is zero',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('100'),
+    debt: new BigNumber('5000'),
+  },
+  balanceInfo: { daiBalance: new BigNumber('10000') },
+  proxyAddress,
+})({
+  stage: 'collateralAllowanceWaitingForConfirmation',
+  depositAmount: new BigNumber('10'),
+  collateralAllowanceAmount: undefined,
+  selectedCollateralAllowanceRadio: 'custom',
+})
 
-// export const CustomCollateralAllowanceAmountGreaterThanMaxUint256 = manageMultiplyVaultStory({
-//   title: 'Error should block user if the allowance they wish to set a value above maxUint256',
-//   vault: {
-//     ilk: 'WBTC-A',
-//     collateral: new BigNumber('100'),
-//     debt: new BigNumber('5000'),
-//   },
-//   balanceInfo: { daiBalance: new BigNumber('10000') },
-//   proxyAddress,
-// })({
-//   stage: 'collateralAllowanceWaitingForConfirmation',
-//   depositAmount: new BigNumber('10'),
-//   selectedCollateralAllowanceRadio: 'custom',
-//   collateralAllowanceAmount: maxUint256.plus(one),
-// })
+export const CustomCollateralAllowanceAmountGreaterThanMaxUint256 = manageMultiplyVaultStory({
+  title: 'Error should block user if the allowance they wish to set a value above maxUint256',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('100'),
+    debt: new BigNumber('5000'),
+  },
+  balanceInfo: { daiBalance: new BigNumber('10000') },
+  proxyAddress,
+})({
+  stage: 'collateralAllowanceWaitingForConfirmation',
+  depositAmount: new BigNumber('10'),
+  selectedCollateralAllowanceRadio: 'custom',
+  collateralAllowanceAmount: maxUint256.plus(one),
+})
 
-// export const CustomCollateralAllowanceAmountLessThanDepositAmount = manageMultiplyVaultStory({
-//   title: 'Error should block user if the allowance they wish to set a value above maxUint256',
-//   vault: {
-//     ilk: 'WBTC-A',
-//     collateral: new BigNumber('100'),
-//     debt: new BigNumber('5000'),
-//   },
-//   balanceInfo: { daiBalance: new BigNumber('10000') },
-//   proxyAddress,
-// })({
-//   stage: 'collateralAllowanceWaitingForConfirmation',
-//   depositAmount: new BigNumber('10'),
-//   collateralAllowanceAmount: new BigNumber('9'),
-//   selectedCollateralAllowanceRadio: 'custom',
-// })
+export const CustomCollateralAllowanceAmountLessThanDepositAmount = manageMultiplyVaultStory({
+  title: 'Error should block user if the allowance they wish to set a value above maxUint256',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('100'),
+    debt: new BigNumber('5000'),
+  },
+  balanceInfo: { daiBalance: new BigNumber('10000') },
+  proxyAddress,
+})({
+  stage: 'collateralAllowanceWaitingForConfirmation',
+  depositAmount: new BigNumber('10'),
+  collateralAllowanceAmount: new BigNumber('9'),
+  selectedCollateralAllowanceRadio: 'custom',
+})
 
 export const CustomDaiAllowanceEmpty = manageMultiplyVaultStory({
   title: 'Error should block user if the allowance they wish to set is zero',
