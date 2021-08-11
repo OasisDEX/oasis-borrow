@@ -449,18 +449,6 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
       } as any,
     )
   } else {
-    console.log({
-      fromTokenAddress: tokens[data.token].address,
-      toTokenAddress: tokens['DAI'].address,
-      fromTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
-      toTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
-      minToTokenAmount: amountToWei(data.borrowedCollateral, data.token)
-        .div(one.minus(data.slippage))
-        .toFixed(0),
-      exchangeAddress: data.exchangeAddress,
-      _exchangeCalldata: data.exchangeData,
-    })
-
     return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.decreaseMultiple(
       {
         fromTokenAddress: tokens[data.token].address,
