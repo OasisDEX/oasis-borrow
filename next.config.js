@@ -41,7 +41,7 @@ module.exports = withBundleAnalyzer(
           infuraProjectId: process.env.INFURA_PROJECT_ID,
           etherscanAPIKey: process.env.ETHERSCAN_API_KEY,
           exchangeAddress: process.env.EXCHANGE,
-          multiplyProxyActions: process.env.MULTIPLY_PROXY_ACTIONS
+          multiplyProxyActions: process.env.MULTIPLY_PROXY_ACTIONS,
         },
         webpack: function (config, { isServer }) {
           // TODO: Figure out how to disable mangling partially without bresking the aplication.

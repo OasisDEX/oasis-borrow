@@ -91,7 +91,6 @@ export function applyOpenMultiplyVaultCalculations(
   const marketPriceMaxSlippage =
     quote?.status === 'SUCCESS' ? quote.tokenPrice.times(slippage.plus(1)) : undefined
 
-  console.log('TEST TES TEST')
   if (
     depositAmount === undefined ||
     marketPrice === undefined ||
