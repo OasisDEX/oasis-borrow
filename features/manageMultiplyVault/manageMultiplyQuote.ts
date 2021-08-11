@@ -108,7 +108,12 @@ export function createExchangeChange$(
     switchMap((state) =>
       every5Seconds$.pipe(
         switchMap(() => {
-          if (state.quote?.status === 'SUCCESS' && state.exchangeAction && state.collateralDelta) {
+          if (
+            state.quote?.status === 'SUCCESS' &&
+            state.exchangeAction &&
+            state.collateralDelta &&
+            state.requiredCollRatio
+          ) {
             return exchangeQuote$(
               state.vault.token,
               state.slippage,

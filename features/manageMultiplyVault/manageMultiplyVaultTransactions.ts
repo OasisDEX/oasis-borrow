@@ -286,7 +286,12 @@ export function adjustPosition(
 export function manageVaultDepositAndGenerate(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageMultiplyVaultChange) => void,
-  { proxyAddress, vault: { ilk, token, id } }: ManageMultiplyVaultState,
+  {
+    proxyAddress,
+    vault: { ilk, token, id },
+    depositAmount = zero,
+    generateAmount = zero,
+  }: ManageMultiplyVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -294,8 +299,8 @@ export function manageVaultDepositAndGenerate(
       switchMap(({ sendWithGasEstimation }) =>
         sendWithGasEstimation(depositAndGenerate, {
           kind: TxMetaKind.depositAndGenerate,
-          generateAmount: zero,
-          depositAmount: zero,
+          generateAmount,
+          depositAmount,
           proxyAddress: proxyAddress!,
           ilk,
           token,
@@ -329,7 +334,13 @@ export function manageVaultDepositAndGenerate(
 export function manageVaultWithdrawAndPayback(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageMultiplyVaultChange) => void,
-  { proxyAddress, vault: { ilk, token, id }, shouldPaybackAll }: ManageMultiplyVaultState,
+  {
+    proxyAddress,
+    vault: { ilk, token, id },
+    shouldPaybackAll,
+    withdrawAmount = zero,
+    paybackAmount = zero,
+  }: ManageMultiplyVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -337,8 +348,8 @@ export function manageVaultWithdrawAndPayback(
       switchMap(({ sendWithGasEstimation }) =>
         sendWithGasEstimation(withdrawAndPayback, {
           kind: TxMetaKind.withdrawAndPayback,
-          withdrawAmount: zero,
-          paybackAmount: zero,
+          withdrawAmount,
+          paybackAmount,
           proxyAddress: proxyAddress!,
           ilk,
           token,
