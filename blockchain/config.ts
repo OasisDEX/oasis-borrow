@@ -40,11 +40,6 @@ const infuraProjectId =
 const etherscanAPIKey =
   process.env.ETHERSCAN_API_KEY || getConfig()?.publicRuntimeConfig?.etherscan || ''
 
-const TEMPORARY_MULTIPLY_CONTRACTS = {
-  ACTIONS: '0x5f3f1dBD7B74C6B46e8c44f98792A1dAf8d69154',
-  EXCHANGE: '0xb7278A61aa25c888815aFC32Ad3cC52fF24fE575',
-}
-
 const protoMain = {
   id: '1',
   name: 'main',
@@ -81,9 +76,9 @@ const protoMain = {
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
-    TEMPORARY_MULTIPLY_CONTRACTS.ACTIONS,
-  ), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
-  exchange: contractDesc(exchange, TEMPORARY_MULTIPLY_CONTRACTS.EXCHANGE), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+    getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
+  ),
+  exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''),
   aaveLendingPool: '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5',
   etherscan: {
     url: 'https://etherscan.io',
@@ -141,9 +136,9 @@ const kovan: NetworkConfig = {
   dssProxyActions: contractDesc(dssProxyActions, kovanAddresses.PROXY_ACTIONS),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
-    TEMPORARY_MULTIPLY_CONTRACTS.ACTIONS,
-  ), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
-  exchange: contractDesc(exchange, TEMPORARY_MULTIPLY_CONTRACTS.EXCHANGE), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+    getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
+  ),
+  exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
   aaveLendingPool: '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5',
   etherscan: {
     url: 'https://kovan.etherscan.io',

@@ -12,6 +12,7 @@ import {
   take,
 } from 'rxjs/operators'
 
+import { compareBigNumber } from '../../helpers/compareBigNumber'
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 type ExchangeQuoteSuccessChange = {
@@ -77,18 +78,6 @@ export function swapToChange(swap: Quote) {
   return swap.status === 'SUCCESS'
     ? { kind: 'swap' as const, swap }
     : { kind: 'swapError' as const }
-}
-
-function compareBigNumber(a: BigNumber | undefined, b: BigNumber | undefined) {
-  if (a === undefined && b === undefined) {
-    return true
-  }
-
-  if (a === undefined || b === undefined) {
-    return false
-  }
-
-  return a.eq(b)
 }
 
 export function createExchangeChange$(
