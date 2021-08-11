@@ -90,7 +90,7 @@ export function mockOpenMultiplyVault({
   proxyAddress,
   allowance = new BigNumber(0),
   account = '0xVaultController',
-  ilks = ['ETH-A'],
+  ilks = ['ETH-A', 'WBTC-A'],
   ilk = 'ETH-A',
   exchangeQuote,
 }: MockOpenMultiplyVaultProps = {}) {
