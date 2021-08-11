@@ -374,6 +374,33 @@ export const CustomDaiAllowanceAmountLessThanDepositAmount = manageMultiplyVault
   daiAllowanceAmount: new BigNumber('9'),
 })
 
+export const ExchangeDataFailure = manageMultiplyVaultStory({
+  title: 'Error is shown when 1inch responded with other status than SUCCESS',
+  ilkData: { debtFloor: new BigNumber('2000') },
+  proxyAddress,
+  exchangeQuote: {
+    status: 'ERROR',
+  },
+})({
+  stage: 'otherActions',
+  otherAction: 'depositCollateral',
+  depositAmount: new BigNumber('5'),
+})
+
+export const ExchangeDataLoading = manageMultiplyVaultStory({
+  title:
+    'Confirm buttons is blocked and App Spinner is shown next to ETH Price when exchange data is being loaded',
+  ilkData: { debtFloor: new BigNumber('2000') },
+  proxyAddress,
+  exchangeQuote: {
+    isLoading: true,
+  },
+})({
+  stage: 'otherActions',
+  otherAction: 'depositCollateral',
+  depositAmount: new BigNumber('5'),
+})
+
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'ManageMultiplyVault/Blocking-Flow-Other-Actions',

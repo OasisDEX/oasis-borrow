@@ -364,7 +364,8 @@ export function applyManageVaultConditions(
       generateAmountLessThanDebtFloor ||
       paybackAmountExceedsDaiBalance ||
       paybackAmountExceedsVaultDebt ||
-      withdrawCollateralOnVaultUnderDebtFloor)
+      withdrawCollateralOnVaultUnderDebtFloor ||
+      exchangeError)
 
   const collateralAllowanceProgressionDisabled =
     isCollateralAllowanceStage &&
