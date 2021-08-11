@@ -12,7 +12,7 @@ export async function get(req: express.Request, res: express.Response) {
 
   const params = paramsSchema.parse(req.params)
 
-  const vault = await selectVaultById(prisma, {
+  const vault = await selectVaultById({
     vaultId: params.id
   })
 
@@ -23,23 +23,20 @@ export async function get(req: express.Request, res: express.Response) {
     .status(200)
     .json(
       {
-        vaultId: vault.vaultId,
+        vaultId: vault.vault_id,
         type: vault.type,
-        proxyAddress: vault.proxyAddres
+        proxyAddress: vault.proxy_address
       }
     )
   }
    
 }
 
-async function selectVaultById(
-    prisma: PrismaClient,
+export async function selectVaultById(
     { vaultId }: { vaultId: number },
   ): Promise<Vault | null> {
     const result = await prisma.vault.findUnique({
-        where: { vaultId }
+        where: { vault_id: vaultId }
     })
     return result
   }
-
-// function serializeVault(vault: Vault)

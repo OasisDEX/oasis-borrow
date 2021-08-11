@@ -25,12 +25,15 @@ model TosApproval {
 }
 
 model Vault {
-  vaultId Int @unique
+  vault_id Int @unique
   type VaultType
-  proxyAddres String
+  proxy_address String
+  owner_address     String     @db.Char(66)
+  @@map("vault")
 }
 
 enum VaultType {
-  BORROW
-  MULTIPLY
+  borrow
+  multiply
+  @@map("vault_type")
 }
