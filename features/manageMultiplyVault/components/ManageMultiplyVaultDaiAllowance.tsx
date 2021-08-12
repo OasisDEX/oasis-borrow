@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+
 import { getToken } from 'blockchain/tokensMetadata'
 import { Radio } from 'components/forms/Radio'
 import { BigNumberInput } from 'helpers/BigNumberInput'
@@ -19,8 +19,8 @@ export function ManageMultiplyVaultDaiAllowance({
   setDaiAllowanceAmountToPaybackAmount,
   resetDaiAllowanceAmount,
   selectedDaiAllowanceRadio,
+  paybackAmount,
 }: ManageMultiplyVaultState) {
-  const paybackAmount = new BigNumber(0)
   const canSelectRadio = stage === 'daiAllowanceWaitingForConfirmation'
 
   const { t } = useTranslation()
