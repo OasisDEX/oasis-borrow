@@ -8,7 +8,7 @@ import {
   ManageMultiplyVaultState,
 } from './manageMultiplyVault'
 import { manageVaultFormDefaults } from './manageMultiplyVaultForm'
-import { manageVaultDepositAndGenerate } from './manageMultiplyVaultTransactions'
+import { adjustPosition } from './manageMultiplyVaultTransactions'
 
 export type ManageVaultTransitionChange =
   | {
@@ -184,18 +184,13 @@ export function applyManageVaultTransition(
   return state
 }
 
-export function progressManage(
+export function progressAdjust(
   txHelpers$: Observable<TxHelpers>,
   state: ManageMultiplyVaultState,
   change: (ch: ManageMultiplyVaultChange) => void,
 ) {
-  // const { depositAmount, generateAmount } = state
-  // const isDepositAndGenerate = depositAmount || generateAmount
-
-  return manageVaultDepositAndGenerate(txHelpers$, change, state)
-  // if (true) {
-  //   return manageVaultDepositAndGenerate(txHelpers$, change, state)
-  // } else {
-  //   return manageVaultWithdrawAndPayback(txHelpers$, change, state)
-  // }
+  // state.exchangeAction === 'BUY_COLLATERAL'
+  // -> increase
+  // -> decrease
+  return adjustPosition(txHelpers$, change, state)
 }
