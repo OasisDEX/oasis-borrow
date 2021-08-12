@@ -62,7 +62,7 @@ yarn start
 HTTPS=true yarn start
 ```
 
-The application will be viewable on http://localhost:3000 or https://localhost:3443 respectively
+The application will be viewable on <http://localhost:3000> or <https://localhost:3443> respectively
 
 <br>
 
@@ -75,8 +75,8 @@ easier for UI work as next.js is very compute heavy when re-rendering changes in
 yarn storybook
 ```
 
-Stories should be viewable at http://localhost:6006 A live version of storybook on parity with the
-staging environment can be found by navigating to https://storybook.oasis.app.
+Stories should be viewable at <http://localhost:6006> A live version of storybook on parity with the
+staging environment can be found by navigating to <https://storybook.oasis.app>.
 
 For specific deployments, users can navigate to
 [https://storybook.oasis.app/<COMMIT_HASH>/index.html](https://storybook.oasis.app/<COMMIT_HASH>/index.html])
@@ -98,7 +98,7 @@ _build time_.
 
 Some of the values that are used you can check in the `.env` file.
 
-#### List of the `build-time` env vars:
+#### List of the `build-time` env vars
 
 - `COMMIT_SHA` - The value is used together with `SHOW_BUILD_INFO`. Main usages is to display a
   commit in the footer. This targets build deployments to staging environments so that the team can
@@ -134,7 +134,7 @@ Some of the values that are used you can check in the `.env` file.
 As mentioned previously, there is also the custom express server part which uses the env variables
 at _run time_
 
-#### List of the `run-time` env vars:
+#### List of the `run-time` env vars
 
 - `INFURA_PROJECT_ID_BACKEND` - This is used mainly together with the
   `<build_time>.USE_TERM_OF_SERVICE`. It is related with Argent internals. On the backend we need to
@@ -154,6 +154,48 @@ make sure that you call the proces that runs the application with the `run-time`
 
 In addition, we make use of hardhat in order to test the application in a controlled mainnet-like
 environment. More details can be found [here](./HARDHAT.md)
+
+<br>
+
+### Docker Containers
+
+Current we have two containers:
+
+- `postgres-oasis-borrow` - This container contains Postgre database
+
+- `multiply-proxy-actions` - This container contains all contracts related to multiply functionality deployed to a hardhat instance
+
+#### Docker Containers Usage
+
+Once you are in the project directory, please execute the following command:
+
+```bash
+docker-compose -f ./scripts/docker-compose.yml up
+```
+
+Alternative to that is to do the following steps:
+
+```bash
+cd ./scripts
+docker-compose up
+```
+
+By executing one of the following commands you will run both containers at the same time. The process won't exit so you will be able to see the output in real time.
+
+#### Docker Containers Configuration
+
+If you open `docker-compose.yml` file under the `./scripts` folder, you will see that there are some environmental variables. 
+For the Postgres container, you won't have the need to change them that often. Also the names are pretty explanatory 
+
+The configuration params for `multiply-proxy-actions` container are as follows:
+
+- `ALCHEMY_NODE` - The node that is used to read/sync data from the blockchain.
+- `ETHERSCAN_API` - Etherscan API Key that is used to get information for a transaction
+- `PRIV_KEY_MAINNET` - The private key of the first wallet address from the signer that is used
+- `TENDERLY_USERNAME` - This is the username in tenderly. It is advised to create your own registration and use your own username. Register [here](https://tenderly.co/).
+- `TENDERLY_PROJECT` - Once you have an account there is a default project - `project`. You can create other project names as well.
+- `USE_DUMMY` - By defailt this value is `0`. If it is set to `1` then instead of the real 1inch Exchange implementation being used, you will use the DummyExchange implementation.
+- `BLOCK_NUMBER` - There is a hardcoded number currently used - `13008355`. If you want to fork from a different one, please use this parameter.
 
 <br>
 
