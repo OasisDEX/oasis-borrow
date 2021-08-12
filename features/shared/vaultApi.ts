@@ -1,4 +1,7 @@
+import BigNumber from 'bignumber.js'
+import { VaultType } from 'features/generalManageVault/generalManageVault'
 import getConfig from 'next/config'
+import { type } from 'os'
 import { of } from 'ramda'
 import { Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
@@ -6,11 +9,26 @@ import { catchError, map } from 'rxjs/operators'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 
+export function checkVaultTypeUsingApi$(  token: string, id: BigNumber): Observable<VaultType> {
+  const vaultType = getVaultFromApi$(token, id).pipe(
+    map((resp) => {
+        const vaultResponse  = resp as {
+          vaultId: BigNumber,
+          type: 'borrow' | 'multiply',
+          proxyAddress: string
+        }
+        return vaultResponse.type as VaultType    
+    }
+  ),
+  )
+   return vaultType
+}
+
 export function getVaultFromApi$(
-    vaultId: number,
-    token: string
+  token: string,  
+  vaultId: BigNumber
 ): Observable< {
-    vaultId: number,
+    vaultId: BigNumber,
     type: 'borrow' | 'multiply',
     proxyAddress: string
   } | {}> {
@@ -40,12 +58,11 @@ export function getVaultFromApi$(
       )
   }
 
-
 export function saveVaultUsingApi$(
+    id: BigNumber,
     token: string,
-    vaultId: number,
-    type: 'borrow' | 'multiply',
-    proxyAddress: string,
+    vaultType: VaultType,
+    // proxyAddress: string,
   ): Observable<void> {
     return ajax({
       url: `${basePath}/api/tos`,
@@ -55,10 +72,9 @@ export function saveVaultUsingApi$(
         authorization: 'Bearer ' + token,
       },
       body: {
-        id: vaultId,
-        type: type,
-        proxyAddress: proxyAddress
+        id: id.toFixed(0),
+        type: vaultType,
+        // proxyAddress: proxyAddress
       },
     }).pipe(map((_) => {}))
   }
-  

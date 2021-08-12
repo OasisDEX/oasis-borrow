@@ -1,6 +1,6 @@
-import { PrismaClient, Vault } from '@prisma/client'
-import { prisma } from 'server/prisma'
+import {  Vault } from '@prisma/client'
 import express from 'express'
+import { prisma } from 'server/prisma'
 import * as z from 'zod'
 
 const paramsSchema = z.object({

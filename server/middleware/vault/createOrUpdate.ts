@@ -2,6 +2,7 @@ import express from 'express'
 import { VaultType } from 'server/database/node_modules/@prisma/client'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
+
 import { getUserFromRequest } from '../signature-auth/getUserFromRequest'
 import { selectVaultById } from './get'
 
@@ -22,11 +23,11 @@ export async function createOrUpdate(req:express.Request, res: express.Response)
         owner_address: user.address
     }
 
-    if (params.type !== 'borrow' || 'multiply' ) {
-        res
-        .status(403)
-        .send('Incorrect type of vault')
-    }
+    // if (params.type !== 'borrow' || 'multiply' ) {
+    //     res
+    //     .status(403)
+    //     .send('Incorrect type of vault')
+    // }
 
     const vault = await selectVaultById({ vaultId: params.id })
     if (vault === null || vault.owner_address === user.address) {
@@ -41,8 +42,5 @@ export async function createOrUpdate(req:express.Request, res: express.Response)
     } else {
         res.sendStatus(401)
     }
-
-
-  
    
 }
