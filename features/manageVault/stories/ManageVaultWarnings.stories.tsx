@@ -311,6 +311,20 @@ export const GeneratingAllDaiFromTotalCollateralAtNextPrice = manageVaultStory({
   generateAmount: new BigNumber('64330'),
 })
 
+export const WithdrawCollateralOnVaultWithZeroDebt = manageVaultStory({
+  title: 'Allowing user to proceed with withdrawing collateral if debt is zero',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('10'),
+    debt: zero,
+  },
+  ilkData: { debtFloor: new BigNumber('200') },
+  proxyAddress,
+})({
+  stage: 'collateralEditing',
+  withdrawAmount: new BigNumber('10'),
+})
+
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'ManageVault/Non-Blocking',

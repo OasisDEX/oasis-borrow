@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { COLLATERALIZATION_DANGER_OFFSET, COLLATERALIZATION_WARNING_OFFSET } from 'blockchain/ilks'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { manageMultiplyVaultStory } from 'helpers/stories/ManageMultiplyVaultStory'
+import { zero } from 'helpers/zero'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
@@ -322,6 +323,21 @@ export const GeneratingAllDaiFromTotalCollateralAtNextPrice = manageMultiplyVaul
   stage: 'otherActions',
   otherAction: 'withdrawDai',
   generateAmount: new BigNumber(63999.94),
+})
+
+export const WithdrawCollateralOnVaultWithZeroDebt = manageMultiplyVaultStory({
+  title: 'Allowing user to proceed with withdrawing collateral if debt is zero',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('10'),
+    debt: zero,
+  },
+  ilkData: { debtFloor: new BigNumber('200') },
+  proxyAddress,
+})({
+  stage: 'otherActions',
+  otherAction: 'withdrawCollateral',
+  withdrawAmount: new BigNumber('10'),
 })
 
 // eslint-disable-next-line import/no-default-export
