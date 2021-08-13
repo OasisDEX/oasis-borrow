@@ -293,7 +293,8 @@
       "custom-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
       "custom-allowance-amount-less-than-deposit-amount": "You need at least an allowance of your deposit amount to continue",
       "depositing-all-eth-balance": "You need some ETH to pay for the gas fees. Lower your deposit amount",
-      "ledger-enable-contract-data": "Please enable Contract data on the Ledgers Ethereum app Settings"
+      "ledger-enable-contract-data": "Please enable Contract data on the Ledgers Ethereum app Settings",
+      "exchange-error": "Could not fetch exchange prices for doing this multiply action."
     }
   },
   "or": "or",
