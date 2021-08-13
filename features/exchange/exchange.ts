@@ -76,7 +76,7 @@ function getQuote$(
       tokenPrice:
         action === 'BUY_COLLATERAL'
           ? new BigNumber(fromTokenAmount).div(new BigNumber(toTokenAmount))
-          : new BigNumber(toTokenAmount).div(new BigNumber(fromTokenAddress)),
+          : new BigNumber(toTokenAmount).div(new BigNumber(fromTokenAmount)),
       tx,
     })),
     retry(3),
