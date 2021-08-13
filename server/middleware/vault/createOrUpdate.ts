@@ -13,7 +13,8 @@ const vaultSchema = z.object({
 })
 
 export async function createOrUpdate(req:express.Request, res: express.Response) {
-    const params = vaultSchema.parse(req.params)
+    console.log(req.body)
+    const params = vaultSchema.parse(req.body)
     const user = getUserFromRequest(req)
 
     const vaultData = {
@@ -22,15 +23,28 @@ export async function createOrUpdate(req:express.Request, res: express.Response)
         proxy_address: params.proxyAddress,
         owner_address: user.address
     }
+    console.log(vaultData)
+    if (params.type !== 'borrow' && params.type !== 'multiply' ) {
+        return res
+        .status(403)
+        .send('Incorrect type of vault')
+    }
 
-    // if (params.type !== 'borrow' || 'multiply' ) {
-    //     res
-    //     .status(403)
-    //     .send('Incorrect type of vault')
-    // }
-
-    const vault = await selectVaultById({ vaultId: params.id })
-    if (vault === null || vault.owner_address === user.address) {
+    const vault = await selectVaultById({ vaultId: params.id }) 
+    console.log(vault)
+    console.log(vault?.owner_address)
+    console.log(user.address)
+    console.log('whole condition')
+    console.log(vault === null || vault.owner_address === user.address)
+    console.log('is vault null?')
+    console.log(vault === null)
+    console.log('addresses not match?')
+    console.log(typeof vault?.owner_address)
+    console.log(typeof user.address)
+    console.log(vault?.owner_address === user.address)
+    console.log(vault?.owner_address.toLowerCase() === user.address.toLowerCase())
+    console.log(vault?.owner_address.length,' ',user.address.length)
+    if (vault === null || vault.owner_address == user.address) {
         await prisma.vault.upsert({
             where: {
                 vault_id: params.id,
@@ -38,9 +52,9 @@ export async function createOrUpdate(req:express.Request, res: express.Response)
             update: vaultData,
             create: vaultData,
         })
-        res.sendStatus(200)
+       return res.sendStatus(200)
     } else {
-        res.sendStatus(401)
+       return res.sendStatus(401)
     }
    
 }

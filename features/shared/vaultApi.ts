@@ -61,20 +61,20 @@ export function getVaultFromApi$(
 export function saveVaultUsingApi$(
     id: BigNumber,
     token: string,
-    vaultType: VaultType,
-    // proxyAddress: string,
+    vaultType: VaultType
   ): Observable<void> {
+    console.log(vaultType)
     return ajax({
-      url: `${basePath}/api/tos`,
+      url: `${basePath}/api/vault`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         authorization: 'Bearer ' + token,
       },
       body: {
-        id: id.toFixed(0),
+        id: parseInt(id.toFixed(0)),
         type: vaultType,
-        // proxyAddress: proxyAddress
+        proxyAddress: ""
       },
     }).pipe(map((_) => {}))
   }

@@ -201,6 +201,7 @@
     "webpack": "^4.42.1"
   },
   "prisma": {
-    "schema": "/server/database/schema.prisma"
+    "schema": "/server/database/schema.prisma",
+    "env": "/server/database/.env"
   }
 }

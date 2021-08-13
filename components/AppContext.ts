@@ -43,6 +43,9 @@ import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
 import { createExchangeQuote$ } from 'features/exchange/exchange'
+import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
+import { checkVaultTypeLocalStorage$, saveVaultTypeLocalStorage$ } from 'features/generalManageVault/vaultTypeLocalStorage'
+
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
@@ -54,7 +57,7 @@ import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultDa
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import { redirectState$ } from 'features/router/redirectState'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
-import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
+import { checkVaultTypeUsingApi$, saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import {
   checkAcceptanceFromApi$,
   saveAcceptanceFromApi$,
@@ -342,16 +345,14 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  // const generalManageVault$ = memoize(
-  //   curry(createGeneralManageVault$)(
-  //     web3ContextConnected$,
-  //     jwtAuthSetupToken$,
-  //     manageMultiplyVault$,
-  //     manageVault$,
-  //     checkVaultTypeUsingApi$,
-  //   ),
-  //   bigNumberTostring,
-  // )
+  const generalManageVault$ = memoize(
+    curry(createGeneralManageVault$)(
+      manageMultiplyVault$,
+      manageVault$,
+      checkVaultTypeLocalStorage$,
+    ),
+    bigNumberTostring,
+  )
 
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
@@ -408,7 +409,7 @@ export function setupAppContext() {
     reclaimCollateral$,
     openVaultOverview$,
     openMultiplyVault$,
-    // generalManageVault$,
+    generalManageVault$,
   }
 }
 

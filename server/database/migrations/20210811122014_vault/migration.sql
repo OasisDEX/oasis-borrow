@@ -14,7 +14,7 @@ CREATE TABLE "migrations" (
 -- CreateTable
 CREATE TABLE "tos_approval" (
     "id" SERIAL NOT NULL,
-    "address" CHAR(66) NOT NULL,
+    "address" CHAR(42) NOT NULL,
     "doc_version" TEXT NOT NULL,
     "sign_date" TIMESTAMP(3) NOT NULL,
 
@@ -26,7 +26,7 @@ CREATE TABLE "vault" (
     "vault_id" INTEGER NOT NULL,
     "type" "vault_type" NOT NULL,
     "proxy_address" TEXT NOT NULL,
-    "owner_address" CHAR(66) NOT NULL
+    "owner_address" CHAR(42) NOT NULL
 );
 
 -- CreateIndex

@@ -4,16 +4,15 @@ import { prisma } from 'server/prisma'
 import * as z from 'zod'
 
 const paramsSchema = z.object({
-    id: z.number(),
-    type: z.enum(['multiply', 'borrow'])
+    id: z.string(),
   })
 
-export async function get(req: express.Request, res: express.Response) {
+export async function getVault(req: express.Request, res: express.Response) {
 
   const params = paramsSchema.parse(req.params)
 
   const vault = await selectVaultById({
-    vaultId: params.id
+    vaultId: parseInt(params.id, 10)
   })
 
   if (vault === undefined || vault == null) {
@@ -25,7 +24,7 @@ export async function get(req: express.Request, res: express.Response) {
       {
         vaultId: vault.vault_id,
         type: vault.type,
-        proxyAddress: vault.proxy_address
+        // proxyAddress: vault.proxy_address
       }
     )
   }
