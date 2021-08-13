@@ -77,12 +77,17 @@ export function applyOpenMultiplyVaultCalculations(
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
     ilkData: { liquidationRatio, debtFloor, ilkDebtAvailable },
     quote,
-    // swap, TODO use swap price
+    swap,
     slippage,
     requiredCollRatio,
   } = state
 
-  const marketPrice = quote?.status === 'SUCCESS' ? quote.tokenPrice : undefined
+  const marketPrice =
+    swap?.status === 'SUCCESS'
+      ? swap.tokenPrice
+      : quote?.status === 'SUCCESS'
+      ? quote.tokenPrice
+      : undefined
   const marketPriceMaxSlippage =
     quote?.status === 'SUCCESS' ? quote.tokenPrice.times(slippage.plus(1)) : undefined
 
