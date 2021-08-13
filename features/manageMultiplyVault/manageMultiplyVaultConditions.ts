@@ -343,6 +343,7 @@ export function applyManageVaultConditions(
   ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
 
   const withdrawCollateralOnVaultUnderDebtFloor =
+    vault.debt.gt(zero) &&
     vault.debt.lt(ilkData.debtFloor) &&
     withdrawAmount !== undefined &&
     withdrawAmount.gt(zero) &&

@@ -54,7 +54,7 @@ import {
 import {
   applyManageVaultTransition,
   ManageVaultTransitionChange,
-  progressManage,
+  progressAdjust,
 } from './manageMultiplyVaultTransitions'
 import {
   ManageVaultErrorMessage,
@@ -375,7 +375,7 @@ function addTransitions(
   if (state.stage === 'manageWaitingForConfirmation' || state.stage === 'manageFailure') {
     return {
       ...state,
-      progress: () => progressManage(txHelpers$, state, change),
+      progress: () => progressAdjust(txHelpers$, state, change),
       regress: () => change({ kind: 'backToEditing' }),
     }
   }
