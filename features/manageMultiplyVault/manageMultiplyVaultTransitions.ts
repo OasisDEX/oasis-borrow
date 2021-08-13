@@ -9,13 +9,11 @@ import {
   ManageMultiplyVaultState,
 } from './manageMultiplyVault'
 import { manageVaultFormDefaults } from './manageMultiplyVaultForm'
-
 import {
   adjustPosition,
   manageVaultDepositAndGenerate,
   manageVaultWithdrawAndPayback,
 } from './manageMultiplyVaultTransactions'
-
 
 export type ManageVaultTransitionChange =
   | {
