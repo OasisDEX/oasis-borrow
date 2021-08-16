@@ -44,10 +44,18 @@ export type ExchangeQuoteChanges =
   | ExchangeSwapFailureChange
 
 export function applyExchange(change: ManageMultiplyVaultChange, state: ManageMultiplyVaultState) {
+  if (change.kind === 'quoteError' || change.kind === 'swapError') {
+    return {
+      ...state,
+      exchangeError: true,
+    }
+  }
+
   if (change.kind === 'quote') {
     return {
       ...state,
       quote: change.quote,
+      exchangeError: false,
     }
   }
 
@@ -55,6 +63,7 @@ export function applyExchange(change: ManageMultiplyVaultChange, state: ManageMu
     return {
       ...state,
       swap: change.swap,
+      exchangeError: false,
     }
   }
 

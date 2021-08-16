@@ -149,6 +149,7 @@ interface OpenMultiplyVaultEnvironment {
   allowance?: BigNumber
   quote?: Quote
   swap?: Quote
+  exchangeError: boolean
   slippage: BigNumber
 }
 
@@ -345,6 +346,7 @@ export function createOpenMultiplyVault$(
                       slippage: SLIPPAGE,
                       totalSteps,
                       currentStep: 1,
+                      exchangeError: false,
                       injectStateOverride,
                     }
 

@@ -179,6 +179,7 @@ export interface ManageVaultEnvironment {
   priceInfo: PriceInfo
   quote?: Quote
   swap?: Quote
+  exchangeError: boolean
   slippage: BigNumber
 }
 
@@ -474,6 +475,7 @@ export function createManageMultiplyVault$(
                     warningMessages: [],
                     summary: defaultManageVaultSummary,
                     slippage: SLIPPAGE,
+                    exchangeError: false,
                     injectStateOverride,
                   }
 

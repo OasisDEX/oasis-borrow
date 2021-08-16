@@ -106,6 +106,7 @@ export interface ManageVaultConditions {
 
   debtWillBeLessThanDebtFloor: boolean
   isLoadingStage: boolean
+  isExchangeLoading: boolean
 
   insufficientCollateralAllowance: boolean
   customCollateralAllowanceAmountEmpty: boolean
@@ -152,6 +153,7 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
 
   debtWillBeLessThanDebtFloor: false,
   isLoadingStage: false,
+  isExchangeLoading: false,
 
   insufficientCollateralAllowance: false,
   customCollateralAllowanceAmountEmpty: false,
@@ -199,6 +201,10 @@ export function applyManageVaultConditions(
     maxWithdrawAmountAtNextPrice,
     maxGenerateAmountAtCurrentPrice,
     maxGenerateAmountAtNextPrice,
+
+    quote,
+    swap,
+    exchangeError,
   } = state
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
   const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)
@@ -359,7 +365,8 @@ export function applyManageVaultConditions(
       generateAmountLessThanDebtFloor ||
       paybackAmountExceedsDaiBalance ||
       paybackAmountExceedsVaultDebt ||
-      withdrawCollateralOnVaultUnderDebtFloor)
+      withdrawCollateralOnVaultUnderDebtFloor ||
+      exchangeError)
 
   const collateralAllowanceProgressionDisabled =
     isCollateralAllowanceStage &&
@@ -373,11 +380,14 @@ export function applyManageVaultConditions(
       customDaiAllowanceAmountExceedsMaxUint256 ||
       customDaiAllowanceAmountLessThanPaybackAmount)
 
+  const isExchangeLoading = !quote && !swap && !exchangeError
+
   const canProgress = !(
     isLoadingStage ||
     editingProgressionDisabled ||
     collateralAllowanceProgressionDisabled ||
-    daiAllowanceProgressionDisabled
+    daiAllowanceProgressionDisabled ||
+    isExchangeLoading
   )
 
   const canRegress = ([
@@ -422,6 +432,7 @@ export function applyManageVaultConditions(
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,
     isLoadingStage,
+    isExchangeLoading,
 
     insufficientCollateralAllowance,
     customCollateralAllowanceAmountEmpty,

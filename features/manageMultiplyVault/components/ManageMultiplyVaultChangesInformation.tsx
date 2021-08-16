@@ -7,6 +7,7 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { AppSpinner } from 'helpers/AppSpinner'
 import {
   formatAmount,
   formatCryptoBalance,
@@ -39,6 +40,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
     oazoFee: multiplyFee,
     marketPrice,
     inputAmountsEmpty,
+    isExchangeLoading,
   } = props
   const collRatioColor = getCollRatioColor(props, collateralizationRatio)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -79,12 +81,16 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
       <VaultChangesInformationItem
         label={`${token} Price (impact)`}
         value={
-          <Text>
-            ${marketPrice ? formatFiatBalance(marketPrice) : formatFiatBalance(zero)}{' '}
-            <Text as="span" sx={{ color: 'onError' }}>
-              ({formatPercent(impact, { precision: 2 })})
+          isExchangeLoading ? (
+            <AppSpinner />
+          ) : (
+            <Text>
+              ${marketPrice ? formatFiatBalance(marketPrice) : formatFiatBalance(zero)}{' '}
+              <Text as="span" sx={{ color: 'onError' }}>
+                ({formatPercent(impact, { precision: 2 })})
+              </Text>
             </Text>
-          </Text>
+          )
         }
       />
       <VaultChangesInformationItem label={'Slippage Limit'} value={'5.00 %'} />

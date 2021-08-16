@@ -34,6 +34,7 @@ export function manageMultiplyVaultStory({
   proxyAddress,
   collateralAllowance,
   daiAllowance,
+  exchangeQuote,
 }: ManageMultiplyVaultStory = {}) {
   return ({
     depositAmount,
@@ -52,6 +53,7 @@ export function manageMultiplyVaultStory({
       proxyAddress,
       collateralAllowance,
       daiAllowance,
+      exchangeQuote,
     })
 
     useEffect(() => {
