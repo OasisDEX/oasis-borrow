@@ -7,7 +7,12 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import {
+  formatAmount,
+  formatCryptoBalance,
+  formatFiatBalance,
+  formatPercent,
+} from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -18,55 +23,93 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
   const { t } = useTranslation()
   const [showFees, setShowFees] = useState(false)
   const {
-    afterCollateralizationRatio,
-    afterLockedCollateral,
-    afterLiquidationPrice,
-    afterDebt,
-    afterFreeCollateral,
-    daiYieldFromTotalCollateral,
-    inputAmountsEmpty,
+    vault: { collateralizationRatio, lockedCollateral, debt, token },
+
     multiply,
     afterMultiply,
+    afterCollateralizationRatio,
+    afterDebt,
+    afterLockedCollateral,
+    buyAmount,
+    buyAmountUSD,
+    // impact,
+    // loanFees,
     fees,
     loanFee,
-    oazoFee,
-    vault: {
-      collateralizationRatio,
-      lockedCollateral,
-      liquidationPrice,
-      debt,
-      freeCollateral,
-      token,
-      daiYieldFromLockedCollateral,
-    },
+    oazoFee: multiplyFee,
+    marketPrice,
+    inputAmountsEmpty,
   } = props
   const collRatioColor = getCollRatioColor(props, collateralizationRatio)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
+  // starting zero balance for UI to show arrows
+  const zeroBalance = formatCryptoBalance(zero)
+  const impact = new BigNumber(0.25)
+
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Vault Changes">
       <VaultChangesInformationItem
-        label={`${t('system.collateral-locked')}`}
+        label={`Buying ${token}`}
         value={
           <Flex>
-            {formatCryptoBalance(lockedCollateral || zero)} {token}
+            {zeroBalance} {token}
             <VaultChangesInformationArrow />
-            {formatCryptoBalance(afterLockedCollateral || zero)} {token}
+            <Text>
+              {formatCryptoBalance(buyAmount || zero)} {token}
+              {` `}
+              <Text as="span" sx={{ color: 'text.subtitle' }}>
+                (${formatAmount(buyAmountUSD || zero, 'USD')})
+              </Text>
+            </Text>
           </Flex>
         }
       />
+      <VaultChangesInformationItem
+        label={`Total ${token} exposure`}
+        value={
+          <Flex>
+            {formatCryptoBalance(lockedCollateral)} {token}
+            <VaultChangesInformationArrow />
+            {formatCryptoBalance(afterLockedCollateral)} {token}
+          </Flex>
+        }
+      />
+
+      <VaultChangesInformationItem
+        label={`${token} Price (impact)`}
+        value={
+          <Text>
+            ${marketPrice ? formatFiatBalance(marketPrice) : formatFiatBalance(zero)}{' '}
+            <Text as="span" sx={{ color: 'onError' }}>
+              ({formatPercent(impact, { precision: 2 })})
+            </Text>
+          </Text>
+        }
+      />
+      <VaultChangesInformationItem label={'Slippage Limit'} value={'5.00 %'} />
       <VaultChangesInformationItem
         label={'Multiply'}
         value={
           <Flex>
-            {multiply.toFixed(1)}x
+            {multiply?.toFixed(2)}x
             <VaultChangesInformationArrow />
-            {afterMultiply.toFixed(1)}x
+            {afterMultiply?.toFixed(2)}x
           </Flex>
         }
       />
       <VaultChangesInformationItem
-        label={`${t('system.collateralization-ratio')}`}
+        label={`${t('system.vault-dai-debt')}`}
+        value={
+          <Flex>
+            {`${formatCryptoBalance(debt || zero)} DAI`}
+            <VaultChangesInformationArrow />
+            {`${formatCryptoBalance(afterDebt || zero)} DAI`}
+          </Flex>
+        }
+      />
+      <VaultChangesInformationItem
+        label={'Collateral Ratio'}
         value={
           <Flex>
             <Text sx={{ color: collRatioColor }}>
@@ -82,46 +125,6 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
                 roundMode: BigNumber.ROUND_DOWN,
               })}
             </Text>
-          </Flex>
-        }
-      />
-      <VaultChangesInformationItem
-        label={`${t('system.liquidation-price')}`}
-        value={
-          <Flex>
-            {`$${formatCryptoBalance(liquidationPrice || zero)}`}
-            <VaultChangesInformationArrow />
-            {`$${formatCryptoBalance(afterLiquidationPrice || zero)}`}
-          </Flex>
-        }
-      />
-      <VaultChangesInformationItem
-        label={`${t('system.vault-dai-debt')}`}
-        value={
-          <Flex>
-            {`${formatCryptoBalance(debt || zero)} DAI`}
-            <VaultChangesInformationArrow />
-            {`${formatCryptoBalance(afterDebt || zero)} DAI`}
-          </Flex>
-        }
-      />
-      <VaultChangesInformationItem
-        label={`${t('system.available-to-withdraw')}`}
-        value={
-          <Flex>
-            {formatCryptoBalance(freeCollateral || zero)} {token}
-            <VaultChangesInformationArrow />
-            {formatCryptoBalance(afterFreeCollateral || zero)} {token}
-          </Flex>
-        }
-      />
-      <VaultChangesInformationItem
-        label={`${t('system.available-to-generate')}`}
-        value={
-          <Flex>
-            {`${formatCryptoBalance(daiYieldFromLockedCollateral || zero)} DAI`}
-            <VaultChangesInformationArrow />
-            {`${formatCryptoBalance(daiYieldFromTotalCollateral || zero)} DAI`}
           </Flex>
         }
       />
@@ -150,7 +153,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
           />
           <VaultChangesInformationItem
             label={'Oasis fee'}
-            value={`$${formatAmount(oazoFee, 'USD')}`}
+            value={`$${formatAmount(multiplyFee, 'USD')}`}
           />
         </Grid>
       )}

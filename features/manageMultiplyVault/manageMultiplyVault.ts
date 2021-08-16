@@ -389,7 +389,7 @@ function addTransitions(
   return state
 }
 
-export const defaultMutableManageVaultState: MutableManageMultiplyVaultState = {
+export const defaultMutableManageMultiplyVaultState: MutableManageMultiplyVaultState = {
   stage: 'adjustPosition',
   originalEditingStage: 'adjustPosition',
   collateralAllowanceAmount: maxUint256,
@@ -457,7 +457,7 @@ export function createManageMultiplyVault$(
                   }
 
                   const initialState: ManageMultiplyVaultState = {
-                    ...defaultMutableManageVaultState,
+                    ...defaultMutableManageMultiplyVaultState,
                     ...defaultManageVaultCalculations,
                     ...defaultManageVaultConditions,
                     vault,
