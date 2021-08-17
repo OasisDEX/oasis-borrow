@@ -44,8 +44,6 @@ import { createCollateralPrices$ } from 'features/collateralPrices/collateralPri
 import { currentContent } from 'features/content'
 import { createExchangeQuote$ } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
-import { checkVaultTypeLocalStorage$, saveVaultTypeLocalStorage$ } from 'features/generalManageVault/vaultTypeLocalStorage'
-
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
@@ -346,11 +344,7 @@ export function setupAppContext() {
   )
 
   const generalManageVault$ = memoize(
-    curry(createGeneralManageVault$)(
-      manageMultiplyVault$,
-      manageVault$,
-      checkVaultTypeUsingApi$,
-    ),
+    curry(createGeneralManageVault$)(manageMultiplyVault$, manageVault$, checkVaultTypeUsingApi$),
     bigNumberTostring,
   )
 

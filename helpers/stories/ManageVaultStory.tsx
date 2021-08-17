@@ -1,10 +1,6 @@
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
-import {
-  createGeneralManageVault$,
-  VaultType,
-} from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
 import {
   defaultMutableManageVaultState,
@@ -18,7 +14,7 @@ import {
 import { memoize } from 'lodash'
 import React from 'react'
 import { useEffect } from 'react'
-import { EMPTY, of } from 'rxjs'
+import { of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 

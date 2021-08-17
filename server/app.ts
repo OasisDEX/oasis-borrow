@@ -55,7 +55,7 @@ export function getApp(config: Config, { nextHandler }: Dependencies): express.A
   app.post(
     `${path}/api/vault`,
     jwt({ secret: config.userJWTSecret, algorithms: ['HS512'] }),
-    createOrUpdate
+    createOrUpdate,
   )
 
   app.use((err: any, _req: any, res: any, _next: any) => {
@@ -79,15 +79,13 @@ export function getApp(config: Config, { nextHandler }: Dependencies): express.A
 
 export function postVault() {
   // TODO: ŁW tbd add all possible req/res scenarios
-
   // const vault = await selectVaultById(prisma, {
   //   vaultId: params.id,
   // })
-
   // if (vault==null){
   //   console.log('vault doesnt exist')
   // }
-//   TODO LW: add an updating existing vault action do it here or other method maybe ?
+  //   TODO LW: add an updating existing vault action do it here or other method maybe ?
   // else {
   //   prisma.vault.create({
   //     data: {
@@ -96,6 +94,5 @@ export function postVault() {
   //     }
   //   })
   // }
-
   // }
 }
