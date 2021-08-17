@@ -140,6 +140,10 @@ export function ManageMultiplyVaultButton(props: ManageMultiplyVaultState) {
     }
   }
 
+  if (stage === 'manageInProgress') {
+    return null
+  }
+
   return (
     <>
       <Button

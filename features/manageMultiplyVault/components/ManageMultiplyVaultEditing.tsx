@@ -196,18 +196,22 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
     updateRequiredCollRatio,
     maxCollRatio,
     collapsed,
+    multiply,
   } = props
 
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const sliderValue = requiredCollRatio || collateralizationRatio || maxCollRatio
-  const slider =
-    sliderValue.minus(liquidationRatio).div(maxCollRatio.minus(liquidationRatio)).times(100) || zero
+  const slider = new BigNumber(100).minus(
+    sliderValue.minus(liquidationRatio).div(maxCollRatio.minus(liquidationRatio)).times(100) ||
+      zero,
+  )
 
-  const sliderBackground = `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
-    colors?.sliderTrackFill
-  } ${new BigNumber(100).minus(slider).toNumber()}%, ${colors?.primaryAlt} ${new BigNumber(100)
-    .minus(slider)
-    .toNumber()}%, ${colors?.primaryAlt} 100%)`
+  const sliderBackground =
+    multiply && !multiply.isNaN() && slider
+      ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
+          slider.toNumber() || 0
+        }%, ${colors?.primaryAlt} ${slider.toNumber() || 0}%, ${colors?.primaryAlt} 100%)`
+      : 'primaryAlt'
 
   return (
     <Grid
@@ -594,13 +598,13 @@ function OtherActionsForm(props: ManageMultiplyVaultState) {
 }
 
 export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
-  const { stage } = props
+  const { stage, inputAmountsEmpty } = props
 
   return (
     <Grid gap={4}>
       {stage === 'adjustPosition' && <AdjustPositionForm {...props} />}
       {stage === 'otherActions' && <OtherActionsForm {...props} />}
-      <Divider sx={{ width: '100%' }} />
+      {!inputAmountsEmpty && <Divider />}
       <ManageMultiplyVaultChangesInformation {...props} />
     </Grid>
   )

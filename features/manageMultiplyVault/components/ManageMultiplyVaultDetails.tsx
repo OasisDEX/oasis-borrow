@@ -1,22 +1,21 @@
-import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import {
   AfterPillProps,
   getAfterPillColors,
   getCollRatioColor,
   VaultDetailsCard,
-  VaultDetailsCardCollateralLocked,
   VaultDetailsCardCurrentPrice,
   VaultDetailsCardLiquidationPrice,
   VaultDetailsCardMockedModal,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatAmount } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Grid, Text } from 'theme-ui'
+import { Box, Grid } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 
@@ -94,28 +93,34 @@ function ManageMultiplyVaultDetailsSummary({
 
 export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const {
-    vault: {
-      token,
-      collateralizationRatio,
-      liquidationPrice,
-      lockedCollateral,
-      lockedCollateralUSD,
-    },
+    vault: { token, liquidationPrice },
     liquidationPriceCurrentPriceDifference,
     afterLiquidationPrice,
     afterCollateralizationRatio,
-    afterLockedCollateralUSD,
-    collateralizationRatioAtNextPrice,
     inputAmountsEmpty,
     stage,
   } = props
-  const { t } = useTranslation()
   const openModal = useModal()
-  const collRatioColor = getCollRatioColor(props, collateralizationRatio)
-  const collRatioNextPriceColor = getCollRatioColor(props, collateralizationRatioAtNextPrice)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
+
+  // TO DO CALCS
+  const buyingPower = zero
+  const buyingPowerUSD = zero
+  const afterBuyingPowerUSD = zero
+  const netValueUSD = zero
+  const afterNetValueUSD = zero
+
+  console.log(`
+    inputs empty ${inputAmountsEmpty}
+    inputs empty ${stage}
+
+
+    ${!inputAmountsEmpty} && ${stage !== 'manageSuccess'}
+
+    show after pill ${showAfterPill}
+  `)
 
   return (
     <Box>
@@ -131,47 +136,23 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
         />
 
         <VaultDetailsCard
-          title={`${t('system.collateralization-ratio')}`}
-          value={
-            <Text as="span" sx={{ color: collRatioColor }}>
-              {formatPercent(collateralizationRatio.times(100), {
-                precision: 2,
-                roundMode: BigNumber.ROUND_DOWN,
-              })}
-            </Text>
-          }
-          valueAfter={
-            showAfterPill &&
-            formatPercent(afterCollateralizationRatio.times(100), {
-              precision: 2,
-              roundMode: BigNumber.ROUND_DOWN,
-            })
-          }
-          valueBottom={
-            <>
-              <Text as="span" sx={{ color: collRatioNextPriceColor }}>
-                {formatPercent(collateralizationRatioAtNextPrice.times(100), {
-                  precision: 2,
-                  roundMode: BigNumber.ROUND_DOWN,
-                })}
-              </Text>
-              <Text as="span" sx={{ color: 'text.subtitle' }}>
-                {` on next price`}
-              </Text>
-            </>
-          }
+          title={`Buying Power`}
+          value={`$${formatAmount(buyingPowerUSD, 'USD')}`}
+          valueBottom={`${formatAmount(buyingPower, token)} ${token}`}
+          valueAfter={showAfterPill && `$${formatAmount(afterBuyingPowerUSD, 'USD')}`}
           openModal={() => openModal(VaultDetailsCardMockedModal)}
           afterPillColors={afterPillColors}
         />
 
         <VaultDetailsCardCurrentPrice {...props} />
-        <VaultDetailsCardCollateralLocked
-          depositAmountUSD={lockedCollateralUSD}
-          afterDepositAmountUSD={afterLockedCollateralUSD}
-          depositAmount={lockedCollateral}
-          token={token}
+
+        <VaultDetailsCard
+          title={`Net Value`}
+          value={`$${formatAmount(netValueUSD, 'USD')}`}
+          valueBottom={`Unrealised P&L 0%`}
+          valueAfter={showAfterPill && `$${formatAmount(afterNetValueUSD, 'USD')}`}
+          openModal={() => openModal(VaultDetailsCardMockedModal)}
           afterPillColors={afterPillColors}
-          showAfterPill={showAfterPill}
         />
       </Grid>
       <ManageMultiplyVaultDetailsSummary
