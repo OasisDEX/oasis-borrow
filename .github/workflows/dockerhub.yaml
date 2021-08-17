@@ -1,0 +1,47 @@
+on:
+  push:
+    branches:
+      - feature/multiply
+
+name: Push image to Docker Hub
+
+jobs:
+  push_to_repo:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Extract commit hash
+      id: vars
+      shell: bash
+      run: |
+        echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
+    - name: Build, tag, and push image to Docker Hub repo
+      id: build-image
+      env:
+        SHA_TAG: ${{ steps.vars.outputs.sha_short }}
+        LATEST_TAG: latest
+        REPO_NAME: ${{ github.event.repository.name }}
+        DOCKERHUB_ORG: "oasisdexorg"
+      run: |
+        docker build --build-arg COMMIT_SHA=${{ env.SHA_TAG }} \
+                     --build-arg API_HOST=${{ secrets.API_HOST_STAGING }} \
+                     --build-arg MIXPANEL_ENV=staging \
+                     --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_STAGING_KEY }} \
+                     --build-arg INFURA_PROJECT_ID=${{ secrets.INFURA_PROJECT_ID }} \
+                     --build-arg ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }} \
+                     --build-arg SHOW_BUILD_INFO=1 \
+                     -t $DOCKERHUB_ORG/$REPO_NAME:$SHA_TAG \
+                     -t $DOCKERHUB_ORG/$REPO_NAME:$LATEST_TAG \
+                     .
+        docker push $DOCKERHUB_ORG/$REPO_NAME --all-tags
