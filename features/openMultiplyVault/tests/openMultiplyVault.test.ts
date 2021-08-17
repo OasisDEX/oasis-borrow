@@ -254,7 +254,6 @@ describe('open multiply vault', () => {
 
     it('should set allowance to custom amount', () => {
       const depositAmount = new BigNumber('100')
-      const generateAmount = new BigNumber('20000')
 
       const customAllowanceAmount = new BigNumber('400')
       const state = getStateUnpacker(
