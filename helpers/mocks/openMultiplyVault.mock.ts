@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
-import { protoTxHelpers } from 'components/AppContext'
+import { protoTxHelpers, TxHelpers } from 'components/AppContext'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { mockBalanceInfo$, MockBalanceInfoProps } from 'helpers/mocks/balanceInfo.mock'
@@ -19,6 +19,7 @@ export interface MockOpenMultiplyVaultProps {
   _proxyAddress$?: Observable<string | undefined>
   _allowance$?: Observable<BigNumber>
   _ilks$?: Observable<string[]>
+  _txHelpers$?: Observable<TxHelpers>
 
   ilkData?: MockIlkDataProps
   priceInfo?: MockPriceInfoProps
@@ -39,6 +40,7 @@ export function mockOpenMultiplyVault({
   _proxyAddress$,
   _allowance$,
   _ilks$,
+  _txHelpers$,
 
   ilkData,
   priceInfo,
@@ -47,7 +49,7 @@ export function mockOpenMultiplyVault({
   allowance = new BigNumber(0),
   account = '0xVaultController',
   ilks = ['ETH-A', 'WBTC-A'],
-  ilk = 'ETH-A',
+  ilk = 'WBTC-A',
   exchangeQuote,
 }: MockOpenMultiplyVaultProps = {}) {
   const token = ilk.split('-')[0]
@@ -81,9 +83,11 @@ export function mockOpenMultiplyVault({
     return _allowance$ || of(allowance)
   }
 
+  const txHelpers$ = _txHelpers$ || of(protoTxHelpers)
+
   return createOpenMultiplyVault$(
     of(mockContextConnected),
-    of(protoTxHelpers),
+    txHelpers$,
     proxyAddress$,
     allowance$,
     priceInfo$,
