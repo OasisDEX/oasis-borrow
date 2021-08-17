@@ -25,8 +25,8 @@ services:
     ports:
       - "8545:8545"
   borrow:
-    image: oasis-borrow
-    container_name:  oasisdexorg/oasis-borrow:latest
+    image: oasisdexorg/oasis-borrow:latest
+    container_name: oasis-borrow
     depends_on:
       - postgres
       - localnode
