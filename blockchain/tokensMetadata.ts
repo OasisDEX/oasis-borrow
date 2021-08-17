@@ -503,5 +503,7 @@ export function getToken(tokenSymbol: string) {
 }
 
 export const ALLOWED_MULTIPLY_TOKENS = tokens
-  .filter((token) => !(token.tags as CoinTag[]).includes('lp-token'))
+  .filter(
+    (token) => !(token.tags as CoinTag[]).some((tag) => tag === 'lp-token' || tag === 'stablecoin'),
+  )
   .map((token) => token.symbol)
