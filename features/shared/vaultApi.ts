@@ -19,7 +19,6 @@ export function checkVaultTypeUsingApi$(id: BigNumber): Observable<VaultType> {
           type: 'borrow' | 'multiply'
           proxyAddress: string
         }
-        console.log(vaultResponse)
         return vaultResponse.type as VaultType
       }
     }),
@@ -51,7 +50,6 @@ export function getVaultFromApi$(
         type: 'borrow' | 'multiply'
         proxyAddress: string
       }
-      console.log(type)
       return { vaultId, type, proxyAddress }
     }),
     catchError((err) => {
@@ -68,7 +66,6 @@ export function saveVaultUsingApi$(
   token: string,
   vaultType: VaultType,
 ): Observable<void> {
-  console.log(vaultType)
   return ajax({
     url: `${basePath}/api/vault`,
     method: 'POST',

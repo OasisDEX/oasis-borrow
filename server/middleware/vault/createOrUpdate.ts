@@ -13,7 +13,6 @@ const vaultSchema = z.object({
 })
 
 export async function createOrUpdate(req: express.Request, res: express.Response) {
-  console.log(req.body)
   const params = vaultSchema.parse(req.body)
   const user = getUserFromRequest(req)
 
@@ -23,7 +22,6 @@ export async function createOrUpdate(req: express.Request, res: express.Response
     proxy_address: params.proxyAddress,
     owner_address: user.address,
   }
-  console.log(vaultData)
   if (params.type !== 'borrow' && params.type !== 'multiply') {
     return res.status(403).send('Incorrect type of vault')
   }
