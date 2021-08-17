@@ -349,7 +349,7 @@ export function setupAppContext() {
     curry(createGeneralManageVault$)(
       manageMultiplyVault$,
       manageVault$,
-      checkVaultTypeLocalStorage$,
+      checkVaultTypeUsingApi$,
     ),
     bigNumberTostring,
   )

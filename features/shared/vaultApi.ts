@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { VaultType } from 'features/generalManageVault/generalManageVault'
 import getConfig from 'next/config'
-import { type } from 'os'
 import { of } from 'ramda'
 import { Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
@@ -9,23 +8,30 @@ import { catchError, map } from 'rxjs/operators'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 
-export function checkVaultTypeUsingApi$(  token: string, id: BigNumber): Observable<VaultType> {
-  const vaultType = getVaultFromApi$(token, id).pipe(
+export function checkVaultTypeUsingApi$( id: BigNumber): Observable<VaultType> {
+  const vaultType = getVaultFromApi$(id).pipe(
     map((resp) => {
+      
+      if (Object.keys(resp).length === 0) {
+          return VaultType.Borrow
+        }
+        else {
         const vaultResponse  = resp as {
           vaultId: BigNumber,
           type: 'borrow' | 'multiply',
           proxyAddress: string
         }
+        console.log(vaultResponse)
         return vaultResponse.type as VaultType    
     }
+  }
   ),
   )
+
    return vaultType
 }
 
 export function getVaultFromApi$(
-  token: string,  
   vaultId: BigNumber
 ): Observable< {
     vaultId: BigNumber,
@@ -37,7 +43,6 @@ export function getVaultFromApi$(
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            authorization: 'Bearer ' + token,
           },
       }).pipe(
         map((resp) => {
@@ -46,7 +51,7 @@ export function getVaultFromApi$(
                 type: 'borrow' | 'multiply',
                 proxyAddress: string
               }
-      
+              console.log(type)
             return { vaultId, type, proxyAddress }
           }),
           catchError((err) => {
