@@ -1,6 +1,8 @@
 import { BigNumber } from 'bignumber.js'
+import { maxUint256 } from 'blockchain/calls/erc20'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { openMultiplyVaultStory } from 'helpers/stories/OpenMultiplyVaultStory'
+import { one } from 'helpers/zero'
 
 import { OpenMultiplyVaultView } from '../components/OpenMultiplyVaultView'
 
@@ -95,40 +97,41 @@ export const GenerateAmountLessThanDebtFloor = openMultiplyVaultStory({
   requiredCollRatio: new BigNumber('5'),
 })
 
-// FOR NOW WE ONLY PROVIDE MULTIPLY FOR ETH COLLATERAL, STEPS BELOW WILL NOT OCCUR
+export const CustomAllowanceEmpty = openMultiplyVaultStory({
+  title: 'Error should block user if the allowance they wish to set is zero',
+  balanceInfo: { daiBalance: new BigNumber('10000') },
+  proxyAddress,
+  ilk: 'WBTC-A',
+})({
+  stage: 'allowanceWaitingForConfirmation',
+  depositAmount: new BigNumber('10'),
+  selectedAllowanceRadio: 'custom',
+  allowanceAmount: undefined,
+})
 
-// export const CustomAllowanceEmpty = openMultiplyVaultStory({
-//   title: 'Error should block user if the allowance they wish to set is zero',
-//   balanceInfo: { daiBalance: new BigNumber('10000') },
-//   proxyAddress,
-// })({
-//   stage: 'allowanceWaitingForConfirmation',
-//   depositAmount: new BigNumber('10'),
-//   selectedAllowanceRadio: 'custom',
-//   allowanceAmount: undefined,
-// })
+export const CustomAllowanceAmountGreaterThanMaxUint256 = openMultiplyVaultStory({
+  title: 'Error should block user if the allowance they wish to set a value above maxUint256',
+  balanceInfo: { daiBalance: new BigNumber('10000') },
+  proxyAddress,
+  ilk: 'WBTC-A',
+})({
+  stage: 'allowanceWaitingForConfirmation',
+  depositAmount: new BigNumber('10'),
+  selectedAllowanceRadio: 'custom',
+  allowanceAmount: maxUint256.plus(one),
+})
 
-// export const CustomAllowanceAmountGreaterThanMaxUint256 = openMultiplyVaultStory({
-//   title: 'Error should block user if the allowance they wish to set a value above maxUint256',
-//   balanceInfo: { daiBalance: new BigNumber('10000') },
-//   proxyAddress,
-// })({
-//   stage: 'allowanceWaitingForConfirmation',
-//   depositAmount: new BigNumber('10'),
-//   selectedAllowanceRadio: 'custom',
-//   allowanceAmount: maxUint256.plus(one),
-// })
-
-// export const CustomAllowanceAmountLessThanDepositAmount = openMultiplyVaultStory({
-//   title: 'Error should block user if the allowance they wish to set a value above maxUint256',
-//   balanceInfo: { daiBalance: new BigNumber('10000') },
-//   proxyAddress,
-// })({
-//   stage: 'allowanceWaitingForConfirmation',
-//   depositAmount: new BigNumber('10'),
-//   allowanceAmount: new BigNumber('9'),
-//   selectedAllowanceRadio: 'custom',
-// })
+export const CustomAllowanceAmountLessThanDepositAmount = openMultiplyVaultStory({
+  title: 'Error should block user if the allowance they wish to set a value above maxUint256',
+  balanceInfo: { daiBalance: new BigNumber('10000') },
+  proxyAddress,
+  ilk: 'WBTC-A',
+})({
+  stage: 'allowanceWaitingForConfirmation',
+  depositAmount: new BigNumber('10'),
+  allowanceAmount: new BigNumber('9'),
+  selectedAllowanceRadio: 'custom',
+})
 
 export const ExchangeDataFailure = openMultiplyVaultStory({
   title: 'Error is shown when 1inch responded with other status than SUCCESS',

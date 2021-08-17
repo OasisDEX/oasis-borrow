@@ -20,6 +20,7 @@ export const EditingStage = openMultiplyVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
 })({
   depositAmount: new BigNumber('50'),
+  requiredCollRatio: new BigNumber(3.5),
 })
 
 export const ProxyWaitingForConfirmation = openMultiplyVaultStory({
@@ -57,46 +58,44 @@ export const ProxySuccess = openMultiplyVaultStory({
   depositAmount: new BigNumber('50'),
 })
 
-// FOR NOW WE ONLY PROVIDE MULTIPLY FOR ETH COLLATERAL, STEPS BELOW WILL NOT OCCUR
+export const AllowanceWaitingForConfirmation = openMultiplyVaultStory({
+  balanceInfo: { collateralBalance: new BigNumber('100') },
+  ilk: 'WBTC-A',
+})({
+  stage: 'allowanceWaitingForConfirmation',
+  depositAmount: new BigNumber('50'),
+})
 
-// export const AllowanceWaitingForConfirmation = openMultiplyVaultStory({
-//   balanceInfo: { collateralBalance: new BigNumber('100') },
-//   ilk: 'WBTC-A',
-// })({
-//   stage: 'allowanceWaitingForConfirmation',
-//   depositAmount: new BigNumber('50'),
-// })
-//
-// export const AllowanceWaitingForApproval = openMultiplyVaultStory({
-//   balanceInfo: { collateralBalance: new BigNumber('100') },
-//   ilk: 'WBTC-A',
-// })({
-//   stage: 'allowanceWaitingForApproval',
-//   depositAmount: new BigNumber('50'),
-// })
+export const AllowanceWaitingForApproval = openMultiplyVaultStory({
+  balanceInfo: { collateralBalance: new BigNumber('100') },
+  ilk: 'WBTC-A',
+})({
+  stage: 'allowanceWaitingForApproval',
+  depositAmount: new BigNumber('50'),
+})
 
-// export const AllowanceFailure = openMultiplyVaultStory({
-//   balanceInfo: { collateralBalance: new BigNumber('100') },
-//   ilk: 'WBTC-A',
-// })({
-//   stage: 'allowanceFailure',
-//   depositAmount: new BigNumber('50'),
-// })
+export const AllowanceFailure = openMultiplyVaultStory({
+  balanceInfo: { collateralBalance: new BigNumber('100') },
+  ilk: 'WBTC-A',
+})({
+  stage: 'allowanceFailure',
+  depositAmount: new BigNumber('50'),
+})
 
-// export const AllowanceInProgress = openMultiplyVaultStory({
-//   ilk: 'WBTC-A',
-// })({
-//   stage: 'allowanceInProgress',
-//   depositAmount: new BigNumber('50'),
-// })
+export const AllowanceInProgress = openMultiplyVaultStory({
+  ilk: 'WBTC-A',
+})({
+  stage: 'allowanceInProgress',
+  depositAmount: new BigNumber('50'),
+})
 
-// export const AllowanceSuccess = openMultiplyVaultStory({
-//   balanceInfo: { collateralBalance: new BigNumber('100') },
-//   ilk: 'WBTC-A',
-// })({
-//   stage: 'allowanceSuccess',
-//   depositAmount: new BigNumber('50'),
-// })
+export const AllowanceSuccess = openMultiplyVaultStory({
+  balanceInfo: { collateralBalance: new BigNumber('100') },
+  ilk: 'WBTC-A',
+})({
+  stage: 'allowanceSuccess',
+  depositAmount: new BigNumber('50'),
+})
 
 export const OpenWaitingForConfirmation = openMultiplyVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
@@ -104,6 +103,7 @@ export const OpenWaitingForConfirmation = openMultiplyVaultStory({
 })({
   stage: 'openWaitingForConfirmation',
   depositAmount: new BigNumber('50'),
+  requiredCollRatio: new BigNumber(3.5),
 })
 
 export const OpenWaitingForApproval = openMultiplyVaultStory({
@@ -112,6 +112,7 @@ export const OpenWaitingForApproval = openMultiplyVaultStory({
 })({
   stage: 'openWaitingForApproval',
   depositAmount: new BigNumber('50'),
+  requiredCollRatio: new BigNumber(3.5),
 })
 
 export const OpenFailure = openMultiplyVaultStory({
@@ -120,6 +121,7 @@ export const OpenFailure = openMultiplyVaultStory({
 })({
   stage: 'openFailure',
   depositAmount: new BigNumber('50'),
+  requiredCollRatio: new BigNumber(3.5),
 })
 
 export const OpenInProgress = openMultiplyVaultStory({
@@ -137,6 +139,7 @@ export const OpenSuccess = openMultiplyVaultStory({
   id: new BigNumber('122345'),
   stage: 'openSuccess',
   depositAmount: new BigNumber('50'),
+  requiredCollRatio: new BigNumber(3.5),
 })
 
 // eslint-disable-next-line import/no-default-export
