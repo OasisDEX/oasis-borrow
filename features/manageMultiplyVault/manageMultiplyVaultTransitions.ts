@@ -121,8 +121,9 @@ export function applyManageVaultTransition(
     } = state
     const canProgress = !errorMessages.length
     const hasProxy = !!proxyAddress
-    const isDepositZero = true
-    const isPaybackZero = true
+    const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
+    const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
+
     const depositAmountLessThanCollateralAllowance =
       collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
 
@@ -132,6 +133,7 @@ export function applyManageVaultTransition(
     const hasCollateralAllowance =
       token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
     const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+
     if (canProgress) {
       if (!hasProxy) {
         return { ...state, stage: 'proxyWaitingForConfirmation' }
@@ -164,6 +166,7 @@ export function applyManageVaultTransition(
     const hasCollateralAllowance =
       token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
     const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+
     if (!hasCollateralAllowance) {
       return { ...state, stage: 'collateralAllowanceWaitingForConfirmation' }
     }
