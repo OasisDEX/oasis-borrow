@@ -5,6 +5,8 @@ import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { MultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxHelpers } from 'components/AppContext'
+import { VaultType } from 'features/generalManageVault/generalManageVault'
+import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
@@ -307,9 +309,7 @@ export function multiplyVault(
           )
 
           if (id) {
-            console.log(
-              'Here we should save "in the background" to DB, vault type to multiply vault',
-            )
+              saveVaultUsingApi$(id, token, VaultType.Multiply) 
           }
 
           return of({

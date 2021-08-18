@@ -5,10 +5,13 @@ import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { open, OpenData } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxHelpers } from 'components/AppContext'
+import { VaultType } from 'features/generalManageVault/generalManageVault'
+import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { filter, switchMap } from 'rxjs/operators'
+import { prisma } from 'server/prisma'
 import Web3 from 'web3'
 
 import { OpenVaultChange, OpenVaultState } from './openVault'
@@ -265,7 +268,8 @@ export function openVault(
   { sendWithGasEstimation }: TxHelpers,
   change: (ch: OpenVaultChange) => void,
   { generateAmount, depositAmount, proxyAddress, ilk, token }: OpenVaultState,
-) {
+  ownerAddress: string
+  ) {
   sendWithGasEstimation(open, {
     kind: TxMetaKind.open,
     generateAmount: generateAmount || zero,
@@ -290,9 +294,11 @@ export function openVault(
           const id = parseVaultIdFromReceiptLogs(
             txState.status === TxStatus.Success && txState.receipt,
           )
-
+          console.log('id is')
+          console.log(id)
           if (id) {
-            console.log('Here we should save "in the background" to DB, vault type regular vault')
+            console.log('in if')
+            saveVaultUsingApi$(id, token, VaultType.Borrow)
           }
 
           return of({
