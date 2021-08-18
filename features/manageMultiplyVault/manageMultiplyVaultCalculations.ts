@@ -402,7 +402,6 @@ export function applyManageVaultCalculations(
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
     vault: { lockedCollateral, debt, debtOffset, lockedCollateralUSD, liquidationPrice },
     requiredCollRatio,
-    inputAmountsEmpty,
     quote,
     swap,
     slippage,
@@ -505,7 +504,7 @@ export function applyManageVaultCalculations(
     maxGenerateAmount,
   }
 
-  if (!marketPrice || !marketPriceMaxSlippage || inputAmountsEmpty) {
+  if (!marketPrice || !marketPriceMaxSlippage) {
     return { ...state, ...defaultManageVaultCalculations, ...maxInputAmounts, ...prices }
   }
 

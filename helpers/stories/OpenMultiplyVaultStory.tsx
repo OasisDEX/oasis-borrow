@@ -29,6 +29,7 @@ export function openMultiplyVaultStory({
   allowance,
   ilks,
   ilk = 'ETH-A',
+  exchangeQuote,
 }: OpenMultiplyVaultStory) {
   return ({
     depositAmount,
@@ -43,6 +44,7 @@ export function openMultiplyVaultStory({
       allowance,
       ilks,
       ilk,
+      exchangeQuote,
     })
 
     useEffect(() => {

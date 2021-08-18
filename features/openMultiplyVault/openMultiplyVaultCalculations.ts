@@ -91,18 +91,18 @@ export function applyOpenMultiplyVaultCalculations(
   const marketPriceMaxSlippage =
     quote?.status === 'SUCCESS' ? quote.tokenPrice.times(slippage.plus(1)) : undefined
 
+  const maxDepositAmount = collateralBalance
+  const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
+
   if (
     depositAmount === undefined ||
     marketPrice === undefined ||
     marketPriceMaxSlippage === undefined
   ) {
-    return { ...state, ...defaultOpenVaultStateCalculations }
+    return { ...state, ...defaultOpenVaultStateCalculations, maxDepositAmount, maxDepositAmountUSD }
   }
 
   const oraclePrice = currentCollateralPrice
-
-  const maxDepositAmount = collateralBalance
-  const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
 
   const maxCollRatio = getMaxPossibleCollRatioOrMax(
     debtFloor,

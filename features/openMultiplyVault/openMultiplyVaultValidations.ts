@@ -12,6 +12,7 @@ export type OpenMultiplyVaultErrorMessage =
   | 'customAllowanceAmountExceedsMaxUint256'
   | 'customAllowanceAmountLessThanDepositAmount'
   | 'ledgerWalletContractDataDisabled'
+  | 'exchangeError'
 
 export function validateErrors(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
   const {
@@ -26,6 +27,7 @@ export function validateErrors(state: OpenMultiplyVaultState): OpenMultiplyVault
     generateAmountLessThanDebtFloor,
     customAllowanceAmountExceedsMaxUint256,
     customAllowanceAmountLessThanDepositAmount,
+    exchangeError,
   } = state
   const errorMessages: OpenMultiplyVaultErrorMessage[] = []
 
@@ -52,6 +54,10 @@ export function validateErrors(state: OpenMultiplyVaultState): OpenMultiplyVault
 
     if (generateAmountLessThanDebtFloor) {
       errorMessages.push('generateAmountLessThanDebtFloor')
+    }
+
+    if (exchangeError) {
+      errorMessages.push('exchangeError')
     }
   }
 

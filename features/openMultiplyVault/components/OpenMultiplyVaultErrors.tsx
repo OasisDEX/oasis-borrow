@@ -53,6 +53,8 @@ export function OpenMultiplyVaultErrors({
         return translate('depositing-all-eth-balance')
       case 'ledgerWalletContractDataDisabled':
         return translate('ledger-enable-contract-data')
+      case 'exchangeError':
+        return translate('exchange-error')
       default:
         throw new UnreachableCaseError(message)
     }

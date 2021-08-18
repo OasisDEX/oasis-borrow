@@ -51,7 +51,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
   return (
     <Grid gap={4}>
       <Grid gap={2}>
-        <Text variant="strong">Deposit your ETH</Text>
+        <Text variant="strong">Deposit your {token}</Text>
         <VaultActionInput
           action="Deposit"
           token={token}
