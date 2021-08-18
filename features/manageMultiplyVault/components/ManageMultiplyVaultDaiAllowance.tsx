@@ -1,4 +1,3 @@
-
 import { getToken } from 'blockchain/tokensMetadata'
 import { Radio } from 'components/forms/Radio'
 import { BigNumberInput } from 'helpers/BigNumberInput'
