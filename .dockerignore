@@ -6,3 +6,5 @@ codecov.yml
 node_modules
 .env
 .env*.local
+./server/database/.env
+./server/database/.env.*

@@ -123,7 +123,6 @@ export function applyManageVaultTransition(
     const hasProxy = !!proxyAddress
     const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
     const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
-
     const depositAmountLessThanCollateralAllowance =
       collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
 

@@ -55,7 +55,7 @@ function getQuote$(
     fromAddress: account,
     slippage: slippage.times(100).toString(),
     disableEstimate: 'true',
-    allowPartial: 'false',
+    allowPartialFill: 'false',
   })
 
   return ajax(`${API_ENDPOINT}?${searchParams.toString()}`).pipe(
