@@ -7,6 +7,7 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxHelpers } from 'components/AppContext'
 import { VaultType } from 'features/generalManageVault/generalManageVault'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
+import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
@@ -267,9 +268,8 @@ export function parseVaultIdFromReceiptLogs({ logs }: Receipt): BigNumber | unde
 export function openVault(
   { sendWithGasEstimation }: TxHelpers,
   change: (ch: OpenVaultChange) => void,
-  { generateAmount, depositAmount, proxyAddress, ilk, token }: OpenVaultState,
-  ownerAddress: string
-  ) {
+  { generateAmount, depositAmount, proxyAddress, ilk, account, token }: OpenVaultState,
+) {
   sendWithGasEstimation(open, {
     kind: TxMetaKind.open,
     generateAmount: generateAmount || zero,
@@ -296,9 +296,12 @@ export function openVault(
           )
           console.log('id is')
           console.log(id)
-          if (id) {
+          // assume that user went through ToS flow and can interact with application
+          const token = jwtAuthGetToken(account as string)
+          if (id && token) {
             console.log('in if')
-            saveVaultUsingApi$(id, token, VaultType.Borrow)
+
+            saveVaultUsingApi$(id, token, VaultType.Borrow).subscribe()
           }
 
           return of({
