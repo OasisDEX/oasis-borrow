@@ -40,8 +40,6 @@ const infuraProjectId =
 const etherscanAPIKey =
   process.env.ETHERSCAN_API_KEY || getConfig()?.publicRuntimeConfig?.etherscan || ''
 
-  console.log('Exchange Address:',getConfig()?.publicRuntimeConfig?.exchangeAddress)
-
 const protoMain = {
   id: '1',
   name: 'main',

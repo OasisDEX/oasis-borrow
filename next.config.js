@@ -40,7 +40,8 @@ module.exports = withBundleAnalyzer(
           showBuildInfo: process.env.SHOW_BUILD_INFO === '1',
           infuraProjectId: process.env.INFURA_PROJECT_ID,
           etherscanAPIKey: process.env.ETHERSCAN_API_KEY,
-          exchangeAddress: process.env.USE_DUMMY === '1' ? process.env.DUMMY_EXCHANGE : process.env.EXCHANGE,
+          exchangeAddress:
+            process.env.USE_DUMMY === '1' ? process.env.DUMMY_EXCHANGE : process.env.EXCHANGE,
           multiplyProxyActions: process.env.MULTIPLY_PROXY_ACTIONS,
         },
         webpack: function (config, { isServer }) {

@@ -121,8 +121,8 @@ export function applyManageVaultTransition(
     } = state
     const canProgress = !errorMessages.length
     const hasProxy = !!proxyAddress
-    const isDepositZero = true
-    const isPaybackZero = true
+    const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
+    const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
     const depositAmountLessThanCollateralAllowance =
       collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
 
