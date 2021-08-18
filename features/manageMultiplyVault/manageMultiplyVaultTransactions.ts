@@ -331,6 +331,106 @@ export function manageVaultDepositAndGenerate(
     .subscribe((ch) => change(ch))
 }
 
+export function closeVaultToCollateral(
+  txHelpers$: Observable<TxHelpers>,
+  change: (ch: ManageMultiplyVaultChange) => void,
+  {
+    proxyAddress,
+    vault: { ilk, token, id },
+    shouldPaybackAll,
+    withdrawAmount = zero,
+    paybackAmount = zero,
+  }: ManageMultiplyVaultState,
+) {
+  txHelpers$
+    .pipe(
+      first(),
+      switchMap(({ sendWithGasEstimation }) =>
+        sendWithGasEstimation(withdrawAndPayback, {
+          kind: TxMetaKind.withdrawAndPayback,
+          withdrawAmount,
+          paybackAmount,
+          proxyAddress: proxyAddress!,
+          ilk,
+          token,
+          id,
+          shouldPaybackAll,
+        }).pipe(
+          transactionToX<ManageMultiplyVaultChange, WithdrawAndPaybackData>(
+            { kind: 'manageWaitingForApproval' },
+            (txState) =>
+              of({
+                kind: 'manageInProgress',
+                manageTxHash: (txState as any).txHash as string,
+              }),
+            (txState) => {
+              return of({
+                kind: 'manageFailure',
+                txError:
+                  txState.status === TxStatus.Error ||
+                  txState.status === TxStatus.CancelledByTheUser
+                    ? txState.error
+                    : undefined,
+              })
+            },
+            () => of({ kind: 'manageSuccess' }),
+          ),
+        ),
+      ),
+    )
+    .subscribe((ch) => change(ch))
+}
+
+export function closeVaultToDai(
+  txHelpers$: Observable<TxHelpers>,
+  change: (ch: ManageMultiplyVaultChange) => void,
+  {
+    proxyAddress,
+    vault: { ilk, token, id },
+    shouldPaybackAll,
+    withdrawAmount = zero,
+    paybackAmount = zero,
+  }: ManageMultiplyVaultState,
+) {
+  txHelpers$
+    .pipe(
+      first(),
+      switchMap(({ sendWithGasEstimation }) =>
+        sendWithGasEstimation(withdrawAndPayback, {
+          kind: TxMetaKind.withdrawAndPayback,
+          withdrawAmount,
+          paybackAmount,
+          proxyAddress: proxyAddress!,
+          ilk,
+          token,
+          id,
+          shouldPaybackAll,
+        }).pipe(
+          transactionToX<ManageMultiplyVaultChange, WithdrawAndPaybackData>(
+            { kind: 'manageWaitingForApproval' },
+            (txState) =>
+              of({
+                kind: 'manageInProgress',
+                manageTxHash: (txState as any).txHash as string,
+              }),
+            (txState) => {
+              return of({
+                kind: 'manageFailure',
+                txError:
+                  txState.status === TxStatus.Error ||
+                  txState.status === TxStatus.CancelledByTheUser
+                    ? txState.error
+                    : undefined,
+              })
+            },
+            () => of({ kind: 'manageSuccess' }),
+          ),
+        ),
+      ),
+    )
+    .subscribe((ch) => change(ch))
+}
+
 export function manageVaultWithdrawAndPayback(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageMultiplyVaultChange) => void,

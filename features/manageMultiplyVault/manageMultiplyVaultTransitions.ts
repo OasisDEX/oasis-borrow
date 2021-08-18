@@ -11,6 +11,8 @@ import {
 import { manageVaultFormDefaults } from './manageMultiplyVaultForm'
 import {
   adjustPosition,
+  closeVaultToCollateral,
+  closeVaultToDai,
   manageVaultDepositAndGenerate,
   manageVaultWithdrawAndPayback,
 } from './manageMultiplyVaultTransactions'
@@ -203,6 +205,13 @@ export function progressAdjust(
     }
     if (state.withdrawAmount !== undefined || state.paybackAmount !== undefined) {
       return manageVaultWithdrawAndPayback(txHelpers$, change, state)
+    }
+    if (state.otherAction === 'closeVault') {
+      if (state.closeVaultTo === 'collateral') {
+        return closeVaultToCollateral(txHelpers$, change, state)
+      } else {
+        return closeVaultToDai(txHelpers$, change, state)
+      }
     }
   } else {
     return adjustPosition(txHelpers$, change, state)

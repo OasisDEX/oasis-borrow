@@ -12,7 +12,6 @@ import {
 } from 'components/vault/VaultDetails'
 import { formatAmount } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
@@ -99,28 +98,16 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
     afterCollateralizationRatio,
     inputAmountsEmpty,
     stage,
+    netValueUSD,
+    afterNetValueUSD,
+    buyingPower,
+    buyingPowerUSD,
+    afterBuyingPowerUSD,
   } = props
   const openModal = useModal()
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
-
-  // TO DO CALCS
-  const buyingPower = zero
-  const buyingPowerUSD = zero
-  const afterBuyingPowerUSD = zero
-  const netValueUSD = zero
-  const afterNetValueUSD = zero
-
-  console.log(`
-    inputs empty ${inputAmountsEmpty}
-    inputs empty ${stage}
-
-
-    ${!inputAmountsEmpty} && ${stage !== 'manageSuccess'}
-
-    show after pill ${showAfterPill}
-  `)
 
   return (
     <Box>

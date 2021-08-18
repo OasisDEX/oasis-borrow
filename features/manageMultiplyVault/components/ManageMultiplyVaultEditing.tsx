@@ -419,10 +419,12 @@ function CloseVaultCard({
   text,
   icon,
   onClick,
+  isActive,
 }: {
   text: string
   icon: string
   onClick: () => void
+  isActive: boolean
 }) {
   return (
     <Card
@@ -432,6 +434,13 @@ function CloseVaultCard({
         fontSize: 2,
         py: 4,
         cursor: 'pointer',
+        ...(isActive
+          ? {
+              boxShadow: 'actionCard',
+              border: '1px solid',
+              borderColor: 'borderSelected',
+            }
+          : {}),
       }}
       onClick={onClick}
     >
@@ -454,14 +463,15 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
           text="Close to ETH"
           icon="ether_circle_color"
           onClick={() => setCloseVaultTo!('collateral')}
+          isActive={closeVaultTo === 'collateral'}
         />
         <CloseVaultCard
           text="Close to DAI"
           icon="dai_circle_color"
           onClick={() => setCloseVaultTo!('dai')}
+          isActive={closeVaultTo === 'dai'}
         />
       </Grid>
-      {closeVaultTo}
       <Text variant="paragraph3" sx={{ color: 'text.subtitle', mt: 3 }}>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras iaculis quam quis risus
         finibus, non imperdiet.
