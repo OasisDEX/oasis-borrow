@@ -309,7 +309,7 @@ export function multiplyVault(
           )
 
           if (id) {
-              saveVaultUsingApi$(id, token, VaultType.Multiply) 
+              saveVaultUsingApi$(id, token, VaultType.Multiply).subscribe()
           }
 
           return of({
