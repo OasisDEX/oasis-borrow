@@ -14,7 +14,7 @@ import {
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxHelpers } from 'components/AppContext'
 import { transactionToX } from 'helpers/form'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { filter, first, switchMap } from 'rxjs/operators'
 
