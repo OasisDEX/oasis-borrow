@@ -32,8 +32,7 @@ export function getVaultFromApi$(
 ): Observable<
   | {
       vaultId: BigNumber
-      type: 'borrow' | 'multiply'
-      proxyAddress: string
+      type: VaultType
     }
   | {}
 > {
@@ -45,12 +44,11 @@ export function getVaultFromApi$(
     },
   }).pipe(
     map((resp) => {
-      const { vaultId, type, proxyAddress } = resp.response as {
+      const { vaultId, type } = resp.response as {
         vaultId: number
-        type: 'borrow' | 'multiply'
-        proxyAddress: string
+        type: VaultType
       }
-      return { vaultId, type, proxyAddress }
+      return { vaultId, type }
     }),
     catchError((err) => {
       if (err.xhr.status === 404) {
@@ -76,7 +74,6 @@ export function saveVaultUsingApi$(
     body: {
       id: parseInt(id.toFixed(0)),
       type: vaultType,
-      proxyAddress: '',
     },
   }).pipe(map((_) => {}))
 }
