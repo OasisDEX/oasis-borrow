@@ -20,6 +20,7 @@ import {
   SetProxyOwnerData,
 } from 'blockchain/calls/proxy'
 import {
+  CloseVaultData,
   DepositAndGenerateData,
   MultiplyAdjustData,
   MultiplyData,
@@ -107,6 +108,7 @@ export type TxData =
   | ReclaimData
   | MultiplyData
   | MultiplyAdjustData
+  | CloseVaultData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
