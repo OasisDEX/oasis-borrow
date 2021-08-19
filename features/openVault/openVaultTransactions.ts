@@ -12,7 +12,6 @@ import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { filter, switchMap } from 'rxjs/operators'
-import { prisma } from 'server/prisma'
 import Web3 from 'web3'
 
 import { OpenVaultChange, OpenVaultState } from './openVault'
@@ -294,13 +293,10 @@ export function openVault(
           const id = parseVaultIdFromReceiptLogs(
             txState.status === TxStatus.Success && txState.receipt,
           )
-          console.log('id is')
-          console.log(id)
+
           // assume that user went through ToS flow and can interact with application
           const token = jwtAuthGetToken(account as string)
           if (id && token) {
-            console.log('in if')
-
             saveVaultUsingApi$(id, token, VaultType.Borrow).subscribe()
           }
 

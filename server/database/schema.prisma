@@ -27,7 +27,6 @@ model TosApproval {
 model Vault {
   vault_id      Int       @unique
   type          VaultType
-  proxy_address String
   owner_address String
 
   @@map("vault")

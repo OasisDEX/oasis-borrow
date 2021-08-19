@@ -9,7 +9,6 @@ import { selectVaultById } from './get'
 const vaultSchema = z.object({
   id: z.number(),
   type: z.enum(['borrow', 'multiply']),
-  proxyAddress: z.string(),
 })
 
 export async function createOrUpdate(req: express.Request, res: express.Response) {
@@ -19,7 +18,6 @@ export async function createOrUpdate(req: express.Request, res: express.Response
   const vaultData = {
     vault_id: params.id,
     type: params.type as VaultType,
-    proxy_address: params.proxyAddress,
     owner_address: user.address,
   }
   if (params.type !== 'borrow' && params.type !== 'multiply') {

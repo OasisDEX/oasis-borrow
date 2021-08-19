@@ -20,7 +20,6 @@ export async function getVault(req: express.Request, res: express.Response) {
     return res.status(200).json({
       vaultId: vault.vault_id,
       type: vault.type,
-      // proxyAddress: vault.proxy_address
     })
   }
 }

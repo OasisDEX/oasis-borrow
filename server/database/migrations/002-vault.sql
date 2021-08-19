@@ -3,7 +3,6 @@ CREATE TYPE "vault_type" AS ENUM ('borrow', 'multiply');
 CREATE TABLE "vault" (
     "vault_id" INTEGER NOT NULL,
     "type" "vault_type" NOT NULL,
-    "proxy_address" TEXT NOT NULL,
     "owner_address" CHAR(42) NOT NULL
 );
 

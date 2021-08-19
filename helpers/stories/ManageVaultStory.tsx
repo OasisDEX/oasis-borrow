@@ -91,15 +91,6 @@ export function manageVaultStory({
     const ctx = ({
       vaultHistory$: memoize(() => of([])),
       context$: of({ etherscan: 'url' }),
-      // generalManageVault$: memoize(() =>
-      //   createGeneralManageVault$(
-      //     // @ts-ignore, don't need to mock Multiply here
-      //     () => of(EMPTY),
-      //     () => obs$,
-      //     () => of(VaultType.Borrow),
-      //     MOCK_VAULT_ID,
-      //   ),
-      // ),
     } as any) as AppContext
 
     return (
