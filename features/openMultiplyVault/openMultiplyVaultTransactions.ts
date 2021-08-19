@@ -308,7 +308,7 @@ export function multiplyVault(
           const id = parseVaultIdFromReceiptLogs(
             txState.status === TxStatus.Success && txState.receipt,
           )
-          
+
           const jwtToken = jwtAuthGetToken(account as string)
           if (id && jwtToken) {
             saveVaultUsingApi$(id, jwtToken, VaultType.Multiply).subscribe()
