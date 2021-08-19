@@ -5,6 +5,7 @@ import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
@@ -246,6 +247,9 @@ export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
     errorMessages: ManageVaultErrorMessage[]
     warningMessages: ManageVaultWarningMessage[]
     summary: ManageVaultSummary
+    initialTotalSteps: number
+    totalSteps: number
+    currentStep: number
   }
 
 function addTransitions(
@@ -458,6 +462,12 @@ export function createManageMultiplyVault$(
                     return change$.next({ kind: 'injectStateOverride', stateToOverride })
                   }
 
+                  const initialTotalSteps = calculateInitialTotalSteps(
+                    proxyAddress,
+                    vault.token,
+                    'skip',
+                  )
+
                   const initialState: ManageMultiplyVaultState = {
                     ...defaultMutableManageMultiplyVaultState,
                     ...defaultManageVaultCalculations,
@@ -477,6 +487,9 @@ export function createManageMultiplyVault$(
                     summary: defaultManageVaultSummary,
                     slippage: SLIPPAGE,
                     exchangeError: false,
+                    initialTotalSteps,
+                    totalSteps: initialTotalSteps,
+                    currentStep: 1,
                     injectStateOverride,
                   }
 
