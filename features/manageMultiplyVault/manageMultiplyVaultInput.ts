@@ -287,7 +287,7 @@ export function applyManageVaultInput(
     }
   }
 
-  if (change.kind === 'buyAmount') {
+  if (change.kind === 'buyAmount' && !state.showSliderController && state.mainAction === 'buy') {
     const { buyAmount } = change
     const { priceInfo } = state
     const buyAmountUSD = buyAmount?.times(priceInfo.currentCollateralPrice)
@@ -303,7 +303,7 @@ export function applyManageVaultInput(
     }
   }
 
-  if (change.kind === 'buyAmountUSD') {
+  if (change.kind === 'buyAmountUSD' && !state.showSliderController && state.mainAction === 'buy') {
     const { buyAmountUSD } = change
     const { priceInfo } = state
     const buyAmount = buyAmountUSD?.div(priceInfo.currentCollateralPrice)
@@ -319,7 +319,7 @@ export function applyManageVaultInput(
     }
   }
 
-  if (change.kind === 'buyMax') {
+  if (change.kind === 'buyMax' && !state.showSliderController && state.mainAction === 'buy') {
     // const { priceInfo } = state
     // TODO use buying power here or debt ceiling
 
@@ -334,7 +334,7 @@ export function applyManageVaultInput(
     }
   }
 
-  if (change.kind === 'sellAmount') {
+  if (change.kind === 'sellAmount' && !state.showSliderController && state.mainAction === 'sell') {
     const { sellAmount } = change
     const { priceInfo } = state
     const sellAmountUSD = sellAmount?.times(priceInfo.currentCollateralPrice)
@@ -350,7 +350,11 @@ export function applyManageVaultInput(
     }
   }
 
-  if (change.kind === 'sellAmountUSD') {
+  if (
+    change.kind === 'sellAmountUSD' &&
+    !state.showSliderController &&
+    state.mainAction === 'sell'
+  ) {
     const { sellAmountUSD } = change
     const { priceInfo } = state
     const sellAmount = sellAmountUSD?.div(priceInfo.currentCollateralPrice)
@@ -366,7 +370,7 @@ export function applyManageVaultInput(
     }
   }
 
-  if (change.kind === 'sellMax') {
+  if (change.kind === 'sellMax' && !state.showSliderController && state.mainAction === 'sell') {
     // const { sellAmountUSD } = change
     const {
       vault: { freeCollateral, freeCollateralUSD },

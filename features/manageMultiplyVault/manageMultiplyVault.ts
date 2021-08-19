@@ -163,6 +163,7 @@ export interface MutableManageMultiplyVaultState {
   requiredCollRatio?: BigNumber
   buyAmount?: BigNumber
   buyAmountUSD?: BigNumber
+
   sellAmount?: BigNumber
   sellAmountUSD?: BigNumber
 }

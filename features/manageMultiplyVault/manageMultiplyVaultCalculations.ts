@@ -14,6 +14,12 @@ import { ManageMultiplyVaultState } from './manageMultiplyVault'
 export const PAYBACK_ALL_BOUND = new BigNumber('0.01')
 
 export interface ManageVaultCalculations {
+  maxBuyAmount: BigNumber
+  maxBuyAmountUSD: BigNumber
+
+  maxSellAmount: BigNumber
+  maxSellAmountUSD: BigNumber
+
   maxDepositAmount: BigNumber
   maxDepositAmountUSD: BigNumber
 
@@ -72,6 +78,12 @@ export interface ManageVaultCalculations {
 export const MAX_COLL_RATIO = new BigNumber(5)
 
 export const defaultManageVaultCalculations: ManageVaultCalculations = {
+  maxBuyAmount: zero,
+  maxBuyAmountUSD: zero,
+
+  maxSellAmount: zero,
+  maxSellAmountUSD: zero,
+
   maxDepositAmount: zero,
   maxDepositAmountUSD: zero,
 
