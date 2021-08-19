@@ -1,6 +1,10 @@
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
+import {
+  createGeneralManageVault$,
+  VaultType,
+} from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
 import {
   defaultMutableManageVaultState,
@@ -14,7 +18,7 @@ import {
 import { memoize } from 'lodash'
 import React from 'react'
 import { useEffect } from 'react'
-import { of } from 'rxjs'
+import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
@@ -91,6 +95,15 @@ export function manageVaultStory({
     const ctx = ({
       vaultHistory$: memoize(() => of([])),
       context$: of({ etherscan: 'url' }),
+      generalManageVault$: memoize(() =>
+        createGeneralManageVault$(
+          // @ts-ignore, don't need to mock Multiply here
+          () => of(EMPTY),
+          () => obs$,
+          () => of(VaultType.Borrow),
+          MOCK_VAULT_ID,
+        ),
+      ),
     } as any) as AppContext
 
     return (

@@ -16,8 +16,7 @@ export function checkVaultTypeUsingApi$(id: BigNumber): Observable<VaultType> {
       } else {
         const vaultResponse = resp as {
           vaultId: BigNumber
-          type: 'borrow' | 'multiply'
-          proxyAddress: string
+          type: VaultType
         }
         return vaultResponse.type as VaultType
       }
