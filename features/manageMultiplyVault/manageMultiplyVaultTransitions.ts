@@ -11,6 +11,7 @@ import {
 import { manageVaultFormDefaults } from './manageMultiplyVaultForm'
 import {
   adjustPosition,
+  closeVault,
   manageVaultDepositAndGenerate,
   manageVaultWithdrawAndPayback,
 } from './manageMultiplyVaultTransactions'
@@ -203,6 +204,9 @@ export function progressAdjust(
     }
     if (state.withdrawAmount !== undefined || state.paybackAmount !== undefined) {
       return manageVaultWithdrawAndPayback(txHelpers$, change, state)
+    }
+    if (state.otherAction === 'closeVault') {
+      return closeVault(txHelpers$, change, state)
     }
   } else {
     return adjustPosition(txHelpers$, change, state)

@@ -4,6 +4,7 @@ import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import {
   adjustMultiplyVault,
+  closeVaultCall,
   depositAndGenerate,
   DepositAndGenerateData,
   MultiplyAdjustData,
@@ -330,7 +331,6 @@ export function manageVaultDepositAndGenerate(
     )
     .subscribe((ch) => change(ch))
 }
-
 export function manageVaultWithdrawAndPayback(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageMultiplyVaultChange) => void,
@@ -506,6 +506,62 @@ export function createProxy(
               )
             },
             safeConfirmations,
+          ),
+        ),
+      ),
+    )
+    .subscribe((ch) => change(ch))
+}
+
+export function closeVault(
+  txHelpers$: Observable<TxHelpers>,
+  change: (ch: ManageMultiplyVaultChange) => void,
+  {
+    proxyAddress,
+    vault: { ilk, token, id, lockedCollateral, debt },
+    closeVaultTo,
+    slippage,
+    swap,
+    account,
+  }: ManageMultiplyVaultState,
+) {
+  txHelpers$
+    .pipe(
+      first(),
+      switchMap(({ sendWithGasEstimation }) =>
+        sendWithGasEstimation(closeVaultCall, {
+          kind: TxMetaKind.closeVault,
+          closeTo: closeVaultTo!,
+          token,
+          ilk,
+          id,
+          slippage: slippage,
+          exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
+          exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
+          userAddress: account!,
+          totalCollateral: lockedCollateral,
+          totalDebt: debt,
+          marketPrice: swap?.status === 'SUCCESS' ? swap.tokenPrice : zero,
+          proxyAddress: proxyAddress!,
+        }).pipe(
+          transactionToX<ManageMultiplyVaultChange, WithdrawAndPaybackData>(
+            { kind: 'manageWaitingForApproval' },
+            (txState) =>
+              of({
+                kind: 'manageInProgress',
+                manageTxHash: (txState as any).txHash as string,
+              }),
+            (txState) => {
+              return of({
+                kind: 'manageFailure',
+                txError:
+                  txState.status === TxStatus.Error ||
+                  txState.status === TxStatus.CancelledByTheUser
+                    ? txState.error
+                    : undefined,
+              })
+            },
+            () => of({ kind: 'manageSuccess' }),
           ),
         ),
       ),
