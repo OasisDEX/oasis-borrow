@@ -5,6 +5,7 @@ import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
 import { amountToWad, amountToWei } from 'blockchain/utils'
 import { ExchangeAction } from 'features/exchange/exchange'
+import { CloseVaultTo } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { one, zero } from 'helpers/zero'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
@@ -496,4 +497,82 @@ export const adjustMultiplyVault: TransactionDef<MultiplyAdjustData> = {
   },
   options: ({ token, depositCollateral }) =>
     token === 'ETH' ? { value: amountToWei(depositCollateral, token).toFixed(0) } : {},
+}
+
+export type CloseVaultData = {
+  kind: TxMetaKind.closeVault
+  closeTo: CloseVaultTo
+  token: string
+  ilk: string
+  id: BigNumber
+  exchangeAddress: string
+  userAddress: string
+  exchangeData: string
+  totalCollateral: BigNumber
+  totalDebt: BigNumber
+  marketPrice: BigNumber
+  slippage: BigNumber
+  proxyAddress: string
+}
+
+function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) {
+  const {
+    contract,
+    joins,
+    mcdJug,
+    dssCdpManager,
+    dssMultiplyProxyActions,
+    tokens,
+    exchange,
+    aaveLendingPool,
+  } = context
+
+  if (data.closeTo === 'collateral') {
+    throw new Error('NOT IMPLEMENTED')
+  } else {
+    return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.closeVaultExitDai(
+      {
+        fromTokenAddress: tokens[data.token].address,
+        toTokenAddress: tokens['DAI'].address,
+        fromTokenAmount: amountToWei(data.totalCollateral, data.token).toFixed(0),
+        toTokenAmount: amountToWei(data.totalCollateral.times(data.marketPrice), 'DAI').toFixed(0),
+        minToTokenAmount: amountToWei(data.totalCollateral.times(data.marketPrice), 'DAI')
+          .times(one.minus(data.slippage))
+          .toFixed(0),
+        exchangeAddress: data.exchangeAddress,
+        _exchangeCalldata: data.exchangeData,
+      } as any,
+      {
+        gemJoin: joins[data.ilk],
+        cdpId: data.id.toString(),
+        ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        fundsReceiver: data.userAddress,
+        borrowCollateral: amountToWei(data.totalCollateral, data.token).toFixed(0),
+        requiredDebt: amountToWei(data.totalDebt.times(one.plus(0.01)), 'DAI').toFixed(0),
+        depositCollateral: '0',
+        withdrawDai: '0',
+        depositDai: '0',
+        withdrawCollateral: '0',
+        skipFL: false,
+        methodName: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      } as any,
+      {
+        jug: mcdJug.address,
+        manager: dssCdpManager.address,
+        multiplyProxyActions: dssMultiplyProxyActions.address,
+        aaveLendingPoolProvider: aaveLendingPool,
+        exchange: exchange.address,
+      } as any,
+    )
+  }
+}
+
+export const closeVaultCall: TransactionDef<CloseVaultData> = {
+  call: ({ proxyAddress }, { contract }) => {
+    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
+  },
+  prepareArgs: (data, context) => {
+    const { dssMultiplyProxyActions } = context
+    return [dssMultiplyProxyActions.address, getCloseVaultCallData(data, context).encodeABI()]
+  },
 }

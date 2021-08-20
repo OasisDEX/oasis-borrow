@@ -61,8 +61,8 @@ export interface ManageVaultCalculations {
   loanFee: BigNumber
   oazoFee: BigNumber
   fees: BigNumber
-  netValue: BigNumber
-  afterNetValue: BigNumber
+  netValueUSD: BigNumber
+  afterNetValueUSD: BigNumber
   buyingPower: BigNumber
   buyingPowerUSD: BigNumber
   afterBuyingPower: BigNumber
@@ -126,12 +126,12 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
   oazoFee: zero,
   fees: zero,
 
-  netValue: zero,
-  afterNetValue: zero,
   buyingPower: zero,
   buyingPowerUSD: zero,
+  netValueUSD: zero,
   afterBuyingPower: zero,
   afterBuyingPowerUSD: zero,
+  afterNetValueUSD: zero,
 }
 
 /*
@@ -612,8 +612,8 @@ export function applyManageVaultCalculations(
 
   const afterCollateralBalance = collateralBalance.minus(depositAmount)
 
-  const netValue = lockedCollateral.times(currentCollateralPrice).minus(debt)
-  const afterNetValue = afterLockedCollateral.times(currentCollateralPrice).minus(debt)
+  const netValueUSD = lockedCollateral.times(currentCollateralPrice).minus(debt)
+  const afterNetValueUSD = afterLockedCollateral.times(currentCollateralPrice).minus(debt)
 
   const { collateralDelta: buyingPower } = getVaultChange({
     currentCollateralPrice,
@@ -684,8 +684,8 @@ export function applyManageVaultCalculations(
     afterCollateralBalance,
     shouldPaybackAll,
 
-    netValue,
-    afterNetValue,
+    netValueUSD,
+    afterNetValueUSD,
     buyingPower,
     buyingPowerUSD,
     afterBuyingPower,

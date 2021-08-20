@@ -249,6 +249,7 @@ export function applyManageVaultConditions(
     quote,
     swap,
     exchangeError,
+    otherAction,
   } = state
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
   const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)
@@ -258,7 +259,8 @@ export function applyManageVaultConditions(
     depositAmount === undefined &&
     generateAmount === undefined &&
     withdrawAmount === undefined &&
-    requiredCollRatio === undefined
+    requiredCollRatio === undefined &&
+    otherAction !== 'closeVault'
 
   const vaultWillBeAtRiskLevelDanger =
     !inputAmountsEmpty &&
