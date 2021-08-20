@@ -15,7 +15,7 @@
     "lint": "eslint --ext .ts --ext .tsx .",
     "lint:fix": "yarn lint --fix",
     "typecheck": "tsc -p ./tsconfig.test.json --noEmit && tsc -p ./tsconfig.json --noEmit",
-    "test": "mocha -r mock-local-storage --config ./.mocharc.js",
+    "test": "mocha -r mock-local-storage --config ./.mocharc.js --exit",
     "test:coverage": "nyc --reporter=lcov yarn test && nyc report --reporter=text --reporter=text-summary",
     "coverage": " yarn test:coverage && codecov",
     "coverage:no-upload": " yarn test:coverage",

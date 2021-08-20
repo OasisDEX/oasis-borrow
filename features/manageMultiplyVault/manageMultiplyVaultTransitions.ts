@@ -133,6 +133,7 @@ export function applyManageVaultTransition(
     const hasCollateralAllowance =
       token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
     const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+
     if (canProgress) {
       if (!hasProxy) {
         return { ...state, stage: 'proxyWaitingForConfirmation' }
@@ -165,6 +166,7 @@ export function applyManageVaultTransition(
     const hasCollateralAllowance =
       token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
     const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+
     if (!hasCollateralAllowance) {
       return { ...state, stage: 'collateralAllowanceWaitingForConfirmation' }
     }
