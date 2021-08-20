@@ -9,4 +9,5 @@ export enum TxMetaKind {
   reclaim = 'reclaim',
   multiply = 'multiply',
   adjustPosition = 'adjustPosition',
+  closeVault = 'closeVault',
 }

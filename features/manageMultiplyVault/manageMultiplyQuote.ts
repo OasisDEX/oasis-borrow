@@ -107,6 +107,8 @@ export function createExchangeChange$(
     ),
     distinctUntilChanged(
       (s1, s2) =>
+        s1.otherAction === s2.otherAction &&
+        s1.closeVaultTo === s2.closeVaultTo &&
         compareBigNumber(s1.requiredCollRatio, s2.requiredCollRatio) &&
         compareBigNumber(s1.depositAmount, s2.depositAmount) &&
         compareBigNumber(s1.withdrawAmount, s2.withdrawAmount) &&
@@ -129,6 +131,20 @@ export function createExchangeChange$(
               state.collateralDelta.abs(),
               state.exchangeAction,
             )
+          }
+          if (state.otherAction === 'closeVault') {
+            if (state.closeVaultTo === 'collateral') {
+              return EMPTY
+            }
+            if (state.closeVaultTo === 'dai') {
+              console.log('GET PRICE FOR CLOSE VAULT')
+              return exchangeQuote$(
+                state.vault.token,
+                state.slippage,
+                state.vault.lockedCollateral,
+                'SELL_COLLATERAL',
+              )
+            }
           }
           return EMPTY
         }),
