@@ -1,3 +1,4 @@
+import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Grid, Text } from 'theme-ui'
@@ -7,6 +8,8 @@ import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 function ManageMultiplyVaultEditingController({
   stage,
   toggle,
+  currentStep,
+  totalSteps,
 }: // accountIsController,
 ManageMultiplyVaultState) {
   const adjustPosition = `vaultEditingController${stage !== 'adjustPosition' ? 'Inactive' : ''}`
@@ -32,20 +35,10 @@ ManageMultiplyVaultState) {
           Other Actions
         </Button>
       </Grid>
+      <Box mt={3} mb={-3}>
+        <WithVaultFormStepIndicator {...{ totalSteps, currentStep }} />
+      </Box>
     </Box>
-  )
-}
-
-function Header({ header, subtext }: { header: string; subtext: string }) {
-  return (
-    <>
-      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
-        {header}
-      </Text>
-      <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
-        {subtext}
-      </Text>
-    </>
   )
 }
 
@@ -56,35 +49,42 @@ export function ManageMultiplyVaultFormHeader(props: ManageMultiplyVaultState) {
     isProxyStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
-    isManageStage,
+    stage,
+    currentStep,
+    totalSteps,
   } = props
 
   return (
     <Box>
       {isEditingStage && <ManageMultiplyVaultEditingController {...props} />}
-      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
-        {isProxyStage && (
-          <Header header={t('vault-form.header.proxy')} subtext={t('vault-form.subtext.proxy')} />
-        )}
-        {isCollateralAllowanceStage && (
-          <Header
-            header={t('vault-form.header.allowance', { token: props.vault.token.toUpperCase() })}
-            subtext={t('vault-form.subtext.allowance')}
-          />
-        )}
-        {isDaiAllowanceStage && (
-          <Header
-            header={t('vault-form.header.daiAllowance')}
-            subtext={t('vault-form.subtext.daiAllowance')}
-          />
-        )}
-        {isManageStage && (
-          <Header
-            header={t('vault-form.header.confirm-manage')}
-            subtext={t('vault-form.subtext.confirm')}
-          />
-        )}
-      </Text>
+      {!isEditingStage && (
+        <Box>
+          <WithVaultFormStepIndicator {...{ totalSteps, currentStep }}>
+            <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
+              {isProxyStage
+                ? t('vault-form.header.proxy')
+                : isCollateralAllowanceStage
+                ? t('vault-form.header.allowance', { token: props.vault.token.toUpperCase() })
+                : isDaiAllowanceStage
+                ? t('vault-form.header.daiAllowance')
+                : stage === 'manageInProgress'
+                ? t('vault-form.header.confirm-in-progress')
+                : t('vault-form.header.confirm-manage')}
+            </Text>
+          </WithVaultFormStepIndicator>
+          <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
+            {isProxyStage
+              ? t('vault-form.subtext.proxy')
+              : isCollateralAllowanceStage
+              ? t('vault-form.subtext.allowance', { token: props.vault.token.toUpperCase() })
+              : isDaiAllowanceStage
+              ? t('vault-form.subtext.daiAllowance')
+              : stage === 'manageInProgress'
+              ? t('vault-form.subtext.confirm-in-progress')
+              : t('vault-form.subtext.confirm')}
+          </Text>
+        </Box>
+      )}
     </Box>
   )
 }

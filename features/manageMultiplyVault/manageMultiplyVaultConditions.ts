@@ -14,13 +14,49 @@ const defaultManageVaultStageCategories = {
 }
 
 export function applyManageVaultStageCategorisation(state: ManageMultiplyVaultState) {
-  switch (state.stage) {
+  const {
+    stage,
+    vault: { token, debtOffset },
+    depositAmount,
+    daiAllowance,
+    collateralAllowance,
+    paybackAmount,
+    initialTotalSteps,
+  } = state
+
+  const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
+  const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
+
+  const depositAmountLessThanCollateralAllowance =
+    collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
+
+  const paybackAmountLessThanDaiAllowance =
+    daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
+
+  const hasCollateralAllowance =
+    token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
+
+  const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+
+  let totalSteps = initialTotalSteps
+
+  if (initialTotalSteps === 2 && (!hasCollateralAllowance || !hasDaiAllowance)) {
+    totalSteps = 3
+  }
+
+  if (initialTotalSteps === 3 && hasCollateralAllowance && hasDaiAllowance && !isPaybackZero) {
+    totalSteps = 2
+  }
+
+  switch (stage) {
     case 'adjustPosition':
     case 'otherActions':
       return {
         ...state,
         ...defaultManageVaultStageCategories,
         isEditingStage: true,
+        totalSteps,
+        currentStep: 1,
       }
     case 'proxyWaitingForConfirmation':
     case 'proxyWaitingForApproval':
@@ -31,6 +67,8 @@ export function applyManageVaultStageCategorisation(state: ManageMultiplyVaultSt
         ...state,
         ...defaultManageVaultStageCategories,
         isProxyStage: true,
+        totalSteps,
+        currentStep: totalSteps - (token === 'ETH' ? 1 : 2),
       }
     case 'collateralAllowanceWaitingForConfirmation':
     case 'collateralAllowanceWaitingForApproval':
@@ -41,6 +79,8 @@ export function applyManageVaultStageCategorisation(state: ManageMultiplyVaultSt
         ...state,
         ...defaultManageVaultStageCategories,
         isCollateralAllowanceStage: true,
+        totalSteps,
+        currentStep: totalSteps - 1,
       }
     case 'daiAllowanceWaitingForConfirmation':
     case 'daiAllowanceWaitingForApproval':
@@ -51,6 +91,8 @@ export function applyManageVaultStageCategorisation(state: ManageMultiplyVaultSt
         ...state,
         ...defaultManageVaultStageCategories,
         isDaiAllowanceStage: true,
+        totalSteps,
+        currentStep: totalSteps - 1,
       }
 
     case 'manageWaitingForConfirmation':
@@ -62,9 +104,11 @@ export function applyManageVaultStageCategorisation(state: ManageMultiplyVaultSt
         ...state,
         ...defaultManageVaultStageCategories,
         isManageStage: true,
+        totalSteps,
+        currentStep: totalSteps,
       }
     default:
-      throw new UnreachableCaseError(state.stage)
+      throw new UnreachableCaseError(stage)
   }
 }
 

@@ -15,7 +15,7 @@ const defaultOpenVaultStageCategories = {
 export function calculateInitialTotalSteps(
   proxyAddress: string | undefined,
   token: string,
-  allowance: BigNumber | undefined,
+  allowance: BigNumber | undefined | 'skip',
 ) {
   let totalSteps = 2
 
@@ -23,8 +23,10 @@ export function calculateInitialTotalSteps(
     totalSteps += 1
   }
 
-  if (token !== 'ETH' && (!allowance || allowance.lte(zero))) {
-    totalSteps += 1
+  if (allowance !== 'skip') {
+    if (token !== 'ETH' && (!allowance || allowance.lte(zero))) {
+      totalSteps += 1
+    }
   }
 
   return totalSteps

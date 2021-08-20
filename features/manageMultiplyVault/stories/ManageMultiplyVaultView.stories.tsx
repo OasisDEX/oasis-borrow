@@ -154,6 +154,7 @@ export const CollateralAllowanceSuccess = manageMultiplyVaultStory({
   vault: vaultERC20,
   balanceInfo: { collateralBalance: new BigNumber('200') },
   proxyAddress,
+  collateralAllowance: zero,
 })({
   stage: 'collateralAllowanceSuccess',
   depositAmount: new BigNumber('2'),
@@ -207,6 +208,7 @@ export const DaiAllowanceSuccess = manageMultiplyVaultStory({
   vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
   proxyAddress,
+  daiAllowance: zero,
 })({
   stage: 'daiAllowanceSuccess',
   withdrawAmount: new BigNumber('0.5'),
