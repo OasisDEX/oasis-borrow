@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { compareBigNumber } from 'helpers/compareBigNumber'
 import { EMPTY, Observable } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, take } from 'rxjs/operators'
 
@@ -35,10 +36,18 @@ export type ExchangeQuoteChanges =
   | ExchangeSwapFailureChange
 
 export function applyExchange(change: OpenMultiplyVaultChange, state: OpenMultiplyVaultState) {
+  if (change.kind === 'quoteError' || change.kind === 'swapError') {
+    return {
+      ...state,
+      exchangeError: true,
+    }
+  }
+
   if (change.kind === 'quote') {
     return {
       ...state,
       quote: change.quote,
+      exchangeError: false,
     }
   }
 
@@ -46,6 +55,7 @@ export function applyExchange(change: OpenMultiplyVaultChange, state: OpenMultip
     return {
       ...state,
       swap: change.swap,
+      exchangeError: false,
     }
   }
 
@@ -84,12 +94,8 @@ export function createExchangeChange$(
     filter((state) => state.depositAmount !== undefined),
     distinctUntilChanged(
       (s1, s2) =>
-        !!s1.depositAmount &&
-        !!s2.depositAmount &&
-        s1.depositAmount.eq(s2.depositAmount) &&
-        !!s1.requiredCollRatio &&
-        !!s2.requiredCollRatio &&
-        s1.requiredCollRatio.eq(s2.requiredCollRatio),
+        compareBigNumber(s1.depositAmount, s2.depositAmount) &&
+        compareBigNumber(s1.requiredCollRatio, s2.requiredCollRatio),
     ),
     debounceTime(500),
     switchMap((state) =>

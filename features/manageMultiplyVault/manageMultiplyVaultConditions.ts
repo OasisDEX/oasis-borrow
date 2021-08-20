@@ -106,6 +106,7 @@ export interface ManageVaultConditions {
 
   debtWillBeLessThanDebtFloor: boolean
   isLoadingStage: boolean
+  isExchangeLoading: boolean
 
   insufficientCollateralAllowance: boolean
   customCollateralAllowanceAmountEmpty: boolean
@@ -152,6 +153,7 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
 
   debtWillBeLessThanDebtFloor: false,
   isLoadingStage: false,
+  isExchangeLoading: false,
 
   insufficientCollateralAllowance: false,
   customCollateralAllowanceAmountEmpty: false,
@@ -172,6 +174,7 @@ export function applyManageVaultConditions(
   const {
     afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
+    afterDebt,
     ilkData,
     vault,
     account,
@@ -193,13 +196,17 @@ export function applyManageVaultConditions(
     generateAmount,
     withdrawAmount,
     requiredCollRatio,
-  } = state
-  //TODO
-  const maxWithdrawAmountAtCurrentPrice = zero
-  const maxWithdrawAmountAtNextPrice = zero
-  const maxGenerateAmountAtCurrentPrice = zero
-  const maxGenerateAmountAtNextPrice = zero
 
+    maxWithdrawAmountAtCurrentPrice,
+    maxWithdrawAmountAtNextPrice,
+    maxGenerateAmountAtCurrentPrice,
+    maxGenerateAmountAtNextPrice,
+
+    quote,
+    swap,
+    exchangeError,
+    otherAction,
+  } = state
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
   const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)
 
@@ -208,7 +215,8 @@ export function applyManageVaultConditions(
     depositAmount === undefined &&
     generateAmount === undefined &&
     withdrawAmount === undefined &&
-    requiredCollRatio === undefined
+    requiredCollRatio === undefined &&
+    otherAction !== 'closeVault'
 
   const vaultWillBeAtRiskLevelDanger =
     !inputAmountsEmpty &&
@@ -233,13 +241,13 @@ export function applyManageVaultConditions(
     afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationWarningThreshold)
 
   const vaultWillBeUnderCollateralized =
-    !inputAmountsEmpty &&
+    afterDebt.gt(zero) &&
     afterCollateralizationRatio.lt(ilkData.liquidationRatio) &&
     !afterCollateralizationRatio.isZero()
 
   const vaultWillBeUnderCollateralizedAtNextPrice =
     !vaultWillBeUnderCollateralized &&
-    !inputAmountsEmpty &&
+    afterDebt.gt(zero) &&
     afterCollateralizationRatioAtNextPrice.lt(ilkData.liquidationRatio) &&
     !afterCollateralizationRatioAtNextPrice.isZero()
 
@@ -255,20 +263,22 @@ export function applyManageVaultConditions(
   const withdrawAmountExceedsFreeCollateralAtNextPrice =
     !withdrawAmountExceedsFreeCollateral && !!withdrawAmount?.gt(maxWithdrawAmountAtNextPrice)
 
-  const generateAmountExceedsDebtCeiling = !!generateAmount?.gt(ilkData.ilkDebtAvailable)
+  // generate amount used for calc, can be from input for Other Actions or from afterDebt for Adjust Position
+  const generateAmountCalc = afterDebt.minus(vault.debt).absoluteValue()
+
+  const generateAmountExceedsDebtCeiling = !!generateAmountCalc?.gt(ilkData.ilkDebtAvailable)
 
   const generateAmountExceedsDaiYieldFromTotalCollateral =
-    !generateAmountExceedsDebtCeiling && !!generateAmount?.gt(maxGenerateAmountAtCurrentPrice)
+    !generateAmountExceedsDebtCeiling && !!generateAmountCalc.gt(maxGenerateAmountAtCurrentPrice)
 
   const generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice =
     !generateAmountExceedsDebtCeiling &&
     !generateAmountExceedsDaiYieldFromTotalCollateral &&
-    !!generateAmount?.gt(maxGenerateAmountAtNextPrice)
+    !!generateAmountCalc.gt(maxGenerateAmountAtNextPrice)
 
   const generateAmountLessThanDebtFloor = !!(
-    generateAmount &&
-    !generateAmount.plus(vault.debt).isZero() &&
-    generateAmount.plus(vault.debt).lt(ilkData.debtFloor)
+    !generateAmountCalc?.plus(vault.debt).isZero() &&
+    generateAmountCalc.plus(vault.debt).lt(ilkData.debtFloor)
   )
 
   const paybackAmountExceedsDaiBalance = !!paybackAmount?.gt(daiBalance)
@@ -335,6 +345,7 @@ export function applyManageVaultConditions(
   ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
 
   const withdrawCollateralOnVaultUnderDebtFloor =
+    vault.debt.gt(zero) &&
     vault.debt.lt(ilkData.debtFloor) &&
     withdrawAmount !== undefined &&
     withdrawAmount.gt(zero) &&
@@ -356,7 +367,8 @@ export function applyManageVaultConditions(
       generateAmountLessThanDebtFloor ||
       paybackAmountExceedsDaiBalance ||
       paybackAmountExceedsVaultDebt ||
-      withdrawCollateralOnVaultUnderDebtFloor)
+      withdrawCollateralOnVaultUnderDebtFloor ||
+      exchangeError)
 
   const collateralAllowanceProgressionDisabled =
     isCollateralAllowanceStage &&
@@ -370,11 +382,14 @@ export function applyManageVaultConditions(
       customDaiAllowanceAmountExceedsMaxUint256 ||
       customDaiAllowanceAmountLessThanPaybackAmount)
 
+  const isExchangeLoading = !quote && !swap && !exchangeError
+
   const canProgress = !(
     isLoadingStage ||
     editingProgressionDisabled ||
     collateralAllowanceProgressionDisabled ||
-    daiAllowanceProgressionDisabled
+    daiAllowanceProgressionDisabled ||
+    isExchangeLoading
   )
 
   const canRegress = ([
@@ -419,6 +434,7 @@ export function applyManageVaultConditions(
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,
     isLoadingStage,
+    isExchangeLoading,
 
     insufficientCollateralAllowance,
     customCollateralAllowanceAmountEmpty,

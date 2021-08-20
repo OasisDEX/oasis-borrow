@@ -1,5 +1,6 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { TxHelpers } from 'components/AppContext'
+import { zero } from 'helpers/zero'
 import { Observable } from 'rxjs'
 
 import {
@@ -8,7 +9,12 @@ import {
   ManageMultiplyVaultState,
 } from './manageMultiplyVault'
 import { manageVaultFormDefaults } from './manageMultiplyVaultForm'
-import { manageVaultDepositAndGenerate } from './manageMultiplyVaultTransactions'
+import {
+  adjustPosition,
+  closeVault,
+  manageVaultDepositAndGenerate,
+  manageVaultWithdrawAndPayback,
+} from './manageMultiplyVaultTransactions'
 
 export type ManageVaultTransitionChange =
   | {
@@ -108,21 +114,22 @@ export function applyManageVaultTransition(
     const {
       errorMessages,
       proxyAddress,
-      // collateralAllowance,
-      // daiAllowance,
-      vault: { token /* debtOffset */ },
+      collateralAllowance,
+      daiAllowance,
+      vault: { token, debtOffset },
+      depositAmount,
+      paybackAmount,
     } = state
     const canProgress = !errorMessages.length
     const hasProxy = !!proxyAddress
-    //TODO allowances validation
-    const isDepositZero = true
-    const isPaybackZero = true
-    // const depositAmountLessThanCollateralAllowance =
-    //   collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
-    const depositAmountLessThanCollateralAllowance = false
-    // const paybackAmountLessThanDaiAllowance =
-    //   daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
-    const paybackAmountLessThanDaiAllowance = false
+    const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
+    const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
+    const depositAmountLessThanCollateralAllowance =
+      collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
+
+    const paybackAmountLessThanDaiAllowance =
+      daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
+
     const hasCollateralAllowance =
       token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
     const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
@@ -141,61 +148,67 @@ export function applyManageVaultTransition(
   }
 
   if (change.kind === 'progressProxy') {
-    // const {
-    // originalEditingStage,
-    // collateralAllowance,
-    // daiAllowance,
-    // vault: { token, debtOffset },
-    // } = state
-    //   const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
-    //   const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
-    //   const depositAmountLessThanCollateralAllowance =
-    //     collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
-    //   const paybackAmountLessThanDaiAllowance =
-    //     daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
-    //   const hasCollateralAllowance =
-    //     token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
-    //   const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
-    //   if (!hasCollateralAllowance) {
-    //     return { ...state, stage: 'collateralAllowanceWaitingForConfirmation' }
-    //   }
-    //   if (!hasDaiAllowance) {
-    //     return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
-    //   }
-    //   return { ...state, stage: originalEditingStage }
-    // }
-    // if (change.kind === 'progressCollateralAllowance') {
-    //   const {
-    //     originalEditingStage,
-    //     paybackAmount,
-    //     daiAllowance,
-    //     vault: { debtOffset },
-    //   } = state
-    //   const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
-    //   const paybackAmountLessThanDaiAllowance =
-    //     daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
-    //   const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
-    //   if (!hasDaiAllowance) {
-    //     return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
-    //   }
-    //   return { ...state, stage: originalEditingStage }
+    const {
+      originalEditingStage,
+      collateralAllowance,
+      daiAllowance,
+      vault: { token, debtOffset },
+      depositAmount,
+      paybackAmount,
+    } = state
+    const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
+    const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
+    const depositAmountLessThanCollateralAllowance =
+      collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
+    const paybackAmountLessThanDaiAllowance =
+      daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
+    const hasCollateralAllowance =
+      token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
+    const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+    if (!hasCollateralAllowance) {
+      return { ...state, stage: 'collateralAllowanceWaitingForConfirmation' }
+    }
+    if (!hasDaiAllowance) {
+      return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
+    }
+    return { ...state, stage: originalEditingStage }
+  }
+  if (change.kind === 'progressCollateralAllowance') {
+    const {
+      originalEditingStage,
+      paybackAmount,
+      daiAllowance,
+      vault: { debtOffset },
+    } = state
+    const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
+    const paybackAmountLessThanDaiAllowance =
+      daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
+    const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+    if (!hasDaiAllowance) {
+      return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
+    }
+    return { ...state, stage: originalEditingStage }
   }
 
   return state
 }
 
-export function progressManage(
+export function progressAdjust(
   txHelpers$: Observable<TxHelpers>,
   state: ManageMultiplyVaultState,
   change: (ch: ManageMultiplyVaultChange) => void,
 ) {
-  // const { depositAmount, generateAmount } = state
-  // const isDepositAndGenerate = depositAmount || generateAmount
-
-  return manageVaultDepositAndGenerate(txHelpers$, change, state)
-  // if (true) {
-  //   return manageVaultDepositAndGenerate(txHelpers$, change, state)
-  // } else {
-  //   return manageVaultWithdrawAndPayback(txHelpers$, change, state)
-  // }
+  if (state.requiredCollRatio === undefined) {
+    if (state.depositAmount !== undefined || state.generateAmount !== undefined) {
+      return manageVaultDepositAndGenerate(txHelpers$, change, state)
+    }
+    if (state.withdrawAmount !== undefined || state.paybackAmount !== undefined) {
+      return manageVaultWithdrawAndPayback(txHelpers$, change, state)
+    }
+    if (state.otherAction === 'closeVault') {
+      return closeVault(txHelpers$, change, state)
+    }
+  } else {
+    return adjustPosition(txHelpers$, change, state)
+  }
 }

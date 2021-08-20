@@ -102,6 +102,7 @@ export interface OpenMultiplyVaultConditions {
   canProgress: boolean
   canRegress: boolean
   canAdjustRisk: boolean
+  isExchangeLoading: boolean
 }
 
 export const defaultOpenVaultConditions: OpenMultiplyVaultConditions = {
@@ -132,6 +133,7 @@ export const defaultOpenVaultConditions: OpenMultiplyVaultConditions = {
   isLoadingStage: false,
   canProgress: false,
   canRegress: false,
+  isExchangeLoading: false,
 }
 
 export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
@@ -152,6 +154,9 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     allowanceAmount,
     allowance,
     maxCollRatio,
+    exchangeError,
+    quote,
+    swap,
   } = state
 
   const inputAmountsEmpty = !depositAmount
@@ -240,6 +245,8 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     token !== 'ETH' &&
     !!(depositAmount && !depositAmount.isZero() && (!allowance || depositAmount.gt(allowance)))
 
+  const isExchangeLoading = !quote && !swap && !exchangeError
+
   const canProgress =
     !(
       inputAmountsEmpty ||
@@ -252,7 +259,9 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
       generateAmountLessThanDebtFloor ||
       customAllowanceAmountEmpty ||
       customAllowanceAmountExceedsMaxUint256 ||
-      customAllowanceAmountLessThanDepositAmount
+      customAllowanceAmountLessThanDepositAmount ||
+      exchangeError ||
+      isExchangeLoading
     ) || stage === 'openSuccess'
 
   const canRegress = ([
@@ -291,5 +300,6 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     isLoadingStage,
     canProgress,
     canRegress,
+    isExchangeLoading,
   }
 }

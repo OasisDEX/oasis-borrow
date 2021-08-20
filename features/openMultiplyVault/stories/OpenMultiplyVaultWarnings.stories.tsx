@@ -32,16 +32,15 @@ export const NoProxyAddress = openMultiplyVaultStory({
   title: 'User has no proxyAddress and will have to create one before opening a vault',
 })({ depositAmount: new BigNumber('100') })
 
-// FOR NOW WE ONLY PROVIDE MULTIPLY FOR ETH COLLATERAL, STEPS BELOW WILL NOT OCCUR
-
-// export const InsufficientAllowance = openMultiplyVaultStory({
-//   title:
-//     'User has no allowance for the given collateral and will have to set it before opening a vault',
-//   proxyAddress,
-//   allowance: zero,
-// })({
-//   depositAmount: new BigNumber('100'),
-// })
+export const InsufficientAllowance = openMultiplyVaultStory({
+  title:
+    'User has no allowance for the given collateral and will have to set it before opening a vault',
+  proxyAddress,
+  allowance: zero,
+  ilk: 'WBTC-A',
+})({
+  depositAmount: new BigNumber('100'),
+})
 
 export const PotentialGenerateAmountLessThanDebtFloor = openMultiplyVaultStory({
   title:

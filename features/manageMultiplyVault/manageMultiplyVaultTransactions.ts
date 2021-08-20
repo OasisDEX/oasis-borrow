@@ -4,6 +4,7 @@ import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import {
   adjustMultiplyVault,
+  closeVaultCall,
   depositAndGenerate,
   DepositAndGenerateData,
   MultiplyAdjustData,
@@ -227,7 +228,17 @@ export function applyManageVaultTransaction(
 export function adjustPosition(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageMultiplyVaultChange) => void,
-  { proxyAddress, vault: { ilk, token, id }, exchangeAction }: ManageMultiplyVaultState,
+  {
+    account,
+    proxyAddress,
+    vault: { ilk, token, id },
+    exchangeAction,
+    debtDelta,
+    depositAmount,
+    collateralDelta,
+    swap,
+    slippage,
+  }: ManageMultiplyVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -235,15 +246,15 @@ export function adjustPosition(
       switchMap(({ sendWithGasEstimation }) =>
         sendWithGasEstimation(adjustMultiplyVault, {
           kind: TxMetaKind.adjustPosition,
-          depositCollateral: zero,
-          requiredDebt: zero,
-          borrowedCollateral: zero,
-          userAddress: '0x',
+          depositCollateral: depositAmount || zero,
+          requiredDebt: debtDelta?.abs() || zero,
+          borrowedCollateral: collateralDelta?.abs() || zero,
+          userAddress: account!,
           proxyAddress: proxyAddress!,
-          exchangeAddress: '0x',
-          exchangeData: '0x',
-          slippage: zero,
-          action: exchangeAction!, // TODO make sure it's defined
+          exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
+          exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
+          slippage: slippage,
+          action: exchangeAction!,
           token,
           id,
           ilk,
@@ -276,7 +287,12 @@ export function adjustPosition(
 export function manageVaultDepositAndGenerate(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageMultiplyVaultChange) => void,
-  { proxyAddress, vault: { ilk, token, id } }: ManageMultiplyVaultState,
+  {
+    proxyAddress,
+    vault: { ilk, token, id },
+    depositAmount = zero,
+    generateAmount = zero,
+  }: ManageMultiplyVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -284,8 +300,8 @@ export function manageVaultDepositAndGenerate(
       switchMap(({ sendWithGasEstimation }) =>
         sendWithGasEstimation(depositAndGenerate, {
           kind: TxMetaKind.depositAndGenerate,
-          generateAmount: zero,
-          depositAmount: zero,
+          generateAmount,
+          depositAmount,
           proxyAddress: proxyAddress!,
           ilk,
           token,
@@ -315,11 +331,16 @@ export function manageVaultDepositAndGenerate(
     )
     .subscribe((ch) => change(ch))
 }
-
 export function manageVaultWithdrawAndPayback(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageMultiplyVaultChange) => void,
-  { proxyAddress, vault: { ilk, token, id }, shouldPaybackAll }: ManageMultiplyVaultState,
+  {
+    proxyAddress,
+    vault: { ilk, token, id },
+    shouldPaybackAll,
+    withdrawAmount = zero,
+    paybackAmount = zero,
+  }: ManageMultiplyVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -327,8 +348,8 @@ export function manageVaultWithdrawAndPayback(
       switchMap(({ sendWithGasEstimation }) =>
         sendWithGasEstimation(withdrawAndPayback, {
           kind: TxMetaKind.withdrawAndPayback,
-          withdrawAmount: zero,
-          paybackAmount: zero,
+          withdrawAmount,
+          paybackAmount,
           proxyAddress: proxyAddress!,
           ilk,
           token,
@@ -485,6 +506,62 @@ export function createProxy(
               )
             },
             safeConfirmations,
+          ),
+        ),
+      ),
+    )
+    .subscribe((ch) => change(ch))
+}
+
+export function closeVault(
+  txHelpers$: Observable<TxHelpers>,
+  change: (ch: ManageMultiplyVaultChange) => void,
+  {
+    proxyAddress,
+    vault: { ilk, token, id, lockedCollateral, debt },
+    closeVaultTo,
+    slippage,
+    swap,
+    account,
+  }: ManageMultiplyVaultState,
+) {
+  txHelpers$
+    .pipe(
+      first(),
+      switchMap(({ sendWithGasEstimation }) =>
+        sendWithGasEstimation(closeVaultCall, {
+          kind: TxMetaKind.closeVault,
+          closeTo: closeVaultTo!,
+          token,
+          ilk,
+          id,
+          slippage: slippage,
+          exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
+          exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
+          userAddress: account!,
+          totalCollateral: lockedCollateral,
+          totalDebt: debt,
+          marketPrice: swap?.status === 'SUCCESS' ? swap.tokenPrice : zero,
+          proxyAddress: proxyAddress!,
+        }).pipe(
+          transactionToX<ManageMultiplyVaultChange, WithdrawAndPaybackData>(
+            { kind: 'manageWaitingForApproval' },
+            (txState) =>
+              of({
+                kind: 'manageInProgress',
+                manageTxHash: (txState as any).txHash as string,
+              }),
+            (txState) => {
+              return of({
+                kind: 'manageFailure',
+                txError:
+                  txState.status === TxStatus.Error ||
+                  txState.status === TxStatus.CancelledByTheUser
+                    ? txState.error
+                    : undefined,
+              })
+            },
+            () => of({ kind: 'manageSuccess' }),
           ),
         ),
       ),

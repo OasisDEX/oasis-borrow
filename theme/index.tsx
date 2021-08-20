@@ -26,6 +26,7 @@ const oasisBaseTheme = {
     light: '#D1DEE6',
     lightIcon: '#BEC9D0',
     border: '#DDDEE6',
+    borderSelected: '#A8A9B1',
     offBlue: '#CAD6DB',
     offWhite: '#F6F8F9',
 
@@ -216,6 +217,7 @@ const oasisBaseTheme = {
     tooltipVaultHeader: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     buttonMenu: '0px 0px 8px rgba(0, 0, 0, 0.1)',
     vaultDetailsCard: '0px 1px 8px rgba(37, 39, 61, 0.1)',
+    actionCard: '0px 2px 6px rgba(37, 39, 61, 0.25);',
   },
   gradients: {
     app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',

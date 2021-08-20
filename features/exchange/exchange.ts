@@ -55,7 +55,7 @@ function getQuote$(
     fromAddress: account,
     slippage: slippage.times(100).toString(),
     disableEstimate: 'true',
-    allowPartial: 'false',
+    allowPartialFill: 'false',
   })
 
   return ajax(`${API_ENDPOINT}?${searchParams.toString()}`).pipe(
@@ -76,7 +76,7 @@ function getQuote$(
       tokenPrice:
         action === 'BUY_COLLATERAL'
           ? new BigNumber(fromTokenAmount).div(new BigNumber(toTokenAmount))
-          : new BigNumber(toTokenAmount).div(new BigNumber(fromTokenAddress)),
+          : new BigNumber(toTokenAmount).div(new BigNumber(fromTokenAmount)),
       tx,
     })),
     retry(3),

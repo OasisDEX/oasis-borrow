@@ -54,7 +54,7 @@ import {
 import {
   applyManageVaultTransition,
   ManageVaultTransitionChange,
-  progressManage,
+  progressAdjust,
 } from './manageMultiplyVaultTransitions'
 import {
   ManageVaultErrorMessage,
@@ -179,6 +179,7 @@ export interface ManageVaultEnvironment {
   priceInfo: PriceInfo
   quote?: Quote
   swap?: Quote
+  exchangeError: boolean
   slippage: BigNumber
 }
 
@@ -374,7 +375,7 @@ function addTransitions(
   if (state.stage === 'manageWaitingForConfirmation' || state.stage === 'manageFailure') {
     return {
       ...state,
-      progress: () => progressManage(txHelpers$, state, change),
+      progress: () => progressAdjust(txHelpers$, state, change),
       regress: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -389,7 +390,7 @@ function addTransitions(
   return state
 }
 
-export const defaultMutableManageVaultState: MutableManageMultiplyVaultState = {
+export const defaultMutableManageMultiplyVaultState: MutableManageMultiplyVaultState = {
   stage: 'adjustPosition',
   originalEditingStage: 'adjustPosition',
   collateralAllowanceAmount: maxUint256,
@@ -457,7 +458,7 @@ export function createManageMultiplyVault$(
                   }
 
                   const initialState: ManageMultiplyVaultState = {
-                    ...defaultMutableManageVaultState,
+                    ...defaultMutableManageMultiplyVaultState,
                     ...defaultManageVaultCalculations,
                     ...defaultManageVaultConditions,
                     vault,
@@ -474,6 +475,7 @@ export function createManageMultiplyVault$(
                     warningMessages: [],
                     summary: defaultManageVaultSummary,
                     slippage: SLIPPAGE,
+                    exchangeError: false,
                     injectStateOverride,
                   }
 

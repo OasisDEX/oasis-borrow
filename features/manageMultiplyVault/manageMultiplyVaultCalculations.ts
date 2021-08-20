@@ -55,15 +55,18 @@ export interface ManageVaultCalculations {
   loanFee: BigNumber
   oazoFee: BigNumber
   fees: BigNumber
+  netValueUSD: BigNumber
+  afterNetValueUSD: BigNumber
+  buyingPower: BigNumber
+  buyingPowerUSD: BigNumber
+  afterBuyingPower: BigNumber
+  afterBuyingPowerUSD: BigNumber
 
   debtDelta?: BigNumber
   collateralDelta?: BigNumber
 
   marketPrice?: BigNumber
   marketPriceMaxSlippage?: BigNumber
-
-  netValue: BigNumber
-  afterNetValue: BigNumber
 }
 
 export const MAX_COLL_RATIO = new BigNumber(5)
@@ -111,8 +114,12 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
   oazoFee: zero,
   fees: zero,
 
-  netValue: zero,
-  afterNetValue: zero,
+  buyingPower: zero,
+  buyingPowerUSD: zero,
+  netValueUSD: zero,
+  afterBuyingPower: zero,
+  afterBuyingPowerUSD: zero,
+  afterNetValueUSD: zero,
 }
 
 /*
@@ -320,6 +327,16 @@ function calculateMaxGenerateAmount({
   })
 }
 
+function calculateMultiply({
+  debt,
+  lockedCollateralUSD,
+}: {
+  debt: BigNumber
+  lockedCollateralUSD: BigNumber
+}) {
+  return lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
+}
+
 export function getVaultChange({
   requiredCollRatio,
   depositAmount,
@@ -385,7 +402,6 @@ export function applyManageVaultCalculations(
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
     vault: { lockedCollateral, debt, debtOffset, lockedCollateralUSD, liquidationPrice },
     requiredCollRatio,
-    inputAmountsEmpty,
     quote,
     swap,
     slippage,
@@ -488,7 +504,7 @@ export function applyManageVaultCalculations(
     maxGenerateAmount,
   }
 
-  if (!marketPrice || !marketPriceMaxSlippage || inputAmountsEmpty) {
+  if (!marketPrice || !marketPriceMaxSlippage) {
     return { ...state, ...defaultManageVaultCalculations, ...maxInputAmounts, ...prices }
   }
 
@@ -516,8 +532,11 @@ export function applyManageVaultCalculations(
 
   const afterCollateralizationRatio = afterLockedCollateralUSD.div(afterDebt)
 
-  const multiply = lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
-  const afterMultiply = afterLockedCollateralUSD.div(afterLockedCollateralUSD.minus(afterDebt))
+  const multiply = calculateMultiply({ debt, lockedCollateralUSD })
+  const afterMultiply = calculateMultiply({
+    debt: afterDebt,
+    lockedCollateralUSD: afterLockedCollateralUSD,
+  })
 
   const afterLiquidationPrice = currentCollateralPrice
     .times(liquidationRatio)
@@ -581,8 +600,41 @@ export function applyManageVaultCalculations(
 
   const afterCollateralBalance = collateralBalance.minus(depositAmount)
 
-  const netValue = lockedCollateral.times(currentCollateralPrice).minus(debt)
-  const afterNetValue = afterLockedCollateral.times(currentCollateralPrice).minus(debt)
+  const netValueUSD = lockedCollateral.times(currentCollateralPrice).minus(debt)
+  const afterNetValueUSD = afterLockedCollateral.times(currentCollateralPrice).minus(debt)
+
+  const { collateralDelta: buyingPower } = getVaultChange({
+    currentCollateralPrice,
+    marketPrice,
+    slippage: SLIPPAGE,
+    debt,
+    lockedCollateral,
+    requiredCollRatio: liquidationRatio,
+    depositAmount: zero,
+    paybackAmount: zero,
+    generateAmount: zero,
+    withdrawAmount: zero,
+    OF: MULTIPLY_FEE,
+    FF: LOAN_FEE,
+  })
+
+  const { collateralDelta: afterBuyingPower } = getVaultChange({
+    currentCollateralPrice,
+    marketPrice,
+    slippage: SLIPPAGE,
+    debt: afterDebt,
+    lockedCollateral: afterLockedCollateral,
+    requiredCollRatio: liquidationRatio,
+    depositAmount: zero,
+    paybackAmount: zero,
+    generateAmount: zero,
+    withdrawAmount: zero,
+    OF: MULTIPLY_FEE,
+    FF: LOAN_FEE,
+  })
+
+  const buyingPowerUSD = buyingPower.times(currentCollateralPrice)
+  const afterBuyingPowerUSD = afterBuyingPower.times(currentCollateralPrice)
 
   return {
     ...state,
@@ -620,7 +672,11 @@ export function applyManageVaultCalculations(
     afterCollateralBalance,
     shouldPaybackAll,
 
-    netValue,
-    afterNetValue,
+    netValueUSD,
+    afterNetValueUSD,
+    buyingPower,
+    buyingPowerUSD,
+    afterBuyingPower,
+    afterBuyingPowerUSD,
   }
 }
