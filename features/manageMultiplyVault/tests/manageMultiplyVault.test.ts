@@ -289,7 +289,7 @@ describe('manageMultiplyVault', () => {
         expect(state().stage).to.deep.equal('daiAllowanceWaitingForConfirmation')
       })
 
-      it('shold update totalSteps if allowances amount are less than deposit or payback amount depending on otherAction', () => {
+      it('should update totalSteps if allowances amount are less than deposit or payback amount depending on otherAction', () => {
         const daiAllowance = new BigNumber('1000')
         const collateralAllowance = new BigNumber('1000')
 
