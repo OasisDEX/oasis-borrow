@@ -6,7 +6,7 @@ import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Divider, Grid } from 'theme-ui'
+import { Box, Grid } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 import { ManageMultiplyVaultButton } from './ManageMultiplyVaultButton'
