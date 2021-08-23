@@ -421,7 +421,11 @@ export function applyManageVaultCalculations(
     paybackAmount = zero,
     generateAmount = zero,
     withdrawAmount = zero,
+    stage,
+    otherAction,
   } = state
+
+  const isCloseAction = stage === 'otherActions' && otherAction === 'closeVault'
 
   const marketPrice =
     swap?.status === 'SUCCESS'
@@ -537,7 +541,7 @@ export function applyManageVaultCalculations(
 
   const fees = BigNumber.sum(loanFee, oazoFee)
 
-  const afterDebt = debt.plus(debtDelta).plus(loanFee)
+  const afterDebt = isCloseAction ? zero : debt.plus(debtDelta).plus(loanFee)
 
   const afterLockedCollateral = lockedCollateral.plus(collateralDelta)
   const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
@@ -545,10 +549,12 @@ export function applyManageVaultCalculations(
   const afterCollateralizationRatio = afterLockedCollateralUSD.div(afterDebt)
 
   const multiply = calculateMultiply({ debt, lockedCollateralUSD })
-  const afterMultiply = calculateMultiply({
-    debt: afterDebt,
-    lockedCollateralUSD: afterLockedCollateralUSD,
-  })
+  const afterMultiply = isCloseAction
+    ? one
+    : calculateMultiply({
+        debt: afterDebt,
+        lockedCollateralUSD: afterLockedCollateralUSD,
+      })
 
   const afterLiquidationPrice = currentCollateralPrice
     .times(liquidationRatio)

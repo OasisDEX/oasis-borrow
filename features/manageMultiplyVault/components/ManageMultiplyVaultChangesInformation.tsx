@@ -34,13 +34,14 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
     buyAmount,
     buyAmountUSD,
     // impact,
-    // loanFees,
     fees,
     loanFee,
     oazoFee: multiplyFee,
     marketPrice,
     inputAmountsEmpty,
     isExchangeLoading,
+    stage,
+    otherAction,
   } = props
   const collRatioColor = getCollRatioColor(props, collateralizationRatio)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -49,8 +50,12 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
   const zeroBalance = formatCryptoBalance(zero)
   const impact = new BigNumber(0.25)
 
+  const isCloseAction = stage === 'otherActions' && otherAction === 'closeVault'
+
   return !inputAmountsEmpty ? (
-    <VaultChangesInformationContainer title="Vault Changes">
+    <VaultChangesInformationContainer
+      title={isCloseAction ? 'Close Vault Information' : 'Vault Changes'}
+    >
       <VaultChangesInformationItem
         label={`Buying ${token}`}
         value={
@@ -68,7 +73,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
         }
       />
       <VaultChangesInformationItem
-        label={`Total ${token} exposure`}
+        label={isCloseAction ? 'Collateral' : `Total ${token} exposure`}
         value={
           <Flex>
             {formatCryptoBalance(lockedCollateral)} {token}
@@ -117,21 +122,25 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
       <VaultChangesInformationItem
         label={'Collateral Ratio'}
         value={
-          <Flex>
-            <Text sx={{ color: collRatioColor }}>
-              {formatPercent(collateralizationRatio.times(100), {
-                precision: 2,
-                roundMode: BigNumber.ROUND_DOWN,
-              })}
-            </Text>
-            <VaultChangesInformationArrow />
-            <Text sx={{ color: afterCollRatioColor }}>
-              {formatPercent(afterCollateralizationRatio.times(100), {
-                precision: 2,
-                roundMode: BigNumber.ROUND_DOWN,
-              })}
-            </Text>
-          </Flex>
+          isCloseAction ? (
+            '--'
+          ) : (
+            <Flex>
+              <Text sx={{ color: collRatioColor }}>
+                {formatPercent(collateralizationRatio.times(100), {
+                  precision: 2,
+                  roundMode: BigNumber.ROUND_DOWN,
+                })}
+              </Text>
+              <VaultChangesInformationArrow />
+              <Text sx={{ color: afterCollRatioColor }}>
+                {formatPercent(afterCollateralizationRatio.times(100), {
+                  precision: 2,
+                  roundMode: BigNumber.ROUND_DOWN,
+                })}
+              </Text>
+            </Flex>
+          )
         }
       />
       <VaultChangesInformationItem

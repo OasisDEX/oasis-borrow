@@ -188,6 +188,25 @@ describe('manageMultiplyVault', () => {
         state().setOtherAction!('withdrawDai')
         expect(state().paybackAmount!).to.be.undefined
       })
+
+      it('should be able to go to closeVault and toggle between collateral and DAI', () => {
+        const state = getStateUnpacker(
+          mockManageMultiplyVault$({
+            vault: {
+              collateral: new BigNumber('50'),
+              debt: new BigNumber('5000'),
+            },
+          }),
+        )
+
+        state().toggle!()
+        state().setOtherAction!('closeVault')
+        expect(state().closeVaultTo).to.deep.equal('collateral')
+        state().setCloseVaultTo!('dai')
+        expect(state().closeVaultTo).to.deep.equal('dai')
+        state().setCloseVaultTo!('collateral')
+        expect(state().closeVaultTo).to.deep.equal('collateral')
+      })
     })
 
     describe('editing progressions', () => {
