@@ -184,7 +184,7 @@
     "moment-locales-webpack-plugin": "^1.2.0",
     "nock": "^13.0.3",
     "node-mocks-http": "^1.8.1",
-    "node-sass": "^4.12.0",
+    "node-sass": "^6.0.1",
     "patch-package": "^6.2.2",
     "pg-promise": "^10.5.3",
     "prettier": "^2.0.1",

@@ -8,6 +8,8 @@ import morgan from 'morgan'
 import { Config } from './config'
 import { jwtAuthMiddleware } from './middleware/signature-auth'
 import { tosRoutes } from './middleware/tos'
+import { createOrUpdate } from './middleware/vault/createOrUpdate'
+import { getVault } from './middleware/vault/get'
 
 const path = ''
 
@@ -46,6 +48,14 @@ export function getApp(config: Config, { nextHandler }: Dependencies): express.A
     `${path}/api/tos`,
     jwt({ secret: config.userJWTSecret, algorithms: ['HS512'] }),
     tosRoutes(),
+  )
+
+  app.get(`${path}/api/vault/:id`, getVault)
+
+  app.post(
+    `${path}/api/vault`,
+    jwt({ secret: config.userJWTSecret, algorithms: ['HS512'] }),
+    createOrUpdate,
   )
 
   app.use((err: any, _req: any, res: any, _next: any) => {
