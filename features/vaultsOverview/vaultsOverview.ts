@@ -36,10 +36,10 @@ export function createVaultsOverview$(
     vaultsAddress$.pipe(map(getVaultsSummary)),
     ilksWithFilter$(ilksListWithBalances$),
   ).pipe(
-    map(([vaultsBorrow, vaultsMultiply, vaultSummary, ilksWithFilters]) => ({
+    map(([borrow, multiply, vaultSummary, ilksWithFilters]) => ({
       vaults: {
-        borrow: vaultsBorrow,
-        multiply: vaultsMultiply,
+        borrow,
+        multiply,
       },
       vaultSummary,
       ilksWithFilters,

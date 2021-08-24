@@ -29,7 +29,7 @@ export function fetchVaultsType(vaults: Vault[]): Observable<VaultWithType[]> {
     map((res) =>
       vaults.map((vault) => ({
         ...vault,
-        type: (res[vault.id.toFixed(0)] ? 'multiply' : 'borrow') as VaultType,
+        type: res[vault.id.toFixed(0)] || 'borrow',
       })),
     ),
   )

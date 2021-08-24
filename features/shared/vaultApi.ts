@@ -1,4 +1,4 @@
-import { Vault } from '@prisma/client'
+import { Vault, VaultType as VaultTypeDB } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { VaultType } from 'features/generalManageVault/generalManageVault'
 import getConfig from 'next/config'
@@ -28,7 +28,7 @@ export function checkVaultTypeUsingApi$(id: BigNumber): Observable<VaultType> {
 }
 
 interface CheckMultipleVaultsResponse {
-  [key: string]: boolean
+  [key: string]: VaultTypeDB
 }
 
 export function checkMultipleVaultsFromApi$(
@@ -46,7 +46,7 @@ export function checkMultipleVaultsFromApi$(
       const vaultTypeMapping: CheckMultipleVaultsResponse = {}
 
       vaults.forEach(({ vault_id, type }) => {
-        vaultTypeMapping[vault_id] = type === 'multiply'
+        vaultTypeMapping[vault_id] = type
       })
 
       return vaultTypeMapping
