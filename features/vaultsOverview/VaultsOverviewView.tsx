@@ -340,7 +340,13 @@ function getHeaderTranslationKey(
     : `${HEADERS_PATH}.connected-viewer-withVaults`
 }
 
-function VaultsOverwiewTest({ vaults, heading }: { vaults: VaultsWithFilters; heading: string }) {
+function VaultsOverwiewPerType({
+  vaults,
+  heading,
+}: {
+  vaults: VaultsWithFilters
+  heading: string
+}) {
   const { t } = useTranslation()
 
   const onVaultSearch = useCallback(
@@ -475,8 +481,8 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
         <>
           <Summary summary={vaultSummary} />
           <Grid gap={5}>
-            <VaultsOverwiewTest vaults={vaults.borrow} heading="Borrow Vault" />
-            <VaultsOverwiewTest vaults={vaults.multiply} heading="Multiply Vault" />
+            <VaultsOverwiewPerType vaults={vaults.borrow} heading="Borrow Vault" />
+            <VaultsOverwiewPerType vaults={vaults.multiply} heading="Multiply Vault" />
           </Grid>
         </>
       )}
