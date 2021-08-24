@@ -339,9 +339,10 @@ function getHeaderTranslationKey(
     ? `${HEADERS_PATH}.connected-viewer-noVaults`
     : `${HEADERS_PATH}.connected-viewer-withVaults`
 }
-export function VaultsOverviewView({ vaultsOverview, context, address }: Props) {
-  const { vaults, vaultSummary } = vaultsOverview
+
+function VaultsOverwiewTest({ vaults, heading }: { vaults: VaultsWithFilters; heading: string }) {
   const { t } = useTranslation()
+
   const onVaultSearch = useCallback(
     (search: string) => {
       vaults.filters.change({ kind: 'search', search })
@@ -355,6 +356,29 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
     },
     [vaults.filters],
   )
+
+  return (
+    <Grid gap={3}>
+      <Heading mb={3} sx={{ fontWeight: 'bold', fontSize: 7 }}>
+        {heading}
+      </Heading>
+      <Filters
+        onSearch={onVaultSearch}
+        search={vaults.filters.search}
+        onTagChange={onVaultsTagChange}
+        tagFilter={vaults.filters.tagFilter}
+        defaultTag="your-vaults"
+        page={Pages.VaultsOverview}
+        searchPlaceholder={t('search-token')}
+      />
+      <VaultsTable vaults={vaults} />
+    </Grid>
+  )
+}
+
+export function VaultsOverviewView({ vaultsOverview, context, address }: Props) {
+  const { vaults, vaultSummary } = vaultsOverview
+  const { t } = useTranslation()
 
   if (vaultSummary === undefined) {
     return null
@@ -450,16 +474,10 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
       {vaultSummary.numberOfVaults !== 0 && (
         <>
           <Summary summary={vaultSummary} />
-          <Filters
-            onSearch={onVaultSearch}
-            search={vaults.filters.search}
-            onTagChange={onVaultsTagChange}
-            tagFilter={vaults.filters.tagFilter}
-            defaultTag="your-vaults"
-            page={Pages.VaultsOverview}
-            searchPlaceholder={t('search-token')}
-          />
-          <VaultsTable vaults={vaults} />
+          <Grid gap={5}>
+            <VaultsOverwiewTest vaults={vaults.borrow} heading="Borrow Vault" />
+            <VaultsOverwiewTest vaults={vaults.multiply} heading="Multiply Vault" />
+          </Grid>
         </>
       )}
     </Grid>
