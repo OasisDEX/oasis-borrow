@@ -170,12 +170,6 @@
   "keyWithCount_plural": "{{count}} items",
   "landing": {
     "footer": {
-      "language": {
-        "en": "Inglés",
-        "es": "Español",
-        "pt": "Português",
-        "cn": "中文"
-      },
       "about": "Acerca de ",
       "team": "Equipo",
       "careers": "Carreras",

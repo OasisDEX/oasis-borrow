@@ -170,12 +170,6 @@
     "keyWithCount_plural": "{{count}} itens",
     "landing": {
         "footer": {
-            "language": {
-                "en": "English",
-                "es": "Español",
-                "pt": "Português",
-                "cn": "中文"
-            },
             "about": "Sobre",
             "team": "Time",
             "careers": "Carreiras",
