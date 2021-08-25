@@ -171,20 +171,8 @@
   "landing": {
     "footer": {
       "about": "Acerca de ",
-      "team": "Equipo",
-      "careers": "Carreras",
-      "privacy": "Privacidad",
-      "terms": "Condiciones",
-      "contact": "Contacto",
       "resources": "Recursos",
-      "blog": "Blog",
-      "faq": "Preguntas Frecuentes",
-      "knowledge-centre": "Centro de Conocimiento",
-      "oracles": "Oráculos",
-      "products": "Productos",
-      "dai-wallet": "Dai Wallet",
-      "borrow": "Borrow",
-      "trade": "Intercambia"
+      "products": "Productos"
     },
     "hero": {
       "headline": "Genera Dai usando cripto como colateral",
@@ -249,6 +237,20 @@
   "min-amount": "La cantidad mínima es de {{minAmount}} {{token}}",
   "moving-into-vault": "Moviendo al Vault",
   "moving-out-vault": "Moviendo fuera del Vault",
+  "nav": {
+    "team": "Equipo",
+    "careers": "Carreras",
+    "privacy": "Privacidad",
+    "terms": "Condiciones",
+    "contact": "Contacto",
+    "blog": "Blog",
+    "faq": "Preguntas Frecuentes",
+    "knowledge-centre": "Centro de Conocimiento",
+    "oracles": "Oráculos",
+    "dai-wallet": "Dai Wallet",
+    "borrow": "Borrow",
+    "trade": "Intercambia"
+  },
   "new-to-ethereum": "¿Nuevo en Ethereum? ",
   "next": "Siguiente",
   "no-dai": "No Dai",

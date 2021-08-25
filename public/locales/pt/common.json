@@ -171,20 +171,8 @@
     "landing": {
         "footer": {
             "about": "Sobre",
-            "team": "Time",
-            "careers": "Carreiras",
-            "privacy": "Privacidade",
-            "terms": "Termos",
-            "contact": "Suporte",
             "resources": "Recursos",
-            "blog": "Blog",
-            "faq": "FAQ",
-            "knowledge-centre": "Centro de Conhecimento",
-            "oracles": "Oráculos",
-            "products": "Produtos",
-            "dai-wallet": "Dai Wallet",
-            "borrow": "Empreste",
-            "trade": "Negocie"
+            "products": "Produtos"
         },
         "hero": {
             "headline": "Dai é uma moeda digital inteligente feita para todos. Compre, envie e gerencie em um só lugar.",
@@ -249,6 +237,20 @@
     "min-amount": "A quantidade mínima é {{minAmount}} {{token}}",
     "moving-into-vault": "Transferindo para o Cofre",
     "moving-out-vault": "Tirando do Cofre",
+    "nav": {
+        "team": "Time",
+        "careers": "Carreiras",
+        "privacy": "Privacidade",
+        "terms": "Termos",
+        "contact": "Suporte",
+        "blog": "Blog",
+        "faq": "FAQ",
+        "knowledge-centre": "Centro de Conhecimento",
+        "oracles": "Oráculos",
+        "dai-wallet": "Dai Wallet",
+        "borrow": "Empreste",
+        "trade": "Negocie"
+    },
     "new-to-ethereum": "Novo no Ethereum? ",
     "next": "Próximo",
     "no-dai": "Sem Dai",

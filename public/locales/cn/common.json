@@ -157,14 +157,6 @@
   "keyWithCount": "{{count}} 项",
   "keyWithCount_plural": "{{count}} 项",
   "landing": {
-    "footer": {
-      "blog": "博客",
-      "contact": "联系方式",
-      "faq": "常见问题",
-      "privacy": "隐私",
-      "terms": "条款",
-      "trade": "交易"
-    },
     "hero": {
       "headline": "抵押数字资产，生成 Dai",
       "subheader": "开启 Maker 金库，存入抵押品，生成 Dai。<0/> 连接钱包以开始。"
@@ -226,6 +218,14 @@
   "min-amount": "最低数量为 {{minAmount}} {{token}}",
   "moving-into-vault": "前往金库",
   "moving-out-vault": "离开金库",
+  "nav": {
+    "blog": "博客",
+    "contact": "联系方式",
+    "faq": "常见问题",
+    "privacy": "隐私",
+    "terms": "条款",
+    "trade": "交易"
+  },
   "new-to-ethereum": "刚接触以太坊？",
   "next": "下一步",
   "no-activity": "无历史记录",

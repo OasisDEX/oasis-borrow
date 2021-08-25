@@ -172,27 +172,10 @@
   "keyWithCount_plural": "{{count}} items",
   "landing": {
     "footer": {
-      "language": {
-        "en": "English",
-        "es": "Español",
-        "pt": "Português",
-        "cn": "中文"
-      },
       "about": "About",
-      "team": "Team",
-      "careers": "Careers",
-      "privacy": "Privacy",
-      "terms": "Terms",
-      "contact": "Contact",
       "resources": "Resources",
-      "blog": "Blog",
-      "faq": "FAQ",
-      "knowledge-centre": "Knowledge Centre",
-      "oracles": "Oracles",
       "products": "Products",
-      "dai-wallet": "Dai Wallet",
-      "borrow": "Borrow",
-      "trade": "Trade"
+      "dai-wallet": "Dai Wallet"
     },
     "hero": {
       "headline": "Generate Dai using crypto as your collateral",
@@ -208,6 +191,12 @@
         "description": "Learn more about Oasis, Dai and DeFi at our FAQ’s page"
       }
     }
+  },
+  "lang-dropdown": {
+    "en": "English",
+    "es": "Español",
+    "pt": "Português",
+    "cn": "中文"
   },
   "ledger-cancel": "Select another wallet",
   "ledger-error": "There was an error, please reset",
@@ -258,6 +247,20 @@
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",
   "moving-into-vault": "Moving into Vault",
   "moving-out-vault": "Moving out of Vault",
+  "nav": {
+    "team": "Team",
+    "careers": "Careers",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "contact": "Contact",
+    "blog": "Blog",
+    "faq": "FAQ",
+    "knowledge-centre": "Knowledge Centre",
+    "oracles": "Oracles",
+    "dai-wallet": "Dai Wallet",
+    "borrow": "Borrow",
+    "trade": "Trade"
+  },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
   "no-dai": "No Dai",

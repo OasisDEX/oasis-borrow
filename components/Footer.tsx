@@ -18,36 +18,36 @@ const FOOTER_SECTIONS = [
   {
     titleKey: 'landing.footer.about',
     links: [
-      { labelKey: 'landing.footer.team', url: '/about' },
-      { labelKey: 'landing.footer.careers', url: '/careers' },
-      { labelKey: 'landing.footer.privacy', url: '/privacy' },
-      { labelKey: 'landing.footer.terms', url: '/terms' },
-      { labelKey: 'landing.footer.contact', url: `${apiHost}/daiwallet/contact` },
+      { labelKey: 'nav.team', url: '/about' },
+      { labelKey: 'nav.careers', url: '/careers' },
+      { labelKey: 'nav.privacy', url: '/privacy' },
+      { labelKey: 'nav.terms', url: '/terms' },
+      { labelKey: 'nav.contact', url: `${apiHost}/daiwallet/contact` },
     ],
   },
   {
     titleKey: 'landing.footer.resources',
     links: [
-      { labelKey: 'landing.footer.blog', url: 'https://blog.oasis.app', target: '_self' },
+      { labelKey: 'nav.blog', url: 'https://blog.oasis.app', target: '_self' },
       {
-        labelKey: 'landing.footer.faq',
+        labelKey: 'nav.faq',
         url: '/support',
       },
       // add link
-      // { labelKey: 'landing.footer.knowledge-centre', url: '/' },
-      { labelKey: 'landing.footer.oracles', url: '/oracles' },
+      // { labelKey: 'nav.knowledge-centre', url: '/' },
+      { labelKey: 'nav.oracles', url: '/oracles' },
     ],
   },
   {
     titleKey: 'landing.footer.products',
     links: [
       {
-        labelKey: 'landing.footer.dai-wallet',
+        labelKey: 'nav.dai-wallet',
         url: `${apiHost}/daiwallet`,
         target: '_self',
       },
-      { labelKey: 'landing.footer.borrow', url: '/' },
-      { labelKey: 'landing.footer.trade', url: `${apiHost}/trade`, target: '_self' },
+      { labelKey: 'nav.borrow', url: '/' },
+      { labelKey: 'nav.trade', url: `${apiHost}/trade`, target: '_self' },
     ],
   },
 ]
@@ -57,10 +57,10 @@ function LanguageSelect() {
   const router = useRouter()
 
   const LANGUAGE_OPTIONS = [
-    { value: 'en', label: t('landing.footer.language.en') },
-    { value: 'es', label: t('landing.footer.language.es') },
-    { value: 'pt', label: t('landing.footer.language.pt') },
-    { value: 'cn', label: t('landing.footer.language.cn') },
+    { value: 'en', label: t('lang-dropdown.en') },
+    { value: 'es', label: t('lang-dropdown.es') },
+    { value: 'pt', label: t('lang-dropdown.pt') },
+    { value: 'cn', label: t('lang-dropdown.cn') },
   ]
 
   return (
