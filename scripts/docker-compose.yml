@@ -24,6 +24,8 @@ services:
       - BLOCK_NUMBER=${BLOCK_NUMBER}
     ports:
       - "8545:8545"
+    volumes:
+      - "../.hardhat/cache:/usr/src/mpa/cache"
   borrow:
     image: oasisdexorg/oasis-borrow:latest
     container_name: oasis-borrow
