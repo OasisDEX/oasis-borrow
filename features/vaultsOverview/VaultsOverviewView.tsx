@@ -343,9 +343,11 @@ function getHeaderTranslationKey(
 function VaultsOverwiewPerType({
   vaults,
   heading,
+  multiply,
 }: {
   vaults: VaultsWithFilters
   heading: string
+  multiply?: boolean
 }) {
   const { t } = useTranslation()
 
@@ -376,6 +378,7 @@ function VaultsOverwiewPerType({
         defaultTag="your-vaults"
         page={Pages.VaultsOverview}
         searchPlaceholder={t('search-token')}
+        multiply={multiply}
       />
       <VaultsTable vaults={vaults} />
     </Grid>
@@ -482,7 +485,7 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
           <Summary summary={vaultSummary} />
           <Grid gap={5}>
             <VaultsOverwiewPerType vaults={vaults.borrow} heading="Borrow Vault" />
-            <VaultsOverwiewPerType vaults={vaults.multiply} heading="Multiply Vault" />
+            <VaultsOverwiewPerType vaults={vaults.multiply} heading="Multiply Vault" multiply />
           </Grid>
         </>
       )}
