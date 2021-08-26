@@ -116,7 +116,7 @@ export function applyOpenMultiplyVaultCalculations(
   const requiredCollRatioSafe = requiredCollRatio || maxCollRatio
 
   const [afterOutstandingDebt, buyingCollateral] =
-    depositAmount && marketPriceMaxSlippage && requiredCollRatio && marketPrice
+    depositAmount && marketPriceMaxSlippage && requiredCollRatioSafe && marketPrice
       ? calculateParamsIncreaseMP(
           oraclePrice,
           marketPrice,
@@ -124,7 +124,7 @@ export function applyOpenMultiplyVaultCalculations(
           LOAN_FEE,
           depositAmount,
           zero,
-          requiredCollRatio,
+          requiredCollRatioSafe,
           state.slippage,
           zero,
         )
