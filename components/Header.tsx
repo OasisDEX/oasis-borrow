@@ -7,11 +7,16 @@ import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
+import getConfig from 'next/config'
+import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 import { TRANSITIONS } from 'theme'
 import { Card, Box, Container, Flex, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from './AppContextProvider'
+const {
+  publicRuntimeConfig: { apiHost },
+} = getConfig()
 
 export function Logo({ sx }: { sx?: SxStyleProp }) {
   return (
@@ -121,7 +126,7 @@ function ConnectedHeader() {
 }
 
 const HEADER_LINKS = {
-  'dai-wallet': '/daiwallet',
+  'dai-wallet': `${apiHost}/daiwallet`,
   'learn': 'https://kb.oasis.app',
   'blog': 'https://blog.oasis.app'
 }
@@ -152,16 +157,43 @@ function HeaderDropdown({ title, children }: { title : string } & WithChildren) 
   </Box>
 }
 
+function LanguageDropdown() {
+  const { t, i18n } = useTranslation()
+  const router = useRouter()
+  const { locales } = i18n.options
+  
+  return <HeaderDropdown title={t(`lang-dropdown.${i18n.language}`)}>
+    {locales
+      .filter(lang => lang !== i18n.language)
+      .map(lang => <Text onClick={() => router.push(router.asPath, router.asPath, { locale: lang })}>
+        {t(`lang-dropdown.${lang}`)}
+      </Text>
+      )
+    }
+  </HeaderDropdown>
+}
+
 function DisconnectedHeader() {
   const { t } = useTranslation()
 
   return (
     <BasicHeader>
-      <Logo sx={{ position: ['absolute', 'static', 'static'], left: 3, top: 3 }} />
-      <HeaderDropdown title="Products">
-        <AppLink href={HEADER_LINKS['dai-wallet']}>{t('nav.dai-wallet')}</AppLink>
-        <Text variant="strong">Borrow</Text>
-      </HeaderDropdown>
+      <Flex sx={{ justifyContent: 'space-between' }}>
+        <Box>
+          <Logo sx={{ position: ['absolute', 'static', 'static'], left: 3, top: 3 }} />
+          <HeaderDropdown title="Products">
+            <AppLink href={HEADER_LINKS['dai-wallet']}>{t('nav.dai-wallet')}</AppLink>
+            <Text variant="strong">Borrow</Text>
+          </HeaderDropdown>
+          <AppLink href={HEADER_LINKS['learn']}>{t('nav.learn')}</AppLink>
+          <AppLink href={HEADER_LINKS['blog']}>{t('nav.blog')}</AppLink>
+        </Box>
+        <Box>
+          <AppLink href="/connect">{t('connect-wallet')}</AppLink>
+          <LanguageDropdown />
+        </Box>
+      </Flex>
+
     </BasicHeader>
   )
 }
