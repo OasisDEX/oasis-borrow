@@ -7,9 +7,9 @@ import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { TRANSITIONS } from 'theme'
-import { Box, Container, Flex, Image, SxStyleProp } from 'theme-ui'
+import { Card, Box, Container, Flex, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from './AppContextProvider'
 
@@ -76,7 +76,7 @@ export function BackArrow() {
   )
 }
 
-export function AppHeader() {
+function ConnectedHeader() {
   const { accountData$, context$ } = useAppContext()
   const { t } = useTranslation()
   const accountData = useObservable(accountData$)
@@ -85,43 +85,93 @@ export function AppHeader() {
   const numberOfVaults =
     accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : undefined
   const firstCDP = numberOfVaults ? numberOfVaults === 0 : undefined
+  
+  return <BasicHeader
+    sx={{
+      position: 'relative',
+      flexDirection: ['column-reverse', 'row', 'row'],
+      alignItems: ['flex-end', 'center', 'center'],
+      zIndex: 1,
+    }}
+    variant="appContainer"
+  >
+    <>
+      <Logo sx={{ position: ['absolute', 'static', 'static'], left: 3, top: 3 }} />
+      <Flex sx={{ ml: 'auto', zIndex: 1, mt: [3, 0, 0] }}>
+        <AppLink
+          variant="nav"
+          sx={{ mr: 4 }}
+          href={`/owner/${context?.account}`}
+          onClick={() => trackingEvents.yourVaults()}
+        >
+          {t('your-vaults')} {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
+        </AppLink>
+        <AppLink
+          variant="nav"
+          sx={{ mr: [0, 4, 4] }}
+          href="/vaults/list"
+          onClick={() => trackingEvents.createNewVault(firstCDP)}
+        >
+          {t('open-new-vault')}
+        </AppLink>
+      </Flex>
+      <AccountButton />
+    </>
+  </BasicHeader>
+}
+
+const HEADER_LINKS = {
+  'dai-wallet': '/daiwallet',
+  'learn': 'https://kb.oasis.app',
+  'blog': 'https://blog.oasis.app'
+}
+
+function HeaderDropdown({ title, children }: { title : string } & WithChildren) {
+  const dropdown = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    function handleDocumentClick(e: { target: any }) {
+      if (dropdown.current && !dropdown.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener('click', handleDocumentClick);
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  });
+
+  return <Box ref={dropdown} sx={{ position: 'relative'}}>
+    <Box onClick={() => setIsOpen(!isOpen)}>
+      {title} <Icon name="caret_down" size="7.75px" />
+    </Box>
+    <Card sx={{ position: 'absolute', top: '100%', display: isOpen ? 'block' : 'none'}}>
+      {children}
+    </Card>
+  </Box>
+}
+
+function DisconnectedHeader() {
+  const { t } = useTranslation()
 
   return (
-    <BasicHeader
-      sx={{
-        position: 'relative',
-        flexDirection: ['column-reverse', 'row', 'row'],
-        alignItems: ['flex-end', 'center', 'center'],
-        zIndex: 1,
-      }}
-      variant="appContainer"
-    >
-      <>
-        <Logo sx={{ position: ['absolute', 'static', 'static'], left: 3, top: 3 }} />
-        {context?.status === 'connected' && (
-          <Flex sx={{ ml: 'auto', zIndex: 1, mt: [3, 0, 0] }}>
-            <AppLink
-              variant="nav"
-              sx={{ mr: 4 }}
-              href={`/owner/${context.account}`}
-              onClick={() => trackingEvents.yourVaults()}
-            >
-              {t('your-vaults')} {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
-            </AppLink>
-            <AppLink
-              variant="nav"
-              sx={{ mr: [0, 4, 4] }}
-              href="/vaults/list"
-              onClick={() => trackingEvents.createNewVault(firstCDP)}
-            >
-              {t('open-new-vault')}
-            </AppLink>
-          </Flex>
-        )}
-        <AccountButton />
-      </>
+    <BasicHeader>
+      <Logo sx={{ position: ['absolute', 'static', 'static'], left: 3, top: 3 }} />
+      <HeaderDropdown title="Products">
+        <AppLink href={HEADER_LINKS['dai-wallet']}>{t('nav.dai-wallet')}</AppLink>
+        <Text variant="strong">Borrow</Text>
+      </HeaderDropdown>
     </BasicHeader>
   )
+}
+
+export function AppHeader() {
+  const { context$ } = useAppContext()
+  const context = useObservable(context$)
+
+  return context?.status === 'connected' ?
+    <ConnectedHeader /> : <DisconnectedHeader />
 }
 
 export function ConnectPageHeader() {
