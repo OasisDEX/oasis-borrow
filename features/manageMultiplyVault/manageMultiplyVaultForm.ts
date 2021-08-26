@@ -33,7 +33,7 @@ export type ManageVaultFormChange =
       closeVaultTo: CloseVaultTo
     }
 
-export const otherActionsDefaults: Partial<ManageMultiplyVaultState> = {
+export const manageInputsDefaults: Partial<ManageMultiplyVaultState> = {
   buyAmount: undefined,
   buyAmountUSD: undefined,
   sellAmount: undefined,
@@ -50,7 +50,7 @@ export const otherActionsDefaults: Partial<ManageMultiplyVaultState> = {
 
 export const manageVaultFormDefaults: Partial<ManageMultiplyVaultState> = {
   ...allowanceDefaults,
-  ...otherActionsDefaults,
+  ...manageInputsDefaults,
 }
 
 export function applyManageVaultForm(
@@ -101,7 +101,7 @@ export function applyManageVaultForm(
   if (change.kind === 'toggleSliderController') {
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       showSliderController: !state.showSliderController,
     }
   }
@@ -109,7 +109,7 @@ export function applyManageVaultForm(
   if (change.kind === 'mainAction') {
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       mainAction: change.mainAction,
     }
   }
@@ -117,7 +117,7 @@ export function applyManageVaultForm(
   if (change.kind === 'otherAction') {
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       otherAction: change.otherAction,
     }
   }
