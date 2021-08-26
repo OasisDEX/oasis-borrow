@@ -64,7 +64,7 @@ export function createVaults$(
           ids.length === 0 ? of([]) : combineLatest(ids.map((id) => vault$(new BigNumber(id)))),
         ),
         distinctUntilChanged(isEqual),
-        switchMap(fetchVaultsType),
+        switchMap((vaults) => (vaults.length === 0 ? of(vaults) : fetchVaultsType(vaults))),
       )
     }),
     shareReplay(1),
