@@ -257,7 +257,6 @@ export function applyManageVaultConditions(
   const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)
 
   const inputAmountsEmpty =
-    paybackAmount === undefined &&
     buyAmount === undefined &&
     sellAmount === undefined &&
     paybackAmount === undefined &&
