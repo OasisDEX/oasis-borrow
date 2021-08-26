@@ -34,6 +34,10 @@ export type ManageVaultFormChange =
     }
 
 export const otherActionsDefaults: Partial<ManageMultiplyVaultState> = {
+  buyAmount: undefined,
+  buyAmountUSD: undefined,
+  sellAmount: undefined,
+  sellAmountUSD: undefined,
   depositAmount: undefined,
   depositAmountUSD: undefined,
   paybackAmount: undefined,
@@ -97,6 +101,7 @@ export function applyManageVaultForm(
   if (change.kind === 'toggleSliderController') {
     return {
       ...state,
+      ...otherActionsDefaults,
       showSliderController: !state.showSliderController,
     }
   }
