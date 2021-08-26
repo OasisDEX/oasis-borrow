@@ -31,8 +31,6 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
     afterCollateralizationRatio,
     afterDebt,
     afterLockedCollateral,
-    buyAmount,
-    buyAmountUSD,
     // impact,
     // loanFees,
     fees,
@@ -42,6 +40,8 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
     inputAmountsEmpty,
     isExchangeLoading,
     exchangeAction,
+    collateralDelta,
+    collateralDeltaUSD,
   } = props
   const collRatioColor = getCollRatioColor(props, collateralizationRatio)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -55,10 +55,10 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
         value={
           <Flex>
             <Text>
-              {formatCryptoBalance(buyAmount || zero)} {token}
+              {formatCryptoBalance(collateralDelta || zero)} {token}
               {` `}
               <Text as="span" sx={{ color: 'text.subtitle' }}>
-                (${formatAmount(buyAmountUSD || zero, 'USD')})
+                (${formatAmount(collateralDeltaUSD || zero, 'USD')})
               </Text>
             </Text>
           </Flex>

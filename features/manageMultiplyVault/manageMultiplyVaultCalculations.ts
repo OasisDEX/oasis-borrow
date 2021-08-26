@@ -70,6 +70,7 @@ export interface ManageVaultCalculations {
 
   debtDelta?: BigNumber
   collateralDelta?: BigNumber
+  collateralDeltaUSD?: BigNumber
 
   marketPrice?: BigNumber
   marketPriceMaxSlippage?: BigNumber
@@ -647,7 +648,7 @@ export function applyManageVaultCalculations(
 
   const buyingPowerUSD = buyingPower.times(currentCollateralPrice)
   const afterBuyingPowerUSD = afterBuyingPower.times(currentCollateralPrice)
-
+  const collateralDeltaUSD = collateralDelta.times(currentCollateralPrice)
   return {
     ...state,
     ...maxInputAmounts,
@@ -690,5 +691,6 @@ export function applyManageVaultCalculations(
     buyingPowerUSD,
     afterBuyingPower,
     afterBuyingPowerUSD,
+    collateralDeltaUSD,
   }
 }
