@@ -41,22 +41,19 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
     marketPrice,
     inputAmountsEmpty,
     isExchangeLoading,
+    exchangeAction,
   } = props
   const collRatioColor = getCollRatioColor(props, collateralizationRatio)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
-  // starting zero balance for UI to show arrows
-  const zeroBalance = formatCryptoBalance(zero)
   const impact = new BigNumber(0.25)
 
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Vault Changes">
       <VaultChangesInformationItem
-        label={`Buying ${token}`}
+        label={exchangeAction === `BUY_COLLATERAL` ? `Buying ${token}` : `Selling ${token}`}
         value={
           <Flex>
-            {zeroBalance} {token}
-            <VaultChangesInformationArrow />
             <Text>
               {formatCryptoBalance(buyAmount || zero)} {token}
               {` `}
