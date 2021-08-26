@@ -872,6 +872,7 @@ const oasisBaseTheme = {
     light: '1px solid #787a9b40',
     bold: '3px solid #D3D4D8',
   },
+  //      0  1  2   3   4   5    6    7    8
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
   sizes: [0, 4, 8, 16, 32, 64, 128, 256, 512],
   radii: {

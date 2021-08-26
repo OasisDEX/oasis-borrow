@@ -178,22 +178,19 @@ function DisconnectedHeader() {
 
   return (
     <BasicHeader>
-      <Flex sx={{ justifyContent: 'space-between' }}>
-        <Box>
-          <Logo sx={{ position: ['absolute', 'static', 'static'], left: 3, top: 3 }} />
-          <HeaderDropdown title="Products">
-            <AppLink href={HEADER_LINKS['dai-wallet']}>{t('nav.dai-wallet')}</AppLink>
-            <Text variant="strong">Borrow</Text>
-          </HeaderDropdown>
-          <AppLink href={HEADER_LINKS['learn']}>{t('nav.learn')}</AppLink>
-          <AppLink href={HEADER_LINKS['blog']}>{t('nav.blog')}</AppLink>
-        </Box>
-        <Box>
-          <AppLink href="/connect">{t('connect-wallet')}</AppLink>
-          <LanguageDropdown />
-        </Box>
+      <Flex sx={{ '& > *': { mr: 5 }}}>
+        <Logo sx={{ position: ['absolute', 'static', 'static'], left: 3, top: 3 }} />
+        <HeaderDropdown title="Products">
+          <AppLink href={HEADER_LINKS['dai-wallet']}>{t('nav.dai-wallet')}</AppLink>
+          <Text variant="strong">Borrow</Text>
+        </HeaderDropdown>
+        <AppLink href={HEADER_LINKS['learn']}>{t('nav.learn')}</AppLink>
+        <AppLink href={HEADER_LINKS['blog']}>{t('nav.blog')}</AppLink>
       </Flex>
-
+      <Flex sx={{ '& > *': { ml: 4 }}}>
+        <AppLink href="/connect">{t('connect-wallet')}</AppLink>
+        <LanguageDropdown />
+      </Flex>
     </BasicHeader>
   )
 }
