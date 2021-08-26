@@ -500,15 +500,15 @@ describe('open multiply vault', () => {
     })
 
     it('validates if deposit amount exceeds collateral balance or depositing all ETH', () => {
-      const depositAmountExceeds = new BigNumber('2')
-      const depositAmountAll = new BigNumber('1')
+      const depositAmountExceeds = new BigNumber('12')
+      const depositAmountAll = new BigNumber('10')
 
       const state = getStateUnpacker(
         mockOpenMultiplyVault({
           ilks: ['ETH-A'],
           ilk: 'ETH-A',
           balanceInfo: {
-            collateralBalance: new BigNumber('1'),
+            collateralBalance: new BigNumber('10'),
           },
         }),
       )
