@@ -1,24 +1,21 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { McdCat } from 'types/web3-v1-contracts/mcd-cat'
+import { McdDog } from 'types/ethers-contracts/McdDog'
 import Web3 from 'web3'
 
 import { WAD } from '../../components/constants'
-import { amountFromRad } from '../utils'
 import { CallDef } from './callsHelpers'
 
-export interface CatIlk {
+export interface DogIlk {
   liquidatorAddress: string
   liquidationPenalty: BigNumber
-  maxAuctionLotSize: BigNumber
 }
 
-export const catIlk: CallDef<string, CatIlk> = {
-  call: (_, { contract, mcdCat }) => contract<McdCat>(mcdCat).methods.ilks,
+export const dogIlk: CallDef<string, DogIlk> = {
+  call: (_, { contract, mcdDog }) => contract<McdDog>(mcdDog).methods.ilks,
   prepareArgs: (collateralTypeName) => [Web3.utils.utf8ToHex(collateralTypeName)],
-  postprocess: ({ flip, chop, dunk }: any) => ({
-    liquidatorAddress: flip,
+  postprocess: ({ clip, chop }: any) => ({
+    liquidatorAddress: clip,
     liquidationPenalty: amountFromWei(new BigNumber(chop).minus(WAD)),
-    maxAuctionLotSize: amountFromRad(new BigNumber(dunk)),
   }),
 }
