@@ -293,7 +293,7 @@ export type MultiplyData = {
   exchangeData: string
   slippage: BigNumber
 }
-function getMultiplyCallData(data: MultiplyData, context: ContextConnected) {
+function getOpenMultiplyCallData(data: MultiplyData, context: ContextConnected) {
   const {
     contract,
     joins,
@@ -329,7 +329,7 @@ function getMultiplyCallData(data: MultiplyData, context: ContextConnected) {
       depositDai: amountToWei(zero, 'DAI').toFixed(0),
       withdrawCollateral: amountToWei(zero, data.token).toFixed(0),
       skipFL: false,
-      methodName: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      methodName: '',
     } as any,
     {
       jug: mcdJug.address,
@@ -347,7 +347,7 @@ export const openMultiplyVault: TransactionDef<MultiplyData> = {
   },
   prepareArgs: (data, context) => {
     const { dssMultiplyProxyActions } = context
-    return [dssMultiplyProxyActions.address, getMultiplyCallData(data, context).encodeABI()]
+    return [dssMultiplyProxyActions.address, getOpenMultiplyCallData(data, context).encodeABI()]
   },
   options: ({ token, depositCollateral }) =>
     token === 'ETH' ? { value: amountToWei(depositCollateral, 'ETH').toString() } : {},
@@ -439,7 +439,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
         depositDai: amountToWei(zero, 'DAI').toFixed(0),
         withdrawCollateral: amountToWei(zero, data.token).toFixed(0),
         skipFL: false,
-        methodName: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        methodName: '',
       } as any,
       {
         jug: mcdJug.address,
@@ -474,7 +474,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
         depositDai: amountToWei(zero, 'DAI').toFixed(0),
         withdrawCollateral: amountToWei(zero, data.token).toFixed(0),
         skipFL: false,
-        methodName: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        methodName: '',
       } as any,
       {
         jug: mcdJug.address,
@@ -554,7 +554,7 @@ function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) 
         depositDai: '0',
         withdrawCollateral: '0',
         skipFL: false,
-        methodName: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        methodName: '',
       } as any,
       {
         jug: mcdJug.address,
