@@ -57,6 +57,16 @@ const customIcons = {
     ),
     viewBox: '0 0 29 23',
   },
+  menu: {
+    path: (
+      <>
+        <rect width="18" height="2" rx="1" fill="#25273D"/>
+        <rect y="6" width="18" height="2" rx="1" fill="#25273D"/>
+        <rect y="12" width="18" height="2" rx="1" fill="#25273D"/>
+      </>
+    ),
+    viewBox: '0 0 18 14'
+  },
   minus: {
     path: (
       <path
@@ -1316,6 +1326,7 @@ const oasisBaseTheme = {
     footer: 2,
     modal: 3,
     cookie: 4,
+    mobileMenu: 8
   },
   sizingsCustom: {
     pxModalBottom: '22px',

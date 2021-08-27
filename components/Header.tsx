@@ -160,7 +160,7 @@ function HeaderDropdown({ title, children }: { title : string } & WithChildren) 
 function LanguageDropdown() {
   const { t, i18n } = useTranslation()
   const router = useRouter()
-  const { locales } = i18n.options
+  const { locales }: { locales: string[]} = i18n.options
   
   return <HeaderDropdown title={t(`lang-dropdown.${i18n.language}`)}>
     {locales
@@ -173,25 +173,82 @@ function LanguageDropdown() {
   </HeaderDropdown>
 }
 
+function MobileMenu() {
+  const [isOpen, setIsOpen] = useState(false)
+
+  useEffect(() => {
+    if (isOpen) {
+      // prevent scroll when menu is open
+      document.body.style.overflow = "hidden"
+      document.body.style.height = "100vh"
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${window.scrollY}px`
+    } else {
+      const scrollY = document.body.style.top
+      document.body.style.position = ''
+      document.body.style.top = ''
+      window.scrollTo(0, parseInt(scrollY || '0') * -1)
+    }
+    return () => {
+      document.body.style.overflow = ''
+      document.body.style.height = ''
+      document.body.style.position = ''
+      document.body.style.top = ''
+    }
+  }, [isOpen])
+
+  return <>
+    <Box sx={{ 
+      backgroundColor: 'background', 
+      position: 'fixed', 
+      top: 0, 
+      left: 0, 
+      right: 0, 
+      zIndex: 'mobileMenu',
+      transition: 'opacity ease-in 0.2s',
+      height: isOpen ? '100vh' : 0,
+      opacity: isOpen ? 1 : 0,
+      overflow: 'hidden'
+    }}>
+      <Box>
+        - Links here -
+      </Box>
+    </Box>
+    <Icon 
+      name={ isOpen ? 'close': 'menu'} 
+      sx={{zIndex: 'mobileMenu', position: 'absolute', top: 3, right: 3}} 
+      onClick={() => setIsOpen(!isOpen)} 
+    />
+  </>
+}
+
 function DisconnectedHeader() {
   const { t } = useTranslation()
 
   return (
-    <BasicHeader>
-      <Flex sx={{ '& > *': { mr: 5 }}}>
-        <Logo sx={{ position: ['absolute', 'static', 'static'], left: 3, top: 3 }} />
-        <HeaderDropdown title="Products">
-          <AppLink href={HEADER_LINKS['dai-wallet']}>{t('nav.dai-wallet')}</AppLink>
-          <Text variant="strong">Borrow</Text>
-        </HeaderDropdown>
-        <AppLink href={HEADER_LINKS['learn']}>{t('nav.learn')}</AppLink>
-        <AppLink href={HEADER_LINKS['blog']}>{t('nav.blog')}</AppLink>
-      </Flex>
-      <Flex sx={{ '& > *': { ml: 4 }}}>
-        <AppLink href="/connect">{t('connect-wallet')}</AppLink>
-        <LanguageDropdown />
-      </Flex>
-    </BasicHeader>
+    <>
+      <Box sx={{ display: ['none', 'block']}}>
+        <BasicHeader>
+          <Flex sx={{ '& > *': { mr: 5 }}}>
+            <Logo />
+            <HeaderDropdown title={t('nav.products')}>
+              <AppLink href={HEADER_LINKS['dai-wallet']}>{t('nav.dai-wallet')}</AppLink>
+              <Text variant="strong">Borrow</Text>
+            </HeaderDropdown>
+            <AppLink href={HEADER_LINKS['learn']}>{t('nav.learn')}</AppLink>
+            <AppLink href={HEADER_LINKS['blog']}>{t('nav.blog')}</AppLink>
+          </Flex>
+          <Flex sx={{ '& > *': { ml: 4 }}}>
+            <AppLink href="/connect">{t('connect-wallet')}</AppLink>
+            <LanguageDropdown />
+          </Flex>
+        </BasicHeader>
+      </Box>
+      <Box sx={{ display: ['block', 'none']}}>
+        <Logo sx={{ position: 'absolute', left: 3, top: 3 }} />
+        <MobileMenu />
+      </Box>
+    </>
   )
 }
 
