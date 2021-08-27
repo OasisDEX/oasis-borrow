@@ -24,6 +24,7 @@
   "approve-allowance": "Approve Allowance",
   "approving-allowance": "Approving Allowance",
   "back": "Back",
+  "ok": "Ok",
   "back-to-editing": "Back to editing",
   "balance": "Balance",
   "balance-insufficient": "Not enough Dai in your wallet",
@@ -503,7 +504,9 @@
       "daiAllowance": "Set DAI allowance",
       "confirm": "Confirm vault creation",
       "confirm-in-progress": "Vault being created",
-      "confirm-manage": "Confirm vault changes"
+      "modified": "Vault is being Modified",
+      "confirm-manage": "Confirm vault changes",
+      "review-manage": "Review vault changes"
     },
     "subtext": {
       "collateral": "Deposit or withdraw from your Vault. Save gas by combining transactions.",
@@ -513,7 +516,9 @@
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "daiAllowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "confirm": "Review and verify details of your vault.",
-      "confirm-in-progress": "Your Vault is currently being. Transaction can take up to 5 minutes"
+      "review": "Here you can review the details of the changes to your vault.",
+      "confirm-in-progress": "Your Vault is currently being. Transaction can take up to 5 minutes",
+      "modified":"Your Vault is currently being updated. Please wait."
     }
   },
   "creating-your-vault": "Creating your {{token}} Vault!",
