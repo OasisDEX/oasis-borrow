@@ -48,8 +48,6 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
         label={`Buying ${token}`}
         value={
           <Flex>
-            {zeroBalance} {token}
-            <VaultChangesInformationArrow />
             <Text>
               {formatCryptoBalance(buyingCollateral)} {token}
               {` `}
