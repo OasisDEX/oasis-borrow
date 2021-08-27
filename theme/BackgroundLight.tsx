@@ -16,6 +16,7 @@ export function BackgroundLight() {
         left: 'calc((100% - 1882px) / 2)',
         right: 0,
         overflow: 'hidden',
+        backgroundColor: 'white',
         '&::after': {
           position: 'absolute',
           top: 0,
