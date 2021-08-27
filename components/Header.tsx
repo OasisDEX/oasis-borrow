@@ -11,7 +11,7 @@ import getConfig from 'next/config'
 import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 import { TRANSITIONS } from 'theme'
-import { Card, Box, Container, Flex, Image, SxStyleProp, Text } from 'theme-ui'
+import { Card, Box, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from './AppContextProvider'
 const {
@@ -173,12 +173,30 @@ function LanguageDropdown() {
   </HeaderDropdown>
 }
 
+const MOBILE_MENU_SECTIONS = [
+  {
+    titleKey: 'nav.products',
+    links: [
+      { labelKey: 'nav.dai-wallet', url: HEADER_LINKS['dai-wallet'] },
+      { labelKey: 'nav.oasis-borrow', url: '#'}
+    ],
+  },
+  {
+    titleKey: 'nav.resources',
+    links: [
+      { labelKey: 'nav.learn', url: HEADER_LINKS['learn'] },
+      { labelKey: 'nav.blog', url: HEADER_LINKS['blog'] }
+    ],
+  }
+]
+
 function MobileMenu() {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
     if (isOpen) {
-      // prevent scroll when menu is open
+      // prevent scroll when opened
       document.body.style.overflow = "hidden"
       document.body.style.height = "100vh"
       document.body.style.position = 'fixed';
@@ -208,11 +226,22 @@ function MobileMenu() {
       transition: 'opacity ease-in 0.2s',
       height: isOpen ? '100vh' : 0,
       opacity: isOpen ? 1 : 0,
-      overflow: 'hidden'
+      overflow: 'hidden',
+      py: 6,
+      px: 5,
     }}>
-      <Box>
-        - Links here -
-      </Box>
+      <Grid>
+        {MOBILE_MENU_SECTIONS.map(section => <Box key={section.titleKey}>
+          <Text>{t(section.titleKey)}</Text>
+          <Box>
+            {section.links.map(link => <AppLink key={link.labelKey} href={link.url}>{t(link.labelKey)}</AppLink>)}
+          </Box>
+        </Box>)}
+        <Box>
+          <Text>{t('languages')}</Text>
+          
+        </Box>
+      </Grid>
     </Box>
     <Icon 
       name={ isOpen ? 'close': 'menu'} 

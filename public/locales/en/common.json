@@ -186,6 +186,7 @@
       }
     }
   },
+  "languages": "Languages",
   "lang-dropdown": {
     "en": "English",
     "es": "Español",
@@ -257,6 +258,7 @@
     "oracles": "Oracles",
     "dai-wallet": "Dai Wallet",
     "borrow": "Borrow",
+    "oasis-borrow": "Oasis Borrow",
     "trade": "Trade"
   },
   "new-to-ethereum": "New to Ethereum? ",
