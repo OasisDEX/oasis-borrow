@@ -169,11 +169,6 @@
     "keyWithCount": "{{count}} item",
     "keyWithCount_plural": "{{count}} itens",
     "landing": {
-        "footer": {
-            "about": "Sobre",
-            "resources": "Recursos",
-            "products": "Produtos"
-        },
         "hero": {
             "headline": "Dai é uma moeda digital inteligente feita para todos. Compre, envie e gerencie em um só lugar.",
             "subheader": "Abrir um Cofre Maker, deposite seu colateral e crie Dai.<0/> Conectar uma carteira para começar."
@@ -238,6 +233,9 @@
     "moving-into-vault": "Transferindo para o Cofre",
     "moving-out-vault": "Tirando do Cofre",
     "nav": {
+        "about": "Sobre",
+        "resources": "Recursos",
+        "products": "Produtos",
         "team": "Time",
         "careers": "Carreiras",
         "privacy": "Privacidade",

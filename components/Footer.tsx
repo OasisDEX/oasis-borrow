@@ -16,7 +16,7 @@ const {
 
 const FOOTER_SECTIONS = [
   {
-    titleKey: 'landing.footer.about',
+    titleKey: 'nav.about',
     links: [
       { labelKey: 'nav.team', url: '/about' },
       { labelKey: 'nav.careers', url: '/careers' },
@@ -26,7 +26,7 @@ const FOOTER_SECTIONS = [
     ],
   },
   {
-    titleKey: 'landing.footer.resources',
+    titleKey: 'nav.resources',
     links: [
       { labelKey: 'nav.blog', url: 'https://blog.oasis.app', target: '_self' },
       {
@@ -39,7 +39,7 @@ const FOOTER_SECTIONS = [
     ],
   },
   {
-    titleKey: 'landing.footer.products',
+    titleKey: 'nav.products',
     links: [
       {
         labelKey: 'nav.dai-wallet',

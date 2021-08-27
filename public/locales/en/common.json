@@ -171,12 +171,6 @@
   "keyWithCount": "{{count}} item",
   "keyWithCount_plural": "{{count}} items",
   "landing": {
-    "footer": {
-      "about": "About",
-      "resources": "Resources",
-      "products": "Products",
-      "dai-wallet": "Dai Wallet"
-    },
     "hero": {
       "headline": "Generate Dai using crypto as your collateral",
       "subheader": "Open a Maker Vault, deposit your collateral, and generate Dai against it.<0/> Connect a wallet to start."
@@ -248,6 +242,9 @@
   "moving-into-vault": "Moving into Vault",
   "moving-out-vault": "Moving out of Vault",
   "nav": {
+    "about": "About",
+    "resources": "Resources",
+    "products": "Products",
     "team": "Team",
     "careers": "Careers",
     "privacy": "Privacy",
