@@ -190,8 +190,8 @@ const LangSelectComponents: Partial<SelectComponents<{
         borderRadius: 'large',
         p: 0,
         overflow: 'hidden',
-        top: 0,
-        transform: `translateY(calc(-100% + -8px))`,
+        top: '32px',
+        right: '-4px',
         boxShadow: 'cardLanding',
       }}
     >
@@ -311,7 +311,7 @@ function DisconnectedHeader() {
   return (
     <>
       <Box sx={{ display: ['none', 'block']}}>
-        <BasicHeader>
+        <BasicHeader variant="appContainer">
           <Flex sx={{ '& > *': { mr: 5 }}}>
             <Logo />
             <HeaderDropdown title={t('nav.products')}>
