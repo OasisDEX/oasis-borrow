@@ -7,6 +7,7 @@ import { TxHelpers } from 'components/AppContext'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { SLIPPAGE } from 'helpers/multiply/calculations'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
@@ -17,7 +18,6 @@ import {
   createExchangeChange$,
   createInitialQuoteChange,
   ExchangeQuoteChanges,
-  SLIPPAGE,
 } from './manageMultiplyQuote'
 import {
   applyManageVaultAllowance,
