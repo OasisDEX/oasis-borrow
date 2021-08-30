@@ -14,13 +14,19 @@ function ManageVaultEditingController({
   isMultiplyTransitionStage,
   totalSteps,
   currentStep,
+  vault: { token },
+  setMainAction,
+  mainAction,
 }: ManageVaultState) {
   const { t } = useTranslation()
-  const collateralVariant = `vaultEditingController${
-    stage === 'collateralEditing' ? '' : 'Inactive'
-  }`
-  const daiVariant = `vaultEditingController${stage === 'daiEditing' ? '' : 'Inactive'}`
+  const isDaiEditing = stage === 'daiEditing'
+  const isCollateralEditing = stage === 'collateralEditing'
+
+  const collateralVariant = `vaultEditingController${isCollateralEditing ? '' : 'Inactive'}`
+  const daiVariant = `vaultEditingController${isDaiEditing ? '' : 'Inactive'}`
   const multiplyVariant = `vaultEditingController${isMultiplyTransitionStage ? '' : 'Inactive'}`
+
+  const beanTokenName = isDaiEditing ? 'DAI' : token
 
   function handleToggle(stage: ManageVaultEditingStage) {
     toggle!(stage)
@@ -45,13 +51,21 @@ function ManageVaultEditingController({
           Multiply
         </Button>
       </Grid>
-      {/* TO DO, refactor main action buy/sell as for multiply for manage */}
       {isEditingStage && (
         <WithVaultFormStepIndicator {...{ totalSteps, currentStep }}>
           <Flex>
-            <Button variant="beanActive">Mock Deposit ETH</Button>
-            <Button variant="bean" sx={{ ml: 3 }}>
-              Mock Withdraw ETH
+            <Button
+              onClick={() => setMainAction!('depositGenerate')}
+              variant={`bean${mainAction === 'depositGenerate' ? 'Active' : ''}`}
+            >
+              {t(`vault-actions.${isDaiEditing ? 'generate' : 'deposit'}`)} {beanTokenName}
+            </Button>
+            <Button
+              onClick={() => setMainAction!('withdrawPayback')}
+              variant={`bean${mainAction === 'withdrawPayback' ? 'Active' : ''}`}
+              sx={{ ml: 3 }}
+            >
+              {t(`vault-actions.${isDaiEditing ? 'payback' : 'withdraw'}`)} {beanTokenName}
             </Button>
           </Flex>
         </WithVaultFormStepIndicator>
