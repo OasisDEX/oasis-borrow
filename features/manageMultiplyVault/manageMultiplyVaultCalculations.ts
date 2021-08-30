@@ -577,23 +577,27 @@ export function applyManageVaultCalculations(
     price: nextCollateralPrice,
   })
 
-  const afterFreeCollateral = calculateAfterFreeCollateral({
-    lockedCollateral: afterLockedCollateral,
-    backingCollateral: afterBackingCollateral,
-  })
+  const afterFreeCollateral = isCloseAction
+    ? zero
+    : calculateAfterFreeCollateral({
+        lockedCollateral: afterLockedCollateral,
+        backingCollateral: afterBackingCollateral,
+      })
 
   const afterFreeCollateralAtNextPrice = calculateAfterFreeCollateral({
     lockedCollateral: afterLockedCollateral,
     backingCollateral: afterBackingCollateralAtNextPrice,
   })
 
-  const daiYieldFromTotalCollateral = calculateDaiYieldFromCollateral({
-    ilkDebtAvailable,
-    collateral: afterLockedCollateral,
-    price: currentCollateralPrice,
-    liquidationRatio,
-    debt: afterDebt,
-  })
+  const daiYieldFromTotalCollateral = isCloseAction
+    ? zero
+    : calculateDaiYieldFromCollateral({
+        ilkDebtAvailable,
+        collateral: afterLockedCollateral,
+        price: currentCollateralPrice,
+        liquidationRatio,
+        debt: afterDebt,
+      })
 
   const daiYieldFromTotalCollateralAtNextPrice = calculateDaiYieldFromCollateral({
     ilkDebtAvailable,
@@ -620,7 +624,9 @@ export function applyManageVaultCalculations(
   const afterCollateralBalance = collateralBalance.minus(depositAmount)
 
   const netValueUSD = lockedCollateral.times(currentCollateralPrice).minus(debt)
-  const afterNetValueUSD = afterLockedCollateral.times(currentCollateralPrice).minus(debt)
+  const afterNetValueUSD = isCloseAction
+    ? zero
+    : afterLockedCollateral.times(currentCollateralPrice).minus(debt)
 
   const { collateralDelta: buyingPower } = getVaultChange({
     currentCollateralPrice,
@@ -637,20 +643,22 @@ export function applyManageVaultCalculations(
     FF: LOAN_FEE,
   })
 
-  const { collateralDelta: afterBuyingPower } = getVaultChange({
-    currentCollateralPrice,
-    marketPrice,
-    slippage: SLIPPAGE,
-    debt: afterDebt,
-    lockedCollateral: afterLockedCollateral,
-    requiredCollRatio: liquidationRatio,
-    depositAmount: zero,
-    paybackAmount: zero,
-    generateAmount: zero,
-    withdrawAmount: zero,
-    OF: MULTIPLY_FEE,
-    FF: LOAN_FEE,
-  })
+  const { collateralDelta: afterBuyingPower } = isCloseAction
+    ? { collateralDelta: zero }
+    : getVaultChange({
+        currentCollateralPrice,
+        marketPrice,
+        slippage: SLIPPAGE,
+        debt: afterDebt,
+        lockedCollateral: afterLockedCollateral,
+        requiredCollRatio: liquidationRatio,
+        depositAmount: zero,
+        paybackAmount: zero,
+        generateAmount: zero,
+        withdrawAmount: zero,
+        OF: MULTIPLY_FEE,
+        FF: LOAN_FEE,
+      })
 
   const buyingPowerUSD = buyingPower.times(currentCollateralPrice)
   const afterBuyingPowerUSD = afterBuyingPower.times(currentCollateralPrice)
