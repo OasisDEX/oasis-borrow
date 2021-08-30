@@ -8,7 +8,6 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
-import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 import { TRANSITIONS } from 'theme'
 import { Card, Box, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
@@ -223,6 +222,39 @@ const LangSelectComponents: Partial<SelectComponents<{
   ),
 }
 
+const LangSelectMobileComponents: Partial<SelectComponents<{
+  value: string;
+  label: string;
+}>> = {
+  IndicatorsContainer: () => null,
+  ValueContainer: ({ children }) => <Flex sx={{ color: 'primary', fontWeight: 'body' }}>{children}</Flex>,
+  SingleValue: ({ children }) => <Box>{children}</Box>,
+  Control: ({ innerProps, children, selectProps: { menuIsOpen } }) => (
+  <Box
+    {...innerProps}
+    sx={{
+      cursor: 'pointer',
+      variant: 'links.nav',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      fontSize: 3,
+      boxShadow: 'table',
+      borderRadius: 'medium',
+      py: '8px',
+      px: '16px',
+    }}
+  >
+    {children}
+    <Icon
+      name={menuIsOpen ? 'chevron_up' : 'chevron_down'}
+      size="auto"
+      width="13.3px"
+      sx={{ ml: 1, position: 'relative', top: '1px' }}
+    />
+  </Box>
+)}
+
 function HeaderLangSelect() {
   return <LanguageSelect components={LangSelectComponents} />
 }
@@ -293,7 +325,7 @@ function MobileMenu() {
         </Box>)}
         <Box>
           <Text>{t('languages')}</Text>
-          
+          <LanguageSelect components={LangSelectMobileComponents} />
         </Box>
       </Grid>
     </Box>
