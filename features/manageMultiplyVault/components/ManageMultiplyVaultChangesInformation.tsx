@@ -32,6 +32,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
     afterDebt,
     afterLockedCollateral,
     // impact,
+    slippage,
     fees,
     loanFee,
     oazoFee,
@@ -95,7 +96,10 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
           )
         }
       />
-      <VaultChangesInformationItem label={'Slippage Limit'} value={'5.00 %'} />
+      <VaultChangesInformationItem
+        label={'Slippage Limit'}
+        value={formatPercent(slippage.times(100), { precision: 2 })}
+      />
       <VaultChangesInformationItem
         label={'Multiply'}
         value={

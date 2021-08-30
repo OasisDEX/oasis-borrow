@@ -6,7 +6,6 @@ import { BalanceInfo } from 'features/shared/balanceInfo'
 import { getMultiplyParams, LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 
-import { SLIPPAGE } from './manageMultiplyQuote'
 import { ManageMultiplyVaultState } from './manageMultiplyVault'
 
 // This value ought to be coupled in relation to how much we round the raw debt
@@ -528,7 +527,7 @@ export function applyManageVaultCalculations(
   const { debtDelta, collateralDelta, loanFee, oazoFee } = getVaultChange({
     currentCollateralPrice,
     marketPrice,
-    slippage: SLIPPAGE,
+    slippage,
     debt,
     lockedCollateral,
     requiredCollRatio,
@@ -631,7 +630,7 @@ export function applyManageVaultCalculations(
   const { collateralDelta: buyingPower } = getVaultChange({
     currentCollateralPrice,
     marketPrice,
-    slippage: SLIPPAGE,
+    slippage,
     debt,
     lockedCollateral,
     requiredCollRatio: liquidationRatio,
@@ -648,7 +647,7 @@ export function applyManageVaultCalculations(
     : getVaultChange({
         currentCollateralPrice,
         marketPrice,
-        slippage: SLIPPAGE,
+        slippage,
         debt: afterDebt,
         lockedCollateral: afterLockedCollateral,
         requiredCollRatio: liquidationRatio,
