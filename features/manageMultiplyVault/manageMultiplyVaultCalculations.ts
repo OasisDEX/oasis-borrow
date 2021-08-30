@@ -422,7 +422,11 @@ export function applyManageVaultCalculations(
     paybackAmount = zero,
     generateAmount = zero,
     withdrawAmount = zero,
+    stage,
+    otherAction,
   } = state
+
+  const isCloseAction = stage === 'otherActions' && otherAction === 'closeVault'
 
   const marketPrice =
     swap?.status === 'SUCCESS'
@@ -538,7 +542,7 @@ export function applyManageVaultCalculations(
 
   const fees = BigNumber.sum(loanFee, oazoFee)
 
-  const afterDebt = debt.plus(debtDelta).plus(loanFee)
+  const afterDebt = isCloseAction ? zero : debt.plus(debtDelta).plus(loanFee)
 
   const afterLockedCollateral = lockedCollateral.plus(collateralDelta)
   const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
@@ -546,10 +550,12 @@ export function applyManageVaultCalculations(
   const afterCollateralizationRatio = afterLockedCollateralUSD.div(afterDebt)
 
   const multiply = calculateMultiply({ debt, lockedCollateralUSD })
-  const afterMultiply = calculateMultiply({
-    debt: afterDebt,
-    lockedCollateralUSD: afterLockedCollateralUSD,
-  })
+  const afterMultiply = isCloseAction
+    ? one
+    : calculateMultiply({
+        debt: afterDebt,
+        lockedCollateralUSD: afterLockedCollateralUSD,
+      })
 
   const afterLiquidationPrice = currentCollateralPrice
     .times(liquidationRatio)
@@ -571,23 +577,27 @@ export function applyManageVaultCalculations(
     price: nextCollateralPrice,
   })
 
-  const afterFreeCollateral = calculateAfterFreeCollateral({
-    lockedCollateral: afterLockedCollateral,
-    backingCollateral: afterBackingCollateral,
-  })
+  const afterFreeCollateral = isCloseAction
+    ? zero
+    : calculateAfterFreeCollateral({
+        lockedCollateral: afterLockedCollateral,
+        backingCollateral: afterBackingCollateral,
+      })
 
   const afterFreeCollateralAtNextPrice = calculateAfterFreeCollateral({
     lockedCollateral: afterLockedCollateral,
     backingCollateral: afterBackingCollateralAtNextPrice,
   })
 
-  const daiYieldFromTotalCollateral = calculateDaiYieldFromCollateral({
-    ilkDebtAvailable,
-    collateral: afterLockedCollateral,
-    price: currentCollateralPrice,
-    liquidationRatio,
-    debt: afterDebt,
-  })
+  const daiYieldFromTotalCollateral = isCloseAction
+    ? zero
+    : calculateDaiYieldFromCollateral({
+        ilkDebtAvailable,
+        collateral: afterLockedCollateral,
+        price: currentCollateralPrice,
+        liquidationRatio,
+        debt: afterDebt,
+      })
 
   const daiYieldFromTotalCollateralAtNextPrice = calculateDaiYieldFromCollateral({
     ilkDebtAvailable,
@@ -614,7 +624,9 @@ export function applyManageVaultCalculations(
   const afterCollateralBalance = collateralBalance.minus(depositAmount)
 
   const netValueUSD = lockedCollateral.times(currentCollateralPrice).minus(debt)
-  const afterNetValueUSD = afterLockedCollateral.times(currentCollateralPrice).minus(debt)
+  const afterNetValueUSD = isCloseAction
+    ? zero
+    : afterLockedCollateral.times(currentCollateralPrice).minus(debt)
 
   const { collateralDelta: buyingPower } = getVaultChange({
     currentCollateralPrice,
@@ -631,20 +643,22 @@ export function applyManageVaultCalculations(
     FF: LOAN_FEE,
   })
 
-  const { collateralDelta: afterBuyingPower } = getVaultChange({
-    currentCollateralPrice,
-    marketPrice,
-    slippage: SLIPPAGE,
-    debt: afterDebt,
-    lockedCollateral: afterLockedCollateral,
-    requiredCollRatio: liquidationRatio,
-    depositAmount: zero,
-    paybackAmount: zero,
-    generateAmount: zero,
-    withdrawAmount: zero,
-    OF: MULTIPLY_FEE,
-    FF: LOAN_FEE,
-  })
+  const { collateralDelta: afterBuyingPower } = isCloseAction
+    ? { collateralDelta: zero }
+    : getVaultChange({
+        currentCollateralPrice,
+        marketPrice,
+        slippage: SLIPPAGE,
+        debt: afterDebt,
+        lockedCollateral: afterLockedCollateral,
+        requiredCollRatio: liquidationRatio,
+        depositAmount: zero,
+        paybackAmount: zero,
+        generateAmount: zero,
+        withdrawAmount: zero,
+        OF: MULTIPLY_FEE,
+        FF: LOAN_FEE,
+      })
 
   const buyingPowerUSD = buyingPower.times(currentCollateralPrice)
   const afterBuyingPowerUSD = afterBuyingPower.times(currentCollateralPrice)
