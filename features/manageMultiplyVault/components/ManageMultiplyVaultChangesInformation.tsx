@@ -34,7 +34,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
     // impact,
     fees,
     loanFee,
-    oazoFee: multiplyFee,
+    oazoFee,
     marketPrice,
     inputAmountsEmpty,
     isExchangeLoading,
@@ -165,7 +165,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
           />
           <VaultChangesInformationItem
             label={'Oasis fee'}
-            value={`$${formatAmount(multiplyFee, 'USD')}`}
+            value={`$${formatAmount(oazoFee, 'USD')}`}
           />
         </Grid>
       )}

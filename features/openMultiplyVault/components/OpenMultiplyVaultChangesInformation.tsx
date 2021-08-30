@@ -32,7 +32,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
     txFees,
     impact,
     loanFees,
-    oazoFee: multiplyFee,
+    oazoFee,
     marketPrice,
     inputAmountsEmpty,
     isExchangeLoading,
@@ -147,7 +147,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
           />
           <VaultChangesInformationItem
             label={'Oasis fee'}
-            value={`$${formatAmount(multiplyFee, 'USD')}`}
+            value={`$${formatAmount(oazoFee, 'USD')}`}
           />
         </Grid>
       )}
