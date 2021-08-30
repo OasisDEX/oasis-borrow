@@ -22,5 +22,9 @@ describe('Other actions calculations', () => {
 
     expect(state().afterDebt).to.be.deep.equal(zero)
     expect(state().afterMultiply).to.be.deep.equal(one)
+    expect(state().afterFreeCollateral).to.be.deep.equal(zero)
+    expect(state().daiYieldFromTotalCollateral).to.be.deep.equal(zero)
+    expect(state().afterNetValueUSD).to.be.deep.equal(zero)
+    expect(state().afterBuyingPower).to.be.deep.equal(zero)
   })
 })
