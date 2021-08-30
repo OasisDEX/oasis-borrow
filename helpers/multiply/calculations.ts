@@ -2,8 +2,9 @@ import BigNumber from 'bignumber.js'
 import { MAX_COLL_RATIO } from 'features/openMultiplyVault/openMultiplyVaultCalculations'
 import { one, zero } from 'helpers/zero'
 
-export const MULTIPLY_FEE = new BigNumber(0.01)
+export const OAZO_FEE = new BigNumber(0.002)
 export const LOAN_FEE = new BigNumber(0.009)
+
 export function calculateParamsIncreaseMP(
   oraclePrice: BigNumber,
   marketPrice: BigNumber,
@@ -165,7 +166,7 @@ function getCollRatioByDebt(
   oraclePrice: BigNumber,
   marketPriceMaxSlippage: BigNumber, // market price in worst case (marketPrice * slippage)
   loanFee: BigNumber = LOAN_FEE,
-  multiplyFee: BigNumber = MULTIPLY_FEE,
+  multiplyFee: BigNumber = OAZO_FEE,
 ) {
   return new BigNumber(
     depositAmount.times(oraclePrice).times(marketPriceMaxSlippage).div(requiredDebt),

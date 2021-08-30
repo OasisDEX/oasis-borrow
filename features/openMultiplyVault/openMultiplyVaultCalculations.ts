@@ -2,12 +2,12 @@ import { BigNumber } from 'bignumber.js'
 import {
   calculateParamsIncreaseMP,
   getMaxPossibleCollRatioOrMax,
+  OAZO_FEE,
 } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
 
 import { OpenMultiplyVaultState } from './openMultiplyVault'
 
-const MULTIPLY_FEE = new BigNumber(0.01)
 const LOAN_FEE = new BigNumber(0.0009)
 
 export const MAX_COLL_RATIO = new BigNumber(5)
@@ -120,7 +120,7 @@ export function applyOpenMultiplyVaultCalculations(
       ? calculateParamsIncreaseMP(
           oraclePrice,
           marketPrice,
-          MULTIPLY_FEE,
+          OAZO_FEE,
           LOAN_FEE,
           depositAmount,
           zero,
@@ -151,7 +151,7 @@ export function applyOpenMultiplyVaultCalculations(
     marketPrice && buyingCollateral ? buyingCollateral.times(marketPrice) : zero
 
   const loanFees = buyingCollateralUSD.times(LOAN_FEE)
-  const oazoFee = afterOutstandingDebt?.times(MULTIPLY_FEE)
+  const oazoFee = afterOutstandingDebt?.times(OAZO_FEE)
   const fees = oazoFee?.plus(loanFees)
 
   const afterCollateralizationRatio =
@@ -180,7 +180,7 @@ export function applyOpenMultiplyVaultCalculations(
     ? calculateParamsIncreaseMP(
         oraclePrice,
         marketPrice,
-        MULTIPLY_FEE,
+        OAZO_FEE,
         LOAN_FEE,
         depositAmount,
         zero,

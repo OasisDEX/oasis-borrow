@@ -2,6 +2,7 @@
 
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
+import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
 
 import { getVaultChange } from '../manageMultiplyVaultCalculations'
@@ -16,9 +17,6 @@ describe('Adjust multiply calculations', () => {
 
     const requiredCollRatio = new BigNumber(2)
 
-    const MULTIPLY_FEE = new BigNumber(0.01)
-    const LOAN_FEE = new BigNumber(0.009)
-
     const { debtDelta, collateralDelta, loanFee } = getVaultChange({
       requiredCollRatio,
       debt,
@@ -30,7 +28,7 @@ describe('Adjust multiply calculations', () => {
       paybackAmount: zero,
       withdrawAmount: zero,
       generateAmount: zero,
-      OF: MULTIPLY_FEE,
+      OF: OAZO_FEE,
       FF: LOAN_FEE,
     })
 
@@ -51,9 +49,6 @@ describe('Adjust multiply calculations', () => {
 
     const requiredCollRatio = new BigNumber(5)
 
-    const MULTIPLY_FEE = new BigNumber(0.01)
-    const LOAN_FEE = new BigNumber(0.009)
-
     const { debtDelta, collateralDelta } = getVaultChange({
       requiredCollRatio,
       debt,
@@ -65,7 +60,7 @@ describe('Adjust multiply calculations', () => {
       paybackAmount: zero,
       withdrawAmount: zero,
       generateAmount: zero,
-      OF: MULTIPLY_FEE,
+      OF: OAZO_FEE,
       FF: LOAN_FEE,
     })
 

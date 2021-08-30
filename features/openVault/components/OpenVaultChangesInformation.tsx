@@ -125,11 +125,11 @@ export function OpenVaultChangesInformation(props: OpenVaultState) {
         <Grid pl={3} gap={2}>
           <VaultChangesInformationItem
             label={'3rd party protocol fees'}
-            value={`$${formatAmount(txFees, 'USD')}`}
+            value={`$${formatAmount(zero, 'USD')}`}
           />
           <VaultChangesInformationItem
             label={'Oasis fee'}
-            value={`$${formatAmount(txFees, 'USD')}`}
+            value={`$${formatAmount(zero, 'USD')}`}
           />
         </Grid>
       )}

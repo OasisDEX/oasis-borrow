@@ -3,7 +3,7 @@ import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { getMultiplyParams, LOAN_FEE, MULTIPLY_FEE } from 'helpers/multiply/calculations'
+import { getMultiplyParams, LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 
 import { SLIPPAGE } from './manageMultiplyQuote'
@@ -536,7 +536,7 @@ export function applyManageVaultCalculations(
     paybackAmount,
     generateAmount,
     withdrawAmount,
-    OF: MULTIPLY_FEE,
+    OF: OAZO_FEE,
     FF: LOAN_FEE,
   })
 
@@ -639,7 +639,7 @@ export function applyManageVaultCalculations(
     paybackAmount: zero,
     generateAmount: zero,
     withdrawAmount: zero,
-    OF: MULTIPLY_FEE,
+    OF: OAZO_FEE,
     FF: LOAN_FEE,
   })
 
@@ -656,7 +656,7 @@ export function applyManageVaultCalculations(
         paybackAmount: zero,
         generateAmount: zero,
         withdrawAmount: zero,
-        OF: MULTIPLY_FEE,
+        OF: OAZO_FEE,
         FF: LOAN_FEE,
       })
 
