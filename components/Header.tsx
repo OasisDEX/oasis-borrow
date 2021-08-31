@@ -8,7 +8,8 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
-import React, { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
 import { TRANSITIONS } from 'theme'
 import { Card, Box, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 import LanguageSelect from 'components/LanguageSelect'
@@ -146,7 +147,7 @@ function HeaderDropdown({ title, children }: { title : string } & WithChildren) 
     </Box>
     <Card sx={{ 
       position: 'absolute', 
-      top: 'calc(100% - 6px)', 
+      top: '100%', 
       borderRadius: 'medium',
       minWidth: 6,
       pl: 3,
@@ -164,69 +165,21 @@ function HeaderDropdown({ title, children }: { title : string } & WithChildren) 
   </Box>
 }
 
-const LangSelectComponents: Partial<SelectComponents<{
-  value: string;
-  label: string;
-}>> = {
-  IndicatorsContainer: () => null,
-  ValueContainer: ({ children }) => <Flex>{children}</Flex>,
-  SingleValue: ({ children }) => <Box>{children}</Box>,
-  Option: ({ children, innerProps }) => (
-    <Box
-      {...innerProps}
-      sx={{
-        py: 2,
-        pl: 3,
-        pr: 5,
-        cursor: 'pointer',
-        '&:hover': {
-          bg: 'background',
-        },
-      }}
-    >
-      {children}
-    </Box>
-  ),
-  Menu: ({ innerProps, children }) => (
-    <Card
-      {...innerProps}
-      sx={{
-        borderRadius: 'medium',
-        minWidth: 6,
-        px: 0,
-        py: 3,
-        overflow: 'hidden',
-        position: 'absolute',
-        top: '32px',
-        right: '-4px',
-        boxShadow: 'cardLanding',
-        border: 'none',
-      }}
-    >
-      {children}
-    </Card>
-  ),
-  MenuList: ({ children }) => <Box sx={{ textAlign: 'left' }}>{children}</Box>,
-  Control: ({ innerProps, children, selectProps: { menuIsOpen } }) => (
-    <Box
-      {...innerProps}
-      sx={{
-        cursor: 'pointer',
-        variant: 'links.navHeader',
-        display: 'inline-flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        fontSize: 3,
-      }}
-    >
-      {children}
-      <Icon
-        name={'caret_down'}
-        size="7.75px"
-        sx={{ ml: 1, position: 'relative', top: '1px' }}
-      />
-    </Box>
-  ),
+function LanguageDropdown() {
+  const { t, i18n } = useTranslation()
+  const router = useRouter()
+  // @ts-ignore
+  const { locales }: { locales: string[]} = i18n.options
+  
+  return <HeaderDropdown title={t(`lang-dropdown.${i18n.language}`)}>
+    {locales
+      .filter(lang => lang !== i18n.language)
+      .map(lang => <Text variant="links.nav" sx={{ fontWeight: 'body' }} onClick={() => router.push(router.asPath, router.asPath, { locale: lang })}>
+        {t(`lang-dropdown.${lang}`)}
+      </Text>
+      )
+    }
+  </HeaderDropdown>
 }
 
 const LangSelectMobileComponents: Partial<SelectComponents<{
@@ -261,10 +214,6 @@ const LangSelectMobileComponents: Partial<SelectComponents<{
     />
   </Box>
 )}
-
-function HeaderLangSelect() {
-  return <LanguageSelect components={LangSelectComponents} />
-}
 
 const MOBILE_MENU_SECTIONS = [
   {
@@ -362,7 +311,7 @@ function DisconnectedHeader() {
           </Flex>
           <Flex sx={{ '& > *': { ml: 4 }}}>
             <AppLink href="/connect">{t('connect-wallet')}</AppLink>
-            <HeaderLangSelect />
+            <LanguageDropdown />
           </Flex>
         </BasicHeader>
       </Box>
