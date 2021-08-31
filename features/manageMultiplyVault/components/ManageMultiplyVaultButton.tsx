@@ -20,6 +20,8 @@ function manageMultiplyVaultButtonText(state: ManageMultiplyVaultState): string 
         ? t('set-token-allowance', { token: state.vault.token })
         : state.insufficientDaiAllowance
         ? t('set-token-allowance', { token: 'DAI' })
+        : state.otherAction === 'closeVault'
+        ? t('close-vault')
         : t('confirm')
 
     case 'proxySuccess':
@@ -101,6 +103,10 @@ export function ManageMultiplyVaultButton(props: ManageMultiplyVaultState) {
     // paybackAmount,
     // withdrawAmount,
     isCollateralAllowanceStage,
+    isEditingStage,
+    otherAction,
+    toggle,
+    setOtherAction,
   } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
@@ -111,6 +117,14 @@ export function ManageMultiplyVaultButton(props: ManageMultiplyVaultState) {
   function handleRegress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
     regress!()
+  }
+
+  function handleClose() {
+    if (stage !== 'otherActions') {
+      toggle!()
+    }
+
+    setOtherAction!('closeVault')
   }
 
   const buttonText = manageMultiplyVaultButtonText(props)
@@ -190,6 +204,16 @@ export function ManageMultiplyVaultButton(props: ManageMultiplyVaultState) {
           </Button>
         </>
       )}
+      {isEditingStage &&
+        (stage === 'adjustPosition' ||
+          (stage === 'otherActions' && otherAction !== 'closeVault')) && (
+          <>
+            <Divider variant="styles.hrVaultFormBottom" />
+            <Button onClick={handleClose} sx={{ cursor: 'pointer' }} variant="textualSmall">
+              Close this vault
+            </Button>
+          </>
+        )}
     </>
   )
 }

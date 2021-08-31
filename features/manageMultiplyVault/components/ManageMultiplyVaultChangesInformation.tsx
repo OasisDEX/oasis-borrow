@@ -32,13 +32,15 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
     afterDebt,
     afterLockedCollateral,
     // impact,
-    // loanFees,
+    slippage,
     fees,
     loanFee,
-    oazoFee: multiplyFee,
+    oazoFee,
     marketPrice,
     inputAmountsEmpty,
     isExchangeLoading,
+    stage,
+    otherAction,
     exchangeAction,
     collateralDelta,
     collateralDeltaUSD,
@@ -48,8 +50,12 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
 
   const impact = new BigNumber(0.25)
 
+  const isCloseAction = stage === 'otherActions' && otherAction === 'closeVault'
+
   return !inputAmountsEmpty ? (
-    <VaultChangesInformationContainer title="Vault Changes">
+    <VaultChangesInformationContainer
+      title={isCloseAction ? 'Close Vault Information' : 'Vault Changes'}
+    >
       <VaultChangesInformationItem
         label={exchangeAction === `BUY_COLLATERAL` ? `Buying ${token}` : `Selling ${token}`}
         value={
@@ -65,7 +71,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
         }
       />
       <VaultChangesInformationItem
-        label={`Total ${token} exposure`}
+        label={isCloseAction ? 'Collateral' : `Total ${token} exposure`}
         value={
           <Flex>
             {formatCryptoBalance(lockedCollateral)} {token}
@@ -90,7 +96,10 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
           )
         }
       />
-      <VaultChangesInformationItem label={'Slippage Limit'} value={'5.00 %'} />
+      <VaultChangesInformationItem
+        label={'Slippage Limit'}
+        value={formatPercent(slippage.times(100), { precision: 2 })}
+      />
       <VaultChangesInformationItem
         label={'Multiply'}
         value={
@@ -114,21 +123,25 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
       <VaultChangesInformationItem
         label={'Collateral Ratio'}
         value={
-          <Flex>
-            <Text sx={{ color: collRatioColor }}>
-              {formatPercent(collateralizationRatio.times(100), {
-                precision: 2,
-                roundMode: BigNumber.ROUND_DOWN,
-              })}
-            </Text>
-            <VaultChangesInformationArrow />
-            <Text sx={{ color: afterCollRatioColor }}>
-              {formatPercent(afterCollateralizationRatio.times(100), {
-                precision: 2,
-                roundMode: BigNumber.ROUND_DOWN,
-              })}
-            </Text>
-          </Flex>
+          isCloseAction ? (
+            '--'
+          ) : (
+            <Flex>
+              <Text sx={{ color: collRatioColor }}>
+                {formatPercent(collateralizationRatio.times(100), {
+                  precision: 2,
+                  roundMode: BigNumber.ROUND_DOWN,
+                })}
+              </Text>
+              <VaultChangesInformationArrow />
+              <Text sx={{ color: afterCollRatioColor }}>
+                {formatPercent(afterCollateralizationRatio.times(100), {
+                  precision: 2,
+                  roundMode: BigNumber.ROUND_DOWN,
+                })}
+              </Text>
+            </Flex>
+          )
         }
       />
       <VaultChangesInformationItem
@@ -156,7 +169,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
           />
           <VaultChangesInformationItem
             label={'Oasis fee'}
-            value={`$${formatAmount(multiplyFee, 'USD')}`}
+            value={`$${formatAmount(oazoFee, 'USD')}`}
           />
         </Grid>
       )}

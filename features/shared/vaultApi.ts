@@ -1,3 +1,4 @@
+import { Vault, VaultType as VaultTypeDB } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { VaultType } from 'features/generalManageVault/generalManageVault'
 import getConfig from 'next/config'
@@ -24,6 +25,39 @@ export function checkVaultTypeUsingApi$(id: BigNumber): Observable<VaultType> {
   )
 
   return vaultType
+}
+
+interface CheckMultipleVaultsResponse {
+  [key: string]: VaultTypeDB
+}
+
+export function checkMultipleVaultsFromApi$(
+  vaults: string[],
+): Observable<CheckMultipleVaultsResponse> {
+  return ajax({
+    url: `${basePath}/api/vaults/?${vaults.map((vault) => `id=${vault}&`).join('')}`,
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).pipe(
+    map((resp) => {
+      const { vaults } = resp.response as { vaults: Vault[] }
+      const vaultTypeMapping: CheckMultipleVaultsResponse = {}
+
+      vaults.forEach(({ vault_id, type }) => {
+        vaultTypeMapping[vault_id] = type
+      })
+
+      return vaultTypeMapping
+    }),
+    catchError((err) => {
+      if (err.xhr.status === 404) {
+        return of({})
+      }
+      throw err
+    }),
+  )
 }
 
 export function getVaultFromApi$(

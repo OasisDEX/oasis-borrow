@@ -81,7 +81,7 @@ export function OpenVaultDetailsSummary({
         valueAfter={
           showAfterPill && (
             <>
-              {formatAmount(maxGenerateAmountCurrentPrice, 'DAI')}
+              {formatAmount(maxGenerateAmountCurrentPrice.minus(generateAmount || zero), 'DAI')}
               {` DAI`}
             </>
           )

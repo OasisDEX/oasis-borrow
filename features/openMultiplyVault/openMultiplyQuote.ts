@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { compareBigNumber } from 'helpers/compareBigNumber'
+import { SLIPPAGE } from 'helpers/multiply/calculations'
 import { EMPTY, Observable } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, take } from 'rxjs/operators'
 
@@ -66,8 +67,6 @@ export function applyExchange(change: OpenMultiplyVaultChange, state: OpenMultip
 
   return state
 }
-
-export const SLIPPAGE = new BigNumber(0.05)
 
 export function quoteToChange(quote: Quote) {
   return quote.status === 'SUCCESS'

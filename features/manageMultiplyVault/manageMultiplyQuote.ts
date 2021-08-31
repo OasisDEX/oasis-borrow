@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { SLIPPAGE } from 'helpers/multiply/calculations'
 import { EMPTY, Observable } from 'rxjs'
 import {
   debounceTime,
@@ -74,8 +75,6 @@ export function applyExchange(change: ManageMultiplyVaultChange, state: ManageMu
 
   return state
 }
-
-export const SLIPPAGE = new BigNumber(0.05)
 
 export function quoteToChange(quote: Quote) {
   return quote.status === 'SUCCESS'
