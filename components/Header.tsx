@@ -133,19 +133,19 @@ const HEADER_LINKS = {
   'blog': 'https://blog.oasis.app'
 }
 
-function HeaderDropdown({ title, children }: { title : string } & WithChildren) {
-  return <Box sx={{ position: 'relative', '& > *:last-child': { display: 'none'}, '&:hover': {
-    '& > *:first-child': {
+function HeaderDropdown({ title, sx, children }: { title : string, sx?: SxStyleProp } & WithChildren) {
+  return <Box sx={{ position: 'relative', '& .menu': { display: 'none'}, '&:hover': {
+    '& .trigger': {
       color: 'primary'
     },
-    '& > *:last-child': {
+    '& .menu': {
       display: 'grid'
     }
-  }}}>
-    <Box variant="links.navHeader">
+  }, ...sx}}>
+    <Box className="trigger" variant="links.navHeader">
       {title} <Icon name="caret_down" size="7.75px" />
     </Box>
-    <Card sx={{ 
+    <Card className="menu" sx={{ 
       position: 'absolute', 
       top: '100%', 
       borderRadius: 'medium',
@@ -158,20 +158,20 @@ function HeaderDropdown({ title, children }: { title : string } & WithChildren) 
       rowGap: 2,
       '& > *': {
         py: 2
-      }
+      },
     }}>
       {children}
     </Card>
   </Box>
 }
 
-function LanguageDropdown() {
+function LanguageDropdown({ sx }: { sx?: SxStyleProp }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
   // @ts-ignore
   const { locales }: { locales: string[]} = i18n.options
   
-  return <HeaderDropdown title={t(`lang-dropdown.${i18n.language}`)}>
+  return <HeaderDropdown title={t(`lang-dropdown.${i18n.language}`)} sx={sx}>
     {locales
       .filter(lang => lang !== i18n.language)
       .map(lang => <Text variant="links.nav" sx={{ fontWeight: 'body' }} onClick={() => router.push(router.asPath, router.asPath, { locale: lang })}>
@@ -311,7 +311,7 @@ function DisconnectedHeader() {
           </Flex>
           <Flex sx={{ '& > *': { ml: 4 }}}>
             <AppLink href="/connect">{t('connect-wallet')}</AppLink>
-            <LanguageDropdown />
+            <LanguageDropdown sx={{ '.menu': { right: '-6px' }}} />
           </Flex>
         </BasicHeader>
       </Box>
