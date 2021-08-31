@@ -133,26 +133,32 @@ const HEADER_LINKS = {
 }
 
 function HeaderDropdown({ title, children }: { title : string } & WithChildren) {
-  const dropdown = useRef(null);
-  const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    function handleDocumentClick(e: { target: any }) {
-      if (dropdown.current && !dropdown.current.contains(e.target)) {
-        setIsOpen(false);
-      }
+  return <Box sx={{ position: 'relative', '& > *:last-child': { display: 'none'}, '&:hover': {
+    '& > *:first-child': {
+      color: 'primary'
+    },
+    '& > *:last-child': {
+      display: 'grid'
     }
-    document.addEventListener('click', handleDocumentClick);
-    return () => {
-      document.removeEventListener('click', handleDocumentClick);
-    };
-  });
-
-  return <Box ref={dropdown} sx={{ position: 'relative'}}>
-    <Box onClick={() => setIsOpen(!isOpen)}>
+  }}}>
+    <Box variant="links.navHeader">
       {title} <Icon name="caret_down" size="7.75px" />
     </Box>
-    <Card sx={{ position: 'absolute', top: '100%', display: isOpen ? 'block' : 'none'}}>
+    <Card sx={{ 
+      position: 'absolute', 
+      top: 'calc(100% - 6px)', 
+      borderRadius: 'medium',
+      minWidth: 6,
+      pl: 3,
+      pr: 4,
+      py: 3,
+      boxShadow: 'cardLanding',
+      border: 'none',
+      rowGap: 2,
+      '& > *': {
+        py: 2
+      }
+    }}>
       {children}
     </Card>
   </Box>
@@ -348,8 +354,8 @@ function DisconnectedHeader() {
           <Flex sx={{ '& > *': { mr: 5 }}}>
             <Logo />
             <HeaderDropdown title={t('nav.products')}>
-              <AppLink href={HEADER_LINKS['dai-wallet']}>{t('nav.dai-wallet')}</AppLink>
-              <Text variant="strong">Borrow</Text>
+              <AppLink variant="links.nav" sx={{ fontWeight: 'body'}} href={HEADER_LINKS['dai-wallet']}>{t('nav.dai-wallet')}</AppLink>
+              <Text variant="links.nav" sx={{ cursor: 'default', ':hover': { color: 'primary' } }}>Borrow</Text>
             </HeaderDropdown>
             <AppLink href={HEADER_LINKS['learn']}>{t('nav.learn')}</AppLink>
             <AppLink href={HEADER_LINKS['blog']}>{t('nav.blog')}</AppLink>
