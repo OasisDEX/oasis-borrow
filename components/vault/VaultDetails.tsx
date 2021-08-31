@@ -184,27 +184,27 @@ function VaultDetailsCardCurrentPriceModal({
   currentPrice,
   nextPriceWithChange,
 }: ModalProps<{ currentPrice: ReactNode; nextPriceWithChange: ReactNode }>) {
+  const { t } = useTranslation()
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
-        <Heading variant="header3">Current Price</Heading>
+        <Heading variant="header3">{`${t('manage-vault.card.current-price')}`}</Heading>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tempor auctor eget magna ac enim
-          lorem tincidunt.
+        {t('manage-vault.card.current-price-description')}
         </Text>
         <Card variant="vaultDetailsCardModal">
           <Heading variant="header3">{currentPrice}</Heading>
         </Card>
       </Grid>
       <Grid gap={2}>
-        <Heading variant="header3">Next Price</Heading>
+        <Heading variant="header3">{`${t('manage-vault.card.next-price')}`}</Heading>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tempor auctor eget magna ac enim
-          lorem tincidunt.
+        {`${t('manage-vault.card.next-price-description')}`}
         </Text>
         <Card variant="vaultDetailsCardModal">
           <Heading variant="header3">{nextPriceWithChange}</Heading>
         </Card>
+        <Text>{`${t('manage-vault.card.more-info-oracles')}`}</Text>
       </Grid>
     </VaultDetailsCardModal>
   )
@@ -221,6 +221,35 @@ export function VaultDetailsCardMockedModal({ close }: ModalProps) {
         </Text>
         <Card variant="vaultDetailsCardModal">
           <Heading variant="header3">Some Mocked card</Heading>
+        </Card>
+      </Grid>
+    </VaultDetailsCardModal>
+  )
+}
+
+interface LiquidationProps {
+  liquidationPrice: BigNumber,
+  liquidationPriceCurrentPriceDifference: BigNumber | undefined
+}
+
+export function VaultDetailsLiquidationModal({ liquidationPrice, liquidationPriceCurrentPriceDifference, close }: ModalProps<LiquidationProps>) {
+  const { t } = useTranslation()
+
+  return (
+    <VaultDetailsCardModal close={close}>
+      <Grid gap={2}>
+        <Heading variant="header1">{`${t('system.liquidation-price')}`}</Heading>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          {t('manage-vault.card.liquidation-price-description')}
+        </Text>
+        <Card variant="vaultDetailsCardModal">
+          <Heading variant="header3">{t('manage-vault.card.liquidation-price-current', `$${formatAmount(liquidationPrice, 'USD')}`)}</Heading>
+          {liquidationPriceCurrentPriceDifference && <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+            {t('manage-vault.card.liquidation-percentage-below', formatPercent(liquidationPriceCurrentPriceDifference.times(100).absoluteValue(), {
+              precision: 2,
+              roundMode: BigNumber.ROUND_DOWN,
+            }))}
+          </Text>}
         </Card>
       </Grid>
     </VaultDetailsCardModal>
@@ -261,7 +290,10 @@ export function VaultDetailsCardLiquidationPrice({
           </>
         )
       }
-      openModal={() => openModal(VaultDetailsCardMockedModal)}
+      openModal={() => openModal(VaultDetailsLiquidationModal, {
+        liquidationPrice: liquidationPrice,
+        liquidationPriceCurrentPriceDifference: liquidationPriceCurrentPriceDifference
+      })}
       afterPillColors={afterPillColors}
     />
   )
