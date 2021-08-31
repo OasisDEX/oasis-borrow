@@ -189,6 +189,21 @@ const LangSelectMobileComponents: Partial<SelectComponents<{
   IndicatorsContainer: () => null,
   ValueContainer: ({ children }) => <Flex sx={{ color: 'primary', fontWeight: 'body' }}>{children}</Flex>,
   SingleValue: ({ children }) => <Box>{children}</Box>,
+  Option: ({ children, innerProps }) => (
+    <Box
+      {...innerProps}
+      sx={{
+        py: 2,
+        px: 3,
+        cursor: 'pointer',
+        '&:hover': {
+          bg: 'background',
+        },
+      }}
+    >
+      {children}
+    </Box>
+  ),
   Control: ({ innerProps, children, selectProps: { menuIsOpen } }) => (
   <Box
     {...innerProps}
@@ -304,10 +319,10 @@ function DisconnectedHeader() {
             <Logo />
             <HeaderDropdown title={t('nav.products')}>
               <AppLink variant="links.nav" sx={{ fontWeight: 'body'}} href={HEADER_LINKS['dai-wallet']}>{t('nav.dai-wallet')}</AppLink>
-              <Text variant="links.nav" sx={{ cursor: 'default', ':hover': { color: 'primary' } }}>Borrow</Text>
+              <Text variant="links.nav" sx={{ cursor: 'default', ':hover': { color: 'primary' } }}>{t('nav.borrow')}</Text>
             </HeaderDropdown>
-            <AppLink href={HEADER_LINKS['learn']}>{t('nav.learn')}</AppLink>
-            <AppLink href={HEADER_LINKS['blog']}>{t('nav.blog')}</AppLink>
+            <AppLink variant="links.navHeader" href={HEADER_LINKS['learn']}>{t('nav.learn')}</AppLink>
+            <AppLink variant="links.navHeader" href={HEADER_LINKS['blog']}>{t('nav.blog')}</AppLink>
           </Flex>
           <Flex sx={{ '& > *': { ml: 4 }}}>
             <AppLink href="/connect">{t('connect-wallet')}</AppLink>
