@@ -163,7 +163,7 @@ const LangSelectComponents: Partial<SelectComponents<{
   label: string;
 }>> = {
   IndicatorsContainer: () => null,
-  ValueContainer: ({ children }) => <Flex sx={{ color: 'primary' }}>{children}</Flex>,
+  ValueContainer: ({ children }) => <Flex>{children}</Flex>,
   SingleValue: ({ children }) => <Box>{children}</Box>,
   Option: ({ children, innerProps }) => (
     <Box
@@ -185,13 +185,16 @@ const LangSelectComponents: Partial<SelectComponents<{
     <Card
       {...innerProps}
       sx={{
-        position: 'absolute',
-        borderRadius: 'large',
-        p: 0,
+        borderRadius: 'medium',
+        minWidth: 6,
+        px: 0,
+        py: 3,
         overflow: 'hidden',
+        position: 'absolute',
         top: '32px',
         right: '-4px',
         boxShadow: 'cardLanding',
+        border: 'none',
       }}
     >
       {children}
@@ -203,7 +206,7 @@ const LangSelectComponents: Partial<SelectComponents<{
       {...innerProps}
       sx={{
         cursor: 'pointer',
-        variant: 'links.nav',
+        variant: 'links.navHeader',
         display: 'inline-flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -212,10 +215,8 @@ const LangSelectComponents: Partial<SelectComponents<{
     >
       {children}
       <Icon
-        name={menuIsOpen ? 'chevron_up' : 'chevron_down'}
-        size="auto"
-        width="10px"
-        height="7px"
+        name={'caret_down'}
+        size="7.75px"
         sx={{ ml: 1, position: 'relative', top: '1px' }}
       />
     </Box>
