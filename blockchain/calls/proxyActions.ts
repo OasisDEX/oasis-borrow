@@ -350,7 +350,7 @@ export const openMultiplyVault: TransactionDef<MultiplyData> = {
     return [dssMultiplyProxyActions.address, getOpenMultiplyCallData(data, context).encodeABI()]
   },
   options: ({ token, depositCollateral }) =>
-    token === 'ETH' ? { value: amountToWei(depositCollateral, 'ETH').toString() } : {},
+    token === 'ETH' ? { value: amountToWei(depositCollateral, 'ETH').toFixed(0) } : {},
 }
 
 export type ReclaimData = {
