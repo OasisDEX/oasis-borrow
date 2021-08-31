@@ -2,13 +2,12 @@ import { BigNumber } from 'bignumber.js'
 import {
   calculateParamsIncreaseMP,
   getMaxPossibleCollRatioOrMax,
+  LOAN_FEE,
   OAZO_FEE,
 } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
 
 import { OpenMultiplyVaultState } from './openMultiplyVault'
-
-const LOAN_FEE = new BigNumber(0.0009)
 
 export const MAX_COLL_RATIO = new BigNumber(5)
 
