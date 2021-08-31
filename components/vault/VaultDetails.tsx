@@ -190,7 +190,7 @@ function VaultDetailsCardCurrentPriceModal({
       <Grid gap={2}>
         <Heading variant="header3">{`${t('manage-vault.card.current-price')}`}</Heading>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-        {t('manage-vault.card.current-price-description')}
+          {t('manage-vault.card.current-price-description')}
         </Text>
         <Card variant="vaultDetailsCardModal">
           <Heading variant="header3">{currentPrice}</Heading>
@@ -199,7 +199,7 @@ function VaultDetailsCardCurrentPriceModal({
       <Grid gap={2}>
         <Heading variant="header3">{`${t('manage-vault.card.next-price')}`}</Heading>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-        {`${t('manage-vault.card.next-price-description')}`}
+          {`${t('manage-vault.card.next-price-description')}`}
         </Text>
         <Card variant="vaultDetailsCardModal">
           <Heading variant="header3">{nextPriceWithChange}</Heading>
@@ -227,14 +227,44 @@ export function VaultDetailsCardMockedModal({ close }: ModalProps) {
   )
 }
 
+export function VaultDetailsBuyingPowerModal({ close }: ModalProps) {
+  const { t } = useTranslation()
+  return (
+    <VaultDetailsCardModal close={close}>
+      <Grid gap={2}>
+        <Heading variant="header3">{t('manage-vault.card.buying-power')}</Heading>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          {t('manage-vault.card.buying-power-description')}
+        </Text>
+      </Grid>
+    </VaultDetailsCardModal>
+  )
+}
+
+export function VaultDetailsNetValueModal({ close }: ModalProps) {
+  const { t } = useTranslation()
+  return (
+    <VaultDetailsCardModal close={close}>
+      <Grid gap={2}>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          {t('manage-vault.card.net-value')}
+        </Text>
+      </Grid>
+    </VaultDetailsCardModal>
+  )
+}
+
 interface LiquidationProps {
-  liquidationPrice: BigNumber,
+  liquidationPrice: BigNumber
   liquidationPriceCurrentPriceDifference: BigNumber | undefined
 }
 
-export function VaultDetailsLiquidationModal({ liquidationPrice, liquidationPriceCurrentPriceDifference, close }: ModalProps<LiquidationProps>) {
+export function VaultDetailsLiquidationModal({
+  liquidationPrice,
+  liquidationPriceCurrentPriceDifference,
+  close,
+}: ModalProps<LiquidationProps>) {
   const { t } = useTranslation()
-
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
@@ -243,13 +273,23 @@ export function VaultDetailsLiquidationModal({ liquidationPrice, liquidationPric
           {t('manage-vault.card.liquidation-price-description')}
         </Text>
         <Card variant="vaultDetailsCardModal">
-          <Heading variant="header3">{t('manage-vault.card.liquidation-price-current', `$${formatAmount(liquidationPrice, 'USD')}`)}</Heading>
-          {liquidationPriceCurrentPriceDifference && <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-            {t('manage-vault.card.liquidation-percentage-below', formatPercent(liquidationPriceCurrentPriceDifference.times(100).absoluteValue(), {
-              precision: 2,
-              roundMode: BigNumber.ROUND_DOWN,
-            }))}
-          </Text>}
+          <Heading variant="header3">
+            {t(
+              'manage-vault.card.liquidation-price-current',
+              `$${formatAmount(liquidationPrice, 'USD')}`,
+            )}
+          </Heading>
+          {liquidationPriceCurrentPriceDifference && (
+            <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+              {t(
+                'manage-vault.card.liquidation-percentage-below',
+                formatPercent(liquidationPriceCurrentPriceDifference.times(100).absoluteValue(), {
+                  precision: 2,
+                  roundMode: BigNumber.ROUND_DOWN,
+                }),
+              )}
+            </Text>
+          )}
         </Card>
       </Grid>
     </VaultDetailsCardModal>
@@ -290,10 +330,12 @@ export function VaultDetailsCardLiquidationPrice({
           </>
         )
       }
-      openModal={() => openModal(VaultDetailsLiquidationModal, {
-        liquidationPrice: liquidationPrice,
-        liquidationPriceCurrentPriceDifference: liquidationPriceCurrentPriceDifference
-      })}
+      openModal={() =>
+        openModal(VaultDetailsLiquidationModal, {
+          liquidationPrice: liquidationPrice,
+          liquidationPriceCurrentPriceDifference: liquidationPriceCurrentPriceDifference,
+        })
+      }
       afterPillColors={afterPillColors}
     />
   )
