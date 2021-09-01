@@ -1,14 +1,15 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
+import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import React from 'react'
-import { SelectComponents } from 'react-select/src/components'
-import LanguageSelect from 'components/LanguageSelect'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
+
+import { SelectComponents } from 'react-select/src/components'
 
 const {
   publicRuntimeConfig: { buildHash, buildDate, showBuildInfo, apiHost },
@@ -53,8 +54,8 @@ const FOOTER_SECTIONS = [
 ]
 
 const LangSelectComponents: Partial<SelectComponents<{
-  value: string;
-  label: string;
+  value: string
+  label: string
 }>> = {
   IndicatorsContainer: () => null,
   ValueContainer: ({ children }) => <Flex sx={{ color: 'primary' }}>{children}</Flex>,
@@ -156,7 +157,7 @@ export function Footer() {
         >
           <Grid gap={3}>
             <Image src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')} />
-            <Flex sx={{ alignItems: 'center', 'a': { fontSize: '0px'}, my: 2 }}>
+            <Flex sx={{ alignItems: 'center', a: { fontSize: '0px' }, my: 2 }}>
               <AppLink href="https://twitter.com/oasisdotapp">
                 <Icon name="twitter" size="auto" width="18px" height="16px" />
               </AppLink>
@@ -164,7 +165,7 @@ export function Footer() {
                 <Icon name="discord" size="auto" width="20px" height="23px" />
               </AppLink>
               <AppLink href="https://github.com/OasisDEX/oasis-borrow/">
-                <Icon name="github" size="auto" width="21px"/>
+                <Icon name="github" size="auto" width="21px" />
               </AppLink>
             </Flex>
             <LanguageSelect components={LangSelectComponents} />
