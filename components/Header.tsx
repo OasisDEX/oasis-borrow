@@ -143,7 +143,7 @@ function HeaderDropdown({ title, sx, children }: { title : string, sx?: SxStyleP
       display: 'block'
     }
   }, ...sx}}>
-    <Box className="trigger" variant="links.navHeader">
+    <Box className="trigger" variant="links.navHeader" sx={{ whiteSpace: 'nowrap' }}>
       {title} <Icon name="caret_down" size="7.75px" sx={{ ml: '3px' }}/>
     </Box>
     <Box className="menu" sx={{ position: 'absolute', top: '100%', pt: 2 }}>
