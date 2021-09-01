@@ -304,14 +304,14 @@ function MobileMenu() {
       overflow: 'hidden',
       p: 5,
     }}>
-      <Grid sx={{ gridAutoFlow: 'row', rowGap: 5, mt: 3, mx: 'auto', maxWidth: 7 }}>
-        {MOBILE_MENU_SECTIONS.map(section => <Grid key={section.titleKey} sx={{ gridAutoFlow: 'row' }}>
+      <Grid sx={{ rowGap: 5, mt: 3, mx: 'auto', maxWidth: 7 }}>
+        {MOBILE_MENU_SECTIONS.map(section => <Grid key={section.titleKey}>
           <Text variant="links.navHeader">{t(section.titleKey)}</Text>
           {section.links.map(link => link.url ? <AppLink key={link.labelKey} variant="text.paragraph1" sx={{ textDecoration: 'none' }} href={link.url}>
             {t(link.labelKey)}
           </AppLink>: <Text key={link.labelKey} variant="text.paragraph1" sx={{ fontWeight: 'semiBold' }}>{t(link.labelKey)}</Text>)}
         </Grid>)}
-        <Grid sx={{ gridAutoFlow: 'row' }}>
+        <Grid>
           <Text variant="links.navHeader">{t('languages')}</Text>
           <LanguageSelect components={LangSelectMobileComponents} />
         </Grid>
