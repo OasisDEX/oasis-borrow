@@ -105,7 +105,7 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
               ? t('vault-form.subtext.daiAllowance')
               : stage === 'manageInProgress'
               ? t('vault-form.subtext.modified')
-              : t('vault-form.subtext.review')}
+              : t('vault-form.subtext.review-manage')}
           </Text>
         </Box>
       )}

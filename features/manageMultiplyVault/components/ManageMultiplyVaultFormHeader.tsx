@@ -81,7 +81,7 @@ export function ManageMultiplyVaultFormHeader(props: ManageMultiplyVaultState) {
               ? t('vault-form.subtext.daiAllowance')
               : stage === 'manageInProgress'
               ? t('vault-form.subtext.modified')
-              : t('vault-form.subtext.review')}
+              : t('vault-form.subtext.review-manage')}
           </Text>
         </Box>
       )}

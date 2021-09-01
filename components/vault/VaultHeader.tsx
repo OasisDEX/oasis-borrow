@@ -92,12 +92,12 @@ export function VaultIlkDetails(props: CommonVaultState & { id?: BigNumber }) {
       <VaultIlkDetailsItem
         label={'VaultID'}
         value={id ? id.toFixed(0) : 'T.B.D'}
-        tooltipContent={t('manage-vault.tooltip.vaultId')}
+        tooltipContent={t('manage-multiply-vault.tooltip.vaultId')}
       />
       <VaultIlkDetailsItem
         label={t('manage-vault.stability-fee')}
         value={`${formatPercent(stabilityFee.times(100), { precision: 2 })}`}
-        tooltipContent={t('manage-vault.tooltip.stabilityFee')}
+        tooltipContent={t('manage-multiply-vault.tooltip.stabilityFee')}
         styles={{
           tooltip: {
             left: ['auto', '-20px'],
@@ -108,12 +108,12 @@ export function VaultIlkDetails(props: CommonVaultState & { id?: BigNumber }) {
       <VaultIlkDetailsItem
         label={t('manage-vault.liquidation-fee')}
         value={`${formatPercent(liquidationPenalty.times(100))}`}
-        tooltipContent={t('manage-vault.tooltip.liquidationFee')}
+        tooltipContent={t('manage-multiply-vault.tooltip.liquidationFee')}
       />
       <VaultIlkDetailsItem
         label={t('manage-vault.min-collat-ratio')}
         value={`${formatPercent(liquidationRatio.times(100))}`}
-        tooltipContent={t('manage-vault.tooltip.min-collateral')}
+        tooltipContent={t('manage-multiply-vault.tooltip.min-collateral')}
         styles={{
           tooltip: {
             left: 'auto',
@@ -124,7 +124,7 @@ export function VaultIlkDetails(props: CommonVaultState & { id?: BigNumber }) {
       <VaultIlkDetailsItem
         label={t('manage-vault.dust-limit')}
         value={`$${formatCryptoBalance(debtFloor)}`}
-        tooltipContent={t('manage-vault.tooltip.dust-limit')}
+        tooltipContent={t('manage-multiply-vault.tooltip.dust-limit')}
         styles={{
           tooltip: {
             left: ['-80px', 'auto'],

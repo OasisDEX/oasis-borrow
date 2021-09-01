@@ -188,23 +188,25 @@ function VaultDetailsCardCurrentPriceModal({
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
-        <Heading variant="header3">{`${t('manage-vault.card.current-price')}`}</Heading>
+        <Heading variant="header3">{`${t('manage-multiply-vault.card.current-price')}`}</Heading>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          {t('manage-vault.card.current-price-description')}
+          {t('manage-multiply-vault.card.current-price-description')}
         </Text>
         <Card variant="vaultDetailsCardModal">
           <Heading variant="header3">{currentPrice}</Heading>
         </Card>
       </Grid>
       <Grid gap={2}>
-        <Heading variant="header3">{`${t('manage-vault.card.next-price')}`}</Heading>
+        <Heading variant="header3">{`${t('manage-multiply-vault.card.next-price')}`}</Heading>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          {`${t('manage-vault.card.next-price-description')}`}
+          {`${t('manage-multiply-vault.card.next-price-description')}`}
         </Text>
         <Card variant="vaultDetailsCardModal">
           <Heading variant="header3">{nextPriceWithChange}</Heading>
         </Card>
-        <Text>{`${t('manage-vault.card.more-info-oracles')}`}</Text>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          {t('manage-multiply-vault.card.more-info-oracles')}
+        </Text>
       </Grid>
     </VaultDetailsCardModal>
   )
@@ -232,9 +234,9 @@ export function VaultDetailsBuyingPowerModal({ close }: ModalProps) {
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
-        <Heading variant="header3">{t('manage-vault.card.buying-power')}</Heading>
+        <Heading variant="header3">{t('manage-multiply-vault.card.buying-power')}</Heading>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          {t('manage-vault.card.buying-power-description')}
+          {t('manage-multiply-vault.card.buying-power-description')}
         </Text>
       </Grid>
     </VaultDetailsCardModal>
@@ -246,8 +248,9 @@ export function VaultDetailsNetValueModal({ close }: ModalProps) {
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
+        <Heading variant="header3">{t('manage-multiply-vault.card.net-value')}</Heading>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          {t('manage-vault.card.net-value')}
+          {t('manage-multiply-vault.card.net-value-description')}
         </Text>
       </Grid>
     </VaultDetailsCardModal>
@@ -268,29 +271,25 @@ export function VaultDetailsLiquidationModal({
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
-        <Heading variant="header1">{`${t('system.liquidation-price')}`}</Heading>
+        <Heading variant="header3">{`${t('system.liquidation-price')}`}</Heading>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          {t('manage-vault.card.liquidation-price-description')}
+          {t('manage-multiply-vault.card.liquidation-price-description')}
         </Text>
-        <Card variant="vaultDetailsCardModal">
-          <Heading variant="header3">
+        <Heading variant="header3">
+          {t('manage-multiply-vault.card.liquidation-price-current')}
+        </Heading>
+        <Card variant="vaultDetailsCardModal">{`$${formatAmount(liquidationPrice, 'USD')}`}</Card>
+        {liquidationPriceCurrentPriceDifference && (
+          <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
             {t(
-              'manage-vault.card.liquidation-price-current',
-              `$${formatAmount(liquidationPrice, 'USD')}`,
+              'manage-multiply-vault.card.liquidation-percentage-below',
+              formatPercent(liquidationPriceCurrentPriceDifference.times(100).absoluteValue(), {
+                precision: 2,
+                roundMode: BigNumber.ROUND_DOWN,
+              }),
             )}
-          </Heading>
-          {liquidationPriceCurrentPriceDifference && (
-            <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-              {t(
-                'manage-vault.card.liquidation-percentage-below',
-                formatPercent(liquidationPriceCurrentPriceDifference.times(100).absoluteValue(), {
-                  precision: 2,
-                  roundMode: BigNumber.ROUND_DOWN,
-                }),
-              )}
-            </Text>
-          )}
-        </Card>
+          </Text>
+        )}
       </Grid>
     </VaultDetailsCardModal>
   )
