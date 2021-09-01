@@ -206,6 +206,21 @@ const LangSelectMobileComponents: Partial<SelectComponents<{
       {children}
     </Box>
   ),
+  Menu: ({ innerProps, children }) => (
+    <Card
+      {...innerProps}
+      sx={{
+        boxShadow: 'table',
+        borderRadius: 'medium',
+        border: 'none',
+        p: 0,
+        position: 'relative',
+        top: '8px',
+      }}
+    >
+      {children}
+    </Card>
+  ),
   Control: ({ innerProps, children, selectProps: { menuIsOpen } }) => (
   <Box
     {...innerProps}
@@ -237,7 +252,7 @@ const MOBILE_MENU_SECTIONS = [
     titleKey: 'nav.products',
     links: [
       { labelKey: 'nav.dai-wallet', url: HEADER_LINKS['dai-wallet'] },
-      { labelKey: 'nav.oasis-borrow', url: '#'}
+      { labelKey: 'nav.oasis-borrow' }
     ],
   },
   {
@@ -287,20 +302,19 @@ function MobileMenu() {
       opacity: isOpen ? 1 : 0,
       pointerEvents: isOpen ? 'unset' : 'none',
       overflow: 'hidden',
-      py: 6,
-      px: 5,
+      p: 5,
     }}>
-      <Grid>
-        {MOBILE_MENU_SECTIONS.map(section => <Box key={section.titleKey}>
-          <Text>{t(section.titleKey)}</Text>
-          <Box>
-            {section.links.map(link => <AppLink key={link.labelKey} href={link.url}>{t(link.labelKey)}</AppLink>)}
-          </Box>
-        </Box>)}
-        <Box>
-          <Text>{t('languages')}</Text>
+      <Grid sx={{ gridAutoFlow: 'row', rowGap: 5, mt: 3, mx: 'auto', maxWidth: 7 }}>
+        {MOBILE_MENU_SECTIONS.map(section => <Grid key={section.titleKey} sx={{ gridAutoFlow: 'row' }}>
+          <Text variant="links.navHeader">{t(section.titleKey)}</Text>
+          {section.links.map(link => link.url ? <AppLink key={link.labelKey} variant="text.paragraph1" sx={{ textDecoration: 'none' }} href={link.url}>
+            {t(link.labelKey)}
+          </AppLink>: <Text key={link.labelKey} variant="text.paragraph1" sx={{ fontWeight: 'semiBold' }}>{t(link.labelKey)}</Text>)}
+        </Grid>)}
+        <Grid sx={{ gridAutoFlow: 'row' }}>
+          <Text variant="links.navHeader">{t('languages')}</Text>
           <LanguageSelect components={LangSelectMobileComponents} />
-        </Box>
+        </Grid>
       </Grid>
     </Box>
     <Icon 
