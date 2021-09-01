@@ -32,10 +32,11 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
     txFees,
     impact,
     loanFees,
-    oazoFee: multiplyFee,
+    oazoFee,
     marketPrice,
     inputAmountsEmpty,
     isExchangeLoading,
+    slippage,
   } = props
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
@@ -83,7 +84,10 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
           )
         }
       />
-      <VaultChangesInformationItem label={'Slippage Limit'} value={'5.00 %'} />
+      <VaultChangesInformationItem
+        label={'Slippage Limit'}
+        value={formatPercent(slippage.times(100), { precision: 2 })}
+      />
       <VaultChangesInformationItem
         label={'Multiply'}
         value={
@@ -147,7 +151,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
           />
           <VaultChangesInformationItem
             label={'Oasis fee'}
-            value={`$${formatAmount(multiplyFee, 'USD')}`}
+            value={`$${formatAmount(oazoFee, 'USD')}`}
           />
         </Grid>
       )}

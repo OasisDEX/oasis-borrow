@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
 
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
-import { otherActionsDefaults } from './manageMultiplyVaultForm'
+import { manageInputsDefaults } from './manageMultiplyVaultForm'
 
 interface DepositAmountChange {
   kind: 'depositAmount'
@@ -282,7 +282,7 @@ export function applyManageVaultInput(
   if (change.kind === 'requiredCollRatio') {
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       requiredCollRatio: change.requiredCollRatio,
     }
   }
@@ -294,12 +294,9 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       buyAmount,
       buyAmountUSD,
-
-      sellAmount: undefined,
-      sellAmountUSD: undefined,
     }
   }
 
@@ -310,12 +307,9 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       buyAmount,
       buyAmountUSD,
-
-      sellAmount: undefined,
-      sellAmountUSD: undefined,
     }
   }
 
@@ -325,12 +319,9 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       buyAmount: zero,
       buyAmountUSD: zero,
-
-      sellAmount: undefined,
-      sellAmountUSD: undefined,
     }
   }
 
@@ -341,12 +332,9 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       sellAmount,
       sellAmountUSD,
-
-      buyAmount: undefined,
-      buyAmountUSD: undefined,
     }
   }
 
@@ -361,12 +349,9 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       sellAmount,
       sellAmountUSD,
-
-      buyAmount: undefined,
-      buyAmountUSD: undefined,
     }
   }
 
@@ -380,12 +365,9 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       sellAmount: freeCollateral,
       sellAmountUSD: freeCollateralUSD,
-
-      buyAmount: undefined,
-      buyAmountUSD: undefined,
     }
   }
 
@@ -396,7 +378,7 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       depositAmount: change.depositAmount,
       depositAmountUSD: change.depositAmount?.times(currentCollateralPrice),
     }
@@ -409,7 +391,7 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       depositAmountUSD: change.depositAmountUSD,
       depositAmount: change.depositAmountUSD?.div(currentCollateralPrice),
     }
@@ -420,7 +402,7 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       depositAmount: maxDepositAmount,
       depositAmountUSD: maxDepositAmountUSD,
     }
@@ -429,7 +411,7 @@ export function applyManageVaultInput(
   if (change.kind === 'paybackAmount') {
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       paybackAmount: change.paybackAmount,
     }
   }
@@ -439,7 +421,7 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       paybackAmount: maxPaybackAmount,
     }
   }
@@ -448,7 +430,7 @@ export function applyManageVaultInput(
     const { priceInfo } = state
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       withdrawAmount: change.withdrawAmount,
       withdrawAmountUSD: change.withdrawAmount?.times(priceInfo.currentCollateralPrice),
     }
@@ -458,7 +440,7 @@ export function applyManageVaultInput(
     const { priceInfo } = state
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       withdrawAmountUSD: change.withdrawAmountUSD,
       withdrawAmount: change.withdrawAmountUSD?.div(priceInfo.currentCollateralPrice),
     }
@@ -469,7 +451,7 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       withdrawAmount: maxWithdrawAmount,
       withdrawAmountUSD: maxWithdrawAmountUSD,
     }
@@ -478,7 +460,7 @@ export function applyManageVaultInput(
   if (change.kind === 'generateAmount') {
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       generateAmount: change.generateAmount,
     }
   }
@@ -487,7 +469,7 @@ export function applyManageVaultInput(
     const { maxGenerateAmount } = state
     return {
       ...state,
-      ...otherActionsDefaults,
+      ...manageInputsDefaults,
       generateAmount: maxGenerateAmount,
     }
   }

@@ -65,6 +65,26 @@ export const OtherActionGenerateStage = manageMultiplyVaultStory({
   generateAmount: new BigNumber('300'),
 })
 
+export const OtherActionCloseToDaiStage = manageMultiplyVaultStory({
+  vault: vaultETH,
+  balanceInfo: { collateralBalance: new BigNumber('200') },
+  proxyAddress,
+})({
+  stage: 'otherActions',
+  otherAction: 'closeVault',
+  closeVaultTo: 'dai',
+})
+
+export const OtherActionCloseToCollateralStage = manageMultiplyVaultStory({
+  vault: vaultETH,
+  balanceInfo: { collateralBalance: new BigNumber('200') },
+  proxyAddress,
+})({
+  stage: 'otherActions',
+  otherAction: 'closeVault',
+  closeVaultTo: 'collateral',
+})
+
 export const ProxyWaitingForConfirmation = manageMultiplyVaultStory({
   vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200') },

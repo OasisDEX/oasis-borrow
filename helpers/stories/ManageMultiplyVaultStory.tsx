@@ -21,6 +21,7 @@ import { useEffect } from 'react'
 import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
+import { InjectTokenIconsDefs } from 'theme/tokenIcons'
 
 type ManageMultiplyVaultStory = { title?: string } & MockManageMultiplyVaultProps
 
@@ -127,6 +128,7 @@ const ManageMultiplyVaultStoryContainer = ({ title }: { title?: string }) => {
 
   return (
     <Container variant="appContainer">
+      <InjectTokenIconsDefs />
       <Grid>
         {title && <Card>{title}</Card>}
         <GeneralManageVaultView id={MOCK_VAULT_ID} />

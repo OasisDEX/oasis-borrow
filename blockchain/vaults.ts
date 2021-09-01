@@ -1,7 +1,9 @@
+import { VaultType } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
 import { Context } from 'blockchain/network'
 import { HOUR, SECONDS_PER_YEAR } from 'components/constants'
+import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
 import { one, zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
@@ -18,13 +20,28 @@ BigNumber.config({
   POW_PRECISION: 100,
 })
 
+export interface VaultWithType extends Vault {
+  type: VaultType
+}
+
+export function fetchVaultsType(vaults: Vault[]): Observable<VaultWithType[]> {
+  return checkMultipleVaultsFromApi$(vaults.map((vault) => vault.id.toFixed(0))).pipe(
+    map((res) =>
+      vaults.map((vault) => ({
+        ...vault,
+        type: res[vault.id.toFixed(0)] || 'borrow',
+      })),
+    ),
+  )
+}
+
 export function createVaults$(
   onEveryBlock$: Observable<number>,
   context$: Observable<Context>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
   vault$: (id: BigNumber) => Observable<Vault>,
   address: string,
-): Observable<Vault[]> {
+): Observable<VaultWithType[]> {
   return combineLatest(context$, proxyAddress$(address)).pipe(
     switchMap(([context, proxyAddress]) => {
       if (!proxyAddress) return of([])
@@ -39,7 +56,6 @@ export function createVaults$(
               switchMap(({ ids }) => of(ids)),
             ),
           ),
-          distinctUntilChanged(isEqual),
         )
       }
 
@@ -47,6 +63,8 @@ export function createVaults$(
         switchMap((ids) =>
           ids.length === 0 ? of([]) : combineLatest(ids.map((id) => vault$(new BigNumber(id)))),
         ),
+        distinctUntilChanged(isEqual),
+        switchMap((vaults) => (vaults.length === 0 ? of(vaults) : fetchVaultsType(vaults))),
       )
     }),
     shareReplay(1),

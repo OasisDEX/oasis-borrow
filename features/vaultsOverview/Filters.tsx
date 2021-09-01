@@ -15,6 +15,7 @@ interface FiltersProps {
   tagFilter: CoinTag | undefined
   searchPlaceholder: string
   sx?: SxStyleProp
+  multiply?: boolean
 }
 
 function Filters_({
@@ -26,6 +27,7 @@ function Filters_({
   page,
   searchPlaceholder,
   sx,
+  multiply,
 }: FiltersProps) {
   const onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,15 +37,21 @@ function Filters_({
   )
   const { t } = useTranslation()
 
+  const vaultTypeOptions = !multiply
+    ? [
+        ...COIN_TAGS.map((tag) => ({
+          value: tag,
+          label: t(`filters.${tag}`),
+        })),
+      ]
+    : []
+
   const options = [
     {
       value: undefined,
       label: t(defaultTag),
     },
-    ...COIN_TAGS.map((tag) => ({
-      value: tag,
-      label: t(`filters.${tag}`),
-    })),
+    ...vaultTypeOptions,
   ]
 
   const selected = options.find((option) => option.value === tagFilter)

@@ -2,7 +2,12 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import {
+  formatAmount,
+  formatCryptoBalance,
+  formatFiatBalance,
+  formatPercent,
+} from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
 import React from 'react'
@@ -454,7 +459,14 @@ function CloseVaultCard({
 
 // @ts-ignore
 function CloseVaultAction(props: ManageMultiplyVaultState) {
-  const { setCloseVaultTo, closeVaultTo } = props
+  const {
+    setCloseVaultTo,
+    closeVaultTo,
+    vault: { token },
+  } = props
+
+  const closeToCollateral = closeVaultTo === 'collateral'
+  const closeToTokenName = closeToCollateral ? token : 'DAI'
 
   return (
     <>
@@ -463,19 +475,29 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
           text="Close to ETH"
           icon="ether_circle_color"
           onClick={() => setCloseVaultTo!('collateral')}
-          isActive={closeVaultTo === 'collateral'}
+          isActive={closeToCollateral}
         />
         <CloseVaultCard
           text="Close to DAI"
           icon="dai_circle_color"
           onClick={() => setCloseVaultTo!('dai')}
-          isActive={closeVaultTo === 'dai'}
+          isActive={!closeToCollateral}
         />
       </Grid>
       <Text variant="paragraph3" sx={{ color: 'text.subtitle', mt: 3 }}>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras iaculis quam quis risus
-        finibus, non imperdiet.
+        To close your vault, a part of your position will be sold to payback the outstanding debt.
+        The rest of your collateral will be send to your address.
       </Text>
+      <Flex sx={{ fontSize: 1, fontWeight: 'semiBold', justifyContent: 'space-between', mt: 3 }}>
+        <Text sx={{ color: 'text.subtitle' }}>{closeToTokenName} after closing</Text>
+        <Text>
+          {formatCryptoBalance(new BigNumber(9.99))} {closeToTokenName}
+          {` `}
+          <Text as="span" sx={{ color: 'text.subtitle' }}>
+            (${formatAmount(new BigNumber(30002.09), 'USD')})
+          </Text>
+        </Text>
+      </Flex>
     </>
   )
 }

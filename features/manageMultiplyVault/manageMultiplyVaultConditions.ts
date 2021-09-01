@@ -235,6 +235,8 @@ export function applyManageVaultConditions(
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
 
+    buyAmount,
+    sellAmount,
     paybackAmount,
     depositAmount,
     generateAmount,
@@ -255,6 +257,8 @@ export function applyManageVaultConditions(
   const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)
 
   const inputAmountsEmpty =
+    buyAmount === undefined &&
+    sellAmount === undefined &&
     paybackAmount === undefined &&
     depositAmount === undefined &&
     generateAmount === undefined &&
