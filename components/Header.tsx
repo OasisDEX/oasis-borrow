@@ -108,6 +108,7 @@ function ConnectedHeader() {
         <AppLink
           variant="nav"
           sx={{ mr: 4 }}
+          // @ts-ignore
           href={`/owner/${context?.account}`}
           onClick={() => trackingEvents.yourVaults()}
         >
@@ -134,34 +135,35 @@ const HEADER_LINKS = {
 }
 
 function HeaderDropdown({ title, sx, children }: { title : string, sx?: SxStyleProp } & WithChildren) {
-  return <Box sx={{ position: 'relative', '& .menu': { display: 'none'}, '&:hover': {
+  return <Box sx={{ position: 'relative', top: '-1px', '& .menu': { display: 'none'}, '&:hover': {
     '& .trigger': {
       color: 'primary'
     },
     '& .menu': {
-      display: 'grid'
+      display: 'block'
     }
   }, ...sx}}>
     <Box className="trigger" variant="links.navHeader">
-      {title} <Icon name="caret_down" size="7.75px" />
+      {title} <Icon name="caret_down" size="7.75px" sx={{ ml: '3px' }}/>
     </Box>
-    <Card className="menu" sx={{ 
-      position: 'absolute', 
-      top: '100%', 
-      borderRadius: 'medium',
-      minWidth: 6,
-      pl: 3,
-      pr: 4,
-      py: 3,
-      boxShadow: 'cardLanding',
-      border: 'none',
-      rowGap: 2,
-      '& > *': {
-        py: 2
-      },
-    }}>
-      {children}
-    </Card>
+    <Box className="menu" sx={{ position: 'absolute', top: '100%', pt: 2 }}>
+      <Card sx={{
+        borderRadius: 'medium',
+        minWidth: 6,
+        pl: 3,
+        pr: 4,
+        py: 3,
+        boxShadow: 'cardLanding',
+        border: 'none',
+        display: 'grid',
+        rowGap: 2,
+        '& > *': {
+          py: 2
+        },
+      }}>
+        {children}
+      </Card>
+    </Box>
   </Box>
 }
 
@@ -315,19 +317,28 @@ function DisconnectedHeader() {
     <>
       <Box sx={{ display: ['none', 'block']}}>
         <BasicHeader variant="appContainer">
-          <Flex sx={{ '& > *': { mr: 5 }}}>
-            <Logo />
+          <Grid sx={{ alignItems: 'center', columnGap: [4, 4, 5], gridAutoFlow: 'column', mr: 3 }}>
+            <Logo sx={{ transform: 'scale(85%)', display: 'inline-flex', '& *': { flexShrink: 0 }}}/>
             <HeaderDropdown title={t('nav.products')}>
               <AppLink variant="links.nav" sx={{ fontWeight: 'body'}} href={HEADER_LINKS['dai-wallet']}>{t('nav.dai-wallet')}</AppLink>
               <Text variant="links.nav" sx={{ cursor: 'default', ':hover': { color: 'primary' } }}>{t('nav.borrow')}</Text>
             </HeaderDropdown>
             <AppLink variant="links.navHeader" href={HEADER_LINKS['learn']}>{t('nav.learn')}</AppLink>
             <AppLink variant="links.navHeader" href={HEADER_LINKS['blog']}>{t('nav.blog')}</AppLink>
-          </Flex>
-          <Flex sx={{ '& > *': { ml: 4 }}}>
-            <AppLink href="/connect">{t('connect-wallet')}</AppLink>
-            <LanguageDropdown sx={{ '.menu': { right: '-6px' }}} />
-          </Flex>
+          </Grid>
+          <Grid sx={{ alignItems: 'center', columnGap: 3, gridAutoFlow: 'column' }}>
+            <AppLink variant="buttons.secondary" href="/connect" sx={{ 
+              boxShadow: 'cardLanding', bg: 'surface', textDecoration: 'none', 
+              display: 'inline-flex', alignItems: 'center', '&:hover svg': {
+                transform: 'translateX(8px)',
+              },
+              flexShrink: 0
+              }}>
+              <Text variant="strong">{t('connect-wallet-button')}</Text><Icon name="arrow_right" size="15px" sx={{ position: 'relative', left: '6px',
+              transition: '0.2s',}}/>
+            </AppLink>
+            <LanguageDropdown sx={{ '@media (max-width: 1330px)': {'.menu': { right: '-6px' }}}} />
+          </Grid>
         </BasicHeader>
       </Box>
       <Box sx={{ display: ['block', 'none']}}>
