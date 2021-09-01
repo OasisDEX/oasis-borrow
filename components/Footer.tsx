@@ -116,10 +116,6 @@ const LangSelectComponents: Partial<SelectComponents<{
   ),
 }
 
-function FooterLangSelect() {
-  return <LanguageSelect components={LangSelectComponents} />
-}
-
 export function TemporaryFooter() {
   const commit = buildHash.substring(0, 10)
   const date = moment(buildDate).format('DD.MM.YYYY HH:MM')
@@ -158,27 +154,20 @@ export function Footer() {
           columns={[2, '150px 1fr 1fr 1fr']}
           gap={[4, null, 5]}
         >
-          <Grid gap={4}>
+          <Grid gap={3}>
             <Image src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')} />
-            <Flex
-              sx={{
-                alignItems: 'center',
-                justifyContent: ['flex-start', 'space-between'],
-                a: {
-                  fontSize: '0px',
-                },
-              }}
-            >
-              <Flex sx={{ alignItems: 'center' }}>
-                <AppLink href="https://twitter.com/oasisdotapp">
-                  <Icon name="twitter" size="auto" width="18px" height="16px" />
-                </AppLink>
-                <AppLink href="https://discord.gg/Kc2bBB59GC" sx={{ mx: 3 }}>
-                  <Icon name="discord" size="auto" width="20px" height="23px" />
-                </AppLink>
-              </Flex>
-              <FooterLangSelect />
+            <Flex sx={{ alignItems: 'center', 'a': { fontSize: '0px'}, my: 2 }}>
+              <AppLink href="https://twitter.com/oasisdotapp">
+                <Icon name="twitter" size="auto" width="18px" height="16px" />
+              </AppLink>
+              <AppLink href="https://discord.gg/Kc2bBB59GC" sx={{ mx: 3 }}>
+                <Icon name="discord" size="auto" width="20px" height="23px" />
+              </AppLink>
+              <AppLink href="https://github.com/OasisDEX/oasis-borrow/">
+                <Icon name="github" size="auto" width="21px"/>
+              </AppLink>
             </Flex>
+            <LanguageSelect components={LangSelectComponents} />
           </Grid>
           {FOOTER_SECTIONS.map(({ titleKey, links }) => (
             <Grid key={titleKey} as="ul" pl={0}>
