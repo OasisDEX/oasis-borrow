@@ -41,7 +41,7 @@ export interface OpenMultiplyVaultCalculations {
   // afterFreeCollateral: BigNumber
 }
 
-export const defaultOpenVaultStateCalculations: OpenMultiplyVaultCalculations = {
+export const defaultOpenMultiplyVaultStateCalculations: OpenMultiplyVaultCalculations = {
   afterLiquidationPrice: zero,
   afterBuyingPower: zero,
   afterBuyingPowerUSD: zero,
@@ -98,7 +98,12 @@ export function applyOpenMultiplyVaultCalculations(
     marketPrice === undefined ||
     marketPriceMaxSlippage === undefined
   ) {
-    return { ...state, ...defaultOpenVaultStateCalculations, maxDepositAmount, maxDepositAmountUSD }
+    return {
+      ...state,
+      ...defaultOpenMultiplyVaultStateCalculations,
+      maxDepositAmount,
+      maxDepositAmountUSD,
+    }
   }
 
   const oraclePrice = currentCollateralPrice

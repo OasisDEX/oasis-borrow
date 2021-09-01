@@ -21,13 +21,13 @@ import {
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openMultiplyVaultAllowances'
 import {
   applyOpenMultiplyVaultCalculations,
-  defaultOpenVaultStateCalculations,
+  defaultOpenMultiplyVaultStateCalculations,
   OpenMultiplyVaultCalculations,
 } from './openMultiplyVaultCalculations'
 import {
   applyOpenVaultConditions,
   applyOpenVaultStageCategorisation,
-  defaultOpenVaultConditions,
+  defaultOpenMultiplyVaultConditions,
   OpenMultiplyVaultConditions,
 } from './openMultiplyVaultConditions'
 import {
@@ -135,6 +135,7 @@ interface OpenMultiplyVaultFunctions {
   setAllowanceAmountUnlimited?: () => void
   setAllowanceAmountToDepositAmount?: () => void
   setAllowanceAmountCustom?: () => void
+  clear: () => void
   injectStateOverride: (state: Partial<MutableOpenMultiplyVaultState>) => void
 }
 
@@ -269,7 +270,7 @@ function addTransitions(
   return state
 }
 
-export const defaultMutableOpenVaultState: MutableOpenMultiplyVaultState = {
+export const defaultMutableOpenMultiplyVaultState: MutableOpenMultiplyVaultState = {
   stage: 'editing' as OpenMultiplyVaultStage,
   selectedAllowanceRadio: 'unlimited' as 'unlimited',
   allowanceAmount: maxUint256,
@@ -327,9 +328,9 @@ export function createOpenMultiplyVault$(
                     const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
 
                     const initialState: OpenMultiplyVaultState = {
-                      ...defaultMutableOpenVaultState,
-                      ...defaultOpenVaultStateCalculations,
-                      ...defaultOpenVaultConditions,
+                      ...defaultMutableOpenMultiplyVaultState,
+                      ...defaultOpenMultiplyVaultStateCalculations,
+                      ...defaultOpenMultiplyVaultConditions,
                       priceInfo,
                       balanceInfo,
                       ilkData,
@@ -347,6 +348,7 @@ export function createOpenMultiplyVault$(
                       totalSteps,
                       currentStep: 1,
                       exchangeError: false,
+                      clear: () => change({ kind: 'clear' }),
                       injectStateOverride,
                     }
 

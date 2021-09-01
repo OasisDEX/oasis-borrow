@@ -1,7 +1,9 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { zero } from 'helpers/zero'
 
-import { OpenVaultChange, OpenVaultState } from './openVault'
+import { defaultMutableOpenVaultState, OpenVaultChange, OpenVaultState } from './openVault'
+import { defaultOpenVaultStateCalculations } from './openVaultCalculations'
+import { defaultOpenVaultConditions } from './openVaultConditions'
 
 export type OpenVaultTransitionChange =
   | {
@@ -15,6 +17,9 @@ export type OpenVaultTransitionChange =
     }
   | {
       kind: 'regressAllowance'
+    }
+  | {
+      kind: 'clear'
     }
 
 export function applyOpenVaultTransition(
@@ -70,6 +75,18 @@ export function applyOpenVaultTransition(
             allowanceAmount: maxUint256,
             selectedAllowanceRadio: 'unlimited',
           }),
+    }
+  }
+
+  if (change.kind === 'clear') {
+    return {
+      ...state,
+      ...defaultMutableOpenVaultState,
+      ...defaultOpenVaultStateCalculations,
+      ...defaultOpenVaultConditions,
+      depositAmount: undefined,
+      depositAmountUSD: undefined,
+      generateAmount: undefined,
     }
   }
 

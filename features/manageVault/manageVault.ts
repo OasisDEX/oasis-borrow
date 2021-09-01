@@ -176,6 +176,7 @@ interface ManageVaultFunctions {
   setDaiAllowanceAmountUnlimited?: () => void
   setDaiAllowanceAmountToPaybackAmount?: () => void
   resetDaiAllowanceAmount?: () => void
+  clear: () => void
   injectStateOverride: (state: Partial<MutableManageVaultState>) => void
   toggleMultiplyTransition?: () => void
 }
@@ -468,6 +469,7 @@ export function createManageVault$(
                     initialTotalSteps,
                     totalSteps: initialTotalSteps,
                     currentStep: 1,
+                    clear: () => change({ kind: 'clear' }),
                     injectStateOverride,
                   }
 
