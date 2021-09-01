@@ -1332,9 +1332,9 @@ const oasisBaseTheme = {
   zIndices: {
     menu: 2,
     footer: 2,
-    modal: 3,
-    cookie: 4,
-    mobileMenu: 8
+    mobileMenu: 3,
+    modal: 4,
+    cookie: 5,
   },
   sizingsCustom: {
     pxModalBottom: '22px',

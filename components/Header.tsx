@@ -285,6 +285,7 @@ function MobileMenu() {
       transition: 'opacity ease-in 0.25s',
       height: isOpen ? '100vh' : 0,
       opacity: isOpen ? 1 : 0,
+      pointerEvents: isOpen ? 'unset' : 'none',
       overflow: 'hidden',
       py: 6,
       px: 5,
@@ -304,8 +305,9 @@ function MobileMenu() {
     </Box>
     <Icon 
       name={ isOpen ? 'close': 'menu'} 
-      sx={{zIndex: 'mobileMenu', position: 'absolute', top: 3, right: 3}} 
+      sx={{zIndex: 'mobileMenu', position: 'absolute', top: '2px', right: '20px'}} 
       onClick={() => setIsOpen(!isOpen)} 
+      size="18px"
     />
   </>
 }
@@ -341,8 +343,8 @@ function DisconnectedHeader() {
           </Grid>
         </BasicHeader>
       </Box>
-      <Box sx={{ display: ['block', 'none']}}>
-        <Logo sx={{ position: 'absolute', left: 3, top: 3 }} />
+      <Box sx={{ display: ['block', 'none'], mb: 5 }}>
+        <Logo sx={{ position: 'absolute', left: '7px', top: '-4px', transform: 'scale(80%)'}} />
         <MobileMenu />
       </Box>
     </>
