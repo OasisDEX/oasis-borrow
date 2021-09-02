@@ -419,6 +419,32 @@ describe('manageVault', () => {
         state().updatePayback!(paybackAmount)
         expect(state().totalSteps).to.deep.equal(2)
       })
+
+      it('should clear form values and go to editing stage', () => {
+        const depositAmount = new BigNumber('100')
+        const generateAmount = new BigNumber('1000')
+
+        const state = getStateUnpacker(
+          mockManageVault$({
+            proxyAddress: DEFAULT_PROXY_ADDRESS,
+            collateralAllowance: maxUint256,
+            vault: {
+              ilk: 'WBTC-A',
+            },
+          }),
+        )
+
+        state().updateDeposit!(depositAmount)
+        state().updateGenerate!(generateAmount)
+        state().progress!()
+        expect(state().stage).to.deep.equal('manageWaitingForConfirmation')
+
+        state().clear()
+        expect(state().stage).to.deep.equal('collateralEditing')
+        expect(state().depositAmount).to.be.undefined
+        expect(state().depositAmountUSD).to.be.undefined
+        expect(state().generateAmount).to.be.undefined
+      })
     })
 
     describe('create proxy flow', () => {
