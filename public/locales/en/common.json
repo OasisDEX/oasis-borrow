@@ -252,6 +252,15 @@
       "ledger-enable-contract-data": "Please enable Contract data on the Ledgers Ethereum app Settings",
       "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, payback your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
       "exchange-error": "Could not fetch exchange prices for doing this multiply action."
+    },
+    "card": {
+      "collateralization-ratio-calculated": "Your collateralization ratio is calculated by: value of your collateral / Dai debt.",
+      "collateralization-ratio-header2": "Current Collateralization ratio:",
+      "collateralization-ratio-description": "The price used to calculate the value of your collateral is the price obtained from the Maker oracles. Your collateralization ratio needs to be above the minimum required at all times to not get liquidated.",
+      "collateralization-ratio-next-price": "Your collateralization ratio on the next price will be:",
+      "collateral-locked-amount": "The total amount of collateral locked in your vault is:",
+      "collateral-locked-USD": "The total value in dollars of the collateral in your vault is:",
+      "collateral-locked-oracles": "We use the current price from the Maker oracles to calculate this value. The current market price of your collateral may differ from this price."
     }
   },
   "manage-multiply-vault": {

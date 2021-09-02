@@ -229,6 +229,84 @@ export function VaultDetailsCardMockedModal({ close }: ModalProps) {
   )
 }
 
+interface CollaterlizationRatioProps {
+  currentCollateralRatio: BigNumber
+  collateralRatioOnNextPrice: BigNumber
+}
+
+export function VaultDetailsCardCollaterlizationRatioModal({
+  currentCollateralRatio,
+  collateralRatioOnNextPrice,
+  close,
+}: ModalProps<CollaterlizationRatioProps>) {
+  const { t } = useTranslation()
+  return (
+    <VaultDetailsCardModal close={close}>
+      <Grid gap={2}>
+        <Heading variant="header3">{`${t('system.collateralization-ratio')}`}</Heading>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          {t('manage-vault.card.collateralization-ratio-calculated')}
+        </Text>
+        <Heading variant="header3">
+          {t('manage-vault.card.collateralization-ratio-header2')}
+        </Heading>
+        <Card variant="vaultDetailsCardModal">
+          {formatPercent(currentCollateralRatio.times(100).absoluteValue(), {
+            precision: 2,
+            roundMode: BigNumber.ROUND_DOWN,
+          })}
+        </Card>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          {t('manage-vault.card.collateralization-ratio-description')}
+        </Text>
+        <Heading variant="header3">
+          {t('manage-vault.card.collateralization-ratio-next-price')}
+        </Heading>
+        <Card variant="vaultDetailsCardModal">
+          {formatPercent(collateralRatioOnNextPrice.times(100).absoluteValue(), {
+            precision: 2,
+            roundMode: BigNumber.ROUND_DOWN,
+          })}
+        </Card>
+      </Grid>
+    </VaultDetailsCardModal>
+  )
+}
+
+interface CollateralLockedProps {
+  token: string
+  collateralAmountLocked: BigNumber | undefined
+  collateralLockedUSD: BigNumber | undefined
+}
+
+export function VaultDetailsCardCollateralLockedModal({
+  collateralAmountLocked,
+  collateralLockedUSD,
+  token,
+  close,
+}: ModalProps<CollateralLockedProps>) {
+  const { t } = useTranslation()
+  return (
+    <VaultDetailsCardModal close={close}>
+      <Grid gap={2}>
+        <Heading variant="header3">{`${t('system.collateral-locked')}`}</Heading>
+        <Heading variant="header3">{`${t('manage-vault.card.collateral-locked-amount')}`}</Heading>
+        <Card variant="vaultDetailsCardModal">
+          {formatAmount(collateralAmountLocked || zero, getToken(token).symbol)}
+        </Card>
+
+        <Heading variant="header3">{t('manage-vault.card.collateral-locked-USD')}</Heading>
+        <Card variant="vaultDetailsCardModal">
+          {collateralLockedUSD && `$${formatAmount(collateralLockedUSD, 'USD')}`}
+        </Card>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          {t('manage-vault.card.collateral-locked-oracles')}
+        </Text>
+      </Grid>
+    </VaultDetailsCardModal>
+  )
+}
+
 export function VaultDetailsBuyingPowerModal({ close }: ModalProps) {
   const { t } = useTranslation()
   return (
@@ -311,7 +389,7 @@ export function VaultDetailsCardLiquidationPrice({
 
   return (
     <VaultDetailsCard
-      title={`${t('system.liquidation-price')}`}
+      title={t('system.liquidation-price')}
       value={`$${formatAmount(liquidationPrice, 'USD')}`}
       valueAfter={showAfterPill && `$${formatAmount(afterLiquidationPrice || zero, 'USD')}`}
       valueBottom={
@@ -422,7 +500,13 @@ export function VaultDetailsCardCollateralLocked({
           </Text>
         </>
       }
-      openModal={() => openModal(VaultDetailsCardMockedModal)}
+      openModal={() =>
+        openModal(VaultDetailsCardCollateralLockedModal, {
+          token: token,
+          collateralAmountLocked: depositAmount,
+          collateralLockedUSD: afterDepositAmountUSD,
+        })
+      }
       afterPillColors={afterPillColors}
     />
   )
