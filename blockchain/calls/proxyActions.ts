@@ -293,6 +293,7 @@ export type MultiplyData = {
   exchangeData: string
   slippage: BigNumber
 }
+
 function getOpenMultiplyCallData(data: MultiplyData, context: ContextConnected) {
   const {
     contract,
@@ -304,6 +305,46 @@ function getOpenMultiplyCallData(data: MultiplyData, context: ContextConnected) 
     exchange,
     aaveLendingPool,
   } = context
+  console.log(`
+    Exchange Data
+
+    fromTokenAddress: ${tokens['DAI'].address},
+    toTokenAddress: ${tokens[data.token].address},
+    fromTokenAmount: ${amountToWei(data.requiredDebt, 'DAI').toFixed(0)},
+    toTokenAmount: ${amountToWei(data.borrowedCollateral, data.token).toFixed(0)},
+    minToTokenAmount: ${amountToWei(data.borrowedCollateral, data.token)
+      .div(one.minus(data.slippage))
+      .toFixed(0)},
+    exchangeAddress: ${data.exchangeAddress},
+    _exchangeCalldata: ${data.exchangeData},
+  `)
+
+  console.log(`
+    CDP data
+
+    gemJoin: ${joins[data.ilk]},
+    cdpId: ${'0'},
+    ilk: ${'0x0000000000000000000000000000000000000000000000000000000000000000'},
+    fundsReceiver: ${data.userAddress},
+    borrowCollateral: ${amountToWei(data.borrowedCollateral, data.token).toFixed(0)},
+    requiredDebt: ${amountToWei(data.requiredDebt, 'DAI').toFixed(0)},
+    depositCollateral: ${amountToWei(data.depositCollateral, data.token).toFixed(0)},
+    withdrawDai: ${amountToWei(zero, 'DAI').toFixed(0)},
+    depositDai: ${amountToWei(zero, 'DAI').toFixed(0)},
+    withdrawCollateral: ${amountToWei(zero, data.token).toFixed(0)},
+    skipFL: ${false},
+    methodName: ${''},
+  `)
+
+  console.log(`
+    Addresses
+
+    jug: ${mcdJug.address},
+    manager: ${dssCdpManager.address},
+    multiplyProxyActions: ${dssMultiplyProxyActions.address},
+    aaveLendingPoolProvider: ${aaveLendingPool},
+    exchange: ${exchange.address},
+  `)
 
   return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.openMultiplyVault(
     {
