@@ -13,6 +13,7 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { TRANSITIONS } from 'theme'
 import { Box, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
+import { Global } from '@emotion/core'
 
 import { useAppContext } from './AppContextProvider'
 import { SelectComponents } from 'react-select/src/components'
@@ -296,29 +297,15 @@ function MobileMenu() {
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
 
-  useEffect(() => {
-    if (isOpen) {
-      // prevent scroll when opened
-      document.body.style.overflow = 'hidden'
-      document.body.style.height = '100vh'
-      document.body.style.position = 'fixed'
-      document.body.style.top = `-${window.scrollY}px`
-    } else {
-      const scrollY = document.body.style.top
-      document.body.style.position = ''
-      document.body.style.top = ''
-      window.scrollTo(0, parseInt(scrollY || '0') * -1)
-    }
-    return () => {
-      document.body.style.overflow = ''
-      document.body.style.height = ''
-      document.body.style.position = ''
-      document.body.style.top = ''
-    }
-  }, [isOpen])
-
   return (
     <>
+      { isOpen && <Global styles={() => ({
+        'body': {
+          overflow: 'hidden',
+          height: '100vh',
+          position: 'fixed',
+        },
+      })} />}
       <Box
         sx={{
           backgroundColor: 'background',
