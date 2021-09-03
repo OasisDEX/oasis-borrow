@@ -299,6 +299,7 @@ export function createOpenMultiplyVault$(
         () => !ilks.some((i) => i === ilk),
         throwError(new Error(`Ilk ${ilk} does not exist`)),
         combineLatest(context$, txHelpers$, ilkData$(ilk)).pipe(
+          first(),
           switchMap(([context, txHelpers, ilkData]) => {
             const { token } = ilkData
             const account = context.account
