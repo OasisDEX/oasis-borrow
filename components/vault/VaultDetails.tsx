@@ -1,11 +1,13 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { CommonVaultState, WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
+import { Trans } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
@@ -204,9 +206,22 @@ function VaultDetailsCardCurrentPriceModal({
         <Card variant="vaultDetailsCardModal">
           <Heading variant="header3">{nextPriceWithChange}</Heading>
         </Card>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          {t('manage-multiply-vault.card.more-info-oracles')}
-        </Text>
+
+        <Trans
+          i18nKey="manage-multiply-vault.card.more-info-oracles"
+          components={[
+            <AppLink
+              href="https://kb.oasis.app/help/the-oracle-security-module"
+              withAccountPrefix={false}
+              target="_blank"
+              sx={{
+                display: 'inline-block',
+                color: 'primary',
+                textDecoration: 'underline',
+              }}
+            />,
+          ]}
+        />
       </Grid>
     </VaultDetailsCardModal>
   )
