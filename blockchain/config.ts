@@ -76,9 +76,9 @@ const protoMain = {
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
-    getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
+    '0xEAE4061009f0b804aAfC76f3ae67567D0ABE9c27',
   ),
-  exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''),
+  exchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
   aaveLendingPool: '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5',
   etherscan: {
     url: 'https://etherscan.io',
@@ -161,6 +161,11 @@ const hardhat: NetworkConfig = {
   infuraUrl: `http://localhost:8545`,
   infuraUrlWS: `ws://localhost:8545`,
   cacheApi: 'http://localhost:3001/v1',
+  dssMultiplyProxyActions: contractDesc(
+    dssMultiplyProxyActions,
+    getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
+  ),
+  exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
 }
 
 export const networksById = keyBy([main, kovan, hardhat], 'id')

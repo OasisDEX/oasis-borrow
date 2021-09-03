@@ -472,6 +472,30 @@ describe('open multiply vault', () => {
       state().updateDeposit!(depositAmount)
       expect(state().totalSteps).to.deep.equal(3)
     })
+
+    it('should clear form values and go to editing stage', () => {
+      const depositAmount = new BigNumber('100')
+      const requiredCollRatio = new BigNumber('2')
+
+      const state = getStateUnpacker(
+        mockOpenMultiplyVault({
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: maxUint256,
+          ilk: 'WBTC-A',
+        }),
+      )
+
+      state().updateDeposit!(depositAmount)
+      state().updateRequiredCollRatio!(requiredCollRatio)
+      state().progress!()
+      expect(state().stage).to.deep.equal('openWaitingForConfirmation')
+
+      state().clear()
+      expect(state().stage).to.deep.equal('editing')
+      expect(state().depositAmount).to.be.undefined
+      expect(state().depositAmountUSD).to.be.undefined
+      expect(state().requiredCollRatio).to.be.undefined
+    })
   })
 
   describe('validation and errors', () => {

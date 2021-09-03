@@ -297,9 +297,10 @@ function AdjustPositionForm(props: ManageMultiplyVaultState) {
     return (
       <>
         <SliderInput {...props} />
-        <Button sx={{ py: 2 }} variant="actionOption" onClick={toggleSliderController!}>
+        {/* TO BE RESTORED */}
+        {/* <Button sx={{ py: 2 }} variant="actionOption" onClick={toggleSliderController!}>
           <Text pr={1}>Or enter an amount of ETH</Text>
-        </Button>
+        </Button> */}
       </>
     )
   }

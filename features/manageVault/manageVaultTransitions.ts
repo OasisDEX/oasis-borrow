@@ -3,8 +3,16 @@ import { TxHelpers } from 'components/AppContext'
 import { zero } from 'helpers/zero'
 import { Observable } from 'rxjs'
 
-import { ManageVaultChange, ManageVaultEditingStage, ManageVaultState } from './manageVault'
+import {
+  defaultMutableManageVaultState,
+  ManageVaultChange,
+  ManageVaultEditingStage,
+  ManageVaultState,
+} from './manageVault'
+import { defaultManageVaultCalculations } from './manageVaultCalculations'
+import { defaultManageVaultConditions } from './manageVaultConditions'
 import { manageVaultFormDefaults } from './manageVaultForm'
+import { depositAndGenerateDefaults, paybackAndWithdrawDefaults } from './manageVaultInput'
 import {
   manageVaultDepositAndGenerate,
   manageVaultWithdrawAndPayback,
@@ -50,6 +58,9 @@ export type ManageVaultTransitionChange =
     }
   | {
       kind: 'regressDaiAllowance'
+    }
+  | {
+      kind: 'clear'
     }
 
 export function applyManageVaultTransition(
@@ -230,6 +241,17 @@ export function applyManageVaultTransition(
     return {
       ...state,
       stage: 'multiplyTransitionSuccess',
+    }
+  }
+
+  if (change.kind === 'clear') {
+    return {
+      ...state,
+      ...defaultMutableManageVaultState,
+      ...defaultManageVaultCalculations,
+      ...defaultManageVaultConditions,
+      ...depositAndGenerateDefaults,
+      ...paybackAndWithdrawDefaults,
     }
   }
 

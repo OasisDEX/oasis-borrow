@@ -2,13 +2,12 @@ import { BigNumber } from 'bignumber.js'
 import {
   calculateParamsIncreaseMP,
   getMaxPossibleCollRatioOrMax,
+  LOAN_FEE,
   OAZO_FEE,
 } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
 
 import { OpenMultiplyVaultState } from './openMultiplyVault'
-
-const LOAN_FEE = new BigNumber(0.0009)
 
 export const MAX_COLL_RATIO = new BigNumber(5)
 
@@ -42,7 +41,7 @@ export interface OpenMultiplyVaultCalculations {
   // afterFreeCollateral: BigNumber
 }
 
-export const defaultOpenVaultStateCalculations: OpenMultiplyVaultCalculations = {
+export const defaultOpenMultiplyVaultStateCalculations: OpenMultiplyVaultCalculations = {
   afterLiquidationPrice: zero,
   afterBuyingPower: zero,
   afterBuyingPowerUSD: zero,
@@ -99,7 +98,12 @@ export function applyOpenMultiplyVaultCalculations(
     marketPrice === undefined ||
     marketPriceMaxSlippage === undefined
   ) {
-    return { ...state, ...defaultOpenVaultStateCalculations, maxDepositAmount, maxDepositAmountUSD }
+    return {
+      ...state,
+      ...defaultOpenMultiplyVaultStateCalculations,
+      maxDepositAmount,
+      maxDepositAmountUSD,
+    }
   }
 
   const oraclePrice = currentCollateralPrice
