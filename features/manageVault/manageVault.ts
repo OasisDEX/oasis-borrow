@@ -123,8 +123,11 @@ export type ManageVaultStage =
   | 'multiplyTransitionFailure'
   | 'multiplyTransitionSuccess'
 
+export type MainAction = 'depositGenerate' | 'withdrawPayback'
+
 export interface MutableManageVaultState {
   stage: ManageVaultStage
+  mainAction: MainAction
   originalEditingStage: ManageVaultEditingStage
   showDepositAndGenerateOption: boolean
   showPaybackAndWithdrawOption: boolean
@@ -156,6 +159,7 @@ interface ManageVaultFunctions {
   progress?: () => void
   regress?: () => void
   toggle?: (stage: ManageVaultEditingStage) => void
+  setMainAction?: (action: MainAction) => void
   toggleDepositAndGenerateOption?: () => void
   togglePaybackAndWithdrawOption?: () => void
   updateDeposit?: (depositAmount?: BigNumber) => void
@@ -291,6 +295,7 @@ function addTransitions(
         }),
       toggle: (stage) => change({ kind: 'toggleEditing', stage }),
       progress: () => change({ kind: 'progressEditing' }),
+      setMainAction: (mainAction: MainAction) => change({ kind: 'mainAction', mainAction }),
     }
   }
 
@@ -387,6 +392,7 @@ function addTransitions(
 
 export const defaultMutableManageVaultState: MutableManageVaultState = {
   stage: 'collateralEditing' as ManageVaultStage,
+  mainAction: 'depositGenerate',
   originalEditingStage: 'collateralEditing' as ManageVaultEditingStage,
   showDepositAndGenerateOption: false,
   showPaybackAndWithdrawOption: false,

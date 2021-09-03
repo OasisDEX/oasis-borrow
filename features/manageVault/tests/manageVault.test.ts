@@ -99,6 +99,11 @@ describe('manageVault', () => {
             },
           }),
         )
+
+        state().updateWithdraw!(withdrawAmount)
+        expect(state().withdrawAmount).to.be.undefined
+
+        state().setMainAction!('withdrawPayback')
         state().updateWithdraw!(withdrawAmount)
         expect(state().withdrawAmount).to.deep.equal(withdrawAmount)
 
@@ -126,6 +131,10 @@ describe('manageVault', () => {
         state().updatePayback!(paybackAmount)
         expect(state().paybackAmount!).to.be.undefined
         state().updateWithdraw!(withdrawAmount)
+        expect(state().withdrawAmount).to.be.undefined
+
+        state().setMainAction!('withdrawPayback')
+        state().updateWithdraw!(withdrawAmount)
         expect(state().withdrawAmount!).to.deep.equal(withdrawAmount)
         state().updatePayback!(paybackAmount)
         expect(state().paybackAmount!).to.be.undefined
@@ -149,6 +158,8 @@ describe('manageVault', () => {
 
         state().updatePaybackMax!()
         expect(state().paybackAmount!).to.be.undefined
+
+        state().setMainAction!('withdrawPayback')
         state().updateWithdraw!(withdrawAmount)
         expect(state().withdrawAmount!).to.deep.equal(withdrawAmount)
         state().updatePaybackMax!()
@@ -218,7 +229,9 @@ describe('manageVault', () => {
             },
           }),
         )
+
         state().toggle!('daiEditing')
+        state().setMainAction!('withdrawPayback')
         state().updatePayback!(paybackAmount)
         expect(state().paybackAmount).to.deep.equal(paybackAmount)
       })
@@ -238,6 +251,10 @@ describe('manageVault', () => {
         state().toggle!('daiEditing')
         state().updateWithdraw!(withdrawAmount)
         expect(state().withdrawAmount!).to.be.undefined
+        state().updatePayback!(paybackAmount)
+        expect(state().paybackAmount!).to.be.undefined
+
+        state().setMainAction!('withdrawPayback')
         state().updatePayback!(paybackAmount)
         expect(state().paybackAmount!).to.deep.equal(paybackAmount)
         state().updateWithdraw!(withdrawAmount)
@@ -353,6 +370,7 @@ describe('manageVault', () => {
         )
 
         state().toggle!('daiEditing')
+        state().setMainAction!('withdrawPayback')
         state().updatePayback!(paybackAmount)
         state().progress!()
         expect(state().stage).to.deep.equal('daiAllowanceWaitingForConfirmation')
@@ -382,6 +400,8 @@ describe('manageVault', () => {
         state().updateDeposit!(depositAmount)
         expect(state().totalSteps).to.deep.equal(3)
         state().updateDeposit!(undefined)
+
+        state().setMainAction!('withdrawPayback')
         state().updateWithdraw!(withdrawAmount)
         expect(state().totalSteps).to.deep.equal(2)
         state().togglePaybackAndWithdrawOption!()
@@ -394,7 +414,7 @@ describe('manageVault', () => {
         expect(state().totalSteps).to.deep.equal(3)
       })
 
-      it('shold decrease totalSteps if user skips collateral deposit and has enough dai allowance to payack', () => {
+      it('shold decrease totalSteps if user skips collateral deposit and has enough dai allowance to payback', () => {
         const daiAllowance = new BigNumber('1000')
 
         const paybackAmount = new BigNumber('500')
@@ -416,6 +436,7 @@ describe('manageVault', () => {
         state().updateDeposit!(depositAmount)
         expect(state().totalSteps).to.deep.equal(3)
         state().toggle!('daiEditing')
+        state().setMainAction!('withdrawPayback')
         state().updatePayback!(paybackAmount)
         expect(state().totalSteps).to.deep.equal(2)
       })
@@ -567,6 +588,7 @@ describe('manageVault', () => {
         _proxyAddress$.next()
         expect(state().proxyAddress).to.be.undefined
         state().toggle!('daiEditing')
+        state().setMainAction!('withdrawPayback')
         state().updatePayback!(paybackAmount)
         state().progress!()
         expect(state().stage).to.deep.equal('proxyWaitingForConfirmation')
@@ -734,6 +756,7 @@ describe('manageVault', () => {
 
         state().toggle!('daiEditing')
         expect(state().stage).to.deep.equal('daiEditing')
+        state().setMainAction!('withdrawPayback')
         state().updatePayback!(paybackAmount)
         state().progress!()
 
