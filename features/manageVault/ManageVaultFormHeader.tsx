@@ -22,9 +22,15 @@ function ManageVaultEditingController({
   const isDaiEditing = stage === 'daiEditing'
   const isCollateralEditing = stage === 'collateralEditing'
 
-  const collateralVariant = `vaultEditingController${isCollateralEditing ? '' : 'Inactive'}`
-  const daiVariant = `vaultEditingController${isDaiEditing ? '' : 'Inactive'}`
-  const multiplyVariant = `vaultEditingController${isMultiplyTransitionStage ? '' : 'Inactive'}`
+  const collateralVariant = isCollateralEditing
+    ? 'vaultEditingController'
+    : 'vaultEditingControllerInactive'
+
+  const daiVariant = isDaiEditing ? 'vaultEditingController' : 'vaultEditingControllerInactive'
+
+  const multiplyVariant = isMultiplyTransitionStage
+    ? 'vaultEditingController'
+    : 'vaultEditingControllerInactive'
 
   const beanTokenName = isDaiEditing ? 'DAI' : token
 
@@ -56,16 +62,16 @@ function ManageVaultEditingController({
           <Flex>
             <Button
               onClick={() => setMainAction!('depositGenerate')}
-              variant={`bean${mainAction === 'depositGenerate' ? 'Active' : ''}`}
+              variant={mainAction === 'depositGenerate' ? 'beanActive' : 'bean'}
             >
-              {t(`vault-actions.${isDaiEditing ? 'generate' : 'deposit'}`)} {beanTokenName}
+              {t(isDaiEditing ? 'vault-actions.generate' : 'vault-actions.deposit')} {beanTokenName}
             </Button>
             <Button
               onClick={() => setMainAction!('withdrawPayback')}
-              variant={`bean${mainAction === 'withdrawPayback' ? 'Active' : ''}`}
+              variant={mainAction === 'withdrawPayback' ? 'beanActive' : 'bean'}
               sx={{ ml: 3 }}
             >
-              {t(`vault-actions.${isDaiEditing ? 'payback' : 'withdraw'}`)} {beanTokenName}
+              {t(isDaiEditing ? 'vault-actions.payback' : 'vault-actions.withdraw')} {beanTokenName}
             </Button>
           </Flex>
         </WithVaultFormStepIndicator>

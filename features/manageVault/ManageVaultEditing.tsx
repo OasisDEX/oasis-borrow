@@ -168,7 +168,7 @@ export function ManageVaultEditing(props: ManageVaultState) {
           {showDepositAndGenerateOptionButton && (
             <Box>
               <Button
-                variant={`actionOption${showDepositAndGenerateOption ? 'Opened' : ''}`}
+                variant={showDepositAndGenerateOption ? 'actionOptionOpened' : 'actionOption'}
                 mt={3}
                 onClick={toggleDepositAndGenerateOption!}
               >
@@ -203,7 +203,7 @@ export function ManageVaultEditing(props: ManageVaultState) {
           {showPaybackAndWithdrawOptionButton && (
             <Box>
               <Button
-                variant={`actionOption${showPaybackAndWithdrawOption ? 'Opened' : ''}`}
+                variant={showPaybackAndWithdrawOption ? 'actionOptionOpened' : 'actionOption'}
                 mt={3}
                 onClick={togglePaybackAndWithdrawOption!}
               >
