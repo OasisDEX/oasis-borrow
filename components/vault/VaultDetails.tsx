@@ -206,22 +206,23 @@ function VaultDetailsCardCurrentPriceModal({
         <Card variant="vaultDetailsCardModal">
           <Heading variant="header3">{nextPriceWithChange}</Heading>
         </Card>
-
-        <Trans
-          i18nKey="manage-multiply-vault.card.more-info-oracles"
-          components={[
-            <AppLink
-              href="https://kb.oasis.app/help/the-oracle-security-module"
-              withAccountPrefix={false}
-              target="_blank"
-              sx={{
-                display: 'inline-block',
-                color: 'primary',
-                textDecoration: 'underline',
-              }}
-            />,
-          ]}
-        />
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          <Trans
+            i18nKey="manage-multiply-vault.card.more-info-oracles"
+            components={[
+              <AppLink
+                href="https://kb.oasis.app/help/the-oracle-security-module"
+                withAccountPrefix={false}
+                target="_blank"
+                sx={{
+                  display: 'inline-block',
+                  color: 'primary',
+                  textDecoration: 'underline',
+                }}
+              />,
+            ]}
+          />
+        </Text>
       </Grid>
     </VaultDetailsCardModal>
   )
