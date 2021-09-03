@@ -76,7 +76,7 @@ function manageMultiplyVaultButtonText(state: ManageMultiplyVaultState): string 
       return t('retry')
 
     case 'manageSuccess':
-      return t('back-to-editing')
+      return t('ok')
 
     case 'manageWaitingForApproval':
     case 'manageInProgress':

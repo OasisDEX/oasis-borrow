@@ -109,7 +109,7 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
                 ? t('vault-form.header.daiAllowance')
                 : isManageStage
                 ? stage === 'manageInProgress'
-                  ? t('vault-form.header.confirm-in-progress')
+                  ? t('vault-form.header.modified')
                   : t('vault-form.header.confirm-manage')
                 : stage === 'multiplyTransitionEditing'
                 ? 'Get up to [x] ETH exposure from your Vault'
@@ -124,8 +124,8 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
               : isDaiAllowanceStage
               ? t('vault-form.subtext.daiAllowance')
               : stage === 'manageInProgress'
-              ? t('vault-form.subtext.confirm-in-progress')
-              : t('vault-form.subtext.confirm')}
+              ? t('vault-form.subtext.modified')
+              : t('vault-form.subtext.review-manage')}
           </Text>
         </Box>
       )}

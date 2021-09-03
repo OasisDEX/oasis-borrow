@@ -7,8 +7,6 @@ docker-compose down
 docker rm -f postgres-oasis-borrow || true
 docker rm -f multiply-proxy-actions || true
 docker rm -f oasis-borrow || true
-
-
 docker-compose pull
 (sleep 10 && cd .. && DATABASE_URL="postgresql://user:pass@localhost:5432/db?schema=public" yarn migrate)&
 

@@ -24,6 +24,7 @@
   "approve-allowance": "Approve Allowance",
   "approving-allowance": "Approving Allowance",
   "back": "Back",
+  "ok": "Ok",
   "back-to-editing": "Back to editing",
   "balance": "Balance",
   "balance-insufficient": "Not enough Dai in your wallet",
@@ -251,6 +252,38 @@
       "ledger-enable-contract-data": "Please enable Contract data on the Ledgers Ethereum app Settings",
       "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, payback your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
       "exchange-error": "Could not fetch exchange prices for doing this multiply action."
+    },
+    "card": {
+      "collateralization-ratio-calculated": "Your collateralization ratio is calculated by: value of your collateral / Dai debt.",
+      "collateralization-ratio-header2": "Current Collateralization ratio:",
+      "collateralization-ratio-description": "The price used to calculate the value of your collateral is the price obtained from the Maker oracles. Your collateralization ratio needs to be above the minimum required at all times to not get liquidated.",
+      "collateralization-ratio-next-price": "Your collateralization ratio on the next price will be:",
+      "collateral-locked-amount": "The total amount of collateral locked in your vault is:",
+      "collateral-locked-USD": "The total value in dollars of the collateral in your vault is:",
+      "collateral-locked-oracles": "We use the current price from the Maker oracles to calculate this value. The current market price of your collateral may differ from this price."
+    }
+  },
+  "manage-multiply-vault": {
+    "tooltip": {
+      "vaultId": "The Vault ID is a unique reference for your Maker Vault in Oasis.app.",
+      "stabilityFee": "The Maker Protocol collects a Stability Fee on Dai that is generated from Maker Vaults. It is a variable-rate fee that changes when Maker’s governing body votes on proposals put forth by Risk Teams.",
+      "liquidationFee": "If your vault is liquidated, a liquidation penalty is added to your vault’s total outstanding debt in Dai, which results in more collateral being sold to cover the outstanding debt. This is done to incentivize vaults owners to avoid liquidation.\nThe size of the liquidation penalty is determined by the Liquidation Fee which is calculated based on the debt in the vault.",
+      "min-collateral": "This is also called the Liquidation Ratio. If the Vault reaches below the minimum collateralization level it is considered undercollateralized and is subject to liquidation. Your collateral will then be partially auctioned.",
+      "dust-limit": "The Dust Limit specifies the minimum amount of DAI that can be minted for this type of Vault. This value is also called the \"Debt Floor\"."
+    },
+    "card": {
+      "liquidation-price-description": "The Liquidation Price specifies the collateral price where your vault is subject to liquidation. If you think your vault is too close to liquidation price you can change your multiply vault to have a higher collateralization ratio, you can add more collateral on your own, or you can pay back some of your Dai debt.",
+      "liquidation-price-current": "Your current liquidation price is:",
+      "liquidation-percentage-below": "That is {{percentageBelow}} below the current price",
+      "buying-power": "Buying power",
+      "buying-power-description": "The Buying Power specifies the maximum of Dai you can buy more collateral with, based on your position. It is using Multiply and going from the current collateralization ratio to the minimum collateralization ratio.",
+      "current-price":"Current Price",
+      "current-price-description": "This is the current price of your vault collateral supplied by the Maker price oracles. There is a one hour delay before the oracle price is made current in the Maker Protocol.",
+      "next-price": "Next Price",
+      "next-price-description": "Here you can see the next price that will go into effect in the Maker Protocol. Compare this with the Liquidation Price to see whether your vault will be liquidated on the next price update.\n{{nextPrice}}",
+      "more-info-oracles": "More information on Maker oracles can be found <0>here</0>",
+      "net-value": "Net Value",
+      "net-value-description": "The Net Value is calculated as the current value of the collateral in your vault minus the current debt.\nNote: This will not be exactly equal to the amount you will receive if you close your vault to Dai. This is due to fees applied when swapping collateral to Dai and because the Net Value is calculated using the Maker oracle price which is one hour delayed compared to the actual market price for the collateral."
     }
   },
   "max": "Max",
@@ -504,17 +537,21 @@
       "daiAllowance": "Set DAI allowance",
       "confirm": "Confirm vault creation",
       "confirm-in-progress": "Vault being created",
-      "confirm-manage": "Confirm vault changes"
+      "modified": "Vault is being Modified",
+      "confirm-manage": "Confirm vault changes",
+      "review-manage": "Review vault changes"
     },
     "subtext": {
       "collateral": "Deposit or withdraw from your Vault. Save gas by combining transactions.",
       "dai": "Generate DAI from the collateral in your vault, or payback DAI. Save gas by combining transactions.",
       "edit": "Simulate your vault by configuring the amount of collateral to deposit, and DAI to generate.",
-      "proxy": "With your smart proxy we can perform multiple actions in one transaction for your Vault. This proxy only needs to be set up once.",
+      "proxy": "With your smart proxy multiple actions can be performed in one transaction for your Vault. This proxy only needs to be set up once.",
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "daiAllowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
-      "confirm": "Review and verify details of your vault.",
-      "confirm-in-progress": "Your Vault is currently being. Transaction can take up to 5 minutes"
+      "confirm": "This will refresh your page. It does not require a transaction.",
+      "review-manage": "Here you can review the details of the changes to your vault.",
+      "confirm-in-progress": "Your Vault is currently being created.",
+      "modified":"Your Vault is currently being updated. Please wait."
     }
   },
   "creating-your-vault": "Creating your {{token}} Vault!",

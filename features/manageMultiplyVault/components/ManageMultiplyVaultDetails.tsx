@@ -3,10 +3,11 @@ import {
   AfterPillProps,
   getAfterPillColors,
   getCollRatioColor,
+  VaultDetailsBuyingPowerModal,
   VaultDetailsCard,
   VaultDetailsCardCurrentPrice,
   VaultDetailsCardLiquidationPrice,
-  VaultDetailsCardMockedModal,
+  VaultDetailsNetValueModal,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -127,7 +128,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
           value={`$${formatAmount(buyingPowerUSD, 'USD')}`}
           valueBottom={`${formatAmount(buyingPower, token)} ${token}`}
           valueAfter={showAfterPill && `$${formatAmount(afterBuyingPowerUSD, 'USD')}`}
-          openModal={() => openModal(VaultDetailsCardMockedModal)}
+          openModal={() => openModal(VaultDetailsBuyingPowerModal)}
           afterPillColors={afterPillColors}
         />
 
@@ -138,7 +139,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
           value={`$${formatAmount(netValueUSD, 'USD')}`}
           valueBottom={`Unrealised P&L 0%`}
           valueAfter={showAfterPill && `$${formatAmount(afterNetValueUSD, 'USD')}`}
-          openModal={() => openModal(VaultDetailsCardMockedModal)}
+          openModal={() => openModal(VaultDetailsNetValueModal)}
           afterPillColors={afterPillColors}
         />
       </Grid>
