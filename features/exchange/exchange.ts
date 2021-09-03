@@ -1,8 +1,11 @@
+import { ContractDesc } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
+import { getToken } from 'blockchain/tokensMetadata'
 import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, distinctUntilChanged, map, retry, switchMap, tap } from 'rxjs/operators'
+import { Dictionary } from 'ts-essentials'
 
 import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 
@@ -36,22 +39,42 @@ interface Tx {
 
 export type ExchangeAction = 'BUY_COLLATERAL' | 'SELL_COLLATERAL'
 
+type TokenMetadata = {
+  address: string
+  decimals: number
+  name: string
+  symbol: string
+}
+
+function getTokenMetaData(symbol: string, tokens: Dictionary<ContractDesc, string>): TokenMetadata {
+  const details = getToken(symbol)
+  return {
+    address: tokens[symbol].address,
+    decimals: details.precision,
+    symbol,
+    name: details.name,
+  }
+}
+
 function getQuote$(
-  daiAddress: string,
-  collateralAddress: string,
+  dai: TokenMetadata,
+  collateral: TokenMetadata,
   account: string,
   amount: BigNumber, // This is always the receiveAtLeast amount of tokens we want to exchange from
   slippage: BigNumber,
   action: ExchangeAction,
 ) {
-  const fromTokenAddress = action === 'BUY_COLLATERAL' ? daiAddress : collateralAddress
-  const toTokenAddress = action === 'BUY_COLLATERAL' ? collateralAddress : daiAddress
+  const fromTokenAddress = action === 'BUY_COLLATERAL' ? dai.address : collateral.address
+  const toTokenAddress = action === 'BUY_COLLATERAL' ? collateral.address : dai.address
 
   //TODO: set proper precision depending on token
   const searchParams = new URLSearchParams({
     fromTokenAddress,
     toTokenAddress,
-    amount: amountToWei(amount).toFixed(0),
+    amount: amountToWei(
+      amount,
+      action === 'BUY_COLLATERAL' ? dai.decimals : collateral.decimals,
+    ).toFixed(0),
     fromAddress: account,
     slippage: slippage.times(100).toString(),
     disableEstimate: 'true',
@@ -63,22 +86,36 @@ function getQuote$(
       if (response.status !== 200) throw new Error(response.responseText)
     }),
     map((response): Response => response.response),
-    map(({ fromToken, toToken, toTokenAmount, fromTokenAmount, tx }) => ({
-      status: 'SUCCESS' as const,
-      fromToken,
-      toToken,
-      collateralAmount: amountFromWei(
-        action === 'BUY_COLLATERAL' ? new BigNumber(toTokenAmount) : new BigNumber(fromTokenAmount),
-      ),
-      daiAmount: amountFromWei(
-        action === 'BUY_COLLATERAL' ? new BigNumber(fromTokenAmount) : new BigNumber(toTokenAmount),
-      ),
-      tokenPrice:
-        action === 'BUY_COLLATERAL'
-          ? new BigNumber(fromTokenAmount).div(new BigNumber(toTokenAmount))
-          : new BigNumber(toTokenAmount).div(new BigNumber(fromTokenAmount)),
-      tx,
-    })),
+    map(({ fromToken, toToken, toTokenAmount, fromTokenAmount, tx }) => {
+      const normalizedFromTokenAmount = amountFromWei(
+        new BigNumber(fromTokenAmount),
+        fromToken.decimals,
+      )
+      const normalizedToTokenAmount = amountFromWei(new BigNumber(toTokenAmount), toToken.decimals)
+
+      return {
+        status: 'SUCCESS' as const,
+        fromToken,
+        toToken,
+        collateralAmount: amountFromWei(
+          action === 'BUY_COLLATERAL'
+            ? new BigNumber(toTokenAmount)
+            : new BigNumber(fromTokenAmount),
+          action === 'BUY_COLLATERAL' ? toToken.decimals : fromToken.decimals,
+        ),
+        daiAmount: amountFromWei(
+          action === 'BUY_COLLATERAL'
+            ? new BigNumber(fromTokenAmount)
+            : new BigNumber(toTokenAmount),
+          action === 'BUY_COLLATERAL' ? fromToken.decimals : toToken.decimals,
+        ),
+        tokenPrice:
+          action === 'BUY_COLLATERAL'
+            ? normalizedFromTokenAmount.div(normalizedToTokenAmount)
+            : normalizedToTokenAmount.div(normalizedFromTokenAmount),
+        tx,
+      }
+    }),
     retry(3),
     catchError(() => of({ status: 'ERROR' as const })),
   )
@@ -96,10 +133,10 @@ export function createExchangeQuote$(
   return context$.pipe(
     switchMap((context) => {
       const { tokens, exchange } = context
-      const daiAddress = tokens['DAI'].address
-      const collateralAddress = tokens[token].address
+      const dai = getTokenMetaData('DAI', tokens)
+      const collateral = getTokenMetaData(token, tokens)
 
-      return getQuote$(daiAddress, collateralAddress, exchange.address, amount, slippage, action)
+      return getQuote$(dai, collateral, exchange.address, amount, slippage, action)
     }),
     distinctUntilChanged((s1, s2) => {
       return JSON.stringify(s1) === JSON.stringify(s2)
