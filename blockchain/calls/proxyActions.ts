@@ -306,12 +306,14 @@ function getOpenMultiplyCallData(data: MultiplyData, context: ContextConnected) 
     exchange,
     aaveLendingPool,
   } = context
+  const fromTokenAmount = amountToWei(data.requiredDebt, 'DAI')
+
   console.log(`
     Exchange Data
 
     fromTokenAddress: ${tokens['DAI'].address},
     toTokenAddress: ${tokens[data.token].address},
-    fromTokenAmount: ${amountToWei(data.requiredDebt, 'DAI').toFixed(0)},
+    fromTokenAmount: ${fromTokenAmount.toFixed(0)},
     toTokenAmount: ${amountToWei(data.borrowedCollateral, data.token).toFixed(0)},
     minToTokenAmount: ${amountToWei(data.borrowedCollateral, data.token)
       .div(one.minus(data.slippage))
@@ -351,7 +353,7 @@ function getOpenMultiplyCallData(data: MultiplyData, context: ContextConnected) 
     {
       fromTokenAddress: tokens['DAI'].address,
       toTokenAddress: tokens[data.token].address,
-      fromTokenAmount: amountToWei(data.requiredDebt.times(one.minus(OAZO_FEE)), 'DAI').toFixed(0),
+      fromTokenAmount: fromTokenAmount.toFixed(0),
       toTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
       minToTokenAmount: amountToWei(data.borrowedCollateral, data.token)
         .div(one.minus(data.slippage))

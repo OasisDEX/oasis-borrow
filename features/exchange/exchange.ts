@@ -59,10 +59,8 @@ function getQuote$(
   })
 
   console.log(`
-    1inch....
-
+    1inch call....
     amount ${amount.toFixed()}
-    fromTokenAddres: ${fromTokenAddress}
   `)
 
   return ajax(`${API_ENDPOINT}?${searchParams.toString()}`).pipe(
@@ -86,7 +84,6 @@ function getQuote$(
           : new BigNumber(toTokenAmount).div(new BigNumber(fromTokenAmount)),
       tx,
     })),
-    tap(({ tx }) => console.log('tx data 1inch', tx)),
     retry(3),
     catchError(() => of({ status: 'ERROR' as const })),
   )

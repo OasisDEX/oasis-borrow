@@ -367,6 +367,9 @@ export function createOpenMultiplyVault$(
                       map(validateErrors),
                       map(validateWarnings),
                       map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
+                      tap((state) =>
+                        console.log('tap state', state.afterOutstandingDebt.toFixed()),
+                      ),
                       tap((state) => stateSubject$.next(state)),
                     )
                   }),

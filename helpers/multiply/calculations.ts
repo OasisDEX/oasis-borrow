@@ -29,11 +29,6 @@ export function calculateParamsIncreaseMP(
     )
   const collateral = debt.times(one.minus(OF)).div(marketPriceSlippage)
 
-  console.log(`
-      calculateIncreaseMP
-
-      debt ${debt}
-  `)
   return [debt, collateral]
 }
 
