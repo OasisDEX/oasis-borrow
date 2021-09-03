@@ -1219,7 +1219,6 @@ const oasisBaseTheme = {
     },
     navHeader: {
       variant: 'links.nav',
-      fontSize: '14px',
       color: 'lavender',
       '&:hover, &:focus-visible': {
         color: 'primary',
