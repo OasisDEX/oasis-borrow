@@ -1,4 +1,5 @@
 // @ts-ignore
+import { Global } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { LanguageSelect } from 'components/LanguageSelect'
@@ -10,10 +11,9 @@ import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { TRANSITIONS } from 'theme'
 import { Box, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
-import { Global } from '@emotion/core'
 
 import { useAppContext } from './AppContextProvider'
 import { SelectComponents } from 'react-select/src/components'
@@ -299,13 +299,17 @@ function MobileMenu() {
 
   return (
     <>
-      { isOpen && <Global styles={() => ({
-        'body': {
-          overflow: 'hidden',
-          height: '100vh',
-          position: 'fixed',
-        },
-      })} />}
+      {isOpen && (
+        <Global
+          styles={() => ({
+            body: {
+              overflow: 'hidden',
+              height: '100vh',
+              position: 'fixed',
+            },
+          })}
+        />
+      )}
       <Box
         sx={{
           backgroundColor: 'background',
