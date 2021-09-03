@@ -6,6 +6,7 @@ import { ContextConnected } from 'blockchain/network'
 import { amountToWad, amountToWei } from 'blockchain/utils'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { CloseVaultTo } from 'features/manageMultiplyVault/manageMultiplyVault'
+import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
@@ -350,7 +351,7 @@ function getOpenMultiplyCallData(data: MultiplyData, context: ContextConnected) 
     {
       fromTokenAddress: tokens['DAI'].address,
       toTokenAddress: tokens[data.token].address,
-      fromTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
+      fromTokenAmount: amountToWei(data.requiredDebt.times(one.minus(OAZO_FEE)), 'DAI').toFixed(0),
       toTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
       minToTokenAmount: amountToWei(data.borrowedCollateral, data.token)
         .div(one.minus(data.slippage))
