@@ -86,8 +86,14 @@ function OpenVaultForm(props: OpenVaultState) {
 }
 
 export function OpenVaultContainer(props: OpenVaultState) {
-  const { ilk } = props
+  const { ilk, clear } = props
   const { t } = useTranslation()
+
+  useEffect(() => {
+    return () => {
+      clear()
+    }
+  }, [])
 
   return (
     <>

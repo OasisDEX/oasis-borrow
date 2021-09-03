@@ -105,7 +105,7 @@ export interface OpenMultiplyVaultConditions {
   isExchangeLoading: boolean
 }
 
-export const defaultOpenVaultConditions: OpenMultiplyVaultConditions = {
+export const defaultOpenMultiplyVaultConditions: OpenMultiplyVaultConditions = {
   ...defaultOpenVaultStageCategories,
   inputAmountsEmpty: true,
   canAdjustRisk: false,

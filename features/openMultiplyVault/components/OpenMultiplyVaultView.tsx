@@ -86,8 +86,14 @@ function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
 }
 
 export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultState) {
-  const { ilk } = props
+  const { ilk, clear } = props
   const { t } = useTranslation()
+
+  useEffect(() => {
+    return () => {
+      clear()
+    }
+  }, [])
 
   return (
     <>
