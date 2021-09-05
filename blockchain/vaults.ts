@@ -98,6 +98,7 @@ export interface Vault {
   collateralizationRatio: BigNumber
   collateralizationRatioAtNextPrice: BigNumber
   liquidationPrice: BigNumber
+  liquidationRatio: BigNumber
   daiYieldFromLockedCollateral: BigNumber
 
   atRiskLevelWarning: boolean
@@ -261,6 +262,7 @@ export function createVault$(
               collateralizationRatio,
               collateralizationRatioAtNextPrice,
               liquidationPrice,
+              liquidationRatio,
               daiYieldFromLockedCollateral,
 
               atRiskLevelWarning,

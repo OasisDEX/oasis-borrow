@@ -1,8 +1,9 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
+import { formatAddress, formatCryptoBalance, formatFiatBalance } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { zero } from 'helpers/zero'
 import moment from 'moment'
 import { TFunction, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
@@ -36,6 +37,78 @@ function getHistoryEventTranslation(t: TFunction, event: VaultHistoryEvent) {
   })
 }
 
+function getHistoryEventDetails(event: VaultHistoryEvent) {
+  const { t } = useTranslation()
+  return (
+    <Grid columns={2} sx={{ py: 1, px: 0, alignItems: 'flex-start', mb: 2 }} gap={2}>
+      <Flex>
+        <Text
+          sx={{ width: '25%', textAlign: 'right', paddingRight: '10px', color: 'text.subtitle' }}
+        >
+          {t('amount')}
+        </Text>
+        {'collateralAmount' in event && formatCryptoBalance(event.collateralAmount)} {event.token}
+      </Flex>
+      <Flex>
+        <Text
+          sx={{ width: '42%', textAlign: 'right', paddingRight: '10px', color: 'text.subtitle' }}
+        >
+          {t('outstanding-debt')}
+        </Text>
+        {'outstandingDebt' in event && formatCryptoBalance(event.outstandingDebt)} DAI
+      </Flex>
+      <Flex>
+        <Text
+          sx={{ width: '25%', textAlign: 'right', paddingRight: '10px', color: 'text.subtitle' }}
+        >
+          {t('price')}
+        </Text>
+        {'oraclePrice' in event && '$' + formatFiatBalance(event.oraclePrice)}
+      </Flex>
+      <Flex>
+        <Text
+          sx={{ width: '42%', textAlign: 'right', paddingRight: '10px', color: 'text.subtitle' }}
+        >
+          {t('net-value')}
+        </Text>
+        {'netValueUSD' in event && '$' + formatFiatBalance(event.netValueUSD)}
+      </Flex>
+      <Flex>
+        <Text
+          sx={{ width: '25%', textAlign: 'right', paddingRight: '10px', color: 'text.subtitle' }}
+        >
+          {t('system.collateral')}
+        </Text>
+        {'collateralTotal' in event && formatCryptoBalance(event.collateralTotal)} {event.token}
+      </Flex>
+      <Flex>
+        <Text
+          sx={{ width: '42%', textAlign: 'right', paddingRight: '10px', color: 'text.subtitle' }}
+        >
+          {t('system.liquidation-price')}
+        </Text>
+        {'liquidationPrice' in event && '$' + formatFiatBalance(event.liquidationPrice)}
+      </Flex>
+      <Flex>
+        <Text
+          sx={{ width: '25%', textAlign: 'right', paddingRight: '10px', color: 'text.subtitle' }}
+        >
+          {t('multiple')}
+        </Text>
+        {'multiple' in event && event.multiple.gt(zero) ? event.multiple.toFixed(2) + 'x' : '-'}
+      </Flex>
+      <Flex>
+        <Text
+          sx={{ width: '42%', textAlign: 'right', paddingRight: '10px', color: 'text.subtitle' }}
+        >
+          {t('fees')}
+        </Text>
+        {'fees' in event && event.fees.gt(zero) ? '$' + formatFiatBalance(event.fees) : '-'}
+      </Flex>
+    </Grid>
+  )
+}
+
 function VaultHistoryItem({
   item,
   etherscan,
@@ -47,7 +120,7 @@ function VaultHistoryItem({
   const [opened, setOpened] = useState(false)
   const translation = getHistoryEventTranslation(t, item)
   const date = moment(item.timestamp)
-
+  const historyItemDetails = getHistoryEventDetails(item)
   return (
     <Card
       sx={{
@@ -55,6 +128,7 @@ function VaultHistoryItem({
         border: 'lightMuted',
         boxShadow: 'vaultHistoryItem',
         fontSize: 2,
+        display: item.isHidden ? 'none' : 'grid',
       }}
     >
       <Box sx={{ p: 2, cursor: 'pointer' }} onClick={() => setOpened(!opened)}>
@@ -96,6 +170,7 @@ function VaultHistoryItem({
       </Box>
       {opened && (
         <Box p={2}>
+          {item.isMultiply && historyItemDetails}
           <AppLink
             variant="links.navFooter"
             sx={{ fontSize: 2 }}

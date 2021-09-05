@@ -62,6 +62,7 @@ import {
   saveAcceptanceFromApi$,
 } from 'features/termsOfService/termsAcceptanceApi'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
+import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiplyHistory'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
@@ -251,6 +252,9 @@ export function setupAppContext() {
   )
 
   const vaultHistory$ = memoize(curry(createVaultHistory$)(context$, onEveryBlock$, vault$))
+  const vaultMultiplyHistory$ = memoize(
+    curry(createVaultMultiplyHistory$)(context$, onEveryBlock$, vault$),
+  )
 
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 
@@ -400,6 +404,7 @@ export function setupAppContext() {
     accountBalances$,
     accountData$,
     vaultHistory$,
+    vaultMultiplyHistory$,
     collateralPrices$,
     termsAcceptance$,
     reclaimCollateral$,

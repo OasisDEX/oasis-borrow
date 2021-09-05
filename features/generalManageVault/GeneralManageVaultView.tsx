@@ -1,19 +1,23 @@
 import BigNumber from 'bignumber.js'
+import { amountFromWei } from 'blockchain/utils'
 import { useAppContext } from 'components/AppContextProvider'
 import { ManageMultiplyVaultContainer } from 'features/manageMultiplyVault/components/ManageMultiplyVaultView'
 import { ManageVaultContainer } from 'features/manageVault/ManageVaultView'
+import { MultiplyEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservableWithError } from 'helpers/observableHook'
+import { zero } from 'helpers/zero'
 import React from 'react'
 import { Container } from 'theme-ui'
 
 import { VaultType } from './generalManageVault'
 
 export function GeneralManageVaultView({ id }: { id: BigNumber }) {
-  const { generalManageVault$, vaultHistory$ } = useAppContext()
+  const { generalManageVault$, vaultHistory$, vaultMultiplyHistory$ } = useAppContext()
   const manageVaultWithId$ = generalManageVault$(id)
   const manageVaultWithError = useObservableWithError(manageVaultWithId$)
   const vaultHistoryWithError = useObservableWithError(vaultHistory$(id))
+  const vaultMultiplyHistoryWithError = useObservableWithError(vaultMultiplyHistory$(id))
 
   // TO DO bring back analytics
   // useEffect(() => {
@@ -24,13 +28,95 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
   //   }
   // }, [])
 
+  function prepareMultiplyHistory(vaultHistory: any[], vaultMultiplyHistory: any[]) {
+    let outstandingDebt = new BigNumber(0)
+    let collateral = new BigNumber(0)
+    for (const mpEvent of vaultMultiplyHistory) {
+      let currentRate = zero
+      const flFee = (mpEvent as MultiplyEvent).flDue.minus(mpEvent.flBorrowed)
+      mpEvent.fees = amountFromWei(flFee.plus(mpEvent.oazoFee), 'DAI')
+
+      for (const event of vaultHistory.filter(
+        (e: any) => e.blockId === mpEvent.blockId && e.txId === mpEvent.txId,
+      )) {
+        if (mpEvent.kind === 'openMultiplyVault' || mpEvent.kind === 'increaseMultiple') {
+          if (event.kind === 'OPEN') {
+            event.isHidden = true
+          }
+          if (event.kind === 'DEPOSIT') {
+            currentRate = event.rate
+            collateral = collateral.plus(event.collateralAmount)
+            mpEvent.collateralAmount = event.collateralAmount
+            mpEvent.collateralTotal = collateral
+            mpEvent.oraclePrice = event.oraclePrice
+            event.isHidden = true
+          }
+          if (event.kind === 'GENERATE') {
+            currentRate = event.rate
+            const debt = event.daiAmount.div(event.rate)
+            outstandingDebt = outstandingDebt.plus(debt)
+            mpEvent.daiAmount = event.daiAmount.div(event.rate)
+            mpEvent.oraclePrice = event.oraclePrice
+            event.isHidden = true
+          }
+        }
+
+        if (
+          mpEvent.kind === 'decreaseMultiple' ||
+          mpEvent.kind === 'closeVaultExitDai' ||
+          mpEvent.kind === 'closeVaultExitCollateral'
+        ) {
+          if (event.kind === 'WITHDRAW') {
+            currentRate = event.rate
+            collateral = collateral.plus(event.collateralAmount)
+            mpEvent.collateralAmount = event.collateralAmount
+            mpEvent.collateralTotal = collateral
+            mpEvent.oraclePrice = event.oraclePrice
+            event.isHidden = true
+          }
+          if (event.kind === 'PAYBACK') {
+            currentRate = event.rate
+            const debt = event.daiAmount.div(event.rate)
+            outstandingDebt = outstandingDebt.plus(debt)
+            mpEvent.daiAmount = event.daiAmount
+            mpEvent.oraclePrice = event.oraclePrice
+            event.isHidden = true
+          }
+        }
+      }
+      const multiple = collateral
+        .times(mpEvent.oraclePrice)
+        .div(collateral.times(mpEvent.oraclePrice).minus(outstandingDebt.times(currentRate)))
+
+      const liquidationPrice = collateral.eq(zero)
+        ? zero
+        : outstandingDebt.times(currentRate).times(mpEvent.liquidationRatio).div(collateral)
+      const netValueUSD = collateral.times(mpEvent.oraclePrice).minus(outstandingDebt)
+
+      mpEvent.collateral = collateral
+      mpEvent.outstandingDebt = outstandingDebt
+      mpEvent.multiple = multiple
+      mpEvent.liquidationPrice = liquidationPrice
+      mpEvent.netValueUSD = netValueUSD
+    }
+    return [...vaultHistory, ...[...vaultMultiplyHistory].reverse()]
+  }
+
   return (
     <WithLoadingIndicator
-      value={[manageVaultWithError.value, vaultHistoryWithError.value]}
-      error={[manageVaultWithError.error, vaultHistoryWithError.error]}
+      value={[
+        manageVaultWithError.value,
+        vaultHistoryWithError.value,
+        vaultMultiplyHistoryWithError.value,
+      ]}
+      error={[
+        manageVaultWithError.error,
+        vaultHistoryWithError.error,
+        vaultMultiplyHistoryWithError.error,
+      ]}
       customLoader={<VaultContainerSpinner />}
     >
-      {([generalManageVault, vaultHistory]) => {
+      {([generalManageVault, vaultHistory, vaultMultiplyHistory]) => {
         switch (generalManageVault.type) {
           case VaultType.Borrow:
             return (
@@ -42,10 +128,11 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
               </Container>
             )
           case VaultType.Multiply:
+            const multiplyHistory = prepareMultiplyHistory(vaultHistory, vaultMultiplyHistory)
             return (
               <Container variant="vaultPageContainer">
                 <ManageMultiplyVaultContainer
-                  vaultHistory={vaultHistory}
+                  vaultHistory={multiplyHistory}
                   manageVault={generalManageVault.state}
                 />
               </Container>
