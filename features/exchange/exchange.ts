@@ -56,13 +56,7 @@ function getQuote$(
     slippage: slippage.times(100).toString(),
     disableEstimate: 'true',
     allowPartialFill: 'false',
-    protocols: 'UNISWAP_V3',
   })
-
-  console.log(`
-    1inch call....
-    amount ${amount.toFixed()}
-  `)
 
   return ajax(`${API_ENDPOINT}?${searchParams.toString()}`).pipe(
     tap((response) => {

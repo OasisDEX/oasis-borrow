@@ -129,8 +129,6 @@ export function applyOpenMultiplyVaultCalculations(
         )
       : [zero, zero]
 
-  console.log('outside calcs', afterOutstandingDebt.toFixed())
-
   const totalExposureUSD = afterOutstandingDebt.gt(0)
     ? afterOutstandingDebt.times(requiredCollRatioSafe)
     : zero

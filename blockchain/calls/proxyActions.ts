@@ -306,17 +306,16 @@ function getOpenMultiplyCallData(data: MultiplyData, context: ContextConnected) 
     exchange,
     aaveLendingPool,
   } = context
-  const fromTokenAmount = amountToWei(data.requiredDebt, 'DAI')
 
   console.log(`
     Exchange Data
 
     fromTokenAddress: ${tokens['DAI'].address},
     toTokenAddress: ${tokens[data.token].address},
-    fromTokenAmount: ${fromTokenAmount.toFixed(0)},
+    fromTokenAmount: ${amountToWei(data.requiredDebt, 'DAI').toFixed(0)},
     toTokenAmount: ${amountToWei(data.borrowedCollateral, data.token).toFixed(0)},
     minToTokenAmount: ${amountToWei(data.borrowedCollateral, data.token)
-      .div(one.minus(data.slippage))
+      .times(one.minus(data.slippage))
       .toFixed(0)},
     exchangeAddress: ${data.exchangeAddress},
     _exchangeCalldata: ${data.exchangeData},
@@ -353,10 +352,10 @@ function getOpenMultiplyCallData(data: MultiplyData, context: ContextConnected) 
     {
       fromTokenAddress: tokens['DAI'].address,
       toTokenAddress: tokens[data.token].address,
-      fromTokenAmount: fromTokenAmount.toFixed(0),
+      fromTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
       toTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
       minToTokenAmount: amountToWei(data.borrowedCollateral, data.token)
-        .div(one.minus(data.slippage))
+        .times(one.minus(data.slippage))
         .toFixed(0),
       exchangeAddress: data.exchangeAddress,
       _exchangeCalldata: data.exchangeData,
@@ -466,7 +465,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
         fromTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
         toTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
         minToTokenAmount: amountToWei(data.borrowedCollateral, data.token)
-          .div(one.minus(data.slippage))
+          .times(one.minus(data.slippage))
           .toFixed(0),
         exchangeAddress: data.exchangeAddress,
         _exchangeCalldata: data.exchangeData,
@@ -501,7 +500,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
         toTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
         fromTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
         minToTokenAmount: amountToWei(data.requiredDebt, 'DAI')
-          .div(one.minus(data.slippage))
+          .times(one.minus(data.slippage))
           .toFixed(0),
         exchangeAddress: data.exchangeAddress,
         _exchangeCalldata: data.exchangeData,
