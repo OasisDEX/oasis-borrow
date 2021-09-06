@@ -25,13 +25,13 @@ import {
 } from './manageMultiplyVaultAllowances'
 import {
   applyManageVaultCalculations,
-  defaultManageVaultCalculations,
+  defaultManageMultiplyVaultCalculations,
   ManageVaultCalculations,
 } from './manageMultiplyVaultCalculations'
 import {
   applyManageVaultConditions,
   applyManageVaultStageCategorisation,
-  defaultManageVaultConditions,
+  defaultManageMultiplyVaultConditions,
   ManageVaultConditions,
 } from './manageMultiplyVaultConditions'
 import {
@@ -212,6 +212,7 @@ interface ManageVaultFunctions {
   setDaiAllowanceAmountUnlimited?: () => void
   setDaiAllowanceAmountToPaybackAmount?: () => void
   resetDaiAllowanceAmount?: () => void
+  clear: () => void
 
   injectStateOverride: (state: Partial<MutableManageMultiplyVaultState>) => void
 
@@ -470,8 +471,8 @@ export function createManageMultiplyVault$(
 
                   const initialState: ManageMultiplyVaultState = {
                     ...defaultMutableManageMultiplyVaultState,
-                    ...defaultManageVaultCalculations,
-                    ...defaultManageVaultConditions,
+                    ...defaultManageMultiplyVaultCalculations,
+                    ...defaultManageMultiplyVaultConditions,
                     vault,
                     priceInfo,
                     balanceInfo,
@@ -490,6 +491,7 @@ export function createManageMultiplyVault$(
                     initialTotalSteps,
                     totalSteps: initialTotalSteps,
                     currentStep: 1,
+                    clear: () => change({ kind: 'clear' }),
                     injectStateOverride,
                   }
 

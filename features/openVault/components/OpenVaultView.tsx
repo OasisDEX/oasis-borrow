@@ -5,7 +5,8 @@ import { VaultFormVaultTypeSwitch, WithVaultFormStepIndicator } from 'components
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
-import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
@@ -86,8 +87,14 @@ function OpenVaultForm(props: OpenVaultState) {
 }
 
 export function OpenVaultContainer(props: OpenVaultState) {
-  const { ilk } = props
+  const { ilk, clear } = props
   const { t } = useTranslation()
+
+  useEffect(() => {
+    return () => {
+      clear()
+    }
+  }, [])
 
   return (
     <>
@@ -122,16 +129,14 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
   }, [])
 
   return (
-    <WithLoadingIndicator
-      {...openVaultWithError}
-      customError={<Box>{openVaultWithError.error?.message}</Box>}
-      customLoader={<VaultContainerSpinner />}
-    >
-      {(openVault) => (
-        <Container variant="vaultPageContainer">
-          <OpenVaultContainer {...openVault} />
-        </Container>
-      )}
-    </WithLoadingIndicator>
+    <WithErrorHandler error={openVaultWithError.error}>
+      <WithLoadingIndicator value={openVaultWithError.value}>
+        {(openVault) => (
+          <Container variant="vaultPageContainer">
+            <OpenVaultContainer {...openVault} />
+          </Container>
+        )}
+      </WithLoadingIndicator>
+    </WithErrorHandler>
   )
 }

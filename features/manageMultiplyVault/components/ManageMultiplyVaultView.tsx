@@ -5,7 +5,7 @@ import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Grid } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
@@ -74,8 +74,15 @@ export function ManageMultiplyVaultContainer({
 }) {
   const {
     vault: { id, ilk },
+    clear,
   } = manageVault
   const { t } = useTranslation()
+
+  useEffect(() => {
+    return () => {
+      clear()
+    }
+  }, [])
 
   return (
     <>

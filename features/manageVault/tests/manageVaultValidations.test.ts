@@ -29,18 +29,21 @@ describe('manageVaultValidations', () => {
   })
 
   it(`validates if generate doesn't exceeds debt ceiling, debt floor`, () => {
-    const depositAmount = new BigNumber('2')
-    const generateAmountAboveCeiling = new BigNumber('30')
+    const depositAmount = new BigNumber('2001')
+    const generateAmountAboveCeiling = new BigNumber('30000000')
     const generateAmountBelowFloor = new BigNumber('9')
 
     const state = getStateUnpacker(
       mockManageVault$({
+        balanceInfo: {
+          collateralBalance: new BigNumber('100000'),
+        },
         ilkData: {
           debtCeiling: new BigNumber('8000025'),
           debtFloor: new BigNumber('2000'),
         },
         vault: {
-          collateral: new BigNumber('3'),
+          collateral: new BigNumber('9999'),
           debt: new BigNumber('1990'),
           ilk: 'ETH-A',
         },
@@ -80,10 +83,11 @@ describe('manageVaultValidations', () => {
       }),
     )
 
+    state().setMainAction!('withdrawPayback')
     state().updateWithdraw!(withdrawAmount)
     expect(state().errorMessages).to.deep.equal(['withdrawAmountExceedsFreeCollateralAtNextPrice'])
-    state().updateWithdraw!(undefined)
 
+    state().setMainAction!('depositGenerate')
     state().updateDeposit!(zero)
     state().toggleDepositAndGenerateOption!()
     state().updateGenerate!(generateAmountExceedsYield)
@@ -164,6 +168,8 @@ describe('manageVaultValidations', () => {
     )
 
     state().toggle!('daiEditing')
+
+    state().setMainAction!('withdrawPayback')
     state().updatePayback!(paybackAmount)
 
     state().progress!()
@@ -190,6 +196,7 @@ describe('manageVaultValidations', () => {
     )
 
     state().toggle!('daiEditing')
+    state().setMainAction!('withdrawPayback')
     state().updatePayback!(paybackAmountExceedsVaultDebt)
     expect(state().errorMessages).to.deep.equal(['paybackAmountExceedsVaultDebt'])
 
@@ -213,6 +220,7 @@ describe('manageVaultValidations', () => {
     })
 
     state().toggle!('daiEditing')
+    state().setMainAction!('withdrawPayback')
     state().updatePayback!(paybackAmount.plus(state().vault.debtOffset))
     expect(state().insufficientDaiAllowance).to.be.true
 
@@ -246,10 +254,36 @@ describe('manageVaultValidations', () => {
       }),
     )
 
+    state().setMainAction!('withdrawPayback')
     state().updateWithdraw!(withdrawAmount)
     expect(state().errorMessages).to.deep.eq(['withdrawCollateralOnVaultUnderDebtFloor'])
     state().toggle!('daiEditing')
+    state().setMainAction!('depositGenerate')
     state().updatePaybackMax!()
     expect(state().errorMessages).to.deep.eq([])
+  })
+
+  it('should show meaningful message when trying to deposit to vault still being under dust limit (debt floor)', () => {
+    const depositAmount = new BigNumber('1')
+
+    const state = getStateUnpacker(
+      mockManageVault$({
+        ilkData: {
+          debtFloor: new BigNumber(10000),
+        },
+        vault: {
+          debt: new BigNumber(5000),
+          collateral: new BigNumber(6),
+        },
+        balanceInfo: {
+          daiBalance: new BigNumber(1000),
+        },
+        proxyAddress: DEFAULT_PROXY_ADDRESS,
+        daiAllowance: zero,
+      }),
+    )
+
+    state().updateDeposit!(depositAmount)
+    expect(state().errorMessages).to.deep.eq(['depositCollateralOnVaultUnderDebtFloor'])
   })
 })
