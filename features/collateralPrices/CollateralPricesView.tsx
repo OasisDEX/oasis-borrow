@@ -3,6 +3,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { TokenSymbol } from 'features/landing/LandingView'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservableWithError } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
@@ -128,7 +129,9 @@ function CollateralPricesTable({
 
 export function CollateralPricesView() {
   const { collateralPrices$ } = useAppContext()
-  const collateralPricesWithError = useObservableWithError(collateralPrices$)
+  const { value: collateral, error: collateralPricesWithError } = useObservableWithError(
+    collateralPrices$,
+  )
   const { t } = useTranslation()
 
   return (
@@ -137,21 +140,26 @@ export function CollateralPricesView() {
         <Heading variant="header2">{t('oracles.header')}</Heading>
         <Box sx={{ maxWidth: '55.5em', color: 'text.subtitle' }}>{t('oracles.description')}</Box>
       </Grid>
-      <WithLoadingIndicator
-        {...collateralPricesWithError}
-        customLoader={
-          <Box
-            sx={{
-              position: 'relative',
-              width: '100%',
-            }}
-          >
-            <AppSpinner sx={{ mx: 'auto', display: 'block' }} variant="styles.spinner.extraLarge" />
-          </Box>
-        }
-      >
-        {(collateralPrices) => <CollateralPricesTable {...{ collateralPrices }} />}
-      </WithLoadingIndicator>
+      <WithErrorHandler error={collateralPricesWithError}>
+        <WithLoadingIndicator
+          value={collateral}
+          customLoader={
+            <Box
+              sx={{
+                position: 'relative',
+                width: '100%',
+              }}
+            >
+              <AppSpinner
+                sx={{ mx: 'auto', display: 'block' }}
+                variant="styles.spinner.extraLarge"
+              />
+            </Box>
+          }
+        >
+          {(collateralPrices) => <CollateralPricesTable {...{ collateralPrices }} />}
+        </WithLoadingIndicator>
+      </WithErrorHandler>
     </Grid>
   )
 }

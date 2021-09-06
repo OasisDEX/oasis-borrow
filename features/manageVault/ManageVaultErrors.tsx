@@ -88,6 +88,19 @@ export function ManageVaultErrors({
             ]}
           />
         )
+      case 'depositCollateralOnVaultUnderDebtFloor':
+        return (
+          <Trans
+            i18nKey="manage-vault.errors.deposit-collateral-on-vault-under-debt-floor"
+            values={{ debtFloor: formatCryptoBalance(debtFloor) }}
+            components={[
+              <AppLink
+                sx={{ color: 'onError' }}
+                href="https://kb.oasis.app/help/minimum-vault-debt-dust"
+              />,
+            ]}
+          />
+        )
 
       default:
         throw new UnreachableCaseError(message)

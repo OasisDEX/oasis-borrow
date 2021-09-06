@@ -9,6 +9,7 @@ import { IlksFilterState, TagFilter } from 'features/ilks/popularIlksFilters'
 import { FiltersWithPopular } from 'features/landing/FiltersWithPopular'
 import { useRedirectToOpenVault } from 'features/openVaultOverview/useRedirectToOpenVault'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -276,46 +277,47 @@ export function LandingView() {
         />
         {landing !== undefined && <FeaturedIlks sx={fadeInAnimation} ilks={landing.featuredIlks} />}
       </Box>
-      <WithLoadingIndicator
-        value={landing}
-        error={landingError}
-        customLoader={
-          <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-            <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
-          </Flex>
-        }
-      >
-        {(landing) => (
-          <Box sx={{ ...slideInAnimation, position: 'relative' }}>
-            <FiltersWithPopular
-              onSearch={onIlkSearch}
-              search={landing.ilks.filters.search}
-              onTagChange={onIlksTagChange}
-              tagFilter={landing.ilks.filters.tagFilter}
-              defaultTag="all-assets"
-              page={Pages.LandingPage}
-              searchPlaceholder={t('search-token')}
-            />
-            <Box sx={{ overflowX: 'auto', p: '3px' }}>
-              <Table
-                data={landing.ilks.data}
-                primaryKey="ilk"
-                state={landing.ilks.filters}
-                columns={ilksColumns}
-                noResults={<Box>{t('no-results')}</Box>}
-                deriveRowProps={(row) => ({
-                  onClick: row.ilkDebtAvailable.isZero()
-                    ? undefined
-                    : () => {
-                        trackingEvents.openVault(Pages.LandingPage, row.ilk)
-                        redirectToOpenVault(row.ilk, row.token)
-                      },
-                })}
+      <WithErrorHandler error={landingError}>
+        <WithLoadingIndicator
+          value={landing}
+          customLoader={
+            <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
+              <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
+            </Flex>
+          }
+        >
+          {(landing) => (
+            <Box sx={{ ...slideInAnimation, position: 'relative' }}>
+              <FiltersWithPopular
+                onSearch={onIlkSearch}
+                search={landing.ilks.filters.search}
+                onTagChange={onIlksTagChange}
+                tagFilter={landing.ilks.filters.tagFilter}
+                defaultTag="all-assets"
+                page={Pages.LandingPage}
+                searchPlaceholder={t('search-token')}
               />
+              <Box sx={{ overflowX: 'auto', p: '3px' }}>
+                <Table
+                  data={landing.ilks.data}
+                  primaryKey="ilk"
+                  state={landing.ilks.filters}
+                  columns={ilksColumns}
+                  noResults={<Box>{t('no-results')}</Box>}
+                  deriveRowProps={(row) => ({
+                    onClick: row.ilkDebtAvailable.isZero()
+                      ? undefined
+                      : () => {
+                          trackingEvents.openVault(Pages.LandingPage, row.ilk)
+                          redirectToOpenVault(row.ilk, row.token)
+                        },
+                  })}
+                />
+              </Box>
             </Box>
-          </Box>
-        )}
-      </WithLoadingIndicator>
+          )}
+        </WithLoadingIndicator>
+      </WithErrorHandler>
       <LandingCards />
     </Grid>
   )

@@ -174,6 +174,7 @@ export interface ManageVaultConditions {
   customDaiAllowanceAmountExceedsMaxUint256: boolean
   customDaiAllowanceAmountLessThanPaybackAmount: boolean
   withdrawCollateralOnVaultUnderDebtFloor: boolean
+  depositCollateralOnVaultUnderDebtFloor: boolean
 }
 
 export const defaultManageVaultConditions: ManageVaultConditions = {
@@ -221,6 +222,7 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   customDaiAllowanceAmountLessThanPaybackAmount: false,
 
   withdrawCollateralOnVaultUnderDebtFloor: false,
+  depositCollateralOnVaultUnderDebtFloor: false,
 }
 
 export function applyManageVaultConditions(state: ManageVaultState): ManageVaultState {
@@ -251,6 +253,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     maxGenerateAmountAtCurrentPrice,
     maxGenerateAmountAtNextPrice,
     isMultiplyTransitionStage,
+    afterDebt,
   } = state
 
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
@@ -391,6 +394,13 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     withdrawAmount.gt(zero) &&
     (paybackAmount === undefined || paybackAmount.lt(vault.debt))
 
+  const depositCollateralOnVaultUnderDebtFloor =
+    vault.debt.gt(zero) &&
+    vault.debt.lt(ilkData.debtFloor) &&
+    depositAmount !== undefined &&
+    depositAmount.lt(ilkData.debtFloor) &&
+    afterDebt.lt(ilkData.debtFloor)
+
   const editingProgressionDisabled =
     isEditingStage &&
     (inputAmountsEmpty ||
@@ -407,7 +417,8 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
       generateAmountLessThanDebtFloor ||
       paybackAmountExceedsDaiBalance ||
       paybackAmountExceedsVaultDebt ||
-      withdrawCollateralOnVaultUnderDebtFloor)
+      withdrawCollateralOnVaultUnderDebtFloor ||
+      depositCollateralOnVaultUnderDebtFloor)
 
   const collateralAllowanceProgressionDisabled =
     isCollateralAllowanceStage &&
@@ -488,5 +499,6 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     customDaiAllowanceAmountLessThanPaybackAmount,
 
     withdrawCollateralOnVaultUnderDebtFloor,
+    depositCollateralOnVaultUnderDebtFloor,
   }
 }
