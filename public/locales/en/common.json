@@ -576,7 +576,7 @@
     "header": "What do you want to do with your {{token}}?",
     "multiply": {
       "header": "Multiply my {{token}}",
-      "subtext": "Use your {{balance}} {{token}} to get a up to {{exposure}} {{token}} exposure.",
+      "subtext": "Create a Multiply position and get up to {{exposureMultiplier}}x exposure on your {{token}}",
       "button": "Multiply {{token}}"
     },
     "borrow": {

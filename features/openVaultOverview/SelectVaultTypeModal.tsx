@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+// import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { ModalProps } from 'helpers/modalHook'
@@ -9,11 +10,19 @@ import { Box, Divider, Grid, Text } from 'theme-ui'
 interface Props {
   ilk: string
   token: string
+  liquidationRatio: number
   balance: BigNumber
 }
-export function SelectVaultTypeModal({ ilk, token, close, balance }: ModalProps<Props>) {
+export function SelectVaultTypeModal({
+  ilk,
+  token,
+  liquidationRatio,
+  close,
+  balance,
+}: ModalProps<Props>) {
   const { t } = useTranslation()
 
+  const exposureMultiplier = 1 + 1 / (liquidationRatio - 100)
   return (
     <Modal close={close} sx={{ maxWidth: '500px', margin: '0 auto', p: 0 }}>
       <ModalCloseIcon sx={{ top: '30px' }} close={close} />
@@ -51,8 +60,7 @@ export function SelectVaultTypeModal({ ilk, token, close, balance }: ModalProps<
           <Text variant="paragraph3" sx={{ color: 'text.muted', mb: '24px' }}>
             {t('select-vault-type.borrow.subtext', {
               token,
-              balance,
-              maxBorrow: balance.times(1000),
+              exposureMultiplier,
             })}
           </Text>
           <AppLink
