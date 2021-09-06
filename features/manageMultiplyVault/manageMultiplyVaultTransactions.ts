@@ -243,8 +243,8 @@ export function adjustPosition(
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ sendWithGasEstimation }) =>
-        sendWithGasEstimation(adjustMultiplyVault, {
+      switchMap(({ send }) =>
+        send(adjustMultiplyVault, {
           kind: TxMetaKind.adjustPosition,
           depositCollateral: depositAmount || zero,
           requiredDebt: debtDelta?.abs() || zero,
