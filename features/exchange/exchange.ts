@@ -56,6 +56,7 @@ function getQuote$(
     slippage: slippage.times(100).toString(),
     disableEstimate: 'true',
     allowPartialFill: 'false',
+    protocols: 'UNISWAP_V3',
   })
 
   console.log(`
