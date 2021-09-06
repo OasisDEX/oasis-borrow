@@ -8,6 +8,7 @@ import { AccountDetails } from 'features/account/AccountData'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { Filters } from 'features/vaultsOverview/Filters'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
@@ -203,17 +204,16 @@ export function OpenVaultOverviewView() {
   const accountData = useObservable(accountData$)
 
   return (
-    <WithLoadingIndicator
-      value={[openVaultOverviewWithError.value, contextWithError.value]}
-      error={[openVaultOverviewWithError.error, contextWithError.error]}
-    >
-      {([openVaultOverview, context]) => (
-        <OpenVaultOverview
-          vaultsOverview={openVaultOverview}
-          context={context}
-          accountDetails={accountData}
-        />
-      )}
-    </WithLoadingIndicator>
+    <WithErrorHandler error={[openVaultOverviewWithError.error, contextWithError.error]}>
+      <WithLoadingIndicator value={[openVaultOverviewWithError.value, contextWithError.value]}>
+        {([openVaultOverview, context]) => (
+          <OpenVaultOverview
+            vaultsOverview={openVaultOverview}
+            context={context}
+            accountDetails={accountData}
+          />
+        )}
+      </WithLoadingIndicator>
+    </WithErrorHandler>
   )
 }

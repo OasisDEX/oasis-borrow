@@ -1,5 +1,5 @@
 {
-  "404-button": "Go to home",
+  "404-button": "Go to homepage",
   "404-message": "Sorry, page not found.",
   "about": {
     "heading": "About us",
@@ -108,6 +108,8 @@
   "erc20-disapprove-description-recent-failed": "Failed to lock transfer of {{ token }}",
   "erc20-disapprove-notification": "Locking {{ token }}",
   "erc20-disapprove-notification-past": "Locked {{ token }}",
+  "error-message": "Something went wrong",
+  "error-button": "See details",
   "create-ds-proxy-description-pending": "Creating proxy",
   "create-ds-proxy-description-recent": "Created proxy",
   "create-ds-proxy-description-recent-failed": "Failed to create proxy",
@@ -227,7 +229,7 @@
     "action": "Manage Vault",
     "warnings": {
       "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
-      "debt-is-less-than-debt-floor": "Your current Dai debt is below the minimum of {{debtFloor}}. You cannot generate more Dai unless you go over this minimum",
+      "debt-is-less-than-debt-floor": "Your current Dai debt is below the minimum of {{debtFloor}}. Because of this some Vault actions are not possible. Please generate more Dai to take you above the minimum or payback all your debt",
       "vault-will-be-at-risk-level-danger": "With this action your vault will be at a collateralization ratio very close to the minimum required",
       "vault-will-be-at-risk-level-danger-at-next-price": "With this action your vault will be at a collateralization ratio very close to the minimum required at the next price update",
       "vault-will-be-at-risk-level-warning": "With this action your vault will be at a collateralization ratio near the minimum required",
@@ -277,7 +279,7 @@
       "liquidation-percentage-below": "That is {{percentageBelow}} below the current price",
       "buying-power": "Buying power",
       "buying-power-description": "The Buying Power specifies the maximum of Dai you can buy more collateral with, based on your position. It is using Multiply and going from the current collateralization ratio to the minimum collateralization ratio.",
-      "current-price":"Current Price",
+      "current-price": "Current Price",
       "current-price-description": "This is the current price of your vault collateral supplied by the Maker price oracles. There is a one hour delay before the oracle price is made current in the Maker Protocol.",
       "next-price": "Next Price",
       "next-price-description": "Here you can see the next price that will go into effect in the Maker Protocol. Compare this with the Liquidation Price to see whether your vault will be liquidated on the next price update.\n{{nextPrice}}",
@@ -370,8 +372,8 @@
       "title": "Dai"
     },
     "default": {
-      "description": "Generate Dai using crypto as your collateral",
-      "title": "Oasis Borrow"
+      "description": "Borrow Dai, a USD pegged Stablecoin, using crypto as your collateral",
+      "title": "Oasis.app"
     },
 
     "support": {
@@ -551,7 +553,7 @@
       "confirm": "This will refresh your page. It does not require a transaction.",
       "review-manage": "Here you can review the details of the changes to your vault.",
       "confirm-in-progress": "Your Vault is currently being created.",
-      "modified":"Your Vault is currently being updated. Please wait."
+      "modified": "Your Vault is currently being updated. Please wait."
     }
   },
   "creating-your-vault": "Creating your {{token}} Vault!",
