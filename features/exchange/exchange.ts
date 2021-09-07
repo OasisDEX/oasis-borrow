@@ -4,7 +4,15 @@ import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
-import { catchError, debounceTime, distinctUntilChanged, map, retry, switchMap, tap } from 'rxjs/operators'
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  retry,
+  switchMap,
+  tap,
+} from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
 
 import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
@@ -83,9 +91,9 @@ function getQuote$(
 
   return ajax(`${API_ENDPOINT}?${searchParams.toString()}`).pipe(
     tap((response) => {
-      console.log("request");
+      console.log('request')
       if (response.status !== 200) {
-        console.log("failed request");
+        console.log('failed request')
         throw new Error(response.responseText)
       }
     }),

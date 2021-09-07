@@ -12,7 +12,6 @@ import {
   retry,
   switchMap,
   take,
-  tap,
 } from 'rxjs/operators'
 
 import { compareBigNumber } from '../../helpers/compareBigNumber'
@@ -130,8 +129,8 @@ export function createExchangeChange$(
               state.vault.token,
               state.slippage,
               state.exchangeAction === 'BUY_COLLATERAL'
-                      ? (state.debtDelta as BigNumber).abs().times(one.minus(OAZO_FEE))
-                      : state.collateralDelta.abs(),
+                ? (state.debtDelta as BigNumber).abs().times(one.minus(OAZO_FEE))
+                : state.collateralDelta.abs(),
               state.exchangeAction,
             )
           }
