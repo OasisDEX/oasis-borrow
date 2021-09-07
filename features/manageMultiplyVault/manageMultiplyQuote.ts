@@ -131,19 +131,14 @@ export function createExchangeChange$(
               state.exchangeAction,
             )
           }
+
           if (state.otherAction === 'closeVault') {
-            if (state.closeVaultTo === 'collateral') {
-              return EMPTY
-            }
-            if (state.closeVaultTo === 'dai') {
-              console.log('GET PRICE FOR CLOSE VAULT')
-              return exchangeQuote$(
-                state.vault.token,
-                state.slippage,
-                state.vault.lockedCollateral,
-                'SELL_COLLATERAL',
-              )
-            }
+            return exchangeQuote$(
+              state.vault.token,
+              state.slippage,
+              state.vault.lockedCollateral,
+              'SELL_COLLATERAL',
+            )
           }
           return EMPTY
         }),
