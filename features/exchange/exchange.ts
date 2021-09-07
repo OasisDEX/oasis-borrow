@@ -36,7 +36,7 @@ interface Tx {
 
 export type ExchangeAction = 'BUY_COLLATERAL' | 'SELL_COLLATERAL'
 
-function getQuote$(
+export function getQuote$(
   daiAddress: string,
   collateralAddress: string,
   account: string,

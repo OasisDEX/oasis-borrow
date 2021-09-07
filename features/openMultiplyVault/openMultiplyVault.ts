@@ -178,6 +178,7 @@ export type OpenMultiplyVaultState = MutableOpenMultiplyVaultState &
 
 function addTransitions(
   txHelpers: TxHelpers,
+  context: ContextConnected,
   proxyAddress$: Observable<string | undefined>,
   change: (ch: OpenMultiplyVaultChange) => void,
   state: OpenMultiplyVaultState,
@@ -251,7 +252,7 @@ function addTransitions(
   if (state.stage === 'openWaitingForConfirmation' || state.stage === 'openFailure') {
     return {
       ...state,
-      progress: () => multiplyVault(txHelpers, change, state),
+      progress: () => multiplyVault(txHelpers, context, change, state),
       regress: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -366,7 +367,9 @@ export function createOpenMultiplyVault$(
                       scan(apply, initialState),
                       map(validateErrors),
                       map(validateWarnings),
-                      map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
+                      map(
+                        curry(addTransitions)(txHelpers, context, connectedProxyAddress$, change),
+                      ),
                       tap((state) => stateSubject$.next(state)),
                     )
                   }),
