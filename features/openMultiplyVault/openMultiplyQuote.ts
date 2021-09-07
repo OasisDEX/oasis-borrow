@@ -98,25 +98,33 @@ export function createExchangeChange$(
         compareBigNumber(s1.requiredCollRatio, s2.requiredCollRatio),
     ),
     debounceTime(500),
-    switchMap((state) =>
-      every5Seconds$.pipe(
-        switchMap(() => {
-          if (state.buyingCollateral.gt(0) && state.quote?.status === 'SUCCESS') {
-            console.log(`
+    switchMap(
+      () =>
+        every5Seconds$.pipe(
+          switchMap(() => {
+            console.log('every 5 secs')
+
+            return state$.pipe(
+              switchMap((state) => {
+                if (state.buyingCollateral.gt(0) && state.quote?.status === 'SUCCESS') {
+                  console.log(`
               before 1inch
               afterOuts: ${state.afterOutstandingDebt.toFixed()}
               afterOutsMinusFee: ${state.afterOutstandingDebt.times(one.minus(OAZO_FEE)).toFixed()}
             `)
-            return exchangeQuote$(
-              state.token,
-              state.slippage,
-              state.afterOutstandingDebt.times(one.minus(OAZO_FEE)),
-              'BUY_COLLATERAL',
+
+                  return exchangeQuote$(
+                    state.token,
+                    state.slippage,
+                    state.afterOutstandingDebt.times(one.minus(OAZO_FEE)),
+                    'BUY_COLLATERAL',
+                  )
+                }
+                return EMPTY
+              }),
             )
-          }
-          return EMPTY
-        }),
-      ),
+          }),
+        ),
     ),
     map(swapToChange),
   )
