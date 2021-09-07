@@ -6,7 +6,7 @@ import { catchError, distinctUntilChanged, map, retry, switchMap, tap } from 'rx
 
 import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 
-const API_ENDPOINT = `https://api.1inch.exchange/v3.0/1/swap`
+const API_ENDPOINT = `https://oasis.api.enterprise.1inch.exchange/v3.0/1/swap`
 
 interface Response {
   fromToken: TokenDescriptor
