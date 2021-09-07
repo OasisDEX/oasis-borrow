@@ -35,6 +35,7 @@ function TextWithCheckmark({ children }: WithChildren) {
           alignItems: 'center',
           justifyContent: 'center',
           color: 'onSuccess',
+          flexShrink: 0
         }}
       >
         <Icon name="checkmark" size="auto" width="11px" sx={{ position: 'relative', top: '1px' }} />
@@ -53,7 +54,7 @@ function ManageVaultMultiplyTransition({ stage, vault }: ManageVaultState) {
           {t('vault-form.subtext.checkmark1', { token: vault.token })}
         </TextWithCheckmark>
         <TextWithCheckmark>{t('vault-form.subtext.checkmark2')}</TextWithCheckmark>
-        <TextWithCheckmark>{t('vault-form.subtext.checkmark3')}</TextWithCheckmark>
+        <TextWithCheckmark sx={{ flexShrink: 0 }}>{t('vault-form.subtext.checkmark3')}</TextWithCheckmark>
         <TextWithCheckmark>{t('vault-form.subtext.checkmark4')}</TextWithCheckmark>
       </Grid>
       <Divider />
