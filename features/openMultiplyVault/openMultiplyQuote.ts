@@ -2,7 +2,8 @@ import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { compareBigNumber } from 'helpers/compareBigNumber'
-import { SLIPPAGE } from 'helpers/multiply/calculations'
+import { OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
+import { one } from 'helpers/zero'
 import { EMPTY, Observable } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, take } from 'rxjs/operators'
 
@@ -101,10 +102,15 @@ export function createExchangeChange$(
       every5Seconds$.pipe(
         switchMap(() => {
           if (state.buyingCollateral.gt(0) && state.quote?.status === 'SUCCESS') {
+            console.log(`
+              before 1inch
+              afterOuts: ${state.afterOutstandingDebt.toFixed()}
+              afterOutsMinusFee: ${state.afterOutstandingDebt.times(one.minus(OAZO_FEE)).toFixed()}
+            `)
             return exchangeQuote$(
               state.token,
               state.slippage,
-              state.afterOutstandingDebt,
+              state.afterOutstandingDebt.times(one.minus(OAZO_FEE)),
               'BUY_COLLATERAL',
             )
           }
