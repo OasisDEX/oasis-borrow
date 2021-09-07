@@ -104,16 +104,18 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
   }
 
   return (
-    <WithErrorHandler error={[
-      manageVaultWithError.error,
-      vaultHistoryWithError.error,
-      vaultMultiplyHistoryWithError.error
-    ]}>
+    <WithErrorHandler
+      error={[
+        manageVaultWithError.error,
+        vaultHistoryWithError.error,
+        vaultMultiplyHistoryWithError.error,
+      ]}
+    >
       <WithLoadingIndicator
         value={[
           manageVaultWithError.value,
           vaultHistoryWithError.value,
-          vaultMultiplyHistoryWithError.value
+          vaultMultiplyHistoryWithError.value,
         ]}
         customLoader={<VaultContainerSpinner />}
       >

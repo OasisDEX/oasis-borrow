@@ -49,7 +49,7 @@ async function getVaultHistory(client: GraphQLClient, urn: string): Promise<Retu
   return data.allVaultEvents.nodes as ReturnedEvent[]
 }
 
-export function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
+function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
   const bigNumberFields = [
     'collateralAmount',
     'daiAmount',

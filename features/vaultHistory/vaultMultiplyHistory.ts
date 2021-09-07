@@ -8,7 +8,7 @@ import pickBy from 'lodash/pickBy'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
 
-import { fetchWithOperationId, parseBigNumbersFields, VaultHistoryEvent } from './vaultHistory'
+import { fetchWithOperationId, VaultHistoryEvent } from './vaultHistory'
 import { ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
 const query = gql`
@@ -31,6 +31,17 @@ const query = gql`
     }
   }
 `
+
+function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
+  const bigNumberFields = ['swapMinAmount', 'swapOptimistAmount', 'oazoFee', 'flDue', 'flBorrowed']
+  return Object.entries(event).reduce(
+    (acc, [key, value]) =>
+      bigNumberFields.includes(key) && value != null
+        ? { ...acc, [key]: new BigNumber(value) }
+        : { ...acc, [key]: value },
+    {},
+  ) as VaultEvent
+}
 
 async function getVaultMultiplyHistory(
   client: GraphQLClient,
