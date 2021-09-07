@@ -421,11 +421,11 @@ export function applyManageVaultCalculations(
     paybackAmount = zero,
     generateAmount = zero,
     withdrawAmount = zero,
-    stage,
     otherAction,
+    originalEditingStage,
   } = state
 
-  const isCloseAction = stage === 'otherActions' && otherAction === 'closeVault'
+  const isCloseAction = originalEditingStage === 'otherActions' && otherAction === 'closeVault'
 
   const marketPrice =
     swap?.status === 'SUCCESS'
@@ -625,7 +625,7 @@ export function applyManageVaultCalculations(
   const netValueUSD = lockedCollateral.times(currentCollateralPrice).minus(debt)
   const afterNetValueUSD = isCloseAction
     ? zero
-    : afterLockedCollateral.times(currentCollateralPrice).minus(debt)
+    : afterLockedCollateral.times(currentCollateralPrice).minus(afterDebt)
 
   const { collateralDelta: buyingPower } = getVaultChange({
     currentCollateralPrice,
