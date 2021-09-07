@@ -541,7 +541,9 @@
       "confirm-in-progress": "Vault being created",
       "modified": "Vault is being Modified",
       "confirm-manage": "Confirm vault changes",
-      "review-manage": "Review vault changes"
+      "review-manage": "Review vault changes",
+      "multiply-transition": "Multiply your exposure on {{token}} in your vault"
+
     },
     "subtext": {
       "collateral": "Deposit or withdraw from your Vault. Save gas by combining transactions.",
@@ -553,7 +555,13 @@
       "confirm": "This will refresh your page. It does not require a transaction.",
       "review-manage": "Here you can review the details of the changes to your vault.",
       "confirm-in-progress": "Your Vault is currently being created.",
-      "modified": "Your Vault is currently being updated. Please wait."
+      "modified": "Your Vault is currently being updated. Please wait.",
+      "checkmark1": "Get up to 3x exposure on your {{token}}",
+      "checkmark2": "Adjust risk and exposure in 1 click",
+      "checkmark3": "Actions like using a flash loan, and buying or selling collateral are grouped into a single transaction for greater efficiency and savings",
+      "checkmark4": "You can review the details of the changes on your vault before execution",
+      "subheader2": "Important",
+      "paragraph2": "When you multiply your vault, you acquire collateral for funds you have borrowed against your own collateral. Make sure you understand the associated risks."
     }
   },
   "creating-your-vault": "Creating your {{token}} Vault!",
@@ -578,12 +586,12 @@
     "header": "What do you want to do with your {{token}}?",
     "multiply": {
       "header": "Multiply my {{token}}",
-      "subtext": "Create a Multiply position and get up to {{exposureMultiplier}}x exposure on your {{token}}",
+      "subtext": "Create a Multiply position and get up to {{exposureMultiplier}} x exposure on your {{token}}",
       "button": "Multiply {{token}}"
     },
     "borrow": {
       "header": "Borrow against my {{token}}",
-      "subtext": "Use your {{balance}} {{token}} to borrow up to {{maxBorrow}} DAI",
+      "subtext": "Borrow up to {{maxBorrow}} DAI for every ${{maxBorrowAmount}} worth of {{token}}",
       "button": "Borrow against {{token}}"
     }
   }

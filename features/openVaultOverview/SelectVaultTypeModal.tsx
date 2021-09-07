@@ -22,7 +22,10 @@ export function SelectVaultTypeModal({
 }: ModalProps<Props>) {
   const { t } = useTranslation()
 
-  const exposureMultiplier = 1 + 1 / (liquidationRatio - 100)
+  const exposureMultiplier = 1 + 1 / (liquidationRatio - 1.0)
+
+  const maxBorrowAmount = ((1 / liquidationRatio) * 100000).toFixed(2)
+
   return (
     <Modal close={close} sx={{ maxWidth: '500px', margin: '0 auto', p: 0 }}>
       <ModalCloseIcon sx={{ top: '30px' }} close={close} />
@@ -38,9 +41,8 @@ export function SelectVaultTypeModal({
           </Text>
           <Text variant="paragraph3" sx={{ color: 'text.muted', mb: '24px' }}>
             {t('select-vault-type.multiply.subtext', {
+              exposureMultiplier,
               token,
-              balance,
-              exposure: balance.times(2),
             })}
           </Text>
           <AppLink
@@ -59,8 +61,9 @@ export function SelectVaultTypeModal({
           </Text>
           <Text variant="paragraph3" sx={{ color: 'text.muted', mb: '24px' }}>
             {t('select-vault-type.borrow.subtext', {
-              token,
-              exposureMultiplier,
+              maxBorrow: balance.times(1000),
+              maxBorrowAmount,
+              token: token,
             })}
           </Text>
           <AppLink
