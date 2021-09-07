@@ -1,8 +1,8 @@
 {
-  "name": "Oasis Borrow",
+  "name": "Oasis",
   "description": "Generate Dai on Oasis using crypto as your collateral",
   "iconPath": "static/img/logo.svg",
-  "short_name": "Oasis.Borrow",
+  "short_name": "Oasis",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#FFFFFF",

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { CatIlk, catIlk } from 'blockchain/calls/cat'
+import { DogIlk, dogIlk } from 'blockchain/calls/dog'
 import { JugIlk, jugIlk } from 'blockchain/calls/jug'
 import { CallObservable } from 'blockchain/calls/observe'
 import { SpotIlk, spotIlk } from 'blockchain/calls/spot'
@@ -8,7 +8,7 @@ import { Context } from 'blockchain/network'
 import { one, zero } from 'helpers/zero'
 import { of } from 'rxjs'
 import { combineLatest, Observable } from 'rxjs'
-import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, map, retry, shareReplay, switchMap } from 'rxjs/operators'
 
 export function createIlks$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(
@@ -24,7 +24,7 @@ interface DerivedIlkData {
   collateralizationDangerThreshold: BigNumber
   collateralizationWarningThreshold: BigNumber
 }
-export type IlkData = VatIlk & SpotIlk & JugIlk & CatIlk & DerivedIlkData
+export type IlkData = VatIlk & SpotIlk & JugIlk & DogIlk & DerivedIlkData
 
 // TODO Go in some config somewhere?
 export const COLLATERALIZATION_DANGER_OFFSET = new BigNumber('0.2') // 150% * 1.2 = 180%
@@ -34,7 +34,7 @@ export function createIlkData$(
   vatIlks$: CallObservable<typeof vatIlk>,
   spotIlks$: CallObservable<typeof spotIlk>,
   jugIlks$: CallObservable<typeof jugIlk>,
-  catIlks$: CallObservable<typeof catIlk>,
+  dogIlks$: CallObservable<typeof dogIlk>,
   ilkToToken$: Observable<(ilk: string) => string>,
   ilk: string,
 ): Observable<IlkData> {
@@ -42,7 +42,7 @@ export function createIlkData$(
     vatIlks$(ilk),
     spotIlks$(ilk),
     jugIlks$(ilk),
-    catIlks$(ilk),
+    dogIlks$(ilk),
     ilkToToken$,
   ).pipe(
     switchMap(
@@ -50,7 +50,7 @@ export function createIlkData$(
         { normalizedIlkDebt, debtScalingFactor, maxDebtPerUnitCollateral, debtCeiling, debtFloor },
         { priceFeedAddress, liquidationRatio },
         { stabilityFee, feeLastLevied },
-        { liquidatorAddress, liquidationPenalty, maxAuctionLotSize },
+        { liquidatorAddress, liquidationPenalty },
         ilkToToken,
       ]) => {
         const collateralizationDangerThreshold = liquidationRatio.times(
@@ -74,7 +74,6 @@ export function createIlkData$(
           feeLastLevied,
           liquidatorAddress,
           liquidationPenalty,
-          maxAuctionLotSize,
           token: ilkToToken(ilk),
           ilk,
           ilkDebt: normalizedIlkDebt
@@ -101,6 +100,7 @@ export function createIlkDataList$(
   return ilks$.pipe(
     switchMap((ilks) => combineLatest(ilks.map((ilk) => ilkData$(ilk)))),
     distinctUntilChanged(),
+    retry(3),
     shareReplay(1),
   )
 }

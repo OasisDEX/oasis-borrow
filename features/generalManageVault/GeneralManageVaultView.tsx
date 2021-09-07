@@ -5,6 +5,7 @@ import { ManageMultiplyVaultContainer } from 'features/manageMultiplyVault/compo
 import { ManageVaultContainer } from 'features/manageVault/ManageVaultView'
 import { MultiplyEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import React from 'react'
@@ -103,42 +104,43 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
   }
 
   return (
-    <WithLoadingIndicator
-      value={[
-        manageVaultWithError.value,
-        vaultHistoryWithError.value,
-        vaultMultiplyHistoryWithError.value,
-      ]}
-      error={[
-        manageVaultWithError.error,
-        vaultHistoryWithError.error,
-        vaultMultiplyHistoryWithError.error,
-      ]}
-      customLoader={<VaultContainerSpinner />}
-    >
-      {([generalManageVault, vaultHistory, vaultMultiplyHistory]) => {
-        switch (generalManageVault.type) {
-          case VaultType.Borrow:
-            return (
-              <Container variant="vaultPageContainer">
-                <ManageVaultContainer
-                  vaultHistory={vaultHistory}
-                  manageVault={generalManageVault.state}
-                />
-              </Container>
-            )
-          case VaultType.Multiply:
-            const multiplyHistory = prepareMultiplyHistory(vaultHistory, vaultMultiplyHistory)
-            return (
-              <Container variant="vaultPageContainer">
-                <ManageMultiplyVaultContainer
-                  vaultHistory={multiplyHistory}
-                  manageVault={generalManageVault.state}
-                />
-              </Container>
-            )
-        }
-      }}
-    </WithLoadingIndicator>
+    <WithErrorHandler error={[
+      manageVaultWithError.error,
+      vaultHistoryWithError.error,
+      vaultMultiplyHistoryWithError.error
+    ]}>
+      <WithLoadingIndicator
+        value={[
+          manageVaultWithError.value,
+          vaultHistoryWithError.value,
+          vaultMultiplyHistoryWithError.value
+        ]}
+        customLoader={<VaultContainerSpinner />}
+      >
+        {([generalManageVault, vaultHistory, vaultMultiplyHistory]) => {
+          switch (generalManageVault.type) {
+            case VaultType.Borrow:
+              return (
+                <Container variant="vaultPageContainer">
+                  <ManageVaultContainer
+                    vaultHistory={vaultHistory}
+                    manageVault={generalManageVault.state}
+                  />
+                </Container>
+              )
+            case VaultType.Multiply:
+              const multiplyHistory = prepareMultiplyHistory(vaultHistory, vaultMultiplyHistory)
+              return (
+                <Container variant="vaultPageContainer">
+                  <ManageMultiplyVaultContainer
+                    vaultHistory={multiplyHistory}
+                    manageVault={generalManageVault.state}
+                  />
+                </Container>
+              )
+          }
+        }}
+      </WithLoadingIndicator>
+    </WithErrorHandler>
   )
 }
