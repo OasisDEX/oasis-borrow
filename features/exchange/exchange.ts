@@ -4,12 +4,12 @@ import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
-import { catchError, distinctUntilChanged, map, retry, switchMap, tap } from 'rxjs/operators'
+import { catchError, debounceTime, distinctUntilChanged, map, retry, switchMap, tap } from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
 
 import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 
-const API_ENDPOINT = `https://api.1inch.exchange/v3.0/1/swap`
+const API_ENDPOINT = `https://oasis.api.enterprise.1inch.exchange/v3.0/1/swap`
 
 interface Response {
   fromToken: TokenDescriptor
@@ -83,7 +83,11 @@ function getQuote$(
 
   return ajax(`${API_ENDPOINT}?${searchParams.toString()}`).pipe(
     tap((response) => {
-      if (response.status !== 200) throw new Error(response.responseText)
+      console.log("request");
+      if (response.status !== 200) {
+        console.log("failed request");
+        throw new Error(response.responseText)
+      }
     }),
     map((response): Response => response.response),
     map(({ fromToken, toToken, toTokenAmount, fromTokenAmount, tx }) => {
@@ -131,6 +135,7 @@ export function createExchangeQuote$(
   action: ExchangeAction,
 ) {
   return context$.pipe(
+    debounceTime(200),
     switchMap((context) => {
       const { tokens, exchange } = context
       const dai = getTokenMetaData('DAI', tokens)

@@ -11,6 +11,7 @@ import {
   retry,
   switchMap,
   take,
+  tap,
 } from 'rxjs/operators'
 
 import { compareBigNumber } from '../../helpers/compareBigNumber'
