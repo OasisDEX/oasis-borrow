@@ -63,7 +63,7 @@ export function SelectVaultTypeModal({
             {t('select-vault-type.borrow.subtext', {
               maxBorrow: balance.times(1000),
               maxBorrowAmount,
-              token: token,
+              token,
             })}
           </Text>
           <AppLink

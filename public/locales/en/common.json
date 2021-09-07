@@ -591,7 +591,7 @@
     },
     "borrow": {
       "header": "Borrow against my {{token}}",
-      "subtext": "Borrow up to {{maxBorrow}} DAI for every ${{maxBorrowAmount}} worth of {{token}}",
+      "subtext": "Borrow up to {{maxBorrow}} DAI for every $100,000 worth of {{token}}",
       "button": "Borrow against {{token}}"
     }
   }
