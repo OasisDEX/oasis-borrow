@@ -169,29 +169,6 @@
     "keyWithCount": "{{count}} item",
     "keyWithCount_plural": "{{count}} itens",
     "landing": {
-        "footer": {
-            "language": {
-                "en": "English",
-                "es": "Español",
-                "pt": "Português",
-                "cn": "中文"
-            },
-            "about": "Sobre",
-            "team": "Time",
-            "careers": "Carreiras",
-            "privacy": "Privacidade",
-            "terms": "Termos",
-            "contact": "Suporte",
-            "resources": "Recursos",
-            "blog": "Blog",
-            "faq": "FAQ",
-            "knowledge-centre": "Centro de Conhecimento",
-            "oracles": "Oráculos",
-            "products": "Produtos",
-            "dai-wallet": "Dai Wallet",
-            "borrow": "Empreste",
-            "trade": "Negocie"
-        },
         "hero": {
             "headline": "Dai é uma moeda digital inteligente feita para todos. Compre, envie e gerencie em um só lugar.",
             "subheader": "Abrir um Cofre Maker, deposite seu colateral e crie Dai.<0/> Conectar uma carteira para começar."
@@ -255,6 +232,23 @@
     "min-amount": "A quantidade mínima é {{minAmount}} {{token}}",
     "moving-into-vault": "Transferindo para o Cofre",
     "moving-out-vault": "Tirando do Cofre",
+    "nav": {
+        "about": "Sobre",
+        "resources": "Recursos",
+        "products": "Produtos",
+        "team": "Time",
+        "careers": "Carreiras",
+        "privacy": "Privacidade",
+        "terms": "Termos",
+        "contact": "Suporte",
+        "blog": "Blog",
+        "faq": "FAQ",
+        "knowledge-centre": "Centro de Conhecimento",
+        "oracles": "Oráculos",
+        "dai-wallet": "Dai Wallet",
+        "borrow": "Empreste",
+        "trade": "Negocie"
+    },
     "new-to-ethereum": "Novo no Ethereum? ",
     "next": "Próximo",
     "no-dai": "Sem Dai",
