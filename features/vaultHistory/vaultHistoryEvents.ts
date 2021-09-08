@@ -163,6 +163,9 @@ export interface ReturnedEvent {
   daiAmount: string | null
   vaultCreator: string | null
   cdpId: string | null
+  txId: string
+  blockId: string
+  rate: string
 }
 
 export type VaultEvent =

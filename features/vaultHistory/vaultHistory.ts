@@ -20,24 +20,23 @@ const query = gql`
         kind
         collateralAmount
         daiAmount
-        rate
         vaultCreator
         cdpId
         transferFrom
         transferTo
         collateralTaken
-        collateralPrice
         coveredDebt
         remainingCollateral
-        oraclePrice
+        rate
         timestamp
         id
         urn
         hash
         logIndex
         auctionId
-        blockId
         txId
+        blockId
+        oraclePrice
       }
     }
   }
@@ -53,11 +52,10 @@ function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
   const bigNumberFields = [
     'collateralAmount',
     'daiAmount',
-    'rate',
     'collateralTaken',
-    'collateralPrice',
     'coveredDebt',
     'remainingCollateral',
+    'rate',
     'oraclePrice',
   ]
   return Object.entries(event).reduce(
@@ -107,7 +105,6 @@ export type VaultHistoryEvent = VaultEvent & {
     apiKey: string
   }
 }
-
 export function fetchWithOperationId(url: string, options?: RequestInit) {
   const operationNameRegex = /query (?<operationName>[a-zA-Z0-9]+)\(/gm
 

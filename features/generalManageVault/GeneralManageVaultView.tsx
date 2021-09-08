@@ -32,6 +32,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
   function prepareMultiplyHistory(vaultHistory: any[], vaultMultiplyHistory: any[]) {
     let outstandingDebt = new BigNumber(0)
     let collateral = new BigNumber(0)
+
     for (const mpEvent of vaultMultiplyHistory) {
       let currentRate = zero
       const flFee = (mpEvent as MultiplyEvent).flDue.minus(mpEvent.flBorrowed)
@@ -40,6 +41,9 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
       for (const event of vaultHistory.filter(
         (e: any) => e.blockId === mpEvent.blockId && e.txId === mpEvent.txId,
       )) {
+        const oraclePrice =
+          event.oraclePrice && event.oraclePrice.gt(zero) ? event.oraclePrice : zero
+
         if (mpEvent.kind === 'openMultiplyVault' || mpEvent.kind === 'increaseMultiple') {
           if (event.kind === 'OPEN') {
             event.isHidden = true
@@ -49,7 +53,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
             collateral = collateral.plus(event.collateralAmount)
             mpEvent.collateralAmount = event.collateralAmount
             mpEvent.collateralTotal = collateral
-            mpEvent.oraclePrice = event.oraclePrice
+            mpEvent.oraclePrice = oraclePrice
             event.isHidden = true
           }
           if (event.kind === 'GENERATE') {
@@ -57,7 +61,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
             const debt = event.daiAmount.div(event.rate)
             outstandingDebt = outstandingDebt.plus(debt)
             mpEvent.daiAmount = event.daiAmount.div(event.rate)
-            mpEvent.oraclePrice = event.oraclePrice
+            mpEvent.oraclePrice = oraclePrice
             event.isHidden = true
           }
         }
@@ -72,7 +76,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
             collateral = collateral.plus(event.collateralAmount)
             mpEvent.collateralAmount = event.collateralAmount
             mpEvent.collateralTotal = collateral
-            mpEvent.oraclePrice = event.oraclePrice
+            mpEvent.oraclePrice = oraclePrice
             event.isHidden = true
           }
           if (event.kind === 'PAYBACK') {
@@ -80,11 +84,12 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
             const debt = event.daiAmount.div(event.rate)
             outstandingDebt = outstandingDebt.plus(debt)
             mpEvent.daiAmount = event.daiAmount
-            mpEvent.oraclePrice = event.oraclePrice
+            mpEvent.oraclePrice = oraclePrice
             event.isHidden = true
           }
         }
       }
+
       const multiple = collateral
         .times(mpEvent.oraclePrice)
         .div(collateral.times(mpEvent.oraclePrice).minus(outstandingDebt.times(currentRate)))
@@ -94,8 +99,9 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
         : outstandingDebt.times(currentRate).times(mpEvent.liquidationRatio).div(collateral)
       const netValueUSD = collateral.times(mpEvent.oraclePrice).minus(outstandingDebt)
 
+      const debt = outstandingDebt.times(currentRate)
       mpEvent.collateral = collateral
-      mpEvent.outstandingDebt = outstandingDebt
+      mpEvent.outstandingDebt = debt.gt(0.01) ? debt : zero
       mpEvent.multiple = multiple
       mpEvent.liquidationPrice = liquidationPrice
       mpEvent.netValueUSD = netValueUSD

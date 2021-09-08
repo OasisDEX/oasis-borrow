@@ -9,7 +9,7 @@ import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
 
 import { fetchWithOperationId, VaultHistoryEvent } from './vaultHistory'
-import { ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
+import { MultiplyEvent, ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
 const query = gql`
   query vaultMultiplyEvents($cdpId: String) {
@@ -27,13 +27,30 @@ const query = gql`
         oazoFee
         flDue
         flBorrowed
+        liquidationRatio
       }
     }
   }
 `
 
+export type VaultMultiplyHistoryEvent = MultiplyEvent & {
+  token: string
+  etherscan?: {
+    url: string
+    apiUrl: string
+    apiKey: string
+  }
+}
+
 function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
-  const bigNumberFields = ['swapMinAmount', 'swapOptimistAmount', 'oazoFee', 'flDue', 'flBorrowed']
+  const bigNumberFields = [
+    'swapMinAmount',
+    'swapOptimistAmount',
+    'oazoFee',
+    'flDue',
+    'flBorrowed',
+    'liquidationRatio',
+  ]
   return Object.entries(event).reduce(
     (acc, [key, value]) =>
       bigNumberFields.includes(key) && value != null
@@ -62,21 +79,18 @@ export function createVaultMultiplyHistory$(
     (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
   )
   return combineLatest(context$, vault$(vaultId)).pipe(
-    switchMap(([{ etherscan, cacheApi }, { token, liquidationRatio }]) => {
+    switchMap(([{ etherscan, cacheApi }, { token }]) => {
       return onEveryBlock$.pipe(
         switchMap(() => getVaultMultiplyHistory(makeClient(cacheApi), vaultId)),
         map((returnedEvents) =>
           flatten(
             returnedEvents
               .map((returnedEvent) => pickBy(returnedEvent, (value) => value !== null))
-              .map(parseBigNumbersFields)
-              .map(
-                (event: VaultEvent): VaultEvent => {
-                  event.isMultiply = true
-                  event.liquidationRatio = liquidationRatio
-                  return event
-                },
-              ),
+              .map((event) => {
+                ;(event as any).isMultiply = true
+                return event
+              })
+              .map(parseBigNumbersFields),
           ),
         ),
         map((events) => events.map((event) => ({ etherscan, token, ...event }))),
