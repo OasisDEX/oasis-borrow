@@ -1,6 +1,7 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
+import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormVaultTypeSwitch, WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultHeader } from 'components/vault/VaultHeader'
@@ -62,7 +63,7 @@ function OpenVaultTitle({
 }
 
 function OpenVaultForm(props: OpenVaultState) {
-  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, ilk } = props
+  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, ilk, stage } = props
 
   return (
     <VaultFormContainer toggleTitle="Open Vault">
@@ -72,6 +73,7 @@ function OpenVaultForm(props: OpenVaultState) {
       {isOpenStage && <OpenVaultConfirmation {...props} />}
       <OpenVaultErrors {...props} />
       <OpenVaultWarnings {...props} />
+      {stage === 'openSuccess' && <VaultChangesWithADelayCard />}
       <OpenVaultButton {...props} />
       {isProxyStage && <VaultProxyStatusCard {...props} />}
       {isAllowanceStage && <VaultAllowanceStatus {...props} />}

@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
+import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
@@ -84,6 +85,7 @@ function ManageVaultForm(props: ManageVaultState) {
     daiAllowanceTxHash,
     collateralAllowanceTxHash,
     vault: { token },
+    stage,
   } = props
 
   return (
@@ -98,6 +100,7 @@ function ManageVaultForm(props: ManageVaultState) {
         <>
           <ManageVaultErrors {...props} />
           <ManageVaultWarnings {...props} />
+          {stage === 'manageSuccess' && <VaultChangesWithADelayCard />}
           <ManageVaultButton {...props} />
         </>
       )}
