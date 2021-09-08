@@ -2,8 +2,8 @@ import BigNumber from 'bignumber.js'
 import { MAX_COLL_RATIO } from 'features/openMultiplyVault/openMultiplyVaultCalculations'
 import { one, zero } from 'helpers/zero'
 
-export const OAZO_FEE = new BigNumber(0.002)
-export const LOAN_FEE = new BigNumber(0.0009)
+export const OAZO_FEE = new BigNumber(0)
+export const LOAN_FEE = new BigNumber(0.1)
 export const SLIPPAGE = new BigNumber(0.005)
 
 export function calculateParamsIncreaseMP(
@@ -27,32 +27,20 @@ export function calculateParamsIncreaseMP(
         .times(one.plus(FF))
         .minus(oraclePrice.times(one.minus(OF))),
     )
-  const collateral = debt.times(one.minus(OF)).div(marketPriceSlippage)
-  return [debt, collateral]
-}
+  // const collateral = debt.div(one.plus(FF)).div(marketPriceSlippage)
+  const collateral = debt.times(one.minus(OF)).div(marketPriceSlippage) // ORIGINAL
 
-export function calculateParamsIncreaseMP_(
-  oraclePrice: BigNumber,
-  marketPrice: BigNumber,
-  OF: BigNumber,
-  FF: BigNumber,
-  currentCollateral: BigNumber,
-  currentDebt: BigNumber,
-  requiredCollRatio: BigNumber,
-  slippage: BigNumber,
-  depositDai = new BigNumber(0),
-) {
-  const marketPriceSlippage = marketPrice.times(one.plus(slippage))
-  const debt = marketPriceSlippage
-    .times(currentCollateral.times(oraclePrice).minus(requiredCollRatio.times(currentDebt)))
-    .plus(oraclePrice.times(depositDai).minus(oraclePrice.times(depositDai).times(OF)))
-    .div(
-      marketPriceSlippage
-        .times(requiredCollRatio)
-        .times(one.plus(FF))
-        .minus(oraclePrice.times(one.minus(OF))),
-    )
-  const collateral = debt.times(one.minus(OF)).div(marketPriceSlippage)
+  console.log(`
+
+      IMP
+
+      debt ${debt}
+      collateral ${collateral}
+
+      marketPriceMaxSlippage ${marketPriceSlippage}
+      marketPrice ${marketPrice}
+  
+  `)
 
   return [debt, collateral]
 }
