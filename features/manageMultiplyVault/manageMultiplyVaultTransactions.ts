@@ -557,9 +557,9 @@ export function closeVault(
             ? lockedCollateral
             : debt
                 .plus(debtOffset)
-                .times(one.plus(OAZO_FEE.plus(LOAN_FEE)))
+                .times(one.plus(OAZO_FEE).times(one.plus(LOAN_FEE)))
                 // we are blocking UI if marketPrice is undefined so user shouldn't be able to trigger this tx if this is not BN
-                .div(marketPrice as BigNumber),
+                .div((marketPrice as BigNumber).times(one.minus(slippage))),
           slippage,
           'SELL_COLLATERAL',
         ).pipe(

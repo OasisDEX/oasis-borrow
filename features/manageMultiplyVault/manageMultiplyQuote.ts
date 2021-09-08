@@ -200,8 +200,8 @@ export function createExchangeChange$(
                   slippage,
                   debt
                     .plus(debtOffset)
-                    .times(one.plus(OAZO_FEE.plus(LOAN_FEE)))
-                    .div(marketPrice),
+                    .times(one.plus(OAZO_FEE).times(one.plus(LOAN_FEE)))
+                    .div(marketPrice.times(one.minus(slippage))),
                   'SELL_COLLATERAL',
                 )
               }

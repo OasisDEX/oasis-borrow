@@ -530,9 +530,12 @@ function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) 
   } = context
 
   if (data.closeTo === 'collateral') {
-    const debtWithFees = data.totalDebt.times(one.plus(OAZO_FEE.plus(LOAN_FEE)))
+    const debtWithFees = data.totalDebt.times(one.plus(OAZO_FEE).times(one.plus(LOAN_FEE)))
 
-    const fromTokenAmount = amountToWei(debtWithFees.div(data.marketPrice), data.token).toFixed(0)
+    const fromTokenAmount = amountToWei(
+      debtWithFees.div(data.marketPrice.times(one.minus(data.slippage))),
+      data.token,
+    ).toFixed(0)
 
     const toTokenAmount = amountToWei(debtWithFees.times(one.plus(data.slippage)), 'DAI').toFixed(0)
 
