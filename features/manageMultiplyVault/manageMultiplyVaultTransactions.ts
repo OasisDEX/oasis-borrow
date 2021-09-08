@@ -538,7 +538,7 @@ export function closeVault(
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     proxyAddress,
-    vault: { ilk, token, id, lockedCollateral, debtOffset },
+    vault: { ilk, token, id, lockedCollateral, debt, debtOffset },
     closeVaultTo,
     slippage,
     account,
@@ -569,7 +569,7 @@ export function closeVault(
               exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
               userAddress: account!,
               totalCollateral: lockedCollateral,
-              totalDebt: debtOffset,
+              totalDebt: debt.plus(debtOffset),
               marketPrice: swap?.status === 'SUCCESS' ? swap.tokenPrice : zero,
               proxyAddress: proxyAddress!,
             }).pipe(
