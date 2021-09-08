@@ -22,7 +22,7 @@ export function SelectVaultTypeModal({
 }: ModalProps<Props>) {
   const { t } = useTranslation()
 
-  const exposureMultiplier = 1 + 1 / (liquidationRatio - 1.0)
+  const exposureMultiplier = (1 + 1 / (liquidationRatio - 1.0)).toFixed(2)
 
   const maxBorrowAmount = ((1 / liquidationRatio) * 100000).toFixed(2)
 
