@@ -28,6 +28,7 @@ export function calculateParamsIncreaseMP(
         .minus(oraclePrice.times(one.minus(OF))),
     )
   const collateral = debt.times(one.minus(OF)).div(marketPriceSlippage)
+
   return [debt, collateral]
 }
 

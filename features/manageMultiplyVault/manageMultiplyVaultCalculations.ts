@@ -625,7 +625,7 @@ export function applyManageVaultCalculations(
   const netValueUSD = lockedCollateral.times(currentCollateralPrice).minus(debt)
   const afterNetValueUSD = isCloseAction
     ? zero
-    : afterLockedCollateral.times(currentCollateralPrice).minus(debt)
+    : afterLockedCollateral.times(currentCollateralPrice).minus(afterDebt)
 
   const { collateralDelta: buyingPower } = getVaultChange({
     currentCollateralPrice,
