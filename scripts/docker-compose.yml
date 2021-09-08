@@ -1,4 +1,4 @@
-version: "3.2"
+version: '3.2'
 services:
   postgres:
     image: postgres:12
@@ -10,7 +10,7 @@ services:
       - POSTGRES_PORT=5432
       - POSTGRES_DB=db
     ports:
-      - "5432:5432"
+      - '5432:5432'
   localnode:
     image: oasisdexorg/multiply-proxy-actions:latest
     container_name: multiply-proxy-actions
@@ -24,16 +24,17 @@ services:
       - USE_DUMMY=${USE_DUMMY}
       - BLOCK_NUMBER=${BLOCK_NUMBER}
     ports:
-      - "8545:8545"
+      - '8545:8545'
     volumes:
-      - "../.hardhat/cache:/usr/src/mpa/cache"
+      - '../.hardhat/cache:/usr/src/mpa/cache'
   borrow:
     image: oasisdexorg/oasis-borrow:latest
     container_name: oasis-borrow
     depends_on:
       - postgres
       - localnode
-    command: ["./scripts/wait-for-it.sh", "postgres-oasis-borrow:5432", "--", "npm", "run", "start:prod"]
+    command:
+      ['./scripts/wait-for-it.sh', 'postgres-oasis-borrow:5432', '--', 'npm', 'run', 'start:prod']
     environment:
       - CHALLENGE_JWT_SECRET=${CHALLENGE_JWT_SECRET}
       - USER_JWT_SECRET=${USER_JWT_SECRET}
@@ -49,4 +50,4 @@ services:
       - USE_DUMMY=${USE_DUMMY}
       - DATABASE_URL=${DATABASE_URL}
     ports:
-      - "3000:3000"
+      - '3000:3000'

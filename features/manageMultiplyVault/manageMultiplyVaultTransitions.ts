@@ -1,4 +1,5 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { Context } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { zero } from 'helpers/zero'
 import { Observable } from 'rxjs'
@@ -213,6 +214,7 @@ export function applyManageVaultTransition(
 
 export function progressAdjust(
   txHelpers$: Observable<TxHelpers>,
+  context: Context,
   state: ManageMultiplyVaultState,
   change: (ch: ManageMultiplyVaultChange) => void,
 ) {
@@ -224,9 +226,9 @@ export function progressAdjust(
       return manageVaultWithdrawAndPayback(txHelpers$, change, state)
     }
     if (state.otherAction === 'closeVault') {
-      return closeVault(txHelpers$, change, state)
+      return closeVault(txHelpers$, context, change, state)
     }
   } else {
-    return adjustPosition(txHelpers$, change, state)
+    return adjustPosition(txHelpers$, context, change, state)
   }
 }
