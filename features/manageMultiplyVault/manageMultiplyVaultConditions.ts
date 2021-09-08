@@ -252,7 +252,7 @@ export function applyManageVaultConditions(
     swap,
     exchangeError,
     otherAction,
-    originalEditingStage
+    originalEditingStage,
   } = state
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
   const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)

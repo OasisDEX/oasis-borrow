@@ -35,6 +35,7 @@ function TextWithCheckmark({ children }: WithChildren) {
           alignItems: 'center',
           justifyContent: 'center',
           color: 'onSuccess',
+          flexShrink: 0,
         }}
       >
         <Icon name="checkmark" size="auto" width="11px" sx={{ position: 'relative', top: '1px' }} />
@@ -44,24 +45,25 @@ function TextWithCheckmark({ children }: WithChildren) {
   )
 }
 
-function ManageVaultMultiplyTransition({ stage }: ManageVaultState) {
+function ManageVaultMultiplyTransition({ stage, vault }: ManageVaultState) {
+  const { t } = useTranslation()
   return stage === 'multiplyTransitionEditing' ? (
     <Grid mt={-3}>
       <Grid variant="text.paragraph3" sx={{ color: 'text.subtitle' }}>
-        <TextWithCheckmark>Get up to 3x exposure with your ETH </TextWithCheckmark>
         <TextWithCheckmark>
-          A new UI specifically designed for multiplying your Vault
+          {t('vault-form.subtext.checkmark1', { token: vault.token.toUpperCase() })}
         </TextWithCheckmark>
-        <TextWithCheckmark>Grouped transactions for greater efficacy and saving</TextWithCheckmark>
-        <TextWithCheckmark>Adjust risk and exposure in 1 click</TextWithCheckmark>
+        <TextWithCheckmark>{t('vault-form.subtext.checkmark2')}</TextWithCheckmark>
+        <TextWithCheckmark>{t('vault-form.subtext.checkmark3')}</TextWithCheckmark>
+        <TextWithCheckmark>{t('vault-form.subtext.checkmark4')}</TextWithCheckmark>
       </Grid>
       <Divider />
       <Grid gap={2}>
         <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
-          Important
+          {t('vault-form.subtext.subheader2')}
         </Text>
         <Text variant="paragraph3" sx={{ color: 'text.subtitle' }}>
-          Better copy needed.
+          {t('vault-form.subtext.paragraph2')}
         </Text>
       </Grid>
     </Grid>
