@@ -16,7 +16,7 @@ import { Context } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { transactionToX } from 'helpers/form'
-import { OAZO_FEE } from 'helpers/multiply/calculations'
+import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
@@ -542,29 +542,30 @@ export function closeVault(
     closeVaultTo,
     slippage,
     account,
+    marketPrice,
   }: ManageMultiplyVaultState,
 ) {
-  console.log(`
-    vault
-    debt: ${debt}
-    debtOffset: ${debtOffset}
-  `)
-
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ send }) =>
+      switchMap(({ sendWithGasEstimation }) =>
         getQuote$(
           getTokenMetaData('DAI', tokens),
           getTokenMetaData(token, tokens),
           exchange.address,
-          lockedCollateral,
+          closeVaultTo === 'dai'
+            ? lockedCollateral
+            : debt
+                .plus(debtOffset)
+                .times(one.plus(OAZO_FEE.plus(LOAN_FEE)))
+                // we are blocking UI if marketPrice is undefined so user shouldn't be able to trigger this tx if this is not BN
+                .div(marketPrice as BigNumber),
           slippage,
           'SELL_COLLATERAL',
         ).pipe(
           first(),
           switchMap((swap) =>
-            send(closeVaultCall, {
+            sendWithGasEstimation(closeVaultCall, {
               kind: TxMetaKind.closeVault,
               closeTo: closeVaultTo!,
               token,
