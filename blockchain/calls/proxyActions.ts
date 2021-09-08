@@ -541,40 +541,6 @@ function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) 
 
     const minToTokenAmount = amountToWei(debtWithFees, 'DAI').toFixed(0)
 
-    console.log(`
-      CLOSE TO COLLATERAL
-
-      Exchange:
-      fromTokenAddress: ${tokens[data.token].address}
-      toTokenAddress: ${tokens['DAI'].address}
-      fromTokenAmount: ${fromTokenAmount}
-      toTokenAmount: ${toTokenAmount}
-      minToTokenAmount: ${minToTokenAmount}
-      exchangeAddress: ${data.exchangeAddress}
-      _exchangeCalldata: ${data.exchangeData}
-      CDP:
-
-      gemJoin: ${joins[data.ilk]}
-      cdpId: ${data.id.toString()}
-      ilk: ${'0x0000000000000000000000000000000000000000000000000000000000000000'}
-      fundsReceiver: ${data.userAddress}
-      borrowCollateral: ${amountToWei(data.totalCollateral, data.token).toFixed(0)}
-      requiredDebt: ${minToTokenAmount}
-      depositCollateral: ${'0'}
-      withdrawDai: ${'0'}
-      depositDai: ${'0'}
-      withdrawCollateral: ${'0'}
-      skipFL: ${false}
-      methodName: ${''}
-      
-      Address:
-      jug: ${mcdJug.address}
-      manager: ${dssCdpManager.address}
-      multiplyProxyActions: ${dssMultiplyProxyActions.address}
-      aaveLendingPoolProvider: ${aaveLendingPool}
-      exchange: ${exchange.address}
-    `)
-
     return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.closeVaultExitCollateral(
       {
         fromTokenAddress: tokens[data.token].address,
