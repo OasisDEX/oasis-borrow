@@ -4,14 +4,17 @@ import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { MultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
+import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { VaultType } from 'features/generalManageVault/generalManageVault'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { transactionToX } from 'helpers/form'
-import { zero } from 'helpers/zero'
+import { OAZO_FEE } from 'helpers/multiply/calculations'
+import { one, zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
-import { filter, switchMap } from 'rxjs/operators'
+import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
 import Web3 from 'web3'
 
 import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
@@ -266,6 +269,7 @@ export function parseVaultIdFromReceiptLogs({ logs }: Receipt): BigNumber | unde
 
 export function multiplyVault(
   { sendWithGasEstimation }: TxHelpers,
+  { tokens, exchange }: ContextConnected,
   change: (ch: OpenMultiplyVaultChange) => void,
   {
     depositAmount,
@@ -275,51 +279,66 @@ export function multiplyVault(
     buyingCollateral,
     afterOutstandingDebt,
     account,
-    swap,
     slippage,
   }: OpenMultiplyVaultState,
 ) {
-  return sendWithGasEstimation(openMultiplyVault, {
-    kind: TxMetaKind.multiply,
-    depositCollateral: depositAmount || zero,
-    userAddress: account,
-    proxyAddress: proxyAddress!,
-    ilk,
-    token,
-    exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '0x',
-    exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '0x',
-    borrowedCollateral: buyingCollateral,
-    requiredDebt: afterOutstandingDebt,
-    slippage: slippage,
-  })
+  return getQuote$(
+    getTokenMetaData('DAI', tokens),
+    getTokenMetaData(token, tokens),
+    exchange.address,
+    afterOutstandingDebt.times(one.minus(OAZO_FEE)),
+    slippage,
+    'BUY_COLLATERAL',
+  )
     .pipe(
-      transactionToX<OpenMultiplyVaultChange, MultiplyData>(
-        { kind: 'openWaitingForApproval' },
-        (txState) => of({ kind: 'openInProgress', openTxHash: (txState as any).txHash as string }),
-        (txState) =>
-          of({
-            kind: 'openFailure',
-            txError:
-              txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-                ? txState.error
-                : undefined,
-          }),
-        (txState) => {
-          const id = parseVaultIdFromReceiptLogs(
-            txState.status === TxStatus.Success && txState.receipt,
-          )
+      first(),
+      switchMap((swap) =>
+        sendWithGasEstimation(openMultiplyVault, {
+          kind: TxMetaKind.multiply,
+          depositCollateral: depositAmount || zero,
+          userAddress: account,
+          proxyAddress: proxyAddress!,
+          ilk,
+          token,
+          exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '0x',
+          exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '0x',
+          borrowedCollateral: buyingCollateral,
+          requiredDebt: afterOutstandingDebt,
+          slippage: slippage,
+        }).pipe(
+          transactionToX<OpenMultiplyVaultChange, MultiplyData>(
+            { kind: 'openWaitingForApproval' },
+            (txState) =>
+              of({ kind: 'openInProgress', openTxHash: (txState as any).txHash as string }),
+            (txState) =>
+              of({
+                kind: 'openFailure',
+                txError:
+                  txState.status === TxStatus.Error ||
+                  txState.status === TxStatus.CancelledByTheUser
+                    ? txState.error
+                    : undefined,
+              }),
+            (txState) => {
+              const id = parseVaultIdFromReceiptLogs(
+                txState.status === TxStatus.Success && txState.receipt,
+              )
 
-          const jwtToken = jwtAuthGetToken(account as string)
-          if (id && jwtToken) {
-            saveVaultUsingApi$(id, jwtToken, VaultType.Multiply).subscribe()
-          }
+              const jwtToken = jwtAuthGetToken(account as string)
+              if (id && jwtToken) {
+                saveVaultUsingApi$(id, jwtToken, VaultType.Multiply).subscribe()
+              }
 
-          return of({
-            kind: 'openSuccess',
-            id: id!,
-          })
-        },
+              return of({
+                kind: 'openSuccess',
+                id: id!,
+              })
+            },
+          ),
+        ),
       ),
+      startWith({ kind: 'openWaitingForApproval' } as OpenMultiplyVaultChange),
+      catchError(() => of({ kind: 'openFailure' } as OpenMultiplyVaultChange)),
     )
     .subscribe((ch) => change(ch))
 }
