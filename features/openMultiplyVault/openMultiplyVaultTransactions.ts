@@ -2,7 +2,7 @@ import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
-import { MultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActions'
+import { OpenMultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxHelpers } from 'components/AppContext'
 import { VaultType } from 'features/generalManageVault/generalManageVault'
@@ -276,7 +276,8 @@ export function multiplyVault(
     afterOutstandingDebt,
     account,
     swap,
-    slippage,
+    toTokenAmount,
+    fromTokenAmount,
   }: OpenMultiplyVaultState,
 ) {
   return sendWithGasEstimation(openMultiplyVault, {
@@ -290,10 +291,11 @@ export function multiplyVault(
     exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '0x',
     borrowedCollateral: buyingCollateral,
     requiredDebt: afterOutstandingDebt,
-    slippage: slippage,
+    toTokenAmount: toTokenAmount,
+    fromTokenAmount,
   })
     .pipe(
-      transactionToX<OpenMultiplyVaultChange, MultiplyData>(
+      transactionToX<OpenMultiplyVaultChange, OpenMultiplyData>(
         { kind: 'openWaitingForApproval' },
         (txState) => of({ kind: 'openInProgress', openTxHash: (txState as any).txHash as string }),
         (txState) =>

@@ -80,7 +80,6 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
               {marketPriceMaxSlippage
                 ? formatFiatBalance(marketPriceMaxSlippage)
                 : formatFiatBalance(zero)}{' '}
-              {console.log(`${marketPriceMaxSlippage} marketPriceMaxSlippage from form`)}
               <Text as="span" sx={{ color: 'onError' }}>
                 ({formatPercent(impact, { precision: 2 })})
               </Text>
