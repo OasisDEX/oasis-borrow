@@ -14,7 +14,7 @@ import {
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Context } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
-import { getQuote$ } from 'features/exchange/exchange'
+import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { transactionToX } from 'helpers/form'
 import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
@@ -248,8 +248,8 @@ export function adjustPosition(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
         getQuote$(
-          tokens['DAI'].address,
-          tokens[token].address,
+          getTokenMetaData('DAI', tokens),
+          getTokenMetaData(token, tokens),
           exchange.address,
           exchangeAction === 'BUY_COLLATERAL'
             ? (debtDelta as BigNumber).abs().times(one.minus(OAZO_FEE))
@@ -549,8 +549,8 @@ export function closeVault(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
         getQuote$(
-          tokens['DAI'].address,
-          tokens[token].address,
+          getTokenMetaData('DAI', tokens),
+          getTokenMetaData(token, tokens),
           exchange.address,
           lockedCollateral,
           slippage,

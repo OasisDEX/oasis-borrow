@@ -6,7 +6,7 @@ import { MultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
-import { getQuote$ } from 'features/exchange/exchange'
+import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { VaultType } from 'features/generalManageVault/generalManageVault'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
@@ -283,8 +283,8 @@ export function multiplyVault(
   }: OpenMultiplyVaultState,
 ) {
   return getQuote$(
-    tokens['DAI'].address,
-    tokens[token].address,
+    getTokenMetaData('DAI', tokens),
+    getTokenMetaData(token, tokens),
     exchange.address,
     afterOutstandingDebt.times(one.minus(OAZO_FEE)),
     slippage,

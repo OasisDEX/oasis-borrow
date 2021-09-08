@@ -46,7 +46,10 @@ type TokenMetadata = {
   symbol: string
 }
 
-function getTokenMetaData(symbol: string, tokens: Dictionary<ContractDesc, string>): TokenMetadata {
+export function getTokenMetaData(
+  symbol: string,
+  tokens: Dictionary<ContractDesc, string>,
+): TokenMetadata {
   const details = getToken(symbol)
   return {
     address: tokens[symbol].address,
