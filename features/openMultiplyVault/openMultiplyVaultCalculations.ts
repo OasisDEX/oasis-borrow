@@ -142,25 +142,10 @@ export function applyOpenMultiplyVaultCalculations(
 
   const afterOutstandingDebt = borrowedDaiAmount.times(one.plus(LOAN_FEE))
 
-  console.log(`
-  
-        requiredCol             ${requiredCollRatio}
-        requiredCollRatioSafe   ${requiredCollRatioSafe}
-        maxCollRatio            ${maxCollRatio}
-        oraclePrice             ${oraclePrice}
-
-        borrowedDaiAmount ${borrowedDaiAmount}
-        afterOutstandingDebt ${afterOutstandingDebt}
-
-        marketPriceMaxSlippage ${marketPriceMaxSlippage}
-        marketPrice ${marketPrice}
-
-  `)
-
   const toTokenAmount = buyingCollateral.times(one.plus(slippage))
   const toTokenAmountUSD = buyingCollateral.times(marketPriceMaxSlippage)
 
-  const fromTokenAmount = afterOutstandingDebt.div(one.plus(LOAN_FEE))
+  const fromTokenAmount = borrowedDaiAmount
 
   const totalExposure = buyingCollateral?.gt(0) ? buyingCollateral.plus(depositAmount) : zero
   const totalExposureUSD = totalExposure.gt(0) ? totalExposure.times(marketPriceMaxSlippage) : zero
