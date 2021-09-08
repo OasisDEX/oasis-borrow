@@ -117,81 +117,86 @@ export function createExchangeChange$(
     ),
     debounceTime(500),
     switchMap(
-      () =>
+      // () =>
+      //   every5Seconds$.pipe(
+      //     switchMap(() => {
+      //       console.log('every 5 secs')
+
+      //       return state$.pipe(
+      //         switchMap((state) => {
+      //           if (
+      //             state.quote?.status === 'SUCCESS' &&
+      //             state.exchangeAction &&
+      //             state.collateralDelta &&
+      //             state.requiredCollRatio
+      //           ) {
+      //             return exchangeQuote$(
+      //               state.vault.token,
+      //               state.slippage,
+      //               state.exchangeAction === 'BUY_COLLATERAL'
+      //                 ? (state.debtDelta as BigNumber).abs().times(one.minus(OAZO_FEE))
+      //                 : state.collateralDelta.abs(),
+      //               state.exchangeAction,
+      //             )
+      //           }
+      //           if (state.otherAction === 'closeVault') {
+      //             if (state.closeVaultTo === 'collateral') {
+      //               return EMPTY
+      //             }
+      //             if (state.closeVaultTo === 'dai') {
+      //               console.log('GET PRICE FOR CLOSE VAULT')
+      //               return exchangeQuote$(
+      //                 state.vault.token,
+      //                 state.slippage,
+      //                 state.vault.lockedCollateral,
+      //                 'SELL_COLLATERAL',
+      //               )
+      //             }
+      //           }
+      //           return EMPTY
+      //         }),
+      //       )
+      //     }),
+      //     retry(3),
+      //   ),
+      // TO DO for every 5 secs we use old value of afterOutstandingDebt, after fetch we update market price
+      // which is factor for calculatinf afterOutstandingDebt
+      (state) =>
         every5Seconds$.pipe(
           switchMap(() => {
-            console.log('every 5 secs')
-
-            return state$.pipe(
-              switchMap((state) => {
-                if (
-                  state.quote?.status === 'SUCCESS' &&
-                  state.exchangeAction &&
-                  state.collateralDelta &&
-                  state.requiredCollRatio
-                ) {
-                  return exchangeQuote$(
-                    state.vault.token,
-                    state.slippage,
-                    state.exchangeAction === 'BUY_COLLATERAL'
-                      ? (state.debtDelta as BigNumber).abs().times(one.minus(OAZO_FEE))
-                      : state.collateralDelta.abs(),
-                    state.exchangeAction,
-                  )
-                }
-                if (state.otherAction === 'closeVault') {
-                  if (state.closeVaultTo === 'collateral') {
-                    return EMPTY
-                  }
-                  if (state.closeVaultTo === 'dai') {
-                    console.log('GET PRICE FOR CLOSE VAULT')
-                    return exchangeQuote$(
-                      state.vault.token,
-                      state.slippage,
-                      state.vault.lockedCollateral,
-                      'SELL_COLLATERAL',
-                    )
-                  }
-                }
+            if (
+              state.quote?.status === 'SUCCESS' &&
+              state.exchangeAction &&
+              state.collateralDelta &&
+              state.requiredCollRatio
+            ) {
+              return exchangeQuote$(
+                state.vault.token,
+                state.slippage,
+                state.exchangeAction === 'BUY_COLLATERAL'
+                  ? (state.debtDelta as BigNumber).abs().times(one.minus(OAZO_FEE))
+                  : state.collateralDelta.abs(),
+                state.exchangeAction,
+              )
+            }
+            if (state.otherAction === 'closeVault') {
+              if (state.closeVaultTo === 'collateral') {
                 return EMPTY
-              }),
-            )
+              }
+              if (state.closeVaultTo === 'dai') {
+                console.log('GET PRICE FOR CLOSE VAULT')
+                return exchangeQuote$(
+                  state.vault.token,
+                  state.slippage,
+                  state.vault.lockedCollateral,
+                  'SELL_COLLATERAL',
+                )
+              }
+            }
+            return EMPTY
           }),
           retry(3),
         ),
-      // every5Seconds$.pipe(
-      //   switchMap(() => {
-      //     if (
-      //       state.quote?.status === 'SUCCESS' &&
-      //       state.exchangeAction &&
-      //       state.collateralDelta &&
-      //       state.requiredCollRatio
-      //     ) {
-      //       return exchangeQuote$(
-      //         state.vault.token,
-      //         state.slippage,
-      //         state.collateralDelta.abs().times(one.minus(OAZO_FEE)),
-      //         state.exchangeAction,
-      //       )
-      //     }
-      //     if (state.otherAction === 'closeVault') {
-      //       if (state.closeVaultTo === 'collateral') {
-      //         return EMPTY
-      //       }
-      //       if (state.closeVaultTo === 'dai') {
-      //         console.log('GET PRICE FOR CLOSE VAULT')
-      //         return exchangeQuote$(
-      //           state.vault.token,
-      //           state.slippage,
-      //           state.vault.lockedCollateral,
-      //           'SELL_COLLATERAL',
-      //         )
-      //       }
-      //     }
-      //     return EMPTY
-      //   }),
-      //   retry(3),
-      // ),
     ),
     map(swapToChange),
   )

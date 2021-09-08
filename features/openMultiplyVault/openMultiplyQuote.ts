@@ -134,13 +134,6 @@ export function createExchangeChange$(
         every5Seconds$.pipe(
           switchMap(() => {
             if (state.buyingCollateral.gt(0) && state.quote?.status === 'SUCCESS') {
-              console.log(`
-              before 1inch
-
-              afterOuts: ${state.afterOutstandingDebt.toFixed()}
-              afterOutsMinusFee: ${state.afterOutstandingDebt.times(one.minus(OAZO_FEE)).toFixed()}
-            `)
-
               return exchangeQuote$(
                 state.token,
                 state.slippage,

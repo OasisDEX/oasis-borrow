@@ -22,7 +22,7 @@ module.exports = {
     './helpers/**/*.test.ts',
     './helpers/**/*.test.tsx',
     './components/**/*.test.ts',
-    // './features/**/*.test.ts',
+    './features/**/*.test.ts',
     './blockchain/**/*.test.ts',
   ],
   timeout: 1000,

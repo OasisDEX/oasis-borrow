@@ -268,7 +268,7 @@ export function parseVaultIdFromReceiptLogs({ logs }: Receipt): BigNumber | unde
 }
 
 export function multiplyVault(
-  { send }: TxHelpers,
+  { sendWithGasEstimation }: TxHelpers,
   { tokens, exchange }: ContextConnected,
   change: (ch: OpenMultiplyVaultChange) => void,
   {
@@ -293,7 +293,7 @@ export function multiplyVault(
     .pipe(
       first(),
       switchMap((swap) =>
-        send(openMultiplyVault, {
+        sendWithGasEstimation(openMultiplyVault, {
           kind: TxMetaKind.multiply,
           depositCollateral: depositAmount || zero,
           userAddress: account,
