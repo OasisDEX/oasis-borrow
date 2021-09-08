@@ -143,14 +143,6 @@ export function applyOpenMultiplyVaultCalculations(
 
   const fromTokenAmount = afterOutstandingDebt.div(one.plus(LOAN_FEE))
 
-  console.log(
-    `
-      afterOutstandingDebt ${afterOutstandingDebt}, 
-      buyingCollateral ${buyingCollateral}
-      price: ${afterOutstandingDebt.div(buyingCollateral)}
-    `,
-  )
-
   const totalExposure = buyingCollateral?.gt(0) ? buyingCollateral.plus(depositAmount) : zero
   const totalExposureUSD = totalExposure.gt(0) ? totalExposure.times(marketPriceMaxSlippage) : zero
 
