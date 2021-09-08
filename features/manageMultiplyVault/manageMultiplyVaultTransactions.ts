@@ -538,7 +538,7 @@ export function closeVault(
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     proxyAddress,
-    vault: { ilk, token, id, lockedCollateral, debtOffset, debt },
+    vault: { ilk, token, id, lockedCollateral, debt, debtOffset },
     closeVaultTo,
     slippage,
     account,
