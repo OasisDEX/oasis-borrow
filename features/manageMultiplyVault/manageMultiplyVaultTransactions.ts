@@ -12,11 +12,14 @@ import {
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { Context } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
+import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { transactionToX } from 'helpers/form'
-import { zero } from 'helpers/zero'
+import { OAZO_FEE } from 'helpers/multiply/calculations'
+import { one, zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
-import { filter, first, switchMap } from 'rxjs/operators'
+import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
 
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
@@ -227,6 +230,7 @@ export function applyManageVaultTransaction(
 
 export function adjustPosition(
   txHelpers$: Observable<TxHelpers>,
+  { tokens, exchange }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     account,
@@ -236,7 +240,6 @@ export function adjustPosition(
     debtDelta,
     depositAmount,
     collateralDelta,
-    swap,
     slippage,
   }: ManageMultiplyVaultState,
 ) {
@@ -244,42 +247,58 @@ export function adjustPosition(
     .pipe(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
-        sendWithGasEstimation(adjustMultiplyVault, {
-          kind: TxMetaKind.adjustPosition,
-          depositCollateral: depositAmount || zero,
-          requiredDebt: debtDelta?.abs() || zero,
-          borrowedCollateral: collateralDelta?.abs() || zero,
-          userAddress: account!,
-          proxyAddress: proxyAddress!,
-          exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
-          exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
-          slippage: slippage,
-          action: exchangeAction!,
-          token,
-          id,
-          ilk,
-        }).pipe(
-          transactionToX<ManageMultiplyVaultChange, MultiplyAdjustData>(
-            { kind: 'manageWaitingForApproval' },
-            (txState) =>
-              of({
-                kind: 'manageInProgress',
-                manageTxHash: (txState as any).txHash as string,
-              }),
-            (txState) => {
-              return of({
-                kind: 'manageFailure',
-                txError:
-                  txState.status === TxStatus.Error ||
-                  txState.status === TxStatus.CancelledByTheUser
-                    ? txState.error
-                    : undefined,
-              })
-            },
-            () => of({ kind: 'manageSuccess' }),
+        getQuote$(
+          getTokenMetaData('DAI', tokens),
+          getTokenMetaData(token, tokens),
+          exchange.address,
+          exchangeAction === 'BUY_COLLATERAL'
+            ? (debtDelta as BigNumber).abs().times(one.minus(OAZO_FEE))
+            : (collateralDelta as BigNumber).abs(),
+          slippage,
+          exchangeAction!,
+        ).pipe(
+          first(),
+          switchMap((swap) =>
+            sendWithGasEstimation(adjustMultiplyVault, {
+              kind: TxMetaKind.adjustPosition,
+              depositCollateral: depositAmount || zero,
+              requiredDebt: debtDelta?.abs() || zero,
+              borrowedCollateral: collateralDelta?.abs() || zero,
+              userAddress: account!,
+              proxyAddress: proxyAddress!,
+              exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
+              exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
+              slippage: slippage,
+              action: exchangeAction!,
+              token,
+              id,
+              ilk,
+            }).pipe(
+              transactionToX<ManageMultiplyVaultChange, MultiplyAdjustData>(
+                { kind: 'manageWaitingForApproval' },
+                (txState) =>
+                  of({
+                    kind: 'manageInProgress',
+                    manageTxHash: (txState as any).txHash as string,
+                  }),
+                (txState) => {
+                  return of({
+                    kind: 'manageFailure',
+                    txError:
+                      txState.status === TxStatus.Error ||
+                      txState.status === TxStatus.CancelledByTheUser
+                        ? txState.error
+                        : undefined,
+                  })
+                },
+                () => of({ kind: 'manageSuccess' }),
+              ),
+            ),
           ),
         ),
       ),
+      startWith({ kind: 'manageWaitingForApproval' } as ManageMultiplyVaultChange),
+      catchError(() => of({ kind: 'manageFailure' } as ManageMultiplyVaultChange)),
     )
     .subscribe((ch) => change(ch))
 }
@@ -515,13 +534,13 @@ export function createProxy(
 
 export function closeVault(
   txHelpers$: Observable<TxHelpers>,
+  { tokens, exchange }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     proxyAddress,
-    vault: { ilk, token, id, lockedCollateral, debt },
+    vault: { ilk, token, id, lockedCollateral, debt, debtOffset },
     closeVaultTo,
     slippage,
-    swap,
     account,
   }: ManageMultiplyVaultState,
 ) {
@@ -529,42 +548,56 @@ export function closeVault(
     .pipe(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
-        sendWithGasEstimation(closeVaultCall, {
-          kind: TxMetaKind.closeVault,
-          closeTo: closeVaultTo!,
-          token,
-          ilk,
-          id,
-          slippage: slippage,
-          exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
-          exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
-          userAddress: account!,
-          totalCollateral: lockedCollateral,
-          totalDebt: debt,
-          marketPrice: swap?.status === 'SUCCESS' ? swap.tokenPrice : zero,
-          proxyAddress: proxyAddress!,
-        }).pipe(
-          transactionToX<ManageMultiplyVaultChange, WithdrawAndPaybackData>(
-            { kind: 'manageWaitingForApproval' },
-            (txState) =>
-              of({
-                kind: 'manageInProgress',
-                manageTxHash: (txState as any).txHash as string,
-              }),
-            (txState) => {
-              return of({
-                kind: 'manageFailure',
-                txError:
-                  txState.status === TxStatus.Error ||
-                  txState.status === TxStatus.CancelledByTheUser
-                    ? txState.error
-                    : undefined,
-              })
-            },
-            () => of({ kind: 'manageSuccess' }),
+        getQuote$(
+          getTokenMetaData('DAI', tokens),
+          getTokenMetaData(token, tokens),
+          exchange.address,
+          lockedCollateral,
+          slippage,
+          'SELL_COLLATERAL',
+        ).pipe(
+          first(),
+          switchMap((swap) =>
+            sendWithGasEstimation(closeVaultCall, {
+              kind: TxMetaKind.closeVault,
+              closeTo: closeVaultTo!,
+              token,
+              ilk,
+              id,
+              slippage,
+              exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
+              exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
+              userAddress: account!,
+              totalCollateral: lockedCollateral,
+              totalDebt: debt.plus(debtOffset),
+              marketPrice: swap?.status === 'SUCCESS' ? swap.tokenPrice : zero,
+              proxyAddress: proxyAddress!,
+            }).pipe(
+              transactionToX<ManageMultiplyVaultChange, WithdrawAndPaybackData>(
+                { kind: 'manageWaitingForApproval' },
+                (txState) =>
+                  of({
+                    kind: 'manageInProgress',
+                    manageTxHash: (txState as any).txHash as string,
+                  }),
+                (txState) => {
+                  return of({
+                    kind: 'manageFailure',
+                    txError:
+                      txState.status === TxStatus.Error ||
+                      txState.status === TxStatus.CancelledByTheUser
+                        ? txState.error
+                        : undefined,
+                  })
+                },
+                () => of({ kind: 'manageSuccess' }),
+              ),
+            ),
           ),
         ),
       ),
+      startWith({ kind: 'manageWaitingForApproval' } as ManageMultiplyVaultChange),
+      catchError(() => of({ kind: 'manageFailure' } as ManageMultiplyVaultChange)),
     )
     .subscribe((ch) => change(ch))
 }

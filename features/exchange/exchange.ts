@@ -9,7 +9,7 @@ import { Dictionary } from 'ts-essentials'
 
 import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 
-const API_ENDPOINT = `https://api.1inch.exchange/v3.0/1/swap`
+const API_ENDPOINT = `https://oasis.api.enterprise.1inch.exchange/v3.0/1/swap`
 
 interface Response {
   fromToken: TokenDescriptor
@@ -46,7 +46,10 @@ type TokenMetadata = {
   symbol: string
 }
 
-function getTokenMetaData(symbol: string, tokens: Dictionary<ContractDesc, string>): TokenMetadata {
+export function getTokenMetaData(
+  symbol: string,
+  tokens: Dictionary<ContractDesc, string>,
+): TokenMetadata {
   const details = getToken(symbol)
   return {
     address: tokens[symbol].address,
@@ -56,7 +59,7 @@ function getTokenMetaData(symbol: string, tokens: Dictionary<ContractDesc, strin
   }
 }
 
-function getQuote$(
+export function getQuote$(
   dai: TokenMetadata,
   collateral: TokenMetadata,
   account: string,
@@ -79,6 +82,7 @@ function getQuote$(
     slippage: slippage.times(100).toString(),
     disableEstimate: 'true',
     allowPartialFill: 'false',
+    protocols: 'UNISWAP_V3,PMM4,UNISWAP_V2,SUSHI,CURVE,PSM',
   })
 
   return ajax(`${API_ENDPOINT}?${searchParams.toString()}`).pipe(

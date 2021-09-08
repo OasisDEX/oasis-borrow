@@ -255,6 +255,7 @@ export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
 
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
+  context: Context,
   proxyAddress$: Observable<string | undefined>,
   change: (ch: ManageMultiplyVaultChange) => void,
   state: ManageMultiplyVaultState,
@@ -381,7 +382,7 @@ function addTransitions(
   if (state.stage === 'manageWaitingForConfirmation' || state.stage === 'manageFailure') {
     return {
       ...state,
-      progress: () => progressAdjust(txHelpers$, state, change),
+      progress: () => progressAdjust(txHelpers$, context, state, change),
       regress: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -512,7 +513,7 @@ export function createManageMultiplyVault$(
                     scan(apply, initialState),
                     map(validateErrors),
                     map(validateWarnings),
-                    map(curry(addTransitions)(txHelpers$, connectedProxyAddress$, change)),
+                    map(curry(addTransitions)(txHelpers$, context, connectedProxyAddress$, change)),
                     tap((state) => stateSubject$.next(state)),
                   )
                 }),
