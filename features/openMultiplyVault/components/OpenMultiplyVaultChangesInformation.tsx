@@ -26,17 +26,17 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
     afterCollateralizationRatio,
     afterOutstandingDebt,
     totalExposure,
-    buyingCollateral,
-    buyingCollateralUSD,
     token,
     txFees,
     impact,
     loanFees,
     oazoFee,
-    marketPrice,
     inputAmountsEmpty,
     isExchangeLoading,
     slippage,
+    marketPriceMaxSlippage,
+    buyingCollateral,
+    buyingCollateralUSD,
   } = props
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
@@ -76,7 +76,11 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
             <AppSpinner />
           ) : (
             <Text>
-              ${marketPrice ? formatFiatBalance(marketPrice) : formatFiatBalance(zero)}{' '}
+              $
+              {marketPriceMaxSlippage
+                ? formatFiatBalance(marketPriceMaxSlippage)
+                : formatFiatBalance(zero)}{' '}
+              {console.log(`${marketPriceMaxSlippage} marketPriceMaxSlippage from form`)}
               <Text as="span" sx={{ color: 'onError' }}>
                 ({formatPercent(impact, { precision: 2 })})
               </Text>

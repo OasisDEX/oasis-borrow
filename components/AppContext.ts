@@ -23,7 +23,7 @@ import {
   CloseVaultData,
   DepositAndGenerateData,
   MultiplyAdjustData,
-  MultiplyData,
+  OpenMultiplyData,
   OpenData,
   ReclaimData,
   WithdrawAndPaybackData,
@@ -103,7 +103,7 @@ export type TxData =
   | CreateDsProxyData
   | SetProxyOwnerData
   | ReclaimData
-  | MultiplyData
+  | OpenMultiplyData
   | MultiplyAdjustData
   | CloseVaultData
 
