@@ -77,7 +77,7 @@ export interface ManageVaultCalculations {
 
 export const MAX_COLL_RATIO = new BigNumber(5)
 
-export const defaultManageVaultCalculations: ManageVaultCalculations = {
+export const defaultManageMultiplyVaultCalculations: ManageVaultCalculations = {
   maxBuyAmount: zero,
   maxBuyAmountUSD: zero,
 
@@ -521,7 +521,7 @@ export function applyManageVaultCalculations(
   }
 
   if (!marketPrice || !marketPriceMaxSlippage) {
-    return { ...state, ...defaultManageVaultCalculations, ...maxInputAmounts, ...prices }
+    return { ...state, ...defaultManageMultiplyVaultCalculations, ...maxInputAmounts, ...prices }
   }
 
   const { debtDelta, collateralDelta, loanFee, oazoFee } = getVaultChange({
@@ -625,7 +625,7 @@ export function applyManageVaultCalculations(
   const netValueUSD = lockedCollateral.times(currentCollateralPrice).minus(debt)
   const afterNetValueUSD = isCloseAction
     ? zero
-    : afterLockedCollateral.times(currentCollateralPrice).minus(debt)
+    : afterLockedCollateral.times(currentCollateralPrice).minus(afterDebt)
 
   const { collateralDelta: buyingPower } = getVaultChange({
     currentCollateralPrice,

@@ -68,8 +68,8 @@ export function ManageMultiplyVaultFormHeader(props: ManageMultiplyVaultState) {
                 : isDaiAllowanceStage
                 ? t('vault-form.header.daiAllowance')
                 : stage === 'manageInProgress'
-                ? t('vault-form.header.confirm-in-progress')
-                : t('vault-form.header.confirm-manage')}
+                ? t('vault-form.header.modified')
+                : t('vault-form.header.review-manage')}
             </Text>
           </WithVaultFormStepIndicator>
           <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
@@ -80,8 +80,8 @@ export function ManageMultiplyVaultFormHeader(props: ManageMultiplyVaultState) {
               : isDaiAllowanceStage
               ? t('vault-form.subtext.daiAllowance')
               : stage === 'manageInProgress'
-              ? t('vault-form.subtext.confirm-in-progress')
-              : t('vault-form.subtext.confirm')}
+              ? t('vault-form.subtext.modified')
+              : t('vault-form.subtext.review-manage')}
           </Text>
         </Box>
       )}

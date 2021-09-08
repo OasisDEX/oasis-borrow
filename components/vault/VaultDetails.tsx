@@ -1,11 +1,13 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { CommonVaultState, WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
+import { Trans } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
@@ -184,27 +186,43 @@ function VaultDetailsCardCurrentPriceModal({
   currentPrice,
   nextPriceWithChange,
 }: ModalProps<{ currentPrice: ReactNode; nextPriceWithChange: ReactNode }>) {
+  const { t } = useTranslation()
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
-        <Heading variant="header3">Current Price</Heading>
+        <Heading variant="header3">{`${t('manage-multiply-vault.card.current-price')}`}</Heading>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tempor auctor eget magna ac enim
-          lorem tincidunt.
+          {t('manage-multiply-vault.card.current-price-description')}
         </Text>
         <Card variant="vaultDetailsCardModal">
           <Heading variant="header3">{currentPrice}</Heading>
         </Card>
       </Grid>
       <Grid gap={2}>
-        <Heading variant="header3">Next Price</Heading>
+        <Heading variant="header3">{`${t('manage-multiply-vault.card.next-price')}`}</Heading>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tempor auctor eget magna ac enim
-          lorem tincidunt.
+          {`${t('manage-multiply-vault.card.next-price-description')}`}
         </Text>
         <Card variant="vaultDetailsCardModal">
           <Heading variant="header3">{nextPriceWithChange}</Heading>
         </Card>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          <Trans
+            i18nKey="manage-multiply-vault.card.more-info-oracles"
+            components={[
+              <AppLink
+                href="https://kb.oasis.app/help/the-oracle-security-module"
+                withAccountPrefix={false}
+                target="_blank"
+                sx={{
+                  display: 'inline-block',
+                  color: 'primary',
+                  textDecoration: 'underline',
+                }}
+              />,
+            ]}
+          />
+        </Text>
       </Grid>
     </VaultDetailsCardModal>
   )
@@ -227,6 +245,150 @@ export function VaultDetailsCardMockedModal({ close }: ModalProps) {
   )
 }
 
+interface CollaterlizationRatioProps {
+  currentCollateralRatio: BigNumber
+  collateralRatioOnNextPrice: BigNumber
+}
+
+export function VaultDetailsCardCollaterlizationRatioModal({
+  currentCollateralRatio,
+  collateralRatioOnNextPrice,
+  close,
+}: ModalProps<CollaterlizationRatioProps>) {
+  const { t } = useTranslation()
+  return (
+    <VaultDetailsCardModal close={close}>
+      <Grid gap={2}>
+        <Heading variant="header3">{`${t('system.collateralization-ratio')}`}</Heading>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          {t('manage-vault.card.collateralization-ratio-calculated')}
+        </Text>
+        <Heading variant="header3">
+          {t('manage-vault.card.collateralization-ratio-header2')}
+        </Heading>
+        <Card variant="vaultDetailsCardModal">
+          {formatPercent(currentCollateralRatio.times(100).absoluteValue(), {
+            precision: 2,
+            roundMode: BigNumber.ROUND_DOWN,
+          })}
+        </Card>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          {t('manage-vault.card.collateralization-ratio-description')}
+        </Text>
+        <Heading variant="header3">
+          {t('manage-vault.card.collateralization-ratio-next-price')}
+        </Heading>
+        <Card variant="vaultDetailsCardModal">
+          {formatPercent(collateralRatioOnNextPrice.times(100).absoluteValue(), {
+            precision: 2,
+            roundMode: BigNumber.ROUND_DOWN,
+          })}
+        </Card>
+      </Grid>
+    </VaultDetailsCardModal>
+  )
+}
+
+interface CollateralLockedProps {
+  token: string
+  collateralAmountLocked: BigNumber | undefined
+  collateralLockedUSD: BigNumber | undefined
+}
+
+export function VaultDetailsCardCollateralLockedModal({
+  collateralAmountLocked,
+  collateralLockedUSD,
+  token,
+  close,
+}: ModalProps<CollateralLockedProps>) {
+  const { t } = useTranslation()
+  return (
+    <VaultDetailsCardModal close={close}>
+      <Grid gap={2}>
+        <Heading variant="header3">{`${t('system.collateral-locked')}`}</Heading>
+        <Heading variant="header3">{`${t('manage-vault.card.collateral-locked-amount')}`}</Heading>
+        <Card variant="vaultDetailsCardModal">
+          {formatAmount(collateralAmountLocked || zero, getToken(token).symbol)}
+        </Card>
+
+        <Heading variant="header3">{t('manage-vault.card.collateral-locked-USD')}</Heading>
+        <Card variant="vaultDetailsCardModal">
+          {collateralLockedUSD && `$${formatAmount(collateralLockedUSD, 'USD')}`}
+        </Card>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          {t('manage-vault.card.collateral-locked-oracles')}
+        </Text>
+      </Grid>
+    </VaultDetailsCardModal>
+  )
+}
+
+export function VaultDetailsBuyingPowerModal({ close }: ModalProps) {
+  const { t } = useTranslation()
+  return (
+    <VaultDetailsCardModal close={close}>
+      <Grid gap={2}>
+        <Heading variant="header3">{t('manage-multiply-vault.card.buying-power')}</Heading>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          {t('manage-multiply-vault.card.buying-power-description')}
+        </Text>
+      </Grid>
+    </VaultDetailsCardModal>
+  )
+}
+
+export function VaultDetailsNetValueModal({ close }: ModalProps) {
+  const { t } = useTranslation()
+  return (
+    <VaultDetailsCardModal close={close}>
+      <Grid gap={2}>
+        <Heading variant="header3">{t('manage-multiply-vault.card.net-value')}</Heading>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          {t('manage-multiply-vault.card.net-value-description')}
+        </Text>
+      </Grid>
+    </VaultDetailsCardModal>
+  )
+}
+
+interface LiquidationProps {
+  liquidationPrice: BigNumber
+  liquidationPriceCurrentPriceDifference: BigNumber | undefined
+}
+
+export function VaultDetailsLiquidationModal({
+  liquidationPrice,
+  liquidationPriceCurrentPriceDifference,
+  close,
+}: ModalProps<LiquidationProps>) {
+  const { t } = useTranslation()
+  return (
+    <VaultDetailsCardModal close={close}>
+      <Grid gap={2}>
+        <Heading variant="header3">{`${t('system.liquidation-price')}`}</Heading>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          {t('manage-multiply-vault.card.liquidation-price-description')}
+        </Text>
+        <Heading variant="header3">
+          {t('manage-multiply-vault.card.liquidation-price-current')}
+        </Heading>
+        <Card variant="vaultDetailsCardModal">{`$${formatAmount(liquidationPrice, 'USD')}`}</Card>
+        {liquidationPriceCurrentPriceDifference && (
+          <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+            {t(
+              'manage-multiply-vault.card.liquidation-percentage-below',
+              formatPercent(liquidationPriceCurrentPriceDifference.times(100).absoluteValue(), {
+                precision: 2,
+                roundMode: BigNumber.ROUND_DOWN,
+              }),
+            )}
+          </Text>
+        )}
+      </Grid>
+    </VaultDetailsCardModal>
+  )
+}
+
 export function VaultDetailsCardLiquidationPrice({
   liquidationPrice,
   liquidationPriceCurrentPriceDifference,
@@ -243,7 +405,7 @@ export function VaultDetailsCardLiquidationPrice({
 
   return (
     <VaultDetailsCard
-      title={`${t('system.liquidation-price')}`}
+      title={t('system.liquidation-price')}
       value={`$${formatAmount(liquidationPrice, 'USD')}`}
       valueAfter={showAfterPill && `$${formatAmount(afterLiquidationPrice || zero, 'USD')}`}
       valueBottom={
@@ -261,7 +423,12 @@ export function VaultDetailsCardLiquidationPrice({
           </>
         )
       }
-      openModal={() => openModal(VaultDetailsCardMockedModal)}
+      openModal={() =>
+        openModal(VaultDetailsLiquidationModal, {
+          liquidationPrice: liquidationPrice,
+          liquidationPriceCurrentPriceDifference: liquidationPriceCurrentPriceDifference,
+        })
+      }
       afterPillColors={afterPillColors}
     />
   )
@@ -349,7 +516,13 @@ export function VaultDetailsCardCollateralLocked({
           </Text>
         </>
       }
-      openModal={() => openModal(VaultDetailsCardMockedModal)}
+      openModal={() =>
+        openModal(VaultDetailsCardCollateralLockedModal, {
+          token: token,
+          collateralAmountLocked: depositAmount,
+          collateralLockedUSD: afterDepositAmountUSD,
+        })
+      }
       afterPillColors={afterPillColors}
     />
   )

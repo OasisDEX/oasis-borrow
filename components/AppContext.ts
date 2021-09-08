@@ -68,7 +68,7 @@ import { curry } from 'ramda'
 import { combineLatest, Observable, of } from 'rxjs'
 import { filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
-import { catIlk } from '../blockchain/calls/cat'
+import { dogIlk } from '../blockchain/calls/dog'
 import {
   ApproveData,
   DisapproveData,
@@ -206,7 +206,7 @@ export function setupAppContext() {
   const vatGem$ = observe(onEveryBlock$, context$, vatGem, ilkUrnAddressToString)
   const spotIlks$ = observe(onEveryBlock$, context$, spotIlk)
   const jugIlks$ = observe(onEveryBlock$, context$, jugIlk)
-  const catIlks$ = observe(onEveryBlock$, context$, catIlk)
+  const dogIlks$ = observe(onEveryBlock$, context$, dogIlk)
 
   const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)
@@ -227,7 +227,7 @@ export function setupAppContext() {
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
 
   const ilkData$ = memoize(
-    curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, catIlks$, ilkToToken$),
+    curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, dogIlks$, ilkToToken$),
   )
 
   const controller$ = memoize(

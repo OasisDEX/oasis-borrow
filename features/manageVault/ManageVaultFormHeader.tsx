@@ -14,13 +14,25 @@ function ManageVaultEditingController({
   isMultiplyTransitionStage,
   totalSteps,
   currentStep,
+  vault: { token },
+  setMainAction,
+  mainAction,
 }: ManageVaultState) {
   const { t } = useTranslation()
-  const collateralVariant = `vaultEditingController${
-    stage === 'collateralEditing' ? '' : 'Inactive'
-  }`
-  const daiVariant = `vaultEditingController${stage === 'daiEditing' ? '' : 'Inactive'}`
-  const multiplyVariant = `vaultEditingController${isMultiplyTransitionStage ? '' : 'Inactive'}`
+  const isDaiEditing = stage === 'daiEditing'
+  const isCollateralEditing = stage === 'collateralEditing'
+
+  const collateralVariant = isCollateralEditing
+    ? 'vaultEditingController'
+    : 'vaultEditingControllerInactive'
+
+  const daiVariant = isDaiEditing ? 'vaultEditingController' : 'vaultEditingControllerInactive'
+
+  const multiplyVariant = isMultiplyTransitionStage
+    ? 'vaultEditingController'
+    : 'vaultEditingControllerInactive'
+
+  const beanTokenName = isDaiEditing ? 'DAI' : token
 
   function handleToggle(stage: ManageVaultEditingStage) {
     toggle!(stage)
@@ -45,13 +57,21 @@ function ManageVaultEditingController({
           Multiply
         </Button>
       </Grid>
-      {/* TO DO, refactor main action buy/sell as for multiply for manage */}
       {isEditingStage && (
         <WithVaultFormStepIndicator {...{ totalSteps, currentStep }}>
           <Flex>
-            <Button variant="beanActive">Mock Deposit ETH</Button>
-            <Button variant="bean" sx={{ ml: 3 }}>
-              Mock Withdraw ETH
+            <Button
+              onClick={() => setMainAction!('depositGenerate')}
+              variant={mainAction === 'depositGenerate' ? 'beanActive' : 'bean'}
+            >
+              {t(isDaiEditing ? 'vault-actions.generate' : 'vault-actions.deposit')} {beanTokenName}
+            </Button>
+            <Button
+              onClick={() => setMainAction!('withdrawPayback')}
+              variant={mainAction === 'withdrawPayback' ? 'beanActive' : 'bean'}
+              sx={{ ml: 3 }}
+            >
+              {t(isDaiEditing ? 'vault-actions.payback' : 'vault-actions.withdraw')} {beanTokenName}
             </Button>
           </Flex>
         </WithVaultFormStepIndicator>
@@ -89,7 +109,7 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
                 ? t('vault-form.header.daiAllowance')
                 : isManageStage
                 ? stage === 'manageInProgress'
-                  ? t('vault-form.header.confirm-in-progress')
+                  ? t('vault-form.header.modified')
                   : t('vault-form.header.confirm-manage')
                 : stage === 'multiplyTransitionEditing'
                 ? 'Get up to [x] ETH exposure from your Vault'
@@ -104,8 +124,8 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
               : isDaiAllowanceStage
               ? t('vault-form.subtext.daiAllowance')
               : stage === 'manageInProgress'
-              ? t('vault-form.subtext.confirm-in-progress')
-              : t('vault-form.subtext.confirm')}
+              ? t('vault-form.subtext.modified')
+              : t('vault-form.subtext.review-manage')}
           </Text>
         </Box>
       )}

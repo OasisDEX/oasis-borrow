@@ -45,7 +45,7 @@ module.exports = withBundleAnalyzer(
           multiplyProxyActions: process.env.MULTIPLY_PROXY_ACTIONS,
         },
         webpack: function (config, { isServer }) {
-          // TODO: Figure out how to disable mangling partially without bresking the aplication.
+          // TODO: Figure out how to disable mangling partially without breaking the aplication.
           // To test if your changes break the app or no - go to /owner/<address> page for an account that has some vaults and see if they are displayed.
           config.optimization.minimizer[0].options.terserOptions.mangle = false
           config.module.rules.push({

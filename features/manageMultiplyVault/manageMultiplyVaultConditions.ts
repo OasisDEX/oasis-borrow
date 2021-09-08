@@ -164,7 +164,7 @@ export interface ManageVaultConditions {
   withdrawCollateralOnVaultUnderDebtFloor: boolean
 }
 
-export const defaultManageVaultConditions: ManageVaultConditions = {
+export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   ...defaultManageVaultStageCategories,
   canProgress: false,
   canRegress: false,

@@ -2,7 +2,7 @@ import { appContext, isAppContextAvailable } from 'components/AppContextProvider
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { OpenMultiplyVaultView } from 'features/openMultiplyVault/components/OpenMultiplyVaultView'
 import {
-  defaultMutableOpenVaultState,
+  defaultMutableOpenMultiplyVaultState,
   MutableOpenMultiplyVaultState,
 } from 'features/openMultiplyVault/openMultiplyVault'
 import {
@@ -34,7 +34,7 @@ export function openMultiplyVaultStory({
   return ({
     depositAmount,
     ...otherState
-  }: Partial<MutableOpenMultiplyVaultState> = defaultMutableOpenVaultState) => () => {
+  }: Partial<MutableOpenMultiplyVaultState> = defaultMutableOpenMultiplyVaultState) => () => {
     const obs$ = mockOpenMultiplyVault({
       _ilks$,
       balanceInfo,

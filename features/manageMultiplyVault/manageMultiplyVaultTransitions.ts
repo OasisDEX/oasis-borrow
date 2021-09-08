@@ -5,11 +5,14 @@ import { zero } from 'helpers/zero'
 import { Observable } from 'rxjs'
 
 import {
+  defaultMutableManageMultiplyVaultState,
   ManageMultiplyVaultChange,
   ManageMultiplyVaultEditingStage,
   ManageMultiplyVaultState,
 } from './manageMultiplyVault'
-import { manageVaultFormDefaults } from './manageMultiplyVaultForm'
+import { defaultManageMultiplyVaultCalculations } from './manageMultiplyVaultCalculations'
+import { defaultManageMultiplyVaultConditions } from './manageMultiplyVaultConditions'
+import { manageMultiplyInputsDefaults, manageVaultFormDefaults } from './manageMultiplyVaultForm'
 import {
   adjustPosition,
   closeVault,
@@ -41,6 +44,9 @@ export type ManageVaultTransitionChange =
     }
   | {
       kind: 'regressDaiAllowance'
+    }
+  | {
+      kind: 'clear'
     }
 
 export function applyManageVaultTransition(
@@ -191,6 +197,16 @@ export function applyManageVaultTransition(
       return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
     }
     return { ...state, stage: originalEditingStage }
+  }
+
+  if (change.kind === 'clear') {
+    return {
+      ...state,
+      ...defaultMutableManageMultiplyVaultState,
+      ...defaultManageMultiplyVaultCalculations,
+      ...defaultManageMultiplyVaultConditions,
+      ...manageMultiplyInputsDefaults,
+    }
   }
 
   return state

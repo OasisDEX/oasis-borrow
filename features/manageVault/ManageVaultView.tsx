@@ -8,7 +8,7 @@ import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Divider, Flex, Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
@@ -126,8 +126,15 @@ export function ManageVaultContainer({
 }) {
   const {
     vault: { id, ilk },
+    clear,
   } = manageVault
   const { t } = useTranslation()
+
+  useEffect(() => {
+    return () => {
+      clear()
+    }
+  }, [])
 
   return (
     <>

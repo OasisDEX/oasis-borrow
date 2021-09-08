@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
 
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
-import { manageInputsDefaults } from './manageMultiplyVaultForm'
+import { manageMultiplyInputsDefaults } from './manageMultiplyVaultForm'
 
 interface DepositAmountChange {
   kind: 'depositAmount'
@@ -282,7 +282,7 @@ export function applyManageVaultInput(
   if (change.kind === 'requiredCollRatio') {
     return {
       ...state,
-      ...manageInputsDefaults,
+      ...manageMultiplyInputsDefaults,
       requiredCollRatio: change.requiredCollRatio,
     }
   }
@@ -294,7 +294,7 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...manageInputsDefaults,
+      ...manageMultiplyInputsDefaults,
       buyAmount,
       buyAmountUSD,
     }
@@ -307,7 +307,7 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...manageInputsDefaults,
+      ...manageMultiplyInputsDefaults,
       buyAmount,
       buyAmountUSD,
     }
@@ -319,7 +319,7 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...manageInputsDefaults,
+      ...manageMultiplyInputsDefaults,
       buyAmount: zero,
       buyAmountUSD: zero,
     }
@@ -332,7 +332,7 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...manageInputsDefaults,
+      ...manageMultiplyInputsDefaults,
       sellAmount,
       sellAmountUSD,
     }
@@ -349,7 +349,7 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...manageInputsDefaults,
+      ...manageMultiplyInputsDefaults,
       sellAmount,
       sellAmountUSD,
     }
@@ -365,7 +365,7 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...manageInputsDefaults,
+      ...manageMultiplyInputsDefaults,
       sellAmount: freeCollateral,
       sellAmountUSD: freeCollateralUSD,
     }
@@ -378,7 +378,7 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...manageInputsDefaults,
+      ...manageMultiplyInputsDefaults,
       depositAmount: change.depositAmount,
       depositAmountUSD: change.depositAmount?.times(currentCollateralPrice),
     }
@@ -391,7 +391,7 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...manageInputsDefaults,
+      ...manageMultiplyInputsDefaults,
       depositAmountUSD: change.depositAmountUSD,
       depositAmount: change.depositAmountUSD?.div(currentCollateralPrice),
     }
@@ -402,7 +402,7 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...manageInputsDefaults,
+      ...manageMultiplyInputsDefaults,
       depositAmount: maxDepositAmount,
       depositAmountUSD: maxDepositAmountUSD,
     }
@@ -411,7 +411,7 @@ export function applyManageVaultInput(
   if (change.kind === 'paybackAmount') {
     return {
       ...state,
-      ...manageInputsDefaults,
+      ...manageMultiplyInputsDefaults,
       paybackAmount: change.paybackAmount,
     }
   }
@@ -421,7 +421,7 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...manageInputsDefaults,
+      ...manageMultiplyInputsDefaults,
       paybackAmount: maxPaybackAmount,
     }
   }
@@ -430,7 +430,7 @@ export function applyManageVaultInput(
     const { priceInfo } = state
     return {
       ...state,
-      ...manageInputsDefaults,
+      ...manageMultiplyInputsDefaults,
       withdrawAmount: change.withdrawAmount,
       withdrawAmountUSD: change.withdrawAmount?.times(priceInfo.currentCollateralPrice),
     }
@@ -440,7 +440,7 @@ export function applyManageVaultInput(
     const { priceInfo } = state
     return {
       ...state,
-      ...manageInputsDefaults,
+      ...manageMultiplyInputsDefaults,
       withdrawAmountUSD: change.withdrawAmountUSD,
       withdrawAmount: change.withdrawAmountUSD?.div(priceInfo.currentCollateralPrice),
     }
@@ -451,7 +451,7 @@ export function applyManageVaultInput(
 
     return {
       ...state,
-      ...manageInputsDefaults,
+      ...manageMultiplyInputsDefaults,
       withdrawAmount: maxWithdrawAmount,
       withdrawAmountUSD: maxWithdrawAmountUSD,
     }
@@ -460,7 +460,7 @@ export function applyManageVaultInput(
   if (change.kind === 'generateAmount') {
     return {
       ...state,
-      ...manageInputsDefaults,
+      ...manageMultiplyInputsDefaults,
       generateAmount: change.generateAmount,
     }
   }
@@ -469,7 +469,7 @@ export function applyManageVaultInput(
     const { maxGenerateAmount } = state
     return {
       ...state,
-      ...manageInputsDefaults,
+      ...manageMultiplyInputsDefaults,
       generateAmount: maxGenerateAmount,
     }
   }

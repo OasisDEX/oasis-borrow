@@ -346,6 +346,28 @@ describe('manageMultiplyVault', () => {
         state().updateGenerateAmount!(generateAmount)
         expect(state().totalSteps).to.deep.equal(2)
       })
+
+      it('should clear form values and go to editing stage', () => {
+        const requiredCollRatio = new BigNumber('2')
+
+        const state = getStateUnpacker(
+          mockManageMultiplyVault$({
+            proxyAddress: DEFAULT_PROXY_ADDRESS,
+            collateralAllowance: maxUint256,
+            vault: {
+              ilk: 'WBTC-A',
+            },
+          }),
+        )
+
+        state().updateRequiredCollRatio!(requiredCollRatio)
+        state().progress!()
+        expect(state().stage).to.deep.equal('manageWaitingForConfirmation')
+
+        state().clear()
+        expect(state().stage).to.deep.equal('adjustPosition')
+        expect(state().requiredCollRatio).to.be.undefined
+      })
     })
 
     describe('create proxy flow', () => {

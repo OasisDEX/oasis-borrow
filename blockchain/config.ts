@@ -13,7 +13,7 @@ import * as erc20 from './abi/erc20.json'
 import * as exchange from './abi/exchange.json'
 import * as getCdps from './abi/get-cdps.json'
 import * as otc from './abi/matching-market.json'
-import * as mcdCat from './abi/mcd-cat.json'
+import * as mcdDog from './abi/mcd-dog.json'
 import * as mcdEnd from './abi/mcd-end.json'
 import * as mcdJoinDai from './abi/mcd-join-dai.json'
 import * as mcdJug from './abi/mcd-jug.json'
@@ -66,7 +66,7 @@ const protoMain = {
   mcdPot: contractDesc(mcdPot, mainnetAddresses.MCD_POT),
   mcdEnd: contractDesc(mcdEnd, mainnetAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, mainnetAddresses.MCD_SPOT),
-  mcdCat: contractDesc(mcdCat, mainnetAddresses.MCD_CAT),
+  mcdDog: contractDesc(mcdDog, mainnetAddresses.MCD_DOG),
   dssCdpManager: contractDesc(dssCdpManager, mainnetAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x9b3f075b12513afe56ca2ed838613b7395f57839'),
   vat: contractDesc(vat, mainnetAddresses.MCD_VAT),
@@ -126,7 +126,7 @@ const kovan: NetworkConfig = {
   mcdJug: contractDesc(mcdJug, kovanAddresses.MCD_JUG),
   mcdEnd: contractDesc(mcdEnd, kovanAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, kovanAddresses.MCD_SPOT),
-  mcdCat: contractDesc(mcdCat, kovanAddresses.MCD_CAT),
+  mcdDog: contractDesc(mcdDog, kovanAddresses.MCD_DOG),
   dssCdpManager: contractDesc(dssCdpManager, kovanAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x303f2bf24d98325479932881657f45567b3e47a8'),
   vat: contractDesc(vat, kovanAddresses.MCD_VAT),
@@ -150,7 +150,7 @@ const kovan: NetworkConfig = {
   magicLink: {
     apiKey: 'pk_test_E72F1844D7C09A07',
   },
-  cacheApi: 'https://oazo-bcache-kovan-staging.new.oasis.app/api/v1 ',
+  cacheApi: 'https://oazo-bcache-kovan-staging.new.oasis.app/api/v1',
 }
 
 const hardhat: NetworkConfig = {

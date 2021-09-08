@@ -80,31 +80,15 @@ type OmitInTuple<T> = T extends readonly [any, ...any[]]
 
 interface WithLoadingIndicatorProps<T> {
   value: T | undefined
-  error: any
   children: (loadable: OmitInTuple<T>) => ReactElement
   variant?: string
-  customError?: ReactElement
   customLoader?: ReactElement
 }
 
 export function WithLoadingIndicator<T extends readonly [any, ...any[]] | object>(
   props: WithLoadingIndicatorProps<T>,
 ) {
-  const { value, error, children, customError, customLoader } = props
-
-  if (Array.isArray(error) ? error.some((el) => el !== undefined) : error !== undefined) {
-    console.info('Error:', error)
-
-    return (
-      customError || (
-        <Box>
-          {Array.isArray(error)
-            ? error.map((el, i) => <Box key={i}>{el ? el.message || 'Error' : null}</Box>)
-            : error?.message || 'Error'}
-        </Box>
-      )
-    )
-  }
+  const { value, children, customLoader } = props
 
   if (Array.isArray(value) ? value.some((el) => el === undefined) : value === undefined) {
     return customLoader || <AppSpinnerWholePage />

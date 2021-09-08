@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { CatIlk } from 'blockchain/calls/cat'
+import { DogIlk } from 'blockchain/calls/dog'
 import { JugIlk } from 'blockchain/calls/jug'
 import { SpotIlk } from 'blockchain/calls/spot'
 import { VatIlk } from 'blockchain/calls/vat'
@@ -20,7 +20,7 @@ export interface MockIlkDataProps {
   _vatIlk$?: Observable<VatIlk>
   _spotIlk$?: Observable<SpotIlk>
   _jugIlk$?: Observable<JugIlk>
-  _catIlk$?: Observable<CatIlk>
+  _dogIlk$?: Observable<DogIlk>
   stabilityFee?: BigNumber
   debtFloor?: BigNumber
   debtCeiling?: BigNumber
@@ -60,7 +60,7 @@ export function mockIlkData$({
   _vatIlk$,
   _spotIlk$,
   _jugIlk$,
-  _catIlk$,
+  _dogIlk$,
   stabilityFee,
   debtFloor,
   debtCeiling,
@@ -123,18 +123,17 @@ export function mockIlkData$({
     )
   }
 
-  function catIlks$() {
+  function dogIlks$() {
     return (
-      _catIlk$ ||
+      _dogIlk$ ||
       of({
         liquidatorAddress: '0xLiquidatorAddress',
         liquidationPenalty: new BigNumber('0.13'),
-        maxAuctionLotSize: new BigNumber('50000'),
       })
     )
   }
 
-  return createIlkData$(vatIlks$, spotIlks$, jugIlks$, catIlks$, ilkToToken$, ilk || defaultIlk)
+  return createIlkData$(vatIlks$, spotIlks$, jugIlks$, dogIlks$, ilkToToken$, ilk || defaultIlk)
 }
 
 export function mockIlkData(props: MockIlkDataProps = {}) {

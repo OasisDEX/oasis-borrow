@@ -17,13 +17,13 @@ const config = {
   test: {
     mixpanel: {
       token,
-      config: { debug: false, ip: false, api_host: 'https://mpp.oazolabs.xyz' },
+      config: { debug: false, ip: false, api_host: 'https://mpp.staging.oasis.app' },
     },
   },
   prod: {
     mixpanel: {
       token,
-      config: { ip: false, api_host: 'https://mpp.oazolabs.xyz' },
+      config: { ip: false, api_host: 'https://mpp.oasis.app' },
     },
   },
 }[env]

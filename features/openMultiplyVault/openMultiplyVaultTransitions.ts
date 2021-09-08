@@ -1,7 +1,13 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { zero } from 'helpers/zero'
 
-import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
+import {
+  defaultMutableOpenMultiplyVaultState,
+  OpenMultiplyVaultChange,
+  OpenMultiplyVaultState,
+} from './openMultiplyVault'
+import { defaultOpenMultiplyVaultStateCalculations } from './openMultiplyVaultCalculations'
+import { defaultOpenMultiplyVaultConditions } from './openMultiplyVaultConditions'
 
 export type OpenVaultTransitionChange =
   | {
@@ -15,6 +21,9 @@ export type OpenVaultTransitionChange =
     }
   | {
       kind: 'regressAllowance'
+    }
+  | {
+      kind: 'clear'
     }
 
 export function applyOpenVaultTransition(
@@ -70,6 +79,18 @@ export function applyOpenVaultTransition(
             allowanceAmount: maxUint256,
             selectedAllowanceRadio: 'unlimited',
           }),
+    }
+  }
+
+  if (change.kind === 'clear') {
+    return {
+      ...state,
+      ...defaultMutableOpenMultiplyVaultState,
+      ...defaultOpenMultiplyVaultStateCalculations,
+      ...defaultOpenMultiplyVaultConditions,
+      depositAmount: undefined,
+      depositAmountUSD: undefined,
+      requiredCollRatio: undefined,
     }
   }
 

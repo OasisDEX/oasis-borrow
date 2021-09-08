@@ -125,6 +125,7 @@ interface OpenVaultFunctions {
   setAllowanceAmountUnlimited?: () => void
   setAllowanceAmountToDepositAmount?: () => void
   setAllowanceAmountCustom?: () => void
+  clear: () => void
   injectStateOverride: (state: Partial<MutableOpenVaultState>) => void
 }
 
@@ -328,6 +329,7 @@ export function createOpenVault$(
                       summary: defaultOpenVaultSummary,
                       totalSteps,
                       currentStep: 1,
+                      clear: () => change({ kind: 'clear' }),
                       injectStateOverride,
                     }
 
