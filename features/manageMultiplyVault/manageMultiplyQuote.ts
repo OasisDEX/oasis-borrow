@@ -180,12 +180,14 @@ export function createExchangeChange$(
               )
             }
             if (state.otherAction === 'closeVault') {
-              return exchangeQuote$(
-                state.vault.token,
-                state.slippage,
-                state.vault.lockedCollateral,
-                'SELL_COLLATERAL',
-              )
+              if (state.closeVaultTo === 'dai') {
+                return exchangeQuote$(
+                  state.vault.token,
+                  state.slippage,
+                  state.vault.lockedCollateral,
+                  'SELL_COLLATERAL',
+                )
+              }
             }
             return EMPTY
           }),
