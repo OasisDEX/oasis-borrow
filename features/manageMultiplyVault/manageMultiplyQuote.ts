@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
-import { OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
+import { LOAN_FEE, OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
 import { one } from 'helpers/zero'
 import { EMPTY, Observable } from 'rxjs'
 import {
@@ -164,33 +164,50 @@ export function createExchangeChange$(
       (state) =>
         every5Seconds$.pipe(
           switchMap(() => {
+            const {
+              quote,
+              exchangeAction,
+              collateralDelta,
+              debtDelta,
+              requiredCollRatio,
+              slippage,
+              otherAction,
+              closeVaultTo,
+              marketPrice,
+              vault: { token, lockedCollateral, debt, debtOffset },
+            } = state
+
             if (
-              state.quote?.status === 'SUCCESS' &&
-              state.exchangeAction &&
-              state.collateralDelta &&
-              state.requiredCollRatio
+              quote?.status === 'SUCCESS' &&
+              exchangeAction &&
+              collateralDelta &&
+              requiredCollRatio
             ) {
               return exchangeQuote$(
-                state.vault.token,
-                state.slippage,
-                state.exchangeAction === 'BUY_COLLATERAL'
-                  ? (state.debtDelta as BigNumber).abs().times(one.minus(OAZO_FEE))
-                  : state.collateralDelta.abs(),
-                state.exchangeAction,
+                token,
+                slippage,
+                exchangeAction === 'BUY_COLLATERAL'
+                  ? (debtDelta as BigNumber).abs().times(one.minus(OAZO_FEE))
+                  : collateralDelta.abs(),
+                exchangeAction,
               )
             }
-            if (state.otherAction === 'closeVault') {
-              if (state.closeVaultTo === 'collateral') {
-                return EMPTY
-              }
-              if (state.closeVaultTo === 'dai') {
-                console.log('GET PRICE FOR CLOSE VAULT')
+
+            if (otherAction === 'closeVault') {
+              if (closeVaultTo === 'collateral' && marketPrice) {
                 return exchangeQuote$(
-                  state.vault.token,
-                  state.slippage,
-                  state.vault.lockedCollateral,
+                  token,
+                  slippage,
+                  debt
+                    .plus(debtOffset)
+                    .times(one.plus(OAZO_FEE).times(one.plus(LOAN_FEE)))
+                    .div(marketPrice.times(one.minus(slippage))),
                   'SELL_COLLATERAL',
                 )
+              }
+
+              if (closeVaultTo === 'dai') {
+                return exchangeQuote$(token, slippage, lockedCollateral, 'SELL_COLLATERAL')
               }
             }
             return EMPTY

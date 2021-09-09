@@ -6,7 +6,7 @@ import { ContextConnected } from 'blockchain/network'
 import { amountToWad, amountToWei } from 'blockchain/utils'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { CloseVaultTo } from 'features/manageMultiplyVault/manageMultiplyVault'
-import { OAZO_FEE } from 'helpers/multiply/calculations'
+import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
@@ -530,7 +530,49 @@ function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) 
   } = context
 
   if (data.closeTo === 'collateral') {
-    throw new Error('NOT IMPLEMENTED')
+    const debtWithFees = data.totalDebt.times(one.plus(OAZO_FEE).times(one.plus(LOAN_FEE)))
+
+    const fromTokenAmount = amountToWei(
+      debtWithFees.div(data.marketPrice.times(one.minus(data.slippage))),
+      data.token,
+    ).toFixed(0)
+
+    const toTokenAmount = amountToWei(debtWithFees.times(one.plus(data.slippage)), 'DAI').toFixed(0)
+
+    const minToTokenAmount = amountToWei(debtWithFees, 'DAI').toFixed(0)
+
+    return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.closeVaultExitCollateral(
+      {
+        fromTokenAddress: tokens[data.token].address,
+        toTokenAddress: tokens['DAI'].address,
+        fromTokenAmount,
+        toTokenAmount,
+        minToTokenAmount,
+        exchangeAddress: data.exchangeAddress,
+        _exchangeCalldata: data.exchangeData,
+      } as any,
+      {
+        gemJoin: joins[data.ilk],
+        cdpId: data.id.toString(),
+        ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        fundsReceiver: data.userAddress,
+        borrowCollateral: amountToWei(data.totalCollateral, data.token).toFixed(0),
+        requiredDebt: minToTokenAmount,
+        depositCollateral: '0',
+        withdrawDai: '0',
+        depositDai: '0',
+        withdrawCollateral: '0',
+        skipFL: false,
+        methodName: '',
+      } as any,
+      {
+        jug: mcdJug.address,
+        manager: dssCdpManager.address,
+        multiplyProxyActions: dssMultiplyProxyActions.address,
+        aaveLendingPoolProvider: aaveLendingPool,
+        exchange: exchange.address,
+      } as any,
+    )
   } else {
     return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.closeVaultExitDai(
       {

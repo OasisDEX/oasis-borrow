@@ -421,11 +421,11 @@ export function applyManageVaultCalculations(
     paybackAmount = zero,
     generateAmount = zero,
     withdrawAmount = zero,
-    stage,
     otherAction,
+    originalEditingStage,
   } = state
 
-  const isCloseAction = stage === 'otherActions' && otherAction === 'closeVault'
+  const isCloseAction = originalEditingStage === 'otherActions' && otherAction === 'closeVault'
 
   const marketPrice =
     swap?.status === 'SUCCESS'
