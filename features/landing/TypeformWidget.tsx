@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 
 export function TypeformWidget() {
-  const scriptId = 'typeform-widget'
+  const scriptId = 'typeform-widget-script'
 
   useEffect(() => {
     if (document.querySelector(`script#${scriptId}`) !== null) {
@@ -11,7 +11,7 @@ export function TypeformWidget() {
     script.id = scriptId
     script.src = '//embed.typeform.com/next/embed.js'
     document.body.append(script)
-  })
+  }, [])
 
   return (
     <div
