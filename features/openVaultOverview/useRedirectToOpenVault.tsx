@@ -14,8 +14,7 @@ export function useRedirectToOpenVault() {
       return openModal(SelectVaultTypeModal, {
         ilk: ilk,
         token: token,
-        liquidationRatio: parseFloat(liquidationRatio.toFixed(2)),
-        balance: new BigNumber(1),
+        liquidationRatio: liquidationRatio,
       })
     }
 

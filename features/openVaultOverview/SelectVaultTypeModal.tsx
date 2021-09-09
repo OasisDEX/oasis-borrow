@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js'
-// import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { ModalProps } from 'helpers/modalHook'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Divider, Grid, Text } from 'theme-ui'
@@ -10,21 +10,14 @@ import { Box, Divider, Grid, Text } from 'theme-ui'
 interface Props {
   ilk: string
   token: string
-  liquidationRatio: number
-  balance: BigNumber
+  liquidationRatio: BigNumber
 }
-export function SelectVaultTypeModal({
-  ilk,
-  token,
-  liquidationRatio,
-  close,
-  balance,
-}: ModalProps<Props>) {
+export function SelectVaultTypeModal({ ilk, token, liquidationRatio, close }: ModalProps<Props>) {
   const { t } = useTranslation()
 
-  const exposureMultiplier = (1 + 1 / (liquidationRatio - 1.0)).toFixed(2)
+  const exposureMultiplier = one.plus(one.div(liquidationRatio.minus(one))).toFixed(2)
 
-  const maxBorrowAmount = ((1 / liquidationRatio) * 100000).toFixed(2)
+  const maxBorrowAmount = new BigNumber(one.div(liquidationRatio).multipliedBy(100000)).toFixed(0)
 
   return (
     <Modal close={close} sx={{ maxWidth: '500px', margin: '0 auto', p: 0 }}>
@@ -61,8 +54,7 @@ export function SelectVaultTypeModal({
           </Text>
           <Text variant="paragraph3" sx={{ color: 'text.muted', mb: '24px' }}>
             {t('select-vault-type.borrow.subtext', {
-              maxBorrow: balance.times(1000),
-              maxBorrowAmount,
+              maxBorrow: maxBorrowAmount,
               token,
             })}
           </Text>
