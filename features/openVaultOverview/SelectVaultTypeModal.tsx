@@ -1,4 +1,3 @@
-
 // import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
@@ -12,12 +11,7 @@ interface Props {
   token: string
   liquidationRatio: number
 }
-export function SelectVaultTypeModal({
-  ilk,
-  token,
-  liquidationRatio,
-  close
-}: ModalProps<Props>) {
+export function SelectVaultTypeModal({ ilk, token, liquidationRatio, close }: ModalProps<Props>) {
   const { t } = useTranslation()
 
   const exposureMultiplier = (1 + 1 / (liquidationRatio - 1.0)).toFixed(2)
@@ -60,7 +54,7 @@ export function SelectVaultTypeModal({
           <Text variant="paragraph3" sx={{ color: 'text.muted', mb: '24px' }}>
             {t('select-vault-type.borrow.subtext', {
               maxBorrow: maxBorrowAmount,
-              token
+              token,
             })}
           </Text>
           <AppLink

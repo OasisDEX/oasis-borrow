@@ -15,7 +15,6 @@ export function useRedirectToOpenVault() {
         ilk: ilk,
         token: token,
         liquidationRatio: parseFloat(liquidationRatio.toFixed(2)),
-        balance: new BigNumber(1),
       })
     }
 
