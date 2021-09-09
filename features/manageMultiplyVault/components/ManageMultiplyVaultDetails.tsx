@@ -25,7 +25,7 @@ function ManageMultiplyVaultDetailsSummary({
   afterPillColors,
   showAfterPill,
   multiply,
-  afterLockedCollateral
+  afterLockedCollateral,
 }: ManageMultiplyVaultState & AfterPillProps) {
   const { t } = useTranslation()
 
