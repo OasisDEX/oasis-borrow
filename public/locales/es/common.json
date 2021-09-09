@@ -364,7 +364,7 @@
     "asset": "Activo",
     "available-to-withdraw": "Disponible para retirar",
     "total-exposure": "Total {{token}} exposure",
-    "multiply": "Multiply",
+    "multiple": "Multiple",
     "multiplier-exposure": "x exposure",
     "available-to-generate": "Disponible para generar",
     "coll-locked": "Colateral bloqueado",

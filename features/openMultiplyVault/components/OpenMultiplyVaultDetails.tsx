@@ -67,7 +67,7 @@ function OpenMultiplyVaultDetailsSummary({
         afterPillColors={afterPillColors}
       />
       <VaultDetailsSummaryItem
-        label={t('system.multiply')}
+        label={t('system.multiple')}
         value={
           <>
             {(0.0).toFixed(2)}
