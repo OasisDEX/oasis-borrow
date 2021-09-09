@@ -16,7 +16,7 @@ import { Context } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { transactionToX } from 'helpers/form'
-import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
+import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
@@ -542,9 +542,13 @@ export function closeVault(
     closeVaultTo,
     slippage,
     account,
-    marketPrice,
+    closeToDaiParams,
+    closeToCollateralParams,
   }: ManageMultiplyVaultState,
 ) {
+  const { fromTokenAmount, toTokenAmount, minToTokenAmount } =
+    closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
+
   txHelpers$
     .pipe(
       first(),
@@ -553,13 +557,7 @@ export function closeVault(
           getTokenMetaData('DAI', tokens),
           getTokenMetaData(token, tokens),
           exchange.address,
-          closeVaultTo === 'dai'
-            ? lockedCollateral
-            : debt
-                .plus(debtOffset)
-                .times(one.plus(OAZO_FEE).times(one.plus(LOAN_FEE)))
-                // we are blocking UI if marketPrice is undefined so user shouldn't be able to trigger this tx if this is not BN
-                .div((marketPrice as BigNumber).times(one.minus(slippage))),
+          fromTokenAmount,
           slippage,
           'SELL_COLLATERAL',
         ).pipe(
@@ -571,14 +569,15 @@ export function closeVault(
               token,
               ilk,
               id,
-              slippage,
               exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
               exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
               userAddress: account!,
               totalCollateral: lockedCollateral,
               totalDebt: debt.plus(debtOffset),
-              marketPrice: swap?.status === 'SUCCESS' ? swap.tokenPrice : zero,
               proxyAddress: proxyAddress!,
+              fromTokenAmount,
+              toTokenAmount,
+              minToTokenAmount,
             }).pipe(
               transactionToX<ManageMultiplyVaultChange, WithdrawAndPaybackData>(
                 { kind: 'manageWaitingForApproval' },

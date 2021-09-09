@@ -71,6 +71,7 @@ export const OtherActionCloseToDaiStage = manageMultiplyVaultStory({
   proxyAddress,
 })({
   stage: 'otherActions',
+  originalEditingStage: 'otherActions',
   otherAction: 'closeVault',
   closeVaultTo: 'dai',
 })
@@ -81,6 +82,7 @@ export const OtherActionCloseToDaiStageERC20 = manageMultiplyVaultStory({
   proxyAddress,
 })({
   stage: 'otherActions',
+  originalEditingStage: 'otherActions',
   otherAction: 'closeVault',
   closeVaultTo: 'dai',
 })
@@ -91,6 +93,7 @@ export const OtherActionCloseToCollateralStage = manageMultiplyVaultStory({
   proxyAddress,
 })({
   stage: 'otherActions',
+  originalEditingStage: 'otherActions',
   otherAction: 'closeVault',
   closeVaultTo: 'collateral',
 })
