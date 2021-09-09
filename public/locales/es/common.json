@@ -24,6 +24,7 @@
   "approve-allowance": "Aprobar permiso",
   "approving-allowance": "Aprobando permiso",
   "back": "Regresar",
+  "ok": "Ok",
   "back-to-editing": "Regresar a edición",
   "balance": "Saldo",
   "balance-insufficient": "El saldo de Dai es insuficiente",
@@ -40,6 +41,7 @@
   },
   "change-your-vault": "Cambiar tu Vault",
   "close": "Cerrar",
+  "close-vault": "Close Vault",
   "coming-soon": "Próximamente",
   "completed": "Completado",
   "compound": "Compound",
@@ -106,6 +108,7 @@
   "erc20-disapprove-description-recent-failed": "No se pudo bloquear la transferencia de {{ token }}",
   "erc20-disapprove-notification": "Bloqueando {{ token }}",
   "erc20-disapprove-notification-past": "Bloqueado {{ token }}",
+  "error-message": "Something went wrong",
   "error-button": "Ver detalles",
   "create-ds-proxy-description-pending": "Creando proxy",
   "create-ds-proxy-description-recent": "Proxy creado",
@@ -134,16 +137,8 @@
   },
   "exchange-rate": "Tasa de Cambio",
   "failed": "Fallido",
-  "featured": {
-    "cheapest": "Más barato",
-    "most-popular": "Más popular",
-    "new": "Nuevo"
-  },
-  "filters": {
-    "lp-token": "LP tokens",
-    "stablecoin": "Stablecoins",
-    "popular": "Popular assets"
-  },
+  "featured": { "cheapest": "Más barato", "most-popular": "Más popular", "new": "Nuevo" },
+  "filters": { "lp-token": "LP tokens", "stablecoin": "Stablecoins", "popular": "Popular assets" },
   "gas-estimation-error": "Error",
   "get-dai": "Obtén Dai",
   "get-started": "Comenzar",
@@ -171,12 +166,7 @@
   "keyWithCount_plural": "{{count}} items",
   "landing": {
     "footer": {
-      "language": {
-        "en": "Inglés",
-        "es": "Español",
-        "pt": "Português",
-        "cn": "中文"
-      },
+      "language": { "en": "Inglés", "es": "Español", "pt": "Português", "cn": "中文" },
       "about": "Acerca de ",
       "team": "Equipo",
       "careers": "Carreras",
@@ -515,7 +505,8 @@
       "confirm-in-progress": "Vault siendo creado",
       "modified": "El Vault está siendo modificado",
       "confirm-manage": "Confirma cambios al Vault",
-      "review-manage": "Revisar cambios del Vault"
+      "review-manage": "Revisar cambios del Vault",
+      "multiply-transition": "Multiply your exposure on {{token}} in your vault"
     },
     "subtext": {
       "collateral": "Deposita o retira de tu Vault. Ahorra gas combinando transacciones.",
@@ -527,7 +518,13 @@
       "confirm": "Revisa y verifica los detalles de tu Vault.",
       "review-manage": "Aqui puedes revisar los detalles de los cambios a tu Vault.",
       "confirm-in-progress": "Tu Vault está siendo creado actualmente.",
-      "modified": "Tu Vault está siendo actualizado. Por favor espera."
+      "modified": "Tu Vault está siendo actualizado. Por favor espera.",
+      "checkmark1": "Get up to 3x exposure on your {{token}}",
+      "checkmark2": "Adjust risk and exposure in 1 click",
+      "checkmark3": "Actions like using a flash loan, and buying or selling collateral are grouped into a single transaction for greater efficiency and savings",
+      "checkmark4": "You can review the details of the changes on your vault before execution",
+      "subheader2": "Important",
+      "paragraph2": "When you multiply your vault, you acquire collateral for funds you have borrowed against your own collateral. Make sure you understand the associated risks."
     }
   },
   "creating-your-vault": "Creando tu Vault de {{token}}",

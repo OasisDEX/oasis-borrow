@@ -6,6 +6,10 @@ import { ContextConnected } from 'blockchain/network'
 import { amountToWad, amountToWei } from 'blockchain/utils'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { CloseVaultTo } from 'features/manageMultiplyVault/manageMultiplyVault'
+<<<<<<< HEAD
+=======
+import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
+>>>>>>> 7eb1997ea58086f78312753ed3f5f13f4ab1e08d
 import { one, zero } from 'helpers/zero'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
