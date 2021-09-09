@@ -7,6 +7,7 @@ import { calculatePriceImpact } from 'features/shared/priceImpact'
 import {
   calculateCloseToCollateralParams,
   calculateCloseToDaiParams,
+  CloseToParams,
   getMultiplyParams,
   LOAN_FEE,
   OAZO_FEE,
@@ -82,8 +83,8 @@ export interface ManageVaultCalculations {
   marketPrice?: BigNumber
   marketPriceMaxSlippage?: BigNumber
 
-  closeToDaiParams: ReturnType<typeof calculateCloseToDaiParams>
-  closeToCollateralParams: ReturnType<typeof calculateCloseToCollateralParams>
+  closeToDaiParams: CloseToParams
+  closeToCollateralParams: CloseToParams
 
   afterCloseToDai: BigNumber
   afterCloseToCollateral: BigNumber
