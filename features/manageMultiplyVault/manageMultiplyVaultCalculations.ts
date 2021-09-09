@@ -3,6 +3,7 @@ import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
+import { calculatePriceImpact } from 'features/shared/priceImpact'
 import { getMultiplyParams, LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 
@@ -52,6 +53,7 @@ export interface ManageVaultCalculations {
   afterCollateralBalance: BigNumber
   shouldPaybackAll: boolean
 
+  impact: BigNumber
   multiply: BigNumber
   afterMultiply: BigNumber
 
@@ -116,6 +118,7 @@ export const defaultManageMultiplyVaultCalculations: ManageVaultCalculations = {
   daiYieldFromTotalCollateralAtNextPrice: zero,
   shouldPaybackAll: false,
 
+  impact: zero,
   multiply: zero,
   afterMultiply: zero,
 
@@ -440,6 +443,11 @@ export function applyManageVaultCalculations(
     marketPriceMaxSlippage,
   }
 
+  const impact =
+    quote?.status === 'SUCCESS' && marketPrice
+      ? calculatePriceImpact(quote.tokenPrice, marketPrice)
+      : zero
+
   // TODO implement slider bounds for adjust position
   // getMaxPossibleCollRatioOrMax(
   //   debtFloor,
@@ -688,6 +696,7 @@ export function applyManageVaultCalculations(
     daiYieldFromTotalCollateral,
     daiYieldFromTotalCollateralAtNextPrice,
 
+    impact,
     loanFee,
     oazoFee,
     fees,
