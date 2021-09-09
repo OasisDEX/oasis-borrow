@@ -55,7 +55,7 @@ function OpenVaultTitle({
           ? t('vault-form.subtext.allowance')
           : stage === 'openInProgress'
           ? t('vault-form.subtext.confirm-in-progress')
-          : t('vault-form.subtext.confirm')}
+          : t('vault-form.subtext.review-manage')}
       </Text>
     </Box>
   )
