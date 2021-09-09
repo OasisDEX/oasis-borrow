@@ -232,13 +232,13 @@ export function calculateCloseToCollateralParams(
   currentDebt: BigNumber,
   slippage: BigNumber,
 ) {
-  const debtWithFees = currentDebt.times(one.plus(OF).times(one.plus(FF)))
+  const expectedFinalDebt = currentDebt.times(one.plus(OF).times(one.plus(FF)))
 
-  const fromTokenAmount = debtWithFees.div(marketPrice.times(one.minus(slippage)))
+  const fromTokenAmount = expectedFinalDebt.div(marketPrice.times(one.minus(slippage)))
 
-  const toTokenAmount = debtWithFees.times(one.plus(slippage))
+  const toTokenAmount = expectedFinalDebt.times(one.plus(slippage))
 
-  const minToTokenAmount = debtWithFees
+  const minToTokenAmount = expectedFinalDebt
 
   return {
     fromTokenAmount,
