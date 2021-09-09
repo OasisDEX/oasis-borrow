@@ -544,71 +544,53 @@ function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) 
     minToTokenAmount,
   } = data
 
+  const exchangeCallData = {
+    fromTokenAddress: tokens[token].address,
+    toTokenAddress: tokens['DAI'].address,
+    fromTokenAmount: amountToWei(fromTokenAmount, token).toFixed(0),
+    toTokenAmount: amountToWei(toTokenAmount, 'DAI').toFixed(0),
+    minToTokenAmount: amountToWei(minToTokenAmount, 'DAI').toFixed(0),
+    exchangeAddress,
+    _exchangeCalldata: exchangeData,
+  }
+
+  const cdpCallData = {
+    gemJoin: joins[ilk],
+    cdpId: id.toString(),
+    ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
+    fundsReceiver: userAddress,
+    borrowCollateral: amountToWei(totalCollateral, token).toFixed(0),
+    requiredDebt: amountToWei(
+      closeTo === 'collateral' ? minToTokenAmount : totalDebt,
+      'DAI',
+    ).toFixed(0),
+    depositCollateral: '0',
+    withdrawDai: '0',
+    depositDai: '0',
+    withdrawCollateral: '0',
+    skipFL: false,
+    methodName: '',
+  }
+
+  const addressRegistryCallData = {
+    jug: mcdJug.address,
+    manager: dssCdpManager.address,
+    multiplyProxyActions: dssMultiplyProxyActions.address,
+    aaveLendingPoolProvider: aaveLendingPool,
+    exchange: exchange.address,
+  }
+
   if (closeTo === 'collateral') {
     return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.closeVaultExitCollateral(
-      {
-        fromTokenAddress: tokens[token].address,
-        toTokenAddress: tokens['DAI'].address,
-        fromTokenAmount: amountToWei(fromTokenAmount, token).toFixed(0),
-        toTokenAmount: amountToWei(toTokenAmount, 'DAI').toFixed(0),
-        minToTokenAmount: amountToWei(minToTokenAmount, 'DAI').toFixed(0),
-        exchangeAddress,
-        _exchangeCalldata: exchangeData,
-      } as any,
-      {
-        gemJoin: joins[ilk],
-        cdpId: id.toString(),
-        ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
-        fundsReceiver: userAddress,
-        borrowCollateral: amountToWei(totalCollateral, token).toFixed(0),
-        requiredDebt: amountToWei(minToTokenAmount, 'DAI').toFixed(0),
-        depositCollateral: '0',
-        withdrawDai: '0',
-        depositDai: '0',
-        withdrawCollateral: '0',
-        skipFL: false,
-        methodName: '',
-      } as any,
-      {
-        jug: mcdJug.address,
-        manager: dssCdpManager.address,
-        multiplyProxyActions: dssMultiplyProxyActions.address,
-        aaveLendingPoolProvider: aaveLendingPool,
-        exchange: exchange.address,
-      } as any,
+      exchangeCallData as any,
+      cdpCallData as any,
+      addressRegistryCallData as any,
     )
   } else {
     return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.closeVaultExitDai(
-      {
-        fromTokenAddress: tokens[token].address,
-        toTokenAddress: tokens['DAI'].address,
-        fromTokenAmount: amountToWei(fromTokenAmount, token).toFixed(0),
-        toTokenAmount: amountToWei(toTokenAmount, 'DAI').toFixed(0),
-        minToTokenAmount: amountToWei(minToTokenAmount, 'DAI').toFixed(0),
-        exchangeAddress,
-        _exchangeCalldata: exchangeData,
-      } as any,
-      {
-        gemJoin: joins[ilk],
-        cdpId: id.toString(),
-        ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
-        fundsReceiver: userAddress,
-        borrowCollateral: amountToWei(totalCollateral, token).toFixed(0),
-        requiredDebt: amountToWei(totalDebt, 'DAI').toFixed(0),
-        depositCollateral: '0',
-        withdrawDai: '0',
-        depositDai: '0',
-        withdrawCollateral: '0',
-        skipFL: false,
-        methodName: '',
-      } as any,
-      {
-        jug: mcdJug.address,
-        manager: dssCdpManager.address,
-        multiplyProxyActions: dssMultiplyProxyActions.address,
-        aaveLendingPoolProvider: aaveLendingPool,
-        exchange: exchange.address,
-      } as any,
+      exchangeCallData as any,
+      cdpCallData as any,
+      addressRegistryCallData as any,
     )
   }
 }
