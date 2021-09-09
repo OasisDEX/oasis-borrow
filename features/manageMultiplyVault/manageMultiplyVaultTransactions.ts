@@ -562,8 +562,8 @@ export function closeVault(
           'SELL_COLLATERAL',
         ).pipe(
           first(),
-          switchMap((swap) => {
-            return sendWithGasEstimation(closeVaultCall, {
+          switchMap((swap) =>
+            sendWithGasEstimation(closeVaultCall, {
               kind: TxMetaKind.closeVault,
               closeTo: closeVaultTo!,
               token,
@@ -598,8 +598,8 @@ export function closeVault(
                 },
                 () => of({ kind: 'manageSuccess' }),
               ),
-            )
-          }),
+            ),
+          ),
         ),
       ),
       startWith({ kind: 'manageWaitingForApproval' } as ManageMultiplyVaultChange),
