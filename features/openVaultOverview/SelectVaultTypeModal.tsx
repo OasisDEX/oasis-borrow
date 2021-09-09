@@ -16,7 +16,7 @@ export function SelectVaultTypeModal({ ilk, token, liquidationRatio, close }: Mo
 
   const exposureMultiplier = (1 + 1 / (liquidationRatio - 1.0)).toFixed(2)
 
-  const maxBorrowAmount = ((1 / liquidationRatio) * 100000).toFixed(2)
+  const maxBorrowAmount = ((1 / liquidationRatio) * 100000).toFixed(0)
 
   return (
     <Modal close={close} sx={{ maxWidth: '500px', margin: '0 auto', p: 0 }}>
