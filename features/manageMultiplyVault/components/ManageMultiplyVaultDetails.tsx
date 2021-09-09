@@ -20,12 +20,12 @@ import { Box, Grid } from 'theme-ui'
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 
 function ManageMultiplyVaultDetailsSummary({
-  vault: { debt, token },
+  vault: { debt, token, lockedCollateral },
   afterDebt,
   afterPillColors,
   showAfterPill,
   multiply,
-  afterLockedCollateral,
+  afterLockedCollateral
 }: ManageMultiplyVaultState & AfterPillProps) {
   const { t } = useTranslation()
 
@@ -54,7 +54,7 @@ function ManageMultiplyVaultDetailsSummary({
         label={t('system.total-exposure', { token })}
         value={
           <>
-            {formatCryptoBalance(zero)} {token}
+            {formatCryptoBalance(lockedCollateral)} {token}
           </>
         }
         valueAfter={
