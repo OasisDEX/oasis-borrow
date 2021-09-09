@@ -81,8 +81,6 @@ export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
     token,
     inputAmountsEmpty,
     stage,
-    multiply,
-    totalExposure,
   } = props
   const openModal = useModal()
 
@@ -95,10 +93,6 @@ export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'openSuccess'
-  console.log('propsy')
-  console.log(props)
-  console.log(multiply)
-  console.log(totalExposure)
   return (
     <>
       <Grid variant="vaultDetailsCardsContainer">
