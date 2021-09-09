@@ -1,4 +1,4 @@
-import { BigNumber } from 'bignumber.js'
+
 // import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
@@ -11,14 +11,12 @@ interface Props {
   ilk: string
   token: string
   liquidationRatio: number
-  balance: BigNumber
 }
 export function SelectVaultTypeModal({
   ilk,
   token,
   liquidationRatio,
-  close,
-  balance,
+  close
 }: ModalProps<Props>) {
   const { t } = useTranslation()
 
@@ -61,9 +59,8 @@ export function SelectVaultTypeModal({
           </Text>
           <Text variant="paragraph3" sx={{ color: 'text.muted', mb: '24px' }}>
             {t('select-vault-type.borrow.subtext', {
-              maxBorrow: balance.times(1000),
-              maxBorrowAmount,
-              token,
+              maxBorrow: maxBorrowAmount,
+              token
             })}
           </Text>
           <AppLink
