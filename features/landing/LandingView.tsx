@@ -96,7 +96,7 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
   {
     headerLabel: '',
     header: () => null,
-    cell: ({ ilk, ilkDebtAvailable, token }) => {
+    cell: ({ ilk, ilkDebtAvailable, token, liquidationRatio }) => {
       const redirectToOpenVault = useRedirectToOpenVault()
       return (
         <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
@@ -110,7 +110,7 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
               if (ilkDebtAvailable.isZero()) {
                 return
               }
-              redirectToOpenVault(ilk, token)
+              redirectToOpenVault(ilk, token, liquidationRatio)
             }}
           >
             {!ilkDebtAvailable.isZero() ? (
@@ -309,7 +309,7 @@ export function LandingView() {
                       ? undefined
                       : () => {
                           trackingEvents.openVault(Pages.LandingPage, row.ilk)
-                          redirectToOpenVault(row.ilk, row.token)
+                          redirectToOpenVault(row.ilk, row.token, row.liquidationRatio)
                         },
                   })}
                 />

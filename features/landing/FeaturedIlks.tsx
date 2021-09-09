@@ -81,7 +81,7 @@ function CallToAction({ ilk }: CallToActionProps) {
         },
       }}
       tabIndex={0}
-      onClick={() => redirectToOpenVault(ilk.ilk, token.symbol)}
+      onClick={() => redirectToOpenVault(ilk.ilk, token.symbol, ilk.liquidationRatio)}
     >
       <Grid
         gap={0}

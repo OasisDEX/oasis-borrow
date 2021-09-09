@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
+import { getToken } from 'blockchain/tokensMetadata'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import {
@@ -468,13 +469,14 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
 
   const closeToCollateral = closeVaultTo === 'collateral'
   const closeToTokenName = closeToCollateral ? token : 'DAI'
+  const tokenData = getToken(token)
 
   return (
     <>
       <Grid columns={2}>
         <CloseVaultCard
-          text="Close to ETH"
-          icon="ether_circle_color"
+          text={`Close to ${token}`}
+          icon={tokenData.iconCircle}
           onClick={() => setCloseVaultTo!('collateral')}
           isActive={closeToCollateral}
         />

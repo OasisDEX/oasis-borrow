@@ -28,6 +28,35 @@ export function calculateParamsIncreaseMP(
         .minus(oraclePrice.times(one.minus(OF))),
     )
   const collateral = debt.times(one.minus(OF)).div(marketPriceSlippage)
+<<<<<<< HEAD
+=======
+
+  return [debt, collateral]
+}
+
+export function calculateParamsIncreaseMP_(
+  oraclePrice: BigNumber,
+  marketPrice: BigNumber,
+  OF: BigNumber,
+  FF: BigNumber,
+  currentCollateral: BigNumber,
+  currentDebt: BigNumber,
+  requiredCollRatio: BigNumber,
+  slippage: BigNumber,
+  depositDai = new BigNumber(0),
+) {
+  const marketPriceSlippage = marketPrice.times(one.plus(slippage))
+  const debt = marketPriceSlippage
+    .times(currentCollateral.times(oraclePrice).minus(requiredCollRatio.times(currentDebt)))
+    .plus(oraclePrice.times(depositDai).minus(oraclePrice.times(depositDai).times(OF)))
+    .div(
+      marketPriceSlippage
+        .times(requiredCollRatio)
+        .times(one.plus(FF))
+        .minus(oraclePrice.times(one.minus(OF))),
+    )
+  const collateral = debt.times(one.minus(OF)).div(marketPriceSlippage)
+>>>>>>> 2915d503ed014c256fc7fb6c02d3204bd73c9d8a
 
   return [debt, collateral]
 }

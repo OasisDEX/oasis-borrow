@@ -31,7 +31,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
     afterCollateralizationRatio,
     afterDebt,
     afterLockedCollateral,
-    // impact,
+    impact,
     slippage,
     fees,
     loanFee,
@@ -39,18 +39,16 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
     marketPrice,
     inputAmountsEmpty,
     isExchangeLoading,
-    stage,
     otherAction,
     exchangeAction,
     collateralDelta,
     collateralDeltaUSD,
+    originalEditingStage,
   } = props
   const collRatioColor = getCollRatioColor(props, collateralizationRatio)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
-  const impact = new BigNumber(0.25)
-
-  const isCloseAction = stage === 'otherActions' && otherAction === 'closeVault'
+  const isCloseAction = originalEditingStage === 'otherActions' && otherAction === 'closeVault'
 
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer

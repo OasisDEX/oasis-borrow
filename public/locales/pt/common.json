@@ -24,6 +24,7 @@
   "approve-allowance": "Aprovar Permissão (Allowance)",
   "approving-allowance": "Aprovando Permissão (Allowance)",
   "back": "Voltar",
+  "ok": "Ok",
   "back-to-editing": "Voltar a editar",
   "balance": "Saldo",
   "balance-insufficient": "DAI insuficiente em seu saldo",
@@ -40,6 +41,7 @@
   },
   "change-your-vault": "Alterar seu Cofre (Vault)",
   "close": "Fechar",
+  "close-vault": "Close Vault",
   "coming-soon": "Em breve",
   "completed": "Completado",
   "compound": "Compound",
@@ -106,6 +108,8 @@
   "erc20-disapprove-description-recent-failed": "Falha ao bloquear transferência de {{ token }}",
   "erc20-disapprove-notification": "Bloqueando {{ token }}",
   "erc20-disapprove-notification-past": "{{ token }} bloqueado",
+  "error-message": "Something went wrong",
+  "error-button": "See details",
   "create-ds-proxy-description-pending": "Criando proxy",
   "create-ds-proxy-description-recent": "Proxy criado",
   "create-ds-proxy-description-recent-failed": "Falha ao criar proxy",
@@ -133,11 +137,7 @@
   },
   "exchange-rate": "Taxa de câmbio",
   "failed": "Falhou",
-  "featured": {
-    "cheapest": "Mais barato",
-    "most-popular": "Mais popular",
-    "new": "Novo"
-  },
+  "featured": { "cheapest": "Mais barato", "most-popular": "Mais popular", "new": "Novo" },
   "filters": {
     "lp-token": "LP tokens",
     "stablecoin": "Moedas Estáveis",
@@ -170,12 +170,7 @@
   "keyWithCount_plural": "{{count}} itens",
   "landing": {
     "footer": {
-      "language": {
-        "en": "English",
-        "es": "Español",
-        "pt": "Português",
-        "cn": "中文"
-      },
+      "language": { "en": "English", "es": "Español", "pt": "Português", "cn": "中文" },
       "about": "Sobre",
       "team": "Time",
       "careers": "Carreiras",
@@ -248,7 +243,40 @@
       "custom-dai-allowance-amount-less-than-payback-amount": "Você precisa ao menos da permissão (allowance) do seu pagamento para continuar",
       "depositing-all-eth-balance": "Você precisa de ETH para pagar taxas com gás. Abaixe sua quantia de depósito",
       "ledger-enable-contract-data": "Por favor, ative 'Contract Data' nas configurações do app Ethereum em sua Ledger",
-      "withdraw-collateral-on-vault-under-debt-floor": "Você não pode retirar do seu Cofre enquanto ele estiver abaixo do mínimo necessário de {{debtFloor}} Dai. Para retirar seu colateral, pague a totalidade de sua dívida. Para aprender mais sobre Dívida Mínima do Cofre, clique <0>aqui</0>."
+      "withdraw-collateral-on-vault-under-debt-floor": "Você não pode retirar do seu Cofre enquanto ele estiver abaixo do mínimo necessário de {{debtFloor}} Dai. Para retirar seu colateral, pague a totalidade de sua dívida. Para aprender mais sobre Dívida Mínima do Cofre, clique <0>aqui</0>.",
+      "exchange-error": "Could not fetch exchange prices for doing this multiply action."
+    },
+    "card": {
+      "collateralization-ratio-calculated": "Your collateralization ratio is calculated by: value of your collateral / Dai debt.",
+      "collateralization-ratio-header2": "Current Collateralization ratio:",
+      "collateralization-ratio-description": "The price used to calculate the value of your collateral is the price obtained from the Maker oracles. Your collateralization ratio needs to be above the minimum required at all times to not get liquidated.",
+      "collateralization-ratio-next-price": "Your collateralization ratio on the next price will be:",
+      "collateral-locked-amount": "The total amount of collateral locked in your vault is:",
+      "collateral-locked-USD": "The total value in dollars of the collateral in your vault is:",
+      "collateral-locked-oracles": "We use the current price from the Maker oracles to calculate this value. The current market price of your collateral may differ from this price."
+    }
+  },
+  "manage-multiply-vault": {
+    "tooltip": {
+      "vaultId": "The Vault ID is a unique reference for your Maker Vault in Oasis.app.",
+      "stabilityFee": "The Maker Protocol collects a Stability Fee on Dai that is generated from Maker Vaults. It is a variable-rate fee that changes when Maker’s governing body votes on proposals put forth by Risk Teams.",
+      "liquidationFee": "If your vault is liquidated, a liquidation penalty is added to your vault’s total outstanding debt in Dai, which results in more collateral being sold to cover the outstanding debt. This is done to incentivize vaults owners to avoid liquidation.\nThe size of the liquidation penalty is determined by the Liquidation Fee which is calculated based on the debt in the vault.",
+      "min-collateral": "This is also called the Liquidation Ratio. If the Vault reaches below the minimum collateralization level it is considered undercollateralized and is subject to liquidation. Your collateral will then be partially auctioned off to cover outstanding debt and liquidation fee.",
+      "dust-limit": "The Dust Limit specifies the minimum amount of DAI that can be minted for this type of Vault. This value is also called the \"Debt Floor\"."
+    },
+    "card": {
+      "liquidation-price-description": "The Liquidation Price specifies the collateral price where your vault is subject to liquidation. If you think your vault is too close to liquidation price you can change your multiply vault to have a higher collateralization ratio, you can add more collateral on your own, or you can pay back some of your Dai debt.",
+      "liquidation-price-current": "Your current liquidation price is:",
+      "liquidation-percentage-below": "That is {{percentageBelow}} below the current price",
+      "buying-power": "Buying power",
+      "buying-power-description": "The Buying Power specifies the maximum of Dai you can buy more collateral with, based on your position. It is using Multiply and going from the current collateralization ratio to the minimum collateralization ratio.",
+      "current-price": "Current Price",
+      "current-price-description": "This is the current price of your vault collateral supplied by the Maker price oracles. There is a one hour delay before the oracle price is made current in the Maker Protocol.",
+      "next-price": "Next Price",
+      "next-price-description": "Here you can see the next price that will go into effect in the Maker Protocol. Compare this with the Liquidation Price to see whether your vault will be liquidated on the next price update.\n{{nextPrice}}",
+      "more-info-oracles": "More information on Maker oracles can be found <0>here</0>",
+      "net-value": "Net Value",
+      "net-value-description": "The Net Value is calculated as the current value of the collateral in your vault minus the current debt.\nNote: This will not be exactly equal to the amount you will receive if you close your vault to Dai. This is due to fees applied when swapping collateral to Dai and because the Net Value is calculated using the Maker oracle price which is one hour delayed compared to the actual market price for the collateral."
     }
   },
   "max": "Máximo",
@@ -292,7 +320,8 @@
       "custom-allowance-amount-exceeds-maxuint256": "Permissão (Allowance) muito grande. Por favor, diminua a quantia customizada de allowance.",
       "custom-allowance-amount-less-than-deposit-amount": "Você precisa ao menos da permissão (allowance) do seu depósito para continuar",
       "depositing-all-eth-balance": "Você precisa de ETH para pagar taxas com gás. Abaixe sua quantia de depósito",
-      "ledger-enable-contract-data": "Por favor, ative 'Contract Data' nas configurações do app Ethereum em sua Ledger"
+      "ledger-enable-contract-data": "Por favor, ative 'Contract Data' nas configurações do app Ethereum em sua Ledger",
+      "exchange-error": "Could not fetch exchange prices for doing this multiply action."
     }
   },
   "or": "ou",
@@ -480,7 +509,6 @@
   "view-on-etherscan": "Ver no Etherscan",
   "waiting-approval": "Aguardando aprovação",
   "waiting-confirmation": "Aguardando confirmação da transação",
-  "waiting-proxy-deployment": "Aguardando Deploy do Proxy",
   "proxy-deployment-confirming": "{{proxyConfirmations}} de {{safeConfirmations}}: criação do Proxy confirmada",
   "withdraw": "Retirar",
   "withdrawn": "Retirado",
@@ -500,7 +528,11 @@
       "allowance": "Determine {{token}} a permissão",
       "daiAllowance": "Determine a permissão em DAI",
       "confirm": "Confirme a criação do Cofre",
-      "confirm-manage": "Confirme as alterações no Cofre"
+      "confirm-in-progress": "Vault being created",
+      "modified": "Vault is being Modified",
+      "confirm-manage": "Confirme as alterações no Cofre",
+      "review-manage": "Review vault changes",
+      "multiply-transition": "Multiply your exposure on {{token}} in your vault"
     },
     "subtext": {
       "collateral": "Deposite ou retire do seu cofre. Economize gás ao combinar as transações.",
@@ -509,7 +541,16 @@
       "proxy": "Com seu Proxy inteligente, nós podemos realizar múltiplas ações em apenas uma transação no seu Cofre. O Proxy precisa ser criado apenas uma vez.",
       "allowance": "Determine a permissão (allowance) para especificar a quantia máxima de tokens que o Cofre pode interagir.",
       "daiAllowance": "Determine a permissão (allowance) para especificar a quantia máxima de tokens que o Cofre pode interagir.",
-      "confirm": "Revise e verifique detalhes de seu cofre."
+      "confirm": "Revise e verifique detalhes de seu cofre.",
+      "review-manage": "Here you can review the details of the changes to your vault.",
+      "confirm-in-progress": "Your Vault is currently being created.",
+      "modified": "Your Vault is currently being updated. Please wait.",
+      "checkmark1": "Get up to 3x exposure on your {{token}}",
+      "checkmark2": "Adjust risk and exposure in 1 click",
+      "checkmark3": "Actions like using a flash loan, and buying or selling collateral are grouped into a single transaction for greater efficiency and savings",
+      "checkmark4": "You can review the details of the changes on your vault before execution",
+      "subheader2": "Important",
+      "paragraph2": "When you multiply your vault, you acquire collateral for funds you have borrowed against your own collateral. Make sure you understand the associated risks."
     }
   },
   "creating-your-vault": "Criando seu {{token}} Cofre!",
@@ -530,6 +571,20 @@
     "next-update": "Próxima atualização",
     "oracle-type": "Tipo do Oráculo"
   },
+  "select-vault-type": {
+    "header": "What do you want to do with your {{token}}?",
+    "multiply": {
+      "header": "Multiply my {{token}}",
+      "subtext": "Create a Multiply position and get up to {{exposureMultiplier}} x exposure on your {{token}}",
+      "button": "Multiply {{token}}"
+    },
+    "borrow": {
+      "header": "Borrow against my {{token}}",
+      "subtext": "Borrow up to {{maxBorrow}} DAI for every $100,000 worth of {{token}}",
+      "button": "Borrow against {{token}}"
+    }
+  },
+  "waiting-proxy-deployment": "Aguardando Deploy do Proxy",
   "Argentina": "Argentina",
   "Brasil": "Brasil",
   "Mexico": "México",
