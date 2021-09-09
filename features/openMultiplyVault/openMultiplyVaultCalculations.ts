@@ -150,8 +150,6 @@ export function applyOpenMultiplyVaultCalculations(
   const totalExposure = buyingCollateral?.gt(0) ? buyingCollateral.plus(depositAmount) : zero
   const totalExposureUSD = totalExposure.gt(0) ? totalExposure.times(marketPriceMaxSlippage) : zero
 
-  const totalExposureUSDAtNextPrice = totalExposure.times(nextCollateralPrice)
-
   const afterCollateralBalance = depositAmount
     ? collateralBalance.minus(depositAmount)
     : collateralBalance
@@ -204,10 +202,6 @@ export function applyOpenMultiplyVaultCalculations(
         state.slippage,
       )
     : [zero, zero]
-
-  // const afterBuyingPower = marketPriceMaxSlippage
-  //   ? afterBuyingPowerUSD.div(marketPriceMaxSlippage)
-  //   : zero
 
   const daiYieldFromDepositingCollateral = totalExposure
     ? totalExposure.times(currentCollateralPrice).div(liquidationRatio)

@@ -307,32 +307,6 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
     aaveLendingPool,
   } = context
 
-  console.log(
-    {
-      fromTokenAddress: tokens['DAI'].address,
-      toTokenAddress: tokens[data.token].address,
-      fromTokenAmount: amountToWei(data.fromTokenAmount, 'DAI').toFixed(0),
-      toTokenAmount: amountToWei(data.toTokenAmount, data.token).toFixed(0),
-      minToTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
-      exchangeAddress: data.exchangeAddress,
-      _exchangeCalldata: data.exchangeData,
-    } as any, //TODO: figure out why Typechain is generating arguments as arrays
-    {
-      gemJoin: joins[data.ilk],
-      cdpId: '0',
-      ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
-      fundsReceiver: data.userAddress,
-      borrowCollateral: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
-      requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
-      depositCollateral: amountToWei(data.depositCollateral, data.token).toFixed(0),
-      withdrawDai: amountToWei(zero, 'DAI').toFixed(0),
-      depositDai: amountToWei(zero, 'DAI').toFixed(0),
-      withdrawCollateral: amountToWei(zero, data.token).toFixed(0),
-      skipFL: false,
-      methodName: '',
-    } as any,
-  )
-
   return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.openMultiplyVault(
     {
       fromTokenAddress: tokens['DAI'].address,
