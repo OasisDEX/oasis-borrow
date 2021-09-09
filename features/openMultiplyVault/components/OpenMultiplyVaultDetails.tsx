@@ -54,17 +54,33 @@ function OpenMultiplyVaultDetailsSummary({
         label={t('system.total-exposure', { token })}
         value={
           <>
-            {formatCryptoBalance(totalExposure || zero)} {token}
+            {formatCryptoBalance(zero)} {token}
           </>
         }
+        valueAfter={
+          showAfterPill && (
+            <>
+              {formatCryptoBalance(totalExposure || zero)} {token}
+            </>
+          )
+        }
+        afterPillColors={afterPillColors}
       />
       <VaultDetailsSummaryItem
         label={t('system.multiply')}
         value={
           <>
-            {multiply?.toFixed(2)}
+            {(0.0).toFixed(2)}
             {t('system.multiplier-exposure')}
           </>
+        }
+        valueAfter={
+          showAfterPill && (
+            <>
+              {multiply?.toFixed(2)}
+              {t('system.multiplier-exposure')}
+            </>
+          )
         }
         afterPillColors={afterPillColors}
       />
