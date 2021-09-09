@@ -389,6 +389,9 @@
   "system": {
     "asset": "Ativo",
     "available-to-withdraw": "Disponível para Retirar",
+    "total-exposure": "Total {{token}} exposure",
+    "multiply": "Multiply",
+    "multiplier-exposure": "x exposure",
     "available-to-generate": "Disponível para Gerar",
     "coll-locked": "Colateral Travado",
     "coll-ratio": "Ratio de Colateralização",
