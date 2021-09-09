@@ -312,17 +312,9 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
     {
       fromTokenAddress: tokens['DAI'].address,
       toTokenAddress: tokens[data.token].address,
-<<<<<<< HEAD
       fromTokenAmount: amountToWei(data.fromTokenAmount, 'DAI').toFixed(0),
       toTokenAmount: amountToWei(data.toTokenAmount, data.token).toFixed(0),
       minToTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
-=======
-      fromTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
-      toTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
-      minToTokenAmount: amountToWei(data.borrowedCollateral, data.token)
-        .times(one.minus(data.slippage))
-        .toFixed(0),
->>>>>>> 2915d503ed014c256fc7fb6c02d3204bd73c9d8a
       exchangeAddress: data.exchangeAddress,
       _exchangeCalldata: data.exchangeData,
     } as any, //TODO: figure out why Typechain is generating arguments as arrays
@@ -466,13 +458,8 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
         toTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
         fromTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
         minToTokenAmount: amountToWei(data.requiredDebt, 'DAI')
-<<<<<<< HEAD
-          .div(one.minus(data.slippage))
-          .toFixed(0), //
-=======
           .times(one.minus(data.slippage))
           .toFixed(0),
->>>>>>> 2915d503ed014c256fc7fb6c02d3204bd73c9d8a
         exchangeAddress: data.exchangeAddress,
         _exchangeCalldata: data.exchangeData,
       } as any, //TODO: figure out why Typechain is generating arguments as arrays

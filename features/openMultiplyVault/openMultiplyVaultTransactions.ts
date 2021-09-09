@@ -279,45 +279,10 @@ export function multiplyVault(
     buyingCollateral,
     afterOutstandingDebt,
     account,
-<<<<<<< HEAD
-    swap,
+    slippage,
     toTokenAmount,
     fromTokenAmount,
     borrowedDaiAmount,
-  }: OpenMultiplyVaultState,
-) {
-  return sendWithGasEstimation(openMultiplyVault, {
-    kind: TxMetaKind.multiply,
-    depositCollateral: depositAmount || zero,
-    userAddress: account,
-    proxyAddress: proxyAddress!,
-    ilk,
-    token,
-    exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '0x',
-    exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '0x',
-    borrowedCollateral: buyingCollateral,
-    requiredDebt: borrowedDaiAmount,
-    toTokenAmount: toTokenAmount,
-    fromTokenAmount,
-  })
-    .pipe(
-      transactionToX<OpenMultiplyVaultChange, OpenMultiplyData>(
-        { kind: 'openWaitingForApproval' },
-        (txState) => of({ kind: 'openInProgress', openTxHash: (txState as any).txHash as string }),
-        (txState) =>
-          of({
-            kind: 'openFailure',
-            txError:
-              txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-                ? txState.error
-                : undefined,
-          }),
-        (txState) => {
-          const id = parseVaultIdFromReceiptLogs(
-            txState.status === TxStatus.Success && txState.receipt,
-          )
-=======
-    slippage,
   }: OpenMultiplyVaultState,
 ) {
   return getQuote$(
@@ -341,10 +306,11 @@ export function multiplyVault(
           exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '0x',
           exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '0x',
           borrowedCollateral: buyingCollateral,
-          requiredDebt: afterOutstandingDebt,
-          slippage: slippage,
+          requiredDebt: borrowedDaiAmount,
+          toTokenAmount: toTokenAmount,
+          fromTokenAmount,
         }).pipe(
-          transactionToX<OpenMultiplyVaultChange, MultiplyData>(
+          transactionToX<OpenMultiplyVaultChange, OpenMultiplyData>(
             { kind: 'openWaitingForApproval' },
             (txState) =>
               of({ kind: 'openInProgress', openTxHash: (txState as any).txHash as string }),
@@ -361,7 +327,6 @@ export function multiplyVault(
               const id = parseVaultIdFromReceiptLogs(
                 txState.status === TxStatus.Success && txState.receipt,
               )
->>>>>>> 2915d503ed014c256fc7fb6c02d3204bd73c9d8a
 
               const jwtToken = jwtAuthGetToken(account as string)
               if (id && jwtToken) {
