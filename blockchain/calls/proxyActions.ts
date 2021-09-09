@@ -561,7 +561,7 @@ function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) 
         ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
         fundsReceiver: userAddress,
         borrowCollateral: amountToWei(totalCollateral, token).toFixed(0),
-        requiredDebt: minToTokenAmount,
+        requiredDebt: amountToWei(minToTokenAmount, token).toFixed(0),
         depositCollateral: '0',
         withdrawDai: '0',
         depositDai: '0',
