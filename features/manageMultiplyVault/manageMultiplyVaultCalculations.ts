@@ -333,6 +333,16 @@ function calculateMaxGenerateAmount({
     paybackAmount,
   })
 
+  console.log("calculateMaxGenerateAmount",{
+    paybackAmount,
+    debt,
+    debtOffset,
+    lockedCollateral,
+    liquidationRatio,
+    price,
+    ilkDebtAvailable
+  });
+
   return calculateDaiYieldFromCollateral({
     ilkDebtAvailable,
     collateral: afterLockedCollateral,
