@@ -3,6 +3,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { formatAddress, formatCryptoBalance, formatFiatBalance } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import moment from 'moment'
 import { TFunction, useTranslation } from 'next-i18next'
@@ -37,75 +38,75 @@ function getHistoryEventTranslation(t: TFunction, event: VaultHistoryEvent) {
   })
 }
 
-function getHistoryEventDetails(event: VaultHistoryEvent) {
-  const { t } = useTranslation()
+function MultiplyHistoryEventDetailsItem({
+  label,
+  children,
+  rightItem,
+}: { label: string; rightItem?: boolean } & WithChildren) {
   return (
-    <Grid columns={2} sx={{ py: 1, px: 0, alignItems: 'flex-start', mb: 2 }} gap={2}>
-      <Flex>
-        <Text
-          sx={{ width: '25%', textAlign: 'right', paddingRight: '10px', color: 'text.subtitle' }}
-        >
-          {t('amount')}
-        </Text>
-        {'collateralAmount' in event && formatCryptoBalance(event.collateralAmount)} {event.token}
-      </Flex>
-      <Flex>
-        <Text
-          sx={{ width: '42%', textAlign: 'right', paddingRight: '10px', color: 'text.subtitle' }}
-        >
-          {t('outstanding-debt')}
-        </Text>
-        {'outstandingDebt' in event && formatCryptoBalance(event.outstandingDebt)} DAI
-      </Flex>
-      <Flex>
-        <Text
-          sx={{ width: '25%', textAlign: 'right', paddingRight: '10px', color: 'text.subtitle' }}
-        >
-          {t('price')}
-        </Text>
-        {'oraclePrice' in event && '$' + formatFiatBalance(event.oraclePrice)}
-      </Flex>
-      <Flex>
-        <Text
-          sx={{ width: '42%', textAlign: 'right', paddingRight: '10px', color: 'text.subtitle' }}
-        >
-          {t('net-value')}
-        </Text>
-        {'netValueUSD' in event && '$' + formatFiatBalance(event.netValueUSD)}
-      </Flex>
-      <Flex>
-        <Text
-          sx={{ width: '25%', textAlign: 'right', paddingRight: '10px', color: 'text.subtitle' }}
-        >
-          {t('system.collateral')}
-        </Text>
-        {'collateralTotal' in event && formatCryptoBalance(event.collateralTotal)} {event.token}
-      </Flex>
-      <Flex>
-        <Text
-          sx={{ width: '42%', textAlign: 'right', paddingRight: '10px', color: 'text.subtitle' }}
-        >
-          {t('system.liquidation-price')}
-        </Text>
-        {'liquidationPrice' in event && '$' + formatFiatBalance(event.liquidationPrice)}
-      </Flex>
-      <Flex>
-        <Text
-          sx={{ width: '25%', textAlign: 'right', paddingRight: '10px', color: 'text.subtitle' }}
-        >
-          {t('multiple')}
-        </Text>
-        {'multiple' in event && event.multiple.gt(zero) ? event.multiple.toFixed(2) + 'x' : '-'}
-      </Flex>
-      <Flex>
-        <Text
-          sx={{ width: '42%', textAlign: 'right', paddingRight: '10px', color: 'text.subtitle' }}
-        >
-          {t('fees')}
-        </Text>
-        {'fees' in event && event.fees.gt(zero) ? '$' + formatFiatBalance(event.fees) : '-'}
-      </Flex>
-    </Grid>
+    <Flex>
+      <Text
+        sx={{
+          textAlign: 'right',
+          minWidth: ['9.5em', null, null, rightItem ? '9.5em' : '6em'],
+          pr: 3,
+          color: 'text.subtitle',
+        }}
+      >
+        {label}
+      </Text>
+      {children}
+    </Flex>
+  )
+}
+
+function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
+  const { t } = useTranslation()
+
+  return (
+    <Flex
+      sx={{
+        mb: 3,
+        maxWidth: '460px',
+        justifyContent: 'space-between',
+        flexDirection: ['column', null, null, 'row'],
+      }}
+    >
+      <Grid
+        gap={2}
+        sx={{
+          mr: [0, null, null, 4],
+          mb: [2, null, null, 0],
+        }}
+      >
+        <MultiplyHistoryEventDetailsItem label={t('amount')}>
+          {'collateralAmount' in event && formatCryptoBalance(event.collateralAmount)} {event.token}
+        </MultiplyHistoryEventDetailsItem>
+        <MultiplyHistoryEventDetailsItem label={t('price')}>
+          {'oraclePrice' in event && '$' + formatFiatBalance(event.oraclePrice)}
+        </MultiplyHistoryEventDetailsItem>
+        <MultiplyHistoryEventDetailsItem label={t('system.collateral')}>
+          {'collateralTotal' in event && formatCryptoBalance(event.collateralTotal)} {event.token}
+        </MultiplyHistoryEventDetailsItem>
+        <MultiplyHistoryEventDetailsItem label={t('multiple')}>
+          {'multiple' in event && event.multiple.gt(zero) ? `${event.multiple.toFixed(2)}x` : '-'}
+        </MultiplyHistoryEventDetailsItem>
+      </Grid>
+      <Grid gap={2}>
+        <MultiplyHistoryEventDetailsItem rightItem label={t('outstanding-debt')}>
+          {'outstandingDebt' in event && formatCryptoBalance(event.outstandingDebt)} DAI
+        </MultiplyHistoryEventDetailsItem>
+        <MultiplyHistoryEventDetailsItem rightItem label={t('net-value')}>
+          {'netValueUSD' in event && '$' + formatFiatBalance(event.netValueUSD)}
+        </MultiplyHistoryEventDetailsItem>
+        <MultiplyHistoryEventDetailsItem rightItem label={t('system.liquidation-price')}>
+          {'liquidationPrice' in event && '$' + formatFiatBalance(event.liquidationPrice)}
+        </MultiplyHistoryEventDetailsItem>
+        <MultiplyHistoryEventDetailsItem rightItem label={t('fees')}>
+          {'fees' in event && event.fees.gt(zero) ? '$' + formatFiatBalance(event.fees) : '-'}
+        </MultiplyHistoryEventDetailsItem>
+      </Grid>
+    </Flex>
   )
 }
 
@@ -120,7 +121,7 @@ function VaultHistoryItem({
   const [opened, setOpened] = useState(false)
   const translation = getHistoryEventTranslation(t, item)
   const date = moment(item.timestamp)
-  const historyItemDetails = getHistoryEventDetails(item)
+
   return (
     <Card
       sx={{
@@ -170,7 +171,7 @@ function VaultHistoryItem({
       </Box>
       {opened && (
         <Box p={2}>
-          {item.isMultiply && historyItemDetails}
+          {item.isMultiply && <MultiplyHistoryEventDetails {...item} />}
           <AppLink
             variant="links.navFooter"
             sx={{ fontSize: 2 }}
