@@ -6,6 +6,7 @@ import { ContextConnected } from 'blockchain/network'
 import { amountToWad, amountToWei } from 'blockchain/utils'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { CloseVaultTo } from 'features/manageMultiplyVault/manageMultiplyVault'
+import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
@@ -307,32 +308,6 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
     aaveLendingPool,
   } = context
 
-  console.log(
-    {
-      fromTokenAddress: tokens['DAI'].address,
-      toTokenAddress: tokens[data.token].address,
-      fromTokenAmount: amountToWei(data.fromTokenAmount, 'DAI').toFixed(0),
-      toTokenAmount: amountToWei(data.toTokenAmount, data.token).toFixed(0),
-      minToTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
-      exchangeAddress: data.exchangeAddress,
-      _exchangeCalldata: data.exchangeData,
-    } as any, //TODO: figure out why Typechain is generating arguments as arrays
-    {
-      gemJoin: joins[data.ilk],
-      cdpId: '0',
-      ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
-      fundsReceiver: data.userAddress,
-      borrowCollateral: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
-      requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
-      depositCollateral: amountToWei(data.depositCollateral, data.token).toFixed(0),
-      withdrawDai: amountToWei(zero, 'DAI').toFixed(0),
-      depositDai: amountToWei(zero, 'DAI').toFixed(0),
-      withdrawCollateral: amountToWei(zero, data.token).toFixed(0),
-      skipFL: false,
-      methodName: '',
-    } as any,
-  )
-
   return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.openMultiplyVault(
     {
       fromTokenAddress: tokens['DAI'].address,
@@ -483,8 +458,8 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
         toTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
         fromTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
         minToTokenAmount: amountToWei(data.requiredDebt, 'DAI')
-          .div(one.minus(data.slippage))
-          .toFixed(0), //
+          .times(one.minus(data.slippage))
+          .toFixed(0),
         exchangeAddress: data.exchangeAddress,
         _exchangeCalldata: data.exchangeData,
       } as any, //TODO: figure out why Typechain is generating arguments as arrays
@@ -554,17 +529,24 @@ function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) 
   } = context
 
   if (data.closeTo === 'collateral') {
-    throw new Error('NOT IMPLEMENTED')
-  } else {
-    return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.closeVaultExitDai(
+    const debtWithFees = data.totalDebt.times(one.plus(OAZO_FEE).times(one.plus(LOAN_FEE)))
+
+    const fromTokenAmount = amountToWei(
+      debtWithFees.div(data.marketPrice.times(one.minus(data.slippage))),
+      data.token,
+    ).toFixed(0)
+
+    const toTokenAmount = amountToWei(debtWithFees.times(one.plus(data.slippage)), 'DAI').toFixed(0)
+
+    const minToTokenAmount = amountToWei(debtWithFees, 'DAI').toFixed(0)
+
+    return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.closeVaultExitCollateral(
       {
         fromTokenAddress: tokens[data.token].address,
         toTokenAddress: tokens['DAI'].address,
-        fromTokenAmount: amountToWei(data.totalCollateral, data.token).toFixed(0),
-        toTokenAmount: amountToWei(data.totalCollateral.times(data.marketPrice), 'DAI').toFixed(0),
-        minToTokenAmount: amountToWei(data.totalCollateral.times(data.marketPrice), 'DAI')
-          .times(one.minus(data.slippage))
-          .toFixed(0),
+        fromTokenAmount,
+        toTokenAmount,
+        minToTokenAmount,
         exchangeAddress: data.exchangeAddress,
         _exchangeCalldata: data.exchangeData,
       } as any,
@@ -574,7 +556,49 @@ function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) 
         ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
         fundsReceiver: data.userAddress,
         borrowCollateral: amountToWei(data.totalCollateral, data.token).toFixed(0),
-        requiredDebt: amountToWei(data.totalDebt.times(one.plus(0.01)), 'DAI').toFixed(0),
+        requiredDebt: minToTokenAmount,
+        depositCollateral: '0',
+        withdrawDai: '0',
+        depositDai: '0',
+        withdrawCollateral: '0',
+        skipFL: false,
+        methodName: '',
+      } as any,
+      {
+        jug: mcdJug.address,
+        manager: dssCdpManager.address,
+        multiplyProxyActions: dssMultiplyProxyActions.address,
+        aaveLendingPoolProvider: aaveLendingPool,
+        exchange: exchange.address,
+      } as any,
+    )
+  } else {
+    return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.closeVaultExitDai(
+      {
+        fromTokenAddress: tokens[data.token].address,
+        toTokenAddress: tokens['DAI'].address,
+        fromTokenAmount: amountToWei(data.totalCollateral, data.token).toFixed(0),
+        toTokenAmount: amountToWei(
+          data.totalCollateral.times(data.marketPrice).times(one.minus(OAZO_FEE)),
+          'DAI',
+        ).toFixed(0),
+        minToTokenAmount: amountToWei(
+          data.totalCollateral
+            .times(data.marketPrice)
+            .times(one.minus(OAZO_FEE))
+            .times(one.minus(data.slippage)),
+          'DAI',
+        ).toFixed(0),
+        exchangeAddress: data.exchangeAddress,
+        _exchangeCalldata: data.exchangeData,
+      } as any,
+      {
+        gemJoin: joins[data.ilk],
+        cdpId: data.id.toString(),
+        ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        fundsReceiver: data.userAddress,
+        borrowCollateral: amountToWei(data.totalCollateral, data.token).toFixed(0),
+        requiredDebt: amountToWei(data.totalDebt, 'DAI').toFixed(0),
         depositCollateral: '0',
         withdrawDai: '0',
         depositDai: '0',

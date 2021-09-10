@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { calculatePriceImpact } from 'features/shared/priceImpact'
 import {
   calculateParamsIncreaseMP,
   getMaxPossibleCollRatioOrMax,
@@ -42,6 +43,7 @@ export interface OpenMultiplyVaultCalculations {
   toTokenAmountUSD: BigNumber
   fromTokenAmount: BigNumber
   borrowedDaiAmount: BigNumber
+  oneInchAmount: BigNumber
 }
 
 export const defaultOpenMultiplyVaultStateCalculations: OpenMultiplyVaultCalculations = {
@@ -72,6 +74,7 @@ export const defaultOpenMultiplyVaultStateCalculations: OpenMultiplyVaultCalcula
   toTokenAmountUSD: zero,
   fromTokenAmount: zero,
   borrowedDaiAmount: zero,
+  oneInchAmount: zero,
 }
 
 export function applyOpenMultiplyVaultCalculations(
@@ -147,10 +150,10 @@ export function applyOpenMultiplyVaultCalculations(
 
   const fromTokenAmount = borrowedDaiAmount
 
+  const oneInchAmount = afterOutstandingDebt.times(one.minus(OAZO_FEE)).div(one.plus(LOAN_FEE))
+
   const totalExposure = buyingCollateral?.gt(0) ? buyingCollateral.plus(depositAmount) : zero
   const totalExposureUSD = totalExposure.gt(0) ? totalExposure.times(marketPriceMaxSlippage) : zero
-
-  const totalExposureUSDAtNextPrice = totalExposure.times(nextCollateralPrice)
 
   const afterCollateralBalance = depositAmount
     ? collateralBalance.minus(depositAmount)
@@ -189,8 +192,10 @@ export function applyOpenMultiplyVaultCalculations(
     ? currentCollateralPrice.times(liquidationRatio).div(afterCollateralizationRatio)
     : zero
 
-  // TODO fix impact
-  const impact = zero
+  const impact =
+    quote?.status === 'SUCCESS' && marketPrice
+      ? calculatePriceImpact(quote.tokenPrice, marketPrice)
+      : zero
 
   const [afterBuyingPowerUSD, afterBuyingPower] = marketPrice
     ? calculateParamsIncreaseMP(
@@ -204,10 +209,6 @@ export function applyOpenMultiplyVaultCalculations(
         state.slippage,
       )
     : [zero, zero]
-
-  // const afterBuyingPower = marketPriceMaxSlippage
-  //   ? afterBuyingPowerUSD.div(marketPriceMaxSlippage)
-  //   : zero
 
   const daiYieldFromDepositingCollateral = totalExposure
     ? totalExposure.times(currentCollateralPrice).div(liquidationRatio)
@@ -269,5 +270,6 @@ export function applyOpenMultiplyVaultCalculations(
     daiYieldFromDepositingCollateralAtNextPrice,
     // afterFreeCollateral,
     borrowedDaiAmount,
+    oneInchAmount,
   }
 }

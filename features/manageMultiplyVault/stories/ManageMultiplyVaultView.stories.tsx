@@ -75,6 +75,16 @@ export const OtherActionCloseToDaiStage = manageMultiplyVaultStory({
   closeVaultTo: 'dai',
 })
 
+export const OtherActionCloseToDaiStageERC20 = manageMultiplyVaultStory({
+  vault: vaultERC20,
+  balanceInfo: { collateralBalance: new BigNumber('200') },
+  proxyAddress,
+})({
+  stage: 'otherActions',
+  otherAction: 'closeVault',
+  closeVaultTo: 'dai',
+})
+
 export const OtherActionCloseToCollateralStage = manageMultiplyVaultStory({
   vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200') },

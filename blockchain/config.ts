@@ -76,7 +76,7 @@ const protoMain = {
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
-    '0xEAE4061009f0b804aAfC76f3ae67567D0ABE9c27',
+    '0x33b4BE1B67c49125C1524777515e4034E04dFF58',
   ),
   exchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
   aaveLendingPool: '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5',

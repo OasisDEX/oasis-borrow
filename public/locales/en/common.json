@@ -270,7 +270,7 @@
       "vaultId": "The Vault ID is a unique reference for your Maker Vault in Oasis.app.",
       "stabilityFee": "The Maker Protocol collects a Stability Fee on Dai that is generated from Maker Vaults. It is a variable-rate fee that changes when Maker’s governing body votes on proposals put forth by Risk Teams.",
       "liquidationFee": "If your vault is liquidated, a liquidation penalty is added to your vault’s total outstanding debt in Dai, which results in more collateral being sold to cover the outstanding debt. This is done to incentivize vaults owners to avoid liquidation.\nThe size of the liquidation penalty is determined by the Liquidation Fee which is calculated based on the debt in the vault.",
-      "min-collateral": "This is also called the Liquidation Ratio. If the Vault reaches below the minimum collateralization level it is considered undercollateralized and is subject to liquidation. Your collateral will then be partially auctioned.",
+      "min-collateral": "This is also called the Liquidation Ratio. If the Vault reaches below the minimum collateralization level it is considered undercollateralized and is subject to liquidation. Your collateral will then be partially auctioned off to cover outstanding debt and liquidation fee.",
       "dust-limit": "The Dust Limit specifies the minimum amount of DAI that can be minted for this type of Vault. This value is also called the \"Debt Floor\"."
     },
     "card": {
@@ -279,7 +279,7 @@
       "liquidation-percentage-below": "That is {{percentageBelow}} below the current price",
       "buying-power": "Buying power",
       "buying-power-description": "The Buying Power specifies the maximum of Dai you can buy more collateral with, based on your position. It is using Multiply and going from the current collateralization ratio to the minimum collateralization ratio.",
-      "current-price": "Current Price",
+      "current-price":"Current Price",
       "current-price-description": "This is the current price of your vault collateral supplied by the Maker price oracles. There is a one hour delay before the oracle price is made current in the Maker Protocol.",
       "next-price": "Next Price",
       "next-price-description": "Here you can see the next price that will go into effect in the Maker Protocol. Compare this with the Liquidation Price to see whether your vault will be liquidated on the next price update.\n{{nextPrice}}",
@@ -541,7 +541,9 @@
       "confirm-in-progress": "Vault being created",
       "modified": "Vault is being Modified",
       "confirm-manage": "Confirm vault changes",
-      "review-manage": "Review vault changes"
+      "review-manage": "Review vault changes",
+      "multiply-transition": "Multiply your exposure on {{token}} in your vault"
+
     },
     "subtext": {
       "collateral": "Deposit or withdraw from your Vault. Save gas by combining transactions.",
@@ -553,7 +555,13 @@
       "confirm": "This will refresh your page. It does not require a transaction.",
       "review-manage": "Here you can review the details of the changes to your vault.",
       "confirm-in-progress": "Your Vault is currently being created.",
-      "modified": "Your Vault is currently being updated. Please wait."
+      "modified": "Your Vault is currently being updated. Please wait.",
+      "checkmark1": "Get up to 3x exposure on your {{token}}",
+      "checkmark2": "Adjust risk and exposure in 1 click",
+      "checkmark3": "Actions like using a flash loan, and buying or selling collateral are grouped into a single transaction for greater efficiency and savings",
+      "checkmark4": "You can review the details of the changes on your vault before execution",
+      "subheader2": "Important",
+      "paragraph2": "When you multiply your vault, you acquire collateral for funds you have borrowed against your own collateral. Make sure you understand the associated risks."
     }
   },
   "creating-your-vault": "Creating your {{token}} Vault!",
@@ -578,12 +586,12 @@
     "header": "What do you want to do with your {{token}}?",
     "multiply": {
       "header": "Multiply my {{token}}",
-      "subtext": "Use your {{balance}} {{token}} to get a up to {{exposure}} {{token}} exposure.",
+      "subtext": "Create a Multiply position and get up to {{exposureMultiplier}} x exposure on your {{token}}",
       "button": "Multiply {{token}}"
     },
     "borrow": {
       "header": "Borrow against my {{token}}",
-      "subtext": "Use your {{balance}} {{token}} to borrow up to {{maxBorrow}} DAI",
+      "subtext": "Borrow up to {{maxBorrow}} DAI for every $100,000 worth of {{token}}",
       "button": "Borrow against {{token}}"
     }
   }

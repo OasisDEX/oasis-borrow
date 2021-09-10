@@ -112,7 +112,9 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
                   ? t('vault-form.header.modified')
                   : t('vault-form.header.confirm-manage')
                 : stage === 'multiplyTransitionEditing'
-                ? 'Get up to [x] ETH exposure from your Vault'
+                ? t('vault-form.header.multiply-transition', {
+                    token: props.vault.token.toUpperCase(),
+                  })
                 : 'Great, now you will go the new Mutiply interface'}
             </Text>
           </WithVaultFormStepIndicator>

@@ -20,7 +20,7 @@ function manageMultiplyVaultButtonText(state: ManageMultiplyVaultState): string 
         ? t('set-token-allowance', { token: state.vault.token })
         : state.insufficientDaiAllowance
         ? t('set-token-allowance', { token: 'DAI' })
-        : state.otherAction === 'closeVault'
+        : state.originalEditingStage === 'otherActions' && state.otherAction === 'closeVault'
         ? t('close-vault')
         : t('confirm')
 
