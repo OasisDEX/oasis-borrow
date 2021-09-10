@@ -176,6 +176,7 @@ export function createExchangeChange$(
               vault: { token },
               closeToDaiParams,
               closeToCollateralParams,
+              oneInchAmount,
             } = state
 
             if (
@@ -184,14 +185,7 @@ export function createExchangeChange$(
               collateralDelta &&
               requiredCollRatio
             ) {
-              return exchangeQuote$(
-                token,
-                slippage,
-                exchangeAction === 'BUY_COLLATERAL'
-                  ? (debtDelta as BigNumber).abs().times(one.minus(OAZO_FEE))
-                  : collateralDelta.abs(),
-                exchangeAction,
-              )
+              return exchangeQuote$(token, slippage, oneInchAmount, exchangeAction)
             }
 
             if (otherAction === 'closeVault') {

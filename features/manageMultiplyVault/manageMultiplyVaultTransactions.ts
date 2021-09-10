@@ -241,6 +241,7 @@ export function adjustPosition(
     depositAmount,
     collateralDelta,
     slippage,
+    oneInchAmount
   }: ManageMultiplyVaultState,
 ) {
   txHelpers$
@@ -251,9 +252,7 @@ export function adjustPosition(
           getTokenMetaData('DAI', tokens),
           getTokenMetaData(token, tokens),
           exchange.address,
-          exchangeAction === 'BUY_COLLATERAL'
-            ? (debtDelta as BigNumber).abs().times(one.minus(OAZO_FEE))
-            : (collateralDelta as BigNumber).abs(),
+          oneInchAmount,
           slippage,
           exchangeAction!,
         ).pipe(

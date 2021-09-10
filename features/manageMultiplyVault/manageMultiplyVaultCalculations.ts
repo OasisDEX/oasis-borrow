@@ -89,6 +89,7 @@ export interface ManageVaultCalculations {
   afterCloseToDai: BigNumber
   afterCloseToCollateral: BigNumber
   afterCloseToCollateralUSD: BigNumber
+  oneInchAmount: BigNumber
 }
 
 export const MAX_COLL_RATIO = new BigNumber(5)
@@ -149,6 +150,7 @@ export const defaultManageMultiplyVaultCalculations: ManageVaultCalculations = {
   afterBuyingPower: zero,
   afterBuyingPowerUSD: zero,
   afterNetValueUSD: zero,
+  oneInchAmount: zero,
 
   closeToDaiParams: {
     fromTokenAmount: zero,
@@ -563,7 +565,12 @@ export function applyManageVaultCalculations(
     return { ...state, ...defaultManageMultiplyVaultCalculations, ...maxInputAmounts, ...prices }
   }
 
-  const { debtDelta, collateralDelta: collateralDeltaNonClose, loanFee, oazoFee } = getVaultChange({
+  const {
+    debtDelta: borrowedDaiAmount,
+    collateralDelta: collateralDeltaNonClose,
+    loanFee,
+    oazoFee,
+  } = getVaultChange({
     currentCollateralPrice,
     marketPrice,
     slippage,
@@ -577,6 +584,13 @@ export function applyManageVaultCalculations(
     OF: OAZO_FEE,
     FF: LOAN_FEE,
   })
+
+  const oneInchAmount = borrowedDaiAmount.gt(zero)
+    ? borrowedDaiAmount.times(one.minus(OAZO_FEE))
+    : borrowedDaiAmount
+        .times(one.plus(LOAN_FEE))
+        .times(one.plus(OAZO_FEE))
+        .div(marketPrice.times(one.plus(slippage)))
 
   const closeToDaiParams = calculateCloseToDaiParams(
     marketPrice,
@@ -602,7 +616,7 @@ export function applyManageVaultCalculations(
 
   const fees = BigNumber.sum(loanFee, oazoFee)
 
-  const afterDebt = isCloseAction ? zero : debt.plus(debtDelta).plus(loanFee)
+  const afterDebt = isCloseAction ? zero : debt.plus(borrowedDaiAmount).plus(loanFee)
 
   const afterLockedCollateral = isCloseAction ? zero : lockedCollateral.plus(collateralDelta)
   const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
@@ -760,7 +774,7 @@ export function applyManageVaultCalculations(
     oazoFee,
     fees,
 
-    debtDelta,
+    debtDelta: borrowedDaiAmount,
     collateralDelta,
 
     afterCollateralBalance,
@@ -779,5 +793,6 @@ export function applyManageVaultCalculations(
     afterCloseToDai,
     afterCloseToCollateral,
     afterCloseToCollateralUSD,
+    oneInchAmount,
   }
 }
