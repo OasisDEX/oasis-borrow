@@ -150,9 +150,7 @@ export function applyOpenMultiplyVaultCalculations(
 
   const fromTokenAmount = borrowedDaiAmount
 
-  // DEVS THE CHANGE IS HERE #LOOK_HERE
-  //
-  const oneInchAmount = afterOutstandingDebt.div(one.plus(OAZO_FEE)).div(one.plus(LOAN_FEE))
+  const oneInchAmount = afterOutstandingDebt.times(one.minus(OAZO_FEE)).div(one.plus(LOAN_FEE))
 
   const totalExposure = buyingCollateral?.gt(0) ? buyingCollateral.plus(depositAmount) : zero
   const totalExposureUSD = totalExposure.gt(0) ? totalExposure.times(marketPriceMaxSlippage) : zero
