@@ -43,6 +43,7 @@ export interface OpenMultiplyVaultCalculations {
   toTokenAmountUSD: BigNumber
   fromTokenAmount: BigNumber
   borrowedDaiAmount: BigNumber
+  oneInchAmount: BigNumber
 }
 
 export const defaultOpenMultiplyVaultStateCalculations: OpenMultiplyVaultCalculations = {
@@ -73,6 +74,7 @@ export const defaultOpenMultiplyVaultStateCalculations: OpenMultiplyVaultCalcula
   toTokenAmountUSD: zero,
   fromTokenAmount: zero,
   borrowedDaiAmount: zero,
+  oneInchAmount: zero,
 }
 
 export function applyOpenMultiplyVaultCalculations(
@@ -147,6 +149,7 @@ export function applyOpenMultiplyVaultCalculations(
   const toTokenAmountUSD = buyingCollateral.times(marketPriceMaxSlippage)
 
   const fromTokenAmount = borrowedDaiAmount
+  const oneInchAmount = afterOutstandingDebt.div(one.plus(OAZO_FEE)).div(one.plus(LOAN_FEE))
 
   const totalExposure = buyingCollateral?.gt(0) ? buyingCollateral.plus(depositAmount) : zero
   const totalExposureUSD = totalExposure.gt(0) ? totalExposure.times(marketPriceMaxSlippage) : zero
@@ -266,5 +269,6 @@ export function applyOpenMultiplyVaultCalculations(
     daiYieldFromDepositingCollateralAtNextPrice,
     // afterFreeCollateral,
     borrowedDaiAmount,
+    oneInchAmount,
   }
 }

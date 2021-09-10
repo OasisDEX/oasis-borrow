@@ -11,7 +11,7 @@ import { VaultType } from 'features/generalManageVault/generalManageVault'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { transactionToX } from 'helpers/form'
-import { OAZO_FEE } from 'helpers/multiply/calculations'
+import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
@@ -268,7 +268,7 @@ export function parseVaultIdFromReceiptLogs({ logs }: Receipt): BigNumber | unde
 }
 
 export function multiplyVault(
-  { sendWithGasEstimation }: TxHelpers,
+  { sendWithGasEstimation, send }: TxHelpers,
   { tokens, exchange }: ContextConnected,
   change: (ch: OpenMultiplyVaultChange) => void,
   {
@@ -283,20 +283,21 @@ export function multiplyVault(
     toTokenAmount,
     fromTokenAmount,
     borrowedDaiAmount,
+    oneInchAmount,
   }: OpenMultiplyVaultState,
 ) {
   return getQuote$(
     getTokenMetaData('DAI', tokens),
     getTokenMetaData(token, tokens),
     exchange.address,
-    afterOutstandingDebt.times(one.minus(OAZO_FEE)),
+    oneInchAmount,
     slippage,
     'BUY_COLLATERAL',
   )
     .pipe(
       first(),
       switchMap((swap) =>
-        sendWithGasEstimation(openMultiplyVault, {
+        send(openMultiplyVault, {
           kind: TxMetaKind.multiply,
           depositCollateral: depositAmount || zero,
           userAddress: account,
