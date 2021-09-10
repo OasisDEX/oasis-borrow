@@ -1,4 +1,3 @@
-import { getToken } from 'blockchain/tokensMetadata'
 import {
   AfterPillProps,
   getAfterPillColors,
@@ -11,8 +10,9 @@ import {
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
@@ -20,15 +20,15 @@ import { Box, Grid } from 'theme-ui'
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 
 function ManageMultiplyVaultDetailsSummary({
-  vault: { debt, token, freeCollateral, daiYieldFromLockedCollateral },
+  vault: { debt, token, lockedCollateral },
   afterDebt,
-  afterFreeCollateral,
-  daiYieldFromTotalCollateral,
   afterPillColors,
   showAfterPill,
+  multiply,
+  afterMultiply,
+  afterLockedCollateral,
 }: ManageMultiplyVaultState & AfterPillProps) {
   const { t } = useTranslation()
-  const { symbol } = getToken(token)
 
   return (
     <VaultDetailsSummaryContainer>
@@ -52,36 +52,34 @@ function ManageMultiplyVaultDetailsSummary({
       />
 
       <VaultDetailsSummaryItem
-        label={t('system.available-to-withdraw')}
+        label={t('system.total-exposure', { token })}
         value={
           <>
-            {formatAmount(freeCollateral, symbol)}
-            {` ${symbol}`}
+            {formatCryptoBalance(lockedCollateral)} {token}
           </>
         }
         valueAfter={
           showAfterPill && (
             <>
-              {formatAmount(afterFreeCollateral, symbol)}
-              {` ${symbol}`}
+              {formatCryptoBalance(afterLockedCollateral || zero)} {token}
             </>
           )
         }
         afterPillColors={afterPillColors}
       />
       <VaultDetailsSummaryItem
-        label={t('system.available-to-generate')}
+        label={t('system.multiple')}
         value={
           <>
-            {formatAmount(daiYieldFromLockedCollateral, 'DAI')}
-            {` DAI`}
+            {multiply?.toFixed(2)}
+            {t('system.multiplier-exposure')}
           </>
         }
         valueAfter={
           showAfterPill && (
             <>
-              {formatAmount(daiYieldFromTotalCollateral, 'DAI')}
-              {` DAI`}
+              {afterMultiply?.toFixed(2)}
+              {t('system.multiplier-exposure')}
             </>
           )
         }

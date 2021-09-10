@@ -1,5 +1,3 @@
-import BigNumber from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
 import {
   AfterPillProps,
   getAfterPillColors,
@@ -12,7 +10,7 @@ import {
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -26,9 +24,10 @@ function OpenMultiplyVaultDetailsSummary({
   afterPillColors,
   showAfterPill,
   afterOutstandingDebt,
+  multiply,
+  totalExposure,
 }: OpenMultiplyVaultState & AfterPillProps) {
   const { t } = useTranslation()
-  const { symbol } = getToken(token)
 
   return (
     <VaultDetailsSummaryContainer>
@@ -52,40 +51,34 @@ function OpenMultiplyVaultDetailsSummary({
       />
 
       <VaultDetailsSummaryItem
-        label={t('system.available-to-withdraw')}
+        label={t('system.total-exposure', { token })}
         value={
           <>
-            {/* TO DO calculations */}
-            {formatAmount(new BigNumber(2), symbol)}
-            {` ${symbol}`}
+            {formatCryptoBalance(zero)} {token}
           </>
         }
         valueAfter={
           showAfterPill && (
             <>
-              {/* TO DO calculations */}
-              {formatAmount(new BigNumber(3), 'DAI')}
-              {` DAI`}
+              {formatCryptoBalance(totalExposure || zero)} {token}
             </>
           )
         }
         afterPillColors={afterPillColors}
       />
       <VaultDetailsSummaryItem
-        label={t('system.available-to-generate')}
+        label={t('system.multiple')}
         value={
           <>
-            {/* TO DO calculations */}
-            {formatAmount(new BigNumber(3), 'DAI')}
-            {` DAI`}
+            {(0.0).toFixed(2)}
+            {t('system.multiplier-exposure')}
           </>
         }
         valueAfter={
           showAfterPill && (
             <>
-              {/* TO DO calculations */}
-              {formatAmount(new BigNumber(4), 'DAI')}
-              {` DAI`}
+              {multiply?.toFixed(2)}
+              {t('system.multiplier-exposure')}
             </>
           )
         }
@@ -116,7 +109,6 @@ export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'openSuccess'
-
   return (
     <>
       <Grid variant="vaultDetailsCardsContainer">

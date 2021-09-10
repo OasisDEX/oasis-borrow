@@ -399,6 +399,9 @@
   "system": {
     "asset": "Asset",
     "available-to-withdraw": "Available to Withdraw",
+    "total-exposure": "Total {{token}} exposure",
+    "multiplier-exposure": "x exposure",
+    "multiple": "Multiple",
     "available-to-generate": "Available to Generate",
     "coll-locked": "Coll. Locked",
     "coll-ratio": "Coll. Ratio",
