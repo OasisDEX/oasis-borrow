@@ -320,9 +320,9 @@ export function applyManageVaultConditions(
   const generateAmountExceedsDaiYieldFromTotalCollateral =
     !generateAmountExceedsDebtCeiling && !!generateAmountCalc.gt(maxGenerateAmountAtCurrentPrice)
 
-  console.log("generateAmountCalc",generateAmountCalc.toString());
-  console.log("maxGenerateAmountAtCurrentPrice",maxGenerateAmountAtCurrentPrice.toString());
-  console.log("generateAmountExceedsDebtCeiling",maxGenerateAmountAtCurrentPrice.toString());
+  console.log('generateAmountCalc', generateAmountCalc.toString())
+  console.log('maxGenerateAmountAtCurrentPrice', maxGenerateAmountAtCurrentPrice.toString())
+  console.log('generateAmountExceedsDebtCeiling', maxGenerateAmountAtCurrentPrice.toString())
 
   const generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice =
     !generateAmountExceedsDebtCeiling &&
