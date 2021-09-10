@@ -219,6 +219,7 @@ export function calculateCloseToDaiParams(
   FF: BigNumber,
   currentCollateral: BigNumber,
   slippage: BigNumber,
+  currentDebt: BigNumber,
 ): CloseToParams {
   const fromTokenAmount = currentCollateral
   const toTokenAmount = currentCollateral.times(marketPrice).times(one.minus(OF))
@@ -232,7 +233,7 @@ export function calculateCloseToDaiParams(
     toTokenAmount,
     minToTokenAmount,
     oazoFee: currentCollateral.times(marketPrice).times(OF),
-    loanFee: currentCollateral.times(marketPrice).times(one.plus(OF)).times(FF),
+    loanFee: currentDebt.times(one.plus(OF)).times(FF),
   }
 }
 

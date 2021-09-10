@@ -593,6 +593,7 @@ export function applyManageVaultCalculations(
     LOAN_FEE,
     lockedCollateral,
     slippage,
+    debt.plus(debtOffset),
   )
 
   const closeToCollateralParams = calculateCloseToCollateralParams(
