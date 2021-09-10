@@ -75,7 +75,7 @@ const protoMain = {
   etherscan: {
     url: 'https://etherscan.io',
     apiUrl: 'https://api.etherscan.io/api',
-    apiKey: '34JVYM6RPM3J1SK8QXQFRNSHD9XG4UHXVU',
+    apiKey: etherscanAPIKey || '',
   },
   taxProxyRegistries: ['0xaa63c8683647ef91b3fdab4b4989ee9588da297b'],
   dssProxyActionsDsr: contractDesc(
@@ -83,7 +83,7 @@ const protoMain = {
     '0x07ee93aEEa0a36FfF2A9B95dd22Bd6049EE54f26',
   ),
   magicLink: {
-    apiKey: 'pk_live_3256343D62443CE6',
+    apiKey: '',
   },
   cacheApi: 'https://oazo-bcache.new.oasis.app/api/v1',
 }
@@ -134,7 +134,7 @@ const kovan: NetworkConfig = {
   taxProxyRegistries: [kovanAddresses.PROXY_REGISTRY],
   dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, kovanAddresses.PROXY_ACTIONS_DSR),
   magicLink: {
-    apiKey: 'pk_test_E72F1844D7C09A07',
+    apiKey: '',
   },
   cacheApi: 'https://oazo-bcache-kovan-staging.new.oasis.app/api/v1',
 }
