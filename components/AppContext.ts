@@ -23,8 +23,8 @@ import {
   CloseVaultData,
   DepositAndGenerateData,
   MultiplyAdjustData,
-  OpenMultiplyData,
   OpenData,
+  OpenMultiplyData,
   ReclaimData,
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions'
