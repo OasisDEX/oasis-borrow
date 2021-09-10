@@ -321,6 +321,7 @@ export function applyManageVaultConditions(
     !generateAmountExceedsDebtCeiling && !!generateAmountCalc.gt(maxGenerateAmountAtCurrentPrice)
 
   console.log('generateAmountCalc', generateAmountCalc.toString())
+  console.log('buyAmount', generateAmountCalc.toString())
   console.log('maxGenerateAmountAtCurrentPrice', maxGenerateAmountAtCurrentPrice.toString())
   console.log('generateAmountExceedsDebtCeiling', maxGenerateAmountAtCurrentPrice.toString())
 

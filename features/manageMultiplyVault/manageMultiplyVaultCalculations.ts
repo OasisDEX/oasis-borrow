@@ -497,15 +497,6 @@ export function applyManageVaultCalculations(
   )
   const maxWithdrawAmountUSD = maxWithdrawAmount.times(currentCollateralPrice)
 
-  const maxGenerateAmountAtCurrentPrice = calculateMaxGenerateAmount({
-    debt,
-    debtOffset,
-    ilkDebtAvailable,
-    liquidationRatio,
-    lockedCollateral,
-    price: currentCollateralPrice,
-  })
-
   const maxGenerateAmountAtNextPrice = calculateMaxGenerateAmount({
     debt,
     debtOffset,
@@ -513,6 +504,34 @@ export function applyManageVaultCalculations(
     liquidationRatio,
     lockedCollateral,
     price: nextCollateralPrice,
+  })
+
+  if (!marketPrice || !marketPriceMaxSlippage) {
+    return { ...state, ...defaultManageMultiplyVaultCalculations, ...maxInputAmounts, ...prices }
+  }
+
+  const { debtDelta, collateralDelta, loanFee, oazoFee } = getVaultChange({
+    currentCollateralPrice,
+    marketPrice,
+    slippage,
+    debt,
+    lockedCollateral,
+    requiredCollRatio,
+    depositAmount,
+    paybackAmount,
+    generateAmount,
+    withdrawAmount,
+    OF: OAZO_FEE,
+    FF: LOAN_FEE,
+  })
+
+  const maxGenerateAmountAtCurrentPrice = calculateMaxGenerateAmount({
+    debt: debt.plus(debtDelta),
+    debtOffset,
+    ilkDebtAvailable,
+    liquidationRatio,
+    lockedCollateral: lockedCollateral.plus(collateralDelta),
+    price: currentCollateralPrice,
   })
 
   const maxGenerateAmount = BigNumber.minimum(
@@ -537,25 +556,6 @@ export function applyManageVaultCalculations(
     maxGenerateAmountAtNextPrice,
     maxGenerateAmount,
   }
-
-  if (!marketPrice || !marketPriceMaxSlippage) {
-    return { ...state, ...defaultManageMultiplyVaultCalculations, ...maxInputAmounts, ...prices }
-  }
-
-  const { debtDelta, collateralDelta, loanFee, oazoFee } = getVaultChange({
-    currentCollateralPrice,
-    marketPrice,
-    slippage,
-    debt,
-    lockedCollateral,
-    requiredCollRatio,
-    depositAmount,
-    paybackAmount,
-    generateAmount,
-    withdrawAmount,
-    OF: OAZO_FEE,
-    FF: LOAN_FEE,
-  })
 
   const fees = BigNumber.sum(loanFee, oazoFee)
 
