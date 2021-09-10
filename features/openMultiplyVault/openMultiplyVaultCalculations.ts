@@ -149,6 +149,9 @@ export function applyOpenMultiplyVaultCalculations(
   const toTokenAmountUSD = buyingCollateral.times(marketPriceMaxSlippage)
 
   const fromTokenAmount = borrowedDaiAmount
+
+  // DEVS THE CHANGE IS HERE #LOOK_HERE
+  //
   const oneInchAmount = afterOutstandingDebt.div(one.plus(OAZO_FEE)).div(one.plus(LOAN_FEE))
 
   const totalExposure = buyingCollateral?.gt(0) ? buyingCollateral.plus(depositAmount) : zero
