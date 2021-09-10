@@ -429,8 +429,6 @@ export function applyManageVaultCalculations(
     originalEditingStage,
   } = state
 
-  console.log(`applyManageVaultCalculations lockedCollateral=${lockedCollateral}`)
-
   const isCloseAction = originalEditingStage === 'otherActions' && otherAction === 'closeVault'
 
   const marketPrice =
@@ -668,16 +666,6 @@ export function applyManageVaultCalculations(
         lockedCollateral: lockedCollateral.plus(collateralDelta),
         price: currentCollateralPrice,
       })
-
-
-      console.log(`
-      Conditions!!!!!!!!:
-      debt:${debt}
-      delta:${debtDelta}
-      lockedCollateral:${lockedCollateral}
-      collateralDelta:${collateralDelta}
-      maxGenerateAmountAtNextPrice:${maxGenerateAmountAtNextPrice}
-      `)
 
       const maxGenerateAmount = BigNumber.minimum(
         maxGenerateAmountAtCurrentPrice,
