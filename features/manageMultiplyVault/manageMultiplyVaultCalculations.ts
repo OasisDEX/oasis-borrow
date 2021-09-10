@@ -4,7 +4,14 @@ import { Vault } from 'blockchain/vaults'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
-import { getMultiplyParams, LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
+import {
+  calculateCloseToCollateralParams,
+  calculateCloseToDaiParams,
+  CloseToParams,
+  getMultiplyParams,
+  LOAN_FEE,
+  OAZO_FEE,
+} from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 
 import { ManageMultiplyVaultState } from './manageMultiplyVault'
@@ -75,6 +82,13 @@ export interface ManageVaultCalculations {
 
   marketPrice?: BigNumber
   marketPriceMaxSlippage?: BigNumber
+
+  closeToDaiParams: CloseToParams
+  closeToCollateralParams: CloseToParams
+
+  afterCloseToDai: BigNumber
+  afterCloseToCollateral: BigNumber
+  afterCloseToCollateralUSD: BigNumber
 }
 
 export const MAX_COLL_RATIO = new BigNumber(5)
@@ -135,6 +149,22 @@ export const defaultManageMultiplyVaultCalculations: ManageVaultCalculations = {
   afterBuyingPower: zero,
   afterBuyingPowerUSD: zero,
   afterNetValueUSD: zero,
+
+  closeToDaiParams: {
+    fromTokenAmount: zero,
+    toTokenAmount: zero,
+    minToTokenAmount: zero,
+  },
+
+  closeToCollateralParams: {
+    fromTokenAmount: zero,
+    toTokenAmount: zero,
+    minToTokenAmount: zero,
+  },
+
+  afterCloseToDai: zero,
+  afterCloseToCollateral: zero,
+  afterCloseToCollateralUSD: zero,
 }
 
 /*
@@ -426,6 +456,7 @@ export function applyManageVaultCalculations(
     withdrawAmount = zero,
     otherAction,
     originalEditingStage,
+    closeVaultTo,
   } = state
 
   const isCloseAction = originalEditingStage === 'otherActions' && otherAction === 'closeVault'
@@ -532,7 +563,7 @@ export function applyManageVaultCalculations(
     return { ...state, ...defaultManageMultiplyVaultCalculations, ...maxInputAmounts, ...prices }
   }
 
-  const { debtDelta, collateralDelta, loanFee, oazoFee } = getVaultChange({
+  const { debtDelta, collateralDelta: collateralDeltaNonClose, loanFee, oazoFee } = getVaultChange({
     currentCollateralPrice,
     marketPrice,
     slippage,
@@ -547,11 +578,33 @@ export function applyManageVaultCalculations(
     FF: LOAN_FEE,
   })
 
+  const closeToDaiParams = calculateCloseToDaiParams(
+    marketPrice,
+    OAZO_FEE,
+    lockedCollateral,
+    slippage,
+  )
+
+  const closeToCollateralParams = calculateCloseToCollateralParams(
+    marketPrice,
+    OAZO_FEE,
+    LOAN_FEE,
+    debt.plus(debtOffset),
+    slippage,
+  )
+
+  const collateralDelta = isCloseAction
+    ? closeVaultTo === 'dai'
+      ? // negated to indicate that we are performing sell action
+        closeToDaiParams.fromTokenAmount.negated()
+      : closeToCollateralParams.fromTokenAmount.negated()
+    : collateralDeltaNonClose
+
   const fees = BigNumber.sum(loanFee, oazoFee)
 
   const afterDebt = isCloseAction ? zero : debt.plus(debtDelta).plus(loanFee)
 
-  const afterLockedCollateral = lockedCollateral.plus(collateralDelta)
+  const afterLockedCollateral = isCloseAction ? zero : lockedCollateral.plus(collateralDelta)
   const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
 
   const afterCollateralizationRatio = afterLockedCollateralUSD.div(afterDebt)
@@ -670,6 +723,12 @@ export function applyManageVaultCalculations(
   const buyingPowerUSD = buyingPower.times(currentCollateralPrice)
   const afterBuyingPowerUSD = afterBuyingPower.times(currentCollateralPrice)
   const collateralDeltaUSD = collateralDelta.times(currentCollateralPrice)
+
+  const afterCloseToDai = closeToDaiParams.minToTokenAmount.minus(debt)
+
+  const afterCloseToCollateral = lockedCollateral.minus(closeToCollateralParams.fromTokenAmount)
+  const afterCloseToCollateralUSD = afterCloseToCollateral.times(currentCollateralPrice)
+
   return {
     ...state,
     ...maxInputAmounts,
@@ -714,5 +773,11 @@ export function applyManageVaultCalculations(
     afterBuyingPower,
     afterBuyingPowerUSD,
     collateralDeltaUSD,
+
+    closeToDaiParams,
+    closeToCollateralParams,
+    afterCloseToDai,
+    afterCloseToCollateral,
+    afterCloseToCollateralUSD,
   }
 }

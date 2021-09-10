@@ -6,7 +6,6 @@ import { ContextConnected } from 'blockchain/network'
 import { amountToWad, amountToWei } from 'blockchain/utils'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { CloseVaultTo } from 'features/manageMultiplyVault/manageMultiplyVault'
-import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
@@ -512,9 +511,10 @@ export type CloseVaultData = {
   exchangeData: string
   totalCollateral: BigNumber
   totalDebt: BigNumber
-  marketPrice: BigNumber
-  slippage: BigNumber
   proxyAddress: string
+  fromTokenAmount: BigNumber
+  toTokenAmount: BigNumber
+  minToTokenAmount: BigNumber
 }
 
 function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) {
@@ -529,91 +529,68 @@ function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) 
     aaveLendingPool,
   } = context
 
-  if (data.closeTo === 'collateral') {
-    const debtWithFees = data.totalDebt.times(one.plus(OAZO_FEE).times(one.plus(LOAN_FEE)))
+  const {
+    id,
+    ilk,
+    userAddress,
+    closeTo,
+    totalCollateral,
+    totalDebt,
+    token,
+    exchangeAddress,
+    exchangeData,
+    fromTokenAmount,
+    toTokenAmount,
+    minToTokenAmount,
+  } = data
 
-    const fromTokenAmount = amountToWei(
-      debtWithFees.div(data.marketPrice.times(one.minus(data.slippage))),
-      data.token,
-    ).toFixed(0)
+  const exchangeCallData = {
+    fromTokenAddress: tokens[token].address,
+    toTokenAddress: tokens['DAI'].address,
+    fromTokenAmount: amountToWei(fromTokenAmount, token).toFixed(0),
+    toTokenAmount: amountToWei(toTokenAmount, 'DAI').toFixed(0),
+    minToTokenAmount: amountToWei(minToTokenAmount, 'DAI').toFixed(0),
+    exchangeAddress,
+    _exchangeCalldata: exchangeData,
+  }
 
-    const toTokenAmount = amountToWei(debtWithFees.times(one.plus(data.slippage)), 'DAI').toFixed(0)
+  const cdpCallData = {
+    gemJoin: joins[ilk],
+    cdpId: id.toString(),
+    ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
+    fundsReceiver: userAddress,
+    borrowCollateral: amountToWei(totalCollateral, token).toFixed(0),
+    requiredDebt: amountToWei(
+      closeTo === 'collateral' ? minToTokenAmount : totalDebt,
+      'DAI',
+    ).toFixed(0),
+    depositCollateral: '0',
+    withdrawDai: '0',
+    depositDai: '0',
+    withdrawCollateral: '0',
+    skipFL: false,
+    methodName: '',
+  }
 
-    const minToTokenAmount = amountToWei(debtWithFees, 'DAI').toFixed(0)
+  const addressRegistryCallData = {
+    jug: mcdJug.address,
+    manager: dssCdpManager.address,
+    multiplyProxyActions: dssMultiplyProxyActions.address,
+    aaveLendingPoolProvider: aaveLendingPool,
+    exchange: exchange.address,
+  }
 
+  if (closeTo === 'collateral') {
     return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.closeVaultExitCollateral(
-      {
-        fromTokenAddress: tokens[data.token].address,
-        toTokenAddress: tokens['DAI'].address,
-        fromTokenAmount,
-        toTokenAmount,
-        minToTokenAmount,
-        exchangeAddress: data.exchangeAddress,
-        _exchangeCalldata: data.exchangeData,
-      } as any,
-      {
-        gemJoin: joins[data.ilk],
-        cdpId: data.id.toString(),
-        ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
-        fundsReceiver: data.userAddress,
-        borrowCollateral: amountToWei(data.totalCollateral, data.token).toFixed(0),
-        requiredDebt: minToTokenAmount,
-        depositCollateral: '0',
-        withdrawDai: '0',
-        depositDai: '0',
-        withdrawCollateral: '0',
-        skipFL: false,
-        methodName: '',
-      } as any,
-      {
-        jug: mcdJug.address,
-        manager: dssCdpManager.address,
-        multiplyProxyActions: dssMultiplyProxyActions.address,
-        aaveLendingPoolProvider: aaveLendingPool,
-        exchange: exchange.address,
-      } as any,
+      exchangeCallData as any,
+      cdpCallData as any,
+      addressRegistryCallData as any,
     )
   } else {
     return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.closeVaultExitDai(
-      {
-        fromTokenAddress: tokens[data.token].address,
-        toTokenAddress: tokens['DAI'].address,
-        fromTokenAmount: amountToWei(data.totalCollateral, data.token).toFixed(0),
-        toTokenAmount: amountToWei(
-          data.totalCollateral.times(data.marketPrice).times(one.minus(OAZO_FEE)),
-          'DAI',
-        ).toFixed(0),
-        minToTokenAmount: amountToWei(
-          data.totalCollateral
-            .times(data.marketPrice)
-            .times(one.minus(OAZO_FEE))
-            .times(one.minus(data.slippage)),
-          'DAI',
-        ).toFixed(0),
-        exchangeAddress: data.exchangeAddress,
-        _exchangeCalldata: data.exchangeData,
-      } as any,
-      {
-        gemJoin: joins[data.ilk],
-        cdpId: data.id.toString(),
-        ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
-        fundsReceiver: data.userAddress,
-        borrowCollateral: amountToWei(data.totalCollateral, data.token).toFixed(0),
-        requiredDebt: amountToWei(data.totalDebt, 'DAI').toFixed(0),
-        depositCollateral: '0',
-        withdrawDai: '0',
-        depositDai: '0',
-        withdrawCollateral: '0',
-        skipFL: false,
-        methodName: '',
-      } as any,
-      {
-        jug: mcdJug.address,
-        manager: dssCdpManager.address,
-        multiplyProxyActions: dssMultiplyProxyActions.address,
-        aaveLendingPoolProvider: aaveLendingPool,
-        exchange: exchange.address,
-      } as any,
+      exchangeCallData as any,
+      cdpCallData as any,
+      addressRegistryCallData as any,
     )
   }
 }

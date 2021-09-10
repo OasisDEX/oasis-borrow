@@ -465,6 +465,9 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
     setCloseVaultTo,
     closeVaultTo,
     vault: { token },
+    afterCloseToDai,
+    afterCloseToCollateral,
+    afterCloseToCollateralUSD,
   } = props
 
   const closeToCollateral = closeVaultTo === 'collateral'
@@ -494,11 +497,14 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
       <Flex sx={{ fontSize: 1, fontWeight: 'semiBold', justifyContent: 'space-between', mt: 3 }}>
         <Text sx={{ color: 'text.subtitle' }}>{closeToTokenName} after closing</Text>
         <Text>
-          {formatCryptoBalance(new BigNumber(9.99))} {closeToTokenName}
+          {formatCryptoBalance(closeToCollateral ? afterCloseToCollateral : afterCloseToDai)}{' '}
+          {closeToTokenName}
           {` `}
-          <Text as="span" sx={{ color: 'text.subtitle' }}>
-            (${formatAmount(new BigNumber(30002.09), 'USD')})
-          </Text>
+          {closeToCollateral && (
+            <Text as="span" sx={{ color: 'text.subtitle' }}>
+              (${formatAmount(afterCloseToCollateralUSD, 'USD')})
+            </Text>
+          )}
         </Text>
       </Flex>
     </>
