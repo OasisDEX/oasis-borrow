@@ -6,7 +6,6 @@ import { BalanceInfo } from 'features/shared/balanceInfo'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import { getMultiplyParams, LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
-import { max } from 'web3-eth-contract/node_modules/@types/bn.js'
 
 import { ManageMultiplyVaultState } from './manageMultiplyVault'
 
@@ -488,8 +487,7 @@ export function applyManageVaultCalculations(
   )
   const maxWithdrawAmountUSD = maxWithdrawAmount.times(currentCollateralPrice)
 
-
-  let maxInputAmounts = {
+  const maxInputAmounts = {
     maxDepositAmount,
     maxDepositAmountUSD,
 
@@ -497,10 +495,10 @@ export function applyManageVaultCalculations(
     maxWithdrawAmountAtNextPrice,
     maxWithdrawAmount,
     maxWithdrawAmountUSD,
-    maxGenerateAmountAtNextPrice:new BigNumber(0),
-    maxPaybackAmount:new BigNumber(0),
-    maxGenerateAmountAtCurrentPrice:new BigNumber(0),
-    maxGenerateAmount:new BigNumber(0)
+    maxGenerateAmountAtNextPrice: new BigNumber(0),
+    maxPaybackAmount: new BigNumber(0),
+    maxGenerateAmountAtCurrentPrice: new BigNumber(0),
+    maxGenerateAmount: new BigNumber(0),
   }
 
   if (!marketPrice || !marketPriceMaxSlippage) {
@@ -522,10 +520,9 @@ export function applyManageVaultCalculations(
     FF: LOAN_FEE,
   })
 
-
   const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt
 
-  maxInputAmounts.maxPaybackAmount =maxPaybackAmount;
+  maxInputAmounts.maxPaybackAmount = maxPaybackAmount
 
   const fees = BigNumber.sum(loanFee, oazoFee)
 
@@ -647,33 +644,31 @@ export function applyManageVaultCalculations(
         FF: LOAN_FEE,
       })
 
+  const maxGenerateAmountAtCurrentPrice = calculateMaxGenerateAmount({
+    debt: debt,
+    debtOffset,
+    ilkDebtAvailable,
+    liquidationRatio,
+    lockedCollateral: lockedCollateral.plus(collateralDelta),
+    price: currentCollateralPrice,
+  })
 
+  const maxGenerateAmountAtNextPrice = calculateMaxGenerateAmount({
+    debt: debt,
+    debtOffset,
+    ilkDebtAvailable,
+    liquidationRatio,
+    lockedCollateral: lockedCollateral.plus(collateralDelta),
+    price: currentCollateralPrice,
+  })
 
-      const maxGenerateAmountAtCurrentPrice = calculateMaxGenerateAmount({
-        debt: debt,
-        debtOffset,
-        ilkDebtAvailable,
-        liquidationRatio,
-        lockedCollateral: lockedCollateral.plus(collateralDelta),
-        price: currentCollateralPrice,
-      })
-
-      const maxGenerateAmountAtNextPrice = calculateMaxGenerateAmount({
-        debt: debt,
-        debtOffset,
-        ilkDebtAvailable,
-        liquidationRatio,
-        lockedCollateral: lockedCollateral.plus(collateralDelta),
-        price: currentCollateralPrice,
-      })
-
-      const maxGenerateAmount = BigNumber.minimum(
-        maxGenerateAmountAtCurrentPrice,
-        maxGenerateAmountAtNextPrice,
-      )
-      maxInputAmounts.maxGenerateAmountAtCurrentPrice=maxGenerateAmountAtCurrentPrice
-      maxInputAmounts.maxGenerateAmount=maxGenerateAmount;
-      maxInputAmounts.maxGenerateAmountAtNextPrice = maxGenerateAmountAtNextPrice;
+  const maxGenerateAmount = BigNumber.minimum(
+    maxGenerateAmountAtCurrentPrice,
+    maxGenerateAmountAtNextPrice,
+  )
+  maxInputAmounts.maxGenerateAmountAtCurrentPrice = maxGenerateAmountAtCurrentPrice
+  maxInputAmounts.maxGenerateAmount = maxGenerateAmount
+  maxInputAmounts.maxGenerateAmountAtNextPrice = maxGenerateAmountAtNextPrice
 
   const buyingPowerUSD = buyingPower.times(currentCollateralPrice)
   const afterBuyingPowerUSD = afterBuyingPower.times(currentCollateralPrice)
