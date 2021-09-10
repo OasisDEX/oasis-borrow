@@ -590,7 +590,7 @@ export function applyManageVaultCalculations(
     : borrowedDaiAmount
         .times(one.plus(LOAN_FEE))
         .times(one.plus(OAZO_FEE))
-        .div(marketPrice.times(one.plus(slippage)))
+        .div(marketPrice.times(one.minus(slippage)))
 
   const closeToDaiParams = calculateCloseToDaiParams(
     marketPrice,
