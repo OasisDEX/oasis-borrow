@@ -6,6 +6,7 @@ import { ContextConnected } from 'blockchain/network'
 import { amountToWad, amountToWei } from 'blockchain/utils'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { CloseVaultTo } from 'features/manageMultiplyVault/manageMultiplyVault'
+import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
@@ -457,8 +458,8 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
         toTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
         fromTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
         minToTokenAmount: amountToWei(data.requiredDebt, 'DAI')
-          .times(one.minus(data.slippage))
-          .toFixed(0),
+          .div(one.minus(OAZO_FEE))
+          .div(one.minus(LOAN_FEE)),
         exchangeAddress: data.exchangeAddress,
         _exchangeCalldata: data.exchangeData,
       } as any, //TODO: figure out why Typechain is generating arguments as arrays
