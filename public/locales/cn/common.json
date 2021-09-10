@@ -375,6 +375,9 @@
   "system": {
     "asset": "资产",
     "available-to-withdraw": "已取回数量",
+    "total-exposure": "Total {{token}} exposure",
+    "multiple": "Multiple",
+    "multiplier-exposure": "x exposure",
     "available-to-generate": "可生成数量",
     "coll-locked": "已存入",
     "coll-ratio": "抵押率",
