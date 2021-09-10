@@ -25,6 +25,7 @@ function ManageMultiplyVaultDetailsSummary({
   afterPillColors,
   showAfterPill,
   multiply,
+  afterMultiply,
   afterLockedCollateral,
 }: ManageMultiplyVaultState & AfterPillProps) {
   const { t } = useTranslation()
@@ -70,14 +71,14 @@ function ManageMultiplyVaultDetailsSummary({
         label={t('system.multiple')}
         value={
           <>
-            {(0.0).toFixed(2)}
+            {multiply?.toFixed(2)}
             {t('system.multiplier-exposure')}
           </>
         }
         valueAfter={
           showAfterPill && (
             <>
-              {multiply?.toFixed(2)}
+              {afterMultiply?.toFixed(2)}
               {t('system.multiplier-exposure')}
             </>
           )
