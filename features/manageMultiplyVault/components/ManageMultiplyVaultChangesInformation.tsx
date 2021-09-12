@@ -31,7 +31,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
     afterCollateralizationRatio,
     afterDebt,
     afterLockedCollateral,
-    // impact,
+    impact,
     slippage,
     fees,
     loanFee,
@@ -39,18 +39,16 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
     marketPrice,
     inputAmountsEmpty,
     isExchangeLoading,
-    stage,
     otherAction,
     exchangeAction,
     collateralDelta,
     collateralDeltaUSD,
+    originalEditingStage,
   } = props
   const collRatioColor = getCollRatioColor(props, collateralizationRatio)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
-  const impact = new BigNumber(0.25)
-
-  const isCloseAction = stage === 'otherActions' && otherAction === 'closeVault'
+  const isCloseAction = originalEditingStage === 'otherActions' && otherAction === 'closeVault'
 
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer
@@ -61,10 +59,10 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
         value={
           <Flex>
             <Text>
-              {formatCryptoBalance(collateralDelta || zero)} {token}
+              {formatCryptoBalance(collateralDelta?.abs() || zero)} {token}
               {` `}
               <Text as="span" sx={{ color: 'text.subtitle' }}>
-                (${formatAmount(collateralDeltaUSD || zero, 'USD')})
+                (${formatAmount(collateralDeltaUSD?.abs() || zero, 'USD')})
               </Text>
             </Text>
           </Flex>
@@ -106,7 +104,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
           <Flex>
             {multiply?.toFixed(2)}x
             <VaultChangesInformationArrow />
-            {afterMultiply?.toFixed(2)}x
+            {isCloseAction ? 'n/a' : `${afterMultiply?.toFixed(2)}x`}
           </Flex>
         }
       />
@@ -123,25 +121,25 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
       <VaultChangesInformationItem
         label={'Collateral Ratio'}
         value={
-          isCloseAction ? (
-            '--'
-          ) : (
-            <Flex>
-              <Text sx={{ color: collRatioColor }}>
-                {formatPercent(collateralizationRatio.times(100), {
-                  precision: 2,
-                  roundMode: BigNumber.ROUND_DOWN,
-                })}
-              </Text>
-              <VaultChangesInformationArrow />
+          <Flex>
+            <Text sx={{ color: collRatioColor }}>
+              {formatPercent(collateralizationRatio.times(100), {
+                precision: 2,
+                roundMode: BigNumber.ROUND_DOWN,
+              })}
+            </Text>
+            <VaultChangesInformationArrow />
+            {isCloseAction ? (
+              'n/a'
+            ) : (
               <Text sx={{ color: afterCollRatioColor }}>
                 {formatPercent(afterCollateralizationRatio.times(100), {
                   precision: 2,
                   roundMode: BigNumber.ROUND_DOWN,
                 })}
               </Text>
-            </Flex>
-          )
+            )}
+          </Flex>
         }
       />
       <VaultChangesInformationItem

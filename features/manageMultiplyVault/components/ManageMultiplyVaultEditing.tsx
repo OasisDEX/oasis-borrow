@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
+import { getToken } from 'blockchain/tokensMetadata'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import {
@@ -464,17 +465,21 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
     setCloseVaultTo,
     closeVaultTo,
     vault: { token },
+    afterCloseToDai,
+    afterCloseToCollateral,
+    afterCloseToCollateralUSD,
   } = props
 
   const closeToCollateral = closeVaultTo === 'collateral'
   const closeToTokenName = closeToCollateral ? token : 'DAI'
+  const tokenData = getToken(token)
 
   return (
     <>
       <Grid columns={2}>
         <CloseVaultCard
-          text="Close to ETH"
-          icon="ether_circle_color"
+          text={`Close to ${token}`}
+          icon={tokenData.iconCircle}
           onClick={() => setCloseVaultTo!('collateral')}
           isActive={closeToCollateral}
         />
@@ -492,11 +497,14 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
       <Flex sx={{ fontSize: 1, fontWeight: 'semiBold', justifyContent: 'space-between', mt: 3 }}>
         <Text sx={{ color: 'text.subtitle' }}>{closeToTokenName} after closing</Text>
         <Text>
-          {formatCryptoBalance(new BigNumber(9.99))} {closeToTokenName}
+          {formatCryptoBalance(closeToCollateral ? afterCloseToCollateral : afterCloseToDai)}{' '}
+          {closeToTokenName}
           {` `}
-          <Text as="span" sx={{ color: 'text.subtitle' }}>
-            (${formatAmount(new BigNumber(30002.09), 'USD')})
-          </Text>
+          {closeToCollateral && (
+            <Text as="span" sx={{ color: 'text.subtitle' }}>
+              (${formatAmount(afterCloseToCollateralUSD, 'USD')})
+            </Text>
+          )}
         </Text>
       </Flex>
     </>

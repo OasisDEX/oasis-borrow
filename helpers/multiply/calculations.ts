@@ -28,6 +28,7 @@ export function calculateParamsIncreaseMP(
         .minus(oraclePrice.times(one.minus(OF))),
     )
   const collateral = debt.times(one.minus(OF)).div(marketPriceSlippage)
+
   return [debt, collateral]
 }
 
@@ -202,4 +203,52 @@ export function getMaxPossibleCollRatioOrMax(
     .div(100)
 
   return maxCollRatioPrecise.minus(maxCollRatioPrecise.times(100).mod(5).div(100))
+}
+
+export type CloseToParams = {
+  fromTokenAmount: BigNumber
+  toTokenAmount: BigNumber
+  minToTokenAmount: BigNumber
+}
+
+export function calculateCloseToDaiParams(
+  marketPrice: BigNumber,
+  OF: BigNumber,
+  currentCollateral: BigNumber,
+  slippage: BigNumber,
+): CloseToParams {
+  const fromTokenAmount = currentCollateral
+  const toTokenAmount = currentCollateral.times(marketPrice).times(one.minus(OF))
+  const minToTokenAmount = currentCollateral
+    .times(marketPrice)
+    .times(one.minus(OF))
+    .times(one.minus(slippage))
+
+  return {
+    fromTokenAmount,
+    toTokenAmount,
+    minToTokenAmount,
+  }
+}
+
+export function calculateCloseToCollateralParams(
+  marketPrice: BigNumber,
+  OF: BigNumber,
+  FF: BigNumber,
+  currentDebt: BigNumber,
+  slippage: BigNumber,
+): CloseToParams {
+  const expectedFinalDebt = currentDebt.times(one.plus(OF).times(one.plus(FF)))
+
+  const fromTokenAmount = expectedFinalDebt.div(marketPrice.times(one.minus(slippage)))
+
+  const toTokenAmount = expectedFinalDebt.times(one.plus(slippage))
+
+  const minToTokenAmount = expectedFinalDebt
+
+  return {
+    fromTokenAmount,
+    toTokenAmount,
+    minToTokenAmount,
+  }
 }

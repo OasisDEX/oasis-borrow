@@ -15,6 +15,7 @@ import {
   formatPercent,
 } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
+import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
 import { OpenMultiplyVaultState } from '../openMultiplyVault'
@@ -42,6 +43,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
 
   // starting zero balance for UI to show arrows
   const zeroBalance = formatCryptoBalance(zero)
+  const { t } = useTranslation()
 
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Order information">
@@ -89,7 +91,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
         value={formatPercent(slippage.times(100), { precision: 2 })}
       />
       <VaultChangesInformationItem
-        label={'Multiply'}
+        label={t('system.multiple')}
         value={
           <Flex>
             {zeroBalance}x

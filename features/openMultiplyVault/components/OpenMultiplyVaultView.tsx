@@ -1,6 +1,7 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
+import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormVaultTypeSwitch, WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultHeader } from 'components/vault/VaultHeader'
@@ -58,14 +59,14 @@ function OpenMultiplyVaultTitle({
           ? t('vault-form.subtext.allowance')
           : stage === 'openInProgress'
           ? t('vault-form.subtext.confirm-in-progress')
-          : t('vault-form.subtext.confirm')}
+          : t('vault-form.subtext.review-manage')}
       </Text>
     </Box>
   )
 }
 
 function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
-  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, ilk } = props
+  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, ilk, stage } = props
 
   return (
     <VaultFormContainer toggleTitle="Open Vault">
@@ -75,12 +76,17 @@ function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
       {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
       <OpenMultiplyVaultErrors {...props} />
       <OpenMultiplyVaultWarnings {...props} />
+      {stage === 'openSuccess' && <VaultChangesWithADelayCard />}
       <OpenMultiplyVaultButton {...props} />
       {isProxyStage && <VaultProxyStatusCard {...props} />}
       {isAllowanceStage && <VaultAllowanceStatus {...props} />}
       {isOpenStage && <OpenMultiplyVaultStatus {...props} />}
       {isEditingStage ? (
-        <VaultFormVaultTypeSwitch href={`/vaults/open/${ilk}`} title="Switch to Borrow" />
+        <VaultFormVaultTypeSwitch
+          href={`/vaults/open/${ilk}`}
+          title="Switch to Borrow"
+          visible={true}
+        />
       ) : null}
     </VaultFormContainer>
   )

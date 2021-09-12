@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { calculatePriceImpact } from 'features/shared/priceImpact'
 import {
   calculateParamsIncreaseMP,
   getMaxPossibleCollRatioOrMax,
@@ -177,8 +178,10 @@ export function applyOpenMultiplyVaultCalculations(
     ? currentCollateralPrice.times(liquidationRatio).div(afterCollateralizationRatio)
     : zero
 
-  // TODO fix impact
-  const impact = zero
+  const impact =
+    quote?.status === 'SUCCESS' && marketPrice
+      ? calculatePriceImpact(quote.tokenPrice, marketPrice)
+      : zero
 
   const [afterBuyingPowerUSD, afterBuyingPower] = marketPrice
     ? calculateParamsIncreaseMP(
