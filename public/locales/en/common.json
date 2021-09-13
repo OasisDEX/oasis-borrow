@@ -142,6 +142,7 @@
     "most-popular": "Most popular",
     "new": "New"
   },
+  "fees": "Fees",
   "filters": {
     "lp-token": "LP tokens",
     "stablecoin": "Stablecoins",
@@ -164,7 +165,12 @@
     "open": "Opened a new Vault with id <0>#{{cdpId}}</0>",
     "payback": "Payback <0>{{daiAmount}}</0> Dai to Vault",
     "transfer": "Vault given to <0>{{transferTo}}</0> by <0>{{transferFrom}}</0>",
-    "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault"
+    "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault",
+    "openmultiplyvault": "Open multiply Vault",
+    "increasemultiple": "Increased multiple, bought using Dai",
+    "decreasemultiple": "Decreased multiple, sold collateral",
+    "closevaultexitdai": "Closed Vault, exited Dai",
+    "closevaultexitcollateral": "Closed Vault, exited collateral"
   },
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",
@@ -292,6 +298,8 @@
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",
   "moving-into-vault": "Moving into Vault",
   "moving-out-vault": "Moving out of Vault",
+  "multiple": "Multiple",
+  "net-value": "Net Value",
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
   "no-dai": "No Dai",
@@ -334,12 +342,14 @@
     }
   },
   "or": "or",
+  "outstanding-debt": "Outstanding Debt",
   "paste": "Paste",
   "pending-transactions": "Pending Transactions",
   "permissions": "Set permissions",
   "permissions-btn": "Set permissions",
   "permissions-desc": "This permission allows Oasis to interact with the Dai in your wallet.",
   "powered-by": "Powered by",
+  "price": "Price",
   "proceed": "Proceed",
   "readonly-alert-message": "You’re currently viewing",
   "readonly-user-connecting": "Connecting readonly...",
