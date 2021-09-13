@@ -722,7 +722,7 @@ export function applyManageVaultCalculations(
 
   const buyingPowerUSD = buyingPower.times(currentCollateralPrice)
   const afterBuyingPowerUSD = afterBuyingPower.times(currentCollateralPrice)
-  const collateralDeltaUSD = collateralDelta.times(currentCollateralPrice)
+  const collateralDeltaUSD = collateralDelta.times(marketPrice)
 
   const afterCloseToDai = closeToDaiParams.minToTokenAmount.minus(debt)
 
