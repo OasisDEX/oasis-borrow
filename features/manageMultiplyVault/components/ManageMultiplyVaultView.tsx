@@ -41,9 +41,10 @@ function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
 
   const shouldDisplayActionButton =
     accountIsConnected &&
-    !accountIsController &&
-    stage !== 'adjustPosition' &&
-    (otherAction === 'depositCollateral' || otherAction === 'depositDai')
+    (accountIsController ||
+      (!accountIsController &&
+        stage !== 'adjustPosition' &&
+        (otherAction === 'depositCollateral' || otherAction === 'depositDai')))
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
       <ManageMultiplyVaultFormHeader {...props} />
