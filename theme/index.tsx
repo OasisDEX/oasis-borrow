@@ -190,6 +190,7 @@ const oasisBaseTheme = {
     lightMuted: '1px solid #F0F0F0',
     bold: '3px solid #D3D4D8',
   },
+  //      0  1  2   3   4   5    6    7    8
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
   sizes: [0, 4, 8, 16, 32, 64, 128, 256, 512],
   radii: {
@@ -610,6 +611,13 @@ const oasisBaseTheme = {
       fontWeight: 'normal',
       fontSize: 3,
     },
+    navHeader: {
+      variant: 'links.nav',
+      color: 'lavender',
+      '&:hover, &:focus-visible': {
+        color: 'primary',
+      },
+    },
     outline: {
       variant: 'buttons.outline',
       display: 'inline-block',
@@ -744,6 +752,7 @@ const oasisBaseTheme = {
   zIndices: {
     menu: 3,
     footer: 2,
+    mobileMenu: 3,
     modal: 4,
     cookie: 5,
   },

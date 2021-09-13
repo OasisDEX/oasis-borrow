@@ -310,6 +310,13 @@
   "moving-out-vault": "离开金库",
   "net-value": "Net Value",
   "multiple": "Multiple",
+  "nav": {
+    "blog": "博客",
+    "contact": "联系方式",
+    "faq": "常见问题",
+    "privacy": "隐私",
+    "terms": "条款"
+  },
   "new-to-ethereum": "刚接触以太坊？",
   "next": "下一步",
   "no-dai": "没有 Dai",

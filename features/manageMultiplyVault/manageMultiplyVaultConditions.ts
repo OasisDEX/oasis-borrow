@@ -334,12 +334,15 @@ export function applyManageVaultConditions(
   const paybackAmountExceedsDaiBalance = !!paybackAmount?.gt(daiBalance)
   const paybackAmountExceedsVaultDebt = !!paybackAmount?.gt(vault.debt)
 
-  const debtWillBeLessThanDebtFloor = !!(
-    paybackAmount &&
-    vault.debt.minus(paybackAmount).lt(ilkData.debtFloor) &&
-    vault.debt.minus(paybackAmount).gt(zero) &&
-    !shouldPaybackAll
-  )
+  const debtWillBeLessThanDebtFloor =
+    stage === 'otherActions'
+      ? !!(
+          paybackAmount &&
+          vault.debt.minus(paybackAmount).lt(ilkData.debtFloor) &&
+          vault.debt.minus(paybackAmount).gt(zero) &&
+          !shouldPaybackAll
+        )
+      : !!(state.debtDelta?.lt(zero) && afterDebt.gt(zero) && afterDebt.lt(ilkData.debtFloor))
 
   const customCollateralAllowanceAmountEmpty =
     selectedCollateralAllowanceRadio === 'custom' && !collateralAllowanceAmount

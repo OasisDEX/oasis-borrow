@@ -137,9 +137,17 @@
   },
   "exchange-rate": "Tasa de Cambio",
   "failed": "Fallido",
-  "featured": { "cheapest": "Más barato", "most-popular": "Más popular", "new": "Nuevo" },
   "fees": "Fees",
-  "filters": { "lp-token": "LP tokens", "stablecoin": "Stablecoins", "popular": "Popular assets" },
+  "featured": {
+    "cheapest": "Más barato",
+    "most-popular": "Más popular",
+    "new": "Nuevo"
+  },
+  "filters": {
+    "lp-token": "LP tokens",
+    "stablecoin": "Stablecoins",
+    "popular": "Popular assets"
+  },
   "gas-estimation-error": "Error",
   "get-dai": "Obtén Dai",
   "get-started": "Comenzar",
@@ -278,7 +286,8 @@
       "next-price-description": "Aquí puedes ver el precio siguiente que se hará efectivo en el protocolo Maker. Compara este valor con el Precio de Liquidación para ver si tu Vault será liquidado en la próxima actualización de precio. {{nextPrice}}",
       "more-info-oracles": "Más información <0>aquí</0>sobre los oráculos de Maker.",
       "net-value": "Valor Neto",
-      "net-value-description": "El Valor neto es calculado como el valor actual del colateral en tu Vault menos la deuda actual.Nota: Esto no será exacamente igual al valor que recibirás si cierras tu Vault en Dai. Esto es debido a las tarifas aplicadas cuando se cambia el colateral a Dai y porque el Valor neto es calculado utilizando el oráculo de precios de Maker que se encuentra una hora demorado respecto del precio actual de mercado del colateral"
+      "net-value-description": "El Valor neto es calculado como el valor actual del colateral en tu Vault menos la deuda actual.Nota: Esto no será exacamente igual al valor que recibirás si cierras tu Vault en Dai. Esto es debido a las tarifas aplicadas cuando se cambia el colateral a Dai y porque el Valor neto es calculado utilizando el oráculo de precios de Maker que se encuentra una hora demorado respecto del precio actual de mercado del colateral",
+      "withdraw-collateral-on-vault-under-debt-floor": "No puede retirar de tu Vault mientras se encuentre debajo del mínimmo requerido de {{debtFloor}} Dai. Para retirar tu colateral, paga tu deuda en su totalidad. Conoce más sobre el monto mínimo de deuda <0>aquí</0>."
     }
   },
   "max": "Max",
@@ -287,6 +296,22 @@
   "moving-out-vault": "Moviendo fuera del Vault",
   "net-value": "Net Value",
   "multiple": "Multiple",
+  "nav": {
+    "about": "Acerca de ",
+    "resources": "Recursos",
+    "products": "Productos",
+    "team": "Equipo",
+    "careers": "Carreras",
+    "privacy": "Privacidad",
+    "terms": "Condiciones",
+    "contact": "Contacto",
+    "blog": "Blog",
+    "faq": "Preguntas Frecuentes",
+    "knowledge-centre": "Centro de Conocimiento",
+    "oracles": "Oráculos",
+    "dai-wallet": "Dai Wallet",
+    "borrow": "Borrow"
+  },
   "new-to-ethereum": "¿Nuevo en Ethereum? ",
   "next": "Siguiente",
   "no-dai": "No Dai",

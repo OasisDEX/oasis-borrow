@@ -31,12 +31,20 @@ function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
     isDaiAllowanceStage,
     isManageStage,
     accountIsConnected,
+    accountIsController,
     daiAllowanceTxHash,
     collateralAllowanceTxHash,
     vault: { token },
     stage,
+    otherAction,
   } = props
 
+  const shouldDisplayActionButton =
+    accountIsConnected &&
+    (accountIsController ||
+      (!accountIsController &&
+        stage !== 'adjustPosition' &&
+        (otherAction === 'depositCollateral' || otherAction === 'depositDai')))
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
       <ManageMultiplyVaultFormHeader {...props} />
@@ -44,7 +52,7 @@ function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
       {isCollateralAllowanceStage && <ManageMultiplyVaultCollateralAllowance {...props} />}
       {isDaiAllowanceStage && <ManageMultiplyVaultDaiAllowance {...props} />}
       {isManageStage && <ManageMultiplyVaultConfirmation {...props} />}
-      {accountIsConnected && (
+      {shouldDisplayActionButton && (
         <>
           <ManageMultiplyVaultErrors {...props} />
           <ManageMultiplyVaultWarnings {...props} />
