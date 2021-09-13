@@ -74,7 +74,7 @@ describe('Adjust multiply calculations', () => {
     expect(afterCollateralizationRatio).to.deep.eq(requiredCollRatio)
   })
 
-  it('Calculates net value using market price', () => {
+  it('Calculates net value USD, after net value USD, after collateral delta USD using market price', () => {
     const expectedNetValueUSD = new BigNumber('2500')
 
     const afterCollRatio = new BigNumber('2')
