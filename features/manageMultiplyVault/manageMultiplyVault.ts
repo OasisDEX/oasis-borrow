@@ -8,6 +8,7 @@ import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { SLIPPAGE } from 'helpers/multiply/calculations'
+import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
@@ -397,17 +398,23 @@ function addTransitions(
   return state
 }
 
-export const defaultMutableManageMultiplyVaultState: MutableManageMultiplyVaultState = {
-  stage: 'adjustPosition',
-  originalEditingStage: 'adjustPosition',
-  collateralAllowanceAmount: maxUint256,
-  daiAllowanceAmount: maxUint256,
-  selectedCollateralAllowanceRadio: 'unlimited',
-  selectedDaiAllowanceRadio: 'unlimited',
-  showSliderController: true,
-  closeVaultTo: 'collateral',
-  mainAction: 'buy',
-  otherAction: 'depositCollateral',
+export function defaultMutableManageMultiplyVaultState(
+  lockedCollateral?: BigNumber,
+): MutableManageMultiplyVaultState {
+  const hasZeroCollateral = lockedCollateral?.eq(zero)
+
+  return {
+    stage: hasZeroCollateral ? 'otherActions' : 'adjustPosition',
+    originalEditingStage: hasZeroCollateral ? 'otherActions' : 'adjustPosition',
+    collateralAllowanceAmount: maxUint256,
+    daiAllowanceAmount: maxUint256,
+    selectedCollateralAllowanceRadio: 'unlimited',
+    selectedDaiAllowanceRadio: 'unlimited',
+    showSliderController: true,
+    closeVaultTo: 'collateral',
+    mainAction: 'buy',
+    otherAction: 'depositCollateral',
+  }
 }
 
 export function createManageMultiplyVault$(
@@ -471,7 +478,7 @@ export function createManageMultiplyVault$(
                   )
 
                   const initialState: ManageMultiplyVaultState = {
-                    ...defaultMutableManageMultiplyVaultState,
+                    ...defaultMutableManageMultiplyVaultState(vault.lockedCollateral),
                     ...defaultManageMultiplyVaultCalculations,
                     ...defaultManageMultiplyVaultConditions,
                     vault,

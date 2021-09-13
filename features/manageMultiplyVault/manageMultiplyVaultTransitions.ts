@@ -202,7 +202,7 @@ export function applyManageVaultTransition(
   if (change.kind === 'clear') {
     return {
       ...state,
-      ...defaultMutableManageMultiplyVaultState,
+      ...defaultMutableManageMultiplyVaultState(state.vault.lockedCollateral),
       ...defaultManageMultiplyVaultCalculations,
       ...defaultManageMultiplyVaultConditions,
       ...manageMultiplyInputsDefaults,

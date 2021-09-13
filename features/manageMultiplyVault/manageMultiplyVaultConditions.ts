@@ -150,6 +150,8 @@ export interface ManageVaultConditions {
 
   debtWillBeLessThanDebtFloor: boolean
   isLoadingStage: boolean
+  exchangeDataRequired: boolean
+  shouldShowExchangeError: boolean
   isExchangeLoading: boolean
 
   insufficientCollateralAllowance: boolean
@@ -162,6 +164,8 @@ export interface ManageVaultConditions {
   customDaiAllowanceAmountExceedsMaxUint256: boolean
   customDaiAllowanceAmountLessThanPaybackAmount: boolean
   withdrawCollateralOnVaultUnderDebtFloor: boolean
+
+  hasToDepositCollateralOnEmptyVault: boolean
 }
 
 export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
@@ -197,6 +201,8 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
 
   debtWillBeLessThanDebtFloor: false,
   isLoadingStage: false,
+  exchangeDataRequired: false,
+  shouldShowExchangeError: false,
   isExchangeLoading: false,
 
   insufficientCollateralAllowance: false,
@@ -210,6 +216,8 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   customDaiAllowanceAmountLessThanPaybackAmount: false,
 
   withdrawCollateralOnVaultUnderDebtFloor: false,
+
+  hasToDepositCollateralOnEmptyVault: false,
 }
 
 export function applyManageVaultConditions(
@@ -256,6 +264,17 @@ export function applyManageVaultConditions(
   } = state
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
   const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)
+
+  const hasToDepositCollateralOnEmptyVault =
+    vault.lockedCollateral.eq(zero) &&
+    !(originalEditingStage === 'otherActions' && otherAction === 'depositCollateral')
+
+  const exchangeDataRequired =
+    stage === 'adjustPosition' || (stage === 'otherActions' && otherAction === 'closeVault')
+
+  const shouldShowExchangeError = exchangeDataRequired && exchangeError
+
+  const isExchangeLoading = exchangeDataRequired && !quote && !swap && !exchangeError
 
   const inputAmountsEmpty =
     buyAmount === undefined &&
@@ -423,7 +442,8 @@ export function applyManageVaultConditions(
       paybackAmountExceedsDaiBalance ||
       paybackAmountExceedsVaultDebt ||
       withdrawCollateralOnVaultUnderDebtFloor ||
-      exchangeError)
+      shouldShowExchangeError ||
+      hasToDepositCollateralOnEmptyVault)
 
   const collateralAllowanceProgressionDisabled =
     isCollateralAllowanceStage &&
@@ -436,8 +456,6 @@ export function applyManageVaultConditions(
     (customDaiAllowanceAmountEmpty ||
       customDaiAllowanceAmountExceedsMaxUint256 ||
       customDaiAllowanceAmountLessThanPaybackAmount)
-
-  const isExchangeLoading = !quote && !swap && !exchangeError
 
   const canProgress = !(
     isLoadingStage ||
@@ -489,6 +507,8 @@ export function applyManageVaultConditions(
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,
     isLoadingStage,
+    exchangeDataRequired,
+    shouldShowExchangeError,
     isExchangeLoading,
 
     insufficientCollateralAllowance,
@@ -502,5 +522,7 @@ export function applyManageVaultConditions(
     customDaiAllowanceAmountLessThanPaybackAmount,
 
     withdrawCollateralOnVaultUnderDebtFloor,
+
+    hasToDepositCollateralOnEmptyVault,
   }
 }
