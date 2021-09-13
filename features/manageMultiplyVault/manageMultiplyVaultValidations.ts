@@ -22,6 +22,7 @@ export type ManageVaultErrorMessage =
   | 'ledgerWalletContractDataDisabled'
   | 'withdrawCollateralOnVaultUnderDebtFloor'
   | 'exchangeError'
+  | 'hasToDepositCollateralOnEmptyVault'
 
 export type ManageVaultWarningMessage =
   | 'potentialGenerateAmountLessThanDebtFloor'
@@ -51,6 +52,7 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
     paybackAmountExceedsDaiBalance,
     paybackAmountExceedsVaultDebt,
     withdrawCollateralOnVaultUnderDebtFloor,
+    hasToDepositCollateralOnEmptyVault,
     exchangeError,
   } = state
 
@@ -103,6 +105,10 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
 
     if (withdrawCollateralOnVaultUnderDebtFloor) {
       errorMessages.push('withdrawCollateralOnVaultUnderDebtFloor')
+    }
+
+    if (hasToDepositCollateralOnEmptyVault) {
+      errorMessages.push('hasToDepositCollateralOnEmptyVault')
     }
 
     if (exchangeError) {

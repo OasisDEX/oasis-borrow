@@ -401,6 +401,14 @@ export const ExchangeDataLoading = manageMultiplyVaultStory({
   depositAmount: new BigNumber('5'),
 })
 
+export const VaultHasNoCollateral = manageMultiplyVaultStory({
+  title: 'If vault has no collateral block flow on other actions other than deposit collateral',
+  vault: { ...vaultERC20, collateral: zero, debt: zero },
+  proxyAddress,
+})({
+  otherAction: 'withdrawCollateral',
+})
+
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'ManageMultiplyVault/Blocking-Flow-Other-Actions',

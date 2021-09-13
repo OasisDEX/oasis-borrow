@@ -301,4 +301,19 @@ describe('manageVaultOtherActionsValidations', () => {
       'withdrawCollateralOnVaultUnderDebtFloor',
     ])
   })
+
+  it('validates if vault has no collateral and show correct error message', () => {
+    const state = getStateUnpacker(
+      mockManageMultiplyVault$({
+        vault: {
+          collateral: zero,
+        },
+      }),
+    )
+
+    expect(state().errorMessages).to.deep.eq([])
+    state().setOtherAction!('withdrawCollateral')
+    expect(state().errorMessages).to.deep.eq(['hasToDepositCollateralOnEmptyVault'])
+    expect(state().canProgress).to.deep.eq(false)
+  })
 })

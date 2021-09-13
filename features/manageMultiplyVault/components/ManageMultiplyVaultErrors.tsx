@@ -78,6 +78,8 @@ export function ManageMultiplyVaultErrors({
         return translate('ledger-enable-contract-data')
       case 'exchangeError':
         return translate('exchange-error')
+      case 'hasToDepositCollateralOnEmptyVault':
+        return translate('has-to-deposit-collateral-on-empty-vault')
       case 'withdrawCollateralOnVaultUnderDebtFloor':
         return (
           <Trans

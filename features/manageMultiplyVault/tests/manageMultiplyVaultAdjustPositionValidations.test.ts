@@ -1,7 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
+import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
+import { zero } from 'helpers/zero'
 
 describe('manageVaultAdjustPositionValidations', () => {
   // TO DO, calculations are off at current price
@@ -79,5 +81,20 @@ describe('manageVaultAdjustPositionValidations', () => {
 
     state().updateRequiredCollRatio!(requiredCollRatioBelow)
     expect(state().errorMessages).to.deep.eq(['generateAmountLessThanDebtFloor'])
+  })
+
+  it('validates if vault has no collateral and can`t progress on adjust position', () => {
+    const state = getStateUnpacker(
+      mockManageMultiplyVault$({
+        vault: {
+          collateral: zero,
+        },
+      }),
+    )
+
+    expect(state().errorMessages).to.deep.eq([])
+    state().toggle!()
+    expect(state().errorMessages).to.deep.eq(['hasToDepositCollateralOnEmptyVault'])
+    expect(state().canProgress).to.deep.eq(false)
   })
 })

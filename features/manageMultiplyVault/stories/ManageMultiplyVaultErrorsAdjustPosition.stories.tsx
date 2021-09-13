@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { manageMultiplyVaultStory } from 'helpers/stories/ManageMultiplyVaultStory'
+import { zero } from 'helpers/zero'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
@@ -58,6 +59,15 @@ export const ExchangeDataLoading = manageMultiplyVaultStory({
   },
 })({
   requiredCollRatio: new BigNumber(3.5),
+})
+
+export const VaultHasNoCollateral = manageMultiplyVaultStory({
+  title: 'If vault has no collateral block flow on adjust position',
+  vault: { ...vaultERC20, collateral: zero, debt: zero },
+  proxyAddress,
+})({
+  stage: 'adjustPosition',
+  originalEditingStage: 'adjustPosition',
 })
 
 // eslint-disable-next-line import/no-default-export

@@ -37,14 +37,17 @@ export function manageMultiplyVaultStory({
   daiAllowance,
   exchangeQuote,
 }: ManageMultiplyVaultStory = {}) {
-  return ({
-    depositAmount,
-    withdrawAmount,
-    generateAmount,
-    paybackAmount,
-    stage = 'adjustPosition',
-    ...otherState
-  }: Partial<MutableManageMultiplyVaultState> = defaultMutableManageMultiplyVaultState) => () => {
+  return (
+    {
+      depositAmount,
+      withdrawAmount,
+      generateAmount,
+      paybackAmount,
+      ...otherState
+    }: Partial<MutableManageMultiplyVaultState> = defaultMutableManageMultiplyVaultState(
+      vault?.collateral,
+    ),
+  ) => () => {
     const obs$ = mockManageMultiplyVault$({
       account,
       balanceInfo,
@@ -63,7 +66,6 @@ export function manageMultiplyVaultStory({
         .subscribe(({ injectStateOverride, priceInfo: { currentCollateralPrice } }) => {
           const newState: Partial<MutableManageMultiplyVaultState> = {
             ...otherState,
-            ...(stage && { stage }),
             ...(depositAmount && {
               depositAmount,
               depositAmountUSD: depositAmount.times(currentCollateralPrice),
