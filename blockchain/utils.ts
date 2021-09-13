@@ -24,6 +24,11 @@ export function amountToWei(amount: BigNumber, token: string): BigNumber {
   return amount.times(new BigNumber(10).pow(precision))
 }
 
+export function amountFromWei(amount: BigNumber, token: string): BigNumber {
+  const precision = getToken(token).precision
+  return amount.div(new BigNumber(10).pow(precision))
+}
+
 export function amountToWad(amount: BigNumber): BigNumber {
   return amount.times(WAD)
 }

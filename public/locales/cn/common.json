@@ -147,6 +147,7 @@
   },
   "exchange-rate": "兑换率",
   "failed": "失败",
+  "fees": "Fees",
   "featured": {
     "cheapest": "最便宜",
     "most-popular": "最受欢迎",
@@ -174,7 +175,12 @@
     "open": "开启新的金库 ID <0>#{{cdpId}}</0>",
     "payback": "偿还 <0>{{daiAmount}}</0> Dai 到金库",
     "transfer": "金库由 <0>{{transferFrom}}</0> 转移到 <0>{{transferTo}}</0>",
-    "withdraw": "从金库取回 <0>{{collateralAmount}} {{token}}</0> "
+    "withdraw": "从金库取回 <0>{{collateralAmount}} {{token}}</0> ",
+    "openmultiplyvault": "Open multiply Vault",
+    "increasemultiple": "Increased multiple, bought using Dai",
+    "decreasemultiple": "Decreased multiple, sold collateral",
+    "closevaultexitdai": "Closed Vault, exited Dai",
+    "closevaultexitcollateral": "Closed Vault, exited collateral"
   },
   "jwt-auth-failed": "签名失败",
   "jwt-auth-in-progress": "等待签名中...",
@@ -302,6 +308,15 @@
   "min-amount": "最低数量为 {{minAmount}} {{token}}",
   "moving-into-vault": "前往金库",
   "moving-out-vault": "离开金库",
+  "net-value": "Net Value",
+  "multiple": "Multiple",
+  "nav": {
+    "blog": "博客",
+    "contact": "联系方式",
+    "faq": "常见问题",
+    "privacy": "隐私",
+    "terms": "条款"
+  },
   "new-to-ethereum": "刚接触以太坊？",
   "next": "下一步",
   "no-dai": "没有 Dai",
@@ -344,11 +359,13 @@
     }
   },
   "or": "或者",
+  "outstanding-debt": "Outstanding debt",
   "paste": "粘贴",
   "pending-transactions": "确认中交易",
   "permissions": "设置许可",
   "permissions-btn": "设置许可",
   "permissions-desc": "这将授权 Oasis 与你钱包中的 Dai 进行交互。",
+  "price": "Price",
   "powered-by": "Powered by",
   "proceed": "继续",
   "readonly-alert-message": "你正在查看",

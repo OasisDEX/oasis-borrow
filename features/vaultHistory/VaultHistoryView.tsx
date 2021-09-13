@@ -1,8 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
+import { formatAddress, formatCryptoBalance, formatFiatBalance } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { WithChildren } from 'helpers/types'
+import { zero } from 'helpers/zero'
 import moment from 'moment'
 import { TFunction, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
@@ -36,6 +38,78 @@ function getHistoryEventTranslation(t: TFunction, event: VaultHistoryEvent) {
   })
 }
 
+function MultiplyHistoryEventDetailsItem({
+  label,
+  children,
+  rightItem,
+}: { label: string; rightItem?: boolean } & WithChildren) {
+  return (
+    <Flex>
+      <Text
+        sx={{
+          textAlign: 'right',
+          minWidth: ['9.5em', null, null, rightItem ? '9.5em' : '6em'],
+          pr: 3,
+          color: 'text.subtitle',
+        }}
+      >
+        {label}
+      </Text>
+      {children}
+    </Flex>
+  )
+}
+
+function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
+  const { t } = useTranslation()
+
+  return (
+    <Flex
+      sx={{
+        mb: 3,
+        maxWidth: '460px',
+        justifyContent: 'space-between',
+        flexDirection: ['column', null, null, 'row'],
+      }}
+    >
+      <Grid
+        gap={2}
+        sx={{
+          mr: [0, null, null, 4],
+          mb: [2, null, null, 0],
+        }}
+      >
+        <MultiplyHistoryEventDetailsItem label={t('amount')}>
+          {'collateralAmount' in event && formatCryptoBalance(event.collateralAmount)} {event.token}
+        </MultiplyHistoryEventDetailsItem>
+        <MultiplyHistoryEventDetailsItem label={t('price')}>
+          {'oraclePrice' in event && '$' + formatFiatBalance(event.oraclePrice)}
+        </MultiplyHistoryEventDetailsItem>
+        <MultiplyHistoryEventDetailsItem label={t('system.collateral')}>
+          {'collateralTotal' in event && formatCryptoBalance(event.collateralTotal)} {event.token}
+        </MultiplyHistoryEventDetailsItem>
+        <MultiplyHistoryEventDetailsItem label={t('multiple')}>
+          {'multiple' in event && event.multiple.gt(zero) ? `${event.multiple.toFixed(2)}x` : '-'}
+        </MultiplyHistoryEventDetailsItem>
+      </Grid>
+      <Grid gap={2}>
+        <MultiplyHistoryEventDetailsItem rightItem label={t('outstanding-debt')}>
+          {'outstandingDebt' in event && formatCryptoBalance(event.outstandingDebt)} DAI
+        </MultiplyHistoryEventDetailsItem>
+        <MultiplyHistoryEventDetailsItem rightItem label={t('net-value')}>
+          {'netValueUSD' in event && '$' + formatFiatBalance(event.netValueUSD)}
+        </MultiplyHistoryEventDetailsItem>
+        <MultiplyHistoryEventDetailsItem rightItem label={t('system.liquidation-price')}>
+          {'liquidationPrice' in event && '$' + formatFiatBalance(event.liquidationPrice)}
+        </MultiplyHistoryEventDetailsItem>
+        <MultiplyHistoryEventDetailsItem rightItem label={t('fees')}>
+          {'fees' in event && event.fees.gt(zero) ? '$' + formatFiatBalance(event.fees) : '-'}
+        </MultiplyHistoryEventDetailsItem>
+      </Grid>
+    </Flex>
+  )
+}
+
 function VaultHistoryItem({
   item,
   etherscan,
@@ -55,6 +129,7 @@ function VaultHistoryItem({
         border: 'lightMuted',
         boxShadow: 'vaultHistoryItem',
         fontSize: 2,
+        display: item.isHidden ? 'none' : 'grid',
       }}
     >
       <Box sx={{ p: 2, cursor: 'pointer' }} onClick={() => setOpened(!opened)}>
@@ -96,6 +171,7 @@ function VaultHistoryItem({
       </Box>
       {opened && (
         <Box p={2}>
+          {item.isMultiply && <MultiplyHistoryEventDetails {...item} />}
           <AppLink
             variant="links.navFooter"
             sx={{ fontSize: 2 }}
