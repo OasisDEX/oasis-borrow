@@ -1,32 +1,79 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { trackingEvents } from 'analytics/analytics'
-import BigNumber from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
-import { useAppContext } from 'components/AppContextProvider'
+import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
+import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { VaultFormContainer } from 'components/vault/VaultFormContainer'
+import { VaultHeader } from 'components/vault/VaultHeader'
+import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
-import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { useObservableWithError } from 'helpers/observableHook'
+import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
+import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
-import { Box, Card, Divider, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
-import { slideInAnimation } from 'theme/animations'
+import { Box, Divider, Flex, Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
-import { createManageVaultAnalytics$ } from './manageVaultAnalytics'
 import { ManageVaultButton } from './ManageVaultButton'
-import {
-  ManageVaultCollateralAllowance,
-  ManageVaultCollateralAllowanceStatus,
-} from './ManageVaultCollateralAllowance'
+import { ManageVaultCollateralAllowance } from './ManageVaultCollateralAllowance'
 import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './ManageVaultConfirmation'
-import { ManageVaultDaiAllowance, ManageVaultDaiAllowanceStatus } from './ManageVaultDaiAllowance'
+import { ManageVaultDaiAllowance } from './ManageVaultDaiAllowance'
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultEditing } from './ManageVaultEditing'
 import { ManageVaultErrors } from './ManageVaultErrors'
-import { ManageVaultIlkDetails } from './ManageVaultIlkDetails'
-import { ManageVaultProxy } from './ManageVaultProxy'
 import { ManageVaultWarnings } from './ManageVaultWarnings'
+
+function TextWithCheckmark({ children }: WithChildren) {
+  return (
+    <Flex sx={{ alignItems: 'center' }}>
+      <Flex
+        sx={{
+          width: '20px',
+          height: '20px',
+          border: '2px solid',
+          borderColor: 'onSuccess',
+          borderRadius: '50%',
+          mr: 3,
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'onSuccess',
+          flexShrink: 0,
+        }}
+      >
+        <Icon name="checkmark" size="auto" width="11px" sx={{ position: 'relative', top: '1px' }} />
+      </Flex>
+      <Text>{children}</Text>
+    </Flex>
+  )
+}
+
+function ManageVaultMultiplyTransition({ stage, vault }: ManageVaultState) {
+  const { t } = useTranslation()
+  return stage === 'multiplyTransitionEditing' ? (
+    <Grid mt={-3}>
+      <Grid variant="text.paragraph3" sx={{ color: 'text.subtitle' }}>
+        <TextWithCheckmark>
+          {t('vault-form.subtext.checkmark1', { token: vault.token.toUpperCase() })}
+        </TextWithCheckmark>
+        <TextWithCheckmark>{t('vault-form.subtext.checkmark2')}</TextWithCheckmark>
+        <TextWithCheckmark>{t('vault-form.subtext.checkmark3')}</TextWithCheckmark>
+        <TextWithCheckmark>{t('vault-form.subtext.checkmark4')}</TextWithCheckmark>
+      </Grid>
+      <Divider />
+      <Grid gap={2}>
+        <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
+          {t('vault-form.subtext.subheader2')}
+        </Text>
+        <Text variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+          {t('vault-form.subtext.paragraph2')}
+        </Text>
+      </Grid>
+    </Grid>
+  ) : (
+    <Box>
+      <Icon name="multiply_transition" size="auto" width="420" height="219" />
+    </Box>
+  )
+}
 
 function ManageVaultForm(props: ManageVaultState) {
   const {
@@ -35,112 +82,77 @@ function ManageVaultForm(props: ManageVaultState) {
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
     isManageStage,
+    isMultiplyTransitionStage,
     accountIsConnected,
+    daiAllowanceTxHash,
+    collateralAllowanceTxHash,
+    vault: { token },
+    stage,
   } = props
 
   return (
-    <Box>
-      <Card variant="surface" sx={{ boxShadow: 'card', borderRadius: 'mediumLarge', px: 4, py: 3 }}>
-        <Grid sx={{ mt: 2 }}>
-          <ManageVaultFormHeader {...props} />
-          {isEditingStage && <ManageVaultEditing {...props} />}
-          {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
-          {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}
-          {isManageStage && <ManageVaultConfirmation {...props} />}
-          {accountIsConnected && (
-            <>
-              <ManageVaultErrors {...props} />
-              <ManageVaultWarnings {...props} />
-              <ManageVaultButton {...props} />
-            </>
-          )}
-          {isProxyStage && <ManageVaultProxy {...props} />}
-          {isCollateralAllowanceStage && <ManageVaultCollateralAllowanceStatus {...props} />}
-          {isDaiAllowanceStage && <ManageVaultDaiAllowanceStatus {...props} />}
-          {isManageStage && <ManageVaultConfirmationStatus {...props} />}
-          <ManageVaultIlkDetails {...props} />
-        </Grid>
-      </Card>
-    </Box>
+    <VaultFormContainer toggleTitle="Edit Vault">
+      <ManageVaultFormHeader {...props} />
+      {isEditingStage && <ManageVaultEditing {...props} />}
+      {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
+      {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}
+      {isManageStage && <ManageVaultConfirmation {...props} />}
+      {isMultiplyTransitionStage && <ManageVaultMultiplyTransition {...props} />}
+      {accountIsConnected && (
+        <>
+          <ManageVaultErrors {...props} />
+          <ManageVaultWarnings {...props} />
+          {stage === 'manageSuccess' && <VaultChangesWithADelayCard />}
+          <ManageVaultButton {...props} />
+        </>
+      )}
+      {isProxyStage && <VaultProxyStatusCard {...props} />}
+      {isCollateralAllowanceStage && (
+        <VaultAllowanceStatus
+          {...props}
+          allowanceTxHash={collateralAllowanceTxHash}
+          token={token}
+        />
+      )}
+      {isDaiAllowanceStage && (
+        <VaultAllowanceStatus {...props} allowanceTxHash={daiAllowanceTxHash} token={'DAI'} />
+      )}
+      {isManageStage && <ManageVaultConfirmationStatus {...props} />}
+    </VaultFormContainer>
   )
 }
 
-export function ManageVaultHeading(props: ManageVaultState & SxProps) {
+export function ManageVaultContainer({
+  manageVault,
+  vaultHistory,
+}: {
+  manageVault: ManageVaultState
+  vaultHistory: VaultHistoryEvent[]
+}) {
   const {
-    vault: { id, ilk, token },
-    sx,
-  } = props
-  const tokenInfo = getToken(token)
+    vault: { id, ilk },
+    clear,
+  } = manageVault
   const { t } = useTranslation()
-  return (
-    <Heading
-      as="h1"
-      variant="paragraph2"
-      sx={{ gridColumn: ['1', '1/3'], fontWeight: 'semiBold', borderBottom: 'light', pb: 3, ...sx }}
-    >
-      <Flex sx={{ justifyContent: ['center', 'left'] }}>
-        <Icon name={tokenInfo.iconCircle} size="26px" sx={{ verticalAlign: 'sub', mr: 2 }} />
-        <Text>{t('vault.header', { ilk, id })}</Text>
-      </Flex>
-    </Heading>
-  )
-}
-
-export function ManageVaultContainer(props: ManageVaultState) {
-  return (
-    <Grid mt={4} columns={['1fr', '2fr minmax(380px, 1fr)']} gap={5}>
-      <ManageVaultHeading {...props} sx={{ display: ['block', 'none'] }} />
-      <Box mb={6} sx={{ order: [3, 1] }}>
-        <ManageVaultDetails {...props} />
-      </Box>
-      <Divider sx={{ display: ['block', 'none'], order: [2, 0] }} />
-      <Box sx={{ order: [1, 2] }}>
-        <ManageVaultForm {...props} />
-      </Box>
-    </Grid>
-  )
-}
-
-export function ManageVaultView({ id }: { id: BigNumber }) {
-  const { manageVault$ } = useAppContext()
-  const manageVaultWithId$ = manageVault$(id)
-  const { value: manageVault, error: manageVaultWithError } = useObservableWithError(
-    manageVaultWithId$,
-  )
 
   useEffect(() => {
-    const subscription = createManageVaultAnalytics$(manageVaultWithId$, trackingEvents).subscribe()
-
     return () => {
-      subscription.unsubscribe()
+      clear()
     }
   }, [])
 
   return (
-    <WithErrorHandler error={manageVaultWithError}>
-      <WithLoadingIndicator
-        value={manageVault}
-        customLoader={
-          <Box
-            sx={{
-              position: 'relative',
-              height: 600,
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <AppSpinner sx={{ mx: 'auto', display: 'block' }} variant="styles.spinner.extraLarge" />
-          </Box>
-        }
-      >
-        {(manageVault) => (
-          <Grid sx={{ width: '100%', zIndex: 1, ...slideInAnimation, position: 'relative' }}>
-            <ManageVaultContainer {...manageVault} />
-          </Grid>
-        )}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+    <>
+      <VaultHeader {...manageVault} header={t('vault.header', { ilk, id })} id={id} />
+      <Grid variant="vaultContainer">
+        <Grid gap={5} mb={[0, 5]}>
+          <ManageVaultDetails {...manageVault} />
+          <VaultHistoryView vaultHistory={vaultHistory} />
+        </Grid>
+        <Box>
+          <ManageVaultForm {...manageVault} />
+        </Box>
+      </Grid>
+    </>
   )
 }

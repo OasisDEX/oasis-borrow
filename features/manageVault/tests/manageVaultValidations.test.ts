@@ -83,10 +83,11 @@ describe('manageVaultValidations', () => {
       }),
     )
 
+    state().setMainAction!('withdrawPayback')
     state().updateWithdraw!(withdrawAmount)
     expect(state().errorMessages).to.deep.equal(['withdrawAmountExceedsFreeCollateralAtNextPrice'])
-    state().updateWithdraw!(undefined)
 
+    state().setMainAction!('depositGenerate')
     state().updateDeposit!(zero)
     state().toggleDepositAndGenerateOption!()
     state().updateGenerate!(generateAmountExceedsYield)
@@ -166,7 +167,9 @@ describe('manageVaultValidations', () => {
       }),
     )
 
-    state().toggle!()
+    state().toggle!('daiEditing')
+
+    state().setMainAction!('withdrawPayback')
     state().updatePayback!(paybackAmount)
 
     state().progress!()
@@ -192,7 +195,8 @@ describe('manageVaultValidations', () => {
       }),
     )
 
-    state().toggle!()
+    state().toggle!('daiEditing')
+    state().setMainAction!('withdrawPayback')
     state().updatePayback!(paybackAmountExceedsVaultDebt)
     expect(state().errorMessages).to.deep.equal(['paybackAmountExceedsVaultDebt'])
 
@@ -215,7 +219,8 @@ describe('manageVaultValidations', () => {
       },
     })
 
-    state().toggle!()
+    state().toggle!('daiEditing')
+    state().setMainAction!('withdrawPayback')
     state().updatePayback!(paybackAmount.plus(state().vault.debtOffset))
     expect(state().insufficientDaiAllowance).to.be.true
 
@@ -249,9 +254,11 @@ describe('manageVaultValidations', () => {
       }),
     )
 
+    state().setMainAction!('withdrawPayback')
     state().updateWithdraw!(withdrawAmount)
     expect(state().errorMessages).to.deep.eq(['withdrawCollateralOnVaultUnderDebtFloor'])
-    state().toggle!()
+    state().toggle!('daiEditing')
+    state().setMainAction!('depositGenerate')
     state().updatePaybackMax!()
     expect(state().errorMessages).to.deep.eq([])
   })

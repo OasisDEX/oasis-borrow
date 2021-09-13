@@ -13,6 +13,11 @@ import { zero } from 'helpers/zero'
 import { of, Subject } from 'rxjs'
 import { map } from 'rxjs/internal/operators'
 
+// @ts-ignore
+global.window = {
+  location: { reload: () => null },
+}
+
 describe('manageVault', () => {
   describe('createManageVault$', () => {
     describe('editing collateral', () => {
@@ -21,6 +26,8 @@ describe('manageVault', () => {
         expect(state().stage).to.be.equal('collateralEditing')
         expect(state().vault.lockedCollateral).to.deep.equal(defaultCollateral)
         expect(state().vault.debt).to.deep.equal(defaultDebt)
+
+        expect(state().totalSteps).to.deep.equal(4)
       })
 
       it('should update deposit amount, deposit amount USD and deposit max with collateral balance', () => {
@@ -92,6 +99,11 @@ describe('manageVault', () => {
             },
           }),
         )
+
+        state().updateWithdraw!(withdrawAmount)
+        expect(state().withdrawAmount).to.be.undefined
+
+        state().setMainAction!('withdrawPayback')
         state().updateWithdraw!(withdrawAmount)
         expect(state().withdrawAmount).to.deep.equal(withdrawAmount)
 
@@ -119,6 +131,10 @@ describe('manageVault', () => {
         state().updatePayback!(paybackAmount)
         expect(state().paybackAmount!).to.be.undefined
         state().updateWithdraw!(withdrawAmount)
+        expect(state().withdrawAmount).to.be.undefined
+
+        state().setMainAction!('withdrawPayback')
+        state().updateWithdraw!(withdrawAmount)
         expect(state().withdrawAmount!).to.deep.equal(withdrawAmount)
         state().updatePayback!(paybackAmount)
         expect(state().paybackAmount!).to.be.undefined
@@ -142,6 +158,8 @@ describe('manageVault', () => {
 
         state().updatePaybackMax!()
         expect(state().paybackAmount!).to.be.undefined
+
+        state().setMainAction!('withdrawPayback')
         state().updateWithdraw!(withdrawAmount)
         expect(state().withdrawAmount!).to.deep.equal(withdrawAmount)
         state().updatePaybackMax!()
@@ -157,7 +175,7 @@ describe('manageVault', () => {
       it('should toggle to daiEditing stage', () => {
         const state = getStateUnpacker(mockManageVault$())
         expect(state().stage).to.deep.equal('collateralEditing')
-        state().toggle!()
+        state().toggle!('daiEditing')
         expect(state().stage).to.deep.equal('daiEditing')
       })
 
@@ -171,7 +189,7 @@ describe('manageVault', () => {
             },
           }),
         )
-        state().toggle!()
+        state().toggle!('daiEditing')
         state().updateGenerate!(generateAmount)
         expect(state().generateAmount!).to.deep.equal(generateAmount)
       })
@@ -188,7 +206,7 @@ describe('manageVault', () => {
             },
           }),
         )
-        state().toggle!()
+        state().toggle!('daiEditing')
         state().updateDeposit!(depositAmount)
         expect(state().depositAmount!).to.be.undefined
         state().updateGenerate!(generateAmount)
@@ -211,7 +229,9 @@ describe('manageVault', () => {
             },
           }),
         )
-        state().toggle!()
+
+        state().toggle!('daiEditing')
+        state().setMainAction!('withdrawPayback')
         state().updatePayback!(paybackAmount)
         expect(state().paybackAmount).to.deep.equal(paybackAmount)
       })
@@ -228,9 +248,13 @@ describe('manageVault', () => {
             },
           }),
         )
-        state().toggle!()
+        state().toggle!('daiEditing')
         state().updateWithdraw!(withdrawAmount)
         expect(state().withdrawAmount!).to.be.undefined
+        state().updatePayback!(paybackAmount)
+        expect(state().paybackAmount!).to.be.undefined
+
+        state().setMainAction!('withdrawPayback')
         state().updatePayback!(paybackAmount)
         expect(state().paybackAmount!).to.deep.equal(paybackAmount)
         state().updateWithdraw!(withdrawAmount)
@@ -257,6 +281,8 @@ describe('manageVault', () => {
             collateralAllowance: maxUint256,
           }),
         )
+
+        expect(state().totalSteps).to.deep.equal(2)
         state().updateDeposit!(depositAmount)
         state().toggleDepositAndGenerateOption!()
         state().updateGenerate!(generateAmount)
@@ -278,7 +304,7 @@ describe('manageVault', () => {
             collateralAllowance: maxUint256,
           }),
         )
-        state().toggle!()
+        state().toggle!('daiEditing')
         state().updateGenerate!(generateAmount)
         state().toggleDepositAndGenerateOption!()
         state().updateDeposit!(depositAmount)
@@ -319,11 +345,14 @@ describe('manageVault', () => {
             collateralAllowance: zero,
           }),
         )
+
+        expect(state().totalSteps).to.deep.equal(3)
         state().updateDeposit!(depositAmount)
         state().toggleDepositAndGenerateOption!()
         state().updateGenerate!(generateAmount)
         state().progress!()
         expect(state().stage).to.deep.equal('collateralAllowanceWaitingForConfirmation')
+        expect(state().currentStep).to.deep.equal(2)
       })
 
       it('should progress from editing to daiAllowance flow if user has proxy but insufficent allowance for payback amount', () => {
@@ -339,10 +368,103 @@ describe('manageVault', () => {
             daiAllowance: zero,
           }),
         )
-        state().toggle!()
+
+        state().toggle!('daiEditing')
+        state().setMainAction!('withdrawPayback')
         state().updatePayback!(paybackAmount)
         state().progress!()
         expect(state().stage).to.deep.equal('daiAllowanceWaitingForConfirmation')
+      })
+
+      it('shold update totalSteps if allowances amount are less than deposit or payback amount', () => {
+        const daiAllowance = new BigNumber('1000')
+        const collateralAllowance = new BigNumber('1000')
+
+        const paybackAmount = new BigNumber('5000')
+        const depositAmount = new BigNumber('5000')
+        const withdrawAmount = new BigNumber('5000')
+
+        const state = getStateUnpacker(
+          mockManageVault$({
+            vault: {
+              collateral: new BigNumber('400'),
+              debt: new BigNumber('10000'),
+            },
+            proxyAddress: DEFAULT_PROXY_ADDRESS,
+            daiAllowance,
+            collateralAllowance,
+          }),
+        )
+
+        expect(state().totalSteps).to.deep.equal(2)
+        state().updateDeposit!(depositAmount)
+        expect(state().totalSteps).to.deep.equal(3)
+        state().updateDeposit!(undefined)
+
+        state().setMainAction!('withdrawPayback')
+        state().updateWithdraw!(withdrawAmount)
+        expect(state().totalSteps).to.deep.equal(2)
+        state().togglePaybackAndWithdrawOption!()
+        state().updatePayback!(paybackAmount)
+        expect(state().totalSteps).to.deep.equal(3)
+
+        state().toggle!('daiEditing')
+        expect(state().totalSteps).to.deep.equal(2)
+        state().updatePayback!(paybackAmount)
+        expect(state().totalSteps).to.deep.equal(3)
+      })
+
+      it('shold decrease totalSteps if user skips collateral deposit and has enough dai allowance to payback', () => {
+        const daiAllowance = new BigNumber('1000')
+
+        const paybackAmount = new BigNumber('500')
+        const depositAmount = new BigNumber('5000')
+
+        const state = getStateUnpacker(
+          mockManageVault$({
+            vault: {
+              collateral: new BigNumber('400'),
+              debt: new BigNumber('10000'),
+            },
+            proxyAddress: DEFAULT_PROXY_ADDRESS,
+            daiAllowance,
+            collateralAllowance: zero,
+          }),
+        )
+
+        expect(state().totalSteps).to.deep.equal(3)
+        state().updateDeposit!(depositAmount)
+        expect(state().totalSteps).to.deep.equal(3)
+        state().toggle!('daiEditing')
+        state().setMainAction!('withdrawPayback')
+        state().updatePayback!(paybackAmount)
+        expect(state().totalSteps).to.deep.equal(2)
+      })
+
+      it('should clear form values and go to editing stage', () => {
+        const depositAmount = new BigNumber('100')
+        const generateAmount = new BigNumber('1000')
+
+        const state = getStateUnpacker(
+          mockManageVault$({
+            proxyAddress: DEFAULT_PROXY_ADDRESS,
+            collateralAllowance: maxUint256,
+            vault: {
+              ilk: 'WBTC-A',
+            },
+          }),
+        )
+
+        state().updateDeposit!(depositAmount)
+        state().updateGenerate!(generateAmount)
+        state().progress!()
+        expect(state().stage).to.deep.equal('manageWaitingForConfirmation')
+
+        state().clear()
+        expect(state().stage).to.deep.equal('collateralEditing')
+        expect(state().depositAmount).to.be.undefined
+        expect(state().depositAmountUSD).to.be.undefined
+        expect(state().generateAmount).to.be.undefined
       })
     })
 
@@ -465,7 +587,8 @@ describe('manageVault', () => {
 
         _proxyAddress$.next()
         expect(state().proxyAddress).to.be.undefined
-        state().toggle!()
+        state().toggle!('daiEditing')
+        state().setMainAction!('withdrawPayback')
         state().updatePayback!(paybackAmount)
         state().progress!()
         expect(state().stage).to.deep.equal('proxyWaitingForConfirmation')
@@ -631,8 +754,9 @@ describe('manageVault', () => {
           }),
         )
 
-        state().toggle!()
+        state().toggle!('daiEditing')
         expect(state().stage).to.deep.equal('daiEditing')
+        state().setMainAction!('withdrawPayback')
         state().updatePayback!(paybackAmount)
         state().progress!()
 
@@ -657,6 +781,78 @@ describe('manageVault', () => {
         expect(state().stage).to.deep.equal('daiAllowanceSuccess')
         state().progress!()
         expect(state().stage).to.deep.equal('daiEditing')
+      })
+    })
+
+    describe('multiply transitions', () => {
+      beforeEach(() => localStorage.clear())
+
+      it('should handle previously selected editing stage when going back and forth from multiply transition stages', () => {
+        const state = getStateUnpacker(mockManageVault$())
+        expect(state().stage).to.be.equal('collateralEditing')
+
+        state().toggle!('multiplyTransitionEditing')
+        expect(state().stage).to.be.equal('multiplyTransitionEditing')
+        state().progress!()
+        expect(state().stage).to.be.equal('multiplyTransitionWaitingForConfirmation')
+        state().regress!()
+        expect(state().stage).to.be.equal('collateralEditing')
+        state().toggle!('daiEditing')
+        expect(state().stage).to.be.equal('daiEditing')
+        state().toggle!('multiplyTransitionEditing')
+        expect(state().stage).to.be.equal('multiplyTransitionEditing')
+        state().regress!()
+        expect(state().stage).to.be.equal('daiEditing')
+      })
+
+      it('should fail when JWT token is not present', () => {
+        const state = getStateUnpacker(mockManageVault$())
+
+        state().toggle!('multiplyTransitionEditing')
+        state().progress!()
+        expect(state().stage).to.be.equal('multiplyTransitionWaitingForConfirmation')
+        state().progress!()
+        expect(state().stage).to.be.equal('multiplyTransitionFailure')
+      })
+
+      it('should handle multiply transition error', () => {
+        localStorage.setItem('token-b/0x123', 'xxx')
+        const _saveVaultType$ = new Subject<void>()
+
+        const state = getStateUnpacker(
+          mockManageVault$({
+            _saveVaultType$,
+            account: '0x123',
+          }),
+        )
+
+        state().toggle!('multiplyTransitionEditing')
+        state().progress!()
+        expect(state().stage).to.be.equal('multiplyTransitionWaitingForConfirmation')
+        state().progress!()
+        expect(state().stage).to.be.equal('multiplyTransitionInProgress')
+        _saveVaultType$.error('error')
+        expect(state().stage).to.be.equal('multiplyTransitionFailure')
+      })
+
+      it('should handle multiply transition success', () => {
+        localStorage.setItem('token-b/0x123', 'xxx')
+        const _saveVaultType$ = new Subject<void>()
+
+        const state = getStateUnpacker(
+          mockManageVault$({
+            _saveVaultType$,
+            account: '0x123',
+          }),
+        )
+
+        state().toggle!('multiplyTransitionEditing')
+        state().progress!()
+        expect(state().stage).to.be.equal('multiplyTransitionWaitingForConfirmation')
+        state().progress!()
+        expect(state().stage).to.be.equal('multiplyTransitionInProgress')
+        _saveVaultType$.next()
+        expect(state().stage).to.be.equal('multiplyTransitionSuccess')
       })
     })
   })

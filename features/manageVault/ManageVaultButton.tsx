@@ -1,7 +1,8 @@
 import { trackingEvents } from 'analytics/analytics'
+import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Button, Flex, Spinner, Text } from 'theme-ui'
+import { Button, Divider, Flex, Spinner, Text } from 'theme-ui'
 import { UnreachableCaseError } from 'ts-essentials'
 
 import { ManageVaultState } from './manageVault'
@@ -74,20 +75,56 @@ function manageVaultButtonText(state: ManageVaultState): string {
       return t('retry')
 
     case 'manageSuccess':
-      return t('back-to-editing')
+      return t('ok')
 
     case 'manageWaitingForApproval':
     case 'manageInProgress':
       return t('changing-vault')
+
+    case 'multiplyTransitionEditing':
+      if (ALLOWED_MULTIPLY_TOKENS.includes(state.vault.token)) {
+        return 'Multiply this Vault'
+      } else {
+        return `Not supported for ${state.vault.token}`
+      }
+
+    case 'multiplyTransitionWaitingForConfirmation':
+      return 'Take me to the Multiply interface'
+
+    case 'multiplyTransitionInProgress':
+      return 'Transition in progress...'
+
+    case 'multiplyTransitionFailure':
+      return 'Something went wrong, try again'
+
+    case 'multiplyTransitionSuccess':
+      return 'Transition completed, refreshing...'
 
     default:
       throw new UnreachableCaseError(state.stage)
   }
 }
 
-export function ManageVaultButton(props: ManageVaultState) {
+function manageVaultSecondaryButtonText(state: ManageVaultState): string {
+  const {
+    isCollateralAllowanceStage,
+    vault: { token },
+  } = state
   const { t } = useTranslation()
 
+  switch (state.stage) {
+    case 'daiAllowanceFailure':
+    case 'collateralAllowanceFailure':
+      return t('edit-token-allowance', { token: isCollateralAllowanceStage ? token : 'DAI' })
+    case 'multiplyTransitionEditing':
+    case 'multiplyTransitionWaitingForConfirmation':
+    case 'multiplyTransitionFailure':
+      return 'Decide later'
+    default:
+      return t('edit-vault-details')
+  }
+}
+export function ManageVaultButton(props: ManageVaultState) {
   const {
     progress,
     stage,
@@ -95,12 +132,11 @@ export function ManageVaultButton(props: ManageVaultState) {
     canProgress,
     canRegress,
     regress,
-    vault: { token },
     depositAmount,
     generateAmount,
     paybackAmount,
     withdrawAmount,
-    isCollateralAllowanceStage,
+    vault,
   } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
@@ -114,10 +150,7 @@ export function ManageVaultButton(props: ManageVaultState) {
   }
 
   const buttonText = manageVaultButtonText(props)
-  const secondaryButtonText =
-    stage === 'daiAllowanceFailure' || stage === 'collateralAllowanceFailure'
-      ? t('edit-token-allowance', { token: isCollateralAllowanceStage ? token : 'DAI' })
-      : t('edit-vault-details')
+  const secondaryButtonText = manageVaultSecondaryButtonText(props)
 
   function trackEvents() {
     if (stage === 'daiEditing' && generateAmount && generateAmount.gt(0)) {
@@ -140,6 +173,10 @@ export function ManageVaultButton(props: ManageVaultState) {
     }
   }
 
+  if (stage === 'manageInProgress') {
+    return null
+  }
+
   return (
     <>
       <Button
@@ -147,7 +184,7 @@ export function ManageVaultButton(props: ManageVaultState) {
           trackEvents()
           handleProgress(e)
         }}
-        disabled={!canProgress}
+        disabled={!canProgress || !ALLOWED_MULTIPLY_TOKENS.includes(vault.token)}
       >
         {isLoadingStage ? (
           <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -170,19 +207,27 @@ export function ManageVaultButton(props: ManageVaultState) {
         )}
       </Button>
       {canRegress && (
-        <Button
-          variant="textual"
-          onClick={(e: React.SyntheticEvent<HTMLButtonElement>) => {
-            if (stage !== 'daiAllowanceFailure' && stage !== 'collateralAllowanceFailure') {
-              trackingEvents.manageVaultConfirmVaultEdit()
-            }
+        <>
+          <Divider variant="styles.hrVaultFormBottom" />
+          <Button
+            variant="textualSmall"
+            onClick={(e: React.SyntheticEvent<HTMLButtonElement>) => {
+              if (
+                stage !== 'daiAllowanceFailure' &&
+                stage !== 'collateralAllowanceFailure' &&
+                stage !== 'multiplyTransitionEditing' &&
+                stage !== 'multiplyTransitionWaitingForConfirmation' &&
+                stage !== 'multiplyTransitionFailure'
+              ) {
+                trackingEvents.manageVaultConfirmVaultEdit()
+              }
 
-            handleRegress(e)
-          }}
-          sx={{ fontSize: 3 }}
-        >
-          {secondaryButtonText}
-        </Button>
+              handleRegress(e)
+            }}
+          >
+            {secondaryButtonText}
+          </Button>
+        </>
       )}
     </>
   )

@@ -1,11 +1,11 @@
-import { VaultActionInput } from 'components/VaultActionInput'
-import { MinusIcon, PlusIcon } from 'features/openVault/OpenVaultEditing'
+import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Flex, Grid, Text } from 'theme-ui'
+import { Box, Button, Divider, Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
+import { ManageVaultChangesInformation } from './ManageVaultChangesInformation'
 
 function DepositInput({
   maxDepositAmount,
@@ -17,9 +17,11 @@ function DepositInput({
   updateDepositUSD,
   updateDepositMax,
   priceInfo: { currentCollateralPrice },
-}: ManageVaultState) {
+  collapsed,
+}: ManageVaultState & { collapsed?: boolean }) {
   return (
     <VaultActionInput
+      collapsed={collapsed}
       action="Deposit"
       token={token}
       tokenUsdPrice={currentCollateralPrice}
@@ -44,9 +46,11 @@ function GenerateInput({
   maxGenerateAmount,
   updateGenerate,
   updateGenerateMax,
-}: ManageVaultState) {
+  collapsed,
+}: ManageVaultState & { collapsed?: boolean }) {
   return (
     <VaultActionInput
+      collapsed={collapsed}
       action="Generate"
       amount={generateAmount}
       token={'DAI'}
@@ -72,9 +76,11 @@ function WithdrawInput({
   updateWithdrawUSD,
   updateWithdrawMax,
   priceInfo: { currentCollateralPrice },
-}: ManageVaultState) {
+  collapsed,
+}: ManageVaultState & { collapsed?: boolean }) {
   return (
     <VaultActionInput
+      collapsed={collapsed}
       action="Withdraw"
       showMax={true}
       hasAuxiliary={true}
@@ -99,9 +105,11 @@ function PaybackInput({
   maxPaybackAmount,
   updatePayback,
   updatePaybackMax,
-}: ManageVaultState) {
+  collapsed,
+}: ManageVaultState & { collapsed?: boolean }) {
   return (
     <VaultActionInput
+      collapsed={collapsed}
       action="Payback"
       amount={paybackAmount}
       token={'DAI'}
@@ -130,12 +138,17 @@ export function ManageVaultEditing(props: ManageVaultState) {
     showDepositAndGenerateOption,
     showPaybackAndWithdrawOption,
     accountIsController,
+    inputAmountsEmpty,
+    mainAction,
   } = props
 
   const disableDepositAndGenerate = paybackAmount || withdrawAmount || showPaybackAndWithdrawOption
   const disablePaybackAndWithdraw = depositAmount || generateAmount || showDepositAndGenerateOption
 
-  const inverted = stage === 'daiEditing'
+  const isDaiEditing = stage === 'daiEditing'
+
+  const showDepositAndGenerateInput = mainAction === 'depositGenerate'
+  const showWithdrawAndPaybackInput = mainAction === 'withdrawPayback'
 
   const showDepositAndGenerateOptionButton =
     (depositAmount || generateAmount) && accountIsController
@@ -143,63 +156,78 @@ export function ManageVaultEditing(props: ManageVaultState) {
     (paybackAmount || withdrawAmount) && accountIsController
 
   return (
-    <Grid>
-      <Box
-        sx={{
-          opacity: disableDepositAndGenerate ? 0.5 : 1,
-          pointerEvents: disableDepositAndGenerate ? 'none' : 'auto',
-        }}
-      >
-        {inverted ? <GenerateInput {...props} /> : <DepositInput {...props} />}
-        {showDepositAndGenerateOptionButton && (
-          <Button variant="actionOption" mt={3} onClick={toggleDepositAndGenerateOption!}>
-            {showDepositAndGenerateOption ? <MinusIcon /> : <PlusIcon />}
-            <Text pr={1}>
-              {t('manage-vault.action-option', {
-                action: inverted ? t('vault-actions.deposit') : t('vault-actions.generate'),
-                token: inverted ? token : 'DAI',
-              })}
-            </Text>
-          </Button>
-        )}
-        {showDepositAndGenerateOption &&
-          (!!depositAmount || !!generateAmount) &&
-          (inverted ? <DepositInput {...props} /> : <GenerateInput {...props} />)}
-      </Box>
-
-      <Flex sx={{ alignItems: 'center', justifyContent: 'space-evenly' }}>
-        <Box sx={{ borderBottom: 'light', height: '0px', width: '100%' }} />
-        <Text
-          mx={3}
-          sx={{ color: 'muted', minWidth: 'fit-content', fontWeight: 'semiBold', fontSize: '1' }}
+    <Grid gap={4}>
+      {showDepositAndGenerateInput && (
+        <Box
+          sx={{
+            opacity: disableDepositAndGenerate ? 0.5 : 1,
+            pointerEvents: disableDepositAndGenerate ? 'none' : 'auto',
+          }}
         >
-          {t('manage-vault.or')}
-        </Text>
-        <Box sx={{ borderBottom: 'light', height: '0px', width: '100%' }} />
-      </Flex>
+          {isDaiEditing ? <GenerateInput {...props} /> : <DepositInput {...props} />}
+          {showDepositAndGenerateOptionButton && (
+            <Box>
+              <Button
+                variant={showDepositAndGenerateOption ? 'actionOptionOpened' : 'actionOption'}
+                mt={3}
+                onClick={toggleDepositAndGenerateOption!}
+              >
+                {showDepositAndGenerateOption ? <MinusIcon /> : <PlusIcon />}
+                <Text pr={1}>
+                  {t('manage-vault.action-option', {
+                    action: isDaiEditing ? t('vault-actions.deposit') : t('vault-actions.generate'),
+                    token: isDaiEditing ? token : 'DAI',
+                  })}
+                </Text>
+              </Button>
+              {showDepositAndGenerateOption &&
+                (!!depositAmount || !!generateAmount) &&
+                (isDaiEditing ? (
+                  <DepositInput {...props} collapsed />
+                ) : (
+                  <GenerateInput {...props} collapsed />
+                ))}
+            </Box>
+          )}
+        </Box>
+      )}
 
-      <Box
-        sx={{
-          opacity: disablePaybackAndWithdraw ? 0.5 : 1,
-          pointerEvents: disablePaybackAndWithdraw ? 'none' : 'auto',
-        }}
-      >
-        {inverted ? <PaybackInput {...props} /> : <WithdrawInput {...props} />}
-        {showPaybackAndWithdrawOptionButton && (
-          <Button variant="actionOption" mt={3} onClick={togglePaybackAndWithdrawOption!}>
-            {showPaybackAndWithdrawOption ? <MinusIcon /> : <PlusIcon />}
-            <Text pr={1}>
-              {t('manage-vault.action-option', {
-                action: inverted ? t('vault-actions.withdraw') : t('vault-actions.payback'),
-                token: inverted ? token : 'DAI',
-              })}
-            </Text>
-          </Button>
-        )}
-        {showPaybackAndWithdrawOption &&
-          (!!paybackAmount || !!withdrawAmount) &&
-          (inverted ? <WithdrawInput {...props} /> : <PaybackInput {...props} />)}
-      </Box>
+      {showWithdrawAndPaybackInput && (
+        <Box
+          sx={{
+            opacity: disablePaybackAndWithdraw ? 0.5 : 1,
+            pointerEvents: disablePaybackAndWithdraw ? 'none' : 'auto',
+          }}
+        >
+          {isDaiEditing ? <PaybackInput {...props} /> : <WithdrawInput {...props} />}
+          {showPaybackAndWithdrawOptionButton && (
+            <Box>
+              <Button
+                variant={showPaybackAndWithdrawOption ? 'actionOptionOpened' : 'actionOption'}
+                mt={3}
+                onClick={togglePaybackAndWithdrawOption!}
+              >
+                {showPaybackAndWithdrawOption ? <MinusIcon /> : <PlusIcon />}
+                <Text pr={1}>
+                  {t('manage-vault.action-option', {
+                    action: isDaiEditing ? t('vault-actions.withdraw') : t('vault-actions.payback'),
+                    token: isDaiEditing ? token : 'DAI',
+                  })}
+                </Text>
+              </Button>
+              {showPaybackAndWithdrawOption &&
+                (!!paybackAmount || !!withdrawAmount) &&
+                (isDaiEditing ? (
+                  <WithdrawInput {...props} collapsed />
+                ) : (
+                  <PaybackInput {...props} collapsed />
+                ))}
+            </Box>
+          )}
+        </Box>
+      )}
+      {!inputAmountsEmpty && <Divider />}
+      <ManageVaultChangesInformation {...props} />
     </Grid>
   )
 }

@@ -12,7 +12,7 @@ export interface TokenConfig {
   iconCircle: string
   iconColor: string
   ticker: string
-  tags: string[]
+  tags: CoinTag[]
   color: string
   bannerIcon: string
 }
@@ -515,3 +515,9 @@ export function getToken(tokenSymbol: string) {
   }
   return tokensBySymbol[tokenSymbol]
 }
+
+export const ALLOWED_MULTIPLY_TOKENS = tokens
+  .filter(
+    (token) => !(token.tags as CoinTag[]).some((tag) => tag === 'lp-token' || tag === 'stablecoin'),
+  )
+  .map((token) => token.symbol)

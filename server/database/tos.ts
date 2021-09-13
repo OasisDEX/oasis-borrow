@@ -16,7 +16,7 @@ export async function selectTosVersionForAddress(
   prisma: PrismaClient,
   { address, version }: { address: string; version: string },
 ): Promise<TosApproval | null> {
-  return await prisma.tosApproval.findOne({
+  return await prisma.tosApproval.findUnique({
     where: { tos_approval_unique_signature: { address, doc_version: version } },
   })
 }

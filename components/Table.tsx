@@ -1,11 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Direction } from 'helpers/form'
-import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
-import React, { HTMLProps, memo, ReactNode, useCallback } from 'react'
+import React, { HTMLProps, memo, ReactNode } from 'react'
 import { Box, Button, Container, SxStyleProp } from 'theme-ui'
-
-import { getIsInternalLink } from './Links'
 
 export interface ColumnDef<T, S> {
   headerLabel: string
@@ -49,27 +46,10 @@ export function TableContainer({
 }
 
 interface RowProps {
-  href?: string
-  target?: string
-  onClick?: (e: React.MouseEvent<any>) => void
+  onClick?: () => void
 }
 
-function Row({
-  children,
-  sx,
-  href, // TODO: remove this and somehow handle it into the onClick function
-  onClick,
-}: React.PropsWithChildren<{ sx?: SxStyleProp } & RowProps>) {
-  const { push } = useRedirect()
-
-  const redirect = useCallback(() => {
-    if (href !== undefined && getIsInternalLink(href)) {
-      push(href)
-    } else if (href !== undefined) {
-      window.open(href, '_blank')
-    }
-  }, [href])
-
+function Row({ children, sx, onClick }: React.PropsWithChildren<{ sx?: SxStyleProp } & RowProps>) {
   return (
     <Box
       sx={{
@@ -83,9 +63,9 @@ function Row({
           transform 0.2s ease-in-out,
           box-shadow 0.2s ease-in-out
           `,
-        cursor: href ? 'pointer' : 'initial',
+        cursor: onClick ? 'pointer' : 'initial',
         ...sx,
-        ...(href
+        ...(onClick
           ? {
               '&:hover': {
                 boxShadow: ['table', 'table_hovered'],
@@ -95,10 +75,7 @@ function Row({
           : {}),
       }}
       as="tr"
-      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-        if (onClick) onClick(e)
-        redirect()
-      }}
+      onClick={onClick}
     >
       {children}
     </Box>

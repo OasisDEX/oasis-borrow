@@ -24,6 +24,7 @@
   "approve-allowance": "Aprobar permiso",
   "approving-allowance": "Aprobando permiso",
   "back": "Regresar",
+  "ok": "Ok",
   "back-to-editing": "Regresar a edición",
   "balance": "Saldo",
   "balance-insufficient": "El saldo de Dai es insuficiente",
@@ -40,6 +41,7 @@
   },
   "change-your-vault": "Cambiar tu Vault",
   "close": "Cerrar",
+  "close-vault": "Close Vault",
   "coming-soon": "Próximamente",
   "completed": "Completado",
   "compound": "Compound",
@@ -106,6 +108,8 @@
   "erc20-disapprove-description-recent-failed": "No se pudo bloquear la transferencia de {{ token }}",
   "erc20-disapprove-notification": "Bloqueando {{ token }}",
   "erc20-disapprove-notification-past": "Bloqueado {{ token }}",
+  "error-message": "Something went wrong",
+  "error-button": "Ver detalles",
   "create-ds-proxy-description-pending": "Creando proxy",
   "create-ds-proxy-description-recent": "Proxy creado",
   "create-ds-proxy-description-recent-failed": "Falló al crear proxy",
@@ -133,6 +137,7 @@
   },
   "exchange-rate": "Tasa de Cambio",
   "failed": "Fallido",
+  "fees": "Fees",
   "featured": {
     "cheapest": "Más barato",
     "most-popular": "Más popular",
@@ -160,7 +165,12 @@
     "open": "Se ha abierto un nuevo Vault número <0>#{{cdpId}}</0>",
     "payback": "Pagado <0>{{daiAmount}}</0> Dai al Vault",
     "transfer": "Vault transferido a <0>{{transferTo}}</0> por <0>{{transferFrom}}</0>",
-    "withdraw": "Retirado <0>{{collateralAmount}} {{token}}</0> Del Vault"
+    "withdraw": "Retirado <0>{{collateralAmount}} {{token}}</0> Del Vault",
+    "openmultiplyvault": "Open multiply Vault",
+    "increasemultiple": "Increased multiple, bought using Dai",
+    "decreasemultiple": "Decreased multiple, sold collateral",
+    "closevaultexitdai": "Closed Vault, exited Dai",
+    "closevaultexitcollateral": "Closed Vault, exited collateral"
   },
   "jwt-auth-failed": "Firma fallida",
   "jwt-auth-in-progress": "Esperando firma...",
@@ -169,6 +179,24 @@
   "keyWithCount": "{{count}} item",
   "keyWithCount_plural": "{{count}} items",
   "landing": {
+    "footer": {
+      "language": { "en": "Inglés", "es": "Español", "pt": "Português", "cn": "中文" },
+      "about": "Acerca de ",
+      "team": "Equipo",
+      "careers": "Carreras",
+      "privacy": "Privacidad",
+      "terms": "Condiciones",
+      "contact": "Contacto",
+      "resources": "Recursos",
+      "blog": "Blog",
+      "faq": "Preguntas Frecuentes",
+      "knowledge-centre": "Centro de Conocimiento",
+      "oracles": "Oráculos",
+      "products": "Productos",
+      "dai-wallet": "Dai Wallet",
+      "borrow": "Borrow",
+      "trade": "Intercambia"
+    },
     "hero": {
       "headline": "Genera Dai usando cripto como colateral",
       "subheader": "Abre un Vault de Maker y genera Dai depositando tu colateral. Conecta tu cartera para comenzar"
@@ -225,6 +253,40 @@
       "custom-dai-allowance-amount-less-than-payback-amount": "Necesitas un permiso de por lo menos el monto a pagar para continuar",
       "depositing-all-eth-balance": "Necesitas algo de ETH para pagar por las tarifas de gas. Reduce el monto a depositar",
       "ledger-enable-contract-data": "Por favor habilita datos de contratos en la configuración de la app de Ethereum de Ledger",
+      "withdraw-collateral-on-vault-under-debt-floor": "No puede retirar de tu Vault mientras se encuentre debajo del mínimmo requerido de {{debtFloor}} Dai. Para retirar tu colateral, paga tu deuda en su totalidad. Conoce más sobre el monto mínimo de deuda <0>aquí</0>.",
+      "exchange-error": "No fue posible obtener los precios del exchange para realizar esta acción de multiplicar"
+    },
+    "card": {
+      "collateralization-ratio-calculated": "Tu ratio de colateralización es calculado así: valor de tu colateral/Deuda de Dai",
+      "collateralization-ratio-header2": "Ratio de colateralización actual:",
+      "collateralization-ratio-description": "El precio utilizado para calcular el valor de tu colateral es el precio obtenido de los oráculos de Maker. Tu ratio de colateralización necesita estar por arriba del mínimo requerido en todo momento para no ser liquidado",
+      "collateralization-ratio-next-price": "Tu ratio de colateralización en el próximo precio será:",
+      "collateral-locked-amount": "El monto total de colateral bloqueado en tu Vault es:",
+      "collateral-locked-USD": "El valor total en dólares del colateral en tu Vault es:",
+      "collateral-locked-oracles": "Usamos el precio actual del oráculo de Maker para calcular este valor. El precio actual de mercado de tu colateral puede diferir de este precio."
+    }
+  },
+  "manage-multiply-vault": {
+    "tooltip": {
+      "vaultId": "El Vault ID es un identificador único para tu Vault de Maker en Oasis.app",
+      "stabilityFee": "El protocolo de Maker cobra una tasa de estabilidad en el Dai que es generado desde los Vaults de Maker. Es una tasa variable que cambia cuando el gobierno de Maker vota en propuestas presentadas por los Equipos de Riesgo",
+      "liquidationFee": "Si tu Vault es liquidado, una penalidad de liquidación es añadida a la deuda de Dai pendiente de tu Vault, lo que resulta en más colateral vendido para pagar la deuda remanente. Esto sucede para incentivar a los dueños de los Vaults a evitar liquidaciones. El tamaño de la penalidad de liquidación es determinado por la Tasa de Liquidación que es calculada basada en la deuda del Vault.",
+      "min-collateral": "Esto es conocido a su vez como Ratio de Liquidación Si el Vault se encuentra por debajo del mínimo de colateralización se considera subcolateralizado y se encuentra sujeto a liquidación. Tu colateral será parcialmente liqudado.",
+      "dust-limit": "El límite Dust especifica el minimo monto de Dai que puede ser generado por este tipo de Vault. Este valor es conocido a su vez como \"deuda piso\"."
+    },
+    "card": {
+      "liquidation-price-description": "El Precio de liquidación especifica el precio del colateral en el cuál tu Vault se encuentra sujeto a ser liquidado. Si piensas que tu Vault está muy cerca del precio de liquidación puedes cambiar tu Multiply Vault para tener un ratio de colateralización más alto, puedes añadir más colateral, o puedes pagar una parte de tu deuda de Dai.",
+      "liquidation-price-current": "Tu precio actual de liquidación es:",
+      "liquidation-percentage-below": "Eso es {{percentageBelow}} debajo del precio actual",
+      "buying-power": "Poder de compra",
+      "buying-power-description": "El poder de compra especifica el máximo de Dai que puedes utilizar para comprar más colateral, basado en tu posición. Utilizando Multiply yendo desde tu ratio de colateralización actual hasta el ratio mínimo de colateralización.",
+      "current-price": "Precio Actual",
+      "current-price-description": "Este es el precio actual del colateral en tu Vault de acuerdo a los oráculos de precio de Maker. Existe una hora de demora antes de que el precio del oráculo se convierta en el precio actual en el protocolo Maker.",
+      "next-price": "Precio Siguiente",
+      "next-price-description": "Aquí puedes ver el precio siguiente que se hará efectivo en el protocolo Maker. Compara este valor con el Precio de Liquidación para ver si tu Vault será liquidado en la próxima actualización de precio. {{nextPrice}}",
+      "more-info-oracles": "Más información <0>aquí</0>sobre los oráculos de Maker.",
+      "net-value": "Valor Neto",
+      "net-value-description": "El Valor neto es calculado como el valor actual del colateral en tu Vault menos la deuda actual.Nota: Esto no será exacamente igual al valor que recibirás si cierras tu Vault en Dai. Esto es debido a las tarifas aplicadas cuando se cambia el colateral a Dai y porque el Valor neto es calculado utilizando el oráculo de precios de Maker que se encuentra una hora demorado respecto del precio actual de mercado del colateral",
       "withdraw-collateral-on-vault-under-debt-floor": "No puede retirar de tu Vault mientras se encuentre debajo del mínimmo requerido de {{debtFloor}} Dai. Para retirar tu colateral, paga tu deuda en su totalidad. Conoce más sobre el monto mínimo de deuda <0>aquí</0>."
     }
   },
@@ -232,6 +294,8 @@
   "min-amount": "La cantidad mínima es de {{minAmount}} {{token}}",
   "moving-into-vault": "Moviendo al Vault",
   "moving-out-vault": "Moviendo fuera del Vault",
+  "net-value": "Net Value",
+  "multiple": "Multiple",
   "nav": {
     "about": "Acerca de ",
     "resources": "Recursos",
@@ -268,12 +332,14 @@
   "open-new-vault": "Abrir un nuevo Vault",
   "open-vault": "Abrir Vault",
   "or": "o",
+  "outstanding-debt": "Outstanding debt",
   "paste": "Pegar",
   "pending-transactions": "Transacciones pendientes",
   "permissions": "Conceder permisos",
   "permissions-btn": " Conceder permisos",
   "permissions-desc": " Este permiso permite a Oasis interactuar con el Dai de su cartera.",
   "powered-by": "Impulsado por",
+  "price": "Price",
   "proceed": "Proceder",
   "readonly-alert-message": "Estás viendo actualmente",
   "readonly-user-connecting": "Conectando solo lectura...",
@@ -332,6 +398,9 @@
   "system": {
     "asset": "Activo",
     "available-to-withdraw": "Disponible para retirar",
+    "total-exposure": "Total {{token}} exposure",
+    "multiple": "Multiple",
+    "multiplier-exposure": "x exposure",
     "available-to-generate": "Disponible para generar",
     "coll-locked": "Colateral bloqueado",
     "coll-ratio": "Ratio de colateral",
@@ -471,7 +540,11 @@
       "allowance": "Configurar permisos de {{token}}",
       "daiAllowance": "Configurar permiso de DAI",
       "confirm": "Confirma creación de Vault",
-      "confirm-manage": "Confirma cambios al Vault"
+      "confirm-in-progress": "Vault siendo creado",
+      "modified": "El Vault está siendo modificado",
+      "confirm-manage": "Confirma cambios al Vault",
+      "review-manage": "Revisar cambios del Vault",
+      "multiply-transition": "Multiply your exposure on {{token}} in your vault"
     },
     "subtext": {
       "collateral": "Deposita o retira de tu Vault. Ahorra gas combinando transacciones.",
@@ -480,7 +553,16 @@
       "proxy": "Con tu proxy inteligente podemos realizar multiples acciones en una transacción para tu Vault. Este proxy solo necesita ser configurado una vez.",
       "allowance": "Especifica un permiso para configurar la cantidad máxima de tokens con la que el Vault puede interactuar.",
       "daiAllowance": "Especifica un permiso para configurar la cantidad máxima de tokens con la que el Vault puede interactuar.",
-      "confirm": "Revisa y verifica los detalles de tu Vault."
+      "confirm": "Revisa y verifica los detalles de tu Vault.",
+      "review-manage": "Aqui puedes revisar los detalles de los cambios a tu Vault.",
+      "confirm-in-progress": "Tu Vault está siendo creado actualmente.",
+      "modified": "Tu Vault está siendo actualizado. Por favor espera.",
+      "checkmark1": "Get up to 3x exposure on your {{token}}",
+      "checkmark2": "Adjust risk and exposure in 1 click",
+      "checkmark3": "Actions like using a flash loan, and buying or selling collateral are grouped into a single transaction for greater efficiency and savings",
+      "checkmark4": "You can review the details of the changes on your vault before execution",
+      "subheader2": "Important",
+      "paragraph2": "When you multiply your vault, you acquire collateral for funds you have borrowed against your own collateral. Make sure you understand the associated risks."
     }
   },
   "creating-your-vault": "Creando tu Vault de {{token}}",

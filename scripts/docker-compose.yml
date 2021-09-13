@@ -1,4 +1,4 @@
-version: "3.2"
+version: '3.2'
 services:
   postgres:
     image: postgres:12
@@ -10,4 +10,44 @@ services:
       - POSTGRES_PORT=5432
       - POSTGRES_DB=db
     ports:
-      - "5432:5432"
+      - '5432:5432'
+  localnode:
+    image: oasisdexorg/multiply-proxy-actions:latest
+    container_name: multiply-proxy-actions
+    environment:
+      - ALCHEMY_NODE=https://eth-mainnet.alchemyapi.io/v2/K7pZy8x91lW2KwbtJLtYNOYwB8LMJYYZ
+      - ALCHEMY_NODE_RINKEBY=https://eth-rinkeby.alchemyapi.io/v2/sJ7rvwzHpW3lEd3UaO_T8tPfUre2u5_j
+      - ETHERSCAN_API_KEY=YAJI4NVD8QTQ9JVWG2NKN3FFUK6IZTMV5S
+      - PRIV_KEY_MAINNET=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+      - TENDERLY_USERNAME=georgi2
+      - TENDERLY_PROJECT=mpoc
+      - USE_DUMMY=${USE_DUMMY}
+      - BLOCK_NUMBER=${BLOCK_NUMBER}
+    ports:
+      - '8545:8545'
+    volumes:
+      - '../.hardhat/cache:/usr/src/mpa/cache'
+  borrow:
+    image: oasisdexorg/oasis-borrow:latest
+    container_name: oasis-borrow
+    depends_on:
+      - postgres
+      - localnode
+    command:
+      ['./scripts/wait-for-it.sh', 'postgres-oasis-borrow:5432', '--', 'npm', 'run', 'start:prod']
+    environment:
+      - CHALLENGE_JWT_SECRET=${CHALLENGE_JWT_SECRET}
+      - USER_JWT_SECRET=${USER_JWT_SECRET}
+      - MIXPANEL_ENV=${MIXPANEL_ENV}
+      - MIXPANEL_KEY=${MIXPANEL_KEY}
+      - INFURA_PROJECT_ID=${INFURA_PROJECT_ID}
+      - INFURA_PROJECT_ID_BACKEND=${INFURA_PROJECT_ID_BACKEND}
+      - ETHERSCAN_API_KEY=${ETHERSCAN_API_KEY}
+      - USE_TERMS_OF_SERVICE=${USE_TERMS_OF_SERVICE}
+      - MULTIPLY_PROXY_ACTIONS=${MULTIPLY_PROXY_ACTIONS}
+      - EXCHANGE=${EXCHANGE}
+      - DUMMY_EXCHANGE=${DUMMY_EXCHANGE}
+      - USE_DUMMY=${USE_DUMMY}
+      - DATABASE_URL=${DATABASE_URL}
+    ports:
+      - '3000:3000'

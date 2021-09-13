@@ -1,17 +1,24 @@
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
+import { SharedUIContext } from 'components/SharedUIProvider'
+import {
+  createGeneralManageVault$,
+  VaultType,
+} from 'features/generalManageVault/generalManageVault'
+import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
 import {
   defaultMutableManageVaultState,
   MutableManageVaultState,
 } from 'features/manageVault/manageVault'
-import { ManageVaultView } from 'features/manageVault/ManageVaultView'
 import {
   MOCK_VAULT_ID,
   mockManageVault$,
   MockManageVaultProps,
 } from 'helpers/mocks/manageVault.mock'
+import { memoize } from 'lodash'
 import React from 'react'
 import { useEffect } from 'react'
+import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
@@ -81,16 +88,35 @@ export function manageVaultStory({
             injectStateOverride(newState || {})
           },
         )
+
       return subscription.unsubscribe()
     }, [])
 
     const ctx = ({
-      manageVault$: () => obs$,
+      vaultHistory$: memoize(() => of([])),
+      context$: of({ etherscan: 'url' }),
+      generalManageVault$: memoize(() =>
+        createGeneralManageVault$(
+          // @ts-ignore, don't need to mock Multiply here
+          () => of(EMPTY),
+          () => obs$,
+          () => of(VaultType.Borrow),
+          MOCK_VAULT_ID,
+        ),
+      ),
     } as any) as AppContext
 
     return (
       <appContext.Provider value={ctx as any}>
-        <ManageVaultStoryContainer title={title} />
+        <SharedUIContext.Provider
+          value={{
+            vaultFormOpened: true,
+            setVaultFormOpened: () => null,
+            setVaultFormToggleTitle: () => null,
+          }}
+        >
+          <ManageVaultStoryContainer title={title} />
+        </SharedUIContext.Provider>
       </appContext.Provider>
     )
   }
@@ -98,11 +124,12 @@ export function manageVaultStory({
 
 const ManageVaultStoryContainer = ({ title }: { title?: string }) => {
   if (!isAppContextAvailable()) return null
+
   return (
     <Container variant="appContainer">
       <Grid>
         {title && <Card>{title}</Card>}
-        <ManageVaultView id={MOCK_VAULT_ID} />
+        <GeneralManageVaultView id={MOCK_VAULT_ID} />
       </Grid>
     </Container>
   )

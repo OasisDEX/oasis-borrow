@@ -3,16 +3,40 @@ import { TxHelpers } from 'components/AppContext'
 import { zero } from 'helpers/zero'
 import { Observable } from 'rxjs'
 
-import { ManageVaultChange, ManageVaultEditingStage, ManageVaultState } from './manageVault'
+import {
+  defaultMutableManageVaultState,
+  ManageVaultChange,
+  ManageVaultEditingStage,
+  ManageVaultState,
+} from './manageVault'
+import { defaultManageVaultCalculations } from './manageVaultCalculations'
+import { defaultManageVaultConditions } from './manageVaultConditions'
 import { manageVaultFormDefaults } from './manageVaultForm'
+import { depositAndGenerateDefaults, paybackAndWithdrawDefaults } from './manageVaultInput'
 import {
   manageVaultDepositAndGenerate,
   manageVaultWithdrawAndPayback,
 } from './manageVaultTransactions'
 
+type ManageVaultMultiplyTransitionChange =
+  | {
+      kind: 'progressMultiplyTransition'
+    }
+  | {
+      kind: 'multiplyTransitionInProgress'
+    }
+  | {
+      kind: 'multiplyTransitionFailure'
+    }
+  | {
+      kind: 'multiplyTransitionSuccess'
+    }
+
 export type ManageVaultTransitionChange =
+  | ManageVaultMultiplyTransitionChange
   | {
       kind: 'toggleEditing'
+      stage: ManageVaultEditingStage
     }
   | {
       kind: 'progressEditing'
@@ -35,6 +59,9 @@ export type ManageVaultTransitionChange =
   | {
       kind: 'regressDaiAllowance'
     }
+  | {
+      kind: 'clear'
+    }
 
 export function applyManageVaultTransition(
   change: ManageVaultChange,
@@ -42,15 +69,15 @@ export function applyManageVaultTransition(
 ): ManageVaultState {
   if (change.kind === 'toggleEditing') {
     const { stage } = state
-    const currentEditing = stage
-    const otherEditing = (['collateralEditing', 'daiEditing'] as ManageVaultEditingStage[]).find(
-      (editingStage) => editingStage !== currentEditing,
-    ) as ManageVaultEditingStage
+
     return {
       ...state,
       ...manageVaultFormDefaults,
-      stage: otherEditing,
-      originalEditingStage: otherEditing,
+      stage: change.stage,
+      originalEditingStage:
+        change.stage === 'multiplyTransitionEditing'
+          ? (stage as ManageVaultEditingStage)
+          : change.stage,
     }
   }
 
@@ -187,6 +214,45 @@ export function applyManageVaultTransition(
       return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
     }
     return { ...state, stage: originalEditingStage }
+  }
+
+  if (change.kind === 'progressMultiplyTransition') {
+    return {
+      ...state,
+      stage: 'multiplyTransitionWaitingForConfirmation',
+    }
+  }
+
+  if (change.kind === 'multiplyTransitionInProgress') {
+    return {
+      ...state,
+      stage: 'multiplyTransitionInProgress',
+    }
+  }
+
+  if (change.kind === 'multiplyTransitionFailure') {
+    return {
+      ...state,
+      stage: 'multiplyTransitionFailure',
+    }
+  }
+
+  if (change.kind === 'multiplyTransitionSuccess') {
+    return {
+      ...state,
+      stage: 'multiplyTransitionSuccess',
+    }
+  }
+
+  if (change.kind === 'clear') {
+    return {
+      ...state,
+      ...defaultMutableManageVaultState,
+      ...defaultManageVaultCalculations,
+      ...defaultManageVaultConditions,
+      ...depositAndGenerateDefaults,
+      ...paybackAndWithdrawDefaults,
+    }
   }
 
   return state

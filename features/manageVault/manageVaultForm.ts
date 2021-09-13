@@ -1,4 +1,4 @@
-import { ManageVaultChange, ManageVaultState } from './manageVault'
+import { MainAction, ManageVaultChange, ManageVaultState } from './manageVault'
 import { allowanceDefaults } from './manageVaultAllowances'
 import { depositAndGenerateDefaults, paybackAndWithdrawDefaults } from './manageVaultInput'
 
@@ -20,9 +20,13 @@ export type ManageVaultFormChange =
   | {
       kind: 'resetDefaults'
     }
+  | {
+      kind: 'mainAction'
+      mainAction: MainAction
+    }
 
 export function applyManageVaultForm(
-  { kind }: ManageVaultChange,
+  change: ManageVaultChange,
   state: ManageVaultState,
 ): ManageVaultState {
   const {
@@ -33,6 +37,7 @@ export function applyManageVaultForm(
     generateAmount,
     withdrawAmount,
     paybackAmount,
+    mainAction,
   } = state
   const isCollateralStage = stage === 'collateralEditing'
   const isDaiStage = stage === 'daiEditing'
@@ -47,7 +52,7 @@ export function applyManageVaultForm(
   const canTogglePaybackAndWithdraw =
     (isCollateralStage && withdrawAmount) || (isDaiStage && paybackAmount)
 
-  if (kind === 'toggleDepositAndGenerateOption' && canToggleDepositAndGenerate) {
+  if (change.kind === 'toggleDepositAndGenerateOption' && canToggleDepositAndGenerate) {
     return {
       ...state,
       showDepositAndGenerateOption: !showDepositAndGenerateOption,
@@ -56,12 +61,31 @@ export function applyManageVaultForm(
     }
   }
 
-  if (kind === 'togglePaybackAndWithdrawOption' && canTogglePaybackAndWithdraw) {
+  if (change.kind === 'togglePaybackAndWithdrawOption' && canTogglePaybackAndWithdraw) {
     return {
       ...state,
       showPaybackAndWithdrawOption: !showPaybackAndWithdrawOption,
       ...(shouldClearPaybackAmount && { paybackAmount: undefined }),
       ...(shouldClearWithdrawAmount && { withdrawAmount: undefined }),
+    }
+  }
+
+  if (change.kind === 'mainAction') {
+    return {
+      ...state,
+      mainAction: change.mainAction,
+      ...(mainAction === 'depositGenerate' && {
+        depositAmount: undefined,
+        depositAmountUSD: undefined,
+        generateAmount: undefined,
+        showDepositAndGenerateOption: false,
+      }),
+      ...(mainAction === 'withdrawPayback' && {
+        withdrawAmount: undefined,
+        withdrawAmountUSD: undefined,
+        paybackAmount: undefined,
+        showPaybackAndWithdrawOption: false,
+      }),
     }
   }
 

@@ -20,7 +20,10 @@ import {
   SetProxyOwnerData,
 } from 'blockchain/calls/proxy'
 import {
+  CloseVaultData,
   DepositAndGenerateData,
+  MultiplyAdjustData,
+  MultiplyData,
   OpenData,
   ReclaimData,
   WithdrawAndPaybackData,
@@ -40,20 +43,26 @@ import { createAccountData } from 'features/account/AccountData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
+import { createExchangeQuote$ } from 'features/exchange/exchange'
+import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
+import { createManageMultiplyVault$ } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { createManageVault$ } from 'features/manageVault/manageVault'
+import { createOpenMultiplyVault$ } from 'features/openMultiplyVault/openMultiplyVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
 import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultData'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import { redirectState$ } from 'features/router/redirectState'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
+import { checkVaultTypeUsingApi$, saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import {
   checkAcceptanceFromApi$,
   saveAcceptanceFromApi$,
 } from 'features/termsOfService/termsAcceptanceApi'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
+import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiplyHistory'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
@@ -95,6 +104,9 @@ export type TxData =
   | CreateDsProxyData
   | SetProxyOwnerData
   | ReclaimData
+  | MultiplyData
+  | MultiplyAdjustData
+  | CloseVaultData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -240,6 +252,9 @@ export function setupAppContext() {
   )
 
   const vaultHistory$ = memoize(curry(createVaultHistory$)(context$, onEveryBlock$, vault$))
+  const vaultMultiplyHistory$ = memoize(
+    curry(createVaultMultiplyHistory$)(context$, onEveryBlock$, vault$),
+  )
 
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 
@@ -284,6 +299,26 @@ export function setupAppContext() {
     ),
   )
 
+  const exchangeQuote$ = memoize(
+    curry(createExchangeQuote$)(context$),
+    (token: string, slippage: BigNumber, amount: BigNumber, action: string) =>
+      `${token}_${slippage.toString()}_${amount.toString()}_${action}`,
+  )
+
+  const openMultiplyVault$ = memoize(
+    curry(createOpenMultiplyVault$)(
+      connectedContext$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      priceInfo$,
+      balanceInfo$,
+      ilks$,
+      ilkData$,
+      exchangeQuote$,
+    ),
+  )
+
   const manageVault$ = memoize(
     curry(createManageVault$)(
       context$,
@@ -294,7 +329,28 @@ export function setupAppContext() {
       balanceInfo$,
       ilkData$,
       vault$,
+      saveVaultUsingApi$,
     ),
+    bigNumberTostring,
+  )
+
+  const manageMultiplyVault$ = memoize(
+    curry(createManageMultiplyVault$)(
+      context$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      priceInfo$,
+      balanceInfo$,
+      ilkData$,
+      vault$,
+      exchangeQuote$,
+    ),
+    bigNumberTostring,
+  )
+
+  const generalManageVault$ = memoize(
+    curry(createGeneralManageVault$)(manageMultiplyVault$, manageVault$, checkVaultTypeUsingApi$),
     bigNumberTostring,
   )
 
@@ -348,10 +404,13 @@ export function setupAppContext() {
     accountBalances$,
     accountData$,
     vaultHistory$,
+    vaultMultiplyHistory$,
     collateralPrices$,
     termsAcceptance$,
     reclaimCollateral$,
     openVaultOverview$,
+    openMultiplyVault$,
+    generalManageVault$,
   }
 }
 

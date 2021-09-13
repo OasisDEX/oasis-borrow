@@ -10,6 +10,7 @@ import * as dssCdpManager from './abi/dss-cdp-manager.json'
 import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
 import * as dssProxyActions from './abi/dss-proxy-actions.json'
 import * as erc20 from './abi/erc20.json'
+import * as exchange from './abi/exchange.json'
 import * as getCdps from './abi/get-cdps.json'
 import * as otc from './abi/matching-market.json'
 import * as mcdDog from './abi/mcd-dog.json'
@@ -18,6 +19,7 @@ import * as mcdJoinDai from './abi/mcd-join-dai.json'
 import * as mcdJug from './abi/mcd-jug.json'
 import * as mcdPot from './abi/mcd-pot.json'
 import * as mcdSpot from './abi/mcd-spot.json'
+import * as dssMultiplyProxyActions from './abi/multiply-proxy-actions.json'
 import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
 import {
@@ -72,6 +74,12 @@ const protoMain = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, mainnetAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, mainnetAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
+  dssMultiplyProxyActions: contractDesc(
+    dssMultiplyProxyActions,
+    '0x33b4BE1B67c49125C1524777515e4034E04dFF58',
+  ),
+  exchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
+  aaveLendingPool: '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5',
   etherscan: {
     url: 'https://etherscan.io',
     apiUrl: 'https://api.etherscan.io/api',
@@ -85,7 +93,7 @@ const protoMain = {
   magicLink: {
     apiKey: '',
   },
-  cacheApi: 'https://oazo-bcache.new.oasis.app/api/v1',
+  cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
 }
 
 export type NetworkConfig = typeof protoMain
@@ -126,6 +134,12 @@ const kovan: NetworkConfig = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, kovanAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, kovanAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, kovanAddresses.PROXY_ACTIONS),
+  dssMultiplyProxyActions: contractDesc(
+    dssMultiplyProxyActions,
+    getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
+  ),
+  exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  aaveLendingPool: '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5',
   etherscan: {
     url: 'https://kovan.etherscan.io',
     apiUrl: 'https://api-kovan.etherscan.io/api',
@@ -147,6 +161,11 @@ const hardhat: NetworkConfig = {
   infuraUrl: `http://localhost:8545`,
   infuraUrlWS: `ws://localhost:8545`,
   cacheApi: 'http://localhost:3001/v1',
+  dssMultiplyProxyActions: contractDesc(
+    dssMultiplyProxyActions,
+    getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
+  ),
+  exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
 }
 
 export const networksById = keyBy([main, kovan, hardhat], 'id')

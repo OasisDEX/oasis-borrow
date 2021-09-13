@@ -1,15 +1,19 @@
 import React, { ReactNode, useCallback, useEffect, useState } from 'react'
-import { Box, Card, SxStyleProp } from 'theme-ui'
+import { Card, SxStyleProp } from 'theme-ui'
 
 export function useTooltip() {
   const [tooltipOpen, setTooltipOpen] = useState(false)
 
-  const close = useCallback(() => setTooltipOpen(false), [])
+  const close = useCallback(() => {
+    setTooltipOpen(false)
+  }, [])
 
   // @ts-ignore
   useEffect(() => {
     if (tooltipOpen) {
-      document.addEventListener('click', close)
+      // capture parameter is added to overcome event phases race condition while rendering portal
+      // (opening modal causes tooltip to stop working) - https://github.com/facebook/react/issues/20074#issuecomment-714158332
+      document.addEventListener('click', close, { capture: true })
 
       return () => document.removeEventListener('click', close)
     }
@@ -22,18 +26,11 @@ export function Tooltip({ children, sx }: { children: ReactNode; sx?: SxStylePro
   return (
     <Card
       sx={{
-        position: 'absolute',
-        top: '-15px',
-        right: '0px',
-        transform: 'translateY(-100%)',
-        boxShadow: 'surface',
-        borderRadius: 'large',
-        color: 'primary',
-        width: ['250px'],
+        variant: 'cards.tooltip',
         ...sx,
       }}
     >
-      <Box px={1}>{children}</Box>
+      {children}
     </Card>
   )
 }

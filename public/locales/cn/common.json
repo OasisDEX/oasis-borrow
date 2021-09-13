@@ -2,10 +2,10 @@
   "404-button": "返回主页",
   "404-message": "抱歉，页面不存在。",
   "about": {
-    "heading": "About us",
-    "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital. We are building Oasis.app to let our users benefit from all of the potential in DeFi.\n\n Our team is made of passionate thinkers and builders.",
-    "careers-link": "Join Us",
-    "pics-title": "Meet the team"
+    "heading": "关于我们",
+    "description": "Oasis 的目标是为用户提供最好和最值得信任的方式来部署资金。我们开发 Oasis.app 让用户能在 DeFi 的领域获得最大的利益，\\n\\n 而我们的团队是由一群对区块链爱好者所组成。",
+    "careers-link": "加入我们",
+    "pics-title": "团队"
   },
   "acceptance-check-failed": "授权检查失败",
   "acceptance-save-failed": "授权保存失败",
@@ -24,24 +24,27 @@
   "approve-allowance": "许可资产额度",
   "approving-allowance": "正在许可资产额度",
   "back": "返回",
+  "ok": "好",
   "back-to-editing": "返回编辑",
   "balance": "余额",
   "balance-insufficient": "你钱包中的 Dai 余额不足",
   "balances": "余额",
   "buy": "购买",
   "careers": {
-    "heading": "Open Roles",
-    "intro": "We believe in talent. Join us to build the next generation of DeFi.",
-    "cta-button": "Apply",
-    "back-link": "Back to Careers",
-    "no-open-positions": "There are currently no roles available at this time, but we are always looking for the best talents to join us.",
-    "no-positions-you-like": "You haven't found something that you like? Show us your interest, we are always looking for the best talents to join us!",
-    "write-us": "Send us your CV to "
+    "heading": "开放职缺",
+    "intro": "我们重視人才，加入我们打造下一代的 DeFi。",
+    "cta-button": "申請",
+    "back-link": "回到开放职缺页面",
+    "no-open-positions": "目前没有开放的职缺，但我们永远在寻找优秀的人才加入我们。",
+    "no-positions-you-like": "您没有找到您有兴趣的职缺吗？告诉我们您感兴趣的职缺，我们永远欢迎最优秀的人才。",
+    "write-us": "发送履历"
   },
   "change-your-vault": "切换金库",
   "close": "关闭",
+  "close-vault": "关闭金库",
   "coming-soon": "即将上线",
   "completed": "已完成",
+  "compound": "Compound",
   "confirm": "确认",
   "confirmed-proxy-deployment": "代理部署已确认",
   "connect-confirm": "在 {{ connectionKind }} 上确认",
@@ -50,6 +53,7 @@
   "connect-wallet": "通过钱包连接",
   "connect-wallet-button": "连接钱包",
   "connect-with": " {{ connectionKind }}",
+  "connect-install-metamask": "安装 Metamask",
   "connected-with": "通过 {{ connectionKind }} 连接",
   "contact": {
     "description": "告知我们反馈和建议",
@@ -83,6 +87,7 @@
   "custom": "自定义",
   "dai-being-generated": "正在生成 Dai",
   "dai-paying-back": "正在偿还 ({{amount}}) Dai",
+  "dai-paying-back-label": "赎回 Dai",
   "dai-savings-rate": "Dai 存款利率",
   "deposit": "存入",
   "disconnect": "断开连接",
@@ -103,6 +108,26 @@
   "erc20-disapprove-description-recent-failed": "取消 {{ token }} 的发送授权失败",
   "erc20-disapprove-notification": "正在取消 {{ token }} 授权",
   "erc20-disapprove-notification-past": "已取消 {{ token }} 授权",
+  "error-message": "发生错误",
+  "error-button": "查看细节",
+  "create-ds-proxy-description-pending": "正在创建 proxy ",
+  "create-ds-proxy-description-recent": "已创建 proxy",
+  "create-ds-proxy-description-recent-failed": "创建 proxy 失败",
+  "set-proxy-owner-description-pending": "正在设置 proxy 所有者",
+  "set-proxy-owner-description-recent": "设置 proxy 所有者",
+  "set-proxy-owner-description-recent-failed": "设置 proxy 所有者失败",
+  "open-vault-description-pending": "正在开启 {{ ilk }} 金库并且存入 {{ depositAmount }} {{ token }} 以生成 {{ generateAmount }} DAI",
+  "open-vault-description-recent": "已开启 {{ ilk }} 金库并且存入 {{ depositAmount }} {{ token }} 以生成 {{ generateAmount }} DAI",
+  "open-vault-description-recent-failed": "开启 {{ ilk }} 失败",
+  "deposit-generate-description-pending": "正在存入 {{ depositAmount }} {{ token }} 到金库 {{ id }} 以生成 {{ generateAmount }} DAI",
+  "deposit-generate-description-recent": "已存入 {{ depositAmount }} {{ token }} 到金库 {{ id }} 以生成 {{ generateAmount }} DAI",
+  "deposit-generate-description-recent-failed": "存入金库 {{ id }} 以生成 Dai 失败 ",
+  "withdraw-payback-description-pending": "正从金库 {{ id }} 提取 {{ withdrawAmount }} {{ token }} 并偿还 {{ paybackAmount }} DAI",
+  "withdraw-payback-description-recent": "已从金库 {{ id }} 提取 {{ withdrawAmount }} {{ token }} 并偿还 {{ paybackAmount }} DAI",
+  "withdraw-payback-description-recent-failed": "从金库 {{ id }} 提取抵押品并偿还债务失败",
+  "reclaim-collateral-description-pending": "正在收回来自金库 {{ id }} 的 {{ amount }} {{ token }} ",
+  "reclaim-collateral-description-recent": "已收回来自金库 {{ id }} 的 {{ amount }} {{ token }} ",
+  "reclaim-collateral-description-recent-failed": "收回来自金库 {{ id }} 的抵押品失败 ",
   "erc20-send-description-pending": "正在发送 {{ amount }} {{ token }}",
   "erc20-send-description-recent": "已发送 {{ amount }} {{ token }}",
   "erc20-send-description-recent-failed": "发送 {{ amount }} {{ token }} 失败",
@@ -122,6 +147,7 @@
   },
   "exchange-rate": "兑换率",
   "failed": "失败",
+  "fees": "Fees",
   "featured": {
     "cheapest": "最便宜",
     "most-popular": "最受欢迎",
@@ -129,7 +155,8 @@
   },
   "filters": {
     "lp-token": "LP 代币",
-    "stablecoin": "稳定币"
+    "stablecoin": "稳定币",
+    "popular": "热门资产"
   },
   "gas-estimation-error": "错误",
   "get-dai": "获得 Dai",
@@ -148,7 +175,12 @@
     "open": "开启新的金库 ID <0>#{{cdpId}}</0>",
     "payback": "偿还 <0>{{daiAmount}}</0> Dai 到金库",
     "transfer": "金库由 <0>{{transferFrom}}</0> 转移到 <0>{{transferTo}}</0>",
-    "withdraw": "从金库取回 <0>{{collateralAmount}} {{token}}</0> "
+    "withdraw": "从金库取回 <0>{{collateralAmount}} {{token}}</0> ",
+    "openmultiplyvault": "Open multiply Vault",
+    "increasemultiple": "Increased multiple, bought using Dai",
+    "decreasemultiple": "Decreased multiple, sold collateral",
+    "closevaultexitdai": "Closed Vault, exited Dai",
+    "closevaultexitcollateral": "Closed Vault, exited collateral"
   },
   "jwt-auth-failed": "签名失败",
   "jwt-auth-in-progress": "等待签名中...",
@@ -157,18 +189,41 @@
   "keyWithCount": "{{count}} 项",
   "keyWithCount_plural": "{{count}} 项",
   "landing": {
+    "footer": {
+      "blog": "博客",
+      "contact": "联系方式",
+      "resources": "资源",
+      "faq": "常见问题",
+      "knowledge-centre": "知识中心",
+      "oracles": "喂价机",
+      "products": "产品",
+      "dai-wallet": "Dai 钱包",
+      "borrow": "借贷",
+      "language": {
+        "en": "英文",
+        "es": "西班牙语",
+        "pt": "葡萄牙语",
+        "cn": "中文"
+      },
+      "about": "关于我们",
+      "team": "团队",
+      "careers": "开放职缺",
+      "privacy": "隐私",
+      "terms": "条款",
+      "trade": "交易"
+    },
     "hero": {
       "headline": "抵押数字资产，生成 Dai",
       "subheader": "开启 Maker 金库，存入抵押品，生成 Dai。<0/> 连接钱包以开始。"
     },
     "cards": {
       "dai": {
-        "title": "Dai Wallet",
-        "description": "Buy, send and manage Dai all in one place. Grow your Dai, access plenty of providers"
+        "title": "Dai 钱包",
+        "description": "一站式购买、发送和管理您的 Dai。借由访问许多的提供商，累积您的 Dai。"
       },
       "faq": {
-        "title": "Have a question?",
-        "description": "Learn more about Oasis, Dai and DeFi at our FAQ’s page"
+        "title": "有任何疑问吗？",
+        "description": "您可以在我们的常见问题页面了解更多关于 Oasis、Dai 和 DeFi 的信息"
       }
     }
   },
@@ -190,7 +245,7 @@
     "action": "管理金库",
     "warnings": {
       "potential-generate-amount-less-than-debt-floor": "初次开启金库最低需要生成 {{debtFloor}} Dai。请添加更多抵押品生成 {{debtFloor}} Dai。",
-      "debt-is-less-than-debt-floor": "你当前借出的 Dai 低于最低限额  {{debtFloor}} Dai。你至少需要借出最低借 Dai 额度。",
+      "debt-is-less-than-debt-floor": "你当前借出的 Dai 低于最低限额  {{debtFloor}} Dai，因此无法使用部分金库的功能。你至少需要借出最低借 Dai 额度，或者偿还你所有的债务。",
       "vault-will-be-at-risk-level-danger": "当前操作会让你的金库抵押率非常接近最低要求。",
       "vault-will-be-at-risk-level-danger-at-next-price": "当前操作会让你的金库抵押率在下次喂价更新的时候非常接近最低要求。",
       "vault-will-be-at-risk-level-warning": "当前操作会让你的金库接近最低抵押率要求",
@@ -203,7 +258,7 @@
       "generate-amount-exceeds-dai-yield-from-total-collateral": "该金库的抵押率过低，请尝试生成更少的 Dai。",
       "generate-amount-exceeds-dai-yield-from-total-collateral-at-next-price": "该金库的抵押率会在下次喂价更新时过低，请尝试生成更少的 Dai。",
       "generate-amount-exceeds-debt-ceiling": "你尝试生成 Dai 的数量超过了当前债务上限。当前最多可生成 {{maxGenerateAmount}} {{token}}。",
-      "generate-amount-less-than-debt-floor": "该金库类型最低借 Dai 金额为 {{debtFloor}} 。点击<0>这里</0>了解最低借 Dai 额度。",
+      "generate-amount-less-than-debt-floor": "该金库类型最低借出的 Dai 金额为 {{debtFloor}} 。点击<0>这里</0>了解 Dai 的最低借贷额度。",
       "payback-amount-exceeds-dai-balance": "你的钱包里没有这么多 Dai 用来偿还。",
       "payback-amount-exceeds-vault-debt": "你希望偿还的金额超出了该金库借 Dai 数量。",
       "debt-will-be-less-than-debt-floor": "Maker 金库的最低借贷金额要么为零或者高于 {{debtFloor}} Dai。请调整你的偿还数量。",
@@ -211,13 +266,50 @@
       "custom-collateral-allowance-amount-less-than-deposit-amount": "你需要许可存入额度以继续。",
       "custom-dai-allowance-amount-exceeds-maxuint256": "许可额度过大，请降低自定义许可数量。",
       "custom-dai-allowance-amount-less-than-payback-amount": "你需要许可偿还额度以继续。",
-      "depositing-all-eth-balance": "你需要留一些 ETH 支付 Gas 费用，请降低你的存入数量。"
+      "depositing-all-eth-balance": "你需要留一些 ETH 支付 Gas 费用，请降低你的存入数量。",
+      "ledger-enable-contract-data": "请在 Ledgers Ethereum app 的设置里启用 Contract data ",
+      "withdraw-collateral-on-vault-under-debt-floor": "当低于 Dai 的最低借贷金额时，你无法从金库提取抵押品。若你想要提取，请偿还你所有的债务。点击<0>这里</0>了解最低债务额度。",
+      "exchange-error": "无法获取交易价格以进行杠杆交易。"
+    },
+    "card": {
+      "collateralization-ratio-calculated": "你的抵押率计算方式为：抵押品的价值 / Dai 债务",
+      "collateralization-ratio-header2": "当前的抵押率：",
+      "collateralization-ratio-description": "从 Maker 喂价机获得的价格会用来计算你的抵押品价值。你的抵押率必须永远高于最低额度以避免被清算。",
+      "collateralization-ratio-next-price": "在下一个价格里，你的抵押率为：",
+      "collateral-locked-amount": "锁在你的金库里的抵押品总额：",
+      "collateral-locked-USD": "锁在你的金库里的抵押品总额（以美金计价）：",
+      "collateral-locked-oracles": "我们使用从 Maker 喂价机得到的价格来计算抵押品的价值。你的抵押品的当前市场的价格有可能会与这个价格不同。"
+    }
+  },
+  "manage-multiply-vault": {
+    "tooltip": {
+      "vaultId": "金库的 ID 是在 Oasis.app 上面针对你的 Maker 金库而生的独一无二数字码。",
+      "stabilityFee": "从 Maker 金库借出 Dai 的时候，Maker Protocol 会索取稳定费。稳定费是一种变动费率，它会因为 Maker 的 Risk Teams 的提议及治理者最后投票而采用的提议而改变。",
+      "liquidationFee": "如果你的金库被清算了，清算罚金将会以 Dai 计算，并且加到你金库中尚未结算的总债务里。这将导致更多的抵押品被拍卖以偿还你尚未结算的债务。这个机制是为了鼓励金库所有者避免被清算。至于清算罚金的金额，是依据金库里的债务而计算出来的清算手续费所决定。",
+      "min-collateral": "这也被称为清算率。如果金库低于最低抵押率，就会被视为抵押不足而可能被清算。",
+      "dust-limit": "Dust Limit 是指在这个类型的金库里，Dai 要被生成的最低数量。这个数值也被称为 “债务底线”"
+    },
+    "card": {
+      "liquidation-price-description": "清算价格指的是可能导致你的金库被清算的抵押品价格。如果你发现你的金库价值非常接近被清算的价格，你可以在你的杠杆金库里调高抵押率，然后增加更多的抵押品。或者，你也可以偿还你的部分债务。",
+      "liquidation-price-current": "你当前的清算价格：",
+      "liquidation-percentage-below": "低于当前价格 {{percentageBelow}} ",
+      "buying-power": "购买力",
+      "buying-power-description": "购买力指的是依据你的仓位，你可以购买更多抵押品的最大值的 Dai。这个数值会介于当前的抵押率和最小抵押率之间。",
+      "current-price": "当前价格",
+      "current-price-description": "你的金库抵押品价格是由 Maker 价格喂价机所提供。",
+      "next-price": "下一次价格",
+      "next-price-description": "你在这里所看见的下次价格将会在 Maker Protocol 产生影响。在与清算价格比较之后，会看出你的金库是否有可能在下一次价格更新时被清算。",
+      "more-info-oracles": "在<0>这里</0>可以得到关于 Maker 喂价机的信息",
+      "net-value": "净值",
+      "net-value-description": "净值的计算方式是，当前抵押品的价值减掉当前债务。注意：这不会完全等于你关闭金库并赎回的 Dai 金额，因为将原本的抵押品换成 Dai 的时候会产生手续费，而且因为净值是由延迟一小时的 Maker 喂价机价格和抵押品的实际价格做比较所计算出来。"
     }
   },
   "max": "最多",
   "min-amount": "最低数量为 {{minAmount}} {{token}}",
   "moving-into-vault": "前往金库",
   "moving-out-vault": "离开金库",
+  "net-value": "Net Value",
+  "multiple": "Multiple",
   "nav": {
     "blog": "博客",
     "contact": "联系方式",
@@ -227,6 +319,7 @@
   },
   "new-to-ethereum": "刚接触以太坊？",
   "next": "下一步",
+  "no-dai": "没有 Dai",
   "no-activity": "无历史记录",
   "notice-privacy": "当使用我们的网站时，即表示你同意我们的<0> Cookie 政策</0>。",
   "notification-status-complete": "已完成",
@@ -260,15 +353,20 @@
       "debt-will-be-less-than-debt-floor": "Maker 金库的最低借贷金额要么为零或者高于 {{debtFloor}} Dai。请调整你的偿还数量。",
       "custom-allowance-amount-exceeds-maxuint256": "许可额度过大，请降低自定义许可数量。",
       "custom-allowance-amount-less-than-deposit-amount": "你需要许可存入额度以继续。",
-      "depositing-all-eth-balance": "你需要留一些 ETH 支付 Gas 费用，请降低你的存入数量。"
+      "depositing-all-eth-balance": "你需要留一些 ETH 支付 Gas 费用，请降低你的存入数量。",
+      "ledger-enable-contract-data": "请在 Ledgers Ethereum 应用程序的设置启用 Contract data",
+      "exchange-error": "无法获取交易价格以进行此次杠杆交易。"
     }
   },
   "or": "或者",
+  "outstanding-debt": "Outstanding debt",
   "paste": "粘贴",
   "pending-transactions": "确认中交易",
   "permissions": "设置许可",
   "permissions-btn": "设置许可",
   "permissions-desc": "这将授权 Oasis 与你钱包中的 Dai 进行交互。",
+  "price": "Price",
+  "powered-by": "Powered by",
   "proceed": "继续",
   "readonly-alert-message": "你正在查看",
   "readonly-user-connecting": "可读模式下浏览...",
@@ -301,7 +399,7 @@
       "title": "Dai"
     },
     "default": {
-      "description": "Borrow Dai, a USD pegged Stablecoin, using crypto as your collateral",
+      "description": "以你的加密货币作为抵押品借出 Dai，一种与美元挂钩的稳定币。",
       "title": "Oasis.app"
     },
     "latam500": {
@@ -313,12 +411,12 @@
       "title": "常见问题"
     },
     "careers": {
-      "title": "Careers",
-      "description": "We believe in talent. Join us to build the next generation of DeFi."
+      "title": "开放职缺",
+      "description": "我们重視人才，加入我们打造下一代的 DeFi。"
     },
     "about": {
-      "title": "About Us",
-      "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital."
+      "title": "关于我们",
+      "description": "Oasis 的目标是为用户提供最好和最值得信任的方式来部署资金。我们开发 Oasis.app 让用户能在 DeFi 的领域获得最大的利益，\\n\\n 而我们的团队是由一群对区块链爱好者所组成。"
     }
   },
   "set-allowance-for": "设置 {{token}} 许可额度",
@@ -338,6 +436,7 @@
     "collateral-locked": "已存入抵押品",
     "collateral-ratio": "抵押率",
     "collateralization-ratio": "抵押率",
+    "dai": "Dai",
     "dai-available": "可生成 Dai",
     "dai-debt": "Dai 债务",
     "deposited": "已存入",
@@ -377,12 +476,13 @@
   "unlimited-allowance": "永久许可",
   "vault": {
     "current-price": "当前 {{token}}/USD 价格 时间 {{time}}",
-    "header": "{{ilk}} 金库 #{{id}}",
+    "header": "{{ilk}} 金库 {{id}}",
     "next-price": "下一次喂价更新: {{count}} 分钟后",
     "next-price-any-time": "下一次喂价更新: 2 分钟内",
     "next-price_plural": "下一次喂价更新: {{count}} 分钟后",
     "open-vault": "开启 {{ilk}} 金库",
-    "vault-details": "金库细节"
+    "vault-details": "金库细节",
+    "token-uds-price": "{{token}} / 美元价格"
   },
   "vault-actions": {
     "deposit": "存入",
@@ -409,7 +509,7 @@
     "banner-header": "你正在查看 {{address}} 的金库。",
     "headers": {
       "connected-owner-noVaults": "你没有开启任何金库。",
-      "connected-owner-withVaults": "你的 Maker 金库概览",
+      "connected-owner-withVaults": "你的所有金库",
       "connected-viewer-noVaults": "{{address}} 地址下当前没有 Maker 金库",
       "connected-viewer-withVaults": "{{address}} 地址下的 Maker 金库",
       "notConnected-noVaults": "{{address}} 地址下当前没有 Maker 金库。<0/> 连接你的钱包开启金库。",
@@ -433,14 +533,16 @@
       "header1": "你的 {{ collateral }} Maker 金库 {{ id }} 即将被清算。",
       "header2": "{{ collateral }} Maker 金库 {{ id }} 即将被清算。",
       "subheader1": "{{ collateral }} 下一个喂价更新会造成该金库的清算，添加更多抵押品或偿还 Dai 避免清算。",
-      "subheader2": "这是你的 Maker 金库吗？请用该地址 {{ address }} 连接，避免金库清算。"
+      "subheader2": "这是你的 Maker 金库吗？请用该地址 {{ address }} 连接，避免金库清算。",
+      "subheader3": "此金库随时会被清算。"
     },
     "liquidated": {
       "header1": "你的 Maker 金库已被清算。",
       "header2": "该 Maker 金库已被清算。",
       "subheader1": "该 Maker 金库已被清算。部分抵押品已被拍卖以偿还你的 Dai 债务。",
       "subheader2": "你可以赎回  {{ amount }} {{ collateral }}。",
-      "subheader3": "如果这是你的金库，请用该地址 {{ address }} 连接取回剩余抵押品。"
+      "subheader3": "此金库已被清算，部分抵押品已被拍卖以偿还 Dai 债务。",
+      "subheader4": "如果这是你的金库，请连接此地址收回剩下的抵押品：{{ address }} "
     }
   },
   "view": "查看",
@@ -448,7 +550,6 @@
   "view-on-etherscan": "在 Etherscan 上查看",
   "waiting-approval": "等待许可",
   "waiting-confirmation": "等待交易确认",
-  "waiting-proxy-deployment": "代理部署确认中",
   "proxy-deployment-confirming": "{{proxyConfirmations}} of {{safeConfirmations}}: 代理部署已确认",
   "withdraw": "取回",
   "withdrawn": "已取回",
@@ -466,15 +567,55 @@
       "edit": "初始化你的金库",
       "proxy": "创建你的智能代理",
       "allowance": "设置 {{token}} 许可",
-      "confirm": "确认金库创建"
+      "daiAllowance": "设置 Dai 同意权",
+      "confirm": "确认金库创建",
+      "confirm-in-progress": "已开启金库",
+      "modified": "已修改金库",
+      "confirm-manage": "确认修改金库",
+      "review-manage": "审查金库的修改"
     },
     "subtext": {
+      "collateral": "在你的金库存款或提款。通过合并交易来节省手续费。",
+      "dai": "从你的金库生成 DAI 或偿还 DAI。通过合并交易来节省手续费。",
       "edit": "模拟输入存入抵押品数量和希望生成的 Dai 金额",
-      "proxy": "智能代理可以将多个步骤一笔交易完成。该操作只需要设置一次。",
+      "proxy": "透过智能代理可以将多个步骤于一笔交易完成。该操作只需要设置一次。",
       "allowance": "设置许可金库可以控制的最大代币数量。",
-      "confirm": "检查并确认你的金库细节。"
+      "daiAllowance": "设置允许智能合约可以互动的代币限额。",
+      "confirm": "即将更新页面，这将不会要求进行交易。",
+      "review-manage": "你可以在这里查看关于修改金库的详细信息",
+      "confirm-in-progress": "正在开启你的金库",
+      "modified": "正在更新你的金库，请耐心等待。"
     }
   },
   "creating-your-vault": "创建你的 {{token}} 金库！",
-  "vault-created": "金库 #{{id}} 已创建！"
+  "vault-created": "金库 #{{id}} 已创建！",
+  "changing-vault": "正在修改金库",
+  "your-wallet": "你的钱包",
+  "welcome": "欢迎来到全新的 Oasis.app",
+  "read-blog-post": "阅览博客",
+  "visit-old-oasis": "前往旧版 Oasis",
+  "oracles": {
+    "header": "喂价机",
+    "description": "可以在下方查看被 Maker 金库所接受的抵押品类型的当前及下一个价格。这边的价格大部分是使用喂价安全模块(Oracle Stability Module, OSM)而得到，该模块一小时只会更新一次。因此，当发生价格骤跌时，用户仍有一小时可以做出反应。",
+    "token": "代币",
+    "current-price": "当前价格",
+    "next-price": "下一个价格",
+    "change": "% 变化",
+    "last-update": "最后更新",
+    "next-update": "下一次更新",
+    "oracle-type": "喂价机类型"
+  },
+  "select-vault-type": {
+    "header": "你想要使用你的代币做什么？",
+    "multiply": {
+      "header": "倍数增加我的代币",
+      "subtext": "使用你的{{balance}} {{token}} 获得最高 {{exposure}} {{token}} 的风险",
+      "button": "进行 {{token}} 的杠杆交易"
+    },
+    "borrow": {
+      "header": "抵押我的 {{token}} 借款",
+      "subtext": "使用 {{balance}} {{token}} 借出最高 {{maxBorrow}} DAI",
+      "button": "抵押 {{token}} 借贷"
+    }
+  }
 }
