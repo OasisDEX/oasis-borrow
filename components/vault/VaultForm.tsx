@@ -4,8 +4,16 @@ import { AppLink } from 'components/Links'
 import { WithChildren } from 'helpers/types'
 import React, { ReactNode } from 'react'
 
-export function VaultFormVaultTypeSwitch({ href, title }: { href: string; title: ReactNode }) {
-  return (
+export function VaultFormVaultTypeSwitch({
+  href,
+  title,
+  visible,
+}: {
+  href: string
+  title: ReactNode
+  visible: boolean
+}) {
+  return visible ? (
     <>
       <Divider variant="styles.hrVaultFormBottom" />
       <Box>
@@ -32,6 +40,8 @@ export function VaultFormVaultTypeSwitch({ href, title }: { href: string; title:
         </AppLink>
       </Box>
     </>
+  ) : (
+    <></>
   )
 }
 

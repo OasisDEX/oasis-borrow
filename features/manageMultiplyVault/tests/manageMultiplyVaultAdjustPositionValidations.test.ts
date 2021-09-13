@@ -57,7 +57,7 @@ describe('manageVaultAdjustPositionValidations', () => {
     expect(state().warningMessages).to.deep.eq(['vaultWillBeAtRiskLevelWarningAtNextPrice'])
   })
 
-  it(`validates if generate doesn't exceeds debt ceiling, debt floor`, () => {
+  it(`validates if adjust action doesn't exceeds debt ceiling, debt floor`, () => {
     const requiredCollRatioExceeds = new BigNumber('1.75')
     const requiredCollRatioBelow = new BigNumber('150')
 
@@ -79,7 +79,7 @@ describe('manageVaultAdjustPositionValidations', () => {
     expect(state().errorMessages).to.deep.eq(['generateAmountExceedsDebtCeiling'])
 
     state().updateRequiredCollRatio!(requiredCollRatioBelow)
-    expect(state().errorMessages).to.deep.eq(['generateAmountLessThanDebtFloor'])
+    expect(state().errorMessages).to.deep.eq(['debtWillBeLessThanDebtFloor'])
   })
 
   it('validates if vault has no collateral and can`t progress on adjust position', () => {

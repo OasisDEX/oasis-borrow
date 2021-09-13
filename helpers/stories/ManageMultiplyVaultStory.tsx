@@ -97,6 +97,7 @@ export function manageMultiplyVaultStory({
 
     const ctx = ({
       vaultHistory$: memoize(() => of([])),
+      vaultMultiplyHistory$: memoize(() => of([])),
       context$: of({ etherscan: 'url' }),
       generalManageVault$: memoize(() =>
         createGeneralManageVault$(

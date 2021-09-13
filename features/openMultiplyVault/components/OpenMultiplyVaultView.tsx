@@ -82,7 +82,11 @@ function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
       {isAllowanceStage && <VaultAllowanceStatus {...props} />}
       {isOpenStage && <OpenMultiplyVaultStatus {...props} />}
       {isEditingStage ? (
-        <VaultFormVaultTypeSwitch href={`/vaults/open/${ilk}`} title="Switch to Borrow" />
+        <VaultFormVaultTypeSwitch
+          href={`/vaults/open/${ilk}`}
+          title="Switch to Borrow"
+          visible={true}
+        />
       ) : null}
     </VaultFormContainer>
   )

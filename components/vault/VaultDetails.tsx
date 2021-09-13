@@ -528,6 +528,30 @@ export function VaultDetailsCardCollateralLocked({
   )
 }
 
+export function VaultDetailsCardNetValue({
+  netValueUSD,
+  afterNetValueUSD,
+  afterPillColors,
+  showAfterPill,
+}: {
+  netValueUSD: BigNumber
+  afterNetValueUSD: BigNumber
+} & AfterPillProps) {
+  const openModal = useModal()
+  const { t } = useTranslation()
+
+  return (
+    <VaultDetailsCard
+      title={t('manage-multiply-vault.card.net-value')}
+      value={`$${formatAmount(netValueUSD, 'USD')}`}
+      // valueBottom={`Unrealised P&L 0%`}
+      valueAfter={showAfterPill && `$${formatAmount(afterNetValueUSD, 'USD')}`}
+      openModal={() => openModal(VaultDetailsNetValueModal)}
+      afterPillColors={afterPillColors}
+    />
+  )
+}
+
 export function VaultDetailsSummaryContainer({ children }: WithChildren) {
   return (
     <Card sx={{ borderRadius: 'large', border: 'lightMuted' }}>
