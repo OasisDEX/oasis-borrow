@@ -30,6 +30,12 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
     - name: Extract commit hash
       id: vars
       shell: bash
@@ -61,6 +67,7 @@ jobs:
                      -t $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
                      .
         docker push $ECR_REGISTRY/$ECR_REPO_NAME --all-tags
+        docker push $DOCKERHUB_ORG/$REPO_NAME --all-tags
 
     - name: Update ECS service with latest Docker image
       id: service-update
