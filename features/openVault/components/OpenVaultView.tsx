@@ -1,4 +1,5 @@
 import { trackingEvents } from 'analytics/analytics'
+import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
@@ -82,6 +83,7 @@ function OpenVaultForm(props: OpenVaultState) {
         <VaultFormVaultTypeSwitch
           href={`/vaults/open-multiply/${ilk}`}
           title="Switch to Multiply"
+          visible={ALLOWED_MULTIPLY_TOKENS.includes(props.token)}
         />
       ) : null}
     </VaultFormContainer>
