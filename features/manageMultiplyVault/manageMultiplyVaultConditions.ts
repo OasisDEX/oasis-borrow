@@ -313,7 +313,7 @@ export function applyManageVaultConditions(
     !withdrawAmountExceedsFreeCollateral && !!withdrawAmount?.gt(maxWithdrawAmountAtNextPrice)
 
   // generate amount used for calc, can be from input for Other Actions or from afterDebt for Adjust Position
-  const generateAmountCalc = afterDebt.minus(vault.debt).absoluteValue()
+  const generateAmountCalc = afterDebt.gt(vault.debt) ? afterDebt.minus(vault.debt) : zero
 
   const generateAmountExceedsDebtCeiling = !!generateAmountCalc?.gt(ilkData.ilkDebtAvailable)
 
