@@ -455,7 +455,13 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
       {
         fromTokenAddress: tokens[data.token].address,
         toTokenAddress: tokens['DAI'].address,
-        toTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
+        toTokenAmount: amountToWei(
+          data.requiredDebt
+            .div(one.minus(OAZO_FEE))
+            .div(one.minus(LOAN_FEE))
+            .times(one.plus(data.slippage)),
+          'DAI',
+        ).toFixed(0),
         fromTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
         minToTokenAmount: amountToWei(data.requiredDebt, 'DAI')
           .div(one.minus(OAZO_FEE))
