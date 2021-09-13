@@ -31,6 +31,7 @@ export const OtherActionDepositStage = manageMultiplyVaultStory({
   proxyAddress,
 })({
   stage: 'otherActions',
+  originalEditingStage: 'otherActions',
   otherAction: 'depositCollateral',
   depositAmount: new BigNumber('2'),
 })
@@ -41,6 +42,7 @@ export const OtherActionWithdrawStage = manageMultiplyVaultStory({
   proxyAddress,
 })({
   stage: 'otherActions',
+  originalEditingStage: 'otherActions',
   otherAction: 'withdrawCollateral',
   withdrawAmount: new BigNumber('2'),
 })
@@ -51,6 +53,7 @@ export const OtherActionPaybackStage = manageMultiplyVaultStory({
   proxyAddress,
 })({
   stage: 'otherActions',
+  originalEditingStage: 'otherActions',
   otherAction: 'depositDai',
   paybackAmount: new BigNumber('300'),
 })
@@ -61,6 +64,7 @@ export const OtherActionGenerateStage = manageMultiplyVaultStory({
   proxyAddress,
 })({
   stage: 'otherActions',
+  originalEditingStage: 'otherActions',
   otherAction: 'withdrawDai',
   generateAmount: new BigNumber('300'),
 })

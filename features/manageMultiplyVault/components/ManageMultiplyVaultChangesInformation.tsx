@@ -49,25 +49,28 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
   const isCloseAction = originalEditingStage === 'otherActions' && otherAction === 'closeVault'
+  const show1InchInfo = originalEditingStage === 'adjustPosition' || isCloseAction
 
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer
       title={isCloseAction ? 'Close Vault Information' : 'Vault Changes'}
     >
-      <VaultChangesInformationItem
-        label={exchangeAction === `BUY_COLLATERAL` ? `Buying ${token}` : `Selling ${token}`}
-        value={
-          <Flex>
-            <Text>
-              {formatCryptoBalance(collateralDelta?.abs() || zero)} {token}
-              {` `}
-              <Text as="span" sx={{ color: 'text.subtitle' }}>
-                (${formatAmount(collateralDeltaUSD?.abs() || zero, 'USD')})
+      {show1InchInfo && (
+        <VaultChangesInformationItem
+          label={exchangeAction === `BUY_COLLATERAL` ? `Buying ${token}` : `Selling ${token}`}
+          value={
+            <Flex>
+              <Text>
+                {formatCryptoBalance(collateralDelta?.abs() || zero)} {token}
+                {` `}
+                <Text as="span" sx={{ color: 'text.subtitle' }}>
+                  (${formatAmount(collateralDeltaUSD?.abs() || zero, 'USD')})
+                </Text>
               </Text>
-            </Text>
-          </Flex>
-        }
-      />
+            </Flex>
+          }
+        />
+      )}
       <VaultChangesInformationItem
         label={isCloseAction ? 'Collateral' : `Total ${token} exposure`}
         value={
@@ -79,25 +82,29 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
         }
       />
 
-      <VaultChangesInformationItem
-        label={`${token} Price (impact)`}
-        value={
-          isExchangeLoading ? (
-            <AppSpinner />
-          ) : (
-            <Text>
-              ${marketPrice ? formatFiatBalance(marketPrice) : formatFiatBalance(zero)}{' '}
-              <Text as="span" sx={{ color: 'onError' }}>
-                ({formatPercent(impact, { precision: 2 })})
-              </Text>
-            </Text>
-          )
-        }
-      />
-      <VaultChangesInformationItem
-        label={'Slippage Limit'}
-        value={formatPercent(slippage.times(100), { precision: 2 })}
-      />
+      {show1InchInfo && (
+        <>
+          <VaultChangesInformationItem
+            label={`${token} Price (impact)`}
+            value={
+              isExchangeLoading ? (
+                <AppSpinner />
+              ) : (
+                <Text>
+                  ${marketPrice ? formatFiatBalance(marketPrice) : formatFiatBalance(zero)}{' '}
+                  <Text as="span" sx={{ color: 'onError' }}>
+                    ({formatPercent(impact, { precision: 2 })})
+                  </Text>
+                </Text>
+              )
+            }
+          />
+          <VaultChangesInformationItem
+            label={'Slippage Limit'}
+            value={formatPercent(slippage.times(100), { precision: 2 })}
+          />
+        </>
+      )}
       <VaultChangesInformationItem
         label={'Multiply'}
         value={
