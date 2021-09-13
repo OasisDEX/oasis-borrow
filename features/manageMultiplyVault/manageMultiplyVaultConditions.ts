@@ -327,22 +327,22 @@ export function applyManageVaultConditions(
     !!generateAmountCalc.gt(maxGenerateAmountAtNextPrice)
 
   const generateAmountLessThanDebtFloor =
-    !vault.debt.minus(paybackAmountCalc).isZero() &&
-    (vault.debt.minus(paybackAmountCalc).lt(ilkData.debtFloor) ||
-      vault.debt.plus(generateAmountCalc).lt(ilkData.debtFloor))
+    generateAmountCalc.gt(zero) &&
+    !(
+      vault.debt.plus(generateAmountCalc).isZero() ||
+      vault.debt.plus(generateAmountCalc).gte(ilkData.debtFloor)
+    )
 
   const paybackAmountExceedsDaiBalance = !!paybackAmount?.gt(daiBalance)
   const paybackAmountExceedsVaultDebt = !!paybackAmount?.gt(vault.debt)
 
   const debtWillBeLessThanDebtFloor =
-    stage === 'otherActions'
-      ? !!(
-          paybackAmount &&
-          vault.debt.minus(paybackAmount).lt(ilkData.debtFloor) &&
-          vault.debt.minus(paybackAmount).gt(zero) &&
-          !shouldPaybackAll
-        )
-      : !!(state.debtDelta?.lt(zero) && afterDebt.gt(zero) && afterDebt.lt(ilkData.debtFloor))
+    !paybackAmountExceedsVaultDebt &&
+    paybackAmountCalc.gt(zero) &&
+    !(
+      vault.debt.minus(paybackAmountCalc).isZero() ||
+      vault.debt.minus(paybackAmountCalc).gte(ilkData.debtFloor)
+    )
 
   const customCollateralAllowanceAmountEmpty =
     selectedCollateralAllowanceRadio === 'custom' && !collateralAllowanceAmount

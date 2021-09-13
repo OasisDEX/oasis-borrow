@@ -25,8 +25,8 @@ describe('manageVaultAdjustPositionValidations', () => {
     expect(state().warningMessages).to.deep.eq(['vaultWillBeAtRiskLevelWarning'])
   })
 
-  it.skip('validates if required collateralization ratio is putting vault at risk, danger or exceeds dai yield from total collateral at next price', () => {
-    const requiredCollRatioYieldNextPrice = new BigNumber('1.75')
+  it('validates if required collateralization ratio is putting vault at risk, danger or exceeds dai yield from total collateral at next price', () => {
+    const requiredCollRatioYieldNextPrice = new BigNumber('1.6')
     const requiredCollRatioDangerNextPrice = new BigNumber('1.85')
     const requiredCollRatioWarningNextPrice = new BigNumber('2.3')
 
@@ -53,7 +53,7 @@ describe('manageVaultAdjustPositionValidations', () => {
     ])
 
     state().updateRequiredCollRatio!(requiredCollRatioWarningNextPrice)
-    expect(state().warningMessages).to.deep.eq(['vaultWillBeAtRiskLevelWarningAtNextPrice'])
+    expect(state().warningMessages).to.deep.eq(['vaultWillBeAtRiskLevelWarningAtNextPrice'], '3')
   })
 
   it(`validates if adjust action doesn't exceeds debt ceiling, debt floor`, () => {
