@@ -21,7 +21,7 @@ export type ManageVaultErrorMessage =
   | 'depositingAllEthBalance'
   | 'ledgerWalletContractDataDisabled'
   | 'withdrawCollateralOnVaultUnderDebtFloor'
-  | 'exchangeError'
+  | 'shouldShowExchangeError'
   | 'hasToDepositCollateralOnEmptyVault'
 
 export type ManageVaultWarningMessage =
@@ -53,7 +53,7 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
     paybackAmountExceedsVaultDebt,
     withdrawCollateralOnVaultUnderDebtFloor,
     hasToDepositCollateralOnEmptyVault,
-    exchangeError,
+    shouldShowExchangeError,
   } = state
 
   const errorMessages: ManageVaultErrorMessage[] = []
@@ -111,8 +111,8 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
       errorMessages.push('hasToDepositCollateralOnEmptyVault')
     }
 
-    if (exchangeError) {
-      errorMessages.push('exchangeError')
+    if (shouldShowExchangeError) {
+      errorMessages.push('shouldShowExchangeError')
     }
   }
 
