@@ -246,7 +246,7 @@ export function adjustPosition(
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ sendWithGasEstimation, send }) =>
+      switchMap(({ sendWithGasEstimation }) =>
         getQuote$(
           getTokenMetaData('DAI', tokens),
           getTokenMetaData(token, tokens),
@@ -257,7 +257,7 @@ export function adjustPosition(
         ).pipe(
           first(),
           switchMap((swap) =>
-            send(adjustMultiplyVault, {
+            sendWithGasEstimation(adjustMultiplyVault, {
               kind: TxMetaKind.adjustPosition,
               depositCollateral: depositAmount || zero,
               requiredDebt: debtDelta?.abs() || zero,
