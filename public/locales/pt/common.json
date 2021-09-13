@@ -137,6 +137,7 @@
   },
   "exchange-rate": "Taxa de câmbio",
   "failed": "Falhou",
+  "fees": "Fees",
   "featured": {
     "cheapest": "Mais barato",
     "most-popular": "Mais popular",
@@ -164,7 +165,12 @@
     "open": "Aberto um novo Cofre com id <0>#{{cdpId}}</0>",
     "payback": "Pago <0>{{daiAmount}}</0> Dai para o Cofre",
     "transfer": "Cofre enviou para <0>{{transferTo}}</0> por <0>{{transferFrom}}</0>",
-    "withdraw": "Retirou <0>{{collateralAmount}} {{token}}</0> do Cofre"
+    "withdraw": "Retirou <0>{{collateralAmount}} {{token}}</0> do Cofre",
+    "openmultiplyvault": "Open multiply Vault",
+    "increasemultiple": "Increased multiple, bought using Dai",
+    "decreasemultiple": "Decreased multiple, sold collateral",
+    "closevaultexitdai": "Closed Vault, exited Dai",
+    "closevaultexitcollateral": "Closed Vault, exited collateral"
   },
   "jwt-auth-failed": "A assinatura falhou",
   "jwt-auth-in-progress": "Aguardando assinatura...",
@@ -217,6 +223,8 @@
   "ledger-live": "Ledger Live",
   "ledger-select-address": "Selecione um endereço",
   "ledger-select-title": "Selecione Ledger Live ou Legacy",
+  "net-value": "Net Value",
+  "multiple": "Multiple",
   "manage-vault": {
     "action-option": "{{action}} {{token}} com essa transação",
     "dai-available": "Dai disponível",
@@ -332,12 +340,14 @@
     }
   },
   "or": "ou",
+  "outstanding-debt": "Outstanding debt",
   "paste": "Colar",
   "pending-transactions": "Transações Pendentes",
   "permissions": "Conceder permissões",
   "permissions-btn": "Conceder permissões",
   "permissions-desc": "Isto permitirá a Oasis interagir com o Dai na sua carteira.",
   "powered-by": "Distribuído por",
+  "price": "Price",
   "proceed": "Continuar",
   "readonly-alert-message": "Você está vendo",
   "readonly-user-connecting": "Conectando, somente leitura...",
