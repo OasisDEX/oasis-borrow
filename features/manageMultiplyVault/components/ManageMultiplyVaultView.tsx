@@ -31,6 +31,7 @@ function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
     isDaiAllowanceStage,
     isManageStage,
     accountIsConnected,
+    accountIsController,
     daiAllowanceTxHash,
     collateralAllowanceTxHash,
     vault: { token },
@@ -44,7 +45,7 @@ function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
       {isCollateralAllowanceStage && <ManageMultiplyVaultCollateralAllowance {...props} />}
       {isDaiAllowanceStage && <ManageMultiplyVaultDaiAllowance {...props} />}
       {isManageStage && <ManageMultiplyVaultConfirmation {...props} />}
-      {accountIsConnected && (
+      {accountIsConnected && accountIsController && (
         <>
           <ManageMultiplyVaultErrors {...props} />
           <ManageMultiplyVaultWarnings {...props} />
