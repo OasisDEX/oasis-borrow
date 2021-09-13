@@ -725,7 +725,7 @@ export function applyManageVaultCalculations(
     ilkDebtAvailable,
     liquidationRatio,
     lockedCollateral: lockedCollateral.plus(collateralDelta),
-    price: currentCollateralPrice,
+    price: nextCollateralPrice,
   })
 
   const maxGenerateAmount = BigNumber.minimum(
