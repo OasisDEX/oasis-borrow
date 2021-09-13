@@ -383,8 +383,8 @@ export const ExchangeDataFailure = manageMultiplyVaultStory({
   },
 })({
   stage: 'otherActions',
-  otherAction: 'depositCollateral',
-  depositAmount: new BigNumber('5'),
+  originalEditingStage: 'otherActions',
+  otherAction: 'closeVault',
 })
 
 export const ExchangeDataLoading = manageMultiplyVaultStory({
@@ -397,8 +397,8 @@ export const ExchangeDataLoading = manageMultiplyVaultStory({
   },
 })({
   stage: 'otherActions',
-  otherAction: 'depositCollateral',
-  depositAmount: new BigNumber('5'),
+  originalEditingStage: 'otherActions',
+  otherAction: 'closeVault',
 })
 
 export const VaultHasNoCollateral = manageMultiplyVaultStory({

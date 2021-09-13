@@ -38,6 +38,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
     oazoFee,
     marketPrice,
     inputAmountsEmpty,
+    exchangeDataRequired,
     isExchangeLoading,
     otherAction,
     exchangeAction,
@@ -49,13 +50,12 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
   const isCloseAction = originalEditingStage === 'otherActions' && otherAction === 'closeVault'
-  const show1InchInfo = originalEditingStage === 'adjustPosition' || isCloseAction
 
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer
       title={isCloseAction ? 'Close Vault Information' : 'Vault Changes'}
     >
-      {show1InchInfo && (
+      {exchangeDataRequired && (
         <VaultChangesInformationItem
           label={exchangeAction === `BUY_COLLATERAL` ? `Buying ${token}` : `Selling ${token}`}
           value={
@@ -82,7 +82,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
         }
       />
 
-      {show1InchInfo && (
+      {exchangeDataRequired && (
         <>
           <VaultChangesInformationItem
             label={`${token} Price (impact)`}
