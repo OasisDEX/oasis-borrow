@@ -6,7 +6,7 @@ import {
   VaultDetailsCard,
   VaultDetailsCardCurrentPrice,
   VaultDetailsCardLiquidationPrice,
-  VaultDetailsNetValueModal,
+  VaultDetailsCardNetValue,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -132,13 +132,13 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
 
         <VaultDetailsCardCurrentPrice {...props} />
 
-        <VaultDetailsCard
-          title={`Net Value`}
-          value={`$${formatAmount(netValueUSD, 'USD')}`}
-          valueBottom={`Unrealised P&L 0%`}
-          valueAfter={showAfterPill && `$${formatAmount(afterNetValueUSD, 'USD')}`}
-          openModal={() => openModal(VaultDetailsNetValueModal)}
-          afterPillColors={afterPillColors}
+        <VaultDetailsCardNetValue
+          {...{
+            netValueUSD,
+            afterNetValueUSD,
+            afterPillColors,
+            showAfterPill,
+          }}
         />
       </Grid>
       <ManageMultiplyVaultDetailsSummary

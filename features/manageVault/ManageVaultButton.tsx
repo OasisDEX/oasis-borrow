@@ -1,4 +1,5 @@
 import { trackingEvents } from 'analytics/analytics'
+import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Divider, Flex, Spinner, Text } from 'theme-ui'
@@ -81,7 +82,11 @@ function manageVaultButtonText(state: ManageVaultState): string {
       return t('changing-vault')
 
     case 'multiplyTransitionEditing':
-      return 'Multiply this Vault'
+      if (ALLOWED_MULTIPLY_TOKENS.includes(state.vault.token)) {
+        return 'Multiply this Vault'
+      } else {
+        return `Not supported for ${state.vault.token}`
+      }
 
     case 'multiplyTransitionWaitingForConfirmation':
       return 'Take me to the Multiply interface'
@@ -131,6 +136,7 @@ export function ManageVaultButton(props: ManageVaultState) {
     generateAmount,
     paybackAmount,
     withdrawAmount,
+    vault,
   } = props
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
@@ -178,7 +184,7 @@ export function ManageVaultButton(props: ManageVaultState) {
           trackEvents()
           handleProgress(e)
         }}
-        disabled={!canProgress}
+        disabled={!canProgress || !ALLOWED_MULTIPLY_TOKENS.includes(vault.token)}
       >
         {isLoadingStage ? (
           <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>

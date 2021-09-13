@@ -142,6 +142,7 @@
     "most-popular": "Most popular",
     "new": "New"
   },
+  "fees": "Fees",
   "filters": {
     "lp-token": "LP tokens",
     "stablecoin": "Stablecoins",
@@ -164,7 +165,12 @@
     "open": "Opened a new Vault with id <0>#{{cdpId}}</0>",
     "payback": "Payback <0>{{daiAmount}}</0> Dai to Vault",
     "transfer": "Vault given to <0>{{transferTo}}</0> by <0>{{transferFrom}}</0>",
-    "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault"
+    "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault",
+    "openmultiplyvault": "Open multiply Vault",
+    "increasemultiple": "Increased multiple, bought using Dai",
+    "decreasemultiple": "Decreased multiple, sold collateral",
+    "closevaultexitdai": "Closed Vault, exited Dai",
+    "closevaultexitcollateral": "Closed Vault, exited collateral"
   },
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",
@@ -173,29 +179,6 @@
   "keyWithCount": "{{count}} item",
   "keyWithCount_plural": "{{count}} items",
   "landing": {
-    "footer": {
-      "language": {
-        "en": "English",
-        "es": "Español",
-        "pt": "Português",
-        "cn": "中文"
-      },
-      "about": "About",
-      "team": "Team",
-      "careers": "Careers",
-      "privacy": "Privacy",
-      "terms": "Terms",
-      "contact": "Contact",
-      "resources": "Resources",
-      "blog": "Blog",
-      "faq": "FAQ",
-      "knowledge-centre": "Knowledge Centre",
-      "oracles": "Oracles",
-      "products": "Products",
-      "dai-wallet": "Dai Wallet",
-      "borrow": "Borrow",
-      "trade": "Trade"
-    },
     "hero": {
       "headline": "Generate Dai using crypto as your collateral",
       "subheader": "Open a Maker Vault, deposit your collateral, and generate Dai against it.<0/> Connect a wallet to start."
@@ -210,6 +193,13 @@
         "description": "Learn more about Oasis, Dai and DeFi at our FAQ’s page"
       }
     }
+  },
+  "languages": "Languages",
+  "lang-dropdown": {
+    "en": "English",
+    "es": "Español",
+    "pt": "Português",
+    "cn": "中文"
   },
   "ledger-cancel": "Select another wallet",
   "ledger-error": "There was an error, please reset",
@@ -285,13 +275,34 @@
       "next-price-description": "Here you can see the next price that will go into effect in the Maker Protocol. Compare this with the Liquidation Price to see whether your vault will be liquidated on the next price update.\n{{nextPrice}}",
       "more-info-oracles": "More information on Maker oracles can be found <0>here</0>",
       "net-value": "Net Value",
-      "net-value-description": "The Net Value is calculated as the current value of the collateral in your vault minus the current debt.\nNote: This will not be exactly equal to the amount you will receive if you close your vault to Dai. This is due to fees applied when swapping collateral to Dai and because the Net Value is calculated using the Maker oracle price which is one hour delayed compared to the actual market price for the collateral."
+      "net-value-description": "The Net Value is calculated as the current value of the collateral in your vault minus the current debt.\nNote: This will not be exactly equal to the amount you will receive if you close your vault to Dai. This is due to fees applied when swapping collateral to Dai and because the Net Value is calculated using the Maker oracle price which is one hour delayed compared to the actual market price for the collateral.",
+      "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
     }
   },
   "max": "Max",
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",
   "moving-into-vault": "Moving into Vault",
   "moving-out-vault": "Moving out of Vault",
+  "multiple": "Multiple",
+  "net-value": "Net Value",
+  "nav": {
+    "about": "About",
+    "resources": "Resources",
+    "products": "Products",
+    "team": "Team",
+    "careers": "Careers",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "contact": "Contact",
+    "blog": "Blog",
+    "faq": "FAQ",
+    "knowledge-centre": "Knowledge Centre",
+    "learn": "Learn",
+    "oracles": "Oracles",
+    "dai-wallet": "Dai Wallet",
+    "borrow": "Borrow",
+    "oasis-borrow": "Oasis Borrow"
+  },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
   "no-dai": "No Dai",
@@ -334,12 +345,14 @@
     }
   },
   "or": "or",
+  "outstanding-debt": "Outstanding Debt",
   "paste": "Paste",
   "pending-transactions": "Pending Transactions",
   "permissions": "Set permissions",
   "permissions-btn": "Set permissions",
   "permissions-desc": "This permission allows Oasis to interact with the Dai in your wallet.",
   "powered-by": "Powered by",
+  "price": "Price",
   "proceed": "Proceed",
   "readonly-alert-message": "You’re currently viewing",
   "readonly-user-connecting": "Connecting readonly...",
