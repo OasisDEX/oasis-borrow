@@ -683,10 +683,10 @@ export function applyManageVaultCalculations(
 
   const afterCollateralBalance = collateralBalance.minus(depositAmount)
 
-  const netValueUSD = lockedCollateral.times(currentCollateralPrice).minus(debt)
+  const netValueUSD = lockedCollateral.times(marketPrice).minus(debt)
   const afterNetValueUSD = isCloseAction
     ? zero
-    : afterLockedCollateral.times(currentCollateralPrice).minus(afterDebt)
+    : afterLockedCollateral.times(marketPrice).minus(afterDebt)
 
   const { collateralDelta: buyingPower } = getVaultChange({
     currentCollateralPrice,
@@ -722,12 +722,12 @@ export function applyManageVaultCalculations(
 
   const buyingPowerUSD = buyingPower.times(currentCollateralPrice)
   const afterBuyingPowerUSD = afterBuyingPower.times(currentCollateralPrice)
-  const collateralDeltaUSD = collateralDelta.times(currentCollateralPrice)
+  const collateralDeltaUSD = collateralDelta.times(marketPrice)
 
   const afterCloseToDai = closeToDaiParams.minToTokenAmount.minus(debt)
 
   const afterCloseToCollateral = lockedCollateral.minus(closeToCollateralParams.fromTokenAmount)
-  const afterCloseToCollateralUSD = afterCloseToCollateral.times(currentCollateralPrice)
+  const afterCloseToCollateralUSD = afterCloseToCollateral.times(marketPrice)
 
   return {
     ...state,
