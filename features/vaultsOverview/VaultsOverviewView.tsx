@@ -484,8 +484,8 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
         <>
           <Summary summary={vaultSummary} />
           <Grid gap={5}>
-            <VaultsOverwiewPerType vaults={vaults.borrow} heading="Borrow Vault" />
-            <VaultsOverwiewPerType vaults={vaults.multiply} heading="Multiply Vault" multiply />
+            <VaultsOverwiewPerType vaults={vaults.borrow} heading="Borrow Vaults" />
+            <VaultsOverwiewPerType vaults={vaults.multiply} heading="Multiply Vaults" multiply />
           </Grid>
         </>
       )}

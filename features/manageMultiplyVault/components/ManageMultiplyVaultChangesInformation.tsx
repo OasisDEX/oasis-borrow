@@ -150,7 +150,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
         }
       />
       <VaultChangesInformationItem
-        label={'Transaction Fee'}
+        label={'Transaction fee (excl. gas)'}
         value={
           <Flex
             sx={{ alignItems: 'center', cursor: 'pointer' }}

@@ -413,7 +413,6 @@
     "asset": "Asset",
     "available-to-withdraw": "Available to Withdraw",
     "total-exposure": "Total {{token}} exposure",
-    "multiplier-exposure": "x exposure",
     "multiple": "Multiple",
     "available-to-generate": "Available to Generate",
     "coll-locked": "Coll. Locked",
@@ -564,7 +563,7 @@
     "subtext": {
       "collateral": "Deposit or withdraw from your Vault. Save gas by combining transactions.",
       "dai": "Generate DAI from the collateral in your vault, or payback DAI. Save gas by combining transactions.",
-      "edit": "Simulate your vault by configuring the amount of collateral to deposit, and DAI to generate.",
+      "edit": "Simulate your vault by configuring the amount of collateral to deposit, and slide your multiply factor.",
       "proxy": "With your smart proxy multiple actions can be performed in one transaction for your Vault. This proxy only needs to be set up once.",
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "daiAllowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
@@ -572,7 +571,7 @@
       "review-manage": "Here you can review the details of the changes to your vault.",
       "confirm-in-progress": "Your Vault is currently being created.",
       "modified": "Your Vault is currently being updated. Please wait.",
-      "checkmark1": "Get up to 3x exposure on your {{token}}",
+      "checkmark1": "Multiply your exposure on your {{token}}",
       "checkmark2": "Adjust risk and exposure in 1 click",
       "checkmark3": "Actions like using a flash loan, and buying or selling collateral are grouped into a single transaction for greater efficiency and savings",
       "checkmark4": "You can review the details of the changes on your vault before execution",
@@ -602,7 +601,7 @@
     "header": "What do you want to do with your {{token}}?",
     "multiply": {
       "header": "Multiply my {{token}}",
-      "subtext": "Create a Multiply position and get up to {{exposureMultiplier}} x exposure on your {{token}}",
+      "subtext": "Create a Multiply position and get up to {{exposureMultiplier}}x exposure on your {{token}}",
       "button": "Multiply {{token}}"
     },
     "borrow": {

@@ -125,9 +125,13 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
               ? t('vault-form.subtext.allowance', { token: props.vault.token.toUpperCase() })
               : isDaiAllowanceStage
               ? t('vault-form.subtext.daiAllowance')
-              : stage === 'manageInProgress'
-              ? t('vault-form.subtext.modified')
-              : t('vault-form.subtext.review-manage')}
+              : isManageStage
+              ? stage === 'manageInProgress'
+                ? t('vault-form.subtext.modified')
+                : ''
+              : stage === 'multiplyTransitionEditing'
+              ? ''
+              : t('vault-form.subtext.confirm')}
           </Text>
         </Box>
       )}
