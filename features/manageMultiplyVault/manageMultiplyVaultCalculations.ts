@@ -520,6 +520,8 @@ export function applyManageVaultCalculations(
   )
   const maxWithdrawAmountUSD = maxWithdrawAmount.times(currentCollateralPrice)
 
+  const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt
+
   const maxInputAmounts = {
     maxDepositAmount,
     maxDepositAmountUSD,
@@ -528,8 +530,8 @@ export function applyManageVaultCalculations(
     maxWithdrawAmountAtNextPrice,
     maxWithdrawAmount,
     maxWithdrawAmountUSD,
+    maxPaybackAmount,
     maxGenerateAmountAtNextPrice: new BigNumber(0),
-    maxPaybackAmount: new BigNumber(0),
     maxGenerateAmountAtCurrentPrice: new BigNumber(0),
     maxGenerateAmount: new BigNumber(0),
   }
@@ -558,9 +560,6 @@ export function applyManageVaultCalculations(
     FF: LOAN_FEE,
   })
 
-  const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt
-
-  maxInputAmounts.maxPaybackAmount = maxPaybackAmount
   const oneInchAmount = borrowedDaiAmount.gt(zero)
     ? borrowedDaiAmount.times(one.minus(OAZO_FEE))
     : collateralDeltaNonClose.times(-1)
