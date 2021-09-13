@@ -69,20 +69,8 @@ function ManageMultiplyVaultDetailsSummary({
       />
       <VaultDetailsSummaryItem
         label={t('system.multiple')}
-        value={
-          <>
-            {multiply?.toFixed(2)}
-            {t('system.multiplier-exposure')}
-          </>
-        }
-        valueAfter={
-          showAfterPill && (
-            <>
-              {afterMultiply?.toFixed(2)}
-              {t('system.multiplier-exposure')}
-            </>
-          )
-        }
+        value={<>{multiply?.toFixed(2)}</>}
+        valueAfter={showAfterPill && <>{afterMultiply?.toFixed(2)}</>}
         afterPillColors={afterPillColors}
       />
     </VaultDetailsSummaryContainer>
