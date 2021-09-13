@@ -16,7 +16,7 @@ import { Context } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { transactionToX } from 'helpers/form'
-import {  zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
 
@@ -246,7 +246,7 @@ export function adjustPosition(
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ sendWithGasEstimation }) =>
+      switchMap(({ sendWithGasEstimation, send }) =>
         getQuote$(
           getTokenMetaData('DAI', tokens),
           getTokenMetaData(token, tokens),
@@ -257,7 +257,7 @@ export function adjustPosition(
         ).pipe(
           first(),
           switchMap((swap) =>
-            sendWithGasEstimation(adjustMultiplyVault, {
+            send(adjustMultiplyVault, {
               kind: TxMetaKind.adjustPosition,
               depositCollateral: depositAmount || zero,
               requiredDebt: debtDelta?.abs() || zero,

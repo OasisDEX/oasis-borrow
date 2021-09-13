@@ -451,6 +451,41 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
       } as any,
     )
   } else {
+    console.log(
+      {
+        fromTokenAddress: tokens[data.token].address,
+        toTokenAddress: tokens['DAI'].address,
+        toTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
+        fromTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
+        minToTokenAmount: amountToWei(data.requiredDebt, 'DAI')
+          .div(one.minus(OAZO_FEE))
+          .div(one.minus(LOAN_FEE))
+          .toFixed(0),
+        exchangeAddress: data.exchangeAddress,
+        _exchangeCalldata: data.exchangeData,
+      } as any, //TODO: figure out why Typechain is generating arguments as arrays
+      {
+        gemJoin: joins[data.ilk],
+        cdpId: data.id.toString(),
+        ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        fundsReceiver: data.userAddress,
+        borrowCollateral: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
+        requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
+        depositCollateral: amountToWei(data.depositCollateral, data.token).toFixed(0),
+        withdrawDai: amountToWei(zero, 'DAI').toFixed(0),
+        depositDai: amountToWei(zero, 'DAI').toFixed(0),
+        withdrawCollateral: amountToWei(zero, data.token).toFixed(0),
+        skipFL: false,
+        methodName: '',
+      } as any,
+      {
+        jug: mcdJug.address,
+        manager: dssCdpManager.address,
+        multiplyProxyActions: dssMultiplyProxyActions.address,
+        aaveLendingPoolProvider: aaveLendingPool,
+        exchange: exchange.address,
+      } as any,
+    )
     return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.decreaseMultiple(
       {
         fromTokenAddress: tokens[data.token].address,
@@ -459,7 +494,8 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
         fromTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
         minToTokenAmount: amountToWei(data.requiredDebt, 'DAI')
           .div(one.minus(OAZO_FEE))
-          .div(one.minus(LOAN_FEE)),
+          .div(one.minus(LOAN_FEE))
+          .toFixed(0),
         exchangeAddress: data.exchangeAddress,
         _exchangeCalldata: data.exchangeData,
       } as any, //TODO: figure out why Typechain is generating arguments as arrays
