@@ -1,5 +1,4 @@
-import { Icon } from '@makerdao/dai-ui-icons'
-import { Flex, Grid, Text } from '@theme-ui/components'
+import { Flex, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import {
   VaultChangesInformationArrow,
@@ -7,16 +6,16 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import React, { useState } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { OpenVaultState } from '../openVault'
 
 export function OpenVaultChangesInformation(props: OpenVaultState) {
   const { t } = useTranslation()
-  const [showFees, setShowFees] = useState(false)
+  // const [showFees, setShowFees] = useState(false)
   const {
     token,
     afterCollateralizationRatio,
@@ -29,8 +28,6 @@ export function OpenVaultChangesInformation(props: OpenVaultState) {
   } = props
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
-  // mock txFees
-  const txFees = new BigNumber(0.123)
   // starting zero balance for UI to show arrows
   const zeroBalance = formatCryptoBalance(zero)
 
@@ -104,7 +101,8 @@ export function OpenVaultChangesInformation(props: OpenVaultState) {
           </Flex>
         }
       />
-      <VaultChangesInformationItem
+      {/* // TO DO bring back with gas estimation */}
+      {/* <VaultChangesInformationItem
         label={'Transaction Fee'}
         value={
           <Flex
@@ -132,7 +130,7 @@ export function OpenVaultChangesInformation(props: OpenVaultState) {
             value={`$${formatAmount(zero, 'USD')}`}
           />
         </Grid>
-      )}
+      )} */}
     </VaultChangesInformationContainer>
   ) : null
 }

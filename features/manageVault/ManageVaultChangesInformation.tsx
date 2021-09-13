@@ -1,5 +1,4 @@
-import { Icon } from '@makerdao/dai-ui-icons'
-import { Flex, Grid, Text } from '@theme-ui/components'
+import { Flex, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import {
   VaultChangesInformationArrow,
@@ -8,14 +7,14 @@ import {
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { ManageVaultState } from 'features/manageVault/manageVault'
-import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import React, { useState } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 export function ManageVaultChangesInformation(props: ManageVaultState) {
   const { t } = useTranslation()
-  const [showFees, setShowFees] = useState(false)
+  // const [showFees, setShowFees] = useState(false)
   const {
     afterCollateralizationRatio,
     afterLockedCollateral,
@@ -36,9 +35,6 @@ export function ManageVaultChangesInformation(props: ManageVaultState) {
   } = props
   const collRatioColor = getCollRatioColor(props, collateralizationRatio)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
-
-  // mock txFees
-  const txFees = new BigNumber(0.11)
 
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Vault Changes">
@@ -112,7 +108,8 @@ export function ManageVaultChangesInformation(props: ManageVaultState) {
           </Flex>
         }
       />
-      <VaultChangesInformationItem
+      {/* // TO DO bring back with gas estimation */}
+      {/* <VaultChangesInformationItem
         label={'Transaction Fee'}
         value={
           <Flex
@@ -140,7 +137,7 @@ export function ManageVaultChangesInformation(props: ManageVaultState) {
             value={`$${formatAmount(zero, 'USD')}`}
           />
         </Grid>
-      )}
+      )} */}
     </VaultChangesInformationContainer>
   ) : null
 }
