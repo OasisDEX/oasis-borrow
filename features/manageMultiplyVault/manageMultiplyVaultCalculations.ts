@@ -563,15 +563,12 @@ export function applyManageVaultCalculations(
   maxInputAmounts.maxPaybackAmount = maxPaybackAmount
   const oneInchAmount = borrowedDaiAmount.gt(zero)
     ? borrowedDaiAmount.times(one.minus(OAZO_FEE))
-    : borrowedDaiAmount
-        .times(one.plus(LOAN_FEE))
-        .times(one.plus(OAZO_FEE))
-        .div(marketPrice.times(one.minus(slippage)))
-        .times(-1)
+    : collateralDeltaNonClose.times(-1)
 
   console.log(`
       oneInchAmount ${oneInchAmount}
-  
+      collateralDeltaNonClose ${collateralDeltaNonClose}
+      
   `)
 
   const closeToDaiParams = calculateCloseToDaiParams(
