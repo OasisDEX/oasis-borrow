@@ -314,6 +314,7 @@ export function applyManageVaultConditions(
 
   // generate amount used for calc, can be from input for Other Actions or from afterDebt for Adjust Position
   const generateAmountCalc = afterDebt.gt(vault.debt) ? afterDebt.minus(vault.debt) : zero
+  const paybackAmountCalc = afterDebt.lt(vault.debt) ? vault.debt.minus(afterDebt) : zero
 
   const generateAmountExceedsDebtCeiling = !!generateAmountCalc?.gt(ilkData.ilkDebtAvailable)
 
@@ -325,10 +326,10 @@ export function applyManageVaultConditions(
     !generateAmountExceedsDaiYieldFromTotalCollateral &&
     !!generateAmountCalc.gt(maxGenerateAmountAtNextPrice)
 
-  const generateAmountLessThanDebtFloor = !!(
-    !generateAmountCalc?.plus(vault.debt).isZero() &&
-    generateAmountCalc.plus(vault.debt).lt(ilkData.debtFloor)
-  )
+  const generateAmountLessThanDebtFloor =
+    !vault.debt.minus(paybackAmountCalc).isZero() &&
+    (vault.debt.minus(paybackAmountCalc).lt(ilkData.debtFloor) ||
+      vault.debt.plus(generateAmountCalc).lt(ilkData.debtFloor))
 
   const paybackAmountExceedsDaiBalance = !!paybackAmount?.gt(daiBalance)
   const paybackAmountExceedsVaultDebt = !!paybackAmount?.gt(vault.debt)
