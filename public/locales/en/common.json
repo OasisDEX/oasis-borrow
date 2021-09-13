@@ -179,29 +179,6 @@
   "keyWithCount": "{{count}} item",
   "keyWithCount_plural": "{{count}} items",
   "landing": {
-    "footer": {
-      "language": {
-        "en": "English",
-        "es": "Español",
-        "pt": "Português",
-        "cn": "中文"
-      },
-      "about": "About",
-      "team": "Team",
-      "careers": "Careers",
-      "privacy": "Privacy",
-      "terms": "Terms",
-      "contact": "Contact",
-      "resources": "Resources",
-      "blog": "Blog",
-      "faq": "FAQ",
-      "knowledge-centre": "Knowledge Centre",
-      "oracles": "Oracles",
-      "products": "Products",
-      "dai-wallet": "Dai Wallet",
-      "borrow": "Borrow",
-      "trade": "Trade"
-    },
     "hero": {
       "headline": "Generate Dai using crypto as your collateral",
       "subheader": "Open a Maker Vault, deposit your collateral, and generate Dai against it.<0/> Connect a wallet to start."
@@ -216,6 +193,13 @@
         "description": "Learn more about Oasis, Dai and DeFi at our FAQ’s page"
       }
     }
+  },
+  "languages": "Languages",
+  "lang-dropdown": {
+    "en": "English",
+    "es": "Español",
+    "pt": "Português",
+    "cn": "中文"
   },
   "ledger-cancel": "Select another wallet",
   "ledger-error": "There was an error, please reset",
@@ -291,7 +275,8 @@
       "next-price-description": "Here you can see the next price that will go into effect in the Maker Protocol. Compare this with the Liquidation Price to see whether your vault will be liquidated on the next price update.\n{{nextPrice}}",
       "more-info-oracles": "More information on Maker oracles can be found <0>here</0>",
       "net-value": "Net Value",
-      "net-value-description": "The Net Value is calculated as the current value of the collateral in your vault minus the current debt.\nNote: This will not be exactly equal to the amount you will receive if you close your vault to Dai. This is due to fees applied when swapping collateral to Dai and because the Net Value is calculated using the Maker oracle price which is one hour delayed compared to the actual market price for the collateral."
+      "net-value-description": "The Net Value is calculated as the current value of the collateral in your vault minus the current debt.\nNote: This will not be exactly equal to the amount you will receive if you close your vault to Dai. This is due to fees applied when swapping collateral to Dai and because the Net Value is calculated using the Maker oracle price which is one hour delayed compared to the actual market price for the collateral.",
+      "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
     }
   },
   "max": "Max",
@@ -300,6 +285,24 @@
   "moving-out-vault": "Moving out of Vault",
   "multiple": "Multiple",
   "net-value": "Net Value",
+  "nav": {
+    "about": "About",
+    "resources": "Resources",
+    "products": "Products",
+    "team": "Team",
+    "careers": "Careers",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "contact": "Contact",
+    "blog": "Blog",
+    "faq": "FAQ",
+    "knowledge-centre": "Knowledge Centre",
+    "learn": "Learn",
+    "oracles": "Oracles",
+    "dai-wallet": "Dai Wallet",
+    "borrow": "Borrow",
+    "oasis-borrow": "Oasis Borrow"
+  },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
   "no-dai": "No Dai",
