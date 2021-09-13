@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
-import { LOAN_FEE, OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
+import { OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
 import { one } from 'helpers/zero'
 import { EMPTY, Observable } from 'rxjs'
 import {
@@ -173,8 +173,9 @@ export function createExchangeChange$(
               slippage,
               otherAction,
               closeVaultTo,
-              marketPrice,
-              vault: { token, lockedCollateral, debt, debtOffset },
+              vault: { token },
+              closeToDaiParams,
+              closeToCollateralParams,
             } = state
 
             if (
@@ -194,21 +195,10 @@ export function createExchangeChange$(
             }
 
             if (otherAction === 'closeVault') {
-              if (closeVaultTo === 'collateral' && marketPrice) {
-                return exchangeQuote$(
-                  token,
-                  slippage,
-                  debt
-                    .plus(debtOffset)
-                    .times(one.plus(OAZO_FEE).times(one.plus(LOAN_FEE)))
-                    .div(marketPrice.times(one.minus(slippage))),
-                  'SELL_COLLATERAL',
-                )
-              }
+              const { fromTokenAmount } =
+                closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
 
-              if (closeVaultTo === 'dai') {
-                return exchangeQuote$(token, slippage, lockedCollateral, 'SELL_COLLATERAL')
-              }
+              return exchangeQuote$(token, slippage, fromTokenAmount, 'SELL_COLLATERAL')
             }
             return EMPTY
           }),

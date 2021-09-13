@@ -59,10 +59,10 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
         value={
           <Flex>
             <Text>
-              {formatCryptoBalance(collateralDelta || zero)} {token}
+              {formatCryptoBalance(collateralDelta?.abs() || zero)} {token}
               {` `}
               <Text as="span" sx={{ color: 'text.subtitle' }}>
-                (${formatAmount(collateralDeltaUSD || zero, 'USD')})
+                (${formatAmount(collateralDeltaUSD?.abs() || zero, 'USD')})
               </Text>
             </Text>
           </Flex>
@@ -104,7 +104,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
           <Flex>
             {multiply?.toFixed(2)}x
             <VaultChangesInformationArrow />
-            {afterMultiply?.toFixed(2)}x
+            {isCloseAction ? 'n/a' : `${afterMultiply?.toFixed(2)}x`}
           </Flex>
         }
       />
@@ -121,25 +121,25 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
       <VaultChangesInformationItem
         label={'Collateral Ratio'}
         value={
-          isCloseAction ? (
-            '--'
-          ) : (
-            <Flex>
-              <Text sx={{ color: collRatioColor }}>
-                {formatPercent(collateralizationRatio.times(100), {
-                  precision: 2,
-                  roundMode: BigNumber.ROUND_DOWN,
-                })}
-              </Text>
-              <VaultChangesInformationArrow />
+          <Flex>
+            <Text sx={{ color: collRatioColor }}>
+              {formatPercent(collateralizationRatio.times(100), {
+                precision: 2,
+                roundMode: BigNumber.ROUND_DOWN,
+              })}
+            </Text>
+            <VaultChangesInformationArrow />
+            {isCloseAction ? (
+              'n/a'
+            ) : (
               <Text sx={{ color: afterCollRatioColor }}>
                 {formatPercent(afterCollateralizationRatio.times(100), {
                   precision: 2,
                   roundMode: BigNumber.ROUND_DOWN,
                 })}
               </Text>
-            </Flex>
-          )
+            )}
+          </Flex>
         }
       />
       <VaultChangesInformationItem
