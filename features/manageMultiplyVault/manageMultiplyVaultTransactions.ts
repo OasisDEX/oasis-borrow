@@ -16,8 +16,7 @@ import { Context } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { transactionToX } from 'helpers/form'
-import { OAZO_FEE } from 'helpers/multiply/calculations'
-import { one, zero } from 'helpers/zero'
+import {  zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
 
@@ -241,7 +240,7 @@ export function adjustPosition(
     depositAmount,
     collateralDelta,
     slippage,
-    oneInchAmount
+    oneInchAmount,
   }: ManageMultiplyVaultState,
 ) {
   txHelpers$

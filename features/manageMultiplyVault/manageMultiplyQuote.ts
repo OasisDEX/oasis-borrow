@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
-import { OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
-import { one } from 'helpers/zero'
+import { SLIPPAGE } from 'helpers/multiply/calculations'
 import { EMPTY, Observable } from 'rxjs'
 import {
   debounceTime,
@@ -168,7 +167,6 @@ export function createExchangeChange$(
               quote,
               exchangeAction,
               collateralDelta,
-              debtDelta,
               requiredCollRatio,
               slippage,
               otherAction,
