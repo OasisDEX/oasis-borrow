@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
-import { OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
-import { one } from 'helpers/zero'
+import { SLIPPAGE } from 'helpers/multiply/calculations'
 import { EMPTY, Observable } from 'rxjs'
 import {
   debounceTime,
@@ -168,7 +167,6 @@ export function createExchangeChange$(
               quote,
               exchangeAction,
               collateralDelta,
-              debtDelta,
               requiredCollRatio,
               slippage,
               otherAction,
@@ -176,6 +174,7 @@ export function createExchangeChange$(
               vault: { token },
               closeToDaiParams,
               closeToCollateralParams,
+              oneInchAmount,
             } = state
 
             if (
@@ -184,14 +183,7 @@ export function createExchangeChange$(
               collateralDelta &&
               requiredCollRatio
             ) {
-              return exchangeQuote$(
-                token,
-                slippage,
-                exchangeAction === 'BUY_COLLATERAL'
-                  ? (debtDelta as BigNumber).abs().times(one.minus(OAZO_FEE))
-                  : collateralDelta.abs(),
-                exchangeAction,
-              )
+              return exchangeQuote$(token, slippage, oneInchAmount, exchangeAction)
             }
 
             if (otherAction === 'closeVault') {
