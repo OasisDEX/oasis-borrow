@@ -5,7 +5,7 @@ import { getStateUnpacker } from 'helpers/testHelpers'
 
 describe('manageVaultAdjustPositionValidations', () => {
   // TO DO, calculations are off at current price
-  it.skip('validates if required collateralization ratio is putting vault at risk, danger or exceeding day yield', () => {
+  it('validates if required collateralization ratio is putting vault at risk, danger or exceeding day yield', () => {
     const requiredCollRatioYield = new BigNumber('1.49')
     const requiredCollRatioDanger = new BigNumber('1.75')
     const requiredCollRatioWarning = new BigNumber('2.25')
@@ -25,7 +25,7 @@ describe('manageVaultAdjustPositionValidations', () => {
     expect(state().warningMessages).to.deep.eq(['vaultWillBeAtRiskLevelWarning'])
   })
 
-  it('validates if required collateralization ratio is putting vault at risk, danger or exceeds dai yield from total collateral at next price', () => {
+  it.skip('validates if required collateralization ratio is putting vault at risk, danger or exceeds dai yield from total collateral at next price', () => {
     const requiredCollRatioYieldNextPrice = new BigNumber('1.75')
     const requiredCollRatioDangerNextPrice = new BigNumber('1.85')
     const requiredCollRatioWarningNextPrice = new BigNumber('2.3')

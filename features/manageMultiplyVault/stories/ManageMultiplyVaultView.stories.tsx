@@ -7,8 +7,8 @@ const proxyAddress = DEFAULT_PROXY_ADDRESS
 
 const vaultETH = {
   ilk: 'ETH-A',
-  collateral: new BigNumber('20'),
-  debt: new BigNumber('3000'),
+  collateral: new BigNumber('100'),
+  debt: new BigNumber('20000'),
 }
 
 const vaultERC20 = {
