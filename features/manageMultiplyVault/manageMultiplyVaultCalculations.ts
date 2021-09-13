@@ -565,12 +565,6 @@ export function applyManageVaultCalculations(
     ? borrowedDaiAmount.times(one.minus(OAZO_FEE))
     : collateralDeltaNonClose.times(-1)
 
-  console.log(`
-      oneInchAmount ${oneInchAmount}
-      collateralDeltaNonClose ${collateralDeltaNonClose}
-      
-  `)
-
   const closeToDaiParams = calculateCloseToDaiParams(
     marketPrice,
     OAZO_FEE,
