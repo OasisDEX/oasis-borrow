@@ -325,10 +325,7 @@ export function applyManageVaultConditions(
     !generateAmountExceedsDaiYieldFromTotalCollateral &&
     !!generateAmountCalc.gt(maxGenerateAmountAtNextPrice)
 
-  const generateAmountLessThanDebtFloor = !!(
-    !generateAmountCalc?.plus(vault.debt).isZero() &&
-    generateAmountCalc.plus(vault.debt).lt(ilkData.debtFloor)
-  )
+  const generateAmountLessThanDebtFloor = !!(!afterDebt.isZero() && afterDebt.lt(ilkData.debtFloor))
 
   const paybackAmountExceedsDaiBalance = !!paybackAmount?.gt(daiBalance)
   const paybackAmountExceedsVaultDebt = !!paybackAmount?.gt(vault.debt)
