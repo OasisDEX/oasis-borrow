@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 export function TypeformWidget() {
   const scriptId = 'typeform-widget'
