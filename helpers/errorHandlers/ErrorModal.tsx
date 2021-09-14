@@ -22,7 +22,7 @@ export function ErrorModal({ close, error }: ModalProps & { error: string }) {
       <Grid gap={4} sx={{ justifyContent: 'center', textAlign: 'center', mt: 5, mx: 'auto' }}>
         <Heading>{t('error-message')}</Heading>
         <Button onClick={onClickDetails} sx={{ maxWidth: 300, mx: 'auto', zIndex: 1 }}>
-          {t('error-button-reload')}
+          {t('error-button')}
         </Button>
         <Button onClick={onClickReload} sx={{ maxWidth: 300, mx: 'auto', zIndex: 1 }}>
           {t('error-button-reload')}
