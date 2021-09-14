@@ -25,6 +25,21 @@ describe('manageMultiplyVault', () => {
         expect(state().totalSteps).to.deep.equal(3)
       })
 
+      it('should start by default in an other actions deposit collateral if vault has zero collateral', () => {
+        const state = getStateUnpacker(
+          mockManageMultiplyVault$({
+            vault: {
+              collateral: zero,
+            },
+          }),
+        )
+        expect(state().stage).to.be.equal('otherActions')
+        expect(state().otherAction).to.be.equal('depositCollateral')
+        expect(state().vault.lockedCollateral).to.deep.equal(zero)
+
+        expect(state().totalSteps).to.deep.equal(3)
+      })
+
       it('should update required collateralization ratio', () => {
         const requiredCollRatio = new BigNumber('2')
         const state = getStateUnpacker(mockManageMultiplyVault$())

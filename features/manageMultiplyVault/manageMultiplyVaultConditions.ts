@@ -150,6 +150,8 @@ export interface ManageVaultConditions {
 
   debtWillBeLessThanDebtFloor: boolean
   isLoadingStage: boolean
+  exchangeDataRequired: boolean
+  shouldShowExchangeError: boolean
   isExchangeLoading: boolean
 
   insufficientCollateralAllowance: boolean
@@ -162,6 +164,8 @@ export interface ManageVaultConditions {
   customDaiAllowanceAmountExceedsMaxUint256: boolean
   customDaiAllowanceAmountLessThanPaybackAmount: boolean
   withdrawCollateralOnVaultUnderDebtFloor: boolean
+
+  hasToDepositCollateralOnEmptyVault: boolean
 }
 
 export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
@@ -197,6 +201,8 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
 
   debtWillBeLessThanDebtFloor: false,
   isLoadingStage: false,
+  exchangeDataRequired: false,
+  shouldShowExchangeError: false,
   isExchangeLoading: false,
 
   insufficientCollateralAllowance: false,
@@ -210,6 +216,8 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   customDaiAllowanceAmountLessThanPaybackAmount: false,
 
   withdrawCollateralOnVaultUnderDebtFloor: false,
+
+  hasToDepositCollateralOnEmptyVault: false,
 }
 
 export function applyManageVaultConditions(
@@ -256,6 +264,17 @@ export function applyManageVaultConditions(
   } = state
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
   const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)
+
+  const hasToDepositCollateralOnEmptyVault =
+    vault.lockedCollateral.eq(zero) &&
+    !(originalEditingStage === 'otherActions' && otherAction === 'depositCollateral')
+
+  const exchangeDataRequired =
+    stage === 'adjustPosition' || (stage === 'otherActions' && otherAction === 'closeVault')
+
+  const shouldShowExchangeError = exchangeDataRequired && exchangeError
+
+  const isExchangeLoading = exchangeDataRequired && !quote && !swap && !exchangeError
 
   const inputAmountsEmpty =
     buyAmount === undefined &&
@@ -313,7 +332,8 @@ export function applyManageVaultConditions(
     !withdrawAmountExceedsFreeCollateral && !!withdrawAmount?.gt(maxWithdrawAmountAtNextPrice)
 
   // generate amount used for calc, can be from input for Other Actions or from afterDebt for Adjust Position
-  const generateAmountCalc = afterDebt.minus(vault.debt).absoluteValue()
+  const generateAmountCalc = afterDebt.gt(vault.debt) ? afterDebt.minus(vault.debt) : zero
+  const paybackAmountCalc = afterDebt.lt(vault.debt) ? vault.debt.minus(afterDebt) : zero
 
   const generateAmountExceedsDebtCeiling = !!generateAmountCalc?.gt(ilkData.ilkDebtAvailable)
 
@@ -326,25 +346,22 @@ export function applyManageVaultConditions(
     !!generateAmountCalc.gt(maxGenerateAmountAtNextPrice)
 
   const generateAmountLessThanDebtFloor =
-    stage === 'otherActions'
-      ? !!(
-          !generateAmountCalc?.plus(vault.debt).isZero() &&
-          generateAmountCalc.plus(vault.debt).lt(ilkData.debtFloor)
-        )
-      : !!(state.debtDelta?.gt(zero) && afterDebt.gt(zero) && afterDebt.lt(ilkData.debtFloor))
+    generateAmountCalc.gt(zero) &&
+    !(
+      vault.debt.plus(generateAmountCalc).isZero() ||
+      vault.debt.plus(generateAmountCalc).gte(ilkData.debtFloor)
+    )
 
   const paybackAmountExceedsDaiBalance = !!paybackAmount?.gt(daiBalance)
   const paybackAmountExceedsVaultDebt = !!paybackAmount?.gt(vault.debt)
 
   const debtWillBeLessThanDebtFloor =
-    stage === 'otherActions'
-      ? !!(
-          paybackAmount &&
-          vault.debt.minus(paybackAmount).lt(ilkData.debtFloor) &&
-          vault.debt.minus(paybackAmount).gt(zero) &&
-          !shouldPaybackAll
-        )
-      : !!(state.debtDelta?.lt(zero) && afterDebt.gt(zero) && afterDebt.lt(ilkData.debtFloor))
+    !paybackAmountExceedsVaultDebt &&
+    paybackAmountCalc.gt(zero) &&
+    !(
+      vault.debt.minus(paybackAmountCalc).isZero() ||
+      vault.debt.minus(paybackAmountCalc).gte(ilkData.debtFloor)
+    )
 
   const customCollateralAllowanceAmountEmpty =
     selectedCollateralAllowanceRadio === 'custom' && !collateralAllowanceAmount
@@ -423,7 +440,8 @@ export function applyManageVaultConditions(
       paybackAmountExceedsDaiBalance ||
       paybackAmountExceedsVaultDebt ||
       withdrawCollateralOnVaultUnderDebtFloor ||
-      exchangeError)
+      shouldShowExchangeError ||
+      hasToDepositCollateralOnEmptyVault)
 
   const collateralAllowanceProgressionDisabled =
     isCollateralAllowanceStage &&
@@ -436,8 +454,6 @@ export function applyManageVaultConditions(
     (customDaiAllowanceAmountEmpty ||
       customDaiAllowanceAmountExceedsMaxUint256 ||
       customDaiAllowanceAmountLessThanPaybackAmount)
-
-  const isExchangeLoading = !quote && !swap && !exchangeError
 
   const canProgress = !(
     isLoadingStage ||
@@ -489,6 +505,8 @@ export function applyManageVaultConditions(
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,
     isLoadingStage,
+    exchangeDataRequired,
+    shouldShowExchangeError,
     isExchangeLoading,
 
     insufficientCollateralAllowance,
@@ -502,5 +520,7 @@ export function applyManageVaultConditions(
     customDaiAllowanceAmountLessThanPaybackAmount,
 
     withdrawCollateralOnVaultUnderDebtFloor,
+
+    hasToDepositCollateralOnEmptyVault,
   }
 }

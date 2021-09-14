@@ -383,8 +383,8 @@ export const ExchangeDataFailure = manageMultiplyVaultStory({
   },
 })({
   stage: 'otherActions',
-  otherAction: 'depositCollateral',
-  depositAmount: new BigNumber('5'),
+  originalEditingStage: 'otherActions',
+  otherAction: 'closeVault',
 })
 
 export const ExchangeDataLoading = manageMultiplyVaultStory({
@@ -397,8 +397,16 @@ export const ExchangeDataLoading = manageMultiplyVaultStory({
   },
 })({
   stage: 'otherActions',
-  otherAction: 'depositCollateral',
-  depositAmount: new BigNumber('5'),
+  originalEditingStage: 'otherActions',
+  otherAction: 'closeVault',
+})
+
+export const VaultHasNoCollateral = manageMultiplyVaultStory({
+  title: 'If vault has no collateral block flow on other actions other than deposit collateral',
+  vault: { ...vaultERC20, collateral: zero, debt: zero },
+  proxyAddress,
+})({
+  otherAction: 'withdrawCollateral',
 })
 
 // eslint-disable-next-line import/no-default-export

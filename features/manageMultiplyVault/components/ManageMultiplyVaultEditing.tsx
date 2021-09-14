@@ -203,6 +203,7 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
     maxCollRatio,
     collapsed,
     multiply,
+    hasToDepositCollateralOnEmptyVault,
   } = props
 
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -258,6 +259,7 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
             background: sliderBackground,
             direction: 'rtl',
           }}
+          disabled={hasToDepositCollateralOnEmptyVault}
           step={5}
           min={liquidationRatio.times(100).toNumber()}
           max={MAX_COLL_RATIO.times(100).toNumber()}

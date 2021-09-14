@@ -89,6 +89,7 @@ export interface ManageVaultCalculations {
   afterCloseToDai: BigNumber
   afterCloseToCollateral: BigNumber
   afterCloseToCollateralUSD: BigNumber
+  oneInchAmount: BigNumber
 }
 
 export const MAX_COLL_RATIO = new BigNumber(5)
@@ -149,6 +150,7 @@ export const defaultManageMultiplyVaultCalculations: ManageVaultCalculations = {
   afterBuyingPower: zero,
   afterBuyingPowerUSD: zero,
   afterNetValueUSD: zero,
+  oneInchAmount: zero,
 
   closeToDaiParams: {
     fromTokenAmount: zero,
@@ -463,6 +465,7 @@ export function applyManageVaultCalculations(
     closeVaultTo,
   } = state
 
+  const vaultHasZeroCollateral = lockedCollateral.eq(zero)
   const isCloseAction = originalEditingStage === 'otherActions' && otherAction === 'closeVault'
 
   const marketPrice =
@@ -522,29 +525,6 @@ export function applyManageVaultCalculations(
   )
   const maxWithdrawAmountUSD = maxWithdrawAmount.times(currentCollateralPrice)
 
-  const maxGenerateAmountAtCurrentPrice = calculateMaxGenerateAmount({
-    debt,
-    debtOffset,
-    ilkDebtAvailable,
-    liquidationRatio,
-    lockedCollateral,
-    price: currentCollateralPrice,
-  })
-
-  const maxGenerateAmountAtNextPrice = calculateMaxGenerateAmount({
-    debt,
-    debtOffset,
-    ilkDebtAvailable,
-    liquidationRatio,
-    lockedCollateral,
-    price: nextCollateralPrice,
-  })
-
-  const maxGenerateAmount = BigNumber.minimum(
-    maxGenerateAmountAtCurrentPrice,
-    maxGenerateAmountAtNextPrice,
-  )
-
   const maxPaybackAmount = daiBalance.lt(debt) ? daiBalance : debt
 
   const maxInputAmounts = {
@@ -555,12 +535,10 @@ export function applyManageVaultCalculations(
     maxWithdrawAmountAtNextPrice,
     maxWithdrawAmount,
     maxWithdrawAmountUSD,
-
     maxPaybackAmount,
-
-    maxGenerateAmountAtCurrentPrice,
-    maxGenerateAmountAtNextPrice,
-    maxGenerateAmount,
+    maxGenerateAmountAtNextPrice: new BigNumber(0),
+    maxGenerateAmountAtCurrentPrice: new BigNumber(0),
+    maxGenerateAmount: new BigNumber(0),
   }
 
   if (!marketPrice || !marketPriceMaxSlippage) {
@@ -568,7 +546,7 @@ export function applyManageVaultCalculations(
   }
 
   const {
-    debtDelta,
+    debtDelta: borrowedDaiAmount,
     collateralDelta: collateralDeltaNonClose,
     loanFee: loanFeeNonClose,
     oazoFee: oazoFeeNonClose,
@@ -586,6 +564,10 @@ export function applyManageVaultCalculations(
     OF: OAZO_FEE,
     FF: LOAN_FEE,
   })
+
+  const oneInchAmount = borrowedDaiAmount.gt(zero)
+    ? borrowedDaiAmount.times(one.minus(OAZO_FEE))
+    : collateralDeltaNonClose.times(-1)
 
   const closeToDaiParams = calculateCloseToDaiParams(
     marketPrice,
@@ -625,24 +607,28 @@ export function applyManageVaultCalculations(
 
   const fees = BigNumber.sum(loanFee, oazoFee)
 
-  const afterDebt = isCloseAction ? zero : debt.plus(debtDelta).plus(loanFee)
+  const afterDebt = isCloseAction ? zero : debt.plus(borrowedDaiAmount).plus(loanFee)
 
   const afterLockedCollateral = isCloseAction ? zero : lockedCollateral.plus(collateralDelta)
   const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
 
-  const afterCollateralizationRatio = afterLockedCollateralUSD.div(afterDebt)
+  const afterCollateralizationRatio = vaultHasZeroCollateral
+    ? zero
+    : afterLockedCollateralUSD.div(afterDebt)
 
-  const multiply = calculateMultiply({ debt, lockedCollateralUSD })
-  const afterMultiply = isCloseAction
+  const multiply = vaultHasZeroCollateral ? zero : calculateMultiply({ debt, lockedCollateralUSD })
+  const afterMultiply = vaultHasZeroCollateral
+    ? zero
+    : isCloseAction
     ? one
     : calculateMultiply({
         debt: afterDebt,
         lockedCollateralUSD: afterLockedCollateralUSD,
       })
 
-  const afterLiquidationPrice = currentCollateralPrice
-    .times(liquidationRatio)
-    .div(afterCollateralizationRatio)
+  const afterLiquidationPrice = vaultHasZeroCollateral
+    ? zero
+    : currentCollateralPrice.times(liquidationRatio).div(afterCollateralizationRatio)
 
   const exchangeAction = collateralDelta.isNegative() ? 'SELL_COLLATERAL' : 'BUY_COLLATERAL'
 
@@ -743,6 +729,32 @@ export function applyManageVaultCalculations(
         FF: LOAN_FEE,
       })
 
+  const maxGenerateAmountAtCurrentPrice = calculateMaxGenerateAmount({
+    debt: debt,
+    debtOffset,
+    ilkDebtAvailable,
+    liquidationRatio,
+    lockedCollateral: lockedCollateral.plus(collateralDelta),
+    price: currentCollateralPrice,
+  })
+
+  const maxGenerateAmountAtNextPrice = calculateMaxGenerateAmount({
+    debt: debt,
+    debtOffset,
+    ilkDebtAvailable,
+    liquidationRatio,
+    lockedCollateral: lockedCollateral.plus(collateralDelta),
+    price: nextCollateralPrice,
+  })
+
+  const maxGenerateAmount = BigNumber.minimum(
+    maxGenerateAmountAtCurrentPrice,
+    maxGenerateAmountAtNextPrice,
+  )
+  maxInputAmounts.maxGenerateAmountAtCurrentPrice = maxGenerateAmountAtCurrentPrice
+  maxInputAmounts.maxGenerateAmount = maxGenerateAmount
+  maxInputAmounts.maxGenerateAmountAtNextPrice = maxGenerateAmountAtNextPrice
+
   const buyingPowerUSD = buyingPower.times(currentCollateralPrice)
   const afterBuyingPowerUSD = afterBuyingPower.times(currentCollateralPrice)
   const collateralDeltaUSD = collateralDelta.times(marketPrice)
@@ -783,7 +795,7 @@ export function applyManageVaultCalculations(
     oazoFee,
     fees,
 
-    debtDelta,
+    debtDelta: borrowedDaiAmount,
     collateralDelta,
 
     afterCollateralBalance,
@@ -802,5 +814,6 @@ export function applyManageVaultCalculations(
     afterCloseToDai,
     afterCloseToCollateral,
     afterCloseToCollateralUSD,
+    oneInchAmount,
   }
 }

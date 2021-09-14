@@ -71,14 +71,12 @@ function OpenMultiplyVaultDetailsSummary({
         value={
           <>
             {(0.0).toFixed(2)}
-            {t('system.multiplier-exposure')}
           </>
         }
         valueAfter={
           showAfterPill && (
             <>
               {multiply?.toFixed(2)}
-              {t('system.multiplier-exposure')}
             </>
           )
         }
