@@ -10,11 +10,11 @@ export function ErrorModal({ close, error }: ModalProps & { error: string }) {
   const [showResults, setShowResults] = React.useState(false)
   const onClickReload: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     e.stopPropagation()
-    window.location.reload();
+    window.location.reload()
   }
   const onClickDetails: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    e.stopPropagation();
-    setShowResults(!showResults);
+    e.stopPropagation()
+    setShowResults(!showResults)
   }
   return (
     <Modal close={close}>
