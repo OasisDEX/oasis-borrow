@@ -234,10 +234,11 @@ describe('manageVaultOtherActionsValidations', () => {
     state().toggle!()
     state().setOtherAction!('depositDai')
     state().updatePaybackAmount!(paybackAmountExceedsVaultDebt)
-    expect(state().errorMessages).to.deep.equal(['paybackAmountExceedsVaultDebt'])
+
+    expect(state().errorMessages).to.deep.equal(['paybackAmountExceedsVaultDebt'], '1')
 
     state().updatePaybackAmount!(paybackAmountNotEnough)
-    expect(state().errorMessages).to.deep.equal(['debtWillBeLessThanDebtFloor'])
+    expect(state().errorMessages).to.deep.equal(['debtWillBeLessThanDebtFloor'], '2')
   })
 
   it('validates if dai allowance is enough to payback whole amount and account debt offset', () => {
@@ -296,10 +297,7 @@ describe('manageVaultOtherActionsValidations', () => {
     state().setOtherAction!('withdrawCollateral')
 
     state().updateWithdrawAmount!(withdrawAmount)
-    expect(state().errorMessages).to.deep.eq([
-      'generateAmountLessThanDebtFloor',
-      'withdrawCollateralOnVaultUnderDebtFloor',
-    ])
+    expect(state().errorMessages).to.deep.eq(['withdrawCollateralOnVaultUnderDebtFloor'])
   })
 
   it('validates if vault has no collateral and show correct error message', () => {
