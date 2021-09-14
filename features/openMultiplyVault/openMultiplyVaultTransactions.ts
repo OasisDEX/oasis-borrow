@@ -2,7 +2,7 @@ import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
-import { MultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActions'
+import { OpenMultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
@@ -11,8 +11,7 @@ import { VaultType } from 'features/generalManageVault/generalManageVault'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { transactionToX } from 'helpers/form'
-import { OAZO_FEE } from 'helpers/multiply/calculations'
-import { one, zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
 import Web3 from 'web3'
@@ -277,16 +276,19 @@ export function multiplyVault(
     ilk,
     token,
     buyingCollateral,
-    afterOutstandingDebt,
     account,
     slippage,
+    toTokenAmount,
+    fromTokenAmount,
+    borrowedDaiAmount,
+    oneInchAmount,
   }: OpenMultiplyVaultState,
 ) {
   return getQuote$(
     getTokenMetaData('DAI', tokens),
     getTokenMetaData(token, tokens),
     exchange.address,
-    afterOutstandingDebt.times(one.minus(OAZO_FEE)),
+    oneInchAmount,
     slippage,
     'BUY_COLLATERAL',
   )
@@ -303,10 +305,11 @@ export function multiplyVault(
           exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '0x',
           exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '0x',
           borrowedCollateral: buyingCollateral,
-          requiredDebt: afterOutstandingDebt,
-          slippage: slippage,
+          requiredDebt: borrowedDaiAmount,
+          toTokenAmount: toTokenAmount,
+          fromTokenAmount,
         }).pipe(
-          transactionToX<OpenMultiplyVaultChange, MultiplyData>(
+          transactionToX<OpenMultiplyVaultChange, OpenMultiplyData>(
             { kind: 'openWaitingForApproval' },
             (txState) =>
               of({ kind: 'openInProgress', openTxHash: (txState as any).txHash as string }),

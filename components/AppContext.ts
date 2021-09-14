@@ -23,8 +23,8 @@ import {
   CloseVaultData,
   DepositAndGenerateData,
   MultiplyAdjustData,
-  MultiplyData,
   OpenData,
+  OpenMultiplyData,
   ReclaimData,
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions'
@@ -104,7 +104,7 @@ export type TxData =
   | CreateDsProxyData
   | SetProxyOwnerData
   | ReclaimData
-  | MultiplyData
+  | OpenMultiplyData
   | MultiplyAdjustData
   | CloseVaultData
 

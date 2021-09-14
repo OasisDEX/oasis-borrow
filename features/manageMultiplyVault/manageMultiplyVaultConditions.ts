@@ -332,7 +332,8 @@ export function applyManageVaultConditions(
     !withdrawAmountExceedsFreeCollateral && !!withdrawAmount?.gt(maxWithdrawAmountAtNextPrice)
 
   // generate amount used for calc, can be from input for Other Actions or from afterDebt for Adjust Position
-  const generateAmountCalc = afterDebt.minus(vault.debt).absoluteValue()
+  const generateAmountCalc = afterDebt.gt(vault.debt) ? afterDebt.minus(vault.debt) : zero
+  const paybackAmountCalc = afterDebt.lt(vault.debt) ? vault.debt.minus(afterDebt) : zero
 
   const generateAmountExceedsDebtCeiling = !!generateAmountCalc?.gt(ilkData.ilkDebtAvailable)
 
@@ -345,25 +346,22 @@ export function applyManageVaultConditions(
     !!generateAmountCalc.gt(maxGenerateAmountAtNextPrice)
 
   const generateAmountLessThanDebtFloor =
-    stage === 'otherActions'
-      ? !!(
-          !generateAmountCalc?.plus(vault.debt).isZero() &&
-          generateAmountCalc.plus(vault.debt).lt(ilkData.debtFloor)
-        )
-      : !!(state.debtDelta?.gt(zero) && afterDebt.gt(zero) && afterDebt.lt(ilkData.debtFloor))
+    generateAmountCalc.gt(zero) &&
+    !(
+      vault.debt.plus(generateAmountCalc).isZero() ||
+      vault.debt.plus(generateAmountCalc).gte(ilkData.debtFloor)
+    )
 
   const paybackAmountExceedsDaiBalance = !!paybackAmount?.gt(daiBalance)
   const paybackAmountExceedsVaultDebt = !!paybackAmount?.gt(vault.debt)
 
   const debtWillBeLessThanDebtFloor =
-    stage === 'otherActions'
-      ? !!(
-          paybackAmount &&
-          vault.debt.minus(paybackAmount).lt(ilkData.debtFloor) &&
-          vault.debt.minus(paybackAmount).gt(zero) &&
-          !shouldPaybackAll
-        )
-      : !!(state.debtDelta?.lt(zero) && afterDebt.gt(zero) && afterDebt.lt(ilkData.debtFloor))
+    !paybackAmountExceedsVaultDebt &&
+    paybackAmountCalc.gt(zero) &&
+    !(
+      vault.debt.minus(paybackAmountCalc).isZero() ||
+      vault.debt.minus(paybackAmountCalc).gte(ilkData.debtFloor)
+    )
 
   const customCollateralAllowanceAmountEmpty =
     selectedCollateralAllowanceRadio === 'custom' && !collateralAllowanceAmount

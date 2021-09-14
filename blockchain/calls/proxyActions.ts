@@ -6,6 +6,7 @@ import { ContextConnected } from 'blockchain/network'
 import { amountToWad, amountToWei } from 'blockchain/utils'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { CloseVaultTo } from 'features/manageMultiplyVault/manageMultiplyVault'
+import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
@@ -278,7 +279,7 @@ export const open: TransactionDef<OpenData> = {
     token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
 }
 
-export type MultiplyData = {
+export type OpenMultiplyData = {
   kind: TxMetaKind.multiply
   token: string
   depositCollateral: BigNumber
@@ -286,15 +287,16 @@ export type MultiplyData = {
   borrowedCollateral: BigNumber
   proxyAddress: string
   userAddress: string
+  toTokenAmount: BigNumber
+  fromTokenAmount: BigNumber
 
   ilk: string
 
   exchangeAddress: string
   exchangeData: string
-  slippage: BigNumber
 }
 
-function getOpenMultiplyCallData(data: MultiplyData, context: ContextConnected) {
+function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnected) {
   const {
     contract,
     joins,
@@ -310,11 +312,9 @@ function getOpenMultiplyCallData(data: MultiplyData, context: ContextConnected) 
     {
       fromTokenAddress: tokens['DAI'].address,
       toTokenAddress: tokens[data.token].address,
-      fromTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
-      toTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
-      minToTokenAmount: amountToWei(data.borrowedCollateral, data.token)
-        .times(one.minus(data.slippage))
-        .toFixed(0),
+      fromTokenAmount: amountToWei(data.fromTokenAmount, 'DAI').toFixed(0),
+      toTokenAmount: amountToWei(data.toTokenAmount, data.token).toFixed(0),
+      minToTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
       exchangeAddress: data.exchangeAddress,
       _exchangeCalldata: data.exchangeData,
     } as any, //TODO: figure out why Typechain is generating arguments as arrays
@@ -342,7 +342,7 @@ function getOpenMultiplyCallData(data: MultiplyData, context: ContextConnected) 
   )
 }
 
-export const openMultiplyVault: TransactionDef<MultiplyData> = {
+export const openMultiplyVault: TransactionDef<OpenMultiplyData> = {
   call: ({ proxyAddress }, { contract }) => {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
@@ -455,10 +455,17 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
       {
         fromTokenAddress: tokens[data.token].address,
         toTokenAddress: tokens['DAI'].address,
-        toTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
+        toTokenAmount: amountToWei(
+          data.requiredDebt
+            .div(one.minus(OAZO_FEE))
+            .div(one.minus(LOAN_FEE))
+            .times(one.plus(data.slippage)),
+          'DAI',
+        ).toFixed(0),
         fromTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
         minToTokenAmount: amountToWei(data.requiredDebt, 'DAI')
-          .times(one.minus(data.slippage))
+          .div(one.minus(OAZO_FEE))
+          .div(one.minus(LOAN_FEE))
           .toFixed(0),
         exchangeAddress: data.exchangeAddress,
         _exchangeCalldata: data.exchangeData,

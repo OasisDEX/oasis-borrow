@@ -32,32 +32,6 @@ export function calculateParamsIncreaseMP(
   return [debt, collateral]
 }
 
-export function calculateParamsIncreaseMP_(
-  oraclePrice: BigNumber,
-  marketPrice: BigNumber,
-  OF: BigNumber,
-  FF: BigNumber,
-  currentCollateral: BigNumber,
-  currentDebt: BigNumber,
-  requiredCollRatio: BigNumber,
-  slippage: BigNumber,
-  depositDai = new BigNumber(0),
-) {
-  const marketPriceSlippage = marketPrice.times(one.plus(slippage))
-  const debt = marketPriceSlippage
-    .times(currentCollateral.times(oraclePrice).minus(requiredCollRatio.times(currentDebt)))
-    .plus(oraclePrice.times(depositDai).minus(oraclePrice.times(depositDai).times(OF)))
-    .div(
-      marketPriceSlippage
-        .times(requiredCollRatio)
-        .times(one.plus(FF))
-        .minus(oraclePrice.times(one.minus(OF))),
-    )
-  const collateral = debt.times(one.minus(OF)).div(marketPriceSlippage)
-
-  return [debt, collateral]
-}
-
 export function calculateParamsDecreaseMP(
   oraclePrice: BigNumber,
   marketPrice: BigNumber,
@@ -209,13 +183,17 @@ export type CloseToParams = {
   fromTokenAmount: BigNumber
   toTokenAmount: BigNumber
   minToTokenAmount: BigNumber
+  oazoFee: BigNumber
+  loanFee: BigNumber
 }
 
 export function calculateCloseToDaiParams(
   marketPrice: BigNumber,
   OF: BigNumber,
+  FF: BigNumber,
   currentCollateral: BigNumber,
   slippage: BigNumber,
+  currentDebt: BigNumber,
 ): CloseToParams {
   const fromTokenAmount = currentCollateral
   const toTokenAmount = currentCollateral.times(marketPrice).times(one.minus(OF))
@@ -228,6 +206,8 @@ export function calculateCloseToDaiParams(
     fromTokenAmount,
     toTokenAmount,
     minToTokenAmount,
+    oazoFee: currentCollateral.times(marketPrice).times(OF),
+    loanFee: currentDebt.times(FF),
   }
 }
 
@@ -238,7 +218,7 @@ export function calculateCloseToCollateralParams(
   currentDebt: BigNumber,
   slippage: BigNumber,
 ): CloseToParams {
-  const expectedFinalDebt = currentDebt.times(one.plus(OF).times(one.plus(FF)))
+  const expectedFinalDebt = currentDebt.times(one.plus(FF)).times(one.plus(OF))
 
   const fromTokenAmount = expectedFinalDebt.div(marketPrice.times(one.minus(slippage)))
 
@@ -250,5 +230,7 @@ export function calculateCloseToCollateralParams(
     fromTokenAmount,
     toTokenAmount,
     minToTokenAmount,
+    oazoFee: currentDebt.times(one.plus(FF)).times(OF),
+    loanFee: currentDebt.times(FF),
   }
 }

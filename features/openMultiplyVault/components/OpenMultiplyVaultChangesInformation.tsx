@@ -27,17 +27,17 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
     afterCollateralizationRatio,
     afterOutstandingDebt,
     totalExposure,
-    buyingCollateral,
-    buyingCollateralUSD,
     token,
     txFees,
     impact,
     loanFees,
     oazoFee,
-    marketPrice,
     inputAmountsEmpty,
     isExchangeLoading,
     slippage,
+    buyingCollateral,
+    buyingCollateralUSD,
+    marketPrice,
   } = props
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
