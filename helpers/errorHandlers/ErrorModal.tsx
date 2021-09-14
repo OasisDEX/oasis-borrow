@@ -21,12 +21,14 @@ export function ErrorModal({ close, error }: ModalProps & { error: string }) {
       <ModalCloseIcon {...{ close }} />
       <Grid gap={4} sx={{ justifyContent: 'center', textAlign: 'center', mt: 5, mx: 'auto' }}>
         <Heading>{t('error-message')}</Heading>
-        <Button onClick={onClickDetails} sx={{ maxWidth: 300, mx: 'auto', zIndex: 1 }}>
-          {t('error-button-reload')}
-        </Button>
-        <Button onClick={onClickReload} sx={{ maxWidth: 300, mx: 'auto', zIndex: 1 }}>
-          {t('error-button-reload')}
-        </Button>
+        <Grid columns="1fr 1fr">
+          <Button onClick={onClickDetails} sx={{ maxWidth: 300, mx: 'auto', zIndex: 1 }}>
+            {t('error-button')}
+          </Button>
+          <Button onClick={onClickReload} sx={{ maxWidth: 300, mx: 'auto', zIndex: 1 }}>
+            {t('error-button-reload')}
+          </Button>
+        </Grid>
         <Box sx={{ justifyContent: 'center', textAlign: 'center', wordWrap: 'break-word' }}>
           {showResults
             ? Array.isArray(error)
