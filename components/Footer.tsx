@@ -48,6 +48,7 @@ const FOOTER_SECTIONS = [
         target: '_self',
       },
       { labelKey: 'nav.borrow', url: '/' },
+      { labelKey: 'nav.trade', url: `${apiHost}/trade`, target: '_self' },
     ],
   },
 ]

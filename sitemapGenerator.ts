@@ -8,7 +8,7 @@ try {
     targetDirectory: 'public/',
     ignoredPaths: ['/api', '404', '/[address]', '/terms', '/privacy', '/save'],
     // other apps routes from Oasis Suite
-    extraPaths: ['/blog'],
+    extraPaths: ['/trade', '/blog'],
     nextConfigPath: `${__dirname}/next.config.js`,
     ignoreIndexFiles: true,
   })
