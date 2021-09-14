@@ -19,7 +19,7 @@ export function ErrorModal({ close, error }: ModalProps & { error: string }) {
   return (
     <Modal close={close}>
       <ModalCloseIcon {...{ close }} />
-      <Grid gap={4} sx={{ justifyContent: 'center', textAlign: 'center', mt: 5, mx: 'auto' }}>
+      <Grid gap={4} sx={{ justifyContent: 'center', textAlign: 'center', mt: 5, mx: 'auto' , columnCount:2 }}>
         <Heading>{t('error-message')}</Heading>
         <Button onClick={onClickDetails} sx={{ maxWidth: 300, mx: 'auto', zIndex: 1 }}>
           {t('error-button')}
