@@ -199,6 +199,11 @@ The configuration params for `multiply-proxy-actions` container are as follows:
 
 <br>
 
+## Multiply feature
+
+We have added multiply functionality, where generated DAI is immediately used to swap for more collateral. This utilizes the multiply proxy actions smart contract. 
+The documentation for those contracts can be found [here](https://docs.google.com/document/d/1GpPEPrOnDLNHtCgyh5YInOyZUV4XGz-1EVRJK0y-GF4/edit).
+
 ## Contributing
 
 Contributions are welcome. Feel free to open issues or PR's to improve Oasis Borrow. We are always
