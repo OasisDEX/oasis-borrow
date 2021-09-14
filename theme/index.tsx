@@ -260,6 +260,11 @@ const oasisBaseTheme = {
       position: 'relative',
       ...slideInAnimation,
     },
+    announcement: {
+      maxWidth: '792px',
+      alignSelf: 'center',
+      zIndex: 4,
+    },
   },
   metadata: {
     fontLinkHref: 'https://rsms.me/inter/inter.css',
