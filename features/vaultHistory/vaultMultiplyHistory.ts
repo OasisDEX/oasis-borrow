@@ -28,6 +28,7 @@ const query = gql`
         flDue
         flBorrowed
         liquidationRatio
+        hash
       }
     }
   }
