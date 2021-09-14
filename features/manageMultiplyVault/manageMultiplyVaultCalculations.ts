@@ -156,12 +156,16 @@ export const defaultManageMultiplyVaultCalculations: ManageVaultCalculations = {
     fromTokenAmount: zero,
     toTokenAmount: zero,
     minToTokenAmount: zero,
+    oazoFee: zero,
+    loanFee: zero,
   },
 
   closeToCollateralParams: {
     fromTokenAmount: zero,
     toTokenAmount: zero,
     minToTokenAmount: zero,
+    oazoFee: zero,
+    loanFee: zero,
   },
 
   afterCloseToDai: zero,
@@ -544,8 +548,8 @@ export function applyManageVaultCalculations(
   const {
     debtDelta: borrowedDaiAmount,
     collateralDelta: collateralDeltaNonClose,
-    loanFee,
-    oazoFee,
+    loanFee: loanFeeNonClose,
+    oazoFee: oazoFeeNonClose,
   } = getVaultChange({
     currentCollateralPrice,
     marketPrice,
@@ -568,8 +572,10 @@ export function applyManageVaultCalculations(
   const closeToDaiParams = calculateCloseToDaiParams(
     marketPrice,
     OAZO_FEE,
+    LOAN_FEE,
     lockedCollateral,
     slippage,
+    debt.plus(debtOffset),
   )
 
   const closeToCollateralParams = calculateCloseToCollateralParams(
@@ -586,6 +592,18 @@ export function applyManageVaultCalculations(
         closeToDaiParams.fromTokenAmount.negated()
       : closeToCollateralParams.fromTokenAmount.negated()
     : collateralDeltaNonClose
+
+  const oazoFee = isCloseAction
+    ? closeVaultTo === 'dai'
+      ? closeToDaiParams.oazoFee
+      : closeToCollateralParams.oazoFee
+    : oazoFeeNonClose
+
+  const loanFee = isCloseAction
+    ? closeVaultTo === 'dai'
+      ? closeToDaiParams.loanFee
+      : closeToCollateralParams.loanFee
+    : loanFeeNonClose
 
   const fees = BigNumber.sum(loanFee, oazoFee)
 

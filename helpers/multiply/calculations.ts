@@ -183,13 +183,17 @@ export type CloseToParams = {
   fromTokenAmount: BigNumber
   toTokenAmount: BigNumber
   minToTokenAmount: BigNumber
+  oazoFee: BigNumber
+  loanFee: BigNumber
 }
 
 export function calculateCloseToDaiParams(
   marketPrice: BigNumber,
   OF: BigNumber,
+  FF: BigNumber,
   currentCollateral: BigNumber,
   slippage: BigNumber,
+  currentDebt: BigNumber,
 ): CloseToParams {
   const fromTokenAmount = currentCollateral
   const toTokenAmount = currentCollateral.times(marketPrice).times(one.minus(OF))
@@ -202,6 +206,8 @@ export function calculateCloseToDaiParams(
     fromTokenAmount,
     toTokenAmount,
     minToTokenAmount,
+    oazoFee: currentCollateral.times(marketPrice).times(OF),
+    loanFee: currentDebt.times(FF),
   }
 }
 
@@ -212,7 +218,7 @@ export function calculateCloseToCollateralParams(
   currentDebt: BigNumber,
   slippage: BigNumber,
 ): CloseToParams {
-  const expectedFinalDebt = currentDebt.times(one.plus(OF).times(one.plus(FF)))
+  const expectedFinalDebt = currentDebt.times(one.plus(FF)).times(one.plus(OF))
 
   const fromTokenAmount = expectedFinalDebt.div(marketPrice.times(one.minus(slippage)))
 
@@ -224,5 +230,7 @@ export function calculateCloseToCollateralParams(
     fromTokenAmount,
     toTokenAmount,
     minToTokenAmount,
+    oazoFee: currentDebt.times(one.plus(FF)).times(OF),
+    loanFee: currentDebt.times(FF),
   }
 }
