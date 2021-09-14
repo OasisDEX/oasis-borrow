@@ -2,7 +2,7 @@ import { Modal, ModalCloseIcon } from 'components/Modal'
 import { ModalProps } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Grid, Heading, } from 'theme-ui'
+import { Box, Button, Grid, Heading } from 'theme-ui'
 
 export function ErrorModal({ close, error }: ModalProps & { error: string }) {
   const { t } = useTranslation()
@@ -21,8 +21,8 @@ export function ErrorModal({ close, error }: ModalProps & { error: string }) {
       <ModalCloseIcon {...{ close }} />
       <Grid
         gap={4}
-        sx={{ justifyContent: 'center', textAlign: 'center', mt: 5, mx: 'auto'}}
-        columns={[1,2,1]}
+        sx={{ justifyContent: 'center', textAlign: 'center', mt: 5, mx: 'auto' }}
+        columns={[1, 2, 1]}
       >
         <Heading>{t('error-message')}</Heading>
         <Button onClick={onClickDetails} sx={{ maxWidth: 300, mx: 'auto', zIndex: 1 }}>
