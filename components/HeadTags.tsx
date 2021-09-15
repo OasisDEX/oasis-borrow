@@ -22,6 +22,7 @@ interface SEOTagsType {
   description: string
   url?: string
   ogImage?: string
+  twitterImage?: string
 }
 
 export function PageSEONoFollow() {
@@ -34,7 +35,13 @@ export function PageSEONoFollow() {
 
 const APP_URL = 'https://oasis.app'
 
-export function PageSEOTags({ title, description, url = '/', ogImage = 'og.png' }: SEOTagsType) {
+export function PageSEOTags({
+  title,
+  description,
+  url = '/',
+  ogImage = 'og.png',
+  twitterImage = 'og_small.png',
+}: SEOTagsType) {
   const { t } = useTranslation()
 
   return (
@@ -62,7 +69,7 @@ export function PageSEOTags({ title, description, url = '/', ogImage = 'og.png' 
 
       <meta property="og:image" content={`${APP_URL}/static/${ogImage}`} />
       <meta property="og:image:secure_url" content={`${APP_URL}/static/${ogImage}`} />
-      <meta name="twitter:image" content={`${APP_URL}/static/${ogImage}`} />
+      <meta name="twitter:image" content={`${APP_URL}/static/${twitterImage}`} />
       <meta name="twitter:card" content="summary_large_image" />
 
       <meta property="og:type" content="website" />
