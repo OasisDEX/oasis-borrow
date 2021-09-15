@@ -170,8 +170,8 @@
     "openmultiplyvault": "Open multiply Vault",
     "increasemultiple": "Increased multiple, bought using Dai",
     "decreasemultiple": "Decreased multiple, sold collateral",
-    "closevaultexitdai": "Closed Vault, exited Dai",
-    "closevaultexitcollateral": "Closed Vault, exited collateral"
+    "closevaultexitdai": "Closed Vault, exited to Dai",
+    "closevaultexitcollateral": "Closed Vault, exited to collateral"
   },
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",
@@ -181,8 +181,8 @@
   "keyWithCount_plural": "{{count}} items",
   "landing": {
     "hero": {
-      "headline": "Generate Dai using crypto as your collateral",
-      "subheader": "Open a Maker Vault, deposit your collateral, and generate Dai against it.<0/> Connect a wallet to start."
+      "headline": "Borrow Dai and Multiply your exposure to crypto",
+      "subheader": "Open a Maker Vault, deposit 25+ crypto collaterals. Either borrow Dai or buy additional collateral to increase your exposure.<0/> Connect a wallet to start."
     },
     "cards": {
       "dai": {
@@ -277,7 +277,7 @@
       "next-price-description": "Here you can see the next price that will go into effect in the Maker Protocol. Compare this with the Liquidation Price to see whether your vault will be liquidated on the next price update.\n{{nextPrice}}",
       "more-info-oracles": "More information on Maker oracles can be found <0>here</0>",
       "net-value": "Net Value",
-      "net-value-description": "The Net Value is calculated as the current value of the collateral in your vault minus the current debt.\nNote: This will not be exactly equal to the amount you will receive if you close your vault to Dai. This is due to fees applied when swapping collateral to Dai and because the Net Value is calculated using the Maker oracle price which is one hour delayed compared to the actual market price for the collateral.",
+      "net-value-description": "The Net Value is calculated as the current value of the collateral in your vault minus the current debt.\nNote: This will not be exactly equal to the amount you will receive if you close your vault to Dai. This is due to fees applied when swapping collateral to Dai. The Net Value is calculated using the market price for the collateral using 1Inch.",
       "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
     }
   },
@@ -387,7 +387,7 @@
       "title": "Dai"
     },
     "default": {
-      "description": "Borrow Dai, a USD pegged Stablecoin, using crypto as your collateral",
+      "description": "Borrow Dai, a USD pegged Stablecoin, or multiply your exposure using crypto as your collateral",
       "title": "Oasis.app"
     },
 
@@ -486,8 +486,8 @@
   },
   "ilks-list": {
     "headers": {
-      "noVaults": "Select a collateral type to create a Maker Vault and generate Dai",
-      "withVaults": "Open a new Maker Vault.<0/> Generate Dai"
+      "noVaults": "Select a collateral type to create a Maker Vault and borrow Dai or buy additional collateral.",
+      "withVaults": "Open a new Maker Vault.<0/> Borrow Dai or buy additional collateral."
     }
   },
   "vaults-overview": {
@@ -502,7 +502,7 @@
       "notConnected-withVaults": "Maker Vaults overview of {{address}}.<0/> Connect your wallet."
     },
     "number-of-vaults": "No. of Vaults",
-    "subheader-no-vaults": "Open a Maker Vault, deposit your collateral, and generate Dai against it.",
+    "subheader-no-vaults": "Open a Maker Vault, deposit your collateral, and borrow Dai or buy additional collateral against it.",
     "total-debt": "Total debt",
     "total-locked": "Total locked",
     "vaults": "Vaults",
@@ -568,7 +568,7 @@
       "proxy": "With your smart proxy multiple actions can be performed in one transaction for your Vault. This proxy only needs to be set up once.",
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "daiAllowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
-      "confirm": "This will refresh your page. It does not require a transaction.",
+      "confirm": "This will update your vault to a multiply vault. It does not require a transaction. This is a one directional change and you will not be able to switch it back to the Borrow view.",
       "review-manage": "Here you can review the details of the changes to your vault.",
       "confirm-in-progress": "Your Vault is currently being created.",
       "modified": "Your Vault is currently being updated. Please wait.",
