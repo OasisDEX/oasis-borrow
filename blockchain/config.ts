@@ -163,9 +163,14 @@ const hardhat: NetworkConfig = {
   cacheApi: 'http://localhost:3001/v1',
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
-    getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
+    getConfig()?.publicRuntimeConfig?.multiplyProxyActions ||
+      '0x33b4BE1B67c49125C1524777515e4034E04dFF58',
   ),
-  exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  exchange: contractDesc(
+    exchange,
+    getConfig()?.publicRuntimeConfig?.exchangeAddress ||
+      '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B',
+  ),
 }
 
 export const networksById = keyBy([main, kovan, hardhat], 'id')
