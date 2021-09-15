@@ -62,10 +62,10 @@ export function WithAnnouncementLayout({
       {showAnnouncement && (
         <Container variant="announcement">
           <GenericAnnouncement
-            text="This is test banner"
+            text="This is test banner, followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text.followed by a very long text."
             discordLink="https://discord.gg/Kc2bBB59GC"
-            link="https://blog.oasis.app/the-future-of-oasis-app/"
-            linkText="The future"
+            link=""
+            linkText=""
           />
         </Container>
       )}
