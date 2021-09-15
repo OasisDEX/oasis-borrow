@@ -7,6 +7,7 @@ import { content as pt } from './pt'
 export type ContentSectionId =
   | 'buying-dai'
   | 'saving-lending-dai'
+  | 'multiply'
   | 'using-oasis'
   | 'security'
   | 'using-daiwallet'
