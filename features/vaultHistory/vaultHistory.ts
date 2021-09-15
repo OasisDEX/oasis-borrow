@@ -5,8 +5,8 @@ import { gql, GraphQLClient } from 'graphql-request'
 import { memoize } from 'lodash'
 import flatten from 'lodash/flatten'
 import pickBy from 'lodash/pickBy'
-import { combineLatest, Observable } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { combineLatest, Observable, of } from 'rxjs'
+import { catchError, map, switchMap } from 'rxjs/operators'
 
 import { ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
@@ -27,12 +27,16 @@ const query = gql`
         collateralTaken
         coveredDebt
         remainingCollateral
+        rate
         timestamp
         id
         urn
         hash
         logIndex
         auctionId
+        txId
+        blockId
+        oraclePrice
       }
     }
   }
@@ -51,6 +55,8 @@ function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
     'collateralTaken',
     'coveredDebt',
     'remainingCollateral',
+    'rate',
+    'oraclePrice',
   ]
   return Object.entries(event).reduce(
     (acc, [key, value]) =>
@@ -99,7 +105,7 @@ export type VaultHistoryEvent = VaultEvent & {
     apiKey: string
   }
 }
-function fetchWithOperationId(url: string, options?: RequestInit) {
+export function fetchWithOperationId(url: string, options?: RequestInit) {
   const operationNameRegex = /query (?<operationName>[a-zA-Z0-9]+)\(/gm
 
   const body = typeof options?.body === 'string' ? options?.body : ''
@@ -133,6 +139,7 @@ export function createVaultHistory$(
           ),
         ),
         map((events) => events.map((event) => ({ etherscan, token, ...event }))),
+        catchError(() => of([])),
       ),
     ),
   )

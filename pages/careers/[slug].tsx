@@ -83,17 +83,18 @@ export async function getStaticProps({ params, locale }: { params: any; locale: 
   }
 }
 
-export async function getStaticPaths() {
+export async function getStaticPaths({ locales }: { locales: string[] }) {
   const files = getCareerFileNames()
 
   return {
-    paths: files.map((file: string) => {
-      return {
+    paths: files.flatMap((file: string) =>
+      locales.map((locale) => ({
         params: {
           slug: slugify(file),
         },
-      }
-    }),
+        locale,
+      })),
+    ),
     fallback: false,
   }
 }

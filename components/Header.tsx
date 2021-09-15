@@ -30,7 +30,7 @@ export function Logo({ sx }: { sx?: SxStyleProp }) {
       sx={{
         color: 'primary',
         fontWeight: 'semiBold',
-        fontSize: 5,
+        fontSize: '0px',
         cursor: 'pointer',
         zIndex: 1,
         ...sx,
@@ -99,8 +99,7 @@ function ConnectedHeader() {
     <BasicHeader
       sx={{
         position: 'relative',
-        flexDirection: ['column-reverse', 'row', 'row'],
-        alignItems: ['flex-end', 'center', 'center'],
+        alignItems: 'center',
         zIndex: 1,
       }}
       variant="appContainer"

@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-import { ManageVaultView } from 'features/manageVault/ManageVaultView'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { manageVaultStory } from 'helpers/stories/ManageVaultStory'
 import { zero } from 'helpers/zero'
@@ -92,7 +91,6 @@ export const ProxySuccess = manageVaultStory({
     debt: new BigNumber('3000'),
   },
   balanceInfo: { collateralBalance: new BigNumber('200') },
-  proxyAddress,
 })({
   stage: 'proxySuccess',
   generateAmount: new BigNumber('300'),
@@ -317,8 +315,27 @@ export const ManageSuccess = manageVaultStory({
   paybackAmount: new BigNumber('300'),
 })
 
+export const MultiplyTransitionEditing = manageVaultStory()({
+  stage: 'multiplyTransitionEditing',
+})
+
+export const MultiplyTransitionWaitingForConfirmation = manageVaultStory()({
+  stage: 'multiplyTransitionWaitingForConfirmation',
+})
+
+export const MultiplyTransitionInProgress = manageVaultStory()({
+  stage: 'multiplyTransitionInProgress',
+})
+
+export const MultiplyTransitionFailure = manageVaultStory()({
+  stage: 'multiplyTransitionFailure',
+})
+
+export const MultiplyTransitionSuccess = manageVaultStory()({
+  stage: 'multiplyTransitionSuccess',
+})
+
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'ManageVault/Stages',
-  component: ManageVaultView,
 }

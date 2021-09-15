@@ -1,5 +1,5 @@
 import { getToken } from 'blockchain/tokensMetadata'
-import { AppLink } from 'components/Links'
+import { useRedirectToOpenVault } from 'features/openVaultOverview/useRedirectToOpenVault'
 import { formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -18,7 +18,7 @@ function CallToActionPlaceholder() {
       sx={{
         flex: 1,
         cursor: 'progress',
-        bg: 'ghost',
+        bg: 'backgroundAlt',
         borderRadius: 'large',
         p: 4,
         position: 'relative',
@@ -53,9 +53,10 @@ function CallToActionPlaceholder() {
 function CallToAction({ ilk }: CallToActionProps) {
   const token = getToken(ilk.token)
   const { t } = useTranslation()
+  const redirectToOpenVault = useRedirectToOpenVault()
 
   return (
-    <AppLink
+    <Box
       sx={{
         overflow: 'hidden',
         transition: `
@@ -79,7 +80,8 @@ function CallToAction({ ilk }: CallToActionProps) {
           },
         },
       }}
-      href={`/vaults/open/${ilk.ilk}`}
+      tabIndex={0}
+      onClick={() => redirectToOpenVault(ilk.ilk, token.symbol, ilk.liquidationRatio)}
     >
       <Grid
         gap={0}
@@ -130,7 +132,7 @@ function CallToAction({ ilk }: CallToActionProps) {
           </Flex>
         </Box>
       </Grid>
-    </AppLink>
+    </Box>
   )
 }
 

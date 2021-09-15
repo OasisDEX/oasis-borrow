@@ -4,9 +4,37 @@ import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { manageVaultStory } from 'helpers/stories/ManageVaultStory'
 import { one, zero } from 'helpers/zero'
 
-import { ManageVaultView } from '../ManageVaultView'
-
 const proxyAddress = DEFAULT_PROXY_ADDRESS
+
+export const VaultUnderCollateralized = manageVaultStory({
+  title: 'Warning is shown when the vault collateralization is below the liquidation ratio',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('10000'),
+  },
+  proxyAddress,
+})({
+  stage: 'daiEditing',
+  generateAmount: new BigNumber(111),
+})
+
+export const VaultUnderCollateralizedAtNextPrice = manageVaultStory({
+  title:
+    'Warning is shown when the vault collateralization is below the liquidation ratio after the next price update',
+  vault: {
+    ilk: 'WBTC-A',
+    collateral: new BigNumber('20'),
+    debt: new BigNumber('2000'),
+  },
+  priceInfo: {
+    collateralChangePercentage: new BigNumber('-0.9'),
+  },
+  proxyAddress,
+})({
+  stage: 'daiEditing',
+  generateAmount: new BigNumber(111),
+})
 
 export const DepositAndWithdrawAmountsEmpty = manageVaultStory({
   title:
@@ -352,5 +380,4 @@ export const CustomDaiAllowanceAmountLessThanDepositAmount = manageVaultStory({
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'ManageVault/Blocking Flow',
-  component: ManageVaultView,
 }

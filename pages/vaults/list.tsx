@@ -27,6 +27,3 @@ export default function VaultsList() {
 }
 
 VaultsList.layout = AppLayout
-VaultsList.layoutProps = {
-  variant: 'daiContainer',
-}

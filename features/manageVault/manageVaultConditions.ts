@@ -11,16 +11,52 @@ const defaultManageVaultStageCategories = {
   isCollateralAllowanceStage: false,
   isDaiAllowanceStage: false,
   isManageStage: false,
+  isMultiplyTransitionStage: false,
 }
 
 export function applyManageVaultStageCategorisation(state: ManageVaultState) {
-  switch (state.stage) {
+  const {
+    stage,
+    vault: { token, debtOffset },
+    depositAmount,
+    daiAllowance,
+    collateralAllowance,
+    paybackAmount,
+    initialTotalSteps,
+  } = state
+  const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
+  const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
+
+  const depositAmountLessThanCollateralAllowance =
+    collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
+
+  const paybackAmountLessThanDaiAllowance =
+    daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
+
+  const hasCollateralAllowance =
+    token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
+
+  const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+
+  let totalSteps = initialTotalSteps
+
+  if (initialTotalSteps === 2 && (!hasCollateralAllowance || !hasDaiAllowance)) {
+    totalSteps = 3
+  }
+
+  if (initialTotalSteps === 3 && hasCollateralAllowance && hasDaiAllowance && !isPaybackZero) {
+    totalSteps = 2
+  }
+
+  switch (stage) {
     case 'collateralEditing':
     case 'daiEditing':
       return {
         ...state,
         ...defaultManageVaultStageCategories,
         isEditingStage: true,
+        totalSteps,
+        currentStep: 1,
       }
     case 'proxyWaitingForConfirmation':
     case 'proxyWaitingForApproval':
@@ -31,6 +67,8 @@ export function applyManageVaultStageCategorisation(state: ManageVaultState) {
         ...state,
         ...defaultManageVaultStageCategories,
         isProxyStage: true,
+        totalSteps,
+        currentStep: totalSteps - (token === 'ETH' ? 1 : 2),
       }
     case 'collateralAllowanceWaitingForConfirmation':
     case 'collateralAllowanceWaitingForApproval':
@@ -41,6 +79,8 @@ export function applyManageVaultStageCategorisation(state: ManageVaultState) {
         ...state,
         ...defaultManageVaultStageCategories,
         isCollateralAllowanceStage: true,
+        totalSteps,
+        currentStep: totalSteps - 1,
       }
     case 'daiAllowanceWaitingForConfirmation':
     case 'daiAllowanceWaitingForApproval':
@@ -51,6 +91,8 @@ export function applyManageVaultStageCategorisation(state: ManageVaultState) {
         ...state,
         ...defaultManageVaultStageCategories,
         isDaiAllowanceStage: true,
+        totalSteps,
+        currentStep: totalSteps - 1,
       }
 
     case 'manageWaitingForConfirmation':
@@ -62,9 +104,23 @@ export function applyManageVaultStageCategorisation(state: ManageVaultState) {
         ...state,
         ...defaultManageVaultStageCategories,
         isManageStage: true,
+        totalSteps,
+        currentStep: totalSteps,
+      }
+    case 'multiplyTransitionEditing':
+    case 'multiplyTransitionWaitingForConfirmation':
+    case 'multiplyTransitionInProgress':
+    case 'multiplyTransitionFailure':
+    case 'multiplyTransitionSuccess':
+      return {
+        ...state,
+        ...defaultManageVaultStageCategories,
+        isMultiplyTransitionStage: true,
+        totalSteps: 2,
+        currentStep: stage === 'multiplyTransitionEditing' ? 1 : 2,
       }
     default:
-      throw new UnreachableCaseError(state.stage)
+      throw new UnreachableCaseError(stage)
   }
 }
 
@@ -74,6 +130,7 @@ export interface ManageVaultConditions {
   isCollateralAllowanceStage: boolean
   isDaiAllowanceStage: boolean
   isManageStage: boolean
+  isMultiplyTransitionStage: boolean
 
   canProgress: boolean
   canRegress: boolean
@@ -195,6 +252,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     maxWithdrawAmountAtNextPrice,
     maxGenerateAmountAtCurrentPrice,
     maxGenerateAmountAtNextPrice,
+    isMultiplyTransitionStage,
     afterDebt,
   } = state
 
@@ -325,6 +383,8 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     'daiAllowanceInProgress',
     'manageInProgress',
     'manageWaitingForApproval',
+    'multiplyTransitionInProgress',
+    'multiplyTransitionSuccess',
   ] as ManageVaultStage[]).some((s) => s === stage)
 
   const withdrawCollateralOnVaultUnderDebtFloor =
@@ -372,11 +432,14 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
       customDaiAllowanceAmountExceedsMaxUint256 ||
       customDaiAllowanceAmountLessThanPaybackAmount)
 
+  const multiplyTransitionDisabled = isMultiplyTransitionStage && !accountIsController
+
   const canProgress = !(
     isLoadingStage ||
     editingProgressionDisabled ||
     collateralAllowanceProgressionDisabled ||
-    daiAllowanceProgressionDisabled
+    daiAllowanceProgressionDisabled ||
+    multiplyTransitionDisabled
   )
 
   const canRegress = ([
@@ -388,6 +451,9 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     'daiAllowanceFailure',
     'manageWaitingForConfirmation',
     'manageFailure',
+    'multiplyTransitionEditing',
+    'multiplyTransitionWaitingForConfirmation',
+    'multiplyTransitionFailure',
   ] as ManageVaultStage[]).some((s) => s === stage)
 
   return {

@@ -18,6 +18,7 @@ import {
 import {
   applyOpenVaultConditions,
   applyOpenVaultStageCategorisation,
+  calculateInitialTotalSteps,
   defaultOpenVaultConditions,
   OpenVaultConditions,
 } from './openVaultConditions'
@@ -124,6 +125,7 @@ interface OpenVaultFunctions {
   setAllowanceAmountUnlimited?: () => void
   setAllowanceAmountToDepositAmount?: () => void
   setAllowanceAmountCustom?: () => void
+  clear: () => void
   injectStateOverride: (state: Partial<MutableOpenVaultState>) => void
 }
 
@@ -157,6 +159,8 @@ export type OpenVaultState = MutableOpenVaultState &
     errorMessages: OpenVaultErrorMessage[]
     warningMessages: OpenVaultWarningMessage[]
     summary: OpenVaultSummary
+    totalSteps: number
+    currentStep: number
   }
 
 function addTransitions(
@@ -304,6 +308,8 @@ export function createOpenVault$(
                       return change$.next({ kind: 'injectStateOverride', stateToOverride })
                     }
 
+                    const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
+
                     const initialState: OpenVaultState = {
                       ...defaultMutableOpenVaultState,
                       ...defaultOpenVaultStateCalculations,
@@ -321,6 +327,9 @@ export function createOpenVault$(
                       errorMessages: [],
                       warningMessages: [],
                       summary: defaultOpenVaultSummary,
+                      totalSteps,
+                      currentStep: 1,
+                      clear: () => change({ kind: 'clear' }),
                       injectStateOverride,
                     }
 

@@ -2,8 +2,6 @@ import { BigNumber } from 'bignumber.js'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { manageVaultStory } from 'helpers/stories/ManageVaultStory'
 
-import { ManageVaultView } from '../ManageVaultView'
-
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
 export const HighPrecision = manageVaultStory({
@@ -41,5 +39,4 @@ export const LowPrecision = manageVaultStory({
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'ManageVault/Precisions',
-  component: ManageVaultView,
 }

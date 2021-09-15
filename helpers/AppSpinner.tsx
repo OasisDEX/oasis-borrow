@@ -51,6 +51,23 @@ export function AppSpinnerWholePage() {
   )
 }
 
+export function VaultContainerSpinner() {
+  return (
+    <Box
+      sx={{
+        position: 'relative',
+        height: 600,
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <AppSpinner sx={{ mx: 'auto', display: 'block' }} variant="styles.spinner.extraLarge" />
+    </Box>
+  )
+}
+
 // By specifing P you may also omit other types in tuple
 // TO DO solve issue with storybook workflow failing and use that
 // type OmitInTuple<T, P = undefined> = T extends [infer U, ...(infer Y)]

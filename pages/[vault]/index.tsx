@@ -2,8 +2,7 @@ import BigNumber from 'bignumber.js'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { VaultBannersView } from 'features/banners/VaultsBannersView'
-import { ManageVaultView } from 'features/manageVault/ManageVaultView'
-import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
+import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import NotFoundPage from 'pages/404'
 import React from 'react'
@@ -33,8 +32,7 @@ export default function Vault({ id }: { id: string }) {
           {isValidVaultId ? (
             <>
               <VaultBannersView id={vaultId} />
-              <ManageVaultView id={vaultId} />
-              <VaultHistoryView id={vaultId} />
+              <GeneralManageVaultView id={vaultId} />
             </>
           ) : (
             <Box sx={{ position: 'relative', zIndex: 1 }}>

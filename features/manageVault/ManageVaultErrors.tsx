@@ -41,7 +41,6 @@ export function ManageVaultErrors({
       case 'generateAmountExceedsDebtCeiling':
         return translate('generate-amount-exceeds-debt-ceiling', {
           maxGenerateAmount: formatCryptoBalance(maxGenerateAmount),
-          token,
         })
       case 'generateAmountLessThanDebtFloor':
         return (

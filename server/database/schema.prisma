@@ -15,11 +15,26 @@ model migrations {
 }
 
 model TosApproval {
-  id          Int        @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   address     String
   doc_version String
   sign_date   DateTime
 
   @@unique([address, doc_version], name: "tos_approval_unique_signature")
   @@map(name: "tos_approval")
+}
+
+model Vault {
+  vault_id      Int       @unique
+  type          VaultType
+  owner_address String
+
+  @@map("vault")
+}
+
+enum VaultType {
+  borrow
+  multiply
+
+  @@map("vault_type")
 }

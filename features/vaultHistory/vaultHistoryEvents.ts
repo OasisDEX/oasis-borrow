@@ -4,6 +4,11 @@ interface HistoryEventBase {
   hash: string
   timestamp: string
   id: string
+  isMultiply?: boolean
+  isHidden?: boolean
+  oraclePrice: BigNumber
+  rate: BigNumber
+  liquidationRatio: BigNumber
 }
 
 interface VaultOpenedEvent extends HistoryEventBase {
@@ -30,17 +35,20 @@ interface GenerateEvent extends HistoryEventBase {
 interface PaybackEvent extends HistoryEventBase {
   kind: 'PAYBACK'
   daiAmount: BigNumber
+  rate: BigNumber
 }
 
 interface DepositGenerateEvent extends HistoryEventBase {
   kind: 'DEPOSIT-GENERATE'
   daiAmount: BigNumber
+  rate: BigNumber
   collateralAmount: BigNumber
 }
 
 interface WithdrawPaybackEvent extends HistoryEventBase {
   kind: 'WITHDRAW-PAYBACK'
   daiAmount: BigNumber
+  rate: BigNumber
   collateralAmount: BigNumber
 }
 
@@ -48,6 +56,7 @@ interface AuctionStartedEvent extends HistoryEventBase {
   kind: 'AUCTION_STARTED'
   collateralAmount: BigNumber
   daiAmount: BigNumber
+  rate: BigNumber
   auctionId: string
 }
 
@@ -56,6 +65,7 @@ interface AuctionStartedV2Event extends HistoryEventBase {
   auctionId: string
   collateralAmount: BigNumber
   daiAmount: BigNumber
+  rate: BigNumber
   liqPenalty: BigNumber
 }
 
@@ -102,6 +112,46 @@ interface MigrateEvent extends HistoryEventBase {
   kind: 'MIGRATE'
 }
 
+interface MultiplyBaseEvent extends HistoryEventBase {
+  blockId: number
+  txId: number
+  collateralAmount: BigNumber
+  collateralTotal: BigNumber
+  daiAmount: BigNumber
+  outstandingDebt: BigNumber
+  oraclePrice: BigNumber
+  collateral: BigNumber
+  multiple: BigNumber
+  liquidationPrice: BigNumber
+  netValueUSD: BigNumber
+  fees: BigNumber
+  flDue: BigNumber
+  flBorrowed: BigNumber
+  oazoFee: BigNumber
+}
+interface OpenMultiplyEvent extends MultiplyBaseEvent {
+  kind: 'openMultiplyVault'
+}
+interface IncreaseMultipleEvent extends MultiplyBaseEvent {
+  kind: 'increaseMultiple'
+}
+interface DecreaseMultipleEvent extends MultiplyBaseEvent {
+  kind: 'decreaseMultiple'
+}
+interface CloseVaultExitDaiMultipleEvent extends MultiplyBaseEvent {
+  kind: 'closeVaultExitDai'
+}
+interface CloseVaultExitCollateralMultipleEvent extends MultiplyBaseEvent {
+  kind: 'closeVaultExitCollateral'
+}
+
+export type MultiplyEvent =
+  | OpenMultiplyEvent
+  | IncreaseMultipleEvent
+  | DecreaseMultipleEvent
+  | CloseVaultExitDaiMultipleEvent
+  | CloseVaultExitCollateralMultipleEvent
+
 export interface ReturnedEvent {
   kind: string
   hash: string
@@ -113,6 +163,9 @@ export interface ReturnedEvent {
   daiAmount: string | null
   vaultCreator: string | null
   cdpId: string | null
+  txId: string
+  blockId: string
+  rate: string
 }
 
 export type VaultEvent =
@@ -131,5 +184,6 @@ export type VaultEvent =
   | AuctionFinishedV2Event
   | MoveSrcEvent
   | MoveDestEvent
+  | MultiplyEvent
 
 export type EventType = VaultEvent['kind']

@@ -5,6 +5,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { disconnect, getConnectionKindMessage } from 'components/connectWallet/ConnectWallet'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
+import { useSharedUI } from 'components/SharedUIProvider'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
@@ -28,7 +29,7 @@ function DaiIndicator({ daiBalance }: { daiBalance: BigNumber | undefined }) {
         p: 1,
       }}
     >
-      <Icon sx={{ zIndex: 1 }} name="dai_circle_color" size={30} />
+      <Icon sx={{ zIndex: 1 }} name="dai_circle_color" size={[24, 30]} />
       <Box sx={{ mx: 2, color: 'onWarning' }}>
         {daiBalance ? formatCryptoBalance(daiBalance) : '0.00'}
       </Box>
@@ -45,9 +46,8 @@ export function AccountIndicator({ address }: { address: string }) {
   )
 }
 
-const buttonMinWidth = '150px'
-
 export function AccountButton() {
+  const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const { accountData$, context$ } = useAppContext()
   const accountData = useObservable(accountData$)
   const context = useObservable(context$)
@@ -71,7 +71,7 @@ export function AccountButton() {
           transition: 'background 0.2s',
           '&:hover, &:focus ': {
             color: 'initial',
-            bg: 'ghost',
+            bg: 'backgroundAlt',
             '& svg': {
               left: '4px',
             },
@@ -97,38 +97,48 @@ export function AccountButton() {
   return (
     <Flex
       sx={{
-        position: 'relative',
-        justifyContent: 'flex-end',
-        minWidth: 'auto',
+        position: ['fixed', 'relative'],
+        bottom: 0,
+        left: 0,
+        right: 0,
+        bg: ['rgba(255,255,255,0.9)', 'transparent'],
+        p: [3, 0],
+        justifyContent: 'space-between',
+        gap: 2,
       }}
     >
-      <Button
-        variant="secondary"
+      <Flex
         sx={{
-          boxSizing: 'border-box',
-          minWidth: buttonMinWidth,
-          zIndex: 1,
-          background: 'white',
-          boxShadow: 'table_hovered',
-          p: 1,
-          display: 'flex',
-          alignItems: 'center',
-          transition: 'border-color ease-in 0.2s',
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          borderColor: '#D8E0E300',
-          '&:hover, &:focus-visible': {
-            borderColor: '#D8E0E3FF',
-          },
-          ':focus': {
-            outline: 'none',
-          },
+          position: 'relative',
+          justifyContent: ['flex-start', 'flex-end'],
+          minWidth: 'auto',
         }}
-        onClick={() => openModal(AccountModal)}
       >
-        <AccountIndicator address={context.account} />
-        <DaiIndicator daiBalance={accountData.daiBalance} />
-      </Button>
+        <Button
+          variant="mobileBottomMenu"
+          sx={{
+            minWidth: '150px',
+            p: 1,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+          onClick={() => openModal(AccountModal)}
+        >
+          <AccountIndicator address={context.account} />
+          <DaiIndicator daiBalance={accountData.daiBalance} />
+        </Button>
+      </Flex>
+      {vaultFormToggleTitle && (
+        <Box sx={{ display: ['flex', 'none'] }}>
+          <Button
+            variant="mobileBottomMenu"
+            sx={{ px: 3 }}
+            onClick={() => setVaultFormOpened(true)}
+          >
+            <Box>{vaultFormToggleTitle}</Box>
+          </Button>
+        </Box>
+      )}
     </Flex>
   )
 }

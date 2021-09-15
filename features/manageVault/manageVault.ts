@@ -4,10 +4,14 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
+import { VaultType } from 'features/generalManageVault/generalManageVault'
+import { SaveVaultType } from 'features/generalManageVault/vaultTypeLocalStorage'
+import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
-import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
+import { catchError, first, map, scan, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
@@ -87,7 +91,10 @@ function apply(state: ManageVaultState, change: ManageVaultChange) {
   return applyManageVaultSummary(s10)
 }
 
-export type ManageVaultEditingStage = 'collateralEditing' | 'daiEditing'
+export type ManageVaultEditingStage =
+  | 'collateralEditing'
+  | 'daiEditing'
+  | 'multiplyTransitionEditing'
 
 export type ManageVaultStage =
   | ManageVaultEditingStage
@@ -111,9 +118,16 @@ export type ManageVaultStage =
   | 'manageInProgress'
   | 'manageFailure'
   | 'manageSuccess'
+  | 'multiplyTransitionWaitingForConfirmation'
+  | 'multiplyTransitionInProgress'
+  | 'multiplyTransitionFailure'
+  | 'multiplyTransitionSuccess'
+
+export type MainAction = 'depositGenerate' | 'withdrawPayback'
 
 export interface MutableManageVaultState {
   stage: ManageVaultStage
+  mainAction: MainAction
   originalEditingStage: ManageVaultEditingStage
   showDepositAndGenerateOption: boolean
   showPaybackAndWithdrawOption: boolean
@@ -144,7 +158,8 @@ export interface ManageVaultEnvironment {
 interface ManageVaultFunctions {
   progress?: () => void
   regress?: () => void
-  toggle?: () => void
+  toggle?: (stage: ManageVaultEditingStage) => void
+  setMainAction?: (action: MainAction) => void
   toggleDepositAndGenerateOption?: () => void
   togglePaybackAndWithdrawOption?: () => void
   updateDeposit?: (depositAmount?: BigNumber) => void
@@ -165,7 +180,9 @@ interface ManageVaultFunctions {
   setDaiAllowanceAmountUnlimited?: () => void
   setDaiAllowanceAmountToPaybackAmount?: () => void
   resetDaiAllowanceAmount?: () => void
+  clear: () => void
   injectStateOverride: (state: Partial<MutableManageVaultState>) => void
+  toggleMultiplyTransition?: () => void
 }
 
 interface ManageVaultTxInfo {
@@ -188,14 +205,63 @@ export type ManageVaultState = MutableManageVaultState &
     errorMessages: ManageVaultErrorMessage[]
     warningMessages: ManageVaultWarningMessage[]
     summary: ManageVaultSummary
+    initialTotalSteps: number
+    totalSteps: number
+    currentStep: number
   }
+
+function saveVaultType(
+  saveVaultType$: SaveVaultType,
+  change: (ch: ManageVaultChange) => void,
+  state: ManageVaultState,
+) {
+  // assume that user went through ToS flow and can interact with application
+  const token = jwtAuthGetToken(state.account as string)
+
+  if (token) {
+    saveVaultType$(state.vault.id, token, VaultType.Multiply)
+      .pipe<ManageVaultChange>(
+        map(() => {
+          window.location.reload()
+          return { kind: 'multiplyTransitionSuccess' } as ManageVaultChange
+        }),
+        catchError(() => of({ kind: 'multiplyTransitionFailure' } as ManageVaultChange)),
+        startWith({ kind: 'multiplyTransitionInProgress' } as ManageVaultChange),
+      )
+      .subscribe((ch) => change(ch))
+  } else {
+    change({ kind: 'multiplyTransitionFailure' })
+  }
+}
 
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
+  saveVaultType$: SaveVaultType,
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ): ManageVaultState {
+  if (state.stage === 'multiplyTransitionEditing') {
+    return {
+      ...state,
+      toggle: (stage) => change({ kind: 'toggleEditing', stage }),
+      progress: () => change({ kind: 'progressMultiplyTransition' }),
+      regress: () => change({ kind: 'backToEditing' }),
+    }
+  }
+
+  if (
+    state.stage === 'multiplyTransitionWaitingForConfirmation' ||
+    state.stage === 'multiplyTransitionFailure'
+  ) {
+    return {
+      ...state,
+      toggle: (stage) => change({ kind: 'toggleEditing', stage }),
+      progress: () => saveVaultType(saveVaultType$, change, state),
+      regress: () => change({ kind: 'backToEditing' }),
+    }
+  }
+
   if (state.stage === 'collateralEditing' || state.stage === 'daiEditing') {
     return {
       ...state,
@@ -227,8 +293,9 @@ function addTransitions(
         change({
           kind: 'togglePaybackAndWithdrawOption',
         }),
-      toggle: () => change({ kind: 'toggleEditing' }),
+      toggle: (stage) => change({ kind: 'toggleEditing', stage }),
       progress: () => change({ kind: 'progressEditing' }),
+      setMainAction: (mainAction: MainAction) => change({ kind: 'mainAction', mainAction }),
     }
   }
 
@@ -325,6 +392,7 @@ function addTransitions(
 
 export const defaultMutableManageVaultState: MutableManageVaultState = {
   stage: 'collateralEditing' as ManageVaultStage,
+  mainAction: 'depositGenerate',
   originalEditingStage: 'collateralEditing' as ManageVaultEditingStage,
   showDepositAndGenerateOption: false,
   showPaybackAndWithdrawOption: false,
@@ -343,6 +411,7 @@ export function createManageVault$(
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   vault$: (id: BigNumber) => Observable<Vault>,
+  saveVaultType$: SaveVaultType,
   id: BigNumber,
 ): Observable<ManageVaultState> {
   return context$.pipe(
@@ -380,6 +449,12 @@ export function createManageVault$(
                     return change$.next({ kind: 'injectStateOverride', stateToOverride })
                   }
 
+                  const initialTotalSteps = calculateInitialTotalSteps(
+                    proxyAddress,
+                    vault.token,
+                    collateralAllowance,
+                  )
+
                   const initialState: ManageVaultState = {
                     ...defaultMutableManageVaultState,
                     ...defaultManageVaultCalculations,
@@ -397,6 +472,10 @@ export function createManageVault$(
                     errorMessages: [],
                     warningMessages: [],
                     summary: defaultManageVaultSummary,
+                    initialTotalSteps,
+                    totalSteps: initialTotalSteps,
+                    currentStep: 1,
+                    clear: () => change({ kind: 'clear' }),
                     injectStateOverride,
                   }
 
@@ -413,7 +492,14 @@ export function createManageVault$(
                     scan(apply, initialState),
                     map(validateErrors),
                     map(validateWarnings),
-                    map(curry(addTransitions)(txHelpers$, connectedProxyAddress$, change)),
+                    map(
+                      curry(addTransitions)(
+                        txHelpers$,
+                        connectedProxyAddress$,
+                        saveVaultType$,
+                        change,
+                      ),
+                    ),
                   )
                 }),
               )

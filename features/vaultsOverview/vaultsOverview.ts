@@ -1,4 +1,4 @@
-import { Vault } from 'blockchain/vaults'
+import { VaultWithType } from 'blockchain/vaults'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
@@ -11,23 +11,36 @@ import { vaultsWithFilter$, VaultsWithFilters } from './vaultsFilters'
 import { getVaultsSummary, VaultSummary } from './vaultSummary'
 
 export interface VaultsOverview {
-  vaults: VaultsWithFilters
+  vaults: {
+    borrow: VaultsWithFilters
+    multiply: VaultsWithFilters
+  }
   vaultSummary: VaultSummary | undefined
   ilksWithFilters: IlksWithFilters
 }
 
 export function createVaultsOverview$(
-  vaults$: (address: string) => Observable<Vault[]>,
+  vaults$: (address: string) => Observable<VaultWithType[]>,
   ilksListWithBalances$: Observable<IlkWithBalance[]>,
   address: string,
 ): Observable<VaultsOverview> {
+  const vaultsAddress$ = vaults$(address)
+
   return combineLatest(
-    vaultsWithFilter$(vaults$(address)),
-    vaults$(address).pipe(map(getVaultsSummary)),
+    vaultsWithFilter$(
+      vaults$(address).pipe(map((vaults) => vaults.filter((vault) => vault.type === 'borrow'))),
+    ),
+    vaultsWithFilter$(
+      vaults$(address).pipe(map((vaults) => vaults.filter((vault) => vault.type === 'multiply'))),
+    ),
+    vaultsAddress$.pipe(map(getVaultsSummary)),
     ilksWithFilter$(ilksListWithBalances$),
   ).pipe(
-    map(([vaults, vaultSummary, ilksWithFilters]) => ({
-      vaults,
+    map(([borrow, multiply, vaultSummary, ilksWithFilters]) => ({
+      vaults: {
+        borrow,
+        multiply,
+      },
       vaultSummary,
       ilksWithFilters,
     })),
