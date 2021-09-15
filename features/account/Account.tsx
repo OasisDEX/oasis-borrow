@@ -169,7 +169,7 @@ export function AccountModal({ close }: ModalProps) {
   const { account, connectionKind } = web3Context
 
   return (
-    <Modal close={close} sx={{ maxWidth: '530px', margin: '0px auto' }}>
+    <Modal id="AccountModal" close={close} sx={{ maxWidth: '530px', margin: '0px auto' }}>
       <ModalCloseIcon {...{ close }} />
       <Grid gap={2} pt={3} mt={1}>
         <Box
