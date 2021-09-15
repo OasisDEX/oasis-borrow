@@ -80,7 +80,9 @@ function overflowClickHandler(onClick: () => void, event: MouseEvent) {
       (node: any) => node.id === 'modalContainer',
     )
     if (hasClickedOnOverlay) {
-      onClick()
+      if (onClick) {
+        onClick()
+      }
     }
   }
 }
