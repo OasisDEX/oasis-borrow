@@ -26,7 +26,7 @@ export function VaultFormContainer({
     }
   }, [])
 
-  const onClose = () => setVaultFormOpened(false);
+  const onClose = () => setVaultFormOpened(false)
 
   return (
     <VaultFormPortal mobile={breakpoint === 0}>
@@ -49,7 +49,7 @@ export function VaultFormContainer({
       >
         {breakpoint === 0 && (
           <Box>
-            {vaultFormOpened && <ModalHTMLOverflow close={onClose}/>}
+            {vaultFormOpened && <ModalHTMLOverflow close={onClose} />}
             <Box
               sx={{
                 display: ['flex', 'none'],
