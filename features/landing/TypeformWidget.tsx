@@ -17,7 +17,7 @@ export function TypeformWidget() {
     <div
       dangerouslySetInnerHTML={{
         __html:
-          '<div data-tf-sidetab="y51linBb" data-tf-width="320" data-tf-height="400" data-tf-custom-icon="https://images.typeform.com/images/VAuKfRAjPyBb" data-tf-button-color="#575CFE" data-tf-button-text="Feedback" style="all:unset;"></div>',
+          '<div data-tf-sidetab="y51linBb" data-tf-width="320" data-tf-height="400" data-tf-custom-icon="https://images.typeform.com/images/VAuKfRAjPyBb" data-tf-button-color="#FFFFFF" data-tf-button-text="Feedback" style="all:unset;"></div>',
       }}
     />
   )
