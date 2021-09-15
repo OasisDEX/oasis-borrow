@@ -63,7 +63,7 @@ export function WithAnnouncementLayout({
         <Container variant="announcement">
           <GenericAnnouncement
             text="This is test banner"
-            discordLink="https://discord.com/channels/837076147694207067/846839026651889675"
+            discordLink="https://discord.gg/Kc2bBB59GC"
             link="https://blog.oasis.app/the-future-of-oasis-app/"
             linkText="The future"
           />
