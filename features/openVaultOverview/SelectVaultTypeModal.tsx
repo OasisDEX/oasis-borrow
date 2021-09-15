@@ -38,7 +38,6 @@ export function SelectVaultTypeModal({ ilk, token, liquidationRatio, close }: Mo
               token,
             })}
           </Text>
-<<<<<<< HEAD
           <Box onClick={close}>
             <AppLink
               variant="primary"
@@ -48,15 +47,6 @@ export function SelectVaultTypeModal({ ilk, token, liquidationRatio, close }: Mo
               {t('select-vault-type.multiply.button', { token })}
             </AppLink>
           </Box>
-=======
-          <AppLink
-            variant="primary"
-            href={`/vaults/open-multiply/${ilk}`}
-            sx={{ display: 'block', textAlign: 'center', mb: 3 }}
-          >
-            {t('select-vault-type.multiply.button', { token })}
-          </AppLink>
->>>>>>> main
         </Box>
         <Divider />
 
@@ -70,7 +60,6 @@ export function SelectVaultTypeModal({ ilk, token, liquidationRatio, close }: Mo
               token,
             })}
           </Text>
-<<<<<<< HEAD
           <Box onClick={close}>
             <AppLink
               variant="primary"
@@ -80,15 +69,6 @@ export function SelectVaultTypeModal({ ilk, token, liquidationRatio, close }: Mo
               {t('select-vault-type.borrow.button', { token })}
             </AppLink>
           </Box>
-=======
-          <AppLink
-            variant="primary"
-            href={`/vaults/open/${ilk}`}
-            sx={{ display: 'block', textAlign: 'center' }}
-          >
-            {t('select-vault-type.borrow.button', { token })}
-          </AppLink>
->>>>>>> main
         </Box>
       </Grid>
     </Modal>
