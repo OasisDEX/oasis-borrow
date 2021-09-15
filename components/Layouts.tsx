@@ -62,11 +62,10 @@ export function WithAnnouncementLayout({
       {showAnnouncement && (
         <Container variant="announcement">
           <GenericAnnouncement
-            text="Welcome to the new Oasis.app. We are thrilled to have you here. Please check the new stuff. How long can it go is that I
-        m curious"
+            text="This is test banner"
             discordLink="https://discord.com/channels/837076147694207067/846839026651889675"
-            link="https://blog.ethereum.org/2015/11/15/merkling-in-ethereum/"
-            linkText="Check blog post"
+            link="https://blog.oasis.app/the-future-of-oasis-app/"
+            linkText="The future"
           />
         </Container>
       )}
@@ -87,7 +86,7 @@ export function AppLayout({ children }: WithChildren) {
     <>
       <WithAnnouncementLayout
         sx={{ zIndex: 2 }}
-        showAnnouncement={false}
+        showAnnouncement={true}
         footer={<Footer />}
         header={<AppHeader />}
       >
@@ -115,7 +114,7 @@ export function LandingPageLayout({ children }: WithChildren) {
       <WithAnnouncementLayout
         header={<AppHeader />}
         footer={<Footer />}
-        showAnnouncement={false}
+        showAnnouncement={true}
         variant="landingContainer"
         sx={{ position: 'relative' }}
       >
