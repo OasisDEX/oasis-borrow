@@ -530,16 +530,19 @@ export function createProxy(
     .subscribe((ch) => change(ch))
 }
 
-
-const fixAddressIfEmpty = function(to : string, proxy: string | undefined): string{
-  if(proxy){
-    return proxy;
+function fixAddressIfEmpty(to: string, proxy: string | undefined): string {
+  if (proxy) {
+    return proxy
   }
-  throw new Error("Invalid proxy address");
+  throw new Error('Invalid proxy address')
 }
 
-const fixDataIfEmpty = function(data : string): string{
-  return "0x";
+function fixDataIfEmpty(data: string): string {
+  if (!data) {
+    return '0x'
+  } else {
+    return data
+  }
 }
 
 export function closeVault(
@@ -579,7 +582,8 @@ export function closeVault(
               token,
               ilk,
               id,
-              exchangeAddress: swap?.status === 'SUCCESS' ? fixAddressIfEmpty(swap.tx.to, proxyAddress) : '',
+              exchangeAddress:
+                swap?.status === 'SUCCESS' ? fixAddressIfEmpty(swap.tx.to, proxyAddress) : '',
               exchangeData: swap?.status === 'SUCCESS' ? fixDataIfEmpty(swap.tx.data) : '',
               userAddress: account!,
               totalCollateral: lockedCollateral,

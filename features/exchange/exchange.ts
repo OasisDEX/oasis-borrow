@@ -6,6 +6,7 @@ import { Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, distinctUntilChanged, map, retry, switchMap, tap } from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
+
 import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 
 const API_ENDPOINT = `https://oasis.api.enterprise.1inch.exchange/v3.0/1/swap`
@@ -46,15 +47,13 @@ type TokenMetadata = {
 }
 
 export type QuoteResult = {
-
-  status: string,
-  fromTokenAddress: string,
-  toTokenAddress: string,
-  collateralAmount: BigNumber,
-  daiAmount: BigNumber,
-  tokenPrice:BigNumber,
-  tx:Tx ,
-
+  status: string
+  fromTokenAddress: string
+  toTokenAddress: string
+  collateralAmount: BigNumber
+  daiAmount: BigNumber
+  tokenPrice: BigNumber
+  tx: Tx
 }
 
 export function getTokenMetaData(
@@ -77,7 +76,7 @@ export function getQuote$(
   amount: BigNumber, // This is always the receiveAtLeast amount of tokens we want to exchange from
   slippage: BigNumber,
   action: ExchangeAction,
-) : Observable<QuoteResult> {
+): Observable<QuoteResult> {
   const fromTokenAddress = action === 'BUY_COLLATERAL' ? dai.address : collateral.address
   const toTokenAddress = action === 'BUY_COLLATERAL' ? collateral.address : dai.address
 
@@ -96,32 +95,31 @@ export function getQuote$(
     protocols: 'UNISWAP_V3,PMM4,UNISWAP_V2,SUSHI,CURVE,PSM',
   })
 
-  let responseBase = {
+  const responseBase = {
     status: 'SUCCESS',
     fromTokenAddress,
     toTokenAddress,
   }
 
-  if(amount.isZero()){
+  if (amount.isZero()) {
     //this is not valid 1inch call
-    return of( {
+    return of({
       ...responseBase,
 
       collateralAmount: amountFromWei(new BigNumber(0)),
       daiAmount: amountFromWei(new BigNumber(0)),
-      tokenPrice:new BigNumber(0),
-      tx: {//empty payload
-        data:"",
-        from:"",
-        gas:0,
-        gasPrice:"0",
-        to:"",
-        value:"0"
-      }
-    } as QuoteResult);
+      tokenPrice: new BigNumber(0),
+      tx: {
+        //empty payload
+        data: '',
+        from: '',
+        gas: 0,
+        gasPrice: '0',
+        to: '',
+        value: '0',
+      },
+    } as QuoteResult)
   }
-
-
 
   return ajax(`${API_ENDPOINT}?${searchParams.toString()}`).pipe(
     tap((response) => {
@@ -157,7 +155,7 @@ export function getQuote$(
       }
     }),
     retry(3),
-    catchError(() => of({ status: 'ERROR'} as QuoteResult)),
+    catchError(() => of({ status: 'ERROR' } as QuoteResult)),
   )
 }
 
