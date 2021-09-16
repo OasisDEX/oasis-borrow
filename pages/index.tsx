@@ -1,5 +1,5 @@
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
-import { MarketingLayout } from 'components/Layouts'
+import { LandingPageLayout } from 'components/Layouts'
 import { LandingView } from 'features/landing/LandingView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -18,8 +18,5 @@ export default function LandingPage() {
   )
 }
 
-LandingPage.layout = MarketingLayout
-LandingPage.layoutProps = {
-  variant: 'landingContainer',
-}
+LandingPage.layout = LandingPageLayout
 LandingPage.theme = 'Landing'
