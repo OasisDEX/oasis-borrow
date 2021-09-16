@@ -196,8 +196,9 @@ function LanguageDropdown({ sx }: { sx?: SxStyleProp }) {
     <HeaderDropdown title={t(`lang-dropdown.${i18n.language}`)} sx={sx}>
       {locales
         .filter((lang) => lang !== i18n.language)
-        .map((lang) => (
+        .map((lang, index) => (
           <Text
+            key={index}
             variant="links.nav"
             sx={{ fontWeight: 'body' }}
             onClick={() => router.push(router.asPath, router.asPath, { locale: lang })}
