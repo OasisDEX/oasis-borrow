@@ -8,6 +8,7 @@ import {
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { AppSpinner } from 'helpers/AppSpinner'
+import { GasEstimationStatus } from 'helpers/form'
 import {
   formatAmount,
   formatCryptoBalance,
@@ -38,12 +39,17 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
     buyingCollateral,
     buyingCollateralUSD,
     marketPrice,
+    gasEstimationStatus,
+    gasEstimationUsd,
   } = props
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
   // starting zero balance for UI to show arrows
   const zeroBalance = formatCryptoBalance(zero)
   const { t } = useTranslation()
+
+  const gasFee =
+    gasEstimationStatus === GasEstimationStatus.calculated ? gasEstimationUsd : undefined
 
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Order information">
@@ -129,13 +135,13 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
         }
       />
       <VaultChangesInformationItem
-        label={'Transaction fee (excl. gas)'}
+        label={'Transaction fee'}
         value={
           <Flex
             sx={{ alignItems: 'center', cursor: 'pointer' }}
             onClick={() => setShowFees(!showFees)}
           >
-            ${formatAmount(txFees, 'USD')}{' '}
+            ${formatAmount(txFees.plus(gasFee || zero), 'USD')}{' '}
             <Icon
               name={`chevron_${showFees ? 'up' : 'down'}`}
               size="auto"
@@ -155,6 +161,12 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
             label={'Oasis fee'}
             value={`$${formatAmount(oazoFee, 'USD')}`}
           />
+          {gasFee && (
+            <VaultChangesInformationItem
+              label={'Gas fee'}
+              value={`$${formatAmount(gasFee, 'USD')}`}
+            />
+          )}
         </Grid>
       )}
     </VaultChangesInformationContainer>

@@ -13,7 +13,7 @@ import {
 } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Context } from 'blockchain/network'
-import { TxHelpers } from 'components/AppContext'
+import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
@@ -604,4 +604,100 @@ export function closeVault(
       catchError(() => of({ kind: 'manageFailure' } as ManageMultiplyVaultChange)),
     )
     .subscribe((ch) => change(ch))
+}
+
+export function applyEstimateGas(
+  addGasEstimation$: AddGasEstimationFunction,
+  state: ManageMultiplyVaultState,
+): Observable<ManageMultiplyVaultState> {
+  return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
+    const {
+      proxyAddress,
+      generateAmount,
+      depositAmount,
+      withdrawAmount,
+      paybackAmount,
+      shouldPaybackAll,
+      vault: { ilk, token, id, lockedCollateral, debt, debtOffset },
+      requiredCollRatio,
+      debtDelta,
+      collateralDelta,
+      account,
+      swap,
+      slippage,
+      exchangeAction,
+      closeVaultTo,
+      closeToDaiParams,
+      closeToCollateralParams,
+    } = state
+
+    if (proxyAddress) {
+      if (requiredCollRatio) {
+        return estimateGas(adjustMultiplyVault, {
+          kind: TxMetaKind.adjustPosition,
+          depositCollateral: depositAmount || zero,
+          requiredDebt: debtDelta?.abs() || zero,
+          borrowedCollateral: collateralDelta?.abs() || zero,
+          userAddress: account!,
+          proxyAddress: proxyAddress!,
+          exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
+          exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
+          slippage: slippage,
+          action: exchangeAction!,
+          token,
+          id,
+          ilk,
+        })
+      } else {
+        if (state.otherAction === 'closeVault') {
+          const { fromTokenAmount, toTokenAmount, minToTokenAmount } =
+            closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
+
+          return estimateGas(closeVaultCall, {
+            kind: TxMetaKind.closeVault,
+            closeTo: closeVaultTo!,
+            token,
+            ilk,
+            id,
+            exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
+            exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
+            userAddress: account!,
+            totalCollateral: lockedCollateral,
+            totalDebt: debt.plus(debtOffset),
+            proxyAddress: proxyAddress!,
+            fromTokenAmount,
+            toTokenAmount,
+            minToTokenAmount,
+          })
+        } else {
+          const isDepositAndGenerate = depositAmount || generateAmount
+
+          if (isDepositAndGenerate) {
+            return estimateGas(depositAndGenerate, {
+              kind: TxMetaKind.depositAndGenerate,
+              generateAmount: generateAmount || zero,
+              depositAmount: depositAmount || zero,
+              proxyAddress: proxyAddress!,
+              ilk,
+              token,
+              id,
+            })
+          } else {
+            return estimateGas(withdrawAndPayback, {
+              kind: TxMetaKind.withdrawAndPayback,
+              withdrawAmount: withdrawAmount || zero,
+              paybackAmount: paybackAmount || zero,
+              proxyAddress: proxyAddress!,
+              ilk,
+              token,
+              id,
+              shouldPaybackAll,
+            })
+          }
+        }
+      }
+    }
+
+    return undefined
+  })
 }
