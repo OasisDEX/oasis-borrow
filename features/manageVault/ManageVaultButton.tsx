@@ -184,7 +184,10 @@ export function ManageVaultButton(props: ManageVaultState) {
           trackEvents()
           handleProgress(e)
         }}
-        disabled={!canProgress || !ALLOWED_MULTIPLY_TOKENS.includes(vault.token)}
+        disabled={
+          !canProgress ||
+          (stage === 'multiplyTransitionEditing' && !ALLOWED_MULTIPLY_TOKENS.includes(vault.token))
+        }
       >
         {isLoadingStage ? (
           <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
