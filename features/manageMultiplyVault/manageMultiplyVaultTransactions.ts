@@ -530,21 +530,6 @@ export function createProxy(
     .subscribe((ch) => change(ch))
 }
 
-function fixAddressIfEmpty(to: string, proxy: string | undefined): string {
-  if (proxy) {
-    return proxy
-  }
-  throw new Error('Invalid proxy address')
-}
-
-function fixDataIfEmpty(data: string): string {
-  if (!data) {
-    return '0x'
-  } else {
-    return data
-  }
-}
-
 export function closeVault(
   txHelpers$: Observable<TxHelpers>,
   { tokens, exchange }: Context,
@@ -586,8 +571,8 @@ export function closeVault(
                 ilk,
                 id,
                 exchangeAddress:
-                  swap?.status === 'SUCCESS' ? fixAddressIfEmpty(swap.tx.to, proxyAddress) : '',
-                exchangeData: swap?.status === 'SUCCESS' ? fixDataIfEmpty(swap.tx.data) : '',
+                  swap?.status === 'SUCCESS' ? swap.tx.to : '',
+                exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
                 userAddress: account!,
                 totalCollateral: lockedCollateral,
                 totalDebt: debt.plus(debtOffset),
