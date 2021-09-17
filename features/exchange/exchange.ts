@@ -101,7 +101,7 @@ export function getQuote$(
     toTokenAddress,
   }
 
-  if (amount.isZero()) {
+  if (amount.isZero() || amount.isNaN() || !amount.isFinite()) {
     //this is not valid 1inch call
     return of({
       ...responseBase,
