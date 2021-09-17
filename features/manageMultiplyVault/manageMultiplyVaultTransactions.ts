@@ -576,7 +576,9 @@ export function closeVault(
         ).pipe(
           first(),
           switchMap((swap) => {
+            console.log('In close', swap.tx.to)
             if (swap.tx.to) {
+              console.log('closeVaultCall')
               return sendWithGasEstimation(closeVaultCall, {
                 kind: TxMetaKind.closeVault,
                 closeTo: closeVaultTo!,
@@ -615,6 +617,7 @@ export function closeVault(
                 ),
               )
             } else {
+              console.log(`withdrawAndPayback withdrawAmount=${lockedCollateral} `)
               const shouldPaybackAll = true
               return sendWithGasEstimation(withdrawAndPayback, {
                 kind: TxMetaKind.withdrawAndPayback,
