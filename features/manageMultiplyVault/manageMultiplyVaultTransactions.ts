@@ -1,4 +1,4 @@
-import { TxStatus } from '@oasisdex/transactions'
+import {  TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
@@ -561,77 +561,42 @@ export function closeVault(
         ).pipe(
           first(),
           switchMap((swap) => {
-            if (swap.tx.to) {
-              return sendWithGasEstimation(closeVaultCall, {
-                kind: TxMetaKind.closeVault,
-                closeTo: closeVaultTo!,
-                token,
-                ilk,
-                id,
-                exchangeAddress:
-                  swap?.status === 'SUCCESS' ? swap.tx.to : '',
-                exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
-                userAddress: account!,
-                totalCollateral: lockedCollateral,
-                totalDebt: debt.plus(debtOffset),
-                proxyAddress: proxyAddress!,
-                fromTokenAmount,
-                toTokenAmount,
-                minToTokenAmount,
-              }).pipe(
-                transactionToX<ManageMultiplyVaultChange, WithdrawAndPaybackData>(
-                  { kind: 'manageWaitingForApproval' },
-                  (txState) =>
-                    of({
-                      kind: 'manageInProgress',
-                      manageTxHash: (txState as any).txHash as string,
-                    }),
-                  (txState) => {
-                    return of({
-                      kind: 'manageFailure',
-                      txError:
-                        txState.status === TxStatus.Error ||
-                        txState.status === TxStatus.CancelledByTheUser
-                          ? txState.error
-                          : undefined,
-                    })
-                  },
-                  () => of({ kind: 'manageSuccess' }),
-                ),
-              )
-            } else {
-              const shouldPaybackAll = true
-              return sendWithGasEstimation(withdrawAndPayback, {
-                kind: TxMetaKind.withdrawAndPayback,
-                withdrawAmount: lockedCollateral,
-                paybackAmount: new BigNumber(0),
-                proxyAddress: proxyAddress!,
-                ilk,
-                token,
-                id,
-                shouldPaybackAll,
-              }).pipe(
-                transactionToX<ManageMultiplyVaultChange, WithdrawAndPaybackData>(
-                  { kind: 'manageWaitingForApproval' },
-                  (txState) =>
-                    of({
-                      kind: 'manageInProgress',
-                      manageTxHash: (txState as any).txHash as string,
-                    }),
-                  (txState) => {
-                    return of({
-                      kind: 'manageFailure',
-                      txError:
-                        txState.status === TxStatus.Error ||
-                        txState.status === TxStatus.CancelledByTheUser
-                          ? txState.error
-                          : undefined,
-                    })
-                  },
-                  () => of({ kind: 'manageSuccess' }),
-                ),
-              )
-            }
+            return sendWithGasEstimation(closeVaultCall, {
+              kind: TxMetaKind.closeVault,
+              closeTo: closeVaultTo!,
+              token,
+              ilk,
+              id,
+              exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
+              exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
+              userAddress: account!,
+              totalCollateral: lockedCollateral,
+              totalDebt: debt.plus(debtOffset),
+              proxyAddress: proxyAddress!,
+              fromTokenAmount,
+              toTokenAmount,
+              minToTokenAmount,
+            }).pipe(
+              transactionToX<ManageMultiplyVaultChange, WithdrawAndPaybackData>(
+                { kind: 'manageWaitingForApproval' },
+                (txState) =>
+                  of({
+                    kind: 'manageInProgress',
+                    manageTxHash: (txState as any).txHash as string,
+                  }),
+                (txState) => {
+                  return of({
+                    kind: 'manageFailure',
+                    txError:
+                      txState.status === TxStatus.Error ||
+                      txState.status === TxStatus.CancelledByTheUser
+                        ? txState.error
+                        : undefined,
+                  })
+                },
+                () => of({ kind: 'manageSuccess' }),
+              ),
+            )
           }),
         ),
       ),
