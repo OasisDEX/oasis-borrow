@@ -8,6 +8,7 @@ export type ContentSectionId =
   | 'buying-dai'
   | 'saving-lending-dai'
   | 'using-oasis'
+  | 'using-multiply'
   | 'security'
   | 'using-daiwallet'
 
