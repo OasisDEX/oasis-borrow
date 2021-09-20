@@ -596,8 +596,8 @@ export function closeVault(
                 },
                 () => of({ kind: 'manageSuccess' }),
               ),
-            )
-          )
+            ),
+          ),
         ),
       ),
       startWith({ kind: 'manageWaitingForApproval' } as ManageMultiplyVaultChange),
