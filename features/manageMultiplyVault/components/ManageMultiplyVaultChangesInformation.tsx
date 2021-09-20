@@ -2,13 +2,14 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex, Grid, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import {
+  getEstimatedGasFeeText,
   VaultChangesInformationArrow,
   VaultChangesInformationContainer,
+  VaultChangesInformationEstimatedGasFee,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { AppSpinner } from 'helpers/AppSpinner'
-import { GasEstimationStatus } from 'helpers/form'
 import {
   formatAmount,
   formatCryptoBalance,
@@ -46,16 +47,11 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
     collateralDelta,
     collateralDeltaUSD,
     originalEditingStage,
-    gasEstimationStatus,
-    gasEstimationUsd,
   } = props
   const collRatioColor = getCollRatioColor(props, collateralizationRatio)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
   const isCloseAction = originalEditingStage === 'otherActions' && otherAction === 'closeVault'
-
-  const gasFee =
-    gasEstimationStatus === GasEstimationStatus.calculated ? gasEstimationUsd : undefined
 
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer
@@ -156,13 +152,14 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
         }
       />
       <VaultChangesInformationItem
-        label={'Transaction fee'}
+        label={'Fees + (estimated gas)'}
         value={
           <Flex
             sx={{ alignItems: 'center', cursor: 'pointer' }}
             onClick={() => setShowFees(!showFees)}
           >
-            ${formatAmount(fees.plus(gasFee || zero), 'USD')}{' '}
+            {`${formatAmount(fees, 'USD')} +`}
+            <Text ml={1}>{getEstimatedGasFeeText(props, true)}</Text>
             <Icon
               name={`chevron_${showFees ? 'up' : 'down'}`}
               size="auto"
@@ -182,12 +179,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
             label={'Oasis fee'}
             value={`$${formatAmount(oazoFee, 'USD')}`}
           />
-          {gasFee && (
-            <VaultChangesInformationItem
-              label={'Gas fee'}
-              value={`$${formatAmount(gasFee, 'USD')}`}
-            />
-          )}
+          <VaultChangesInformationEstimatedGasFee {...props} />
         </Grid>
       )}
     </VaultChangesInformationContainer>

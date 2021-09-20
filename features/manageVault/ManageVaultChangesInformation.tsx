@@ -1,23 +1,20 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import {
   VaultChangesInformationArrow,
   VaultChangesInformationContainer,
+  VaultChangesInformationEstimatedGasFee,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { ManageVaultState } from 'features/manageVault/manageVault'
-import { GasEstimationStatus } from 'helpers/form'
-import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import React, { useState } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Grid } from 'theme-ui'
 
 export function ManageVaultChangesInformation(props: ManageVaultState) {
   const { t } = useTranslation()
-  const [showFees, setShowFees] = useState(false)
   const {
     afterCollateralizationRatio,
     afterLockedCollateral,
@@ -35,14 +32,9 @@ export function ManageVaultChangesInformation(props: ManageVaultState) {
       token,
       daiYieldFromLockedCollateral,
     },
-    gasEstimationStatus,
-    gasEstimationUsd,
   } = props
   const collRatioColor = getCollRatioColor(props, collateralizationRatio)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
-
-  const gasFee =
-    gasEstimationStatus === GasEstimationStatus.calculated ? gasEstimationUsd : undefined
 
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Vault Changes">
@@ -116,35 +108,7 @@ export function ManageVaultChangesInformation(props: ManageVaultState) {
           </Flex>
         }
       />
-      {gasFee && (
-        <>
-          <VaultChangesInformationItem
-            label={'Transaction fee (excl. gas)'}
-            value={
-              <Flex
-                sx={{ alignItems: 'center', cursor: 'pointer' }}
-                onClick={() => setShowFees(!showFees)}
-              >
-                ${formatAmount(gasFee, 'USD')}{' '}
-                <Icon
-                  name={`chevron_${showFees ? 'up' : 'down'}`}
-                  size="auto"
-                  width="12px"
-                  sx={{ ml: 2 }}
-                />
-              </Flex>
-            }
-          />
-          {showFees && (
-            <Grid pl={3} gap={2}>
-              <VaultChangesInformationItem
-                label={'Gas fee'}
-                value={`$${formatAmount(gasFee, 'USD')}`}
-              />
-            </Grid>
-          )}
-        </>
-      )}
+      <VaultChangesInformationEstimatedGasFee {...props} />
     </VaultChangesInformationContainer>
   ) : null
 }
