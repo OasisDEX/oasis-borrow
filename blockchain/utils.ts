@@ -7,10 +7,12 @@ import ethAbi from 'web3-eth-abi'
 import { getToken } from './tokensMetadata'
 
 export function amountFromRay(amount: BigNumber): BigNumber {
+  BigNumber.config({ DECIMAL_PLACES: RAY.toString().length })
   return amount.div(RAY)
 }
 
 export function amountFromRad(amount: BigNumber): BigNumber {
+  BigNumber.config({ DECIMAL_PLACES: RAD.toString().length })
   return amount.div(RAD)
 }
 
