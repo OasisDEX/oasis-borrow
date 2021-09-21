@@ -35,10 +35,7 @@ export function ManageVaultChangesInformation(props: ManageVaultState) {
   } = props
   const collRatioColor = getCollRatioColor(props, collateralizationRatio)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
-  console.log('debt')
-  console.log(`${debt}`)
-  console.log('after')
-  console.log(`${afterDebt}`)
+
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Vault Changes">
       <VaultChangesInformationItem
