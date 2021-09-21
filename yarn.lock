@@ -3545,10 +3545,10 @@
   dependencies:
     bignumber.js "^9.0.1"
 
-"@oasisdex/web3-context@^0.0.22":
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/@oasisdex/web3-context/-/web3-context-0.0.22.tgz#2cbe1cfaf2878aae2d6c57244e1f41478cca9120"
-  integrity sha512-jbJHJGy4jL5Itp9ia6jHNmjd5Cci//aKeyXn4PCMVyY7kHIfpwgIjn4NxNBOPzTCUHOAihXxYGdlXspTvhUIgQ==
+"@oasisdex/web3-context@^0.0.25":
+  version "0.0.25"
+  resolved "https://registry.yarnpkg.com/@oasisdex/web3-context/-/web3-context-0.0.25.tgz#5b38e84616f445ce71da7ac142d38bea1027956e"
+  integrity sha512-2DOqDZ9o8//GPmD+jjsDoZAEVADz+fXGkWZIuRc/CMZ1UvITa0o6U4ZoipkHWZNaNwi4Mn4uDK1RpACJq2zxKw==
   dependencies:
     "@oasisdex/connectors" "^0.0.24"
     "@oasisdex/utils" "^0.0.8"
@@ -13275,7 +13275,7 @@ got@^7.1.0:
     url-parse-lax "^1.0.0"
     url-to-options "^1.0.1"
 
-graceful-fs@^4.1.10, graceful-fs@^4.1.9, graceful-fs@^4.2.3, graceful-fs@^4.2.4:
+graceful-fs@^4.1.10, graceful-fs@^4.1.9, graceful-fs@^4.2.4:
   version "4.2.6"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.6.tgz#ff040b2b0853b23c3d31027523706f1885d76bee"
   integrity sha512-nTnJ528pbqxYanhpDYsi4Rd8MAeaBA67+RZ10CM1m3bTAVFEDcd5AuA4a6W5YkGZ1iNXHzZz8T6TBKLeBuNriQ==

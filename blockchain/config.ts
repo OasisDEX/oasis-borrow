@@ -28,6 +28,7 @@ import {
   getCollateralTokens,
   getOsms,
 } from './addresses/addressesUtils'
+import { default as goerliAddresses } from './addresses/goerli.json'
 import { default as kovanAddresses } from './addresses/kovan.json'
 import { default as mainnetAddresses } from './addresses/mainnet.json'
 
@@ -53,9 +54,6 @@ const protoMain = {
     ...getCollateralTokens(mainnetAddresses),
     WETH: contractDesc(eth, mainnetAddresses['ETH']),
     DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
-    MKR: contractDesc(erc20, mainnetAddresses.MCD_GOV),
-    CHAI: contractDesc(erc20, '0x06af07097c9eeb7fd685c692751d5c66db49c215'),
-    // WBTC: contractDesc(erc20, '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'),
   } as Dictionary<ContractDesc>,
   joins: {
     ...getCollateralJoinContracts(mainnetAddresses),
@@ -113,9 +111,6 @@ const kovan: NetworkConfig = {
     WETH: contractDesc(eth, kovanAddresses['ETH']),
     DAI: contractDesc(erc20, kovanAddresses['MCD_DAI']),
     USDC: contractDesc(erc20, '0x198419c5c340e8De47ce4C0E4711A03664d42CB2'),
-    MKR: contractDesc(erc20, kovanAddresses.MCD_GOV),
-    CHAI: contractDesc(erc20, '0xb641957b6c29310926110848db2d464c8c3c3f38'),
-    // WBTC: contractDesc(erc20, '0xA08d982C2deBa0DbE433a9C6177a219E96CeE656'),
   },
   joins: {
     ...getCollateralJoinContracts(kovanAddresses),
@@ -153,6 +148,59 @@ const kovan: NetworkConfig = {
   cacheApi: 'https://oazo-bcache-kovan-staging.new.oasis.app/api/v1',
 }
 
+const goerli: NetworkConfig = {
+  id: '5',
+  name: 'goerli',
+  label: 'goerli',
+  infuraUrl: `https://goerli.infura.io/v3/${infuraProjectId}`,
+  infuraUrlWS: `wss://goerli.infura.io/ws/v3/${infuraProjectId}`,
+  safeConfirmations: 6,
+  otc: contractDesc(otc, '0x0000000000000000000000000000000000000000'),
+  collaterals: getCollaterals(goerliAddresses),
+  tokens: {
+    ...getCollateralTokens(goerliAddresses),
+    WETH: contractDesc(eth, goerliAddresses.ETH),
+    DAI: contractDesc(erc20, goerliAddresses.MCD_DAI),
+  },
+  joins: {
+    ...getCollateralJoinContracts(goerliAddresses),
+  },
+  getCdps: contractDesc(getCdps, goerliAddresses.GET_CDPS),
+  mcdOsms: getOsms(goerliAddresses),
+  mcdPot: contractDesc(mcdPot, goerliAddresses.MCD_POT),
+  mcdJug: contractDesc(mcdJug, goerliAddresses.MCD_JUG),
+  mcdEnd: contractDesc(mcdEnd, goerliAddresses.MCD_END),
+  mcdSpot: contractDesc(mcdSpot, goerliAddresses.MCD_SPOT),
+  mcdDog: contractDesc(mcdDog, goerliAddresses.MCD_DOG),
+  dssCdpManager: contractDesc(dssCdpManager, goerliAddresses.CDP_MANAGER),
+  otcSupportMethods: contractDesc(otcSupport, '0x0000000000000000000000000000000000000000'),
+  vat: contractDesc(vat, goerliAddresses.MCD_VAT),
+  mcdJoinDai: contractDesc(mcdJoinDai, goerliAddresses.MCD_JOIN_DAI),
+  dsProxyRegistry: contractDesc(dsProxyRegistry, goerliAddresses.PROXY_REGISTRY),
+  dsProxyFactory: contractDesc(dsProxyFactory, goerliAddresses.PROXY_FACTORY),
+  dssProxyActions: contractDesc(dssProxyActions, goerliAddresses.PROXY_ACTIONS),
+  // Currently this is not supported on Goerli - no deployed contract
+  dssMultiplyProxyActions: contractDesc(
+    dssMultiplyProxyActions,
+    getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
+  ),
+  // Currently this is not supported on Goerli - no deployed contract
+  exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''),
+  // Currently this is not supported on Goerli - no deployed contract
+  aaveLendingPool: '0x0000000000000000000000000000000000000000',
+  etherscan: {
+    url: 'https://goerli.etherscan.io',
+    apiUrl: 'https://api-goerli.etherscan.io/api',
+    apiKey: etherscanAPIKey || '',
+  },
+  taxProxyRegistries: [goerliAddresses.PROXY_REGISTRY],
+  dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, goerliAddresses.PROXY_ACTIONS_DSR),
+  magicLink: {
+    apiKey: '',
+  },
+  cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app',
+}
+
 const hardhat: NetworkConfig = {
   ...protoMain,
   id: '2137',
@@ -173,8 +221,8 @@ const hardhat: NetworkConfig = {
   ),
 }
 
-export const networksById = keyBy([main, kovan, hardhat], 'id')
-export const networksByName = keyBy([main, kovan, hardhat], 'name')
+export const networksById = keyBy([main, kovan, hardhat, goerli], 'id')
+export const networksByName = keyBy([main, kovan, hardhat, goerli], 'name')
 
 export const dappName = 'Oasis'
 export const pollingInterval = 12000
