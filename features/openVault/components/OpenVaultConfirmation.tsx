@@ -1,4 +1,4 @@
-import { TxStatusCardSuccess } from 'components/vault/TxStatusCard'
+import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Divider } from 'theme-ui'
@@ -20,6 +20,16 @@ export function OpenVaultConfirmation(props: OpenVaultState) {
 
 export function OpenVaultStatus({ stage, id, etherscan, openTxHash }: OpenVaultState) {
   const { t } = useTranslation()
+
+  if (stage === 'openInProgress') {
+    return (
+      <TxStatusCardProgress
+        text={t('creating-your-vault')}
+        etherscan={etherscan!}
+        txHash={openTxHash!}
+      />
+    )
+  }
 
   if (stage === 'openSuccess') {
     return (
