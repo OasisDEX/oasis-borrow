@@ -1,3 +1,4 @@
+import { ConnectionKind } from '@oasisdex/web3-context'
 import * as mixpanelBrowser from 'mixpanel-browser'
 import getConfig from 'next/config'
 
@@ -181,6 +182,8 @@ export const trackingEvents = {
     daiAmount: string,
     firstCDP: boolean | undefined,
     txHash: string,
+    network: string,
+    walletType: ConnectionKind,
   ) => {
     mixpanel.track('btn-click', {
       id: 'ConfirmTransaction',
@@ -190,6 +193,8 @@ export const trackingEvents = {
       daiAmount,
       firstCDP,
       txHash,
+      network,
+      walletType,
       page: Pages.VaultCreate,
       section: 'ConfirmVault',
     })
@@ -341,6 +346,8 @@ export const trackingEvents = {
     collateralAmount: string,
     daiAmount: string,
     txHash: string,
+    network: string,
+    walletType: ConnectionKind,
   ) => {
     mixpanel.track('btn-click', {
       id: 'ConfirmTransaction',
@@ -349,6 +356,8 @@ export const trackingEvents = {
       collateralAmount,
       daiAmount,
       txHash,
+      network,
+      walletType,
       page,
       section: 'ConfirmVault',
     })
