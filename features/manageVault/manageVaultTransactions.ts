@@ -9,7 +9,7 @@ import {
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { TxHelpers } from 'components/AppContext'
+import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
@@ -445,4 +445,50 @@ export function createProxy(
       ),
     )
     .subscribe((ch) => change(ch))
+}
+
+export function applyEstimateGas(
+  addGasEstimation$: AddGasEstimationFunction,
+  state: ManageVaultState,
+): Observable<ManageVaultState> {
+  return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
+    const {
+      proxyAddress,
+      generateAmount,
+      depositAmount,
+      withdrawAmount,
+      paybackAmount,
+      shouldPaybackAll,
+      vault: { ilk, token, id },
+    } = state
+
+    if (proxyAddress) {
+      const isDepositAndGenerate = depositAmount || generateAmount
+
+      if (isDepositAndGenerate) {
+        return estimateGas(depositAndGenerate, {
+          kind: TxMetaKind.depositAndGenerate,
+          generateAmount: generateAmount || zero,
+          depositAmount: depositAmount || zero,
+          proxyAddress: proxyAddress!,
+          ilk,
+          token,
+          id,
+        })
+      } else {
+        return estimateGas(withdrawAndPayback, {
+          kind: TxMetaKind.withdrawAndPayback,
+          withdrawAmount: withdrawAmount || zero,
+          paybackAmount: paybackAmount || zero,
+          proxyAddress: proxyAddress!,
+          ilk,
+          token,
+          id,
+          shouldPaybackAll,
+        })
+      }
+    }
+
+    return undefined
+  })
 }
