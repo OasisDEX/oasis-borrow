@@ -282,8 +282,6 @@ export function doGasEstimation<S extends HasGasEstimation>(
     first(),
     switchMap(([gasPrice, { ETH: ETHUsd, DAI: DAIUsd }, txHelpers]) => {
       if (state.gasEstimationStatus !== GasEstimationStatus.unset) {
-        console.log('!eq state')
-
         return of(state)
       }
 
@@ -292,8 +290,6 @@ export function doGasEstimation<S extends HasGasEstimation>(
       const gasCall = call(txHelpers, state)
 
       if (!gasPrice || !gasCall) {
-        console.log('no price or call')
-
         return of({
           ...stateWithoutGasEstimation,
           gasEstimationStatus: GasEstimationStatus.unset,
@@ -306,13 +302,6 @@ export function doGasEstimation<S extends HasGasEstimation>(
           const gasEstimationUsd = ETHUsd ? gasCost.times(ETHUsd) : undefined
           const gasEstimationDai =
             gasEstimationUsd && DAIUsd ? gasEstimationUsd.div(DAIUsd) : undefined
-
-          console.log(`
-            gasEstimation: ${gasEstimation},
-            gasCost: ${gasCost},
-            gasEstimationUsd: ${gasEstimationUsd},
-            
-            `)
 
           return {
             ...state,

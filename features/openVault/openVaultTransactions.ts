@@ -317,21 +317,6 @@ export function applyEstimateGas(
   return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
     const { proxyAddress, generateAmount, depositAmount, ilk, token } = state
 
-    // if (stage === 'proxyWaitingForConfirmation' || stage === 'proxyFailure') {
-    //   return estimateGas(setupDSProxy, { kind: TxMetaKind.setupDSProxy })
-    // }
-
-    // if (
-    //   proxyAddress &&
-    //   (stage === 'allowanceWaiting4Confirmation' || stage === 'allowanceFiasco')
-    // ) {
-    //   return estimateGas(approve, {
-    //     token: 'DAI',
-    //     spender: proxyAddress,
-    //     kind: TxMetaKind.approve,
-    //   })
-    // }
-
     if (proxyAddress && (generateAmount || depositAmount)) {
       return estimateGas(open, {
         kind: TxMetaKind.open,
