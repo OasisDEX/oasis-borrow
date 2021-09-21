@@ -46,21 +46,6 @@ export const InsufficientDaiAllowance = manageMultiplyVaultStory({
   paybackAmount: new BigNumber('600'),
 })
 
-// export const PotentialGenerateAmountLessThanDebtFloor = manageMultiplyVaultStory({
-//   title:
-//     'Warning is shown when the amount of collateral in the vault plus the amount a user is depositing does not satisfy the amount of debt necessary to exceed the debt floor',
-//   vault: {
-//     ilk: 'WBTC-A',
-//     collateral: one,
-//     debt: zero,
-//   },
-//   proxyAddress,
-// })({
-//   stage: 'otherActions',
-//   otherAction: 'depositCollateral',
-//   depositAmount: new BigNumber('4'),
-// })
-
 export const DebtIsLessThanDebtFloor = manageMultiplyVaultStory({
   title:
     'Warning is shown when the debt in the vault is non-zero and is less than the debt floor. This occurs when a the debt floor increases, leaving some vaults in a limited status in which the user can either close out their position or continue their position by depositing more collateral and generating more debt until it exceeds the new debt floor',

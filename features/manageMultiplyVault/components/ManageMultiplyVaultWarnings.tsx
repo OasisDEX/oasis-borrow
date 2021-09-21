@@ -19,10 +19,6 @@ export function ManageMultiplyVaultWarnings({
     const translate = (key: string, args?: Dictionary<any>) =>
       t(`manage-vault.warnings.${key}`, args)
     switch (message) {
-      case 'potentialGenerateAmountLessThanDebtFloor':
-        return translate('potential-generate-amount-less-than-debt-floor', {
-          debtFloor: formatCryptoBalance(debtFloor),
-        })
       case 'debtIsLessThanDebtFloor':
         return translate('debt-is-less-than-debt-floor', {
           debtFloor: formatCryptoBalance(debtFloor),
