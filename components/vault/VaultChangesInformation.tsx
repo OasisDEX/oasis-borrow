@@ -60,6 +60,7 @@ export function getEstimatedGasFeeText(
     case GasEstimationStatus.unknown:
     case GasEstimationStatus.unset:
     case undefined:
+      return 'n/a'
     case GasEstimationStatus.calculated:
       const textGas = `$${formatAmount(gasEstimationUsd as BigNumber, 'USD')}`
 
