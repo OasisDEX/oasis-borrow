@@ -59,6 +59,7 @@ export function createOpenVaultAnalytics$(
   )
 
   const depositAmountChanges: Observable<DepositAmountChange> = openVaultState$.pipe(
+    filter((state) => state.stage === 'editing'),
     map((state) => state.depositAmount),
     filter((amount) => !!amount),
     distinctUntilChanged(isEqual),
@@ -70,6 +71,7 @@ export function createOpenVaultAnalytics$(
   )
 
   const generateAmountChanges: Observable<GenerateAmountChange> = openVaultState$.pipe(
+    filter((state) => state.stage === 'editing'),
     map((state) => state.generateAmount),
     filter((amount) => !!amount),
     distinctUntilChanged(isEqual),
