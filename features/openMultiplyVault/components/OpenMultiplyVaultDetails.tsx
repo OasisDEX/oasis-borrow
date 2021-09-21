@@ -42,7 +42,7 @@ function OpenMultiplyVaultDetailsSummary({
         valueAfter={
           showAfterPill && (
             <>
-              {formatAmount(afterOutstandingDebt, 'DAI')}
+              {formatAmount(afterOutstandingDebt.precision(8), 'DAI')}
               {` DAI`}
             </>
           )

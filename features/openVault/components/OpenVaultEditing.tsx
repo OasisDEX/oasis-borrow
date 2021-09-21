@@ -74,7 +74,7 @@ export function OpenVaultEditing(props: OpenVaultState) {
                 amount={generateAmount}
                 token={'DAI'}
                 showMax={true}
-                maxAmount={maxGenerateAmount}
+                maxAmount={maxGenerateAmount.precision(8)}
                 maxAmountLabel={'Max'}
                 onSetMax={updateGenerateMax}
                 onChange={handleNumericInput(updateGenerate!)}

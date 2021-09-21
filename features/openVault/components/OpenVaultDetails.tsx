@@ -45,7 +45,7 @@ export function OpenVaultDetailsSummary({
         valueAfter={
           showAfterPill && (
             <>
-              {formatAmount(generateAmount || zero, 'DAI')}
+              {formatAmount(generateAmount?.precision(8) || zero, 'DAI')}
               {` DAI`}
             </>
           )

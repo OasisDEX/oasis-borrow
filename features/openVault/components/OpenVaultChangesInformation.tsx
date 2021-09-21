@@ -77,7 +77,7 @@ export function OpenVaultChangesInformation(props: OpenVaultState) {
           <Flex>
             {zeroBalance} DAI
             <VaultChangesInformationArrow />
-            {formatCryptoBalance(generateAmount || zero)} DAI
+            {formatCryptoBalance(generateAmount?.precision(8) || zero)} DAI
           </Flex>
         }
       />

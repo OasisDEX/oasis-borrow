@@ -35,7 +35,10 @@ export function ManageVaultChangesInformation(props: ManageVaultState) {
   } = props
   const collRatioColor = getCollRatioColor(props, collateralizationRatio)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
-
+  console.log('debt')
+  console.log(`${debt}`)
+  console.log('after')
+  console.log(`${afterDebt}`)
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Vault Changes">
       <VaultChangesInformationItem
@@ -82,9 +85,9 @@ export function ManageVaultChangesInformation(props: ManageVaultState) {
         label={`${t('system.vault-dai-debt')}`}
         value={
           <Flex>
-            {`${formatCryptoBalance(debt || zero)} DAI`}
+            {`${formatCryptoBalance(debt.precision(8) || zero)} DAI`}
             <VaultChangesInformationArrow />
-            {`${formatCryptoBalance(afterDebt || zero)} DAI`}
+            {`${formatCryptoBalance(afterDebt.precision(8) || zero)} DAI`}
           </Flex>
         }
       />
