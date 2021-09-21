@@ -4,6 +4,7 @@ export const content: ContentTypeSupport = {
   title: 'FAQ',
   navigation: [
     { title: 'Using Oasis.app', id: 'using-oasis' },
+    { title: 'Using Oasis Multiply', id: 'using-multiply' },
     { title: 'Using Dai Wallet', id: 'using-daiwallet' },
     { title: 'Security', id: 'security' },
     { title: 'Buying Dai', id: 'buying-dai' },
@@ -87,6 +88,57 @@ export const content: ContentTypeSupport = {
           question: 'How can I contact the Oasis team?',
           answer:
             'If you have any questions, reach out to us through our [Contact page](/daiwallet/contact) or on [Twitter](https://twitter.com/oasisdotapp).',
+        },
+      ],
+    },
+    {
+      title: 'Using Oasis Multiply',
+      id: 'using-multiply',
+      questions: [
+        {
+          question: 'What is ‘Multiply’?',
+          answer:
+            'Oasis Multiply, allows users to borrow Dai and increase their exposure to their selected collateral by creating Multiply Positions that immediately swap the borrowed Dai for more collateral in the same transaction. This is similar to margin positions but without the need to borrow funds from a centralised counterparty. Oasis Multiply is built on top of the Maker Protocol, 1Inch Dex Aggregator and Aave.',
+        },
+        {
+          question: 'What are the fees for Multiply?',
+          answer:
+            'Oasis.app applies a fee of 0.2% for each token swap that takes place within a Multiply transaction. These actions may also incur an additional flashloan fee of 0.09% that goes to Aave in case their liquidity is needed for the action. Multiply Positions will pay an ongoing stability fee to the Maker Protocol like every Maker Vault. As usual Ethereum gas fees may apply depending on the network conditions. Standard actions in all Vaults are, as always, free.',
+        },
+        {
+          question: 'How are swaps done?',
+          answer:
+            'When a Multiply position is created Dai will be generated against collateral and swapped through 1inch protocol for more collateral in order to gain higher exposure to the supplied collateral. Thanks to the 1inch integration users will get the best possible prices across all markets.',
+        },
+        {
+          question: 'What is buying power?',
+          answer:
+            'The Buying Power specifies the maximum of Dai you can buy more collateral with, based on your position. It is using Multiply and going from the current collateralization ratio to the minimum collateralization ratio.',
+        },
+        {
+          question: 'What is net value?',
+          answer:
+            'The Net Value is calculated as the current value of the collateral in your vault minus the current debt. Note: This will not be exactly equal to the amount you will receive if you close your vault to Dai. This is due to fees applied when swapping collateral to Dai and because the Net Value is calculated using the mid-market price and you may suffer a larger price impact if you have a large position to close.',
+        },
+        {
+          question: 'What is price impact?',
+          answer:
+            'Price impact is the spread between the mid price and the execution price of a trade as the size of the trade grows with respect to available liquidity. If trade size is big and liquidity shallow the difference between mid market price and execution price will be high and the user will be negatively impacted. Thanks to 1inch integration, Oasis.app users can trade with confidence that the best liquidity sources will be used to get the best price possible.',
+        },
+        {
+          question: 'What is slippage?',
+          answer:
+            'Transactions sent to the network may take some time to confirm and because of this trades may execute at a different price than the one expected. Slippage refers to the difference you are willing to accept between the quoted price and the execution prices due to differences in market conditions during transaction confirmation.',
+        },
+        {
+          question: 'What does the multiple number mean?',
+          answer:
+            'Multiply Vaults allow increased exposure to collateral price movements. As such the multiple number refers to how much more the position is expected to increase or decrease in value with respect to movements of the collateral. If multiple is 3x Vault owners will get 3 times as much price appreciation as if it was only holding their initial collateral.',
+        },
+        {
+          question: 'How can I convert my Multiply view back to a Borrow view?',
+          answer:
+            'If you have upgraded your Borrow Vault to a Multiply Vault in the Oasis UI and would like to swap it back, you will need to email support@oasis.app stating your wallet address and Vault ID you would like to swap back. The support team may ask for additional information to prove you own the Vault, and it can take up to 24 hours (longer at weekends) to change it.',
         },
       ],
     },
