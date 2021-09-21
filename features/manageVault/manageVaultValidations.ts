@@ -1,4 +1,3 @@
-import { isNullish } from 'helpers/functions'
 import { zero } from 'helpers/zero'
 
 import { ManageVaultState } from './manageVault'
@@ -24,7 +23,6 @@ export type ManageVaultErrorMessage =
   | 'depositCollateralOnVaultUnderDebtFloor'
 
 export type ManageVaultWarningMessage =
-  | 'potentialGenerateAmountLessThanDebtFloor'
   | 'debtIsLessThanDebtFloor'
   | 'vaultWillBeAtRiskLevelDanger'
   | 'vaultWillBeAtRiskLevelWarning'
@@ -143,7 +141,6 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
 
 export function validateWarnings(state: ManageVaultState): ManageVaultState {
   const {
-    depositAmount,
     vault,
     ilkData,
     errorMessages,
@@ -152,7 +149,6 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
     vaultWillBeAtRiskLevelDangerAtNextPrice,
     vaultWillBeAtRiskLevelWarning,
     vaultWillBeAtRiskLevelWarningAtNextPrice,
-    maxGenerateAmountAtCurrentPrice,
   } = state
 
   const warningMessages: ManageVaultWarningMessage[] = []
@@ -160,10 +156,6 @@ export function validateWarnings(state: ManageVaultState): ManageVaultState {
   if (errorMessages.length) return { ...state, warningMessages }
 
   if (isEditingStage) {
-    if (!isNullish(depositAmount) && maxGenerateAmountAtCurrentPrice.lt(ilkData.debtFloor)) {
-      warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
-    }
-
     if (vault.debt.lt(ilkData.debtFloor) && vault.debt.gt(zero)) {
       warningMessages.push('debtIsLessThanDebtFloor')
     }
