@@ -238,8 +238,6 @@ export function createManageVaultAnalytics$(
           merge(manageVaultConfirm, manageVaultConfirmTransaction),
         ).pipe(
           tap((event) => {
-            console.log(event)
-
             const page = stage === 'daiEditing' ? Pages.ManageDai : Pages.ManageCollateral
             switch (event.kind) {
               case 'depositAmountChange':
