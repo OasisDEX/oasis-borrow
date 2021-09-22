@@ -54,13 +54,12 @@ export function getEstimatedGasFeeText(
         </Text>
       )
     case GasEstimationStatus.error:
-      const textError = 'Failed'
-
-      return <Text sx={{ color: 'onError' }}>{withBrackets ? `(${textError})` : textError}</Text>
     case GasEstimationStatus.unknown:
     case GasEstimationStatus.unset:
     case undefined:
-      return 'n/a'
+      const textError = 'n/a'
+
+      return <Text sx={{ color: 'onError' }}>{withBrackets ? `(${textError})` : textError}</Text>
     case GasEstimationStatus.calculated:
       const textGas = `$${formatAmount(gasEstimationUsd as BigNumber, 'USD')}`
 
