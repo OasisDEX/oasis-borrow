@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import {
   VaultChangesInformationArrow,
   VaultChangesInformationContainer,
+  VaultChangesInformationEstimatedGasFee,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
@@ -14,7 +15,6 @@ import { useTranslation } from 'react-i18next'
 
 export function ManageVaultChangesInformation(props: ManageVaultState) {
   const { t } = useTranslation()
-  // const [showFees, setShowFees] = useState(false)
   const {
     afterCollateralizationRatio,
     afterLockedCollateral,
@@ -108,37 +108,7 @@ export function ManageVaultChangesInformation(props: ManageVaultState) {
           </Flex>
         }
       />
-
-      {/* // TO DO bring back with gas estimation */}
-      {/* <VaultChangesInformationItem
-        label={'Transaction fee (excl. gas)'}
-        value={
-          <Flex
-            sx={{ alignItems: 'center', cursor: 'pointer' }}
-            onClick={() => setShowFees(!showFees)}
-          >
-            ${formatAmount(txFees, 'USD')}{' '}
-            <Icon
-              name={`chevron_${showFees ? 'up' : 'down'}`}
-              size="auto"
-              width="12px"
-              sx={{ ml: 2 }}
-            />
-          </Flex>
-        }
-      />
-      {showFees && (
-        <Grid pl={3} gap={2}>
-          <VaultChangesInformationItem
-            label={'3rd party protocol fees'}
-            value={`$${formatAmount(zero, 'USD')}`}
-          />
-          <VaultChangesInformationItem
-            label={'Oasis fee'}
-            value={`$${formatAmount(zero, 'USD')}`}
-          />
-        </Grid>
-      )} */}
+      <VaultChangesInformationEstimatedGasFee {...props} />
     </VaultChangesInformationContainer>
   ) : null
 }

@@ -4,6 +4,7 @@ export const content: ContentTypeSupport = {
   title: 'FAQ',
   navigation: [
     { title: 'Usar Oasis.app', id: 'using-oasis' },
+    { title: 'Usar Oasis Multiply', id: 'using-multiply' },
     { title: 'Usar Dai Wallet', id: 'using-daiwallet' },
     { title: 'Seguridad', id: 'security' },
     { title: 'Comprar Dai', id: 'buying-dai' },
@@ -73,6 +74,57 @@ export const content: ContentTypeSupport = {
           question: '¿Cómo puedo contactar al equipo de Oasis?',
           answer:
             'Si tienes preguntas, puedes comunicarte con nosotros a través de la [página de contacto](/daiwallet/contact) o en [Twitter](https://twitter.com/oasisdotapp).',
+        },
+      ],
+    },
+    {
+      title: 'Usar Oasis Multiply',
+      id: 'using-multiply',
+      questions: [
+        {
+          question: '¿Qué es ‘Multiply’?',
+          answer:
+            'Oasis Multiply permite a los usuarios pedir prestado Dai y aumentar su exposición a su colateral elegido al crear posiciones de Multiply que intercambian inmediatamente el Dai prestado por más colateral en la misma transacción. Esto es similar a posiciones de margen pero sin la necesidad de pedir fondos prestados desde una contraparte centralizada. Oasis Multiply está construido sobre el Protocol Maker, 1inch Dex Aggregator y Aave.',
+        },
+        {
+          question: '¿Cuáles son los costos de Multiply?',
+          answer:
+            'Oasis.app cobra una tarifa de 0,2% por cada intercambio de tokens que ocurre dentro de una transacción Multiply. Estas acciones pueden también generar una tarifa adicional de Flashloan de 0,09% cobrada por Aave en caso de que su liquidez sea necesaria para la acción. Las posiciones de Multiply pagan regularmente una tasa de estabilidad al protocolo Maker como cualquier otro Vault. Como es usual, se deberán pagar las tarifas de gas de la red de Ethereum dependiendo de las condiciones de la red. Las acciones estándar de todos los Vaults son gratis, como siempre.',
+        },
+        {
+          question: '¿Cómo son realizados los intercambios?',
+          answer:
+            'Cuando una posición de Multiply es creada, Dai será generado contra el colateral e intercambiado por medio del protocolo 1inch por más colateral con el objetivo de obtener mayor exposición al colateral suministrado. Gracias a la integración de 1inch los usuarios obtendrán el mejor precio posible entre todos los mercados.',
+        },
+        {
+          question: '¿Qué es el poder de compra?',
+          answer:
+            'El Poder de compra especifica el máximo monto de Dai que puedes utilizar para comprar más colateral, basado en tu posición. Se computa yendo desde el ratio de colateral actual al ratio de colateralización mínimo.',
+        },
+        {
+          question: '¿Qué es el valor neto?',
+          answer:
+            'El Valor Neto es calculado como el valor actual del colateral en tu Vault menos tu deuda actual. Nota: Esto no será exactamente igual al monto que recibirás si cierras tu Vault a Dai. Esto se debe a las tarifas aplicadas durante el intercambio de colateral a Dai y porque el Valor Neto está calculado utilizando el precio medio del mercado y puedes incurrir en un gran impacto de precio si tienes una posición grande para cerrar.',
+        },
+        {
+          question: '¿Qué es el impacto en el precio?',
+          answer:
+            'El impacto en el precio es la diferencia entre el precio medio y el precio de ejecución de un intercambio a medida que el tamaño del intercambio crece en relación a la liquidez disponible. Si el tamaño del intercambio es grande y la liquidez limitada, la diferencia entre el precio medio del mercado y el precio de ejecución será alta y el usuario será afectado negativamente.  Gracias a la integración con 1inch, los usuarios de Oasis.app pueden realizar intercambios con la confianza de que las mejores fuentes de liquidez serán usadas para obtener los mejores precios posibles.',
+        },
+        {
+          question: '¿Qué es el deslizamiento de precios?',
+          answer:
+            'Las transacciones enviadas a la red pueden requerir un tiempo para ser confirmadas y, por esta razón, los intercambios pueden ejecutarse a un precio distinto del esperado. El deslizamiento de precio se refiere a la diferencia que estás dispuesto a aceptar entre el precio indicado y el precio de ejecución debido a diferencias en las condiciones del mercado durante la confirmación de la transacción.',
+        },
+        {
+          question: '¿Qué significa el número de múltiplo?',
+          answer:
+            'Los Multiply Vaults permiten mayor exposición a los movimientos del precio del colateral. El múltiplo se refiere a cuánto se espera que la posición aumente o reduzca su valor con respecto al movimiento de precio del colateral. Si el múltiplo es 3x los dueños de Vaults obtendrán 3 veces más apreciación de su posición que si solamente tuvieran su colateral inicial.',
+        },
+        {
+          question: '¿Cómo puedo convertir mi vista de Multiply nuevamente a la vista de Borrow?',
+          answer:
+            'Si actualizaste tu Borrow Vault a Multiply Vault en la interfaz de Oasis y te gustaría deshacer el cambio, necesitarás enviar un correo electrónico a support@oasis.app indicando la dirección de tu cartera y el ID del Vault que quieres cambiar. Puede que el equipo de soporte te solicite información adicional para demostrar que eres dueño del Vault y es posible que el cambio tarde hasta 24 horas (con mayor demora durante los fines de semana).',
         },
       ],
     },

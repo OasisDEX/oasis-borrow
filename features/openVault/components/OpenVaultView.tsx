@@ -116,7 +116,7 @@ export function OpenVaultContainer(props: OpenVaultState) {
 }
 
 export function OpenVaultView({ ilk }: { ilk: string }) {
-  const { openVault$, accountData$ } = useAppContext()
+  const { openVault$, accountData$, context$ } = useAppContext()
   const openVaultWithIlk$ = openVault$(ilk)
   const openVaultWithError = useObservableWithError(openVaultWithIlk$)
 
@@ -124,6 +124,7 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
     const subscription = createOpenVaultAnalytics$(
       accountData$,
       openVaultWithIlk$,
+      context$,
       trackingEvents,
     ).subscribe()
 

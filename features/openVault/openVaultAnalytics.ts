@@ -1,9 +1,11 @@
 import { INPUT_DEBOUNCE_TIME, Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
+import { networksById } from 'blockchain/config'
+import { Context } from 'blockchain/network'
 import { AccountDetails } from 'features/account/AccountData'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
-import { merge, Observable, zip } from 'rxjs'
+import { combineLatest, merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 
 import { MutableOpenVaultState, OpenVaultState } from './openVault'
@@ -48,6 +50,7 @@ type OpenVaultConfirmTransaction = {
 export function createOpenVaultAnalytics$(
   accountDetails$: Observable<AccountDetails>,
   openVaultState$: Observable<OpenVaultState>,
+  context$: Observable<Context>,
   tracker: Tracker,
 ) {
   const firstCDPChange: Observable<boolean | undefined> = accountDetails$.pipe(
@@ -56,6 +59,7 @@ export function createOpenVaultAnalytics$(
   )
 
   const depositAmountChanges: Observable<DepositAmountChange> = openVaultState$.pipe(
+    filter((state) => state.stage === 'editing'),
     map((state) => state.depositAmount),
     filter((amount) => !!amount),
     distinctUntilChanged(isEqual),
@@ -67,6 +71,7 @@ export function createOpenVaultAnalytics$(
   )
 
   const generateAmountChanges: Observable<GenerateAmountChange> = openVaultState$.pipe(
+    filter((state) => state.stage === 'editing'),
     map((state) => state.generateAmount),
     filter((amount) => !!amount),
     distinctUntilChanged(isEqual),
@@ -133,8 +138,8 @@ export function createOpenVaultAnalytics$(
     distinctUntilChanged(isEqual),
   )
 
-  return firstCDPChange.pipe(
-    switchMap((firstCDP) =>
+  return combineLatest(context$, firstCDPChange).pipe(
+    switchMap(([context, firstCDP]) =>
       merge(
         depositAmountChanges,
         generateAmountChanges,
@@ -166,12 +171,17 @@ export function createOpenVaultAnalytics$(
               )
               break
             case 'openVaultConfirmTransaction':
+              const network = networksById[context.chainId].name
+              const walletType = context.connectionKind
+
               tracker.confirmVaultConfirmTransaction(
                 event.value.ilk,
                 event.value.collateralAmount.toString(),
                 event.value.daiAmount.toString(),
                 firstCDP,
                 event.value.txHash,
+                network,
+                walletType,
               )
               break
             default:

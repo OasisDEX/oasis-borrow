@@ -13,6 +13,10 @@ import { mockContextConnected$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
 
+export function addGasEstimationMock<T>(state: T) {
+  return of(state)
+}
+
 export interface MockOpenVaultProps {
   _context$?: Observable<ContextConnected>
   _txHelpers$?: Observable<TxHelpers>
@@ -102,6 +106,7 @@ export function mockOpenVault$({
     ilks$,
     ilkData$,
     ilkToToken$,
+    addGasEstimationMock,
     ilk,
   )
 }

@@ -19,6 +19,7 @@ import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContext$ } from './context.mock'
 import { MockExchangeQuote, mockExchangeQuote$ } from './exchangeQuote.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
+import { addGasEstimationMock } from './openVault.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
 import { mockVault$, MockVaultProps } from './vaults.mock'
 
@@ -137,6 +138,7 @@ export function mockManageMultiplyVault$({
     ilkData$,
     vault$,
     mockExchangeQuote$(exchangeQuote),
+    addGasEstimationMock,
     MOCK_VAULT_ID,
   )
 }

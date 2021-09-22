@@ -4,7 +4,7 @@ import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { open, OpenData } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { TxHelpers } from 'components/AppContext'
+import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { VaultType } from 'features/generalManageVault/generalManageVault'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
@@ -308,4 +308,26 @@ export function openVault(
       ),
     )
     .subscribe((ch) => change(ch))
+}
+
+export function applyEstimateGas(
+  addGasEstimation$: AddGasEstimationFunction,
+  state: OpenVaultState,
+): Observable<OpenVaultState> {
+  return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
+    const { proxyAddress, generateAmount, depositAmount, ilk, token } = state
+
+    if (proxyAddress && (generateAmount || depositAmount)) {
+      return estimateGas(open, {
+        kind: TxMetaKind.open,
+        generateAmount: generateAmount || zero,
+        depositAmount: depositAmount || zero,
+        proxyAddress,
+        ilk,
+        token,
+      })
+    }
+
+    return undefined
+  })
 }

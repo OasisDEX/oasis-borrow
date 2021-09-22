@@ -2,9 +2,10 @@ import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
-import { TxHelpers } from 'components/AppContext'
+import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
@@ -31,6 +32,7 @@ import {
   OpenVaultSummary,
 } from './openVaultSummary'
 import {
+  applyEstimateGas,
   applyOpenVaultTransaction,
   createProxy,
   openVault,
@@ -161,7 +163,7 @@ export type OpenVaultState = MutableOpenVaultState &
     summary: OpenVaultSummary
     totalSteps: number
     currentStep: number
-  }
+  } & HasGasEstimation
 
 function addTransitions(
   txHelpers: TxHelpers,
@@ -275,6 +277,7 @@ export function createOpenVault$(
   ilks$: Observable<string[]>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilkToToken$: Observable<(ilk: string) => string>,
+  addGasEstimation$: AddGasEstimationFunction,
   ilk: string,
 ): Observable<OpenVaultState> {
   return ilks$.pipe(
@@ -330,6 +333,7 @@ export function createOpenVault$(
                       totalSteps,
                       currentStep: 1,
                       clear: () => change({ kind: 'clear' }),
+                      gasEstimationStatus: GasEstimationStatus.unset,
                       injectStateOverride,
                     }
 
@@ -345,6 +349,7 @@ export function createOpenVault$(
                       scan(apply, initialState),
                       map(validateErrors),
                       map(validateWarnings),
+                      switchMap(curry(applyEstimateGas)(addGasEstimation$)),
                       map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
                     )
                   }),
