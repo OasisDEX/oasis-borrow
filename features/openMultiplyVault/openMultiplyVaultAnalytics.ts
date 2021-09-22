@@ -144,7 +144,7 @@ export function createOpenMultiplyVaultAnalytics$(
                 event.value.ilk,
                 firstCDP,
                 event.value.collateralAmount.toString(),
-                event.value.multiply.toString(),
+                event.value.multiply.toFixed(3),
               )
               break
             case 'openMultiplyVaultConfirmTransaction':
@@ -155,7 +155,7 @@ export function createOpenMultiplyVaultAnalytics$(
                 event.value.ilk,
                 firstCDP,
                 event.value.collateralAmount.toString(),
-                event.value.multiply.toString(),
+                event.value.multiply.toFixed(3),
                 event.value.txHash,
                 network,
                 walletType,

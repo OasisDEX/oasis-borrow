@@ -190,13 +190,13 @@ export function createManageMultiplyVaultAnalytics$(
             case 'adjustPositionConfirm':
               tracker.multiply.adjustPositionConfirm(
                 event.value.ilk,
-                event.value.multiply.toString(),
+                event.value.multiply.toFixed(3),
               )
               break
             case 'adjustPositionConfirmTransaction':
               tracker.multiply.adjustPositionConfirmTransaction(
                 event.value.ilk,
-                event.value.multiply.toString(),
+                event.value.multiply.toFixed(3),
                 event.value.txHash,
                 network,
                 walletType,
@@ -222,14 +222,14 @@ export function createManageMultiplyVaultAnalytics$(
             case 'closeVaultConfirm':
               tracker.multiply.closeVaultConfirm(
                 event.value.ilk,
-                event.value.debt.toString(),
+                event.value.debt.toFixed(3),
                 event.value.closeTo,
               )
               break
             case 'closeVaultConfirmTransaction':
               tracker.multiply.closeVaultConfirmTransaction(
                 event.value.ilk,
-                event.value.debt.toString(),
+                event.value.debt.toFixed(3),
                 event.value.closeTo,
                 event.value.txHash,
                 network,
