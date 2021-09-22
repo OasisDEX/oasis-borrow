@@ -1,4 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { trackingEvents } from 'analytics/analytics'
+import { useAppContext } from 'components/AppContextProvider'
 import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
@@ -13,6 +15,7 @@ import React, { useEffect } from 'react'
 import { Box, Divider, Flex, Grid, Text } from 'theme-ui'
 
 import { ManageVaultState } from './manageVault'
+import { createManageVaultAnalytics$ } from './manageVaultAnalytics'
 import { ManageVaultButton } from './ManageVaultButton'
 import { ManageVaultCollateralAllowance } from './ManageVaultCollateralAllowance'
 import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './ManageVaultConfirmation'
@@ -129,6 +132,7 @@ export function ManageVaultContainer({
   manageVault: ManageVaultState
   vaultHistory: VaultHistoryEvent[]
 }) {
+  const { manageVault$, context$ } = useAppContext()
   const {
     vault: { id, ilk },
     clear,
@@ -136,8 +140,15 @@ export function ManageVaultContainer({
   const { t } = useTranslation()
 
   useEffect(() => {
+    const subscription = createManageVaultAnalytics$(
+      manageVault$(id),
+      context$,
+      trackingEvents,
+    ).subscribe()
+
     return () => {
       clear()
+      subscription.unsubscribe()
     }
   }, [])
 

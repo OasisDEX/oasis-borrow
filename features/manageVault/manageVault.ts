@@ -3,12 +3,13 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
-import { TxHelpers } from 'components/AppContext'
+import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { VaultType } from 'features/generalManageVault/generalManageVault'
 import { SaveVaultType } from 'features/generalManageVault/vaultTypeLocalStorage'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { catchError, first, map, scan, shareReplay, startWith, switchMap } from 'rxjs/operators'
@@ -35,6 +36,7 @@ import {
   ManageVaultSummary,
 } from './manageVaultSummary'
 import {
+  applyEstimateGas,
   applyManageVaultTransaction,
   createProxy,
   ManageVaultTransactionChange,
@@ -208,7 +210,7 @@ export type ManageVaultState = MutableManageVaultState &
     initialTotalSteps: number
     totalSteps: number
     currentStep: number
-  }
+  } & HasGasEstimation
 
 function saveVaultType(
   saveVaultType$: SaveVaultType,
@@ -412,6 +414,7 @@ export function createManageVault$(
   ilkData$: (ilk: string) => Observable<IlkData>,
   vault$: (id: BigNumber) => Observable<Vault>,
   saveVaultType$: SaveVaultType,
+  addGasEstimation$: AddGasEstimationFunction,
   id: BigNumber,
 ): Observable<ManageVaultState> {
   return context$.pipe(
@@ -476,6 +479,7 @@ export function createManageVault$(
                     totalSteps: initialTotalSteps,
                     currentStep: 1,
                     clear: () => change({ kind: 'clear' }),
+                    gasEstimationStatus: GasEstimationStatus.unset,
                     injectStateOverride,
                   }
 
@@ -492,6 +496,7 @@ export function createManageVault$(
                     scan(apply, initialState),
                     map(validateErrors),
                     map(validateWarnings),
+                    switchMap(curry(applyEstimateGas)(addGasEstimation$)),
                     map(
                       curry(addTransitions)(
                         txHelpers$,

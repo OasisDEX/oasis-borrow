@@ -4,6 +4,7 @@ export const content: ContentTypeSupport = {
   title: 'FAQ',
   navigation: [
     { title: 'Utilizando Oasis.app', id: 'using-oasis' },
+    { title: 'Utilizando Oasis Multiply', id: 'using-multiply' },
     { title: 'Utilizando Dai Wallet', id: 'using-daiwallet' },
     { title: 'Segurança', id: 'security' },
     { title: 'Comprando Dai', id: 'buying-dai' },
@@ -87,6 +88,57 @@ export const content: ContentTypeSupport = {
           question: 'Como eu contato o time do Oasis?',
           answer:
             'Se tiver alguma pergunta, nos [contate usando esta página](/daiwallet/contact) ou nos mande uma mensagem no [Twitter](https://twitter.com/oasisdotapp).',
+        },
+      ],
+    },
+    {
+      title: 'Utilizando Oasis Multiply',
+      id: 'using-multiply',
+      questions: [
+        {
+          question: 'O que é ‘Multiply’?',
+          answer:
+            'Oasis Multiply permite que usuários emprestem Dai e aumentem sua exposição ao colateral selecionado ao criar Posições Multiply que imediatamente trocam o Dai emprestado por mais colateral na mesma transação. Isso é semelhante às posições com margem, porém sem a necessidade de emprestar fundos de uma contraparte centralizada. Oasis Multiply é construído com base no Protocolo Maker, Agregador de DEX 1INCH e Aave.',
+        },
+        {
+          question: 'Quais as taxas no Multiply?',
+          answer:
+            'Oasis.app aplica uma taxa de 0,2% para cada troca de ativo dentro de uma transação Multiply. Essas ações podem ocasionar uma taxa adicional de 0,09%, que vai para a Aave, em razão dos empréstimos relâmpagos, caso a liquidez deles seja necessária para a ação. As Posições Multiply também pagarão taxas de estabilidade para o Protocolo Maker, como qualquer Cofre Maker. As taxas com gás no Ethereum variam conforme as condições da rede. Ações tradicionais em todos os Cofres são, como sempre, gratuitas.',
+        },
+        {
+          question: 'Como as trocas são feitas?',
+          answer:
+            'Quando uma posição Multiply é criada, Dai será gerado contra o colateral e trocado através do protocolo 1INCH por mais colateral, com o objetivo de aumentar a exposição ao colateral fornecido. Em razão da integração do 1INCH com outras bolsas descentralizadas, nossos usuários vão receber os melhores preços possíveis em todos os mercados.',
+        },
+        {
+          question: 'O que é poder de compra (buying power)?',
+          answer:
+            'O Poder de Compra determina o máximo de Dai que você poderá comprar de colateral, baseado na sua posição. Está usando o Multiply e transformando seu atual nível de colateralização no menor nível possível.',
+        },
+        {
+          question: 'O que é valor líquido (net value)?',
+          answer:
+            'O valor líquido é calculado através do valor atual do seu colateral menos sua dívida. Nota: este cálculo não será exatamente igual ao valor que você receberá quando fechar seu cofre para Dai. Isso ocorre porque taxas são aplicadas quando você troca o colateral por Dai e porque o valor líquido é calculado usado o preço intermediário de mercado, que poderá ser impactado se você tiver uma posição grande para fechar.',
+        },
+        {
+          question: 'O que é impacto no preço (price impact)?',
+          answer:
+            'Impacto no preço é a diferença entre o preço intermediário (mid price) e o preço de execução da troca, em razão da relação entre o tamanho da troca solicitada e a liquidez disponível no mercado.  Se a troca for grande e a liquidez pequena, a diferença será maior e o usuário será impactado negativamente. Em razão da integração com 1INCH, os usuários do Oasis.app podem negociar com confiança de que as melhores fontes de liquidez serão usadas para conseguir o melhor preço do mercado.',
+        },
+        {
+          question: 'O que é slippage?',
+          answer:
+            'Transactions sent to the network may take some time to confirm and because of this trades may execute at a different price than the one expected. Slippage refers to the difference you are willing to accept between the quoted price and the execution prices due to differences in market conditions during transaction confirmation.',
+        },
+        {
+          question: 'O que o Multiply número (number) significa?',
+          answer:
+            'Os Cofres Multiply possibilitam exposição aumentada para movimentos de preços do colateral. Assim, o Multiply Number se refere a quantas vezes mais a posição deve aumentar ou diminuir em valor com relação às mudanças de preço do colateral. Se o múltiplo é 3x, os usuários deverão receber 3 vezes mais apreciação de valor do que se estivessem apenas posicionados no colateral inicial.',
+        },
+        {
+          question: 'Como eu transformo meu Cofre Multiply de volta para um Cofre Borrow?',
+          answer:
+            'Se você transformou seu Cofre Borrow em um Cofre Multiply dentro da interface do Oasis e gostaria de desfazer, você terá que enviar um email para support@oasis.app declarando o endereço da sua carteira e ID do Cofre que você gostaria de transformar de volta. O time do suporte pode perguntar por mais informações para provar que você é o proprietário do Cofre e o processo pode levar até 24 horas para ser realizado (possivelmente maior nos finais de semana e feriados).',
         },
       ],
     },

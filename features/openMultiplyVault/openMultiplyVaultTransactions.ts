@@ -5,7 +5,7 @@ import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { OpenMultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ContextConnected } from 'blockchain/network'
-import { TxHelpers } from 'components/AppContext'
+import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { VaultType } from 'features/generalManageVault/generalManageVault'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
@@ -344,4 +344,43 @@ export function multiplyVault(
       catchError(() => of({ kind: 'openFailure' } as OpenMultiplyVaultChange)),
     )
     .subscribe((ch) => change(ch))
+}
+
+export function applyEstimateGas(
+  addGasEstimation$: AddGasEstimationFunction,
+  state: OpenMultiplyVaultState,
+): Observable<OpenMultiplyVaultState> {
+  return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
+    const {
+      proxyAddress,
+      depositAmount,
+      ilk,
+      token,
+      account,
+      swap,
+      buyingCollateral,
+      borrowedDaiAmount,
+      toTokenAmount,
+      fromTokenAmount,
+    } = state
+
+    if (proxyAddress && depositAmount) {
+      return estimateGas(openMultiplyVault, {
+        kind: TxMetaKind.multiply,
+        depositCollateral: depositAmount,
+        userAddress: account,
+        proxyAddress: proxyAddress!,
+        ilk,
+        token,
+        exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '0x',
+        exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '0x',
+        borrowedCollateral: buyingCollateral,
+        requiredDebt: borrowedDaiAmount,
+        toTokenAmount: toTokenAmount,
+        fromTokenAmount,
+      })
+    }
+
+    return undefined
+  })
 }

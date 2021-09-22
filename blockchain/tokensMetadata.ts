@@ -440,6 +440,21 @@ const tokens = [
     tags: ['lp-token'],
   },
   {
+    symbol: 'GUNIV3DAIUSDC1',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'GUNIV3DAIUSDC1',
+    icon: 'uni_circle_color',
+    iconCircle: 'uni_circle_color',
+    iconColor: 'uni_circle_color',
+    color: '#ff077d',
+    background:
+      'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
+    tags: ['lp-token'],
+  },
+  {
     symbol: 'MATIC',
     precision: 18,
     digits: 5,

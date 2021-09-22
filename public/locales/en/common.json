@@ -17,6 +17,7 @@
   "activity": "Activity",
   "address": "Address",
   "address-invalid": "Address not found",
+  "adjust-your-position": "Adjust your position",
   "after": "After",
   "after-next": "After + Next",
   "all-assets": "All Assets",
@@ -110,7 +111,7 @@
   "erc20-disapprove-notification-past": "Locked {{ token }}",
   "error-header": "Lost connection",
   "error-message": "It looks like we lost a connection to some data. Hit reload below to reload your page. If this error persists, please get in touch at support@oasis.app",
-  "error-button-reload": "Refresh page",
+  "error-button-reload": "Reload page",
   "error-button": "More info",
   "create-ds-proxy-description-pending": "Creating proxy",
   "create-ds-proxy-description-recent": "Created proxy",
@@ -246,7 +247,8 @@
       "ledger-enable-contract-data": "Please enable Contract data on the Ledgers Ethereum app Settings",
       "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, payback your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
       "exchange-error": "Could not fetch exchange prices for doing this multiply action.",
-      "has-to-deposit-collateral-on-empty-vault": "There is no collateral in this vault. Please first add collateral in the 'Other actions' tab, with the 'deposit collateral' action"
+      "has-to-deposit-collateral-on-empty-vault": "There is no collateral in this vault. Please first add collateral in the 'Other actions' tab, with the 'deposit collateral' action",
+      "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
     },
     "card": {
       "collateralization-ratio-calculated": "Your collateralization ratio is calculated by: value of your collateral / Dai debt.",
@@ -271,7 +273,7 @@
       "liquidation-price-current": "Your current liquidation price is:",
       "liquidation-percentage-below": "That is {{percentageBelow}} below the current price",
       "buying-power": "Buying power",
-      "buying-power-description": "The Buying Power specifies the maximum of Dai you can buy more collateral with, based on your position. It is using Multiply and going from the current collateralization ratio to the minimum collateralization ratio.",
+      "buying-power-description": "This is how much DAI you can use to buy more collateral right now. Buying Power specifies the maximum of Dai you can buy more collateral with based on the current state of your position. It is calculated by taking the maximum DAI available to you, using it to purchase more collateral, and locking the collateral back into the vault.",
       "current-price": "Current Price",
       "current-price-description": "This is the current price of your vault collateral supplied by the Maker price oracles. There is a one hour delay before the oracle price is made current in the Maker Protocol.",
       "next-price": "Next Price",

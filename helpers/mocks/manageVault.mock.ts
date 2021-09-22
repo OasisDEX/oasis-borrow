@@ -15,6 +15,7 @@ import { switchMap } from 'rxjs/operators'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContext$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
+import { addGasEstimationMock } from './openVault.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
 import { mockVault$, MockVaultProps } from './vaults.mock'
 
@@ -136,6 +137,7 @@ export function mockManageVault$({
     ilkData$,
     vault$,
     saveVaultType$,
+    addGasEstimationMock,
     MOCK_VAULT_ID,
   )
 }
