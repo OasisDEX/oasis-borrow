@@ -2,7 +2,7 @@ import { SendFunction, TxMeta } from '@oasisdex/transactions'
 import {
   CallDef as CallDefAbstractContext,
   createSendTransaction as createSendTransactionAbstractContext,
-  createSendWithGasConstraints1559 as createSendWithGasConstraintsAbstractContext,
+  createSendWithGasConstraints as createSendWithGasConstraintsAbstractContext,
   estimateGas as estimateGasAbstractContext,
   EstimateGasFunction as EstimateGasFunctionAbstractContext,
   SendTransactionFunction as SendTransactionFunctionAbstractContext,
