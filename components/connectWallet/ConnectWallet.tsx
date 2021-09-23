@@ -448,6 +448,10 @@ function autoConnect(
   let firstTime = true
 
   const subscription = web3Context$.subscribe(async (web3Context) => {
+    if (web3Context.status === 'error' && web3Context.error instanceof UnsupportedChainIdError) {
+      web3Context.deactivate()
+    }
+
     try {
       const serialized = localStorage.getItem(AUTO_CONNECT)
       if (firstTime && web3Context.status === 'notConnected' && serialized) {
