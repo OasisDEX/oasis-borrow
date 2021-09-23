@@ -24275,20 +24275,7 @@ web3@1.2.4:
     web3-shh "1.2.4"
     web3-utils "1.2.4"
 
-web3@1.3.3, web3@^1.3.3:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/web3/-/web3-1.3.3.tgz#be2dda6f58b177c00275fc19529f7465b1460687"
-  integrity sha512-fI/g0yC1FC0m4envv8FsPh7tbBoe/eXbEho+iY/hahs7YGgGt3nYNrAFTkR9pLhQaVMpOilhwgFxXEp+O7My/g==
-  dependencies:
-    web3-bzz "1.3.3"
-    web3-core "1.3.3"
-    web3-eth "1.3.3"
-    web3-eth-personal "1.3.3"
-    web3-net "1.3.3"
-    web3-shh "1.3.3"
-    web3-utils "1.3.3"
-
-web3@1.5.3:
+web3@1.5.3, web3@^1.5.3:
   version "1.5.3"
   resolved "https://registry.yarnpkg.com/web3/-/web3-1.5.3.tgz#11882679453c645bf33620fbc255a243343075aa"
   integrity sha512-eyBg/1K44flfv0hPjXfKvNwcUfIVDI4NX48qHQe6wd7C8nPSdbWqo9vLy6ksZIt9NLa90HjI8HsGYgnMSUxn6w==
@@ -24300,6 +24287,19 @@ web3@1.5.3:
     web3-net "1.5.3"
     web3-shh "1.5.3"
     web3-utils "1.5.3"
+
+web3@^1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/web3/-/web3-1.3.3.tgz#be2dda6f58b177c00275fc19529f7465b1460687"
+  integrity sha512-fI/g0yC1FC0m4envv8FsPh7tbBoe/eXbEho+iY/hahs7YGgGt3nYNrAFTkR9pLhQaVMpOilhwgFxXEp+O7My/g==
+  dependencies:
+    web3-bzz "1.3.3"
+    web3-core "1.3.3"
+    web3-eth "1.3.3"
+    web3-eth-personal "1.3.3"
+    web3-net "1.3.3"
+    web3-shh "1.3.3"
+    web3-utils "1.3.3"
 
 webidl-conversions@^4.0.2:
   version "4.0.2"
