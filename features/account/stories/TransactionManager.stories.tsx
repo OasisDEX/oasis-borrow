@@ -7,6 +7,7 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AppContext, TxData } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { ModalProvider } from 'helpers/modalHook'
+import { SLIPPAGE } from 'helpers/multiply/calculations'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
 import { of } from 'rxjs'
@@ -207,6 +208,57 @@ const mockTxMetaDefinitions: Pick<TxState<TxData>, 'meta'>[] = [
       amount: new BigNumber(4),
       token: 'ETH',
       id: new BigNumber(3456),
+    },
+  },
+  {
+    meta: {
+      kind: TxMetaKind.multiply,
+      proxyAddress: DEFAULT_PROXY_ADDRESS,
+      token: 'ETH',
+      userAddress: '0x',
+      depositCollateral: new BigNumber(4),
+      borrowedCollateral: new BigNumber(1),
+      requiredDebt: new BigNumber(4000),
+      ilk: 'ETH-A',
+      fromTokenAmount: new BigNumber(3),
+      toTokenAmount: new BigNumber(3),
+      exchangeData: '0x',
+      exchangeAddress: '0x',
+    },
+  },
+  {
+    meta: {
+      kind: TxMetaKind.adjustPosition,
+      proxyAddress: DEFAULT_PROXY_ADDRESS,
+      token: 'ETH',
+      userAddress: '0x',
+      depositCollateral: new BigNumber(4),
+      borrowedCollateral: new BigNumber(1),
+      requiredDebt: new BigNumber(4000),
+      ilk: 'ETH-A',
+      exchangeData: '0x',
+      exchangeAddress: '0x',
+      slippage: SLIPPAGE,
+      action: 'BUY_COLLATERAL',
+      id: new BigNumber(3456),
+    },
+  },
+  {
+    meta: {
+      kind: TxMetaKind.closeVault,
+      proxyAddress: DEFAULT_PROXY_ADDRESS,
+      token: 'ETH',
+      userAddress: '0x',
+      ilk: 'ETH-A',
+      totalCollateral: new BigNumber(4),
+      totalDebt: new BigNumber(4000),
+      fromTokenAmount: new BigNumber(4),
+      toTokenAmount: new BigNumber(4500),
+      minToTokenAmount: new BigNumber(4000),
+      exchangeData: '0x',
+      exchangeAddress: '0x',
+      id: new BigNumber(3456),
+      closeTo: 'dai',
     },
   },
 ]

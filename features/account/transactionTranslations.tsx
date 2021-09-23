@@ -47,7 +47,14 @@ export function getTransactionTranslations(tx: TxMgrTransaction) {
         return getTranslations('withdraw-payback', meta)
       case TxMetaKind.reclaim:
         return getTranslations('reclaim-collateral', meta)
+      case TxMetaKind.multiply:
+        return getTranslations('multiply', meta)
+      case TxMetaKind.adjustPosition:
+        return getTranslations('adjust-position', meta)
+      case TxMetaKind.closeVault:
+        return getTranslations('close-vault', meta)
       default:
+        // console.log(meta.kind)
         return MISSING_TRANSLATIONS
     }
   }
