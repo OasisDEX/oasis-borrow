@@ -54,7 +54,6 @@ export function getTransactionTranslations(tx: TxMgrTransaction) {
       case TxMetaKind.closeVault:
         return getTranslations('close-vault', meta)
       default:
-        // console.log(meta.kind)
         return MISSING_TRANSLATIONS
     }
   }
