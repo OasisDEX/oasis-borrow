@@ -448,10 +448,6 @@ function autoConnect(
   let firstTime = true
 
   const subscription = web3Context$.subscribe(async (web3Context) => {
-    if (web3Context.status === 'error' && web3Context.error instanceof UnsupportedChainIdError) {
-      web3Context.deactivate()
-    }
-
     try {
       const serialized = localStorage.getItem(AUTO_CONNECT)
       if (firstTime && web3Context.status === 'notConnected' && serialized) {
@@ -508,10 +504,19 @@ async function connectReadonly(web3Context: Web3ContextNotConnected) {
 }
 
 export function WithConnection({ children }: WithChildren) {
+  const { replace } = useRedirect()
   const { web3Context$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
 
+  console.log('DEBUG: WITH CONNECTION', web3Context)
+
   useEffect(() => {
+    if (web3Context?.status === 'error' && web3Context.error instanceof UnsupportedChainIdError) {
+      disconnect(web3Context)
+      redirectState$.next(window.location.pathname)
+      replace(`/connect`)
+    }
+
     if (web3Context && web3Context.status === 'connectedReadonly') {
       redirectState$.next(window.location.pathname)
     }
@@ -526,11 +531,19 @@ export function WithWalletConnection({ children }: WithChildren) {
   const { replace } = useRedirect()
   const { web3Context$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
+
   useEffect(() => {
+    if (web3Context?.status === 'error' && web3Context.error instanceof UnsupportedChainIdError) {
+      disconnect(web3Context)
+      redirectState$.next(window.location.pathname)
+      replace(`/connect`)
+    }
+
     if (web3Context?.status === 'connectedReadonly') {
       redirectState$.next(window.location.pathname)
       replace(`/connect`)
     }
+
     if (web3Context?.status === 'notConnected') {
       redirectState$.next(window.location.pathname)
       autoConnect(web3Context$, getNetworkId(), () => replace(`/connect`))
