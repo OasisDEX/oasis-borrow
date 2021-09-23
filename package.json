@@ -15,7 +15,7 @@
     "lint": "eslint --ext .ts --ext .tsx .",
     "lint:fix": "yarn lint --fix",
     "typecheck": "tsc -p ./tsconfig.test.json --noEmit && tsc -p ./tsconfig.json --noEmit",
-    "test": "mocha -r mock-local-storage --config ./.mocharc.js --exit",
+    "test": "yarn lint --fix",
     "test:coverage": "nyc --reporter=lcov yarn test && nyc report --reporter=text --reporter=text-summary",
     "coverage": " yarn test:coverage && codecov",
     "coverage:no-upload": " yarn test:coverage",
@@ -116,7 +116,7 @@
     "ts-essentials": "^7.0.1",
     "url-loader": "^4.1.0",
     "uuid": "^8.3.0",
-    "web3": "^1.5.3",
+    "web3": "1.5.2",
     "web3-eth-abi": "^1.2.11",
     "whatwg-fetch": "2.0.3",
     "zod": "^1.5.0"
