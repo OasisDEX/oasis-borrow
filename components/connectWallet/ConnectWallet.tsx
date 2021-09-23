@@ -508,8 +508,6 @@ export function WithConnection({ children }: WithChildren) {
   const { web3Context$ } = useAppContext()
   const web3Context = useObservable(web3Context$)
 
-  console.log('DEBUG: WITH CONNECTION', web3Context)
-
   useEffect(() => {
     if (web3Context?.status === 'error' && web3Context.error instanceof UnsupportedChainIdError) {
       disconnect(web3Context)
