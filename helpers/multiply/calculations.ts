@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js'
+import { Vault } from 'blockchain/vaults'
 import { MAX_COLL_RATIO } from 'features/openMultiplyVault/openMultiplyVaultCalculations'
 import { one, zero } from 'helpers/zero'
+import { TestEvents } from './testTypes'
 
 export const OAZO_FEE = new BigNumber(0.002)
 export const LOAN_FEE = new BigNumber(0.0009)
@@ -233,4 +235,54 @@ export function calculateCloseToCollateralParams(
     oazoFee: currentDebt.times(one.plus(FF)).times(OF),
     loanFee: currentDebt.times(FF),
   }
+}
+
+export function calculatePNL(events: TestEvents[], currentNetValueUSD: BigNumber) {
+  let cummulativeDepositUSD = zero
+  let cummulativeWithdrawnUSD = zero
+  let cummulativeFeesUSD = zero
+
+  events.forEach((event) => {
+    if (event.kind === 'OPEN_MULTIPLY_VAULT' || event.kind === 'INCREASE_MULTIPLY') {
+      const { deposit, marketPrice } = event
+
+      cummulativeDepositUSD = cummulativeDepositUSD.plus(deposit.times(marketPrice))
+    }
+
+    if (event.kind === 'DECREASE_MULTIPLY') {
+      const { withdrawn, marketPrice } = event
+
+      cummulativeWithdrawnUSD = cummulativeWithdrawnUSD.plus(withdrawn.times(marketPrice))
+    }
+
+    if (event.kind === 'CLOSE_VAULT_TO_DAI') {
+      const { exitDai } = event
+
+      cummulativeWithdrawnUSD = cummulativeWithdrawnUSD.plus(exitDai)
+    }
+
+    if (event.kind === 'CLOSE_VAULT_TO_COLLATERAL') {
+      const { exitCollateral, marketPrice } = event
+      cummulativeWithdrawnUSD = cummulativeWithdrawnUSD.plus(exitCollateral.times(marketPrice))
+    }
+
+    if (event.kind === 'GENERATE_DAI') {
+      const { generated } = event
+
+      cummulativeWithdrawnUSD = cummulativeWithdrawnUSD.plus(generated)
+    }
+
+    cummulativeFeesUSD = cummulativeFeesUSD.plus(event.gasFee)
+  })
+
+  console.log(`
+    starting ${cummulativeDepositUSD.minus(cummulativeWithdrawnUSD).toFixed()}
+    current ${currentNetValueUSD.toFixed()}
+  `)
+
+  return cummulativeWithdrawnUSD
+    .plus(currentNetValueUSD)
+    .minus(cummulativeFeesUSD)
+    .minus(cummulativeDepositUSD)
+    .div(cummulativeDepositUSD)
 }
