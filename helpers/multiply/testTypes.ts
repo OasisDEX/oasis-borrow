@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { zero } from 'helpers/zero'
 
 interface OpenMultiplyEvent {
   kind: 'OPEN_MULTIPLY_VAULT'
@@ -7,15 +6,7 @@ interface OpenMultiplyEvent {
   bought: BigNumber
   marketPrice: BigNumber
   oraclePrice: BigNumber
-  multiple: BigNumber
-  debt: BigNumber
-  collateralizationRatio: BigNumber
-  netValue: BigNumber
-  liquidationPrice: BigNumber
-  oazoFee: BigNumber
-  loanFee: BigNumber
-  totalFee: BigNumber
-  gasFee: BigNumber // in wei
+  gasFee: BigNumber
 }
 
 interface IncreaseMultiplyEvent {
@@ -24,22 +15,7 @@ interface IncreaseMultiplyEvent {
   bought: BigNumber
   marketPrice: BigNumber
   oraclePrice: BigNumber
-  beforeMultiple: BigNumber
-  multiple: BigNumber
-  beforeDebt: BigNumber
-  debt: BigNumber
-  beforeCollateral: BigNumber
-  collateral: BigNumber
-  beforeCollateralizationRatio: BigNumber
-  collateralizationRatio: BigNumber
-  beforeNetValue: BigNumber
-  netValue: BigNumber
-  beforeLiquidationPrice: BigNumber
-  liquidationPrice: BigNumber
-  oazoFee: BigNumber
-  loanFee: BigNumber
-  totalFee: BigNumber
-  gasFee: BigNumber // in wei
+  gasFee: BigNumber
 }
 
 interface DecreaseMultiplyEvent {
@@ -48,22 +24,7 @@ interface DecreaseMultiplyEvent {
   sold: BigNumber
   marketPrice: BigNumber
   oraclePrice: BigNumber
-  beforeMultiple: BigNumber
-  multiple: BigNumber
-  beforeDebt: BigNumber
-  debt: BigNumber
-  beforeCollateral: BigNumber
-  collateral: BigNumber
-  beforeCollateralizationRatio: BigNumber
-  collateralizationRatio: BigNumber
-  beforeNetValue: BigNumber
-  netValue: BigNumber
-  beforeLiquidationPrice: BigNumber
-  liquidationPrice: BigNumber
-  oazoFee: BigNumber
-  loanFee: BigNumber
-  totalFee: BigNumber
-  gasFee: BigNumber // in wei
+  gasFee: BigNumber
 }
 
 interface CloseVaultToDaiEvent {
@@ -72,13 +33,7 @@ interface CloseVaultToDaiEvent {
   marketPrice: BigNumber
   oraclePrice: BigNumber
   exitDai: BigNumber
-  debtBefore: BigNumber
-  beforeCollateral: BigNumber
-  beforeCollateralizationRatio: BigNumber
-  oazoFee: BigNumber
-  loanFee: BigNumber
-  totalFee: BigNumber
-  gasFee: BigNumber // in wei
+  gasFee: BigNumber
 }
 
 interface CloseVaultToCollateralEvent {
@@ -87,21 +42,21 @@ interface CloseVaultToCollateralEvent {
   marketPrice: BigNumber
   oraclePrice: BigNumber
   exitCollateral: BigNumber
-  debtBefore: BigNumber
-  beforeCollateral: BigNumber
-  beforeCollateralizationRatio: BigNumber
-  oazoFee: BigNumber
-  loanFee: BigNumber
-  totalFee: BigNumber
-  gasFee: BigNumber // in wei
+  gasFee: BigNumber
 }
 
+// to do account deposit generate
 interface GenerateDAIEvent {
   kind: 'GENERATE_DAI'
+  marketPrice: BigNumber
   generated: BigNumber
+  gasFee: BigNumber
 }
 
-export type TestEvents =
+// to do account withdrawPayback
+// add more events
+
+export type MockedEvents =
   | OpenMultiplyEvent
   | IncreaseMultiplyEvent
   | DecreaseMultiplyEvent

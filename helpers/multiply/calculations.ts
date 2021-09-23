@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
-import { Vault } from 'blockchain/vaults'
 import { MAX_COLL_RATIO } from 'features/openMultiplyVault/openMultiplyVaultCalculations'
 import { one, zero } from 'helpers/zero'
-import { TestEvents } from './testTypes'
+
+import { MockedEvents } from './testTypes'
 
 export const OAZO_FEE = new BigNumber(0.002)
 export const LOAN_FEE = new BigNumber(0.0009)
@@ -237,7 +237,7 @@ export function calculateCloseToCollateralParams(
   }
 }
 
-export function calculatePNL(events: TestEvents[], currentNetValueUSD: BigNumber) {
+export function calculatePNL(events: MockedEvents[], currentNetValueUSD: BigNumber) {
   let cummulativeDepositUSD = zero
   let cummulativeWithdrawnUSD = zero
   let cummulativeFeesUSD = zero
@@ -272,13 +272,13 @@ export function calculatePNL(events: TestEvents[], currentNetValueUSD: BigNumber
       cummulativeWithdrawnUSD = cummulativeWithdrawnUSD.plus(generated)
     }
 
-    cummulativeFeesUSD = cummulativeFeesUSD.plus(event.gasFee)
+    cummulativeFeesUSD = cummulativeFeesUSD.plus(event.gasFee.times(event.marketPrice))
   })
 
-  console.log(`
-    starting ${cummulativeDepositUSD.minus(cummulativeWithdrawnUSD).toFixed()}
-    current ${currentNetValueUSD.toFixed()}
-  `)
+  // console.log(`
+  //   starting ${cummulativeDepositUSD.minus(cummulativeWithdrawnUSD).toFixed()}
+  //   current ${currentNetValueUSD.toFixed()}
+  // `)
 
   return cummulativeWithdrawnUSD
     .plus(currentNetValueUSD)
