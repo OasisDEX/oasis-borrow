@@ -13,7 +13,8 @@ export function ManageVaultConfirmation(props: ManageVaultState) {
     if (props.stage !== 'manageSuccess') {
       setVaultChanges(props)
     }
-  }, [props.stage])
+  }, [props])
+
   return props.stage === 'manageInProgress' ? (
     <OpenVaultAnimation />
   ) : (
