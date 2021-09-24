@@ -99,7 +99,9 @@ export function createOpenMultiplyVaultAnalytics$(
       value: {
         ilk: ilk,
         collateralAmount: depositAmount,
-        multiply,
+        // slight movements on market price are causing change of multiply
+        // to counter that we round passed multiply to not have retriggered events
+        multiply: multiply?.toFixed(3),
       },
     })),
     distinctUntilChanged(isEqual),
@@ -112,7 +114,7 @@ export function createOpenMultiplyVaultAnalytics$(
       value: {
         ilk: ilk,
         collateralAmount: depositAmount,
-        multiply,
+        multiply: multiply?.toFixed(3),
         txHash: openTxHash,
       },
     })),
@@ -144,7 +146,7 @@ export function createOpenMultiplyVaultAnalytics$(
                 event.value.ilk,
                 firstCDP,
                 event.value.collateralAmount.toString(),
-                event.value.multiply.toFixed(3),
+                event.value.multiply.toString(),
               )
               break
             case 'openMultiplyVaultConfirmTransaction':
@@ -155,7 +157,7 @@ export function createOpenMultiplyVaultAnalytics$(
                 event.value.ilk,
                 firstCDP,
                 event.value.collateralAmount.toString(),
-                event.value.multiply.toFixed(3),
+                event.value.multiply.toString(),
                 event.value.txHash,
                 network,
                 walletType,

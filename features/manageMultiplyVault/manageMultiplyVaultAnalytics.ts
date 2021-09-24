@@ -13,7 +13,7 @@ type AdjustPositionConfirm = {
   kind: 'adjustPositionConfirm'
   value: {
     ilk: string
-    multiply: BigNumber
+    multiply: string
   }
 }
 
@@ -21,7 +21,7 @@ type AdjustPositionConfirmTransaction = {
   kind: 'adjustPositionConfirmTransaction'
   value: {
     ilk: string
-    multiply: BigNumber
+    multiply: string
     txHash: string
   }
 }
@@ -49,7 +49,7 @@ type CloseVaultConfirm = {
   kind: 'closeVaultConfirm'
   value: {
     ilk: string
-    debt: BigNumber
+    debt: string
     closeTo: CloseVaultTo
     txHash: string
   }
@@ -59,7 +59,7 @@ type CloseVaultConfirmTransaction = {
   kind: 'closeVaultConfirmTransaction'
   value: {
     ilk: string
-    debt: BigNumber
+    debt: string
     closeTo: CloseVaultTo
     txHash: string
   }
@@ -98,7 +98,7 @@ export function createManageMultiplyVaultAnalytics$(
             kind: 'adjustPositionConfirmTransaction',
             value: {
               ilk,
-              multiply: afterMultiply.minus(multiply),
+              multiply: afterMultiply.minus(multiply).toFixed(3),
               txHash: manageTxHash,
             },
           } as AdjustPositionConfirmTransaction
@@ -119,7 +119,7 @@ export function createManageMultiplyVaultAnalytics$(
             kind: 'closeVaultConfirmTransaction',
             value: {
               ilk,
-              debt,
+              debt: debt.toFixed(3),
               closeTo: closeVaultTo,
               txHash: manageTxHash,
             },
@@ -150,7 +150,7 @@ export function createManageMultiplyVaultAnalytics$(
             kind: 'adjustPositionConfirm',
             value: {
               ilk,
-              multiply: afterMultiply.minus(multiply),
+              multiply: afterMultiply.minus(multiply).toFixed(3),
             },
           } as AdjustPositionConfirm
         } else if (otherAction !== 'closeVault') {
@@ -169,7 +169,7 @@ export function createManageMultiplyVaultAnalytics$(
             kind: 'closeVaultConfirm',
             value: {
               ilk,
-              debt,
+              debt: debt.toFixed(3),
               closeTo: closeVaultTo,
             },
           } as CloseVaultConfirm
@@ -188,15 +188,12 @@ export function createManageMultiplyVaultAnalytics$(
 
           switch (event.kind) {
             case 'adjustPositionConfirm':
-              tracker.multiply.adjustPositionConfirm(
-                event.value.ilk,
-                event.value.multiply.toFixed(3),
-              )
+              tracker.multiply.adjustPositionConfirm(event.value.ilk, event.value.multiply)
               break
             case 'adjustPositionConfirmTransaction':
               tracker.multiply.adjustPositionConfirmTransaction(
                 event.value.ilk,
-                event.value.multiply.toFixed(3),
+                event.value.multiply,
                 event.value.txHash,
                 network,
                 walletType,
@@ -222,14 +219,14 @@ export function createManageMultiplyVaultAnalytics$(
             case 'closeVaultConfirm':
               tracker.multiply.closeVaultConfirm(
                 event.value.ilk,
-                event.value.debt.toFixed(3),
+                event.value.debt,
                 event.value.closeTo,
               )
               break
             case 'closeVaultConfirmTransaction':
               tracker.multiply.closeVaultConfirmTransaction(
                 event.value.ilk,
-                event.value.debt.toFixed(3),
+                event.value.debt,
                 event.value.closeTo,
                 event.value.txHash,
                 network,
