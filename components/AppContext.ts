@@ -415,6 +415,7 @@ export function setupAppContext() {
     landing$,
     openVault$,
     manageVault$,
+    manageMultiplyVault$,
     vaultsOverview$,
     vaultBanners$,
     redirectState$,

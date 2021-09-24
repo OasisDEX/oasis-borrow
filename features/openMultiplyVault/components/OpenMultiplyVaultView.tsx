@@ -118,7 +118,7 @@ export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultState) {
 }
 
 export function OpenMultiplyVaultView({ ilk }: { ilk: string }) {
-  const { openMultiplyVault$, accountData$ } = useAppContext()
+  const { openMultiplyVault$, accountData$, context$ } = useAppContext()
   const multiplyVaultWithIlk$ = openMultiplyVault$(ilk)
 
   const openVaultWithError = useObservableWithError(openMultiplyVault$(ilk))
@@ -127,6 +127,7 @@ export function OpenMultiplyVaultView({ ilk }: { ilk: string }) {
     const subscription = createOpenMultiplyVaultAnalytics$(
       accountData$,
       multiplyVaultWithIlk$,
+      context$,
       trackingEvents,
     ).subscribe()
 

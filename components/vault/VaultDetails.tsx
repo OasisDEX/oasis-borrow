@@ -228,23 +228,6 @@ function VaultDetailsCardCurrentPriceModal({
   )
 }
 
-export function VaultDetailsCardMockedModal({ close }: ModalProps) {
-  return (
-    <VaultDetailsCardModal close={close}>
-      <Grid gap={2}>
-        <Heading variant="header3">Mocked Modal</Heading>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tempor auctor eget magna ac enim
-          lorem tincidunt.
-        </Text>
-        <Card variant="vaultDetailsCardModal">
-          <Heading variant="header3">Some Mocked card</Heading>
-        </Card>
-      </Grid>
-    </VaultDetailsCardModal>
-  )
-}
-
 interface CollaterlizationRatioProps {
   currentCollateralRatio: BigNumber
   collateralRatioOnNextPrice: BigNumber
