@@ -6,9 +6,9 @@ import {
   getCollRatioColor,
   VaultDetailsCard,
   VaultDetailsCardCollateralLocked,
+  VaultDetailsCardCollaterlizationRatioModal,
   VaultDetailsCardCurrentPrice,
   VaultDetailsCardLiquidationPrice,
-  VaultDetailsCardMockedModal,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -160,7 +160,12 @@ export function ManageVaultDetails(props: ManageVaultState) {
               </Text>
             </>
           }
-          openModal={() => openModal(VaultDetailsCardMockedModal)}
+          openModal={() =>
+            openModal(VaultDetailsCardCollaterlizationRatioModal, {
+              collateralRatioOnNextPrice: collateralizationRatioAtNextPrice,
+              currentCollateralRatio: collateralizationRatio,
+            })
+          }
           afterPillColors={afterPillColors}
         />
 
