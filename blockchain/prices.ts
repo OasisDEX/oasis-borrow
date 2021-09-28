@@ -39,10 +39,12 @@ export function createGasPrice$(
     }),
     map(([block]) => {
       console.log('Block in createGasPrice', block)
-      return {
+      const retVal = {
         MaxFeePerGas: new BigNumber(block.baseFeePerGas).multipliedBy(2),
         MaxPrirityFeePerGas: new BigNumber(5000000000),
       } as GasPriceParams
+      console.log('GasPriceParams = ', retVal)
+      return retVal;
     }),
     distinctUntilChanged(
       (x: GasPriceParams, y: GasPriceParams) =>
