@@ -18,16 +18,31 @@ export interface Ticker {
   [label: string]: BigNumber
 }
 
-export type GasPrice$ = Observable<BigNumber>
+export type GasPriceParams = {
+  MaxFeePerGas : BigNumber;
+  MaxPrirityFeePerGas : BigNumber;
+}
+
+export type GasPrice$ = Observable<GasPriceParams>
 
 export function createGasPrice$(
   onEveryBlock$: Observable<number>,
   context$: Observable<Context>,
 ): GasPrice$ {
   return combineLatest(onEveryBlock$, context$).pipe(
-    switchMap(([, { web3 }]) => bindNodeCallback(web3.eth.getGasPrice)()),
-    map((x) => new BigNumber(x)),
-    distinctUntilChanged((x: BigNumber, y: BigNumber) => x.eq(y)),
+    switchMap(([, { web3 }]) => combineLatest(context$,bindNodeCallback(web3.eth.getBlockNumber)())),
+    switchMap(([ { web3 }, blockNumber]) => {
+      console.log("BlockNumber in createGasPrice",blockNumber);
+      return bindNodeCallback(web3.eth.getBlock)(blockNumber)
+    }),
+    map(([,block]) => {
+      console.log("Block in createGasPrice",block);
+      return{
+        MaxFeePerGas:(new BigNumber(block.baseFeePerGas)).multipliedBy(2),
+        MaxPrirityFeePerGas:new BigNumber(5000000000)
+      } as GasPriceParams;
+    } ),
+    distinctUntilChanged((x: GasPriceParams, y: GasPriceParams) => x.MaxFeePerGas.eq(y.MaxFeePerGas) && x.MaxPrirityFeePerGas.eq(y.MaxPrirityFeePerGas)),
     shareReplay(1),
   )
 }
