@@ -37,8 +37,7 @@ export function createGasPrice$(
       console.log('BlockNumber in createGasPrice', blockNumber)
       return bindNodeCallback(web3.eth.getBlock)(blockNumber)
     }),
-    map((input) => {
-      const block = input[1]
+    map(([block]) => {
       console.log('Block in createGasPrice', block)
       return {
         MaxFeePerGas: new BigNumber(block.baseFeePerGas).multipliedBy(2),
