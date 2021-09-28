@@ -43,7 +43,9 @@ export function createGasPrice$(
         MaxFeePerGas: new BigNumber(block.baseFeePerGas).multipliedBy(2),
         MaxPrirityFeePerGas: new BigNumber(5000000000),
       } as GasPriceParams
-      console.log('GasPriceParams = ', retVal)
+      console.log(
+        `GasPriceParams = { MaxFeePerGas:${retVal.MaxFeePerGas}, MaxPrirityFeePerGas:${retVal.MaxPrirityFeePerGas} }`,
+      )
       return retVal
     }),
     distinctUntilChanged(
