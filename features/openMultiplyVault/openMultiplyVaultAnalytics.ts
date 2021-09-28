@@ -1,8 +1,10 @@
 import { INPUT_DEBOUNCE_TIME, Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
+import { networksById } from 'blockchain/config'
+import { Context } from 'blockchain/network'
 import { AccountDetails } from 'features/account/AccountData'
 import { isEqual } from 'lodash'
-import { merge, Observable, zip } from 'rxjs'
+import { combineLatest, merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 
 import { MutableOpenMultiplyVaultState, OpenMultiplyVaultState } from './openMultiplyVault'
@@ -20,9 +22,29 @@ type AllowanceChange = {
   }
 }
 
+type OpenMultiplyVaultConfirm = {
+  kind: 'openMultiplyVaultConfirm'
+  value: {
+    ilk: string
+    collateralAmount: BigNumber
+    multiply: BigNumber
+  }
+}
+
+type OpenMultiplyVaultConfirmTransaction = {
+  kind: 'openMultiplyVaultConfirmTransaction'
+  value: {
+    ilk: string
+    collateralAmount: BigNumber
+    multiply: BigNumber
+    txHash: string
+  }
+}
+
 export function createOpenMultiplyVaultAnalytics$(
   accountDetails$: Observable<AccountDetails>,
   openVaultState$: Observable<OpenMultiplyVaultState>,
+  context$: Observable<Context>,
   tracker: Tracker,
 ) {
   const firstCDPChange: Observable<boolean | undefined> = accountDetails$.pipe(
@@ -31,6 +53,7 @@ export function createOpenMultiplyVaultAnalytics$(
   )
 
   const depositAmountChanges: Observable<DepositAmountChange> = openVaultState$.pipe(
+    filter((state) => state.stage === 'editing'),
     map((state) => state.depositAmount),
     filter((amount) => !!amount),
     distinctUntilChanged(isEqual),
@@ -69,9 +92,43 @@ export function createOpenMultiplyVaultAnalytics$(
     })),
   )
 
-  return firstCDPChange.pipe(
-    switchMap((firstCDP) =>
-      merge(depositAmountChanges, allowanceChanges).pipe(
+  const openMultiplyVaultConfirm: Observable<OpenMultiplyVaultConfirm> = openVaultState$.pipe(
+    filter((state) => state.stage === 'openWaitingForApproval'),
+    map(({ ilk, depositAmount, multiply }) => ({
+      kind: 'openMultiplyVaultConfirm',
+      value: {
+        ilk: ilk,
+        collateralAmount: depositAmount,
+        // slight movements on market price are causing change of multiply
+        // to counter that we round passed multiply to not have retriggered events
+        multiply: multiply?.toFixed(3),
+      },
+    })),
+    distinctUntilChanged(isEqual),
+  )
+
+  const openMultiplyVaultConfirmTransaction: Observable<OpenMultiplyVaultConfirmTransaction> = openVaultState$.pipe(
+    filter((state) => state.stage === 'openInProgress'),
+    map(({ ilk, depositAmount, openTxHash, multiply }) => ({
+      kind: 'openMultiplyVaultConfirmTransaction',
+      value: {
+        ilk: ilk,
+        collateralAmount: depositAmount,
+        multiply: multiply?.toFixed(3),
+        txHash: openTxHash,
+      },
+    })),
+    distinctUntilChanged(isEqual),
+  )
+
+  return combineLatest(context$, firstCDPChange).pipe(
+    switchMap(([context, firstCDP]) =>
+      merge(
+        depositAmountChanges,
+        allowanceChanges,
+        openMultiplyVaultConfirm,
+        openMultiplyVaultConfirmTransaction,
+      ).pipe(
         tap((event) => {
           switch (event.kind) {
             case 'depositAmountChange':
@@ -82,6 +139,28 @@ export function createOpenMultiplyVaultAnalytics$(
                 firstCDP,
                 event.value.type.toString(),
                 event.value.amount.toString(),
+              )
+              break
+            case 'openMultiplyVaultConfirm':
+              tracker.multiply.confirmOpenMultiplyConfirm(
+                event.value.ilk,
+                firstCDP,
+                event.value.collateralAmount.toString(),
+                event.value.multiply.toString(),
+              )
+              break
+            case 'openMultiplyVaultConfirmTransaction':
+              const network = networksById[context.chainId].name
+              const walletType = context.connectionKind
+
+              tracker.multiply.confirmOpenMultiplyConfirmTransaction(
+                event.value.ilk,
+                firstCDP,
+                event.value.collateralAmount.toString(),
+                event.value.multiply.toString(),
+                event.value.txHash,
+                network,
+                walletType,
               )
               break
             default:

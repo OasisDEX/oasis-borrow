@@ -1,4 +1,5 @@
 import { ConnectionKind } from '@oasisdex/web3-context'
+import { CloseVaultTo } from 'features/manageMultiplyVault/manageMultiplyVault'
 import * as mixpanelBrowser from 'mixpanel-browser'
 import getConfig from 'next/config'
 
@@ -26,6 +27,10 @@ export enum Pages {
   VaultsOverview = 'VaultsOverview',
   ManageCollateral = 'ManageCollateral',
   ManageDai = 'ManageDai',
+  OpenMultiply = 'OpenMultiply',
+  AdjustPosition = 'AdjustPosition',
+  OtherActions = 'OtherActions',
+  CloseVault = 'CloseVault',
 }
 
 export const trackingEvents = {
@@ -441,6 +446,149 @@ export const trackingEvents = {
       page: Pages.ManageDai,
       section: 'Payback',
     })
+  },
+
+  multiply: {
+    confirmOpenMultiplyConfirm: (
+      ilk: string,
+      firstCDP: boolean | undefined,
+      collAmount: string,
+      multiply: string,
+    ) => {
+      mixpanel.track('btn-click', {
+        id: 'Confirm',
+        product,
+        ilk,
+        firstCDP,
+        collAmount,
+        multiply,
+        page: Pages.OpenMultiply,
+        section: 'ConfirmVault',
+      })
+    },
+
+    confirmOpenMultiplyConfirmTransaction: (
+      ilk: string,
+      firstCDP: boolean | undefined,
+      collAmount: string,
+      multiply: string,
+      txHash: string,
+      network: string,
+      walletType: ConnectionKind,
+    ) => {
+      mixpanel.track('btn-click', {
+        id: 'ConfirmTransaction',
+        product,
+        ilk,
+        firstCDP,
+        collAmount,
+        multiply,
+        txHash,
+        network,
+        walletType,
+        page: Pages.OpenMultiply,
+        section: 'ConfirmVault',
+      })
+    },
+
+    adjustPositionConfirm: (ilk: string, multiply: string) => {
+      mixpanel.track('btn-click', {
+        id: 'Confirm',
+        product,
+        ilk,
+        multiply,
+        page: Pages.AdjustPosition,
+        section: 'ConfirmVault',
+      })
+    },
+
+    adjustPositionConfirmTransaction: (
+      ilk: string,
+      multiply: string,
+      txHash: string,
+      network: string,
+      walletType: ConnectionKind,
+    ) => {
+      mixpanel.track('btn-click', {
+        id: 'ConfirmTransaction',
+        product,
+        ilk,
+        multiply,
+        txHash,
+        network,
+        walletType,
+        page: Pages.AdjustPosition,
+        section: 'ConfirmVault',
+      })
+    },
+
+    otherActionsConfirm: (ilk: string, collateralAmount: string, daiAmount: string) => {
+      mixpanel.track('btn-click', {
+        id: 'Confirm',
+        product,
+        ilk,
+        collateralAmount,
+        daiAmount,
+        page: Pages.OtherActions,
+        section: 'ConfirmVault',
+      })
+    },
+
+    otherActionsConfirmTransaction: (
+      ilk: string,
+      collateralAmount: string,
+      daiAmount: string,
+      txHash: string,
+      network: string,
+      walletType: ConnectionKind,
+    ) => {
+      mixpanel.track('btn-click', {
+        id: 'ConfirmTransaction',
+        product,
+        ilk,
+        collateralAmount,
+        daiAmount,
+        txHash,
+        network,
+        walletType,
+        page: Pages.OtherActions,
+        section: 'ConfirmVault',
+      })
+    },
+
+    closeVaultConfirm: (ilk: string, debt: string, closeTo: CloseVaultTo) => {
+      mixpanel.track('btn-click', {
+        id: 'Confirm',
+        product,
+        ilk,
+        debt,
+        closeTo,
+        page: Pages.CloseVault,
+        section: 'ConfirmVault',
+      })
+    },
+
+    closeVaultConfirmTransaction: (
+      ilk: string,
+      debt: string,
+      closeTo: CloseVaultTo,
+      txHash: string,
+      network: string,
+      walletType: ConnectionKind,
+    ) => {
+      mixpanel.track('btn-click', {
+        id: 'ConfirmTransaction',
+        product,
+        ilk,
+        debt,
+        closeTo,
+        txHash,
+        network,
+        walletType,
+        page: Pages.CloseVault,
+        section: 'ConfirmVault',
+      })
+    },
   },
 }
 
