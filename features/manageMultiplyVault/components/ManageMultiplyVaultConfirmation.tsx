@@ -1,5 +1,5 @@
 import { Divider } from '@theme-ui/components'
-import { TxStatusCardSuccess } from 'components/vault/TxStatusCard'
+import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { OpenVaultAnimation } from 'theme/animations'
@@ -29,8 +29,23 @@ export function ManageMultiplyVaultConfirmationStatus({
   stage,
   etherscan,
   manageTxHash,
+  originalEditingStage,
+  otherAction,
 }: ManageMultiplyVaultState) {
   const { t } = useTranslation()
+
+  if (stage === 'manageInProgress') {
+    const messageKey =
+      originalEditingStage === 'adjustPosition'
+        ? 'adjusting-vault-multiply'
+        : otherAction === 'closeVault'
+        ? 'closing-vault-multiply'
+        : 'changing-vault-multiply'
+
+    return (
+      <TxStatusCardProgress text={t(messageKey)} etherscan={etherscan!} txHash={manageTxHash!} />
+    )
+  }
 
   if (stage === 'manageSuccess') {
     return (
