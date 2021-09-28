@@ -30,7 +30,12 @@ import {
 } from 'blockchain/calls/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
-import { createGasPrice$, createOraclePriceData$, GasPriceParams, tokenPricesInUSD$ } from 'blockchain/prices'
+import {
+  createGasPrice$,
+  createOraclePriceData$,
+  GasPriceParams,
+  tokenPricesInUSD$,
+} from 'blockchain/prices'
 import {
   createAccountBalance$,
   createAllowance$,
@@ -189,7 +194,7 @@ export function setupAppContext() {
     connectedContext$,
   )
 
-  const gasPrice$ = createGasPrice$(onEveryBlock$, context$);
+  const gasPrice$ = createGasPrice$(onEveryBlock$, context$)
 
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
