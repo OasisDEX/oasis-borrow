@@ -29,6 +29,7 @@ export function createGasPrice$(
   onEveryBlock$: Observable<number>,
   context$: Observable<Context>,
 ): GasPrice$ {
+  const minersTip =  new BigNumber(5000000000);
   return combineLatest(onEveryBlock$, context$).pipe(
     switchMap(([, { web3 }]) =>
       combineLatest(context$, bindNodeCallback(web3.eth.getBlockNumber)()),
@@ -40,8 +41,8 @@ export function createGasPrice$(
     map((block: any) => {
       console.log('Block in createGasPrice', block)
       const retVal = {
-        MaxFeePerGas: new BigNumber(block.baseFeePerGas).multipliedBy(2),
-        MaxPrirityFeePerGas: new BigNumber(5000000000),
+        MaxFeePerGas: new BigNumber(block.baseFeePerGas).multipliedBy(2).plus(minersTip),
+        MaxPrirityFeePerGas: minersTip,
       } as GasPriceParams
       console.log(
         `GasPriceParams = { MaxFeePerGas:${retVal.MaxFeePerGas}, MaxPrirityFeePerGas:${retVal.MaxPrirityFeePerGas} }`,
