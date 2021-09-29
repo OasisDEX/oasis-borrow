@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { SLIPPAGE_WARNING_THRESHOLD } from 'features/slippageLimit/slippageLimit'
 import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
@@ -430,7 +431,7 @@ export function applyManageVaultConditions(
     withdrawAmount.gt(zero) &&
     (paybackAmount === undefined || paybackAmount.lt(vault.debt))
 
-  const highSlippage = exchangeDataRequired && slippage.gt(new BigNumber(5).div(100))
+  const highSlippage = exchangeDataRequired && slippage.gt(SLIPPAGE_WARNING_THRESHOLD.div(100))
 
   const editingProgressionDisabled =
     isEditingStage &&

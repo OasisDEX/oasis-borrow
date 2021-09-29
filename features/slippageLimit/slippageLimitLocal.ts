@@ -8,7 +8,7 @@ export function checkSlippageLocalStorage$(): Observable<{ slippage: string | nu
   return of({ slippage })
 }
 
-export function saveSlippageLocalStorage$(slippage: BigNumber): Observable<void> {
+export function saveSlippageLocalStorage$(slippage: BigNumber): Observable<boolean> {
   localStorage.setItem(SLIPPAGE_LOCAL_STORAGE, slippage.toFixed())
-  return of(undefined)
+  return of(true)
 }

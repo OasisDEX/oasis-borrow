@@ -35,8 +35,13 @@ export const SLIPPAGE_DEFAULT = new BigNumber(0.5)
 const SLIPPAGE_LOW = new BigNumber(0.5)
 const SLIPPAGE_MEDIUM = new BigNumber(1)
 const SLIPPAGE_HIGH = new BigNumber(2)
+export const SLIPPAGE_WARNING_THRESHOLD = new BigNumber(5)
+const SLIPPAGE_LIMIT_MAX = new BigNumber(20)
+const SLIPPAGE_LIMIT_MIN = new BigNumber(0.1)
 
 export const SLIPPAGE_OPTIONS = [SLIPPAGE_LOW, SLIPPAGE_MEDIUM, SLIPPAGE_HIGH]
+
+type SaveSlippageFunction = (slippageInput: BigNumber) => Observable<boolean>
 
 function apply(state: SlippageLimitState, change: SlippageLimitChange): SlippageLimitState {
   if (change.kind === 'slippageInput') {
@@ -64,8 +69,12 @@ function apply(state: SlippageLimitState, change: SlippageLimitChange): Slippage
   return state
 }
 
-function saveSlippage(slippageInput: BigNumber, change: (ch: SlippageLimitChange) => void) {
-  return saveSlippageLocalStorage$(slippageInput)
+function saveSlippage(
+  slippageInput: BigNumber,
+  change: (ch: SlippageLimitChange) => void,
+  saveSlippage$: SaveSlippageFunction,
+) {
+  return saveSlippage$(slippageInput)
     .pipe(
       map(() => ({ kind: 'slippageSaved', slippageInput } as SlippageLimitChange)),
       startWith({ kind: 'stage', stage: 'inProgress' } as SlippageLimitChange),
@@ -75,12 +84,13 @@ function saveSlippage(slippageInput: BigNumber, change: (ch: SlippageLimitChange
 }
 
 function addTransitions(
+  saveSlippage$: SaveSlippageFunction,
   change: (ch: SlippageLimitChange) => void,
   state: SlippageLimitState,
 ): SlippageLimitState {
   return {
     ...state,
-    saveSlippage: () => saveSlippage(state.slippageInput, change),
+    saveSlippage: () => saveSlippage(state.slippageInput, change, saveSlippage$),
   }
 }
 
@@ -92,13 +102,14 @@ function validate(state: SlippageLimitState): SlippageLimitState {
   const invalidSlippage =
     !slippageInput ||
     slippageInput.isNaN() ||
-    (slippageInput && (slippageInput.gt(new BigNumber(20)) || slippageInput.lt(new BigNumber(0.1))))
+    (slippageInput &&
+      (slippageInput.gt(SLIPPAGE_LIMIT_MAX) || slippageInput.lt(SLIPPAGE_LIMIT_MIN)))
 
   if (invalidSlippage) {
     errors.push('invalidSlippage')
   }
 
-  if (!invalidSlippage && slippageInput.gt(new BigNumber(5))) {
+  if (!invalidSlippage && slippageInput.gt(SLIPPAGE_WARNING_THRESHOLD)) {
     warnings.push('highSlippage')
   }
 
@@ -107,8 +118,11 @@ function validate(state: SlippageLimitState): SlippageLimitState {
   return { ...state, errors, warnings, canProgress }
 }
 
-export function createSlippageLimit$(): Observable<SlippageLimitState> {
-  return checkSlippageLocalStorage$().pipe(
+export function createSlippageLimit$(
+  checkSlippage$: () => Observable<{ slippage: string | null }>,
+  saveSlippage$: SaveSlippageFunction,
+): Observable<SlippageLimitState> {
+  return checkSlippage$().pipe(
     switchMap(({ slippage: initialSlippage }) => {
       const change$ = new Subject<SlippageLimitChange>()
 
@@ -135,7 +149,7 @@ export function createSlippageLimit$(): Observable<SlippageLimitState> {
 
       return merge(change$).pipe(
         scan(apply, initialState),
-        map(curry(addTransitions)(change)),
+        map(curry(addTransitions)(saveSlippage$, change)),
         map(curry(validate)),
         startWith(initialState),
       )

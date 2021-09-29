@@ -67,7 +67,7 @@ function getSlippageLimitMessageTranslation(
   }
 }
 
-function SlippageLimitErrors({
+function SlippageLimitMessages({
   errors,
   warnings,
 }: Pick<SlippageLimitState, 'errors' | 'warnings'>) {
@@ -169,7 +169,7 @@ export function SlippageLimitDropdown(props: SlippageLimitState) {
           </Grid>
         </Card>
       </Box>
-      <SlippageLimitErrors {...{ errors, warnings }} />
+      <SlippageLimitMessages {...{ errors, warnings }} />
       <Button
         disabled={!canProgress || stage === 'inProgress'}
         onClick={saveSlippage}

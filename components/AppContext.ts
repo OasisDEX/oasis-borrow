@@ -59,6 +59,10 @@ import { createPriceInfo$ } from 'features/shared/priceInfo'
 import { checkVaultTypeUsingApi$, saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { createSlippageLimit$ } from 'features/slippageLimit/slippageLimit'
 import {
+  checkSlippageLocalStorage$,
+  saveSlippageLocalStorage$,
+} from 'features/slippageLimit/slippageLimitLocal'
+import {
   checkAcceptanceFromApi$,
   saveAcceptanceFromApi$,
 } from 'features/termsOfService/termsAcceptanceApi'
@@ -293,7 +297,7 @@ export function setupAppContext() {
     account: string | undefined,
   ) => Observable<BalanceInfo>
 
-  const slippageLimit$ = createSlippageLimit$()
+  const slippageLimit$ = createSlippageLimit$(checkSlippageLocalStorage$, saveSlippageLocalStorage$)
 
   const openVault$ = memoize((ilk: string) =>
     createOpenVault$(
