@@ -67,7 +67,7 @@ export const trackingEvents = {
   accountChange: (account: string, network: string, walletType: string) => {
     const eventName = 'account-change'
     const eventBody = {
-      id: 'addressChange',
+      id: 'AccountChange',
       account,
       network,
       product,
