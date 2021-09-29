@@ -1,3 +1,5 @@
+import { trackingEvents } from 'analytics/analytics'
+import { useAppContext } from 'components/AppContextProvider'
 import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
@@ -10,6 +12,7 @@ import React, { useEffect } from 'react'
 import { Box, Grid } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
+import { createManageMultiplyVaultAnalytics$ } from '../manageMultiplyVaultAnalytics'
 import { ManageMultiplyVaultButton } from './ManageMultiplyVaultButton'
 import { ManageMultiplyVaultCollateralAllowance } from './ManageMultiplyVaultCollateralAllowance'
 import {
@@ -83,6 +86,7 @@ export function ManageMultiplyVaultContainer({
   manageVault: ManageMultiplyVaultState
   vaultHistory: VaultHistoryEvent[]
 }) {
+  const { manageMultiplyVault$, context$ } = useAppContext()
   const {
     vault: { id, ilk },
     clear,
@@ -90,8 +94,15 @@ export function ManageMultiplyVaultContainer({
   const { t } = useTranslation()
 
   useEffect(() => {
+    const subscription = createManageMultiplyVaultAnalytics$(
+      manageMultiplyVault$(id),
+      context$,
+      trackingEvents,
+    ).subscribe()
+
     return () => {
       clear()
+      subscription.unsubscribe()
     }
   }, [])
 

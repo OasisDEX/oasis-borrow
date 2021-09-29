@@ -1,303 +1,243 @@
-import { INPUT_DEBOUNCE_TIME } from 'analytics/analytics'
+import { Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
+import { networksById } from 'blockchain/config'
+import { Context } from 'blockchain/network'
+import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
-import { merge, Observable, zip } from 'rxjs'
-import { debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
+import { merge, Observable } from 'rxjs'
+import { distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 
-import { ManageMultiplyVaultState } from './manageMultiplyVault'
+import { CloseVaultTo, ManageMultiplyVaultState } from './manageMultiplyVault'
 
-// type GenerateAmountChange = {
-//   kind: 'generateAmountChange'
-//   value: { amount: BigNumber; setMax: boolean }
-// }
-
-// type DepositAmountChange = {
-//   kind: 'depositAmountChange'
-//   value: { amount: BigNumber; setMax: boolean }
-// }
-
-// type PaybackAmountChange = {
-//   kind: 'paybackAmountChange'
-//   value: { amount: BigNumber; setMax: boolean }
-// }
-
-// type WithdrawAmountChange = {
-//   kind: 'withdrawAmountChange'
-//   value: { amount: BigNumber; setMax: boolean }
-// }
-
-type AllowanceChange = {
-  kind: 'collateralAllowanceChange' | 'daiAllowanceChange'
+type AdjustPositionConfirm = {
+  kind: 'adjustPositionConfirm'
   value: {
-    type:
-      | Pick<ManageMultiplyVaultState, 'selectedDaiAllowanceRadio'>
-      | Pick<ManageMultiplyVaultState, 'selectedCollateralAllowanceRadio'>
-    amount: BigNumber
+    ilk: string
+    multiply: string
   }
 }
 
-// type ManageVaultConfirm = {
-//   kind: 'manageVaultConfirm'
-//   value: {
-//     ilk: string
-//     collateralAmount: BigNumber
-//     daiAmount: BigNumber
-//   }
-// }
+type AdjustPositionConfirmTransaction = {
+  kind: 'adjustPositionConfirmTransaction'
+  value: {
+    ilk: string
+    multiply: string
+    txHash: string
+  }
+}
 
-// type ManageVaultConfirmTransaction = {
-//   kind: 'manageVaultConfirmTransaction'
-//   value: {
-//     ilk: string
-//     collateralAmount: BigNumber
-//     daiAmount: BigNumber
-//     txHash: string
-//   }
-// }
+type OtherActionsConfirm = {
+  kind: 'otherActionsConfirm'
+  value: {
+    ilk: string
+    collateralAmount: BigNumber
+    daiAmount: BigNumber
+  }
+}
 
-export function createManageVaultAnalytics$(
-  manageVaultState$: Observable<ManageMultiplyVaultState>,
-  // tracker: Tracker,
+type OtherActionsConfirmTransaction = {
+  kind: 'otherActionsConfirmTransaction'
+  value: {
+    ilk: string
+    collateralAmount: BigNumber
+    daiAmount: BigNumber
+    txHash: string
+  }
+}
+
+type CloseVaultConfirm = {
+  kind: 'closeVaultConfirm'
+  value: {
+    ilk: string
+    debt: string
+    closeTo: CloseVaultTo
+    txHash: string
+  }
+}
+
+type CloseVaultConfirmTransaction = {
+  kind: 'closeVaultConfirmTransaction'
+  value: {
+    ilk: string
+    debt: string
+    closeTo: CloseVaultTo
+    txHash: string
+  }
+}
+
+type ManageMultiplyConfirmTransaction =
+  | AdjustPositionConfirmTransaction
+  | OtherActionsConfirmTransaction
+  | CloseVaultConfirmTransaction
+
+type ManageMultiplyConfirm = AdjustPositionConfirm | OtherActionsConfirm | CloseVaultConfirm
+
+export function createManageMultiplyVaultAnalytics$(
+  manageMultiplyVaultState$: Observable<ManageMultiplyVaultState>,
+  context$: Observable<Context>,
+  tracker: Tracker,
 ) {
-  const stageChanges = manageVaultState$.pipe(
-    map((state) => state.stage),
-    filter((stage) => stage === 'otherActions' || stage === 'adjustPosition'),
-    distinctUntilChanged(isEqual),
-  )
-
-  // const depositAmountChanges: Observable<DepositAmountChange> = manageVaultState$.pipe(
-  //   map(({ depositAmount, maxDepositAmount }) => ({
-  //     amount: depositAmount,
-  //     setMax: depositAmount?.eq(maxDepositAmount),
-  //   })),
-  //   filter((value) => !!value.amount),
-  //   distinctUntilChanged(isEqual),
-  //   debounceTime(INPUT_DEBOUNCE_TIME),
-  //   map((value) => ({
-  //     kind: 'depositAmountChange',
-  //     value,
-  //   })),
-  // )
-
-  // const generateAmountChanges: Observable<GenerateAmountChange> = manageVaultState$.pipe(
-  //   map(({ generateAmount, maxGenerateAmount }) => ({
-  //     amount: generateAmount,
-  //     setMax: generateAmount?.eq(maxGenerateAmount),
-  //   })),
-  //   filter((value) => !!value.amount),
-  //   distinctUntilChanged(isEqual),
-  //   debounceTime(INPUT_DEBOUNCE_TIME),
-  //   map((value) => ({
-  //     kind: 'generateAmountChange',
-  //     value,
-  //   })),
-  // )
-
-  // const paybackAmountChanges: Observable<PaybackAmountChange> = manageVaultState$.pipe(
-  //   map(({ paybackAmount, maxPaybackAmount }) => ({
-  //     amount: paybackAmount,
-  //     setMax: paybackAmount?.eq(maxPaybackAmount),
-  //   })),
-  //   filter((value) => !!value.amount),
-  //   distinctUntilChanged(isEqual),
-  //   debounceTime(INPUT_DEBOUNCE_TIME),
-  //   map((value) => ({
-  //     kind: 'paybackAmountChange',
-  //     value,
-  //   })),
-  // )
-
-  // const withdrawAmountChanges: Observable<WithdrawAmountChange> = manageVaultState$.pipe(
-  //   map(({ withdrawAmount, maxWithdrawAmount }) => ({
-  //     amount: withdrawAmount,
-  //     setMax: withdrawAmount?.eq(maxWithdrawAmount),
-  //   })),
-  //   filter((value) => !!value.amount),
-  //   distinctUntilChanged(isEqual),
-  //   debounceTime(INPUT_DEBOUNCE_TIME),
-  //   map((value) => ({
-  //     kind: 'withdrawAmountChange',
-  //     value,
-  //   })),
-  // )
-
-  const collateralAllowanceTypeChanges: Observable<Pick<
-    ManageMultiplyVaultState,
-    'selectedCollateralAllowanceRadio'
-  >> = manageVaultState$.pipe(
-    filter((state) => state.stage === 'collateralAllowanceWaitingForConfirmation'),
-    map((state) => state.selectedCollateralAllowanceRadio),
-    distinctUntilChanged(isEqual),
-  )
-
-  const collateralAllowanceAmountChanges: Observable<BigNumber> = manageVaultState$.pipe(
-    map((state) => state.collateralAllowanceAmount),
-    filter((amount) => !!amount),
-    distinctUntilChanged(isEqual),
-    debounceTime(INPUT_DEBOUNCE_TIME),
-  )
-
-  const collateralAllowanceChanges: Observable<AllowanceChange> = zip(
-    collateralAllowanceTypeChanges,
-    collateralAllowanceAmountChanges,
-  ).pipe(
-    map(([type, amount]) => ({
-      kind: 'collateralAllowanceChange',
-      value: {
-        type,
-        amount,
+  const manageMultiplyConfirmTransaction: Observable<ManageMultiplyConfirmTransaction> = manageMultiplyVaultState$.pipe(
+    filter((state) => state.stage === 'manageInProgress'),
+    map(
+      ({
+        vault: { ilk, debt },
+        manageTxHash,
+        multiply,
+        afterMultiply,
+        originalEditingStage,
+        otherAction,
+        depositAmount,
+        withdrawAmount,
+        generateAmount,
+        paybackAmount,
+        closeVaultTo,
+      }) => {
+        if (originalEditingStage === 'adjustPosition') {
+          return {
+            kind: 'adjustPositionConfirmTransaction',
+            value: {
+              ilk,
+              multiply: afterMultiply.minus(multiply).toFixed(3),
+              txHash: manageTxHash,
+            },
+          } as AdjustPositionConfirmTransaction
+        } else if (otherAction !== 'closeVault') {
+          return {
+            kind: 'otherActionsConfirmTransaction',
+            value: {
+              ilk,
+              collateralAmount:
+                depositAmount || (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : zero),
+              daiAmount:
+                generateAmount || (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : zero),
+              txHash: manageTxHash,
+            },
+          } as OtherActionsConfirmTransaction
+        } else {
+          return {
+            kind: 'closeVaultConfirmTransaction',
+            value: {
+              ilk,
+              debt: debt.toFixed(3),
+              closeTo: closeVaultTo,
+              txHash: manageTxHash,
+            },
+          } as CloseVaultConfirmTransaction
+        }
       },
-    })),
-  )
-
-  const daiAllowanceTypeChanges: Observable<Pick<
-    ManageMultiplyVaultState,
-    'selectedDaiAllowanceRadio'
-  >> = manageVaultState$.pipe(
-    filter((state) => state.stage === 'daiAllowanceWaitingForConfirmation'),
-    map((state) => state.selectedDaiAllowanceRadio),
+    ),
     distinctUntilChanged(isEqual),
   )
 
-  const daiAllowanceAmountChanges: Observable<BigNumber> = manageVaultState$.pipe(
-    map((state) => state.daiAllowanceAmount),
-    filter((amount) => !!amount),
-    distinctUntilChanged(isEqual),
-    debounceTime(INPUT_DEBOUNCE_TIME),
-  )
-
-  const daiAllowanceChanges: Observable<AllowanceChange> = zip(
-    daiAllowanceTypeChanges,
-    daiAllowanceAmountChanges,
-  ).pipe(
-    map(([type, amount]) => ({
-      kind: 'daiAllowanceChange',
-      value: {
-        type,
-        amount,
+  const manageMultiplyConfirm: Observable<ManageMultiplyConfirm> = manageMultiplyVaultState$.pipe(
+    filter((state) => state.stage === 'manageWaitingForApproval'),
+    map(
+      ({
+        vault: { ilk, debt },
+        multiply,
+        afterMultiply,
+        originalEditingStage,
+        otherAction,
+        depositAmount,
+        withdrawAmount,
+        generateAmount,
+        paybackAmount,
+        closeVaultTo,
+      }) => {
+        if (originalEditingStage === 'adjustPosition') {
+          return {
+            kind: 'adjustPositionConfirm',
+            value: {
+              ilk,
+              multiply: afterMultiply.minus(multiply).toFixed(3),
+            },
+          } as AdjustPositionConfirm
+        } else if (otherAction !== 'closeVault') {
+          return {
+            kind: 'otherActionsConfirm',
+            value: {
+              ilk,
+              collateralAmount:
+                depositAmount || (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : zero),
+              daiAmount:
+                generateAmount || (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : zero),
+            },
+          } as OtherActionsConfirm
+        } else {
+          return {
+            kind: 'closeVaultConfirm',
+            value: {
+              ilk,
+              debt: debt.toFixed(3),
+              closeTo: closeVaultTo,
+            },
+          } as CloseVaultConfirm
+        }
       },
-    })),
+    ),
+    distinctUntilChanged(isEqual),
   )
 
-  // const manageVaultConfirm: Observable<ManageVaultConfirm> = manageVaultState$.pipe(
-  //   filter((state) => state.stage === 'manageWaitingForApproval'),
-  //   map(({ vault: { ilk }, depositAmount, withdrawAmount, generateAmount, paybackAmount }) => ({
-  //     kind: 'manageVaultConfirm',
-  //     value: {
-  //       ilk: ilk,
-  //       collateralAmount:
-  //         depositAmount || (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : zero),
-  //       daiAmount:
-  //         generateAmount || (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : zero),
-  //     },
-  //   })),
-  //   distinctUntilChanged(isEqual),
-  // )
+  return context$.pipe(
+    switchMap((context) =>
+      merge(merge(manageMultiplyConfirm, manageMultiplyConfirmTransaction)).pipe(
+        tap((event) => {
+          const network = networksById[context.chainId].name
+          const walletType = context.connectionKind
 
-  // const manageVaultConfirmTransaction: Observable<ManageVaultConfirmTransaction> = manageVaultState$.pipe(
-  //   filter((state) => state.stage === 'manageInProgress'),
-  //   map(
-  //     ({
-  //       vault: { ilk },
-  //       depositAmount,
-  //       withdrawAmount,
-  //       generateAmount,
-  //       paybackAmount,
-  //       manageTxHash,
-  //     }) => ({
-  //       kind: 'manageVaultConfirmTransaction',
-  //       value: {
-  //         ilk: ilk,
-  //         collateralAmount:
-  //           depositAmount || (withdrawAmount ? withdrawAmount.times(new BigNumber(-1)) : zero),
-  //         daiAmount:
-  //           generateAmount || (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : zero),
-  //         txHash: manageTxHash,
-  //       },
-  //     }),
-  //   ),
-  //   distinctUntilChanged(isEqual),
-  // )
-
-  return stageChanges.pipe(
-    switchMap((_stage) =>
-      merge(
-        merge(
-          // depositAmountChanges,
-          // generateAmountChanges,
-          // paybackAmountChanges,
-          // withdrawAmountChanges,
-          collateralAllowanceChanges,
-          daiAllowanceChanges,
-        ),
-        // merge(manageVaultConfirm, manageVaultConfirmTransaction),
-      )
-        .pipe
-        // tap((event) => {
-        //   const page = stage === 'daiEditing' ? Pages.ManageDai : Pages.ManageCollateral
-        //   switch (event.kind) {
-        //     case 'depositAmountChange':
-        //       tracker.manageVaultDepositAmount(
-        //         page,
-        //         event.value.amount.toString(),
-        //         event.value.setMax,
-        //       )
-        //       break
-        //     case 'generateAmountChange':
-        //       tracker.manageVaultGenerateAmount(
-        //         page,
-        //         event.value.amount.toString(),
-        //         event.value.setMax,
-        //       )
-        //       break
-        //     case 'paybackAmountChange':
-        //       tracker.manageVaultPaybackAmount(
-        //         page,
-        //         event.value.amount.toString(),
-        //         event.value.setMax,
-        //       )
-        //       break
-        //     case 'withdrawAmountChange':
-        //       tracker.manageVaultWithdrawAmount(
-        //         page,
-        //         event.value.amount.toString(),
-        //         event.value.setMax,
-        //       )
-        //       break
-        //     case 'collateralAllowanceChange':
-        //       tracker.manageCollateralPickAllowance(
-        //         event.value.type.toString(),
-        //         event.value.amount.toString(),
-        //       )
-        //       break
-        //     case 'daiAllowanceChange':
-        //       tracker.manageDaiPickAllowance(
-        //         event.value.type.toString(),
-        //         event.value.amount.toString(),
-        //       )
-        //       break
-        //     case 'manageVaultConfirm':
-        //       tracker.manageVaultConfirm(
-        //         page,
-        //         event.value.ilk,
-        //         event.value.collateralAmount.toString(),
-        //         event.value.daiAmount.toString(),
-        //       )
-        //       break
-        //     case 'manageVaultConfirmTransaction':
-        //       tracker.manageVaultConfirmTransaction(
-        //         page,
-        //         event.value.ilk,
-        //         event.value.collateralAmount.toString(),
-        //         event.value.daiAmount.toString(),
-        //         event.value.txHash,
-        //       )
-        //       break
-        //     default:
-        //       throw new Error('Unhandled Scenario')
-        //   }
-        // }),
-        (),
+          switch (event.kind) {
+            case 'adjustPositionConfirm':
+              tracker.multiply.adjustPositionConfirm(event.value.ilk, event.value.multiply)
+              break
+            case 'adjustPositionConfirmTransaction':
+              tracker.multiply.adjustPositionConfirmTransaction(
+                event.value.ilk,
+                event.value.multiply,
+                event.value.txHash,
+                network,
+                walletType,
+              )
+              break
+            case 'otherActionsConfirm':
+              tracker.multiply.otherActionsConfirm(
+                event.value.ilk,
+                event.value.collateralAmount.toString(),
+                event.value.daiAmount.toString(),
+              )
+              break
+            case 'otherActionsConfirmTransaction':
+              tracker.multiply.otherActionsConfirmTransaction(
+                event.value.ilk,
+                event.value.collateralAmount.toString(),
+                event.value.daiAmount.toString(),
+                event.value.txHash,
+                network,
+                walletType,
+              )
+              break
+            case 'closeVaultConfirm':
+              tracker.multiply.closeVaultConfirm(
+                event.value.ilk,
+                event.value.debt,
+                event.value.closeTo,
+              )
+              break
+            case 'closeVaultConfirmTransaction':
+              tracker.multiply.closeVaultConfirmTransaction(
+                event.value.ilk,
+                event.value.debt,
+                event.value.closeTo,
+                event.value.txHash,
+                network,
+                walletType,
+              )
+              break
+            default:
+              throw new Error('Unhandled Scenario')
+          }
+        }),
+      ),
     ),
   )
 }
