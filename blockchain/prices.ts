@@ -3,6 +3,7 @@ import { Context, every10Seconds$ } from 'blockchain/network'
 import { zero } from 'helpers/zero'
 import { bindNodeCallback, combineLatest, forkJoin, iif, Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
+import { isEqual } from 'lodash'
 import {
   catchError,
   distinctUntilChanged,
@@ -51,7 +52,7 @@ export function createGasPrice$(
     }),
     distinctUntilChanged(
       (x: GasPriceParams, y: GasPriceParams) =>
-        x.maxFeePerGas.eq(y.maxFeePerGas) && x.maxPriorityFeePerGas.eq(y.maxPriorityFeePerGas),
+      isEqual(x,y)
     ),
     shareReplay(1),
   )
