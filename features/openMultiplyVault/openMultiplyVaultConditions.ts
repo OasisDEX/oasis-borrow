@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { SLIPPAGE_WARNING_THRESHOLD } from 'features/slippageLimit/slippageLimit'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
@@ -254,7 +253,7 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
 
   const isExchangeLoading = !quote && !swap && !exchangeError
 
-  const highSlippage = slippage.gt(SLIPPAGE_WARNING_THRESHOLD.div(100))
+  const highSlippage = slippage.gt(SLIPPAGE_WARNING_THRESHOLD)
 
   const canProgress =
     !(

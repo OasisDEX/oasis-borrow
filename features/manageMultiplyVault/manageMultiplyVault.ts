@@ -499,7 +499,7 @@ export function createManageMultiplyVault$(
                     errorMessages: [],
                     warningMessages: [],
                     summary: defaultManageVaultSummary,
-                    slippage: slippage.div(100),
+                    slippage,
                     exchangeError: false,
                     initialTotalSteps,
                     totalSteps: initialTotalSteps,
@@ -516,7 +516,7 @@ export function createManageMultiplyVault$(
                     balanceInfoChange$(balanceInfo$, vault.token, account),
                     createIlkDataChange$(ilkData$, vault.ilk),
                     createVaultChange$(vault$, id),
-                    createInitialQuoteChange(exchangeQuote$, vault.token, slippage.div(100)),
+                    createInitialQuoteChange(exchangeQuote$, vault.token, slippage),
                     createExchangeChange$(exchangeQuote$, stateSubject$),
                     slippageChange$(slippageLimit$),
                   )

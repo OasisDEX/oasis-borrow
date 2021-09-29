@@ -39,7 +39,7 @@ export function applyOpenVaultEnvironment(
   if (change.kind === 'slippage') {
     return {
       ...state,
-      slippage: change.slippage.div(100),
+      slippage: change.slippage,
     }
   }
 

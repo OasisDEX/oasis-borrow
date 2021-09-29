@@ -350,7 +350,7 @@ export function createOpenMultiplyVault$(
                       errorMessages: [],
                       warningMessages: [],
                       summary: defaultOpenVaultSummary,
-                      slippage: slippage.div(100),
+                      slippage,
                       totalSteps,
                       currentStep: 1,
                       exchangeError: false,
@@ -365,7 +365,7 @@ export function createOpenMultiplyVault$(
                       priceInfoChange$(priceInfo$, token),
                       balanceInfoChange$(balanceInfo$, token, account),
                       createIlkDataChange$(ilkData$, ilk),
-                      createInitialQuoteChange(exchangeQuote$, token, slippage.div(100)),
+                      createInitialQuoteChange(exchangeQuote$, token, slippage),
                       createExchangeChange$(exchangeQuote$, stateSubject$),
                       slippageChange$(slippageLimit$),
                     )

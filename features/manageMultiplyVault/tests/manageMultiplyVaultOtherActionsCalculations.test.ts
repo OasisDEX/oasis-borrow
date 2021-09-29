@@ -58,7 +58,7 @@ describe('Other actions calculations', () => {
       OAZO_FEE,
       LOAN_FEE,
       currentCollateral,
-      SLIPPAGE_DEFAULT.div(100),
+      SLIPPAGE_DEFAULT,
       currentDebt,
     )
 
@@ -92,7 +92,7 @@ describe('Other actions calculations', () => {
       OAZO_FEE,
       LOAN_FEE,
       currentDebt,
-      SLIPPAGE_DEFAULT.div(100),
+      SLIPPAGE_DEFAULT,
     )
 
     expect(fromTokenAmount).to.be.deep.equal(expectedFromTokenAmount)

@@ -37,7 +37,7 @@ function SlippageOptionButton({ option, onClick }: { option: BigNumber; onClick:
       }}
       onClick={onClick}
     >
-      {formatPercent(option, { precision: 2 })}
+      {formatPercent(option.times(100), { precision: 2 })}
     </Button>
   )
 }
@@ -161,9 +161,9 @@ export function SlippageLimitDropdown(props: SlippageLimitState) {
                 prefix: '',
               })}
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setSlippageCustom(new BigNumber(e.target.value.replace(/,/g, '')))
+                setSlippageCustom(new BigNumber(e.target.value).div(100))
               }
-              value={slippageInput ? formatPrecision(slippageInput, 2) : undefined}
+              value={slippageInput ? formatPrecision(slippageInput.times(100), 2) : undefined}
               sx={{ variant: 'forms.inputSecondary' }}
             />
           </Grid>
@@ -215,7 +215,7 @@ export function SlippageLimitButton() {
       <Button variant="menuButton" onClick={() => setOpened(!opened)} sx={{ mr: 1, px: 2 }}>
         <Flex sx={{ alignItems: 'center', px: 1 }}>
           <Icon size="auto" width="15" height="26" name="slippage_limit" sx={{ mr: '6px' }} />
-          <Text>{formatPercent(slippageLimit.slippage, { precision: 2 })}</Text>
+          <Text>{formatPercent(slippageLimit.slippage.times(100), { precision: 2 })}</Text>
         </Flex>
       </Button>
       {slippageLimit && opened && <SlippageLimitDropdown {...slippageLimit} />}
