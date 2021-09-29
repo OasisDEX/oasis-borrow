@@ -43,7 +43,7 @@ export enum Pages {
 
 function mixpanelInternalAPI(eventName: string, eventBody: { [key: string]: any }) {
   // eslint-disable-next-line
-  fetch('/api/mixpanel', {
+  fetch('/api/t', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
