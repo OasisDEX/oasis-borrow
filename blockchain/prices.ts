@@ -50,10 +50,7 @@ export function createGasPrice$(
       )
       return retVal
     }),
-    distinctUntilChanged(
-      (x: GasPriceParams, y: GasPriceParams) =>
-      isEqual(x,y)
-    ),
+    distinctUntilChanged(isEqual),
     shareReplay(1),
   )
 }
