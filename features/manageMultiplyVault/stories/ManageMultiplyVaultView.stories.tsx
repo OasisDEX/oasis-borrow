@@ -292,6 +292,25 @@ export const ManageInProgress = manageMultiplyVaultStory({
   paybackAmount: new BigNumber('300'),
 })
 
+export const ManageInProgressOtherActions = manageMultiplyVaultStory({
+  vault: vaultETH,
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
+  proxyAddress,
+})({
+  stage: 'manageInProgress',
+  originalEditingStage: 'otherActions',
+})
+
+export const ManageInProgressCloseVault = manageMultiplyVaultStory({
+  vault: vaultETH,
+  balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },
+  proxyAddress,
+})({
+  stage: 'manageInProgress',
+  originalEditingStage: 'otherActions',
+  otherAction: 'closeVault',
+})
+
 export const ManageSuccess = manageMultiplyVaultStory({
   vault: vaultETH,
   balanceInfo: { collateralBalance: new BigNumber('200'), daiBalance: new BigNumber('1000') },

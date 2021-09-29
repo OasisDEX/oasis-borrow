@@ -585,8 +585,12 @@
     }
   },
   "creating-your-vault": "Creating your {{token}} Vault!",
+  "creating-your-vault-multiply": "Creating your {{token}} Multiply Vault!",
   "vault-created": "Vault #{{id}} created!",
   "changing-vault": "Changing Vault",
+  "changing-vault-multiply": "Changing Multiply Vault",
+  "adjusting-vault-multiply": "Multiplying your Vault in progress",
+  "closing-vault-multiply": "Closing your Multiply Vault",
   "your-wallet": "Your wallet",
   "welcome": "Welcome to the new Oasis.app.",
   "read-blog-post": "Read the blog post",
