@@ -298,7 +298,7 @@ export function doGasEstimation<S extends HasGasEstimation>(
 
       return gasCall.pipe(
         map((gasEstimation: number) => {
-          const gasCost = amountFromWei(gasPrice.MaxFeePerGas.times(gasEstimation))
+          const gasCost = amountFromWei(gasPrice.maxFeePerGas.times(gasEstimation))
           const gasEstimationUsd = ETHUsd ? gasCost.times(ETHUsd) : undefined
           const gasEstimationDai =
             gasEstimationUsd && DAIUsd ? gasEstimationUsd.div(DAIUsd) : undefined
