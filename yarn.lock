@@ -13275,7 +13275,7 @@ got@^7.1.0:
     url-parse-lax "^1.0.0"
     url-to-options "^1.0.1"
 
-graceful-fs@^4.1.10, graceful-fs@^4.1.9, graceful-fs@^4.2.3, graceful-fs@^4.2.4:
+graceful-fs@^4.1.10, graceful-fs@^4.1.9, graceful-fs@^4.2.4:
   version "4.2.6"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.6.tgz#ff040b2b0853b23c3d31027523706f1885d76bee"
   integrity sha512-nTnJ528pbqxYanhpDYsi4Rd8MAeaBA67+RZ10CM1m3bTAVFEDcd5AuA4a6W5YkGZ1iNXHzZz8T6TBKLeBuNriQ==
@@ -13895,20 +13895,20 @@ https-browserify@^1.0.0:
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
   integrity sha1-7AbBDgo0wPL68Zn3/X/Hj//QPHM=
 
+https-proxy-agent@5.0.0, https-proxy-agent@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-5.0.0.tgz#e2a90542abb68a762e0a0850f6c9edadfd8506b2"
+  integrity sha512-EkYm5BcKUGiduxzSt3Eppko+PiNWNEpa4ySk9vTC6wDsQJW9rHSa+UhGNJoRYp7bz6Ht1eaRIa6QaJqO5rCFbA==
+  dependencies:
+    agent-base "6"
+    debug "4"
+
 https-proxy-agent@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-4.0.0.tgz#702b71fb5520a132a66de1f67541d9e62154d82b"
   integrity sha512-zoDhWrkR3of1l9QAL8/scJZyLu8j/gBkcwcaQOZh7Gyh/+uJQzGVETdgT30akuwkpL8HTRfssqI3BZuV18teDg==
   dependencies:
     agent-base "5"
-    debug "4"
-
-https-proxy-agent@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-5.0.0.tgz#e2a90542abb68a762e0a0850f6c9edadfd8506b2"
-  integrity sha512-EkYm5BcKUGiduxzSt3Eppko+PiNWNEpa4ySk9vTC6wDsQJW9rHSa+UhGNJoRYp7bz6Ht1eaRIa6QaJqO5rCFbA==
-  dependencies:
-    agent-base "6"
     debug "4"
 
 i18next-fs-backend@^1.0.7:
@@ -16429,6 +16429,13 @@ mixpanel-browser@^2.29.1:
   version "2.29.1"
   resolved "https://registry.yarnpkg.com/mixpanel-browser/-/mixpanel-browser-2.29.1.tgz#0e5bda9d43aab5fb74c3bfc527651c4a90fc675d"
   integrity sha512-RSBqVBznOkKBz3MkCXRrkTEEXqoNNYAbASpjaCxvhpT5pykWhjh7JY54fAmOvtG9XNL3GHYA6XiB7Yos4ngNYQ==
+
+mixpanel@^0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/mixpanel/-/mixpanel-0.13.0.tgz#699bf510d9ba013c75edcf979ff1e24085fde9d2"
+  integrity sha512-YOWmpr/o4+zJ8LPjuLUkWLc2ImFeIkX6hF1t62Wlvq6loC6e8EK8qieYO4gYPTPxxtjAryl7xmIvf/7qnPwjrQ==
+  dependencies:
+    https-proxy-agent "5.0.0"
 
 mkdirp-classic@^0.5.2:
   version "0.5.3"
