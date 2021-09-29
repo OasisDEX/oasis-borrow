@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
@@ -103,6 +104,8 @@ export interface OpenMultiplyVaultConditions {
   canRegress: boolean
   canAdjustRisk: boolean
   isExchangeLoading: boolean
+
+  highSlippage: boolean
 }
 
 export const defaultOpenMultiplyVaultConditions: OpenMultiplyVaultConditions = {
@@ -134,6 +137,8 @@ export const defaultOpenMultiplyVaultConditions: OpenMultiplyVaultConditions = {
   canProgress: false,
   canRegress: false,
   isExchangeLoading: false,
+
+  highSlippage: false,
 }
 
 export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
@@ -157,6 +162,7 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     exchangeError,
     quote,
     swap,
+    slippage,
   } = state
 
   const inputAmountsEmpty = !depositAmount
@@ -247,6 +253,8 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
 
   const isExchangeLoading = !quote && !swap && !exchangeError
 
+  const highSlippage = slippage.gt(new BigNumber(5).div(100))
+
   const canProgress =
     !(
       inputAmountsEmpty ||
@@ -301,5 +309,7 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     canProgress,
     canRegress,
     isExchangeLoading,
+
+    highSlippage,
   }
 }

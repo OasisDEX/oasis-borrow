@@ -57,6 +57,7 @@ import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimColl
 import { redirectState$ } from 'features/router/redirectState'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import { checkVaultTypeUsingApi$, saveVaultUsingApi$ } from 'features/shared/vaultApi'
+import { createSlippageLimit$ } from 'features/slippageLimit/slippageLimit'
 import {
   checkAcceptanceFromApi$,
   saveAcceptanceFromApi$,
@@ -292,6 +293,8 @@ export function setupAppContext() {
     account: string | undefined,
   ) => Observable<BalanceInfo>
 
+  const slippageLimit$ = createSlippageLimit$()
+
   const openVault$ = memoize((ilk: string) =>
     createOpenVault$(
       connectedContext$,
@@ -326,6 +329,7 @@ export function setupAppContext() {
       ilkData$,
       exchangeQuote$,
       addGasEstimation$,
+      slippageLimit$,
       ilk,
     ),
   )
@@ -361,6 +365,7 @@ export function setupAppContext() {
         vault$,
         exchangeQuote$,
         addGasEstimation$,
+        slippageLimit$,
         id,
       ),
     bigNumberTostring,
@@ -429,6 +434,7 @@ export function setupAppContext() {
     openVaultOverview$,
     openMultiplyVault$,
     generalManageVault$,
+    slippageLimit$,
   }
 }
 

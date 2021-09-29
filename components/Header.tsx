@@ -5,6 +5,7 @@ import { trackingEvents } from 'analytics/analytics'
 import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
 import { AccountButton } from 'features/account/Account'
+import { SlippageLimitButton } from 'features/slippageLimit/SlippageLimitView'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
@@ -105,27 +106,32 @@ function ConnectedHeader() {
       variant="appContainer"
     >
       <>
-        <Logo sx={{ position: ['absolute', 'static', 'static'], left: 3, top: 3 }} />
-        <Flex sx={{ ml: 'auto', zIndex: 1, mt: [3, 0, 0] }}>
-          <AppLink
-            variant="nav"
-            sx={{ mr: 4 }}
-            // @ts-ignore
-            href={`/owner/${context?.account}`}
-            onClick={() => trackingEvents.yourVaults()}
-          >
-            {t('your-vaults')} {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
-          </AppLink>
-          <AppLink
-            variant="nav"
-            sx={{ mr: [0, 4, 4] }}
-            href="/vaults/list"
-            onClick={() => trackingEvents.createNewVault(firstCDP)}
-          >
-            {t('open-new-vault')}
-          </AppLink>
+        <Flex sx={{ alignItems: 'center' }}>
+          <Logo sx={{ position: ['absolute', 'static', 'static'], left: 3, top: 3 }} />
+          <Flex sx={{ ml: 5, zIndex: 1, mt: [3, 0, 0] }}>
+            <AppLink
+              variant="nav"
+              sx={{ mr: 4 }}
+              // @ts-ignore
+              href={`/owner/${context?.account}`}
+              onClick={() => trackingEvents.yourVaults()}
+            >
+              {t('your-vaults')} {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
+            </AppLink>
+            <AppLink
+              variant="nav"
+              sx={{ mr: [0, 4, 4] }}
+              href="/vaults/list"
+              onClick={() => trackingEvents.createNewVault(firstCDP)}
+            >
+              {t('open-new-vault')}
+            </AppLink>
+          </Flex>
         </Flex>
-        <AccountButton />
+        <Flex>
+          <SlippageLimitButton />
+          <AccountButton />
+        </Flex>
       </>
     </BasicHeader>
   )

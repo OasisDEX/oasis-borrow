@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
-import { SLIPPAGE } from 'helpers/multiply/calculations'
 import { EMPTY, Observable } from 'rxjs'
 import {
   debounceTime,
@@ -209,8 +208,9 @@ export function createInitialQuoteChange(
     action: ExchangeAction,
   ) => Observable<Quote>,
   token: string,
+  slippage: BigNumber,
 ) {
-  return exchangeQuote$(token, SLIPPAGE, new BigNumber(1), 'BUY_COLLATERAL').pipe(
+  return exchangeQuote$(token, slippage, new BigNumber(1), 'BUY_COLLATERAL').pipe(
     map(quoteToChange),
     take(1),
   )

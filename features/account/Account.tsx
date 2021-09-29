@@ -115,7 +115,7 @@ export function AccountButton() {
         }}
       >
         <Button
-          variant="mobileBottomMenu"
+          variant="menuButton"
           sx={{
             minWidth: '150px',
             p: 1,
@@ -130,11 +130,7 @@ export function AccountButton() {
       </Flex>
       {vaultFormToggleTitle && (
         <Box sx={{ display: ['flex', 'none'] }}>
-          <Button
-            variant="mobileBottomMenu"
-            sx={{ px: 3 }}
-            onClick={() => setVaultFormOpened(true)}
-          >
+          <Button variant="menuButton" sx={{ px: 3 }} onClick={() => setVaultFormOpened(true)}>
             <Box>{vaultFormToggleTitle}</Box>
           </Button>
         </Box>

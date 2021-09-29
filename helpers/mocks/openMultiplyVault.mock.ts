@@ -12,6 +12,7 @@ import { Observable, of } from 'rxjs'
 import { createOpenMultiplyVault$ } from '../../features/openMultiplyVault/openMultiplyVault'
 import { MockExchangeQuote, mockExchangeQuote$ } from './exchangeQuote.mock'
 import { addGasEstimationMock } from './openVault.mock'
+import { slippageLimitMock } from './slippageLimit.mock'
 
 export interface MockOpenMultiplyVaultProps {
   _ilkData$?: Observable<IlkData>
@@ -97,6 +98,7 @@ export function mockOpenMultiplyVault({
     ilkData$,
     mockExchangeQuote$(exchangeQuote),
     addGasEstimationMock,
+    slippageLimitMock(),
     ilk,
   )
 }

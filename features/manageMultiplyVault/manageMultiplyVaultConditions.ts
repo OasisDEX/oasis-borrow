@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
@@ -166,6 +167,8 @@ export interface ManageVaultConditions {
   withdrawCollateralOnVaultUnderDebtFloor: boolean
 
   hasToDepositCollateralOnEmptyVault: boolean
+
+  highSlippage: boolean
 }
 
 export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
@@ -218,6 +221,8 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   withdrawCollateralOnVaultUnderDebtFloor: false,
 
   hasToDepositCollateralOnEmptyVault: false,
+
+  highSlippage: false,
 }
 
 export function applyManageVaultConditions(
@@ -261,6 +266,7 @@ export function applyManageVaultConditions(
     exchangeError,
     otherAction,
     originalEditingStage,
+    slippage,
   } = state
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
   const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)
@@ -424,6 +430,8 @@ export function applyManageVaultConditions(
     withdrawAmount.gt(zero) &&
     (paybackAmount === undefined || paybackAmount.lt(vault.debt))
 
+  const highSlippage = exchangeDataRequired && slippage.gt(new BigNumber(5).div(100))
+
   const editingProgressionDisabled =
     isEditingStage &&
     (inputAmountsEmpty ||
@@ -523,5 +531,7 @@ export function applyManageVaultConditions(
     withdrawCollateralOnVaultUnderDebtFloor,
 
     hasToDepositCollateralOnEmptyVault,
+
+    highSlippage,
   }
 }
