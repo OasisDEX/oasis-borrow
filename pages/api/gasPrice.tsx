@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
 const request = require('request')
+const NodeCache = require('node-cache')
+const cache = new NodeCache({ stdTTL: 9 })
 
 export default async function (_req: NextApiRequest, res: NextApiResponse) {
   const options = {
@@ -19,10 +21,23 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
     const estimatedPriceFor95PercentConfidence = estimatedPricesForNextBlock[1]
     console.log('inside request', estimatedPriceFor95PercentConfidence)
     if (!error && response.statusCode === 200) {
+      cache.set('time', new Date().getTime())
       res.status(200)
-      res.json(estimatedPriceFor95PercentConfidence)
+      res.json({
+        time: cache.get('time'),
+        estimatedPriceFor95PercentConfidence
+      })
     }
   }
 
-  request(options, callback)
+  const time = cache.get('time')
+  if (time === undefined) {
+    // handle miss!
+    request(options, callback)
+  } else {
+    res.json({
+      time: time,
+      fromCache: true,
+    })
+  }
 }
