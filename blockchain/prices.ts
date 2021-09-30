@@ -39,11 +39,36 @@ export function createGasPrice$(
       return bindNodeCallback(web3.eth.getBlock)(blockNumber)
     }),
     map((block: any) => {
-      const retVal = {
+      const gasFees = {
         maxFeePerGas: new BigNumber(block.baseFeePerGas).multipliedBy(2).plus(minersTip),
         maxPriorityFeePerGas: minersTip,
       } as GasPriceParams
-      return retVal
+      return gasFees
+    }),
+    map((gasFees : GasPriceParams)=>{
+      console.log("before /api/gasPrice");
+      ajax({
+        url: `/api/gasPrice`,
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+        },
+      }).pipe(
+        map(({ response }) => {
+          console.log("inside /api/gasPrice");
+          const maxFeePerGas = new BigNumber(response.estimatedPriceFor95PercentConfidence.maxFeePerGas)
+          const maxPriorityFeePerGas = new BigNumber(response.estimatedPriceFor95PercentConfidence.maxPriorityFeePerGas)
+          console.log(`before /api/gasPrice ${maxFeePerGas} ${maxPriorityFeePerGas}`);
+          return {
+            maxFeePerGas,
+            maxPriorityFeePerGas,
+          } as GasPriceParams
+        }),
+        catchError((error) => {
+          console.debug(`Error fetching price data: ${error}`)
+          return of(gasFees);
+        }),
+      )
     }),
     distinctUntilChanged(isEqual),
     shareReplay(1),
