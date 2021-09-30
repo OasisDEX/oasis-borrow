@@ -1,14 +1,33 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ajax } from 'rxjs/ajax'
+
+const request = require('request')
+const NodeCache = require('node-cache')
+const cache = new NodeCache({ stdTTL: 9 })
 
 export default async function (_req: NextApiRequest, res: NextApiResponse) {
-  console.log('Hello call from gasPrice', res === undefined)
-  ajax({
+  const options = {
     url: `https://api.blocknative.com/gasprices/blockprices`,
-    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       Authorization: '44352ff7-890f-4334-a9e0-a9cfe0edd5cb',
     },
-  }).subscribe((json) => console.log(json))
+  }
+
+  function callback(error: any, response: any, body: any) {
+    console.log(body === undefined)
+    if (!error && response.statusCode === 200) {
+      cache.set('time', new Date().getTime())
+      res.json({
+        time: cache.get('time'),
+      })
+    }
+  }
+
+  const time = cache.get('time')
+  if (time === undefined) {
+    // handle miss!
+    request(options, callback)
+  } else {
+    res.json
+  }
 }
