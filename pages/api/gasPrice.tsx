@@ -1,4 +1,4 @@
-import { json } from 'body-parser';
+
 import { NextApiRequest, NextApiResponse } from 'next'
 
 const request = require('request')
@@ -13,6 +13,8 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
   }
 
   function callback(error: any, response: any, body: any) {
+    console.log('inside request', error)
+    console.log('inside request', body)
     if (!error && response.statusCode === 200) {
       res.json(body)
     }
