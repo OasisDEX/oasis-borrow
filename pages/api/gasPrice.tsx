@@ -1,3 +1,4 @@
+import { json } from 'body-parser';
 import { NextApiRequest, NextApiResponse } from 'next'
 
 const request = require('request')
