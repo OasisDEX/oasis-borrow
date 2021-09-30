@@ -36,18 +36,13 @@ export function createGasPrice$(
       combineLatest(context$, bindNodeCallback(web3.eth.getBlockNumber)()),
     ),
     switchMap(([{ web3 }, blockNumber]) => {
-      console.log('BlockNumber in createGasPrice', blockNumber)
       return bindNodeCallback(web3.eth.getBlock)(blockNumber)
     }),
     map((block: any) => {
-      console.log('Block in createGasPrice', block)
       const retVal = {
         maxFeePerGas: new BigNumber(block.baseFeePerGas).multipliedBy(2).plus(minersTip),
         maxPriorityFeePerGas: minersTip,
       } as GasPriceParams
-      console.log(
-        `GasPriceParams = { MaxFeePerGas:${retVal.maxFeePerGas}, MaxPrirityFeePerGas:${retVal.maxPriorityFeePerGas} }`,
-      )
       return retVal
     }),
     distinctUntilChanged(isEqual),
