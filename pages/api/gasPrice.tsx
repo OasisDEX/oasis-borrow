@@ -19,6 +19,7 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
       cache.set('time', new Date().getTime())
       res.json({
         time: cache.get('time'),
+        fromCache: false,
       })
     }
   }
@@ -28,6 +29,9 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
     // handle miss!
     request(options, callback)
   } else {
-    res.json
+    res.json({
+      time: time,
+      fromCache: true,
+    })
   }
 }
