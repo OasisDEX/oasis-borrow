@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { ajax } from 'rxjs/ajax'
 
 export default async function (_req: NextApiRequest, res: NextApiResponse) {
-
+  console.log('Hello call from gasPrice');
   ajax({
     url: `https://api.blocknative.com/gasprices/blockprices`,
     method: 'GET',
