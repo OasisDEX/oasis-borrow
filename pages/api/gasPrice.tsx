@@ -1,44 +1,46 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import axios from 'axios';
 
-const request = require('request')
 const NodeCache = require('node-cache')
 const cache = new NodeCache({ stdTTL: 9 })
 
 export default async function (_req: NextApiRequest, res: NextApiResponse) {
-  const options = {
-    url: `https://api.blocknative.com/gasprices/blockprices`,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: process.env.BLOCKNATIVE_API_KEY,
-    },
-  }
-
-  function callback(error: any, response: any, body: any) {
-    const responseFromBlocknative = JSON.parse(body)
-    const estimatedPricesForNextBlock = responseFromBlocknative?.blockPrices[0].estimatedPrices
-    // TODO LW - what do to when responseFromBlocknative had no blockPrices ? It happens when doing multiple requests one after another
-    const estimatedPriceFor95PercentConfidence = estimatedPricesForNextBlock[1]
-    if (!error && response.statusCode === 200) {
-      cache.set('time', new Date().getTime())
-      cache.set('estimatedPriceFor95PercentConfidence', estimatedPriceFor95PercentConfidence)
-      res.status(200)
+  const time = cache.get('time')
+  if (!time) {
+    axios({
+      method: 'get',
+      url: 'https://api.blocknative.com/gasprices/blockprices',
+      responseType: 'json',
+      headers: {
+        'Authorization': `${process.env.BLOCKNATIVE_API_KEY}`
+      } 
+    })
+      .then((response) => {
+        const responseFromBlocknative:any = response.data
+        const estimatedPricesForNextBlock:any = responseFromBlocknative?.blockPrices[0].estimatedPrices
+        const estimatedPriceFor95PercentConfidence = estimatedPricesForNextBlock[1]
+        cache.set('time', new Date().getTime())
+        cache.set('estimatedPriceFor95PercentConfidence', estimatedPriceFor95PercentConfidence)
+        res.status(200)
+        res.json({
+          time: cache.get('time'),
+          fromCache: false,
+          maxPriorityFeePerGas: estimatedPriceFor95PercentConfidence.maxPriorityFeePerGas,
+          maxFeePerGas: estimatedPriceFor95PercentConfidence.maxFeePerGas
+        })
+      })
+      .catch((error) => {
+        console.log(error)
+        res.status(error.status)
+      });
+    } 
+    else {
+      const estimatedPriceFor95PercentConfidence= cache.get('estimatedPriceFor95PercentConfidence')
       res.json({
-        time: cache.get('time'),
-        fromCache: false,
-        estimatedPriceFor95PercentConfidence
+        time: time,
+        fromCache: true,
+        maxPriorityFeePerGas: estimatedPriceFor95PercentConfidence.maxPriorityFeePerGas,
+        maxFeePerGas: estimatedPriceFor95PercentConfidence.maxFeePerGas
       })
     }
-  }
-
-  const time = cache.get('time')
-  if (time === undefined) {
-    // handle miss!
-    request(options, callback)
-  } else {
-    res.json({
-      time: time,
-      fromCache: true,
-      estimatedPriceFor95PercentConfidence: cache.get('estimatedPriceFor95PercentConfidence'),
-    })
-  }
 }
