@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { Context, every10Seconds$ } from 'blockchain/network'
 import { zero } from 'helpers/zero'
+import { isEqual } from 'lodash'
 import { bindNodeCallback, combineLatest, forkJoin, iif, Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import {
@@ -18,16 +19,33 @@ export interface Ticker {
   [label: string]: BigNumber
 }
 
-export type GasPrice$ = Observable<BigNumber>
+export type GasPriceParams = {
+  maxFeePerGas: BigNumber
+  maxPriorityFeePerGas: BigNumber
+}
+
+export type GasPrice$ = Observable<GasPriceParams>
 
 export function createGasPrice$(
   onEveryBlock$: Observable<number>,
   context$: Observable<Context>,
 ): GasPrice$ {
+  const minersTip = new BigNumber(5000000000)
   return combineLatest(onEveryBlock$, context$).pipe(
-    switchMap(([, { web3 }]) => bindNodeCallback(web3.eth.getGasPrice)()),
-    map((x) => new BigNumber(x)),
-    distinctUntilChanged((x: BigNumber, y: BigNumber) => x.eq(y)),
+    switchMap(([, { web3 }]) =>
+      combineLatest(context$, bindNodeCallback(web3.eth.getBlockNumber)()),
+    ),
+    switchMap(([{ web3 }, blockNumber]) => {
+      return bindNodeCallback(web3.eth.getBlock)(blockNumber)
+    }),
+    map((block: any) => {
+      const retVal = {
+        maxFeePerGas: new BigNumber(block.baseFeePerGas).multipliedBy(2).plus(minersTip),
+        maxPriorityFeePerGas: minersTip,
+      } as GasPriceParams
+      return retVal
+    }),
+    distinctUntilChanged(isEqual),
     shareReplay(1),
   )
 }
