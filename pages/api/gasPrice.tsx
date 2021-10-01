@@ -12,8 +12,10 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
       Authorization: process.env.BLOCKNATIVE_API_KEY,
     },
   }
+  console.log('Setting up gasPrice')
 
   function callback(error: any, response: any, body: any) {
+    console.log('Executing gasPrice')
     const responseFromBlocknative = JSON.parse(body)
     const estimatedPricesForNextBlock = responseFromBlocknative?.blockPrices[0].estimatedPrices
     // TODO LW - what do to when responseFromBlocknative had no blockPrices ? It happens when doing multiple requests one after another
