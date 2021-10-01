@@ -45,8 +45,8 @@ export function createGasPrice$(
       } as GasPriceParams
       return gasFees
     }),
-    map((gasFees : GasPriceParams)=>{
-      console.log("before /api/gasPrice");
+    map((gasFees: GasPriceParams) => {
+      console.log('before /api/gasPrice')
       ajax({
         url: `/api/gasPrice`,
         method: 'GET',
@@ -55,10 +55,14 @@ export function createGasPrice$(
         },
       }).pipe(
         map(({ response }) => {
-          console.log("inside /api/gasPrice");
-          const maxFeePerGas = new BigNumber(response.estimatedPriceFor95PercentConfidence.maxFeePerGas)
-          const maxPriorityFeePerGas = new BigNumber(response.estimatedPriceFor95PercentConfidence.maxPriorityFeePerGas)
-          console.log(`before /api/gasPrice ${maxFeePerGas} ${maxPriorityFeePerGas}`);
+          console.log('inside /api/gasPrice')
+          const maxFeePerGas = new BigNumber(
+            response.estimatedPriceFor95PercentConfidence.maxFeePerGas,
+          )
+          const maxPriorityFeePerGas = new BigNumber(
+            response.estimatedPriceFor95PercentConfidence.maxPriorityFeePerGas,
+          )
+          console.log(`before /api/gasPrice ${maxFeePerGas} ${maxPriorityFeePerGas}`)
           return {
             maxFeePerGas,
             maxPriorityFeePerGas,
@@ -66,7 +70,7 @@ export function createGasPrice$(
         }),
         catchError((error) => {
           console.debug(`Error fetching price data: ${error}`)
-          return of(gasFees);
+          return of(gasFees)
         }),
       )
     }),
