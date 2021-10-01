@@ -48,7 +48,7 @@ export function createGasPrice$(
     map((gasFees: GasPriceParams) => {
       console.log('before /api/gasPrice')
       ajax({
-        url: `/api/gasPrice`,
+        url: `https://oasis-borrow-as-2743-us-kuvjdq.herokuapp.com/api/gasPrice`,
         method: 'GET',
         headers: {
           Accept: 'application/json',
