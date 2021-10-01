@@ -11,6 +11,7 @@ import {
   map,
   shareReplay,
   switchMap,
+  tap,
 } from 'rxjs/operators'
 
 import { getToken } from '../blockchain/tokensMetadata'
@@ -47,14 +48,18 @@ export function createGasPrice$(
     }),
     map((gasFees: GasPriceParams) => {
       console.log('before /api/gasPrice')
-      ajax({
-        url: `https://oasis-borrow-as-2743-us-kuvjdq.herokuapp.com/api/gasPrice`,
+      return ajax({
+        url: `${window.location.origin}/api/gasPrice`,
         method: 'GET',
         headers: {
           Accept: 'application/json',
         },
       }).pipe(
-        map(({ response }) => {
+        tap((response) => {
+          if (response.status !== 200) throw new Error(response.responseText)
+          return response;
+        }),
+        map(( {response} ) => {
           console.log('inside /api/gasPrice')
           const maxFeePerGas = new BigNumber(
             response.estimatedPriceFor95PercentConfidence.maxFeePerGas,
