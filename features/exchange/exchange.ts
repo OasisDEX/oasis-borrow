@@ -47,7 +47,7 @@ type TokenMetadata = {
 }
 
 export type QuoteResult = {
-  status: string
+  status: 'SUCCESS'
   fromTokenAddress: string
   toTokenAddress: string
   collateralAmount: BigNumber
@@ -76,7 +76,7 @@ export function getQuote$(
   amount: BigNumber, // This is always the receiveAtLeast amount of tokens we want to exchange from
   slippage: BigNumber,
   action: ExchangeAction,
-): Observable<QuoteResult> {
+) {
   const fromTokenAddress = action === 'BUY_COLLATERAL' ? dai.address : collateral.address
   const toTokenAddress = action === 'BUY_COLLATERAL' ? collateral.address : dai.address
 
@@ -155,7 +155,7 @@ export function getQuote$(
       }
     }),
     retry(3),
-    catchError(() => of({ status: 'ERROR' } as QuoteResult)),
+    catchError(() => of({ status: 'ERROR' } as const)),
   )
 }
 
