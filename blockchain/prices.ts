@@ -46,9 +46,7 @@ export function createGasPrice$(
     }),
     map(({ response }) => {
       const maxFeePerGas = new BigNumber(response.maxFeePerGas)
-      const maxPriorityFeePerGas = new BigNumber(
-        response.maxPriorityFeePerGas,
-      )
+      const maxPriorityFeePerGas = new BigNumber(response.maxPriorityFeePerGas)
       return {
         maxFeePerGas,
         maxPriorityFeePerGas,
