@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 const NodeCache = require('node-cache')
@@ -12,12 +12,13 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
       url: 'https://api.blocknative.com/gasprices/blockprices',
       responseType: 'json',
       headers: {
-        'Authorization': `${process.env.BLOCKNATIVE_API_KEY}`
-      } 
+        Authorization: `${process.env.BLOCKNATIVE_API_KEY}`,
+      },
     })
       .then((response) => {
-        const responseFromBlocknative:any = response.data
-        const estimatedPricesForNextBlock:any = responseFromBlocknative?.blockPrices[0].estimatedPrices
+        const responseFromBlocknative: any = response.data
+        const estimatedPricesForNextBlock: any =
+          responseFromBlocknative?.blockPrices[0].estimatedPrices
         const estimatedPriceFor95PercentConfidence = estimatedPricesForNextBlock[1]
         cache.set('time', new Date().getTime())
         cache.set('estimatedPriceFor95PercentConfidence', estimatedPriceFor95PercentConfidence)
@@ -26,21 +27,20 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
           time: cache.get('time'),
           fromCache: false,
           maxPriorityFeePerGas: estimatedPriceFor95PercentConfidence.maxPriorityFeePerGas,
-          maxFeePerGas: estimatedPriceFor95PercentConfidence.maxFeePerGas
+          maxFeePerGas: estimatedPriceFor95PercentConfidence.maxFeePerGas,
         })
       })
       .catch((error) => {
         console.log(error)
         res.status(error.status)
-      });
-    } 
-    else {
-      const estimatedPriceFor95PercentConfidence= cache.get('estimatedPriceFor95PercentConfidence')
-      res.json({
-        time: time,
-        fromCache: true,
-        maxPriorityFeePerGas: estimatedPriceFor95PercentConfidence.maxPriorityFeePerGas,
-        maxFeePerGas: estimatedPriceFor95PercentConfidence.maxFeePerGas
       })
-    }
+  } else {
+    const estimatedPriceFor95PercentConfidence = cache.get('estimatedPriceFor95PercentConfidence')
+    res.json({
+      time: time,
+      fromCache: true,
+      maxPriorityFeePerGas: estimatedPriceFor95PercentConfidence.maxPriorityFeePerGas,
+      maxFeePerGas: estimatedPriceFor95PercentConfidence.maxFeePerGas,
+    })
+  }
 }
