@@ -198,7 +198,7 @@ const goerli: NetworkConfig = {
   magicLink: {
     apiKey: '',
   },
-  cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app',
+  cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
 }
 
 const hardhat: NetworkConfig = {
