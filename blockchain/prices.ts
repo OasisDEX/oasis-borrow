@@ -21,8 +21,8 @@ export interface Ticker {
 }
 
 export type GasPriceParams = {
-  maxFeePerGas: any
-  maxPriorityFeePerGas: any
+  maxFeePerGas: BigNumber
+  maxPriorityFeePerGas: BigNumber
 }
 
 export type GasPrice$ = Observable<GasPriceParams>
