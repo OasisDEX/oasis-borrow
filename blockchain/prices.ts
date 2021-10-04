@@ -11,6 +11,7 @@ import {
   map,
   shareReplay,
   switchMap,
+  tap,
 } from 'rxjs/operators'
 
 import { getToken } from '../blockchain/tokensMetadata'
@@ -31,20 +32,52 @@ export function createGasPrice$(
   context$: Observable<Context>,
 ): GasPrice$ {
   const minersTip = new BigNumber(5000000000)
-  return combineLatest(onEveryBlock$, context$).pipe(
+
+  const blockNativeRequest$ = ajax({
+    url: `${window.location.origin}/api/gasPrice`,
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+  }).pipe(
+    tap((response) => {
+      if (response.status !== 200) throw new Error(response.responseText)
+      return response
+    }),
+    map(({ response }) => {
+      const maxFeePerGas = new BigNumber(response.maxFeePerGas)
+      const maxPriorityFeePerGas = new BigNumber(response.maxPriorityFeePerGas)
+      return {
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+      } as GasPriceParams
+    }),
+  )
+
+  return combineLatest(onEveryBlock$, context$, blockNativeRequest$).pipe(
     switchMap(([, { web3 }]) =>
       combineLatest(context$, bindNodeCallback(web3.eth.getBlockNumber)()),
     ),
     switchMap(([{ web3 }, blockNumber]) => {
-      return bindNodeCallback(web3.eth.getBlock)(blockNumber)
+      return combineLatest(blockNativeRequest$, bindNodeCallback(web3.eth.getBlock)(blockNumber))
     }),
-    map((block: any) => {
-      const retVal = {
-        maxFeePerGas: new BigNumber(block.baseFeePerGas).multipliedBy(2).plus(minersTip),
-        maxPriorityFeePerGas: minersTip,
-      } as GasPriceParams
-      return retVal
-    }),
+    map(
+      ([blockNativeResp, block]): GasPriceParams => {
+        const blockNative = blockNativeResp as GasPriceParams
+        const gasFees = {
+          maxFeePerGas: new BigNumber((block as any).baseFeePerGas).multipliedBy(2).plus(minersTip),
+          maxPriorityFeePerGas: minersTip,
+        } as GasPriceParams
+        if (blockNative.maxFeePerGas.gt(0)) {
+          gasFees.maxFeePerGas = blockNative.maxFeePerGas
+          gasFees.maxPriorityFeePerGas = blockNative.maxPriorityFeePerGas
+        }
+        console.log(
+          `Final gas fees Total=${gasFees.maxFeePerGas} priority = ${gasFees.maxPriorityFeePerGas}`,
+        )
+        return gasFees
+      },
+    ),
     distinctUntilChanged(isEqual),
     shareReplay(1),
   )

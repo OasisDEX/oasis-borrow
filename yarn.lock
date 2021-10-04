@@ -3643,10 +3643,10 @@
     web3 "^1.5.3"
     web3-provider-engine "^14.0.1"
 
-"@oasisdex/transactions@^0.0.29-alpha.0":
-  version "0.0.29-alpha.0"
-  resolved "https://registry.yarnpkg.com/@oasisdex/transactions/-/transactions-0.0.29-alpha.0.tgz#cfe882a4f510128962bf65c6c1b248fa9fb5ecef"
-  integrity sha512-5y9Euh+LXL9B706+D6FvBtWT+jflPDmmVZ2VdwEwi/F/rdH2T7mrUrb6mCkGReGgphMYd2WawtE0r5aejup96Q==
+"@oasisdex/transactions@^0.0.33-alpha.0":
+  version "0.0.33-alpha.0"
+  resolved "https://registry.yarnpkg.com/@oasisdex/transactions/-/transactions-0.0.33-alpha.0.tgz#2837e448d0f5a3af40fd496594197b2dc05af505"
+  integrity sha512-WWW6SCdWOm7j5sWscQEo8ODyerj+iXcXNWgeDeiqlbpF4j66Xp57KdJ4GP68L0XP4xWv/eZmQTXi5lfs//eK2w==
   dependencies:
     "@types/ramda" "^0.25.38"
     bignumber.js "^9.0.1"
