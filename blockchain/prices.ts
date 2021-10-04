@@ -45,9 +45,9 @@ export function createGasPrice$(
       return response
     }),
     map(({ response }) => {
-      const maxFeePerGas = new BigNumber(response.estimatedPriceFor95PercentConfidence.maxFeePerGas)
+      const maxFeePerGas = new BigNumber(response.maxFeePerGas)
       const maxPriorityFeePerGas = new BigNumber(
-        response.estimatedPriceFor95PercentConfidence.maxPriorityFeePerGas,
+        response.maxPriorityFeePerGas,
       )
       return {
         maxFeePerGas,
