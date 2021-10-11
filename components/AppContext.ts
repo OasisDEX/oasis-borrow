@@ -64,10 +64,10 @@ import {
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiplyHistory'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
-import { mapValues, memoize } from 'lodash'
+import { isEqual, mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
 import { combineLatest, Observable, of } from 'rxjs'
-import { filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { dogIlk } from '../blockchain/calls/dog'
 import {
@@ -168,13 +168,18 @@ export function setupAppContext() {
   combineLatest(account$, connectedContext$)
     .pipe(
       mergeMap(([account, network]) => {
-        return of({ network, account: account?.toLowerCase() })
+        return of({
+          networkName: network.name,
+          connectionKind: network.connectionKind,
+          account: account?.toLowerCase(),
+        })
       }),
+      distinctUntilChanged(isEqual),
     )
-    .subscribe(({ account, network }) => {
-      if (account && network) {
-        mixpanelIdentify(account, { walletType: network.connectionKind })
-        trackingEvents.accountChange(account, network.name, network.connectionKind)
+    .subscribe(({ account, networkName, connectionKind }) => {
+      if (account) {
+        mixpanelIdentify(account, { walletType: connectionKind })
+        trackingEvents.accountChange(account, networkName, connectionKind)
       }
     })
 

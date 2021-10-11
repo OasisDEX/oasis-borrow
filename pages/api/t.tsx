@@ -10,10 +10,11 @@ mixpanel = enableMixpanelDevelopmentMode(mixpanel)
 
 export default async function (req: NextApiRequest, res: NextApiResponse<{ status: number }>) {
   try {
-    const { eventName, eventBody } = req.body
+    const { eventName, eventBody, distinctId } = req.body
 
     mixpanel.track(`be-${eventName}`, {
       ...eventBody,
+      distinct_id: distinctId,
       id: `be-${eventBody.id}`,
     })
 
