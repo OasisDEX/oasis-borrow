@@ -45,7 +45,6 @@ export function createGasPrice$(
       return response
     }),
     map(({ response }) => {
-      console.log('blockNativeResp', response)
       const maxFeePerGas = new BigNumber(response.maxFeePerGas)
       const maxPriorityFeePerGas = new BigNumber(response.maxPriorityFeePerGas)
       return {
@@ -69,18 +68,12 @@ export function createGasPrice$(
           maxFeePerGas: new BigNumber((block as any).baseFeePerGas).multipliedBy(2).plus(minersTip),
           maxPriorityFeePerGas: minersTip,
         } as GasPriceParams
-        console.log(
-          `Initial gas fees Total=${gasFees.maxFeePerGas} priority = ${gasFees.maxPriorityFeePerGas}`,
-        )
         if (blockNative.maxFeePerGas.gt(0)) {
           gasFees.maxFeePerGas = new BigNumber(1000000000).multipliedBy(blockNative.maxFeePerGas)
           gasFees.maxPriorityFeePerGas = new BigNumber(1000000000).multipliedBy(
             blockNative.maxPriorityFeePerGas,
           )
         }
-        console.log(
-          `Final gas fees Total=${gasFees.maxFeePerGas} priority = ${gasFees.maxPriorityFeePerGas}`,
-        )
         return gasFees
       },
     ),
