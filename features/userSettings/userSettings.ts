@@ -3,30 +3,27 @@ import { curry } from 'lodash'
 import { merge, Observable, of, Subject } from 'rxjs'
 import { catchError, map, scan, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
-type SlippageLimitStage = 'editing' | 'inProgress' | 'success' | 'failure'
+type UserSettingsStage = 'editing' | 'inProgress' | 'success' | 'failure'
 
-export type SlippageLimitErrorMessages = 'invalidSlippage'
+export type UserSettingsErrorMessages = 'invalidSlippage'
 
-export type SlippageLimitWarningMessages = 'highSlippage'
+export type UserSettingsWarningMessages = 'highSlippage'
 
-export interface SlippageLimitState {
-  stage: SlippageLimitStage
+export interface UserSettingsState {
+  stage: UserSettingsStage
   slippage: BigNumber
   slippageInput: BigNumber
-  setSlippageLow: () => void
-  setSlippageMedium: () => void
-  setSlippageHigh: () => void
-  setSlippageCustom: (slippageInput: BigNumber) => void
-  saveSlippage?: () => void
+  setSlippageInput: (slippageInput: BigNumber) => void
+  saveSettings?: () => void
   reset: () => void
-  errors: SlippageLimitErrorMessages[]
-  warnings: SlippageLimitWarningMessages[]
+  errors: UserSettingsErrorMessages[]
+  warnings: UserSettingsWarningMessages[]
   canProgress: boolean
 }
 
-type SlippageLimitChange =
-  | { kind: 'stage'; stage: SlippageLimitStage }
-  | { kind: 'slippageSaved'; slippageInput: BigNumber }
+type UserSettingsChange =
+  | { kind: 'stage'; stage: UserSettingsStage }
+  | { kind: 'settingsSaved'; slippageInput: BigNumber }
   | { kind: 'slippageInput'; slippageInput: BigNumber }
 
 export const SLIPPAGE_DEFAULT = new BigNumber(0.005)
@@ -39,9 +36,9 @@ const SLIPPAGE_LIMIT_MIN = new BigNumber(0.001)
 
 export const SLIPPAGE_OPTIONS = [SLIPPAGE_LOW, SLIPPAGE_MEDIUM, SLIPPAGE_HIGH]
 
-type SaveSlippageFunction = (slippageInput: BigNumber) => Observable<boolean>
+type SaveUserSettingsFunction = (slippageInput: BigNumber) => Observable<boolean>
 
-function apply(state: SlippageLimitState, change: SlippageLimitChange): SlippageLimitState {
+function apply(state: UserSettingsState, change: UserSettingsChange): UserSettingsState {
   if (change.kind === 'slippageInput') {
     return {
       ...state,
@@ -56,7 +53,7 @@ function apply(state: SlippageLimitState, change: SlippageLimitChange): Slippage
     }
   }
 
-  if (change.kind === 'slippageSaved') {
+  if (change.kind === 'settingsSaved') {
     return {
       ...state,
       slippage: change.slippageInput,
@@ -67,35 +64,35 @@ function apply(state: SlippageLimitState, change: SlippageLimitChange): Slippage
   return state
 }
 
-function saveSlippage(
+function saveSettings(
   slippageInput: BigNumber,
-  change: (ch: SlippageLimitChange) => void,
-  saveSlippage$: SaveSlippageFunction,
+  change: (ch: UserSettingsChange) => void,
+  saveUserSettings$: SaveUserSettingsFunction,
 ) {
-  return saveSlippage$(slippageInput)
+  return saveUserSettings$(slippageInput)
     .pipe(
-      map(() => ({ kind: 'slippageSaved', slippageInput } as SlippageLimitChange)),
-      startWith({ kind: 'stage', stage: 'inProgress' } as SlippageLimitChange),
-      catchError(() => of({ kind: 'stage', stage: 'failure' } as SlippageLimitChange)),
+      map(() => ({ kind: 'settingsSaved', slippageInput } as UserSettingsChange)),
+      startWith({ kind: 'stage', stage: 'inProgress' } as UserSettingsChange),
+      catchError(() => of({ kind: 'stage', stage: 'failure' } as UserSettingsChange)),
     )
     .subscribe((ch) => change(ch))
 }
 
 function addTransitions(
-  saveSlippage$: SaveSlippageFunction,
-  change: (ch: SlippageLimitChange) => void,
-  state: SlippageLimitState,
-): SlippageLimitState {
+  saveUserSettings$: SaveUserSettingsFunction,
+  change: (ch: UserSettingsChange) => void,
+  state: UserSettingsState,
+): UserSettingsState {
   return {
     ...state,
-    saveSlippage: () => saveSlippage(state.slippageInput, change, saveSlippage$),
+    saveSettings: () => saveSettings(state.slippageInput, change, saveUserSettings$),
   }
 }
 
-function validate(state: SlippageLimitState): SlippageLimitState {
+function validate(state: UserSettingsState): UserSettingsState {
   const { slippageInput } = state
-  const errors: SlippageLimitErrorMessages[] = []
-  const warnings: SlippageLimitWarningMessages[] = []
+  const errors: UserSettingsErrorMessages[] = []
+  const warnings: UserSettingsWarningMessages[] = []
 
   const invalidSlippage =
     !slippageInput ||
@@ -116,28 +113,25 @@ function validate(state: SlippageLimitState): SlippageLimitState {
   return { ...state, errors, warnings, canProgress }
 }
 
-export function createSlippageLimit$(
-  checkSlippage$: () => Observable<{ slippage: string | null }>,
-  saveSlippage$: SaveSlippageFunction,
-): Observable<SlippageLimitState> {
-  return checkSlippage$().pipe(
+export function createUserSettings$(
+  checkUserSettings$: () => Observable<{ slippage: string | null }>,
+  saveUserSettings$: SaveUserSettingsFunction,
+): Observable<UserSettingsState> {
+  return checkUserSettings$().pipe(
     switchMap(({ slippage: initialSlippage }) => {
-      const change$ = new Subject<SlippageLimitChange>()
+      const change$ = new Subject<UserSettingsChange>()
 
-      function change(ch: SlippageLimitChange) {
+      function change(ch: UserSettingsChange) {
         change$.next(ch)
       }
 
       const slippage = initialSlippage ? new BigNumber(initialSlippage) : SLIPPAGE_DEFAULT
 
-      const initialState: SlippageLimitState = {
+      const initialState: UserSettingsState = {
         stage: 'editing',
         slippage,
         slippageInput: slippage,
-        setSlippageLow: () => change({ kind: 'slippageInput', slippageInput: SLIPPAGE_LOW }),
-        setSlippageMedium: () => change({ kind: 'slippageInput', slippageInput: SLIPPAGE_MEDIUM }),
-        setSlippageHigh: () => change({ kind: 'slippageInput', slippageInput: SLIPPAGE_HIGH }),
-        setSlippageCustom: (slippageInput: BigNumber) =>
+        setSlippageInput: (slippageInput: BigNumber) =>
           change({ kind: 'slippageInput', slippageInput }),
         reset: () => change({ kind: 'stage', stage: 'editing' }),
         errors: [],
@@ -147,7 +141,7 @@ export function createSlippageLimit$(
 
       return merge(change$).pipe(
         scan(apply, initialState),
-        map(curry(addTransitions)(saveSlippage$, change)),
+        map(curry(addTransitions)(saveUserSettings$, change)),
         map(curry(validate)),
         startWith(initialState),
       )
@@ -162,7 +156,7 @@ export interface SlippageChange {
 }
 
 export function slippageChange$(
-  slippageLimit$: Observable<SlippageLimitState>,
+  slippageLimit$: Observable<UserSettingsState>,
 ): Observable<SlippageChange> {
   return slippageLimit$.pipe(
     map(({ slippage }) => ({

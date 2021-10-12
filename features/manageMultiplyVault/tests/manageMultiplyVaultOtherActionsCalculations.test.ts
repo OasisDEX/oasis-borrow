@@ -2,7 +2,7 @@
 
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
-import { SLIPPAGE_DEFAULT } from 'features/slippageLimit/slippageLimit'
+import { SLIPPAGE_DEFAULT } from 'features/userSettings/userSettings'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
 import {
   calculateCloseToCollateralParams,

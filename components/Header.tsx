@@ -5,7 +5,7 @@ import { trackingEvents } from 'analytics/analytics'
 import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
 import { AccountButton } from 'features/account/Account'
-import { SlippageLimitButton } from 'features/slippageLimit/SlippageLimitView'
+import { UserSettingsButton } from 'features/userSettings/UserSettingsView'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
@@ -129,7 +129,7 @@ function ConnectedHeader() {
           </Flex>
         </Flex>
         <Flex>
-          <SlippageLimitButton />
+          <UserSettingsButton />
           <AccountButton />
         </Flex>
       </>

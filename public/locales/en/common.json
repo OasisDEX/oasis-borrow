@@ -615,22 +615,24 @@
       "button": "Borrow against {{token}}"
     }
   },
-  "slippage-limit": {
-    "preset-title": "Select preset slippage amount",
-    "preset-description": "Select the amount of slippage you would like.",
-    "read-more": "Read more about slippage.",
-    "custom-title": "Set custom slippage amount",
-    "custom-description": "Select a custom amount of slippage",
-    "custom-label": "Slippage amount",
-    "button": "Confirm slippage",
-    "button-in-progress": "Updating slippage settings",
-    "update-success": "Slippage settings updated",
-    "update-failure": "Something went wrong",
-    "errors": {
-      "invalid-slippage": "Invalid slippage. Slippage should be in 20%, 0.1% range"
+  "user-settings": {
+    "button-menu": "Slippage",
+    "slippage-limit": {
+      "preset-title": "Slippage settings",
+      "preset-description": "Select the amount of slippage you would like.",
+      "read-more": "Read more about slippage.",
+      "custom-title": "Set custom slippage amount",
+      "custom-label": "Slippage amount",
+      "errors": {
+        "invalid-slippage": "Invalid slippage. Slippage should be in 20%, 0.1% range"
+      },
+      "warnings": {
+        "high-slippage": "Warning. You have set a high slippage limit which can result in you getting a price quite far from your quoted price. Only continue if you understand this risk."
+      }
     },
-    "warnings": {
-      "high-slippage": "Warning. You have set a high slippage limit which can result in you getting a price quite far from your quoted price. Only continue if you understand this risk."
-    }
+    "button": "Update settings",
+    "button-in-progress": "Updating settings",
+    "update-success": "Settings updated",
+    "update-failure": "Something went wrong"
   }
 }

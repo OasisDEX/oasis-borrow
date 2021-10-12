@@ -1,5 +1,5 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
-import { SLIPPAGE_WARNING_THRESHOLD } from 'features/slippageLimit/slippageLimit'
+import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 

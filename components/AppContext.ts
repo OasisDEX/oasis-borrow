@@ -57,15 +57,15 @@ import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimColl
 import { redirectState$ } from 'features/router/redirectState'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import { checkVaultTypeUsingApi$, saveVaultUsingApi$ } from 'features/shared/vaultApi'
-import { createSlippageLimit$ } from 'features/slippageLimit/slippageLimit'
-import {
-  checkSlippageLocalStorage$,
-  saveSlippageLocalStorage$,
-} from 'features/slippageLimit/slippageLimitLocal'
 import {
   checkAcceptanceFromApi$,
   saveAcceptanceFromApi$,
 } from 'features/termsOfService/termsAcceptanceApi'
+import { createUserSettings$ } from 'features/userSettings/userSettings'
+import {
+  checkUserSettingsLocalStorage$,
+  saveUserSettingsLocalStorage$,
+} from 'features/userSettings/userSettingsLocal'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiplyHistory'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
@@ -297,7 +297,10 @@ export function setupAppContext() {
     account: string | undefined,
   ) => Observable<BalanceInfo>
 
-  const slippageLimit$ = createSlippageLimit$(checkSlippageLocalStorage$, saveSlippageLocalStorage$)
+  const userSettings$ = createUserSettings$(
+    checkUserSettingsLocalStorage$,
+    saveUserSettingsLocalStorage$,
+  )
 
   const openVault$ = memoize((ilk: string) =>
     createOpenVault$(
@@ -333,7 +336,7 @@ export function setupAppContext() {
       ilkData$,
       exchangeQuote$,
       addGasEstimation$,
-      slippageLimit$,
+      userSettings$,
       ilk,
     ),
   )
@@ -369,7 +372,7 @@ export function setupAppContext() {
         vault$,
         exchangeQuote$,
         addGasEstimation$,
-        slippageLimit$,
+        userSettings$,
         id,
       ),
     bigNumberTostring,
@@ -438,7 +441,7 @@ export function setupAppContext() {
     openVaultOverview$,
     openMultiplyVault$,
     generalManageVault$,
-    slippageLimit$,
+    userSettings$,
   }
 }
 

@@ -7,7 +7,7 @@ import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { slippageChange$, SlippageLimitState } from 'features/slippageLimit/slippageLimit'
+import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
@@ -295,7 +295,7 @@ export function createOpenMultiplyVault$(
     action: ExchangeAction,
   ) => Observable<Quote>,
   addGasEstimation$: AddGasEstimationFunction,
-  slippageLimit$: Observable<SlippageLimitState>,
+  slippageLimit$: Observable<UserSettingsState>,
   ilk: string,
 ): Observable<OpenMultiplyVaultState> {
   return ilks$.pipe(

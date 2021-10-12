@@ -7,7 +7,7 @@ import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { slippageChange$, SlippageLimitState } from 'features/slippageLimit/slippageLimit'
+import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
@@ -435,7 +435,7 @@ export function createManageMultiplyVault$(
     action: ExchangeAction,
   ) => Observable<Quote>,
   addGasEstimation$: AddGasEstimationFunction,
-  slippageLimit$: Observable<SlippageLimitState>,
+  slippageLimit$: Observable<UserSettingsState>,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
   return context$.pipe(

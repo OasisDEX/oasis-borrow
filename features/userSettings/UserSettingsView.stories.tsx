@@ -3,10 +3,10 @@ import { WithChildren } from 'helpers/types'
 import React from 'react'
 import { Box, Container, Heading } from 'theme-ui'
 
-import { SLIPPAGE_DEFAULT, SlippageLimitState } from './slippageLimit'
-import { SlippageLimitDropdown } from './SlippageLimitView'
+import { SLIPPAGE_DEFAULT, SLIPPAGE_OPTIONS, UserSettingsState } from './userSettings'
+import { UserSettingsDropdown } from './UserSettingsView'
 
-const stories = storiesOf('Slippage Limit Selection', module)
+const stories = storiesOf('User settings', module)
 
 const StoryContainer = ({ children, title }: { title: string } & WithChildren) => {
   return (
@@ -19,24 +19,34 @@ const StoryContainer = ({ children, title }: { title: string } & WithChildren) =
   )
 }
 
-const BASE_PROPS: SlippageLimitState = {
+const BASE_PROPS: UserSettingsState = {
   stage: 'editing',
   slippage: SLIPPAGE_DEFAULT,
   slippageInput: SLIPPAGE_DEFAULT,
-  setSlippageCustom: () => null,
-  setSlippageLow: () => null,
-  setSlippageMedium: () => null,
-  setSlippageHigh: () => null,
+  setSlippageInput: () => null,
   reset: () => null,
   canProgress: true,
   errors: [],
   warnings: [],
 }
 
+const BASE_PROPS_CHANGED_VALUE: UserSettingsState = {
+  ...BASE_PROPS,
+  slippageInput: SLIPPAGE_OPTIONS[1],
+}
+
+stories.add('Editing start', () => {
+  return (
+    <StoryContainer title="Editing start Slippage">
+      <UserSettingsDropdown {...BASE_PROPS} />
+    </StoryContainer>
+  )
+})
+
 stories.add('Editing', () => {
   return (
     <StoryContainer title="Editing Slippage">
-      <SlippageLimitDropdown {...BASE_PROPS} />
+      <UserSettingsDropdown {...BASE_PROPS_CHANGED_VALUE} />
     </StoryContainer>
   )
 })
@@ -44,7 +54,7 @@ stories.add('Editing', () => {
 stories.add('In progress', () => {
   return (
     <StoryContainer title="In progress">
-      <SlippageLimitDropdown {...BASE_PROPS} stage="inProgress" />
+      <UserSettingsDropdown {...BASE_PROPS_CHANGED_VALUE} stage="inProgress" />
     </StoryContainer>
   )
 })
@@ -52,7 +62,7 @@ stories.add('In progress', () => {
 stories.add('Failure', () => {
   return (
     <StoryContainer title="Failure">
-      <SlippageLimitDropdown {...BASE_PROPS} stage="failure" />
+      <UserSettingsDropdown {...BASE_PROPS_CHANGED_VALUE} stage="failure" />
     </StoryContainer>
   )
 })
@@ -60,7 +70,7 @@ stories.add('Failure', () => {
 stories.add('Success', () => {
   return (
     <StoryContainer title="Success">
-      <SlippageLimitDropdown {...BASE_PROPS} stage="success" />
+      <UserSettingsDropdown {...BASE_PROPS_CHANGED_VALUE} stage="success" />
     </StoryContainer>
   )
 })
