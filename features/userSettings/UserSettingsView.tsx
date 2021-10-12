@@ -40,11 +40,11 @@ function SlippageOptionButton({
         '&:last-child': { mr: '0px' },
         '&:hover': {
           borderColor: 'primary',
-          boxShadow: 'slippageOptionButton',
+          boxShadow: 'userSettingsOptionButton',
         },
         ...(active && {
           borderColor: 'primary',
-          boxShadow: 'slippageOptionButton',
+          boxShadow: 'userSettingsOptionButton',
         }),
       }}
       onClick={onClick}
@@ -197,7 +197,7 @@ export function UserSettingsDropdown(props: UserSettingsState) {
         bottom: '0',
         right: '0',
         transform: 'translateY(calc(100% + 10px))',
-        boxShadow: 'slippageCardDropdown',
+        boxShadow: 'userSettingsCardDropdown',
         borderRadius: 'mediumLarge',
         border: 'none',
       }}
