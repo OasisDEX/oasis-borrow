@@ -14,7 +14,7 @@ export function TxStatusCardProgress({
 }) {
   const { t } = useTranslation()
   return (
-    <Card sx={{ backgroundColor: 'warning', border: 'none', p: 2, borderRadius: 'round' }}>
+    <Card sx={{ backgroundColor: 'warning', border: 'none', p: 2, px: 3, borderRadius: 'round' }}>
       <Flex sx={{ alignItems: 'center', p: 1 }}>
         <Spinner size={20} color="onWarning" />
         <Grid pl={2} gap={0}>

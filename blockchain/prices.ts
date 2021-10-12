@@ -107,8 +107,8 @@ export function createOraclePriceData$(
   token: string,
 ): Observable<OraclePriceData> {
   return context$.pipe(
-    switchMap(({ web3, mcdOsms }) =>
-      bindNodeCallback(web3.eth.getCode)(mcdOsms[token].address).pipe(
+    switchMap(({ web3, mcdOsms }) => {
+      return bindNodeCallback(web3.eth.getCode)(mcdOsms[token].address).pipe(
         first(),
         switchMap((contractData) =>
           iif(
@@ -145,8 +145,8 @@ export function createOraclePriceData$(
             }),
           ),
         ),
-      ),
-    ),
+      )
+    }),
     shareReplay(1),
   )
 }
