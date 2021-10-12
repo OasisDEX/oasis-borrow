@@ -73,8 +73,8 @@ export function createGasPrice$(
           `Initial gas fees Total=${gasFees.maxFeePerGas} priority = ${gasFees.maxPriorityFeePerGas}`,
         )
         if (blockNative.maxFeePerGas.gt(0)) {
-          gasFees.maxFeePerGas = blockNative.maxFeePerGas
-          gasFees.maxPriorityFeePerGas = blockNative.maxPriorityFeePerGas
+          gasFees.maxFeePerGas = (new BigNumber(1000000000)).multipliedBy(blockNative.maxFeePerGas)
+          gasFees.maxPriorityFeePerGas =  (new BigNumber(1000000000)).multipliedBy(blockNative.maxPriorityFeePerGas);
         }
         console.log(
           `Final gas fees Total=${gasFees.maxFeePerGas} priority = ${gasFees.maxPriorityFeePerGas}`,
