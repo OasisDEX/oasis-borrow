@@ -45,7 +45,7 @@ export function createGasPrice$(
       return response
     }),
     map(({ response }) => {
-      console.log("blockNativeResp",response);
+      console.log('blockNativeResp', response)
       const maxFeePerGas = new BigNumber(response.maxFeePerGas)
       const maxPriorityFeePerGas = new BigNumber(response.maxPriorityFeePerGas)
       return {
