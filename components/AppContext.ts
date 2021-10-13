@@ -30,7 +30,7 @@ import {
 } from 'blockchain/calls/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
-import { createGasPrice$, createOraclePriceData$ } from 'blockchain/prices'
+import { createGasPrice$, createOraclePriceData$, tokenPricesInUSD$ } from 'blockchain/prices'
 import {
   createAccountBalance$,
   createAllowance$,
@@ -64,10 +64,10 @@ import {
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiplyHistory'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
-import { mapValues, memoize } from 'lodash'
+import { isEqual, mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
 import { combineLatest, Observable, of } from 'rxjs'
-import { filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { dogIlk } from '../blockchain/calls/dog'
 import {
@@ -93,7 +93,7 @@ import { createTransactionManager } from '../features/account/transactionManager
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
-import { HasGasEstimation } from '../helpers/form'
+import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 
 export type TxData =
   | OpenData
@@ -168,13 +168,18 @@ export function setupAppContext() {
   combineLatest(account$, connectedContext$)
     .pipe(
       mergeMap(([account, network]) => {
-        return of({ network, account: account?.toLowerCase() })
+        return of({
+          networkName: network.name,
+          connectionKind: network.connectionKind,
+          account: account?.toLowerCase(),
+        })
       }),
+      distinctUntilChanged(isEqual),
     )
-    .subscribe(({ account, network }) => {
-      if (account && network) {
-        mixpanelIdentify(account, { walletType: network.connectionKind })
-        trackingEvents.accountChange(account, network.name, network.connectionKind)
+    .subscribe(({ account, networkName, connectionKind }) => {
+      if (account) {
+        mixpanelIdentify(account, { walletType: connectionKind })
+        trackingEvents.accountChange(account, networkName, connectionKind)
       }
     })
 
@@ -195,6 +200,13 @@ export function setupAppContext() {
 
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
+
+  function addGasEstimation$<S extends HasGasEstimation>(
+    state: S,
+    call: (send: TxHelpers, state: S) => Observable<number> | undefined,
+  ): Observable<S> {
+    return doGasEstimation(gasPrice$, tokenPricesInUSD$, txHelpers$, state, call)
+  }
 
   // base
   const proxyAddress$ = memoize(curry(createProxyAddress$)(onEveryBlock$, context$))
@@ -285,8 +297,8 @@ export function setupAppContext() {
     account: string | undefined,
   ) => Observable<BalanceInfo>
 
-  const openVault$ = memoize(
-    curry(createOpenVault$)(
+  const openVault$ = memoize((ilk: string) =>
+    createOpenVault$(
       connectedContext$,
       txHelpers$,
       proxyAddress$,
@@ -296,6 +308,8 @@ export function setupAppContext() {
       ilks$,
       ilkData$,
       ilkToToken$,
+      addGasEstimation$,
+      ilk,
     ),
   )
 
@@ -305,8 +319,8 @@ export function setupAppContext() {
       `${token}_${slippage.toString()}_${amount.toString()}_${action}`,
   )
 
-  const openMultiplyVault$ = memoize(
-    curry(createOpenMultiplyVault$)(
+  const openMultiplyVault$ = memoize((ilk: string) =>
+    createOpenMultiplyVault$(
       connectedContext$,
       txHelpers$,
       proxyAddress$,
@@ -316,36 +330,44 @@ export function setupAppContext() {
       ilks$,
       ilkData$,
       exchangeQuote$,
+      addGasEstimation$,
+      ilk,
     ),
   )
 
   const manageVault$ = memoize(
-    curry(createManageVault$)(
-      context$,
-      txHelpers$,
-      proxyAddress$,
-      allowance$,
-      priceInfo$,
-      balanceInfo$,
-      ilkData$,
-      vault$,
-      saveVaultUsingApi$,
-    ),
+    (id: BigNumber) =>
+      createManageVault$(
+        context$,
+        txHelpers$,
+        proxyAddress$,
+        allowance$,
+        priceInfo$,
+        balanceInfo$,
+        ilkData$,
+        vault$,
+        saveVaultUsingApi$,
+        addGasEstimation$,
+        id,
+      ),
     bigNumberTostring,
   )
 
   const manageMultiplyVault$ = memoize(
-    curry(createManageMultiplyVault$)(
-      context$,
-      txHelpers$,
-      proxyAddress$,
-      allowance$,
-      priceInfo$,
-      balanceInfo$,
-      ilkData$,
-      vault$,
-      exchangeQuote$,
-    ),
+    (id: BigNumber) =>
+      createManageMultiplyVault$(
+        context$,
+        txHelpers$,
+        proxyAddress$,
+        allowance$,
+        priceInfo$,
+        balanceInfo$,
+        ilkData$,
+        vault$,
+        exchangeQuote$,
+        addGasEstimation$,
+        id,
+      ),
     bigNumberTostring,
   )
 
@@ -398,6 +420,7 @@ export function setupAppContext() {
     landing$,
     openVault$,
     manageVault$,
+    manageMultiplyVault$,
     vaultsOverview$,
     vaultBanners$,
     redirectState$,

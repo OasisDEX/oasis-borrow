@@ -3,10 +3,11 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
-import { TxHelpers } from 'components/AppContext'
+import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { SLIPPAGE } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
@@ -47,6 +48,7 @@ import {
   ManageVaultSummary,
 } from './manageMultiplyVaultSummary'
 import {
+  applyEstimateGas,
   applyManageVaultTransaction,
   createProxy,
   ManageVaultTransactionChange,
@@ -252,7 +254,7 @@ export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
     initialTotalSteps: number
     totalSteps: number
     currentStep: number
-  }
+  } & HasGasEstimation
 
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
@@ -432,6 +434,7 @@ export function createManageMultiplyVault$(
     amount: BigNumber,
     action: ExchangeAction,
   ) => Observable<Quote>,
+  addGasEstimation$: AddGasEstimationFunction,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
   return context$.pipe(
@@ -500,6 +503,7 @@ export function createManageMultiplyVault$(
                     totalSteps: initialTotalSteps,
                     currentStep: 1,
                     clear: () => change({ kind: 'clear' }),
+                    gasEstimationStatus: GasEstimationStatus.unset,
                     injectStateOverride,
                   }
 
@@ -520,6 +524,7 @@ export function createManageMultiplyVault$(
                     scan(apply, initialState),
                     map(validateErrors),
                     map(validateWarnings),
+                    switchMap(curry(applyEstimateGas)(addGasEstimation$)),
                     map(curry(addTransitions)(txHelpers$, context, connectedProxyAddress$, change)),
                     tap((state) => stateSubject$.next(state)),
                   )

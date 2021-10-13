@@ -13,7 +13,9 @@ function manageMultiplyVaultButtonText(state: ManageMultiplyVaultState): string 
     case 'adjustPosition':
     case 'otherActions':
       return state.inputAmountsEmpty
-        ? t('enter-an-amount')
+        ? state.stage === 'adjustPosition'
+          ? t('adjust-your-position')
+          : t('enter-an-amount')
         : !state.proxyAddress
         ? t('setup-proxy')
         : state.insufficientCollateralAllowance

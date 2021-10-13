@@ -1,8 +1,10 @@
 import { INPUT_DEBOUNCE_TIME, Pages, Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
+import { networksById } from 'blockchain/config'
+import { Context } from 'blockchain/network'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
-import { merge, Observable, zip } from 'rxjs'
+import { combineLatest, merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 
 import { ManageVaultState } from './manageVault'
@@ -58,6 +60,7 @@ type ManageVaultConfirmTransaction = {
 
 export function createManageVaultAnalytics$(
   manageVaultState$: Observable<ManageVaultState>,
+  context$: Observable<Context>,
   tracker: Tracker,
 ) {
   const stageChanges = manageVaultState$.pipe(
@@ -220,9 +223,9 @@ export function createManageVaultAnalytics$(
     distinctUntilChanged(isEqual),
   )
 
-  return stageChanges
+  return combineLatest(context$, stageChanges)
     .pipe(
-      switchMap((stage) =>
+      switchMap(([context, stage]) =>
         merge(
           merge(
             depositAmountChanges,
@@ -286,12 +289,17 @@ export function createManageVaultAnalytics$(
                 )
                 break
               case 'manageVaultConfirmTransaction':
+                const network = networksById[context.chainId].name
+                const walletType = context.connectionKind
+
                 tracker.manageVaultConfirmTransaction(
                   page,
                   event.value.ilk,
                   event.value.collateralAmount.toString(),
                   event.value.daiAmount.toString(),
                   event.value.txHash,
+                  network,
+                  walletType,
                 )
                 break
               default:

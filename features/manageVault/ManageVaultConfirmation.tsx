@@ -1,19 +1,26 @@
 import { Divider } from '@theme-ui/components'
-import { TxStatusCardSuccess } from 'components/vault/TxStatusCard'
+import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { OpenVaultAnimation } from 'theme/animations'
 
 import { ManageVaultState } from './manageVault'
 import { ManageVaultChangesInformation } from './ManageVaultChangesInformation'
 
 export function ManageVaultConfirmation(props: ManageVaultState) {
+  const [vaultChange, setVaultChanges] = useState<ManageVaultState>(props)
+  useEffect(() => {
+    if (props.stage !== 'manageSuccess') {
+      setVaultChanges(props)
+    }
+  }, [props])
+
   return props.stage === 'manageInProgress' ? (
     <OpenVaultAnimation />
   ) : (
     <>
       <Divider />
-      <ManageVaultChangesInformation {...props} />
+      <ManageVaultChangesInformation {...vaultChange} />
     </>
   )
 }
@@ -24,6 +31,17 @@ export function ManageVaultConfirmationStatus({
   manageTxHash,
 }: ManageVaultState) {
   const { t } = useTranslation()
+
+  if (stage === 'manageInProgress') {
+    return (
+      <TxStatusCardProgress
+        text={t('changing-vault')}
+        etherscan={etherscan!}
+        txHash={manageTxHash!}
+      />
+    )
+  }
+
   if (stage === 'manageSuccess') {
     return (
       <TxStatusCardSuccess

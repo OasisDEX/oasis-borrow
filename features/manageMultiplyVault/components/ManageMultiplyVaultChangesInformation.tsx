@@ -2,8 +2,10 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex, Grid, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import {
+  getEstimatedGasFeeText,
   VaultChangesInformationArrow,
   VaultChangesInformationContainer,
+  VaultChangesInformationEstimatedGasFee,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
@@ -150,13 +152,14 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
         }
       />
       <VaultChangesInformationItem
-        label={'Transaction fee (excl. gas)'}
+        label={'Fees + (estimated gas)'}
         value={
           <Flex
             sx={{ alignItems: 'center', cursor: 'pointer' }}
             onClick={() => setShowFees(!showFees)}
           >
-            ${formatAmount(fees, 'USD')}{' '}
+            {`${formatAmount(fees, 'USD')} +`}
+            <Text ml={1}>{getEstimatedGasFeeText(props, true)}</Text>
             <Icon
               name={`chevron_${showFees ? 'up' : 'down'}`}
               size="auto"
@@ -176,6 +179,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
             label={'Oasis fee'}
             value={`$${formatAmount(oazoFee, 'USD')}`}
           />
+          <VaultChangesInformationEstimatedGasFee {...props} />
         </Grid>
       )}
     </VaultChangesInformationContainer>

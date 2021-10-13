@@ -21,15 +21,6 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
   const vaultHistoryWithError = useObservableWithError(vaultHistory$(id))
   const vaultMultiplyHistoryWithError = useObservableWithError(vaultMultiplyHistory$(id))
 
-  // TO DO bring back analytics
-  // useEffect(() => {
-  //   const subscription = createManageVaultAnalytics$(manageVaultWithId$, trackingEvents).subscribe()
-
-  //   return () => {
-  //     subscription.unsubscribe()
-  //   }
-  // }, [])
-
   function prepareMultiplyHistory(vaultHistory: any[], vaultMultiplyHistory: any[]) {
     let outstandingDebt = new BigNumber(0)
     let collateral = new BigNumber(0)
