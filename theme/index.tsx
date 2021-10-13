@@ -573,6 +573,7 @@ const oasisBaseTheme = {
       bg: 'background',
       boxShadow: 'buttonMenu',
       fontSize: [1, 2],
+      minHeight: ['40px', 'auto'],
     },
   },
   links: {
