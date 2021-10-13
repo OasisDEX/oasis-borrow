@@ -3619,10 +3619,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@oasisdex/connectors@^0.0.25-alpha.0":
-  version "0.0.25-alpha.0"
-  resolved "https://registry.yarnpkg.com/@oasisdex/connectors/-/connectors-0.0.25-alpha.0.tgz#6877c185aaa88c16e463733fef750923ad775845"
-  integrity sha512-rBwlx5JLpyWUA8EJmVrEYlqEF7wFe4SEjk1D7inoVtiVWtqylj3OcV6+3bHwBZ4PpmXq5w7LZwb7d/tIMJjG7Q==
+"@oasisdex/connectors@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@oasisdex/connectors/-/connectors-0.1.0.tgz#9e13dc6405633cc5c7760f8d55ffbabbfcdb0c3e"
+  integrity sha512-F3+RdCitrhRPXRIBakQRlZBJJQ+0m5Kgrqp01MH9E0slDKsL2Lncopi0Jc1zvkt6fY3Kqq5LAZK/nqUiU5Nb+g==
   dependencies:
     "@0x/assert" "^3.0.17"
     "@0x/subproviders" "^6.1.9"
@@ -3643,10 +3643,10 @@
     web3 "^1.5.3"
     web3-provider-engine "^14.0.1"
 
-"@oasisdex/transactions@^0.0.33-alpha.0":
-  version "0.0.33-alpha.0"
-  resolved "https://registry.yarnpkg.com/@oasisdex/transactions/-/transactions-0.0.33-alpha.0.tgz#2837e448d0f5a3af40fd496594197b2dc05af505"
-  integrity sha512-WWW6SCdWOm7j5sWscQEo8ODyerj+iXcXNWgeDeiqlbpF4j66Xp57KdJ4GP68L0XP4xWv/eZmQTXi5lfs//eK2w==
+"@oasisdex/transactions@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@oasisdex/transactions/-/transactions-0.1.0.tgz#c8aebfe79ecc260d939c1091622ea55349621532"
+  integrity sha512-nRxtfDSs4nhzPrt+Zs0Y4w4h7DQk3+DjINU3qQrgvcUV0/MrUW8U0HBPw+guQ259mq/eYsQ6spqtpoAyHaDfnQ==
   dependencies:
     "@types/ramda" "^0.25.38"
     bignumber.js "^9.0.1"
@@ -3663,12 +3663,12 @@
   dependencies:
     bignumber.js "^9.0.1"
 
-"@oasisdex/web3-context@0.0.28-alpha.0":
-  version "0.0.28-alpha.0"
-  resolved "https://registry.yarnpkg.com/@oasisdex/web3-context/-/web3-context-0.0.28-alpha.0.tgz#80971701d9e3ca161e8e4bf7575e8f3abd7c9a1c"
-  integrity sha512-P5QmvgKyGw7avYn7+sJjnPcmOBLgDc6gmmWFrI+XtNLr0Tlz9KWyVejfV9uN+noxWvCdBIRhngqI2t5w62leNg==
+"@oasisdex/web3-context@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@oasisdex/web3-context/-/web3-context-0.1.0.tgz#79b8e15b59f1e567b332a5dfb88ad37046e9b4bd"
+  integrity sha512-JpLUz5JpOorvu5+6CxBMwX1vti3ckHdh4VA+LO6Z43sWeaAafJnqIXjQXAqnsmT4lvZa7SgHY7jpIplvtxT7Sg==
   dependencies:
-    "@oasisdex/connectors" "^0.0.25-alpha.0"
+    "@oasisdex/connectors" "^0.1.0"
     "@oasisdex/utils" "^0.0.8"
     "@web3-react/abstract-connector" "^6.0.7"
     "@web3-react/core" "^6.1.1"
