@@ -550,7 +550,7 @@ export function closeVault(
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ send }) =>
+      switchMap(({ sendWithGasEstimation }) =>
         getQuote$(
           getTokenMetaData('DAI', tokens),
           getTokenMetaData(token, tokens),
@@ -561,7 +561,7 @@ export function closeVault(
         ).pipe(
           first(),
           switchMap((swap) => {
-            return send(closeVaultCall, {
+            return sendWithGasEstimation(closeVaultCall, {
               kind: TxMetaKind.closeVault,
               closeTo: closeVaultTo!,
               token,

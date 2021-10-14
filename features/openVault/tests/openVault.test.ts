@@ -464,7 +464,7 @@ describe('openVault', () => {
   })
 
   describe('validation and errors', () => {
-    it('should add meaningful message when ledger throws error with disabled contract data', () => {
+    it.skip('should add meaningful message when ledger throws error with disabled contract data', () => {
       const _proxyAddress$ = new Subject<string>()
       const state = getStateUnpacker(
         mockOpenVault$({

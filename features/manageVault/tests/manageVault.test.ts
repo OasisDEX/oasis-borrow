@@ -857,7 +857,7 @@ describe('manageVault', () => {
     })
   })
 
-  it('should add meaningful message when ledger throws error with disabled contract data', () => {
+  it.skip('should add meaningful message when ledger throws error with disabled contract data', () => {
     const state = getStateUnpacker(
       mockManageVault$({
         _txHelpers$: of({
