@@ -68,6 +68,7 @@ const oasisBaseTheme = {
     bear: '#F75524',
     sliderTrackFill: '#9DA3DA',
     actionInputHover: '#E5E7E8',
+    newsletterInputBorder: 'rgba(120, 122, 155, 0.25)',
   },
   fonts: {
     body: '"Inter", "Helvetica Neue", sans-serif',

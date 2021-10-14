@@ -10,6 +10,11 @@ import React from 'react'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
 
 import { SelectComponents } from 'react-select/src/components'
+import {
+  NewsletterForm,
+  NewsletterSection,
+  NewsletterSectionFooter,
+} from 'features/newsletter/NewsletterView'
 
 const {
   publicRuntimeConfig: { buildHash, buildDate, showBuildInfo, apiHost },
@@ -182,6 +187,7 @@ export function Footer() {
             </Grid>
           ))}
         </Grid>
+        <NewsletterSectionFooter />
       </Container>
       <TemporaryFooter />
     </Box>

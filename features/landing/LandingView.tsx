@@ -7,6 +7,7 @@ import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { IlksFilterState, TagFilter } from 'features/ilks/popularIlksFilters'
 import { FiltersWithPopular } from 'features/landing/FiltersWithPopular'
+import { NewsletterForm, NewsletterSection } from 'features/newsletter/NewsletterView'
 import { useRedirectToOpenVault } from 'features/openVaultOverview/useRedirectToOpenVault'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -321,6 +322,7 @@ export function LandingView() {
       </WithErrorHandler>
       <LandingCards />
       <TypeformWidget />
+      <NewsletterSection />
     </Grid>
   )
 }
