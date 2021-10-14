@@ -80,14 +80,16 @@ export function getQuote$(
   const fromTokenAddress = action === 'BUY_COLLATERAL' ? dai.address : collateral.address
   const toTokenAddress = action === 'BUY_COLLATERAL' ? collateral.address : dai.address
 
+  const _1inchAmount = amountToWei(
+    amount,
+    action === 'BUY_COLLATERAL' ? dai.decimals : collateral.decimals,
+  ).toFixed(0)
+
   //TODO: set proper precision depending on token
   const searchParams = new URLSearchParams({
     fromTokenAddress,
     toTokenAddress,
-    amount: amountToWei(
-      amount,
-      action === 'BUY_COLLATERAL' ? dai.decimals : collateral.decimals,
-    ).toFixed(0),
+    amount: _1inchAmount,
     fromAddress: account,
     slippage: slippage.times(100).toString(),
     disableEstimate: 'true',
@@ -103,7 +105,7 @@ export function getQuote$(
 
   console.log(`queried amount ${amount}`)
 
-  if (amount.isZero() || amount.isNaN() || !amount.isFinite()) {
+  if (amount.isZero() || amount.isNaN() || !amount.isFinite() || _1inchAmount === '0') {
     //this is not valid 1inch call
     console.log('skipping 1inch call')
 
