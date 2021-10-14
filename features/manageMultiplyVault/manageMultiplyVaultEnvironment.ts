@@ -1,6 +1,7 @@
 import { IlkDataChange } from 'blockchain/ilks'
 import { VaultChange } from 'blockchain/vaults'
 import { PriceInfoChange } from 'features/shared/priceInfo'
+import { SlippageChange } from 'features/userSettings/userSettings'
 
 import { BalanceInfoChange } from '../shared/balanceInfo'
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
@@ -10,6 +11,7 @@ export type ManageVaultEnvironmentChange =
   | BalanceInfoChange
   | IlkDataChange
   | VaultChange
+  | SlippageChange
 
 export function applyManageVaultEnvironment(
   change: ManageMultiplyVaultChange,
@@ -40,6 +42,13 @@ export function applyManageVaultEnvironment(
     return {
       ...state,
       vault: change.vault,
+    }
+  }
+
+  if (change.kind === 'slippage') {
+    return {
+      ...state,
+      slippage: change.slippage,
     }
   }
 

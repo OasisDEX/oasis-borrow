@@ -3,7 +3,7 @@ import React, { useRef } from 'react'
 import { default as MaskedInput } from 'react-text-mask'
 import { Input } from 'theme-ui'
 
-export const BigNumberInput = ({ value, pipe, onChange, ...props }: any) => {
+export const BigNumberInput = ({ value, pipe, onChange, sx, ...props }: any) => {
   const lastValue = useRef<string | undefined>()
   const changed = (e: React.ChangeEvent<HTMLInputElement>): void => {
     lastValue.current = e.target.value
@@ -39,7 +39,7 @@ export const BigNumberInput = ({ value, pipe, onChange, ...props }: any) => {
       guide={false}
       defaultValue=""
       pipe={maskPipe}
-      render={(ref, xprops) => <Input ref={ref} {...xprops} />}
+      render={(ref, xprops) => <Input ref={ref} {...xprops} sx={sx} />}
     />
   )
 }

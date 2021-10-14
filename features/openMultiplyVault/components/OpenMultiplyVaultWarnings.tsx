@@ -30,6 +30,8 @@ export function OpenMultiplyVaultWarnings({
         return translate('vault-will-be-at-risk-level-danger-at-next-price')
       case 'vaultWillBeAtRiskLevelWarningAtNextPrice':
         return translate('vault-will-be-at-risk-level-warning-at-next-price')
+      case 'highSlippage':
+        return t('slippage-limit.warnings.high-slippage')
       default:
         throw new UnreachableCaseError(message)
     }

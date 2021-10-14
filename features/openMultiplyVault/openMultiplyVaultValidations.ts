@@ -85,6 +85,7 @@ export type OpenMultiplyVaultWarningMessage =
   | 'vaultWillBeAtRiskLevelWarning'
   | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
   | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
+  | 'highSlippage'
 
 export function validateWarnings(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
   const {
@@ -97,6 +98,7 @@ export function validateWarnings(state: OpenMultiplyVaultState): OpenMultiplyVau
     depositAmount,
     ilkData,
     afterOutstandingDebt,
+    highSlippage,
   } = state
 
   const warningMessages: OpenMultiplyVaultWarningMessage[] = []
@@ -122,6 +124,10 @@ export function validateWarnings(state: OpenMultiplyVaultState): OpenMultiplyVau
 
     if (vaultWillBeAtRiskLevelWarningAtNextPrice) {
       warningMessages.push('vaultWillBeAtRiskLevelWarningAtNextPrice')
+    }
+
+    if (highSlippage) {
+      warningMessages.push('highSlippage')
     }
   }
   return { ...state, warningMessages }

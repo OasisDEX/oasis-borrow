@@ -2,13 +2,13 @@
 
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
+import { SLIPPAGE_DEFAULT } from 'features/userSettings/userSettings'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
 import {
   calculateCloseToCollateralParams,
   calculateCloseToDaiParams,
   LOAN_FEE,
   OAZO_FEE,
-  SLIPPAGE,
 } from 'helpers/multiply/calculations'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
@@ -58,7 +58,7 @@ describe('Other actions calculations', () => {
       OAZO_FEE,
       LOAN_FEE,
       currentCollateral,
-      SLIPPAGE,
+      SLIPPAGE_DEFAULT,
       currentDebt,
     )
 
@@ -87,7 +87,13 @@ describe('Other actions calculations', () => {
       minToTokenAmount,
       toTokenAmount,
       fromTokenAmount,
-    } = calculateCloseToCollateralParams(marketPrice, OAZO_FEE, LOAN_FEE, currentDebt, SLIPPAGE)
+    } = calculateCloseToCollateralParams(
+      marketPrice,
+      OAZO_FEE,
+      LOAN_FEE,
+      currentDebt,
+      SLIPPAGE_DEFAULT,
+    )
 
     expect(fromTokenAmount).to.be.deep.equal(expectedFromTokenAmount)
     expect(toTokenAmount).to.be.deep.equal(expectedToTokenAmount)
