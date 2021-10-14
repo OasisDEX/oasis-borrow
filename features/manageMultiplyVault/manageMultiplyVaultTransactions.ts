@@ -561,7 +561,7 @@ export function closeVault(
         ).pipe(
           first(),
           switchMap((swap) =>
-            sendWithGasEstimation(closeVaultCall, {
+            send(closeVaultCall, {
               kind: TxMetaKind.closeVault,
               closeTo: closeVaultTo!,
               token,

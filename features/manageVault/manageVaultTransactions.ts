@@ -279,37 +279,40 @@ export function manageVaultWithdrawAndPayback(
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ sendWithGasEstimation }) =>
-        sendWithGasEstimation(withdrawAndPayback, {
-          kind: TxMetaKind.withdrawAndPayback,
-          withdrawAmount: withdrawAmount || zero,
-          paybackAmount: paybackAmount || zero,
-          proxyAddress: proxyAddress!,
-          ilk,
-          token,
-          id,
-          shouldPaybackAll,
-        }).pipe(
-          transactionToX<ManageVaultChange, WithdrawAndPaybackData>(
-            { kind: 'manageWaitingForApproval' },
-            (txState) =>
-              of({
-                kind: 'manageInProgress',
-                manageTxHash: (txState as any).txHash as string,
-              }),
-            (txState) => {
-              return of({
-                kind: 'manageFailure',
-                txError:
-                  txState.status === TxStatus.Error ||
-                  txState.status === TxStatus.CancelledByTheUser
-                    ? txState.error
-                    : undefined,
-              })
-            },
-            () => of({ kind: 'manageSuccess' }),
-          ),
-        ),
+      switchMap(({ send }) =>
+        {
+          console.log(`in close paybackAmount=${paybackAmount} withdrawAmount=${withdrawAmount}`);
+          return send(withdrawAndPayback, {
+            kind: TxMetaKind.withdrawAndPayback,
+            withdrawAmount: withdrawAmount || zero,
+            paybackAmount: paybackAmount || zero,
+            proxyAddress: proxyAddress!,
+            ilk,
+            token,
+            id,
+            shouldPaybackAll,
+          }).pipe(
+            transactionToX<ManageVaultChange, WithdrawAndPaybackData>(
+              { kind: 'manageWaitingForApproval' },
+              (txState) =>
+                of({
+                  kind: 'manageInProgress',
+                  manageTxHash: (txState as any).txHash as string,
+                }),
+              (txState) => {
+                return of({
+                  kind: 'manageFailure',
+                  txError:
+                    txState.status === TxStatus.Error ||
+                    txState.status === TxStatus.CancelledByTheUser
+                      ? txState.error
+                      : undefined,
+                })
+              },
+              () => of({ kind: 'manageSuccess' }),
+            ),
+          )
+        }
       ),
     )
     .subscribe((ch) => change(ch))
