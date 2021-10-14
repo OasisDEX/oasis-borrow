@@ -550,7 +550,7 @@ export function closeVault(
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ sendWithGasEstimation }) =>
+      switchMap(({ send }) =>
         getQuote$(
           getTokenMetaData('DAI', tokens),
           getTokenMetaData(token, tokens),
@@ -560,8 +560,8 @@ export function closeVault(
           'SELL_COLLATERAL',
         ).pipe(
           first(),
-          switchMap((swap) =>
-            send(closeVaultCall, {
+          switchMap((swap) => {
+            return send(closeVaultCall, {
               kind: TxMetaKind.closeVault,
               closeTo: closeVaultTo!,
               token,
@@ -596,8 +596,8 @@ export function closeVault(
                 },
                 () => of({ kind: 'manageSuccess' }),
               ),
-            ),
-          ),
+            )
+          }),
         ),
       ),
       startWith({ kind: 'manageWaitingForApproval' } as ManageMultiplyVaultChange),
