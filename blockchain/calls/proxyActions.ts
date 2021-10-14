@@ -608,9 +608,6 @@ export const closeVaultCall: TransactionDef<CloseVaultData> = {
   },
   prepareArgs: (data, context) => {
     const { dssMultiplyProxyActions, dssProxyActions } = context
-    console.log(
-      `ExchangeData inside closeVaultCall '${data.exchangeData}' -> ${!!data.exchangeData}`,
-    )
     if (data.exchangeData) {
       return [dssMultiplyProxyActions.address, getCloseVaultCallData(data, context).encodeABI()]
     } else {
