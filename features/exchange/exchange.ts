@@ -101,8 +101,12 @@ export function getQuote$(
     toTokenAddress,
   }
 
+  console.log(`queried amount ${amount}`);
+
   if (amount.isZero() || amount.isNaN() || !amount.isFinite()) {
     //this is not valid 1inch call
+    console.log('skipping 1inch call');
+
     return of({
       ...responseBase,
 
@@ -120,6 +124,8 @@ export function getQuote$(
       },
     } as QuoteResult)
   }
+
+  console.log('making 1inch call');
 
   return ajax(`${API_ENDPOINT}?${searchParams.toString()}`).pipe(
     tap((response) => {
