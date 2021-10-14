@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { apiResolver } from 'next/dist/next-server/server/api-utils'
 import { EmailProvider } from 'server/middleware/emails/types'
 
+import * as gasPriceHandler from '../../pages/api/gasPrice'
 import * as healthHandler from '../../pages/api/health'
 import { Dependencies, getApp } from '../../server/app'
 import { Config } from '../../server/config'
@@ -45,6 +46,7 @@ export function setupServer(
     },
   )
   app.get('/api/health', nextApiResolver(healthHandler))
+  app.get('/api/gasPrice', nextApiResolver(gasPriceHandler))
 
   return app
 }
