@@ -41,6 +41,8 @@ export function mockExchangeQuote$({
             address: `0x${token}`,
             logoURI: 'url',
           },
+          fromTokenAddress: '',
+          toTokenAddress: '',
           toTokenAmount: 'string',
           fromTokenAmount: 'string',
           tx: {
