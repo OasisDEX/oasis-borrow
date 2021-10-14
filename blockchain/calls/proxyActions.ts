@@ -610,7 +610,7 @@ export const closeVaultCall: TransactionDef<CloseVaultData> = {
     const { dssMultiplyProxyActions, dssProxyActions } = context
     console.log(
       `ExchangeData inside closeVaultCall '${data.exchangeData}' -> ${
-        data.exchangeData ? true : false
+        !!data.exchangeData
       }`,
     )
     if (data.exchangeData) {
