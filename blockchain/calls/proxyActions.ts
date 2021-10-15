@@ -305,7 +305,7 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
     dssMultiplyProxyActions,
     tokens,
     exchange,
-    aaveLendingPool,
+    fmm,
   } = context
 
   return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.openMultiplyVault(
@@ -336,7 +336,7 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
       jug: mcdJug.address,
       manager: dssCdpManager.address,
       multiplyProxyActions: dssMultiplyProxyActions.address,
-      aaveLendingPoolProvider: aaveLendingPool,
+      lender: fmm,
       exchange: exchange.address,
     } as any,
   )
@@ -412,7 +412,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
     dssMultiplyProxyActions,
     tokens,
     exchange,
-    aaveLendingPool,
+    fmm,
   } = context
 
   if (data.action === 'BUY_COLLATERAL') {
@@ -446,7 +446,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
         jug: mcdJug.address,
         manager: dssCdpManager.address,
         multiplyProxyActions: dssMultiplyProxyActions.address,
-        aaveLendingPoolProvider: aaveLendingPool,
+        lender: fmm,
         exchange: exchange.address,
       } as any,
     )
@@ -488,7 +488,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
         jug: mcdJug.address,
         manager: dssCdpManager.address,
         multiplyProxyActions: dssMultiplyProxyActions.address,
-        aaveLendingPoolProvider: aaveLendingPool,
+        lender: fmm,
         exchange: exchange.address,
       } as any,
     )
@@ -533,7 +533,7 @@ function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) 
     dssMultiplyProxyActions,
     tokens,
     exchange,
-    aaveLendingPool,
+    fmm,
   } = context
 
   const {
@@ -583,7 +583,7 @@ function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) 
     jug: mcdJug.address,
     manager: dssCdpManager.address,
     multiplyProxyActions: dssMultiplyProxyActions.address,
-    aaveLendingPoolProvider: aaveLendingPool,
+    lender: fmm,
     exchange: exchange.address,
   }
 

@@ -1,4 +1,6 @@
+
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
@@ -92,6 +94,7 @@ export interface OpenMultiplyVaultConditions {
   generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice: boolean
   generateAmountExceedsDebtCeiling: boolean
   generateAmountLessThanDebtFloor: boolean
+  generateAmountMoreThanMaxFlashAmount: boolean
 
   customAllowanceAmountEmpty: boolean
   customAllowanceAmountExceedsMaxUint256: boolean
@@ -124,6 +127,7 @@ export const defaultOpenMultiplyVaultConditions: OpenMultiplyVaultConditions = {
   generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice: false,
   generateAmountExceedsDebtCeiling: false,
   generateAmountLessThanDebtFloor: false,
+  generateAmountMoreThanMaxFlashAmount: false,
 
   customAllowanceAmountEmpty: false,
   customAllowanceAmountExceedsMaxUint256: false,
@@ -219,6 +223,8 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     !afterOutstandingDebt.isZero() &&
     afterOutstandingDebt.lt(ilkData.debtFloor)
 
+  const generateAmountMoreThanMaxFlashAmount = afterOutstandingDebt.gt(FLASH_MINT_LIMIT_PER_TX)
+
   const isLoadingStage = ([
     'proxyInProgress',
     'proxyWaitingForApproval',
@@ -257,6 +263,7 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
       depositAmountExceedsCollateralBalance ||
       generateAmountExceedsDebtCeiling ||
       generateAmountLessThanDebtFloor ||
+      generateAmountMoreThanMaxFlashAmount ||
       customAllowanceAmountEmpty ||
       customAllowanceAmountExceedsMaxUint256 ||
       customAllowanceAmountLessThanDepositAmount ||
@@ -291,6 +298,7 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice,
     generateAmountExceedsDebtCeiling,
     generateAmountLessThanDebtFloor,
+    generateAmountMoreThanMaxFlashAmount,
 
     customAllowanceAmountEmpty,
     customAllowanceAmountExceedsMaxUint256,
