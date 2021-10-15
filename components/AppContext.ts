@@ -30,7 +30,12 @@ import {
 } from 'blockchain/calls/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
-import { createGasPrice$, createOraclePriceData$, tokenPricesInUSD$ } from 'blockchain/prices'
+import {
+  createGasPrice$,
+  createOraclePriceData$,
+  GasPriceParams,
+  tokenPricesInUSD$,
+} from 'blockchain/prices'
 import {
   createAccountBalance$,
   createAllowance$,
@@ -64,10 +69,10 @@ import {
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiplyHistory'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
-import { mapValues, memoize } from 'lodash'
+import { isEqual, mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
 import { combineLatest, Observable, of } from 'rxjs'
-import { filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { dogIlk } from '../blockchain/calls/dog'
 import {
@@ -132,7 +137,7 @@ export const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
 function createTxHelpers$(
   context$: Observable<ContextConnected>,
   send: SendFunction<TxData>,
-  gasPrice$: Observable<BigNumber>,
+  gasPrice$: Observable<GasPriceParams>,
 ): TxHelpers$ {
   return context$.pipe(
     filter(({ status }) => status === 'connected'),
@@ -168,13 +173,18 @@ export function setupAppContext() {
   combineLatest(account$, connectedContext$)
     .pipe(
       mergeMap(([account, network]) => {
-        return of({ network, account: account?.toLowerCase() })
+        return of({
+          networkName: network.name,
+          connectionKind: network.connectionKind,
+          account: account?.toLowerCase(),
+        })
       }),
+      distinctUntilChanged(isEqual),
     )
-    .subscribe(({ account, network }) => {
-      if (account && network) {
-        mixpanelIdentify(account, { walletType: network.connectionKind })
-        trackingEvents.accountChange(account, network.name, network.connectionKind)
+    .subscribe(({ account, networkName, connectionKind }) => {
+      if (account) {
+        mixpanelIdentify(account, { walletType: connectionKind })
+        trackingEvents.accountChange(account, networkName, connectionKind)
       }
     })
 
@@ -189,9 +199,7 @@ export function setupAppContext() {
     connectedContext$,
   )
 
-  const gasPrice$ = createGasPrice$(onEveryBlock$, context$).pipe(
-    map((x) => BigNumber.max(x.plus(1), x.multipliedBy(1.01).decimalPlaces(0, 0))),
-  )
+  const gasPrice$ = createGasPrice$(onEveryBlock$, context$)
 
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)

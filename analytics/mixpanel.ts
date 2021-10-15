@@ -13,7 +13,7 @@ const env =
 
 const token = getConfig()?.publicRuntimeConfig.mixpanelAPIKey || process.env.MIXPANEL_KEY
 
-const config = {
+export const config = {
   test: {
     mixpanel: {
       token,

@@ -607,7 +607,26 @@ export const closeVaultCall: TransactionDef<CloseVaultData> = {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => {
-    const { dssMultiplyProxyActions } = context
-    return [dssMultiplyProxyActions.address, getCloseVaultCallData(data, context).encodeABI()]
+    const { dssMultiplyProxyActions, dssProxyActions } = context
+    if (data.exchangeData) {
+      return [dssMultiplyProxyActions.address, getCloseVaultCallData(data, context).encodeABI()]
+    } else {
+      return [
+        dssProxyActions.address,
+        getWithdrawAndPaybackCallData(
+          {
+            kind: TxMetaKind.withdrawAndPayback,
+            withdrawAmount: data.totalCollateral,
+            paybackAmount: new BigNumber(0),
+            proxyAddress: data.proxyAddress!,
+            ilk: data.ilk,
+            token: data.token,
+            id: data.id,
+            shouldPaybackAll: true,
+          },
+          context,
+        ).encodeABI(),
+      ]
+    }
   },
 }
