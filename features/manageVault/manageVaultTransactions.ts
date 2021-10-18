@@ -280,7 +280,9 @@ export function manageVaultWithdrawAndPayback(
     .pipe(
       first(),
       switchMap(({ send }) => {
-        console.log(`in close paybackAmount=${paybackAmount || zero} withdrawAmount=${withdrawAmount}`)
+        console.log(
+          `in close paybackAmount=${paybackAmount || zero} withdrawAmount=${withdrawAmount}`,
+        )
         return send(withdrawAndPayback, {
           kind: TxMetaKind.withdrawAndPayback,
           withdrawAmount: withdrawAmount || zero,
