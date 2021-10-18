@@ -36,7 +36,7 @@ const SLIPPAGE_LIMIT_MIN = new BigNumber(0.001)
 
 export const SLIPPAGE_OPTIONS = [SLIPPAGE_LOW, SLIPPAGE_MEDIUM, SLIPPAGE_HIGH]
 
-type SaveUserSettingsFunction = (slippageInput: BigNumber) => Observable<boolean>
+export type SaveUserSettingsFunction = (slippageInput: BigNumber) => Observable<boolean>
 
 function apply(state: UserSettingsState, change: UserSettingsChange): UserSettingsState {
   if (change.kind === 'slippageInput') {
