@@ -51,6 +51,7 @@ export function getWithdrawAndPaybackCallData(
         mcdJoinDai.address,
         id.toString(),
         amountToWei(withdrawAmount, token).toFixed(0),
+       // amountToWei(withdrawAmount, token).toFixed(0,BigNumber.ROUND_DOWN),
         amountToWei(paybackAmount, 'DAI').toFixed(0),
       )
     }
@@ -61,6 +62,7 @@ export function getWithdrawAndPaybackCallData(
         joins[ilk],
         mcdJoinDai.address,
         id.toString(),
+      //  amountToWei(withdrawAmount, token).toFixed(0,BigNumber.ROUND_DOWN),
         amountToWei(withdrawAmount, token).toFixed(0),
       )
     }
@@ -71,6 +73,7 @@ export function getWithdrawAndPaybackCallData(
       mcdJoinDai.address,
       id.toString(),
       amountToWei(withdrawAmount, token).toFixed(0),
+    //  amountToWei(withdrawAmount, token).toFixed(0,BigNumber.ROUND_DOWN),
       amountToWei(paybackAmount, 'DAI').toFixed(0),
     )
   }
