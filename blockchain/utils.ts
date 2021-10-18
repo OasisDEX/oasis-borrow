@@ -23,7 +23,11 @@ export function funcSigTopic(v: string): string {
 
 export function amountToWei(amount: BigNumber, token: string): BigNumber {
   const precision = getToken(token).precision
-  return amount.times(new BigNumber(10).pow(precision))
+  const retValue = amount.times(new BigNumber(10).pow(precision));
+  console.log(`amountToWei = ${retValue}`);
+  const realRetValue = new BigNumber(retValue.toFixed(0,BigNumber.ROUND_DOWN));
+  console.log(`amountToWei after = ${realRetValue}`);
+  return realRetValue;
 }
 
 export function amountFromWei(amount: BigNumber, token: string): BigNumber {
