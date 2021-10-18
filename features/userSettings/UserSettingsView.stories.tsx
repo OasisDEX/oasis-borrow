@@ -19,7 +19,7 @@ const StoryContainer = ({ children, title }: { title: string } & WithChildren) =
   )
 }
 
-const BASE_PROPS: UserSettingsState = {
+const BASE_PROPS: UserSettingsState & { opened: boolean; setOpened: () => void } = {
   stage: 'editing',
   slippage: SLIPPAGE_DEFAULT,
   slippageInput: SLIPPAGE_DEFAULT,
@@ -28,9 +28,11 @@ const BASE_PROPS: UserSettingsState = {
   canProgress: true,
   errors: [],
   warnings: [],
+  opened: false,
+  setOpened: () => null,
 }
 
-const BASE_PROPS_CHANGED_VALUE: UserSettingsState = {
+const BASE_PROPS_CHANGED_VALUE: UserSettingsState & { opened: boolean; setOpened: () => void } = {
   ...BASE_PROPS,
   slippageInput: SLIPPAGE_OPTIONS[1],
 }

@@ -14,9 +14,10 @@ import getConfig from 'next/config'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { TRANSITIONS } from 'theme'
-import { Box, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
+import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from './AppContextProvider'
+import { useSharedUI } from './SharedUIProvider'
 import { SelectComponents } from 'react-select/src/components'
 
 const {
@@ -87,6 +88,7 @@ export function BackArrow() {
 }
 
 function ConnectedHeader() {
+  const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const { accountData$, context$ } = useAppContext()
   const { t } = useTranslation()
   const accountData = useObservable(accountData$)
@@ -106,9 +108,15 @@ function ConnectedHeader() {
       variant="appContainer"
     >
       <>
-        <Flex sx={{ alignItems: 'center' }}>
-          <Logo sx={{ position: ['absolute', 'static', 'static'], left: 3, top: 3 }} />
-          <Flex sx={{ ml: 5, zIndex: 1, mt: [3, 0, 0] }}>
+        <Flex
+          sx={{
+            alignItems: 'center',
+            justifyContent: ['space-between', 'flex-start'],
+            width: ['100%', 'auto'],
+          }}
+        >
+          <Logo />
+          <Flex sx={{ ml: 5, zIndex: 1 }}>
             <AppLink
               variant="nav"
               sx={{ mr: 4 }}
@@ -120,17 +128,40 @@ function ConnectedHeader() {
             </AppLink>
             <AppLink
               variant="nav"
-              sx={{ mr: [0, 4, 4] }}
+              sx={{ mr: [0, 4] }}
               href="/vaults/list"
               onClick={() => trackingEvents.createNewVault(firstCDP)}
             >
-              {t('open-new-vault')}
+              <Box sx={{ display: ['none', 'block'] }}>{t('open-new-vault')}</Box>
+              <Box sx={{ display: ['block', 'none'], fontSize: '0px' }}>
+                <Icon name="plus_header" size="auto" width="18px" height="18px" />
+              </Box>
             </AppLink>
           </Flex>
         </Flex>
-        <Flex>
-          <UserSettingsButton />
-          <AccountButton />
+        <Flex
+          sx={{
+            position: ['fixed', 'relative'],
+            bottom: 0,
+            left: 0,
+            right: 0,
+            bg: ['rgba(255,255,255,0.9)', 'transparent'],
+            p: [3, 0],
+            justifyContent: 'space-between',
+            gap: 2,
+          }}
+        >
+          <Flex>
+            <UserSettingsButton />
+            <AccountButton />
+          </Flex>
+          {vaultFormToggleTitle && (
+            <Box sx={{ display: ['flex', 'none'] }}>
+              <Button variant="menuButton" sx={{ px: 3 }} onClick={() => setVaultFormOpened(true)}>
+                <Box>{vaultFormToggleTitle}</Box>
+              </Button>
+            </Box>
+          )}
         </Flex>
       </>
     </BasicHeader>
@@ -366,7 +397,7 @@ function MobileMenu() {
       </Box>
       <Icon
         name={isOpen ? 'close' : 'menu'}
-        sx={{ zIndex: 'mobileMenu', position: 'absolute', top: '2px', right: '20px' }}
+        sx={{ zIndex: 'mobileMenu', cursor: 'pointer' }}
         onClick={() => setIsOpen(!isOpen)}
         size="18px"
       />
@@ -382,9 +413,7 @@ function DisconnectedHeader() {
       <Box sx={{ display: ['none', 'block'] }}>
         <BasicHeader variant="appContainer">
           <Grid sx={{ alignItems: 'center', columnGap: [4, 4, 5], gridAutoFlow: 'column', mr: 3 }}>
-            <Logo
-              sx={{ transform: 'scale(85%)', display: 'inline-flex', '& *': { flexShrink: 0 } }}
-            />
+            <Logo />
             <HeaderDropdown title={t('nav.products')}>
               <AppLink
                 variant="links.nav"
@@ -434,8 +463,10 @@ function DisconnectedHeader() {
         </BasicHeader>
       </Box>
       <Box sx={{ display: ['block', 'none'], mb: 5 }}>
-        <Logo sx={{ position: 'absolute', left: '7px', top: '-4px', transform: 'scale(80%)' }} />
-        <MobileMenu />
+        <BasicHeader variant="appContainer">
+          <Logo />
+          <MobileMenu />
+        </BasicHeader>
       </Box>
     </>
   )

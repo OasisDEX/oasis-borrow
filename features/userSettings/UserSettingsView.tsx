@@ -2,6 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
+import { MobileSidePanelClose, MobileSidePanelPortal } from 'components/Modal'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatPercent, formatPrecision } from 'helpers/formatters/format'
@@ -178,8 +179,19 @@ function SlippageSettingsForm(props: UserSettingsState) {
   )
 }
 
-export function UserSettingsDropdown(props: UserSettingsState) {
-  const { slippage, slippageInput, stage, saveSettings, canProgress, reset } = props
+export function UserSettingsDropdown(
+  props: UserSettingsState & { opened: boolean; setOpened: (opened: boolean) => void },
+) {
+  const {
+    slippage,
+    slippageInput,
+    stage,
+    saveSettings,
+    canProgress,
+    reset,
+    opened,
+    setOpened,
+  } = props
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -188,54 +200,67 @@ export function UserSettingsDropdown(props: UserSettingsState) {
     }
   }, [])
 
+  const onClose = () => setOpened(false)
+
   return (
-    <Card
-      sx={{
-        p: 4,
-        position: 'absolute',
-        minWidth: '380px',
-        bottom: '0',
-        right: '0',
-        transform: 'translateY(calc(100% + 10px))',
-        boxShadow: 'userSettingsCardDropdown',
-        borderRadius: 'mediumLarge',
-        border: 'none',
-      }}
-    >
-      <SlippageSettingsForm {...props} />
-      {/* Gas settings will go here */}
-      {!slippage.eq(slippageInput) && (
-        <Button
-          disabled={!canProgress || stage === 'inProgress'}
-          onClick={saveSettings}
-          sx={{ mt: 2, width: '100%' }}
-        >
-          <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
-            {stage === 'inProgress' && (
-              <AppSpinner
-                variant="styles.spinner.large"
-                sx={{ color: 'surface', display: 'flex', mr: 2 }}
-              />
-            )}
-            <Text>
-              {stage === 'inProgress'
-                ? t('user-settings.button-in-progress')
-                : t('user-settings.button')}
-            </Text>
-          </Flex>
-        </Button>
-      )}
-      {stage === 'success' && (
-        <Text sx={{ ...saveStatusMessageStyles, color: 'onSuccess' }}>
-          {t('user-settings.update-success')}
-        </Text>
-      )}
-      {stage === 'failure' && (
-        <Text sx={{ ...saveStatusMessageStyles, color: 'onError' }}>
-          {t('user-settings.update-failure')}
-        </Text>
-      )}
-    </Card>
+    <MobileSidePanelPortal>
+      <Card
+        sx={{
+          display: ['block', opened ? 'block' : 'none'],
+          p: [4, 4],
+          pt: [0, 4],
+          position: ['fixed', 'absolute'],
+          top: [0, 'auto'],
+          left: [0, 'auto'],
+          right: 0,
+          bottom: 0,
+          minWidth: ['100%', '380px'],
+          transition: ['0.3s transform ease-in-out', '0s'],
+          transform: [`translateX(${opened ? '0' : '100'}%)`, 'translateY(calc(100% + 10px))'],
+          bg: ['background'],
+          boxShadow: ['none', 'userSettingsCardDropdown'],
+          borderRadius: ['0px', 'mediumLarge'],
+          border: 'none',
+          overflowX: ['hidden', 'visible'],
+          zIndex: ['modal', 0],
+        }}
+      >
+        <MobileSidePanelClose opened={opened} onClose={onClose} />
+        <SlippageSettingsForm {...props} />
+        {/* Gas settings will go here */}
+        {!slippage.eq(slippageInput) && (
+          <Button
+            disabled={!canProgress || stage === 'inProgress'}
+            onClick={saveSettings}
+            sx={{ mt: 2, width: '100%' }}
+          >
+            <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+              {stage === 'inProgress' && (
+                <AppSpinner
+                  variant="styles.spinner.large"
+                  sx={{ color: 'surface', display: 'flex', mr: 2 }}
+                />
+              )}
+              <Text>
+                {stage === 'inProgress'
+                  ? t('user-settings.button-in-progress')
+                  : t('user-settings.button')}
+              </Text>
+            </Flex>
+          </Button>
+        )}
+        {stage === 'success' && (
+          <Text sx={{ ...saveStatusMessageStyles, color: 'onSuccess' }}>
+            {t('user-settings.update-success')}
+          </Text>
+        )}
+        {stage === 'failure' && (
+          <Text sx={{ ...saveStatusMessageStyles, color: 'onError' }}>
+            {t('user-settings.update-failure')}
+          </Text>
+        )}
+      </Card>
+    </MobileSidePanelPortal>
   )
 }
 
@@ -249,19 +274,30 @@ export function UserSettingsButton() {
 
   return (
     <Flex sx={{ position: 'relative', mr: 2 }}>
-      <Button variant="menuButton" onClick={() => setOpened(!opened)} sx={{ mr: 1, px: 3 }}>
-        <Flex sx={{ alignItems: 'center', px: 1 }}>
-          <Text>{t('user-settings.button-menu')}</Text>
+      <Button
+        variant="menuButton"
+        onClick={() => setOpened(!opened)}
+        sx={{ mr: 1, px: [2, 3], width: ['40px', 'auto'] }}
+      >
+        <Flex sx={{ alignItems: 'center', justifyContent: 'center', px: [0, 1] }}>
+          <Text sx={{ display: ['none', 'block'] }}>{t('user-settings.button-menu')}</Text>
           <Icon
             size="auto"
             width="12"
             height="7"
             name={opened ? 'chevron_up' : 'chevron_down'}
-            sx={{ ml: '6px', position: 'relative', top: '1px' }}
+            sx={{ display: ['none', 'block'], ml: '6px', position: 'relative', top: '1px' }}
+          />
+          <Icon
+            size="auto"
+            width="16"
+            height="16"
+            name="settings"
+            sx={{ display: ['block', 'none'] }}
           />
         </Flex>
       </Button>
-      {opened && <UserSettingsDropdown {...userSettings} />}
+      <UserSettingsDropdown {...userSettings} opened={opened} setOpened={setOpened} />
     </Flex>
   )
 }
