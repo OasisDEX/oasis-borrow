@@ -499,7 +499,7 @@ describe('open multiply vault', () => {
   })
 
   describe('validation and errors', () => {
-    it.skip('should add meaningful message when ledger throws error with disabled contract data', () => {
+    it('should add meaningful message when ledger throws error with disabled contract data', () => {
       const _proxyAddress$ = new Subject<string>()
       const state = getStateUnpacker(
         mockOpenMultiplyVault({
