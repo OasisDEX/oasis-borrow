@@ -279,8 +279,8 @@ export function manageVaultWithdrawAndPayback(
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ sendWithGasEstimation }) => {
-        return sendWithGasEstimation(withdrawAndPayback, {
+      switchMap(({ sendWithGasEstimation }) =>
+        sendWithGasEstimation(withdrawAndPayback, {
           kind: TxMetaKind.withdrawAndPayback,
           withdrawAmount: withdrawAmount || zero,
           paybackAmount: paybackAmount || zero,
@@ -309,8 +309,8 @@ export function manageVaultWithdrawAndPayback(
             },
             () => of({ kind: 'manageSuccess' }),
           ),
-        )
-      }),
+        ),
+      ),
     )
     .subscribe((ch) => change(ch))
 }

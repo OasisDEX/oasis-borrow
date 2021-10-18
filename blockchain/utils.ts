@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { RAD, RAY, WAD } from 'components/constants'
+import { ten } from 'helpers/zero'
 import padEnd from 'lodash/padEnd'
 //@ts-ignore
 import ethAbi from 'web3-eth-abi'
@@ -23,11 +24,8 @@ export function funcSigTopic(v: string): string {
 
 export function amountToWei(amount: BigNumber, token: string): BigNumber {
   const precision = getToken(token).precision
-  const retValue = amount.times(new BigNumber(10).pow(precision));
-  console.log(`amountToWei = ${retValue}`);
-  const realRetValue = new BigNumber(retValue.toFixed(0,BigNumber.ROUND_DOWN));
-  console.log(`amountToWei after = ${realRetValue}`);
-  return realRetValue;
+  const decimalsMultiplayer = new BigNumber(ten).pow(precision)
+  return new BigNumber(amount.times(decimalsMultiplayer).toFixed(0, BigNumber.ROUND_DOWN))
 }
 
 export function amountFromWei(amount: BigNumber, token: string): BigNumber {
