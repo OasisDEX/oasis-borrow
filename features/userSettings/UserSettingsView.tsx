@@ -116,10 +116,7 @@ function SlippageSettingsForm(props: UserSettingsState) {
         <Text variant="paragraph3" sx={{ color: 'text.subtitle', mb: -1 }}>
           {t('user-settings.slippage-limit.preset-description')}
         </Text>
-        <AppLink
-          href="https://kb.oasis.app/help/slippage"
-          sx={{ fontSize: 2, fontWeight: 'body', mt: -1 }}
-        >
+        <AppLink href="/support#using-multiply" sx={{ fontSize: 2, fontWeight: 'body', mt: -1 }}>
           {t('user-settings.slippage-limit.read-more')}
         </AppLink>
         <Text variant="paragraph4" sx={{ fontWeight: 'semiBold', my: 3 }}>
