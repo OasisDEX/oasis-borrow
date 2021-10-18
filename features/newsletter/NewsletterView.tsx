@@ -5,6 +5,7 @@ import { AppSpinner } from 'helpers/AppSpinner'
 import { useTranslation } from 'next-i18next'
 import React, { FormEvent, useState } from 'react'
 import { useEffect } from 'react'
+import { GRADIENTS } from 'theme'
 import { Box, Button, Flex, Grid, Heading, Input, Text } from 'theme-ui'
 
 import { createNewsletter$, NewsletterMessage, NewsletterState } from './newsletter'
@@ -20,34 +21,53 @@ export const NEWSLETTER_FORM_ERROR: {
 }
 
 function NewsletterFormSuccess({ small }: { small?: boolean }) {
+  const { t } = useTranslation()
+
   return (
-    <Grid sx={{ bg: 'bgPrimaryAlt', borderRadius: '2em', p: small ? 3 : 4 }}>
-      <Flex
+    <Box sx={{ textAlign: small ? 'left' : 'center' }}>
+      <Box
         sx={{
-          mx: 'auto',
-          width: small ? '48px' : '64px',
-          height: small ? '48px' : '64px',
+          display: 'inline-flex',
+          bg: 'backgroundAlt',
+          borderRadius: '3em',
+          px: 4,
+          py: 3,
           alignItems: 'center',
-          justifyContent: 'center',
-          bg: 'primary',
-          borderRadius: '50%',
         }}
       >
-        <Icon name="checkmark" color="surface" size={21} />
-      </Flex>
-      <Box sx={{ flex: 1, ml: 3, textAlign: 'center' }}>
-        <Heading sx={{ fontSize: small ? 5 : 6 }}>Success!</Heading>
-        <Text sx={{ fontSize: small ? 1 : 2, mt: 2 }}>
-          If you do not receive the confirmation email within a few minutes of signing up, please
-          check your Spam folder. Choose the confirmation message and mark as not spam. This will
-          move the message to your inbox and enable the link for you to subscribe.
-        </Text>
+        <Flex
+          sx={{
+            mx: 'auto',
+            width: small ? '32px' : '40px',
+            height: small ? '32px' : '40px',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: GRADIENTS.newsletterSuccess,
+            borderRadius: '50%',
+          }}
+        >
+          <Icon name="checkmark" color="surface" size={small ? 16 : 21} />
+        </Flex>
+        <Box sx={{ flex: 1, ml: 3, textAlign: 'center' }}>
+          <Text
+            sx={{
+              color: 'text.subtitle',
+              fontSize: small ? 1 : 3,
+              py: 1,
+              maxWidth: '32em',
+              textAlign: 'left',
+              fontWeight: 'semiBold',
+            }}
+          >
+            {t('newsletter.success')}
+          </Text>
+        </Box>
       </Box>
-    </Grid>
+    </Box>
   )
 }
 
-function NewsletterFormInternal({ small }: { small?: boolean }) {
+function NewsletterForm({ small }: { small?: boolean }) {
   const [inputOnFocus, setInputOnFocus] = useState(false)
   const [newsletterForm, setNewsletterForm] = useState<NewsletterState | undefined>(undefined)
   const { t } = useTranslation()
@@ -59,7 +79,7 @@ function NewsletterFormInternal({ small }: { small?: boolean }) {
   }, [])
 
   if (!newsletterForm) return null
-  const { change, email, submit, stage, messages, messageResponse } = newsletterForm
+  const { change, email, submit, messages, messageResponse, stage } = newsletterForm
 
   function onSubmit(e: FormEvent<HTMLDivElement>) {
     e.preventDefault()
@@ -92,8 +112,7 @@ function NewsletterFormInternal({ small }: { small?: boolean }) {
           bg: ['transparent', 'bgPrimaryAlt'],
           border: 'light',
           borderColor: 'newsletterInputBorder',
-          flexDirection: ['column', 'row'],
-          height: ['initial', small ? '33px' : 'initial'],
+          height: small ? '38px' : 'initial',
           px: 2,
         }}
       >
@@ -105,7 +124,6 @@ function NewsletterFormInternal({ small }: { small?: boolean }) {
             border: 'none',
             px: 3,
             flex: 1,
-            mb: [3, 0],
             fontSize: small ? 2 : 3,
             lineHeight: 1.2,
           }}
@@ -119,7 +137,6 @@ function NewsletterFormInternal({ small }: { small?: boolean }) {
         <Button
           variant="textual"
           sx={{
-            width: ['100%', 'auto'],
             fontWeight: 'semiBold',
             borderRadius: 'inherit',
             fontSize: 2,
@@ -138,7 +155,7 @@ function NewsletterFormInternal({ small }: { small?: boolean }) {
           disabled={!submit}
         >
           {stage === 'inProgress' ? (
-            <AppSpinner sx={{ color: 'surface' }} variant={small ? 'default' : 'defaultBulletin'} />
+            <AppSpinner sx={{ color: 'primary' }} variant="styles.spinner.large" />
           ) : (
             <Flex sx={{ alignItems: 'center' }}>
               <Text mr={1}>{t('newsletter.button')}</Text>
@@ -158,38 +175,28 @@ function NewsletterFormInternal({ small }: { small?: boolean }) {
   )
 }
 
-export function NewsletterForm({ small }: { small?: boolean }) {
-  return isAppContextAvailable() ? <NewsletterFormInternal small={small} /> : null
-}
-
-export function NewsletterSection() {
+export function NewsletterSection({ small }: { small?: boolean }) {
   const { t } = useTranslation()
 
   return (
-    <Box>
-      <Grid sx={{ textAlign: 'center' }} gap={1} mb={4}>
-        <Heading variant="header2" sx={{ fontWeight: 'bold' }}>
+    <Box
+      sx={{
+        ...(small && {
+          '@media screen and (max-width: 1024px)': {
+            gridColumn: '1/-1',
+            maxWidth: '480px',
+            ml: '0',
+          },
+        }),
+      }}
+    >
+      <Grid sx={{ textAlign: small ? 'left' : 'center' }} gap={1} mb={small ? 3 : 4}>
+        <Heading variant="header2" sx={{ fontWeight: 'bold', fontSize: small ? 4 : 7 }}>
           {t('newsletter.title')}
         </Heading>
         <Text sx={{ color: 'text.subtitle' }}>{t('newsletter.subtitle')}</Text>
       </Grid>
-      <NewsletterForm />
-    </Box>
-  )
-}
-
-export function NewsletterSectionFooter() {
-  const { t } = useTranslation()
-
-  return (
-    <Box>
-      <Grid sx={{ textAlign: 'center' }} gap={1} mb={4}>
-        <Heading variant="header2" sx={{ fontWeight: 'bold' }}>
-          {t('newsletter.title')}
-        </Heading>
-        <Text sx={{ color: 'text.subtitle' }}>{t('newsletter.subtitle')}</Text>
-      </Grid>
-      <NewsletterForm small />
+      {isAppContextAvailable() ? <NewsletterForm small={small} /> : null}
     </Box>
   )
 }

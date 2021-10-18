@@ -2,6 +2,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
+import { NewsletterSection } from 'features/newsletter/NewsletterView'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
@@ -10,11 +11,6 @@ import React from 'react'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
 
 import { SelectComponents } from 'react-select/src/components'
-import {
-  NewsletterForm,
-  NewsletterSection,
-  NewsletterSectionFooter,
-} from 'features/newsletter/NewsletterView'
 
 const {
   publicRuntimeConfig: { buildHash, buildDate, showBuildInfo, apiHost },
@@ -150,13 +146,19 @@ export function Footer() {
 
   return (
     <Box as="footer" sx={{ position: 'relative', zIndex: 'footer' }}>
-      <Container sx={{ maxWidth: '824px', mb: 5, pb: 4, pt: 2 }}>
+      <Container sx={{ maxWidth: '1200px', mb: 5, pb: 4, pt: 2 }}>
         <Grid
           sx={{
             pl: 0,
             alignItems: 'flex-start',
+            '@media screen and (max-width: 64em)': {
+              gridTemplateColumns: '150px 1fr 1fr 1fr',
+            },
+            '@media screen and (max-width: 48em)': {
+              gridTemplateColumns: '1fr 1fr',
+            },
           }}
-          columns={[2, '150px 1fr 1fr 1fr']}
+          columns="1fr 1fr 1fr 1fr 378px"
           gap={[4, null, 5]}
         >
           <Grid gap={3}>
@@ -186,8 +188,8 @@ export function Footer() {
               ))}
             </Grid>
           ))}
+          <NewsletterSection small />
         </Grid>
-        <NewsletterSectionFooter />
       </Container>
       <TemporaryFooter />
     </Box>

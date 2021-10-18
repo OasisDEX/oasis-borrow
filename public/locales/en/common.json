@@ -633,6 +633,7 @@
     "subtitle": "Subscribe to the newsletter for Oasis updates",
     "placeholder": "Email Address",
     "button": "Subscribe",
+    "success": "Thank you for subscribing the newsletter!",
     "errors": {
       "unknown": "Something went wrong. Please try again.",
       "email-is-invalid": "Please enter a valid email address",

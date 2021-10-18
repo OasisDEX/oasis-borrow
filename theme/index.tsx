@@ -7,6 +7,10 @@ export const TRANSITIONS = {
   global: '150ms cubic-bezier(0.215,0.61,0.355,1)',
 }
 
+export const GRADIENTS = {
+  newsletterSuccess: 'linear-gradient(137.02deg, #2A30EE 0%, #A4A6FF 99.12%);',
+}
+
 const oasisBaseTheme = {
   useBorderBox: true,
   useBodyStyles: true,

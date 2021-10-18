@@ -7,7 +7,17 @@ const AUTHORIZATION_HEADER = `Basic ${Buffer.from(
 
 const SUBSCRIBERS_ENDPOINT = `${process.env.MAILCHIMP_ENDPOINT}/members`
 
-const INITIAL_USER_STATUS = 'pending'
+type UserStatus =
+  | 'pending'
+  | 'subscribed'
+  | 'unsubscribed'
+  | 'cleaned'
+  | 'pending'
+  | 'transactional'
+
+// change to pending if there is need for opt-in confirm email
+// change to subscribed if there is no need for opt-in
+const INITIAL_USER_STATUS: UserStatus = 'subscribed'
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   const { email } = req.body
