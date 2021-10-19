@@ -1,3 +1,4 @@
+import { getMultiplyParams } from '@oasisdex/multiply'
 import { BigNumber } from 'bignumber.js'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import {
@@ -128,20 +129,33 @@ export function applyOpenMultiplyVaultCalculations(
 
   const requiredCollRatioSafe = requiredCollRatio || maxCollRatio
 
-  const [borrowedDaiAmount, buyingCollateral] =
+  const { debtDelta: borrowedDaiAmount, collateralDelta: buyingCollateral } =
     depositAmount && marketPriceMaxSlippage && requiredCollRatioSafe && marketPrice
-      ? calculateParamsIncreaseMP(
-          oraclePrice,
-          marketPrice,
-          OAZO_FEE,
-          LOAN_FEE,
-          depositAmount,
-          zero,
-          requiredCollRatioSafe,
-          state.slippage,
-          zero,
+      ? getMultiplyParams(
+          // Market params
+          {
+            oraclePrice,
+            marketPrice,
+            OF: OAZO_FEE,
+            FF: LOAN_FEE,
+            slippage: state.slippage,
+          },
+          // Vault info
+          {
+            currentDebt: zero,
+            currentCollateral: depositAmount,
+            minCollRatio: zero,
+          },
+          // Desired CDP state
+          {
+            requiredCollRatio: requiredCollRatioSafe,
+            providedCollateral: zero,
+            providedDai: zero,
+            withdrawDai: zero,
+            withdrawColl: zero,
+          },
         )
-      : [zero, zero]
+      : { debtDelta: zero, collateralDelta: zero }
 
   const afterOutstandingDebt = borrowedDaiAmount.times(one.plus(LOAN_FEE))
 
