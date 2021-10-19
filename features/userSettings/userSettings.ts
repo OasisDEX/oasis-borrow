@@ -43,6 +43,7 @@ function apply(state: UserSettingsState, change: UserSettingsChange): UserSettin
     return {
       ...state,
       slippageInput: change.slippageInput,
+      stage: 'editing',
     }
   }
 

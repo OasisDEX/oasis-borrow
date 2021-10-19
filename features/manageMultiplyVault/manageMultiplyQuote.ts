@@ -111,7 +111,8 @@ export function createExchangeChange$(
         compareBigNumber(s1.depositAmount, s2.depositAmount) &&
         compareBigNumber(s1.withdrawAmount, s2.withdrawAmount) &&
         compareBigNumber(s1.generateAmount, s2.generateAmount) &&
-        compareBigNumber(s1.paybackAmount, s2.paybackAmount),
+        compareBigNumber(s1.paybackAmount, s2.paybackAmount) &&
+        compareBigNumber(s1.slippage, s2.slippage),
     ),
     debounceTime(500),
     switchMap(

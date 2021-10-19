@@ -192,10 +192,10 @@ export function UserSettingsDropdown(
   const { t } = useTranslation()
 
   useEffect(() => {
-    return () => {
+    if (!opened) {
       reset()
     }
-  }, [])
+  }, [opened])
 
   const onClose = () => setOpened(false)
 

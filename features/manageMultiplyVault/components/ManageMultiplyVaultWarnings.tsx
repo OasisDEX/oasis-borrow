@@ -36,7 +36,7 @@ export function ManageMultiplyVaultWarnings({
       case 'vaultWillBeAtRiskLevelWarningAtNextPrice':
         return translate('vault-will-be-at-risk-level-warning-at-next-price')
       case 'highSlippage':
-        return t('slippage-limit.warnings.high-slippage')
+        return t('user-settings.slippage-limit.warnings.high-slippage')
       default:
         throw new UnreachableCaseError(message)
     }

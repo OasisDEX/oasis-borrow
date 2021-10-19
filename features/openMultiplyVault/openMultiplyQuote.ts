@@ -93,7 +93,8 @@ export function createExchangeChange$(
     distinctUntilChanged(
       (s1, s2) =>
         compareBigNumber(s1.depositAmount, s2.depositAmount) &&
-        compareBigNumber(s1.requiredCollRatio, s2.requiredCollRatio),
+        compareBigNumber(s1.requiredCollRatio, s2.requiredCollRatio) &&
+        compareBigNumber(s1.slippage, s2.slippage),
     ),
     debounceTime(500),
     switchMap(
