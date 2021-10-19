@@ -7,7 +7,7 @@ import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { catchError, first, flatMap, map, startWith, switchMap } from 'rxjs/operators'
 import { OmitProperties, ValueOf } from 'ts-essentials'
 
-import { Ticker } from '../blockchain/prices'
+import { GasPriceParams, Ticker } from '../blockchain/prices'
 
 export enum FormStage {
   idle = 'idle',
@@ -272,7 +272,7 @@ export interface HasGasEstimation extends HasGasEstimationCost {
 }
 
 export function doGasEstimation<S extends HasGasEstimation>(
-  gasPrice$: Observable<BigNumber>,
+  gasPrice$: Observable<GasPriceParams>,
   tokenPricesInUSD$: Observable<Ticker>,
   txHelpers$: TxHelpers$,
   state: S,
@@ -298,7 +298,7 @@ export function doGasEstimation<S extends HasGasEstimation>(
 
       return gasCall.pipe(
         map((gasEstimation: number) => {
-          const gasCost = amountFromWei(gasPrice.times(gasEstimation))
+          const gasCost = amountFromWei(gasPrice.maxFeePerGas.times(gasEstimation))
           const gasEstimationUsd = ETHUsd ? gasCost.times(ETHUsd) : undefined
           const gasEstimationDai =
             gasEstimationUsd && DAIUsd ? gasEstimationUsd.div(DAIUsd) : undefined
