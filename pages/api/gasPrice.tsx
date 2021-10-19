@@ -31,8 +31,10 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
         })
       })
       .catch((error) => {
-        console.log(error)
-        res.status(error.status)
+        res.status(error.response.status)
+        res.json({
+          error: error.message
+        })
       })
   } else {
     const estimatedPriceFor95PercentConfidence = cache.get('estimatedPriceFor95PercentConfidence')
