@@ -155,6 +155,9 @@
     "new": "New"
   },
   "fees": "Fees",
+  "fees-plus-gas": "Fees + (max gas fee)",
+  "max-gas-fee": "Max gas fee",
+  "gas-explanation": "The Max gas fee is the maximum that will be paid in gas for the transaction. We want your transactions to succeed, so we provide a max gas price of 2x the current base fee + a priority fee that will get you in the next block in 95% of the times. In most cases you will pay a lot less than this maximum.",
   "filters": {
     "lp-token": "LP tokens",
     "stablecoin": "Stablecoins",
