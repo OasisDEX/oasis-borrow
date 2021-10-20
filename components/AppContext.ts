@@ -30,7 +30,12 @@ import {
 } from 'blockchain/calls/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
-import { createGasPrice$, createOraclePriceData$, tokenPricesInUSD$ } from 'blockchain/prices'
+import {
+  createGasPrice$,
+  createOraclePriceData$,
+  GasPriceParams,
+  tokenPricesInUSD$,
+} from 'blockchain/prices'
 import {
   createAccountBalance$,
   createAllowance$,
@@ -132,7 +137,7 @@ export const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
 function createTxHelpers$(
   context$: Observable<ContextConnected>,
   send: SendFunction<TxData>,
-  gasPrice$: Observable<BigNumber>,
+  gasPrice$: Observable<GasPriceParams>,
 ): TxHelpers$ {
   return context$.pipe(
     filter(({ status }) => status === 'connected'),
@@ -194,9 +199,7 @@ export function setupAppContext() {
     connectedContext$,
   )
 
-  const gasPrice$ = createGasPrice$(onEveryBlock$, context$).pipe(
-    map((x) => BigNumber.max(x.plus(1), x.multipliedBy(1.01).decimalPlaces(0, 0))),
-  )
+  const gasPrice$ = createGasPrice$(onEveryBlock$, context$)
 
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
