@@ -33,7 +33,7 @@ export function VaultChangesInformationItem({
         <Box>{label}</Box>
         {tooltip && <Icon name="question_o" size="20px" sx={{ ml: 1 }} />}
       </Flex>
-      {tooltip && tooltipOpen && <Tooltip>{tooltip}</Tooltip>}
+      {tooltip && tooltipOpen && <Tooltip sx={{ transform: 'translateY(60%)' }}>{tooltip}</Tooltip>}
       <Box>{value}</Box>
     </Flex>
   )
