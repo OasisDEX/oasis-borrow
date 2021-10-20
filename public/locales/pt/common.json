@@ -581,7 +581,7 @@
       "confirm-manage": "Confirme as alterações no Cofre",
       "review-manage": "Revisar mudanças no cofre",
       "multiply-transition": "Multiply your exposure on {{token}} in your vault",
-      "go-to-multiply": "Great, now you will go the new Mutiply interface"
+      "go-to-multiply": "Great, now you will go to the new Multiply interface"
     },
     "subtext": {
       "collateral": "Deposite ou retire do seu cofre. Economize gás ao combinar as transações.",
