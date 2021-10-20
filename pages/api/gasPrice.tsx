@@ -31,9 +31,13 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
         })
       })
       .catch((error) => {
-        res.status(error.response.status)
+        console.log(error)
+        res.status(200)
         res.json({
-          error: error.message
+          time: cache.get('time'),
+          fromCache: false,
+          maxPriorityFeePerGas: 0,
+          maxFeePerGas: 0,
         })
       })
   } else {
