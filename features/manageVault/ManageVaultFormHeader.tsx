@@ -115,7 +115,7 @@ export function ManageVaultFormHeader(props: ManageVaultState) {
                 ? t('vault-form.header.multiply-transition', {
                     token: props.vault.token.toUpperCase(),
                   })
-                : t('vault-form.header.modified.go-to-multiply')}
+                : t('vault-form.header.go-to-multiply')}
             </Text>
           </WithVaultFormStepIndicator>
           <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
