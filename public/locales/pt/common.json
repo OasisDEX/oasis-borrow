@@ -579,7 +579,9 @@
       "confirm-in-progress": "Cofre sendo criado",
       "modified": "Cofre sendo modificado",
       "confirm-manage": "Confirme as alterações no Cofre",
-      "review-manage": "Revisar mudanças no cofre"
+      "review-manage": "Revisar mudanças no cofre",
+      "multiply-transition": "Multiply your exposure on {{token}} in your vault",
+      "go-to-multiply": "Great, now you will go the new Mutiply interface"
     },
     "subtext": {
       "collateral": "Deposite ou retire do seu cofre. Economize gás ao combinar as transações.",

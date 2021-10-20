@@ -544,7 +544,8 @@
       "modified": "El Vault está siendo modificado",
       "confirm-manage": "Confirma cambios al Vault",
       "review-manage": "Revisar cambios del Vault",
-      "multiply-transition": "Multiply your exposure on {{token}} in your vault"
+      "multiply-transition": "Multiply your exposure on {{token}} in your vault",
+      "go-to-multiply": "Great, now you will go the new Mutiply interface"
     },
     "subtext": {
       "collateral": "Deposita o retira de tu Vault. Ahorra gas combinando transacciones.",
