@@ -576,7 +576,7 @@
       "confirm-manage": "Confirm vault changes",
       "review-manage": "Review vault changes",
       "multiply-transition": "Multiply your exposure on {{token}} in your vault",
-      "go-to-multiply": "Great, now you will go the new Mutiply interface"
+      "go-to-multiply": "Great, now you will go to the new Multiply interface"
     },
     "subtext": {
       "collateral": "Deposit or withdraw from your Vault. Save gas by combining transactions.",
