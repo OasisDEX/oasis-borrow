@@ -3,7 +3,10 @@ import { CloseVaultTo } from 'features/manageMultiplyVault/manageMultiplyVault'
 import * as mixpanelBrowser from 'mixpanel-browser'
 import getConfig from 'next/config'
 
-export type MixpanelDevelopmentType = { track: (eventType: string, payload: any) => void }
+export type MixpanelDevelopmentType = {
+  track: (eventType: string, payload: any) => void
+  get_distinct_id: () => string
+}
 
 export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevelopmentType {
   const env = getConfig()?.publicRuntimeConfig.mixpanelEnv || process.env.MIXPANEL_ENV
@@ -13,6 +16,7 @@ export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevel
       track: function (eventType: string, payload: any) {
         console.info('Mixpanel Event: ', eventType, payload)
       },
+      get_distinct_id: () => 'test_id',
     }
   }
 
@@ -42,6 +46,8 @@ export enum Pages {
 }
 
 function mixpanelInternalAPI(eventName: string, eventBody: { [key: string]: any }) {
+  const distinctId = mixpanel.get_distinct_id()
+
   // eslint-disable-next-line
   fetch('/api/t', {
     method: 'POST',
@@ -52,6 +58,7 @@ function mixpanelInternalAPI(eventName: string, eventBody: { [key: string]: any 
     body: JSON.stringify({
       eventName,
       eventBody,
+      distinctId,
     }),
   })
 }

@@ -53,11 +53,6 @@ const oasisBaseTheme = {
     onWarning: '#D8762D',
     lavender: '#787A9B',
     lavender_o25: '#787a9b40',
-    networks: {
-      mainnet: 'rgb(41, 182, 175)',
-      kovan: 'rgb(112, 87, 255)',
-      default: '#aaa',
-    },
     banner: {
       warning: '#FF6A16',
       danger: '#FE4343',

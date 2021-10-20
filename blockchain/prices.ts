@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { Context, every10Seconds$ } from 'blockchain/network'
 import { zero } from 'helpers/zero'
+import { isEqual } from 'lodash'
 import { bindNodeCallback, combineLatest, forkJoin, iif, Observable, of } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import {
@@ -10,6 +11,7 @@ import {
   map,
   shareReplay,
   switchMap,
+  tap,
 } from 'rxjs/operators'
 
 import { getToken } from '../blockchain/tokensMetadata'
@@ -18,16 +20,64 @@ export interface Ticker {
   [label: string]: BigNumber
 }
 
-export type GasPrice$ = Observable<BigNumber>
+export type GasPriceParams = {
+  maxFeePerGas: BigNumber
+  maxPriorityFeePerGas: BigNumber
+}
+
+export type GasPrice$ = Observable<GasPriceParams>
 
 export function createGasPrice$(
   onEveryBlock$: Observable<number>,
   context$: Observable<Context>,
 ): GasPrice$ {
-  return combineLatest(onEveryBlock$, context$).pipe(
-    switchMap(([, { web3 }]) => bindNodeCallback(web3.eth.getGasPrice)()),
-    map((x) => new BigNumber(x)),
-    distinctUntilChanged((x: BigNumber, y: BigNumber) => x.eq(y)),
+  const minersTip = new BigNumber(5000000000)
+
+  const blockNativeRequest$ = ajax({
+    url: `${window.location.origin}/api/gasPrice`,
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+  }).pipe(
+    tap((response) => {
+      if (response.status !== 200) throw new Error(response.responseText)
+      return response
+    }),
+    map(({ response }) => {
+      const maxFeePerGas = new BigNumber(response.maxFeePerGas)
+      const maxPriorityFeePerGas = new BigNumber(response.maxPriorityFeePerGas)
+      return {
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+      } as GasPriceParams
+    }),
+  )
+
+  return combineLatest(onEveryBlock$, context$, blockNativeRequest$).pipe(
+    switchMap(([, { web3 }]) =>
+      combineLatest(context$, bindNodeCallback(web3.eth.getBlockNumber)()),
+    ),
+    switchMap(([{ web3 }, blockNumber]) => {
+      return combineLatest(blockNativeRequest$, bindNodeCallback(web3.eth.getBlock)(blockNumber))
+    }),
+    map(
+      ([blockNativeResp, block]): GasPriceParams => {
+        const blockNative = blockNativeResp as GasPriceParams
+        const gasFees = {
+          maxFeePerGas: new BigNumber((block as any).baseFeePerGas).multipliedBy(2).plus(minersTip),
+          maxPriorityFeePerGas: minersTip,
+        } as GasPriceParams
+        if (blockNative.maxFeePerGas.gt(0)) {
+          gasFees.maxFeePerGas = new BigNumber(1000000000).multipliedBy(blockNative.maxFeePerGas)
+          gasFees.maxPriorityFeePerGas = new BigNumber(1000000000).multipliedBy(
+            blockNative.maxPriorityFeePerGas,
+          )
+        }
+        return gasFees
+      },
+    ),
+    distinctUntilChanged(isEqual),
     shareReplay(1),
   )
 }
@@ -107,8 +157,8 @@ export function createOraclePriceData$(
   token: string,
 ): Observable<OraclePriceData> {
   return context$.pipe(
-    switchMap(({ web3, mcdOsms }) =>
-      bindNodeCallback(web3.eth.getCode)(mcdOsms[token].address).pipe(
+    switchMap(({ web3, mcdOsms }) => {
+      return bindNodeCallback(web3.eth.getCode)(mcdOsms[token].address).pipe(
         first(),
         switchMap((contractData) =>
           iif(
@@ -145,8 +195,8 @@ export function createOraclePriceData$(
             }),
           ),
         ),
-      ),
-    ),
+      )
+    }),
     shareReplay(1),
   )
 }
