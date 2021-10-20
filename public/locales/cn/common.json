@@ -573,7 +573,9 @@
       "confirm-in-progress": "已开启金库",
       "modified": "已修改金库",
       "confirm-manage": "确认修改金库",
-      "review-manage": "审查金库的修改"
+      "review-manage": "审查金库的修改",
+      "multiply-transition": "Multiply your exposure on {{token}} in your vault",
+      "go-to-multiply": "Great, now you will go the new Mutiply interface"
     },
     "subtext": {
       "collateral": "在你的金库存款或提款。通过合并交易来节省手续费。",
