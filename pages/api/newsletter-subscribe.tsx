@@ -68,6 +68,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
     return res.status(500).json({ error: 'unknown' })
   } catch (error) {
+    // @ts-ignore
     return res.status(500).json({ error: error.message || error.toString() })
   }
 }
