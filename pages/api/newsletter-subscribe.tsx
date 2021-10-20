@@ -64,8 +64,8 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       error: 'unknown',
     })
   } catch (error) {
-    // @ts-ignore
     return res.status(500).json({
+      // @ts-ignore
       error: error.message || error.toString(),
       api: process.env.MAILCHIMP_API_KEY,
       endpoint: process.env.MAILCHIMP_ENDPOINT,
