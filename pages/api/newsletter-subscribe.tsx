@@ -7,13 +7,7 @@ const AUTHORIZATION_HEADER = `Basic ${Buffer.from(
 
 const SUBSCRIBERS_ENDPOINT = `${process.env.MAILCHIMP_ENDPOINT}/members`
 
-type UserStatus =
-  | 'pending'
-  | 'subscribed'
-  | 'unsubscribed'
-  | 'cleaned'
-  | 'pending'
-  | 'transactional'
+type UserStatus = 'pending' | 'subscribed' | 'unsubscribed' | 'cleaned' | 'transactional'
 
 // change to pending if there is need for opt-in confirm email
 // change to subscribed if there is no need for opt-in
@@ -68,12 +62,13 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
     return res.status(500).json({
       error: 'unknown',
-      response,
-      api: process.env.MAILCHIMP_API_KEY,
-      endpoint: process.env.MAILCHIMP_ENDPOINT,
     })
   } catch (error) {
     // @ts-ignore
-    return res.status(500).json({ error: error.message || error.toString() })
+    return res.status(500).json({
+      error: error.message || error.toString(),
+      api: process.env.MAILCHIMP_API_KEY,
+      endpoint: process.env.MAILCHIMP_ENDPOINT,
+    })
   }
 }
