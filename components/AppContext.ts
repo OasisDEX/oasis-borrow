@@ -93,6 +93,7 @@ import {
   createInitializedAccount$,
   createOnEveryBlock$,
   createWeb3ContextConnected$,
+  every3Seconds$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
@@ -199,7 +200,7 @@ export function setupAppContext() {
     connectedContext$,
   )
 
-  const gasPrice$ = createGasPrice$(onEveryBlock$, context$)
+  const gasPrice$ = createGasPrice$(every3Seconds$, context$)
 
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
