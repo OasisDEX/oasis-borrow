@@ -84,9 +84,9 @@ export function CustomMDXLink(props: AppLinkProps) {
   return <AppLink {...props} />
 }
 
-export function AppLinkWithArrow({ href, children }: AppLinkProps & WithChildren) {
+export function AppLinkWithArrow({ href, sx, children }: AppLinkProps & WithChildren) {
   return (
-    <AppLink href={href} sx={{ display: 'flex', alignItems: 'center', color: 'primary' }}>
+    <AppLink href={href} sx={{ display: 'flex', alignItems: 'center', color: 'primary', ...sx }}>
       <Text mr={1}>{children}</Text>
       <Icon name="arrow_right" size="auto" width="14px" />
     </AppLink>

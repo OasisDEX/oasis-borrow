@@ -8,7 +8,7 @@ const HAVE_SOME_QUESTIONS_ITEMS = [
     translationKey: 'learn',
     backgroundImage: 'learn',
     backgroundGradient:
-      'radial-gradient(209.93% 294.65% at 2.92% 94.16%, #FFDDF1 0%, #EEF0FF 47.4%, #DDFFF7 100%)',
+      'radial-gradient(108.93% 164.65% at 2.92% 94.16%,#FFDDF1 0%,#EEF0FF 47.4%,#DDFFF7 100%)',
     gradient: '',
     links: [
       {
@@ -29,7 +29,7 @@ const HAVE_SOME_QUESTIONS_ITEMS = [
     translationKey: 'support',
     backgroundImage: 'support',
     backgroundGradient:
-      'radial-gradient(199.72% 231.11% at 11.11% 22.22%, #FFFADD 0%, #E9FFEB 23.96%, #FADDFF 100%)',
+      'radial-gradient(139.72% 401.11% at 11.11% -167.78%,#FFFADD 34%,#E9FFEB 56.96%,#FADDFF 90%)',
     links: [
       {
         href: ROUTES.SUPPORT,
@@ -92,9 +92,9 @@ function HaveSomeQuestionCard({
         <Text sx={{ mb: 4, color: 'text.subtitle', minHeight: '3em' }}>
           {t(`landing.have-some-questions.${translationKey}.subtitle`)}
         </Text>
-        <Grid sx={{ color: 'primary', fontSize: 3, mb: 5 }}>
+        <Grid gap={2} sx={{ color: 'primary', fontSize: 3, mb: 5 }}>
           {links.map(({ href, labelKey }) => (
-            <AppLinkWithArrow key={href} href={href}>
+            <AppLinkWithArrow key={href} href={href} sx={{ pb: 1 }}>
               {t(`landing.have-some-questions.${translationKey}.links.${labelKey}`)}
             </AppLinkWithArrow>
           ))}
