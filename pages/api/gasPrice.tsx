@@ -2,6 +2,7 @@ import axios from 'axios'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 const NodeCache = require('node-cache')
+const uuid = Math.random();
 const cache = new NodeCache({ stdTTL: 9 })
 
 export default async function (_req: NextApiRequest, res: NextApiResponse) {
@@ -25,6 +26,7 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
         cache.set('estimatedPriceFor95PercentConfidence', estimatedPriceFor95PercentConfidence)
         res.status(200)
         res.json({
+          uuid,
           time: cache.get('time'),
           fromCache: false,
           maxPriorityFeePerGas: estimatedPriceFor95PercentConfidence.maxPriorityFeePerGas,
@@ -35,15 +37,18 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
         console.log(error)
         res.status(200)
         res.json({
+          uuid,
           time: cache.get('time'),
           fromCache: false,
           maxPriorityFeePerGas: 0,
           maxFeePerGas: 0,
+          error,
         })
       })
   } else {
     const estimatedPriceFor95PercentConfidence = cache.get('estimatedPriceFor95PercentConfidence')
     res.json({
+      uuid,
       time: time,
       fromCache: true,
       maxPriorityFeePerGas: estimatedPriceFor95PercentConfidence.maxPriorityFeePerGas,
