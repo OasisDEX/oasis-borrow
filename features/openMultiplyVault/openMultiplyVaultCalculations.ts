@@ -1,12 +1,7 @@
 import { getMultiplyParams } from '@oasisdex/multiply'
 import { BigNumber } from 'bignumber.js'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
-import {
-  calculateParamsIncreaseMP,
-  getMaxPossibleCollRatioOrMax,
-  LOAN_FEE,
-  OAZO_FEE,
-} from 'helpers/multiply/calculations'
+import { getMaxPossibleCollRatioOrMax, LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 
 import { OpenMultiplyVaultState } from './openMultiplyVault'
@@ -129,7 +124,7 @@ export function applyOpenMultiplyVaultCalculations(
 
   const requiredCollRatioSafe = requiredCollRatio || maxCollRatio
 
-  const { debtDelta: borrowedDaiAmount, collateralDelta: buyingCollateral, loanFee, oazoFee, skipFL } =
+  const { debtDelta: borrowedDaiAmount, collateralDelta: buyingCollateral, loanFee, oazoFee } =
     depositAmount && marketPriceMaxSlippage && requiredCollRatioSafe && marketPrice
       ? getMultiplyParams(
           // Market params
@@ -155,7 +150,7 @@ export function applyOpenMultiplyVaultCalculations(
             withdrawColl: zero,
           },
         )
-      : { debtDelta: zero, collateralDelta: zero, loanFee: zero, oazoFee: zero, skipFL: false }
+      : { debtDelta: zero, collateralDelta: zero, loanFee: zero, oazoFee: zero }
 
   const afterOutstandingDebt = borrowedDaiAmount.times(one.plus(LOAN_FEE))
 
@@ -209,18 +204,32 @@ export function applyOpenMultiplyVaultCalculations(
       ? calculatePriceImpact(quote.tokenPrice, marketPrice)
       : zero
 
-  const [afterBuyingPowerUSD, afterBuyingPower] = marketPrice
-    ? calculateParamsIncreaseMP(
-        oraclePrice,
-        marketPrice,
-        OAZO_FEE,
-        LOAN_FEE,
-        depositAmount,
-        zero,
-        liquidationRatio,
-        state.slippage,
+  const { debtDelta: afterBuyingPowerUSD, collateralDelta: afterBuyingPower } = marketPrice
+    ? getMultiplyParams(
+        // Market params
+        {
+          oraclePrice,
+          marketPrice,
+          OF: OAZO_FEE,
+          FF: LOAN_FEE,
+          slippage: state.slippage,
+        },
+        // Vault info
+        {
+          currentDebt: zero,
+          currentCollateral: zero,
+          minCollRatio: zero,
+        },
+        // Desired CDP state
+        {
+          requiredCollRatio: liquidationRatio,
+          providedCollateral: depositAmount,
+          providedDai: zero,
+          withdrawDai: zero,
+          withdrawColl: zero,
+        },
       )
-    : [zero, zero]
+    : { debtDelta: zero, collateralDelta: zero }
 
   const daiYieldFromDepositingCollateral = totalExposure
     ? totalExposure.times(currentCollateralPrice).div(liquidationRatio)

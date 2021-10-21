@@ -1,3 +1,4 @@
+import { getMultiplyParams } from '@oasisdex/multiply'
 import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
@@ -8,7 +9,6 @@ import {
   calculateCloseToCollateralParams,
   calculateCloseToDaiParams,
   CloseToParams,
-  getMultiplyParams,
   LOAN_FEE,
   OAZO_FEE,
 } from 'helpers/multiply/calculations'
@@ -421,18 +421,28 @@ export function getVaultChange({
 }) {
   if (requiredCollRatio) {
     return getMultiplyParams(
-      currentCollateralPrice,
-      marketPrice,
-      slippage,
-      debt,
-      lockedCollateral,
-      requiredCollRatio,
-      depositAmount,
-      paybackAmount,
-      generateAmount,
-      withdrawAmount,
-      FF,
-      OF,
+      // market params
+      {
+        oraclePrice: currentCollateralPrice,
+        marketPrice,
+        OF,
+        FF,
+        slippage,
+      },
+      // vault info
+      {
+        currentDebt: debt,
+        currentCollateral: lockedCollateral,
+        minCollRatio: requiredCollRatio,
+      },
+      // desired cdp state
+      {
+        requiredCollRatio: requiredCollRatio,
+        providedCollateral: depositAmount,
+        providedDai: paybackAmount,
+        withdrawDai: generateAmount,
+        withdrawColl: withdrawAmount,
+      },
     )
   } else {
     return {
