@@ -106,7 +106,6 @@ export const tokenPricesInUSD$: Observable<Ticker> = every10Seconds$.pipe(
             }
           }),
           catchError((error) => {
-            console.debug(`Error fetching price data: ${error}`)
             return of({})
           }),
         ),

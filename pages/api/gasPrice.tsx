@@ -2,7 +2,7 @@ import axios from 'axios'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 const NodeCache = require('node-cache')
-const uuid = Math.random()
+const uuid = Math.floor(1000000*Math.random());
 const cache = new NodeCache({ stdTTL: 9 })
 
 export default async function (_req: NextApiRequest, res: NextApiResponse) {
@@ -26,6 +26,7 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
         cache.set('estimatedPriceFor95PercentConfidence', estimatedPriceFor95PercentConfidence)
         res.status(200)
         res.json({
+          remove_this:process.env.BLOCKNATIVE_API_KEY,
           uuid,
           time: cache.get('time'),
           fromCache: false,
@@ -34,9 +35,9 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
         })
       })
       .catch((error) => {
-        console.log(error)
         res.status(200)
         res.json({
+          remove_this:process.env.BLOCKNATIVE_API_KEY,
           uuid,
           time: cache.get('time'),
           fromCache: false,
@@ -48,6 +49,7 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
   } else {
     const estimatedPriceFor95PercentConfidence = cache.get('estimatedPriceFor95PercentConfidence')
     res.json({
+      remove_this:process.env.BLOCKNATIVE_API_KEY,
       uuid,
       time: time,
       fromCache: true,
