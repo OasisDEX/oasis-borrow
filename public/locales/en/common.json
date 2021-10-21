@@ -195,6 +195,27 @@
       "headline": "Borrow Dai and Multiply your exposure to crypto",
       "subheader": "Open a Maker Vault, deposit 25+ crypto collaterals. Either borrow Dai or buy additional collateral to increase your exposure.<0/> Connect a wallet to start."
     },
+    "how-it-works": {
+      "title": "How it works",
+      "items": {
+        "connect-wallet": {
+          "title": "Connect a wallet",
+          "description": "We support the main wallets (Metamask, Ledger, Trezor, Coinbase Wallet etc.)"
+        },
+        "deposit-assets": {
+          "title": "Deposit your assets",
+          "description": "Transfer your assets to be used as collaterals on Oasis in an easy and secure way"
+        },
+        "generate-dai": {
+          "title": "Generate Dai",
+          "description": "Select the amount of Dai you want to generate and open your vault. Use this Dai any way you want. <0>See use case -></0>"
+        },
+        "manage-vault": {
+          "title": "Manage your vault",
+          "description": "Payback your debt to unlock your collateral, or generate more Dai when the price has moved. <0>How to manage -></0>"
+        }
+      }
+    },
     "cards": {
       "dai": {
         "title": "Dai Wallet",
