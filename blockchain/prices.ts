@@ -36,7 +36,6 @@ export function createGasPrice$(
   const blockNativeRequest$ = ajax({
     url: `${window.location.origin}/api/gasPrice`,
     method: 'GET',
-    timeout: 1000,
     headers: {
       Accept: 'application/json',
     },

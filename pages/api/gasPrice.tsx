@@ -9,6 +9,7 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
   if (!time) {
     axios({
       method: 'get',
+      timeout:1000,
       url: 'https://api.blocknative.com/gasprices/blockprices',
       responseType: 'json',
       headers: {
