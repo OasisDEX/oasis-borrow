@@ -181,7 +181,7 @@ export function HowItWorksSection() {
   )
 
   return (
-    <Box py={6}>
+    <Box pt={6} pb={5}>
       <Grid
         columns={[1, 2, 'minmax(275px, 1fr) minmax(1fr, 576px)']}
         sx={{ alignItems: 'flex-start' }}

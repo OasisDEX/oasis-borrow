@@ -1,9 +1,15 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { WithChildren } from 'helpers/types'
+import getConfig from 'next/config'
 import { LinkProps } from 'next/dist/client/link'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React from 'react'
-import { Link as ThemeLink, SxStyleProp } from 'theme-ui'
+import { Link as ThemeLink, SxStyleProp, Text } from 'theme-ui'
+
+const {
+  publicRuntimeConfig: { apiHost },
+} = getConfig()
 
 export interface AppLinkProps extends WithChildren, LinkProps {
   disabled?: boolean
@@ -76,4 +82,20 @@ function InternalLink({
 
 export function CustomMDXLink(props: AppLinkProps) {
   return <AppLink {...props} />
+}
+
+export function AppLinkWithArrow({ href, children }: AppLinkProps & WithChildren) {
+  return (
+    <AppLink href={href} sx={{ display: 'flex', alignItems: 'center', color: 'primary' }}>
+      <Text mr={1}>{children}</Text>
+      <Icon name="arrow_right" size="auto" width="14px" />
+    </AppLink>
+  )
+}
+
+export const ROUTES = {
+  CONTACT: `${apiHost}/daiwallet/contact`,
+  SUPPORT: '/support',
+  TWITTER: 'https://twitter.com/oasisdotapp',
+  DISCORD: 'https://discord.gg/Kc2bBB59GC',
 }

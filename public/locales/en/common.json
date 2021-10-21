@@ -216,14 +216,26 @@
         }
       }
     },
-    "cards": {
-      "dai": {
-        "title": "Dai Wallet",
-        "description": "Buy, send and manage Dai all in one place. Grow your Dai, access plenty of providers"
+    "have-some-questions": {
+      "title": "Have some questions?",
+      "learn": {
+        "title": "Learn",
+        "subtitle": "Deep dive into oasis.app functionalities and glossary",
+        "links": {
+          "get-started": "Get started",
+          "tutorials": "Tutorials",
+          "key-concepts": "Key concepts"
+        }
       },
-      "faq": {
-        "title": "Have a question?",
-        "description": "Learn more about Oasis, Dai and DeFi at our FAQ’s page"
+      "support": {
+        "title": "Support",
+        "subtitle": "Contact Oasis.app team whenever you need",
+        "links": {
+          "faq": "FAQ",
+          "discord": "Discord",
+          "contact-us": "Contact us",
+          "twitter": "Twitter"
+        }
       }
     }
   },
