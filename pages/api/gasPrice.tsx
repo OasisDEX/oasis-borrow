@@ -2,7 +2,7 @@ import axios from 'axios'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 const NodeCache = require('node-cache')
-const uuid = Math.random();
+const uuid = Math.random()
 const cache = new NodeCache({ stdTTL: 9 })
 
 export default async function (_req: NextApiRequest, res: NextApiResponse) {
@@ -10,7 +10,7 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
   if (!time) {
     axios({
       method: 'get',
-      timeout:1000,
+      timeout: 1000,
       url: 'https://api.blocknative.com/gasprices/blockprices',
       responseType: 'json',
       headers: {
