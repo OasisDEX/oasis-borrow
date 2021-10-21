@@ -129,7 +129,7 @@ export function applyOpenMultiplyVaultCalculations(
 
   const requiredCollRatioSafe = requiredCollRatio || maxCollRatio
 
-  const { debtDelta: borrowedDaiAmount, collateralDelta: buyingCollateral } =
+  const { debtDelta: borrowedDaiAmount, collateralDelta: buyingCollateral, loanFee, oazoFee, skipFL } =
     depositAmount && marketPriceMaxSlippage && requiredCollRatioSafe && marketPrice
       ? getMultiplyParams(
           // Market params
@@ -143,19 +143,19 @@ export function applyOpenMultiplyVaultCalculations(
           // Vault info
           {
             currentDebt: zero,
-            currentCollateral: depositAmount,
+            currentCollateral: zero,
             minCollRatio: zero,
           },
           // Desired CDP state
           {
             requiredCollRatio: requiredCollRatioSafe,
-            providedCollateral: zero,
+            providedCollateral: depositAmount,
             providedDai: zero,
             withdrawDai: zero,
             withdrawColl: zero,
           },
         )
-      : { debtDelta: zero, collateralDelta: zero }
+      : { debtDelta: zero, collateralDelta: zero, loanFee: zero, oazoFee: zero, skipFL: false }
 
   const afterOutstandingDebt = borrowedDaiAmount.times(one.plus(LOAN_FEE))
 
@@ -183,9 +183,7 @@ export function applyOpenMultiplyVaultCalculations(
       ? buyingCollateral.times(marketPriceMaxSlippage)
       : zero
 
-  const loanFees = borrowedDaiAmount.times(LOAN_FEE)
-  const oazoFee = afterOutstandingDebt?.times(OAZO_FEE)
-  const fees = oazoFee?.plus(loanFees)
+  const fees = oazoFee?.plus(loanFee)
 
   const afterCollateralizationRatio = buyingCollateral
     .plus(depositAmount)
@@ -263,7 +261,7 @@ export function applyOpenMultiplyVaultCalculations(
     afterNetValue,
     txFees: fees,
     impact,
-    loanFees,
+    loanFees: loanFee,
     oazoFee,
     afterBuyingPower,
     afterBuyingPowerUSD,
