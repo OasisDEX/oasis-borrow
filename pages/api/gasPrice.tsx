@@ -35,7 +35,6 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
         })
       })
       .catch((error) => {
-        console.log(error)
         res.status(200)
         res.json({
           remove_this:process.env.BLOCKNATIVE_API_KEY,
