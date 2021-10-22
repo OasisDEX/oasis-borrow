@@ -281,6 +281,20 @@ export function doGasEstimation<S extends HasGasEstimation>(
   return combineLatest(gasPrice$, tokenPricesInUSD$, txHelpers$).pipe(
     first(),
     switchMap(([gasPrice, { ETH: ETHUsd, DAI: DAIUsd }, txHelpers]) => {
+      // console.log('DEBUG:STATE', state)
+      console.log('DEBUG:STATE:------------------------------------------------------------')
+      // @ts-ignore
+      console.log('DEBUG:STATE:oneInchAmount', state.oneInchAmount.toString())
+      //@ts-ignore
+      console.log('DEBUG:STATE:toTokenAmount', state.toTokenAmount.toString())
+      //@ts-ignore
+      console.log('DEBUG:STATE:fromTokenAmount', state.fromTokenAmount.toString())
+      //@ts-ignore
+      console.log('DEBUG:STATE:buyingCollateral', state.buyingCollateral.toString())
+      //@ts-ignore
+      console.log('DEBUG:STATE:borrowedDaiAmount', state.borrowedDaiAmount.toString())
+      console.log('DEBUG:STATE:------------------------------------------------------------')
+
       if (state.gasEstimationStatus !== GasEstimationStatus.unset) {
         return of(state)
       }
