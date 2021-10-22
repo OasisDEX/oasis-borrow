@@ -70,7 +70,7 @@ export const content: ContentTypeSupport = {
         },
 
         {
-          question: 'What is ‘Dai available’? Why can\'t I borrow more Dai?',
+          question: "What is ‘Dai available’? Why can't I borrow more Dai?",
           answer: `The Maker protocol sets an upper limit for for    borrowing against each Vault type: the Debt Ceiling. Dai available represents the maximum amount of Dai all Vault owners can generate against that Vault type until the Debt Ceiling is reached. This Debt Ceiling should not be confused with the Dai available to generate seen in your Vault page. That amount represents the maximum amount of Dai you can borrow based on your current Vault state. In case the Debt Ceiling is reached no more Dai can be generated unless the debt ceiling is lifted or someone payback their debt. The Maker protocol updates the debt ceiling regularly but if you can’t generate more Dai because the Debt Ceiling has been reached please check back in a few hours.`,
         },
 
