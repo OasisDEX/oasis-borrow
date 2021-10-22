@@ -7,6 +7,12 @@ export const TRANSITIONS = {
   global: '150ms cubic-bezier(0.215,0.61,0.355,1)',
 }
 
+// Gradients can't be used as bg prop and have to be used with background in sx as ThemeUI maps bg to backgroundColor
+// which is not proper CSS property to apply gradient to
+export const GRADIENTS = {
+  howItWorksBullet: 'linear-gradient(137.02deg, #2A30EE 0%, #A4A6FF 99.12%)',
+}
+
 const oasisBaseTheme = {
   useBorderBox: true,
   useBodyStyles: true,
