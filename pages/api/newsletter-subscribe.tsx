@@ -54,7 +54,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       // Might happen eg. if user who was permanently deleted (not archived) tries to resubscribe
       if (response.status !== INITIAL_USER_STATUS) {
         console.error(response)
-        return res.status(500).json({ error: 'unknown' })
+        return res.status(500).json({ error: 'unknown', response })
       }
 
       return res.status(200).json({})
@@ -62,13 +62,10 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
     return res.status(500).json({
       error: 'unknown',
+      response,
     })
   } catch (error) {
-    return res.status(500).json({
-      // @ts-ignore
-      error: error.message || error.toString(),
-      api: process.env.MAILCHIMP_API_KEY,
-      endpoint: process.env.MAILCHIMP_ENDPOINT,
-    })
+    // @ts-ignore
+    return res.status(500).json({ error: error.message || error.toString() })
   }
 }

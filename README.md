@@ -145,6 +145,10 @@ at _run time_
 - `USER_JWT_SECRET` - Could be any value different from `CHALLENGE_JWT_SECRET`. This is used when
   the user signs the Terms of Service.
 
+- `MAILCHIMP_ENDPOINT` - Mailchimp endpoint with audience ID used to integrate Mailchimp newsletter.
+
+- `MAILCHIMP_API_KEY` - Mailchimp API Key used to integrate Mailchimp newsletter.
+
 _Note: Make sure that you call the process that build the project with the `build-time` vars and
 make sure that you call the proces that runs the application with the `run-time` vars._
 
@@ -163,7 +167,8 @@ Current we have two containers:
 
 - `postgres-oasis-borrow` - This container contains Postgre database
 
-- `multiply-proxy-actions` - This container contains all contracts related to multiply functionality deployed to a hardhat instance
+- `multiply-proxy-actions` - This container contains all contracts related to multiply functionality
+  deployed to a hardhat instance
 
 #### Docker Containers Usage
 
@@ -180,29 +185,37 @@ cd ./scripts
 docker-compose up
 ```
 
-By executing one of the following commands you will run both containers at the same time. The process won't exit so you will be able to see the output in real time.
+By executing one of the following commands you will run both containers at the same time. The
+process won't exit so you will be able to see the output in real time.
 
 #### Docker Containers Configuration
 
-If you open `docker-compose.yml` file under the `./scripts` folder, you will see that there are some environmental variables. 
-For the Postgres container, you won't have the need to change them that often. Also the names are pretty explanatory 
+If you open `docker-compose.yml` file under the `./scripts` folder, you will see that there are some
+environmental variables. For the Postgres container, you won't have the need to change them that
+often. Also the names are pretty explanatory
 
 The configuration params for `multiply-proxy-actions` container are as follows:
 
 - `ALCHEMY_NODE` - The node that is used to read/sync data from the blockchain.
 - `ETHERSCAN_API` - Etherscan API Key that is used to get information for a transaction
 - `PRIV_KEY_MAINNET` - The private key of the first wallet address from the signer that is used
-- `TENDERLY_USERNAME` - This is the username in tenderly. It is advised to create your own registration and use your own username. Register [here](https://tenderly.co/).
-- `TENDERLY_PROJECT` - Once you have an account there is a default project - `project`. You can create other project names as well.
-- `USE_DUMMY` - By defailt this value is `0`. If it is set to `1` then instead of the real 1inch Exchange implementation being used, you will use the DummyExchange implementation.
-- `BLOCK_NUMBER` - There is a hardcoded number currently used - `13008355`. If you want to fork from a different one, please use this parameter.
+- `TENDERLY_USERNAME` - This is the username in tenderly. It is advised to create your own
+  registration and use your own username. Register [here](https://tenderly.co/).
+- `TENDERLY_PROJECT` - Once you have an account there is a default project - `project`. You can
+  create other project names as well.
+- `USE_DUMMY` - By defailt this value is `0`. If it is set to `1` then instead of the real 1inch
+  Exchange implementation being used, you will use the DummyExchange implementation.
+- `BLOCK_NUMBER` - There is a hardcoded number currently used - `13008355`. If you want to fork from
+  a different one, please use this parameter.
 
 <br>
 
 ## Multiply feature
 
-We have added multiply functionality, where generated DAI is immediately used to swap for more collateral. This utilizes the multiply proxy actions smart contract. 
-The documentation for those contracts can be found [here](https://docs.google.com/document/d/1GpPEPrOnDLNHtCgyh5YInOyZUV4XGz-1EVRJK0y-GF4/edit).
+We have added multiply functionality, where generated DAI is immediately used to swap for more
+collateral. This utilizes the multiply proxy actions smart contract. The documentation for those
+contracts can be found
+[here](https://docs.google.com/document/d/1GpPEPrOnDLNHtCgyh5YInOyZUV4XGz-1EVRJK0y-GF4/edit).
 
 ## Contributing
 
