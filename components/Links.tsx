@@ -86,9 +86,20 @@ export function CustomMDXLink(props: AppLinkProps) {
 
 export function AppLinkWithArrow({ href, sx, children }: AppLinkProps & WithChildren) {
   return (
-    <AppLink href={href} sx={{ display: 'flex', alignItems: 'center', color: 'primary', ...sx }}>
+    <AppLink
+      href={href}
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        color: 'primary',
+        '&:hover svg': {
+          transform: 'translateX(8px)',
+        },
+        ...sx,
+      }}
+    >
       <Text mr={1}>{children}</Text>
-      <Icon name="arrow_right" size="auto" width="14px" />
+      <Icon name="arrow_right" size="auto" width="14px" sx={{ transition: '0.2s' }} />
     </AppLink>
   )
 }
