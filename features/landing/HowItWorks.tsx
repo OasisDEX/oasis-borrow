@@ -1,8 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
+import { useObservable } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useEffect, useRef, useState } from 'react'
-import { Box, Button, Flex, Grid, Heading, Image, Text } from 'theme-ui'
+import { Box, Button, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 
 const HOW_IT_WORKS_ITEMS = [
   {
@@ -31,14 +33,14 @@ const HOW_IT_WORKS_ITEMS = [
 
 function HowItWorksItemDescription({
   isActive,
-  i,
+  itemNumber,
   onClick,
   translationKey,
   components,
 }: {
   isActive: boolean
-  i: number
-  onClick?: (i: number) => void
+  itemNumber: number
+  onClick?: (itemNumber: number) => void
 } & typeof HOW_IT_WORKS_ITEMS[number]) {
   const { t } = useTranslation()
 
@@ -63,6 +65,7 @@ function HowItWorksItemDescription({
           fontWeight: 'semiBold',
           bg: '#EDEDFF',
           position: 'relative',
+          cursor: onClick ? 'pointer' : 'default',
           ...(isActive && {
             color: 'text.contrast',
           }),
@@ -84,8 +87,9 @@ function HowItWorksItemDescription({
             }),
           },
         }}
+        onClick={onClick ? () => onClick(itemNumber) : undefined}
       >
-        <Text sx={{ position: 'relative', zIndex: 2 }}>{i + 1}</Text>
+        <Text sx={{ position: 'relative', zIndex: 1 }}>{itemNumber + 1}</Text>
       </Flex>
       <Box sx={{ flex: 1, ml: 2, mt: 1 }}>
         <Text
@@ -98,7 +102,7 @@ function HowItWorksItemDescription({
               color: 'primary',
             }),
           }}
-          onClick={onClick ? () => onClick(i) : undefined}
+          onClick={onClick ? () => onClick(itemNumber) : undefined}
         >
           {t(`landing.how-it-works.items.${translationKey}.title`)}
         </Text>
@@ -115,18 +119,22 @@ function HowItWorksItemDescription({
   )
 }
 
-function ButtonConnectWallet() {
+function ButtonConnectWallet({ sx }: { sx?: SxStyleProp }) {
+  const { context$ } = useAppContext()
+  const context = useObservable(context$)
   const { t } = useTranslation()
 
-  return (
-    <AppLink href="/connect">
-      <Button sx={{ fontWeight: 'semiBold', px: 4, width: ['100%', 'auto'] }}>
-        <Flex sx={{ alignItems: 'center', justifyContent: ['center', 'flex-start'] }}>
-          <Text>{t('connect-wallet-button')}</Text>
-          <Icon sx={{ ml: 1 }} name="arrow_right" />
-        </Flex>
-      </Button>
-    </AppLink>
+  return context?.status === 'connected' ? null : (
+    <Box sx={sx}>
+      <AppLink href="/connect">
+        <Button sx={{ fontWeight: 'semiBold', px: 4, width: ['100%', 'auto'] }}>
+          <Flex sx={{ alignItems: 'center', justifyContent: ['center', 'flex-start'] }}>
+            <Text>{t('connect-wallet-button')}</Text>
+            <Icon sx={{ ml: 1 }} name="arrow_right" />
+          </Flex>
+        </Button>
+      </AppLink>
+    </Box>
   )
 }
 
@@ -156,8 +164,8 @@ export function HowItWorksSection() {
     }
   }
 
-  function handleScrollTo(i: number) {
-    const howItWorksItem = document.getElementById(`how-it-works-${i}`)
+  function handleScrollTo(itemNumber: number) {
+    const howItWorksItem = document.getElementById(`how-it-works-${itemNumber}`)
 
     if (howItWorksItem) {
       const top = howItWorksItem.offsetTop - 32
@@ -207,7 +215,7 @@ export function HowItWorksSection() {
                   key={i}
                   {...{
                     isActive: i + 1 === activeStep,
-                    i,
+                    itemNumber: i,
                     translationKey,
                     components,
                     onClick: handleScrollTo,
@@ -216,9 +224,7 @@ export function HowItWorksSection() {
               ))}
             </Grid>
           </Box>
-          <Box sx={{ display: ['none', 'block'], mt: 3 }}>
-            <ButtonConnectWallet />
-          </Box>
+          <ButtonConnectWallet sx={{ display: ['none', 'block'], mt: 3 }} />
         </Grid>
         <Grid gap={[5, 6]} ref={cardsRef} pt={5} sx={{ flex: 1 }}>
           {HOW_IT_WORKS_ITEMS.map(({ translationKey, components }, i) => (
@@ -257,11 +263,13 @@ export function HowItWorksSection() {
                 </Box>
               </Box>
               <Box sx={{ display: ['block', 'none'], maxWidth: '476px', mx: 'auto', py: 4 }}>
-                <HowItWorksItemDescription {...{ isActive: true, i, translationKey, components }} />
+                <HowItWorksItemDescription
+                  {...{ isActive: true, itemNumber: i, translationKey, components }}
+                />
               </Box>
             </Box>
           ))}
-          <Box
+          <ButtonConnectWallet
             sx={{
               display: ['block', 'none'],
               mt: 0,
@@ -269,9 +277,7 @@ export function HowItWorksSection() {
               width: '100%',
               mx: 'auto',
             }}
-          >
-            <ButtonConnectWallet />
-          </Box>
+          />
         </Grid>
       </Grid>
     </Box>
