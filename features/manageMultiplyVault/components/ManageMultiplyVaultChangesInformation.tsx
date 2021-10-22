@@ -171,10 +171,12 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
       />
       {showFees && (
         <Grid pl={3} gap={2}>
-          <VaultChangesInformationItem
-            label={'3rd party protocol fees'}
-            value={`$${formatAmount(loanFee, 'USD')}`}
-          />
+          {loanFee.gt(zero) && (
+            <VaultChangesInformationItem
+              label={'3rd party protocol fees'}
+              value={`$${formatAmount(loanFee, 'USD')}`}
+            />
+          )}
           <VaultChangesInformationItem
             label={'Oasis fee'}
             value={`$${formatAmount(oazoFee, 'USD')}`}
