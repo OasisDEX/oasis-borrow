@@ -19,7 +19,7 @@ import { Box, Button, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'them
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
-import { HaveSomeQuestionsSection } from './HaveSomeQuestionts'
+import { HaveSomeQuestionsSection } from './HaveSomeQuestions'
 import { HowItWorksSection } from './HowItWorks'
 import { TypeformWidget } from './TypeformWidget'
 

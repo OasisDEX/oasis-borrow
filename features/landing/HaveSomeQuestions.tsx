@@ -1,14 +1,14 @@
 import { AppLinkWithArrow, ROUTES } from 'components/Links'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { GRADIENTS } from 'theme'
 import { Box, Card, Grid, Heading, Text } from 'theme-ui'
 
 const HAVE_SOME_QUESTIONS_ITEMS = [
   {
     translationKey: 'learn',
     backgroundImage: 'learn',
-    backgroundGradient:
-      'radial-gradient(108.93% 164.65% at 2.92% 94.16%,#FFDDF1 0%,#EEF0FF 47.4%,#DDFFF7 100%)',
+    backgroundGradient: GRADIENTS.haveSomeQuestionsLearn,
     gradient: '',
     links: [
       {
@@ -28,8 +28,7 @@ const HAVE_SOME_QUESTIONS_ITEMS = [
   {
     translationKey: 'support',
     backgroundImage: 'support',
-    backgroundGradient:
-      'radial-gradient(139.72% 401.11% at 11.11% -167.78%,#FFFADD 34%,#E9FFEB 56.96%,#FADDFF 90%)',
+    backgroundGradient: GRADIENTS.haveSomeQuestionsSupport,
     links: [
       {
         href: ROUTES.SUPPORT,
