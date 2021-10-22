@@ -4,6 +4,7 @@ import { AppLink } from 'components/Links'
 import { useObservable } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useEffect, useRef, useState } from 'react'
+import { GRADIENTS } from 'theme'
 import { Box, Button, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 
 const HOW_IT_WORKS_ITEMS = [
@@ -81,7 +82,7 @@ function HowItWorksItemDescription({
             borderRadius: 'inherit',
             transition: 'inherit',
             opacity: 0,
-            background: 'linear-gradient(137.02deg, #2A30EE 0%, #A4A6FF 99.12%)',
+            background: GRADIENTS.howItWorksBullet,
             ...(isActive && {
               opacity: 1,
             }),
