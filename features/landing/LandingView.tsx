@@ -19,6 +19,7 @@ import { Box, Button, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'them
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
+import { GetStartedSection } from './GetStarted'
 import { HaveSomeQuestionsSection } from './HaveSomeQuestions'
 import { HowItWorksSection } from './HowItWorks'
 import { TypeformWidget } from './TypeformWidget'
@@ -278,6 +279,7 @@ export function LandingView() {
       </WithErrorHandler>
       <HowItWorksSection />
       <HaveSomeQuestionsSection />
+      <GetStartedSection />
       <TypeformWidget />
     </Grid>
   )

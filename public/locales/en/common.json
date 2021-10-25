@@ -237,6 +237,24 @@
           "twitter": "Twitter"
         }
       }
+    },
+    "get-started": {
+      "title": "Get started with Oasis.app",
+      "multiply": {
+        "title": "Multiply your assets",
+        "subtitle": "In a single transaction you can open a Maker vault, generate DAI, and spend them for more collateral",
+        "link": "Open vault"
+      },
+      "borrow": {
+        "title": "Borrow Dai",
+        "subtitle": "Choose your preferred token as collateral and open a Maker vault to get DAI",
+        "link": "Open vault"
+      },
+      "manage": {
+        "title": "Manage your vault",
+        "subtitle": "Make actions on your vault whenever you want",
+        "link": "Connect wallet"
+      }
     }
   },
   "languages": "Languages",
