@@ -186,17 +186,12 @@ export const content: ContentTypeSupport = {
         {
           question: 'Is Oasis Secure?',
           answer:
-            'Security is our top priority. We stringently follow the best security practices, and regularly conduct smart contract and code audits. In addition, Oasis code is open-source, giving everyone in the community the ability to pressure test and audit the core technology.',
+            'Security is our top priority. We stringently follow the best security practices, and regularly conduct smart contract and code audits. In addition, Oasis code is open-source, giving everyone in the community the ability to pressure test and audit the core technology. You can check our [documentation](https://kb.oasis.app/help/smart-contracts-and-documentation) page where you will find links to our codebase, smart contracts addresses and code and the audit reports.',
         },
         {
           question: 'Can Oasis access the funds in my account or wallet?',
           answer:
             'No. With Dai, you - and only you - have access and control over your Dai. Dai uses blockchain technology to ensure the highest level of trust and transparency, and because of the way blockchain technology works, you ultimately get to decide just how secure you want it to be. This does mean you are your own security ultimately, so it is very important you keep access to your Dai and Oasis account secure.',
-        },
-        {
-          question: 'Is Oasis Secure?',
-          answer:
-            'You can check our [documentation](https://kb.oasis.app/help/smart-contracts-and-documentation) page where you will find links to our codebase, smart contracts addresses and code and the audit reports.',
         },
         {
           question: 'I’ve found a bug? Where can I report issues?',
