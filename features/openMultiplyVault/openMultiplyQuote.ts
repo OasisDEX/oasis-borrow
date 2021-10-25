@@ -3,7 +3,7 @@ import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { compareBigNumber } from 'helpers/compareBigNumber'
 import { SLIPPAGE } from 'helpers/multiply/calculations'
-import { EMPTY, Observable, combineLatest } from 'rxjs'
+import { combineLatest, EMPTY, Observable } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, take } from 'rxjs/operators'
 
 import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'

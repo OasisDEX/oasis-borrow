@@ -1,10 +1,11 @@
-import { Flex, Grid } from '@theme-ui/components'
-import { getToken, tokens } from '../../../blockchain/tokensMetadata'
+import { Flex } from '@theme-ui/components'
+import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
+
+import { getToken, tokens } from '../../../blockchain/tokensMetadata'
 import { CollateralCard } from '../CollateralCard'
-import { IlkData } from 'blockchain/ilks'
-import BigNumber from 'bignumber.js'
 
 const StoryContainer = ({ children }: WithChildren) => {
   return <Flex sx={{ flexWrap: 'wrap', flex: '' }}>{children}</Flex>
@@ -95,6 +96,7 @@ export function AllCollateralCards() {
   )
 }
 
+// eslint-disable-next-line import/no-default-export
 export default {
   title: 'Collateral Cards',
   argTypes: {

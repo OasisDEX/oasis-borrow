@@ -1,8 +1,6 @@
-import { BigNumber } from '@ethersproject/bignumber'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useRedirectToOpenVault } from 'features/openVaultOverview/useRedirectToOpenVault'
 import { formatPercent } from 'helpers/formatters/format'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
