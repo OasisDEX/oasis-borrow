@@ -212,7 +212,7 @@ const hardhat: NetworkConfig = {
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions ||
-      '0x33b4BE1B67c49125C1524777515e4034E04dFF58',
+      '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
   ),
   exchange: contractDesc(
     exchange,
