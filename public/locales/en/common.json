@@ -172,8 +172,12 @@
     "auction_finished_v2": "Auction <0>#{{auctionId}}</0> finished, <0>{{remainingCollateral}} {{token}}</0> remained",
     "auction_started": "Auction started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} Dai</0>",
     "auction_started_v2": "Auction <0>#{{auctionId}}</0> started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} Dai</0>",
+    "bought": "Bought",
     "deposit": "Deposited <0>{{collateralAmount}} {{token}}</0> into Vault",
+    "deposited": "Deposited",
     "generate": "Generated <0>{{daiAmount}}</0> Dai from Vault",
+    "exit-collateral": "Exit collateral",
+    "exit-dai": "Exit Dai",
     "migrate": "Vault migrated",
     "move_dest": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> Dai debt to the vault",
     "move_src": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> Dai debt from the vault",
@@ -181,11 +185,13 @@
     "payback": "Payback <0>{{daiAmount}}</0> Dai to Vault",
     "transfer": "Vault given to <0>{{transferTo}}</0> by <0>{{transferFrom}}</0>",
     "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault",
-    "openmultiplyvault": "Open multiply Vault",
-    "increasemultiple": "Increased multiple, bought using Dai",
-    "decreasemultiple": "Decreased multiple, sold collateral",
-    "closevaultexitdai": "Closed Vault, exited to Dai",
-    "closevaultexitcollateral": "Closed Vault, exited to collateral"
+    "open_multiply_vault": "Open multiply Vault",
+    "increase_multiple": "Increased multiple",
+    "decrease_multiple": "Decreased multiple",
+    "close_vault_to_dai": "Closed Vault, exited to Dai",
+    "close_vault_to_collateral": "Closed Vault, exited to collateral",
+    "sold": "Sold",
+    "total-fees": "Total fees"
   },
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",
@@ -454,7 +460,10 @@
     "stability-fee": "Stability Fee",
     "type": "Type",
     "vault-dai-debt": "Vault Dai Debt",
-    "vault-id": "Vault ID"
+    "vault-id": "Vault ID",
+    "oracle-price": "Oracle Price",
+    "market-price": "Market Price"
+
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",

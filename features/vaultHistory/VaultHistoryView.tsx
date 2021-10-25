@@ -1,7 +1,13 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { formatAddress, formatCryptoBalance, formatFiatBalance } from 'helpers/formatters/format'
+import {
+  formatAddress,
+  formatCryptoBalance,
+  formatFiatBalance,
+  formatPercent,
+} from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
@@ -48,7 +54,7 @@ function MultiplyHistoryEventDetailsItem({
       <Text
         sx={{
           textAlign: 'right',
-          minWidth: ['9.5em', null, null, rightItem ? '9.5em' : '6em'],
+          minWidth: ['9.5em', null, null, rightItem ? '9.5em' : '8em'],
           pr: 3,
           color: 'text.subtitle',
         }}
@@ -63,11 +69,14 @@ function MultiplyHistoryEventDetailsItem({
 function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
   const { t } = useTranslation()
 
+  const closeEvent =
+    event.kind === 'CLOSE_VAULT_TO_DAI' || event.kind === 'CLOSE_VAULT_TO_COLLATERAL'
+
   return (
     <Flex
       sx={{
         mb: 3,
-        maxWidth: '460px',
+        width: '600px',
         justifyContent: 'space-between',
         flexDirection: ['column', null, null, 'row'],
       }}
@@ -77,33 +86,106 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
         sx={{
           mr: [0, null, null, 4],
           mb: [2, null, null, 0],
+          alignContent: 'flex-start',
         }}
       >
-        <MultiplyHistoryEventDetailsItem label={t('amount')}>
-          {'collateralAmount' in event && formatCryptoBalance(event.collateralAmount)} {event.token}
-        </MultiplyHistoryEventDetailsItem>
-        <MultiplyHistoryEventDetailsItem label={t('price')}>
+        {event.kind === 'OPEN_MULTIPLY_VAULT' && (
+          <>
+            <MultiplyHistoryEventDetailsItem label={t('history.deposited')}>
+              {'depositCollateral' in event && formatCryptoBalance(event.depositCollateral)}{' '}
+              {event.token}
+            </MultiplyHistoryEventDetailsItem>
+            <MultiplyHistoryEventDetailsItem label={t('history.bought')}>
+              {'bought' in event && formatCryptoBalance(event.bought)} {event.token}
+            </MultiplyHistoryEventDetailsItem>
+          </>
+        )}
+        {event.kind === 'INCREASE_MULTIPLY' && (
+          <MultiplyHistoryEventDetailsItem label={t('history.bought')}>
+            {'bought' in event && formatCryptoBalance(event.bought)} {event.token}
+          </MultiplyHistoryEventDetailsItem>
+        )}
+        {(event.kind === 'DECREASE_MULTIPLY' || closeEvent) && (
+          <MultiplyHistoryEventDetailsItem label={t('history.sold')}>
+            {'sold' in event && formatCryptoBalance(event.sold)} {event.token}
+          </MultiplyHistoryEventDetailsItem>
+        )}
+        <MultiplyHistoryEventDetailsItem label={t('system.oracle-price')}>
           {'oraclePrice' in event && '$' + formatFiatBalance(event.oraclePrice)}
         </MultiplyHistoryEventDetailsItem>
-        <MultiplyHistoryEventDetailsItem label={t('system.collateral')}>
-          {'collateralTotal' in event && formatCryptoBalance(event.collateralTotal)} {event.token}
+        <MultiplyHistoryEventDetailsItem label={t('system.market-price')}>
+          {'marketPrice' in event && '$' + formatFiatBalance(event.marketPrice)}
         </MultiplyHistoryEventDetailsItem>
-        <MultiplyHistoryEventDetailsItem label={t('multiple')}>
-          {'multiple' in event && event.multiple.gt(zero) ? `${event.multiple.toFixed(2)}x` : '-'}
-        </MultiplyHistoryEventDetailsItem>
+
+        {!closeEvent && (
+          <>
+            <MultiplyHistoryEventDetailsItem label={t('system.collateral')}>
+              {'beforeLockedCollateral' in event &&
+                event.beforeLockedCollateral.gt(0) &&
+                formatCryptoBalance(event.beforeLockedCollateral) + `->`}
+              {'lockedCollateral' in event && formatCryptoBalance(event.lockedCollateral)}{' '}
+              {event.token}
+            </MultiplyHistoryEventDetailsItem>
+            <MultiplyHistoryEventDetailsItem label={t('multiple')}>
+              {'beforeMultiple' in event &&
+                event.beforeMultiple.gt(0) &&
+                formatCryptoBalance(event.beforeMultiple) + `x` + `->`}
+              {'multiple' in event && event.multiple.gt(zero)
+                ? `${event.multiple.toFixed(2)}x`
+                : '-'}
+            </MultiplyHistoryEventDetailsItem>
+          </>
+        )}
+        {event.kind === 'CLOSE_VAULT_TO_DAI' && (
+          <MultiplyHistoryEventDetailsItem label={t('history.exit-dai')}>
+            {'exitDai' in event && formatCryptoBalance(event.exitDai)} DAI
+          </MultiplyHistoryEventDetailsItem>
+        )}
+        {event.kind === 'CLOSE_VAULT_TO_COLLATERAL' && (
+          <MultiplyHistoryEventDetailsItem label={t('history.exit-collateral')}>
+            {'exitCollateral' in event && formatCryptoBalance(event.exitCollateral)} {event.token}
+          </MultiplyHistoryEventDetailsItem>
+        )}
       </Grid>
       <Grid gap={2}>
         <MultiplyHistoryEventDetailsItem rightItem label={t('outstanding-debt')}>
-          {'outstandingDebt' in event && formatCryptoBalance(event.outstandingDebt)} DAI
+          {'beforeDebt' in event &&
+            event.beforeDebt.gt(0) &&
+            formatCryptoBalance(event.beforeDebt) + `DAI` + `->`}
+          {'debt' in event && formatCryptoBalance(event.debt)} DAI
         </MultiplyHistoryEventDetailsItem>
-        <MultiplyHistoryEventDetailsItem rightItem label={t('net-value')}>
-          {'netValueUSD' in event && '$' + formatFiatBalance(event.netValueUSD)}
-        </MultiplyHistoryEventDetailsItem>
-        <MultiplyHistoryEventDetailsItem rightItem label={t('system.liquidation-price')}>
-          {'liquidationPrice' in event && '$' + formatFiatBalance(event.liquidationPrice)}
-        </MultiplyHistoryEventDetailsItem>
-        <MultiplyHistoryEventDetailsItem rightItem label={t('fees')}>
-          {'fees' in event && event.fees.gt(zero) ? '$' + formatFiatBalance(event.fees) : '-'}
+        {!closeEvent && (
+          <MultiplyHistoryEventDetailsItem rightItem label={t('system.coll-ratio')}>
+            {'beforeCollateralizationRatio' in event &&
+              event.beforeCollateralizationRatio.gt(0) &&
+              formatPercent(event.beforeCollateralizationRatio.times(100), {
+                precision: 2,
+                roundMode: BigNumber.ROUND_DOWN,
+              }) + `->`}
+            {'collateralizationRatio' in event &&
+              formatPercent(event.collateralizationRatio.times(100), {
+                precision: 2,
+                roundMode: BigNumber.ROUND_DOWN,
+              })}
+          </MultiplyHistoryEventDetailsItem>
+        )}
+        {!closeEvent && (
+          <MultiplyHistoryEventDetailsItem rightItem label={t('net-value')}>
+            {'netValue' in event && '$' + formatFiatBalance(event.netValue)}
+          </MultiplyHistoryEventDetailsItem>
+        )}
+        {!closeEvent && (
+          <MultiplyHistoryEventDetailsItem rightItem label={t('system.liquidation-price')}>
+            {'beforeLiquidationPrice' in event &&
+              event.beforeLiquidationPrice.gt(0) &&
+              `$` + formatFiatBalance(event.beforeLiquidationPrice) + `->`}
+            {'liquidationPrice' in event && '$' + formatFiatBalance(event.liquidationPrice)}
+          </MultiplyHistoryEventDetailsItem>
+        )}
+        <MultiplyHistoryEventDetailsItem rightItem label={t('history.total-fees')}>
+          {'totalFee' in event && event.totalFee.gt(zero)
+            ? '$' + formatFiatBalance(event.totalFee)
+            : '-'}
         </MultiplyHistoryEventDetailsItem>
       </Grid>
     </Flex>
@@ -122,6 +204,13 @@ function VaultHistoryItem({
   const translation = getHistoryEventTranslation(t, item)
   const date = moment(item.timestamp)
 
+  const isMultiplyEvent =
+    item.kind === 'OPEN_MULTIPLY_VAULT' ||
+    item.kind === 'INCREASE_MULTIPLY' ||
+    item.kind === 'DECREASE_MULTIPLY' ||
+    item.kind === 'CLOSE_VAULT_TO_DAI' ||
+    item.kind === 'CLOSE_VAULT_TO_COLLATERAL'
+
   return (
     <Card
       sx={{
@@ -129,7 +218,7 @@ function VaultHistoryItem({
         border: 'lightMuted',
         boxShadow: 'vaultHistoryItem',
         fontSize: 2,
-        display: item.isHidden ? 'none' : 'grid',
+        display: 'grid',
       }}
     >
       <Box sx={{ p: 2, cursor: 'pointer' }} onClick={() => setOpened(!opened)}>
@@ -171,7 +260,7 @@ function VaultHistoryItem({
       </Box>
       {opened && (
         <Box p={2}>
-          {item.isMultiply && <MultiplyHistoryEventDetails {...item} />}
+          {isMultiplyEvent && <MultiplyHistoryEventDetails {...item} />}
           <AppLink
             variant="links.navFooter"
             sx={{ fontSize: 2 }}

@@ -4,8 +4,6 @@ interface HistoryEventBase {
   hash: string
   timestamp: string
   id: string
-  isMultiply?: boolean
-  isHidden?: boolean
   oraclePrice: BigNumber
   rate: BigNumber
   liquidationRatio: BigNumber
@@ -118,31 +116,44 @@ interface MultiplyBaseEvent extends HistoryEventBase {
   collateralAmount: BigNumber
   collateralTotal: BigNumber
   daiAmount: BigNumber
+  beforeDebt: BigNumber
+  debt: BigNumber
+  beforeCollateralizationRatio: BigNumber
+  collateralizationRatio: BigNumber
   outstandingDebt: BigNumber
   oraclePrice: BigNumber
-  collateral: BigNumber
+  marketPrice: BigNumber
+  exitDai: BigNumber
+  exitCollateral: BigNumber
+  beforeLockedCollateral: BigNumber
+  lockedCollateral: BigNumber
   multiple: BigNumber
+  beforeMultiple: BigNumber
+  beforeLiquidationPrice: BigNumber
   liquidationPrice: BigNumber
-  netValueUSD: BigNumber
-  fees: BigNumber
+  netValue: BigNumber
+  totalFee: BigNumber
+  depositCollateral: BigNumber
+  bought: BigNumber
+  sold: BigNumber
   flDue: BigNumber
   flBorrowed: BigNumber
   oazoFee: BigNumber
 }
 interface OpenMultiplyEvent extends MultiplyBaseEvent {
-  kind: 'openMultiplyVault'
+  kind: 'OPEN_MULTIPLY_VAULT'
 }
 interface IncreaseMultipleEvent extends MultiplyBaseEvent {
-  kind: 'increaseMultiple'
+  kind: 'INCREASE_MULTIPLY'
 }
 interface DecreaseMultipleEvent extends MultiplyBaseEvent {
-  kind: 'decreaseMultiple'
+  kind: 'DECREASE_MULTIPLY'
 }
 interface CloseVaultExitDaiMultipleEvent extends MultiplyBaseEvent {
-  kind: 'closeVaultExitDai'
+  kind: 'CLOSE_VAULT_TO_DAI'
 }
 interface CloseVaultExitCollateralMultipleEvent extends MultiplyBaseEvent {
-  kind: 'closeVaultExitCollateral'
+  kind: 'CLOSE_VAULT_TO_COLLATERAL'
 }
 
 export type MultiplyEvent =
