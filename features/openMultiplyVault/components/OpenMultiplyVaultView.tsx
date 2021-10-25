@@ -52,7 +52,7 @@ function OpenMultiplyVaultTitle({
       </WithVaultFormStepIndicator>
       <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
         {isEditingStage
-          ? t('vault-form.subtext.edit')
+          ? t('vault-form.subtext.edit-multiply')
           : isProxyStage
           ? t('vault-form.subtext.proxy')
           : isAllowanceStage
