@@ -200,7 +200,7 @@ export function setupAppContext() {
     connectedContext$,
   )
 
-  const gasPrice$ = createGasPrice$(every3Seconds$, context$)
+  const gasPrice$ = createGasPrice$(onEveryBlock$, context$)
 
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
