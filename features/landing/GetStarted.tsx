@@ -4,8 +4,9 @@ import React from 'react'
 import { GRADIENTS } from 'theme'
 import { Box, Card, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 
-const GET_STARTED_BIG_CARD_ITEMS = {
-  multiply: {
+const GET_STARTED_BIG_CARD_ITEMS = [
+  {
+    cardKey: 'multiply',
     backgroundGradient: GRADIENTS.getStartedMultiply,
     cardMinHeight: ['343px', '420px'],
     imageStyles: {
@@ -14,10 +15,11 @@ const GET_STARTED_BIG_CARD_ITEMS = {
     },
     link: '/vaults/list',
   },
-}
+]
 
-const GET_STARTED_SMALL_CARD_ITEMS = {
-  borrow: {
+const GET_STARTED_SMALL_CARD_ITEMS = [
+  {
+    cardKey: 'borrow',
     backgroundGradient: GRADIENTS.getStartedBorrow,
     cardMinHeight: ['343px', '202px'],
     imageStyles: {
@@ -29,7 +31,8 @@ const GET_STARTED_SMALL_CARD_ITEMS = {
     },
     link: '/vaults/list',
   },
-  manage: {
+  {
+    cardKey: 'manage',
     backgroundGradient: GRADIENTS.getStartedManage,
     cardMinHeight: ['343px', '202px'],
     imageStyles: {
@@ -41,13 +44,13 @@ const GET_STARTED_SMALL_CARD_ITEMS = {
     },
     link: '/connect',
   },
-}
+]
 
 interface GetStartedProps {
+  cardKey: string
   backgroundGradient: string
   cardMinHeight: string[]
   link: string
-  cardKey: string
   imageStyles?: SxStyleProp
   textStyles?: SxStyleProp
 }
@@ -114,13 +117,13 @@ export function GetStartedSection() {
         sx={{ pt: 3, maxWidth: ['343px', '943px'], mx: 'auto' }}
       >
         <Grid>
-          {Object.entries(GET_STARTED_BIG_CARD_ITEMS).map(([key, value]) => (
-            <GetStartedCard key={key} cardKey={key} {...value} />
+          {GET_STARTED_BIG_CARD_ITEMS.map((item) => (
+            <GetStartedCard key={item.cardKey} {...item} />
           ))}
         </Grid>
         <Grid>
-          {Object.entries(GET_STARTED_SMALL_CARD_ITEMS).map(([key, value]) => (
-            <GetStartedCard key={key} cardKey={key} {...value} />
+          {GET_STARTED_SMALL_CARD_ITEMS.map((item) => (
+            <GetStartedCard key={item.cardKey} {...item} />
           ))}
         </Grid>
       </Grid>
