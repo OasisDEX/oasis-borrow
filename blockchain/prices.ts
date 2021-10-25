@@ -69,10 +69,13 @@ export function createGasPrice$(
           maxPriorityFeePerGas: minersTip,
         } as GasPriceParams
         if (blockNative.maxFeePerGas.gt(0)) {
+          console.log('from blockNative')
           gasFees.maxFeePerGas = new BigNumber(1000000000).multipliedBy(blockNative.maxFeePerGas)
           gasFees.maxPriorityFeePerGas = new BigNumber(1000000000).multipliedBy(
             blockNative.maxPriorityFeePerGas,
           )
+        } else {
+          console.log('defaults', gasFees)
         }
         return gasFees
       },
@@ -103,7 +106,7 @@ export const tokenPricesInUSD$: Observable<Ticker> = every10Seconds$.pipe(
             }
           }),
           catchError((error) => {
-            console.debug(`Error fetching price data: ${error}`)
+            console.log(error)
             return of({})
           }),
         ),

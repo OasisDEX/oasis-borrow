@@ -7,3 +7,5 @@ export const RAD = new BigNumber('1e45')
 export const HOUR = 60 * 60
 export const DAY = 24 * HOUR
 export const SECONDS_PER_YEAR = 365 * DAY
+
+export const FLASH_MINT_LIMIT_PER_TX = new BigNumber('500000000')
