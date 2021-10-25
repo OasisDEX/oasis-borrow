@@ -93,7 +93,6 @@ import {
   createInitializedAccount$,
   createOnEveryBlock$,
   createWeb3ContextConnected$,
-  every3Seconds$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
