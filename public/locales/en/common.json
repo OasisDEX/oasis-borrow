@@ -449,7 +449,9 @@
     "stability-fee": "Stability Fee",
     "type": "Type",
     "vault-dai-debt": "Vault Dai Debt",
-    "vault-id": "Vault ID"
+    "vault-id": "Vault ID",
+    "annual-fee": "Annual fee (variable)",
+    "min-collateral-ratio": "Min collateral ratio"
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
