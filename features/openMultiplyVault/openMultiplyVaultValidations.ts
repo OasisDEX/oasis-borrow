@@ -9,6 +9,7 @@ export type OpenMultiplyVaultErrorMessage =
   | 'generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice'
   | 'generateAmountExceedsDebtCeiling'
   | 'generateAmountLessThanDebtFloor'
+  | 'generateAmountMoreThanMaxFlashAmount'
   | 'customAllowanceAmountExceedsMaxUint256'
   | 'customAllowanceAmountLessThanDepositAmount'
   | 'ledgerWalletContractDataDisabled'
@@ -24,6 +25,7 @@ export function validateErrors(state: OpenMultiplyVaultState): OpenMultiplyVault
     generateAmountExceedsDaiYieldFromDepositingCollateral,
     generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice,
     generateAmountExceedsDebtCeiling,
+    generateAmountMoreThanMaxFlashAmount,
     generateAmountLessThanDebtFloor,
     customAllowanceAmountExceedsMaxUint256,
     customAllowanceAmountLessThanDepositAmount,
@@ -58,6 +60,10 @@ export function validateErrors(state: OpenMultiplyVaultState): OpenMultiplyVault
 
     if (exchangeError) {
       errorMessages.push('exchangeError')
+    }
+
+    if (generateAmountMoreThanMaxFlashAmount) {
+      errorMessages.push('generateAmountMoreThanMaxFlashAmount')
     }
   }
 
