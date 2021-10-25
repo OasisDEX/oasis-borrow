@@ -104,7 +104,7 @@ export function GetStartedSection() {
   const { t } = useTranslation()
 
   return (
-    <Box my={[4,0]}>
+    <Box my={[4, 0]}>
       <Heading as="h2" variant="header2" sx={{ textAlign: 'center', mb: 4 }}>
         {t('landing.get-started.title')}
       </Heading>
