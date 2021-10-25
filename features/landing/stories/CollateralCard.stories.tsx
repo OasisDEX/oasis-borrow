@@ -1,8 +1,8 @@
 import { Flex, Grid } from '@theme-ui/components'
-import { tokens } from '../../../blockchain/tokensMetadata'
+import { getToken, tokens } from '../../../blockchain/tokensMetadata'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
-import { CollateralCard } from '../FeaturedIlks'
+import { CollateralCard } from '../CollateralCard'
 import { IlkData } from 'blockchain/ilks'
 import BigNumber from 'bignumber.js'
 
@@ -14,9 +14,16 @@ export function SingleCollateralCardSingleIlk({ collateral }: { collateral: stri
   const ilks = [
     { liquidationPenalty: new BigNumber('0.13'), liquidationRatio: new BigNumber('1.45') },
   ] as IlkData[]
+  const token = getToken(collateral)
   return (
     <StoryContainer>
-      <CollateralCard ilks={ilks} collateral={collateral} onClick={() => {}} />
+      <CollateralCard
+        ilks={ilks}
+        title={token.symbol}
+        background={token.background!}
+        icon={token.bannerIconPng!}
+        onClick={() => {}}
+      />
     </StoryContainer>
   )
 }
@@ -26,9 +33,35 @@ export function SingleCollateralCardMultipleIlk({ collateral }: { collateral: st
     { liquidationPenalty: new BigNumber('0.13'), liquidationRatio: new BigNumber('1.45') },
     { liquidationPenalty: new BigNumber('0.2'), liquidationRatio: new BigNumber('1.2') },
   ] as IlkData[]
+  const token = getToken(collateral)
   return (
     <StoryContainer>
-      <CollateralCard ilks={ilks} collateral={collateral} onClick={() => {}} />
+      <CollateralCard
+        ilks={ilks}
+        title={token.symbol}
+        background={token.background!}
+        icon={token.bannerIconPng!}
+        onClick={() => {}}
+      />
+    </StoryContainer>
+  )
+}
+
+export function LpTokenCard() {
+  const ilks = [
+    { liquidationPenalty: new BigNumber('0.13'), liquidationRatio: new BigNumber('1.45') },
+    { liquidationPenalty: new BigNumber('0.2'), liquidationRatio: new BigNumber('1.2') },
+  ] as IlkData[]
+  const token = getToken('UNIV2DAIUSDT')
+  return (
+    <StoryContainer>
+      <CollateralCard
+        ilks={ilks}
+        title={'UNI LP Tokens'}
+        background={token.background!}
+        icon={token.bannerIconPng!}
+        onClick={() => {}}
+      />
     </StoryContainer>
   )
 }
@@ -36,6 +69,7 @@ export function SingleCollateralCardMultipleIlk({ collateral }: { collateral: st
 export function AllCollateralCards() {
   const allCollaterals = tokens
     .filter((token) => token.background !== undefined)
+    .filter((token) => !(token.tags as string[]).includes('lp-token'))
     .map((token) => ({
       token,
       ilks: [
@@ -46,9 +80,17 @@ export function AllCollateralCards() {
 
   return (
     <StoryContainer>
-      {allCollaterals.map(({ token, ilks }) => (
-        <CollateralCard collateral={token.symbol} onClick={() => {}} ilks={ilks} />
-      ))}
+      {allCollaterals.map(({ token, ilks }) => {
+        return (
+          <CollateralCard
+            title={token.symbol}
+            background={token.background!}
+            icon={token.bannerIconPng!}
+            onClick={() => {}}
+            ilks={ilks}
+          />
+        )
+      })}
     </StoryContainer>
   )
 }
