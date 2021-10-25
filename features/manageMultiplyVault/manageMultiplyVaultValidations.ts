@@ -10,6 +10,7 @@ export type ManageVaultErrorMessage =
   | 'generateAmountExceedsDaiYieldFromTotalCollateral'
   | 'generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice'
   | 'generateAmountExceedsDebtCeiling'
+  | 'generateAmountMoreThanMaxFlashAmount'
   | 'generateAmountLessThanDebtFloor'
   | 'paybackAmountExceedsDaiBalance'
   | 'paybackAmountExceedsVaultDebt'
@@ -49,6 +50,7 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
     depositAmountExceedsCollateralBalance,
     depositingAllEthBalance,
     generateAmountExceedsDebtCeiling,
+    generateAmountMoreThanMaxFlashAmount,
     paybackAmountExceedsDaiBalance,
     paybackAmountExceedsVaultDebt,
     withdrawCollateralOnVaultUnderDebtFloor,
@@ -77,6 +79,10 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
 
     if (generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice) {
       errorMessages.push('generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice')
+    }
+
+    if (generateAmountMoreThanMaxFlashAmount) {
+      errorMessages.push('generateAmountMoreThanMaxFlashAmount')
     }
 
     if (generateAmountExceedsDebtCeiling) {

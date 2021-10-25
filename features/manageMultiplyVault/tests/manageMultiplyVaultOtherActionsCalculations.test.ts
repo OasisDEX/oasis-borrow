@@ -6,12 +6,13 @@ import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock
 import {
   calculateCloseToCollateralParams,
   calculateCloseToDaiParams,
-  LOAN_FEE,
   OAZO_FEE,
   SLIPPAGE,
 } from 'helpers/multiply/calculations'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
+
+const LOAN_FEE = new BigNumber(0.0009)
 
 describe('Other actions calculations', () => {
   it('Should calculate initial parameters for closeTo actions correctly', () => {

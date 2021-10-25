@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { NextApiRequest, NextApiResponse } from 'next'
 
-const NodeCache = require('node-cache');
+const NodeCache = require('node-cache')
 const cache = new NodeCache({ stdTTL: 9 })
 
 export default async function (_req: NextApiRequest, res: NextApiResponse) {
@@ -38,7 +38,7 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
           fromCache: false,
           maxPriorityFeePerGas: 0,
           maxFeePerGas: 0,
-          error:error.message,
+          error: error.message,
         })
       })
   } else {

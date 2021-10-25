@@ -1,3 +1,4 @@
+import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
 import { formatCryptoBalance } from 'helpers/formatters/format'
@@ -31,6 +32,10 @@ export function OpenMultiplyVaultErrors({
       case 'generateAmountExceedsDebtCeiling':
         return translate('generate-amount-exceeds-debt-ceiling', {
           maxGenerateAmount: formatCryptoBalance(maxGenerateAmount),
+        })
+      case 'generateAmountMoreThanMaxFlashAmount':
+        return translate('generate-amount-more-than-max-flash-amount', {
+          maxFlashAmount: FLASH_MINT_LIMIT_PER_TX.toFormat(0),
         })
       case 'generateAmountLessThanDebtFloor':
         return (
