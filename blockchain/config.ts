@@ -74,7 +74,7 @@ const protoMain = {
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
-    '0x33b4BE1B67c49125C1524777515e4034E04dFF58',
+    '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
   ),
   exchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
   fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
