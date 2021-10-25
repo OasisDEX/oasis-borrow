@@ -14,18 +14,14 @@ import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
-import getConfig from 'next/config'
 import React, { ComponentProps, useCallback } from 'react'
-import { Box, Button, Card, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
+import { Box, Button, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
+import { HaveSomeQuestionsSection } from './HaveSomeQuestions'
 import { HowItWorksSection } from './HowItWorks'
 import { TypeformWidget } from './TypeformWidget'
-
-const {
-  publicRuntimeConfig: { apiHost },
-} = getConfig()
 
 export function TokenSymbol({
   token,
@@ -187,46 +183,6 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
   )
 }
 
-function LandingCard({ href, cardKey }: { href: string; cardKey: 'dai' | 'faq' }) {
-  const { t } = useTranslation()
-
-  return (
-    <AppLink href={href} sx={{ display: 'flex' }} target="_self">
-      <Card sx={{ p: [3, 4], boxShadow: 'cardLanding', border: 'none', borderRadius: 'large' }}>
-        <Flex sx={{ py: 3, px: [2, 0] }}>
-          <Flex sx={{ mr: [3, 4], width: ['70px', '88px'], height: ['70px', '88px'] }}>
-            <Icon name={`landing_card_${cardKey}`} size="auto" width="100%" height="100%" />
-          </Flex>
-          <Box sx={{ color: 'primary', flex: 1 }}>
-            <Heading mb={3} sx={{ fontWeight: 'semiBold' }}>
-              {t(`landing.cards.${cardKey}.title`)}
-            </Heading>
-            <Text variant="paragraph2">{t(`landing.cards.${cardKey}.description`)}</Text>
-          </Box>
-        </Flex>
-      </Card>
-    </AppLink>
-  )
-}
-
-function LandingCards() {
-  return (
-    <Grid
-      columns={[1, null, 2]}
-      gap={4}
-      sx={{
-        maxWidth: ['460px', null, '992px'],
-        mx: 'auto',
-        my: 5,
-        py: 4,
-      }}
-    >
-      <LandingCard href={`${apiHost}/daiwallet`} cardKey="dai" />
-      <LandingCard href="/support" cardKey="faq" />
-    </Grid>
-  )
-}
-
 export function LandingView() {
   const { landing$, context$ } = useAppContext()
   const context = useObservable(context$)
@@ -321,7 +277,7 @@ export function LandingView() {
         </WithLoadingIndicator>
       </WithErrorHandler>
       <HowItWorksSection />
-      <LandingCards />
+      <HaveSomeQuestionsSection />
       <TypeformWidget />
     </Grid>
   )

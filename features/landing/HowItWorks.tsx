@@ -190,7 +190,7 @@ export function HowItWorksSection() {
   )
 
   return (
-    <Box py={6}>
+    <Box pt={6} pb={5}>
       <Grid
         columns={[1, 2, 'minmax(275px, 1fr) minmax(1fr, 576px)']}
         sx={{ alignItems: 'flex-start' }}
@@ -213,7 +213,7 @@ export function HowItWorksSection() {
             <Grid gap={3}>
               {HOW_IT_WORKS_ITEMS.map(({ translationKey, components }, i) => (
                 <HowItWorksItemDescription
-                  key={i}
+                  key={translationKey}
                   {...{
                     isActive: i + 1 === activeStep,
                     itemNumber: i,
@@ -231,7 +231,7 @@ export function HowItWorksSection() {
           {HOW_IT_WORKS_ITEMS.map(({ translationKey, components }, i) => (
             <Box
               id={`how-it-works-${i}`}
-              key={i}
+              key={translationKey}
               sx={{
                 overflow: 'hidden',
                 opacity: 1,

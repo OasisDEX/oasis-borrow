@@ -11,6 +11,10 @@ export const TRANSITIONS = {
 // which is not proper CSS property to apply gradient to
 export const GRADIENTS = {
   howItWorksBullet: 'linear-gradient(137.02deg, #2A30EE 0%, #A4A6FF 99.12%)',
+  haveSomeQuestionsLearn:
+    'radial-gradient(108.93% 164.65% at 2.92% 94.16%,#FFDDF1 0%,#EEF0FF 47.4%,#DDFFF7 100%)',
+  haveSomeQuestionsSupport:
+    'radial-gradient(139.72% 401.11% at 11.11% -167.78%,#FFFADD 34%,#E9FFEB 56.96%,#FADDFF 90%)',
 }
 
 const oasisBaseTheme = {
