@@ -112,8 +112,8 @@ export function HaveSomeQuestionsSection() {
         {t('landing.have-some-questions.title')}
       </Heading>
       <Grid columns={[1, 2]} gap={[3, 4]} sx={{ pt: 3, maxWidth: ['343px', '854px'], mx: 'auto' }}>
-        {HAVE_SOME_QUESTIONS_ITEMS.map((item, i) => (
-          <HaveSomeQuestionCard {...item} key={i} />
+        {HAVE_SOME_QUESTIONS_ITEMS.map((item) => (
+          <HaveSomeQuestionCard {...item} key={item.translationKey} />
         ))}
       </Grid>
     </Box>

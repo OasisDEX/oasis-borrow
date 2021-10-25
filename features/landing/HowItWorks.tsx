@@ -213,7 +213,7 @@ export function HowItWorksSection() {
             <Grid gap={3}>
               {HOW_IT_WORKS_ITEMS.map(({ translationKey, components }, i) => (
                 <HowItWorksItemDescription
-                  key={i}
+                  key={translationKey}
                   {...{
                     isActive: i + 1 === activeStep,
                     itemNumber: i,
@@ -231,7 +231,7 @@ export function HowItWorksSection() {
           {HOW_IT_WORKS_ITEMS.map(({ translationKey, components }, i) => (
             <Box
               id={`how-it-works-${i}`}
-              key={i}
+              key={translationKey}
               sx={{
                 overflow: 'hidden',
                 opacity: 1,
