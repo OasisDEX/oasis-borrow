@@ -1,17 +1,24 @@
 import { IlkDataList } from 'blockchain/ilks'
-import { IlksPerToken } from 'features/ilks/ilksPerToken'
+import { groupTokensByPattern, IlksPerToken } from 'features/ilks/ilksPerToken'
 import { chain, pick, sumBy } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 export function getPopular(ilksPerToken: IlksPerToken, n: number = 3) {
   const reducedDebts = Object.keys(ilksPerToken).reduce((acc, curr) => {
-    return { ...acc, [curr]: sumBy(ilksPerToken[curr], (ilk) => ilk.ilkDebt.toNumber()) }
-  }, {} as Record<string, number>)
+    return {
+      ...acc,
+      [curr]: {
+        totalIlksDebt: sumBy(ilksPerToken[curr], (ilk) => ilk.ilkDebt.toNumber()),
+        totalIlksAvailable: sumBy(ilksPerToken[curr], (ilk) => ilk.ilkDebtAvailable.toNumber()),
+      },
+    }
+  }, {} as Record<string, { totalIlksDebt: number; totalIlksAvailable: number }>)
 
   const nTopTokens = chain(reducedDebts)
     .keys()
-    .sort((a, b) => reducedDebts[b] - reducedDebts[a])
+    .filter((tokenKey) => reducedDebts[tokenKey].totalIlksAvailable > 0)
+    .sort((a, b) => reducedDebts[b].totalIlksDebt - reducedDebts[a].totalIlksDebt)
     .take(n)
     .value()
 
@@ -21,24 +28,25 @@ export function getPopular(ilksPerToken: IlksPerToken, n: number = 3) {
 export function getNewest(ilks: IlkDataList) {
   const { token } = ilks[ilks.length - 1]
   const listOfAllIlks = ilks.filter((ilk) => ilk.token === token)
+  const mappedToken = groupTokensByPattern(token) || token
 
-  return { [token]: listOfAllIlks }
+  return { [mappedToken]: listOfAllIlks }
 }
 
 export function getCollateralCards(
   ilkDataList: IlkDataList,
   ilksPerToken: Record<string, IlkDataList>,
 ) {
-  const mostPopular = getPopular(ilksPerToken)
+  const popular = getPopular(ilksPerToken)
   const newest = getNewest(ilkDataList)
 
-  return { ...mostPopular, ...newest }
+  return { popular, newest }
 }
 
 export function createLanding$(
   ilkDataList$: Observable<IlkDataList>,
   ilksPerToken$: Observable<IlksPerToken>,
-): Observable<IlksPerToken> {
+): Observable<{ popular: IlksPerToken; newest: IlksPerToken }> {
   return combineLatest(ilkDataList$, ilksPerToken$).pipe(
     map(([ilkDataList, tokensWithIlks]) => getCollateralCards(ilkDataList, tokensWithIlks)),
   )

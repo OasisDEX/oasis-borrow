@@ -47,12 +47,10 @@ export function CollateralCard({ onClick, title, ilks, background, icon }: Colla
   return (
     <Flex
       sx={{
-        maxWidth: '288px',
-        minWidth: '288px',
+        width: ['343px', '288px'],
         height: '315px',
         overflow: 'hidden',
         position: 'relative',
-        flex: 1,
         p: 4,
         transition: `
           transform 0.5s cubic-bezier(0, 0.28, 0.45, 0.95),
