@@ -8,7 +8,18 @@ import { Trans, useTranslation } from 'next-i18next'
 import { curry } from 'ramda'
 import React, { useCallback, useEffect, useState } from 'react'
 import { TRANSITIONS } from 'theme'
-import { Box, Button, Card, Container, Flex, Grid, IconButton, SxStyleProp, Text } from 'theme-ui'
+import {
+  Box,
+  Button,
+  Card,
+  Container,
+  Flex,
+  Grid,
+  Heading,
+  IconButton,
+  SxStyleProp,
+  Text,
+} from 'theme-ui'
 
 import { useAppContext } from './AppContextProvider'
 import { disconnect } from './connectWallet/ConnectWallet'
@@ -246,9 +257,12 @@ export function ModalTrezorMetamaskEIP1559() {
       sxWrapper={{ display: 'none', zIndex: 'modalOnMobilePanel' }}
       omitHTMLOverflow
     >
-      <Grid sx={{ p: 4 }}>
+      <Grid sx={{ p: 4, fontSize: 2 }}>
+        <Heading>
+          <Trans i18nKey="modal-trezor-eip1559-title" />
+        </Heading>
         <ModalCloseIcon close={close} />
-        <Box pt={3}>
+        <Box>
           <Trans
             i18nKey="modal-trezor-eip1559-paragraph1"
             components={[
@@ -262,6 +276,12 @@ export function ModalTrezorMetamaskEIP1559() {
         <Box>
           <Trans
             i18nKey="modal-trezor-eip1559-paragraph2"
+            components={[<AppLink sx={{ fontSize: 'inherit' }} href="https://legacy.oasis.app/" />]}
+          />
+        </Box>
+        <Box>
+          <Trans
+            i18nKey="modal-trezor-eip1559-paragraph3"
             components={[
               <Button
                 variant="textual"
