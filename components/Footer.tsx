@@ -1,7 +1,7 @@
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { LanguageSelect } from 'components/LanguageSelect'
-import { AppLink } from 'components/Links'
+import { AppLink, ROUTES } from 'components/Links'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
@@ -23,7 +23,7 @@ const FOOTER_SECTIONS = [
       { labelKey: 'nav.careers', url: '/careers' },
       { labelKey: 'nav.privacy', url: '/privacy' },
       { labelKey: 'nav.terms', url: '/terms' },
-      { labelKey: 'nav.contact', url: `${apiHost}/daiwallet/contact` },
+      { labelKey: 'nav.contact', url: ROUTES.CONTACT },
     ],
   },
   {
@@ -32,7 +32,7 @@ const FOOTER_SECTIONS = [
       { labelKey: 'nav.blog', url: 'https://blog.oasis.app', target: '_self' },
       {
         labelKey: 'nav.faq',
-        url: '/support',
+        url: ROUTES.SUPPORT,
       },
       // add link
       // { labelKey: 'nav.knowledge-centre', url: '/' },
@@ -157,10 +157,10 @@ export function Footer() {
           <Grid gap={3}>
             <Image src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')} />
             <Flex sx={{ alignItems: 'center', a: { fontSize: '0px' }, my: 2 }}>
-              <AppLink href="https://twitter.com/oasisdotapp">
+              <AppLink href={ROUTES.TWITTER}>
                 <Icon name="twitter" size="auto" width="18px" height="16px" />
               </AppLink>
-              <AppLink href="https://discord.gg/Kc2bBB59GC" sx={{ mx: 3 }}>
+              <AppLink href={ROUTES.DISCORD} sx={{ mx: 3 }}>
                 <Icon name="discord" size="auto" width="20px" height="23px" />
               </AppLink>
               <AppLink href="https://github.com/OasisDEX/oasis-borrow/">

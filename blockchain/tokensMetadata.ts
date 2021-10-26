@@ -496,7 +496,7 @@ export const tokens = [
     color: '#ff077d',
     background: 'linear-gradient(106.31deg, #8246E4 0%, #DB45F3 100%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/matic.svg'),
-    bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/matic.png'),
+    bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/MATIC.png'),
     tags: [],
   },
   // {
