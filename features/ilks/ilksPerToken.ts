@@ -4,12 +4,12 @@ import { map } from 'rxjs/operators'
 
 export type IlksPerToken = Record<string, IlkDataList>
 
-const patterns: Record<string, RegExp> = {
+const aggregationPatterns: Record<string, RegExp> = {
   'UNI LP Tokens': /^(GUNIV3|UNIV2)/,
 }
 
-export function groupTokensByPattern(token: string) {
-  return Object.keys(patterns).find((key) => patterns[key].test(token))
+export function aggregateTokensByPattern(token: string) {
+  return Object.keys(aggregationPatterns).find((key) => aggregationPatterns[key].test(token))
 }
 
 export function createIlksPerToken$(
@@ -17,17 +17,17 @@ export function createIlksPerToken$(
 ): Observable<IlksPerToken> {
   return ilkDataList$.pipe(
     map((ilkDataList) => {
-      // has metadata check missing
       return ilkDataList.reduce((acc, curr) => {
-        const checkForPatt = groupTokensByPattern(curr.token)
-        if (checkForPatt && acc[checkForPatt]) {
+        const aggregatedTokenKey = aggregateTokensByPattern(curr.token)
+
+        if (aggregatedTokenKey && acc[aggregatedTokenKey]) {
           return {
             ...acc,
-            [checkForPatt]: [...acc[checkForPatt], curr],
+            [aggregatedTokenKey]: [...acc[aggregatedTokenKey], curr],
           }
         }
-        if (checkForPatt) {
-          return { ...acc, [checkForPatt]: [curr] }
+        if (aggregatedTokenKey) {
+          return { ...acc, [aggregatedTokenKey]: [curr] }
         }
         if (acc[curr.token]) {
           return {

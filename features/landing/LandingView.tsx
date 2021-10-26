@@ -72,7 +72,7 @@ export function LandingView() {
   const { landing$, context$ } = useAppContext()
   const context = useObservable(context$)
   const { value: landing, error: landingError } = useObservableWithError(landing$)
-  console.log(landing)
+
   return (
     <Grid
       sx={{
@@ -114,10 +114,11 @@ export function LandingView() {
           >
             {(landing) => (
               <Grid columns={[1, 4]} sx={{ mx: 'auto', maxWidth: ['343px', 'inherit'] }}>
-                {landing !== undefined && (
-                  <>
-                    {Object.keys(landing.popular).map((tokenKey) => (
+                {landing !== undefined &&
+                  Object.entries(landing).map(([category, ilks]) =>
+                    Object.keys(ilks).flatMap((tokenKey) => (
                       <CollateralCard
+                        category={category.toUpperCase()}
                         key={tokenKey}
                         title={tokenKey}
                         onClick={() => null}
@@ -125,19 +126,8 @@ export function LandingView() {
                         background={getToken(tokenKey).background!}
                         icon={getToken(tokenKey).bannerIconPng!}
                       />
-                    ))}
-                    {Object.keys(landing.newest).map((tokenKey) => (
-                      <CollateralCard
-                        key={tokenKey}
-                        title={tokenKey}
-                        onClick={() => null}
-                        ilks={landing.popular[tokenKey]}
-                        background={getToken(tokenKey).background!}
-                        icon={getToken(tokenKey).bannerIconPng!}
-                      />
-                    ))}
-                  </>
-                )}
+                    )),
+                  )}
               </Grid>
             )}
           </WithLoadingIndicator>

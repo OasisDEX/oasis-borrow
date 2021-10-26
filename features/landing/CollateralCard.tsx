@@ -7,6 +7,7 @@ import { Box, Flex, Heading, Image, Text } from 'theme-ui'
 
 export interface CollateralCardProps {
   title: string
+  category?: string
   onClick(): void
   ilks: IlkData[]
   background: string
@@ -41,7 +42,14 @@ function getCollRatioString(ilks: IlkData[]) {
   return `${formatPercent(minRatio.times(100))} - ${formatPercent(maxRatio.times(100))}`
 }
 
-export function CollateralCard({ onClick, title, ilks, background, icon }: CollateralCardProps) {
+export function CollateralCard({
+  onClick,
+  title,
+  ilks,
+  background,
+  icon,
+  category,
+}: CollateralCardProps) {
   const { t } = useTranslation()
 
   return (
@@ -92,7 +100,15 @@ export function CollateralCard({ onClick, title, ilks, background, icon }: Colla
         src={icon}
       />
       <Flex sx={{ zIndex: 1, flexDirection: 'column', alignItems: 'space-between' }}>
-        <Heading variant="header2" sx={{ color: 'white', minHeight: '100px', py: 3 }}>
+        {category && (
+          <Text variant="paragraph3" sx={{ color: 'white', pt: 3, pb: 2 }}>
+            {category}
+          </Text>
+        )}
+        <Heading
+          variant="header2"
+          sx={{ color: 'white', minHeight: '100px', py: category ? 0 : 3 }}
+        >
           {title}
         </Heading>
         <Box sx={{ flex: 1 }}>
