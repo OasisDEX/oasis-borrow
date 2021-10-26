@@ -221,7 +221,7 @@ function saveVaultType(
   const token = jwtAuthGetToken(state.account as string)
 
   if (token) {
-    saveVaultType$(state.vault.id, token, VaultType.Multiply)
+    saveVaultType$(state.vault.id, token, VaultType.Multiply, state.vault.chainId)
       .pipe<ManageVaultChange>(
         map(() => {
           window.location.reload()

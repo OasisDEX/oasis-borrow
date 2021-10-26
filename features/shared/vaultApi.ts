@@ -96,7 +96,10 @@ export function saveVaultUsingApi$(
   id: BigNumber,
   token: string,
   vaultType: VaultType,
+  chainId: string
 ): Observable<void> {
+  console.log('chainId')
+  console.log(chainId)
   return ajax({
     url: `${basePath}/api/vault`,
     method: 'POST',
@@ -107,6 +110,7 @@ export function saveVaultUsingApi$(
     body: {
       id: parseInt(id.toFixed(0)),
       type: vaultType,
+      chainId: chainId
     },
   }).pipe(map((_) => {}))
 }

@@ -8,10 +8,10 @@ datasource db {
 }
 
 model migrations {
-  executed_at DateTime? @default(now())
-  hash        String
   id          Int       @id
   name        String    @unique
+  hash        String
+  executed_at DateTime? @default(now())
 }
 
 model TosApproval {
@@ -21,13 +21,14 @@ model TosApproval {
   sign_date   DateTime
 
   @@unique([address, doc_version], name: "tos_approval_unique_signature")
-  @@map(name: "tos_approval")
+  @@map("tos_approval")
 }
 
 model Vault {
   vault_id      Int       @unique
   type          VaultType
   owner_address String
+  chain_id      Int?
 
   @@map("vault")
 }
@@ -36,5 +37,5 @@ enum VaultType {
   borrow
   multiply
 
-  @@map("vault_type")
+   @@map("vault_type")
 }

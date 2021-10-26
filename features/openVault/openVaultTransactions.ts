@@ -297,7 +297,9 @@ export function openVault(
           // assume that user went through ToS flow and can interact with application
           const jwtToken = jwtAuthGetToken(account as string)
           if (id && jwtToken) {
-            saveVaultUsingApi$(id, jwtToken, VaultType.Borrow).subscribe()
+            console.log('network id')
+            console.log(txState.networkId)
+            saveVaultUsingApi$(id, jwtToken, VaultType.Borrow, txState.networkId).subscribe()
           }
 
           return of({
