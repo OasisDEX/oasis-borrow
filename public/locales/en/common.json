@@ -633,5 +633,7 @@
       "subtext": "Borrow up to {{maxBorrow}} DAI for every $100,000 worth of {{token}}",
       "button": "Borrow against {{token}}"
     }
-  }
+  },
+  "modal-trezor-eip1559-paragraph1": "Connecting with Trezor through metamask is currently broken due to an issue in metamask, see <0>here</0>.",
+  "modal-trezor-eip1559-paragraph2": "Please <0>connect</0> with your Trezor directly to Oasis.app."
 }

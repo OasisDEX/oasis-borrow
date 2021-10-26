@@ -49,7 +49,7 @@ export function VaultFormContainer({
       >
         {breakpoint === 0 && (
           <Box>
-            {vaultFormOpened && <ModalHTMLOverflow close={onClose} />}
+            {vaultFormOpened && <ModalHTMLOverflow />}
             <Box
               sx={{
                 display: ['flex', 'none'],

@@ -13,6 +13,11 @@ import { zero } from 'helpers/zero'
 import { of, Subject } from 'rxjs'
 import { map } from 'rxjs/operators'
 
+// @ts-ignore
+global.document = {
+  getElementById: () => null,
+}
+
 describe('manageMultiplyVault', () => {
   describe('manageMultiplyVault$', () => {
     describe('adjust position', () => {
