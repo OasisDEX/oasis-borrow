@@ -583,7 +583,8 @@
     "subtext": {
       "collateral": "Deposit or withdraw from your Vault. Save gas by combining transactions.",
       "dai": "Generate DAI from the collateral in your vault, or payback DAI. Save gas by combining transactions.",
-      "edit": "Simulate your vault by configuring the amount of collateral to deposit, and slide your multiply factor.",
+      "edit": "Simulate your vault by configuring the amount of collateral to deposit, and DAI to generate.",
+      "edit-multiply": "Simulate your vault by configuring the amount of collateral to deposit, and slide your multiply factor.",
       "proxy": "With your smart proxy multiple actions can be performed in one transaction for your Vault. This proxy only needs to be set up once.",
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "daiAllowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
