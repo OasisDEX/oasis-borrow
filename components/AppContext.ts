@@ -29,7 +29,7 @@ import {
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
-import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
+import { createIlkData$, createIlkDataList$, createIlks$, IlkDataList } from 'blockchain/ilks'
 import {
   createGasPrice$,
   createOraclePriceData$,
@@ -72,7 +72,14 @@ import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
 import { combineLatest, Observable, of } from 'rxjs'
-import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  mergeMap,
+  shareReplay,
+  switchMap,
+} from 'rxjs/operators'
 
 import { dogIlk } from '../blockchain/calls/dog'
 import {
@@ -99,6 +106,7 @@ import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
+import { zero } from '../helpers/zero'
 
 export type TxData =
   | OpenData
@@ -381,9 +389,21 @@ export function setupAppContext() {
 
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
-  const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
+  // const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
+  const tokensWithIlks$ = ilkDataList$.pipe(
+    map((ilkDataList) => {
+      const filteredIlks = ilkDataList.filter(({ ilkDebtAvailable }) => ilkDebtAvailable.gt(zero))
+      return filteredIlks.reduce((acc, curr) => {
+        if (acc[curr.token]) {
+          return { ...acc, [curr.token]: [...acc[curr.token], curr] }
+        }
+        return { ...acc, [curr.token]: [curr] }
+      }, {} as Record<string, IlkDataList>)
+    }),
+  )
   const vaultsOverview$ = memoize(curry(createVaultsOverview$)(vaults$, ilksWithBalance$))
-  const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
+  // const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
+  const landing$ = curry(createLanding$)(ilkDataList$, tokensWithIlks$)
 
   const termsAcceptance$ = createTermsAcceptance$(
     web3Context$,
@@ -421,6 +441,7 @@ export function setupAppContext() {
     vault$,
     ilks$,
     landing$,
+    tokensWithIlks$,
     openVault$,
     manageVault$,
     manageMultiplyVault$,

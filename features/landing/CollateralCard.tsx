@@ -54,7 +54,6 @@ export function CollateralCard({ onClick, title, ilks, background, icon }: Colla
         position: 'relative',
         flex: 1,
         p: 4,
-        m: 3,
         transition: `
           transform 0.5s cubic-bezier(0, 0.28, 0.45, 0.95),
           box-shadow 0.5s cubic-bezier(0, 0.28, 0.45, 0.95)

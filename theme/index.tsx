@@ -220,8 +220,8 @@ const oasisBaseTheme = {
   },
   layout: {
     container: {
-      maxWidth: '1232px',
-      px: 3,
+      maxWidth: '1200px',
+      px: [3, 0],
     },
     appContainer: {
       variant: 'layout.container',

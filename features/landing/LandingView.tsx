@@ -12,15 +12,15 @@ import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import React, { ComponentProps, useCallback } from 'react'
-import { Box, Button, Card, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
 import { TypeformWidget } from './TypeformWidget'
+import { CollateralCard } from './CollateralCard'
 
 const {
   publicRuntimeConfig: { apiHost },
@@ -154,7 +154,6 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
       <Text variant="paragraph1" sx={{ mb: 4, color: 'lavender' }}>
         <Trans i18nKey="landing.hero.subheader" components={[<br />]} />
       </Text>
-      <Image sx={{ mb: 4 }} src={staticFilesRuntimeUrl('/static/img/icons_set.svg')} />
       {!isConnected && (
         <AppLink
           href="/connect"
@@ -230,21 +229,24 @@ export function LandingView() {
   const { landing$, context$ } = useAppContext()
   const context = useObservable(context$)
   const { value: landing, error: landingError } = useObservableWithError(landing$)
-  const { t } = useTranslation()
-  const redirectToOpenVault = useRedirectToOpenVault()
+  // const { value: tokensWithIlks, error: tokensWithIlksError } = useObservableWithError(tokensWithIlks$)
 
-  const onIlkSearch = useCallback(
-    (search: string) => {
-      landing?.ilks.filters.change({ kind: 'search', search })
-    },
-    [landing?.ilks.filters],
-  )
-  const onIlksTagChange = useCallback(
-    (tagFilter: TagFilter) => {
-      landing?.ilks.filters.change({ kind: 'tagFilter', tagFilter })
-    },
-    [landing?.ilks.filters],
-  )
+  console.log(landing)
+  // const { t } = useTranslation()
+  // const redirectToOpenVault = useRedirectToOpenVault()
+  //
+  // const onIlkSearch = useCallback(
+  //   (search: string) => {
+  //     landing?.ilks.filters.change({ kind: 'search', search })
+  //   },
+  //   [landing?.ilks.filters],
+  // )
+  // const onIlksTagChange = useCallback(
+  //   (tagFilter: TagFilter) => {
+  //     landing?.ilks.filters.change({ kind: 'tagFilter', tagFilter })
+  //   },
+  //   [landing?.ilks.filters],
+  // )
 
   return (
     <Grid
@@ -276,49 +278,62 @@ export function LandingView() {
               : {}
           }
         />
-        {landing !== undefined && <FeaturedIlks sx={fadeInAnimation} ilks={landing.featuredIlks} />}
-      </Box>
-      <WithErrorHandler error={landingError}>
-        <WithLoadingIndicator
-          value={landing}
-          customLoader={
-            <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-              <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
-            </Flex>
-          }
-        >
-          {(landing) => (
-            <Box sx={{ ...slideInAnimation, position: 'relative' }}>
-              <FiltersWithPopular
-                onSearch={onIlkSearch}
-                search={landing.ilks.filters.search}
-                onTagChange={onIlksTagChange}
-                tagFilter={landing.ilks.filters.tagFilter}
-                defaultTag="all-assets"
-                page={Pages.LandingPage}
-                searchPlaceholder={t('search-token')}
+        {/*{landing !== undefined && <FeaturedIlks sx={fadeInAnimation} ilks={landing.featuredIlks} />}*/}
+        <Grid columns={[1, 4]} sx={{ mx: 'auto', maxWidth: ['288px', 'inherit'] }}>
+          {landing !== undefined &&
+            Object.keys(landing).map((tokenKey) => (
+              <CollateralCard
+                key={tokenKey}
+                title={tokenKey}
+                onClick={() => null}
+                ilks={landing[tokenKey]}
+                background={getToken(tokenKey).background!}
+                icon={getToken(tokenKey).bannerIconPng!}
               />
-              <Box sx={{ overflowX: 'auto', p: '3px' }}>
-                <Table
-                  data={landing.ilks.data}
-                  primaryKey="ilk"
-                  state={landing.ilks.filters}
-                  columns={ilksColumns}
-                  noResults={<Box>{t('no-results')}</Box>}
-                  deriveRowProps={(row) => ({
-                    onClick: row.ilkDebtAvailable.isZero()
-                      ? undefined
-                      : () => {
-                          trackingEvents.openVault(Pages.LandingPage, row.ilk)
-                          redirectToOpenVault(row.ilk, row.token, row.liquidationRatio)
-                        },
-                  })}
-                />
-              </Box>
-            </Box>
-          )}
-        </WithLoadingIndicator>
-      </WithErrorHandler>
+            ))}
+        </Grid>
+      </Box>
+      {/*<WithErrorHandler error={landingError}>*/}
+      {/*  <WithLoadingIndicator*/}
+      {/*    value={landing}*/}
+      {/*    customLoader={*/}
+      {/*      <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>*/}
+      {/*        <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />*/}
+      {/*      </Flex>*/}
+      {/*    }*/}
+      {/*  >*/}
+      {/*    {(landing) => (*/}
+      {/*      <Box sx={{ ...slideInAnimation, position: 'relative' }}>*/}
+      {/*        <FiltersWithPopular*/}
+      {/*          onSearch={onIlkSearch}*/}
+      {/*          search={landing.ilks.filters.search}*/}
+      {/*          onTagChange={onIlksTagChange}*/}
+      {/*          tagFilter={landing.ilks.filters.tagFilter}*/}
+      {/*          defaultTag="all-assets"*/}
+      {/*          page={Pages.LandingPage}*/}
+      {/*          searchPlaceholder={t('search-token')}*/}
+      {/*        />*/}
+      {/*        <Box sx={{ overflowX: 'auto', p: '3px' }}>*/}
+      {/*          <Table*/}
+      {/*            data={landing.ilks.data}*/}
+      {/*            primaryKey="ilk"*/}
+      {/*            state={landing.ilks.filters}*/}
+      {/*            columns={ilksColumns}*/}
+      {/*            noResults={<Box>{t('no-results')}</Box>}*/}
+      {/*            deriveRowProps={(row) => ({*/}
+      {/*              onClick: row.ilkDebtAvailable.isZero()*/}
+      {/*                ? undefined*/}
+      {/*                : () => {*/}
+      {/*                    trackingEvents.openVault(Pages.LandingPage, row.ilk)*/}
+      {/*                    redirectToOpenVault(row.ilk, row.token, row.liquidationRatio)*/}
+      {/*                  },*/}
+      {/*            })}*/}
+      {/*          />*/}
+      {/*        </Box>*/}
+      {/*      </Box>*/}
+      {/*    )}*/}
+      {/*  </WithLoadingIndicator>*/}
+      {/*</WithErrorHandler>*/}
       <LandingCards />
       <TypeformWidget />
     </Grid>
