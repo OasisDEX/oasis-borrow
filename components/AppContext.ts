@@ -29,7 +29,7 @@ import {
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
-import { createIlkData$, createIlkDataList$, createIlks$, IlkDataList } from 'blockchain/ilks'
+import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import {
   createGasPrice$,
   createOraclePriceData$,
@@ -51,7 +51,6 @@ import { currentContent } from 'features/content'
 import { createExchangeQuote$ } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
-import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageMultiplyVault$ } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { createManageVault$ } from 'features/manageVault/manageVault'
@@ -72,14 +71,7 @@ import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
 import { combineLatest, Observable, of } from 'rxjs'
-import {
-  distinctUntilChanged,
-  filter,
-  map,
-  mergeMap,
-  shareReplay,
-  switchMap,
-} from 'rxjs/operators'
+import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { dogIlk } from '../blockchain/calls/dog'
 import {
@@ -102,11 +94,11 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import { createIlksPerToken$ } from '../features/ilks/ilksPerToken'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
-import { zero } from '../helpers/zero'
 
 export type TxData =
   | OpenData
@@ -389,21 +381,9 @@ export function setupAppContext() {
 
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
-  // const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
-  const tokensWithIlks$ = ilkDataList$.pipe(
-    map((ilkDataList) => {
-      const filteredIlks = ilkDataList.filter(({ ilkDebtAvailable }) => ilkDebtAvailable.gt(zero))
-      return filteredIlks.reduce((acc, curr) => {
-        if (acc[curr.token]) {
-          return { ...acc, [curr.token]: [...acc[curr.token], curr] }
-        }
-        return { ...acc, [curr.token]: [curr] }
-      }, {} as Record<string, IlkDataList>)
-    }),
-  )
+  const ilksPerToken$ = createIlksPerToken$(ilkDataList$)
   const vaultsOverview$ = memoize(curry(createVaultsOverview$)(vaults$, ilksWithBalance$))
-  // const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
-  const landing$ = curry(createLanding$)(ilkDataList$, tokensWithIlks$)
+  const landing$ = curry(createLanding$)(ilkDataList$, ilksPerToken$)
 
   const termsAcceptance$ = createTermsAcceptance$(
     web3Context$,
@@ -441,7 +421,7 @@ export function setupAppContext() {
     vault$,
     ilks$,
     landing$,
-    tokensWithIlks$,
+    ilksPerToken$,
     openVault$,
     manageVault$,
     manageMultiplyVault$,

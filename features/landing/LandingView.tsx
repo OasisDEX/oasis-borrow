@@ -1,136 +1,21 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Pages, trackingEvents } from 'analytics/analytics'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { ColumnDef, Table, TableSortHeader } from 'components/Table'
-import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
-import { IlksFilterState, TagFilter } from 'features/ilks/popularIlksFilters'
-import { FiltersWithPopular } from 'features/landing/FiltersWithPopular'
-import { useRedirectToOpenVault } from 'features/openVaultOverview/useRedirectToOpenVault'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { ComponentProps, useCallback } from 'react'
-import { Box, Button, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
+import React from 'react'
+import { Box, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
-import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
+import { CollateralCard } from './CollateralCard'
+import { FeaturedIlksPlaceholder } from './FeaturedIlks'
 import { GetStartedSection } from './GetStarted'
 import { HaveSomeQuestionsSection } from './HaveSomeQuestions'
 import { HowItWorksSection } from './HowItWorks'
 import { TypeformWidget } from './TypeformWidget'
-import { CollateralCard } from './CollateralCard'
-
-export function TokenSymbol({
-  token,
-  displaySymbol,
-  ...props
-}: { token: string; displaySymbol?: boolean } & Omit<ComponentProps<typeof Icon>, 'name'>) {
-  const tokenInfo = getToken(token)
-
-  return (
-    <Flex>
-      <Icon
-        name={tokenInfo.iconCircle}
-        size="26px"
-        sx={{ verticalAlign: 'sub', mr: 2 }}
-        {...props}
-      />
-      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', whiteSpace: 'nowrap' }}>
-        {tokenInfo[displaySymbol ? 'symbol' : 'name']}
-      </Text>
-    </Flex>
-  )
-}
-
-const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
-  {
-    headerLabel: 'system.asset',
-    header: ({ label }) => <Text variant="tableHead">{label}</Text>,
-    cell: ({ token }) => <TokenSymbol token={token} />,
-  },
-  {
-    headerLabel: 'system.type',
-    header: ({ label }) => <Text variant="tableHead">{label}</Text>,
-    cell: ({ ilk }) => <Text>{ilk}</Text>,
-  },
-  {
-    headerLabel: 'system.dai-available',
-    header: ({ label, ...filters }) => (
-      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="ilkDebtAvailable">
-        {label}
-      </TableSortHeader>
-    ),
-    cell: ({ ilkDebtAvailable }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(ilkDebtAvailable)}</Text>
-    ),
-  },
-  {
-    headerLabel: 'system.stability-fee',
-    header: ({ label, ...filters }) => (
-      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="stabilityFee">
-        {label}
-      </TableSortHeader>
-    ),
-    cell: ({ stabilityFee }) => (
-      <Text sx={{ textAlign: 'right' }}>
-        {formatPercent(stabilityFee.times(100), { precision: 2 })}
-      </Text>
-    ),
-  },
-  {
-    headerLabel: 'system.min-coll-ratio',
-    header: ({ label, ...filters }) => (
-      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="liquidationRatio">
-        {label}
-      </TableSortHeader>
-    ),
-    cell: ({ liquidationRatio }) => (
-      <Text sx={{ textAlign: 'right' }}>{formatPercent(liquidationRatio.times(100))}</Text>
-    ),
-  },
-  {
-    headerLabel: '',
-    header: () => null,
-    cell: ({ ilk, ilkDebtAvailable, token, liquidationRatio }) => {
-      const redirectToOpenVault = useRedirectToOpenVault()
-      return (
-        <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
-          <AppLink
-            sx={{ width: ['100%', 'inherit'], textAlign: 'center', maxWidth: ['100%', '150px'] }}
-            variant="secondary"
-            href={`/vaults/open/${ilk}`}
-            disabled={ilkDebtAvailable.isZero()}
-            onClick={(e) => {
-              e.preventDefault()
-              if (ilkDebtAvailable.isZero()) {
-                return
-              }
-              redirectToOpenVault(ilk, token, liquidationRatio)
-            }}
-          >
-            {!ilkDebtAvailable.isZero() ? (
-              <Trans i18nKey="open-vault.title" />
-            ) : (
-              <Button
-                variant="secondary"
-                disabled={true}
-                sx={{ width: '100%', maxWidth: ['100%', '150px'] }}
-              >
-                <Text>
-                  <Trans i18nKey="no-dai" />
-                </Text>
-              </Button>
-            )}
-          </AppLink>
-        </Box>
-      )
-    },
-  },
-]
 
 export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boolean }) {
   const { t } = useTranslation()
@@ -187,24 +72,6 @@ export function LandingView() {
   const { landing$, context$ } = useAppContext()
   const context = useObservable(context$)
   const { value: landing, error: landingError } = useObservableWithError(landing$)
-  // const { value: tokensWithIlks, error: tokensWithIlksError } = useObservableWithError(tokensWithIlks$)
-
-  console.log(landing)
-  // const { t } = useTranslation()
-  // const redirectToOpenVault = useRedirectToOpenVault()
-  //
-  // const onIlkSearch = useCallback(
-  //   (search: string) => {
-  //     landing?.ilks.filters.change({ kind: 'search', search })
-  //   },
-  //   [landing?.ilks.filters],
-  // )
-  // const onIlksTagChange = useCallback(
-  //   (tagFilter: TagFilter) => {
-  //     landing?.ilks.filters.change({ kind: 'tagFilter', tagFilter })
-  //   },
-  //   [landing?.ilks.filters],
-  // )
 
   return (
     <Grid
@@ -236,62 +103,33 @@ export function LandingView() {
               : {}
           }
         />
-        {/*{landing !== undefined && <FeaturedIlks sx={fadeInAnimation} ilks={landing.featuredIlks} />}*/}
-        <Grid columns={[1, 4]} sx={{ mx: 'auto', maxWidth: ['288px', 'inherit'] }}>
-          {landing !== undefined &&
-            Object.keys(landing).map((tokenKey) => (
-              <CollateralCard
-                key={tokenKey}
-                title={tokenKey}
-                onClick={() => null}
-                ilks={landing[tokenKey]}
-                background={getToken(tokenKey).background!}
-                icon={getToken(tokenKey).bannerIconPng!}
-              />
-            ))}
-        </Grid>
+        <WithErrorHandler error={landingError}>
+          <WithLoadingIndicator
+            value={landing}
+            customLoader={
+              <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
+                <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
+              </Flex>
+            }
+          >
+            {(landing) => (
+              <Grid columns={[1, 4]} sx={{ mx: 'auto', maxWidth: ['288px', 'inherit'] }}>
+                {landing !== undefined &&
+                  Object.keys(landing).map((tokenKey) => (
+                    <CollateralCard
+                      key={tokenKey}
+                      title={tokenKey}
+                      onClick={() => null}
+                      ilks={landing[tokenKey]}
+                      background={getToken(tokenKey).background!}
+                      icon={getToken(tokenKey).bannerIconPng!}
+                    />
+                  ))}
+              </Grid>
+            )}
+          </WithLoadingIndicator>
+        </WithErrorHandler>
       </Box>
-      {/*<WithErrorHandler error={landingError}>*/}
-      {/*  <WithLoadingIndicator*/}
-      {/*    value={landing}*/}
-      {/*    customLoader={*/}
-      {/*      <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>*/}
-      {/*        <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />*/}
-      {/*      </Flex>*/}
-      {/*    }*/}
-      {/*  >*/}
-      {/*    {(landing) => (*/}
-      {/*      <Box sx={{ ...slideInAnimation, position: 'relative' }}>*/}
-      {/*        <FiltersWithPopular*/}
-      {/*          onSearch={onIlkSearch}*/}
-      {/*          search={landing.ilks.filters.search}*/}
-      {/*          onTagChange={onIlksTagChange}*/}
-      {/*          tagFilter={landing.ilks.filters.tagFilter}*/}
-      {/*          defaultTag="all-assets"*/}
-      {/*          page={Pages.LandingPage}*/}
-      {/*          searchPlaceholder={t('search-token')}*/}
-      {/*        />*/}
-      {/*        <Box sx={{ overflowX: 'auto', p: '3px' }}>*/}
-      {/*          <Table*/}
-      {/*            data={landing.ilks.data}*/}
-      {/*            primaryKey="ilk"*/}
-      {/*            state={landing.ilks.filters}*/}
-      {/*            columns={ilksColumns}*/}
-      {/*            noResults={<Box>{t('no-results')}</Box>}*/}
-      {/*            deriveRowProps={(row) => ({*/}
-      {/*              onClick: row.ilkDebtAvailable.isZero()*/}
-      {/*                ? undefined*/}
-      {/*                : () => {*/}
-      {/*                    trackingEvents.openVault(Pages.LandingPage, row.ilk)*/}
-      {/*                    redirectToOpenVault(row.ilk, row.token, row.liquidationRatio)*/}
-      {/*                  },*/}
-      {/*            })}*/}
-      {/*          />*/}
-      {/*        </Box>*/}
-      {/*      </Box>*/}
-      {/*    )}*/}
-      {/*  </WithLoadingIndicator>*/}
-      {/*</WithErrorHandler>*/}
       <HowItWorksSection />
       <HaveSomeQuestionsSection />
       <GetStartedSection />
