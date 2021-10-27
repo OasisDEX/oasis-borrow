@@ -6,6 +6,7 @@ import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
 import React from 'react'
 import { Box, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
@@ -72,6 +73,7 @@ export function LandingView() {
   const { landing$, context$ } = useAppContext()
   const context = useObservable(context$)
   const { value: landing, error: landingError } = useObservableWithError(landing$)
+  const router = useRouter()
 
   return (
     <Grid
@@ -130,8 +132,7 @@ export function LandingView() {
                         category={category as keyof Landing}
                         key={tokenKey}
                         title={tokenKey}
-                        // to be updated when page per asset available
-                        onClick={() => null}
+                        onClick={() => router.push(`/assets/${tokenKey}`)}
                         ilks={landing[category as keyof Landing][tokenKey]}
                         background={getToken(tokenKey).background!}
                         icon={getToken(tokenKey).bannerIconPng!}
