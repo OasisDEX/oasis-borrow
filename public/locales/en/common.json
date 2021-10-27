@@ -149,11 +149,6 @@
   },
   "exchange-rate": "Exchange rate",
   "failed": "Failed",
-  "featured": {
-    "cheapest": "Cheapest",
-    "most-popular": "Most popular",
-    "new": "New"
-  },
   "fees": "Fees",
   "filters": {
     "lp-token": "LP tokens",
