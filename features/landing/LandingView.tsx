@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { AppLink } from 'components/Links'
+import { AppLink, AppLinkWithArrow } from 'components/Links'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
@@ -70,8 +70,10 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
 }
 
 export function LandingView() {
-  const { landing$, context$ } = useAppContext()
+  const { landing$, context$, ilksPerToken$ } = useAppContext()
   const context = useObservable(context$)
+  const ilksPerToken = useObservable(ilksPerToken$)
+  const numberOfCollaterals = ilksPerToken && Object.keys(ilksPerToken).length
   const { value: landing, error: landingError } = useObservableWithError(landing$)
   const router = useRouter()
 
@@ -90,8 +92,7 @@ export function LandingView() {
         sx={{
           ...slideInAnimation,
           position: 'relative',
-          my: 4,
-          mb: [2, 3, 5],
+          mb: ['112px', '240px'],
         }}
       >
         <LandingPageCardsPlaceholder
@@ -118,28 +119,37 @@ export function LandingView() {
             }
           >
             {(landing) => (
-              <Grid
-                columns={[1, 2, 4]}
-                sx={{
-                  mx: 'auto',
-                  maxWidth: ['343px', '686px', 'inherit'],
-                }}
-              >
-                {landing !== undefined &&
-                  Object.entries(landing).map(([category, ilks]) =>
-                    Object.keys(ilks).flatMap((tokenKey) => (
-                      <CollateralCard
-                        category={category as keyof Landing}
-                        key={tokenKey}
-                        title={tokenKey}
-                        onClick={() => router.push(`/assets/${tokenKey}`)}
-                        ilks={landing[category as keyof Landing][tokenKey]}
-                        background={getToken(tokenKey).background!}
-                        icon={getToken(tokenKey).bannerIconPng!}
-                      />
-                    )),
-                  )}
-              </Grid>
+              <>
+                <Grid
+                  columns={[1, 2, 4]}
+                  sx={{
+                    mx: 'auto',
+                    maxWidth: ['343px', '686px', 'inherit'],
+                  }}
+                >
+                  {landing !== undefined &&
+                    Object.entries(landing).map(([category, ilks]) =>
+                      Object.keys(ilks).flatMap((tokenKey) => (
+                        <CollateralCard
+                          category={category as keyof Landing}
+                          key={tokenKey}
+                          title={tokenKey}
+                          onClick={() => router.push(`/assets/${tokenKey}`)}
+                          ilks={landing[category as keyof Landing][tokenKey]}
+                          background={getToken(tokenKey).background!}
+                          icon={getToken(tokenKey).bannerIconPng!}
+                        />
+                      )),
+                    )}
+                </Grid>
+                {numberOfCollaterals && (
+                  <Box sx={{ justifyContent: 'center', mt: 4, display: ['none', 'flex'] }}>
+                    <AppLinkWithArrow href="/assets/all" sx={{ fontSize: 3 }}>
+                      See all {numberOfCollaterals} collateral types
+                    </AppLinkWithArrow>
+                  </Box>
+                )}
+              </>
             )}
           </WithLoadingIndicator>
         </WithErrorHandler>

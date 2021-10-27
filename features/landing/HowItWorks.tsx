@@ -190,7 +190,7 @@ export function HowItWorksSection() {
   )
 
   return (
-    <Box pt={6} pb={5}>
+    <Box pb={5}>
       <Grid
         columns={[1, 2, 'minmax(275px, 1fr) minmax(1fr, 576px)']}
         sx={{ alignItems: 'flex-start' }}
@@ -198,7 +198,6 @@ export function HowItWorksSection() {
       >
         <Grid
           sx={{
-            pt: 5,
             ...(scrolled && {
               position: ['relative', 'sticky'],
               top: 0,
