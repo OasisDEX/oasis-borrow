@@ -144,7 +144,7 @@ interface OpenMultiplyEvent extends MultiplyBaseEvent {
   kind: 'OPEN_MULTIPLY_VAULT'
 }
 interface IncreaseMultipleEvent extends MultiplyBaseEvent {
-  kind: 'INCREASE_MULTIPLY'
+  kind: 'INCREASE_MULTIPLE'
 }
 interface DecreaseMultipleEvent extends MultiplyBaseEvent {
   kind: 'DECREASE_MULTIPLY'

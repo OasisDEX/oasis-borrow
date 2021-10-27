@@ -100,7 +100,7 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
             </MultiplyHistoryEventDetailsItem>
           </>
         )}
-        {event.kind === 'INCREASE_MULTIPLY' && (
+        {event.kind === 'INCREASE_MULTIPLE' && (
           <MultiplyHistoryEventDetailsItem label={t('history.bought')}>
             {'bought' in event && formatCryptoBalance(event.bought)} {event.token}
           </MultiplyHistoryEventDetailsItem>
@@ -206,7 +206,7 @@ function VaultHistoryItem({
 
   const isMultiplyEvent =
     item.kind === 'OPEN_MULTIPLY_VAULT' ||
-    item.kind === 'INCREASE_MULTIPLY' ||
+    item.kind === 'INCREASE_MULTIPLE' ||
     item.kind === 'DECREASE_MULTIPLY' ||
     item.kind === 'CLOSE_VAULT_TO_DAI' ||
     item.kind === 'CLOSE_VAULT_TO_COLLATERAL'
