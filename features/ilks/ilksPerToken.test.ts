@@ -13,5 +13,6 @@ describe('createIlksPerToken$', () => {
     expect(state()).to.have.property('USDC')
     expect(state()).to.have.property('ETH')
     expect(state()).to.have.property('LINK')
+    expect(state()).to.have.property('UNI LP Tokens')
   })
 })
