@@ -70,10 +70,18 @@ export function LandingPageCardsPlaceholder({ sx }: { sx: SxStyleProp }) {
         left: 0,
         top: 0,
         right: 0,
-        maxWidth: ['343px', '686px', 'inherit'],
         mx: 'auto',
+        maxWidth: '343px',
+        gridTemplateColumns: '1fr',
+        '@media screen and (min-width: 768px)': {
+          gridTemplateColumns: 'repeat(2,1fr)',
+          maxWidth: '686px',
+        },
+        '@media screen and (min-width: 1200px)': {
+          gridTemplateColumns: 'repeat(4,1fr)',
+          maxWidth: 'inherit',
+        },
       }}
-      columns={[1, 2, 4]}
     >
       <CollateralCardPlaceholder />
       <CollateralCardPlaceholder sx={{ display: ['none', 'inherit'] }} />
@@ -92,13 +100,13 @@ export function CollateralCard({
   category,
 }: CollateralCardProps) {
   const { t } = useTranslation()
-  const translatedCategory = t(`landing.collateral-cards.${category}`)
+  const translatedCategory = category ? t(`landing.collateral-cards.${category}`) : ''
 
   return (
     <Flex
       sx={{
         ...fadeInAnimation,
-        minWidth: ['343px', '260px'],
+        minWidth: ['343px', '280px'],
         height: '315px',
         overflow: 'hidden',
         position: 'relative',

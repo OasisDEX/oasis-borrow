@@ -121,10 +121,18 @@ export function LandingView() {
             {(landing) => (
               <>
                 <Grid
-                  columns={[1, 2, 4]}
                   sx={{
                     mx: 'auto',
-                    maxWidth: ['343px', '686px', 'inherit'],
+                    maxWidth: '343px',
+                    gridTemplateColumns: '1fr',
+                    '@media screen and (min-width: 768px)': {
+                      gridTemplateColumns: 'repeat(2,1fr)',
+                      maxWidth: '686px',
+                    },
+                    '@media screen and (min-width: 1200px)': {
+                      gridTemplateColumns: 'repeat(4,1fr)',
+                      maxWidth: 'inherit',
+                    },
                   }}
                 >
                   {landing !== undefined &&
