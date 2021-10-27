@@ -755,6 +755,7 @@ const oasisBaseTheme = {
     mobileMenu: 3,
     modal: 4,
     cookie: 5,
+    modalOnMobilePanel: 5,
   },
   grids: {
     vaultContainer: {
