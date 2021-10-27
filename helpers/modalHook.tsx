@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom'
 
 export interface WithClose {
   close: () => void
+  id?: string
 }
 
 export type ModalProps<T = any> = T & WithClose

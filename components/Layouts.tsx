@@ -10,6 +10,7 @@ import { BackgroundLight } from 'theme/BackgroundLight'
 import { BackgroundLighter } from 'theme/BackgroundLighter'
 
 import { GenericAnnouncement } from './Announcement'
+import { ModalTrezorMetamaskEIP1559 } from './Modal'
 
 interface BasicLayoutProps extends WithChildren {
   header: JSX.Element
@@ -92,6 +93,7 @@ export function AppLayout({ children }: WithChildren) {
         header={<AppHeader />}
       >
         {children}
+        <ModalTrezorMetamaskEIP1559 />
       </WithAnnouncementLayout>
     </>
   )
