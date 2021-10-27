@@ -16,6 +16,7 @@ import { ModalProvider } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { appWithTranslation } from 'next-i18next'
 import { AppProps } from 'next/app'
+import getConfig from 'next/config'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
@@ -111,9 +112,11 @@ const noOverlayWorkaroundScript = `
   })
 `
 
+const { adRollAdvId, adRollPixId } = getConfig()?.publicRuntimeConfig
+
 const adRollPixelScript = `
-  adroll_adv_id = "6CNZTX5DVNE6TI3XADWZTT";
-  adroll_pix_id = "YJYBAF7U6REERGTMRBQLIM";
+  adroll_adv_id = ${adRollAdvId};
+  adroll_pix_id = ${adRollPixId};
   adroll_version = "2.0";
 
   (function(w, d, e, o, a) {
@@ -169,9 +172,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         {process.env.NODE_ENV !== 'production' && (
           <script dangerouslySetInnerHTML={{ __html: noOverlayWorkaroundScript }} />
         )}
-        {process.env.NODE_ENV === 'production' && (
-          <script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} />
-        )}
+        <script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <ThemeProvider theme={theme}>
