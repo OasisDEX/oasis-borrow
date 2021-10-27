@@ -195,6 +195,10 @@
       "headline": "Borrow and multiply using your favourite cryptos",
       "subheader": "ETH, WBTC, +30 more assets available to put to work from just 1.50% per year. <0/>Connect a wallet to get started."
     },
+    "collateral-cards": {
+      "popular": "POPULAR",
+      "newest": "NEWEST"
+    },
     "how-it-works": {
       "title": "How it works",
       "items": {

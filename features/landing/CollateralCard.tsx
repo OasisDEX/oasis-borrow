@@ -4,6 +4,7 @@ import { max, min } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Heading, Image, Text } from 'theme-ui'
+import { fadeInAnimation } from 'theme/animations'
 
 export interface CollateralCardProps {
   title: string
@@ -55,6 +56,7 @@ export function CollateralCard({
   return (
     <Flex
       sx={{
+        ...fadeInAnimation,
         width: ['343px', '288px'],
         height: '315px',
         overflow: 'hidden',

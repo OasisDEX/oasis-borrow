@@ -4,20 +4,25 @@ import { chain, pick, sumBy } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
+export interface Landing {
+  popular: IlksPerToken
+  newest: IlksPerToken
+}
+
 export function getPopular(ilksPerToken: IlksPerToken, n: number = 3) {
   const reducedDebts = Object.keys(ilksPerToken).reduce((acc, curr) => {
     return {
       ...acc,
       [curr]: {
         totalIlksDebt: sumBy(ilksPerToken[curr], (ilk) => ilk.ilkDebt.toNumber()),
-        totalIlksAvailable: sumBy(ilksPerToken[curr], (ilk) => ilk.ilkDebtAvailable.toNumber()),
+        totalIlksDebtAvailable: sumBy(ilksPerToken[curr], (ilk) => ilk.ilkDebtAvailable.toNumber()),
       },
     }
-  }, {} as Record<string, { totalIlksDebt: number; totalIlksAvailable: number }>)
+  }, {} as Record<string, { totalIlksDebt: number; totalIlksDebtAvailable: number }>)
 
   const nTopTokens = chain(reducedDebts)
     .keys()
-    .filter((tokenKey) => reducedDebts[tokenKey].totalIlksAvailable > 0)
+    .filter((tokenKey) => reducedDebts[tokenKey].totalIlksDebtAvailable > 0)
     .sort((a, b) => reducedDebts[b].totalIlksDebt - reducedDebts[a].totalIlksDebt)
     .take(n)
     .value()
@@ -46,7 +51,7 @@ export function getCollateralCards(
 export function createLanding$(
   ilkDataList$: Observable<IlkDataList>,
   ilksPerToken$: Observable<IlksPerToken>,
-): Observable<{ popular: IlksPerToken; newest: IlksPerToken }> {
+): Observable<Landing> {
   return combineLatest(ilkDataList$, ilksPerToken$).pipe(
     map(([ilkDataList, tokensWithIlks]) => getCollateralCards(ilkDataList, tokensWithIlks)),
   )

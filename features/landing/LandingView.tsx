@@ -15,6 +15,7 @@ import { FeaturedIlksPlaceholder } from './FeaturedIlks'
 import { GetStartedSection } from './GetStarted'
 import { HaveSomeQuestionsSection } from './HaveSomeQuestions'
 import { HowItWorksSection } from './HowItWorks'
+import { Landing } from './landing'
 import { TypeformWidget } from './TypeformWidget'
 
 export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boolean }) {
@@ -69,6 +70,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
 }
 
 export function LandingView() {
+  const { t } = useTranslation()
   const { landing$, context$ } = useAppContext()
   const context = useObservable(context$)
   const { value: landing, error: landingError } = useObservableWithError(landing$)
@@ -107,8 +109,8 @@ export function LandingView() {
           <WithLoadingIndicator
             value={landing}
             customLoader={
-              <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-                <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
+              <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '410px' }}>
+                <AppSpinner sx={{ mt: 6 }} variant="styles.spinner.large" />
               </Flex>
             }
           >
@@ -118,11 +120,12 @@ export function LandingView() {
                   Object.entries(landing).map(([category, ilks]) =>
                     Object.keys(ilks).flatMap((tokenKey) => (
                       <CollateralCard
-                        category={category.toUpperCase()}
+                        category={t(`landing.collateral-cards.${category}`)}
                         key={tokenKey}
                         title={tokenKey}
+                        // to be updated when page per asset available
                         onClick={() => null}
-                        ilks={landing.popular[tokenKey]}
+                        ilks={landing[category as keyof Landing][tokenKey]}
                         background={getToken(tokenKey).background!}
                         icon={getToken(tokenKey).bannerIconPng!}
                       />

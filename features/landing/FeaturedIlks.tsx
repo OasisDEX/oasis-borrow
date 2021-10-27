@@ -149,10 +149,19 @@ export function FeaturedIlks({ ilks, sx }: { ilks: FeaturedIlk[]; sx?: SxStylePr
 export function FeaturedIlksPlaceholder({ sx }: { sx: SxStyleProp }) {
   return (
     <Grid
-      sx={{ ...sx, position: 'absolute', left: 0, top: 0, right: 0 }}
-      columns={['1fr', '1fr 1fr 1fr']}
+      sx={{
+        ...sx,
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        right: 0,
+        maxWidth: ['343px', 'inherit'],
+        mx: 'auto',
+      }}
+      columns={['1fr', '1fr 1fr 1fr 1fr']}
       gap={4}
     >
+      <CallToActionPlaceholder />
       <CallToActionPlaceholder />
       <CallToActionPlaceholder />
       <CallToActionPlaceholder />
