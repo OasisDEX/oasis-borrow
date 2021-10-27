@@ -5,11 +5,11 @@ import { map } from 'rxjs/operators'
 
 export type IlksPerToken = Record<string, IlkDataList>
 
-const aggregationPatterns: Record<string, RegExp> = {
-  'UNI LP Tokens': /^(GUNIV3|UNIV2)/,
-}
+export function getAggregationTokenKey(token: string) {
+  const aggregationPatterns: Record<string, RegExp> = {
+    'UNI LP Tokens': /^(GUNIV3|UNIV2)/,
+  }
 
-export function aggregateTokensByPattern(token: string) {
   return Object.keys(aggregationPatterns).find((key) => aggregationPatterns[key].test(token))
 }
 
@@ -19,9 +19,9 @@ export function createIlksPerToken$(
   return ilkDataList$.pipe(
     map((ilkDataList) => {
       return groupBy(ilkDataList, (ilkDataList) => {
-        const aggregatedTokenKey = aggregateTokensByPattern(ilkDataList.token)
-        if (aggregatedTokenKey) {
-          return aggregatedTokenKey
+        const aggregationTokenKey = getAggregationTokenKey(ilkDataList.token)
+        if (aggregationTokenKey) {
+          return aggregationTokenKey
         }
         return ilkDataList.token
       })

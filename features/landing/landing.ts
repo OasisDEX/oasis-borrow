@@ -1,5 +1,5 @@
 import { IlkDataList } from 'blockchain/ilks'
-import { aggregateTokensByPattern, IlksPerToken } from 'features/ilks/ilksPerToken'
+import { getAggregationTokenKey, IlksPerToken } from 'features/ilks/ilksPerToken'
 import { chain, pick, sumBy } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
@@ -32,10 +32,13 @@ export function getPopular(ilksPerToken: IlksPerToken, n: number = 3) {
 
 export function getNewest(ilks: IlkDataList) {
   const { token } = ilks[ilks.length - 1]
-  const listOfAllIlks = ilks.filter((ilk) => ilk.token === token)
-  const aggregatedTokenKey = aggregateTokensByPattern(token) || token
+  const aggregationTokenKey = getAggregationTokenKey(token)
 
-  return { [aggregatedTokenKey]: listOfAllIlks }
+  if (aggregationTokenKey) {
+    return { [aggregationTokenKey]: ilks.filter((ilk) => getAggregationTokenKey(ilk.token)) }
+  }
+
+  return { [token]: ilks.filter((ilk) => ilk.token === token) }
 }
 
 export function getCollateralCards(

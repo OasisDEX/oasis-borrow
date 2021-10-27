@@ -10,8 +10,7 @@ import React from 'react'
 import { Box, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
-import { CollateralCard } from './CollateralCard'
-import { FeaturedIlksPlaceholder } from './FeaturedIlks'
+import { CollateralCard, LandingPageCardsPlaceholder } from './CollateralCard'
 import { GetStartedSection } from './GetStarted'
 import { HaveSomeQuestionsSection } from './HaveSomeQuestions'
 import { HowItWorksSection } from './HowItWorks'
@@ -70,7 +69,6 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
 }
 
 export function LandingView() {
-  const { t } = useTranslation()
   const { landing$, context$ } = useAppContext()
   const context = useObservable(context$)
   const { value: landing, error: landingError } = useObservableWithError(landing$)
@@ -94,7 +92,7 @@ export function LandingView() {
           mb: [2, 3, 5],
         }}
       >
-        <FeaturedIlksPlaceholder
+        <LandingPageCardsPlaceholder
           sx={
             landing !== undefined
               ? {
@@ -110,17 +108,26 @@ export function LandingView() {
             value={landing}
             customLoader={
               <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '410px' }}>
-                <AppSpinner sx={{ mt: 6 }} variant="styles.spinner.large" />
+                <AppSpinner
+                  sx={{ mt: ['145px', '315px', '145px'] }}
+                  variant="styles.spinner.large"
+                />
               </Flex>
             }
           >
             {(landing) => (
-              <Grid columns={[1, 4]} sx={{ mx: 'auto', maxWidth: ['343px', 'inherit'] }}>
+              <Grid
+                columns={[1, 2, 4]}
+                sx={{
+                  mx: 'auto',
+                  maxWidth: ['343px', '686px', 'inherit'],
+                }}
+              >
                 {landing !== undefined &&
                   Object.entries(landing).map(([category, ilks]) =>
                     Object.keys(ilks).flatMap((tokenKey) => (
                       <CollateralCard
-                        category={t(`landing.collateral-cards.${category}`)}
+                        category={category as keyof Landing}
                         key={tokenKey}
                         title={tokenKey}
                         // to be updated when page per asset available

@@ -3,16 +3,16 @@ import { formatPercent } from 'helpers/formatters/format'
 import { max, min } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Heading, Image, Text } from 'theme-ui'
+import { Box, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
 
 export interface CollateralCardProps {
   title: string
-  category?: string
   onClick(): void
   ilks: IlkData[]
   background: string
   icon: string
+  category?: string
 }
 function getAnnualFeeString(ilks: IlkData[]) {
   if (ilks.length === 1) {
@@ -43,6 +43,46 @@ function getCollRatioString(ilks: IlkData[]) {
   return `${formatPercent(minRatio.times(100))} - ${formatPercent(maxRatio.times(100))}`
 }
 
+function CollateralCardPlaceholder({ sx }: { sx?: SxStyleProp }) {
+  return (
+    <Box
+      sx={{
+        cursor: 'progress',
+        bg: 'backgroundAlt',
+        borderRadius: 'large',
+        boxShadow: 'surface',
+        backgroundBlendMode: 'overlay',
+        opacity: 0.3,
+        color: 'transparent',
+        height: '315px',
+        ...sx,
+      }}
+    />
+  )
+}
+
+export function LandingPageCardsPlaceholder({ sx }: { sx: SxStyleProp }) {
+  return (
+    <Grid
+      sx={{
+        ...sx,
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        right: 0,
+        maxWidth: ['343px', '686px', 'inherit'],
+        mx: 'auto',
+      }}
+      columns={[1, 2, 4]}
+    >
+      <CollateralCardPlaceholder />
+      <CollateralCardPlaceholder sx={{ display: ['none', 'inherit'] }} />
+      <CollateralCardPlaceholder sx={{ display: ['none', 'inherit'] }} />
+      <CollateralCardPlaceholder sx={{ display: ['none', 'inherit'] }} />
+    </Grid>
+  )
+}
+
 export function CollateralCard({
   onClick,
   title,
@@ -52,12 +92,13 @@ export function CollateralCard({
   category,
 }: CollateralCardProps) {
   const { t } = useTranslation()
+  const translatedCategory = t(`landing.collateral-cards.${category}`)
 
   return (
     <Flex
       sx={{
         ...fadeInAnimation,
-        width: ['343px', '288px'],
+        minWidth: ['343px', '260px'],
         height: '315px',
         overflow: 'hidden',
         position: 'relative',
@@ -102,9 +143,9 @@ export function CollateralCard({
         src={icon}
       />
       <Flex sx={{ zIndex: 1, flexDirection: 'column', alignItems: 'space-between' }}>
-        {category && (
+        {translatedCategory && (
           <Text variant="paragraph3" sx={{ color: 'white', pt: 3, pb: 2 }}>
-            {category}
+            {translatedCategory}
           </Text>
         )}
         <Heading
