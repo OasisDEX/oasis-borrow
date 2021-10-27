@@ -18,7 +18,7 @@ const query = gql`
       orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
     ) {
       nodes {
-        txHash
+        hash
         txId
         logIndex
         blockId

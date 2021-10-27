@@ -91,7 +91,8 @@ const protoMain = {
   magicLink: {
     apiKey: '',
   },
-  cacheApi: 'https://oazo-bcache.new.oasis.app/api/v1',
+  // TODO: revert to 'https://oazo-bcache.new.oasis.app/api/v1' when multiply history is merged to main branch
+  cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
 }
 
 export type NetworkConfig = typeof protoMain
