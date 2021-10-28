@@ -54,8 +54,8 @@ function MultiplyHistoryEventDetailsItem({
       <Text
         sx={{
           textAlign: 'right',
-          minWidth: ['9.5em', null, null, rightItem ? '9.5em' : '8em'],
-          pr: 3,
+          minWidth: ['9.5em', null, null, rightItem ? '9.5em' : '9.5em'],
+          pr: [2, 3],
           color: 'text.subtitle',
         }}
       >
@@ -73,22 +73,15 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
     event.kind === 'CLOSE_VAULT_TO_DAI' || event.kind === 'CLOSE_VAULT_TO_COLLATERAL'
 
   return (
-    <Flex
+    <Grid
+      gap={2}
       sx={{
         mb: 3,
-        width: '600px',
-        justifyContent: 'space-between',
-        flexDirection: ['column', null, null, 'row'],
+        alignItems: 'flex-start',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
       }}
     >
-      <Grid
-        gap={2}
-        sx={{
-          mr: [0, null, null, 4],
-          mb: [2, null, null, 0],
-          alignContent: 'flex-start',
-        }}
-      >
+      <Grid gap={2}>
         {event.kind === 'OPEN_MULTIPLY_VAULT' && (
           <>
             <MultiplyHistoryEventDetailsItem label={t('history.deposited')}>
@@ -188,7 +181,7 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
             : '-'}
         </MultiplyHistoryEventDetailsItem>
       </Grid>
-    </Flex>
+    </Grid>
   )
 }
 
@@ -219,9 +212,11 @@ function VaultHistoryItem({
         boxShadow: 'vaultHistoryItem',
         fontSize: 2,
         display: 'grid',
+        p: [2, 3],
+        minWidth: ['100%', '400px', '475px'],
       }}
     >
-      <Box sx={{ p: 2, cursor: 'pointer' }} onClick={() => setOpened(!opened)}>
+      <Box sx={{ p: [1, 2], cursor: 'pointer' }} onClick={() => setOpened(!opened)}>
         <Flex
           sx={{
             justifyContent: 'space-between',
@@ -259,7 +254,7 @@ function VaultHistoryItem({
         </Flex>
       </Box>
       {opened && (
-        <Box p={2}>
+        <Box p={[1, 2]}>
           {isMultiplyEvent && <MultiplyHistoryEventDetails {...item} />}
           <AppLink
             variant="links.navFooter"
