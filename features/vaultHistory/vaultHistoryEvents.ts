@@ -147,7 +147,7 @@ interface IncreaseMultipleEvent extends MultiplyBaseEvent {
   kind: 'INCREASE_MULTIPLE'
 }
 interface DecreaseMultipleEvent extends MultiplyBaseEvent {
-  kind: 'DECREASE_MULTIPLY'
+  kind: 'DECREASE_MULTIPLE'
 }
 interface CloseVaultExitDaiMultipleEvent extends MultiplyBaseEvent {
   kind: 'CLOSE_VAULT_TO_DAI'

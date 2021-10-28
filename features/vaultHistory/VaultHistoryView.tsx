@@ -98,7 +98,7 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
             {'bought' in event && formatCryptoBalance(event.bought)} {event.token}
           </MultiplyHistoryEventDetailsItem>
         )}
-        {(event.kind === 'DECREASE_MULTIPLY' || closeEvent) && (
+        {(event.kind === 'DECREASE_MULTIPLE' || closeEvent) && (
           <MultiplyHistoryEventDetailsItem label={t('history.sold')}>
             {'sold' in event && formatCryptoBalance(event.sold)} {event.token}
           </MultiplyHistoryEventDetailsItem>
@@ -200,9 +200,13 @@ function VaultHistoryItem({
   const isMultiplyEvent =
     item.kind === 'OPEN_MULTIPLY_VAULT' ||
     item.kind === 'INCREASE_MULTIPLE' ||
-    item.kind === 'DECREASE_MULTIPLY' ||
+    item.kind === 'DECREASE_MULTIPLE' ||
     item.kind === 'CLOSE_VAULT_TO_DAI' ||
     item.kind === 'CLOSE_VAULT_TO_COLLATERAL'
+
+  if (item.kind === 'DECREASE_MULTIPLE') {
+    console.log(item, isMultiplyEvent)
+  }
 
   return (
     <Card
@@ -256,6 +260,7 @@ function VaultHistoryItem({
       {opened && (
         <Box p={[1, 2]}>
           {isMultiplyEvent && <MultiplyHistoryEventDetails {...item} />}
+          {console.log(item)}
           <AppLink
             variant="links.navFooter"
             sx={{ fontSize: 2 }}
