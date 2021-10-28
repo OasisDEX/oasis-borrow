@@ -55,6 +55,9 @@ function CollateralCardPlaceholder({ sx }: { sx?: SxStyleProp }) {
         opacity: 0.3,
         color: 'transparent',
         height: '315px',
+        '@media screen and (min-width: 768px)': {
+          display: 'block',
+        },
         ...sx,
       }}
     />
@@ -84,9 +87,9 @@ export function LandingPageCardsPlaceholder({ sx }: { sx: SxStyleProp }) {
       }}
     >
       <CollateralCardPlaceholder />
-      <CollateralCardPlaceholder sx={{ display: ['none', 'inherit'] }} />
-      <CollateralCardPlaceholder sx={{ display: ['none', 'inherit'] }} />
-      <CollateralCardPlaceholder sx={{ display: ['none', 'inherit'] }} />
+      <CollateralCardPlaceholder sx={{ display: 'none' }} />
+      <CollateralCardPlaceholder sx={{ display: 'none' }} />
+      <CollateralCardPlaceholder sx={{ display: 'none' }} />
     </Grid>
   )
 }
@@ -100,7 +103,6 @@ export function CollateralCard({
   category,
 }: CollateralCardProps) {
   const { t } = useTranslation()
-  const translatedCategory = category ? t(`landing.collateral-cards.${category}`) : ''
 
   return (
     <Flex
@@ -141,7 +143,6 @@ export function CollateralCard({
         sx={{
           transformOrigin: '50% 50%',
           transition: 'transform 0.2s',
-          // maxWidth: '150%',
           position: 'absolute',
           userSelect: 'none',
           transform: 'translateX(16px)',
@@ -151,9 +152,9 @@ export function CollateralCard({
         src={icon}
       />
       <Flex sx={{ zIndex: 1, flexDirection: 'column', alignItems: 'space-between' }}>
-        {translatedCategory && (
+        {category && (
           <Text variant="paragraph3" sx={{ color: 'white', pt: 3, pb: 2 }}>
-            {translatedCategory}
+            {category}
           </Text>
         )}
         <Heading

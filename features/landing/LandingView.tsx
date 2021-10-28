@@ -76,6 +76,7 @@ export function LandingView() {
   const numberOfCollaterals = ilksPerToken && Object.keys(ilksPerToken).length
   const { value: landing, error: landingError } = useObservableWithError(landing$)
   const router = useRouter()
+  const { t } = useTranslation()
 
   return (
     <Grid
@@ -110,9 +111,31 @@ export function LandingView() {
           <WithLoadingIndicator
             value={landing}
             customLoader={
-              <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '410px' }}>
+              <Flex
+                sx={{
+                  alignItems: 'flex-start',
+                  justifyContent: 'center',
+                  height: '410px',
+                  '@media screen and (min-width: 768px)': {
+                    height: '630px',
+                  },
+                  '@media screen and (min-width: 1200px)': {
+                    height: '370px',
+                  },
+                }}
+              >
                 <AppSpinner
-                  sx={{ mt: ['145px', '315px', '145px'] }}
+                  sx={{
+                    mt: '145px',
+                    '@media screen and (min-width: 768px)': {
+                      display: 'block',
+                      mt: '315px',
+                    },
+                    '@media screen and (min-width: 1200px)': {
+                      display: 'block',
+                      mt: '145px',
+                    },
+                  }}
                   variant="styles.spinner.large"
                 />
               </Flex>
@@ -139,7 +162,7 @@ export function LandingView() {
                     Object.entries(landing).map(([category, ilks]) =>
                       Object.keys(ilks).flatMap((tokenKey) => (
                         <CollateralCard
-                          category={category as keyof Landing}
+                          category={t(`landing.collateral-cards.${category}`)}
                           key={tokenKey}
                           title={tokenKey}
                           onClick={() => router.push(`/assets/${tokenKey}`)}

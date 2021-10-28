@@ -76,7 +76,7 @@ export function CardsWithTags() {
   return (
     <StoryContainer>
       <CollateralCard
-        category="popular"
+        category="POPULAR"
         ilks={ilks}
         title={'UNI LP Tokens'}
         background={token.background!}
@@ -84,7 +84,7 @@ export function CardsWithTags() {
         onClick={() => {}}
       />
       <CollateralCard
-        category="newest"
+        category="NEWEST"
         ilks={ilks}
         title={'UNI LP Tokens'}
         background={token.background!}
