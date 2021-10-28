@@ -11,7 +11,17 @@ import { CollateralCard } from '../CollateralCard'
 const StoryContainer = ({ children }: WithChildren) => {
   return (
     <Flex sx={{ flexWrap: 'wrap', flex: '' }}>
-      {Array.isArray(children) ? children.map((card) => <Box p={2}>{card}</Box>) : children}
+      {Array.isArray(children) ? (
+        children.map((card) => (
+          <Box p={2} sx={{ minWidth: '280px' }}>
+            {card}
+          </Box>
+        ))
+      ) : (
+        <Box p={2} sx={{ minWidth: '280px' }}>
+          {children}
+        </Box>
+      )}
     </Flex>
   )
 }

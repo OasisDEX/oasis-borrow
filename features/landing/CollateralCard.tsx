@@ -108,8 +108,7 @@ export function CollateralCard({
     <Flex
       sx={{
         ...fadeInAnimation,
-        minWidth: ['343px', '280px'],
-        height: '315px',
+        minHeight: '315px',
         overflow: 'hidden',
         position: 'relative',
         p: 4,
