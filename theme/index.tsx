@@ -792,6 +792,19 @@ const oasisBaseTheme = {
       alignSelf: 'flex-start',
       mb: 3,
     },
+    collateralCardsContainer: {
+      mx: 'auto',
+      maxWidth: '343px',
+      gridTemplateColumns: '1fr',
+      '@media screen and (min-width: 768px)': {
+        gridTemplateColumns: 'repeat(2,1fr)',
+        maxWidth: '686px',
+      },
+      '@media screen and (min-width: 1200px)': {
+        gridTemplateColumns: 'repeat(4,1fr)',
+        maxWidth: 'inherit',
+      },
+    },
   },
   styles: {
     root: {

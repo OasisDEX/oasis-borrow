@@ -13,9 +13,6 @@ export interface CollateralCardProps {
   ilks: IlkData[]
   background: string
   icon: string
-  styles?: {
-    container?: SxStyleProp
-  }
   category?: string
 }
 function getAnnualFeeString(ilks: IlkData[]) {
@@ -104,7 +101,6 @@ export function CollateralCard({
   ilks,
   background,
   icon,
-  styles,
   category,
 }: CollateralCardProps) {
   const { t } = useTranslation()
@@ -112,9 +108,9 @@ export function CollateralCard({
   return (
     <AppLink
       sx={{
-        display: 'flex',
         ...fadeInAnimation,
-        minWidth: ['343px', '280px'],
+        display: 'flex',
+        minWidth: ['280px', 'auto'],
         height: '315px',
         overflow: 'hidden',
         position: 'relative',
@@ -140,7 +136,6 @@ export function CollateralCard({
             transform: 'scale(1.2)',
           },
         },
-        ...styles?.container,
       }}
       href={href}
     >

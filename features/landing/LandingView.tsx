@@ -75,7 +75,6 @@ export function LandingView() {
   const ilksPerToken = useObservable(ilksPerToken$)
   const numberOfCollaterals = ilksPerToken && Object.keys(ilksPerToken).length
   const { value: landing, error: landingError } = useObservableWithError(landing$)
-  const router = useRouter()
   const { t } = useTranslation()
 
   return (
@@ -143,21 +142,7 @@ export function LandingView() {
           >
             {(landing) => (
               <>
-                <Grid
-                  sx={{
-                    mx: 'auto',
-                    maxWidth: '343px',
-                    gridTemplateColumns: '1fr',
-                    '@media screen and (min-width: 768px)': {
-                      gridTemplateColumns: 'repeat(2,1fr)',
-                      maxWidth: '686px',
-                    },
-                    '@media screen and (min-width: 1200px)': {
-                      gridTemplateColumns: 'repeat(4,1fr)',
-                      maxWidth: 'inherit',
-                    },
-                  }}
-                >
+                <Grid variant="collateralCardsContainer">
                   {landing !== undefined &&
                     Object.entries(landing).map(([category, ilks]) =>
                       Object.keys(ilks).flatMap((tokenKey) => (

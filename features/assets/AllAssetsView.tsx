@@ -72,7 +72,19 @@ function AllAssetsSelect(
             {children}
           </Flex>
         ),
-        SingleValue: ({ children }) => <Box>{children}</Box>,
+        SingleValue: ({ children }) => (
+          <Box
+            sx={{
+              whiteSpace: 'nowrap',
+              ml: -1,
+              maxWidth: '99%',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {children}
+          </Box>
+        ),
         Menu: ({ innerProps, children }) => (
           <Card
             {...innerProps}
@@ -119,7 +131,18 @@ function AllAssetsFilters() {
   const { t } = useTranslation()
 
   return (
-    <Grid columns="1fr 288px 288px" sx={{ pt: 3, mb: 4, position: 'relative', zIndex: 2 }}>
+    <Grid
+      gap={[3, 1, 3]}
+      columns={[1, 3, '1fr 305px 305px']}
+      sx={{
+        pt: 3,
+        mb: 4,
+        position: 'relative',
+        zIndex: 2,
+        maxWidth: ['343px', '100%'],
+        mx: 'auto',
+      }}
+    >
       <SearchInput
         {...{
           onChange: (e) => console.log(e),
@@ -128,8 +151,9 @@ function AllAssetsFilters() {
           page: Pages.AllAssets,
           sx: {
             bg: 'surface',
-            ml: '0',
+            ml: 0,
             width: '100%',
+            mt: 0,
           },
         }}
       />
@@ -140,7 +164,7 @@ function AllAssetsFilters() {
       />
       <AllAssetsSelect
         options={ASSETS_SORT_OPTIONS}
-        value={ASSETS_SORT_OPTIONS[0]}
+        value={ASSETS_SORT_OPTIONS[2]}
         dropdownKey="sort-dropdown"
       />
     </Grid>
@@ -162,7 +186,7 @@ function AllAssetsCards() {
 
   return (
     <Box sx={{ pt: 3, pb: 5 }}>
-      <Grid columns={4}>
+      <Grid variant="collateralCardsContainer">
         {allCollateralsMock.map(({ token, ilks }) => (
           <CollateralCard
             key={token.symbol}
@@ -171,11 +195,6 @@ function AllAssetsCards() {
             icon={token.bannerIconPng!}
             href={ROUTES.ASSET(token.symbol)}
             ilks={ilks}
-            styles={{
-              container: {
-                m: 0,
-              },
-            }}
           />
         ))}
       </Grid>
@@ -187,12 +206,12 @@ export function AllAssetsView() {
   const { t } = useTranslation()
 
   return (
-    <Container sx={{ position: 'relative', zIndex: 1 }}>
+    <Box sx={{ position: 'relative', zIndex: 1, width: '100%' }}>
       <Heading as="h1" variant="header2" sx={{ textAlign: 'center', mt: 6, mb: 5 }}>
         {t('all-assets-page.title')}
       </Heading>
       <AllAssetsFilters />
       <AllAssetsCards />
-    </Container>
+    </Box>
   )
 }
