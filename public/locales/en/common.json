@@ -192,7 +192,8 @@
     },
     "collateral-cards": {
       "popular": "POPULAR",
-      "newest": "NEWEST"
+      "newest": "NEWEST",
+      "all-assets": "See all {{numberOfCollaterals}} collateral types"
     },
     "how-it-works": {
       "title": "How it works",
