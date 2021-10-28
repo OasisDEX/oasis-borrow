@@ -707,9 +707,16 @@ const oasisBaseTheme = {
       fontSize: 2,
       fontWeight: 'semiBold',
       border: '1px solid #D1DEE6',
-      p: 0,
-      ':focus-within': {
-        //indicate that input is focused
+      borderColor: 'lavender_o25',
+      p: [2, 1, 1],
+      alignItems: 'center',
+      color: 'text.off',
+      '& input::placeholder': {
+        color: 'text.off',
+        fontWeight: 'heading',
+      },
+      '&:focus-within': {
+        color: 'text.focused',
       },
     },
     plain: {

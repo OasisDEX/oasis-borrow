@@ -1,16 +1,20 @@
 import { IlkData } from 'blockchain/ilks'
+import { AppLink } from 'components/Links'
 import { formatPercent } from 'helpers/formatters/format'
 import { max, min } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Heading, Image, Text } from 'theme-ui'
+import { Box, Flex, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 
 export interface CollateralCardProps {
   title: string
-  onClick(): void
+  href: string
   ilks: IlkData[]
   background: string
   icon: string
+  styles?: {
+    container?: SxStyleProp
+  }
 }
 function getAnnualFeeString(ilks: IlkData[]) {
   if (ilks.length === 1) {
@@ -41,14 +45,21 @@ function getCollRatioString(ilks: IlkData[]) {
   return `${formatPercent(minRatio.times(100))} - ${formatPercent(maxRatio.times(100))}`
 }
 
-export function CollateralCard({ onClick, title, ilks, background, icon }: CollateralCardProps) {
+export function CollateralCard({
+  href,
+  title,
+  ilks,
+  background,
+  icon,
+  styles,
+}: CollateralCardProps) {
   const { t } = useTranslation()
 
   return (
-    <Flex
+    <AppLink
       sx={{
-        maxWidth: '288px',
-        minWidth: '288px',
+        display: 'flex',
+        width: '288px',
         height: '315px',
         overflow: 'hidden',
         position: 'relative',
@@ -76,9 +87,9 @@ export function CollateralCard({ onClick, title, ilks, background, icon }: Colla
             transform: 'scale(1.2)',
           },
         },
+        ...styles?.container,
       }}
-      tabIndex={0}
-      onClick={onClick}
+      href={href}
     >
       <Image
         className="featured-ilk-bg-image"
@@ -115,6 +126,6 @@ export function CollateralCard({ onClick, title, ilks, background, icon }: Colla
           </Text>
         </Box>
       </Flex>
-    </Flex>
+    </AppLink>
   )
 }

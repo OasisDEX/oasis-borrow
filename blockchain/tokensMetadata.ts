@@ -142,7 +142,7 @@ export const tokens = [
     color: '#005121',
     background: 'linear-gradient(143.13deg, #0B9F74 12.24%, #64DFBB 85.9%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/pax.svg'),
-    bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/PAXUSD.png'),
+    bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/PAX.png'),
     tags: ['stablecoin'],
   },
   {

@@ -43,6 +43,7 @@ export enum Pages {
   AdjustPosition = 'AdjustPosition',
   OtherActions = 'OtherActions',
   CloseVault = 'CloseVault',
+  AllAssets = 'AllAssets',
 }
 
 function mixpanelInternalAPI(eventName: string, eventBody: { [key: string]: any }) {

@@ -105,6 +105,7 @@ export function AppLinkWithArrow({ href, sx, children }: AppLinkProps & WithChil
 }
 
 export const ROUTES = {
+  ASSET: (token: string) => `/assets/${token}`,
   CONTACT: `${apiHost}/daiwallet/contact`,
   SUPPORT: '/support',
   TWITTER: 'https://twitter.com/oasisdotapp',

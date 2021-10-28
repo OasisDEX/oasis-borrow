@@ -680,5 +680,21 @@
       "subtext": "Borrow up to {{maxBorrow}} DAI for every $100,000 worth of {{token}}",
       "button": "Borrow against {{token}}"
     }
+  },
+  "all-assets-page": {
+    "title": "All collateral types",
+    "type-dropdown": {
+      "all-assets": "All Assets",
+      "lp-tokens": "LP Tokens",
+      "stablecoins": "Stablecoins"
+    },
+    "sort-dropdown": {
+      "popularity_desc": "Popularity (Most -> Least)",
+      "popularity_asc": "Popularity (Least -> Most)",
+      "min_coll_ratio_desc": "Min Collateral Ratio (High -> Low)",
+      "min_coll_ratio_asc": "Min Collateral Ratio (Low -> High)",
+      "annual_fee_desc": "Annual Fee (High -> Low)",
+      "annual_fee_asc": "Annual Fee (Low -> High)"
+    }
   }
 }
