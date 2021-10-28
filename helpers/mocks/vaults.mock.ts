@@ -11,6 +11,7 @@ import { first, switchMap } from 'rxjs/operators'
 
 import { mockIlkData$ } from './ilks.mock'
 import { mockPriceInfo$ } from './priceInfo.mock'
+import { mockContext$ } from './context.mock'
 
 export interface MockVaultProps {
   _cdpManagerUrns$?: Observable<string>
@@ -25,6 +26,7 @@ export interface MockVaultProps {
 }
 
 export const DEFAULT_PROXY_ADDRESS = '0xProxyAddress'
+export const DEFAULT_CHAIN_ID = 7312 
 
 export const defaultController = '0xVaultController'
 export const defaultDebt = new BigNumber('5000')
@@ -113,7 +115,7 @@ export function mockVault$({
     oraclePriceData$,
     controller$,
     ilkToToken$,
-    id,
+    DEFAULT_CHAIN_ID
   )
 }
 

@@ -77,15 +77,15 @@ function eventsFromLastWeek(event: VaultHistoryEvent) {
 export function createVaultsBanners$(
   context$: Observable<Context>,
   priceInfo$: (token: string) => Observable<PriceInfo>,
-  vault$: (id: BigNumber) => Observable<Vault>,
-  vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
+  vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
+  vaultHistory$: (id: BigNumber, chainId: number) => Observable<VaultHistoryEvent[]>,
   id: BigNumber,
 ): Observable<VaultBannersState> {
   return context$.pipe(
     switchMap((context) => {
       return combineLatest(
-        vault$(id),
-        vaultHistory$(id).pipe(startWith([] as VaultHistoryEvent[])),
+        vault$(id, context.chainId),
+        vaultHistory$(id, context.chainId).pipe(startWith([] as VaultHistoryEvent[])),
       ).pipe(
         switchMap(
           ([

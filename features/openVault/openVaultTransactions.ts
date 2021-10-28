@@ -299,7 +299,7 @@ export function openVault(
           if (id && jwtToken) {
             console.log('network id')
             console.log(txState.networkId)
-            saveVaultUsingApi$(id, jwtToken, VaultType.Borrow, txState.networkId).subscribe()
+            saveVaultUsingApi$(id, jwtToken, VaultType.Borrow, parseInt(txState.networkId)).subscribe()
           }
 
           return of({

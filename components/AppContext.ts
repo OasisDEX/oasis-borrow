@@ -252,7 +252,8 @@ export function setupAppContext() {
   )
 
   const vault$ = memoize(
-    curry(createVault$)(
+    (id: BigNumber) =>
+    createVault$(
       cdpManagerUrns$,
       cdpManagerIlks$,
       cdpManagerOwner$,
@@ -262,6 +263,8 @@ export function setupAppContext() {
       oraclePriceData$,
       controller$,
       ilkToToken$,
+      context$,
+      id,
     ),
     bigNumberTostring,
   )

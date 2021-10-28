@@ -331,7 +331,7 @@ export function multiplyVault(
               if (id && jwtToken) {
                 console.log('network id')
                 console.log(txState.networkId)
-                saveVaultUsingApi$(id, jwtToken, VaultType.Multiply, txState.networkId).subscribe()
+                saveVaultUsingApi$(id, jwtToken, VaultType.Multiply, parseInt(txState.networkId)).subscribe()
               }
 
               return of({

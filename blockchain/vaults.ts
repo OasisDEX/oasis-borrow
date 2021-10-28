@@ -39,7 +39,7 @@ export function createVaults$(
   onEveryBlock$: Observable<number>,
   context$: Observable<Context>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
-  vault$: (id: BigNumber) => Observable<Vault>,
+  vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
   address: string,
 ): Observable<VaultWithType[]> {
   return combineLatest(context$, proxyAddress$(address)).pipe(
@@ -61,7 +61,7 @@ export function createVaults$(
 
       return fetchVaultIds().pipe(
         switchMap((ids) =>
-          ids.length === 0 ? of([]) : combineLatest(ids.map((id) => vault$(new BigNumber(id)))),
+          ids.length === 0 ? of([]) : combineLatest(ids.map((id) => vault$(new BigNumber(id), context.chainId))),
         ),
         distinctUntilChanged(isEqual),
         switchMap((vaults) => (vaults.length === 0 ? of(vaults) : fetchVaultsType(vaults))),
@@ -107,6 +107,7 @@ export interface Vault {
   atRiskLevelWarningAtNextPrice: boolean
   atRiskLevelDangerAtNextPrice: boolean
   underCollateralizedAtNextPrice: boolean
+  chainId: number
 }
 
 export function createController$(
@@ -127,16 +128,18 @@ export function createVault$(
   oraclePriceData$: (token: string) => Observable<OraclePriceData>,
   controller$: (id: BigNumber) => Observable<string | undefined>,
   ilkToToken$: Observable<(ilk: string) => string>,
+  context$: Observable<Context>,
   id: BigNumber,
-): Observable<Vault> {
+  ): Observable<Vault> {
   return combineLatest(
     cdpManagerUrns$(id),
     cdpManagerIlks$(id),
     cdpManagerOwner$(id),
     controller$(id),
     ilkToToken$,
+    context$
   ).pipe(
-    switchMap(([urnAddress, ilk, owner, controller, ilkToToken]) => {
+    switchMap(([urnAddress, ilk, owner, controller, ilkToToken, context]) => {
       const token = ilkToToken(ilk)
       return combineLatest(
         vatUrns$({ ilk, urnAddress }),
@@ -269,6 +272,7 @@ export function createVault$(
               atRiskLevelWarningAtNextPrice,
               atRiskLevelDangerAtNextPrice,
               underCollateralizedAtNextPrice,
+              chainId: context.chainId
             })
           },
         ),
@@ -284,8 +288,9 @@ export interface VaultChange {
 }
 
 export function createVaultChange$(
-  vault$: (id: BigNumber) => Observable<Vault>,
+  vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
   id: BigNumber,
+  chainId: number
 ): Observable<VaultChange> {
-  return vault$(id).pipe(map((vault) => ({ kind: 'vault', vault })))
+  return vault$(id, chainId).pipe(map((vault) => ({ kind: 'vault', vault })))
 }

@@ -10,7 +10,8 @@ export function checkVaultTypeLocalStorage$(id: BigNumber): Observable<VaultType
   return of(vaultType).pipe(delay(500))
 }
 
-export type SaveVaultType = (id: BigNumber, token: string, vaultType: VaultType, chainId: Number) => Observable<void>
+// TODO ŁW: Refactor move this type to separate file? It's not related to localStorage
+export type SaveVaultType = (id: BigNumber, token: string, vaultType: VaultType, chainId: number) => Observable<void>
 
 /**
  * @deprecated The method should not be used unless for some reason there will be requirement
