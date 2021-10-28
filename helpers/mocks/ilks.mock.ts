@@ -159,6 +159,12 @@ export function mockIlkDataList() {
     ilk: 'LINK-A',
     stabilityFee: new BigNumber('0.08'),
   })
+  const toAggregate = mockIlkData({
+    ilk: 'UNIV2DAIUSDC-LP-TOKEN',
+    stabilityFee: new BigNumber('0.08'),
+  })
 
-  return [cheapest, zeroDebt, popular, newest].map((mockIlkData) => mockIlkData()) as IlkDataList
+  return [cheapest, zeroDebt, popular, newest, toAggregate].map((mockIlkData) =>
+    mockIlkData(),
+  ) as IlkDataList
 }

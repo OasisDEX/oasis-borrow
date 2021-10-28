@@ -4,7 +4,8 @@ import { formatPercent } from 'helpers/formatters/format'
 import { max, min } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Heading, Image, SxStyleProp, Text } from 'theme-ui'
+import { Box, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
+import { fadeInAnimation } from 'theme/animations'
 
 export interface CollateralCardProps {
   title: string
@@ -15,6 +16,7 @@ export interface CollateralCardProps {
   styles?: {
     container?: SxStyleProp
   }
+  category?: string
 }
 function getAnnualFeeString(ilks: IlkData[]) {
   if (ilks.length === 1) {
@@ -45,6 +47,57 @@ function getCollRatioString(ilks: IlkData[]) {
   return `${formatPercent(minRatio.times(100))} - ${formatPercent(maxRatio.times(100))}`
 }
 
+function CollateralCardPlaceholder({ sx }: { sx?: SxStyleProp }) {
+  return (
+    <Box
+      sx={{
+        cursor: 'progress',
+        bg: 'backgroundAlt',
+        borderRadius: 'large',
+        boxShadow: 'surface',
+        backgroundBlendMode: 'overlay',
+        opacity: 0.3,
+        color: 'transparent',
+        height: '315px',
+        '@media screen and (min-width: 768px)': {
+          display: 'block',
+        },
+        ...sx,
+      }}
+    />
+  )
+}
+
+export function LandingPageCardsPlaceholder({ sx }: { sx: SxStyleProp }) {
+  return (
+    <Grid
+      sx={{
+        ...sx,
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        right: 0,
+        mx: 'auto',
+        maxWidth: '343px',
+        gridTemplateColumns: '1fr',
+        '@media screen and (min-width: 768px)': {
+          gridTemplateColumns: 'repeat(2,1fr)',
+          maxWidth: '686px',
+        },
+        '@media screen and (min-width: 1200px)': {
+          gridTemplateColumns: 'repeat(4,1fr)',
+          maxWidth: 'inherit',
+        },
+      }}
+    >
+      <CollateralCardPlaceholder />
+      <CollateralCardPlaceholder sx={{ display: 'none' }} />
+      <CollateralCardPlaceholder sx={{ display: 'none' }} />
+      <CollateralCardPlaceholder sx={{ display: 'none' }} />
+    </Grid>
+  )
+}
+
 export function CollateralCard({
   href,
   title,
@@ -52,6 +105,7 @@ export function CollateralCard({
   background,
   icon,
   styles,
+  category,
 }: CollateralCardProps) {
   const { t } = useTranslation()
 
@@ -59,13 +113,12 @@ export function CollateralCard({
     <AppLink
       sx={{
         display: 'flex',
-        width: '288px',
+        ...fadeInAnimation,
+        minWidth: ['343px', '280px'],
         height: '315px',
         overflow: 'hidden',
         position: 'relative',
-        flex: 1,
         p: 4,
-        m: 3,
         transition: `
           transform 0.5s cubic-bezier(0, 0.28, 0.45, 0.95),
           box-shadow 0.5s cubic-bezier(0, 0.28, 0.45, 0.95)
@@ -96,7 +149,6 @@ export function CollateralCard({
         sx={{
           transformOrigin: '50% 50%',
           transition: 'transform 0.2s',
-          // maxWidth: '150%',
           position: 'absolute',
           userSelect: 'none',
           transform: 'translateX(16px)',
@@ -106,7 +158,15 @@ export function CollateralCard({
         src={icon}
       />
       <Flex sx={{ zIndex: 1, flexDirection: 'column', alignItems: 'space-between' }}>
-        <Heading variant="header2" sx={{ color: 'white', minHeight: '100px', py: 3 }}>
+        {category && (
+          <Text variant="paragraph3" sx={{ color: 'white', pt: 3, pb: 2 }}>
+            {category}
+          </Text>
+        )}
+        <Heading
+          variant="header2"
+          sx={{ color: 'white', minHeight: '100px', py: category ? 0 : 3 }}
+        >
           {title}
         </Heading>
         <Box sx={{ flex: 1 }}>

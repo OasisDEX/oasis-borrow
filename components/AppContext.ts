@@ -51,7 +51,6 @@ import { currentContent } from 'features/content'
 import { createExchangeQuote$ } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
-import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageMultiplyVault$ } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { createManageVault$ } from 'features/manageVault/manageVault'
@@ -95,6 +94,7 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import { createIlksPerToken$ } from '../features/ilks/ilksPerToken'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
@@ -381,9 +381,9 @@ export function setupAppContext() {
 
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
-  const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
+  const ilksPerToken$ = createIlksPerToken$(ilkDataList$)
   const vaultsOverview$ = memoize(curry(createVaultsOverview$)(vaults$, ilksWithBalance$))
-  const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
+  const landing$ = curry(createLanding$)(ilkDataList$, ilksPerToken$)
 
   const termsAcceptance$ = createTermsAcceptance$(
     web3Context$,
@@ -421,6 +421,7 @@ export function setupAppContext() {
     vault$,
     ilks$,
     landing$,
+    ilksPerToken$,
     openVault$,
     manageVault$,
     manageMultiplyVault$,

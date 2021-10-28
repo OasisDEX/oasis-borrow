@@ -8,7 +8,7 @@ import { getToken, tokens } from '../../../blockchain/tokensMetadata'
 import { CollateralCard } from '../CollateralCard'
 
 const StoryContainer = ({ children }: WithChildren) => {
-  return <Flex sx={{ flexWrap: 'wrap', flex: '' }}>{children}</Flex>
+  return <Flex sx={{ flexWrap: 'wrap', flex: '', gap: 3 }}>{children}</Flex>
 }
 
 export function SingleCollateralCardSingleIlk({ collateral }: { collateral: string }) {
@@ -57,6 +57,34 @@ export function LpTokenCard() {
   return (
     <StoryContainer>
       <CollateralCard
+        ilks={ilks}
+        title={'UNI LP Tokens'}
+        background={token.background!}
+        icon={token.bannerIconPng!}
+        onClick={() => {}}
+      />
+    </StoryContainer>
+  )
+}
+
+export function CardsWithTags() {
+  const ilks = [
+    { liquidationPenalty: new BigNumber('0.13'), liquidationRatio: new BigNumber('1.45') },
+    { liquidationPenalty: new BigNumber('0.2'), liquidationRatio: new BigNumber('1.2') },
+  ] as IlkData[]
+  const token = getToken('UNIV2DAIUSDT')
+  return (
+    <StoryContainer>
+      <CollateralCard
+        category="POPULAR"
+        ilks={ilks}
+        title={'UNI LP Tokens'}
+        background={token.background!}
+        icon={token.bannerIconPng!}
+        onClick={() => {}}
+      />
+      <CollateralCard
+        category="NEWEST"
         ilks={ilks}
         title={'UNI LP Tokens'}
         background={token.background!}
