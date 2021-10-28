@@ -74,7 +74,7 @@ export function createVaultMultiplyHistory$(
   context$: Observable<Context>,
   onEveryBlock$: Observable<number>,
   vault$: (id: BigNumber) => Observable<Vault>,
-  vaultId: BigNumber
+  vaultId: BigNumber,
 ): Observable<VaultHistoryEvent[]> {
   const makeClient = memoize(
     (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),

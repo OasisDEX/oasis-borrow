@@ -253,19 +253,19 @@ export function setupAppContext() {
 
   const vault$ = memoize(
     (id: BigNumber) =>
-    createVault$(
-      cdpManagerUrns$,
-      cdpManagerIlks$,
-      cdpManagerOwner$,
-      vatUrns$,
-      vatGem$,
-      ilkData$,
-      oraclePriceData$,
-      controller$,
-      ilkToToken$,
-      context$,
-      id,
-    ),
+      createVault$(
+        cdpManagerUrns$,
+        cdpManagerIlks$,
+        cdpManagerOwner$,
+        vatUrns$,
+        vatGem$,
+        ilkData$,
+        oraclePriceData$,
+        controller$,
+        ilkToToken$,
+        context$,
+        id,
+      ),
     bigNumberTostring,
   )
 

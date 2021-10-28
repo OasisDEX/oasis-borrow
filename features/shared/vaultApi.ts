@@ -96,7 +96,7 @@ export function saveVaultUsingApi$(
   id: BigNumber,
   token: string,
   vaultType: VaultType,
-  chainId: number
+  chainId: number,
 ): Observable<void> {
   console.log('chainId')
   console.log(chainId)
@@ -110,7 +110,7 @@ export function saveVaultUsingApi$(
     body: {
       id: parseInt(id.toFixed(0)),
       type: vaultType,
-      chainId: chainId
+      chainId: chainId,
     },
   }).pipe(map((_) => {}))
 }
