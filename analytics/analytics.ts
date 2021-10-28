@@ -87,7 +87,7 @@ export const trackingEvents = {
   },
 
   searchToken: (
-    page: Pages.LandingPage | Pages.OpenVaultOverview | Pages.VaultsOverview,
+    page: Pages.LandingPage | Pages.OpenVaultOverview | Pages.VaultsOverview | Pages.AllAssets,
     query: string,
   ) => {
     mixpanel.track('input-change', {

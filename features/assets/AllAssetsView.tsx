@@ -9,7 +9,7 @@ import { SearchInput } from 'features/landing/FiltersWithPopular'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import ReactSelect, { Props as SelectProps } from 'react-select'
-import { Box, Card, Container, Flex, Grid, Heading } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading } from 'theme-ui'
 
 const ASSETS_TYPE_OPTIONS = ['all-assets', 'lp-tokens', 'stablecoins']
 
