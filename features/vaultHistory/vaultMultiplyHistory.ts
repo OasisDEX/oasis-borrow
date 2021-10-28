@@ -149,7 +149,7 @@ export function createVaultMultiplyHistory$(
     (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
   )
   return combineLatest(context$, vault$(vaultId)).pipe(
-    switchMap(([{ etherscan, cacheApi }, { token, address }]) => {
+    switchMap(([{ etherscan, cacheApi, ethtx }, { token, address }]) => {
       return onEveryBlock$.pipe(
         switchMap(() => getVaultMultiplyHistory(makeClient(cacheApi), address.toLowerCase())),
         map((returnedEvents) =>
@@ -159,7 +159,7 @@ export function createVaultMultiplyHistory$(
               .map(parseBigNumbersFields),
           ),
         ),
-        map((events) => events.map((event) => ({ etherscan, token, ...event }))),
+        map((events) => events.map((event) => ({ etherscan, ethtx, token, ...event }))),
         catchError(() => of([])),
       )
     }),

@@ -104,6 +104,9 @@ export type VaultHistoryEvent = VaultEvent & {
     apiUrl: string
     apiKey: string
   }
+  ethx?: {
+    url: string
+  }
 }
 export function fetchWithOperationId(url: string, options?: RequestInit) {
   const operationNameRegex = /query (?<operationName>[a-zA-Z0-9]+)\(/gm

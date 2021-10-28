@@ -2,6 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
+import { WithArrow } from 'components/WithArrow'
 import {
   formatAddress,
   formatCryptoBalance,
@@ -188,9 +189,11 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
 function VaultHistoryItem({
   item,
   etherscan,
+  ethtx,
 }: {
   item: VaultHistoryEvent
   etherscan?: { url: string }
+  ethtx?: { url: string }
 }) {
   const { t } = useTranslation()
   const [opened, setOpened] = useState(false)
@@ -203,10 +206,6 @@ function VaultHistoryItem({
     item.kind === 'DECREASE_MULTIPLE' ||
     item.kind === 'CLOSE_VAULT_TO_DAI' ||
     item.kind === 'CLOSE_VAULT_TO_COLLATERAL'
-
-  if (item.kind === 'DECREASE_MULTIPLE') {
-    console.log(item, isMultiplyEvent)
-  }
 
   return (
     <Card
@@ -260,14 +259,23 @@ function VaultHistoryItem({
       {opened && (
         <Box p={[1, 2]}>
           {isMultiplyEvent && <MultiplyHistoryEventDetails {...item} />}
-          {console.log(item)}
-          <AppLink
-            variant="links.navFooter"
-            sx={{ fontSize: 2 }}
-            href={`${etherscan?.url}/tx/${item.hash}`}
-          >
-            {t('view-on-etherscan')}
-          </AppLink>
+          <Flex>
+            <AppLink sx={{ textDecoration: 'none' }} href={`${etherscan?.url}/tx/${item.hash}`}>
+              <WithArrow sx={{ color: 'link', mr: 4, fontWeight: 'semiBold' }}>
+                {t('view-on-etherscan')}
+              </WithArrow>
+            </AppLink>
+            {ethtx && (
+              <AppLink
+                sx={{ textDecoration: 'none', fontWeight: 'semiBold' }}
+                href={`${ethtx.url}/${item.hash}`}
+              >
+                <WithArrow sx={{ color: 'link', fontWeight: 'semiBold' }}>
+                  {t('view-on-ethtx')}
+                </WithArrow>
+              </AppLink>
+            )}
+          </Flex>
         </Box>
       )}
     </Card>
@@ -286,7 +294,12 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
       </Heading>
       <Grid gap={2}>
         {vaultHistory.map((item) => (
-          <VaultHistoryItem item={item} etherscan={context?.etherscan} key={item.id} />
+          <VaultHistoryItem
+            item={item}
+            etherscan={context?.etherscan}
+            ethtx={context?.ethtx}
+            key={item.id}
+          />
         ))}
       </Grid>
     </Box>

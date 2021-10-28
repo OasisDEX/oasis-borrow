@@ -463,7 +463,6 @@
     "vault-id": "Vault ID",
     "oracle-price": "Oracle Price",
     "market-price": "Market Price"
-
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
@@ -561,6 +560,7 @@
   "view": "View",
   "view-more": "View more",
   "view-on-etherscan": "View on Etherscan",
+  "view-on-ethtx": "View on ethtx.info",
   "waiting-approval": "Waiting for approval",
   "waiting-confirmation": "Waiting for transaction confirmation",
   "proxy-deployment-confirming": "{{proxyConfirmations}} of {{safeConfirmations}}: Proxy deployment confirmed",
