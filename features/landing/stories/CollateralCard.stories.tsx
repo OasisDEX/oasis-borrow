@@ -1,14 +1,19 @@
 import { Flex } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
+import { getToken, tokens } from 'blockchain/tokensMetadata'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
+import { Box } from 'theme-ui'
 
-import { getToken, tokens } from '../../../blockchain/tokensMetadata'
 import { CollateralCard } from '../CollateralCard'
 
 const StoryContainer = ({ children }: WithChildren) => {
-  return <Flex sx={{ flexWrap: 'wrap', flex: '', gap: 3 }}>{children}</Flex>
+  return (
+    <Flex sx={{ flexWrap: 'wrap', flex: '' }}>
+      {Array.isArray(children) ? children.map((card) => <Box p={2}>{card}</Box>) : children}
+    </Flex>
+  )
 }
 
 export function SingleCollateralCardSingleIlk({ collateral }: { collateral: string }) {
