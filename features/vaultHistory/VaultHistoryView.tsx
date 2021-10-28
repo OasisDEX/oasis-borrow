@@ -144,8 +144,8 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
         <MultiplyHistoryEventDetailsItem rightItem label={t('outstanding-debt')}>
           {'beforeDebt' in event &&
             event.beforeDebt.gt(0) &&
-            formatCryptoBalance(event.beforeDebt) + `DAI` + `->`}
-          {'debt' in event && formatCryptoBalance(event.debt)} DAI
+            formatCryptoBalance(event.beforeDebt.times(event.rate)) + `DAI` + `->`}
+          {'debt' in event && formatCryptoBalance(event.debt.times(event.rate))} DAI
         </MultiplyHistoryEventDetailsItem>
         {!closeEvent && (
           <MultiplyHistoryEventDetailsItem rightItem label={t('system.coll-ratio')}>
