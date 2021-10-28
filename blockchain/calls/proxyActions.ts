@@ -330,7 +330,7 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
       withdrawDai: amountToWei(zero, 'DAI').toFixed(0),
       depositDai: amountToWei(zero, 'DAI').toFixed(0),
       withdrawCollateral: amountToWei(zero, data.token).toFixed(0),
-      skipFL: false,
+      skipFL: data.skipFL,
       methodName: '',
     } as any,
     {
