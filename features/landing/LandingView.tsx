@@ -159,11 +159,13 @@ export function LandingView() {
                     )}
                 </Grid>
                 {numberOfCollaterals && (
-                  <Box sx={{ justifyContent: 'center', mt: 4, display: ['none', 'flex'] }}>
+                  <Flex sx={{ mt: 4, justifyContent: 'center' }}>
                     <AppLinkWithArrow href="/assets/all" sx={{ fontSize: 3 }}>
-                      See all {numberOfCollaterals} collateral types
+                      {t('landing.collateral-cards.all-assets', {
+                        numberOfCollaterals,
+                      })}
                     </AppLinkWithArrow>
-                  </Box>
+                  </Flex>
                 )}
               </>
             )}

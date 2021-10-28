@@ -111,7 +111,7 @@ export function CollateralCard({
         ...fadeInAnimation,
         display: 'flex',
         minWidth: ['280px', 'auto'],
-        height: '315px',
+        minHeight: '315px',
         overflow: 'hidden',
         position: 'relative',
         p: 4,
