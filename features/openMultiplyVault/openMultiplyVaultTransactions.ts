@@ -276,6 +276,7 @@ export function multiplyVault(
     ilk,
     token,
     buyingCollateral,
+    skipFL,
     account,
     slippage,
     toTokenAmount,
@@ -298,6 +299,7 @@ export function multiplyVault(
         sendWithGasEstimation(openMultiplyVault, {
           kind: TxMetaKind.multiply,
           depositCollateral: depositAmount || zero,
+          skipFL,
           userAddress: account,
           proxyAddress: proxyAddress!,
           ilk,
@@ -354,6 +356,7 @@ export function applyEstimateGas(
     const {
       proxyAddress,
       depositAmount,
+      skipFL,
       ilk,
       token,
       account,
@@ -368,6 +371,7 @@ export function applyEstimateGas(
       return estimateGas(openMultiplyVault, {
         kind: TxMetaKind.multiply,
         depositCollateral: depositAmount,
+        skipFL,
         userAddress: account,
         proxyAddress: proxyAddress!,
         ilk,

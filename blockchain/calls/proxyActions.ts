@@ -285,6 +285,7 @@ export type OpenMultiplyData = {
   depositCollateral: BigNumber
   requiredDebt: BigNumber
   borrowedCollateral: BigNumber
+  skipFL: boolean
   proxyAddress: string
   userAddress: string
   toTokenAmount: BigNumber

@@ -30,6 +30,7 @@ export interface OpenMultiplyVaultCalculations {
   afterCollateralBalance: BigNumber
   loanFees: BigNumber
   oazoFee: BigNumber
+  skipFL: boolean
   maxCollRatio?: BigNumber
   marketPrice?: BigNumber
   marketPriceMaxSlippage?: BigNumber
@@ -63,6 +64,7 @@ export const defaultOpenMultiplyVaultStateCalculations: OpenMultiplyVaultCalcula
   afterCollateralizationRatioAtNextPrice: zero,
   loanFees: zero,
   oazoFee: zero,
+  skipFL: false,
   totalExposureUSD: zero,
   daiYieldFromDepositingCollateral: zero,
   daiYieldFromDepositingCollateralAtNextPrice: zero,
@@ -124,7 +126,7 @@ export function applyOpenMultiplyVaultCalculations(
 
   const requiredCollRatioSafe = requiredCollRatio || maxCollRatio
 
-  const { debtDelta: borrowedDaiAmount, collateralDelta: buyingCollateral, loanFee, oazoFee } =
+  const { debtDelta: borrowedDaiAmount, collateralDelta: buyingCollateral, loanFee, oazoFee, skipFL } =
     depositAmount && marketPriceMaxSlippage && requiredCollRatioSafe && marketPrice
       ? getMultiplyParams(
           // Market params
@@ -150,7 +152,7 @@ export function applyOpenMultiplyVaultCalculations(
             withdrawColl: zero,
           },
         )
-      : { debtDelta: zero, collateralDelta: zero, loanFee: zero, oazoFee: zero }
+      : { debtDelta: zero, collateralDelta: zero, loanFee: zero, oazoFee: zero, skipFL: false }
 
   const afterOutstandingDebt = borrowedDaiAmount.times(one.plus(LOAN_FEE))
 
@@ -272,6 +274,7 @@ export function applyOpenMultiplyVaultCalculations(
     impact,
     loanFees: loanFee,
     oazoFee,
+    skipFL,
     afterBuyingPower,
     afterBuyingPowerUSD,
     maxCollRatio,
