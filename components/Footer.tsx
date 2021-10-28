@@ -140,12 +140,34 @@ export function TemporaryFooter() {
   )
 }
 
+function SocialWithLogo() {
+  return (
+    <Grid gap={3}>
+      <Image src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')} />
+      <Flex sx={{ alignItems: 'center', a: { fontSize: '0px' }, my: 2 }}>
+        <AppLink href={ROUTES.TWITTER}>
+          <Icon name="twitter" size="auto" width="18px" height="16px" />
+        </AppLink>
+        <AppLink href={ROUTES.DISCORD} sx={{ mx: 3 }}>
+          <Icon name="discord" size="auto" width="20px" height="23px" />
+        </AppLink>
+        <AppLink href="https://github.com/OasisDEX/oasis-borrow/">
+          <Icon name="github" size="auto" width="21px" />
+        </AppLink>
+      </Flex>
+      <Flex sx={{ justifyContent: ['center', 'flex-start'] }}>
+        <LanguageSelect components={LangSelectComponents} />
+      </Flex>
+    </Grid>
+  )
+}
+
 export function Footer() {
   const { t } = useTranslation()
 
   return (
     <Box as="footer" sx={{ position: 'relative', zIndex: 'footer' }}>
-      <Container sx={{ maxWidth: '824px', mb: 5, pb: 4, pt: 2 }}>
+      <Container sx={{ maxWidth: '1200px', mb: 5, pb: 2, pt: 2 }}>
         <Grid
           sx={{
             pl: 0,
@@ -154,21 +176,9 @@ export function Footer() {
           columns={[2, '150px 1fr 1fr 1fr']}
           gap={[4, null, 5]}
         >
-          <Grid gap={3}>
-            <Image src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')} />
-            <Flex sx={{ alignItems: 'center', a: { fontSize: '0px' }, my: 2 }}>
-              <AppLink href={ROUTES.TWITTER}>
-                <Icon name="twitter" size="auto" width="18px" height="16px" />
-              </AppLink>
-              <AppLink href={ROUTES.DISCORD} sx={{ mx: 3 }}>
-                <Icon name="discord" size="auto" width="20px" height="23px" />
-              </AppLink>
-              <AppLink href="https://github.com/OasisDEX/oasis-borrow/">
-                <Icon name="github" size="auto" width="21px" />
-              </AppLink>
-            </Flex>
-            <LanguageSelect components={LangSelectComponents} />
-          </Grid>
+          <Box sx={{ display: ['none', 'block'] }}>
+            <SocialWithLogo />
+          </Box>
           {FOOTER_SECTIONS.map(({ titleKey, links }) => (
             <Grid key={titleKey} as="ul" pl={0}>
               <Text sx={{ fontSize: 4, fontWeight: 'semiBold' }}>{t(titleKey)}</Text>
@@ -182,6 +192,9 @@ export function Footer() {
             </Grid>
           ))}
         </Grid>
+        <Flex sx={{ justifyContent: 'center', pt: 5, display: ['flex', 'none'] }}>
+          <SocialWithLogo />
+        </Flex>
       </Container>
       <TemporaryFooter />
     </Box>
