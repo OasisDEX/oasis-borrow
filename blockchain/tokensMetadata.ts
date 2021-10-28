@@ -469,6 +469,22 @@ export const tokens = [
     tags: ['lp-token'],
   },
   {
+    symbol: 'UNI LP Tokens',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'UNI LP Tokens',
+    icon: 'uni_circle_color',
+    iconCircle: 'uni_circle_color',
+    iconColor: 'uni_circle_color',
+    color: '#ff077d',
+    background:
+      'linear-gradient(99.1deg, #FFA09A 0%, #FF748D 43.67%, #EB61B4 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
+    bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/UNI.png'),
+    tags: [],
+  },
+  {
     symbol: 'GUNIV3DAIUSDC1',
     precision: 18,
     digits: 5,
