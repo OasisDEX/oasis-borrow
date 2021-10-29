@@ -707,9 +707,16 @@ const oasisBaseTheme = {
       fontSize: 2,
       fontWeight: 'semiBold',
       border: '1px solid #D1DEE6',
-      p: 0,
-      ':focus-within': {
-        //indicate that input is focused
+      borderColor: 'lavender_o25',
+      p: [2, 1, 1],
+      alignItems: 'center',
+      color: 'text.off',
+      '& input::placeholder': {
+        color: 'text.off',
+        fontWeight: 'heading',
+      },
+      '&:focus-within': {
+        color: 'text.focused',
       },
     },
     plain: {
@@ -784,6 +791,19 @@ const oasisBaseTheme = {
       gridTemplateColumns: ['1fr', null, null, '1fr 1fr'],
       alignSelf: 'flex-start',
       mb: 3,
+    },
+    collateralCardsContainer: {
+      mx: 'auto',
+      maxWidth: '343px',
+      gridTemplateColumns: '1fr',
+      '@media screen and (min-width: 768px)': {
+        gridTemplateColumns: 'repeat(2,1fr)',
+        maxWidth: '686px',
+      },
+      '@media screen and (min-width: 1200px)': {
+        gridTemplateColumns: 'repeat(4,1fr)',
+        maxWidth: 'inherit',
+      },
     },
   },
   styles: {

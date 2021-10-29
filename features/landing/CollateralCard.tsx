@@ -1,4 +1,5 @@
 import { IlkData } from 'blockchain/ilks'
+import { AppLink } from 'components/Links'
 import { formatPercent } from 'helpers/formatters/format'
 import { max, min } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -8,7 +9,7 @@ import { fadeInAnimation } from 'theme/animations'
 
 export interface CollateralCardProps {
   title: string
-  onClick(): void
+  href: string
   ilks: IlkData[]
   background: string
   icon: string
@@ -95,7 +96,7 @@ export function LandingPageCardsPlaceholder({ sx }: { sx: SxStyleProp }) {
 }
 
 export function CollateralCard({
-  onClick,
+  href,
   title,
   ilks,
   background,
@@ -105,9 +106,11 @@ export function CollateralCard({
   const { t } = useTranslation()
 
   return (
-    <Flex
+    <AppLink
       sx={{
         ...fadeInAnimation,
+        display: 'flex',
+        minWidth: ['280px', 'auto'],
         minHeight: '315px',
         overflow: 'hidden',
         position: 'relative',
@@ -134,8 +137,7 @@ export function CollateralCard({
           },
         },
       }}
-      tabIndex={0}
-      onClick={onClick}
+      href={href}
     >
       <Image
         className="featured-ilk-bg-image"
@@ -179,6 +181,6 @@ export function CollateralCard({
           </Text>
         </Box>
       </Flex>
-    </Flex>
+    </AppLink>
   )
 }

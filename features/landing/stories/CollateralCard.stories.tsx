@@ -38,7 +38,7 @@ export function SingleCollateralCardSingleIlk({ collateral }: { collateral: stri
         title={token.symbol}
         background={token.background!}
         icon={token.bannerIconPng!}
-        onClick={() => {}}
+        href="/"
       />
     </StoryContainer>
   )
@@ -57,7 +57,7 @@ export function SingleCollateralCardMultipleIlk({ collateral }: { collateral: st
         title={token.symbol}
         background={token.background!}
         icon={token.bannerIconPng!}
-        onClick={() => {}}
+        href="/"
       />
     </StoryContainer>
   )
@@ -76,7 +76,7 @@ export function LpTokenCard() {
         title={'UNI LP Tokens'}
         background={token.background!}
         icon={token.bannerIconPng!}
-        onClick={() => {}}
+        href="/"
       />
     </StoryContainer>
   )
@@ -96,7 +96,7 @@ export function CardsWithTags() {
         title={'UNI LP Tokens'}
         background={token.background!}
         icon={token.bannerIconPng!}
-        onClick={() => {}}
+        href="/"
       />
       <CollateralCard
         category="NEWEST"
@@ -104,7 +104,7 @@ export function CardsWithTags() {
         title={'UNI LP Tokens'}
         background={token.background!}
         icon={token.bannerIconPng!}
-        onClick={() => {}}
+        href="/"
       />
     </StoryContainer>
   )
@@ -130,7 +130,7 @@ export function AllCollateralCards() {
             title={token.symbol}
             background={token.background!}
             icon={token.bannerIconPng!}
-            onClick={() => {}}
+            href="/"
             ilks={ilks}
           />
         )

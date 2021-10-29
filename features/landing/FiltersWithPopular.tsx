@@ -3,7 +3,7 @@ import { Pages, trackingEvents } from 'analytics/analytics'
 import { COIN_TAGS } from 'blockchain/tokensMetadata'
 import { TagFilter } from 'features/ilks/popularIlksFilters'
 import { useTranslation } from 'next-i18next'
-import React, { memo, useCallback } from 'react'
+import React, { ChangeEvent, memo, useCallback } from 'react'
 import ReactSelect from 'react-select'
 import { Box, Button, Flex, Input, SxStyleProp } from 'theme-ui'
 
@@ -12,10 +12,50 @@ interface FiltersProps {
   onTagChange: (tag: TagFilter) => void
   search: string
   defaultTag: 'your-vaults' | 'all-assets'
-  page: Pages.LandingPage | Pages.OpenVaultOverview | Pages.VaultsOverview
+  page: Pages.LandingPage | Pages.OpenVaultOverview | Pages.VaultsOverview | Pages.AllAssets
   tagFilter: TagFilter
   searchPlaceholder: string
   sx?: SxStyleProp
+}
+
+export function SearchInput({
+  onChange,
+  page,
+  search,
+  searchPlaceholder,
+  sx,
+}: {
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void
+} & Pick<FiltersProps, 'page' | 'search' | 'searchPlaceholder' | 'sx'>) {
+  return (
+    <Flex
+      sx={{
+        variant: 'forms.search',
+        width: ['100%', '100%', '313px'],
+        ml: 'auto',
+        mt: [3, 3, 0],
+        ...sx,
+      }}
+    >
+      <Icon
+        sx={{
+          position: 'relative',
+          top: '6px',
+          ml: 3,
+        }}
+        name="search"
+        size="4"
+      />
+      <Input
+        sx={{ fontWeight: 'heading' }}
+        variant="plain"
+        onChange={onChange}
+        onBlur={() => trackingEvents.searchToken(page, search)}
+        value={search}
+        placeholder={searchPlaceholder}
+      />
+    </Flex>
+  )
 }
 
 function Filters_({
@@ -29,7 +69,7 @@ function Filters_({
   sx,
 }: FiltersProps) {
   const onChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    (e: ChangeEvent<HTMLInputElement>) => {
       onSearch(e.currentTarget.value)
     },
     [onSearch],
@@ -115,43 +155,7 @@ function Filters_({
           }}
         />
       </Box>
-      <Flex
-        sx={{
-          variant: 'forms.search',
-          borderColor: 'lavender_o25',
-          width: ['100%', '100%', '313px'],
-          p: [2, 1, 1],
-          ml: 'auto',
-          alignItems: 'center',
-          mt: [3, 3, 0],
-          color: 'text.off',
-          '& input::placeholder': {
-            color: 'text.off',
-            fontWeight: 'heading',
-          },
-          '&:focus-within': {
-            color: 'text.focused',
-          },
-        }}
-      >
-        <Icon
-          sx={{
-            position: 'relative',
-            top: '6px',
-            ml: 3,
-          }}
-          name="search"
-          size="4"
-        />
-        <Input
-          sx={{ fontWeight: 'heading' }}
-          variant="plain"
-          onChange={onChange}
-          onBlur={() => trackingEvents.searchToken(page, search)}
-          value={search}
-          placeholder={searchPlaceholder}
-        />
-      </Flex>
+      <SearchInput {...{ onChange, search, page, searchPlaceholder }} />
     </Flex>
   )
 }
