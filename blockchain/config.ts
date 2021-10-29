@@ -83,6 +83,9 @@ const protoMain = {
     apiUrl: 'https://api.etherscan.io/api',
     apiKey: etherscanAPIKey || '',
   },
+  ethtx: {
+    url: 'https://ethtx.info/mainnet',
+  },
   taxProxyRegistries: ['0xaa63c8683647ef91b3fdab4b4989ee9588da297b'],
   dssProxyActionsDsr: contractDesc(
     dssProxyActionsDsr,
@@ -91,7 +94,8 @@ const protoMain = {
   magicLink: {
     apiKey: '',
   },
-  cacheApi: 'https://oazo-bcache.new.oasis.app/api/v1',
+  // TODO: revert to 'https://oazo-bcache.new.oasis.app/api/v1' when multiply history is merged to main branch
+  cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
 }
 
 export type NetworkConfig = typeof protoMain
@@ -139,6 +143,9 @@ const kovan: NetworkConfig = {
     url: 'https://kovan.etherscan.io',
     apiUrl: 'https://api-kovan.etherscan.io/api',
     apiKey: etherscanAPIKey || '',
+  },
+  ethtx: {
+    url: 'https://ethtx.info/kovan',
   },
   taxProxyRegistries: [kovanAddresses.PROXY_REGISTRY],
   dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, kovanAddresses.PROXY_ACTIONS_DSR),
@@ -192,6 +199,9 @@ const goerli: NetworkConfig = {
     url: 'https://goerli.etherscan.io',
     apiUrl: 'https://api-goerli.etherscan.io/api',
     apiKey: etherscanAPIKey || '',
+  },
+  ethtx: {
+    url: 'https://ethtx.info/goerli',
   },
   taxProxyRegistries: [goerliAddresses.PROXY_REGISTRY],
   dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, goerliAddresses.PROXY_ACTIONS_DSR),
