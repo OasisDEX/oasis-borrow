@@ -67,7 +67,7 @@ function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
   ) as VaultEvent
 }
 
-function splitEvents(event: VaultEvent): VaultEvent | VaultEvent[] {
+export function splitEvents(event: VaultEvent): VaultEvent | VaultEvent[] {
   if (event.kind === 'DEPOSIT-GENERATE') {
     return [
       {
