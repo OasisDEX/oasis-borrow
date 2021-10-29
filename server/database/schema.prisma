@@ -30,6 +30,7 @@ model Vault {
   owner_address String
   chain_id      Int?
 
+  @@unique([vault_id, chain_id], name: "vault_vault_id_chain_id_unique_constraint")
   @@map("vault")
 }
 
