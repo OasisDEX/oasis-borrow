@@ -85,12 +85,12 @@ export function splitEvents(event: VaultEvent): VaultEvent | VaultEvent[] {
     return [
       {
         ...event,
-        kind: 'PAYBACK',
+        id: `${event.id}_a`,
+        kind: 'WITHDRAW',
       },
       {
         ...event,
-        id: `${event.id}_a`,
-        kind: 'WITHDRAW',
+        kind: 'PAYBACK',
       },
     ]
   }

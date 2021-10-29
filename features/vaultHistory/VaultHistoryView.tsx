@@ -149,32 +149,30 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
           {'debt' in event && formatCryptoBalance(event.debt.times(event.rate))} DAI
         </MultiplyHistoryEventDetailsItem>
         {!closeEvent && (
-          <MultiplyHistoryEventDetailsItem rightItem label={t('system.coll-ratio')}>
-            {'beforeCollateralizationRatio' in event &&
-              event.beforeCollateralizationRatio.gt(0) &&
-              formatPercent(event.beforeCollateralizationRatio.times(100), {
-                precision: 2,
-                roundMode: BigNumber.ROUND_DOWN,
-              }) + `->`}
-            {'collateralizationRatio' in event &&
-              formatPercent(event.collateralizationRatio.times(100), {
-                precision: 2,
-                roundMode: BigNumber.ROUND_DOWN,
-              })}
-          </MultiplyHistoryEventDetailsItem>
-        )}
-        {!closeEvent && (
-          <MultiplyHistoryEventDetailsItem rightItem label={t('net-value')}>
-            {'netValue' in event && '$' + formatFiatBalance(event.netValue)}
-          </MultiplyHistoryEventDetailsItem>
-        )}
-        {!closeEvent && (
-          <MultiplyHistoryEventDetailsItem rightItem label={t('system.liquidation-price')}>
-            {'beforeLiquidationPrice' in event &&
-              event.beforeLiquidationPrice.gt(0) &&
-              `$` + formatFiatBalance(event.beforeLiquidationPrice) + `->`}
-            {'liquidationPrice' in event && '$' + formatFiatBalance(event.liquidationPrice)}
-          </MultiplyHistoryEventDetailsItem>
+          <>
+            <MultiplyHistoryEventDetailsItem rightItem label={t('system.coll-ratio')}>
+              {'beforeCollateralizationRatio' in event &&
+                event.beforeCollateralizationRatio.gt(0) &&
+                formatPercent(event.beforeCollateralizationRatio.times(100), {
+                  precision: 2,
+                  roundMode: BigNumber.ROUND_DOWN,
+                }) + `->`}
+              {'collateralizationRatio' in event &&
+                formatPercent(event.collateralizationRatio.times(100), {
+                  precision: 2,
+                  roundMode: BigNumber.ROUND_DOWN,
+                })}
+            </MultiplyHistoryEventDetailsItem>
+            <MultiplyHistoryEventDetailsItem rightItem label={t('net-value')}>
+              {'netValue' in event && '$' + formatFiatBalance(event.netValue)}
+            </MultiplyHistoryEventDetailsItem>
+            <MultiplyHistoryEventDetailsItem rightItem label={t('system.liquidation-price')}>
+              {'beforeLiquidationPrice' in event &&
+                event.beforeLiquidationPrice.gt(0) &&
+                `$` + formatFiatBalance(event.beforeLiquidationPrice) + `->`}
+              {'liquidationPrice' in event && '$' + formatFiatBalance(event.liquidationPrice)}
+            </MultiplyHistoryEventDetailsItem>
+          </>
         )}
         <MultiplyHistoryEventDetailsItem rightItem label={t('history.total-fees')}>
           {'totalFee' in event && event.totalFee.gt(zero)
