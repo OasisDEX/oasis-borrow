@@ -6,8 +6,8 @@ import { ExchangeAction } from 'features/exchange/exchange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import {
-  calculateCloseToCollateralParams,
-  calculateCloseToDaiParams,
+  getCloseToCollateralParams,
+  getCloseToDaiParams,
   CloseToParams,
   LOAN_FEE,
   OAZO_FEE,
@@ -67,6 +67,7 @@ export interface ManageVaultCalculations {
   maxCollRatio: BigNumber
   liquidationPriceCurrentPriceDifference: BigNumber | undefined
   loanFee: BigNumber
+  skipFL: boolean
   oazoFee: BigNumber
   fees: BigNumber
   netValueUSD: BigNumber
@@ -141,6 +142,7 @@ export const defaultManageMultiplyVaultCalculations: ManageVaultCalculations = {
   liquidationPriceCurrentPriceDifference: undefined,
 
   loanFee: zero,
+  skipFL: false,
   oazoFee: zero,
   fees: zero,
 
@@ -450,6 +452,7 @@ export function getVaultChange({
       collateralDelta: depositAmount.minus(withdrawAmount),
       loanFee: zero,
       oazoFee: zero,
+      skipFL: false,
     }
   }
 }
@@ -559,6 +562,7 @@ export function applyManageVaultCalculations(
     debtDelta: borrowedDaiAmount,
     collateralDelta: collateralDeltaNonClose,
     loanFee: loanFeeNonClose,
+    skipFL: skipFLNonClose,
     oazoFee: oazoFeeNonClose,
   } = getVaultChange({
     currentCollateralPrice,
@@ -579,21 +583,38 @@ export function applyManageVaultCalculations(
     ? borrowedDaiAmount.times(one.minus(OAZO_FEE))
     : collateralDeltaNonClose.times(-1)
 
-  const closeToDaiParams = calculateCloseToDaiParams(
-    marketPrice,
-    OAZO_FEE,
-    LOAN_FEE,
-    lockedCollateral,
-    slippage,
-    debt.plus(debtOffset),
+  const closeToDaiParams = getCloseToDaiParams(
+    // market params
+    {
+      oraclePrice: zero, // is ignored
+      marketPrice,
+      OF: OAZO_FEE,
+      FF: LOAN_FEE,
+      slippage,
+    },
+    // vault info
+    {
+      currentDebt: debt.plus(debtOffset),
+      currentCollateral: lockedCollateral,
+      minCollRatio: requiredCollRatio || zero, // todo: make minCollRatio optional in library
+    },
   )
 
-  const closeToCollateralParams = calculateCloseToCollateralParams(
-    marketPrice,
-    OAZO_FEE,
-    LOAN_FEE,
-    debt.plus(debtOffset),
-    slippage,
+  const closeToCollateralParams = getCloseToCollateralParams(
+    // market params
+    {
+      oraclePrice: zero, // is ignored
+      marketPrice,
+      OF: OAZO_FEE,
+      FF: LOAN_FEE,
+      slippage,
+    },
+    // vault info
+    {
+      currentDebt: debt.plus(debtOffset),
+      currentCollateral: lockedCollateral,
+      minCollRatio: requiredCollRatio || zero,
+    },
   )
 
   const collateralDelta = isCloseAction
@@ -614,6 +635,12 @@ export function applyManageVaultCalculations(
       ? closeToDaiParams.loanFee
       : closeToCollateralParams.loanFee
     : loanFeeNonClose
+
+  const skipFL = isCloseAction
+    ? closeVaultTo === 'dai'
+      ? closeToDaiParams.skipFL
+      : closeToCollateralParams.skipFL
+    : skipFLNonClose
 
   const fees = BigNumber.sum(loanFee, oazoFee)
 
@@ -802,6 +829,7 @@ export function applyManageVaultCalculations(
 
     impact,
     loanFee,
+    skipFL,
     oazoFee,
     fees,
 

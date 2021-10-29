@@ -175,7 +175,7 @@ export function getCloseToCollateralParams(
     marketParams.marketPrice.times(one.plus(marketParams.slippage)),
   );
 
-  if (vaultInfo.currentCollateral.dividedBy(vaultInfo.minCollRatio).gt(maxCollNeeded)) {
+  if (!vaultInfo.minCollRatio.isZero() && vaultInfo.currentCollateral.dividedBy(vaultInfo.minCollRatio).gt(maxCollNeeded)) {
     _skipFL = true;
   }
 
