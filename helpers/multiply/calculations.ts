@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { MarketParams, VaultInfo } from '@oasisdex/multiply'
 import { MAX_COLL_RATIO } from 'features/openMultiplyVault/openMultiplyVaultCalculations'
 import { one } from 'helpers/zero'
 
@@ -103,4 +104,93 @@ export function calculateCloseToCollateralParams(
     oazoFee: currentDebt.times(one.plus(FF)).times(OF),
     loanFee: currentDebt.times(FF),
   }
+}
+
+export function getCloseToDaiParams(
+  marketParams: MarketParams,
+  vaultInfo: VaultInfo,
+): {
+  fromTokenAmount: BigNumber;
+  toTokenAmount: BigNumber;
+  minToTokenAmount: BigNumber;
+  borrowCollateral: BigNumber;
+  requiredDebt: BigNumber;
+  withdrawCollateral: BigNumber;
+  loanFee: BigNumber;
+  oazoFee: BigNumber;
+  skipFL: boolean;
+} {
+  const _skipFL = false;
+  const maxCollNeeded = vaultInfo.currentDebt
+    .times(1.00001 /* to account for not up to date value here */)
+    .dividedBy(
+      marketParams.marketPrice
+        .times(one.minus(marketParams.slippage))
+        .times(one.plus(marketParams.OF)),
+    )
+    .times(one.plus(marketParams.FF));
+
+  const _toTokenAmount = vaultInfo.currentDebt
+    .times(one.minus(marketParams.OF))
+    .times(marketParams.marketPrice);
+
+  const _requiredDebt = new BigNumber(0);
+  const oazoFee = vaultInfo.currentDebt.times(marketParams.marketPrice).minus(_toTokenAmount);
+  const loanFee = maxCollNeeded.times(marketParams.FF).dividedBy(one.plus(marketParams.FF));
+
+  return {
+    fromTokenAmount: vaultInfo.currentCollateral,
+    toTokenAmount: _toTokenAmount,
+    minToTokenAmount: _toTokenAmount.times(one.minus(marketParams.slippage)),
+    borrowCollateral: vaultInfo.currentCollateral,
+    requiredDebt: _requiredDebt,
+    withdrawCollateral: new BigNumber(0),
+    skipFL: _skipFL,
+    loanFee: loanFee,
+    oazoFee: oazoFee,
+  };
+}
+
+export function getCloseToCollateralParams(
+  marketParams: MarketParams,
+  vaultInfo: VaultInfo,
+  debug = false,
+): {
+  fromTokenAmount: BigNumber;
+  toTokenAmount: BigNumber;
+  minToTokenAmount: BigNumber;
+  borrowCollateral: BigNumber;
+  requiredDebt: BigNumber;
+  withdrawCollateral: BigNumber;
+  loanFee: BigNumber;
+  oazoFee: BigNumber;
+  skipFL: boolean;
+} {
+  const _requiredAmount = vaultInfo.currentDebt
+    .times(1.00001 /* to account for not up to date value here */)
+    .times(one.plus(marketParams.OF))
+    .times(one.plus(marketParams.FF));
+  let _skipFL = false;
+  const maxCollNeeded = _requiredAmount.dividedBy(
+    marketParams.marketPrice.times(one.plus(marketParams.slippage)),
+  );
+
+  if (vaultInfo.currentCollateral.dividedBy(vaultInfo.minCollRatio).gt(maxCollNeeded)) {
+    _skipFL = true;
+  }
+
+  const oazoFee = _requiredAmount.multipliedBy(marketParams.OF);
+  const loanFee = _requiredAmount.times(marketParams.FF);
+
+  return {
+    fromTokenAmount: maxCollNeeded,
+    toTokenAmount: _requiredAmount.dividedBy(one.minus(marketParams.slippage)),
+    minToTokenAmount: _requiredAmount,
+    borrowCollateral: new BigNumber(0),
+    requiredDebt: _skipFL ? new BigNumber(0) : _requiredAmount,
+    withdrawCollateral: vaultInfo.currentCollateral.minus(maxCollNeeded),
+    skipFL: _skipFL,
+    loanFee,
+    oazoFee,
+  };
 }
