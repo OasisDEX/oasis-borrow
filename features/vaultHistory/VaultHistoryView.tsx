@@ -45,17 +45,13 @@ function getHistoryEventTranslation(t: TFunction, event: VaultHistoryEvent) {
   })
 }
 
-function MultiplyHistoryEventDetailsItem({
-  label,
-  children,
-  rightItem,
-}: { label: string; rightItem?: boolean } & WithChildren) {
+function MultiplyHistoryEventDetailsItem({ label, children }: { label: string } & WithChildren) {
   return (
     <Flex>
       <Text
         sx={{
           textAlign: 'right',
-          minWidth: ['9.5em', null, null, rightItem ? '9.5em' : '9.5em'],
+          minWidth: ['9.5em', null, null, '9.5em'],
           pr: [2, 3],
           color: 'text.subtitle',
         }}
@@ -142,7 +138,7 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
         )}
       </Grid>
       <Grid gap={2}>
-        <MultiplyHistoryEventDetailsItem rightItem label={t('outstanding-debt')}>
+        <MultiplyHistoryEventDetailsItem label={t('outstanding-debt')}>
           {'beforeDebt' in event &&
             event.beforeDebt.gt(0) &&
             formatCryptoBalance(event.beforeDebt.times(event.rate)) + `DAI` + `->`}
@@ -150,7 +146,7 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
         </MultiplyHistoryEventDetailsItem>
         {!closeEvent && (
           <>
-            <MultiplyHistoryEventDetailsItem rightItem label={t('system.coll-ratio')}>
+            <MultiplyHistoryEventDetailsItem label={t('system.coll-ratio')}>
               {'beforeCollateralizationRatio' in event &&
                 event.beforeCollateralizationRatio.gt(0) &&
                 formatPercent(event.beforeCollateralizationRatio.times(100), {
@@ -163,10 +159,10 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
                   roundMode: BigNumber.ROUND_DOWN,
                 })}
             </MultiplyHistoryEventDetailsItem>
-            <MultiplyHistoryEventDetailsItem rightItem label={t('net-value')}>
+            <MultiplyHistoryEventDetailsItem label={t('net-value')}>
               {'netValue' in event && '$' + formatFiatBalance(event.netValue)}
             </MultiplyHistoryEventDetailsItem>
-            <MultiplyHistoryEventDetailsItem rightItem label={t('system.liquidation-price')}>
+            <MultiplyHistoryEventDetailsItem label={t('system.liquidation-price')}>
               {'beforeLiquidationPrice' in event &&
                 event.beforeLiquidationPrice.gt(0) &&
                 `$` + formatFiatBalance(event.beforeLiquidationPrice) + `->`}
@@ -174,7 +170,7 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
             </MultiplyHistoryEventDetailsItem>
           </>
         )}
-        <MultiplyHistoryEventDetailsItem rightItem label={t('history.total-fees')}>
+        <MultiplyHistoryEventDetailsItem label={t('history.total-fees')}>
           {'totalFee' in event && event.totalFee.gt(zero)
             ? '$' + formatFiatBalance(event.totalFee)
             : '-'}
