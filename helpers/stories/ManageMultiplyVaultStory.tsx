@@ -108,6 +108,7 @@ export function manageMultiplyVaultStory({
           MOCK_VAULT_ID,
         ),
       ),
+      manageMultiplyVault$: () => obs$,
     } as any) as AppContext
 
     return (

@@ -5,7 +5,7 @@ import { one, zero } from 'helpers/zero'
 import { MockedEvents } from './testTypes'
 
 export const OAZO_FEE = new BigNumber(0.002)
-export const LOAN_FEE = new BigNumber(0.0009)
+export const LOAN_FEE = new BigNumber(0.0)
 export const SLIPPAGE = new BigNumber(0.005)
 
 export function calculateParamsIncreaseMP(

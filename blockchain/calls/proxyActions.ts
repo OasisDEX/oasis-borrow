@@ -305,7 +305,7 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
     dssMultiplyProxyActions,
     tokens,
     exchange,
-    aaveLendingPool,
+    fmm,
   } = context
 
   return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.openMultiplyVault(
@@ -336,7 +336,7 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
       jug: mcdJug.address,
       manager: dssCdpManager.address,
       multiplyProxyActions: dssMultiplyProxyActions.address,
-      aaveLendingPoolProvider: aaveLendingPool,
+      lender: fmm,
       exchange: exchange.address,
     } as any,
   )
@@ -412,7 +412,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
     dssMultiplyProxyActions,
     tokens,
     exchange,
-    aaveLendingPool,
+    fmm,
   } = context
 
   if (data.action === 'BUY_COLLATERAL') {
@@ -446,7 +446,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
         jug: mcdJug.address,
         manager: dssCdpManager.address,
         multiplyProxyActions: dssMultiplyProxyActions.address,
-        aaveLendingPoolProvider: aaveLendingPool,
+        lender: fmm,
         exchange: exchange.address,
       } as any,
     )
@@ -488,7 +488,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
         jug: mcdJug.address,
         manager: dssCdpManager.address,
         multiplyProxyActions: dssMultiplyProxyActions.address,
-        aaveLendingPoolProvider: aaveLendingPool,
+        lender: fmm,
         exchange: exchange.address,
       } as any,
     )
@@ -533,7 +533,7 @@ function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) 
     dssMultiplyProxyActions,
     tokens,
     exchange,
-    aaveLendingPool,
+    fmm,
   } = context
 
   const {
@@ -583,7 +583,7 @@ function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) 
     jug: mcdJug.address,
     manager: dssCdpManager.address,
     multiplyProxyActions: dssMultiplyProxyActions.address,
-    aaveLendingPoolProvider: aaveLendingPool,
+    lender: fmm,
     exchange: exchange.address,
   }
 
@@ -607,7 +607,26 @@ export const closeVaultCall: TransactionDef<CloseVaultData> = {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => {
-    const { dssMultiplyProxyActions } = context
-    return [dssMultiplyProxyActions.address, getCloseVaultCallData(data, context).encodeABI()]
+    const { dssMultiplyProxyActions, dssProxyActions } = context
+    if (data.exchangeData) {
+      return [dssMultiplyProxyActions.address, getCloseVaultCallData(data, context).encodeABI()]
+    } else {
+      return [
+        dssProxyActions.address,
+        getWithdrawAndPaybackCallData(
+          {
+            kind: TxMetaKind.withdrawAndPayback,
+            withdrawAmount: data.totalCollateral,
+            paybackAmount: new BigNumber(0),
+            proxyAddress: data.proxyAddress!,
+            ilk: data.ilk,
+            token: data.token,
+            id: data.id,
+            shouldPaybackAll: true,
+          },
+          context,
+        ).encodeABI(),
+      ]
+    }
   },
 }

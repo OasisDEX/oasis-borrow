@@ -105,6 +105,7 @@ export function manageVaultStory({
           MOCK_VAULT_ID,
         ),
       ),
+      manageVault$: () => obs$,
     } as any) as AppContext
 
     return (

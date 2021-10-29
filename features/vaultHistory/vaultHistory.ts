@@ -67,7 +67,7 @@ function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
   ) as VaultEvent
 }
 
-function splitEvents(event: VaultEvent): VaultEvent | VaultEvent[] {
+export function splitEvents(event: VaultEvent): VaultEvent | VaultEvent[] {
   if (event.kind === 'DEPOSIT-GENERATE') {
     return [
       {
@@ -85,12 +85,12 @@ function splitEvents(event: VaultEvent): VaultEvent | VaultEvent[] {
     return [
       {
         ...event,
-        kind: 'PAYBACK',
+        id: `${event.id}_a`,
+        kind: 'WITHDRAW',
       },
       {
         ...event,
-        id: `${event.id}_a`,
-        kind: 'WITHDRAW',
+        kind: 'PAYBACK',
       },
     ]
   }
@@ -103,6 +103,9 @@ export type VaultHistoryEvent = VaultEvent & {
     url: string
     apiUrl: string
     apiKey: string
+  }
+  ethx?: {
+    url: string
   }
 }
 export function fetchWithOperationId(url: string, options?: RequestInit) {

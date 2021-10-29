@@ -360,7 +360,7 @@ function MobileMenu() {
       </Box>
       <Icon
         name={isOpen ? 'close' : 'menu'}
-        sx={{ zIndex: 'mobileMenu', position: 'absolute', top: '2px', right: '20px' }}
+        sx={{ zIndex: 'mobileMenu', cursor: 'pointer' }}
         onClick={() => setIsOpen(!isOpen)}
         size="18px"
       />
@@ -376,9 +376,7 @@ function DisconnectedHeader() {
       <Box sx={{ display: ['none', 'block'] }}>
         <BasicHeader variant="appContainer">
           <Grid sx={{ alignItems: 'center', columnGap: [4, 4, 5], gridAutoFlow: 'column', mr: 3 }}>
-            <Logo
-              sx={{ transform: 'scale(85%)', display: 'inline-flex', '& *': { flexShrink: 0 } }}
-            />
+            <Logo />
             <HeaderDropdown title={t('nav.products')}>
               <AppLink
                 variant="links.nav"
@@ -428,8 +426,10 @@ function DisconnectedHeader() {
         </BasicHeader>
       </Box>
       <Box sx={{ display: ['block', 'none'], mb: 5 }}>
-        <Logo sx={{ position: 'absolute', left: '7px', top: '-4px', transform: 'scale(80%)' }} />
-        <MobileMenu />
+        <BasicHeader variant="appContainer">
+          <Logo />
+          <MobileMenu />
+        </BasicHeader>
       </Box>
     </>
   )

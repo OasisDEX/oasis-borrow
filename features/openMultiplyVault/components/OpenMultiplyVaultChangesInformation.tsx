@@ -131,7 +131,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
         }
       />
       <VaultChangesInformationItem
-        label={'Fees + (estimated gas)'}
+        label={t('fees-plus-gas')}
         value={
           <Flex
             sx={{ alignItems: 'center', cursor: 'pointer' }}
@@ -150,10 +150,12 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
       />
       {showFees && (
         <Grid pl={3} gap={2}>
-          <VaultChangesInformationItem
-            label={'3rd party protocol fees'}
-            value={`$${formatAmount(loanFees, 'USD')}`}
-          />
+          {loanFees.gt(zero) && (
+            <VaultChangesInformationItem
+              label={'3rd party protocol fees'}
+              value={`$${formatAmount(loanFees, 'USD')}`}
+            />
+          )}
           <VaultChangesInformationItem
             label={'Oasis fee'}
             value={`$${formatAmount(oazoFee, 'USD')}`}

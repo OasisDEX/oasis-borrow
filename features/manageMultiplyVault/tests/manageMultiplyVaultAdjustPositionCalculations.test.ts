@@ -78,9 +78,9 @@ describe('Adjust multiply calculations', () => {
     const expectedNetValueUSD = new BigNumber('2500')
 
     const afterCollRatio = new BigNumber('2')
-    const expectedAfterCollateralDelta = new BigNumber('4.58067535578901113454')
-    const expectedAfterCollateralDeltaUSD = new BigNumber('4580.67535578901113454')
-    const expectedAfterNetValueUSD = new BigNumber('2463.719490631428618727573395')
+    const expectedAfterCollateralDelta = new BigNumber('4.59317941753432925909')
+    const expectedAfterCollateralDeltaUSD = new BigNumber('4593.17941753432925909')
+    const expectedAfterNetValueUSD = new BigNumber('2467.78331069865700920317')
 
     const state = getStateUnpacker(
       mockManageMultiplyVault$({

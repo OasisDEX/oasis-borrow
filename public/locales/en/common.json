@@ -131,6 +131,15 @@
   "reclaim-collateral-description-pending": "Reclaiming {{ amount }} {{ token }} from vault {{ id }}",
   "reclaim-collateral-description-recent": "Reclaimed {{ amount }} {{ token }} from vault {{ id }}",
   "reclaim-collateral-description-recent-failed": "Failed to reclaim collateral from vault {{ id }}",
+  "multiply-description-pending": "Creating new Multiply Vault ",
+  "multiply-description-recent": "Multiply Vault {{ id }} was created",
+  "multiply-description-recent-failed": "Multiply Vault failed to be created",
+  "adjust-position-description-pending": "Adjusting Multiply Vault {{ id }}",
+  "adjust-position-description-recent": "Multiply Vault {{ id }} adjusted",
+  "adjust-position-description-recent-failed": "Vault {{ id }} Multiply Adjustment failed",
+  "close-vault-description-pending": "Closing Vault {{ id }} to {{ closeTo }}",
+  "close-vault-description-recent": "Closed Vault {{ id }} to {{ closeTo }}",
+  "close-vault-description-recent-failed": "Closing Vault {{ id }} failed",
   "event": {
     "activity": "Activity",
     "deposit": "Deposited",
@@ -146,6 +155,9 @@
     "new": "New"
   },
   "fees": "Fees",
+  "fees-plus-gas": "Fees + (max gas fee)",
+  "max-gas-fee": "Max gas fee",
+  "gas-explanation": "The Max gas fee is the maximum that will be paid in gas for the transaction. We want your transactions to succeed, so we provide a max gas price of 2x the current base fee + a priority fee that will get you in the next block in 95% of the times. In most cases you will pay a lot less than this maximum.",
   "filters": {
     "lp-token": "LP tokens",
     "stablecoin": "Stablecoins",
@@ -160,8 +172,12 @@
     "auction_finished_v2": "Auction <0>#{{auctionId}}</0> finished, <0>{{remainingCollateral}} {{token}}</0> remained",
     "auction_started": "Auction started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} Dai</0>",
     "auction_started_v2": "Auction <0>#{{auctionId}}</0> started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} Dai</0>",
+    "bought": "Bought",
     "deposit": "Deposited <0>{{collateralAmount}} {{token}}</0> into Vault",
+    "deposited": "Deposited",
     "generate": "Generated <0>{{daiAmount}}</0> Dai from Vault",
+    "exit-collateral": "Exit collateral",
+    "exit-dai": "Exit Dai",
     "migrate": "Vault migrated",
     "move_dest": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> Dai debt to the vault",
     "move_src": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> Dai debt from the vault",
@@ -169,11 +185,13 @@
     "payback": "Payback <0>{{daiAmount}}</0> Dai to Vault",
     "transfer": "Vault given to <0>{{transferTo}}</0> by <0>{{transferFrom}}</0>",
     "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault",
-    "openmultiplyvault": "Open multiply Vault",
-    "increasemultiple": "Increased multiple, bought using Dai",
-    "decreasemultiple": "Decreased multiple, sold collateral",
-    "closevaultexitdai": "Closed Vault, exited to Dai",
-    "closevaultexitcollateral": "Closed Vault, exited to collateral"
+    "open_multiply_vault": "Open multiply Vault",
+    "increase_multiple": "Increased multiple",
+    "decrease_multiple": "Decreased multiple",
+    "close_vault_to_dai": "Closed Vault, exited to Dai",
+    "close_vault_to_collateral": "Closed Vault, exited to collateral",
+    "sold": "Sold",
+    "total-fees": "Total fees"
   },
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",
@@ -236,6 +254,7 @@
       "generate-amount-exceeds-dai-yield-from-total-collateral-at-next-price": "The collateralization ratio for this Maker Vault is too low at the next price update. Please generate less Dai",
       "generate-amount-exceeds-debt-ceiling": "You are trying to generate more than the current debt ceiling allows. The amount of Dai that can be generated is {{maxGenerateAmount}}",
       "generate-amount-less-than-debt-floor": "This vault type requires a minimum of {{debtFloor}} Dai to be generated. Read more about the Minimum Vault Debt <0>here</0>.",
+      "generate-amount-more-than-max-flash-amount": "This transaction exceeds the maximum flash loan amount of {{maxFlashAmount}}, please lower the multiple, or deposit amount.",
       "payback-amount-exceeds-dai-balance": "You cannot payback more Dai than the amount in your wallet",
       "payback-amount-exceeds-vault-debt": "You are trying to payback more than your Dai debt for this Maker Vault",
       "debt-will-be-less-than-debt-floor": "The Maker Vault debt amount either must be 0 or exceed {{debtFloor}} amount of Dai. Please change your payback amount",
@@ -289,6 +308,7 @@
   "moving-into-vault": "Moving into Vault",
   "moving-out-vault": "Moving out of Vault",
   "multiple": "Multiple",
+  "metamask-unsupported-network": "You are on an unsupported network. Please switch to Mainnet.",
   "net-value": "Net Value",
   "nav": {
     "about": "About",
@@ -341,6 +361,7 @@
       "generate-amount-exceeds-dai-yield-from-depositing-collateral-at-next-price": "The collateralization ratio for this Maker Vault will be too low at the next price update. Please generate less Dai",
       "generate-amount-exceeds-debt-ceiling": "You are trying to generate more than the current debt ceiling allows. The amount of Dai that can be generated is {{maxGenerateAmount}}",
       "generate-amount-less-than-debt-floor": "This vault type requires a minimum of {{debtFloor}} Dai to be generated. Read more about the Minimum Vault Debt <0>here</0>.",
+      "generate-amount-more-than-max-flash-amount": "This transaction exceeds the maximum flash loan amount of {{maxFlashAmount}}, please lower the multiple, or deposit amount.",
       "debt-will-be-less-than-debt-floor": "The Maker Vault debt amount either must be 0 or exceed {{debtFloor}} amount of Dai. Please change your payback amount",
       "custom-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
       "custom-allowance-amount-less-than-deposit-amount": "You need at least an allowance of your deposit amount to continue",
@@ -439,7 +460,9 @@
     "stability-fee": "Stability Fee",
     "type": "Type",
     "vault-dai-debt": "Vault Dai Debt",
-    "vault-id": "Vault ID"
+    "vault-id": "Vault ID",
+    "oracle-price": "Oracle Price",
+    "market-price": "Market Price"
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
@@ -537,6 +560,7 @@
   "view": "View",
   "view-more": "View more",
   "view-on-etherscan": "View on Etherscan",
+  "view-on-ethtx": "View on ethtx.info",
   "waiting-approval": "Waiting for approval",
   "waiting-confirmation": "Waiting for transaction confirmation",
   "proxy-deployment-confirming": "{{proxyConfirmations}} of {{safeConfirmations}}: Proxy deployment confirmed",
@@ -562,12 +586,14 @@
       "modified": "Vault is being Modified",
       "confirm-manage": "Confirm vault changes",
       "review-manage": "Review vault changes",
-      "multiply-transition": "Multiply your exposure on {{token}} in your vault"
+      "multiply-transition": "Multiply your exposure on {{token}} in your vault",
+      "go-to-multiply": "Great, now you will go to the new Multiply interface"
     },
     "subtext": {
       "collateral": "Deposit or withdraw from your Vault. Save gas by combining transactions.",
       "dai": "Generate DAI from the collateral in your vault, or payback DAI. Save gas by combining transactions.",
-      "edit": "Simulate your vault by configuring the amount of collateral to deposit, and slide your multiply factor.",
+      "edit": "Simulate your vault by configuring the amount of collateral to deposit, and DAI to generate.",
+      "edit-multiply": "Simulate your vault by configuring the amount of collateral to deposit, and slide your multiply factor.",
       "proxy": "With your smart proxy multiple actions can be performed in one transaction for your Vault. This proxy only needs to be set up once.",
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "daiAllowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
@@ -584,8 +610,12 @@
     }
   },
   "creating-your-vault": "Creating your {{token}} Vault!",
+  "creating-your-vault-multiply": "Creating your {{token}} Multiply Vault!",
   "vault-created": "Vault #{{id}} created!",
   "changing-vault": "Changing Vault",
+  "changing-vault-multiply": "Changing Multiply Vault",
+  "adjusting-vault-multiply": "Multiplying your Vault in progress",
+  "closing-vault-multiply": "Closing your Multiply Vault",
   "your-wallet": "Your wallet",
   "welcome": "Welcome to the new Oasis.app.",
   "read-blog-post": "Read the blog post",
@@ -613,5 +643,9 @@
       "subtext": "Borrow up to {{maxBorrow}} DAI for every $100,000 worth of {{token}}",
       "button": "Borrow against {{token}}"
     }
-  }
+  },
+  "modal-trezor-eip1559-title": "Trezor with Metamask does not support EIP-1559",
+  "modal-trezor-eip1559-paragraph1": "Oasis.app has recently updated all transactions to support EIP-1559. Doing EIP-1559 transactions with Trezor through metamask is currently not supported, see <0>here</0>.",
+  "modal-trezor-eip1559-paragraph2": "You can continue to use Metamask with Trezor with legacy transactions on our environment here: <0>legacy.oasis.app</0>.",
+  "modal-trezor-eip1559-paragraph3": "Alternatively, if you have a Model T Trezor you can <0>connect</0> directly to Oasis.app."
 }

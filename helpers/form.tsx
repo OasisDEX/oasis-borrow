@@ -2,12 +2,14 @@ import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
 import { amountFromWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
 import { TxHelpers, TxHelpers$ } from 'components/AppContext'
+import { MODAL_CONTAINER_TREZOR_METAMASK_EIP1559 } from 'components/Modal'
 import { combineLatest, Observable, of } from 'rxjs'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { catchError, first, flatMap, map, startWith, switchMap } from 'rxjs/operators'
 import { OmitProperties, ValueOf } from 'ts-essentials'
 
-import { Ticker } from '../blockchain/prices'
+import { GasPriceParams, Ticker } from '../blockchain/prices'
+import { ErrorTxState } from '@oasisdex/transactions/lib/src/types'
 
 export enum FormStage {
   idle = 'idle',
@@ -234,6 +236,16 @@ export function transactionToX<X, Y extends TxMeta>(
             case TxStatus.CancelledByTheUser:
             case TxStatus.Failure:
             case TxStatus.Error:
+              const modal = document.getElementById(MODAL_CONTAINER_TREZOR_METAMASK_EIP1559)
+
+              if (
+                (txState as ErrorTxState).error?.message?.includes('params specify an EIP-1559') &&
+                modal
+              ) {
+                modal.style.display = 'block'
+                document.documentElement.style.overflow = 'hidden'
+              }
+
               return isFunction(fiascoX) ? fiascoX(txState) : of(fiascoX)
             case TxStatus.Propagating:
             case TxStatus.WaitingForConfirmation:
@@ -272,7 +284,7 @@ export interface HasGasEstimation extends HasGasEstimationCost {
 }
 
 export function doGasEstimation<S extends HasGasEstimation>(
-  gasPrice$: Observable<BigNumber>,
+  gasPrice$: Observable<GasPriceParams>,
   tokenPricesInUSD$: Observable<Ticker>,
   txHelpers$: TxHelpers$,
   state: S,
@@ -298,7 +310,7 @@ export function doGasEstimation<S extends HasGasEstimation>(
 
       return gasCall.pipe(
         map((gasEstimation: number) => {
-          const gasCost = amountFromWei(gasPrice.times(gasEstimation))
+          const gasCost = amountFromWei(gasPrice.maxFeePerGas.times(gasEstimation))
           const gasEstimationUsd = ETHUsd ? gasCost.times(ETHUsd) : undefined
           const gasEstimationDai =
             gasEstimationUsd && DAIUsd ? gasEstimationUsd.div(DAIUsd) : undefined

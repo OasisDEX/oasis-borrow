@@ -185,8 +185,12 @@
     "auction_finished_v2": "Leilão <0>#{{auctionId}}</0> finalizado, <0>{{remainingCollateral}} {{token}}</0> restou",
     "auction_started": "Leilão iniciado, <0>{{collateralAmount}} {{token}}</0> usado para cobrir <0>{{daiAmount}} Dai</0>",
     "auction_started_v2": "Leilão <0>#{{auctionId}}</0> iniciado, <0>{{collateralAmount}} {{token}}</0> usado para cobrir <0>{{daiAmount}} Dai</0>",
+    "bought": "Bought",
     "deposit": "Depositado <0>{{collateralAmount}} {{token}}</0> no Cofre",
+    "deposited": "Deposited",
     "generate": "Gerado <0>{{daiAmount}}</0> Dai do Cofre",
+    "exit-collateral": "Exit collateral",
+    "exit-dai": "Exit Dai",
     "migrate": "Cofre migrado",
     "move_dest": "Movido <0>{{collateralAmount}} {{token}}</0> e <0>{{daiAmount}}</0> dívida Dai para o Cofre",
     "move_src": "Movido <0>{{collateralAmount}} {{token}}</0> e <0>{{daiAmount}}</0> dívida Dai do Cofre",
@@ -194,11 +198,13 @@
     "payback": "Pago <0>{{daiAmount}}</0> Dai para o Cofre",
     "transfer": "Cofre enviou para <0>{{transferTo}}</0> por <0>{{transferFrom}}</0>",
     "withdraw": "Retirou <0>{{collateralAmount}} {{token}}</0> do Cofre",
-    "openmultiplyvault": "Open multiply Vault",
-    "increasemultiple": "Increased multiple, bought using Dai",
-    "decreasemultiple": "Decreased multiple, sold collateral",
-    "closevaultexitdai": "Closed Vault, exited Dai",
-    "closevaultexitcollateral": "Closed Vault, exited collateral"
+    "open_multiply_vault": "Open multiply Vault",
+    "increase_multiple": "Increased multiple",
+    "decrease_multiple": "Decreased multiple",
+    "close_vault_to_dai": "Closed Vault, exited to Dai",
+    "close_vault_to_collateral": "Closed Vault, exited to collateral",
+    "sold": "Sold",
+    "total-fees": "Total fees"
   },
   "jwt-auth-failed": "A assinatura falhou",
   "jwt-auth-in-progress": "Aguardando assinatura...",
@@ -579,7 +585,9 @@
       "confirm-in-progress": "Cofre sendo criado",
       "modified": "Cofre sendo modificado",
       "confirm-manage": "Confirme as alterações no Cofre",
-      "review-manage": "Revisar mudanças no cofre"
+      "review-manage": "Revisar mudanças no cofre",
+      "multiply-transition": "Multiply your exposure on {{token}} in your vault",
+      "go-to-multiply": "Great, now you will go to the new Multiply interface"
     },
     "subtext": {
       "collateral": "Deposite ou retire do seu cofre. Economize gás ao combinar as transações.",
