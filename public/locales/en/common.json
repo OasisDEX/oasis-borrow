@@ -696,5 +696,11 @@
       "annual_fee_desc": "Annual Fee (High -> Low)",
       "annual_fee_asc": "Annual Fee (Low -> High)"
     }
+  },
+  "asset-page": {
+    "other-assets-title": "Other Assets",
+    "other-assets-link": "All assets",
+    "about-title": "About {{ token }}",
+    "about-link": "Official site"
   }
 }

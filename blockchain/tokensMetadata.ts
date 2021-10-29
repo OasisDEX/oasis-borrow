@@ -38,6 +38,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/eth.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/ETH.png'),
     tags: [],
+    description: {
+      en:
+        'ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it. We can think about it as the "fuel" of the network. Users may exchange other cryptocurrencies for ether tokens, but ether tokens cannot be substituted with other cryptocurrencies to provide computing power for Ethereum transactions',
+    },
+    link: 'https://ethereum.org/en/eth/',
   },
   {
     symbol: 'BAT',
@@ -52,6 +57,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/bat.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/BAT.png'),
     tags: [],
+    description: {
+      en: `The BAT that powers Brave Software's blockchain-based digital advertising platform. The browser blocks trackers, malware and invasive cookies.The token is deployed with smart contracts issued directly from the advertiser. Users get rewarded for their “attention” by watching ads in an anonymous, blockchain based environment. Creators also receive rewards and revenue for content creation.`,
+    },
+    link: 'https://basicattentiontoken.org/#ad-network',
   },
   {
     symbol: 'WBTC',
@@ -70,6 +79,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/wbtc.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/WBTC.png'),
     tags: [],
+    description: {
+      en:
+        'Wrapped Bitcoin delivers the power of Bitcoin with the flexibility of an ERC20 token. It is the first ERC20 token backed 1:1 with Bitcoin. It is completely transparent, 100% verifiable and community led. WBTC bringd Bitcoin’s liquidity to DEXs and makes it possible to use Bitcoin for token trades.',
+    },
+    link: 'https://wbtc.network/',
   },
   {
     symbol: 'RENBTC',
@@ -88,6 +102,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/renbtc.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/renBTC.png'),
     tags: [],
+    description: {
+      en:
+        'RenBTC is an ERC-20 token built on the Ethereum network, pegged to Bitcoin and minted on the Ren platform, which is an open protocol helping to bring assets from other blockchains to Ethereum decentralized applications (DApps). To mint it, the users send their BTC to RenVM, which then secures the asset and mints an equivalent number of renBTC.',
+    },
+    link: 'https://renproject.io/',
   },
   {
     symbol: 'TUSD',
@@ -102,6 +121,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/tusd.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/TUSD.png'),
     tags: ['stablecoin'],
+    description: {
+      en:
+        'TUSD is a 1:1 USD-backed centralized stablecoin, it is an ERC-20 token, part of the TrustToken asset tokenization platform.',
+    },
+    link: 'https://www.trusttoken.com/',
   },
   {
     symbol: 'KNC',
@@ -116,6 +140,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/knc.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/KNC.png'),
     tags: [],
+    description: {
+      en:
+        'KNC is an Ethereum token used for paying fees on the Kyber Network, a blockchain-based liquidity hub that connects liquidity from a wide range of sources to power instant and secure crypto exchange in any decentralized application.',
+    },
+    link: 'https://kyber.network/',
   },
   {
     symbol: 'MANA',
@@ -130,6 +159,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/mana.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/MANA.png'),
     tags: [],
+    description: {
+      en:
+        'MANA is the ERC-20 token built for Decentraland, a virtual reality platform powered by the ethereum blockchain. It is primarily used to buy goods, services and LAND (an NFT token) within Decentraland.',
+    },
+    link: 'https://decentraland.org/',
   },
   {
     symbol: 'PAXUSD',
@@ -144,6 +178,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/pax.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/PAX.png'),
     tags: ['stablecoin'],
+    description: {
+      en:
+        'Pax Dollar is a 1:1 USD-backed centralized stablecoin, it is an ERC-20 token. The correspondent dollars are held in Paxos-owned US bank accounts. Paxos is a regulated blockchain infrastructure platform, building a new, open financial system.',
+    },
+    link: 'https://www.paxos.com/',
   },
   {
     symbol: 'USDT',
@@ -158,6 +197,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/usdt.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/USDT.png'),
     tags: ['stablecoin'],
+    description: {
+      en:
+        'Tether is a centralized stablecoin, backed 100% by fiat currency. USDT is equal to one unit of the coin it is anchored to, the US Dollar. Tether allows users to use fiat-backed tokens on blockchains and bypass the price volatility of other cryptocurrencies.',
+    },
+    link: 'https://tether.to/',
   },
   {
     symbol: 'COMP',
@@ -173,6 +217,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/comp.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/COMP.png'),
     tags: [],
+    description: {
+      en:
+        'Compound (COMP) is the governance token of Compound protocol. Compound is an algorithmic, autonomous interest rate protocol built for developers, to unlock a universe of open financial applications.',
+    },
+    link: 'https://compound.finance/',
   },
   {
     symbol: 'LRC',
@@ -187,6 +236,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/lrc.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/LRC.png'),
     tags: [],
+    description: {
+      en:
+        'Loopring is an Ethereum token that describes itself as “an open-sourced, audited, and non-custodial exchange protocol.” It aims to allow anyone to build non-custodial, order book-based exchanges on Ethereum by leveraging zero-knowledge proofs.',
+    },
+    link: 'https://loopring.org/',
   },
   {
     symbol: 'LINK',
@@ -201,6 +255,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/link.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/LINK.png'),
     tags: [],
+    description: {
+      en:
+        'LINK is an ERC-20 token used in the Chainlink network to compensate Chainlink Node operators for the retrieval of data from the external data sources. Chainlink is a blockchain-based cryptocurrency network that provides a link between real world data and smart contracts.',
+    },
+    link: 'https://chain.link/',
   },
   {
     symbol: 'GUSD',
@@ -215,6 +274,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/gusd.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/GUSD.png'),
     tags: ['stablecoin'],
+    description: {
+      en:
+        'The Gemini Dollar is a 1:1 USD-backed centralized stablecoin, an ERC20 token built atop the Ethereum network whose purpose is to bridge the divide between the traditional finance sector and the crypto industry. Gemini is a regulated cryptocurrency exchange, wallet, and custodian that makes it simple and secure to buy bitcoin, ether, and other cryptocurrencies.',
+    },
+    link: 'https://www.gemini.com/eu',
   },
   {
     symbol: 'ZRX',
@@ -229,6 +293,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/zerox.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/ZRX.png'),
     tags: [],
+    description: {
+      en:
+        'ZRX is the native governance and staking token for 0x, the open protocol that enables the peer-to-peer exchange of assets on the Ethereum blockchain. The peer-to-peer decentralised exchange is mainly used to pay trading fees and governance as it doesn’t interact with fiat currency.',
+    },
+    link: 'https://0x.org/',
   },
   {
     symbol: 'USDC',
@@ -246,6 +315,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/usdc.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/USDC.png'),
     tags: ['stablecoin'],
+    description: {
+      en:
+        'USDC is a 1:1 USD-backed centralized stablecoin, fully regulated. USDC is natively supported on multiple layer 1 blockchains including Ethereum as an ERC-20 token, Algorand as an ASA token, Solana as a SPL token, TRON as an TRC-20 token, and Stellar as a native asset. It is operated by Circle.',
+    },
+    link: 'https://www.circle.com/en/about-circle',
   },
   {
     symbol: 'BAL',
@@ -261,6 +335,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/bal.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/BAL.png'),
     tags: [],
+    description: {
+      en:
+        'Balancer (BAL) is an Ethereum token that powers the Balancer protocol, an automated market maker that lets anyone create or add liquidity to trading pools while earning customizable trading fees. BAL is the governance token of the protocol.',
+    },
+    link: 'https://balancer.fi/',
   },
   {
     symbol: 'YFI',
@@ -276,6 +355,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/yfi.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/YFI.png'),
     tags: [],
+    description: {
+      en:
+        'Yearn.finance (YFI) is the governance token of the Yearn.finance platform. The platform is a yield optimizer that moves funds around the decentralized finance ecosystem in an effort to generate a high return.',
+    },
+    link: 'https://yearn.finance/',
   },
   {
     symbol: 'UNI',
@@ -292,6 +376,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/UNI.png'),
     tags: [],
+    description: {
+      en:
+        'UNI is the governance token of Uniswap Protocol, which is governed by a decentralized community of UNI token holders and their delegates who propose and vote on upgrades to the protocol. Uniswap is a crypto trading protocol for swapping ERC20 tokens.',
+    },
+    link: 'https://uniswap.org/',
   },
   {
     symbol: 'AAVE',
@@ -307,6 +396,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/aave.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/AAVE.png'),
     tags: [],
+    description: {
+      en:
+        'Aave is the governance token of Aave protocol. Aave is a decentralized finance protocol that lets people lend and borrow cryptocurrency without having to go through a centralized intermediary. When they lend, they earn interest; when they borrow, they pay interest.',
+    },
+    link: 'https://aave.com/',
   },
   {
     symbol: 'UNIV2USDCETH',
@@ -483,6 +577,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/UNI.png'),
     tags: [],
+    description: {
+      en:
+        'When tokens are deposited into a crypto liquidity pool, the platform automatically generates a new token that represents the share the depositor owns of that pool. This is called a liquidity provider (LP) token, and it can be used for a multitude of functions both within its native platform and other decentralized finance (DeFi) apps. This has the effect of multiplying the liquidity available in the DeFi ecosystem.',
+    },
+    link: 'https://uniswap.org/',
   },
   {
     symbol: 'GUNIV3DAIUSDC1',
@@ -514,6 +613,11 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/matic.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/MATIC.png'),
     tags: [],
+    description: {
+      en:
+        'Polygon (MATIC) is an Ethereum token that powers the Polygon Network, a scaling solution for Ethereum. Polygon is a protocol and a framework for building and connecting Ethereum-compatible blockchain networks. Aggregating scalable solutions on Ethereum supporting a multi-chain Ethereum ecosystem.',
+    },
+    link: 'https://polygon.technology/',
   },
   // {
   //   symbol: 'WETH',
