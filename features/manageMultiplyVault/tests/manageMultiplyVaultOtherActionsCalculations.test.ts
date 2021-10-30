@@ -4,8 +4,8 @@ import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
 import {
-  calculateCloseToCollateralParams,
-  calculateCloseToDaiParams,
+  getCloseToCollateralParams,
+  getCloseToDaiParams,
   LOAN_FEE,
   OAZO_FEE,
   SLIPPAGE,
@@ -53,13 +53,21 @@ describe('Other actions calculations', () => {
       minToTokenAmount,
       toTokenAmount,
       fromTokenAmount,
-    } = calculateCloseToDaiParams(
-      marketPrice,
-      OAZO_FEE,
-      LOAN_FEE,
-      currentCollateral,
-      SLIPPAGE,
-      currentDebt,
+    } = getCloseToDaiParams(
+      // market params
+      {
+        oraclePrice: zero, // is ignored
+        marketPrice,
+        OF: OAZO_FEE,
+        FF: LOAN_FEE,
+        slippage: SLIPPAGE,
+      },
+      // vault info
+      {
+        currentDebt,
+        currentCollateral,
+        minCollRatio: zero,
+      },
     )
 
     expect(fromTokenAmount).to.be.deep.equal(expectedFromTokenAmount)
@@ -87,7 +95,22 @@ describe('Other actions calculations', () => {
       minToTokenAmount,
       toTokenAmount,
       fromTokenAmount,
-    } = calculateCloseToCollateralParams(marketPrice, OAZO_FEE, LOAN_FEE, currentDebt, SLIPPAGE)
+    } = getCloseToCollateralParams(
+      // market params
+      {
+        oraclePrice: zero, // is ignored
+        marketPrice,
+        OF: OAZO_FEE,
+        FF: LOAN_FEE,
+        slippage: SLIPPAGE,
+      },
+      // vault info
+      {
+        currentDebt,
+        currentCollateral: zero,
+        minCollRatio: zero,
+      },
+    )
 
     expect(fromTokenAmount).to.be.deep.equal(expectedFromTokenAmount)
     expect(toTokenAmount).to.be.deep.equal(expectedToTokenAmount)

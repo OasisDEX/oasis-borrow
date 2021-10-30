@@ -126,7 +126,13 @@ export function applyOpenMultiplyVaultCalculations(
 
   const requiredCollRatioSafe = requiredCollRatio || maxCollRatio
 
-  const { debtDelta: borrowedDaiAmount, collateralDelta: buyingCollateral, loanFee, oazoFee, skipFL } =
+  const {
+    debtDelta: borrowedDaiAmount,
+    collateralDelta: buyingCollateral,
+    loanFee,
+    oazoFee,
+    skipFL,
+  } =
     depositAmount && marketPriceMaxSlippage && requiredCollRatioSafe && marketPrice
       ? getMultiplyParams(
           // Market params

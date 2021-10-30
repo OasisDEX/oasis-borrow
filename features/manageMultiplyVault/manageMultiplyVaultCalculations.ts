@@ -6,9 +6,9 @@ import { ExchangeAction } from 'features/exchange/exchange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import {
+  CloseToParams,
   getCloseToCollateralParams,
   getCloseToDaiParams,
-  CloseToParams,
   LOAN_FEE,
   OAZO_FEE,
 } from 'helpers/multiply/calculations'
