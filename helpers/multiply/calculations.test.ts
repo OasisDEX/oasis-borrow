@@ -1,66 +1,109 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
+import { VaultEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
 import { calculatePNL } from 'helpers/multiply/calculations'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 
-import { MockedEvents } from './testTypes'
-
 // based on https://docs.google.com/spreadsheets/d/144cmXYXe89tzjUOrgj8eK7B2pU2WSQBdZr6s1GeXnms/edit#gid=0
-const mockedMultiplyEvents: MockedEvents[] = [
+const multiplyBaseEvent = {
+  marketPrice: zero,
+  oraclePrice: zero,
+
+  beforeDebt: zero,
+  debt: zero,
+
+  beforeLockedCollateral: zero,
+  lockedCollateral: zero,
+
+  beforeCollateralizationRatio: zero,
+  collateralizationRatio: zero,
+
+  multiple: zero,
+  beforeMultiple: zero,
+
+  urn: '0x',
+  logIndex: 1,
+
+  netValue: zero,
+
+  liquidationRatio: zero,
+  beforeLiquidationPrice: zero,
+  liquidationPrice: zero,
+
+  loanFee: zero,
+  oazoFee: zero,
+  totalFee: zero,
+  gasFee: zero, // in wei
+}
+
+const mockedMultiplyEvents: VaultEvent[] = [
   {
+    ...multiplyBaseEvent,
     kind: 'OPEN_MULTIPLY_VAULT',
-    deposit: new BigNumber(10),
     bought: zero,
-    marketPrice: new BigNumber(2000),
+    depositCollateral: new BigNumber(10),
     oraclePrice: new BigNumber(2000),
+    marketPrice: new BigNumber(2000),
+    depositDai: new BigNumber(0),
     gasFee: new BigNumber(0.01),
   },
   {
-    kind: 'INCREASE_MULTIPLY',
-    deposit: zero,
+    ...multiplyBaseEvent,
+    kind: 'INCREASE_MULTIPLE',
     bought: new BigNumber(5),
-    marketPrice: new BigNumber(2000),
-    oraclePrice: new BigNumber(2000),
+    depositCollateral: new BigNumber(0),
+    oraclePrice: new BigNumber(2005),
+    marketPrice: new BigNumber(2005),
+    depositDai: new BigNumber(0),
     gasFee: new BigNumber(0.0375),
   },
   {
-    kind: 'INCREASE_MULTIPLY',
-    deposit: new BigNumber(5),
-    bought: zero,
-    marketPrice: new BigNumber(2700),
+    kind: 'DEPOSIT',
+    collateralAmount: new BigNumber(5),
     oraclePrice: new BigNumber(2700),
-    gasFee: new BigNumber(0.00925),
+    rate: new BigNumber(1),
+    hash: '0x',
+    timestamp: 'string',
+    id: 'string',
   },
   {
-    kind: 'INCREASE_MULTIPLY',
-    deposit: zero,
+    ...multiplyBaseEvent,
+    kind: 'INCREASE_MULTIPLE',
     bought: new BigNumber(7),
-    marketPrice: new BigNumber(2700),
+    depositCollateral: new BigNumber(0),
+    depositDai: new BigNumber(0),
     oraclePrice: new BigNumber(2700),
+    marketPrice: new BigNumber(2700),
     gasFee: new BigNumber(0.02225),
   },
   {
-    kind: 'DECREASE_MULTIPLY',
-    withdrawn: new BigNumber(2),
-    sold: zero,
-    marketPrice: new BigNumber(2705),
+    kind: 'WITHDRAW',
+    collateralAmount: new BigNumber(-2),
     oraclePrice: new BigNumber(2705),
-    gasFee: new BigNumber(0.011),
+    rate: new BigNumber(1),
+    hash: '0x',
+    timestamp: 'string',
+    id: 'string',
   },
   {
-    kind: 'GENERATE_DAI',
-    generated: new BigNumber(1000),
-    marketPrice: new BigNumber(2650),
-    gasFee: new BigNumber(0.0075),
-  },
-  {
-    kind: 'DECREASE_MULTIPLY',
-    withdrawn: zero,
-    sold: new BigNumber(5),
-    marketPrice: new BigNumber(2650),
+    kind: 'GENERATE',
+    daiAmount: new BigNumber(1000),
     oraclePrice: new BigNumber(2650),
+    rate: new BigNumber(1),
+    hash: '0x',
+    timestamp: 'string',
+    id: 'string',
+  },
+  {
+    ...multiplyBaseEvent,
+    kind: 'DECREASE_MULTIPLE',
+    sold: new BigNumber(5),
+    withdrawnDai: new BigNumber(0),
+    withdrawnCollateral: new BigNumber(0),
+    oraclePrice: new BigNumber(2650),
+    marketPrice: new BigNumber(2650),
     gasFee: new BigNumber(0.02825),
   },
 ]
@@ -84,8 +127,7 @@ describe('Multiply calculations', () => {
     )
 
     const pnl = calculatePNL(mockedMultiplyEvents, state().netValueUSD)
-    // console.log(pnl.toFixed())
 
-    expect(pnl).to.be.deep.equal(new BigNumber('0.26643156716417910448'))
+    expect(pnl).to.be.deep.equal(new BigNumber('0.26865298507462686567'))
   })
 })
