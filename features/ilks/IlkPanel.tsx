@@ -8,18 +8,20 @@ import { TFunction, useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Box, Card, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 
+import { formatPercent } from '../../helpers/formatters/format'
+
 const ILK_PANEL_ITEMS = (dailyStabilityFee: string, stabilityFee: string, minCollRatio: string) => [
   {
     translationKey: 'daily-stability-fee',
-    value: dailyStabilityFee + 'DAI',
+    value: `${dailyStabilityFee} DAI`,
   },
   {
     translationKey: 'stability-fee',
-    value: stabilityFee + '%',
+    value: stabilityFee,
   },
   {
     translationKey: 'minimum-coll-ratio',
-    value: minCollRatio + '%',
+    value: minCollRatio,
   },
 ]
 
@@ -240,8 +242,8 @@ export function IlkPanel({
   const { ilk, stabilityFee, liquidationRatio, token } = ilkData
   const { daiDebt } = vaultEstimations
   const dailyStabilityFee = getDailyStabilityFee(stabilityFee, daiDebt)
-  const stabilityFeeInPercent = (stabilityFee.toNumber() * 100).toFixed(2)
-  const minCollRatio = (liquidationRatio.toNumber() * 100).toFixed(2)
+  const stabilityFeeInPercent = formatPercent(stabilityFee.times(100), { precision: 2 })
+  const minCollRatio = formatPercent(liquidationRatio.times(100), { precision: 2 })
 
   return (
     <Card sx={{ p: 0, boxShadow: 'cardLanding' }}>
@@ -256,7 +258,7 @@ export function IlkPanel({
         </Grid>
         <Flex sx={{ justifyContent: ['flex-start', 'flex-end'], alignItems: 'center' }}>
           {isBestForExposure && (
-            <IlkPanelInfoPill sx={{ bg: '#EDEDFF', color: 'link' }}>
+            <IlkPanelInfoPill sx={{ bg: 'titanWhite', color: 'link' }}>
               {t('asset-page.ilk-panel.best-for-exposure', { token })}
             </IlkPanelInfoPill>
           )}
