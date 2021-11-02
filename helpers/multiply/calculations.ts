@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { MAX_COLL_RATIO } from 'features/openMultiplyVault/openMultiplyVaultCalculations'
+import { VaultEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import { one, zero } from 'helpers/zero'
-
-import { MockedEvents } from './testTypes'
 
 export const OAZO_FEE = new BigNumber(0.002)
 export const LOAN_FEE = new BigNumber(0.0)
@@ -237,52 +236,73 @@ export function calculateCloseToCollateralParams(
   }
 }
 
-export function calculatePNL(events: MockedEvents[], currentNetValueUSD: BigNumber) {
-  let cummulativeDepositUSD = zero
-  let cummulativeWithdrawnUSD = zero
-  let cummulativeFeesUSD = zero
+function getCumulativeDepositUSD(total: BigNumber, event: VaultEvent) {
+  switch (event.kind) {
+    case 'DEPOSIT':
+    case 'DEPOSIT-GENERATE':
+      return total.plus(event.collateralAmount.times(event.oraclePrice))
+    case 'PAYBACK':
+    case 'WITHDRAW-PAYBACK':
+      return total.plus(event.daiAmount.abs())
+    case 'OPEN_MULTIPLY_VAULT':
+    case 'INCREASE_MULTIPLE':
+      return total.plus(event.depositCollateral.times(event.marketPrice)).plus(event.depositDai)
+    case 'AUCTION_STARTED':
+    case 'AUCTION_STARTED_V2':
+      return zero
+    default:
+      return total
+    // TODO: move_dest
+    //
+  }
+}
 
-  events.forEach((event) => {
-    if (event.kind === 'OPEN_MULTIPLY_VAULT' || event.kind === 'INCREASE_MULTIPLY') {
-      const { deposit, marketPrice } = event
+function getCumulativeWithdrawnUSD(total: BigNumber, event: VaultEvent) {
+  switch (event.kind) {
+    case 'WITHDRAW':
+    case 'WITHDRAW-PAYBACK':
+      return total.plus(event.collateralAmount.abs().times(event.oraclePrice))
+    case 'GENERATE':
+    case 'DEPOSIT-GENERATE':
+      return total.plus(event.daiAmount)
+    case 'DECREASE_MULTIPLE':
+      return total
+        .plus(event.withdrawnCollateral.abs().times(event.marketPrice))
+        .plus(event.withdrawnDai.abs())
+    case 'CLOSE_VAULT_TO_COLLATERAL':
+      return total.plus(event.exitCollateral.times(event.marketPrice))
+    case 'CLOSE_VAULT_TO_DAI':
+      return total.plus(event.exitDai)
+    case 'AUCTION_STARTED':
+    case 'AUCTION_STARTED_V2':
+      return zero
+    default:
+      return total
+    // TODO: move_src
+  }
+}
 
-      cummulativeDepositUSD = cummulativeDepositUSD.plus(deposit.times(marketPrice))
-    }
+function getCumulativeFeesUSD(total: BigNumber, event: VaultEvent) {
+  switch (event.kind) {
+    case 'OPEN_MULTIPLY_VAULT':
+    case 'DECREASE_MULTIPLE':
+    case 'INCREASE_MULTIPLE':
+    case 'CLOSE_VAULT_TO_COLLATERAL':
+    case 'CLOSE_VAULT_TO_DAI':
+      return total.plus(event.gasFee.times(event.marketPrice)) // TODO add ethPrice to all events
+    default:
+      return total
+  }
+}
 
-    if (event.kind === 'DECREASE_MULTIPLY') {
-      const { withdrawn, marketPrice } = event
+export function calculatePNL(events: VaultEvent[], currentNetValueUSD: BigNumber) {
+  const cumulativeDepositUSD = events.reduce(getCumulativeDepositUSD, zero)
+  const cumulativeWithdrawnUSD = events.reduce(getCumulativeWithdrawnUSD, zero)
+  const cumulativeFeesUSD = events.reduce(getCumulativeFeesUSD, zero)
 
-      cummulativeWithdrawnUSD = cummulativeWithdrawnUSD.plus(withdrawn.times(marketPrice))
-    }
-
-    if (event.kind === 'CLOSE_VAULT_TO_DAI') {
-      const { exitDai } = event
-
-      cummulativeWithdrawnUSD = cummulativeWithdrawnUSD.plus(exitDai)
-    }
-
-    if (event.kind === 'CLOSE_VAULT_TO_COLLATERAL') {
-      const { exitCollateral, marketPrice } = event
-      cummulativeWithdrawnUSD = cummulativeWithdrawnUSD.plus(exitCollateral.times(marketPrice))
-    }
-
-    if (event.kind === 'GENERATE_DAI') {
-      const { generated } = event
-
-      cummulativeWithdrawnUSD = cummulativeWithdrawnUSD.plus(generated)
-    }
-
-    cummulativeFeesUSD = cummulativeFeesUSD.plus(event.gasFee.times(event.marketPrice))
-  })
-
-  // console.log(`
-  //   starting ${cummulativeDepositUSD.minus(cummulativeWithdrawnUSD).toFixed()}
-  //   current ${currentNetValueUSD.toFixed()}
-  // `)
-
-  return cummulativeWithdrawnUSD
+  return cumulativeWithdrawnUSD
     .plus(currentNetValueUSD)
-    .minus(cummulativeFeesUSD)
-    .minus(cummulativeDepositUSD)
-    .div(cummulativeDepositUSD)
+    .minus(cumulativeFeesUSD)
+    .minus(cumulativeDepositUSD)
+    .div(cumulativeDepositUSD)
 }
