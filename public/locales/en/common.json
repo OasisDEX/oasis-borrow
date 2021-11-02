@@ -607,7 +607,7 @@
   "view": "View",
   "view-more": "View more",
   "view-on-etherscan": "View on Etherscan",
-  "view-on-ethtx": "View on ethtx.info",
+  "view-on-ethtx": "View on Ethtx",
   "waiting-approval": "Waiting for approval",
   "waiting-confirmation": "Waiting for transaction confirmation",
   "proxy-deployment-confirming": "{{proxyConfirmations}} of {{safeConfirmations}}: Proxy deployment confirmed",
