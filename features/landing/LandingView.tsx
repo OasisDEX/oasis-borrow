@@ -94,17 +94,19 @@ export function LandingView() {
           mb: ['112px', '240px'],
         }}
       >
-        <LandingPageCardsPlaceholder
-          sx={
-            landing !== undefined
-              ? {
-                  ...fadeInAnimation,
-                  animationDirection: 'backwards',
-                  animationFillMode: 'backwards',
-                }
-              : {}
-          }
-        />
+        {!landingError && (
+          <LandingPageCardsPlaceholder
+            sx={
+              landing !== undefined
+                ? {
+                    ...fadeInAnimation,
+                    animationDirection: 'backwards',
+                    animationFillMode: 'backwards',
+                  }
+                : {}
+            }
+          />
+        )}
         <WithErrorHandler error={landingError}>
           <WithLoadingIndicator
             value={landing}
