@@ -4,7 +4,7 @@ import { VaultEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
 import { calculatePNL } from 'helpers/multiply/calculations'
 import { getStateUnpacker } from 'helpers/testHelpers'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 
 // based on https://docs.google.com/spreadsheets/d/144cmXYXe89tzjUOrgj8eK7B2pU2WSQBdZr6s1GeXnms/edit#gid=0
 const multiplyBaseEvent = {
@@ -36,6 +36,12 @@ const multiplyBaseEvent = {
   oazoFee: zero,
   totalFee: zero,
   gasFee: zero, // in wei
+
+  timestamp: '',
+  hash: '0x',
+  id: '0',
+
+  rate: one,
 }
 
 const mockedMultiplyEvents: VaultEvent[] = [

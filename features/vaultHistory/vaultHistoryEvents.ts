@@ -116,8 +116,11 @@ interface MigrateEvent extends HistoryEventBase {
 }
 
 export interface MultiplyBaseEvent {
+  timestamp: string
+  hash: string
   marketPrice: BigNumber
   oraclePrice: BigNumber
+  id: string
 
   beforeDebt: BigNumber
   debt: BigNumber
@@ -144,6 +147,7 @@ export interface MultiplyBaseEvent {
   oazoFee: BigNumber
   totalFee: BigNumber
   gasFee: BigNumber // in wei
+  rate: BigNumber
 }
 interface OpenMultiplyEvent extends MultiplyBaseEvent {
   kind: 'OPEN_MULTIPLY_VAULT'
