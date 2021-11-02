@@ -37,23 +37,22 @@ function AssetOtherAssets() {
 }
 
 export function AssetAbout({ token }: { token: string }) {
-  const {
-    t,
-    i18n: { language },
-  } = useTranslation()
+  const { t } = useTranslation()
   const tokenData = getToken(token)
 
-  const description =
-    (tokenData.description &&
-      tokenData.description[language as keyof typeof tokenData.description]) ||
-    'Missing description'
+  const description = t(`${tokenData.description?.content}`, {
+    defaultValue: t('asset-page.missing-description'),
+  })
 
   return (
     <AssetCard>
       <Heading variant="header3">{t('asset-page.about-title', { token: tokenData.name })}</Heading>
       <Text sx={{ mt: 3, mb: 4, color: 'text.subtitle' }}>{description}</Text>
-      {tokenData.link && (
-        <AppLinkWithArrow href={tokenData.link} sx={{ color: 'link', fontWeight: 'body' }}>
+      {tokenData.description?.link && (
+        <AppLinkWithArrow
+          href={tokenData.description.link}
+          sx={{ color: 'link', fontWeight: 'body' }}
+        >
           {t('asset-page.about-link')}
         </AppLinkWithArrow>
       )}
