@@ -329,8 +329,6 @@ export function multiplyVault(
 
               const jwtToken = jwtAuthGetToken(account as string)
               if (id && jwtToken) {
-                console.log('network id')
-                console.log(txState.networkId)
                 saveVaultUsingApi$(
                   id,
                   jwtToken,

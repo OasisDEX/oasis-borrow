@@ -98,8 +98,6 @@ export function saveVaultUsingApi$(
   vaultType: VaultType,
   chainId: number,
 ): Observable<void> {
-  console.log('chainId')
-  console.log(chainId)
   return ajax({
     url: `${basePath}/api/vault`,
     method: 'POST',

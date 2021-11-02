@@ -432,8 +432,6 @@ export function createManageVault$(
             first(),
             switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress]) => {
               vault.chainId = context.chainId
-              console.log('vault')
-              console.log(vault)
               const collateralAllowance$ =
                 account && proxyAddress
                   ? allowance$(vault.token, account, proxyAddress)
