@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { mockIlkData } from 'helpers/mocks/ilks.mock'
+import React from 'react'
 
 import { VaultType } from '../../generalManageVault/generalManageVault'
 import { IlkPanel } from '../IlkPanel'
