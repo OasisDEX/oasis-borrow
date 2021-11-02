@@ -4,7 +4,16 @@ import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { compareBigNumber } from 'helpers/compareBigNumber'
 import { SLIPPAGE } from 'helpers/multiply/calculations'
 import { EMPTY, Observable } from 'rxjs'
-import { debounceTime, distinctUntilChanged, filter, map, switchMap, take } from 'rxjs/operators'
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  shareReplay,
+  switchMap,
+  take,
+  withLatestFrom,
+} from 'rxjs/operators'
 
 import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
@@ -89,7 +98,12 @@ export function createExchangeChange$(
   ) => Observable<Quote>,
   state$: Observable<OpenMultiplyVaultState>,
 ) {
-  return state$.pipe(
+  const stateChanges$ = state$.pipe(
+    map((state) => state),
+    shareReplay(1),
+  )
+
+  return stateChanges$.pipe(
     filter((state) => state.depositAmount !== undefined),
     distinctUntilChanged(
       (s1, s2) =>
@@ -97,52 +111,22 @@ export function createExchangeChange$(
         compareBigNumber(s1.requiredCollRatio, s2.requiredCollRatio),
     ),
     debounceTime(500),
-    switchMap(
-      // () =>
-      //   every5Seconds$.pipe(
-      //     switchMap(() => {
-      //       console.log('every 5 secs')
-
-      //       return state$.pipe(
-      //         switchMap((state) => {
-      //           if (state.buyingCollateral.gt(0) && state.quote?.status === 'SUCCESS') {
-      //             console.log(`
-      //               before 1inch
-
-      //               afterOuts: ${state.afterOutstandingDebt.toFixed()}
-      //               afterOutsMinusFee: ${state.afterOutstandingDebt
-      //                 .times(one.minus(OAZO_FEE))
-      //                 .toFixed()}
-      //             `)
-
-      //             return exchangeQuote$(
-      //               state.token,
-      //               state.slippage,
-      //               state.afterOutstandingDebt.times(one.minus(OAZO_FEE)),
-      //               'BUY_COLLATERAL',
-      //             )
-      //           }
-      //           return EMPTY
-      //         }),
-      //       )
-      //     }),
-      //   ),
-      // TO DO for every 5 secs we use old value of afterOutstandingDebt, after fetch we update market price
-      // which is factor for calculatinf afterOutstandingDebt
-      (state) =>
-        every5Seconds$.pipe(
-          switchMap(() => {
-            if (state.buyingCollateral.gt(0) && state.quote?.status === 'SUCCESS') {
-              return exchangeQuote$(
-                state.token,
-                state.slippage,
-                state.oneInchAmount,
-                'BUY_COLLATERAL',
-              )
-            }
-            return EMPTY
-          }),
-        ),
+    switchMap(() =>
+      every5Seconds$.pipe(
+        withLatestFrom(stateChanges$),
+        switchMap(([_seconds, state]) => {
+          if (state.buyingCollateral.gt(0) && state.quote?.status === 'SUCCESS') {
+            console.log('DEBUG: 1Inch.DATA', state.oneInchAmount.toString())
+            return exchangeQuote$(
+              state.token,
+              state.slippage,
+              state.oneInchAmount,
+              'BUY_COLLATERAL',
+            )
+          }
+          return EMPTY
+        }),
+      ),
     ),
     map(swapToChange),
   )
