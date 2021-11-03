@@ -329,7 +329,12 @@ export function multiplyVault(
 
               const jwtToken = jwtAuthGetToken(account as string)
               if (id && jwtToken) {
-                saveVaultUsingApi$(id, jwtToken, VaultType.Multiply).subscribe()
+                saveVaultUsingApi$(
+                  id,
+                  jwtToken,
+                  VaultType.Multiply,
+                  parseInt(txState.networkId),
+                ).subscribe()
               }
 
               return of({

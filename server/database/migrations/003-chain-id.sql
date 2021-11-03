@@ -1,0 +1,2 @@
+ALTER TABLE vault
+ADD COLUMN chain_id INTEGER;
