@@ -38,6 +38,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/eth.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/ETH.png'),
     tags: [],
+    description: {
+      content: 'asset-page.descriptions.eth',
+      link: 'https://ethereum.org/en/eth/',
+    },
   },
   {
     symbol: 'BAT',
@@ -52,6 +56,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/bat.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/BAT.png'),
     tags: [],
+    description: {
+      content: 'asset-page.descriptions.bat',
+      link: 'https://basicattentiontoken.org/#ad-network',
+    },
   },
   {
     symbol: 'WBTC',
@@ -70,6 +78,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/wbtc.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/WBTC.png'),
     tags: [],
+    description: {
+      content: 'asset-page.descriptions.wbtc',
+      link: 'https://wbtc.network/',
+    },
   },
   {
     symbol: 'RENBTC',
@@ -88,6 +100,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/renbtc.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/renBTC.png'),
     tags: [],
+    description: {
+      content: 'asset-page.descriptions.renbtc',
+      link: 'https://renproject.io/',
+    },
   },
   {
     symbol: 'TUSD',
@@ -102,6 +118,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/tusd.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/TUSD.png'),
     tags: ['stablecoin'],
+    description: {
+      content: 'asset-page.descriptions.tusd',
+      link: 'https://www.trusttoken.com/',
+    },
   },
   {
     symbol: 'KNC',
@@ -116,6 +136,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/knc.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/KNC.png'),
     tags: [],
+    description: {
+      content: 'asset-page.descriptions.knc',
+      link: 'https://kyber.network/',
+    },
   },
   {
     symbol: 'MANA',
@@ -130,6 +154,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/mana.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/MANA.png'),
     tags: [],
+    description: {
+      content: 'asset-page.descriptions.mana',
+      link: 'https://decentraland.org/',
+    },
   },
   {
     symbol: 'PAXUSD',
@@ -144,6 +172,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/pax.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/PAX.png'),
     tags: ['stablecoin'],
+    description: {
+      content: 'asset-page.descriptions.paxusd',
+      link: 'https://www.paxos.com/',
+    },
   },
   {
     symbol: 'USDT',
@@ -158,6 +190,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/usdt.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/USDT.png'),
     tags: ['stablecoin'],
+    description: {
+      content: 'asset-page.descriptions.usdt',
+      link: 'https://tether.to/',
+    },
   },
   {
     symbol: 'COMP',
@@ -173,6 +209,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/comp.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/COMP.png'),
     tags: [],
+    description: {
+      content: 'asset-page.descriptions.comp',
+      link: 'https://compound.finance/',
+    },
   },
   {
     symbol: 'LRC',
@@ -187,6 +227,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/lrc.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/LRC.png'),
     tags: [],
+    description: {
+      content: 'asset-page.descriptions.lrc',
+      link: 'https://loopring.org/',
+    },
   },
   {
     symbol: 'LINK',
@@ -201,6 +245,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/link.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/LINK.png'),
     tags: [],
+    description: {
+      content: 'asset-page.descriptions.link',
+      link: 'https://chain.link/',
+    },
   },
   {
     symbol: 'GUSD',
@@ -215,6 +263,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/gusd.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/GUSD.png'),
     tags: ['stablecoin'],
+    description: {
+      content: 'asset-page.descriptions.gusd',
+      link: 'https://www.gemini.com/eu',
+    },
   },
   {
     symbol: 'ZRX',
@@ -229,6 +281,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/zerox.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/ZRX.png'),
     tags: [],
+    description: {
+      content: 'asset-page.descriptions.zrx',
+      link: 'https://0x.org/',
+    },
   },
   {
     symbol: 'USDC',
@@ -246,6 +302,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/usdc.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/USDC.png'),
     tags: ['stablecoin'],
+    description: {
+      content: 'asset-page.descriptions.usdc',
+      link: 'https://www.circle.com/en/about-circle',
+    },
   },
   {
     symbol: 'BAL',
@@ -261,6 +321,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/bal.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/BAL.png'),
     tags: [],
+    description: {
+      content: 'asset-page.descriptions.bal',
+      link: 'https://balancer.fi/',
+    },
   },
   {
     symbol: 'YFI',
@@ -276,6 +340,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/yfi.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/YFI.png'),
     tags: [],
+    description: {
+      content: 'asset-page.descriptions.yfi',
+      link: 'https://yearn.finance/',
+    },
   },
   {
     symbol: 'UNI',
@@ -292,6 +360,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/UNI.png'),
     tags: [],
+    description: {
+      content: 'asset-page.descriptions.uni',
+      link: 'https://uniswap.org/',
+    },
   },
   {
     symbol: 'AAVE',
@@ -307,6 +379,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/aave.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/AAVE.png'),
     tags: [],
+    description: {
+      content: 'asset-page.descriptions.aave',
+      link: 'https://aave.com/',
+    },
   },
   {
     symbol: 'UNIV2USDCETH',
@@ -483,6 +559,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/UNI.png'),
     tags: [],
+    description: {
+      content: 'asset-page.descriptions.uni lp tokens',
+      link: 'https://uniswap.org/',
+    },
   },
   {
     symbol: 'GUNIV3DAIUSDC1',
@@ -514,6 +594,10 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/matic.svg'),
     bannerIconPng: staticFilesRuntimeUrl('/static/img/banner_icons/MATIC.png'),
     tags: [],
+    description: {
+      content: 'asset-page.descriptions.matic',
+      link: 'https://polygon.technology/',
+    },
   },
   // {
   //   symbol: 'WETH',
