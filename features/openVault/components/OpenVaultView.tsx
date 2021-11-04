@@ -43,7 +43,7 @@ function OpenVaultTitle({
             ? t('vault-form.header.proxy')
             : isAllowanceStage
             ? t('vault-form.header.allowance', { token: token.toUpperCase() })
-            : stage === 'openInProgress'
+            : stage === 'txInProgress'
             ? t('vault-form.header.confirm-in-progress')
             : t('vault-form.header.confirm')}
         </Text>
@@ -55,7 +55,7 @@ function OpenVaultTitle({
           ? t('vault-form.subtext.proxy')
           : isAllowanceStage
           ? t('vault-form.subtext.allowance')
-          : stage === 'openInProgress'
+          : stage === 'txInProgress'
           ? t('vault-form.subtext.confirm-in-progress')
           : t('vault-form.subtext.review-manage')}
       </Text>
@@ -74,7 +74,7 @@ function OpenVaultForm(props: OpenVaultState) {
       {isOpenStage && <OpenVaultConfirmation {...props} />}
       <OpenVaultErrors {...props} />
       <OpenVaultWarnings {...props} />
-      {stage === 'openSuccess' && <VaultChangesWithADelayCard />}
+      {stage === 'txSuccess' && <VaultChangesWithADelayCard />}
       <OpenVaultButton {...props} />
       {isProxyStage && <VaultProxyStatusCard {...props} />}
       {isAllowanceStage && <VaultAllowanceStatus {...props} />}

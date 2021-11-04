@@ -45,7 +45,7 @@ function OpenMultiplyVaultTitle({
             ? t('vault-form.header.proxy')
             : isAllowanceStage
             ? t('vault-form.header.allowance', { token: token.toUpperCase() })
-            : stage === 'openInProgress'
+            : stage === 'txInProgress'
             ? t('vault-form.header.confirm-in-progress')
             : t('vault-form.header.confirm')}
         </Text>
@@ -57,7 +57,7 @@ function OpenMultiplyVaultTitle({
           ? t('vault-form.subtext.proxy')
           : isAllowanceStage
           ? t('vault-form.subtext.allowance')
-          : stage === 'openInProgress'
+          : stage === 'txInProgress'
           ? t('vault-form.subtext.confirm-in-progress')
           : t('vault-form.subtext.review-manage')}
       </Text>
@@ -76,7 +76,7 @@ function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
       {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
       <OpenMultiplyVaultErrors {...props} />
       <OpenMultiplyVaultWarnings {...props} />
-      {stage === 'openSuccess' && <VaultChangesWithADelayCard />}
+      {stage === 'txSuccess' && <VaultChangesWithADelayCard />}
       <OpenMultiplyVaultButton {...props} />
       {isProxyStage && <VaultProxyStatusCard {...props} />}
       {isAllowanceStage && <VaultAllowanceStatus {...props} />}
