@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { OpenVaultAnimation } from 'theme/animations'
 
 import { OpenMultiplyVaultState } from '../openMultiplyVault'
-import { OpenMultiplyVaultChangesInformation } from './OpenMultiplyVaultChangesInformation'
+import { DefaultOpenMultiplyVaultChangesInformation } from '../variants/default/open/DefaultOpenMultiplyVaultChangesInformation'
 
 export function OpenMultiplyVaultConfirmation(props: OpenMultiplyVaultState) {
   return props.stage === 'openInProgress' ? (
@@ -13,7 +13,7 @@ export function OpenMultiplyVaultConfirmation(props: OpenMultiplyVaultState) {
   ) : (
     <>
       <Divider />
-      <OpenMultiplyVaultChangesInformation {...props} />
+      <DefaultOpenMultiplyVaultChangesInformation {...props} />
     </>
   )
 }

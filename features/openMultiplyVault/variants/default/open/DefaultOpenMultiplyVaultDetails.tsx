@@ -17,7 +17,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { OpenMultiplyVaultState } from '../openMultiplyVault'
+import { OpenMultiplyVaultState } from '../../../openMultiplyVault'
 
 function OpenMultiplyVaultDetailsSummary({
   token,
@@ -76,7 +76,7 @@ function OpenMultiplyVaultDetailsSummary({
   )
 }
 
-export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
+export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
   const {
     afterLiquidationPrice,
     afterCollateralizationRatio,

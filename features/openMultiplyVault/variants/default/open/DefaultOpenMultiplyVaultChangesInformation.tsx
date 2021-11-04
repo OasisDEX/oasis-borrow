@@ -20,9 +20,9 @@ import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
-import { OpenMultiplyVaultState } from '../openMultiplyVault'
+import { OpenMultiplyVaultState } from '../../../openMultiplyVault'
 
-export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultState) {
+export function DefaultOpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultState) {
   const [showFees, setShowFees] = useState(false)
   const {
     multiply,

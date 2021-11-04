@@ -294,6 +294,8 @@
       "more-info-oracles": "More information on Maker oracles can be found <0>here</0>",
       "net-value": "Net Value",
       "net-value-description": "The Net Value is calculated as the current value of the collateral in your vault minus the current debt.\nNote: This will not be exactly equal to the amount you will receive if you close your vault to Dai. This is due to fees applied when swapping collateral to Dai. The Net Value is calculated using the market price for the collateral using 1Inch.",
+      "profit-and-loss": "P&L",
+      "profit-and-loss-description": "TBD",
       "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
     }
   },
@@ -433,6 +435,8 @@
     "asset": "Asset",
     "available-to-withdraw": "Available to Withdraw",
     "total-exposure": "Total {{token}} exposure",
+    "exposure": "exposure",
+    "total-collateral": "Total collateral",
     "multiple": "Multiple",
     "available-to-generate": "Available to Generate",
     "coll-locked": "Coll. Locked",
@@ -487,6 +491,15 @@
     "open-vault": "Open {{ilk}} Vault",
     "vault-details": "Vault Details",
     "token-uds-price": "{{token}}/USD price"
+  },
+  "vault-changes": {
+    "order-information": "Order information",
+    "getting-token": "Getting {{token}}",
+    "buying-token": "Buying {{token}}",
+    "price-impact": "{{token}} Price (impact)",
+    "slippage-limit": "Slippage Limit",
+    "third-party-fees": "3rd party protocol fees",
+    "oasis-fee": "Oasis fee"
   },
   "vault-actions": {
     "deposit": "Deposit",
@@ -569,6 +582,7 @@
   "vault-form": {
     "header": {
       "edit": "Configure your Vault",
+      "editWithToken": "Configure your {{token}} Vault",
       "proxy": "Create your smart Proxy ",
       "allowance": "Set {{token}} allowance",
       "daiAllowance": "Set DAI allowance",

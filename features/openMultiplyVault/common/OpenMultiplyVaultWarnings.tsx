@@ -11,7 +11,8 @@ import { OpenMultiplyVaultWarningMessage } from '../openMultiplyVaultValidations
 export function OpenMultiplyVaultWarnings({
   warningMessages,
   ilkData: { debtFloor },
-}: OpenMultiplyVaultState) {
+  warningMessagesToOmit = [],
+}: OpenMultiplyVaultState & { warningMessagesToOmit?: OpenMultiplyVaultWarningMessage[] }) {
   const { t } = useTranslation()
   if (!warningMessages.length) return null
 
@@ -35,10 +36,12 @@ export function OpenMultiplyVaultWarnings({
     }
   }
 
-  const messages = warningMessages.reduce(
-    (acc, message) => [...acc, applyWarningMessageTranslation(message)],
-    [] as (string | JSX.Element)[],
-  )
+  const messages = warningMessages
+    .filter((warnMsg) => !warningMessagesToOmit.includes(warnMsg))
+    .reduce(
+      (acc, message) => [...acc, applyWarningMessageTranslation(message)],
+      [] as (string | JSX.Element)[],
+    )
 
   return <MessageCard {...{ messages, type: 'warning' }} />
 }

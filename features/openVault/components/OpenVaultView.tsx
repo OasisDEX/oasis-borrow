@@ -1,11 +1,11 @@
 import { trackingEvents } from 'analytics/analytics'
 import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
+import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormVaultTypeSwitch, WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -102,7 +102,7 @@ export function OpenVaultContainer(props: OpenVaultState) {
 
   return (
     <>
-      <VaultHeader {...props} header={t('vault.open-vault', { ilk })} />
+      <DefaultVaultHeader {...props} header={t('vault.open-vault', { ilk })} />
       <Grid variant="vaultContainer">
         <Box>
           <OpenVaultDetails {...props} />

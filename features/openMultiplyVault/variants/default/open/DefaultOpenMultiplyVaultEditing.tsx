@@ -6,10 +6,10 @@ import { handleNumericInput } from 'helpers/input'
 import React from 'react'
 import { Box, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
-import { OpenMultiplyVaultState } from '../openMultiplyVault'
-import { OpenMultiplyVaultChangesInformation } from './OpenMultiplyVaultChangesInformation'
+import { OpenMultiplyVaultState } from '../../../openMultiplyVault'
+import { DefaultOpenMultiplyVaultChangesInformation } from './DefaultOpenMultiplyVaultChangesInformation'
 
-export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
+export function DefaultOpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
   const {
     theme: { colors },
   } = useThemeUI()
@@ -132,7 +132,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
         </Box>
       </Grid>
       {!inputAmountsEmpty && <Divider />}
-      <OpenMultiplyVaultChangesInformation {...props} />
+      <DefaultOpenMultiplyVaultChangesInformation {...props} />
     </Grid>
   )
 }

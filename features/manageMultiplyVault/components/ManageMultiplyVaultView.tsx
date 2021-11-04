@@ -1,9 +1,9 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
+import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
@@ -79,6 +79,7 @@ function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
   )
 }
 
+// TODO also to refactor
 export function ManageMultiplyVaultContainer({
   manageVault,
   vaultHistory,
@@ -108,7 +109,7 @@ export function ManageMultiplyVaultContainer({
 
   return (
     <>
-      <VaultHeader {...manageVault} header={t('vault.header', { ilk, id })} id={id} />
+      <DefaultVaultHeader {...manageVault} header={t('vault.header', { ilk, id })} id={id} />
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <ManageMultiplyVaultDetails {...manageVault} />

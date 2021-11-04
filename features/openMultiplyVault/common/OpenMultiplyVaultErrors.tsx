@@ -14,7 +14,8 @@ export function OpenMultiplyVaultErrors({
   errorMessages,
   maxGenerateAmount,
   ilkData: { debtFloor },
-}: OpenMultiplyVaultState) {
+  errorMessagesToOmit = [],
+}: OpenMultiplyVaultState & { errorMessagesToOmit?: OpenMultiplyVaultErrorMessage[] }) {
   const { t } = useTranslation()
   if (!errorMessages.length) return null
 
@@ -65,10 +66,12 @@ export function OpenMultiplyVaultErrors({
     }
   }
 
-  const messages = errorMessages.reduce(
-    (acc, message) => [...acc, applyErrorMessageTranslation(message)],
-    [] as (string | JSX.Element)[],
-  )
+  const messages = errorMessages
+    .filter((errMsg) => !errorMessagesToOmit.includes(errMsg))
+    .reduce(
+      (acc, message) => [...acc, applyErrorMessageTranslation(message)],
+      [] as (string | JSX.Element)[],
+    )
 
   return <MessageCard {...{ messages, type: 'error' }} />
 }
