@@ -53,14 +53,14 @@ function openVaultPrimaryButtonText({
     case 'allowanceSuccess':
       return t('continue')
 
-    case 'openFailure':
+    case 'txFailure':
       return t('retry')
-    case 'openInProgress':
+    case 'txInProgress':
       return t('creating-vault')
-    case 'openSuccess':
+    case 'txSuccess':
       return t('go-to-vault', { id })
-    case 'openWaitingForApproval':
-    case 'openWaitingForConfirmation':
+    case 'txWaitingForApproval':
+    case 'txWaitingForConfirmation':
       return t('create-vault')
     default:
       throw new UnreachableCaseError(stage)
@@ -87,7 +87,7 @@ export function OpenVaultButton(props: OpenVaultState) {
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
-    if (stage === 'openSuccess') {
+    if (stage === 'txSuccess') {
       replace(`/${id}`)
 
       return
@@ -129,7 +129,7 @@ export function OpenVaultButton(props: OpenVaultState) {
     trackingEvent = () => trackingEvents.approveAllowance(firstCDP)
   }
 
-  if (stage === 'openInProgress') {
+  if (stage === 'txInProgress') {
     return null
   }
 

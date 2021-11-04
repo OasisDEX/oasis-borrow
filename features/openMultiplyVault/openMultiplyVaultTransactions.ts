@@ -56,17 +56,17 @@ type AllowanceChange =
     }
 
 type OpenChange =
-  | { kind: 'openWaitingForApproval' }
+  | { kind: 'txWaitingForApproval' }
   | {
-      kind: 'openInProgress'
+      kind: 'txInProgress'
       openTxHash: string
     }
   | {
-      kind: 'openFailure'
+      kind: 'txFailure'
       txError?: any
     }
   | {
-      kind: 'openSuccess'
+      kind: 'txSuccess'
       id: BigNumber
     }
 
@@ -144,33 +144,33 @@ export function applyOpenMultiplyVaultTransaction(
     return { ...state, stage: 'allowanceSuccess', allowance }
   }
 
-  if (change.kind === 'openWaitingForApproval') {
+  if (change.kind === 'txWaitingForApproval') {
     return {
       ...state,
-      stage: 'openWaitingForApproval',
+      stage: 'txWaitingForApproval',
     }
   }
 
-  if (change.kind === 'openInProgress') {
+  if (change.kind === 'txInProgress') {
     const { openTxHash } = change
     return {
       ...state,
       openTxHash,
-      stage: 'openInProgress',
+      stage: 'txInProgress',
     }
   }
 
-  if (change.kind === 'openFailure') {
+  if (change.kind === 'txFailure') {
     const { txError } = change
     return {
       ...state,
-      stage: 'openFailure',
+      stage: 'txFailure',
       txError,
     }
   }
 
-  if (change.kind === 'openSuccess') {
-    return { ...state, stage: 'openSuccess', id: change.id }
+  if (change.kind === 'txSuccess') {
+    return { ...state, stage: 'txSuccess', id: change.id }
   }
 
   return state
@@ -311,12 +311,12 @@ export function multiplyVault(
           fromTokenAmount,
         }).pipe(
           transactionToX<OpenMultiplyVaultChange, OpenMultiplyData>(
-            { kind: 'openWaitingForApproval' },
+            { kind: 'txWaitingForApproval' },
             (txState) =>
-              of({ kind: 'openInProgress', openTxHash: (txState as any).txHash as string }),
+              of({ kind: 'txInProgress', openTxHash: (txState as any).txHash as string }),
             (txState) =>
               of({
-                kind: 'openFailure',
+                kind: 'txFailure',
                 txError:
                   txState.status === TxStatus.Error ||
                   txState.status === TxStatus.CancelledByTheUser
@@ -339,15 +339,15 @@ export function multiplyVault(
               }
 
               return of({
-                kind: 'openSuccess',
+                kind: 'txSuccess',
                 id: id!,
               })
             },
           ),
         ),
       ),
-      startWith({ kind: 'openWaitingForApproval' } as OpenMultiplyVaultChange),
-      catchError(() => of({ kind: 'openFailure' } as OpenMultiplyVaultChange)),
+      startWith({ kind: 'txWaitingForApproval' } as OpenMultiplyVaultChange),
+      catchError(() => of({ kind: 'txFailure' } as OpenMultiplyVaultChange)),
     )
     .subscribe((ch) => change(ch))
 }

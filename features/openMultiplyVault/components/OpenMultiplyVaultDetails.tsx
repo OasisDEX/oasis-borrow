@@ -96,7 +96,7 @@ export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
 
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
-  const showAfterPill = !inputAmountsEmpty && stage !== 'openSuccess'
+  const showAfterPill = !inputAmountsEmpty && stage !== 'txSuccess'
   return (
     <>
       <Grid variant="vaultDetailsCardsContainer">

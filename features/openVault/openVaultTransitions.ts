@@ -42,7 +42,7 @@ export function applyOpenVaultTransition(
       ? 'proxyWaitingForConfirmation'
       : !hasAllowance
       ? 'allowanceWaitingForConfirmation'
-      : 'openWaitingForConfirmation'
+      : 'txWaitingForConfirmation'
     if (canProgress) {
       return {
         ...state,

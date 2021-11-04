@@ -98,23 +98,28 @@ function apply(state: OpenMultiplyVaultState, change: OpenMultiplyVaultChange) {
   return applyOpenVaultSummary(s10)
 }
 
-export type OpenMultiplyVaultStage =
-  | 'editing'
+export type ProxyStages =
   | 'proxyWaitingForConfirmation'
   | 'proxyWaitingForApproval'
   | 'proxyInProgress'
   | 'proxyFailure'
   | 'proxySuccess'
+export type AllowanceStages =
   | 'allowanceWaitingForConfirmation'
   | 'allowanceWaitingForApproval'
   | 'allowanceInProgress'
   | 'allowanceFailure'
   | 'allowanceSuccess'
-  | 'openWaitingForConfirmation'
-  | 'openWaitingForApproval'
-  | 'openInProgress'
-  | 'openFailure'
-  | 'openSuccess'
+
+export type TxStage =
+  | 'txWaitingForConfirmation'
+  | 'txWaitingForApproval'
+  | 'txInProgress'
+  | 'txFailure'
+  | 'txSuccess'
+
+export type EditingStage = 'editing'
+export type OpenMultiplyVaultStage = EditingStage | ProxyStages | AllowanceStages | TxStage
 
 export interface MutableOpenMultiplyVaultState {
   stage: OpenMultiplyVaultStage
@@ -252,7 +257,7 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'openWaitingForConfirmation' || state.stage === 'openFailure') {
+  if (state.stage === 'txWaitingForConfirmation' || state.stage === 'txFailure') {
     return {
       ...state,
       progress: () => multiplyVault(txHelpers, context, change, state),
@@ -260,7 +265,7 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'openSuccess') {
+  if (state.stage === 'txSuccess') {
     return {
       ...state,
       progress: () =>
