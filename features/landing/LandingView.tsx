@@ -21,6 +21,7 @@ import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
 import { TypeformWidget } from './TypeformWidget'
+import CookieBanner from './CookieBanner'
 
 const {
   publicRuntimeConfig: { apiHost },
@@ -321,6 +322,7 @@ export function LandingView() {
       </WithErrorHandler>
       <LandingCards />
       <TypeformWidget />
+      <CookieBanner />
     </Grid>
   )
 }
