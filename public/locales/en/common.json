@@ -207,6 +207,23 @@
         "title": "Have a question?",
         "description": "Learn more about Oasis, Dai and DeFi at our FAQ’s page"
       }
+    },
+    "cookie-banner": {
+      "message": "We use the cookies on the website to improve your experience, analyze traffic, and for basic funationality. Cookies are anonymous and do not link to user data. You can still use the website without cookies. For more information, please read our <0>Privacy Policy</0>.",
+      "settings-toggle": "Manage settings",
+      "accept": "Accept",
+      "reject": "Reject",
+      "cookies": {
+        "functional": {
+          "title": "Functional Cookies",
+          "description": "These items are required to enable basic site fountionality."
+        },
+        "analytics": {
+          "title": "Analytics Cookies",
+          "description": "These items help us to understand how the website performs and find where it can be improved."
+        }
+      }
+      
     }
   },
   "languages": "Languages",
