@@ -116,7 +116,6 @@ export function createExchangeChange$(
         withLatestFrom(stateChanges$),
         switchMap(([_seconds, state]) => {
           if (state.buyingCollateral.gt(0) && state.quote?.status === 'SUCCESS') {
-            console.log('DEBUG: 1Inch.DATA', state.oneInchAmount.toString())
             return exchangeQuote$(
               state.token,
               state.slippage,
