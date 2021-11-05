@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { CloseVaultCard } from 'components/vault/CloseVaultCard'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import {
@@ -20,7 +21,6 @@ import {
   OtherAction,
 } from '../../../../manageMultiplyVault/manageMultiplyVault'
 import { MAX_COLL_RATIO } from '../../../../manageMultiplyVault/manageMultiplyVaultCalculations'
-import { CloseVaultCard } from '../../../common/CloseVaultCard'
 import { DefaultManageMultiplyVaultChangesInformation } from './DefaultManageMultiplyVaultChangesInformation'
 
 //TODO max buy token

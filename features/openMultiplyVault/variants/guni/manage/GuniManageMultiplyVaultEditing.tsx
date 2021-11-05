@@ -1,9 +1,9 @@
+import { CloseVaultCard } from 'components/vault/CloseVaultCard'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import React from 'react'
 import { Divider, Flex, Grid, Text } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../../../../manageMultiplyVault/manageMultiplyVault'
-import { CloseVaultCard } from '../../../common/CloseVaultCard'
 import { GuniManageMultiplyVaultChangesInformation } from './GuniManageMultiplyVaultChangesInformation'
 
 function CloseVaultAction(props: ManageMultiplyVaultState) {
