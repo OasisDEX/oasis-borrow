@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
+import { createIlkDataChange$, IlkData, IlkDataChange } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
@@ -14,8 +14,8 @@ import {
   ProxyStages,
   TxStage,
 } from 'features/openMultiplyVault/openMultiplyVault'
-import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
-import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { BalanceInfo, BalanceInfoChange, balanceInfoChange$ } from 'features/shared/balanceInfo'
+import { PriceInfo, PriceInfoChange, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus } from 'helpers/form'
 import { curry } from 'lodash'
 import { pipe } from 'ramda'
@@ -49,7 +49,7 @@ interface FormFunctions {
   clear: () => void
 }
 
-interface vaultTxInfo {
+interface VaultTxInfo {
   allowanceTxHash?: string
   proxyTxHash?: string
   actionTxHash?: string // different then in rest
@@ -86,6 +86,35 @@ interface EnvironmentState {
   allowance?: BigNumber
 }
 
+export type EnvironmentChange = PriceInfoChange | BalanceInfoChange | IlkDataChange
+export function applyEnvironment<Ch extends EnvironmentChange, S extends EnvironmentState>( //split it into even smaller parts
+  state: S,
+  change: Ch,
+): S {
+  if (change.kind === 'priceInfo') {
+    return {
+      ...state,
+      priceInfo: change.priceInfo,
+    }
+  }
+
+  if (change.kind === 'balanceInfo') {
+    return {
+      ...state,
+      balanceInfo: change.balanceInfo,
+    }
+  }
+
+  if (change.kind === 'ilkData') {
+    return {
+      ...state,
+      ilkData: change.ilkData,
+    }
+  }
+
+  return state
+}
+
 interface ExchangeState {
   quote?: Quote
   swap?: Quote
@@ -95,14 +124,32 @@ interface ExchangeState {
 
 type OpenGuniVaultState = OverrideHelper &
   StageFunctions &
+  AllowanceSate &
   AllowanceFunctions &
   FormFunctions &
   FormState &
   EnvironmentState &
-  ExchangeState
+  ExchangeState &
+  VaultTxInfo
 
-const apply = pipe()
+type FormChanges = { kind: 'depositAmount'; depositAmount: BigNumber }
+type OpenGuniChanges = EnvironmentChange | FormChanges
 
+function applyFormChange<S extends FormState = FormState, Ch extends FormChanges = FormChanges>(
+  state: S,
+  changes: Ch,
+) {
+  return state
+}
+
+function combineApply<S, Ch>(
+  ...applyFunctions: ((state: S, change: Ch) => S)[]
+): (state: S, change: Ch) => S {
+  return (state: S, change: Ch) =>
+    applyFunctions.reduce((nextState, apply) => apply(nextState, change), state)
+}
+
+const apply = combineApply<OpenGuniVaultState, OpenGuniChanges>(applyEnvironment, applyFormChange)
 export function createOpenGuniVault$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
@@ -132,10 +179,14 @@ export function createOpenGuniVault$(
             const { token } = ilkData
             const tokenInfo = getToken(token)
 
+            if (!tokenInfo.token1 || !tokenInfo.token2) {
+              throw new Error('Missing tokens in configuration')
+            }
+
             const account = context.account
             return combineLatest(
               priceInfo$(token),
-              balanceInfo$(token, account),
+              balanceInfo$(tokenInfo.token1, account),
               proxyAddress$(account),
             ).pipe(
               first(),
@@ -178,8 +229,8 @@ export function createOpenGuniVault$(
                       errorMessages: [],
                       warningMessages: [],
                       //   summary: defaultOpenVaultSummary,
-                      //   slippage: SLIPPAGE,
-                      //   totalSteps,
+                      // slippage: SLIPPAGE,
+                      // totalSteps,
                       currentStep: 1,
                       exchangeError: false,
                       clear: () => change({ kind: 'clear' }),
@@ -199,17 +250,16 @@ export function createOpenGuniVault$(
 
                     const connectedProxyAddress$ = proxyAddress$(account)
 
-                    return merge(change$, environmentChanges$)
-                      .pipe
-                      //   scan(apply, initialState),
+                    return merge(change$, environmentChanges$).pipe(
+                      scan(apply, initialState),
                       //   map(validateErrors),
                       //   map(validateWarnings),
                       //   switchMap(curry(applyEstimateGas)(addGasEstimation$)),
                       //   map(
                       //     curry(addTransitions)(txHelpers, context, connectedProxyAddress$, change),
                       //   ),
-                      //   tap((state) => stateSubject$.next(state)),
-                      ()
+                      tap((state) => stateSubject$.next(state)),
+                    )
                   }),
                 ),
               ),

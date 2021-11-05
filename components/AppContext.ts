@@ -55,6 +55,7 @@ import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageMultiplyVault$ } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { createManageVault$ } from 'features/manageVault/manageVault'
+import { createOpenGuniVault$ } from 'features/openGuniVault/openGuniVault'
 import { createOpenMultiplyVault$ } from 'features/openMultiplyVault/openMultiplyVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
 import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultData'
@@ -341,6 +342,22 @@ export function setupAppContext() {
     ),
   )
 
+  const openGuniVault$ = memoize((ilk: string) =>
+    createOpenGuniVault$(
+      connectedContext$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      priceInfo$,
+      balanceInfo$,
+      ilks$,
+      ilkData$,
+      // exchangeQuote$,
+      // addGasEstimation$,
+      ilk,
+    ),
+  )
+
   const manageVault$ = memoize(
     (id: BigNumber) =>
       createManageVault$(
@@ -440,6 +457,7 @@ export function setupAppContext() {
     openVaultOverview$,
     openMultiplyVault$,
     generalManageVault$,
+    openGuniVault$,
   }
 }
 
