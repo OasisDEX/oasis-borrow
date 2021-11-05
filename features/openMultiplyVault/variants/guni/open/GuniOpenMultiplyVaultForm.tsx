@@ -10,9 +10,9 @@ import {
   OpenMultiplyVaultConfirmation,
   OpenMultiplyVaultStatus,
 } from '../../../common/OpenMultiplyVaultConfirmation'
-import { OpenMultiplyVaultErrors } from '../../../common/OpenMultiplyVaultErrors'
 import { OpenMultiplyVaultTitle } from '../../../common/OpenMultiplyVaultTitle'
-import { OpenMultiplyVaultWarnings } from '../../../common/OpenMultiplyVaultWarnings'
+import { VaultErrors } from '../../../common/VaultErrors'
+import { VaultWarnings } from '../../../common/VaultWarnings'
 import { OpenMultiplyVaultState } from '../../../openMultiplyVault'
 import { GuniOpenMultiplyVaultEditing } from './GuniOpenMultiplyVaultEditing'
 
@@ -30,13 +30,24 @@ export function GuniOpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
       {isEditingStage && <GuniOpenMultiplyVaultEditing {...props} />}
       {isAllowanceStage && <VaultAllowance {...props} />}
       {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
-      <OpenMultiplyVaultErrors
+      <VaultErrors
         {...props}
-        errorMessagesToOmit={['generateAmountExceedsDaiYieldFromDepositingCollateral']}
+        errorMessagesToPick={[
+          'depositAmountExceedsCollateralBalance',
+          'generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice',
+          'generateAmountExceedsDebtCeiling',
+          'generateAmountMoreThanMaxFlashAmount',
+          'generateAmountLessThanDebtFloor',
+          'customAllowanceAmountExceedsMaxUint256',
+          'customAllowanceAmountLessThanDepositAmount',
+          'depositingAllEthBalance',
+          'ledgerWalletContractDataDisabled',
+          'exchangeError',
+        ]}
       />
-      <OpenMultiplyVaultWarnings
+      <VaultWarnings
         {...props}
-        warningMessagesToOmit={['vaultWillBeAtRiskLevelDanger', 'vaultWillBeAtRiskLevelWarning']}
+        warningMessagesToPick={['potentialGenerateAmountLessThanDebtFloor']}
       />
       {stage === 'openSuccess' && <VaultChangesWithADelayCard />}
       <OpenMultiplyVaultButton {...props} />

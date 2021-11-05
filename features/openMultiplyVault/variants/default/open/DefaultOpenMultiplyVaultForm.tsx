@@ -14,9 +14,9 @@ import {
   OpenMultiplyVaultConfirmation,
   OpenMultiplyVaultStatus,
 } from '../../../common/OpenMultiplyVaultConfirmation'
-import { OpenMultiplyVaultErrors } from '../../../common/OpenMultiplyVaultErrors'
 import { OpenMultiplyVaultTitle } from '../../../common/OpenMultiplyVaultTitle'
-import { OpenMultiplyVaultWarnings } from '../../../common/OpenMultiplyVaultWarnings'
+import { VaultErrors } from '../../../common/VaultErrors'
+import { VaultWarnings } from '../../../common/VaultWarnings'
 import { OpenMultiplyVaultState } from '../../../openMultiplyVault'
 import { DefaultOpenMultiplyVaultEditing } from './DefaultOpenMultiplyVaultEditing'
 
@@ -34,8 +34,32 @@ export function DefaultOpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
       {isEditingStage && <DefaultOpenMultiplyVaultEditing {...props} />}
       {isAllowanceStage && <VaultAllowance {...props} />}
       {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
-      <OpenMultiplyVaultErrors {...props} />
-      <OpenMultiplyVaultWarnings {...props} />
+      <VaultErrors
+        {...props}
+        errorMessagesToPick={[
+          'depositAmountExceedsCollateralBalance',
+          'generateAmountExceedsDaiYieldFromDepositingCollateral',
+          'generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice',
+          'generateAmountExceedsDebtCeiling',
+          'generateAmountMoreThanMaxFlashAmount',
+          'generateAmountLessThanDebtFloor',
+          'customAllowanceAmountExceedsMaxUint256',
+          'customAllowanceAmountLessThanDepositAmount',
+          'depositingAllEthBalance',
+          'ledgerWalletContractDataDisabled',
+          'exchangeError',
+        ]}
+      />
+      <VaultWarnings
+        {...props}
+        warningMessagesToPick={[
+          'potentialGenerateAmountLessThanDebtFloor',
+          'vaultWillBeAtRiskLevelDanger',
+          'vaultWillBeAtRiskLevelWarning',
+          'vaultWillBeAtRiskLevelDangerAtNextPrice',
+          'vaultWillBeAtRiskLevelWarningAtNextPrice',
+        ]}
+      />
       {stage === 'openSuccess' && <VaultChangesWithADelayCard />}
       <OpenMultiplyVaultButton {...props} />
       {isProxyStage && <VaultProxyStatusCard {...props} />}

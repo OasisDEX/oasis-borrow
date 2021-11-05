@@ -5,14 +5,20 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
-import { OpenMultiplyVaultState } from '../openMultiplyVault'
+import { IlkData } from '../../../blockchain/ilks'
 import { OpenMultiplyVaultWarningMessage } from '../openMultiplyVaultValidations'
 
-export function OpenMultiplyVaultWarnings({
+interface VaultWarningsProps {
+  warningMessages: OpenMultiplyVaultWarningMessage[]
+  ilkData: IlkData
+  warningMessagesToPick: OpenMultiplyVaultWarningMessage[]
+}
+
+export function VaultWarnings({
   warningMessages,
   ilkData: { debtFloor },
-  warningMessagesToOmit = [],
-}: OpenMultiplyVaultState & { warningMessagesToOmit?: OpenMultiplyVaultWarningMessage[] }) {
+  warningMessagesToPick = [],
+}: VaultWarningsProps) {
   const { t } = useTranslation()
   if (!warningMessages.length) return null
 
@@ -21,6 +27,10 @@ export function OpenMultiplyVaultWarnings({
     switch (message) {
       case 'potentialGenerateAmountLessThanDebtFloor':
         return translate('potential-generate-amount-less-than-debt-floor', {
+          debtFloor: formatCryptoBalance(debtFloor),
+        })
+      case 'debtIsLessThanDebtFloor':
+        return translate('debt-is-less-than-debt-floor', {
           debtFloor: formatCryptoBalance(debtFloor),
         })
       case 'vaultWillBeAtRiskLevelDanger':
@@ -37,7 +47,7 @@ export function OpenMultiplyVaultWarnings({
   }
 
   const messages = warningMessages
-    .filter((warnMsg) => !warningMessagesToOmit.includes(warnMsg))
+    .filter((warnMsg) => warningMessagesToPick.includes(warnMsg))
     .reduce(
       (acc, message) => [...acc, applyWarningMessageTranslation(message)],
       [] as (string | JSX.Element)[],

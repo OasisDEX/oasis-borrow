@@ -14,6 +14,20 @@ export type OpenMultiplyVaultErrorMessage =
   | 'customAllowanceAmountLessThanDepositAmount'
   | 'ledgerWalletContractDataDisabled'
   | 'exchangeError'
+  | 'withdrawAmountExceedsFreeCollateral'
+  | 'withdrawAmountExceedsFreeCollateralAtNextPrice'
+  | 'generateAmountExceedsDaiYieldFromTotalCollateral'
+  | 'generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice'
+  | 'paybackAmountExceedsDaiBalance'
+  | 'paybackAmountExceedsVaultDebt'
+  | 'debtWillBeLessThanDebtFloor'
+  | 'customCollateralAllowanceAmountExceedsMaxUint256'
+  | 'customCollateralAllowanceAmountLessThanDepositAmount'
+  | 'customDaiAllowanceAmountExceedsMaxUint256'
+  | 'customDaiAllowanceAmountLessThanPaybackAmount'
+  | 'withdrawCollateralOnVaultUnderDebtFloor'
+  | 'shouldShowExchangeError'
+  | 'hasToDepositCollateralOnEmptyVault'
 
 export function validateErrors(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
   const {
@@ -91,6 +105,7 @@ export type OpenMultiplyVaultWarningMessage =
   | 'vaultWillBeAtRiskLevelWarning'
   | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
   | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
+  | 'debtIsLessThanDebtFloor'
 
 export function validateWarnings(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
   const {

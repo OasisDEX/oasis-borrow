@@ -11,6 +11,8 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Grid } from 'theme-ui'
 
+import { VaultErrors } from '../../openMultiplyVault/common/VaultErrors'
+import { VaultWarnings } from '../../openMultiplyVault/common/VaultWarnings'
 import { ManageMultiplyVaultState } from '../manageMultiplyVault'
 import { createManageMultiplyVaultAnalytics$ } from '../manageMultiplyVaultAnalytics'
 import { ManageMultiplyVaultButton } from './ManageMultiplyVaultButton'
@@ -22,9 +24,7 @@ import {
 import { ManageMultiplyVaultDaiAllowance } from './ManageMultiplyVaultDaiAllowance'
 import { ManageMultiplyVaultDetails } from './ManageMultiplyVaultDetails'
 import { ManageMultiplyVaultEditing } from './ManageMultiplyVaultEditing'
-import { ManageMultiplyVaultErrors } from './ManageMultiplyVaultErrors'
 import { ManageMultiplyVaultFormHeader } from './ManageMultiplyVaultFormHeader'
-import { ManageMultiplyVaultWarnings } from './ManageMultiplyVaultWarnings'
 
 function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
   const {
@@ -57,8 +57,44 @@ function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
       {isManageStage && <ManageMultiplyVaultConfirmation {...props} />}
       {shouldDisplayActionButton && (
         <>
-          <ManageMultiplyVaultErrors {...props} />
-          <ManageMultiplyVaultWarnings {...props} />
+          {/*<ManageMultiplyVaultErrors {...props} />*/}
+          <VaultErrors
+            {...props}
+            errorMessagesToPick={[
+              'depositAmountExceedsCollateralBalance',
+              'withdrawAmountExceedsFreeCollateral',
+              'withdrawAmountExceedsFreeCollateralAtNextPrice',
+              'generateAmountExceedsDaiYieldFromTotalCollateral',
+              'generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice',
+              'generateAmountExceedsDebtCeiling',
+              'generateAmountMoreThanMaxFlashAmount',
+              'generateAmountLessThanDebtFloor',
+              'paybackAmountExceedsDaiBalance',
+              'paybackAmountExceedsVaultDebt',
+              'debtWillBeLessThanDebtFloor',
+              'customCollateralAllowanceAmountExceedsMaxUint256',
+              'customCollateralAllowanceAmountLessThanDepositAmount',
+              'customDaiAllowanceAmountExceedsMaxUint256',
+              'customDaiAllowanceAmountLessThanPaybackAmount',
+              'depositingAllEthBalance',
+              'ledgerWalletContractDataDisabled',
+              'shouldShowExchangeError',
+              'hasToDepositCollateralOnEmptyVault',
+              'withdrawCollateralOnVaultUnderDebtFloor',
+            ]}
+          />
+          {/*<ManageMultiplyVaultWarnings {...props} />*/}
+          <VaultWarnings
+            {...props}
+            warningMessagesToPick={[
+              'potentialGenerateAmountLessThanDebtFloor',
+              'debtIsLessThanDebtFloor',
+              'vaultWillBeAtRiskLevelDanger',
+              'vaultWillBeAtRiskLevelWarning',
+              'vaultWillBeAtRiskLevelDangerAtNextPrice',
+              'vaultWillBeAtRiskLevelWarningAtNextPrice',
+            ]}
+          />
           {stage === 'manageSuccess' && <VaultChangesWithADelayCard />}
           <ManageMultiplyVaultButton {...props} />
         </>
