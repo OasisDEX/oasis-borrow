@@ -468,6 +468,21 @@ const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/matic.svg'),
     tags: [],
   },
+  {
+    symbol: 'WSTETH',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'WSTETH',
+    icon: 'wsteth_circle_color',
+    iconCircle: 'wsteth_circle_color',
+    iconColor: 'wsteth_circle_color',
+    color: '#ff077d',
+    background:
+      'linear-gradient(99.1deg, #00A3FF 0%, #4EB7F2 36.72%, #5DBAEF 43.67%, #0A98E8 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/wsteth.svg'),
+    tags: [],
+  },
   // {
   //   symbol: 'WETH',
   //   precision: 18,
