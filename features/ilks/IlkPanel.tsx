@@ -6,7 +6,7 @@ import { Tooltip, useTooltip } from 'components/Tooltip'
 import { VaultType } from 'features/generalManageVault/generalManageVault'
 import { TFunction, useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
-import { Box, Card, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
+import {  Card, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 
 import { formatPercent } from '../../helpers/formatters/format'
 
@@ -205,38 +205,19 @@ function IlkPanelButton({
   )
 }
 
-function IlkPanelInfoPill({ children, sx }: { children: ReactNode; sx: SxStyleProp }) {
-  return (
-    <Box
-      sx={{
-        py: 1,
-        px: 3,
-        borderRadius: '16px',
-        fontSize: 1,
-        fontWeight: 'semiBold',
-        ...sx,
-      }}
-    >
-      {children}
-    </Box>
-  )
-}
-
 export function IlkPanel({
   ilkData,
   description,
   vaultType,
   vaultEstimations,
-  isCheapestBorrowing,
-  isBestForExposure,
+  infoBadge,
 }: {
   ilkData: IlkData
   debt: number
   description: string
   vaultType: VaultType
   vaultEstimations: VaultEstimations
-  isCheapestBorrowing?: boolean
-  isBestForExposure?: boolean
+  infoBadge?: ReactNode
 }) {
   const { t } = useTranslation()
   const { ilk, stabilityFee, liquidationRatio, token } = ilkData
@@ -256,18 +237,11 @@ export function IlkPanel({
             {description}
           </Text>
         </Grid>
-        <Flex sx={{ justifyContent: ['flex-start', 'flex-end'], alignItems: 'center' }}>
-          {isBestForExposure && (
-            <IlkPanelInfoPill sx={{ bg: 'titanWhite', color: 'link' }}>
-              {t('asset-page.ilk-panel.best-for-exposure', { token })}
-            </IlkPanelInfoPill>
-          )}
-          {isCheapestBorrowing && (
-            <IlkPanelInfoPill sx={{ bg: 'success', color: 'onSuccess' }}>
-              {t('asset-page.ilk-panel.cheapest-borrowing')}
-            </IlkPanelInfoPill>
-          )}
-        </Flex>
+        {infoBadge && (
+          <Flex sx={{ justifyContent: ['flex-start', 'flex-end'], alignItems: 'center' }}>
+            {infoBadge}
+          </Flex>
+        )}
       </Grid>
       <Grid columns={1} gap={2} sx={{ p: [4, 5], py: [4, 4] }}>
         <IlkPanelEstimation
