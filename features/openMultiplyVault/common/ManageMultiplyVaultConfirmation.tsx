@@ -4,8 +4,8 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { OpenVaultAnimation } from 'theme/animations'
 
-import { ManageMultiplyVaultState } from '../manageMultiplyVault'
-import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
+import { ManageMultiplyVaultState } from '../../manageMultiplyVault/manageMultiplyVault'
+import { DefaultManageMultiplyVaultChangesInformation } from '../variants/default/manage/DefaultManageMultiplyVaultChangesInformation'
 
 export function ManageMultiplyVaultConfirmation(props: ManageMultiplyVaultState) {
   const [vaultChange, setVaultChanges] = useState<ManageMultiplyVaultState>(props)
@@ -20,7 +20,7 @@ export function ManageMultiplyVaultConfirmation(props: ManageMultiplyVaultState)
   ) : (
     <>
       <Divider />
-      <ManageMultiplyVaultChangesInformation {...vaultChange} />
+      <DefaultManageMultiplyVaultChangesInformation {...vaultChange} />
     </>
   )
 }

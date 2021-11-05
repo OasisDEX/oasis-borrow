@@ -15,9 +15,13 @@ import React from 'react'
 import ReactSelect from 'react-select'
 import { Box, Button, Card, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
-import { ManageMultiplyVaultState, OtherAction } from '../manageMultiplyVault'
-import { MAX_COLL_RATIO } from '../manageMultiplyVaultCalculations'
-import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
+import {
+  ManageMultiplyVaultState,
+  OtherAction,
+} from '../../../../manageMultiplyVault/manageMultiplyVault'
+import { MAX_COLL_RATIO } from '../../../../manageMultiplyVault/manageMultiplyVaultCalculations'
+import { CloseVaultCard } from '../../../common/CloseVaultCard'
+import { DefaultManageMultiplyVaultChangesInformation } from './DefaultManageMultiplyVaultChangesInformation'
 
 //TODO max buy token
 function BuyTokenInput({
@@ -352,7 +356,10 @@ function OtherActionsSelect(props: ManageMultiplyVaultState) {
       isSearchable={false}
       value={OTHER_ACTIONS_OPTIONS.find(({ value }) => value === otherAction)}
       // @ts-ignore
-      onChange={({ value }) => setOtherAction!(value)}
+      onChange={({ value }) => {
+        console.log(value)
+        setOtherAction!(value)
+      }}
       components={{
         IndicatorsContainer: () => null,
         ValueContainer: ({ children }) => <Flex sx={{ color: 'primary' }}>{children}</Flex>,
@@ -421,43 +428,6 @@ function OtherActionsSelect(props: ManageMultiplyVaultState) {
         ),
       }}
     />
-  )
-}
-
-function CloseVaultCard({
-  text,
-  icon,
-  onClick,
-  isActive,
-}: {
-  text: string
-  icon: string
-  onClick: () => void
-  isActive: boolean
-}) {
-  return (
-    <Card
-      sx={{
-        borderRadius: 'mediumLarge',
-        fontWeight: 'semiBold',
-        fontSize: 2,
-        py: 4,
-        cursor: 'pointer',
-        ...(isActive
-          ? {
-              boxShadow: 'actionCard',
-              border: '1px solid',
-              borderColor: 'borderSelected',
-            }
-          : {}),
-      }}
-      onClick={onClick}
-    >
-      <Flex sx={{ alignItems: 'center', px: 2, lineHeight: 2 }}>
-        <Icon name={icon} size="auto" width="26px" height="26px" sx={{ mr: 2 }} />
-        <Text ml={1}>{text}</Text>
-      </Flex>
-    </Card>
   )
 }
 
@@ -640,7 +610,7 @@ function OtherActionsForm(props: ManageMultiplyVaultState) {
   )
 }
 
-export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
+export function DefaultManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
   const { stage, inputAmountsEmpty } = props
 
   return (
@@ -648,7 +618,7 @@ export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
       {stage === 'adjustPosition' && <AdjustPositionForm {...props} />}
       {stage === 'otherActions' && <OtherActionsForm {...props} />}
       {!inputAmountsEmpty && <Divider />}
-      <ManageMultiplyVaultChangesInformation {...props} />
+      <DefaultManageMultiplyVaultChangesInformation {...props} />
     </Grid>
   )
 }

@@ -73,7 +73,7 @@ export function GuniOpenMultiplyVaultChangesInformation(props: OpenMultiplyVault
         value={formatPercent(slippage.times(100), { precision: 2 })}
       />
       <VaultChangesInformationItem
-        label={t('system.multiple')}
+        label={t('vault-changes.multiply')}
         value={
           <Flex>
             {zeroBalance}x

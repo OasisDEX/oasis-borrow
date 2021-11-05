@@ -1,12 +1,11 @@
-import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { DefaultVaultHeaderProps } from '../../../../components/vault/DefaultVaultHeader'
 import { VaultHeader, VaultIlkDetailsItem } from '../../../../components/vault/VaultHeader'
 import { formatCryptoBalance, formatPercent } from '../../../../helpers/formatters/format'
-import { CommonVaultState } from '../../../../helpers/types'
 
-export function GuniVaultHeader(props: CommonVaultState & { header: string; id?: BigNumber }) {
+export function GuniVaultHeader(props: DefaultVaultHeaderProps) {
   const {
     ilkData: { stabilityFee, debtFloor },
     id,

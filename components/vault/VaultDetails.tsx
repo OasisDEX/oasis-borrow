@@ -38,27 +38,23 @@ export function getCollRatioColor(
     collateralizationRatio.lt(ilkData.liquidationRatio) &&
     !collateralizationRatio.isZero()
 
-  const collRatioColor = collateralizationRatio.isZero()
+  return collateralizationRatio.isZero()
     ? 'primary'
     : vaultWillBeAtRiskLevelDanger || vaultWillBeUnderCollateralized
     ? 'onError'
     : vaultWillBeAtRiskLevelWarning
     ? 'onWarning'
     : 'onSuccess'
-
-  return collRatioColor
 }
 
 export function getPriceChangeColor({
   priceInfo: { collateralPricePercentageChange },
 }: CommonVaultState) {
-  const priceChangeColor = collateralPricePercentageChange.isZero()
+  return collateralPricePercentageChange.isZero()
     ? 'text.muted'
     : collateralPricePercentageChange.gt(zero)
     ? 'onSuccess'
     : 'onError'
-
-  return priceChangeColor
 }
 
 export function getAfterPillColors(collRatioColor: CollRatioColor) {
@@ -333,20 +329,6 @@ export function VaultDetailsNetValueModal({ close }: ModalProps) {
     </VaultDetailsCardModal>
   )
 }
-// TODO mocked for now but will be delivered by Johnny
-export function VaultDetailsProfitAndLossModal({ close }: ModalProps) {
-  const { t } = useTranslation()
-  return (
-    <VaultDetailsCardModal close={close}>
-      <Grid gap={2}>
-        <Heading variant="header3">{t('manage-multiply-vault.card.profit-and-loss')}</Heading>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          {t('manage-multiply-vault.card.profit-and-loss-description')}
-        </Text>
-      </Grid>
-    </VaultDetailsCardModal>
-  )
-}
 
 interface LiquidationProps {
   liquidationPrice: BigNumber
@@ -544,29 +526,6 @@ export function VaultDetailsCardNetValue({
       // valueBottom={`Unrealised P&L 0%`}
       valueAfter={showAfterPill && `$${formatAmount(afterNetValueUSD, 'USD')}`}
       openModal={() => openModal(VaultDetailsNetValueModal)}
-      afterPillColors={afterPillColors}
-    />
-  )
-}
-// TODO mocked for now but will be delivered by Johnny
-export function VaultDetailsCardProfitAndLoss({
-  profitAndLossUSD,
-  afterProfitAndLossUSD,
-  afterPillColors,
-  showAfterPill,
-}: {
-  profitAndLossUSD: BigNumber
-  afterProfitAndLossUSD: BigNumber
-} & AfterPillProps) {
-  const openModal = useModal()
-  const { t } = useTranslation()
-
-  return (
-    <VaultDetailsCard
-      title={t('manage-multiply-vault.card.profit-and-loss')}
-      value={`$${formatAmount(profitAndLossUSD, 'USD')}`}
-      valueAfter={showAfterPill && `$${formatAmount(afterProfitAndLossUSD, 'USD')}`}
-      openModal={() => openModal(VaultDetailsProfitAndLossModal)}
       afterPillColors={afterPillColors}
     />
   )

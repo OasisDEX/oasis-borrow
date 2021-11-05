@@ -1,25 +1,19 @@
 import {
   AfterPillProps,
   getAfterPillColors,
-  getCollRatioColor,
-  VaultDetailsBuyingPowerModal,
-  VaultDetailsCard,
-  VaultDetailsCardCurrentPrice,
-  VaultDetailsCardLiquidationPrice,
   VaultDetailsCardNetValue,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
-import { useModal } from 'helpers/modalHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
-import { ManageMultiplyVaultState } from '../manageMultiplyVault'
+import { ManageMultiplyVaultState } from '../../../../manageMultiplyVault/manageMultiplyVault'
 
-function ManageMultiplyVaultDetailsSummary({
+function GuniManageMultiplyVaultDetailsSummary({
   vault: { debt, token, lockedCollateral },
   afterDebt,
   afterPillColors,
@@ -52,7 +46,7 @@ function ManageMultiplyVaultDetailsSummary({
       />
 
       <VaultDetailsSummaryItem
-        label={t('system.total-exposure', { token })}
+        label={t('system.total-collateral', { token })}
         value={
           <>
             {formatCryptoBalance(lockedCollateral)} {token}
@@ -69,7 +63,11 @@ function ManageMultiplyVaultDetailsSummary({
       />
       <VaultDetailsSummaryItem
         label={t('system.multiple')}
-        value={<>{multiply?.toFixed(2)}x</>}
+        value={
+          <>
+            {multiply?.toFixed(2)}x {t('system.exposure')}
+          </>
+        }
         valueAfter={showAfterPill && <>{afterMultiply?.toFixed(2)}x</>}
         afterPillColors={afterPillColors}
       />
@@ -77,49 +75,15 @@ function ManageMultiplyVaultDetailsSummary({
   )
 }
 
-export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
-  const {
-    vault: { token, liquidationPrice },
-    liquidationPriceCurrentPriceDifference,
-    afterLiquidationPrice,
-    afterCollateralizationRatio,
-    inputAmountsEmpty,
-    stage,
-    netValueUSD,
-    afterNetValueUSD,
-    buyingPower,
-    buyingPowerUSD,
-    afterBuyingPowerUSD,
-  } = props
-  const openModal = useModal()
-  const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
+  const { inputAmountsEmpty, stage, netValueUSD, afterNetValueUSD } = props
+  const afterCollRatioColor = 'onSuccess'
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
 
   return (
     <Box>
       <Grid variant="vaultDetailsCardsContainer">
-        <VaultDetailsCardLiquidationPrice
-          {...{
-            liquidationPrice,
-            liquidationPriceCurrentPriceDifference,
-            afterLiquidationPrice,
-            afterPillColors,
-            showAfterPill,
-          }}
-        />
-
-        <VaultDetailsCard
-          title={`Buying Power`}
-          value={`$${formatAmount(buyingPowerUSD, 'USD')}`}
-          valueBottom={`${formatAmount(buyingPower, token)} ${token}`}
-          valueAfter={showAfterPill && `$${formatAmount(afterBuyingPowerUSD, 'USD')}`}
-          openModal={() => openModal(VaultDetailsBuyingPowerModal)}
-          afterPillColors={afterPillColors}
-        />
-
-        <VaultDetailsCardCurrentPrice {...props} />
-
         <VaultDetailsCardNetValue
           {...{
             netValueUSD,
@@ -129,7 +93,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
           }}
         />
       </Grid>
-      <ManageMultiplyVaultDetailsSummary
+      <GuniManageMultiplyVaultDetailsSummary
         {...props}
         afterPillColors={afterPillColors}
         showAfterPill={showAfterPill}

@@ -8,7 +8,7 @@ import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 
-import { ManageMultiplyVaultState } from '../manageMultiplyVault'
+import { ManageMultiplyVaultState } from '../../manageMultiplyVault/manageMultiplyVault'
 
 export function ManageMultiplyVaultDaiAllowance({
   stage,

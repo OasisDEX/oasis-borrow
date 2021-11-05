@@ -1,6 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex, Grid, Text } from '@theme-ui/components'
-import BigNumber from 'bignumber.js'
 import {
   getEstimatedGasFeeText,
   VaultChangesInformationArrow,
@@ -8,7 +7,6 @@ import {
   VaultChangesInformationEstimatedGasFee,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { AppSpinner } from 'helpers/AppSpinner'
 import {
   formatAmount,
@@ -20,19 +18,16 @@ import { zero } from 'helpers/zero'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { ManageMultiplyVaultState } from '../manageMultiplyVault'
+import { ManageMultiplyVaultState } from '../../../../manageMultiplyVault/manageMultiplyVault'
 
-export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVaultState) {
+export function GuniManageMultiplyVaultChangesInformation(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
   const [showFees, setShowFees] = useState(false)
   const {
-    vault: { collateralizationRatio, lockedCollateral, debt, token },
-
+    vault: { debt },
     multiply,
     afterMultiply,
-    afterCollateralizationRatio,
     afterDebt,
-    afterLockedCollateral,
     impact,
     slippage,
     fees,
@@ -43,51 +38,25 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
     exchangeDataRequired,
     isExchangeLoading,
     otherAction,
-    exchangeAction,
-    collateralDelta,
     collateralDeltaUSD,
     originalEditingStage,
   } = props
-  const collRatioColor = getCollRatioColor(props, collateralizationRatio)
-  const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
 
   const isCloseAction = originalEditingStage === 'otherActions' && otherAction === 'closeVault'
 
   return !inputAmountsEmpty ? (
-    <VaultChangesInformationContainer
-      title={isCloseAction ? 'Close Vault Information' : 'Vault Changes'}
-    >
+    <VaultChangesInformationContainer title={t('vault-changes.close-vault-information')}>
       {exchangeDataRequired && (
         <VaultChangesInformationItem
-          label={exchangeAction === `BUY_COLLATERAL` ? `Buying ${token}` : `Selling ${token}`}
-          value={
-            <Flex>
-              <Text>
-                {formatCryptoBalance(collateralDelta?.abs() || zero)} {token}
-                {` `}
-                <Text as="span" sx={{ color: 'text.subtitle' }}>
-                  (${formatAmount(collateralDeltaUSD?.abs() || zero, 'USD')})
-                </Text>
-              </Text>
-            </Flex>
-          }
+          label={t('vault-changes.selling-token', { token: 'USDC' })}
+          value={<Text>${formatAmount(collateralDeltaUSD?.abs() || zero, 'USD')}</Text>}
         />
       )}
-      <VaultChangesInformationItem
-        label={isCloseAction ? 'Collateral' : `Total ${token} exposure`}
-        value={
-          <Flex>
-            {formatCryptoBalance(lockedCollateral)} {token}
-            <VaultChangesInformationArrow />
-            {formatCryptoBalance(afterLockedCollateral)} {token}
-          </Flex>
-        }
-      />
 
       {exchangeDataRequired && (
         <>
           <VaultChangesInformationItem
-            label={`${token} Price (impact)`}
+            label={t('vault-changes.price-impact', { token: 'USDC' })}
             value={
               isExchangeLoading ? (
                 <AppSpinner />
@@ -102,13 +71,13 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
             }
           />
           <VaultChangesInformationItem
-            label={'Slippage Limit'}
+            label={t('vault-changes.slippage-limit')}
             value={formatPercent(slippage.times(100), { precision: 2 })}
           />
         </>
       )}
       <VaultChangesInformationItem
-        label={'Multiply'}
+        label={t('vault-changes.multiply')}
         value={
           <Flex>
             {multiply?.toFixed(2)}x
@@ -118,7 +87,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
         }
       />
       <VaultChangesInformationItem
-        label={`${t('system.vault-dai-debt')}`}
+        label={`${t('outstanding-debt')}`}
         value={
           <Flex>
             {`${formatCryptoBalance(debt || zero)} DAI`}
@@ -128,31 +97,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
         }
       />
       <VaultChangesInformationItem
-        label={'Collateral Ratio'}
-        value={
-          <Flex>
-            <Text sx={{ color: collRatioColor }}>
-              {formatPercent(collateralizationRatio.times(100), {
-                precision: 2,
-                roundMode: BigNumber.ROUND_DOWN,
-              })}
-            </Text>
-            <VaultChangesInformationArrow />
-            {isCloseAction ? (
-              'n/a'
-            ) : (
-              <Text sx={{ color: afterCollRatioColor }}>
-                {formatPercent(afterCollateralizationRatio.times(100), {
-                  precision: 2,
-                  roundMode: BigNumber.ROUND_DOWN,
-                })}
-              </Text>
-            )}
-          </Flex>
-        }
-      />
-      <VaultChangesInformationItem
-        label={t('fees-plus-gas')}
+        label={t('transaction-fee')}
         value={
           <Flex
             sx={{ alignItems: 'center', cursor: 'pointer' }}
@@ -173,12 +118,12 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
         <Grid pl={3} gap={2}>
           {loanFee.gt(zero) && (
             <VaultChangesInformationItem
-              label={'3rd party protocol fees'}
+              label={t('vault-changes.third-party-fee')}
               value={`$${formatAmount(loanFee, 'USD')}`}
             />
           )}
           <VaultChangesInformationItem
-            label={'Oasis fee'}
+            label={t('vault-changes.oasis-fee')}
             value={`$${formatAmount(oazoFee, 'USD')}`}
           />
           <VaultChangesInformationEstimatedGasFee {...props} />

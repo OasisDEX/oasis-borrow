@@ -2,13 +2,17 @@ import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { IlkData } from '../../blockchain/ilks'
 import { formatCryptoBalance, formatPercent } from '../../helpers/formatters/format'
-import { CommonVaultState } from '../../helpers/types'
 import { VaultHeader, VaultIlkDetailsItem } from './VaultHeader'
 
-export function DefaultVaultHeader(
-  props: CommonVaultState & { header: string; id?: BigNumber },
-) {
+export interface DefaultVaultHeaderProps {
+  header: string
+  id?: BigNumber
+  ilkData: IlkData
+}
+
+export function DefaultVaultHeader(props: DefaultVaultHeaderProps) {
   const {
     ilkData: { liquidationRatio, stabilityFee, liquidationPenalty, debtFloor },
     id,

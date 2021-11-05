@@ -20,7 +20,7 @@ export async function getServerSideProps(ctx: any) {
 // TODO remove before releasing
 const multiplyContainerMap: Record<string, (props: OpenMultiplyVaultState) => JSX.Element> = {
   'ETH-A': (props) => <GuniOpenMultiplyVaultContainer {...props} />,
-  // 'GUNIV3DAIUSDC1-A': (props) => <GuniOpenMultiplyVaultContainer {...props} />,
+  'GUNIV3DAIUSDC1-A': (props) => <GuniOpenMultiplyVaultContainer {...props} />,
 }
 export default function OpenVault({ ilk }: { ilk: string }) {
   return (

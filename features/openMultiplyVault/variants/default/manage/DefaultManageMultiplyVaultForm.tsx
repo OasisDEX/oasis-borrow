@@ -1,32 +1,23 @@
-import { trackingEvents } from 'analytics/analytics'
-import { useAppContext } from 'components/AppContextProvider'
-import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
-import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
-import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
-import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
-import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
-import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
-import { Box, Grid } from 'theme-ui'
+import React from 'react'
 
-import { VaultErrors } from '../../openMultiplyVault/common/VaultErrors'
-import { VaultWarnings } from '../../openMultiplyVault/common/VaultWarnings'
-import { ManageMultiplyVaultState } from '../manageMultiplyVault'
-import { createManageMultiplyVaultAnalytics$ } from '../manageMultiplyVaultAnalytics'
-import { ManageMultiplyVaultButton } from './ManageMultiplyVaultButton'
-import { ManageMultiplyVaultCollateralAllowance } from './ManageMultiplyVaultCollateralAllowance'
+import { VaultAllowanceStatus } from '../../../../../components/vault/VaultAllowance'
+import { VaultChangesWithADelayCard } from '../../../../../components/vault/VaultChangesWithADelayCard'
+import { VaultFormContainer } from '../../../../../components/vault/VaultFormContainer'
+import { VaultProxyStatusCard } from '../../../../../components/vault/VaultProxy'
+import { ManageMultiplyVaultState } from '../../../../manageMultiplyVault/manageMultiplyVault'
+import { ManageMultiplyVaultButton } from '../../../common/ManageMultiplyVaultButton'
+import { ManageMultiplyVaultCollateralAllowance } from '../../../common/ManageMultiplyVaultCollateralAllowance'
 import {
   ManageMultiplyVaultConfirmation,
   ManageMultiplyVaultConfirmationStatus,
-} from './ManageMultiplyVaultConfirmation'
-import { ManageMultiplyVaultDaiAllowance } from './ManageMultiplyVaultDaiAllowance'
-import { ManageMultiplyVaultDetails } from './ManageMultiplyVaultDetails'
-import { ManageMultiplyVaultEditing } from './ManageMultiplyVaultEditing'
-import { ManageMultiplyVaultFormHeader } from './ManageMultiplyVaultFormHeader'
+} from '../../../common/ManageMultiplyVaultConfirmation'
+import { ManageMultiplyVaultDaiAllowance } from '../../../common/ManageMultiplyVaultDaiAllowance'
+import { VaultErrors } from '../../../common/VaultErrors'
+import { VaultWarnings } from '../../../common/VaultWarnings'
+import { DefaultManageMultiplyVaultEditing } from './DefaultManageMultiplyVaultEditing'
+import { DefaultManageMultiplyVaultFormHeader } from './DefaultManageMultiplyVaultFormHeader'
 
-function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
+export function DefaultManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
   const {
     isEditingStage,
     isProxyStage,
@@ -50,8 +41,8 @@ function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
         (otherAction === 'depositCollateral' || otherAction === 'depositDai')))
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
-      <ManageMultiplyVaultFormHeader {...props} />
-      {isEditingStage && <ManageMultiplyVaultEditing {...props} />}
+      <DefaultManageMultiplyVaultFormHeader {...props} />
+      {isEditingStage && <DefaultManageMultiplyVaultEditing {...props} />}
       {isCollateralAllowanceStage && <ManageMultiplyVaultCollateralAllowance {...props} />}
       {isDaiAllowanceStage && <ManageMultiplyVaultDaiAllowance {...props} />}
       {isManageStage && <ManageMultiplyVaultConfirmation {...props} />}
@@ -112,49 +103,5 @@ function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
       )}
       {isManageStage && <ManageMultiplyVaultConfirmationStatus {...props} />}
     </VaultFormContainer>
-  )
-}
-
-// TODO also to refactor
-export function ManageMultiplyVaultContainer({
-  manageVault,
-  vaultHistory,
-}: {
-  manageVault: ManageMultiplyVaultState
-  vaultHistory: VaultHistoryEvent[]
-}) {
-  const { manageMultiplyVault$, context$ } = useAppContext()
-  const {
-    vault: { id, ilk },
-    clear,
-  } = manageVault
-  const { t } = useTranslation()
-
-  useEffect(() => {
-    const subscription = createManageMultiplyVaultAnalytics$(
-      manageMultiplyVault$(id),
-      context$,
-      trackingEvents,
-    ).subscribe()
-
-    return () => {
-      clear()
-      subscription.unsubscribe()
-    }
-  }, [])
-
-  return (
-    <>
-      <DefaultVaultHeader {...manageVault} header={t('vault.header', { ilk, id })} id={id} />
-      <Grid variant="vaultContainer">
-        <Grid gap={5} mb={[0, 5]}>
-          <ManageMultiplyVaultDetails {...manageVault} />
-          <VaultHistoryView vaultHistory={vaultHistory} />
-        </Grid>
-        <Box>
-          <ManageMultiplyVaultForm {...manageVault} />
-        </Box>
-      </Grid>
-    </>
   )
 }

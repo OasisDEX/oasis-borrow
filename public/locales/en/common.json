@@ -508,8 +508,11 @@
   },
   "vault-changes": {
     "order-information": "Order information",
+    "multiply": "Multiply",
+    "close-vault-information": "Close Vault Information",
     "getting-token": "Getting {{token}}",
     "buying-token": "Buying {{token}}",
+    "selling-token": "Selling {{token}}",
     "price-impact": "{{token}} Price (impact)",
     "slippage-limit": "Slippage Limit",
     "third-party-fees": "3rd party protocol fees",

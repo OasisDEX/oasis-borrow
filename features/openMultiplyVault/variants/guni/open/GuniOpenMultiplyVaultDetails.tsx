@@ -3,7 +3,6 @@ import {
   AfterPillProps,
   getAfterPillColors,
   VaultDetailsCardNetValue,
-  VaultDetailsCardProfitAndLoss,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -80,15 +79,11 @@ function GuniOpenMultiplyVaultDetailsSummary({
 export function GuniOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
   const {
     afterNetValueUSD,
-    // @ts-ignore
-    afterProfitAndLossUSD = new BigNumber(12345), // TODO TBD within pipeline
     inputAmountsEmpty,
     stage,
+    // @ts-ignore
+    netValueUSD = zero, // TODO TBD within pipeline
   } = props
-
-  // initial values only to show in UI as starting parameters
-  const netValueUSD = zero
-  const profitAndLossUSD = zero
 
   const afterCollRatioColor = 'onSuccess'
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
@@ -100,14 +95,6 @@ export function GuniOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
           {...{
             netValueUSD,
             afterNetValueUSD,
-            afterPillColors,
-            showAfterPill,
-          }}
-        />
-        <VaultDetailsCardProfitAndLoss
-          {...{
-            profitAndLossUSD,
-            afterProfitAndLossUSD,
             afterPillColors,
             showAfterPill,
           }}
