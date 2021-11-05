@@ -14,6 +14,7 @@ import {
   MOCK_VAULT_ID,
   mockManageMultiplyVault$,
   MockManageMultiplyVaultProps,
+  MOCK_CHAIN_ID,
 } from 'helpers/mocks/manageMultiplyVault.mock'
 import { memoize } from 'lodash'
 import React from 'react'
@@ -106,6 +107,7 @@ export function manageMultiplyVaultStory({
           () => of(EMPTY),
           () => of(VaultType.Multiply),
           MOCK_VAULT_ID,
+          MOCK_CHAIN_ID
         ),
       ),
       manageMultiplyVault$: () => obs$,
@@ -135,7 +137,7 @@ const ManageMultiplyVaultStoryContainer = ({ title }: { title?: string }) => {
       <InjectTokenIconsDefs />
       <Grid>
         {title && <Card>{title}</Card>}
-        <GeneralManageVaultView id={MOCK_VAULT_ID} />
+        <GeneralManageVaultView id={MOCK_VAULT_ID} chainId={MOCK_CHAIN_ID}/>
       </Grid>
     </Container>
   )

@@ -5,29 +5,27 @@ import * as z from 'zod'
 
 const paramsSchema = z.object({
   id: z.string(),
+  chainId: z.string()
 })
 
 export async function getVault(req: express.Request, res: express.Response) {
   const params = paramsSchema.parse(req.params)
 
-  const vaults = await selectVaultsById({
-    vaultId: parseInt(params.id, 10),
+  const vault = await selectVaultByIdAndChainId({
+    vault_id: parseInt(params.id, 10),
+    chain_id: parseInt(params.chainId),
   })
 
-  if (vaults === undefined || vaults == null) {
+  if (vault === undefined || vault == null) {
     return res.sendStatus(404)
   } else {
     return res.status(200).json({
-      vaults,
+      vaultId: vault.vault_id,
+      type: vault.type,
+      ownerAddress: vault.owner_address,
+      chainId: vault.chain_id
     })
   }
-}
-
-export async function selectVaultsById({ vaultId }: { vaultId: number }): Promise<Vault[] | null> {
-  const result = await prisma.vault.findMany({
-    where: { vault_id: vaultId },
-  })
-  return result
 }
 
 export async function selectVaultByIdAndChainId({
