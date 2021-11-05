@@ -5,8 +5,8 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
-import { IlkData } from '../../../blockchain/ilks'
-import { OpenMultiplyVaultWarningMessage } from '../openMultiplyVaultValidations'
+import { IlkData } from '../../blockchain/ilks'
+import { OpenMultiplyVaultWarningMessage } from '../../features/openMultiplyVault/openMultiplyVaultValidations'
 
 interface VaultWarningsProps {
   warningMessages: OpenMultiplyVaultWarningMessage[]

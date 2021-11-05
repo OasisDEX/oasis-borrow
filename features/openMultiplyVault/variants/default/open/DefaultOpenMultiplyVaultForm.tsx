@@ -1,22 +1,22 @@
-import { useTranslation } from 'next-i18next'
-import React from 'react'
-
 import {
   VaultAllowance,
   VaultAllowanceStatus,
-} from '../../../../../components/vault/VaultAllowance'
-import { VaultChangesWithADelayCard } from '../../../../../components/vault/VaultChangesWithADelayCard'
-import { VaultFormVaultTypeSwitch } from '../../../../../components/vault/VaultForm'
-import { VaultFormContainer } from '../../../../../components/vault/VaultFormContainer'
-import { VaultProxyStatusCard } from '../../../../../components/vault/VaultProxy'
+} from 'components/vault/VaultAllowance'
+import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultFormVaultTypeSwitch } from 'components/vault/VaultForm'
+import { VaultFormContainer } from 'components/vault/VaultFormContainer'
+import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+
 import { OpenMultiplyVaultButton } from '../../../common/OpenMultiplyVaultButton'
 import {
   OpenMultiplyVaultConfirmation,
   OpenMultiplyVaultStatus,
 } from '../../../common/OpenMultiplyVaultConfirmation'
 import { OpenMultiplyVaultTitle } from '../../../common/OpenMultiplyVaultTitle'
-import { VaultErrors } from '../../../common/VaultErrors'
-import { VaultWarnings } from '../../../common/VaultWarnings'
 import { OpenMultiplyVaultState } from '../../../openMultiplyVault'
 import { DefaultOpenMultiplyVaultEditing } from './DefaultOpenMultiplyVaultEditing'
 

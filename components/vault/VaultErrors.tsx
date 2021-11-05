@@ -8,10 +8,10 @@ import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
-import { IlkData } from '../../../blockchain/ilks'
-import { Vault } from '../../../blockchain/vaults'
-import { zero } from '../../../helpers/zero'
-import { OpenMultiplyVaultErrorMessage } from '../openMultiplyVaultValidations'
+import { IlkData } from '../../blockchain/ilks'
+import { Vault } from '../../blockchain/vaults'
+import { OpenMultiplyVaultErrorMessage } from '../../features/openMultiplyVault/openMultiplyVaultValidations'
+import { zero } from '../../helpers/zero'
 
 interface VaultErrorsProps {
   errorMessages: OpenMultiplyVaultErrorMessage[]

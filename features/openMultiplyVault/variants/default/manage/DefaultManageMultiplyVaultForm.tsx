@@ -1,9 +1,11 @@
+import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
+import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultFormContainer } from 'components/vault/VaultFormContainer'
+import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import React from 'react'
 
-import { VaultAllowanceStatus } from '../../../../../components/vault/VaultAllowance'
-import { VaultChangesWithADelayCard } from '../../../../../components/vault/VaultChangesWithADelayCard'
-import { VaultFormContainer } from '../../../../../components/vault/VaultFormContainer'
-import { VaultProxyStatusCard } from '../../../../../components/vault/VaultProxy'
 import { ManageMultiplyVaultState } from '../../../../manageMultiplyVault/manageMultiplyVault'
 import { ManageMultiplyVaultButton } from '../../../common/ManageMultiplyVaultButton'
 import { ManageMultiplyVaultCollateralAllowance } from '../../../common/ManageMultiplyVaultCollateralAllowance'
@@ -12,8 +14,6 @@ import {
   ManageMultiplyVaultConfirmationStatus,
 } from '../../../common/ManageMultiplyVaultConfirmation'
 import { ManageMultiplyVaultDaiAllowance } from '../../../common/ManageMultiplyVaultDaiAllowance'
-import { VaultErrors } from '../../../common/VaultErrors'
-import { VaultWarnings } from '../../../common/VaultWarnings'
 import { DefaultManageMultiplyVaultEditing } from './DefaultManageMultiplyVaultEditing'
 import { DefaultManageMultiplyVaultFormHeader } from './DefaultManageMultiplyVaultFormHeader'
 
