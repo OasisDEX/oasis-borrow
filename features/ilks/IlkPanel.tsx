@@ -6,7 +6,7 @@ import { Tooltip, useTooltip } from 'components/Tooltip'
 import { VaultType } from 'features/generalManageVault/generalManageVault'
 import { TFunction, useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
-import {  Card, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
+import { Card, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 
 import { formatPercent } from '../../helpers/formatters/format'
 
