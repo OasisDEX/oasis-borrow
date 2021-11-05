@@ -1,0 +1,1 @@
+DROP INDEX public."vault.vault_id_unique";
