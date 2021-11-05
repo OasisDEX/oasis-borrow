@@ -48,44 +48,8 @@ export function DefaultManageMultiplyVaultForm(props: ManageMultiplyVaultState) 
       {isManageStage && <ManageMultiplyVaultConfirmation {...props} />}
       {shouldDisplayActionButton && (
         <>
-          {/*<ManageMultiplyVaultErrors {...props} />*/}
-          <VaultErrors
-            {...props}
-            errorMessagesToPick={[
-              'depositAmountExceedsCollateralBalance',
-              'withdrawAmountExceedsFreeCollateral',
-              'withdrawAmountExceedsFreeCollateralAtNextPrice',
-              'generateAmountExceedsDaiYieldFromTotalCollateral',
-              'generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice',
-              'generateAmountExceedsDebtCeiling',
-              'generateAmountMoreThanMaxFlashAmount',
-              'generateAmountLessThanDebtFloor',
-              'paybackAmountExceedsDaiBalance',
-              'paybackAmountExceedsVaultDebt',
-              'debtWillBeLessThanDebtFloor',
-              'customCollateralAllowanceAmountExceedsMaxUint256',
-              'customCollateralAllowanceAmountLessThanDepositAmount',
-              'customDaiAllowanceAmountExceedsMaxUint256',
-              'customDaiAllowanceAmountLessThanPaybackAmount',
-              'depositingAllEthBalance',
-              'ledgerWalletContractDataDisabled',
-              'shouldShowExchangeError',
-              'hasToDepositCollateralOnEmptyVault',
-              'withdrawCollateralOnVaultUnderDebtFloor',
-            ]}
-          />
-          {/*<ManageMultiplyVaultWarnings {...props} />*/}
-          <VaultWarnings
-            {...props}
-            warningMessagesToPick={[
-              'potentialGenerateAmountLessThanDebtFloor',
-              'debtIsLessThanDebtFloor',
-              'vaultWillBeAtRiskLevelDanger',
-              'vaultWillBeAtRiskLevelWarning',
-              'vaultWillBeAtRiskLevelDangerAtNextPrice',
-              'vaultWillBeAtRiskLevelWarningAtNextPrice',
-            ]}
-          />
+          <VaultErrors {...props} />
+          <VaultWarnings {...props} />
           {stage === 'manageSuccess' && <VaultChangesWithADelayCard />}
           <ManageMultiplyVaultButton {...props} />
         </>

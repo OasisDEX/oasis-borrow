@@ -34,32 +34,8 @@ export function DefaultOpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
       {isEditingStage && <DefaultOpenMultiplyVaultEditing {...props} />}
       {isAllowanceStage && <VaultAllowance {...props} />}
       {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
-      <VaultErrors
-        {...props}
-        errorMessagesToPick={[
-          'depositAmountExceedsCollateralBalance',
-          'generateAmountExceedsDaiYieldFromDepositingCollateral',
-          'generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice',
-          'generateAmountExceedsDebtCeiling',
-          'generateAmountMoreThanMaxFlashAmount',
-          'generateAmountLessThanDebtFloor',
-          'customAllowanceAmountExceedsMaxUint256',
-          'customAllowanceAmountLessThanDepositAmount',
-          'depositingAllEthBalance',
-          'ledgerWalletContractDataDisabled',
-          'exchangeError',
-        ]}
-      />
-      <VaultWarnings
-        {...props}
-        warningMessagesToPick={[
-          'potentialGenerateAmountLessThanDebtFloor',
-          'vaultWillBeAtRiskLevelDanger',
-          'vaultWillBeAtRiskLevelWarning',
-          'vaultWillBeAtRiskLevelDangerAtNextPrice',
-          'vaultWillBeAtRiskLevelWarningAtNextPrice',
-        ]}
-      />
+      <VaultErrors {...props} />
+      <VaultWarnings {...props} />
       {stage === 'openSuccess' && <VaultChangesWithADelayCard />}
       <OpenMultiplyVaultButton {...props} />
       {isProxyStage && <VaultProxyStatusCard {...props} />}

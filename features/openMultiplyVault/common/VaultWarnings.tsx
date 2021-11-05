@@ -11,14 +11,9 @@ import { OpenMultiplyVaultWarningMessage } from '../openMultiplyVaultValidations
 interface VaultWarningsProps {
   warningMessages: OpenMultiplyVaultWarningMessage[]
   ilkData: IlkData
-  warningMessagesToPick: OpenMultiplyVaultWarningMessage[]
 }
 
-export function VaultWarnings({
-  warningMessages,
-  ilkData: { debtFloor },
-  warningMessagesToPick = [],
-}: VaultWarningsProps) {
+export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: VaultWarningsProps) {
   const { t } = useTranslation()
   if (!warningMessages.length) return null
 
@@ -46,12 +41,10 @@ export function VaultWarnings({
     }
   }
 
-  const messages = warningMessages
-    .filter((warnMsg) => warningMessagesToPick.includes(warnMsg))
-    .reduce(
-      (acc, message) => [...acc, applyWarningMessageTranslation(message)],
-      [] as (string | JSX.Element)[],
-    )
+  const messages = warningMessages.reduce(
+    (acc, message) => [...acc, applyWarningMessageTranslation(message)],
+    [] as (string | JSX.Element)[],
+  )
 
   return <MessageCard {...{ messages, type: 'warning' }} />
 }

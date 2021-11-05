@@ -17,7 +17,6 @@ interface VaultErrorsProps {
   errorMessages: OpenMultiplyVaultErrorMessage[]
   maxGenerateAmount: BigNumber
   ilkData: IlkData
-  errorMessagesToPick: OpenMultiplyVaultErrorMessage[]
   vault?: Vault
   maxWithdrawAmount?: BigNumber
 }
@@ -27,7 +26,6 @@ export function VaultErrors({
   maxGenerateAmount,
   maxWithdrawAmount = zero,
   ilkData: { debtFloor },
-  errorMessagesToPick = [],
   vault,
 }: VaultErrorsProps) {
   const { t } = useTranslation()
@@ -128,12 +126,10 @@ export function VaultErrors({
     }
   }
 
-  const messages = errorMessages
-    .filter((errMsg) => errorMessagesToPick.includes(errMsg))
-    .reduce(
-      (acc, message) => [...acc, applyErrorMessageTranslation(message)],
-      [] as (string | JSX.Element)[],
-    )
+  const messages = errorMessages.reduce(
+    (acc, message) => [...acc, applyErrorMessageTranslation(message)],
+    [] as (string | JSX.Element)[],
+  )
 
   return <MessageCard {...{ messages, type: 'error' }} />
 }

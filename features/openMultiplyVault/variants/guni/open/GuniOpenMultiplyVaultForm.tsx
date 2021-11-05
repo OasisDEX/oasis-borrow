@@ -30,25 +30,8 @@ export function GuniOpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
       {isEditingStage && <GuniOpenMultiplyVaultEditing {...props} />}
       {isAllowanceStage && <VaultAllowance {...props} />}
       {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
-      <VaultErrors
-        {...props}
-        errorMessagesToPick={[
-          'depositAmountExceedsCollateralBalance',
-          'generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice',
-          'generateAmountExceedsDebtCeiling',
-          'generateAmountMoreThanMaxFlashAmount',
-          'generateAmountLessThanDebtFloor',
-          'customAllowanceAmountExceedsMaxUint256',
-          'customAllowanceAmountLessThanDepositAmount',
-          'depositingAllEthBalance',
-          'ledgerWalletContractDataDisabled',
-          'exchangeError',
-        ]}
-      />
-      <VaultWarnings
-        {...props}
-        warningMessagesToPick={['potentialGenerateAmountLessThanDebtFloor']}
-      />
+      <VaultErrors {...props} />
+      <VaultWarnings {...props} />
       {stage === 'openSuccess' && <VaultChangesWithADelayCard />}
       <OpenMultiplyVaultButton {...props} />
       {isProxyStage && <VaultProxyStatusCard {...props} />}
