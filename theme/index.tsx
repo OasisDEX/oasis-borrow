@@ -52,6 +52,7 @@ const oasisBaseTheme = {
     },
 
     link: '#575CFE',
+    titanWhite: '#EDEDFF',
     textAlt: 'rgba(37, 39, 61, 0.67)',
     onBackground: '#9FAFB9',
     onPrimary: '#FFF',

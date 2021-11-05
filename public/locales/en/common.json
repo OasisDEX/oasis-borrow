@@ -257,6 +257,27 @@
       }
     }
   },
+  "asset-page": {
+    "ilk-panel": {
+      "daily-stability-fee": "Daily Stability Fee",
+      "daily-stability-fee-tooltip": "TBD",
+      "stability-fee": "Stability Fee",
+      "stability-fee-tooltip": "The Stability Fee is a variable-rate fee continuously added to a Vault owner’s generated Dai balance.",
+      "minimum-coll-ratio": "Minimum Collateral Ratio",
+      "minimum-coll-ratio-tooltip": "TBD",
+      "borrow-with": "Borrow with {{ilk}}",
+      "multiply-with": "Multiply with {{ilk}}",
+      "borrow": "Borrow",
+      "multiply": "Multiply",
+      "at-daily-cost": "At a daily cost of",
+      "multiplyTitle": "Depositing {{valueToDeposit}} {{token}}",
+      "multiplyValue": "Get up to {{exposureValue}} {{token}} exposure",
+      "borrowTitle": "Get {{daiToGenerate}} DAI at {{collRatio}} Coll. Ratio",
+      "borrowValue": "Using {{collUsage}} {{token}}",
+      "cheapest-borrowing": "Cheapest borrowing rates",
+      "best-for-exposure": "Best for {{token}} exposure"
+    }
+  },
   "languages": "Languages",
   "lang-dropdown": {
     "en": "English",

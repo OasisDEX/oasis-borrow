@@ -64,7 +64,7 @@ function HowItWorksItemDescription({
           mr: 3,
           transition: '0.3s ease-in-out',
           fontWeight: 'semiBold',
-          bg: '#EDEDFF',
+          bg: 'titanWhite',
           position: 'relative',
           cursor: onClick ? 'pointer' : 'default',
           ...(isActive && {
