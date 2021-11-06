@@ -7,6 +7,7 @@ import BigNumber from 'bignumber.js'
 import moment from 'moment'
 
 function PreviewObject({ object, indent = 0 }) {
+  // TODO remove it
   return (
     <Box sx={{ ml: `${indent * 30}px` }}>
       {Object.entries(object).map(([key, value]) => {
@@ -98,6 +99,15 @@ export function OpenGuniVaultView({ ilk }: { ilk: string }) {
         {(vault) => (
           <Container variant="vaultPageContainer">
             {console.log(vault)}
+            <input
+              type="number"
+              value={vault.depositAmount?.toString()}
+              onChange={(e) =>
+                vault.updateDeposit && vault.updateDeposit(new BigNumber(e.target.value))
+              }
+            />
+            <button onClick={vault.progress}>progress</button>
+            <button onClick={vault.regress}>regress</button>
             <PreviewObject object={vault} />
           </Container>
         )}

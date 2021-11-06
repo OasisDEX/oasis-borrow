@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { createIlkDataChange$, IlkData, IlkDataChange } from 'blockchain/ilks'
+import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
@@ -8,23 +8,28 @@ import {
   createExchangeChange$,
   createInitialQuoteChange,
 } from 'features/openMultiplyVault/openMultiplyQuote'
-import {
-  AllowanceStages,
-  EditingStage,
-  ProxyStages,
-  TxStage,
-} from 'features/openMultiplyVault/openMultiplyVault'
-import { BalanceInfo, BalanceInfoChange, balanceInfoChange$ } from 'features/shared/balanceInfo'
-import { PriceInfo, PriceInfoChange, priceInfoChange$ } from 'features/shared/priceInfo'
+import { AllowanceStages, ProxyStages, TxStage } from 'features/openMultiplyVault/openMultiplyVault'
+import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
+import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus } from 'helpers/form'
 import { curry } from 'lodash'
 import { pipe } from 'ramda'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { catchError, first, map, scan, shareReplay, switchMap, tap } from 'rxjs/internal/operators'
+import {
+  FormChanges,
+  FormFunctions,
+  FormState,
+  applyFormChange,
+  addFormTransitions,
+  defaultFormState,
+  EditingStage,
+} from './guniForm'
+import { EnvironmentState, EnvironmentChange, applyEnvironment } from './enviroment'
 
-interface OpenGuniVault {}
+type AnyChange = any
 
-type OpenGuniVaultChange = any
+type InjectChange = { kind: 'injectStateOverride'; stateToOverride: OpenGuniVaultState }
 
 interface OverrideHelper {
   injectStateOverride: (state: Partial<any>) => void
@@ -32,21 +37,14 @@ interface OverrideHelper {
 
 export type Stage = EditingStage | ProxyStages | AllowanceStages | TxStage
 
+interface StageState {
+  stage: Stage
+}
+
 enum AllowanceOption {
   UNLIMITED,
   DEPOSIT_AMOUNT,
   CUSTOM,
-}
-
-interface FormState {
-  depositAmount?: BigNumber
-}
-
-interface FormFunctions {
-  updateDeposit?: (depositAmount?: BigNumber) => void
-  updateDepositMax?: () => void
-  updateAllowanceAmount?: (amount?: BigNumber) => void
-  clear: () => void
 }
 
 interface VaultTxInfo {
@@ -73,47 +71,25 @@ interface AllowanceFunctions {
 interface StageFunctions {
   progress?: () => void
   regress?: () => void
+  clear: () => void
 }
 
-interface EnvironmentState {
-  ilk: string
-  account: string
-  token: string
-  priceInfo: PriceInfo
-  balanceInfo: BalanceInfo
-  ilkData: IlkData
-  proxyAddress?: string
-  allowance?: BigNumber
-}
-
-export type EnvironmentChange = PriceInfoChange | BalanceInfoChange | IlkDataChange
-export function applyEnvironment<Ch extends EnvironmentChange, S extends EnvironmentState>( //split it into even smaller parts
-  state: S,
-  change: Ch,
-): S {
-  if (change.kind === 'priceInfo') {
-    return {
-      ...state,
-      priceInfo: change.priceInfo,
+export type StageChange =
+  | {
+      kind: 'progressEditing'
     }
-  }
-
-  if (change.kind === 'balanceInfo') {
-    return {
-      ...state,
-      balanceInfo: change.balanceInfo,
+  | {
+      kind: 'progressProxy'
     }
-  }
-
-  if (change.kind === 'ilkData') {
-    return {
-      ...state,
-      ilkData: change.ilkData,
+  | {
+      kind: 'backToEditing'
     }
-  }
-
-  return state
-}
+  | {
+      kind: 'regressAllowance'
+    }
+  | {
+      kind: 'clear'
+    }
 
 interface ExchangeState {
   quote?: Quote
@@ -122,7 +98,18 @@ interface ExchangeState {
   slippage: BigNumber
 }
 
+type OpenGuniChanges = EnvironmentChange | FormChanges | InjectChange
+
+type ErrorState = {
+  errorMessages: string[] // TODO add errors
+}
+
+type WarringState = {
+  warningMessages: string[] // TODO add warring
+}
+
 type OpenGuniVaultState = OverrideHelper &
+  StageState &
   StageFunctions &
   AllowanceSate &
   AllowanceFunctions &
@@ -130,20 +117,12 @@ type OpenGuniVaultState = OverrideHelper &
   FormState &
   EnvironmentState &
   ExchangeState &
-  VaultTxInfo
-
-type FormChanges = { kind: 'depositAmount'; depositAmount: BigNumber }
-type OpenGuniChanges = EnvironmentChange | FormChanges
-
-function applyFormChange<S extends FormState = FormState, Ch extends FormChanges = FormChanges>(
-  state: S,
-  changes: Ch,
-) {
-  return state
-}
+  VaultTxInfo &
+  ErrorState &
+  WarringState
 
 function combineApply<S, Ch>(
-  ...applyFunctions: ((state: S, change: Ch) => S)[]
+  ...applyFunctions: ((state: S, change: AnyChange) => S)[]
 ): (state: S, change: Ch) => S {
   return (state: S, change: Ch) =>
     applyFunctions.reduce((nextState, apply) => apply(nextState, change), state)
@@ -167,7 +146,7 @@ export function createOpenGuniVault$(
   //   ) => Observable<Quote>,
   //   addGasEstimation$: AddGasEstimationFunction,
   ilk: string,
-): Observable<OpenGuniVault> {
+): Observable<OpenGuniVaultState> {
   return ilks$.pipe(
     switchMap((ilks) =>
       iif(
@@ -182,6 +161,8 @@ export function createOpenGuniVault$(
             if (!tokenInfo.token1 || !tokenInfo.token2) {
               throw new Error('Missing tokens in configuration')
             }
+
+            console.log('&*W(&(*#&*(&(*&(*&(*&(*&(')
 
             const account = context.account
             return combineLatest(
@@ -199,23 +180,27 @@ export function createOpenGuniVault$(
                 ).pipe(
                   first(),
                   switchMap((allowance) => {
-                    const change$ = new Subject<OpenGuniVaultChange>()
+                    const change$ = new Subject<OpenGuniChanges>()
 
-                    function change(ch: OpenGuniVaultChange) {
+                    function change(ch: OpenGuniChanges) {
                       change$.next(ch)
                     }
 
                     // NOTE: Not to be used in production/dev, test only
-                    function injectStateOverride(stateToOverride: Partial<OpenGuniVault>) {
+                    function injectStateOverride(stateToOverride: Partial<OpenGuniVaultState>) {
                       return change$.next({ kind: 'injectStateOverride', stateToOverride })
                     }
 
                     // const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
 
-                    const initialState: OpenGuniVaultChange = {
+                    const initialState: OpenGuniVaultState = {
+                      stage: 'editing',
+                      ...defaultFormState,
+
                       //   ...defaultMutableOpenMultiplyVaultState,
                       //   ...defaultOpenMultiplyVaultStateCalculations,
                       //   ...defaultOpenMultiplyVaultConditions,
+
                       priceInfo,
                       balanceInfo,
                       ilkData,
@@ -231,14 +216,14 @@ export function createOpenGuniVault$(
                       //   summary: defaultOpenVaultSummary,
                       // slippage: SLIPPAGE,
                       // totalSteps,
-                      currentStep: 1,
+                      // currentStep: 1,
                       exchangeError: false,
                       clear: () => change({ kind: 'clear' }),
-                      gasEstimationStatus: GasEstimationStatus.unset,
+                      // gasEstimationStatus: GasEstimationStatus.unset,
                       injectStateOverride,
                     }
 
-                    const stateSubject$ = new Subject<OpenGuniVaultChange>()
+                    const stateSubject$ = new Subject<OpenGuniVaultState>()
 
                     const environmentChanges$ = merge(
                       priceInfoChange$(priceInfo$, token),
@@ -258,6 +243,7 @@ export function createOpenGuniVault$(
                       //   map(
                       //     curry(addTransitions)(txHelpers, context, connectedProxyAddress$, change),
                       //   ),
+                      map((state) => addFormTransitions(state, change)),
                       tap((state) => stateSubject$.next(state)),
                     )
                   }),
@@ -269,10 +255,5 @@ export function createOpenGuniVault$(
       ),
     ),
     shareReplay(1),
-    catchError((err) => {
-      console.log(err)
-
-      return of({})
-    }),
   )
 }

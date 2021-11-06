@@ -1,7 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
-import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { open, OpenData } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
@@ -10,8 +9,7 @@ import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
-import { iif, Observable, of } from 'rxjs'
-import { filter, switchMap } from 'rxjs/operators'
+import { Observable, of } from 'rxjs'
 import Web3 from 'web3'
 
 import { OpenVaultChange, OpenVaultState } from './openVault'
@@ -201,46 +199,6 @@ export function setAllowance(
                 : undefined,
           }),
         (txState) => of({ kind: 'allowanceSuccess', allowance: txState.meta.amount }),
-      ),
-    )
-    .subscribe((ch) => change(ch))
-}
-
-export function createProxy(
-  { sendWithGasEstimation }: TxHelpers,
-  proxyAddress$: Observable<string | undefined>,
-  change: (ch: OpenVaultChange) => void,
-  { safeConfirmations }: OpenVaultState,
-) {
-  sendWithGasEstimation(createDsProxy, { kind: TxMetaKind.createDsProxy })
-    .pipe(
-      transactionToX<OpenVaultChange, CreateDsProxyData>(
-        { kind: 'proxyWaitingForApproval' },
-        (txState) =>
-          of({ kind: 'proxyInProgress', proxyTxHash: (txState as any).txHash as string }),
-        (txState) =>
-          of({
-            kind: 'proxyFailure',
-            txError:
-              txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-                ? txState.error
-                : undefined,
-          }),
-        (txState) =>
-          proxyAddress$.pipe(
-            filter((proxyAddress) => !!proxyAddress),
-            switchMap((proxyAddress) =>
-              iif(
-                () => (txState as any).confirmations < safeConfirmations,
-                of({
-                  kind: 'proxyConfirming',
-                  proxyConfirmations: (txState as any).confirmations,
-                }),
-                of({ kind: 'proxySuccess', proxyAddress: proxyAddress! }),
-              ),
-            ),
-          ),
-        safeConfirmations,
       ),
     )
     .subscribe((ch) => change(ch))

@@ -5,6 +5,7 @@ import { ContextConnected } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
+import { createProxy } from 'features/proxy/createProxy'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
@@ -44,7 +45,6 @@ import {
 import {
   applyEstimateGas,
   applyOpenMultiplyVaultTransaction,
-  createProxy,
   multiplyVault,
   OpenVaultTransactionChange,
   setAllowance,
