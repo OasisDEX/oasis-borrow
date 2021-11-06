@@ -34,11 +34,11 @@ import {
 import {
   applyEstimateGas,
   applyOpenVaultTransaction,
-  createProxy,
   openVault,
   OpenVaultTransactionChange,
   setAllowance,
 } from './openVaultTransactions'
+import { createProxy } from '../proxy/createProxy'
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openVaultTransitions'
 import {
   OpenVaultErrorMessage,

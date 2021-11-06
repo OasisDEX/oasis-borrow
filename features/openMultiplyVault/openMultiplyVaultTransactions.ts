@@ -208,46 +208,6 @@ export function setAllowance(
     .subscribe((ch) => change(ch))
 }
 
-export function createProxy(
-  { sendWithGasEstimation }: TxHelpers,
-  proxyAddress$: Observable<string | undefined>,
-  change: (ch: OpenMultiplyVaultChange) => void,
-  { safeConfirmations }: OpenMultiplyVaultState,
-) {
-  sendWithGasEstimation(createDsProxy, { kind: TxMetaKind.createDsProxy })
-    .pipe(
-      transactionToX<OpenMultiplyVaultChange, CreateDsProxyData>(
-        { kind: 'proxyWaitingForApproval' },
-        (txState) =>
-          of({ kind: 'proxyInProgress', proxyTxHash: (txState as any).txHash as string }),
-        (txState) =>
-          of({
-            kind: 'proxyFailure',
-            txError:
-              txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-                ? txState.error
-                : undefined,
-          }),
-        (txState) =>
-          proxyAddress$.pipe(
-            filter((proxyAddress) => !!proxyAddress),
-            switchMap((proxyAddress) =>
-              iif(
-                () => (txState as any).confirmations < safeConfirmations,
-                of({
-                  kind: 'proxyConfirming',
-                  proxyConfirmations: (txState as any).confirmations,
-                }),
-                of({ kind: 'proxySuccess', proxyAddress: proxyAddress! }),
-              ),
-            ),
-          ),
-        safeConfirmations,
-      ),
-    )
-    .subscribe((ch) => change(ch))
-}
-
 interface Receipt {
   logs: { topics: string[] | undefined }[]
 }
