@@ -20,7 +20,6 @@ import { GuniOpenMultiplyVaultEditing } from './GuniOpenMultiplyVaultEditing'
 export function GuniOpenMultiplyVaultForm(props: OpenGuniVaultState) {
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, stage } = props
   const { t } = useTranslation()
-  // console.log(props)
 
   return (
     <VaultFormContainer toggleTitle={t('open.vault.title')}>
@@ -28,9 +27,10 @@ export function GuniOpenMultiplyVaultForm(props: OpenGuniVaultState) {
         {...props}
         title={t('vault-form.header.editWithToken', { token: 'GUNI' })}
         subTitle={t('vault-form.subtext.edit-multiply')}
+        token="DAI"
       />
       {isEditingStage && <GuniOpenMultiplyVaultEditing {...props} />}
-      {isAllowanceStage && <VaultAllowance {...props} />}
+      {isAllowanceStage && <VaultAllowance {...props} token="DAI" />}
       {isOpenStage && (
         <OpenMultiplyVaultConfirmation stage={props.stage}>
           <GuniOpenMultiplyVaultChangesInformation {...props} />
@@ -39,7 +39,7 @@ export function GuniOpenMultiplyVaultForm(props: OpenGuniVaultState) {
       <VaultErrors {...props} />
       <VaultWarnings {...props} />
       {stage === 'txSuccess' && <VaultChangesWithADelayCard />}
-      <OpenMultiplyVaultButton {...props} />
+      <OpenMultiplyVaultButton {...props} token="DAI" />
       {isProxyStage && <VaultProxyStatusCard {...props} />}
       {isAllowanceStage && <VaultAllowanceStatus {...props} />}
       {isOpenStage && <OpenMultiplyVaultStatus {...props} />}

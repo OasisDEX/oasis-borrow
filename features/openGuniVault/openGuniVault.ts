@@ -134,6 +134,7 @@ export type OpenGuniVaultState = OverrideHelper &
     inputAmountsEmpty: boolean
     customAllowanceAmountEmpty: boolean
     updateAllowanceAmount?: (amount?: BigNumber) => void
+    netValueUSD: BigNumber
   }
 
 const apply = combineApplyChanges<OpenGuniVaultState, OpenGuniChanges>(
@@ -254,6 +255,7 @@ export function createOpenGuniVault$(
                       insufficientAllowance: true,
                       customAllowanceAmountEmpty: false,
                       inputAmountsEmpty: false,
+                      netValueUSD: new BigNumber(1000)
                     }
 
                     const stateSubject$ = new Subject<OpenGuniVaultState>()

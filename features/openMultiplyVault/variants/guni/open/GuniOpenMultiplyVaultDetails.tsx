@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import {
   AfterPillProps,
   getAfterPillColors,
@@ -20,7 +19,7 @@ function GuniOpenMultiplyVaultDetailsSummary({
   showAfterPill,
   afterOutstandingDebt,
   multiply,
-  totalCollateral = new BigNumber(12345), // TODO TBD within pipeline
+  totalCollateral,
 }: OpenGuniVaultState & AfterPillProps) {
   const { t } = useTranslation()
 
@@ -76,13 +75,7 @@ function GuniOpenMultiplyVaultDetailsSummary({
 }
 
 export function GuniOpenMultiplyVaultDetails(props: OpenGuniVaultState) {
-  const {
-    afterNetValueUSD,
-    inputAmountsEmpty,
-    stage,
-    // @ts-ignore
-    netValueUSD = zero, // TODO TBD within pipeline
-  } = props
+  const { afterNetValueUSD, inputAmountsEmpty, stage, netValueUSD } = props
 
   const afterCollRatioColor = 'onSuccess'
   const afterPillColors = getAfterPillColors(afterCollRatioColor)

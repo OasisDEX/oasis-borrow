@@ -1,6 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex, Grid, Text } from '@theme-ui/components'
-import BigNumber from 'bignumber.js'
 import {
   getEstimatedGasFeeText,
   VaultChangesInformationArrow,
@@ -29,8 +28,8 @@ export function GuniOpenMultiplyVaultChangesInformation(props: OpenGuniVaultStat
     inputAmountsEmpty,
     isExchangeLoading,
     slippage,
-    gettingCollateral = new BigNumber(54321), // TODO TBD within pipeline
-    gettingCollateralUSD = new BigNumber(54321), // TODO TBD within pipeline, maybe not needed since its stablecoin
+    gettingCollateral,
+    gettingCollateralUSD,
     buyingCollateralUSD,
   } = props
 
