@@ -5,6 +5,8 @@ import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { Box, Container, Grid, Text } from 'theme-ui'
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
+import { AllowanceOption } from 'features/allowance/allowance'
+import { type } from 'os'
 
 function PreviewObject({ object, indent = 0 }) {
   // TODO remove it
@@ -61,6 +63,17 @@ function PreviewObject({ object, indent = 0 }) {
           )
         }
 
+        if (typeof value === 'boolean') {
+          return (
+            <Box>
+              {key}:
+              <Box as={'span'} sx={{ fontWeight: 'bold' }}>
+                {value.toString()}
+              </Box>
+            </Box>
+          )
+        }
+
         return (
           <Box>
             {key}:
@@ -108,6 +121,46 @@ export function OpenGuniVaultView({ ilk }: { ilk: string }) {
             />
             <button onClick={vault.progress}>progress</button>
             <button onClick={vault.regress}>regress</button>
+
+            <label>
+              <input
+                type="radio"
+                name="allowance"
+                value={AllowanceOption.DEPOSIT_AMOUNT}
+                checked={vault.selectedAllowanceRadio === AllowanceOption.DEPOSIT_AMOUNT}
+                onChange={(e) =>
+                  vault.setAllowanceAmountToDepositAmount &&
+                  vault.setAllowanceAmountToDepositAmount()
+                }
+              />
+              deposit
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="allowance"
+                value={AllowanceOption.UNLIMITED}
+                checked={vault.selectedAllowanceRadio === AllowanceOption.UNLIMITED}
+                onChange={(e) =>
+                  vault.setAllowanceAmountUnlimited && vault.setAllowanceAmountUnlimited()
+                }
+              />
+              unlimited
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="allowance"
+                value={AllowanceOption.CUSTOM}
+                checked={vault.selectedAllowanceRadio === AllowanceOption.CUSTOM}
+                onChange={(e) => vault.setAllowanceAmountCustom && vault.setAllowanceAmountCustom()}
+              />
+              custom
+              <input
+                onChange={(e) => vault.updateAllowanceAmount!(new BigNumber(e.target.value))}
+                type="number"
+              ></input>
+            </label>
             <PreviewObject object={vault} />
           </Container>
         )}

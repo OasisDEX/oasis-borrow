@@ -171,39 +171,6 @@ export function applyOpenVaultTransaction(
   return state
 }
 
-export function setAllowance(
-  { sendWithGasEstimation }: TxHelpers,
-  change: (ch: OpenVaultChange) => void,
-  state: OpenVaultState,
-) {
-  sendWithGasEstimation(approve, {
-    kind: TxMetaKind.approve,
-    token: state.token,
-    spender: state.proxyAddress!,
-    amount: state.allowanceAmount!,
-  })
-    .pipe(
-      transactionToX<OpenVaultChange, ApproveData>(
-        { kind: 'allowanceWaitingForApproval' },
-        (txState) =>
-          of({
-            kind: 'allowanceInProgress',
-            allowanceTxHash: (txState as any).txHash as string,
-          }),
-        (txState) =>
-          of({
-            kind: 'allowanceFailure',
-            txError:
-              txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-                ? txState.error
-                : undefined,
-          }),
-        (txState) => of({ kind: 'allowanceSuccess', allowance: txState.meta.amount }),
-      ),
-    )
-    .subscribe((ch) => change(ch))
-}
-
 interface Receipt {
   logs: { topics: string[] | undefined }[]
 }

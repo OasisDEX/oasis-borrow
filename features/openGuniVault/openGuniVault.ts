@@ -4,18 +4,12 @@ import { ContextConnected } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
-import {
-  createExchangeChange$,
-  createInitialQuoteChange,
-} from 'features/openMultiplyVault/openMultiplyQuote'
-import { AllowanceStages, ProxyStages, TxStage } from 'features/openMultiplyVault/openMultiplyVault'
+
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus } from 'helpers/form'
-import { curry } from 'lodash'
-import { pipe } from 'ramda'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
-import { catchError, first, map, scan, shareReplay, switchMap, tap } from 'rxjs/internal/operators'
+import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/internal/operators'
 import {
   FormChanges,
   FormFunctions,
@@ -24,10 +18,33 @@ import {
   addFormTransitions,
   defaultFormState,
   EditingStage,
+  applyIsEditingStage,
 } from './guniForm'
 import { EnvironmentState, EnvironmentChange, applyEnvironment } from './enviroment'
+import {
+  addProxyTransitions,
+  applyIsProxyStage,
+  applyProxyChanges,
+  defaultProxyStage,
+  ProxyChanges,
+  ProxyStages,
+  ProxyState,
+} from 'features/proxy/proxy'
+import {
+  applyAllowanceChanges,
+  AllowanceChanges,
+  AllowanceState,
+  AllowanceFunctions,
+  defaultAllowanceState,
+  allowanceTransitions,
+  applyIsAllowanceStage,
+  AllowanceStages,
+  applyAllowanceConditions,
+} from 'features/allowance/allowance'
+import { combineTransitions } from '../../helpers/pipelines/combineTransitions'
+import { combineApplyChanges } from '../../helpers/pipelines/combineApply'
 
-type AnyChange = any
+import { TxStage } from 'features/openMultiplyVault/openMultiplyVault' // TODO: remove
 
 type InjectChange = { kind: 'injectStateOverride'; stateToOverride: OpenGuniVaultState }
 
@@ -41,31 +58,10 @@ interface StageState {
   stage: Stage
 }
 
-enum AllowanceOption {
-  UNLIMITED,
-  DEPOSIT_AMOUNT,
-  CUSTOM,
-}
-
 interface VaultTxInfo {
-  allowanceTxHash?: string
-  proxyTxHash?: string
-  actionTxHash?: string // different then in rest
   txError?: any
   etherscan?: string
-  proxyConfirmations?: number
   safeConfirmations: number
-}
-
-interface AllowanceSate {
-  selectedAllowanceRadio: AllowanceOption
-  allowanceAmount?: BigNumber
-}
-
-interface AllowanceFunctions {
-  setAllowanceAmountUnlimited?: () => void
-  setAllowanceAmountToDepositAmount?: () => void
-  setAllowanceAmountCustom?: () => void
 }
 
 interface StageFunctions {
@@ -74,23 +70,6 @@ interface StageFunctions {
   clear: () => void
 }
 
-export type StageChange =
-  | {
-      kind: 'progressEditing'
-    }
-  | {
-      kind: 'progressProxy'
-    }
-  | {
-      kind: 'backToEditing'
-    }
-  | {
-      kind: 'regressAllowance'
-    }
-  | {
-      kind: 'clear'
-    }
-
 interface ExchangeState {
   quote?: Quote
   swap?: Quote
@@ -98,7 +77,12 @@ interface ExchangeState {
   slippage: BigNumber
 }
 
-type OpenGuniChanges = EnvironmentChange | FormChanges | InjectChange
+type OpenGuniChanges =
+  | EnvironmentChange
+  | FormChanges
+  | InjectChange
+  | ProxyChanges
+  | AllowanceChanges
 
 type ErrorState = {
   errorMessages: string[] // TODO add errors
@@ -111,24 +95,23 @@ type WarringState = {
 type OpenGuniVaultState = OverrideHelper &
   StageState &
   StageFunctions &
-  AllowanceSate &
+  AllowanceState &
   AllowanceFunctions &
   FormFunctions &
   FormState &
   EnvironmentState &
-  ExchangeState &
+  // ExchangeState &
   VaultTxInfo &
   ErrorState &
-  WarringState
+  WarringState &
+  ProxyState
 
-function combineApply<S, Ch>(
-  ...applyFunctions: ((state: S, change: AnyChange) => S)[]
-): (state: S, change: Ch) => S {
-  return (state: S, change: Ch) =>
-    applyFunctions.reduce((nextState, apply) => apply(nextState, change), state)
-}
-
-const apply = combineApply<OpenGuniVaultState, OpenGuniChanges>(applyEnvironment, applyFormChange)
+const apply = combineApplyChanges<OpenGuniVaultState, OpenGuniChanges>(
+  applyEnvironment,
+  applyFormChange,
+  applyProxyChanges,
+  applyAllowanceChanges,
+)
 export function createOpenGuniVault$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
@@ -162,8 +145,6 @@ export function createOpenGuniVault$(
               throw new Error('Missing tokens in configuration')
             }
 
-            console.log('&*W(&(*#&*(&(*&(*&(*&(*&(')
-
             const account = context.account
             return combineLatest(
               priceInfo$(token),
@@ -194,13 +175,10 @@ export function createOpenGuniVault$(
                     // const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
 
                     const initialState: OpenGuniVaultState = {
-                      stage: 'editing',
                       ...defaultFormState,
-
-                      //   ...defaultMutableOpenMultiplyVaultState,
-                      //   ...defaultOpenMultiplyVaultStateCalculations,
-                      //   ...defaultOpenMultiplyVaultConditions,
-
+                      ...defaultAllowanceState,
+                      ...defaultProxyStage,
+                      stage: 'editing',
                       priceInfo,
                       balanceInfo,
                       ilkData,
@@ -217,7 +195,7 @@ export function createOpenGuniVault$(
                       // slippage: SLIPPAGE,
                       // totalSteps,
                       // currentStep: 1,
-                      exchangeError: false,
+                      // exchangeError: false,
                       clear: () => change({ kind: 'clear' }),
                       // gasEstimationStatus: GasEstimationStatus.unset,
                       injectStateOverride,
@@ -235,15 +213,36 @@ export function createOpenGuniVault$(
 
                     const connectedProxyAddress$ = proxyAddress$(account)
 
+                    const applyTransition = combineTransitions<OpenGuniVaultState>( // TODO: can we do it better?
+                      (state) => addFormTransitions(change, state),
+                      (state) =>
+                        addProxyTransitions(txHelpers, connectedProxyAddress$, change, state),
+                      (state) =>
+                        allowanceTransitions(
+                          txHelpers,
+                          change,
+                          { tokenToAllow: tokenInfo.token1 },
+                          state,
+                        ),
+                    )
+
+                    const applyStages = combineTransitions<OpenGuniVaultState>(
+                      applyIsEditingStage,
+                      applyIsProxyStage,
+                      applyIsAllowanceStage,
+                      applyAllowanceConditions,
+                    )
+
                     return merge(change$, environmentChanges$).pipe(
                       scan(apply, initialState),
+                      map(applyStages),
                       //   map(validateErrors),
                       //   map(validateWarnings),
                       //   switchMap(curry(applyEstimateGas)(addGasEstimation$)),
                       //   map(
                       //     curry(addTransitions)(txHelpers, context, connectedProxyAddress$, change),
                       //   ),
-                      map((state) => addFormTransitions(state, change)),
+                      map(applyTransition),
                       tap((state) => stateSubject$.next(state)),
                     )
                   }),

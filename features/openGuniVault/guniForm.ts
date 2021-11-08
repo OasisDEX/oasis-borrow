@@ -16,8 +16,28 @@ export type FormChanges =
   | DepositMaxChange
   | StageProgressChange
   | BackToEditingChange
+
 export interface FormState {
   depositAmount?: BigNumber
+  isEditingStage: boolean
+}
+
+export const defaultFormState: FormState = {
+  depositAmount: undefined,
+  isEditingStage: false,
+}
+
+export const EDITING_STAGES = ['editing'] as const
+
+export function isEditingStage(stage: string): stage is EditingStage {
+  return EDITING_STAGES.includes(stage as any)
+}
+
+export function applyIsEditingStage<S extends { stage: string }>(state: S): S {
+  return {
+    ...state,
+    isEditingStage: isEditingStage(state.stage),
+  }
 }
 
 export interface FormFunctions {
@@ -32,7 +52,6 @@ type StateDependencies = {
   allowance?: BigNumber
   errorMessages: string[]
 }
-
 export function applyFormChange<S extends FormState & StateDependencies, Ch extends FormChanges>(
   state: S,
   change: Ch,
@@ -66,10 +85,9 @@ export function applyFormChange<S extends FormState & StateDependencies, Ch exte
         }
       }
 
-      const depositAmountLessThenAllowance =
-        !!allowance && !!depositAmount && allowance.gte(depositAmount)
+      const allowanceToSmall = !!allowance && !!depositAmount && depositAmount.gte(allowance)
 
-      if (depositAmountLessThenAllowance) {
+      if (allowanceToSmall) {
         return {
           ...state,
           stage: 'allowanceWaitingForConfirmation',
@@ -91,7 +109,7 @@ export function applyFormChange<S extends FormState & StateDependencies, Ch exte
 }
 export function addFormTransitions<
   S extends FormFunctions & EnvironmentState & { stage: string /* TODO make it precise */ }
->(state: S, change: (ch: any /* TODO make it precise */) => void): S {
+>(change: (ch: any /* TODO make it precise */) => void, state: S): S {
   if (state.stage === 'editing') {
     return {
       ...state,
@@ -105,6 +123,11 @@ export function addFormTransitions<
   return state
 }
 
-export const defaultFormState: FormState = {
-  depositAmount: undefined,
+interface FormValidationState {
+  inputAmountsEmpty: boolean
+  depositingAllDaiBalance: boolean
+  depositAmountExceedsDaiBalance: boolean
+  generateAmountExceedsDebtCeiling: boolean // TODO: maybe in different place
+  generateAmountLessThanDebtFloor: boolean // TODO: maybe in different place
 }
+export function applyFormValidation() {}
