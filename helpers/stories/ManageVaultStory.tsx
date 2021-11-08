@@ -11,8 +11,8 @@ import {
   MutableManageVaultState,
 } from 'features/manageVault/manageVault'
 import {
-  MOCK_VAULT_ID,
   MOCK_CHAIN_ID,
+  MOCK_VAULT_ID,
   mockManageVault$,
   MockManageVaultProps,
 } from 'helpers/mocks/manageVault.mock'

@@ -11,10 +11,10 @@ import {
   MutableManageMultiplyVaultState,
 } from 'features/manageMultiplyVault/manageMultiplyVault'
 import {
+  MOCK_CHAIN_ID,
   MOCK_VAULT_ID,
   mockManageMultiplyVault$,
   MockManageMultiplyVaultProps,
-  MOCK_CHAIN_ID,
 } from 'helpers/mocks/manageMultiplyVault.mock'
 import { memoize } from 'lodash'
 import React from 'react'

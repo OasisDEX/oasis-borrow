@@ -9,8 +9,8 @@ import { catchError, map } from 'rxjs/operators'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 
-export function checkVaultTypeUsingApi$(id: BigNumber, chainId: BigNumber): Observable<VaultType> {
-  const vaultType = getVaultFromApi$(id, chainId).pipe(
+export function checkVaultTypeUsingApi$(id: BigNumber): Observable<VaultType> {
+  const vaultType = getVaultFromApi$(id).pipe(
     map((resp) => {
       if (Object.keys(resp).length === 0) {
         return VaultType.Borrow
@@ -61,9 +61,7 @@ export function checkMultipleVaultsFromApi$(
 }
 
 export function getVaultFromApi$(
-  vaultId: BigNumber,
-  chainId: BigNumber
-): Observable<
+  vaultId: BigNumber): Observable<
   | {
       vaultId: BigNumber
       type: VaultType
@@ -71,7 +69,7 @@ export function getVaultFromApi$(
   | {}
 > {
   return ajax({
-    url: `${basePath}/api/vault/${vaultId}/${chainId}`,
+    url: `${basePath}/api/vault/${vaultId}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
