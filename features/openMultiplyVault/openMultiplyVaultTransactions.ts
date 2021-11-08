@@ -11,7 +11,8 @@ import { VaultType } from 'features/generalManageVault/generalManageVault'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { transactionToX } from 'helpers/form'
-import { zero } from 'helpers/zero'
+import { OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
+import { one, zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
 import Web3 from 'web3'
@@ -356,18 +357,11 @@ export function applyEstimateGas(
   state: OpenMultiplyVaultState,
 ): Observable<OpenMultiplyVaultState> {
   return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
-    const {
-      proxyAddress,
-      depositAmount,
-      ilk,
-      token,
-      account,
-      swap,
-      buyingCollateral,
-      borrowedDaiAmount,
-      toTokenAmount,
-      fromTokenAmount,
-    } = state
+    const { proxyAddress, depositAmount, ilk, token, account, swap } = state
+
+    const daiAmount = swap?.status === 'SUCCESS' ? swap.daiAmount.div(one.minus(OAZO_FEE)) : zero
+    const collateralAmount =
+      swap?.status === 'SUCCESS' ? swap.collateralAmount.times(one.minus(SLIPPAGE)) : zero
 
     if (proxyAddress && depositAmount) {
       return estimateGas(openMultiplyVault, {
@@ -379,10 +373,10 @@ export function applyEstimateGas(
         token,
         exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '0x',
         exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '0x',
-        borrowedCollateral: buyingCollateral,
-        requiredDebt: borrowedDaiAmount,
-        toTokenAmount: toTokenAmount,
-        fromTokenAmount,
+        borrowedCollateral: collateralAmount,
+        requiredDebt: daiAmount,
+        toTokenAmount: collateralAmount,
+        fromTokenAmount: daiAmount,
       })
     }
 
