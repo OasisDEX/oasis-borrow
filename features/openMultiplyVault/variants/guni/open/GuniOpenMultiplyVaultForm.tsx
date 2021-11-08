@@ -32,7 +32,7 @@ export function GuniOpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
       {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
       <VaultErrors {...props} />
       <VaultWarnings {...props} />
-      {stage === 'openSuccess' && <VaultChangesWithADelayCard />}
+      {stage === 'txSuccess' && <VaultChangesWithADelayCard />}
       <OpenMultiplyVaultButton {...props} />
       {isProxyStage && <VaultProxyStatusCard {...props} />}
       {isAllowanceStage && <VaultAllowanceStatus {...props} />}

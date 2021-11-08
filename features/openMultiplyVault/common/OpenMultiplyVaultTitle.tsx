@@ -27,7 +27,7 @@ export function OpenMultiplyVaultTitle({
             ? t('vault-form.header.proxy')
             : isAllowanceStage
             ? t('vault-form.header.allowance', { token: token.toUpperCase() })
-            : stage === 'openInProgress'
+            : stage === 'txInProgress'
             ? t('vault-form.header.confirm-in-progress')
             : t('vault-form.header.confirm')}
         </Text>
@@ -39,7 +39,7 @@ export function OpenMultiplyVaultTitle({
           ? t('vault-form.subtext.proxy')
           : isAllowanceStage
           ? t('vault-form.subtext.allowance')
-          : stage === 'openInProgress'
+          : stage === 'txInProgress'
           ? t('vault-form.subtext.confirm-in-progress')
           : t('vault-form.subtext.review-manage')}
       </Text>
