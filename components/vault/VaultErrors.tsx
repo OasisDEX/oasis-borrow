@@ -10,11 +10,11 @@ import { Dictionary } from 'ts-essentials'
 
 import { IlkData } from '../../blockchain/ilks'
 import { Vault } from '../../blockchain/vaults'
-import { OpenMultiplyVaultErrorMessage } from '../../features/openMultiplyVault/openMultiplyVaultValidations'
+import { VaultErrorMessage } from '../../features/openMultiplyVault/openMultiplyVaultValidations'
 import { zero } from '../../helpers/zero'
 
 interface VaultErrorsProps {
-  errorMessages: OpenMultiplyVaultErrorMessage[]
+  errorMessages: VaultErrorMessage[]
   maxGenerateAmount: BigNumber
   ilkData: IlkData
   vault?: Vault
@@ -31,7 +31,7 @@ export function VaultErrors({
   const { t } = useTranslation()
   if (!errorMessages.length) return null
 
-  function applyErrorMessageTranslation(message: OpenMultiplyVaultErrorMessage) {
+  function applyErrorMessageTranslation(message: VaultErrorMessage) {
     const translate = (key: string, args?: Dictionary<any>) => t(`open-vault.errors.${key}`, args)
     switch (message) {
       case 'depositAmountExceedsCollateralBalance':

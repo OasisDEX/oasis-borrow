@@ -6,10 +6,10 @@ import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
 import { IlkData } from '../../blockchain/ilks'
-import { OpenMultiplyVaultWarningMessage } from '../../features/openMultiplyVault/openMultiplyVaultValidations'
+import { VaultWarningMessage } from '../../features/openMultiplyVault/openMultiplyVaultValidations'
 
 interface VaultWarningsProps {
-  warningMessages: OpenMultiplyVaultWarningMessage[]
+  warningMessages: VaultWarningMessage[]
   ilkData: IlkData
 }
 
@@ -17,7 +17,7 @@ export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: Vault
   const { t } = useTranslation()
   if (!warningMessages.length) return null
 
-  function applyWarningMessageTranslation(message: OpenMultiplyVaultWarningMessage) {
+  function applyWarningMessageTranslation(message: VaultWarningMessage) {
     const translate = (key: string, args?: Dictionary<any>) => t(`open-vault.warnings.${key}`, args)
     switch (message) {
       case 'potentialGenerateAmountLessThanDebtFloor':

@@ -1,20 +1,15 @@
-import BigNumber from 'bignumber.js'
-import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
+import React, { ReactElement, useEffect } from 'react'
 import { Box, Grid } from 'theme-ui'
 
-import { CommonVaultState } from '../../../helpers/types'
-import { OpenMultiplyVaultState } from '../openMultiplyVault'
+interface OpenMultiplyVaultContainerProps {
+  clear: () => void
+  details: ReactElement
+  form: ReactElement
+  header: ReactElement
+}
 
-export function OpenMultiplyVaultContainer(
-  props: OpenMultiplyVaultState & {
-    details: (props: OpenMultiplyVaultState) => JSX.Element
-    form: (props: OpenMultiplyVaultState) => JSX.Element
-    header: (props: CommonVaultState & { header: string; id?: BigNumber }) => JSX.Element
-  },
-) {
-  const { ilk, clear, details: Details, form: Form, header: Header } = props
-  const { t } = useTranslation()
+export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultContainerProps) {
+  const { clear, details, form, header } = props
 
   useEffect(() => {
     return () => {
@@ -24,14 +19,10 @@ export function OpenMultiplyVaultContainer(
 
   return (
     <>
-      <Header {...props} header={t('vault.open-vault', { ilk })} />
+      {header}
       <Grid variant="vaultContainer">
-        <Box>
-          <Details {...props} />
-        </Box>
-        <Box>
-          <Form {...props} />
-        </Box>
+        <Box>{details}</Box>
+        <Box>{form}</Box>
       </Grid>
     </>
   )

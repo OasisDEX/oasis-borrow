@@ -1,7 +1,4 @@
-import {
-  VaultAllowance,
-  VaultAllowanceStatus,
-} from 'components/vault/VaultAllowance'
+import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultFormVaultTypeSwitch } from 'components/vault/VaultForm'
@@ -18,6 +15,7 @@ import {
 } from '../../../common/OpenMultiplyVaultConfirmation'
 import { OpenMultiplyVaultTitle } from '../../../common/OpenMultiplyVaultTitle'
 import { OpenMultiplyVaultState } from '../../../openMultiplyVault'
+import { DefaultOpenMultiplyVaultChangesInformation } from './DefaultOpenMultiplyVaultChangesInformation'
 import { DefaultOpenMultiplyVaultEditing } from './DefaultOpenMultiplyVaultEditing'
 
 export function DefaultOpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
@@ -33,7 +31,11 @@ export function DefaultOpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
       />
       {isEditingStage && <DefaultOpenMultiplyVaultEditing {...props} />}
       {isAllowanceStage && <VaultAllowance {...props} />}
-      {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
+      {isOpenStage && (
+        <OpenMultiplyVaultConfirmation stage={props.stage}>
+          <DefaultOpenMultiplyVaultChangesInformation {...props} />
+        </OpenMultiplyVaultConfirmation>
+      )}
       <VaultErrors {...props} />
       <VaultWarnings {...props} />
       {stage === 'txSuccess' && <VaultChangesWithADelayCard />}

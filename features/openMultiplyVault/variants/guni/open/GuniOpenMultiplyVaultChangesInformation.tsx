@@ -14,9 +14,9 @@ import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
-import { OpenMultiplyVaultState } from '../../../openMultiplyVault'
+import { OpenGuniVaultState } from '../../../../openGuniVault/openGuniVault'
 
-export function GuniOpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultState) {
+export function GuniOpenMultiplyVaultChangesInformation(props: OpenGuniVaultState) {
   const [showFees, setShowFees] = useState(false)
   const {
     multiply,
@@ -29,9 +29,7 @@ export function GuniOpenMultiplyVaultChangesInformation(props: OpenMultiplyVault
     inputAmountsEmpty,
     isExchangeLoading,
     slippage,
-    // @ts-ignore
     gettingCollateral = new BigNumber(54321), // TODO TBD within pipeline
-    // @ts-ignore
     gettingCollateralUSD = new BigNumber(54321), // TODO TBD within pipeline, maybe not needed since its stablecoin
     buyingCollateralUSD,
   } = props

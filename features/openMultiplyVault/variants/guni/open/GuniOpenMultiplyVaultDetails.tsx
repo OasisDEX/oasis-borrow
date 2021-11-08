@@ -12,7 +12,7 @@ import { Grid } from 'theme-ui'
 
 import { formatAmount, formatCryptoBalance } from '../../../../../helpers/formatters/format'
 import { zero } from '../../../../../helpers/zero'
-import { OpenMultiplyVaultState } from '../../../openMultiplyVault'
+import { OpenGuniVaultState } from '../../../../openGuniVault/openGuniVault'
 
 function GuniOpenMultiplyVaultDetailsSummary({
   token,
@@ -20,9 +20,8 @@ function GuniOpenMultiplyVaultDetailsSummary({
   showAfterPill,
   afterOutstandingDebt,
   multiply,
-  // @ts-ignore
   totalCollateral = new BigNumber(12345), // TODO TBD within pipeline
-}: OpenMultiplyVaultState & AfterPillProps) {
+}: OpenGuniVaultState & AfterPillProps) {
   const { t } = useTranslation()
 
   return (
@@ -76,7 +75,7 @@ function GuniOpenMultiplyVaultDetailsSummary({
   )
 }
 
-export function GuniOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
+export function GuniOpenMultiplyVaultDetails(props: OpenGuniVaultState) {
   const {
     afterNetValueUSD,
     inputAmountsEmpty,
@@ -87,7 +86,7 @@ export function GuniOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
 
   const afterCollRatioColor = 'onSuccess'
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
-  const showAfterPill = !inputAmountsEmpty && stage !== 'openSuccess'
+  const showAfterPill = !inputAmountsEmpty && stage !== 'txSuccess'
   return (
     <>
       <Grid variant="vaultDetailsCardsContainer">

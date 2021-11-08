@@ -1,4 +1,5 @@
 import { trackingEvents } from 'analytics/analytics'
+import { BigNumber } from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { useObservable } from 'helpers/observableHook'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
@@ -7,7 +8,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Divider, Flex, Spinner, Text } from 'theme-ui'
 
-import { OpenMultiplyVaultState } from '../openMultiplyVault'
+import { Stage } from '../../openGuniVault/openGuniVault'
 
 function multiplyVaultPrimaryButtonText({
   stage,
@@ -17,7 +18,7 @@ function multiplyVaultPrimaryButtonText({
   insufficientAllowance,
   inputAmountsEmpty,
   customAllowanceAmountEmpty,
-}: OpenMultiplyVaultState) {
+}: OpenMultiplyVaultButtonProps) {
   const { t } = useTranslation()
 
   switch (stage) {
@@ -67,7 +68,23 @@ function multiplyVaultPrimaryButtonText({
   }
 }
 
-export function OpenMultiplyVaultButton(props: OpenMultiplyVaultState) {
+export interface OpenMultiplyVaultButtonProps {
+  stage: Stage
+  progress?: () => void
+  regress?: () => void
+  canRegress: boolean
+  id?: BigNumber
+  canProgress: boolean
+  isLoadingStage: boolean
+  token: string
+  depositAmount?: BigNumber
+  proxyAddress?: string
+  insufficientAllowance: boolean
+  inputAmountsEmpty: boolean
+  customAllowanceAmountEmpty: boolean
+}
+
+export function OpenMultiplyVaultButton(props: OpenMultiplyVaultButtonProps) {
   const { accountData$ } = useAppContext()
   const accountData = useObservable(accountData$)
   const { t } = useTranslation()

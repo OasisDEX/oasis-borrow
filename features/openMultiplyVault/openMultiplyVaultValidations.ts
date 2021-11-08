@@ -2,7 +2,7 @@ import { isNullish } from 'helpers/functions'
 
 import { OpenMultiplyVaultState } from './openMultiplyVault'
 
-export type OpenMultiplyVaultErrorMessage =
+export type VaultErrorMessage =
   | 'depositAmountExceedsCollateralBalance'
   | 'depositingAllEthBalance'
   | 'generateAmountExceedsDaiYieldFromDepositingCollateral'
@@ -45,7 +45,7 @@ export function validateErrors(state: OpenMultiplyVaultState): OpenMultiplyVault
     customAllowanceAmountLessThanDepositAmount,
     exchangeError,
   } = state
-  const errorMessages: OpenMultiplyVaultErrorMessage[] = []
+  const errorMessages: VaultErrorMessage[] = []
 
   if (isEditingStage) {
     if (depositAmount?.gt(balanceInfo.collateralBalance)) {
@@ -99,7 +99,7 @@ export function validateErrors(state: OpenMultiplyVaultState): OpenMultiplyVault
   return { ...state, errorMessages }
 }
 
-export type OpenMultiplyVaultWarningMessage =
+export type VaultWarningMessage =
   | 'potentialGenerateAmountLessThanDebtFloor'
   | 'vaultWillBeAtRiskLevelDanger'
   | 'vaultWillBeAtRiskLevelWarning'
@@ -120,7 +120,7 @@ export function validateWarnings(state: OpenMultiplyVaultState): OpenMultiplyVau
     afterOutstandingDebt,
   } = state
 
-  const warningMessages: OpenMultiplyVaultWarningMessage[] = []
+  const warningMessages: VaultWarningMessage[] = []
 
   if (errorMessages.length) return { ...state, warningMessages }
 

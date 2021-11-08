@@ -5,10 +5,10 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Divider, Flex, Grid, Text } from 'theme-ui'
 
-import { OpenMultiplyVaultState } from '../../../openMultiplyVault'
+import { OpenGuniVaultState } from '../../../../openGuniVault/openGuniVault'
 import { GuniOpenMultiplyVaultChangesInformation } from './GuniOpenMultiplyVaultChangesInformation'
 
-export function GuniOpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
+export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
   const { t } = useTranslation()
 
   const {

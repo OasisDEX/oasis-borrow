@@ -14,23 +14,23 @@ export function GuniOpenVaultView({
 }: {
   ilk: string
 }) {
-  const { openMultiplyVault$, accountData$, context$ } = useAppContext()
-  const multiplyVaultWithIlk$ = openMultiplyVault$(ilk)
+  const { openGuniVault$, accountData$, context$ } = useAppContext()
+  // const multiplyVaultWithIlk$ = openGuniVault$(ilk)
 
-  const openVaultWithError = useObservableWithError(openMultiplyVault$(ilk))
+  const openVaultWithError = useObservableWithError(openGuniVault$(ilk))
 
-  useEffect(() => {
-    const subscription = createOpenMultiplyVaultAnalytics$(
-      accountData$,
-      multiplyVaultWithIlk$,
-      context$,
-      trackingEvents,
-    ).subscribe()
-
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
+  // useEffect(() => {
+  //   const subscription = createOpenMultiplyVaultAnalytics$(
+  //     accountData$,
+  //     multiplyVaultWithIlk$,
+  //     context$,
+  //     trackingEvents,
+  //   ).subscribe()
+  //
+  //   return () => {
+  //     subscription.unsubscribe()
+  //   }
+  // }, [])
 
   return (
     <WithErrorHandler error={openVaultWithError.error}>

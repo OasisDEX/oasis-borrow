@@ -3,7 +3,19 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Text } from 'theme-ui'
 
-import { OpenMultiplyVaultState } from '../openMultiplyVault'
+import { OpenMultiplyVaultStage } from '../openMultiplyVault'
+
+export interface OpenMultiplyVaultTitleProps {
+  isEditingStage: boolean
+  isProxyStage: boolean
+  isAllowanceStage: boolean
+  token: string
+  totalSteps: number
+  currentStep: number
+  stage: OpenMultiplyVaultStage
+  title: string
+  subTitle: string
+}
 
 export function OpenMultiplyVaultTitle({
   isEditingStage,
@@ -15,7 +27,7 @@ export function OpenMultiplyVaultTitle({
   stage,
   title,
   subTitle,
-}: OpenMultiplyVaultState & { title: string; subTitle: string }) {
+}: OpenMultiplyVaultTitleProps) {
   const { t } = useTranslation()
   return (
     <Box>

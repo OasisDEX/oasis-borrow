@@ -51,10 +51,10 @@ import {
 } from './openMultiplyVaultTransactions'
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openMultiplyVaultTransitions'
 import {
-  OpenMultiplyVaultErrorMessage,
-  OpenMultiplyVaultWarningMessage,
   validateErrors,
   validateWarnings,
+  VaultErrorMessage,
+  VaultWarningMessage,
 } from './openMultiplyVaultValidations'
 
 interface OpenVaultInjectedOverrideChange {
@@ -177,8 +177,8 @@ export type OpenMultiplyVaultState = MutableOpenMultiplyVaultState &
   OpenMultiplyVaultEnvironment &
   OpenMultiplyVaultConditions &
   OpenMultiplyVaultTxInfo & {
-    errorMessages: OpenMultiplyVaultErrorMessage[]
-    warningMessages: OpenMultiplyVaultWarningMessage[]
+    errorMessages: VaultErrorMessage[]
+    warningMessages: VaultWarningMessage[]
     summary: OpenVaultSummary
     totalSteps: number
     currentStep: number

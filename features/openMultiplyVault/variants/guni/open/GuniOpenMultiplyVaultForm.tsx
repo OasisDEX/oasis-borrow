@@ -7,18 +7,20 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { OpenGuniVaultState } from '../../../../openGuniVault/openGuniVault'
 import { OpenMultiplyVaultButton } from '../../../common/OpenMultiplyVaultButton'
 import {
   OpenMultiplyVaultConfirmation,
   OpenMultiplyVaultStatus,
 } from '../../../common/OpenMultiplyVaultConfirmation'
 import { OpenMultiplyVaultTitle } from '../../../common/OpenMultiplyVaultTitle'
-import { OpenMultiplyVaultState } from '../../../openMultiplyVault'
+import { GuniOpenMultiplyVaultChangesInformation } from './GuniOpenMultiplyVaultChangesInformation'
 import { GuniOpenMultiplyVaultEditing } from './GuniOpenMultiplyVaultEditing'
 
-export function GuniOpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
+export function GuniOpenMultiplyVaultForm(props: OpenGuniVaultState) {
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, stage } = props
   const { t } = useTranslation()
+  // console.log(props)
 
   return (
     <VaultFormContainer toggleTitle={t('open.vault.title')}>
@@ -29,7 +31,11 @@ export function GuniOpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
       />
       {isEditingStage && <GuniOpenMultiplyVaultEditing {...props} />}
       {isAllowanceStage && <VaultAllowance {...props} />}
-      {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
+      {isOpenStage && (
+        <OpenMultiplyVaultConfirmation stage={props.stage}>
+          <GuniOpenMultiplyVaultChangesInformation {...props} />
+        </OpenMultiplyVaultConfirmation>
+      )}
       <VaultErrors {...props} />
       <VaultWarnings {...props} />
       {stage === 'txSuccess' && <VaultChangesWithADelayCard />}
