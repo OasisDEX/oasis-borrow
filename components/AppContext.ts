@@ -352,7 +352,7 @@ export function setupAppContext() {
       balanceInfo$,
       ilks$,
       ilkData$,
-      // exchangeQuote$,
+      exchangeQuote$,
       // addGasEstimation$,
       ilk,
     ),
