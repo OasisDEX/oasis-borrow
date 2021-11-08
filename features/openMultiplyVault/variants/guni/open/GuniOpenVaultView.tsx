@@ -2,19 +2,17 @@ import { useAppContext } from 'components/AppContextProvider'
 import React, { useEffect } from 'react'
 import { Container } from 'theme-ui'
 
-import { trackingEvents } from '../../../analytics/analytics'
-import { VaultContainerSpinner, WithLoadingIndicator } from '../../../helpers/AppSpinner'
-import { WithErrorHandler } from '../../../helpers/errorHandlers/WithErrorHandler'
-import { useObservableWithError } from '../../../helpers/observableHook'
-import { OpenMultiplyVaultState } from '../openMultiplyVault'
-import { createOpenMultiplyVaultAnalytics$ } from '../openMultiplyVaultAnalytics'
+import { trackingEvents } from '../../../../../analytics/analytics'
+import { VaultContainerSpinner, WithLoadingIndicator } from '../../../../../helpers/AppSpinner'
+import { WithErrorHandler } from '../../../../../helpers/errorHandlers/WithErrorHandler'
+import { useObservableWithError } from '../../../../../helpers/observableHook'
+import { createOpenMultiplyVaultAnalytics$ } from '../../../openMultiplyVaultAnalytics'
+import { GuniOpenMultiplyVaultContainer } from './GuniOpenMultiplyVaultContainer'
 
-export function OpenMultiplyVaultView({
+export function GuniOpenVaultView({
   ilk,
-  render,
 }: {
   ilk: string
-  render: (props: OpenMultiplyVaultState) => JSX.Element
 }) {
   const { openMultiplyVault$, accountData$, context$ } = useAppContext()
   const multiplyVaultWithIlk$ = openMultiplyVault$(ilk)
@@ -39,7 +37,7 @@ export function OpenMultiplyVaultView({
       <WithLoadingIndicator {...openVaultWithError} customLoader={<VaultContainerSpinner />}>
         {(openVault) => (
           <Container variant="vaultPageContainer">
-            {render(openVault)}
+            <GuniOpenMultiplyVaultContainer {...openVault} />
           </Container>
         )}
       </WithLoadingIndicator>
