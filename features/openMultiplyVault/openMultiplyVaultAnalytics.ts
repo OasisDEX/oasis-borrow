@@ -93,7 +93,7 @@ export function createOpenMultiplyVaultAnalytics$(
   )
 
   const openMultiplyVaultConfirm: Observable<OpenMultiplyVaultConfirm> = openVaultState$.pipe(
-    filter((state) => state.stage === 'openWaitingForApproval'),
+    filter((state) => state.stage === 'txWaitingForApproval'),
     map(({ ilk, depositAmount, multiply }) => ({
       kind: 'openMultiplyVaultConfirm',
       value: {
@@ -108,7 +108,7 @@ export function createOpenMultiplyVaultAnalytics$(
   )
 
   const openMultiplyVaultConfirmTransaction: Observable<OpenMultiplyVaultConfirmTransaction> = openVaultState$.pipe(
-    filter((state) => state.stage === 'openInProgress'),
+    filter((state) => state.stage === 'txInProgress'),
     map(({ ilk, depositAmount, openTxHash, multiply }) => ({
       kind: 'openMultiplyVaultConfirmTransaction',
       value: {

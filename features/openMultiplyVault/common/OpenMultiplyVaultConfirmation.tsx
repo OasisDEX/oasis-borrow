@@ -8,7 +8,7 @@ import { OpenMultiplyVaultState } from '../openMultiplyVault'
 import { DefaultOpenMultiplyVaultChangesInformation } from '../variants/default/open/DefaultOpenMultiplyVaultChangesInformation'
 
 export function OpenMultiplyVaultConfirmation(props: OpenMultiplyVaultState) {
-  return props.stage === 'openInProgress' ? (
+  return props.stage === 'txInProgress' ? (
     <OpenVaultAnimation />
   ) : (
     <>
@@ -26,7 +26,7 @@ export function OpenMultiplyVaultStatus({
 }: OpenMultiplyVaultState) {
   const { t } = useTranslation()
 
-  if (stage === 'openInProgress') {
+  if (stage === 'txInProgress') {
     return (
       <TxStatusCardProgress
         text={t('creating-your-vault-multiply')}
@@ -36,7 +36,7 @@ export function OpenMultiplyVaultStatus({
     )
   }
 
-  if (stage === 'openSuccess') {
+  if (stage === 'txSuccess') {
     return (
       <TxStatusCardSuccess
         text={t('vault-created', { id: id?.toString() })}

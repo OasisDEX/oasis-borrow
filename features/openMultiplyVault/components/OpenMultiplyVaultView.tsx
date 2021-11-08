@@ -1,37 +1,39 @@
 import { trackingEvents } from 'analytics/analytics'
-import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormVaultTypeSwitch, WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
+import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
-import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Container, Grid, Text } from 'theme-ui'
 
-import { OpenVaultState } from '../openVault'
-import { createOpenVaultAnalytics$ } from '../openVaultAnalytics'
-import { OpenVaultButton } from './OpenVaultButton'
-import { OpenVaultConfirmation, OpenVaultStatus } from './OpenVaultConfirmation'
-import { OpenVaultDetails } from './OpenVaultDetails'
-import { OpenVaultEditing } from './OpenVaultEditing'
-import { OpenVaultErrors } from './OpenVaultErrors'
-import { OpenVaultWarnings } from './OpenVaultWarnings'
+import { OpenMultiplyVaultState } from '../openMultiplyVault'
+import { createOpenMultiplyVaultAnalytics$ } from '../openMultiplyVaultAnalytics'
+import { OpenMultiplyVaultButton } from './OpenMultiplyVaultButton'
+import {
+  OpenMultiplyVaultConfirmation,
+  OpenMultiplyVaultStatus,
+} from './OpenMultiplyVaultConfirmation'
+import { OpenMultiplyVaultDetails } from './OpenMultiplyVaultDetails'
+import { OpenMultiplyVaultEditing } from './OpenMultiplyVaultEditing'
+import { OpenMultiplyVaultErrors } from './OpenMultiplyVaultErrors'
+import { OpenMultiplyVaultWarnings } from './OpenMultiplyVaultWarnings'
 
-function OpenVaultTitle({
+function OpenMultiplyVaultTitle({
   isEditingStage,
   isProxyStage,
   isAllowanceStage,
   token,
-  stage,
   totalSteps,
   currentStep,
-}: OpenVaultState) {
+  stage,
+}: OpenMultiplyVaultState) {
   const { t } = useTranslation()
   return (
     <Box>
@@ -50,7 +52,7 @@ function OpenVaultTitle({
       </WithVaultFormStepIndicator>
       <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
         {isEditingStage
-          ? t('vault-form.subtext.edit')
+          ? t('vault-form.subtext.edit-multiply')
           : isProxyStage
           ? t('vault-form.subtext.proxy')
           : isAllowanceStage
@@ -63,34 +65,34 @@ function OpenVaultTitle({
   )
 }
 
-function OpenVaultForm(props: OpenVaultState) {
+function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, ilk, stage } = props
 
   return (
     <VaultFormContainer toggleTitle="Open Vault">
-      <OpenVaultTitle {...props} />
-      {isEditingStage && <OpenVaultEditing {...props} />}
+      <OpenMultiplyVaultTitle {...props} />
+      {isEditingStage && <OpenMultiplyVaultEditing {...props} />}
       {isAllowanceStage && <VaultAllowance {...props} />}
-      {isOpenStage && <OpenVaultConfirmation {...props} />}
-      <OpenVaultErrors {...props} />
-      <OpenVaultWarnings {...props} />
+      {isOpenStage && <OpenMultiplyVaultConfirmation {...props} />}
+      <OpenMultiplyVaultErrors {...props} />
+      <OpenMultiplyVaultWarnings {...props} />
       {stage === 'txSuccess' && <VaultChangesWithADelayCard />}
-      <OpenVaultButton {...props} />
+      <OpenMultiplyVaultButton {...props} />
       {isProxyStage && <VaultProxyStatusCard {...props} />}
       {isAllowanceStage && <VaultAllowanceStatus {...props} />}
-      {isOpenStage && <OpenVaultStatus {...props} />}
+      {isOpenStage && <OpenMultiplyVaultStatus {...props} />}
       {isEditingStage ? (
         <VaultFormVaultTypeSwitch
-          href={`/vaults/open-multiply/${ilk}`}
-          title="Switch to Multiply"
-          visible={ALLOWED_MULTIPLY_TOKENS.includes(props.token)}
+          href={`/vaults/open/${ilk}`}
+          title="Switch to Borrow"
+          visible={true}
         />
       ) : null}
     </VaultFormContainer>
   )
 }
 
-export function OpenVaultContainer(props: OpenVaultState) {
+export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultState) {
   const { ilk, clear } = props
   const { t } = useTranslation()
 
@@ -102,28 +104,29 @@ export function OpenVaultContainer(props: OpenVaultState) {
 
   return (
     <>
-      <DefaultVaultHeader {...props} header={t('vault.open-vault', { ilk })} />
+      <VaultHeader {...props} header={t('vault.open-vault', { ilk })} />
       <Grid variant="vaultContainer">
         <Box>
-          <OpenVaultDetails {...props} />
+          <OpenMultiplyVaultDetails {...props} />
         </Box>
         <Box>
-          <OpenVaultForm {...props} />
+          <OpenMultiplyVaultForm {...props} />
         </Box>
       </Grid>
     </>
   )
 }
 
-export function OpenVaultView({ ilk }: { ilk: string }) {
-  const { openVault$, accountData$, context$ } = useAppContext()
-  const openVaultWithIlk$ = openVault$(ilk)
-  const openVaultWithError = useObservableWithError(openVaultWithIlk$)
+export function OpenMultiplyVaultView({ ilk }: { ilk: string }) {
+  const { openMultiplyVault$, accountData$, context$ } = useAppContext()
+  const multiplyVaultWithIlk$ = openMultiplyVault$(ilk)
+
+  const openVaultWithError = useObservableWithError(openMultiplyVault$(ilk))
 
   useEffect(() => {
-    const subscription = createOpenVaultAnalytics$(
+    const subscription = createOpenMultiplyVaultAnalytics$(
       accountData$,
-      openVaultWithIlk$,
+      multiplyVaultWithIlk$,
       context$,
       trackingEvents,
     ).subscribe()
@@ -135,10 +138,10 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
 
   return (
     <WithErrorHandler error={openVaultWithError.error}>
-      <WithLoadingIndicator value={openVaultWithError.value}>
+      <WithLoadingIndicator {...openVaultWithError} customLoader={<VaultContainerSpinner />}>
         {(openVault) => (
           <Container variant="vaultPageContainer">
-            <OpenVaultContainer {...openVault} />
+            <OpenMultiplyVaultContainer {...openVault} />
           </Container>
         )}
       </WithLoadingIndicator>

@@ -55,6 +55,7 @@ import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageMultiplyVault$ } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { createManageVault$ } from 'features/manageVault/manageVault'
+import { createOpenGuniVault$ } from 'features/openGuniVault/openGuniVault'
 import { createOpenMultiplyVault$ } from 'features/openMultiplyVault/openMultiplyVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
 import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultData'
@@ -252,17 +253,20 @@ export function setupAppContext() {
   )
 
   const vault$ = memoize(
-    curry(createVault$)(
-      cdpManagerUrns$,
-      cdpManagerIlks$,
-      cdpManagerOwner$,
-      vatUrns$,
-      vatGem$,
-      ilkData$,
-      oraclePriceData$,
-      controller$,
-      ilkToToken$,
-    ),
+    (id: BigNumber) =>
+      createVault$(
+        cdpManagerUrns$,
+        cdpManagerIlks$,
+        cdpManagerOwner$,
+        vatUrns$,
+        vatGem$,
+        ilkData$,
+        oraclePriceData$,
+        controller$,
+        ilkToToken$,
+        context$,
+        id,
+      ),
     bigNumberTostring,
   )
 
@@ -334,6 +338,22 @@ export function setupAppContext() {
       ilkData$,
       exchangeQuote$,
       addGasEstimation$,
+      ilk,
+    ),
+  )
+
+  const openGuniVault$ = memoize((ilk: string) =>
+    createOpenGuniVault$(
+      connectedContext$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      priceInfo$,
+      balanceInfo$,
+      ilks$,
+      ilkData$,
+      // exchangeQuote$,
+      // addGasEstimation$,
       ilk,
     ),
   )
@@ -437,6 +457,7 @@ export function setupAppContext() {
     openVaultOverview$,
     openMultiplyVault$,
     generalManageVault$,
+    openGuniVault$,
   }
 }
 

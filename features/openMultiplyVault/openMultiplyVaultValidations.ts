@@ -90,7 +90,7 @@ export function validateErrors(state: OpenMultiplyVaultState): OpenMultiplyVault
     }
   }
 
-  if (stage === 'openFailure' || stage === 'proxyFailure' || stage === 'allowanceFailure') {
+  if (stage === 'txFailure' || stage === 'proxyFailure' || stage === 'allowanceFailure') {
     if (state.txError?.name === 'EthAppPleaseEnableContractData') {
       errorMessages.push('ledgerWalletContractDataDisabled')
     }

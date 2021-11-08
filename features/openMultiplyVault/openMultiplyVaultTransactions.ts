@@ -55,17 +55,17 @@ type AllowanceChange =
     }
 
 type OpenChange =
-  | { kind: 'openWaitingForApproval' }
+  | { kind: 'txWaitingForApproval' }
   | {
-      kind: 'openInProgress'
+      kind: 'txInProgress'
       openTxHash: string
     }
   | {
-      kind: 'openFailure'
+      kind: 'txFailure'
       txError?: any
     }
   | {
-      kind: 'openSuccess'
+      kind: 'txSuccess'
       id: BigNumber
     }
 
@@ -143,33 +143,33 @@ export function applyOpenMultiplyVaultTransaction(
     return { ...state, stage: 'allowanceSuccess', allowance }
   }
 
-  if (change.kind === 'openWaitingForApproval') {
+  if (change.kind === 'txWaitingForApproval') {
     return {
       ...state,
-      stage: 'openWaitingForApproval',
+      stage: 'txWaitingForApproval',
     }
   }
 
-  if (change.kind === 'openInProgress') {
+  if (change.kind === 'txInProgress') {
     const { openTxHash } = change
     return {
       ...state,
       openTxHash,
-      stage: 'openInProgress',
+      stage: 'txInProgress',
     }
   }
 
-  if (change.kind === 'openFailure') {
+  if (change.kind === 'txFailure') {
     const { txError } = change
     return {
       ...state,
-      stage: 'openFailure',
+      stage: 'txFailure',
       txError,
     }
   }
 
-  if (change.kind === 'openSuccess') {
-    return { ...state, stage: 'openSuccess', id: change.id }
+  if (change.kind === 'txSuccess') {
+    return { ...state, stage: 'txSuccess', id: change.id }
   }
 
   return state
@@ -203,46 +203,6 @@ export function setAllowance(
                 : undefined,
           }),
         (txState) => of({ kind: 'allowanceSuccess', allowance: txState.meta.amount }),
-      ),
-    )
-    .subscribe((ch) => change(ch))
-}
-
-export function createProxy(
-  { sendWithGasEstimation }: TxHelpers,
-  proxyAddress$: Observable<string | undefined>,
-  change: (ch: OpenMultiplyVaultChange) => void,
-  { safeConfirmations }: OpenMultiplyVaultState,
-) {
-  sendWithGasEstimation(createDsProxy, { kind: TxMetaKind.createDsProxy })
-    .pipe(
-      transactionToX<OpenMultiplyVaultChange, CreateDsProxyData>(
-        { kind: 'proxyWaitingForApproval' },
-        (txState) =>
-          of({ kind: 'proxyInProgress', proxyTxHash: (txState as any).txHash as string }),
-        (txState) =>
-          of({
-            kind: 'proxyFailure',
-            txError:
-              txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-                ? txState.error
-                : undefined,
-          }),
-        (txState) =>
-          proxyAddress$.pipe(
-            filter((proxyAddress) => !!proxyAddress),
-            switchMap((proxyAddress) =>
-              iif(
-                () => (txState as any).confirmations < safeConfirmations,
-                of({
-                  kind: 'proxyConfirming',
-                  proxyConfirmations: (txState as any).confirmations,
-                }),
-                of({ kind: 'proxySuccess', proxyAddress: proxyAddress! }),
-              ),
-            ),
-          ),
-        safeConfirmations,
       ),
     )
     .subscribe((ch) => change(ch))
@@ -310,12 +270,12 @@ export function multiplyVault(
           fromTokenAmount,
         }).pipe(
           transactionToX<OpenMultiplyVaultChange, OpenMultiplyData>(
-            { kind: 'openWaitingForApproval' },
+            { kind: 'txWaitingForApproval' },
             (txState) =>
-              of({ kind: 'openInProgress', openTxHash: (txState as any).txHash as string }),
+              of({ kind: 'txInProgress', openTxHash: (txState as any).txHash as string }),
             (txState) =>
               of({
-                kind: 'openFailure',
+                kind: 'txFailure',
                 txError:
                   txState.status === TxStatus.Error ||
                   txState.status === TxStatus.CancelledByTheUser
@@ -329,19 +289,24 @@ export function multiplyVault(
 
               const jwtToken = jwtAuthGetToken(account as string)
               if (id && jwtToken) {
-                saveVaultUsingApi$(id, jwtToken, VaultType.Multiply).subscribe()
+                saveVaultUsingApi$(
+                  id,
+                  jwtToken,
+                  VaultType.Multiply,
+                  parseInt(txState.networkId),
+                ).subscribe()
               }
 
               return of({
-                kind: 'openSuccess',
+                kind: 'txSuccess',
                 id: id!,
               })
             },
           ),
         ),
       ),
-      startWith({ kind: 'openWaitingForApproval' } as OpenMultiplyVaultChange),
-      catchError(() => of({ kind: 'openFailure' } as OpenMultiplyVaultChange)),
+      startWith({ kind: 'txWaitingForApproval' } as OpenMultiplyVaultChange),
+      catchError(() => of({ kind: 'txFailure' } as OpenMultiplyVaultChange)),
     )
     .subscribe((ch) => change(ch))
 }

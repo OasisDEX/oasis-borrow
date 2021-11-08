@@ -9,6 +9,7 @@ import { selectVaultById } from './get'
 const vaultSchema = z.object({
   id: z.number(),
   type: z.enum(['borrow', 'multiply']),
+  chainId: z.number(),
 })
 
 export async function createOrUpdate(req: express.Request, res: express.Response) {
@@ -19,6 +20,7 @@ export async function createOrUpdate(req: express.Request, res: express.Response
     vault_id: params.id,
     type: params.type as VaultType,
     owner_address: user.address,
+    chain_id: params.chainId,
   }
   if (params.type !== 'borrow' && params.type !== 'multiply') {
     return res.status(403).send('Incorrect type of vault')

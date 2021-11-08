@@ -34,11 +34,10 @@ import {
 import {
   applyEstimateGas,
   applyOpenVaultTransaction,
-  createProxy,
   openVault,
   OpenVaultTransactionChange,
-  setAllowance,
 } from './openVaultTransactions'
+import { createProxy } from '../proxy/createProxy'
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openVaultTransitions'
 import {
   OpenVaultErrorMessage,
@@ -46,6 +45,7 @@ import {
   validateErrors,
   validateWarnings,
 } from './openVaultValidations'
+import { setAllowance } from 'features/allowance/setAllowance'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -97,11 +97,11 @@ export type OpenVaultStage =
   | 'allowanceInProgress'
   | 'allowanceFailure'
   | 'allowanceSuccess'
-  | 'openWaitingForConfirmation'
-  | 'openWaitingForApproval'
-  | 'openInProgress'
-  | 'openFailure'
-  | 'openSuccess'
+  | 'txWaitingForConfirmation'
+  | 'txWaitingForApproval'
+  | 'txInProgress'
+  | 'txFailure'
+  | 'txSuccess'
 
 export interface MutableOpenVaultState {
   stage: OpenVaultStage
@@ -239,7 +239,7 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'openWaitingForConfirmation' || state.stage === 'openFailure') {
+  if (state.stage === 'txWaitingForConfirmation' || state.stage === 'txFailure') {
     return {
       ...state,
       progress: () => openVault(txHelpers, change, state),
@@ -247,7 +247,7 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'openSuccess') {
+  if (state.stage === 'txSuccess') {
     return {
       ...state,
       progress: () =>
