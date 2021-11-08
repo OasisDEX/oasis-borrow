@@ -2,7 +2,7 @@ import { createOpenGuniVault$ } from '../openGuniVault'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { protoTxHelpers, TxHelpers } from 'components/AppContext'
 import { mockPriceInfo$, MockPriceInfoProps } from 'helpers/mocks/priceInfo.mock'
-import { of } from 'rxjs'
+import { EMPTY, of } from 'rxjs'
 import { mockBalanceInfo$ } from 'helpers/mocks/balanceInfo.mock'
 import { mockIlkData$ } from 'helpers/mocks/ilks.mock'
 import BigNumber from 'bignumber.js'
@@ -39,6 +39,9 @@ describe('test', () => {
       (address?: string) => mockBalanceInfo$({ address }),
       ilks$(),
       (ilk) => ilkData$(),
+      () => {
+        return of(EMPTY)
+      } as any,
       'GUNIV3DAIUSDC1',
     )
 

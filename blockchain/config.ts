@@ -8,6 +8,7 @@ import * as dsProxyFactory from './abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from './abi/ds-proxy-registry.json'
 import * as dssCdpManager from './abi/dss-cdp-manager.json'
 import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
+import * as dssGuniProxyActions from './abi/dss-guni-proxy-actions.json'
 import * as dssProxyActions from './abi/dss-proxy-actions.json'
 import * as erc20 from './abi/erc20.json'
 import * as exchange from './abi/exchange.json'
@@ -72,6 +73,11 @@ const protoMain = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, mainnetAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, mainnetAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
+  dssGuniProxyActions: contractDesc(
+    dssGuniProxyActions,
+    '0x922d6956c99e12dfeb3224dea977d0939758a1fe',
+  ),
+  guniResolver: '0x0317650Af6f184344D7368AC8bB0bEbA5EDB214a',
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
@@ -133,6 +139,8 @@ const kovan: NetworkConfig = {
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
   ),
+  dssGuniProxyActions: contractDesc(dssGuniProxyActions, '0x'), // TODO: add address
+  guniResolver: '0x',
   exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
   fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
   etherscan: {
@@ -184,6 +192,8 @@ const goerli: NetworkConfig = {
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
   ),
+  dssGuniProxyActions: contractDesc(dssGuniProxyActions, '0x'), // TODO: add address
+  guniResolver: '0x',
   // Currently this is not supported on Goerli - no deployed contract
   exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''),
   // Currently this is not supported on Goerli - no deployed contract
