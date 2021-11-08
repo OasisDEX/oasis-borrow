@@ -5,13 +5,7 @@ import { TxHelpers } from 'components/AppContext'
 import { transactionToX } from 'helpers/form'
 import { iif, Observable, of } from 'rxjs'
 import { filter, switchMap } from 'rxjs/operators'
-
-type ProxyChanges =
-  | { kind: 'proxyWaitingForApproval' }
-  | { kind: 'proxyInProgress' }
-  | { kind: 'proxyFailure' }
-  | { kind: 'proxyConfirming' }
-  | { kind: 'proxySuccess'; proxyAddress: string }
+import { ProxyChanges } from './proxy'
 
 export function createProxy(
   { sendWithGasEstimation }: TxHelpers,
