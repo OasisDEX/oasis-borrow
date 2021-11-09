@@ -24,6 +24,7 @@ import {
   DepositAndGenerateData,
   MultiplyAdjustData,
   OpenData,
+  OpenGuniMultiplyData,
   OpenMultiplyData,
   ReclaimData,
   WithdrawAndPaybackData,
@@ -113,6 +114,7 @@ export type TxData =
   | OpenMultiplyData
   | MultiplyAdjustData
   | CloseVaultData
+  | OpenGuniMultiplyData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -352,7 +354,8 @@ export function setupAppContext() {
       balanceInfo$,
       ilks$,
       ilkData$,
-      // exchangeQuote$,
+      exchangeQuote$,
+      onEveryBlock$,
       // addGasEstimation$,
       ilk,
     ),
