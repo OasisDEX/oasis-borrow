@@ -539,7 +539,7 @@ export const ALLOWED_MULTIPLY_TOKENS = tokens
   .filter(
     (token) =>
       !(token.tags as CoinTag[]).some(
-        (tag) => (tag === 'lp-token' && !token.token1 && !token.token2) || tag === 'stablecoin',
+        (tag) => (tag === 'lp-token' && !token.token0 && !token.token1) || tag === 'stablecoin',
       ),
   )
   .map((token) => token.symbol)

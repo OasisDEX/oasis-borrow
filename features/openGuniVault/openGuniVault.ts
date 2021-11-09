@@ -50,6 +50,7 @@ import { one, zero } from 'helpers/zero'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { observe } from 'blockchain/calls/observe'
 import { getToken1Balance } from './guniActionsCalls'
+import { VaultErrorMessage, VaultWarningMessage } from '../openMultiplyVault/openMultiplyVaultValidations'
 
 type InjectChange = { kind: 'injectStateOverride'; stateToOverride: OpenGuniVaultState }
 
@@ -297,7 +298,6 @@ export function createOpenGuniVault$(
                       impact: new BigNumber(1000),
                       loanFees: new BigNumber(1000),
                       oazoFee: new BigNumber(1000),
-                      slippage: new BigNumber(1000),
                       isExchangeLoading: false,
                       gettingCollateral: new BigNumber(1000), // it was not available in standard multiply state
                       gettingCollateralUSD: new BigNumber(1000), // it was not available in standard multiply state
@@ -305,12 +305,12 @@ export function createOpenGuniVault$(
                       maxGenerateAmount: new BigNumber(1000),
                       totalSteps: 3,
                       currentStep: 1,
-                      canRegress: true,
-                      canProgress: true,
+                      canRegress: false,
+                      canProgress: false,
                       isLoadingStage: false,
                       insufficientAllowance: true,
                       customAllowanceAmountEmpty: false,
-                      inputAmountsEmpty: false,
+                      inputAmountsEmpty: true,
                       netValueUSD: new BigNumber(1000)
                     }
 
