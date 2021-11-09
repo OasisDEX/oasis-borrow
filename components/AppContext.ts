@@ -377,8 +377,11 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  const checkVault$ = (vaultId: BigNumber) => {
+    return context$.pipe(map(context => context.chainId), switchMap(chainId => checkVaultTypeUsingApi$(vaultId, new BigNumber(chainId))))
+  } 
   const generalManageVault$ = memoize(
-    curry(createGeneralManageVault$)(manageMultiplyVault$, manageVault$, checkVaultTypeUsingApi$),
+    curry(createGeneralManageVault$)(manageMultiplyVault$, manageVault$, checkVault$),
     bigNumberTostring,
   )
 
