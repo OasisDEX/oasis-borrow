@@ -340,13 +340,13 @@ export function createOpenGuniVault$(
                                       )
 
                                       console.log(`
-mintAmount: ${mintAmount}
-collateralPrice: ${collateralPrice}
-collateralizationRatio: ${collateralPrice.div(requiredDebt!)}
-token0Amount: ${token0Amount}
-token1Amount: ${token1Amount}
-amount0: ${amount0}
-amount1: ${amount1}
+                                      mintAmount: ${mintAmount}
+                                      collateralPrice: ${collateralPrice}
+                                      collateralizationRatio: ${collateralPrice.div(requiredDebt!)}
+                                      token0Amount: ${token0Amount}
+                                      token1Amount: ${token1Amount}
+                                      amount0: ${amount0}
+                                      amount1: ${amount1}
                                       
                                       `)
 

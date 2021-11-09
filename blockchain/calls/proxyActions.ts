@@ -401,7 +401,7 @@ function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: Contex
     {
       fromTokenAddress: tokens[token0Symbol].address,
       toTokenAddress: tokens[token1Symbol].address,
-      fromTokenAmount: amountToWei(data.fromTokenAmount, token1Symbol).toFixed(0),
+      fromTokenAmount: amountToWei(data.fromTokenAmount, token0Symbol).toFixed(0),
       toTokenAmount: amountToWei(data.toTokenAmount, token1Symbol).toFixed(0),
       minToTokenAmount: amountToWei(data.minToTokenAmount, token1Symbol).toFixed(0),
       exchangeAddress: data.exchangeAddress,
