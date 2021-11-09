@@ -259,7 +259,7 @@ export function createOpenGuniVault$(
                     }
 
                     // const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
-                    const SLIPPAGE = new BigNumber(0.1)
+                    const SLIPPAGE = new BigNumber(0.001)
 
                     const initialState: OpenGuniVaultState = {
                       ...defaultFormState,
@@ -334,6 +334,21 @@ export function createOpenGuniVault$(
                                     ({ amount0, amount1, mintAmount }): GuniTxDataChange => {
                                       const oazoFee = daiAmountToSwapForUsdc.times(OAZO_FEE)
                                       const requiredDebt = flAmount?.plus(oazoFee)
+
+                                      const collateralPrice = mintAmount.times(
+                                        priceInfo.currentCollateralPrice,
+                                      )
+
+                                      console.log(`
+mintAmount: ${mintAmount}
+collateralPrice: ${collateralPrice}
+collateralizationRatio: ${collateralPrice.div(requiredDebt!)}
+token0Amount: ${token0Amount}
+token1Amount: ${token1Amount}
+amount0: ${amount0}
+amount1: ${amount1}
+                                      
+                                      `)
 
                                       return {
                                         kind: 'guniTxData',
