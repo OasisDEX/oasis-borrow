@@ -15,8 +15,8 @@ export interface TokenConfig {
   tags: CoinTag[]
   color: string
   bannerIcon: string
+  token0?: string
   token1?: string
-  token2?: string
 }
 
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
@@ -455,8 +455,8 @@ const tokens = [
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     tags: ['lp-token'],
-    token1: 'DAI',
-    token2: 'USDC',
+    token0: 'DAI',
+    token1: 'USDC',
   },
   {
     symbol: 'MATIC',
