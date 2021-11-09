@@ -20,6 +20,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse<{ statu
 
     res.json({ status: 200 })
   } catch (err) {
-    res.json({ status: 500 })
+    res.json({ status: 200 })
   }
 }
