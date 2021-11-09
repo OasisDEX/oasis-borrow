@@ -1,21 +1,21 @@
 import BigNumber from 'bignumber.js'
+import { openMultiplyVaultStory } from 'helpers/stories/OpenMultiplyVaultStory'
 import { NEVER } from 'rxjs'
 
-import { guniOpenMultiplyVaultStory } from '../../../helpers/stories/GuniOpenMultiplyVaultStory'
-import { GuniOpenMultiplyVaultView } from '../variants/guni/open/GuniOpenMultiplyVaultView'
+import { DefaultOpenMultiplyVaultView } from '../../../variants/default/open/DefaultOpenMultiplyVaultView'
 
-export const WaitingForIlksToBeFetched = guniOpenMultiplyVaultStory({
+export const WaitingForIlksToBeFetched = openMultiplyVaultStory({
   title:
     'We must first validate and verify that the ilks will be fetched before we can render anything.',
   _ilks$: NEVER,
 })()
 
-export const InvalidIlk = guniOpenMultiplyVaultStory({
+export const InvalidIlk = openMultiplyVaultStory({
   title: 'Here, the user would be using a url /vault/open/WBTC-Z, should 404',
   ilk: 'ETH-Z',
 })()
 
-export const EditingStage = guniOpenMultiplyVaultStory({
+export const EditingStage = openMultiplyVaultStory({
   proxyAddress: '0xProxyAddress',
   balanceInfo: { collateralBalance: new BigNumber('100') },
 })({
@@ -23,118 +23,118 @@ export const EditingStage = guniOpenMultiplyVaultStory({
   requiredCollRatio: new BigNumber(3.5),
 })
 
-export const ProxyWaitingForConfirmation = guniOpenMultiplyVaultStory({
-  ilk: 'GUNIV3DAIUSDC1-A',
+export const ProxyWaitingForConfirmation = openMultiplyVaultStory({
+  ilk: 'ETH-A',
 })({
   stage: 'proxyWaitingForConfirmation',
   depositAmount: new BigNumber('50'),
 })
 
-export const ProxyWaitingForApproval = guniOpenMultiplyVaultStory({
-  ilk: 'GUNIV3DAIUSDC1-A',
+export const ProxyWaitingForApproval = openMultiplyVaultStory({
+  ilk: 'ETH-A',
 })({
   stage: 'proxyWaitingForApproval',
   depositAmount: new BigNumber('50'),
 })
 
-export const ProxyFailure = guniOpenMultiplyVaultStory({
-  ilk: 'GUNIV3DAIUSDC1-A',
+export const ProxyFailure = openMultiplyVaultStory({
+  ilk: 'ETH-A',
 })({
   stage: 'proxyFailure',
   depositAmount: new BigNumber('50'),
 })
 
-export const ProxyInProgress = guniOpenMultiplyVaultStory({
-  ilk: 'GUNIV3DAIUSDC1-A',
+export const ProxyInProgress = openMultiplyVaultStory({
+  ilk: 'ETH-A',
 })({
   stage: 'proxyInProgress',
   depositAmount: new BigNumber('50'),
 })
 
-export const ProxySuccess = guniOpenMultiplyVaultStory({
-  ilk: 'GUNIV3DAIUSDC1-A',
+export const ProxySuccess = openMultiplyVaultStory({
+  ilk: 'ETH-A',
 })({
   stage: 'proxySuccess',
   depositAmount: new BigNumber('50'),
 })
 
-export const AllowanceWaitingForConfirmation = guniOpenMultiplyVaultStory({
+export const AllowanceWaitingForConfirmation = openMultiplyVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
-  ilk: 'GUNIV3DAIUSDC1-A',
+  ilk: 'WBTC-A',
 })({
   stage: 'allowanceWaitingForConfirmation',
   depositAmount: new BigNumber('50'),
 })
 
-export const AllowanceWaitingForApproval = guniOpenMultiplyVaultStory({
+export const AllowanceWaitingForApproval = openMultiplyVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
-  ilk: 'GUNIV3DAIUSDC1-A',
+  ilk: 'WBTC-A',
 })({
   stage: 'allowanceWaitingForApproval',
   depositAmount: new BigNumber('50'),
 })
 
-export const AllowanceFailure = guniOpenMultiplyVaultStory({
+export const AllowanceFailure = openMultiplyVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
-  ilk: 'GUNIV3DAIUSDC1-A',
+  ilk: 'WBTC-A',
 })({
   stage: 'allowanceFailure',
   depositAmount: new BigNumber('50'),
 })
 
-export const AllowanceInProgress = guniOpenMultiplyVaultStory({
-  ilk: 'GUNIV3DAIUSDC1-A',
+export const AllowanceInProgress = openMultiplyVaultStory({
+  ilk: 'WBTC-A',
 })({
   stage: 'allowanceInProgress',
   depositAmount: new BigNumber('50'),
 })
 
-export const AllowanceSuccess = guniOpenMultiplyVaultStory({
+export const AllowanceSuccess = openMultiplyVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
-  ilk: 'GUNIV3DAIUSDC1-A',
+  ilk: 'WBTC-A',
 })({
   stage: 'allowanceSuccess',
   depositAmount: new BigNumber('50'),
 })
 
-export const txWaitingForConfirmation = guniOpenMultiplyVaultStory({
+export const txWaitingForConfirmation = openMultiplyVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
-  ilk: 'GUNIV3DAIUSDC1-A',
+  ilk: 'ETH-A',
 })({
   stage: 'txWaitingForConfirmation',
   depositAmount: new BigNumber('50'),
   requiredCollRatio: new BigNumber(3.5),
 })
 
-export const txWaitingForApproval = guniOpenMultiplyVaultStory({
+export const txWaitingForApproval = openMultiplyVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
-  ilk: 'GUNIV3DAIUSDC1-A',
+  ilk: 'ETH-A',
 })({
   stage: 'txWaitingForApproval',
   depositAmount: new BigNumber('50'),
   requiredCollRatio: new BigNumber(3.5),
 })
 
-export const txFailure = guniOpenMultiplyVaultStory({
+export const txFailure = openMultiplyVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
-  ilk: 'GUNIV3DAIUSDC1-A',
+  ilk: 'ETH-A',
 })({
   stage: 'txFailure',
   depositAmount: new BigNumber('50'),
   requiredCollRatio: new BigNumber(3.5),
 })
 
-export const txInProgress = guniOpenMultiplyVaultStory({
+export const txInProgress = openMultiplyVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
-  ilk: 'GUNIV3DAIUSDC1-A',
+  ilk: 'ETH-A',
 })({
   stage: 'txInProgress',
   depositAmount: new BigNumber('50'),
 })
 
-export const txSuccess = guniOpenMultiplyVaultStory({
+export const txSuccess = openMultiplyVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
-  ilk: 'GUNIV3DAIUSDC1-A',
+  ilk: 'ETH-A',
 })({
   id: new BigNumber('122345'),
   stage: 'txSuccess',
@@ -144,6 +144,6 @@ export const txSuccess = guniOpenMultiplyVaultStory({
 
 // eslint-disable-next-line import/no-default-export
 export default {
-  title: 'GuniOpenMultiplyVault/Stages',
-  component: GuniOpenMultiplyVaultView,
+  title: 'OpenMultiplyVault/Stages',
+  component: DefaultOpenMultiplyVaultView,
 }

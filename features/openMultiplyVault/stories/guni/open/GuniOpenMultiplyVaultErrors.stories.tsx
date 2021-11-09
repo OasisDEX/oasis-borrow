@@ -4,7 +4,7 @@ import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { guniOpenMultiplyVaultStory } from 'helpers/stories/GuniOpenMultiplyVaultStory'
 import { one } from 'helpers/zero'
 
-import { GuniOpenMultiplyVaultView } from '../variants/guni/open/GuniOpenMultiplyVaultView'
+import { GuniOpenMultiplyVaultView } from '../../../variants/guni/open/GuniOpenMultiplyVaultView'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 

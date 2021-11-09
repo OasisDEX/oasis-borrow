@@ -7,9 +7,9 @@ import { mockPriceInfo$ } from 'helpers/mocks/priceInfo.mock'
 import { of } from 'rxjs'
 
 import { createOpenGuniVault$ } from '../../features/openGuniVault/openGuniVault'
-// import { mockExchangeQuote$ } from './exchangeQuote.mock'
+import { mockExchangeQuote$ } from './exchangeQuote.mock'
 import { MockOpenMultiplyVaultProps } from './openMultiplyVault.mock'
-// import { addGasEstimationMock } from './openVault.mock'
+import { addGasEstimationMock } from './openVault.mock'
 
 export function mockGuniOpenMultiplyVault({
   _ilkData$,
@@ -28,7 +28,7 @@ export function mockGuniOpenMultiplyVault({
   account = '0xVaultController',
   ilks = ['GUNIV3DAIUSDC1-A'],
   ilk = 'GUNIV3DAIUSDC1-A',
-  // exchangeQuote,
+  exchangeQuote,
 }: MockOpenMultiplyVaultProps = {}) {
   const token = ilk.split('-')[0]
 
@@ -72,8 +72,8 @@ export function mockGuniOpenMultiplyVault({
     balanceInfo$,
     ilks$,
     ilkData$,
-    // mockExchangeQuote$(exchangeQuote),
-    // addGasEstimationMock,
+    mockExchangeQuote$(exchangeQuote),
+    addGasEstimationMock,
     ilk,
   )
 }

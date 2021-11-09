@@ -2,8 +2,8 @@ import { BigNumber } from 'bignumber.js'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { zero } from 'helpers/zero'
 
-import { guniOpenMultiplyVaultStory } from '../../../helpers/stories/GuniOpenMultiplyVaultStory'
-import { GuniOpenMultiplyVaultView } from '../variants/guni/open/GuniOpenMultiplyVaultView'
+import { guniOpenMultiplyVaultStory } from '../../../../../helpers/stories/GuniOpenMultiplyVaultStory'
+import { GuniOpenMultiplyVaultView } from '../../../variants/guni/open/GuniOpenMultiplyVaultView'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
