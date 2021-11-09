@@ -1,19 +1,30 @@
 import { Vault } from '@prisma/client'
+import { networksByName } from 'blockchain/config'
 import express from 'express'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
 
 const paramsSchema = z.object({
-  id: z.string(),
-  chainId: z.string()
+  id: z.string()
 })
 
 export async function getVault(req: express.Request, res: express.Response) {
   const params = paramsSchema.parse(req.params)
+  console.log('QUeRY')
+  console.log(req.query)
+  console.log("Network")
+  console.log(req.query.network)
+  const networkName = req.query.network;
+  const networkData = networksByName[networkName.toString()]
+  console.log('network data')
+  console.log(networkData)
+  console.log('chain id')
+  console.log(networkData.id)
+  const chain_id = networkData.id != null ? networkData.id : `1`;
 
   const vault = await selectVaultByIdAndChainId({
     vault_id: parseInt(params.id, 10),
-    chain_id: parseInt(params.chainId),
+    chain_id: parseInt(chain_id), // to be changed with query param
   })
 
   if (vault === undefined || vault == null) {
@@ -23,7 +34,7 @@ export async function getVault(req: express.Request, res: express.Response) {
       vaultId: vault.vault_id,
       type: vault.type,
       ownerAddress: vault.owner_address,
-      chainId: vault.chain_id
+      chainId: chain_id
     })
   }
 }

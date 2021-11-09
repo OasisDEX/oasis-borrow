@@ -14,9 +14,9 @@ import { Container } from 'theme-ui'
 
 import { VaultType } from './generalManageVault'
 
-export function GeneralManageVaultView({ id }: { id: BigNumber }) {
+export function GeneralManageVaultView({ id, chainId }: { id: BigNumber, chainId: BigNumber }) {
   const { generalManageVault$, vaultHistory$, vaultMultiplyHistory$ } = useAppContext()
-  const manageVaultWithId$ = generalManageVault$(id)
+  const manageVaultWithId$ = generalManageVault$(id, chainId)
   const manageVaultWithError = useObservableWithError(manageVaultWithId$)
   const vaultHistoryWithError = useObservableWithError(vaultHistory$(id))
   const vaultMultiplyHistoryWithError = useObservableWithError(vaultMultiplyHistory$(id))
@@ -171,10 +171,6 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
         customLoader={<VaultContainerSpinner />}
       >
         {([generalManageVault, vaultHistory, vaultMultiplyHistory]) => {
-          console.log('generalManageVault')
-          console.log(generalManageVault)
-          console.log('type')
-          console.log(generalManageVault.type)
           switch (generalManageVault.type) {
             case VaultType.Borrow:
               return (

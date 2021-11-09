@@ -26,10 +26,11 @@ export type GeneralManageVaultState =
 export function createGeneralManageVault$(
   manageMultiplyVault$: (id: BigNumber) => Observable<ManageMultiplyVaultState>,
   manageVault$: (id: BigNumber) => Observable<ManageVaultState>,
-  checkVaultType$: (id: BigNumber) => Observable<VaultType>,
-  id: BigNumber
+  checkVaultType$: (id: BigNumber, chainId: BigNumber) => Observable<VaultType>,
+  id: BigNumber,
+  chainId: BigNumber
 ): Observable<GeneralManageVaultState> {
-  return checkVaultType$(id).pipe(
+  return checkVaultType$(id, chainId).pipe(
     switchMap((type) => {
       switch (type) {
         case VaultType.Borrow:
