@@ -5,13 +5,11 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
 
-import { DssGuniProxyActions } from 'types/ethers-contracts/DssGuniProxyActions'
-
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus } from 'helpers/form'
-import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
-import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/internal/operators'
+import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
+import { filter, first, map, scan, shareReplay, switchMap, tap } from 'rxjs/internal/operators'
 import {
   FormChanges,
   FormFunctions,
@@ -21,6 +19,7 @@ import {
   defaultFormState,
   EditingStage,
   applyIsEditingStage,
+  DepositChange,
 } from './guniForm'
 import { EnvironmentState, EnvironmentChange, applyEnvironment } from './enviroment'
 import {
@@ -48,8 +47,9 @@ import { combineApplyChanges } from '../../helpers/pipelines/combineApply'
 
 import { TxStage } from 'features/openMultiplyVault/openMultiplyVault' // TODO: remove
 import { one, zero } from 'helpers/zero'
-import { CallDef, TransactionDef } from 'blockchain/calls/callsHelpers'
-import { amountToWei } from 'blockchain/utils'
+import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { observe } from 'blockchain/calls/observe'
+import { getToken1Balance } from './guniActionsCalls'
 
 type InjectChange = { kind: 'injectStateOverride'; stateToOverride: OpenGuniVaultState }
 
@@ -138,49 +138,33 @@ type OpenGuniVaultState = OverrideHelper &
   ErrorState &
   WarringState &
   ProxyState &
-  GuniCalculations
-
-const apply = combineApplyChanges<OpenGuniVaultState, OpenGuniChanges>(
-  applyEnvironment,
-  applyFormChange,
-  applyProxyChanges,
-  applyAllowanceChanges,
-  applyExchange,
-)
+  GuniCalculations &
+  TokensLpBalanceState
 
 interface GuniCalculations {
   leveragedAmount?: BigNumber
   flAmount?: BigNumber
-  maxMultiply?: BigNumber
 }
 
-function applyCalculations<S extends { ilkData: IlkData; depositAmount?: BigNumber }>(state: S): S {
+function applyCalculations<S extends { ilkData: IlkData; depositAmount?: BigNumber }>(
+  state: S,
+): S & GuniCalculations {
   // TODO: missing fees
-  const maxMultiply = state.ilkData.liquidationRatio.minus(one)
-  const leveragedAmount = state.depositAmount ? state.depositAmount.div(maxMultiply) : zero
+  const leveragedAmount = state.depositAmount
+    ? state.depositAmount.div(state.ilkData.liquidationRatio.minus(one))
+    : zero
   const flAmount = state.depositAmount ? leveragedAmount.minus(state.depositAmount) : zero
 
   return {
     ...state,
-    maxMultiply,
     leveragedAmount,
     flAmount,
   }
 }
 
-export const getToken2Balance: CallDef<{ token: string; leveragedAmount: BigNumber }, BigNumber> = {
-  call: (_, { contract, dssGuniProxyActions }) => {
-    return contract<DssGuniProxyActions>(dssGuniProxyActions).methods.getOtherTokenAmount
-  },
-  prepareArgs: ({ token, leveragedAmount }, context) => {
-    // const tokenAddress = '0xAbDDAfB225e10B90D798bB8A886238Fb835e2053'
-    const tokenAddress = context.tokens[token]
-
-    if (tokenAddress !== tokenAddress) throw new Error('tokenAddress is not defined') // TODO temporary
-
-    return [tokenAddress, context.guniResolver, amountToWei(leveragedAmount, 'DAI').toFixed(0), 6] // TODO: remove fixed precision
-  },
-  postprocess: (token2Amount: any) => new BigNumber(token2Amount).div(new BigNumber(10).pow(6)),
+interface TokensLpBalanceState {
+  token0Amount?: BigNumber
+  token1Amount?: BigNumber
 }
 
 export function createOpenGuniVault$(
@@ -198,6 +182,7 @@ export function createOpenGuniVault$(
     amount: BigNumber,
     action: ExchangeAction,
   ) => Observable<Quote>,
+  onEveryBlock$: Observable<number>,
   //   addGasEstimation$: AddGasEstimationFunction,
   ilk: string,
 ): Observable<OpenGuniVaultState> {
@@ -212,22 +197,22 @@ export function createOpenGuniVault$(
             const { token } = ilkData
             const tokenInfo = getToken(token)
 
-            if (!tokenInfo.token1 || !tokenInfo.token2) {
+            if (!tokenInfo.token0 || !tokenInfo.token1) {
               throw new Error('Missing tokens in configuration')
             }
 
             const account = context.account
             return combineLatest(
               priceInfo$(token),
-              balanceInfo$(tokenInfo.token1, account),
+              balanceInfo$(tokenInfo.token0, account),
               proxyAddress$(account),
             ).pipe(
               first(),
               switchMap(([priceInfo, balanceInfo, proxyAddress]) =>
                 (
                   (proxyAddress &&
-                    tokenInfo.token1 &&
-                    allowance$(tokenInfo.token1, account, proxyAddress)) ||
+                    tokenInfo.token0 &&
+                    allowance$(tokenInfo.token0, account, proxyAddress)) ||
                   of(undefined)
                 ).pipe(
                   first(),
@@ -277,13 +262,67 @@ export function createOpenGuniVault$(
 
                     const stateSubject$ = new Subject<OpenGuniVaultState>()
 
+                    const token1Balance$ = observe(onEveryBlock$, context$, getToken1Balance)
+
+                    type token1AmountChange = { kind: 'token1Amount'; token1Amount: BigNumber }
+                    const token1AmountChanges$: Observable<token1AmountChange> = change$.pipe(
+                      filter((change) => change.kind === 'depositAmount'),
+                      switchMap((change: DepositChange) => {
+                        const { leveragedAmount } = applyCalculations({
+                          ilkData,
+                          depositAmount: change.depositAmount,
+                        })
+
+                        if (!leveragedAmount || leveragedAmount.isZero()) {
+                          return of(zero)
+                        }
+
+                        return token1Balance$({
+                          token,
+                          leveragedAmount,
+                        })
+                      }),
+                      switchMap((token1Amount) => {
+                        // GIVEN
+                      }),
+                      map((token1Amount) => ({
+                        kind: 'token1Amount',
+                        token1Amount,
+                      })),
+                    )
+
+                    function applyLpTokensChanges<
+                      S extends TokensLpBalanceState & GuniCalculations,
+                      Ch extends token1AmountChange
+                    >(state: S, change: Ch): S {
+                      if (change.kind === 'token1Amount') {
+                        const token0Amount =
+                          state.leveragedAmount?.minus(change.token1Amount) || zero
+                        return {
+                          ...state,
+                          token1Amount: change.token1Amount,
+                          token0Amount,
+                        }
+                      }
+                      return state
+                    }
+
+                    const apply = combineApplyChanges<OpenGuniVaultState, OpenGuniChanges>(
+                      applyEnvironment,
+                      applyFormChange,
+                      applyProxyChanges,
+                      applyAllowanceChanges,
+                      applyExchange,
+                      applyLpTokensChanges,
+                    )
+
                     const environmentChanges$ = merge(
                       priceInfoChange$(priceInfo$, token),
                       balanceInfoChange$(balanceInfo$, token, account),
                       createIlkDataChange$(ilkData$, ilk),
-                      createInitialQuoteChange(exchangeQuote$, tokenInfo.token2),
-
-                      //   createExchangeChange$(exchangeQuote$, stateSubject$),
+                      createInitialQuoteChange(exchangeQuote$, tokenInfo.token1),
+                      token1AmountChanges$,
+                      //createExchangeChange$(exchangeQuote$, stateSubject$),
                     )
 
                     const connectedProxyAddress$ = proxyAddress$(account)
@@ -296,9 +335,10 @@ export function createOpenGuniVault$(
                         allowanceTransitions(
                           txHelpers,
                           change,
-                          { tokenToAllow: tokenInfo.token1 },
+                          { tokenToAllow: tokenInfo.token0 },
                           state,
                         ),
+                      (state) => openGuniVaultTransitions,
                     )
 
                     const applyStages = combineTransitions<OpenGuniVaultState>(
@@ -312,9 +352,6 @@ export function createOpenGuniVault$(
                     return merge(change$, environmentChanges$).pipe(
                       scan(apply, initialState),
                       map(applyStages),
-                      switchMap((state) => {
-                        return of(state)
-                      }),
                       //   map(validateErrors),
                       //   map(validateWarnings),
                       //   switchMap(curry(applyEstimateGas)(addGasEstimation$)),

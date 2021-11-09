@@ -4,7 +4,7 @@ import { zero } from 'helpers/zero'
 import { EnvironmentState } from './enviroment'
 
 export type EditingStage = 'editing'
-type DepositChange = { kind: 'depositAmount'; depositAmount?: BigNumber }
+export type DepositChange = { kind: 'depositAmount'; depositAmount?: BigNumber }
 type DepositMaxChange = { kind: 'depositMaxAmount'; depositAmount?: BigNumber }
 
 type StageProgressChange = { kind: 'progressEditing' }
