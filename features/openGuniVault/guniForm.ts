@@ -1,7 +1,9 @@
 import { BigNumber } from 'bignumber.js'
+import { TxHelpers } from 'components/AppContext'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { zero } from 'helpers/zero'
 import { EnvironmentState } from './enviroment'
+import { openGuniVault, TxStateDependencies } from './guniActionsCalls'
 
 export type EditingStage = 'editing'
 export type DepositChange = { kind: 'depositAmount'; depositAmount?: BigNumber }
@@ -104,12 +106,43 @@ export function applyFormChange<S extends FormState & StateDependencies, Ch exte
         stage: 'editing',
       }
     default:
+      // TODO: move it to a separate file
+      if (change.kind === 'txWaitingForApproval') {
+        return {
+          ...state,
+          stage: 'txWaitingForApproval',
+        }
+      }
+
+      if (change.kind === 'txInProgress') {
+        const { txTxHash } = change
+        return {
+          ...state,
+          txTxHash,
+          stage: 'txInProgress',
+        }
+      }
+
+      if (change.kind === 'txFailure') {
+        const { txError } = change
+        return {
+          ...state,
+          stage: 'txFailure',
+          txError,
+        }
+      }
+
+      if (change.kind === 'txSuccess') {
+        return { ...state, stage: 'txSuccess', id: change.id }
+      }
       return state
   }
 }
 export function addFormTransitions<
-  S extends FormFunctions & EnvironmentState & { stage: string /* TODO make it precise */ }
->(change: (ch: any /* TODO make it precise */) => void, state: S): S {
+  S extends FormFunctions &
+    EnvironmentState &
+    TxStateDependencies & { stage: string /* TODO make it precise */ }
+>(txHelpers: TxHelpers, change: (ch: any /* TODO make it precise */) => void, state: S): S {
   if (state.stage === 'editing') {
     return {
       ...state,
@@ -117,6 +150,14 @@ export function addFormTransitions<
         change({ kind: 'depositAmount', depositAmount }),
       updateDepositMax: () => change({ kind: 'depositMaxAmount' }),
       progress: () => change({ kind: 'progressEditing' }),
+    }
+  }
+
+  if (state.stage === 'txWaitingForConfirmation' || state.stage === 'txFailure') {
+    return {
+      ...state,
+      progress: () => openGuniVault(txHelpers, change, state),
+      regress: () => change({ kind: 'backToEditing' }),
     }
   }
 

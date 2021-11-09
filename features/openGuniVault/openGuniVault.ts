@@ -1,15 +1,24 @@
 import { BigNumber } from 'bignumber.js'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
-import { ContextConnected } from 'blockchain/network'
+import { compareBigNumber, ContextConnected } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
-import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { ExchangeAction, getQuote$, Quote } from 'features/exchange/exchange'
 
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus } from 'helpers/form'
 import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
-import { filter, first, map, scan, shareReplay, switchMap, tap } from 'rxjs/internal/operators'
+import {
+  distinctUntilChanged,
+  filter,
+  first,
+  map,
+  scan,
+  shareReplay,
+  switchMap,
+  tap,
+} from 'rxjs/internal/operators'
 import {
   FormChanges,
   FormFunctions,
@@ -49,7 +58,8 @@ import { TxStage } from 'features/openMultiplyVault/openMultiplyVault' // TODO: 
 import { one, zero } from 'helpers/zero'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { observe } from 'blockchain/calls/observe'
-import { getToken1Balance } from './guniActionsCalls'
+import { getGuniMintAmount, getToken1Balance } from './guniActionsCalls'
+import { OAZO_FEE } from 'helpers/multiply/calculations'
 
 type InjectChange = { kind: 'injectStateOverride'; stateToOverride: OpenGuniVaultState }
 
@@ -167,6 +177,26 @@ interface TokensLpBalanceState {
   token1Amount?: BigNumber
 }
 
+interface GuniTxData {
+  swap?: Quote
+  flAmount?: BigNumber
+  leveragedAmount?: BigNumber
+  token0Amount?: BigNumber
+  token1Amount?: BigNumber
+  amount0?: BigNumber
+  amount1?: BigNumber
+  fromTokenAmount?: BigNumber
+  toTokenAmount?: BigNumber
+  minToTokenAmount?: BigNumber
+  afterCollateralAmount?: BigNumber
+  afterOutstandingDebt?: BigNumber
+  requiredDebt?: BigNumber
+  oazoFee?: BigNumber
+  totalFees?: BigNumber
+}
+
+type GuniTxDataChange = { kind: 'guniTxData' } & GuniTxData
+
 export function createOpenGuniVault$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
@@ -263,45 +293,88 @@ export function createOpenGuniVault$(
                     const stateSubject$ = new Subject<OpenGuniVaultState>()
 
                     const token1Balance$ = observe(onEveryBlock$, context$, getToken1Balance)
+                    const getGuniMintAmount$ = observe(onEveryBlock$, context$, getGuniMintAmount)
 
-                    type token1AmountChange = { kind: 'token1Amount'; token1Amount: BigNumber }
-                    const token1AmountChanges$: Observable<token1AmountChange> = change$.pipe(
+                    const gUniDataChanges$: Observable<GuniTxDataChange> = change$.pipe(
                       filter((change) => change.kind === 'depositAmount'),
                       switchMap((change: DepositChange) => {
-                        const { leveragedAmount } = applyCalculations({
+                        const { leveragedAmount, flAmount } = applyCalculations({
                           ilkData,
                           depositAmount: change.depositAmount,
                         })
 
                         if (!leveragedAmount || leveragedAmount.isZero()) {
-                          return of(zero)
+                          return of(EMPTY)
                         }
 
                         return token1Balance$({
                           token,
                           leveragedAmount,
-                        })
+                        }).pipe(
+                          distinctUntilChanged(compareBigNumber),
+                          switchMap((daiAmountToSwapForUsdc /* USDC */) => {
+                            const token0Amount = leveragedAmount.minus(daiAmountToSwapForUsdc)
+                            return exchangeQuote$(
+                              tokenInfo.token1,
+                              SLIPPAGE,
+                              daiAmountToSwapForUsdc,
+                              'BUY_COLLATERAL',
+                            ).pipe(
+                              switchMap((swap) => {
+                                if (swap.status !== 'SUCCESS') {
+                                  return EMPTY
+                                }
+                                const token1Amount = swap.collateralAmount
+                                return getGuniMintAmount$({
+                                  token,
+                                  amountOMax: token0Amount,
+                                  amount1Max: token1Amount,
+                                }).pipe(
+                                  map(
+                                    ({ amount0, amount1, mintAmount }): GuniTxDataChange => {
+                                      const oazoFee = daiAmountToSwapForUsdc.times(OAZO_FEE)
+                                      const requiredDebt = flAmount?.plus(oazoFee)
+
+                                      return {
+                                        kind: 'guniTxData',
+                                        swap,
+                                        flAmount,
+                                        leveragedAmount,
+                                        token0Amount,
+                                        token1Amount,
+                                        amount0,
+                                        amount1,
+                                        fromTokenAmount: swap.daiAmount,
+                                        toTokenAmount: swap.collateralAmount,
+                                        minToTokenAmount: swap.collateralAmount.times(
+                                          one.minus(SLIPPAGE),
+                                        ),
+                                        afterCollateralAmount: mintAmount,
+                                        afterOutstandingDebt: requiredDebt,
+                                        requiredDebt,
+                                        oazoFee,
+                                        totalFees: oazoFee,
+                                      }
+                                    },
+                                  ),
+                                )
+                              }),
+                            )
+                          }),
+                        )
                       }),
-                      // switchMap((token1Amount) => {
-                      //   // GIVEN
-                      // }),
-                      map((token1Amount) => ({
-                        kind: 'token1Amount',
-                        token1Amount,
-                      })),
                     )
 
-                    function applyLpTokensChanges<
+                    function applyGuniDataChanges<
                       S extends TokensLpBalanceState & GuniCalculations,
-                      Ch extends token1AmountChange
+                      Ch extends GuniTxDataChange
                     >(state: S, change: Ch): S {
-                      if (change.kind === 'token1Amount') {
-                        const token0Amount =
-                          state.leveragedAmount?.minus(change.token1Amount) || zero
+                      if (change.kind === 'guniTxData') {
+                        const { kind: _, ...data } = change
+
                         return {
                           ...state,
-                          token1Amount: change.token1Amount,
-                          token0Amount,
+                          ...data,
                         }
                       }
                       return state
@@ -313,22 +386,22 @@ export function createOpenGuniVault$(
                       applyProxyChanges,
                       applyAllowanceChanges,
                       applyExchange,
-                      applyLpTokensChanges,
+                      applyGuniDataChanges,
                     )
 
                     const environmentChanges$ = merge(
                       priceInfoChange$(priceInfo$, token),
                       balanceInfoChange$(balanceInfo$, token, account),
                       createIlkDataChange$(ilkData$, ilk),
-                      createInitialQuoteChange(exchangeQuote$, tokenInfo.token1),
-                      token1AmountChanges$,
+                      // createInitialQuoteChange(exchangeQuote$, tokenInfo.token1),
+                      gUniDataChanges$,
                       //createExchangeChange$(exchangeQuote$, stateSubject$),
                     )
 
                     const connectedProxyAddress$ = proxyAddress$(account)
 
                     const applyTransition = combineTransitions<OpenGuniVaultState>( // TODO: can we do it better?
-                      (state) => addFormTransitions(change, state),
+                      (state) => addFormTransitions(txHelpers, change, state),
                       (state) =>
                         addProxyTransitions(txHelpers, connectedProxyAddress$, change, state),
                       (state) =>
