@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { CommonVaultState, WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
@@ -320,14 +320,18 @@ export function VaultDetailsBuyingPowerModal({ close }: ModalProps) {
   )
 }
 
-export function VaultDetailsNetValueModal({ close }: ModalProps) {
+interface NetValueProps {
+  marketPrice: BigNumber | undefined
+}
+
+export function VaultDetailsNetValueModal({ marketPrice, close }: ModalProps<NetValueProps>) {
   const { t } = useTranslation()
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
         <Heading variant="header3">{t('manage-multiply-vault.card.net-value')}</Heading>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          {t('manage-multiply-vault.card.net-value-description')}
+          {t('manage-multiply-vault.card.based-on-price', { marketPrice: formatCryptoBalance(marketPrice? marketPrice : zero) })}
         </Text>
       </Grid>
     </VaultDetailsCardModal>
@@ -516,20 +520,28 @@ export function VaultDetailsCardNetValue({
   afterNetValueUSD,
   afterPillColors,
   showAfterPill,
+  currentPnL,
+  marketPrice
 }: {
   netValueUSD: BigNumber
   afterNetValueUSD: BigNumber
+  currentPnL: BigNumber
+  marketPrice: BigNumber | undefined
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
+
 
   return (
     <VaultDetailsCard
       title={t('manage-multiply-vault.card.net-value')}
       value={`$${formatAmount(netValueUSD, 'USD')}`}
-      // valueBottom={`Unrealised P&L 0%`}
+      valueBottom={`${t('manage-multiply-vault.card.unrealised-pnl')} ${formatPercent(currentPnL.times(100).absoluteValue(), {
+        precision: 2,
+        roundMode: BigNumber.ROUND_DOWN,
+      })}`}
       valueAfter={showAfterPill && `$${formatAmount(afterNetValueUSD, 'USD')}`}
-      openModal={() => openModal(VaultDetailsNetValueModal)}
+      openModal={() => openModal(VaultDetailsNetValueModal, { marketPrice:  marketPrice})}
       afterPillColors={afterPillColors}
     />
   )

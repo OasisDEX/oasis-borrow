@@ -7,6 +7,7 @@ import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
+import { calculatePNL } from 'helpers/multiply/calculations'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Grid } from 'theme-ui'
@@ -105,6 +106,8 @@ export function ManageMultiplyVaultContainer({
       subscription.unsubscribe()
     }
   }, [])
+
+  manageVault.currentPnL= calculatePNL(vaultHistory, manageVault.netValueUSD)
 
   return (
     <>

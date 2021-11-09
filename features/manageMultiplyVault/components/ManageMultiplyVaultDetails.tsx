@@ -90,6 +90,8 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
     buyingPower,
     buyingPowerUSD,
     afterBuyingPowerUSD,
+    currentPnL,
+    marketPrice
   } = props
   const openModal = useModal()
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -126,6 +128,8 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
             afterNetValueUSD,
             afterPillColors,
             showAfterPill,
+            currentPnL,
+            marketPrice
           }}
         />
       </Grid>
