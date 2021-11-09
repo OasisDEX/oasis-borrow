@@ -106,8 +106,24 @@ export function openGuniVault<S extends TxStateDependencies>(
     token0Amount, // DAI
     requiredDebt,
     swap,
+
+    minToTokenAmount,
   }: S,
 ) {
+  console.log(`
+    kind:${TxMetaKind.openGuni}
+    depositCollateral:${depositAmount || zero}
+    userAddress:${account}
+    proxyAddress:${proxyAddress!}
+    
+    exchangeData:${swap?.status === 'SUCCESS' ? swap.tx.data : ''}
+    minToTokenAmount:${minToTokenAmount || zero}
+    requiredDebt:${requiredDebt || zero}
+    toTokenAmount:${toTokenAmount || zero}
+    fromTokenAmount:${fromTokenAmount || zero}
+    token0Amount:${token0Amount || zero}
+  
+  `)
   return send(openGuniMultiplyVault, {
     kind: TxMetaKind.openGuni,
     depositCollateral: depositAmount || zero,
@@ -117,7 +133,7 @@ export function openGuniVault<S extends TxStateDependencies>(
     token,
     exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '0x',
     exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '0x',
-    minToTokenAmount: token1Amount?.times(one.minus(slippage)) || zero,
+    minToTokenAmount: minToTokenAmount || zero,
     requiredDebt: requiredDebt || zero,
     toTokenAmount: toTokenAmount || zero,
     fromTokenAmount: fromTokenAmount || zero,
