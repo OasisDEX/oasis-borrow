@@ -20,9 +20,8 @@ export async function getServerSideProps(ctx: any) {
   }
 }
 
-export default function Vault({ id, chainId }: { id: string, chainId: string }) {
+export default function Vault({ id }: { id: string }) {
   const vaultId = new BigNumber(id)
-  const chain_id = new BigNumber(chainId)
   const isValidVaultId = vaultId.isInteger() && vaultId.gt(0)
 
   return (

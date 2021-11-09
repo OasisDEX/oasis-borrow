@@ -1,16 +1,20 @@
 import { Vault, VaultType as VaultTypeDB } from '@prisma/client'
 import BigNumber from 'bignumber.js'
+import { Context } from 'blockchain/network'
 import { VaultType } from 'features/generalManageVault/generalManageVault'
 import getConfig from 'next/config'
 import { of } from 'ramda'
 import { Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
-import { catchError, map } from 'rxjs/operators'
+import { catchError, map, switchMap } from 'rxjs/operators'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 
-export function checkVaultTypeUsingApi$(id: BigNumber, chainId: BigNumber): Observable<VaultType> {
-  const vaultType = getVaultFromApi$(id, chainId).pipe(
+export function checkVaultTypeUsingApi$(context$: Observable<Context>, id: BigNumber): Observable<VaultType> {
+  
+  return context$.pipe(
+    switchMap((context) => {
+        const vaultType = getVaultFromApi$(id, new BigNumber(context.chainId)).pipe(
     map((resp) => {
       if (Object.keys(resp).length === 0) {
         return VaultType.Borrow
@@ -23,8 +27,10 @@ export function checkVaultTypeUsingApi$(id: BigNumber, chainId: BigNumber): Obse
       }
     }),
   )
-
   return vaultType
+}
+    )
+  )
 }
 
 interface CheckMultipleVaultsResponse {

@@ -417,7 +417,7 @@ export function createManageVault$(
   addGasEstimation$: AddGasEstimationFunction,
   id: BigNumber,
 ): Observable<ManageVaultState> {
-  return context$.pipe(
+return context$.pipe(
     switchMap((context) => {
       const account = context.status === 'connected' ? context.account : undefined
       return vault$(id, context.chainId).pipe(
