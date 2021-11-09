@@ -282,9 +282,9 @@ export function createOpenGuniVault$(
                           leveragedAmount,
                         })
                       }),
-                      switchMap((token1Amount) => {
-                        // GIVEN
-                      }),
+                      // switchMap((token1Amount) => {
+                      //   // GIVEN
+                      // }),
                       map((token1Amount) => ({
                         kind: 'token1Amount',
                         token1Amount,
@@ -338,7 +338,7 @@ export function createOpenGuniVault$(
                           { tokenToAllow: tokenInfo.token0 },
                           state,
                         ),
-                      (state) => openGuniVaultTransitions,
+                      // (state) => openGuniVaultTransitions,
                     )
 
                     const applyStages = combineTransitions<OpenGuniVaultState>(
