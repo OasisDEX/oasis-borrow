@@ -9,7 +9,7 @@ import { useObservableWithError } from '../../../../../helpers/observableHook'
 import { createOpenMultiplyVaultAnalytics$ } from '../../../openMultiplyVaultAnalytics'
 import { DefaultOpenMultiplyVaultContainer } from './DefaultOpenMultiplyVaultContainer'
 
-export function DefaultMultiplyVaultView({ ilk }: { ilk: string }) {
+export function DefaultOpenMultiplyVaultView({ ilk }: { ilk: string }) {
   const { openMultiplyVault$, accountData$, context$ } = useAppContext()
   const multiplyVaultWithIlk$ = openMultiplyVault$(ilk)
 

@@ -4,11 +4,7 @@ import {
   defaultMutableOpenMultiplyVaultState,
   MutableOpenMultiplyVaultState,
 } from 'features/openMultiplyVault/openMultiplyVault'
-import { DefaultOpenMultiplyVaultView } from 'features/openMultiplyVault/variants/default/open/DefaultOpenMultiplyVaultView'
-import {
-  mockOpenMultiplyVault,
-  MockOpenMultiplyVaultProps,
-} from 'helpers/mocks/openMultiplyVault.mock'
+import { MockOpenMultiplyVaultProps } from 'helpers/mocks/openMultiplyVault.mock'
 import { AppContext } from 'next/app'
 import React from 'react'
 import { useEffect } from 'react'
@@ -16,11 +12,13 @@ import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
-type OpenMultiplyVaultStory = { title?: string } & MockOpenMultiplyVaultProps
+import { GuniOpenMultiplyVaultView } from '../../features/openMultiplyVault/variants/guni/open/GuniOpenMultiplyVaultView'
+import { mockGuniOpenMultiplyVault } from '../mocks/guniOpenMultiplyVault.mock'
 
-export function openMultiplyVaultStory({
+type GuniOpenMultiplyVaultStory = { title?: string } & MockOpenMultiplyVaultProps
+
+export function guniOpenMultiplyVaultStory({
   _ilks$,
-
   title,
   proxyAddress,
   priceInfo,
@@ -28,14 +26,14 @@ export function openMultiplyVaultStory({
   ilkData,
   allowance,
   ilks,
-  ilk = 'ETH-A',
+  ilk = 'GUNIV3DAIUSDC1-A',
   exchangeQuote,
-}: OpenMultiplyVaultStory) {
+}: GuniOpenMultiplyVaultStory) {
   return ({
     depositAmount,
     ...otherState
   }: Partial<MutableOpenMultiplyVaultState> = defaultMutableOpenMultiplyVaultState) => () => {
-    const obs$ = mockOpenMultiplyVault({
+    const obs$ = mockGuniOpenMultiplyVault({
       _ilks$,
       balanceInfo,
       priceInfo,
@@ -63,9 +61,9 @@ export function openMultiplyVaultStory({
       return subscription.unsubscribe()
     }, [])
 
-    const openMultiplyVault$ = () => obs$
+    const openGuniVault$ = () => obs$
     const ctx = ({
-      openMultiplyVault$,
+      openGuniVault$,
       accountData$: of(EMPTY),
     } as any) as AppContext
 
@@ -78,21 +76,21 @@ export function openMultiplyVaultStory({
             setVaultFormToggleTitle: () => null,
           }}
         >
-          <OpenMultiplyVaultStoryContainer ilk={'WBTC-A'} title={title} />
+          <GuniOpenMultiplyVaultStoryContainer ilk={'GUNIV3DAIUSDC1-A'} title={title} />
         </SharedUIContext.Provider>
       </appContext.Provider>
     )
   }
 }
 
-const OpenMultiplyVaultStoryContainer = ({ title, ilk }: { title?: string; ilk: string }) => {
+const GuniOpenMultiplyVaultStoryContainer = ({ title, ilk }: { title?: string; ilk: string }) => {
   if (!isAppContextAvailable()) return null
 
   return (
     <Container variant="appContainer">
       <Grid>
         {title && <Card>{title}</Card>}
-        <DefaultOpenMultiplyVaultView ilk={ilk} />
+        <GuniOpenMultiplyVaultView ilk={ilk} />
       </Grid>
     </Container>
   )

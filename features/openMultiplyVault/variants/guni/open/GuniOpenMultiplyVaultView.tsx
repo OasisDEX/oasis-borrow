@@ -9,7 +9,7 @@ import { useObservableWithError } from '../../../../../helpers/observableHook'
 import { createOpenMultiplyVaultAnalytics$ } from '../../../openMultiplyVaultAnalytics'
 import { GuniOpenMultiplyVaultContainer } from './GuniOpenMultiplyVaultContainer'
 
-export function GuniOpenVaultView({
+export function GuniOpenMultiplyVaultView({
   ilk,
 }: {
   ilk: string
