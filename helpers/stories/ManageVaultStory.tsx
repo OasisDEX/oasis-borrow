@@ -104,7 +104,7 @@ export function manageVaultStory({
           () => obs$,
           () => of(VaultType.Borrow),
           MOCK_VAULT_ID,
-          MOCK_CHAIN_ID
+          MOCK_CHAIN_ID,
         ),
       ),
       manageVault$: () => obs$,

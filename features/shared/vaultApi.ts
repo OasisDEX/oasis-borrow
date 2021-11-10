@@ -10,26 +10,27 @@ import { catchError, map, switchMap } from 'rxjs/operators'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 
-export function checkVaultTypeUsingApi$(context$: Observable<Context>, id: BigNumber): Observable<VaultType> {
-  
+export function checkVaultTypeUsingApi$(
+  context$: Observable<Context>,
+  id: BigNumber,
+): Observable<VaultType> {
   return context$.pipe(
     switchMap((context) => {
-        const vaultType = getVaultFromApi$(id, new BigNumber(context.chainId)).pipe(
-    map((resp) => {
-      if (Object.keys(resp).length === 0) {
-        return VaultType.Borrow
-      } else {
-        const vaultResponse = resp as {
-          vaultId: BigNumber
-          type: VaultType
-        }
-        return vaultResponse.type as VaultType
-      }
+      const vaultType = getVaultFromApi$(id, new BigNumber(context.chainId)).pipe(
+        map((resp) => {
+          if (Object.keys(resp).length === 0) {
+            return VaultType.Borrow
+          } else {
+            const vaultResponse = resp as {
+              vaultId: BigNumber
+              type: VaultType
+            }
+            return vaultResponse.type as VaultType
+          }
+        }),
+      )
+      return vaultType
     }),
-  )
-  return vaultType
-}
-    )
   )
 }
 
@@ -66,7 +67,10 @@ export function checkMultipleVaultsFromApi$(
   )
 }
 
-export function getVaultFromApi$(vaultId: BigNumber, chainId: BigNumber): Observable<
+export function getVaultFromApi$(
+  vaultId: BigNumber,
+  chainId: BigNumber,
+): Observable<
   | {
       vaultId: BigNumber
       type: VaultType
