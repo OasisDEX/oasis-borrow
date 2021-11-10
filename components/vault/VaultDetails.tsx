@@ -10,7 +10,8 @@ import { zero } from 'helpers/zero'
 import { Trans } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
+import { Box, Card, Divider, Flex, Grid, Heading, Text } from 'theme-ui'
+import { VaultChangesInformationContainer, VaultChangesInformationItem } from './VaultChangesInformation'
 
 type CollRatioColor = 'primary' | 'onError' | 'onWarning' | 'onSuccess'
 
@@ -334,6 +335,31 @@ export function VaultDetailsNetValueModal({ marketPrice, close }: ModalProps<Net
           {t('manage-multiply-vault.card.based-on-price', { marketPrice: formatCryptoBalance(marketPrice? marketPrice : zero) })}
         </Text>
       </Grid>
+      <Grid gap={2} columns={[1,2,3]}>
+        <Box/>
+        <Box>kol1</Box>
+        <Box>kol2</Box>
+        
+        <Box>{t('manage-multiply-vault.card.collateral-value')}</Box>
+        <Box>23.07 ETH</Box>
+        <Box>$112,555,445.00</Box>
+
+        <Box>collateral bla bla bla</Box>
+        <Box>23.07 ETH</Box>
+        <Box>$112,555,445.00</Box>
+
+        <Box>{t('net-value')}</Box>
+        <Box>23.07 ETH</Box>
+        <Box>$112,555,445.00</Box>
+      </Grid>
+
+      <Divider variant="styles.hrVaultFormBottom" />
+      <Grid gap={2} columns={[1,2,3]}>
+        <Box>gas fee</Box>
+        <Box>23.07 ETH</Box>
+        <Box>$112,555,445.00</Box>
+      </Grid>
+
     </VaultDetailsCardModal>
   )
 }
