@@ -44,7 +44,7 @@ export function GuniOpenMultiplyVaultChangesInformation(props: OpenGuniVaultStat
         value={
           <Flex>
             <Text>
-              {formatCryptoBalance(gettingCollateral)} USDC
+              {formatCryptoBalance(gettingCollateral)} GUNI
               {` `}
               <Text as="span" sx={{ color: 'text.subtitle' }}>
                 (${formatAmount(gettingCollateralUSD, 'USD')})

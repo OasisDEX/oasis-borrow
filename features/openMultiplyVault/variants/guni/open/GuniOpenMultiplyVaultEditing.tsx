@@ -1,6 +1,5 @@
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { handleNumericInput } from 'helpers/input'
-import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Divider, Flex, Grid, Text } from 'theme-ui'
@@ -17,11 +16,9 @@ export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
     balanceInfo: { daiBalance },
     updateDeposit,
     updateDepositMax,
-    ilkData: { liquidationRatio },
     inputAmountsEmpty,
+    multiply,
   } = props
-
-  const maxMultiple = liquidationRatio.div(liquidationRatio.minus(one)).toNumber().toFixed(0)
 
   return (
     <Grid gap={4}>
@@ -48,7 +45,7 @@ export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
           }}
         >
           <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', color: 'primary' }}>
-            {maxMultiple}x {token}
+            {multiply.toNumber().toFixed(2)}x {token}
           </Text>
         </Flex>
       </Grid>

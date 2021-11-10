@@ -22,7 +22,7 @@ export function GuniOpenMultiplyVaultForm(props: OpenGuniVaultState) {
   const { t } = useTranslation()
 
   return (
-    <VaultFormContainer toggleTitle={t('open.vault.title')}>
+    <VaultFormContainer toggleTitle={t('open-vault.title')}>
       <OpenMultiplyVaultTitle
         {...props}
         title={t('vault-form.header.editWithToken', { token: 'GUNI' })}
