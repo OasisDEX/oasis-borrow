@@ -106,7 +106,6 @@ export function openGuniVault<S extends TxStateDependencies>(
     token0Amount, // DAI
     requiredDebt,
     swap,
-
     minToTokenAmount,
   }: S,
 ) {
@@ -158,6 +157,7 @@ export function openGuniVault<S extends TxStateDependencies>(
             txState.status === TxStatus.Success && txState.receipt,
           )
 
+          // TODO: save in db that vault is multiply
           // const jwtToken = jwtAuthGetToken(account as string)
           // if (id && jwtToken) {
           //   saveVaultUsingApi$(

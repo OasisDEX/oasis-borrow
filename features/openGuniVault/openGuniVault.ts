@@ -223,6 +223,12 @@ interface GuniTxData {
   requiredDebt?: BigNumber
   oazoFee?: BigNumber
   totalFees?: BigNumber
+  totalCollateral?: BigNumber
+  gettingCollateral: BigNumber
+  gettingCollateralUSD: BigNumber
+  afterNetValueUSD: BigNumber
+  buyingCollateralUSD: BigNumber
+  multiply: BigNumber
 }
 
 type GuniTxDataChange = { kind: 'guniTxData' } & GuniTxData
@@ -362,7 +368,6 @@ export function createOpenGuniVault$(
                         }).pipe(
                           distinctUntilChanged(compareBigNumber),
                           switchMap((daiAmountToSwapForUsdc /* USDC */) => {
-                            console.log('DEBUG:daiAmountToSwapForUsdc', daiAmountToSwapForUsdc)
                             const token0Amount = leveragedAmount.minus(daiAmountToSwapForUsdc)
                             const oazoFee = daiAmountToSwapForUsdc.times(OAZO_FEE)
                             return exchangeQuote$(
@@ -383,32 +388,19 @@ export function createOpenGuniVault$(
                                 }).pipe(
                                   map(
                                     ({ amount0, amount1, mintAmount }): GuniTxDataChange => {
-                                      const requiredDebt = flAmount?.plus(oazoFee)
+                                      const requiredDebt = flAmount?.plus(oazoFee) || zero
 
-                                      const collateralPrice = mintAmount.times(
-                                        priceInfo.currentCollateralPrice,
-                                      )
+                                      const afterNetValueUSD = mintAmount
+                                        .times(priceInfo.currentCollateralPrice)
+                                        .minus(requiredDebt)
 
-                                      console.log(`
-                                        DEBUG:\n
-                                        mintAmount: ${mintAmount}
-                                        collateralPrice: ${collateralPrice}
-                                        collateralizationRatio: ${collateralPrice.div(
-                                          requiredDebt!,
-                                        )}
-                                        token0Amount: ${token0Amount}
-                                        token1Amount: ${token1Amount}
-                                        amount0: ${amount0}
-                                        amount1: ${amount1}
-                                        swap.daiAmount: ${swap.daiAmount}
-                                        swap.daiAmount + fee: ${swap.daiAmount.plus(oazoFee)}
-                                        oazoFee: ${oazoFee}
-                                        daiAmountToSwapForUsdc: ${daiAmountToSwapForUsdc}
-                                      `)
-
-                                      /*
-                                          fromTokenAmount -
-                                      */
+                                      const multiple = mintAmount
+                                        .times(priceInfo.currentCollateralPrice)
+                                        .div(
+                                          mintAmount
+                                            .times(priceInfo.currentCollateralPrice)
+                                            .minus(requiredDebt),
+                                        )
 
                                       return {
                                         kind: 'guniTxData',
@@ -424,11 +416,19 @@ export function createOpenGuniVault$(
                                         minToTokenAmount: swap.collateralAmount.times(
                                           one.minus(SLIPPAGE),
                                         ),
+                                        buyingCollateralUSD: amount1,
+                                        totalCollateral: mintAmount,
                                         afterCollateralAmount: mintAmount,
                                         afterOutstandingDebt: requiredDebt,
                                         requiredDebt,
                                         oazoFee,
                                         totalFees: oazoFee,
+                                        gettingCollateral: mintAmount,
+                                        gettingCollateralUSD: mintAmount.times(
+                                          priceInfo.currentCollateralPrice,
+                                        ),
+                                        afterNetValueUSD,
+                                        multiply: multiple,
                                       }
                                     },
                                   ),
