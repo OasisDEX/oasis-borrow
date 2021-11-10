@@ -100,7 +100,9 @@ export const Components = () => {
     <Container>
       <Heading sx={{ mt: 4, fontSize: 5 }}>Components</Heading>
       <Heading sx={{ mt: 4, fontSize: 5 }}>Buttons</Heading>
-      <Grid sx={{ gridTemplateColumns: 'repeat(5, 1fr)', maxWidth: '1000px', justifyItems: 'start' }}>
+      <Grid
+        sx={{ gridTemplateColumns: 'repeat(5, 1fr)', maxWidth: '1000px', justifyItems: 'start' }}
+      >
         {buttons.map((variant) => (
           <Box sx={{ position: 'relative', bg: 'white', m: 3, p: 3 }} key={variant}>
             <Text sx={{ position: 'absolute', top: 0, transform: 'translateY(-90%)' }}>

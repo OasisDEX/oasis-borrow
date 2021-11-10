@@ -658,15 +658,15 @@ const oasisBaseTheme = {
   },
   chevronUpDown: {
     sort: {
-      ml: 1, 
+      ml: 1,
       display: 'flex',
       width: 1,
     },
     select: {
-      ml: 1, 
-      position: 'relative', 
-      top: '1px'
-    }
+      ml: 1,
+      position: 'relative',
+      top: '1px',
+    },
   },
   forms: {
     label: {

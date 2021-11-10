@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
-import ChevronUpDown from 'components/ChevronUpDown'
+import { ChevronUpDown } from 'components/ChevronUpDown'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import {
@@ -411,7 +411,7 @@ function OtherActionsSelect(props: ManageMultiplyVaultState) {
             }}
           >
             {children}
-            <ChevronUpDown 
+            <ChevronUpDown
               isUp={!!menuIsOpen}
               variant="select"
               size="auto"

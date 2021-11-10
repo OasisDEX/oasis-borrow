@@ -16,8 +16,8 @@ import { TRANSITIONS } from 'theme'
 import { Box, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from './AppContextProvider'
+import { ChevronUpDown } from './ChevronUpDown'
 import { SelectComponents } from 'react-select/src/components'
-import ChevronUpDown from './ChevronUpDown'
 
 const {
   publicRuntimeConfig: { apiHost },
@@ -267,12 +267,7 @@ const LangSelectMobileComponents: Partial<SelectComponents<{
       }}
     >
       {children}
-      <ChevronUpDown 
-        isUp={!!menuIsOpen}
-        variant="select"
-        size="auto"
-        width="13.3px"
-      />
+      <ChevronUpDown isUp={!!menuIsOpen} variant="select" size="auto" width="13.3px" />
     </Box>
   ),
 }

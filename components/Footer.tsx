@@ -9,8 +9,8 @@ import getConfig from 'next/config'
 import React from 'react'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
 
+import { ChevronUpDown } from './ChevronUpDown'
 import { SelectComponents } from 'react-select/src/components'
-import ChevronUpDown from './ChevronUpDown'
 
 const {
   publicRuntimeConfig: { buildHash, buildDate, showBuildInfo, apiHost },
@@ -106,13 +106,7 @@ const LangSelectComponents: Partial<SelectComponents<{
       }}
     >
       {children}
-      <ChevronUpDown 
-        isUp={!!menuIsOpen}
-        variant="select"
-        size="auto"
-        width="10px"
-        height="7px"
-      />
+      <ChevronUpDown isUp={!!menuIsOpen} variant="select" size="auto" width="10px" height="7px" />
     </Box>
   ),
 }

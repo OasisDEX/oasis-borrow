@@ -1,9 +1,9 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { Direction } from 'helpers/form'
 import { useTranslation } from 'next-i18next'
 import React, { HTMLProps, memo, ReactNode } from 'react'
 import { Box, Button, Container, SxStyleProp } from 'theme-ui'
-import ChevronUpDown from './ChevronUpDown'
+
+import { ChevronUpDown } from './ChevronUpDown'
 
 export interface ColumnDef<T, S> {
   headerLabel: string
