@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
@@ -322,11 +323,14 @@ export function VaultDetailsBuyingPowerModal({ close }: ModalProps) {
 }
 
 interface NetValueProps {
-  marketPrice: BigNumber | undefined
+  marketPrice: BigNumber | undefined,
+  netValueUSD: BigNumber,
+  vault: Vault
 }
 
-export function VaultDetailsNetValueModal({ marketPrice, close }: ModalProps<NetValueProps>) {
+export function VaultDetailsNetValueModal({ marketPrice, netValueUSD, vault, close }: ModalProps<NetValueProps>) {
   const { t } = useTranslation()
+  const lockedCollateralUSD = vault.lockedCollateral.times(marketPrice!== undefined ? marketPrice : zero);
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
@@ -337,25 +341,25 @@ export function VaultDetailsNetValueModal({ marketPrice, close }: ModalProps<Net
       </Grid>
       <Grid gap={2} columns={[1,2,3]}>
         <Box/>
-        <Box>kol1</Box>
-        <Box>kol2</Box>
-        
         <Box>{t('manage-multiply-vault.card.collateral-value')}</Box>
-        <Box>23.07 ETH</Box>
-        <Box>$112,555,445.00</Box>
+        <Box>{t('manage-multiply-vault.card.usd-value')}</Box>
+        
+        <Box>{t('manage-multiply-vault.card.collateral-value-in-vault')}</Box>
+        <Box>{`${formatCryptoBalance(vault.lockedCollateral)} ${vault.token}`}</Box>
+        <Box>{lockedCollateralUSD !== zero ? `$${formatCryptoBalance(vault.lockedCollateral.times(lockedCollateralUSD))}` : "Market price unavailable, please check later"}</Box>
 
-        <Box>collateral bla bla bla</Box>
-        <Box>23.07 ETH</Box>
+        <Box>{t('manage-multiply-vault.card.dai-debt-in-vault')}</Box>
+        <Box>23.07 TKN</Box>
         <Box>$112,555,445.00</Box>
 
         <Box>{t('net-value')}</Box>
-        <Box>23.07 ETH</Box>
-        <Box>$112,555,445.00</Box>
+        <Box>23.07 TKN</Box>
+        <Box>{`$${formatAmount(netValueUSD, 'USD')}`}</Box>
       </Grid>
 
       <Divider variant="styles.hrVaultFormBottom" />
       <Grid gap={2} columns={[1,2,3]}>
-        <Box>gas fee</Box>
+        <Box>{t('manage-multiply-vault.card.gas-fees')}</Box>
         <Box>23.07 ETH</Box>
         <Box>$112,555,445.00</Box>
       </Grid>
@@ -547,12 +551,14 @@ export function VaultDetailsCardNetValue({
   afterPillColors,
   showAfterPill,
   currentPnL,
-  marketPrice
+  marketPrice,
+  vault
 }: {
   netValueUSD: BigNumber
   afterNetValueUSD: BigNumber
   currentPnL: BigNumber
   marketPrice: BigNumber | undefined
+  vault: Vault
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
@@ -567,7 +573,7 @@ export function VaultDetailsCardNetValue({
         roundMode: BigNumber.ROUND_DOWN,
       })}`}
       valueAfter={showAfterPill && `$${formatAmount(afterNetValueUSD, 'USD')}`}
-      openModal={() => openModal(VaultDetailsNetValueModal, { marketPrice:  marketPrice})}
+      openModal={() => openModal(VaultDetailsNetValueModal, { marketPrice, netValueUSD, vault})}
       afterPillColors={afterPillColors}
     />
   )
