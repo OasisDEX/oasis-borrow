@@ -315,6 +315,7 @@ export function createOpenGuniVault$(
                           switchMap((daiAmountToSwapForUsdc /* USDC */) => {
                             console.log('DEBUG:daiAmountToSwapForUsdc', daiAmountToSwapForUsdc)
                             const token0Amount = leveragedAmount.minus(daiAmountToSwapForUsdc)
+                            const oazoFee = daiAmountToSwapForUsdc.times(OAZO_FEE)
                             return exchangeQuote$(
                               tokenInfo.token1,
                               SLIPPAGE,
@@ -333,7 +334,6 @@ export function createOpenGuniVault$(
                                 }).pipe(
                                   map(
                                     ({ amount0, amount1, mintAmount }): GuniTxDataChange => {
-                                      const oazoFee = daiAmountToSwapForUsdc.times(OAZO_FEE)
                                       const requiredDebt = flAmount?.plus(oazoFee)
 
                                       const collateralPrice = mintAmount.times(
@@ -358,6 +358,10 @@ export function createOpenGuniVault$(
                                         oazoFee: ${oazoFee}
                                         daiAmountToSwapForUsdc: ${daiAmountToSwapForUsdc}
                                       `)
+
+                                      /*
+                                          fromTokenAmount -
+                                      */
 
                                       return {
                                         kind: 'guniTxData',

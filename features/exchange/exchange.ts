@@ -94,7 +94,7 @@ export function getQuote$(
     slippage: slippage.times(100).toString(),
     disableEstimate: 'true',
     allowPartialFill: 'false',
-    protocols: 'PSM',
+    protocols: 'UNISWAP_V3,PMM4,UNISWAP_V2,SUSHI,CURVE,PSM',
   })
 
   const responseBase = {
