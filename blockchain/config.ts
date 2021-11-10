@@ -229,7 +229,7 @@ const hardhat: NetworkConfig = {
   exchange: contractDesc(
     exchange,
     getConfig()?.publicRuntimeConfig?.exchangeAddress ||
-      '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B',
+      '0x4C4a2f8c81640e47606d3fd77B353E87Ba015584',
   ),
 }
 
