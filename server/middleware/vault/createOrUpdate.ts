@@ -4,7 +4,7 @@ import { prisma } from 'server/prisma'
 import * as z from 'zod'
 
 import { getUserFromRequest } from '../signature-auth/getUserFromRequest'
-import { selectVaultById } from './get'
+import { selectVaultByIdAndChainId } from './get'
 
 const vaultSchema = z.object({
   id: z.number(),
@@ -26,12 +26,16 @@ export async function createOrUpdate(req: express.Request, res: express.Response
     return res.status(403).send('Incorrect type of vault')
   }
 
-  const vault = await selectVaultById({ vaultId: params.id })
+  const vault = await selectVaultByIdAndChainId(vaultData)
 
   if (vault === null || vault.owner_address === user.address) {
+
     await prisma.vault.upsert({
       where: {
-        vault_id: params.id,
+        vault_vault_id_chain_id_unique_constraint: {
+          vault_id: vaultData.vault_id,
+          chain_id: vaultData.chain_id,
+        },
       },
       update: vaultData,
       create: vaultData,

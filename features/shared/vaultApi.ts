@@ -1,16 +1,20 @@
 import { Vault, VaultType as VaultTypeDB } from '@prisma/client'
 import BigNumber from 'bignumber.js'
+import { Context } from 'blockchain/network'
 import { VaultType } from 'features/generalManageVault/generalManageVault'
 import getConfig from 'next/config'
 import { of } from 'ramda'
 import { Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
-import { catchError, map } from 'rxjs/operators'
+import { catchError, map, switchMap } from 'rxjs/operators'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 
-export function checkVaultTypeUsingApi$(id: BigNumber): Observable<VaultType> {
-  const vaultType = getVaultFromApi$(id).pipe(
+export function checkVaultTypeUsingApi$(context$: Observable<Context>, id: BigNumber): Observable<VaultType> {
+  
+  return context$.pipe(
+    switchMap((context) => {
+        const vaultType = getVaultFromApi$(id, new BigNumber(context.chainId)).pipe(
     map((resp) => {
       if (Object.keys(resp).length === 0) {
         return VaultType.Borrow
@@ -23,8 +27,10 @@ export function checkVaultTypeUsingApi$(id: BigNumber): Observable<VaultType> {
       }
     }),
   )
-
   return vaultType
+}
+    )
+  )
 }
 
 interface CheckMultipleVaultsResponse {
@@ -60,28 +66,28 @@ export function checkMultipleVaultsFromApi$(
   )
 }
 
-export function getVaultFromApi$(
-  vaultId: BigNumber,
-): Observable<
+export function getVaultFromApi$(vaultId: BigNumber, chainId: BigNumber): Observable<
   | {
       vaultId: BigNumber
       type: VaultType
+      chainId: BigNumber
     }
   | {}
 > {
   return ajax({
-    url: `${basePath}/api/vault/${vaultId}`,
+    url: `${basePath}/api/vault/${vaultId}/${chainId}`,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
   }).pipe(
     map((resp) => {
-      const { vaultId, type } = resp.response as {
+      const { vaultId, type, chainId } = resp.response as {
         vaultId: number
         type: VaultType
+        chainId: number
       }
-      return { vaultId, type }
+      return { vaultId, type, chainId }
     }),
     catchError((err) => {
       if (err.xhr.status === 404) {
