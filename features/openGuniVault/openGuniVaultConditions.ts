@@ -13,7 +13,7 @@ const defaultOpenVaultStageCategories = {
 }
 
 export function applyGuniOpenVaultStageCategorisation(state: OpenGuniVaultState) {
-  const { stage, token, depositAmount, allowance } = state
+  const { stage, depositAmount, allowance } = state
   const openingEmptyVault = depositAmount ? depositAmount.eq(zero) : true
   const depositAmountLessThanAllowance = allowance && depositAmount && allowance.gte(depositAmount)
 
@@ -40,7 +40,7 @@ export function applyGuniOpenVaultStageCategorisation(state: OpenGuniVaultState)
         ...defaultOpenVaultStageCategories,
         isProxyStage: true,
         totalSteps,
-        currentStep: totalSteps - (token === 'ETH' ? 1 : 2),
+        currentStep: totalSteps - 2,
       }
     case 'allowanceWaitingForConfirmation':
     case 'allowanceWaitingForApproval':
@@ -79,19 +79,6 @@ export interface GuniOpenMultiplyVaultConditions {
 
   inputAmountsEmpty: boolean
 
-  // vaultWillBeAtRiskLevelWarning: boolean
-  // vaultWillBeAtRiskLevelDanger: boolean
-  // vaultWillBeUnderCollateralized: boolean
-  //
-  // vaultWillBeAtRiskLevelWarningAtNextPrice: boolean
-  // vaultWillBeAtRiskLevelDangerAtNextPrice: boolean
-  // vaultWillBeUnderCollateralizedAtNextPrice: boolean
-  //
-  // depositingAllEthBalance: boolean
-  // depositAmountExceedsCollateralBalance: boolean
-  // generateAmountExceedsDaiYieldFromDepositingCollateral: boolean
-  // generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice: boolean
-  // generateAmountExceedsDebtCeiling: boolean
   generateAmountLessThanDebtFloor: boolean
   generateAmountMoreThanMaxFlashAmount: boolean
 
@@ -103,28 +90,13 @@ export interface GuniOpenMultiplyVaultConditions {
   isLoadingStage: boolean
   canProgress: boolean
   canRegress: boolean
-  // canAdjustRisk: boolean
   isExchangeLoading: boolean
 }
 
 export const defaultGuniOpenMultiplyVaultConditions: GuniOpenMultiplyVaultConditions = {
   ...defaultOpenVaultStageCategories,
   inputAmountsEmpty: true,
-  // canAdjustRisk: false,
 
-  // vaultWillBeAtRiskLevelWarning: false,
-  // vaultWillBeAtRiskLevelDanger: false,
-  // vaultWillBeUnderCollateralized: false,
-
-  // vaultWillBeAtRiskLevelWarningAtNextPrice: false,
-  // vaultWillBeAtRiskLevelDangerAtNextPrice: false,
-  // vaultWillBeUnderCollateralizedAtNextPrice: false,
-
-  // depositingAllEthBalance: false,
-  // depositAmountExceedsCollateralBalance: false,
-  // generateAmountExceedsDaiYieldFromDepositingCollateral: false,
-  // generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice: false,
-  // generateAmountExceedsDebtCeiling: false,
   generateAmountLessThanDebtFloor: false,
   generateAmountMoreThanMaxFlashAmount: false,
 
@@ -142,80 +114,20 @@ export const defaultGuniOpenMultiplyVaultConditions: GuniOpenMultiplyVaultCondit
 export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGuniVaultState {
   const {
     stage,
-    // afterCollateralizationRatio,
-    // afterCollateralizationRatioAtNextPrice,
     afterOutstandingDebt,
-    // daiYieldFromDepositingCollateral,
-    // daiYieldFromDepositingCollateralAtNextPrice,
 
     ilkData,
-    // token,
-    // balanceInfo: { collateralBalance },
     depositAmount,
 
     selectedAllowanceRadio,
     allowanceAmount,
     allowance,
-    // maxCollRatio,
     exchangeError,
     quote,
     swap,
   } = state
 
   const inputAmountsEmpty = !depositAmount
-  // const canAdjustRisk =
-  //   depositAmount !== undefined &&
-  //   maxCollRatio !== undefined &&
-  //   depositAmount.gt(0) &&
-  //   maxCollRatio.gt(ilkData.liquidationRatio)
-
-  // const vaultWillBeAtRiskLevelDanger =
-  //   !inputAmountsEmpty &&
-  //   afterCollateralizationRatio.gte(ilkData.liquidationRatio) &&
-  //   afterCollateralizationRatio.lte(ilkData.collateralizationDangerThreshold)
-  //
-  // const vaultWillBeAtRiskLevelDangerAtNextPrice =
-  //   !vaultWillBeAtRiskLevelDanger &&
-  //   !inputAmountsEmpty &&
-  //   afterCollateralizationRatioAtNextPrice.gte(ilkData.liquidationRatio) &&
-  //   afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationDangerThreshold)
-  //
-  // const vaultWillBeAtRiskLevelWarning =
-  //   !inputAmountsEmpty &&
-  //   afterCollateralizationRatio.gt(ilkData.collateralizationDangerThreshold) &&
-  //   afterCollateralizationRatio.lte(ilkData.collateralizationWarningThreshold)
-  //
-  // const vaultWillBeAtRiskLevelWarningAtNextPrice =
-  //   !vaultWillBeAtRiskLevelWarning &&
-  //   !inputAmountsEmpty &&
-  //   afterCollateralizationRatioAtNextPrice.gt(ilkData.collateralizationDangerThreshold) &&
-  //   afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationWarningThreshold)
-  //
-  // const vaultWillBeUnderCollateralized =
-  //   afterOutstandingDebt?.gt(zero) &&
-  //   afterCollateralizationRatio.lt(ilkData.liquidationRatio) &&
-  //   !afterCollateralizationRatio.isZero()
-  //
-  // const vaultWillBeUnderCollateralizedAtNextPrice =
-  //   !vaultWillBeUnderCollateralized &&
-  //   !!(
-  //     afterOutstandingDebt?.gt(zero) &&
-  //     afterCollateralizationRatioAtNextPrice.lt(ilkData.liquidationRatio) &&
-  //     !afterCollateralizationRatioAtNextPrice.isZero()
-  //   )
-
-  // const depositingAllEthBalance = token === 'ETH' && !!depositAmount?.eq(collateralBalance)
-  // const depositAmountExceedsCollateralBalance = !!depositAmount?.gt(collateralBalance)
-  //
-  // const generateAmountExceedsDaiYieldFromDepositingCollateral = !!afterOutstandingDebt?.gt(
-  //   daiYieldFromDepositingCollateral,
-  // )
-  //
-  // const generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice =
-  //   !generateAmountExceedsDaiYieldFromDepositingCollateral &&
-  //   !!afterOutstandingDebt?.gt(daiYieldFromDepositingCollateralAtNextPrice)
-
-  // const generateAmountExceedsDebtCeiling = !!afterOutstandingDebt?.gt(ilkData.ilkDebtAvailable)
 
   const generateAmountLessThanDebtFloor =
     afterOutstandingDebt &&
@@ -258,11 +170,6 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     !(
       inputAmountsEmpty ||
       isLoadingStage ||
-      // vaultWillBeUnderCollateralized ||
-      // vaultWillBeUnderCollateralizedAtNextPrice ||
-      // depositingAllEthBalance ||
-      // depositAmountExceedsCollateralBalance ||
-      // generateAmountExceedsDebtCeiling ||
       generateAmountLessThanDebtFloor ||
       generateAmountMoreThanMaxFlashAmount ||
       customAllowanceAmountEmpty ||
@@ -284,20 +191,7 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
   return {
     ...state,
     inputAmountsEmpty,
-    // canAdjustRisk,
-    //
-    // vaultWillBeAtRiskLevelWarning,
-    // vaultWillBeAtRiskLevelWarningAtNextPrice,
-    // vaultWillBeAtRiskLevelDanger,
-    // vaultWillBeAtRiskLevelDangerAtNextPrice,
-    // vaultWillBeUnderCollateralized,
-    // vaultWillBeUnderCollateralizedAtNextPrice,
-    //
-    // depositingAllEthBalance,
-    // depositAmountExceedsCollateralBalance,
-    // generateAmountExceedsDaiYieldFromDepositingCollateral,
-    // generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice,
-    // generateAmountExceedsDebtCeiling,
+
     generateAmountLessThanDebtFloor,
     generateAmountMoreThanMaxFlashAmount,
 

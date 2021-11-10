@@ -104,20 +104,20 @@ interface ExchangeState {
 
 type ExchangeChange = { kind: 'quote'; quote: Quote } | { kind: 'swap'; swap: Quote }
 
-function createInitialQuoteChange(
-  exchangeQuote$: (
-    token: string,
-    slippage: BigNumber,
-    amount: BigNumber,
-    action: ExchangeAction,
-  ) => Observable<Quote>,
-  token: string,
-): Observable<ExchangeChange> {
-  return exchangeQuote$(token, new BigNumber(0.1), new BigNumber(1), 'BUY_COLLATERAL').pipe(
-    map((quote) => ({ kind: 'quote' as const, quote })),
-    shareReplay(1),
-  )
-}
+// function createInitialQuoteChange(
+//   exchangeQuote$: (
+//     token: string,
+//     slippage: BigNumber,
+//     amount: BigNumber,
+//     action: ExchangeAction,
+//   ) => Observable<Quote>,
+//   token: string,
+// ): Observable<ExchangeChange> {
+//   return exchangeQuote$(token, new BigNumber(0.1), new BigNumber(1), 'BUY_COLLATERAL').pipe(
+//     map((quote) => ({ kind: 'quote' as const, quote })),
+//     shareReplay(1),
+//   )
+// }
 
 function applyExchange<S extends ExchangeState>(state: S, change: ExchangeChange): S {
   switch (change.kind) {
