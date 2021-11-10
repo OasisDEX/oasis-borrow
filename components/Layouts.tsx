@@ -65,7 +65,7 @@ export function WithAnnouncementLayout({
           <GenericAnnouncement
             text="Welcome to the new Oasis.app. We are thrilled to have you here. Please check the new stuff. How long can it go is that I
         m curious"
-            discordLink="https://discord.gg/Kc2bBB59GC"
+            discordLink="https://discord.gg/oasisapp"
             link="https://blog.ethereum.org/2015/11/15/merkling-in-ethereum/"
             linkText="Check blog post"
           />
