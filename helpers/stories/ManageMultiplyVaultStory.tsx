@@ -11,7 +11,6 @@ import {
   MutableManageMultiplyVaultState,
 } from 'features/manageMultiplyVault/manageMultiplyVault'
 import {
-  MOCK_CHAIN_ID,
   MOCK_VAULT_ID,
   mockManageMultiplyVault$,
   MockManageMultiplyVaultProps,
@@ -107,7 +106,6 @@ export function manageMultiplyVaultStory({
           () => of(EMPTY),
           () => of(VaultType.Multiply),
           MOCK_VAULT_ID,
-          MOCK_CHAIN_ID
         ),
       ),
       manageMultiplyVault$: () => obs$,
@@ -137,7 +135,7 @@ const ManageMultiplyVaultStoryContainer = ({ title }: { title?: string }) => {
       <InjectTokenIconsDefs />
       <Grid>
         {title && <Card>{title}</Card>}
-        <GeneralManageVaultView id={MOCK_VAULT_ID} chainId={MOCK_CHAIN_ID}/>
+        <GeneralManageVaultView id={MOCK_VAULT_ID} />
       </Grid>
     </Container>
   )

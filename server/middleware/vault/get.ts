@@ -5,7 +5,7 @@ import * as z from 'zod'
 
 const paramsSchema = z.object({
   id: z.string(),
-  chainId: z.string()
+  chainId: z.string(),
 })
 
 export async function getVault(req: express.Request, res: express.Response) {
@@ -23,7 +23,7 @@ export async function getVault(req: express.Request, res: express.Response) {
       vaultId: vault.vault_id,
       type: vault.type,
       ownerAddress: vault.owner_address,
-      chainId: vault.chain_id
+      chainId: vault.chain_id,
     })
   }
 }

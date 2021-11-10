@@ -29,7 +29,6 @@ export async function createOrUpdate(req: express.Request, res: express.Response
   const vault = await selectVaultByIdAndChainId(vaultData)
 
   if (vault === null || vault.owner_address === user.address) {
-
     await prisma.vault.upsert({
       where: {
         vault_vault_id_chain_id_unique_constraint: {
