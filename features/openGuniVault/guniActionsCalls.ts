@@ -124,7 +124,7 @@ export function openGuniVault<S extends TxStateDependencies>(
     token0Amount:${token0Amount || zero}
   
   `)
-  return sendWithGasEstimation(openGuniMultiplyVault, {
+  return send(openGuniMultiplyVault, {
     kind: TxMetaKind.openGuni,
     depositCollateral: depositAmount || zero,
     userAddress: account,

@@ -355,6 +355,8 @@ export function createOpenGuniVault$(
                                         swap.daiAmount + fee: ${swap.daiAmount.plus(
                                           oazoFee,
                                         )}                                  
+                                        oazoFee: ${oazoFee}
+                                        daiAmountToSwapForUsdc: ${daiAmountToSwapForUsdc}
                                       `)
 
                                       return {
