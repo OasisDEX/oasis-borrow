@@ -70,6 +70,7 @@ import {
 } from './openGuniVaultConditions'
 import { getGuniMintAmount, getToken1Balance } from './guniActionsCalls'
 import { OAZO_FEE } from 'helpers/multiply/calculations'
+import { validateGuniErrors, validateGuniWarnings } from './guniOpenMultiplyVaultValidations'
 
 type InjectChange = { kind: 'injectStateOverride'; stateToOverride: OpenGuniVaultState }
 
@@ -400,9 +401,7 @@ export function createOpenGuniVault$(
                                         amount0: ${amount0}
                                         amount1: ${amount1}
                                         swap.daiAmount: ${swap.daiAmount}
-                                        swap.daiAmount + fee: ${swap.daiAmount.plus(
-                                          oazoFee,
-                                        )}
+                                        swap.daiAmount + fee: ${swap.daiAmount.plus(oazoFee)}
                                         oazoFee: ${oazoFee}
                                         daiAmountToSwapForUsdc: ${daiAmountToSwapForUsdc}
                                       `)
@@ -499,8 +498,8 @@ export function createOpenGuniVault$(
                     return merge(change$, environmentChanges$).pipe(
                       scan(apply, initialState),
                       map(applyStages),
-                      //   map(validateErrors),
-                      //   map(validateWarnings),
+                      map(validateGuniErrors),
+                      map(validateGuniWarnings),
                       //   switchMap(curry(applyEstimateGas)(addGasEstimation$)),
                       //   map(
                       //     curry(addTransitions)(txHelpers, context, connectedProxyAddress$, change),

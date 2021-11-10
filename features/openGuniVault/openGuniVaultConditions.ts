@@ -81,6 +81,7 @@ export interface GuniOpenMultiplyVaultConditions {
 
   generateAmountLessThanDebtFloor: boolean
   generateAmountMoreThanMaxFlashAmount: boolean
+  generateAmountExceedsDebtCeiling: boolean
 
   customAllowanceAmountEmpty: boolean
   customAllowanceAmountExceedsMaxUint256: boolean
@@ -99,6 +100,7 @@ export const defaultGuniOpenMultiplyVaultConditions: GuniOpenMultiplyVaultCondit
 
   generateAmountLessThanDebtFloor: false,
   generateAmountMoreThanMaxFlashAmount: false,
+  generateAmountExceedsDebtCeiling: false,
 
   customAllowanceAmountEmpty: false,
   customAllowanceAmountExceedsMaxUint256: false,
@@ -151,6 +153,8 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     selectedAllowanceRadio === 'custom' && allowanceAmount?.gt(maxUint256)
   )
 
+  const generateAmountExceedsDebtCeiling = !!afterOutstandingDebt?.gt(ilkData.ilkDebtAvailable)
+
   const customAllowanceAmountLessThanDepositAmount = !!(
     selectedAllowanceRadio === 'custom' &&
     allowanceAmount &&
@@ -194,6 +198,7 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
 
     generateAmountLessThanDebtFloor,
     generateAmountMoreThanMaxFlashAmount,
+    generateAmountExceedsDebtCeiling,
 
     customAllowanceAmountEmpty,
     customAllowanceAmountExceedsMaxUint256,

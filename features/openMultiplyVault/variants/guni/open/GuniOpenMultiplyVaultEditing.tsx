@@ -14,7 +14,7 @@ export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
   const {
     token,
     depositAmount,
-    maxDepositAmount,
+    balanceInfo: { daiBalance },
     updateDeposit,
     updateDepositMax,
     ilkData: { liquidationRatio },
@@ -34,7 +34,7 @@ export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
           onSetMax={updateDepositMax!}
           amount={depositAmount}
           onChange={handleNumericInput(updateDeposit!)}
-          maxAmount={maxDepositAmount}
+          maxAmount={daiBalance}
           maxAmountLabel={t('balance')}
           hasError={false}
         />
