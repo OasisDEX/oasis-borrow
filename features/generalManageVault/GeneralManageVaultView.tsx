@@ -171,10 +171,6 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
         customLoader={<VaultContainerSpinner />}
       >
         {([generalManageVault, vaultHistory, vaultMultiplyHistory]) => {
-          console.log('generalManageVault')
-          console.log(generalManageVault)
-          console.log('type')
-          console.log(generalManageVault.type)
           switch (generalManageVault.type) {
             case VaultType.Borrow:
               return (
