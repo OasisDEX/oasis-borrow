@@ -50,7 +50,16 @@ import { one, zero } from 'helpers/zero'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { observe } from 'blockchain/calls/observe'
 import { getToken1Balance } from './guniActionsCalls'
-import { VaultErrorMessage, VaultWarningMessage } from '../openMultiplyVault/openMultiplyVaultValidations'
+import {
+  VaultErrorMessage,
+  VaultWarningMessage,
+} from '../openMultiplyVault/openMultiplyVaultValidations'
+import {
+  applyGuniOpenVaultConditions,
+  applyGuniOpenVaultStageCategorisation,
+  defaultGuniOpenMultiplyVaultConditions,
+  GuniOpenMultiplyVaultConditions,
+} from './openGuniVaultConditions'
 
 type InjectChange = { kind: 'injectStateOverride'; stateToOverride: OpenGuniVaultState }
 
@@ -140,9 +149,9 @@ export type OpenGuniVaultState = OverrideHelper &
   WarringState &
   ProxyState &
   GuniCalculations &
-  TokensLpBalanceState & {
+  TokensLpBalanceState &
+  GuniOpenMultiplyVaultConditions & {
     // TODO - ADDED BY SEBASTIAN TO BE REMOVED
-    isOpenStage: boolean
     afterOutstandingDebt: BigNumber
     multiply: BigNumber
     totalCollateral: BigNumber // it was not available in standard multiply state
@@ -152,21 +161,12 @@ export type OpenGuniVaultState = OverrideHelper &
     impact: BigNumber
     loanFees: BigNumber
     oazoFee: BigNumber
-    slippage: BigNumber
-    isExchangeLoading: boolean
     gettingCollateral: BigNumber // it was not available in standard multiply state
     gettingCollateralUSD: BigNumber // it was not available in standard multiply state
     buyingCollateralUSD: BigNumber
     maxGenerateAmount: BigNumber
     totalSteps: number
     currentStep: number
-    canRegress: boolean
-    canProgress: boolean
-    isLoadingStage: boolean
-    insufficientAllowance: boolean
-    inputAmountsEmpty: boolean
-    customAllowanceAmountEmpty: boolean
-    updateAllowanceAmount?: (amount?: BigNumber) => void
     netValueUSD: BigNumber
   }
 
@@ -264,6 +264,7 @@ export function createOpenGuniVault$(
                       ...defaultFormState,
                       ...defaultAllowanceState,
                       ...defaultProxyStage,
+                      ...defaultGuniOpenMultiplyVaultConditions,
                       stage: 'editing',
                       priceInfo,
                       balanceInfo,
@@ -288,30 +289,23 @@ export function createOpenGuniVault$(
                       // gasEstimationStatus: GasEstimationStatus.unset,
                       injectStateOverride,
                       // TODO - ADDED BY SEBASTIAN TO BE REMOVED
-                      isOpenStage: false,
-                      afterOutstandingDebt: new BigNumber(1000),
-                      multiply: new BigNumber(1000),
-                      totalCollateral: new BigNumber(1000), // it was not available in standard multiply state
-                      afterNetValueUSD: new BigNumber(1000),
-                      maxDepositAmount: new BigNumber(1000),
-                      txFees: new BigNumber(1000),
-                      impact: new BigNumber(1000),
-                      loanFees: new BigNumber(1000),
-                      oazoFee: new BigNumber(1000),
-                      isExchangeLoading: false,
-                      gettingCollateral: new BigNumber(1000), // it was not available in standard multiply state
-                      gettingCollateralUSD: new BigNumber(1000), // it was not available in standard multiply state
-                      buyingCollateralUSD: new BigNumber(1000),
-                      maxGenerateAmount: new BigNumber(1000),
+                      // isOpenStage: false,
+                      afterOutstandingDebt: zero,
+                      multiply: zero,
+                      totalCollateral: zero, // it was not available in standard multiply state
+                      afterNetValueUSD: zero,
+                      maxDepositAmount: zero,
+                      txFees: zero,
+                      impact: zero,
+                      loanFees: zero,
+                      oazoFee: zero,
+                      gettingCollateral: zero, // it was not available in standard multiply state
+                      gettingCollateralUSD: zero, // it was not available in standard multiply state
+                      buyingCollateralUSD: zero,
+                      maxGenerateAmount: zero,
+                      netValueUSD: zero,
                       totalSteps: 3,
                       currentStep: 1,
-                      canRegress: false,
-                      canProgress: false,
-                      isLoadingStage: false,
-                      insufficientAllowance: true,
-                      customAllowanceAmountEmpty: false,
-                      inputAmountsEmpty: true,
-                      netValueUSD: new BigNumber(1000)
                     }
 
                     const stateSubject$ = new Subject<OpenGuniVaultState>()
@@ -364,10 +358,13 @@ export function createOpenGuniVault$(
                     const apply = combineApplyChanges<OpenGuniVaultState, OpenGuniChanges>(
                       applyEnvironment,
                       applyFormChange,
+                      // applyFormValidation,
                       applyProxyChanges,
                       applyAllowanceChanges,
                       applyExchange,
-                      applyLpTokensChanges,
+                      applyGuniOpenVaultStageCategorisation,
+                      applyGuniOpenVaultConditions,
+                      // applyLpTokensChanges,
                     )
 
                     const environmentChanges$ = merge(
@@ -375,7 +372,7 @@ export function createOpenGuniVault$(
                       balanceInfoChange$(balanceInfo$, token, account),
                       createIlkDataChange$(ilkData$, ilk),
                       createInitialQuoteChange(exchangeQuote$, tokenInfo.token1),
-                      token1AmountChanges$,
+                      // token1AmountChanges$,
                       //createExchangeChange$(exchangeQuote$, stateSubject$),
                     )
 

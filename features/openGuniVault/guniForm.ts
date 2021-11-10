@@ -123,11 +123,30 @@ export function addFormTransitions<
   return state
 }
 
-interface FormValidationState {
-  inputAmountsEmpty: boolean
-  depositingAllDaiBalance: boolean
-  depositAmountExceedsDaiBalance: boolean
-  generateAmountExceedsDebtCeiling: boolean // TODO: maybe in different place
-  generateAmountLessThanDebtFloor: boolean // TODO: maybe in different place
-}
-export function applyFormValidation() {}
+// interface FormValidationState {
+//   inputAmountsEmpty: boolean
+//   depositingAllDaiBalance: boolean
+//   depositAmountExceedsDaiBalance: boolean
+//   // generateAmountExceedsDebtCeiling: boolean // TODO: maybe in different place
+//   // generateAmountLessThanDebtFloor: boolean // TODO: maybe in different place
+// }
+// export function applyFormValidation<
+//   S extends FormState & StateDependencies & { stage: string /* TODO make it precise */ }
+// >(state: S) {
+//   const {
+//     balanceInfo: { daiBalance },
+//     depositAmount,
+//     stage,
+//   } = state
+//   console.log(stage)
+//   if (stage === 'editing') {
+//     return {
+//       ...state,
+//       inputAmountsEmpty: !depositAmount,
+//       depositingAllDaiBalance: daiBalance === depositAmount,
+//       depositAmountExceedsDaiBalance: depositAmount ? depositAmount > daiBalance : false,
+//     }
+//   }
+//
+//   return state
+// }
