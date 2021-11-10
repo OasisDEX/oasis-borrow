@@ -11,6 +11,7 @@ import {
   MutableManageVaultState,
 } from 'features/manageVault/manageVault'
 import {
+  MOCK_CHAIN_ID,
   MOCK_VAULT_ID,
   mockManageVault$,
   MockManageVaultProps,
@@ -103,6 +104,7 @@ export function manageVaultStory({
           () => obs$,
           () => of(VaultType.Borrow),
           MOCK_VAULT_ID,
+          MOCK_CHAIN_ID
         ),
       ),
       manageVault$: () => obs$,
@@ -131,7 +133,7 @@ const ManageVaultStoryContainer = ({ title }: { title?: string }) => {
     <Container variant="appContainer">
       <Grid>
         {title && <Card>{title}</Card>}
-        <GeneralManageVaultView id={MOCK_VAULT_ID} />
+        <GeneralManageVaultView id={MOCK_VAULT_ID} chainId={MOCK_CHAIN_ID} />
       </Grid>
     </Container>
   )

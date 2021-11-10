@@ -51,7 +51,7 @@ export function getApp(config: Config, { nextHandler }: Dependencies): express.A
     tosRoutes(),
   )
 
-  app.get(`${path}/api/vault/:id`, getVault)
+  app.get(`${path}/api/vault/:id/:chainId`, getVault)
   app.post(
     `${path}/api/vault`,
     jwt({ secret: config.userJWTSecret, algorithms: ['HS512'] }),

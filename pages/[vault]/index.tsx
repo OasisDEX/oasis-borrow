@@ -32,7 +32,7 @@ export default function Vault({ id }: { id: string }) {
           {isValidVaultId ? (
             <>
               <VaultBannersView id={vaultId} />
-              <GeneralManageVaultView id={vaultId} />
+              <GeneralManageVaultView id={vaultId}/>
             </>
           ) : (
             <Box sx={{ position: 'relative', zIndex: 1 }}>

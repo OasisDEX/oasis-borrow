@@ -27,7 +27,7 @@ export function createGeneralManageVault$(
   manageMultiplyVault$: (id: BigNumber) => Observable<ManageMultiplyVaultState>,
   manageVault$: (id: BigNumber) => Observable<ManageVaultState>,
   checkVaultType$: (id: BigNumber) => Observable<VaultType>,
-  id: BigNumber,
+  id: BigNumber
 ): Observable<GeneralManageVaultState> {
   return checkVaultType$(id).pipe(
     switchMap((type) => {
