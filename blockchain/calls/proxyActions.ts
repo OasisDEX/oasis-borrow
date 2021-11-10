@@ -396,7 +396,7 @@ function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: Contex
   if (!token0Symbol || !token1Symbol) {
     throw new Error('Invalid token')
   }
-
+  console.log('DEbug:fromTokenAmount', data.fromTokenAmount)
   return contract<DssGuniProxyActions>(guniProxyActions).methods.openMultiplyGuniVault(
     {
       fromTokenAddress: tokens[token0Symbol].address,
@@ -413,7 +413,7 @@ function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: Contex
       cdpId: '0',
       ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
       requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
-      token0Amount: amountToWei(data.token0Amount, token0Symbol).toFixed(0),
+      token0Amount: amountToWei(data.depositCollateral, token0Symbol).toFixed(0),
       methodName: '',
     } as any,
     {
@@ -425,7 +425,7 @@ function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: Contex
       manager: dssCdpManager.address,
       guniProxyActions: guniProxyActions.address,
       lender: fmm,
-      exchange: '0x21dF544947ba3E8b3c32561399E88B52Dc8b2823', //exchange.address,
+      exchange: exchange.address,
     } as any,
   )
 }

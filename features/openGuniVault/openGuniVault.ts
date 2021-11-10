@@ -361,6 +361,7 @@ export function createOpenGuniVault$(
                         }).pipe(
                           distinctUntilChanged(compareBigNumber),
                           switchMap((daiAmountToSwapForUsdc /* USDC */) => {
+                            console.log('DEBUG:daiAmountToSwapForUsdc', daiAmountToSwapForUsdc)
                             const token0Amount = leveragedAmount.minus(daiAmountToSwapForUsdc)
                             return exchangeQuote$(
                               tokenInfo.token1,
@@ -388,14 +389,22 @@ export function createOpenGuniVault$(
                                       )
 
                                       console.log(`
-                                      mintAmount: ${mintAmount}
-                                      collateralPrice: ${collateralPrice}
-                                      collateralizationRatio: ${collateralPrice.div(requiredDebt!)}
-                                      token0Amount: ${token0Amount}
-                                      token1Amount: ${token1Amount}
-                                      amount0: ${amount0}
-                                      amount1: ${amount1}
-
+                                        DEBUG:\n
+                                        mintAmount: ${mintAmount}
+                                        collateralPrice: ${collateralPrice}
+                                        collateralizationRatio: ${collateralPrice.div(
+                                          requiredDebt!,
+                                        )}
+                                        token0Amount: ${token0Amount}
+                                        token1Amount: ${token1Amount}
+                                        amount0: ${amount0}
+                                        amount1: ${amount1}
+                                        swap.daiAmount: ${swap.daiAmount}
+                                        swap.daiAmount + fee: ${swap.daiAmount.plus(
+                                          oazoFee,
+                                        )}
+                                        oazoFee: ${oazoFee}
+                                        daiAmountToSwapForUsdc: ${daiAmountToSwapForUsdc}
                                       `)
 
                                       return {
@@ -407,7 +416,7 @@ export function createOpenGuniVault$(
                                         token1Amount,
                                         amount0,
                                         amount1,
-                                        fromTokenAmount: swap.daiAmount,
+                                        fromTokenAmount: swap.daiAmount.plus(oazoFee),
                                         toTokenAmount: swap.collateralAmount,
                                         minToTokenAmount: swap.collateralAmount.times(
                                           one.minus(SLIPPAGE),
