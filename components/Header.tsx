@@ -17,6 +17,7 @@ import { Box, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'them
 
 import { useAppContext } from './AppContextProvider'
 import { SelectComponents } from 'react-select/src/components'
+import ChevronUpDown from './ChevronUpDown'
 
 const {
   publicRuntimeConfig: { apiHost },
@@ -266,11 +267,11 @@ const LangSelectMobileComponents: Partial<SelectComponents<{
       }}
     >
       {children}
-      <Icon
-        name={menuIsOpen ? 'chevron_up' : 'chevron_down'}
+      <ChevronUpDown 
+        isUp={!!menuIsOpen}
+        variant="select"
         size="auto"
         width="13.3px"
-        sx={{ ml: 1, position: 'relative', top: '1px' }}
       />
     </Box>
   ),
