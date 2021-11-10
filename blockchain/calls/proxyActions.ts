@@ -384,7 +384,7 @@ function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: Contex
     exchange,
     fmm,
     guniResolver,
-    dssGuniProxyActions,
+    guniProxyActions,
     guniRouter,
   } = context
 
@@ -397,11 +397,11 @@ function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: Contex
     throw new Error('Invalid token')
   }
 
-  return contract<DssGuniProxyActions>(dssGuniProxyActions).methods.openMultiplyGuniVault(
+  return contract<DssGuniProxyActions>(guniProxyActions).methods.openMultiplyGuniVault(
     {
       fromTokenAddress: tokens[token0Symbol].address,
       toTokenAddress: tokens[token1Symbol].address,
-      fromTokenAmount: amountToWei(data.fromTokenAmount, token1Symbol).toFixed(0),
+      fromTokenAmount: amountToWei(data.fromTokenAmount, token0Symbol).toFixed(0),
       toTokenAmount: amountToWei(data.toTokenAmount, token1Symbol).toFixed(0),
       minToTokenAmount: amountToWei(data.minToTokenAmount, token1Symbol).toFixed(0),
       exchangeAddress: data.exchangeAddress,
@@ -423,10 +423,9 @@ function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: Contex
       router: guniRouter,
       otherToken: tokens[token1Symbol].address,
       manager: dssCdpManager.address,
-      multiplyProxyActions: dssGuniProxyActions.address,
-
+      guniProxyActions: guniProxyActions.address,
       lender: fmm,
-      exchange: exchange.address,
+      exchange: '0x21dF544947ba3E8b3c32561399E88B52Dc8b2823', //exchange.address,
     } as any,
   )
 }
@@ -436,8 +435,9 @@ export const openGuniMultiplyVault: TransactionDef<OpenGuniMultiplyData> = {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => {
-    const { dssGuniProxyActions } = context
-    return [dssGuniProxyActions.address, getOpenGuniMultiplyCallData(data, context).encodeABI()]
+    const { guniProxyActions } = context
+    console.log({ guniProxyActions })
+    return [guniProxyActions.address, getOpenGuniMultiplyCallData(data, context).encodeABI()]
   },
 }
 
