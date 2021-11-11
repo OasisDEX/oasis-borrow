@@ -19,7 +19,7 @@ import React, { ComponentProps, useCallback } from 'react'
 import { Box, Button, Card, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
-import CookieBanner from './CookieBanner'
+import { CookieBanner } from './CookieBanner'
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
 import { TypeformWidget } from './TypeformWidget'
 

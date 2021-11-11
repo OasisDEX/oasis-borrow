@@ -1,12 +1,44 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { ChevronUpDown } from 'components/ChevronUpDown'
 import { AppLink } from 'components/Links'
-import React, { useState } from 'react'
+import React, { MouseEventHandler, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { Box, Button, Container, Flex, Grid } from 'theme-ui'
+import { Box, Button, Container, Flex, Grid, Text } from 'theme-ui'
+
+function Checkbox({
+  checked,
+  onClick,
+}: {
+  checked: boolean
+  onClick: MouseEventHandler<HTMLDivElement>
+}) {
+  return (
+    <Flex
+      onClick={onClick}
+      sx={{
+        border: '1px solid',
+        borderColor: checked ? 'onSuccess' : 'lavender_o25',
+        backgroundColor: checked ? 'success' : 'surface',
+        width: '20px',
+        height: '20px',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      {checked && <Icon name="checkmark" color="onSuccess" size="auto" width="12px" />}
+    </Flex>
+  )
+}
 
 export function CookieBanner() {
   const { t } = useTranslation()
   const [showSettings, setShowSettings] = useState(false)
+  const [cookieSettings, setCookieSettings]: any = useState({
+    functional: true,
+    analytics: true,
+  })
 
   return (
     <Box sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 'cookie' }}>
@@ -55,7 +87,28 @@ export function CookieBanner() {
             {t('landing.cookie-banner.settings-toggle')}
             <ChevronUpDown isUp={showSettings} size={10} sx={{ ml: 2 }} />
           </Button>
-          {showSettings && <Box>[Settings]</Box>}
+          {showSettings && (
+            <Grid sx={{ gridTemplateColumns: '12px 1fr' }}>
+              {Object.keys(cookieSettings).map((cookieName) => (
+                <>
+                  <Checkbox
+                    key={`${cookieName}-checkbox`}
+                    checked={cookieSettings[cookieName]}
+                    onClick={() => {
+                      setCookieSettings({
+                        ...cookieSettings,
+                        [cookieName]: !cookieSettings[cookieName],
+                      })
+                    }}
+                  />
+                  <Grid key={`${cookieName}-description`}>
+                    <Text>{t(`landing.cookie-banner.cookies.${cookieName}.title`)}</Text>
+                    <Text>{t(`landing.cookie-banner.cookies.${cookieName}.description`)}</Text>
+                  </Grid>
+                </>
+              ))}
+            </Grid>
+          )}
         </Box>
       </Container>
     </Box>
