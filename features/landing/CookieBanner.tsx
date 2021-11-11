@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ChevronUpDown } from 'components/ChevronUpDown'
 import { AppLink } from 'components/Links'
+import * as mixpanel from 'mixpanel-browser'
 import React, { MouseEventHandler, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Box, Button, Container, Flex, Grid, Text } from 'theme-ui'
@@ -32,13 +33,44 @@ function Checkbox({
   )
 }
 
+interface Switch {
+  enable: Function
+  disable: Function
+}
+
+const manageCookie: { [k: string]: Switch } = {
+  marketing: {
+    // todo: implement these when we have adroll integration
+    enable: () => {},
+    disable: () => {},
+  },
+  analytics: {
+    enable: () => mixpanel.opt_in_tracking(),
+    disable: () => mixpanel.opt_out_tracking(),
+    // todo: delete user data https://developer.mixpanel.com/docs/managing-personal-data
+  },
+}
+
 export function CookieBanner() {
   const { t } = useTranslation()
   const [showSettings, setShowSettings] = useState(false)
   const [cookieSettings, setCookieSettings]: any = useState({
-    functional: true,
+    marketing: true,
     analytics: true,
   })
+
+  function toggleCookie(cookieName: string) {
+    const isEnabled = cookieSettings[cookieName]
+    setCookieSettings({
+      ...cookieSettings,
+      [cookieName]: !isEnabled,
+    })
+    if (isEnabled) {
+      manageCookie[cookieName].disable()
+    } else {
+      manageCookie[cookieName].enable()
+    }
+  }
 
   return (
     <Box sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 'cookie' }}>
@@ -94,12 +126,7 @@ export function CookieBanner() {
                   <Checkbox
                     key={`${cookieName}-checkbox`}
                     checked={cookieSettings[cookieName]}
-                    onClick={() => {
-                      setCookieSettings({
-                        ...cookieSettings,
-                        [cookieName]: !cookieSettings[cookieName],
-                      })
-                    }}
+                    onClick={() => toggleCookie(cookieName)}
                   />
                   <Grid key={`${cookieName}-description`}>
                     <Text>{t(`landing.cookie-banner.cookies.${cookieName}.title`)}</Text>

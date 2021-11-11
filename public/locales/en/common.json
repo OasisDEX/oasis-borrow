@@ -214,9 +214,9 @@
       "accept": "Accept",
       "reject": "Reject",
       "cookies": {
-        "functional": {
-          "title": "Functional Cookies",
-          "description": "These items are required to enable basic site fountionality."
+        "marketing": {
+          "title": "Marketing Cookies",
+          "description": "Oasis.app uses anonymised cookies for marketing purposes."
         },
         "analytics": {
           "title": "Analytics Cookies",
