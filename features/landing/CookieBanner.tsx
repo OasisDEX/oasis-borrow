@@ -109,6 +109,25 @@ export function CookieBanner() {
     saveSettings({ accepted: true, cookieSettings })
   }
 
+  const ctaButtons = (
+    <Box
+      sx={{
+        display: 'inline-grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: 2,
+        alignItems: 'start',
+        minWidth: '200px',
+      }}
+    >
+      <Button variant="bean" sx={{ fontSize: 2 }} onClick={() => rejectCookies()}>
+        {t('landing.cookie-banner.reject')}
+      </Button>
+      <Button variant="beanActive" sx={{ fontSize: 2 }} onClick={() => acceptCookies()}>
+        {t('landing.cookie-banner.accept')}
+      </Button>
+    </Box>
+  )
+
   return (
     <Box sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 'cookie' }}>
       <Container variant="landingContainer" sx={{ margin: '0 auto', px: 3 }}>
@@ -132,21 +151,7 @@ export function CookieBanner() {
                 />
               </Box>
             </Box>
-            <Grid
-              sx={{
-                gridTemplateColumns: '1fr 1fr',
-                gap: 2,
-                alignItems: 'start',
-                minWidth: '200px',
-              }}
-            >
-              <Button variant="bean" sx={{ fontSize: 2 }} onClick={() => rejectCookies()}>
-                {t('landing.cookie-banner.reject')}
-              </Button>
-              <Button variant="beanActive" sx={{ fontSize: 2 }} onClick={() => acceptCookies()}>
-                {t('landing.cookie-banner.accept')}
-              </Button>
-            </Grid>
+            <Box sx={{ display: ['none', 'block'], minWidth: '200px' }}>{ctaButtons}</Box>
           </Flex>
           <Button
             variant="textual"
@@ -176,6 +181,7 @@ export function CookieBanner() {
               ))}
             </Grid>
           )}
+          <Box sx={{ display: ['block', 'none'], pt: 3 }}>{ctaButtons}</Box>
         </Box>
       </Container>
     </Box>
