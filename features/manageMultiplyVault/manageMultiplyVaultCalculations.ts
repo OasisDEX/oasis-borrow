@@ -91,6 +91,7 @@ export interface ManageVaultCalculations {
   afterCloseToCollateralUSD: BigNumber
   oneInchAmount: BigNumber
   currentPnL: BigNumber
+  totalGasSpentUSD: BigNumber
 }
 
 export const MAX_COLL_RATIO = new BigNumber(5)
@@ -172,7 +173,8 @@ export const defaultManageMultiplyVaultCalculations: ManageVaultCalculations = {
   afterCloseToDai: zero,
   afterCloseToCollateral: zero,
   afterCloseToCollateralUSD: zero,
-  currentPnL: zero
+  currentPnL: zero,
+  totalGasSpentUSD: zero,
 }
 
 /*

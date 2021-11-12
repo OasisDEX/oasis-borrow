@@ -282,7 +282,7 @@ function getCumulativeWithdrawnUSD(total: BigNumber, event: VaultEvent) {
   }
 }
 
-function getCumulativeFeesUSD(total: BigNumber, event: VaultEvent) {
+export function getCumulativeFeesUSD(total: BigNumber, event: VaultEvent) {
   switch (event.kind) {
     case 'OPEN_MULTIPLY_VAULT':
     case 'DECREASE_MULTIPLE':

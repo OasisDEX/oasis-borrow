@@ -306,7 +306,8 @@
       "collateral-value": "Collateral Value",
       "usd-value": "$ Value",
       "gas-fees": "Gas fees",
-      "net-value-description": "The Net Value is calculated as the current value of the collateral in your vault minus the current debt.\nNote: This will not be exactly equal to the amount you will receive if you close your vault to Dai. This is due to fees applied when swapping collateral to Dai. The Net Value is calculated using the market price for the collateral using 1Inch.",
+      "market-price-unavailable": "Market price temporally unavailable, please check later",
+      "formula": "The unrealised profit & loss is calculated by the following formula:\nUnrealised P&L = ((Net value + Cumulative value of the withdrawals - Gas fees spent) - Cumulative value of the deposits) / Cumulative value of the deposits",
       "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
     }
   },
