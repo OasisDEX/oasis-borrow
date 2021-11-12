@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { ChevronUpDown } from 'components/ChevronUpDown'
 import { AppLink } from 'components/Links'
 import * as mixpanel from 'mixpanel-browser'
-import React, { MouseEventHandler, useState } from 'react'
+import React, { Fragment, MouseEventHandler, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Box, Button, Container, Flex, Grid, Text } from 'theme-ui'
 
@@ -157,19 +157,22 @@ export function CookieBanner() {
             <ChevronUpDown isUp={showSettings} size={10} sx={{ ml: 2 }} />
           </Button>
           {showSettings && (
-            <Grid sx={{ gridTemplateColumns: '12px 1fr' }}>
+            <Grid sx={{ gridTemplateColumns: '16px 1fr', my: 3 }}>
               {COOKIE_NAMES.map((cookieName) => (
-                <>
+                <Fragment key={cookieName}>
                   <Checkbox
-                    key={`${cookieName}-checkbox`}
                     checked={cookieSettings[cookieName]}
                     onClick={() => toggleCookie(cookieName)}
                   />
-                  <Grid key={`${cookieName}-description`}>
-                    <Text>{t(`landing.cookie-banner.cookies.${cookieName}.title`)}</Text>
-                    <Text>{t(`landing.cookie-banner.cookies.${cookieName}.description`)}</Text>
+                  <Grid sx={{ gap: 1 }}>
+                    <Text variant="paragraph3">
+                      {t(`landing.cookie-banner.cookies.${cookieName}.title`)}
+                    </Text>
+                    <Text variant="subheader" sx={{ fontSize: 2 }}>
+                      {t(`landing.cookie-banner.cookies.${cookieName}.description`)}
+                    </Text>
                   </Grid>
-                </>
+                </Fragment>
               ))}
             </Grid>
           )}
