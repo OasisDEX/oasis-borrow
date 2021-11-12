@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { CookieBanner } from '../CookieBanner'
 
 export function Banner() {
