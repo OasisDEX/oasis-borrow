@@ -6,6 +6,11 @@ import React, { MouseEventHandler, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Box, Button, Container, Flex, Grid, Text } from 'theme-ui'
 
+const COOKIE_NAMES = ['marketing', 'analytics'] as const
+const LOCALSTORAGE_KEY = 'cookieSettings'
+
+type CookieName = typeof COOKIE_NAMES[number]
+
 function Checkbox({
   checked,
   onClick,
@@ -38,7 +43,7 @@ interface Switch {
   disable: Function
 }
 
-const manageCookie: { [k: string]: Switch } = {
+const manageCookie: Record<CookieName, Switch> = {
   marketing: {
     // todo: implement these when we have adroll integration
     enable: () => {},
@@ -51,15 +56,25 @@ const manageCookie: { [k: string]: Switch } = {
   },
 }
 
+type CookieSettings = Record<CookieName, boolean>
+type SavedSettings = { accepted: boolean; cookieSettings: CookieSettings }
+
+function initCookieSettings(defaultValue: boolean): CookieSettings {
+  // @ts-ignore
+  return COOKIE_NAMES.reduce((acc, cookieName) => ({ ...acc, [cookieName]: defaultValue }), {})
+}
+
 export function CookieBanner() {
   const { t } = useTranslation()
   const [showSettings, setShowSettings] = useState(false)
-  const [cookieSettings, setCookieSettings]: any = useState({
-    marketing: true,
-    analytics: true,
-  })
+  const [cookieSettings, setCookieSettings] = useState(initCookieSettings(true))
+  const [settingsAreSaved, setSettingsAreSaved] = useState(false)
 
-  function toggleCookie(cookieName: string) {
+  if (settingsAreSaved || localStorage.getItem(LOCALSTORAGE_KEY)) {
+    return null
+  }
+
+  function toggleCookie(cookieName: CookieName) {
     const isEnabled = cookieSettings[cookieName]
     setCookieSettings({
       ...cookieSettings,
@@ -70,6 +85,28 @@ export function CookieBanner() {
     } else {
       manageCookie[cookieName].enable()
     }
+  }
+
+  function saveSettings(settings: SavedSettings) {
+    localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(settings))
+    setSettingsAreSaved(true)
+  }
+
+  function rejectCookies() {
+    COOKIE_NAMES.forEach((cookieName) => manageCookie[cookieName].disable())
+    saveSettings({ accepted: false, cookieSettings: initCookieSettings(false) })
+  }
+
+  function acceptCookies() {
+    // enable/disable based on settings
+    COOKIE_NAMES.forEach((cookieName) => {
+      if (cookieSettings[cookieName]) {
+        manageCookie[cookieName].enable()
+      } else {
+        manageCookie[cookieName].disable()
+      }
+    })
+    saveSettings({ accepted: true, cookieSettings })
   }
 
   return (
@@ -103,10 +140,10 @@ export function CookieBanner() {
                 minWidth: '200px',
               }}
             >
-              <Button variant="bean" sx={{ fontSize: 2 }}>
+              <Button variant="bean" sx={{ fontSize: 2 }} onClick={() => rejectCookies()}>
                 {t('landing.cookie-banner.reject')}
               </Button>
-              <Button variant="beanActive" sx={{ fontSize: 2 }}>
+              <Button variant="beanActive" sx={{ fontSize: 2 }} onClick={() => acceptCookies()}>
                 {t('landing.cookie-banner.accept')}
               </Button>
             </Grid>
@@ -121,7 +158,7 @@ export function CookieBanner() {
           </Button>
           {showSettings && (
             <Grid sx={{ gridTemplateColumns: '12px 1fr' }}>
-              {Object.keys(cookieSettings).map((cookieName) => (
+              {COOKIE_NAMES.map((cookieName) => (
                 <>
                   <Checkbox
                     key={`${cookieName}-checkbox`}
