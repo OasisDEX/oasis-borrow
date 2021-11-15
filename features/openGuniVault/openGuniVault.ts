@@ -303,21 +303,15 @@ export function createOpenGuniVault$(
                       ilk,
                       proxyAddress,
                       allowance,
+                      maxGenerateAmount: ilkDebtAvailable,
                       safeConfirmations: context.safeConfirmations,
                       etherscan: context.etherscan.url,
                       errorMessages: [],
                       warningMessages: [],
-                      exchangeError: false,
-                      //   summary: defaultOpenVaultSummary,
                       slippage: SLIPPAGE,
-
-                      // totalSteps,
-                      // currentStep: 1,
-                      // exchangeError: false,
                       clear: () => change({ kind: 'clear' }),
                       gasEstimationStatus: GasEstimationStatus.unset,
-                      // TODO - ADDED BY SEBASTIAN TO BE REMOVED
-                      // isOpenStage: false,
+                      exchangeError: false,
                       afterOutstandingDebt: zero,
                       multiply: zero,
                       totalCollateral: zero, // it was not available in standard multiply state
@@ -330,7 +324,6 @@ export function createOpenGuniVault$(
                       gettingCollateral: zero, // it was not available in standard multiply state
                       gettingCollateralUSD: zero, // it was not available in standard multiply state
                       buyingCollateralUSD: zero,
-                      maxGenerateAmount: ilkDebtAvailable,
                       netValueUSD: zero,
                       totalSteps: 3,
                       currentStep: 1,

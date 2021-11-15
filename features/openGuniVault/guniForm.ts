@@ -5,6 +5,9 @@ import { zero } from 'helpers/zero'
 
 import { EnvironmentState } from './enviroment'
 import { openGuniVault, TxStateDependencies } from './guniActionsCalls'
+import { defaultAllowanceState } from '../allowance/allowance'
+import { defaultProxyStage } from '../proxy/proxy'
+import { defaultGuniOpenMultiplyVaultConditions } from './openGuniVaultConditions'
 
 export type EditingStage = 'editing'
 export type DepositChange = { kind: 'depositAmount'; depositAmount?: BigNumber }
@@ -103,6 +106,7 @@ export function applyFormChange<S extends FormState & StateDependencies, Ch exte
         ...state,
         stage: 'editing',
       }
+
     default:
       // TODO: move it to a separate file
       if (change.kind === 'txWaitingForApproval') {
@@ -133,6 +137,20 @@ export function applyFormChange<S extends FormState & StateDependencies, Ch exte
       if (change.kind === 'txSuccess') {
         return { ...state, stage: 'txSuccess', id: change.id }
       }
+
+      if (change.kind === 'clear') {
+        return {
+          ...state,
+          ...defaultFormState,
+          ...defaultAllowanceState,
+          ...defaultProxyStage,
+          ...defaultGuniOpenMultiplyVaultConditions,
+          depositAmount: undefined,
+          depositAmountUSD: undefined,
+          afterOutstandingDebt: undefined
+        }
+      }
+
       return state
   }
 }
