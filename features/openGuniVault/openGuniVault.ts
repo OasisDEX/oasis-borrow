@@ -257,7 +257,7 @@ export function createOpenGuniVault$(
         combineLatest(context$, txHelpers$, ilkData$(ilk)).pipe(
           first(),
           switchMap(([context, txHelpers, ilkData]) => {
-            const { token } = ilkData
+            const { token, ilkDebtAvailable } = ilkData
             const tokenInfo = getToken(token)
 
             if (!tokenInfo.token0 || !tokenInfo.token1) {
@@ -330,7 +330,7 @@ export function createOpenGuniVault$(
                       gettingCollateral: zero, // it was not available in standard multiply state
                       gettingCollateralUSD: zero, // it was not available in standard multiply state
                       buyingCollateralUSD: zero,
-                      maxGenerateAmount: zero,
+                      maxGenerateAmount: ilkDebtAvailable,
                       netValueUSD: zero,
                       totalSteps: 3,
                       currentStep: 1,
