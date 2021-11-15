@@ -1,17 +1,20 @@
-import { createOpenGuniVault$ } from '../openGuniVault'
-import { mockContextConnected } from 'helpers/mocks/context.mock'
-import { protoTxHelpers, TxHelpers } from 'components/AppContext'
-import { mockPriceInfo$, MockPriceInfoProps } from 'helpers/mocks/priceInfo.mock'
-import { EMPTY, of } from 'rxjs'
-import { mockBalanceInfo$ } from 'helpers/mocks/balanceInfo.mock'
-import { mockIlkData$ } from 'helpers/mocks/ilks.mock'
 import BigNumber from 'bignumber.js'
+import { protoTxHelpers } from 'components/AppContext'
+import { mockBalanceInfo$ } from 'helpers/mocks/balanceInfo.mock'
+import { mockContextConnected } from 'helpers/mocks/context.mock'
+import { mockIlkData$ } from 'helpers/mocks/ilks.mock'
+import { mockPriceInfo$ } from 'helpers/mocks/priceInfo.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
+import { EMPTY, of } from 'rxjs'
 
+import { createOpenGuniVault$ } from '../openGuniVault'
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function proxyAddress$(address: string) {
   return of(undefined)
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function allowance$(address: string) {
   return of(new BigNumber(0))
 }
@@ -29,7 +32,12 @@ function ilkData$() {
 }
 
 describe('test', () => {
-  it.only('playground', () => {
+  it('playground', () => {
+    function exchangeQuote$() {
+      return of(EMPTY)
+    }
+
+    // @ts-ignore
     const openGuniVault$ = createOpenGuniVault$(
       of(mockContextConnected),
       of(protoTxHelpers),
@@ -38,10 +46,8 @@ describe('test', () => {
       (token: string) => mockPriceInfo$({ token }),
       (address?: string) => mockBalanceInfo$({ address }),
       ilks$(),
-      (ilk) => ilkData$(),
-      () => {
-        return of(EMPTY)
-      } as any,
+      () => ilkData$(),
+      exchangeQuote$(),
       'GUNIV3DAIUSDC1',
     )
 

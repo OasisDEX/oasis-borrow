@@ -1,19 +1,18 @@
+import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
-import { DssGuniProxyActions as GuniProxyActions } from 'types/ethers-contracts/DssGuniProxyActions'
-import { GuniToken } from 'types/ethers-contracts/GuniToken'
 import { CallDef } from 'blockchain/calls/callsHelpers'
+import { openGuniMultiplyVault } from 'blockchain/calls/proxyActions'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { amountToWei } from 'blockchain/utils'
 import { TxHelpers } from 'components/AppContext'
-import { ContextConnected } from 'blockchain/network'
-import { getQuote$, getTokenMetaData, Quote } from 'features/exchange/exchange'
-import { catchError, first, startWith, switchMap } from 'rxjs/operators'
-import { one, zero } from 'helpers/zero'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { openGuniMultiplyVault } from 'blockchain/calls/proxyActions'
-import { of } from 'rxjs'
-import { transactionToX } from 'helpers/form'
-import { TxStatus } from '@oasisdex/transactions'
+import { Quote } from 'features/exchange/exchange'
 import { parseVaultIdFromReceiptLogs } from 'features/openVault/openVaultTransactions'
+import { transactionToX } from 'helpers/form'
+import { zero } from 'helpers/zero'
+import { of } from 'rxjs'
+import { catchError, startWith } from 'rxjs/operators'
+import { DssGuniProxyActions as GuniProxyActions } from 'types/ethers-contracts/DssGuniProxyActions'
+import { GuniToken } from 'types/ethers-contracts/GuniToken'
 
 type TxChange =
   | { kind: 'txWaitingForApproval' }
@@ -91,7 +90,7 @@ export interface TxStateDependencies {
 }
 
 export function openGuniVault<S extends TxStateDependencies>(
-  { sendWithGasEstimation, send }: TxHelpers,
+  { sendWithGasEstimation }: TxHelpers,
   change: (ch: TxChange) => void,
   {
     depositAmount,
@@ -99,10 +98,10 @@ export function openGuniVault<S extends TxStateDependencies>(
     ilk,
     token,
     account,
-    slippage,
+    // slippage,
     toTokenAmount,
     fromTokenAmount,
-    token1Amount, // USDC
+    // token1Amount, // USDC
     token0Amount, // DAI
     requiredDebt,
     swap,

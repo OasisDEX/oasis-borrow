@@ -1,6 +1,5 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
-import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { open, OpenData } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'

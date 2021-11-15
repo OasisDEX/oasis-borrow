@@ -396,7 +396,7 @@ function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: Contex
   if (!token0Symbol || !token1Symbol) {
     throw new Error('Invalid token')
   }
-  
+
   return contract<DssGuniProxyActions>(guniProxyActions).methods.openMultiplyGuniVault(
     {
       fromTokenAddress: tokens[token0Symbol].address,

@@ -1,19 +1,14 @@
 import { useAppContext } from 'components/AppContextProvider'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Container } from 'theme-ui'
 
-import { trackingEvents } from '../../../../../analytics/analytics'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../../../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../../../../helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from '../../../../../helpers/observableHook'
-import { createOpenMultiplyVaultAnalytics$ } from '../../../openMultiplyVaultAnalytics'
 import { GuniOpenMultiplyVaultContainer } from './GuniOpenMultiplyVaultContainer'
 
-export function GuniOpenVaultView({
-  ilk,
-}: {
-  ilk: string
-}) {
+export function GuniOpenVaultView({ ilk }: { ilk: string }) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { openGuniVault$, accountData$, context$ } = useAppContext()
   // const multiplyVaultWithIlk$ = openGuniVault$(ilk)
 
