@@ -131,6 +131,8 @@ export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
             showAfterPill,
             currentPnL,
             marketPrice,
+            totalGasSpentUSD: zero,
+            vault: undefined,
           }}
         />
       </Grid>

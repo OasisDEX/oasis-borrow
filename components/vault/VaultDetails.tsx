@@ -326,7 +326,7 @@ interface NetValueProps {
   netValueUSD: BigNumber
   totalGasSpentUSD: BigNumber
   currentPnL: BigNumber
-  vault: Vault
+  vault: Vault | undefined
 }
 
 export function VaultDetailsNetValueModal({
@@ -338,33 +338,34 @@ export function VaultDetailsNetValueModal({
   close,
 }: ModalProps<NetValueProps>) {
   const { t } = useTranslation()
-  const lockedCollateralUSD = vault.lockedCollateral.times(
-    marketPrice !== undefined ? marketPrice : zero,
-  )
-  const daiDebtUndercollateralizedToken = vault.debt.dividedBy(
-    marketPrice !== undefined ? marketPrice : zero,
-  )
+  const lockedCollateralUSD =
+    vault && marketPrice ? vault.lockedCollateral.times(marketPrice) : zero
+  const daiDebtUndercollateralizedToken =
+    vault && marketPrice ? vault.debt.dividedBy(marketPrice) : zero
   const netValueUndercollateralizedToken =
-    marketPrice !== undefined
+    marketPrice && vault
       ? vault.lockedCollateral.minus(vault.debt.dividedBy(marketPrice))
       : undefined
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
         <Heading variant="header3">{t('manage-multiply-vault.card.net-value')}</Heading>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          {t('manage-multiply-vault.card.based-on-price', {
-            marketPrice: formatCryptoBalance(marketPrice || zero),
-          })}
+        <Text variant="subheader" sx={{ fontSize: 2 }}>
+          {t('manage-multiply-vault.card.based-on-price')}
+        </Text>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2, fontWeight: 'bold' }}>
+          ${formatCryptoBalance(marketPrice || zero)}
         </Text>
       </Grid>
-      <Grid gap={2} columns={[1, 2, 3]}>
+      <Grid gap={2} columns={[1, 2, 3]} variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
         <Box />
         <Box>{t('manage-multiply-vault.card.collateral-value')}</Box>
         <Box>{t('manage-multiply-vault.card.usd-value')}</Box>
 
         <Box>{t('manage-multiply-vault.card.collateral-value-in-vault')}</Box>
-        <Box>{`${formatCryptoBalance(vault.lockedCollateral)} ${vault.token}`}</Box>
+        <Box>{`${vault ? formatCryptoBalance(vault.lockedCollateral) : ''} ${
+          vault ? vault.token : ''
+        }`}</Box>
         <Box>
           {marketPrice !== undefined
             ? `$${formatCryptoBalance(lockedCollateralUSD)}`
@@ -373,15 +374,15 @@ export function VaultDetailsNetValueModal({
 
         <Box>{t('manage-multiply-vault.card.dai-debt-in-vault')}</Box>
         <Box>
-          {marketPrice !== undefined
+          {marketPrice && vault
             ? `${formatCryptoBalance(daiDebtUndercollateralizedToken)} ${vault.token}`
-            : t('manage-multiply-vault.card."market-price-unavailable"')}
+            : t('manage-multiply-vault.card.market-price-unavailable')}
         </Box>
-        <Box>{`$${formatCryptoBalance(vault.debt)}`}</Box>
+        <Box>{`$${vault ? formatCryptoBalance(vault.debt) : ''}`}</Box>
 
         <Box>{t('net-value')}</Box>
         <Box>
-          {netValueUndercollateralizedToken !== undefined
+          {netValueUndercollateralizedToken && vault
             ? `${formatCryptoBalance(netValueUndercollateralizedToken)} ${vault.token}`
             : t('manage-multiply-vault.card."market-price-unavailable"')}
         </Box>
@@ -394,13 +395,14 @@ export function VaultDetailsNetValueModal({
         <Box></Box>
         <Box>{`$${formatAmount(totalGasSpentUSD, 'USD')}`}</Box>
       </Grid>
-      <Card variant="vaultDetailsCardModal">
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2, textAlign: 'center' }}>
+      <Card
+        variant="vaultDetailsCardModal"
+        sx={{ fontWeight: 'semiBold', alignItems: 'center', textAlign: 'center' }}
+      >
+        <Text variant="paragraph2" sx={{ fontSize: 1, pb: 2 }}>
           {t('manage-multiply-vault.card.unrealised-pnl')}
         </Text>
-        <Text sx={{ textAlign: 'center' }}>
-          {formatPercent(currentPnL.times(100), { precision: 2 })}
-        </Text>
+        <Text>{formatPercent(currentPnL.times(100), { precision: 2 })}</Text>
       </Card>
       <Grid>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
@@ -603,7 +605,7 @@ export function VaultDetailsCardNetValue({
   currentPnL: BigNumber
   marketPrice: BigNumber | undefined
   totalGasSpentUSD: BigNumber
-  vault: Vault
+  vault: Vault | undefined
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()

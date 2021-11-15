@@ -309,7 +309,7 @@
       "more-info-oracles": "在<0>这里</0>可以得到关于 Maker 喂价机的信息",
       "net-value": "净值",
       "unrealised-pnl": "Unrealised P&L",
-      "based-on-price": "The current net value is calculated based on the market price of {{marketPrice}}",
+      "based-on-price": "The current net value is calculated based on the market price of",
       "collateral-value-in-vault": "Collateral value in vault",
       "dai-debt-in-vault": "Dai debt in vault",
       "collateral-value": "Collateral Value",

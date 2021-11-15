@@ -326,7 +326,7 @@
       "more-info-oracles": "Mais informações nos oráculos Maker podem ser encontradas <0>here</0>",
       "net-value": "Valor Líquido",
       "unrealised-pnl": "Unrealised P&L",
-      "based-on-price": "The current net value is calculated based on the market price of {{marketPrice}}",
+      "based-on-price": "The current net value is calculated based on the market price of",
       "collateral-value-in-vault": "Collateral value in vault",
       "dai-debt-in-vault": "Dai debt in vault",
       "collateral-value": "Collateral Value",
