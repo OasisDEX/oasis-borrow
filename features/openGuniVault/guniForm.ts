@@ -2,12 +2,13 @@ import { BigNumber } from 'bignumber.js'
 import { TxHelpers } from 'components/AppContext'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { zero } from 'helpers/zero'
+
 import { EnvironmentState } from './enviroment'
 import { openGuniVault, TxStateDependencies } from './guniActionsCalls'
 
 export type EditingStage = 'editing'
 export type DepositChange = { kind: 'depositAmount'; depositAmount?: BigNumber }
-type DepositMaxChange = { kind: 'depositMaxAmount'; depositAmount?: BigNumber }
+export type DepositMaxChange = { kind: 'depositMaxAmount'; depositAmount?: BigNumber }
 
 type StageProgressChange = { kind: 'progressEditing' }
 
@@ -60,15 +61,12 @@ export function applyFormChange<S extends FormState & StateDependencies, Ch exte
 ): S {
   switch (change.kind) {
     case 'depositAmount':
+    case 'depositMaxAmount':
       return {
         ...state,
         depositAmount: change.depositAmount,
       }
-    case 'depositMaxAmount':
-      return {
-        ...state,
-        depositAmount: state.balanceInfo.daiBalance,
-      }
+
     case 'progressEditing':
       const { allowance, errorMessages, proxyAddress, depositAmount } = state
       const preventProgress = errorMessages.length > 0
@@ -148,7 +146,8 @@ export function addFormTransitions<
       ...state,
       updateDeposit: (depositAmount?: BigNumber) =>
         change({ kind: 'depositAmount', depositAmount }),
-      updateDepositMax: () => change({ kind: 'depositMaxAmount' }),
+      updateDepositMax: () =>
+        change({ kind: 'depositMaxAmount', depositAmount: state.balanceInfo.daiBalance }),
       progress: () => change({ kind: 'progressEditing' }),
     }
   }

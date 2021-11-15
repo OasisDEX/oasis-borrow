@@ -29,6 +29,9 @@ import {
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { OAZO_FEE } from 'helpers/multiply/calculations'
+import { one, zero } from 'helpers/zero'
+import { curry } from 'ramda'
 import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import {
   distinctUntilChanged,
@@ -48,35 +51,29 @@ import {
   VaultWarningMessage,
 } from '../openMultiplyVault/openMultiplyVaultValidations'
 import { applyEnvironment, EnvironmentChange, EnvironmentState } from './enviroment'
+import { getGuniMintAmount, getToken1Balance } from './guniActionsCalls'
 import {
   addFormTransitions,
   applyFormChange,
   applyIsEditingStage,
   defaultFormState,
   DepositChange,
+  DepositMaxChange,
   EditingStage,
   FormChanges,
   FormFunctions,
   FormState,
 } from './guniForm'
+import { validateGuniErrors, validateGuniWarnings } from './guniOpenMultiplyVaultValidations'
+import { applyGuniEstimateGas } from './openGuniMultiplyVaultTransactions'
 import {
   applyGuniOpenVaultConditions,
   applyGuniOpenVaultStageCategorisation,
   defaultGuniOpenMultiplyVaultConditions,
   GuniOpenMultiplyVaultConditions,
 } from './openGuniVaultConditions'
-import { getGuniMintAmount, getToken1Balance } from './guniActionsCalls'
-import { OAZO_FEE } from 'helpers/multiply/calculations'
-import { validateGuniErrors, validateGuniWarnings } from './guniOpenMultiplyVaultValidations'
-import { curry } from 'ramda'
-import { applyGuniEstimateGas } from './openGuniMultiplyVaultTransactions'
-import { one, zero } from 'helpers/zero'
 
 type InjectChange = { kind: 'injectStateOverride'; stateToOverride: OpenGuniVaultState }
-
-interface OverrideHelper {
-  injectStateOverride: (state: Partial<any>) => void
-}
 
 export type Stage = EditingStage | ProxyStages | AllowanceStages | TxStage
 
@@ -346,8 +343,11 @@ export function createOpenGuniVault$(
                     const getGuniMintAmount$ = observe(onEveryBlock$, context$, getGuniMintAmount)
 
                     const gUniDataChanges$: Observable<GuniTxDataChange> = change$.pipe(
-                      filter((change) => change.kind === 'depositAmount'),
-                      switchMap((change: DepositChange) => {
+                      filter(
+                        (change) =>
+                          change.kind === 'depositAmount' || change.kind === 'depositMaxAmount',
+                      ),
+                      switchMap((change: DepositChange | DepositMaxChange) => {
                         const { leveragedAmount, flAmount } = applyCalculations({
                           ilkData,
                           depositAmount: change.depositAmount,
