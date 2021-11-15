@@ -537,9 +537,8 @@ export function getToken(tokenSymbol: string) {
 
 export const ALLOWED_MULTIPLY_TOKENS = tokens
   .filter(
-    (token) =>
-      !(token.tags as CoinTag[]).some(
-        (tag) => (tag === 'lp-token' && !token.token0 && !token.token1) || tag === 'stablecoin',
-      ),
+    (token) => !(token.tags as CoinTag[]).some((tag) => tag === 'lp-token' || tag === 'stablecoin'),
   )
   .map((token) => token.symbol)
+
+export const ONLY_MULTIPLY_TOKENS = ['GUNIV3DAIUSDC1']

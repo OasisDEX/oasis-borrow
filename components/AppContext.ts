@@ -356,7 +356,7 @@ export function setupAppContext() {
       ilkData$,
       exchangeQuote$,
       onEveryBlock$,
-      // addGasEstimation$,
+      addGasEstimation$,
       ilk,
     ),
   )

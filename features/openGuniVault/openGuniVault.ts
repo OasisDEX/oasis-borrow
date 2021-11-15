@@ -7,7 +7,7 @@ import { ExchangeAction, getQuote$, Quote } from 'features/exchange/exchange'
 
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { GasEstimationStatus } from 'helpers/form'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import {
   distinctUntilChanged,
@@ -71,6 +71,8 @@ import {
 import { getGuniMintAmount, getToken1Balance } from './guniActionsCalls'
 import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { validateGuniErrors, validateGuniWarnings } from './guniOpenMultiplyVaultValidations'
+import { curry } from 'ramda'
+import { applyGuniEstimateGas } from './openGuniMultiplyVaultTransactions'
 
 type InjectChange = { kind: 'injectStateOverride'; stateToOverride: OpenGuniVaultState }
 
@@ -179,7 +181,8 @@ export type OpenGuniVaultState = OverrideHelper &
     totalSteps: number
     currentStep: number
     netValueUSD: BigNumber
-  }
+    minToTokenAmount: BigNumber
+  } & HasGasEstimation
 
 interface GuniCalculations {
   leveragedAmount?: BigNumber
@@ -249,7 +252,7 @@ export function createOpenGuniVault$(
     action: ExchangeAction,
   ) => Observable<Quote>,
   onEveryBlock$: Observable<number>,
-  //   addGasEstimation$: AddGasEstimationFunction,
+  addGasEstimation$: AddGasEstimationFunction,
   ilk: string,
 ): Observable<OpenGuniVaultState> {
   return ilks$.pipe(
@@ -343,6 +346,7 @@ export function createOpenGuniVault$(
                       netValueUSD: zero,
                       totalSteps: 3,
                       currentStep: 1,
+                      minToTokenAmount: zero,
                     }
 
                     const stateSubject$ = new Subject<OpenGuniVaultState>()
@@ -402,6 +406,9 @@ export function createOpenGuniVault$(
                                             .minus(requiredDebt),
                                         )
 
+                                      const multiply =
+                                        multiple.toNumber() > 20 ? new BigNumber(20) : multiple
+
                                       return {
                                         kind: 'guniTxData',
                                         swap,
@@ -428,7 +435,7 @@ export function createOpenGuniVault$(
                                           priceInfo.currentCollateralPrice,
                                         ),
                                         afterNetValueUSD,
-                                        multiply: multiple,
+                                        multiply,
                                       }
                                     },
                                   ),
@@ -504,7 +511,7 @@ export function createOpenGuniVault$(
                       map(applyStages),
                       map(validateGuniErrors),
                       map(validateGuniWarnings),
-                      //   switchMap(curry(applyEstimateGas)(addGasEstimation$)),
+                      switchMap(curry(applyGuniEstimateGas)(addGasEstimation$)),
                       //   map(
                       //     curry(addTransitions)(txHelpers, context, connectedProxyAddress$, change),
                       //   ),
