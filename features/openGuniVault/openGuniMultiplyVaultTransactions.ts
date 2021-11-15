@@ -21,6 +21,7 @@ export function applyGuniEstimateGas(
       swap,
       token0Amount,
       minToTokenAmount,
+      requiredDebt,
     } = state
 
     const daiAmount = swap?.status === 'SUCCESS' ? swap.daiAmount.div(one.minus(OAZO_FEE)) : zero
@@ -38,7 +39,7 @@ export function applyGuniEstimateGas(
         exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '0x',
         exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '0x',
         minToTokenAmount,
-        requiredDebt: daiAmount,
+        requiredDebt: requiredDebt,
         toTokenAmount: collateralAmount,
         fromTokenAmount: daiAmount,
         token0Amount: token0Amount || zero,
