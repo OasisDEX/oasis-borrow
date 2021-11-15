@@ -397,8 +397,9 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  const checkVault$ = memoize((id: BigNumber) => curry(checkVaultTypeUsingApi$)(context$, id))
   const generalManageVault$ = memoize(
-    curry(createGeneralManageVault$)(manageMultiplyVault$, manageVault$, checkVaultTypeUsingApi$),
+    curry(createGeneralManageVault$)(manageMultiplyVault$, manageVault$, checkVault$),
     bigNumberTostring,
   )
 
