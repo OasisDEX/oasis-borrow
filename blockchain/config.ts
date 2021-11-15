@@ -75,7 +75,7 @@ const protoMain = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, mainnetAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, mainnetAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
-  guniProxyActions: contractDesc(guniProxyActions, '0x1fa02b2d6a771842690194cf62d91bdd92bfe28d'),
+  guniProxyActions: contractDesc(guniProxyActions, '0x62fab0ffcc439c75a7d31f94f5b34be31f3e08e7'),
   guniResolver: '0x0317650Af6f184344D7368AC8bB0bEbA5EDB214a',
   guniRouter: '0x14E6D67F824C3a7b4329d3228807f8654294e4bd',
   dssMultiplyProxyActions: contractDesc(
