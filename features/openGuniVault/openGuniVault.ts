@@ -1,10 +1,31 @@
 import { BigNumber } from 'bignumber.js'
+import { observe } from 'blockchain/calls/observe'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { compareBigNumber, ContextConnected } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
-import { ExchangeAction, getQuote$, Quote } from 'features/exchange/exchange'
-
+import {
+  AllowanceChanges,
+  AllowanceFunctions,
+  AllowanceStages,
+  AllowanceState,
+  allowanceTransitions,
+  applyAllowanceChanges,
+  applyAllowanceConditions,
+  applyIsAllowanceStage,
+  defaultAllowanceState,
+} from 'features/allowance/allowance'
+import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { TxStage } from 'features/openMultiplyVault/openMultiplyVault' // TODO: remove
+import {
+  addProxyTransitions,
+  applyIsProxyStage,
+  applyProxyChanges,
+  defaultProxyStage,
+  ProxyChanges,
+  ProxyStages,
+  ProxyState,
+} from 'features/proxy/proxy'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
@@ -19,49 +40,25 @@ import {
   switchMap,
   tap,
 } from 'rxjs/internal/operators'
-import {
-  FormChanges,
-  FormFunctions,
-  FormState,
-  applyFormChange,
-  addFormTransitions,
-  defaultFormState,
-  EditingStage,
-  applyIsEditingStage,
-  DepositChange,
-} from './guniForm'
-import { EnvironmentState, EnvironmentChange, applyEnvironment } from './enviroment'
-import {
-  addProxyTransitions,
-  applyIsProxyStage,
-  applyProxyChanges,
-  defaultProxyStage,
-  ProxyChanges,
-  ProxyStages,
-  ProxyState,
-} from 'features/proxy/proxy'
-import {
-  applyAllowanceChanges,
-  AllowanceChanges,
-  AllowanceState,
-  AllowanceFunctions,
-  defaultAllowanceState,
-  allowanceTransitions,
-  applyIsAllowanceStage,
-  AllowanceStages,
-  applyAllowanceConditions,
-} from 'features/allowance/allowance'
-import { combineTransitions } from '../../helpers/pipelines/combineTransitions'
-import { combineApplyChanges } from '../../helpers/pipelines/combineApply'
 
-import { TxStage } from 'features/openMultiplyVault/openMultiplyVault' // TODO: remove
-import { one, zero } from 'helpers/zero'
-import { TransactionDef } from 'blockchain/calls/callsHelpers'
-import { observe } from 'blockchain/calls/observe'
+import { combineApplyChanges } from '../../helpers/pipelines/combineApply'
+import { combineTransitions } from '../../helpers/pipelines/combineTransitions'
 import {
   VaultErrorMessage,
   VaultWarningMessage,
 } from '../openMultiplyVault/openMultiplyVaultValidations'
+import { applyEnvironment, EnvironmentChange, EnvironmentState } from './enviroment'
+import {
+  addFormTransitions,
+  applyFormChange,
+  applyIsEditingStage,
+  defaultFormState,
+  DepositChange,
+  EditingStage,
+  FormChanges,
+  FormFunctions,
+  FormState,
+} from './guniForm'
 import {
   applyGuniOpenVaultConditions,
   applyGuniOpenVaultStageCategorisation,
@@ -73,6 +70,7 @@ import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { validateGuniErrors, validateGuniWarnings } from './guniOpenMultiplyVaultValidations'
 import { curry } from 'ramda'
 import { applyGuniEstimateGas } from './openGuniMultiplyVaultTransactions'
+import { one, zero } from 'helpers/zero'
 
 type InjectChange = { kind: 'injectStateOverride'; stateToOverride: OpenGuniVaultState }
 
@@ -148,8 +146,7 @@ type WarringState = {
   warningMessages: VaultWarningMessage[] // TODO add warring
 }
 
-export type OpenGuniVaultState = OverrideHelper &
-  StageState &
+export type OpenGuniVaultState = StageState &
   StageFunctions &
   AllowanceState &
   AllowanceFunctions &
@@ -292,11 +289,6 @@ export function createOpenGuniVault$(
                       change$.next(ch)
                     }
 
-                    // NOTE: Not to be used in production/dev, test only
-                    function injectStateOverride(stateToOverride: Partial<OpenGuniVaultState>) {
-                      return change$.next({ kind: 'injectStateOverride', stateToOverride })
-                    }
-
                     // const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
                     const SLIPPAGE = new BigNumber(0.001)
 
@@ -327,7 +319,6 @@ export function createOpenGuniVault$(
                       // exchangeError: false,
                       clear: () => change({ kind: 'clear' }),
                       gasEstimationStatus: GasEstimationStatus.unset,
-                      injectStateOverride,
                       // TODO - ADDED BY SEBASTIAN TO BE REMOVED
                       // isOpenStage: false,
                       afterOutstandingDebt: zero,
@@ -374,10 +365,13 @@ export function createOpenGuniVault$(
                           switchMap((daiAmountToSwapForUsdc /* USDC */) => {
                             const token0Amount = leveragedAmount.minus(daiAmountToSwapForUsdc)
                             const oazoFee = daiAmountToSwapForUsdc.times(OAZO_FEE)
+                            const amountWithFee = daiAmountToSwapForUsdc.plus(oazoFee)
+                            const contractFee = amountWithFee.times(OAZO_FEE)
+                            const oneInchAmount = amountWithFee.minus(contractFee)
                             return exchangeQuote$(
                               tokenInfo.token1,
                               SLIPPAGE,
-                              daiAmountToSwapForUsdc,
+                              oneInchAmount,
                               'BUY_COLLATERAL',
                             ).pipe(
                               switchMap((swap) => {
@@ -418,7 +412,7 @@ export function createOpenGuniVault$(
                                         token1Amount,
                                         amount0,
                                         amount1,
-                                        fromTokenAmount: swap.daiAmount.plus(oazoFee),
+                                        fromTokenAmount: amountWithFee,
                                         toTokenAmount: swap.collateralAmount,
                                         minToTokenAmount: swap.collateralAmount.times(
                                           one.minus(SLIPPAGE),
