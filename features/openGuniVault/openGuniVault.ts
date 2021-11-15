@@ -326,7 +326,7 @@ export function createOpenGuniVault$(
                       // currentStep: 1,
                       // exchangeError: false,
                       clear: () => change({ kind: 'clear' }),
-                      // gasEstimationStatus: GasEstimationStatus.unset,
+                      gasEstimationStatus: GasEstimationStatus.unset,
                       injectStateOverride,
                       // TODO - ADDED BY SEBASTIAN TO BE REMOVED
                       // isOpenStage: false,
