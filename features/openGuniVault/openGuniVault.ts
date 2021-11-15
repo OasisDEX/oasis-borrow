@@ -176,6 +176,7 @@ export type OpenGuniVaultState = StageState &
     currentStep: number
     netValueUSD: BigNumber
     minToTokenAmount: BigNumber
+    requiredDebt?: BigNumber
   } & HasGasEstimation
 
 interface GuniCalculations {

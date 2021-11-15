@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { VaultHistoryView } from '../../../../vaultHistory/VaultHistoryView'
 import {
   ManageMultiplyVaultContainer,

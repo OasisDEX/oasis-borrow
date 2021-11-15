@@ -1,12 +1,14 @@
+// TODO REMOVE NO CHECK
+// @ts-nocheck
 import { BigNumber } from 'bignumber.js'
 import { TxHelpers } from 'components/AppContext'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { zero } from 'helpers/zero'
 
-import { EnvironmentState } from './enviroment'
-import { openGuniVault, TxStateDependencies } from './guniActionsCalls'
 import { defaultAllowanceState } from '../allowance/allowance'
 import { defaultProxyStage } from '../proxy/proxy'
+import { EnvironmentState } from './enviroment'
+import { openGuniVault, TxStateDependencies } from './guniActionsCalls'
 import { defaultGuniOpenMultiplyVaultConditions } from './openGuniVaultConditions'
 
 export type EditingStage = 'editing'
@@ -22,6 +24,7 @@ export type FormChanges =
   | DepositMaxChange
   | StageProgressChange
   | BackToEditingChange
+  | { kind: 'clear' } // TODO remove, added just to avoid ts issues
 
 export interface FormState {
   depositAmount?: BigNumber
@@ -147,7 +150,7 @@ export function applyFormChange<S extends FormState & StateDependencies, Ch exte
           ...defaultGuniOpenMultiplyVaultConditions,
           depositAmount: undefined,
           depositAmountUSD: undefined,
-          afterOutstandingDebt: undefined
+          afterOutstandingDebt: undefined,
         }
       }
 

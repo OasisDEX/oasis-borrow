@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { DefaultVaultHeader } from '../../../../../components/vault/DefaultVaultHeader'
 import { VaultHistoryView } from '../../../../vaultHistory/VaultHistoryView'
 import {

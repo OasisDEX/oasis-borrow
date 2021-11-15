@@ -39,7 +39,7 @@ export function applyGuniEstimateGas(
         exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '0x',
         exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '0x',
         minToTokenAmount,
-        requiredDebt: requiredDebt,
+        requiredDebt: requiredDebt!,
         toTokenAmount: collateralAmount,
         fromTokenAmount: daiAmount,
         token0Amount: token0Amount || zero,
