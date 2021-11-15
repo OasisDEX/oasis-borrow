@@ -346,6 +346,10 @@ export function VaultDetailsNetValueModal({
     marketPrice && vault
       ? vault.lockedCollateral.minus(vault.debt.dividedBy(marketPrice))
       : undefined
+  const collateralTags = vault ? (getToken(vault?.token).tags as String[]) : []
+  const isCollateralLpToken = vault ? collateralTags.includes('lp-token') : false
+  const renderMiddleColumn = !isCollateralLpToken
+
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
@@ -359,10 +363,15 @@ export function VaultDetailsNetValueModal({
       </Grid>
       <Grid gap={2} columns={[1, 2, 3]} variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
         <Box />
-        <Box>{t('manage-multiply-vault.card.collateral-value')}</Box>
+        {renderMiddleColumn ? (
+          <Box>{t('manage-multiply-vault.card.collateral-value')}</Box>
+        ) : (
+          <Box />
+        )}
         <Box>{t('manage-multiply-vault.card.usd-value')}</Box>
 
         <Box>{t('manage-multiply-vault.card.collateral-value-in-vault')}</Box>
+
         <Box>{`${vault ? formatCryptoBalance(vault.lockedCollateral) : ''} ${
           vault ? vault.token : ''
         }`}</Box>
@@ -373,19 +382,27 @@ export function VaultDetailsNetValueModal({
         </Box>
 
         <Box>{t('manage-multiply-vault.card.dai-debt-in-vault')}</Box>
-        <Box>
-          {marketPrice && vault
-            ? `${formatCryptoBalance(daiDebtUndercollateralizedToken)} ${vault.token}`
-            : t('manage-multiply-vault.card.market-price-unavailable')}
-        </Box>
+        {renderMiddleColumn ? (
+          <Box>
+            {marketPrice && vault
+              ? `${formatCryptoBalance(daiDebtUndercollateralizedToken)} ${vault.token}`
+              : t('manage-multiply-vault.card.market-price-unavailable')}
+          </Box>
+        ) : (
+          <Box />
+        )}
         <Box>{`$${vault ? formatCryptoBalance(vault.debt) : ''}`}</Box>
 
         <Box>{t('net-value')}</Box>
-        <Box>
-          {netValueUndercollateralizedToken && vault
-            ? `${formatCryptoBalance(netValueUndercollateralizedToken)} ${vault.token}`
-            : t('manage-multiply-vault.card."market-price-unavailable"')}
-        </Box>
+        {renderMiddleColumn ? (
+          <Box>
+            {netValueUndercollateralizedToken && vault
+              ? `${formatCryptoBalance(netValueUndercollateralizedToken)} ${vault.token}`
+              : t('manage-multiply-vault.card."market-price-unavailable"')}
+          </Box>
+        ) : (
+          <Box />
+        )}
         <Box>{`$${formatAmount(netValueUSD, 'USD')}`}</Box>
       </Grid>
 
