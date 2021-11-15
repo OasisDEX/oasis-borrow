@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
 import { useAppContext } from 'components/AppContextProvider'
-import { ManageMultiplyVaultContainer } from 'features/manageMultiplyVault/components/ManageMultiplyVaultView'
 import { ManageVaultContainer } from 'features/manageVault/ManageVaultView'
 import { MultiplyEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -9,9 +8,11 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import _ from 'lodash'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Container } from 'theme-ui'
 
+import { DefaultManageMultiplyVaultContainer } from '../openMultiplyVault/variants/default/manage/DefaultManageMultiplyVaultContainer'
+import { GuniManageMultiplyVaultCointainer } from '../openMultiplyVault/variants/guni/manage/GuniManageMultiplyVaultCointainer'
 import { VaultType } from './generalManageVault'
 
 export function GeneralManageVaultView({ id }: { id: BigNumber }) {
@@ -186,12 +187,32 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                 _.cloneDeep(vaultHistory),
                 _.cloneDeep(vaultMultiplyHistory),
               )
-              return (
-                <Container variant="vaultPageContainer">
-                  <ManageMultiplyVaultContainer
+              const vaultIlk = generalManageVault.state.ilkData.ilk
+              const multiplyContainerMap: Record<string, ReactNode> = {
+                // TODO just for testing, remove before release
+                'ETH-A': (
+                  <GuniManageMultiplyVaultCointainer
                     vaultHistory={multiplyHistory}
                     manageVault={generalManageVault.state}
                   />
+                ),
+                'GUNIV3DAIUSDC1-A': (
+                  <GuniManageMultiplyVaultCointainer
+                    vaultHistory={multiplyHistory}
+                    manageVault={generalManageVault.state}
+                  />
+                ),
+              }
+              return (
+                <Container variant="vaultPageContainer">
+                  {multiplyContainerMap[vaultIlk] ? (
+                    multiplyContainerMap[vaultIlk]
+                  ) : (
+                    <DefaultManageMultiplyVaultContainer
+                      vaultHistory={multiplyHistory}
+                      manageVault={generalManageVault.state}
+                    />
+                  )}
                 </Container>
               )
           }

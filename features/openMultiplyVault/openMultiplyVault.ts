@@ -5,6 +5,7 @@ import { ContextConnected } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
+import { createProxy } from 'features/proxy/createProxy'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
@@ -44,17 +45,16 @@ import {
 import {
   applyEstimateGas,
   applyOpenMultiplyVaultTransaction,
-  createProxy,
   multiplyVault,
   OpenVaultTransactionChange,
   setAllowance,
 } from './openMultiplyVaultTransactions'
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openMultiplyVaultTransitions'
 import {
-  OpenMultiplyVaultErrorMessage,
-  OpenMultiplyVaultWarningMessage,
   validateErrors,
   validateWarnings,
+  VaultErrorMessage,
+  VaultWarningMessage,
 } from './openMultiplyVaultValidations'
 
 interface OpenVaultInjectedOverrideChange {
@@ -98,23 +98,28 @@ function apply(state: OpenMultiplyVaultState, change: OpenMultiplyVaultChange) {
   return applyOpenVaultSummary(s10)
 }
 
-export type OpenMultiplyVaultStage =
-  | 'editing'
+export type ProxyStages =
   | 'proxyWaitingForConfirmation'
   | 'proxyWaitingForApproval'
   | 'proxyInProgress'
   | 'proxyFailure'
   | 'proxySuccess'
+export type AllowanceStages =
   | 'allowanceWaitingForConfirmation'
   | 'allowanceWaitingForApproval'
   | 'allowanceInProgress'
   | 'allowanceFailure'
   | 'allowanceSuccess'
-  | 'openWaitingForConfirmation'
-  | 'openWaitingForApproval'
-  | 'openInProgress'
-  | 'openFailure'
-  | 'openSuccess'
+
+export type TxStage =
+  | 'txWaitingForConfirmation'
+  | 'txWaitingForApproval'
+  | 'txInProgress'
+  | 'txFailure'
+  | 'txSuccess'
+
+export type EditingStage = 'editing'
+export type OpenMultiplyVaultStage = EditingStage | ProxyStages | AllowanceStages | TxStage
 
 export interface MutableOpenMultiplyVaultState {
   stage: OpenMultiplyVaultStage
@@ -172,8 +177,8 @@ export type OpenMultiplyVaultState = MutableOpenMultiplyVaultState &
   OpenMultiplyVaultEnvironment &
   OpenMultiplyVaultConditions &
   OpenMultiplyVaultTxInfo & {
-    errorMessages: OpenMultiplyVaultErrorMessage[]
-    warningMessages: OpenMultiplyVaultWarningMessage[]
+    errorMessages: VaultErrorMessage[]
+    warningMessages: VaultWarningMessage[]
     summary: OpenVaultSummary
     totalSteps: number
     currentStep: number
@@ -252,7 +257,7 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'openWaitingForConfirmation' || state.stage === 'openFailure') {
+  if (state.stage === 'txWaitingForConfirmation' || state.stage === 'txFailure') {
     return {
       ...state,
       progress: () => multiplyVault(txHelpers, context, change, state),
@@ -260,7 +265,7 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'openSuccess') {
+  if (state.stage === 'txSuccess') {
     return {
       ...state,
       progress: () =>

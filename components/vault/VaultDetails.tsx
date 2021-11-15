@@ -38,27 +38,23 @@ export function getCollRatioColor(
     collateralizationRatio.lt(ilkData.liquidationRatio) &&
     !collateralizationRatio.isZero()
 
-  const collRatioColor = collateralizationRatio.isZero()
+  return collateralizationRatio.isZero()
     ? 'primary'
     : vaultWillBeAtRiskLevelDanger || vaultWillBeUnderCollateralized
     ? 'onError'
     : vaultWillBeAtRiskLevelWarning
     ? 'onWarning'
     : 'onSuccess'
-
-  return collRatioColor
 }
 
 export function getPriceChangeColor({
   priceInfo: { collateralPricePercentageChange },
 }: CommonVaultState) {
-  const priceChangeColor = collateralPricePercentageChange.isZero()
+  return collateralPricePercentageChange.isZero()
     ? 'text.muted'
     : collateralPricePercentageChange.gt(zero)
     ? 'onSuccess'
     : 'onError'
-
-  return priceChangeColor
 }
 
 export function getAfterPillColors(collRatioColor: CollRatioColor) {

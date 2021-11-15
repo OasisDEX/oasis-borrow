@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { openMultiplyVaultStory } from 'helpers/stories/OpenMultiplyVaultStory'
 import { NEVER } from 'rxjs'
 
-import { OpenMultiplyVaultView } from '../components/OpenMultiplyVaultView'
+import { DefaultMultiplyVaultView } from '../variants/default/open/DefaultMultiplyVaultView'
 
 export const WaitingForIlksToBeFetched = openMultiplyVaultStory({
   title:
@@ -97,47 +97,47 @@ export const AllowanceSuccess = openMultiplyVaultStory({
   depositAmount: new BigNumber('50'),
 })
 
-export const OpenWaitingForConfirmation = openMultiplyVaultStory({
+export const txWaitingForConfirmation = openMultiplyVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'ETH-A',
 })({
-  stage: 'openWaitingForConfirmation',
+  stage: 'txWaitingForConfirmation',
   depositAmount: new BigNumber('50'),
   requiredCollRatio: new BigNumber(3.5),
 })
 
-export const OpenWaitingForApproval = openMultiplyVaultStory({
+export const txWaitingForApproval = openMultiplyVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'ETH-A',
 })({
-  stage: 'openWaitingForApproval',
+  stage: 'txWaitingForApproval',
   depositAmount: new BigNumber('50'),
   requiredCollRatio: new BigNumber(3.5),
 })
 
-export const OpenFailure = openMultiplyVaultStory({
+export const txFailure = openMultiplyVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'ETH-A',
 })({
-  stage: 'openFailure',
+  stage: 'txFailure',
   depositAmount: new BigNumber('50'),
   requiredCollRatio: new BigNumber(3.5),
 })
 
-export const OpenInProgress = openMultiplyVaultStory({
+export const txInProgress = openMultiplyVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'ETH-A',
 })({
-  stage: 'openInProgress',
+  stage: 'txInProgress',
   depositAmount: new BigNumber('50'),
 })
 
-export const OpenSuccess = openMultiplyVaultStory({
+export const txSuccess = openMultiplyVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'ETH-A',
 })({
   id: new BigNumber('122345'),
-  stage: 'openSuccess',
+  stage: 'txSuccess',
   depositAmount: new BigNumber('50'),
   requiredCollRatio: new BigNumber(3.5),
 })
@@ -145,5 +145,5 @@ export const OpenSuccess = openMultiplyVaultStory({
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'OpenMultiplyVault/Stages',
-  component: OpenMultiplyVaultView,
+  component: DefaultMultiplyVaultView,
 }

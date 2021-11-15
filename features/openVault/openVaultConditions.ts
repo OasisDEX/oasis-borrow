@@ -74,11 +74,11 @@ export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
         totalSteps,
         currentStep: totalSteps - 1,
       }
-    case 'openWaitingForConfirmation':
-    case 'openWaitingForApproval':
-    case 'openInProgress':
-    case 'openFailure':
-    case 'openSuccess':
+    case 'txWaitingForConfirmation':
+    case 'txWaitingForApproval':
+    case 'txInProgress':
+    case 'txFailure':
+    case 'txSuccess':
       return {
         ...state,
         ...defaultOpenVaultStageCategories,
@@ -232,8 +232,8 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     'proxyWaitingForApproval',
     'allowanceInProgress',
     'allowanceWaitingForApproval',
-    'openInProgress',
-    'openWaitingForApproval',
+    'txInProgress',
+    'txWaitingForApproval',
   ] as OpenVaultStage[]).some((s) => s === stage)
 
   const customAllowanceAmountEmpty = selectedAllowanceRadio === 'custom' && !allowanceAmount
@@ -266,15 +266,15 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
       customAllowanceAmountEmpty ||
       customAllowanceAmountExceedsMaxUint256 ||
       customAllowanceAmountLessThanDepositAmount
-    ) || stage === 'openSuccess'
+    ) || stage === 'txSuccess'
 
   const canRegress = ([
     'proxyWaitingForConfirmation',
     'proxyFailure',
     'allowanceWaitingForConfirmation',
     'allowanceFailure',
-    'openWaitingForConfirmation',
-    'openFailure',
+    'txWaitingForConfirmation',
+    'txFailure',
   ] as OpenVaultStage[]).some((s) => s === stage)
 
   return {
