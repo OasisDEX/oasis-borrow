@@ -394,9 +394,6 @@ export function createOpenGuniVault$(
                                             .minus(requiredDebt),
                                         )
 
-                                      const multiply =
-                                        multiple.toNumber() > 20 ? new BigNumber(20) : multiple
-
                                       return {
                                         kind: 'guniTxData',
                                         swap,
@@ -423,7 +420,7 @@ export function createOpenGuniVault$(
                                           priceInfo.currentCollateralPrice,
                                         ),
                                         afterNetValueUSD,
-                                        multiply,
+                                        multiply: multiple,
                                       }
                                     },
                                   ),
