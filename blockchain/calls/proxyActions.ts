@@ -5,7 +5,7 @@ import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWad, amountToWei } from 'blockchain/utils'
-import { ExchangeAction, getTokenMetaData } from 'features/exchange/exchange'
+import { ExchangeAction } from 'features/exchange/exchange'
 import { CloseVaultTo } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
@@ -396,7 +396,7 @@ function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: Contex
   if (!token0Symbol || !token1Symbol) {
     throw new Error('Invalid token')
   }
-  console.log('DEbug:fromTokenAmount', data.fromTokenAmount)
+  
   return contract<DssGuniProxyActions>(guniProxyActions).methods.openMultiplyGuniVault(
     {
       fromTokenAddress: tokens[token0Symbol].address,
