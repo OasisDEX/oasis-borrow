@@ -261,6 +261,10 @@ const oasisBaseTheme = {
       alignSelf: 'center',
       zIndex: 4,
     },
+    buttonPair: {
+      minWidth: '200px',
+      width: 'unset',
+    },
   },
   metadata: {
     fontLinkHref: 'https://rsms.me/inter/inter.css',
@@ -337,6 +341,13 @@ const oasisBaseTheme = {
       p: 3,
       bg: 'secondaryAlt',
       borderRadius: 'large',
+    },
+    cookieBanner: {
+      boxShadow: 'fixedBanner',
+      bg: 'surface',
+      borderRadius: '16px 16px 0 0',
+      padding: '24px',
+      pb: 3,
     },
   },
   badges: {

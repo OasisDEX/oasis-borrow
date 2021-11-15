@@ -4,7 +4,7 @@ import { AppLink } from 'components/Links'
 import * as mixpanel from 'mixpanel-browser'
 import React, { Fragment, MouseEventHandler, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { Box, Button, Container, Flex, Grid, Text } from 'theme-ui'
+import { Box, Button, Card, Container, Flex, Grid, Text } from 'theme-ui'
 
 const COOKIE_NAMES = ['marketing', 'analytics'] as const
 const LOCALSTORAGE_KEY = 'cookieSettings'
@@ -110,13 +110,14 @@ export function CookieBanner() {
   }
 
   const ctaButtons = (
-    <Box
+    <Container
+      variant="buttonPair"
       sx={{
         display: 'inline-grid',
         gridTemplateColumns: '1fr 1fr',
         gap: 2,
         alignItems: 'start',
-        minWidth: '200px',
+        direction: ['rtl', 'unset'],
       }}
     >
       <Button variant="bean" sx={{ fontSize: 2 }} onClick={() => rejectCookies()}>
@@ -125,23 +126,15 @@ export function CookieBanner() {
       <Button variant="beanActive" sx={{ fontSize: 2 }} onClick={() => acceptCookies()}>
         {t('landing.cookie-banner.accept')}
       </Button>
-    </Box>
+    </Container>
   )
 
   return (
     <Box sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 'cookie' }}>
       <Container variant="landingContainer" sx={{ margin: '0 auto', px: 3 }}>
-        <Box
-          sx={{
-            boxShadow: 'fixedBanner',
-            bg: 'surface',
-            borderRadius: '16px 16px 0 0',
-            padding: '24px',
-            pb: 3,
-          }}
-        >
+        <Card variant="cookieBanner">
           <Flex sx={{ justifyContent: 'space-between' }}>
-            <Box sx={{ maxWidth: '872px', mr: 2 }}>
+            <Box sx={{ mr: [2, 3, 4] }}>
               <Box sx={{ variant: 'text.paragraph3' }}>
                 <Trans
                   i18nKey="landing.cookie-banner.message"
@@ -151,7 +144,9 @@ export function CookieBanner() {
                 />
               </Box>
             </Box>
-            <Box sx={{ display: ['none', 'block'], minWidth: '200px' }}>{ctaButtons}</Box>
+            <Container variant="buttonPair" sx={{ display: ['none', 'block'] }}>
+              {ctaButtons}
+            </Container>
           </Flex>
           <Button
             variant="textual"
@@ -182,7 +177,7 @@ export function CookieBanner() {
             </Grid>
           )}
           <Box sx={{ display: ['block', 'none'], pt: 3 }}>{ctaButtons}</Box>
-        </Box>
+        </Card>
       </Container>
     </Box>
   )
