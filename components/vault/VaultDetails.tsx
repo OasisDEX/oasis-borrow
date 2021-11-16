@@ -177,7 +177,7 @@ export function VaultDetailsCardModal({
   )
 }
 
-function VaultDetailsCardCurrentPriceModal({
+export function VaultDetailsCardCurrentPriceModal({
   close,
   currentPrice,
   nextPriceWithChange,

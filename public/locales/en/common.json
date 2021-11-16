@@ -296,7 +296,14 @@
       "net-value-description": "The Net Value is calculated as the current value of the collateral in your vault minus the current debt.\nNote: This will not be exactly equal to the amount you will receive if you close your vault to Dai. This is due to fees applied when swapping collateral to Dai. The Net Value is calculated using the market price for the collateral using 1Inch.",
       "profit-and-loss": "P&L",
       "profit-and-loss-description": "TBD",
-      "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
+      "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
+      "stop-loss-coll-ratio": "Stop Loss Collateral Ratio",
+      "dynamic-stop-price": "Dynamic Stop price",
+      "max-token-on-stop-loss-trigger": "Max {{token}} on stop loss trigger",
+      "current-coll-ratio": "{{value}} Current coll ratio",
+      "saving-comp-to-liquidation": "{{value}} Saving compared to liquidation",
+      "above-liquidation-price": "{{value}} above liquidation price",
+      "on-next-price": "on next price"
     }
   },
   "max": "Max",
