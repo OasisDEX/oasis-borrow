@@ -189,13 +189,6 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
               )
               const vaultIlk = generalManageVault.state.ilkData.ilk
               const multiplyContainerMap: Record<string, ReactNode> = {
-                // TODO just for testing, remove before release
-                'ETH-A': (
-                  <GuniManageMultiplyVaultCointainer
-                    vaultHistory={multiplyHistory}
-                    manageVault={generalManageVault.state}
-                  />
-                ),
                 'GUNIV3DAIUSDC1-A': (
                   <GuniManageMultiplyVaultCointainer
                     vaultHistory={multiplyHistory}
