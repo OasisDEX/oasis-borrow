@@ -159,6 +159,7 @@ export type OpenGuniVaultState = StageState &
   TokensLpBalanceState &
   GuniOpenMultiplyVaultConditions & {
     // TODO - ADDED BY SEBASTIAN TO BE REMOVED
+    maxMultiple: BigNumber
     afterOutstandingDebt: BigNumber
     multiply: BigNumber
     totalCollateral: BigNumber // it was not available in standard multiply state
@@ -329,6 +330,7 @@ export function createOpenGuniVault$(
                       totalSteps: 3,
                       currentStep: 1,
                       minToTokenAmount: zero,
+                      maxMultiple: one.div(ilkData.liquidationRatio.minus(one)),
                     }
 
                     const stateSubject$ = new Subject<OpenGuniVaultState>()
@@ -393,6 +395,21 @@ export function createOpenGuniVault$(
                                             .times(priceInfo.currentCollateralPrice)
                                             .minus(requiredDebt),
                                         )
+
+                                      console.log(`
+                                      leveragedAmount: ${leveragedAmount}
+                                      daiaAmountToSwapForUsdc: ${daiAmountToSwapForUsdc}
+                                      swap.collateralAmount: ${swap.collateralAmount}
+                                      swap.daiAmount: ${swap.daiAmount}
+                                      amount0 ${amount0}
+                                      amount1 ${amount1}
+                                      mintAmount ${mintAmount}
+                                      requiredDebt ${requiredDebt}
+                                      token0Amount ${token0Amount}
+                                      token1Amount ${token1Amount}
+                                      priceInfo.currentCollateralPrice ${priceInfo.currentCollateralPrice}
+
+                                      `)
 
                                       return {
                                         kind: 'guniTxData',
