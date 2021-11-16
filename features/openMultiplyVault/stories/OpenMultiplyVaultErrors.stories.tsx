@@ -4,7 +4,7 @@ import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { openMultiplyVaultStory } from 'helpers/stories/OpenMultiplyVaultStory'
 import { one } from 'helpers/zero'
 
-import { OpenMultiplyVaultView } from '../components/OpenMultiplyVaultView'
+import { DefaultMultiplyVaultView } from '../variants/default/open/DefaultMultiplyVaultView'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
@@ -159,5 +159,5 @@ export const ExchangeDataLoading = openMultiplyVaultStory({
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'OpenMultiplyVault/Blocking',
-  component: OpenMultiplyVaultView,
+  component: DefaultMultiplyVaultView,
 }

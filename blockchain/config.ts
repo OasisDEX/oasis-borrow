@@ -7,11 +7,13 @@ import * as eth from './abi/ds-eth-token.json'
 import * as dsProxyFactory from './abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from './abi/ds-proxy-registry.json'
 import * as dssCdpManager from './abi/dss-cdp-manager.json'
+import * as guniProxyActions from './abi/dss-guni-proxy-actions.json'
 import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
 import * as dssProxyActions from './abi/dss-proxy-actions.json'
 import * as erc20 from './abi/erc20.json'
 import * as exchange from './abi/exchange.json'
 import * as getCdps from './abi/get-cdps.json'
+import * as guniToken from './abi/guni-token.json'
 import * as otc from './abi/matching-market.json'
 import * as mcdDog from './abi/mcd-dog.json'
 import * as mcdEnd from './abi/mcd-end.json'
@@ -52,6 +54,7 @@ const protoMain = {
   collaterals: getCollaterals(mainnetAddresses),
   tokens: {
     ...getCollateralTokens(mainnetAddresses),
+    GUNIV3DAIUSDC1: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC1']),
     WETH: contractDesc(eth, mainnetAddresses['ETH']),
     DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
   } as Dictionary<ContractDesc>,
@@ -72,6 +75,9 @@ const protoMain = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, mainnetAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, mainnetAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
+  guniProxyActions: contractDesc(guniProxyActions, '0x64b0010f6b90d0ae0bf2587ba47f2d3437487447'),
+  guniResolver: '0x0317650Af6f184344D7368AC8bB0bEbA5EDB214a',
+  guniRouter: '0x14E6D67F824C3a7b4329d3228807f8654294e4bd',
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
@@ -133,6 +139,9 @@ const kovan: NetworkConfig = {
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
   ),
+  guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
+  guniResolver: '0x',
+  guniRouter: '0x',
   exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
   fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
   etherscan: {
@@ -184,6 +193,9 @@ const goerli: NetworkConfig = {
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
   ),
+  guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
+  guniResolver: '0x',
+  guniRouter: '0x',
   // Currently this is not supported on Goerli - no deployed contract
   exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''),
   // Currently this is not supported on Goerli - no deployed contract
@@ -217,7 +229,7 @@ const hardhat: NetworkConfig = {
   exchange: contractDesc(
     exchange,
     getConfig()?.publicRuntimeConfig?.exchangeAddress ||
-      '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B',
+      '0x4C4a2f8c81640e47606d3fd77B353E87Ba015584',
   ),
 }
 
