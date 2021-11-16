@@ -294,6 +294,8 @@
       "more-info-oracles": "More information on Maker oracles can be found <0>here</0>",
       "net-value": "Net Value",
       "net-value-description": "The Net Value is calculated as the current value of the collateral in your vault minus the current debt.\nNote: This will not be exactly equal to the amount you will receive if you close your vault to Dai. This is due to fees applied when swapping collateral to Dai. The Net Value is calculated using the market price for the collateral using 1Inch.",
+      "profit-and-loss": "P&L",
+      "profit-and-loss-description": "TBD",
       "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
     }
   },
@@ -344,6 +346,7 @@
     "title": "Open Vault",
     "warnings": {
       "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
+      "debt-is-less-than-debt-floor": "Your current Dai debt is below the minimum of {{debtFloor}}. Because of this some Vault actions are not possible. Please generate more Dai to take you above the minimum or payback all your debt",
       "vault-will-be-at-risk-level-danger": "With this action your vault will be at a collateralization ratio very close to the minimum required",
       "vault-will-be-at-risk-level-danger-at-next-price": "With this action your vault will be at a collateralization ratio very close to the minimum required at the next price update",
       "vault-will-be-at-risk-level-warning": "With this action your vault will be at a collateralization ratio near the minimum required",
@@ -361,7 +364,20 @@
       "custom-allowance-amount-less-than-deposit-amount": "You need at least an allowance of your deposit amount to continue",
       "depositing-all-eth-balance": "You need some ETH to pay for the gas fees. Lower your deposit amount",
       "ledger-enable-contract-data": "Please enable Contract data on the Ledgers Ethereum app Settings",
-      "exchange-error": "Could not fetch exchange prices for doing this multiply action."
+      "exchange-error": "Could not fetch exchange prices for doing this multiply action.",
+      "withdraw-amount-exceeds-free-collateral": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
+      "withdraw-amount-exceeds-free-collateral-at-next-price": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
+      "generate-amount-exceeds-dai-yield-from-total-collateral": "The collateralization ratio for this Maker Vault is too low. Please generate less Dai",
+      "generate-amount-exceeds-dai-yield-from-total-collateral-at-next-price": "The collateralization ratio for this Maker Vault is too low at the next price update. Please generate less Dai",
+      "payback-amount-exceeds-dai-balance": "You cannot payback more Dai than the amount in your wallet",
+      "payback-amount-exceeds-vault-debt": "You are trying to payback more than your Dai debt for this Maker Vault",
+      "custom-collateral-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
+      "custom-collateral-allowance-amount-less-than-deposit-amount": "You need at least an allowance of your deposit amount to continue",
+      "custom-dai-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
+      "custom-dai-allowance-amount-less-than-payback-amount": "You need at least an allowance of your payback amount to continue",
+      "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, payback your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
+      "has-to-deposit-collateral-on-empty-vault": "There is no collateral in this vault. Please first add collateral in the 'Other actions' tab, with the 'deposit collateral' action",
+      "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
     }
   },
   "or": "or",
@@ -433,6 +449,8 @@
     "asset": "Asset",
     "available-to-withdraw": "Available to Withdraw",
     "total-exposure": "Total {{token}} exposure",
+    "exposure": "exposure",
+    "total-collateral": "Total collateral",
     "multiple": "Multiple",
     "available-to-generate": "Available to Generate",
     "coll-locked": "Coll. Locked",
@@ -487,6 +505,18 @@
     "open-vault": "Open {{ilk}} Vault",
     "vault-details": "Vault Details",
     "token-uds-price": "{{token}}/USD price"
+  },
+  "vault-changes": {
+    "order-information": "Order information",
+    "multiply": "Multiply",
+    "close-vault-information": "Close Vault Information",
+    "getting-token": "Getting {{token}}",
+    "buying-token": "Buying {{token}}",
+    "selling-token": "Selling {{token}}",
+    "price-impact": "{{token}} Price (impact)",
+    "slippage-limit": "Slippage Limit",
+    "third-party-fees": "3rd party protocol fees",
+    "oasis-fee": "Oasis fee"
   },
   "vault-actions": {
     "deposit": "Deposit",
@@ -569,6 +599,7 @@
   "vault-form": {
     "header": {
       "edit": "Configure your Vault",
+      "editWithToken": "Configure your {{token}} Vault",
       "proxy": "Create your smart Proxy ",
       "allowance": "Set {{token}} allowance",
       "daiAllowance": "Set DAI allowance",
@@ -585,6 +616,7 @@
       "dai": "Generate DAI from the collateral in your vault, or payback DAI. Save gas by combining transactions.",
       "edit": "Simulate your vault by configuring the amount of collateral to deposit, and DAI to generate.",
       "edit-multiply": "Simulate your vault by configuring the amount of collateral to deposit, and slide your multiply factor.",
+      "edit-multiply-dai": "This vault can be created by simply <1>depositing DAI</1>. The transaction will create the {{token}} position for you based on this DAI deposit.",
       "proxy": "With your smart proxy multiple actions can be performed in one transaction for your Vault. This proxy only needs to be set up once.",
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "daiAllowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",

@@ -9,8 +9,10 @@ import {
   filter,
   map,
   retry,
+  shareReplay,
   switchMap,
   take,
+  withLatestFrom,
 } from 'rxjs/operators'
 
 import { compareBigNumber } from '../../helpers/compareBigNumber'
@@ -97,7 +99,12 @@ export function createExchangeChange$(
   ) => Observable<Quote>,
   state$: Observable<ManageMultiplyVaultState>,
 ) {
-  return state$.pipe(
+  const stateChanges$ = state$.pipe(
+    map((state) => state),
+    shareReplay(1),
+  )
+
+  return stateChanges$.pipe(
     filter(
       (state) =>
         !state.inputAmountsEmpty &&
@@ -115,87 +122,43 @@ export function createExchangeChange$(
         compareBigNumber(s1.paybackAmount, s2.paybackAmount),
     ),
     debounceTime(500),
-    switchMap(
-      // () =>
-      //   every5Seconds$.pipe(
-      //     switchMap(() => {
-      //       console.log('every 5 secs')
+    switchMap(() =>
+      every5Seconds$.pipe(
+        withLatestFrom(stateChanges$),
+        switchMap(([_seconds, state]) => {
+          const {
+            quote,
+            exchangeAction,
+            collateralDelta,
+            requiredCollRatio,
+            slippage,
+            otherAction,
+            closeVaultTo,
+            vault: { token },
+            closeToDaiParams,
+            closeToCollateralParams,
+            oneInchAmount,
+          } = state
 
-      //       return state$.pipe(
-      //         switchMap((state) => {
-      //           if (
-      //             state.quote?.status === 'SUCCESS' &&
-      //             state.exchangeAction &&
-      //             state.collateralDelta &&
-      //             state.requiredCollRatio
-      //           ) {
-      //             return exchangeQuote$(
-      //               state.vault.token,
-      //               state.slippage,
-      //               state.exchangeAction === 'BUY_COLLATERAL'
-      //                 ? (state.debtDelta as BigNumber).abs().times(one.minus(OAZO_FEE))
-      //                 : state.collateralDelta.abs(),
-      //               state.exchangeAction,
-      //             )
-      //           }
-      //           if (state.otherAction === 'closeVault') {
-      //             if (state.closeVaultTo === 'collateral') {
-      //               return EMPTY
-      //             }
-      //             if (state.closeVaultTo === 'dai') {
-      //               console.log('GET PRICE FOR CLOSE VAULT')
-      //               return exchangeQuote$(
-      //                 state.vault.token,
-      //                 state.slippage,
-      //                 state.vault.lockedCollateral,
-      //                 'SELL_COLLATERAL',
-      //               )
-      //             }
-      //           }
-      //           return EMPTY
-      //         }),
-      //       )
-      //     }),
-      //     retry(3),
-      //   ),
-      // TO DO for every 5 secs we use old value of afterOutstandingDebt, after fetch we update market price
-      // which is factor for calculatinf afterOutstandingDebt
-      (state) =>
-        every5Seconds$.pipe(
-          switchMap(() => {
-            const {
-              quote,
-              exchangeAction,
-              collateralDelta,
-              requiredCollRatio,
-              slippage,
-              otherAction,
-              closeVaultTo,
-              vault: { token },
-              closeToDaiParams,
-              closeToCollateralParams,
-              oneInchAmount,
-            } = state
+          if (
+            quote?.status === 'SUCCESS' &&
+            exchangeAction &&
+            collateralDelta &&
+            requiredCollRatio
+          ) {
+            return exchangeQuote$(token, slippage, oneInchAmount, exchangeAction)
+          }
 
-            if (
-              quote?.status === 'SUCCESS' &&
-              exchangeAction &&
-              collateralDelta &&
-              requiredCollRatio
-            ) {
-              return exchangeQuote$(token, slippage, oneInchAmount, exchangeAction)
-            }
+          if (otherAction === 'closeVault') {
+            const { fromTokenAmount } =
+              closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
 
-            if (otherAction === 'closeVault') {
-              const { fromTokenAmount } =
-                closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
-
-              return exchangeQuote$(token, slippage, fromTokenAmount, 'SELL_COLLATERAL')
-            }
-            return EMPTY
-          }),
-          retry(3),
-        ),
+            return exchangeQuote$(token, slippage, fromTokenAmount, 'SELL_COLLATERAL')
+          }
+          return EMPTY
+        }),
+        retry(3),
+      ),
     ),
     map(swapToChange),
   )

@@ -1,5 +1,6 @@
 import { ManageMultiplyVaultState } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { ManageVaultState } from 'features/manageVault/manageVault'
+import { OpenGuniVaultState } from 'features/openGuniVault/openGuniVault'
 import { OpenMultiplyVaultState } from 'features/openMultiplyVault/openMultiplyVault'
 import { OpenVaultState } from 'features/openVault/openVault'
 import { TFunction } from 'next-i18next'
@@ -14,3 +15,4 @@ export type CommonVaultState =
   | ManageVaultState
   | OpenMultiplyVaultState
   | ManageMultiplyVaultState
+  | OpenGuniVaultState

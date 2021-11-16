@@ -4,7 +4,7 @@ import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { openMultiplyVaultStory } from 'helpers/stories/OpenMultiplyVaultStory'
 import { zero } from 'helpers/zero'
 
-import { OpenMultiplyVaultView } from '../components/OpenMultiplyVaultView'
+import { DefaultMultiplyVaultView } from '../variants/default/open/DefaultMultiplyVaultView'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
@@ -170,5 +170,5 @@ export const GeneratingAllDaiFromDepositingCollateralAtNextPrice = openMultiplyV
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'OpenMultiplyVault/Non-Blocking',
-  component: OpenMultiplyVaultView,
+  component: DefaultMultiplyVaultView,
 }
