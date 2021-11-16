@@ -13,8 +13,8 @@ import {
   VaultDetailsCardModal,
 } from '../VaultDetails'
 
-const StopLossCollRatioModal = ({ close }: ModalProps) => (
-  <VaultDetailsCardModal close={close}>StopLossCollRatioModal</VaultDetailsCardModal>
+const DummyModal = ({ close }: ModalProps) => (
+  <VaultDetailsCardModal close={close}>DummyModal</VaultDetailsCardModal>
 )
 
 const MaxWidthWrapper = ({ children }: { children: ReactNode }) => (
@@ -50,8 +50,15 @@ export const StopLossCollRatioCard = ({ hasAfter }: CardsControl) => {
         title={t('manage-multiply-vault.card.stop-loss-coll-ratio')}
         value="180%"
         valueAfter={hasAfter ? '180%' : ''}
-        valueBottom={t('manage-multiply-vault.card.current-coll-ratio', { value: '220.00%' })}
-        openModal={() => openModal(StopLossCollRatioModal)}
+        valueBottom={
+          <>
+            220.00%{' '}
+            <Text as="span" sx={{ color: 'text.subtitle' }}>
+              {t('manage-multiply-vault.card.current-coll-ratio')}
+            </Text>
+          </>
+        }
+        openModal={() => openModal(DummyModal)}
       />
     </MaxWidthWrapper>
   )
@@ -68,11 +75,18 @@ export const DynamicStopPrice = ({ hasAfter, hasBottom }: CardsControl) => {
         value="$1,750.0"
         valueAfter={hasAfter ? '$1,750.0' : ''}
         valueBottom={
-          hasBottom
-            ? t('manage-multiply-vault.card.above-liquidation-price', { value: '$453.43' })
-            : '-'
+          hasBottom ? (
+            <>
+              $453.43{' '}
+              <Text as="span" sx={{ color: 'text.subtitle' }}>
+                {t('manage-multiply-vault.card.above-liquidation-price')}
+              </Text>
+            </>
+          ) : (
+            '-'
+          )
         }
-        openModal={() => openModal(StopLossCollRatioModal)}
+        openModal={() => openModal(DummyModal)}
       />
     </MaxWidthWrapper>
   )
@@ -85,17 +99,22 @@ export const MaxTokenOnStopLossTrigger = ({ hasAfter, hasBottom }: CardsControl)
   return (
     <MaxWidthWrapper>
       <VaultDetailsCard
-        title={t('manage-multiply-vault.card.max-token-on-stop-loss-trigger')}
+        title={t('manage-multiply-vault.card.max-token-on-stop-loss-trigger', { token: 'ETH' })}
         value="12.40 ETH"
-        valueAfter={hasAfter ? '11.24' : ''}
+        valueAfter={hasAfter ? t('manage-multiply-vault.card.up-to', { value: '11.24' }) : ''}
         valueBottom={
-          hasBottom
-            ? t('manage-multiply-vault.card.saving-comp-to-liquidation', {
-                value: '4.14 ETH',
-              })
-            : '-'
+          hasBottom ? (
+            <>
+              11.24 ETH{' '}
+              <Text as="span" sx={{ color: 'text.subtitle' }}>
+                {t('manage-multiply-vault.card.saving-comp-to-liquidation')}
+              </Text>
+            </>
+          ) : (
+            '-'
+          )
         }
-        openModal={() => openModal(StopLossCollRatioModal)}
+        openModal={() => openModal(DummyModal)}
       />
     </MaxWidthWrapper>
   )

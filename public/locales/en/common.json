@@ -300,10 +300,11 @@
       "stop-loss-coll-ratio": "Stop Loss Collateral Ratio",
       "dynamic-stop-price": "Dynamic Stop price",
       "max-token-on-stop-loss-trigger": "Max {{token}} on stop loss trigger",
-      "current-coll-ratio": "{{value}} Current coll ratio",
-      "saving-comp-to-liquidation": "{{value}} Saving compared to liquidation",
-      "above-liquidation-price": "{{value}} above liquidation price",
-      "on-next-price": "on next price"
+      "current-coll-ratio": "Current coll ratio",
+      "saving-comp-to-liquidation": "Saving compared to liquidation",
+      "above-liquidation-price": "above liquidation price",
+      "on-next-price": "on next price",
+      "up-to": "up to {{value}}"
     }
   },
   "max": "Max",
