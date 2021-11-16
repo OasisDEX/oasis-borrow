@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { openMultiplyVaultStory } from 'helpers/stories/OpenMultiplyVaultStory'
 import { NEVER } from 'rxjs'
 
-import { DefaultMultiplyVaultView } from '../variants/default/open/DefaultMultiplyVaultView'
+import { DefaultMultiplyVaultView } from '../../../variants/default/open/DefaultMultiplyVaultView'
 
 export const WaitingForIlksToBeFetched = openMultiplyVaultStory({
   title:

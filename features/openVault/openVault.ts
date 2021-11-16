@@ -39,7 +39,6 @@ import {
   openVault,
   OpenVaultTransactionChange,
 } from './openVaultTransactions'
-import { createProxy } from '../proxy/createProxy'
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openVaultTransitions'
 import {
   OpenVaultErrorMessage,
@@ -47,7 +46,6 @@ import {
   validateErrors,
   validateWarnings,
 } from './openVaultValidations'
-import { setAllowance } from 'features/allowance/setAllowance'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
