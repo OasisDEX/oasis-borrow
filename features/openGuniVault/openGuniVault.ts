@@ -396,21 +396,6 @@ export function createOpenGuniVault$(
                                             .minus(requiredDebt),
                                         )
 
-                                      console.log(`
-                                      leveragedAmount: ${leveragedAmount}
-                                      daiaAmountToSwapForUsdc: ${daiAmountToSwapForUsdc}
-                                      swap.collateralAmount: ${swap.collateralAmount}
-                                      swap.daiAmount: ${swap.daiAmount}
-                                      amount0 ${amount0}
-                                      amount1 ${amount1}
-                                      mintAmount ${mintAmount}
-                                      requiredDebt ${requiredDebt}
-                                      token0Amount ${token0Amount}
-                                      token1Amount ${token1Amount}
-                                      priceInfo.currentCollateralPrice ${priceInfo.currentCollateralPrice}
-
-                                      `)
-
                                       return {
                                         kind: 'guniTxData',
                                         swap,
