@@ -80,13 +80,6 @@ export function manageMultiplyVaultStory({
             ...(paybackAmount && {
               paybackAmount,
             }),
-            // showDepositAndGenerateOption:
-            //   (stage === 'daiEditing' && !!depositAmount) ||
-            //   (stage === 'collateralEditing' && !!generateAmount),
-            // showPaybackAndWithdrawOption:
-            //   accountIsController &&
-            //   ((stage === 'daiEditing' && !!withdrawAmount) ||
-            //     (stage === 'collateralEditing' && !!paybackAmount)),
           }
 
           injectStateOverride(newState || {})

@@ -5,7 +5,7 @@ import { VaultBannersView } from 'features/banners/VaultsBannersView'
 import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import NotFoundPage from 'pages/404'
-import React from 'react'
+import React, { useState } from 'react'
 import { Box, Button, Grid } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
@@ -28,12 +28,11 @@ enum VaultViewMode{
 
 export default function Vault({ id }: { id: string }) {
   const vaultId = new BigNumber(id)
+  const [mode,setMode] = useState<VaultViewMode>(VaultViewMode.Overview);
   const isValidVaultId = vaultId.isInteger() && vaultId.gt(0)
-  let mode : VaultViewMode = VaultViewMode.Overview;
-
   
   function handleToggle(newMode: VaultViewMode) {
-    mode = newMode;
+    setMode(newMode);
   }
 
   return (
