@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { openMultiplyVaultStory } from 'helpers/stories/OpenMultiplyVaultStory'
 import { NEVER } from 'rxjs'
 
-import { DefaultOpenMultiplyVaultView } from '../../../variants/default/open/DefaultOpenMultiplyVaultView'
+import { DefaultMultiplyVaultView } from '../variants/default/open/DefaultMultiplyVaultView'
 
 export const WaitingForIlksToBeFetched = openMultiplyVaultStory({
   title:
@@ -145,5 +145,5 @@ export const txSuccess = openMultiplyVaultStory({
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'OpenMultiplyVault/Stages',
-  component: DefaultOpenMultiplyVaultView,
+  component: DefaultMultiplyVaultView,
 }

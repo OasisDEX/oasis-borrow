@@ -79,6 +79,7 @@ export function VaultAllowance({
                   decimalLimit: getToken(token).digits,
                   prefix: '',
                 })}
+                // @ts-ignore TODO PROVIDE PROPER TYPING
                 onChange={handleNumericInput(updateAllowanceAmount!)}
               />
               <Text sx={{ fontSize: 1 }}>{token}</Text>

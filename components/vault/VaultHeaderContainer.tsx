@@ -1,8 +1,14 @@
 import { Heading } from '@theme-ui/components'
 import React, { ReactNode } from 'react'
-import { Box,Grid } from 'theme-ui'
+import { Box, Grid } from 'theme-ui'
 
-export function VaultHeaderContainer({ children, header }: { children: ReactNode, header: string }) {
+export function VaultHeaderContainer({
+  children,
+  header,
+}: {
+  children: ReactNode
+  header: string
+}) {
   return (
     <Grid mt={4}>
       <Heading

@@ -3,6 +3,7 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
+import { setAllowance } from 'features/allowance/setAllowance'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
@@ -10,6 +11,7 @@ import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
+import { createProxy } from '../proxy/createProxy'
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openVaultAllowances'
 import {
   applyOpenVaultCalculations,

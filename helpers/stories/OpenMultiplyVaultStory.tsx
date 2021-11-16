@@ -4,7 +4,7 @@ import {
   defaultMutableOpenMultiplyVaultState,
   MutableOpenMultiplyVaultState,
 } from 'features/openMultiplyVault/openMultiplyVault'
-import { DefaultOpenMultiplyVaultView } from 'features/openMultiplyVault/variants/default/open/DefaultOpenMultiplyVaultView'
+import { DefaultMultiplyVaultView } from 'features/openMultiplyVault/variants/default/open/DefaultMultiplyVaultView'
 import {
   mockOpenMultiplyVault,
   MockOpenMultiplyVaultProps,
@@ -92,7 +92,7 @@ const OpenMultiplyVaultStoryContainer = ({ title, ilk }: { title?: string; ilk: 
     <Container variant="appContainer">
       <Grid>
         {title && <Card>{title}</Card>}
-        <DefaultOpenMultiplyVaultView ilk={ilk} />
+        <DefaultMultiplyVaultView ilk={ilk} />
       </Grid>
     </Container>
   )

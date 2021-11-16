@@ -21,7 +21,6 @@ export function GuniOpenMultiplyVaultChangesInformation(props: OpenGuniVaultStat
     multiply,
     afterOutstandingDebt,
     token,
-    txFees,
     impact,
     loanFees,
     oazoFee,
@@ -44,7 +43,7 @@ export function GuniOpenMultiplyVaultChangesInformation(props: OpenGuniVaultStat
         value={
           <Flex>
             <Text>
-              {formatCryptoBalance(gettingCollateral)} USDC
+              {formatCryptoBalance(gettingCollateral)} GUNI
               {` `}
               <Text as="span" sx={{ color: 'text.subtitle' }}>
                 (${formatAmount(gettingCollateralUSD, 'USD')})
@@ -96,7 +95,7 @@ export function GuniOpenMultiplyVaultChangesInformation(props: OpenGuniVaultStat
             sx={{ alignItems: 'center', cursor: 'pointer' }}
             onClick={() => setShowFees(!showFees)}
           >
-            {`${formatAmount(txFees, 'USD')} +`}
+            {`${formatAmount(oazoFee, 'USD')} +`}
             <Text ml={1}>{getEstimatedGasFeeText(props, true)}</Text>
             <Icon
               name={`chevron_${showFees ? 'up' : 'down'}`}

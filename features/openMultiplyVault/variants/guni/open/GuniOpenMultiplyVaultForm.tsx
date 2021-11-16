@@ -4,7 +4,7 @@ import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { OpenGuniVaultState } from '../../../../openGuniVault/openGuniVault'
@@ -22,11 +22,16 @@ export function GuniOpenMultiplyVaultForm(props: OpenGuniVaultState) {
   const { t } = useTranslation()
 
   return (
-    <VaultFormContainer toggleTitle={t('open.vault.title')}>
+    <VaultFormContainer toggleTitle={t('open-vault.title')}>
       <OpenMultiplyVaultTitle
         {...props}
         title={t('vault-form.header.editWithToken', { token: 'GUNI' })}
-        subTitle={t('vault-form.subtext.edit-multiply')}
+        subTitle={
+          <Trans i18nKey="vault-form.subtext.edit-multiply-dai" values={{ token: 'GUNIV3DAIUSDC' }}>
+            This vault can be created by simply <strong>depositing DAI</strong>. The transaction
+            will create the GUNIV3DAIUSDC position for you based on this DAI deposit
+          </Trans>
+        }
         token="DAI"
       />
       {isEditingStage && <GuniOpenMultiplyVaultEditing {...props} />}

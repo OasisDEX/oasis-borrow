@@ -1,6 +1,6 @@
 import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Box, Text } from 'theme-ui'
 
 import { OpenMultiplyVaultStage } from '../openMultiplyVault'
@@ -14,7 +14,7 @@ export interface OpenMultiplyVaultTitleProps {
   currentStep: number
   stage: OpenMultiplyVaultStage
   title: string
-  subTitle: string
+  subTitle: ReactNode
 }
 
 export function OpenMultiplyVaultTitle({
