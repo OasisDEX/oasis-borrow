@@ -75,6 +75,10 @@ import {
 
 type InjectChange = { kind: 'injectStateOverride'; stateToOverride: OpenGuniVaultState }
 
+interface OverrideHelper {
+  injectStateOverride: (state: Partial<any>) => void
+}
+
 export type Stage = EditingStage | ProxyStages | AllowanceStages | TxStage
 
 interface StageState {
@@ -143,7 +147,8 @@ type WarringState = {
   warningMessages: VaultWarningMessage[] // TODO add warring
 }
 
-export type OpenGuniVaultState = StageState &
+export type OpenGuniVaultState = OverrideHelper &
+  StageState &
   StageFunctions &
   AllowanceState &
   AllowanceFunctions &
@@ -287,6 +292,11 @@ export function createOpenGuniVault$(
                       change$.next(ch)
                     }
 
+                    // NOTE: Not to be used in production/dev, test only
+                    function injectStateOverride(stateToOverride: Partial<OpenGuniVaultState>) {
+                      return change$.next({ kind: 'injectStateOverride', stateToOverride })
+                    }
+
                     // const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
                     const SLIPPAGE = new BigNumber(0.001)
 
@@ -329,6 +339,7 @@ export function createOpenGuniVault$(
                       totalSteps: 3,
                       currentStep: 1,
                       minToTokenAmount: zero,
+                      injectStateOverride,
                     }
 
                     const stateSubject$ = new Subject<OpenGuniVaultState>()

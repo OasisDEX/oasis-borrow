@@ -46,18 +46,15 @@ export function guniOpenMultiplyVaultStory({
     })
 
     useEffect(() => {
-      const subscription = obs$
-        .pipe(first())
-        .subscribe(({ injectStateOverride, priceInfo: { currentCollateralPrice } }) => {
-          const newState = {
-            ...otherState,
-            ...(depositAmount && {
-              depositAmount,
-              depositAmountUSD: depositAmount.times(currentCollateralPrice),
-            }),
-          }
-          injectStateOverride(newState || {})
-        })
+      const subscription = obs$.pipe(first()).subscribe(({ injectStateOverride }) => {
+        const newState = {
+          ...otherState,
+          ...(depositAmount && {
+            depositAmount,
+          }),
+        }
+        injectStateOverride(newState || {})
+      })
       return subscription.unsubscribe()
     }, [])
 

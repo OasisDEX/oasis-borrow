@@ -4,7 +4,7 @@ import { mockBalanceInfo$ } from 'helpers/mocks/balanceInfo.mock'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { mockIlkData$ } from 'helpers/mocks/ilks.mock'
 import { mockPriceInfo$ } from 'helpers/mocks/priceInfo.mock'
-import { of } from 'rxjs'
+import { Observable, of } from 'rxjs'
 
 import { createOpenGuniVault$ } from '../../features/openGuniVault/openGuniVault'
 import { mockExchangeQuote$ } from './exchangeQuote.mock'
@@ -73,6 +73,7 @@ export function mockGuniOpenMultiplyVault({
     ilks$,
     ilkData$,
     mockExchangeQuote$(exchangeQuote),
+    new Observable<number>(), // todo make a obs as timer every i.e. 10 sec
     addGasEstimationMock,
     ilk,
   )

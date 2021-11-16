@@ -17,10 +17,9 @@ export const InvalidIlk = guniOpenMultiplyVaultStory({
 
 export const EditingStage = guniOpenMultiplyVaultStory({
   proxyAddress: '0xProxyAddress',
-  balanceInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { collateralBalance: new BigNumber('100'), daiBalance: new BigNumber('12345') },
 })({
   depositAmount: new BigNumber('50'),
-  requiredCollRatio: new BigNumber(3.5),
 })
 
 export const ProxyWaitingForConfirmation = guniOpenMultiplyVaultStory({
