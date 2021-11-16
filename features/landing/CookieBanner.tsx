@@ -97,8 +97,7 @@ export function CookieBanner() {
     saveSettings({ accepted: false, cookieSettings: initCookieSettings(false) })
   }
 
-  function acceptCookies() {
-    // enable/disable based on settings
+  function acceptSelectedCookies() {
     COOKIE_NAMES.forEach((cookieName) => {
       if (cookieSettings[cookieName]) {
         manageCookie[cookieName].enable()
@@ -123,7 +122,7 @@ export function CookieBanner() {
       <Button variant="bean" sx={{ fontSize: 2 }} onClick={() => rejectCookies()}>
         {t('landing.cookie-banner.reject')}
       </Button>
-      <Button variant="beanActive" sx={{ fontSize: 2 }} onClick={() => acceptCookies()}>
+      <Button variant="beanActive" sx={{ fontSize: 2 }} onClick={() => acceptSelectedCookies()}>
         {t('landing.cookie-banner.accept')}
       </Button>
     </Container>
