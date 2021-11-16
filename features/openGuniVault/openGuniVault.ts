@@ -357,34 +357,75 @@ export function createOpenGuniVault$(
                         }).pipe(
                           distinctUntilChanged(compareBigNumber),
                           switchMap((daiAmountToSwapForUsdc /* USDC */) => {
+
                             const token0Amount = leveragedAmount.minus(daiAmountToSwapForUsdc)
                             const oazoFee = daiAmountToSwapForUsdc.times(OAZO_FEE)
+                            console.log('oazoFee',oazoFee.toString() );
                             const amountWithFee = daiAmountToSwapForUsdc.plus(oazoFee)
+                            console.log('amountWithFee',amountWithFee.toString() );
                             const contractFee = amountWithFee.times(OAZO_FEE)
+                            console.log('contractFee',contractFee.toString() );
                             const oneInchAmount = amountWithFee.minus(contractFee)
+                            console.log('oneInchAmount',oazoFee.toString() );
+
+                            const daiSwapAmount = daiAmountToSwapForUsdc.times(one.minus(OAZO_FEE));
+
+                            console.log('DAI FOR SWAP', daiAmountToSwapForUsdc.toString() );
+                            console.log('DAI FOR SWAP without OF', daiSwapAmount.toString() );
+                            
+                            // exchangeQuote$(
+                            //   tokenInfo.token1, <--- jaki token kupujesz 
+                            //   SLIPPAGE,
+                            //   oneInchAmount, <---- ile dajesz DAI 
+                            //   'BUY_COLLATERAL',
+                            //   ) ->{
+                            //   collateralAmount: ile dostaniesz USDC
+                            //   daiAmount: za ile DAI
+                            //   tokenPrice: cenę 
+                            //   txData: dane dla 1inch
+                            //   }
+
                             return exchangeQuote$(
                               tokenInfo.token1,
                               SLIPPAGE,
-                              oneInchAmount,
+                              daiSwapAmount, // amount of Dai provided
                               'BUY_COLLATERAL',
                             ).pipe(
                               switchMap((swap) => {
                                 if (swap.status !== 'SUCCESS') {
                                   return EMPTY
                                 }
-                                const token1Amount = swap.collateralAmount
+                                const token1Amount = swap.collateralAmount //amount of usdc received
+
+                                console.log('swap', swap );
+                                console.log('swap dai', swap.daiAmount.toString() );
+                                console.log('swap usdc', swap.collateralAmount.toString() );
+                                
+                                console.log('daiAmountToSwapForUsdc', daiAmountToSwapForUsdc.toString() );
+                                console.log('token 0 to mint amount', token0Amount.toString() );
+                                console.log('token 1 to mint amount', token1Amount.toString() );
+                                console.log('token 1 to mint amount slippage', token1Amount.times(one.minus(SLIPPAGE)).toString() );
+                                
                                 return getGuniMintAmount$({
                                   token,
                                   amountOMax: token0Amount,
-                                  amount1Max: token1Amount,
+                                  amount1Max: token1Amount.times(one.minus(SLIPPAGE)),
                                 }).pipe(
                                   map(
                                     ({ amount0, amount1, mintAmount }): GuniTxDataChange => {
-                                      const requiredDebt = flAmount?.plus(oazoFee) || zero
+                                      const requiredDebt = flAmount || zero
 
+                                      console.log('REQ DEBT', requiredDebt.toString() );
+                                      
+
+                                      console.log('token 0 after mint amount', amount0.toString() );
+                                      console.log('token 1 after mint amount', amount1.toString() );
+                                      console.log('mintAmount', mintAmount.toString() );
+                                      
                                       const afterNetValueUSD = mintAmount
                                         .times(priceInfo.currentCollateralPrice)
                                         .minus(requiredDebt)
+
 
                                       const multiple = mintAmount
                                         .times(priceInfo.currentCollateralPrice)
@@ -393,6 +434,12 @@ export function createOpenGuniVault$(
                                             .times(priceInfo.currentCollateralPrice)
                                             .minus(requiredDebt),
                                         )
+                                        
+                                      const maxDebtAvailable = (mintAmount.times(priceInfo.currentCollateralPrice)).div(new BigNumber(1.05))
+                                      console.log('maxDebtAvailable', maxDebtAvailable.toString());
+                                        
+                                      console.log('multiple@@@', multiple.toString());
+
 
                                       return {
                                         kind: 'guniTxData',
@@ -403,7 +450,7 @@ export function createOpenGuniVault$(
                                         token1Amount,
                                         amount0,
                                         amount1,
-                                        fromTokenAmount: amountWithFee,
+                                        fromTokenAmount: daiAmountToSwapForUsdc,
                                         toTokenAmount: swap.collateralAmount,
                                         minToTokenAmount: swap.collateralAmount.times(
                                           one.minus(SLIPPAGE),
