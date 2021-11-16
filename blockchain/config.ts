@@ -226,7 +226,6 @@ const hardhat: NetworkConfig = {
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions ||
       '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
   ),
-  guniProxyActions: contractDesc(guniProxyActions, '0x1fa02b2d6a771842690194cf62d91bdd92bfe28d'),
   exchange: contractDesc(
     exchange,
     getConfig()?.publicRuntimeConfig?.exchangeAddress ||
