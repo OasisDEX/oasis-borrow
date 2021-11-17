@@ -3,20 +3,17 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
-import { ModalProps, useModal } from '../../../helpers/modalHook'
+import { useModal } from '../../../helpers/modalHook'
 import {
   VaultDetailsCard,
   VaultDetailsCardCollateralLocked,
   VaultDetailsCardCollaterlizationRatioModal,
   VaultDetailsCardCurrentPrice,
+  VaultDetailsCardDynamicStopPrice,
   VaultDetailsCardLiquidationPrice,
-  VaultDetailsCardModal,
+  VaultDetailsCardMaxTokenOnStopLossTrigger,
   VaultDetailsCardStopLossCollRatio,
 } from '../VaultDetails'
-
-const DummyModal = ({ close }: ModalProps) => (
-  <VaultDetailsCardModal close={close}>DummyModal</VaultDetailsCardModal>
-)
 
 const MaxWidthWrapper = ({ children }: { children: ReactNode }) => (
   <Box sx={{ maxWidth: '337px' }}>{children}</Box>
@@ -25,6 +22,7 @@ const MaxWidthWrapper = ({ children }: { children: ReactNode }) => (
 interface CardsControl {
   hasAfter: boolean
   hasBottom: boolean
+  isProtected: boolean
 }
 
 export const AllCards = (props: CardsControl) => {
@@ -41,71 +39,52 @@ export const AllCards = (props: CardsControl) => {
   )
 }
 
-export const StopLossCollRatioCard = ({ hasAfter }: CardsControl) => {
+export const StopLossCollRatioCard = ({ hasAfter, isProtected }: CardsControl) => {
   return (
     <MaxWidthWrapper>
       <VaultDetailsCardStopLossCollRatio
-        slRatio={new BigNumber(220)}
-        lockedCollateralUSD={new BigNumber(1000)}
-        lockedCollateralUSDAtNextPrice={new BigNumber(1200)}
-        debt={new BigNumber(820)}
+        slRatio={new BigNumber(160)}
+        afterSlRatio={new BigNumber(180)}
+        collateralizationRatio={new BigNumber(200)}
         showAfterPill={hasAfter}
+        isProtected={isProtected}
       />
     </MaxWidthWrapper>
   )
 }
 
-export const DynamicStopPrice = ({ hasAfter, hasBottom }: CardsControl) => {
-  const { t } = useTranslation()
-  const openModal = useModal()
-
+export const DynamicStopPrice = ({ hasAfter, isProtected }: CardsControl) => {
   return (
     <MaxWidthWrapper>
-      <VaultDetailsCard
-        title={t('manage-multiply-vault.card.dynamic-stop-price')}
-        value="$1,750.0"
-        valueAfter={hasAfter ? '$1,750.0' : ''}
-        valueBottom={
-          hasBottom ? (
-            <>
-              $453.43{' '}
-              <Text as="span" sx={{ color: 'text.subtitle' }}>
-                {t('manage-multiply-vault.card.above-liquidation-price')}
-              </Text>
-            </>
-          ) : (
-            '-'
-          )
-        }
-        openModal={() => openModal(DummyModal)}
+      <VaultDetailsCardDynamicStopPrice
+        slRatio={new BigNumber(1.6)}
+        afterSlRatio={new BigNumber(1.7)}
+        liquidationPrice={new BigNumber(900)}
+        afterLiquidationPrice={new BigNumber(800)}
+        liquidationRatio={new BigNumber(1.5)}
+        showAfterPill={hasAfter}
+        isProtected={isProtected}
       />
     </MaxWidthWrapper>
   )
 }
 
-export const MaxTokenOnStopLossTrigger = ({ hasAfter, hasBottom }: CardsControl) => {
-  const { t } = useTranslation()
-  const openModal = useModal()
-
+export const MaxTokenOnStopLossTrigger = ({ hasAfter, isProtected }: CardsControl) => {
   return (
     <MaxWidthWrapper>
-      <VaultDetailsCard
-        title={t('manage-multiply-vault.card.max-token-on-stop-loss-trigger', { token: 'ETH' })}
-        value="12.40 ETH"
-        valueAfter={hasAfter ? t('manage-multiply-vault.card.up-to', { value: '11.24' }) : ''}
-        valueBottom={
-          hasBottom ? (
-            <>
-              11.24 ETH{' '}
-              <Text as="span" sx={{ color: 'text.subtitle' }}>
-                {t('manage-multiply-vault.card.saving-comp-to-liquidation')}
-              </Text>
-            </>
-          ) : (
-            '-'
-          )
-        }
-        openModal={() => openModal(DummyModal)}
+      <VaultDetailsCardMaxTokenOnStopLossTrigger
+        slRatio={new BigNumber(1.6)}
+        afterSlRatio={new BigNumber(1.7)}
+        liquidationPrice={new BigNumber(2000)}
+        isProtected={isProtected}
+        debt={new BigNumber(12000)}
+        collateralAmountLocked={new BigNumber(20)}
+        afterLockedCollateral={new BigNumber(20)}
+        afterDebt={new BigNumber(12000)}
+        liquidationRatio={new BigNumber(1.3)}
+        afterLiquidationPrice={new BigNumber(2000)}
+        token="ETH"
+        showAfterPill={hasAfter}
       />
     </MaxWidthWrapper>
   )
@@ -203,6 +182,12 @@ export default {
     },
     hasBottom: {
       description: 'Has bottom value',
+      options: [true, false],
+      control: { type: 'radio' },
+      defaultValue: true,
+    },
+    isProtected: {
+      description: 'Has protection enabled',
       options: [true, false],
       control: { type: 'radio' },
       defaultValue: true,

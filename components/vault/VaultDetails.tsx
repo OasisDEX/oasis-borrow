@@ -334,9 +334,35 @@ export function VaultDetailsStopLossCollRatioModal({ close }: ModalProps) {
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
-        <Heading variant="header3">StopLossCollRatio</Heading>
+        <Heading variant="header3">Stop Loss Coll Ratio</Heading>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
           StopLossCollRatio dummy modal
+        </Text>
+      </Grid>
+    </VaultDetailsCardModal>
+  )
+}
+
+export function VaultDetailsDynamicStopPriceModal({ close }: ModalProps) {
+  return (
+    <VaultDetailsCardModal close={close}>
+      <Grid gap={2}>
+        <Heading variant="header3">Dynamic Stop Price Modal</Heading>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          VaultDetailsDynamicStopPriceModal dummy modal
+        </Text>
+      </Grid>
+    </VaultDetailsCardModal>
+  )
+}
+
+export function VaultDetailsCardMaxTokenOnStopLossTriggerModal({ close }: ModalProps) {
+  return (
+    <VaultDetailsCardModal close={close}>
+      <Grid gap={2}>
+        <Heading variant="header3">Max Token On Stop Loss Trigger</Heading>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          VaultDetailsCardMaxTokenOnStopLossTriggerModal dummy modal
         </Text>
       </Grid>
     </VaultDetailsCardModal>
@@ -546,16 +572,16 @@ export function VaultDetailsCardNetValue({
 
 export function VaultDetailsCardStopLossCollRatio({
   slRatio,
-  lockedCollateralUSD,
-  lockedCollateralUSDAtNextPrice,
-  debt,
+  afterSlRatio,
+  collateralizationRatio,
   afterPillColors,
   showAfterPill,
+  isProtected,
 }: {
   slRatio: BigNumber
-  lockedCollateralUSD: BigNumber
-  lockedCollateralUSDAtNextPrice: BigNumber
-  debt: BigNumber
+  afterSlRatio: BigNumber
+  collateralizationRatio: BigNumber
+  isProtected: boolean
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
@@ -563,12 +589,16 @@ export function VaultDetailsCardStopLossCollRatio({
   return (
     <VaultDetailsCard
       title={t('manage-multiply-vault.card.stop-loss-coll-ratio')}
-      value={formatPercent(debt.times(slRatio).dividedBy(lockedCollateralUSD), {
-        precision: 2,
-      })}
+      value={
+        isProtected
+          ? formatPercent(slRatio, {
+              precision: 2,
+            })
+          : '-'
+      }
       valueBottom={
         <>
-          {formatPercent(slRatio, {
+          {formatPercent(collateralizationRatio, {
             precision: 2,
           })}{' '}
           <Text as="span" sx={{ color: 'text.subtitle' }}>
@@ -578,11 +608,124 @@ export function VaultDetailsCardStopLossCollRatio({
       }
       valueAfter={
         showAfterPill &&
-        formatPercent(debt.times(slRatio).dividedBy(lockedCollateralUSDAtNextPrice), {
+        formatPercent(afterSlRatio, {
           precision: 2,
         })
       }
       openModal={() => openModal(VaultDetailsStopLossCollRatioModal)}
+      afterPillColors={afterPillColors}
+    />
+  )
+}
+
+export function VaultDetailsCardDynamicStopPrice({
+  slRatio,
+  afterSlRatio,
+  liquidationPrice,
+  afterLiquidationPrice,
+  liquidationRatio,
+  afterPillColors,
+  showAfterPill,
+  isProtected,
+}: {
+  slRatio: BigNumber
+  afterSlRatio: BigNumber
+  liquidationPrice: BigNumber
+  afterLiquidationPrice: BigNumber
+  liquidationRatio: BigNumber
+  isProtected: boolean
+} & AfterPillProps) {
+  const openModal = useModal()
+  const { t } = useTranslation()
+
+  const dynamicStopPrice = liquidationPrice.div(liquidationRatio).times(slRatio)
+  const afterDynamicStopPrice = afterLiquidationPrice.div(liquidationRatio).times(afterSlRatio)
+
+  return (
+    <VaultDetailsCard
+      title={t('manage-multiply-vault.card.dynamic-stop-price')}
+      value={isProtected ? `$${formatAmount(dynamicStopPrice, 'USD')}` : '-'}
+      valueBottom={
+        isProtected ? (
+          <>
+            ${formatAmount(dynamicStopPrice.minus(liquidationPrice), 'USD')}{' '}
+            <Text as="span" sx={{ color: 'text.subtitle' }}>
+              {t('manage-multiply-vault.card.above-liquidation-price')}
+            </Text>
+          </>
+        ) : (
+          '-'
+        )
+      }
+      valueAfter={showAfterPill && `$${formatAmount(afterDynamicStopPrice, 'USD')}`}
+      openModal={() => openModal(VaultDetailsDynamicStopPriceModal)}
+      afterPillColors={afterPillColors}
+    />
+  )
+}
+
+export function VaultDetailsCardMaxTokenOnStopLossTrigger({
+  slRatio,
+  afterSlRatio,
+  liquidationPrice,
+  afterPillColors,
+  showAfterPill,
+  isProtected,
+  debt,
+  collateralAmountLocked,
+  afterLockedCollateral,
+  afterDebt,
+  afterLiquidationPrice,
+  liquidationRatio,
+  token,
+}: {
+  slRatio: BigNumber
+  afterSlRatio: BigNumber
+  liquidationPrice: BigNumber
+  isProtected: boolean
+  debt: BigNumber
+  collateralAmountLocked: BigNumber
+  afterLockedCollateral: BigNumber
+  afterDebt: BigNumber
+  liquidationRatio: BigNumber
+  afterLiquidationPrice: BigNumber
+  token: string
+} & AfterPillProps) {
+  const openModal = useModal()
+  const { t } = useTranslation()
+
+  const ethDuringLiquidation = debt.times(liquidationRatio).div(liquidationPrice)
+
+  const dynamicStopPrice = liquidationPrice.div(liquidationRatio).times(slRatio)
+  const afterDynamicStopPrice = afterLiquidationPrice.div(liquidationRatio).times(afterSlRatio)
+
+  const maxEth = collateralAmountLocked.times(dynamicStopPrice).minus(debt).div(dynamicStopPrice)
+  const afterMaxEth = afterLockedCollateral
+    .times(afterDynamicStopPrice)
+    .minus(afterDebt)
+    .div(afterDynamicStopPrice)
+
+  return (
+    <VaultDetailsCard
+      title={t('manage-multiply-vault.card.max-token-on-stop-loss-trigger')}
+      value={isProtected ? `${formatAmount(maxEth, token)} ${token}` : '-'}
+      valueBottom={
+        showAfterPill ? (
+          <>
+            ${formatAmount(maxEth.minus(ethDuringLiquidation), token)} {token}{' '}
+            <Text as="span" sx={{ color: 'text.subtitle' }}>
+              {t('manage-multiply-vault.card.saving-comp-to-liquidation')}
+            </Text>
+          </>
+        ) : (
+          '-'
+        )
+      }
+      valueAfter={
+        showAfterPill &&
+        `${t('manage-multiply-vault.card.up-to')} $${formatAmount(afterMaxEth, token)} ${token}`
+      }
+      openModal={() => openModal(VaultDetailsCardMaxTokenOnStopLossTriggerModal)}
       afterPillColors={afterPillColors}
     />
   )
