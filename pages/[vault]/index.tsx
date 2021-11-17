@@ -1,12 +1,13 @@
 import BigNumber from 'bignumber.js'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
+import { TabSwitch, VaultViewMode } from 'components/TabSwitch'
 import { VaultBannersView } from 'features/banners/VaultsBannersView'
 import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import NotFoundPage from 'pages/404'
 import React, { useState } from 'react'
-import { Box, Button, Grid } from 'theme-ui'
+import { Box } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { WithTermsOfService } from '../../features/termsOfService/TermsOfService'
@@ -20,52 +21,29 @@ export async function getServerSideProps(ctx: any) {
   }
 }
 
-enum VaultViewMode{
-  History=1,
-  Protection=2,
-  Overview=3
-}
 
 export default function Vault({ id }: { id: string }) {
   const vaultId = new BigNumber(id)
-  const [mode,setMode] = useState<VaultViewMode>(VaultViewMode.Overview);
   const isValidVaultId = vaultId.isInteger() && vaultId.gt(0)
-  
-  function handleToggle(newMode: VaultViewMode) {
-    setMode(newMode);
-  }
 
   return (
     <WithConnection>
       <WithTermsOfService>
-        <Grid gap={0} sx={{ width: '100%' }}>
-          
-        <Grid columns={3} variant="vaultEditingControllerContainer">
-          <Button onClick={() => handleToggle(VaultViewMode.Overview)} >
-            Overview
-          </Button>
-          <Button onClick={() => handleToggle(VaultViewMode.Protection)} >
-            Protection
-          </Button>
-          <Button onClick={() => handleToggle(VaultViewMode.History)}>
-            History
-          </Button>
-        </Grid>
           <BackgroundLight />
           {isValidVaultId ? (
             <>
               <VaultBannersView id={vaultId} />
-              {mode==VaultViewMode.Overview?
-              <GeneralManageVaultView id={vaultId} />
-              :"ala ma kota"
-              }
+              <TabSwitch defaultMode={VaultViewMode.Overview}
+                overViewControl={<GeneralManageVaultView id={vaultId}/>}
+                historyControl={<h1>TODO History</h1>}
+                protectionControl={<h1>TODO Protection</h1>}
+              />
             </>
           ) : (
             <Box sx={{ position: 'relative', zIndex: 1 }}>
               <NotFoundPage />
             </Box>
           )}
-        </Grid>
       </WithTermsOfService>
     </WithConnection>
   )
