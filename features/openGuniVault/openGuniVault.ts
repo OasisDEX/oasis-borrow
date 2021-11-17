@@ -29,7 +29,7 @@ import {
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { OAZO_FEE } from 'helpers/multiply/calculations'
+// import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { curry } from 'ramda'
 import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
@@ -73,6 +73,8 @@ import {
   GuniOpenMultiplyVaultConditions,
 } from './openGuniVaultConditions'
 
+const OAZO_FEE = zero
+
 type InjectChange = { kind: 'injectStateOverride'; stateToOverride: OpenGuniVaultState }
 
 export type Stage = EditingStage | ProxyStages | AllowanceStages | TxStage
@@ -100,7 +102,10 @@ interface ExchangeState {
   slippage: BigNumber
 }
 
-type ExchangeChange = { kind: 'quote'; quote: Quote } | { kind: 'swap'; swap: Quote }
+type ExchangeChange =
+  | { kind: 'quote'; quote: Quote }
+  | { kind: 'swap'; swap: Quote }
+  | { kind: 'exchangeError' }
 
 // function createInitialQuoteChange(
 //   exchangeQuote$: (
@@ -120,9 +125,11 @@ type ExchangeChange = { kind: 'quote'; quote: Quote } | { kind: 'swap'; swap: Qu
 function applyExchange<S extends ExchangeState>(state: S, change: ExchangeChange): S {
   switch (change.kind) {
     case 'quote':
-      return { ...state, quote: change.quote }
+      return { ...state, quote: change.quote, exchangeError: false }
     case 'swap':
-      return { ...state, swap: change.swap }
+      return { ...state, swap: change.swap, exchangeError: false }
+    case 'exchangeError':
+      return { ...state, exchangeError: true }
     default:
       return state
   }
@@ -370,7 +377,8 @@ export function createOpenGuniVault$(
                             ).pipe(
                               switchMap((swap) => {
                                 if (swap.status !== 'SUCCESS') {
-                                  return EMPTY
+                                  console.log('ERROR EXCHANGE', swap)
+                                  return of({ kind: 'exchangeError' })
                                 }
                                 const token1Amount = swap.collateralAmount
                                 return getGuniMintAmount$({
