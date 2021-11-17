@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ChevronUpDown } from 'components/ChevronUpDown'
