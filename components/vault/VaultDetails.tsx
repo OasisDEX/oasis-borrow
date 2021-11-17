@@ -1,16 +1,17 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { CommonVaultState, WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { Trans } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
+import { Box, Card, Divider, Flex, Grid, Heading, Text } from 'theme-ui'
 
 type CollRatioColor = 'primary' | 'onError' | 'onWarning' | 'onSuccess'
 
@@ -270,8 +271,8 @@ export function VaultDetailsCardCollaterlizationRatioModal({
 
 interface CollateralLockedProps {
   token: string
-  collateralAmountLocked: BigNumber | undefined
-  collateralLockedUSD: BigNumber | undefined
+  collateralAmountLocked?: BigNumber
+  collateralLockedUSD?: BigNumber
 }
 
 export function VaultDetailsCardCollateralLockedModal({
@@ -316,14 +317,182 @@ export function VaultDetailsBuyingPowerModal({ close }: ModalProps) {
   )
 }
 
-export function VaultDetailsNetValueModal({ close }: ModalProps) {
+interface NetValueProps {
+  marketPrice?: BigNumber
+  netValueUSD: BigNumber
+  totalGasSpentUSD: BigNumber
+  currentPnL: BigNumber
+  vault?: Vault
+}
+
+export function VaultDetailsNetValueModal({
+  marketPrice,
+  netValueUSD,
+  totalGasSpentUSD,
+  vault,
+  currentPnL,
+  close,
+}: ModalProps<NetValueProps>) {
   const { t } = useTranslation()
+  const lockedCollateralUSD =
+    vault && marketPrice ? vault.lockedCollateral.times(marketPrice) : zero
+  const daiDebtUndercollateralizedToken =
+    vault && marketPrice ? vault.debt.dividedBy(marketPrice) : zero
+  const netValueUndercollateralizedToken =
+    marketPrice && vault
+      ? vault.lockedCollateral.minus(vault.debt.dividedBy(marketPrice))
+      : undefined
+  const collateralTags = vault ? (getToken(vault?.token).tags as String[]) : []
+  const isCollateralLpToken = vault ? collateralTags.includes('lp-token') : false
+  const renderCollateralValue = !isCollateralLpToken
+
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
         <Heading variant="header3">{t('manage-multiply-vault.card.net-value')}</Heading>
+        <Text variant="subheader" sx={{ fontSize: 2 }}>
+          {t('manage-multiply-vault.card.based-on-price')}
+        </Text>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2, fontWeight: 'bold' }}>
+          ${formatCryptoBalance(marketPrice || zero)}
+        </Text>
+      </Grid>
+      {/* Grid for just DESKTOP */}
+      <Grid
+        gap={2}
+        columns={[1, 2, 3]}
+        variant="subheader"
+        sx={{ fontSize: 2, pb: 2, display: ['none', 'none', 'grid'] }}
+      >
+        <Box />
+        {renderCollateralValue ? (
+          <Box>{t('manage-multiply-vault.card.collateral-value')}</Box>
+        ) : (
+          <Box />
+        )}
+        <Box>{t('manage-multiply-vault.card.usd-value')}</Box>
+
+        <Box>{t('manage-multiply-vault.card.collateral-value-in-vault')}</Box>
+
+        <Box>{`${vault ? formatCryptoBalance(vault.lockedCollateral) : ''} ${
+          vault ? vault.token : ''
+        }`}</Box>
+        <Box>
+          {marketPrice !== undefined
+            ? `$${formatCryptoBalance(lockedCollateralUSD)}`
+            : t('manage-multiply-vault.card."market-price-unavailable"')}
+        </Box>
+
+        <Box>{t('manage-multiply-vault.card.dai-debt-in-vault')}</Box>
+        {renderCollateralValue ? (
+          <Box>
+            {marketPrice && vault
+              ? `${formatCryptoBalance(daiDebtUndercollateralizedToken)} ${vault.token}`
+              : t('manage-multiply-vault.card.market-price-unavailable')}
+          </Box>
+        ) : (
+          <Box />
+        )}
+        <Box>{`$${vault ? formatCryptoBalance(vault.debt) : ''}`}</Box>
+
+        <Box>{t('net-value')}</Box>
+        {renderCollateralValue ? (
+          <Box>
+            {netValueUndercollateralizedToken && vault
+              ? `${formatCryptoBalance(netValueUndercollateralizedToken)} ${vault.token}`
+              : t('manage-multiply-vault.card."market-price-unavailable"')}
+          </Box>
+        ) : (
+          <Box />
+        )}
+        <Box>{`$${formatAmount(netValueUSD, 'USD')}`}</Box>
+      </Grid>
+
+      {/* Grid for MOBILE && TABLETs */}
+      <Grid
+        gap={2}
+        columns={[2, 1]}
+        variant="subheader"
+        sx={{ fontSize: 2, pb: 2, display: ['grid', 'grid', 'none'] }}
+      >
+        <Box sx={{ fontWeight: 'semiBold' }}>
+          {t('manage-multiply-vault.card.collateral-value-in-vault')}
+        </Box>
+        <Box />
+        {renderCollateralValue ? (
+          <Box>{t('manage-multiply-vault.card.collateral-value')}</Box>
+        ) : (
+          <Box />
+        )}
+        <Box>
+          {`${vault ? formatCryptoBalance(vault.lockedCollateral) : ''} ${
+            vault ? vault.token : ''
+          }`}
+        </Box>
+        <Box>{t('manage-multiply-vault.card.usd-value')}</Box>
+        <Box>
+          {marketPrice !== undefined
+            ? `$${formatCryptoBalance(lockedCollateralUSD)}`
+            : t('manage-multiply-vault.card."market-price-unavailable"')}
+        </Box>
+        <Box sx={{ fontWeight: 'semiBold' }}>
+          {t('manage-multiply-vault.card.dai-debt-in-vault')}
+        </Box>
+        <Box />
+        {renderCollateralValue ? (
+          <Box>{t('manage-multiply-vault.card.collateral-value')}</Box>
+        ) : (
+          <Box />
+        )}
+        {renderCollateralValue ? (
+          <Box>
+            {marketPrice && vault
+              ? `${formatCryptoBalance(daiDebtUndercollateralizedToken)} ${vault.token}`
+              : t('manage-multiply-vault.card.market-price-unavailable')}
+          </Box>
+        ) : (
+          <Box />
+        )}
+        <Box>{t('manage-multiply-vault.card.usd-value')}</Box>
+        <Box>{`$${vault ? formatCryptoBalance(vault.debt) : ''}`}</Box>
+        <Box sx={{ fontWeight: 'semiBold' }}>{t('net-value')}</Box>
+        <Box />
+        {renderCollateralValue ? (
+          <Box>{t('manage-multiply-vault.card.collateral-value')}</Box>
+        ) : (
+          <Box />
+        )}
+        {renderCollateralValue ? (
+          <Box>
+            {netValueUndercollateralizedToken && vault
+              ? `${formatCryptoBalance(netValueUndercollateralizedToken)} ${vault.token}`
+              : t('manage-multiply-vault.card."market-price-unavailable"')}
+          </Box>
+        ) : (
+          <Box />
+        )}
+        <Box>{t('manage-multiply-vault.card.usd-value')}</Box>
+        <Box>{`$${formatAmount(netValueUSD, 'USD')}`}</Box>
+      </Grid>
+
+      <Divider variant="styles.hrVaultFormBottom" />
+      <Grid gap={2} columns={[1, 2, 3]}>
+        <Box>{t('manage-multiply-vault.card.gas-fees')}</Box>
+        <Box></Box>
+        <Box>{`$${formatAmount(totalGasSpentUSD, 'USD')}`}</Box>
+      </Grid>
+      <Card
+        variant="vaultDetailsCardModal"
+        sx={{ fontWeight: 'semiBold', alignItems: 'center', textAlign: 'center' }}
+      >
+        <Text variant="paragraph2" sx={{ fontSize: 1, pb: 2 }}>
+          {t('manage-multiply-vault.card.unrealised-pnl')}
+        </Text>
+        <Text>{formatPercent(currentPnL.times(100), { precision: 2 })}</Text>
+      </Card>
+      <Grid>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          {t('manage-multiply-vault.card.net-value-description')}
+          {t('manage-multiply-vault.card.formula')}
         </Text>
       </Grid>
     </VaultDetailsCardModal>
@@ -332,7 +501,7 @@ export function VaultDetailsNetValueModal({ close }: ModalProps) {
 
 interface LiquidationProps {
   liquidationPrice: BigNumber
-  liquidationPriceCurrentPriceDifference: BigNumber | undefined
+  liquidationPriceCurrentPriceDifference?: BigNumber
 }
 
 export function VaultDetailsLiquidationModal({
@@ -512,9 +681,17 @@ export function VaultDetailsCardNetValue({
   afterNetValueUSD,
   afterPillColors,
   showAfterPill,
+  currentPnL,
+  marketPrice,
+  totalGasSpentUSD,
+  vault,
 }: {
   netValueUSD: BigNumber
   afterNetValueUSD: BigNumber
+  currentPnL: BigNumber
+  marketPrice?: BigNumber
+  totalGasSpentUSD: BigNumber
+  vault?: Vault
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
@@ -523,9 +700,23 @@ export function VaultDetailsCardNetValue({
     <VaultDetailsCard
       title={t('manage-multiply-vault.card.net-value')}
       value={`$${formatAmount(netValueUSD, 'USD')}`}
-      // valueBottom={`Unrealised P&L 0%`}
+      valueBottom={`${t('manage-multiply-vault.card.unrealised-pnl')} ${formatPercent(
+        currentPnL.times(100).absoluteValue(),
+        {
+          precision: 2,
+          roundMode: BigNumber.ROUND_DOWN,
+        },
+      )}`}
       valueAfter={showAfterPill && `$${formatAmount(afterNetValueUSD, 'USD')}`}
-      openModal={() => openModal(VaultDetailsNetValueModal)}
+      openModal={() =>
+        openModal(VaultDetailsNetValueModal, {
+          marketPrice,
+          netValueUSD,
+          totalGasSpentUSD,
+          currentPnL,
+          vault,
+        })
+      }
       afterPillColors={afterPillColors}
     />
   )

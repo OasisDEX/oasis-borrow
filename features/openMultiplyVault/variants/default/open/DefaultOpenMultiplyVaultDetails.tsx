@@ -85,6 +85,7 @@ export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
     token,
     inputAmountsEmpty,
     stage,
+    marketPrice,
   } = props
   const openModal = useModal()
 
@@ -93,6 +94,7 @@ export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
   const buyingPowerUSD = zero
   const buyingPower = zero
   const netValueUSD = zero
+  const currentPnL = zero
 
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
@@ -126,6 +128,10 @@ export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
             afterNetValueUSD,
             afterPillColors,
             showAfterPill,
+            currentPnL,
+            marketPrice,
+            totalGasSpentUSD: zero,
+            vault: undefined,
           }}
         />
       </Grid>
