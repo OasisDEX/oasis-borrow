@@ -91,7 +91,7 @@ export function applyFormChange<S extends FormState & StateDependencies, Ch exte
         }
       }
 
-      const allowanceToSmall = !!allowance && !!depositAmount && depositAmount.gte(allowance)
+      const allowanceToSmall = !!allowance && !!depositAmount && depositAmount.gt(allowance)
 
       if (allowanceToSmall) {
         return {
