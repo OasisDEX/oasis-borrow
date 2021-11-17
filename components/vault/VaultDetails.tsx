@@ -330,6 +330,19 @@ export function VaultDetailsNetValueModal({ close }: ModalProps) {
   )
 }
 
+export function VaultDetailsStopLossCollRatioModal({ close }: ModalProps) {
+  return (
+    <VaultDetailsCardModal close={close}>
+      <Grid gap={2}>
+        <Heading variant="header3">StopLossCollRatio</Heading>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          StopLossCollRatio dummy modal
+        </Text>
+      </Grid>
+    </VaultDetailsCardModal>
+  )
+}
+
 interface LiquidationProps {
   liquidationPrice: BigNumber
   liquidationPriceCurrentPriceDifference: BigNumber | undefined
@@ -526,6 +539,50 @@ export function VaultDetailsCardNetValue({
       // valueBottom={`Unrealised P&L 0%`}
       valueAfter={showAfterPill && `$${formatAmount(afterNetValueUSD, 'USD')}`}
       openModal={() => openModal(VaultDetailsNetValueModal)}
+      afterPillColors={afterPillColors}
+    />
+  )
+}
+
+export function VaultDetailsCardStopLossCollRatio({
+  slRatio,
+  lockedCollateralUSD,
+  lockedCollateralUSDAtNextPrice,
+  debt,
+  afterPillColors,
+  showAfterPill,
+}: {
+  slRatio: BigNumber
+  lockedCollateralUSD: BigNumber
+  lockedCollateralUSDAtNextPrice: BigNumber
+  debt: BigNumber
+} & AfterPillProps) {
+  const openModal = useModal()
+  const { t } = useTranslation()
+
+  return (
+    <VaultDetailsCard
+      title={t('manage-multiply-vault.card.stop-loss-coll-ratio')}
+      value={formatPercent(debt.times(slRatio).dividedBy(lockedCollateralUSD), {
+        precision: 2,
+      })}
+      valueBottom={
+        <>
+          {formatPercent(slRatio, {
+            precision: 2,
+          })}{' '}
+          <Text as="span" sx={{ color: 'text.subtitle' }}>
+            {t('manage-multiply-vault.card.current-coll-ratio')}
+          </Text>
+        </>
+      }
+      valueAfter={
+        showAfterPill &&
+        formatPercent(debt.times(slRatio).dividedBy(lockedCollateralUSDAtNextPrice), {
+          precision: 2,
+        })
+      }
+      openModal={() => openModal(VaultDetailsStopLossCollRatioModal)}
       afterPillColors={afterPillColors}
     />
   )

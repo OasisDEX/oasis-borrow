@@ -11,6 +11,7 @@ import {
   VaultDetailsCardCurrentPrice,
   VaultDetailsCardLiquidationPrice,
   VaultDetailsCardModal,
+  VaultDetailsCardStopLossCollRatio,
 } from '../VaultDetails'
 
 const DummyModal = ({ close }: ModalProps) => (
@@ -41,24 +42,14 @@ export const AllCards = (props: CardsControl) => {
 }
 
 export const StopLossCollRatioCard = ({ hasAfter }: CardsControl) => {
-  const { t } = useTranslation()
-  const openModal = useModal()
-
   return (
     <MaxWidthWrapper>
-      <VaultDetailsCard
-        title={t('manage-multiply-vault.card.stop-loss-coll-ratio')}
-        value="180%"
-        valueAfter={hasAfter ? '180%' : ''}
-        valueBottom={
-          <>
-            220.00%{' '}
-            <Text as="span" sx={{ color: 'text.subtitle' }}>
-              {t('manage-multiply-vault.card.current-coll-ratio')}
-            </Text>
-          </>
-        }
-        openModal={() => openModal(DummyModal)}
+      <VaultDetailsCardStopLossCollRatio
+        slRatio={new BigNumber(220)}
+        lockedCollateralUSD={new BigNumber(1000)}
+        lockedCollateralUSDAtNextPrice={new BigNumber(1200)}
+        debt={new BigNumber(820)}
+        showAfterPill={hasAfter}
       />
     </MaxWidthWrapper>
   )
