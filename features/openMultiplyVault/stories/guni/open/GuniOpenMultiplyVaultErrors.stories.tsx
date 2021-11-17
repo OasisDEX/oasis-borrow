@@ -12,7 +12,7 @@ export const DepositAmountExceedsCollateralBalance = guniOpenMultiplyVaultStory(
   title:
     'Amount user is depositing exceeds the balance of collateral they have outstanding in their wallet',
   proxyAddress,
-  balanceInfo: { collateralBalance: new BigNumber('999') },
+  balanceInfo: { daiBalance: new BigNumber('999') },
 })({
   depositAmount: new BigNumber('1000'),
 })
