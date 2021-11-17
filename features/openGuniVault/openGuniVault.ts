@@ -29,7 +29,7 @@ import {
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-// import { OAZO_FEE } from 'helpers/multiply/calculations'
+import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { curry } from 'ramda'
 import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
@@ -72,8 +72,6 @@ import {
   defaultGuniOpenMultiplyVaultConditions,
   GuniOpenMultiplyVaultConditions,
 } from './openGuniVaultConditions'
-
-const OAZO_FEE = zero
 
 type InjectChange = { kind: 'injectStateOverride'; stateToOverride: OpenGuniVaultState }
 
@@ -195,9 +193,7 @@ function applyCalculations<S extends { ilkData: IlkData; depositAmount?: BigNumb
   state: S,
 ): S & GuniCalculations {
   // TODO: missing fees
-  const leveragedAmount = state.depositAmount
-    ? state.depositAmount.div(state.ilkData.liquidationRatio.minus(one))
-    : zero
+  const leveragedAmount = state.depositAmount ? state.depositAmount.div(new BigNumber(0.021)) : zero
   const flAmount = state.depositAmount ? leveragedAmount.minus(state.depositAmount) : zero
 
   return {
@@ -369,6 +365,7 @@ export function createOpenGuniVault$(
                             const amountWithFee = daiAmountToSwapForUsdc.plus(oazoFee)
                             const contractFee = amountWithFee.times(OAZO_FEE)
                             const oneInchAmount = amountWithFee.minus(contractFee)
+
                             return exchangeQuote$(
                               tokenInfo.token1,
                               SLIPPAGE,
@@ -379,6 +376,7 @@ export function createOpenGuniVault$(
                                 if (swap.status !== 'SUCCESS') {
                                   return of({ kind: 'exchangeError' })
                                 }
+
                                 const token1Amount = swap.collateralAmount
                                 return getGuniMintAmount$({
                                   token,

@@ -54,7 +54,7 @@ export const getGuniMintAmount: CallDef<
     return contract<GuniToken>(guniToken).methods.getMintAmounts
   },
   prepareArgs: ({ amountOMax, amount1Max }) => {
-    return [amountToWei(amountOMax, 'DAI'), amountToWei(amount1Max, 'USDC')]
+    return [amountToWei(amountOMax, 'DAI').toFixed(0), amountToWei(amount1Max, 'USDC').toFixed(0)]
   },
   postprocess: ({ amount0, amount1, mintAmount }: any) => {
     return {
@@ -90,7 +90,7 @@ export interface TxStateDependencies {
 }
 
 export function openGuniVault<S extends TxStateDependencies>(
-  { sendWithGasEstimation }: TxHelpers,
+  { sendWithGasEstimation, send }: TxHelpers,
   change: (ch: TxChange) => void,
   {
     depositAmount,
@@ -122,7 +122,7 @@ export function openGuniVault<S extends TxStateDependencies>(
     token0Amount:${token0Amount || zero}
 
   `)
-  return sendWithGasEstimation(openGuniMultiplyVault, {
+  return send(openGuniMultiplyVault, {
     kind: TxMetaKind.openGuni,
     depositCollateral: depositAmount || zero,
     userAddress: account,
