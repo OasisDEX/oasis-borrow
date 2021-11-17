@@ -90,7 +90,7 @@ export interface TxStateDependencies {
 }
 
 export function openGuniVault<S extends TxStateDependencies>(
-  { sendWithGasEstimation, send }: TxHelpers,
+  { sendWithGasEstimation }: TxHelpers,
   change: (ch: TxChange) => void,
   {
     depositAmount,
@@ -108,21 +108,7 @@ export function openGuniVault<S extends TxStateDependencies>(
     minToTokenAmount,
   }: S,
 ) {
-  console.log(`
-    kind:${TxMetaKind.openGuni}
-    depositCollateral:${depositAmount || zero}
-    userAddress:${account}
-    proxyAddress:${proxyAddress!}
-
-    exchangeData:${swap?.status === 'SUCCESS' ? swap.tx.data : ''}
-    minToTokenAmount:${minToTokenAmount || zero}
-    requiredDebt:${requiredDebt || zero}
-    toTokenAmount:${toTokenAmount || zero}
-    fromTokenAmount:${fromTokenAmount || zero}
-    token0Amount:${token0Amount || zero}
-
-  `)
-  return send(openGuniMultiplyVault, {
+  return sendWithGasEstimation(openGuniMultiplyVault, {
     kind: TxMetaKind.openGuni,
     depositCollateral: depositAmount || zero,
     userAddress: account,
