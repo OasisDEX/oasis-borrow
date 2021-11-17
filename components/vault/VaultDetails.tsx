@@ -275,8 +275,8 @@ export function VaultDetailsCardCollaterlizationRatioModal({
 
 interface CollateralLockedProps {
   token: string
-  collateralAmountLocked: BigNumber | undefined
-  collateralLockedUSD: BigNumber | undefined
+  collateralAmountLocked?: BigNumber
+  collateralLockedUSD?: BigNumber
 }
 
 export function VaultDetailsCardCollateralLockedModal({
@@ -322,11 +322,11 @@ export function VaultDetailsBuyingPowerModal({ close }: ModalProps) {
 }
 
 interface NetValueProps {
-  marketPrice: BigNumber | undefined
+  marketPrice?: BigNumber
   netValueUSD: BigNumber
   totalGasSpentUSD: BigNumber
   currentPnL: BigNumber
-  vault: Vault | undefined
+  vault?: Vault
 }
 
 export function VaultDetailsNetValueModal({
@@ -505,7 +505,7 @@ export function VaultDetailsNetValueModal({
 
 interface LiquidationProps {
   liquidationPrice: BigNumber
-  liquidationPriceCurrentPriceDifference: BigNumber | undefined
+  liquidationPriceCurrentPriceDifference?: BigNumber
 }
 
 export function VaultDetailsLiquidationModal({
@@ -693,9 +693,9 @@ export function VaultDetailsCardNetValue({
   netValueUSD: BigNumber
   afterNetValueUSD: BigNumber
   currentPnL: BigNumber
-  marketPrice: BigNumber | undefined
+  marketPrice?: BigNumber
   totalGasSpentUSD: BigNumber
-  vault: Vault | undefined
+  vault?: Vault
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
