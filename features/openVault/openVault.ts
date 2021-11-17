@@ -3,6 +3,7 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
+import { setAllowance } from 'features/allowance/setAllowance'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
@@ -10,6 +11,7 @@ import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
+import { createProxy } from '../proxy/createProxy'
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openVaultAllowances'
 import {
   applyOpenVaultCalculations,
@@ -34,10 +36,8 @@ import {
 import {
   applyEstimateGas,
   applyOpenVaultTransaction,
-  createProxy,
   openVault,
   OpenVaultTransactionChange,
-  setAllowance,
 } from './openVaultTransactions'
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openVaultTransitions'
 import {
@@ -97,11 +97,11 @@ export type OpenVaultStage =
   | 'allowanceInProgress'
   | 'allowanceFailure'
   | 'allowanceSuccess'
-  | 'openWaitingForConfirmation'
-  | 'openWaitingForApproval'
-  | 'openInProgress'
-  | 'openFailure'
-  | 'openSuccess'
+  | 'txWaitingForConfirmation'
+  | 'txWaitingForApproval'
+  | 'txInProgress'
+  | 'txFailure'
+  | 'txSuccess'
 
 export interface MutableOpenVaultState {
   stage: OpenVaultStage
@@ -239,7 +239,7 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'openWaitingForConfirmation' || state.stage === 'openFailure') {
+  if (state.stage === 'txWaitingForConfirmation' || state.stage === 'txFailure') {
     return {
       ...state,
       progress: () => openVault(txHelpers, change, state),
@@ -247,7 +247,7 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'openSuccess') {
+  if (state.stage === 'txSuccess') {
     return {
       ...state,
       progress: () =>

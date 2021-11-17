@@ -10,4 +10,5 @@ export enum TxMetaKind {
   multiply = 'multiply',
   adjustPosition = 'adjustPosition',
   closeVault = 'closeVault',
+  openGuni = 'openGuni',
 }
