@@ -20,6 +20,7 @@ import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
 import { mockVault$, MockVaultProps } from './vaults.mock'
 
 export const MOCK_VAULT_ID = one
+export const MOCK_CHAIN_ID = new BigNumber(2137)
 
 export interface MockManageVaultProps {
   _context$?: Observable<Context>
