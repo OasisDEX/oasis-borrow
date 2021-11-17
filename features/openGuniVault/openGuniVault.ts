@@ -377,7 +377,6 @@ export function createOpenGuniVault$(
                             ).pipe(
                               switchMap((swap) => {
                                 if (swap.status !== 'SUCCESS') {
-                                  console.log('ERROR EXCHANGE', swap)
                                   return of({ kind: 'exchangeError' })
                                 }
                                 const token1Amount = swap.collateralAmount
