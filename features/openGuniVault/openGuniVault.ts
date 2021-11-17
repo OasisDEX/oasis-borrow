@@ -73,10 +73,23 @@ import {
   GuniOpenMultiplyVaultConditions,
 } from './openGuniVaultConditions'
 
-type InjectChange = { kind: 'injectStateOverride'; stateToOverride: OpenGuniVaultState }
+type InjectChange = { kind: 'injectStateOverride'; stateToOverride: Partial<OpenGuniVaultState> }
 
 interface OverrideHelper {
   injectStateOverride: (state: Partial<any>) => void
+}
+
+function applyOpenGuniVaultInjectedOverride(
+  state: OpenGuniVaultState,
+  change: OpenGuniChanges,
+) {
+  if (change.kind === 'injectStateOverride') {
+    return {
+      ...state,
+      ...change.stateToOverride,
+    }
+  }
+  return state
 }
 
 export type Stage = EditingStage | ProxyStages | AllowanceStages | TxStage
@@ -460,6 +473,7 @@ export function createOpenGuniVault$(
 
                     const apply = combineApplyChanges<OpenGuniVaultState, OpenGuniChanges>(
                       applyEnvironment,
+                      applyOpenGuniVaultInjectedOverride,
                       applyFormChange,
                       applyProxyChanges,
                       applyAllowanceChanges,
