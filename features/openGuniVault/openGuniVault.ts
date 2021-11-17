@@ -100,7 +100,10 @@ interface ExchangeState {
   slippage: BigNumber
 }
 
-type ExchangeChange = { kind: 'quote'; quote: Quote } | { kind: 'swap'; swap: Quote }
+type ExchangeChange =
+  | { kind: 'quote'; quote: Quote }
+  | { kind: 'swap'; swap: Quote }
+  | { kind: 'exchangeError' }
 
 // function createInitialQuoteChange(
 //   exchangeQuote$: (
@@ -120,9 +123,11 @@ type ExchangeChange = { kind: 'quote'; quote: Quote } | { kind: 'swap'; swap: Qu
 function applyExchange<S extends ExchangeState>(state: S, change: ExchangeChange): S {
   switch (change.kind) {
     case 'quote':
-      return { ...state, quote: change.quote }
+      return { ...state, quote: change.quote, exchangeError: false }
     case 'swap':
-      return { ...state, swap: change.swap }
+      return { ...state, swap: change.swap, exchangeError: false }
+    case 'exchangeError':
+      return { ...state, exchangeError: true }
     default:
       return state
   }
@@ -159,6 +164,7 @@ export type OpenGuniVaultState = StageState &
   TokensLpBalanceState &
   GuniOpenMultiplyVaultConditions & {
     // TODO - ADDED BY SEBASTIAN TO BE REMOVED
+    maxMultiple: BigNumber
     afterOutstandingDebt: BigNumber
     multiply: BigNumber
     totalCollateral: BigNumber // it was not available in standard multiply state
@@ -188,9 +194,7 @@ function applyCalculations<S extends { ilkData: IlkData; depositAmount?: BigNumb
   state: S,
 ): S & GuniCalculations {
   // TODO: missing fees
-  const leveragedAmount = state.depositAmount
-    ? state.depositAmount.div(state.ilkData.liquidationRatio.minus(one))
-    : zero
+  const leveragedAmount = state.depositAmount ? state.depositAmount.div(new BigNumber(0.021)) : zero
   const flAmount = state.depositAmount ? leveragedAmount.minus(state.depositAmount) : zero
 
   return {
@@ -329,6 +333,7 @@ export function createOpenGuniVault$(
                       totalSteps: 3,
                       currentStep: 1,
                       minToTokenAmount: zero,
+                      maxMultiple: one.div(ilkData.liquidationRatio.minus(one)),
                     }
 
                     const stateSubject$ = new Subject<OpenGuniVaultState>()
@@ -362,6 +367,7 @@ export function createOpenGuniVault$(
                             const amountWithFee = daiAmountToSwapForUsdc.plus(oazoFee)
                             const contractFee = amountWithFee.times(OAZO_FEE)
                             const oneInchAmount = amountWithFee.minus(contractFee)
+
                             return exchangeQuote$(
                               tokenInfo.token1,
                               SLIPPAGE,
@@ -370,8 +376,9 @@ export function createOpenGuniVault$(
                             ).pipe(
                               switchMap((swap) => {
                                 if (swap.status !== 'SUCCESS') {
-                                  return EMPTY
+                                  return of({ kind: 'exchangeError' })
                                 }
+
                                 const token1Amount = swap.collateralAmount
                                 return getGuniMintAmount$({
                                   token,

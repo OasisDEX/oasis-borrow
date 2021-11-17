@@ -120,10 +120,10 @@ export function applyFormChange<S extends FormState & StateDependencies, Ch exte
       }
 
       if (change.kind === 'txInProgress') {
-        const { txTxHash } = change
+        const { openTxHash } = change
         return {
           ...state,
-          txTxHash,
+          openTxHash,
           stage: 'txInProgress',
         }
       }
