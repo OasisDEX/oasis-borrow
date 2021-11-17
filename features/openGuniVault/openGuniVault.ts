@@ -188,10 +188,18 @@ function applyCalculations<S extends { ilkData: IlkData; depositAmount?: BigNumb
   state: S,
 ): S & GuniCalculations {
   // TODO: missing fees
+  // const depoDecreased = state.depositAmount ? state.depositAmount.times(0.95) : zero
+  const depoDecreased = state.depositAmount ? state.depositAmount : zero
+
+  console.log('depo decreased', depoDecreased.toString() );
+
   const leveragedAmount = state.depositAmount
-    ? state.depositAmount.div(state.ilkData.liquidationRatio.minus(one))
+    ? depoDecreased.div(state.ilkData.liquidationRatio.minus(one))
     : zero
   const flAmount = state.depositAmount ? leveragedAmount.minus(state.depositAmount) : zero
+
+  console.log('LEVERAGED AMOUNT', leveragedAmount.toString() );
+  console.log('flAmount AMOUNT', flAmount.toString() );
 
   return {
     ...state,
@@ -288,7 +296,7 @@ export function createOpenGuniVault$(
                     }
 
                     // const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
-                    const SLIPPAGE = new BigNumber(0.001)
+                    const SLIPPAGE = new BigNumber(0.01)
 
                     const initialState: OpenGuniVaultState = {
                       ...defaultFormState,
@@ -360,18 +368,20 @@ export function createOpenGuniVault$(
 
                             const token0Amount = leveragedAmount.minus(daiAmountToSwapForUsdc)
                             const oazoFee = daiAmountToSwapForUsdc.times(OAZO_FEE)
-                            console.log('oazoFee',oazoFee.toString() );
+                            console.log('oazoFee',oazoFee.toString())
                             const amountWithFee = daiAmountToSwapForUsdc.plus(oazoFee)
-                            console.log('amountWithFee',amountWithFee.toString() );
+                            console.log('amountWithFee',amountWithFee.toString())
                             const contractFee = amountWithFee.times(OAZO_FEE)
-                            console.log('contractFee',contractFee.toString() );
+                            console.log('contractFee',contractFee.toString())
                             const oneInchAmount = amountWithFee.minus(contractFee)
-                            console.log('oneInchAmount',oazoFee.toString() );
+                            console.log('oneInchAmount',oazoFee.toString())
 
-                            const daiSwapAmount = daiAmountToSwapForUsdc.times(one.minus(OAZO_FEE));
-
-                            console.log('DAI FOR SWAP', daiAmountToSwapForUsdc.toString() );
-                            console.log('DAI FOR SWAP without OF', daiSwapAmount.toString() );
+                            const daiSwapAmount = daiAmountToSwapForUsdc.times(one.minus(OAZO_FEE))
+                            const feeAmount = daiAmountToSwapForUsdc.minus(daiSwapAmount)
+                            
+                            console.log('TOTAL DAI FOR SWAP (120k)', daiAmountToSwapForUsdc.toString())
+                            console.log('DAI FOR SWAP MINUS DEE', daiSwapAmount.toString())
+                            console.log('FEE AMOUNT', feeAmount.toString() );
                             
                             // exchangeQuote$(
                             //   tokenInfo.token1, <--- jaki token kupujesz 
@@ -417,7 +427,6 @@ export function createOpenGuniVault$(
 
                                       console.log('REQ DEBT', requiredDebt.toString() );
                                       
-
                                       console.log('token 0 after mint amount', amount0.toString() );
                                       console.log('token 1 after mint amount', amount1.toString() );
                                       console.log('mintAmount', mintAmount.toString() );
