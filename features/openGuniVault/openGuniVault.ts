@@ -164,6 +164,7 @@ export type OpenGuniVaultState = StageState &
   TokensLpBalanceState &
   GuniOpenMultiplyVaultConditions & {
     // TODO - ADDED BY SEBASTIAN TO BE REMOVED
+    maxMultiple: BigNumber
     afterOutstandingDebt: BigNumber
     multiply: BigNumber
     totalCollateral: BigNumber // it was not available in standard multiply state
@@ -332,6 +333,7 @@ export function createOpenGuniVault$(
                       totalSteps: 3,
                       currentStep: 1,
                       minToTokenAmount: zero,
+                      maxMultiple: one.div(ilkData.liquidationRatio.minus(one)),
                     }
 
                     const stateSubject$ = new Subject<OpenGuniVaultState>()
