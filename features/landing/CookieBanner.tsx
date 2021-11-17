@@ -56,10 +56,10 @@ const manageCookie: Record<CookieName, Switch> = {
   },
 }
 
-type CookieSettings = Record<CookieName, boolean>
-type SavedSettings = { accepted: boolean; cookieSettings: CookieSettings }
+type SelectedCookies = Record<CookieName, boolean>
+type SavedSettings = { accepted: boolean; enabledCookies: SelectedCookies }
 
-function initCookieSettings(defaultValue: boolean): CookieSettings {
+function initSelectedCookies(defaultValue: boolean): SelectedCookies {
   // @ts-ignore
   return COOKIE_NAMES.reduce((acc, cookieName) => ({ ...acc, [cookieName]: defaultValue }), {})
 }
@@ -67,7 +67,7 @@ function initCookieSettings(defaultValue: boolean): CookieSettings {
 export function CookieBanner() {
   const { t } = useTranslation()
   const [showSettings, setShowSettings] = useState(false)
-  const [cookieSettings, setCookieSettings] = useState(initCookieSettings(true))
+  const [selectedCookies, setSelectedCookies] = useState(initSelectedCookies(true))
   const [settingsAreSaved, setSettingsAreSaved] = useState(false)
 
   if (settingsAreSaved || localStorage.getItem(LOCALSTORAGE_KEY)) {
@@ -75,9 +75,9 @@ export function CookieBanner() {
   }
 
   function toggleCookie(cookieName: CookieName) {
-    const isEnabled = cookieSettings[cookieName]
-    setCookieSettings({
-      ...cookieSettings,
+    const isEnabled = selectedCookies[cookieName]
+    setSelectedCookies({
+      ...selectedCookies,
       [cookieName]: !isEnabled,
     })
     if (isEnabled) {
@@ -94,18 +94,18 @@ export function CookieBanner() {
 
   function rejectCookies() {
     COOKIE_NAMES.forEach((cookieName) => manageCookie[cookieName].disable())
-    saveSettings({ accepted: false, cookieSettings: initCookieSettings(false) })
+    saveSettings({ accepted: false, enabledCookies: initSelectedCookies(false) })
   }
 
   function acceptSelectedCookies() {
     COOKIE_NAMES.forEach((cookieName) => {
-      if (cookieSettings[cookieName]) {
+      if (selectedCookies[cookieName]) {
         manageCookie[cookieName].enable()
       } else {
         manageCookie[cookieName].disable()
       }
     })
-    saveSettings({ accepted: true, cookieSettings })
+    saveSettings({ accepted: true, enabledCookies: selectedCookies })
   }
 
   const ctaButtons = (
@@ -160,7 +160,7 @@ export function CookieBanner() {
               {COOKIE_NAMES.map((cookieName) => (
                 <Fragment key={cookieName}>
                   <Checkbox
-                    checked={cookieSettings[cookieName]}
+                    checked={selectedCookies[cookieName]}
                     onClick={() => toggleCookie(cookieName)}
                   />
                   <Grid sx={{ gap: 1 }}>
