@@ -579,7 +579,7 @@ export function VaultDetailsCardStopLossCollRatio({
   isProtected,
 }: {
   slRatio: BigNumber
-  afterSlRatio: BigNumber
+  afterSlRatio?: BigNumber
   collateralizationRatio: BigNumber
   isProtected: boolean
 } & AfterPillProps) {
@@ -608,6 +608,7 @@ export function VaultDetailsCardStopLossCollRatio({
       }
       valueAfter={
         showAfterPill &&
+        afterSlRatio &&
         formatPercent(afterSlRatio, {
           precision: 2,
         })
@@ -629,9 +630,9 @@ export function VaultDetailsCardDynamicStopPrice({
   isProtected,
 }: {
   slRatio: BigNumber
-  afterSlRatio: BigNumber
+  afterSlRatio?: BigNumber
   liquidationPrice: BigNumber
-  afterLiquidationPrice: BigNumber
+  afterLiquidationPrice?: BigNumber
   liquidationRatio: BigNumber
   isProtected: boolean
 } & AfterPillProps) {
@@ -639,7 +640,10 @@ export function VaultDetailsCardDynamicStopPrice({
   const { t } = useTranslation()
 
   const dynamicStopPrice = liquidationPrice.div(liquidationRatio).times(slRatio)
-  const afterDynamicStopPrice = afterLiquidationPrice.div(liquidationRatio).times(afterSlRatio)
+  const afterDynamicStopPrice =
+    afterLiquidationPrice && afterSlRatio
+      ? afterLiquidationPrice.div(liquidationRatio).times(afterSlRatio)
+      : zero
 
   return (
     <VaultDetailsCard
@@ -680,7 +684,7 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
   token,
 }: {
   slRatio: BigNumber
-  afterSlRatio: BigNumber
+  afterSlRatio?: BigNumber
   liquidationPrice: BigNumber
   isProtected: boolean
   debt: BigNumber
@@ -697,7 +701,9 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
   const ethDuringLiquidation = debt.times(liquidationRatio).div(liquidationPrice)
 
   const dynamicStopPrice = liquidationPrice.div(liquidationRatio).times(slRatio)
-  const afterDynamicStopPrice = afterLiquidationPrice.div(liquidationRatio).times(afterSlRatio)
+  const afterDynamicStopPrice = afterLiquidationPrice
+    .div(liquidationRatio)
+    .times(afterSlRatio || zero)
 
   const maxEth = collateralAmountLocked.times(dynamicStopPrice).minus(debt).div(dynamicStopPrice)
   const afterMaxEth = afterLockedCollateral
