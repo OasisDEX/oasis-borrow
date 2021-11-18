@@ -6,7 +6,7 @@ import { VaultBannersView } from 'features/banners/VaultsBannersView'
 import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import NotFoundPage from 'pages/404'
-import React, { useState } from 'react'
+import React from 'react'
 import { Box } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
