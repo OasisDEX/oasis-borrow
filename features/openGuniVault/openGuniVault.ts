@@ -181,15 +181,16 @@ export type OpenGuniVaultState = StageState &
 
 interface GuniCalculations {
   leveragedAmount?: BigNumber
+  leveragedAmountInitial?: BigNumber
   flAmount?: BigNumber
 }
 
 function applyCalculations<S extends { ilkData: IlkData; depositAmount?: BigNumber }>(
   state: S,
 ): S & GuniCalculations {
-  // TODO: missing fees
-  // const depoDecreased = state.depositAmount ? state.depositAmount.times(0.95) : zero
-  const depoDecreased = state.depositAmount ? state.depositAmount : zero
+
+  const depoDecreased = state.depositAmount ? state.depositAmount.times(0.90) : zero
+  // const depoDecreased = state.depositAmount ? state.depositAmount : zero
 
   console.log('depo decreased', depoDecreased.toString() );
 
@@ -350,7 +351,7 @@ export function createOpenGuniVault$(
                           change.kind === 'depositAmount' || change.kind === 'depositMaxAmount',
                       ),
                       switchMap((change: DepositChange | DepositMaxChange) => {
-                        const { leveragedAmount, flAmount } = applyCalculations({
+                        let { leveragedAmount, flAmount } = applyCalculations({
                           ilkData,
                           depositAmount: change.depositAmount,
                         })
@@ -365,17 +366,23 @@ export function createOpenGuniVault$(
                         }).pipe(
                           distinctUntilChanged(compareBigNumber),
                           switchMap((daiAmountToSwapForUsdc /* USDC */) => {
+                            console.log('INIT amount decrease', daiAmountToSwapForUsdc.times(OAZO_FEE.plus(SLIPPAGE)).toString() );
+                            
+                            const depoDecreased = change.depositAmount ? change.depositAmount.minus(
+                              daiAmountToSwapForUsdc.times(OAZO_FEE.plus(SLIPPAGE))
+                            ) : zero
+                            const depoDecreased = state.depositAmount ? state.depositAmount : zero
+                          
+                            console.log('depo decreased', depoDecreased.toString() );
+                            console.log('ILK DATA ratio', ilkData.liquidationRatio.toString());
+                            
+                            leveragedAmount = change.depositAmount
+                              ? depoDecreased.div(ilkData.liquidationRatio.minus(one))
+                              : zero
+                            flAmount = change.depositAmount ? leveragedAmount.minus(change.depositAmount) : zero
 
                             const token0Amount = leveragedAmount.minus(daiAmountToSwapForUsdc)
                             const oazoFee = daiAmountToSwapForUsdc.times(OAZO_FEE)
-                            console.log('oazoFee',oazoFee.toString())
-                            const amountWithFee = daiAmountToSwapForUsdc.plus(oazoFee)
-                            console.log('amountWithFee',amountWithFee.toString())
-                            const contractFee = amountWithFee.times(OAZO_FEE)
-                            console.log('contractFee',contractFee.toString())
-                            const oneInchAmount = amountWithFee.minus(contractFee)
-                            console.log('oneInchAmount',oazoFee.toString())
-
                             const daiSwapAmount = daiAmountToSwapForUsdc.times(one.minus(OAZO_FEE))
                             const feeAmount = daiAmountToSwapForUsdc.minus(daiSwapAmount)
                             
@@ -383,18 +390,6 @@ export function createOpenGuniVault$(
                             console.log('DAI FOR SWAP MINUS DEE', daiSwapAmount.toString())
                             console.log('FEE AMOUNT', feeAmount.toString() );
                             
-                            // exchangeQuote$(
-                            //   tokenInfo.token1, <--- jaki token kupujesz 
-                            //   SLIPPAGE,
-                            //   oneInchAmount, <---- ile dajesz DAI 
-                            //   'BUY_COLLATERAL',
-                            //   ) ->{
-                            //   collateralAmount: ile dostaniesz USDC
-                            //   daiAmount: za ile DAI
-                            //   tokenPrice: cenę 
-                            //   txData: dane dla 1inch
-                            //   }
-
                             return exchangeQuote$(
                               tokenInfo.token1,
                               SLIPPAGE,
