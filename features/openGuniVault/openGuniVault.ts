@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-import { observe } from 'blockchain/calls/observe'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { compareBigNumber, ContextConnected } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -51,7 +50,6 @@ import {
   VaultWarningMessage,
 } from '../openMultiplyVault/openMultiplyVaultValidations'
 import { applyEnvironment, EnvironmentChange, EnvironmentState } from './enviroment'
-import { getGuniMintAmount, getToken1Balance } from './guniActionsCalls'
 import {
   addFormTransitions,
   applyFormChange,
@@ -73,7 +71,21 @@ import {
   GuniOpenMultiplyVaultConditions,
 } from './openGuniVaultConditions'
 
-type InjectChange = { kind: 'injectStateOverride'; stateToOverride: OpenGuniVaultState }
+type InjectChange = { kind: 'injectStateOverride'; stateToOverride: Partial<OpenGuniVaultState> }
+
+interface OverrideHelper {
+  injectStateOverride: (state: Partial<any>) => void
+}
+
+function applyOpenGuniVaultInjectedOverride(state: OpenGuniVaultState, change: OpenGuniChanges) {
+  if (change.kind === 'injectStateOverride') {
+    return {
+      ...state,
+      ...change.stateToOverride,
+    }
+  }
+  return state
+}
 
 export type Stage = EditingStage | ProxyStages | AllowanceStages | TxStage
 
@@ -148,7 +160,8 @@ type WarringState = {
   warningMessages: VaultWarningMessage[] // TODO add warring
 }
 
-export type OpenGuniVaultState = StageState &
+export type OpenGuniVaultState = OverrideHelper &
+  StageState &
   StageFunctions &
   AllowanceState &
   AllowanceFunctions &
@@ -253,6 +266,12 @@ export function createOpenGuniVault$(
   onEveryBlock$: Observable<number>,
   addGasEstimation$: AddGasEstimationFunction,
   ilk: string,
+  token1Balance$: (args: { token: string; leveragedAmount: BigNumber }) => Observable<BigNumber>,
+  getGuniMintAmount$: (args: {
+    token: string
+    amountOMax: BigNumber
+    amount1Max: BigNumber
+  }) => Observable<{ amount0: BigNumber; amount1: BigNumber; mintAmount: BigNumber }>,
 ): Observable<OpenGuniVaultState> {
   return ilks$.pipe(
     switchMap((ilks) =>
@@ -289,6 +308,11 @@ export function createOpenGuniVault$(
 
                     function change(ch: OpenGuniChanges) {
                       change$.next(ch)
+                    }
+
+                    // NOTE: Not to be used in production/dev, test only
+                    function injectStateOverride(stateToOverride: Partial<OpenGuniVaultState>) {
+                      return change$.next({ kind: 'injectStateOverride', stateToOverride })
                     }
 
                     // const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
@@ -334,22 +358,26 @@ export function createOpenGuniVault$(
                       currentStep: 1,
                       minToTokenAmount: zero,
                       maxMultiple: one.div(ilkData.liquidationRatio.minus(one)),
+                      injectStateOverride,
                     }
 
                     const stateSubject$ = new Subject<OpenGuniVaultState>()
 
-                    const token1Balance$ = observe(onEveryBlock$, context$, getToken1Balance)
-                    const getGuniMintAmount$ = observe(onEveryBlock$, context$, getGuniMintAmount)
-
                     const gUniDataChanges$: Observable<GuniTxDataChange> = change$.pipe(
                       filter(
                         (change) =>
-                          change.kind === 'depositAmount' || change.kind === 'depositMaxAmount',
+                          change.kind === 'depositAmount' ||
+                          change.kind === 'depositMaxAmount' ||
+                          change.kind === 'injectStateOverride',
                       ),
-                      switchMap((change: DepositChange | DepositMaxChange) => {
+                      switchMap((change: DepositChange | DepositMaxChange | InjectChange) => {
+                        const depositAmount =
+                          change.kind === 'injectStateOverride'
+                            ? change.stateToOverride.depositAmount
+                            : change.depositAmount
                         const { leveragedAmount, flAmount } = applyCalculations({
                           ilkData,
-                          depositAmount: change.depositAmount,
+                          depositAmount,
                         })
 
                         if (!leveragedAmount || leveragedAmount.isZero()) {
@@ -456,6 +484,7 @@ export function createOpenGuniVault$(
 
                     const apply = combineApplyChanges<OpenGuniVaultState, OpenGuniChanges>(
                       applyEnvironment,
+                      applyOpenGuniVaultInjectedOverride,
                       applyFormChange,
                       applyProxyChanges,
                       applyAllowanceChanges,

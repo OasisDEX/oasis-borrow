@@ -97,6 +97,7 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import { getGuniMintAmount, getToken1Balance } from '../features/openGuniVault/guniActionsCalls'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
@@ -344,6 +345,9 @@ export function setupAppContext() {
     ),
   )
 
+  const token1Balance$ = observe(onEveryBlock$, context$, getToken1Balance)
+  const getGuniMintAmount$ = observe(onEveryBlock$, context$, getGuniMintAmount)
+
   const openGuniVault$ = memoize((ilk: string) =>
     createOpenGuniVault$(
       connectedContext$,
@@ -358,6 +362,8 @@ export function setupAppContext() {
       onEveryBlock$,
       addGasEstimation$,
       ilk,
+      token1Balance$,
+      getGuniMintAmount$,
     ),
   )
 
