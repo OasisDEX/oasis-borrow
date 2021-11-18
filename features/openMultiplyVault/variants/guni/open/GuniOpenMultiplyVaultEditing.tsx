@@ -17,7 +17,7 @@ export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
     updateDeposit,
     updateDepositMax,
     inputAmountsEmpty,
-    multiply,
+    maxMultiple,
   } = props
 
   return (
@@ -45,7 +45,7 @@ export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
           }}
         >
           <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', color: 'primary' }}>
-            {multiply.toNumber().toFixed(2)}x {token}
+            {maxMultiple.toNumber().toFixed(2)}x {token}
           </Text>
         </Flex>
       </Grid>
