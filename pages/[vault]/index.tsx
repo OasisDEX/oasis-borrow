@@ -7,7 +7,7 @@ import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManag
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import NotFoundPage from 'pages/404'
 import React from 'react'
-import { Box } from 'theme-ui'
+import { Box, Grid } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { WithTermsOfService } from '../../features/termsOfService/TermsOfService'
