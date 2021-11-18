@@ -329,7 +329,7 @@ const tokens = [
     name: 'UNIV2WBTCETH',
     icon: 'univ2_wbtc_eth_circles_color',
     iconCircle: 'univ2_wbtc_eth_circles_color',
-    iconColor: 'uni_circle_color',
+    iconColor: 'univ2_wbtc_eth_circles_color',
     color: '#ff077d',
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
