@@ -21,7 +21,6 @@ export async function getServerSideProps(ctx: any) {
   }
 }
 
-
 export default function Vault({ id }: { id: string }) {
   const vaultId = new BigNumber(id)
   const isValidVaultId = vaultId.isInteger() && vaultId.gt(0)
@@ -34,8 +33,9 @@ export default function Vault({ id }: { id: string }) {
           {isValidVaultId ? (
             <>
               <VaultBannersView id={vaultId} />
-              <TabSwitch defaultMode={VaultViewMode.Overview}
-                overViewControl={<GeneralManageVaultView id={vaultId}/>}
+              <TabSwitch
+                defaultMode={VaultViewMode.Overview}
+                overViewControl={<GeneralManageVaultView id={vaultId} />}
                 historyControl={<h1>TODO History</h1>}
                 protectionControl={<h1>TODO Protection</h1>}
               />
