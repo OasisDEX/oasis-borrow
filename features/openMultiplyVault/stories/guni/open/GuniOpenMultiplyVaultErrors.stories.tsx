@@ -55,7 +55,7 @@ export const ExchangeDataFailure = guniOpenMultiplyVaultStory({
   balanceInfo: { daiBalance: new BigNumber('10000') },
   proxyAddress,
   exchangeQuote: {
-    status: 'ERROR'
+    status: 'ERROR',
   },
 })({
   depositAmount: new BigNumber('1500'),
