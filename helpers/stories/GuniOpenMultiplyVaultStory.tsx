@@ -12,7 +12,7 @@ import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
-import { GuniOpenMultiplyVaultView } from '../../features/openMultiplyVault/variants/guni/open/GuniOpenMultiplyVaultView'
+import { GuniOpenVaultView } from '../../features/openMultiplyVault/variants/guni/open/GuniOpenVaultView'
 import { mockGuniOpenMultiplyVault } from '../mocks/guniOpenMultiplyVault.mock'
 
 type GuniOpenMultiplyVaultStory = { title?: string } & MockOpenMultiplyVaultProps
@@ -87,7 +87,7 @@ const GuniOpenMultiplyVaultStoryContainer = ({ title, ilk }: { title?: string; i
     <Container variant="appContainer">
       <Grid>
         {title && <Card>{title}</Card>}
-        <GuniOpenMultiplyVaultView ilk={ilk} />
+        <GuniOpenVaultView ilk={ilk} />
       </Grid>
     </Container>
   )

@@ -3,7 +3,7 @@ import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { zero } from 'helpers/zero'
 
 import { guniOpenMultiplyVaultStory } from '../../../../../helpers/stories/GuniOpenMultiplyVaultStory'
-import { GuniOpenMultiplyVaultView } from '../../../variants/guni/open/GuniOpenMultiplyVaultView'
+import { GuniOpenVaultView } from '../../../variants/guni/open/GuniOpenVaultView'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
@@ -31,5 +31,5 @@ export const PotentialGenerateAmountLessThanDebtFloor = guniOpenMultiplyVaultSto
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'GuniOpenMultiplyVault/Non-Blocking',
-  component: GuniOpenMultiplyVaultView,
+  component: GuniOpenVaultView,
 }

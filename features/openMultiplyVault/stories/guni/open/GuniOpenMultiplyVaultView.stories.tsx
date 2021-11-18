@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { NEVER } from 'rxjs'
 
 import { guniOpenMultiplyVaultStory } from '../../../../../helpers/stories/GuniOpenMultiplyVaultStory'
-import { GuniOpenMultiplyVaultView } from '../../../variants/guni/open/GuniOpenMultiplyVaultView'
+import { GuniOpenVaultView } from '../../../variants/guni/open/GuniOpenVaultView'
 
 export const WaitingForIlksToBeFetched = guniOpenMultiplyVaultStory({
   title:
@@ -144,5 +144,5 @@ export const txSuccess = guniOpenMultiplyVaultStory({
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'GuniOpenMultiplyVault/Stages',
-  component: GuniOpenMultiplyVaultView,
+  component: GuniOpenVaultView,
 }

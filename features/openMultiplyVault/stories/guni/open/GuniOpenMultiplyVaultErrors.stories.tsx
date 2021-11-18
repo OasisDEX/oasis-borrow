@@ -4,7 +4,7 @@ import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { guniOpenMultiplyVaultStory } from 'helpers/stories/GuniOpenMultiplyVaultStory'
 import { one } from 'helpers/zero'
 
-import { GuniOpenMultiplyVaultView } from '../../../variants/guni/open/GuniOpenMultiplyVaultView'
+import { GuniOpenVaultView } from '../../../variants/guni/open/GuniOpenVaultView'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
@@ -76,5 +76,5 @@ export const ExchangeDataLoading = guniOpenMultiplyVaultStory({
 // eslint-disable-next-line import/no-default-export
 export default {
   title: 'GuniOpenMultiplyVault/Blocking',
-  component: GuniOpenMultiplyVaultView,
+  component: GuniOpenVaultView,
 }
