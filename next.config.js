@@ -12,8 +12,6 @@ const { i18n } = require('./next-i18next.config')
 const isProduction = process.env.NODE_ENV === 'production'
 const basePath = ''
 
-console.log("TOS", process.env.USE_TERMS_OF_SERVICE );
-
 module.exports = withBundleAnalyzer(
   withPWA(
     withMDX(
