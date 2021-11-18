@@ -122,7 +122,7 @@ export const CustomAllowanceAmountGreaterThanMaxUint256 = openMultiplyVaultStory
 })
 
 export const CustomAllowanceAmountLessThanDepositAmount = openMultiplyVaultStory({
-  title: 'Error should block user if the allowance they wish to set a value above maxUint256',
+  title: 'Error should block user if the deposit they wish to set is below allowance limit',
   balanceInfo: { daiBalance: new BigNumber('10000') },
   proxyAddress,
   ilk: 'WBTC-A',

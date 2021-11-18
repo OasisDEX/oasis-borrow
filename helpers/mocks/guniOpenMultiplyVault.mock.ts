@@ -11,6 +11,8 @@ import { mockExchangeQuote$ } from './exchangeQuote.mock'
 import { MockOpenMultiplyVaultProps } from './openMultiplyVault.mock'
 import { addGasEstimationMock } from './openVault.mock'
 
+const mockOnEveryBlock = new Observable<number>()
+
 export function mockGuniOpenMultiplyVault({
   _ilkData$,
   _priceInfo$,
@@ -19,12 +21,14 @@ export function mockGuniOpenMultiplyVault({
   _allowance$,
   _ilks$,
   _txHelpers$,
+  _token1Balance$,
+  _getGuniMintAmount$,
 
   ilkData,
-  priceInfo,
+  priceInfo = { collateralPrice: new BigNumber(1021) },
   balanceInfo,
   proxyAddress,
-  allowance = new BigNumber(0),
+  allowance = new BigNumber(10000),
   account = '0xVaultController',
   ilks = ['GUNIV3DAIUSDC1-A'],
   ilk = 'GUNIV3DAIUSDC1-A',
@@ -39,6 +43,7 @@ export function mockGuniOpenMultiplyVault({
       _ilkData$ ||
       mockIlkData$({
         ilk,
+        liquidationRatio: new BigNumber(1.02),
         _priceInfo$: priceInfo$(),
         ...ilkData,
       })
@@ -61,6 +66,21 @@ export function mockGuniOpenMultiplyVault({
     return _allowance$ || of(allowance)
   }
 
+  function token1Balance$() {
+    return _token1Balance$ || of(new BigNumber(8.549))
+  }
+
+  function getGuniMintAmount$() {
+    return (
+      _getGuniMintAmount$ ||
+      of({
+        amount0: new BigNumber(58604),
+        amount1: new BigNumber(12820),
+        mintAmount: new BigNumber(69.96),
+      })
+    )
+  }
+
   const txHelpers$ = _txHelpers$ || of(protoTxHelpers)
 
   return createOpenGuniVault$(
@@ -73,8 +93,10 @@ export function mockGuniOpenMultiplyVault({
     ilks$,
     ilkData$,
     mockExchangeQuote$(exchangeQuote),
-    new Observable<number>(), // todo make a obs as timer every i.e. 10 sec
+    mockOnEveryBlock,
     addGasEstimationMock,
     ilk,
+    token1Balance$,
+    getGuniMintAmount$,
   )
 }

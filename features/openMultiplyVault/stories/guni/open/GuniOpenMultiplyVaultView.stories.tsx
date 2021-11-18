@@ -17,127 +17,127 @@ export const InvalidIlk = guniOpenMultiplyVaultStory({
 
 export const EditingStage = guniOpenMultiplyVaultStory({
   proxyAddress: '0xProxyAddress',
-  balanceInfo: { collateralBalance: new BigNumber('100'), daiBalance: new BigNumber('12345') },
+  balanceInfo: { daiBalance: new BigNumber('10000') },
 })({
-  depositAmount: new BigNumber('50'),
+  depositAmount: new BigNumber('1500'),
 })
 
 export const ProxyWaitingForConfirmation = guniOpenMultiplyVaultStory({
   ilk: 'GUNIV3DAIUSDC1-A',
 })({
   stage: 'proxyWaitingForConfirmation',
-  depositAmount: new BigNumber('50'),
+  depositAmount: new BigNumber('1500'),
 })
 
 export const ProxyWaitingForApproval = guniOpenMultiplyVaultStory({
   ilk: 'GUNIV3DAIUSDC1-A',
 })({
   stage: 'proxyWaitingForApproval',
-  depositAmount: new BigNumber('50'),
+  depositAmount: new BigNumber('1500'),
 })
 
 export const ProxyFailure = guniOpenMultiplyVaultStory({
   ilk: 'GUNIV3DAIUSDC1-A',
 })({
   stage: 'proxyFailure',
-  depositAmount: new BigNumber('50'),
+  depositAmount: new BigNumber('1500'),
 })
 
 export const ProxyInProgress = guniOpenMultiplyVaultStory({
   ilk: 'GUNIV3DAIUSDC1-A',
 })({
   stage: 'proxyInProgress',
-  depositAmount: new BigNumber('50'),
+  depositAmount: new BigNumber('1500'),
 })
 
 export const ProxySuccess = guniOpenMultiplyVaultStory({
   ilk: 'GUNIV3DAIUSDC1-A',
 })({
   stage: 'proxySuccess',
-  depositAmount: new BigNumber('50'),
+  depositAmount: new BigNumber('1500'),
 })
 
 export const AllowanceWaitingForConfirmation = guniOpenMultiplyVaultStory({
-  balanceInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { daiBalance: new BigNumber('10000') },
   ilk: 'GUNIV3DAIUSDC1-A',
 })({
   stage: 'allowanceWaitingForConfirmation',
-  depositAmount: new BigNumber('50'),
+  depositAmount: new BigNumber('1500'),
 })
 
 export const AllowanceWaitingForApproval = guniOpenMultiplyVaultStory({
-  balanceInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { daiBalance: new BigNumber('10000') },
   ilk: 'GUNIV3DAIUSDC1-A',
 })({
   stage: 'allowanceWaitingForApproval',
-  depositAmount: new BigNumber('50'),
+  depositAmount: new BigNumber('1500'),
 })
 
 export const AllowanceFailure = guniOpenMultiplyVaultStory({
-  balanceInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { daiBalance: new BigNumber('10000') },
   ilk: 'GUNIV3DAIUSDC1-A',
 })({
   stage: 'allowanceFailure',
-  depositAmount: new BigNumber('50'),
+  depositAmount: new BigNumber('1500'),
 })
 
 export const AllowanceInProgress = guniOpenMultiplyVaultStory({
   ilk: 'GUNIV3DAIUSDC1-A',
 })({
   stage: 'allowanceInProgress',
-  depositAmount: new BigNumber('50'),
+  depositAmount: new BigNumber('1500'),
 })
 
 export const AllowanceSuccess = guniOpenMultiplyVaultStory({
-  balanceInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { daiBalance: new BigNumber('10000') },
   ilk: 'GUNIV3DAIUSDC1-A',
 })({
   stage: 'allowanceSuccess',
-  depositAmount: new BigNumber('50'),
+  depositAmount: new BigNumber('1500'),
 })
 
 export const txWaitingForConfirmation = guniOpenMultiplyVaultStory({
-  balanceInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { daiBalance: new BigNumber('10000') },
   ilk: 'GUNIV3DAIUSDC1-A',
 })({
   stage: 'txWaitingForConfirmation',
-  depositAmount: new BigNumber('50'),
+  depositAmount: new BigNumber('1500'),
   requiredCollRatio: new BigNumber(3.5),
 })
 
 export const txWaitingForApproval = guniOpenMultiplyVaultStory({
-  balanceInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { daiBalance: new BigNumber('10000') },
   ilk: 'GUNIV3DAIUSDC1-A',
 })({
   stage: 'txWaitingForApproval',
-  depositAmount: new BigNumber('50'),
+  depositAmount: new BigNumber('1500'),
   requiredCollRatio: new BigNumber(3.5),
 })
 
 export const txFailure = guniOpenMultiplyVaultStory({
-  balanceInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { daiBalance: new BigNumber('10000') },
   ilk: 'GUNIV3DAIUSDC1-A',
 })({
   stage: 'txFailure',
-  depositAmount: new BigNumber('50'),
+  depositAmount: new BigNumber('1500'),
   requiredCollRatio: new BigNumber(3.5),
 })
 
 export const txInProgress = guniOpenMultiplyVaultStory({
-  balanceInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { daiBalance: new BigNumber('10000') },
   ilk: 'GUNIV3DAIUSDC1-A',
 })({
   stage: 'txInProgress',
-  depositAmount: new BigNumber('50'),
+  depositAmount: new BigNumber('1500'),
 })
 
 export const txSuccess = guniOpenMultiplyVaultStory({
-  balanceInfo: { collateralBalance: new BigNumber('100') },
+  balanceInfo: { daiBalance: new BigNumber('10000') },
   ilk: 'GUNIV3DAIUSDC1-A',
 })({
   id: new BigNumber('122345'),
   stage: 'txSuccess',
-  depositAmount: new BigNumber('50'),
+  depositAmount: new BigNumber('1500'),
   requiredCollRatio: new BigNumber(3.5),
 })
 

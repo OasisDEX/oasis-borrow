@@ -23,7 +23,7 @@ export const CustomAllowanceEmpty = guniOpenMultiplyVaultStory({
   proxyAddress,
 })({
   stage: 'allowanceWaitingForConfirmation',
-  depositAmount: new BigNumber('10'),
+  depositAmount: new BigNumber('1500'),
   selectedAllowanceRadio: 'custom',
   allowanceAmount: undefined,
 })
@@ -34,13 +34,13 @@ export const CustomAllowanceAmountGreaterThanMaxUint256 = guniOpenMultiplyVaultS
   proxyAddress,
 })({
   stage: 'allowanceWaitingForConfirmation',
-  depositAmount: new BigNumber('10'),
+  depositAmount: new BigNumber('1500'),
   selectedAllowanceRadio: 'custom',
   allowanceAmount: maxUint256.plus(one),
 })
 
 export const CustomAllowanceAmountLessThanDepositAmount = guniOpenMultiplyVaultStory({
-  title: 'Error should block user if the allowance they wish to set a value above maxUint256',
+  title: 'Error should block user if the deposit they wish to set is below allowance limit',
   balanceInfo: { daiBalance: new BigNumber('10000') },
   proxyAddress,
 })({
@@ -52,25 +52,25 @@ export const CustomAllowanceAmountLessThanDepositAmount = guniOpenMultiplyVaultS
 
 export const ExchangeDataFailure = guniOpenMultiplyVaultStory({
   title: 'Error is shown when 1inch responded with other status than SUCCESS',
-  ilkData: { debtFloor: new BigNumber('2000') },
+  balanceInfo: { daiBalance: new BigNumber('10000') },
   proxyAddress,
   exchangeQuote: {
-    status: 'ERROR',
+    status: 'ERROR'
   },
 })({
-  depositAmount: new BigNumber('5'),
+  depositAmount: new BigNumber('1500'),
 })
 
 export const ExchangeDataLoading = guniOpenMultiplyVaultStory({
   title:
     'Confirm buttons is blocked and App Spinner is shown next to ETH Price when exchange data is being loaded',
-  ilkData: { debtFloor: new BigNumber('2000') },
+  balanceInfo: { daiBalance: new BigNumber('10000') },
   proxyAddress,
   exchangeQuote: {
     isLoading: true,
   },
 })({
-  depositAmount: new BigNumber('5'),
+  depositAmount: new BigNumber('1500'),
 })
 
 // eslint-disable-next-line import/no-default-export

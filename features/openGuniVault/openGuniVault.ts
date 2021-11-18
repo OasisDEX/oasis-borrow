@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-import { observe } from 'blockchain/calls/observe'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { compareBigNumber, ContextConnected } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -51,7 +50,6 @@ import {
   VaultWarningMessage,
 } from '../openMultiplyVault/openMultiplyVaultValidations'
 import { applyEnvironment, EnvironmentChange, EnvironmentState } from './enviroment'
-import { getGuniMintAmount, getToken1Balance } from './guniActionsCalls'
 import {
   addFormTransitions,
   applyFormChange,
@@ -79,10 +77,7 @@ interface OverrideHelper {
   injectStateOverride: (state: Partial<any>) => void
 }
 
-function applyOpenGuniVaultInjectedOverride(
-  state: OpenGuniVaultState,
-  change: OpenGuniChanges,
-) {
+function applyOpenGuniVaultInjectedOverride(state: OpenGuniVaultState, change: OpenGuniChanges) {
   if (change.kind === 'injectStateOverride') {
     return {
       ...state,
@@ -271,6 +266,12 @@ export function createOpenGuniVault$(
   onEveryBlock$: Observable<number>,
   addGasEstimation$: AddGasEstimationFunction,
   ilk: string,
+  token1Balance$: (args: { token: string; leveragedAmount: BigNumber }) => Observable<BigNumber>,
+  getGuniMintAmount$: (args: {
+    token: string
+    amountOMax: BigNumber
+    amount1Max: BigNumber
+  }) => Observable<{ amount0: BigNumber; amount1: BigNumber; mintAmount: BigNumber }>,
 ): Observable<OpenGuniVaultState> {
   return ilks$.pipe(
     switchMap((ilks) =>
@@ -362,18 +363,21 @@ export function createOpenGuniVault$(
 
                     const stateSubject$ = new Subject<OpenGuniVaultState>()
 
-                    const token1Balance$ = observe(onEveryBlock$, context$, getToken1Balance)
-                    const getGuniMintAmount$ = observe(onEveryBlock$, context$, getGuniMintAmount)
-
                     const gUniDataChanges$: Observable<GuniTxDataChange> = change$.pipe(
                       filter(
                         (change) =>
-                          change.kind === 'depositAmount' || change.kind === 'depositMaxAmount',
+                          change.kind === 'depositAmount' ||
+                          change.kind === 'depositMaxAmount' ||
+                          change.kind === 'injectStateOverride',
                       ),
-                      switchMap((change: DepositChange | DepositMaxChange) => {
+                      switchMap((change: DepositChange | DepositMaxChange | InjectChange) => {
+                        const depositAmount =
+                          change.kind === 'injectStateOverride'
+                            ? change.stateToOverride.depositAmount
+                            : change.depositAmount
                         const { leveragedAmount, flAmount } = applyCalculations({
                           ilkData,
-                          depositAmount: change.depositAmount,
+                          depositAmount,
                         })
 
                         if (!leveragedAmount || leveragedAmount.isZero()) {
