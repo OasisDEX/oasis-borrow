@@ -1,4 +1,4 @@
-import { Button,Grid } from '@theme-ui/components'
+import { Button, Grid } from '@theme-ui/components'
 import { Container } from 'next/app'
 import React, { useState } from 'react'
 
