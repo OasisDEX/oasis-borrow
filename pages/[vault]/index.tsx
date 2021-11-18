@@ -6,7 +6,7 @@ import { VaultBannersView } from 'features/banners/VaultsBannersView'
 import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import NotFoundPage from 'pages/404'
-import React, { useState } from 'react'
+import React from 'react'
 import { Box } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
@@ -29,6 +29,7 @@ export default function Vault({ id }: { id: string }) {
   return (
     <WithConnection>
       <WithTermsOfService>
+        <Grid gap={0} sx={{ width: '100%' }}>
           <BackgroundLight />
           {isValidVaultId ? (
             <>
@@ -44,6 +45,7 @@ export default function Vault({ id }: { id: string }) {
               <NotFoundPage />
             </Box>
           )}
+        </Grid>
       </WithTermsOfService>
     </WithConnection>
   )
