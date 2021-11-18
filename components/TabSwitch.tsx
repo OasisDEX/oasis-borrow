@@ -19,16 +19,22 @@ export function TabSwitch({
   protectionControl?: JSX.Element
 }): JSX.Element {
   const [mode, setMode] = useState<VaultViewMode>(defaultMode)
+  const padding = { paddingTop:"1px", paddingBottom:"1px"};
+
+  function getVariant(currentMode: VaultViewMode, activeMode: VaultViewMode){
+    return (currentMode === activeMode)?"primary":"secondary";
+
+  }
 
   function handleToggle(newMode: VaultViewMode) {
     setMode(newMode)
   }
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
-      <Grid columns={3} sx={{ zIndex: 1 }} variant="vaultEditingControllerContainer">
-        <Button onClick={() => handleToggle(VaultViewMode.Overview)}>Overview</Button>
-        <Button onClick={() => handleToggle(VaultViewMode.Protection)}>Protection</Button>
-        <Button onClick={() => handleToggle(VaultViewMode.History)}>History</Button>
+      <Grid columns={3} sx={{ paddingTop:"4px", paddingBottom:"4px" ,zIndex: 1, width: '40%'}}  variant="vaultEditingControllerContainer" >
+        <Button sx={{...padding}} onClick={() => handleToggle(VaultViewMode.Overview)} variant={getVariant(mode,VaultViewMode.Overview)}>Overview</Button>
+        <Button sx={{...padding}} onClick={() => handleToggle(VaultViewMode.Protection)} variant={getVariant(mode,VaultViewMode.Protection)}>Protection</Button>
+        <Button sx={{...padding}} onClick={() => handleToggle(VaultViewMode.History)} variant={getVariant(mode,VaultViewMode.History)}>History</Button>
       </Grid>
       <Box sx={{ zIndex: 1 }}>
         {mode === VaultViewMode.Overview
