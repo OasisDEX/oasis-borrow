@@ -1,19 +1,18 @@
+import { Story } from '@storybook/react'
 import { BigNumber } from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
-import { useModal } from '../../../helpers/modalHook'
-import {
-  VaultDetailsCard,
-  VaultDetailsCardCollateralLocked,
-  VaultDetailsCardCollaterlizationRatioModal,
-  VaultDetailsCardCurrentPrice,
-  VaultDetailsCardDynamicStopPrice,
-  VaultDetailsCardLiquidationPrice,
-  VaultDetailsCardMaxTokenOnStopLossTrigger,
-  VaultDetailsCardStopLossCollRatio,
-} from '../VaultDetails'
+import { ModalProvider, useModal } from '../../../helpers/modalHook'
+import { VaultDetailsCardCollateralLocked } from '../detailsCards/VaultDetailsCardCollateralLocked'
+import { VaultDetailsCardCollaterlizationRatioModal } from '../detailsCards/VaultDetailsCardCollaterlizationRatio'
+import { VaultDetailsCardCurrentPrice } from '../detailsCards/VaultDetailsCardCurrentPrice'
+import { VaultDetailsCardDynamicStopPrice } from '../detailsCards/VaultDetailsCardDynamicStopPrice'
+import { VaultDetailsCardLiquidationPrice } from '../detailsCards/VaultDetailsCardLiquidationPrice'
+import { VaultDetailsCardMaxTokenOnStopLossTrigger } from '../detailsCards/VaultDetailsCardMaxTokenOnStopLossTrigger'
+import { VaultDetailsCardStopLossCollRatio } from '../detailsCards/VaultDetailsCardStopLossCollRatio'
+import { VaultDetailsCard } from '../VaultDetails'
 
 const MaxWidthWrapper = ({ children }: { children: ReactNode }) => (
   <Box sx={{ maxWidth: '337px' }}>{children}</Box>
@@ -193,4 +192,11 @@ export default {
       defaultValue: true,
     },
   },
+  decorators: [
+    (Story: Story) => (
+      <ModalProvider>
+        <Story />
+      </ModalProvider>
+    ),
+  ],
 }

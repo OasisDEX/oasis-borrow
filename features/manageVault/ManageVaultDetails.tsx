@@ -5,10 +5,6 @@ import {
   getAfterPillColors,
   getCollRatioColor,
   VaultDetailsCard,
-  VaultDetailsCardCollateralLocked,
-  VaultDetailsCardCollaterlizationRatioModal,
-  VaultDetailsCardCurrentPrice,
-  VaultDetailsCardLiquidationPrice,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -18,6 +14,10 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
+import { VaultDetailsCardCollateralLocked } from '../../components/vault/detailsCards/VaultDetailsCardCollateralLocked'
+import { VaultDetailsCardCollaterlizationRatioModal } from '../../components/vault/detailsCards/VaultDetailsCardCollaterlizationRatio'
+import { VaultDetailsCardCurrentPrice } from '../../components/vault/detailsCards/VaultDetailsCardCurrentPrice'
+import { VaultDetailsCardLiquidationPrice } from '../../components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
 import { ManageVaultState } from './manageVault'
 
 function ManageVaultDetailsSummary({
