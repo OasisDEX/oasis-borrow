@@ -46,6 +46,8 @@ import {
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
+import { createAutomationTriggersData } from 'features/automation/AutomationTriggersData'
+import { createStopLossTriggersData } from 'features/automation/triggers/StopLossTriggerData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
@@ -428,6 +430,11 @@ export function setupAppContext() {
   )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$)
 
+  const automationTriggersData$ = 
+    curry(createAutomationTriggersData)(connectedContext$,onEveryBlock$,vault$);
+
+  const stopLossTriggersData$ = (vaultId:BigNumber) => createStopLossTriggersData(automationTriggersData$(vaultId));
+
   const openVaultOverview$ = createOpenVaultOverview$(ilksWithBalance$)
 
   return {
@@ -452,7 +459,9 @@ export function setupAppContext() {
     vaultBanners$,
     redirectState$,
     accountBalances$,
-    accountData$,
+    automationTriggersData$,
+    stopLossTriggersData$,
+    accountData$, 
     vaultHistory$,
     vaultMultiplyHistory$,
     collateralPrices$,
