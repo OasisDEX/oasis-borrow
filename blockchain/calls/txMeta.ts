@@ -11,4 +11,6 @@ export enum TxMetaKind {
   adjustPosition = 'adjustPosition',
   closeVault = 'closeVault',
   openGuni = 'openGuni',
+  addTrigger = 'addTrigger',
+  removeTrigger = 'removeTrigger',
 }

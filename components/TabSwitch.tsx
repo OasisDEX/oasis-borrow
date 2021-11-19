@@ -1,4 +1,4 @@
-import { Grid, Button, Box } from '@theme-ui/components'
+import { Box,Button, Grid } from '@theme-ui/components'
 import React, { useState } from 'react'
 
 enum VaultViewMode {
@@ -19,11 +19,10 @@ export function TabSwitch({
   protectionControl?: JSX.Element
 }): JSX.Element {
   const [mode, setMode] = useState<VaultViewMode>(defaultMode)
-  const padding = { paddingTop:"1px", paddingBottom:"1px"};
+  const padding = { paddingTop: '1px', paddingBottom: '1px' }
 
-  function getVariant(currentMode: VaultViewMode, activeMode: VaultViewMode){
-    return (currentMode === activeMode)?"primary":"secondary";
-
+  function getVariant(currentMode: VaultViewMode, activeMode: VaultViewMode) {
+    return currentMode === activeMode ? 'primary' : 'secondary'
   }
 
   function handleToggle(newMode: VaultViewMode) {
@@ -31,10 +30,32 @@ export function TabSwitch({
   }
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
-      <Grid columns={3} sx={{ paddingTop:"4px", paddingBottom:"4px" ,zIndex: 1, width: '40%'}}  variant="vaultEditingControllerContainer" >
-        <Button sx={{...padding}} onClick={() => handleToggle(VaultViewMode.Overview)} variant={getVariant(mode,VaultViewMode.Overview)}>Overview</Button>
-        <Button sx={{...padding}} onClick={() => handleToggle(VaultViewMode.Protection)} variant={getVariant(mode,VaultViewMode.Protection)}>Protection</Button>
-        <Button sx={{...padding}} onClick={() => handleToggle(VaultViewMode.History)} variant={getVariant(mode,VaultViewMode.History)}>History</Button>
+      <Grid
+        columns={3}
+        sx={{ paddingTop: '4px', paddingBottom: '4px', zIndex: 1, width: '40%' }}
+        variant="vaultEditingControllerContainer"
+      >
+        <Button
+          sx={{ ...padding }}
+          onClick={() => handleToggle(VaultViewMode.Overview)}
+          variant={getVariant(mode, VaultViewMode.Overview)}
+        >
+          Overview
+        </Button>
+        <Button
+          sx={{ ...padding }}
+          onClick={() => handleToggle(VaultViewMode.Protection)}
+          variant={getVariant(mode, VaultViewMode.Protection)}
+        >
+          Protection
+        </Button>
+        <Button
+          sx={{ ...padding }}
+          onClick={() => handleToggle(VaultViewMode.History)}
+          variant={getVariant(mode, VaultViewMode.History)}
+        >
+          History
+        </Button>
       </Grid>
       <Box sx={{ zIndex: 1 }}>
         {mode === VaultViewMode.Overview

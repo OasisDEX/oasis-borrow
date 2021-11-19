@@ -430,10 +430,15 @@ export function setupAppContext() {
   )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$)
 
-  const automationTriggersData$ = 
-    curry(createAutomationTriggersData)(connectedContext$,onEveryBlock$,vault$);
+  const automationTriggersData$ = curry(createAutomationTriggersData)(
+    connectedContext$,
+    onEveryBlock$,
+    vault$,
+  )
 
-  const stopLossTriggersData$ = (vaultId:BigNumber) => createStopLossTriggersData(automationTriggersData$(vaultId));
+  function stopLossTriggersData$(vaultId: BigNumber) {
+    return createStopLossTriggersData(automationTriggersData$(vaultId));
+  }
 
   const openVaultOverview$ = createOpenVaultOverview$(ilksWithBalance$)
 
@@ -461,7 +466,7 @@ export function setupAppContext() {
     accountBalances$,
     automationTriggersData$,
     stopLossTriggersData$,
-    accountData$, 
+    accountData$,
     vaultHistory$,
     vaultMultiplyHistory$,
     collateralPrices$,

@@ -3,6 +3,7 @@ import { keyBy } from 'lodash'
 import getConfig from 'next/config'
 import { Dictionary } from 'ts-essentials'
 
+import * as automationBot from './abi/automation-bot.json'
 import * as eth from './abi/ds-eth-token.json'
 import * as dsProxyFactory from './abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from './abi/ds-proxy-registry.json'
@@ -75,6 +76,7 @@ const protoMain = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, mainnetAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, mainnetAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
+  automationBot: contractDesc(automationBot, '0x'), // TODO: add address
   guniProxyActions: contractDesc(guniProxyActions, '0x64b0010f6b90d0ae0bf2587ba47f2d3437487447'),
   guniResolver: '0x0317650Af6f184344D7368AC8bB0bEbA5EDB214a',
   guniRouter: '0x14E6D67F824C3a7b4329d3228807f8654294e4bd',
@@ -140,6 +142,7 @@ const kovan: NetworkConfig = {
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
   ),
   guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
+  automationBot: contractDesc(automationBot, '0x'), // TODO: add address
   guniResolver: '0x',
   guniRouter: '0x',
   exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
@@ -196,6 +199,7 @@ const goerli: NetworkConfig = {
   guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
   guniResolver: '0x',
   guniRouter: '0x',
+  automationBot: contractDesc(automationBot, '0x62fab0FfcC439c75a7d31F94f5B34bE31F3e08E7'),
   // Currently this is not supported on Goerli - no deployed contract
   exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''),
   // Currently this is not supported on Goerli - no deployed contract
