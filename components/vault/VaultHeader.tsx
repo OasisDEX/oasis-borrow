@@ -1,14 +1,14 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Box, Flex, Grid, Heading, Text } from '@theme-ui/components'
+import { Box, Flex, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { Tooltip, useTooltip } from 'components/Tooltip'
-import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
-import { CommonVaultState } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { SxStyleProp } from 'theme-ui'
 
-function VaultIlkDetailsItem({
+import { VaultHeaderContainer } from './VaultHeaderContainer'
+
+export function VaultIlkDetailsItem({
   label,
   value,
   tooltipContent,
@@ -70,86 +70,18 @@ function VaultIlkDetailsItem({
   )
 }
 
-export function VaultIlkDetails(props: CommonVaultState & { id?: BigNumber }) {
-  const {
-    ilkData: { liquidationRatio, stabilityFee, liquidationPenalty, debtFloor },
-    id,
-  } = props
+export function VaultHeader(props: { header: string; id?: BigNumber; children: ReactNode }) {
+  const { id, header, children } = props
   const { t } = useTranslation()
 
   return (
-    <Box
-      sx={{
-        mb: 4,
-        fontSize: 1,
-        fontWeight: 'semiBold',
-        color: 'text.subtitle',
-        display: ['grid', 'flex'],
-        gridTemplateColumns: '1fr 1fr',
-        gap: [3, 0],
-      }}
-    >
+    <VaultHeaderContainer header={header}>
       <VaultIlkDetailsItem
         label={'VaultID'}
         value={id ? id.toFixed(0) : 'T.B.D'}
         tooltipContent={t('manage-multiply-vault.tooltip.vaultId')}
       />
-      <VaultIlkDetailsItem
-        label={t('manage-vault.stability-fee')}
-        value={`${formatPercent(stabilityFee.times(100), { precision: 2 })}`}
-        tooltipContent={t('manage-multiply-vault.tooltip.stabilityFee')}
-        styles={{
-          tooltip: {
-            left: ['auto', '-20px'],
-            right: ['-0px', 'auto'],
-          },
-        }}
-      />
-      <VaultIlkDetailsItem
-        label={t('manage-vault.liquidation-fee')}
-        value={`${formatPercent(liquidationPenalty.times(100))}`}
-        tooltipContent={t('manage-multiply-vault.tooltip.liquidationFee')}
-      />
-      <VaultIlkDetailsItem
-        label={t('manage-vault.min-collat-ratio')}
-        value={`${formatPercent(liquidationRatio.times(100))}`}
-        tooltipContent={t('manage-multiply-vault.tooltip.min-collateral')}
-        styles={{
-          tooltip: {
-            left: 'auto',
-            right: ['10px', '-154px'],
-          },
-        }}
-      />
-      <VaultIlkDetailsItem
-        label={t('manage-vault.dust-limit')}
-        value={`$${formatCryptoBalance(debtFloor)}`}
-        tooltipContent={t('manage-multiply-vault.tooltip.dust-limit')}
-        styles={{
-          tooltip: {
-            left: ['-80px', 'auto'],
-            right: ['auto', '-32px'],
-          },
-        }}
-      />
-    </Box>
-  )
-}
-
-export function VaultHeader(props: CommonVaultState & { header: string; id?: BigNumber }) {
-  return (
-    <Grid mt={4}>
-      <Heading
-        as="h1"
-        variant="heading1"
-        sx={{
-          fontWeight: 'semiBold',
-          pb: 2,
-        }}
-      >
-        {props.header}
-      </Heading>
-      <VaultIlkDetails {...props} />
-    </Grid>
+      {children}
+    </VaultHeaderContainer>
   )
 }

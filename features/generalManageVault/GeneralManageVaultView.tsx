@@ -1,13 +1,14 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { ManageMultiplyVaultContainer } from 'features/manageMultiplyVault/components/ManageMultiplyVaultView'
 import { ManageVaultContainer } from 'features/manageVault/ManageVaultView'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Container } from 'theme-ui'
 
+import { DefaultManageMultiplyVaultContainer } from '../openMultiplyVault/variants/default/manage/DefaultManageMultiplyVaultContainer'
+import { GuniManageMultiplyVaultCointainer } from '../openMultiplyVault/variants/guni/manage/GuniManageMultiplyVaultCointainer'
 import { VaultType } from './generalManageVault'
 
 export function GeneralManageVaultView({ id }: { id: BigNumber }) {
@@ -45,12 +46,25 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                 </Container>
               )
             case VaultType.Multiply:
-              return (
-                <Container variant="vaultPageContainer">
-                  <ManageMultiplyVaultContainer
+              const vaultIlk = generalManageVault.state.ilkData.ilk
+              const multiplyContainerMap: Record<string, ReactNode> = {
+                'GUNIV3DAIUSDC1-A': (
+                  <GuniManageMultiplyVaultCointainer
                     vaultHistory={vaultMultiplyHistory}
                     manageVault={generalManageVault.state}
                   />
+                ),
+              }
+              return (
+                <Container variant="vaultPageContainer">
+                  {multiplyContainerMap[vaultIlk] ? (
+                    multiplyContainerMap[vaultIlk]
+                  ) : (
+                    <DefaultManageMultiplyVaultContainer
+                      vaultHistory={vaultMultiplyHistory}
+                      manageVault={generalManageVault.state}
+                    />
+                  )}
                 </Container>
               )
           }

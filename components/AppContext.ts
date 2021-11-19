@@ -24,6 +24,7 @@ import {
   DepositAndGenerateData,
   MultiplyAdjustData,
   OpenData,
+  OpenGuniMultiplyData,
   OpenMultiplyData,
   ReclaimData,
   WithdrawAndPaybackData,
@@ -55,6 +56,7 @@ import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageMultiplyVault$ } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { createManageVault$ } from 'features/manageVault/manageVault'
+import { createOpenGuniVault$ } from 'features/openGuniVault/openGuniVault'
 import { createOpenMultiplyVault$ } from 'features/openMultiplyVault/openMultiplyVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
 import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultData'
@@ -95,6 +97,7 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import { getGuniMintAmount, getToken1Balance } from '../features/openGuniVault/guniActionsCalls'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
@@ -112,6 +115,7 @@ export type TxData =
   | OpenMultiplyData
   | MultiplyAdjustData
   | CloseVaultData
+  | OpenGuniMultiplyData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -252,17 +256,20 @@ export function setupAppContext() {
   )
 
   const vault$ = memoize(
-    curry(createVault$)(
-      cdpManagerUrns$,
-      cdpManagerIlks$,
-      cdpManagerOwner$,
-      vatUrns$,
-      vatGem$,
-      ilkData$,
-      oraclePriceData$,
-      controller$,
-      ilkToToken$,
-    ),
+    (id: BigNumber) =>
+      createVault$(
+        cdpManagerUrns$,
+        cdpManagerIlks$,
+        cdpManagerOwner$,
+        vatUrns$,
+        vatGem$,
+        ilkData$,
+        oraclePriceData$,
+        controller$,
+        ilkToToken$,
+        context$,
+        id,
+      ),
     bigNumberTostring,
   )
 
@@ -338,6 +345,28 @@ export function setupAppContext() {
     ),
   )
 
+  const token1Balance$ = observe(onEveryBlock$, context$, getToken1Balance)
+  const getGuniMintAmount$ = observe(onEveryBlock$, context$, getGuniMintAmount)
+
+  const openGuniVault$ = memoize((ilk: string) =>
+    createOpenGuniVault$(
+      connectedContext$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      priceInfo$,
+      balanceInfo$,
+      ilks$,
+      ilkData$,
+      exchangeQuote$,
+      onEveryBlock$,
+      addGasEstimation$,
+      ilk,
+      token1Balance$,
+      getGuniMintAmount$,
+    ),
+  )
+
   const manageVault$ = memoize(
     (id: BigNumber) =>
       createManageVault$(
@@ -374,8 +403,9 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  const checkVault$ = memoize((id: BigNumber) => curry(checkVaultTypeUsingApi$)(context$, id))
   const generalManageVault$ = memoize(
-    curry(createGeneralManageVault$)(manageMultiplyVault$, manageVault$, checkVaultTypeUsingApi$),
+    curry(createGeneralManageVault$)(manageMultiplyVault$, manageVault$, checkVault$),
     bigNumberTostring,
   )
 
@@ -437,6 +467,7 @@ export function setupAppContext() {
     openVaultOverview$,
     openMultiplyVault$,
     generalManageVault$,
+    openGuniVault$,
   }
 }
 
