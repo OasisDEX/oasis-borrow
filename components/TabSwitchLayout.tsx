@@ -7,7 +7,7 @@ enum VaultViewMode {
   Overview = 3,
 }
 
-export function TabSwitch({
+export function TabSwitchLayout({
   defaultMode,
   overViewControl,
   historyControl,

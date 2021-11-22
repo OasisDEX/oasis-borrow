@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
-import { TabSwitch, VaultViewMode } from 'components/TabSwitch'
+import { TabSwitchLayout, VaultViewMode } from 'components/TabSwitchLayout'
 import { DefaaultVaultLayout } from 'components/vault/DefaaultVaultLayout'
-import { DefaultVaultHeader_v2 } from 'components/vault/DefaultVaultHeader_v2'
-import { ProtectionDetails } from 'features/automation/controls/ProtectionDetails'
+import { DefaultVaultHeaderControl } from 'components/vault/DefaultVaultHeaderControl'
+import { ProtectionDetailsControl } from 'features/automation/controls/ProtectionDetailsControl'
 import { VaultBannersView } from 'features/banners/VaultsBannersView'
 import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -36,16 +36,19 @@ export default function Vault({ id }: { id: string }) {
         {isValidVaultId ? (
           <Box sx={{ width: '100%' }}>
             <VaultBannersView id={vaultId} />
-            <TabSwitch
+            <TabSwitchLayout
               defaultMode={VaultViewMode.Overview}
               overViewControl={<GeneralManageVaultView id={vaultId} />}
               historyControl={<h1>TODO History</h1>}
               protectionControl={
                 <DefaaultVaultLayout
-                  detailsViewControl={<ProtectionDetails id={vaultId} />}
+                  detailsViewControl={<ProtectionDetailsControl id={vaultId} />}
                   editForm={<></>}
                   headerControl={
-                    <DefaultVaultHeader_v2 header="vault.manage-vault" vaultId={vaultId} />
+                    <DefaultVaultHeaderControl
+                      header="vault.manage-vault.title"
+                      vaultId={vaultId}
+                    />
                   }
                 />
               }
