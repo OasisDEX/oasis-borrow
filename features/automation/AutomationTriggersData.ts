@@ -25,8 +25,7 @@ export function createAutomationTriggersData(
   vauit$: (id: BigNumber) => Observable<Vault>,
   id: BigNumber,
 ): Observable<TriggersData> {
-  return context$.pipe(
-    filter((context): context is ContextConnected => context.status === 'connected'),
+  return onEveryBlock$.pipe(
     switchMap(() =>
       combineLatest(
         startWithDefault(onEveryBlock$, undefined),
