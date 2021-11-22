@@ -5,7 +5,7 @@ import { useObservableWithError } from 'helpers/observableHook'
 import React from 'react'
 
 export function ProtectionDetails({ id }: { id: BigNumber }) {
-  console.log("Rendering ProtectionDetails");
+  console.log('Rendering ProtectionDetails')
   const { stopLossTriggersData$ } = useAppContext()
   const slTriggerData$ = stopLossTriggersData$(id)
   const slTriggerDataWithError = useObservableWithError(slTriggerData$)
@@ -15,12 +15,12 @@ export function ProtectionDetails({ id }: { id: BigNumber }) {
       customLoader={<VaultContainerSpinner />}
     >
       {([triggerrsData]) => {
-        console.log("Rendering ProtectionDetails Internal");
+        console.log('Rendering ProtectionDetails Internal')
         return (
           <h1>
-            TODO Protection Level = {triggerrsData.stopLossLevel.toString()}, 
-            CloseToCollateral = {triggerrsData.isToCollateral.toString()},
-            Enabled = {triggerrsData.isStopLossEnabled.toString()}
+            TODO Protection Level = {triggerrsData.stopLossLevel.toString()}, CloseToCollateral ={' '}
+            {triggerrsData.isToCollateral.toString()}, Enabled ={' '}
+            {triggerrsData.isStopLossEnabled.toString()}
           </h1>
         )
       }}

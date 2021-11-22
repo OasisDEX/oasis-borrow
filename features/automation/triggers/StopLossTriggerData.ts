@@ -25,7 +25,7 @@ export function createStopLossTriggersData(
 ): Observable<StopLossTriggerData> {
   return triggersData$.pipe(
     filter((data) => {
-      console.log("Processing triggersData$",data);
+      console.log('Processing triggersData$', data)
       const validElements = _.filter(
         data.triggers,
         (x) =>

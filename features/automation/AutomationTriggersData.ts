@@ -44,7 +44,7 @@ export function createAutomationTriggersData(
   )
 }
 function generateFromVault(id: BigNumber | undefined): List<TriggerRecord> {
-  console.log("generating triggers data");
+  console.log('generating triggers data')
   /* TODO: replace with actual Event reading when ready and in final version with fetching from cache */
   switch ((id ? id.toNumber() : 0) % 4) {
     case 0:
