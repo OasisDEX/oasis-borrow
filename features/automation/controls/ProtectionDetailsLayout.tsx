@@ -3,15 +3,15 @@ import React from 'react'
 
 export interface ProtectionDetailsLayoutProps {
   isToCollateral: boolean
-  stopLossLevel: BigNumber
+  slRatio: BigNumber
+  vaultDebt: BigNumber
+  collateralUSD: BigNumber
+  currentOraclePrice: BigNumber
+  nextOraclePrice: BigNumber
   isStopLossEnabled: boolean
+  lockedCollateral: BigNumber
 }
 
 export function ProtectionDetailsLayout(props: ProtectionDetailsLayoutProps) {
-  return (
-    <h1>
-      TODO Protection Level = {props.toString()}, CloseToCollateral = {props.isToCollateral},
-      Enabled = {props.isStopLossEnabled.toString()}
-    </h1>
-  )
+  return <h1>ALL DATA AVAILABLE: {JSON.stringify(props)}</h1>
 }

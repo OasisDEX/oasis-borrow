@@ -8,20 +8,32 @@ import { ProtectionDetailsLayout, ProtectionDetailsLayoutProps } from './Protect
 
 export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
   console.log('Rendering ProtectionDetails', id.toString())
-  const { stopLossTriggersData$ } = useAppContext()
+  const { stopLossTriggersData$, vault$, collateralPrices$ } = useAppContext()
   const slTriggerData$ = stopLossTriggersData$(id)
   const slTriggerDataWithError = useObservableWithError(slTriggerData$)
+  const vaultDataWithError = useObservableWithError(vault$(id))
+  const collateralPricesWithError = useObservableWithError(collateralPrices$)
 
   return (
     <WithLoadingIndicator
-      value={[slTriggerDataWithError.value]}
+      value={[
+        slTriggerDataWithError.value,
+        vaultDataWithError.value,
+        collateralPricesWithError.value,
+      ]}
       customLoader={<VaultContainerSpinner />}
     >
-      {([triggersData]) => {
+      {([triggersData, vaultData, collateralPrices]) => {
+        const collateralPrice = collateralPrices.data.filter((x) => x.token === vaultData.token)[0]
         const props: ProtectionDetailsLayoutProps = {
           isStopLossEnabled: triggersData.isStopLossEnabled,
           isToCollateral: triggersData.isToCollateral,
-          stopLossLevel: triggersData.stopLossLevel,
+          slRatio: triggersData.stopLossLevel,
+          vaultDebt: vaultData.debt,
+          collateralUSD: vaultData.lockedCollateralUSD,
+          currentOraclePrice: collateralPrice.currentPrice,
+          nextOraclePrice: collateralPrice.nextPrice,
+          lockedCollateral: vaultData.lockedCollateral,
         }
         return <ProtectionDetailsLayout {...props} />
       }}
