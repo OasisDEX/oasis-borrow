@@ -4,7 +4,7 @@ import { Vault } from 'blockchain/vaults'
 import { startWithDefault } from 'helpers/operators'
 import { List } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
-import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 const STOP_LOSS_TRIGGER_TYPE_COLL = 1
 const STOP_LOSS_TRIGGER_TYPE_DAI = 2
 
@@ -43,6 +43,7 @@ export function createAutomationTriggersData(
           console.log('distinctUntilChanged', s1, s2)
           return JSON.stringify(s1) === JSON.stringify(s2)
         }),
+        shareReplay(1),
       ),
     ),
   )
