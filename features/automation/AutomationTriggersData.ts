@@ -41,7 +41,7 @@ export function createAutomationTriggersData(
           return x
         }),
         distinctUntilChanged((s1, s2) => {
-          console.log('distinctUntilChanged', s1, s2)
+          console.log('distinctUntilChanged', JSON.stringify(s1), JSON.stringify(s2))
           return JSON.stringify(s1) === JSON.stringify(s2)
         }),
         shareReplay(1),
