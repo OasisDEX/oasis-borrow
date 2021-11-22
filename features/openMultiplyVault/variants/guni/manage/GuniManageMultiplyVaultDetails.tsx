@@ -76,7 +76,14 @@ function GuniManageMultiplyVaultDetailsSummary({
 }
 
 export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
-  const { inputAmountsEmpty, stage, netValueUSD, afterNetValueUSD } = props
+  const {
+    inputAmountsEmpty,
+    stage,
+    netValueUSD,
+    afterNetValueUSD,
+    currentPnL,
+    totalGasSpentUSD,
+  } = props
   const afterCollRatioColor = 'onSuccess'
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
@@ -90,6 +97,8 @@ export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) 
             afterNetValueUSD,
             afterPillColors,
             showAfterPill,
+            currentPnL,
+            totalGasSpentUSD,
           }}
         />
       </Grid>
