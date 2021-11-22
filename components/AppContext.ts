@@ -434,9 +434,10 @@ export function setupAppContext() {
     curry(createAutomationTriggersData)(connectedContext$, onEveryBlock$, vault$),
   )
 
-  function stopLossTriggersData$(vaultId: BigNumber) {
+  const stopLossTriggersData$ = memoize((vaultId: BigNumber) => {
+    console.log('Subscribing to stopLossTriggersData')
     return createStopLossTriggersData(automationTriggersData$(vaultId))
-  }
+  })
 
   const openVaultOverview$ = createOpenVaultOverview$(ilksWithBalance$)
 
