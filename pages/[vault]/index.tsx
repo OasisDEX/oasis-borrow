@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { TabSwitch, VaultViewMode } from 'components/TabSwitch'
+import { ProtectionDetails } from 'features/automation/controls/ProtectionDetails'
 import { VaultBannersView } from 'features/banners/VaultsBannersView'
 import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -36,7 +37,7 @@ export default function Vault({ id }: { id: string }) {
               defaultMode={VaultViewMode.Overview}
               overViewControl={<GeneralManageVaultView id={vaultId} />}
               historyControl={<h1>TODO History</h1>}
-              protectionControl={<h1>TODO Protection</h1>}
+              protectionControl={<ProtectionDetails id={vaultId} />}
             />
           </Box>
         ) : (
