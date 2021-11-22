@@ -1,4 +1,4 @@
-import { Box,Button, Grid } from '@theme-ui/components'
+import { Box, Button, Grid } from '@theme-ui/components'
 import React, { useState } from 'react'
 
 enum VaultViewMode {

@@ -437,7 +437,7 @@ export function setupAppContext() {
   )
 
   function stopLossTriggersData$(vaultId: BigNumber) {
-    return createStopLossTriggersData(automationTriggersData$(vaultId));
+    return createStopLossTriggersData(automationTriggersData$(vaultId))
   }
 
   const openVaultOverview$ = createOpenVaultOverview$(ilksWithBalance$)

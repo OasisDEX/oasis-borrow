@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import _ from 'lodash'
 import { Observable } from 'rxjs'
-import { filter,map } from 'rxjs/operators'
+import { filter, map } from 'rxjs/operators'
 
 import { TriggerRecord, TriggersData } from '../AutomationTriggersData'
 
@@ -10,7 +10,7 @@ const STOP_LOSS_TRIGGER_TYPE_DAI = 2
 
 function getSLLevel(rawBytes: string): BigNumber {
   /* TODO: Some event data parsing here in a future */
-  rawBytes.length;
+  rawBytes.length
   return new BigNumber(1.95)
 }
 
@@ -36,9 +36,11 @@ export function createStopLossTriggersData(
     map((data) => {
       const doesStopLossExist = data.triggers ? data.triggers.length > 0 : false
       if (doesStopLossExist) {
-        const slRecord: TriggerRecord | undefined  = data.triggers ? _.last(data.triggers) : undefined
+        const slRecord: TriggerRecord | undefined = data.triggers
+          ? _.last(data.triggers)
+          : undefined
         if (!slRecord)
-          throw data; /* TODO: This is logically unreachable, revrite so typecheck works */
+          throw data /* TODO: This is logically unreachable, revrite so typecheck works */
         return {
           isStopLossEnabled: true,
           stopLossLevel: getSLLevel(slRecord.executionParams),
