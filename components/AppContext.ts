@@ -430,10 +430,8 @@ export function setupAppContext() {
   )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$)
 
-  const automationTriggersData$ = curry(createAutomationTriggersData)(
-    connectedContext$,
-    onEveryBlock$,
-    vault$,
+  const automationTriggersData$ = memoize(
+    curry(createAutomationTriggersData)(connectedContext$, onEveryBlock$, vault$),
   )
 
   function stopLossTriggersData$(vaultId: BigNumber) {
