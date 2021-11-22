@@ -4,7 +4,7 @@ import { Vault } from 'blockchain/vaults'
 import { startWithDefault } from 'helpers/operators'
 import { List } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
-import { filter, map, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 const STOP_LOSS_TRIGGER_TYPE_COLL = 1
 const STOP_LOSS_TRIGGER_TYPE_DAI = 2
 
@@ -32,12 +32,17 @@ export function createAutomationTriggersData(
         startWithDefault(onEveryBlock$, undefined),
         startWithDefault(vauit$(id /*,context.chainId*/), undefined),
       ).pipe(
-        map(([, vault]) => {
+        map(([blockNumber, vault]) => {
+          console.log('reading triggersData from blockchain MOCK', blockNumber)
           const x = {
             isAutomationEnabled: true,
             triggers: generateFromVault(vault?.id),
           } as TriggersData
           return x
+        }),
+        distinctUntilChanged((s1, s2) => {
+          console.log('distinctUntilChanged', s1, s2)
+          return JSON.stringify(s1) === JSON.stringify(s2)
         }),
       ),
     ),
