@@ -1,19 +1,17 @@
-import t from "pages/api/t";
-import React from "react";
-import { Box, Grid } from "theme-ui";
-import { DefaultVaultHeader } from "./DefaultVaultHeader";
+import React from 'react'
+import { Box, Grid } from 'theme-ui'
 
 export function DefaaultVaultLayout({
-    detailsViewControl,
-    editForm,
-    headerControl,
-    listControl
-  }: {
-    detailsViewControl: JSX.Element
-    editForm: JSX.Element
-    headerControl: JSX.Element,
-    listControl?: JSX.Element
-  }){
+  detailsViewControl,
+  editForm,
+  headerControl,
+  listControl,
+}: {
+  detailsViewControl: JSX.Element
+  editForm: JSX.Element
+  headerControl: JSX.Element
+  listControl?: JSX.Element
+}) {
   return (
     <>
       {headerControl}
@@ -22,9 +20,7 @@ export function DefaaultVaultLayout({
           {detailsViewControl}
           {listControl}
         </Grid>
-        <Box>
-          {editForm}
-        </Box>
+        <Box>{editForm}</Box>
       </Grid>
     </>
   )

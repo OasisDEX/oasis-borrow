@@ -40,11 +40,15 @@ export default function Vault({ id }: { id: string }) {
               defaultMode={VaultViewMode.Overview}
               overViewControl={<GeneralManageVaultView id={vaultId} />}
               historyControl={<h1>TODO History</h1>}
-              protectionControl={<DefaaultVaultLayout 
-                detailsViewControl={<ProtectionDetails id={vaultId} />} 
-                editForm={<></>} 
-                headerControl={<DefaultVaultHeader_v2 header='vault.open-vault' vaultId={vaultId} />}              
-              />}
+              protectionControl={
+                <DefaaultVaultLayout
+                  detailsViewControl={<ProtectionDetails id={vaultId} />}
+                  editForm={<></>}
+                  headerControl={
+                    <DefaultVaultHeader_v2 header="vault.open-vault" vaultId={vaultId} />
+                  }
+                />
+              }
             />
           </Box>
         ) : (

@@ -475,7 +475,7 @@ export function setupAppContext() {
     openMultiplyVault$,
     generalManageVault$,
     openGuniVault$,
-    ilkDataList$
+    ilkDataList$,
   }
 }
 
