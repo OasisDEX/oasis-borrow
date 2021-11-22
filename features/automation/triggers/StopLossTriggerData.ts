@@ -23,6 +23,7 @@ export interface StopLossTriggerData {
 export function createStopLossTriggersData(
   triggersData$: Observable<TriggersData>,
 ): Observable<StopLossTriggerData> {
+  console.log('Building Observable<StopLossTriggerData>')
   return triggersData$.pipe(
     filter((data) => {
       console.log('Processing triggersData$', data)
