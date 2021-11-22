@@ -27,10 +27,8 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
         const collateralPrice = collateralPrices.data.filter((x) => x.token === vaultData.token)[0]
         const props: ProtectionDetailsLayoutProps = {
           isStopLossEnabled: triggersData.isStopLossEnabled,
-          isToCollateral: triggersData.isToCollateral,
           slRatio: triggersData.stopLossLevel,
           vaultDebt: vaultData.debt,
-          collateralUSD: vaultData.lockedCollateralUSD,
           currentOraclePrice: collateralPrice.currentPrice,
           nextOraclePrice: collateralPrice.nextPrice,
           lockedCollateral: vaultData.lockedCollateral,

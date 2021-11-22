@@ -46,7 +46,7 @@ export default function Vault({ id }: { id: string }) {
                   editForm={<></>}
                   headerControl={
                     <DefaultVaultHeaderControl
-                      header="vault.manage-vault.title"
+                      header="vault.header"
                       vaultId={vaultId}
                     />
                   }

@@ -2,10 +2,8 @@ import BigNumber from 'bignumber.js'
 import React from 'react'
 
 export interface ProtectionDetailsLayoutProps {
-  isToCollateral: boolean
   slRatio: BigNumber
   vaultDebt: BigNumber
-  collateralUSD: BigNumber
   currentOraclePrice: BigNumber
   nextOraclePrice: BigNumber
   isStopLossEnabled: boolean
