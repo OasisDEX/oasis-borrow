@@ -1,3 +1,4 @@
+import { calculatePNL } from 'helpers/multiply/calculations'
 import React from 'react'
 
 import { DefaultVaultHeader } from '../../../../../components/vault/DefaultVaultHeader'
@@ -10,6 +11,11 @@ import { DefaultManageMultiplyVaultDetails } from './DefaultManageMultiplyVaultD
 import { DefaultManageMultiplyVaultForm } from './DefaultManageMultiplyVaultForm'
 
 export function DefaultManageMultiplyVaultContainer(props: ManageMultiplyVaultContainerProps) {
+  console.log(`
+    P&L
+    ${calculatePNL(props.vaultHistory, props.manageVault.netValueUSD)}
+  `)
+
   return (
     <ManageMultiplyVaultContainer
       {...props}

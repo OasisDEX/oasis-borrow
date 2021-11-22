@@ -5,6 +5,7 @@ interface HistoryEventBase {
   timestamp: string
   id: string
   liquidationRatio?: BigNumber
+  ethPrice: BigNumber
 }
 
 interface VaultOpenedEvent extends HistoryEventBase {
@@ -101,14 +102,16 @@ interface MoveSrcEvent extends HistoryEventBase {
   transferTo: string
   collateralAmount: BigNumber
   daiAmount: BigNumber
+  oraclePrice: BigNumber
 }
 
 interface MoveDestEvent extends HistoryEventBase {
-  kind: 'MOVE_DESC'
+  kind: 'MOVE_DEST'
   transferFrom: string
   transferTo: string
   collateralAmount: BigNumber
   daiAmount: BigNumber
+  oraclePrice: BigNumber
 }
 
 interface MigrateEvent extends HistoryEventBase {
@@ -120,6 +123,7 @@ export interface MultiplyBaseEvent {
   hash: string
   marketPrice: BigNumber
   oraclePrice: BigNumber
+  ethPrice: BigNumber
   id: string
 
   beforeDebt: BigNumber

@@ -250,10 +250,10 @@ function getCumulativeDepositUSD(total: BigNumber, event: VaultEvent) {
     case 'AUCTION_STARTED':
     case 'AUCTION_STARTED_V2':
       return zero
+    case 'MOVE_DEST':
+      return total.plus(event.daiAmount).plus(event.collateralAmount.times(event.oraclePrice))
     default:
       return total
-    // TODO: move_dest
-    //
   }
 }
 
@@ -276,9 +276,10 @@ function getCumulativeWithdrawnUSD(total: BigNumber, event: VaultEvent) {
     case 'AUCTION_STARTED':
     case 'AUCTION_STARTED_V2':
       return zero
+    case 'MOVE_SRC':
+      return total.plus(event.daiAmount).plus(event.collateralAmount.times(event.oraclePrice))
     default:
       return total
-    // TODO: move_src
   }
 }
 
@@ -289,7 +290,7 @@ export function getCumulativeFeesUSD(total: BigNumber, event: VaultEvent) {
     case 'INCREASE_MULTIPLE':
     case 'CLOSE_VAULT_TO_COLLATERAL':
     case 'CLOSE_VAULT_TO_DAI':
-      return total.plus(event.gasFee.times(event.marketPrice)) // TODO add ethPrice to all events
+      return total.plus(event.gasFee.times(event.ethPrice))
     default:
       return total
   }
@@ -299,6 +300,10 @@ export function calculatePNL(events: VaultEvent[], currentNetValueUSD: BigNumber
   const cumulativeDepositUSD = events.reduce(getCumulativeDepositUSD, zero)
   const cumulativeWithdrawnUSD = events.reduce(getCumulativeWithdrawnUSD, zero)
   const cumulativeFeesUSD = events.reduce(getCumulativeFeesUSD, zero)
+
+  if (cumulativeDepositUSD.isZero()) {
+    return zero
+  }
 
   return cumulativeWithdrawnUSD
     .plus(currentNetValueUSD)
