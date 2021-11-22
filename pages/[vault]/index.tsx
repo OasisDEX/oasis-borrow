@@ -45,7 +45,7 @@ export default function Vault({ id }: { id: string }) {
                   detailsViewControl={<ProtectionDetails id={vaultId} />}
                   editForm={<></>}
                   headerControl={
-                    <DefaultVaultHeader_v2 header="vault.open-vault" vaultId={vaultId} />
+                    <DefaultVaultHeader_v2 header="vault.manage-vault" vaultId={vaultId} />
                   }
                 />
               }
