@@ -435,7 +435,7 @@ export function setupAppContext() {
   )
 
   const stopLossTriggersData$ = memoize((vaultId: BigNumber) => {
-    console.log('Subscribing to stopLossTriggersData')
+    console.log('Subscribing to stopLossTriggersData', vaultId.toString())
     return createStopLossTriggersData(automationTriggersData$(vaultId))
   })
 
