@@ -46,7 +46,7 @@ import {
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
-import { createAutomationTriggersData } from 'features/automation/AutomationTriggersData'
+import { createAutomationTriggersData } from 'features/automation/triggers/AutomationTriggersData'
 import { createStopLossTriggersData } from 'features/automation/triggers/StopLossTriggerData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'

@@ -44,6 +44,12 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
           const XYZ = new BigNumber('1') // this value should be replaced with correct value from protection state
 
           const props: ProtectionDetailsLayoutProps = {
+            // isStopLossEnabled: triggersData.isStopLossEnabled,
+            // slRatio: triggersData.stopLossLevel,
+            // vaultDebt: vaultData.debt,
+            // currentOraclePrice: collateralPrice.currentPrice,
+            // nextOraclePrice: collateralPrice.nextPrice,
+            // lockedCollateral: vaultData.lockedCollateral,
             isStopLossEnabled: triggersData.isStopLossEnabled,
             slRatio: triggersData.stopLossLevel,
             vaultDebt: vaultData.debt,

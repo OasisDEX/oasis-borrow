@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
-export function DefaaultVaultLayout({
+export function DefaultVaultLayout({
   detailsViewControl,
   editForm,
   headerControl,
