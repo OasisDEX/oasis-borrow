@@ -5,8 +5,8 @@ import { startWithDefault } from 'helpers/operators'
 import { List } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
-const STOP_LOSS_TRIGGER_TYPE_COLL = 1
-const STOP_LOSS_TRIGGER_TYPE_DAI = 2
+
+import { TriggersTypes } from './common/TriggersTypes'
 
 export interface TriggerRecord {
   triggerId: number
@@ -57,7 +57,7 @@ function generateFromVault(id: BigNumber | undefined): List<TriggerRecord> {
       return [
         {
           triggerId: 1,
-          triggerType: STOP_LOSS_TRIGGER_TYPE_COLL,
+          triggerType: TriggersTypes.StopLossToCollateral,
           executionParams: '0x1234',
         } as TriggerRecord,
       ] as List<TriggerRecord>
@@ -65,7 +65,7 @@ function generateFromVault(id: BigNumber | undefined): List<TriggerRecord> {
       return [
         {
           triggerId: 1,
-          triggerType: STOP_LOSS_TRIGGER_TYPE_DAI,
+          triggerType: TriggersTypes.StopLossToDai,
           executionParams: '0x1234',
         } as TriggerRecord,
       ] as List<TriggerRecord>

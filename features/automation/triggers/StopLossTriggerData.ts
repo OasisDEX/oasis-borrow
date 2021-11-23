@@ -4,9 +4,7 @@ import { Observable } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
 
 import { TriggerRecord, TriggersData } from '../AutomationTriggersData'
-
-const STOP_LOSS_TRIGGER_TYPE_COLL = 1
-const STOP_LOSS_TRIGGER_TYPE_DAI = 2
+import { TriggersTypes } from '../common/TriggersTypes'
 
 function getSLLevel(rawBytes: string): BigNumber {
   /* TODO: Some event data parsing here in a future */
@@ -30,8 +28,8 @@ export function createStopLossTriggersData(
       const validElements = _.filter(
         data.triggers,
         (x) =>
-          x.triggerType === STOP_LOSS_TRIGGER_TYPE_COLL ||
-          x.triggerType === STOP_LOSS_TRIGGER_TYPE_DAI,
+          x.triggerType === TriggersTypes.StopLossToCollateral ||
+          x.triggerType === TriggersTypes.StopLossToDai,
       )
       return validElements.length > 0
     }),
@@ -46,7 +44,7 @@ export function createStopLossTriggersData(
         return {
           isStopLossEnabled: true,
           stopLossLevel: getSLLevel(slRecord.executionParams),
-          isToCollateral: slRecord.triggerType === STOP_LOSS_TRIGGER_TYPE_COLL,
+          isToCollateral: slRecord.triggerType === TriggersTypes.StopLossToCollateral,
         } as StopLossTriggerData
       } else {
         return {
