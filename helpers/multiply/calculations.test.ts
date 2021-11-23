@@ -1,13 +1,15 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
-import { VaultEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
 import { calculatePNL } from 'helpers/multiply/calculations'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
 
+import { VaultHistoryEvent } from '../../features/vaultHistory/vaultHistory'
+
 // based on https://docs.google.com/spreadsheets/d/144cmXYXe89tzjUOrgj8eK7B2pU2WSQBdZr6s1GeXnms/edit#gid=0
 const multiplyBaseEvent = {
+  token: 'ETH',
   marketPrice: zero,
   oraclePrice: zero,
 
@@ -44,7 +46,7 @@ const multiplyBaseEvent = {
   rate: one,
 }
 
-const mockedMultiplyEvents: VaultEvent[] = [
+export const mockedMultiplyEvents: VaultHistoryEvent[] = [
   {
     ...multiplyBaseEvent,
     kind: 'OPEN_MULTIPLY_VAULT',
@@ -68,6 +70,7 @@ const mockedMultiplyEvents: VaultEvent[] = [
     gasFee: new BigNumber(0.0375),
   },
   {
+    token: 'ETH',
     kind: 'DEPOSIT',
     collateralAmount: new BigNumber(5),
     oraclePrice: new BigNumber(2700),
@@ -89,6 +92,7 @@ const mockedMultiplyEvents: VaultEvent[] = [
     gasFee: new BigNumber(0.02225),
   },
   {
+    token: 'ETH',
     kind: 'WITHDRAW',
     collateralAmount: new BigNumber(-2),
     oraclePrice: new BigNumber(2705),
@@ -99,6 +103,7 @@ const mockedMultiplyEvents: VaultEvent[] = [
     id: 'string',
   },
   {
+    token: 'ETH',
     kind: 'GENERATE',
     daiAmount: new BigNumber(1000),
     oraclePrice: new BigNumber(2650),
@@ -141,6 +146,6 @@ describe('Multiply calculations', () => {
 
     const pnl = calculatePNL(mockedMultiplyEvents, state().netValueUSD)
 
-    expect(pnl).to.be.deep.equal(new BigNumber('0.26865298507462686567'))
+    expect(pnl).to.be.deep.equal(new BigNumber('0.26777014925373134328'))
   })
 })

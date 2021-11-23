@@ -7,7 +7,9 @@ import { calculatePriceImpact } from 'features/shared/priceImpact'
 import {
   calculateCloseToCollateralParams,
   calculateCloseToDaiParams,
+  calculatePNL,
   CloseToParams,
+  getCumulativeFeesUSD,
   getMultiplyParams,
   LOAN_FEE,
   OAZO_FEE,
@@ -467,6 +469,7 @@ export function applyManageVaultCalculations(
     otherAction,
     originalEditingStage,
     closeVaultTo,
+    vaultHistory,
   } = state
 
   const vaultHasZeroCollateral = lockedCollateral.eq(zero)
@@ -768,6 +771,9 @@ export function applyManageVaultCalculations(
   const afterCloseToCollateral = lockedCollateral.minus(closeToCollateralParams.fromTokenAmount)
   const afterCloseToCollateralUSD = afterCloseToCollateral.times(marketPrice)
 
+  const currentPnL = calculatePNL(vaultHistory, netValueUSD)
+  const totalGasSpentUSD = vaultHistory.reduce(getCumulativeFeesUSD, zero)
+
   return {
     ...state,
     ...maxInputAmounts,
@@ -782,6 +788,9 @@ export function applyManageVaultCalculations(
     afterMultiply,
     afterLiquidationPrice,
     exchangeAction,
+
+    currentPnL,
+    totalGasSpentUSD,
 
     afterCollateralizationRatioAtNextPrice,
     afterFreeCollateral,
