@@ -408,6 +408,7 @@ export function setupAppContext() {
         vault$,
         exchangeQuote$,
         addGasEstimation$,
+        vaultMultiplyHistory$,
         id,
       ),
     bigNumberTostring,
