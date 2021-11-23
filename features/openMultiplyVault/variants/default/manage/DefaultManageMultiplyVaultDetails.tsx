@@ -2,11 +2,7 @@ import {
   AfterPillProps,
   getAfterPillColors,
   getCollRatioColor,
-  VaultDetailsBuyingPowerModal,
   VaultDetailsCard,
-  VaultDetailsCardCurrentPrice,
-  VaultDetailsCardLiquidationPrice,
-  VaultDetailsCardNetValue,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -17,6 +13,10 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
+import { VaultDetailsBuyingPowerModal } from '../../../../../components/vault/detailsCards/VaultDetailsBuyingPower'
+import { VaultDetailsCardCurrentPrice } from '../../../../../components/vault/detailsCards/VaultDetailsCardCurrentPrice'
+import { VaultDetailsCardLiquidationPrice } from '../../../../../components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
+import { VaultDetailsCardNetValue } from '../../../../../components/vault/detailsCards/VaultDetailsCardNetValue'
 import { ManageMultiplyVaultState } from '../../../../manageMultiplyVault/manageMultiplyVault'
 
 function DefaultManageMultiplyVaultDetailsSummary({
