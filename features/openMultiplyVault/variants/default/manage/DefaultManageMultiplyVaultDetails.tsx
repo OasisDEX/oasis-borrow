@@ -118,7 +118,7 @@ export function DefaultManageMultiplyVaultDetails(props: ManageMultiplyVaultStat
           afterPillColors={afterPillColors}
         />
 
-        <VaultDetailsCardCurrentPrice {...props} />
+        <VaultDetailsCardCurrentPrice {...props.priceInfo} />
 
         <VaultDetailsCardNetValue
           {...{

@@ -3,9 +3,9 @@ import React, { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
+import { PriceInfo } from '../../../features/shared/priceInfo'
 import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
 import { ModalProps, useModal } from '../../../helpers/modalHook'
-import { CommonVaultState } from '../../../helpers/types'
 import { AppLink } from '../../Links'
 import { getPriceChangeColor, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
@@ -56,17 +56,20 @@ export function VaultDetailsCardCurrentPriceModal({
   )
 }
 
-export function VaultDetailsCardCurrentPrice(props: CommonVaultState) {
-  const {
-    priceInfo: {
-      currentCollateralPrice,
-      nextCollateralPrice,
-      isStaticCollateralPrice,
-      collateralPricePercentageChange,
-    },
-  } = props
+export function VaultDetailsCardCurrentPrice({
+  currentCollateralPrice,
+  nextCollateralPrice,
+  isStaticCollateralPrice,
+  collateralPricePercentageChange,
+}: Pick<
+  PriceInfo,
+  | 'currentCollateralPrice'
+  | 'nextCollateralPrice'
+  | 'isStaticCollateralPrice'
+  | 'collateralPricePercentageChange'
+>) {
   const openModal = useModal()
-  const priceChangeColor = getPriceChangeColor(props)
+  const priceChangeColor = getPriceChangeColor({ collateralPricePercentageChange })
 
   const currentPrice = `$${formatAmount(currentCollateralPrice, 'USD')}`
   const nextPriceWithChange = (
