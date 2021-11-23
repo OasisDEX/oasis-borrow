@@ -3,8 +3,8 @@ import _ from 'lodash'
 import { Observable } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
 
-import { TriggerRecord, TriggersData } from './AutomationTriggersData'
 import { TriggersTypes } from '../common/enums/TriggersTypes'
+import { TriggerRecord, TriggersData } from './AutomationTriggersData'
 
 function getSLLevel(rawBytes: string): BigNumber {
   /* TODO: Some event data parsing here in a future */

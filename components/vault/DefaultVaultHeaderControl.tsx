@@ -21,7 +21,7 @@ export function DefaultVaultHeaderControl(props: DefaultVaultHeaderControlProps)
   const ilksDataWithError = useObservableWithError(ilkDataList$)
   return (
     <WithLoadingIndicator
-      variant='DefaultVaultHeaderControl'
+      variant="DefaultVaultHeaderControl"
       value={[vaultDataWithError.value, ilksDataWithError.value]}
       customLoader={<VaultContainerSpinner />}
     >

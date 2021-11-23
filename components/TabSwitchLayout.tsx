@@ -24,7 +24,7 @@ export function TabSwitchLayout({
   function getVariant(currentMode: VaultViewMode, activeMode: VaultViewMode) {
     return currentMode === activeMode ? 'primary' : 'secondary'
   }
-  
+
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
       <Grid

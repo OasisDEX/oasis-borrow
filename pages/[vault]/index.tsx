@@ -44,7 +44,7 @@ export default function Vault({ id }: { id: string }) {
               protectionControl={
                 <DefaultVaultLayout
                   detailsViewControl={<ProtectionDetailsControl id={vaultId} />}
-                  editForm={<AdjustSlForm  id={vaultId} />}
+                  editForm={<AdjustSlForm id={vaultId} />}
                   headerControl={
                     <DefaultVaultHeaderControl header="vault.header" vaultId={vaultId} />
                   }
