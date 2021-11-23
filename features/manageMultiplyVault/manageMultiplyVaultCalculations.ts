@@ -160,6 +160,7 @@ export const defaultManageMultiplyVaultCalculations: ManageVaultCalculations = {
     minToTokenAmount: zero,
     oazoFee: zero,
     loanFee: zero,
+    skipFL: false,
   },
 
   closeToCollateralParams: {
@@ -168,6 +169,7 @@ export const defaultManageMultiplyVaultCalculations: ManageVaultCalculations = {
     minToTokenAmount: zero,
     oazoFee: zero,
     loanFee: zero,
+    skipFL: false,
   },
 
   afterCloseToDai: zero,
@@ -584,37 +586,22 @@ export function applyManageVaultCalculations(
     : collateralDeltaNonClose.times(-1)
 
   const closeToDaiParams = getCloseToDaiParams(
-    // market params
-    {
-      oraclePrice: zero, // is ignored
-      marketPrice,
-      OF: OAZO_FEE,
-      FF: LOAN_FEE,
-      slippage,
-    },
-    // vault info
-    {
-      currentDebt: debt.plus(debtOffset),
-      currentCollateral: lockedCollateral,
-      minCollRatio: requiredCollRatio || zero, // todo: make minCollRatio optional in library
-    },
+    marketPrice,
+    OAZO_FEE,
+    LOAN_FEE,
+    lockedCollateral,
+    slippage,
+    debt.plus(debtOffset)
   )
 
   const closeToCollateralParams = getCloseToCollateralParams(
-    // market params
-    {
-      oraclePrice: zero, // is ignored
-      marketPrice,
-      OF: OAZO_FEE,
-      FF: LOAN_FEE,
-      slippage,
-    },
-    // vault info
-    {
-      currentDebt: debt.plus(debtOffset),
-      currentCollateral: lockedCollateral,
-      minCollRatio: requiredCollRatio || zero,
-    },
+    marketPrice,
+    OAZO_FEE,
+    LOAN_FEE,
+    debt.plus(debtOffset),
+    slippage,
+    lockedCollateral,
+    one // todo: put actual min collateralization ratio
   )
 
   const collateralDelta = isCloseAction
