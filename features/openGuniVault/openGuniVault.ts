@@ -196,6 +196,8 @@ export type OpenGuniVaultState = OverrideHelper &
     netValueUSD: BigNumber
     minToTokenAmount: BigNumber
     requiredDebt?: BigNumber
+    currentPnL: BigNumber
+    totalGasSpentUSD: BigNumber
   } & HasGasEstimation
 
 interface GuniCalculations {
@@ -358,6 +360,8 @@ export function createOpenGuniVault$(
                       currentStep: 1,
                       minToTokenAmount: zero,
                       maxMultiple: one.div(ilkData.liquidationRatio.minus(one)),
+                      currentPnL: zero,
+                      totalGasSpentUSD: zero,
                       injectStateOverride,
                     }
 
