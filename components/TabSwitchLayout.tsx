@@ -24,10 +24,7 @@ export function TabSwitchLayout({
   function getVariant(currentMode: VaultViewMode, activeMode: VaultViewMode) {
     return currentMode === activeMode ? 'primary' : 'secondary'
   }
-
-  function handleToggle(newMode: VaultViewMode) {
-    setMode(newMode)
-  }
+  
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
       <Grid
@@ -37,21 +34,21 @@ export function TabSwitchLayout({
       >
         <Button
           sx={{ ...padding }}
-          onClick={() => handleToggle(VaultViewMode.Overview)}
+          onClick={() => setMode(VaultViewMode.Overview)}
           variant={getVariant(mode, VaultViewMode.Overview)}
         >
           Overview
         </Button>
         <Button
           sx={{ ...padding }}
-          onClick={() => handleToggle(VaultViewMode.Protection)}
+          onClick={() => setMode(VaultViewMode.Protection)}
           variant={getVariant(mode, VaultViewMode.Protection)}
         >
           Protection
         </Button>
         <Button
           sx={{ ...padding }}
-          onClick={() => handleToggle(VaultViewMode.History)}
+          onClick={() => setMode(VaultViewMode.History)}
           variant={getVariant(mode, VaultViewMode.History)}
         >
           History

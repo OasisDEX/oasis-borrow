@@ -2,8 +2,9 @@ import BigNumber from 'bignumber.js'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { TabSwitchLayout, VaultViewMode } from 'components/TabSwitchLayout'
-import { DefaaultVaultLayout } from 'components/vault/DefaaultVaultLayout'
+import { DefaultVaultLayout } from 'components/vault/DefaaultVaultLayout'
 import { DefaultVaultHeaderControl } from 'components/vault/DefaultVaultHeaderControl'
+import { AdjustSlForm } from 'features/automation/controls/AdjustSlForm'
 import { ProtectionDetailsControl } from 'features/automation/controls/ProtectionDetailsControl'
 import { VaultBannersView } from 'features/banners/VaultsBannersView'
 import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
@@ -41,9 +42,9 @@ export default function Vault({ id }: { id: string }) {
               overViewControl={<GeneralManageVaultView id={vaultId} />}
               historyControl={<h1>TODO History</h1>}
               protectionControl={
-                <DefaaultVaultLayout
+                <DefaultVaultLayout
                   detailsViewControl={<ProtectionDetailsControl id={vaultId} />}
-                  editForm={<></>}
+                  editForm={<AdjustSlForm  id={vaultId} />}
                   headerControl={
                     <DefaultVaultHeaderControl header="vault.header" vaultId={vaultId} />
                   }

@@ -14,12 +14,14 @@ export interface DefaultVaultHeaderControlProps {
 
 export function DefaultVaultHeaderControl(props: DefaultVaultHeaderControlProps) {
   const { header, vaultId } = props
+  console.log('Rendering DefaultVaultHeaderControl', vaultId.toString())
   const { t } = useTranslation()
   const { vault$, ilkDataList$ } = useAppContext()
   const vaultDataWithError = useObservableWithError(vault$(vaultId))
   const ilksDataWithError = useObservableWithError(ilkDataList$)
   return (
     <WithLoadingIndicator
+      variant='DefaultVaultHeaderControl'
       value={[vaultDataWithError.value, ilksDataWithError.value]}
       customLoader={<VaultContainerSpinner />}
     >

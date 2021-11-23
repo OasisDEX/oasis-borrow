@@ -16,6 +16,7 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
 
   return (
     <WithLoadingIndicator
+      variant='ProtectionDetailsControl'
       value={[
         slTriggerDataWithError.value,
         vaultDataWithError.value,

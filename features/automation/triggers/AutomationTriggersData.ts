@@ -6,7 +6,7 @@ import { List } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
-import { TriggersTypes } from './common/TriggersTypes'
+import { TriggersTypes } from '../common/enums/TriggersTypes'
 
 export interface TriggerRecord {
   triggerId: number

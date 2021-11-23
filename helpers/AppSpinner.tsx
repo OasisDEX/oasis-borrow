@@ -88,13 +88,16 @@ interface WithLoadingIndicatorProps<T> {
 export function WithLoadingIndicator<T extends readonly [any, ...any[]] | object>(
   props: WithLoadingIndicatorProps<T>,
 ) {
+  console.log(`Rendering WithLoadingIndicator variant=${props.variant}`);
   const { value, children, customLoader } = props
 
   if (Array.isArray(value) ? value.some((el) => el === undefined) : value === undefined) {
+    console.log(`Rendering WithLoadingIndicator variant=${props.variant}, branch: loader`);
     return customLoader || <AppSpinnerWholePage />
   }
 
   if (Array.isArray(children)) {
+    console.log(`Rendering WithLoadingIndicator variant=${props.variant}, branch: control`);
     return children[0](value)
   }
 
