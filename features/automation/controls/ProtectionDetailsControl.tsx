@@ -1,8 +1,10 @@
 import BigNumber from 'bignumber.js'
+import { calculatePricePercentageChange } from 'blockchain/prices'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
+import { zero } from 'helpers/zero'
 import React from 'react'
 
 import { ProtectionDetailsLayout, ProtectionDetailsLayoutProps } from './ProtectionDetailsLayout'
@@ -10,8 +12,6 @@ import { ProtectionDetailsLayout, ProtectionDetailsLayoutProps } from './Protect
 export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
   console.log('Rendering ProtectionDetails', id.toString())
   const { stopLossTriggersData$, vault$, collateralPrices$, ilkDataList$ } = useAppContext()
-  // these observables could be wrapped into single one which will contain protection state as well
-  // like it was for opening / managing flows
   const slTriggerData$ = stopLossTriggersData$(id)
   const slTriggerDataWithError = useObservableWithError(slTriggerData$)
   const vaultDataWithError = useObservableWithError(vault$(id))
@@ -42,26 +42,34 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
             (x) => x.token === vaultData.token,
           )[0]
           const XYZ = new BigNumber('1') // this value should be replaced with correct value from protection state
+          const percentageChange = calculatePricePercentageChange(
+            collateralPrice.currentPrice,
+            collateralPrice.nextPrice,
+          )
+          const collateralizationRatio = vaultData.debt.isZero()
+            ? zero
+            : vaultData.lockedCollateral.times(collateralPrice.currentPrice).div(vaultData.debt)
+
+          const liquidationPrice = vaultData.lockedCollateral.eq(zero)
+            ? zero
+            : vaultData.debt.times(ilk.liquidationRatio).div(vaultData.lockedCollateral)
 
           const props: ProtectionDetailsLayoutProps = {
-            // isStopLossEnabled: triggersData.isStopLossEnabled,
-            // slRatio: triggersData.stopLossLevel,
-            // vaultDebt: vaultData.debt,
-            // currentOraclePrice: collateralPrice.currentPrice,
-            // nextOraclePrice: collateralPrice.nextPrice,
-            // lockedCollateral: vaultData.lockedCollateral,
             isStopLossEnabled: triggersData.isStopLossEnabled,
             slRatio: triggersData.stopLossLevel,
             vaultDebt: vaultData.debt,
-            collateralizationRatio: vaultData.collateralizationRatio,
-            liquidationPrice: vaultData.liquidationPrice,
-            liquidationRatio: ilk.liquidationRatio,
             currentOraclePrice: collateralPrice.currentPrice,
             nextOraclePrice: collateralPrice.nextPrice,
-            percentageChange: collateralPrice.percentageChange,
-            isStaticPrice: collateralPrice.isStaticPrice,
             lockedCollateral: vaultData.lockedCollateral,
+
+            collateralizationRatio,
+            percentageChange,
+            liquidationPrice,
+            liquidationRatio: ilk.liquidationRatio,
+            isStaticPrice: collateralPrice.isStaticPrice,
             token: vaultData.token,
+
+            // protectionState mocked for now
             protectionState: {
               ilkData: ilk,
               inputAmountsEmpty: false,
