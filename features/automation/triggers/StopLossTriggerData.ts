@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import _ from 'lodash'
 import { Observable } from 'rxjs'
-import { filter, map } from 'rxjs/operators'
+import { map } from 'rxjs/operators'
 
 import { TriggersTypes } from '../common/enums/TriggersTypes'
 import { TriggerRecord, TriggersData } from './AutomationTriggersData'
@@ -23,16 +23,6 @@ export function createStopLossTriggersData(
 ): Observable<StopLossTriggerData> {
   console.log('Building Observable<StopLossTriggerData>')
   return triggersData$.pipe(
-    filter((data) => {
-      console.log('Processing triggersData$', data)
-      const validElements = _.filter(
-        data.triggers,
-        (x) =>
-          x.triggerType === TriggersTypes.StopLossToCollateral ||
-          x.triggerType === TriggersTypes.StopLossToDai,
-      )
-      return validElements.length > 0
-    }),
     map((data) => {
       const doesStopLossExist = data.triggers ? data.triggers.length > 0 : false
       if (doesStopLossExist) {
