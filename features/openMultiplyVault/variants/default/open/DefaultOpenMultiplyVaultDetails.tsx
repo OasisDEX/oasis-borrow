@@ -118,7 +118,7 @@ export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
           afterPillColors={afterPillColors}
         />
 
-        <VaultDetailsCardCurrentPrice {...props} />
+        <VaultDetailsCardCurrentPrice {...props.priceInfo} />
 
         <VaultDetailsCardNetValue
           {...{

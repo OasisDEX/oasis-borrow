@@ -42,36 +42,48 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
   isProtected: boolean
   debt: BigNumber
   collateralAmountLocked: BigNumber
-  afterLockedCollateral: BigNumber
-  afterDebt: BigNumber
   liquidationRatio: BigNumber
-  afterLiquidationPrice: BigNumber
   token: string
+  afterLockedCollateral?: BigNumber
+  afterDebt?: BigNumber
+  afterLiquidationPrice?: BigNumber
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
+  console.log(slRatio.toNumber())
+  const ethDuringLiquidation = !liquidationPrice.isZero()
+    ? debt.times(liquidationRatio).div(liquidationPrice)
+    : zero
 
-  const ethDuringLiquidation = debt.times(liquidationRatio).div(liquidationPrice)
+  const dynamicStopPrice = !liquidationPrice.isZero()
+    ? liquidationPrice.div(liquidationRatio).times(slRatio)
+    : zero
 
-  const dynamicStopPrice = liquidationPrice.div(liquidationRatio).times(slRatio)
   const afterDynamicStopPrice = afterLiquidationPrice
-    .div(liquidationRatio)
-    .times(afterSlRatio || zero)
+    ? afterLiquidationPrice.div(liquidationRatio).times(afterSlRatio || zero)
+    : zero
 
-  const maxEth = collateralAmountLocked.times(dynamicStopPrice).minus(debt).div(dynamicStopPrice)
-  const afterMaxEth = afterLockedCollateral
-    .times(afterDynamicStopPrice)
-    .minus(afterDebt)
-    .div(afterDynamicStopPrice)
+  const maxEth =
+    !collateralAmountLocked.isZero() && !dynamicStopPrice.isZero()
+      ? collateralAmountLocked.times(dynamicStopPrice).minus(debt).div(dynamicStopPrice)
+      : zero
+
+  const afterMaxEth =
+    afterLockedCollateral && afterDebt
+      ? afterLockedCollateral
+          .times(afterDynamicStopPrice)
+          .minus(afterDebt)
+          .div(afterDynamicStopPrice)
+      : zero
 
   return (
     <VaultDetailsCard
       title={t('manage-multiply-vault.card.max-token-on-stop-loss-trigger', { token })}
-      value={isProtected ? `${formatAmount(maxEth, token)} ${token}` : '-'}
+      value={isProtected && !maxEth.isZero() ? `${formatAmount(maxEth, token)} ${token}` : '-'}
       valueBottom={
-        showAfterPill ? (
+        !slRatio.isZero() && !collateralAmountLocked.isZero() ? (
           <>
-            ${formatAmount(maxEth.minus(ethDuringLiquidation), token)} {token}{' '}
+            ${formatAmount(ethDuringLiquidation.minus(maxEth), token)} {token}{' '}
             <Text as="span" sx={{ color: 'text.subtitle' }}>
               {t('manage-multiply-vault.card.saving-comp-to-liquidation')}
             </Text>

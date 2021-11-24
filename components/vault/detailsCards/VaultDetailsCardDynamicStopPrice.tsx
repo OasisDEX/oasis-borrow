@@ -32,11 +32,11 @@ export function VaultDetailsCardDynamicStopPrice({
   isProtected,
 }: {
   slRatio: BigNumber
-  afterSlRatio?: BigNumber
   liquidationPrice: BigNumber
-  afterLiquidationPrice?: BigNumber
   liquidationRatio: BigNumber
   isProtected: boolean
+  afterSlRatio?: BigNumber
+  afterLiquidationPrice?: BigNumber
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
@@ -50,9 +50,13 @@ export function VaultDetailsCardDynamicStopPrice({
   return (
     <VaultDetailsCard
       title={t('manage-multiply-vault.card.dynamic-stop-price')}
-      value={isProtected ? `$${formatAmount(dynamicStopPrice, 'USD')}` : '-'}
+      value={
+        isProtected && !dynamicStopPrice.isZero()
+          ? `$${formatAmount(dynamicStopPrice, 'USD')}`
+          : '-'
+      }
       valueBottom={
-        isProtected ? (
+        isProtected && !dynamicStopPrice.isZero() ? (
           <>
             ${formatAmount(dynamicStopPrice.minus(liquidationPrice), 'USD')}{' '}
             <Text as="span" sx={{ color: 'text.subtitle' }}>
