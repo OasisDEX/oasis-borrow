@@ -63,9 +63,10 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
     ? afterLiquidationPrice.div(liquidationRatio).times(afterSlRatio || zero)
     : zero
 
-  const maxEth = !collateralAmountLocked.isZero() && !dynamicStopPrice.isZero()
-    ? collateralAmountLocked.times(dynamicStopPrice).minus(debt).div(dynamicStopPrice)
-    : zero
+  const maxEth =
+    !collateralAmountLocked.isZero() && !dynamicStopPrice.isZero()
+      ? collateralAmountLocked.times(dynamicStopPrice).minus(debt).div(dynamicStopPrice)
+      : zero
 
   const afterMaxEth =
     afterLockedCollateral && afterDebt
