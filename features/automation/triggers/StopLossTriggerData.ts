@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import _ from 'lodash'
+import { last } from 'lodash'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
@@ -26,9 +26,7 @@ export function createStopLossTriggersData(
     map((data) => {
       const doesStopLossExist = data.triggers ? data.triggers.length > 0 : false
       if (doesStopLossExist) {
-        const slRecord: TriggerRecord | undefined = data.triggers
-          ? _.last(data.triggers)
-          : undefined
+        const slRecord: TriggerRecord | undefined = data.triggers ? last(data.triggers) : undefined
         if (!slRecord)
           throw data /* TODO: This is logically unreachable, revrite so typecheck works */
         return {

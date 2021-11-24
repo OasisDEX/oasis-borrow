@@ -2,9 +2,9 @@ import { Box, Button, Grid } from '@theme-ui/components'
 import React, { useState } from 'react'
 
 enum VaultViewMode {
-  History = 1,
-  Protection = 2,
-  Overview = 3,
+  History,
+  Protection,
+  Overview,
 }
 
 export function TabSwitchLayout({

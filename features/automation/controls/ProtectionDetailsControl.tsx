@@ -42,17 +42,6 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
             (x) => x.token === vaultData.token,
           )[0]
           const XYZ = new BigNumber('1') // this value should be replaced with correct value from protection state
-          const percentageChange = calculatePricePercentageChange(
-            collateralPrice.currentPrice,
-            collateralPrice.nextPrice,
-          )
-          const collateralizationRatio = vaultData.debt.isZero()
-            ? zero
-            : vaultData.lockedCollateral.times(collateralPrice.currentPrice).div(vaultData.debt)
-
-          const liquidationPrice = vaultData.lockedCollateral.eq(zero)
-            ? zero
-            : vaultData.debt.times(ilk.liquidationRatio).div(vaultData.lockedCollateral)
 
           const props: ProtectionDetailsLayoutProps = {
             isStopLossEnabled: triggersData.isStopLossEnabled,
@@ -62,19 +51,14 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
             nextOraclePrice: collateralPrice.nextPrice,
             lockedCollateral: vaultData.lockedCollateral,
 
-            collateralizationRatio,
-            percentageChange,
-            liquidationPrice,
             liquidationRatio: ilk.liquidationRatio,
             isStaticPrice: collateralPrice.isStaticPrice,
             token: vaultData.token,
 
             // protectionState mocked for now
             protectionState: {
-              ilkData: ilk,
-              inputAmountsEmpty: false,
+              inputAmountsEmpty: true,
               stage: 'editing',
-              afterCollateralizationRatio: XYZ,
               afterSlRatio: XYZ,
               afterDebt: XYZ,
               afterLiquidationPrice: XYZ,

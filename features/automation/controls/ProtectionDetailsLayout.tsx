@@ -6,18 +6,17 @@ import { VaultDetailsCardStopLossCollRatio } from 'components/vault/detailsCards
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
-import { IlkData } from '../../../blockchain/ilks'
-import { getAfterPillColors, getCollRatioColor } from '../../../components/vault/VaultDetails'
+import { calculatePricePercentageChange } from '../../../blockchain/prices'
+import { getAfterPillColors } from '../../../components/vault/VaultDetails'
+import { zero } from '../../../helpers/zero'
 
 export interface ProtectionState {
-  ilkData: IlkData
   inputAmountsEmpty: boolean
   stage: string // prepare protection stages
-  afterCollateralizationRatio: BigNumber
-  afterSlRatio: BigNumber
-  afterDebt: BigNumber
-  afterLiquidationPrice: BigNumber
-  afterLockedCollateral: BigNumber
+  afterSlRatio?: BigNumber
+  afterDebt?: BigNumber
+  afterLiquidationPrice?: BigNumber
+  afterLockedCollateral?: BigNumber
 }
 
 export interface ProtectionDetailsLayoutProps {
@@ -26,13 +25,10 @@ export interface ProtectionDetailsLayoutProps {
   vaultDebt: BigNumber
   currentOraclePrice: BigNumber
   nextOraclePrice: BigNumber
-  percentageChange: BigNumber
   isStaticPrice: boolean
   isStopLossEnabled: boolean
   lockedCollateral: BigNumber
   token: string
-  collateralizationRatio: BigNumber
-  liquidationPrice: BigNumber
   liquidationRatio: BigNumber
 
   // protection state
@@ -45,21 +41,16 @@ export function ProtectionDetailsLayout({
   vaultDebt,
   currentOraclePrice,
   nextOraclePrice,
-  percentageChange,
   isStaticPrice,
   isStopLossEnabled,
   lockedCollateral,
   token,
-  collateralizationRatio,
-  liquidationPrice,
   liquidationRatio,
 
   // protection state
   protectionState: {
-    ilkData,
     stage,
     inputAmountsEmpty,
-    afterCollateralizationRatio,
     afterSlRatio,
     afterDebt,
     afterLiquidationPrice,
@@ -68,11 +59,17 @@ export function ProtectionDetailsLayout({
 }: ProtectionDetailsLayoutProps) {
   const showAfterPill = !inputAmountsEmpty && stage !== 'protectionSuccess'
 
-  const afterCollRatioColor = getCollRatioColor(
-    { ilkData, inputAmountsEmpty },
-    afterCollateralizationRatio,
-  )
-  const afterPillColors = getAfterPillColors(afterCollRatioColor)
+  const afterPillColors = getAfterPillColors('onSuccess')
+
+  const percentageChange = calculatePricePercentageChange(currentOraclePrice, nextOraclePrice)
+  const collateralizationRatio = vaultDebt.isZero()
+    ? zero
+    : lockedCollateral.times(currentOraclePrice).div(vaultDebt)
+
+  const liquidationPrice = lockedCollateral.isZero()
+    ? zero
+    : vaultDebt.times(liquidationRatio).div(lockedCollateral)
+
   return (
     <Box>
       <Grid variant="vaultDetailsCardsContainer">
