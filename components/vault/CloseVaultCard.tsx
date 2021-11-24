@@ -12,7 +12,7 @@ export function CloseVaultCard({
   text: string
   icon: string
   optionName: string
-  onClick: (optionName:string) => void
+  onClick: (optionName: string) => void
   isActive: boolean
 }) {
   return (
@@ -31,7 +31,7 @@ export function CloseVaultCard({
             }
           : {}),
       }}
-      onClick={()=>onClick(optionName)}
+      onClick={() => onClick(optionName)}
     >
       <Flex sx={{ alignItems: 'center', px: 2, lineHeight: 2, justifyContent: 'center' }}>
         <Icon name={icon} size="auto" width="26px" height="26px" sx={{ mr: 2 }} />

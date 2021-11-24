@@ -1,10 +1,8 @@
 import BigNumber from 'bignumber.js'
-import { calculatePricePercentageChange } from 'blockchain/prices'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
-import { zero } from 'helpers/zero'
 import React from 'react'
 
 import { ProtectionDetailsLayout, ProtectionDetailsLayoutProps } from './ProtectionDetailsLayout'

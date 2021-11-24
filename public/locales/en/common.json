@@ -451,6 +451,24 @@
   "setup-proxy": "Setup Proxy",
   "setup-wallet": "Setup your wallet",
   "show-more": "Show more",
+  "slider":{
+    "adjust-multiply":{
+      "introduction-header":"Adjust your multiply",
+      "introduction-content":"",
+      "left-label":"Liquidation Price",
+      "right-label":"Collateral Ratio",
+      "left-footer":"Decrease risk",
+      "right-footer":"Increase risk"
+    },
+    "set-stoploss":{
+      "introduction-header":"Set downside protection",
+      "introduction-content":"Some intro text. Some more text, even more, even more, even more, even more, even more, even more, even more {{ link }}",
+      "left-label":"Stop loss coll.ratio",
+      "right-label":"Dynamic stop price",
+      "left-footer":"",
+      "right-footer":""
+    }
+  },
   "spots-remaining": "{{ spots }} spots remaining",
   "start-saving": "Start Saving",
   "system": {
