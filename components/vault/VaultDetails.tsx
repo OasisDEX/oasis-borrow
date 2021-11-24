@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { Modal, ModalCloseIcon } from 'components/Modal'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { CommonVaultState, WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import React, { ReactNode } from 'react'
@@ -14,7 +15,7 @@ export type AfterPillProps = {
 }
 
 export function getCollRatioColor(
-  { inputAmountsEmpty, ilkData }: CommonVaultState,
+  { inputAmountsEmpty, ilkData }: Pick<CommonVaultState, 'inputAmountsEmpty' | 'ilkData'>,
   collateralizationRatio: BigNumber,
 ): CollRatioColor {
   const vaultWillBeAtRiskLevelDanger =
@@ -42,8 +43,8 @@ export function getCollRatioColor(
 }
 
 export function getPriceChangeColor({
-  priceInfo: { collateralPricePercentageChange },
-}: CommonVaultState) {
+  collateralPricePercentageChange,
+}: Pick<PriceInfo, 'collateralPricePercentageChange'>) {
   return collateralPricePercentageChange.isZero()
     ? 'text.muted'
     : collateralPricePercentageChange.gt(zero)

@@ -93,13 +93,10 @@ export const CurrentPrice = ({ hasBottom }: CardsControl) => {
   return (
     <MaxWidthWrapper>
       <VaultDetailsCardCurrentPrice
-        // @ts-ignore // TODO this type should be given explicitly instead CommonVaultState
-        priceInfo={{
-          currentCollateralPrice: new BigNumber(4000),
-          nextCollateralPrice: new BigNumber(4100),
-          collateralPricePercentageChange: new BigNumber('0.01'),
-          isStaticCollateralPrice: !hasBottom,
-        }}
+        currentCollateralPrice={new BigNumber(4000)}
+        nextCollateralPrice={new BigNumber(4100)}
+        collateralPricePercentageChange={new BigNumber('0.01')}
+        isStaticCollateralPrice={!hasBottom}
       />
     </MaxWidthWrapper>
   )

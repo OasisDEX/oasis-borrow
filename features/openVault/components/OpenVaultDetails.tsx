@@ -149,7 +149,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
           afterPillColors={afterPillColors}
         />
 
-        <VaultDetailsCardCurrentPrice {...props} />
+        <VaultDetailsCardCurrentPrice {...props.priceInfo} />
         <VaultDetailsCardCollateralLocked
           {...{
             depositAmount,
