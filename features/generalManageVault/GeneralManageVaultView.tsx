@@ -16,11 +16,17 @@ import { GuniManageMultiplyVaultCointainer } from '../openMultiplyVault/variants
 import { VaultType } from './generalManageVault'
 
 export function GeneralManageVaultView({ id }: { id: BigNumber }) {
-  const { generalManageVault$, vaultHistory$, vaultMultiplyHistory$ } = useAppContext()
+  const {
+    generalManageVault$,
+    vaultHistory$,
+    vaultMultiplyHistory$,
+    manageGuniVault$,
+  } = useAppContext()
   const manageVaultWithId$ = generalManageVault$(id)
   const manageVaultWithError = useObservableWithError(manageVaultWithId$)
   const vaultHistoryWithError = useObservableWithError(vaultHistory$(id))
   const vaultMultiplyHistoryWithError = useObservableWithError(vaultMultiplyHistory$(id))
+  const manageGuniVaultWithError = useObservableWithError(manageGuniVault$(id))
 
   function prepareMultiplyHistory(vaultHistory: any[], vaultMultiplyHistory: any[]) {
     let outstandingDebt = new BigNumber(0)
@@ -161,6 +167,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
         manageVaultWithError.error,
         vaultHistoryWithError.error,
         vaultMultiplyHistoryWithError.error,
+        manageGuniVaultWithError.error
       ]}
     >
       <WithLoadingIndicator
@@ -168,10 +175,11 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
           manageVaultWithError.value,
           vaultHistoryWithError.value,
           vaultMultiplyHistoryWithError.value,
+          manageGuniVaultWithError.value
         ]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([generalManageVault, vaultHistory, vaultMultiplyHistory]) => {
+        {([generalManageVault, vaultHistory, vaultMultiplyHistory, manageGuniVault]) => {
           switch (generalManageVault.type) {
             case VaultType.Borrow:
               return (
@@ -192,7 +200,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                 'GUNIV3DAIUSDC1-A': (
                   <GuniManageMultiplyVaultCointainer
                     vaultHistory={multiplyHistory}
-                    manageVault={generalManageVault.state}
+                    manageVault={manageGuniVault}
                   />
                 ),
               }

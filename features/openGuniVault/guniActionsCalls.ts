@@ -65,6 +65,32 @@ export const getGuniMintAmount: CallDef<
   },
 }
 
+export const getUnderlyingBalances: CallDef<
+  { token: string },
+  { amount0: BigNumber; amount1: BigNumber }
+> = {
+  call: ({ token }, { contract, tokens }) => {
+    const guniToken = tokens[token]
+    return contract<GuniToken>(guniToken).methods.getUnderlyingBalances
+  },
+  prepareArgs: () => [],
+  postprocess: ([amount0, amount1]: any) => {
+    return {
+      amount0: new BigNumber(amount0).div(new BigNumber(10).pow(18)),
+      amount1: new BigNumber(amount1).div(new BigNumber(10).pow(6)),
+    }
+  },
+}
+
+export const getTotalSupply: CallDef<{ token: string }, BigNumber> = {
+  call: ({ token }, { contract, tokens }) => {
+    const guniToken = tokens[token]
+    return contract<GuniToken>(guniToken).methods.totalSupply
+  },
+  prepareArgs: () => [],
+  postprocess: (total: any) => new BigNumber(total),
+}
+
 export interface TxStateDependencies {
   depositAmount?: BigNumber
   proxyAddress?: string

@@ -97,7 +97,13 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
-import { getGuniMintAmount, getToken1Balance } from '../features/openGuniVault/guniActionsCalls'
+import { createManageGuniVault$ } from '../features/manageGuniVault/manageGuniVault'
+import {
+  getGuniMintAmount,
+  getToken1Balance,
+  getTotalSupply,
+  getUnderlyingBalances,
+} from '../features/openGuniVault/guniActionsCalls'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
@@ -403,6 +409,40 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  const getTokensAmount$ = observe(onEveryBlock$, context$, getUnderlyingBalances)
+
+  const getTotalSupply$ = observe(onEveryBlock$, context$, getTotalSupply)
+
+  function getProportions$(gUniBalance: BigNumber, token: string) {
+    return combineLatest(getTokensAmount$({ token }), getTotalSupply$({ token })).pipe(
+      map(([{ amount0, amount1 }, totalSupply]) => {
+        return {
+          shareAmount0: amount0.times(gUniBalance).div(totalSupply),
+          shareAmount1: amount1.times(gUniBalance).div(totalSupply),
+        }
+      }),
+    )
+  }
+
+  const manageGuniVault$ = memoize(
+    (id: BigNumber) =>
+      createManageGuniVault$(
+        context$,
+        txHelpers$,
+        proxyAddress$,
+        allowance$,
+        priceInfo$,
+        balanceInfo$,
+        ilkData$,
+        vault$,
+        exchangeQuote$,
+        addGasEstimation$,
+        getProportions$,
+        id,
+      ),
+    bigNumberTostring,
+  )
+
   const checkVault$ = memoize((id: BigNumber) => curry(checkVaultTypeUsingApi$)(context$, id))
   const generalManageVault$ = memoize(
     curry(createGeneralManageVault$)(manageMultiplyVault$, manageVault$, checkVault$),
@@ -454,6 +494,7 @@ export function setupAppContext() {
     openVault$,
     manageVault$,
     manageMultiplyVault$,
+    manageGuniVault$,
     vaultsOverview$,
     vaultBanners$,
     redirectState$,
