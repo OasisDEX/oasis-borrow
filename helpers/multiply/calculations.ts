@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { amountFromWei } from 'blockchain/utils'
 import { MAX_COLL_RATIO } from 'features/openMultiplyVault/openMultiplyVaultCalculations'
 import { VaultEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import { one, zero } from 'helpers/zero'
@@ -251,7 +252,7 @@ function getCumulativeDepositUSD(total: BigNumber, event: VaultEvent) {
     case 'AUCTION_STARTED_V2':
       return zero
     case 'MOVE_DEST':
-      return total.plus(event.daiAmount).plus(event.collateralAmount.times(event.oraclePrice))
+      return total.plus(event.collateralAmount.times(event.oraclePrice))
     default:
       return total
   }
@@ -275,9 +276,10 @@ function getCumulativeWithdrawnUSD(total: BigNumber, event: VaultEvent) {
       return total.plus(event.exitDai)
     case 'AUCTION_STARTED':
     case 'AUCTION_STARTED_V2':
-      return zero
     case 'MOVE_SRC':
-      return total.plus(event.daiAmount).plus(event.collateralAmount.times(event.oraclePrice))
+      return zero
+    case 'MOVE_DEST':
+      return total.plus(event.daiAmount.abs())
     default:
       return total
   }
@@ -290,7 +292,11 @@ export function getCumulativeFeesUSD(total: BigNumber, event: VaultEvent) {
     case 'INCREASE_MULTIPLE':
     case 'CLOSE_VAULT_TO_COLLATERAL':
     case 'CLOSE_VAULT_TO_DAI':
-      return total.plus(event.gasFee.times(event.ethPrice))
+      return total.plus(amountFromWei(event.gasFee, 'ETH').times(event.ethPrice))
+    case 'AUCTION_STARTED':
+    case 'AUCTION_STARTED_V2':
+    case 'MOVE_SRC':
+      return zero
     default:
       return total
   }
