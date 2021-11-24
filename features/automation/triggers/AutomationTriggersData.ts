@@ -34,11 +34,11 @@ export function createAutomationTriggersData(
       ).pipe(
         map(([blockNumber, vault]) => {
           console.log('reading triggersData from blockchain MOCK', blockNumber)
-          const x = {
+          const trigerData: TriggersData = {
             isAutomationEnabled: true,
             triggers: generateFromVault(vault?.id),
-          } as TriggersData
-          return x
+          }
+          return trigerData
         }),
         distinctUntilChanged((s1, s2) => {
           console.log('distinctUntilChanged', JSON.stringify(s1), JSON.stringify(s2))

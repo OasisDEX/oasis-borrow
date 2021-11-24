@@ -36,8 +36,7 @@ export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData
     ]
   },
   prepareArgs: (data, context) => {
-    const { guniProxyActions } = context
-    console.log({ guniProxyActions })
-    return [guniProxyActions.address, getAddAutomationTriggerCallData(data, context).encodeABI()]
+    const { automationBot } = context
+    return [automationBot.address, getAddAutomationTriggerCallData(data, context).encodeABI()]
   },
 }
