@@ -17,6 +17,7 @@ import { GuniToken } from 'types/ethers-contracts/GuniToken'
 import { VaultType } from '../generalManageVault/generalManageVault'
 import { saveVaultUsingApi$ } from '../shared/vaultApi'
 import { jwtAuthGetToken } from '../termsOfService/jwt'
+import { getToken } from '../../blockchain/tokensMetadata'
 
 type TxChange =
   | { kind: 'txWaitingForApproval' }
@@ -78,10 +79,14 @@ export const getUnderlyingBalances: CallDef<
     return contract<GuniToken>(guniToken).methods.getUnderlyingBalances
   },
   prepareArgs: () => [],
-  postprocess: ({ 0: amount0, 1: amount1 }: any) => {
+  postprocess: ({ 0: amount0, 1: amount1 }: any, { token }) => {
+    const tokenData = getToken(token)
+    const token0Precision = getToken(tokenData.token0!).precision
+    const token1Precision = getToken(tokenData.token1!).precision
+
     return {
-      amount0: new BigNumber(amount0).div(new BigNumber(10).pow(18)),
-      amount1: new BigNumber(amount1).div(new BigNumber(10).pow(6)),
+      amount0: new BigNumber(amount0).div(new BigNumber(10).pow(token0Precision)),
+      amount1: new BigNumber(amount1).div(new BigNumber(10).pow(token1Precision)),
     }
   },
 }
@@ -92,7 +97,10 @@ export const getTotalSupply: CallDef<{ token: string }, BigNumber> = {
     return contract<GuniToken>(guniToken).methods.totalSupply
   },
   prepareArgs: () => [],
-  postprocess: (total: any) => new BigNumber(total),
+  postprocess: (total: any, { token }) => {
+    const { precision } = getToken(token)
+    return new BigNumber(total).div(new BigNumber(10).pow(precision))
+  },
 }
 
 export interface TxStateDependencies {

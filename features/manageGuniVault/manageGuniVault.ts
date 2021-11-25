@@ -48,6 +48,7 @@ import {
   validateWarnings,
 } from '../manageMultiplyVault/manageMultiplyVaultValidations'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
+import { getToken } from '../../blockchain/tokensMetadata'
 
 function applyManageVaultInjectedOverride(
   change: ManageMultiplyVaultChange,
@@ -215,12 +216,15 @@ export function createManageGuniVault$(
                   const guniDataChange$ = getProportions$(vault.lockedCollateral, vault.token).pipe(
                     switchMap(({ shareAmount0, shareAmount1 }) => {
                       // TODO calculations required here
+                      console.log(shareAmount0.toNumber())
+                      console.log(shareAmount1.toNumber())
+                      const { token1 } = getToken(vault.token) // USDC
 
                       return exchangeQuote$(
-                        vault.token,
+                        token1!,
                         SLIPPAGE,
-                        _, // TODO dunno what to put here
-                        'BUY_COLLATERAL',
+                        shareAmount1, // TODO dunno what to put here
+                        'SELL_COLLATERAL',
                       ).pipe(
                         map((swap) => {
                           console.log('lets go')
