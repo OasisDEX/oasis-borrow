@@ -184,3 +184,24 @@ export function createExchangeQuote$(
     }),
   )
 }
+
+export function createZeroExchangeQuote$(
+  context$: Observable<Context>,
+  token: string,
+  slippage: BigNumber,
+  amount: BigNumber,
+  action: ExchangeAction,
+) {
+  return context$.pipe(
+    switchMap((context) => {
+      const { tokens, exchange0 } = context
+      const dai = getTokenMetaData('DAI', tokens)
+      const collateral = getTokenMetaData(token, tokens)
+
+      return getQuote$(dai, collateral, exchange0.address, amount, slippage, action)
+    }),
+    distinctUntilChanged((s1, s2) => {
+      return JSON.stringify(s1) === JSON.stringify(s2)
+    }),
+  )
+}

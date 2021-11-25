@@ -242,7 +242,7 @@ export function createManageGuniVault$(
                       return exchangeQuote$(
                         token1!,
                         SLIPPAGE,
-                        shareAmount1.minus(0.001),
+                        shareAmount1.minus(0.01),
                         'SELL_COLLATERAL',
                       ).pipe(
                         map((swap) => {
@@ -254,7 +254,7 @@ export function createManageGuniVault$(
                             kind: 'guniTxData',
                             swap,
                             shareAmount0,
-                            shareAmount1: shareAmount1.minus(0.001),
+                            shareAmount1: shareAmount1.minus(0.01),
                             requiredDebt,
 
                             fromTokenAmount: swap.collateralAmount,
