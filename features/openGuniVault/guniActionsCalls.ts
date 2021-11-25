@@ -74,7 +74,7 @@ export const getUnderlyingBalances: CallDef<
     return contract<GuniToken>(guniToken).methods.getUnderlyingBalances
   },
   prepareArgs: () => [],
-  postprocess: ([amount0, amount1]: any) => {
+  postprocess: ({ 0: amount0, 1: amount1 }: any) => {
     return {
       amount0: new BigNumber(amount0).div(new BigNumber(10).pow(18)),
       amount1: new BigNumber(amount1).div(new BigNumber(10).pow(6)),

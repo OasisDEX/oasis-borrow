@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
-import { createVaultChange$, Vault, VaultChange } from 'blockchain/vaults'
+import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
@@ -11,7 +11,7 @@ import { GasEstimationStatus } from 'helpers/form'
 import { SLIPPAGE } from 'helpers/multiply/calculations'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
-import { filter, first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
+import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import {
   applyExchange,
@@ -212,14 +212,28 @@ export function createManageGuniVault$(
                     injectStateOverride,
                   }
 
-                  const guniDataChange$ = change$.pipe(
-                    filter((change) => change.kind === 'vault'),
-                    switchMap(({ vault }: VaultChange) => {
-                      const { lockedCollateral, token } = vault
+                  const guniDataChange$ = getProportions$(vault.lockedCollateral, vault.token).pipe(
+                    switchMap(({ shareAmount0, shareAmount1 }) => {
+                      // TODO calculations required here
 
-                      return getProportions$(lockedCollateral, token).pipe(
-                        switchMap(({ shareAmount0, shareAmount1 }) => {
-                          return exchangeQuote$(token, SLIPPAGE, _, 'BUY_COLLATERAL')
+                      return exchangeQuote$(
+                        vault.token,
+                        SLIPPAGE,
+                        _, // TODO dunno what to put here
+                        'BUY_COLLATERAL',
+                      ).pipe(
+                        map((swap) => {
+                          console.log('lets go')
+                          if (swap.status !== 'SUCCESS') {
+                            return of({ kind: 'exchangeError' })
+                          }
+
+                          return {
+                            kind: 'guniTxData',
+                            swap,
+
+                            // fill all necessary parametrs here
+                          }
                         }),
                       )
                     }),
