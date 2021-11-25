@@ -16,6 +16,7 @@ import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-act
 import Web3 from 'web3'
 
 import { TxMetaKind } from './txMeta'
+import { IlkData } from '../ilks'
 
 export type WithdrawAndPaybackData = {
   kind: TxMetaKind.withdrawAndPayback
@@ -700,6 +701,104 @@ export const closeVaultCall: TransactionDef<CloseVaultData> = {
     } else {
       return [
         dssProxyActions.address,
+        getWithdrawAndPaybackCallData(
+          {
+            kind: TxMetaKind.withdrawAndPayback,
+            withdrawAmount: data.totalCollateral,
+            paybackAmount: new BigNumber(0),
+            proxyAddress: data.proxyAddress!,
+            ilk: data.ilk,
+            token: data.token,
+            id: data.id,
+            shouldPaybackAll: true,
+          },
+          context,
+        ).encodeABI(),
+      ]
+    }
+  },
+}
+
+export interface CloseGuniMultiplyData {
+  kind: TxMetaKind.closeGuni
+  token: string
+  ilk: string
+  userAddress: string
+  requiredDebt: BigNumber
+  cdpId: string
+  fromTokenAmount: BigNumber
+  toTokenAmount: BigNumber
+  minToTokenAmount: BigNumber
+  exchangeAddress: string
+  exchangeData: string
+}
+
+function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConnected) {
+  const {
+    contract,
+    guniProxyActions,
+    joins,
+    mcdJug,
+    dssCdpManager,
+    tokens,
+    exchange0,
+    fmm,
+    guniResolver,
+    guniRouter,
+  } = context
+
+  const tokenData = getToken(data.token)
+  const token0Symbol = tokenData.token0
+  const token1Symbol = tokenData.token1
+
+  if (!token0Symbol || !token1Symbol) {
+    throw new Error('Invalid token')
+  }
+
+  return contract<DssGuniProxyActions>(guniProxyActions).closeGuniVaultExitDai(
+    {
+      fromTokenAddress: tokens[token1Symbol].address,
+      toTokenAddress: tokens[token0Symbol].address,
+      fromTokenAmount: amountToWei(data.fromTokenAmount, token1Symbol).toFixed(0),
+      toTokenAmount: amountToWei(data.toTokenAmount, token0Symbol).toFixed(0),
+      minToTokenAmount: amountToWei(data.minToTokenAmount, token1Symbol).toFixed(0),
+      exchangeAddress: data.exchangeAddress,
+      _exchangeCalldata: data.exchangeData,
+    } as any,
+    {
+      gemJoin: joins[data.ilk],
+      fundsReceiver: data.userAddress,
+      cdpId: data.cdpId,
+      ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
+      token0Amount: '0',
+      methodName: '',
+    } as any,
+    {
+      jug: mcdJug.address,
+      guni: tokens[data.token].address,
+      resolver: guniResolver,
+      router: guniRouter,
+      otherToken: tokens[token1Symbol!].address,
+      manager: dssCdpManager.address,
+      guniProxyActions: guniProxyActions.address,
+      lender: fmm,
+      exchange: exchange0.address,
+    } as any,
+  )
+}
+
+export const closeGuniVaultCall: TransactionDef<CloseVaultData> = {
+  call: ({ proxyAddress }, { contract }) => {
+    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
+  },
+  prepareArgs: (data, context) => {
+    const { dssMultiplyProxyActions, guniProxyActions } = context
+    if (data.exchangeData) {
+      return [dssMultiplyProxyActions.address, getCloseVaultCallData(data, context).encodeABI()]
+    } else {
+      return [
+        guniProxyActions.address,
         getWithdrawAndPaybackCallData(
           {
             kind: TxMetaKind.withdrawAndPayback,

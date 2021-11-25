@@ -3,9 +3,9 @@ import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { Observable } from 'rxjs'
 import { filter, map, switchMap } from 'rxjs/operators'
 
+import { Vault } from '../../blockchain/vaults'
 import { ManageMultiplyVaultState } from '../manageMultiplyVault/manageMultiplyVault'
 import { ManageVaultState } from '../manageVault/manageVault'
-import { Vault } from '../../blockchain/vaults'
 
 export enum VaultType {
   Borrow = 'borrow',

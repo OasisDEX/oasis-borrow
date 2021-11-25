@@ -63,12 +63,32 @@ function applyManageVaultInjectedOverride(
   return state
 }
 
+type GuniCalculations = {}
+type GuniTxData = {}
+type GuniTxDataChange = { kind: 'guniTxData' } & GuniTxData
+
+function applyGuniDataChanges<S extends GuniCalculations, Ch extends GuniTxDataChange>(
+  state: S,
+  change: Ch,
+): S {
+  if (change.kind === 'guniTxData') {
+    const { kind: _, ...data } = change
+    console.log(change)
+    return {
+      ...state,
+      ...data,
+    }
+  }
+  return state
+}
+
 function apply(state: ManageMultiplyVaultState, change: ManageMultiplyVaultChange) {
   const s1_ = applyExchange(change, state)
   const s5 = applyManageVaultTransaction(change, s1_)
   const s6 = applyManageVaultEnvironment(change, s5)
   const s7 = applyManageVaultInjectedOverride(change, s6)
-  const s8 = applyManageVaultCalculations(s7) // TODO probably we need guni specific calculations
+  const s7_ = applyGuniDataChanges(s7, change)
+  const s8 = applyManageVaultCalculations(s7_) // TODO probably we need guni specific calculations
   const s9 = applyManageVaultStageCategorisation(s8)
   const s10 = applyManageVaultConditions(s9)
   return applyManageVaultSummary(s10)
@@ -218,16 +238,18 @@ export function createManageGuniVault$(
                       // TODO calculations required here
                       console.log(shareAmount0.toNumber())
                       console.log(shareAmount1.toNumber())
+
+                      const requiredDebt = vault.debt
+
                       const { token1 } = getToken(vault.token) // USDC
 
                       return exchangeQuote$(
                         token1!,
                         SLIPPAGE,
-                        shareAmount1, // TODO dunno what to put here
+                        shareAmount1,
                         'SELL_COLLATERAL',
                       ).pipe(
                         map((swap) => {
-                          console.log('lets go')
                           if (swap.status !== 'SUCCESS') {
                             return of({ kind: 'exchangeError' })
                           }
@@ -235,6 +257,9 @@ export function createManageGuniVault$(
                           return {
                             kind: 'guniTxData',
                             swap,
+                            shareAmount0,
+                            shareAmount1,
+                            requiredDebt
 
                             // fill all necessary parametrs here
                           }
@@ -244,15 +269,13 @@ export function createManageGuniVault$(
                   )
 
                   const stateSubject$ = new Subject<ManageMultiplyVaultState>()
-                  console.log('manageGuni')
+
                   const environmentChanges$ = merge(
                     priceInfoChange$(priceInfo$, vault.token),
                     balanceInfoChange$(balanceInfo$, vault.token, account),
                     createIlkDataChange$(ilkData$, vault.ilk),
                     createVaultChange$(vault$, id, context.chainId),
-                    // guniDataChange$,
-                    // createInitialQuoteChange(exchangeQuote$, vault.token),
-                    // createExchangeChange$(exchangeQuote$, stateSubject$),
+                    guniDataChange$,
                   )
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
