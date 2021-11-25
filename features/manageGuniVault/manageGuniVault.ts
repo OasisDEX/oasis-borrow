@@ -244,13 +244,13 @@ export function createManageGuniVault$(
                   )
 
                   const stateSubject$ = new Subject<ManageMultiplyVaultState>()
-
+                  console.log('manageGuni')
                   const environmentChanges$ = merge(
                     priceInfoChange$(priceInfo$, vault.token),
                     balanceInfoChange$(balanceInfo$, vault.token, account),
                     createIlkDataChange$(ilkData$, vault.ilk),
                     createVaultChange$(vault$, id, context.chainId),
-                    guniDataChange$,
+                    // guniDataChange$,
                     // createInitialQuoteChange(exchangeQuote$, vault.token),
                     // createExchangeChange$(exchangeQuote$, stateSubject$),
                   )

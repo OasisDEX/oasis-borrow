@@ -20,13 +20,11 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
     generalManageVault$,
     vaultHistory$,
     vaultMultiplyHistory$,
-    manageGuniVault$,
   } = useAppContext()
   const manageVaultWithId$ = generalManageVault$(id)
   const manageVaultWithError = useObservableWithError(manageVaultWithId$)
   const vaultHistoryWithError = useObservableWithError(vaultHistory$(id))
   const vaultMultiplyHistoryWithError = useObservableWithError(vaultMultiplyHistory$(id))
-  const manageGuniVaultWithError = useObservableWithError(manageGuniVault$(id))
 
   function prepareMultiplyHistory(vaultHistory: any[], vaultMultiplyHistory: any[]) {
     let outstandingDebt = new BigNumber(0)
@@ -167,7 +165,6 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
         manageVaultWithError.error,
         vaultHistoryWithError.error,
         vaultMultiplyHistoryWithError.error,
-        manageGuniVaultWithError.error
       ]}
     >
       <WithLoadingIndicator
@@ -175,11 +172,10 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
           manageVaultWithError.value,
           vaultHistoryWithError.value,
           vaultMultiplyHistoryWithError.value,
-          manageGuniVaultWithError.value
         ]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([generalManageVault, vaultHistory, vaultMultiplyHistory, manageGuniVault]) => {
+        {([generalManageVault, vaultHistory, vaultMultiplyHistory]) => {
           switch (generalManageVault.type) {
             case VaultType.Borrow:
               return (
@@ -200,7 +196,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                 'GUNIV3DAIUSDC1-A': (
                   <GuniManageMultiplyVaultCointainer
                     vaultHistory={multiplyHistory}
-                    manageVault={manageGuniVault}
+                    manageVault={generalManageVault.state}
                   />
                 ),
               }
