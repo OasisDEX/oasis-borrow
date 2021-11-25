@@ -35,7 +35,7 @@ export function createGeneralManageVault$(
   return checkVaultType$(id).pipe(
     switchMap((type) => {
       return vault$(id).pipe(
-        filter(vault => vault !== undefined),
+        filter((vault) => vault !== undefined),
         switchMap((vault) => {
           switch (type) {
             case VaultType.Borrow:
@@ -50,8 +50,7 @@ export function createGeneralManageVault$(
                   map((state) => ({ state, type })),
                 )
               }
-              console.log('outside')
-              console.log(vault)
+
               return manageMultiplyVault$(id).pipe(
                 map((state) => ({ ...state, toggleVaultType: () => {} })),
                 map((state) => ({ state, type })),

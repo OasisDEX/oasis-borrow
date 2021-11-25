@@ -508,7 +508,7 @@ export function createManageMultiplyVault$(
                   }
 
                   const stateSubject$ = new Subject<ManageMultiplyVaultState>()
-                  console.log('dunno')
+
                   const environmentChanges$ = merge(
                     priceInfoChange$(priceInfo$, vault.token),
                     balanceInfoChange$(balanceInfo$, vault.token, account),
