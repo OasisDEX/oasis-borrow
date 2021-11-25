@@ -32,7 +32,7 @@ export function createAutomationTriggersData(
         startWithDefault(onEveryBlock$, undefined),
         startWithDefault(vauit$(id /*,context.chainId*/), undefined),
       ).pipe(
-        map(([blockNumber, vault]) => {
+        map(([, vault]) => {
           const trigerData: TriggersData = {
             isAutomationEnabled: true,
             triggers: generateFromVault(vault?.id),

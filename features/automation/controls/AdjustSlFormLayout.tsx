@@ -2,6 +2,7 @@ import { Box, Grid } from '@theme-ui/components'
 import { PickCloseState, PickCloseStateProps } from 'components/stateless/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/stateless/SliderValuePicker'
 import React from 'react'
+
 import { AddTriggerLayout, AddTriggerProps } from './AddTriggerLayout'
 
 export interface AdjustSlFormLayoutProps {
