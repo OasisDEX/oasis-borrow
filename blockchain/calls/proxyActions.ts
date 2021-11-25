@@ -758,11 +758,11 @@ function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConn
 
   return contract<DssGuniProxyActions>(guniProxyActions).methods.closeGuniVaultExitDai(
     {
-      fromTokenAddress: tokens[token1Symbol].address,
-      toTokenAddress: tokens[token0Symbol].address,
+      fromTokenAddress: tokens[token0Symbol].address,
+      toTokenAddress: tokens[token1Symbol].address,
       fromTokenAmount: amountToWei(data.fromTokenAmount, token1Symbol).toFixed(0),
       toTokenAmount: amountToWei(data.toTokenAmount, token0Symbol).toFixed(0),
-      minToTokenAmount: amountToWei(data.minToTokenAmount, token1Symbol).toFixed(0),
+      minToTokenAmount: amountToWei(data.minToTokenAmount, token0Symbol).toFixed(0),
       exchangeAddress: data.exchangeAddress,
       _exchangeCalldata: data.exchangeData,
     } as any,
