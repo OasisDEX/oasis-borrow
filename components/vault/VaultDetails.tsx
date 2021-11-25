@@ -701,7 +701,7 @@ export function VaultDetailsCardNetValue({
       title={t('manage-multiply-vault.card.net-value')}
       value={`$${formatAmount(netValueUSD, 'USD')}`}
       valueBottom={`${t('manage-multiply-vault.card.unrealised-pnl')} ${formatPercent(
-        currentPnL.times(100).absoluteValue(),
+        currentPnL.times(100),
         {
           precision: 2,
           roundMode: BigNumber.ROUND_DOWN,
