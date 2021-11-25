@@ -98,13 +98,9 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import { getTotalSupply, getUnderlyingBalances } from '../features/manageGuniVault/guniActionsCalls'
 import { createManageGuniVault$ } from '../features/manageGuniVault/manageGuniVault'
-import {
-  getGuniMintAmount,
-  getToken1Balance,
-  getTotalSupply,
-  getUnderlyingBalances,
-} from '../features/openGuniVault/guniActionsCalls'
+import { getGuniMintAmount, getToken1Balance } from '../features/openGuniVault/guniActionsCalls'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'

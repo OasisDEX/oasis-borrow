@@ -719,7 +719,7 @@ export const closeVaultCall: TransactionDef<CloseVaultData> = {
   },
 }
 
-export interface CloseGuniMultiplyData {
+export type CloseGuniMultiplyData = {
   kind: TxMetaKind.closeGuni
   token: string
   ilk: string
@@ -731,6 +731,7 @@ export interface CloseGuniMultiplyData {
   minToTokenAmount: BigNumber
   exchangeAddress: string
   exchangeData: string
+  proxyAddress: string
 }
 
 function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConnected) {
@@ -755,7 +756,7 @@ function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConn
     throw new Error('Invalid token')
   }
 
-  return contract<DssGuniProxyActions>(guniProxyActions).closeGuniVaultExitDai(
+  return contract<DssGuniProxyActions>(guniProxyActions).methods.closeGuniVaultExitDai(
     {
       fromTokenAddress: tokens[token1Symbol].address,
       toTokenAddress: tokens[token0Symbol].address,
@@ -788,31 +789,13 @@ function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConn
   )
 }
 
-export const closeGuniVaultCall: TransactionDef<CloseVaultData> = {
+export const closeGuniVaultCall: TransactionDef<CloseGuniMultiplyData> = {
   call: ({ proxyAddress }, { contract }) => {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => {
-    const { dssMultiplyProxyActions, guniProxyActions } = context
-    if (data.exchangeData) {
-      return [dssMultiplyProxyActions.address, getCloseVaultCallData(data, context).encodeABI()]
-    } else {
-      return [
-        guniProxyActions.address,
-        getWithdrawAndPaybackCallData(
-          {
-            kind: TxMetaKind.withdrawAndPayback,
-            withdrawAmount: data.totalCollateral,
-            paybackAmount: new BigNumber(0),
-            proxyAddress: data.proxyAddress!,
-            ilk: data.ilk,
-            token: data.token,
-            id: data.id,
-            shouldPaybackAll: true,
-          },
-          context,
-        ).encodeABI(),
-      ]
-    }
+    const { guniProxyActions } = context
+
+    return [guniProxyActions.address, getGuniCloseVaultData(data, context).encodeABI()]
   },
 }

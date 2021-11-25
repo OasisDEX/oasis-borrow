@@ -13,13 +13,10 @@ import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
+import { getToken } from '../../blockchain/tokensMetadata'
+import { one } from '../../helpers/zero'
+import { applyExchange } from '../manageMultiplyVault/manageMultiplyQuote'
 import {
-  applyExchange,
-  // createExchangeChange$,
-  // createInitialQuoteChange,
-} from '../manageMultiplyVault/manageMultiplyQuote'
-import {
-  CloseVaultTo,
   ManageMultiplyVaultChange,
   ManageMultiplyVaultState,
   MutableManageMultiplyVaultState,
@@ -38,17 +35,14 @@ import {
   applyManageVaultSummary,
   defaultManageVaultSummary,
 } from '../manageMultiplyVault/manageMultiplyVaultSummary'
-import {
-  applyEstimateGas,
-  applyManageVaultTransaction,
-} from '../manageMultiplyVault/manageMultiplyVaultTransactions'
-import { progressAdjust } from '../manageMultiplyVault/manageMultiplyVaultTransitions'
+import { applyManageVaultTransaction } from '../manageMultiplyVault/manageMultiplyVaultTransactions'
+import { applyManageVaultTransition } from '../manageMultiplyVault/manageMultiplyVaultTransitions'
 import {
   validateErrors,
   validateWarnings,
 } from '../manageMultiplyVault/manageMultiplyVaultValidations'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
-import { getToken } from '../../blockchain/tokensMetadata'
+import { closeGuniVault } from './guniActionsCalls'
 
 function applyManageVaultInjectedOverride(
   change: ManageMultiplyVaultChange,
@@ -82,12 +76,16 @@ function applyGuniDataChanges<S extends GuniCalculations, Ch extends GuniTxDataC
   return state
 }
 
-function apply(state: ManageMultiplyVaultState, change: ManageMultiplyVaultChange) {
-  const s1_ = applyExchange(change, state)
-  const s5 = applyManageVaultTransaction(change, s1_)
-  const s6 = applyManageVaultEnvironment(change, s5)
-  const s7 = applyManageVaultInjectedOverride(change, s6)
-  const s7_ = applyGuniDataChanges(s7, change)
+function apply(
+  state: ManageMultiplyVaultState,
+  change: ManageMultiplyVaultChange | GuniTxDataChange,
+) {
+  const s1_ = applyExchange(change as ManageMultiplyVaultChange, state)
+  const s4 = applyManageVaultTransition(change as ManageMultiplyVaultChange, s1_)
+  const s5 = applyManageVaultTransaction(change as ManageMultiplyVaultChange, s4)
+  const s6 = applyManageVaultEnvironment(change as ManageMultiplyVaultChange, s5)
+  const s7 = applyManageVaultInjectedOverride(change as ManageMultiplyVaultChange, s6)
+  const s7_ = applyGuniDataChanges(s7, change as GuniTxDataChange)
   const s8 = applyManageVaultCalculations(s7_) // TODO probably we need guni specific calculations
   const s9 = applyManageVaultStageCategorisation(s8)
   const s10 = applyManageVaultConditions(s9)
@@ -104,8 +102,6 @@ function addTransitions(
   if (state.stage === 'adjustPosition' || state.stage === 'otherActions') {
     return {
       ...state,
-      setCloseVaultTo: (closeVaultTo: CloseVaultTo) =>
-        change({ kind: 'closeVaultTo', closeVaultTo }),
       progress: () => change({ kind: 'progressEditing' }),
     }
   }
@@ -113,7 +109,7 @@ function addTransitions(
   if (state.stage === 'manageWaitingForConfirmation' || state.stage === 'manageFailure') {
     return {
       ...state,
-      progress: () => progressAdjust(txHelpers$, context, state, change),
+      progress: () => closeGuniVault(txHelpers$, change, state),
       regress: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -259,7 +255,11 @@ export function createManageGuniVault$(
                             swap,
                             shareAmount0,
                             shareAmount1,
-                            requiredDebt
+                            requiredDebt,
+
+                            toTokenAmount: swap.daiAmount,
+                            fromTokenAmount: swap.collateralAmount,
+                            minToTokenAmount: swap.daiAmount.times(one.minus(SLIPPAGE)),
 
                             // fill all necessary parametrs here
                           }
@@ -284,7 +284,7 @@ export function createManageGuniVault$(
                     scan(apply, initialState),
                     map(validateErrors),
                     map(validateWarnings),
-                    switchMap(curry(applyEstimateGas)(addGasEstimation$)),
+                    // switchMap(curry(applyEstimateGas)(addGasEstimation$)),
                     map(curry(addTransitions)(txHelpers$, context, connectedProxyAddress$, change)),
                     tap((state) => stateSubject$.next(state)),
                   )
