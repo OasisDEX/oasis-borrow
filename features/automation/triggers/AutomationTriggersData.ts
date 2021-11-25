@@ -33,7 +33,6 @@ export function createAutomationTriggersData(
         startWithDefault(vauit$(id /*,context.chainId*/), undefined),
       ).pipe(
         map(([blockNumber, vault]) => {
-          console.log('reading triggersData from blockchain MOCK', blockNumber)
           const trigerData: TriggersData = {
             isAutomationEnabled: true,
             triggers: generateFromVault(vault?.id),
@@ -41,7 +40,6 @@ export function createAutomationTriggersData(
           return trigerData
         }),
         distinctUntilChanged((s1, s2) => {
-          console.log('distinctUntilChanged', JSON.stringify(s1), JSON.stringify(s2))
           return JSON.stringify(s1) === JSON.stringify(s2)
         }),
         shareReplay(1),
@@ -50,7 +48,6 @@ export function createAutomationTriggersData(
   )
 }
 function generateFromVault(id: BigNumber | undefined): List<TriggerRecord> {
-  console.log('generating triggers data')
   /* TODO: replace with actual Event reading when ready and in final version with fetching from cache */
   switch ((id ? id.toNumber() : 0) % 4) {
     case 0:

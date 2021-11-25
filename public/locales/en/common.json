@@ -17,6 +17,7 @@
   "activity": "Activity",
   "address": "Address",
   "address-invalid": "Address not found",
+  "add-stop-loss": "Add StopLoss",
   "adjust-your-position": "Adjust your position",
   "after": "After",
   "after-next": "After + Next",
@@ -465,8 +466,8 @@
       "introduction-content":"Some intro text. Some more text, even more, even more, even more, even more, even more, even more, even more {{ link }}",
       "left-label":"Stop loss coll.ratio",
       "right-label":"Dynamic stop price",
-      "left-footer":"",
-      "right-footer":""
+      "left-footer":"Bigger loss",
+      "right-footer":"More likely execution"
     }
   },
   "spots-remaining": "{{ spots }} spots remaining",

@@ -8,7 +8,6 @@ import React from 'react'
 import { ProtectionDetailsLayout, ProtectionDetailsLayoutProps } from './ProtectionDetailsLayout'
 
 export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
-  console.log('Rendering ProtectionDetails', id.toString())
   const { stopLossTriggersData$, vault$, collateralPrices$, ilkDataList$ } = useAppContext()
   const slTriggerData$ = stopLossTriggersData$(id)
   const slTriggerDataWithError = useObservableWithError(slTriggerData$)

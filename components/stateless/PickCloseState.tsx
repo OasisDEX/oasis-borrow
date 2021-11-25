@@ -15,8 +15,11 @@ export interface PickCloseStateProps {
 export function PickCloseState(props: PickCloseStateProps) {
   const [isActive, setIsActive] = useState(props.isCollateralActive)
 
+  console.log("PickCloseState isCollateralActive", isActive);
+
   const OnClickHandler = (op: string) => {
     setIsActive(op === props.optionNames[0])
+    console.log("PickCloseState OnClickHandler isActive=", op === props.optionNames[0]);
     props.onclickHandler(op)
   }
 

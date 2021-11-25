@@ -50,7 +50,6 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
-  console.log(slRatio.toNumber())
   const ethDuringLiquidation = !liquidationPrice.isZero()
     ? debt.times(liquidationRatio).div(liquidationPrice)
     : zero
