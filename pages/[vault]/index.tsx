@@ -4,7 +4,7 @@ import { AppLayout } from 'components/Layouts'
 import { TabSwitchLayout, VaultViewMode } from 'components/TabSwitchLayout'
 import { DefaultVaultLayout } from 'components/vault/DefaaultVaultLayout'
 import { DefaultVaultHeaderControl } from 'components/vault/DefaultVaultHeaderControl'
-import { AdjustSlForm } from 'features/automation/controls/AdjustSlForm'
+import { AdjustSlFormControl } from 'features/automation/controls/AdjustSlFormControl'
 import { ProtectionDetailsControl } from 'features/automation/controls/ProtectionDetailsControl'
 import { VaultBannersView } from 'features/banners/VaultsBannersView'
 import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
@@ -44,7 +44,7 @@ export default function Vault({ id }: { id: string }) {
               protectionControl={
                 <DefaultVaultLayout
                   detailsViewControl={<ProtectionDetailsControl id={vaultId} />}
-                  editForm={<AdjustSlForm id={vaultId} />}
+                  editForm={<AdjustSlFormControl id={vaultId} />}
                   headerControl={
                     <DefaultVaultHeaderControl header="vault.header" vaultId={vaultId} />
                   }

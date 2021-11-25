@@ -1,18 +1,19 @@
 import { Grid } from '@theme-ui/components'
 import { CloseVaultCard } from 'components/vault/CloseVaultCard'
+import { FixedSizeArray } from 'helpers/types'
 import { useState } from 'react'
 import React from 'react'
 
 export interface PickCloseStateProps {
   collateralTokenSymbol: string
   collateralTokenIconCircle: string
-  optionNames: string[2]
+  optionNames: FixedSizeArray<string, 2>
   onclickHandler: (optionName: string) => void
-  isFirstActive: boolean
+  isCollateralActive: boolean
 }
 
 export function PickCloseState(props: PickCloseStateProps) {
-  const [isActive, setIsActive] = useState(props.isFirstActive)
+  const [isActive, setIsActive] = useState(props.isCollateralActive)
 
   const OnClickHandler = (op: string) => {
     setIsActive(op === props.optionNames[0])
