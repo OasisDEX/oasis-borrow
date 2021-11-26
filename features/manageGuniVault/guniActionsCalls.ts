@@ -80,8 +80,8 @@ export function closeGuniVault<S extends CloseGuniTxStateDependencies>(
   return txHelpers$
     .pipe(
       first(),
-      switchMap(({ send }) => {
-        return send(closeGuniVaultCall, {
+      switchMap(({ sendWithGasEstimation }) => {
+        return sendWithGasEstimation(closeGuniVaultCall, {
           kind: TxMetaKind.closeGuni,
           token: vault.token,
           ilk: vault.ilk,
@@ -103,7 +103,6 @@ export function closeGuniVault<S extends CloseGuniTxStateDependencies>(
                 manageTxHash: (txState as any).manageTxHash as string,
               }),
             (txState) => {
-              // console.log('txState', txState)
               return of({
                 kind: 'manageFailure',
                 txError:

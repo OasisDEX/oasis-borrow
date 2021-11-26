@@ -17,6 +17,7 @@ import { getToken } from '../../blockchain/tokensMetadata'
 import { one, zero } from '../../helpers/zero'
 import { applyExchange } from '../manageMultiplyVault/manageMultiplyQuote'
 import {
+  CloseVaultTo,
   ManageMultiplyVaultChange,
   ManageMultiplyVaultState,
   MutableManageMultiplyVaultState,
@@ -43,6 +44,7 @@ import {
 } from '../manageMultiplyVault/manageMultiplyVaultValidations'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { closeGuniVault } from './guniActionsCalls'
+import { applyGuniManageEstimateGas } from './manageGuniVaultTransactions'
 
 function applyManageVaultInjectedOverride(
   change: ManageMultiplyVaultChange,
@@ -57,10 +59,13 @@ function applyManageVaultInjectedOverride(
   return state
 }
 
-type GuniTxData = {
+export type GuniTxData = {
   shareAmount0?: BigNumber
   shareAmount1?: BigNumber
   minToTokenAmount?: BigNumber
+  toTokenAmount?: BigNumber
+  fromTokenAmount?: BigNumber
+  requiredDebt?: BigNumber
 }
 
 type GuniTxDataChange = { kind: 'guniTxData' }
@@ -127,6 +132,8 @@ function addTransitions(
     return {
       ...state,
       progress: () => change({ kind: 'progressEditing' }),
+      setCloseVaultTo: (closeVaultTo: CloseVaultTo) =>
+        change({ kind: 'closeVaultTo', closeVaultTo }),
     }
   }
 
@@ -300,7 +307,7 @@ export function createManageGuniVault$(
                     scan(apply, initialState),
                     map(validateErrors),
                     map(validateWarnings),
-                    // switchMap(curry(applyEstimateGas)(addGasEstimation$)),
+                    switchMap(curry(applyGuniManageEstimateGas)(addGasEstimation$)),
                     map(curry(addTransitions)(txHelpers$, context, connectedProxyAddress$, change)),
                     tap((state) => stateSubject$.next(state)),
                   )
