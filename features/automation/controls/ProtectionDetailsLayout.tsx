@@ -14,8 +14,7 @@ export interface ProtectionState {
   inputAmountsEmpty: boolean
   stage: string // prepare protection stages
   afterSlRatio?: BigNumber
-  afterDebt?: BigNumber
-  afterLiquidationPrice?: BigNumber
+  afterSlTriggeringPrice?: BigNumber
   afterLockedCollateral?: BigNumber
 }
 
@@ -48,14 +47,7 @@ export function ProtectionDetailsLayout({
   liquidationRatio,
 
   // protection state
-  protectionState: {
-    stage,
-    inputAmountsEmpty,
-    afterSlRatio,
-    afterDebt,
-    afterLiquidationPrice,
-    afterLockedCollateral,
-  },
+  protectionState: { stage, inputAmountsEmpty, afterSlRatio, afterSlTriggeringPrice },
 }: ProtectionDetailsLayoutProps) {
   const showAfterPill = !inputAmountsEmpty && stage !== 'protectionSuccess'
 
@@ -88,7 +80,7 @@ export function ProtectionDetailsLayout({
           isProtected={isStopLossEnabled}
           showAfterPill={showAfterPill}
           afterSlRatio={afterSlRatio}
-          afterLiquidationPrice={afterLiquidationPrice}
+          afterSlTriggeringPrice={afterSlTriggeringPrice}
           afterPillColors={afterPillColors}
         />
         <VaultDetailsCardCurrentPrice
@@ -107,9 +99,9 @@ export function ProtectionDetailsLayout({
           liquidationRatio={liquidationRatio}
           token={token}
           showAfterPill={showAfterPill}
-          afterLockedCollateral={afterLockedCollateral}
-          afterLiquidationPrice={afterLiquidationPrice}
-          afterDebt={afterDebt}
+          lockedCollateral={lockedCollateral}
+          afterSlTriggeringPrice={afterSlTriggeringPrice}
+          vaultDebt={vaultDebt}
           afterSlRatio={afterSlRatio}
           afterPillColors={afterPillColors}
         />

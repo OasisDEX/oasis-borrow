@@ -13,20 +13,22 @@ import { useState } from 'react'
 import React from 'react'
 
 import { TransactionLifecycle } from '../common/enums/TxStatus'
+import { AddFormChange } from '../common/UITypes/AddFormChange'
 import { AddTriggerProps } from './AddTriggerLayout'
 import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
 
 export function AdjustSlFormControl({ id }: { id: BigNumber }) {
-  const token = 'ETH'
+  const uiSubjectName = 'AdjustSlForm'
   const validOptions: FixedSizeArray<string, 2> = ['collateral', 'dai']
-  const tokenData = getToken(token)
   const [collateralActive, setCloseToCollateral] = useState(false)
   const [txStatus, setTxStatus] = useState(TransactionLifecycle.None)
 
-  const { vault$, collateralPrices$, ilkDataList$ } = useAppContext()
+  const { vault$, collateralPrices$, ilkDataList$, uiChanges } = useAppContext()
   const vaultDataWithError = useObservableWithError(vault$(id))
   const collateralPricesWithError = useObservableWithError(collateralPrices$)
   const ilksDataWithError = useObservableWithError(ilkDataList$)
+
+  uiChanges.createIfMissing<AddFormChange>(uiSubjectName)
 
   return (
     <WithErrorHandler
@@ -37,6 +39,8 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
         customLoader={<VaultContainerSpinner />}
       >
         {([vaultData, collateralPriceData, ilksData]) => {
+          const token = vaultData.token
+          const tokenData = getToken(token)
           const currentIlkData = ilksData.filter((x) => x.ilk === vaultData.ilk)[0]
           const currentCollateralData = collateralPriceData.data.filter(
             (x) => x.token === vaultData.token,
@@ -81,6 +85,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
             minBoundry: liqRatio.multipliedBy(100),
             setter: (slCollRatio) => {
               setSelectedSLValue(slCollRatio)
+              /*TO DO: this is duplicated and can be extracted*/
               const currentCollRatio = vaultData.lockedCollateral
                 .multipliedBy(currentCollateralData.currentPrice)
                 .dividedBy(vaultData.debt)
@@ -88,6 +93,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
                 .dividedBy(100)
                 .multipliedBy(currentCollateralData.currentPrice)
                 .dividedBy(currentCollRatio)
+              /* END OF DUPLICATION */
               setAfterLiqPrice(computedAfterLiqPrice)
             },
           }
@@ -104,8 +110,14 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
           }
 
           useEffect(() => {
-            console.log('Tx Started')
-          }, [txStatus])
+            const newVaues: AddFormChange = {
+              selectedSLValue,
+              txStatus,
+              collateralActive,
+            }
+            console.log('Some Change is happening', newVaues)
+            uiChanges.publish<AddFormChange>(uiSubjectName, newVaues)
+          }, [selectedSLValue, txStatus, collateralActive])
 
           return <AdjustSlFormLayout {...props} />
         }}

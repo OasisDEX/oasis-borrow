@@ -32,10 +32,11 @@ export function createAutomationTriggersData(
         startWithDefault(onEveryBlock$, undefined),
         startWithDefault(vauit$(id /*,context.chainId*/), undefined),
       ).pipe(
-        map(([, vault]) => {
+        map(([blockNumber, vault]) => {
+          console.log(blockNumber, vault?.id)
           const trigerData: TriggersData = {
             isAutomationEnabled: true,
-            triggers: generateFromVault(vault?.id),
+            triggers: generateMock(),
           }
           return trigerData
         }),
@@ -47,28 +48,13 @@ export function createAutomationTriggersData(
     ),
   )
 }
-function generateFromVault(id: BigNumber | undefined): List<TriggerRecord> {
+function generateMock(): List<TriggerRecord> {
   /* TODO: replace with actual Event reading when ready and in final version with fetching from cache */
-  switch ((id ? id.toNumber() : 0) % 4) {
-    case 0:
-      return [
-        {
-          triggerId: 1,
-          triggerType: TriggersTypes.StopLossToCollateral,
-          executionParams: '0x1234',
-        } as TriggerRecord,
-      ] as List<TriggerRecord>
-    case 1:
-      return [
-        {
-          triggerId: 1,
-          triggerType: TriggersTypes.StopLossToDai,
-          executionParams: '0x1234',
-        } as TriggerRecord,
-      ] as List<TriggerRecord>
-    case 2:
-    case 3:
-      return [] as List<TriggerRecord>
-  }
-  throw new Error('Function not implemented.')
+  return [
+    {
+      triggerId: 1,
+      triggerType: TriggersTypes.StopLossToCollateral,
+      executionParams: '0x1234',
+    } as TriggerRecord,
+  ] as List<TriggerRecord>
 }

@@ -75,7 +75,7 @@ import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiply
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
-import { combineLatest, Observable, of } from 'rxjs'
+import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { dogIlk } from '../blockchain/calls/dog'
@@ -154,6 +154,40 @@ function createTxHelpers$(
       },
     })),
   )
+}
+
+function createUIChangesSubject() {
+  const subjects: any = {}
+
+  function createIfMissing<T>(subjectName: string): void {
+    if (!subjects[subjectName]) {
+      subjects[subjectName] = new Subject<T>()
+    }
+  }
+
+  function publish<T>(subjectName: string, data: T): void {
+    if (!subjects[subjectName]) {
+      throw new Error(`Subject ${subjectName} not created`)
+    }
+    const subject: Subject<T> = subjects[subjectName] as Subject<T>
+    subject.next(data)
+  }
+
+  function subscribe<T>(subjectName: string, handler: (value: T) => void) {
+    if (!subjects[subjectName]) {
+      throw new Error(`Subject ${subjectName} not created`)
+    }
+    const subject: Subject<T> = subjects[subjectName] as Subject<T>
+    subject.subscribe({
+      next: handler,
+    })
+  }
+
+  return {
+    createIfMissing: createIfMissing,
+    subscribe: subscribe,
+    publish: publish,
+  }
 }
 
 export function setupAppContext() {
@@ -441,6 +475,8 @@ export function setupAppContext() {
 
   const openVaultOverview$ = createOpenVaultOverview$(ilksWithBalance$)
 
+  const uiChanges = createUIChangesSubject()
+
   return {
     web3Context$,
     web3ContextConnected$,
@@ -476,6 +512,7 @@ export function setupAppContext() {
     generalManageVault$,
     openGuniVault$,
     ilkDataList$,
+    uiChanges,
   }
 }
 
