@@ -60,8 +60,8 @@ function applyManageVaultInjectedOverride(
 }
 
 export type GuniTxData = {
-  shareAmount0?: BigNumber
-  shareAmount1?: BigNumber
+  sharedAmount0?: BigNumber
+  sharedAmount1?: BigNumber
   minToTokenAmount?: BigNumber
   toTokenAmount?: BigNumber
   fromTokenAmount?: BigNumber
@@ -85,8 +85,8 @@ function applyGuniDataChanges<S, Ch extends GuniTxDataChange>(state: S, change: 
 function applyGuniCalculations(state: ManageMultiplyVaultState & GuniTxData) {
   const {
     vault: { lockedCollateralUSD, debt },
-    shareAmount0,
-    shareAmount1,
+    sharedAmount0,
+    sharedAmount1,
     minToTokenAmount,
   } = state
 
@@ -95,12 +95,12 @@ function applyGuniCalculations(state: ManageMultiplyVaultState & GuniTxData) {
   return {
     ...state,
     netValueUSD,
-    collateralDeltaUSD: shareAmount1,
+    collateralDeltaUSD: sharedAmount1,
     oazoFee: zero,
     loanFee: zero,
     fees: zero,
     afterCloseToDai:
-      shareAmount0 && minToTokenAmount ? shareAmount0.plus(minToTokenAmount).minus(debt) : zero,
+      sharedAmount0 && minToTokenAmount ? sharedAmount0.plus(minToTokenAmount).minus(debt) : zero,
   }
 }
 
@@ -187,7 +187,7 @@ export function createManageGuniVault$(
   getProportions$: (
     gUniAmount: BigNumber,
     token: string,
-  ) => Observable<{ shareAmount0: BigNumber; shareAmount1: BigNumber }>,
+  ) => Observable<{ sharedAmount0: BigNumber; sharedAmount1: BigNumber }>,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
   return context$.pipe(
@@ -261,14 +261,14 @@ export function createManageGuniVault$(
                   }
 
                   const guniDataChange$ = getProportions$(vault.lockedCollateral, vault.token).pipe(
-                    switchMap(({ shareAmount0, shareAmount1 }) => {
+                    switchMap(({ sharedAmount0, sharedAmount1 }) => {
                       const requiredDebt = vault.debt
                       const { token1 } = getToken(vault.token) // USDC
 
                       return exchangeQuote$(
                         token1!,
                         SLIPPAGE,
-                        shareAmount1.minus(0.01),
+                        sharedAmount1.minus(0.01),
                         'SELL_COLLATERAL',
                       ).pipe(
                         map((swap) => {
@@ -279,8 +279,8 @@ export function createManageGuniVault$(
                           return {
                             kind: 'guniTxData',
                             swap,
-                            shareAmount0,
-                            shareAmount1: shareAmount1.minus(0.01),
+                            sharedAmount0,
+                            shareAmount1: sharedAmount1.minus(0.01),
                             requiredDebt,
                             fromTokenAmount: swap.collateralAmount,
                             toTokenAmount: swap.daiAmount,

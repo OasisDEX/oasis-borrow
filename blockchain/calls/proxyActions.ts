@@ -741,15 +741,13 @@ function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConn
     mcdJug,
     dssCdpManager,
     tokens,
-    exchange0,
+    noFeesExchange,
     fmm,
     guniResolver,
     guniRouter,
   } = context
 
-  const tokenData = getToken(data.token)
-  const token0Symbol = tokenData.token0
-  const token1Symbol = tokenData.token1
+  const { token0: token0Symbol, token1: token1Symbol } = getToken(data.token)
 
   if (!token0Symbol || !token1Symbol) {
     throw new Error('Invalid token')
@@ -783,7 +781,7 @@ function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConn
       manager: dssCdpManager.address,
       guniProxyActions: guniProxyActions.address,
       lender: fmm,
-      exchange: exchange0.address,
+      exchange: noFeesExchange.address,
     } as any,
   )
 }

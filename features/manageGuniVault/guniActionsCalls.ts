@@ -29,9 +29,9 @@ export const getUnderlyingBalances: CallDef<
   },
   prepareArgs: () => [],
   postprocess: ({ 0: amount0, 1: amount1 }: any, { token }) => {
-    const tokenData = getToken(token)
-    const token0Precision = getToken(tokenData.token0!).precision
-    const token1Precision = getToken(tokenData.token1!).precision
+    const { token0, token1 } = getToken(token)
+    const token0Precision = getToken(token0!).precision
+    const token1Precision = getToken(token1!).precision
 
     return {
       amount0: new BigNumber(amount0).div(new BigNumber(10).pow(token0Precision)),

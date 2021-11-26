@@ -50,7 +50,7 @@ import { createAccountData } from 'features/account/AccountData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
-import { createExchangeQuote$, createZeroExchangeQuote$ } from 'features/exchange/exchange'
+import { createExchangeQuote$, createNoFeesExchangeQuote$ } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
@@ -333,8 +333,8 @@ export function setupAppContext() {
       `${token}_${slippage.toString()}_${amount.toString()}_${action}`,
   )
 
-  const exchangeZeroQuote$ = memoize(
-    curry(createZeroExchangeQuote$)(context$),
+  const noFeesExchangeQuote$ = memoize(
+    curry(createNoFeesExchangeQuote$)(context$),
     (token: string, slippage: BigNumber, amount: BigNumber, action: string) =>
       `${token}_${slippage.toString()}_${amount.toString()}_${action}`,
   )
@@ -413,16 +413,16 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  const getTokensAmount$ = observe(onEveryBlock$, context$, getUnderlyingBalances)
+  const getGuniPoolBalances$ = observe(onEveryBlock$, context$, getUnderlyingBalances)
 
   const getTotalSupply$ = observe(onEveryBlock$, context$, getTotalSupply)
 
   function getProportions$(gUniBalance: BigNumber, token: string) {
-    return combineLatest(getTokensAmount$({ token }), getTotalSupply$({ token })).pipe(
+    return combineLatest(getGuniPoolBalances$({ token }), getTotalSupply$({ token })).pipe(
       map(([{ amount0, amount1 }, totalSupply]) => {
         return {
-          shareAmount0: amount0.times(gUniBalance).div(totalSupply),
-          shareAmount1: amount1.times(gUniBalance).div(totalSupply),
+          sharedAmount0: amount0.times(gUniBalance).div(totalSupply),
+          sharedAmount1: amount1.times(gUniBalance).div(totalSupply),
         }
       }),
     )
@@ -439,7 +439,7 @@ export function setupAppContext() {
         balanceInfo$,
         ilkData$,
         vault$,
-        exchangeZeroQuote$,
+        noFeesExchangeQuote$,
         addGasEstimation$,
         getProportions$,
         id,
