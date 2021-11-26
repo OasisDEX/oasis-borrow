@@ -18,7 +18,7 @@ import { VaultType } from '../generalManageVault/generalManageVault'
 import { saveVaultUsingApi$ } from '../shared/vaultApi'
 import { jwtAuthGetToken } from '../termsOfService/jwt'
 
-type TxChange =
+export type TxChange =
   | { kind: 'txWaitingForApproval' }
   | {
       kind: 'txInProgress'
