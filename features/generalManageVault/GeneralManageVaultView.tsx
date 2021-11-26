@@ -16,11 +16,7 @@ import { GuniManageMultiplyVaultCointainer } from '../openMultiplyVault/variants
 import { VaultType } from './generalManageVault'
 
 export function GeneralManageVaultView({ id }: { id: BigNumber }) {
-  const {
-    generalManageVault$,
-    vaultHistory$,
-    vaultMultiplyHistory$,
-  } = useAppContext()
+  const { generalManageVault$, vaultHistory$, vaultMultiplyHistory$ } = useAppContext()
   const manageVaultWithId$ = generalManageVault$(id)
   const manageVaultWithError = useObservableWithError(manageVaultWithId$)
   const vaultHistoryWithError = useObservableWithError(vaultHistory$(id))

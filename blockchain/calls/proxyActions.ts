@@ -16,7 +16,6 @@ import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-act
 import Web3 from 'web3'
 
 import { TxMetaKind } from './txMeta'
-import { IlkData } from '../ilks'
 
 export type WithdrawAndPaybackData = {
   kind: TxMetaKind.withdrawAndPayback

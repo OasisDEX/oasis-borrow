@@ -80,7 +80,7 @@ export function closeGuniVault<S extends CloseGuniTxStateDependencies>(
   return txHelpers$
     .pipe(
       first(),
-      switchMap(({ sendWithGasEstimation, send }) => {
+      switchMap(({ send }) => {
         return send(closeGuniVaultCall, {
           kind: TxMetaKind.closeGuni,
           token: vault.token,
