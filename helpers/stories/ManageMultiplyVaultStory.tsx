@@ -102,13 +102,16 @@ export function manageMultiplyVaultStory({
       generalManageVault$: memoize(() =>
         createGeneralManageVault$(
           () => obs$,
+          () => obs$,
           // @ts-ignore, don't need to mock regular here
           () => of(EMPTY),
           () => of(VaultType.Multiply),
+          () => of(EMPTY),
           MOCK_VAULT_ID,
         ),
       ),
       manageMultiplyVault$: () => obs$,
+      manageGuniVault$: () => obs$,
     } as any) as AppContext
 
     return (
