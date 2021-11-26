@@ -3,7 +3,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
-import { useState } from 'hoist-non-react-statics/node_modules/@types/react'
+import { useState } from 'react'
 import React from 'react'
 
 import { AddFormChange } from '../common/UITypes/AddFormChange'
@@ -11,6 +11,7 @@ import { ProtectionDetailsLayout, ProtectionDetailsLayoutProps } from './Protect
 
 export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
   const uiSubjectName = 'AdjustSlForm'
+  const subscriberId = 'ProtectionDetailsControl'
   const {
     stopLossTriggersData$,
     vault$,
@@ -25,7 +26,7 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
   const ilksDataWithError = useObservableWithError(ilkDataList$)
   const [lastUIState, lastUIStateSetter] = useState<AddFormChange | undefined>(undefined)
 
-  uiChanges.subscribe<AddFormChange>(uiSubjectName, (value) => {
+  uiChanges.subscribe<AddFormChange>(uiSubjectName,subscriberId, (value) => {
     console.log('New UI value received', value)
     lastUIStateSetter(value)
   })
@@ -55,17 +56,6 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
             (x) => x.token === vaultData.token,
           )[0]
 
-          /*TO DO: this is duplicated and can be extracted*/
-          const currentCollRatio = vaultData.lockedCollateral
-            .multipliedBy(collateralPrice.currentPrice)
-            .dividedBy(vaultData.debt)
-
-          const computedAfterLiqPrice = lastUIState?.selectedSLValue
-            .dividedBy(100)
-            .multipliedBy(collateralPrice.currentPrice)
-            .dividedBy(currentCollRatio)
-          /* END OF DUPLICATION */
-
           const props: ProtectionDetailsLayoutProps = {
             isStopLossEnabled: triggersData.isStopLossEnabled,
             slRatio: triggersData.stopLossLevel,
@@ -80,10 +70,9 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
 
             // protectionState mocked for now
             protectionState: {
-              inputAmountsEmpty: true,
+              inputAmountsEmpty: false,
               stage: 'editing',
-              afterSlRatio: lastUIState ? lastUIState.selectedSLValue : new BigNumber(0),
-              afterSlTriggeringPrice: computedAfterLiqPrice,
+              afterSlRatio: lastUIState ? lastUIState.selectedSLValue.dividedBy(100) : new BigNumber(0),
             },
           }
           return <ProtectionDetailsLayout {...props} />

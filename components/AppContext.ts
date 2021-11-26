@@ -158,10 +158,22 @@ function createTxHelpers$(
 
 function createUIChangesSubject() {
   const subjects: any = {}
+  const waitingSubscriptions: any = {};
+  const doubleSubscriptionGuard : Map<string,Map<string,boolean>> = new Map<string,Map<string,boolean>>()
 
   function createIfMissing<T>(subjectName: string): void {
     if (!subjects[subjectName]) {
-      subjects[subjectName] = new Subject<T>()
+      const newSubject =  new Subject<T>();
+      subjects[subjectName] = newSubject;
+      if(waitingSubscriptions[subjectName] && waitingSubscriptions[subjectName].length){
+        let waitingHandlers : Array< (value: T) => void> = waitingSubscriptions[subjectName] as Array< (value: T) => void> ;
+        waitingHandlers.forEach(handler => {
+          newSubject.subscribe({
+            next: handler,
+          });
+        })
+        delete waitingSubscriptions[subjectName]
+      }
     }
   }
 
@@ -173,14 +185,22 @@ function createUIChangesSubject() {
     subject.next(data)
   }
 
-  function subscribe<T>(subjectName: string, handler: (value: T) => void) {
-    if (!subjects[subjectName]) {
-      throw new Error(`Subject ${subjectName} not created`)
+  function subscribe<T>(subjectName: string, subscriberId : string, handler: (value: T) => void) {
+    if(!doubleSubscriptionGuard.get(subjectName)?.get(subscriberId)){
+      if (!subjects[subjectName]) {
+        waitingSubscriptions[subjectName] = waitingSubscriptions[subjectName] || [];
+        waitingSubscriptions[subjectName].push(handler);
+      }else{
+        const subject: Subject<T> = subjects[subjectName] as Subject<T>
+        subject.subscribe({
+          next: handler,
+        })
+      }
+      
+      let col = doubleSubscriptionGuard.has(subjectName)? doubleSubscriptionGuard.get(subjectName) as Map<string, boolean> : new Map<string, boolean>();
+      col.set(subscriberId,true);
+      doubleSubscriptionGuard.set(subjectName,col);
     }
-    const subject: Subject<T> = subjects[subjectName] as Subject<T>
-    subject.subscribe({
-      next: handler,
-    })
   }
 
   return {

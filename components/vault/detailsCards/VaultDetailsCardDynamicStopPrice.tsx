@@ -25,7 +25,6 @@ export function VaultDetailsCardDynamicStopPrice({
   slRatio,
   afterSlRatio,
   liquidationPrice,
-  afterSlTriggeringPrice,
   liquidationRatio,
   afterPillColors,
   showAfterPill,
@@ -36,15 +35,14 @@ export function VaultDetailsCardDynamicStopPrice({
   liquidationRatio: BigNumber
   isProtected: boolean
   afterSlRatio?: BigNumber
-  afterSlTriggeringPrice?: BigNumber
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
 
   const dynamicStopPrice = liquidationPrice.div(liquidationRatio).times(slRatio)
   const afterDynamicStopPrice =
-    afterSlTriggeringPrice && afterSlRatio
-      ? afterSlTriggeringPrice.div(liquidationRatio).times(afterSlRatio)
+    liquidationPrice && afterSlRatio
+      ? liquidationPrice.div(liquidationRatio).times(afterSlRatio)
       : zero
 
   return (

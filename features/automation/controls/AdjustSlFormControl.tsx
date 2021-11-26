@@ -23,39 +23,51 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
   const [collateralActive, setCloseToCollateral] = useState(false)
   const [txStatus, setTxStatus] = useState(TransactionLifecycle.None)
 
-  const { vault$, collateralPrices$, ilkDataList$, uiChanges } = useAppContext()
+  const { vault$, collateralPrices$, ilkDataList$, uiChanges, stopLossTriggersData$ } = useAppContext()
+
+  const slTriggerData$ = stopLossTriggersData$(id)
+
   const vaultDataWithError = useObservableWithError(vault$(id))
   const collateralPricesWithError = useObservableWithError(collateralPrices$)
   const ilksDataWithError = useObservableWithError(ilkDataList$)
+  const slTriggerDataWithError = useObservableWithError(slTriggerData$)
 
   uiChanges.createIfMissing<AddFormChange>(uiSubjectName)
 
+  function publishUIChange(props : AddFormChange){
+    console.log('Some Change is happening', props)
+    uiChanges.publish<AddFormChange>(uiSubjectName, props)
+  }
+
   return (
     <WithErrorHandler
-      error={[vaultDataWithError.error, collateralPricesWithError.error, ilksDataWithError.error]}
+      error={[vaultDataWithError.error, collateralPricesWithError.error, ilksDataWithError.error, slTriggerDataWithError.error]}
     >
       <WithLoadingIndicator
-        value={[vaultDataWithError.value, collateralPricesWithError.value, ilksDataWithError.value]}
+        value={[vaultDataWithError.value, collateralPricesWithError.value, ilksDataWithError.value, slTriggerDataWithError.value]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([vaultData, collateralPriceData, ilksData]) => {
+        {([vaultData, collateralPriceData, ilksData, slTriggerData]) => {
           const token = vaultData.token
           const tokenData = getToken(token)
           const currentIlkData = ilksData.filter((x) => x.ilk === vaultData.ilk)[0]
           const currentCollateralData = collateralPriceData.data.filter(
             (x) => x.token === vaultData.token,
           )[0]
+          const startingSlRatio =  slTriggerData.isStopLossEnabled?slTriggerData.stopLossLevel:
+          currentIlkData.liquidationRatio;
+
           const currentCollRatio = vaultData.lockedCollateral
             .multipliedBy(currentCollateralData.currentPrice)
             .dividedBy(vaultData.debt)
-          const currentLiquidationPrice = currentCollateralData.currentPrice
-            .multipliedBy(currentIlkData.liquidationRatio)
+          const startingAfterNewLiquidationPrice = currentCollateralData.currentPrice
+            .multipliedBy(startingSlRatio)
             .dividedBy(currentCollRatio)
-          const [selectedSLValue, setSelectedSLValue] = useState(
-            currentIlkData.liquidationRatio.multipliedBy(100),
+
+          const [selectedSLValue, setSelectedSLValue] = useState(startingSlRatio.multipliedBy(100),
           )
           const [afterNewLiquidationPrice, setAfterLiqPrice] = useState(
-            new BigNumber(currentLiquidationPrice),
+            new BigNumber(startingAfterNewLiquidationPrice),
           )
 
           const liqRatio = currentIlkData.liquidationRatio
@@ -65,6 +77,11 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
             onclickHandler: (optionName: string) => {
               console.log('collateralActive', collateralActive)
               setCloseToCollateral(optionName === validOptions[1])
+              publishUIChange({
+                  selectedSLValue,
+                  txStatus,
+                  collateralActive,
+                });
             },
             isCollateralActive: collateralActive,
             collateralTokenSymbol: token,
@@ -95,6 +112,11 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
                 .dividedBy(currentCollRatio)
               /* END OF DUPLICATION */
               setAfterLiqPrice(computedAfterLiqPrice)
+              publishUIChange({
+                selectedSLValue:slCollRatio,
+                txStatus,
+                collateralActive,
+              });
             },
           }
 
@@ -108,16 +130,6 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
             slValuePickerConfig: sliderProps,
             addTriggerConfig: addTriggerConfig,
           }
-
-          useEffect(() => {
-            const newVaues: AddFormChange = {
-              selectedSLValue,
-              txStatus,
-              collateralActive,
-            }
-            console.log('Some Change is happening', newVaues)
-            uiChanges.publish<AddFormChange>(uiSubjectName, newVaues)
-          }, [selectedSLValue, txStatus, collateralActive])
 
           return <AdjustSlFormLayout {...props} />
         }}
