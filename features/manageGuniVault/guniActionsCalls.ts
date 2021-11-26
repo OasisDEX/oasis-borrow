@@ -100,7 +100,7 @@ export function closeGuniVault<S extends CloseGuniTxStateDependencies>(
             (txState) =>
               of({
                 kind: 'manageInProgress',
-                manageTxHash: (txState as any).manageTxHash as string,
+                manageTxHash: (txState as any).txHash as string,
               }),
             (txState) => {
               return of({
