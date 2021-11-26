@@ -25,7 +25,10 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
   const ilksDataWithError = useObservableWithError(ilkDataList$)
   const [lastUIState, lastUIStateSetter] = useState<AddFormChange | undefined>(undefined)
 
-  uiChanges.subscribe<AddFormChange>(uiSubjectName, lastUIStateSetter)
+  uiChanges.subscribe<AddFormChange>(uiSubjectName, (value) => {
+    console.log('New UI value received', value)
+    lastUIStateSetter(value)
+  })
 
   return (
     <WithErrorHandler
