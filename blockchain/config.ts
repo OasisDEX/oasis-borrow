@@ -83,6 +83,7 @@ const protoMain = {
     '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
   ),
   exchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
+  noFeesExchange: contractDesc(exchange, '0x99e4484dac819aa74b347208752306615213d324'),
   fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
   etherscan: {
     url: 'https://etherscan.io',
@@ -143,6 +144,7 @@ const kovan: NetworkConfig = {
   guniResolver: '0x',
   guniRouter: '0x',
   exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  noFeesExchange: contractDesc(exchange, '0x0'),
   fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
   etherscan: {
     url: 'https://kovan.etherscan.io',
@@ -198,6 +200,7 @@ const goerli: NetworkConfig = {
   guniRouter: '0x',
   // Currently this is not supported on Goerli - no deployed contract
   exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''),
+  noFeesExchange: contractDesc(exchange, '0x0'),
   // Currently this is not supported on Goerli - no deployed contract
   fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
   etherscan: {
