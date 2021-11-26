@@ -91,6 +91,9 @@ function applyGuniCalculations(state: ManageMultiplyVaultState & GuniTxData) {
     ...state,
     netValueUSD,
     collateralDeltaUSD: shareAmount1,
+    oazoFee: zero,
+    loanFee: zero,
+    fees: zero,
     afterCloseToDai:
       shareAmount0 && minToTokenAmount ? shareAmount0.plus(minToTokenAmount).minus(debt) : zero,
   }
