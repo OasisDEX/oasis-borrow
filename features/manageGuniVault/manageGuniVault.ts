@@ -14,7 +14,7 @@ import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { getToken } from '../../blockchain/tokensMetadata'
-import { one } from '../../helpers/zero'
+import { one, zero } from '../../helpers/zero'
 import { applyExchange } from '../manageMultiplyVault/manageMultiplyQuote'
 import {
   ManageMultiplyVaultChange,
@@ -57,17 +57,18 @@ function applyManageVaultInjectedOverride(
   return state
 }
 
-type GuniCalculations = {}
-type GuniTxData = {}
-type GuniTxDataChange = { kind: 'guniTxData' } & GuniTxData
+type GuniTxData = {
+  shareAmount0?: BigNumber
+  shareAmount1?: BigNumber
+  minToTokenAmount?: BigNumber
+}
 
-function applyGuniDataChanges<S extends GuniCalculations, Ch extends GuniTxDataChange>(
-  state: S,
-  change: Ch,
-): S {
+type GuniTxDataChange = { kind: 'guniTxData' }
+
+function applyGuniDataChanges<S, Ch extends GuniTxDataChange>(state: S, change: Ch): S {
   if (change.kind === 'guniTxData') {
     const { kind: _, ...data } = change
-    console.log(change)
+
     return {
       ...state,
       ...data,
@@ -75,19 +76,39 @@ function applyGuniDataChanges<S extends GuniCalculations, Ch extends GuniTxDataC
   }
   return state
 }
+// this method overwrites state from s7
+function applyGuniCalculations(state: ManageMultiplyVaultState & GuniTxData) {
+  const {
+    vault: { lockedCollateralUSD, debt },
+    shareAmount0,
+    shareAmount1,
+    minToTokenAmount,
+  } = state
+
+  const netValueUSD = lockedCollateralUSD.minus(debt)
+
+  return {
+    ...state,
+    netValueUSD,
+    collateralDeltaUSD: shareAmount1,
+    afterCloseToDai:
+      shareAmount0 && minToTokenAmount ? shareAmount0.plus(minToTokenAmount).minus(debt) : zero,
+  }
+}
 
 function apply(
   state: ManageMultiplyVaultState,
   change: ManageMultiplyVaultChange | GuniTxDataChange,
 ) {
-  const s1_ = applyExchange(change as ManageMultiplyVaultChange, state)
-  const s4 = applyManageVaultTransition(change as ManageMultiplyVaultChange, s1_)
-  const s5 = applyManageVaultTransaction(change as ManageMultiplyVaultChange, s4)
-  const s6 = applyManageVaultEnvironment(change as ManageMultiplyVaultChange, s5)
-  const s7 = applyManageVaultInjectedOverride(change as ManageMultiplyVaultChange, s6)
-  const s7_ = applyGuniDataChanges(s7, change as GuniTxDataChange)
-  const s8 = applyManageVaultCalculations(s7_) // TODO probably we need guni specific calculations
-  const s9 = applyManageVaultStageCategorisation(s8)
+  const s1 = applyExchange(change as ManageMultiplyVaultChange, state)
+  const s2 = applyManageVaultTransition(change as ManageMultiplyVaultChange, s1)
+  const s3 = applyManageVaultTransaction(change as ManageMultiplyVaultChange, s2)
+  const s4 = applyManageVaultEnvironment(change as ManageMultiplyVaultChange, s3)
+  const s5 = applyManageVaultInjectedOverride(change as ManageMultiplyVaultChange, s4)
+  const s6 = applyGuniDataChanges(s5, change as GuniTxDataChange)
+  const s7 = applyManageVaultCalculations(s6)
+  const s8 = applyGuniCalculations(s7)
+  const s9 = applyManageVaultStageCategorisation(s8 as ManageMultiplyVaultState)
   const s10 = applyManageVaultConditions(s9)
   return applyManageVaultSummary(s10)
 }
@@ -202,7 +223,7 @@ export function createManageGuniVault$(
                     'skip',
                   )
 
-                  const initialState: ManageMultiplyVaultState = {
+                  const initialState: ManageMultiplyVaultState & GuniTxData = {
                     ...defaultMutableManageMultiplyVaultState,
                     ...defaultManageMultiplyVaultCalculations,
                     ...defaultManageMultiplyVaultConditions,
@@ -231,12 +252,7 @@ export function createManageGuniVault$(
 
                   const guniDataChange$ = getProportions$(vault.lockedCollateral, vault.token).pipe(
                     switchMap(({ shareAmount0, shareAmount1 }) => {
-                      // TODO calculations required here
-                      console.log(shareAmount0.toNumber())
-                      console.log(shareAmount1.toNumber())
-
                       const requiredDebt = vault.debt
-
                       const { token1 } = getToken(vault.token) // USDC
 
                       return exchangeQuote$(
@@ -256,12 +272,9 @@ export function createManageGuniVault$(
                             shareAmount0,
                             shareAmount1: shareAmount1.minus(0.01),
                             requiredDebt,
-
                             fromTokenAmount: swap.collateralAmount,
                             toTokenAmount: swap.daiAmount,
                             minToTokenAmount: swap.daiAmount.times(one.minus(SLIPPAGE)),
-
-                            // fill all necessary parametrs here
                           }
                         }),
                       )
