@@ -11,7 +11,7 @@ export function AddTriggerLayout(props: AddTriggerProps) {
   const { t } = useTranslation()
   const caption = t(props.translationKey)
   return (
-    <Button variant="primary" onClick={props.onClick}>
+    <Button sx={{ width: '80%', justifySelf: 'center' }} variant="primary" onClick={props.onClick}>
       {caption}
     </Button>
   )

@@ -1,4 +1,3 @@
-import { useEffect } from '@storybook/addons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
@@ -23,7 +22,13 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
   const [collateralActive, setCloseToCollateral] = useState(false)
   const [txStatus, setTxStatus] = useState(TransactionLifecycle.None)
 
-  const { vault$, collateralPrices$, ilkDataList$, uiChanges, stopLossTriggersData$ } = useAppContext()
+  const {
+    vault$,
+    collateralPrices$,
+    ilkDataList$,
+    uiChanges,
+    stopLossTriggersData$,
+  } = useAppContext()
 
   const slTriggerData$ = stopLossTriggersData$(id)
 
@@ -34,17 +39,27 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
 
   uiChanges.createIfMissing<AddFormChange>(uiSubjectName)
 
-  function publishUIChange(props : AddFormChange){
+  function publishUIChange(props: AddFormChange) {
     console.log('Some Change is happening', props)
     uiChanges.publish<AddFormChange>(uiSubjectName, props)
   }
 
   return (
     <WithErrorHandler
-      error={[vaultDataWithError.error, collateralPricesWithError.error, ilksDataWithError.error, slTriggerDataWithError.error]}
+      error={[
+        vaultDataWithError.error,
+        collateralPricesWithError.error,
+        ilksDataWithError.error,
+        slTriggerDataWithError.error,
+      ]}
     >
       <WithLoadingIndicator
-        value={[vaultDataWithError.value, collateralPricesWithError.value, ilksDataWithError.value, slTriggerDataWithError.value]}
+        value={[
+          vaultDataWithError.value,
+          collateralPricesWithError.value,
+          ilksDataWithError.value,
+          slTriggerDataWithError.value,
+        ]}
         customLoader={<VaultContainerSpinner />}
       >
         {([vaultData, collateralPriceData, ilksData, slTriggerData]) => {
@@ -54,8 +69,9 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
           const currentCollateralData = collateralPriceData.data.filter(
             (x) => x.token === vaultData.token,
           )[0]
-          const startingSlRatio =  slTriggerData.isStopLossEnabled?slTriggerData.stopLossLevel:
-          currentIlkData.liquidationRatio;
+          const startingSlRatio = slTriggerData.isStopLossEnabled
+            ? slTriggerData.stopLossLevel
+            : currentIlkData.liquidationRatio
 
           const currentCollRatio = vaultData.lockedCollateral
             .multipliedBy(currentCollateralData.currentPrice)
@@ -64,8 +80,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
             .multipliedBy(startingSlRatio)
             .dividedBy(currentCollRatio)
 
-          const [selectedSLValue, setSelectedSLValue] = useState(startingSlRatio.multipliedBy(100),
-          )
+          const [selectedSLValue, setSelectedSLValue] = useState(startingSlRatio.multipliedBy(100))
           const [afterNewLiquidationPrice, setAfterLiqPrice] = useState(
             new BigNumber(startingAfterNewLiquidationPrice),
           )
@@ -78,10 +93,10 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
               console.log('collateralActive', collateralActive)
               setCloseToCollateral(optionName === validOptions[1])
               publishUIChange({
-                  selectedSLValue,
-                  txStatus,
-                  collateralActive,
-                });
+                selectedSLValue,
+                txStatus,
+                collateralActive,
+              })
             },
             isCollateralActive: collateralActive,
             collateralTokenSymbol: token,
@@ -113,10 +128,10 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
               /* END OF DUPLICATION */
               setAfterLiqPrice(computedAfterLiqPrice)
               publishUIChange({
-                selectedSLValue:slCollRatio,
+                selectedSLValue: slCollRatio,
                 txStatus,
                 collateralActive,
-              });
+              })
             },
           }
 

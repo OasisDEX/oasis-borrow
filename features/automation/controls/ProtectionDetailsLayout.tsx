@@ -48,8 +48,7 @@ export function ProtectionDetailsLayout({
   // protection state
   protectionState: { stage, inputAmountsEmpty, afterSlRatio },
 }: ProtectionDetailsLayoutProps) {
-
-  console.log("ProtectionDetailsLayout rerender",afterSlRatio?.toString());
+  console.log('ProtectionDetailsLayout rerender', afterSlRatio?.toString())
   const showAfterPill = !inputAmountsEmpty && stage !== 'protectionSuccess'
 
   const afterPillColors = getAfterPillColors('onSuccess')

@@ -75,7 +75,7 @@ import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiply
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
-import { combineLatest, Observable, of, Subject } from 'rxjs'
+import { combineLatest, Observable, of, Subject, Subscription } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { dogIlk } from '../blockchain/calls/dog'
@@ -157,20 +157,40 @@ function createTxHelpers$(
 }
 
 function createUIChangesSubject() {
+  interface HangingSubscription<T> {
+    subscriberId: string
+    handler: (value: T) => void
+  }
+
   const subjects: any = {}
-  const waitingSubscriptions: any = {};
-  const doubleSubscriptionGuard : Map<string,Map<string,boolean>> = new Map<string,Map<string,boolean>>()
+  const waitingSubscriptions: any = {}
+  const doubleSubscriptionGuard: Map<string, Map<string, any>> = new Map<string, Map<string, any>>()
+  const existingSubscriptions: Map<string, Map<string, Subscription>> = new Map<
+    string,
+    Map<string, Subscription>
+  >()
+
+  function addSubscription(subjectName: string, subscriberId: string, sub: Subscription) {
+    if (!existingSubscriptions.get(subjectName)) {
+      existingSubscriptions.set(subjectName, new Map<string, Subscription>())
+    }
+    existingSubscriptions.get(subjectName)?.set(subscriberId, sub)
+  }
 
   function createIfMissing<T>(subjectName: string): void {
     if (!subjects[subjectName]) {
-      const newSubject =  new Subject<T>();
-      subjects[subjectName] = newSubject;
-      if(waitingSubscriptions[subjectName] && waitingSubscriptions[subjectName].length){
-        let waitingHandlers : Array< (value: T) => void> = waitingSubscriptions[subjectName] as Array< (value: T) => void> ;
-        waitingHandlers.forEach(handler => {
-          newSubject.subscribe({
-            next: handler,
-          });
+      const newSubject = new Subject<T>()
+      subjects[subjectName] = newSubject
+      if (waitingSubscriptions[subjectName] && waitingSubscriptions[subjectName].length) {
+        const waitingHandlers: Array<HangingSubscription<T>> = waitingSubscriptions[
+          subjectName
+        ] as Array<HangingSubscription<T>>
+        waitingHandlers.forEach((item) => {
+          const sub = newSubject.subscribe({
+            next: item.handler,
+          })
+          console.log('Adding early subscription', subjectName, item.subscriberId)
+          addSubscription(subjectName, item.subscriberId, sub)
         })
         delete waitingSubscriptions[subjectName]
       }
@@ -185,21 +205,42 @@ function createUIChangesSubject() {
     subject.next(data)
   }
 
-  function subscribe<T>(subjectName: string, subscriberId : string, handler: (value: T) => void) {
-    if(!doubleSubscriptionGuard.get(subjectName)?.get(subscriberId)){
+  function unsubscribe<T>(subjectName: string, subscriberId: string) {
+    console.log('Unsubscribing', subjectName, subscriberId)
+
+    if (waitingSubscriptions[subjectName]) {
+      const subs = waitingSubscriptions[subjectName] as Array<HangingSubscription<T>>
+      const excludedSubs = subs.filter((x) => x.subscriberId !== subscriberId)
+      waitingSubscriptions[subjectName] = new Array<HangingSubscription<T>>(...excludedSubs)
+    }
+
+    if (existingSubscriptions.get(subjectName)?.get(subscriberId)) {
+      existingSubscriptions.get(subjectName)?.get(subscriberId)?.unsubscribe()
+    }
+  }
+
+  function subscribe<T>(subjectName: string, subscriberId: string, handler: (value: T) => void) {
+    console.log('Subscribing', subjectName, subscriberId)
+    if (!doubleSubscriptionGuard.get(subjectName)?.get(subscriberId)) {
       if (!subjects[subjectName]) {
-        waitingSubscriptions[subjectName] = waitingSubscriptions[subjectName] || [];
-        waitingSubscriptions[subjectName].push(handler);
-      }else{
+        waitingSubscriptions[subjectName] = waitingSubscriptions[subjectName] || []
+        waitingSubscriptions[subjectName].push({
+          subscriberId,
+          handler,
+        } as HangingSubscription<T>)
+      } else {
         const subject: Subject<T> = subjects[subjectName] as Subject<T>
-        subject.subscribe({
+        const sub = subject.subscribe({
           next: handler,
         })
+        addSubscription(subjectName, subscriberId, sub)
       }
-      
-      let col = doubleSubscriptionGuard.has(subjectName)? doubleSubscriptionGuard.get(subjectName) as Map<string, boolean> : new Map<string, boolean>();
-      col.set(subscriberId,true);
-      doubleSubscriptionGuard.set(subjectName,col);
+
+      const col = doubleSubscriptionGuard.has(subjectName)
+        ? (doubleSubscriptionGuard.get(subjectName) as Map<string, any>)
+        : new Map<string, any>()
+      col.set(subscriberId, handler)
+      doubleSubscriptionGuard.set(subjectName, col)
     }
   }
 
@@ -207,6 +248,7 @@ function createUIChangesSubject() {
     createIfMissing: createIfMissing,
     subscribe: subscribe,
     publish: publish,
+    unsubscribe: unsubscribe,
   }
 }
 

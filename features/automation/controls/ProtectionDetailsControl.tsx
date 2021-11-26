@@ -3,7 +3,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import React from 'react'
 
 import { AddFormChange } from '../common/UITypes/AddFormChange'
@@ -26,9 +26,15 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
   const ilksDataWithError = useObservableWithError(ilkDataList$)
   const [lastUIState, lastUIStateSetter] = useState<AddFormChange | undefined>(undefined)
 
-  uiChanges.subscribe<AddFormChange>(uiSubjectName,subscriberId, (value) => {
-    console.log('New UI value received', value)
-    lastUIStateSetter(value)
+  useEffect(() => {
+    uiChanges.subscribe<AddFormChange>(uiSubjectName, subscriberId, (value) => {
+      console.log('New UI value received', value)
+      lastUIStateSetter(value)
+    })
+
+    return () => {
+      uiChanges.unsubscribe(uiSubjectName, subscriberId)
+    }
   })
 
   return (
@@ -72,7 +78,9 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
             protectionState: {
               inputAmountsEmpty: false,
               stage: 'editing',
-              afterSlRatio: lastUIState ? lastUIState.selectedSLValue.dividedBy(100) : new BigNumber(0),
+              afterSlRatio: lastUIState
+                ? lastUIState.selectedSLValue.dividedBy(100)
+                : new BigNumber(0),
             },
           }
           return <ProtectionDetailsLayout {...props} />
