@@ -2,27 +2,32 @@ import { Button, Flex, Spinner, Text } from '@theme-ui/components'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
-export interface AddTriggerProps {
-  onClick: (cancelLoader:()=>void) => void
+export interface RetryableLoadingButtonProps {
+  onClick: (finishLoader:(succed : boolean)=>void) => void
   translationKey: string,
   isRetry:boolean,
   isLoading:boolean
 }
 
-export function AddTriggerLayout(props: AddTriggerProps) {
+export function RetryableLoadingButton(props: RetryableLoadingButtonProps) {
   const { t } = useTranslation()
-  const  caption = t(props.isRetry?'retry':props.translationKey)
   const [isLoading,setLoading] = useState(false);
+  const [isRetry,setRetry] = useState(false);
 
   function buttonClickHandler(){
-    setLoading(true);
-    props.onClick(()=>{
-      setLoading(false);
-    });
+    if(!isLoading){
+      console.log("Handling click");
+      setLoading(true);
+      props.onClick((succeded : boolean)=>{
+        setLoading(false);
+        setRetry(!succeded);
+      });
+    }
   }
 
   useEffect(()=>{
     setLoading(props.isLoading);
+    setRetry(props.isRetry);
   },[])
 
   return (
@@ -40,11 +45,11 @@ export function AddTriggerLayout(props: AddTriggerProps) {
                   transform: 'translate(-105%, -50%)',
                 }}
               />
-              {caption}
+              { t(isRetry?'retry':props.translationKey) }
             </Text>
           </Flex>
         ) : (
-          <Text>{caption}</Text>
+          <Text>{ t(isRetry?'retry':props.translationKey) }</Text>
         )}
     </Button>
   )

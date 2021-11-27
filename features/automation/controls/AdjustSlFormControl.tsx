@@ -8,12 +8,12 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservableWithError } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import React from 'react'
 
 import { TransactionLifecycle } from '../common/enums/TxStatus'
 import { AddFormChange } from '../common/UITypes/AddFormChange'
-import { AddTriggerProps } from './AddTriggerLayout'
+import { RetryableLoadingButtonProps } from '../../../components/stateless/RetryableLoadingButton'
 import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
 import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
 import { Vault } from 'blockchain/vaults'
@@ -25,6 +25,8 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
   const validOptions: FixedSizeArray<string, 2> = ['collateral', 'dai']
   const [collateralActive, setCloseToCollateral] = useState(false)
   const [txStatus, setTxStatus] = useState(TransactionLifecycle.None)
+  const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
+ // const [txLoderCompletedHandler, setTxHandler] = useState<(succeded : boolean) => void>();
 
   const {
     vault$,
@@ -70,12 +72,15 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
         .multipliedBy(startingSlRatio)
         .dividedBy(currentCollRatio)
 
-      const [selectedSLValue, setSelectedSLValue] = useState(startingSlRatio.multipliedBy(100))
       const [afterNewLiquidationPrice, setAfterLiqPrice] = useState(
         new BigNumber(startingAfterNewLiquidationPrice),
       )
 
       const liqRatio = currentIlkData.liquidationRatio
+
+      useEffect(()=>{
+        setSelectedSLValue(startingSlRatio.multipliedBy(100));
+      },[])
 
       const closeProps: PickCloseStateProps = {
         optionNames: validOptions,
@@ -125,12 +130,12 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
         },
       }
 
-      const addTriggerConfig: AddTriggerProps = {
+      const addTriggerConfig: RetryableLoadingButtonProps = {
         translationKey: 'add-stop-loss',
-        onClick: (cancelLoader:() => void) =>{
+        onClick: (finishLoader:(succeded : boolean) => void) =>{
           setTxStatus(TransactionLifecycle.Requested);
-          console.log("Requesting transaction");
-          setTimeout(cancelLoader,5000);
+         // setTxHandler(finishLoader);
+          setTimeout(()=>finishLoader(Math.random()>0.5),5000);
         },
         isLoading:false,
         isRetry:false,
