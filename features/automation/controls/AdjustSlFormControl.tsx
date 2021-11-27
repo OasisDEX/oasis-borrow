@@ -20,13 +20,18 @@ import { Vault } from 'blockchain/vaults'
 import { IlkDataList } from 'blockchain/ilks'
 import { StopLossTriggerData } from '../triggers/StopLossTriggerData'
 
+interface TxProgressData{
+  stage : TransactionLifecycle,
+  endStatusHandler : ((succeded : boolean) => void ) | undefined
+}
+
 export function AdjustSlFormControl({ id }: { id: BigNumber }) {
   const uiSubjectName = 'AdjustSlForm'
   const validOptions: FixedSizeArray<string, 2> = ['collateral', 'dai']
   const [collateralActive, setCloseToCollateral] = useState(false)
-  const [txStatus, setTxStatus] = useState(TransactionLifecycle.None)
+  const [txStatus, setTxStatus] = useState<TxProgressData>({stage:TransactionLifecycle.None, endStatusHandler: undefined})
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
- // const [txLoderCompletedHandler, setTxHandler] = useState<(succeded : boolean) => void>();
+  //const [txLoderCompletedHandler, setTxHandler] = useState<(succeded : boolean) => void>();
 
   const {
     vault$,
@@ -78,9 +83,15 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
 
       const liqRatio = currentIlkData.liquidationRatio
 
+      //set proper defaults
       useEffect(()=>{
         setSelectedSLValue(startingSlRatio.multipliedBy(100));
       },[])
+
+      //listen for button clicks and finished transactions
+      useEffect(()=>{
+        console.log("Detecting change of txStatus",txStatus);
+      },[txStatus])
 
       const closeProps: PickCloseStateProps = {
         optionNames: validOptions,
@@ -133,9 +144,11 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       const addTriggerConfig: RetryableLoadingButtonProps = {
         translationKey: 'add-stop-loss',
         onClick: (finishLoader:(succeded : boolean) => void) =>{
-          setTxStatus(TransactionLifecycle.Requested);
-         // setTxHandler(finishLoader);
-          setTimeout(()=>finishLoader(Math.random()>0.5),5000);
+          setTxStatus({
+            stage: TransactionLifecycle.Requested,
+            endStatusHandler : finishLoader
+          });
+          setTimeout(()=>{ finishLoader(Math.random()>0.5) },5000);
         },
         isLoading:false,
         isRetry:false,
