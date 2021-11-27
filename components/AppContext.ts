@@ -75,7 +75,7 @@ import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiply
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
-import { combineLatest, Observable, of, Subject, Subscription } from 'rxjs'
+import { BehaviorSubject, combineLatest, Observable, of, Subject, Subscription } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { dogIlk } from '../blockchain/calls/dog'
@@ -177,9 +177,11 @@ function createUIChangesSubject() {
     existingSubscriptions.get(subjectName)?.set(subscriberId, sub)
   }
 
-  function createIfMissing<T>(subjectName: string): void {
+  function createIfMissing<T>(subjectName: string, defaultValue : T): void {
+    
     if (!subjects[subjectName]) {
-      const newSubject = new Subject<T>()
+      console.log("createIfMissing", subjectName);
+      const newSubject = new BehaviorSubject<T>(defaultValue)
       subjects[subjectName] = newSubject
       if (waitingSubscriptions[subjectName] && waitingSubscriptions[subjectName].length) {
         const waitingHandlers: Array<HangingSubscription<T>> = waitingSubscriptions[
@@ -194,6 +196,8 @@ function createUIChangesSubject() {
         })
         delete waitingSubscriptions[subjectName]
       }
+    }else{
+      console.log("createIfMissing - no action");
     }
   }
 
@@ -201,7 +205,7 @@ function createUIChangesSubject() {
     if (!subjects[subjectName]) {
       throw new Error(`Subject ${subjectName} not created`)
     }
-    const subject: Subject<T> = subjects[subjectName] as Subject<T>
+    const subject: BehaviorSubject<T> = subjects[subjectName] as BehaviorSubject<T>
     subject.next(data)
   }
 
@@ -216,6 +220,8 @@ function createUIChangesSubject() {
 
     if (existingSubscriptions.get(subjectName)?.get(subscriberId)) {
       existingSubscriptions.get(subjectName)?.get(subscriberId)?.unsubscribe()
+      existingSubscriptions.get(subjectName)?.delete(subscriberId);
+      doubleSubscriptionGuard.get(subjectName)?.delete(subscriberId);
     }
   }
 

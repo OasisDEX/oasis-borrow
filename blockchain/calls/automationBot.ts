@@ -13,7 +13,7 @@ export type AutomationBotAddTriggerData = {
   triggerType: BigNumber
   serviceRegistry: string
   triggerData: string
-  automationBotAddress: string
+  proxyAddress : string
 }
 
 function getAddAutomationTriggerCallData(
@@ -30,8 +30,8 @@ function getAddAutomationTriggerCallData(
 }
 
 export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData> = {
-  call: ({ automationBotAddress }, { contract }) => {
-    return contract<DsProxy>(contractDesc(dsProxy, automationBotAddress)).methods[
+  call: ({ proxyAddress }, { contract }) => {
+    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods[
       'execute(address,bytes)'
     ]
   },

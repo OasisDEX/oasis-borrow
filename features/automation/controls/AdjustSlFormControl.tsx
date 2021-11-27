@@ -15,6 +15,10 @@ import { TransactionLifecycle } from '../common/enums/TxStatus'
 import { AddFormChange } from '../common/UITypes/AddFormChange'
 import { AddTriggerProps } from './AddTriggerLayout'
 import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
+import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
+import { Vault } from 'blockchain/vaults'
+import { IlkDataList } from 'blockchain/ilks'
+import { StopLossTriggerData } from '../triggers/StopLossTriggerData'
 
 export function AdjustSlFormControl({ id }: { id: BigNumber }) {
   const uiSubjectName = 'AdjustSlForm'
@@ -37,12 +41,106 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
   const ilksDataWithError = useObservableWithError(ilkDataList$)
   const slTriggerDataWithError = useObservableWithError(slTriggerData$)
 
-  uiChanges.createIfMissing<AddFormChange>(uiSubjectName)
+  uiChanges.createIfMissing<AddFormChange>(uiSubjectName,{
+    txStatus:TransactionLifecycle.None,
+    selectedSLValue:new BigNumber(0),
+    collateralActive: false
+  })
 
   function publishUIChange(props: AddFormChange) {
     console.log('Some Change is happening', props)
     uiChanges.publish<AddFormChange>(uiSubjectName, props)
   }
+
+  function renderLayout(vaultData : Vault,collateralPriceData : CollateralPricesWithFilters, ilksData : IlkDataList, slTriggerData: StopLossTriggerData){
+      const token = vaultData.token
+      const tokenData = getToken(token)
+      const currentIlkData = ilksData.filter((x) => x.ilk === vaultData.ilk)[0]
+      const currentCollateralData = collateralPriceData.data.filter(
+        (x) => x.token === vaultData.token,
+      )[0]
+      const startingSlRatio = slTriggerData.isStopLossEnabled
+        ? slTriggerData.stopLossLevel
+        : currentIlkData.liquidationRatio
+
+      const currentCollRatio = vaultData.lockedCollateral
+        .multipliedBy(currentCollateralData.currentPrice)
+        .dividedBy(vaultData.debt)
+      const startingAfterNewLiquidationPrice = currentCollateralData.currentPrice
+        .multipliedBy(startingSlRatio)
+        .dividedBy(currentCollRatio)
+
+      const [selectedSLValue, setSelectedSLValue] = useState(startingSlRatio.multipliedBy(100))
+      const [afterNewLiquidationPrice, setAfterLiqPrice] = useState(
+        new BigNumber(startingAfterNewLiquidationPrice),
+      )
+
+      const liqRatio = currentIlkData.liquidationRatio
+
+      const closeProps: PickCloseStateProps = {
+        optionNames: validOptions,
+        onclickHandler: (optionName: string) => {
+          console.log('collateralActive', collateralActive)
+          setCloseToCollateral(optionName === validOptions[1])
+          publishUIChange({
+            selectedSLValue,
+            txStatus,
+            collateralActive,
+          })
+        },
+        isCollateralActive: collateralActive,
+        collateralTokenSymbol: token,
+        collateralTokenIconCircle: tokenData.iconCircle,
+      }
+
+      const sliderProps: SliderValuePickerProps = {
+        disabled: false,
+        leftBoundry: selectedSLValue,
+        rightBoundry: afterNewLiquidationPrice,
+        sliderKey: 'set-stoploss',
+        lastValue: selectedSLValue,
+        leftBoundryFormatter: (x: BigNumber) => formatPercent(x),
+        leftBoundryStyling: { fontWeight: 'semiBold' },
+        rightBoundryFormatter: (x: BigNumber) => '$ ' + formatAmount(x, 'USD'),
+        rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
+        maxBoundry: currentCollRatio.multipliedBy(100),
+        minBoundry: liqRatio.multipliedBy(100),
+        setter: (slCollRatio) => {
+          setSelectedSLValue(slCollRatio)
+          /*TO DO: this is duplicated and can be extracted*/
+          const currentCollRatio = vaultData.lockedCollateral
+            .multipliedBy(currentCollateralData.currentPrice)
+            .dividedBy(vaultData.debt)
+          const computedAfterLiqPrice = slCollRatio
+            .dividedBy(100)
+            .multipliedBy(currentCollateralData.currentPrice)
+            .dividedBy(currentCollRatio)
+          /* END OF DUPLICATION */
+          setAfterLiqPrice(computedAfterLiqPrice)
+          publishUIChange({
+            selectedSLValue: slCollRatio,
+            txStatus,
+            collateralActive,
+          })
+        },
+      }
+
+      const addTriggerConfig: AddTriggerProps = {
+        translationKey: 'add-stop-loss',
+        onClick: () =>{
+          setTxStatus(TransactionLifecycle.Requested);
+          console.log("Requesting transaction");
+        },
+      }
+
+      const props: AdjustSlFormLayoutProps = {
+        closePickerConfig: closeProps,
+        slValuePickerConfig: sliderProps,
+        addTriggerConfig: addTriggerConfig,
+      }
+
+      return <AdjustSlFormLayout {...props} />
+    }
 
   return (
     <WithErrorHandler
@@ -62,92 +160,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
         ]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([vaultData, collateralPriceData, ilksData, slTriggerData]) => {
-          const token = vaultData.token
-          const tokenData = getToken(token)
-          const currentIlkData = ilksData.filter((x) => x.ilk === vaultData.ilk)[0]
-          const currentCollateralData = collateralPriceData.data.filter(
-            (x) => x.token === vaultData.token,
-          )[0]
-          const startingSlRatio = slTriggerData.isStopLossEnabled
-            ? slTriggerData.stopLossLevel
-            : currentIlkData.liquidationRatio
-
-          const currentCollRatio = vaultData.lockedCollateral
-            .multipliedBy(currentCollateralData.currentPrice)
-            .dividedBy(vaultData.debt)
-          const startingAfterNewLiquidationPrice = currentCollateralData.currentPrice
-            .multipliedBy(startingSlRatio)
-            .dividedBy(currentCollRatio)
-
-          const [selectedSLValue, setSelectedSLValue] = useState(startingSlRatio.multipliedBy(100))
-          const [afterNewLiquidationPrice, setAfterLiqPrice] = useState(
-            new BigNumber(startingAfterNewLiquidationPrice),
-          )
-
-          const liqRatio = currentIlkData.liquidationRatio
-
-          const closeProps: PickCloseStateProps = {
-            optionNames: validOptions,
-            onclickHandler: (optionName: string) => {
-              console.log('collateralActive', collateralActive)
-              setCloseToCollateral(optionName === validOptions[1])
-              publishUIChange({
-                selectedSLValue,
-                txStatus,
-                collateralActive,
-              })
-            },
-            isCollateralActive: collateralActive,
-            collateralTokenSymbol: token,
-            collateralTokenIconCircle: tokenData.iconCircle,
-          }
-
-          const sliderProps: SliderValuePickerProps = {
-            disabled: false,
-            leftBoundry: selectedSLValue,
-            rightBoundry: afterNewLiquidationPrice,
-            sliderKey: 'set-stoploss',
-            lastValue: selectedSLValue,
-            leftBoundryFormatter: (x: BigNumber) => formatPercent(x),
-            leftBoundryStyling: { fontWeight: 'semiBold' },
-            rightBoundryFormatter: (x: BigNumber) => '$ ' + formatAmount(x, 'USD'),
-            rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
-            maxBoundry: currentCollRatio.multipliedBy(100),
-            minBoundry: liqRatio.multipliedBy(100),
-            setter: (slCollRatio) => {
-              setSelectedSLValue(slCollRatio)
-              /*TO DO: this is duplicated and can be extracted*/
-              const currentCollRatio = vaultData.lockedCollateral
-                .multipliedBy(currentCollateralData.currentPrice)
-                .dividedBy(vaultData.debt)
-              const computedAfterLiqPrice = slCollRatio
-                .dividedBy(100)
-                .multipliedBy(currentCollateralData.currentPrice)
-                .dividedBy(currentCollRatio)
-              /* END OF DUPLICATION */
-              setAfterLiqPrice(computedAfterLiqPrice)
-              publishUIChange({
-                selectedSLValue: slCollRatio,
-                txStatus,
-                collateralActive,
-              })
-            },
-          }
-
-          const addTriggerConfig: AddTriggerProps = {
-            translationKey: 'add-stop-loss',
-            onClick: () => setTxStatus(TransactionLifecycle.Requested),
-          }
-
-          const props: AdjustSlFormLayoutProps = {
-            closePickerConfig: closeProps,
-            slValuePickerConfig: sliderProps,
-            addTriggerConfig: addTriggerConfig,
-          }
-
-          return <AdjustSlFormLayout {...props} />
-        }}
+        {([v,c,i,s])=> renderLayout(v,c,i,s)}
       </WithLoadingIndicator>
     </WithErrorHandler>
   )

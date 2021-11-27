@@ -9,6 +9,8 @@ import React from 'react'
 import { AddFormChange } from '../common/UITypes/AddFormChange'
 import { ProtectionDetailsLayout, ProtectionDetailsLayoutProps } from './ProtectionDetailsLayout'
 
+function renderLayout()
+
 export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
   const uiSubjectName = 'AdjustSlForm'
   const subscriberId = 'ProtectionDetailsControl'
@@ -26,16 +28,17 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
   const ilksDataWithError = useObservableWithError(ilkDataList$)
   const [lastUIState, lastUIStateSetter] = useState<AddFormChange | undefined>(undefined)
 
-  useEffect(() => {
+  useEffect(()=>{
+    console.log("Subscribing to uiChanges")
     uiChanges.subscribe<AddFormChange>(uiSubjectName, subscriberId, (value) => {
       console.log('New UI value received', value)
       lastUIStateSetter(value)
-    })
-
-    return () => {
-      uiChanges.unsubscribe(uiSubjectName, subscriberId)
+    });
+    return ()=>{
+      console.log("Unsubscribing FROM uiChanges")
+      return uiChanges.unsubscribe(uiSubjectName, subscriberId);
     }
-  })
+  },[]);
 
   return (
     <WithErrorHandler
@@ -56,6 +59,8 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
         customLoader={<VaultContainerSpinner />}
       >
         {([triggersData, vaultData, collateralPrices, ilkDataList]) => {
+          
+
           const ilk = ilkDataList.filter((x) => x.ilk === vaultData.ilk)[0]
 
           const collateralPrice = collateralPrices.data.filter(
