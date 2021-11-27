@@ -127,10 +127,13 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
 
       const addTriggerConfig: AddTriggerProps = {
         translationKey: 'add-stop-loss',
-        onClick: () =>{
+        onClick: (cancelLoader:() => void) =>{
           setTxStatus(TransactionLifecycle.Requested);
           console.log("Requesting transaction");
+          setTimeout(cancelLoader,5000);
         },
+        isLoading:false,
+        isRetry:false,
       }
 
       const props: AdjustSlFormLayoutProps = {
