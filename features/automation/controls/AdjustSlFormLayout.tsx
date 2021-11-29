@@ -2,7 +2,10 @@ import { Box, Grid } from '@theme-ui/components'
 import { PickCloseState, PickCloseStateProps } from 'components/stateless/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/stateless/SliderValuePicker'
 
-import { RetryableLoadingButton, RetryableLoadingButtonProps } from '../../../components/stateless/RetryableLoadingButton'
+import {
+  RetryableLoadingButton,
+  RetryableLoadingButtonProps,
+} from '../../../components/stateless/RetryableLoadingButton'
 
 export interface AdjustSlFormLayoutProps {
   closePickerConfig: PickCloseStateProps

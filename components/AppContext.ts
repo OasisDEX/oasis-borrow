@@ -177,10 +177,9 @@ function createUIChangesSubject() {
     existingSubscriptions.get(subjectName)?.set(subscriberId, sub)
   }
 
-  function createIfMissing<T>(subjectName: string, defaultValue : T): void {
-    
+  function createIfMissing<T>(subjectName: string, defaultValue: T): void {
     if (!subjects[subjectName]) {
-      console.log("createIfMissing", subjectName);
+      console.log('createIfMissing', subjectName)
       const newSubject = new BehaviorSubject<T>(defaultValue)
       subjects[subjectName] = newSubject
       if (waitingSubscriptions[subjectName] && waitingSubscriptions[subjectName].length) {
@@ -196,8 +195,8 @@ function createUIChangesSubject() {
         })
         delete waitingSubscriptions[subjectName]
       }
-    }else{
-      console.log("createIfMissing - no action");
+    } else {
+      console.log('createIfMissing - no action')
     }
   }
 
@@ -220,8 +219,8 @@ function createUIChangesSubject() {
 
     if (existingSubscriptions.get(subjectName)?.get(subscriberId)) {
       existingSubscriptions.get(subjectName)?.get(subscriberId)?.unsubscribe()
-      existingSubscriptions.get(subjectName)?.delete(subscriberId);
-      doubleSubscriptionGuard.get(subjectName)?.delete(subscriberId);
+      existingSubscriptions.get(subjectName)?.delete(subscriberId)
+      doubleSubscriptionGuard.get(subjectName)?.delete(subscriberId)
     }
   }
 

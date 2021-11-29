@@ -77,6 +77,7 @@ const protoMain = {
   dsProxyFactory: contractDesc(dsProxyFactory, mainnetAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
   automationBot: contractDesc(automationBot, '0x'), // TODO: add address
+  serviceRegistry: '0x', // TODO: add address
   guniProxyActions: contractDesc(guniProxyActions, '0x64b0010f6b90d0ae0bf2587ba47f2d3437487447'),
   guniResolver: '0x0317650Af6f184344D7368AC8bB0bEbA5EDB214a',
   guniRouter: '0x14E6D67F824C3a7b4329d3228807f8654294e4bd',
@@ -143,6 +144,7 @@ const kovan: NetworkConfig = {
   ),
   guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
   automationBot: contractDesc(automationBot, '0x'), // TODO: add address
+  serviceRegistry: '0x', // TODO: add address
   guniResolver: '0x',
   guniRouter: '0x',
   exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
@@ -200,6 +202,7 @@ const goerli: NetworkConfig = {
   guniResolver: '0x',
   guniRouter: '0x',
   automationBot: contractDesc(automationBot, '0x62fab0FfcC439c75a7d31F94f5B34bE31F3e08E7'),
+  serviceRegistry: '0x2a49Eae5CCa3f050eBEC729Cf90CC910fADAf7A2', // TODO: add address
   // Currently this is not supported on Goerli - no deployed contract
   exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''),
   // Currently this is not supported on Goerli - no deployed contract

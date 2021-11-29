@@ -8,6 +8,17 @@ import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operator
 
 import { TriggersTypes } from '../common/enums/TriggersTypes'
 
+function generateMock(): List<TriggerRecord> {
+  /* TODO: replace with actual Event reading when ready and in final version with fetching from cache */
+  return [
+    {
+      triggerId: 1,
+      triggerType: TriggersTypes.StopLossToCollateral,
+      executionParams: '0x1234',
+    } as TriggerRecord,
+  ] as List<TriggerRecord>
+}
+
 export interface TriggerRecord {
   triggerId: number
   triggerType: number
@@ -47,14 +58,4 @@ export function createAutomationTriggersData(
       ),
     ),
   )
-}
-function generateMock(): List<TriggerRecord> {
-  /* TODO: replace with actual Event reading when ready and in final version with fetching from cache */
-  return [
-    {
-      triggerId: 1,
-      triggerType: TriggersTypes.StopLossToCollateral,
-      executionParams: '0x1234',
-    } as TriggerRecord,
-  ] as List<TriggerRecord>
 }
