@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "license": "Apache-2.0",
   "scripts": {
     "start": "ts-node --project ./tsconfig.dev.json -r tsconfig-paths/register -r dotenv-flow/config ./server/server.ts",

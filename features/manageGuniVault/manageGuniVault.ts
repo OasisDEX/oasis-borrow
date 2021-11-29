@@ -280,7 +280,7 @@ export function createManageGuniVault$(
                             kind: 'guniTxData',
                             swap,
                             sharedAmount0,
-                            shareAmount1: sharedAmount1.minus(0.01),
+                            sharedAmount1: sharedAmount1.minus(0.01),
                             requiredDebt,
                             fromTokenAmount: swap.collateralAmount,
                             toTokenAmount: swap.daiAmount,
