@@ -1,10 +1,11 @@
 import Web3 from 'web3'
+import { AbiItem } from 'web3-utils'
 
-const argentABI = [
+const argentABI: AbiItem[] = [
   {
     inputs: [
-      { internalType: 'bytes32', name: '_message', type: 'bytes32' },
-      { internalType: 'bytes', name: '_signature', type: 'bytes' },
+      { name: '_message', type: 'bytes32' },
+      { name: '_signature', type: 'bytes' },
     ],
     name: 'isValidSignature',
     outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
@@ -13,9 +14,9 @@ const argentABI = [
   },
 ]
 
-const walletDetectorABI = [
+const walletDetectorABI: AbiItem[] = [
   {
-    inputs: [{ internalType: 'address', name: '_wallet', type: 'address' }],
+    inputs: [{ name: '_wallet', type: 'address' }],
     name: 'isArgentWallet',
     outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
     stateMutability: 'view',
@@ -28,7 +29,6 @@ const WALLET_DETECTOR_ADDRESS = {
 }
 
 export async function isArgentWallet(web3: Web3, address: string): Promise<boolean> {
-  // @ts-ignore
   const walletDetector = new web3.eth.Contract(walletDetectorABI, WALLET_DETECTOR_ADDRESS[1])
 
   return walletDetector.methods.isArgentWallet(address).call()
@@ -40,7 +40,6 @@ export async function isValidSignature(
   message: string,
   signature: string,
 ): Promise<boolean> {
-  // @ts-ignore
   const wallet = new web3.eth.Contract(argentABI, address)
   const messageBytes32 = web3.eth.accounts.hashMessage(message)
 

@@ -3,6 +3,7 @@
  */
 
 import * as mixpanel from 'mixpanel-browser'
+import { Config, Mixpanel } from 'mixpanel-browser'
 import getConfig from 'next/config'
 
 const env =
@@ -37,8 +38,7 @@ export function mixpanelInit() {
 }
 
 export function mixpanelIdentify(id: string, props: any) {
-  // @ts-ignore
-  if (!mixpanel.config) return
+  if (!(mixpanel as Mixpanel & { config: Config }).config) return
   console.debug(
     `[Mixpanel] Identifying as ${id} ${
       props && props.walletType ? `using wallet ${props.walletType}` : ''

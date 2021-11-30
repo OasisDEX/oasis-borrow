@@ -119,15 +119,14 @@ stories.add('Connected MagicLink Kovan', () => {
 })
 
 stories.add('Connected with pending transaction delayed', () => {
-  const startTime = new Date()
-  const newTime = startTime.setSeconds(startTime.getSeconds() + 2)
+  // const startTime = new Date()
+  // const newTime = startTime.setSeconds(startTime.getSeconds() + 2)
 
   return (
     <MockContextProvider
       title="Connected Metamask Kovan"
       web3Context={protoWeb3Context}
-      // @ts-ignore
-      transactions={[protoSuccessTx, { ...protoPendingTx, lastChange: newTime }]}
+      // transactions={[protoSuccessTx, { ...protoPendingTx, lastChange: newTime }]}
     >
       <AppHeader />
     </MockContextProvider>

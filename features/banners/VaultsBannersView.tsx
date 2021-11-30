@@ -12,8 +12,10 @@ import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
-import { Box, Flex, Grid, Heading, SxStyleProp, Text, useThemeUI } from 'theme-ui'
+import { Box, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 
+import { OasisTheme } from '../../theme'
+import { useTheme } from '../../theme/useThemeUI'
 import { VaultBannersState } from './vaultsBanners'
 
 type VaultBannerProps = {
@@ -302,7 +304,7 @@ export function VaultNextPriceUpdateCounter({
     duration: 0,
   })
 
-  const { theme } = useThemeUI()
+  const { theme } = useTheme()
 
   useEffect(() => {
     const nextUpdateTimestamp = nextPriceUpdateDate?.getTime()
@@ -322,12 +324,9 @@ export function VaultNextPriceUpdateCounter({
       size={56}
       strokeWidth={3}
       colors={[
-        // @ts-ignore
-        [theme.colors.counter.primary, 0],
-        // @ts-ignore
+        [((theme as unknown) as OasisTheme).colors?.counter.primary, 0],
         [theme.colors.counter.secondary, 0],
       ]}
-      // @ts-ignore
       trailColor={theme.colors.counter.surface}
       duration={duration}
       isLinearGradient={true}

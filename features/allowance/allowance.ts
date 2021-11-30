@@ -82,7 +82,7 @@ export interface AllowanceFunctions {
   setAllowanceAmountUnlimited?: () => void
   setAllowanceAmountToDepositAmount?: () => void
   setAllowanceAmountCustom?: () => void
-  updateAllowanceAmount?: (amount: BigNumber) => void
+  updateAllowanceAmount?: (amount?: BigNumber) => void
   progress?: () => void
   regress?: () => void
 }
