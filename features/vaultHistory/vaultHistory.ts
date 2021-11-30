@@ -147,3 +147,8 @@ export function createVaultHistory$(
     ),
   )
 }
+
+export interface VaultHistoryChange {
+  kind: 'vaultHistory'
+  vaultHistory: VaultHistoryEvent[]
+}

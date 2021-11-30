@@ -70,6 +70,7 @@ const query = gql`
         collateralTaken
         ilk
         oraclePrice
+        ethPrice
       }
     }
   }

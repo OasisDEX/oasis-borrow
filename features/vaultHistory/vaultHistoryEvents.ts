@@ -5,6 +5,7 @@ interface HistoryEventBase {
   timestamp: string
   id: string
   liquidationRatio?: BigNumber
+  ethPrice: BigNumber
 }
 
 interface VaultOpenedEvent extends HistoryEventBase {
@@ -18,6 +19,7 @@ interface DepositEvent extends HistoryEventBase {
   collateralAmount: BigNumber
   rate: BigNumber
   oraclePrice: BigNumber
+  gasFee?: BigNumber
 }
 
 interface WithdrawEvent extends HistoryEventBase {
@@ -25,6 +27,7 @@ interface WithdrawEvent extends HistoryEventBase {
   collateralAmount: BigNumber
   rate: BigNumber
   oraclePrice: BigNumber
+  gasFee?: BigNumber
 }
 
 interface GenerateEvent extends HistoryEventBase {
@@ -32,6 +35,7 @@ interface GenerateEvent extends HistoryEventBase {
   daiAmount: BigNumber
   rate: BigNumber
   oraclePrice: BigNumber
+  gasFee?: BigNumber
 }
 
 interface PaybackEvent extends HistoryEventBase {
@@ -39,6 +43,7 @@ interface PaybackEvent extends HistoryEventBase {
   daiAmount: BigNumber
   rate: BigNumber
   oraclePrice: BigNumber
+  gasFee?: BigNumber
 }
 
 interface DepositGenerateEvent extends HistoryEventBase {
@@ -47,6 +52,7 @@ interface DepositGenerateEvent extends HistoryEventBase {
   rate: BigNumber
   collateralAmount: BigNumber
   oraclePrice: BigNumber
+  gasFee?: BigNumber
 }
 
 interface WithdrawPaybackEvent extends HistoryEventBase {
@@ -55,6 +61,7 @@ interface WithdrawPaybackEvent extends HistoryEventBase {
   rate: BigNumber
   collateralAmount: BigNumber
   oraclePrice: BigNumber
+  gasFee?: BigNumber
 }
 
 interface AuctionStartedEvent extends HistoryEventBase {
@@ -62,6 +69,7 @@ interface AuctionStartedEvent extends HistoryEventBase {
   collateralAmount: BigNumber
   daiAmount: BigNumber
   auctionId: string
+  oraclePrice?: BigNumber
 }
 
 interface AuctionStartedV2Event extends HistoryEventBase {
@@ -70,6 +78,7 @@ interface AuctionStartedV2Event extends HistoryEventBase {
   collateralAmount: BigNumber
   daiAmount: BigNumber
   liqPenalty: BigNumber
+  oraclePrice?: BigNumber
 }
 
 interface AuctionFinishedV2Event extends HistoryEventBase {
@@ -101,14 +110,16 @@ interface MoveSrcEvent extends HistoryEventBase {
   transferTo: string
   collateralAmount: BigNumber
   daiAmount: BigNumber
+  oraclePrice: BigNumber
 }
 
 interface MoveDestEvent extends HistoryEventBase {
-  kind: 'MOVE_DESC'
+  kind: 'MOVE_DEST'
   transferFrom: string
   transferTo: string
   collateralAmount: BigNumber
   daiAmount: BigNumber
+  oraclePrice: BigNumber
 }
 
 interface MigrateEvent extends HistoryEventBase {
@@ -120,6 +131,7 @@ export interface MultiplyBaseEvent {
   hash: string
   marketPrice: BigNumber
   oraclePrice: BigNumber
+  ethPrice: BigNumber
   id: string
 
   beforeDebt: BigNumber
@@ -180,6 +192,7 @@ interface CloseVaultExitCollateralMultipleEvent extends MultiplyBaseEvent {
   kind: 'CLOSE_VAULT_TO_COLLATERAL'
   sold: BigNumber
   exitCollateral: BigNumber
+  exitDai: BigNumber
 }
 
 export type MultiplyEvent =

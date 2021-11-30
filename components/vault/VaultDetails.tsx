@@ -380,7 +380,7 @@ export function VaultDetailsNetValueModal({
         <Box>
           {marketPrice !== undefined
             ? `$${formatCryptoBalance(lockedCollateralUSD)}`
-            : t('manage-multiply-vault.card."market-price-unavailable"')}
+            : t('manage-multiply-vault.card.market-price-unavailable')}
         </Box>
 
         <Box>{t('manage-multiply-vault.card.dai-debt-in-vault')}</Box>
@@ -400,7 +400,7 @@ export function VaultDetailsNetValueModal({
           <Box>
             {netValueUndercollateralizedToken && vault
               ? `${formatCryptoBalance(netValueUndercollateralizedToken)} ${vault.token}`
-              : t('manage-multiply-vault.card."market-price-unavailable"')}
+              : t('manage-multiply-vault.card.market-price-unavailable')}
           </Box>
         ) : (
           <Box />
@@ -433,7 +433,7 @@ export function VaultDetailsNetValueModal({
         <Box>
           {marketPrice !== undefined
             ? `$${formatCryptoBalance(lockedCollateralUSD)}`
-            : t('manage-multiply-vault.card."market-price-unavailable"')}
+            : t('manage-multiply-vault.card.market-price-unavailable')}
         </Box>
         <Box sx={{ fontWeight: 'semiBold' }}>
           {t('manage-multiply-vault.card.dai-debt-in-vault')}
@@ -466,7 +466,7 @@ export function VaultDetailsNetValueModal({
           <Box>
             {netValueUndercollateralizedToken && vault
               ? `${formatCryptoBalance(netValueUndercollateralizedToken)} ${vault.token}`
-              : t('manage-multiply-vault.card."market-price-unavailable"')}
+              : t('manage-multiply-vault.card.market-price-unavailable')}
           </Box>
         ) : (
           <Box />
@@ -701,7 +701,7 @@ export function VaultDetailsCardNetValue({
       title={t('manage-multiply-vault.card.net-value')}
       value={`$${formatAmount(netValueUSD, 'USD')}`}
       valueBottom={`${t('manage-multiply-vault.card.unrealised-pnl')} ${formatPercent(
-        currentPnL.times(100).absoluteValue(),
+        currentPnL.times(100),
         {
           precision: 2,
           roundMode: BigNumber.ROUND_DOWN,

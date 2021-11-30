@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { amountFromWei } from 'blockchain/utils'
 import { MAX_COLL_RATIO } from 'features/openMultiplyVault/openMultiplyVaultCalculations'
 import { VaultEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import { one, zero } from 'helpers/zero'
@@ -247,13 +248,10 @@ function getCumulativeDepositUSD(total: BigNumber, event: VaultEvent) {
     case 'OPEN_MULTIPLY_VAULT':
     case 'INCREASE_MULTIPLE':
       return total.plus(event.depositCollateral.times(event.marketPrice)).plus(event.depositDai)
-    case 'AUCTION_STARTED':
-    case 'AUCTION_STARTED_V2':
-      return zero
+    case 'MOVE_DEST':
+      return total.plus(event.collateralAmount.times(event.oraclePrice))
     default:
       return total
-    // TODO: move_dest
-    //
   }
 }
 
@@ -270,15 +268,25 @@ function getCumulativeWithdrawnUSD(total: BigNumber, event: VaultEvent) {
         .plus(event.withdrawnCollateral.abs().times(event.marketPrice))
         .plus(event.withdrawnDai.abs())
     case 'CLOSE_VAULT_TO_COLLATERAL':
-      return total.plus(event.exitCollateral.times(event.marketPrice))
+      return total.plus(event.exitCollateral.times(event.marketPrice)).plus(event.exitDai)
     case 'CLOSE_VAULT_TO_DAI':
       return total.plus(event.exitDai)
-    case 'AUCTION_STARTED':
-    case 'AUCTION_STARTED_V2':
-      return zero
+    case 'MOVE_SRC':
+      return total.plus(event.collateralAmount.times(event.oraclePrice))
     default:
       return total
-    // TODO: move_src
+  }
+}
+
+function getCumulativeLossesUSD(total: BigNumber, event: VaultEvent) {
+  switch (event.kind) {
+    case 'AUCTION_STARTED':
+    case 'AUCTION_STARTED_V2':
+      return event.oraclePrice
+        ? total.plus(event.collateralAmount.abs().times(event.oraclePrice))
+        : total
+    default:
+      return total
   }
 }
 
@@ -289,7 +297,13 @@ export function getCumulativeFeesUSD(total: BigNumber, event: VaultEvent) {
     case 'INCREASE_MULTIPLE':
     case 'CLOSE_VAULT_TO_COLLATERAL':
     case 'CLOSE_VAULT_TO_DAI':
-      return total.plus(event.gasFee.times(event.marketPrice)) // TODO add ethPrice to all events
+    case 'DEPOSIT':
+    case 'GENERATE':
+    case 'DEPOSIT-GENERATE':
+    case 'WITHDRAW':
+    case 'PAYBACK':
+    case 'WITHDRAW-PAYBACK':
+      return total.plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice))
     default:
       return total
   }
@@ -299,10 +313,16 @@ export function calculatePNL(events: VaultEvent[], currentNetValueUSD: BigNumber
   const cumulativeDepositUSD = events.reduce(getCumulativeDepositUSD, zero)
   const cumulativeWithdrawnUSD = events.reduce(getCumulativeWithdrawnUSD, zero)
   const cumulativeFeesUSD = events.reduce(getCumulativeFeesUSD, zero)
+  const cumulativeLossesUSD = events.reduce(getCumulativeLossesUSD, zero)
+
+  if (cumulativeDepositUSD.isZero()) {
+    return zero
+  }
 
   return cumulativeWithdrawnUSD
     .plus(currentNetValueUSD)
     .minus(cumulativeFeesUSD)
+    .minus(cumulativeLossesUSD)
     .minus(cumulativeDepositUSD)
     .div(cumulativeDepositUSD)
 }
