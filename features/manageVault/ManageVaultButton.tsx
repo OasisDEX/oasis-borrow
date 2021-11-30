@@ -1,5 +1,5 @@
 import { trackingEvents } from 'analytics/analytics'
-import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
+import { ALLOWED_MULTIPLY_TOKENS, ONLY_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Divider, Flex, Spinner, Text } from 'theme-ui'
@@ -82,7 +82,10 @@ function manageVaultButtonText(state: ManageVaultState): string {
       return t('changing-vault')
 
     case 'multiplyTransitionEditing':
-      if (ALLOWED_MULTIPLY_TOKENS.includes(state.vault.token)) {
+      if (
+        ALLOWED_MULTIPLY_TOKENS.includes(state.vault.token) ||
+        ONLY_MULTIPLY_TOKENS.includes(state.vault.token)
+      ) {
         return 'Multiply this Vault'
       } else {
         return `Not supported for ${state.vault.token}`
@@ -186,7 +189,11 @@ export function ManageVaultButton(props: ManageVaultState) {
         }}
         disabled={
           !canProgress ||
-          (stage === 'multiplyTransitionEditing' && !ALLOWED_MULTIPLY_TOKENS.includes(vault.token))
+          (stage === 'multiplyTransitionEditing' &&
+            !(
+              ALLOWED_MULTIPLY_TOKENS.includes(vault.token) ||
+              ONLY_MULTIPLY_TOKENS.includes(vault.token)
+            ))
         }
       >
         {isLoadingStage ? (

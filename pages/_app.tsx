@@ -6,6 +6,7 @@ import { Web3ReactProvider } from '@web3-react/core'
 import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
 import { SetupWeb3Context } from 'blockchain/web3Context'
 import { AppContextProvider } from 'components/AppContextProvider'
+import { CookieBanner } from 'components/CookieBanner'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
 import { AppLayout, MarketingLayoutProps } from 'components/Layouts'
 import { CustomMDXLink } from 'components/Links'
@@ -156,6 +157,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                     <SharedUIProvider>
                       <Layout {...layoutProps}>
                         <Component {...pageProps} />
+                        <CookieBanner />
                       </Layout>
                     </SharedUIProvider>
                   </SetupWeb3Context>
