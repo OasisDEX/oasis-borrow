@@ -43,8 +43,6 @@ function ManageVaultEditingController({
       trackingEvents.switchToCollateral(accountIsController)
     }
   }
-  // TODO REMOVE IT AS SOON AS MANAGE FOR GUNI WILL BE READY
-  const multiplyDisabled = token === 'GUNIV3DAIUSDC1'
 
   return (
     <Grid gap={4}>
@@ -55,15 +53,9 @@ function ManageVaultEditingController({
         <Button onClick={() => handleToggle('daiEditing')} variant={daiVariant}>
           {t('system.dai')}
         </Button>
-        {/* TODO REMOVE IT AS SOON AS MANAGE FOR GUNI WILL BE READY */}
-        {!multiplyDisabled && (
-          <Button
-            onClick={() => handleToggle('multiplyTransitionEditing')}
-            variant={multiplyVariant}
-          >
-            Multiply
-          </Button>
-        )}
+        <Button onClick={() => handleToggle('multiplyTransitionEditing')} variant={multiplyVariant}>
+          Multiply
+        </Button>
       </Grid>
       {isEditingStage && (
         <WithVaultFormStepIndicator {...{ totalSteps, currentStep }}>

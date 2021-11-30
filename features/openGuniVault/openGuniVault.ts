@@ -219,7 +219,7 @@ function applyCalculations<S extends { ilkData: IlkData; depositAmount?: BigNumb
   }
 }
 
-interface TokensLpBalanceState {
+export interface TokensLpBalanceState {
   token0Amount?: BigNumber
   token1Amount?: BigNumber
 }

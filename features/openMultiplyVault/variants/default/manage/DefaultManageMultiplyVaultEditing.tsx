@@ -1,6 +1,6 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { ChevronUpDown } from 'components/ChevronUpDown'
 import { CloseVaultCard } from 'components/vault/CloseVaultCard'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
@@ -417,12 +417,13 @@ function OtherActionsSelect(props: ManageMultiplyVaultState) {
             }}
           >
             {children}
-            <Icon
-              name={menuIsOpen ? 'chevron_up' : 'chevron_down'}
+            <ChevronUpDown
+              isUp={!!menuIsOpen}
+              variant="select"
               size="auto"
               width="14px"
               height="9px"
-              sx={{ ml: 1, position: 'relative', top: '1px', color: 'text.subtitle' }}
+              sx={{ color: 'text.subtitle' }}
             />
           </Box>
         ),
