@@ -26,6 +26,7 @@ import { components, ThemeProvider } from 'theme-ui'
 import Web3 from 'web3'
 
 import { trackingEvents } from '../analytics/analytics'
+import { initTrackers } from '../analytics/common'
 import { mixpanelInit } from '../analytics/mixpanel'
 import nextI18NextConfig from '../next-i18next.config.js'
 
@@ -128,6 +129,8 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         trackingEvents.pageView(url)
       }
     }
+    // mixpanel and adRoll consent trigger
+    initTrackers()
 
     router.events.on('routeChangeComplete', handleRouteChange)
 

@@ -2,7 +2,7 @@ import React from 'react'
 
 import { CookieBanner } from '../CookieBanner'
 
-export function Banner() {
+export const Default = () => {
   return <CookieBanner />
 }
 

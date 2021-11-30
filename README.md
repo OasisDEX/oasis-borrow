@@ -114,6 +114,12 @@ Some of the values that are used you can check in the `.env` file.
 - `MIXPANEL_KEY` - The value will be used for `production` environments. This is the project key
   that is generated from Mixpanel.
 
+- `ADROLL_PIX_ID` - The value will be used for `production` environments. This is the project key
+  that is generated from AdRoll Pixel.
+
+- `ADROLL_ADV_ID` - The value will be used for `production` environments. This is the project key
+  that is generated from AdRoll Pixel.
+
 - `USE_TERMS_OF_SERVICE` - In order to use some functionalities the user should read and accept
   Terms of Service. For development purposes, this feature can be disabled. You can disable this
   feature if you'd like to remove that functionality at all. The values are either `0` (disabled) or
@@ -184,8 +190,8 @@ By executing one of the following commands you will run both containers at the s
 
 #### Docker Containers Configuration
 
-If you open `docker-compose.yml` file under the `./scripts` folder, you will see that there are some environmental variables. 
-For the Postgres container, you won't have the need to change them that often. Also the names are pretty explanatory 
+If you open `docker-compose.yml` file under the `./scripts` folder, you will see that there are some environmental variables.
+For the Postgres container, you won't have the need to change them that often. Also the names are pretty explanatory
 
 The configuration params for `multiply-proxy-actions` container are as follows:
 
@@ -201,7 +207,7 @@ The configuration params for `multiply-proxy-actions` container are as follows:
 
 ## Multiply feature
 
-We have added multiply functionality, where generated DAI is immediately used to swap for more collateral. This utilizes the multiply proxy actions smart contract. 
+We have added multiply functionality, where generated DAI is immediately used to swap for more collateral. This utilizes the multiply proxy actions smart contract.
 The documentation for those contracts can be found [here](https://docs.google.com/document/d/1GpPEPrOnDLNHtCgyh5YInOyZUV4XGz-1EVRJK0y-GF4/edit).
 
 ## Contributing
