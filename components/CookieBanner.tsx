@@ -2,9 +2,11 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { ChevronUpDown } from 'components/ChevronUpDown'
 import { AppLink } from 'components/Links'
 import * as mixpanel from 'mixpanel-browser'
-import React, { Fragment, MouseEventHandler, useState } from 'react'
+import React, { Fragment, MouseEventHandler, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Box, Button, Card, Container, Flex, Grid, Text } from 'theme-ui'
+
+import { adRollScriptInsert } from '../marketing/adroll'
 
 const COOKIE_NAMES = ['marketing', 'analytics'] as const
 const LOCALSTORAGE_KEY = 'cookieSettings'
@@ -45,9 +47,8 @@ interface Switch {
 
 const manageCookie: Record<CookieName, Switch> = {
   marketing: {
-    // todo: implement these when we have adroll integration
-    enable: () => {},
-    disable: () => {},
+    enable: () => adRollScriptInsert(),
+    disable: () => {}, // no needed since adding adRoll instance to app is 0/1 like
   },
   analytics: {
     enable: () => mixpanel.opt_in_tracking(),
@@ -70,7 +71,27 @@ export function CookieBanner() {
   const [selectedCookies, setSelectedCookies] = useState(initSelectedCookies(true))
   const [settingsAreSaved, setSettingsAreSaved] = useState(false)
 
-  if (settingsAreSaved || localStorage.getItem(LOCALSTORAGE_KEY)) {
+  const trackingLocalState = localStorage.getItem(LOCALSTORAGE_KEY)
+
+  function initTrackers() {
+    if (trackingLocalState) {
+      const state = JSON.parse(trackingLocalState).enabledCookies
+
+      COOKIE_NAMES.forEach((cookieName) => {
+        if (state[cookieName]) {
+          manageCookie[cookieName].enable()
+        } else {
+          manageCookie[cookieName].disable()
+        }
+      })
+    }
+  }
+
+  useEffect(() => {
+    initTrackers()
+  }, [])
+
+  if (settingsAreSaved || trackingLocalState) {
     return null
   }
 

@@ -17,7 +17,6 @@ import { ModalProvider } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { appWithTranslation } from 'next-i18next'
 import { AppProps } from 'next/app'
-import getConfig from 'next/config'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
@@ -113,36 +112,6 @@ const noOverlayWorkaroundScript = `
   })
 `
 
-const { adRollAdvId, adRollPixId } = getConfig()?.publicRuntimeConfig
-
-const adRollPixelScript = `
-  adroll_adv_id = ${adRollAdvId};
-  adroll_pix_id = ${adRollPixId};
-  adroll_version = "2.0";
-
-  (function(w, d, e, o, a) {
-      w.__adroll_loaded = true;
-      w.adroll = w.adroll || [];
-      w.adroll.f = [ 'setProperties', 'identify', 'track' ];
-      var roundtripUrl = "https://s.adroll.com/j/" + adroll_adv_id
-              + "/roundtrip.js";
-      for (a = 0; a < w.adroll.f.length; a++) {
-          w.adroll[w.adroll.f[a]] = w.adroll[w.adroll.f[a]] || (function(n) {
-              return function() {
-                  w.adroll.push([ n, arguments ])
-              }
-          })(w.adroll.f[a])
-      }
-
-      e = d.createElement('script');
-      o = d.getElementsByTagName('script')[0];
-      e.async = 1;
-      e.src = roundtripUrl;
-      o.parentNode.insertBefore(e, o);
-  })(window, document);
-  adroll.track("pageView");
-`
-
 function App({ Component, pageProps }: AppProps & CustomAppProps) {
   const Layout = Component.layout || AppLayout
   const layoutProps = Component.layoutProps
@@ -173,7 +142,6 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         {process.env.NODE_ENV !== 'production' && (
           <script dangerouslySetInnerHTML={{ __html: noOverlayWorkaroundScript }} />
         )}
-        <script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <ThemeProvider theme={theme}>
