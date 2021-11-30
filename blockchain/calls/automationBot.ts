@@ -29,14 +29,14 @@ function getAddAutomationTriggerCallData(
 
 export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData> = {
   call: ({ proxyAddress }, { contract }) => {
-    console.log("Inside addAutomationBotTrigger", proxyAddress);
+    console.log('Inside addAutomationBotTrigger', proxyAddress)
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => {
-    const { automationBot } = context;
-    
-    console.log("Inside addAutomationBotTrigger.prepareArgs", automationBot.address);
-    console.log("Inside addAutomationBotTrigger.prepareArgs - data", data);
+    const { automationBot } = context
+
+    console.log('Inside addAutomationBotTrigger.prepareArgs', automationBot.address)
+    console.log('Inside addAutomationBotTrigger.prepareArgs - data', data)
     return [automationBot.address, getAddAutomationTriggerCallData(data, context).encodeABI()]
   },
 }

@@ -47,7 +47,6 @@ import { createController$, createVault$, createVaults$ } from 'blockchain/vault
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
 import { createAutomationTriggersData } from 'features/automation/triggers/AutomationTriggersData'
-import { createStopLossTriggersData } from 'features/automation/triggers/StopLossTriggerData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
@@ -535,11 +534,6 @@ export function setupAppContext() {
     curry(createAutomationTriggersData)(connectedContext$, onEveryBlock$, vault$),
   )
 
-  const stopLossTriggersData$ = memoize((vaultId: BigNumber) => {
-    console.log('Subscribing to stopLossTriggersData', vaultId.toString())
-    return createStopLossTriggersData(automationTriggersData$(vaultId))
-  })
-
   const openVaultOverview$ = createOpenVaultOverview$(ilksWithBalance$)
 
   const uiChanges = createUIChangesSubject()
@@ -567,7 +561,6 @@ export function setupAppContext() {
     redirectState$,
     accountBalances$,
     automationTriggersData$,
-    stopLossTriggersData$,
     accountData$,
     vaultHistory$,
     vaultMultiplyHistory$,

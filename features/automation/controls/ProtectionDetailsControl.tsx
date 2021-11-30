@@ -8,8 +8,8 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useEffect, useState } from 'react'
 
+import { extractSLData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { AddFormChange } from '../common/UITypes/AddFormChange'
-import { StopLossTriggerData } from '../triggers/StopLossTriggerData'
 import { ProtectionDetailsLayout, ProtectionDetailsLayoutProps } from './ProtectionDetailsLayout'
 
 function renderLayout(
@@ -49,14 +49,14 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
   const uiSubjectName = 'AdjustSlForm'
   const subscriberId = 'ProtectionDetailsControl'
   const {
-    stopLossTriggersData$,
+    automationTriggersData$,
     vault$,
     collateralPrices$,
     ilkDataList$,
     uiChanges,
   } = useAppContext()
-  const slTriggerData$ = stopLossTriggersData$(id)
-  const slTriggerDataWithError = useObservableWithError(slTriggerData$)
+  const autoTriggersData$ = automationTriggersData$(id)
+  const automationTriggersDataWithError = useObservableWithError(autoTriggersData$)
   const vaultDataWithError = useObservableWithError(vault$(id))
   const collateralPricesWithError = useObservableWithError(collateralPrices$)
   const ilksDataWithError = useObservableWithError(ilkDataList$)
@@ -77,7 +77,7 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
   return (
     <WithErrorHandler
       error={[
-        slTriggerDataWithError.error,
+        automationTriggersDataWithError.error,
         vaultDataWithError.error,
         collateralPricesWithError.error,
         ilksDataWithError.error,
@@ -85,7 +85,7 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
     >
       <WithLoadingIndicator
         value={[
-          slTriggerDataWithError.value,
+          automationTriggersDataWithError.value,
           vaultDataWithError.value,
           collateralPricesWithError.value,
           ilksDataWithError.value,
@@ -93,7 +93,13 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
         customLoader={<VaultContainerSpinner />}
       >
         {([triggersData, vaultData, collateralPrices, ilkDataList]) => {
-          return renderLayout(triggersData, vaultData, collateralPrices, ilkDataList, lastUIState)
+          return renderLayout(
+            extractSLData(triggersData),
+            vaultData,
+            collateralPrices,
+            ilkDataList,
+            lastUIState,
+          )
         }}
       </WithLoadingIndicator>
     </WithErrorHandler>
