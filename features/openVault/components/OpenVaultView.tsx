@@ -1,11 +1,11 @@
 import { trackingEvents } from 'analytics/analytics'
 import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
+import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormVaultTypeSwitch, WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -43,7 +43,7 @@ function OpenVaultTitle({
             ? t('vault-form.header.proxy')
             : isAllowanceStage
             ? t('vault-form.header.allowance', { token: token.toUpperCase() })
-            : stage === 'openInProgress'
+            : stage === 'txInProgress'
             ? t('vault-form.header.confirm-in-progress')
             : t('vault-form.header.confirm')}
         </Text>
@@ -55,7 +55,7 @@ function OpenVaultTitle({
           ? t('vault-form.subtext.proxy')
           : isAllowanceStage
           ? t('vault-form.subtext.allowance')
-          : stage === 'openInProgress'
+          : stage === 'txInProgress'
           ? t('vault-form.subtext.confirm-in-progress')
           : t('vault-form.subtext.review-manage')}
       </Text>
@@ -74,7 +74,7 @@ function OpenVaultForm(props: OpenVaultState) {
       {isOpenStage && <OpenVaultConfirmation {...props} />}
       <OpenVaultErrors {...props} />
       <OpenVaultWarnings {...props} />
-      {stage === 'openSuccess' && <VaultChangesWithADelayCard />}
+      {stage === 'txSuccess' && <VaultChangesWithADelayCard />}
       <OpenVaultButton {...props} />
       {isProxyStage && <VaultProxyStatusCard {...props} />}
       {isAllowanceStage && <VaultAllowanceStatus {...props} />}
@@ -102,7 +102,7 @@ export function OpenVaultContainer(props: OpenVaultState) {
 
   return (
     <>
-      <VaultHeader {...props} header={t('vault.open-vault', { ilk })} />
+      <DefaultVaultHeader {...props} header={t('vault.open-vault', { ilk })} />
       <Grid variant="vaultContainer">
         <Box>
           <OpenVaultDetails {...props} />

@@ -100,8 +100,10 @@ export function manageVaultStory({
         createGeneralManageVault$(
           // @ts-ignore, don't need to mock Multiply here
           () => of(EMPTY),
+          () => of(EMPTY),
           () => obs$,
           () => of(VaultType.Borrow),
+          () => of(EMPTY),
           MOCK_VAULT_ID,
         ),
       ),

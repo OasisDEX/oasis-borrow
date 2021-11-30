@@ -2,12 +2,28 @@ import { Global } from '@emotion/core'
 // @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ModalProps } from 'helpers/modalHook'
+import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import { curry } from 'ramda'
 import React, { useCallback, useEffect, useState } from 'react'
 import { TRANSITIONS } from 'theme'
-import { Box, Card, Container, Flex, IconButton, SxStyleProp, Text } from 'theme-ui'
+import {
+  Box,
+  Button,
+  Card,
+  Container,
+  Flex,
+  Grid,
+  Heading,
+  IconButton,
+  SxStyleProp,
+  Text,
+} from 'theme-ui'
+
+import { useAppContext } from './AppContextProvider'
+import { disconnect } from './connectWallet/ConnectWallet'
+import { AppLink } from './Links'
 
 interface ModalCloseIconProps extends ModalProps<WithChildren> {
   sx?: SxStyleProp
@@ -88,20 +104,15 @@ function overflowClickHandler(onClick: () => void, event: MouseEvent) {
 }
 
 // Helper component to compensate jumping of window upon opening Modal
-export function ModalHTMLOverflow({ close }: { close: () => void }) {
+export function ModalHTMLOverflow() {
   const [compensateWidth, setCompensateWidth] = useState(false)
 
   useEffect(() => {
     document.body.style.width = `${document.body.clientWidth}px`
     setCompensateWidth(true)
 
-    const curriedOverflowClickHandler = curry(overflowClickHandler)(close)
-
-    document.body.addEventListener('click', curriedOverflowClickHandler)
-
     return () => {
       document.body.removeAttribute('style')
-      document.body.removeEventListener('click', curriedOverflowClickHandler)
     }
   }, [])
 
@@ -116,9 +127,31 @@ export function ModalHTMLOverflow({ close }: { close: () => void }) {
   ) : null
 }
 
-function ModalWrapper({ children, close }: WithChildren & { close: () => void }) {
+function ModalWrapper({
+  children,
+  id,
+  close,
+  sxWrapper,
+  omitHTMLOverflow,
+}: WithChildren & {
+  close: () => void
+  id?: string
+  sxWrapper?: SxStyleProp
+  omitHTMLOverflow?: boolean
+}) {
+  useEffect(() => {
+    const curriedOverflowClickHandler = curry(overflowClickHandler)(close)
+
+    document.body.addEventListener('click', curriedOverflowClickHandler)
+
+    return () => {
+      document.body.removeEventListener('click', curriedOverflowClickHandler)
+    }
+  }, [])
+
   return (
     <Box
+      id={id}
       sx={{
         position: 'fixed',
         width: '100%',
@@ -131,17 +164,26 @@ function ModalWrapper({ children, close }: WithChildren & { close: () => void })
         display: 'block',
         bg: '#00000080',
         overflow: 'auto',
+        ...sxWrapper,
       }}
     >
-      <ModalHTMLOverflow close={close} />
+      {!omitHTMLOverflow && <ModalHTMLOverflow />}
       {children}
     </Box>
   )
 }
 
-export function Modal({ children, variant, sx, close }: ModalProps) {
+export function Modal({
+  children,
+  variant,
+  sx,
+  sxWrapper,
+  close,
+  id,
+  omitHTMLOverflow,
+}: ModalProps) {
   return (
-    <ModalWrapper close={close}>
+    <ModalWrapper {...{ close, id, sxWrapper, omitHTMLOverflow }}>
       <Flex
         sx={{
           justifyContent: 'center',
@@ -184,5 +226,77 @@ export function ModalErrorMessage({ message }: { message: string }) {
       </Flex>
       <Text sx={{ fontSize: 5, textAlign: 'center', mt: 3 }}>{t(message)}</Text>
     </Box>
+  )
+}
+
+export const MODAL_CONTAINER_TREZOR_METAMASK_EIP1559 = 'trezor-metamask-eip1559'
+
+export function ModalTrezorMetamaskEIP1559() {
+  const { web3Context$ } = useAppContext()
+  const web3Context = useObservable(web3Context$)
+
+  function close() {
+    const modal = document.getElementById(MODAL_CONTAINER_TREZOR_METAMASK_EIP1559)
+
+    if (modal) {
+      modal.style.display = 'none'
+      document.documentElement.style.overflow = 'auto'
+    }
+  }
+
+  function disconnectHandler() {
+    disconnect(web3Context)
+    close()
+  }
+
+  return (
+    <Modal
+      id={MODAL_CONTAINER_TREZOR_METAMASK_EIP1559}
+      close={close}
+      sx={{ maxWidth: '450px', mx: 'auto' }}
+      sxWrapper={{ display: 'none', zIndex: 'modalOnMobilePanel' }}
+      omitHTMLOverflow
+    >
+      <Grid sx={{ p: 4, fontSize: 2 }}>
+        <Heading>
+          <Trans i18nKey="modal-trezor-eip1559-title" />
+        </Heading>
+        <ModalCloseIcon close={close} />
+        <Box>
+          <Trans
+            i18nKey="modal-trezor-eip1559-paragraph1"
+            components={[
+              <AppLink
+                sx={{ fontSize: 'inherit' }}
+                href="https://github.com/MetaMask/metamask-extension/issues/12130"
+              />,
+            ]}
+          />
+        </Box>
+        <Box>
+          <Trans
+            i18nKey="modal-trezor-eip1559-paragraph2"
+            components={[<AppLink sx={{ fontSize: 'inherit' }} href="https://legacy.oasis.app/" />]}
+          />
+        </Box>
+        <Box>
+          <Trans
+            i18nKey="modal-trezor-eip1559-paragraph3"
+            components={[
+              <Button
+                variant="textual"
+                sx={{
+                  textAlign: 'left',
+                  p: 0,
+                  verticalAlign: 'baseline',
+                  fontSize: 'inherit',
+                }}
+                onClick={disconnectHandler}
+              />,
+            ]}
+          />
+        </Box>
+      </Grid>
+    </Modal>
   )
 }
