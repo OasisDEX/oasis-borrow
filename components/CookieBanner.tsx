@@ -1,17 +1,11 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ChevronUpDown } from 'components/ChevronUpDown'
 import { AppLink } from 'components/Links'
-import * as mixpanel from 'mixpanel-browser'
-import React, { Fragment, MouseEventHandler, useEffect, useState } from 'react'
+import React, { Fragment, MouseEventHandler, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Box, Button, Card, Container, Flex, Grid, Text } from 'theme-ui'
 
-import { adRollScriptInsert } from '../marketing/adroll'
-
-const COOKIE_NAMES = ['marketing', 'analytics'] as const
-const LOCALSTORAGE_KEY = 'cookieSettings'
-
-type CookieName = typeof COOKIE_NAMES[number]
+import { COOKIE_NAMES, CookieName, LOCALSTORAGE_KEY, manageCookie } from '../analytics/common'
 
 function Checkbox({
   checked,
@@ -40,28 +34,10 @@ function Checkbox({
   )
 }
 
-interface Switch {
-  enable: Function
-  disable: Function
-}
-
-const manageCookie: Record<CookieName, Switch> = {
-  marketing: {
-    enable: () => adRollScriptInsert(),
-    disable: () => {}, // no needed since adding adRoll instance to app is 0/1 like
-  },
-  analytics: {
-    enable: () => mixpanel.opt_in_tracking(),
-    disable: () => mixpanel.opt_out_tracking(),
-    // todo: delete user data https://developer.mixpanel.com/docs/managing-personal-data
-  },
-}
-
 type SelectedCookies = Record<CookieName, boolean>
 type SavedSettings = { accepted: boolean; enabledCookies: SelectedCookies }
 
 function initSelectedCookies(defaultValue: boolean): SelectedCookies {
-  // @ts-ignore
   return COOKIE_NAMES.reduce((acc, cookieName) => ({ ...acc, [cookieName]: defaultValue }), {})
 }
 
@@ -72,24 +48,6 @@ export function CookieBanner() {
   const [settingsAreSaved, setSettingsAreSaved] = useState(false)
 
   const trackingLocalState = localStorage.getItem(LOCALSTORAGE_KEY)
-
-  function initTrackers() {
-    if (trackingLocalState) {
-      const state = JSON.parse(trackingLocalState).enabledCookies
-
-      COOKIE_NAMES.forEach((cookieName) => {
-        if (state[cookieName]) {
-          manageCookie[cookieName].enable()
-        } else {
-          manageCookie[cookieName].disable()
-        }
-      })
-    }
-  }
-
-  useEffect(() => {
-    initTrackers()
-  }, [])
 
   if (settingsAreSaved || trackingLocalState) {
     return null
