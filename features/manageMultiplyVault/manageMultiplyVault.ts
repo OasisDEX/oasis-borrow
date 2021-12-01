@@ -14,6 +14,7 @@ import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
+import { TxError } from '../../helpers/types'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import {
   applyExchange,
@@ -236,7 +237,7 @@ interface ManageVaultTxInfo {
   daiAllowanceTxHash?: string
   proxyTxHash?: string
   manageTxHash?: string
-  txError?: any
+  txError?: TxError
   etherscan?: string
   proxyConfirmations?: number
   safeConfirmations: number

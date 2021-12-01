@@ -16,3 +16,7 @@ export type CommonVaultState =
   | OpenMultiplyVaultState
   | ManageMultiplyVaultState
   | OpenGuniVaultState
+
+export type TxError = {
+  name: string
+}

@@ -1,18 +1,27 @@
 import { BigNumber } from 'bignumber.js'
-import React, { useRef } from 'react'
-import { default as MaskedInput } from 'react-text-mask'
+import React, { ChangeEvent, useRef } from 'react'
+import { default as MaskedInput, MaskedInputProps } from 'react-text-mask'
 import { Input } from 'theme-ui'
 
-export const BigNumberInput = ({ value, pipe, onChange, ...props }: any) => {
+export const BigNumberInput = ({
+  value,
+  pipe,
+  onChange,
+  ...props
+}: MaskedInputProps & {
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void
+  variant?: string
+  pipe?: Pipe
+}) => {
   const lastValue = useRef<string | undefined>()
   const changed = (e: React.ChangeEvent<HTMLInputElement>): void => {
     lastValue.current = e.target.value
-    if (e.target.value !== '0._') {
+    if (e.target.value !== '0._' && onChange) {
       onChange(e)
     }
   }
 
-  const currentValue: string | undefined = value
+  const currentValue = value as string | undefined
   let maskValue: string | undefined
   if (
     lastValue.current &&
@@ -29,7 +38,7 @@ export const BigNumberInput = ({ value, pipe, onChange, ...props }: any) => {
   const allowOnlyOneDot = (v: string, { rawValue }: { rawValue: string }) =>
     rawValue.match(/\..*\./) ? false : v
 
-  const maskPipe = [allowOnlyOneDot, ...(pipe ? [pipe] : [])].reduce(composePipes, (v: any) => v)
+  const maskPipe = [allowOnlyOneDot, ...(pipe ? [pipe] : [])].reduce(composePipes, (v: string) => v)
 
   return (
     <MaskedInput
@@ -44,8 +53,8 @@ export const BigNumberInput = ({ value, pipe, onChange, ...props }: any) => {
   )
 }
 
-type Pipe = (v: string, config: any) => string | false
-export const composePipes = (p1: Pipe, p2: Pipe) => (v: string, config: any) => {
+type Pipe = (v: string, config: { rawValue: string }) => string | false
+export const composePipes = (p1: Pipe, p2: Pipe) => (v: string, config: { rawValue: string }) => {
   const tmp = p1(v, config)
   return tmp === false ? tmp : p2(tmp, config)
 }

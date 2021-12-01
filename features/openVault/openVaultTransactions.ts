@@ -11,6 +11,7 @@ import { zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import Web3 from 'web3'
 
+import { TxError } from '../../helpers/types'
 import { OpenVaultChange, OpenVaultState } from './openVault'
 
 type ProxyChange =
@@ -23,7 +24,7 @@ type ProxyChange =
     }
   | {
       kind: 'proxyFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'proxyConfirming'
@@ -42,7 +43,7 @@ type AllowanceChange =
     }
   | {
       kind: 'allowanceFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'allowanceSuccess'
@@ -57,7 +58,7 @@ type OpenChange =
     }
   | {
       kind: 'txFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'txSuccess'

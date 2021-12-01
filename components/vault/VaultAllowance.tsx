@@ -72,7 +72,7 @@ export function VaultAllowance({
                 value={
                   allowanceAmount && isCustom
                     ? formatAmount(allowanceAmount, getToken(token).symbol)
-                    : null
+                    : undefined
                 }
                 mask={createNumberMask({
                   allowDecimal: true,

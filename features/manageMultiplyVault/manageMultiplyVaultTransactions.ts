@@ -21,6 +21,7 @@ import { one, zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
 
+import { TxError } from '../../helpers/types'
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 type ProxyChange =
@@ -33,7 +34,7 @@ type ProxyChange =
     }
   | {
       kind: 'proxyFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'proxyConfirming'
@@ -52,7 +53,7 @@ type CollateralAllowanceChange =
     }
   | {
       kind: 'collateralAllowanceFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'collateralAllowanceSuccess'
@@ -67,7 +68,7 @@ type DaiAllowanceChange =
     }
   | {
       kind: 'daiAllowanceFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'daiAllowanceSuccess'
@@ -82,7 +83,7 @@ export type ManageChange =
     }
   | {
       kind: 'manageFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'manageSuccess'
