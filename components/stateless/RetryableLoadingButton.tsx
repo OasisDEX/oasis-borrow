@@ -15,7 +15,7 @@ export function RetryableLoadingButton(props: RetryableLoadingButtonProps) {
   const [isLoading, setLoading] = useState(false)
   const [isRetry, setRetry] = useState(false)
 
-  console.log("Is button disabled",props.disabled);
+  console.log('Is button disabled', props.disabled)
 
   function buttonClickHandler() {
     if (!isLoading) {

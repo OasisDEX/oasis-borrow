@@ -110,7 +110,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     ilksData: IlkDataList,
     slTriggerData: StopLossTriggerData,
     txHelpers: TxHelpers,
-    isOwner : boolean
+    isOwner: boolean,
   ) {
     const token = vaultData.token
     const tokenData = getToken(token)
@@ -192,9 +192,8 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     const addTriggerConfig: RetryableLoadingButtonProps = {
       translationKey: 'add-stop-loss',
       onClick: (finishLoader: (succeded: boolean) => void) => {
-        
-        const txSendSuccessHandler = (x : TxState<AutomationBotAddTriggerData>) => {
-          console.log("Tx Status", x);
+        const txSendSuccessHandler = (x: TxState<AutomationBotAddTriggerData>) => {
+          console.log('Tx Status', x)
           txStatusSetter(x)
           if (isTxStatusFinal(x.status)) {
             if (isTxStatusFailed(x.status)) {
@@ -207,22 +206,21 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
               txStatusSetter(undefined)
             }
           }
-        };
-        
-        const sendTxErrorHandler = (x: any)=>{
-          finishLoader(false);
         }
-        
+
+        const sendTxErrorHandler = () => {
+          finishLoader(false)
+        }
+
         const txData = prepareTriggerData(vaultData, collateralActive, selectedSLValue)
-        
+
         const waitForTx = txHelpers
           .sendWithGasEstimation(addAutomationBotTrigger, txData)
           .subscribe(txSendSuccessHandler, sendTxErrorHandler)
-         
       },
       isLoading: false,
       isRetry: false,
-      disabled: isOwner
+      disabled: isOwner,
     }
 
     const props: AdjustSlFormLayoutProps = {
@@ -232,7 +230,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       txState: txStatus,
     }
 
-    return <AdjustSlFormLayout {...props} />;
+    return <AdjustSlFormLayout {...props} />
   }
 
   return (
@@ -257,14 +255,9 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
         ]}
         customLoader={<VaultContainerSpinner />}
       >
-        {
-        
-        ([v, c, i, s, tx, ctx]) => {
-          
-          return renderLayout(v, c, i, extractSLData(s), tx, ctx.account !== v.controller);
-        }
-        
-        }
+        {([v, c, i, s, tx, ctx]) => {
+          return renderLayout(v, c, i, extractSLData(s), tx, ctx.account !== v.controller)
+        }}
       </WithLoadingIndicator>
     </WithErrorHandler>
   )
