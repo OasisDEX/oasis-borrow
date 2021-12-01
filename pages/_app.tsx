@@ -137,7 +137,7 @@ function getStorageValue(key: string, defaultValue: unknown) {
   // getting stored value
   if (typeof window !== 'undefined') {
     const saved = localStorage.getItem(key)
-    const initial = saved !== null ? JSON.parse(saved) : defaultValue;
+    const initial = saved !== null ? JSON.parse(saved) : defaultValue
     return initial || defaultValue
   }
 }
@@ -207,7 +207,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                     <SharedUIProvider>
                       <Layout {...layoutProps}>
                         <Component {...pageProps} />
-                        <CookieBanner setValue={setValue} value={value}/>
+                        <CookieBanner setValue={setValue} value={value} />
                       </Layout>
                     </SharedUIProvider>
                   </SetupWeb3Context>
