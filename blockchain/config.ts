@@ -2,8 +2,8 @@ import { ContractDesc } from '@oasisdex/web3-context'
 import { keyBy } from 'lodash'
 import getConfig from 'next/config'
 import { Dictionary } from 'ts-essentials'
-import { AbiItem } from 'web3-utils'
 
+import { Abi } from '../helpers/types'
 import * as eth from './abi/ds-eth-token.json'
 import * as dsProxyFactory from './abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from './abi/ds-proxy-registry.json'
@@ -35,14 +35,7 @@ import { default as goerliAddresses } from './addresses/goerli.json'
 import { default as kovanAddresses } from './addresses/kovan.json'
 import { default as mainnetAddresses } from './addresses/mainnet.json'
 
-export function contractDesc(
-  abi: (Omit<AbiItem, 'type' | 'stateMutability'> & {
-    internalType?: string
-    type: string // 'function' | 'constructor' | 'event' | 'fallback'
-    stateMutability?: string // 'pure' | 'view' | 'nonpayable' | 'payable'
-  })[],
-  address: string,
-): ContractDesc {
+export function contractDesc(abi: Abi[], address: string): ContractDesc {
   return { abi, address }
 }
 

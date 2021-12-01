@@ -14,7 +14,6 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { Box, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 
-import { OasisTheme } from '../../theme'
 import { useTheme } from '../../theme/useThemeUI'
 import { VaultBannersState } from './vaultsBanners'
 
@@ -324,7 +323,7 @@ export function VaultNextPriceUpdateCounter({
       size={56}
       strokeWidth={3}
       colors={[
-        [((theme as unknown) as OasisTheme).colors?.counter.primary, 0],
+        [theme.colors?.counter.primary, 0],
         [theme.colors.counter.secondary, 0],
       ]}
       trailColor={theme.colors.counter.surface}
