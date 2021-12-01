@@ -117,7 +117,7 @@ export const CustomAllowanceAmountGreaterThanMaxUint256 = openVaultStory({
 })
 
 export const CustomAllowanceAmountLessThanDepositAmount = openVaultStory({
-  title: 'Error should block user if the allowance they wish to set a value above maxUint256',
+  title: 'Error should block user if the deposit they wish to set is below allowance limit',
   balanceInfo: { daiBalance: new BigNumber('10000') },
   proxyAddress,
 })({

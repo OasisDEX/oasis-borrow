@@ -717,3 +717,82 @@ export const closeVaultCall: TransactionDef<CloseVaultData> = {
     }
   },
 }
+
+export type CloseGuniMultiplyData = {
+  kind: TxMetaKind.closeGuni
+  token: string
+  ilk: string
+  userAddress: string
+  requiredDebt: BigNumber
+  cdpId: string
+  fromTokenAmount: BigNumber
+  toTokenAmount: BigNumber
+  minToTokenAmount: BigNumber
+  exchangeAddress: string
+  exchangeData: string
+  proxyAddress: string
+}
+
+function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConnected) {
+  const {
+    contract,
+    guniProxyActions,
+    joins,
+    mcdJug,
+    dssCdpManager,
+    tokens,
+    noFeesExchange,
+    fmm,
+    guniResolver,
+    guniRouter,
+  } = context
+
+  const { token0: token0Symbol, token1: token1Symbol } = getToken(data.token)
+
+  if (!token0Symbol || !token1Symbol) {
+    throw new Error('Invalid token')
+  }
+
+  return contract<DssGuniProxyActions>(guniProxyActions).methods.closeGuniVaultExitDai(
+    {
+      fromTokenAddress: tokens[token0Symbol].address,
+      toTokenAddress: tokens[token1Symbol].address,
+      fromTokenAmount: amountToWei(data.fromTokenAmount, token1Symbol).toFixed(0),
+      toTokenAmount: amountToWei(data.toTokenAmount, token0Symbol).toFixed(0),
+      minToTokenAmount: amountToWei(data.minToTokenAmount, token0Symbol).toFixed(0),
+      exchangeAddress: data.exchangeAddress,
+      _exchangeCalldata: data.exchangeData,
+    } as any,
+    {
+      gemJoin: joins[data.ilk],
+      fundsReceiver: data.userAddress,
+      cdpId: data.cdpId,
+      ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
+      token0Amount: '0',
+      methodName: '',
+    } as any,
+    {
+      jug: mcdJug.address,
+      guni: tokens[data.token].address,
+      resolver: guniResolver,
+      router: guniRouter,
+      otherToken: tokens[token1Symbol!].address,
+      manager: dssCdpManager.address,
+      guniProxyActions: guniProxyActions.address,
+      lender: fmm,
+      exchange: noFeesExchange.address,
+    } as any,
+  )
+}
+
+export const closeGuniVaultCall: TransactionDef<CloseGuniMultiplyData> = {
+  call: ({ proxyAddress }, { contract }) => {
+    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
+  },
+  prepareArgs: (data, context) => {
+    const { guniProxyActions } = context
+
+    return [guniProxyActions.address, getGuniCloseVaultData(data, context).encodeABI()]
+  },
+}

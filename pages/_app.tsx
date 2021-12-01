@@ -6,6 +6,7 @@ import { Web3ReactProvider } from '@web3-react/core'
 import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
 import { SetupWeb3Context } from 'blockchain/web3Context'
 import { AppContextProvider } from 'components/AppContextProvider'
+import { CookieBanner } from 'components/CookieBanner'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
 import { AppLayout, MarketingLayoutProps } from 'components/Layouts'
 import { CustomMDXLink } from 'components/Links'
@@ -25,6 +26,7 @@ import { components, ThemeProvider } from 'theme-ui'
 import Web3 from 'web3'
 
 import { trackingEvents } from '../analytics/analytics'
+import { initTrackers } from '../analytics/common'
 import { mixpanelInit } from '../analytics/mixpanel'
 import nextI18NextConfig from '../next-i18next.config.js'
 
@@ -127,6 +129,8 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         trackingEvents.pageView(url)
       }
     }
+    // mixpanel and adRoll consent trigger
+    initTrackers()
 
     router.events.on('routeChangeComplete', handleRouteChange)
 
@@ -156,6 +160,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                     <SharedUIProvider>
                       <Layout {...layoutProps}>
                         <Component {...pageProps} />
+                        <CookieBanner />
                       </Layout>
                     </SharedUIProvider>
                   </SetupWeb3Context>

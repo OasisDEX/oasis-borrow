@@ -21,6 +21,12 @@ export interface MockOpenMultiplyVaultProps {
   _allowance$?: Observable<BigNumber>
   _ilks$?: Observable<string[]>
   _txHelpers$?: Observable<TxHelpers>
+  _token1Balance$?: Observable<BigNumber>
+  _getGuniMintAmount$?: Observable<{
+    amount0: BigNumber
+    amount1: BigNumber
+    mintAmount: BigNumber
+  }>
 
   ilkData?: MockIlkDataProps
   priceInfo?: MockPriceInfoProps

@@ -14,7 +14,11 @@ import { catchError, startWith } from 'rxjs/operators'
 import { DssGuniProxyActions as GuniProxyActions } from 'types/ethers-contracts/DssGuniProxyActions'
 import { GuniToken } from 'types/ethers-contracts/GuniToken'
 
-type TxChange =
+import { VaultType } from '../generalManageVault/generalManageVault'
+import { saveVaultUsingApi$ } from '../shared/vaultApi'
+import { jwtAuthGetToken } from '../termsOfService/jwt'
+
+export type TxChange =
   | { kind: 'txWaitingForApproval' }
   | {
       kind: 'txInProgress'
@@ -142,16 +146,15 @@ export function openGuniVault<S extends TxStateDependencies>(
             txState.status === TxStatus.Success && txState.receipt,
           )
 
-          // TODO: save in db that vault is multiply
-          // const jwtToken = jwtAuthGetToken(account as string)
-          // if (id && jwtToken) {
-          //   saveVaultUsingApi$(
-          //     id,
-          //     jwtToken,
-          //     VaultType.Multiply,
-          //     parseInt(txState.networkId),
-          //   ).subscribe()
-          // }
+          const jwtToken = jwtAuthGetToken(account as string)
+          if (id && jwtToken) {
+            saveVaultUsingApi$(
+              id,
+              jwtToken,
+              VaultType.Multiply,
+              parseInt(txState.networkId),
+            ).subscribe()
+          }
 
           return of({
             kind: 'txSuccess',
