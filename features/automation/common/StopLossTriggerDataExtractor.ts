@@ -8,7 +8,6 @@ import { TriggersTypes } from './enums/TriggersTypes'
 function getSLLevel(rawBytes: string): BigNumber {
   const values = ethers.utils.defaultAbiCoder.decode(['uint256', 'bool', 'uint256'], rawBytes)
   const slLevel = new BigNumber(values[2].toString()).dividedBy(100)
-  console.log('Parsed values', values, slLevel.toString())
   return slLevel
 }
 

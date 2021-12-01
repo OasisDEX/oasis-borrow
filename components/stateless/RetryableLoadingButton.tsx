@@ -7,12 +7,15 @@ export interface RetryableLoadingButtonProps {
   translationKey: string
   isRetry: boolean
   isLoading: boolean
+  disabled: boolean
 }
 
 export function RetryableLoadingButton(props: RetryableLoadingButtonProps) {
   const { t } = useTranslation()
   const [isLoading, setLoading] = useState(false)
   const [isRetry, setRetry] = useState(false)
+
+  console.log("Is button disabled",props.disabled);
 
   function buttonClickHandler() {
     if (!isLoading) {
@@ -34,6 +37,7 @@ export function RetryableLoadingButton(props: RetryableLoadingButtonProps) {
       sx={{ width: '100%', justifySelf: 'center' }}
       variant="primary"
       onClick={buttonClickHandler}
+      disabled={props.disabled}
     >
       {isLoading ? (
         <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>

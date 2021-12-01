@@ -83,6 +83,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     uiChanges,
     automationTriggersData$,
     txHelpers$,
+    connectedContext$,
   } = useAppContext()
 
   const autoTriggersData$ = automationTriggersData$(id)
@@ -92,6 +93,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
   const ilksDataWithError = useObservableWithError(ilkDataList$)
   const autoTriggerDataWithError = useObservableWithError(autoTriggersData$)
   const txHelpersWithError = useObservableWithError(txHelpers$)
+  const contextWithError = useObservableWithError(connectedContext$)
 
   uiChanges.createIfMissing<AddFormChange>(uiSubjectName, {
     selectedSLValue: new BigNumber(0),
@@ -108,6 +110,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     ilksData: IlkDataList,
     slTriggerData: StopLossTriggerData,
     txHelpers: TxHelpers,
+    isOwner : boolean
   ) {
     const token = vaultData.token
     const tokenData = getToken(token)
@@ -189,26 +192,37 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     const addTriggerConfig: RetryableLoadingButtonProps = {
       translationKey: 'add-stop-loss',
       onClick: (finishLoader: (succeded: boolean) => void) => {
+        
+        const txSendSuccessHandler = (x : TxState<AutomationBotAddTriggerData>) => {
+          console.log("Tx Status", x);
+          txStatusSetter(x)
+          if (isTxStatusFinal(x.status)) {
+            if (isTxStatusFailed(x.status)) {
+              finishLoader(false)
+              waitForTx.unsubscribe()
+              txStatusSetter(undefined)
+            } else {
+              finishLoader(true)
+              waitForTx.unsubscribe()
+              txStatusSetter(undefined)
+            }
+          }
+        };
+        
+        const sendTxErrorHandler = (x: any)=>{
+          finishLoader(false);
+        }
+        
         const txData = prepareTriggerData(vaultData, collateralActive, selectedSLValue)
+        
         const waitForTx = txHelpers
           .sendWithGasEstimation(addAutomationBotTrigger, txData)
-          .subscribe((x) => {
-            txStatusSetter(x)
-            if (isTxStatusFinal(x.status)) {
-              if (isTxStatusFailed(x.status)) {
-                finishLoader(false)
-                waitForTx.unsubscribe()
-                txStatusSetter(undefined)
-              } else {
-                finishLoader(true)
-                waitForTx.unsubscribe()
-                txStatusSetter(undefined)
-              }
-            }
-          })
+          .subscribe(txSendSuccessHandler, sendTxErrorHandler)
+         
       },
       isLoading: false,
       isRetry: false,
+      disabled: isOwner
     }
 
     const props: AdjustSlFormLayoutProps = {
@@ -218,7 +232,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       txState: txStatus,
     }
 
-    return <AdjustSlFormLayout {...props} />
+    return <AdjustSlFormLayout {...props} />;
   }
 
   return (
@@ -229,6 +243,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
         ilksDataWithError.error,
         autoTriggerDataWithError.error,
         txHelpersWithError.error,
+        contextWithError.error,
       ]}
     >
       <WithLoadingIndicator
@@ -238,10 +253,18 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
           ilksDataWithError.value,
           autoTriggerDataWithError.value,
           txHelpersWithError.value,
+          contextWithError.value,
         ]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([v, c, i, s, tx]) => renderLayout(v, c, i, extractSLData(s), tx)}
+        {
+        
+        ([v, c, i, s, tx, ctx]) => {
+          
+          return renderLayout(v, c, i, extractSLData(s), tx, ctx.account !== v.controller);
+        }
+        
+        }
       </WithLoadingIndicator>
     </WithErrorHandler>
   )

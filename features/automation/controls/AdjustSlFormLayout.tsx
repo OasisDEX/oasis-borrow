@@ -1,5 +1,5 @@
 import { TxState } from '@oasisdex/transactions'
-import { Box, Grid } from '@theme-ui/components'
+import { Box, Grid, Card } from '@theme-ui/components'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
 import { PickCloseState, PickCloseStateProps } from 'components/stateless/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/stateless/SliderValuePicker'
@@ -19,19 +19,21 @@ export interface AdjustSlFormLayoutProps {
 
 export function AdjustSlFormLayout(props: AdjustSlFormLayoutProps) {
   return (
-    <Grid columns={[1]}>
-      <Box>
-        <SliderValuePicker {...props.slValuePickerConfig} />
-      </Box>
-      <Box>
-        <PickCloseState {...props.closePickerConfig} />
-      </Box>
-      <Box>
-        <TxStatusSection txState={props.txState} />
-      </Box>
-      <Box>
-        <RetryableLoadingButton {...props.addTriggerConfig} />
-      </Box>
-    </Grid>
+    <Card sx={{ borderRadius: 'large', border: 'lightMuted' }}>
+      <Grid columns={[1]}>
+        <Box>
+          <SliderValuePicker {...props.slValuePickerConfig} />
+        </Box>
+        <Box>
+          <PickCloseState {...props.closePickerConfig} />
+        </Box>
+        <Box>
+          <TxStatusSection txState={props.txState} />
+        </Box>
+        <Box>
+          <RetryableLoadingButton {...props.addTriggerConfig} />
+        </Box>
+      </Grid>
+    </Card>
   )
 }

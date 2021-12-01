@@ -79,6 +79,7 @@ export function createAutomationTriggersData(
       console.log('createAutomationTriggersData Tick')
     }),
     mergeMap(([blockNumber, , vault]) => {
+      /* TODO: In future replace with oasis-cache query */
       const networkConfig = networksById[(vault as Vault).chainId]
       /* TODO: find proper current provider */
       var testProvider = new ethers.providers.Web3Provider((window as any).ethereum)

@@ -630,6 +630,7 @@ export function setupAppContext() {
     openGuniVault$,
     ilkDataList$,
     uiChanges,
+    connectedContext$,
   }
 }
 
