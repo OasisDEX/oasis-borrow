@@ -3,6 +3,7 @@ import { Box, Card, Grid } from '@theme-ui/components'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
 import { PickCloseState, PickCloseStateProps } from 'components/stateless/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/stateless/SliderValuePicker'
+import React from 'react'
 
 import {
   RetryableLoadingButton,

@@ -6,7 +6,7 @@ import { CollateralPricesWithFilters } from 'features/collateralPrices/collatera
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { extractSLData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { AddFormChange } from '../common/UITypes/AddFormChange'

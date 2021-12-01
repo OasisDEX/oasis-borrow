@@ -1,6 +1,6 @@
 import { Button, Flex, Spinner, Text } from '@theme-ui/components'
 import { useTranslation } from 'next-i18next'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 export interface RetryableLoadingButtonProps {
   onClick: (finishLoader: (succed: boolean) => void) => void

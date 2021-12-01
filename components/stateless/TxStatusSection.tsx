@@ -1,5 +1,6 @@
 import { TxState } from '@oasisdex/transactions'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
+import React from 'react'
 
 export interface TxStatusSectionProps {
   txState: TxState<AutomationBotAddTriggerData> | undefined
