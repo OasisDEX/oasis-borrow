@@ -43,7 +43,7 @@ export function initSelectedCookies(defaultValue: boolean): SelectedCookies {
 
 interface CookieBannerProps {
   value: SavedSettings
-  setValue: React.Dispatch<React.SetStateAction<SavedSettings>>
+  setValue: (data: SavedSettings) => void
 }
 
 export function CookieBanner({ value, setValue }: CookieBannerProps) {
