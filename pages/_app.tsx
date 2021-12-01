@@ -19,14 +19,14 @@ import { appWithTranslation } from 'next-i18next'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { theme } from 'theme'
 // @ts-ignore
 import { components, ThemeProvider } from 'theme-ui'
 import Web3 from 'web3'
 
+import { adRollPixelScript, checkAdRoll } from '../analytics/adroll'
 import { trackingEvents } from '../analytics/analytics'
-import { initTrackers } from '../analytics/common'
 import { mixpanelInit } from '../analytics/mixpanel'
 import nextI18NextConfig from '../next-i18next.config.js'
 
@@ -114,6 +114,7 @@ const noOverlayWorkaroundScript = `
 `
 
 function App({ Component, pageProps }: AppProps & CustomAppProps) {
+  const [isAdRollEnabled, setIsAddRollEnabled] = useState(false)
   const Layout = Component.layout || AppLayout
   const layoutProps = Component.layoutProps
   const seoTags = Component.seoTags || (
@@ -129,10 +130,10 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         trackingEvents.pageView(url)
       }
     }
-    // mixpanel and adRoll consent trigger
-    initTrackers()
 
     router.events.on('routeChangeComplete', handleRouteChange)
+    // mixpanel and adRoll consent triggerx
+    setIsAddRollEnabled(checkAdRoll())
 
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange)
@@ -145,6 +146,8 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         {process.env.NODE_ENV !== 'production' && (
           <script dangerouslySetInnerHTML={{ __html: noOverlayWorkaroundScript }} />
         )}
+        {isAdRollEnabled && <script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} />}
+
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <ThemeProvider theme={theme}>
