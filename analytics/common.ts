@@ -21,28 +21,3 @@ export const manageCookie: Record<CookieName, Switch> = {
     // todo: delete user data https://developer.mixpanel.com/docs/managing-personal-data
   },
 }
-
-export function initTrackers() {
-  const trackingLocalState = localStorage.getItem(LOCALSTORAGE_KEY)
-
-  if (trackingLocalState) {
-    const state = JSON.parse(trackingLocalState).enabledCookies
-    COOKIE_NAMES.forEach((cookieName) => {
-      if (state[cookieName]) {
-        manageCookie[cookieName].enable()
-      } else {
-        manageCookie[cookieName].disable()
-      }
-    })
-  }
-}
-
-export function checkAdRoll() {
-  const trackingLocalState = localStorage.getItem(LOCALSTORAGE_KEY)
-  if (trackingLocalState) {
-    const state = JSON.parse(trackingLocalState!).enabledCookies
-
-    return !!state['marketing']
-  }
-  return false
-}

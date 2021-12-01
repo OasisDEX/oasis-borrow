@@ -1,7 +1,5 @@
 import getConfig from 'next/config'
 
-import { LOCALSTORAGE_KEY } from './common'
-
 const { adRollAdvId, adRollPixId } = getConfig()?.publicRuntimeConfig
 
 export const adRollPixelScript = `
@@ -31,23 +29,3 @@ export const adRollPixelScript = `
   })(window, document);
   adroll.track("pageView");
 `
-
-// export function adRollScriptInsert() {
-//   const script = document.createElement('script')
-//
-//   script.type = 'text/javascript'
-//   script.innerText = adRollPixelScript
-//
-//   document.head.appendChild(script)
-// }
-
-export function checkAdRoll() {
-  if (!localStorage) return false
-  const trackingLocalState = localStorage?.getItem(LOCALSTORAGE_KEY)
-  if (trackingLocalState) {
-    const state = JSON.parse(trackingLocalState!).enabledCookies
-
-    return !!state['marketing']
-  }
-  return false
-}

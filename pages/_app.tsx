@@ -19,7 +19,7 @@ import { appWithTranslation } from 'next-i18next'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { theme } from 'theme'
 // @ts-ignore
 import { components, ThemeProvider } from 'theme-ui'
@@ -29,6 +29,7 @@ import { adRollPixelScript } from '../analytics/adroll'
 import { trackingEvents } from '../analytics/analytics'
 import { LOCALSTORAGE_KEY } from '../analytics/common'
 import { mixpanelInit } from '../analytics/mixpanel'
+import { useLocalStorage } from '../helpers/useLocalStorage'
 import nextI18NextConfig from '../next-i18next.config.js'
 
 function getLibrary(provider: any, connector: AbstractConnector | undefined): Web3 {
@@ -113,48 +114,6 @@ const noOverlayWorkaroundScript = `
     }
   })
 `
-
-// function getAnalyticsData() {
-//   return JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY) as string);
-// }
-
-// export function useAnalyticsData() {
-//   const [analyticsData, setAnalyticsData] = useState(false)
-//
-//   useEffect(() => {
-//     function handleChangeStorage() {
-//       setAnalyticsData(checkAdRoll())
-//     }
-//
-//     window.addEventListener('storage', handleChangeStorage)
-//     return () => window.removeEventListener('storage', handleChangeStorage)
-//   }, [])
-//
-//   return { analyticsData, setAnalyticsData }
-// }
-
-function getStorageValue(key: string, defaultValue: unknown) {
-  // getting stored value
-  if (typeof window !== 'undefined') {
-    const saved = localStorage.getItem(key)
-    const initial = saved !== null ? JSON.parse(saved) : defaultValue
-    return initial || defaultValue
-  }
-}
-
-export const useLocalStorage = (key: string, defaultValue: unknown) => {
-  const [value, setValue] = useState(() => {
-    return getStorageValue(key, defaultValue)
-  })
-  useEffect(() => {
-    // storing input name
-    localStorage.setItem(key, JSON.stringify(value))
-  }, [key, value])
-
-  console.log(value)
-
-  return [value, setValue]
-}
 
 function App({ Component, pageProps }: AppProps & CustomAppProps) {
   const [value, setValue] = useLocalStorage(LOCALSTORAGE_KEY, '')

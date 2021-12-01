@@ -35,13 +35,18 @@ function Checkbox({
 }
 
 type SelectedCookies = Record<CookieName, boolean>
-type SavedSettings = { accepted: boolean; enabledCookies: SelectedCookies }
+export type SavedSettings = { accepted: boolean; enabledCookies: SelectedCookies }
 
-function initSelectedCookies(defaultValue: boolean): SelectedCookies {
+export function initSelectedCookies(defaultValue: boolean): SelectedCookies {
   return COOKIE_NAMES.reduce((acc, cookieName) => ({ ...acc, [cookieName]: defaultValue }), {})
 }
 
-export function CookieBanner({ value, setValue }: any) {
+interface CookieBannerProps {
+  value: SavedSettings
+  setValue: React.Dispatch<React.SetStateAction<SavedSettings>>
+}
+
+export function CookieBanner({ value, setValue }: CookieBannerProps) {
   const { t } = useTranslation()
 
   const [showSettings, setShowSettings] = useState(false)
