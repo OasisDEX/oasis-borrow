@@ -42,7 +42,8 @@ export const adRollPixelScript = `
 // }
 
 export function checkAdRoll() {
-  const trackingLocalState = localStorage.getItem(LOCALSTORAGE_KEY)
+  if (!localStorage) return false
+  const trackingLocalState = localStorage?.getItem(LOCALSTORAGE_KEY)
   if (trackingLocalState) {
     const state = JSON.parse(trackingLocalState!).enabledCookies
 

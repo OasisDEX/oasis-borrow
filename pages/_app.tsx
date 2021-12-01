@@ -25,8 +25,9 @@ import { theme } from 'theme'
 import { components, ThemeProvider } from 'theme-ui'
 import Web3 from 'web3'
 
-import { adRollPixelScript, checkAdRoll } from '../analytics/adroll'
+import { adRollPixelScript } from '../analytics/adroll'
 import { trackingEvents } from '../analytics/analytics'
+import { LOCALSTORAGE_KEY } from '../analytics/common'
 import { mixpanelInit } from '../analytics/mixpanel'
 import nextI18NextConfig from '../next-i18next.config.js'
 
@@ -113,14 +114,57 @@ const noOverlayWorkaroundScript = `
   })
 `
 
+// function getAnalyticsData() {
+//   return JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY) as string);
+// }
+
+// export function useAnalyticsData() {
+//   const [analyticsData, setAnalyticsData] = useState(false)
+//
+//   useEffect(() => {
+//     function handleChangeStorage() {
+//       setAnalyticsData(checkAdRoll())
+//     }
+//
+//     window.addEventListener('storage', handleChangeStorage)
+//     return () => window.removeEventListener('storage', handleChangeStorage)
+//   }, [])
+//
+//   return { analyticsData, setAnalyticsData }
+// }
+
+function getStorageValue(key: string, defaultValue: unknown) {
+  // getting stored value
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem(key)
+    const initial = saved !== null ? JSON.parse(saved) : defaultValue;
+    return initial || defaultValue
+  }
+}
+
+export const useLocalStorage = (key: string, defaultValue: unknown) => {
+  const [value, setValue] = useState(() => {
+    return getStorageValue(key, defaultValue)
+  })
+  useEffect(() => {
+    // storing input name
+    localStorage.setItem(key, JSON.stringify(value))
+  }, [key, value])
+
+  console.log(value)
+
+  return [value, setValue]
+}
+
 function App({ Component, pageProps }: AppProps & CustomAppProps) {
-  const [isAdRollEnabled, setIsAddRollEnabled] = useState(false)
+  const [value, setValue] = useLocalStorage(LOCALSTORAGE_KEY, '')
+
   const Layout = Component.layout || AppLayout
+
   const layoutProps = Component.layoutProps
   const seoTags = Component.seoTags || (
     <PageSEOTags title="seo.default.title" description="seo.default.description" />
   )
-
   const router = useRouter()
 
   useEffect(() => {
@@ -132,8 +176,6 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     }
 
     router.events.on('routeChangeComplete', handleRouteChange)
-    // mixpanel and adRoll consent triggerx
-    setIsAddRollEnabled(checkAdRoll())
 
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange)
@@ -146,7 +188,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         {process.env.NODE_ENV !== 'production' && (
           <script dangerouslySetInnerHTML={{ __html: noOverlayWorkaroundScript }} />
         )}
-        {isAdRollEnabled && (
+        {value?.enabledCookies?.marketing && (
           <script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} async />
         )}
 
@@ -165,7 +207,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                     <SharedUIProvider>
                       <Layout {...layoutProps}>
                         <Component {...pageProps} />
-                        <CookieBanner />
+                        <CookieBanner setValue={setValue} value={value}/>
                       </Layout>
                     </SharedUIProvider>
                   </SetupWeb3Context>
