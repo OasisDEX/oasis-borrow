@@ -146,7 +146,9 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         {process.env.NODE_ENV !== 'production' && (
           <script dangerouslySetInnerHTML={{ __html: noOverlayWorkaroundScript }} />
         )}
-        {isAdRollEnabled && <script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} />}
+        {isAdRollEnabled && (
+          <script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} defer />
+        )}
 
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
