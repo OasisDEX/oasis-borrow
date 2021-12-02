@@ -125,6 +125,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     const currentCollRatio = vaultData.lockedCollateral
       .multipliedBy(currentCollateralData.currentPrice)
       .dividedBy(vaultData.debt)
+
     const startingAfterNewLiquidationPrice = currentCollateralData.currentPrice
       .multipliedBy(startingSlRatio)
       .dividedBy(currentCollRatio)
@@ -136,6 +137,8 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     const [txStatus, txStatusSetter] = useState<TxState<AutomationBotAddTriggerData> | undefined>(
       undefined,
     )
+
+    const maxBoundry = currentCollRatio.isNaN() ? new BigNumber(5) : currentCollRatio
 
     const liqRatio = currentIlkData.liquidationRatio
 
@@ -168,7 +171,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       leftBoundryStyling: { fontWeight: 'semiBold' },
       rightBoundryFormatter: (x: BigNumber) => '$ ' + formatAmount(x, 'USD'),
       rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
-      maxBoundry: currentCollRatio.multipliedBy(100),
+      maxBoundry: maxBoundry,
       minBoundry: liqRatio.multipliedBy(100),
       setter: (slCollRatio) => {
         setSelectedSLValue(slCollRatio)
