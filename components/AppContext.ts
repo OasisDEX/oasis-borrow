@@ -443,6 +443,7 @@ export function setupAppContext() {
         noFeesExchangeQuote$,
         addGasEstimation$,
         getProportions$,
+        vaultMultiplyHistory$,
         id,
       ),
     bigNumberTostring,

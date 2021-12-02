@@ -549,7 +549,12 @@ export function applyManageVaultCalculations(
   }
 
   if (!marketPrice || !marketPriceMaxSlippage) {
-    return { ...state, ...defaultManageMultiplyVaultCalculations, ...maxInputAmounts, ...prices }
+    return {
+      ...state,
+      ...defaultManageMultiplyVaultCalculations,
+      ...maxInputAmounts,
+      ...prices,
+    }
   }
 
   const {
@@ -772,6 +777,7 @@ export function applyManageVaultCalculations(
   const afterCloseToCollateralUSD = afterCloseToCollateral.times(marketPrice)
 
   const currentPnL = calculatePNL(vaultHistory, netValueUSD)
+
   const totalGasSpentUSD = vaultHistory.reduce(getCumulativeFeesUSD, zero)
 
   return {
