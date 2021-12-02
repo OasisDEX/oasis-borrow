@@ -138,7 +138,8 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       undefined,
     )
 
-    const maxBoundry = currentCollRatio.isNaN() ? new BigNumber(5) : currentCollRatio
+    const maxBoundry =
+      currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
     console.log('MaxBoundry, CurrentCollRatio', maxBoundry.toString(), currentCollRatio.toString())
 
     const liqRatio = currentIlkData.liquidationRatio
@@ -172,7 +173,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       leftBoundryStyling: { fontWeight: 'semiBold' },
       rightBoundryFormatter: (x: BigNumber) => '$ ' + formatAmount(x, 'USD'),
       rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
-      maxBoundry: maxBoundry,
+      maxBoundry: maxBoundry.multipliedBy(100),
       minBoundry: liqRatio.multipliedBy(100),
       setter: (slCollRatio) => {
         setSelectedSLValue(slCollRatio)
