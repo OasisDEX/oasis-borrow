@@ -139,6 +139,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     )
 
     const maxBoundry = currentCollRatio.isNaN() ? new BigNumber(5) : currentCollRatio
+    console.log('MaxBoundry, CurrentCollRatio', maxBoundry.toString(), currentCollRatio.toString())
 
     const liqRatio = currentIlkData.liquidationRatio
 
