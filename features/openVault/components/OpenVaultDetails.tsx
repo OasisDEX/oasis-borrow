@@ -14,6 +14,7 @@ import {
 } from 'components/vault/VaultDetails'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
+import useHasChangedSinceFirstRender from 'helpers/useHasChangedSinceFirstRender'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
@@ -116,16 +117,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'txSuccess'
 
-  const amountHasInput = !inputAmountsEmpty
-
-  const [inputAmountWasChanged, setInputAmountWasChanged] = useState<boolean>(false)
-  const [previousAmountHasInput, setPreviousAmountHasInput] = useState<boolean>(
-    inputAmountWasChanged,
-  )
-  if (amountHasInput !== previousAmountHasInput) {
-    setInputAmountWasChanged(true)
-    setPreviousAmountHasInput(amountHasInput)
-  }
+  const inputAmountWasChanged = useHasChangedSinceFirstRender(inputAmountsEmpty)
 
   return (
     <>
