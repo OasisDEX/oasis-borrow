@@ -11,8 +11,8 @@ import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../Vaul
 
 interface CollateralLockedProps {
   token: string
-  collateralAmountLocked: BigNumber | undefined
-  collateralLockedUSD: BigNumber | undefined
+  collateralAmountLocked?: BigNumber
+  collateralLockedUSD?: BigNumber
 }
 
 function VaultDetailsCardCollateralLockedModal({

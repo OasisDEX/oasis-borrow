@@ -10,7 +10,7 @@ import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../Vaul
 
 interface LiquidationProps {
   liquidationPrice: BigNumber
-  liquidationPriceCurrentPriceDifference: BigNumber | undefined
+  liquidationPriceCurrentPriceDifference?: BigNumber
 }
 
 function VaultDetailsLiquidationModal({

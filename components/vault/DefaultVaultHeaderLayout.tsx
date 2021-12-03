@@ -25,7 +25,7 @@ export function DefaultVaultHeaderLayout(props: DefaultVaultHeaderLayoutProps) {
         styles={{
           tooltip: {
             left: ['auto', '-20px'],
-            right: ['-0px', 'auto'],
+            right: ['0px', 'auto'],
           },
         }}
       />
