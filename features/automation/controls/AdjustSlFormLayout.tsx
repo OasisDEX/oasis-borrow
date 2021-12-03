@@ -1,21 +1,21 @@
 import { TxState } from '@oasisdex/transactions'
 import { Box, Card, Grid } from '@theme-ui/components'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
-import { PickCloseState, PickCloseStateProps } from 'components/stateless/PickCloseState'
-import { SliderValuePicker, SliderValuePickerProps } from 'components/stateless/SliderValuePicker'
+import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
+import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import React from 'react'
 
 import {
   RetryableLoadingButton,
   RetryableLoadingButtonProps,
-} from '../../../components/stateless/RetryableLoadingButton'
-import { TxStatusSection } from '../../../components/stateless/TxStatusSection'
+} from '../../../components/dumb/RetryableLoadingButton'
+import { TxStatusSection } from '../../../components/dumb/TxStatusSection'
 
 export interface AdjustSlFormLayoutProps {
   closePickerConfig: PickCloseStateProps
   slValuePickerConfig: SliderValuePickerProps
   addTriggerConfig: RetryableLoadingButtonProps
-  txState: TxState<AutomationBotAddTriggerData> | undefined
+  txState?: TxState<AutomationBotAddTriggerData>
 }
 
 export function AdjustSlFormLayout(props: AdjustSlFormLayoutProps) {

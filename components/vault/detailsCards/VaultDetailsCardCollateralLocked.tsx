@@ -25,8 +25,8 @@ function VaultDetailsCardCollateralLockedModal({
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
-        <Heading variant="header3">{`${t('system.collateral-locked')}`}</Heading>
-        <Heading variant="header3">{`${t('manage-vault.card.collateral-locked-amount')}`}</Heading>
+        <Heading variant="header3">{t('system.collateral-locked')}</Heading>
+        <Heading variant="header3">{t('manage-vault.card.collateral-locked-amount')}</Heading>
         <Card variant="vaultDetailsCardModal">
           {formatAmount(collateralAmountLocked || zero, getToken(token).symbol)}
         </Card>
