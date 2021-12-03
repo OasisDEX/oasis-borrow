@@ -65,7 +65,11 @@ export function VaultDetailsCardDynamicStopPrice({
           '-'
         )
       }
-      valueAfter={showAfterPill && `$${formatAmount(afterDynamicStopPrice, 'USD')}`}
+      valueAfter={
+        showAfterPill &&
+        !dynamicStopPrice.isZero() &&
+        `$${formatAmount(afterDynamicStopPrice, 'USD')}`
+      }
       openModal={() => openModal(VaultDetailsDynamicStopPriceModal)}
       afterPillColors={afterPillColors}
     />

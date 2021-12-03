@@ -40,7 +40,7 @@ export function VaultDetailsCardStopLossCollRatio({
     <VaultDetailsCard
       title={t('manage-multiply-vault.card.stop-loss-coll-ratio')}
       value={
-        isProtected && !collateralizationRatio.isZero()
+        isProtected
           ? formatPercent(slRatio.times(100), {
               precision: 2,
             })
