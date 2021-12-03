@@ -526,7 +526,7 @@ export function VaultDetailsCardNetValue({
 }: {
   netValueUSD: BigNumber
   afterNetValueUSD: BigNumber
-  relevant: boolean
+  relevant?: boolean
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()

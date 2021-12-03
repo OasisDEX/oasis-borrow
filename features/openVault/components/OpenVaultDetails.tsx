@@ -116,7 +116,6 @@ export function OpenVaultDetails(props: OpenVaultState) {
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'txSuccess'
-
   const inputAmountWasChanged = useHasChangedSinceFirstRender(inputAmountsEmpty)
 
   return (
