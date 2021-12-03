@@ -15,6 +15,7 @@ import {
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
 import { zero } from 'helpers/zero'
+import { useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -115,6 +116,17 @@ export function OpenVaultDetails(props: OpenVaultState) {
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'txSuccess'
 
+  const amountHasInput = !inputAmountsEmpty
+
+  const [inputAmountWasChanged, setInputAmountWasChanged] = useState<boolean>(false)
+  const [previousAmountHasInput, setPreviousAmountHasInput] = useState<boolean>(
+    inputAmountWasChanged,
+  )
+  if (amountHasInput !== previousAmountHasInput) {
+    setInputAmountWasChanged(true)
+    setPreviousAmountHasInput(amountHasInput)
+  }
+
   return (
     <>
       <Grid variant="vaultDetailsCardsContainer">
@@ -124,6 +136,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
             afterLiquidationPrice,
             afterPillColors,
             showAfterPill,
+            raised: inputAmountWasChanged,
           }}
         />
 
@@ -147,6 +160,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
             })
           }
           afterPillColors={afterPillColors}
+          raised={inputAmountWasChanged}
         />
 
         <VaultDetailsCardCurrentPrice {...props} />
@@ -158,6 +172,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
             token,
             afterPillColors,
             showAfterPill,
+            raised: inputAmountWasChanged,
           }}
         />
       </Grid>
