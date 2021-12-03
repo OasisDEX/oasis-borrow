@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
+import { truncate } from 'fs'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { CommonVaultState, WithChildren } from 'helpers/types'
@@ -521,9 +522,11 @@ export function VaultDetailsCardNetValue({
   afterNetValueUSD,
   afterPillColors,
   showAfterPill,
+  relevant = true,
 }: {
   netValueUSD: BigNumber
   afterNetValueUSD: BigNumber
+  relevant: boolean
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
@@ -536,6 +539,7 @@ export function VaultDetailsCardNetValue({
       valueAfter={showAfterPill && `$${formatAmount(afterNetValueUSD, 'USD')}`}
       openModal={() => openModal(VaultDetailsNetValueModal)}
       afterPillColors={afterPillColors}
+      relevant={relevant}
     />
   )
 }
