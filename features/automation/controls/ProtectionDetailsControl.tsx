@@ -66,7 +66,7 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
     const uiChanges$ = uiChanges.subscribe<AddFormChange>(uiSubjectName)
 
     const subscription = uiChanges$.subscribe((value) => {
-      console.log('New UI value received', value)
+      console.log('New UI value received', value);
       lastUIStateSetter(value)
     })
     return () => {

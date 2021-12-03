@@ -168,6 +168,7 @@ function createUIChangesSubject() {
   const commonSubject = new Subject<Record>()
 
   function subscribe<T>(subjectName: string): Observable<T> {
+    console.log("Subscribing for a channel")
     return commonSubject.pipe(
       filter((x) => x.subjectName === subjectName),
       map((x) => x.payload as T),
@@ -176,6 +177,7 @@ function createUIChangesSubject() {
   }
 
   function publish<T>(subjectName: string, event: T) {
+    console.log("Publishing to a channel")
     commonSubject.next({
       subjectName,
       payload: event,
