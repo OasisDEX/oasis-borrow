@@ -1,8 +1,9 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { Direction } from 'helpers/form'
 import { useTranslation } from 'next-i18next'
 import React, { HTMLProps, memo, ReactNode } from 'react'
 import { Box, Button, Container, SxStyleProp } from 'theme-ui'
+
+import { ChevronUpDown } from './ChevronUpDown'
 
 export interface ColumnDef<T, S> {
   headerLabel: string
@@ -229,10 +230,10 @@ export function TableSortHeader<K extends string>({
         {children}
       </Box>
       <Box>
-        <Icon
-          sx={{ ml: 1, display: 'flex', width: 1 }}
+        <ChevronUpDown
+          variant="sort"
+          isUp={filters.direction === 'ASC' && isSelected}
           size={12}
-          name={filters.direction === 'ASC' && isSelected ? 'chevron_up' : 'chevron_down'}
           color={isSelected ? 'primary' : 'text.muted'}
         />
       </Box>
