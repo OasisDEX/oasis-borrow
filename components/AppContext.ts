@@ -177,7 +177,6 @@ function createUIChangesSubject() {
   }
 
   function publish<T>(subjectName: string, event: T) {
-    console.log("Publishing to a channel")
     commonSubject.next({
       subjectName,
       payload: event,
