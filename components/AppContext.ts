@@ -75,7 +75,7 @@ import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiply
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
-import { BehaviorSubject, combineLatest, Observable, of, Subject, Subscription } from 'rxjs'
+import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { dogIlk } from '../blockchain/calls/dog'
@@ -161,103 +161,30 @@ function createTxHelpers$(
 }
 
 function createUIChangesSubject() {
-  interface HangingSubscription<T> {
-    subscriberId: string
-    handler: (value: T) => void
+  interface Record {
+    subjectName: string
+    payload: any
+  }
+  const commonSubject = new Subject<Record>()
+
+  function subscribe<T>(subjectName: string): Observable<T> {
+    return commonSubject.pipe(
+      filter((x) => x.subjectName === subjectName),
+      map((x) => x.payload as T),
+      shareReplay(1),
+    )
   }
 
-  const subjects: any = {}
-  const waitingSubscriptions: any = {}
-  const doubleSubscriptionGuard: Map<string, Map<string, any>> = new Map<string, Map<string, any>>()
-  const existingSubscriptions: Map<string, Map<string, Subscription>> = new Map<
-    string,
-    Map<string, Subscription>
-  >()
-
-  function addSubscription(subjectName: string, subscriberId: string, sub: Subscription) {
-    if (!existingSubscriptions.get(subjectName)) {
-      existingSubscriptions.set(subjectName, new Map<string, Subscription>())
-    }
-    existingSubscriptions.get(subjectName)?.set(subscriberId, sub)
-  }
-
-  function createIfMissing<T>(subjectName: string, defaultValue: T): void {
-    if (!subjects[subjectName]) {
-      console.log('createIfMissing', subjectName)
-      const newSubject = new BehaviorSubject<T>(defaultValue)
-      subjects[subjectName] = newSubject
-      if (waitingSubscriptions[subjectName] && waitingSubscriptions[subjectName].length) {
-        const waitingHandlers: Array<HangingSubscription<T>> = waitingSubscriptions[
-          subjectName
-        ] as Array<HangingSubscription<T>>
-        waitingHandlers.forEach((item) => {
-          const sub = newSubject.subscribe({
-            next: item.handler,
-          })
-          console.log('Adding early subscription', subjectName, item.subscriberId)
-          addSubscription(subjectName, item.subscriberId, sub)
-        })
-        delete waitingSubscriptions[subjectName]
-      }
-    } else {
-      console.log('createIfMissing - no action')
-    }
-  }
-
-  function publish<T>(subjectName: string, data: T): void {
-    if (!subjects[subjectName]) {
-      throw new Error(`Subject ${subjectName} not created`)
-    }
-    const subject: BehaviorSubject<T> = subjects[subjectName] as BehaviorSubject<T>
-    subject.next(data)
-  }
-
-  function unsubscribe<T>(subjectName: string, subscriberId: string) {
-    console.log('Unsubscribing', subjectName, subscriberId)
-
-    if (waitingSubscriptions[subjectName]) {
-      const subs = waitingSubscriptions[subjectName] as Array<HangingSubscription<T>>
-      const excludedSubs = subs.filter((x) => x.subscriberId !== subscriberId)
-      waitingSubscriptions[subjectName] = new Array<HangingSubscription<T>>(...excludedSubs)
-    }
-
-    if (existingSubscriptions.get(subjectName)?.get(subscriberId)) {
-      existingSubscriptions.get(subjectName)?.get(subscriberId)?.unsubscribe()
-      existingSubscriptions.get(subjectName)?.delete(subscriberId)
-      doubleSubscriptionGuard.get(subjectName)?.delete(subscriberId)
-    }
-  }
-
-  function subscribe<T>(subjectName: string, subscriberId: string, handler: (value: T) => void) {
-    console.log('Subscribing', subjectName, subscriberId)
-    if (!doubleSubscriptionGuard.get(subjectName)?.get(subscriberId)) {
-      if (!subjects[subjectName]) {
-        waitingSubscriptions[subjectName] = waitingSubscriptions[subjectName] || []
-        waitingSubscriptions[subjectName].push({
-          subscriberId,
-          handler,
-        } as HangingSubscription<T>)
-      } else {
-        const subject: Subject<T> = subjects[subjectName] as Subject<T>
-        const sub = subject.subscribe({
-          next: handler,
-        })
-        addSubscription(subjectName, subscriberId, sub)
-      }
-
-      const col = doubleSubscriptionGuard.has(subjectName)
-        ? (doubleSubscriptionGuard.get(subjectName) as Map<string, any>)
-        : new Map<string, any>()
-      col.set(subscriberId, handler)
-      doubleSubscriptionGuard.set(subjectName, col)
-    }
+  function publish<T>(subjectName: string, event: T) {
+    commonSubject.next({
+      subjectName,
+      payload: event,
+    })
   }
 
   return {
-    createIfMissing: createIfMissing,
     subscribe: subscribe,
     publish: publish,
-    unsubscribe: unsubscribe,
   }
 }
 
@@ -402,10 +329,6 @@ export function setupAppContext() {
   const ilksWithBalance$ = createIlkDataListWithBalances$(context$, ilkDataList$, accountBalances$)
 
   const priceInfo$ = curry(createPriceInfo$)(oraclePriceData$)
-  // as (
-  //   token: string,
-  //   account: string | undefined,
-  // ) => Observable<PriceInfo>
 
   // TODO Don't allow undefined args like this
   const balanceInfo$ = curry(createBalanceInfo$)(balance$) as (

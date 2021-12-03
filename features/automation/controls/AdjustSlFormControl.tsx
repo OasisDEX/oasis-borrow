@@ -95,11 +95,6 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
   const txHelpersWithError = useObservableWithError(txHelpers$)
   const contextWithError = useObservableWithError(connectedContext$)
 
-  uiChanges.createIfMissing<AddFormChange>(uiSubjectName, {
-    selectedSLValue: new BigNumber(0),
-    collateralActive: false,
-  })
-
   function publishUIChange(props: AddFormChange) {
     uiChanges.publish<AddFormChange>(uiSubjectName, props)
   }
