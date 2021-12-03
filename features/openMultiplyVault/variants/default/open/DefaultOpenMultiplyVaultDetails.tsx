@@ -27,11 +27,12 @@ function OpenMultiplyVaultDetailsSummary({
   afterOutstandingDebt,
   multiply,
   totalExposure,
-}: OpenMultiplyVaultState & AfterPillProps) {
+  relevant,
+}: OpenMultiplyVaultState & AfterPillProps & { relevant: boolean }) {
   const { t } = useTranslation()
 
   return (
-    <VaultDetailsSummaryContainer>
+    <VaultDetailsSummaryContainer relevant={relevant}>
       <VaultDetailsSummaryItem
         label={t('system.vault-dai-debt')}
         value={
@@ -140,6 +141,7 @@ export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
         {...props}
         afterPillColors={afterPillColors}
         showAfterPill={showAfterPill}
+        relevant={inputAmountChangedSinceFirstRender}
       />
     </>
   )
