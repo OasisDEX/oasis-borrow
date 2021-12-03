@@ -172,7 +172,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
             token,
             afterPillColors,
             showAfterPill,
-            raised: inputAmountWasChanged,
+            relevant: inputAmountWasChanged,
           }}
         />
       </Grid>

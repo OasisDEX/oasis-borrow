@@ -479,13 +479,13 @@ export function VaultDetailsCardCollateralLocked({
   token,
   afterPillColors,
   showAfterPill,
-  raised = true,
+  relevant = true,
 }: {
   depositAmountUSD?: BigNumber
   depositAmount?: BigNumber
   afterDepositAmountUSD?: BigNumber
   token: string
-  raised?: boolean
+  relevant?: boolean
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
@@ -511,7 +511,7 @@ export function VaultDetailsCardCollateralLocked({
         })
       }
       afterPillColors={afterPillColors}
-      relevant={raised}
+      relevant={relevant}
     />
   )
 }
