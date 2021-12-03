@@ -5,7 +5,7 @@ import {
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
-import useHasChangedSinceFirstRender from 'helpers/useHasChangedSinceFirstRender'
+import { useHasChangedSinceFirstRender } from 'helpers/useHasChangedSinceFirstRender'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'

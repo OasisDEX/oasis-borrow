@@ -14,7 +14,7 @@ import {
 } from 'components/vault/VaultDetails'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
-import useHasChangedSinceFirstRender from 'helpers/useHasChangedSinceFirstRender'
+import { useHasChangedSinceFirstRender } from 'helpers/useHasChangedSinceFirstRender'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
