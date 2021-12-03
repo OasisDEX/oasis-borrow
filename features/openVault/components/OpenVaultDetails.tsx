@@ -15,8 +15,8 @@ import {
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
 import { zero } from 'helpers/zero'
-import { useState } from 'react'
 import { useTranslation } from 'next-i18next'
+import { useState } from 'react'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
