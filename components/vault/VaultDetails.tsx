@@ -544,9 +544,12 @@ export function VaultDetailsCardNetValue({
   )
 }
 
-export function VaultDetailsSummaryContainer({ children }: WithChildren) {
+export function VaultDetailsSummaryContainer({
+  children,
+  relevant = true,
+}: WithChildren & { relevant?: boolean }) {
   return (
-    <Card sx={{ borderRadius: 'large', border: 'lightMuted' }}>
+    <Card sx={{ borderRadius: 'large', border: 'lightMuted', opacity: relevant ? 1 : 0.5 }}>
       <Grid
         columns={[1, null, null, 3]}
         sx={{ py: 3, px: 2, alignItems: 'flex-start' }}
