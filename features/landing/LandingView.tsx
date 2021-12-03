@@ -320,7 +320,8 @@ export function LandingView() {
         </WithLoadingIndicator>
       </WithErrorHandler>
       <LandingCards />
-//      <TypeformWidget />
+      {/* Typeform is hidden right now - but can be re-enabled later by uncommenting the Typeform related comments in this file.
+      <TypeformWidget />*/}
     </Grid>
   )
 }
