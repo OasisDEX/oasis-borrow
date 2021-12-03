@@ -17,6 +17,7 @@ export interface SliderValuePickerProps {
   disabled: boolean
   leftBoundryStyling: SxStyleProp
   rightBoundryStyling: SxStyleProp
+  step: number
 }
 
 export function SliderValuePicker(props: SliderValuePickerProps) {
@@ -67,7 +68,7 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
         <Slider
           sx={props.rightBoundryStyling}
           disabled={props.disabled}
-          step={0.05}
+          step={props.step}
           min={props.minBoundry?.toNumber()}
           max={props.maxBoundry?.toNumber()}
           value={props.lastValue?.toNumber() || props.maxBoundry?.toNumber()}

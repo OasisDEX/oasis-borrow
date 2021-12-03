@@ -7,11 +7,9 @@ export interface TxStatusSectionProps {
 }
 
 export function TxStatusSection(props: TxStatusSectionProps) {
-  console.log(props)
-  const isUndefined = props.txState === undefined
   return (
     <>
-      {isUndefined ? (
+      {!props.txState ? (
         <></>
       ) : (
         <p>
