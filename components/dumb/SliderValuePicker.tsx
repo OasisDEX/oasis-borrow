@@ -10,7 +10,7 @@ export interface SliderValuePickerProps {
   leftBoundryFormatter: (input: BigNumber) => string
   rightBoundry: BigNumber
   rightBoundryFormatter: (input: BigNumber) => string
-  setter: (input: BigNumber) => void
+  onChange: (input: BigNumber) => void
   minBoundry: BigNumber
   maxBoundry: BigNumber
   lastValue: BigNumber
@@ -73,7 +73,7 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
           max={props.maxBoundry?.toNumber()}
           value={props.lastValue?.toNumber() || props.maxBoundry?.toNumber()}
           onChange={(e) => {
-            props.setter(new BigNumber(e.target.value))
+            props.onChange(new BigNumber(e.target.value))
           }}
         />
       </Box>

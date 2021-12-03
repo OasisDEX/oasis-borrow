@@ -134,7 +134,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     )
 
     const maxBoundry =
-      currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio;
+      currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
 
     const liqRatio = currentIlkData.liquidationRatio
 
@@ -170,7 +170,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       step: 0.05,
       maxBoundry: maxBoundry.multipliedBy(100),
       minBoundry: liqRatio.multipliedBy(100),
-      setter: (slCollRatio) => {
+      onChange: (slCollRatio) => {
         setSelectedSLValue(slCollRatio)
         /*TO DO: this is duplicated and can be extracted*/
         const currentCollRatio = vaultData.lockedCollateral
