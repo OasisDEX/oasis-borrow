@@ -136,7 +136,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
             afterLiquidationPrice,
             afterPillColors,
             showAfterPill,
-            raised: inputAmountWasChanged,
+            relevant: inputAmountWasChanged,
           }}
         />
 
@@ -160,7 +160,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
             })
           }
           afterPillColors={afterPillColors}
-          raised={inputAmountWasChanged}
+          relevant={inputAmountWasChanged}
         />
 
         <VaultDetailsCardCurrentPrice {...props} />

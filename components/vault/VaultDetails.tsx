@@ -100,14 +100,14 @@ export function VaultDetailsCard({
   valueAfter,
   afterPillColors,
   openModal,
-  raised = true,
+  relevant = true,
 }: {
   title: string
   value: ReactNode
   valueBottom?: ReactNode
   valueAfter?: ReactNode
   openModal?: () => void
-  raised?: Boolean
+  relevant?: Boolean
 } & AfterPillProps) {
   return (
     <Card
@@ -117,7 +117,7 @@ export function VaultDetailsCard({
         overflow: 'hidden',
         minHeight: '194px',
         display: 'flex',
-        opacity: raised ? 1 : 0.5,
+        opacity: relevant ? 1 : 0.5,
         svg: {
           color: 'text.subtitle',
         },
@@ -377,12 +377,12 @@ export function VaultDetailsCardLiquidationPrice({
   afterLiquidationPrice,
   afterPillColors,
   showAfterPill,
-  raised = true,
+  relevant = true,
 }: {
   liquidationPrice: BigNumber
   liquidationPriceCurrentPriceDifference?: BigNumber
   afterLiquidationPrice?: BigNumber
-  raised?: Boolean
+  relevant?: Boolean
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
@@ -413,7 +413,7 @@ export function VaultDetailsCardLiquidationPrice({
           liquidationPriceCurrentPriceDifference: liquidationPriceCurrentPriceDifference,
         })
       }
-      raised={raised}
+      relevant={relevant}
       afterPillColors={afterPillColors}
     />
   )
@@ -511,7 +511,7 @@ export function VaultDetailsCardCollateralLocked({
         })
       }
       afterPillColors={afterPillColors}
-      raised={raised}
+      relevant={raised}
     />
   )
 }
