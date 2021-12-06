@@ -161,11 +161,11 @@ function createTxHelpers$(
 }
 
 function createUIChangesSubject() {
-  interface Record {
+  interface PublisherRecord {
     subjectName: string
     payload: any
   }
-  const commonSubject = new Subject<Record>()
+  const commonSubject = new Subject<PublisherRecord>()
 
   function subscribe<T>(subjectName: string): Observable<T> {
     console.log('Subscribing for a channel')

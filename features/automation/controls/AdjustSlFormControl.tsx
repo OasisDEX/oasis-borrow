@@ -58,8 +58,8 @@ function prepareTriggerData(
   const networkConfig = networksById[vaultData.chainId]
 
   return {
-    cdpId: vaultData.id,
     kind: TxMetaKind.addTrigger,
+    cdpId: vaultData.id,
     triggerType: isCloseToCollateral
       ? new BigNumber(TriggersTypes.StopLossToCollateral)
       : new BigNumber(TriggersTypes.StopLossToDai),
