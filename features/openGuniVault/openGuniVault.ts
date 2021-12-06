@@ -335,8 +335,6 @@ export function createOpenGuniVault$(
   return provideContext(ilk, ilks$, context$, txHelpers$, ilkData$, handler)
 }
 
-
-
 function priceOrBalanceDataUpdateHandlerFactory(
   proxyAddress$: (address: string) => Observable<string | undefined>,
   allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
