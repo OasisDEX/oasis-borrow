@@ -234,17 +234,17 @@ const hardhat: NetworkConfig = {
   infuraUrl: `http://localhost:8545`,
   infuraUrlWS: `ws://localhost:8545`,
   cacheApi: 'http://localhost:3001/v1',
-  // dssMultiplyProxyActions: contractDesc(
-  //   dssMultiplyProxyActions,
-  //   getConfig()?.publicRuntimeConfig?.multiplyProxyActions ||
-  //     '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
-  // ),
-  // // guniProxyActions: contractDesc(guniProxyActions, '0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25'),
-  // exchange: contractDesc(
-  //   exchange,
-  //   getConfig()?.publicRuntimeConfig?.exchangeAddress ||
-  //     '0x4C4a2f8c81640e47606d3fd77B353E87Ba015584',
-  // ),
+  dssMultiplyProxyActions: contractDesc(
+    dssMultiplyProxyActions,
+    getConfig()?.publicRuntimeConfig?.multiplyProxyActions ||
+      '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
+  ),
+  // guniProxyActions: contractDesc(guniProxyActions, '0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25'),
+  exchange: contractDesc(
+    exchange,
+    getConfig()?.publicRuntimeConfig?.exchangeAddress ||
+      '0x4C4a2f8c81640e47606d3fd77B353E87Ba015584',
+  ),
 }
 
 export const networksById = keyBy([main, kovan, hardhat, goerli], 'id')
