@@ -50,7 +50,7 @@ export function DefaultOpenMultiplyVaultChangesInformation(props: OpenMultiplyVa
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Order information">
       <VaultChangesInformationItem
-        label={`Buying ${token}`}
+        label={t('vault-changes.buying-token', { token })}
         value={
           <Flex>
             <Text>
@@ -64,7 +64,7 @@ export function DefaultOpenMultiplyVaultChangesInformation(props: OpenMultiplyVa
         }
       />
       <VaultChangesInformationItem
-        label={`Total ${token} exposure`}
+        label={t('system.total-exposure', { token })}
         value={
           <Flex>
             {zeroBalance} {token}
@@ -74,7 +74,7 @@ export function DefaultOpenMultiplyVaultChangesInformation(props: OpenMultiplyVa
         }
       />
       <VaultChangesInformationItem
-        label={`${token} Price (impact)`}
+        label={t('vault-changes.price-impact', { token })}
         value={
           isExchangeLoading ? (
             <AppSpinner />
@@ -89,7 +89,7 @@ export function DefaultOpenMultiplyVaultChangesInformation(props: OpenMultiplyVa
         }
       />
       <VaultChangesInformationItem
-        label={'Slippage Limit'}
+        label={t('vault-changes.slippage-limit')}
         value={formatPercent(slippage.times(100), { precision: 2 })}
       />
       <VaultChangesInformationItem
@@ -103,7 +103,7 @@ export function DefaultOpenMultiplyVaultChangesInformation(props: OpenMultiplyVa
         }
       />
       <VaultChangesInformationItem
-        label={'Outstanding Debt'}
+        label={t('outstanding-debt')}
         value={
           <Flex>
             {zeroBalance} DAI
@@ -113,7 +113,7 @@ export function DefaultOpenMultiplyVaultChangesInformation(props: OpenMultiplyVa
         }
       />
       <VaultChangesInformationItem
-        label={'Collateral Ratio'}
+        label={t('system.collateral-ratio')}
         value={
           <Flex>
             {formatPercent(zero.times(100), {
@@ -152,12 +152,12 @@ export function DefaultOpenMultiplyVaultChangesInformation(props: OpenMultiplyVa
         <Grid pl={3} gap={2}>
           {loanFees.gt(zero) && (
             <VaultChangesInformationItem
-              label={'3rd party protocol fees'}
+              label={t('vault-changes.third-party-fee')}
               value={`$${formatAmount(loanFees, 'USD')}`}
             />
           )}
           <VaultChangesInformationItem
-            label={'Oasis fee'}
+            label={t('vault-changes.oasis-fee')}
             value={`$${formatAmount(oazoFee, 'USD')}`}
           />
           <VaultChangesInformationEstimatedGasFee {...props} />

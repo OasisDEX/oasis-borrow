@@ -6,6 +6,7 @@ import { Web3ReactProvider } from '@web3-react/core'
 import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
 import { SetupWeb3Context } from 'blockchain/web3Context'
 import { AppContextProvider } from 'components/AppContextProvider'
+import { CookieBanner } from 'components/CookieBanner'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
 import { AppLayout, MarketingLayoutProps } from 'components/Layouts'
 import { CustomMDXLink } from 'components/Links'
@@ -24,8 +25,11 @@ import { theme } from 'theme'
 import { components, ThemeProvider } from 'theme-ui'
 import Web3 from 'web3'
 
+import { adRollPixelScript } from '../analytics/adroll'
 import { trackingEvents } from '../analytics/analytics'
+import { LOCALSTORAGE_KEY } from '../analytics/common'
 import { mixpanelInit } from '../analytics/mixpanel'
+import { useLocalStorage } from '../helpers/useLocalStorage'
 import nextI18NextConfig from '../next-i18next.config.js'
 
 function getLibrary(provider: any, connector: AbstractConnector | undefined): Web3 {
@@ -112,12 +116,14 @@ const noOverlayWorkaroundScript = `
 `
 
 function App({ Component, pageProps }: AppProps & CustomAppProps) {
+  const [value, setValue] = useLocalStorage(LOCALSTORAGE_KEY, '')
+
   const Layout = Component.layout || AppLayout
+
   const layoutProps = Component.layoutProps
   const seoTags = Component.seoTags || (
     <PageSEOTags title="seo.default.title" description="seo.default.description" />
   )
-
   const router = useRouter()
 
   useEffect(() => {
@@ -141,6 +147,10 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         {process.env.NODE_ENV !== 'production' && (
           <script dangerouslySetInnerHTML={{ __html: noOverlayWorkaroundScript }} />
         )}
+        {value?.enabledCookies?.marketing && (
+          <script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} async />
+        )}
+
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <ThemeProvider theme={theme}>
@@ -156,6 +166,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                     <SharedUIProvider>
                       <Layout {...layoutProps}>
                         <Component {...pageProps} />
+                        <CookieBanner setValue={setValue} value={value} />
                       </Layout>
                     </SharedUIProvider>
                   </SetupWeb3Context>

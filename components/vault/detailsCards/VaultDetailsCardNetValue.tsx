@@ -26,9 +26,11 @@ export function VaultDetailsCardNetValue({
   afterNetValueUSD,
   afterPillColors,
   showAfterPill,
+  relevant = true,
 }: {
   netValueUSD: BigNumber
   afterNetValueUSD: BigNumber
+  relevant?: boolean
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
@@ -41,6 +43,7 @@ export function VaultDetailsCardNetValue({
       valueAfter={showAfterPill && `$${formatAmount(afterNetValueUSD, 'USD')}`}
       openModal={() => openModal(VaultDetailsNetValueModal)}
       afterPillColors={afterPillColors}
+      relevant={relevant}
     />
   )
 }

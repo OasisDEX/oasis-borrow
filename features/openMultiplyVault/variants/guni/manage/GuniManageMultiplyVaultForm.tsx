@@ -14,6 +14,7 @@ import {
   ManageMultiplyVaultConfirmationStatus,
 } from '../../../common/ManageMultiplyVaultConfirmation'
 import { ManageMultiplyVaultDaiAllowance } from '../../../common/ManageMultiplyVaultDaiAllowance'
+import { GuniManageMultiplyVaultChangesInformation } from './GuniManageMultiplyVaultChangesInformation'
 import { GuniManageMultiplyVaultEditing } from './GuniManageMultiplyVaultEditing'
 import { GuniManageMultiplyVaultFormHeader } from './GuniManageMultiplyVaultFormHeader'
 
@@ -45,7 +46,11 @@ export function GuniManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
       {isEditingStage && <GuniManageMultiplyVaultEditing {...props} />}
       {isCollateralAllowanceStage && <ManageMultiplyVaultCollateralAllowance {...props} />}
       {isDaiAllowanceStage && <ManageMultiplyVaultDaiAllowance {...props} />}
-      {isManageStage && <ManageMultiplyVaultConfirmation {...props} />}
+      {isManageStage && (
+        <ManageMultiplyVaultConfirmation {...props}>
+          {(state) => <GuniManageMultiplyVaultChangesInformation {...state} />}
+        </ManageMultiplyVaultConfirmation>
+      )}
       {shouldDisplayActionButton && (
         <>
           <VaultErrors {...props} />
