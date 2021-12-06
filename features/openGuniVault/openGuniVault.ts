@@ -233,6 +233,110 @@ interface GuniTxData {
 
 type GuniTxDataChange = { kind: 'guniTxData' } & GuniTxData
 
+export function guniSpecificTransformationFactory(
+  proxyAddress$: (address: string) => Observable<string | undefined>,
+  allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
+  priceInfo$: (token: string) => Observable<PriceInfo>,
+  balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
+  ilkData$: (ilk: string) => Observable<IlkData>,
+  exchangeQuote$: (
+    token: string,
+    slippage: BigNumber,
+    amount: BigNumber,
+    action: ExchangeAction,
+  ) => Observable<Quote>,
+  addGasEstimation$: AddGasEstimationFunction,
+  token1Balance$: (args: { token: string; leveragedAmount: BigNumber }) => Observable<BigNumber>,
+  getGuniMintAmount$: (args: {
+    token: string
+    amountOMax: BigNumber
+    amount1Max: BigNumber
+  }) => Observable<{ amount0: BigNumber; amount1: BigNumber; mintAmount: BigNumber }>,
+): (
+  contextConnected: ContextConnected,
+  txHelpers: TxHelpers,
+  ilkData: IlkData,
+) => Observable<OpenGuniVaultState> {
+  return (context, txHelpers, ilkData) => {
+    const { token } = ilkData
+    const tokenInfo = getToken(token)
+
+    if (!tokenInfo.token0 || !tokenInfo.token1) {
+      throw new Error('Missing tokens in configuration')
+    }
+
+    const account = context.account
+
+    const handler = priceOrBalanceDataUpdateHandlerFactory(
+      proxyAddress$,
+      allowance$,
+      context,
+      priceInfo$,
+      balanceInfo$,
+      ilkData$,
+      addGasEstimation$,
+      token1Balance$,
+      getGuniMintAmount$,
+      exchangeQuote$,
+      token,
+      account,
+      ilkData,
+      txHelpers,
+    )
+
+    return provideExternalPricesChangesContext(
+      proxyAddress$,
+      priceInfo$,
+      balanceInfo$,
+      handler,
+      token,
+      account,
+      tokenInfo.token0,
+    )
+  }
+}
+
+export function createOpenGuniVault$(
+  context$: Observable<ContextConnected>,
+  txHelpers$: Observable<TxHelpers>,
+  proxyAddress$: (address: string) => Observable<string | undefined>,
+  allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
+  priceInfo$: (token: string) => Observable<PriceInfo>,
+  balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
+  ilks$: Observable<string[]>,
+  ilkData$: (ilk: string) => Observable<IlkData>,
+  exchangeQuote$: (
+    token: string,
+    slippage: BigNumber,
+    amount: BigNumber,
+    action: ExchangeAction,
+  ) => Observable<Quote>,
+  addGasEstimation$: AddGasEstimationFunction,
+  ilk: string,
+  token1Balance$: (args: { token: string; leveragedAmount: BigNumber }) => Observable<BigNumber>,
+  getGuniMintAmount$: (args: {
+    token: string
+    amountOMax: BigNumber
+    amount1Max: BigNumber
+  }) => Observable<{ amount0: BigNumber; amount1: BigNumber; mintAmount: BigNumber }>,
+): Observable<OpenGuniVaultState> {
+  const handler = guniSpecificTransformationFactory(
+    proxyAddress$,
+    allowance$,
+    priceInfo$,
+    balanceInfo$,
+    ilkData$,
+    exchangeQuote$,
+    addGasEstimation$,
+    token1Balance$,
+    getGuniMintAmount$,
+  )
+
+  return provideContext(ilk, ilks$, context$, txHelpers$, ilkData$, handler)
+}
+
+
+
 function priceOrBalanceDataUpdateHandlerFactory(
   proxyAddress$: (address: string) => Observable<string | undefined>,
   allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
@@ -506,106 +610,4 @@ function priceOrBalanceDataUpdateHandlerFactory(
         }),
       )
   }
-}
-
-export function guniSpecificTransformationFactory(
-  proxyAddress$: (address: string) => Observable<string | undefined>,
-  allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
-  priceInfo$: (token: string) => Observable<PriceInfo>,
-  balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
-  ilkData$: (ilk: string) => Observable<IlkData>,
-  exchangeQuote$: (
-    token: string,
-    slippage: BigNumber,
-    amount: BigNumber,
-    action: ExchangeAction,
-  ) => Observable<Quote>,
-  addGasEstimation$: AddGasEstimationFunction,
-  token1Balance$: (args: { token: string; leveragedAmount: BigNumber }) => Observable<BigNumber>,
-  getGuniMintAmount$: (args: {
-    token: string
-    amountOMax: BigNumber
-    amount1Max: BigNumber
-  }) => Observable<{ amount0: BigNumber; amount1: BigNumber; mintAmount: BigNumber }>,
-): (
-  contextConnected: ContextConnected,
-  txHelpers: TxHelpers,
-  ilkData: IlkData,
-) => Observable<OpenGuniVaultState> {
-  return (context, txHelpers, ilkData) => {
-    const { token } = ilkData
-    const tokenInfo = getToken(token)
-
-    if (!tokenInfo.token0 || !tokenInfo.token1) {
-      throw new Error('Missing tokens in configuration')
-    }
-
-    const account = context.account
-
-    const handler = priceOrBalanceDataUpdateHandlerFactory(
-      proxyAddress$,
-      allowance$,
-      context,
-      priceInfo$,
-      balanceInfo$,
-      ilkData$,
-      addGasEstimation$,
-      token1Balance$,
-      getGuniMintAmount$,
-      exchangeQuote$,
-      token,
-      account,
-      ilkData,
-      txHelpers,
-    )
-
-    return provideExternalPricesChangesContext(
-      proxyAddress$,
-      priceInfo$,
-      balanceInfo$,
-      handler,
-      token,
-      account,
-      tokenInfo.token0,
-    )
-  }
-}
-
-export function createOpenGuniVault$(
-  context$: Observable<ContextConnected>,
-  txHelpers$: Observable<TxHelpers>,
-  proxyAddress$: (address: string) => Observable<string | undefined>,
-  allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
-  priceInfo$: (token: string) => Observable<PriceInfo>,
-  balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
-  ilks$: Observable<string[]>,
-  ilkData$: (ilk: string) => Observable<IlkData>,
-  exchangeQuote$: (
-    token: string,
-    slippage: BigNumber,
-    amount: BigNumber,
-    action: ExchangeAction,
-  ) => Observable<Quote>,
-  addGasEstimation$: AddGasEstimationFunction,
-  ilk: string,
-  token1Balance$: (args: { token: string; leveragedAmount: BigNumber }) => Observable<BigNumber>,
-  getGuniMintAmount$: (args: {
-    token: string
-    amountOMax: BigNumber
-    amount1Max: BigNumber
-  }) => Observable<{ amount0: BigNumber; amount1: BigNumber; mintAmount: BigNumber }>,
-): Observable<OpenGuniVaultState> {
-  const handler = guniSpecificTransformationFactory(
-    proxyAddress$,
-    allowance$,
-    priceInfo$,
-    balanceInfo$,
-    ilkData$,
-    exchangeQuote$,
-    addGasEstimation$,
-    token1Balance$,
-    getGuniMintAmount$,
-  )
-
-  return provideContext(ilk, ilks$, context$, txHelpers$, ilkData$, handler)
 }
