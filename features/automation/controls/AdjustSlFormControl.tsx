@@ -164,7 +164,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       sliderKey: 'set-stoploss',
       lastValue: selectedSLValue,
       leftBoundryFormatter: (x: BigNumber) => formatPercent(x),
-      leftBoundryStyling: { fontWeight: 'semiBold' },
+      leftBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right' },
       rightBoundryFormatter: (x: BigNumber) => '$ ' + formatAmount(x, 'USD'),
       rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
       step: 0.05,

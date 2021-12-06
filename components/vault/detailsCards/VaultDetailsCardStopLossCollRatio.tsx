@@ -51,7 +51,7 @@ export function VaultDetailsCardStopLossCollRatio({
           {formatPercent(collateralizationRatio.times(100), {
             precision: 2,
           })}{' '}
-          <Text as="span" sx={{ color: 'text.subtitle' }}>
+          <Text as="span" sx={{ color: 'text.subtitle', fontSize: '1' }}>
             {t('manage-multiply-vault.card.current-coll-ratio')}
           </Text>
         </>
