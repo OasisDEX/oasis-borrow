@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
-import { ilkToToken$, protoTxHelpers, TxHelpers } from 'components/AppContext'
+import {  protoTxHelpers, TxHelpers } from 'components/AppContext'
 import { createOpenVault$ } from 'features/openVault/openVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
@@ -105,7 +105,6 @@ export function mockOpenVault$({
     balanceInfo$,
     ilks$,
     ilkData$,
-    ilkToToken$,
     addGasEstimationMock,
     ilk,
   )

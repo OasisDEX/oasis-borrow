@@ -4,14 +4,12 @@ import { mockBalanceInfo$ } from 'helpers/mocks/balanceInfo.mock'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { mockIlkData$ } from 'helpers/mocks/ilks.mock'
 import { mockPriceInfo$ } from 'helpers/mocks/priceInfo.mock'
-import { Observable, of } from 'rxjs'
+import { of } from 'rxjs'
 
 import { createOpenGuniVault$ } from '../../features/openGuniVault/openGuniVault'
 import { mockExchangeQuote$ } from './exchangeQuote.mock'
 import { MockOpenMultiplyVaultProps } from './openMultiplyVault.mock'
 import { addGasEstimationMock } from './openVault.mock'
-
-const mockOnEveryBlock = new Observable<number>()
 
 export function mockGuniOpenMultiplyVault({
   _ilkData$,
@@ -93,7 +91,6 @@ export function mockGuniOpenMultiplyVault({
     ilks$,
     ilkData$,
     mockExchangeQuote$(exchangeQuote),
-    mockOnEveryBlock,
     addGasEstimationMock,
     ilk,
     token1Balance$,
