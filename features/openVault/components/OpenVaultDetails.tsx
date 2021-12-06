@@ -14,6 +14,7 @@ import {
 } from 'components/vault/VaultDetails'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
+import { useHasChangedSinceFirstRender } from 'helpers/useHasChangedSinceFirstRender'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -21,19 +22,20 @@ import { Grid } from 'theme-ui'
 
 import { OpenVaultState } from '../openVault'
 
-export function OpenVaultDetailsSummary({
+function OpenVaultDetailsSummary({
   generateAmount,
   afterFreeCollateral,
   token,
   maxGenerateAmountCurrentPrice,
   afterPillColors,
   showAfterPill,
-}: OpenVaultState & AfterPillProps) {
+  relevant,
+}: OpenVaultState & AfterPillProps & { relevant: boolean }) {
   const { t } = useTranslation()
   const { symbol } = getToken(token)
 
   return (
-    <VaultDetailsSummaryContainer>
+    <VaultDetailsSummaryContainer relevant={relevant}>
       <VaultDetailsSummaryItem
         label={t('system.vault-dai-debt')}
         value={
@@ -114,6 +116,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'txSuccess'
+  const inputAmountWasChanged = useHasChangedSinceFirstRender(inputAmountsEmpty)
 
   return (
     <>
@@ -124,6 +127,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
             afterLiquidationPrice,
             afterPillColors,
             showAfterPill,
+            relevant: inputAmountWasChanged,
           }}
         />
 
@@ -147,6 +151,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
             })
           }
           afterPillColors={afterPillColors}
+          relevant={inputAmountWasChanged}
         />
 
         <VaultDetailsCardCurrentPrice {...props} />
@@ -158,6 +163,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
             token,
             afterPillColors,
             showAfterPill,
+            relevant: inputAmountWasChanged,
           }}
         />
       </Grid>
@@ -165,6 +171,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
         {...props}
         afterPillColors={afterPillColors}
         showAfterPill={showAfterPill}
+        relevant={inputAmountWasChanged}
       />
     </>
   )
