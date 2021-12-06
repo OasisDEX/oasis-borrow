@@ -5,6 +5,7 @@ import {
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
+import { useHasChangedSinceFirstRender } from 'helpers/useHasChangedSinceFirstRender'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -20,11 +21,12 @@ function GuniOpenMultiplyVaultDetailsSummary({
   afterOutstandingDebt,
   multiply,
   totalCollateral,
-}: OpenGuniVaultState & AfterPillProps) {
+  relevant,
+}: OpenGuniVaultState & AfterPillProps & { relevant: boolean }) {
   const { t } = useTranslation()
 
   return (
-    <VaultDetailsSummaryContainer>
+    <VaultDetailsSummaryContainer relevant={relevant}>
       <VaultDetailsSummaryItem
         label={t('system.vault-dai-debt')}
         value={
@@ -80,6 +82,8 @@ export function GuniOpenMultiplyVaultDetails(props: OpenGuniVaultState) {
   const afterCollRatioColor = 'onSuccess'
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'txSuccess'
+  const inputAmountChangedSinceFirstRender = useHasChangedSinceFirstRender(inputAmountsEmpty)
+
   return (
     <>
       <Grid variant="vaultDetailsCardsContainer">
@@ -89,6 +93,7 @@ export function GuniOpenMultiplyVaultDetails(props: OpenGuniVaultState) {
             afterNetValueUSD,
             afterPillColors,
             showAfterPill,
+            relevant: inputAmountChangedSinceFirstRender,
           }}
         />
       </Grid>
@@ -96,6 +101,7 @@ export function GuniOpenMultiplyVaultDetails(props: OpenGuniVaultState) {
         {...props}
         afterPillColors={afterPillColors}
         showAfterPill={showAfterPill}
+        relevant={inputAmountChangedSinceFirstRender}
       />
     </>
   )

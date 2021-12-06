@@ -100,12 +100,14 @@ export function VaultDetailsCard({
   valueAfter,
   afterPillColors,
   openModal,
+  relevant = true,
 }: {
   title: string
   value: ReactNode
   valueBottom?: ReactNode
   valueAfter?: ReactNode
   openModal?: () => void
+  relevant?: Boolean
 } & AfterPillProps) {
   return (
     <Card
@@ -115,6 +117,7 @@ export function VaultDetailsCard({
         overflow: 'hidden',
         minHeight: '194px',
         display: 'flex',
+        opacity: relevant ? 1 : 0.5,
         svg: {
           color: 'text.subtitle',
         },
@@ -374,10 +377,12 @@ export function VaultDetailsCardLiquidationPrice({
   afterLiquidationPrice,
   afterPillColors,
   showAfterPill,
+  relevant = true,
 }: {
   liquidationPrice: BigNumber
   liquidationPriceCurrentPriceDifference?: BigNumber
   afterLiquidationPrice?: BigNumber
+  relevant?: Boolean
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
@@ -408,6 +413,7 @@ export function VaultDetailsCardLiquidationPrice({
           liquidationPriceCurrentPriceDifference: liquidationPriceCurrentPriceDifference,
         })
       }
+      relevant={relevant}
       afterPillColors={afterPillColors}
     />
   )
@@ -473,11 +479,13 @@ export function VaultDetailsCardCollateralLocked({
   token,
   afterPillColors,
   showAfterPill,
+  relevant = true,
 }: {
   depositAmountUSD?: BigNumber
   depositAmount?: BigNumber
   afterDepositAmountUSD?: BigNumber
   token: string
+  relevant?: boolean
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
@@ -503,6 +511,7 @@ export function VaultDetailsCardCollateralLocked({
         })
       }
       afterPillColors={afterPillColors}
+      relevant={relevant}
     />
   )
 }
@@ -512,9 +521,11 @@ export function VaultDetailsCardNetValue({
   afterNetValueUSD,
   afterPillColors,
   showAfterPill,
+  relevant = true,
 }: {
   netValueUSD: BigNumber
   afterNetValueUSD: BigNumber
+  relevant?: boolean
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
@@ -527,13 +538,17 @@ export function VaultDetailsCardNetValue({
       valueAfter={showAfterPill && `$${formatAmount(afterNetValueUSD, 'USD')}`}
       openModal={() => openModal(VaultDetailsNetValueModal)}
       afterPillColors={afterPillColors}
+      relevant={relevant}
     />
   )
 }
 
-export function VaultDetailsSummaryContainer({ children }: WithChildren) {
+export function VaultDetailsSummaryContainer({
+  children,
+  relevant = true,
+}: WithChildren & { relevant?: boolean }) {
   return (
-    <Card sx={{ borderRadius: 'large', border: 'lightMuted' }}>
+    <Card sx={{ borderRadius: 'large', border: 'lightMuted', opacity: relevant ? 1 : 0.5 }}>
       <Grid
         columns={[1, null, null, 3]}
         sx={{ py: 3, px: 2, alignItems: 'flex-start' }}
