@@ -39,17 +39,18 @@ export function provideExternalPricesChangesContext<T>(
   proxyAddress$: (address: string) => Observable<string | undefined>,
   priceInfo$: (token: string) => Observable<PriceInfo>,
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
-  token: string,
-  account: string,
   handler: (
     priceInfo: PriceInfo,
     balanceInfo: BalanceInfo,
     proxyAddress: string | undefined,
   ) => Observable<T>,
+  token: string,
+  account: string,
+  token0: string = token,
 ): Observable<T> {
   return combineLatest(
     priceInfo$(token),
-    balanceInfo$(token, account),
+    balanceInfo$(token0, account),
     proxyAddress$(account),
   ).pipe(
     first(),

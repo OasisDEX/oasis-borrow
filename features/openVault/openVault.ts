@@ -268,7 +268,7 @@ export const defaultMutableOpenVaultState: MutableOpenVaultState = {
   allowanceAmount: maxUint256,
 }
 
-export function priceOrBalanceDataUpdateHandlerFactory(
+function priceOrBalanceDataUpdateHandlerFactory(
   proxyAddress$: (address: string) => Observable<string | undefined>,
   allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
   contextConnected: ContextConnected,
@@ -346,7 +346,7 @@ export function priceOrBalanceDataUpdateHandlerFactory(
   }
 }
 
-export function vaultOpeningSpecificTransformationFactory(
+function vaultOpeningSpecificTransformationFactory(
   proxyAddress$: (address: string) => Observable<string | undefined>,
   priceInfo$: (token: string) => Observable<PriceInfo>,
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
@@ -378,9 +378,9 @@ export function vaultOpeningSpecificTransformationFactory(
       proxyAddress$,
       priceInfo$,
       balanceInfo$,
+      priceUpdateHandler,
       token,
       account,
-      priceUpdateHandler,
     )
   }
 }
@@ -403,7 +403,7 @@ export function createOpenVault$(
     balanceInfo$,
     allowance$,
     ilkData$,
-    addGasEstimation$
+    addGasEstimation$,
   )
 
   return provideContext(ilk, ilks$, context$, txHelpers$, ilkData$, handler)
