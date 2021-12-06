@@ -6,13 +6,32 @@ import {
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useEffect } from 'react'
+import { identity } from 'rxjs'
 import { Grid } from 'theme-ui'
 
+import { useAppContext } from '../../../../../components/AppContextProvider'
 import { formatAmount, formatCryptoBalance } from '../../../../../helpers/formatters/format'
+import { useObservable } from '../../../../../helpers/observableHook'
 import { zero } from '../../../../../helpers/zero'
 import { OpenGuniVaultState } from '../../../../openGuniVault/openGuniVault'
 
+export function DummyDetails() {
+  const {
+    guniFormState: { selectFormState, setCanProgress },
+  } = useAppContext()
+  const formState = useObservable(selectFormState(identity))
+
+  useEffect(() => {
+    if (formState) {
+      if (formState.depositAmount > 5) {
+        setCanProgress(true)
+      }
+    }
+  }, [formState?.depositAmount])
+
+  return <div>{formState?.depositAmount}</div>
+}
 function GuniOpenMultiplyVaultDetailsSummary({
   token,
   afterPillColors,
@@ -97,6 +116,7 @@ export function GuniOpenMultiplyVaultDetails(props: OpenGuniVaultState) {
         afterPillColors={afterPillColors}
         showAfterPill={showAfterPill}
       />
+      <DummyDetails />
     </>
   )
 }

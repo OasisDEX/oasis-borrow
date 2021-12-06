@@ -98,6 +98,7 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import { createFormState } from '../features/form/form'
 import { getTotalSupply, getUnderlyingBalances } from '../features/manageGuniVault/guniActionsCalls'
 import { createManageGuniVault$ } from '../features/manageGuniVault/manageGuniVault'
 import { getGuniMintAmount, getToken1Balance } from '../features/openGuniVault/guniActionsCalls'
@@ -486,6 +487,9 @@ export function setupAppContext() {
 
   const openVaultOverview$ = createOpenVaultOverview$(ilksWithBalance$)
 
+  // USAGE OF FORM STATE FACTORY WITH CUSTOM INITIAL STATE THAT CAN VARY FOR SPECIFIC IMPLEMENTATIONS
+  const guniFormState = createFormState({ depositAmount: 1, isProxy: false, isAllowance: false })
+
   return {
     web3Context$,
     web3ContextConnected$,
@@ -519,6 +523,7 @@ export function setupAppContext() {
     openMultiplyVault$,
     generalManageVault$,
     openGuniVault$,
+    guniFormState,
   }
 }
 
