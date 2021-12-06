@@ -1,6 +1,8 @@
 import { IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'
+import { BalanceInfo } from 'features/shared/balanceInfo'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { combineLatest, iif, Observable, throwError } from 'rxjs'
 import { first, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -30,5 +32,29 @@ export function provideContext<T>(
       ),
     ),
     shareReplay(1),
+  )
+}
+
+export function provideExternalPricesChangesContext<T>(
+  proxyAddress$: (address: string) => Observable<string | undefined>,
+  priceInfo$: (token: string) => Observable<PriceInfo>,
+  balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
+  token: string,
+  account: string,
+  handler: (
+    priceInfo: PriceInfo,
+    balanceInfo: BalanceInfo,
+    proxyAddress: string | undefined,
+  ) => Observable<T>,
+): Observable<T> {
+  return combineLatest(
+    priceInfo$(token),
+    balanceInfo$(token, account),
+    proxyAddress$(account),
+  ).pipe(
+    first(),
+    switchMap(([priceInfo, balanceInfo, proxyAddress]) => {
+      return handler(priceInfo, balanceInfo, proxyAddress)
+    }),
   )
 }
