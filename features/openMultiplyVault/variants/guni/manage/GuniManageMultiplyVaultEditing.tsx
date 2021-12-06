@@ -34,7 +34,7 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
         The rest of your collateral will be send to your address.
       </Text>
       <Flex sx={{ fontSize: 1, fontWeight: 'semiBold', justifyContent: 'space-between', mt: 3 }}>
-        <Text sx={{ color: 'text.subtitle' }}>{closeToTokenName} after closing</Text>
+        <Text sx={{ color: 'text.subtitle' }}>Minimum {closeToTokenName} after closing</Text>
         <Text>
           {formatCryptoBalance(closeToCollateral ? afterCloseToCollateral : afterCloseToDai)}{' '}
           {closeToTokenName}

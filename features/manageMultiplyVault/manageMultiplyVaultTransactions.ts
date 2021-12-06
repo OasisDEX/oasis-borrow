@@ -74,7 +74,7 @@ type DaiAllowanceChange =
       daiAllowance: BigNumber
     }
 
-type ManageChange =
+export type ManageChange =
   | { kind: 'manageWaitingForApproval' }
   | {
       kind: 'manageInProgress'

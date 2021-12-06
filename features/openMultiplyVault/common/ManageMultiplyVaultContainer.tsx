@@ -1,5 +1,6 @@
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
+import { Observable } from 'rxjs'
 import { Box, Grid } from 'theme-ui'
 
 import { trackingEvents } from '../../../analytics/analytics'
@@ -29,7 +30,7 @@ export function ManageMultiplyVaultContainer({
   form: Form,
   history: History,
 }: ManageMultiplyVaultContainerProps & ManageMultiplyVaultContainerComponents) {
-  const { manageMultiplyVault$, context$ } = useAppContext()
+  const { manageMultiplyVault$, context$, manageGuniVault$ } = useAppContext()
   const {
     vault: { id, ilk },
     clear,
@@ -38,8 +39,13 @@ export function ManageMultiplyVaultContainer({
   const { t } = useTranslation()
 
   useEffect(() => {
+    const { token } = manageVault.vault
+
+    const manageVaultMap: Record<string, Observable<ManageMultiplyVaultState>> = {
+      GUNIV3DAIUSDC1: manageGuniVault$(id),
+    }
     const subscription = createManageMultiplyVaultAnalytics$(
-      manageMultiplyVault$(id),
+      manageVaultMap[token] ? manageVaultMap[token] : manageMultiplyVault$(id),
       context$,
       trackingEvents,
     ).subscribe()
