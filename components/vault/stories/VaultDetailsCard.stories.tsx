@@ -59,7 +59,6 @@ export const DynamicStopPrice = ({ hasAfter, isProtected }: CardsControl) => {
         slRatio={new BigNumber(1.6)}
         afterSlRatio={new BigNumber(1.7)}
         liquidationPrice={new BigNumber(900)}
-        afterLiquidationPrice={new BigNumber(800)}
         liquidationRatio={new BigNumber(1.5)}
         showAfterPill={hasAfter}
         isProtected={isProtected}
@@ -78,10 +77,7 @@ export const MaxTokenOnStopLossTrigger = ({ hasAfter, isProtected }: CardsContro
         isProtected={isProtected}
         debt={new BigNumber(12000)}
         collateralAmountLocked={new BigNumber(20)}
-        afterLockedCollateral={new BigNumber(20)}
-        afterDebt={new BigNumber(12000)}
         liquidationRatio={new BigNumber(1.3)}
-        afterLiquidationPrice={new BigNumber(2000)}
         token="ETH"
         showAfterPill={hasAfter}
       />

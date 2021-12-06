@@ -1,4 +1,4 @@
-import { TxStatus } from '@oasisdex/transactions'
+import { TxState, TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import {
   addAutomationBotTrigger,
@@ -11,8 +11,8 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
-import { PickCloseStateProps } from 'components/stateless/PickCloseState'
-import { SliderValuePickerProps } from 'components/stateless/SliderValuePicker'
+import { PickCloseStateProps } from 'components/dumb/PickCloseState'
+import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { ethers } from 'ethers'
 import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -23,10 +23,10 @@ import { FixedSizeArray } from 'helpers/types'
 import { useEffect, useState } from 'react'
 import React from 'react'
 
-import { RetryableLoadingButtonProps } from '../../../components/stateless/RetryableLoadingButton'
+import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
 import { TriggersTypes } from '../common/enums/TriggersTypes'
+import { extractSLData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { AddFormChange } from '../common/UITypes/AddFormChange'
-import { StopLossTriggerData } from '../triggers/StopLossTriggerData'
 import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
 
 function isTxStatusFinal(status: TxStatus) {
@@ -43,10 +43,9 @@ function isTxStatusFailed(status: TxStatus) {
 }
 
 function buildTriggerData(id: BigNumber, isCloseToCollateral: boolean, slLevel: number): string {
-  console.log('Before tx send, encoding:', [id.toNumber(), isCloseToCollateral, slLevel])
   return ethers.utils.defaultAbiCoder.encode(
-    ['uint256', 'boolean', 'uint256'],
-    [id.toNumber(), isCloseToCollateral, slLevel],
+    ['uint256', 'bool', 'uint256'],
+    [id.toNumber(), isCloseToCollateral, Math.round(slLevel)],
   )
 }
 
@@ -59,8 +58,8 @@ function prepareTriggerData(
   const networkConfig = networksById[vaultData.chainId]
 
   return {
-    cdpId: vaultData.id,
     kind: TxMetaKind.addTrigger,
+    cdpId: vaultData.id,
     triggerType: isCloseToCollateral
       ? new BigNumber(TriggersTypes.StopLossToCollateral)
       : new BigNumber(TriggersTypes.StopLossToDai),
@@ -82,22 +81,19 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     collateralPrices$,
     ilkDataList$,
     uiChanges,
-    stopLossTriggersData$,
+    automationTriggersData$,
     txHelpers$,
+    connectedContext$,
   } = useAppContext()
 
-  const slTriggerData$ = stopLossTriggersData$(id)
+  const autoTriggersData$ = automationTriggersData$(id)
 
   const vaultDataWithError = useObservableWithError(vault$(id))
   const collateralPricesWithError = useObservableWithError(collateralPrices$)
   const ilksDataWithError = useObservableWithError(ilkDataList$)
-  const slTriggerDataWithError = useObservableWithError(slTriggerData$)
+  const autoTriggerDataWithError = useObservableWithError(autoTriggersData$)
   const txHelpersWithError = useObservableWithError(txHelpers$)
-
-  uiChanges.createIfMissing<AddFormChange>(uiSubjectName, {
-    selectedSLValue: new BigNumber(0),
-    collateralActive: false,
-  })
+  const contextWithError = useObservableWithError(connectedContext$)
 
   function publishUIChange(props: AddFormChange) {
     uiChanges.publish<AddFormChange>(uiSubjectName, props)
@@ -109,6 +105,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     ilksData: IlkDataList,
     slTriggerData: StopLossTriggerData,
     txHelpers: TxHelpers,
+    isOwner: boolean,
   ) {
     const token = vaultData.token
     const tokenData = getToken(token)
@@ -123,6 +120,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     const currentCollRatio = vaultData.lockedCollateral
       .multipliedBy(currentCollateralData.currentPrice)
       .dividedBy(vaultData.debt)
+
     const startingAfterNewLiquidationPrice = currentCollateralData.currentPrice
       .multipliedBy(startingSlRatio)
       .dividedBy(currentCollRatio)
@@ -130,6 +128,13 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     const [afterNewLiquidationPrice, setAfterLiqPrice] = useState(
       new BigNumber(startingAfterNewLiquidationPrice),
     )
+
+    const [txStatus, txStatusSetter] = useState<TxState<AutomationBotAddTriggerData> | undefined>(
+      undefined,
+    )
+
+    const maxBoundry =
+      currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
 
     const liqRatio = currentIlkData.liquidationRatio
 
@@ -141,7 +146,6 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     const closeProps: PickCloseStateProps = {
       optionNames: validOptions,
       onclickHandler: (optionName: string) => {
-        console.log('collateralActive', collateralActive)
         setCloseToCollateral(optionName === validOptions[1])
         publishUIChange({
           selectedSLValue,
@@ -163,9 +167,10 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       leftBoundryStyling: { fontWeight: 'semiBold' },
       rightBoundryFormatter: (x: BigNumber) => '$ ' + formatAmount(x, 'USD'),
       rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
-      maxBoundry: currentCollRatio.multipliedBy(100),
+      step: 0.05,
+      maxBoundry: maxBoundry.multipliedBy(100),
       minBoundry: liqRatio.multipliedBy(100),
-      setter: (slCollRatio) => {
+      onChange: (slCollRatio) => {
         setSelectedSLValue(slCollRatio)
         /*TO DO: this is duplicated and can be extracted*/
         const currentCollRatio = vaultData.lockedCollateral
@@ -187,31 +192,42 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     const addTriggerConfig: RetryableLoadingButtonProps = {
       translationKey: 'add-stop-loss',
       onClick: (finishLoader: (succeded: boolean) => void) => {
+        const txSendSuccessHandler = (x: TxState<AutomationBotAddTriggerData>) => {
+          console.log('Tx Status', x)
+          txStatusSetter(x)
+          if (isTxStatusFinal(x.status)) {
+            if (isTxStatusFailed(x.status)) {
+              finishLoader(false)
+              waitForTx.unsubscribe()
+              txStatusSetter(undefined)
+            } else {
+              finishLoader(true)
+              waitForTx.unsubscribe()
+              txStatusSetter(undefined)
+            }
+          }
+        }
+
+        const sendTxErrorHandler = () => {
+          finishLoader(false)
+        }
+
         const txData = prepareTriggerData(vaultData, collateralActive, selectedSLValue)
-        console.log('Forming Tx ', txData)
+
         const waitForTx = txHelpers
           .sendWithGasEstimation(addAutomationBotTrigger, txData)
-          .subscribe((x) => {
-            console.log('In Tx ', x)
-            if (isTxStatusFinal(x.status)) {
-              if (isTxStatusFailed(x.status)) {
-                finishLoader(false)
-                waitForTx.unsubscribe()
-              } else {
-                finishLoader(true)
-                waitForTx.unsubscribe()
-              }
-            }
-          })
+          .subscribe(txSendSuccessHandler, sendTxErrorHandler)
       },
       isLoading: false,
       isRetry: false,
+      disabled: isOwner,
     }
 
     const props: AdjustSlFormLayoutProps = {
       closePickerConfig: closeProps,
       slValuePickerConfig: sliderProps,
       addTriggerConfig: addTriggerConfig,
+      txState: txStatus,
     }
 
     return <AdjustSlFormLayout {...props} />
@@ -223,8 +239,9 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
         vaultDataWithError.error,
         collateralPricesWithError.error,
         ilksDataWithError.error,
-        slTriggerDataWithError.error,
+        autoTriggerDataWithError.error,
         txHelpersWithError.error,
+        contextWithError.error,
       ]}
     >
       <WithLoadingIndicator
@@ -232,12 +249,15 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
           vaultDataWithError.value,
           collateralPricesWithError.value,
           ilksDataWithError.value,
-          slTriggerDataWithError.value,
+          autoTriggerDataWithError.value,
           txHelpersWithError.value,
+          contextWithError.value,
         ]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([v, c, i, s, tx]) => renderLayout(v, c, i, s, tx)}
+        {([v, c, i, s, tx, ctx]) => {
+          return renderLayout(v, c, i, extractSLData(s), tx, ctx.account !== v.controller)
+        }}
       </WithLoadingIndicator>
     </WithErrorHandler>
   )
