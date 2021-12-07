@@ -12,7 +12,9 @@ export function DefaultOpenMultiplyVaultContainer(props: OpenMultiplyVaultState)
 
   return (
     <OpenMultiplyVaultContainer
-      header={<DefaultVaultHeader {...props} header={t('vault.open-vault', { ilk: props.ilk })} />}
+      header={
+        <DefaultVaultHeader ilk={props.ilk} header={t('vault.open-vault', { ilk: props.ilk })} />
+      }
       details={<DefaultOpenMultiplyVaultDetails {...props} />}
       form={<DefaultOpenMultiplyVaultForm {...props} />}
       clear={props.clear}

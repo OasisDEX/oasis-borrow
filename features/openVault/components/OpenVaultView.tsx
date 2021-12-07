@@ -102,7 +102,7 @@ export function OpenVaultContainer(props: OpenVaultState) {
 
   return (
     <>
-      <DefaultVaultHeader {...props} header={t('vault.open-vault', { ilk })} />
+      <DefaultVaultHeader ilk={ilk} header={t('vault.open-vault', { ilk })} />
       <Grid variant="vaultContainer">
         <Box>
           <OpenVaultDetails {...props} />
