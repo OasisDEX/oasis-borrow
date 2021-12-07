@@ -37,7 +37,7 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
         </Text>
       )}
       {introductionContent && (
-        <Text variant="paragraph3" mb={2}>
+        <Text variant="paragraph3" mb="24px">
           {introductionContent}
         </Text>
       )}

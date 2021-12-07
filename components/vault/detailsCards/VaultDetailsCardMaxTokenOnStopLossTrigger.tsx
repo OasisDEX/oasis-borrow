@@ -77,7 +77,7 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
         !slRatio.isZero() && !maxEth.isZero() ? (
           <>
             ${formatAmount(ethDuringLiquidation.minus(maxEth), token)} {token}{' '}
-            <Text as="span" sx={{ color: 'text.subtitle' }}>
+            <Text as="span" sx={{ color: 'text.subtitle', fontSize: '1' }}>
               {t('manage-multiply-vault.card.saving-comp-to-liquidation')}
             </Text>
           </>

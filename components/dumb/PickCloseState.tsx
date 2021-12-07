@@ -21,7 +21,7 @@ export function PickCloseState(props: PickCloseStateProps) {
   }
 
   return (
-    <Grid columns={2}>
+    <Grid columns={2} sx={{ pt: 3 }}>
       <CloseVaultCard
         text={`Close to ${props.collateralTokenSymbol}`}
         icon={props.collateralTokenIconCircle}

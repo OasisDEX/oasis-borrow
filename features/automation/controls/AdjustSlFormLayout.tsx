@@ -20,7 +20,14 @@ export interface AdjustSlFormLayoutProps {
 
 export function AdjustSlFormLayout(props: AdjustSlFormLayoutProps) {
   return (
-    <Card sx={{ borderRadius: 'large', border: 'lightMuted' }}>
+    <Card
+      sx={{
+        borderRadius: 'large',
+        border: 'lightMuted',
+        boxShadow: 'vaultDetailsCard',
+        padding: '24px',
+      }}
+    >
       <Grid columns={[1]}>
         <Box>
           <SliderValuePicker {...props.slValuePickerConfig} />
