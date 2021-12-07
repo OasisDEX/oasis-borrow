@@ -21,6 +21,7 @@ import {
   SetProxyOwnerData,
 } from 'blockchain/calls/proxy'
 import {
+  CloseGuniMultiplyData,
   CloseVaultData,
   DepositAndGenerateData,
   MultiplyAdjustData,
@@ -48,11 +49,10 @@ import { createController$, createVault$, createVaults$ } from 'blockchain/vault
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
 import { createAutomationTriggersData } from 'features/automation/triggers/AutomationTriggersData'
-import { createStopLossTriggersData } from 'features/automation/triggers/StopLossTriggerData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
-import { createExchangeQuote$ } from 'features/exchange/exchange'
+import { createExchangeQuote$, createNoFeesExchangeQuote$ } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
@@ -76,7 +76,7 @@ import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiply
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
-import { BehaviorSubject, combineLatest, Observable, of, Subject, Subscription } from 'rxjs'
+import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { dogIlk } from '../blockchain/calls/dog'
@@ -100,6 +100,9 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import { getTotalSupply, getUnderlyingBalances } from '../features/manageGuniVault/guniActionsCalls'
+import { createManageGuniVault$ } from '../features/manageGuniVault/manageGuniVault'
+import { getGuniMintAmount, getToken1Balance } from '../features/openGuniVault/guniActionsCalls'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
@@ -119,6 +122,7 @@ export type TxData =
   | CloseVaultData
   | OpenGuniMultiplyData
   | AutomationBotAddTriggerData
+  | CloseGuniMultiplyData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -159,103 +163,31 @@ function createTxHelpers$(
 }
 
 function createUIChangesSubject() {
-  interface HangingSubscription<T> {
-    subscriberId: string
-    handler: (value: T) => void
+  interface PublisherRecord {
+    subjectName: string
+    payload: any
+  }
+  const commonSubject = new Subject<PublisherRecord>()
+
+  function subscribe<T>(subjectName: string): Observable<T> {
+    console.log('Subscribing for a channel')
+    return commonSubject.pipe(
+      filter((x) => x.subjectName === subjectName),
+      map((x) => x.payload as T),
+      shareReplay(1),
+    )
   }
 
-  const subjects: any = {}
-  const waitingSubscriptions: any = {}
-  const doubleSubscriptionGuard: Map<string, Map<string, any>> = new Map<string, Map<string, any>>()
-  const existingSubscriptions: Map<string, Map<string, Subscription>> = new Map<
-    string,
-    Map<string, Subscription>
-  >()
-
-  function addSubscription(subjectName: string, subscriberId: string, sub: Subscription) {
-    if (!existingSubscriptions.get(subjectName)) {
-      existingSubscriptions.set(subjectName, new Map<string, Subscription>())
-    }
-    existingSubscriptions.get(subjectName)?.set(subscriberId, sub)
-  }
-
-  function createIfMissing<T>(subjectName: string, defaultValue: T): void {
-    if (!subjects[subjectName]) {
-      console.log('createIfMissing', subjectName)
-      const newSubject = new BehaviorSubject<T>(defaultValue)
-      subjects[subjectName] = newSubject
-      if (waitingSubscriptions[subjectName] && waitingSubscriptions[subjectName].length) {
-        const waitingHandlers: Array<HangingSubscription<T>> = waitingSubscriptions[
-          subjectName
-        ] as Array<HangingSubscription<T>>
-        waitingHandlers.forEach((item) => {
-          const sub = newSubject.subscribe({
-            next: item.handler,
-          })
-          console.log('Adding early subscription', subjectName, item.subscriberId)
-          addSubscription(subjectName, item.subscriberId, sub)
-        })
-        delete waitingSubscriptions[subjectName]
-      }
-    } else {
-      console.log('createIfMissing - no action')
-    }
-  }
-
-  function publish<T>(subjectName: string, data: T): void {
-    if (!subjects[subjectName]) {
-      throw new Error(`Subject ${subjectName} not created`)
-    }
-    const subject: BehaviorSubject<T> = subjects[subjectName] as BehaviorSubject<T>
-    subject.next(data)
-  }
-
-  function unsubscribe<T>(subjectName: string, subscriberId: string) {
-    console.log('Unsubscribing', subjectName, subscriberId)
-
-    if (waitingSubscriptions[subjectName]) {
-      const subs = waitingSubscriptions[subjectName] as Array<HangingSubscription<T>>
-      const excludedSubs = subs.filter((x) => x.subscriberId !== subscriberId)
-      waitingSubscriptions[subjectName] = new Array<HangingSubscription<T>>(...excludedSubs)
-    }
-
-    if (existingSubscriptions.get(subjectName)?.get(subscriberId)) {
-      existingSubscriptions.get(subjectName)?.get(subscriberId)?.unsubscribe()
-      existingSubscriptions.get(subjectName)?.delete(subscriberId)
-      doubleSubscriptionGuard.get(subjectName)?.delete(subscriberId)
-    }
-  }
-
-  function subscribe<T>(subjectName: string, subscriberId: string, handler: (value: T) => void) {
-    console.log('Subscribing', subjectName, subscriberId)
-    if (!doubleSubscriptionGuard.get(subjectName)?.get(subscriberId)) {
-      if (!subjects[subjectName]) {
-        waitingSubscriptions[subjectName] = waitingSubscriptions[subjectName] || []
-        waitingSubscriptions[subjectName].push({
-          subscriberId,
-          handler,
-        } as HangingSubscription<T>)
-      } else {
-        const subject: Subject<T> = subjects[subjectName] as Subject<T>
-        const sub = subject.subscribe({
-          next: handler,
-        })
-        addSubscription(subjectName, subscriberId, sub)
-      }
-
-      const col = doubleSubscriptionGuard.has(subjectName)
-        ? (doubleSubscriptionGuard.get(subjectName) as Map<string, any>)
-        : new Map<string, any>()
-      col.set(subscriberId, handler)
-      doubleSubscriptionGuard.set(subjectName, col)
-    }
+  function publish<T>(subjectName: string, event: T) {
+    commonSubject.next({
+      subjectName,
+      payload: event,
+    })
   }
 
   return {
-    createIfMissing: createIfMissing,
     subscribe: subscribe,
     publish: publish,
-    unsubscribe: unsubscribe,
   }
 }
 
@@ -400,10 +332,6 @@ export function setupAppContext() {
   const ilksWithBalance$ = createIlkDataListWithBalances$(context$, ilkDataList$, accountBalances$)
 
   const priceInfo$ = curry(createPriceInfo$)(oraclePriceData$)
-  // as (
-  //   token: string,
-  //   account: string | undefined,
-  // ) => Observable<PriceInfo>
 
   // TODO Don't allow undefined args like this
   const balanceInfo$ = curry(createBalanceInfo$)(balance$) as (
@@ -433,6 +361,12 @@ export function setupAppContext() {
       `${token}_${slippage.toString()}_${amount.toString()}_${action}`,
   )
 
+  const noFeesExchangeQuote$ = memoize(
+    curry(createNoFeesExchangeQuote$)(context$),
+    (token: string, slippage: BigNumber, amount: BigNumber, action: string) =>
+      `${token}_${slippage.toString()}_${amount.toString()}_${action}`,
+  )
+
   const openMultiplyVault$ = memoize((ilk: string) =>
     createOpenMultiplyVault$(
       connectedContext$,
@@ -449,6 +383,9 @@ export function setupAppContext() {
     ),
   )
 
+  const token1Balance$ = observe(onEveryBlock$, context$, getToken1Balance)
+  const getGuniMintAmount$ = observe(onEveryBlock$, context$, getGuniMintAmount)
+
   const openGuniVault$ = memoize((ilk: string) =>
     createOpenGuniVault$(
       connectedContext$,
@@ -463,6 +400,8 @@ export function setupAppContext() {
       onEveryBlock$,
       addGasEstimation$,
       ilk,
+      token1Balance$,
+      getGuniMintAmount$,
     ),
   )
 
@@ -502,9 +441,49 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  const getGuniPoolBalances$ = observe(onEveryBlock$, context$, getUnderlyingBalances)
+
+  const getTotalSupply$ = observe(onEveryBlock$, context$, getTotalSupply)
+
+  function getProportions$(gUniBalance: BigNumber, token: string) {
+    return combineLatest(getGuniPoolBalances$({ token }), getTotalSupply$({ token })).pipe(
+      map(([{ amount0, amount1 }, totalSupply]) => {
+        return {
+          sharedAmount0: amount0.times(gUniBalance).div(totalSupply),
+          sharedAmount1: amount1.times(gUniBalance).div(totalSupply),
+        }
+      }),
+    )
+  }
+
+  const manageGuniVault$ = memoize(
+    (id: BigNumber) =>
+      createManageGuniVault$(
+        context$,
+        txHelpers$,
+        proxyAddress$,
+        allowance$,
+        priceInfo$,
+        balanceInfo$,
+        ilkData$,
+        vault$,
+        noFeesExchangeQuote$,
+        addGasEstimation$,
+        getProportions$,
+        id,
+      ),
+    bigNumberTostring,
+  )
+
   const checkVault$ = memoize((id: BigNumber) => curry(checkVaultTypeUsingApi$)(context$, id))
   const generalManageVault$ = memoize(
-    curry(createGeneralManageVault$)(manageMultiplyVault$, manageVault$, checkVault$),
+    curry(createGeneralManageVault$)(
+      manageMultiplyVault$,
+      manageGuniVault$,
+      manageVault$,
+      checkVault$,
+      vault$,
+    ),
     bigNumberTostring,
   )
 
@@ -537,11 +516,6 @@ export function setupAppContext() {
     curry(createAutomationTriggersData)(connectedContext$, onEveryBlock$, vault$),
   )
 
-  const stopLossTriggersData$ = memoize((vaultId: BigNumber) => {
-    console.log('Subscribing to stopLossTriggersData', vaultId.toString())
-    return createStopLossTriggersData(automationTriggersData$(vaultId))
-  })
-
   const openVaultOverview$ = createOpenVaultOverview$(ilksWithBalance$)
 
   const uiChanges = createUIChangesSubject()
@@ -564,12 +538,12 @@ export function setupAppContext() {
     openVault$,
     manageVault$,
     manageMultiplyVault$,
+    manageGuniVault$,
     vaultsOverview$,
     vaultBanners$,
     redirectState$,
     accountBalances$,
     automationTriggersData$,
-    stopLossTriggersData$,
     accountData$,
     vaultHistory$,
     vaultMultiplyHistory$,
@@ -582,6 +556,7 @@ export function setupAppContext() {
     openGuniVault$,
     ilkDataList$,
     uiChanges,
+    connectedContext$,
   }
 }
 

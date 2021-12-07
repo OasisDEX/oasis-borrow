@@ -23,7 +23,7 @@ export const config = {
   prod: {
     mixpanel: {
       token,
-      config: { ip: false, api_host: 'https://mpp.oasis.app' },
+      config: { ip: false, api_host: 'https://mpp.oasis.app', opt_out_tracking_by_default: true },
     },
   },
 }[env]

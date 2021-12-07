@@ -15,24 +15,24 @@ export interface PickCloseStateProps {
 export function PickCloseState(props: PickCloseStateProps) {
   const [isActive, setIsActive] = useState(props.isCollateralActive)
 
-  const OnClickHandler = (op: string) => {
+  const onClickHandler = (op: string) => {
     setIsActive(op === props.optionNames[0])
     props.onclickHandler(op)
   }
 
   return (
-    <Grid columns={2}>
+    <Grid columns={2} sx={{ pt: 3 }}>
       <CloseVaultCard
         text={`Close to ${props.collateralTokenSymbol}`}
         icon={props.collateralTokenIconCircle}
-        onClick={OnClickHandler}
+        onClick={onClickHandler}
         isActive={isActive}
         optionName={props.optionNames[0]}
       />
       <CloseVaultCard
         text="Close to DAI"
         icon="dai_circle_color"
-        onClick={OnClickHandler}
+        onClick={onClickHandler}
         isActive={!isActive}
         optionName={props.optionNames[1]}
       />

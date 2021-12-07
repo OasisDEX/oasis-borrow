@@ -1,12 +1,13 @@
 import { Button, Flex, Spinner, Text } from '@theme-ui/components'
 import { useTranslation } from 'next-i18next'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 export interface RetryableLoadingButtonProps {
   onClick: (finishLoader: (succed: boolean) => void) => void
   translationKey: string
   isRetry: boolean
   isLoading: boolean
+  disabled: boolean
 }
 
 export function RetryableLoadingButton(props: RetryableLoadingButtonProps) {
@@ -34,6 +35,7 @@ export function RetryableLoadingButton(props: RetryableLoadingButtonProps) {
       sx={{ width: '100%', justifySelf: 'center' }}
       variant="primary"
       onClick={buttonClickHandler}
+      disabled={props.disabled}
     >
       {isLoading ? (
         <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>

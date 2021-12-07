@@ -19,35 +19,31 @@ export function TabSwitchLayout({
   protectionControl?: JSX.Element
 }): JSX.Element {
   const [mode, setMode] = useState<VaultViewMode>(defaultMode)
-  const padding = { paddingTop: '1px', paddingBottom: '1px' }
 
   function getVariant(currentMode: VaultViewMode, activeMode: VaultViewMode) {
-    return currentMode === activeMode ? 'primary' : 'secondary'
+    return currentMode === activeMode ? 'tab' : 'tabInactive'
   }
 
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
       <Grid
         columns={3}
-        sx={{ paddingTop: '4px', paddingBottom: '4px', zIndex: 1, width: '40%' }}
+        sx={{ zIndex: 1, width: '40%', backgroundColor: 'fadedWhite' }}
         variant="vaultEditingControllerContainer"
       >
         <Button
-          sx={{ ...padding }}
           onClick={() => setMode(VaultViewMode.Overview)}
           variant={getVariant(mode, VaultViewMode.Overview)}
         >
           Overview
         </Button>
         <Button
-          sx={{ ...padding }}
           onClick={() => setMode(VaultViewMode.Protection)}
           variant={getVariant(mode, VaultViewMode.Protection)}
         >
           Protection
         </Button>
         <Button
-          sx={{ ...padding }}
           onClick={() => setMode(VaultViewMode.History)}
           variant={getVariant(mode, VaultViewMode.History)}
         >

@@ -23,6 +23,7 @@ const oasisBaseTheme = {
     backgroundAlt: '#F1F3F4',
     surface: '#FFF',
 
+    fadedWhite: 'rgba(255, 255, 255, 0.5)',
     light: '#D1DEE6',
     lightIcon: '#BEC9D0',
     border: '#DDDEE6',
@@ -200,6 +201,7 @@ const oasisBaseTheme = {
   shadows: {
     card: '0px 0px 8px rgba(37, 39, 61, 0.1)',
     cardLanding: '0px 0px 8px rgba(0, 0, 0, 0.1)',
+    fixedBanner: '0px 0px 16px rgba(0, 0, 0, 0.1)',
     medium: '0 2px 8px rgba(0, 0, 0, 0.17)',
     light: '0 2px 8px rgba(0, 0, 0, 0.13)',
     surface: '0px 0px 8px rgba(0, 0, 0, 0.2)',
@@ -259,6 +261,10 @@ const oasisBaseTheme = {
       maxWidth: '792px',
       alignSelf: 'center',
       zIndex: 4,
+    },
+    buttonPair: {
+      minWidth: '200px',
+      width: 'unset',
     },
   },
   metadata: {
@@ -337,6 +343,13 @@ const oasisBaseTheme = {
       bg: 'secondaryAlt',
       borderRadius: 'large',
     },
+    cookieBanner: {
+      boxShadow: 'fixedBanner',
+      bg: 'surface',
+      borderRadius: '16px 16px 0 0',
+      padding: '24px',
+      pb: 3,
+    },
   },
   badges: {
     dsr: {
@@ -369,6 +382,39 @@ const oasisBaseTheme = {
       '&:focus': {
         outline: 'none',
       },
+    },
+    tab: {
+      variant: 'text.paragraph2',
+      cursor: 'pointer',
+      fontWeight: 'semiBold',
+      paddingTop: '5px',
+      paddingBottom: '5px',
+      borderRadius: 'round',
+      lineHeight: 'buttons',
+      color: 'text.contrast',
+      transition: 'background 0.2s ease-in',
+      '&:focus-visible': {
+        bg: 'primaryEmphasis',
+      },
+      '&:disabled': {
+        bg: 'primaryAlt',
+        pointerEvents: 'none',
+      },
+      '&:focus': {
+        outline: 'none',
+      },
+    },
+    tabInactive: {
+      variant: 'text.paragraph2',
+      cursor: 'pointer',
+      paddingTop: '5px',
+      paddingBottom: '5px',
+      fontWeight: 'semiBold',
+      borderRadius: 'round',
+      lineHeight: 'buttons',
+      color: 'text.subtitle',
+      transition: 'background 0.2s ease-in',
+      bg: 'unset',
     },
     outline: {
       variant: 'text.paragraph2',
@@ -653,6 +699,18 @@ const oasisBaseTheme = {
     },
     'input:focus ~ &': {
       color: 'onSuccess',
+    },
+  },
+  chevronUpDown: {
+    sort: {
+      ml: 1,
+      display: 'flex',
+      width: 1,
+    },
+    select: {
+      ml: 1,
+      position: 'relative',
+      top: '1px',
     },
   },
   forms: {

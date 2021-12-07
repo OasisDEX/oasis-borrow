@@ -10,13 +10,14 @@ export interface SliderValuePickerProps {
   leftBoundryFormatter: (input: BigNumber) => string
   rightBoundry: BigNumber
   rightBoundryFormatter: (input: BigNumber) => string
-  setter: (input: BigNumber) => void
+  onChange: (input: BigNumber) => void
   minBoundry: BigNumber
   maxBoundry: BigNumber
   lastValue: BigNumber
   disabled: boolean
   leftBoundryStyling: SxStyleProp
   rightBoundryStyling: SxStyleProp
+  step: number
 }
 
 export function SliderValuePicker(props: SliderValuePickerProps) {
@@ -36,7 +37,7 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
         </Text>
       )}
       {introductionContent && (
-        <Text variant="paragraph3" mb={2}>
+        <Text variant="paragraph3" mb="24px">
           {introductionContent}
         </Text>
       )}
@@ -67,12 +68,12 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
         <Slider
           sx={props.rightBoundryStyling}
           disabled={props.disabled}
-          step={0.05}
+          step={props.step}
           min={props.minBoundry?.toNumber()}
           max={props.maxBoundry?.toNumber()}
           value={props.lastValue?.toNumber() || props.maxBoundry?.toNumber()}
           onChange={(e) => {
-            props.setter(new BigNumber(e.target.value))
+            props.onChange(new BigNumber(e.target.value))
           }}
         />
       </Box>

@@ -11,8 +11,8 @@ import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../Vaul
 
 interface CollateralLockedProps {
   token: string
-  collateralAmountLocked: BigNumber | undefined
-  collateralLockedUSD: BigNumber | undefined
+  collateralAmountLocked?: BigNumber
+  collateralLockedUSD?: BigNumber
 }
 
 function VaultDetailsCardCollateralLockedModal({
@@ -25,8 +25,8 @@ function VaultDetailsCardCollateralLockedModal({
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
-        <Heading variant="header3">{`${t('system.collateral-locked')}`}</Heading>
-        <Heading variant="header3">{`${t('manage-vault.card.collateral-locked-amount')}`}</Heading>
+        <Heading variant="header3">{t('system.collateral-locked')}</Heading>
+        <Heading variant="header3">{t('manage-vault.card.collateral-locked-amount')}</Heading>
         <Card variant="vaultDetailsCardModal">
           {formatAmount(collateralAmountLocked || zero, getToken(token).symbol)}
         </Card>
@@ -50,11 +50,13 @@ export function VaultDetailsCardCollateralLocked({
   token,
   afterPillColors,
   showAfterPill,
+  relevant = true,
 }: {
   depositAmountUSD?: BigNumber
   depositAmount?: BigNumber
   afterDepositAmountUSD?: BigNumber
   token: string
+  relevant?: boolean
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
@@ -80,6 +82,7 @@ export function VaultDetailsCardCollateralLocked({
         })
       }
       afterPillColors={afterPillColors}
+      relevant={relevant}
     />
   )
 }

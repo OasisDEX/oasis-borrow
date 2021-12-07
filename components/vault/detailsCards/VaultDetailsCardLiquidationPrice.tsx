@@ -10,7 +10,7 @@ import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../Vaul
 
 interface LiquidationProps {
   liquidationPrice: BigNumber
-  liquidationPriceCurrentPriceDifference: BigNumber | undefined
+  liquidationPriceCurrentPriceDifference?: BigNumber
 }
 
 function VaultDetailsLiquidationModal({
@@ -52,10 +52,12 @@ export function VaultDetailsCardLiquidationPrice({
   afterLiquidationPrice,
   afterPillColors,
   showAfterPill,
+  relevant = true,
 }: {
   liquidationPrice: BigNumber
   liquidationPriceCurrentPriceDifference?: BigNumber
   afterLiquidationPrice?: BigNumber
+  relevant?: Boolean
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
@@ -86,6 +88,7 @@ export function VaultDetailsCardLiquidationPrice({
           liquidationPriceCurrentPriceDifference: liquidationPriceCurrentPriceDifference,
         })
       }
+      relevant={relevant}
       afterPillColors={afterPillColors}
     />
   )

@@ -57,7 +57,7 @@ export function VaultDetailsCardDynamicStopPrice({
         isProtected && !dynamicStopPrice.isZero() ? (
           <>
             ${formatAmount(dynamicStopPrice.minus(liquidationPrice), 'USD')}{' '}
-            <Text as="span" sx={{ color: 'text.subtitle' }}>
+            <Text as="span" sx={{ color: 'text.subtitle', fontSize: '1' }}>
               {t('manage-multiply-vault.card.above-liquidation-price')}
             </Text>
           </>
@@ -65,7 +65,11 @@ export function VaultDetailsCardDynamicStopPrice({
           '-'
         )
       }
-      valueAfter={showAfterPill && `$${formatAmount(afterDynamicStopPrice, 'USD')}`}
+      valueAfter={
+        showAfterPill &&
+        !dynamicStopPrice.isZero() &&
+        `$${formatAmount(afterDynamicStopPrice, 'USD')}`
+      }
       openModal={() => openModal(VaultDetailsDynamicStopPriceModal)}
       afterPillColors={afterPillColors}
     />
