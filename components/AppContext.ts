@@ -160,7 +160,12 @@ function createTxHelpers$(
   )
 }
 
-function createUIChangesSubject() {
+export type UIChanges = {
+  subscribe: <T>(sub: string) => Observable<T>
+  publish: <T>(sub: string, event: T) => void
+}
+
+function createUIChangesSubject(): UIChanges {
   interface PublisherRecord {
     subjectName: string
     payload: any

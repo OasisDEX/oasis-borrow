@@ -18,7 +18,7 @@ import { CollateralPricesWithFilters } from 'features/collateralPrices/collatera
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { useObservableWithError } from 'helpers/observableHook'
+import { useObservableWithError, useUIChanges } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
 import { useEffect, useState } from 'react'
 import React from 'react'
@@ -80,7 +80,6 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     vault$,
     collateralPrices$,
     ilkDataList$,
-    uiChanges,
     automationTriggersData$,
     txHelpers$,
     connectedContext$,
@@ -95,8 +94,17 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
   const txHelpersWithError = useObservableWithError(txHelpers$)
   const contextWithError = useObservableWithError(connectedContext$)
 
-  function publishUIChange(props: AddFormChange) {
-    uiChanges.publish<AddFormChange>(uiSubjectName, props)
+  type Action =
+    | { type: 'stop-loss'; stopLoss: BigNumber }
+    | { type: 'close-type'; toCollateral: boolean }
+
+  function reducerHandler(state: AddFormChange, action: Action): AddFormChange {
+    switch (action.type) {
+      case 'stop-loss':
+        return { ...state, selectedSLValue: action.stopLoss }
+      case 'close-type':
+        return { ...state, collateralActive: action.toCollateral }
+    }
   }
 
   function renderLayout(
@@ -129,6 +137,13 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       new BigNumber(startingAfterNewLiquidationPrice),
     )
 
+    const initial: AddFormChange = {
+      collateralActive: false,
+      selectedSLValue: new BigNumber(currentCollRatio),
+    }
+
+    const dispatch = useUIChanges(reducerHandler, initial, uiSubjectName)
+
     const [txStatus, txStatusSetter] = useState<TxState<AutomationBotAddTriggerData> | undefined>(
       undefined,
     )
@@ -147,9 +162,9 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       optionNames: validOptions,
       onclickHandler: (optionName: string) => {
         setCloseToCollateral(optionName === validOptions[1])
-        publishUIChange({
-          selectedSLValue,
-          collateralActive,
+        dispatch({
+          type: 'close-type',
+          toCollateral: optionName === validOptions[1],
         })
       },
       isCollateralActive: collateralActive,
@@ -182,9 +197,9 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
           .dividedBy(currentCollRatio)
         /* END OF DUPLICATION */
         setAfterLiqPrice(computedAfterLiqPrice)
-        publishUIChange({
-          selectedSLValue: slCollRatio,
-          collateralActive,
+        dispatch({
+          type: 'stop-loss',
+          stopLoss: slCollRatio,
         })
       },
     }
