@@ -3,6 +3,7 @@ import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
+import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
 import {
   createSendTransaction,
   createSendWithGasConstraints,
@@ -120,6 +121,7 @@ export type TxData =
   | MultiplyAdjustData
   | CloseVaultData
   | OpenGuniMultiplyData
+  | AutomationBotAddTriggerData
   | CloseGuniMultiplyData
 
 export interface TxHelpers {
@@ -173,7 +175,6 @@ function createUIChangesSubject(): UIChanges {
   const commonSubject = new Subject<PublisherRecord>()
 
   function subscribe<T>(subjectName: string): Observable<T> {
-    console.log('Subscribing for a channel')
     return commonSubject.pipe(
       filter((x) => x.subjectName === subjectName),
       map((x) => x.payload as T),
