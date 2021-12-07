@@ -299,16 +299,9 @@ export type OpenMultiplyData = {
 }
 
 function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnected) {
-  const {
-    contract,
-    joins,
-    mcdJug,
-    dssCdpManager,
-    dssMultiplyProxyActions,
-    tokens,
-    exchange,
-    fmm,
-  } = context
+  const { contract, joins, mcdJug, dssCdpManager, dssMultiplyProxyActions, tokens, fmm } = context
+
+  const exchange = context['defaultExchange']
 
   return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.openMultiplyVault(
     {
@@ -381,12 +374,13 @@ function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: Contex
     mcdJug,
     dssCdpManager,
     tokens,
-    exchange,
     fmm,
     guniResolver,
     guniProxyActions,
     guniRouter,
   } = context
+
+  const exchange = context['lowerFeesExchange']
 
   const tokenData = getToken(data.token)
 
@@ -491,16 +485,9 @@ export type MultiplyAdjustData = {
   id: BigNumber
 }
 function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextConnected) {
-  const {
-    contract,
-    joins,
-    mcdJug,
-    dssCdpManager,
-    dssMultiplyProxyActions,
-    tokens,
-    exchange,
-    fmm,
-  } = context
+  const { contract, joins, mcdJug, dssCdpManager, dssMultiplyProxyActions, tokens, fmm } = context
+
+  const exchange = context['defaultExchange']
 
   if (data.action === 'BUY_COLLATERAL') {
     return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.increaseMultiple(
@@ -612,16 +599,9 @@ export type CloseVaultData = {
 }
 
 function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) {
-  const {
-    contract,
-    joins,
-    mcdJug,
-    dssCdpManager,
-    dssMultiplyProxyActions,
-    tokens,
-    exchange,
-    fmm,
-  } = context
+  const { contract, joins, mcdJug, dssCdpManager, dssMultiplyProxyActions, tokens, fmm } = context
+
+  const exchange = context['defaultExchange']
 
   const {
     id,
@@ -741,11 +721,12 @@ function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConn
     mcdJug,
     dssCdpManager,
     tokens,
-    noFeesExchange,
     fmm,
     guniResolver,
     guniRouter,
   } = context
+
+  const exchange = context['noFeesExchange']
 
   const { token0: token0Symbol, token1: token1Symbol } = getToken(data.token)
 
@@ -781,7 +762,7 @@ function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConn
       manager: dssCdpManager.address,
       guniProxyActions: guniProxyActions.address,
       lender: fmm,
-      exchange: noFeesExchange.address,
+      exchange: exchange.address,
     } as any,
   )
 }

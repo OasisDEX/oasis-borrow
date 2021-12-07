@@ -262,6 +262,7 @@ export function createOpenGuniVault$(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: string,
   ) => Observable<Quote>,
   onEveryBlock$: Observable<number>,
   addGasEstimation$: AddGasEstimationFunction,
@@ -401,6 +402,7 @@ export function createOpenGuniVault$(
                               SLIPPAGE,
                               oneInchAmount,
                               'BUY_COLLATERAL',
+                              'lowerFeesExchange',
                             ).pipe(
                               switchMap((swap) => {
                                 if (swap.status !== 'SUCCESS') {

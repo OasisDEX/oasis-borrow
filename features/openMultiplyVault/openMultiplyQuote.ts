@@ -95,6 +95,7 @@ export function createExchangeChange$(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: string,
   ) => Observable<Quote>,
   state$: Observable<OpenMultiplyVaultState>,
 ) {
@@ -121,6 +122,7 @@ export function createExchangeChange$(
               state.slippage,
               state.oneInchAmount,
               'BUY_COLLATERAL',
+              'defaultExchange',
             )
           }
           return EMPTY
@@ -137,11 +139,15 @@ export function createInitialQuoteChange(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: string,
   ) => Observable<Quote>,
   token: string,
 ) {
-  return exchangeQuote$(token, SLIPPAGE, new BigNumber(1), 'BUY_COLLATERAL').pipe(
-    map(quoteToChange),
-    take(1),
-  )
+  return exchangeQuote$(
+    token,
+    SLIPPAGE,
+    new BigNumber(1),
+    'BUY_COLLATERAL',
+    'defaultExchange',
+  ).pipe(map(quoteToChange), take(1))
 }

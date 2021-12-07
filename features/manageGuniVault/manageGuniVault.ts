@@ -182,6 +182,7 @@ export function createManageGuniVault$(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: string,
   ) => Observable<Quote>,
   addGasEstimation$: AddGasEstimationFunction,
   getProportions$: (
@@ -270,6 +271,7 @@ export function createManageGuniVault$(
                         SLIPPAGE,
                         sharedAmount1.minus(0.01),
                         'SELL_COLLATERAL',
+                        'lowerFeesExchange',
                       ).pipe(
                         map((swap) => {
                           if (swap.status !== 'SUCCESS') {

@@ -433,6 +433,7 @@ export function createManageMultiplyVault$(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: string,
   ) => Observable<Quote>,
   addGasEstimation$: AddGasEstimationFunction,
   id: BigNumber,

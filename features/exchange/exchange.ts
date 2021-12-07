@@ -170,35 +170,17 @@ export function createExchangeQuote$(
   slippage: BigNumber,
   amount: BigNumber,
   action: ExchangeAction,
+  exchangeType: string,
 ) {
   return context$.pipe(
     switchMap((context) => {
-      const { tokens, exchange } = context
+      const { tokens } = context
+      const exchange = (context as any)[exchangeType]
+
       const dai = getTokenMetaData('DAI', tokens)
       const collateral = getTokenMetaData(token, tokens)
 
       return getQuote$(dai, collateral, exchange.address, amount, slippage, action)
-    }),
-    distinctUntilChanged((s1, s2) => {
-      return JSON.stringify(s1) === JSON.stringify(s2)
-    }),
-  )
-}
-
-export function createNoFeesExchangeQuote$(
-  context$: Observable<Context>,
-  token: string,
-  slippage: BigNumber,
-  amount: BigNumber,
-  action: ExchangeAction,
-) {
-  return context$.pipe(
-    switchMap((context) => {
-      const { tokens, noFeesExchange } = context
-      const dai = getTokenMetaData('DAI', tokens)
-      const collateral = getTokenMetaData(token, tokens)
-
-      return getQuote$(dai, collateral, noFeesExchange.address, amount, slippage, action)
     }),
     distinctUntilChanged((s1, s2) => {
       return JSON.stringify(s1) === JSON.stringify(s2)

@@ -228,7 +228,7 @@ export function parseVaultIdFromReceiptLogs({ logs }: Receipt): BigNumber | unde
 
 export function multiplyVault(
   { sendWithGasEstimation }: TxHelpers,
-  { tokens, exchange }: ContextConnected,
+  { tokens, defaultExchange }: ContextConnected,
   change: (ch: OpenMultiplyVaultChange) => void,
   {
     depositAmount,
@@ -247,7 +247,7 @@ export function multiplyVault(
   return getQuote$(
     getTokenMetaData('DAI', tokens),
     getTokenMetaData(token, tokens),
-    exchange.address,
+    defaultExchange.address,
     oneInchAmount,
     slippage,
     'BUY_COLLATERAL',
