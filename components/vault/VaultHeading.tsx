@@ -51,8 +51,8 @@ export function VaultHeading() {
         pb: 2,
       }}
     >
-      {vaultId && <VaultHeadingManage vaultId={vaultId} />}
-      {ilkName && <VaultHeadingOpen ilk={ilkName} />}
+      {vaultId && !ilkName && <VaultHeadingManage vaultId={vaultId} />}
+      {ilkName && !vaultId && <VaultHeadingOpen ilk={ilkName} />}
     </Heading>
   )
 }
