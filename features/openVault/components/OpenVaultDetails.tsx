@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { useAppContext } from 'components/AppContextProvider'
 import {
   AfterPillProps,
   getAfterPillColors,
@@ -15,12 +16,24 @@ import {
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
 import { useHasChangedSinceFirstRender } from 'helpers/useHasChangedSinceFirstRender'
+import { usePresenter } from 'helpers/usePresenter'
 import { zero } from 'helpers/zero'
+import { memoize } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Observable } from 'rxjs'
+import { map, scan } from 'rxjs/operators'
 import { Grid } from 'theme-ui'
+import { IlkData } from 'blockchain/ilks'
 
-import { OpenVaultState } from '../openVault'
+import { OpenVaultStage, OpenVaultState } from '../openVault'
+
+type OpenVaultDetailsSummaryProps = {
+  generateAmount?: BigNumber
+  afterFreeCollateral: BigNumber
+  token: string
+  maxGenerateAmountCurrentPrice: BigNumber
+}
 
 function OpenVaultDetailsSummary({
   generateAmount,
@@ -30,7 +43,7 @@ function OpenVaultDetailsSummary({
   afterPillColors,
   showAfterPill,
   relevant,
-}: OpenVaultState & AfterPillProps & { relevant: boolean }) {
+}: OpenVaultDetailsSummaryProps & AfterPillProps & { relevant: boolean }) {
   const { t } = useTranslation()
   const { symbol } = getToken(token)
 
@@ -94,29 +107,91 @@ function OpenVaultDetailsSummary({
   )
 }
 
-export function OpenVaultDetails(props: OpenVaultState) {
+type OpenVaultDetailsViewData = {
+  afterCollateralizationRatio: BigNumber
+  afterLiquidationPrice: BigNumber
+  token: string
+  inputAmountsEmpty: boolean
+  stage: OpenVaultStage
+  afterDepositAmountUSD?: BigNumber
+  ilkData: IlkData
+  currentCollateralPrice: BigNumber
+  nextCollateralPrice: BigNumber
+  isStaticCollateralPrice: boolean
+  collateralPricePercentageChange: BigNumber
+  generateAmount?: BigNumber
+  afterFreeCollateral: BigNumber
+  maxGenerateAmountCurrentPrice: BigNumber
+  inputAmountWasChanged: boolean
+}
+
+const presenter = memoize(
+  (openVault$: Observable<OpenVaultState>): Observable<OpenVaultDetailsViewData> =>
+    openVault$.pipe(
+      map((openVaultState) => {
+        return {
+          afterCollateralizationRatio: openVaultState.afterCollateralizationRatio,
+          afterLiquidationPrice: openVaultState.afterLiquidationPrice,
+          token: openVaultState.token,
+          inputAmountsEmpty: openVaultState.inputAmountsEmpty,
+          stage: openVaultState.stage,
+          afterDepositAmountUSD: openVaultState.depositAmountUSD,
+          ilkData: openVaultState.ilkData,
+          currentCollateralPrice: openVaultState.priceInfo.currentCollateralPrice,
+          nextCollateralPrice: openVaultState.priceInfo.nextCollateralPrice,
+          isStaticCollateralPrice: openVaultState.priceInfo.isStaticCollateralPrice,
+          collateralPricePercentageChange: openVaultState.priceInfo.collateralPricePercentageChange,
+          generateAmount: openVaultState.generateAmount,
+          afterFreeCollateral: openVaultState.afterFreeCollateral,
+          maxGenerateAmountCurrentPrice: openVaultState.maxGenerateAmountCurrentPrice,
+          inputAmountWasChanged: !openVaultState.inputAmountsEmpty,
+        }
+      }),
+      scan((acc, cur) => ({
+        ...cur,
+        inputAmountWasChanged: acc.inputAmountWasChanged || cur.inputAmountWasChanged,
+      })),
+    ),
+)
+
+export function OpenVaultDetails(props: { ilk: string }) {
+  const { t } = useTranslation()
+  const openModal = useModal()
+  const openVault$ = useAppContext().openVault$(props.ilk)
+  const viewData = usePresenter<OpenVaultState, OpenVaultDetailsViewData>(openVault$, presenter)
+  if (!viewData) return null
+
   const {
     afterCollateralizationRatio,
     afterLiquidationPrice,
     token,
     inputAmountsEmpty,
     stage,
-  } = props
-  const { t } = useTranslation()
-  const openModal = useModal()
+    afterDepositAmountUSD,
+    ilkData,
+    currentCollateralPrice,
+    nextCollateralPrice,
+    isStaticCollateralPrice,
+    collateralPricePercentageChange,
+    generateAmount,
+    afterFreeCollateral,
+    maxGenerateAmountCurrentPrice,
+    inputAmountWasChanged,
+  } = viewData
 
   // initial values only to show in UI as starting parameters
   const liquidationPrice = zero
   const collateralizationRatio = zero
 
-  const afterDepositAmountUSD = props.depositAmountUSD
   const depositAmountUSD = zero
   const depositAmount = zero
 
-  const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const afterCollRatioColor = getCollRatioColor(
+    { inputAmountsEmpty, ilkData },
+    afterCollateralizationRatio,
+  )
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'txSuccess'
-  const inputAmountWasChanged = useHasChangedSinceFirstRender(inputAmountsEmpty)
 
   return (
     <>
@@ -154,7 +229,14 @@ export function OpenVaultDetails(props: OpenVaultState) {
           relevant={inputAmountWasChanged}
         />
 
-        <VaultDetailsCardCurrentPrice {...props} />
+        <VaultDetailsCardCurrentPrice
+          {...{
+            currentCollateralPrice,
+            nextCollateralPrice,
+            isStaticCollateralPrice,
+            collateralPricePercentageChange,
+          }}
+        />
         <VaultDetailsCardCollateralLocked
           {...{
             depositAmount,
@@ -168,10 +250,15 @@ export function OpenVaultDetails(props: OpenVaultState) {
         />
       </Grid>
       <OpenVaultDetailsSummary
-        {...props}
-        afterPillColors={afterPillColors}
-        showAfterPill={showAfterPill}
-        relevant={inputAmountWasChanged}
+        {...{
+          generateAmount,
+          afterFreeCollateral,
+          token,
+          maxGenerateAmountCurrentPrice,
+          afterPillColors,
+          showAfterPill,
+          relevant: inputAmountWasChanged,
+        }}
       />
     </>
   )

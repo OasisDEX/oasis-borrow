@@ -11,6 +11,7 @@ import { Trans } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
+import { IlkData } from 'blockchain/ilks'
 
 type CollRatioColor = 'primary' | 'onError' | 'onWarning' | 'onSuccess'
 
@@ -20,7 +21,7 @@ export type AfterPillProps = {
 }
 
 export function getCollRatioColor(
-  { inputAmountsEmpty, ilkData }: CommonVaultState,
+  { inputAmountsEmpty, ilkData }: { inputAmountsEmpty: boolean; ilkData: IlkData },
   collateralizationRatio: BigNumber,
 ): CollRatioColor {
   const vaultWillBeAtRiskLevelDanger =
@@ -47,9 +48,7 @@ export function getCollRatioColor(
     : 'onSuccess'
 }
 
-export function getPriceChangeColor({
-  priceInfo: { collateralPricePercentageChange },
-}: CommonVaultState) {
+export function getPriceChangeColor(collateralPricePercentageChange: BigNumber) {
   return collateralPricePercentageChange.isZero()
     ? 'text.muted'
     : collateralPricePercentageChange.gt(zero)
@@ -419,17 +418,19 @@ export function VaultDetailsCardLiquidationPrice({
   )
 }
 
-export function VaultDetailsCardCurrentPrice(props: CommonVaultState) {
-  const {
-    priceInfo: {
-      currentCollateralPrice,
-      nextCollateralPrice,
-      isStaticCollateralPrice,
-      collateralPricePercentageChange,
-    },
-  } = props
+export function VaultDetailsCardCurrentPrice({
+  currentCollateralPrice,
+  nextCollateralPrice,
+  isStaticCollateralPrice,
+  collateralPricePercentageChange,
+}: {
+  currentCollateralPrice: BigNumber
+  nextCollateralPrice: BigNumber
+  isStaticCollateralPrice: boolean
+  collateralPricePercentageChange: BigNumber
+}) {
   const openModal = useModal()
-  const priceChangeColor = getPriceChangeColor(props)
+  const priceChangeColor = getPriceChangeColor(collateralPricePercentageChange)
 
   const currentPrice = `$${formatAmount(currentCollateralPrice, 'USD')}`
   const nextPriceWithChange = (

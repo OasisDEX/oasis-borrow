@@ -124,7 +124,12 @@ export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
           relevant={inputAmountChangedSinceFirstRender}
         />
 
-        <VaultDetailsCardCurrentPrice {...props} />
+        <VaultDetailsCardCurrentPrice
+          currentCollateralPrice={props.priceInfo.currentCollateralPrice}
+          nextCollateralPrice={props.priceInfo.nextCollateralPrice}
+          isStaticCollateralPrice={props.priceInfo.isStaticCollateralPrice}
+          collateralPricePercentageChange={props.priceInfo.collateralPricePercentageChange}
+        />
 
         <VaultDetailsCardNetValue
           {...{

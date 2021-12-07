@@ -169,7 +169,12 @@ export function ManageVaultDetails(props: ManageVaultState) {
           afterPillColors={afterPillColors}
         />
 
-        <VaultDetailsCardCurrentPrice {...props} />
+        <VaultDetailsCardCurrentPrice
+          currentCollateralPrice={props.priceInfo.currentCollateralPrice}
+          nextCollateralPrice={props.priceInfo.nextCollateralPrice}
+          isStaticCollateralPrice={props.priceInfo.isStaticCollateralPrice}
+          collateralPricePercentageChange={props.priceInfo.collateralPricePercentageChange}
+        />
         <VaultDetailsCardCollateralLocked
           depositAmountUSD={lockedCollateralUSD}
           afterDepositAmountUSD={afterLockedCollateralUSD}
