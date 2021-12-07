@@ -134,10 +134,9 @@ export function ManageVaultContainer({
 }) {
   const { manageVault$, context$ } = useAppContext()
   const {
-    vault: { id, ilk },
+    vault: { id },
     clear,
   } = manageVault
-  const { t } = useTranslation()
 
   useEffect(() => {
     const subscription = createManageVaultAnalytics$(
@@ -154,7 +153,7 @@ export function ManageVaultContainer({
 
   return (
     <>
-      <DefaultVaultHeader {...manageVault} header={t('vault.header', { ilk, id })} id={id} />
+      <DefaultVaultHeader {...manageVault} id={id} />
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <ManageVaultDetails {...manageVault} />
