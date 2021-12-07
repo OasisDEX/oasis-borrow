@@ -193,7 +193,6 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       translationKey: 'add-stop-loss',
       onClick: (finishLoader: (succeded: boolean) => void) => {
         const txSendSuccessHandler = (x: TxState<AutomationBotAddTriggerData>) => {
-          console.log('Tx Status', x)
           txStatusSetter(x)
           if (isTxStatusFinal(x.status)) {
             if (isTxStatusFailed(x.status)) {

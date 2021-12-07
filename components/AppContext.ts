@@ -170,7 +170,6 @@ function createUIChangesSubject() {
   const commonSubject = new Subject<PublisherRecord>()
 
   function subscribe<T>(subjectName: string): Observable<T> {
-    console.log('Subscribing for a channel')
     return commonSubject.pipe(
       filter((x) => x.subjectName === subjectName),
       map((x) => x.payload as T),

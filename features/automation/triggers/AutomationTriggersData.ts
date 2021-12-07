@@ -87,14 +87,8 @@ export function createAutomationTriggersData(
         blockNumber,
       )
     }),
-    tap(() => {
-      console.log('triggers data queried')
-    }),
     distinctUntilChanged((s1, s2) => {
       return JSON.stringify(s1) === JSON.stringify(s2)
-    }),
-    tap((triggersData) => {
-      console.log('New triggers data', triggersData)
     }),
     shareReplay(1),
   )
