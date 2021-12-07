@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { gql, GraphQLClient } from 'graphql-request'
-import { zero } from 'helpers/zero'
 import { memoize } from 'lodash'
 import flatten from 'lodash/flatten'
 import pickBy from 'lodash/pickBy'
@@ -68,18 +67,22 @@ function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
   ) as VaultEvent
 }
 
-export const SPLIT_MARK = '_split'
-export function splitEvents(event: VaultEvent): VaultEvent | VaultEvent[] {
+type WithSplitMark<T> = T & { splitId?: number }
+
+export function splitEvents(
+  event: VaultHistoryEvent,
+): WithSplitMark<VaultHistoryEvent> | WithSplitMark<VaultHistoryEvent>[] {
   if (event.kind === 'DEPOSIT-GENERATE') {
     return [
       {
         ...event,
-        id: `${event.id}${SPLIT_MARK}`,
         kind: 'GENERATE',
+        splitId: 0,
       },
       {
         ...event,
         kind: 'DEPOSIT',
+        splitId: 1,
       },
     ]
   }
@@ -87,12 +90,13 @@ export function splitEvents(event: VaultEvent): VaultEvent | VaultEvent[] {
     return [
       {
         ...event,
-        id: `${event.id}${SPLIT_MARK}`,
         kind: 'WITHDRAW',
+        splitId: 0,
       },
       {
         ...event,
         kind: 'PAYBACK',
+        splitId: 1,
       },
     ]
   }
@@ -139,8 +143,7 @@ export function createVaultHistory$(
           flatten(
             returnedEvents
               .map((returnedEvent) => pickBy(returnedEvent, (value) => value !== null))
-              .map(parseBigNumbersFields)
-              .map(splitEvents),
+              .map(parseBigNumbersFields),
           ),
         ),
         map((events) => events.map((event) => ({ etherscan, token, ...event }))),

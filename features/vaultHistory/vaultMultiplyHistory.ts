@@ -8,7 +8,7 @@ import pickBy from 'lodash/pickBy'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
 
-import { fetchWithOperationId, splitEvents, VaultHistoryEvent } from './vaultHistory'
+import { fetchWithOperationId, VaultHistoryEvent } from './vaultHistory'
 import { MultiplyEvent, ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
 const query = gql`
@@ -157,8 +157,7 @@ export function createVaultMultiplyHistory$(
           flatten(
             returnedEvents
               .map((returnedEvent) => pickBy(returnedEvent, (value) => value !== null))
-              .map(parseBigNumbersFields)
-              .map(splitEvents),
+              .map(parseBigNumbersFields),
           ),
         ),
         map((events) => events.map((event) => ({ etherscan, ethtx, token, ...event }))),
