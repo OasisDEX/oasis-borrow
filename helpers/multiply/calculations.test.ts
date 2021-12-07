@@ -127,7 +127,7 @@ export const mockedMultiplyEvents: VaultHistoryEvent[] = [
 ]
 
 describe('Multiply calculations', () => {
-  it.only('Calculates PNL correctly', () => {
+  it('Calculates PNL correctly', () => {
     const state = getStateUnpacker(
       mockManageMultiplyVault$({
         vault: {
