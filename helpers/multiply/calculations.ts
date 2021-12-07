@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
 import { MAX_COLL_RATIO } from 'features/openMultiplyVault/openMultiplyVaultCalculations'
+import { SPLIT_MARK } from 'features/vaultHistory/vaultHistory'
 import { VaultEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import { one, zero } from 'helpers/zero'
 
@@ -303,6 +304,9 @@ export function getCumulativeFeesUSD(total: BigNumber, event: VaultEvent) {
     case 'WITHDRAW':
     case 'PAYBACK':
     case 'WITHDRAW-PAYBACK':
+      if (event.id.includes(SPLIT_MARK)) {
+        return total
+      }
       return total.plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice))
     default:
       return total

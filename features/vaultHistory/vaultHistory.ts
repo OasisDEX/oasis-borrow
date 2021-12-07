@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { gql, GraphQLClient } from 'graphql-request'
+import { zero } from 'helpers/zero'
 import { memoize } from 'lodash'
 import flatten from 'lodash/flatten'
 import pickBy from 'lodash/pickBy'
@@ -67,12 +68,13 @@ function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
   ) as VaultEvent
 }
 
+export const SPLIT_MARK = '_split'
 export function splitEvents(event: VaultEvent): VaultEvent | VaultEvent[] {
   if (event.kind === 'DEPOSIT-GENERATE') {
     return [
       {
         ...event,
-        id: `${event.id}_a`,
+        id: `${event.id}${SPLIT_MARK}`,
         kind: 'GENERATE',
       },
       {
@@ -85,7 +87,7 @@ export function splitEvents(event: VaultEvent): VaultEvent | VaultEvent[] {
     return [
       {
         ...event,
-        id: `${event.id}_a`,
+        id: `${event.id}${SPLIT_MARK}`,
         kind: 'WITHDRAW',
       },
       {
