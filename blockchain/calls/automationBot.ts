@@ -1,10 +1,10 @@
-import { TxMeta } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
 import { AutomationBot, DsProxy } from 'types/ethers-contracts'
+
 import { TxMetaKind } from './txMeta'
 
 export type AutomationBotAddTriggerData = {
