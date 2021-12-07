@@ -6,7 +6,7 @@ import { Vault } from 'blockchain/vaults'
 import { ethers } from 'ethers'
 import { List } from 'lodash'
 import { Observable } from 'rxjs'
-import { distinctUntilChanged, mergeMap, shareReplay, tap, withLatestFrom } from 'rxjs/operators'
+import { distinctUntilChanged, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
 import automationBot from '../../../blockchain/abi/automation-bot.json'
 
