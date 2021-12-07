@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import {
@@ -15,7 +16,6 @@ import {
 } from 'components/vault/VaultDetails'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
-import { useHasChangedSinceFirstRender } from 'helpers/useHasChangedSinceFirstRender'
 import { usePresenter } from 'helpers/usePresenter'
 import { zero } from 'helpers/zero'
 import { memoize } from 'lodash'
@@ -24,7 +24,6 @@ import React from 'react'
 import { Observable } from 'rxjs'
 import { map, scan } from 'rxjs/operators'
 import { Grid } from 'theme-ui'
-import { IlkData } from 'blockchain/ilks'
 
 import { OpenVaultStage, OpenVaultState } from '../openVault'
 

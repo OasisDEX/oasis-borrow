@@ -1,5 +1,6 @@
 import { MemoizedFunction } from 'lodash'
 import { Observable } from 'rxjs'
+
 import { useObservable } from './observableHook'
 
 export function usePresenter<T, U>(

@@ -1,15 +1,15 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { OpenVaultState } from 'features/openVault/openVault'
+import { memoize } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
+import React from 'react'
+import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
 
 import { formatCryptoBalance, formatPercent } from '../../helpers/formatters/format'
-import { VaultHeader, VaultIlkDetailsItem } from './VaultHeader'
 import { usePresenter } from '../../helpers/usePresenter'
-import { map } from 'rxjs/operators'
-import { Observable } from 'rxjs'
-import { memoize } from 'lodash'
-import { OpenVaultState } from 'features/openVault/openVault'
+import { VaultHeader, VaultIlkDetailsItem } from './VaultHeader'
 
 export interface DefaultVaultHeaderProps {
   header: string
