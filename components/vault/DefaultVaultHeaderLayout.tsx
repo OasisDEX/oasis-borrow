@@ -8,7 +8,6 @@ import { VaultHeader, VaultIlkDetailsItem } from './VaultHeader'
 export interface DefaultVaultHeaderLayoutProps {
   id: BigNumber
   stabilityFee: BigNumber
-  header: string
   debtFloor: BigNumber
   liquidationPenalty: BigNumber
   liquidationRatio: BigNumber
@@ -17,7 +16,7 @@ export interface DefaultVaultHeaderLayoutProps {
 export function DefaultVaultHeaderLayout(props: DefaultVaultHeaderLayoutProps) {
   const { t } = useTranslation()
   return (
-    <VaultHeader header={props.header} id={props.id}>
+    <VaultHeader id={props.id}>
       <VaultIlkDetailsItem
         label={t('manage-vault.stability-fee')}
         value={`${formatPercent(props.stabilityFee.times(100), { precision: 2 })}`}

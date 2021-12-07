@@ -14,6 +14,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Container, Grid, Text } from 'theme-ui'
 
+import { VaultHeading } from '../../../components/vault/VaultHeading'
 import { OpenVaultState } from '../openVault'
 import { createOpenVaultAnalytics$ } from '../openVaultAnalytics'
 import { OpenVaultButton } from './OpenVaultButton'
@@ -91,8 +92,7 @@ function OpenVaultForm(props: OpenVaultState) {
 }
 
 export function OpenVaultContainer(props: OpenVaultState) {
-  const { ilk, clear } = props
-  const { t } = useTranslation()
+  const { clear } = props
 
   useEffect(() => {
     return () => {
@@ -102,7 +102,8 @@ export function OpenVaultContainer(props: OpenVaultState) {
 
   return (
     <>
-      <DefaultVaultHeader {...props} header={t('vault.open-vault', { ilk })} />
+      <VaultHeading />
+      <DefaultVaultHeader {...props} />
       <Grid variant="vaultContainer">
         <Box>
           <OpenVaultDetails {...props} />
