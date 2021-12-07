@@ -18,6 +18,8 @@ export function VaultChangesInformationItem({
   tooltip?: ReactNode
 }) {
   const { tooltipOpen, setTooltipOpen } = useTooltip()
+  const isTouchDevice = window && 'ontouchstart' in window
+
   return (
     <Flex
       sx={{
@@ -29,7 +31,11 @@ export function VaultChangesInformationItem({
       }}
       onClick={() => tooltip && setTooltipOpen(true)}
     >
-      <Flex sx={{ color: 'text.subtitle', justifyContent: 'flex-end' }}>
+      <Flex
+        sx={{ color: 'text.subtitle', justifyContent: 'flex-end' }}
+        onMouseEnter={!isTouchDevice ? () => setTooltipOpen(true) : undefined}
+        onMouseLeave={!isTouchDevice ? () => setTooltipOpen(false) : undefined}
+      >
         <Box>{label}</Box>
         {tooltip && <Icon name="question_o" size="20px" sx={{ ml: 1 }} />}
       </Flex>
