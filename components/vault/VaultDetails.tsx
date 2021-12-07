@@ -4,6 +4,7 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { CommonVaultState, WithChildren } from 'helpers/types'
@@ -323,6 +324,7 @@ interface NetValueProps {
   totalGasSpentUSD: BigNumber
   currentPnL: BigNumber
   vault?: Vault
+  priceInfo: PriceInfo
 }
 
 export function VaultDetailsNetValueModal({
@@ -331,30 +333,49 @@ export function VaultDetailsNetValueModal({
   totalGasSpentUSD,
   vault,
   currentPnL,
+  priceInfo,
   close,
 }: ModalProps<NetValueProps>) {
   const { t } = useTranslation()
-  const lockedCollateralUSD =
-    vault && marketPrice ? vault.lockedCollateral.times(marketPrice) : zero
-  const daiDebtUndercollateralizedToken =
-    vault && marketPrice ? vault.debt.dividedBy(marketPrice) : zero
-  const netValueUndercollateralizedToken =
-    marketPrice && vault
-      ? vault.lockedCollateral.minus(vault.debt.dividedBy(marketPrice))
-      : undefined
   const collateralTags = vault ? (getToken(vault?.token).tags as String[]) : []
   const isCollateralLpToken = vault ? collateralTags.includes('lp-token') : false
   const renderCollateralValue = !isCollateralLpToken
+
+  const oraclePrice = priceInfo.currentCollateralPrice
+
+  const lockedCollateralUSD = isCollateralLpToken
+    ? vault?.lockedCollateralUSD || zero
+    : vault && marketPrice
+    ? vault.lockedCollateral.times(marketPrice)
+    : zero
+
+  const daiDebtUndercollateralizedToken = vault
+    ? isCollateralLpToken
+      ? vault.debt.dividedBy(oraclePrice)
+      : marketPrice
+      ? vault.debt.dividedBy(marketPrice)
+      : zero
+    : zero
+
+  const netValueUndercollateralizedToken = vault
+    ? isCollateralLpToken
+      ? netValueUSD.dividedBy(oraclePrice)
+      : marketPrice
+      ? netValueUSD.dividedBy(marketPrice)
+      : zero
+    : zero
 
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
         <Heading variant="header3">{t('manage-multiply-vault.card.net-value')}</Heading>
         <Text variant="subheader" sx={{ fontSize: 2 }}>
-          {t('manage-multiply-vault.card.based-on-price')}
+          {isCollateralLpToken
+            ? t('manage-multiply-vault.card.based-on-price-lp')
+            : t('manage-multiply-vault.card.based-on-price')}
         </Text>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2, fontWeight: 'bold' }}>
-          ${formatCryptoBalance(marketPrice || zero)}
+          ${formatCryptoBalance(marketPrice || oraclePrice)}
         </Text>
       </Grid>
       {/* Grid for just DESKTOP */}
@@ -377,18 +398,11 @@ export function VaultDetailsNetValueModal({
         <Box>{`${vault ? formatCryptoBalance(vault.lockedCollateral) : ''} ${
           vault ? vault.token : ''
         }`}</Box>
-        <Box>
-          {marketPrice !== undefined
-            ? `$${formatCryptoBalance(lockedCollateralUSD)}`
-            : t('manage-multiply-vault.card.market-price-unavailable')}
-        </Box>
-
+        <Box>{`$${formatCryptoBalance(lockedCollateralUSD)}`}</Box>
         <Box>{t('manage-multiply-vault.card.dai-debt-in-vault')}</Box>
         {renderCollateralValue ? (
           <Box>
-            {marketPrice && vault
-              ? `${formatCryptoBalance(daiDebtUndercollateralizedToken)} ${vault.token}`
-              : t('manage-multiply-vault.card.market-price-unavailable')}
+            {vault && `${formatCryptoBalance(daiDebtUndercollateralizedToken)} ${vault.token}`}
           </Box>
         ) : (
           <Box />
@@ -398,9 +412,7 @@ export function VaultDetailsNetValueModal({
         <Box>{t('net-value')}</Box>
         {renderCollateralValue ? (
           <Box>
-            {netValueUndercollateralizedToken && vault
-              ? `${formatCryptoBalance(netValueUndercollateralizedToken)} ${vault.token}`
-              : t('manage-multiply-vault.card.market-price-unavailable')}
+            {vault ? `${formatCryptoBalance(netValueUndercollateralizedToken)} ${vault.token}` : ''}
           </Box>
         ) : (
           <Box />
@@ -430,11 +442,7 @@ export function VaultDetailsNetValueModal({
           }`}
         </Box>
         <Box>{t('manage-multiply-vault.card.usd-value')}</Box>
-        <Box>
-          {marketPrice !== undefined
-            ? `$${formatCryptoBalance(lockedCollateralUSD)}`
-            : t('manage-multiply-vault.card.market-price-unavailable')}
-        </Box>
+        <Box>{`$${formatCryptoBalance(lockedCollateralUSD)}`}</Box>
         <Box sx={{ fontWeight: 'semiBold' }}>
           {t('manage-multiply-vault.card.dai-debt-in-vault')}
         </Box>
@@ -446,9 +454,7 @@ export function VaultDetailsNetValueModal({
         )}
         {renderCollateralValue ? (
           <Box>
-            {marketPrice && vault
-              ? `${formatCryptoBalance(daiDebtUndercollateralizedToken)} ${vault.token}`
-              : t('manage-multiply-vault.card.market-price-unavailable')}
+            {vault && `${formatCryptoBalance(daiDebtUndercollateralizedToken)} ${vault.token}`}
           </Box>
         ) : (
           <Box />
@@ -464,9 +470,7 @@ export function VaultDetailsNetValueModal({
         )}
         {renderCollateralValue ? (
           <Box>
-            {netValueUndercollateralizedToken && vault
-              ? `${formatCryptoBalance(netValueUndercollateralizedToken)} ${vault.token}`
-              : t('manage-multiply-vault.card.market-price-unavailable')}
+            {vault && `${formatCryptoBalance(netValueUndercollateralizedToken)} ${vault.token}`}
           </Box>
         ) : (
           <Box />
@@ -685,13 +689,15 @@ export function VaultDetailsCardNetValue({
   marketPrice,
   totalGasSpentUSD,
   vault,
+  priceInfo,
 }: {
   netValueUSD: BigNumber
   afterNetValueUSD: BigNumber
   currentPnL: BigNumber
   marketPrice?: BigNumber
   totalGasSpentUSD: BigNumber
-  vault?: Vault
+  vault: Vault | undefined
+  priceInfo: PriceInfo
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
@@ -715,6 +721,7 @@ export function VaultDetailsCardNetValue({
           totalGasSpentUSD,
           currentPnL,
           vault,
+          priceInfo,
         })
       }
       afterPillColors={afterPillColors}

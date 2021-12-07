@@ -82,6 +82,7 @@ export function GuniOpenMultiplyVaultDetails(props: OpenGuniVaultState) {
     netValueUSD,
     currentPnL,
     totalGasSpentUSD,
+    priceInfo,
   } = props
 
   const afterCollRatioColor = 'onSuccess'
@@ -98,6 +99,8 @@ export function GuniOpenMultiplyVaultDetails(props: OpenGuniVaultState) {
             showAfterPill,
             currentPnL,
             totalGasSpentUSD,
+            priceInfo,
+            vault: undefined,
           }}
         />
       </Grid>

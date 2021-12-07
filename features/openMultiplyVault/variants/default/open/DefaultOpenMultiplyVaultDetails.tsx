@@ -86,6 +86,7 @@ export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
     inputAmountsEmpty,
     stage,
     marketPrice,
+    priceInfo,
   } = props
   const openModal = useModal()
 
@@ -132,6 +133,7 @@ export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
             marketPrice,
             totalGasSpentUSD: zero,
             vault: undefined,
+            priceInfo,
           }}
         />
       </Grid>
