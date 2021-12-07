@@ -23,7 +23,7 @@ const oasisBaseTheme = {
     backgroundAlt: '#F1F3F4',
     surface: '#FFF',
 
-    silver: 'rgba(255, 255, 255, 0.5)',
+    fadedWhite: 'rgba(255, 255, 255, 0.5)',
     light: '#D1DEE6',
     lightIcon: '#BEC9D0',
     border: '#DDDEE6',

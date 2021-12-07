@@ -28,7 +28,7 @@ export function TabSwitchLayout({
     <Grid gap={0} sx={{ width: '100%' }}>
       <Grid
         columns={3}
-        sx={{ zIndex: 1, width: '40%', backgroundColor: 'silver' }}
+        sx={{ zIndex: 1, width: '40%', backgroundColor: 'fadedWhite' }}
         variant="vaultEditingControllerContainer"
       >
         <Button
