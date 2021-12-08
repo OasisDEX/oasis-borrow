@@ -6,7 +6,7 @@ import { Vault } from 'blockchain/vaults'
 import { ethers } from 'ethers'
 import { List } from 'lodash'
 import { Observable } from 'rxjs'
-import { distinctUntilChanged, mergeMap, shareReplay, tap, withLatestFrom } from 'rxjs/operators'
+import { distinctUntilChanged, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
 import automationBot from '../../../blockchain/abi/automation-bot.json'
 
@@ -87,14 +87,8 @@ export function createAutomationTriggersData(
         blockNumber,
       )
     }),
-    tap(() => {
-      console.log('triggers data queried')
-    }),
     distinctUntilChanged((s1, s2) => {
       return JSON.stringify(s1) === JSON.stringify(s2)
-    }),
-    tap((triggersData) => {
-      console.log('New triggers data', triggersData)
     }),
     shareReplay(1),
   )
