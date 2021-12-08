@@ -69,6 +69,7 @@ export function validateGuniWarnings(state: OpenGuniVaultState): OpenGuniVaultSt
     depositAmount,
     ilkData,
     afterOutstandingDebt,
+    highSlippage,
   } = state
 
   const warningMessages: VaultWarningMessage[] = []
@@ -78,6 +79,10 @@ export function validateGuniWarnings(state: OpenGuniVaultState): OpenGuniVaultSt
   if (isEditingStage) {
     if (!isNullish(depositAmount) && afterOutstandingDebt.lt(ilkData.debtFloor)) {
       warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
+    }
+
+    if (highSlippage) {
+      warningMessages.push('highSlippage')
     }
   }
   return { ...state, warningMessages }

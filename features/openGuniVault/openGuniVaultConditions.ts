@@ -3,6 +3,7 @@ import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
+import { SLIPPAGE_WARNING_THRESHOLD } from '../userSettings/userSettings'
 import { OpenGuniVaultState, Stage } from './openGuniVault'
 
 const defaultOpenVaultStageCategories = {
@@ -92,6 +93,8 @@ export interface GuniOpenMultiplyVaultConditions {
   canProgress: boolean
   canRegress: boolean
   isExchangeLoading: boolean
+
+  highSlippage: boolean
 }
 
 export const defaultGuniOpenMultiplyVaultConditions: GuniOpenMultiplyVaultConditions = {
@@ -111,6 +114,8 @@ export const defaultGuniOpenMultiplyVaultConditions: GuniOpenMultiplyVaultCondit
   canProgress: false,
   canRegress: false,
   isExchangeLoading: false,
+
+  highSlippage: false,
 }
 
 export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGuniVaultState {
@@ -127,6 +132,8 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     exchangeError,
     quote,
     swap,
+
+    slippage,
   } = state
 
   const inputAmountsEmpty = !depositAmount
@@ -170,6 +177,8 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
 
   const isExchangeLoading = !quote && !swap && !exchangeError
 
+  const highSlippage = slippage.gt(SLIPPAGE_WARNING_THRESHOLD)
+
   const canProgress =
     !(
       inputAmountsEmpty ||
@@ -209,5 +218,7 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     canProgress,
     canRegress,
     isExchangeLoading,
+
+    highSlippage,
   }
 }

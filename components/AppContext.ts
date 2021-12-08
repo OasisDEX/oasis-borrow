@@ -385,6 +385,7 @@ export function setupAppContext() {
       ilk,
       token1Balance$,
       getGuniMintAmount$,
+      userSettings$,
     ),
   )
 
