@@ -299,9 +299,16 @@ export type OpenMultiplyData = {
 }
 
 function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnected) {
-  const { contract, joins, mcdJug, dssCdpManager, dssMultiplyProxyActions, tokens, fmm } = context
-
-  const exchange = context['defaultExchange']
+  const {
+    contract,
+    defaultExchange,
+    joins,
+    mcdJug,
+    dssCdpManager,
+    dssMultiplyProxyActions,
+    tokens,
+    fmm,
+  } = context
 
   return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.openMultiplyVault(
     {
@@ -332,7 +339,7 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
       manager: dssCdpManager.address,
       multiplyProxyActions: dssMultiplyProxyActions.address,
       lender: fmm,
-      exchange: exchange.address,
+      exchange: defaultExchange.address,
     } as any,
   )
 }
@@ -485,9 +492,16 @@ export type MultiplyAdjustData = {
   id: BigNumber
 }
 function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextConnected) {
-  const { contract, joins, mcdJug, dssCdpManager, dssMultiplyProxyActions, tokens, fmm } = context
-
-  const exchange = context['defaultExchange']
+  const {
+    contract,
+    defaultExchange,
+    joins,
+    mcdJug,
+    dssCdpManager,
+    dssMultiplyProxyActions,
+    tokens,
+    fmm,
+  } = context
 
   if (data.action === 'BUY_COLLATERAL') {
     return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.increaseMultiple(
@@ -521,7 +535,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
         manager: dssCdpManager.address,
         multiplyProxyActions: dssMultiplyProxyActions.address,
         lender: fmm,
-        exchange: exchange.address,
+        exchange: defaultExchange.address,
       } as any,
     )
   } else {
@@ -563,7 +577,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
         manager: dssCdpManager.address,
         multiplyProxyActions: dssMultiplyProxyActions.address,
         lender: fmm,
-        exchange: exchange.address,
+        exchange: defaultExchange.address,
       } as any,
     )
   }
@@ -599,9 +613,16 @@ export type CloseVaultData = {
 }
 
 function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) {
-  const { contract, joins, mcdJug, dssCdpManager, dssMultiplyProxyActions, tokens, fmm } = context
-
-  const exchange = context['defaultExchange']
+  const {
+    contract,
+    defaultExchange,
+    joins,
+    mcdJug,
+    dssCdpManager,
+    dssMultiplyProxyActions,
+    tokens,
+    fmm,
+  } = context
 
   const {
     id,
@@ -651,7 +672,7 @@ function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) 
     manager: dssCdpManager.address,
     multiplyProxyActions: dssMultiplyProxyActions.address,
     lender: fmm,
-    exchange: exchange.address,
+    exchange: defaultExchange.address,
   }
 
   if (closeTo === 'collateral') {

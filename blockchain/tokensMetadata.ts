@@ -457,7 +457,8 @@ const tokens = [
     tags: ['lp-token'],
     token0: 'DAI',
     token1: 'USDC',
-  }, {
+  },
+  {
     symbol: 'GUNIV3DAIUSDC2',
     precision: 18,
     digits: 5,

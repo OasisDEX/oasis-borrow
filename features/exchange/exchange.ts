@@ -39,6 +39,8 @@ interface Tx {
 
 export type ExchangeAction = 'BUY_COLLATERAL' | 'SELL_COLLATERAL'
 
+export type ExchangeType = 'defaultExchange' | 'noFeesExchange' | 'lowerFeesExchange'
+
 type TokenMetadata = {
   address: string
   decimals: number
@@ -170,7 +172,7 @@ export function createExchangeQuote$(
   slippage: BigNumber,
   amount: BigNumber,
   action: ExchangeAction,
-  exchangeType: string,
+  exchangeType: ExchangeType,
 ) {
   return context$.pipe(
     switchMap((context) => {

@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
-import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { compareBigNumber } from 'helpers/compareBigNumber'
 import { SLIPPAGE } from 'helpers/multiply/calculations'
 import { EMPTY, Observable } from 'rxjs'
@@ -95,7 +95,7 @@ export function createExchangeChange$(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
-    exchangeType: string,
+    exchangeType: ExchangeType,
   ) => Observable<Quote>,
   state$: Observable<OpenMultiplyVaultState>,
 ) {
@@ -139,7 +139,7 @@ export function createInitialQuoteChange(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
-    exchangeType: string,
+    exchangeType: ExchangeType,
   ) => Observable<Quote>,
   token: string,
 ) {

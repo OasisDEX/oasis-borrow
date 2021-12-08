@@ -14,7 +14,7 @@ import {
   applyIsAllowanceStage,
   defaultAllowanceState,
 } from 'features/allowance/allowance'
-import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { TxStage } from 'features/openMultiplyVault/openMultiplyVault' // TODO: remove
 import {
   addProxyTransitions,
@@ -262,7 +262,7 @@ export function createOpenGuniVault$(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
-    exchangeType: string,
+    exchangeType: ExchangeType,
   ) => Observable<Quote>,
   onEveryBlock$: Observable<number>,
   addGasEstimation$: AddGasEstimationFunction,

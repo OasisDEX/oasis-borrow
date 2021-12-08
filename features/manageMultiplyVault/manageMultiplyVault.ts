@@ -4,7 +4,7 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
-import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
@@ -433,7 +433,7 @@ export function createManageMultiplyVault$(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
-    exchangeType: string,
+    exchangeType: ExchangeType,
   ) => Observable<Quote>,
   addGasEstimation$: AddGasEstimationFunction,
   id: BigNumber,
