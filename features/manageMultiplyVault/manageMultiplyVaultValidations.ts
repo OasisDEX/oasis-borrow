@@ -32,6 +32,7 @@ export type ManageVaultWarningMessage =
   | 'vaultWillBeAtRiskLevelWarning'
   | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
   | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
+  | 'highSlippage'
 
 export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyVaultState {
   const {
@@ -165,6 +166,7 @@ export function validateWarnings(state: ManageMultiplyVaultState): ManageMultipl
     vaultWillBeAtRiskLevelWarning,
     vaultWillBeAtRiskLevelWarningAtNextPrice,
     maxGenerateAmountAtCurrentPrice,
+    highSlippage,
   } = state
   //TODO
   const depositAmount = zero
@@ -196,6 +198,10 @@ export function validateWarnings(state: ManageMultiplyVaultState): ManageMultipl
 
     if (vaultWillBeAtRiskLevelWarningAtNextPrice) {
       warningMessages.push('vaultWillBeAtRiskLevelWarningAtNextPrice')
+    }
+
+    if (highSlippage) {
+      warningMessages.push('highSlippage')
     }
   }
   return { ...state, warningMessages }

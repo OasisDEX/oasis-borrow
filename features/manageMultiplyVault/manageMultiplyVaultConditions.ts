@@ -1,5 +1,6 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
+import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
 import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
@@ -167,6 +168,8 @@ export interface ManageVaultConditions {
   withdrawCollateralOnVaultUnderDebtFloor: boolean
 
   hasToDepositCollateralOnEmptyVault: boolean
+
+  highSlippage: boolean
 }
 
 export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
@@ -220,6 +223,8 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   withdrawCollateralOnVaultUnderDebtFloor: false,
 
   hasToDepositCollateralOnEmptyVault: false,
+
+  highSlippage: false,
 }
 
 export function applyManageVaultConditions(
@@ -264,6 +269,7 @@ export function applyManageVaultConditions(
     exchangeError,
     otherAction,
     originalEditingStage,
+    slippage,
   } = state
   const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
   const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)
@@ -431,6 +437,8 @@ export function applyManageVaultConditions(
     withdrawAmount.gt(zero) &&
     (paybackAmount === undefined || paybackAmount.lt(vault.debt))
 
+  const highSlippage = exchangeDataRequired && slippage.gt(SLIPPAGE_WARNING_THRESHOLD)
+
   const editingProgressionDisabled =
     isEditingStage &&
     (inputAmountsEmpty ||
@@ -532,5 +540,7 @@ export function applyManageVaultConditions(
     withdrawCollateralOnVaultUnderDebtFloor,
 
     hasToDepositCollateralOnEmptyVault,
+
+    highSlippage,
   }
 }
