@@ -282,7 +282,7 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
   const context = useObservable(context$)
   const { t } = useTranslation()
 
-  const spitedEvents = useMemo(() => flatten(vaultHistory.map(splitEvents)), [vaultHistory])
+  const spitedEvents = flatten(vaultHistory.map(splitEvents))
 
   return (
     <Box>
