@@ -207,6 +207,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     const addTriggerConfig: RetryableLoadingButtonProps = {
       translationKey: 'add-stop-loss',
       onClick: (finishLoader: (succeded: boolean) => void) => {
+        //TODO: this tx handler can be more generic and reused
         const txSendSuccessHandler = (x: TxState<AutomationBotAddTriggerData>) => {
           console.log('Tx Status', x)
           txStatusSetter(x)

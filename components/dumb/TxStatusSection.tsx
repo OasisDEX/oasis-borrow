@@ -4,6 +4,7 @@ import React from 'react'
 
 import { TxStatusCardProgress } from '../vault/TxStatusCard'
 
+//TODO: Decouple by using generics
 export interface TxStatusSectionProps {
   txState: TxState<AutomationBotAddTriggerData> | undefined
 }
