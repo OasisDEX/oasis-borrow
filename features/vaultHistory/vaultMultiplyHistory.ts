@@ -12,23 +12,65 @@ import { fetchWithOperationId, VaultHistoryEvent } from './vaultHistory'
 import { MultiplyEvent, ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
 const query = gql`
-  query vaultMultiplyEvents($cdpId: String) {
-    allVaultMultiplyEvents(
-      filter: { cdpId: { equalTo: $cdpId } }
-      orderBy: [TIMESTAMP_ASC, LOG_INDEX_ASC]
+  query vaultMultiplyHistories($urn: String) {
+    allVaultMultiplyHistories(
+      filter: { urn: { equalTo: $urn } }
+      orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
     ) {
       nodes {
-        kind
-        timestamp
-        txId
-        blockId
-        swapMinAmount
-        swapOptimistAmount
-        oazoFee
-        flDue
-        flBorrowed
-        liquidationRatio
         hash
+        txId
+        logIndex
+        blockId
+        blockNumber
+        blockHash
+        timestamp
+        id
+        urn
+        kind
+        marketPrice
+        beforeLockedCollateral
+        lockedCollateral
+        beforeCollateralizationRatio
+        collateralizationRatio
+        beforeDebt
+        debt
+        beforeMultiple
+        multiple
+        beforeLiquidationPrice
+        liquidationPrice
+        netValue
+        oazoFee
+        loanFee
+        gasFee
+        totalFee
+        bought
+        depositCollateral
+        depositDai
+        sold
+        withdrawnCollateral
+        withdrawnDai
+        exitCollateral
+        exitDai
+        collateralAmount
+        daiAmount
+        rate
+        vaultCreator
+        depositor
+        cdpId
+        transferFrom
+        transferTo
+        collateral
+        auctionId
+        liqPenalty
+        collateralPrice
+        coveredDebt
+        remainingDebt
+        remainingCollateral
+        collateralTaken
+        ilk
+        oraclePrice
+        ethPrice
       }
     }
   }
@@ -45,12 +87,41 @@ export type VaultMultiplyHistoryEvent = MultiplyEvent & {
 
 function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
   const bigNumberFields = [
-    'swapMinAmount',
-    'swapOptimistAmount',
+    'marketPrice',
+    'beforeLockedCollateral',
+    'lockedCollateral',
+    'beforeCollateralizationRatio',
+    'collateralizationRatio',
+    'beforeDebt',
+    'debt',
+    'beforeMultiple',
+    'multiple',
+    'beforeLiquidationPrice',
+    'liquidationPrice',
+    'netValue',
     'oazoFee',
-    'flDue',
-    'flBorrowed',
-    'liquidationRatio',
+    'loanFee',
+    'gasFee',
+    'totalFee',
+    'bought',
+    'depositCollateral',
+    'depositDai',
+    'sold',
+    'withdrawnCollateral',
+    'withdrawnDai',
+    'exitCollateral',
+    'exitDai',
+    'collateralAmount',
+    'daiAmount',
+    'rate',
+    'collateral',
+    'liqPenalty',
+    'collateralPrice',
+    'coveredDebt',
+    'remainingDebt',
+    'remainingCollateral',
+    'collateralTaken',
+    'oraclePrice',
   ]
   return Object.entries(event).reduce(
     (acc, [key, value]) =>
@@ -63,11 +134,10 @@ function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
 
 async function getVaultMultiplyHistory(
   client: GraphQLClient,
-  cdpId: BigNumber,
+  urn: string,
 ): Promise<ReturnedEvent[]> {
-  const data = await client.request(query, { cdpId: cdpId.toFixed(0) })
-
-  return data.allVaultMultiplyEvents.nodes as ReturnedEvent[]
+  const data = await client.request(query, { urn })
+  return data.allVaultMultiplyHistories.nodes
 }
 
 export function createVaultMultiplyHistory$(
@@ -80,21 +150,17 @@ export function createVaultMultiplyHistory$(
     (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
   )
   return combineLatest(context$, vault$(vaultId)).pipe(
-    switchMap(([{ etherscan, cacheApi }, { token }]) => {
+    switchMap(([{ etherscan, cacheApi, ethtx }, { token, address }]) => {
       return onEveryBlock$.pipe(
-        switchMap(() => getVaultMultiplyHistory(makeClient(cacheApi), vaultId)),
+        switchMap(() => getVaultMultiplyHistory(makeClient(cacheApi), address.toLowerCase())),
         map((returnedEvents) =>
           flatten(
             returnedEvents
               .map((returnedEvent) => pickBy(returnedEvent, (value) => value !== null))
-              .map((event) => {
-                ;(event as any).isMultiply = true
-                return event
-              })
               .map(parseBigNumbersFields),
           ),
         ),
-        map((events) => events.map((event) => ({ etherscan, token, ...event }))),
+        map((events) => events.map((event) => ({ etherscan, ethtx, token, ...event }))),
         catchError(() => of([])),
       )
     }),

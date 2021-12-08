@@ -31,7 +31,17 @@ import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { curry } from 'ramda'
-import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
+import {
+  BehaviorSubject,
+  combineLatest,
+  EMPTY,
+  iif,
+  merge,
+  Observable,
+  of,
+  Subject,
+  throwError,
+} from 'rxjs'
 import {
   distinctUntilChanged,
   filter,
@@ -196,6 +206,8 @@ export type OpenGuniVaultState = OverrideHelper &
     netValueUSD: BigNumber
     minToTokenAmount: BigNumber
     requiredDebt?: BigNumber
+    currentPnL: BigNumber
+    totalGasSpentUSD: BigNumber
   } & HasGasEstimation
 
 interface GuniCalculations {
@@ -358,10 +370,12 @@ export function createOpenGuniVault$(
                       currentStep: 1,
                       minToTokenAmount: zero,
                       maxMultiple: one.div(ilkData.liquidationRatio.minus(one)),
+                      currentPnL: zero,
+                      totalGasSpentUSD: zero,
                       injectStateOverride,
                     }
 
-                    const stateSubject$ = new Subject<OpenGuniVaultState>()
+                    const stateSubject$ = new BehaviorSubject<OpenGuniVaultState>(initialState)
 
                     const gUniDataChanges$: Observable<GuniTxDataChange> = change$.pipe(
                       filter(
@@ -398,7 +412,7 @@ export function createOpenGuniVault$(
 
                             return exchangeQuote$(
                               tokenInfo.token1,
-                              SLIPPAGE,
+                              stateSubject$.value.slippage,
                               oneInchAmount,
                               'BUY_COLLATERAL',
                             ).pipe(
