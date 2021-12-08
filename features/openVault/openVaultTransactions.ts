@@ -1,7 +1,5 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
-import { approve, ApproveData } from 'blockchain/calls/erc20'
-import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import { open, OpenData } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
@@ -10,8 +8,7 @@ import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
-import { iif, Observable, of } from 'rxjs'
-import { filter, switchMap } from 'rxjs/operators'
+import { Observable, of } from 'rxjs'
 import Web3 from 'web3'
 
 import { OpenVaultChange, OpenVaultState } from './openVault'
@@ -53,17 +50,17 @@ type AllowanceChange =
     }
 
 type OpenChange =
-  | { kind: 'openWaitingForApproval' }
+  | { kind: 'txWaitingForApproval' }
   | {
-      kind: 'openInProgress'
+      kind: 'txInProgress'
       openTxHash: string
     }
   | {
-      kind: 'openFailure'
+      kind: 'txFailure'
       txError?: any
     }
   | {
-      kind: 'openSuccess'
+      kind: 'txSuccess'
       id: BigNumber
     }
 
@@ -141,109 +138,36 @@ export function applyOpenVaultTransaction(
     return { ...state, stage: 'allowanceSuccess', allowance }
   }
 
-  if (change.kind === 'openWaitingForApproval') {
+  if (change.kind === 'txWaitingForApproval') {
     return {
       ...state,
-      stage: 'openWaitingForApproval',
+      stage: 'txWaitingForApproval',
     }
   }
 
-  if (change.kind === 'openInProgress') {
+  if (change.kind === 'txInProgress') {
     const { openTxHash } = change
     return {
       ...state,
       openTxHash,
-      stage: 'openInProgress',
+      stage: 'txInProgress',
     }
   }
 
-  if (change.kind === 'openFailure') {
+  if (change.kind === 'txFailure') {
     const { txError } = change
     return {
       ...state,
-      stage: 'openFailure',
+      stage: 'txFailure',
       txError,
     }
   }
 
-  if (change.kind === 'openSuccess') {
-    return { ...state, stage: 'openSuccess', id: change.id }
+  if (change.kind === 'txSuccess') {
+    return { ...state, stage: 'txSuccess', id: change.id }
   }
 
   return state
-}
-
-export function setAllowance(
-  { sendWithGasEstimation }: TxHelpers,
-  change: (ch: OpenVaultChange) => void,
-  state: OpenVaultState,
-) {
-  sendWithGasEstimation(approve, {
-    kind: TxMetaKind.approve,
-    token: state.token,
-    spender: state.proxyAddress!,
-    amount: state.allowanceAmount!,
-  })
-    .pipe(
-      transactionToX<OpenVaultChange, ApproveData>(
-        { kind: 'allowanceWaitingForApproval' },
-        (txState) =>
-          of({
-            kind: 'allowanceInProgress',
-            allowanceTxHash: (txState as any).txHash as string,
-          }),
-        (txState) =>
-          of({
-            kind: 'allowanceFailure',
-            txError:
-              txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-                ? txState.error
-                : undefined,
-          }),
-        (txState) => of({ kind: 'allowanceSuccess', allowance: txState.meta.amount }),
-      ),
-    )
-    .subscribe((ch) => change(ch))
-}
-
-export function createProxy(
-  { sendWithGasEstimation }: TxHelpers,
-  proxyAddress$: Observable<string | undefined>,
-  change: (ch: OpenVaultChange) => void,
-  { safeConfirmations }: OpenVaultState,
-) {
-  sendWithGasEstimation(createDsProxy, { kind: TxMetaKind.createDsProxy })
-    .pipe(
-      transactionToX<OpenVaultChange, CreateDsProxyData>(
-        { kind: 'proxyWaitingForApproval' },
-        (txState) =>
-          of({ kind: 'proxyInProgress', proxyTxHash: (txState as any).txHash as string }),
-        (txState) =>
-          of({
-            kind: 'proxyFailure',
-            txError:
-              txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-                ? txState.error
-                : undefined,
-          }),
-        (txState) =>
-          proxyAddress$.pipe(
-            filter((proxyAddress) => !!proxyAddress),
-            switchMap((proxyAddress) =>
-              iif(
-                () => (txState as any).confirmations < safeConfirmations,
-                of({
-                  kind: 'proxyConfirming',
-                  proxyConfirmations: (txState as any).confirmations,
-                }),
-                of({ kind: 'proxySuccess', proxyAddress: proxyAddress! }),
-              ),
-            ),
-          ),
-        safeConfirmations,
-      ),
-    )
-    .subscribe((ch) => change(ch))
 }
 
 interface Receipt {
@@ -279,11 +203,11 @@ export function openVault(
   })
     .pipe(
       transactionToX<OpenVaultChange, OpenData>(
-        { kind: 'openWaitingForApproval' },
-        (txState) => of({ kind: 'openInProgress', openTxHash: (txState as any).txHash as string }),
+        { kind: 'txWaitingForApproval' },
+        (txState) => of({ kind: 'txInProgress', openTxHash: (txState as any).txHash as string }),
         (txState) =>
           of({
-            kind: 'openFailure',
+            kind: 'txFailure',
             txError:
               txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
                 ? txState.error
@@ -297,11 +221,16 @@ export function openVault(
           // assume that user went through ToS flow and can interact with application
           const jwtToken = jwtAuthGetToken(account as string)
           if (id && jwtToken) {
-            saveVaultUsingApi$(id, jwtToken, VaultType.Borrow).subscribe()
+            saveVaultUsingApi$(
+              id,
+              jwtToken,
+              VaultType.Borrow,
+              parseInt(txState.networkId),
+            ).subscribe()
           }
 
           return of({
-            kind: 'openSuccess',
+            kind: 'txSuccess',
             id: id!,
           })
         },

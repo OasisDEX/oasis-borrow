@@ -200,6 +200,7 @@ const oasisBaseTheme = {
   shadows: {
     card: '0px 0px 8px rgba(37, 39, 61, 0.1)',
     cardLanding: '0px 0px 8px rgba(0, 0, 0, 0.1)',
+    fixedBanner: '0px 0px 16px rgba(0, 0, 0, 0.1)',
     medium: '0 2px 8px rgba(0, 0, 0, 0.17)',
     light: '0 2px 8px rgba(0, 0, 0, 0.13)',
     surface: '0px 0px 8px rgba(0, 0, 0, 0.2)',
@@ -261,6 +262,10 @@ const oasisBaseTheme = {
       maxWidth: '792px',
       alignSelf: 'center',
       zIndex: 4,
+    },
+    buttonPair: {
+      minWidth: '200px',
+      width: 'unset',
     },
   },
   metadata: {
@@ -338,6 +343,13 @@ const oasisBaseTheme = {
       p: 3,
       bg: 'secondaryAlt',
       borderRadius: 'large',
+    },
+    cookieBanner: {
+      boxShadow: 'fixedBanner',
+      bg: 'surface',
+      borderRadius: '16px 16px 0 0',
+      padding: '24px',
+      pb: 3,
     },
   },
   badges: {
@@ -658,6 +670,18 @@ const oasisBaseTheme = {
       color: 'onSuccess',
     },
   },
+  chevronUpDown: {
+    sort: {
+      ml: 1,
+      display: 'flex',
+      width: 1,
+    },
+    select: {
+      ml: 1,
+      position: 'relative',
+      top: '1px',
+    },
+  },
   forms: {
     label: {
       fontSize: 4,
@@ -768,6 +792,7 @@ const oasisBaseTheme = {
     mobileMenu: 3,
     modal: 4,
     cookie: 5,
+    modalOnMobilePanel: 5,
   },
   grids: {
     vaultContainer: {

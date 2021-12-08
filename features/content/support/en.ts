@@ -70,6 +70,11 @@ export const content: ContentTypeSupport = {
         },
 
         {
+          question: "What is ‘Dai available’? Why can't I borrow more Dai?",
+          answer: `The Maker protocol sets an upper limit for for    borrowing against each Vault type: the Debt Ceiling. Dai available represents the maximum amount of Dai all Vault owners can generate against that Vault type until the Debt Ceiling is reached. This Debt Ceiling should not be confused with the Dai available to generate seen in your Vault page. That amount represents the maximum amount of Dai you can borrow based on your current Vault state. In case the Debt Ceiling is reached no more Dai can be generated unless the debt ceiling is lifted or someone payback their debt. The Maker protocol updates the debt ceiling regularly but if you can’t generate more Dai because the Debt Ceiling has been reached please check back in a few hours.`,
+        },
+
+        {
           question: 'What is the next price and how do you know?',
           answer: `Within the Maker Protocol, there are always two prices for the collateral, the current price and the next price. To protect the system and users from ‘bad actors’ and flash crashes, the Maker Protocol uses an ‘Oracle Security Module’. This means that all prices that go into the system are delayed by one hour, and only updated once per hour - roughly on the hour. The next price is the price that will come into the system as the ‘Current Price’. It is the Current Price that your Vault is always measured against, so you can only be liquidated once the ‘Current Price’ goes below your  ‘Liquidation Price’. This also means you have up to one hour to react if there is a big price drop and the next price is below your Liquidation Price. You can read more about the Oracle Security Module [here](https://kb.oasis.app/help/the-oracle-security-module).`,
         },
@@ -98,12 +103,12 @@ export const content: ContentTypeSupport = {
         {
           question: 'What is ‘Multiply’?',
           answer:
-            'Oasis Multiply, allows users to borrow Dai and increase their exposure to their selected collateral by creating Multiply Positions that immediately swap the borrowed Dai for more collateral in the same transaction. This is similar to margin positions but without the need to borrow funds from a centralised counterparty. Oasis Multiply is built on top of the Maker Protocol, 1Inch Dex Aggregator and Aave.',
+            'Oasis Multiply, allows users to borrow Dai and increase their exposure to their selected collateral by creating Multiply Positions that immediately swap the borrowed Dai for more collateral in the same transaction. This is similar to margin positions but without the need to borrow funds from a centralised counterparty. Oasis Multiply is built on top of the Maker Protocol and 1Inch Dex Aggregator.',
         },
         {
           question: 'What are the fees for Multiply?',
           answer:
-            'Oasis.app applies a fee of 0.2% for each token swap that takes place within a Multiply transaction. These actions may also incur an additional flashloan fee of 0.09% that goes to Aave in case their liquidity is needed for the action. Multiply Positions will pay an ongoing stability fee to the Maker Protocol like every Maker Vault. As usual Ethereum gas fees may apply depending on the network conditions. Standard actions in all Vaults are, as always, free.',
+            'Oasis.app applies a fee of 0.2% for each token swap that takes place within a Multiply transaction. Flashloans use Maker Flash Mint Module for borrowing Dai which is free. Multiply Positions will pay an ongoing stability fee to the Maker Protocol like every Maker Vault. As usual Ethereum gas fees may apply depending on the network conditions. Standard actions in all Vaults are, as always, free.',
         },
         {
           question: 'How are swaps done?',
@@ -181,12 +186,17 @@ export const content: ContentTypeSupport = {
         {
           question: 'Is Oasis Secure?',
           answer:
-            'Security is our top priority. We stringently follow the best security practices, and regularly conduct smart contract and code audits. In addition, Oasis code is open-source, giving everyone in the community the ability to pressure test and audit the core technology.',
+            'Security is our top priority. We stringently follow the best security practices, and regularly conduct smart contract and code audits. In addition, Oasis code is open-source, giving everyone in the community the ability to pressure test and audit the core technology. You can check our [documentation](https://kb.oasis.app/help/smart-contracts-and-documentation) page where you will find links to our codebase, smart contracts addresses and code and the audit reports.',
         },
         {
           question: 'Can Oasis access the funds in my account or wallet?',
           answer:
             'No. With Dai, you - and only you - have access and control over your Dai. Dai uses blockchain technology to ensure the highest level of trust and transparency, and because of the way blockchain technology works, you ultimately get to decide just how secure you want it to be. This does mean you are your own security ultimately, so it is very important you keep access to your Dai and Oasis account secure.',
+        },
+        {
+          question: 'I’ve found a bug? Where can I report issues?',
+          answer:
+            'In case you think you have found a bug critical or not, you can reach us by emailing Support@oasis.app and we will review your report with the highest priority.',
         },
       ],
     },

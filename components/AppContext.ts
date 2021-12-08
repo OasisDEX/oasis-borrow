@@ -20,10 +20,12 @@ import {
   SetProxyOwnerData,
 } from 'blockchain/calls/proxy'
 import {
+  CloseGuniMultiplyData,
   CloseVaultData,
   DepositAndGenerateData,
   MultiplyAdjustData,
   OpenData,
+  OpenGuniMultiplyData,
   OpenMultiplyData,
   ReclaimData,
   WithdrawAndPaybackData,
@@ -48,13 +50,14 @@ import { createAccountData } from 'features/account/AccountData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
-import { createExchangeQuote$ } from 'features/exchange/exchange'
+import { createExchangeQuote$, createNoFeesExchangeQuote$ } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageMultiplyVault$ } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { createManageVault$ } from 'features/manageVault/manageVault'
+import { createOpenGuniVault$ } from 'features/openGuniVault/openGuniVault'
 import { createOpenMultiplyVault$ } from 'features/openMultiplyVault/openMultiplyVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
 import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultData'
@@ -100,6 +103,9 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import { getTotalSupply, getUnderlyingBalances } from '../features/manageGuniVault/guniActionsCalls'
+import { createManageGuniVault$ } from '../features/manageGuniVault/manageGuniVault'
+import { getGuniMintAmount, getToken1Balance } from '../features/openGuniVault/guniActionsCalls'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
@@ -117,6 +123,8 @@ export type TxData =
   | OpenMultiplyData
   | MultiplyAdjustData
   | CloseVaultData
+  | OpenGuniMultiplyData
+  | CloseGuniMultiplyData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -257,17 +265,20 @@ export function setupAppContext() {
   )
 
   const vault$ = memoize(
-    curry(createVault$)(
-      cdpManagerUrns$,
-      cdpManagerIlks$,
-      cdpManagerOwner$,
-      vatUrns$,
-      vatGem$,
-      ilkData$,
-      oraclePriceData$,
-      controller$,
-      ilkToToken$,
-    ),
+    (id: BigNumber) =>
+      createVault$(
+        cdpManagerUrns$,
+        cdpManagerIlks$,
+        cdpManagerOwner$,
+        vatUrns$,
+        vatGem$,
+        ilkData$,
+        oraclePriceData$,
+        controller$,
+        ilkToToken$,
+        context$,
+        id,
+      ),
     bigNumberTostring,
   )
 
@@ -332,6 +343,12 @@ export function setupAppContext() {
       `${token}_${slippage.toString()}_${amount.toString()}_${action}`,
   )
 
+  const noFeesExchangeQuote$ = memoize(
+    curry(createNoFeesExchangeQuote$)(context$),
+    (token: string, slippage: BigNumber, amount: BigNumber, action: string) =>
+      `${token}_${slippage.toString()}_${amount.toString()}_${action}`,
+  )
+
   const openMultiplyVault$ = memoize((ilk: string) =>
     createOpenMultiplyVault$(
       connectedContext$,
@@ -346,6 +363,28 @@ export function setupAppContext() {
       addGasEstimation$,
       userSettings$,
       ilk,
+    ),
+  )
+
+  const token1Balance$ = observe(onEveryBlock$, context$, getToken1Balance)
+  const getGuniMintAmount$ = observe(onEveryBlock$, context$, getGuniMintAmount)
+
+  const openGuniVault$ = memoize((ilk: string) =>
+    createOpenGuniVault$(
+      connectedContext$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      priceInfo$,
+      balanceInfo$,
+      ilks$,
+      ilkData$,
+      exchangeQuote$,
+      onEveryBlock$,
+      addGasEstimation$,
+      ilk,
+      token1Balance$,
+      getGuniMintAmount$,
     ),
   )
 
@@ -386,8 +425,49 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  const getGuniPoolBalances$ = observe(onEveryBlock$, context$, getUnderlyingBalances)
+
+  const getTotalSupply$ = observe(onEveryBlock$, context$, getTotalSupply)
+
+  function getProportions$(gUniBalance: BigNumber, token: string) {
+    return combineLatest(getGuniPoolBalances$({ token }), getTotalSupply$({ token })).pipe(
+      map(([{ amount0, amount1 }, totalSupply]) => {
+        return {
+          sharedAmount0: amount0.times(gUniBalance).div(totalSupply),
+          sharedAmount1: amount1.times(gUniBalance).div(totalSupply),
+        }
+      }),
+    )
+  }
+
+  const manageGuniVault$ = memoize(
+    (id: BigNumber) =>
+      createManageGuniVault$(
+        context$,
+        txHelpers$,
+        proxyAddress$,
+        allowance$,
+        priceInfo$,
+        balanceInfo$,
+        ilkData$,
+        vault$,
+        noFeesExchangeQuote$,
+        addGasEstimation$,
+        getProportions$,
+        id,
+      ),
+    bigNumberTostring,
+  )
+
+  const checkVault$ = memoize((id: BigNumber) => curry(checkVaultTypeUsingApi$)(context$, id))
   const generalManageVault$ = memoize(
-    curry(createGeneralManageVault$)(manageMultiplyVault$, manageVault$, checkVaultTypeUsingApi$),
+    curry(createGeneralManageVault$)(
+      manageMultiplyVault$,
+      manageGuniVault$,
+      manageVault$,
+      checkVault$,
+      vault$,
+    ),
     bigNumberTostring,
   )
 
@@ -436,6 +516,7 @@ export function setupAppContext() {
     openVault$,
     manageVault$,
     manageMultiplyVault$,
+    manageGuniVault$,
     vaultsOverview$,
     vaultBanners$,
     redirectState$,
@@ -450,6 +531,7 @@ export function setupAppContext() {
     openMultiplyVault$,
     generalManageVault$,
     userSettings$,
+    openGuniVault$,
   }
 }
 

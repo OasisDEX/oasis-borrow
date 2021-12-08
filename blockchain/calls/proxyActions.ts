@@ -3,11 +3,13 @@ import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
+import { getToken } from 'blockchain/tokensMetadata'
 import { amountToWad, amountToWei } from 'blockchain/utils'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { CloseVaultTo } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
+import { DssGuniProxyActions } from 'types/ethers-contracts'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-actions'
@@ -354,6 +356,91 @@ export const openMultiplyVault: TransactionDef<OpenMultiplyData> = {
     token === 'ETH' ? { value: amountToWei(depositCollateral, 'ETH').toFixed(0) } : {},
 }
 
+export type OpenGuniMultiplyData = {
+  kind: TxMetaKind.openGuni
+  token: string
+  depositCollateral: BigNumber
+  requiredDebt: BigNumber
+  minToTokenAmount: BigNumber
+  proxyAddress: string
+  userAddress: string
+  toTokenAmount: BigNumber
+  fromTokenAmount: BigNumber
+
+  ilk: string
+
+  exchangeAddress: string
+  exchangeData: string
+  token0Amount: BigNumber
+}
+
+function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: ContextConnected) {
+  const {
+    contract,
+    joins,
+    mcdJug,
+    dssCdpManager,
+    tokens,
+    exchange,
+    fmm,
+    guniResolver,
+    guniProxyActions,
+    guniRouter,
+  } = context
+
+  const tokenData = getToken(data.token)
+
+  const token0Symbol = tokenData.token0
+  const token1Symbol = tokenData.token1
+
+  if (!token0Symbol || !token1Symbol) {
+    throw new Error('Invalid token')
+  }
+
+  return contract<DssGuniProxyActions>(guniProxyActions).methods.openMultiplyGuniVault(
+    {
+      fromTokenAddress: tokens[token0Symbol].address,
+      toTokenAddress: tokens[token1Symbol].address,
+      fromTokenAmount: amountToWei(data.fromTokenAmount, token0Symbol).toFixed(0),
+      toTokenAmount: amountToWei(data.toTokenAmount, token1Symbol).toFixed(0),
+      minToTokenAmount: amountToWei(data.minToTokenAmount, token1Symbol).toFixed(0),
+      exchangeAddress: data.exchangeAddress,
+      _exchangeCalldata: data.exchangeData,
+    } as any, //TODO: figure out why Typechain is generating arguments as arrays
+    {
+      gemJoin: joins[data.ilk],
+      fundsReceiver: data.userAddress,
+      cdpId: '0',
+      ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
+      token0Amount: amountToWei(data.depositCollateral, token0Symbol).toFixed(0),
+      methodName: '',
+    } as any,
+    {
+      jug: mcdJug.address,
+      guni: tokens[data.token].address,
+      resolver: guniResolver,
+      router: guniRouter,
+      otherToken: tokens[token1Symbol].address,
+      manager: dssCdpManager.address,
+      guniProxyActions: guniProxyActions.address,
+      lender: fmm,
+      exchange: exchange.address,
+    } as any,
+  )
+}
+
+export const openGuniMultiplyVault: TransactionDef<OpenGuniMultiplyData> = {
+  call: ({ proxyAddress }, { contract }) => {
+    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
+  },
+  prepareArgs: (data, context) => {
+    const { guniProxyActions } = context
+    console.log({ guniProxyActions })
+    return [guniProxyActions.address, getOpenGuniMultiplyCallData(data, context).encodeABI()]
+  },
+}
+
 export type ReclaimData = {
   kind: TxMetaKind.reclaim
   proxyAddress: string
@@ -628,5 +715,84 @@ export const closeVaultCall: TransactionDef<CloseVaultData> = {
         ).encodeABI(),
       ]
     }
+  },
+}
+
+export type CloseGuniMultiplyData = {
+  kind: TxMetaKind.closeGuni
+  token: string
+  ilk: string
+  userAddress: string
+  requiredDebt: BigNumber
+  cdpId: string
+  fromTokenAmount: BigNumber
+  toTokenAmount: BigNumber
+  minToTokenAmount: BigNumber
+  exchangeAddress: string
+  exchangeData: string
+  proxyAddress: string
+}
+
+function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConnected) {
+  const {
+    contract,
+    guniProxyActions,
+    joins,
+    mcdJug,
+    dssCdpManager,
+    tokens,
+    noFeesExchange,
+    fmm,
+    guniResolver,
+    guniRouter,
+  } = context
+
+  const { token0: token0Symbol, token1: token1Symbol } = getToken(data.token)
+
+  if (!token0Symbol || !token1Symbol) {
+    throw new Error('Invalid token')
+  }
+
+  return contract<DssGuniProxyActions>(guniProxyActions).methods.closeGuniVaultExitDai(
+    {
+      fromTokenAddress: tokens[token0Symbol].address,
+      toTokenAddress: tokens[token1Symbol].address,
+      fromTokenAmount: amountToWei(data.fromTokenAmount, token1Symbol).toFixed(0),
+      toTokenAmount: amountToWei(data.toTokenAmount, token0Symbol).toFixed(0),
+      minToTokenAmount: amountToWei(data.minToTokenAmount, token0Symbol).toFixed(0),
+      exchangeAddress: data.exchangeAddress,
+      _exchangeCalldata: data.exchangeData,
+    } as any,
+    {
+      gemJoin: joins[data.ilk],
+      fundsReceiver: data.userAddress,
+      cdpId: data.cdpId,
+      ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
+      requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
+      token0Amount: '0',
+      methodName: '',
+    } as any,
+    {
+      jug: mcdJug.address,
+      guni: tokens[data.token].address,
+      resolver: guniResolver,
+      router: guniRouter,
+      otherToken: tokens[token1Symbol!].address,
+      manager: dssCdpManager.address,
+      guniProxyActions: guniProxyActions.address,
+      lender: fmm,
+      exchange: noFeesExchange.address,
+    } as any,
+  )
+}
+
+export const closeGuniVaultCall: TransactionDef<CloseGuniMultiplyData> = {
+  call: ({ proxyAddress }, { contract }) => {
+    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
+  },
+  prepareArgs: (data, context) => {
+    const { guniProxyActions } = context
+
+    return [guniProxyActions.address, getGuniCloseVaultData(data, context).encodeABI()]
   },
 }
