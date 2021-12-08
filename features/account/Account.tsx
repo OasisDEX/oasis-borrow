@@ -17,6 +17,8 @@ import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Flex, Grid, Heading, Text, Textarea } from 'theme-ui'
 
 import { PendingTransactions, RecentTransactions } from './TransactionManagerView'
+import ENS, { getEnsAddress } from '@ensdomains/ensjs'
+
 
 function DaiIndicator({ daiBalance }: { daiBalance: BigNumber | undefined }) {
   return (
@@ -53,6 +55,18 @@ export function AccountButton() {
   const context = useObservable(context$)
   const { t } = useTranslation()
   const openModal = useModal()
+
+  let userWalletAddress;
+  
+  let ensName = null;
+  ({ name: ensName } = await ens.getName(userWalletAddress))
+  // Check to be sure the reverse record is correct. skip check if the name is null
+  if(ensName == null || userWalletAddress != await ens.name(ensName).getAddress()) {
+    ensName = null;
+    userWalletAddress = context.account;
+  } else {
+    userWalletAddress = ensName;
+  }
 
   if (context === undefined) {
     return null
@@ -124,7 +138,7 @@ export function AccountButton() {
           }}
           onClick={() => openModal(AccountModal)}
         >
-          <AccountIndicator address={context.account} />
+          <AccountIndicator address={userWalletAddress} />
           <DaiIndicator daiBalance={accountData.daiBalance} />
         </Button>
       </Flex>
