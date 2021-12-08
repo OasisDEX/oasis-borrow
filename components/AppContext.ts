@@ -455,6 +455,7 @@ export function setupAppContext() {
         noFeesExchangeQuote$,
         addGasEstimation$,
         getProportions$,
+        userSettings$,
         id,
       ),
     bigNumberTostring,

@@ -8,10 +8,9 @@ import { ExchangeAction, Quote } from 'features/exchange/exchange'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus } from 'helpers/form'
-import { SLIPPAGE } from 'helpers/multiply/calculations'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
-import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
+import { first, map, scan, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
 
 import { getToken } from '../../blockchain/tokensMetadata'
 import { one, zero } from '../../helpers/zero'
@@ -43,6 +42,7 @@ import {
   validateWarnings,
 } from '../manageMultiplyVault/manageMultiplyVaultValidations'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
+import { slippageChange$, UserSettingsState } from '../userSettings/userSettings'
 import { closeGuniVault } from './guniActionsCalls'
 import { applyGuniManageEstimateGas } from './manageGuniVaultTransactions'
 
@@ -188,6 +188,7 @@ export function createManageGuniVault$(
     gUniAmount: BigNumber,
     token: string,
   ) => Observable<{ sharedAmount0: BigNumber; sharedAmount1: BigNumber }>,
+  slippageLimit$: Observable<UserSettingsState>,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
   return context$.pipe(
@@ -201,9 +202,10 @@ export function createManageGuniVault$(
             balanceInfo$(vault.token, account),
             ilkData$(vault.ilk),
             account ? proxyAddress$(account) : of(undefined),
+            slippageLimit$,
           ).pipe(
             first(),
-            switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress]) => {
+            switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress, { slippage }]) => {
               const collateralAllowance$ =
                 account && proxyAddress
                   ? allowance$(vault.token, account, proxyAddress)
@@ -250,7 +252,7 @@ export function createManageGuniVault$(
                     errorMessages: [],
                     warningMessages: [],
                     summary: defaultManageVaultSummary,
-                    slippage: SLIPPAGE,
+                    slippage,
                     exchangeError: false,
                     initialTotalSteps,
                     totalSteps: initialTotalSteps,
@@ -260,50 +262,56 @@ export function createManageGuniVault$(
                     injectStateOverride,
                   }
 
-                  const guniDataChange$ = getProportions$(vault.lockedCollateral, vault.token).pipe(
-                    switchMap(({ sharedAmount0, sharedAmount1 }) => {
-                      const requiredDebt = vault.debt
-                      const { token1 } = getToken(vault.token) // USDC
+                  const stateSubject$ = new Subject<ManageMultiplyVaultState>()
+                  const stateSubjectShared$ = stateSubject$.pipe(shareReplay(1))
 
-                      return exchangeQuote$(
-                        token1!,
-                        SLIPPAGE,
-                        sharedAmount1.minus(0.01),
-                        'SELL_COLLATERAL',
-                      ).pipe(
-                        map((swap) => {
-                          if (swap.status !== 'SUCCESS') {
-                            return of({ kind: 'exchangeError' })
-                          }
+                  const environmentChanges$ = merge(
+                    slippageChange$(slippageLimit$),
+                    priceInfoChange$(priceInfo$, vault.token),
+                    balanceInfoChange$(balanceInfo$, vault.token, account),
+                    createIlkDataChange$(ilkData$, vault.ilk),
+                    createVaultChange$(vault$, id, context.chainId),
+                  )
 
-                          return {
-                            kind: 'guniTxData',
-                            swap,
-                            sharedAmount0,
-                            sharedAmount1: sharedAmount1.minus(0.01),
-                            requiredDebt,
-                            fromTokenAmount: swap.collateralAmount,
-                            toTokenAmount: swap.daiAmount,
-                            minToTokenAmount: swap.daiAmount.times(one.minus(SLIPPAGE)),
-                          }
+                  const guniDataChange$ = environmentChanges$.pipe(
+                    withLatestFrom(stateSubjectShared$),
+                    switchMap(([_, state]) => {
+                      return getProportions$(vault.lockedCollateral, vault.token).pipe(
+                        switchMap(({ sharedAmount0, sharedAmount1 }) => {
+                          const requiredDebt = vault.debt
+                          const { token1 } = getToken(vault.token) // USDC
+
+                          return exchangeQuote$(
+                            token1!,
+                            state.slippage,
+                            sharedAmount1.minus(0.01),
+                            'SELL_COLLATERAL',
+                          ).pipe(
+                            map((swap) => {
+                              if (swap.status !== 'SUCCESS') {
+                                return of({ kind: 'exchangeError' })
+                              }
+
+                              return {
+                                kind: 'guniTxData',
+                                swap,
+                                sharedAmount0,
+                                sharedAmount1: sharedAmount1.minus(0.01),
+                                requiredDebt,
+                                fromTokenAmount: swap.collateralAmount,
+                                toTokenAmount: swap.daiAmount,
+                                minToTokenAmount: swap.daiAmount.times(one.minus(state.slippage)),
+                              }
+                            }),
+                          )
                         }),
                       )
                     }),
                   )
 
-                  const stateSubject$ = new Subject<ManageMultiplyVaultState>()
-
-                  const environmentChanges$ = merge(
-                    priceInfoChange$(priceInfo$, vault.token),
-                    balanceInfoChange$(balanceInfo$, vault.token, account),
-                    createIlkDataChange$(ilkData$, vault.ilk),
-                    createVaultChange$(vault$, id, context.chainId),
-                    guniDataChange$,
-                  )
-
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
 
-                  return merge(change$, environmentChanges$).pipe(
+                  return merge(change$, environmentChanges$, guniDataChange$).pipe(
                     scan(apply, initialState),
                     map(validateErrors),
                     map(validateWarnings),
