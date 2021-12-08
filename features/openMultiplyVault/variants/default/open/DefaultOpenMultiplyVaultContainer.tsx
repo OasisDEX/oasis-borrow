@@ -19,7 +19,7 @@ export function DefaultOpenMultiplyVaultContainer(props: OpenMultiplyVaultState)
   const { t } = useTranslation()
 
   const vaultHeaderProps = usePresenter(
-    useAppContext().openMultiplyVault$(props.ilk),
+    (appContext) => appContext.openMultiplyVault$(props.ilk),
     vaultHeaderPresenter,
   )
 

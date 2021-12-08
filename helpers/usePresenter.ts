@@ -1,12 +1,15 @@
+import { useAppContext } from 'components/AppContextProvider'
 import { MemoizedFunction } from 'lodash'
 import { Observable } from 'rxjs'
+import { AppContext } from '../components/AppContext'
 
 import { useObservable } from './observableHook'
 
 export function usePresenter<T, U>(
-  source$: Observable<T>,
-  transform: ((source$: Observable<T>) => Observable<U>) & MemoizedFunction,
+  getSources: (appContext: AppContext) => T,
+  createPresenter: ((sources: T) => Observable<U>) & MemoizedFunction,
 ): U | undefined {
-  const viewData$: Observable<U> = transform(source$)
+  const sources: T = getSources(useAppContext())
+  const viewData$: Observable<U> = createPresenter(sources)
   return useObservable(viewData$)
 }

@@ -156,8 +156,7 @@ const presenter = memoize(
 export function OpenVaultDetails(props: { ilk: string }) {
   const { t } = useTranslation()
   const openModal = useModal()
-  const openVault$ = useAppContext().openVault$(props.ilk)
-  const viewData = usePresenter<OpenVaultState, OpenVaultDetailsViewData>(openVault$, presenter)
+  const viewData = usePresenter((appContext) => appContext.openVault$(props.ilk), presenter)
   if (!viewData) return null
 
   const {

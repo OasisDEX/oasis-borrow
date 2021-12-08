@@ -171,7 +171,10 @@ export function ManageVaultContainer({
     }
   }, [])
 
-  const vaultHeaderProps = usePresenter(useAppContext().manageVault$(id), vaultHeaderPresenter)
+  const vaultHeaderProps = usePresenter(
+    (appContext) => appContext.manageVault$(id),
+    vaultHeaderPresenter,
+  )
   if (!vaultHeaderProps) return null
   return (
     <>

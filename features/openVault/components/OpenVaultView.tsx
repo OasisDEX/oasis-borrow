@@ -119,8 +119,10 @@ export function OpenVaultContainer(props: OpenVaultState) {
     }
   }, [])
 
-  const openVault$ = useAppContext().openVault$(ilk)
-  const vaultHeaderProps = usePresenter(openVault$, vaultHeaderPresenter)
+  const vaultHeaderProps = usePresenter(
+    (appContext) => appContext.openVault$(ilk),
+    vaultHeaderPresenter,
+  )
 
   if (!vaultHeaderProps) return null
 
