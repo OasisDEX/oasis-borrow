@@ -1,6 +1,8 @@
+import { useAppContext } from 'components/AppContextProvider'
+import { usePresenter } from 'helpers/usePresenter'
+import { memoize } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { memoize } from 'lodash'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
@@ -12,8 +14,6 @@ import { OpenMultiplyVaultContainer } from '../../../common/OpenMultiplyVaultCon
 import { OpenMultiplyVaultState } from '../../../openMultiplyVault'
 import { DefaultOpenMultiplyVaultDetails } from './DefaultOpenMultiplyVaultDetails'
 import { DefaultOpenMultiplyVaultForm } from './DefaultOpenMultiplyVaultForm'
-import { usePresenter } from 'helpers/usePresenter'
-import { useAppContext } from 'components/AppContextProvider'
 
 export function DefaultOpenMultiplyVaultContainer(props: OpenMultiplyVaultState) {
   const { t } = useTranslation()
