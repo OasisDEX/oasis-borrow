@@ -15,7 +15,7 @@ import { zero } from 'helpers/zero'
 import { flatten } from 'lodash'
 import moment from 'moment'
 import { TFunction, useTranslation } from 'next-i18next'
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { interpolate } from '../../helpers/interpolate'
