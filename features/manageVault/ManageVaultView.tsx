@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
-import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
+import { DefaultVaultHeader, DefaultVaultHeaderProps } from 'components/vault/DefaultVaultHeader'
 import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
@@ -10,9 +10,13 @@ import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeade
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { WithChildren } from 'helpers/types'
+import { usePresenter } from 'helpers/usePresenter'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Divider, Flex, Grid, Text } from 'theme-ui'
+import { map } from 'rxjs/operators'
+import { Observable } from 'rxjs'
+import { memoize } from 'lodash'
 
 import { ManageVaultState } from './manageVault'
 import { createManageVaultAnalytics$ } from './manageVaultAnalytics'
@@ -125,6 +129,21 @@ function ManageVaultForm(props: ManageVaultState) {
   )
 }
 
+const vaultHeaderPresenter = memoize(
+  (openVault$: Observable<ManageVaultState>): Observable<DefaultVaultHeaderProps> =>
+    openVault$.pipe(
+      map((manageVaultState: ManageVaultState) => {
+        return {
+          header: 'unused',
+          liquidationRatio: manageVaultState.ilkData.liquidationRatio,
+          stabilityFee: manageVaultState.ilkData.stabilityFee,
+          liquidationPenalty: manageVaultState.ilkData.liquidationPenalty,
+          debtFloor: manageVaultState.ilkData.debtFloor,
+        }
+      }),
+    ),
+)
+
 export function ManageVaultContainer({
   manageVault,
   vaultHistory,
@@ -152,9 +171,11 @@ export function ManageVaultContainer({
     }
   }, [])
 
+  const vaultHeaderProps = usePresenter(useAppContext().manageVault$(id), vaultHeaderPresenter)
+  if (!vaultHeaderProps) return null
   return (
     <>
-      <DefaultVaultHeader {...manageVault} header={t('vault.header', { ilk, id })} id={id} />
+      <DefaultVaultHeader {...vaultHeaderProps} header={t('vault.header', { ilk, id })} />
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <ManageVaultDetails {...manageVault} />

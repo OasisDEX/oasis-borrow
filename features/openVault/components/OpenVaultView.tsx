@@ -1,7 +1,7 @@
 import { trackingEvents } from 'analytics/analytics'
 import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
+import { DefaultVaultHeader, DefaultVaultHeaderProps } from 'components/vault/DefaultVaultHeader'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormVaultTypeSwitch, WithVaultFormStepIndicator } from 'components/vault/VaultForm'
@@ -10,8 +10,12 @@ import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
+import { usePresenter } from 'helpers/usePresenter'
+import { memoize } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
+import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
 import { Box, Container, Grid, Text } from 'theme-ui'
 
 import { OpenVaultState } from '../openVault'
@@ -90,6 +94,21 @@ function OpenVaultForm(props: OpenVaultState) {
   )
 }
 
+const vaultHeaderPresenter = memoize(
+  (openVault$: Observable<OpenVaultState>): Observable<DefaultVaultHeaderProps> =>
+    openVault$.pipe(
+      map((openVaultState: OpenVaultState) => {
+        return {
+          header: 'unused',
+          liquidationRatio: openVaultState.ilkData.liquidationRatio,
+          stabilityFee: openVaultState.ilkData.stabilityFee,
+          liquidationPenalty: openVaultState.ilkData.liquidationPenalty,
+          debtFloor: openVaultState.ilkData.debtFloor,
+        }
+      }),
+    ),
+)
+
 export function OpenVaultContainer(props: OpenVaultState) {
   const { ilk, clear } = props
   const { t } = useTranslation()
@@ -100,9 +119,14 @@ export function OpenVaultContainer(props: OpenVaultState) {
     }
   }, [])
 
+  const openVault$ = useAppContext().openVault$(ilk)
+  const vaultHeaderProps = usePresenter(openVault$, vaultHeaderPresenter)
+
+  if (!vaultHeaderProps) return null
+
   return (
     <>
-      <DefaultVaultHeader ilk={ilk} header={t('vault.open-vault', { ilk })} />
+      <DefaultVaultHeader {...vaultHeaderProps} header={t('vault.open-vault', { ilk })} />
       <Grid variant="vaultContainer">
         <Box>
           <OpenVaultDetails {...props} />

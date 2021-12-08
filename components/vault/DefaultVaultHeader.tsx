@@ -1,37 +1,13 @@
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
-import { OpenVaultState } from 'features/openVault/openVault'
-import { memoize } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
 
 import { formatCryptoBalance, formatPercent } from '../../helpers/formatters/format'
-import { usePresenter } from '../../helpers/usePresenter'
 import { VaultHeader, VaultIlkDetailsItem } from './VaultHeader'
 
 export interface DefaultVaultHeaderProps {
   header: string
   id?: BigNumber
-  ilk: string
-}
-
-const presenter = memoize(
-  (openVault$: Observable<OpenVaultState>): Observable<HeaderViewData> =>
-    openVault$.pipe(
-      map((openVaultState) => {
-        return {
-          liquidationRatio: openVaultState.ilkData.liquidationRatio,
-          stabilityFee: openVaultState.ilkData.stabilityFee,
-          liquidationPenalty: openVaultState.ilkData.liquidationPenalty,
-          debtFloor: openVaultState.ilkData.debtFloor,
-        }
-      }),
-    ),
-)
-
-type HeaderViewData = {
   liquidationRatio: BigNumber
   stabilityFee: BigNumber
   liquidationPenalty: BigNumber
@@ -39,15 +15,8 @@ type HeaderViewData = {
 }
 
 export function DefaultVaultHeader(props: DefaultVaultHeaderProps) {
-  const { id, header, ilk } = props
+  const { id, header, liquidationRatio, stabilityFee, liquidationPenalty, debtFloor } = props
   const { t } = useTranslation()
-
-  const openVault$ = useAppContext().openVault$(ilk)
-
-  const viewData = usePresenter<OpenVaultState, HeaderViewData>(openVault$, presenter)
-
-  if (!viewData) return null
-  const { liquidationRatio, stabilityFee, liquidationPenalty, debtFloor } = viewData
 
   return (
     <VaultHeader header={header} id={id}>
