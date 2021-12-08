@@ -55,6 +55,7 @@ const protoMain = {
   tokens: {
     ...getCollateralTokens(mainnetAddresses),
     GUNIV3DAIUSDC1: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC1']),
+    GUNIV3DAIUSDC2: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC2']),
     WETH: contractDesc(eth, mainnetAddresses['ETH']),
     DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
   } as Dictionary<ContractDesc>,
