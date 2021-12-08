@@ -17,8 +17,7 @@ import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Flex, Grid, Heading, Text, Textarea } from 'theme-ui'
 
 import { PendingTransactions, RecentTransactions } from './TransactionManagerView'
-import ENS, { getEnsAddress } from '@ensdomains/ensjs'
-
+import { ethers } from 'ethers'
 
 function DaiIndicator({ daiBalance }: { daiBalance: BigNumber | undefined }) {
   return (
@@ -48,7 +47,7 @@ export function AccountIndicator({ address }: { address: string }) {
   )
 }
 
-export function AccountButton() {
+export async function AccountButton() {
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const { accountData$, context$ } = useAppContext()
   const accountData = useObservable(accountData$)
@@ -56,17 +55,16 @@ export function AccountButton() {
   const { t } = useTranslation()
   const openModal = useModal()
 
-  let userWalletAddress;
+  const provider = new ethers.providers.JsonRpcProvider('https://eth-mainnet.alchemyapi.io/v2/IHJOWZSabgMvTt3kjXnZ0Urzo8FFweES')
+
+  let userWalletAddress = context.account;
   
   let ensName = null;
-  ({ name: ensName } = await ens.getName(userWalletAddress))
-  // Check to be sure the reverse record is correct. skip check if the name is null
-  if(ensName == null || userWalletAddress != await ens.name(ensName).getAddress()) {
-    ensName = null;
-    userWalletAddress = context.account;
-  } else {
-    userWalletAddress = ensName;
-  }
+
+  ensName = await provider.lookupAddress(userWalletAddress);
+  if (ensName !== null) {
+    userWalletAddress = ensName
+  }   
 
   if (context === undefined) {
     return null
