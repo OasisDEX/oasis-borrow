@@ -94,6 +94,7 @@ export function DefaultManageMultiplyVaultDetails(props: ManageMultiplyVaultStat
     marketPrice,
     totalGasSpentUSD,
     vault,
+    priceInfo,
   } = props
   const openModal = useModal()
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -134,6 +135,7 @@ export function DefaultManageMultiplyVaultDetails(props: ManageMultiplyVaultStat
             marketPrice,
             totalGasSpentUSD,
             vault,
+            priceInfo,
           }}
         />
       </Grid>

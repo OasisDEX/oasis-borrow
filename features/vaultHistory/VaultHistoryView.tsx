@@ -12,13 +12,14 @@ import {
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
+import { flatten } from 'lodash'
 import moment from 'moment'
 import { TFunction, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { interpolate } from '../../helpers/interpolate'
-import { VaultHistoryEvent } from './vaultHistory'
+import { splitEvents, VaultHistoryEvent } from './vaultHistory'
 
 function getHistoryEventTranslation(t: TFunction, event: VaultHistoryEvent) {
   return t(`history.${event.kind.toLowerCase()}`, {
@@ -101,7 +102,7 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
           </MultiplyHistoryEventDetailsItem>
         )}
         <MultiplyHistoryEventDetailsItem label={t('system.oracle-price')}>
-          {'oraclePrice' in event && '$' + formatFiatBalance(event.oraclePrice)}
+          {'oraclePrice' in event && '$' + formatFiatBalance(event.oraclePrice!)}
         </MultiplyHistoryEventDetailsItem>
         <MultiplyHistoryEventDetailsItem label={t('system.market-price')}>
           {'marketPrice' in event && '$' + formatFiatBalance(event.marketPrice)}
@@ -281,18 +282,20 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
   const context = useObservable(context$)
   const { t } = useTranslation()
 
+  const spitedEvents = flatten(vaultHistory.map(splitEvents))
+
   return (
     <Box>
       <Heading variant="header3" sx={{ mb: [4, 3] }}>
         {t('vault-history')}
       </Heading>
       <Grid gap={2}>
-        {vaultHistory.map((item) => (
+        {spitedEvents.map((item) => (
           <VaultHistoryItem
             item={item}
             etherscan={context?.etherscan}
             ethtx={context?.ethtx}
-            key={item.id}
+            key={`${item.id}${`-${item.splitId}` || ''}`}
           />
         ))}
       </Grid>

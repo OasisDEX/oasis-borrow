@@ -1,4 +1,3 @@
-import { calculatePNL } from 'helpers/multiply/calculations'
 import React from 'react'
 
 import { DefaultVaultHeader } from '../../../../../components/vault/DefaultVaultHeader'

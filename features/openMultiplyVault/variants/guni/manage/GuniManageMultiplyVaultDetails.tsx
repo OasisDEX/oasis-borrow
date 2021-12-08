@@ -83,6 +83,8 @@ export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) 
     afterNetValueUSD,
     currentPnL,
     totalGasSpentUSD,
+    vault,
+    priceInfo,
   } = props
   const afterCollRatioColor = 'onSuccess'
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
@@ -99,6 +101,8 @@ export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) 
             showAfterPill,
             currentPnL,
             totalGasSpentUSD,
+            vault,
+            priceInfo,
           }}
         />
       </Grid>

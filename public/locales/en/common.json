@@ -229,7 +229,6 @@
           "description": "These items help us to understand how the website performs and find where it can be improved."
         }
       }
-      
     }
   },
   "languages": "Languages",
@@ -318,6 +317,7 @@
       "net-value": "Net Value & P&L",
       "unrealised-pnl": "P&L",
       "based-on-price": "The current net value is calculated based on the market price of",
+      "based-on-price-lp": "The current net value is calculated based on the oracle price of",
       "collateral-value-in-vault": "Collateral value in vault",
       "dai-debt-in-vault": "Dai debt in vault",
       "collateral-value": "Collateral Value",

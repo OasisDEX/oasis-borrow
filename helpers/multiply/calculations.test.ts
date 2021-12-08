@@ -146,6 +146,6 @@ describe('Multiply calculations', () => {
 
     const pnl = calculatePNL(mockedMultiplyEvents, state().netValueUSD)
 
-    expect(pnl).to.be.deep.equal(new BigNumber('0.26777014925373134328'))
+    expect(pnl).to.be.deep.equal(new BigNumber('0.27552238805970149253'))
   })
 })

@@ -67,17 +67,22 @@ function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
   ) as VaultEvent
 }
 
-export function splitEvents(event: VaultEvent): VaultEvent | VaultEvent[] {
+type WithSplitMark<T> = T & { splitId?: number }
+
+export function splitEvents(
+  event: VaultHistoryEvent,
+): WithSplitMark<VaultHistoryEvent> | WithSplitMark<VaultHistoryEvent>[] {
   if (event.kind === 'DEPOSIT-GENERATE') {
     return [
       {
         ...event,
-        id: `${event.id}_a`,
         kind: 'GENERATE',
+        splitId: 0,
       },
       {
         ...event,
         kind: 'DEPOSIT',
+        splitId: 1,
       },
     ]
   }
@@ -85,12 +90,13 @@ export function splitEvents(event: VaultEvent): VaultEvent | VaultEvent[] {
     return [
       {
         ...event,
-        id: `${event.id}_a`,
         kind: 'WITHDRAW',
+        splitId: 0,
       },
       {
         ...event,
         kind: 'PAYBACK',
+        splitId: 1,
       },
     ]
   }
@@ -137,8 +143,7 @@ export function createVaultHistory$(
           flatten(
             returnedEvents
               .map((returnedEvent) => pickBy(returnedEvent, (value) => value !== null))
-              .map(parseBigNumbersFields)
-              .map(splitEvents),
+              .map(parseBigNumbersFields),
           ),
         ),
         map((events) => events.map((event) => ({ etherscan, token, ...event }))),
