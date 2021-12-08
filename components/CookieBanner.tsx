@@ -5,7 +5,7 @@ import React, { Fragment, MouseEventHandler, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Box, Button, Card, Container, Flex, Grid, Text } from 'theme-ui'
 
-import { COOKIE_NAMES, CookieName, LOCALSTORAGE_KEY, manageCookie } from '../analytics/common'
+import { COOKIE_NAMES, CookieName, manageCookie } from '../analytics/common'
 
 function Checkbox({
   checked,
@@ -35,21 +35,25 @@ function Checkbox({
 }
 
 type SelectedCookies = Record<CookieName, boolean>
-type SavedSettings = { accepted: boolean; enabledCookies: SelectedCookies }
+export type SavedSettings = { accepted: boolean; enabledCookies: SelectedCookies }
 
-function initSelectedCookies(defaultValue: boolean): SelectedCookies {
+export function initSelectedCookies(defaultValue: boolean): SelectedCookies {
   return COOKIE_NAMES.reduce((acc, cookieName) => ({ ...acc, [cookieName]: defaultValue }), {})
 }
 
-export function CookieBanner() {
+interface CookieBannerProps {
+  value: SavedSettings
+  setValue: (data: SavedSettings) => void
+}
+
+export function CookieBanner({ value, setValue }: CookieBannerProps) {
   const { t } = useTranslation()
+
   const [showSettings, setShowSettings] = useState(false)
   const [selectedCookies, setSelectedCookies] = useState(initSelectedCookies(true))
   const [settingsAreSaved, setSettingsAreSaved] = useState(false)
 
-  const trackingLocalState = localStorage.getItem(LOCALSTORAGE_KEY)
-
-  if (settingsAreSaved || trackingLocalState) {
+  if (settingsAreSaved || value) {
     return null
   }
 
@@ -67,7 +71,7 @@ export function CookieBanner() {
   }
 
   function saveSettings(settings: SavedSettings) {
-    localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(settings))
+    setValue(settings)
     setSettingsAreSaved(true)
   }
 

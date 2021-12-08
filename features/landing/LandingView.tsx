@@ -20,7 +20,7 @@ import { Box, Button, Card, Flex, Grid, Heading, Image, SxStyleProp, Text } from
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
-import { TypeformWidget } from './TypeformWidget'
+//import { TypeformWidget } from './TypeformWidget'
 
 const {
   publicRuntimeConfig: { apiHost },
@@ -320,7 +320,8 @@ export function LandingView() {
         </WithLoadingIndicator>
       </WithErrorHandler>
       <LandingCards />
-      <TypeformWidget />
+      {/* Typeform is hidden right now - but can be re-enabled later by uncommenting the Typeform related comments in this file.
+      <TypeformWidget />*/}
     </Grid>
   )
 }

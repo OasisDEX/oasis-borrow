@@ -29,12 +29,3 @@ export const adRollPixelScript = `
   })(window, document);
   adroll.track("pageView");
 `
-
-export function adRollScriptInsert() {
-  const script = document.createElement('script')
-
-  script.type = 'text/javascript'
-  script.innerText = adRollPixelScript
-
-  document.head.appendChild(script)
-}
