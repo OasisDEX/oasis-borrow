@@ -10,7 +10,7 @@ import { ModalProps, useModal } from 'helpers/modalHook'
 import { CommonVaultState, WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import React, { ReactNode } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { Box, Card, Divider, Flex, Grid, Heading, Text } from 'theme-ui'
 
 type CollRatioColor = 'primary' | 'onError' | 'onWarning' | 'onSuccess'
