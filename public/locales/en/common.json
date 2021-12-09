@@ -172,8 +172,12 @@
     "auction_finished_v2": "Auction <0>#{{auctionId}}</0> finished, <0>{{remainingCollateral}} {{token}}</0> remained",
     "auction_started": "Auction started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} Dai</0>",
     "auction_started_v2": "Auction <0>#{{auctionId}}</0> started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} Dai</0>",
+    "bought": "Bought",
     "deposit": "Deposited <0>{{collateralAmount}} {{token}}</0> into Vault",
+    "deposited": "Deposited",
     "generate": "Generated <0>{{daiAmount}}</0> Dai from Vault",
+    "exit-collateral": "Exit collateral",
+    "exit-dai": "Exit Dai",
     "migrate": "Vault migrated",
     "move_dest": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> Dai debt to the vault",
     "move_src": "Moved <0>{{collateralAmount}} {{token}}</0> and <0>{{daiAmount}}</0> Dai debt from the vault",
@@ -181,11 +185,13 @@
     "payback": "Payback <0>{{daiAmount}}</0> Dai to Vault",
     "transfer": "Vault given to <0>{{transferTo}}</0> by <0>{{transferFrom}}</0>",
     "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault",
-    "openmultiplyvault": "Open multiply Vault",
-    "increasemultiple": "Increased multiple, bought using Dai",
-    "decreasemultiple": "Decreased multiple, sold collateral",
-    "closevaultexitdai": "Closed Vault, exited to Dai",
-    "closevaultexitcollateral": "Closed Vault, exited to collateral"
+    "open_multiply_vault": "Open multiply Vault",
+    "increase_multiple": "Increased multiple",
+    "decrease_multiple": "Decreased multiple",
+    "close_vault_to_dai": "Closed Vault, exited to Dai",
+    "close_vault_to_collateral": "Closed Vault, exited to collateral",
+    "sold": "Sold",
+    "total-fees": "Total fees"
   },
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",
@@ -223,7 +229,6 @@
           "description": "These items help us to understand how the website performs and find where it can be improved."
         }
       }
-      
     }
   },
   "languages": "Languages",
@@ -309,7 +314,17 @@
       "next-price": "Next Price",
       "next-price-description": "Here you can see the next price that will go into effect in the Maker Protocol. Compare this with the Liquidation Price to see whether your vault will be liquidated on the next price update.\n{{nextPrice}}",
       "more-info-oracles": "More information on Maker oracles can be found <0>here</0>",
-      "net-value": "Net Value",
+      "net-value": "Net Value & P&L",
+      "unrealised-pnl": "P&L",
+      "based-on-price": "The current net value is calculated based on the market price of",
+      "based-on-price-lp": "The current net value is calculated based on the oracle price of",
+      "collateral-value-in-vault": "Collateral value in vault",
+      "dai-debt-in-vault": "Dai debt in vault",
+      "collateral-value": "Collateral Value",
+      "usd-value": "$ Value",
+      "gas-fees": "Gas fees",
+      "market-price-unavailable": "Market price temporally unavailable, please check later",
+      "formula": "The profit & loss is calculated by the following formula: P&L = ((Net value + Cumulative value of the withdrawals - Gas fees spent) - Cumulative value of the deposits) / Cumulative value of the deposits",
       "net-value-description": "The Net Value is calculated as the current value of the collateral in your vault minus the current debt.\nNote: This will not be exactly equal to the amount you will receive if you close your vault to Dai. This is due to fees applied when swapping collateral to Dai. The Net Value is calculated using the market price for the collateral using 1Inch.",
       "profit-and-loss": "P&L",
       "profit-and-loss-description": "TBD",
@@ -489,7 +504,9 @@
     "stability-fee": "Stability Fee",
     "type": "Type",
     "vault-dai-debt": "Vault Dai Debt",
-    "vault-id": "Vault ID"
+    "vault-id": "Vault ID",
+    "oracle-price": "Oracle Price",
+    "market-price": "Market Price"
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
@@ -599,6 +616,7 @@
   "view": "View",
   "view-more": "View more",
   "view-on-etherscan": "View on Etherscan",
+  "view-on-ethtx": "View on Ethtx",
   "waiting-approval": "Waiting for approval",
   "waiting-confirmation": "Waiting for transaction confirmation",
   "proxy-deployment-confirming": "{{proxyConfirmations}} of {{safeConfirmations}}: Proxy deployment confirmed",
