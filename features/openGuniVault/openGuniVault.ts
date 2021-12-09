@@ -219,7 +219,9 @@ function applyCalculations<S extends { ilkData: IlkData; depositAmount?: BigNumb
   state: S,
 ): S & GuniCalculations {
   // TODO: missing fees
-  const leveragedAmount = state.depositAmount ? state.depositAmount.div(state.ilkData.liquidationRatio.minus(one).plus(0.001)) : zero
+  const leveragedAmount = state.depositAmount
+    ? state.depositAmount.div(state.ilkData.liquidationRatio.minus(one).plus(0.001))
+    : zero
   const flAmount = state.depositAmount ? leveragedAmount.minus(state.depositAmount) : zero
 
   return {
