@@ -14,7 +14,7 @@ import {
   applyIsAllowanceStage,
   defaultAllowanceState,
 } from 'features/allowance/allowance'
-import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { TxStage } from 'features/openMultiplyVault/openMultiplyVault' // TODO: remove
 import {
   addProxyTransitions,
@@ -31,7 +31,17 @@ import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { curry } from 'ramda'
-import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
+import {
+  BehaviorSubject,
+  combineLatest,
+  EMPTY,
+  iif,
+  merge,
+  Observable,
+  of,
+  Subject,
+  throwError,
+} from 'rxjs'
 import {
   distinctUntilChanged,
   filter,
@@ -196,6 +206,8 @@ export type OpenGuniVaultState = OverrideHelper &
     netValueUSD: BigNumber
     minToTokenAmount: BigNumber
     requiredDebt?: BigNumber
+    currentPnL: BigNumber
+    totalGasSpentUSD: BigNumber
   } & HasGasEstimation
 
 interface GuniCalculations {
@@ -207,7 +219,9 @@ function applyCalculations<S extends { ilkData: IlkData; depositAmount?: BigNumb
   state: S,
 ): S & GuniCalculations {
   // TODO: missing fees
-  const leveragedAmount = state.depositAmount ? state.depositAmount.div(new BigNumber(0.021)) : zero
+  const leveragedAmount = state.depositAmount
+    ? state.depositAmount.div(state.ilkData.liquidationRatio.minus(one).plus(0.001))
+    : zero
   const flAmount = state.depositAmount ? leveragedAmount.minus(state.depositAmount) : zero
 
   return {
@@ -262,6 +276,7 @@ export function createOpenGuniVault$(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: ExchangeType,
   ) => Observable<Quote>,
   onEveryBlock$: Observable<number>,
   addGasEstimation$: AddGasEstimationFunction,
@@ -358,10 +373,12 @@ export function createOpenGuniVault$(
                       currentStep: 1,
                       minToTokenAmount: zero,
                       maxMultiple: one.div(ilkData.liquidationRatio.minus(one)),
+                      currentPnL: zero,
+                      totalGasSpentUSD: zero,
                       injectStateOverride,
                     }
 
-                    const stateSubject$ = new Subject<OpenGuniVaultState>()
+                    const stateSubject$ = new BehaviorSubject<OpenGuniVaultState>(initialState)
 
                     const gUniDataChanges$: Observable<GuniTxDataChange> = change$.pipe(
                       filter(
@@ -398,9 +415,10 @@ export function createOpenGuniVault$(
 
                             return exchangeQuote$(
                               tokenInfo.token1,
-                              SLIPPAGE,
+                              stateSubject$.value.slippage,
                               oneInchAmount,
                               'BUY_COLLATERAL',
+                              'lowerFeesExchange',
                             ).pipe(
                               switchMap((swap) => {
                                 if (swap.status !== 'SUCCESS') {

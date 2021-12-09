@@ -4,11 +4,13 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
-import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import { createMultiplyHistoryChange$ } from 'features/manageMultiplyVault/manageMultiplyHistory'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { GasEstimationStatus } from 'helpers/form'
-import { SLIPPAGE } from 'helpers/multiply/calculations'
+import { calculatePNL, SLIPPAGE } from 'helpers/multiply/calculations'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
@@ -88,9 +90,11 @@ function applyGuniCalculations(state: ManageMultiplyVaultState & GuniTxData) {
     sharedAmount0,
     sharedAmount1,
     minToTokenAmount,
+    vaultHistory,
   } = state
 
   const netValueUSD = lockedCollateralUSD.minus(debt)
+  const currentPnL = calculatePNL(vaultHistory, netValueUSD)
 
   return {
     ...state,
@@ -99,6 +103,7 @@ function applyGuniCalculations(state: ManageMultiplyVaultState & GuniTxData) {
     oazoFee: zero,
     loanFee: zero,
     fees: zero,
+    currentPnL,
     afterCloseToDai:
       sharedAmount0 && minToTokenAmount ? sharedAmount0.plus(minToTokenAmount).minus(debt) : zero,
   }
@@ -182,12 +187,14 @@ export function createManageGuniVault$(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: ExchangeType,
   ) => Observable<Quote>,
   addGasEstimation$: AddGasEstimationFunction,
   getProportions$: (
     gUniAmount: BigNumber,
     token: string,
   ) => Observable<{ sharedAmount0: BigNumber; sharedAmount1: BigNumber }>,
+  vaultMultiplyHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
   return context$.pipe(
@@ -255,6 +262,7 @@ export function createManageGuniVault$(
                     initialTotalSteps,
                     totalSteps: initialTotalSteps,
                     currentStep: 1,
+                    vaultHistory: [],
                     clear: () => change({ kind: 'clear' }),
                     gasEstimationStatus: GasEstimationStatus.unset,
                     injectStateOverride,
@@ -270,6 +278,7 @@ export function createManageGuniVault$(
                         SLIPPAGE,
                         sharedAmount1.minus(0.01),
                         'SELL_COLLATERAL',
+                        'lowerFeesExchange',
                       ).pipe(
                         map((swap) => {
                           if (swap.status !== 'SUCCESS') {
@@ -298,6 +307,7 @@ export function createManageGuniVault$(
                     balanceInfoChange$(balanceInfo$, vault.token, account),
                     createIlkDataChange$(ilkData$, vault.ilk),
                     createVaultChange$(vault$, id, context.chainId),
+                    createMultiplyHistoryChange$(vaultMultiplyHistory$, id),
                     guniDataChange$,
                   )
 

@@ -56,6 +56,7 @@ const protoMain = {
   tokens: {
     ...getCollateralTokens(mainnetAddresses),
     GUNIV3DAIUSDC1: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC1']),
+    GUNIV3DAIUSDC2: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC2']),
     WETH: contractDesc(eth, mainnetAddresses['ETH']),
     DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
   } as Dictionary<ContractDesc>,
@@ -78,20 +79,24 @@ const protoMain = {
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
   automationBot: contractDesc(automationBot, '0x'), // TODO: add address
   serviceRegistry: '0x', // TODO: add address
-  guniProxyActions: contractDesc(guniProxyActions, '0x64b0010f6b90d0ae0bf2587ba47f2d3437487447'),
+  guniProxyActions: contractDesc(guniProxyActions, '0xed3a954c0adfc8e3f85d92729c051ff320648e30'),
   guniResolver: '0x0317650Af6f184344D7368AC8bB0bEbA5EDB214a',
   guniRouter: '0x14E6D67F824C3a7b4329d3228807f8654294e4bd',
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
   ),
-  exchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
+  defaultExchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
   noFeesExchange: contractDesc(exchange, '0x99e4484dac819aa74b347208752306615213d324'),
+  lowerFeesExchange: contractDesc(exchange, '0x12dcc776525c35836b10026929558208d1258b91'),
   fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
   etherscan: {
     url: 'https://etherscan.io',
     apiUrl: 'https://api.etherscan.io/api',
     apiKey: etherscanAPIKey || '',
+  },
+  ethtx: {
+    url: 'https://ethtx.info/mainnet',
   },
   taxProxyRegistries: ['0xaa63c8683647ef91b3fdab4b4989ee9588da297b'],
   dssProxyActionsDsr: contractDesc(
@@ -148,13 +153,17 @@ const kovan: NetworkConfig = {
   serviceRegistry: '0x', // TODO: add address
   guniResolver: '0x',
   guniRouter: '0x',
-  exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  defaultExchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  lowerFeesExchange: contractDesc(exchange, '0x0'),
   noFeesExchange: contractDesc(exchange, '0x0'),
   fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
   etherscan: {
     url: 'https://kovan.etherscan.io',
     apiUrl: 'https://api-kovan.etherscan.io/api',
     apiKey: etherscanAPIKey || '',
+  },
+  ethtx: {
+    url: 'https://ethtx.info/kovan',
   },
   taxProxyRegistries: [kovanAddresses.PROXY_REGISTRY],
   dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, kovanAddresses.PROXY_ACTIONS_DSR),
@@ -206,7 +215,8 @@ const goerli: NetworkConfig = {
   automationBot: contractDesc(automationBot, '0x62fab0FfcC439c75a7d31F94f5B34bE31F3e08E7'),
   serviceRegistry: '0x2a49Eae5CCa3f050eBEC729Cf90CC910fADAf7A2', // TODO: add address
   // Currently this is not supported on Goerli - no deployed contract
-  exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''),
+  defaultExchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''),
+  lowerFeesExchange: contractDesc(exchange, '0x0'),
   noFeesExchange: contractDesc(exchange, '0x0'),
   // Currently this is not supported on Goerli - no deployed contract
   fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
@@ -214,6 +224,9 @@ const goerli: NetworkConfig = {
     url: 'https://goerli.etherscan.io',
     apiUrl: 'https://api-goerli.etherscan.io/api',
     apiKey: etherscanAPIKey || '',
+  },
+  ethtx: {
+    url: 'https://ethtx.info/goerli',
   },
   taxProxyRegistries: [goerliAddresses.PROXY_REGISTRY],
   dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, goerliAddresses.PROXY_ACTIONS_DSR),
@@ -237,7 +250,7 @@ const hardhat: NetworkConfig = {
       '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
   ),
   // guniProxyActions: contractDesc(guniProxyActions, '0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25'),
-  exchange: contractDesc(
+  defaultExchange: contractDesc(
     exchange,
     getConfig()?.publicRuntimeConfig?.exchangeAddress ||
       '0x4C4a2f8c81640e47606d3fd77B353E87Ba015584',

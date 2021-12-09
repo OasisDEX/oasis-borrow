@@ -44,7 +44,7 @@ export function createGeneralManageVault$(
                 map((state) => ({ state, type })),
               )
             case VaultType.Multiply:
-              if (vault.token === 'GUNIV3DAIUSDC1') {
+              if (vault.token === 'GUNIV3DAIUSDC1' || vault.token === 'GUNIV3DAIUSDC2') {
                 return manageGuniVault$(id).pipe(
                   map((state) => ({ ...state, toggleVaultType: () => {} })),
                   map((state) => ({ state, type })),
