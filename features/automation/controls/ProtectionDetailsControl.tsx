@@ -92,6 +92,7 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
         customLoader={<VaultContainerSpinner />}
       >
         {([triggersData, vaultData, collateralPrices, ilkDataList]) => {
+          console.log("rendering ProtDetailsControl");
           return renderLayout(
             extractSLData(triggersData),
             vaultData,

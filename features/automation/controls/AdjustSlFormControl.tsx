@@ -161,10 +161,10 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     const closeProps: PickCloseStateProps = {
       optionNames: validOptions,
       onclickHandler: (optionName: string) => {
-        setCloseToCollateral(optionName === validOptions[1])
+        setCloseToCollateral(optionName === validOptions[0])
         dispatch({
           type: 'close-type',
-          toCollateral: optionName === validOptions[1],
+          toCollateral: optionName === validOptions[0],
         })
       },
       isCollateralActive: collateralActive,
