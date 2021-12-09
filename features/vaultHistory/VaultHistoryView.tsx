@@ -1,17 +1,25 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { formatAddress, formatCryptoBalance, formatFiatBalance } from 'helpers/formatters/format'
+import { WithArrow } from 'components/WithArrow'
+import {
+  formatAddress,
+  formatCryptoBalance,
+  formatFiatBalance,
+  formatPercent,
+} from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
+import { flatten } from 'lodash'
 import moment from 'moment'
 import { TFunction, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { interpolate } from '../../helpers/interpolate'
-import { VaultHistoryEvent } from './vaultHistory'
+import { splitEvents, VaultHistoryEvent } from './vaultHistory'
 
 function getHistoryEventTranslation(t: TFunction, event: VaultHistoryEvent) {
   return t(`history.${event.kind.toLowerCase()}`, {
@@ -38,18 +46,14 @@ function getHistoryEventTranslation(t: TFunction, event: VaultHistoryEvent) {
   })
 }
 
-function MultiplyHistoryEventDetailsItem({
-  label,
-  children,
-  rightItem,
-}: { label: string; rightItem?: boolean } & WithChildren) {
+function MultiplyHistoryEventDetailsItem({ label, children }: { label: string } & WithChildren) {
   return (
     <Flex>
       <Text
         sx={{
           textAlign: 'right',
-          minWidth: ['9.5em', null, null, rightItem ? '9.5em' : '6em'],
-          pr: 3,
+          minWidth: ['9.5em', null, null, '9.5em'],
+          pr: [2, 3],
           color: 'text.subtitle',
         }}
       >
@@ -63,64 +67,140 @@ function MultiplyHistoryEventDetailsItem({
 function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
   const { t } = useTranslation()
 
+  const closeEvent =
+    event.kind === 'CLOSE_VAULT_TO_DAI' || event.kind === 'CLOSE_VAULT_TO_COLLATERAL'
+
   return (
-    <Flex
+    <Grid
+      gap={2}
       sx={{
         mb: 3,
-        maxWidth: '460px',
-        justifyContent: 'space-between',
-        flexDirection: ['column', null, null, 'row'],
+        alignItems: 'flex-start',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
       }}
     >
-      <Grid
-        gap={2}
-        sx={{
-          mr: [0, null, null, 4],
-          mb: [2, null, null, 0],
-        }}
-      >
-        <MultiplyHistoryEventDetailsItem label={t('amount')}>
-          {'collateralAmount' in event && formatCryptoBalance(event.collateralAmount)} {event.token}
+      <Grid gap={2}>
+        {event.kind === 'OPEN_MULTIPLY_VAULT' && (
+          <>
+            <MultiplyHistoryEventDetailsItem label={t('history.deposited')}>
+              {'depositCollateral' in event && formatCryptoBalance(event.depositCollateral)}{' '}
+              {event.token}
+            </MultiplyHistoryEventDetailsItem>
+            <MultiplyHistoryEventDetailsItem label={t('history.bought')}>
+              {'bought' in event && formatCryptoBalance(event.bought)} {event.token}
+            </MultiplyHistoryEventDetailsItem>
+          </>
+        )}
+        {event.kind === 'INCREASE_MULTIPLE' && (
+          <MultiplyHistoryEventDetailsItem label={t('history.bought')}>
+            {'bought' in event && formatCryptoBalance(event.bought)} {event.token}
+          </MultiplyHistoryEventDetailsItem>
+        )}
+        {(event.kind === 'DECREASE_MULTIPLE' || closeEvent) && (
+          <MultiplyHistoryEventDetailsItem label={t('history.sold')}>
+            {'sold' in event && formatCryptoBalance(event.sold)} {event.token}
+          </MultiplyHistoryEventDetailsItem>
+        )}
+        <MultiplyHistoryEventDetailsItem label={t('system.oracle-price')}>
+          {'oraclePrice' in event && '$' + formatFiatBalance(event.oraclePrice!)}
         </MultiplyHistoryEventDetailsItem>
-        <MultiplyHistoryEventDetailsItem label={t('price')}>
-          {'oraclePrice' in event && '$' + formatFiatBalance(event.oraclePrice)}
+        <MultiplyHistoryEventDetailsItem label={t('system.market-price')}>
+          {'marketPrice' in event && '$' + formatFiatBalance(event.marketPrice)}
         </MultiplyHistoryEventDetailsItem>
-        <MultiplyHistoryEventDetailsItem label={t('system.collateral')}>
-          {'collateralTotal' in event && formatCryptoBalance(event.collateralTotal)} {event.token}
-        </MultiplyHistoryEventDetailsItem>
-        <MultiplyHistoryEventDetailsItem label={t('multiple')}>
-          {'multiple' in event && event.multiple.gt(zero) ? `${event.multiple.toFixed(2)}x` : '-'}
-        </MultiplyHistoryEventDetailsItem>
+
+        {!closeEvent && (
+          <>
+            <MultiplyHistoryEventDetailsItem label={t('system.collateral')}>
+              {'beforeLockedCollateral' in event &&
+                event.beforeLockedCollateral.gt(0) &&
+                formatCryptoBalance(event.beforeLockedCollateral) + `->`}
+              {'lockedCollateral' in event && formatCryptoBalance(event.lockedCollateral)}{' '}
+              {event.token}
+            </MultiplyHistoryEventDetailsItem>
+            <MultiplyHistoryEventDetailsItem label={t('multiple')}>
+              {'beforeMultiple' in event &&
+                event.beforeMultiple.gt(0) &&
+                formatCryptoBalance(event.beforeMultiple) + `x` + `->`}
+              {'multiple' in event && event.multiple.gt(zero)
+                ? `${event.multiple.toFixed(2)}x`
+                : '-'}
+            </MultiplyHistoryEventDetailsItem>
+          </>
+        )}
+        {event.kind === 'CLOSE_VAULT_TO_DAI' && (
+          <MultiplyHistoryEventDetailsItem label={t('history.exit-dai')}>
+            {'exitDai' in event && formatCryptoBalance(event.exitDai)} DAI
+          </MultiplyHistoryEventDetailsItem>
+        )}
+        {event.kind === 'CLOSE_VAULT_TO_COLLATERAL' && (
+          <MultiplyHistoryEventDetailsItem label={t('history.exit-collateral')}>
+            {'exitCollateral' in event && formatCryptoBalance(event.exitCollateral)} {event.token}
+          </MultiplyHistoryEventDetailsItem>
+        )}
       </Grid>
       <Grid gap={2}>
-        <MultiplyHistoryEventDetailsItem rightItem label={t('outstanding-debt')}>
-          {'outstandingDebt' in event && formatCryptoBalance(event.outstandingDebt)} DAI
+        <MultiplyHistoryEventDetailsItem label={t('outstanding-debt')}>
+          {'beforeDebt' in event &&
+            event.beforeDebt.gt(0) &&
+            formatCryptoBalance(event.beforeDebt.times(event.rate)) + `DAI` + `->`}
+          {'debt' in event && formatCryptoBalance(event.debt.times(event.rate))} DAI
         </MultiplyHistoryEventDetailsItem>
-        <MultiplyHistoryEventDetailsItem rightItem label={t('net-value')}>
-          {'netValueUSD' in event && '$' + formatFiatBalance(event.netValueUSD)}
-        </MultiplyHistoryEventDetailsItem>
-        <MultiplyHistoryEventDetailsItem rightItem label={t('system.liquidation-price')}>
-          {'liquidationPrice' in event && '$' + formatFiatBalance(event.liquidationPrice)}
-        </MultiplyHistoryEventDetailsItem>
-        <MultiplyHistoryEventDetailsItem rightItem label={t('fees')}>
-          {'fees' in event && event.fees.gt(zero) ? '$' + formatFiatBalance(event.fees) : '-'}
+        {!closeEvent && (
+          <>
+            <MultiplyHistoryEventDetailsItem label={t('system.coll-ratio')}>
+              {'beforeCollateralizationRatio' in event &&
+                event.beforeCollateralizationRatio.gt(0) &&
+                formatPercent(event.beforeCollateralizationRatio.times(100), {
+                  precision: 2,
+                  roundMode: BigNumber.ROUND_DOWN,
+                }) + `->`}
+              {'collateralizationRatio' in event &&
+                formatPercent(event.collateralizationRatio.times(100), {
+                  precision: 2,
+                  roundMode: BigNumber.ROUND_DOWN,
+                })}
+            </MultiplyHistoryEventDetailsItem>
+            <MultiplyHistoryEventDetailsItem label={t('net-value')}>
+              {'netValue' in event && '$' + formatFiatBalance(event.netValue)}
+            </MultiplyHistoryEventDetailsItem>
+            <MultiplyHistoryEventDetailsItem label={t('system.liquidation-price')}>
+              {'beforeLiquidationPrice' in event &&
+                event.beforeLiquidationPrice.gt(0) &&
+                `$` + formatFiatBalance(event.beforeLiquidationPrice) + `->`}
+              {'liquidationPrice' in event && '$' + formatFiatBalance(event.liquidationPrice)}
+            </MultiplyHistoryEventDetailsItem>
+          </>
+        )}
+        <MultiplyHistoryEventDetailsItem label={t('history.total-fees')}>
+          {'totalFee' in event && event.totalFee.gt(zero)
+            ? '$' + formatFiatBalance(event.totalFee)
+            : '-'}
         </MultiplyHistoryEventDetailsItem>
       </Grid>
-    </Flex>
+    </Grid>
   )
 }
 
 function VaultHistoryItem({
   item,
   etherscan,
+  ethtx,
 }: {
   item: VaultHistoryEvent
   etherscan?: { url: string }
+  ethtx?: { url: string }
 }) {
   const { t } = useTranslation()
   const [opened, setOpened] = useState(false)
   const translation = getHistoryEventTranslation(t, item)
   const date = moment(item.timestamp)
+
+  const isMultiplyEvent =
+    item.kind === 'OPEN_MULTIPLY_VAULT' ||
+    item.kind === 'INCREASE_MULTIPLE' ||
+    item.kind === 'DECREASE_MULTIPLE' ||
+    item.kind === 'CLOSE_VAULT_TO_DAI' ||
+    item.kind === 'CLOSE_VAULT_TO_COLLATERAL'
 
   return (
     <Card
@@ -129,10 +209,12 @@ function VaultHistoryItem({
         border: 'lightMuted',
         boxShadow: 'vaultHistoryItem',
         fontSize: 2,
-        display: item.isHidden ? 'none' : 'grid',
+        display: 'grid',
+        p: [2, 3],
+        minWidth: ['100%', '400px', '475px'],
       }}
     >
-      <Box sx={{ p: 2, cursor: 'pointer' }} onClick={() => setOpened(!opened)}>
+      <Box sx={{ p: [1, 2], cursor: 'pointer' }} onClick={() => setOpened(!opened)}>
         <Flex
           sx={{
             justifyContent: 'space-between',
@@ -170,15 +252,25 @@ function VaultHistoryItem({
         </Flex>
       </Box>
       {opened && (
-        <Box p={2}>
-          {item.isMultiply && <MultiplyHistoryEventDetails {...item} />}
-          <AppLink
-            variant="links.navFooter"
-            sx={{ fontSize: 2 }}
-            href={`${etherscan?.url}/tx/${item.hash}`}
-          >
-            {t('view-on-etherscan')}
-          </AppLink>
+        <Box p={[1, 2]}>
+          {isMultiplyEvent && <MultiplyHistoryEventDetails {...item} />}
+          <Flex>
+            <AppLink sx={{ textDecoration: 'none' }} href={`${etherscan?.url}/tx/${item.hash}`}>
+              <WithArrow sx={{ color: 'link', mr: 4, fontWeight: 'semiBold' }}>
+                {t('view-on-etherscan')}
+              </WithArrow>
+            </AppLink>
+            {ethtx && (
+              <AppLink
+                sx={{ textDecoration: 'none', fontWeight: 'semiBold' }}
+                href={`${ethtx.url}/${item.hash}`}
+              >
+                <WithArrow sx={{ color: 'link', fontWeight: 'semiBold' }}>
+                  {t('view-on-ethtx')}
+                </WithArrow>
+              </AppLink>
+            )}
+          </Flex>
         </Box>
       )}
     </Card>
@@ -190,14 +282,21 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
   const context = useObservable(context$)
   const { t } = useTranslation()
 
+  const spitedEvents = flatten(vaultHistory.map(splitEvents))
+
   return (
     <Box>
       <Heading variant="header3" sx={{ mb: [4, 3] }}>
         {t('vault-history')}
       </Heading>
       <Grid gap={2}>
-        {vaultHistory.map((item) => (
-          <VaultHistoryItem item={item} etherscan={context?.etherscan} key={item.id} />
+        {spitedEvents.map((item) => (
+          <VaultHistoryItem
+            item={item}
+            etherscan={context?.etherscan}
+            ethtx={context?.ethtx}
+            key={`${item.id}${`-${item.splitId}` || ''}`}
+          />
         ))}
       </Grid>
     </Box>
