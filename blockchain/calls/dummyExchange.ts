@@ -7,8 +7,9 @@ import { DummyExchange } from 'types/web3-v1-contracts/dummy-exchange'
 import { CallDef } from './callsHelpers'
 
 export const setExchangePrice: CallDef<{ price: BigNumber }, any> = {
-  call: (_, { contract, exchange }) => {
-    return contract<DummyExchange>(contractDesc(dummyExchange, exchange.address)).methods.setPrice
+  call: (_, { contract, defaultExchange }) => {
+    return contract<DummyExchange>(contractDesc(dummyExchange, defaultExchange.address)).methods
+      .setPrice
   },
   prepareArgs: ({ price }: { price: BigNumber }) => [amountToWei(price, 'DAI').toFixed(0)],
 }
