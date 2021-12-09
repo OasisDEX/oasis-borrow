@@ -605,7 +605,7 @@ export function VaultDetailsCardCurrentPrice(props: CommonVaultState) {
     },
   } = props
   const openModal = useModal()
-  const priceChangeColor = getPriceChangeColor(props)
+  const priceChangeColor = getPriceChangeColor({ collateralPricePercentageChange })
 
   const currentPrice = `$${formatAmount(currentCollateralPrice, 'USD')}`
   const nextPriceWithChange = (
