@@ -56,7 +56,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                 ),
                 'GUNIV3DAIUSDC2-A': (
                   <GuniManageMultiplyVaultCointainer
-                    vaultHistory={multiplyHistory}
+                    vaultHistory={vaultMultiplyHistory}
                     manageVault={generalManageVault.state}
                   />
                 ),
