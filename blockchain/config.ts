@@ -3,6 +3,7 @@ import { keyBy } from 'lodash'
 import getConfig from 'next/config'
 import { Dictionary } from 'ts-essentials'
 
+import { Abi } from '../helpers/types'
 import * as eth from './abi/ds-eth-token.json'
 import * as dsProxyFactory from './abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from './abi/ds-proxy-registry.json'
@@ -34,7 +35,7 @@ import { default as goerliAddresses } from './addresses/goerli.json'
 import { default as kovanAddresses } from './addresses/kovan.json'
 import { default as mainnetAddresses } from './addresses/mainnet.json'
 
-export function contractDesc(abi: any, address: string): ContractDesc {
+export function contractDesc(abi: Abi[], address: string): ContractDesc {
   return { abi, address }
 }
 

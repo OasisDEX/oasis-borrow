@@ -2,11 +2,11 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 import React from 'react'
-import { useThemeUI } from 'theme-ui'
+
+import { useTheme } from '../theme/useThemeUI'
 
 export function HeadTags() {
-  const { theme } = useThemeUI()
-  // @ts-ignore
+  const { theme } = useTheme()
   const fontLinkHref = theme.metadata && theme.metadata.fontLinkHref
 
   return (

@@ -8,6 +8,7 @@ import { transactionToX } from 'helpers/form'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { scan, startWith, switchMap } from 'rxjs/operators'
 
+import { TxError } from '../../helpers/types'
 import { Context } from '@oasisdex/transactions/lib/src/callHelpersContextParametrized'
 
 export type ReclaimChange =
@@ -18,7 +19,7 @@ export type ReclaimChange =
     }
   | {
       kind: 'reclaimFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'reclaimSuccess'

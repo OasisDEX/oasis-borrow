@@ -18,14 +18,20 @@ export class JsonRpcBatchProvider extends providers.JsonRpcProvider {
       method: method,
       params: params,
       id: this._nextId++,
-      jsonrpc: '2.0',
+      jsonrpc: '2.0' as '2.0',
     }
 
     if (this._pendingBatch == null) {
       this._pendingBatch = []
     }
 
-    const inflightRequest: any = { request, resolve: null, reject: null }
+    interface InflightRequest {
+      request: typeof request
+      resolve: (value: unknown) => void
+      reject: (value: unknown) => void
+    }
+
+    const inflightRequest: InflightRequest = { request, resolve: () => null, reject: () => null }
 
     const promise = new Promise((resolve, reject) => {
       inflightRequest.resolve = resolve

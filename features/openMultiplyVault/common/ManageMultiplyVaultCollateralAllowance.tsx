@@ -75,7 +75,7 @@ export function ManageMultiplyVaultCollateralAllowance({
                 value={
                   collateralAllowanceAmount && isCustom
                     ? formatAmount(collateralAllowanceAmount, getToken(token).symbol)
-                    : null
+                    : undefined
                 }
                 mask={createNumberMask({
                   allowDecimal: true,

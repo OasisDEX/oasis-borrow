@@ -45,6 +45,7 @@ import {
 
 import { combineApplyChanges } from '../../helpers/pipelines/combineApply'
 import { combineTransitions } from '../../helpers/pipelines/combineTransitions'
+import { TxError } from '../../helpers/types'
 import {
   VaultErrorMessage,
   VaultWarningMessage,
@@ -94,7 +95,7 @@ interface StageState {
 }
 
 interface VaultTxInfo {
-  txError?: any
+  txError?: TxError
   etherscan?: string
   safeConfirmations: number
 }
