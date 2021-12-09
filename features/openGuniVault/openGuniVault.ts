@@ -14,7 +14,7 @@ import {
   applyIsAllowanceStage,
   defaultAllowanceState,
 } from 'features/allowance/allowance'
-import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { TxStage } from 'features/openMultiplyVault/openMultiplyVault' // TODO: remove
 import {
   addProxyTransitions,
@@ -219,7 +219,9 @@ function applyCalculations<S extends { ilkData: IlkData; depositAmount?: BigNumb
   state: S,
 ): S & GuniCalculations {
   // TODO: missing fees
-  const leveragedAmount = state.depositAmount ? state.depositAmount.div(new BigNumber(0.021)) : zero
+  const leveragedAmount = state.depositAmount
+    ? state.depositAmount.div(state.ilkData.liquidationRatio.minus(one).plus(0.001))
+    : zero
   const flAmount = state.depositAmount ? leveragedAmount.minus(state.depositAmount) : zero
 
   return {
@@ -274,6 +276,7 @@ export function createOpenGuniVault$(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: ExchangeType,
   ) => Observable<Quote>,
   onEveryBlock$: Observable<number>,
   addGasEstimation$: AddGasEstimationFunction,
@@ -415,6 +418,7 @@ export function createOpenGuniVault$(
                               stateSubject$.value.slippage,
                               oneInchAmount,
                               'BUY_COLLATERAL',
+                              'lowerFeesExchange',
                             ).pipe(
                               switchMap((swap) => {
                                 if (swap.status !== 'SUCCESS') {

@@ -54,6 +54,12 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                     manageVault={generalManageVault.state}
                   />
                 ),
+                'GUNIV3DAIUSDC2-A': (
+                  <GuniManageMultiplyVaultCointainer
+                    vaultHistory={vaultMultiplyHistory}
+                    manageVault={generalManageVault.state}
+                  />
+                ),
               }
               return (
                 <Container variant="vaultPageContainer">

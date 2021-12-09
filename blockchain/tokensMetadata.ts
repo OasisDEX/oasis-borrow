@@ -459,6 +459,23 @@ const tokens = [
     token1: 'USDC',
   },
   {
+    symbol: 'GUNIV3DAIUSDC2',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'GUNIV3DAIUSDC2',
+    icon: 'guniv3_dai_usdc1_circles_color',
+    iconCircle: 'guniv3_dai_usdc1_circles_color',
+    iconColor: 'guniv3_dai_usdc1_circles_color',
+    color: '#ff077d',
+    background:
+      'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
+    tags: ['lp-token'],
+    token0: 'DAI',
+    token1: 'USDC',
+  },
+  {
     symbol: 'MATIC',
     precision: 18,
     digits: 5,
@@ -556,4 +573,4 @@ export const ALLOWED_MULTIPLY_TOKENS = tokens
   )
   .map((token) => token.symbol)
 
-export const ONLY_MULTIPLY_TOKENS = ['GUNIV3DAIUSDC1']
+export const ONLY_MULTIPLY_TOKENS = ['GUNIV3DAIUSDC1', 'GUNIV3DAIUSDC2']
