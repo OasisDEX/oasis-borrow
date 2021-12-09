@@ -1,7 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
-import { Modal, ModalCloseIcon } from 'components/Modal'
-import { PriceInfo } from 'features/shared/priceInfo'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
