@@ -9,8 +9,9 @@ import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/format
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { CommonVaultState, WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
+import { Trans } from 'next-i18next'
 import React, { ReactNode } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { Box, Card, Divider, Flex, Grid, Heading, Text } from 'theme-ui'
 
 type CollRatioColor = 'primary' | 'onError' | 'onWarning' | 'onSuccess'
