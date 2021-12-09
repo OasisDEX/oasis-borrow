@@ -2,6 +2,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import React from 'react'
 import { Container } from 'theme-ui'
 
+import { GuniStateContextProvider } from '../../../../../components/GuniStateProvider'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../../../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../../../../helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from '../../../../../helpers/observableHook'
@@ -31,9 +32,11 @@ export function GuniOpenVaultView({ ilk }: { ilk: string }) {
     <WithErrorHandler error={openVaultWithError.error}>
       <WithLoadingIndicator {...openVaultWithError} customLoader={<VaultContainerSpinner />}>
         {(openVault) => (
-          <Container variant="vaultPageContainer">
-            <GuniOpenMultiplyVaultContainer {...openVault} />
-          </Container>
+          <GuniStateContextProvider value={openVault}>
+            <Container variant="vaultPageContainer">
+              <GuniOpenMultiplyVaultContainer {...openVault} />
+            </Container>
+          </GuniStateContextProvider>
         )}
       </WithLoadingIndicator>
     </WithErrorHandler>

@@ -1,17 +1,23 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { useGuniState } from '../../../../components/GuniStateProvider'
 import { DefaultVaultHeaderProps } from '../../../../components/vault/DefaultVaultHeader'
 import { VaultHeader, VaultIlkDetailsItem } from '../../../../components/vault/VaultHeader'
 import { formatCryptoBalance, formatPercent } from '../../../../helpers/formatters/format'
 
 export function GuniVaultHeader(props: DefaultVaultHeaderProps) {
-  const {
-    ilkData: { stabilityFee, debtFloor },
-    id,
-    header,
-  } = props
+  const { id, header } = props
   const { t } = useTranslation()
+
+  const { stabilityFee, debtFloor } = useGuniState((state) => ({
+    stabilityFee: state.ilkData.stabilityFee,
+    debtFloor: state.ilkData.debtFloor,
+  }))
+
+  console.log(stabilityFee.toNumber())
+  console.log(debtFloor.toNumber())
+
   return (
     <VaultHeader header={header} id={id}>
       <VaultIlkDetailsItem
