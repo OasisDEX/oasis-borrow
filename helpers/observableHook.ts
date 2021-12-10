@@ -1,18 +1,19 @@
+import { UiChangesTypes } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { useEffect, useReducer, useState } from 'react'
 import { Observable } from 'rxjs'
 
 type Unpack<T extends Observable<any>> = T extends Observable<infer U> ? U : never
 
-export function useUIChanges<S, A>(
-  handler: (state: S, action: A) => S,
-  initial: S,
-  uiSubjectName: string,
+export function useUIChanges<S extends keyof UiChangesTypes, A>(
+  handler: (state: UiChangesTypes[S], action: A) => UiChangesTypes[S],
+  initial: UiChangesTypes[S],
+  uiSubjectName: S,
 ): React.Dispatch<A> {
   const { uiChanges } = useAppContext()
 
-  function publishUIChange<T>(props: T) {
-    uiChanges.publish<T>(uiSubjectName, props)
+  function publishUIChange(props: UiChangesTypes[typeof uiSubjectName]) {
+    uiChanges.publish(uiSubjectName, props)
   }
 
   const [uiState, dispatch] = useReducer(handler, initial)
