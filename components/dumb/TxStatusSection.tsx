@@ -1,4 +1,5 @@
 import { TxMeta, TxState } from '@oasisdex/transactions'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { TxStatusCardProgress } from '../vault/TxStatusCard'
@@ -8,13 +9,14 @@ export interface TxStatusSectionProps<A extends TxMeta> {
 }
 
 export function TxStatusSection<A extends TxMeta>(props: TxStatusSectionProps<A>) {
+  const { t } = useTranslation()
   return (
     <>
       {!props.txState ? (
         <></>
       ) : (
         <TxStatusCardProgress
-          text={`Transaction is processing ${props.txState?.status.toString()}`}
+          text={t('waiting-confirmation')}
           etherscan={''}
           txHash={(props.txState as any).txHash}
         />
