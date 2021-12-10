@@ -46,7 +46,7 @@ function renderLayout(
 }
 
 export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
-  const uiSubjectName = 'AdjustSlForm'
+  const uiSubjectName = 'AdjustSlForm' as const
   const {
     automationTriggersData$,
     vault$,
@@ -63,7 +63,7 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
 
   useEffect(() => {
     console.log('Subscribing to uiChanges')
-    const uiChanges$ = uiChanges.subscribe<AddFormChange>(uiSubjectName)
+    const uiChanges$ = uiChanges.subscribe(uiSubjectName)
 
     const subscription = uiChanges$.subscribe((value) => {
       lastUIStateSetter(value)

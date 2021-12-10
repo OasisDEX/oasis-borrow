@@ -48,6 +48,7 @@ import {
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
+import { AddFormChange } from 'features/automation/common/UITypes/AddFormChange'
 import { createAutomationTriggersData } from 'features/automation/triggers/AutomationTriggersData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
@@ -124,6 +125,10 @@ export type TxData =
   | AutomationBotAddTriggerData
   | CloseGuniMultiplyData
 
+export type UiChangesTypes = {
+  AdjustSlForm: AddFormChange
+}
+
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
   sendWithGasEstimation: SendTransactionFunction<TxData>
@@ -163,8 +168,8 @@ function createTxHelpers$(
 }
 
 export type UIChanges = {
-  subscribe: <T>(sub: string) => Observable<T>
-  publish: <T>(sub: string, event: T) => void
+  subscribe: <T extends keyof UiChangesTypes>(sub: T) => Observable<UiChangesTypes[T]>
+  publish: <T extends keyof UiChangesTypes>(sub: T, event: UiChangesTypes[T]) => void
 }
 
 function createUIChangesSubject(): UIChanges {
