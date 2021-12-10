@@ -1,4 +1,3 @@
-import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Observable } from 'rxjs'
 import { Box, Grid } from 'theme-ui'
@@ -32,11 +31,10 @@ export function ManageMultiplyVaultContainer({
 }: ManageMultiplyVaultContainerProps & ManageMultiplyVaultContainerComponents) {
   const { manageMultiplyVault$, context$, manageGuniVault$ } = useAppContext()
   const {
-    vault: { id, ilk },
+    vault: { id },
     clear,
     ilkData,
   } = manageVault
-  const { t } = useTranslation()
 
   useEffect(() => {
     const { token } = manageVault.vault
@@ -59,7 +57,7 @@ export function ManageMultiplyVaultContainer({
 
   return (
     <>
-      <Header header={t('vault.header', { ilk, id })} id={id} ilkData={ilkData} />
+      <Header id={id} ilkData={ilkData} />
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <Details {...manageVault} />

@@ -1,12 +1,9 @@
+import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
 import {
   AfterPillProps,
   getAfterPillColors,
   getCollRatioColor,
-  VaultDetailsBuyingPowerModal,
   VaultDetailsCard,
-  VaultDetailsCardCurrentPrice,
-  VaultDetailsCardLiquidationPrice,
-  VaultDetailsCardNetValue,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -18,6 +15,9 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
+import { VaultDetailsBuyingPowerModal } from '../../../../../components/vault/detailsCards/VaultDetailsBuyingPower'
+import { VaultDetailsCardLiquidationPrice } from '../../../../../components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
+import { VaultDetailsCardNetValue } from '../../../../../components/vault/detailsCards/VaultDetailsCardNetValue'
 import { OpenMultiplyVaultState } from '../../../openMultiplyVault'
 
 function OpenMultiplyVaultDetailsSummary({
@@ -127,7 +127,7 @@ export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
           relevant={inputAmountChangedSinceFirstRender}
         />
 
-        <VaultDetailsCardCurrentPrice {...props} />
+        <VaultDetailsCardCurrentPrice {...props.priceInfo} />
 
         <VaultDetailsCardNetValue
           {...{

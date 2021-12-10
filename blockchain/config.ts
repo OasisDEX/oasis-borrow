@@ -3,6 +3,7 @@ import { keyBy } from 'lodash'
 import getConfig from 'next/config'
 import { Dictionary } from 'ts-essentials'
 
+import * as automationBot from './abi/automation-bot.json'
 import * as eth from './abi/ds-eth-token.json'
 import * as dsProxyFactory from './abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from './abi/ds-proxy-registry.json'
@@ -76,6 +77,8 @@ const protoMain = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, mainnetAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, mainnetAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
+  automationBot: contractDesc(automationBot, '0x'), // TODO: add address
+  serviceRegistry: '0x', // TODO: add address
   guniProxyActions: contractDesc(guniProxyActions, '0xed3a954c0adfc8e3f85d92729c051ff320648e30'),
   guniResolver: '0x0317650Af6f184344D7368AC8bB0bEbA5EDB214a',
   guniRouter: '0x14E6D67F824C3a7b4329d3228807f8654294e4bd',
@@ -146,6 +149,8 @@ const kovan: NetworkConfig = {
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
   ),
   guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
+  automationBot: contractDesc(automationBot, '0x'), // TODO: add address
+  serviceRegistry: '0x', // TODO: add address
   guniResolver: '0x',
   guniRouter: '0x',
   defaultExchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
@@ -207,6 +212,8 @@ const goerli: NetworkConfig = {
   guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
   guniResolver: '0x',
   guniRouter: '0x',
+  automationBot: contractDesc(automationBot, '0x62fab0FfcC439c75a7d31F94f5B34bE31F3e08E7'),
+  serviceRegistry: '0x2a49Eae5CCa3f050eBEC729Cf90CC910fADAf7A2', // TODO: add address
   // Currently this is not supported on Goerli - no deployed contract
   defaultExchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''),
   lowerFeesExchange: contractDesc(exchange, '0x0'),

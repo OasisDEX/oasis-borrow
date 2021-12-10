@@ -22,7 +22,7 @@ export type AfterPillProps = {
 }
 
 export function getCollRatioColor(
-  { inputAmountsEmpty, ilkData }: CommonVaultState,
+  { inputAmountsEmpty, ilkData }: Pick<CommonVaultState, 'inputAmountsEmpty' | 'ilkData'>,
   collateralizationRatio: BigNumber,
 ): CollRatioColor {
   const vaultWillBeAtRiskLevelDanger =
@@ -50,8 +50,8 @@ export function getCollRatioColor(
 }
 
 export function getPriceChangeColor({
-  priceInfo: { collateralPricePercentageChange },
-}: CommonVaultState) {
+  collateralPricePercentageChange,
+}: Pick<PriceInfo, 'collateralPricePercentageChange'>) {
   return collateralPricePercentageChange.isZero()
     ? 'text.muted'
     : collateralPricePercentageChange.gt(zero)
@@ -73,7 +73,10 @@ export function getAfterPillColors(collRatioColor: CollRatioColor) {
   }
 }
 
-function VaultDetailsAfterPill({ children, afterPillColors }: WithChildren & AfterPillProps) {
+export function VaultDetailsAfterPill({
+  children,
+  afterPillColors,
+}: WithChildren & AfterPillProps) {
   return (
     <Card
       sx={{
@@ -602,7 +605,7 @@ export function VaultDetailsCardCurrentPrice(props: CommonVaultState) {
     },
   } = props
   const openModal = useModal()
-  const priceChangeColor = getPriceChangeColor(props)
+  const priceChangeColor = getPriceChangeColor({ collateralPricePercentageChange })
 
   const currentPrice = `$${formatAmount(currentCollateralPrice, 'USD')}`
   const nextPriceWithChange = (
