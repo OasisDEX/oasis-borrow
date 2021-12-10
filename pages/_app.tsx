@@ -25,7 +25,7 @@ import { theme } from 'theme'
 import { components, ThemeProvider } from 'theme-ui'
 import Web3 from 'web3'
 
-import { adRollPixelScript } from '../analytics/adroll'
+// import { adRollPixelScript } from '../analytics/adroll'
 import { trackingEvents } from '../analytics/analytics'
 import { LOCALSTORAGE_KEY } from '../analytics/common'
 import { mixpanelInit } from '../analytics/mixpanel'
@@ -147,9 +147,10 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
         {process.env.NODE_ENV !== 'production' && (
           <script dangerouslySetInnerHTML={{ __html: noOverlayWorkaroundScript }} />
         )}
-        {value?.enabledCookies?.marketing && (
-          <script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} async />
-        )}
+        {/* TODO uncomment when we will receive information from AdRoll that they approved our customer cookie banner */}
+        {/*{value?.enabledCookies?.marketing && (*/}
+        {/*  <script dangerouslySetInnerHTML={{ __html: adRollPixelScript }} async />*/}
+        {/*)}*/}
 
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
