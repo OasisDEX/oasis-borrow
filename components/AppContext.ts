@@ -162,6 +162,19 @@ function createTxHelpers$(
   )
 }
 
+/* TODO: Try changing to:
+
+export type UiChangesTypes = {
+  AdjustSlForm: AddFormChange
+}
+
+export type UIChanges = {
+  subscribe: <T extends keyof UiChangesTypes>(sub: T) => Observable<UiChangesTypes[T]>
+  publish: <T extends keyof UiChangesTypes>(sub: T, event: UiChangesTypes[T]) => void
+}
+
+*/
+
 export type UIChanges = {
   subscribe: <T>(sub: string) => Observable<T>
   publish: <T>(sub: string, event: T) => void
