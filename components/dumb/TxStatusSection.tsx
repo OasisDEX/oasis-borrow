@@ -1,15 +1,13 @@
-import { TxState } from '@oasisdex/transactions'
-import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
+import { TxMeta, TxState } from '@oasisdex/transactions'
 import React from 'react'
 
 import { TxStatusCardProgress } from '../vault/TxStatusCard'
 
-//TODO: Decouple by using generics
-export interface TxStatusSectionProps {
-  txState: TxState<AutomationBotAddTriggerData> | undefined
+export interface TxStatusSectionProps<A extends TxMeta> {
+  txState: TxState<A> | undefined
 }
 
-export function TxStatusSection(props: TxStatusSectionProps) {
+export function TxStatusSection<A extends TxMeta>(props: TxStatusSectionProps<A>) {
   return (
     <>
       {!props.txState ? (
