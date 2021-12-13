@@ -4,7 +4,7 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
-import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { createMultiplyHistoryChange$ } from 'features/manageMultiplyVault/manageMultiplyHistory'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
@@ -187,6 +187,7 @@ export function createManageGuniVault$(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: ExchangeType,
   ) => Observable<Quote>,
   addGasEstimation$: AddGasEstimationFunction,
   getProportions$: (
@@ -277,6 +278,7 @@ export function createManageGuniVault$(
                         SLIPPAGE,
                         sharedAmount1.minus(0.01),
                         'SELL_COLLATERAL',
+                        'lowerFeesExchange',
                       ).pipe(
                         map((swap) => {
                           if (swap.status !== 'SUCCESS') {

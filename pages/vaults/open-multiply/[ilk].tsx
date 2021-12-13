@@ -18,6 +18,7 @@ export async function getServerSideProps(ctx: any) {
 
 const multiplyContainerMap: Record<string, (ilk: string) => JSX.Element> = {
   'GUNIV3DAIUSDC1-A': (ilk) => <GuniOpenVaultView ilk={ilk} />,
+  'GUNIV3DAIUSDC2-A': (ilk) => <GuniOpenVaultView ilk={ilk} />,
 }
 export default function OpenVault({ ilk }: { ilk: string }) {
   return (

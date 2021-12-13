@@ -50,7 +50,7 @@ import { createAccountData } from 'features/account/AccountData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
-import { createExchangeQuote$, createNoFeesExchangeQuote$ } from 'features/exchange/exchange'
+import { createExchangeQuote$ } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
@@ -329,14 +329,8 @@ export function setupAppContext() {
 
   const exchangeQuote$ = memoize(
     curry(createExchangeQuote$)(context$),
-    (token: string, slippage: BigNumber, amount: BigNumber, action: string) =>
-      `${token}_${slippage.toString()}_${amount.toString()}_${action}`,
-  )
-
-  const noFeesExchangeQuote$ = memoize(
-    curry(createNoFeesExchangeQuote$)(context$),
-    (token: string, slippage: BigNumber, amount: BigNumber, action: string) =>
-      `${token}_${slippage.toString()}_${amount.toString()}_${action}`,
+    (token: string, slippage: BigNumber, amount: BigNumber, action: string, exchangeType: string) =>
+      `${token}_${slippage.toString()}_${amount.toString()}_${action}_${exchangeType}`,
   )
 
   const openMultiplyVault$ = memoize((ilk: string) =>
@@ -440,7 +434,7 @@ export function setupAppContext() {
         balanceInfo$,
         ilkData$,
         vault$,
-        noFeesExchangeQuote$,
+        exchangeQuote$,
         addGasEstimation$,
         getProportions$,
         vaultMultiplyHistory$,

@@ -5,6 +5,7 @@ import { VaultEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import { one, zero } from 'helpers/zero'
 
 export const OAZO_FEE = new BigNumber(0.002)
+export const OAZO_LOWER_FEE = new BigNumber(0.0004)
 export const LOAN_FEE = new BigNumber(0.0)
 export const SLIPPAGE = new BigNumber(0.005)
 

@@ -14,7 +14,7 @@ import {
   applyIsAllowanceStage,
   defaultAllowanceState,
 } from 'features/allowance/allowance'
-import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { TxStage } from 'features/openMultiplyVault/openMultiplyVault' // TODO: remove
 import {
   addProxyTransitions,
@@ -28,7 +28,7 @@ import {
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { OAZO_FEE } from 'helpers/multiply/calculations'
+import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { curry } from 'ramda'
 import {
@@ -219,7 +219,9 @@ function applyCalculations<S extends { ilkData: IlkData; depositAmount?: BigNumb
   state: S,
 ): S & GuniCalculations {
   // TODO: missing fees
-  const leveragedAmount = state.depositAmount ? state.depositAmount.div(new BigNumber(0.021)) : zero
+  const leveragedAmount = state.depositAmount
+    ? state.depositAmount.div(state.ilkData.liquidationRatio.minus(one).plus(0.001))
+    : zero
   const flAmount = state.depositAmount ? leveragedAmount.minus(state.depositAmount) : zero
 
   return {
@@ -274,6 +276,7 @@ export function createOpenGuniVault$(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: ExchangeType,
   ) => Observable<Quote>,
   onEveryBlock$: Observable<number>,
   addGasEstimation$: AddGasEstimationFunction,
@@ -405,9 +408,9 @@ export function createOpenGuniVault$(
                           distinctUntilChanged(compareBigNumber),
                           switchMap((daiAmountToSwapForUsdc /* USDC */) => {
                             const token0Amount = leveragedAmount.minus(daiAmountToSwapForUsdc)
-                            const oazoFee = daiAmountToSwapForUsdc.times(OAZO_FEE)
+                            const oazoFee = daiAmountToSwapForUsdc.times(OAZO_LOWER_FEE)
                             const amountWithFee = daiAmountToSwapForUsdc.plus(oazoFee)
-                            const contractFee = amountWithFee.times(OAZO_FEE)
+                            const contractFee = amountWithFee.times(OAZO_LOWER_FEE)
                             const oneInchAmount = amountWithFee.minus(contractFee)
 
                             return exchangeQuote$(
@@ -415,6 +418,7 @@ export function createOpenGuniVault$(
                               stateSubject$.value.slippage,
                               oneInchAmount,
                               'BUY_COLLATERAL',
+                              'lowerFeesExchange',
                             ).pipe(
                               switchMap((swap) => {
                                 if (swap.status !== 'SUCCESS') {
