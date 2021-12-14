@@ -1,7 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
 import {
-  AfterPillProps,
   getAfterPillColors,
   getCollRatioColor,
   VaultDetailsCard,
@@ -9,10 +7,8 @@ import {
   VaultDetailsCardCollaterlizationRatioModal,
   VaultDetailsCardCurrentPrice,
   VaultDetailsCardLiquidationPrice,
-  VaultDetailsSummaryContainer,
-  VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatPercent } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
 import { pick } from 'helpers/pick'
 import { useHasChangedSinceFirstRender } from 'helpers/useHasChangedSinceFirstRender'
@@ -22,80 +18,8 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { OpenVaultState } from '../openVault'
+import { OpenVaultDetailsSummary } from './details/Summary'
 import { OpenBorrowVaultContext } from './OpenVaultView'
-
-function OpenVaultDetailsSummary({
-  generateAmount,
-  afterFreeCollateral,
-  token,
-  maxGenerateAmountCurrentPrice,
-  afterPillColors,
-  showAfterPill,
-  relevant,
-}: OpenVaultState & AfterPillProps & { relevant: boolean }) {
-  const { t } = useTranslation()
-  const { symbol } = getToken(token)
-
-  return (
-    <VaultDetailsSummaryContainer relevant={relevant}>
-      <VaultDetailsSummaryItem
-        label={t('system.vault-dai-debt')}
-        value={
-          <>
-            {formatAmount(zero, 'DAI')}
-            {` DAI`}
-          </>
-        }
-        valueAfter={
-          showAfterPill && (
-            <>
-              {formatAmount(generateAmount || zero, 'DAI')}
-              {` DAI`}
-            </>
-          )
-        }
-        afterPillColors={afterPillColors}
-      />
-      <VaultDetailsSummaryItem
-        label={t('system.available-to-withdraw')}
-        value={
-          <>
-            {formatAmount(zero, symbol)}
-            {` ${symbol}`}
-          </>
-        }
-        valueAfter={
-          showAfterPill && (
-            <>
-              {formatAmount(afterFreeCollateral.isNegative() ? zero : afterFreeCollateral, symbol)}
-              {` ${symbol}`}
-            </>
-          )
-        }
-        afterPillColors={afterPillColors}
-      />
-      <VaultDetailsSummaryItem
-        label={t('system.available-to-generate')}
-        value={
-          <>
-            {formatAmount(zero, 'DAI')}
-            {` DAI`}
-          </>
-        }
-        valueAfter={
-          showAfterPill && (
-            <>
-              {formatAmount(maxGenerateAmountCurrentPrice.minus(generateAmount || zero), 'DAI')}
-              {` DAI`}
-            </>
-          )
-        }
-        afterPillColors={afterPillColors}
-      />
-    </VaultDetailsSummaryContainer>
-  )
-}
 
 export function OpenVaultDetails() {
   const {
@@ -109,7 +33,6 @@ export function OpenVaultDetails() {
     collateralizationDangerThreshold,
     collateralizationWarningThreshold,
     priceInfo,
-    props,
   } = useSelectFromContext(OpenBorrowVaultContext, (ctx) => ({
     ...pick(
       ctx,
@@ -127,8 +50,6 @@ export function OpenVaultDetails() {
     ),
     afterDepositAmountUSD: ctx.depositAmountUSD,
     priceInfo: ctx.priceInfo,
-
-    props: ctx,
   }))
   const { t } = useTranslation()
   const openModal = useModal()
@@ -200,12 +121,7 @@ export function OpenVaultDetails() {
           }}
         />
       </Grid>
-      <OpenVaultDetailsSummary
-        {...props}
-        afterPillColors={afterPillColors}
-        showAfterPill={showAfterPill}
-        relevant={inputAmountWasChanged}
-      />
+      <OpenVaultDetailsSummary />
     </>
   )
 }
