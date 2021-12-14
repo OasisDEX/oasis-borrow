@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 import React from 'react'
 
+import { AutomationFromKind } from '../common/enums/TriggersTypes'
 import { ProtectionFormLayout } from './ProtectionFormLayout'
 
 interface Props {
@@ -8,23 +9,20 @@ interface Props {
   cancelForm: JSX.Element
 }
 
-export enum ProtectionForms {
-  ADJUST,
-  CANCEL,
-}
-
 export function ProtectionFormControl({ adjustForm, cancelForm }: Props) {
-  const [currentForm, setForm] = useState(ProtectionForms.ADJUST)
+  const [currentForm, setForm] = useState(AutomationFromKind.ADJUST)
 
   const toggleForms = useCallback(() => {
     setForm((prevState) =>
-      prevState === ProtectionForms.ADJUST ? ProtectionForms.CANCEL : ProtectionForms.ADJUST,
+      prevState === AutomationFromKind.ADJUST
+        ? AutomationFromKind.CANCEL
+        : AutomationFromKind.ADJUST,
     )
   }, [currentForm])
 
   return (
     <ProtectionFormLayout currentForm={currentForm} toggleForm={toggleForms}>
-      {currentForm === ProtectionForms.ADJUST ? adjustForm : cancelForm}
+      {currentForm === AutomationFromKind.ADJUST ? adjustForm : cancelForm}
     </ProtectionFormLayout>
   )
 }

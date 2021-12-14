@@ -1,5 +1,5 @@
 import { TxState } from '@oasisdex/transactions'
-import { Box,  Grid } from '@theme-ui/components'
+import { Box, Grid } from '@theme-ui/components'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'

@@ -2,13 +2,13 @@ import { Button, Divider, Grid } from '@theme-ui/components'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { ProtectionForms } from './ProtectionFormControl'
+import { AutomationFromKind } from '../common/enums/TriggersTypes'
 
 export function ProtectionFormLayout({
   toggleForm,
   currentForm,
   children,
-}: React.PropsWithChildren<{ toggleForm: () => void; currentForm: ProtectionForms }>) {
+}: React.PropsWithChildren<{ toggleForm: () => void; currentForm: AutomationFromKind }>) {
   const { t } = useTranslation()
 
   return (
@@ -19,7 +19,7 @@ export function ProtectionFormLayout({
         variant="styles.hrVaultFormBottom"
       />
       <Button sx={{ mt: 3 }} variant="textualSmall" onClick={toggleForm}>
-        {currentForm === ProtectionForms.ADJUST
+        {currentForm === AutomationFromKind.ADJUST
           ? t('protection.navigate-cancel')
           : t('protection.navigate-adjust')}
       </Button>
