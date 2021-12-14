@@ -1,23 +1,27 @@
 import { trackingEvents } from 'analytics/analytics'
+import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { useObservable } from 'helpers/observableHook'
+import { pick } from 'helpers/pick'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useRedirect } from 'helpers/useRedirect'
+import { useSelectFromContext } from 'helpers/useSelectFromContext'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Divider, Flex, Spinner, Text } from 'theme-ui'
 
-import { OpenVaultState } from '../openVault'
+import { OpenVaultStage, OpenVaultState } from '../openVault'
+import { OpenBorrowVaultContext } from './OpenVaultView'
 
-function openVaultPrimaryButtonText({
-  stage,
-  id,
-  token,
-  proxyAddress,
-  insufficientAllowance,
-  inputAmountsEmpty,
-  customAllowanceAmountEmpty,
-}: OpenVaultState) {
+function openVaultPrimaryButtonText(
+  stage: OpenVaultStage,
+  id: BigNumber | undefined,
+  token: string,
+  proxyAddress: string | undefined,
+  insufficientAllowance: boolean,
+  inputAmountsEmpty: boolean,
+  customAllowanceAmountEmpty: boolean,
+) {
   const { t } = useTranslation()
 
   switch (stage) {
@@ -67,7 +71,7 @@ function openVaultPrimaryButtonText({
   }
 }
 
-export function OpenVaultButton(props: OpenVaultState) {
+export function OpenVaultButton() {
   const { accountData$ } = useAppContext()
   const accountData = useObservable(accountData$)
   const { t } = useTranslation()
@@ -83,7 +87,29 @@ export function OpenVaultButton(props: OpenVaultState) {
     token,
     depositAmount,
     generateAmount,
-  } = props
+    proxyAddress,
+    insufficientAllowance,
+    inputAmountsEmpty,
+    customAllowanceAmountEmpty,
+  } = useSelectFromContext(OpenBorrowVaultContext, (ctx) => ({
+    ...pick(
+      ctx,
+      'stage',
+      'progress',
+      'regress',
+      'canRegress',
+      'id',
+      'canProgress',
+      'isLoadingStage',
+      'token',
+      'depositAmount',
+      'generateAmount',
+      'proxyAddress',
+      'insufficientAllowance',
+      'inputAmountsEmpty',
+      'customAllowanceAmountEmpty',
+    ),
+  }))
 
   function handleProgress(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault()
@@ -100,7 +126,15 @@ export function OpenVaultButton(props: OpenVaultState) {
     regress!()
   }
 
-  const primaryButtonText = openVaultPrimaryButtonText(props)
+  const primaryButtonText = openVaultPrimaryButtonText(
+    stage,
+    id,
+    token,
+    proxyAddress,
+    insufficientAllowance,
+    inputAmountsEmpty,
+    customAllowanceAmountEmpty,
+  )
   const secondaryButtonText =
     stage === 'allowanceFailure' ? t('edit-token-allowance', { token }) : t('edit-vault-details')
 

@@ -201,16 +201,27 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
     vault: { collateralizationRatio },
     afterCollateralizationRatio,
     afterLiquidationPrice,
-    ilkData: { liquidationRatio },
+    ilkData: {
+      liquidationRatio,
+      collateralizationDangerThreshold,
+      collateralizationWarningThreshold,
+    },
     requiredCollRatio,
     updateRequiredCollRatio,
     maxCollRatio,
     collapsed,
     multiply,
+    inputAmountsEmpty,
     hasToDepositCollateralOnEmptyVault,
   } = props
 
-  const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const collRatioColor = getCollRatioColor(
+    inputAmountsEmpty,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
+    afterCollateralizationRatio,
+  )
   const sliderValue = requiredCollRatio || collateralizationRatio || maxCollRatio
   const slider = new BigNumber(100).minus(
     sliderValue.minus(liquidationRatio).div(maxCollRatio.minus(liquidationRatio)).times(100) ||

@@ -23,6 +23,13 @@ export function ManageVaultChangesInformation(props: ManageVaultState) {
     afterFreeCollateral,
     daiYieldFromTotalCollateral,
     inputAmountsEmpty,
+    gasEstimationStatus,
+    gasEstimationUsd,
+    ilkData: {
+      liquidationRatio,
+      collateralizationDangerThreshold,
+      collateralizationWarningThreshold,
+    },
     vault: {
       collateralizationRatio,
       lockedCollateral,
@@ -33,8 +40,20 @@ export function ManageVaultChangesInformation(props: ManageVaultState) {
       daiYieldFromLockedCollateral,
     },
   } = props
-  const collRatioColor = getCollRatioColor(props, collateralizationRatio)
-  const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const collRatioColor = getCollRatioColor(
+    inputAmountsEmpty,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
+    collateralizationRatio,
+  )
+  const afterCollRatioColor = getCollRatioColor(
+    inputAmountsEmpty,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
+    afterCollateralizationRatio,
+  )
 
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Vault Changes">
@@ -108,7 +127,10 @@ export function ManageVaultChangesInformation(props: ManageVaultState) {
           </Flex>
         }
       />
-      <VaultChangesInformationEstimatedGasFee {...props} />
+      <VaultChangesInformationEstimatedGasFee
+        gasEstimationStatus={gasEstimationStatus}
+        gasEstimationUsd={gasEstimationUsd}
+      />
     </VaultChangesInformationContainer>
   ) : null
 }

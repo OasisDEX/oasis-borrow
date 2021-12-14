@@ -58,7 +58,8 @@ export function VaultChangesInformationArrow() {
 }
 
 export function getEstimatedGasFeeText(
-  { gasEstimationStatus, gasEstimationUsd }: CommonVaultState,
+  gasEstimationStatus: GasEstimationStatus,
+  gasEstimationUsd: BigNumber | undefined,
   withBrackets = false,
 ) {
   switch (gasEstimationStatus) {
@@ -84,12 +85,18 @@ export function getEstimatedGasFeeText(
   }
 }
 
-export function VaultChangesInformationEstimatedGasFee(props: CommonVaultState) {
+export function VaultChangesInformationEstimatedGasFee({
+  gasEstimationStatus,
+  gasEstimationUsd,
+}: {
+  gasEstimationStatus: GasEstimationStatus
+  gasEstimationUsd: BigNumber | undefined
+}) {
   const { t } = useTranslation()
   return (
     <VaultChangesInformationItem
       label={t('max-gas-fee')}
-      value={getEstimatedGasFeeText(props)}
+      value={getEstimatedGasFeeText(gasEstimationStatus, gasEstimationUsd)}
       tooltip={<Box>{t('gas-explanation')}</Box>}
     />
   )

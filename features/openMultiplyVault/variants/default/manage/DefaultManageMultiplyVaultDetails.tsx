@@ -95,9 +95,20 @@ export function DefaultManageMultiplyVaultDetails(props: ManageMultiplyVaultStat
     totalGasSpentUSD,
     vault,
     priceInfo,
+    ilkData: {
+      liquidationRatio,
+      collateralizationDangerThreshold,
+      collateralizationWarningThreshold,
+    },
   } = props
   const openModal = useModal()
-  const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const afterCollRatioColor = getCollRatioColor(
+    inputAmountsEmpty,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
+    afterCollateralizationRatio,
+  )
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
 
@@ -123,7 +134,7 @@ export function DefaultManageMultiplyVaultDetails(props: ManageMultiplyVaultStat
           afterPillColors={afterPillColors}
         />
 
-        <VaultDetailsCardCurrentPrice {...props} />
+        <VaultDetailsCardCurrentPrice {...props.priceInfo} />
 
         <VaultDetailsCardNetValue
           {...{

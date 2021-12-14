@@ -35,13 +35,26 @@ export function DefaultOpenMultiplyVaultChangesInformation(props: OpenMultiplyVa
     loanFees,
     oazoFee,
     inputAmountsEmpty,
+    gasEstimationStatus,
+    gasEstimationUsd,
+    ilkData: {
+      liquidationRatio,
+      collateralizationDangerThreshold,
+      collateralizationWarningThreshold,
+    },
     isExchangeLoading,
     slippage,
     buyingCollateral,
     buyingCollateralUSD,
     marketPrice,
   } = props
-  const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const collRatioColor = getCollRatioColor(
+    inputAmountsEmpty,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
+    afterCollateralizationRatio,
+  )
 
   // starting zero balance for UI to show arrows
   const zeroBalance = formatCryptoBalance(zero)
@@ -138,7 +151,9 @@ export function DefaultOpenMultiplyVaultChangesInformation(props: OpenMultiplyVa
             onClick={() => setShowFees(!showFees)}
           >
             {`${formatAmount(txFees, 'USD')} +`}
-            <Text ml={1}>{getEstimatedGasFeeText(props, true)}</Text>
+            <Text ml={1}>
+              {getEstimatedGasFeeText(gasEstimationStatus, gasEstimationUsd, true)}
+            </Text>
             <Icon
               name={`chevron_${showFees ? 'up' : 'down'}`}
               size="auto"
@@ -160,7 +175,10 @@ export function DefaultOpenMultiplyVaultChangesInformation(props: OpenMultiplyVa
             label={t('vault-changes.oasis-fee')}
             value={`$${formatAmount(oazoFee, 'USD')}`}
           />
-          <VaultChangesInformationEstimatedGasFee {...props} />
+          <VaultChangesInformationEstimatedGasFee
+            gasEstimationStatus={gasEstimationStatus}
+            gasEstimationUsd={gasEstimationUsd}
+          />
         </Grid>
       )}
     </VaultChangesInformationContainer>

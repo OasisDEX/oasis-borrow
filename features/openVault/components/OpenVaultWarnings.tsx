@@ -1,14 +1,22 @@
 import { MessageCard } from 'components/MessageCard'
 import { formatCryptoBalance } from 'helpers/formatters/format'
+import { pick } from 'helpers/pick'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { useSelectFromContext } from 'helpers/useSelectFromContext'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
 import { OpenVaultState } from '../openVault'
 import { OpenVaultWarningMessage } from '../openVaultValidations'
+import { OpenBorrowVaultContext } from './OpenVaultView'
 
-export function OpenVaultWarnings({ warningMessages, ilkData: { debtFloor } }: OpenVaultState) {
+export function OpenVaultWarnings() {
+  const { warningMessages, debtFloor } = useSelectFromContext(OpenBorrowVaultContext, (ctx) => ({
+    ...pick(ctx, 'warningMessages'),
+    ...pick(ctx.ilkData, 'debtFloor'),
+  }))
+
   const { t } = useTranslation()
   if (!warningMessages.length) return null
 

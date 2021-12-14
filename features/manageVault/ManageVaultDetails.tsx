@@ -94,12 +94,18 @@ function ManageVaultDetailsSummary({
 
 export function ManageVaultDetails(props: ManageVaultState) {
   const {
+    priceInfo,
     vault: {
       token,
       collateralizationRatio,
       liquidationPrice,
       lockedCollateral,
       lockedCollateralUSD,
+    },
+    ilkData: {
+      liquidationRatio,
+      collateralizationDangerThreshold,
+      collateralizationWarningThreshold,
     },
     liquidationPriceCurrentPriceDifference,
     afterLiquidationPrice,
@@ -111,9 +117,27 @@ export function ManageVaultDetails(props: ManageVaultState) {
   } = props
   const { t } = useTranslation()
   const openModal = useModal()
-  const collRatioColor = getCollRatioColor(props, collateralizationRatio)
-  const collRatioNextPriceColor = getCollRatioColor(props, collateralizationRatioAtNextPrice)
-  const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const collRatioColor = getCollRatioColor(
+    inputAmountsEmpty,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
+    collateralizationRatio,
+  )
+  const collRatioNextPriceColor = getCollRatioColor(
+    inputAmountsEmpty,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
+    collateralizationRatioAtNextPrice,
+  )
+  const afterCollRatioColor = getCollRatioColor(
+    inputAmountsEmpty,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
+    afterCollateralizationRatio,
+  )
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
 
@@ -169,7 +193,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
           afterPillColors={afterPillColors}
         />
 
-        <VaultDetailsCardCurrentPrice {...props} />
+        <VaultDetailsCardCurrentPrice {...priceInfo} />
         <VaultDetailsCardCollateralLocked
           depositAmountUSD={lockedCollateralUSD}
           afterDepositAmountUSD={afterLockedCollateralUSD}

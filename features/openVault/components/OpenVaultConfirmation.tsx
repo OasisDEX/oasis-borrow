@@ -1,24 +1,32 @@
+import BigNumber from 'bignumber.js'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Divider } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 
-import { OpenVaultState } from '../openVault'
+import { OpenVaultStage, OpenVaultState } from '../openVault'
 import { OpenVaultChangesInformation } from './OpenVaultChangesInformation'
 
-export function OpenVaultConfirmation(props: OpenVaultState) {
-  return props.stage === 'txInProgress' ? (
+export function OpenVaultConfirmation({ stage }: { stage: OpenVaultStage }) {
+  return stage === 'txInProgress' ? (
     <OpenVaultAnimation />
   ) : (
     <>
       <Divider />
-      <OpenVaultChangesInformation {...props} />
+      <OpenVaultChangesInformation />
     </>
   )
 }
 
-export function OpenVaultStatus({ stage, id, etherscan, openTxHash }: OpenVaultState) {
+type OpenVaultStatusProps = {
+  stage: OpenVaultState['stage']
+  id?: BigNumber
+  etherscan?: string
+  openTxHash?: string
+}
+
+export function OpenVaultStatus({ stage, id, etherscan, openTxHash }: OpenVaultStatusProps) {
   const { t } = useTranslation()
 
   if (stage === 'txInProgress') {

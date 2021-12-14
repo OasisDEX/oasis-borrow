@@ -30,7 +30,11 @@ export function DefaultOpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
     afterCollateralizationRatio,
     requiredCollRatio,
 
-    ilkData: { liquidationRatio },
+    ilkData: {
+      liquidationRatio,
+      collateralizationDangerThreshold,
+      collateralizationWarningThreshold,
+    },
     maxCollRatio,
     inputAmountsEmpty,
   } = props
@@ -40,7 +44,13 @@ export function DefaultOpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
     ?.div(maxCollRatio.minus(liquidationRatio))
     .times(100)
 
-  const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const collRatioColor = getCollRatioColor(
+    inputAmountsEmpty,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
+    afterCollateralizationRatio,
+  )
   const sliderBackground =
     multiply && !multiply.isNaN() && slider
       ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${

@@ -89,6 +89,11 @@ export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
     stage,
     marketPrice,
     priceInfo,
+    ilkData: {
+      liquidationRatio,
+      collateralizationDangerThreshold,
+      collateralizationWarningThreshold,
+    },
   } = props
   const openModal = useModal()
 
@@ -99,7 +104,13 @@ export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
   const netValueUSD = zero
   const currentPnL = zero
 
-  const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const afterCollRatioColor = getCollRatioColor(
+    inputAmountsEmpty,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
+    afterCollateralizationRatio,
+  )
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'txSuccess'
   const inputAmountChangedSinceFirstRender = useHasChangedSinceFirstRender(inputAmountsEmpty)
@@ -127,7 +138,7 @@ export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
           relevant={inputAmountChangedSinceFirstRender}
         />
 
-        <VaultDetailsCardCurrentPrice {...props} />
+        <VaultDetailsCardCurrentPrice {...props.priceInfo} />
 
         <VaultDetailsCardNetValue
           {...{

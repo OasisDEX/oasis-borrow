@@ -9,6 +9,8 @@ import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { useSelectFromContext } from 'helpers/useSelectFromContext'
+import { pick } from 'helpers/pick'
 import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
@@ -23,15 +25,24 @@ import { OpenVaultEditing } from './OpenVaultEditing'
 import { OpenVaultErrors } from './OpenVaultErrors'
 import { OpenVaultWarnings } from './OpenVaultWarnings'
 
-function OpenVaultTitle({
-  isEditingStage,
-  isProxyStage,
-  isAllowanceStage,
-  token,
-  stage,
-  totalSteps,
-  currentStep,
-}: OpenVaultState) {
+function OpenVaultTitle() {
+  const {
+    isEditingStage,
+    isProxyStage,
+    isAllowanceStage,
+    token,
+    stage,
+    totalSteps,
+    currentStep,
+  } = useSelectFromContext(OpenBorrowVaultContext, (ctx) => ({
+    isEditingStage: ctx.isEditingStage,
+    isProxyStage: ctx.isProxyStage,
+    isAllowanceStage: ctx.isAllowanceStage,
+    token: ctx.token,
+    stage: ctx.stage,
+    totalSteps: ctx.totalSteps,
+    currentStep: ctx.currentStep,
+  }))
   const { t } = useTranslation()
   return (
     <Box>
@@ -63,36 +74,119 @@ function OpenVaultTitle({
   )
 }
 
-function OpenVaultForm(props: OpenVaultState) {
-  const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, ilk, stage } = props
+function OpenVaultForm() {
+  const {
+    isEditingStage,
+    isProxyStage,
+    isAllowanceStage,
+    isOpenStage,
+    ilk,
+    stage,
+    token,
+    depositAmount,
+    allowanceAmount,
+    updateAllowanceAmount,
+    setAllowanceAmountUnlimited,
+    setAllowanceAmountToDepositAmount,
+    setAllowanceAmountCustom,
+    selectedAllowanceRadio,
+    proxyConfirmations,
+    safeConfirmations,
+    proxyTxHash,
+    etherscan,
+    allowanceTxHash,
+    id,
+    openTxHash,
+  } = useSelectFromContext(OpenBorrowVaultContext, (ctx) => ({
+    ...pick(
+      ctx,
+      'isEditingStage',
+      'isProxyStage',
+      'isAllowanceStage',
+      'isOpenStage',
+      'ilk',
+      'stage',
+      'token',
+      'depositAmount',
+      'allowanceAmount',
+      'updateAllowanceAmount',
+      'setAllowanceAmountUnlimited',
+      'setAllowanceAmountToDepositAmount',
+      'setAllowanceAmountCustom',
+      'selectedAllowanceRadio',
+      'proxyConfirmations',
+      'safeConfirmations',
+      'proxyTxHash',
+      'etherscan',
+      'allowanceTxHash',
+      'id',
+      'openTxHash',
+    ),
+  }))
 
   return (
     <VaultFormContainer toggleTitle="Open Vault">
-      <OpenVaultTitle {...props} />
-      {isEditingStage && <OpenVaultEditing {...props} />}
-      {isAllowanceStage && <VaultAllowance {...props} />}
-      {isOpenStage && <OpenVaultConfirmation {...props} />}
-      <OpenVaultErrors {...props} />
-      <OpenVaultWarnings {...props} />
+      <OpenVaultTitle />
+      {isEditingStage && <OpenVaultEditing />}
+      {isAllowanceStage && (
+        <VaultAllowance
+          stage={stage}
+          token={token}
+          depositAmount={depositAmount}
+          allowanceAmount={allowanceAmount}
+          updateAllowanceAmount={updateAllowanceAmount}
+          setAllowanceAmountUnlimited={setAllowanceAmountUnlimited}
+          setAllowanceAmountToDepositAmount={setAllowanceAmountToDepositAmount}
+          setAllowanceAmountCustom={setAllowanceAmountCustom}
+          selectedAllowanceRadio={selectedAllowanceRadio}
+        />
+      )}
+      {isOpenStage && <OpenVaultConfirmation stage={stage} />}
+      <OpenVaultErrors />
+      <OpenVaultWarnings />
       {stage === 'txSuccess' && <VaultChangesWithADelayCard />}
-      <OpenVaultButton {...props} />
-      {isProxyStage && <VaultProxyStatusCard {...props} />}
-      {isAllowanceStage && <VaultAllowanceStatus {...props} />}
-      {isOpenStage && <OpenVaultStatus {...props} />}
+      <OpenVaultButton />
+      {isProxyStage && (
+        <VaultProxyStatusCard
+          stage={stage}
+          proxyConfirmations={proxyConfirmations}
+          safeConfirmations={safeConfirmations}
+          proxyTxHash={proxyTxHash}
+          etherscan={etherscan}
+        />
+      )}
+      {isAllowanceStage && (
+        <VaultAllowanceStatus
+          stage={stage}
+          allowanceTxHash={allowanceTxHash}
+          etherscan={etherscan}
+          token={token}
+        />
+      )}
+      {isOpenStage && (
+        <OpenVaultStatus stage={stage} id={id} etherscan={etherscan} openTxHash={openTxHash} />
+      )}
       {isEditingStage ? (
         <VaultFormVaultTypeSwitch
           href={`/vaults/open-multiply/${ilk}`}
           title="Switch to Multiply"
-          visible={ALLOWED_MULTIPLY_TOKENS.includes(props.token)}
+          visible={ALLOWED_MULTIPLY_TOKENS.includes(token)}
         />
       ) : null}
     </VaultFormContainer>
   )
 }
 
-export function OpenVaultContainer(props: OpenVaultState) {
-  const { ilk, clear } = props
+export function OpenVaultContainer() {
   const { t } = useTranslation()
+  const { headerProps, clear } = useSelectFromContext(OpenBorrowVaultContext, (ctx) => ({
+    headerProps: {
+      ilkData: ctx.ilkData,
+      id: ctx.id,
+      header: t('vault.open-vault', { ilk: ctx.ilk }),
+    },
+    clear: ctx.clear,
+  }))
 
   useEffect(() => {
     return () => {
@@ -102,18 +196,20 @@ export function OpenVaultContainer(props: OpenVaultState) {
 
   return (
     <>
-      <DefaultVaultHeader {...props} header={t('vault.open-vault', { ilk })} />
+      <DefaultVaultHeader {...headerProps} />
       <Grid variant="vaultContainer">
         <Box>
-          <OpenVaultDetails {...props} />
+          <OpenVaultDetails />
         </Box>
         <Box>
-          <OpenVaultForm {...props} />
+          <OpenVaultForm />
         </Box>
       </Grid>
     </>
   )
 }
+
+export const OpenBorrowVaultContext = React.createContext<OpenVaultState | undefined>(undefined)
 
 export function OpenVaultView({ ilk }: { ilk: string }) {
   const { openVault$, accountData$, context$ } = useAppContext()
@@ -138,7 +234,9 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
       <WithLoadingIndicator value={openVaultWithError.value}>
         {(openVault) => (
           <Container variant="vaultPageContainer">
-            <OpenVaultContainer {...openVault} />
+            <OpenBorrowVaultContext.Provider value={openVault}>
+              <OpenVaultContainer />
+            </OpenBorrowVaultContext.Provider>
           </Container>
         )}
       </WithLoadingIndicator>

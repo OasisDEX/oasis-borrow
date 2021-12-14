@@ -2,19 +2,27 @@ import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { useSelectFromContext } from 'helpers/useSelectFromContext'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
+import { pick } from 'helpers/pick'
 
 import { OpenVaultState } from '../openVault'
 import { OpenVaultErrorMessage } from '../openVaultValidations'
+import { OpenBorrowVaultContext } from './OpenVaultView'
 
-export function OpenVaultErrors({
-  errorMessages,
-  maxGenerateAmount,
-  ilkData: { debtFloor },
-}: OpenVaultState) {
+export function OpenVaultErrors() {
   const { t } = useTranslation()
+
+  const { errorMessages, maxGenerateAmount, debtFloor } = useSelectFromContext(
+    OpenBorrowVaultContext,
+    (ctx) => ({
+      ...pick(ctx, 'errorMessages', 'maxGenerateAmount'),
+      ...pick(ctx.ilkData, 'debtFloor'),
+    }),
+  )
+
   if (!errorMessages.length) return null
 
   function applyErrorMessageTranslation(message: OpenVaultErrorMessage) {

@@ -8,13 +8,16 @@ import {
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { useSelectFromContext } from 'helpers/useSelectFromContext'
 import { zero } from 'helpers/zero'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { OpenVaultState } from '../openVault'
+import { OpenBorrowVaultContext } from './OpenVaultView'
+import { pick } from 'helpers/pick'
 
-export function OpenVaultChangesInformation(props: OpenVaultState) {
+export function OpenVaultChangesInformation() {
   const { t } = useTranslation()
   const {
     token,
@@ -25,8 +28,39 @@ export function OpenVaultChangesInformation(props: OpenVaultState) {
     maxGenerateAmountCurrentPrice,
     inputAmountsEmpty,
     depositAmount,
-  } = props
-  const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+    liquidationRatio,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
+    gasEstimationStatus,
+    gasEstimationUsd,
+  } = useSelectFromContext(OpenBorrowVaultContext, (ctx) => ({
+    ...pick(
+      ctx,
+      'token',
+      'afterCollateralizationRatio',
+      'afterLiquidationPrice',
+      'afterFreeCollateral',
+      'generateAmount',
+      'maxGenerateAmountCurrentPrice',
+      'inputAmountsEmpty',
+      'depositAmount',
+      'gasEstimationStatus',
+      'gasEstimationUsd',
+    ),
+    ...pick(
+      ctx.ilkData,
+      'liquidationRatio',
+      'collateralizationDangerThreshold',
+      'collateralizationWarningThreshold',
+    ),
+  }))
+  const collRatioColor = getCollRatioColor(
+    inputAmountsEmpty,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
+    afterCollateralizationRatio,
+  )
 
   // starting zero balance for UI to show arrows
   const zeroBalance = formatCryptoBalance(zero)
@@ -101,7 +135,10 @@ export function OpenVaultChangesInformation(props: OpenVaultState) {
           </Flex>
         }
       />
-      <VaultChangesInformationEstimatedGasFee {...props} />
+      <VaultChangesInformationEstimatedGasFee
+        gasEstimationStatus={gasEstimationStatus}
+        gasEstimationUsd={gasEstimationUsd}
+      />
     </VaultChangesInformationContainer>
   ) : null
 }

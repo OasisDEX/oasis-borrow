@@ -1,9 +1,11 @@
+import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Radio } from 'components/forms/Radio'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
+import { AllowanceOption } from 'features/allowance/allowance'
 import { OpenGuniVaultState } from 'features/openGuniVault/openGuniVault'
 import { OpenMultiplyVaultState } from 'features/openMultiplyVault/openMultiplyVault'
-import { OpenVaultState } from 'features/openVault/openVault'
+import { OpenVaultStage, OpenVaultState } from 'features/openVault/openVault'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
@@ -12,6 +14,18 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
+
+type VaultAllowanceProps = {
+  stage: OpenVaultStage
+  token: string
+  depositAmount?: BigNumber
+  allowanceAmount?: BigNumber
+  updateAllowanceAmount?: (amount: BigNumber) => void
+  setAllowanceAmountUnlimited?: () => void
+  setAllowanceAmountToDepositAmount?: () => void
+  setAllowanceAmountCustom?: () => void
+  selectedAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
+}
 
 export function VaultAllowance({
   stage,
@@ -23,7 +37,7 @@ export function VaultAllowance({
   setAllowanceAmountToDepositAmount,
   setAllowanceAmountCustom,
   selectedAllowanceRadio,
-}: OpenVaultState | OpenMultiplyVaultState | OpenGuniVaultState) {
+}: VaultAllowanceProps) {
   const canSelectRadio = stage === 'allowanceWaitingForConfirmation'
 
   const isUnlimited = selectedAllowanceRadio === 'unlimited'
@@ -91,12 +105,19 @@ export function VaultAllowance({
   )
 }
 
+type VaultAllowanceStatusprops = {
+  stage: CommonVaultState['stage']
+  allowanceTxHash?: string
+  etherscan?: string
+  token: string
+}
+
 export function VaultAllowanceStatus({
   stage,
   allowanceTxHash,
   etherscan,
   token,
-}: CommonVaultState & { allowanceTxHash?: string; token: string }) {
+}: VaultAllowanceStatusprops) {
   const { t } = useTranslation()
 
   if (

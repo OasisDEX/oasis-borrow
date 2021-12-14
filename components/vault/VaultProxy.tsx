@@ -4,13 +4,21 @@ import { useTranslation } from 'react-i18next'
 
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
+type VaultProxyStatusCardProps = {
+  stage: CommonVaultState['stage']
+  proxyConfirmations?: number
+  safeConfirmations: number
+  proxyTxHash?: string
+  etherscan?: string
+}
+
 export function VaultProxyStatusCard({
   stage,
   proxyConfirmations,
   safeConfirmations,
   proxyTxHash,
   etherscan,
-}: CommonVaultState) {
+}: VaultProxyStatusCardProps) {
   const { t } = useTranslation()
 
   return (

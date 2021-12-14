@@ -30,6 +30,8 @@ export function GuniOpenMultiplyVaultChangesInformation(props: OpenGuniVaultStat
     gettingCollateral,
     gettingCollateralUSD,
     buyingCollateralUSD,
+    gasEstimationStatus,
+    gasEstimationUsd,
   } = props
 
   // starting zero balance for UI to show arrows
@@ -96,7 +98,9 @@ export function GuniOpenMultiplyVaultChangesInformation(props: OpenGuniVaultStat
             onClick={() => setShowFees(!showFees)}
           >
             {`${formatAmount(oazoFee, 'USD')} +`}
-            <Text ml={1}>{getEstimatedGasFeeText(props, true)}</Text>
+            <Text ml={1}>
+              {getEstimatedGasFeeText(gasEstimationStatus, gasEstimationUsd, true)}
+            </Text>
             <Icon
               name={`chevron_${showFees ? 'up' : 'down'}`}
               size="auto"
@@ -118,7 +122,10 @@ export function GuniOpenMultiplyVaultChangesInformation(props: OpenGuniVaultStat
             label={t('vault-changes.oasis-fee')}
             value={`$${formatAmount(oazoFee, 'USD')}`}
           />
-          <VaultChangesInformationEstimatedGasFee {...props} />
+          <VaultChangesInformationEstimatedGasFee
+            gasEstimationStatus={gasEstimationStatus}
+            gasEstimationUsd={gasEstimationUsd}
+          />
         </Grid>
       )}
     </VaultChangesInformationContainer>

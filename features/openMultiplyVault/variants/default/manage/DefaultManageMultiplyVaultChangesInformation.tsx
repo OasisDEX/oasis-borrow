@@ -47,9 +47,28 @@ export function DefaultManageMultiplyVaultChangesInformation(props: ManageMultip
     collateralDelta,
     collateralDeltaUSD,
     originalEditingStage,
+    gasEstimationStatus,
+    gasEstimationUsd,
+    ilkData: {
+      liquidationRatio,
+      collateralizationDangerThreshold,
+      collateralizationWarningThreshold,
+    },
   } = props
-  const collRatioColor = getCollRatioColor(props, collateralizationRatio)
-  const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const collRatioColor = getCollRatioColor(
+    inputAmountsEmpty,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
+    collateralizationRatio,
+  )
+  const afterCollRatioColor = getCollRatioColor(
+    inputAmountsEmpty,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
+    afterCollateralizationRatio,
+  )
 
   const isCloseAction = originalEditingStage === 'otherActions' && otherAction === 'closeVault'
 
@@ -159,7 +178,9 @@ export function DefaultManageMultiplyVaultChangesInformation(props: ManageMultip
             onClick={() => setShowFees(!showFees)}
           >
             {`${formatAmount(fees, 'USD')} +`}
-            <Text ml={1}>{getEstimatedGasFeeText(props, true)}</Text>
+            <Text ml={1}>
+              {getEstimatedGasFeeText(gasEstimationStatus, gasEstimationUsd, true)}
+            </Text>
             <Icon
               name={`chevron_${showFees ? 'up' : 'down'}`}
               size="auto"
@@ -181,7 +202,10 @@ export function DefaultManageMultiplyVaultChangesInformation(props: ManageMultip
             label={'Oasis fee'}
             value={`$${formatAmount(oazoFee, 'USD')}`}
           />
-          <VaultChangesInformationEstimatedGasFee {...props} />
+          <VaultChangesInformationEstimatedGasFee
+            gasEstimationStatus={gasEstimationStatus}
+            gasEstimationUsd={gasEstimationUsd}
+          />
         </Grid>
       )}
     </VaultChangesInformationContainer>

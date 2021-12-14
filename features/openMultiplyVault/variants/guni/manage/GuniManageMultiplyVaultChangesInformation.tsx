@@ -40,6 +40,8 @@ export function GuniManageMultiplyVaultChangesInformation(props: ManageMultiplyV
     otherAction,
     collateralDeltaUSD,
     originalEditingStage,
+    gasEstimationStatus,
+    gasEstimationUsd,
   } = props
 
   const isCloseAction = originalEditingStage === 'otherActions' && otherAction === 'closeVault'
@@ -104,7 +106,9 @@ export function GuniManageMultiplyVaultChangesInformation(props: ManageMultiplyV
             onClick={() => setShowFees(!showFees)}
           >
             {`${formatAmount(fees, 'USD')} +`}
-            <Text ml={1}>{getEstimatedGasFeeText(props, true)}</Text>
+            <Text ml={1}>
+              {getEstimatedGasFeeText(gasEstimationStatus, gasEstimationUsd, true)}
+            </Text>
             <Icon
               name={`chevron_${showFees ? 'up' : 'down'}`}
               size="auto"
@@ -126,7 +130,10 @@ export function GuniManageMultiplyVaultChangesInformation(props: ManageMultiplyV
             label={t('vault-changes.oasis-fee')}
             value={`$${formatAmount(oazoFee, 'USD')}`}
           />
-          <VaultChangesInformationEstimatedGasFee {...props} />
+          <VaultChangesInformationEstimatedGasFee
+            gasEstimationStatus={gasEstimationStatus}
+            gasEstimationUsd={gasEstimationUsd}
+          />
         </Grid>
       )}
     </VaultChangesInformationContainer>

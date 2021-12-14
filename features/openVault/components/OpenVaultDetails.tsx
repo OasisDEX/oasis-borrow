@@ -15,12 +15,15 @@ import {
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
 import { useHasChangedSinceFirstRender } from 'helpers/useHasChangedSinceFirstRender'
+import { useSelectFromContext } from 'helpers/useSelectFromContext'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
+import { pick } from 'helpers/pick'
 
 import { OpenVaultState } from '../openVault'
+import { OpenBorrowVaultContext } from './OpenVaultView'
 
 function OpenVaultDetailsSummary({
   generateAmount,
@@ -94,14 +97,39 @@ function OpenVaultDetailsSummary({
   )
 }
 
-export function OpenVaultDetails(props: OpenVaultState) {
+export function OpenVaultDetails() {
   const {
     afterCollateralizationRatio,
     afterLiquidationPrice,
     token,
     inputAmountsEmpty,
     stage,
-  } = props
+    afterDepositAmountUSD,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
+    priceInfo,
+    props,
+  } = useSelectFromContext(OpenBorrowVaultContext, (ctx) => ({
+    ...pick(
+      ctx,
+      'afterCollateralizationRatio',
+      'afterLiquidationPrice',
+      'token',
+      'inputAmountsEmpty',
+      'stage',
+    ),
+    ...pick(
+      ctx.ilkData,
+      'liquidationRatio',
+      'collateralizationDangerThreshold',
+      'collateralizationWarningThreshold',
+    ),
+    afterDepositAmountUSD: ctx.depositAmountUSD,
+    priceInfo: ctx.priceInfo,
+
+    props: ctx,
+  }))
   const { t } = useTranslation()
   const openModal = useModal()
 
@@ -109,11 +137,16 @@ export function OpenVaultDetails(props: OpenVaultState) {
   const liquidationPrice = zero
   const collateralizationRatio = zero
 
-  const afterDepositAmountUSD = props.depositAmountUSD
   const depositAmountUSD = zero
   const depositAmount = zero
 
-  const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const afterCollRatioColor = getCollRatioColor(
+    inputAmountsEmpty,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
+    afterCollateralizationRatio,
+  )
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'txSuccess'
   const inputAmountWasChanged = useHasChangedSinceFirstRender(inputAmountsEmpty)
@@ -154,7 +187,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
           relevant={inputAmountWasChanged}
         />
 
-        <VaultDetailsCardCurrentPrice {...props} />
+        <VaultDetailsCardCurrentPrice {...priceInfo} />
         <VaultDetailsCardCollateralLocked
           {...{
             depositAmount,

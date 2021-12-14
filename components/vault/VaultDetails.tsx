@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
@@ -22,22 +23,25 @@ export type AfterPillProps = {
 }
 
 export function getCollRatioColor(
-  { inputAmountsEmpty, ilkData }: CommonVaultState,
+  inputAmountsEmpty: boolean,
+  liquidationRatio: BigNumber,
+  collateralizationDangerThreshold: BigNumber,
+  collateralizationWarningThreshold: BigNumber,
   collateralizationRatio: BigNumber,
 ): CollRatioColor {
   const vaultWillBeAtRiskLevelDanger =
     !inputAmountsEmpty &&
-    collateralizationRatio.gte(ilkData.liquidationRatio) &&
-    collateralizationRatio.lte(ilkData.collateralizationDangerThreshold)
+    collateralizationRatio.gte(liquidationRatio) &&
+    collateralizationRatio.lte(collateralizationDangerThreshold)
 
   const vaultWillBeAtRiskLevelWarning =
     !inputAmountsEmpty &&
-    collateralizationRatio.gt(ilkData.collateralizationDangerThreshold) &&
-    collateralizationRatio.lte(ilkData.collateralizationWarningThreshold)
+    collateralizationRatio.gt(collateralizationDangerThreshold) &&
+    collateralizationRatio.lte(collateralizationWarningThreshold)
 
   const vaultWillBeUnderCollateralized =
     !inputAmountsEmpty &&
-    collateralizationRatio.lt(ilkData.liquidationRatio) &&
+    collateralizationRatio.lt(liquidationRatio) &&
     !collateralizationRatio.isZero()
 
   return collateralizationRatio.isZero()
@@ -49,9 +53,7 @@ export function getCollRatioColor(
     : 'onSuccess'
 }
 
-export function getPriceChangeColor({
-  priceInfo: { collateralPricePercentageChange },
-}: CommonVaultState) {
+export function getPriceChangeColor(collateralPricePercentageChange: BigNumber) {
   return collateralPricePercentageChange.isZero()
     ? 'text.muted'
     : collateralPricePercentageChange.gt(zero)
@@ -592,17 +594,14 @@ export function VaultDetailsCardLiquidationPrice({
   )
 }
 
-export function VaultDetailsCardCurrentPrice(props: CommonVaultState) {
-  const {
-    priceInfo: {
-      currentCollateralPrice,
-      nextCollateralPrice,
-      isStaticCollateralPrice,
-      collateralPricePercentageChange,
-    },
-  } = props
+export function VaultDetailsCardCurrentPrice({
+  currentCollateralPrice,
+  nextCollateralPrice,
+  isStaticCollateralPrice,
+  collateralPricePercentageChange,
+}: PriceInfo) {
   const openModal = useModal()
-  const priceChangeColor = getPriceChangeColor(props)
+  const priceChangeColor = getPriceChangeColor(collateralPricePercentageChange)
 
   const currentPrice = `$${formatAmount(currentCollateralPrice, 'USD')}`
   const nextPriceWithChange = (
