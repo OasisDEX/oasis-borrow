@@ -186,6 +186,7 @@
     "transfer": "Vault given to <0>{{transferTo}}</0> by <0>{{transferFrom}}</0>",
     "withdraw": "Withdrew <0>{{collateralAmount}} {{token}}</0> from Vault",
     "open_multiply_vault": "Open multiply Vault",
+    "open_multiply_guni_vault": "Open multiply Vault",
     "increase_multiple": "Increased multiple",
     "decrease_multiple": "Decreased multiple",
     "close_vault_to_dai": "Closed Vault, exited to Dai",

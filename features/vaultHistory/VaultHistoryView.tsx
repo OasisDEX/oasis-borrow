@@ -18,6 +18,7 @@ import { TFunction, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
+import { getToken } from '../../blockchain/tokensMetadata'
 import { interpolate } from '../../helpers/interpolate'
 import { splitEvents, VaultHistoryEvent } from './vaultHistory'
 
@@ -66,9 +67,10 @@ function MultiplyHistoryEventDetailsItem({ label, children }: { label: string } 
 
 function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
   const { t } = useTranslation()
-
+  const daiPrecision = getToken('DAI').precision
   const closeEvent =
     event.kind === 'CLOSE_VAULT_TO_DAI' || event.kind === 'CLOSE_VAULT_TO_COLLATERAL'
+  const guniVaultEvent = event.token.includes('GUNI')
 
   return (
     <Grid
@@ -91,6 +93,15 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
             </MultiplyHistoryEventDetailsItem>
           </>
         )}
+        {event.kind === 'OPEN_MULTIPLY_GUNI_VAULT' && (
+          <>
+            <MultiplyHistoryEventDetailsItem label={t('history.deposited')}>
+              {'depositDai' in event &&
+                formatCryptoBalance(event.depositDai.div(new BigNumber(10).pow(daiPrecision)))}{' '}
+              DAI
+            </MultiplyHistoryEventDetailsItem>
+          </>
+        )}
         {event.kind === 'INCREASE_MULTIPLE' && (
           <MultiplyHistoryEventDetailsItem label={t('history.bought')}>
             {'bought' in event && formatCryptoBalance(event.bought)} {event.token}
@@ -98,15 +109,20 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
         )}
         {(event.kind === 'DECREASE_MULTIPLE' || closeEvent) && (
           <MultiplyHistoryEventDetailsItem label={t('history.sold')}>
-            {'sold' in event && formatCryptoBalance(event.sold)} {event.token}
+            {'sold' in event && formatCryptoBalance(event.sold)}{' '}
+            {guniVaultEvent ? 'USDC' : event.token}
           </MultiplyHistoryEventDetailsItem>
         )}
-        <MultiplyHistoryEventDetailsItem label={t('system.oracle-price')}>
-          {'oraclePrice' in event && '$' + formatFiatBalance(event.oraclePrice!)}
-        </MultiplyHistoryEventDetailsItem>
-        <MultiplyHistoryEventDetailsItem label={t('system.market-price')}>
-          {'marketPrice' in event && '$' + formatFiatBalance(event.marketPrice)}
-        </MultiplyHistoryEventDetailsItem>
+        {!(closeEvent && guniVaultEvent) && (
+          <MultiplyHistoryEventDetailsItem label={t('system.oracle-price')}>
+            {'oraclePrice' in event && '$' + formatFiatBalance(event.oraclePrice!)}
+          </MultiplyHistoryEventDetailsItem>
+        )}
+        {event.kind !== 'OPEN_MULTIPLY_GUNI_VAULT' && (
+          <MultiplyHistoryEventDetailsItem label={t('system.market-price')}>
+            {'marketPrice' in event && '$' + formatFiatBalance(event.marketPrice)}
+          </MultiplyHistoryEventDetailsItem>
+        )}
 
         {!closeEvent && (
           <>
@@ -147,28 +163,32 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
         </MultiplyHistoryEventDetailsItem>
         {!closeEvent && (
           <>
-            <MultiplyHistoryEventDetailsItem label={t('system.coll-ratio')}>
-              {'beforeCollateralizationRatio' in event &&
-                event.beforeCollateralizationRatio.gt(0) &&
-                formatPercent(event.beforeCollateralizationRatio.times(100), {
-                  precision: 2,
-                  roundMode: BigNumber.ROUND_DOWN,
-                }) + `->`}
-              {'collateralizationRatio' in event &&
-                formatPercent(event.collateralizationRatio.times(100), {
-                  precision: 2,
-                  roundMode: BigNumber.ROUND_DOWN,
-                })}
-            </MultiplyHistoryEventDetailsItem>
+            {event.kind !== 'OPEN_MULTIPLY_GUNI_VAULT' && (
+              <MultiplyHistoryEventDetailsItem label={t('system.coll-ratio')}>
+                {'beforeCollateralizationRatio' in event &&
+                  event.beforeCollateralizationRatio.gt(0) &&
+                  formatPercent(event.beforeCollateralizationRatio.times(100), {
+                    precision: 2,
+                    roundMode: BigNumber.ROUND_DOWN,
+                  }) + `->`}
+                {'collateralizationRatio' in event &&
+                  formatPercent(event.collateralizationRatio.times(100), {
+                    precision: 2,
+                    roundMode: BigNumber.ROUND_DOWN,
+                  })}
+              </MultiplyHistoryEventDetailsItem>
+            )}
             <MultiplyHistoryEventDetailsItem label={t('net-value')}>
               {'netValue' in event && '$' + formatFiatBalance(event.netValue)}
             </MultiplyHistoryEventDetailsItem>
-            <MultiplyHistoryEventDetailsItem label={t('system.liquidation-price')}>
-              {'beforeLiquidationPrice' in event &&
-                event.beforeLiquidationPrice.gt(0) &&
-                `$` + formatFiatBalance(event.beforeLiquidationPrice) + `->`}
-              {'liquidationPrice' in event && '$' + formatFiatBalance(event.liquidationPrice)}
-            </MultiplyHistoryEventDetailsItem>
+            {event.kind !== 'OPEN_MULTIPLY_GUNI_VAULT' && (
+              <MultiplyHistoryEventDetailsItem label={t('system.liquidation-price')}>
+                {'beforeLiquidationPrice' in event &&
+                  event.beforeLiquidationPrice.gt(0) &&
+                  `$` + formatFiatBalance(event.beforeLiquidationPrice) + `->`}
+                {'liquidationPrice' in event && '$' + formatFiatBalance(event.liquidationPrice)}
+              </MultiplyHistoryEventDetailsItem>
+            )}
           </>
         )}
         <MultiplyHistoryEventDetailsItem label={t('history.total-fees')}>
@@ -197,6 +217,7 @@ function VaultHistoryItem({
 
   const isMultiplyEvent =
     item.kind === 'OPEN_MULTIPLY_VAULT' ||
+    item.kind === 'OPEN_MULTIPLY_GUNI_VAULT' ||
     item.kind === 'INCREASE_MULTIPLE' ||
     item.kind === 'DECREASE_MULTIPLE' ||
     item.kind === 'CLOSE_VAULT_TO_DAI' ||
