@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 import { Tooltip, useTooltip } from 'components/Tooltip'
 import { GasEstimationStatus } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
-import {  WithChildren } from 'helpers/types'
+import { WithChildren } from 'helpers/types'
 import React, { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
