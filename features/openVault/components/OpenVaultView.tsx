@@ -30,7 +30,7 @@ export function OpenVaultContainer() {
   }, [])
 
   return (
-    <>
+    <Container variant="vaultPageContainer">
       <Header />
       <Grid variant="vaultContainer">
         <Box>
@@ -46,7 +46,7 @@ export function OpenVaultContainer() {
           <OpenVaultForm />
         </Box>
       </Grid>
-    </>
+    </Container>
   )
 }
 
@@ -74,11 +74,9 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
     <WithErrorHandler error={openVaultWithError.error}>
       <WithLoadingIndicator value={openVaultWithError.value}>
         {(openVault) => (
-          <Container variant="vaultPageContainer">
-            <OpenBorrowVaultContext.Provider value={openVault}>
-              <OpenVaultContainer />
-            </OpenBorrowVaultContext.Provider>
-          </Container>
+          <OpenBorrowVaultContext.Provider value={openVault}>
+            <OpenVaultContainer />
+          </OpenBorrowVaultContext.Provider>
         )}
       </WithLoadingIndicator>
     </WithErrorHandler>
