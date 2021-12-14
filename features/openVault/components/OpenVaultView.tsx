@@ -10,8 +10,13 @@ import { Box, Container, Grid } from 'theme-ui'
 import { OpenVaultState } from '../openVault'
 import { createOpenVaultAnalytics$ } from '../openVaultAnalytics'
 import { Header } from './Header'
-import { OpenVaultDetails } from './OpenVaultDetails'
 import { OpenVaultForm } from './OpenVaultForm'
+
+import { CardCollateralizationRatio } from './details/CardCollateralizationRatio'
+import { CardCollateralLocked } from './details/CardCollateralLocked'
+import { CardCurrentPrice } from './details/CardCurrentPrice'
+import { CardLiquidationPrice } from './details/CardLiquidationPrice'
+import { OpenVaultDetailsSummary } from './details/Summary'
 
 export function OpenVaultContainer() {
   const { clear } = useSelectFromContext(OpenBorrowVaultContext, (ctx) => ({
@@ -29,7 +34,13 @@ export function OpenVaultContainer() {
       <Header />
       <Grid variant="vaultContainer">
         <Box>
-          <OpenVaultDetails />
+          <Grid variant="vaultDetailsCardsContainer">
+            <CardLiquidationPrice />
+            <CardCollateralizationRatio />
+            <CardCurrentPrice />
+            <CardCollateralLocked />
+          </Grid>
+          <OpenVaultDetailsSummary />
         </Box>
         <Box>
           <OpenVaultForm />
