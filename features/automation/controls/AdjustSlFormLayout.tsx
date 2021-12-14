@@ -20,28 +20,19 @@ export interface AdjustSlFormLayoutProps {
 
 export function AdjustSlFormLayout(props: AdjustSlFormLayoutProps) {
   return (
-    <Card
-      sx={{
-        borderRadius: 'large',
-        border: 'lightMuted',
-        boxShadow: 'vaultDetailsCard',
-        padding: '24px',
-      }}
-    >
-      <Grid columns={[1]}>
-        <Box>
-          <SliderValuePicker {...props.slValuePickerConfig} />
-        </Box>
-        <Box>
-          <PickCloseState {...props.closePickerConfig} />
-        </Box>
-        <Box>
-          <TxStatusSection txState={props.txState} />
-        </Box>
-        <Box>
-          <RetryableLoadingButton {...props.addTriggerConfig} />
-        </Box>
-      </Grid>
-    </Card>
+    <Grid columns={[1]}>
+      <Box>
+        <SliderValuePicker {...props.slValuePickerConfig} />
+      </Box>
+      <Box>
+        <PickCloseState {...props.closePickerConfig} />
+      </Box>
+      <Box>
+        <TxStatusSection txState={props.txState} />
+      </Box>
+      <Box>
+        <RetryableLoadingButton {...props.addTriggerConfig} />
+      </Box>
+    </Grid>
   )
 }

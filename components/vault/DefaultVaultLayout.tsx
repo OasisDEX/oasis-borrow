@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Grid } from 'theme-ui'
+import { Card, Grid } from 'theme-ui'
 
 export function DefaultVaultLayout({
   detailsViewControl,
@@ -20,7 +20,16 @@ export function DefaultVaultLayout({
           {detailsViewControl}
           {listControl}
         </Grid>
-        <Box>{editForm}</Box>
+        <Card
+          sx={{
+            borderRadius: 'large',
+            border: 'lightMuted',
+            boxShadow: 'vaultDetailsCard',
+            padding: '24px',
+          }}
+        >
+          {editForm}
+        </Card>
       </Grid>
     </>
   )

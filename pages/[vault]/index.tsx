@@ -6,6 +6,7 @@ import { DefaultVaultHeaderControl } from 'components/vault/DefaultVaultHeaderCo
 import { DefaultVaultLayout } from 'components/vault/DefaultVaultLayout'
 import { AdjustSlFormControl } from 'features/automation/controls/AdjustSlFormControl'
 import { ProtectionDetailsControl } from 'features/automation/controls/ProtectionDetailsControl'
+import { ProtectionFormControl } from 'features/automation/controls/ProtectionFormControl'
 import { VaultBannersView } from 'features/banners/VaultsBannersView'
 import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -44,7 +45,12 @@ export default function Vault({ id }: { id: string }) {
               protectionControl={
                 <DefaultVaultLayout
                   detailsViewControl={<ProtectionDetailsControl id={vaultId} />}
-                  editForm={<AdjustSlFormControl id={vaultId} />}
+                  editForm={
+                    <ProtectionFormControl
+                      adjustForm={<AdjustSlFormControl id={vaultId} />}
+                      cancelForm={<div>Cancel form</div>}
+                    />
+                  }
                   headerControl={<DefaultVaultHeaderControl vaultId={vaultId} />}
                 />
               }
