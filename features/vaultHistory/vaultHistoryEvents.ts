@@ -195,6 +195,12 @@ interface CloseVaultExitDaiMultipleEvent extends MultiplyBaseEvent {
   exitDai: BigNumber
 }
 
+interface CloseGuniVaultExitDaiMultipleEvent extends MultiplyBaseEvent {
+  kind: 'CLOSE_GUNI_VAULT_TO_DAI'
+  sold: BigNumber
+  exitDai: BigNumber
+}
+
 interface CloseVaultExitCollateralMultipleEvent extends MultiplyBaseEvent {
   kind: 'CLOSE_VAULT_TO_COLLATERAL'
   sold: BigNumber
@@ -208,6 +214,7 @@ export type MultiplyEvent =
   | IncreaseMultipleEvent
   | DecreaseMultipleEvent
   | CloseVaultExitDaiMultipleEvent
+  | CloseGuniVaultExitDaiMultipleEvent
   | CloseVaultExitCollateralMultipleEvent
 
 export interface ReturnedEvent {

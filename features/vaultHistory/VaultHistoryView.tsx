@@ -18,7 +18,6 @@ import { TFunction, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
-import { getToken } from '../../blockchain/tokensMetadata'
 import { interpolate } from '../../helpers/interpolate'
 import { splitEvents, VaultHistoryEvent } from './vaultHistory'
 
@@ -67,9 +66,10 @@ function MultiplyHistoryEventDetailsItem({ label, children }: { label: string } 
 
 function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
   const { t } = useTranslation()
-  const daiPrecision = getToken('DAI').precision
   const closeEvent =
-    event.kind === 'CLOSE_VAULT_TO_DAI' || event.kind === 'CLOSE_VAULT_TO_COLLATERAL'
+    event.kind === 'CLOSE_VAULT_TO_DAI' ||
+    event.kind === 'CLOSE_VAULT_TO_COLLATERAL' ||
+    event.kind === 'CLOSE_GUNI_VAULT_TO_DAI'
   const guniVaultEvent = event.token.includes('GUNI')
 
   return (
@@ -96,9 +96,7 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
         {event.kind === 'OPEN_MULTIPLY_GUNI_VAULT' && (
           <>
             <MultiplyHistoryEventDetailsItem label={t('history.deposited')}>
-              {'depositDai' in event &&
-                formatCryptoBalance(event.depositDai.div(new BigNumber(10).pow(daiPrecision)))}{' '}
-              DAI
+              {'depositDai' in event && formatCryptoBalance(event.depositDai)} DAI
             </MultiplyHistoryEventDetailsItem>
           </>
         )}
@@ -143,7 +141,7 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
             </MultiplyHistoryEventDetailsItem>
           </>
         )}
-        {event.kind === 'CLOSE_VAULT_TO_DAI' && (
+        {(event.kind === 'CLOSE_VAULT_TO_DAI' || event.kind === 'CLOSE_GUNI_VAULT_TO_DAI') && (
           <MultiplyHistoryEventDetailsItem label={t('history.exit-dai')}>
             {'exitDai' in event && formatCryptoBalance(event.exitDai)} DAI
           </MultiplyHistoryEventDetailsItem>
@@ -221,6 +219,7 @@ function VaultHistoryItem({
     item.kind === 'INCREASE_MULTIPLE' ||
     item.kind === 'DECREASE_MULTIPLE' ||
     item.kind === 'CLOSE_VAULT_TO_DAI' ||
+    item.kind === 'CLOSE_GUNI_VAULT_TO_DAI' ||
     item.kind === 'CLOSE_VAULT_TO_COLLATERAL'
 
   return (
