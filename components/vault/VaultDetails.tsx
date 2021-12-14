@@ -593,12 +593,19 @@ export function VaultDetailsCardLiquidationPrice({
   )
 }
 
+type VaultDetailsCardCardCurrentPriceProps = {
+  currentCollateralPrice: BigNumber
+  nextCollateralPrice: BigNumber
+  isStaticCollateralPrice: boolean
+  collateralPricePercentageChange: BigNumber
+}
+
 export function VaultDetailsCardCurrentPrice({
   currentCollateralPrice,
   nextCollateralPrice,
   isStaticCollateralPrice,
   collateralPricePercentageChange,
-}: PriceInfo) {
+}: VaultDetailsCardCardCurrentPriceProps) {
   const openModal = useModal()
   const priceChangeColor = getPriceChangeColor(collateralPricePercentageChange)
 

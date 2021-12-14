@@ -12,6 +12,7 @@ import { useSelectFromContext } from 'helpers/useSelectFromContext'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+
 import { OpenBorrowVaultContext } from '../OpenVaultView'
 
 export function OpenVaultDetailsSummary() {
@@ -48,13 +49,6 @@ export function OpenVaultDetailsSummary() {
 
   const { symbol } = getToken(token)
   const { t } = useTranslation()
-
-  // initial values only to show in UI as starting parameters
-  const liquidationPrice = zero
-  const collateralizationRatio = zero
-
-  const depositAmountUSD = zero
-  const depositAmount = zero
 
   const afterCollRatioColor = getCollRatioColor(
     inputAmountsEmpty,
