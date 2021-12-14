@@ -1,6 +1,7 @@
 import { Button, Divider, Grid } from '@theme-ui/components'
 import React from 'react'
-import { useTranslation } from 'react-i18next/*'
+import { useTranslation } from 'react-i18next'
+
 import { Forms } from './ProtectionFormControl'
 
 export function ProtectionFormLayout({
