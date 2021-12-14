@@ -8,21 +8,23 @@ interface Props {
   cancelForm: JSX.Element
 }
 
-export enum Forms {
+export enum ProtectionForms {
   ADJUST,
   CANCEL,
 }
 
 export function ProtectionFormControl({ adjustForm, cancelForm }: Props) {
-  const [currentForm, setForm] = useState(Forms.ADJUST)
+  const [currentForm, setForm] = useState(ProtectionForms.ADJUST)
 
   const toggleForms = useCallback(() => {
-    setForm(currentForm === Forms.ADJUST ? Forms.CANCEL : Forms.ADJUST)
+    setForm((prevState) =>
+      prevState === ProtectionForms.ADJUST ? ProtectionForms.CANCEL : ProtectionForms.ADJUST,
+    )
   }, [currentForm])
 
   return (
     <ProtectionFormLayout currentForm={currentForm} toggleForm={toggleForms}>
-      {currentForm === Forms.ADJUST ? adjustForm : cancelForm}
+      {currentForm === ProtectionForms.ADJUST ? adjustForm : cancelForm}
     </ProtectionFormLayout>
   )
 }

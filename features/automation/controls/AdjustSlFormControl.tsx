@@ -270,8 +270,8 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
         ]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([vault, collateralPrice, ilksData, triggerData, tx, ctx]) => {
-          return renderLayout(
+        {([vault, collateralPrice, ilksData, triggerData, tx, ctx]) =>
+          renderLayout(
             vault,
             collateralPrice,
             ilksData,
@@ -279,7 +279,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
             tx,
             ctx.account !== vault.controller,
           )
-        }}
+        }
       </WithLoadingIndicator>
     </WithErrorHandler>
   )
