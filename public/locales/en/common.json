@@ -484,22 +484,22 @@
   "setup-proxy": "Setup Proxy",
   "setup-wallet": "Setup your wallet",
   "show-more": "Show more",
-  "slider":{
-    "adjust-multiply":{
-      "introduction-header":"Adjust your multiply",
-      "introduction-content":"",
-      "left-label":"Liquidation Price",
-      "right-label":"Collateral Ratio",
-      "left-footer":"Decrease risk",
-      "right-footer":"Increase risk"
+  "slider": {
+    "adjust-multiply": {
+      "introduction-header": "Adjust your multiply",
+      "introduction-content": "",
+      "left-label": "Liquidation Price",
+      "right-label": "Collateral Ratio",
+      "left-footer": "Decrease risk",
+      "right-footer": "Increase risk"
     },
-    "set-stoploss":{
-      "introduction-header":"Set downside protection",
-      "introduction-content":"Some intro text. Some more text, even more, even more, even more, even more, even more, even more, even more {{ link }}",
-      "left-label":"Stop loss coll.ratio",
-      "right-label":"Dynamic stop price",
-      "left-footer":"Bigger loss",
-      "right-footer":"More likely execution"
+    "set-stoploss": {
+      "introduction-header": "Set downside protection",
+      "introduction-content": "Some intro text. Some more text, even more, even more, even more, even more, even more, even more, even more {{ link }}",
+      "left-label": "Stop loss coll.ratio",
+      "right-label": "Dynamic stop price",
+      "left-footer": "Bigger loss",
+      "right-footer": "More likely execution"
     }
   },
   "spots-remaining": "{{ spots }} spots remaining",
@@ -728,6 +728,10 @@
       "subtext": "Borrow up to {{maxBorrow}} DAI for every $100,000 worth of {{token}}",
       "button": "Borrow against {{token}}"
     }
+  },
+  "protection": {
+    "navigate-cancel": "Cancel downside protection",
+    "navigate-adjust": "Return to adjusting stop loss"
   },
   "modal-trezor-eip1559-title": "Trezor with Metamask does not support EIP-1559",
   "modal-trezor-eip1559-paragraph1": "Oasis.app has recently updated all transactions to support EIP-1559. Doing EIP-1559 transactions with Trezor through metamask is currently not supported, see <0>here</0>.",
