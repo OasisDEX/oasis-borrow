@@ -1,14 +1,13 @@
 import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
 import { formatCryptoBalance } from 'helpers/formatters/format'
+import { pick } from 'helpers/pick'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useSelectFromContext } from 'helpers/useSelectFromContext'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
-import { pick } from 'helpers/pick'
 
-import { OpenVaultState } from '../openVault'
 import { OpenVaultErrorMessage } from '../openVaultValidations'
 import { OpenBorrowVaultContext } from './OpenVaultView'
 

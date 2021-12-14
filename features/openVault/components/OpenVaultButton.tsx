@@ -10,7 +10,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Divider, Flex, Spinner, Text } from 'theme-ui'
 
-import { OpenVaultStage, OpenVaultState } from '../openVault'
+import { OpenVaultStage } from '../openVault'
 import { OpenBorrowVaultContext } from './OpenVaultView'
 
 function openVaultPrimaryButtonText(

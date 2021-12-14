@@ -8,14 +8,13 @@ import {
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { pick } from 'helpers/pick'
 import { useSelectFromContext } from 'helpers/useSelectFromContext'
 import { zero } from 'helpers/zero'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { OpenVaultState } from '../openVault'
 import { OpenBorrowVaultContext } from './OpenVaultView'
-import { pick } from 'helpers/pick'
 
 export function OpenVaultChangesInformation() {
   const { t } = useTranslation()

@@ -7,7 +7,6 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
-import { OpenVaultState } from '../openVault'
 import { OpenVaultWarningMessage } from '../openVaultValidations'
 import { OpenBorrowVaultContext } from './OpenVaultView'
 

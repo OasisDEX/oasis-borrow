@@ -1,12 +1,11 @@
 import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
 import { handleNumericInput } from 'helpers/input'
-import { useSelectFromContext } from 'helpers/useSelectFromContext'
 import { pick } from 'helpers/pick'
+import { useSelectFromContext } from 'helpers/useSelectFromContext'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Divider, Grid, Text } from 'theme-ui'
 
-import { OpenVaultState } from '../openVault'
 import { OpenVaultChangesInformation } from './OpenVaultChangesInformation'
 import { OpenBorrowVaultContext } from './OpenVaultView'
 
@@ -29,7 +28,6 @@ export function OpenVaultEditing() {
     showGenerateOption,
     toggleGenerateOption,
     currentCollateralPrice,
-    props,
   } = useSelectFromContext(OpenBorrowVaultContext, (ctx) => ({
     ...pick(
       ctx,
@@ -49,7 +47,6 @@ export function OpenVaultEditing() {
       'toggleGenerateOption',
     ),
     currentCollateralPrice: ctx.priceInfo.currentCollateralPrice,
-    props: ctx,
   }))
 
   const showGenerateOptionButton = depositAmount && !depositAmount.isZero()
