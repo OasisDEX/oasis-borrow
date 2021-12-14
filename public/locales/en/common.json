@@ -484,14 +484,14 @@
   "setup-proxy": "Setup Proxy",
   "setup-wallet": "Setup your wallet",
   "show-more": "Show more",
-  "slider":{
-    "adjust-multiply":{
-      "introduction-header":"Adjust your multiply",
-      "introduction-content":"",
-      "left-label":"Liquidation Price",
-      "right-label":"Collateral Ratio",
-      "left-footer":"Decrease risk",
-      "right-footer":"Increase risk"
+  "slider": {
+    "adjust-multiply": {
+      "introduction-header": "Adjust your multiply",
+      "introduction-content": "",
+      "left-label": "Liquidation Price",
+      "right-label": "Collateral Ratio",
+      "left-footer": "Decrease risk",
+      "right-footer": "Increase risk"
     },
     "set-stoploss":{
       "introduction-header":"Set downside protection",
@@ -500,6 +500,16 @@
       "right-label":"Dynamic stop price",
       "left-footer":"Bigger loss",
       "right-footer":"More likely execution"
+    },
+    "cancel-stoploss":{
+      "introduction-header": "Cancellation confirmation",
+    "set-stoploss": {
+      "introduction-header": "Set downside protection",
+      "introduction-content": "Some intro text. Some more text, even more, even more, even more, even more, even more, even more, even more {{ link }}",
+      "left-label": "Stop loss coll.ratio",
+      "right-label": "Dynamic stop price",
+      "left-footer": "Bigger loss",
+      "right-footer": "More likely execution"
     },
     "cancel-stoploss":{
       "introduction-header": "Cancellation confirmation"
@@ -732,8 +742,13 @@
       "button": "Borrow against {{token}}"
     }
   },
+  "protection": {
+    "navigate-cancel": "Cancel downside protection",
+    "navigate-adjust": "Return to adjusting stop loss"
+  },
   "modal-trezor-eip1559-title": "Trezor with Metamask does not support EIP-1559",
   "modal-trezor-eip1559-paragraph1": "Oasis.app has recently updated all transactions to support EIP-1559. Doing EIP-1559 transactions with Trezor through metamask is currently not supported, see <0>here</0>.",
   "modal-trezor-eip1559-paragraph2": "You can continue to use Metamask with Trezor with legacy transactions on our environment here: <0>legacy.oasis.app</0>.",
   "modal-trezor-eip1559-paragraph3": "Alternatively, if you have a Model T Trezor you can <0>connect</0> directly to Oasis.app."
+}
 }
