@@ -500,6 +500,9 @@
       "right-label":"Dynamic stop price",
       "left-footer":"Bigger loss",
       "right-footer":"More likely execution"
+    },
+    "cancel-stoploss":{
+      "introduction-header": "Cancellation confirmation"
     }
   },
   "spots-remaining": "{{ spots }} spots remaining",
