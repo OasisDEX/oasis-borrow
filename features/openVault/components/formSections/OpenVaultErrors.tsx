@@ -8,8 +8,8 @@ import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
-import { OpenVaultErrorMessage } from '../openVaultValidations'
-import { OpenBorrowVaultContext } from './OpenVaultView'
+import { OpenVaultErrorMessage } from '../../openVaultValidations'
+import { OpenBorrowVaultContext } from '../OpenVaultView'
 
 export function OpenVaultErrors() {
   const { t } = useTranslation()

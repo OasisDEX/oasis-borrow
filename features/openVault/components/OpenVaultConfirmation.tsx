@@ -1,14 +1,18 @@
-import BigNumber from 'bignumber.js'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
+import { pick } from 'helpers/pick'
+import { useSelectFromContext } from 'helpers/useSelectFromContext'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Divider } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 
-import { OpenVaultStage, OpenVaultState } from '../openVault'
 import { OpenVaultChangesInformation } from './OpenVaultChangesInformation'
+import { OpenBorrowVaultContext } from './OpenVaultView'
 
-export function OpenVaultConfirmation({ stage }: { stage: OpenVaultStage }) {
+export function OpenVaultConfirmation() {
+  const { stage } = useSelectFromContext(OpenBorrowVaultContext, (ctx) => ({
+    ...pick(ctx, 'stage'),
+  }))
   return stage === 'txInProgress' ? (
     <OpenVaultAnimation />
   ) : (
@@ -19,15 +23,14 @@ export function OpenVaultConfirmation({ stage }: { stage: OpenVaultStage }) {
   )
 }
 
-type OpenVaultStatusProps = {
-  stage: OpenVaultState['stage']
-  id?: BigNumber
-  etherscan?: string
-  openTxHash?: string
-}
-
-export function OpenVaultStatus({ stage, id, etherscan, openTxHash }: OpenVaultStatusProps) {
+export function OpenVaultStatus() {
   const { t } = useTranslation()
+  const { stage, etherscan, id, openTxHash } = useSelectFromContext(
+    OpenBorrowVaultContext,
+    (ctx) => ({
+      ...pick(ctx, 'stage', 'etherscan', 'id', 'openTxHash'),
+    }),
+  )
 
   if (stage === 'txInProgress') {
     return (

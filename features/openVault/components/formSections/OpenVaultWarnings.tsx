@@ -7,8 +7,8 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
-import { OpenVaultWarningMessage } from '../openVaultValidations'
-import { OpenBorrowVaultContext } from './OpenVaultView'
+import { OpenVaultWarningMessage } from '../../openVaultValidations'
+import { OpenBorrowVaultContext } from '../OpenVaultView'
 
 export function OpenVaultWarnings() {
   const { warningMessages, debtFloor } = useSelectFromContext(OpenBorrowVaultContext, (ctx) => ({
