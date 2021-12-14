@@ -247,9 +247,10 @@ function getCumulativeDepositUSD(total: BigNumber, event: VaultEvent) {
     case 'WITHDRAW-PAYBACK':
       return total.plus(event.daiAmount.abs())
     case 'OPEN_MULTIPLY_VAULT':
-    case 'OPEN_MULTIPLY_GUNI_VAULT':
     case 'INCREASE_MULTIPLE':
       return total.plus(event.depositCollateral.times(event.marketPrice)).plus(event.depositDai)
+    case 'OPEN_MULTIPLY_GUNI_VAULT':
+      return total.plus(event.depositDai)
     case 'MOVE_DEST':
       return total.plus(event.collateralAmount.times(event.oraclePrice))
     default:
