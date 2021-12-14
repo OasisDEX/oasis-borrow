@@ -237,7 +237,7 @@ const hardhat: NetworkConfig = {
   infuraUrl: `http://localhost:8545`,
   infuraUrlWS: `ws://localhost:8545`,
   cacheApi: 'http://localhost:3001/v1',
-  dssMultiplyProxyActions: contractDesc(
+  /* dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions ||
       '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
@@ -247,7 +247,7 @@ const hardhat: NetworkConfig = {
     exchange,
     getConfig()?.publicRuntimeConfig?.exchangeAddress ||
       '0x4C4a2f8c81640e47606d3fd77B353E87Ba015584',
-  ),
+  ), */
 }
 
 export const networksById = keyBy([main, kovan, hardhat, goerli], 'id')
