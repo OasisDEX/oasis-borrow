@@ -493,16 +493,6 @@
       "left-footer": "Decrease risk",
       "right-footer": "Increase risk"
     },
-    "set-stoploss":{
-      "introduction-header":"Set downside protection",
-      "introduction-content":"Some intro text. Some more text, even more, even more, even more, even more, even more, even more, even more {{ link }}",
-      "left-label":"Stop loss coll.ratio",
-      "right-label":"Dynamic stop price",
-      "left-footer":"Bigger loss",
-      "right-footer":"More likely execution"
-    },
-    "cancel-stoploss":{
-      "introduction-header": "Cancellation confirmation",
     "set-stoploss": {
       "introduction-header": "Set downside protection",
       "introduction-content": "Some intro text. Some more text, even more, even more, even more, even more, even more, even more, even more {{ link }}",
@@ -510,10 +500,14 @@
       "right-label": "Dynamic stop price",
       "left-footer": "Bigger loss",
       "right-footer": "More likely execution"
-    },
-    "cancel-stoploss":{
-      "introduction-header": "Cancellation confirmation"
     }
+  },
+  "cancel-stoploss": {
+    "header": "Cancellation confirmation",
+    "description": "To cancel the stop loss you’ll need to click the button below and confirm the transaction.",
+    "summary-header": "Cancel stop loss order summary",
+    "liquidation": "Liquidation price after cancellation",
+    "total": "Total transaction cost"
   },
   "spots-remaining": "{{ spots }} spots remaining",
   "start-saving": "Start Saving",
@@ -750,5 +744,4 @@
   "modal-trezor-eip1559-paragraph1": "Oasis.app has recently updated all transactions to support EIP-1559. Doing EIP-1559 transactions with Trezor through metamask is currently not supported, see <0>here</0>.",
   "modal-trezor-eip1559-paragraph2": "You can continue to use Metamask with Trezor with legacy transactions on our environment here: <0>legacy.oasis.app</0>.",
   "modal-trezor-eip1559-paragraph3": "Alternatively, if you have a Model T Trezor you can <0>connect</0> directly to Oasis.app."
-}
 }
