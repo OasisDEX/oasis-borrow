@@ -94,7 +94,7 @@ export interface TxStateDependencies {
 }
 
 export function openGuniVault<S extends TxStateDependencies>(
-  { sendWithGasEstimation }: TxHelpers,
+  { sendWithGasEstimation, send }: TxHelpers,
   change: (ch: TxChange) => void,
   {
     depositAmount,
@@ -112,7 +112,7 @@ export function openGuniVault<S extends TxStateDependencies>(
     minToTokenAmount,
   }: S,
 ) {
-  return sendWithGasEstimation(openGuniMultiplyVault, {
+  return send(openGuniMultiplyVault, {
     kind: TxMetaKind.openGuni,
     depositCollateral: depositAmount || zero,
     userAddress: account,
