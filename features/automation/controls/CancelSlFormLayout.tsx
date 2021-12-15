@@ -37,14 +37,16 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
         </Text>
         <Grid columns={2}>
         <Box>
-        <Text >
+        <Text variant="subheader">
           {liquidation}
         </Text>
         </Box>
         <Box>$2303.57</Box>
-        <Box>    <Text >
-          {total}
-        </Text></Box>
+        <Box>
+          <Text variant="subheader">
+            {total}
+          </Text>
+        </Box>
         <Box>$250.00</Box>
 
         </Grid>

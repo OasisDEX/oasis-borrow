@@ -158,51 +158,6 @@ export function CancelSlFormControl({ id }: { id: BigNumber }) {
       setSelectedSLValue(startingSlRatio.multipliedBy(100))
     }, [])
 
-    const closeProps: PickCloseStateProps = {
-      optionNames: validOptions,
-      onclickHandler: (optionName: string) => {
-        setCloseToCollateral(optionName === validOptions[0])
-        dispatch({
-          type: 'close-type',
-          toCollateral: optionName === validOptions[0],
-        })
-      },
-      isCollateralActive: collateralActive,
-      collateralTokenSymbol: token,
-      collateralTokenIconCircle: tokenData.iconCircle,
-    }
-
-    const sliderProps: SliderValuePickerProps = {
-      disabled: false,
-      leftBoundry: selectedSLValue,
-      rightBoundry: afterNewLiquidationPrice,
-      sliderKey: 'cancel-stoploss',
-      lastValue: selectedSLValue,
-      leftBoundryFormatter: (x: BigNumber) => formatPercent(x),
-      leftBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right' },
-      rightBoundryFormatter: (x: BigNumber) => '$ ' + formatAmount(x, 'USD'),
-      rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
-      step: 0.05,
-      maxBoundry: maxBoundry.multipliedBy(100),
-      minBoundry: liqRatio.multipliedBy(100),
-      onChange: (slCollRatio) => {
-        setSelectedSLValue(slCollRatio)
-        /*TO DO: this is duplicated and can be extracted*/
-        const currentCollRatio = vaultData.lockedCollateral
-          .multipliedBy(currentCollateralData.currentPrice)
-          .dividedBy(vaultData.debt)
-        const computedAfterLiqPrice = slCollRatio
-          .dividedBy(100)
-          .multipliedBy(currentCollateralData.currentPrice)
-          .dividedBy(currentCollRatio)
-        /* END OF DUPLICATION */
-        setAfterLiqPrice(computedAfterLiqPrice)
-        dispatch({
-          type: 'stop-loss',
-          stopLoss: slCollRatio,
-        })
-      },
-    }
 
     const addTriggerConfig: RetryableLoadingButtonProps = {
       translationKey: 'add-stop-loss',
@@ -268,8 +223,8 @@ export function CancelSlFormControl({ id }: { id: BigNumber }) {
         ]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([v, c, i, s, tx, ctx]) => {
-          return renderLayout(v, c, i, extractSLData(s), tx, ctx.account !== v.controller)
+        {([vault, collateralPrice, ilksData, triggerData, tx, ctx]) => {
+          return renderLayout(vault, collateralPrice, ilksData, extractSLData(triggerData), tx, ctx.account !== vault.controller)
         }}
       </WithLoadingIndicator>
     </WithErrorHandler>
