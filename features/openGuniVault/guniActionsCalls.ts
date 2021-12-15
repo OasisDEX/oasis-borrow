@@ -94,7 +94,7 @@ export interface TxStateDependencies {
 }
 
 export function openGuniVault<S extends TxStateDependencies>(
-  { sendWithGasEstimation, send }: TxHelpers,
+  { send }: TxHelpers,
   change: (ch: TxChange) => void,
   {
     depositAmount,
