@@ -7,7 +7,6 @@ import { pick } from 'helpers/pick'
 import { useHasChangedSinceFirstRender } from 'helpers/useHasChangedSinceFirstRender'
 import { useSelectFromContext } from 'helpers/useSelectFromContext'
 import { zero } from 'helpers/zero'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { OpenBorrowVaultContext } from '../OpenVaultView'
