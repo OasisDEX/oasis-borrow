@@ -502,6 +502,13 @@
       "right-footer": "More likely execution"
     }
   },
+  "cancel-stoploss": {
+    "header": "Cancellation confirmation",
+    "description": "To cancel the stop loss you’ll need to click the button below and confirm the transaction.",
+    "summary-header": "Cancel stop loss order summary",
+    "liquidation": "Liquidation price after cancellation",
+    "total": "Total transaction cost"
+  },
   "spots-remaining": "{{ spots }} spots remaining",
   "start-saving": "Start Saving",
   "system": {

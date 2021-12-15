@@ -11,13 +11,10 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
-import { PickCloseStateProps } from 'components/dumb/PickCloseState'
-import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { ethers } from 'ethers'
 import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservableWithError, useUIChanges } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
 import { useEffect, useState } from 'react'
@@ -158,7 +155,6 @@ export function CancelSlFormControl({ id }: { id: BigNumber }) {
       setSelectedSLValue(startingSlRatio.multipliedBy(100))
     }, [])
 
-
     const addTriggerConfig: RetryableLoadingButtonProps = {
       translationKey: 'add-stop-loss',
       onClick: (finishLoader: (succeded: boolean) => void) => {
@@ -194,6 +190,7 @@ export function CancelSlFormControl({ id }: { id: BigNumber }) {
     }
 
     const props: CancelSlFormLayoutProps = {
+      liquidationPrice: vaultData.liquidationPrice,
       addTriggerConfig: addTriggerConfig,
       txState: txStatus,
     }

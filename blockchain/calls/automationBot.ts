@@ -42,3 +42,5 @@ export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData
     return [automationBot.address, getAddAutomationTriggerCallData(data, context).encodeABI()]
   },
 }
+
+// export const removeAutomationBotTrigger: TransactionDef<AutomationBotRemoveTriggerData> 

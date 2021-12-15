@@ -1,6 +1,8 @@
 import { TxState } from '@oasisdex/transactions'
 import { Box, Grid, Text } from '@theme-ui/components'
+import BigNumber from 'bignumber.js'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -10,6 +12,7 @@ import {
 } from '../../../components/dumb/RetryableLoadingButton'
 
 export interface CancelSlFormLayoutProps {
+  liquidationPrice: BigNumber
   addTriggerConfig: RetryableLoadingButtonProps
   txState?: TxState<AutomationBotAddTriggerData>
 }
@@ -41,7 +44,9 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
           {liquidation}
         </Text>
         </Box>
-        <Box>$2303.57</Box>
+        <Box>
+        {`$${formatCryptoBalance(props.liquidationPrice)}`}
+        </Box>
         <Box>
           <Text variant="subheader">
             {total}
