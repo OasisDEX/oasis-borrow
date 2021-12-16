@@ -32,7 +32,7 @@ export function VaultErrors({
   if (!errorMessages.length) return null
 
   function applyErrorMessageTranslation(message: VaultErrorMessage) {
-    const translate = (key: string, args?: Dictionary<any>) => t(`open-vault.errors.${key}`, args)
+    const translate = (key: string, args?: Dictionary<any>) => t(`vault-errors.${key}`, args)
     switch (message) {
       case 'depositAmountExceedsCollateralBalance':
         return translate('deposit-amount-exceeds-collateral-balance')
@@ -53,7 +53,7 @@ export function VaultErrors({
       case 'generateAmountLessThanDebtFloor':
         return (
           <Trans
-            i18nKey="open-vault.errors.generate-amount-less-than-debt-floor"
+            i18nKey="vault-errors.generate-amount-less-than-debt-floor"
             values={{ debtFloor: formatCryptoBalance(debtFloor) }}
             components={[
               <AppLink
@@ -110,7 +110,7 @@ export function VaultErrors({
       case 'withdrawCollateralOnVaultUnderDebtFloor':
         return (
           <Trans
-            i18nKey="manage-vault.errors.withdraw-collateral-on-vault-under-debt-floor"
+            i18nKey="vault-errors.withdraw-collateral-on-vault-under-debt-floor"
             values={{ debtFloor: formatCryptoBalance(debtFloor) }}
             components={[
               <AppLink
@@ -123,7 +123,7 @@ export function VaultErrors({
       case 'depositCollateralOnVaultUnderDebtFloor':
         return (
           <Trans
-            i18nKey="manage-vault.errors.deposit-collateral-on-vault-under-debt-floor"
+            i18nKey="vault-errors.deposit-collateral-on-vault-under-debt-floor"
             values={{ debtFloor: formatCryptoBalance(debtFloor) }}
             components={[
               <AppLink
