@@ -1,6 +1,6 @@
 import { VaultErrorMessage } from '../openMultiplyVault/openMultiplyVaultValidations'
 
-interface FormValidationInput {
+interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean
   generateAmountExceedsDebtCeiling?: boolean
   exchangeError?: boolean
@@ -56,7 +56,7 @@ export function errorMessagesHandler({
   depositCollateralOnVaultUnderDebtFloor,
   hasToDepositCollateralOnEmptyVault,
   shouldShowExchangeError,
-}: FormValidationInput) {
+}: ErrorMessagesHandler) {
   const errorMessages: VaultErrorMessage[] = []
 
   if (depositAmountExceedsCollateralBalance) {

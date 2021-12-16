@@ -3,6 +3,7 @@ import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
+import { isNullish } from '../../helpers/functions'
 import { OpenGuniVaultState, Stage } from './openGuniVault'
 
 const defaultOpenVaultStageCategories = {
@@ -89,6 +90,7 @@ export interface GuniOpenMultiplyVaultConditions {
   customAllowanceAmountExceedsMaxUint256: boolean
   customAllowanceAmountLessThanDepositAmount: boolean
   insufficientAllowance: boolean
+  potentialGenerateAmountLessThanDebtFloor: boolean
 
   isLoadingStage: boolean
   canProgress: boolean
@@ -110,6 +112,7 @@ export const defaultGuniOpenMultiplyVaultConditions: GuniOpenMultiplyVaultCondit
   customAllowanceAmountExceedsMaxUint256: false,
   customAllowanceAmountLessThanDepositAmount: false,
   insufficientAllowance: false,
+  potentialGenerateAmountLessThanDebtFloor: false,
 
   isLoadingStage: false,
   canProgress: false,
@@ -179,6 +182,9 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
 
   const isExchangeLoading = !quote && !swap && !exchangeError
 
+  const potentialGenerateAmountLessThanDebtFloor =
+    !isNullish(depositAmount) && afterOutstandingDebt.lt(ilkData.debtFloor)
+
   const canProgress =
     !(
       inputAmountsEmpty ||
@@ -215,6 +221,7 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     customAllowanceAmountExceedsMaxUint256,
     customAllowanceAmountLessThanDepositAmount,
     insufficientAllowance,
+    potentialGenerateAmountLessThanDebtFloor,
 
     isLoadingStage,
     canProgress,

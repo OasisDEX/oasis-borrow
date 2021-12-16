@@ -1,7 +1,9 @@
-import { isNullish } from 'helpers/functions'
-
 import { errorMessagesHandler } from '../form/errorMessagesHandler'
-import { VaultErrorMessage } from '../openMultiplyVault/openMultiplyVaultValidations'
+import { warningMessagesHandler } from '../form/warningMessagesHandler'
+import {
+  VaultErrorMessage,
+  VaultWarningMessage,
+} from '../openMultiplyVault/openMultiplyVaultValidations'
 import { OpenVaultState } from './openVault'
 
 export function validateErrors(state: OpenVaultState): OpenVaultState {
@@ -53,50 +55,31 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
   return { ...state, errorMessages }
 }
 
-export type OpenVaultWarningMessage =
-  | 'potentialGenerateAmountLessThanDebtFloor'
-  | 'vaultWillBeAtRiskLevelDanger'
-  | 'vaultWillBeAtRiskLevelWarning'
-  | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
-  | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
-
 export function validateWarnings(state: OpenVaultState): OpenVaultState {
   const {
-    depositAmount,
     errorMessages,
-    daiYieldFromDepositingCollateral,
-    ilkData,
     isEditingStage,
     vaultWillBeAtRiskLevelDanger,
     vaultWillBeAtRiskLevelDangerAtNextPrice,
     vaultWillBeAtRiskLevelWarning,
     vaultWillBeAtRiskLevelWarningAtNextPrice,
+    potentialGenerateAmountLessThanDebtFloor,
   } = state
 
-  const warningMessages: OpenVaultWarningMessage[] = []
+  const warningMessages: VaultWarningMessage[] = []
 
   if (errorMessages.length) return { ...state, warningMessages }
 
   if (isEditingStage) {
-    if (!isNullish(depositAmount) && daiYieldFromDepositingCollateral.lt(ilkData.debtFloor)) {
-      warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
-    }
-
-    if (vaultWillBeAtRiskLevelDanger) {
-      warningMessages.push('vaultWillBeAtRiskLevelDanger')
-    }
-
-    if (vaultWillBeAtRiskLevelDangerAtNextPrice) {
-      warningMessages.push('vaultWillBeAtRiskLevelDangerAtNextPrice')
-    }
-
-    if (vaultWillBeAtRiskLevelWarning) {
-      warningMessages.push('vaultWillBeAtRiskLevelWarning')
-    }
-
-    if (vaultWillBeAtRiskLevelWarningAtNextPrice) {
-      warningMessages.push('vaultWillBeAtRiskLevelWarningAtNextPrice')
-    }
+    warningMessages.push(
+      ...warningMessagesHandler({
+        potentialGenerateAmountLessThanDebtFloor,
+        vaultWillBeAtRiskLevelDanger,
+        vaultWillBeAtRiskLevelDangerAtNextPrice,
+        vaultWillBeAtRiskLevelWarning,
+        vaultWillBeAtRiskLevelWarningAtNextPrice,
+      }),
+    )
   }
   return { ...state, warningMessages }
 }

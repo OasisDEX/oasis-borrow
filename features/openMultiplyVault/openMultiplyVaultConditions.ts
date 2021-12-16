@@ -3,6 +3,7 @@ import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
+import { isNullish } from '../../helpers/functions'
 import { OpenMultiplyVaultStage, OpenMultiplyVaultState } from './openMultiplyVault'
 
 const defaultOpenVaultStageCategories = {
@@ -86,6 +87,7 @@ export interface OpenMultiplyVaultConditions {
   vaultWillBeAtRiskLevelWarningAtNextPrice: boolean
   vaultWillBeAtRiskLevelDangerAtNextPrice: boolean
   vaultWillBeUnderCollateralizedAtNextPrice: boolean
+  potentialGenerateAmountLessThanDebtFloor: boolean
 
   depositingAllEthBalance: boolean
   depositAmountExceedsCollateralBalance: boolean
@@ -120,6 +122,7 @@ export const defaultOpenMultiplyVaultConditions: OpenMultiplyVaultConditions = {
   vaultWillBeAtRiskLevelWarningAtNextPrice: false,
   vaultWillBeAtRiskLevelDangerAtNextPrice: false,
   vaultWillBeUnderCollateralizedAtNextPrice: false,
+  potentialGenerateAmountLessThanDebtFloor: false,
 
   depositingAllEthBalance: false,
   depositAmountExceedsCollateralBalance: false,
@@ -250,6 +253,9 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
 
   const ledgerWalletContractDataDisabled = state.txError?.name === 'EthAppPleaseEnableContractData'
 
+  const potentialGenerateAmountLessThanDebtFloor =
+    !isNullish(depositAmount) && afterOutstandingDebt.lt(ilkData.debtFloor)
+
   const insufficientAllowance =
     token !== 'ETH' &&
     !!(depositAmount && !depositAmount.isZero() && (!allowance || depositAmount.gt(allowance)))
@@ -294,6 +300,7 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     vaultWillBeAtRiskLevelDangerAtNextPrice,
     vaultWillBeUnderCollateralized,
     vaultWillBeUnderCollateralizedAtNextPrice,
+    potentialGenerateAmountLessThanDebtFloor,
 
     depositingAllEthBalance,
     depositAmountExceedsCollateralBalance,

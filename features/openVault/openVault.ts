@@ -11,7 +11,10 @@ import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
-import { VaultErrorMessage } from '../openMultiplyVault/openMultiplyVaultValidations'
+import {
+  VaultErrorMessage,
+  VaultWarningMessage,
+} from '../openMultiplyVault/openMultiplyVaultValidations'
 import { createProxy } from '../proxy/createProxy'
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openVaultAllowances'
 import {
@@ -41,7 +44,7 @@ import {
   OpenVaultTransactionChange,
 } from './openVaultTransactions'
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openVaultTransitions'
-import { OpenVaultWarningMessage, validateErrors, validateWarnings } from './openVaultValidations'
+import { validateErrors, validateWarnings } from './openVaultValidations'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -155,7 +158,7 @@ export type OpenVaultState = MutableOpenVaultState &
   OpenVaultConditions &
   OpenVaultTxInfo & {
     errorMessages: VaultErrorMessage[]
-    warningMessages: OpenVaultWarningMessage[]
+    warningMessages: VaultWarningMessage[]
     summary: OpenVaultSummary
     totalSteps: number
     currentStep: number

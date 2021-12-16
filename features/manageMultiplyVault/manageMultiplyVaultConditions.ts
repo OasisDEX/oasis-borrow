@@ -134,6 +134,8 @@ export interface ManageVaultConditions {
   vaultWillBeAtRiskLevelWarningAtNextPrice: boolean
   vaultWillBeAtRiskLevelDangerAtNextPrice: boolean
   vaultWillBeUnderCollateralizedAtNextPrice: boolean
+  potentialGenerateAmountLessThanDebtFloor: boolean
+  debtIsLessThanDebtFloor: boolean
 
   accountIsConnected: boolean
   accountIsController: boolean
@@ -182,6 +184,8 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   vaultWillBeAtRiskLevelWarningAtNextPrice: false,
   vaultWillBeAtRiskLevelDangerAtNextPrice: false,
   vaultWillBeUnderCollateralizedAtNextPrice: false,
+  potentialGenerateAmountLessThanDebtFloor: false,
+  debtIsLessThanDebtFloor: false,
 
   depositAndWithdrawAmountsEmpty: true,
   generateAndPaybackAmountsEmpty: true,
@@ -468,6 +472,11 @@ export function applyManageVaultConditions(
       customDaiAllowanceAmountExceedsMaxUint256 ||
       customDaiAllowanceAmountLessThanPaybackAmount)
 
+  const potentialGenerateAmountLessThanDebtFloor =
+    !isNullish(depositAmount) && maxGenerateAmountAtCurrentPrice.lt(ilkData.debtFloor)
+
+  const debtIsLessThanDebtFloor = vault.debt.lt(ilkData.debtFloor) && vault.debt.gt(zero)
+
   const canProgress = !(
     isLoadingStage ||
     editingProgressionDisabled ||
@@ -502,6 +511,8 @@ export function applyManageVaultConditions(
     vaultWillBeAtRiskLevelDangerAtNextPrice,
     vaultWillBeUnderCollateralized,
     vaultWillBeUnderCollateralizedAtNextPrice,
+    potentialGenerateAmountLessThanDebtFloor,
+    debtIsLessThanDebtFloor,
 
     accountIsConnected,
     accountIsController,

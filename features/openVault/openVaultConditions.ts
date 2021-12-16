@@ -3,6 +3,7 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
+import { isNullish } from '../../helpers/functions'
 import { OpenVaultStage, OpenVaultState } from './openVault'
 
 const defaultOpenVaultStageCategories = {
@@ -106,6 +107,7 @@ export interface OpenVaultConditions {
   vaultWillBeAtRiskLevelWarningAtNextPrice: boolean
   vaultWillBeAtRiskLevelDangerAtNextPrice: boolean
   vaultWillBeUnderCollateralizedAtNextPrice: boolean
+  potentialGenerateAmountLessThanDebtFloor: boolean
 
   depositingAllEthBalance: boolean
   depositAmountExceedsCollateralBalance: boolean
@@ -136,6 +138,7 @@ export const defaultOpenVaultConditions: OpenVaultConditions = {
   vaultWillBeAtRiskLevelWarningAtNextPrice: false,
   vaultWillBeAtRiskLevelDangerAtNextPrice: false,
   vaultWillBeUnderCollateralizedAtNextPrice: false,
+  potentialGenerateAmountLessThanDebtFloor: false,
 
   depositingAllEthBalance: false,
   depositAmountExceedsCollateralBalance: false,
@@ -229,6 +232,9 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     generateAmount.lt(ilkData.debtFloor)
   )
 
+  const potentialGenerateAmountLessThanDebtFloor =
+    !isNullish(depositAmount) && daiYieldFromDepositingCollateral.lt(ilkData.debtFloor)
+
   const isLoadingStage = ([
     'proxyInProgress',
     'proxyWaitingForApproval',
@@ -291,6 +297,7 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     vaultWillBeAtRiskLevelDangerAtNextPrice,
     vaultWillBeUnderCollateralized,
     vaultWillBeUnderCollateralizedAtNextPrice,
+    potentialGenerateAmountLessThanDebtFloor,
 
     depositingAllEthBalance,
     depositAmountExceedsCollateralBalance,

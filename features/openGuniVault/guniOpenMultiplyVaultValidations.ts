@@ -1,6 +1,5 @@
-import { isNullish } from 'helpers/functions'
-
 import { errorMessagesHandler } from '../form/errorMessagesHandler'
+import { warningMessagesHandler } from '../form/warningMessagesHandler'
 import {
   VaultErrorMessage,
   VaultWarningMessage,
@@ -55,23 +54,18 @@ export function validateGuniErrors(state: OpenGuniVaultState): OpenGuniVaultStat
 }
 
 export function validateGuniWarnings(state: OpenGuniVaultState): OpenGuniVaultState {
-  const {
-    errorMessages,
-    isEditingStage,
-
-    depositAmount,
-    ilkData,
-    afterOutstandingDebt,
-  } = state
+  const { errorMessages, isEditingStage, potentialGenerateAmountLessThanDebtFloor } = state
 
   const warningMessages: VaultWarningMessage[] = []
 
   if (errorMessages.length) return { ...state, warningMessages }
 
   if (isEditingStage) {
-    if (!isNullish(depositAmount) && afterOutstandingDebt.lt(ilkData.debtFloor)) {
-      warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
-    }
+    warningMessages.push(
+      ...warningMessagesHandler({
+        potentialGenerateAmountLessThanDebtFloor,
+      }),
+    )
   }
   return { ...state, warningMessages }
 }

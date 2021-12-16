@@ -1,6 +1,5 @@
-import { isNullish } from 'helpers/functions'
-
 import { errorMessagesHandler } from '../form/errorMessagesHandler'
+import { warningMessagesHandler } from '../form/warningMessagesHandler'
 import { OpenMultiplyVaultState } from './openMultiplyVault'
 
 export type VaultErrorMessage =
@@ -100,9 +99,7 @@ export function validateWarnings(state: OpenMultiplyVaultState): OpenMultiplyVau
     vaultWillBeAtRiskLevelDangerAtNextPrice,
     vaultWillBeAtRiskLevelWarning,
     vaultWillBeAtRiskLevelWarningAtNextPrice,
-    depositAmount,
-    ilkData,
-    afterOutstandingDebt,
+    potentialGenerateAmountLessThanDebtFloor,
   } = state
 
   const warningMessages: VaultWarningMessage[] = []
@@ -110,25 +107,15 @@ export function validateWarnings(state: OpenMultiplyVaultState): OpenMultiplyVau
   if (errorMessages.length) return { ...state, warningMessages }
 
   if (isEditingStage) {
-    if (!isNullish(depositAmount) && afterOutstandingDebt.lt(ilkData.debtFloor)) {
-      warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
-    }
-
-    if (vaultWillBeAtRiskLevelDanger) {
-      warningMessages.push('vaultWillBeAtRiskLevelDanger')
-    }
-
-    if (vaultWillBeAtRiskLevelDangerAtNextPrice) {
-      warningMessages.push('vaultWillBeAtRiskLevelDangerAtNextPrice')
-    }
-
-    if (vaultWillBeAtRiskLevelWarning) {
-      warningMessages.push('vaultWillBeAtRiskLevelWarning')
-    }
-
-    if (vaultWillBeAtRiskLevelWarningAtNextPrice) {
-      warningMessages.push('vaultWillBeAtRiskLevelWarningAtNextPrice')
-    }
+    warningMessages.push(
+      ...warningMessagesHandler({
+        potentialGenerateAmountLessThanDebtFloor,
+        vaultWillBeAtRiskLevelDanger,
+        vaultWillBeAtRiskLevelDangerAtNextPrice,
+        vaultWillBeAtRiskLevelWarning,
+        vaultWillBeAtRiskLevelWarningAtNextPrice,
+      }),
+    )
   }
   return { ...state, warningMessages }
 }
