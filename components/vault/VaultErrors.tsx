@@ -58,7 +58,7 @@ export function VaultErrors({
             components={[
               <AppLink
                 sx={{ color: 'onError' }}
-                href="https://community-development.makerdao.com/en/learn/governance/param-debt-floor/"
+                href="https://kb.oasis.app/help/minimum-vault-debt-dust"
               />,
             ]}
           />
@@ -111,6 +111,19 @@ export function VaultErrors({
         return (
           <Trans
             i18nKey="manage-vault.errors.withdraw-collateral-on-vault-under-debt-floor"
+            values={{ debtFloor: formatCryptoBalance(debtFloor) }}
+            components={[
+              <AppLink
+                sx={{ color: 'onError' }}
+                href="https://kb.oasis.app/help/minimum-vault-debt-dust"
+              />,
+            ]}
+          />
+        )
+      case 'depositCollateralOnVaultUnderDebtFloor':
+        return (
+          <Trans
+            i18nKey="manage-vault.errors.deposit-collateral-on-vault-under-debt-floor"
             values={{ debtFloor: formatCryptoBalance(debtFloor) }}
             components={[
               <AppLink

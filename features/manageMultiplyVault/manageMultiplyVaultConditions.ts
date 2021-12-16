@@ -159,6 +159,7 @@ export interface ManageVaultConditions {
   customCollateralAllowanceAmountEmpty: boolean
   customCollateralAllowanceAmountExceedsMaxUint256: boolean
   customCollateralAllowanceAmountLessThanDepositAmount: boolean
+  ledgerWalletContractDataDisabled: boolean
 
   insufficientDaiAllowance: boolean
   customDaiAllowanceAmountEmpty: boolean
@@ -211,6 +212,7 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   customCollateralAllowanceAmountEmpty: false,
   customCollateralAllowanceAmountExceedsMaxUint256: false,
   customCollateralAllowanceAmountLessThanDepositAmount: false,
+  ledgerWalletContractDataDisabled: false,
 
   insufficientDaiAllowance: false,
   customDaiAllowanceAmountEmpty: false,
@@ -413,6 +415,8 @@ export function applyManageVaultConditions(
     (!daiAllowance || paybackAmount.plus(vault.debtOffset).gt(daiAllowance))
   )
 
+  const ledgerWalletContractDataDisabled = state.txError?.name === 'EthAppPleaseEnableContractData'
+
   const isLoadingStage = ([
     'proxyInProgress',
     'proxyWaitingForApproval',
@@ -512,6 +516,7 @@ export function applyManageVaultConditions(
     generateAmountMoreThanMaxFlashAmount,
     paybackAmountExceedsDaiBalance,
     paybackAmountExceedsVaultDebt,
+    ledgerWalletContractDataDisabled,
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,
     isLoadingStage,

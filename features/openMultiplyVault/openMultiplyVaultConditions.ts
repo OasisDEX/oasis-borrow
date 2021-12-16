@@ -94,6 +94,7 @@ export interface OpenMultiplyVaultConditions {
   generateAmountExceedsDebtCeiling: boolean
   generateAmountLessThanDebtFloor: boolean
   generateAmountMoreThanMaxFlashAmount: boolean
+  ledgerWalletContractDataDisabled: boolean
 
   customAllowanceAmountEmpty: boolean
   customAllowanceAmountExceedsMaxUint256: boolean
@@ -127,6 +128,7 @@ export const defaultOpenMultiplyVaultConditions: OpenMultiplyVaultConditions = {
   generateAmountExceedsDebtCeiling: false,
   generateAmountLessThanDebtFloor: false,
   generateAmountMoreThanMaxFlashAmount: false,
+  ledgerWalletContractDataDisabled: false,
 
   customAllowanceAmountEmpty: false,
   customAllowanceAmountExceedsMaxUint256: false,
@@ -246,6 +248,8 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     allowanceAmount.lt(depositAmount)
   )
 
+  const ledgerWalletContractDataDisabled = state.txError?.name === 'EthAppPleaseEnableContractData'
+
   const insufficientAllowance =
     token !== 'ETH' &&
     !!(depositAmount && !depositAmount.isZero() && (!allowance || depositAmount.gt(allowance)))
@@ -298,6 +302,7 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     generateAmountExceedsDebtCeiling,
     generateAmountLessThanDebtFloor,
     generateAmountMoreThanMaxFlashAmount,
+    ledgerWalletContractDataDisabled,
 
     customAllowanceAmountEmpty,
     customAllowanceAmountExceedsMaxUint256,

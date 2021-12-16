@@ -113,6 +113,7 @@ export interface OpenVaultConditions {
   generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice: boolean
   generateAmountExceedsDebtCeiling: boolean
   generateAmountLessThanDebtFloor: boolean
+  ledgerWalletContractDataDisabled: boolean
 
   customAllowanceAmountEmpty: boolean
   customAllowanceAmountExceedsMaxUint256: boolean
@@ -142,6 +143,7 @@ export const defaultOpenVaultConditions: OpenVaultConditions = {
   generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice: false,
   generateAmountExceedsDebtCeiling: false,
   generateAmountLessThanDebtFloor: false,
+  ledgerWalletContractDataDisabled: false,
 
   customAllowanceAmountEmpty: false,
   customAllowanceAmountExceedsMaxUint256: false,
@@ -249,6 +251,8 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     allowanceAmount.lt(depositAmount)
   )
 
+  const ledgerWalletContractDataDisabled = state.txError?.name === 'EthAppPleaseEnableContractData'
+
   const insufficientAllowance =
     token !== 'ETH' &&
     !!(depositAmount && !depositAmount.isZero() && (!allowance || depositAmount.gt(allowance)))
@@ -294,6 +298,7 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice,
     generateAmountExceedsDebtCeiling,
     generateAmountLessThanDebtFloor,
+    ledgerWalletContractDataDisabled,
 
     customAllowanceAmountEmpty,
     customAllowanceAmountExceedsMaxUint256,

@@ -82,6 +82,8 @@ export interface GuniOpenMultiplyVaultConditions {
   generateAmountLessThanDebtFloor: boolean
   generateAmountMoreThanMaxFlashAmount: boolean
   generateAmountExceedsDebtCeiling: boolean
+  depositAmountExceedsCollateralBalance: boolean
+  ledgerWalletContractDataDisabled: boolean
 
   customAllowanceAmountEmpty: boolean
   customAllowanceAmountExceedsMaxUint256: boolean
@@ -101,6 +103,8 @@ export const defaultGuniOpenMultiplyVaultConditions: GuniOpenMultiplyVaultCondit
   generateAmountLessThanDebtFloor: false,
   generateAmountMoreThanMaxFlashAmount: false,
   generateAmountExceedsDebtCeiling: false,
+  depositAmountExceedsCollateralBalance: false,
+  ledgerWalletContractDataDisabled: false,
 
   customAllowanceAmountEmpty: false,
   customAllowanceAmountExceedsMaxUint256: false,
@@ -120,6 +124,7 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
 
     ilkData,
     depositAmount,
+    balanceInfo,
 
     selectedAllowanceRadio,
     allowanceAmount,
@@ -162,6 +167,10 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     allowanceAmount.lt(depositAmount)
   )
 
+  const ledgerWalletContractDataDisabled = state.txError?.name === 'EthAppPleaseEnableContractData'
+
+  const depositAmountExceedsCollateralBalance = !!depositAmount?.gt(balanceInfo.daiBalance)
+
   const insufficientAllowance = !!(
     depositAmount &&
     !depositAmount.isZero() &&
@@ -199,6 +208,8 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     generateAmountLessThanDebtFloor,
     generateAmountMoreThanMaxFlashAmount,
     generateAmountExceedsDebtCeiling,
+    depositAmountExceedsCollateralBalance,
+    ledgerWalletContractDataDisabled,
 
     customAllowanceAmountEmpty,
     customAllowanceAmountExceedsMaxUint256,

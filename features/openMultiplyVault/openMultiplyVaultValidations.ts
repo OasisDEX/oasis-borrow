@@ -1,5 +1,6 @@
 import { isNullish } from 'helpers/functions'
 
+import { errorMessagesHandler } from '../form/errorMessagesHandler'
 import { OpenMultiplyVaultState } from './openMultiplyVault'
 
 export type VaultErrorMessage =
@@ -28,11 +29,10 @@ export type VaultErrorMessage =
   | 'withdrawCollateralOnVaultUnderDebtFloor'
   | 'shouldShowExchangeError'
   | 'hasToDepositCollateralOnEmptyVault'
+  | 'depositCollateralOnVaultUnderDebtFloor'
 
 export function validateErrors(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
   const {
-    depositAmount,
-    balanceInfo,
     stage,
     isEditingStage,
     depositingAllEthBalance,
@@ -43,57 +43,42 @@ export function validateErrors(state: OpenMultiplyVaultState): OpenMultiplyVault
     generateAmountLessThanDebtFloor,
     customAllowanceAmountExceedsMaxUint256,
     customAllowanceAmountLessThanDepositAmount,
+    depositAmountExceedsCollateralBalance,
+    ledgerWalletContractDataDisabled,
     exchangeError,
   } = state
   const errorMessages: VaultErrorMessage[] = []
 
   if (isEditingStage) {
-    if (depositAmount?.gt(balanceInfo.collateralBalance)) {
-      errorMessages.push('depositAmountExceedsCollateralBalance')
-    }
-
-    if (depositingAllEthBalance) {
-      errorMessages.push('depositingAllEthBalance')
-    }
-
-    if (generateAmountExceedsDaiYieldFromDepositingCollateral) {
-      errorMessages.push('generateAmountExceedsDaiYieldFromDepositingCollateral')
-    }
-
-    if (generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice) {
-      errorMessages.push('generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice')
-    }
-
-    if (generateAmountExceedsDebtCeiling) {
-      errorMessages.push('generateAmountExceedsDebtCeiling')
-    }
-
-    if (generateAmountLessThanDebtFloor) {
-      errorMessages.push('generateAmountLessThanDebtFloor')
-    }
-
-    if (exchangeError) {
-      errorMessages.push('exchangeError')
-    }
-
-    if (generateAmountMoreThanMaxFlashAmount) {
-      errorMessages.push('generateAmountMoreThanMaxFlashAmount')
-    }
+    errorMessages.push(
+      ...errorMessagesHandler({
+        depositAmountExceedsCollateralBalance,
+        depositingAllEthBalance,
+        generateAmountExceedsDaiYieldFromDepositingCollateral,
+        generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice,
+        generateAmountExceedsDebtCeiling,
+        generateAmountLessThanDebtFloor,
+        exchangeError,
+        generateAmountMoreThanMaxFlashAmount,
+      }),
+    )
   }
 
   if (stage === 'allowanceWaitingForConfirmation') {
-    if (customAllowanceAmountExceedsMaxUint256) {
-      errorMessages.push('customAllowanceAmountExceedsMaxUint256')
-    }
-    if (customAllowanceAmountLessThanDepositAmount) {
-      errorMessages.push('customAllowanceAmountLessThanDepositAmount')
-    }
+    errorMessages.push(
+      ...errorMessagesHandler({
+        customAllowanceAmountExceedsMaxUint256,
+        customAllowanceAmountLessThanDepositAmount,
+      }),
+    )
   }
 
   if (stage === 'txFailure' || stage === 'proxyFailure' || stage === 'allowanceFailure') {
-    if (state.txError?.name === 'EthAppPleaseEnableContractData') {
-      errorMessages.push('ledgerWalletContractDataDisabled')
-    }
+    errorMessages.push(
+      ...errorMessagesHandler({
+        ledgerWalletContractDataDisabled,
+      }),
+    )
   }
 
   return { ...state, errorMessages }
