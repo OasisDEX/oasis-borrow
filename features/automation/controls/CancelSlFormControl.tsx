@@ -156,7 +156,7 @@ export function CancelSlFormControl({ id }: { id: BigNumber }) {
     }, [])
 
     const addTriggerConfig: RetryableLoadingButtonProps = {
-      translationKey: 'add-stop-loss',
+      translationKey: 'cancel-stop-loss',
       onClick: (finishLoader: (succeded: boolean) => void) => {
         //TODO: this tx handler can be more generic and reused
         const txSendSuccessHandler = (x: TxState<AutomationBotAddTriggerData>) => {

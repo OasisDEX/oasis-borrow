@@ -16,6 +16,15 @@ export type AutomationBotAddTriggerData = {
   proxyAddress: string
 }
 
+export type AutomationBotRemoveTriggerData = {
+  kind: TxMetaKind.removeTrigger
+  cdpId: BigNumber
+  triggerType: BigNumber
+  serviceRegistry: string
+  triggerData: string
+  proxyAddress: string
+}
+
 function getAddAutomationTriggerCallData(
   data: AutomationBotAddTriggerData,
   context: ContextConnected,
@@ -43,4 +52,29 @@ export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData
   },
 }
 
-// export const removeAutomationBotTrigger: TransactionDef<AutomationBotRemoveTriggerData> 
+function getRemoveAutomationTriggerCallData(
+  data: AutomationBotRemoveTriggerData,
+  context: ContextConnected,
+) {
+  const { contract, automationBot } = context
+  return contract<AutomationBot>(automationBot).methods.removeTrigger(
+    data.cdpId,
+    data.triggerType,
+    data.serviceRegistry,
+    data.triggerData,
+  ) as any
+}
+
+export const removeAutomationBotTrigger: TransactionDef<AutomationBotRemoveTriggerData> = {
+  call: ({ proxyAddress }, { contract }) => {
+    console.log('Inside removeAutomationBotTrigger', proxyAddress)
+    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
+  },
+  prepareArgs: (data, context) => {
+    const { automationBot } = context
+
+    console.log('Inside removeAutomationBotTrigger.prepareArgs', automationBot.address)
+    console.log('Inside removeAutomationBotTrigger.prepareArgs - data', data)
+    return [automationBot.address, getRemoveAutomationTriggerCallData(data, context).encodeABI()]
+  },
+}

@@ -18,6 +18,7 @@
   "address": "Address",
   "address-invalid": "Address not found",
   "add-stop-loss": "Add Stop Loss",
+  "cancel-stop-loss": "Cancel Stop Loss",
   "adjust-your-position": "Adjust your position",
   "after": "After",
   "after-next": "After + Next",
@@ -509,6 +510,7 @@
     "liquidation": "Liquidation price after cancellation",
     "total": "Total transaction cost"
   },
+  "notice": "Notice: Canceling your stop loss means you will no longer have protection in place and you will need to actively monitor your Collateralisation Ratio.",
   "spots-remaining": "{{ spots }} spots remaining",
   "start-saving": "Start Saving",
   "system": {

@@ -2,6 +2,7 @@ import { TxState } from '@oasisdex/transactions'
 import { Box, Grid, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
+import { MessageCard } from 'components/MessageCard'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -25,6 +26,7 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
   const summaryHeader = t(`cancel-stoploss.summary-header`)
   const liquidation = t(`cancel-stoploss.liquidation`)
   const total = t(`cancel-stoploss.total`)
+  const messages = [t(`notice`)]
   return (
     <Grid columns={[1]}>
       <Box>
@@ -53,8 +55,8 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
           </Text>
         </Box>
         <Box>$250.00</Box>
-
         </Grid>
+        <MessageCard {...{ messages, type: 'warning' }} />
       <Box>
         <RetryableLoadingButton {...props.addTriggerConfig} />
       </Box>
