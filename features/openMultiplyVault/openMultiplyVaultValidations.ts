@@ -1,34 +1,6 @@
-import { errorMessagesHandler } from '../form/errorMessagesHandler'
-import { warningMessagesHandler } from '../form/warningMessagesHandler'
+import { errorMessagesHandler, VaultErrorMessage } from '../form/errorMessagesHandler'
+import { VaultWarningMessage, warningMessagesHandler } from '../form/warningMessagesHandler'
 import { OpenMultiplyVaultState } from './openMultiplyVault'
-
-export type VaultErrorMessage =
-  | 'depositAmountExceedsCollateralBalance'
-  | 'depositingAllEthBalance'
-  | 'generateAmountExceedsDaiYieldFromDepositingCollateral'
-  | 'generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice'
-  | 'generateAmountExceedsDebtCeiling'
-  | 'generateAmountLessThanDebtFloor'
-  | 'generateAmountMoreThanMaxFlashAmount'
-  | 'customAllowanceAmountExceedsMaxUint256'
-  | 'customAllowanceAmountLessThanDepositAmount'
-  | 'ledgerWalletContractDataDisabled'
-  | 'exchangeError'
-  | 'withdrawAmountExceedsFreeCollateral'
-  | 'withdrawAmountExceedsFreeCollateralAtNextPrice'
-  | 'generateAmountExceedsDaiYieldFromTotalCollateral'
-  | 'generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice'
-  | 'paybackAmountExceedsDaiBalance'
-  | 'paybackAmountExceedsVaultDebt'
-  | 'debtWillBeLessThanDebtFloor'
-  | 'customCollateralAllowanceAmountExceedsMaxUint256'
-  | 'customCollateralAllowanceAmountLessThanDepositAmount'
-  | 'customDaiAllowanceAmountExceedsMaxUint256'
-  | 'customDaiAllowanceAmountLessThanPaybackAmount'
-  | 'withdrawCollateralOnVaultUnderDebtFloor'
-  | 'shouldShowExchangeError'
-  | 'hasToDepositCollateralOnEmptyVault'
-  | 'depositCollateralOnVaultUnderDebtFloor'
 
 export function validateErrors(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
   const {
@@ -82,14 +54,6 @@ export function validateErrors(state: OpenMultiplyVaultState): OpenMultiplyVault
 
   return { ...state, errorMessages }
 }
-
-export type VaultWarningMessage =
-  | 'potentialGenerateAmountLessThanDebtFloor'
-  | 'vaultWillBeAtRiskLevelDanger'
-  | 'vaultWillBeAtRiskLevelWarning'
-  | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
-  | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
-  | 'debtIsLessThanDebtFloor'
 
 export function validateWarnings(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
   const {

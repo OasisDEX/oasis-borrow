@@ -1,9 +1,5 @@
-import { errorMessagesHandler } from '../form/errorMessagesHandler'
-import { warningMessagesHandler } from '../form/warningMessagesHandler'
-import {
-  VaultErrorMessage,
-  VaultWarningMessage,
-} from '../openMultiplyVault/openMultiplyVaultValidations'
+import { errorMessagesHandler, VaultErrorMessage } from '../form/errorMessagesHandler'
+import { VaultWarningMessage, warningMessagesHandler } from '../form/warningMessagesHandler'
 import { OpenVaultState } from './openVault'
 
 export function validateErrors(state: OpenVaultState): OpenVaultState {

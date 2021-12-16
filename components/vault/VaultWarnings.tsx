@@ -6,7 +6,7 @@ import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
 import { IlkData } from '../../blockchain/ilks'
-import { VaultWarningMessage } from '../../features/openMultiplyVault/openMultiplyVaultValidations'
+import { VaultWarningMessage } from '../../features/form/warningMessagesHandler'
 
 interface VaultWarningsProps {
   warningMessages: VaultWarningMessage[]

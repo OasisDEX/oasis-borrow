@@ -1,4 +1,10 @@
-import { VaultWarningMessage } from '../openMultiplyVault/openMultiplyVaultValidations'
+export type VaultWarningMessage =
+  | 'potentialGenerateAmountLessThanDebtFloor'
+  | 'vaultWillBeAtRiskLevelDanger'
+  | 'vaultWillBeAtRiskLevelWarning'
+  | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
+  | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
+  | 'debtIsLessThanDebtFloor'
 
 interface WarningMessagesHandler {
   potentialGenerateAmountLessThanDebtFloor?: boolean

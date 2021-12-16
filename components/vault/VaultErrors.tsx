@@ -10,7 +10,7 @@ import { Dictionary } from 'ts-essentials'
 
 import { IlkData } from '../../blockchain/ilks'
 import { Vault } from '../../blockchain/vaults'
-import { VaultErrorMessage } from '../../features/openMultiplyVault/openMultiplyVaultValidations'
+import { VaultErrorMessage } from '../../features/form/errorMessagesHandler'
 import { zero } from '../../helpers/zero'
 
 interface VaultErrorsProps {
