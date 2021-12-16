@@ -7,8 +7,7 @@ import { AutomationBot, DsProxy } from 'types/ethers-contracts'
 
 import { TxMetaKind } from './txMeta'
 
-export type AutomationBotAddTriggerData = {
-  kind: TxMetaKind.addTrigger
+export type AutomationBaseTriggerData = {
   cdpId: BigNumber
   triggerType: BigNumber
   serviceRegistry: string
@@ -16,14 +15,9 @@ export type AutomationBotAddTriggerData = {
   proxyAddress: string
 }
 
-export type AutomationBotRemoveTriggerData = {
-  kind: TxMetaKind.removeTrigger
-  cdpId: BigNumber
-  triggerType: BigNumber
-  serviceRegistry: string
-  triggerData: string
-  proxyAddress: string
-}
+export type AutomationBotAddTriggerData = AutomationBaseTriggerData & {kind: TxMetaKind.addTrigger}
+
+export type AutomationBotRemoveTriggerData = AutomationBaseTriggerData & {kind: TxMetaKind.removeTrigger}
 
 function getAddAutomationTriggerCallData(
   data: AutomationBotAddTriggerData,
@@ -51,16 +45,18 @@ export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData
     return [automationBot.address, getAddAutomationTriggerCallData(data, context).encodeABI()]
   },
 }
-
+// TODO ŁW refactor use template method pattern and getAddAutomationTriggerCallData
 function getRemoveAutomationTriggerCallData(
   data: AutomationBotRemoveTriggerData,
   context: ContextConnected,
 ) {
   const { contract, automationBot } = context
   return contract<AutomationBot>(automationBot).methods.removeTrigger(
+    // data.kind= TxMetaKind.removeTrigger,
     data.cdpId,
     data.triggerType,
     data.serviceRegistry,
+    true,
     data.triggerData,
   ) as any
 }

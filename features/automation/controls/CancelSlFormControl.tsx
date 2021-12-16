@@ -3,6 +3,8 @@ import BigNumber from 'bignumber.js'
 import {
   addAutomationBotTrigger,
   AutomationBotAddTriggerData,
+  AutomationBotRemoveTriggerData,
+  removeAutomationBotTrigger,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { networksById } from 'blockchain/config'
@@ -22,47 +24,23 @@ import React from 'react'
 
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
 import { TriggersTypes } from '../common/enums/TriggersTypes'
-import { extractSLData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
+import { extractSLData, isTxStatusFailed, isTxStatusFinal, prepareTriggerData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { AddFormChange } from '../common/UITypes/AddFormChange'
 import { CancelSlFormLayout, CancelSlFormLayoutProps } from './CancelSlFormLayout'
 
-function isTxStatusFinal(status: TxStatus) {
-  return (
-    status === TxStatus.CancelledByTheUser ||
-    status === TxStatus.Failure ||
-    status === TxStatus.Error ||
-    status === TxStatus.Success
-  )
-}
 
-function isTxStatusFailed(status: TxStatus) {
-  return isTxStatusFinal(status) && status !== TxStatus.Success
-}
 
-function buildTriggerData(id: BigNumber, isCloseToCollateral: boolean, slLevel: number): string {
-  return ethers.utils.defaultAbiCoder.encode(
-    ['uint256', 'bool', 'uint256'],
-    [id.toNumber(), isCloseToCollateral, Math.round(slLevel)],
-  )
-}
-
-function prepareTriggerData(
+function prepareRemoveTriggerData(
   vaultData: Vault,
   isCloseToCollateral: boolean,
   stopLossLevel: BigNumber,
-): AutomationBotAddTriggerData {
-  const slLevel: number = stopLossLevel.toNumber()
-  const networkConfig = networksById[vaultData.chainId]
+): AutomationBotRemoveTriggerData {
 
+  const baseTriggerData = prepareTriggerData(vaultData, isCloseToCollateral, stopLossLevel)
+  
   return {
-    kind: TxMetaKind.addTrigger,
-    cdpId: vaultData.id,
-    triggerType: isCloseToCollateral
-      ? new BigNumber(TriggersTypes.StopLossToCollateral)
-      : new BigNumber(TriggersTypes.StopLossToDai),
-    proxyAddress: vaultData.owner,
-    serviceRegistry: networkConfig.serviceRegistry,
-    triggerData: buildTriggerData(vaultData.id, isCloseToCollateral, slLevel),
+    ...baseTriggerData,
+    kind: TxMetaKind.removeTrigger
   }
 }
 
@@ -141,7 +119,7 @@ export function CancelSlFormControl({ id }: { id: BigNumber }) {
 
     const dispatch = useUIChanges(reducerHandler, initial, uiSubjectName)
 
-    const [txStatus, txStatusSetter] = useState<TxState<AutomationBotAddTriggerData> | undefined>(
+    const [txStatus, txStatusSetter] = useState<TxState<AutomationBotRemoveTriggerData> | undefined>(
       undefined,
     )
 
@@ -155,11 +133,11 @@ export function CancelSlFormControl({ id }: { id: BigNumber }) {
       setSelectedSLValue(startingSlRatio.multipliedBy(100))
     }, [])
 
-    const addTriggerConfig: RetryableLoadingButtonProps = {
+    const removeTriggerConfig: RetryableLoadingButtonProps = {
       translationKey: 'cancel-stop-loss',
       onClick: (finishLoader: (succeded: boolean) => void) => {
         //TODO: this tx handler can be more generic and reused
-        const txSendSuccessHandler = (x: TxState<AutomationBotAddTriggerData>) => {
+        const txSendSuccessHandler = (x: TxState<AutomationBotRemoveTriggerData>) => {
           txStatusSetter(x)
           if (isTxStatusFinal(x.status)) {
             if (isTxStatusFailed(x.status)) {
@@ -178,10 +156,10 @@ export function CancelSlFormControl({ id }: { id: BigNumber }) {
           finishLoader(false)
         }
 
-        const txData = prepareTriggerData(vaultData, collateralActive, selectedSLValue)
+        const txData = prepareRemoveTriggerData(vaultData, collateralActive, selectedSLValue)
 
         const waitForTx = txHelpers
-          .sendWithGasEstimation(addAutomationBotTrigger, txData)
+          .sendWithGasEstimation(removeAutomationBotTrigger, txData)
           .subscribe(txSendSuccessHandler, sendTxErrorHandler)
       },
       isLoading: false,
@@ -191,7 +169,7 @@ export function CancelSlFormControl({ id }: { id: BigNumber }) {
 
     const props: CancelSlFormLayoutProps = {
       liquidationPrice: vaultData.liquidationPrice,
-      addTriggerConfig: addTriggerConfig,
+      removeTriggerConfig: removeTriggerConfig,
       txState: txStatus,
     }
 

@@ -24,48 +24,20 @@ import { useEffect, useState } from 'react'
 import React from 'react'
 
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
-import { TriggersTypes } from '../common/enums/TriggersTypes'
-import { extractSLData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
+import { extractSLData, isTxStatusFailed, isTxStatusFinal, prepareTriggerData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { AddFormChange } from '../common/UITypes/AddFormChange'
 import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
 
-function isTxStatusFinal(status: TxStatus) {
-  return (
-    status === TxStatus.CancelledByTheUser ||
-    status === TxStatus.Failure ||
-    status === TxStatus.Error ||
-    status === TxStatus.Success
-  )
-}
-
-function isTxStatusFailed(status: TxStatus) {
-  return isTxStatusFinal(status) && status !== TxStatus.Success
-}
-
-function buildTriggerData(id: BigNumber, isCloseToCollateral: boolean, slLevel: number): string {
-  return ethers.utils.defaultAbiCoder.encode(
-    ['uint256', 'bool', 'uint256'],
-    [id.toNumber(), isCloseToCollateral, Math.round(slLevel)],
-  )
-}
-
-function prepareTriggerData(
+function prepareAddTriggerData(
   vaultData: Vault,
   isCloseToCollateral: boolean,
   stopLossLevel: BigNumber,
 ): AutomationBotAddTriggerData {
-  const slLevel: number = stopLossLevel.toNumber()
-  const networkConfig = networksById[vaultData.chainId]
-
+  const baseTriggerData = prepareTriggerData(vaultData, isCloseToCollateral, stopLossLevel)
+  
   return {
-    kind: TxMetaKind.addTrigger,
-    cdpId: vaultData.id,
-    triggerType: isCloseToCollateral
-      ? new BigNumber(TriggersTypes.StopLossToCollateral)
-      : new BigNumber(TriggersTypes.StopLossToDai),
-    proxyAddress: vaultData.owner,
-    serviceRegistry: networkConfig.serviceRegistry,
-    triggerData: buildTriggerData(vaultData.id, isCloseToCollateral, slLevel),
+    ...baseTriggerData,
+    kind: TxMetaKind.addTrigger
   }
 }
 
@@ -227,7 +199,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
           finishLoader(false)
         }
 
-        const txData = prepareTriggerData(vaultData, collateralActive, selectedSLValue)
+        const txData = prepareAddTriggerData(vaultData, collateralActive, selectedSLValue)
 
         const waitForTx = txHelpers
           .sendWithGasEstimation(addAutomationBotTrigger, txData)
