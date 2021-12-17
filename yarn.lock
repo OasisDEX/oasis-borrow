@@ -3525,10 +3525,10 @@
     web3 "^1.3.3"
     web3-provider-engine "^14.0.1"
 
-"@oasisdex/multiply@^0.2.4":
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/@oasisdex/multiply/-/multiply-0.2.4.tgz#e017a91ddbf25c62c52873ff7374c75d1ed73ad8"
-  integrity sha512-lFHdzYqlEZEUZIURTF9WIvNORZ2S8mx4n9xTxQ4ztxFA9v5CHj78ym6/PZ6MK9Cz4+xqCwxob5wH3Vfz9/debg==
+"@oasisdex/multiply@0.2.5-alpha.1":
+  version "0.2.5-alpha.1"
+  resolved "https://registry.yarnpkg.com/@oasisdex/multiply/-/multiply-0.2.5-alpha.1.tgz#11dc470f308c559593ed5296e471134c1372d122"
+  integrity sha512-it2FDt/omB0Lk97wAGx4SKgNUjzWq9m+cYfkPLSQFsS7mz2eNCOfK4Z2pXBMs74v/rVMB0f7YAB8M269Drmkow==
   dependencies:
     "@types/chai" "^4.2.21"
     "@types/mocha" "^9.0.0"
