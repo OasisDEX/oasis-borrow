@@ -54,12 +54,20 @@ describe('Other actions calculations', () => {
       toTokenAmount,
       fromTokenAmount,
     } = getCloseToDaiParams(
-      marketPrice,
-      OAZO_FEE,
-      LOAN_FEE,
-      currentCollateral,
-      SLIPPAGE,
-      currentDebt,
+      // market params
+      {
+        oraclePrice: zero, // is ignored
+        marketPrice,
+        OF: OAZO_FEE,
+        FF: LOAN_FEE,
+        slippage: SLIPPAGE,
+      },
+      // vault info
+      {
+        currentDebt,
+        currentCollateral,
+        minCollRatio: zero,
+      },
     )
 
     expect(fromTokenAmount).to.be.deep.equal(expectedFromTokenAmount)
@@ -88,13 +96,20 @@ describe('Other actions calculations', () => {
       toTokenAmount,
       fromTokenAmount,
     } = getCloseToCollateralParams(
-      marketPrice, 
-      OAZO_FEE, 
-      LOAN_FEE, 
-      currentDebt, 
-      SLIPPAGE,
-      one,
-      one
+      // market params
+      {
+        oraclePrice: zero, // is ignored
+        marketPrice,
+        OF: OAZO_FEE,
+        FF: LOAN_FEE,
+        slippage: SLIPPAGE,
+      },
+      // vault info
+      {
+        currentDebt,
+        currentCollateral: zero,
+        minCollRatio: zero,
+      },
     )
 
     expect(fromTokenAmount).to.be.deep.equal(expectedFromTokenAmount)
