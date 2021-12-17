@@ -3,18 +3,30 @@ import { CloseVaultTo } from 'features/manageMultiplyVault/manageMultiplyVault'
 import * as mixpanelBrowser from 'mixpanel-browser'
 import getConfig from 'next/config'
 
-type MixpanelType = { track: (eventType: string, payload: any) => void } | typeof mixpanelBrowser
+export type MixpanelDevelopmentType = {
+  track: (eventType: string, payload: any) => void
+  get_distinct_id: () => string
+}
+
+export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevelopmentType {
+  const env = getConfig()?.publicRuntimeConfig.mixpanelEnv || process.env.MIXPANEL_ENV
+
+  if (env !== 'production' && env !== 'staging') {
+    return {
+      track: function (eventType: string, payload: any) {
+        console.info('Mixpanel Event: ', eventType, payload)
+      },
+      get_distinct_id: () => 'test_id',
+    }
+  }
+
+  return mixpanel
+}
+
+type MixpanelType = MixpanelDevelopmentType | typeof mixpanelBrowser
 let mixpanel: MixpanelType = mixpanelBrowser
 
-const env = getConfig()?.publicRuntimeConfig.mixpanelEnv || process.env.MIXPANEL_ENV
-
-if (env !== 'production' && env !== 'staging') {
-  mixpanel = {
-    track: function (eventType: string, payload: any) {
-      console.info('Mixpanel Event: ', eventType, payload)
-    },
-  }
-}
+mixpanel = enableMixpanelDevelopmentMode<MixpanelType>(mixpanel)
 
 const product = 'borrow'
 export const INPUT_DEBOUNCE_TIME = 800
@@ -33,6 +45,24 @@ export enum Pages {
   CloseVault = 'CloseVault',
 }
 
+function mixpanelInternalAPI(eventName: string, eventBody: { [key: string]: any }) {
+  const distinctId = mixpanel.get_distinct_id()
+
+  // eslint-disable-next-line
+  fetch('/api/t', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      eventName,
+      eventBody,
+      distinctId,
+    }),
+  })
+}
+
 export const trackingEvents = {
   pageView: (location: string) => {
     mixpanel.track('Pageview', {
@@ -42,12 +72,17 @@ export const trackingEvents = {
   },
 
   accountChange: (account: string, network: string, walletType: string) => {
-    mixpanel.track('account-change', {
+    const eventName = 'account-change'
+    const eventBody = {
+      id: 'AccountChange',
       account,
       network,
       product,
       walletType,
-    })
+    }
+
+    mixpanel.track(eventName, eventBody)
+    mixpanelInternalAPI(eventName, eventBody)
   },
 
   searchToken: (
@@ -190,7 +225,8 @@ export const trackingEvents = {
     network: string,
     walletType: ConnectionKind,
   ) => {
-    mixpanel.track('btn-click', {
+    const eventName = 'btn-click'
+    const eventBody = {
       id: 'ConfirmTransaction',
       product,
       ilk,
@@ -202,7 +238,10 @@ export const trackingEvents = {
       walletType,
       page: Pages.VaultCreate,
       section: 'ConfirmVault',
-    })
+    }
+
+    mixpanel.track(eventName, eventBody)
+    mixpanelInternalAPI(eventName, eventBody)
   },
 
   confirmVaultEdit: (firstCDP: boolean | undefined) => {
@@ -354,7 +393,8 @@ export const trackingEvents = {
     network: string,
     walletType: ConnectionKind,
   ) => {
-    mixpanel.track('btn-click', {
+    const eventName = 'btn-click'
+    const eventBody = {
       id: 'ConfirmTransaction',
       product,
       ilk,
@@ -365,7 +405,10 @@ export const trackingEvents = {
       walletType,
       page,
       section: 'ConfirmVault',
-    })
+    }
+
+    mixpanel.track(eventName, eventBody)
+    mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageCollateralPickAllowance: (type: string, amount: string) => {
@@ -476,7 +519,8 @@ export const trackingEvents = {
       network: string,
       walletType: ConnectionKind,
     ) => {
-      mixpanel.track('btn-click', {
+      const eventName = 'btn-click'
+      const eventBody = {
         id: 'ConfirmTransaction',
         product,
         ilk,
@@ -488,7 +532,10 @@ export const trackingEvents = {
         walletType,
         page: Pages.OpenMultiply,
         section: 'ConfirmVault',
-      })
+      }
+
+      mixpanel.track(eventName, eventBody)
+      mixpanelInternalAPI(eventName, eventBody)
     },
 
     adjustPositionConfirm: (ilk: string, multiply: string) => {
@@ -509,7 +556,8 @@ export const trackingEvents = {
       network: string,
       walletType: ConnectionKind,
     ) => {
-      mixpanel.track('btn-click', {
+      const eventName = 'btn-click'
+      const eventBody = {
         id: 'ConfirmTransaction',
         product,
         ilk,
@@ -519,7 +567,10 @@ export const trackingEvents = {
         walletType,
         page: Pages.AdjustPosition,
         section: 'ConfirmVault',
-      })
+      }
+
+      mixpanel.track(eventName, eventBody)
+      mixpanelInternalAPI(eventName, eventBody)
     },
 
     otherActionsConfirm: (ilk: string, collateralAmount: string, daiAmount: string) => {
@@ -542,7 +593,8 @@ export const trackingEvents = {
       network: string,
       walletType: ConnectionKind,
     ) => {
-      mixpanel.track('btn-click', {
+      const eventName = 'btn-click'
+      const eventBody = {
         id: 'ConfirmTransaction',
         product,
         ilk,
@@ -553,7 +605,10 @@ export const trackingEvents = {
         walletType,
         page: Pages.OtherActions,
         section: 'ConfirmVault',
-      })
+      }
+
+      mixpanel.track(eventName, eventBody)
+      mixpanelInternalAPI(eventName, eventBody)
     },
 
     closeVaultConfirm: (ilk: string, debt: string, closeTo: CloseVaultTo) => {
@@ -576,7 +631,8 @@ export const trackingEvents = {
       network: string,
       walletType: ConnectionKind,
     ) => {
-      mixpanel.track('btn-click', {
+      const eventName = 'btn-click'
+      const eventBody = {
         id: 'ConfirmTransaction',
         product,
         ilk,
@@ -587,7 +643,10 @@ export const trackingEvents = {
         walletType,
         page: Pages.CloseVault,
         section: 'ConfirmVault',
-      })
+      }
+
+      mixpanel.track(eventName, eventBody)
+      mixpanelInternalAPI(eventName, eventBody)
     },
   },
 }

@@ -221,7 +221,7 @@ function saveVaultType(
   const token = jwtAuthGetToken(state.account as string)
 
   if (token) {
-    saveVaultType$(state.vault.id, token, VaultType.Multiply)
+    saveVaultType$(state.vault.id, token, VaultType.Multiply, state.vault.chainId)
       .pipe<ManageVaultChange>(
         map(() => {
           window.location.reload()
@@ -412,7 +412,7 @@ export function createManageVault$(
   priceInfo$: (token: string) => Observable<PriceInfo>,
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilkData$: (ilk: string) => Observable<IlkData>,
-  vault$: (id: BigNumber) => Observable<Vault>,
+  vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
   saveVaultType$: SaveVaultType,
   addGasEstimation$: AddGasEstimationFunction,
   id: BigNumber,
@@ -420,7 +420,7 @@ export function createManageVault$(
   return context$.pipe(
     switchMap((context) => {
       const account = context.status === 'connected' ? context.account : undefined
-      return vault$(id).pipe(
+      return vault$(id, context.chainId).pipe(
         first(),
         switchMap((vault) => {
           return combineLatest(
@@ -431,6 +431,7 @@ export function createManageVault$(
           ).pipe(
             first(),
             switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress]) => {
+              vault.chainId = context.chainId
               const collateralAllowance$ =
                 account && proxyAddress
                   ? allowance$(vault.token, account, proxyAddress)
@@ -487,7 +488,7 @@ export function createManageVault$(
                     priceInfoChange$(priceInfo$, vault.token),
                     balanceInfoChange$(balanceInfo$, vault.token, account),
                     createIlkDataChange$(ilkData$, vault.ilk),
-                    createVaultChange$(vault$, id),
+                    createVaultChange$(vault$, id, context.chainId),
                   )
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)

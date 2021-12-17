@@ -6,7 +6,12 @@ import { Vault } from 'blockchain/vaults'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
-import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
+import {
+  calculatePNL,
+  getCumulativeFeesUSD,
+  LOAN_FEE,
+  OAZO_FEE,
+} from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 
 import { ManageMultiplyVaultState } from './manageMultiplyVault'
@@ -86,6 +91,8 @@ export interface ManageVaultCalculations {
   afterCloseToCollateral: BigNumber
   afterCloseToCollateralUSD: BigNumber
   oneInchAmount: BigNumber
+  currentPnL: BigNumber
+  totalGasSpentUSD: BigNumber
 }
 
 export const MAX_COLL_RATIO = new BigNumber(5)
@@ -176,6 +183,8 @@ export const defaultManageMultiplyVaultCalculations: ManageVaultCalculations = {
   afterCloseToDai: zero,
   afterCloseToCollateral: zero,
   afterCloseToCollateralUSD: zero,
+  currentPnL: zero,
+  totalGasSpentUSD: zero,
 }
 
 /*
@@ -479,6 +488,7 @@ export function applyManageVaultCalculations(
     otherAction,
     originalEditingStage,
     closeVaultTo,
+    vaultHistory,
   } = state
 
   const vaultHasZeroCollateral = lockedCollateral.eq(zero)
@@ -558,7 +568,12 @@ export function applyManageVaultCalculations(
   }
 
   if (!marketPrice || !marketPriceMaxSlippage) {
-    return { ...state, ...defaultManageMultiplyVaultCalculations, ...maxInputAmounts, ...prices }
+    return {
+      ...state,
+      ...defaultManageMultiplyVaultCalculations,
+      ...maxInputAmounts,
+      ...prices,
+    }
   }
 
   const {
@@ -803,6 +818,10 @@ export function applyManageVaultCalculations(
   const afterCloseToCollateral = lockedCollateral.minus(closeToCollateralParams.fromTokenAmount)
   const afterCloseToCollateralUSD = afterCloseToCollateral.times(marketPrice)
 
+  const currentPnL = calculatePNL(vaultHistory, netValueUSD)
+
+  const totalGasSpentUSD = vaultHistory.reduce(getCumulativeFeesUSD, zero)
+
   return {
     ...state,
     ...maxInputAmounts,
@@ -817,6 +836,9 @@ export function applyManageVaultCalculations(
     afterMultiply,
     afterLiquidationPrice,
     exchangeAction,
+
+    currentPnL,
+    totalGasSpentUSD,
 
     afterCollateralizationRatioAtNextPrice,
     afterFreeCollateral,

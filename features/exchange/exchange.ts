@@ -9,7 +9,7 @@ import { Dictionary } from 'ts-essentials'
 
 import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 
-const API_ENDPOINT = `https://oasis.api.enterprise.1inch.exchange/v3.0/1/swap`
+const API_ENDPOINT = `https://oasis.api.enterprise.1inch.exchange/v4.0/1/swap`
 
 interface Response {
   fromToken: TokenDescriptor
@@ -39,11 +39,23 @@ interface Tx {
 
 export type ExchangeAction = 'BUY_COLLATERAL' | 'SELL_COLLATERAL'
 
+export type ExchangeType = 'defaultExchange' | 'noFeesExchange' | 'lowerFeesExchange'
+
 type TokenMetadata = {
   address: string
   decimals: number
   name: string
   symbol: string
+}
+
+export type QuoteResult = {
+  status: 'SUCCESS'
+  fromTokenAddress: string
+  toTokenAddress: string
+  collateralAmount: BigNumber
+  daiAmount: BigNumber
+  tokenPrice: BigNumber
+  tx: Tx
 }
 
 export function getTokenMetaData(
@@ -70,20 +82,49 @@ export function getQuote$(
   const fromTokenAddress = action === 'BUY_COLLATERAL' ? dai.address : collateral.address
   const toTokenAddress = action === 'BUY_COLLATERAL' ? collateral.address : dai.address
 
+  const _1inchAmount = amountToWei(
+    amount,
+    action === 'BUY_COLLATERAL' ? dai.decimals : collateral.decimals,
+  ).toFixed(0)
+
   //TODO: set proper precision depending on token
   const searchParams = new URLSearchParams({
     fromTokenAddress,
     toTokenAddress,
-    amount: amountToWei(
-      amount,
-      action === 'BUY_COLLATERAL' ? dai.decimals : collateral.decimals,
-    ).toFixed(0),
+    amount: _1inchAmount,
     fromAddress: account,
     slippage: slippage.times(100).toString(),
     disableEstimate: 'true',
     allowPartialFill: 'false',
     protocols: 'UNISWAP_V3,PMM4,UNISWAP_V2,SUSHI,CURVE,PSM',
   })
+
+  const responseBase = {
+    status: 'SUCCESS',
+    fromTokenAddress,
+    toTokenAddress,
+  }
+
+  if (amount.isZero() || amount.isNaN() || !amount.isFinite() || _1inchAmount === '0') {
+    //this is not valid 1inch call
+
+    return of({
+      ...responseBase,
+
+      collateralAmount: amountFromWei(new BigNumber(0)),
+      daiAmount: amountFromWei(new BigNumber(0)),
+      tokenPrice: new BigNumber(0),
+      tx: {
+        //empty payload
+        data: '',
+        from: '',
+        gas: 0,
+        gasPrice: '0',
+        to: '',
+        value: '0',
+      },
+    } as QuoteResult)
+  }
 
   return ajax(`${API_ENDPOINT}?${searchParams.toString()}`).pipe(
     tap((response) => {
@@ -96,11 +137,8 @@ export function getQuote$(
         fromToken.decimals,
       )
       const normalizedToTokenAmount = amountFromWei(new BigNumber(toTokenAmount), toToken.decimals)
-
       return {
-        status: 'SUCCESS' as const,
-        fromToken,
-        toToken,
+        ...responseBase,
         collateralAmount: amountFromWei(
           action === 'BUY_COLLATERAL'
             ? new BigNumber(toTokenAmount)
@@ -121,7 +159,7 @@ export function getQuote$(
       }
     }),
     retry(3),
-    catchError(() => of({ status: 'ERROR' as const })),
+    catchError(() => of({ status: 'ERROR' } as const)),
   )
 }
 
@@ -133,10 +171,13 @@ export function createExchangeQuote$(
   slippage: BigNumber,
   amount: BigNumber,
   action: ExchangeAction,
+  exchangeType: ExchangeType,
 ) {
   return context$.pipe(
     switchMap((context) => {
-      const { tokens, exchange } = context
+      const { tokens } = context
+      const exchange = (context as any)[exchangeType]
+
       const dai = getTokenMetaData('DAI', tokens)
       const collateral = getTokenMetaData(token, tokens)
 

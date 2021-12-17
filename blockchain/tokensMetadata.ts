@@ -15,6 +15,8 @@ export interface TokenConfig {
   tags: CoinTag[]
   color: string
   bannerIcon: string
+  token0?: string
+  token1?: string
 }
 
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
@@ -295,9 +297,9 @@ const tokens = [
     digits: 5,
     digitsInstant: 2,
     name: 'UNIV2USDCETH',
-    icon: 'uni_circle_color',
-    iconCircle: 'uni_circle_color',
-    iconColor: 'uni_circle_color',
+    icon: 'univ2_usdc_eth_circles_color',
+    iconCircle: 'univ2_usdc_eth_circles_color',
+    iconColor: 'univ2_usdc_eth_circles_color',
     color: '#ff077d',
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
@@ -310,9 +312,9 @@ const tokens = [
     digits: 5,
     digitsInstant: 2,
     name: 'UNIV2DAIUSDC',
-    icon: 'uni_circle_color',
-    iconCircle: 'uni_circle_color',
-    iconColor: 'uni_circle_color',
+    icon: 'univ2_dai_usdc_circles_color',
+    iconCircle: 'univ2_dai_usdc_circles_color',
+    iconColor: 'univ2_dai_usdc_circles_color',
     color: '#ff077d',
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
@@ -325,9 +327,9 @@ const tokens = [
     digits: 5,
     digitsInstant: 2,
     name: 'UNIV2WBTCETH',
-    icon: 'uni_circle_color',
-    iconCircle: 'uni_circle_color',
-    iconColor: 'uni_circle_color',
+    icon: 'univ2_wbtc_eth_circles_color',
+    iconCircle: 'univ2_wbtc_eth_circles_color',
+    iconColor: 'univ2_wbtc_eth_circles_color',
     color: '#ff077d',
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
@@ -340,9 +342,9 @@ const tokens = [
     digits: 5,
     digitsInstant: 2,
     name: 'UNIV2DAIETH',
-    icon: 'uni_circle_color',
-    iconCircle: 'uni_circle_color',
-    iconColor: 'uni_circle_color',
+    icon: 'univ2_dai_eth_circles_color',
+    iconCircle: 'univ2_dai_eth_circles_color',
+    iconColor: 'univ2_dai_eth_circles_color',
     color: '#ff077d',
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
@@ -355,9 +357,9 @@ const tokens = [
     digits: 5,
     digitsInstant: 2,
     name: 'UNIV2ETHUSDT',
-    icon: 'uni_circle_color',
-    iconCircle: 'uni_circle_color',
-    iconColor: 'uni_circle_color',
+    icon: 'univ2_eth_usdt_circles_color',
+    iconCircle: 'univ2_eth_usdt_circles_color',
+    iconColor: 'univ2_eth_usdt_circles_color',
     color: '#ff077d',
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
@@ -370,9 +372,9 @@ const tokens = [
     digits: 5,
     digitsInstant: 2,
     name: 'UNIV2UNIETH',
-    icon: 'uni_circle_color',
-    iconCircle: 'uni_circle_color',
-    iconColor: 'uni_circle_color',
+    icon: 'univ2_uni_eth_circles_color',
+    iconCircle: 'univ2_uni_eth_circles_color',
+    iconColor: 'univ2_uni_eth_circles_color',
     color: '#ff077d',
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
@@ -385,9 +387,9 @@ const tokens = [
     digits: 5,
     digitsInstant: 2,
     name: 'UNIV2LINKETH',
-    icon: 'uni_circle_color',
-    iconCircle: 'uni_circle_color',
-    iconColor: 'uni_circle_color',
+    icon: 'univ2_link_eth_circles_color',
+    iconCircle: 'univ2_link_eth_circles_color',
+    iconColor: 'univ2_link_eth_circles_color',
     color: '#ff077d',
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
@@ -400,9 +402,9 @@ const tokens = [
     digits: 5,
     digitsInstant: 2,
     name: 'UNIV2WBTCDAI',
-    icon: 'uni_circle_color',
-    iconCircle: 'uni_circle_color',
-    iconColor: 'uni_circle_color',
+    icon: 'univ2_wbtc_dai_circles_color',
+    iconCircle: 'univ2_wbtc_dai_circles_color',
+    iconColor: 'univ2_wbtc_dai_circles_color',
     color: '#ff077d',
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
@@ -415,9 +417,9 @@ const tokens = [
     digits: 5,
     digitsInstant: 2,
     name: 'UNIV2AAVEETH',
-    icon: 'uni_circle_color',
-    iconCircle: 'uni_circle_color',
-    iconColor: 'uni_circle_color',
+    icon: 'univ2_aave_eth_circles_color',
+    iconCircle: 'univ2_aave_eth_circles_color',
+    iconColor: 'univ2_aave_eth_circles_color',
     color: '#ff077d',
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
@@ -430,9 +432,9 @@ const tokens = [
     digits: 5,
     digitsInstant: 2,
     name: 'UNIV2DAIUSDT',
-    icon: 'uni_circle_color',
-    iconCircle: 'uni_circle_color',
-    iconColor: 'uni_circle_color',
+    icon: 'univ2_dai_usdt_circles_color',
+    iconCircle: 'univ2_dai_usdt_circles_color',
+    iconColor: 'univ2_dai_usdt_circles_color',
     color: '#ff077d',
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
@@ -444,15 +446,34 @@ const tokens = [
     precision: 18,
     digits: 5,
     digitsInstant: 2,
-    name: 'GUNIV3DAIUSDC1',
-    icon: 'uni_circle_color',
-    iconCircle: 'uni_circle_color',
-    iconColor: 'uni_circle_color',
+    name: 'GUNIV3 DAI/USDC 0.05%',
+    icon: 'guniv3_dai_usdc1_circles_color',
+    iconCircle: 'guniv3_dai_usdc1_circles_color',
+    iconColor: 'guniv3_dai_usdc1_circles_color',
     color: '#ff077d',
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     tags: ['lp-token'],
+    token0: 'DAI',
+    token1: 'USDC',
+  },
+  {
+    symbol: 'GUNIV3DAIUSDC2',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'GUNIV3 DAI/USDC 0.01%',
+    icon: 'guniv3_dai_usdc1_circles_color',
+    iconCircle: 'guniv3_dai_usdc1_circles_color',
+    iconColor: 'guniv3_dai_usdc1_circles_color',
+    color: '#ff077d',
+    background:
+      'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
+    tags: ['lp-token'],
+    token0: 'DAI',
+    token1: 'USDC',
   },
   {
     symbol: 'MATIC',
@@ -466,6 +487,21 @@ const tokens = [
     color: '#ff077d',
     background: 'linear-gradient(106.31deg, #8246E4 0%, #DB45F3 100%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/matic.svg'),
+    tags: [],
+  },
+  {
+    symbol: 'WSTETH',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'WSTETH',
+    icon: 'wsteth_circle_color',
+    iconCircle: 'wsteth_circle_color',
+    iconColor: 'wsteth_circle_color',
+    color: '#ff077d',
+    background:
+      'linear-gradient(99.1deg, #00A3FF 0%, #4EB7F2 36.72%, #5DBAEF 43.67%, #0A98E8 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/wsteth.svg'),
     tags: [],
   },
   // {
@@ -536,3 +572,5 @@ export const ALLOWED_MULTIPLY_TOKENS = tokens
     (token) => !(token.tags as CoinTag[]).some((tag) => tag === 'lp-token' || tag === 'stablecoin'),
   )
   .map((token) => token.symbol)
+
+export const ONLY_MULTIPLY_TOKENS = ['GUNIV3DAIUSDC1', 'GUNIV3DAIUSDC2']

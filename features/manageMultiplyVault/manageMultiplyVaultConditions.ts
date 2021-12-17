@@ -1,4 +1,5 @@
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
@@ -147,7 +148,7 @@ export interface ManageVaultConditions {
   generateAmountExceedsDebtCeiling: boolean
   paybackAmountExceedsVaultDebt: boolean
   paybackAmountExceedsDaiBalance: boolean
-
+  generateAmountMoreThanMaxFlashAmount: boolean
   debtWillBeLessThanDebtFloor: boolean
   isLoadingStage: boolean
   exchangeDataRequired: boolean
@@ -196,6 +197,7 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice: false,
   generateAmountLessThanDebtFloor: false,
   generateAmountExceedsDebtCeiling: false,
+  generateAmountMoreThanMaxFlashAmount: false,
   paybackAmountExceedsVaultDebt: false,
   paybackAmountExceedsDaiBalance: false,
 
@@ -227,6 +229,7 @@ export function applyManageVaultConditions(
     afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
     afterDebt,
+    debtDelta,
     ilkData,
     vault,
     account,
@@ -353,6 +356,10 @@ export function applyManageVaultConditions(
       vault.debt.plus(generateAmountCalc).gte(ilkData.debtFloor)
     )
 
+  const generateAmountMoreThanMaxFlashAmount = debtDelta
+    ? debtDelta?.gt(FLASH_MINT_LIMIT_PER_TX)
+    : false
+
   const paybackAmountExceedsDaiBalance = !!paybackAmount?.gt(daiBalance)
   const paybackAmountExceedsVaultDebt = !!paybackAmount?.gt(vault.debt)
 
@@ -438,6 +445,7 @@ export function applyManageVaultConditions(
       depositingAllEthBalance ||
       generateAmountExceedsDebtCeiling ||
       generateAmountLessThanDebtFloor ||
+      generateAmountMoreThanMaxFlashAmount ||
       paybackAmountExceedsDaiBalance ||
       paybackAmountExceedsVaultDebt ||
       withdrawCollateralOnVaultUnderDebtFloor ||
@@ -501,6 +509,7 @@ export function applyManageVaultConditions(
     generateAmountExceedsDaiYieldFromTotalCollateral,
     generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice,
     generateAmountLessThanDebtFloor,
+    generateAmountMoreThanMaxFlashAmount,
     paybackAmountExceedsDaiBalance,
     paybackAmountExceedsVaultDebt,
     shouldPaybackAll,

@@ -7,11 +7,13 @@ import * as eth from './abi/ds-eth-token.json'
 import * as dsProxyFactory from './abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from './abi/ds-proxy-registry.json'
 import * as dssCdpManager from './abi/dss-cdp-manager.json'
+import * as guniProxyActions from './abi/dss-guni-proxy-actions.json'
 import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
 import * as dssProxyActions from './abi/dss-proxy-actions.json'
 import * as erc20 from './abi/erc20.json'
 import * as exchange from './abi/exchange.json'
 import * as getCdps from './abi/get-cdps.json'
+import * as guniToken from './abi/guni-token.json'
 import * as otc from './abi/matching-market.json'
 import * as mcdDog from './abi/mcd-dog.json'
 import * as mcdEnd from './abi/mcd-end.json'
@@ -28,6 +30,7 @@ import {
   getCollateralTokens,
   getOsms,
 } from './addresses/addressesUtils'
+import { default as goerliAddresses } from './addresses/goerli.json'
 import { default as kovanAddresses } from './addresses/kovan.json'
 import { default as mainnetAddresses } from './addresses/mainnet.json'
 
@@ -51,11 +54,10 @@ const protoMain = {
   collaterals: getCollaterals(mainnetAddresses),
   tokens: {
     ...getCollateralTokens(mainnetAddresses),
+    GUNIV3DAIUSDC1: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC1']),
+    GUNIV3DAIUSDC2: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC2']),
     WETH: contractDesc(eth, mainnetAddresses['ETH']),
     DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
-    MKR: contractDesc(erc20, mainnetAddresses.MCD_GOV),
-    CHAI: contractDesc(erc20, '0x06af07097c9eeb7fd685c692751d5c66db49c215'),
-    // WBTC: contractDesc(erc20, '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'),
   } as Dictionary<ContractDesc>,
   joins: {
     ...getCollateralJoinContracts(mainnetAddresses),
@@ -74,16 +76,24 @@ const protoMain = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, mainnetAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, mainnetAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
+  guniProxyActions: contractDesc(guniProxyActions, '0xed3a954c0adfc8e3f85d92729c051ff320648e30'),
+  guniResolver: '0x0317650Af6f184344D7368AC8bB0bEbA5EDB214a',
+  guniRouter: '0x14E6D67F824C3a7b4329d3228807f8654294e4bd',
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
-    '0x33b4BE1B67c49125C1524777515e4034E04dFF58',
+    '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
   ),
-  exchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
-  aaveLendingPool: '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5',
+  defaultExchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
+  noFeesExchange: contractDesc(exchange, '0x99e4484dac819aa74b347208752306615213d324'),
+  lowerFeesExchange: contractDesc(exchange, '0x12dcc776525c35836b10026929558208d1258b91'),
+  fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
   etherscan: {
     url: 'https://etherscan.io',
     apiUrl: 'https://api.etherscan.io/api',
     apiKey: etherscanAPIKey || '',
+  },
+  ethtx: {
+    url: 'https://ethtx.info/mainnet',
   },
   taxProxyRegistries: ['0xaa63c8683647ef91b3fdab4b4989ee9588da297b'],
   dssProxyActionsDsr: contractDesc(
@@ -113,9 +123,6 @@ const kovan: NetworkConfig = {
     WETH: contractDesc(eth, kovanAddresses['ETH']),
     DAI: contractDesc(erc20, kovanAddresses['MCD_DAI']),
     USDC: contractDesc(erc20, '0x198419c5c340e8De47ce4C0E4711A03664d42CB2'),
-    MKR: contractDesc(erc20, kovanAddresses.MCD_GOV),
-    CHAI: contractDesc(erc20, '0xb641957b6c29310926110848db2d464c8c3c3f38'),
-    // WBTC: contractDesc(erc20, '0xA08d982C2deBa0DbE433a9C6177a219E96CeE656'),
   },
   joins: {
     ...getCollateralJoinContracts(kovanAddresses),
@@ -138,12 +145,20 @@ const kovan: NetworkConfig = {
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
   ),
-  exchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
-  aaveLendingPool: '0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5',
+  guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
+  guniResolver: '0x',
+  guniRouter: '0x',
+  defaultExchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
+  lowerFeesExchange: contractDesc(exchange, '0x0'),
+  noFeesExchange: contractDesc(exchange, '0x0'),
+  fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
   etherscan: {
     url: 'https://kovan.etherscan.io',
     apiUrl: 'https://api-kovan.etherscan.io/api',
     apiKey: etherscanAPIKey || '',
+  },
+  ethtx: {
+    url: 'https://ethtx.info/kovan',
   },
   taxProxyRegistries: [kovanAddresses.PROXY_REGISTRY],
   dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, kovanAddresses.PROXY_ACTIONS_DSR),
@@ -151,6 +166,67 @@ const kovan: NetworkConfig = {
     apiKey: '',
   },
   cacheApi: 'https://oazo-bcache-kovan-staging.new.oasis.app/api/v1',
+}
+
+const goerli: NetworkConfig = {
+  id: '5',
+  name: 'goerli',
+  label: 'goerli',
+  infuraUrl: `https://goerli.infura.io/v3/${infuraProjectId}`,
+  infuraUrlWS: `wss://goerli.infura.io/ws/v3/${infuraProjectId}`,
+  safeConfirmations: 6,
+  otc: contractDesc(otc, '0x0000000000000000000000000000000000000000'),
+  collaterals: getCollaterals(goerliAddresses),
+  tokens: {
+    ...getCollateralTokens(goerliAddresses),
+    WETH: contractDesc(eth, goerliAddresses.ETH),
+    DAI: contractDesc(erc20, goerliAddresses.MCD_DAI),
+  },
+  joins: {
+    ...getCollateralJoinContracts(goerliAddresses),
+  },
+  getCdps: contractDesc(getCdps, goerliAddresses.GET_CDPS),
+  mcdOsms: getOsms(goerliAddresses),
+  mcdPot: contractDesc(mcdPot, goerliAddresses.MCD_POT),
+  mcdJug: contractDesc(mcdJug, goerliAddresses.MCD_JUG),
+  mcdEnd: contractDesc(mcdEnd, goerliAddresses.MCD_END),
+  mcdSpot: contractDesc(mcdSpot, goerliAddresses.MCD_SPOT),
+  mcdDog: contractDesc(mcdDog, goerliAddresses.MCD_DOG),
+  dssCdpManager: contractDesc(dssCdpManager, goerliAddresses.CDP_MANAGER),
+  otcSupportMethods: contractDesc(otcSupport, '0x0000000000000000000000000000000000000000'),
+  vat: contractDesc(vat, goerliAddresses.MCD_VAT),
+  mcdJoinDai: contractDesc(mcdJoinDai, goerliAddresses.MCD_JOIN_DAI),
+  dsProxyRegistry: contractDesc(dsProxyRegistry, goerliAddresses.PROXY_REGISTRY),
+  dsProxyFactory: contractDesc(dsProxyFactory, goerliAddresses.PROXY_FACTORY),
+  dssProxyActions: contractDesc(dssProxyActions, goerliAddresses.PROXY_ACTIONS),
+  // Currently this is not supported on Goerli - no deployed contract
+  dssMultiplyProxyActions: contractDesc(
+    dssMultiplyProxyActions,
+    getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
+  ),
+  guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
+  guniResolver: '0x',
+  guniRouter: '0x',
+  // Currently this is not supported on Goerli - no deployed contract
+  defaultExchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''),
+  lowerFeesExchange: contractDesc(exchange, '0x0'),
+  noFeesExchange: contractDesc(exchange, '0x0'),
+  // Currently this is not supported on Goerli - no deployed contract
+  fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
+  etherscan: {
+    url: 'https://goerli.etherscan.io',
+    apiUrl: 'https://api-goerli.etherscan.io/api',
+    apiKey: etherscanAPIKey || '',
+  },
+  ethtx: {
+    url: 'https://ethtx.info/goerli',
+  },
+  taxProxyRegistries: [goerliAddresses.PROXY_REGISTRY],
+  dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, goerliAddresses.PROXY_ACTIONS_DSR),
+  magicLink: {
+    apiKey: '',
+  },
+  cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
 }
 
 const hardhat: NetworkConfig = {
@@ -161,20 +237,21 @@ const hardhat: NetworkConfig = {
   infuraUrl: `http://localhost:8545`,
   infuraUrlWS: `ws://localhost:8545`,
   cacheApi: 'http://localhost:3001/v1',
-  dssMultiplyProxyActions: contractDesc(
+  /* dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions ||
-      '0x33b4BE1B67c49125C1524777515e4034E04dFF58',
+      '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
   ),
-  exchange: contractDesc(
+  // guniProxyActions: contractDesc(guniProxyActions, '0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25'),
+  defaultExchange: contractDesc(
     exchange,
     getConfig()?.publicRuntimeConfig?.exchangeAddress ||
-      '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B',
-  ),
+      '0x4C4a2f8c81640e47606d3fd77B353E87Ba015584',
+  ), */
 }
 
-export const networksById = keyBy([main, kovan, hardhat], 'id')
-export const networksByName = keyBy([main, kovan, hardhat], 'name')
+export const networksById = keyBy([main, kovan, hardhat, goerli], 'id')
+export const networksByName = keyBy([main, kovan, hardhat, goerli], 'name')
 
 export const dappName = 'Oasis'
 export const pollingInterval = 12000

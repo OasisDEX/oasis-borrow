@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
+import { ALLOWED_MULTIPLY_TOKENS, ONLY_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useModal } from 'helpers/modalHook'
 import { useRedirect } from 'helpers/useRedirect'
 
@@ -18,6 +18,10 @@ export function useRedirectToOpenVault() {
       })
     }
 
-    push(`/vaults/open/${ilk}`)
+    if (ONLY_MULTIPLY_TOKENS.includes(token)) {
+      push(`/vaults/open-multiply/${ilk}`)
+    } else {
+      push(`/vaults/open/${ilk}`)
+    }
   }
 }

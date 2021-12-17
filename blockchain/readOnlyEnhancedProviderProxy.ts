@@ -57,7 +57,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
             const result = await provider.send(payload.method, payload.params)
             callback(null, { jsonrpc: payload.jsonrpc, id: payload.id, result })
           } catch (err) {
-            callback(err)
+            callback(err as any)
           }
         }
         return sendAsyncMaybeReadOnly

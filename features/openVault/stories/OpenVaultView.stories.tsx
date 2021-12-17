@@ -111,48 +111,48 @@ export const AllowanceSuccess = openVaultStory({
   generateAmount: new BigNumber('5000'),
 })
 
-export const OpenWaitingForConfirmation = openVaultStory({
+export const txWaitingForConfirmation = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'ETH-A',
 })({
-  stage: 'openWaitingForConfirmation',
+  stage: 'txWaitingForConfirmation',
   depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('5000'),
 })
 
-export const OpenWaitingForApproval = openVaultStory({
+export const txWaitingForApproval = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'ETH-A',
 })({
-  stage: 'openWaitingForApproval',
+  stage: 'txWaitingForApproval',
   depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('5000'),
 })
 
-export const OpenFailure = openVaultStory({
+export const txFailure = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'ETH-A',
 })({
-  stage: 'openFailure',
+  stage: 'txFailure',
   depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('5000'),
 })
 
-export const OpenInProgress = openVaultStory({
+export const txInProgress = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'ETH-A',
 })({
-  stage: 'openInProgress',
+  stage: 'txInProgress',
   depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('5000'),
 })
 
-export const OpenSuccess = openVaultStory({
+export const txSuccess = openVaultStory({
   balanceInfo: { collateralBalance: new BigNumber('100') },
   ilk: 'ETH-A',
 })({
   id: new BigNumber('122345'),
-  stage: 'openSuccess',
+  stage: 'txSuccess',
   depositAmount: new BigNumber('50'),
   generateAmount: new BigNumber('5000'),
 })

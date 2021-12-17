@@ -20,17 +20,24 @@ import {
   SetProxyOwnerData,
 } from 'blockchain/calls/proxy'
 import {
+  CloseGuniMultiplyData,
   CloseVaultData,
   DepositAndGenerateData,
   MultiplyAdjustData,
   OpenData,
+  OpenGuniMultiplyData,
   OpenMultiplyData,
   ReclaimData,
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
-import { createGasPrice$, createOraclePriceData$, tokenPricesInUSD$ } from 'blockchain/prices'
+import {
+  createGasPrice$,
+  createOraclePriceData$,
+  GasPriceParams,
+  tokenPricesInUSD$,
+} from 'blockchain/prices'
 import {
   createAccountBalance$,
   createAllowance$,
@@ -50,6 +57,7 @@ import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
 import { createManageMultiplyVault$ } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { createManageVault$ } from 'features/manageVault/manageVault'
+import { createOpenGuniVault$ } from 'features/openGuniVault/openGuniVault'
 import { createOpenMultiplyVault$ } from 'features/openMultiplyVault/openMultiplyVault'
 import { createOpenVault$ } from 'features/openVault/openVault'
 import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultData'
@@ -64,10 +72,10 @@ import {
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiplyHistory'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
-import { mapValues, memoize } from 'lodash'
+import { isEqual, mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
 import { combineLatest, Observable, of } from 'rxjs'
-import { filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { dogIlk } from '../blockchain/calls/dog'
 import {
@@ -90,6 +98,9 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import { getTotalSupply, getUnderlyingBalances } from '../features/manageGuniVault/guniActionsCalls'
+import { createManageGuniVault$ } from '../features/manageGuniVault/manageGuniVault'
+import { getGuniMintAmount, getToken1Balance } from '../features/openGuniVault/guniActionsCalls'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
@@ -107,6 +118,8 @@ export type TxData =
   | OpenMultiplyData
   | MultiplyAdjustData
   | CloseVaultData
+  | OpenGuniMultiplyData
+  | CloseGuniMultiplyData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -132,7 +145,7 @@ export const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
 function createTxHelpers$(
   context$: Observable<ContextConnected>,
   send: SendFunction<TxData>,
-  gasPrice$: Observable<BigNumber>,
+  gasPrice$: Observable<GasPriceParams>,
 ): TxHelpers$ {
   return context$.pipe(
     filter(({ status }) => status === 'connected'),
@@ -168,13 +181,18 @@ export function setupAppContext() {
   combineLatest(account$, connectedContext$)
     .pipe(
       mergeMap(([account, network]) => {
-        return of({ network, account: account?.toLowerCase() })
+        return of({
+          networkName: network.name,
+          connectionKind: network.connectionKind,
+          account: account?.toLowerCase(),
+        })
       }),
+      distinctUntilChanged(isEqual),
     )
-    .subscribe(({ account, network }) => {
-      if (account && network) {
-        mixpanelIdentify(account, { walletType: network.connectionKind })
-        trackingEvents.accountChange(account, network.name, network.connectionKind)
+    .subscribe(({ account, networkName, connectionKind }) => {
+      if (account) {
+        mixpanelIdentify(account, { walletType: connectionKind })
+        trackingEvents.accountChange(account, networkName, connectionKind)
       }
     })
 
@@ -189,9 +207,7 @@ export function setupAppContext() {
     connectedContext$,
   )
 
-  const gasPrice$ = createGasPrice$(onEveryBlock$, context$).pipe(
-    map((x) => BigNumber.max(x.plus(1), x.multipliedBy(1.01).decimalPlaces(0, 0))),
-  )
+  const gasPrice$ = createGasPrice$(onEveryBlock$, context$)
 
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
@@ -244,17 +260,20 @@ export function setupAppContext() {
   )
 
   const vault$ = memoize(
-    curry(createVault$)(
-      cdpManagerUrns$,
-      cdpManagerIlks$,
-      cdpManagerOwner$,
-      vatUrns$,
-      vatGem$,
-      ilkData$,
-      oraclePriceData$,
-      controller$,
-      ilkToToken$,
-    ),
+    (id: BigNumber) =>
+      createVault$(
+        cdpManagerUrns$,
+        cdpManagerIlks$,
+        cdpManagerOwner$,
+        vatUrns$,
+        vatGem$,
+        ilkData$,
+        oraclePriceData$,
+        controller$,
+        ilkToToken$,
+        context$,
+        id,
+      ),
     bigNumberTostring,
   )
 
@@ -310,8 +329,8 @@ export function setupAppContext() {
 
   const exchangeQuote$ = memoize(
     curry(createExchangeQuote$)(context$),
-    (token: string, slippage: BigNumber, amount: BigNumber, action: string) =>
-      `${token}_${slippage.toString()}_${amount.toString()}_${action}`,
+    (token: string, slippage: BigNumber, amount: BigNumber, action: string, exchangeType: string) =>
+      `${token}_${slippage.toString()}_${amount.toString()}_${action}_${exchangeType}`,
   )
 
   const openMultiplyVault$ = memoize((ilk: string) =>
@@ -327,6 +346,28 @@ export function setupAppContext() {
       exchangeQuote$,
       addGasEstimation$,
       ilk,
+    ),
+  )
+
+  const token1Balance$ = observe(onEveryBlock$, context$, getToken1Balance)
+  const getGuniMintAmount$ = observe(onEveryBlock$, context$, getGuniMintAmount)
+
+  const openGuniVault$ = memoize((ilk: string) =>
+    createOpenGuniVault$(
+      connectedContext$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      priceInfo$,
+      balanceInfo$,
+      ilks$,
+      ilkData$,
+      exchangeQuote$,
+      onEveryBlock$,
+      addGasEstimation$,
+      ilk,
+      token1Balance$,
+      getGuniMintAmount$,
     ),
   )
 
@@ -361,13 +402,56 @@ export function setupAppContext() {
         vault$,
         exchangeQuote$,
         addGasEstimation$,
+        vaultMultiplyHistory$,
         id,
       ),
     bigNumberTostring,
   )
 
+  const getGuniPoolBalances$ = observe(onEveryBlock$, context$, getUnderlyingBalances)
+
+  const getTotalSupply$ = observe(onEveryBlock$, context$, getTotalSupply)
+
+  function getProportions$(gUniBalance: BigNumber, token: string) {
+    return combineLatest(getGuniPoolBalances$({ token }), getTotalSupply$({ token })).pipe(
+      map(([{ amount0, amount1 }, totalSupply]) => {
+        return {
+          sharedAmount0: amount0.times(gUniBalance).div(totalSupply),
+          sharedAmount1: amount1.times(gUniBalance).div(totalSupply),
+        }
+      }),
+    )
+  }
+
+  const manageGuniVault$ = memoize(
+    (id: BigNumber) =>
+      createManageGuniVault$(
+        context$,
+        txHelpers$,
+        proxyAddress$,
+        allowance$,
+        priceInfo$,
+        balanceInfo$,
+        ilkData$,
+        vault$,
+        exchangeQuote$,
+        addGasEstimation$,
+        getProportions$,
+        vaultMultiplyHistory$,
+        id,
+      ),
+    bigNumberTostring,
+  )
+
+  const checkVault$ = memoize((id: BigNumber) => curry(checkVaultTypeUsingApi$)(context$, id))
   const generalManageVault$ = memoize(
-    curry(createGeneralManageVault$)(manageMultiplyVault$, manageVault$, checkVaultTypeUsingApi$),
+    curry(createGeneralManageVault$)(
+      manageMultiplyVault$,
+      manageGuniVault$,
+      manageVault$,
+      checkVault$,
+      vault$,
+    ),
     bigNumberTostring,
   )
 
@@ -416,6 +500,7 @@ export function setupAppContext() {
     openVault$,
     manageVault$,
     manageMultiplyVault$,
+    manageGuniVault$,
     vaultsOverview$,
     vaultBanners$,
     redirectState$,
@@ -429,6 +514,7 @@ export function setupAppContext() {
     openVaultOverview$,
     openMultiplyVault$,
     generalManageVault$,
+    openGuniVault$,
   }
 }
 

@@ -4,7 +4,7 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
-import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
@@ -15,6 +15,8 @@ import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
+import { VaultHistoryEvent } from '../vaultHistory/vaultHistory'
+import { createMultiplyHistoryChange$ } from './manageMultiplyHistory'
 import {
   applyExchange,
   createExchangeChange$,
@@ -186,6 +188,7 @@ export interface ManageVaultEnvironment {
   swap?: Quote
   exchangeError: boolean
   slippage: BigNumber
+  vaultHistory: VaultHistoryEvent[]
 }
 
 interface ManageVaultFunctions {
@@ -427,20 +430,22 @@ export function createManageMultiplyVault$(
   priceInfo$: (token: string) => Observable<PriceInfo>,
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilkData$: (ilk: string) => Observable<IlkData>,
-  vault$: (id: BigNumber) => Observable<Vault>,
+  vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
   exchangeQuote$: (
     token: string,
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: ExchangeType,
   ) => Observable<Quote>,
   addGasEstimation$: AddGasEstimationFunction,
+  vaultMultiplyHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
   return context$.pipe(
     switchMap((context) => {
       const account = context.status === 'connected' ? context.account : undefined
-      return vault$(id).pipe(
+      return vault$(id, context.chainId).pipe(
         first(),
         switchMap((vault) => {
           return combineLatest(
@@ -486,6 +491,7 @@ export function createManageMultiplyVault$(
                     ...defaultManageMultiplyVaultConditions,
                     vault,
                     priceInfo,
+                    vaultHistory: [],
                     balanceInfo,
                     ilkData,
                     account,
@@ -513,9 +519,10 @@ export function createManageMultiplyVault$(
                     priceInfoChange$(priceInfo$, vault.token),
                     balanceInfoChange$(balanceInfo$, vault.token, account),
                     createIlkDataChange$(ilkData$, vault.ilk),
-                    createVaultChange$(vault$, id),
+                    createVaultChange$(vault$, id, context.chainId),
                     createInitialQuoteChange(exchangeQuote$, vault.token),
                     createExchangeChange$(exchangeQuote$, stateSubject$),
+                    createMultiplyHistoryChange$(vaultMultiplyHistory$, id),
                   )
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
