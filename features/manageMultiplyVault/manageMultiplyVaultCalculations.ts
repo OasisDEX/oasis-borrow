@@ -1,17 +1,12 @@
 import { getMultiplyParams } from '@oasisdex/multiply'
+import { CloseToParams, getCloseToCollateralParams, getCloseToDaiParams } from '@oasisdex/multiply'
 import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
-import {
-  CloseToParams,
-  getCloseToCollateralParams,
-  getCloseToDaiParams,
-  LOAN_FEE,
-  OAZO_FEE,
-} from 'helpers/multiply/calculations'
+import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 
 import { ManageMultiplyVaultState } from './manageMultiplyVault'
@@ -158,16 +153,24 @@ export const defaultManageMultiplyVaultCalculations: ManageVaultCalculations = {
     fromTokenAmount: zero,
     toTokenAmount: zero,
     minToTokenAmount: zero,
+    borrowCollateral: zero,
+    requiredDebt: zero,
+    withdrawCollateral: zero,
     oazoFee: zero,
     loanFee: zero,
+    skipFL: false,
   },
 
   closeToCollateralParams: {
     fromTokenAmount: zero,
     toTokenAmount: zero,
     minToTokenAmount: zero,
+    borrowCollateral: zero,
+    requiredDebt: zero,
+    withdrawCollateral: zero,
     oazoFee: zero,
     loanFee: zero,
+    skipFL: false,
   },
 
   afterCloseToDai: zero,
@@ -586,7 +589,7 @@ export function applyManageVaultCalculations(
   const closeToDaiParams = getCloseToDaiParams(
     // market params
     {
-      oraclePrice: zero, // is ignored
+      oraclePrice: currentCollateralPrice,
       marketPrice,
       OF: OAZO_FEE,
       FF: LOAN_FEE,
@@ -596,14 +599,13 @@ export function applyManageVaultCalculations(
     {
       currentDebt: debt.plus(debtOffset),
       currentCollateral: lockedCollateral,
-      minCollRatio: requiredCollRatio || zero, // todo: make minCollRatio optional in library
     },
   )
 
   const closeToCollateralParams = getCloseToCollateralParams(
     // market params
     {
-      oraclePrice: zero, // is ignored
+      oraclePrice: currentCollateralPrice,
       marketPrice,
       OF: OAZO_FEE,
       FF: LOAN_FEE,
@@ -613,7 +615,7 @@ export function applyManageVaultCalculations(
     {
       currentDebt: debt.plus(debtOffset),
       currentCollateral: lockedCollateral,
-      minCollRatio: requiredCollRatio || zero,
+      minCollRatio: requiredCollRatio,
     },
   )
 

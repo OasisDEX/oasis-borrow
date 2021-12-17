@@ -1,7 +1,7 @@
 import { getMultiplyParams } from '@oasisdex/multiply'
 import { BigNumber } from 'bignumber.js'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
-import { getMaxPossibleCollRatioOrMax, LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
+import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 
 import { OpenMultiplyVaultState } from './openMultiplyVault'
@@ -73,6 +73,49 @@ export const defaultOpenMultiplyVaultStateCalculations: OpenMultiplyVaultCalcula
   fromTokenAmount: zero,
   borrowedDaiAmount: zero,
   oneInchAmount: zero,
+}
+
+function getCollRatioByDebt(
+  requiredDebt: BigNumber,
+  depositAmount: BigNumber,
+  oraclePrice: BigNumber,
+  marketPriceMaxSlippage: BigNumber, // market price in worst case (marketPrice * slippage)
+  loanFee: BigNumber = LOAN_FEE,
+  multiplyFee: BigNumber = OAZO_FEE,
+) {
+  return new BigNumber(
+    depositAmount.times(oraclePrice).times(marketPriceMaxSlippage).div(requiredDebt),
+  )
+    .plus(oraclePrice)
+    .minus(oraclePrice.times(multiplyFee))
+    .div(marketPriceMaxSlippage.plus(marketPriceMaxSlippage.times(loanFee)))
+}
+
+export function getMaxPossibleCollRatioOrMax(
+  debtFloor: BigNumber,
+  depositAmount: BigNumber,
+  oraclePrice: BigNumber,
+  marketPriceMaxSlippage: BigNumber,
+  liquidationRatio: BigNumber,
+  currentCollRatio: BigNumber,
+) {
+  const maxPossibleCollRatio = getCollRatioByDebt(
+    debtFloor,
+    depositAmount,
+    oraclePrice,
+    marketPriceMaxSlippage,
+  )
+
+  const maxCollRatioPrecise = BigNumber.max(
+    BigNumber.min(maxPossibleCollRatio, MAX_COLL_RATIO),
+    liquidationRatio,
+    currentCollRatio,
+  )
+    .times(100)
+    .integerValue(BigNumber.ROUND_DOWN)
+    .div(100)
+
+  return maxCollRatioPrecise.minus(maxCollRatioPrecise.times(100).mod(5).div(100))
 }
 
 export function applyOpenMultiplyVaultCalculations(
