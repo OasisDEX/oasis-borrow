@@ -73,7 +73,7 @@ function ManageVaultMultiplyTransition({ stage, vault }: ManageVaultState) {
     </Grid>
   ) : (
     <Box>
-      <Icon name="multiply_transition" size="auto" width="420" height="219" />
+      <Icon name="multiply_transition" size="auto" />
     </Box>
   )
 }
