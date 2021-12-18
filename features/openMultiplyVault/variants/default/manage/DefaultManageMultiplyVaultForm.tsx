@@ -8,12 +8,12 @@ import React from 'react'
 
 import { ManageMultiplyVaultState } from '../../../../manageMultiplyVault/manageMultiplyVault'
 import { ManageMultiplyVaultButton } from '../../../common/ManageMultiplyVaultButton'
-import { ManageMultiplyVaultCollateralAllowance } from '../../../common/ManageMultiplyVaultCollateralAllowance'
 import {
   ManageMultiplyVaultConfirmation,
   ManageMultiplyVaultConfirmationStatus,
 } from '../../../common/ManageMultiplyVaultConfirmation'
 import { ManageMultiplyVaultDaiAllowance } from '../../../common/ManageMultiplyVaultDaiAllowance'
+import { ManageVaultCollateralAllowance } from '../../../common/ManageVaultCollateralAllowance'
 import { DefaultManageMultiplyVaultChangesInformation } from './DefaultManageMultiplyVaultChangesInformation'
 import { DefaultManageMultiplyVaultEditing } from './DefaultManageMultiplyVaultEditing'
 import { DefaultManageMultiplyVaultFormHeader } from './DefaultManageMultiplyVaultFormHeader'
@@ -44,7 +44,7 @@ export function DefaultManageMultiplyVaultForm(props: ManageMultiplyVaultState) 
     <VaultFormContainer toggleTitle="Edit Vault">
       <DefaultManageMultiplyVaultFormHeader {...props} />
       {isEditingStage && <DefaultManageMultiplyVaultEditing {...props} />}
-      {isCollateralAllowanceStage && <ManageMultiplyVaultCollateralAllowance {...props} />}
+      {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
       {isDaiAllowanceStage && <ManageMultiplyVaultDaiAllowance {...props} />}
       {isManageStage && (
         <ManageMultiplyVaultConfirmation {...props}>

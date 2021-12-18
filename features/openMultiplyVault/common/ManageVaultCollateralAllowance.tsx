@@ -9,19 +9,32 @@ import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 
-import { ManageMultiplyVaultState } from '../../manageMultiplyVault/manageMultiplyVault'
+import { TAllVaultStages } from './TAllVaultStages'
 
-export function ManageMultiplyVaultCollateralAllowance({
+type ManageVaultCollateralAllowanceProps = {
+  stage: TAllVaultStages
+  vault: { token: string }
+  depositAmount?: BigNumber
+  collateralAllowanceAmount?: BigNumber
+  updateCollateralAllowanceAmount?: (amount?: BigNumber) => void
+  setCollateralAllowanceAmountUnlimited?: () => void
+  setCollateralAllowanceAmountToDepositAmount?: () => void
+  resetCollateralAllowanceAmount?: () => void
+  selectedCollateralAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
+}
+
+export function ManageVaultCollateralAllowance({
   stage,
   vault: { token },
+  depositAmount,
   collateralAllowanceAmount,
   updateCollateralAllowanceAmount,
   setCollateralAllowanceAmountUnlimited,
   setCollateralAllowanceAmountToDepositAmount,
   resetCollateralAllowanceAmount,
   selectedCollateralAllowanceRadio,
-}: ManageMultiplyVaultState) {
-  const depositAmount = new BigNumber(0)
+}: ManageVaultCollateralAllowanceProps) {
+  const _depositAmount = depositAmount || new BigNumber(0)
   const canSelectRadio = stage === 'collateralAllowanceWaitingForConfirmation'
 
   const isUnlimited = selectedCollateralAllowanceRadio === 'unlimited'
@@ -49,7 +62,7 @@ export function ManageMultiplyVaultCollateralAllowance({
             onChange={setCollateralAllowanceAmountToDepositAmount!}
           >
             <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: '18px' }}>
-              {t('token-depositing', { token, amount: formatCryptoBalance(depositAmount!) })}
+              {t('token-depositing', { token, amount: formatCryptoBalance(_depositAmount!) })}
             </Text>
           </Radio>
           <Radio

@@ -14,6 +14,7 @@ import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
+import { TBaseManageVaultStage } from '../openMultiplyVault/common/TBaseManageVaultStage'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { VaultHistoryEvent } from '../vaultHistory/vaultHistory'
 import { createMultiplyHistoryChange$ } from './manageMultiplyHistory'
@@ -114,28 +115,7 @@ function apply(state: ManageMultiplyVaultState, change: ManageMultiplyVaultChang
 
 export type ManageMultiplyVaultEditingStage = 'adjustPosition' | 'otherActions'
 
-export type ManageMultiplyVaultStage =
-  | ManageMultiplyVaultEditingStage
-  | 'proxyWaitingForConfirmation'
-  | 'proxyWaitingForApproval'
-  | 'proxyInProgress'
-  | 'proxyFailure'
-  | 'proxySuccess'
-  | 'collateralAllowanceWaitingForConfirmation'
-  | 'collateralAllowanceWaitingForApproval'
-  | 'collateralAllowanceInProgress'
-  | 'collateralAllowanceFailure'
-  | 'collateralAllowanceSuccess'
-  | 'daiAllowanceWaitingForConfirmation'
-  | 'daiAllowanceWaitingForApproval'
-  | 'daiAllowanceInProgress'
-  | 'daiAllowanceFailure'
-  | 'daiAllowanceSuccess'
-  | 'manageWaitingForConfirmation'
-  | 'manageWaitingForApproval'
-  | 'manageInProgress'
-  | 'manageFailure'
-  | 'manageSuccess'
+export type ManageMultiplyVaultStage = ManageMultiplyVaultEditingStage | TBaseManageVaultStage
 
 export type MainAction = 'buy' | 'sell'
 export type CloseVaultTo = 'collateral' | 'dai'

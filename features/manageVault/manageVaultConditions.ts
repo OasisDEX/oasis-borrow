@@ -3,7 +3,7 @@ import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
-import { ManageVaultStage, ManageVaultState } from './manageVault'
+import { ManageBorrowVaultStage, ManageVaultState } from './manageVault'
 
 const defaultManageVaultStageCategories = {
   isEditingStage: false,
@@ -385,7 +385,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     'manageWaitingForApproval',
     'multiplyTransitionInProgress',
     'multiplyTransitionSuccess',
-  ] as ManageVaultStage[]).some((s) => s === stage)
+  ] as ManageBorrowVaultStage[]).some((s) => s === stage)
 
   const withdrawCollateralOnVaultUnderDebtFloor =
     vault.debt.gt(zero) &&
@@ -454,7 +454,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     'multiplyTransitionEditing',
     'multiplyTransitionWaitingForConfirmation',
     'multiplyTransitionFailure',
-  ] as ManageVaultStage[]).some((s) => s === stage)
+  ] as ManageBorrowVaultStage[]).some((s) => s === stage)
 
   return {
     ...state,

@@ -14,6 +14,7 @@ import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { catchError, first, map, scan, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
+import { TBaseManageVaultStage } from '../openMultiplyVault/common/TBaseManageVaultStage'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
 import {
@@ -98,28 +99,9 @@ export type ManageVaultEditingStage =
   | 'daiEditing'
   | 'multiplyTransitionEditing'
 
-export type ManageVaultStage =
+export type ManageBorrowVaultStage =
+  | TBaseManageVaultStage
   | ManageVaultEditingStage
-  | 'proxyWaitingForConfirmation'
-  | 'proxyWaitingForApproval'
-  | 'proxyInProgress'
-  | 'proxyFailure'
-  | 'proxySuccess'
-  | 'collateralAllowanceWaitingForConfirmation'
-  | 'collateralAllowanceWaitingForApproval'
-  | 'collateralAllowanceInProgress'
-  | 'collateralAllowanceFailure'
-  | 'collateralAllowanceSuccess'
-  | 'daiAllowanceWaitingForConfirmation'
-  | 'daiAllowanceWaitingForApproval'
-  | 'daiAllowanceInProgress'
-  | 'daiAllowanceFailure'
-  | 'daiAllowanceSuccess'
-  | 'manageWaitingForConfirmation'
-  | 'manageWaitingForApproval'
-  | 'manageInProgress'
-  | 'manageFailure'
-  | 'manageSuccess'
   | 'multiplyTransitionWaitingForConfirmation'
   | 'multiplyTransitionInProgress'
   | 'multiplyTransitionFailure'
@@ -128,7 +110,7 @@ export type ManageVaultStage =
 export type MainAction = 'depositGenerate' | 'withdrawPayback'
 
 export interface MutableManageVaultState {
-  stage: ManageVaultStage
+  stage: ManageBorrowVaultStage
   mainAction: MainAction
   originalEditingStage: ManageVaultEditingStage
   showDepositAndGenerateOption: boolean
@@ -393,7 +375,7 @@ function addTransitions(
 }
 
 export const defaultMutableManageVaultState: MutableManageVaultState = {
-  stage: 'collateralEditing' as ManageVaultStage,
+  stage: 'collateralEditing' as ManageBorrowVaultStage,
   mainAction: 'depositGenerate',
   originalEditingStage: 'collateralEditing' as ManageVaultEditingStage,
   showDepositAndGenerateOption: false,
