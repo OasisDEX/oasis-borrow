@@ -17,19 +17,26 @@ export type AutomationBaseTriggerData = {
 
 export type AutomationBotAddTriggerData = AutomationBaseTriggerData & {kind: TxMetaKind.addTrigger}
 
-export type AutomationBotRemoveTriggerData = AutomationBaseTriggerData & {kind: TxMetaKind.removeTrigger}
+export type AutomationBotRemoveTriggerData = AutomationBaseTriggerData & {kind: TxMetaKind.removeTrigger, triggerId: number}
 
 function getAddAutomationTriggerCallData(
   data: AutomationBotAddTriggerData,
   context: ContextConnected,
 ) {
   const { contract, automationBot } = context
-  return contract<AutomationBot>(automationBot).methods.addTrigger(
+  const retVal = contract<AutomationBot>(automationBot).methods.addTrigger(
     data.cdpId,
     data.triggerType,
     data.serviceRegistry,
     data.triggerData,
   ) as any
+  console.log("inside getAddAutomationTriggerCallData")
+  console.log(retVal)
+  console.log(data.cdpId.toFixed(2),
+    data.triggerType.toFixed(2),
+    data.serviceRegistry,
+    data.triggerData)
+    return retVal
 }
 
 export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData> = {
@@ -51,14 +58,26 @@ function getRemoveAutomationTriggerCallData(
   context: ContextConnected,
 ) {
   const { contract, automationBot } = context
-  return contract<AutomationBot>(automationBot).methods.removeTrigger(
+  // TODO ŁW allowance !!! but copntract has it this way
+  const removeAllowence = false
+  console.log('triggerId')
+  console.log(    data.triggerId    )
+  const retVal = contract<AutomationBot>(automationBot).methods.removeTrigger(
     // data.kind= TxMetaKind.removeTrigger,
     data.cdpId,
-    data.triggerType,
+    data.triggerId,
     data.serviceRegistry,
-    true,
+    removeAllowence,
     data.triggerData,
   ) as any
+  console.log("inside getRemoveAutomationTriggerCallData")
+  console.log(retVal)
+  // console.log(data.cdpId.toFixed(2),
+  //   data.triggerType.toFixed(2),
+  //   data.serviceRegistry,
+  //   false,
+  //   data.triggerData)
+  return retVal
 }
 
 export const removeAutomationBotTrigger: TransactionDef<AutomationBotRemoveTriggerData> = {

@@ -34,13 +34,15 @@ function prepareRemoveTriggerData(
   vaultData: Vault,
   isCloseToCollateral: boolean,
   stopLossLevel: BigNumber,
+  triggerId: number
 ): AutomationBotRemoveTriggerData {
 
   const baseTriggerData = prepareTriggerData(vaultData, isCloseToCollateral, stopLossLevel)
   
   return {
     ...baseTriggerData,
-    kind: TxMetaKind.removeTrigger
+    kind: TxMetaKind.removeTrigger,
+    triggerId
   }
 }
 
@@ -156,7 +158,7 @@ export function CancelSlFormControl({ id }: { id: BigNumber }) {
           finishLoader(false)
         }
 
-        const txData = prepareRemoveTriggerData(vaultData, collateralActive, selectedSLValue)
+        const txData = prepareRemoveTriggerData(vaultData, collateralActive, selectedSLValue, slTriggerData.triggerId)
 
         const waitForTx = txHelpers
           .sendWithGasEstimation(removeAutomationBotTrigger, txData)
