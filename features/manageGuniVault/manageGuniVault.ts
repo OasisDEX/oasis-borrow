@@ -72,7 +72,7 @@ export type GuniTxData = {
 
 type GuniTxDataChange = { kind: 'guniTxData' }
 
-function applyGuniDataChanges<S, Ch extends GuniTxDataChange>(state: S, change: Ch): S {
+function applyGuniDataChanges<S, Ch extends GuniTxDataChange>(change: Ch, state: S): S {
   if (change.kind === 'guniTxData') {
     const { kind: _, ...data } = change
 
@@ -136,7 +136,7 @@ function apply(
   const s4 = applyManageVaultTransaction(change as ManageMultiplyVaultChange, s3)
   const s5 = applyManageVaultEnvironment(change as ManageMultiplyVaultChange, s4)
   const s6 = applyManageVaultInjectedOverride(change as ManageMultiplyVaultChange, s5)
-  const s7 = applyGuniDataChanges(s6, change as GuniTxDataChange)
+  const s7 = applyGuniDataChanges(change as GuniTxDataChange, s6)
   const s8 = applyManageVaultCalculations(s7)
   const s9 = applyGuniCalculations(s8)
   const s10 = applyManageVaultStageCategorisation(s9 as ManageMultiplyVaultState)
