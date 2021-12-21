@@ -9,8 +9,8 @@ import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 
-import { TAllVaultStages } from './TAllVaultStages'
 import { zero } from '../../../helpers/zero'
+import { TAllVaultStages } from './TAllVaultStages'
 
 type SelectedCollateralAllowanceRadio = 'unlimited' | 'depositAmount' | 'custom'
 
