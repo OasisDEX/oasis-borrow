@@ -17,7 +17,7 @@ import { useState } from 'react'
 import React from 'react'
 
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
-import { handleFinalTransaction, isTxStatusFinal } from '../common/AutomationTransactionPlunger'
+import { composeSuccessHandler } from '../common/AutomationTransactionPlunger'
 import {
   determineProperDefaults,
   extractSLData,
@@ -85,22 +85,9 @@ export function CancelSlFormControl({ id }: { id: BigNumber }) {
     const removeTriggerConfig: RetryableLoadingButtonProps = {
       translationKey: 'cancel-stop-loss',
       onClick: (finishLoader: (succeded: boolean) => void) => {
-        //TODO: this tx handler can be more generic and reused
-        const txSendSuccessHandler = (
-          transactionState: TxState<AutomationBotRemoveTriggerData>,
-        ) => {
-          txStatusSetter(transactionState)
-          if (isTxStatusFinal(transactionState.status)) {
-            handleFinalTransaction(
-              transactionState,
-              finishLoader,
-              waitForTx,
-              txStatusSetter as React.Dispatch<
-                React.SetStateAction<TxState<AutomationBotRemoveTriggerData> | undefined>
-              >,
-            )
-          }
-        }
+        const txSendSuccessHandler = (transactionState: TxState<AutomationBotRemoveTriggerData>) =>
+          composeSuccessHandler(txStatusSetter, transactionState, finishLoader, waitForTx)
+
         const sendTxErrorHandler = () => {
           finishLoader(false)
         }

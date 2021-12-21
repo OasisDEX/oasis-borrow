@@ -18,11 +18,19 @@ export function isTxStatusFailed(status: TxStatus) {
   return isTxStatusFinal(status) && status !== TxStatus.Success
 }
 
-// TODO ŁW - do something to simplify returned type, unfortunately AutomationBaseTriggerData didn't worked
-// Maybe add something to AutomationBaseTriggerData to make it have kind which is unspecified
-// Tried to solve it by adding   kind: TxMetaKind.addTrigger | TxMetaKind.removeTrigger to AutomationBaseTriggerData
-// This messed up prepareTriggerData which is perfectly fine without any kind at all
-export function handleFinalTransaction(
+export function composeSuccessHandler(
+  txStatusSetter: React.Dispatch<React.SetStateAction<TxState<any> | undefined>>,
+  transactionState: TxState<AutomationBotAddTriggerData | AutomationBotRemoveTriggerData>,
+  finishLoader: (succeded: boolean) => void,
+  waitForTx: Subscription,
+) {
+  txStatusSetter(transactionState)
+  if (isTxStatusFinal(transactionState.status)) {
+    handleFinalTransaction(transactionState, finishLoader, waitForTx, txStatusSetter)
+  }
+}
+
+function handleFinalTransaction(
   transactionState: TxState<AutomationBotAddTriggerData | AutomationBotRemoveTriggerData>,
   finishLoader: (succeded: boolean) => void,
   waitForTx: Subscription,
@@ -30,10 +38,12 @@ export function handleFinalTransaction(
 ) {
   if (isTxStatusFailed(transactionState.status)) {
     finishLoader(false)
-    waitForTx.unsubscribe()
-    txStatusSetter(undefined)
+    resetStatus()
   } else {
     finishLoader(true)
+    resetStatus()
+  }
+  function resetStatus() {
     waitForTx.unsubscribe()
     txStatusSetter(undefined)
   }

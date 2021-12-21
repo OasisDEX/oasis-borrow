@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js'
 import {
   addAutomationBotTrigger,
   AutomationBotAddTriggerData,
-  AutomationBotRemoveTriggerData,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkDataList } from 'blockchain/ilks'
@@ -23,7 +22,7 @@ import { useState } from 'react'
 import React from 'react'
 
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
-import { handleFinalTransaction, isTxStatusFinal } from '../common/AutomationTransactionPlunger'
+import { composeSuccessHandler } from '../common/AutomationTransactionPlunger'
 import {
   determineProperDefaults,
   extractSLData,
@@ -51,7 +50,6 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
   const validOptions: FixedSizeArray<string, 2> = ['collateral', 'dai']
   const [collateralActive, setCloseToCollateral] = useState(false)
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
-  //const [txLoderCompletedHandler, setTxHandler] = useState<(succeded : boolean) => void>();
 
   const {
     vault$,
@@ -179,22 +177,8 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     const addTriggerConfig: RetryableLoadingButtonProps = {
       translationKey: 'add-stop-loss',
       onClick: (finishLoader: (succeded: boolean) => void) => {
-        //TODO: this tx handler can be more generic and reused
-        // ŁW: it is simplified at one level but now problematic thing is waitForTx which is used in that scope but declared below
-        // We need to find nice way to refactor such scopes and closures
-        const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) => {
-          txStatusSetter(transactionState)
-          if (isTxStatusFinal(transactionState.status)) {
-            handleFinalTransaction(
-              transactionState,
-              finishLoader,
-              waitForTx,
-              txStatusSetter as React.Dispatch<
-                React.SetStateAction<TxState<AutomationBotRemoveTriggerData> | undefined>
-              >,
-            )
-          }
-        }
+        const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) =>
+          composeSuccessHandler(txStatusSetter, transactionState, finishLoader, waitForTx)
         const sendTxErrorHandler = () => {
           finishLoader(false)
         }

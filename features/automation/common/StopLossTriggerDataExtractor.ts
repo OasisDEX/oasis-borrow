@@ -6,7 +6,7 @@ import { ethers } from 'ethers'
 import { last } from 'lodash'
 import { useEffect } from 'react'
 
-import { TriggerRecord, TriggersData } from '../triggers/AutomationTriggersData'
+import { TriggersData } from '../triggers/AutomationTriggersData'
 import { TriggersTypes } from './enums/TriggersTypes'
 
 function getSLLevel(rawBytes: string): BigNumber {
@@ -25,8 +25,7 @@ export interface StopLossTriggerData {
 export function extractSLData(data: TriggersData): StopLossTriggerData {
   const doesStopLossExist = data.triggers ? data.triggers.length > 0 : false
   if (doesStopLossExist) {
-    // TODO LW how can it be undefined as its checked before if it exist !?
-    const slRecord: TriggerRecord | undefined = data.triggers ? last(data.triggers) : undefined
+    const slRecord = last(data.triggers)
     if (!slRecord) throw data /* TODO: This is logically unreachable, revrite so typecheck works */
     return {
       isStopLossEnabled: true,
