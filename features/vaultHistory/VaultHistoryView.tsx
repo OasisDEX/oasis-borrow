@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
+import { amountFromWei } from 'blockchain/utils'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
@@ -190,8 +191,16 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
           </>
         )}
         <MultiplyHistoryEventDetailsItem label={t('history.total-fees')}>
-          {'totalFee' in event && event.totalFee.gt(zero)
-            ? '$' + formatFiatBalance(event.totalFee)
+          {'totalFee' in event &&
+          'gasFee' in event &&
+          (event.totalFee.gt(zero) || event.gasFee.gt(zero))
+            ? '$' +
+              formatFiatBalance(
+                BigNumber.sum(
+                  event.totalFee,
+                  amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice),
+                ),
+              )
             : '-'}
         </MultiplyHistoryEventDetailsItem>
       </Grid>
