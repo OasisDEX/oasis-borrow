@@ -28,7 +28,7 @@ import {
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { OAZO_FEE } from 'helpers/multiply/calculations'
+import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { curry } from 'ramda'
 import {
@@ -220,7 +220,7 @@ function applyCalculations<S extends { ilkData: IlkData; depositAmount?: BigNumb
 ): S & GuniCalculations {
   // TODO: missing fees
   const leveragedAmount = state.depositAmount
-    ? state.depositAmount.div(state.ilkData.liquidationRatio.minus(one).plus(0.001))
+    ? state.depositAmount.div(state.ilkData.liquidationRatio.minus(one).plus(0.002))
     : zero
   const flAmount = state.depositAmount ? leveragedAmount.minus(state.depositAmount) : zero
 
@@ -408,9 +408,9 @@ export function createOpenGuniVault$(
                           distinctUntilChanged(compareBigNumber),
                           switchMap((daiAmountToSwapForUsdc /* USDC */) => {
                             const token0Amount = leveragedAmount.minus(daiAmountToSwapForUsdc)
-                            const oazoFee = daiAmountToSwapForUsdc.times(OAZO_FEE)
+                            const oazoFee = daiAmountToSwapForUsdc.times(OAZO_LOWER_FEE)
                             const amountWithFee = daiAmountToSwapForUsdc.plus(oazoFee)
-                            const contractFee = amountWithFee.times(OAZO_FEE)
+                            const contractFee = amountWithFee.times(OAZO_LOWER_FEE)
                             const oneInchAmount = amountWithFee.minus(contractFee)
 
                             return exchangeQuote$(

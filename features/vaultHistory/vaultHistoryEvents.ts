@@ -168,6 +168,13 @@ interface OpenMultiplyEvent extends MultiplyBaseEvent {
   bought: BigNumber
 }
 
+interface OpenMultiplyGuniEvent extends MultiplyBaseEvent {
+  kind: 'OPEN_MULTIPLY_GUNI_VAULT'
+  depositDai: BigNumber
+  depositCollateral: BigNumber
+  bought: BigNumber
+}
+
 interface IncreaseMultipleEvent extends MultiplyBaseEvent {
   kind: 'INCREASE_MULTIPLE'
   depositCollateral: BigNumber
@@ -188,6 +195,12 @@ interface CloseVaultExitDaiMultipleEvent extends MultiplyBaseEvent {
   exitDai: BigNumber
 }
 
+interface CloseGuniVaultExitDaiMultipleEvent extends MultiplyBaseEvent {
+  kind: 'CLOSE_GUNI_VAULT_TO_DAI'
+  sold: BigNumber
+  exitDai: BigNumber
+}
+
 interface CloseVaultExitCollateralMultipleEvent extends MultiplyBaseEvent {
   kind: 'CLOSE_VAULT_TO_COLLATERAL'
   sold: BigNumber
@@ -197,9 +210,11 @@ interface CloseVaultExitCollateralMultipleEvent extends MultiplyBaseEvent {
 
 export type MultiplyEvent =
   | OpenMultiplyEvent
+  | OpenMultiplyGuniEvent
   | IncreaseMultipleEvent
   | DecreaseMultipleEvent
   | CloseVaultExitDaiMultipleEvent
+  | CloseGuniVaultExitDaiMultipleEvent
   | CloseVaultExitCollateralMultipleEvent
 
 export interface ReturnedEvent {

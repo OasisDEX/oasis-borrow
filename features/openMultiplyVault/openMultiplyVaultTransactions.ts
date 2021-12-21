@@ -320,7 +320,7 @@ export function applyEstimateGas(
 
     const daiAmount = swap?.status === 'SUCCESS' ? swap.daiAmount.div(one.minus(OAZO_FEE)) : zero
     const collateralAmount =
-      swap?.status === 'SUCCESS' ? swap.collateralAmount.times(one.minus(SLIPPAGE)) : zero
+      swap?.status === 'SUCCESS' ? swap.collateralAmount : zero
 
     if (proxyAddress && depositAmount) {
       return estimateGas(openMultiplyVault, {
