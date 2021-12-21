@@ -1,5 +1,9 @@
-import { getMultiplyParams } from '@oasisdex/multiply'
-import { CloseToParams, getCloseToCollateralParams, getCloseToDaiParams } from '@oasisdex/multiply'
+import {
+  CloseToParams,
+  getCloseToCollateralParams,
+  getCloseToDaiParams,
+  getMultiplyParams,
+} from '@oasisdex/multiply'
 import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
