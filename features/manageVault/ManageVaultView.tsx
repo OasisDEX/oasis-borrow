@@ -15,6 +15,7 @@ import React, { useEffect } from 'react'
 import { Box, Divider, Flex, Grid, Text } from 'theme-ui'
 
 import { ManageVaultCollateralAllowance } from '../openMultiplyVault/common/ManageVaultCollateralAllowance'
+import { ManageVaultDaiAllowance } from '../openMultiplyVault/common/ManageVaultDaiAllowance'
 import { ManageVaultState } from './manageVault'
 import { createManageVaultAnalytics$ } from './manageVaultAnalytics'
 import { ManageVaultButton } from './ManageVaultButton'
@@ -23,7 +24,6 @@ import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultEditing } from './ManageVaultEditing'
 import { ManageVaultErrors } from './ManageVaultErrors'
 import { ManageVaultWarnings } from './ManageVaultWarnings'
-import { ManageVaultDaiAllowance } from '../openMultiplyVault/common/ManageVaultDaiAllowance'
 
 function TextWithCheckmark({ children }: WithChildren) {
   return (

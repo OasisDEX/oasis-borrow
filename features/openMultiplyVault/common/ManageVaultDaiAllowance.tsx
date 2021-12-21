@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Radio } from 'components/forms/Radio'
 import { BigNumberInput } from 'helpers/BigNumberInput'
@@ -9,7 +10,6 @@ import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 
 import { TAllVaultStages } from './TAllVaultStages'
-import BigNumber from 'bignumber.js'
 
 type ManageVaultDaiAllowanceProps = {
   stage: TAllVaultStages

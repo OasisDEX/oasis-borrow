@@ -12,8 +12,8 @@ import {
   ManageMultiplyVaultConfirmation,
   ManageMultiplyVaultConfirmationStatus,
 } from '../../../common/ManageMultiplyVaultConfirmation'
-import { ManageVaultDaiAllowance } from '../../../common/ManageVaultDaiAllowance'
 import { ManageVaultCollateralAllowance } from '../../../common/ManageVaultCollateralAllowance'
+import { ManageVaultDaiAllowance } from '../../../common/ManageVaultDaiAllowance'
 import { DefaultManageMultiplyVaultChangesInformation } from './DefaultManageMultiplyVaultChangesInformation'
 import { DefaultManageMultiplyVaultEditing } from './DefaultManageMultiplyVaultEditing'
 import { DefaultManageMultiplyVaultFormHeader } from './DefaultManageMultiplyVaultFormHeader'

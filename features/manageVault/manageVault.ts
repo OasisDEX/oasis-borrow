@@ -14,6 +14,7 @@ import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { catchError, first, map, scan, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
+import { SelectedDaiAllowanceRadio } from '../openMultiplyVault/common/ManageVaultDaiAllowance'
 import { TBaseManageVaultStage } from '../openMultiplyVault/common/TBaseManageVaultStage'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
@@ -55,7 +56,6 @@ import {
   validateErrors,
   validateWarnings,
 } from './manageVaultValidations'
-import { SelectedDaiAllowanceRadio } from '../openMultiplyVault/common/ManageVaultDaiAllowance'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
