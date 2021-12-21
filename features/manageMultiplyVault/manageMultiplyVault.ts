@@ -69,6 +69,7 @@ import {
   validateErrors,
   validateWarnings,
 } from './manageMultiplyVaultValidations'
+import { SelectedDaiAllowanceRadio } from '../openMultiplyVault/common/ManageVaultDaiAllowance'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -144,7 +145,7 @@ export interface MutableManageMultiplyVaultState {
   collateralAllowanceAmount?: BigNumber
   daiAllowanceAmount?: BigNumber
   selectedCollateralAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
-  selectedDaiAllowanceRadio: 'unlimited' | 'paybackAmount' | 'custom'
+  selectedDaiAllowanceRadio: SelectedDaiAllowanceRadio
 
   requiredCollRatio?: BigNumber
   buyAmount?: BigNumber

@@ -19,11 +19,11 @@ import { ManageVaultState } from './manageVault'
 import { createManageVaultAnalytics$ } from './manageVaultAnalytics'
 import { ManageVaultButton } from './ManageVaultButton'
 import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './ManageVaultConfirmation'
-import { ManageVaultDaiAllowance } from './ManageVaultDaiAllowance'
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultEditing } from './ManageVaultEditing'
 import { ManageVaultErrors } from './ManageVaultErrors'
 import { ManageVaultWarnings } from './ManageVaultWarnings'
+import { ManageVaultDaiAllowance } from '../openMultiplyVault/common/ManageVaultDaiAllowance'
 
 function TextWithCheckmark({ children }: WithChildren) {
   return (

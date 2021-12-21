@@ -12,7 +12,7 @@ import {
   ManageMultiplyVaultConfirmation,
   ManageMultiplyVaultConfirmationStatus,
 } from '../../../common/ManageMultiplyVaultConfirmation'
-import { ManageMultiplyVaultDaiAllowance } from '../../../common/ManageMultiplyVaultDaiAllowance'
+import { ManageVaultDaiAllowance } from '../../../common/ManageVaultDaiAllowance'
 import { ManageVaultCollateralAllowance } from '../../../common/ManageVaultCollateralAllowance'
 import { DefaultManageMultiplyVaultChangesInformation } from './DefaultManageMultiplyVaultChangesInformation'
 import { DefaultManageMultiplyVaultEditing } from './DefaultManageMultiplyVaultEditing'
@@ -45,7 +45,7 @@ export function DefaultManageMultiplyVaultForm(props: ManageMultiplyVaultState) 
       <DefaultManageMultiplyVaultFormHeader {...props} />
       {isEditingStage && <DefaultManageMultiplyVaultEditing {...props} />}
       {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
-      {isDaiAllowanceStage && <ManageMultiplyVaultDaiAllowance {...props} />}
+      {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}
       {isManageStage && (
         <ManageMultiplyVaultConfirmation {...props}>
           {(state) => <DefaultManageMultiplyVaultChangesInformation {...state} />}
