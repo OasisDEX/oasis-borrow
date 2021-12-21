@@ -482,6 +482,8 @@ export function applyManageVaultConditions(
     debtOffset,
   })
 
+  const ledgerWalletContractDataDisabled = state.txError?.name === 'EthAppPleaseEnableContractData'
+
   const isLoadingStage = ([
     'proxyInProgress',
     'proxyWaitingForApproval',
@@ -539,6 +541,11 @@ export function applyManageVaultConditions(
     !isNullish(depositAmount) && maxGenerateAmountAtCurrentPrice.lt(debtFloor)
 
   const debtIsLessThanDebtFloor = debtIsLessThanDebtFloorValidator({ debtFloor, debt })
+
+  const potentialGenerateAmountLessThanDebtFloor =
+    !isNullish(depositAmount) && maxGenerateAmountAtCurrentPrice.lt(ilkData.debtFloor)
+
+  const debtIsLessThanDebtFloor = vault.debt.lt(ilkData.debtFloor) && vault.debt.gt(zero)
 
   const canProgress = !(
     isLoadingStage ||

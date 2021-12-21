@@ -122,6 +122,7 @@ function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
     'remainingCollateral',
     'collateralTaken',
     'oraclePrice',
+    'ethPrice',
   ]
   return Object.entries(event).reduce(
     (acc, [key, value]) =>
