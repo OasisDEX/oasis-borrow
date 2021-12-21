@@ -134,6 +134,8 @@ export interface ManageVaultConditions {
   vaultWillBeAtRiskLevelWarningAtNextPrice: boolean
   vaultWillBeAtRiskLevelDangerAtNextPrice: boolean
   vaultWillBeUnderCollateralizedAtNextPrice: boolean
+  potentialGenerateAmountLessThanDebtFloor: boolean
+  debtIsLessThanDebtFloor: boolean
 
   accountIsConnected: boolean
   accountIsController: boolean
@@ -159,6 +161,7 @@ export interface ManageVaultConditions {
   customCollateralAllowanceAmountEmpty: boolean
   customCollateralAllowanceAmountExceedsMaxUint256: boolean
   customCollateralAllowanceAmountLessThanDepositAmount: boolean
+  ledgerWalletContractDataDisabled: boolean
 
   insufficientDaiAllowance: boolean
   customDaiAllowanceAmountEmpty: boolean
@@ -181,6 +184,8 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   vaultWillBeAtRiskLevelWarningAtNextPrice: false,
   vaultWillBeAtRiskLevelDangerAtNextPrice: false,
   vaultWillBeUnderCollateralizedAtNextPrice: false,
+  potentialGenerateAmountLessThanDebtFloor: false,
+  debtIsLessThanDebtFloor: false,
 
   depositAndWithdrawAmountsEmpty: true,
   generateAndPaybackAmountsEmpty: true,
@@ -211,6 +216,7 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   customCollateralAllowanceAmountEmpty: false,
   customCollateralAllowanceAmountExceedsMaxUint256: false,
   customCollateralAllowanceAmountLessThanDepositAmount: false,
+  ledgerWalletContractDataDisabled: false,
 
   insufficientDaiAllowance: false,
   customDaiAllowanceAmountEmpty: false,
@@ -413,6 +419,8 @@ export function applyManageVaultConditions(
     (!daiAllowance || paybackAmount.plus(vault.debtOffset).gt(daiAllowance))
   )
 
+  const ledgerWalletContractDataDisabled = state.txError?.name === 'EthAppPleaseEnableContractData'
+
   const isLoadingStage = ([
     'proxyInProgress',
     'proxyWaitingForApproval',
@@ -464,6 +472,11 @@ export function applyManageVaultConditions(
       customDaiAllowanceAmountExceedsMaxUint256 ||
       customDaiAllowanceAmountLessThanPaybackAmount)
 
+  const potentialGenerateAmountLessThanDebtFloor =
+    !isNullish(depositAmount) && maxGenerateAmountAtCurrentPrice.lt(ilkData.debtFloor)
+
+  const debtIsLessThanDebtFloor = vault.debt.lt(ilkData.debtFloor) && vault.debt.gt(zero)
+
   const canProgress = !(
     isLoadingStage ||
     editingProgressionDisabled ||
@@ -498,6 +511,8 @@ export function applyManageVaultConditions(
     vaultWillBeAtRiskLevelDangerAtNextPrice,
     vaultWillBeUnderCollateralized,
     vaultWillBeUnderCollateralizedAtNextPrice,
+    potentialGenerateAmountLessThanDebtFloor,
+    debtIsLessThanDebtFloor,
 
     accountIsConnected,
     accountIsController,
@@ -512,6 +527,7 @@ export function applyManageVaultConditions(
     generateAmountMoreThanMaxFlashAmount,
     paybackAmountExceedsDaiBalance,
     paybackAmountExceedsVaultDebt,
+    ledgerWalletContractDataDisabled,
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,
     isLoadingStage,

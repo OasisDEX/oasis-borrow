@@ -7,6 +7,8 @@ import { useSelectFromContext } from 'helpers/useSelectFromContext'
 import React, { useEffect } from 'react'
 import { Box, Container, Grid } from 'theme-ui'
 
+import { VaultErrors } from '../../../components/vault/VaultErrors'
+import { VaultWarnings } from '../../../components/vault/VaultWarnings'
 import { OpenVaultState } from '../openVault'
 import { createOpenVaultAnalytics$ } from '../openVaultAnalytics'
 import { CardCollateralizationRatio } from './details/CardCollateralizationRatio'
@@ -31,6 +33,8 @@ export function OpenVaultContainer() {
   return (
     <Container variant="vaultPageContainer">
       <Header />
+      <VaultErrors {...props} />
+      <VaultWarnings {...props} />
       <Grid variant="vaultContainer">
         <Box>
           <Grid variant="vaultDetailsCardsContainer">

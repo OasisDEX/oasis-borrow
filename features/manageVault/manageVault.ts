@@ -14,6 +14,8 @@ import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { catchError, first, map, scan, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
+import { VaultErrorMessage } from '../form/errorMessagesHandler'
+import { VaultWarningMessage } from '../form/warningMessagesHandler'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
 import {
@@ -48,12 +50,7 @@ import {
   ManageVaultTransitionChange,
   progressManage,
 } from './manageVaultTransitions'
-import {
-  ManageVaultErrorMessage,
-  ManageVaultWarningMessage,
-  validateErrors,
-  validateWarnings,
-} from './manageVaultValidations'
+import { validateErrors, validateWarnings } from './manageVaultValidations'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -204,8 +201,8 @@ export type ManageVaultState = MutableManageVaultState &
   ManageVaultEnvironment &
   ManageVaultFunctions &
   ManageVaultTxInfo & {
-    errorMessages: ManageVaultErrorMessage[]
-    warningMessages: ManageVaultWarningMessage[]
+    errorMessages: VaultErrorMessage[]
+    warningMessages: VaultWarningMessage[]
     summary: ManageVaultSummary
     initialTotalSteps: number
     totalSteps: number

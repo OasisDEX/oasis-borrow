@@ -14,6 +14,8 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Divider, Flex, Grid, Text } from 'theme-ui'
 
+import { VaultErrors } from '../../components/vault/VaultErrors'
+import { VaultWarnings } from '../../components/vault/VaultWarnings'
 import { ManageVaultState } from './manageVault'
 import { createManageVaultAnalytics$ } from './manageVaultAnalytics'
 import { ManageVaultButton } from './ManageVaultButton'
@@ -22,8 +24,6 @@ import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './Manage
 import { ManageVaultDaiAllowance } from './ManageVaultDaiAllowance'
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultEditing } from './ManageVaultEditing'
-import { ManageVaultErrors } from './ManageVaultErrors'
-import { ManageVaultWarnings } from './ManageVaultWarnings'
 
 function TextWithCheckmark({ children }: WithChildren) {
   return (
@@ -103,8 +103,8 @@ function ManageVaultForm(props: ManageVaultState) {
       {isMultiplyTransitionStage && <ManageVaultMultiplyTransition {...props} />}
       {accountIsConnected && (
         <>
-          <ManageVaultErrors {...props} />
-          <ManageVaultWarnings {...props} />
+          <VaultErrors {...props} />
+          <VaultWarnings {...props} />
           {stage === 'manageSuccess' && <VaultChangesWithADelayCard />}
           <ManageVaultButton {...props} />
         </>
