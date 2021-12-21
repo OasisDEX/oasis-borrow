@@ -19,7 +19,6 @@ export interface CancelSlFormLayoutProps {
 }
 
 export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
-
   const { t } = useTranslation()
   const header = t(`cancel-stoploss.header`)
   const description = t(`cancel-stoploss.description`)
@@ -33,30 +32,20 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
         <Text variant="strong" mb={2}>
           {header}
         </Text>
-        <Text variant="subheader">
-          {description}
-        </Text>
+        <Text variant="subheader">{description}</Text>
       </Box>
-      <Text variant="strong">
-          {summaryHeader}
-        </Text>
-        <Grid columns={2}>
+      <Text variant="strong">{summaryHeader}</Text>
+      <Grid columns={2}>
         <Box>
-        <Text variant="subheader">
-          {liquidation}
-        </Text>
+          <Text variant="subheader">{liquidation}</Text>
         </Box>
+        <Box>{`$${formatCryptoBalance(props.liquidationPrice)}`}</Box>
         <Box>
-        {`$${formatCryptoBalance(props.liquidationPrice)}`}
-        </Box>
-        <Box>
-          <Text variant="subheader">
-            {total}
-          </Text>
+          <Text variant="subheader">{total}</Text>
         </Box>
         <Box>$250.00</Box>
-        </Grid>
-        <MessageCard {...{ messages, type: 'warning' }} />
+      </Grid>
+      <MessageCard {...{ messages, type: 'warning' }} />
       <Box>
         <RetryableLoadingButton {...props.removeTriggerConfig} />
       </Box>

@@ -13,26 +13,32 @@ import { CollateralPricesWithFilters } from 'features/collateralPrices/collatera
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import React from 'react'
 
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
-import { extractSLData, isTxStatusFailed, isTxStatusFinal, prepareTriggerData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
+import {
+  determineProperDefaults,
+  extractSLData,
+  isTxStatusFailed,
+  isTxStatusFinal,
+  prepareTriggerData,
+  StopLossTriggerData,
+} from '../common/StopLossTriggerDataExtractor'
 import { CancelSlFormLayout, CancelSlFormLayoutProps } from './CancelSlFormLayout'
 
 function prepareRemoveTriggerData(
   vaultData: Vault,
   isCloseToCollateral: boolean,
   stopLossLevel: BigNumber,
-  triggerId: number
+  triggerId: number,
 ): AutomationBotRemoveTriggerData {
-
   const baseTriggerData = prepareTriggerData(vaultData, isCloseToCollateral, stopLossLevel)
-  
+
   return {
     ...baseTriggerData,
     kind: TxMetaKind.removeTrigger,
-    triggerId
+    triggerId,
   }
 }
 
@@ -58,10 +64,6 @@ export function CancelSlFormControl({ id }: { id: BigNumber }) {
   const txHelpersWithError = useObservableWithError(txHelpers$)
   const contextWithError = useObservableWithError(connectedContext$)
 
-  type Action =
-    | { type: 'stop-loss'; stopLoss: BigNumber }
-    | { type: 'close-type'; toCollateral: boolean }
-
   function renderLayout(
     vaultData: Vault,
     collateralPriceData: CollateralPricesWithFilters,
@@ -70,21 +72,16 @@ export function CancelSlFormControl({ id }: { id: BigNumber }) {
     txHelpers: TxHelpers,
     isOwner: boolean,
   ) {
-    // const tokenData = getToken(token)
     const currentIlkData = ilksData.filter((x) => x.ilk === vaultData.ilk)[0]
 
     const startingSlRatio = slTriggerData.isStopLossEnabled
       ? slTriggerData.stopLossLevel
       : currentIlkData.liquidationRatio
+    const [txStatus, txStatusSetter] = useState<
+      TxState<AutomationBotRemoveTriggerData> | undefined
+    >()
 
-    const [txStatus, txStatusSetter] = useState<TxState<AutomationBotRemoveTriggerData> | undefined>(
-      undefined,
-    )
-
-    //set proper defaults
-    useEffect(() => {
-      setSelectedSLValue(startingSlRatio.multipliedBy(100))
-    }, [])
+    determineProperDefaults(setSelectedSLValue, startingSlRatio)
 
     const removeTriggerConfig: RetryableLoadingButtonProps = {
       translationKey: 'cancel-stop-loss',
@@ -107,7 +104,12 @@ export function CancelSlFormControl({ id }: { id: BigNumber }) {
         const sendTxErrorHandler = () => {
           finishLoader(false)
         }
-        const txData = prepareRemoveTriggerData(vaultData, collateralActive, selectedSLValue, slTriggerData.triggerId)
+        const txData = prepareRemoveTriggerData(
+          vaultData,
+          collateralActive,
+          selectedSLValue,
+          slTriggerData.triggerId,
+        )
 
         const waitForTx = txHelpers
           .sendWithGasEstimation(removeAutomationBotTrigger, txData)
@@ -150,7 +152,14 @@ export function CancelSlFormControl({ id }: { id: BigNumber }) {
         customLoader={<VaultContainerSpinner />}
       >
         {([vault, collateralPrice, ilksData, triggerData, tx, ctx]) => {
-          return renderLayout(vault, collateralPrice, ilksData, extractSLData(triggerData), tx, ctx.account !== vault.controller)
+          return renderLayout(
+            vault,
+            collateralPrice,
+            ilksData,
+            extractSLData(triggerData),
+            tx,
+            ctx.account !== vault.controller,
+          )
         }}
       </WithLoadingIndicator>
     </WithErrorHandler>

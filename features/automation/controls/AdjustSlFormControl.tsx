@@ -18,11 +18,18 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservableWithError, useUIChanges } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import React from 'react'
 
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
-import { extractSLData, isTxStatusFailed, isTxStatusFinal, prepareTriggerData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
+import {
+  determineProperDefaults,
+  extractSLData,
+  isTxStatusFailed,
+  isTxStatusFinal,
+  prepareTriggerData,
+  StopLossTriggerData,
+} from '../common/StopLossTriggerDataExtractor'
 import { AddFormChange } from '../common/UITypes/AddFormChange'
 import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
 
@@ -32,10 +39,10 @@ function prepareAddTriggerData(
   stopLossLevel: BigNumber,
 ): AutomationBotAddTriggerData {
   const baseTriggerData = prepareTriggerData(vaultData, isCloseToCollateral, stopLossLevel)
-  
+
   return {
     ...baseTriggerData,
-    kind: TxMetaKind.addTrigger
+    kind: TxMetaKind.addTrigger,
   }
 }
 
@@ -114,19 +121,14 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
 
     const dispatch = useUIChanges(reducerHandler, initial, uiSubjectName)
 
-    const [txStatus, txStatusSetter] = useState<TxState<AutomationBotAddTriggerData> | undefined>(
-      undefined,
-    )
+    const [txStatus, txStatusSetter] = useState<TxState<AutomationBotAddTriggerData> | undefined>()
 
     const maxBoundry =
       currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
 
     const liqRatio = currentIlkData.liquidationRatio
 
-    //set proper defaults
-    useEffect(() => {
-      setSelectedSLValue(startingSlRatio.multipliedBy(100))
-    }, [])
+    determineProperDefaults(setSelectedSLValue, startingSlRatio)
 
     const closeProps: PickCloseStateProps = {
       optionNames: validOptions,

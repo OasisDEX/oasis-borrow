@@ -5,6 +5,7 @@ import { networksById } from 'blockchain/config'
 import { Vault } from 'blockchain/vaults'
 import { ethers } from 'ethers'
 import { last } from 'lodash'
+import { useEffect } from 'react'
 
 import { TriggerRecord, TriggersData } from '../triggers/AutomationTriggersData'
 import { TriggersTypes } from './enums/TriggersTypes'
@@ -32,7 +33,7 @@ export function extractSLData(data: TriggersData): StopLossTriggerData {
       isStopLossEnabled: true,
       stopLossLevel: getSLLevel(slRecord.executionParams),
       isToCollateral: slRecord.triggerType === TriggersTypes.StopLossToCollateral,
-      triggerId: slRecord.triggerId
+      triggerId: slRecord.triggerId,
     } as StopLossTriggerData
   } else {
     return {
@@ -52,7 +53,7 @@ function buildTriggerData(id: BigNumber, isCloseToCollateral: boolean, slLevel: 
 export function prepareTriggerData(
   vaultData: Vault,
   isCloseToCollateral: boolean,
-  stopLossLevel: BigNumber
+  stopLossLevel: BigNumber,
 ): AutomationBaseTriggerData {
   const slLevel: number = stopLossLevel.toNumber()
   const networkConfig = networksById[vaultData.chainId]
@@ -79,4 +80,13 @@ export function isTxStatusFinal(status: TxStatus) {
 
 export function isTxStatusFailed(status: TxStatus) {
   return isTxStatusFinal(status) && status !== TxStatus.Success
+}
+
+export function determineProperDefaults(
+  setSelectedSLValue: React.Dispatch<React.SetStateAction<BigNumber>>,
+  startingSlRatio: BigNumber,
+) {
+  useEffect(() => {
+    setSelectedSLValue(startingSlRatio.multipliedBy(100))
+  }, [])
 }

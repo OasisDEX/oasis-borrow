@@ -15,21 +15,26 @@ export type AutomationBaseTriggerData = {
   proxyAddress: string
 }
 
-export type AutomationBotAddTriggerData = AutomationBaseTriggerData & {kind: TxMetaKind.addTrigger}
+export type AutomationBotAddTriggerData = AutomationBaseTriggerData & {
+  kind: TxMetaKind.addTrigger
+}
 
-export type AutomationBotRemoveTriggerData = AutomationBaseTriggerData & {kind: TxMetaKind.removeTrigger, triggerId: number}
+export type AutomationBotRemoveTriggerData = AutomationBaseTriggerData & {
+  kind: TxMetaKind.removeTrigger
+  triggerId: number
+}
 
 function getAddAutomationTriggerCallData(
   data: AutomationBotAddTriggerData,
   context: ContextConnected,
 ) {
   const { contract, automationBot } = context
-    return contract<AutomationBot>(automationBot).methods.addTrigger(
-      data.cdpId,
-      data.triggerType,
-      data.serviceRegistry,
-      data.triggerData,
-    ) as any
+  return contract<AutomationBot>(automationBot).methods.addTrigger(
+    data.cdpId,
+    data.triggerType,
+    data.serviceRegistry,
+    data.triggerData,
+  ) as any
 }
 
 export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData> = {
