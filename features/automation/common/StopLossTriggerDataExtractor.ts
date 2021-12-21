@@ -1,4 +1,3 @@
-import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { AutomationBaseTriggerData } from 'blockchain/calls/automationBot'
 import { networksById } from 'blockchain/config'
@@ -67,19 +66,6 @@ export function prepareTriggerData(
     serviceRegistry: networkConfig.serviceRegistry,
     triggerData: buildTriggerData(vaultData.id, isCloseToCollateral, slLevel),
   }
-}
-
-export function isTxStatusFinal(status: TxStatus) {
-  return (
-    status === TxStatus.CancelledByTheUser ||
-    status === TxStatus.Failure ||
-    status === TxStatus.Error ||
-    status === TxStatus.Success
-  )
-}
-
-export function isTxStatusFailed(status: TxStatus) {
-  return isTxStatusFinal(status) && status !== TxStatus.Success
 }
 
 export function determineProperDefaults(
