@@ -10,6 +10,9 @@ import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 
 import { TAllVaultStages } from './TAllVaultStages'
+import { zero } from '../../../helpers/zero'
+
+type SelectedCollateralAllowanceRadio = 'unlimited' | 'depositAmount' | 'custom'
 
 type ManageVaultCollateralAllowanceProps = {
   stage: TAllVaultStages
@@ -20,13 +23,13 @@ type ManageVaultCollateralAllowanceProps = {
   setCollateralAllowanceAmountUnlimited?: () => void
   setCollateralAllowanceAmountToDepositAmount?: () => void
   resetCollateralAllowanceAmount?: () => void
-  selectedCollateralAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
+  selectedCollateralAllowanceRadio: SelectedCollateralAllowanceRadio
 }
 
 export function ManageVaultCollateralAllowance({
   stage,
   vault: { token },
-  depositAmount,
+  depositAmount = zero,
   collateralAllowanceAmount,
   updateCollateralAllowanceAmount,
   setCollateralAllowanceAmountUnlimited,
@@ -34,7 +37,6 @@ export function ManageVaultCollateralAllowance({
   resetCollateralAllowanceAmount,
   selectedCollateralAllowanceRadio,
 }: ManageVaultCollateralAllowanceProps) {
-  const _depositAmount = depositAmount || new BigNumber(0)
   const canSelectRadio = stage === 'collateralAllowanceWaitingForConfirmation'
 
   const isUnlimited = selectedCollateralAllowanceRadio === 'unlimited'
@@ -62,7 +64,7 @@ export function ManageVaultCollateralAllowance({
             onChange={setCollateralAllowanceAmountToDepositAmount!}
           >
             <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: '18px' }}>
-              {t('token-depositing', { token, amount: formatCryptoBalance(_depositAmount!) })}
+              {t('token-depositing', { token, amount: formatCryptoBalance(depositAmount) })}
             </Text>
           </Radio>
           <Radio
