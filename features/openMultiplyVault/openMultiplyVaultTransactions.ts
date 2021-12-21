@@ -10,7 +10,7 @@ import { VaultType } from 'features/generalManageVault/generalManageVault'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { transactionToX } from 'helpers/form'
-import { OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
+import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { catchError, first, startWith, switchMap } from 'rxjs/operators'
@@ -319,8 +319,7 @@ export function applyEstimateGas(
     const { proxyAddress, depositAmount, ilk, token, account, swap } = state
 
     const daiAmount = swap?.status === 'SUCCESS' ? swap.daiAmount.div(one.minus(OAZO_FEE)) : zero
-    const collateralAmount =
-      swap?.status === 'SUCCESS' ? swap.collateralAmount : zero
+    const collateralAmount = swap?.status === 'SUCCESS' ? swap.collateralAmount : zero
 
     if (proxyAddress && depositAmount) {
       return estimateGas(openMultiplyVault, {
