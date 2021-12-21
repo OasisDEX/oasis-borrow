@@ -202,7 +202,7 @@ export function AccountModal({ close }: ModalProps) {
               </Flex>
               <Flex sx={{ alignItems: 'center' }}>
                 <Box mr={2}>
-                  <Davatar size={30} address={account} generatedAvatarType="jazzicon" />
+                  <Davatar size={28} address={account} generatedAvatarType="jazzicon" />
                 </Box>
                 <Text sx={{ fontSize: 5, mx: 1 }}>{formatAddress(account)}</Text>
                 <Icon
