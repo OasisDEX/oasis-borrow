@@ -55,10 +55,8 @@ import {
 
 import { combineApplyChanges } from '../../helpers/pipelines/combineApply'
 import { combineTransitions } from '../../helpers/pipelines/combineTransitions'
-import {
-  VaultErrorMessage,
-  VaultWarningMessage,
-} from '../openMultiplyVault/openMultiplyVaultValidations'
+import { VaultErrorMessage } from '../form/errorMessagesHandler'
+import { VaultWarningMessage } from '../form/warningMessagesHandler'
 import { applyEnvironment, EnvironmentChange, EnvironmentState } from './enviroment'
 import {
   addFormTransitions,
@@ -163,11 +161,11 @@ type OpenGuniChanges =
   | AllowanceChanges
 
 type ErrorState = {
-  errorMessages: VaultErrorMessage[] // TODO add errors
+  errorMessages: VaultErrorMessage[]
 }
 
 type WarringState = {
-  warningMessages: VaultWarningMessage[] // TODO add warring
+  warningMessages: VaultWarningMessage[]
 }
 
 export type OpenGuniVaultState = OverrideHelper &

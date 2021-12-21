@@ -16,14 +16,14 @@ import { Box, Divider, Flex, Grid, Text } from 'theme-ui'
 
 import { ManageVaultCollateralAllowance } from '../openMultiplyVault/common/ManageVaultCollateralAllowance'
 import { ManageVaultDaiAllowance } from '../openMultiplyVault/common/ManageVaultDaiAllowance'
+import { VaultErrors } from '../../components/vault/VaultErrors'
+import { VaultWarnings } from '../../components/vault/VaultWarnings'
 import { ManageVaultState } from './manageVault'
 import { createManageVaultAnalytics$ } from './manageVaultAnalytics'
 import { ManageVaultButton } from './ManageVaultButton'
 import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './ManageVaultConfirmation'
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultEditing } from './ManageVaultEditing'
-import { ManageVaultErrors } from './ManageVaultErrors'
-import { ManageVaultWarnings } from './ManageVaultWarnings'
 
 function TextWithCheckmark({ children }: WithChildren) {
   return (
@@ -103,8 +103,8 @@ function ManageVaultForm(props: ManageVaultState) {
       {isMultiplyTransitionStage && <ManageVaultMultiplyTransition {...props} />}
       {accountIsConnected && (
         <>
-          <ManageVaultErrors {...props} />
-          <ManageVaultWarnings {...props} />
+          <VaultErrors {...props} />
+          <VaultWarnings {...props} />
           {stage === 'manageSuccess' && <VaultChangesWithADelayCard />}
           <ManageVaultButton {...props} />
         </>

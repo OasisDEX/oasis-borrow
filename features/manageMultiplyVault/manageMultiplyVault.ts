@@ -16,6 +16,8 @@ import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { SelectedDaiAllowanceRadio } from '../openMultiplyVault/common/ManageVaultDaiAllowance'
 import { TBaseManageVaultStage } from '../openMultiplyVault/common/TBaseManageVaultStage'
+import { VaultErrorMessage } from '../form/errorMessagesHandler'
+import { VaultWarningMessage } from '../form/warningMessagesHandler'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { VaultHistoryEvent } from '../vaultHistory/vaultHistory'
 import { createMultiplyHistoryChange$ } from './manageMultiplyHistory'
@@ -64,12 +66,7 @@ import {
   ManageVaultTransitionChange,
   progressAdjust,
 } from './manageMultiplyVaultTransitions'
-import {
-  ManageVaultErrorMessage,
-  ManageVaultWarningMessage,
-  validateErrors,
-  validateWarnings,
-} from './manageMultiplyVaultValidations'
+import { validateErrors, validateWarnings } from './manageMultiplyVaultValidations'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -232,8 +229,8 @@ export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
   ManageVaultEnvironment &
   ManageVaultFunctions &
   ManageVaultTxInfo & {
-    errorMessages: ManageVaultErrorMessage[]
-    warningMessages: ManageVaultWarningMessage[]
+    errorMessages: VaultErrorMessage[]
+    warningMessages: VaultWarningMessage[]
     summary: ManageVaultSummary
     initialTotalSteps: number
     totalSteps: number

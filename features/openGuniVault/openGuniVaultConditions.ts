@@ -3,6 +3,7 @@ import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
+import { isNullish } from '../../helpers/functions'
 import { OpenGuniVaultState, Stage } from './openGuniVault'
 
 const defaultOpenVaultStageCategories = {
@@ -82,11 +83,14 @@ export interface GuniOpenMultiplyVaultConditions {
   generateAmountLessThanDebtFloor: boolean
   generateAmountMoreThanMaxFlashAmount: boolean
   generateAmountExceedsDebtCeiling: boolean
+  depositAmountExceedsCollateralBalance: boolean
+  ledgerWalletContractDataDisabled: boolean
 
   customAllowanceAmountEmpty: boolean
   customAllowanceAmountExceedsMaxUint256: boolean
   customAllowanceAmountLessThanDepositAmount: boolean
   insufficientAllowance: boolean
+  potentialGenerateAmountLessThanDebtFloor: boolean
 
   isLoadingStage: boolean
   canProgress: boolean
@@ -101,11 +105,14 @@ export const defaultGuniOpenMultiplyVaultConditions: GuniOpenMultiplyVaultCondit
   generateAmountLessThanDebtFloor: false,
   generateAmountMoreThanMaxFlashAmount: false,
   generateAmountExceedsDebtCeiling: false,
+  depositAmountExceedsCollateralBalance: false,
+  ledgerWalletContractDataDisabled: false,
 
   customAllowanceAmountEmpty: false,
   customAllowanceAmountExceedsMaxUint256: false,
   customAllowanceAmountLessThanDepositAmount: false,
   insufficientAllowance: false,
+  potentialGenerateAmountLessThanDebtFloor: false,
 
   isLoadingStage: false,
   canProgress: false,
@@ -120,6 +127,7 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
 
     ilkData,
     depositAmount,
+    balanceInfo,
 
     selectedAllowanceRadio,
     allowanceAmount,
@@ -162,6 +170,10 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     allowanceAmount.lt(depositAmount)
   )
 
+  const ledgerWalletContractDataDisabled = state.txError?.name === 'EthAppPleaseEnableContractData'
+
+  const depositAmountExceedsCollateralBalance = !!depositAmount?.gt(balanceInfo.daiBalance)
+
   const insufficientAllowance = !!(
     depositAmount &&
     !depositAmount.isZero() &&
@@ -169,6 +181,9 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
   )
 
   const isExchangeLoading = !quote && !swap && !exchangeError
+
+  const potentialGenerateAmountLessThanDebtFloor =
+    !isNullish(depositAmount) && afterOutstandingDebt.lt(ilkData.debtFloor)
 
   const canProgress =
     !(
@@ -199,11 +214,14 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     generateAmountLessThanDebtFloor,
     generateAmountMoreThanMaxFlashAmount,
     generateAmountExceedsDebtCeiling,
+    depositAmountExceedsCollateralBalance,
+    ledgerWalletContractDataDisabled,
 
     customAllowanceAmountEmpty,
     customAllowanceAmountExceedsMaxUint256,
     customAllowanceAmountLessThanDepositAmount,
     insufficientAllowance,
+    potentialGenerateAmountLessThanDebtFloor,
 
     isLoadingStage,
     canProgress,

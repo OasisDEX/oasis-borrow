@@ -146,6 +146,8 @@ export interface ManageVaultConditions {
   vaultWillBeAtRiskLevelWarningAtNextPrice: boolean
   vaultWillBeAtRiskLevelDangerAtNextPrice: boolean
   vaultWillBeUnderCollateralizedAtNextPrice: boolean
+  potentialGenerateAmountLessThanDebtFloor: boolean
+  debtIsLessThanDebtFloor: boolean
 
   accountIsConnected: boolean
   accountIsController: boolean
@@ -168,6 +170,7 @@ export interface ManageVaultConditions {
   customCollateralAllowanceAmountEmpty: boolean
   customCollateralAllowanceAmountExceedsMaxUint256: boolean
   customCollateralAllowanceAmountLessThanDepositAmount: boolean
+  ledgerWalletContractDataDisabled: boolean
 
   insufficientDaiAllowance: boolean
   customDaiAllowanceAmountEmpty: boolean
@@ -189,6 +192,8 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   vaultWillBeAtRiskLevelWarningAtNextPrice: false,
   vaultWillBeAtRiskLevelDangerAtNextPrice: false,
   vaultWillBeUnderCollateralizedAtNextPrice: false,
+  potentialGenerateAmountLessThanDebtFloor: false,
+  debtIsLessThanDebtFloor: false,
 
   depositAndWithdrawAmountsEmpty: true,
   generateAndPaybackAmountsEmpty: true,
@@ -215,6 +220,7 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   customCollateralAllowanceAmountEmpty: false,
   customCollateralAllowanceAmountExceedsMaxUint256: false,
   customCollateralAllowanceAmountLessThanDepositAmount: false,
+  ledgerWalletContractDataDisabled: false,
 
   insufficientDaiAllowance: false,
   customDaiAllowanceAmountEmpty: false,
@@ -368,6 +374,8 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
       (!collateralAllowance || depositAmount.gt(collateralAllowance))
     )
 
+  const ledgerWalletContractDataDisabled = state.txError?.name === 'EthAppPleaseEnableContractData'
+
   const insufficientDaiAllowance = !!(
     paybackAmount &&
     !paybackAmount.isZero() &&
@@ -432,6 +440,11 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
       customDaiAllowanceAmountExceedsMaxUint256 ||
       customDaiAllowanceAmountLessThanPaybackAmount)
 
+  const potentialGenerateAmountLessThanDebtFloor =
+    !isNullish(depositAmount) && maxGenerateAmountAtCurrentPrice.lt(ilkData.debtFloor)
+
+  const debtIsLessThanDebtFloor = vault.debt.lt(ilkData.debtFloor) && vault.debt.gt(zero)
+
   const multiplyTransitionDisabled = isMultiplyTransitionStage && !accountIsController
 
   const canProgress = !(
@@ -471,6 +484,8 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     vaultWillBeAtRiskLevelDangerAtNextPrice,
     vaultWillBeUnderCollateralized,
     vaultWillBeUnderCollateralizedAtNextPrice,
+    potentialGenerateAmountLessThanDebtFloor,
+    debtIsLessThanDebtFloor,
 
     accountIsConnected,
     accountIsController,
@@ -484,6 +499,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     generateAmountLessThanDebtFloor,
     paybackAmountExceedsDaiBalance,
     paybackAmountExceedsVaultDebt,
+    ledgerWalletContractDataDisabled,
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,
     isLoadingStage,
