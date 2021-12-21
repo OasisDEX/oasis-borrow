@@ -249,6 +249,8 @@ function getCumulativeDepositUSD(total: BigNumber, event: VaultEvent) {
     case 'OPEN_MULTIPLY_VAULT':
     case 'INCREASE_MULTIPLE':
       return total.plus(event.depositCollateral.times(event.marketPrice)).plus(event.depositDai)
+    case 'OPEN_MULTIPLY_GUNI_VAULT':
+      return total.plus(event.depositDai)
     case 'MOVE_DEST':
       return total.plus(event.collateralAmount.times(event.oraclePrice))
     default:
@@ -271,6 +273,7 @@ function getCumulativeWithdrawnUSD(total: BigNumber, event: VaultEvent) {
     case 'CLOSE_VAULT_TO_COLLATERAL':
       return total.plus(event.exitCollateral.times(event.marketPrice)).plus(event.exitDai)
     case 'CLOSE_VAULT_TO_DAI':
+    case 'CLOSE_GUNI_VAULT_TO_DAI':
       return total.plus(event.exitDai)
     case 'MOVE_SRC':
       return total.plus(event.collateralAmount.times(event.oraclePrice))
@@ -294,10 +297,12 @@ function getCumulativeLossesUSD(total: BigNumber, event: VaultEvent) {
 export function getCumulativeFeesUSD(total: BigNumber, event: VaultEvent) {
   switch (event.kind) {
     case 'OPEN_MULTIPLY_VAULT':
+    case 'OPEN_MULTIPLY_GUNI_VAULT':
     case 'DECREASE_MULTIPLE':
     case 'INCREASE_MULTIPLE':
     case 'CLOSE_VAULT_TO_COLLATERAL':
     case 'CLOSE_VAULT_TO_DAI':
+    case 'CLOSE_GUNI_VAULT_TO_DAI':
     case 'DEPOSIT':
     case 'GENERATE':
     case 'DEPOSIT-GENERATE':
