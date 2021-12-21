@@ -15,12 +15,12 @@ import { OpenBorrowVaultContext } from './OpenVaultView'
 
 function openVaultPrimaryButtonText(
   stage: OpenVaultStage,
-  id: BigNumber | undefined,
   token: string,
   proxyAddress: string | undefined,
   insufficientAllowance: boolean,
   inputAmountsEmpty: boolean,
   customAllowanceAmountEmpty: boolean,
+  id?: BigNumber,
 ) {
   const { t } = useTranslation()
 
@@ -128,12 +128,12 @@ export function OpenVaultButton() {
 
   const primaryButtonText = openVaultPrimaryButtonText(
     stage,
-    id,
     token,
     proxyAddress,
     insufficientAllowance,
     inputAmountsEmpty,
     customAllowanceAmountEmpty,
+    id,
   )
   const secondaryButtonText =
     stage === 'allowanceFailure' ? t('edit-token-allowance', { token }) : t('edit-vault-details')

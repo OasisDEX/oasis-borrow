@@ -8,12 +8,10 @@ import { OpenBorrowVaultContext } from './OpenVaultView'
 export function Header() {
   const { t } = useTranslation()
 
-  const { headerProps } = useSelectFromContext(OpenBorrowVaultContext, (ctx) => ({
-    headerProps: {
-      ilkData: ctx.ilkData,
-      id: ctx.id,
-      header: t('vault.open-vault', { ilk: ctx.ilk }),
-    },
+  const headerProps = useSelectFromContext(OpenBorrowVaultContext, (ctx) => ({
+    ilkData: ctx.ilkData,
+    id: ctx.id,
+    header: t('vault.open-vault', { ilk: ctx.ilk }),
   }))
 
   return <DefaultVaultHeader {...headerProps} />

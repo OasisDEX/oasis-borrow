@@ -59,7 +59,7 @@ export function VaultChangesInformationArrow() {
 
 export function getEstimatedGasFeeText(
   gasEstimationStatus: GasEstimationStatus,
-  gasEstimationUsd: BigNumber | undefined,
+  gasEstimationUsd?: BigNumber,
   withBrackets = false,
 ) {
   switch (gasEstimationStatus) {
@@ -90,7 +90,7 @@ export function VaultChangesInformationEstimatedGasFee({
   gasEstimationUsd,
 }: {
   gasEstimationStatus: GasEstimationStatus
-  gasEstimationUsd: BigNumber | undefined
+  gasEstimationUsd?: BigNumber
 }) {
   const { t } = useTranslation()
   return (
