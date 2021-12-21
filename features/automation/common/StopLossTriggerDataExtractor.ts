@@ -1,7 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { AutomationBaseTriggerData } from 'blockchain/calls/automationBot'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { networksById } from 'blockchain/config'
 import { Vault } from 'blockchain/vaults'
 import { ethers } from 'ethers'
@@ -25,15 +24,9 @@ export interface StopLossTriggerData {
 
 export function extractSLData(data: TriggersData): StopLossTriggerData {
   const doesStopLossExist = data.triggers ? data.triggers.length > 0 : false
-  console.log('does sl exist?')
-  console.log(doesStopLossExist)
-
   if (doesStopLossExist) {
-    // TODO LW how can it be undefinedd as its checked before if it exist !?
+    // TODO LW how can it be undefined as its checked before if it exist !?
     const slRecord: TriggerRecord | undefined = data.triggers ? last(data.triggers) : undefined
-    console.log('sl record')
-    console.log(slRecord)
-
     if (!slRecord) throw data /* TODO: This is logically unreachable, revrite so typecheck works */
     return {
       isStopLossEnabled: true,
@@ -50,13 +43,10 @@ export function extractSLData(data: TriggersData): StopLossTriggerData {
 }
 
 function buildTriggerData(id: BigNumber, isCloseToCollateral: boolean, slLevel: number): string {
-  const retVal=  ethers.utils.defaultAbiCoder.encode(
+  return ethers.utils.defaultAbiCoder.encode(
     ['uint256', 'bool', 'uint256'],
     [id.toNumber(), isCloseToCollateral, Math.round(slLevel)],
   )
-  console.log("buildTriggerData")
-  console.log(retVal)
-  return retVal
 }
 
 export function prepareTriggerData(
