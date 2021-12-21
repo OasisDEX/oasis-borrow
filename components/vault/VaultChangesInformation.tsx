@@ -5,7 +5,7 @@ import { Tooltip, useTooltip } from 'components/Tooltip'
 import { GasEstimationStatus } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
 import { CommonVaultState, WithChildren } from 'helpers/types'
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 export function VaultChangesInformationItem({
@@ -18,6 +18,20 @@ export function VaultChangesInformationItem({
   tooltip?: ReactNode
 }) {
   const { tooltipOpen, setTooltipOpen } = useTooltip()
+  const isTouchDevice = window && 'ontouchstart' in window
+
+  const handleMouseEnter = useMemo(
+    () => (!isTouchDevice ? () => setTooltipOpen(true) : undefined),
+    [isTouchDevice],
+  )
+
+  const handleMouseLeave = useMemo(
+    () => (!isTouchDevice ? () => setTooltipOpen(false) : undefined),
+    [isTouchDevice],
+  )
+
+  const handleClick = useCallback(() => tooltip && setTooltipOpen(true), [tooltip])
+
   return (
     <Flex
       sx={{
@@ -27,9 +41,13 @@ export function VaultChangesInformationItem({
         fontWeight: 'semiBold',
         cursor: tooltip ? 'pointer' : 'inherit',
       }}
-      onClick={() => tooltip && setTooltipOpen(true)}
+      onClick={handleClick}
     >
-      <Flex sx={{ color: 'text.subtitle', justifyContent: 'flex-end' }}>
+      <Flex
+        sx={{ color: 'text.subtitle', justifyContent: 'flex-end' }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         <Box>{label}</Box>
         {tooltip && <Icon name="question_o" size="20px" sx={{ ml: 1 }} />}
       </Flex>
