@@ -1,9 +1,14 @@
-import { maxUint256 } from 'blockchain/calls/erc20'
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
 import { isNullish } from '../../helpers/functions'
+import {
+  customAllowanceAmountEmptyValidator,
+  customAllowanceAmountExceedsMaxUint256Validator,
+  customAllowanceAmountLessThanDepositAmountValidator,
+  ledgerWalletContractDataDisabledValidator,
+} from '../form/commonValidators'
 import { OpenGuniVaultState, Stage } from './openGuniVault'
 
 const defaultOpenVaultStageCategories = {
@@ -127,7 +132,7 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
 
     ilkData,
     depositAmount,
-    balanceInfo,
+    balanceInfo: { daiBalance },
 
     selectedAllowanceRadio,
     allowanceAmount,
@@ -135,6 +140,7 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     exchangeError,
     quote,
     swap,
+    txError,
   } = state
 
   const inputAmountsEmpty = !depositAmount
@@ -155,24 +161,29 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     'txWaitingForApproval',
   ] as Stage[]).some((s) => s === stage)
 
-  const customAllowanceAmountEmpty = selectedAllowanceRadio === 'custom' && !allowanceAmount
+  const customAllowanceAmountEmpty = customAllowanceAmountEmptyValidator({
+    selectedAllowanceRadio,
+    allowanceAmount,
+  })
 
-  const customAllowanceAmountExceedsMaxUint256 = !!(
-    selectedAllowanceRadio === 'custom' && allowanceAmount?.gt(maxUint256)
-  )
+  const customAllowanceAmountExceedsMaxUint256 = customAllowanceAmountExceedsMaxUint256Validator({
+    selectedAllowanceRadio,
+    allowanceAmount,
+  })
 
   const generateAmountExceedsDebtCeiling = !!afterOutstandingDebt?.gt(ilkData.ilkDebtAvailable)
 
-  const customAllowanceAmountLessThanDepositAmount = !!(
-    selectedAllowanceRadio === 'custom' &&
-    allowanceAmount &&
-    depositAmount &&
-    allowanceAmount.lt(depositAmount)
+  const customAllowanceAmountLessThanDepositAmount = customAllowanceAmountLessThanDepositAmountValidator(
+    {
+      selectedAllowanceRadio,
+      allowanceAmount,
+      depositAmount,
+    },
   )
 
-  const ledgerWalletContractDataDisabled = state.txError?.name === 'EthAppPleaseEnableContractData'
+  const ledgerWalletContractDataDisabled = ledgerWalletContractDataDisabledValidator({ txError })
 
-  const depositAmountExceedsCollateralBalance = !!depositAmount?.gt(balanceInfo.daiBalance)
+  const depositAmountExceedsCollateralBalance = !!depositAmount?.gt(daiBalance)
 
   const insufficientAllowance = !!(
     depositAmount &&
