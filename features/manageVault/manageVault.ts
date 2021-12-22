@@ -17,7 +17,7 @@ import { catchError, first, map, scan, shareReplay, startWith, switchMap } from 
 import { VaultErrorMessage } from '../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../form/warningMessagesHandler'
 import { SelectedDaiAllowanceRadio } from '../openMultiplyVault/common/ManageVaultDaiAllowance'
-import { TBaseManageVaultStage } from '../openMultiplyVault/common/TBaseManageVaultStage'
+import { BaseManageVaultStage } from '../openMultiplyVault/common/types/BaseManageVaultStage'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
 import {
@@ -98,7 +98,7 @@ export type ManageVaultEditingStage =
   | 'multiplyTransitionEditing'
 
 export type ManageBorrowVaultStage =
-  | TBaseManageVaultStage
+  | BaseManageVaultStage
   | ManageVaultEditingStage
   | 'multiplyTransitionWaitingForConfirmation'
   | 'multiplyTransitionInProgress'

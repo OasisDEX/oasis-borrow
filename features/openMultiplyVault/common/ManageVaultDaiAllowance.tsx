@@ -9,10 +9,10 @@ import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 
-import { TAllVaultStages } from './TAllVaultStages'
+import { AllVaultStages } from './types/AllVaultStages'
 
 type ManageVaultDaiAllowanceProps = {
-  stage: TAllVaultStages
+  stage: AllVaultStages
   daiAllowanceAmount?: BigNumber
   updateDaiAllowanceAmount?: (amount?: BigNumber) => void
   setDaiAllowanceAmountUnlimited?: () => void

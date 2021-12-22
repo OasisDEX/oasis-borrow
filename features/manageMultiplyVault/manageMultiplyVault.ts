@@ -17,7 +17,7 @@ import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { VaultErrorMessage } from '../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../form/warningMessagesHandler'
 import { SelectedDaiAllowanceRadio } from '../openMultiplyVault/common/ManageVaultDaiAllowance'
-import { TBaseManageVaultStage } from '../openMultiplyVault/common/TBaseManageVaultStage'
+import { BaseManageVaultStage } from '../openMultiplyVault/common/types/BaseManageVaultStage'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { VaultHistoryEvent } from '../vaultHistory/vaultHistory'
 import { createMultiplyHistoryChange$ } from './manageMultiplyHistory'
@@ -113,7 +113,7 @@ function apply(state: ManageMultiplyVaultState, change: ManageMultiplyVaultChang
 
 export type ManageMultiplyVaultEditingStage = 'adjustPosition' | 'otherActions'
 
-export type ManageMultiplyVaultStage = ManageMultiplyVaultEditingStage | TBaseManageVaultStage
+export type ManageMultiplyVaultStage = ManageMultiplyVaultEditingStage | BaseManageVaultStage
 
 export type MainAction = 'buy' | 'sell'
 export type CloseVaultTo = 'collateral' | 'dai'

@@ -10,12 +10,12 @@ import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 
 import { zero } from '../../../helpers/zero'
-import { TAllVaultStages } from './TAllVaultStages'
+import { AllVaultStages } from './types/AllVaultStages'
 
 type SelectedCollateralAllowanceRadio = 'unlimited' | 'depositAmount' | 'custom'
 
 type ManageVaultCollateralAllowanceProps = {
-  stage: TAllVaultStages
+  stage: AllVaultStages
   vault: { token: string }
   depositAmount?: BigNumber
   collateralAllowanceAmount?: BigNumber
