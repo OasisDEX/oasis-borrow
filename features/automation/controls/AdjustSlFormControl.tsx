@@ -1,11 +1,10 @@
-import { TxState, TxStatus } from '@oasisdex/transactions'
+import { TxState } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import {
   addAutomationBotTrigger,
   AutomationBotAddTriggerData,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { networksById } from 'blockchain/config'
 import { IlkDataList } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
@@ -13,59 +12,36 @@ import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
-import { ethers } from 'ethers'
 import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservableWithError, useUIChanges } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import React from 'react'
 
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
-import { TriggersTypes } from '../common/enums/TriggersTypes'
-import { extractSLData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
+import { composeSuccessHandler } from '../common/AutomationTransactionPlunger'
+import {
+  determineProperDefaults,
+  extractSLData,
+  prepareTriggerData,
+  StopLossTriggerData,
+} from '../common/StopLossTriggerDataExtractor'
 import { AddFormChange } from '../common/UITypes/AddFormChange'
 import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
 
-function isTxStatusFinal(status: TxStatus) {
-  return (
-    status === TxStatus.CancelledByTheUser ||
-    status === TxStatus.Failure ||
-    status === TxStatus.Error ||
-    status === TxStatus.Success
-  )
-}
-
-function isTxStatusFailed(status: TxStatus) {
-  return isTxStatusFinal(status) && status !== TxStatus.Success
-}
-
-function buildTriggerData(id: BigNumber, isCloseToCollateral: boolean, slLevel: number): string {
-  return ethers.utils.defaultAbiCoder.encode(
-    ['uint256', 'bool', 'uint256'],
-    [id.toNumber(), isCloseToCollateral, Math.round(slLevel)],
-  )
-}
-
-function prepareTriggerData(
+function prepareAddTriggerData(
   vaultData: Vault,
   isCloseToCollateral: boolean,
   stopLossLevel: BigNumber,
 ): AutomationBotAddTriggerData {
-  const slLevel: number = stopLossLevel.toNumber()
-  const networkConfig = networksById[vaultData.chainId]
+  const baseTriggerData = prepareTriggerData(vaultData, isCloseToCollateral, stopLossLevel)
 
   return {
+    ...baseTriggerData,
     kind: TxMetaKind.addTrigger,
-    cdpId: vaultData.id,
-    triggerType: isCloseToCollateral
-      ? new BigNumber(TriggersTypes.StopLossToCollateral)
-      : new BigNumber(TriggersTypes.StopLossToDai),
-    proxyAddress: vaultData.owner,
-    serviceRegistry: networkConfig.serviceRegistry,
-    triggerData: buildTriggerData(vaultData.id, isCloseToCollateral, slLevel),
   }
 }
 
@@ -74,7 +50,6 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
   const validOptions: FixedSizeArray<string, 2> = ['collateral', 'dai']
   const [collateralActive, setCloseToCollateral] = useState(false)
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
-  //const [txLoderCompletedHandler, setTxHandler] = useState<(succeded : boolean) => void>();
 
   const {
     vault$,
@@ -144,19 +119,14 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
 
     const dispatch = useUIChanges(reducerHandler, initial, uiSubjectName)
 
-    const [txStatus, txStatusSetter] = useState<TxState<AutomationBotAddTriggerData> | undefined>(
-      undefined,
-    )
+    const [txStatus, txStatusSetter] = useState<TxState<AutomationBotAddTriggerData> | undefined>()
 
     const maxBoundry =
       currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
 
     const liqRatio = currentIlkData.liquidationRatio
 
-    //set proper defaults
-    useEffect(() => {
-      setSelectedSLValue(startingSlRatio.multipliedBy(100))
-    }, [])
+    determineProperDefaults(setSelectedSLValue, startingSlRatio)
 
     const closeProps: PickCloseStateProps = {
       optionNames: validOptions,
@@ -207,28 +177,12 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     const addTriggerConfig: RetryableLoadingButtonProps = {
       translationKey: 'add-stop-loss',
       onClick: (finishLoader: (succeded: boolean) => void) => {
-        //TODO: this tx handler can be more generic and reused
-        const txSendSuccessHandler = (x: TxState<AutomationBotAddTriggerData>) => {
-          txStatusSetter(x)
-          if (isTxStatusFinal(x.status)) {
-            if (isTxStatusFailed(x.status)) {
-              finishLoader(false)
-              waitForTx.unsubscribe()
-              txStatusSetter(undefined)
-            } else {
-              finishLoader(true)
-              waitForTx.unsubscribe()
-              txStatusSetter(undefined)
-            }
-          }
-        }
-
+        const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) =>
+          composeSuccessHandler(txStatusSetter, transactionState, finishLoader, waitForTx)
         const sendTxErrorHandler = () => {
           finishLoader(false)
         }
-
-        const txData = prepareTriggerData(vaultData, collateralActive, selectedSLValue)
-
+        const txData = prepareAddTriggerData(vaultData, collateralActive, selectedSLValue)
         const waitForTx = txHelpers
           .sendWithGasEstimation(addAutomationBotTrigger, txData)
           .subscribe(txSendSuccessHandler, sendTxErrorHandler)
