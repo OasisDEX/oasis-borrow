@@ -295,7 +295,7 @@ export function createManageGuniVault$(
                         SLIPPAGE,
                         sharedAmount1.minus(0.01),
                         'SELL_COLLATERAL',
-                        'lowerFeesExchange',
+                        'noFeesExchange',
                       ).pipe(
                         map((swap) => {
                           if (swap.status !== 'SUCCESS') {

@@ -747,7 +747,7 @@ function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConn
     guniRouter,
   } = context
 
-  const exchange = context['lowerFeesExchange']
+  const exchange = context['noFeesExchange']
 
   const { token0: token0Symbol, token1: token1Symbol } = getToken(data.token)
 
