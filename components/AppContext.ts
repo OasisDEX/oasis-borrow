@@ -31,6 +31,7 @@ import {
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
+import { resolveENSName$ } from 'blockchain/ens'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import {
   createGasPrice$,
@@ -246,6 +247,7 @@ export function setupAppContext() {
     curry(createBalance$)(onEveryBlock$, context$, tokenBalance$),
     (token, address) => `${token}_${address}`,
   )
+  const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
@@ -478,7 +480,7 @@ export function setupAppContext() {
     curry(createReclaimCollateral$)(context$, txHelpers$, proxyAddress$),
     bigNumberTostring,
   )
-  const accountData$ = createAccountData(web3Context$, balance$, vaults$)
+  const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
 
   const openVaultOverview$ = createOpenVaultOverview$(ilksWithBalance$)
 

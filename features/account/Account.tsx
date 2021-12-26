@@ -36,11 +36,17 @@ function DaiIndicator({ daiBalance }: { daiBalance: BigNumber | undefined }) {
     </Flex>
   )
 }
-export function AccountIndicator({ address }: { address: string }) {
+export function AccountIndicator({
+  address,
+  ensName,
+}: {
+  address: string
+  ensName: string | null
+}) {
   return (
     <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mx: 3 }}>
       <Text variant="paragraph4" sx={{ fontWeight: 'bold' }}>
-        {formatAddress(address)}
+        {ensName || formatAddress(address)}
       </Text>
     </Flex>
   )
@@ -124,7 +130,7 @@ export function AccountButton() {
           }}
           onClick={() => openModal(AccountModal)}
         >
-          <AccountIndicator address={context.account} />
+          <AccountIndicator address={context.account} ensName={accountData.ensName} />
           <DaiIndicator daiBalance={accountData.daiBalance} />
         </Button>
       </Flex>
