@@ -1,4 +1,5 @@
 // @ts-ignore
+import Davatar from '@davatar/react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
@@ -11,8 +12,6 @@ import { ModalProps, useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useRef } from 'react'
-// @ts-ignore
-import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
 import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Flex, Grid, Heading, Text, Textarea } from 'theme-ui'
 
@@ -204,7 +203,7 @@ export function AccountModal({ close }: ModalProps) {
               </Flex>
               <Flex sx={{ alignItems: 'center' }}>
                 <Box mr={2}>
-                  <Jazzicon diameter={28} seed={jsNumberForAddress(account)} />
+                  <Davatar size={28} address={account} generatedAvatarType="jazzicon" />
                 </Box>
                 <Text sx={{ fontSize: 5, mx: 1 }}>{formatAddress(account)}</Text>
                 <Icon
