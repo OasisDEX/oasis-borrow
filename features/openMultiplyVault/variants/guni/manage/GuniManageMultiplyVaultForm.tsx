@@ -56,7 +56,7 @@ export function GuniManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
           <VaultErrors {...props} />
           <VaultWarnings {...props} />
           {stage === 'manageSuccess' && <VaultChangesWithADelayCard />}
-          <ManageMultiplyVaultButton {...props} />
+          {stage !== 'adjustPosition' && <ManageMultiplyVaultButton {...props} />}
         </>
       )}
       {isProxyStage && <VaultProxyStatusCard {...props} />}

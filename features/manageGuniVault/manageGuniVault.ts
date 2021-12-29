@@ -19,7 +19,6 @@ import { getToken } from '../../blockchain/tokensMetadata'
 import { one, zero } from '../../helpers/zero'
 import { applyExchange } from '../manageMultiplyVault/manageMultiplyQuote'
 import {
-  CloseVaultTo,
   ManageMultiplyVaultChange,
   ManageMultiplyVaultState,
   MutableManageMultiplyVaultState,
@@ -34,6 +33,7 @@ import {
   defaultManageMultiplyVaultConditions,
 } from '../manageMultiplyVault/manageMultiplyVaultConditions'
 import { applyManageVaultEnvironment } from '../manageMultiplyVault/manageMultiplyVaultEnvironment'
+import { manageMultiplyInputsDefaults } from '../manageMultiplyVault/manageMultiplyVaultForm'
 import {
   applyManageVaultSummary,
   defaultManageVaultSummary,
@@ -72,7 +72,7 @@ export type GuniTxData = {
 
 type GuniTxDataChange = { kind: 'guniTxData' }
 
-function applyGuniDataChanges<S, Ch extends GuniTxDataChange>(state: S, change: Ch): S {
+function applyGuniDataChanges<S, Ch extends GuniTxDataChange>(change: Ch, state: S): S {
   if (change.kind === 'guniTxData') {
     const { kind: _, ...data } = change
 
@@ -109,21 +109,39 @@ function applyGuniCalculations(state: ManageMultiplyVaultState & GuniTxData) {
   }
 }
 
+export function applyManageGuniVaultTransition(
+  change: ManageMultiplyVaultChange,
+  state: ManageMultiplyVaultState,
+): ManageMultiplyVaultState {
+  if (change.kind === 'clear') {
+    return {
+      ...state,
+      ...defaultMutableManageMultiplyVaultState,
+      ...defaultManageMultiplyVaultCalculations,
+      ...defaultManageMultiplyVaultConditions,
+      ...manageMultiplyInputsDefaults,
+    }
+  }
+
+  return state
+}
+
 function apply(
   state: ManageMultiplyVaultState,
   change: ManageMultiplyVaultChange | GuniTxDataChange,
 ) {
   const s1 = applyExchange(change as ManageMultiplyVaultChange, state)
   const s2 = applyManageVaultTransition(change as ManageMultiplyVaultChange, s1)
-  const s3 = applyManageVaultTransaction(change as ManageMultiplyVaultChange, s2)
-  const s4 = applyManageVaultEnvironment(change as ManageMultiplyVaultChange, s3)
-  const s5 = applyManageVaultInjectedOverride(change as ManageMultiplyVaultChange, s4)
-  const s6 = applyGuniDataChanges(s5, change as GuniTxDataChange)
-  const s7 = applyManageVaultCalculations(s6)
-  const s8 = applyGuniCalculations(s7)
-  const s9 = applyManageVaultStageCategorisation(s8 as ManageMultiplyVaultState)
-  const s10 = applyManageVaultConditions(s9)
-  return applyManageVaultSummary(s10)
+  const s3 = applyManageGuniVaultTransition(change as ManageMultiplyVaultChange, s2)
+  const s4 = applyManageVaultTransaction(change as ManageMultiplyVaultChange, s3)
+  const s5 = applyManageVaultEnvironment(change as ManageMultiplyVaultChange, s4)
+  const s6 = applyManageVaultInjectedOverride(change as ManageMultiplyVaultChange, s5)
+  const s7 = applyGuniDataChanges(change as GuniTxDataChange, s6)
+  const s8 = applyManageVaultCalculations(s7)
+  const s9 = applyGuniCalculations(s8)
+  const s10 = applyManageVaultStageCategorisation(s9 as ManageMultiplyVaultState)
+  const s11 = applyManageVaultConditions(s10)
+  return applyManageVaultSummary(s11)
 }
 
 function addTransitions(
@@ -137,8 +155,7 @@ function addTransitions(
     return {
       ...state,
       progress: () => change({ kind: 'progressEditing' }),
-      setCloseVaultTo: (closeVaultTo: CloseVaultTo) =>
-        change({ kind: 'closeVaultTo', closeVaultTo }),
+      setCloseVaultTo: () => change({ kind: 'toggleEditing' }),
     }
   }
 
@@ -161,8 +178,8 @@ function addTransitions(
 }
 
 export const defaultMutableManageMultiplyVaultState = {
-  stage: 'otherActions',
-  originalEditingStage: 'otherActions',
+  stage: 'adjustPosition',
+  originalEditingStage: 'adjustPosition',
   collateralAllowanceAmount: maxUint256,
   daiAllowanceAmount: maxUint256,
   selectedCollateralAllowanceRadio: 'unlimited',
