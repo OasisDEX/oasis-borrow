@@ -251,7 +251,7 @@ export function MobileSidePanelClose({
 
   return mobile ? (
     <Box>
-      {opened && <ModalHTMLOverflow close={onClose} />}
+      {opened && <ModalHTMLOverflow />}
       <Box
         sx={{
           display: ['flex', 'none'],
