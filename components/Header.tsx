@@ -17,8 +17,8 @@ import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from './AppContextProvider'
-import { useSharedUI } from './SharedUIProvider'
 import { ChevronUpDown } from './ChevronUpDown'
+import { useSharedUI } from './SharedUIProvider'
 import { SelectComponents } from 'react-select/src/components'
 
 const {
