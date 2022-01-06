@@ -43,6 +43,8 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
         <Box>
           <Text variant="subheader">{total}</Text>
         </Box>
+        {/* TODO LW implement when it will be available in addTrigger */}
+        {/* https://app.shortcut.com/oazo-apps/story/3284/add-total-tx-costs-for-transactions-in-automation */}
         <Box>$250.00</Box>
       </Grid>
       <MessageCard {...{ messages, type: 'warning' }} />
