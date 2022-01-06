@@ -10,7 +10,7 @@ import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditio
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { GasEstimationStatus } from 'helpers/form'
-import { calculatePNL, SLIPPAGE } from 'helpers/multiply/calculations'
+import { calculatePNL } from 'helpers/multiply/calculations'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
@@ -256,6 +256,8 @@ export function createManageGuniVault$(
                     vault.token,
                     'skip',
                   )
+
+                  const SLIPPAGE = new BigNumber(0.001)
 
                   const initialState: ManageMultiplyVaultState & GuniTxData = {
                     ...defaultMutableManageMultiplyVaultState,
