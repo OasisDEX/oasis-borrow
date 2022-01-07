@@ -16,6 +16,8 @@ import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { VaultErrorMessage } from '../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../form/warningMessagesHandler'
+import { SelectedDaiAllowanceRadio } from '../openMultiplyVault/common/ManageVaultDaiAllowance'
+import { BaseManageVaultStage } from '../openMultiplyVault/common/types/BaseManageVaultStage'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { VaultHistoryEvent } from '../vaultHistory/vaultHistory'
 import { createMultiplyHistoryChange$ } from './manageMultiplyHistory'
@@ -111,28 +113,7 @@ function apply(state: ManageMultiplyVaultState, change: ManageMultiplyVaultChang
 
 export type ManageMultiplyVaultEditingStage = 'adjustPosition' | 'otherActions'
 
-export type ManageMultiplyVaultStage =
-  | ManageMultiplyVaultEditingStage
-  | 'proxyWaitingForConfirmation'
-  | 'proxyWaitingForApproval'
-  | 'proxyInProgress'
-  | 'proxyFailure'
-  | 'proxySuccess'
-  | 'collateralAllowanceWaitingForConfirmation'
-  | 'collateralAllowanceWaitingForApproval'
-  | 'collateralAllowanceInProgress'
-  | 'collateralAllowanceFailure'
-  | 'collateralAllowanceSuccess'
-  | 'daiAllowanceWaitingForConfirmation'
-  | 'daiAllowanceWaitingForApproval'
-  | 'daiAllowanceInProgress'
-  | 'daiAllowanceFailure'
-  | 'daiAllowanceSuccess'
-  | 'manageWaitingForConfirmation'
-  | 'manageWaitingForApproval'
-  | 'manageInProgress'
-  | 'manageFailure'
-  | 'manageSuccess'
+export type ManageMultiplyVaultStage = ManageMultiplyVaultEditingStage | BaseManageVaultStage
 
 export type MainAction = 'buy' | 'sell'
 export type CloseVaultTo = 'collateral' | 'dai'
@@ -161,7 +142,7 @@ export interface MutableManageMultiplyVaultState {
   collateralAllowanceAmount?: BigNumber
   daiAllowanceAmount?: BigNumber
   selectedCollateralAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
-  selectedDaiAllowanceRadio: 'unlimited' | 'paybackAmount' | 'custom'
+  selectedDaiAllowanceRadio: SelectedDaiAllowanceRadio
 
   requiredCollRatio?: BigNumber
   buyAmount?: BigNumber
