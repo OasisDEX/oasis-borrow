@@ -9,6 +9,8 @@ export const OAZO_LOWER_FEE = new BigNumber(0.0004)
 export const LOAN_FEE = new BigNumber(0.0)
 export const SLIPPAGE = new BigNumber(0.005)
 
+export const GUNI_SLIPPAGE = new BigNumber(0.001)
+
 export function calculateParamsIncreaseMP(
   oraclePrice: BigNumber,
   marketPrice: BigNumber,
