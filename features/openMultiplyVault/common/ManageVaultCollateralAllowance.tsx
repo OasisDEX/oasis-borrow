@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Radio } from 'components/forms/Radio'
 import { BigNumberInput } from 'helpers/BigNumberInput'
@@ -8,19 +9,34 @@ import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 
-import { ManageVaultState } from './manageVault'
+import { zero } from '../../../helpers/zero'
+import { AllVaultStages } from './types/AllVaultStages'
+
+type SelectedCollateralAllowanceRadio = 'unlimited' | 'depositAmount' | 'custom'
+
+type ManageVaultCollateralAllowanceProps = {
+  stage: AllVaultStages
+  vault: { token: string }
+  depositAmount?: BigNumber
+  collateralAllowanceAmount?: BigNumber
+  updateCollateralAllowanceAmount?: (amount?: BigNumber) => void
+  setCollateralAllowanceAmountUnlimited?: () => void
+  setCollateralAllowanceAmountToDepositAmount?: () => void
+  resetCollateralAllowanceAmount?: () => void
+  selectedCollateralAllowanceRadio: SelectedCollateralAllowanceRadio
+}
 
 export function ManageVaultCollateralAllowance({
   stage,
   vault: { token },
+  depositAmount = zero,
   collateralAllowanceAmount,
-  depositAmount,
   updateCollateralAllowanceAmount,
   setCollateralAllowanceAmountUnlimited,
   setCollateralAllowanceAmountToDepositAmount,
   resetCollateralAllowanceAmount,
   selectedCollateralAllowanceRadio,
-}: ManageVaultState) {
+}: ManageVaultCollateralAllowanceProps) {
   const canSelectRadio = stage === 'collateralAllowanceWaitingForConfirmation'
 
   const isUnlimited = selectedCollateralAllowanceRadio === 'unlimited'
@@ -48,7 +64,7 @@ export function ManageVaultCollateralAllowance({
             onChange={setCollateralAllowanceAmountToDepositAmount!}
           >
             <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: '18px' }}>
-              {t('token-depositing', { token, amount: formatCryptoBalance(depositAmount!) })}
+              {t('token-depositing', { token, amount: formatCryptoBalance(depositAmount) })}
             </Text>
           </Radio>
           <Radio

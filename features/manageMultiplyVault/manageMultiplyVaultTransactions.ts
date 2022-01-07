@@ -231,7 +231,7 @@ export function applyManageVaultTransaction(
 
 export function adjustPosition(
   txHelpers$: Observable<TxHelpers>,
-  { tokens, exchange }: Context,
+  { tokens, defaultExchange }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     account,
@@ -252,7 +252,7 @@ export function adjustPosition(
         getQuote$(
           getTokenMetaData('DAI', tokens),
           getTokenMetaData(token, tokens),
-          exchange.address,
+          defaultExchange.address,
           oneInchAmount,
           slippage,
           exchangeAction!,
@@ -534,7 +534,7 @@ export function createProxy(
 
 export function closeVault(
   txHelpers$: Observable<TxHelpers>,
-  { tokens, exchange }: Context,
+  { tokens, defaultExchange }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     proxyAddress,
@@ -556,7 +556,7 @@ export function closeVault(
         getQuote$(
           getTokenMetaData('DAI', tokens),
           getTokenMetaData(token, tokens),
-          exchange.address,
+          defaultExchange.address,
           fromTokenAmount,
           slippage,
           'SELL_COLLATERAL',

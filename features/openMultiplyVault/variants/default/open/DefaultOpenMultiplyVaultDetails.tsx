@@ -12,6 +12,7 @@ import {
 } from 'components/vault/VaultDetails'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
+import { useHasChangedSinceFirstRender } from 'helpers/useHasChangedSinceFirstRender'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -26,11 +27,12 @@ function OpenMultiplyVaultDetailsSummary({
   afterOutstandingDebt,
   multiply,
   totalExposure,
-}: OpenMultiplyVaultState & AfterPillProps) {
+  relevant,
+}: OpenMultiplyVaultState & AfterPillProps & { relevant: boolean }) {
   const { t } = useTranslation()
 
   return (
-    <VaultDetailsSummaryContainer>
+    <VaultDetailsSummaryContainer relevant={relevant}>
       <VaultDetailsSummaryItem
         label={t('system.vault-dai-debt')}
         value={
@@ -85,6 +87,8 @@ export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
     token,
     inputAmountsEmpty,
     stage,
+    marketPrice,
+    priceInfo,
   } = props
   const openModal = useModal()
 
@@ -93,10 +97,13 @@ export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
   const buyingPowerUSD = zero
   const buyingPower = zero
   const netValueUSD = zero
+  const currentPnL = zero
 
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'txSuccess'
+  const inputAmountChangedSinceFirstRender = useHasChangedSinceFirstRender(inputAmountsEmpty)
+
   return (
     <>
       <Grid variant="vaultDetailsCardsContainer">
@@ -106,6 +113,7 @@ export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
             afterLiquidationPrice,
             afterPillColors,
             showAfterPill,
+            relevant: inputAmountChangedSinceFirstRender,
           }}
         />
 
@@ -116,6 +124,7 @@ export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
           valueAfter={showAfterPill && `$${formatAmount(afterBuyingPowerUSD, 'USD')}`}
           openModal={() => openModal(VaultDetailsBuyingPowerModal)}
           afterPillColors={afterPillColors}
+          relevant={inputAmountChangedSinceFirstRender}
         />
 
         <VaultDetailsCardCurrentPrice {...props} />
@@ -126,6 +135,12 @@ export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
             afterNetValueUSD,
             afterPillColors,
             showAfterPill,
+            currentPnL,
+            marketPrice,
+            totalGasSpentUSD: zero,
+            vault: undefined,
+            priceInfo,
+            relevant: inputAmountChangedSinceFirstRender,
           }}
         />
       </Grid>
@@ -133,6 +148,7 @@ export function DefaultOpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
         {...props}
         afterPillColors={afterPillColors}
         showAfterPill={showAfterPill}
+        relevant={inputAmountChangedSinceFirstRender}
       />
     </>
   )
