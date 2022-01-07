@@ -28,7 +28,7 @@ import {
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
+import { GUNI_SLIPPAGE, OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { curry } from 'ramda'
 import {
@@ -329,7 +329,6 @@ export function createOpenGuniVault$(
                     }
 
                     // const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
-                    const SLIPPAGE = new BigNumber(0.001)
 
                     const initialState: OpenGuniVaultState = {
                       ...defaultFormState,
@@ -350,7 +349,7 @@ export function createOpenGuniVault$(
                       etherscan: context.etherscan.url,
                       errorMessages: [],
                       warningMessages: [],
-                      slippage: SLIPPAGE,
+                      slippage: GUNI_SLIPPAGE,
                       clear: () => change({ kind: 'clear' }),
                       gasEstimationStatus: GasEstimationStatus.unset,
                       exchangeError: false,
@@ -457,7 +456,7 @@ export function createOpenGuniVault$(
                                         fromTokenAmount: amountWithFee,
                                         toTokenAmount: swap.collateralAmount,
                                         minToTokenAmount: swap.collateralAmount.times(
-                                          one.minus(SLIPPAGE),
+                                          one.minus(GUNI_SLIPPAGE),
                                         ),
                                         buyingCollateralUSD: amount1,
                                         totalCollateral: mintAmount,

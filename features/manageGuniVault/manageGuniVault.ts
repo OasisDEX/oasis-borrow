@@ -10,7 +10,7 @@ import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditio
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { GasEstimationStatus } from 'helpers/form'
-import { calculatePNL } from 'helpers/multiply/calculations'
+import { calculatePNL, GUNI_SLIPPAGE } from 'helpers/multiply/calculations'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
@@ -257,8 +257,6 @@ export function createManageGuniVault$(
                     'skip',
                   )
 
-                  const SLIPPAGE = new BigNumber(0.001)
-
                   const initialState: ManageMultiplyVaultState & GuniTxData = {
                     ...defaultMutableManageMultiplyVaultState,
                     ...defaultManageMultiplyVaultCalculations,
@@ -276,7 +274,7 @@ export function createManageGuniVault$(
                     errorMessages: [],
                     warningMessages: [],
                     summary: defaultManageVaultSummary,
-                    slippage: SLIPPAGE,
+                    slippage: GUNI_SLIPPAGE,
                     exchangeError: false,
                     initialTotalSteps,
                     totalSteps: initialTotalSteps,
@@ -294,7 +292,7 @@ export function createManageGuniVault$(
 
                       return exchangeQuote$(
                         token1!,
-                        SLIPPAGE,
+                        GUNI_SLIPPAGE,
                         sharedAmount1.minus(0.01),
                         'SELL_COLLATERAL',
                         'lowerFeesExchange',
@@ -312,7 +310,7 @@ export function createManageGuniVault$(
                             requiredDebt,
                             fromTokenAmount: swap.collateralAmount,
                             toTokenAmount: swap.daiAmount,
-                            minToTokenAmount: swap.daiAmount.times(one.minus(SLIPPAGE)),
+                            minToTokenAmount: swap.daiAmount.times(one.minus(GUNI_SLIPPAGE)),
                           }
                         }),
                       )
