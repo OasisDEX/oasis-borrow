@@ -22,7 +22,7 @@ import { useState } from 'react'
 import React from 'react'
 
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
-import { composeSuccessHandler } from '../common/AutomationTransactionPlunger'
+import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import {
   determineProperDefaults,
   extractSLData,
@@ -178,7 +178,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       translationKey: 'add-stop-loss',
       onClick: (finishLoader: (succeded: boolean) => void) => {
         const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) =>
-          composeSuccessHandler(txStatusSetter, transactionState, finishLoader, waitForTx)
+          transactionStateHandler(txStatusSetter, transactionState, finishLoader, waitForTx)
         const sendTxErrorHandler = () => {
           finishLoader(false)
         }

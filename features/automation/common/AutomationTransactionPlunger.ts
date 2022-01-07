@@ -18,7 +18,7 @@ export function isTxStatusFailed(status: TxStatus) {
   return isTxStatusFinal(status) && status !== TxStatus.Success
 }
 
-export function composeSuccessHandler(
+export function transactionStateHandler(
   txStatusSetter: React.Dispatch<React.SetStateAction<TxState<any> | undefined>>,
   transactionState: TxState<AutomationBotAddTriggerData | AutomationBotRemoveTriggerData>,
   finishLoader: (succeded: boolean) => void,

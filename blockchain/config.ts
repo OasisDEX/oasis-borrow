@@ -215,9 +215,9 @@ const goerli: NetworkConfig = {
   automationBot: contractDesc(automationBot, '0x62fab0FfcC439c75a7d31F94f5B34bE31F3e08E7'),
   serviceRegistry: '0x2a49Eae5CCa3f050eBEC729Cf90CC910fADAf7A2', // TODO: add address
   // Currently this is not supported on Goerli - no deployed contract
-  defaultExchange: contractDesc(exchange, "0x21261F47b3CFEa595c80bdc016AD0fea0Ef086eA"),
-  lowerFeesExchange: contractDesc(exchange, "0x21261F47b3CFEa595c80bdc016AD0fea0Ef086eA"),
-  noFeesExchange: contractDesc(exchange, "0x21261F47b3CFEa595c80bdc016AD0fea0Ef086eA"),
+  defaultExchange: contractDesc(exchange, '0x21261F47b3CFEa595c80bdc016AD0fea0Ef086eA'),
+  lowerFeesExchange: contractDesc(exchange, '0x21261F47b3CFEa595c80bdc016AD0fea0Ef086eA'),
+  noFeesExchange: contractDesc(exchange, '0x21261F47b3CFEa595c80bdc016AD0fea0Ef086eA'),
   // Currently this is not supported on Goerli - no deployed contract
   fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
   etherscan: {
