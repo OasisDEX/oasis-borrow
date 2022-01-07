@@ -17,7 +17,8 @@ export function calculateParamsIncreaseMP(
   slippage: BigNumber,
   depositDai = new BigNumber(0),
 ) {
-  const marketPriceSlippage = marketPrice.times(one.plus(slippage))
+  // TODO I guess we are calculating here extremes that's why one.plus
+  const marketPriceSlippage = marketPrice.div(one.plus(slippage))
   const debt = marketPriceSlippage
     .times(currentCollateral.times(oraclePrice).minus(requiredCollRatio.times(currentDebt)))
     .plus(oraclePrice.times(depositDai).minus(oraclePrice.times(depositDai).times(OF)))
@@ -43,7 +44,8 @@ export function calculateParamsDecreaseMP(
   slippage: BigNumber,
   // depositDai: BigNumber = zero,
 ) {
-  const marketPriceSlippage = marketPrice.times(one.minus(slippage))
+  // TODO I guess we are calculating here extremes that's why one.minus
+  const marketPriceSlippage = marketPrice.div(one.minus(slippage))
   const debt = currentCollateral
     .times(oraclePrice)
     .times(marketPriceSlippage)
@@ -197,10 +199,14 @@ export function calculateCloseToDaiParams(
 ): CloseToParams {
   const fromTokenAmount = currentCollateral
   const toTokenAmount = currentCollateral.times(marketPrice).times(one.minus(OF))
+  // TODO
   const minToTokenAmount = currentCollateral
     .times(marketPrice)
     .times(one.minus(OF))
     .times(one.minus(slippage))
+  // I GUESS IT SHOULD BE
+  // const minToTokenAmount = currentCollateral
+  //   .times(marketPrice.div(one.minus(slippage))).times(one.minus(OF))
 
   return {
     fromTokenAmount,
@@ -220,7 +226,7 @@ export function calculateCloseToCollateralParams(
 ): CloseToParams {
   const expectedFinalDebt = currentDebt.times(one.plus(FF)).times(one.plus(OF))
 
-  const fromTokenAmount = expectedFinalDebt.div(marketPrice.times(one.minus(slippage)))
+  const fromTokenAmount = expectedFinalDebt.div(marketPrice.div(one.minus(slippage)))
 
   const toTokenAmount = expectedFinalDebt.times(one.plus(slippage))
 
