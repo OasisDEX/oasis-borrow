@@ -3,7 +3,10 @@ import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
-import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
+import {
+  AutomationBotAddTriggerData,
+  AutomationBotRemoveTriggerData,
+} from 'blockchain/calls/automationBot'
 import {
   createSendTransaction,
   createSendWithGasConstraints,
@@ -122,6 +125,7 @@ export type TxData =
   | CloseVaultData
   | OpenGuniMultiplyData
   | AutomationBotAddTriggerData
+  | AutomationBotRemoveTriggerData
   | CloseGuniMultiplyData
 
 export interface TxHelpers {

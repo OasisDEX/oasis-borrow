@@ -72,7 +72,6 @@ export function createAutomationTriggersData(
   vauit$: (id: BigNumber) => Observable<Vault>,
   id: BigNumber,
 ): Observable<TriggersData> {
-  console.log('Building Observable<TriggersData> ')
   return onEveryBlock$.pipe(
     withLatestFrom(context$, vauit$(id /*,context.chainId*/)),
     mergeMap(([blockNumber, , vault]) => {
