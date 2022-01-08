@@ -1,15 +1,9 @@
-import { isNullish } from 'helpers/functions'
-
-import {
-  VaultErrorMessage,
-  VaultWarningMessage,
-} from '../openMultiplyVault/openMultiplyVaultValidations'
+import { errorMessagesHandler, VaultErrorMessage } from '../form/errorMessagesHandler'
+import { VaultWarningMessage, warningMessagesHandler } from '../form/warningMessagesHandler'
 import { OpenGuniVaultState } from './openGuniVault'
 
 export function validateGuniErrors(state: OpenGuniVaultState): OpenGuniVaultState {
   const {
-    depositAmount,
-    balanceInfo,
     stage,
     isEditingStage,
     generateAmountMoreThanMaxFlashAmount,
@@ -18,67 +12,56 @@ export function validateGuniErrors(state: OpenGuniVaultState): OpenGuniVaultStat
     customAllowanceAmountExceedsMaxUint256,
     customAllowanceAmountLessThanDepositAmount,
     exchangeError,
+    ledgerWalletContractDataDisabled,
+    depositAmountExceedsCollateralBalance,
   } = state
   const errorMessages: VaultErrorMessage[] = []
 
   if (isEditingStage) {
-    if (depositAmount?.gt(balanceInfo.daiBalance)) {
-      errorMessages.push('depositAmountExceedsCollateralBalance')
-    }
-
-    if (generateAmountLessThanDebtFloor) {
-      errorMessages.push('generateAmountLessThanDebtFloor')
-    }
-
-    if (generateAmountExceedsDebtCeiling) {
-      errorMessages.push('generateAmountExceedsDebtCeiling')
-    }
-
-    if (exchangeError) {
-      errorMessages.push('exchangeError')
-    }
-
-    if (generateAmountMoreThanMaxFlashAmount) {
-      errorMessages.push('generateAmountMoreThanMaxFlashAmount')
-    }
+    errorMessages.push(
+      ...errorMessagesHandler({
+        depositAmountExceedsCollateralBalance,
+        generateAmountLessThanDebtFloor,
+        generateAmountExceedsDebtCeiling,
+        exchangeError,
+        generateAmountMoreThanMaxFlashAmount,
+      }),
+    )
   }
 
   if (stage === 'allowanceWaitingForConfirmation') {
-    if (customAllowanceAmountExceedsMaxUint256) {
-      errorMessages.push('customAllowanceAmountExceedsMaxUint256')
-    }
-    if (customAllowanceAmountLessThanDepositAmount) {
-      errorMessages.push('customAllowanceAmountLessThanDepositAmount')
-    }
+    errorMessages.push(
+      ...errorMessagesHandler({
+        customAllowanceAmountExceedsMaxUint256,
+        customAllowanceAmountLessThanDepositAmount,
+      }),
+    )
   }
 
   if (stage === 'txFailure' || stage === 'proxyFailure' || stage === 'allowanceFailure') {
-    if (state.txError?.name === 'EthAppPleaseEnableContractData') {
-      errorMessages.push('ledgerWalletContractDataDisabled')
-    }
+    errorMessages.push(
+      ...errorMessagesHandler({
+        ledgerWalletContractDataDisabled,
+      }),
+    )
   }
 
   return { ...state, errorMessages }
 }
 
 export function validateGuniWarnings(state: OpenGuniVaultState): OpenGuniVaultState {
-  const {
-    errorMessages,
-    isEditingStage,
-
-    depositAmount,
-    ilkData,
-    afterOutstandingDebt,
-  } = state
+  const { errorMessages, isEditingStage, potentialGenerateAmountLessThanDebtFloor } = state
 
   const warningMessages: VaultWarningMessage[] = []
 
   if (errorMessages.length) return { ...state, warningMessages }
 
   if (isEditingStage) {
-    if (!isNullish(depositAmount) && afterOutstandingDebt.lt(ilkData.debtFloor)) {
-      warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
-    }
+    warningMessages.push(
+      ...warningMessagesHandler({
+        potentialGenerateAmountLessThanDebtFloor,
+      }),
+    )
   }
   return { ...state, warningMessages }
 }

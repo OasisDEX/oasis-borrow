@@ -1,22 +1,9 @@
-import { isNullish } from 'helpers/functions'
-
+import { errorMessagesHandler, VaultErrorMessage } from '../form/errorMessagesHandler'
+import { VaultWarningMessage, warningMessagesHandler } from '../form/warningMessagesHandler'
 import { OpenVaultState } from './openVault'
-
-export type OpenVaultErrorMessage =
-  | 'depositAmountExceedsCollateralBalance'
-  | 'depositingAllEthBalance'
-  | 'generateAmountExceedsDaiYieldFromDepositingCollateral'
-  | 'generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice'
-  | 'generateAmountExceedsDebtCeiling'
-  | 'generateAmountLessThanDebtFloor'
-  | 'customAllowanceAmountExceedsMaxUint256'
-  | 'customAllowanceAmountLessThanDepositAmount'
-  | 'ledgerWalletContractDataDisabled'
 
 export function validateErrors(state: OpenVaultState): OpenVaultState {
   const {
-    depositAmount,
-    balanceInfo,
     stage,
     isEditingStage,
     depositingAllEthBalance,
@@ -26,97 +13,69 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
     generateAmountLessThanDebtFloor,
     customAllowanceAmountExceedsMaxUint256,
     customAllowanceAmountLessThanDepositAmount,
+    depositAmountExceedsCollateralBalance,
+    ledgerWalletContractDataDisabled,
   } = state
-  const errorMessages: OpenVaultErrorMessage[] = []
+  const errorMessages: VaultErrorMessage[] = []
 
   if (isEditingStage) {
-    if (depositAmount?.gt(balanceInfo.collateralBalance)) {
-      errorMessages.push('depositAmountExceedsCollateralBalance')
-    }
-
-    if (depositingAllEthBalance) {
-      errorMessages.push('depositingAllEthBalance')
-    }
-
-    if (generateAmountExceedsDaiYieldFromDepositingCollateral) {
-      errorMessages.push('generateAmountExceedsDaiYieldFromDepositingCollateral')
-    }
-
-    if (generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice) {
-      errorMessages.push('generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice')
-    }
-
-    if (generateAmountExceedsDebtCeiling) {
-      errorMessages.push('generateAmountExceedsDebtCeiling')
-    }
-
-    if (generateAmountLessThanDebtFloor) {
-      errorMessages.push('generateAmountLessThanDebtFloor')
-    }
+    errorMessages.push(
+      ...errorMessagesHandler({
+        depositAmountExceedsCollateralBalance,
+        depositingAllEthBalance,
+        generateAmountExceedsDaiYieldFromDepositingCollateral,
+        generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice,
+        generateAmountExceedsDebtCeiling,
+        generateAmountLessThanDebtFloor,
+      }),
+    )
   }
 
   if (stage === 'allowanceWaitingForConfirmation') {
-    if (customAllowanceAmountExceedsMaxUint256) {
-      errorMessages.push('customAllowanceAmountExceedsMaxUint256')
-    }
-    if (customAllowanceAmountLessThanDepositAmount) {
-      errorMessages.push('customAllowanceAmountLessThanDepositAmount')
-    }
+    errorMessages.push(
+      ...errorMessagesHandler({
+        customAllowanceAmountExceedsMaxUint256,
+        customAllowanceAmountLessThanDepositAmount,
+      }),
+    )
   }
 
   if (stage === 'txFailure' || stage === 'proxyFailure' || stage === 'allowanceFailure') {
-    if (state.txError?.name === 'EthAppPleaseEnableContractData') {
-      errorMessages.push('ledgerWalletContractDataDisabled')
-    }
+    errorMessages.push(
+      ...errorMessagesHandler({
+        ledgerWalletContractDataDisabled,
+      }),
+    )
   }
 
   return { ...state, errorMessages }
 }
 
-export type OpenVaultWarningMessage =
-  | 'potentialGenerateAmountLessThanDebtFloor'
-  | 'vaultWillBeAtRiskLevelDanger'
-  | 'vaultWillBeAtRiskLevelWarning'
-  | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
-  | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
-
 export function validateWarnings(state: OpenVaultState): OpenVaultState {
   const {
-    depositAmount,
     errorMessages,
-    daiYieldFromDepositingCollateral,
-    ilkData,
     isEditingStage,
     vaultWillBeAtRiskLevelDanger,
     vaultWillBeAtRiskLevelDangerAtNextPrice,
     vaultWillBeAtRiskLevelWarning,
     vaultWillBeAtRiskLevelWarningAtNextPrice,
+    potentialGenerateAmountLessThanDebtFloor,
   } = state
 
-  const warningMessages: OpenVaultWarningMessage[] = []
+  const warningMessages: VaultWarningMessage[] = []
 
   if (errorMessages.length) return { ...state, warningMessages }
 
   if (isEditingStage) {
-    if (!isNullish(depositAmount) && daiYieldFromDepositingCollateral.lt(ilkData.debtFloor)) {
-      warningMessages.push('potentialGenerateAmountLessThanDebtFloor')
-    }
-
-    if (vaultWillBeAtRiskLevelDanger) {
-      warningMessages.push('vaultWillBeAtRiskLevelDanger')
-    }
-
-    if (vaultWillBeAtRiskLevelDangerAtNextPrice) {
-      warningMessages.push('vaultWillBeAtRiskLevelDangerAtNextPrice')
-    }
-
-    if (vaultWillBeAtRiskLevelWarning) {
-      warningMessages.push('vaultWillBeAtRiskLevelWarning')
-    }
-
-    if (vaultWillBeAtRiskLevelWarningAtNextPrice) {
-      warningMessages.push('vaultWillBeAtRiskLevelWarningAtNextPrice')
-    }
+    warningMessages.push(
+      ...warningMessagesHandler({
+        potentialGenerateAmountLessThanDebtFloor,
+        vaultWillBeAtRiskLevelDanger,
+        vaultWillBeAtRiskLevelDangerAtNextPrice,
+        vaultWillBeAtRiskLevelWarning,
+        vaultWillBeAtRiskLevelWarningAtNextPrice,
+      }),
+    )
   }
   return { ...state, warningMessages }
 }

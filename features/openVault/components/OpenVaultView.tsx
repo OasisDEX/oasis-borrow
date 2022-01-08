@@ -15,14 +15,14 @@ import React, { useEffect } from 'react'
 import { Box, Container, Grid, Text } from 'theme-ui'
 
 import { VaultHeading } from '../../../components/vault/VaultHeading'
+import { VaultErrors } from '../../../components/vault/VaultErrors'
+import { VaultWarnings } from '../../../components/vault/VaultWarnings'
 import { OpenVaultState } from '../openVault'
 import { createOpenVaultAnalytics$ } from '../openVaultAnalytics'
 import { OpenVaultButton } from './OpenVaultButton'
 import { OpenVaultConfirmation, OpenVaultStatus } from './OpenVaultConfirmation'
 import { OpenVaultDetails } from './OpenVaultDetails'
 import { OpenVaultEditing } from './OpenVaultEditing'
-import { OpenVaultErrors } from './OpenVaultErrors'
-import { OpenVaultWarnings } from './OpenVaultWarnings'
 
 function OpenVaultTitle({
   isEditingStage,
@@ -73,8 +73,8 @@ function OpenVaultForm(props: OpenVaultState) {
       {isEditingStage && <OpenVaultEditing {...props} />}
       {isAllowanceStage && <VaultAllowance {...props} />}
       {isOpenStage && <OpenVaultConfirmation {...props} />}
-      <OpenVaultErrors {...props} />
-      <OpenVaultWarnings {...props} />
+      <VaultErrors {...props} />
+      <VaultWarnings {...props} />
       {stage === 'txSuccess' && <VaultChangesWithADelayCard />}
       <OpenVaultButton {...props} />
       {isProxyStage && <VaultProxyStatusCard {...props} />}

@@ -1,9 +1,36 @@
-import { maxUint256 } from 'blockchain/calls/erc20'
 import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
-import { ManageVaultStage, ManageVaultState } from './manageVault'
+import {
+  accountIsConnectedValidator,
+  accountIsControllerValidator,
+  collateralAllowanceProgressionDisabledValidator,
+  customCollateralAllowanceAmountEmptyValidator,
+  customCollateralAllowanceAmountExceedsMaxUint256Validator,
+  customCollateralAllowanceAmountLessThanDepositAmountValidator,
+  customDaiAllowanceAmountEmptyValidator,
+  customDaiAllowanceAmountExceedsMaxUint256Validator,
+  customDaiAllowanceAmountLessThanPaybackAmountValidator,
+  daiAllowanceProgressionDisabledValidator,
+  debtIsLessThanDebtFloorValidator,
+  depositAndWithdrawAmountsEmptyValidator,
+  depositingAllEthBalanceValidator,
+  generateAndPaybackAmountsEmptyValidator,
+  insufficientCollateralAllowanceValidator,
+  insufficientDaiAllowanceValidator,
+  ledgerWalletContractDataDisabledValidator,
+  paybackAmountExceedsDaiBalanceValidator,
+  paybackAmountExceedsVaultDebtValidator,
+  vaultWillBeAtRiskLevelDangerAtNextPriceValidator,
+  vaultWillBeAtRiskLevelDangerValidator,
+  vaultWillBeAtRiskLevelWarningAtNextPriceValidator,
+  vaultWillBeAtRiskLevelWarningValidator,
+  withdrawAmountExceedsFreeCollateralAtNextPriceValidator,
+  withdrawAmountExceedsFreeCollateralValidator,
+  withdrawCollateralOnVaultUnderDebtFloorValidator,
+} from '../form/commonValidators'
+import { ManageBorrowVaultStage, ManageVaultState } from './manageVault'
 
 const defaultManageVaultStageCategories = {
   isEditingStage: false,
@@ -146,6 +173,8 @@ export interface ManageVaultConditions {
   vaultWillBeAtRiskLevelWarningAtNextPrice: boolean
   vaultWillBeAtRiskLevelDangerAtNextPrice: boolean
   vaultWillBeUnderCollateralizedAtNextPrice: boolean
+  potentialGenerateAmountLessThanDebtFloor: boolean
+  debtIsLessThanDebtFloor: boolean
 
   accountIsConnected: boolean
   accountIsController: boolean
@@ -168,6 +197,7 @@ export interface ManageVaultConditions {
   customCollateralAllowanceAmountEmpty: boolean
   customCollateralAllowanceAmountExceedsMaxUint256: boolean
   customCollateralAllowanceAmountLessThanDepositAmount: boolean
+  ledgerWalletContractDataDisabled: boolean
 
   insufficientDaiAllowance: boolean
   customDaiAllowanceAmountEmpty: boolean
@@ -189,6 +219,8 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   vaultWillBeAtRiskLevelWarningAtNextPrice: false,
   vaultWillBeAtRiskLevelDangerAtNextPrice: false,
   vaultWillBeUnderCollateralizedAtNextPrice: false,
+  potentialGenerateAmountLessThanDebtFloor: false,
+  debtIsLessThanDebtFloor: false,
 
   depositAndWithdrawAmountsEmpty: true,
   generateAndPaybackAmountsEmpty: true,
@@ -215,6 +247,7 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   customCollateralAllowanceAmountEmpty: false,
   customCollateralAllowanceAmountExceedsMaxUint256: false,
   customCollateralAllowanceAmountLessThanDepositAmount: false,
+  ledgerWalletContractDataDisabled: false,
 
   insufficientDaiAllowance: false,
   customDaiAllowanceAmountEmpty: false,
@@ -233,8 +266,14 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     paybackAmount,
     afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
-    ilkData,
-    vault,
+    ilkData: {
+      liquidationRatio,
+      collateralizationDangerThreshold,
+      collateralizationWarningThreshold,
+      debtFloor,
+      ilkDebtAvailable,
+    },
+    vault: { controller, debt, token, debtOffset },
     account,
     stage,
     selectedCollateralAllowanceRadio,
@@ -254,59 +293,89 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     maxGenerateAmountAtNextPrice,
     isMultiplyTransitionStage,
     afterDebt,
+    txError,
   } = state
 
-  const depositAndWithdrawAmountsEmpty = isNullish(depositAmount) && isNullish(withdrawAmount)
-  const generateAndPaybackAmountsEmpty = isNullish(generateAmount) && isNullish(paybackAmount)
+  const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
+    depositAmount,
+    withdrawAmount,
+  })
+
+  const generateAndPaybackAmountsEmpty = generateAndPaybackAmountsEmptyValidator({
+    generateAmount,
+    paybackAmount,
+  })
 
   const inputAmountsEmpty = depositAndWithdrawAmountsEmpty && generateAndPaybackAmountsEmpty
 
-  const vaultWillBeAtRiskLevelDanger =
-    !inputAmountsEmpty &&
-    afterCollateralizationRatio.gte(ilkData.liquidationRatio) &&
-    afterCollateralizationRatio.lte(ilkData.collateralizationDangerThreshold)
+  const vaultWillBeAtRiskLevelDanger = vaultWillBeAtRiskLevelDangerValidator({
+    inputAmountsEmpty,
+    afterCollateralizationRatio,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+  })
 
-  const vaultWillBeAtRiskLevelDangerAtNextPrice =
-    !vaultWillBeAtRiskLevelDanger &&
-    !inputAmountsEmpty &&
-    afterCollateralizationRatioAtNextPrice.gte(ilkData.liquidationRatio) &&
-    afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationDangerThreshold)
+  const vaultWillBeAtRiskLevelDangerAtNextPrice = vaultWillBeAtRiskLevelDangerAtNextPriceValidator({
+    vaultWillBeAtRiskLevelDanger,
+    inputAmountsEmpty,
+    afterCollateralizationRatioAtNextPrice,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+  })
 
-  const vaultWillBeAtRiskLevelWarning =
-    !inputAmountsEmpty &&
-    afterCollateralizationRatio.gt(ilkData.collateralizationDangerThreshold) &&
-    afterCollateralizationRatio.lte(ilkData.collateralizationWarningThreshold)
+  const vaultWillBeAtRiskLevelWarning = vaultWillBeAtRiskLevelWarningValidator({
+    inputAmountsEmpty,
+    afterCollateralizationRatio,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
+  })
 
-  const vaultWillBeAtRiskLevelWarningAtNextPrice =
-    !vaultWillBeAtRiskLevelWarning &&
-    !inputAmountsEmpty &&
-    afterCollateralizationRatioAtNextPrice.gt(ilkData.collateralizationDangerThreshold) &&
-    afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationWarningThreshold)
+  const vaultWillBeAtRiskLevelWarningAtNextPrice = vaultWillBeAtRiskLevelWarningAtNextPriceValidator(
+    {
+      vaultWillBeAtRiskLevelWarning,
+      inputAmountsEmpty,
+      afterCollateralizationRatioAtNextPrice,
+      collateralizationDangerThreshold,
+      collateralizationWarningThreshold,
+    },
+  )
 
   const vaultWillBeUnderCollateralized =
     !inputAmountsEmpty &&
-    afterCollateralizationRatio.lt(ilkData.liquidationRatio) &&
+    afterCollateralizationRatio.lt(liquidationRatio) &&
     !afterCollateralizationRatio.isZero()
 
   const vaultWillBeUnderCollateralizedAtNextPrice =
     !vaultWillBeUnderCollateralized &&
     !inputAmountsEmpty &&
-    afterCollateralizationRatioAtNextPrice.lt(ilkData.liquidationRatio) &&
+    afterCollateralizationRatioAtNextPrice.lt(liquidationRatio) &&
     !afterCollateralizationRatioAtNextPrice.isZero()
 
-  const accountIsConnected = !!account
-  const accountIsController = accountIsConnected ? account === vault.controller : true
+  const accountIsConnected = accountIsConnectedValidator({ account })
+  const accountIsController = accountIsControllerValidator({
+    accountIsConnected,
+    account,
+    controller,
+  })
 
   const depositAmountExceedsCollateralBalance = !!depositAmount?.gt(collateralBalance)
 
-  const depositingAllEthBalance = vault.token === 'ETH' && !!depositAmount?.eq(collateralBalance)
+  const depositingAllEthBalance = depositingAllEthBalanceValidator({
+    token,
+    depositAmount,
+    collateralBalance,
+  })
 
-  const withdrawAmountExceedsFreeCollateral = !!withdrawAmount?.gt(maxWithdrawAmountAtCurrentPrice)
+  const withdrawAmountExceedsFreeCollateral = withdrawAmountExceedsFreeCollateralValidator({
+    withdrawAmount,
+    maxWithdrawAmountAtCurrentPrice,
+  })
 
-  const withdrawAmountExceedsFreeCollateralAtNextPrice =
-    !withdrawAmountExceedsFreeCollateral && !!withdrawAmount?.gt(maxWithdrawAmountAtNextPrice)
+  const withdrawAmountExceedsFreeCollateralAtNextPrice = withdrawAmountExceedsFreeCollateralAtNextPriceValidator(
+    { withdrawAmount, withdrawAmountExceedsFreeCollateral, maxWithdrawAmountAtNextPrice },
+  )
 
-  const generateAmountExceedsDebtCeiling = !!generateAmount?.gt(ilkData.ilkDebtAvailable)
+  const generateAmountExceedsDebtCeiling = !!generateAmount?.gt(ilkDebtAvailable)
 
   const generateAmountExceedsDaiYieldFromTotalCollateral =
     !generateAmountExceedsDebtCeiling && !!generateAmount?.gt(maxGenerateAmountAtCurrentPrice)
@@ -318,61 +387,65 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
 
   const generateAmountLessThanDebtFloor = !!(
     generateAmount &&
-    !generateAmount.plus(vault.debt).isZero() &&
-    generateAmount.plus(vault.debt).lt(ilkData.debtFloor)
+    !generateAmount.plus(debt).isZero() &&
+    generateAmount.plus(debt).lt(debtFloor)
   )
 
-  const paybackAmountExceedsDaiBalance = !!paybackAmount?.gt(daiBalance)
-  const paybackAmountExceedsVaultDebt = !!paybackAmount?.gt(vault.debt)
+  const paybackAmountExceedsDaiBalance = paybackAmountExceedsDaiBalanceValidator({
+    paybackAmount,
+    daiBalance,
+  })
+
+  const paybackAmountExceedsVaultDebt = paybackAmountExceedsVaultDebtValidator({
+    paybackAmount,
+    debt,
+  })
 
   const debtWillBeLessThanDebtFloor = !!(
     paybackAmount &&
-    vault.debt.minus(paybackAmount).lt(ilkData.debtFloor) &&
-    vault.debt.minus(paybackAmount).gt(zero) &&
+    debt.minus(paybackAmount).lt(debtFloor) &&
+    debt.minus(paybackAmount).gt(zero) &&
     !shouldPaybackAll
   )
+  const customCollateralAllowanceAmountEmpty = customCollateralAllowanceAmountEmptyValidator({
+    selectedCollateralAllowanceRadio,
+    collateralAllowanceAmount,
+  })
 
-  const customCollateralAllowanceAmountEmpty =
-    selectedCollateralAllowanceRadio === 'custom' && !collateralAllowanceAmount
+  const customDaiAllowanceAmountEmpty = customDaiAllowanceAmountEmptyValidator({
+    selectedDaiAllowanceRadio,
+    daiAllowanceAmount,
+  })
 
-  const customDaiAllowanceAmountEmpty =
-    selectedDaiAllowanceRadio === 'custom' && !daiAllowanceAmount
-
-  const customCollateralAllowanceAmountExceedsMaxUint256 = !!(
-    selectedCollateralAllowanceRadio === 'custom' && collateralAllowanceAmount?.gt(maxUint256)
+  const customCollateralAllowanceAmountExceedsMaxUint256 = customCollateralAllowanceAmountExceedsMaxUint256Validator(
+    { selectedCollateralAllowanceRadio, collateralAllowanceAmount },
   )
 
-  const customCollateralAllowanceAmountLessThanDepositAmount = !!(
-    selectedCollateralAllowanceRadio === 'custom' &&
-    collateralAllowanceAmount &&
-    depositAmount &&
-    collateralAllowanceAmount.lt(depositAmount)
+  const customCollateralAllowanceAmountLessThanDepositAmount = customCollateralAllowanceAmountLessThanDepositAmountValidator(
+    { selectedCollateralAllowanceRadio, collateralAllowanceAmount, depositAmount },
   )
 
-  const customDaiAllowanceAmountExceedsMaxUint256 = !!(
-    selectedDaiAllowanceRadio === 'custom' && daiAllowanceAmount?.gt(maxUint256)
+  const customDaiAllowanceAmountExceedsMaxUint256 = customDaiAllowanceAmountExceedsMaxUint256Validator(
+    { selectedDaiAllowanceRadio, daiAllowanceAmount },
   )
 
-  const customDaiAllowanceAmountLessThanPaybackAmount = !!(
-    selectedDaiAllowanceRadio === 'custom' &&
-    daiAllowanceAmount &&
-    paybackAmount &&
-    daiAllowanceAmount.lt(paybackAmount)
+  const customDaiAllowanceAmountLessThanPaybackAmount = customDaiAllowanceAmountLessThanPaybackAmountValidator(
+    { selectedDaiAllowanceRadio, daiAllowanceAmount, paybackAmount },
   )
 
-  const insufficientCollateralAllowance =
-    vault.token !== 'ETH' &&
-    !!(
-      depositAmount &&
-      !depositAmount.isZero() &&
-      (!collateralAllowance || depositAmount.gt(collateralAllowance))
-    )
+  const insufficientCollateralAllowance = insufficientCollateralAllowanceValidator({
+    token,
+    depositAmount,
+    collateralAllowance,
+  })
 
-  const insufficientDaiAllowance = !!(
-    paybackAmount &&
-    !paybackAmount.isZero() &&
-    (!daiAllowance || paybackAmount.plus(vault.debtOffset).gt(daiAllowance))
-  )
+  const ledgerWalletContractDataDisabled = ledgerWalletContractDataDisabledValidator({ txError })
+
+  const insufficientDaiAllowance = insufficientDaiAllowanceValidator({
+    paybackAmount,
+    daiAllowance,
+    debtOffset,
+  })
 
   const isLoadingStage = ([
     'proxyInProgress',
@@ -385,26 +458,26 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     'manageWaitingForApproval',
     'multiplyTransitionInProgress',
     'multiplyTransitionSuccess',
-  ] as ManageVaultStage[]).some((s) => s === stage)
+  ] as ManageBorrowVaultStage[]).some((s) => s === stage)
 
-  const withdrawCollateralOnVaultUnderDebtFloor =
-    vault.debt.gt(zero) &&
-    vault.debt.lt(ilkData.debtFloor) &&
-    withdrawAmount !== undefined &&
-    withdrawAmount.gt(zero) &&
-    (paybackAmount === undefined || paybackAmount.lt(vault.debt))
+  const withdrawCollateralOnVaultUnderDebtFloor = withdrawCollateralOnVaultUnderDebtFloorValidator({
+    debtFloor,
+    debt,
+    withdrawAmount,
+    paybackAmount,
+  })
 
   const depositCollateralOnVaultUnderDebtFloor =
-    vault.debt.gt(zero) &&
-    vault.debt.lt(ilkData.debtFloor) &&
+    debt.gt(zero) &&
+    debt.lt(debtFloor) &&
     depositAmount !== undefined &&
-    depositAmount.lt(ilkData.debtFloor) &&
-    afterDebt.lt(ilkData.debtFloor)
+    depositAmount.lt(debtFloor) &&
+    afterDebt.lt(debtFloor)
 
   const editingProgressionDisabled =
     isEditingStage &&
     (inputAmountsEmpty ||
-      !vault.controller ||
+      !controller ||
       !accountIsConnected ||
       vaultWillBeUnderCollateralized ||
       vaultWillBeUnderCollateralizedAtNextPrice ||
@@ -420,17 +493,24 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
       withdrawCollateralOnVaultUnderDebtFloor ||
       depositCollateralOnVaultUnderDebtFloor)
 
-  const collateralAllowanceProgressionDisabled =
-    isCollateralAllowanceStage &&
-    (customCollateralAllowanceAmountEmpty ||
-      customCollateralAllowanceAmountExceedsMaxUint256 ||
-      customCollateralAllowanceAmountLessThanDepositAmount)
+  const collateralAllowanceProgressionDisabled = collateralAllowanceProgressionDisabledValidator({
+    isCollateralAllowanceStage,
+    customCollateralAllowanceAmountEmpty,
+    customCollateralAllowanceAmountExceedsMaxUint256,
+    customCollateralAllowanceAmountLessThanDepositAmount,
+  })
 
-  const daiAllowanceProgressionDisabled =
-    isDaiAllowanceStage &&
-    (customDaiAllowanceAmountEmpty ||
-      customDaiAllowanceAmountExceedsMaxUint256 ||
-      customDaiAllowanceAmountLessThanPaybackAmount)
+  const daiAllowanceProgressionDisabled = daiAllowanceProgressionDisabledValidator({
+    isDaiAllowanceStage,
+    customDaiAllowanceAmountEmpty,
+    customDaiAllowanceAmountLessThanPaybackAmount,
+    customDaiAllowanceAmountExceedsMaxUint256,
+  })
+
+  const potentialGenerateAmountLessThanDebtFloor =
+    !isNullish(depositAmount) && maxGenerateAmountAtCurrentPrice.lt(debtFloor)
+
+  const debtIsLessThanDebtFloor = debtIsLessThanDebtFloorValidator({ debtFloor, debt })
 
   const multiplyTransitionDisabled = isMultiplyTransitionStage && !accountIsController
 
@@ -454,7 +534,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     'multiplyTransitionEditing',
     'multiplyTransitionWaitingForConfirmation',
     'multiplyTransitionFailure',
-  ] as ManageVaultStage[]).some((s) => s === stage)
+  ] as ManageBorrowVaultStage[]).some((s) => s === stage)
 
   return {
     ...state,
@@ -471,6 +551,8 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     vaultWillBeAtRiskLevelDangerAtNextPrice,
     vaultWillBeUnderCollateralized,
     vaultWillBeUnderCollateralizedAtNextPrice,
+    potentialGenerateAmountLessThanDebtFloor,
+    debtIsLessThanDebtFloor,
 
     accountIsConnected,
     accountIsController,
@@ -484,6 +566,7 @@ export function applyManageVaultConditions(state: ManageVaultState): ManageVault
     generateAmountLessThanDebtFloor,
     paybackAmountExceedsDaiBalance,
     paybackAmountExceedsVaultDebt,
+    ledgerWalletContractDataDisabled,
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,
     isLoadingStage,

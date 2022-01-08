@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Radio } from 'components/forms/Radio'
 import { BigNumberInput } from 'helpers/BigNumberInput'
@@ -8,18 +9,31 @@ import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 
-import { ManageVaultState } from './manageVault'
+import { AllVaultStages } from './types/AllVaultStages'
+
+type ManageVaultDaiAllowanceProps = {
+  stage: AllVaultStages
+  daiAllowanceAmount?: BigNumber
+  updateDaiAllowanceAmount?: (amount?: BigNumber) => void
+  setDaiAllowanceAmountUnlimited?: () => void
+  setDaiAllowanceAmountToPaybackAmount?: () => void
+  resetDaiAllowanceAmount?: () => void
+  selectedDaiAllowanceRadio: SelectedDaiAllowanceRadio
+  paybackAmount?: BigNumber
+}
+
+export type SelectedDaiAllowanceRadio = 'unlimited' | 'paybackAmount' | 'custom'
 
 export function ManageVaultDaiAllowance({
   stage,
   daiAllowanceAmount,
-  paybackAmount,
   updateDaiAllowanceAmount,
   setDaiAllowanceAmountUnlimited,
   setDaiAllowanceAmountToPaybackAmount,
   resetDaiAllowanceAmount,
   selectedDaiAllowanceRadio,
-}: ManageVaultState) {
+  paybackAmount,
+}: ManageVaultDaiAllowanceProps) {
   const canSelectRadio = stage === 'daiAllowanceWaitingForConfirmation'
 
   const { t } = useTranslation()

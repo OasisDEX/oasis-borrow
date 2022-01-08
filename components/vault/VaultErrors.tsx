@@ -10,8 +10,12 @@ import { Dictionary } from 'ts-essentials'
 
 import { IlkData } from '../../blockchain/ilks'
 import { Vault } from '../../blockchain/vaults'
-import { VaultErrorMessage } from '../../features/openMultiplyVault/openMultiplyVaultValidations'
+import { VaultErrorMessage } from '../../features/form/errorMessagesHandler'
 import { zero } from '../../helpers/zero'
+
+const KbLink = (
+  <AppLink sx={{ color: 'onError' }} href="https://kb.oasis.app/help/minimum-vault-debt-dust" />
+)
 
 interface VaultErrorsProps {
   errorMessages: VaultErrorMessage[]
@@ -32,7 +36,7 @@ export function VaultErrors({
   if (!errorMessages.length) return null
 
   function applyErrorMessageTranslation(message: VaultErrorMessage) {
-    const translate = (key: string, args?: Dictionary<any>) => t(`open-vault.errors.${key}`, args)
+    const translate = (key: string, args?: Dictionary<any>) => t(`vault-errors.${key}`, args)
     switch (message) {
       case 'depositAmountExceedsCollateralBalance':
         return translate('deposit-amount-exceeds-collateral-balance')
@@ -53,14 +57,9 @@ export function VaultErrors({
       case 'generateAmountLessThanDebtFloor':
         return (
           <Trans
-            i18nKey="open-vault.errors.generate-amount-less-than-debt-floor"
+            i18nKey="vault-errors.generate-amount-less-than-debt-floor"
             values={{ debtFloor: formatCryptoBalance(debtFloor) }}
-            components={[
-              <AppLink
-                sx={{ color: 'onError' }}
-                href="https://community-development.makerdao.com/en/learn/governance/param-debt-floor/"
-              />,
-            ]}
+            components={[KbLink]}
           />
         )
       case 'customAllowanceAmountExceedsMaxUint256':
@@ -110,14 +109,17 @@ export function VaultErrors({
       case 'withdrawCollateralOnVaultUnderDebtFloor':
         return (
           <Trans
-            i18nKey="manage-vault.errors.withdraw-collateral-on-vault-under-debt-floor"
+            i18nKey="vault-errors.withdraw-collateral-on-vault-under-debt-floor"
             values={{ debtFloor: formatCryptoBalance(debtFloor) }}
-            components={[
-              <AppLink
-                sx={{ color: 'onError' }}
-                href="https://kb.oasis.app/help/minimum-vault-debt-dust"
-              />,
-            ]}
+            components={[KbLink]}
+          />
+        )
+      case 'depositCollateralOnVaultUnderDebtFloor':
+        return (
+          <Trans
+            i18nKey="vault-errors.deposit-collateral-on-vault-under-debt-floor"
+            values={{ debtFloor: formatCryptoBalance(debtFloor) }}
+            components={[KbLink]}
           />
         )
 
