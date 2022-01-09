@@ -460,7 +460,7 @@ export function getVaultChange({
         providedDai: paybackAmount,
         withdrawDai: generateAmount,
         withdrawColl: withdrawAmount,
-      }
+      },
     )
   } else {
     return {
