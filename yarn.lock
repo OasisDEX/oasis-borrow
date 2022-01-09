@@ -3643,6 +3643,15 @@
     web3 "^1.5.3"
     web3-provider-engine "^14.0.1"
 
+"@oasisdex/multiply@0.2.5-alpha.6":
+  version "0.2.5-alpha.6"
+  resolved "https://registry.yarnpkg.com/@oasisdex/multiply/-/multiply-0.2.5-alpha.6.tgz#5ee8e0d89f194d5a4072885df5fed370bf3cb12f"
+  integrity sha512-xeKtmPVGx9gMqqGjiVTkjksnbA8WTS+ber8feJZNvAScTnoGs8ODZW157JGbDqwOFr0i2xI6IYCPMKszPh/SEg==
+  dependencies:
+    "@types/chai" "^4.2.21"
+    "@types/mocha" "^9.0.0"
+    bignumber.js "^9.0.1"
+
 "@oasisdex/transactions@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@oasisdex/transactions/-/transactions-0.1.0.tgz#c8aebfe79ecc260d939c1091622ea55349621532"
@@ -5183,6 +5192,11 @@
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.2.11.tgz#d3614d6c5f500142358e6ed24e1bf16657536c50"
   integrity sha512-t7uW6eFafjO+qJ3BIV2gGUyZs27egcNRkUdalkud+Qa3+kg//f129iuOFivHDXQ+vnU3fDXuwgv0cqMCbcE8sw==
 
+"@types/chai@^4.2.21":
+  version "4.2.22"
+  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.2.22.tgz#47020d7e4cf19194d43b5202f35f75bd2ad35ce7"
+  integrity sha512-tFfcE+DSTzWAgifkjik9AySNqIyNoYwmR+uecPwwD/XRNfvOjmC/FjCxpiUGDkDVDphPfCUecSQVFw+lN3M3kQ==
+
 "@types/cheerio@*":
   version "0.22.28"
   resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.28.tgz#90808aabb44fec40fa2950f4c72351e3e4eb065b"
@@ -5468,6 +5482,11 @@
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-7.0.2.tgz#b17f16cf933597e10d6d78eae3251e692ce8b0ce"
   integrity sha512-ZvO2tAcjmMi8V/5Z3JsyofMe3hasRcaw88cto5etSVMwVQfeivGAlEYmaQgceUSVYFofVjT+ioHsATjdWcFt1w==
+
+"@types/mocha@^9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-9.0.0.tgz#3205bcd15ada9bc681ac20bef64e9e6df88fd297"
+  integrity sha512-scN0hAWyLVAvLR9AyW7HoFF5sJZglyBsbPuHO4fv7JRvfmPBMfp1ozWqOf/e4wwPNxezBZXRfWzMb6iFLgEVRA==
 
 "@types/moment-locales-webpack-plugin@^1.2.0":
   version "1.2.0"

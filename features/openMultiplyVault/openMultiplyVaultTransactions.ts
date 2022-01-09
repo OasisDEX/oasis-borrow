@@ -236,6 +236,7 @@ export function multiplyVault(
     ilk,
     token,
     buyingCollateral,
+    skipFL,
     account,
     slippage,
     toTokenAmount,
@@ -258,6 +259,7 @@ export function multiplyVault(
         sendWithGasEstimation(openMultiplyVault, {
           kind: TxMetaKind.multiply,
           depositCollateral: depositAmount || zero,
+          skipFL,
           userAddress: account,
           proxyAddress: proxyAddress!,
           ilk,
@@ -316,7 +318,7 @@ export function applyEstimateGas(
   state: OpenMultiplyVaultState,
 ): Observable<OpenMultiplyVaultState> {
   return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
-    const { proxyAddress, depositAmount, ilk, token, account, swap } = state
+    const { proxyAddress, depositAmount, ilk, token, account, swap, skipFL } = state
 
     const daiAmount = swap?.status === 'SUCCESS' ? swap.daiAmount.div(one.minus(OAZO_FEE)) : zero
     const collateralAmount = swap?.status === 'SUCCESS' ? swap.collateralAmount : zero
@@ -325,6 +327,7 @@ export function applyEstimateGas(
       return estimateGas(openMultiplyVault, {
         kind: TxMetaKind.multiply,
         depositCollateral: depositAmount,
+        skipFL,
         userAddress: account,
         proxyAddress: proxyAddress!,
         ilk,
