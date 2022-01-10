@@ -1,17 +1,17 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { AppLink } from 'components/Links'
 import { MobileSidePanelClose, MobileSidePanelPortal } from 'components/Modal'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatPercent, formatPrecision } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
+import Link from 'next/link'
 import React, { ChangeEvent, useState } from 'react'
 import { useEffect } from 'react'
 import { createNumberMask } from 'text-mask-addons'
-import { Box, Button, Card, Flex, Grid, SxStyleProp, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Link as ThemeLink, SxStyleProp, Text } from 'theme-ui'
 import { UnreachableCaseError } from 'ts-essentials'
 
 import {
@@ -20,7 +20,6 @@ import {
   UserSettingsState,
   UserSettingsWarningMessages,
 } from './userSettings'
-
 function SlippageOptionButton({
   option,
   onClick,
@@ -116,9 +115,11 @@ function SlippageSettingsForm(props: UserSettingsState) {
         <Text variant="paragraph3" sx={{ color: 'text.subtitle', mb: -1 }}>
           {t('user-settings.slippage-limit.preset-description')}
         </Text>
-        <AppLink href="/support#using-multiply" sx={{ fontSize: 2, fontWeight: 'body', mt: -1 }}>
-          {t('user-settings.slippage-limit.read-more')}
-        </AppLink>
+        <Link href="/support#using-multiply" passHref>
+          <ThemeLink target="_self" sx={{ fontSize: 2, fontWeight: 'body', mt: -1 }}>
+            {t('user-settings.slippage-limit.read-more')}
+          </ThemeLink>
+        </Link>
         <Text variant="paragraph4" sx={{ fontWeight: 'semiBold', my: 3 }}>
           Your current slippage: {formatPercent(slippage.times(100), { precision: 2 })}
         </Text>
