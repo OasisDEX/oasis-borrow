@@ -505,7 +505,7 @@ export function applyManageVaultCalculations(
       ? quote.tokenPrice
       : undefined
 
-  const marketPriceMaxSlippage = marketPrice ? marketPrice.times(slippage.plus(1)) : undefined
+  const marketPriceMaxSlippage = marketPrice ? marketPrice.div(one.minus(slippage)) : undefined
 
   const prices = {
     marketPrice,
