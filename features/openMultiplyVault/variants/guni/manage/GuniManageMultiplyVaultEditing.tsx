@@ -59,7 +59,10 @@ function OtherActionsForm(props: ManageMultiplyVaultState) {
 }
 
 export function GuniManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
-  const { inputAmountsEmpty } = props
+  const {
+    inputAmountsEmpty,
+    vault: { debt },
+  } = props
 
   return (
     <Grid gap={4}>
@@ -67,7 +70,7 @@ export function GuniManageMultiplyVaultEditing(props: ManageMultiplyVaultState) 
       {/* originalEditingStage === 'otherActions' && otherAction === 'closeVault' */}
       <OtherActionsForm {...props} />
       {!inputAmountsEmpty && <Divider />}
-      <GuniManageMultiplyVaultChangesInformation {...props} />
+      {!debt.isZero() && <GuniManageMultiplyVaultChangesInformation {...props} />}
     </Grid>
   )
 }

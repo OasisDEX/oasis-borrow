@@ -9,19 +9,34 @@ import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 
-import { ManageMultiplyVaultState } from '../../manageMultiplyVault/manageMultiplyVault'
+import { zero } from '../../../helpers/zero'
+import { AllVaultStages } from './types/AllVaultStages'
 
-export function ManageMultiplyVaultCollateralAllowance({
+type SelectedCollateralAllowanceRadio = 'unlimited' | 'depositAmount' | 'custom'
+
+type ManageVaultCollateralAllowanceProps = {
+  stage: AllVaultStages
+  vault: { token: string }
+  depositAmount?: BigNumber
+  collateralAllowanceAmount?: BigNumber
+  updateCollateralAllowanceAmount?: (amount?: BigNumber) => void
+  setCollateralAllowanceAmountUnlimited?: () => void
+  setCollateralAllowanceAmountToDepositAmount?: () => void
+  resetCollateralAllowanceAmount?: () => void
+  selectedCollateralAllowanceRadio: SelectedCollateralAllowanceRadio
+}
+
+export function ManageVaultCollateralAllowance({
   stage,
   vault: { token },
+  depositAmount = zero,
   collateralAllowanceAmount,
   updateCollateralAllowanceAmount,
   setCollateralAllowanceAmountUnlimited,
   setCollateralAllowanceAmountToDepositAmount,
   resetCollateralAllowanceAmount,
   selectedCollateralAllowanceRadio,
-}: ManageMultiplyVaultState) {
-  const depositAmount = new BigNumber(0)
+}: ManageVaultCollateralAllowanceProps) {
   const canSelectRadio = stage === 'collateralAllowanceWaitingForConfirmation'
 
   const isUnlimited = selectedCollateralAllowanceRadio === 'unlimited'
@@ -49,7 +64,7 @@ export function ManageMultiplyVaultCollateralAllowance({
             onChange={setCollateralAllowanceAmountToDepositAmount!}
           >
             <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: '18px' }}>
-              {t('token-depositing', { token, amount: formatCryptoBalance(depositAmount!) })}
+              {t('token-depositing', { token, amount: formatCryptoBalance(depositAmount) })}
             </Text>
           </Radio>
           <Radio
@@ -75,7 +90,7 @@ export function ManageMultiplyVaultCollateralAllowance({
                 value={
                   collateralAllowanceAmount && isCustom
                     ? formatAmount(collateralAllowanceAmount, getToken(token).symbol)
-                    : null
+                    : undefined
                 }
                 mask={createNumberMask({
                   allowDecimal: true,

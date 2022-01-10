@@ -21,7 +21,7 @@ public/sw.js.map
 public/workbox-*.js.map
 public/worker-*.js.map
 public/sitemap.xml
-types
+/types
 
 storybook-static
 storybook-static/*

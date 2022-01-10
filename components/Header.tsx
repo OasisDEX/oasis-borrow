@@ -1,4 +1,3 @@
-// @ts-ignore
 import { Global } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
@@ -9,6 +8,7 @@ import { UserSettingsButton } from 'features/userSettings/UserSettingsView'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
+import { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import { useRouter } from 'next/router'
@@ -16,6 +16,7 @@ import React, { useState } from 'react'
 import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 
+import { ContextConnected } from '../blockchain/network'
 import { useAppContext } from './AppContextProvider'
 import { ChevronUpDown } from './ChevronUpDown'
 import { useSharedUI } from './SharedUIProvider'
@@ -121,8 +122,7 @@ function ConnectedHeader() {
             <AppLink
               variant="nav"
               sx={{ mr: 4 }}
-              // @ts-ignore
-              href={`/owner/${context?.account}`}
+              href={`/owner/${(context as ContextConnected)?.account}`}
               onClick={() => trackingEvents.yourVaults()}
             >
               {t('your-vaults')} {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
@@ -227,8 +227,7 @@ function HeaderDropdown({
 function LanguageDropdown({ sx }: { sx?: SxStyleProp }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
-  // @ts-ignore
-  const { locales }: { locales: string[] } = i18n.options
+  const { locales } = i18n.options as InitOptions & { locales: string[] }
 
   return (
     <HeaderDropdown title={t(`lang-dropdown.${i18n.language}`)} sx={sx}>
