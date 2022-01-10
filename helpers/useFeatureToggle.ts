@@ -13,18 +13,18 @@ const configuredFeatures: Record<Features, boolean> = {
 }
 
 export function loadFeatureToggles(features: Array<Features> = []) {
-  const _releaseSelectedFeatures = assign(
-    {},
-    features.reduce(
-      (acc, feature) => ({
-        ...acc,
-        [feature]: true,
-      }),
-      configuredFeatures,
-    ),
-  )
   // update local toggles
   if (typeof localStorage !== 'undefined') {
+    const _releaseSelectedFeatures = assign(
+      {},
+      features.reduce(
+        (acc, feature) => ({
+          ...acc,
+          [feature]: true,
+        }),
+        configuredFeatures,
+      ),
+    )
     const rawFeatures = localStorage.getItem(FT_LOCAL_STORAGE_KEY)
     if (!rawFeatures) {
       localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(_releaseSelectedFeatures))
@@ -33,12 +33,10 @@ export function loadFeatureToggles(features: Array<Features> = []) {
       const merged = assign({}, _releaseSelectedFeatures, userSelectedFeatures)
       localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(merged))
     }
-  } else {
-    console.log('undefined')
   }
 }
 
-export function useFeatureEnabled(feature: Features): boolean {
+export function useFeatureToggle(feature: Features): boolean {
   const userEnabledFeatures = localStorage.getItem(FT_LOCAL_STORAGE_KEY)
   if (userEnabledFeatures) {
     return JSON.parse(userEnabledFeatures)[feature] || configuredFeatures[feature]
