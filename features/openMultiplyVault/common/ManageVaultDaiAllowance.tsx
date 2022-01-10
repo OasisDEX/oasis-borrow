@@ -83,7 +83,7 @@ export function ManageVaultDaiAllowance({
                 value={
                   daiAllowanceAmount && isCustom
                     ? formatAmount(daiAllowanceAmount, getToken('DAI').symbol)
-                    : null
+                    : undefined
                 }
                 mask={createNumberMask({
                   allowDecimal: true,

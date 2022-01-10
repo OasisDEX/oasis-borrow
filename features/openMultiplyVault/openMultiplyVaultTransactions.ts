@@ -16,6 +16,7 @@ import { Observable, of } from 'rxjs'
 import { catchError, first, startWith, switchMap } from 'rxjs/operators'
 import Web3 from 'web3'
 
+import { TxError } from '../../helpers/types'
 import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
 type ProxyChange =
@@ -28,7 +29,7 @@ type ProxyChange =
     }
   | {
       kind: 'proxyFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'proxyConfirming'
@@ -47,7 +48,7 @@ type AllowanceChange =
     }
   | {
       kind: 'allowanceFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'allowanceSuccess'
@@ -62,7 +63,7 @@ type OpenChange =
     }
   | {
       kind: 'txFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'txSuccess'

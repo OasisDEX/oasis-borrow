@@ -90,7 +90,7 @@ export function ManageVaultCollateralAllowance({
                 value={
                   collateralAllowanceAmount && isCustom
                     ? formatAmount(collateralAllowanceAmount, getToken(token).symbol)
-                    : null
+                    : undefined
                 }
                 mask={createNumberMask({
                   allowDecimal: true,

@@ -1,5 +1,4 @@
 import { icons as daiUiIcons } from '@makerdao/dai-ui-icons'
-// @ts-ignore
 import { icons as brandingIcons } from '@makerdao/dai-ui-icons-branding'
 import React from 'react'
 

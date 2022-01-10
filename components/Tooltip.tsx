@@ -8,7 +8,6 @@ export function useTooltip() {
     setTooltipOpen(false)
   }, [])
 
-  // @ts-ignore
   useEffect(() => {
     if (tooltipOpen) {
       // capture parameter is added to overcome event phases race condition while rendering portal
@@ -17,6 +16,7 @@ export function useTooltip() {
 
       return () => document.removeEventListener('click', close)
     }
+    return () => null
   }, [tooltipOpen])
 
   return { tooltipOpen, setTooltipOpen }

@@ -3,14 +3,15 @@ import { AppLayout } from 'components/Layouts'
 import { DefaultMultiplyVaultView } from 'features/openMultiplyVault/variants/default/open/DefaultMultiplyVaultView'
 import { GuniOpenVaultView } from 'features/openMultiplyVault/variants/guni/open/GuniOpenVaultView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
+import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
     props: {
-      ...(await serverSideTranslations(ctx.locale, ['common'])),
+      ...(await serverSideTranslations(ctx.locale!, ['common'])),
       ilk: ctx.query.ilk || null,
     },
   }

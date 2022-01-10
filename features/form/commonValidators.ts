@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 
 import { maxUint256 } from '../../blockchain/calls/erc20'
 import { isNullish } from '../../helpers/functions'
+import { TxError } from '../../helpers/types'
 import { zero } from '../../helpers/zero'
 
 type CollateralAllowanceRadio = 'unlimited' | 'depositAmount' | 'custom'
@@ -134,11 +135,7 @@ export function customAllowanceAmountLessThanDepositAmountValidator({
   )
 }
 
-export function ledgerWalletContractDataDisabledValidator({
-  txError,
-}: {
-  txError: { name: string }
-}) {
+export function ledgerWalletContractDataDisabledValidator({ txError }: { txError?: TxError }) {
   return txError?.name === 'EthAppPleaseEnableContractData'
 }
 

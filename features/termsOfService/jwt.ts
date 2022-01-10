@@ -39,8 +39,7 @@ async function requestJWT(web3: Web3, account: string): Promise<string> {
 async function signTypedPayload(challenge: string, web3: Web3, account: string): Promise<string> {
   const data = getDataToSignFromChallenge(challenge)
 
-  // @ts-ignore
-  return web3.eth.personal.sign(data, account)
+  return web3.eth.personal.sign(data, account, '')
 }
 
 function requestChallenge(address: string): Observable<string> {

@@ -877,3 +877,4 @@ const oasisBaseTheme = {
 }
 
 export const theme = oasisBaseTheme
+export type OasisTheme = typeof oasisBaseTheme
