@@ -375,9 +375,6 @@ export function createOpenGuniVault$(
                       priceInfoChange$(priceInfo$, token),
                       balanceInfoChange$(balanceInfo$, token, account),
                       createIlkDataChange$(ilkData$, ilk),
-                      // createInitialQuoteChange(exchangeQuote$, tokenInfo.token1),
-
-                      //createExchangeChange$(exchangeQuote$, stateSubject$),
                     )
 
                     const gUniDataChanges$: Observable<GuniTxDataChange> = merge(
