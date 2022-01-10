@@ -10,6 +10,7 @@ import { createOpenGuniVault$ } from '../../features/openGuniVault/openGuniVault
 import { mockExchangeQuote$ } from './exchangeQuote.mock'
 import { MockOpenMultiplyVaultProps } from './openMultiplyVault.mock'
 import { addGasEstimationMock } from './openVault.mock'
+import { slippageLimitMock } from './slippageLimit.mock'
 
 const mockOnEveryBlock = new Observable<number>()
 
@@ -98,5 +99,6 @@ export function mockGuniOpenMultiplyVault({
     ilk,
     token1Balance$,
     getGuniMintAmount$,
+    slippageLimitMock(),
   )
 }

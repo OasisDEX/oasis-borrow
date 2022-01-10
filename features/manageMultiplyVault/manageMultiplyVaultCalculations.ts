@@ -504,6 +504,7 @@ export function applyManageVaultCalculations(
       : quote?.status === 'SUCCESS'
       ? quote.tokenPrice
       : undefined
+
   const marketPriceMaxSlippage = marketPrice ? marketPrice.div(one.minus(slippage)) : undefined
 
   const prices = {

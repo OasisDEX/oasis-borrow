@@ -379,6 +379,7 @@ export function setupAppContext() {
       ilk,
       token1Balance$,
       getGuniMintAmount$,
+      userSettings$,
     ),
   )
 
@@ -450,6 +451,7 @@ export function setupAppContext() {
         addGasEstimation$,
         getProportions$,
         vaultMultiplyHistory$,
+        userSettings$,
         id,
       ),
     bigNumberTostring,
