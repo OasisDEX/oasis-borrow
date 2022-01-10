@@ -8,7 +8,7 @@ import { formatPercent, formatPrecision } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useRef, useState } from 'react'
 import { useEffect } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Link as ThemeLink, SxStyleProp, Text } from 'theme-ui'
@@ -191,12 +191,32 @@ export function UserSettingsDropdown(
     setOpened,
   } = props
   const { t } = useTranslation()
+  const wrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!opened) {
       reset()
     }
   }, [opened])
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+        setOpened(false)
+        console.log('here')
+      }
+    }
+
+    if (opened) {
+      document.addEventListener('mousedown', handleClickOutside)
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [wrapperRef, opened])
 
   const onClose = () => setOpened(false)
 
@@ -222,6 +242,7 @@ export function UserSettingsDropdown(
           overflowX: ['hidden', 'visible'],
           zIndex: ['modal', 0],
         }}
+        ref={wrapperRef}
       >
         <MobileSidePanelClose opened={opened} onClose={onClose} />
         <SlippageSettingsForm {...props} />
