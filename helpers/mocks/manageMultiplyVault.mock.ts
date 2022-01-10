@@ -149,8 +149,8 @@ export function mockManageMultiplyVault$({
     vault$,
     mockExchangeQuote$(exchangeQuote),
     addGasEstimationMock,
-    vaultMultiplyHistory$,
     slippageLimitMock(),
+    vaultMultiplyHistory$,
     MOCK_VAULT_ID,
   )
 }
