@@ -169,6 +169,7 @@ const kovan: NetworkConfig = {
     url: 'https://ethtx.info/kovan',
   },
   taxProxyRegistries: [kovanAddresses.PROXY_REGISTRY],
+  tokensMainnet: protoMain.tokensMainnet,
   dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, kovanAddresses.PROXY_ACTIONS_DSR),
   magicLink: {
     apiKey: '',
