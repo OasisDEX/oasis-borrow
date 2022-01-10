@@ -11,6 +11,9 @@ import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
+import { TxError } from '../../helpers/types'
+import { VaultErrorMessage } from '../form/errorMessagesHandler'
+import { VaultWarningMessage } from '../form/warningMessagesHandler'
 import { createProxy } from '../proxy/createProxy'
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openVaultAllowances'
 import {
@@ -40,12 +43,7 @@ import {
   OpenVaultTransactionChange,
 } from './openVaultTransactions'
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openVaultTransitions'
-import {
-  OpenVaultErrorMessage,
-  OpenVaultWarningMessage,
-  validateErrors,
-  validateWarnings,
-} from './openVaultValidations'
+import { validateErrors, validateWarnings } from './openVaultValidations'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -146,7 +144,7 @@ interface OpenVaultTxInfo {
   allowanceTxHash?: string
   proxyTxHash?: string
   openTxHash?: string
-  txError?: any
+  txError?: TxError
   etherscan?: string
   proxyConfirmations?: number
   safeConfirmations: number
@@ -158,8 +156,8 @@ export type OpenVaultState = MutableOpenVaultState &
   OpenVaultEnvironment &
   OpenVaultConditions &
   OpenVaultTxInfo & {
-    errorMessages: OpenVaultErrorMessage[]
-    warningMessages: OpenVaultWarningMessage[]
+    errorMessages: VaultErrorMessage[]
+    warningMessages: VaultWarningMessage[]
     summary: OpenVaultSummary
     totalSteps: number
     currentStep: number

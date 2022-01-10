@@ -1,3 +1,9 @@
+import {
+  CloseToParams,
+  getCloseToCollateralParams,
+  getCloseToDaiParams,
+  getMultiplyParams,
+} from '@oasisdex/multiply'
 import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
@@ -5,10 +11,8 @@ import { ExchangeAction } from 'features/exchange/exchange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import {
-  calculateCloseToCollateralParams,
-  calculateCloseToDaiParams,
-  CloseToParams,
-  getMultiplyParams,
+  calculatePNL,
+  getCumulativeFeesUSD,
   LOAN_FEE,
   OAZO_FEE,
 } from 'helpers/multiply/calculations'
@@ -67,6 +71,7 @@ export interface ManageVaultCalculations {
   maxCollRatio: BigNumber
   liquidationPriceCurrentPriceDifference: BigNumber | undefined
   loanFee: BigNumber
+  skipFL: boolean
   oazoFee: BigNumber
   fees: BigNumber
   netValueUSD: BigNumber
@@ -90,6 +95,8 @@ export interface ManageVaultCalculations {
   afterCloseToCollateral: BigNumber
   afterCloseToCollateralUSD: BigNumber
   oneInchAmount: BigNumber
+  currentPnL: BigNumber
+  totalGasSpentUSD: BigNumber
 }
 
 export const MAX_COLL_RATIO = new BigNumber(5)
@@ -141,6 +148,7 @@ export const defaultManageMultiplyVaultCalculations: ManageVaultCalculations = {
   liquidationPriceCurrentPriceDifference: undefined,
 
   loanFee: zero,
+  skipFL: false,
   oazoFee: zero,
   fees: zero,
 
@@ -156,21 +164,31 @@ export const defaultManageMultiplyVaultCalculations: ManageVaultCalculations = {
     fromTokenAmount: zero,
     toTokenAmount: zero,
     minToTokenAmount: zero,
+    borrowCollateral: zero,
+    requiredDebt: zero,
+    withdrawCollateral: zero,
     oazoFee: zero,
     loanFee: zero,
+    skipFL: false,
   },
 
   closeToCollateralParams: {
     fromTokenAmount: zero,
     toTokenAmount: zero,
     minToTokenAmount: zero,
+    borrowCollateral: zero,
+    requiredDebt: zero,
+    withdrawCollateral: zero,
     oazoFee: zero,
     loanFee: zero,
+    skipFL: false,
   },
 
   afterCloseToDai: zero,
   afterCloseToCollateral: zero,
   afterCloseToCollateralUSD: zero,
+  currentPnL: zero,
+  totalGasSpentUSD: zero,
 }
 
 /*
@@ -421,18 +439,28 @@ export function getVaultChange({
 }) {
   if (requiredCollRatio) {
     return getMultiplyParams(
-      currentCollateralPrice,
-      marketPrice,
-      slippage,
-      debt,
-      lockedCollateral,
-      requiredCollRatio,
-      depositAmount,
-      paybackAmount,
-      generateAmount,
-      withdrawAmount,
-      FF,
-      OF,
+      // market params
+      {
+        oraclePrice: currentCollateralPrice,
+        marketPrice,
+        OF,
+        FF,
+        slippage,
+      },
+      // vault info
+      {
+        currentDebt: debt,
+        currentCollateral: lockedCollateral,
+        minCollRatio: requiredCollRatio,
+      },
+      // desired cdp state
+      {
+        requiredCollRatio: requiredCollRatio,
+        providedCollateral: depositAmount,
+        providedDai: paybackAmount,
+        withdrawDai: generateAmount,
+        withdrawColl: withdrawAmount,
+      },
     )
   } else {
     return {
@@ -440,6 +468,7 @@ export function getVaultChange({
       collateralDelta: depositAmount.minus(withdrawAmount),
       loanFee: zero,
       oazoFee: zero,
+      skipFL: false,
     }
   }
 }
@@ -463,6 +492,7 @@ export function applyManageVaultCalculations(
     otherAction,
     originalEditingStage,
     closeVaultTo,
+    vaultHistory,
   } = state
 
   const vaultHasZeroCollateral = lockedCollateral.eq(zero)
@@ -542,13 +572,19 @@ export function applyManageVaultCalculations(
   }
 
   if (!marketPrice || !marketPriceMaxSlippage) {
-    return { ...state, ...defaultManageMultiplyVaultCalculations, ...maxInputAmounts, ...prices }
+    return {
+      ...state,
+      ...defaultManageMultiplyVaultCalculations,
+      ...maxInputAmounts,
+      ...prices,
+    }
   }
 
   const {
     debtDelta: borrowedDaiAmount,
     collateralDelta: collateralDeltaNonClose,
     loanFee: loanFeeNonClose,
+    skipFL: skipFLNonClose,
     oazoFee: oazoFeeNonClose,
   } = getVaultChange({
     currentCollateralPrice,
@@ -569,21 +605,37 @@ export function applyManageVaultCalculations(
     ? borrowedDaiAmount.times(one.minus(OAZO_FEE))
     : collateralDeltaNonClose.times(-1)
 
-  const closeToDaiParams = calculateCloseToDaiParams(
-    marketPrice,
-    OAZO_FEE,
-    LOAN_FEE,
-    lockedCollateral,
-    slippage,
-    debt.plus(debtOffset),
+  const closeToDaiParams = getCloseToDaiParams(
+    // market params
+    {
+      oraclePrice: currentCollateralPrice,
+      marketPrice,
+      OF: OAZO_FEE,
+      FF: LOAN_FEE,
+      slippage,
+    },
+    // vault info
+    {
+      currentDebt: debt.plus(debtOffset),
+      currentCollateral: lockedCollateral,
+    },
   )
 
-  const closeToCollateralParams = calculateCloseToCollateralParams(
-    marketPrice,
-    OAZO_FEE,
-    LOAN_FEE,
-    debt.plus(debtOffset),
-    slippage,
+  const closeToCollateralParams = getCloseToCollateralParams(
+    // market params
+    {
+      oraclePrice: currentCollateralPrice,
+      marketPrice,
+      OF: OAZO_FEE,
+      FF: LOAN_FEE,
+      slippage,
+    },
+    // vault info
+    {
+      currentDebt: debt.plus(debtOffset),
+      currentCollateral: lockedCollateral,
+      minCollRatio: requiredCollRatio,
+    },
   )
 
   const collateralDelta = isCloseAction
@@ -604,6 +656,12 @@ export function applyManageVaultCalculations(
       ? closeToDaiParams.loanFee
       : closeToCollateralParams.loanFee
     : loanFeeNonClose
+
+  const skipFL = isCloseAction
+    ? closeVaultTo === 'dai'
+      ? closeToDaiParams.skipFL
+      : closeToCollateralParams.skipFL
+    : skipFLNonClose
 
   const fees = BigNumber.sum(loanFee, oazoFee)
 
@@ -764,6 +822,10 @@ export function applyManageVaultCalculations(
   const afterCloseToCollateral = lockedCollateral.minus(closeToCollateralParams.fromTokenAmount)
   const afterCloseToCollateralUSD = afterCloseToCollateral.times(marketPrice)
 
+  const currentPnL = calculatePNL(vaultHistory, netValueUSD)
+
+  const totalGasSpentUSD = vaultHistory.reduce(getCumulativeFeesUSD, zero)
+
   return {
     ...state,
     ...maxInputAmounts,
@@ -779,6 +841,9 @@ export function applyManageVaultCalculations(
     afterLiquidationPrice,
     exchangeAction,
 
+    currentPnL,
+    totalGasSpentUSD,
+
     afterCollateralizationRatioAtNextPrice,
     afterFreeCollateral,
     afterFreeCollateralAtNextPrice,
@@ -792,6 +857,7 @@ export function applyManageVaultCalculations(
 
     impact,
     loanFee,
+    skipFL,
     oazoFee,
     fees,
 

@@ -1,8 +1,14 @@
-import { maxUint256 } from 'blockchain/calls/erc20'
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
+import { isNullish } from '../../helpers/functions'
+import {
+  customAllowanceAmountEmptyValidator,
+  customAllowanceAmountExceedsMaxUint256Validator,
+  customAllowanceAmountLessThanDepositAmountValidator,
+  ledgerWalletContractDataDisabledValidator,
+} from '../form/commonValidators'
 import { OpenGuniVaultState, Stage } from './openGuniVault'
 
 const defaultOpenVaultStageCategories = {
@@ -82,11 +88,14 @@ export interface GuniOpenMultiplyVaultConditions {
   generateAmountLessThanDebtFloor: boolean
   generateAmountMoreThanMaxFlashAmount: boolean
   generateAmountExceedsDebtCeiling: boolean
+  depositAmountExceedsCollateralBalance: boolean
+  ledgerWalletContractDataDisabled: boolean
 
   customAllowanceAmountEmpty: boolean
   customAllowanceAmountExceedsMaxUint256: boolean
   customAllowanceAmountLessThanDepositAmount: boolean
   insufficientAllowance: boolean
+  potentialGenerateAmountLessThanDebtFloor: boolean
 
   isLoadingStage: boolean
   canProgress: boolean
@@ -101,11 +110,14 @@ export const defaultGuniOpenMultiplyVaultConditions: GuniOpenMultiplyVaultCondit
   generateAmountLessThanDebtFloor: false,
   generateAmountMoreThanMaxFlashAmount: false,
   generateAmountExceedsDebtCeiling: false,
+  depositAmountExceedsCollateralBalance: false,
+  ledgerWalletContractDataDisabled: false,
 
   customAllowanceAmountEmpty: false,
   customAllowanceAmountExceedsMaxUint256: false,
   customAllowanceAmountLessThanDepositAmount: false,
   insufficientAllowance: false,
+  potentialGenerateAmountLessThanDebtFloor: false,
 
   isLoadingStage: false,
   canProgress: false,
@@ -120,6 +132,7 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
 
     ilkData,
     depositAmount,
+    balanceInfo: { daiBalance },
 
     selectedAllowanceRadio,
     allowanceAmount,
@@ -127,6 +140,7 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     exchangeError,
     quote,
     swap,
+    txError,
   } = state
 
   const inputAmountsEmpty = !depositAmount
@@ -147,20 +161,29 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     'txWaitingForApproval',
   ] as Stage[]).some((s) => s === stage)
 
-  const customAllowanceAmountEmpty = selectedAllowanceRadio === 'custom' && !allowanceAmount
+  const customAllowanceAmountEmpty = customAllowanceAmountEmptyValidator({
+    selectedAllowanceRadio,
+    allowanceAmount,
+  })
 
-  const customAllowanceAmountExceedsMaxUint256 = !!(
-    selectedAllowanceRadio === 'custom' && allowanceAmount?.gt(maxUint256)
-  )
+  const customAllowanceAmountExceedsMaxUint256 = customAllowanceAmountExceedsMaxUint256Validator({
+    selectedAllowanceRadio,
+    allowanceAmount,
+  })
 
   const generateAmountExceedsDebtCeiling = !!afterOutstandingDebt?.gt(ilkData.ilkDebtAvailable)
 
-  const customAllowanceAmountLessThanDepositAmount = !!(
-    selectedAllowanceRadio === 'custom' &&
-    allowanceAmount &&
-    depositAmount &&
-    allowanceAmount.lt(depositAmount)
+  const customAllowanceAmountLessThanDepositAmount = customAllowanceAmountLessThanDepositAmountValidator(
+    {
+      selectedAllowanceRadio,
+      allowanceAmount,
+      depositAmount,
+    },
   )
+
+  const ledgerWalletContractDataDisabled = ledgerWalletContractDataDisabledValidator({ txError })
+
+  const depositAmountExceedsCollateralBalance = !!depositAmount?.gt(daiBalance)
 
   const insufficientAllowance = !!(
     depositAmount &&
@@ -169,6 +192,9 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
   )
 
   const isExchangeLoading = !quote && !swap && !exchangeError
+
+  const potentialGenerateAmountLessThanDebtFloor =
+    !isNullish(depositAmount) && afterOutstandingDebt.lt(ilkData.debtFloor)
 
   const canProgress =
     !(
@@ -199,11 +225,14 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     generateAmountLessThanDebtFloor,
     generateAmountMoreThanMaxFlashAmount,
     generateAmountExceedsDebtCeiling,
+    depositAmountExceedsCollateralBalance,
+    ledgerWalletContractDataDisabled,
 
     customAllowanceAmountEmpty,
     customAllowanceAmountExceedsMaxUint256,
     customAllowanceAmountLessThanDepositAmount,
     insufficientAllowance,
+    potentialGenerateAmountLessThanDebtFloor,
 
     isLoadingStage,
     canProgress,

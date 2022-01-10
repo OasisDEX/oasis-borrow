@@ -357,7 +357,6 @@ function OtherActionsSelect(props: ManageMultiplyVaultState) {
       value={OTHER_ACTIONS_OPTIONS.find(({ value }) => value === otherAction)}
       // @ts-ignore
       onChange={({ value }) => {
-        console.log(value)
         setOtherAction!(value)
       }}
       components={{
@@ -432,7 +431,6 @@ function OtherActionsSelect(props: ManageMultiplyVaultState) {
   )
 }
 
-// @ts-ignore
 function CloseVaultAction(props: ManageMultiplyVaultState) {
   const {
     setCloseVaultTo,

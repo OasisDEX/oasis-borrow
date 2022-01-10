@@ -224,6 +224,7 @@ const mockTxMetaDefinitions: Pick<TxState<TxData>, 'meta'>[] = [
       toTokenAmount: new BigNumber(3),
       exchangeData: '0x',
       exchangeAddress: '0x',
+      skipFL: false,
     },
   },
   {

@@ -4,31 +4,7 @@ import React, { useLayoutEffect, useState } from 'react'
 import { Box, Flex, IconButton, SxProps, Text } from 'theme-ui'
 
 import { AppLink } from './Links'
-
-function WithArrow({ children }: React.PropsWithChildren<{}>) {
-  return (
-    <Text
-      variant="paragraph3"
-      sx={{
-        fontWeight: 'semiBold',
-        fontSize: [1, 2],
-        position: 'relative',
-        '& .arrow': {
-          transition: 'ease-in-out 0.2s',
-          transform: 'translateX(0px)',
-        },
-        '&:hover .arrow': {
-          transform: 'translateX(5px)',
-        },
-      }}
-    >
-      <Box sx={{ display: 'inline', mr: 2 }}>{children}</Box>
-      <Box className="arrow" sx={{ display: 'inline', position: 'absolute' }}>
-        →
-      </Box>
-    </Text>
-  )
-}
+import { WithArrow } from './WithArrow'
 
 function Separator() {
   return (
