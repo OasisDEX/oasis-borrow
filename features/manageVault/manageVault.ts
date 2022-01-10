@@ -14,6 +14,11 @@ import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { catchError, first, map, scan, shareReplay, startWith, switchMap } from 'rxjs/operators'
 
+import { TxError } from '../../helpers/types'
+import { VaultErrorMessage } from '../form/errorMessagesHandler'
+import { VaultWarningMessage } from '../form/warningMessagesHandler'
+import { SelectedDaiAllowanceRadio } from '../openMultiplyVault/common/ManageVaultDaiAllowance'
+import { BaseManageVaultStage } from '../openMultiplyVault/common/types/BaseManageVaultStage'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
 import {
@@ -48,12 +53,7 @@ import {
   ManageVaultTransitionChange,
   progressManage,
 } from './manageVaultTransitions'
-import {
-  ManageVaultErrorMessage,
-  ManageVaultWarningMessage,
-  validateErrors,
-  validateWarnings,
-} from './manageVaultValidations'
+import { validateErrors, validateWarnings } from './manageVaultValidations'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -98,28 +98,9 @@ export type ManageVaultEditingStage =
   | 'daiEditing'
   | 'multiplyTransitionEditing'
 
-export type ManageVaultStage =
+export type ManageBorrowVaultStage =
+  | BaseManageVaultStage
   | ManageVaultEditingStage
-  | 'proxyWaitingForConfirmation'
-  | 'proxyWaitingForApproval'
-  | 'proxyInProgress'
-  | 'proxyFailure'
-  | 'proxySuccess'
-  | 'collateralAllowanceWaitingForConfirmation'
-  | 'collateralAllowanceWaitingForApproval'
-  | 'collateralAllowanceInProgress'
-  | 'collateralAllowanceFailure'
-  | 'collateralAllowanceSuccess'
-  | 'daiAllowanceWaitingForConfirmation'
-  | 'daiAllowanceWaitingForApproval'
-  | 'daiAllowanceInProgress'
-  | 'daiAllowanceFailure'
-  | 'daiAllowanceSuccess'
-  | 'manageWaitingForConfirmation'
-  | 'manageWaitingForApproval'
-  | 'manageInProgress'
-  | 'manageFailure'
-  | 'manageSuccess'
   | 'multiplyTransitionWaitingForConfirmation'
   | 'multiplyTransitionInProgress'
   | 'multiplyTransitionFailure'
@@ -128,7 +109,7 @@ export type ManageVaultStage =
 export type MainAction = 'depositGenerate' | 'withdrawPayback'
 
 export interface MutableManageVaultState {
-  stage: ManageVaultStage
+  stage: ManageBorrowVaultStage
   mainAction: MainAction
   originalEditingStage: ManageVaultEditingStage
   showDepositAndGenerateOption: boolean
@@ -142,7 +123,7 @@ export interface MutableManageVaultState {
   collateralAllowanceAmount?: BigNumber
   daiAllowanceAmount?: BigNumber
   selectedCollateralAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
-  selectedDaiAllowanceRadio: 'unlimited' | 'paybackAmount' | 'custom'
+  selectedDaiAllowanceRadio: SelectedDaiAllowanceRadio
 }
 
 export interface ManageVaultEnvironment {
@@ -192,7 +173,7 @@ interface ManageVaultTxInfo {
   daiAllowanceTxHash?: string
   proxyTxHash?: string
   manageTxHash?: string
-  txError?: any
+  txError?: TxError
   etherscan?: string
   proxyConfirmations?: number
   safeConfirmations: number
@@ -204,8 +185,8 @@ export type ManageVaultState = MutableManageVaultState &
   ManageVaultEnvironment &
   ManageVaultFunctions &
   ManageVaultTxInfo & {
-    errorMessages: ManageVaultErrorMessage[]
-    warningMessages: ManageVaultWarningMessage[]
+    errorMessages: VaultErrorMessage[]
+    warningMessages: VaultWarningMessage[]
     summary: ManageVaultSummary
     initialTotalSteps: number
     totalSteps: number
@@ -393,7 +374,7 @@ function addTransitions(
 }
 
 export const defaultMutableManageVaultState: MutableManageVaultState = {
-  stage: 'collateralEditing' as ManageVaultStage,
+  stage: 'collateralEditing' as ManageBorrowVaultStage,
   mainAction: 'depositGenerate',
   originalEditingStage: 'collateralEditing' as ManageVaultEditingStage,
   showDepositAndGenerateOption: false,

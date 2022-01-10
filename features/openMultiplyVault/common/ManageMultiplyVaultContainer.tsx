@@ -43,6 +43,7 @@ export function ManageMultiplyVaultContainer({
 
     const manageVaultMap: Record<string, Observable<ManageMultiplyVaultState>> = {
       GUNIV3DAIUSDC1: manageGuniVault$(id),
+      GUNIV3DAIUSDC2: manageGuniVault$(id),
     }
     const subscription = createManageMultiplyVaultAnalytics$(
       manageVaultMap[token] ? manageVaultMap[token] : manageMultiplyVault$(id),

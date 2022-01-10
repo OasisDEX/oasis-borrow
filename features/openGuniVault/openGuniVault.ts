@@ -14,7 +14,7 @@ import {
   applyIsAllowanceStage,
   defaultAllowanceState,
 } from 'features/allowance/allowance'
-import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { TxStage } from 'features/openMultiplyVault/openMultiplyVault' // TODO: remove
 import {
   addProxyTransitions,
@@ -28,10 +28,19 @@ import {
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { OAZO_FEE } from 'helpers/multiply/calculations'
+import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { curry } from 'ramda'
-import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
+import {
+  combineLatest,
+  EMPTY,
+  iif,
+  merge,
+  Observable,
+  of,
+  Subject,
+  throwError,
+} from 'rxjs'
 import {
   distinctUntilChanged,
   filter,
@@ -46,10 +55,9 @@ import { withLatestFrom } from 'rxjs/operators'
 
 import { combineApplyChanges } from '../../helpers/pipelines/combineApply'
 import { combineTransitions } from '../../helpers/pipelines/combineTransitions'
-import {
-  VaultErrorMessage,
-  VaultWarningMessage,
-} from '../openMultiplyVault/openMultiplyVaultValidations'
+import { TxError } from '../../helpers/types'
+import { VaultErrorMessage } from '../form/errorMessagesHandler'
+import { VaultWarningMessage } from '../form/warningMessagesHandler'
 import { slippageChange$, UserSettingsState } from '../userSettings/userSettings'
 import { applyEnvironment, EnvironmentChange, EnvironmentState } from './enviroment'
 import {
@@ -94,7 +102,7 @@ interface StageState {
 }
 
 interface VaultTxInfo {
-  txError?: any
+  txError?: TxError
   etherscan?: string
   safeConfirmations: number
 }
@@ -153,11 +161,11 @@ type OpenGuniChanges =
   | AllowanceChanges
 
 type ErrorState = {
-  errorMessages: VaultErrorMessage[] // TODO add errors
+  errorMessages: VaultErrorMessage[]
 }
 
 type WarringState = {
-  warningMessages: VaultWarningMessage[] // TODO add warring
+  warningMessages: VaultWarningMessage[]
 }
 
 export type OpenGuniVaultState = OverrideHelper &
@@ -196,6 +204,8 @@ export type OpenGuniVaultState = OverrideHelper &
     netValueUSD: BigNumber
     minToTokenAmount: BigNumber
     requiredDebt?: BigNumber
+    currentPnL: BigNumber
+    totalGasSpentUSD: BigNumber
   } & HasGasEstimation
 
 interface GuniCalculations {
@@ -207,7 +217,9 @@ function applyCalculations<S extends { ilkData: IlkData; depositAmount?: BigNumb
   state: S,
 ): S & GuniCalculations {
   // TODO: missing fees
-  const leveragedAmount = state.depositAmount ? state.depositAmount.div(new BigNumber(0.021)) : zero
+  const leveragedAmount = state.depositAmount
+    ? state.depositAmount.div(state.ilkData.liquidationRatio.minus(one).plus(0.002))
+    : zero
   const flAmount = state.depositAmount ? leveragedAmount.minus(state.depositAmount) : zero
 
   return {
@@ -262,6 +274,7 @@ export function createOpenGuniVault$(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: ExchangeType,
   ) => Observable<Quote>,
   onEveryBlock$: Observable<number>,
   addGasEstimation$: AddGasEstimationFunction,
@@ -358,6 +371,8 @@ export function createOpenGuniVault$(
                       currentStep: 1,
                       minToTokenAmount: zero,
                       maxMultiple: one.div(ilkData.liquidationRatio.minus(one)),
+                      currentPnL: zero,
+                      totalGasSpentUSD: zero,
                       injectStateOverride,
                     }
 
@@ -410,9 +425,9 @@ export function createOpenGuniVault$(
                           distinctUntilChanged(compareBigNumber),
                           switchMap((daiAmountToSwapForUsdc) => {
                             const token0Amount = leveragedAmount.minus(daiAmountToSwapForUsdc)
-                            const oazoFee = daiAmountToSwapForUsdc.times(OAZO_FEE)
+                            const oazoFee = daiAmountToSwapForUsdc.times(OAZO_LOWER_FEE)
                             const amountWithFee = daiAmountToSwapForUsdc.plus(oazoFee)
-                            const contractFee = amountWithFee.times(OAZO_FEE)
+                            const contractFee = amountWithFee.times(OAZO_LOWER_FEE)
                             const oneInchAmount = amountWithFee.minus(contractFee)
 
                             return exchangeQuote$(
@@ -420,6 +435,7 @@ export function createOpenGuniVault$(
                               state.slippage,
                               oneInchAmount,
                               'BUY_COLLATERAL',
+                              'lowerFeesExchange',
                             ).pipe(
                               switchMap((swap) => {
                                 if (swap.status !== 'SUCCESS') {

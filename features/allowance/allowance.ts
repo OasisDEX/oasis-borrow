@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { TxHelpers } from 'components/AppContext'
 
+import { TxError } from '../../helpers/types'
 import { setAllowance } from './setAllowance'
 
 // TODO: there is inconsistency between open/manage
@@ -20,7 +21,7 @@ export type AllowanceChanges =
     }
   | {
       kind: 'allowanceFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'allowanceSuccess'
@@ -67,7 +68,7 @@ export interface AllowanceState {
   selectedAllowanceRadio: AllowanceOption
   allowanceAmount?: BigNumber
   allowanceTxHash?: string
-  txError?: any
+  txError?: TxError
   allowance?: BigNumber
   isAllowanceStage: boolean
 }
@@ -82,7 +83,7 @@ export interface AllowanceFunctions {
   setAllowanceAmountUnlimited?: () => void
   setAllowanceAmountToDepositAmount?: () => void
   setAllowanceAmountCustom?: () => void
-  updateAllowanceAmount?: (amount: BigNumber) => void
+  updateAllowanceAmount?: (amount?: BigNumber) => void
   progress?: () => void
   regress?: () => void
 }

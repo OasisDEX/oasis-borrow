@@ -1,5 +1,4 @@
 import { Global } from '@emotion/core'
-// @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ModalProps } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
@@ -34,7 +33,7 @@ interface ModalCloseIconProps extends ModalProps<WithChildren> {
   color?: string
 }
 
-export function ModalCloseIcon({ close, sx, size = 26, color = 'onSurface' }: ModalCloseIconProps) {
+export function ModalCloseIcon({ close, sx, size = 3, color = 'onSurface' }: ModalCloseIconProps) {
   const handleEscClose = useCallback((event) => {
     const { keyCode } = event
     if (keyCode === 27) {

@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
-import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { compareBigNumber } from 'helpers/compareBigNumber'
 import { EMPTY, Observable } from 'rxjs'
 import {
@@ -94,6 +94,7 @@ export function createExchangeChange$(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: ExchangeType,
   ) => Observable<Quote>,
   state$: Observable<OpenMultiplyVaultState>,
 ) {
@@ -121,6 +122,7 @@ export function createExchangeChange$(
               state.slippage,
               state.oneInchAmount,
               'BUY_COLLATERAL',
+              'defaultExchange',
             )
           }
           return EMPTY
@@ -137,12 +139,16 @@ export function createInitialQuoteChange(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: ExchangeType,
   ) => Observable<Quote>,
   token: string,
   slippage: BigNumber,
 ) {
-  return exchangeQuote$(token, slippage, new BigNumber(1), 'BUY_COLLATERAL').pipe(
-    map(quoteToChange),
-    take(1),
-  )
+  return exchangeQuote$(
+    token,
+    slippage,
+    new BigNumber(1),
+    'BUY_COLLATERAL',
+    'defaultExchange',
+  ).pipe(map(quoteToChange), take(1))
 }

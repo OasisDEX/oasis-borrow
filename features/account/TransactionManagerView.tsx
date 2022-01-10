@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-// @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
 import { ActivityItem } from 'components/Activity'
@@ -100,7 +99,7 @@ function PendingTransaction<A extends TxMeta>({
   etherscan: { url },
 }: {
   transaction: TxMgrTransaction
-  etherscan: any
+  etherscan: { url: string }
 }) {
   const { raw, kind, status } = transaction
   const { t } = useTranslation()

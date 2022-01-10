@@ -31,7 +31,7 @@ export function setupServer(
   customConfig: Partial<Config> = {},
   customDependencies: Partial<Dependencies> = {},
 ): express.Application {
-  function noopHandler(_req: any, _res: any, next: any) {
+  function noopHandler(_req: express.Request, _res: express.Response, next: express.NextFunction) {
     next()
   }
 

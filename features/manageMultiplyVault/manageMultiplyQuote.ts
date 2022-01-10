@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
-import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { EMPTY, Observable } from 'rxjs'
 import {
   debounceTime,
@@ -95,6 +95,7 @@ export function createExchangeChange$(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: ExchangeType,
   ) => Observable<Quote>,
   state$: Observable<ManageMultiplyVaultState>,
 ) {
@@ -146,14 +147,20 @@ export function createExchangeChange$(
             collateralDelta &&
             requiredCollRatio
           ) {
-            return exchangeQuote$(token, slippage, oneInchAmount, exchangeAction)
+            return exchangeQuote$(token, slippage, oneInchAmount, exchangeAction, 'defaultExchange')
           }
 
           if (otherAction === 'closeVault') {
             const { fromTokenAmount } =
               closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
 
-            return exchangeQuote$(token, slippage, fromTokenAmount, 'SELL_COLLATERAL')
+            return exchangeQuote$(
+              token,
+              slippage,
+              fromTokenAmount,
+              'SELL_COLLATERAL',
+              'defaultExchange',
+            )
           }
           return EMPTY
         }),
@@ -170,12 +177,16 @@ export function createInitialQuoteChange(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: ExchangeType,
   ) => Observable<Quote>,
   token: string,
   slippage: BigNumber,
 ) {
-  return exchangeQuote$(token, slippage, new BigNumber(1), 'BUY_COLLATERAL').pipe(
-    map(quoteToChange),
-    take(1),
-  )
+  return exchangeQuote$(
+    token,
+    slippage,
+    new BigNumber(1),
+    'BUY_COLLATERAL',
+    'defaultExchange',
+  ).pipe(map(quoteToChange), take(1))
 }

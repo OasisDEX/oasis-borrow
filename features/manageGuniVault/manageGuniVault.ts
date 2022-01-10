@@ -4,10 +4,13 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
-import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import { createMultiplyHistoryChange$ } from 'features/manageMultiplyVault/manageMultiplyHistory'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { GasEstimationStatus } from 'helpers/form'
+import { calculatePNL } from 'helpers/multiply/calculations'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
@@ -16,7 +19,6 @@ import { getToken } from '../../blockchain/tokensMetadata'
 import { one, zero } from '../../helpers/zero'
 import { applyExchange } from '../manageMultiplyVault/manageMultiplyQuote'
 import {
-  CloseVaultTo,
   ManageMultiplyVaultChange,
   ManageMultiplyVaultState,
   MutableManageMultiplyVaultState,
@@ -31,6 +33,7 @@ import {
   defaultManageMultiplyVaultConditions,
 } from '../manageMultiplyVault/manageMultiplyVaultConditions'
 import { applyManageVaultEnvironment } from '../manageMultiplyVault/manageMultiplyVaultEnvironment'
+import { manageMultiplyInputsDefaults } from '../manageMultiplyVault/manageMultiplyVaultForm'
 import {
   applyManageVaultSummary,
   defaultManageVaultSummary,
@@ -70,7 +73,7 @@ export type GuniTxData = {
 
 type GuniTxDataChange = { kind: 'guniTxData' }
 
-function applyGuniDataChanges<S, Ch extends GuniTxDataChange>(state: S, change: Ch): S {
+function applyGuniDataChanges<S, Ch extends GuniTxDataChange>(change: Ch, state: S): S {
   if (change.kind === 'guniTxData') {
     const { kind: _, ...data } = change
 
@@ -88,9 +91,11 @@ function applyGuniCalculations(state: ManageMultiplyVaultState & GuniTxData) {
     sharedAmount0,
     sharedAmount1,
     minToTokenAmount,
+    vaultHistory,
   } = state
 
   const netValueUSD = lockedCollateralUSD.minus(debt)
+  const currentPnL = calculatePNL(vaultHistory, netValueUSD)
 
   return {
     ...state,
@@ -99,9 +104,27 @@ function applyGuniCalculations(state: ManageMultiplyVaultState & GuniTxData) {
     oazoFee: zero,
     loanFee: zero,
     fees: zero,
+    currentPnL,
     afterCloseToDai:
       sharedAmount0 && minToTokenAmount ? sharedAmount0.plus(minToTokenAmount).minus(debt) : zero,
   }
+}
+
+export function applyManageGuniVaultTransition(
+  change: ManageMultiplyVaultChange,
+  state: ManageMultiplyVaultState,
+): ManageMultiplyVaultState {
+  if (change.kind === 'clear') {
+    return {
+      ...state,
+      ...defaultMutableManageMultiplyVaultState,
+      ...defaultManageMultiplyVaultCalculations,
+      ...defaultManageMultiplyVaultConditions,
+      ...manageMultiplyInputsDefaults,
+    }
+  }
+
+  return state
 }
 
 function apply(
@@ -110,15 +133,16 @@ function apply(
 ) {
   const s1 = applyExchange(change as ManageMultiplyVaultChange, state)
   const s2 = applyManageVaultTransition(change as ManageMultiplyVaultChange, s1)
-  const s3 = applyManageVaultTransaction(change as ManageMultiplyVaultChange, s2)
-  const s4 = applyManageVaultEnvironment(change as ManageMultiplyVaultChange, s3)
-  const s5 = applyManageVaultInjectedOverride(change as ManageMultiplyVaultChange, s4)
-  const s6 = applyGuniDataChanges(s5, change as GuniTxDataChange)
-  const s7 = applyManageVaultCalculations(s6)
-  const s8 = applyGuniCalculations(s7)
-  const s9 = applyManageVaultStageCategorisation(s8 as ManageMultiplyVaultState)
-  const s10 = applyManageVaultConditions(s9)
-  return applyManageVaultSummary(s10)
+  const s3 = applyManageGuniVaultTransition(change as ManageMultiplyVaultChange, s2)
+  const s4 = applyManageVaultTransaction(change as ManageMultiplyVaultChange, s3)
+  const s5 = applyManageVaultEnvironment(change as ManageMultiplyVaultChange, s4)
+  const s6 = applyManageVaultInjectedOverride(change as ManageMultiplyVaultChange, s5)
+  const s7 = applyGuniDataChanges(change as GuniTxDataChange, s6)
+  const s8 = applyManageVaultCalculations(s7)
+  const s9 = applyGuniCalculations(s8)
+  const s10 = applyManageVaultStageCategorisation(s9 as ManageMultiplyVaultState)
+  const s11 = applyManageVaultConditions(s10)
+  return applyManageVaultSummary(s11)
 }
 
 function addTransitions(
@@ -132,8 +156,7 @@ function addTransitions(
     return {
       ...state,
       progress: () => change({ kind: 'progressEditing' }),
-      setCloseVaultTo: (closeVaultTo: CloseVaultTo) =>
-        change({ kind: 'closeVaultTo', closeVaultTo }),
+      setCloseVaultTo: () => change({ kind: 'toggleEditing' }),
     }
   }
 
@@ -156,8 +179,8 @@ function addTransitions(
 }
 
 export const defaultMutableManageMultiplyVaultState = {
-  stage: 'otherActions',
-  originalEditingStage: 'otherActions',
+  stage: 'adjustPosition',
+  originalEditingStage: 'adjustPosition',
   collateralAllowanceAmount: maxUint256,
   daiAllowanceAmount: maxUint256,
   selectedCollateralAllowanceRadio: 'unlimited',
@@ -182,12 +205,14 @@ export function createManageGuniVault$(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: ExchangeType,
   ) => Observable<Quote>,
   addGasEstimation$: AddGasEstimationFunction,
   getProportions$: (
     gUniAmount: BigNumber,
     token: string,
   ) => Observable<{ sharedAmount0: BigNumber; sharedAmount1: BigNumber }>,
+  vaultMultiplyHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
   slippageLimit$: Observable<UserSettingsState>,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
@@ -257,6 +282,7 @@ export function createManageGuniVault$(
                     initialTotalSteps,
                     totalSteps: initialTotalSteps,
                     currentStep: 1,
+                    vaultHistory: [],
                     clear: () => change({ kind: 'clear' }),
                     gasEstimationStatus: GasEstimationStatus.unset,
                     injectStateOverride,
@@ -271,6 +297,7 @@ export function createManageGuniVault$(
                     balanceInfoChange$(balanceInfo$, vault.token, account),
                     createIlkDataChange$(ilkData$, vault.ilk),
                     createVaultChange$(vault$, id, context.chainId),
+                    createMultiplyHistoryChange$(vaultMultiplyHistory$, id),
                   )
 
                   const guniDataChange$ = environmentChanges$.pipe(
@@ -286,6 +313,7 @@ export function createManageGuniVault$(
                             state.slippage,
                             sharedAmount1.minus(0.01),
                             'SELL_COLLATERAL',
+                            'noFeesExchange',
                           ).pipe(
                             map((swap) => {
                               if (swap.status !== 'SUCCESS') {

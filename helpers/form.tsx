@@ -211,7 +211,7 @@ export function toAccountChange(account$: Observable<string | undefined>) {
 type TxState$ToX$<X, Y extends TxMeta> = (txState$: Observable<TxState<Y>>) => Observable<X>
 type TxStateToX$<X, Y extends TxMeta> = (txState: TxState<Y>) => Observable<X>
 
-function isFunction(f: any): f is Function {
+function isFunction(f: unknown): f is Function {
   return typeof f === 'function'
 }
 
