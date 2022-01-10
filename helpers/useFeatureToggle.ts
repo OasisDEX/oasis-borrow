@@ -2,14 +2,14 @@ import { assign } from 'lodash'
 
 export const FT_LOCAL_STORAGE_KEY = 'features'
 
-type Features = 'TestFeature' | 'AnotherTestFeature' | 'AssetLandingPages'
-
 type ConfiguredFeatures = Record<Features, boolean>
 
+type Features = 'TestFeature' | 'AnotherTestFeature' | 'AssetLandingPages'
 const configuredFeatures: Record<Features, boolean> = {
   TestFeature: false, // used in unit tests
   AnotherTestFeature: true, // used in unit tests
   AssetLandingPages: false,
+  // your feature here....
 }
 
 export function loadFeatureToggles(features: Array<Features> = []) {
