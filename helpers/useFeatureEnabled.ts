@@ -1,40 +1,48 @@
 import { assign } from 'lodash'
 
-const FT_LOCAL_STORAGE_KEY = 'features'
+export const FT_LOCAL_STORAGE_KEY = 'features'
 
-export enum Features {
-  TestFeature = 'TestFeature', // used in unit tests
-  AssetLandingPages = 'AssetLandingPages',
+type Features = 'TestFeature' | 'AnotherTestFeature' | 'AssetLandingPages'
+
+type ConfiguredFeatures = Record<Features, boolean>
+
+const configuredFeatures: Record<Features, boolean> = {
+  TestFeature: false, // used in unit tests
+  AnotherTestFeature: true, // used in unit tests
+  AssetLandingPages: false,
 }
 
-const releaseSelectedFeatures = Object.keys(Features).reduce((acc, feature) => {
-  acc[feature as Features] = false
-  return acc
-}, {} as FeaturesData)
-
-type FeaturesData = {
-  [key in Features]: boolean
-}
-
-const enabledFeatures = [Features.AssetLandingPages]
-
-// update local toggles
-if (typeof window !== 'undefined' && window.localStorage) {
-  const rawFeatures = localStorage.getItem(FT_LOCAL_STORAGE_KEY)
-  if (!rawFeatures) {
-    localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(releaseSelectedFeatures))
+export function load(features: Array<Features> = []) {
+  const _releaseSelectedFeatures = assign(
+    {},
+    features.reduce(
+      (acc, feature) => ({
+        ...acc,
+        [feature]: true,
+      }),
+      configuredFeatures,
+    ),
+  )
+  // update local toggles
+  if (typeof localStorage !== 'undefined') {
+    const rawFeatures = localStorage.getItem(FT_LOCAL_STORAGE_KEY)
+    if (!rawFeatures) {
+      localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(_releaseSelectedFeatures))
+    } else {
+      const userSelectedFeatures: ConfiguredFeatures = JSON.parse(rawFeatures) as ConfiguredFeatures
+      const merged = assign({}, _releaseSelectedFeatures, userSelectedFeatures)
+      localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(merged))
+    }
   } else {
-    const userSelectedFeatures: FeaturesData = JSON.parse(rawFeatures) as FeaturesData
-    const merged = assign({}, releaseSelectedFeatures, userSelectedFeatures)
-    localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(merged))
+    console.log('undefined')
   }
 }
 
 export function useFeatureEnabled(feature: Features): boolean {
   const userEnabledFeatures = localStorage.getItem(FT_LOCAL_STORAGE_KEY)
   if (userEnabledFeatures) {
-    return JSON.parse(userEnabledFeatures)[feature] || enabledFeatures.includes(feature)
+    return JSON.parse(userEnabledFeatures)[feature] || configuredFeatures[feature]
   } else {
-    return false
+    return configuredFeatures[feature]
   }
 }

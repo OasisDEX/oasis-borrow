@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { useFeatureEnabled } from './useFeatureEnabled'
+import { useFeatureEnabled, FT_LOCAL_STORAGE_KEY, load } from './useFeatureEnabled'
 
 describe.only('useFeatureEnabled', () => {
   describe('test setup', () => {
@@ -19,49 +19,84 @@ describe.only('useFeatureEnabled', () => {
     })
   })
 
-  describe('adding/removing a feature toggle', () => {
-    it('creates the features and sets to disabled in local storage on first load')
+  describe('loading feature toggles', () => {
+    it('creates the features and sets to disabled in local storage on first load', () => {
+      expect(localStorage.getItem(FT_LOCAL_STORAGE_KEY)).to.be.null
+      load()
+      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
+        TestFeature: false,
+      })
+    })
 
-    it('creates a new feature on load when there are existing features')
+    it('creates a new feature on load when there are existing features', () => {
+      localStorage.setItem(
+        FT_LOCAL_STORAGE_KEY,
+        JSON.stringify({
+          TestFeature: false,
+        }),
+      )
+      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).not.to.contain({
+        AnotherTestFeature: true,
+      })
+      load(['AnotherTestFeature'])
+      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
+        AnotherTestFeature: true,
+      })
+    })
 
-    it('does not overwrite existing enabled feature toggles on load')
-
-    it('removes toggles from local storage when they are removed from code')
+    it('does not overwrite existing enabled feature toggles on load', () => {
+      localStorage.setItem(
+        FT_LOCAL_STORAGE_KEY,
+        JSON.stringify({
+          TestFeature: true,
+        }),
+      )
+      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
+        TestFeature: true,
+      })
+      load()
+      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
+        TestFeature: true,
+      })
+    })
   })
 
   describe('enabled/disabled', () => {
-    it('enables feature when enabled in local storage')
-    it('enables feature when enabled in code')
-    it('disables feature when disabled in code and localstorage')
+    it('enables feature when enabled in local storage and disabled in code', () => {
+      localStorage.setItem(
+        FT_LOCAL_STORAGE_KEY,
+        JSON.stringify({
+          TestFeature: true,
+        }),
+      )
+      load()
+      expect(useFeatureEnabled('TestFeature')).to.be.true
+    })
+
+    it('enables feature when enabled in code and disabled in local storage', () => {
+      localStorage.setItem(
+        FT_LOCAL_STORAGE_KEY,
+        JSON.stringify({
+          AnotherTestFeature: false,
+        }),
+      )
+      load()
+      expect(useFeatureEnabled('AnotherTestFeature')).to.be.true
+    })
+
+    it('disables feature when disabled in code and localstorage', () => {
+      localStorage.setItem(
+        FT_LOCAL_STORAGE_KEY,
+        JSON.stringify({
+          TestFeature: false,
+        }),
+      )
+      load()
+      expect(useFeatureEnabled('TestFeature')).to.be.false
+    })
   })
-
-  // old notes
-
-  // returns true if the feature is enabled in local storage
-  // returns false if the feature is disabled in local storage
-  // returns true if a feature is disabled in local storage but enabled in code
-
-  // does not update an existing feature in local storage if it has been set by user
-  // creates new features in local storage
-  // it marks feature as enabled if the feature has been released (flagged in code as enabled)
 
   afterEach(() => {
     localStorage.clear()
-  })
-
-  describe('local dev', () => {
-    // add a new feature toggle - set as disabled
-    //  - creates in local storage.  does not override existing feature toggles - merges in
-    // enable using local storage
-    // disable using local storage
-    //
-    // testing on staging - enable feature toggle in local storage
-    // disable
-    //
-    // releasing
-    // set feature as enabled in source code, and deploy.
-    // 👉 feature enabled overwrites local storage state
-    // 👉 feature disabled does not overwrite local storage state
-    // therefore feature is enabled if one of local storage and code is set to true
   })
 })
