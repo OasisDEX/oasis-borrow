@@ -1,7 +1,8 @@
 import { expect } from 'chai'
-import { useFeatureToggle, FT_LOCAL_STORAGE_KEY, loadFeatureToggles } from './useFeatureToggle'
 
-describe.only('useFeatureEnabled', () => {
+import { FT_LOCAL_STORAGE_KEY, loadFeatureToggles, useFeatureToggle } from './useFeatureToggle'
+
+describe('useFeatureEnabled', () => {
   describe('loading feature toggles', () => {
     it('creates the features and sets to disabled in local storage on first load', () => {
       expect(localStorage.getItem(FT_LOCAL_STORAGE_KEY)).to.be.null

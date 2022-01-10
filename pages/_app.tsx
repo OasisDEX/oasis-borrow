@@ -29,9 +29,9 @@ import { adRollPixelScript } from '../analytics/adroll'
 import { trackingEvents } from '../analytics/analytics'
 import { LOCALSTORAGE_KEY } from '../analytics/common'
 import { mixpanelInit } from '../analytics/mixpanel'
+import { loadFeatureToggles } from '../helpers/useFeatureToggle'
 import { useLocalStorage } from '../helpers/useLocalStorage'
 import nextI18NextConfig from '../next-i18next.config.js'
-import { loadFeatureToggles } from '../helpers/useFeatureToggle'
 
 function getLibrary(provider: any, connector: AbstractConnector | undefined): Web3 {
   const chainIdPromise = connector!.getChainId()
