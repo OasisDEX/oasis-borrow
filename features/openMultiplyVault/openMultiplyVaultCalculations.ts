@@ -206,7 +206,6 @@ export function applyOpenMultiplyVaultCalculations(
   const afterOutstandingDebt = borrowedDaiAmount.times(one.plus(LOAN_FEE))
 
   const toTokenAmount = buyingCollateral.times(one.plus(slippage))
-
   const toTokenAmountUSD = buyingCollateral.times(marketPriceMaxSlippage)
 
   const fromTokenAmount = borrowedDaiAmount
