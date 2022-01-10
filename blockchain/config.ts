@@ -60,6 +60,13 @@ const protoMain = {
     WETH: contractDesc(eth, mainnetAddresses['ETH']),
     DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
   } as Dictionary<ContractDesc>,
+  tokensMainnet:{
+    ...getCollateralTokens(mainnetAddresses),
+    GUNIV3DAIUSDC1: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC1']),
+    GUNIV3DAIUSDC2: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC2']),
+    WETH: contractDesc(eth, mainnetAddresses['ETH']),
+    DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
+  },
   joins: {
     ...getCollateralJoinContracts(mainnetAddresses),
   },
@@ -183,6 +190,7 @@ const goerli: NetworkConfig = {
     WETH: contractDesc(eth, goerliAddresses.ETH),
     DAI: contractDesc(erc20, goerliAddresses.MCD_DAI),
   },
+  tokensMainnet: protoMain.tokensMainnet,
   joins: {
     ...getCollateralJoinContracts(goerliAddresses),
   },
@@ -202,16 +210,15 @@ const goerli: NetworkConfig = {
   dssProxyActions: contractDesc(dssProxyActions, goerliAddresses.PROXY_ACTIONS),
   // Currently this is not supported on Goerli - no deployed contract
   dssMultiplyProxyActions: contractDesc(
-    dssMultiplyProxyActions,
-    getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
+    dssMultiplyProxyActions, '0x216F1d572782a44a0dF6653017B1354112eA5590',
   ),
   guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
   guniResolver: '0x',
   guniRouter: '0x',
   // Currently this is not supported on Goerli - no deployed contract
-  defaultExchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''),
-  lowerFeesExchange: contractDesc(exchange, '0x0'),
-  noFeesExchange: contractDesc(exchange, '0x0'),
+  defaultExchange: contractDesc(exchange, "0xde21e8bb2aac2923c13d957745e96c37a223e2e6"),
+  lowerFeesExchange: contractDesc(exchange, "0xde21e8bb2aac2923c13d957745e96c37a223e2e6"),
+  noFeesExchange: contractDesc(exchange, "0xde21e8bb2aac2923c13d957745e96c37a223e2e6"),
   // Currently this is not supported on Goerli - no deployed contract
   fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
   etherscan: {
