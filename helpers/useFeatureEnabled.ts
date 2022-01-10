@@ -12,7 +12,7 @@ const configuredFeatures: Record<Features, boolean> = {
   AssetLandingPages: false,
 }
 
-export function load(features: Array<Features> = []) {
+export function loadFeatureToggles(features: Array<Features> = []) {
   const _releaseSelectedFeatures = assign(
     {},
     features.reduce(

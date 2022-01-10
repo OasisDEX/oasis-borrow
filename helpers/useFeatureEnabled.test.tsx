@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { useFeatureEnabled, FT_LOCAL_STORAGE_KEY, load } from './useFeatureEnabled'
+import { useFeatureEnabled, FT_LOCAL_STORAGE_KEY, loadFeatureToggles } from './useFeatureEnabled'
 
 describe.only('useFeatureEnabled', () => {
   describe('test setup', () => {
@@ -22,7 +22,7 @@ describe.only('useFeatureEnabled', () => {
   describe('loading feature toggles', () => {
     it('creates the features and sets to disabled in local storage on first load', () => {
       expect(localStorage.getItem(FT_LOCAL_STORAGE_KEY)).to.be.null
-      load()
+      loadFeatureToggles()
       expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
         TestFeature: false,
       })
@@ -38,7 +38,7 @@ describe.only('useFeatureEnabled', () => {
       expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).not.to.contain({
         AnotherTestFeature: true,
       })
-      load(['AnotherTestFeature'])
+      loadFeatureToggles(['AnotherTestFeature'])
       expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
         AnotherTestFeature: true,
       })
@@ -54,7 +54,7 @@ describe.only('useFeatureEnabled', () => {
       expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
         TestFeature: true,
       })
-      load()
+      loadFeatureToggles()
       expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
         TestFeature: true,
       })
@@ -69,7 +69,7 @@ describe.only('useFeatureEnabled', () => {
           TestFeature: true,
         }),
       )
-      load()
+      loadFeatureToggles()
       expect(useFeatureEnabled('TestFeature')).to.be.true
     })
 
@@ -80,7 +80,7 @@ describe.only('useFeatureEnabled', () => {
           AnotherTestFeature: false,
         }),
       )
-      load()
+      loadFeatureToggles()
       expect(useFeatureEnabled('AnotherTestFeature')).to.be.true
     })
 
@@ -91,7 +91,7 @@ describe.only('useFeatureEnabled', () => {
           TestFeature: false,
         }),
       )
-      load()
+      loadFeatureToggles()
       expect(useFeatureEnabled('TestFeature')).to.be.false
     })
   })

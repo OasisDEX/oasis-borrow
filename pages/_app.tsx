@@ -31,6 +31,7 @@ import { LOCALSTORAGE_KEY } from '../analytics/common'
 import { mixpanelInit } from '../analytics/mixpanel'
 import { useLocalStorage } from '../helpers/useLocalStorage'
 import nextI18NextConfig from '../next-i18next.config.js'
+import { loadFeatureToggles } from '../helpers/useFeatureEnabled'
 
 function getLibrary(provider: any, connector: AbstractConnector | undefined): Web3 {
   const chainIdPromise = connector!.getChainId()
@@ -135,7 +136,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     }
 
     router.events.on('routeChangeComplete', handleRouteChange)
-
+    loadFeatureToggles()
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange)
     }
