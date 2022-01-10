@@ -3,7 +3,7 @@ import { LandingPageLayout } from 'components/Layouts'
 import { LandingView } from 'features/landing/LandingView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { Features, useFeatureEnabled } from '../helpers/useFeatureEnabled'
+import { useFeatureEnabled } from '../helpers/useFeatureEnabled'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
@@ -12,7 +12,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 })
 
 export default function LandingPage() {
-  const enabled = useFeatureEnabled(Features.AssetLandingPages)
+  const enabled = useFeatureEnabled('AssetLandingPages')
   const view = enabled ? 'AssetLandingPages feature enabled ✅' : <LandingView />
   return <WithConnection>{view}</WithConnection>
 }
