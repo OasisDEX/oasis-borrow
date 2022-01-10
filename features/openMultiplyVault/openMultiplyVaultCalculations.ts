@@ -205,10 +205,8 @@ export function applyOpenMultiplyVaultCalculations(
 
   const afterOutstandingDebt = borrowedDaiAmount.times(one.plus(LOAN_FEE))
 
-  // TODO inconsistency here -> buyingCollateral.times(one.plus(slippage))
   const toTokenAmount = buyingCollateral.times(one.plus(slippage))
-  // I guess it should be just:
-  // const toTokenAmount = buyingCollateral
+
   const toTokenAmountUSD = buyingCollateral.times(marketPriceMaxSlippage)
 
   const fromTokenAmount = borrowedDaiAmount
