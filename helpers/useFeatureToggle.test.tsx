@@ -42,6 +42,22 @@ describe.only('useFeatureEnabled', () => {
         TestFeature: true,
       })
     })
+
+    it('does not overwrite existing disabled feature toggles when features are enabled in code', () => {
+      localStorage.setItem(
+        FT_LOCAL_STORAGE_KEY,
+        JSON.stringify({
+          TestFeature: false,
+        }),
+      )
+      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
+        TestFeature: false,
+      })
+      loadFeatureToggles(['TestFeature'])
+      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
+        TestFeature: false,
+      })
+    })
   })
 
   describe('enabling & disabling features', () => {
