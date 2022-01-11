@@ -364,6 +364,7 @@ export function createOpenGuniVault$(
                       maxMultiple: one.div(ilkData.liquidationRatio.minus(one)),
                       currentPnL: zero,
                       totalGasSpentUSD: zero,
+                      invalidSlippage: false,
                       injectStateOverride,
                     }
 

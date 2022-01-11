@@ -14,6 +14,7 @@ export interface EnvironmentState {
   ilkData: IlkData
   proxyAddress?: string
   allowance?: BigNumber
+  invalidSlippage: boolean
 }
 
 export type EnvironmentChange = PriceInfoChange | BalanceInfoChange | IlkDataChange | SlippageChange

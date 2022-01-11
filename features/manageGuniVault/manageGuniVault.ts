@@ -10,13 +10,12 @@ import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditio
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { GasEstimationStatus } from 'helpers/form'
-import { calculatePNL } from 'helpers/multiply/calculations'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
 
 import { getToken } from '../../blockchain/tokensMetadata'
-import { one, zero } from '../../helpers/zero'
+import { one } from '../../helpers/zero'
 import { applyExchange } from '../manageMultiplyVault/manageMultiplyQuote'
 import {
   ManageMultiplyVaultChange,
@@ -47,6 +46,8 @@ import {
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
 import { slippageChange$, UserSettingsState } from '../userSettings/userSettings'
 import { closeGuniVault } from './guniActionsCalls'
+import { applyGuniCalculations } from './manageGuniVaultCalculations'
+import { applyGuniManageVaultConditions } from './manageGuniVaultConditions'
 import { applyGuniManageEstimateGas } from './manageGuniVaultTransactions'
 
 function applyManageVaultInjectedOverride(
@@ -84,31 +85,6 @@ function applyGuniDataChanges<S, Ch extends GuniTxDataChange>(change: Ch, state:
   }
   return state
 }
-// this method overwrites state from s7
-function applyGuniCalculations(state: ManageMultiplyVaultState & GuniTxData) {
-  const {
-    vault: { lockedCollateralUSD, debt },
-    sharedAmount0,
-    sharedAmount1,
-    minToTokenAmount,
-    vaultHistory,
-  } = state
-
-  const netValueUSD = lockedCollateralUSD.minus(debt)
-  const currentPnL = calculatePNL(vaultHistory, netValueUSD)
-
-  return {
-    ...state,
-    netValueUSD,
-    collateralDeltaUSD: sharedAmount1,
-    oazoFee: zero,
-    loanFee: zero,
-    fees: zero,
-    currentPnL,
-    afterCloseToDai:
-      sharedAmount0 && minToTokenAmount ? sharedAmount0.plus(minToTokenAmount).minus(debt) : zero,
-  }
-}
 
 export function applyManageGuniVaultTransition(
   change: ManageMultiplyVaultChange,
@@ -142,7 +118,8 @@ function apply(
   const s9 = applyGuniCalculations(s8)
   const s10 = applyManageVaultStageCategorisation(s9 as ManageMultiplyVaultState)
   const s11 = applyManageVaultConditions(s10)
-  return applyManageVaultSummary(s11)
+  const s12 = applyGuniManageVaultConditions(s11)
+  return applyManageVaultSummary(s12)
 }
 
 function addTransitions(
@@ -285,6 +262,7 @@ export function createManageGuniVault$(
                     vaultHistory: [],
                     clear: () => change({ kind: 'clear' }),
                     gasEstimationStatus: GasEstimationStatus.unset,
+                    invalidSlippage: false,
                     injectStateOverride,
                   }
 

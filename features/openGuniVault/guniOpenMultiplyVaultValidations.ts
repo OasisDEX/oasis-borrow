@@ -14,6 +14,7 @@ export function validateGuniErrors(state: OpenGuniVaultState): OpenGuniVaultStat
     exchangeError,
     ledgerWalletContractDataDisabled,
     depositAmountExceedsCollateralBalance,
+    invalidSlippage,
   } = state
   const errorMessages: VaultErrorMessage[] = []
 
@@ -25,6 +26,7 @@ export function validateGuniErrors(state: OpenGuniVaultState): OpenGuniVaultStat
         generateAmountExceedsDebtCeiling,
         exchangeError,
         generateAmountMoreThanMaxFlashAmount,
+        invalidSlippage,
       }),
     )
   }

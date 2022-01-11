@@ -26,6 +26,7 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
     hasToDepositCollateralOnEmptyVault,
     shouldShowExchangeError,
     ledgerWalletContractDataDisabled,
+    invalidSlippage,
   } = state
 
   const errorMessages: VaultErrorMessage[] = []
@@ -48,6 +49,7 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
         withdrawCollateralOnVaultUnderDebtFloor,
         hasToDepositCollateralOnEmptyVault,
         shouldShowExchangeError,
+        invalidSlippage,
       }),
     )
   }

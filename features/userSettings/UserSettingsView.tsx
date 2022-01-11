@@ -203,7 +203,6 @@ export function UserSettingsDropdown(
     function handleClickOutside(event: MouseEvent) {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
         setOpened(false)
-        console.log('here')
       }
     }
 

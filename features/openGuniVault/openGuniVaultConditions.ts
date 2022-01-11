@@ -3,6 +3,7 @@ import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
 import { isNullish } from '../../helpers/functions'
+import { GUNI_MAX_SLIPPAGE } from '../../helpers/multiply/calculations'
 import {
   customAllowanceAmountEmptyValidator,
   customAllowanceAmountExceedsMaxUint256Validator,
@@ -202,6 +203,8 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
 
   const highSlippage = slippage.gt(SLIPPAGE_WARNING_THRESHOLD)
 
+  const invalidSlippage = slippage.gt(GUNI_MAX_SLIPPAGE)
+
   const potentialGenerateAmountLessThanDebtFloor =
     !isNullish(depositAmount) && afterOutstandingDebt.lt(ilkData.debtFloor)
 
@@ -215,7 +218,8 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
       customAllowanceAmountExceedsMaxUint256 ||
       customAllowanceAmountLessThanDepositAmount ||
       exchangeError ||
-      isExchangeLoading
+      isExchangeLoading ||
+      invalidSlippage
     ) || stage === 'txSuccess'
 
   const canRegress = ([
@@ -249,5 +253,6 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     isExchangeLoading,
 
     highSlippage,
+    invalidSlippage,
   }
 }

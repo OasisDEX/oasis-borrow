@@ -200,6 +200,7 @@ export interface ManageVaultConditions {
   hasToDepositCollateralOnEmptyVault: boolean
 
   highSlippage: boolean
+  invalidSlippage: boolean
 }
 
 export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
@@ -258,6 +259,7 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   hasToDepositCollateralOnEmptyVault: false,
 
   highSlippage: false,
+  invalidSlippage: false,
 }
 
 export function applyManageVaultConditions(
@@ -310,6 +312,8 @@ export function applyManageVaultConditions(
     originalEditingStage,
     slippage,
     txError,
+
+    invalidSlippage,
   } = state
 
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
@@ -527,7 +531,8 @@ export function applyManageVaultConditions(
       paybackAmountExceedsVaultDebt ||
       withdrawCollateralOnVaultUnderDebtFloor ||
       shouldShowExchangeError ||
-      hasToDepositCollateralOnEmptyVault)
+      hasToDepositCollateralOnEmptyVault ||
+      invalidSlippage)
 
   const collateralAllowanceProgressionDisabled = collateralAllowanceProgressionDisabledValidator({
     isCollateralAllowanceStage,
