@@ -1,4 +1,3 @@
-
 export const FT_LOCAL_STORAGE_KEY = 'features'
 
 type ConfiguredFeatures = Record<Features, boolean>
