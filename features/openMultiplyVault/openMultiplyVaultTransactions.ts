@@ -177,11 +177,11 @@ export function applyOpenMultiplyVaultTransaction(
 }
 
 export function setAllowance(
-  { send }: TxHelpers,
+  { sendWithGasEstimation }: TxHelpers,
   change: (ch: OpenMultiplyVaultChange) => void,
   state: OpenMultiplyVaultState,
 ) {
-  send(approve, {
+  sendWithGasEstimation(approve, {
     kind: TxMetaKind.approve,
     token: state.token,
     spender: state.proxyAddress!,
@@ -228,8 +228,8 @@ export function parseVaultIdFromReceiptLogs({ logs }: Receipt): BigNumber | unde
 }
 
 export function multiplyVault(
-  { send }: TxHelpers,
-  { tokens, defaultExchange }: ContextConnected,
+  { sendWithGasEstimation }: TxHelpers,
+  { tokensMainnet, defaultExchange }: ContextConnected,
   change: (ch: OpenMultiplyVaultChange) => void,
   {
     depositAmount,
@@ -247,8 +247,8 @@ export function multiplyVault(
   }: OpenMultiplyVaultState,
 ) {
   return getQuote$(
-    getTokenMetaData('DAI', tokens),
-    getTokenMetaData(token, tokens),
+    getTokenMetaData('DAI', tokensMainnet),
+    getTokenMetaData(token, tokensMainnet),
     defaultExchange.address,
     oneInchAmount,
     slippage,
@@ -257,7 +257,7 @@ export function multiplyVault(
     .pipe(
       first(),
       switchMap((swap) =>
-      send(openMultiplyVault, {
+        sendWithGasEstimation(openMultiplyVault, {
           kind: TxMetaKind.multiply,
           depositCollateral: depositAmount || zero,
           skipFL,

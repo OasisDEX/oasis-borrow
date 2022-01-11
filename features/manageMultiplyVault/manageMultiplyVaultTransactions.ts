@@ -231,7 +231,7 @@ export function applyManageVaultTransaction(
 
 export function adjustPosition(
   txHelpers$: Observable<TxHelpers>,
-  { tokens, defaultExchange }: Context,
+  { tokensMainnet, defaultExchange }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     account,
@@ -249,10 +249,10 @@ export function adjustPosition(
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ send }) =>
+      switchMap(({ sendWithGasEstimation }) =>
         getQuote$(
-          getTokenMetaData('DAI', tokens),
-          getTokenMetaData(token, tokens),
+          getTokenMetaData('DAI', tokensMainnet),
+          getTokenMetaData(token, tokensMainnet),
           defaultExchange.address,
           oneInchAmount,
           slippage,
@@ -260,7 +260,7 @@ export function adjustPosition(
         ).pipe(
           first(),
           switchMap((swap) =>
-            send(adjustMultiplyVault, {
+            sendWithGasEstimation(adjustMultiplyVault, {
               kind: TxMetaKind.adjustPosition,
               depositCollateral: depositAmount || zero,
               requiredDebt: debtDelta?.abs() || zero,
@@ -535,7 +535,7 @@ export function createProxy(
 
 export function closeVault(
   txHelpers$: Observable<TxHelpers>,
-  { tokens, defaultExchange }: Context,
+  { tokensMainnet, defaultExchange }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     proxyAddress,
@@ -553,10 +553,10 @@ export function closeVault(
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ send }) =>
+      switchMap(({ sendWithGasEstimation }) =>
         getQuote$(
-          getTokenMetaData('DAI', tokens),
-          getTokenMetaData(token, tokens),
+          getTokenMetaData('DAI', tokensMainnet),
+          getTokenMetaData(token, tokensMainnet),
           defaultExchange.address,
           fromTokenAmount,
           slippage,
@@ -564,7 +564,7 @@ export function closeVault(
         ).pipe(
           first(),
           switchMap((swap) => {
-            return send(closeVaultCall, {
+            return sendWithGasEstimation(closeVaultCall, {
               kind: TxMetaKind.closeVault,
               closeTo: closeVaultTo!,
               token,

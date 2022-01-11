@@ -9,12 +9,12 @@ import { filter, switchMap } from 'rxjs/operators'
 import { ProxyChanges } from './proxy'
 
 export function createProxy(
-  { send }: TxHelpers,
+  { sendWithGasEstimation }: TxHelpers,
   proxyAddress$: Observable<string | undefined>,
   change: (ch: any /* TODO fix changes type */) => void,
   { safeConfirmations }: { safeConfirmations: number },
 ) {
-  send(createDsProxy, { kind: TxMetaKind.createDsProxy })
+  sendWithGasEstimation(createDsProxy, { kind: TxMetaKind.createDsProxy })
     .pipe(
       transactionToX<ProxyChanges, CreateDsProxyData>(
         { kind: 'proxyWaitingForApproval' },
