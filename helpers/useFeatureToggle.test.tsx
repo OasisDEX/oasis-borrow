@@ -1,9 +1,9 @@
 import { expect } from 'chai'
 
 import {
+  configureLocalStorageForTests,
   FT_LOCAL_STORAGE_KEY,
   loadFeatureToggles,
-  configureLocalStorageForTests,
   useFeatureToggle,
 } from './useFeatureToggle'
 
