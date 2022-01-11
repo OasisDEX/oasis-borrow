@@ -19,15 +19,12 @@ export function configureLocalStorageForTests(data: { [feature in Features]?: bo
 export function loadFeatureToggles(features: Array<Features> = []) {
   // update local toggles
   if (typeof localStorage !== 'undefined') {
-    const _releaseSelectedFeatures = assign(
-      {},
-      features.reduce(
-        (acc, feature) => ({
-          ...acc,
-          [feature]: true,
-        }),
-        configuredFeatures,
-      ),
+    const _releaseSelectedFeatures = features.reduce(
+      (acc, feature) => ({
+        ...acc,
+        [feature]: true,
+      }),
+      configuredFeatures,
     )
     const rawFeatures = localStorage.getItem(FT_LOCAL_STORAGE_KEY)
     if (!rawFeatures) {
