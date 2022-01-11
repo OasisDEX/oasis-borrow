@@ -177,11 +177,11 @@ export function applyOpenMultiplyVaultTransaction(
 }
 
 export function setAllowance(
-  { sendWithGasEstimation }: TxHelpers,
+  { send }: TxHelpers,
   change: (ch: OpenMultiplyVaultChange) => void,
   state: OpenMultiplyVaultState,
 ) {
-  sendWithGasEstimation(approve, {
+  send(approve, {
     kind: TxMetaKind.approve,
     token: state.token,
     spender: state.proxyAddress!,
