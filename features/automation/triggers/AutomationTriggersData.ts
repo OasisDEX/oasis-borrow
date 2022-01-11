@@ -9,7 +9,7 @@ import { Observable } from 'rxjs'
 import { distinctUntilChanged, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
 import automationBot from '../../../blockchain/abi/automation-bot.json'
-
+// TODO - ŁW - Implement tests for this file
 function parseEvent(abi: Array<string>, ev: ethers.Event): TriggerRecord {
   const intf = new Interface(abi)
   const parsedEvent = intf.parseLog(ev) as any
@@ -28,20 +28,32 @@ async function getEvents(
 ): Promise<TriggersData> {
   const abi = [
     'event TriggerAdded( uint256 indexed triggerId, uint256 triggerType, uint256 indexed cdpId,  bytes triggerData)',
+    'event TriggerRemoved (index_topic_1 uint256 cdpId, index_topic_2 uint256 triggerId)'
   ]
-
+  console.log(abi)
   const contract = new ethers.Contract(botAddress ?? '', new Interface(automationBot), provider)
-  const filterFrom = contract.filters.TriggerAdded(null, null, vaultId, null)
-  const eventsList = await contract.queryFilter(
-    filterFrom,
+  const filterFromTriggerAdded = contract.filters.TriggerAdded(null, null, vaultId, null)
+  const addedEventsList = await contract.queryFilter(
+    filterFromTriggerAdded,
     process.env.DEPLOYMENT_BLOCK,
     blockNumber,
   )
-  const events = eventsList.map((singleEvent) => {
+  const events = addedEventsList.map((singleEvent) => {
     const record: TriggerRecord = parseEvent(abi, singleEvent)
     return record
   })
+  console.log(addedEventsList)
+  console.log(events)
 
+  const filterFromTriggerRemoved = contract.filters.TriggerRemoved(vaultId, null)
+  console.log(filterFromTriggerRemoved)
+  const removedEventsList = await contract.queryFilter(
+    filterFromTriggerRemoved,
+    process.env.DEPLOYMENT_BLOCK,
+    blockNumber,
+  )
+  console.log(removedEventsList)
+  // TODO then add removedEvents to events, sort it by block No determine what to return
   if (events.length === 0) {
     return {
       triggers: [],
