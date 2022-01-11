@@ -18,6 +18,7 @@ import { Box, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'them
 import { useAppContext } from './AppContextProvider'
 import { ChevronUpDown } from './ChevronUpDown'
 import { SelectComponents } from 'react-select/src/components'
+import { useFeatureToggle } from '../helpers/useFeatureToggle'
 
 const {
   publicRuntimeConfig: { apiHost },
@@ -136,6 +137,7 @@ const HEADER_LINKS = {
   'dai-wallet': `${apiHost}/daiwallet`,
   learn: 'https://kb.oasis.app',
   blog: 'https://blog.oasis.app',
+  multiply: ``,
 }
 
 function HeaderDropdown({
@@ -366,31 +368,53 @@ function MobileMenu() {
 
 function DisconnectedHeader() {
   const { t } = useTranslation()
-
+  const assetLandingPagesEnabled = useFeatureToggle('AssetLandingPages')
+  const menuBarLandingPagesDisabled = (
+    <>
+      <HeaderDropdown title={t('nav.products')}>
+        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['dai-wallet']}>
+          {t('nav.dai-wallet')}
+        </AppLink>
+        <Text variant="links.nav" sx={{ cursor: 'default', ':hover': { color: 'primary' } }}>
+          {t('nav.borrow')}
+        </Text>
+      </HeaderDropdown>
+      <AppLink variant="links.navHeader" href={HEADER_LINKS['learn']}>
+        {t('nav.learn')}
+      </AppLink>
+      <AppLink variant="links.navHeader" href={HEADER_LINKS['blog']}>
+        {t('nav.blog')}
+      </AppLink>
+    </>
+  )
+  const menuBarLandingPagesEnabled = (
+    <>
+      <AppLink variant="links.navHeader" href="/multiply">
+        {t('nav.multiply')}
+      </AppLink>
+      <AppLink variant="links.navHeader" href="/borrow">
+        {t('nav.borrow')}
+      </AppLink>
+      <HeaderDropdown title={t('nav.more')}>
+        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['dai-wallet']}>
+          {t('nav.dai-wallet')}
+        </AppLink>
+        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['learn']}>
+          {t('nav.learn')}
+        </AppLink>
+        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['blog']}>
+          {t('nav.blog')}
+        </AppLink>
+      </HeaderDropdown>
+    </>
+  )
   return (
     <>
       <Box sx={{ display: ['none', 'block'] }}>
         <BasicHeader variant="appContainer">
           <Grid sx={{ alignItems: 'center', columnGap: [4, 4, 5], gridAutoFlow: 'column', mr: 3 }}>
             <Logo />
-            <HeaderDropdown title={t('nav.products')}>
-              <AppLink
-                variant="links.nav"
-                sx={{ fontWeight: 'body' }}
-                href={HEADER_LINKS['dai-wallet']}
-              >
-                {t('nav.dai-wallet')}
-              </AppLink>
-              <Text variant="links.nav" sx={{ cursor: 'default', ':hover': { color: 'primary' } }}>
-                {t('nav.borrow')}
-              </Text>
-            </HeaderDropdown>
-            <AppLink variant="links.navHeader" href={HEADER_LINKS['learn']}>
-              {t('nav.learn')}
-            </AppLink>
-            <AppLink variant="links.navHeader" href={HEADER_LINKS['blog']}>
-              {t('nav.blog')}
-            </AppLink>
+            {assetLandingPagesEnabled ? menuBarLandingPagesEnabled : menuBarLandingPagesDisabled}
           </Grid>
           <Grid sx={{ alignItems: 'center', columnGap: 3, gridAutoFlow: 'column' }}>
             <AppLink
