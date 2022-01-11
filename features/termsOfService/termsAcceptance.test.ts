@@ -16,7 +16,7 @@ interface PipelineInput {
   saveAcceptance$: () => Observable<never | void>
 }
 
-const defaultParams: Partial<PipelineInput> = {
+const defaultParams: PipelineInput = {
   web3Context$: of({
     status: 'connected',
     account: '0x123',
@@ -32,18 +32,35 @@ const defaultParams: Partial<PipelineInput> = {
 }
 
 function createState$(overrides?: Partial<PipelineInput>): Observable<TermsAcceptanceState> {
+  const {
+    web3Context$,
+    version,
+    jwtAuthSetupToken$,
+    checkAcceptance$,
+    saveAcceptance$,
+  } = defaultParams
+
   if (!overrides) {
-    //@ts-ignore
-    return createTermsAcceptance$(...Object.values(defaultParams))
+    return createTermsAcceptance$(
+      web3Context$,
+      version,
+      jwtAuthSetupToken$,
+      checkAcceptance$,
+      saveAcceptance$,
+    )
   }
 
   const args = mapValues(defaultParams, (v, k) => {
-    //@ts-ignore
-    return overrides[k] ? overrides[k] : v
-  })
+    return overrides[k as keyof PipelineInput] ? overrides[k as keyof PipelineInput] : v
+  }) as PipelineInput
 
-  //@ts-ignore
-  return createTermsAcceptance$(...Object.values(args))
+  return createTermsAcceptance$(
+    args.web3Context$,
+    args.version,
+    args.jwtAuthSetupToken$,
+    args.checkAcceptance$,
+    args.saveAcceptance$,
+  )
 }
 
 describe('termsAcceptance', () => {

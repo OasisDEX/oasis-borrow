@@ -1,8 +1,19 @@
-import { maxUint256 } from 'blockchain/calls/erc20'
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
+import { isNullish } from '../../helpers/functions'
+import {
+  customAllowanceAmountEmptyValidator,
+  customAllowanceAmountExceedsMaxUint256Validator,
+  customAllowanceAmountLessThanDepositAmountValidator,
+  depositingAllEthBalanceValidator,
+  ledgerWalletContractDataDisabledValidator,
+  vaultWillBeAtRiskLevelDangerAtNextPriceValidator,
+  vaultWillBeAtRiskLevelDangerValidator,
+  vaultWillBeAtRiskLevelWarningAtNextPriceValidator,
+  vaultWillBeAtRiskLevelWarningValidator,
+} from '../form/commonValidators'
 import { OpenMultiplyVaultStage, OpenMultiplyVaultState } from './openMultiplyVault'
 
 const defaultOpenVaultStageCategories = {
@@ -86,6 +97,7 @@ export interface OpenMultiplyVaultConditions {
   vaultWillBeAtRiskLevelWarningAtNextPrice: boolean
   vaultWillBeAtRiskLevelDangerAtNextPrice: boolean
   vaultWillBeUnderCollateralizedAtNextPrice: boolean
+  potentialGenerateAmountLessThanDebtFloor: boolean
 
   depositingAllEthBalance: boolean
   depositAmountExceedsCollateralBalance: boolean
@@ -94,6 +106,7 @@ export interface OpenMultiplyVaultConditions {
   generateAmountExceedsDebtCeiling: boolean
   generateAmountLessThanDebtFloor: boolean
   generateAmountMoreThanMaxFlashAmount: boolean
+  ledgerWalletContractDataDisabled: boolean
 
   customAllowanceAmountEmpty: boolean
   customAllowanceAmountExceedsMaxUint256: boolean
@@ -119,6 +132,7 @@ export const defaultOpenMultiplyVaultConditions: OpenMultiplyVaultConditions = {
   vaultWillBeAtRiskLevelWarningAtNextPrice: false,
   vaultWillBeAtRiskLevelDangerAtNextPrice: false,
   vaultWillBeUnderCollateralizedAtNextPrice: false,
+  potentialGenerateAmountLessThanDebtFloor: false,
 
   depositingAllEthBalance: false,
   depositAmountExceedsCollateralBalance: false,
@@ -127,6 +141,7 @@ export const defaultOpenMultiplyVaultConditions: OpenMultiplyVaultConditions = {
   generateAmountExceedsDebtCeiling: false,
   generateAmountLessThanDebtFloor: false,
   generateAmountMoreThanMaxFlashAmount: false,
+  ledgerWalletContractDataDisabled: false,
 
   customAllowanceAmountEmpty: false,
   customAllowanceAmountExceedsMaxUint256: false,
@@ -148,7 +163,13 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     daiYieldFromDepositingCollateral,
     daiYieldFromDepositingCollateralAtNextPrice,
 
-    ilkData,
+    ilkData: {
+      liquidationRatio,
+      collateralizationDangerThreshold,
+      collateralizationWarningThreshold,
+      debtFloor,
+      ilkDebtAvailable,
+    },
     token,
     balanceInfo: { collateralBalance },
     depositAmount,
@@ -160,51 +181,68 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     exchangeError,
     quote,
     swap,
+    txError,
   } = state
 
   const inputAmountsEmpty = !depositAmount
+
   const canAdjustRisk =
     depositAmount !== undefined &&
     maxCollRatio !== undefined &&
     depositAmount.gt(0) &&
-    maxCollRatio.gt(ilkData.liquidationRatio)
+    maxCollRatio.gt(liquidationRatio)
 
-  const vaultWillBeAtRiskLevelDanger =
-    !inputAmountsEmpty &&
-    afterCollateralizationRatio.gte(ilkData.liquidationRatio) &&
-    afterCollateralizationRatio.lte(ilkData.collateralizationDangerThreshold)
+  const vaultWillBeAtRiskLevelDanger = vaultWillBeAtRiskLevelDangerValidator({
+    inputAmountsEmpty,
+    afterCollateralizationRatio,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+  })
 
-  const vaultWillBeAtRiskLevelDangerAtNextPrice =
-    !vaultWillBeAtRiskLevelDanger &&
-    !inputAmountsEmpty &&
-    afterCollateralizationRatioAtNextPrice.gte(ilkData.liquidationRatio) &&
-    afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationDangerThreshold)
+  const vaultWillBeAtRiskLevelDangerAtNextPrice = vaultWillBeAtRiskLevelDangerAtNextPriceValidator({
+    vaultWillBeAtRiskLevelDanger,
+    inputAmountsEmpty,
+    afterCollateralizationRatioAtNextPrice,
+    liquidationRatio,
+    collateralizationDangerThreshold,
+  })
 
-  const vaultWillBeAtRiskLevelWarning =
-    !inputAmountsEmpty &&
-    afterCollateralizationRatio.gt(ilkData.collateralizationDangerThreshold) &&
-    afterCollateralizationRatio.lte(ilkData.collateralizationWarningThreshold)
+  const vaultWillBeAtRiskLevelWarning = vaultWillBeAtRiskLevelWarningValidator({
+    inputAmountsEmpty,
+    afterCollateralizationRatio,
+    collateralizationDangerThreshold,
+    collateralizationWarningThreshold,
+  })
 
-  const vaultWillBeAtRiskLevelWarningAtNextPrice =
-    !vaultWillBeAtRiskLevelWarning &&
-    !inputAmountsEmpty &&
-    afterCollateralizationRatioAtNextPrice.gt(ilkData.collateralizationDangerThreshold) &&
-    afterCollateralizationRatioAtNextPrice.lte(ilkData.collateralizationWarningThreshold)
+  const vaultWillBeAtRiskLevelWarningAtNextPrice = vaultWillBeAtRiskLevelWarningAtNextPriceValidator(
+    {
+      vaultWillBeAtRiskLevelWarning,
+      inputAmountsEmpty,
+      afterCollateralizationRatioAtNextPrice,
+      collateralizationDangerThreshold,
+      collateralizationWarningThreshold,
+    },
+  )
 
   const vaultWillBeUnderCollateralized =
     afterOutstandingDebt?.gt(zero) &&
-    afterCollateralizationRatio.lt(ilkData.liquidationRatio) &&
+    afterCollateralizationRatio.lt(liquidationRatio) &&
     !afterCollateralizationRatio.isZero()
 
   const vaultWillBeUnderCollateralizedAtNextPrice =
     !vaultWillBeUnderCollateralized &&
     !!(
       afterOutstandingDebt?.gt(zero) &&
-      afterCollateralizationRatioAtNextPrice.lt(ilkData.liquidationRatio) &&
+      afterCollateralizationRatioAtNextPrice.lt(liquidationRatio) &&
       !afterCollateralizationRatioAtNextPrice.isZero()
     )
 
-  const depositingAllEthBalance = token === 'ETH' && !!depositAmount?.eq(collateralBalance)
+  const depositingAllEthBalance = depositingAllEthBalanceValidator({
+    token,
+    depositAmount,
+    collateralBalance,
+  })
+
   const depositAmountExceedsCollateralBalance = !!depositAmount?.gt(collateralBalance)
 
   const generateAmountExceedsDaiYieldFromDepositingCollateral = !!afterOutstandingDebt?.gt(
@@ -215,12 +253,10 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     !generateAmountExceedsDaiYieldFromDepositingCollateral &&
     !!afterOutstandingDebt?.gt(daiYieldFromDepositingCollateralAtNextPrice)
 
-  const generateAmountExceedsDebtCeiling = !!afterOutstandingDebt?.gt(ilkData.ilkDebtAvailable)
+  const generateAmountExceedsDebtCeiling = !!afterOutstandingDebt?.gt(ilkDebtAvailable)
 
   const generateAmountLessThanDebtFloor =
-    afterOutstandingDebt &&
-    !afterOutstandingDebt.isZero() &&
-    afterOutstandingDebt.lt(ilkData.debtFloor)
+    afterOutstandingDebt && !afterOutstandingDebt.isZero() && afterOutstandingDebt.lt(debtFloor)
 
   const generateAmountMoreThanMaxFlashAmount = afterOutstandingDebt.gt(FLASH_MINT_LIMIT_PER_TX)
 
@@ -233,18 +269,28 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     'txWaitingForApproval',
   ] as OpenMultiplyVaultStage[]).some((s) => s === stage)
 
-  const customAllowanceAmountEmpty = selectedAllowanceRadio === 'custom' && !allowanceAmount
+  const customAllowanceAmountEmpty = customAllowanceAmountEmptyValidator({
+    selectedAllowanceRadio,
+    allowanceAmount,
+  })
 
-  const customAllowanceAmountExceedsMaxUint256 = !!(
-    selectedAllowanceRadio === 'custom' && allowanceAmount?.gt(maxUint256)
+  const customAllowanceAmountExceedsMaxUint256 = customAllowanceAmountExceedsMaxUint256Validator({
+    selectedAllowanceRadio,
+    allowanceAmount,
+  })
+
+  const customAllowanceAmountLessThanDepositAmount = customAllowanceAmountLessThanDepositAmountValidator(
+    {
+      selectedAllowanceRadio,
+      allowanceAmount,
+      depositAmount,
+    },
   )
 
-  const customAllowanceAmountLessThanDepositAmount = !!(
-    selectedAllowanceRadio === 'custom' &&
-    allowanceAmount &&
-    depositAmount &&
-    allowanceAmount.lt(depositAmount)
-  )
+  const ledgerWalletContractDataDisabled = ledgerWalletContractDataDisabledValidator({ txError })
+
+  const potentialGenerateAmountLessThanDebtFloor =
+    !isNullish(depositAmount) && afterOutstandingDebt.lt(debtFloor)
 
   const insufficientAllowance =
     token !== 'ETH' &&
@@ -290,6 +336,7 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     vaultWillBeAtRiskLevelDangerAtNextPrice,
     vaultWillBeUnderCollateralized,
     vaultWillBeUnderCollateralizedAtNextPrice,
+    potentialGenerateAmountLessThanDebtFloor,
 
     depositingAllEthBalance,
     depositAmountExceedsCollateralBalance,
@@ -298,6 +345,7 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     generateAmountExceedsDebtCeiling,
     generateAmountLessThanDebtFloor,
     generateAmountMoreThanMaxFlashAmount,
+    ledgerWalletContractDataDisabled,
 
     customAllowanceAmountEmpty,
     customAllowanceAmountExceedsMaxUint256,

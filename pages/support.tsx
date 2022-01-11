@@ -1,4 +1,3 @@
-// @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 // @ts-ignore
 import MDX from '@mdx-js/runtime'

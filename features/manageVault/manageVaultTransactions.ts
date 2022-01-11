@@ -15,6 +15,7 @@ import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { filter, first, switchMap } from 'rxjs/operators'
 
+import { TxError } from '../../helpers/types'
 import { ManageVaultChange, ManageVaultState } from './manageVault'
 
 type ProxyChange =
@@ -27,7 +28,7 @@ type ProxyChange =
     }
   | {
       kind: 'proxyFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'proxyConfirming'
@@ -46,7 +47,7 @@ type CollateralAllowanceChange =
     }
   | {
       kind: 'collateralAllowanceFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'collateralAllowanceSuccess'
@@ -61,7 +62,7 @@ type DaiAllowanceChange =
     }
   | {
       kind: 'daiAllowanceFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'daiAllowanceSuccess'
@@ -76,7 +77,7 @@ type ManageChange =
     }
   | {
       kind: 'manageFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'manageSuccess'

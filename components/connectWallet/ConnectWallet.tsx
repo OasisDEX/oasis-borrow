@@ -48,7 +48,7 @@ const rpcUrls: { [chainId: number]: string } = mapValues(
 export async function getConnector(
   connectorKind: ConnectionKind,
   network: number,
-  options: any = {},
+  options: Record<string, unknown> = {},
 ) {
   assert(rpcUrls[network], 'Unsupported chainId!')
   switch (connectorKind) {
@@ -208,7 +208,7 @@ function connect(
   web3Context: Web3Context | undefined,
   connectorKind: ConnectionKind,
   chainId: number,
-  options: any = {},
+  options: Record<string, unknown> = {},
 ) {
   return async () => {
     if (

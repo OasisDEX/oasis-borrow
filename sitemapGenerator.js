@@ -1,4 +1,3 @@
-// @ts-ignore
 const sitemap = require('nextjs-sitemap-generator')
 
 try {

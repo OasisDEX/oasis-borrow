@@ -1,5 +1,4 @@
 import { Global } from '@emotion/core'
-// @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ModalProps } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'

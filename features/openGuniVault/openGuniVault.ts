@@ -28,7 +28,7 @@ import {
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
+import { GUNI_SLIPPAGE, OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { curry } from 'ramda'
 import {
@@ -55,10 +55,9 @@ import {
 
 import { combineApplyChanges } from '../../helpers/pipelines/combineApply'
 import { combineTransitions } from '../../helpers/pipelines/combineTransitions'
-import {
-  VaultErrorMessage,
-  VaultWarningMessage,
-} from '../openMultiplyVault/openMultiplyVaultValidations'
+import { TxError } from '../../helpers/types'
+import { VaultErrorMessage } from '../form/errorMessagesHandler'
+import { VaultWarningMessage } from '../form/warningMessagesHandler'
 import { applyEnvironment, EnvironmentChange, EnvironmentState } from './enviroment'
 import {
   addFormTransitions,
@@ -104,7 +103,7 @@ interface StageState {
 }
 
 interface VaultTxInfo {
-  txError?: any
+  txError?: TxError
   etherscan?: string
   safeConfirmations: number
 }
@@ -163,11 +162,11 @@ type OpenGuniChanges =
   | AllowanceChanges
 
 type ErrorState = {
-  errorMessages: VaultErrorMessage[] // TODO add errors
+  errorMessages: VaultErrorMessage[]
 }
 
 type WarringState = {
-  warningMessages: VaultWarningMessage[] // TODO add warring
+  warningMessages: VaultWarningMessage[]
 }
 
 export type OpenGuniVaultState = OverrideHelper &
@@ -331,7 +330,6 @@ export function createOpenGuniVault$(
                     }
 
                     // const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
-                    const SLIPPAGE = new BigNumber(0.001)
 
                     const initialState: OpenGuniVaultState = {
                       ...defaultFormState,
@@ -352,7 +350,7 @@ export function createOpenGuniVault$(
                       etherscan: context.etherscan.url,
                       errorMessages: [],
                       warningMessages: [],
-                      slippage: SLIPPAGE,
+                      slippage: GUNI_SLIPPAGE,
                       clear: () => change({ kind: 'clear' }),
                       gasEstimationStatus: GasEstimationStatus.unset,
                       exchangeError: false,
@@ -459,7 +457,7 @@ export function createOpenGuniVault$(
                                         fromTokenAmount: amountWithFee,
                                         toTokenAmount: swap.collateralAmount,
                                         minToTokenAmount: swap.collateralAmount.times(
-                                          one.minus(SLIPPAGE),
+                                          one.minus(GUNI_SLIPPAGE),
                                         ),
                                         buyingCollateralUSD: amount1,
                                         totalCollateral: mintAmount,
