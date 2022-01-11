@@ -325,7 +325,9 @@
     "oracles": "Oracles",
     "dai-wallet": "Dai Wallet",
     "borrow": "Borrow",
-    "oasis-borrow": "Oasis Borrow"
+    "oasis-borrow": "Oasis Borrow",
+    "multiply": "Multiply",
+    "more": "More"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
