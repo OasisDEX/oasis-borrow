@@ -505,7 +505,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
   } = context
 
   if (data.action === 'BUY_COLLATERAL') {
-    return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.increaseMultiple(
+    const params = [
       {
         fromTokenAddress: tokens['DAI'].address,
         toTokenAddress: tokens[data.token].address,
@@ -538,9 +538,17 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
         lender: fmm,
         exchange: defaultExchange.address,
       } as any,
+    ]
+
+    console.log('BUY_COLLATERAL params crap', ...params)
+
+    return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.increaseMultiple(
+      params[0],
+      params[1],
+      params[2],
     )
   } else {
-    return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.decreaseMultiple(
+    const params = [
       {
         fromTokenAddress: tokens[data.token].address,
         toTokenAddress: tokens['DAI'].address,
@@ -580,6 +588,12 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
         lender: fmm,
         exchange: defaultExchange.address,
       } as any,
+    ]
+    console.log('else BUY_COLLATERAL params crap', ...params)
+    return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.decreaseMultiple(
+      params[0],
+      params[1],
+      params[2],
     )
   }
 }

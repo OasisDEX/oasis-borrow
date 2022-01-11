@@ -245,10 +245,11 @@ export function adjustPosition(
     oneInchAmount,
   }: ManageMultiplyVaultState,
 ) {
+  console.log('sending transaction')
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ sendWithGasEstimation }) =>
+      switchMap(({ send }) =>
         getQuote$(
           getTokenMetaData('DAI', tokens),
           getTokenMetaData(token, tokens),
@@ -259,7 +260,7 @@ export function adjustPosition(
         ).pipe(
           first(),
           switchMap((swap) =>
-            sendWithGasEstimation(adjustMultiplyVault, {
+            send(adjustMultiplyVault, {
               kind: TxMetaKind.adjustPosition,
               depositCollateral: depositAmount || zero,
               requiredDebt: debtDelta?.abs() || zero,
