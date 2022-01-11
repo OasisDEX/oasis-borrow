@@ -12,6 +12,10 @@ const configuredFeatures: Record<Features, boolean> = {
   // your feature here....
 }
 
+export function configureLocalStorageForTests(data: { [feature in Features]?: boolean }) {
+  localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(data))
+}
+
 export function loadFeatureToggles(features: Array<Features> = []) {
   // update local toggles
   if (typeof localStorage !== 'undefined') {

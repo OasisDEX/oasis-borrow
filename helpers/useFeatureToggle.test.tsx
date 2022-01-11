@@ -1,6 +1,11 @@
 import { expect } from 'chai'
 
-import { FT_LOCAL_STORAGE_KEY, loadFeatureToggles, useFeatureToggle } from './useFeatureToggle'
+import {
+  FT_LOCAL_STORAGE_KEY,
+  loadFeatureToggles,
+  configureLocalStorageForTests,
+  useFeatureToggle,
+} from './useFeatureToggle'
 
 describe('useFeatureEnabled', () => {
   describe('loading feature toggles', () => {
@@ -13,12 +18,9 @@ describe('useFeatureEnabled', () => {
     })
 
     it('creates a new feature on load when there are existing features', () => {
-      localStorage.setItem(
-        FT_LOCAL_STORAGE_KEY,
-        JSON.stringify({
-          TestFeature: false,
-        }),
-      )
+      configureLocalStorageForTests({
+        TestFeature: false,
+      })
       expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).not.to.contain({
         AnotherTestFeature: true,
       })
@@ -29,12 +31,9 @@ describe('useFeatureEnabled', () => {
     })
 
     it('does not overwrite existing enabled feature toggles on load', () => {
-      localStorage.setItem(
-        FT_LOCAL_STORAGE_KEY,
-        JSON.stringify({
-          TestFeature: true,
-        }),
-      )
+      configureLocalStorageForTests({
+        TestFeature: true,
+      })
       expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
         TestFeature: true,
       })
@@ -45,12 +44,9 @@ describe('useFeatureEnabled', () => {
     })
 
     it('does not overwrite existing disabled feature toggles when features are enabled in code', () => {
-      localStorage.setItem(
-        FT_LOCAL_STORAGE_KEY,
-        JSON.stringify({
-          TestFeature: false,
-        }),
-      )
+      configureLocalStorageForTests({
+        TestFeature: false,
+      })
       expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
         TestFeature: false,
       })
@@ -63,34 +59,25 @@ describe('useFeatureEnabled', () => {
 
   describe('enabling & disabling features', () => {
     it('enables feature when enabled in local storage and disabled in code', () => {
-      localStorage.setItem(
-        FT_LOCAL_STORAGE_KEY,
-        JSON.stringify({
-          TestFeature: true,
-        }),
-      )
+      configureLocalStorageForTests({
+        TestFeature: true,
+      })
       loadFeatureToggles()
       expect(useFeatureToggle('TestFeature')).to.be.true
     })
 
     it('enables feature when enabled in code and disabled in local storage', () => {
-      localStorage.setItem(
-        FT_LOCAL_STORAGE_KEY,
-        JSON.stringify({
-          AnotherTestFeature: false,
-        }),
-      )
+      configureLocalStorageForTests({
+        AnotherTestFeature: false,
+      })
       loadFeatureToggles()
       expect(useFeatureToggle('AnotherTestFeature')).to.be.true
     })
 
     it('disables feature when disabled in code and localstorage', () => {
-      localStorage.setItem(
-        FT_LOCAL_STORAGE_KEY,
-        JSON.stringify({
-          TestFeature: false,
-        }),
-      )
+      configureLocalStorageForTests({
+        TestFeature: false,
+      })
       loadFeatureToggles()
       expect(useFeatureToggle('TestFeature')).to.be.false
     })
