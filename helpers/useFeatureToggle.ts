@@ -1,4 +1,3 @@
-import { assign } from 'lodash'
 
 export const FT_LOCAL_STORAGE_KEY = 'features'
 
@@ -16,10 +15,11 @@ export function configureLocalStorageForTests(data: { [feature in Features]?: bo
   localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(data))
 }
 
-export function loadFeatureToggles(features: Array<Features> = []) {
+export function loadFeatureToggles(testFeaturesFlaggedEnabled: Array<Features> = []) {
   // update local toggles
   if (typeof localStorage !== 'undefined') {
-    const _releaseSelectedFeatures = features.reduce(
+    // merge features used for unit testing
+    const _releaseSelectedFeatures = testFeaturesFlaggedEnabled.reduce(
       (acc, feature) => ({
         ...acc,
         [feature]: true,
@@ -31,7 +31,7 @@ export function loadFeatureToggles(features: Array<Features> = []) {
       localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(_releaseSelectedFeatures))
     } else {
       const userSelectedFeatures: ConfiguredFeatures = JSON.parse(rawFeatures) as ConfiguredFeatures
-      const merged = assign({}, _releaseSelectedFeatures, userSelectedFeatures)
+      const merged = { ..._releaseSelectedFeatures, ...userSelectedFeatures }
       localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(merged))
     }
   }
