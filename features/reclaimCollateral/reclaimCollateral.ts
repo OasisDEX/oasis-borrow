@@ -26,13 +26,13 @@ export type ReclaimChange =
     }
 
 export function reclaimCollateral(
-  { sendWithGasEstimation }: TxHelpers,
+  { send }: TxHelpers,
   proxyAddress: string,
   amount: BigNumber,
   token: string,
   id: BigNumber,
 ) {
-  return sendWithGasEstimation(reclaim, {
+  return send(reclaim, {
     kind: TxMetaKind.reclaim,
     proxyAddress: proxyAddress!,
     amount,
