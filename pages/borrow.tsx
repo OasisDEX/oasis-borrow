@@ -1,6 +1,7 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useRouter } from 'next/router'
+
+import { useFeatureToggle } from '../helpers/useFeatureToggle'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
@@ -13,7 +14,7 @@ export default function Borrow() {
   if (!assetLandingPagesEnabled) {
     const router = useRouter()
     if (typeof window !== 'undefined') {
-      router.push('/')
+      void router.push('/')
     }
   }
   return 'hello from borrow page'

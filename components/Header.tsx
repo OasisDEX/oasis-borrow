@@ -15,10 +15,10 @@ import React, { useState } from 'react'
 import { TRANSITIONS } from 'theme'
 import { Box, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 
+import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
 import { ChevronUpDown } from './ChevronUpDown'
 import { SelectComponents } from 'react-select/src/components'
-import { useFeatureToggle } from '../helpers/useFeatureToggle'
 
 const {
   publicRuntimeConfig: { apiHost },
