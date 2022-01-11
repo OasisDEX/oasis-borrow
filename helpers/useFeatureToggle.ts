@@ -42,9 +42,5 @@ export function loadFeatureToggles(features: Array<Features> = []) {
 
 export function useFeatureToggle(feature: Features): boolean {
   const userEnabledFeatures = localStorage.getItem(FT_LOCAL_STORAGE_KEY)
-  if (userEnabledFeatures) {
-    return JSON.parse(userEnabledFeatures)[feature] || configuredFeatures[feature]
-  } else {
-    return configuredFeatures[feature]
-  }
+  return JSON.parse(userEnabledFeatures || '{}')[feature] || configuredFeatures[feature]
 }
