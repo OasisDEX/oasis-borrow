@@ -207,8 +207,8 @@
     "hero": {
       "headlinePreAssetLandingPages": "Genera Dai usando cripto como colateral",
       "subheaderPreAssetLandingPages": "Abre un Vault de Maker y genera Dai depositando tu colateral. Conecta tu cartera para comenzar",
-      "headline": "Borrow and multiply using your favourite cryptos",
-      "subheader": "ETH, WBTC, +30 more assets available to put to work from just 1.50% per year.<0/> Connect a wallet to get started"
+      "headline": "Pide prestado y multiplica tus activos con tus cripto favoritas",
+      "subheader": "ETH, WBTC, más de 30 activos para poner a trabajar desde 1,50% por año.<0/> Conecta una cartera para comenzar"
     },
     "cards": {
       "dai": {
