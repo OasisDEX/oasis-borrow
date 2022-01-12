@@ -9,11 +9,11 @@ import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
-import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
-import { Box, Divider, Flex, Grid, Text } from 'theme-ui'
+import { Box, Divider, Grid, Text } from 'theme-ui'
 
+import { TextWithCheckmark } from 'components/TextWithCheckmark'
 import { VaultErrors } from '../../components/vault/VaultErrors'
 import { VaultWarnings } from '../../components/vault/VaultWarnings'
 import { ManageVaultCollateralAllowance } from '../openMultiplyVault/common/ManageVaultCollateralAllowance'
@@ -24,30 +24,6 @@ import { ManageVaultButton } from './ManageVaultButton'
 import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './ManageVaultConfirmation'
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultEditing } from './ManageVaultEditing'
-
-function TextWithCheckmark({ children }: WithChildren) {
-  return (
-    <Flex sx={{ alignItems: 'center' }}>
-      <Flex
-        sx={{
-          width: '20px',
-          height: '20px',
-          border: '2px solid',
-          borderColor: 'onSuccess',
-          borderRadius: '50%',
-          mr: 3,
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'onSuccess',
-          flexShrink: 0,
-        }}
-      >
-        <Icon name="checkmark" size="auto" width="11px" sx={{ position: 'relative', top: '1px' }} />
-      </Flex>
-      <Text>{children}</Text>
-    </Flex>
-  )
-}
 
 function ManageVaultMultiplyTransition({ stage, vault }: ManageVaultState) {
   const { t } = useTranslation()
