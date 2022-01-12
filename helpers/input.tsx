@@ -67,7 +67,7 @@ export function InputWithMax({
             prefix: '',
           })}
           onChange={onChange}
-          value={amount ? formatAmount(amount!, token.symbol) : null}
+          value={amount ? formatAmount(amount!, token.symbol) : undefined}
           placeholder={`0 ${token.symbol}`}
           variant={hasError ? 'inputError' : 'input'}
         />

@@ -122,6 +122,8 @@ export function VaultErrors({
             components={[KbLink]}
           />
         )
+      case 'invalidSlippage':
+        return translate('invalid-slippage')
 
       default:
         throw new UnreachableCaseError(message)

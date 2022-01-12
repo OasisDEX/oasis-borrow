@@ -8,12 +8,13 @@ import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditio
 import { createProxy } from 'features/proxy/createProxy'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { SLIPPAGE } from 'helpers/multiply/calculations'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
+import { TxError } from '../../helpers/types'
 import { VaultErrorMessage } from '../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../form/warningMessagesHandler'
 import {
@@ -162,7 +163,7 @@ interface OpenMultiplyVaultTxInfo {
   allowanceTxHash?: string
   proxyTxHash?: string
   openTxHash?: string
-  txError?: any
+  txError?: TxError
   etherscan?: string
   proxyConfirmations?: number
   safeConfirmations: number
@@ -298,6 +299,7 @@ export function createOpenMultiplyVault$(
     exchangeType: ExchangeType,
   ) => Observable<Quote>,
   addGasEstimation$: AddGasEstimationFunction,
+  slippageLimit$: Observable<UserSettingsState>,
   ilk: string,
 ): Observable<OpenMultiplyVaultState> {
   return ilks$.pipe(
@@ -305,9 +307,9 @@ export function createOpenMultiplyVault$(
       iif(
         () => !ilks.some((i) => i === ilk),
         throwError(new Error(`Ilk ${ilk} does not exist`)),
-        combineLatest(context$, txHelpers$, ilkData$(ilk)).pipe(
+        combineLatest(context$, txHelpers$, ilkData$(ilk), slippageLimit$).pipe(
           first(),
-          switchMap(([context, txHelpers, ilkData]) => {
+          switchMap(([context, txHelpers, ilkData, { slippage }]) => {
             const { token } = ilkData
             const account = context.account
             return combineLatest(
@@ -352,7 +354,7 @@ export function createOpenMultiplyVault$(
                       errorMessages: [],
                       warningMessages: [],
                       summary: defaultOpenVaultSummary,
-                      slippage: SLIPPAGE,
+                      slippage,
                       totalSteps,
                       currentStep: 1,
                       exchangeError: false,
@@ -367,8 +369,9 @@ export function createOpenMultiplyVault$(
                       priceInfoChange$(priceInfo$, token),
                       balanceInfoChange$(balanceInfo$, token, account),
                       createIlkDataChange$(ilkData$, ilk),
-                      createInitialQuoteChange(exchangeQuote$, token),
+                      createInitialQuoteChange(exchangeQuote$, token, slippage),
                       createExchangeChange$(exchangeQuote$, stateSubject$),
+                      slippageChange$(slippageLimit$),
                     )
 
                     const connectedProxyAddress$ = proxyAddress$(account)

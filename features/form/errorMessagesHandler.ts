@@ -25,6 +25,7 @@ export type VaultErrorMessage =
   | 'shouldShowExchangeError'
   | 'hasToDepositCollateralOnEmptyVault'
   | 'depositCollateralOnVaultUnderDebtFloor'
+  | 'invalidSlippage'
 
 interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean
@@ -53,6 +54,7 @@ interface ErrorMessagesHandler {
   depositCollateralOnVaultUnderDebtFloor?: boolean
   hasToDepositCollateralOnEmptyVault?: boolean
   shouldShowExchangeError?: boolean
+  invalidSlippage?: boolean
 }
 
 export function errorMessagesHandler({
@@ -82,6 +84,7 @@ export function errorMessagesHandler({
   depositCollateralOnVaultUnderDebtFloor,
   hasToDepositCollateralOnEmptyVault,
   shouldShowExchangeError,
+  invalidSlippage,
 }: ErrorMessagesHandler) {
   const errorMessages: VaultErrorMessage[] = []
 
@@ -187,6 +190,10 @@ export function errorMessagesHandler({
 
   if (shouldShowExchangeError) {
     errorMessages.push('shouldShowExchangeError')
+  }
+
+  if (invalidSlippage) {
+    errorMessages.push('invalidSlippage')
   }
 
   return errorMessages

@@ -3,6 +3,7 @@ import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
 import { Career, getCareerByFileName, getCareerFileNames, slugify } from 'features/careers/careers'
+import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import dynamic from 'next/dynamic'
 import React from 'react'
@@ -72,23 +73,23 @@ CareerPage.layoutProps = {
   variant: 'marketingSmallContainer',
 }
 
-export async function getStaticProps({ params, locale }: { params: any; locale: string }) {
-  const career = await getCareerByFileName(`${params.slug}.mdx`)
+export async function getStaticProps({ params, locale }: GetServerSidePropsContext) {
+  const career = await getCareerByFileName(`${params!.slug}.mdx`)
 
   return {
     props: {
       career,
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale!, ['common'])),
     },
   }
 }
 
-export async function getStaticPaths({ locales }: { locales: string[] }) {
+export async function getStaticPaths({ locales }: GetServerSidePropsContext) {
   const files = getCareerFileNames()
 
   return {
     paths: files.flatMap((file: string) =>
-      locales.map((locale) => ({
+      locales!.map((locale) => ({
         params: {
           slug: slugify(file),
         },

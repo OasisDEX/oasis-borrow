@@ -465,7 +465,10 @@
     "stability-fee": "稳定费率",
     "type": "类型",
     "vault-dai-debt": "该金库 Dai 债务",
-    "vault-id": "金库 ID"
+    "vault-id": "金库 ID",
+    "oracle-price": "Oracle Price",
+    "market-price": "Market Price",
+    "max-multiple": "Max Multiple"
   },
   "to-the-following-address": "至此地址",
   "token-balance": "{{token}} 余额",
@@ -634,6 +637,23 @@
       "header": "抵押我的 {{token}} 借款",
       "subtext": "使用 {{balance}} {{token}} 借出最高 {{maxBorrow}} DAI",
       "button": "抵押 {{token}} 借贷"
+    }
+  },
+  "product-card": {
+    "borrow": {
+      "description": "A Vault designed for borrowing against {{token}}."
+    },
+    "multiply": {
+      "description": "A Vault designed for multiple exposure to {{token}}."
+    }
+  },
+  "product-card-banner": {
+    "with": "With {{value}} {{token}} \uD83D\uDC47",
+    "borrow": {
+      "description": "Borrow up to {{value}} {{token}}"
+    },
+    "multiply": {
+      "description": "Get up to {{value}} {{token}} exposure"
     }
   }
 }

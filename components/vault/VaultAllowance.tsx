@@ -72,14 +72,13 @@ export function VaultAllowance({
                 value={
                   allowanceAmount && isCustom
                     ? formatAmount(allowanceAmount, getToken(token).symbol)
-                    : null
+                    : undefined
                 }
                 mask={createNumberMask({
                   allowDecimal: true,
                   decimalLimit: getToken(token).digits,
                   prefix: '',
                 })}
-                // @ts-ignore TODO PROVIDE PROPER TYPING
                 onChange={handleNumericInput(updateAllowanceAmount!)}
               />
               <Text sx={{ fontSize: 1 }}>{token}</Text>
