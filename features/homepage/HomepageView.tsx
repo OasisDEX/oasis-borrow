@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { MouseEvent,useCallback, useState } from 'react'
-import { Button, Flex, Grid, Heading, Image,  SxStyleProp, Text } from 'theme-ui'
+import React, { MouseEvent, useCallback, useState } from 'react'
+import { Box, Button, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { AppLink } from '../../components/Links'
@@ -9,6 +9,36 @@ import { useObservable } from '../../helpers/observableHook'
 import { staticFilesRuntimeUrl } from '../../helpers/staticPaths'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { slideInAnimation } from '../../theme/animations'
+
+function MultiplyTabContent() {
+  return (
+    <Text
+      variant="paragraph2"
+      sx={{ mt: 4, color: 'lavender', maxWidth: 617, textAlign: 'center' }}
+    >
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum nibh etc aliquam
+      dolor sit amet.{' '}
+      <AppLink href="/multiply" variant="inText">
+        See all Multiply collateral types →
+      </AppLink>
+    </Text>
+  )
+}
+
+function BorrowTabContent() {
+  return (
+    <Text
+      variant="paragraph2"
+      sx={{ mt: 4, color: 'lavender', maxWidth: 617, textAlign: 'center' }}
+    >
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum nibh etc aliquam
+      dolor sit amet.{' '}
+      <AppLink href="/borrow" variant="inText">
+        See all Borrow collateral types →
+      </AppLink>
+    </Text>
+  )
+}
 
 function TabSwitcher() {
   enum Tabs {
@@ -21,7 +51,7 @@ function TabSwitcher() {
       setSelectedTab((event.currentTarget.value as unknown) as Tabs),
     [],
   )
-  console.log(selectedTab)
+
   return (
     <Flex
       sx={{
@@ -54,16 +84,7 @@ function TabSwitcher() {
           Borrow on Oasis
         </Button>
       </Grid>
-      <Text
-        variant="paragraph2"
-        sx={{ mt: 4, color: 'lavender', maxWidth: 617, textAlign: 'center' }}
-      >
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum nibh etc
-        aliquam dolor sit amet.{' '}
-        <AppLink href="/multiply" variant="inText">
-          See all Multiply collateral types →
-        </AppLink>
-      </Text>
+      {selectedTab === Tabs.Multiply ? <MultiplyTabContent /> : <BorrowTabContent />}
     </Flex>
   )
 }
