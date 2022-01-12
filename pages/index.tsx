@@ -5,6 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
+import HomepageView from '../features/homepage/HomepageView'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
@@ -14,7 +15,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 
 export default function LandingPage() {
   const enabled = useFeatureToggle('AssetLandingPages')
-  const view = enabled ? 'AssetLandingPages feature enabled ✅' : <LandingView />
+  const view = enabled ? <HomepageView /> : <LandingView />
   return <WithConnection>{view}</WithConnection>
 }
 

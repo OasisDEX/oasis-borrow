@@ -1,7 +1,7 @@
 import { IlkDataList } from 'blockchain/ilks'
 import { popularIlksWithFilter$, PopularIlksWithFilters } from 'features/ilks/popularIlksFilters'
 import { combineLatest, Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { map, tap } from 'rxjs/operators'
 
 import { FeaturedIlk } from './featuredIlksData'
 
@@ -15,6 +15,7 @@ export function createLanding$(
   featuredIlks: Observable<FeaturedIlk[]>,
 ): Observable<Landing> {
   return combineLatest(popularIlksWithFilter$(ilkDataList$), featuredIlks).pipe(
+    tap(console.log),
     map(([ilks, featuredIlks]) => ({
       ilks,
       featuredIlks,
