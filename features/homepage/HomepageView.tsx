@@ -1,18 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import {
-  Box,
-  Button,
-  Container,
-  Flex,
-  Grid,
-  Heading,
-  Image,
-  Link,
-  SxStyleProp,
-  Text,
-} from 'theme-ui'
+import { Button, Flex, Grid, Heading, Image, Link, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { AppLink } from '../../components/Links'
@@ -20,7 +9,6 @@ import { useObservable } from '../../helpers/observableHook'
 import { staticFilesRuntimeUrl } from '../../helpers/staticPaths'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { slideInAnimation } from '../../theme/animations'
-import { WithArrow } from '../../components/WithArrow'
 
 function TabSwitcher() {
   return (
