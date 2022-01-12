@@ -211,15 +211,15 @@ const goerli: NetworkConfig = {
   dssProxyActions: contractDesc(dssProxyActions, goerliAddresses.PROXY_ACTIONS),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
-    '0xa553c3f4e65A1FC951B236142C1f69c1BcA5bF2b',
+    '0x24E54706B100e2061Ed67fAe6894791ec421B421',
   ),
   guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
   guniResolver: '0x',
   guniRouter: '0x',
   // Currently this is not supported on Goerli - no deployed contract
-  defaultExchange: contractDesc(exchange, '0x5Ba87C40ff34dBc4ebF492052Fb23BB8B24f6dc0'),
-  lowerFeesExchange: contractDesc(exchange, '0x5Ba87C40ff34dBc4ebF492052Fb23BB8B24f6dc0'),
-  noFeesExchange: contractDesc(exchange, '0x5Ba87C40ff34dBc4ebF492052Fb23BB8B24f6dc0'),
+  defaultExchange: contractDesc(exchange, '0x84564e7D57Ee18D646b32b645AFACE140B19083d'),
+  lowerFeesExchange: contractDesc(exchange, '0x84564e7D57Ee18D646b32b645AFACE140B19083d'),
+  noFeesExchange: contractDesc(exchange, '0x84564e7D57Ee18D646b32b645AFACE140B19083d'),
   // Currently this is not supported on Goerli - no deployed contract
   fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
   etherscan: {
