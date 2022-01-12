@@ -78,7 +78,9 @@ export function ProductCard({
         position: 'relative',
       }}
     >
-      {floatingLabelText && <FloatingLabel text={floatingLabelText} flexSx={{ top: 4, right: '-20px' }} />}
+      {floatingLabelText && (
+        <FloatingLabel text={floatingLabelText} flexSx={{ top: 4, right: '-20px' }} />
+      )}
       <Flex sx={{ flexDirection: 'column', alignItems: 'center', pb: 2 }}>
         <Image src={tokenImage} sx={{ height: '200px' }} />
         <Heading variant="header2" as="h3" sx={{ fontSize: '28px', pb: 3 }}>
