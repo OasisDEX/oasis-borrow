@@ -8,18 +8,7 @@ interface FloatingLabelProps {
   textSx?: SxStyleProp
 }
 
-export function FloatingLabel({
-  text,
-  variant = 'primary',
-  flexSx = {},
-  textSx = {},
-}: FloatingLabelProps) {
-  const variantsMap = {
-    primary: {
-      backgroundColor: '#5C5FFE',
-    },
-  }
-
+export function FloatingLabel({ text, flexSx = {}, textSx = {} }: FloatingLabelProps) {
   return (
     <Flex
       sx={{
@@ -29,7 +18,7 @@ export function FloatingLabel({
         px: 3,
         position: 'absolute',
         alignItems: 'center',
-        ...variantsMap[variant],
+        backgroundColor: '#5C5FFE',
         ...flexSx,
       }}
     >
