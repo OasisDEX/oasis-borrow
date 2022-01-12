@@ -46,7 +46,7 @@ export const Multiply = () => {
       rightSlot={{ title: t(t('system.stability-fee')), value: '2.0%' }}
       background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
       button={{ link: '/vaults/open-multiply/ETH-A', text: t('nav.multiply') }}
-      floatingLabel="Get up to 3.3x ETH exposure"
+      floatingLabelText="Get up to 3.3x ETH exposure"
     />
   )
 }
