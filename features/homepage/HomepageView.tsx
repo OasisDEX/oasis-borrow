@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { MouseEvent, useCallback, useState } from 'react'
-import { Box, Button, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
+import React from 'react'
+import { Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { AppLink } from '../../components/Links'
@@ -9,6 +9,7 @@ import { useObservable } from '../../helpers/observableHook'
 import { staticFilesRuntimeUrl } from '../../helpers/staticPaths'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { slideInAnimation } from '../../theme/animations'
+import { TabSwitcher } from '../../components/TabSwitcher'
 
 function MultiplyTabContent() {
   return (
@@ -40,55 +41,6 @@ function BorrowTabContent() {
   )
 }
 
-function TabSwitcher() {
-  enum Tabs {
-    Multiply = 'Multiply',
-    Borrow = 'Borrow',
-  }
-  const [selectedTab, setSelectedTab] = useState(Tabs.Multiply)
-  const selectTab = useCallback(
-    (event: MouseEvent<HTMLButtonElement>) =>
-      setSelectedTab((event.currentTarget.value as unknown) as Tabs),
-    [],
-  )
-
-  return (
-    <Flex
-      sx={{
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-    >
-      <Grid
-        columns={2}
-        variant="tabSwitcher"
-        width={[100]}
-        sx={{
-          maxWidth: 412,
-        }}
-      >
-        <Button
-          onClick={selectTab}
-          value={Tabs.Multiply}
-          variant={
-            selectedTab === Tabs.Multiply ? 'tabSwitcherTabActive' : 'tabSwitcherTabInactive'
-          }
-        >
-          Multiply on Oasis
-        </Button>
-        <Button
-          onClick={selectTab}
-          value={Tabs.Borrow}
-          variant={selectedTab === Tabs.Borrow ? 'tabSwitcherTabActive' : 'tabSwitcherTabInactive'}
-        >
-          Borrow on Oasis
-        </Button>
-      </Grid>
-      {selectedTab === Tabs.Multiply ? <MultiplyTabContent /> : <BorrowTabContent />}
-    </Flex>
-  )
-}
-
 export function HomepageView() {
   const { context$ } = useAppContext()
   const context = useObservable(context$)
@@ -103,7 +55,18 @@ export function HomepageView() {
         isConnected={context?.status === 'connected'}
         sx={{ ...slideInAnimation, position: 'relative' }}
       />
-      <TabSwitcher />
+      <TabSwitcher
+        tabs={[
+          {
+            tabLabel: 'Borrow',
+            tabContent: <BorrowTabContent />,
+          },
+          {
+            tabLabel: 'Multiply',
+            tabContent: <MultiplyTabContent />,
+          },
+        ]}
+      />
     </Grid>
   )
 }
