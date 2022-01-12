@@ -28,9 +28,12 @@ async function getEvents(
 ): Promise<TriggersData> {
   const abi = [
     'event TriggerAdded( uint256 indexed triggerId, uint256 triggerType, uint256 indexed cdpId,  bytes triggerData)',
-    'event TriggerRemoved (index_topic_1 uint256 cdpId, index_topic_2 uint256 triggerId)'
+    'event TriggerRemoved ( uint256 cdpId, uint256 triggerId)'
   ]
-  console.log(abi)
+  console.log('add trigger abi')
+  console.log(abi[0])
+  console.log('remove trigger abi')
+  console.log(abi[1])
   const contract = new ethers.Contract(botAddress ?? '', new Interface(automationBot), provider)
   const filterFromTriggerAdded = contract.filters.TriggerAdded(null, null, vaultId, null)
   const addedEventsList = await contract.queryFilter(
@@ -38,10 +41,7 @@ async function getEvents(
     process.env.DEPLOYMENT_BLOCK,
     blockNumber,
   )
-  const events = addedEventsList.map((singleEvent) => {
-    const record: TriggerRecord = parseEvent(abi, singleEvent)
-    return record
-  })
+  const events = addedEventsList.map((singleEvent) => parseEvent(abi, singleEvent))
   console.log(addedEventsList)
   console.log(events)
 
@@ -54,16 +54,10 @@ async function getEvents(
   )
   console.log(removedEventsList)
   // TODO then add removedEvents to events, sort it by block No determine what to return
-  if (events.length === 0) {
-    return {
-      triggers: [],
-      isAutomationEnabled: false,
-    } as TriggersData
-  } else {
-    return {
-      triggers: events,
-      isAutomationEnabled: true,
-    } as TriggersData
+
+  return {
+    triggers: events,
+    isAutomationEnabled: events.length !== 0,
   }
 }
 
