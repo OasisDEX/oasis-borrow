@@ -6,13 +6,11 @@ import ethAbi, { AbiCoder } from 'web3-eth-abi'
 import { getToken } from './tokensMetadata'
 
 export function amountFromRay(amount: BigNumber): BigNumber {
-  BigNumber.config({ DECIMAL_PLACES: RAY.toString().length })
-  return amount.div(RAY)
+  return amount.div(RAY).decimalPlaces(RAY.toString().length)
 }
 
 export function amountFromRad(amount: BigNumber): BigNumber {
-  BigNumber.config({ DECIMAL_PLACES: RAD.toString().length })
-  return amount.div(RAD)
+  return amount.div(RAD).decimalPlaces(RAD.toString().length)
 }
 
 export function funcSigTopic(v: string): string {
@@ -22,15 +20,20 @@ export function funcSigTopic(v: string): string {
 }
 
 export function amountToWei(amount: BigNumber, token: string): BigNumber {
-  const precision = getToken(token).precision
+  const { precision } = getToken(token)
   return amount.times(new BigNumber(10).pow(precision))
 }
 
 export function amountFromWei(amount: BigNumber, token: string): BigNumber {
-  const precision = getToken(token).precision
+  const { precision } = getToken(token)
   return amount.div(new BigNumber(10).pow(precision))
 }
 
 export function amountToWad(amount: BigNumber): BigNumber {
   return amount.times(WAD)
+}
+
+export function amountToWeiRoundDown(amount: BigNumber, token: string): BigNumber {
+  const { precision } = getToken(token)
+  return amount.times(new BigNumber(10).pow(precision)).decimalPlaces(0, BigNumber.ROUND_DOWN)
 }

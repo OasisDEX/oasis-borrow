@@ -4,7 +4,7 @@ import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
-import { amountToWad, amountToWei } from 'blockchain/utils'
+import { amountToWad, amountToWeiRoundDown } from 'blockchain/utils'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { CloseVaultTo } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
@@ -43,7 +43,7 @@ export function getWithdrawAndPaybackCallData(
           joins[ilk],
           mcdJoinDai.address,
           id.toString(),
-          amountToWei(withdrawAmount, token).toFixed(0),
+          amountToWeiRoundDown(withdrawAmount, token).toFixed(0),
         )
       }
 
@@ -52,8 +52,8 @@ export function getWithdrawAndPaybackCallData(
         joins[ilk],
         mcdJoinDai.address,
         id.toString(),
-        amountToWei(withdrawAmount, token).toFixed(0),
-        amountToWei(paybackAmount, 'DAI').toFixed(0),
+        amountToWeiRoundDown(withdrawAmount, token).toFixed(0),
+        amountToWeiRoundDown(paybackAmount, 'DAI').toFixed(0),
       )
     }
 
@@ -63,7 +63,7 @@ export function getWithdrawAndPaybackCallData(
         joins[ilk],
         mcdJoinDai.address,
         id.toString(),
-        amountToWei(withdrawAmount, token).toFixed(0),
+        amountToWeiRoundDown(withdrawAmount, token).toFixed(0),
       )
     }
 
@@ -72,8 +72,8 @@ export function getWithdrawAndPaybackCallData(
       joins[ilk],
       mcdJoinDai.address,
       id.toString(),
-      amountToWei(withdrawAmount, token).toFixed(0),
-      amountToWei(paybackAmount, 'DAI').toFixed(0),
+      amountToWeiRoundDown(withdrawAmount, token).toFixed(0),
+      amountToWeiRoundDown(paybackAmount, 'DAI').toFixed(0),
     )
   }
 
@@ -83,14 +83,14 @@ export function getWithdrawAndPaybackCallData(
         dssCdpManager.address,
         joins[ilk],
         id.toString(),
-        amountToWei(withdrawAmount, token).toFixed(0),
+        amountToWeiRoundDown(withdrawAmount, token).toFixed(0),
       )
     }
     return contract<DssProxyActions>(dssProxyActions).methods.freeGem(
       dssCdpManager.address,
       joins[ilk],
       id.toString(),
-      amountToWei(withdrawAmount, token).toFixed(0),
+      amountToWeiRoundDown(withdrawAmount, token).toFixed(0),
     )
   }
 
@@ -107,7 +107,7 @@ export function getWithdrawAndPaybackCallData(
       dssCdpManager.address,
       mcdJoinDai.address,
       id.toString(),
-      amountToWei(paybackAmount, 'DAI').toFixed(0),
+      amountToWeiRoundDown(paybackAmount, 'DAI').toFixed(0),
     )
   }
 
@@ -147,7 +147,7 @@ function getDepositAndGenerateCallData(data: DepositAndGenerateData, context: Co
         joins[ilk],
         mcdJoinDai.address,
         id.toString(),
-        amountToWei(generateAmount, 'DAI').toFixed(0),
+        amountToWeiRoundDown(generateAmount, 'DAI').toFixed(0),
       )
     }
     return contract<DssProxyActions>(dssProxyActions).methods.lockGemAndDraw(
@@ -156,8 +156,8 @@ function getDepositAndGenerateCallData(data: DepositAndGenerateData, context: Co
       joins[ilk],
       mcdJoinDai.address,
       id.toString(),
-      amountToWei(depositAmount, token).toFixed(0),
-      amountToWei(generateAmount, 'DAI').toFixed(0),
+      amountToWeiRoundDown(depositAmount, token).toFixed(0),
+      amountToWeiRoundDown(generateAmount, 'DAI').toFixed(0),
       true,
     )
   }
@@ -175,7 +175,7 @@ function getDepositAndGenerateCallData(data: DepositAndGenerateData, context: Co
       dssCdpManager.address,
       joins[ilk],
       id.toString(),
-      amountToWei(depositAmount, token).toFixed(0),
+      amountToWeiRoundDown(depositAmount, token).toFixed(0),
       true,
     )
   }
@@ -185,7 +185,7 @@ function getDepositAndGenerateCallData(data: DepositAndGenerateData, context: Co
     mcdJug.address,
     mcdJoinDai.address,
     id.toString(),
-    amountToWei(generateAmount, 'DAI').toFixed(0),
+    amountToWeiRoundDown(generateAmount, 'DAI').toFixed(0),
   )
 }
 
@@ -198,7 +198,7 @@ export const depositAndGenerate: TransactionDef<DepositAndGenerateData> = {
     return [dssProxyActions.address, getDepositAndGenerateCallData(data, context).encodeABI()]
   },
   options: ({ token, depositAmount }) =>
-    token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
+    token === 'ETH' ? { value: amountToWeiRoundDown(depositAmount, 'ETH').toString() } : {},
 }
 
 export type OpenData = {
@@ -222,7 +222,7 @@ function getOpenCallData(data: OpenData, context: ContextConnected) {
         joins[ilk],
         mcdJoinDai.address,
         Web3.utils.utf8ToHex(ilk),
-        amountToWei(generateAmount, 'DAI').toFixed(0),
+        amountToWeiRoundDown(generateAmount, 'DAI').toFixed(0),
       )
     }
 
@@ -232,8 +232,8 @@ function getOpenCallData(data: OpenData, context: ContextConnected) {
       joins[ilk],
       mcdJoinDai.address,
       Web3.utils.utf8ToHex(ilk),
-      amountToWei(depositAmount, token).toFixed(0),
-      amountToWei(generateAmount, 'DAI').toFixed(0),
+      amountToWeiRoundDown(depositAmount, token).toFixed(0),
+      amountToWeiRoundDown(generateAmount, 'DAI').toFixed(0),
       true,
     )
   }
@@ -256,7 +256,7 @@ function getOpenCallData(data: OpenData, context: ContextConnected) {
       joins[ilk],
       mcdJoinDai.address,
       Web3.utils.utf8ToHex(ilk),
-      amountToWei(depositAmount, token).toFixed(0),
+      amountToWeiRoundDown(depositAmount, token).toFixed(0),
       zero.toFixed(0),
       true,
     )
@@ -278,7 +278,7 @@ export const open: TransactionDef<OpenData> = {
     return [dssProxyActions.address, getOpenCallData(data, context).encodeABI()]
   },
   options: ({ token, depositAmount }) =>
-    token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
+    token === 'ETH' ? { value: amountToWeiRoundDown(depositAmount, 'ETH').toString() } : {},
 }
 
 export type OpenMultiplyData = {
@@ -315,9 +315,9 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
     {
       fromTokenAddress: tokens['DAI'].address,
       toTokenAddress: tokens[data.token].address,
-      fromTokenAmount: amountToWei(data.fromTokenAmount, 'DAI').toFixed(0),
-      toTokenAmount: amountToWei(data.toTokenAmount, data.token).toFixed(0),
-      minToTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
+      fromTokenAmount: amountToWeiRoundDown(data.fromTokenAmount, 'DAI').toFixed(0),
+      toTokenAmount: amountToWeiRoundDown(data.toTokenAmount, data.token).toFixed(0),
+      minToTokenAmount: amountToWeiRoundDown(data.borrowedCollateral, data.token).toFixed(0),
       exchangeAddress: data.exchangeAddress,
       _exchangeCalldata: data.exchangeData,
     } as any, //TODO: figure out why Typechain is generating arguments as arrays
@@ -326,6 +326,7 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
       cdpId: '0',
       ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
       fundsReceiver: data.userAddress,
+<<<<<<< HEAD
       borrowCollateral: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
       requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
       depositCollateral: amountToWei(data.depositCollateral, data.token).toFixed(0),
@@ -333,6 +334,15 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
       depositDai: amountToWei(zero, 'DAI').toFixed(0),
       withdrawCollateral: amountToWei(zero, data.token).toFixed(0),
       skipFL: data.skipFL,
+=======
+      borrowCollateral: amountToWeiRoundDown(data.borrowedCollateral, data.token).toFixed(0),
+      requiredDebt: amountToWeiRoundDown(data.requiredDebt, 'DAI').toFixed(0),
+      depositCollateral: amountToWeiRoundDown(data.depositCollateral, data.token).toFixed(0),
+      withdrawDai: amountToWeiRoundDown(zero, 'DAI').toFixed(0),
+      depositDai: amountToWeiRoundDown(zero, 'DAI').toFixed(0),
+      withdrawCollateral: amountToWeiRoundDown(zero, data.token).toFixed(0),
+      skipFL: false,
+>>>>>>> 7d5c5266 (fix rounding issues)
       methodName: '',
     } as any,
     {
@@ -354,7 +364,7 @@ export const openMultiplyVault: TransactionDef<OpenMultiplyData> = {
     return [dssMultiplyProxyActions.address, getOpenMultiplyCallData(data, context).encodeABI()]
   },
   options: ({ token, depositCollateral }) =>
-    token === 'ETH' ? { value: amountToWei(depositCollateral, 'ETH').toFixed(0) } : {},
+    token === 'ETH' ? { value: amountToWeiRoundDown(depositCollateral, 'ETH').toFixed(0) } : {},
 }
 
 export type OpenGuniMultiplyData = {
@@ -403,9 +413,9 @@ function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: Contex
     {
       fromTokenAddress: tokens[token0Symbol].address,
       toTokenAddress: tokens[token1Symbol].address,
-      fromTokenAmount: amountToWei(data.fromTokenAmount, token0Symbol).toFixed(0),
-      toTokenAmount: amountToWei(data.toTokenAmount, token1Symbol).toFixed(0),
-      minToTokenAmount: amountToWei(data.minToTokenAmount, token1Symbol).toFixed(0),
+      fromTokenAmount: amountToWeiRoundDown(data.fromTokenAmount, token0Symbol).toFixed(0),
+      toTokenAmount: amountToWeiRoundDown(data.toTokenAmount, token1Symbol).toFixed(0),
+      minToTokenAmount: amountToWeiRoundDown(data.minToTokenAmount, token1Symbol).toFixed(0),
       exchangeAddress: data.exchangeAddress,
       _exchangeCalldata: data.exchangeData,
     } as any, //TODO: figure out why Typechain is generating arguments as arrays
@@ -414,8 +424,8 @@ function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: Contex
       fundsReceiver: data.userAddress,
       cdpId: '0',
       ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
-      requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
-      token0Amount: amountToWei(data.depositCollateral, token0Symbol).toFixed(0),
+      requiredDebt: amountToWeiRoundDown(data.requiredDebt, 'DAI').toFixed(0),
+      token0Amount: amountToWeiRoundDown(data.depositCollateral, token0Symbol).toFixed(0),
       methodName: '',
     } as any,
     {
@@ -509,9 +519,9 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
       {
         fromTokenAddress: tokens['DAI'].address,
         toTokenAddress: tokens[data.token].address,
-        fromTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
-        toTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
-        minToTokenAmount: amountToWei(data.borrowedCollateral, data.token)
+        fromTokenAmount: amountToWeiRoundDown(data.requiredDebt, 'DAI').toFixed(0),
+        toTokenAmount: amountToWeiRoundDown(data.borrowedCollateral, data.token).toFixed(0),
+        minToTokenAmount: amountToWeiRoundDown(data.borrowedCollateral, data.token)
           .times(one.minus(data.slippage))
           .toFixed(0),
         exchangeAddress: data.exchangeAddress,
@@ -522,12 +532,12 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
         cdpId: data.id.toString(),
         ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
         fundsReceiver: data.userAddress,
-        borrowCollateral: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
-        requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
-        depositCollateral: amountToWei(data.depositCollateral, data.token).toFixed(0),
-        withdrawDai: amountToWei(zero, 'DAI').toFixed(0),
-        depositDai: amountToWei(zero, 'DAI').toFixed(0),
-        withdrawCollateral: amountToWei(zero, data.token).toFixed(0),
+        borrowCollateral: amountToWeiRoundDown(data.borrowedCollateral, data.token).toFixed(0),
+        requiredDebt: amountToWeiRoundDown(data.requiredDebt, 'DAI').toFixed(0),
+        depositCollateral: amountToWeiRoundDown(data.depositCollateral, data.token).toFixed(0),
+        withdrawDai: amountToWeiRoundDown(zero, 'DAI').toFixed(0),
+        depositDai: amountToWeiRoundDown(zero, 'DAI').toFixed(0),
+        withdrawCollateral: amountToWeiRoundDown(zero, data.token).toFixed(0),
         skipFL: false,
         methodName: '',
       } as any,
@@ -544,15 +554,15 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
       {
         fromTokenAddress: tokens[data.token].address,
         toTokenAddress: tokens['DAI'].address,
-        toTokenAmount: amountToWei(
+        toTokenAmount: amountToWeiRoundDown(
           data.requiredDebt
             .div(one.minus(OAZO_FEE))
             .div(one.minus(LOAN_FEE))
             .times(one.plus(data.slippage)),
           'DAI',
         ).toFixed(0),
-        fromTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
-        minToTokenAmount: amountToWei(data.requiredDebt, 'DAI')
+        fromTokenAmount: amountToWeiRoundDown(data.borrowedCollateral, data.token).toFixed(0),
+        minToTokenAmount: amountToWeiRoundDown(data.requiredDebt, 'DAI')
           .div(one.minus(OAZO_FEE))
           .div(one.minus(LOAN_FEE))
           .toFixed(0),
@@ -564,12 +574,12 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
         cdpId: data.id.toString(),
         ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
         fundsReceiver: data.userAddress,
-        borrowCollateral: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
-        requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
-        depositCollateral: amountToWei(data.depositCollateral, data.token).toFixed(0),
-        withdrawDai: amountToWei(zero, 'DAI').toFixed(0),
-        depositDai: amountToWei(zero, 'DAI').toFixed(0),
-        withdrawCollateral: amountToWei(zero, data.token).toFixed(0),
+        borrowCollateral: amountToWeiRoundDown(data.borrowedCollateral, data.token).toFixed(0),
+        requiredDebt: amountToWeiRoundDown(data.requiredDebt, 'DAI').toFixed(0),
+        depositCollateral: amountToWeiRoundDown(data.depositCollateral, data.token).toFixed(0),
+        withdrawDai: amountToWeiRoundDown(zero, 'DAI').toFixed(0),
+        depositDai: amountToWeiRoundDown(zero, 'DAI').toFixed(0),
+        withdrawCollateral: amountToWeiRoundDown(zero, data.token).toFixed(0),
         skipFL: false,
         methodName: '',
       } as any,
@@ -593,7 +603,7 @@ export const adjustMultiplyVault: TransactionDef<MultiplyAdjustData> = {
     return [dssMultiplyProxyActions.address, getMultiplyAdjustCallData(data, context).encodeABI()]
   },
   options: ({ token, depositCollateral }) =>
-    token === 'ETH' ? { value: amountToWei(depositCollateral, token).toFixed(0) } : {},
+    token === 'ETH' ? { value: amountToWeiRoundDown(depositCollateral, token).toFixed(0) } : {},
 }
 
 export type CloseVaultData = {
@@ -643,9 +653,9 @@ function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) 
   const exchangeCallData = {
     fromTokenAddress: tokens[token].address,
     toTokenAddress: tokens['DAI'].address,
-    fromTokenAmount: amountToWei(fromTokenAmount, token).toFixed(0),
-    toTokenAmount: amountToWei(toTokenAmount, 'DAI').toFixed(0),
-    minToTokenAmount: amountToWei(minToTokenAmount, 'DAI').toFixed(0),
+    fromTokenAmount: amountToWeiRoundDown(fromTokenAmount, token).toFixed(0),
+    toTokenAmount: amountToWeiRoundDown(toTokenAmount, 'DAI').toFixed(0),
+    minToTokenAmount: amountToWeiRoundDown(minToTokenAmount, 'DAI').toFixed(0),
     exchangeAddress,
     _exchangeCalldata: exchangeData,
   }
@@ -655,8 +665,8 @@ function getCloseVaultCallData(data: CloseVaultData, context: ContextConnected) 
     cdpId: id.toString(),
     ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
     fundsReceiver: userAddress,
-    borrowCollateral: amountToWei(totalCollateral, token).toFixed(0),
-    requiredDebt: amountToWei(
+    borrowCollateral: amountToWeiRoundDown(totalCollateral, token).toFixed(0),
+    requiredDebt: amountToWeiRoundDown(
       closeTo === 'collateral' ? minToTokenAmount : totalDebt,
       'DAI',
     ).toFixed(0),
@@ -760,9 +770,9 @@ function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConn
     {
       fromTokenAddress: tokens[token0Symbol].address,
       toTokenAddress: tokens[token1Symbol].address,
-      fromTokenAmount: amountToWei(data.fromTokenAmount, token1Symbol).toFixed(0),
-      toTokenAmount: amountToWei(data.toTokenAmount, token0Symbol).toFixed(0),
-      minToTokenAmount: amountToWei(data.minToTokenAmount, token0Symbol).toFixed(0),
+      fromTokenAmount: amountToWeiRoundDown(data.fromTokenAmount, token1Symbol).toFixed(0),
+      toTokenAmount: amountToWeiRoundDown(data.toTokenAmount, token0Symbol).toFixed(0),
+      minToTokenAmount: amountToWeiRoundDown(data.minToTokenAmount, token0Symbol).toFixed(0),
       exchangeAddress: data.exchangeAddress,
       _exchangeCalldata: data.exchangeData,
     } as any,
@@ -771,7 +781,7 @@ function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConn
       fundsReceiver: data.userAddress,
       cdpId: data.cdpId,
       ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
-      requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
+      requiredDebt: amountToWeiRoundDown(data.requiredDebt, 'DAI').toFixed(0),
       token0Amount: '0',
       methodName: '',
     } as any,
