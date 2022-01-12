@@ -3,6 +3,8 @@ import { IlkData, IlkDataChange } from 'blockchain/ilks'
 import { BalanceInfo, BalanceInfoChange } from 'features/shared/balanceInfo'
 import { PriceInfo, PriceInfoChange } from 'features/shared/priceInfo'
 
+import { SlippageChange } from '../userSettings/userSettings'
+
 export interface EnvironmentState {
   ilk: string
   account: string
@@ -12,9 +14,10 @@ export interface EnvironmentState {
   ilkData: IlkData
   proxyAddress?: string
   allowance?: BigNumber
+  invalidSlippage: boolean
 }
 
-export type EnvironmentChange = PriceInfoChange | BalanceInfoChange | IlkDataChange
+export type EnvironmentChange = PriceInfoChange | BalanceInfoChange | IlkDataChange | SlippageChange
 
 export function applyEnvironment<S extends EnvironmentState, Ch extends EnvironmentChange>(
   state: S,
@@ -38,6 +41,13 @@ export function applyEnvironment<S extends EnvironmentState, Ch extends Environm
     return {
       ...state,
       ilkData: change.ilkData,
+    }
+  }
+
+  if (change.kind === 'slippage') {
+    return {
+      ...state,
+      slippage: change.slippage,
     }
   }
 

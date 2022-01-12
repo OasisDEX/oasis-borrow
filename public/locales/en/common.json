@@ -502,7 +502,8 @@
     "custom-dai-allowance-amount-less-than-payback-amount": "You need at least an allowance of your payback amount to continue",
     "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, payback your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
     "has-to-deposit-collateral-on-empty-vault": "There is no collateral in this vault. Please first add collateral in the 'Other actions' tab, with the 'deposit collateral' action",
-    "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
+    "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
+    "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting"
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
@@ -673,6 +674,26 @@
       "subtext": "Borrow up to {{maxBorrow}} DAI for every $100,000 worth of {{token}}",
       "button": "Borrow against {{token}}"
     }
+  },
+  "user-settings": {
+    "button-menu": "Slippage",
+    "slippage-limit": {
+      "preset-title": "Slippage settings",
+      "preset-description": "Select the amount of slippage you would like.",
+      "read-more": "Read more about slippage.",
+      "custom-title": "Set custom slippage amount",
+      "custom-label": "Slippage amount",
+      "errors": {
+        "invalid-slippage": "Invalid slippage. Slippage should be in 20%, 0.1% range"
+      },
+      "warnings": {
+        "high-slippage": "Warning. You have set a high slippage limit which can result in you getting a price quite far from your quoted price. Only continue if you understand this risk."
+      }
+    },
+    "button": "Update settings",
+    "button-in-progress": "Updating settings",
+    "update-success": "Settings updated",
+    "update-failure": "Something went wrong"
   },
   "modal-trezor-eip1559-title": "Trezor with Metamask does not support EIP-1559",
   "modal-trezor-eip1559-paragraph1": "Oasis.app has recently updated all transactions to support EIP-1559. Doing EIP-1559 transactions with Trezor through metamask is currently not supported, see <0>here</0>.",

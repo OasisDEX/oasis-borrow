@@ -7,8 +7,8 @@ import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { SLIPPAGE } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
@@ -418,6 +418,7 @@ export function createManageMultiplyVault$(
     exchangeType: ExchangeType,
   ) => Observable<Quote>,
   addGasEstimation$: AddGasEstimationFunction,
+  slippageLimit$: Observable<UserSettingsState>,
   vaultMultiplyHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
@@ -432,9 +433,10 @@ export function createManageMultiplyVault$(
             balanceInfo$(vault.token, account),
             ilkData$(vault.ilk),
             account ? proxyAddress$(account) : of(undefined),
+            slippageLimit$,
           ).pipe(
             first(),
-            switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress]) => {
+            switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress, { slippage }]) => {
               const collateralAllowance$ =
                 account && proxyAddress
                   ? allowance$(vault.token, account, proxyAddress)
@@ -482,7 +484,7 @@ export function createManageMultiplyVault$(
                     errorMessages: [],
                     warningMessages: [],
                     summary: defaultManageVaultSummary,
-                    slippage: SLIPPAGE,
+                    slippage,
                     exchangeError: false,
                     initialTotalSteps,
                     totalSteps: initialTotalSteps,
@@ -499,8 +501,9 @@ export function createManageMultiplyVault$(
                     balanceInfoChange$(balanceInfo$, vault.token, account),
                     createIlkDataChange$(ilkData$, vault.ilk),
                     createVaultChange$(vault$, id, context.chainId),
-                    createInitialQuoteChange(exchangeQuote$, vault.token),
+                    createInitialQuoteChange(exchangeQuote$, vault.token, slippage),
                     createExchangeChange$(exchangeQuote$, stateSubject$),
+                    slippageChange$(slippageLimit$),
                     createMultiplyHistoryChange$(vaultMultiplyHistory$, id),
                   )
 

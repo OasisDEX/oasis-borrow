@@ -64,6 +64,7 @@ export function validateWarnings(state: OpenMultiplyVaultState): OpenMultiplyVau
     vaultWillBeAtRiskLevelWarning,
     vaultWillBeAtRiskLevelWarningAtNextPrice,
     potentialGenerateAmountLessThanDebtFloor,
+    highSlippage,
   } = state
 
   const warningMessages: VaultWarningMessage[] = []
@@ -78,6 +79,7 @@ export function validateWarnings(state: OpenMultiplyVaultState): OpenMultiplyVau
         vaultWillBeAtRiskLevelDangerAtNextPrice,
         vaultWillBeAtRiskLevelWarning,
         vaultWillBeAtRiskLevelWarningAtNextPrice,
+        highSlippage,
       }),
     )
   }
