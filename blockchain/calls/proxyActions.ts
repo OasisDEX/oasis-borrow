@@ -544,8 +544,6 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
       exchange: defaultExchange.address,
     } as any
 
-    // console.log('BUY_COLLATERAL params crap')
-
     return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.increaseMultiple(
       exchangeData,
       cdpData,
