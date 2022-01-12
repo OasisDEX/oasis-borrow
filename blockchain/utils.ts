@@ -6,13 +6,11 @@ import ethAbi, { AbiCoder } from 'web3-eth-abi'
 import { getToken } from './tokensMetadata'
 
 export function amountFromRay(amount: BigNumber): BigNumber {
-  BigNumber.config({ DECIMAL_PLACES: RAY.toString().length })
-  return amount.div(RAY)
+  return amount.div(RAY).decimalPlaces(RAY.toString().length)
 }
 
 export function amountFromRad(amount: BigNumber): BigNumber {
-  BigNumber.config({ DECIMAL_PLACES: RAD.toString().length })
-  return amount.div(RAD)
+  return amount.div(RAD).decimalPlaces(RAD.toString().length)
 }
 
 export function funcSigTopic(v: string): string {
