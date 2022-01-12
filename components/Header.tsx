@@ -11,7 +11,7 @@ import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { TRANSITIONS } from 'theme'
 import { Box, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 
@@ -137,7 +137,8 @@ const HEADER_LINKS = {
   'dai-wallet': `${apiHost}/daiwallet`,
   learn: 'https://kb.oasis.app',
   blog: 'https://blog.oasis.app',
-  multiply: ``,
+  multiply: `/multiply`,
+  borrow: `/borrow`,
 }
 
 function HeaderDropdown({
@@ -274,7 +275,7 @@ const LangSelectMobileComponents: Partial<SelectComponents<{
   ),
 }
 
-const MOBILE_MENU_SECTIONS = [
+const MOBILE_MENU_SECTIONS_PRE_ASSET_LANDING_PAGES = [
   {
     titleKey: 'nav.products',
     links: [
@@ -291,10 +292,34 @@ const MOBILE_MENU_SECTIONS = [
   },
 ]
 
+const MOBILE_MENU_SECTIONS = [
+  {
+    titleKey: 'nav.products',
+    links: [
+      { labelKey: 'nav.multiply', url: HEADER_LINKS.multiply },
+      { labelKey: 'nav.borrow', url: HEADER_LINKS.borrow },
+      { labelKey: 'nav.dai-wallet', url: HEADER_LINKS['dai-wallet'] },
+    ],
+  },
+  {
+    titleKey: 'nav.resources',
+    links: [
+      { labelKey: 'nav.learn', url: HEADER_LINKS['learn'] },
+      { labelKey: 'nav.blog', url: HEADER_LINKS['blog'] },
+    ],
+  },
+]
+
 function MobileMenu() {
   const { t } = useTranslation()
+  const assetLandingPagesFeatureEnabled = useFeatureToggle('AssetLandingPages')
   const [isOpen, setIsOpen] = useState(false)
 
+  const mobileMenuEntries = assetLandingPagesFeatureEnabled
+    ? MOBILE_MENU_SECTIONS
+    : MOBILE_MENU_SECTIONS_PRE_ASSET_LANDING_PAGES
+
+  const closeMenu = useCallback(() => setIsOpen(false), [])
   return (
     <>
       {isOpen && (
@@ -304,6 +329,7 @@ function MobileMenu() {
               overflow: 'hidden',
               height: '100vh',
               position: 'fixed',
+              width: '100vw',
             },
           })}
         />
@@ -325,7 +351,7 @@ function MobileMenu() {
         }}
       >
         <Grid sx={{ rowGap: 5, mt: 3, mx: 'auto', maxWidth: 7 }}>
-          {MOBILE_MENU_SECTIONS.map((section) => (
+          {mobileMenuEntries.map((section) => (
             <Grid key={section.titleKey}>
               <Text variant="links.navHeader">{t(section.titleKey)}</Text>
               {section.links.map((link) =>
@@ -335,6 +361,7 @@ function MobileMenu() {
                     variant="text.paragraph1"
                     sx={{ textDecoration: 'none' }}
                     href={link.url}
+                    onClick={closeMenu}
                   >
                     {t(link.labelKey)}
                   </AppLink>
@@ -389,10 +416,10 @@ function DisconnectedHeader() {
   )
   const menuBarLandingPagesEnabled = (
     <>
-      <AppLink variant="links.navHeader" href="/multiply">
+      <AppLink variant="links.navHeader" href={HEADER_LINKS.multiply}>
         {t('nav.multiply')}
       </AppLink>
-      <AppLink variant="links.navHeader" href="/borrow">
+      <AppLink variant="links.navHeader" href={HEADER_LINKS.borrow}>
         {t('nav.borrow')}
       </AppLink>
       <HeaderDropdown title={t('nav.more')}>

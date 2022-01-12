@@ -1,4 +1,7 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import React from 'react'
+
+import { LandingPageLayout } from '../components/Layouts'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
@@ -7,5 +10,8 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 })
 
 export default function Multiply() {
-  return 'hello from multiply page'
+  return <>hello from multiply page</>
 }
+
+Multiply.layout = LandingPageLayout
+Multiply.theme = 'Landing'
