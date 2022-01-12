@@ -28,4 +28,3 @@ services:
       - '8545:8545'
     volumes:
       - '../.hardhat/cache:/usr/src/mpa/cache'
-  
