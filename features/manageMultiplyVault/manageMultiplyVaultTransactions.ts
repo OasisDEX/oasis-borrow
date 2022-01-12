@@ -245,7 +245,6 @@ export function adjustPosition(
     oneInchAmount,
   }: ManageMultiplyVaultState,
 ) {
-  console.log('sending transaction')
   txHelpers$
     .pipe(
       first(),
