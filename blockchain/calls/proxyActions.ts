@@ -319,7 +319,7 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
     minToTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
     exchangeAddress: data.exchangeAddress,
     _exchangeCalldata: data.exchangeData,
-  };
+  }
   const cdpData = {
     gemJoin: joins[data.ilk],
     cdpId: '0',
@@ -333,18 +333,22 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
     withdrawCollateral: amountToWei(zero, data.token).toFixed(0),
     skipFL: data.skipFL,
     methodName: '',
-  };
+  }
   const addressRegistry = {
     jug: mcdJug.address,
     manager: dssCdpManager.address,
     multiplyProxyActions: dssMultiplyProxyActions.address,
     lender: fmm,
     exchange: defaultExchange.address,
-  };
+  }
 
-  console.log("Deta to send",exchangeData,cdpData,addressRegistry);
+  console.log('Deta to send', exchangeData, cdpData, addressRegistry)
   //TODO: figure out why Typechain is generating arguments as arrays
-  return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.openMultiplyVault(exchangeData as any,cdpData as any,addressRegistry as any);
+  return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.openMultiplyVault(
+    exchangeData as any,
+    cdpData as any,
+    addressRegistry as any,
+  )
 }
 
 export const openMultiplyVault: TransactionDef<OpenMultiplyData> = {
