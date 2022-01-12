@@ -1,4 +1,5 @@
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
+import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
@@ -118,6 +119,8 @@ export interface OpenMultiplyVaultConditions {
   canRegress: boolean
   canAdjustRisk: boolean
   isExchangeLoading: boolean
+
+  highSlippage: boolean
 }
 
 export const defaultOpenMultiplyVaultConditions: OpenMultiplyVaultConditions = {
@@ -152,6 +155,8 @@ export const defaultOpenMultiplyVaultConditions: OpenMultiplyVaultConditions = {
   canProgress: false,
   canRegress: false,
   isExchangeLoading: false,
+
+  highSlippage: false,
 }
 
 export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
@@ -181,6 +186,7 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     exchangeError,
     quote,
     swap,
+    slippage,
     txError,
   } = state
 
@@ -298,6 +304,8 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
 
   const isExchangeLoading = !quote && !swap && !exchangeError
 
+  const highSlippage = slippage.gt(SLIPPAGE_WARNING_THRESHOLD)
+
   const canProgress =
     !(
       inputAmountsEmpty ||
@@ -356,5 +364,7 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     canProgress,
     canRegress,
     isExchangeLoading,
+
+    highSlippage,
   }
 }

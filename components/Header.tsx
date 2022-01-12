@@ -4,6 +4,7 @@ import { trackingEvents } from 'analytics/analytics'
 import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
 import { AccountButton } from 'features/account/Account'
+import { UserSettingsButton } from 'features/userSettings/UserSettingsView'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
@@ -13,11 +14,12 @@ import getConfig from 'next/config'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { TRANSITIONS } from 'theme'
-import { Box, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
+import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { ContextConnected } from '../blockchain/network'
 import { useAppContext } from './AppContextProvider'
 import { ChevronUpDown } from './ChevronUpDown'
+import { useSharedUI } from './SharedUIProvider'
 import { SelectComponents } from 'react-select/src/components'
 
 const {
@@ -88,6 +90,7 @@ export function BackArrow() {
 }
 
 function ConnectedHeader() {
+  const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const { accountData$, context$ } = useAppContext()
   const { t } = useTranslation()
   const accountData = useObservable(accountData$)
@@ -107,26 +110,60 @@ function ConnectedHeader() {
       variant="appContainer"
     >
       <>
-        <Logo sx={{ position: ['absolute', 'static', 'static'], left: 3, top: 3 }} />
-        <Flex sx={{ ml: 'auto', zIndex: 1, mt: [3, 0, 0] }}>
-          <AppLink
-            variant="nav"
-            sx={{ mr: 4 }}
-            href={`/owner/${(context as ContextConnected)?.account}`}
-            onClick={() => trackingEvents.yourVaults()}
-          >
-            {t('your-vaults')} {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
-          </AppLink>
-          <AppLink
-            variant="nav"
-            sx={{ mr: [0, 4, 4] }}
-            href="/vaults/list"
-            onClick={() => trackingEvents.createNewVault(firstCDP)}
-          >
-            {t('open-new-vault')}
-          </AppLink>
+        <Flex
+          sx={{
+            alignItems: 'center',
+            justifyContent: ['space-between', 'flex-start'],
+            width: ['100%', 'auto'],
+          }}
+        >
+          <Logo />
+          <Flex sx={{ ml: 5, zIndex: 1 }}>
+            <AppLink
+              variant="nav"
+              sx={{ mr: 4 }}
+              href={`/owner/${(context as ContextConnected)?.account}`}
+              onClick={() => trackingEvents.yourVaults()}
+            >
+              {t('your-vaults')} {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
+            </AppLink>
+            <AppLink
+              variant="nav"
+              sx={{ mr: [0, 4] }}
+              href="/vaults/list"
+              onClick={() => trackingEvents.createNewVault(firstCDP)}
+            >
+              <Box sx={{ display: ['none', 'block'] }}>{t('open-new-vault')}</Box>
+              <Box sx={{ display: ['block', 'none'], fontSize: '0px' }}>
+                <Icon name="plus_header" size="auto" width="18px" height="18px" />
+              </Box>
+            </AppLink>
+          </Flex>
         </Flex>
-        <AccountButton />
+        <Flex
+          sx={{
+            position: ['fixed', 'relative'],
+            bottom: 0,
+            left: 0,
+            right: 0,
+            bg: ['rgba(255,255,255,0.9)', 'transparent'],
+            p: [3, 0],
+            justifyContent: 'space-between',
+            gap: 2,
+          }}
+        >
+          <Flex>
+            <UserSettingsButton />
+            <AccountButton />
+          </Flex>
+          {vaultFormToggleTitle && (
+            <Box sx={{ display: ['flex', 'none'] }}>
+              <Button variant="menuButton" sx={{ px: 3 }} onClick={() => setVaultFormOpened(true)}>
+                <Box>{vaultFormToggleTitle}</Box>
+              </Button>
+            </Box>
+          )}
+        </Flex>
       </>
     </BasicHeader>
   )

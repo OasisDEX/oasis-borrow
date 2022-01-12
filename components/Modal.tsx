@@ -6,12 +6,14 @@ import { WithChildren } from 'helpers/types'
 import { Trans, useTranslation } from 'next-i18next'
 import { curry } from 'ramda'
 import React, { useCallback, useEffect, useState } from 'react'
+import ReactDOM from 'react-dom'
 import { TRANSITIONS } from 'theme'
 import {
   Box,
   Button,
   Card,
   Container,
+  Divider,
   Flex,
   Grid,
   Heading,
@@ -19,6 +21,7 @@ import {
   SxStyleProp,
   Text,
 } from 'theme-ui'
+import { useBreakpointIndex } from 'theme/useBreakpointIndex'
 
 import { useAppContext } from './AppContextProvider'
 import { disconnect } from './connectWallet/ConnectWallet'
@@ -226,6 +229,46 @@ export function ModalErrorMessage({ message }: { message: string }) {
       <Text sx={{ fontSize: 5, textAlign: 'center', mt: 3 }}>{t(message)}</Text>
     </Box>
   )
+}
+
+export function MobileSidePanelPortal({ children }: WithChildren) {
+  const breakpoint = useBreakpointIndex()
+  const mobile = breakpoint === 0
+
+  return mobile ? ReactDOM.createPortal(children, document.body) : children
+}
+
+export function MobileSidePanelClose({
+  opened,
+  onClose,
+}: {
+  opened: boolean
+  onClose: () => void
+}) {
+  const breakpoint = useBreakpointIndex()
+  const mobile = breakpoint === 0
+
+  return mobile ? (
+    <Box>
+      {opened && <ModalHTMLOverflow />}
+      <Box
+        sx={{
+          display: ['flex', 'none'],
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          py: 3,
+          my: 2,
+        }}
+      >
+        <ModalCloseIcon
+          close={onClose}
+          sx={{ top: 0, right: 0, color: 'primary', position: 'relative' }}
+          size={3}
+        />
+      </Box>
+      <Divider variant="styles.hrVaultFormTop" sx={{ mt: 0, pt: 0 }} />
+    </Box>
+  ) : null
 }
 
 export const MODAL_CONTAINER_TREZOR_METAMASK_EIP1559 = 'trezor-metamask-eip1559'

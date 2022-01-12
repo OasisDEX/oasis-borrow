@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { every5Seconds$ } from 'blockchain/network'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
-import { SLIPPAGE } from 'helpers/multiply/calculations'
 import { EMPTY, Observable } from 'rxjs'
 import {
   debounceTime,
@@ -120,7 +119,8 @@ export function createExchangeChange$(
         compareBigNumber(s1.depositAmount, s2.depositAmount) &&
         compareBigNumber(s1.withdrawAmount, s2.withdrawAmount) &&
         compareBigNumber(s1.generateAmount, s2.generateAmount) &&
-        compareBigNumber(s1.paybackAmount, s2.paybackAmount),
+        compareBigNumber(s1.paybackAmount, s2.paybackAmount) &&
+        compareBigNumber(s1.slippage, s2.slippage),
     ),
     debounceTime(500),
     switchMap(() =>
@@ -180,10 +180,11 @@ export function createInitialQuoteChange(
     exchangeType: ExchangeType,
   ) => Observable<Quote>,
   token: string,
+  slippage: BigNumber,
 ) {
   return exchangeQuote$(
     token,
-    SLIPPAGE,
+    slippage,
     new BigNumber(1),
     'BUY_COLLATERAL',
     'defaultExchange',
