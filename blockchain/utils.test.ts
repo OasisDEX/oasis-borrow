@@ -25,6 +25,7 @@ describe('utils$', () => {
     // Return values is not needed, so ignore it
     amountFromRay(one)
 
-    expect(radValueUnits.div(2).toFixed()).to.equal(halfRadValueUnits.toFixed())
+    expect(halfRadValueUnits.toFixed()).to.eq('0.500000000000000000000000000000000000000000001')
+    expect(radValueUnits.div(2).toFixed()).to.eq(halfRadValueUnits.toFixed())
   })
 })

@@ -5,6 +5,9 @@ import ethAbi, { AbiCoder } from 'web3-eth-abi'
 
 import { getToken } from './tokensMetadata'
 
+// Set global decimals places to the minimum unit we operate on
+BigNumber.config({ DECIMAL_PLACES: 45 })
+
 export function amountFromRay(amount: BigNumber): BigNumber {
   return amount.div(RAY).decimalPlaces(RAY.toString().length)
 }
