@@ -94,7 +94,7 @@ const protoMain = {
   defaultExchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
   noFeesExchange: contractDesc(exchange, '0x99e4484dac819aa74b347208752306615213d324'),
   lowerFeesExchange: contractDesc(exchange, '0x12dcc776525c35836b10026929558208d1258b91'),
-  fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
+  fmm: mainnetAddresses.MCD_FLASH,
   etherscan: {
     url: 'https://etherscan.io',
     apiUrl: 'https://api.etherscan.io/api',
@@ -159,7 +159,7 @@ const kovan: NetworkConfig = {
   defaultExchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
   lowerFeesExchange: contractDesc(exchange, '0x0'),
   noFeesExchange: contractDesc(exchange, '0x0'),
-  fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
+  fmm: '0x',
   etherscan: {
     url: 'https://kovan.etherscan.io',
     apiUrl: 'https://api-kovan.etherscan.io/api',
@@ -221,7 +221,7 @@ const goerli: NetworkConfig = {
   lowerFeesExchange: contractDesc(exchange, '0x84564e7D57Ee18D646b32b645AFACE140B19083d'),
   noFeesExchange: contractDesc(exchange, '0x84564e7D57Ee18D646b32b645AFACE140B19083d'),
   // Currently this is not supported on Goerli - no deployed contract
-  fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
+  fmm: goerliAddresses.MCD_FLASH,
   etherscan: {
     url: 'https://goerli.etherscan.io',
     apiUrl: 'https://api-goerli.etherscan.io/api',
