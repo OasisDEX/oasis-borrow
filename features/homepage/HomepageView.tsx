@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
-import { Button, Flex, Grid, Heading, Image, Link, SxStyleProp, Text } from 'theme-ui'
+import React, { MouseEvent,useCallback, useState } from 'react'
+import { Button, Flex, Grid, Heading, Image,  SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { AppLink } from '../../components/Links'
@@ -11,6 +11,17 @@ import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { slideInAnimation } from '../../theme/animations'
 
 function TabSwitcher() {
+  enum Tabs {
+    Multiply = 'Multiply',
+    Borrow = 'Borrow',
+  }
+  const [selectedTab, setSelectedTab] = useState(Tabs.Multiply)
+  const selectTab = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) =>
+      setSelectedTab((event.currentTarget.value as unknown) as Tabs),
+    [],
+  )
+  console.log(selectedTab)
   return (
     <Flex
       sx={{
@@ -26,10 +37,20 @@ function TabSwitcher() {
           maxWidth: 412,
         }}
       >
-        <Button onClick={() => {}} variant="tabSwitcherTabActive">
+        <Button
+          onClick={selectTab}
+          value={Tabs.Multiply}
+          variant={
+            selectedTab === Tabs.Multiply ? 'tabSwitcherTabActive' : 'tabSwitcherTabInactive'
+          }
+        >
           Multiply on Oasis
         </Button>
-        <Button onClick={() => {}} variant="tabSwitcherTabInactive">
+        <Button
+          onClick={selectTab}
+          value={Tabs.Borrow}
+          variant={selectedTab === Tabs.Borrow ? 'tabSwitcherTabActive' : 'tabSwitcherTabInactive'}
+        >
           Borrow on Oasis
         </Button>
       </Grid>
@@ -39,9 +60,9 @@ function TabSwitcher() {
       >
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum nibh etc
         aliquam dolor sit amet.{' '}
-        <Link href="/multiply" variant="inText">
+        <AppLink href="/multiply" variant="inText">
           See all Multiply collateral types →
-        </Link>
+        </AppLink>
       </Text>
     </Flex>
   )
