@@ -1,15 +1,16 @@
-import { Flex, Heading, Image, SxStyleProp, Text, Grid } from 'theme-ui'
-import { Trans, useTranslation } from 'next-i18next'
-import { staticFilesRuntimeUrl } from '../../helpers/staticPaths'
-import { AppLink } from '../../components/Links'
 import { Icon } from '@makerdao/dai-ui-icons'
+import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { slideInAnimation } from '../../theme/animations'
-import { useAppContext } from '../../components/AppContextProvider'
-import { useObservable } from '../../helpers/observableHook'
-import { useFeatureToggle } from '../../helpers/useFeatureToggle'
+import { Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 
-export default function HomepageView() {
+import { useAppContext } from '../../components/AppContextProvider'
+import { AppLink } from '../../components/Links'
+import { useObservable } from '../../helpers/observableHook'
+import { staticFilesRuntimeUrl } from '../../helpers/staticPaths'
+import { useFeatureToggle } from '../../helpers/useFeatureToggle'
+import { slideInAnimation } from '../../theme/animations'
+
+export function HomepageView() {
   const { context$ } = useAppContext()
   const context = useObservable(context$)
   return (

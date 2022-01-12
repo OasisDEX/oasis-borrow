@@ -18,8 +18,8 @@ import React, { ComponentProps, useCallback } from 'react'
 import { Box, Button, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
-import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
 import { Hero } from '../homepage/HomepageView'
+import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
 //import { TypeformWidget } from './TypeformWidget'
 
 const {
