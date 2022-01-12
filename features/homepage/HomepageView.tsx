@@ -5,11 +5,11 @@ import { Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { AppLink } from '../../components/Links'
+import { TabSwitcher } from '../../components/TabSwitcher'
 import { useObservable } from '../../helpers/observableHook'
 import { staticFilesRuntimeUrl } from '../../helpers/staticPaths'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { slideInAnimation } from '../../theme/animations'
-import { TabSwitcher } from '../../components/TabSwitcher'
 
 function MultiplyTabContent() {
   return (

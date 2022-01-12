@@ -1,6 +1,6 @@
+import { SystemStyleObject } from '@styled-system/css'
 import React, { MouseEvent, ReactNode, useCallback, useState } from 'react'
 import { Button, Flex, Grid } from 'theme-ui'
-import { SystemStyleObject } from '@styled-system/css'
 
 type ArrayWithAtLeastOne<T> = {
   0: T
