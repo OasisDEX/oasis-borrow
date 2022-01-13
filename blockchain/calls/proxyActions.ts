@@ -342,7 +342,6 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
     exchange: defaultExchange.address,
   }
 
-  console.log('Deta to send', exchangeData, cdpData, addressRegistry)
   //TODO: figure out why Typechain is generating arguments as arrays
   return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.openMultiplyVault(
     exchangeData as any,
