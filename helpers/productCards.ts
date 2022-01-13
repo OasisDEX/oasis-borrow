@@ -11,8 +11,16 @@ import {
 } from '../blockchain/tokensMetadata'
 import { PriceInfo } from '../features/shared/priceInfo'
 
+export interface ProductCardData {
+  token: string
+  ilk: string
+  liquidationRatio: BigNumber
+  stabilityFee: BigNumber
+  currentCollateralPrice: BigNumber
+}
+
 export function landingPageCards(
-  ilkDataList: IlkDataList,
+  productCardsData: ProductCardData[],
   product: 'multiply' | 'borrow' | 'earn' = 'multiply',
 ) {
   const landingCardsMap = {
@@ -21,26 +29,23 @@ export function landingPageCards(
     earn: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
   }
 
-  return ilkDataList.filter((ilk) => landingCardsMap[product].includes(ilk.ilk))
-}
-
-export function tokenPageCards(ilkDataList: IlkDataList, token: string) {
-  const tokenMeta = getToken(token)
-  return ilkDataList.filter((ilk) => ilk.token === token || ilk.token === tokenMeta.rootToken)
+  return productCardsData.filter((ilk) => landingCardsMap[product].includes(ilk.ilk))
 }
 
 export function multiplyPageCards({
-  ilkDataList,
+  productCardsData,
   token,
 }: {
-  ilkDataList: IlkDataList
+  productCardsData: ProductCardData[]
   token?: string
 }) {
   const featuredCards = ['ETH-A', 'WBTC-A', 'LINK-A']
-  const multiplyTokens = ilkDataList.filter((ilk) => ALLOWED_MULTIPLY_TOKENS.includes(ilk.token))
+  const multiplyTokens = productCardsData.filter((ilk) =>
+    ALLOWED_MULTIPLY_TOKENS.includes(ilk.token),
+  )
 
   if (!token) {
-    return ilkDataList.filter((ilk) => featuredCards.includes(ilk.ilk))
+    return productCardsData.filter((ilk) => featuredCards.includes(ilk.ilk))
   }
 
   const tokenMeta = getToken(token)
@@ -51,39 +56,31 @@ export function multiplyPageCards({
 }
 
 export function borrowPageCards({
-  ilkDataList,
+  productCardsData,
   token,
 }: {
-  ilkDataList: IlkDataList
+  productCardsData: ProductCardData[]
   token?: string
 }) {
   const featuredCards = ['ETH-A', 'WBTC-A', 'ETH-C']
 
   if (!token) {
-    return ilkDataList.filter((ilk) => featuredCards.includes(ilk.ilk))
+    return productCardsData.filter((ilk) => featuredCards.includes(ilk.ilk))
   }
 
   if (token === 'UNI-LP') {
     const lpTokensSymbols = ONLY_LP_TOKENS.map((lpToken) => lpToken.symbol)
 
-    return ilkDataList.filter(
+    return productCardsData.filter(
       (ilk) => lpTokensSymbols.includes(ilk.token) && !ONLY_MULTIPLY_TOKENS.includes(ilk.token),
     )
   }
 
   const tokenMeta = getToken(token)
 
-  return ilkDataList.filter(
+  return productCardsData.filter(
     (ilk) => ilk.token === token || tokenMeta.derivativeTokens?.includes(ilk.token),
   )
-}
-
-interface ProductCardData {
-  token: string
-  ilk: string
-  liquidationRatio: BigNumber
-  stabilityFee: BigNumber
-  currentCollateralPrice: BigNumber
 }
 
 export function createProductCardsData$(

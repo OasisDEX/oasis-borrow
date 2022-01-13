@@ -69,7 +69,6 @@ const tokens = [
     background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/wbtc.png'),
     tags: [],
-    rootToken: 'BTC',
   },
   {
     symbol: 'RENBTC',
@@ -87,7 +86,6 @@ const tokens = [
     background: 'linear-gradient(160.47deg, #F1F5F5 0.35%, #E5E7E8 99.18%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/renBTC.png'),
     tags: [],
-    rootToken: 'BTC',
   },
   {
     symbol: 'TUSD',
@@ -274,8 +272,7 @@ const tokens = [
     iconCircle: 'uni_circle_color',
     iconColor: 'uni_circle_color',
     color: '#ff077d',
-    background:
-      'linear-gradient(160.65deg, #FDEEF3 2.52%, #FFE6F5 101.43%), #FFFFFF',
+    background: 'linear-gradient(160.65deg, #FDEEF3 2.52%, #FFE6F5 101.43%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old.png'),
     tags: [],
   },
@@ -513,6 +510,7 @@ const tokens = [
     ticker: 'dai-dai',
     coinbaseTicker: 'dai-usdc',
     color: '#fdc134',
+    bannerIcon: '',
     tags: ['stablecoin'],
   },
 ]

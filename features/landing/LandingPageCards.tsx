@@ -1,41 +1,49 @@
+import { BigNumber } from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Flex, Heading } from 'theme-ui'
 
-import { IlkDataList } from '../../blockchain/ilks'
 import { getToken } from '../../blockchain/tokensMetadata'
 import { ProductCard } from '../../components/ProductCard'
-import { borrowPageCards, landingPageCards, multiplyPageCards } from '../../helpers/productCards'
 import { formatPercent } from '../../helpers/formatters/format'
+import {
+  borrowPageCards,
+  landingPageCards,
+  multiplyPageCards,
+  ProductCardData,
+} from '../../helpers/productCards'
 import { one } from '../../helpers/zero'
-import { Flex, Heading } from 'theme-ui'
-import { BigNumber } from 'bignumber.js'
 
 interface LandingPageCardsProps {
-  ilkDataList: IlkDataList
+  productCardsData: ProductCardData[]
 }
 
-export function LandingPageCards({ ilkDataList }: LandingPageCardsProps) {
+const hardcodedTokenAmount = 1
+
+export function LandingPageCards({ productCardsData }: LandingPageCardsProps) {
   const { t } = useTranslation()
+  console.log(productCardsData)
 
   return (
     <Flex sx={{ flexDirection: 'column', width: '100%' }}>
       <Heading sx={{ pb: 3, textAlign: 'center' }}>Landing page multiply</Heading>
       <Flex sx={{ justifyContent: 'space-around', pb: 4 }}>
-        {landingPageCards(ilkDataList, 'multiply').map((ilk) => {
-          const tokenMeta = getToken(ilk.token)
+        {landingPageCards(productCardsData, 'multiply').map((cardData) => {
+          const tokenMeta = getToken(cardData.token)
 
-          const maxMultiple = one.div(ilk.liquidationRatio.minus(one))
+          const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
 
           return (
             <ProductCard
+              key={cardData.ilk}
               tokenImage={tokenMeta.bannerIcon}
-              title={ilk.ilk}
-              description={t(`product-card.multiply.description`, { token: ilk.token })}
+              title={cardData.ilk}
+              description={t(`product-card.multiply.description`, { token: cardData.token })}
               banner={{
-                title: t('product-card-banner.with', { value: '100', token: ilk.token }),
+                title: t('product-card-banner.with', { value: '100', token: cardData.token }),
                 description: t(`product-card-banner.multiply.description`, {
                   value: maxMultiple.times(100).toFixed(2),
-                  token: ilk.token,
+                  token: cardData.token,
                 }),
               }}
               leftSlot={{
@@ -44,9 +52,9 @@ export function LandingPageCards({ ilkDataList }: LandingPageCardsProps) {
               }}
               rightSlot={{
                 title: t(t('system.stability-fee')),
-                value: formatPercent(ilk.stabilityFee.times(100), { precision: 2 }),
+                value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
               }}
-              button={{ link: `/vaults/open-multiply/${ilk.ilk}`, text: t('nav.multiply') }}
+              button={{ link: `/vaults/open-multiply/${cardData.ilk}`, text: t('nav.multiply') }}
               background={tokenMeta.background!}
             />
           )
@@ -54,31 +62,39 @@ export function LandingPageCards({ ilkDataList }: LandingPageCardsProps) {
       </Flex>
       <Heading sx={{ pb: 3, textAlign: 'center' }}>Landing page borrow</Heading>
       <Flex sx={{ justifyContent: 'space-around', pb: 4 }}>
-        {landingPageCards(ilkDataList, 'borrow').map((ilk) => {
-          const tokenMeta = getToken(ilk.token)
+        {landingPageCards(productCardsData, 'borrow').map((cardData) => {
+          const tokenMeta = getToken(cardData.token)
 
-          const maxMultiple = one.div(ilk.liquidationRatio.minus(one))
-          const maxBorrowAmount = new BigNumber(one.div(ilk.liquidationRatio).multipliedBy(100000)).toFixed(0)
+          const maxBorrowAmount = new BigNumber(
+            one
+              .div(cardData.liquidationRatio)
+              .multipliedBy(cardData.currentCollateralPrice.times(hardcodedTokenAmount)),
+          ).toFixed(0)
+
           return (
             <ProductCard
+              key={cardData.ilk}
               tokenImage={tokenMeta.bannerIcon}
-              title={ilk.ilk}
-              description={t(`product-card.borrow.description`, { token: ilk.token })}
+              title={cardData.ilk}
+              description={t(`product-card.borrow.description`, { token: cardData.token })}
               banner={{
-                title: t('product-card-banner.with', { value: '100', token: ilk.token }),
+                title: t('product-card-banner.with', {
+                  value: hardcodedTokenAmount,
+                  token: cardData.token,
+                }),
                 description: t(`product-card-banner.borrow.description`, {
                   value: maxBorrowAmount,
                 }),
               }}
               leftSlot={{
                 title: t('system.min-coll-ratio'),
-                value: `${formatPercent(ilk.liquidationRatio.times(100), { precision: 2 })}`,
+                value: `${formatPercent(cardData.liquidationRatio.times(100), { precision: 2 })}`,
               }}
               rightSlot={{
                 title: t(t('system.stability-fee')),
-                value: formatPercent(ilk.stabilityFee.times(100), { precision: 2 }),
+                value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
               }}
-              button={{ link: `/vaults/open/${ilk.ilk}`, text: t('nav.borrow') }}
+              button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}
               background={tokenMeta.background!}
             />
           )
@@ -86,13 +102,14 @@ export function LandingPageCards({ ilkDataList }: LandingPageCardsProps) {
       </Flex>
       <Heading sx={{ pb: 3, textAlign: 'center' }}>Landing page earn</Heading>
       <Flex sx={{ justifyContent: 'space-around', pb: 4 }}>
-        {landingPageCards(ilkDataList, 'earn').map((ilk) => {
-          const tokenMeta = getToken(ilk.token)
+        {landingPageCards(productCardsData, 'earn').map((cardData) => {
+          const tokenMeta = getToken(cardData.token)
 
-          const maxMultiple = one.div(ilk.liquidationRatio.minus(one))
+          const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
 
           return (
             <ProductCard
+              key={cardData.ilk}
               tokenImage={tokenMeta.bannerIcon}
               title={tokenMeta.name}
               description={t(`product-card.earn.description`, { token: 'DAI' })}
@@ -109,9 +126,9 @@ export function LandingPageCards({ ilkDataList }: LandingPageCardsProps) {
               }}
               rightSlot={{
                 title: t(t('system.stability-fee')),
-                value: formatPercent(ilk.stabilityFee.times(100), { precision: 2 }),
+                value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
               }}
-              button={{ link: `/vaults/open-multiply/${ilk.ilk}`, text: t('nav.earn') }}
+              button={{ link: `/vaults/open-multiply/${cardData.ilk}`, text: t('nav.earn') }}
               background={tokenMeta.background!}
             />
           )
@@ -119,21 +136,22 @@ export function LandingPageCards({ ilkDataList }: LandingPageCardsProps) {
       </Flex>
       <Heading sx={{ pb: 3, textAlign: 'center' }}>Multiply page featured</Heading>
       <Flex sx={{ justifyContent: 'space-around', pb: 4, flexWrap: 'wrap' }}>
-        {multiplyPageCards({ ilkDataList }).map((ilk) => {
-          const tokenMeta = getToken(ilk.token)
+        {multiplyPageCards({ productCardsData }).map((cardData) => {
+          const tokenMeta = getToken(cardData.token)
 
-          const maxMultiple = one.div(ilk.liquidationRatio.minus(one))
+          const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
 
           return (
             <ProductCard
+              key={cardData.ilk}
               tokenImage={tokenMeta.bannerIcon}
-              title={ilk.ilk}
-              description={t(`product-card.multiply.description`, { token: ilk.token })}
+              title={cardData.ilk}
+              description={t(`product-card.multiply.description`, { token: cardData.token })}
               banner={{
-                title: t('product-card-banner.with', { value: '100', token: ilk.token }),
+                title: t('product-card-banner.with', { value: '100', token: cardData.token }),
                 description: t(`product-card-banner.multiply.description`, {
                   value: maxMultiple.times(100).toFixed(2),
-                  token: ilk.token,
+                  token: cardData.token,
                 }),
               }}
               leftSlot={{
@@ -142,9 +160,9 @@ export function LandingPageCards({ ilkDataList }: LandingPageCardsProps) {
               }}
               rightSlot={{
                 title: t(t('system.stability-fee')),
-                value: formatPercent(ilk.stabilityFee.times(100), { precision: 2 }),
+                value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
               }}
-              button={{ link: `/vaults/open-multiply/${ilk.ilk}`, text: t('nav.multiply') }}
+              button={{ link: `/vaults/open-multiply/${cardData.ilk}`, text: t('nav.multiply') }}
               background={tokenMeta.background!}
             />
           )
@@ -152,21 +170,22 @@ export function LandingPageCards({ ilkDataList }: LandingPageCardsProps) {
       </Flex>
       <Heading sx={{ pb: 3, textAlign: 'center' }}>Multiply page ETH</Heading>
       <Flex sx={{ justifyContent: 'space-around', pb: 4, flexWrap: 'wrap' }}>
-        {multiplyPageCards({ ilkDataList, token: 'ETH' }).map((ilk) => {
-          const tokenMeta = getToken(ilk.token)
+        {multiplyPageCards({ productCardsData, token: 'ETH' }).map((cardData) => {
+          const tokenMeta = getToken(cardData.token)
 
-          const maxMultiple = one.div(ilk.liquidationRatio.minus(one))
+          const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
 
           return (
             <ProductCard
+              key={cardData.ilk}
               tokenImage={tokenMeta.bannerIcon}
-              title={ilk.ilk}
-              description={t(`product-card.multiply.description`, { token: ilk.token })}
+              title={cardData.ilk}
+              description={t(`product-card.multiply.description`, { token: cardData.token })}
               banner={{
-                title: t('product-card-banner.with', { value: '100', token: ilk.token }),
+                title: t('product-card-banner.with', { value: '100', token: cardData.token }),
                 description: t(`product-card-banner.multiply.description`, {
                   value: maxMultiple.times(100).toFixed(2),
-                  token: ilk.token,
+                  token: cardData.token,
                 }),
               }}
               leftSlot={{
@@ -175,9 +194,9 @@ export function LandingPageCards({ ilkDataList }: LandingPageCardsProps) {
               }}
               rightSlot={{
                 title: t(t('system.stability-fee')),
-                value: formatPercent(ilk.stabilityFee.times(100), { precision: 2 }),
+                value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
               }}
-              button={{ link: `/vaults/open-multiply/${ilk.ilk}`, text: t('nav.multiply') }}
+              button={{ link: `/vaults/open-multiply/${cardData.ilk}`, text: t('nav.multiply') }}
               background={tokenMeta.background!}
             />
           )
@@ -185,31 +204,39 @@ export function LandingPageCards({ ilkDataList }: LandingPageCardsProps) {
       </Flex>
       <Heading sx={{ pb: 3, textAlign: 'center' }}>Borrow page featured</Heading>
       <Flex sx={{ justifyContent: 'space-around', pb: 4, flexWrap: 'wrap' }}>
-        {borrowPageCards({ ilkDataList }).map((ilk) => {
-          const tokenMeta = getToken(ilk.token)
+        {borrowPageCards({ productCardsData }).map((cardData) => {
+          const tokenMeta = getToken(cardData.token)
 
-          const maxMultiple = one.div(ilk.liquidationRatio.minus(one))
+          const maxBorrowAmount = new BigNumber(
+            one
+              .div(cardData.liquidationRatio)
+              .multipliedBy(cardData.currentCollateralPrice.times(hardcodedTokenAmount)),
+          ).toFixed(0)
 
           return (
             <ProductCard
+              key={cardData.ilk}
               tokenImage={tokenMeta.bannerIcon}
-              title={ilk.ilk}
-              description={t(`product-card.borrow.description`, { token: ilk.token })}
+              title={cardData.ilk}
+              description={t(`product-card.borrow.description`, { token: cardData.token })}
               banner={{
-                title: t('product-card-banner.with', { value: '100', token: ilk.token }),
+                title: t('product-card-banner.with', {
+                  value: hardcodedTokenAmount,
+                  token: cardData.token,
+                }),
                 description: t(`product-card-banner.borrow.description`, {
-                  value: maxMultiple.times(100).toFixed(2),
+                  value: maxBorrowAmount,
                 }),
               }}
               leftSlot={{
                 title: t('system.min-coll-ratio'),
-                value: `${formatPercent(ilk.liquidationRatio.times(100), { precision: 2 })}`,
+                value: `${formatPercent(cardData.liquidationRatio.times(100), { precision: 2 })}`,
               }}
               rightSlot={{
                 title: t(t('system.stability-fee')),
-                value: formatPercent(ilk.stabilityFee.times(100), { precision: 2 }),
+                value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
               }}
-              button={{ link: `/vaults/open/${ilk.ilk}`, text: t('nav.borrow') }}
+              button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}
               background={tokenMeta.background!}
             />
           )
@@ -217,31 +244,39 @@ export function LandingPageCards({ ilkDataList }: LandingPageCardsProps) {
       </Flex>
       <Heading sx={{ pb: 3, textAlign: 'center' }}>Borrow page BTC</Heading>
       <Flex sx={{ justifyContent: 'space-around', pb: 4, flexWrap: 'wrap' }}>
-        {borrowPageCards({ ilkDataList, token: 'WBTC' }).map((ilk) => {
-          const tokenMeta = getToken(ilk.token)
+        {borrowPageCards({ productCardsData, token: 'WBTC' }).map((cardData) => {
+          const tokenMeta = getToken(cardData.token)
 
-          const maxMultiple = one.div(ilk.liquidationRatio.minus(one))
+          const maxBorrowAmount = new BigNumber(
+            one
+              .div(cardData.liquidationRatio)
+              .multipliedBy(cardData.currentCollateralPrice.times(hardcodedTokenAmount)),
+          ).toFixed(0)
 
           return (
             <ProductCard
+              key={cardData.ilk}
               tokenImage={tokenMeta.bannerIcon}
-              title={ilk.ilk}
-              description={t(`product-card.borrow.description`, { token: ilk.token })}
+              title={cardData.ilk}
+              description={t(`product-card.borrow.description`, { token: cardData.token })}
               banner={{
-                title: t('product-card-banner.with', { value: '100', token: ilk.token }),
+                title: t('product-card-banner.with', {
+                  value: hardcodedTokenAmount,
+                  token: cardData.token,
+                }),
                 description: t(`product-card-banner.borrow.description`, {
-                  value: maxMultiple.times(100).toFixed(2),
+                  value: maxBorrowAmount,
                 }),
               }}
               leftSlot={{
                 title: t('system.min-coll-ratio'),
-                value: `${formatPercent(ilk.liquidationRatio.times(100), { precision: 2 })}`,
+                value: `${formatPercent(cardData.liquidationRatio.times(100), { precision: 2 })}`,
               }}
               rightSlot={{
                 title: t(t('system.stability-fee')),
-                value: formatPercent(ilk.stabilityFee.times(100), { precision: 2 }),
+                value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
               }}
-              button={{ link: `/vaults/open/${ilk.ilk}`, text: t('nav.borrow') }}
+              button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}
               background={tokenMeta.background!}
             />
           )
@@ -249,31 +284,39 @@ export function LandingPageCards({ ilkDataList }: LandingPageCardsProps) {
       </Flex>
       <Heading sx={{ pb: 3, textAlign: 'center' }}>Borrow page UNI-LP</Heading>
       <Flex sx={{ justifyContent: 'space-around', pb: 4, flexWrap: 'wrap' }}>
-        {borrowPageCards({ ilkDataList, token: 'UNI-LP' }).map((ilk) => {
-          const tokenMeta = getToken(ilk.token)
+        {borrowPageCards({ productCardsData, token: 'UNI-LP' }).map((cardData) => {
+          const tokenMeta = getToken(cardData.token)
 
-          const maxMultiple = one.div(ilk.liquidationRatio.minus(one))
+          const maxBorrowAmount = new BigNumber(
+            one
+              .div(cardData.liquidationRatio)
+              .multipliedBy(cardData.currentCollateralPrice.times(hardcodedTokenAmount)),
+          ).toFixed(0)
 
           return (
             <ProductCard
+              key={cardData.ilk}
               tokenImage={tokenMeta.bannerIcon}
-              title={ilk.ilk}
-              description={t(`product-card.borrow.description`, { token: ilk.token })}
+              title={cardData.ilk}
+              description={t(`product-card.borrow.description`, { token: cardData.token })}
               banner={{
-                title: t('product-card-banner.with', { value: '100', token: ilk.token }),
+                title: t('product-card-banner.with', {
+                  value: hardcodedTokenAmount,
+                  token: cardData.token,
+                }),
                 description: t(`product-card-banner.borrow.description`, {
-                  value: maxMultiple.times(100).toFixed(2),
+                  value: maxBorrowAmount,
                 }),
               }}
               leftSlot={{
                 title: t('system.min-coll-ratio'),
-                value: `${formatPercent(ilk.liquidationRatio.times(100), { precision: 2 })}`,
+                value: `${formatPercent(cardData.liquidationRatio.times(100), { precision: 2 })}`,
               }}
               rightSlot={{
                 title: t(t('system.stability-fee')),
-                value: formatPercent(ilk.stabilityFee.times(100), { precision: 2 }),
+                value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
               }}
-              button={{ link: `/vaults/open/${ilk.ilk}`, text: t('nav.borrow') }}
+              button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}
               background={tokenMeta.background!}
             />
           )
@@ -281,31 +324,39 @@ export function LandingPageCards({ ilkDataList }: LandingPageCardsProps) {
       </Flex>
       <Heading sx={{ pb: 3, textAlign: 'center' }}>Borrow page UNI</Heading>
       <Flex sx={{ justifyContent: 'space-around', pb: 4, flexWrap: 'wrap' }}>
-        {borrowPageCards({ ilkDataList, token: 'UNI' }).map((ilk) => {
-          const tokenMeta = getToken(ilk.token)
+        {borrowPageCards({ productCardsData, token: 'UNI' }).map((cardData) => {
+          const tokenMeta = getToken(cardData.token)
 
-          const maxMultiple = one.div(ilk.liquidationRatio.minus(one))
+          const maxBorrowAmount = new BigNumber(
+            one
+              .div(cardData.liquidationRatio)
+              .multipliedBy(cardData.currentCollateralPrice.times(hardcodedTokenAmount)),
+          ).toFixed(0)
 
           return (
             <ProductCard
+              key={cardData.ilk}
               tokenImage={tokenMeta.bannerIcon}
-              title={ilk.ilk}
-              description={t(`product-card.borrow.description`, { token: ilk.token })}
+              title={cardData.ilk}
+              description={t(`product-card.borrow.description`, { token: cardData.token })}
               banner={{
-                title: t('product-card-banner.with', { value: '100', token: ilk.token }),
+                title: t('product-card-banner.with', {
+                  value: hardcodedTokenAmount,
+                  token: cardData.token,
+                }),
                 description: t(`product-card-banner.borrow.description`, {
-                  value: maxMultiple.times(100).toFixed(2),
+                  value: maxBorrowAmount,
                 }),
               }}
               leftSlot={{
                 title: t('system.min-coll-ratio'),
-                value: `${formatPercent(ilk.liquidationRatio.times(100), { precision: 2 })}`,
+                value: `${formatPercent(cardData.liquidationRatio.times(100), { precision: 2 })}`,
               }}
               rightSlot={{
                 title: t(t('system.stability-fee')),
-                value: formatPercent(ilk.stabilityFee.times(100), { precision: 2 }),
+                value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
               }}
-              button={{ link: `/vaults/open/${ilk.ilk}`, text: t('nav.borrow') }}
+              button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}
               background={tokenMeta.background!}
             />
           )

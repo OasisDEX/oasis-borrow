@@ -20,7 +20,6 @@ import { Box, Button, Card, Flex, Grid, Heading, Image, SxStyleProp, Text } from
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
-
 import { LandingPageCards } from './LandingPageCards'
 //import { TypeformWidget } from './TypeformWidget'
 
@@ -229,16 +228,12 @@ function LandingCards() {
 }
 
 export function LandingView() {
-  const { landing$, context$, ilkDataList$, ilks$, productCardsData$ } = useAppContext()
+  const { landing$, context$, productCardsData$ } = useAppContext()
   const context = useObservable(context$)
-  const ilkDataList = useObservable(ilkDataList$)
-  const ilks = useObservable(ilks$)
-  const productCardsData = useObservable(productCardsData$)
-  // console.log(ilkDataList)
-  // console.log(ilks)
-  console.log(productCardsData)
   const { value: landing, error: landingError } = useObservableWithError(landing$)
-  const ilkDataListWithError = useObservableWithError(ilkDataList$)
+  const { error: productCardsDataError, value: productCardsData } = useObservableWithError(
+    productCardsData$,
+  )
   const { t } = useTranslation()
   const redirectToOpenVault = useRedirectToOpenVault()
 
@@ -287,19 +282,19 @@ export function LandingView() {
         />
         {landing !== undefined && <FeaturedIlks sx={fadeInAnimation} ilks={landing.featuredIlks} />}
       </Box>
-      <WithErrorHandler error={[ilkDataListWithError.error, landingError]}>
+      <WithErrorHandler error={[productCardsDataError, landingError]}>
         <WithLoadingIndicator
-          value={[ilkDataList, landing]}
+          value={[productCardsData, landing]}
           customLoader={
             <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
               <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
             </Flex>
           }
         >
-          {([ilkDataList, landing]) => (
+          {([productCardsData, landing]) => (
             <Box sx={{ ...slideInAnimation, position: 'relative' }}>
               <Flex sx={{ justifyContent: 'space-between' }}>
-                <LandingPageCards ilkDataList={ilkDataList} />
+                <LandingPageCards productCardsData={productCardsData} />
               </Flex>
               <FiltersWithPopular
                 onSearch={onIlkSearch}

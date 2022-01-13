@@ -1,5 +1,5 @@
-import EthImage from 'public/static/img/tokens/eth.png'
 import { useTranslation } from 'next-i18next'
+import EthImage from 'public/static/img/tokens/eth.png'
 import React from 'react'
 
 import { ProductCard } from '../ProductCard'
