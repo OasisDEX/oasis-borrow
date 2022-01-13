@@ -43,8 +43,7 @@ jobs:
         run: echo ${{ env.RELEASE_TYPE }}
       - name: git config
         run: |
-          git config user.name "Damian"
-          git config user.email "damian@oazoapps.com"
+          git config user.name ${{ github.actor }}
       # See: https://github.com/actions/cache/blob/main/examples.md#node---yarn
       - name: Get Yarn cache directory
         id: yarn-cache-dir-path
@@ -57,20 +56,17 @@ jobs:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
 
-      # `--prefer-offline` gives cache priority
       - name: Install dependencies
         run: yarn install --prefer-offline --frozen-lockfile
 
       - name: release version
-        run: npm run release ${{ env.RELEASE_TYPE }}
+        run: npm run release -- ${{ env.RELEASE_TYPE }} --ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/checkout@v2
-
       - name: Merge dev -> main
         uses: devmasx/merge-branch@master
         with:
           type: now
+          from_branch: dev
           target_branch: main
           github_token: ${{ github.token }}
