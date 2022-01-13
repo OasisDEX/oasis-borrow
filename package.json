@@ -113,6 +113,7 @@
     "react-select": "^3.1.0",
     "react-spring": "^8.0.27",
     "react-text-mask": "^5.4.1",
+    "release-it": "^14.12.1",
     "request": "^2.88.2",
     "rxjs": "^6.2.0",
     "rxjs-take-while-inclusive": "^2.1.0",
