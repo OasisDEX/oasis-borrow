@@ -1,5 +1,6 @@
-import { combineLatest, forkJoin, Observable, of } from 'rxjs'
-import { combineAll, flatMap, map, tap, switchMap } from 'rxjs/operators'
+import { BigNumber } from 'bignumber.js'
+import { combineLatest, Observable, of } from 'rxjs'
+import { switchMap } from 'rxjs/operators'
 
 import { IlkDataList } from '../blockchain/ilks'
 import {
@@ -77,21 +78,35 @@ export function borrowPageCards({
   )
 }
 
+interface ProductCardData {
+  token: string
+  ilk: string
+  liquidationRatio: BigNumber
+  stabilityFee: BigNumber
+  currentCollateralPrice: BigNumber
+}
+
 export function createProductCardsData$(
   ilkDataList$: Observable<IlkDataList>,
   priceInfo$: (token: string) => Observable<PriceInfo>,
-) {
-  const prices$ = ilkDataList$.pipe(
-    switchMap((ilkDataList) => {
-      return forkJoin(ilkDataList.map((ilk) => priceInfo$(ilk.token)))
-    }),
+): Observable<ProductCardData[]> {
+  return ilkDataList$.pipe(
+    switchMap((ilkDataList) =>
+      combineLatest(
+        ...ilkDataList.map((ilk) =>
+          priceInfo$(ilk.token).pipe(
+            switchMap((priceInfo) =>
+              of({
+                token: ilk.token,
+                ilk: ilk.ilk,
+                liquidationRatio: ilk.liquidationRatio,
+                stabilityFee: ilk.stabilityFee,
+                currentCollateralPrice: priceInfo.currentCollateralPrice,
+              }),
+            ),
+          ),
+        ),
+      ),
+    ),
   )
-
-  // return ilkDataList$.pipe(
-  //   switchMap((ilkDataList) => {
-  //     combineLatest(...ilkDataList.map((ilk) => priceInfo$(ilk.token)))
-  //   }),
-  // )
-
-  return combineLatest(ilkDataList$, prices$).pipe(map((item) => item))
 }

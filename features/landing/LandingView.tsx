@@ -234,7 +234,7 @@ export function LandingView() {
   const ilkDataList = useObservable(ilkDataList$)
   const ilks = useObservable(ilks$)
   const productCardsData = useObservable(productCardsData$)
-  console.log(ilkDataList)
+  // console.log(ilkDataList)
   // console.log(ilks)
   console.log(productCardsData)
   const { value: landing, error: landingError } = useObservableWithError(landing$)
