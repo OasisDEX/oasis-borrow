@@ -1,0 +1,13 @@
+{
+  "git": {
+    "commitMessage": "Release v${version}",
+    "requireCleanWorkingDir": false,
+    "changelog": "git log --pretty=format:\"* %s (%h)\" ${from}...${to}"
+  },
+  "npm": {
+    "publish": false
+  },
+  "github": {
+    "release": true
+  }
+}

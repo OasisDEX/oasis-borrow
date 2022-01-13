@@ -66,6 +66,16 @@ The application will be viewable on <http://localhost:3000> or <https://localhos
 
 <br>
 
+### Run staging site locally
+
+You can run the current staging site, (found at <https://staging.oasis.app>) alongside the database, by running:
+
+```sh
+./scripts/dev-with-staging.sh
+```
+
+It will pull an additional docker container with the current staging site and will make it available at <http://0.0.0.0:3000>
+
 ### Storybook
 
 We utilise storybook for visualising some of our UI components in isolation. This makes development
