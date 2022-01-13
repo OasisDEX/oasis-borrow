@@ -7,6 +7,7 @@ import {
   ALLOWED_MULTIPLY_TOKENS,
   BTC_TOKENS,
   ETH_TOKENS,
+  getToken,
   LP_TOKENS,
   ONLY_MULTIPLY_TOKENS,
 } from '../blockchain/tokensMetadata'
@@ -18,6 +19,9 @@ export interface ProductCardData {
   liquidationRatio: BigNumber
   stabilityFee: BigNumber
   currentCollateralPrice: BigNumber
+  bannerIcon: string
+  background: string
+  name: string
 }
 
 function btcProductCards(productCardsData: ProductCardData[]) {
@@ -109,8 +113,9 @@ export function createProductCardsData$(
   return ilkDataList$.pipe(
     switchMap((ilkDataList) =>
       combineLatest(
-        ...ilkDataList.map((ilk) =>
-          priceInfo$(ilk.token).pipe(
+        ...ilkDataList.map((ilk) => {
+          const tokenMeta = getToken(ilk.token)
+          return priceInfo$(ilk.token).pipe(
             switchMap((priceInfo) =>
               of({
                 token: ilk.token,
@@ -118,10 +123,13 @@ export function createProductCardsData$(
                 liquidationRatio: ilk.liquidationRatio,
                 stabilityFee: ilk.stabilityFee,
                 currentCollateralPrice: priceInfo.currentCollateralPrice,
+                bannerIcon: tokenMeta.bannerIconAssetFeature,
+                background: tokenMeta.backgroundAssetFeature,
+                name: tokenMeta.name,
               }),
             ),
-          ),
-        ),
+          )
+        }),
       ),
     ),
   )

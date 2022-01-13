@@ -19,7 +19,6 @@ import React, { ComponentProps, useCallback } from 'react'
 import { Box, Button, Card, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
-import { PageCards } from '../../components/PageCards'
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
 //import { TypeformWidget } from './TypeformWidget'
 
@@ -228,12 +227,10 @@ function LandingCards() {
 }
 
 export function LandingView() {
-  const { landing$, context$, productCardsData$ } = useAppContext()
+  const { landing$, context$ } = useAppContext()
   const context = useObservable(context$)
   const { value: landing, error: landingError } = useObservableWithError(landing$)
-  const { error: productCardsDataError, value: productCardsData } = useObservableWithError(
-    productCardsData$,
-  )
+
   const { t } = useTranslation()
   const redirectToOpenVault = useRedirectToOpenVault()
 
@@ -282,21 +279,17 @@ export function LandingView() {
         />
         {landing !== undefined && <FeaturedIlks sx={fadeInAnimation} ilks={landing.featuredIlks} />}
       </Box>
-      <WithErrorHandler error={[productCardsDataError, landingError]}>
+      <WithErrorHandler error={[landingError]}>
         <WithLoadingIndicator
-          value={[productCardsData, landing]}
+          value={[landing]}
           customLoader={
             <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
               <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
             </Flex>
           }
         >
-          {([productCardsData, landing]) => (
+          {([landing]) => (
             <Box sx={{ ...slideInAnimation, position: 'relative' }}>
-              <Flex sx={{ justifyContent: 'space-between' }}>
-                {/* TODO ITS JUST FOR TESTING, REMOVE WHEN SPECIFIC PAGES WILL BE CREATED*/}
-                <PageCards productCardsData={productCardsData} />
-              </Flex>
               <FiltersWithPopular
                 onSearch={onIlkSearch}
                 search={landing.ilks.filters.search}
