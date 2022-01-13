@@ -44,6 +44,13 @@ const infuraProjectId =
 const etherscanAPIKey =
   process.env.ETHERSCAN_API_KEY || getConfig()?.publicRuntimeConfig?.etherscan || ''
 
+const tokensMainnet = {
+  ...getCollateralTokens(mainnetAddresses),
+  GUNIV3DAIUSDC1: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC1']),
+  GUNIV3DAIUSDC2: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC2']),
+  WETH: contractDesc(eth, mainnetAddresses['ETH']),
+  DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
+} as Dictionary<ContractDesc>;
 const protoMain = {
   id: '1',
   name: 'main',
@@ -53,20 +60,8 @@ const protoMain = {
   safeConfirmations: 10,
   otc: contractDesc(otc, '0x794e6e91555438aFc3ccF1c5076A74F42133d08D'),
   collaterals: getCollaterals(mainnetAddresses),
-  tokens: {
-    ...getCollateralTokens(mainnetAddresses),
-    GUNIV3DAIUSDC1: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC1']),
-    GUNIV3DAIUSDC2: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC2']),
-    WETH: contractDesc(eth, mainnetAddresses['ETH']),
-    DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
-  } as Dictionary<ContractDesc>,
-  tokensMainnet: {
-    ...getCollateralTokens(mainnetAddresses),
-    GUNIV3DAIUSDC1: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC1']),
-    GUNIV3DAIUSDC2: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC2']),
-    WETH: contractDesc(eth, mainnetAddresses['ETH']),
-    DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
-  },
+  tokens: tokensMainnet,
+  tokensMainnet,
   joins: {
     ...getCollateralJoinContracts(mainnetAddresses),
   },
