@@ -28,33 +28,28 @@ async function getEvents(
 ): Promise<TriggersData> {
   const abi = [
     'event TriggerAdded( uint256 indexed triggerId, uint256 triggerType, uint256 indexed cdpId,  bytes triggerData)',
-    'event TriggerRemoved ( uint256 cdpId, uint256 triggerId)'
+    'event TriggerRemoved ( uint256 cdpId, uint256 triggerId)',
   ]
-  console.log('add trigger abi')
-  console.log(abi[0])
-  console.log('remove trigger abi')
-  console.log(abi[1])
   const contract = new ethers.Contract(botAddress ?? '', new Interface(automationBot), provider)
+  const filterFromTriggerRemoved = contract.filters.TriggerRemoved(vaultId, null)
+  const removedEventsList = await contract.queryFilter(
+    filterFromTriggerRemoved,
+    process.env.DEPLOYMENT_BLOCK,
+    blockNumber,
+  )
+  // Probably there's no need to sort ~ŁW
+  removedEventsList.sort((event1, event2) => (event1.blockNumber > event2.blockNumber ? 1 : -1))
+  const newestRemoveEvent = removedEventsList[removedEventsList.length - 1]
   const filterFromTriggerAdded = contract.filters.TriggerAdded(null, null, vaultId, null)
   const addedEventsList = await contract.queryFilter(
     filterFromTriggerAdded,
     process.env.DEPLOYMENT_BLOCK,
     blockNumber,
   )
-  const events = addedEventsList.map((singleEvent) => parseEvent(abi, singleEvent))
-  console.log(addedEventsList)
-  console.log(events)
-
-  const filterFromTriggerRemoved = contract.filters.TriggerRemoved(vaultId, null)
-  console.log(filterFromTriggerRemoved)
-  const removedEventsList = await contract.queryFilter(
-    filterFromTriggerRemoved,
-    process.env.DEPLOYMENT_BLOCK,
-    blockNumber,
-  )
-  console.log(removedEventsList)
-  // TODO then add removedEvents to events, sort it by block No determine what to return
-
+  const filteredAddedEvents = addedEventsList.filter((event) => {
+    return newestRemoveEvent.blockNumber < event.blockNumber
+  })
+  const events = filteredAddedEvents.map((singleEvent) => parseEvent(abi, singleEvent))
   return {
     triggers: events,
     isAutomationEnabled: events.length !== 0,
