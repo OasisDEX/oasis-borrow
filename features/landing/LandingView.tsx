@@ -19,8 +19,8 @@ import React, { ComponentProps, useCallback } from 'react'
 import { Box, Button, Card, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
+import { PageCards } from '../../components/PageCards'
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
-import { LandingPageCards } from './LandingPageCards'
 //import { TypeformWidget } from './TypeformWidget'
 
 const {
@@ -294,7 +294,8 @@ export function LandingView() {
           {([productCardsData, landing]) => (
             <Box sx={{ ...slideInAnimation, position: 'relative' }}>
               <Flex sx={{ justifyContent: 'space-between' }}>
-                <LandingPageCards productCardsData={productCardsData} />
+                {/* TODO ITS JUST FOR TESTING, REMOVE WHEN SPECIFIC PAGES WILL BE CREATED*/}
+                <PageCards productCardsData={productCardsData} />
               </Flex>
               <FiltersWithPopular
                 onSearch={onIlkSearch}

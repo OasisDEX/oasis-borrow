@@ -38,7 +38,6 @@ const tokens = [
     background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/eth.png'),
     tags: [],
-    derivativeTokens: ['WSTETH'],
   },
   {
     symbol: 'BAT',
@@ -69,6 +68,7 @@ const tokens = [
     background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/wbtc.png'),
     tags: [],
+    rootToken: 'BTC',
   },
   {
     symbol: 'RENBTC',
@@ -86,6 +86,7 @@ const tokens = [
     background: 'linear-gradient(160.47deg, #F1F5F5 0.35%, #E5E7E8 99.18%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/renBTC.png'),
     tags: [],
+    rootToken: 'BTC',
   },
   {
     symbol: 'TUSD',
@@ -346,7 +347,7 @@ const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old_dai_eth.png'),
     tags: ['lp-token'],
   },
-  // TO BE REMOVED
+  // TODO TO BE REMOVED
   {
     symbol: 'UNIV2ETHUSDT',
     precision: 18,
@@ -376,7 +377,7 @@ const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old_uni_eth.png'),
     tags: ['lp-token'],
   },
-  // TO BE REMOVED
+  // TODO TO BE REMOVED WHEN LANDING PAGE WILL BE READY
   {
     symbol: 'UNIV2LINKETH',
     precision: 18,
@@ -406,7 +407,7 @@ const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old_wbtc_dai.png'),
     tags: ['lp-token'],
   },
-  // TO BE REMOVED
+  // TODO TO BE REMOVED WHEN LANDING PAGE WILL BE READY
   {
     symbol: 'UNIV2AAVEETH',
     precision: 18,
@@ -422,7 +423,7 @@ const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     tags: ['lp-token'],
   },
-  // TO BE REMOVED
+  // TODO TO BE REMOVED WHEN LANDING PAGE WILL BE READY
   {
     symbol: 'UNIV2DAIUSDT',
     precision: 18,
@@ -497,6 +498,7 @@ const tokens = [
     background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/eth.png'),
     tags: [],
+    rootToken: 'ETH',
   },
   {
     symbol: 'DAI',
@@ -531,8 +533,16 @@ export const ALLOWED_MULTIPLY_TOKENS = tokens
   )
   .map((token) => token.symbol)
 
-export const ONLY_LP_TOKENS = tokens.filter((token) =>
-  (token.tags as CoinTag[]).includes('lp-token'),
-)
+export const LP_TOKENS = tokens
+  .filter((token) => (token.tags as CoinTag[]).includes('lp-token'))
+  .map((lpToken) => lpToken.symbol)
+
+export const BTC_TOKENS = tokens
+  .filter((token) => token.rootToken === 'BTC' || token.symbol === 'BTC')
+  .map((btcToken) => btcToken.symbol)
+
+export const ETH_TOKENS = tokens
+  .filter((token) => token.rootToken === 'ETH' || token.symbol === 'ETH')
+  .map((ethToken) => ethToken.symbol)
 
 export const ONLY_MULTIPLY_TOKENS = ['GUNIV3DAIUSDC1', 'GUNIV3DAIUSDC2']

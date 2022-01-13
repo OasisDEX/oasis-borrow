@@ -3,16 +3,16 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Heading } from 'theme-ui'
 
-import { getToken } from '../../blockchain/tokensMetadata'
-import { ProductCard } from '../../components/ProductCard'
-import { formatPercent } from '../../helpers/formatters/format'
+import { getToken } from '../blockchain/tokensMetadata'
+import { formatPercent } from '../helpers/formatters/format'
 import {
   borrowPageCards,
   landingPageCards,
   multiplyPageCards,
   ProductCardData,
-} from '../../helpers/productCards'
-import { one } from '../../helpers/zero'
+} from '../helpers/productCards'
+import { one } from '../helpers/zero'
+import { ProductCard } from './ProductCard'
 
 interface LandingPageCardsProps {
   productCardsData: ProductCardData[]
@@ -20,7 +20,7 @@ interface LandingPageCardsProps {
 
 const hardcodedTokenAmount = 1
 
-export function LandingPageCards({ productCardsData }: LandingPageCardsProps) {
+export function PageCards({ productCardsData }: LandingPageCardsProps) {
   const { t } = useTranslation()
   console.log(productCardsData)
 
@@ -244,7 +244,7 @@ export function LandingPageCards({ productCardsData }: LandingPageCardsProps) {
       </Flex>
       <Heading sx={{ pb: 3, textAlign: 'center' }}>Borrow page BTC</Heading>
       <Flex sx={{ justifyContent: 'space-around', pb: 4, flexWrap: 'wrap' }}>
-        {borrowPageCards({ productCardsData, token: 'WBTC' }).map((cardData) => {
+        {borrowPageCards({ productCardsData, token: 'BTC' }).map((cardData) => {
           const tokenMeta = getToken(cardData.token)
 
           const maxBorrowAmount = new BigNumber(

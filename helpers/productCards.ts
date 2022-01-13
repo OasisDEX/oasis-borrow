@@ -5,8 +5,9 @@ import { switchMap } from 'rxjs/operators'
 import { IlkDataList } from '../blockchain/ilks'
 import {
   ALLOWED_MULTIPLY_TOKENS,
-  getToken,
-  ONLY_LP_TOKENS,
+  BTC_TOKENS,
+  ETH_TOKENS,
+  LP_TOKENS,
   ONLY_MULTIPLY_TOKENS,
 } from '../blockchain/tokensMetadata'
 import { PriceInfo } from '../features/shared/priceInfo'
@@ -17,6 +18,20 @@ export interface ProductCardData {
   liquidationRatio: BigNumber
   stabilityFee: BigNumber
   currentCollateralPrice: BigNumber
+}
+
+function btcProductCards(productCardsData: ProductCardData[]) {
+  return productCardsData.filter((ilk) => BTC_TOKENS.includes(ilk.token))
+}
+
+function ethProductCards(productCardsData: ProductCardData[]) {
+  return productCardsData.filter((ilk) => ETH_TOKENS.includes(ilk.token))
+}
+
+function uniLpProductCards(productCardsData: ProductCardData[]) {
+  return productCardsData.filter(
+    (ilk) => LP_TOKENS.includes(ilk.token) && !ONLY_MULTIPLY_TOKENS.includes(ilk.token),
+  )
 }
 
 export function landingPageCards(
@@ -48,11 +63,15 @@ export function multiplyPageCards({
     return productCardsData.filter((ilk) => featuredCards.includes(ilk.ilk))
   }
 
-  const tokenMeta = getToken(token)
+  if (token === 'BTC') {
+    return btcProductCards(productCardsData)
+  }
 
-  return multiplyTokens.filter(
-    (ilk) => ilk.token === token || tokenMeta.derivativeTokens?.includes(ilk.token),
-  )
+  if (token === 'ETH') {
+    return ethProductCards(productCardsData)
+  }
+
+  return multiplyTokens.filter((ilk) => ilk.token === token)
 }
 
 export function borrowPageCards({
@@ -69,18 +88,18 @@ export function borrowPageCards({
   }
 
   if (token === 'UNI-LP') {
-    const lpTokensSymbols = ONLY_LP_TOKENS.map((lpToken) => lpToken.symbol)
-
-    return productCardsData.filter(
-      (ilk) => lpTokensSymbols.includes(ilk.token) && !ONLY_MULTIPLY_TOKENS.includes(ilk.token),
-    )
+    return uniLpProductCards(productCardsData)
   }
 
-  const tokenMeta = getToken(token)
+  if (token === 'BTC') {
+    return btcProductCards(productCardsData)
+  }
 
-  return productCardsData.filter(
-    (ilk) => ilk.token === token || tokenMeta.derivativeTokens?.includes(ilk.token),
-  )
+  if (token === 'ETH') {
+    return ethProductCards(productCardsData)
+  }
+
+  return productCardsData.filter((ilk) => ilk.token === token)
 }
 
 export function createProductCardsData$(
