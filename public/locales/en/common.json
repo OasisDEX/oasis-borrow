@@ -327,6 +327,7 @@
     "dai-wallet": "Dai Wallet",
     "borrow": "Borrow",
     "multiply": "Multiply",
+    "earn": "Earn",
     "oasis-borrow": "Oasis Borrow"
   },
   "new-to-ethereum": "New to Ethereum? ",
@@ -707,15 +708,21 @@
     },
     "multiply": {
       "description": "A Vault designed for multiple exposure to {{token}}."
+    },
+    "earn": {
+      "description": "A great way to earn a stable long term yield on your {{token}}"
     }
   },
   "product-card-banner": {
     "with": "With {{value}} {{token}} \uD83D\uDC47",
     "borrow": {
-      "description": "Borrow up to {{value}} {{token}}"
+      "description": "Borrow up to {{value}} DAI"
     },
     "multiply": {
       "description": "Get up to {{value}} {{token}} exposure"
+    },
+    "earn": {
+      "description": "Earn {{value}} {{token}} a year"
     }
   }
 }

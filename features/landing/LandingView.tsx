@@ -20,6 +20,8 @@ import { Box, Button, Card, Flex, Grid, Heading, Image, SxStyleProp, Text } from
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
+
+import { LandingPageCards } from './LandingPageCards'
 //import { TypeformWidget } from './TypeformWidget'
 
 const {
@@ -227,9 +229,16 @@ function LandingCards() {
 }
 
 export function LandingView() {
-  const { landing$, context$ } = useAppContext()
+  const { landing$, context$, ilkDataList$, ilks$, productCardsData$ } = useAppContext()
   const context = useObservable(context$)
+  const ilkDataList = useObservable(ilkDataList$)
+  const ilks = useObservable(ilks$)
+  const productCardsData = useObservable(productCardsData$)
+  console.log(ilkDataList)
+  // console.log(ilks)
+  console.log(productCardsData)
   const { value: landing, error: landingError } = useObservableWithError(landing$)
+  const ilkDataListWithError = useObservableWithError(ilkDataList$)
   const { t } = useTranslation()
   const redirectToOpenVault = useRedirectToOpenVault()
 
@@ -278,17 +287,20 @@ export function LandingView() {
         />
         {landing !== undefined && <FeaturedIlks sx={fadeInAnimation} ilks={landing.featuredIlks} />}
       </Box>
-      <WithErrorHandler error={landingError}>
+      <WithErrorHandler error={[ilkDataListWithError.error, landingError]}>
         <WithLoadingIndicator
-          value={landing}
+          value={[ilkDataList, landing]}
           customLoader={
             <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
               <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
             </Flex>
           }
         >
-          {(landing) => (
+          {([ilkDataList, landing]) => (
             <Box sx={{ ...slideInAnimation, position: 'relative' }}>
+              <Flex sx={{ justifyContent: 'space-between' }}>
+                <LandingPageCards ilkDataList={ilkDataList} />
+              </Flex>
               <FiltersWithPopular
                 onSearch={onIlkSearch}
                 search={landing.ilks.filters.search}

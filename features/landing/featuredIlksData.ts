@@ -14,6 +14,7 @@ function createFeaturedIlk(
   selector: (ilks: IlkDataList) => IlkData | undefined,
   title: string,
 ): FeaturedIlk | undefined {
+  console.log(ilkDataList)
   const featured = selector(ilkDataList.filter(hasAllMetaInfo))
   if (featured === undefined) {
     return undefined
