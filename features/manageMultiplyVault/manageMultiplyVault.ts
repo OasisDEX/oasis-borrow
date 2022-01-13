@@ -112,7 +112,7 @@ function apply(state: ManageMultiplyVaultState, change: ManageMultiplyVaultChang
   return applyManageVaultSummary(s10)
 }
 
-export type ManageMultiplyVaultEditingStage = 'adjustPosition' | 'otherActions'
+export type ManageMultiplyVaultEditingStage = 'adjustPosition' | 'otherActions' | 'borrowTransitionEditing'
 
 export type ManageMultiplyVaultStage = ManageMultiplyVaultEditingStage | BaseManageVaultStage
 
@@ -173,7 +173,7 @@ export interface ManageVaultEnvironment {
 interface ManageVaultFunctions {
   progress?: () => void
   regress?: () => void
-  toggle?: () => void
+  toggle?: (stage: ManageMultiplyVaultEditingStage) => void
 
   updateDepositAmount?: (depositAmount?: BigNumber) => void
   updateDepositAmountUSD?: (depositAmountUSD?: BigNumber) => void
@@ -274,7 +274,7 @@ function addTransitions(
       setCloseVaultTo: (closeVaultTo: CloseVaultTo) =>
         change({ kind: 'closeVaultTo', closeVaultTo }),
 
-      toggle: () => change({ kind: 'toggleEditing' }),
+      toggle: (stage) => change({ kind: 'toggleEditing', stage }),
       progress: () => change({ kind: 'progressEditing' }),
       toggleSliderController: () => change({ kind: 'toggleSliderController' }),
       updateRequiredCollRatio: (requiredCollRatio: BigNumber) =>

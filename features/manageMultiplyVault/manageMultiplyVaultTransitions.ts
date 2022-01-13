@@ -22,7 +22,8 @@ import {
 
 export type ManageVaultTransitionChange =
   | {
-      kind: 'toggleEditing'
+      kind: 'toggleEditing',
+      stage: ManageMultiplyVaultEditingStage
     }
   | {
       kind: 'progressEditing'
@@ -55,18 +56,12 @@ export function applyManageVaultTransition(
 ): ManageMultiplyVaultState {
   if (change.kind === 'toggleEditing') {
     const { stage } = state
-    const currentEditing = stage
-    const otherEditing = ([
-      'adjustPosition',
-      'otherActions',
-    ] as ManageMultiplyVaultEditingStage[]).find(
-      (editingStage) => editingStage !== currentEditing,
-    ) as ManageMultiplyVaultEditingStage
+
     return {
       ...state,
       ...manageVaultFormDefaults,
-      stage: otherEditing,
-      originalEditingStage: otherEditing,
+      stage: change.stage,
+      originalEditingStage: change.stage,
     }
   }
 

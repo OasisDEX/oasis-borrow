@@ -83,7 +83,8 @@ function manageMultiplyVaultButtonText(state: ManageMultiplyVaultState): string 
     case 'manageWaitingForApproval':
     case 'manageInProgress':
       return t('changing-vault')
-
+    case 'borrowTransitionEditing':
+      return 'woot!'
     default:
       throw new UnreachableCaseError(state.stage)
   }

@@ -4,6 +4,7 @@ import { Box, Button, Grid } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../../../../manageMultiplyVault/manageMultiplyVault'
 import { ManageVaultHeaderAllowance } from '../../../common/ManageVaultHeaderAllowance'
+import { ManageMultiplyVaultEditingStage } from 'features/manageMultiplyVault/manageMultiplyVault'
 
 function DefaultManageMultiplyVaultEditingController({
   stage,
@@ -14,9 +15,10 @@ function DefaultManageMultiplyVaultEditingController({
 ManageMultiplyVaultState) {
   const adjustPosition = `vaultEditingController${stage !== 'adjustPosition' ? 'Inactive' : ''}`
   const otherActions = `vaultEditingController${stage !== 'otherActions' ? 'Inactive' : ''}`
+  const borrow = `vaultEditingController${stage !== 'borrowTransitionEditing' ? 'Inactive' : ''}`
 
-  function handleToggle() {
-    toggle!()
+  function handleToggle(stage: ManageMultiplyVaultEditingStage) {
+    toggle!(stage)
     // TODO add analytics
     // if (stage === 'collateralEditing') {
     //   trackingEvents.switchToDai(accountIsController)
@@ -28,11 +30,14 @@ ManageMultiplyVaultState) {
   return (
     <Box sx={{ justifyContent: 'center' }}>
       <Grid columns={2} variant="vaultEditingControllerContainer">
-        <Button onClick={handleToggle} variant={adjustPosition}>
+        <Button onClick={() => handleToggle('adjustPosition')} variant={adjustPosition}>
           Adjust Position
         </Button>
-        <Button onClick={handleToggle} variant={otherActions}>
+        <Button onClick={() => handleToggle('otherActions')} variant={otherActions}>
           Other Actions
+        </Button>
+        <Button onClick={() => handleToggle('borrowTransitionEditing')} variant={borrow}>
+          Borrow
         </Button>
       </Grid>
       <Box mt={3} mb={-3}>
