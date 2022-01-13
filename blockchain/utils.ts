@@ -1,19 +1,19 @@
 import { BigNumber } from 'bignumber.js'
-import { RAD, RAY, WAD } from 'components/constants'
+import { RAD, RAD_PRECISION, RAY, RAY_PRECISION, WAD } from 'components/constants'
 import padEnd from 'lodash/padEnd'
 import ethAbi, { AbiCoder } from 'web3-eth-abi'
 
 import { getToken } from './tokensMetadata'
 
 // Set global decimals places to the minimum unit we operate on
-BigNumber.config({ DECIMAL_PLACES: 45 })
+BigNumber.set({ DECIMAL_PLACES: 45 })
 
 export function amountFromRay(amount: BigNumber): BigNumber {
-  return amount.div(RAY).decimalPlaces(RAY.toString().length)
+  return amount.div(RAY).decimalPlaces(RAY_PRECISION)
 }
 
 export function amountFromRad(amount: BigNumber): BigNumber {
-  return amount.div(RAD).decimalPlaces(RAD.toString().length)
+  return amount.div(RAD).decimalPlaces(RAD_PRECISION)
 }
 
 export function funcSigTopic(v: string): string {

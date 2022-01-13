@@ -7,13 +7,13 @@ import { amountFromRad, amountFromRay } from './utils'
 
 describe('utils$', () => {
   it('should not reconfigure global precision for bignumber', () => {
-    const defaultDecimal = BigNumber.config({}).DECIMAL_PLACES
+    const defaultDecimals = BigNumber.config({}).DECIMAL_PLACES
 
     amountFromRad(one)
-    expect(BigNumber.config({}).DECIMAL_PLACES).to.eq(defaultDecimal)
+    expect(BigNumber.config({}).DECIMAL_PLACES).to.eq(defaultDecimals)
 
     amountFromRay(one)
-    expect(BigNumber.config({}).DECIMAL_PLACES).to.eq(defaultDecimal)
+    expect(BigNumber.config({}).DECIMAL_PLACES).to.eq(defaultDecimals)
   })
 
   it('should not lose precision when dividing rad value', () => {
