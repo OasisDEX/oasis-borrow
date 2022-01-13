@@ -28,6 +28,7 @@ import { adRollPixelScript } from '../analytics/adroll'
 import { trackingEvents } from '../analytics/analytics'
 import { LOCALSTORAGE_KEY } from '../analytics/common'
 import { mixpanelInit } from '../analytics/mixpanel'
+import { loadFeatureToggles } from '../helpers/useFeatureToggle'
 import { useLocalStorage } from '../helpers/useLocalStorage'
 import nextI18NextConfig from '../next-i18next.config.js'
 
@@ -134,7 +135,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     }
 
     router.events.on('routeChangeComplete', handleRouteChange)
-
+    loadFeatureToggles()
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange)
     }
