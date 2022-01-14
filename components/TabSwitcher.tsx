@@ -69,7 +69,7 @@ export function TabSwitcher(props: {
                   transition: 'transform 0.2s ease-in-out',
                 }}
               >
-                <Icon name="chevron" />
+                <Icon name="chevron_down" />
               </Flex>
             ),
             Control: ({ children, innerProps }) => (
