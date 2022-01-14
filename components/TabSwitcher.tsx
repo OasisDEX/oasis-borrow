@@ -25,13 +25,29 @@ export function TabSwitcher(props: {
     [],
   )
 
-  return (
-    <Flex
-      sx={{
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-    >
+  const WideTabSelector = () => {
+    return (
+      <Grid columns={props.tabs.length} variant="tabSwitcher" sx={props.wideTabsSx}>
+        {props.tabs.map(({ tabLabel }, index) => {
+          return (
+            <Button
+              key={index}
+              onClick={selectTab}
+              value={index}
+              variant={
+                selectedTab === index.toString() ? 'tabSwitcherTabActive' : 'tabSwitcherTabInactive'
+              }
+            >
+              {tabLabel}
+            </Button>
+          )
+        })}
+      </Grid>
+    )
+  }
+
+  const NarrowTabSelector = () => {
+    return (
       <Box sx={props.narrowTabsSx}>
         <ReactSelect
           value={{
@@ -74,22 +90,18 @@ export function TabSwitcher(props: {
           }}
         />
       </Box>
-      <Grid columns={props.tabs.length} variant="tabSwitcher" sx={props.wideTabsSx}>
-        {props.tabs.map(({ tabLabel }, index) => {
-          return (
-            <Button
-              key={index}
-              onClick={selectTab}
-              value={index}
-              variant={
-                selectedTab === index.toString() ? 'tabSwitcherTabActive' : 'tabSwitcherTabInactive'
-              }
-            >
-              {tabLabel}
-            </Button>
-          )
-        })}
-      </Grid>
+    )
+  }
+
+  return (
+    <Flex
+      sx={{
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
+      <NarrowTabSelector />
+      <WideTabSelector />
       {props.tabs[parseInt(selectedTab)].tabContent}
     </Flex>
   )
