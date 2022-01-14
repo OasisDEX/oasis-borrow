@@ -31,23 +31,13 @@ async function getEvents(
     'event TriggerRemoved ( uint256 cdpId, uint256 triggerId)',
   ]
   const contract = new ethers.Contract(botAddress ?? '', new Interface(automationBot), provider)
-  const filterFromTriggerRemoved = contract.filters.TriggerRemoved(vaultId, null)
-  const removedEventsList = await contract.queryFilter(
-    filterFromTriggerRemoved,
-    process.env.DEPLOYMENT_BLOCK,
-    blockNumber,
-  )
-  // Probably there's no need to sort ~ŁW
-  removedEventsList.sort((event1, event2) => (event1.blockNumber > event2.blockNumber ? 1 : -1))
+  
+  const removedEventsList = await loadRemoveEvents()
+  const addedEventsList = await loadAddEvents()
 
-  const newestRemoveEvent = removedEventsList.reduce((latest, event) =>
+  if (removedEventsList.length > 0) {
+    const newestRemoveEvent = removedEventsList.reduce((latest, event) =>
     latest?.blockNumber > event.blockNumber ? latest : event,
-  )
-  const filterFromTriggerAdded = contract.filters.TriggerAdded(null, null, vaultId, null)
-  const addedEventsList = await contract.queryFilter(
-    filterFromTriggerAdded,
-    process.env.DEPLOYMENT_BLOCK,
-    blockNumber,
   )
   const filteredAddedEvents = addedEventsList.filter((event) => {
     return newestRemoveEvent.blockNumber < event.blockNumber
@@ -56,6 +46,32 @@ async function getEvents(
   return {
     triggers: events,
     isAutomationEnabled: events.length !== 0,
+  }
+  }
+  const events = addedEventsList.map((singleEvent) => parseEvent(abi, singleEvent))
+  return {
+    triggers: events,
+    isAutomationEnabled: events.length !== 0,
+  }
+
+  async function loadAddEvents() {
+    const filterFromTriggerAdded = contract.filters.TriggerAdded(null, null, vaultId, null)
+    const addedEventsList = await contract.queryFilter(
+      filterFromTriggerAdded,
+      process.env.DEPLOYMENT_BLOCK,
+      blockNumber
+    )
+    return addedEventsList
+  }
+
+  async function loadRemoveEvents() {
+    const filterFromTriggerRemoved = contract.filters.TriggerRemoved(vaultId, null)
+    const removedEventsList = await contract.queryFilter(
+      filterFromTriggerRemoved,
+      process.env.DEPLOYMENT_BLOCK,
+      blockNumber
+    )
+    return removedEventsList
   }
 }
 
