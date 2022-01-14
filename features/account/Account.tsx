@@ -8,6 +8,7 @@ import { disconnect, getConnectionKindMessage } from 'components/connectWallet/C
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { useSharedUI } from 'components/SharedUIProvider'
+import { ethers } from 'ethers'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
@@ -121,7 +122,7 @@ export function AccountButton() {
         }}
         onClick={() => openModal(AccountModal)}
       >
-        <AccountIndicator address={context.account} />
+        <AccountIndicator address={context.account} ensName={accountData.ensName} />
         <Box
           sx={{
             '@media screen and (max-width: 440px)': {
@@ -129,7 +130,6 @@ export function AccountButton() {
             },
           }}
         >
-          <AccountIndicator address={context.account} ensName={accountData.ensName} />
           <DaiIndicator daiBalance={accountData.daiBalance} />
         </Box>
       </Button>
@@ -138,10 +138,12 @@ export function AccountButton() {
 }
 
 export function AccountModal({ close }: ModalProps) {
-  const { web3Context$, accountData$ } = useAppContext()
+  const { web3Context$, accountData$, context$ } = useAppContext()
   const accountData = useObservable(accountData$)
   const web3Context = useObservable(web3Context$)
   const clipboardContentRef = useRef<HTMLTextAreaElement>(null)
+  const context = useObservable(context$)
+  const provider = new ethers.providers.JsonRpcProvider(context?.infuraUrl)
   const { t } = useTranslation()
 
   function disconnectHandler() {
@@ -192,7 +194,12 @@ export function AccountModal({ close }: ModalProps) {
               </Flex>
               <Flex sx={{ alignItems: 'center' }}>
                 <Box mr={2}>
-                  <Davatar size={28} address={account} generatedAvatarType="jazzicon" />
+                  <Davatar
+                    size={28}
+                    address={account}
+                    generatedAvatarType="jazzicon"
+                    provider={provider}
+                  />
                 </Box>
                 <Text sx={{ fontSize: 5, mx: 1 }}>{formatAddress(account)}</Text>
                 <Icon
