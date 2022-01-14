@@ -39,7 +39,10 @@ async function getEvents(
   )
   // Probably there's no need to sort ~ŁW
   removedEventsList.sort((event1, event2) => (event1.blockNumber > event2.blockNumber ? 1 : -1))
-  const newestRemoveEvent = removedEventsList[removedEventsList.length - 1]
+
+  const newestRemoveEvent = removedEventsList.reduce((latest, event) =>
+    latest?.blockNumber > event.blockNumber ? latest : event,
+  )
   const filterFromTriggerAdded = contract.filters.TriggerAdded(null, null, vaultId, null)
   const addedEventsList = await contract.queryFilter(
     filterFromTriggerAdded,
