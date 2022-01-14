@@ -58,11 +58,11 @@ export function HomepageView() {
       <TabSwitcher
         tabs={[
           {
-            tabLabel: 'Borrow',
+            tabLabel: 'Borrow on Oasis',
             tabContent: <BorrowTabContent />,
           },
           {
-            tabLabel: 'Multiply',
+            tabLabel: 'Multiply on Oasis',
             tabContent: <MultiplyTabContent />,
           },
         ]}
@@ -75,9 +75,13 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
   const { t } = useTranslation()
   const assetLpEnabled = useFeatureToggle('AssetLandingPages')
 
-  const [heading, subheading] = assetLpEnabled
-    ? ['landing.hero.headline', 'landing.hero.subheader']
-    : ['landing.hero.headlinePreAssetLandingPages', 'landing.hero.subheaderPreAssetLandingPages']
+  const [heading, subheading, greyCircles] = assetLpEnabled
+    ? ['landing.hero.headline', 'landing.hero.subheader', null]
+    : [
+        'landing.hero.headlinePreAssetLandingPages',
+        'landing.hero.subheaderPreAssetLandingPages',
+        <Image sx={{ mb: 4 }} src={staticFilesRuntimeUrl('/static/img/icons_set.svg')} />,
+      ]
   return (
     <Flex
       sx={{
@@ -95,7 +99,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
       <Text variant="paragraph1" sx={{ mb: 4, color: 'lavender' }}>
         <Trans i18nKey={subheading} components={[<br />]} />
       </Text>
-      <Image sx={{ mb: 4 }} src={staticFilesRuntimeUrl('/static/img/icons_set.svg')} />
+      {greyCircles}
       {!isConnected && (
         <AppLink
           href="/connect"
