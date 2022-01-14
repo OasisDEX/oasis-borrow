@@ -6,10 +6,10 @@ import { of } from 'rxjs'
 
 import { mockPriceInfo$ } from './mocks/priceInfo.mock'
 import {
-  borrowPageCards,
+  borrowPageCardsData,
   createProductCardsData$,
-  landingPageCards,
-  multiplyPageCards,
+  landingPageCardsData,
+  multiplyPageCardsData,
 } from './productCards'
 
 const wbtcA = mockIlkData({
@@ -54,22 +54,20 @@ const wsteth = mockIlkData({
   liquidationRatio: new BigNumber('1.4'),
 })()
 
-const expectedOutput = {
-  background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
-  bannerIcon: '/static/img/tokens/wbtc.png',
-  currentCollateralPrice: new BigNumber(550),
-  ilk: 'WBTC-A',
-  liquidationRatio: new BigNumber(1.4),
-  name: 'Wrapped Bitcoin',
-  stabilityFee: new BigNumber(0.045),
-  token: 'WBTC',
-}
-
 describe('createProductCardsData$', () => {
   it('should return correct product data', () => {
     const state = getStateUnpacker(createProductCardsData$(of([wbtcA]), () => mockPriceInfo$()))
 
-    expect(state()[0]).to.eql(expectedOutput)
+    expect(state()[0]).to.eql({
+      background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
+      bannerIcon: '/static/img/tokens/wbtc.png',
+      currentCollateralPrice: new BigNumber(550),
+      ilk: 'WBTC-A',
+      liquidationRatio: new BigNumber(1.4),
+      name: 'Wrapped Bitcoin',
+      stabilityFee: new BigNumber(0.045),
+      token: 'WBTC',
+    })
   })
 
   it('should return correct landing page product data', () => {
@@ -77,7 +75,7 @@ describe('createProductCardsData$', () => {
       createProductCardsData$(of([wbtcA, ethA, linkA, wsteth]), () => mockPriceInfo$()),
     )
 
-    const landingPageData = landingPageCards({ productCardsData: state() })
+    const landingPageData = landingPageCardsData({ productCardsData: state() })
 
     expect(landingPageData).to.eql([
       {
@@ -118,7 +116,7 @@ describe('createProductCardsData$', () => {
       createProductCardsData$(of([wbtcA, ethA, linkA, wsteth]), () => mockPriceInfo$()),
     )
 
-    const multiplyPageData = multiplyPageCards({ productCardsData: state() })
+    const multiplyPageData = multiplyPageCardsData({ productCardsData: state() })
 
     expect(multiplyPageData).to.eql([
       {
@@ -159,7 +157,7 @@ describe('createProductCardsData$', () => {
       createProductCardsData$(of([wbtcA, ethA, linkA, wsteth]), () => mockPriceInfo$()),
     )
 
-    const multiplyPageData = multiplyPageCards({ productCardsData: state(), token: 'ETH' })
+    const multiplyPageData = multiplyPageCardsData({ productCardsData: state(), token: 'ETH' })
 
     expect(multiplyPageData).to.eql([
       {
@@ -190,7 +188,7 @@ describe('createProductCardsData$', () => {
       createProductCardsData$(of([wbtcA, ethA, ethC, linkA, wsteth]), () => mockPriceInfo$()),
     )
 
-    const borrowPageData = borrowPageCards({ productCardsData: state() })
+    const borrowPageData = borrowPageCardsData({ productCardsData: state() })
 
     expect(borrowPageData).to.eql([
       {
@@ -233,7 +231,7 @@ describe('createProductCardsData$', () => {
       ),
     )
 
-    const borrowPageData = borrowPageCards({ productCardsData: state(), token: 'BTC' })
+    const borrowPageData = borrowPageCardsData({ productCardsData: state(), token: 'BTC' })
 
     expect(borrowPageData).to.eql([
       {

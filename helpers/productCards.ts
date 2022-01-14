@@ -38,7 +38,7 @@ function uniLpProductCards(productCardsData: ProductCardData[]) {
   )
 }
 
-export function landingPageCards({
+export function landingPageCardsData({
   productCardsData,
   product = 'multiply',
 }: {
@@ -54,7 +54,7 @@ export function landingPageCards({
   return productCardsData.filter((ilk) => landingCardsMap[product].includes(ilk.ilk))
 }
 
-export function multiplyPageCards({
+export function multiplyPageCardsData({
   productCardsData,
   token,
 }: {
@@ -81,7 +81,7 @@ export function multiplyPageCards({
   return multiplyTokens.filter((ilk) => ilk.token === token)
 }
 
-export function borrowPageCards({
+export function borrowPageCardsData({
   productCardsData,
   token,
 }: {

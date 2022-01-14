@@ -7,7 +7,11 @@ import { AppSpinner, WithLoadingIndicator } from '../helpers/AppSpinner'
 import { WithErrorHandler } from '../helpers/errorHandlers/WithErrorHandler'
 import { formatPercent } from '../helpers/formatters/format'
 import { useObservableWithError } from '../helpers/observableHook'
-import { borrowPageCards, landingPageCards, multiplyPageCards } from '../helpers/productCards'
+import {
+  borrowPageCardsData,
+  landingPageCardsData,
+  multiplyPageCardsData,
+} from '../helpers/productCards'
 import { one } from '../helpers/zero'
 import { useAppContext } from './AppContextProvider'
 import { ProductCard } from './ProductCard'
@@ -37,7 +41,7 @@ export function PageCards() {
             <Flex sx={{ flexDirection: 'column', width: '100%' }}>
               <Heading sx={{ pb: 3, textAlign: 'center' }}>Landing page multiply</Heading>
               <Flex sx={{ justifyContent: 'space-around', pb: 4 }}>
-                {landingPageCards({ productCardsData }).map((cardData) => {
+                {landingPageCardsData({ productCardsData }).map((cardData) => {
                   const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
 
                   return (
@@ -77,7 +81,7 @@ export function PageCards() {
               </Flex>
               <Heading sx={{ pb: 3, textAlign: 'center' }}>Landing page borrow</Heading>
               <Flex sx={{ justifyContent: 'space-around', pb: 4 }}>
-                {landingPageCards({ productCardsData, product: 'borrow' }).map((cardData) => {
+                {landingPageCardsData({ productCardsData, product: 'borrow' }).map((cardData) => {
                   const maxBorrowAmount = new BigNumber(
                     one
                       .div(cardData.liquidationRatio)
@@ -117,7 +121,7 @@ export function PageCards() {
               </Flex>
               <Heading sx={{ pb: 3, textAlign: 'center' }}>Landing page earn</Heading>
               <Flex sx={{ justifyContent: 'space-around', pb: 4 }}>
-                {landingPageCards({ productCardsData, product: 'earn' }).map((cardData) => {
+                {landingPageCardsData({ productCardsData, product: 'earn' }).map((cardData) => {
                   const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
 
                   return (
@@ -152,7 +156,7 @@ export function PageCards() {
               </Flex>
               <Heading sx={{ pb: 3, textAlign: 'center' }}>Multiply page featured</Heading>
               <Flex sx={{ justifyContent: 'space-around', pb: 4, flexWrap: 'wrap' }}>
-                {multiplyPageCards({ productCardsData }).map((cardData) => {
+                {multiplyPageCardsData({ productCardsData }).map((cardData) => {
                   const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
 
                   return (
@@ -192,7 +196,7 @@ export function PageCards() {
               </Flex>
               <Heading sx={{ pb: 3, textAlign: 'center' }}>Multiply page ETH</Heading>
               <Flex sx={{ justifyContent: 'space-around', pb: 4, flexWrap: 'wrap' }}>
-                {multiplyPageCards({ productCardsData, token: 'ETH' }).map((cardData) => {
+                {multiplyPageCardsData({ productCardsData, token: 'ETH' }).map((cardData) => {
                   const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
 
                   return (
@@ -232,7 +236,7 @@ export function PageCards() {
               </Flex>
               <Heading sx={{ pb: 3, textAlign: 'center' }}>Borrow page featured</Heading>
               <Flex sx={{ justifyContent: 'space-around', pb: 4, flexWrap: 'wrap' }}>
-                {borrowPageCards({ productCardsData }).map((cardData) => {
+                {borrowPageCardsData({ productCardsData }).map((cardData) => {
                   const maxBorrowAmount = new BigNumber(
                     one
                       .div(cardData.liquidationRatio)
@@ -272,7 +276,7 @@ export function PageCards() {
               </Flex>
               <Heading sx={{ pb: 3, textAlign: 'center' }}>Borrow page BTC</Heading>
               <Flex sx={{ justifyContent: 'space-around', pb: 4, flexWrap: 'wrap' }}>
-                {borrowPageCards({ productCardsData, token: 'BTC' }).map((cardData) => {
+                {borrowPageCardsData({ productCardsData, token: 'BTC' }).map((cardData) => {
                   const maxBorrowAmount = new BigNumber(
                     one
                       .div(cardData.liquidationRatio)
@@ -312,7 +316,7 @@ export function PageCards() {
               </Flex>
               <Heading sx={{ pb: 3, textAlign: 'center' }}>Borrow page UNI-LP</Heading>
               <Flex sx={{ justifyContent: 'space-around', pb: 4, flexWrap: 'wrap' }}>
-                {borrowPageCards({ productCardsData, token: 'UNI-LP' }).map((cardData) => {
+                {borrowPageCardsData({ productCardsData, token: 'UNI-LP' }).map((cardData) => {
                   const maxBorrowAmount = new BigNumber(
                     one
                       .div(cardData.liquidationRatio)
@@ -352,7 +356,7 @@ export function PageCards() {
               </Flex>
               <Heading sx={{ pb: 3, textAlign: 'center' }}>Borrow page UNI</Heading>
               <Flex sx={{ justifyContent: 'space-around', pb: 4, flexWrap: 'wrap' }}>
-                {borrowPageCards({ productCardsData, token: 'UNI' }).map((cardData) => {
+                {borrowPageCardsData({ productCardsData, token: 'UNI' }).map((cardData) => {
                   const maxBorrowAmount = new BigNumber(
                     one
                       .div(cardData.liquidationRatio)
