@@ -1,5 +1,5 @@
 import React, { MouseEvent, ReactNode, useCallback, useState } from 'react'
-import { Box, Button, Flex, Grid } from 'theme-ui'
+import { Box, Button, Flex, Grid, SxStyleProp } from 'theme-ui'
 import ReactSelect from 'react-select'
 import { Icon } from '@makerdao/dai-ui-icons'
 
@@ -12,7 +12,11 @@ type TabSwitcherTab = {
   tabContent: ReactNode
 }
 
-export function TabSwitcher(props: { tabs: ArrayWithAtLeastOne<TabSwitcherTab> }) {
+export function TabSwitcher(props: {
+  tabs: ArrayWithAtLeastOne<TabSwitcherTab>
+  narrowTabsSx: SxStyleProp
+  wideTabsSx: SxStyleProp
+}) {
   const [selectedTab, setSelectedTab] = useState('0')
 
   const selectTab = useCallback(
@@ -28,13 +32,7 @@ export function TabSwitcher(props: { tabs: ArrayWithAtLeastOne<TabSwitcherTab> }
         alignItems: 'center',
       }}
     >
-      <Box
-        sx={{
-          display: ['block', 'none'],
-          maxWidth: '343px',
-          width: '100%',
-        }}
-      >
+      <Box sx={props.narrowTabsSx}>
         <ReactSelect
           value={{
             value: parseInt(selectedTab),
@@ -44,13 +42,6 @@ export function TabSwitcher(props: { tabs: ArrayWithAtLeastOne<TabSwitcherTab> }
           onChange={(option) =>
             option && 'value' in option && setSelectedTab(option.value.toString())
           }
-          styles={{
-            container: (base) => ({
-              ...base,
-              maxWidth: '343px',
-              width: '100%',
-            }),
-          }}
           components={{
             IndicatorsContainer: ({ selectProps: { menuIsOpen } }) => (
               <Flex
@@ -83,7 +74,7 @@ export function TabSwitcher(props: { tabs: ArrayWithAtLeastOne<TabSwitcherTab> }
           }}
         />
       </Box>
-      <Grid columns={props.tabs.length} variant="tabSwitcher" sx={{ display: ['none', 'block'] }}>
+      <Grid columns={props.tabs.length} variant="tabSwitcher" sx={props.wideTabsSx}>
         {props.tabs.map(({ tabLabel }, index) => {
           return (
             <Button

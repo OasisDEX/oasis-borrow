@@ -66,6 +66,12 @@ export function HomepageView() {
             tabContent: <MultiplyTabContent />,
           },
         ]}
+        narrowTabsSx={{
+          display: ['block', 'none'],
+          maxWidth: '343px',
+          width: '100%',
+        }}
+        wideTabsSx={{ display: ['none', 'block'] }}
       />
     </Grid>
   )
