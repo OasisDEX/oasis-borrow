@@ -38,10 +38,13 @@ function uniLpProductCards(productCardsData: ProductCardData[]) {
   )
 }
 
-export function landingPageCards(
-  productCardsData: ProductCardData[],
-  product: 'multiply' | 'borrow' | 'earn' = 'multiply',
-) {
+export function landingPageCards({
+  productCardsData,
+  product = 'multiply',
+}: {
+  productCardsData: ProductCardData[]
+  product?: 'multiply' | 'borrow' | 'earn'
+}) {
   const landingCardsMap = {
     multiply: ['ETH-A', 'WBTC-A', 'LINK-A'],
     borrow: ['ETH-A', 'WBTC-A', 'LINK-A'],

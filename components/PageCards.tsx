@@ -37,7 +37,7 @@ export function PageCards() {
             <Flex sx={{ flexDirection: 'column', width: '100%' }}>
               <Heading sx={{ pb: 3, textAlign: 'center' }}>Landing page multiply</Heading>
               <Flex sx={{ justifyContent: 'space-around', pb: 4 }}>
-                {landingPageCards(productCardsData, 'multiply').map((cardData) => {
+                {landingPageCards({ productCardsData }).map((cardData) => {
                   const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
 
                   return (
@@ -77,7 +77,7 @@ export function PageCards() {
               </Flex>
               <Heading sx={{ pb: 3, textAlign: 'center' }}>Landing page borrow</Heading>
               <Flex sx={{ justifyContent: 'space-around', pb: 4 }}>
-                {landingPageCards(productCardsData, 'borrow').map((cardData) => {
+                {landingPageCards({ productCardsData, product: 'borrow' }).map((cardData) => {
                   const maxBorrowAmount = new BigNumber(
                     one
                       .div(cardData.liquidationRatio)
@@ -117,7 +117,7 @@ export function PageCards() {
               </Flex>
               <Heading sx={{ pb: 3, textAlign: 'center' }}>Landing page earn</Heading>
               <Flex sx={{ justifyContent: 'space-around', pb: 4 }}>
-                {landingPageCards(productCardsData, 'earn').map((cardData) => {
+                {landingPageCards({ productCardsData, product: 'earn' }).map((cardData) => {
                   const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
 
                   return (
