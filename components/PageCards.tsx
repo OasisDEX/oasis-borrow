@@ -17,14 +17,14 @@ const hardcodedTokenAmount = 1
 export function PageCards() {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
-  const { error: productCardsDataError, value: productCardsData } = useObservableWithError(
+  const { error: productCardsDataError, value: productCardsDataValue } = useObservableWithError(
     productCardsData$,
   )
 
   return (
     <WithErrorHandler error={[productCardsDataError]}>
       <WithLoadingIndicator
-        value={[productCardsData]}
+        value={[productCardsDataValue]}
         customLoader={
           <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
             <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
@@ -69,7 +69,7 @@ export function PageCards() {
                         link: `/vaults/open-multiply/${cardData.ilk}`,
                         text: t('nav.multiply'),
                       }}
-                      background={cardData.background!}
+                      background={cardData.background}
                     />
                   )
                 })}
@@ -109,7 +109,7 @@ export function PageCards() {
                         value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
                       }}
                       button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}
-                      background={cardData.background!}
+                      background={cardData.background}
                     />
                   )
                 })}
@@ -144,7 +144,7 @@ export function PageCards() {
                         link: `/vaults/open-multiply/${cardData.ilk}`,
                         text: t('nav.earn'),
                       }}
-                      background={cardData.background!}
+                      background={cardData.background}
                     />
                   )
                 })}
@@ -184,7 +184,7 @@ export function PageCards() {
                         link: `/vaults/open-multiply/${cardData.ilk}`,
                         text: t('nav.multiply'),
                       }}
-                      background={cardData.background!}
+                      background={cardData.background}
                     />
                   )
                 })}
@@ -224,7 +224,7 @@ export function PageCards() {
                         link: `/vaults/open-multiply/${cardData.ilk}`,
                         text: t('nav.multiply'),
                       }}
-                      background={cardData.background!}
+                      background={cardData.background}
                     />
                   )
                 })}
@@ -264,7 +264,7 @@ export function PageCards() {
                         value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
                       }}
                       button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}
-                      background={cardData.background!}
+                      background={cardData.background}
                     />
                   )
                 })}
@@ -304,7 +304,7 @@ export function PageCards() {
                         value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
                       }}
                       button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}
-                      background={cardData.background!}
+                      background={cardData.background}
                     />
                   )
                 })}
@@ -344,7 +344,7 @@ export function PageCards() {
                         value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
                       }}
                       button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}
-                      background={cardData.background!}
+                      background={cardData.background}
                     />
                   )
                 })}
@@ -384,7 +384,7 @@ export function PageCards() {
                         value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
                       }}
                       button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}
-                      background={cardData.background!}
+                      background={cardData.background}
                     />
                   )
                 })}
