@@ -36,23 +36,9 @@ async function getEvents(
   const addedEventsList = await loadAddEvents()
 
   if (removedEventsList.length > 0) {
-    const newestRemoveEvent = removedEventsList.reduce((latest, event) =>
-    latest?.blockNumber > event.blockNumber ? latest : event,
-  )
-  const filteredAddedEvents = addedEventsList.filter((event) => {
-    return newestRemoveEvent.blockNumber < event.blockNumber
-  })
-  const events = filteredAddedEvents.map((singleEvent) => parseEvent(abi, singleEvent))
-  return {
-    triggers: events,
-    isAutomationEnabled: events.length !== 0,
+    return returnFilteredAddTriggerEvents(removedEventsList, addedEventsList, abi)
   }
-  }
-  const events = addedEventsList.map((singleEvent) => parseEvent(abi, singleEvent))
-  return {
-    triggers: events,
-    isAutomationEnabled: events.length !== 0,
-  }
+  return returnAllAddTriggerEvents(addedEventsList, abi)
 
   async function loadAddEvents() {
     const filterFromTriggerAdded = contract.filters.TriggerAdded(null, null, vaultId, null)
@@ -84,6 +70,27 @@ export interface TriggerRecord {
 export interface TriggersData {
   isAutomationEnabled: boolean
   triggers: List<TriggerRecord> | undefined
+}
+
+function returnAllAddTriggerEvents(addedEventsList: ethers.Event[], abi: string[]) {
+  const events = addedEventsList.map((singleEvent) => parseEvent(abi, singleEvent))
+  return {
+    triggers: events,
+    isAutomationEnabled: events.length !== 0,
+  }
+}
+
+function returnFilteredAddTriggerEvents(removedEventsList: ethers.Event[], addedEventsList: ethers.Event[], abi: string[]) {
+  const newestRemoveEvent = removedEventsList.reduce((latest, event) => latest?.blockNumber > event.blockNumber ? latest : event
+  )
+  const filteredAddedEvents = addedEventsList.filter((event) => {
+    return newestRemoveEvent.blockNumber < event.blockNumber
+  })
+  const events = filteredAddedEvents.map((singleEvent) => parseEvent(abi, singleEvent))
+  return {
+    triggers: events,
+    isAutomationEnabled: events.length !== 0,
+  }
 }
 
 export function createAutomationTriggersData(
