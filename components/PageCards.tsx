@@ -14,6 +14,7 @@ import { ProductCard } from './ProductCard'
 
 const hardcodedTokenAmount = 1
 
+// TODO THIS IS DUMMY COMPONENT WHICH SHOULD REMOVED WHEN ALL PAGES WILL BE AVAILABLE
 export function PageCards() {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
