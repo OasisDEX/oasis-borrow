@@ -2,9 +2,11 @@ import { TxHelpers } from 'components/AppContext'
 import { createProxy } from 'features/proxy/createProxy'
 import { Observable } from 'rxjs'
 
+import { TxError } from '../../helpers/types'
+
 export interface ProxyState {
   proxyTxHash?: string
-  txError?: any // TODO: find type
+  txError?: TxError
   proxyConfirmations?: number
   proxyAddress?: string
   progress?(): void
@@ -52,7 +54,7 @@ export type ProxyChanges =
     }
   | {
       kind: 'proxyFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'proxyConfirming'

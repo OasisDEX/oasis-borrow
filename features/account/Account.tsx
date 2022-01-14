@@ -1,3 +1,4 @@
+
 // @ts-ignore
 import Davatar from '@davatar/react'
 import { Icon } from '@makerdao/dai-ui-icons'
@@ -52,7 +53,7 @@ export function AccountIndicator({
 }
 
 export function AccountButton() {
-  const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
+  const { vaultFormToggleTitle } = useSharedUI()
   const { accountData$, context$ } = useAppContext()
   const accountData = useObservable(accountData$)
   const context = useObservable(context$)
@@ -102,48 +103,36 @@ export function AccountButton() {
   return (
     <Flex
       sx={{
-        position: ['fixed', 'relative'],
-        bottom: 0,
-        left: 0,
-        right: 0,
-        bg: ['rgba(255,255,255,0.9)', 'transparent'],
-        p: [3, 0],
-        justifyContent: 'space-between',
-        gap: 2,
+        position: 'relative',
+        justifyContent: ['flex-start', 'flex-end'],
+        minWidth: 'auto',
       }}
     >
-      <Flex
+      <Button
+        variant="menuButton"
         sx={{
-          position: 'relative',
-          justifyContent: ['flex-start', 'flex-end'],
-          minWidth: 'auto',
+          minWidth: '150px',
+          p: 1,
+          display: 'flex',
+          alignItems: 'center',
+          '@media screen and (max-width: 440px)': {
+            minWidth: vaultFormToggleTitle ? 'auto' : '150px',
+          },
         }}
+        onClick={() => openModal(AccountModal)}
       >
-        <Button
-          variant="mobileBottomMenu"
+        <AccountIndicator address={context.account} />
+        <Box
           sx={{
-            minWidth: '150px',
-            p: 1,
-            display: 'flex',
-            alignItems: 'center',
+            '@media screen and (max-width: 440px)': {
+              display: vaultFormToggleTitle ? 'none' : 'block',
+            },
           }}
-          onClick={() => openModal(AccountModal)}
         >
           <AccountIndicator address={context.account} ensName={accountData.ensName} />
           <DaiIndicator daiBalance={accountData.daiBalance} />
-        </Button>
-      </Flex>
-      {vaultFormToggleTitle && (
-        <Box sx={{ display: ['flex', 'none'] }}>
-          <Button
-            variant="mobileBottomMenu"
-            sx={{ px: 3 }}
-            onClick={() => setVaultFormOpened(true)}
-          >
-            <Box>{vaultFormToggleTitle}</Box>
-          </Button>
         </Box>
-      )}
+      </Button>
     </Flex>
   )
 }

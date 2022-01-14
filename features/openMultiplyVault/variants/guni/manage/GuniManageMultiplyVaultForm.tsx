@@ -8,12 +8,12 @@ import React from 'react'
 
 import { ManageMultiplyVaultState } from '../../../../manageMultiplyVault/manageMultiplyVault'
 import { ManageMultiplyVaultButton } from '../../../common/ManageMultiplyVaultButton'
-import { ManageMultiplyVaultCollateralAllowance } from '../../../common/ManageMultiplyVaultCollateralAllowance'
 import {
   ManageMultiplyVaultConfirmation,
   ManageMultiplyVaultConfirmationStatus,
 } from '../../../common/ManageMultiplyVaultConfirmation'
-import { ManageMultiplyVaultDaiAllowance } from '../../../common/ManageMultiplyVaultDaiAllowance'
+import { ManageVaultCollateralAllowance } from '../../../common/ManageVaultCollateralAllowance'
+import { ManageVaultDaiAllowance } from '../../../common/ManageVaultDaiAllowance'
 import { GuniManageMultiplyVaultChangesInformation } from './GuniManageMultiplyVaultChangesInformation'
 import { GuniManageMultiplyVaultEditing } from './GuniManageMultiplyVaultEditing'
 import { GuniManageMultiplyVaultFormHeader } from './GuniManageMultiplyVaultFormHeader'
@@ -44,8 +44,8 @@ export function GuniManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
     <VaultFormContainer toggleTitle="Edit Vault">
       <GuniManageMultiplyVaultFormHeader {...props} />
       {isEditingStage && <GuniManageMultiplyVaultEditing {...props} />}
-      {isCollateralAllowanceStage && <ManageMultiplyVaultCollateralAllowance {...props} />}
-      {isDaiAllowanceStage && <ManageMultiplyVaultDaiAllowance {...props} />}
+      {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
+      {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}
       {isManageStage && (
         <ManageMultiplyVaultConfirmation {...props}>
           {(state) => <GuniManageMultiplyVaultChangesInformation {...state} />}

@@ -26,6 +26,7 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
     hasToDepositCollateralOnEmptyVault,
     shouldShowExchangeError,
     ledgerWalletContractDataDisabled,
+    invalidSlippage,
   } = state
 
   const errorMessages: VaultErrorMessage[] = []
@@ -48,6 +49,7 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
         withdrawCollateralOnVaultUnderDebtFloor,
         hasToDepositCollateralOnEmptyVault,
         shouldShowExchangeError,
+        invalidSlippage,
       }),
     )
   }
@@ -96,6 +98,7 @@ export function validateWarnings(state: ManageMultiplyVaultState): ManageMultipl
     vaultWillBeAtRiskLevelDangerAtNextPrice,
     vaultWillBeAtRiskLevelWarning,
     vaultWillBeAtRiskLevelWarningAtNextPrice,
+    highSlippage,
   } = state
 
   const warningMessages: VaultWarningMessage[] = []
@@ -111,6 +114,7 @@ export function validateWarnings(state: ManageMultiplyVaultState): ManageMultipl
         vaultWillBeAtRiskLevelDangerAtNextPrice,
         vaultWillBeAtRiskLevelWarning,
         vaultWillBeAtRiskLevelWarningAtNextPrice,
+        highSlippage,
       }),
     )
   }

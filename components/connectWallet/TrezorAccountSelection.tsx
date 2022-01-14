@@ -1,4 +1,3 @@
-// @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import {
   AccountWithBalances,

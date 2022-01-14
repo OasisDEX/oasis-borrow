@@ -1,0 +1,72 @@
+# This is a basic workflow that is manually triggered
+
+name: Release the Kraken! 🐙
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      release_type:
+        # Release type
+        description: 'Release type, major | minor | patch'
+        default: 'minor'
+
+        required: true
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "greet"
+  release:
+    runs-on: ubuntu-latest
+    # The type of runner that the job will run on
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Runs a single command using the runners shell
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: 'Determine Release Type'
+        run: |
+          if ${{ contains(github.event.inputs.release_type, 'major') }}; then
+            echo "RELEASE_TYPE=major" >> $GITHUB_ENV
+          elif ${{ contains(github.event.inputs.release_type, 'minor') }}; then
+            echo "RELEASE_TYPE=minor" >> $GITHUB_ENV
+          elif ${{ contains(github.event.inputs.release_type, 'patch') }}; then
+            echo "RELEASE_TYPE=patch" >> $GITHUB_ENV
+          else
+            echo "NOTE: There was no release type specified in the commit message, and therefore no release will be published."
+            exit 1
+          fi
+      - name: 'Release Type'
+        run: echo ${{ env.RELEASE_TYPE }}
+      - name: git config
+        run: |
+          git config user.name ${{ github.actor }}
+      # See: https://github.com/actions/cache/blob/main/examples.md#node---yarn
+      - name: Get Yarn cache directory
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Use Yarn cache
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install dependencies
+        run: yarn install --prefer-offline --frozen-lockfile
+
+      - name: release version
+        run: npm run release -- ${{ env.RELEASE_TYPE }} --ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Merge dev -> main
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: dev
+          target_branch: main
+          github_token: ${{ github.token }}
