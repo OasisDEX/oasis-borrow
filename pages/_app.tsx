@@ -11,7 +11,6 @@ import { HeadTags, PageSEOTags } from 'components/HeadTags'
 import { AppLayout, MarketingLayoutProps } from 'components/Layouts'
 import { CustomMDXLink } from 'components/Links'
 import { SharedUIProvider } from 'components/SharedUIProvider'
-// @ts-ignore
 import { cache } from 'emotion'
 import { ModalProvider } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'

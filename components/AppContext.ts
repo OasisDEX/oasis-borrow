@@ -69,6 +69,11 @@ import {
   checkAcceptanceFromApi$,
   saveAcceptanceFromApi$,
 } from 'features/termsOfService/termsAcceptanceApi'
+import { createUserSettings$ } from 'features/userSettings/userSettings'
+import {
+  checkUserSettingsLocalStorage$,
+  saveUserSettingsLocalStorage$,
+} from 'features/userSettings/userSettingsLocal'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiplyHistory'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
@@ -311,6 +316,11 @@ export function setupAppContext() {
     account: string | undefined,
   ) => Observable<BalanceInfo>
 
+  const userSettings$ = createUserSettings$(
+    checkUserSettingsLocalStorage$,
+    saveUserSettingsLocalStorage$,
+  )
+
   const openVault$ = memoize((ilk: string) =>
     createOpenVault$(
       connectedContext$,
@@ -345,6 +355,7 @@ export function setupAppContext() {
       ilkData$,
       exchangeQuote$,
       addGasEstimation$,
+      userSettings$,
       ilk,
     ),
   )
@@ -368,6 +379,7 @@ export function setupAppContext() {
       ilk,
       token1Balance$,
       getGuniMintAmount$,
+      userSettings$,
     ),
   )
 
@@ -402,6 +414,7 @@ export function setupAppContext() {
         vault$,
         exchangeQuote$,
         addGasEstimation$,
+        userSettings$,
         vaultMultiplyHistory$,
         id,
       ),
@@ -438,6 +451,7 @@ export function setupAppContext() {
         addGasEstimation$,
         getProportions$,
         vaultMultiplyHistory$,
+        userSettings$,
         id,
       ),
     bigNumberTostring,
@@ -514,6 +528,7 @@ export function setupAppContext() {
     openVaultOverview$,
     openMultiplyVault$,
     generalManageVault$,
+    userSettings$,
     openGuniVault$,
   }
 }

@@ -13,8 +13,8 @@ import { zero } from 'helpers/zero'
 import { of, Subject } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-// @ts-ignore
-global.document = {
+type GlobalMock = NodeJS.Global & { document: { getElementById: () => void } }
+;(global as GlobalMock).document = {
   getElementById: () => null,
 }
 

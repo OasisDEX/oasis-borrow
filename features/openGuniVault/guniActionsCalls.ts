@@ -14,6 +14,7 @@ import { catchError, startWith } from 'rxjs/operators'
 import { DssGuniProxyActions as GuniProxyActions } from 'types/ethers-contracts/DssGuniProxyActions'
 import { GuniToken } from 'types/ethers-contracts/GuniToken'
 
+import { TxError } from '../../helpers/types'
 import { VaultType } from '../generalManageVault/generalManageVault'
 import { saveVaultUsingApi$ } from '../shared/vaultApi'
 import { jwtAuthGetToken } from '../termsOfService/jwt'
@@ -26,7 +27,7 @@ export type TxChange =
     }
   | {
       kind: 'txFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'txSuccess'

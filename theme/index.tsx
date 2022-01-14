@@ -214,7 +214,9 @@ const oasisBaseTheme = {
     tooltipVaultHeader: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     buttonMenu: '0px 0px 8px rgba(0, 0, 0, 0.1)',
     vaultDetailsCard: '0px 1px 8px rgba(37, 39, 61, 0.1)',
-    actionCard: '0px 2px 6px rgba(37, 39, 61, 0.25);',
+    actionCard: '0px 2px 6px rgba(37, 39, 61, 0.25)',
+    userSettingsCardDropdown: '0px 4px 28px rgba(37, 39, 61, 0.36)',
+    userSettingsOptionButton: '0px 2px 4px rgba(0, 0, 0, 0.25)',
     tabSwitcherTabActive: '0px 1px 6px rgba(37, 39, 61, 0.15)',
   },
   gradients: {
@@ -607,11 +609,12 @@ const oasisBaseTheme = {
       paddingLeft: '2em',
       paddingRight: '2em',
     },
-    mobileBottomMenu: {
+    menuButton: {
       variant: 'buttons.secondary',
       bg: 'background',
       boxShadow: 'buttonMenu',
       fontSize: [1, 2],
+      minHeight: ['40px', 'auto'],
     },
   },
   links: {
@@ -743,6 +746,16 @@ const oasisBaseTheme = {
       '&:focus': {
         borderColor: 'onError',
       },
+    },
+    inputSecondary: {
+      variant: 'forms.input',
+      bg: 'backgroundAlt',
+      borderRadius: 'small',
+      color: 'text.subtitle',
+      p: 2,
+      fontSize: 2,
+      lineHeight: 'bodyLoose',
+      borderColor: 'primaryAlt',
     },
     search: {
       fontFamily: 'body',
@@ -915,3 +928,4 @@ const oasisBaseTheme = {
 }
 
 export const theme = oasisBaseTheme
+export type OasisTheme = typeof oasisBaseTheme

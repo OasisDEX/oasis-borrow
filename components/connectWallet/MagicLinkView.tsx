@@ -1,5 +1,3 @@
-// @ts-ignore
-
 import { MagicLinkMessage } from './magicLink'
 
 export function getMessageKey(msg: MagicLinkMessage) {

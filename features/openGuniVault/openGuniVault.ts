@@ -28,20 +28,10 @@ import {
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { GUNI_SLIPPAGE, OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
+import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { curry } from 'ramda'
-import {
-  BehaviorSubject,
-  combineLatest,
-  EMPTY,
-  iif,
-  merge,
-  Observable,
-  of,
-  Subject,
-  throwError,
-} from 'rxjs'
+import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import {
   distinctUntilChanged,
   filter,
@@ -52,19 +42,20 @@ import {
   switchMap,
   tap,
 } from 'rxjs/internal/operators'
+import { withLatestFrom } from 'rxjs/operators'
 
 import { combineApplyChanges } from '../../helpers/pipelines/combineApply'
 import { combineTransitions } from '../../helpers/pipelines/combineTransitions'
+import { TxError } from '../../helpers/types'
 import { VaultErrorMessage } from '../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../form/warningMessagesHandler'
+import { slippageChange$, UserSettingsState } from '../userSettings/userSettings'
 import { applyEnvironment, EnvironmentChange, EnvironmentState } from './enviroment'
 import {
   addFormTransitions,
   applyFormChange,
   applyIsEditingStage,
   defaultFormState,
-  DepositChange,
-  DepositMaxChange,
   EditingStage,
   FormChanges,
   FormFunctions,
@@ -102,7 +93,7 @@ interface StageState {
 }
 
 interface VaultTxInfo {
-  txError?: any
+  txError?: TxError
   etherscan?: string
   safeConfirmations: number
 }
@@ -285,15 +276,16 @@ export function createOpenGuniVault$(
     amountOMax: BigNumber
     amount1Max: BigNumber
   }) => Observable<{ amount0: BigNumber; amount1: BigNumber; mintAmount: BigNumber }>,
+  slippageLimit$: Observable<UserSettingsState>,
 ): Observable<OpenGuniVaultState> {
   return ilks$.pipe(
     switchMap((ilks) =>
       iif(
         () => !ilks.some((i) => i === ilk),
         throwError(new Error(`Ilk ${ilk} does not exist`)),
-        combineLatest(context$, txHelpers$, ilkData$(ilk)).pipe(
+        combineLatest(context$, txHelpers$, ilkData$(ilk), slippageLimit$).pipe(
           first(),
-          switchMap(([context, txHelpers, ilkData]) => {
+          switchMap(([context, txHelpers, ilkData, { slippage }]) => {
             const { token, ilkDebtAvailable } = ilkData
             const tokenInfo = getToken(token)
 
@@ -349,7 +341,7 @@ export function createOpenGuniVault$(
                       etherscan: context.etherscan.url,
                       errorMessages: [],
                       warningMessages: [],
-                      slippage: GUNI_SLIPPAGE,
+                      slippage,
                       clear: () => change({ kind: 'clear' }),
                       gasEstimationStatus: GasEstimationStatus.unset,
                       exchangeError: false,
@@ -372,23 +364,40 @@ export function createOpenGuniVault$(
                       maxMultiple: one.div(ilkData.liquidationRatio.minus(one)),
                       currentPnL: zero,
                       totalGasSpentUSD: zero,
+                      invalidSlippage: false,
                       injectStateOverride,
                     }
 
-                    const stateSubject$ = new BehaviorSubject<OpenGuniVaultState>(initialState)
+                    const stateSubject$ = new Subject<OpenGuniVaultState>()
+                    const stateSubjectShared$ = stateSubject$.pipe(shareReplay(1))
 
-                    const gUniDataChanges$: Observable<GuniTxDataChange> = change$.pipe(
+                    const environmentChanges$ = merge(
+                      slippageChange$(slippageLimit$),
+                      priceInfoChange$(priceInfo$, token),
+                      balanceInfoChange$(balanceInfo$, token, account),
+                      createIlkDataChange$(ilkData$, ilk),
+                    )
+
+                    const gUniDataChanges$: Observable<GuniTxDataChange> = merge(
+                      change$,
+                      environmentChanges$,
+                    ).pipe(
                       filter(
                         (change) =>
                           change.kind === 'depositAmount' ||
+                          change.kind === 'slippage' ||
                           change.kind === 'depositMaxAmount' ||
                           change.kind === 'injectStateOverride',
                       ),
-                      switchMap((change: DepositChange | DepositMaxChange | InjectChange) => {
+                      withLatestFrom(stateSubjectShared$),
+                      switchMap(([change, state]) => {
                         const depositAmount =
                           change.kind === 'injectStateOverride'
                             ? change.stateToOverride.depositAmount
-                            : change.depositAmount
+                            : change.kind === 'depositAmount'
+                            ? change.depositAmount
+                            : state.depositAmount
+
                         const { leveragedAmount, flAmount } = applyCalculations({
                           ilkData,
                           depositAmount,
@@ -403,7 +412,7 @@ export function createOpenGuniVault$(
                           leveragedAmount,
                         }).pipe(
                           distinctUntilChanged(compareBigNumber),
-                          switchMap((daiAmountToSwapForUsdc /* USDC */) => {
+                          switchMap((daiAmountToSwapForUsdc) => {
                             const token0Amount = leveragedAmount.minus(daiAmountToSwapForUsdc)
                             const oazoFee = daiAmountToSwapForUsdc.times(OAZO_LOWER_FEE)
                             const amountWithFee = daiAmountToSwapForUsdc.plus(oazoFee)
@@ -412,7 +421,7 @@ export function createOpenGuniVault$(
 
                             return exchangeQuote$(
                               tokenInfo.token1,
-                              stateSubject$.value.slippage,
+                              state.slippage,
                               oneInchAmount,
                               'BUY_COLLATERAL',
                               'lowerFeesExchange',
@@ -456,7 +465,7 @@ export function createOpenGuniVault$(
                                         fromTokenAmount: amountWithFee,
                                         toTokenAmount: swap.collateralAmount,
                                         minToTokenAmount: swap.collateralAmount.times(
-                                          one.minus(GUNI_SLIPPAGE),
+                                          one.minus(state.slippage),
                                         ),
                                         buyingCollateralUSD: amount1,
                                         totalCollateral: mintAmount,
@@ -509,15 +518,6 @@ export function createOpenGuniVault$(
                       applyGuniOpenVaultConditions,
                     )
 
-                    const environmentChanges$ = merge(
-                      priceInfoChange$(priceInfo$, token),
-                      balanceInfoChange$(balanceInfo$, token, account),
-                      createIlkDataChange$(ilkData$, ilk),
-                      // createInitialQuoteChange(exchangeQuote$, tokenInfo.token1),
-                      gUniDataChanges$,
-                      //createExchangeChange$(exchangeQuote$, stateSubject$),
-                    )
-
                     const connectedProxyAddress$ = proxyAddress$(account)
 
                     const applyTransition = combineTransitions<OpenGuniVaultState>( // TODO: can we do it better?
@@ -542,7 +542,7 @@ export function createOpenGuniVault$(
                       applyCalculations,
                     )
 
-                    return merge(change$, environmentChanges$).pipe(
+                    return merge(change$, environmentChanges$, gUniDataChanges$).pipe(
                       scan(apply, initialState),
                       map(applyStages),
                       map(validateGuniErrors),

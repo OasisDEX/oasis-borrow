@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "2.8.0",
+  "version": "2.9.0",
   "license": "Apache-2.0",
   "scripts": {
     "start": "ts-node --project ./tsconfig.dev.json -r tsconfig-paths/register -r dotenv-flow/config ./server/server.ts",
@@ -8,7 +8,7 @@
     "migrate": "ts-node --project ./tsconfig.dev.json -T ./server/database/migrate.ts",
     "prisma:introspect": "prisma introspect --schema=./server/database/schema.prisma",
     "prisma:generate": "prisma generate --schema=./server/database/schema.prisma",
-    "build": "next build && node sitemapGenerator.ts",
+    "build": "next build && node sitemapGenerator.js",
     "build:server": "tsc --project ./tsconfig.prod.json",
     "format": "prettier --check \"./**/*.{ts,tsx,js,jsx}\"",
     "format:fix": "prettier --write \"./**/*.{ts,tsx,js,jsx}\"",
@@ -41,6 +41,7 @@
     "@myetherwallet/mewconnect-connector": "^0.1.8",
     "@next/bundle-analyzer": "^10.0.7",
     "@next/mdx": "^9.4.0",
+    "@oasisdex/multiply": "0.2.5-alpha.6",
     "@oasisdex/connectors": "^0.1.0",
     "@oasisdex/transactions": "^0.1.0",
     "@oasisdex/utils": "^0.0.8",
@@ -112,6 +113,7 @@
     "react-select": "^3.1.0",
     "react-spring": "^8.0.27",
     "react-text-mask": "^5.4.1",
+    "release-it": "^14.12.1",
     "request": "^2.88.2",
     "rxjs": "^6.2.0",
     "rxjs-take-while-inclusive": "^2.1.0",
