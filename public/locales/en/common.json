@@ -300,7 +300,19 @@
       "profit-and-loss": "P&L",
       "profit-and-loss-description": "TBD",
       "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
+    },
+    "action-tabs": {
+      "adjust": "Adjust",
+      "other": "Other",
+      "borrow": "Borrow"
     }
+  },
+  "multiply-to-borrow": {
+    "title": "View your Vault in the borrow UI",
+    "checkmark1": "Specifically designed for borrowing positions",
+    "checkmark2": "You can change back to the Multiply UI anytime",
+    "checkmark3": "This does not require a transaction",
+    "button-start" : "Go to Borrow interface"
   },
   "max": "Max",
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",

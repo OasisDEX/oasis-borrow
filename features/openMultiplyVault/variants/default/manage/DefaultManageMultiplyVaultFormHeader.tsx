@@ -5,6 +5,7 @@ import { Box, Button, Grid } from 'theme-ui'
 import { ManageMultiplyVaultState } from '../../../../manageMultiplyVault/manageMultiplyVault'
 import { ManageVaultHeaderAllowance } from '../../../common/ManageVaultHeaderAllowance'
 import { ManageMultiplyVaultEditingStage } from 'features/manageMultiplyVault/manageMultiplyVault'
+import { useTranslation } from 'next-i18next'
 
 function DefaultManageMultiplyVaultEditingController({
   stage,
@@ -13,6 +14,7 @@ function DefaultManageMultiplyVaultEditingController({
   totalSteps,
 }: // accountIsController,
 ManageMultiplyVaultState) {
+  const { t } = useTranslation()
   const adjustPosition = `vaultEditingController${stage !== 'adjustPosition' ? 'Inactive' : ''}`
   const otherActions = `vaultEditingController${stage !== 'otherActions' ? 'Inactive' : ''}`
   const borrow = `vaultEditingController${stage !== 'borrowTransitionEditing' ? 'Inactive' : ''}`
@@ -31,13 +33,13 @@ ManageMultiplyVaultState) {
     <Box sx={{ justifyContent: 'center' }}>
       <Grid columns={3} variant="vaultEditingControllerContainer">
         <Button onClick={() => handleToggle('adjustPosition')} variant={adjustPosition}>
-          Adjust Position
+          {t('manage-multiply-vault.action-tabs.adjust')}
         </Button>
         <Button onClick={() => handleToggle('otherActions')} variant={otherActions}>
-          Other Actions
+          {t('manage-multiply-vault.action-tabs.other')}
         </Button>
         <Button onClick={() => handleToggle('borrowTransitionEditing')} variant={borrow}>
-          Borrow
+          {t('manage-multiply-vault.action-tabs.borrow')}
         </Button>
       </Grid>
       <Box mt={3} mb={-3}>
@@ -53,7 +55,7 @@ export function DefaultManageMultiplyVaultFormHeader(props: ManageMultiplyVaultS
   return (
     <Box>
       {(isEditingStage || isBorrowTransitionStage) && <DefaultManageMultiplyVaultEditingController {...props} />}
-      {!isEditingStage && <ManageVaultHeaderAllowance {...props} />}
+      {!isEditingStage && !isBorrowTransitionStage && <ManageVaultHeaderAllowance {...props} />}
     </Box>
   )
 }

@@ -1,31 +1,22 @@
 import React from 'react'
-import { Box, Divider, Grid, Text } from 'theme-ui'
+import { Box, Grid, Text } from 'theme-ui'
 import { useTranslation } from 'next-i18next'
 import { Icon } from '@makerdao/dai-ui-icons'
 
 import { ManageMultiplyVaultState } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { TextWithCheckmark } from 'components/TextWithCheckmark'
 
-export function DefaultManageMultiplyVaultBorrowTransition({ stage, vault }: ManageMultiplyVaultState) {
+export function DefaultManageMultiplyVaultBorrowTransition({ stage }: ManageMultiplyVaultState) {
   const { t } = useTranslation()
-  return (stage === 'borrowTransitionEditing') || true ? (
+  return stage === 'borrowTransitionEditing' ? (
     <Grid mt={-3}>
+      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
+        {t('multiply-to-borrow.title')}
+      </Text>
       <Grid variant="text.paragraph3" sx={{ color: 'text.subtitle' }}>
-        <TextWithCheckmark>
-          {t('vault-form.subtext.checkmark1', { token: vault.token.toUpperCase() })}
-        </TextWithCheckmark>
-        <TextWithCheckmark>{t('vault-form.subtext.checkmark2')}</TextWithCheckmark>
-        <TextWithCheckmark>{t('vault-form.subtext.checkmark3')}</TextWithCheckmark>
-        <TextWithCheckmark>{t('vault-form.subtext.checkmark4')}</TextWithCheckmark>
-      </Grid>
-      <Divider />
-      <Grid gap={2}>
-        <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
-          {t('vault-form.subtext.subheader2')}
-        </Text>
-        <Text variant="paragraph3" sx={{ color: 'text.subtitle' }}>
-          {t('vault-form.subtext.paragraph2')}
-        </Text>
+        <TextWithCheckmark>{t('multiply-to-borrow.checkmark1')}</TextWithCheckmark>
+        <TextWithCheckmark>{t('multiply-to-borrow.checkmark2')}</TextWithCheckmark>
+        <TextWithCheckmark>{t('multiply-to-borrow.checkmark3')}</TextWithCheckmark>
       </Grid>
     </Grid>
   ) : (
