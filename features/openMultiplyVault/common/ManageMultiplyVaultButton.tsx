@@ -124,7 +124,7 @@ export function ManageMultiplyVaultButton(props: ManageMultiplyVaultState) {
 
   function handleClose() {
     if (stage !== 'otherActions') {
-      toggle!()
+      toggle!('otherActions')
     }
 
     setOtherAction!('closeVault')

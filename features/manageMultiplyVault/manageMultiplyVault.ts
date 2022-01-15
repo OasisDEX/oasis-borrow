@@ -245,6 +245,27 @@ function addTransitions(
   change: (ch: ManageMultiplyVaultChange) => void,
   state: ManageMultiplyVaultState,
 ): ManageMultiplyVaultState {
+  if (state.stage === 'borrowTransitionEditing') {
+    return {
+      ...state,
+      toggle: (stage) => change({ kind: 'toggleEditing', stage }),
+    //  progress: () => change({ kind: 'progressMultiplyTransition' }),
+      regress: () => change({ kind: 'backToEditing' }),
+    }
+  }
+
+  if (
+    state.stage === 'borrowTransitionWaitingForConfirmation' ||
+    state.stage === 'borrowTransitionFailure'
+  ) {
+    return {
+      ...state,
+      toggle: (stage) => change({ kind: 'toggleEditing', stage }),
+      // progress: () => saveVaultType(saveVaultType$, change, state),
+      regress: () => change({ kind: 'backToEditing' }),
+    }
+  }
+
   if (state.stage === 'adjustPosition' || state.stage === 'otherActions') {
     return {
       ...state,

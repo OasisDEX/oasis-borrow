@@ -29,7 +29,7 @@ ManageMultiplyVaultState) {
 
   return (
     <Box sx={{ justifyContent: 'center' }}>
-      <Grid columns={2} variant="vaultEditingControllerContainer">
+      <Grid columns={3} variant="vaultEditingControllerContainer">
         <Button onClick={() => handleToggle('adjustPosition')} variant={adjustPosition}>
           Adjust Position
         </Button>
@@ -48,11 +48,11 @@ ManageMultiplyVaultState) {
 }
 
 export function DefaultManageMultiplyVaultFormHeader(props: ManageMultiplyVaultState) {
-  const { isEditingStage } = props
+  const { isEditingStage, isBorrowTransitionStage } = props
 
   return (
     <Box>
-      {isEditingStage && <DefaultManageMultiplyVaultEditingController {...props} />}
+      {(isEditingStage || isBorrowTransitionStage) && <DefaultManageMultiplyVaultEditingController {...props} />}
       {!isEditingStage && <ManageVaultHeaderAllowance {...props} />}
     </Box>
   )
