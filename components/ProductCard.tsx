@@ -58,7 +58,7 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
   )
 }
 
-interface ProductCardProps {
+export interface ProductCardProps {
   tokenImage: string
   title: string
   description: string

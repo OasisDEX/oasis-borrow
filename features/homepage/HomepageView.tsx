@@ -12,7 +12,7 @@ import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { slideInAnimation } from '../../theme/animations'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { landingPageCardsData } from '../../helpers/productCards'
+import { landingPageCardsData, ProductCardData } from '../../helpers/productCards'
 import { ProductCardBorrow } from '../../components/ProductCardBorrow'
 import { ProductCardsLayout } from '../../components/ProductCard'
 
@@ -31,7 +31,11 @@ function MultiplyTabContent() {
   )
 }
 
-function BorrowTabContent() {
+function BorrowTabContent(props: {
+  paraText: JSX.Element
+  type: 'borrow' | 'multiply' | 'earn'
+  renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
+}) {
   const { productCardsData$ } = useAppContext()
   const { error: productCardsDataError, value: productCardsDataValue } = useObservableWithError(
     productCardsData$,
@@ -53,19 +57,13 @@ function BorrowTabContent() {
               variant="paragraph2"
               sx={{ mt: 4, color: 'lavender', maxWidth: 617, textAlign: 'center', mb: 4 }}
             >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum nibh etc
-              aliquam dolor sit amet.{' '}
-              <AppLink href="/borrow" variant="inText">
-                See all Borrow collateral types →
-              </AppLink>
+              {props.paraText}
             </Text>
             <ProductCardsLayout
               productCards={landingPageCardsData({
                 productCardsData,
-                product: 'borrow',
-              }).map((cardData) => (
-                <ProductCardBorrow cardData={cardData} />
-              ))}
+                product: props.type,
+              }).map((cardData) => props.renderProductCard({ cardData }))}
             />
           </>
         )}
@@ -93,7 +91,21 @@ export function HomepageView() {
         tabs={[
           {
             tabLabel: 'Borrow on Oasis',
-            tabContent: <BorrowTabContent />,
+            tabContent: (
+              <BorrowTabContent
+                paraText={
+                  <>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum
+                    nibh etc aliquam dolor sit amet.{' '}
+                    <AppLink href="/borrow" variant="inText">
+                      See all Borrow collateral types →
+                    </AppLink>
+                  </>
+                }
+                type="borrow"
+                renderProductCard={ProductCardBorrow}
+              />
+            ),
           },
           {
             tabLabel: 'Multiply on Oasis',
