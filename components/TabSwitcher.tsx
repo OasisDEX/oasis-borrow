@@ -1,7 +1,7 @@
-import React, { MouseEvent, ReactNode, useCallback, useState } from 'react'
-import { Box, Button, Flex, Grid, SxStyleProp } from 'theme-ui'
-import ReactSelect from 'react-select'
 import { Icon } from '@makerdao/dai-ui-icons'
+import React, { MouseEvent, ReactNode, useCallback, useState } from 'react'
+import ReactSelect from 'react-select'
+import { Box, Button, Flex, Grid, SxStyleProp } from 'theme-ui'
 
 type ArrayWithAtLeastOne<T> = {
   0: T

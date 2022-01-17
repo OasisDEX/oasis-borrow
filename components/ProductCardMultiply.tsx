@@ -1,9 +1,10 @@
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+
+import { formatPercent } from '../helpers/formatters/format'
+import { ProductCardData } from '../helpers/productCards'
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
-import { formatPercent } from '../helpers/formatters/format'
-import React from 'react'
-import { ProductCardData } from '../helpers/productCards'
-import { useTranslation } from 'next-i18next'
 
 export function ProductCardMultiply(props: { cardData: ProductCardData }) {
   const { t } = useTranslation()

@@ -1,10 +1,11 @@
-import { ProductCardData } from '../helpers/productCards'
-import { useTranslation } from 'next-i18next'
 import { BigNumber } from 'bignumber.js'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+
+import { formatPercent } from '../helpers/formatters/format'
+import { ProductCardData } from '../helpers/productCards'
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
-import { formatPercent } from '../helpers/formatters/format'
-import React from 'react'
 
 const hardcodedTokenAmount = 1
 

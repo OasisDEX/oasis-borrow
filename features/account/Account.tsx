@@ -1,4 +1,3 @@
-
 // @ts-ignore
 import Davatar from '@davatar/react'
 import { Icon } from '@makerdao/dai-ui-icons'

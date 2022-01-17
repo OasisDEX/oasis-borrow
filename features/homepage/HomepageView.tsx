@@ -5,17 +5,17 @@ import { Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { AppLink } from '../../components/Links'
+import { ProductCardsLayout } from '../../components/ProductCard'
+import { ProductCardBorrow } from '../../components/ProductCardBorrow'
+import { ProductCardMultiply } from '../../components/ProductCardMultiply'
 import { TabSwitcher } from '../../components/TabSwitcher'
+import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
+import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable, useObservableWithError } from '../../helpers/observableHook'
+import { landingPageCardsData, ProductCardData } from '../../helpers/productCards'
 import { staticFilesRuntimeUrl } from '../../helpers/staticPaths'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { slideInAnimation } from '../../theme/animations'
-import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
-import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { landingPageCardsData, ProductCardData } from '../../helpers/productCards'
-import { ProductCardBorrow } from '../../components/ProductCardBorrow'
-import { ProductCardsLayout } from '../../components/ProductCard'
-import { ProductCardMultiply } from '../../components/ProductCardMultiply'
 
 function TabContent(props: {
   paraText: JSX.Element

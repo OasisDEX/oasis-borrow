@@ -3,6 +3,7 @@ import { LandingPageLayout } from 'components/Layouts'
 import { LandingView } from 'features/landing/LandingView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
+
 import { HomepageView } from '../features/homepage/HomepageView'
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
 
