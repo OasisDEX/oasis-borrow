@@ -111,6 +111,7 @@ import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
+import { createProductCardsData$ } from '../helpers/productCards'
 
 export type TxData =
   | OpenData
@@ -474,6 +475,9 @@ export function setupAppContext() {
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
+
+  const productCardsData$ = createProductCardsData$(ilkDataList$, priceInfo$)
+
   const vaultsOverview$ = memoize(curry(createVaultsOverview$)(vaults$, ilksWithBalance$))
   const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
 
@@ -532,6 +536,8 @@ export function setupAppContext() {
     generalManageVault$,
     userSettings$,
     openGuniVault$,
+    ilkDataList$,
+    productCardsData$,
   }
 }
 
