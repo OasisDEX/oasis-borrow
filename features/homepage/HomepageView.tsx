@@ -15,23 +15,9 @@ import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { landingPageCardsData, ProductCardData } from '../../helpers/productCards'
 import { ProductCardBorrow } from '../../components/ProductCardBorrow'
 import { ProductCardsLayout } from '../../components/ProductCard'
+import { ProductCardMultiply } from '../../components/ProductCardMultiply'
 
-function MultiplyTabContent() {
-  return (
-    <Text
-      variant="paragraph2"
-      sx={{ mt: 4, color: 'lavender', maxWidth: 617, textAlign: 'center' }}
-    >
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum nibh etc aliquam
-      dolor sit amet.{' '}
-      <AppLink href="/multiply" variant="inText">
-        See all Multiply collateral types →
-      </AppLink>
-    </Text>
-  )
-}
-
-function BorrowTabContent(props: {
+function TabContent(props: {
   paraText: JSX.Element
   type: 'borrow' | 'multiply' | 'earn'
   renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
@@ -92,7 +78,7 @@ export function HomepageView() {
           {
             tabLabel: 'Borrow on Oasis',
             tabContent: (
-              <BorrowTabContent
+              <TabContent
                 paraText={
                   <>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum
@@ -109,7 +95,21 @@ export function HomepageView() {
           },
           {
             tabLabel: 'Multiply on Oasis',
-            tabContent: <MultiplyTabContent />,
+            tabContent: (
+              <TabContent
+                paraText={
+                  <>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum
+                    nibh etc aliquam dolor sit amet.{' '}
+                    <AppLink href="/multiply" variant="inText">
+                      See all Multiply collateral types →
+                    </AppLink>
+                  </>
+                }
+                type="multiply"
+                renderProductCard={ProductCardMultiply}
+              />
+            ),
           },
         ]}
         narrowTabsSx={{
