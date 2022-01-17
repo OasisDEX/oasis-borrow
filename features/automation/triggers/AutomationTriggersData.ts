@@ -31,7 +31,7 @@ async function getEvents(
     'event TriggerRemoved ( uint256 cdpId, uint256 triggerId)',
   ]
   const contract = new ethers.Contract(botAddress ?? '', new Interface(automationBot), provider)
-  
+
   const removedEventsList = await loadRemoveEvents()
   const addedEventsList = await loadAddEvents()
 
@@ -45,7 +45,7 @@ async function getEvents(
     const addedEventsList = await contract.queryFilter(
       filterFromTriggerAdded,
       process.env.DEPLOYMENT_BLOCK,
-      blockNumber
+      blockNumber,
     )
     return addedEventsList
   }
@@ -55,7 +55,7 @@ async function getEvents(
     const removedEventsList = await contract.queryFilter(
       filterFromTriggerRemoved,
       process.env.DEPLOYMENT_BLOCK,
-      blockNumber
+      blockNumber,
     )
     return removedEventsList
   }
@@ -80,8 +80,13 @@ function returnAllAddTriggerEvents(addedEventsList: ethers.Event[], abi: string[
   }
 }
 
-function returnFilteredAddTriggerEvents(removedEventsList: ethers.Event[], addedEventsList: ethers.Event[], abi: string[]) {
-  const newestRemoveEvent = removedEventsList.reduce((latest, event) => latest?.blockNumber > event.blockNumber ? latest : event
+function returnFilteredAddTriggerEvents(
+  removedEventsList: ethers.Event[],
+  addedEventsList: ethers.Event[],
+  abi: string[],
+) {
+  const newestRemoveEvent = removedEventsList.reduce((latest, event) =>
+    latest?.blockNumber > event.blockNumber ? latest : event,
   )
   const filteredAddedEvents = addedEventsList.filter((event) => {
     return newestRemoveEvent.blockNumber < event.blockNumber
