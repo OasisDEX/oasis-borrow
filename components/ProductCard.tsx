@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Box, Card, Flex, Heading, Image, Text } from 'theme-ui'
 
+import { useWindowSize } from '../helpers/useWindowSize'
 import { FloatingLabel } from './FloatingLabel'
 import { AppLink } from './Links'
 
@@ -10,6 +11,16 @@ interface ProductCardBannerProps {
 }
 
 function ProductCardBanner({ title, description }: ProductCardBannerProps) {
+  const dataContainer = useRef<HTMLDivElement>(null)
+  const [bigContainer, setBigCointainer] = useState(false)
+  const size = useWindowSize()
+
+  useEffect(() => {
+    if (dataContainer.current) {
+      setBigCointainer(dataContainer.current.getBoundingClientRect().height > 75)
+    }
+  }, [size])
+
   return (
     <Box sx={{ position: 'relative', pb: '24px' }}>
       <Card
@@ -17,7 +28,7 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
         sx={{
           mixBlendMode: 'overlay',
           backgroundColor: 'black',
-          minHeight: [description.length < 28 ? '88px' : '116px', '88px'],
+          minHeight: bigContainer ? '116px' : '88px',
           border: 'unset',
         }}
       />
@@ -31,7 +42,10 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
           transform: 'translateX(-50%)',
         }}
       >
-        <Flex sx={{ flexDirection: 'column', alignItems: 'center', width: ['240px', '280px'] }}>
+        <Flex
+          sx={{ flexDirection: 'column', alignItems: 'center', width: ['240px', '280px'] }}
+          ref={dataContainer}
+        >
           <Text sx={{ color: 'text.subtitle' }} variant="paragraph2">
             {title}
           </Text>
@@ -78,46 +92,56 @@ export function ProductCard({
         position: 'relative',
       }}
     >
-      {floatingLabelText && (
-        <FloatingLabel text={floatingLabelText} flexSx={{ top: 4, right: '-20px' }} />
-      )}
-      <Flex sx={{ flexDirection: 'column', alignItems: 'center', pb: 2 }}>
-        <Image src={tokenImage} sx={{ height: '200px' }} />
-        <Heading variant="header2" as="h3" sx={{ fontSize: '28px', pb: 3 }}>
-          {title}
-        </Heading>
-        <Text
-          sx={{ color: 'text.subtitle', pb: '12px', fontSize: '15px', textAlign: 'center' }}
-          variant="paragraph3"
-        >
-          {description}
-        </Text>
-      </Flex>
-      <ProductCardBanner {...banner} />
-      <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', pb: '24px' }}>
-        <div>
-          <Text sx={{ color: 'text.subtitle', pb: 1 }} variant="paragraph3">
-            {leftSlot.title}
-          </Text>
-          <Text variant="paragraph1">{leftSlot.value}</Text>
-        </div>
-        <div>
-          <Text sx={{ color: 'text.subtitle', pb: 1 }} variant="paragraph3">
-            {rightSlot.title}
-          </Text>
-          <Text variant="paragraph1" sx={{ textAlign: 'right' }}>
-            {rightSlot.value}
-          </Text>
-        </div>
-      </Flex>
-      <Flex>
-        <AppLink
-          href={button.link}
-          variant="primary"
-          sx={{ width: '100%', fontWeight: 'body', textAlign: 'center' }}
-        >
-          {button.text}
-        </AppLink>
+      <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+        <Box>
+          {floatingLabelText && (
+            <FloatingLabel text={floatingLabelText} flexSx={{ top: 4, right: '-20px' }} />
+          )}
+          <Flex sx={{ flexDirection: 'column', alignItems: 'center', pb: 2 }}>
+            <Image src={tokenImage} sx={{ height: '200px' }} />
+            <Heading
+              variant="header2"
+              as="h3"
+              sx={{ fontSize: '28px', pb: 3, textAlign: 'center' }}
+            >
+              {title}
+            </Heading>
+            <Text
+              sx={{ color: 'text.subtitle', pb: '12px', fontSize: '15px', textAlign: 'center' }}
+              variant="paragraph3"
+            >
+              {description}
+            </Text>
+          </Flex>
+          <ProductCardBanner {...banner} />
+        </Box>
+        <Box>
+          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', pb: '24px' }}>
+            <div>
+              <Text sx={{ color: 'text.subtitle', pb: 1 }} variant="paragraph3">
+                {leftSlot.title}
+              </Text>
+              <Text variant="paragraph1">{leftSlot.value}</Text>
+            </div>
+            <div>
+              <Text sx={{ color: 'text.subtitle', pb: 1 }} variant="paragraph3">
+                {rightSlot.title}
+              </Text>
+              <Text variant="paragraph1" sx={{ textAlign: 'right' }}>
+                {rightSlot.value}
+              </Text>
+            </div>
+          </Flex>
+          <Flex>
+            <AppLink
+              href={button.link}
+              variant="primary"
+              sx={{ width: '100%', fontWeight: 'body', textAlign: 'center' }}
+            >
+              {button.text}
+            </AppLink>
+          </Flex>
+        </Box>
       </Flex>
     </Card>
   )
