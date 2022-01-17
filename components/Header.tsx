@@ -173,6 +173,7 @@ const HEADER_LINKS = {
   'dai-wallet': `${apiHost}/daiwallet`,
   learn: 'https://kb.oasis.app',
   blog: 'https://blog.oasis.app',
+  multiply: '/multiply',
 }
 
 function HeaderDropdown({
@@ -421,6 +422,9 @@ function DisconnectedHeader() {
                 {t('nav.borrow')}
               </Text>
             </HeaderDropdown>
+            <AppLink variant="links.navHeader" href={HEADER_LINKS['multiply']}>
+              {t('nav.multiply')}
+            </AppLink>
             <AppLink variant="links.navHeader" href={HEADER_LINKS['learn']}>
               {t('nav.learn')}
             </AppLink>

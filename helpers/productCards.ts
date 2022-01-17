@@ -66,7 +66,7 @@ export function multiplyPageCardsData({
     ALLOWED_MULTIPLY_TOKENS.includes(ilk.token),
   )
 
-  if (!token) {
+  if (token === 'Featured') {
     return productCardsData.filter((ilk) => featuredCards.includes(ilk.ilk))
   }
 
