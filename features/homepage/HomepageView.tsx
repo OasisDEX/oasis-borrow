@@ -13,7 +13,8 @@ import { slideInAnimation } from '../../theme/animations'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { landingPageCardsData } from '../../helpers/productCards'
-import { BorrowProductCard } from '../../components/ProductCardBorrow'
+import { ProductCardBorrow } from '../../components/ProductCardBorrow'
+import { ProductCardsLayout } from '../../components/ProductCard'
 
 function MultiplyTabContent() {
   return (
@@ -27,22 +28,6 @@ function MultiplyTabContent() {
         See all Multiply collateral types →
       </AppLink>
     </Text>
-  )
-}
-
-function ProductCardsLayout(props: { productCards: Array<JSX.Element> }) {
-  return (
-    <Grid
-      sx={{
-        gap: '17px',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(378px, max-content))',
-        width: '100%',
-        boxSizing: 'border-box',
-        justifyContent: 'center',
-      }}
-    >
-      {props.productCards}
-    </Grid>
   )
 }
 
@@ -79,7 +64,7 @@ function BorrowTabContent() {
                 productCardsData,
                 product: 'borrow',
               }).map((cardData) => (
-                <BorrowProductCard cardData={cardData} />
+                <ProductCardBorrow cardData={cardData} />
               ))}
             />
           </>

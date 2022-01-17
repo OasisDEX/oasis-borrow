@@ -8,7 +8,7 @@ import React from 'react'
 
 const hardcodedTokenAmount = 1
 
-export function BorrowProductCard(props: { cardData: ProductCardData }) {
+export function ProductCardBorrow(props: { cardData: ProductCardData }) {
   const { t } = useTranslation()
   const { cardData } = props
   const maxBorrowAmount = new BigNumber(
