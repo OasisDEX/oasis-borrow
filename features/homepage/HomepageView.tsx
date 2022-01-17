@@ -6,10 +6,14 @@ import { Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 import { useAppContext } from '../../components/AppContextProvider'
 import { AppLink } from '../../components/Links'
 import { TabSwitcher } from '../../components/TabSwitcher'
-import { useObservable } from '../../helpers/observableHook'
+import { useObservable, useObservableWithError } from '../../helpers/observableHook'
 import { staticFilesRuntimeUrl } from '../../helpers/staticPaths'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { slideInAnimation } from '../../theme/animations'
+import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
+import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
+import { landingPageCardsData } from '../../helpers/productCards'
+import { BorrowProductCard } from '../../components/ProductCardBorrow'
 
 function MultiplyTabContent() {
   return (
@@ -26,18 +30,62 @@ function MultiplyTabContent() {
   )
 }
 
-function BorrowTabContent() {
+function ProductCardsLayout(props: { productCards: Array<JSX.Element> }) {
   return (
-    <Text
-      variant="paragraph2"
-      sx={{ mt: 4, color: 'lavender', maxWidth: 617, textAlign: 'center' }}
+    <Grid
+      sx={{
+        gap: '17px',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(378px, max-content))',
+        width: '100%',
+        boxSizing: 'border-box',
+        justifyContent: 'center',
+      }}
     >
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum nibh etc aliquam
-      dolor sit amet.{' '}
-      <AppLink href="/borrow" variant="inText">
-        See all Borrow collateral types →
-      </AppLink>
-    </Text>
+      {props.productCards}
+    </Grid>
+  )
+}
+
+function BorrowTabContent() {
+  const { productCardsData$ } = useAppContext()
+  const { error: productCardsDataError, value: productCardsDataValue } = useObservableWithError(
+    productCardsData$,
+  )
+
+  return (
+    <WithErrorHandler error={[productCardsDataError]}>
+      <WithLoadingIndicator
+        value={[productCardsDataValue]}
+        customLoader={
+          <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
+            <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
+          </Flex>
+        }
+      >
+        {([productCardsData]) => (
+          <>
+            <Text
+              variant="paragraph2"
+              sx={{ mt: 4, color: 'lavender', maxWidth: 617, textAlign: 'center', mb: 4 }}
+            >
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum nibh etc
+              aliquam dolor sit amet.{' '}
+              <AppLink href="/borrow" variant="inText">
+                See all Borrow collateral types →
+              </AppLink>
+            </Text>
+            <ProductCardsLayout
+              productCards={landingPageCardsData({
+                productCardsData,
+                product: 'borrow',
+              }).map((cardData) => (
+                <BorrowProductCard cardData={cardData} />
+              ))}
+            />
+          </>
+        )}
+      </WithLoadingIndicator>
+    </WithErrorHandler>
   )
 }
 
@@ -55,6 +103,7 @@ export function HomepageView() {
         isConnected={context?.status === 'connected'}
         sx={{ ...slideInAnimation, position: 'relative' }}
       />
+
       <TabSwitcher
         tabs={[
           {
