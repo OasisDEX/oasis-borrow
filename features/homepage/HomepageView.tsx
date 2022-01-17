@@ -82,7 +82,7 @@ export function HomepageView() {
               <TabContent
                 paraText={
                   <>
-                    {t('landing.tabs.borrow.tabParaContent')}
+                    {t('landing.tabs.borrow.tabParaContent')}{' '}
                     <AppLink href="/borrow" variant="inText">
                       {t('landing.tabs.borrow.tabParaLinkContent')}
                     </AppLink>
@@ -99,7 +99,7 @@ export function HomepageView() {
               <TabContent
                 paraText={
                   <>
-                    {t('landing.tabs.multiply.tabParaContent')}
+                    {t('landing.tabs.multiply.tabParaContent')}{' '}
                     <AppLink href="/multiply" variant="inText">
                       {t('landing.tabs.multiply.tabParaLinkContent')}
                     </AppLink>
