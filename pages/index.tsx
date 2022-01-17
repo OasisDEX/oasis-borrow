@@ -15,14 +15,6 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 
 export default function LandingPage() {
   const enabled = useFeatureToggle('AssetLandingPages')
-  // const view = enabled ? (
-  //   <Flex sx={{ flexDirection: 'column' }}>
-  //     <p>AssetLandingPages feature enabled ✅</p>
-  //     <PageCards />
-  //   </Flex>
-  // ) : (
-  //   <LandingView />
-  // )
   const view = enabled ? <HomepageView /> : <LandingView />
   return <WithConnection>{view}</WithConnection>
 }
