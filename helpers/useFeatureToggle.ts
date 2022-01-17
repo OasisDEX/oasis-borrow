@@ -1,3 +1,4 @@
+import { mapValues } from 'lodash'
 export const FT_LOCAL_STORAGE_KEY = 'features'
 
 type ConfiguredFeatures = Record<Features, boolean>
@@ -14,23 +15,39 @@ export function configureLocalStorageForTests(data: { [feature in Features]?: bo
   localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(data))
 }
 
+// Features in code are added to localstorage on app start, where they do not exist.
+// They are also disabled in local storage, even if they are enabled in the code.
+// Because a feature is enabled if it's enabled either in code or local storage, the
+// feature ends up enabled.
+
 export function loadFeatureToggles(testFeaturesFlaggedEnabled: Array<Features> = []) {
   // update local toggles
   if (typeof localStorage !== 'undefined') {
-    // merge features used for unit testing
-    const _releaseSelectedFeatures = testFeaturesFlaggedEnabled.reduce(
+    // No-yet-loaded features are always set to false in local storage even if true in code.
+    const featuresToLoadInLocalStorage = mapValues(configuredFeatures, () => false)
+
+    // Gather features enabled in unit tests.
+    const featuresEnabledForUnitTesting = testFeaturesFlaggedEnabled.reduce(
       (acc, feature) => ({
         ...acc,
         [feature]: true,
       }),
-      configuredFeatures,
+      {},
     )
-    const rawFeatures = localStorage.getItem(FT_LOCAL_STORAGE_KEY)
-    if (!rawFeatures) {
-      localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(_releaseSelectedFeatures))
+
+    const featuresSourcedFromCode = {
+      ...featuresToLoadInLocalStorage,
+      ...featuresEnabledForUnitTesting,
+    }
+
+    const featureFlagsInLocalStorage = localStorage.getItem(FT_LOCAL_STORAGE_KEY)
+    if (!featureFlagsInLocalStorage) {
+      localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(featuresSourcedFromCode))
     } else {
-      const userSelectedFeatures: ConfiguredFeatures = JSON.parse(rawFeatures) as ConfiguredFeatures
-      const merged = { ..._releaseSelectedFeatures, ...userSelectedFeatures }
+      const userSelectedFeatures: ConfiguredFeatures = JSON.parse(
+        featureFlagsInLocalStorage,
+      ) as ConfiguredFeatures
+      const merged = { ...featuresSourcedFromCode, ...userSelectedFeatures }
       localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(merged))
     }
   }
