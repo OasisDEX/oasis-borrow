@@ -44,8 +44,8 @@ const infuraProjectId =
 const etherscanAPIKey =
   process.env.ETHERSCAN_API_KEY || getConfig()?.publicRuntimeConfig?.etherscan || ''
 
-const supportedIlks = [
-  'ETH-A',
+export const supportedIlks = [
+  /* export just for test purposes */ 'ETH-A',
   'ETH-B',
   'ETH-C',
   'BAT-A',
@@ -80,10 +80,10 @@ const supportedIlks = [
   'UNIV2DAIUSDT-A',
   'MATIC-A',
   'GUNIV3DAIUSDC1-A',
-  'GUNIV3DAIUSDC2_A',
-  'WSTETH_A',
-  'WBTC_B',
-  'WBTC_C',
+  'GUNIV3DAIUSDC2-A',
+  'WSTETH-A',
+  'WBTC-B',
+  'WBTC-C',
 ]
 
 const tokensMainnet = {

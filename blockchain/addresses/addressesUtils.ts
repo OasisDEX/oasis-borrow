@@ -5,7 +5,9 @@ import * as mcdOsm from '../abi/mcd-osm.json'
 import { contractDesc } from '../config'
 
 export function getOsms(addresses: Dictionary<string>, ilks: string[]) {
-  const keysLegalPostfixes = ilks.map((x) => x.replace('-', '_'))
+  const keysLegalPostfixes = ilks.map((x) =>
+    x.substring(0, x.indexOf('-') > 0 ? x.indexOf('-') : x.length),
+  )
   return Object.entries(addresses)
     .filter(([key]) => /PIP_.*/.test(key))
     .filter(
@@ -16,12 +18,17 @@ export function getOsms(addresses: Dictionary<string>, ilks: string[]) {
 }
 
 export function getCollaterals(addresses: Dictionary<string>, ilks: string[]) {
-  const keysLegalPostfixes = ilks.map((x) => x.replace('-', '_'))
+  const keysLegalPostfixes = ilks.map((x) =>
+    x.substring(0, x.indexOf('-') > 0 ? x.indexOf('-') : x.length),
+  )
   return Object.entries(addresses)
     .filter(([key]) => /PIP_.*/.test(key))
     .filter(([key]) => key !== 'ETH')
     .filter(
-      ([key]) => keysLegalPostfixes.filter((possibleKey) => key.endsWith(possibleKey)).length > 0,
+      ([key]) =>
+        keysLegalPostfixes.filter((possibleKey) => {
+          return key.endsWith(possibleKey)
+        }).length > 0,
     )
     .map(([key]) => key.replace('PIP_', ''))
 }
