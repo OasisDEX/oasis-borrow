@@ -29,7 +29,8 @@
     "postinstall": "rm -f node_modules/web3/index.d.ts && yarn prisma:generate && yarn patch-package && yarn typechain:generate",
     "storybook": "start-storybook -p 6006 -s ./public",
     "build:storybook": "build-storybook",
-    "publish:storybook": "storybook-to-aws-s3"
+    "publish:storybook": "storybook-to-aws-s3",
+    "release": "release-it"
   },
   "dependencies": {
     "@davatar/react": "^1.8.1",
