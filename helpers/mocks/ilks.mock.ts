@@ -28,6 +28,7 @@ export interface MockIlkDataProps {
   liquidationRatio?: BigNumber
   currentCollateralPrice?: BigNumber
   ilk?: string
+  token?: string
 }
 
 // stabilityFee :: 8% = 1.08

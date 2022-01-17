@@ -229,21 +229,22 @@ function LandingCards() {
 export function LandingView() {
   const { landing$, context$ } = useAppContext()
   const context = useObservable(context$)
-  const { value: landing, error: landingError } = useObservableWithError(landing$)
+  const { value: landingValue, error: landingError } = useObservableWithError(landing$)
+
   const { t } = useTranslation()
   const redirectToOpenVault = useRedirectToOpenVault()
 
   const onIlkSearch = useCallback(
     (search: string) => {
-      landing?.ilks.filters.change({ kind: 'search', search })
+      landingValue?.ilks.filters.change({ kind: 'search', search })
     },
-    [landing?.ilks.filters],
+    [landingValue?.ilks.filters],
   )
   const onIlksTagChange = useCallback(
     (tagFilter: TagFilter) => {
-      landing?.ilks.filters.change({ kind: 'tagFilter', tagFilter })
+      landingValue?.ilks.filters.change({ kind: 'tagFilter', tagFilter })
     },
-    [landing?.ilks.filters],
+    [landingValue?.ilks.filters],
   )
 
   return (
@@ -267,7 +268,7 @@ export function LandingView() {
       >
         <FeaturedIlksPlaceholder
           sx={
-            landing !== undefined
+            landingValue !== undefined
               ? {
                   ...fadeInAnimation,
                   animationDirection: 'backwards',
@@ -276,18 +277,20 @@ export function LandingView() {
               : {}
           }
         />
-        {landing !== undefined && <FeaturedIlks sx={fadeInAnimation} ilks={landing.featuredIlks} />}
+        {landingValue !== undefined && (
+          <FeaturedIlks sx={fadeInAnimation} ilks={landingValue.featuredIlks} />
+        )}
       </Box>
-      <WithErrorHandler error={landingError}>
+      <WithErrorHandler error={[landingError]}>
         <WithLoadingIndicator
-          value={landing}
+          value={[landingValue]}
           customLoader={
             <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
               <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
             </Flex>
           }
         >
-          {(landing) => (
+          {([landing]) => (
             <Box sx={{ ...slideInAnimation, position: 'relative' }}>
               <FiltersWithPopular
                 onSearch={onIlkSearch}
