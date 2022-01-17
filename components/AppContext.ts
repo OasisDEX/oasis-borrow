@@ -31,6 +31,7 @@ import {
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
+import { resolveENSName$ } from 'blockchain/ens'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import {
   createGasPrice$,
@@ -110,6 +111,7 @@ import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
+import { createProductCardsData$ } from '../helpers/productCards'
 
 export type TxData =
   | OpenData
@@ -251,6 +253,7 @@ export function setupAppContext() {
     curry(createBalance$)(onEveryBlock$, context$, tokenBalance$),
     (token, address) => `${token}_${address}`,
   )
+  const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
@@ -472,6 +475,9 @@ export function setupAppContext() {
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
+
+  const productCardsData$ = createProductCardsData$(ilkDataList$, priceInfo$)
+
   const vaultsOverview$ = memoize(curry(createVaultsOverview$)(vaults$, ilksWithBalance$))
   const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
 
@@ -492,7 +498,7 @@ export function setupAppContext() {
     curry(createReclaimCollateral$)(context$, txHelpers$, proxyAddress$),
     bigNumberTostring,
   )
-  const accountData$ = createAccountData(web3Context$, balance$, vaults$)
+  const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
 
   const openVaultOverview$ = createOpenVaultOverview$(ilksWithBalance$)
 
@@ -530,6 +536,8 @@ export function setupAppContext() {
     generalManageVault$,
     userSettings$,
     openGuniVault$,
+    ilkDataList$,
+    productCardsData$,
   }
 }
 
