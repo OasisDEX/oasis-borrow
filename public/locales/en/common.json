@@ -219,6 +219,18 @@
         "description": "Learn more about Oasis, Dai and DeFi at our FAQ’s page"
       }
     },
+    "tabs": {
+      "borrow": {
+        "tabLabel": "Borrow on Oasis",
+        "tabParaContent": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum nibh etc aliquam dolor sit amet.",
+        "tabParaLinkContent": "See all Borrow collateral types →"
+      },
+      "multiply": {
+        "tabLabel": "Multiply on Oasis",
+        "tabParaContent": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum nibh etc aliquam dolor sit amet.",
+        "tabParaLinkContent": "See all Multiply collateral types →"
+      }
+    },
     "cookie-banner": {
       "message": "We use the cookies on the website to improve your experience, analyze traffic, and for basic functionality. Cookies are anonymous and do not link to user data. You can still use the website without cookies. For more information, please read our <0>Privacy Policy</0>.",
       "settings-toggle": "Manage settings",
@@ -331,8 +343,7 @@
     "oasis-borrow": "Oasis Borrow",
     "multiply": "Multiply",
     "more": "More",
-    "earn": "Earn",
-    "oasis-borrow": "Oasis Borrow"
+    "earn": "Earn"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",

@@ -59,6 +59,7 @@ function TabContent(props: {
 }
 
 export function HomepageView() {
+  const { t } = useTranslation()
   const { context$ } = useAppContext()
   const context = useObservable(context$)
   return (
@@ -76,15 +77,14 @@ export function HomepageView() {
       <TabSwitcher
         tabs={[
           {
-            tabLabel: 'Borrow on Oasis',
+            tabLabel: t('landing.tabs.borrow.tabLabel'),
             tabContent: (
               <TabContent
                 paraText={
                   <>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum
-                    nibh etc aliquam dolor sit amet.{' '}
+                    {t('landing.tabs.borrow.tabParaContent')}
                     <AppLink href="/borrow" variant="inText">
-                      See all Borrow collateral types →
+                      {t('landing.tabs.borrow.tabParaLinkContent')}
                     </AppLink>
                   </>
                 }
@@ -94,15 +94,14 @@ export function HomepageView() {
             ),
           },
           {
-            tabLabel: 'Multiply on Oasis',
+            tabLabel: t('landing.tabs.multiply.tabLabel'),
             tabContent: (
               <TabContent
                 paraText={
                   <>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum
-                    nibh etc aliquam dolor sit amet.{' '}
+                    {t('landing.tabs.multiply.tabParaContent')}
                     <AppLink href="/multiply" variant="inText">
-                      See all Multiply collateral types →
+                      {t('landing.tabs.multiply.tabParaLinkContent')}
                     </AppLink>
                   </>
                 }
