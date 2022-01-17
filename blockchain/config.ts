@@ -50,7 +50,7 @@ const tokensMainnet = {
   GUNIV3DAIUSDC2: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC2']),
   WETH: contractDesc(eth, mainnetAddresses['ETH']),
   DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
-} as Dictionary<ContractDesc>;
+} as Dictionary<ContractDesc>
 const protoMain = {
   id: '1',
   name: 'main',
