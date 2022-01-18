@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Box, Card, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
 import { useWindowSize } from '../helpers/useWindowSize'
+import { fadeInAnimation } from '../theme/animations'
 import { FloatingLabel } from './FloatingLabel'
 import { AppLink } from './Links'
 
@@ -19,7 +20,7 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
     if (dataContainer.current) {
       setBigCointainer(dataContainer.current.getBoundingClientRect().height > 75)
     }
-  }, [size])
+  }, [size, description])
 
   return (
     <Box sx={{ position: 'relative', pb: '24px' }}>
@@ -90,6 +91,7 @@ export function ProductCard({
         maxWidth: '378px',
         minHeight: '608px',
         position: 'relative',
+        ...fadeInAnimation,
       }}
     >
       <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
