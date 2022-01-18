@@ -326,7 +326,11 @@
     "checkmark1": "Specifically designed for borrowing positions",
     "checkmark2": "You can change back to the Multiply UI anytime",
     "checkmark3": "This does not require a transaction",
-    "button-start" : "Go to Borrow interface"
+    "button-start" : "Go to Borrow interface",
+    "button-confirm": "Take me to the Borrow interface",
+    "button-progress": "Transition in progress...",
+    "button-failure": "Something went wrong, try again",
+    "button-success": "Transition completed, refreshing..."
   },
   "max": "Max",
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",

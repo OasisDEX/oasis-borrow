@@ -403,6 +403,7 @@ export function setupAppContext() {
         exchangeQuote$,
         addGasEstimation$,
         vaultMultiplyHistory$,
+        saveVaultUsingApi$,
         id,
       ),
     bigNumberTostring,

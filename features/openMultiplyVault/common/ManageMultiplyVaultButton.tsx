@@ -84,7 +84,15 @@ function manageMultiplyVaultButtonText(state: ManageMultiplyVaultState): string 
     case 'manageInProgress':
       return t('changing-vault')
     case 'borrowTransitionEditing':
-      return 'woot!'
+      return t('multiply-to-borrow.button-start')
+    case 'borrowTransitionWaitingForConfirmation':
+      return t('multiply-to-borrow.button-confirm')
+    case 'borrowTransitionInProgress':
+      return t('multiply-to-borrow.button-progress')
+    case 'borrowTransitionFailure':
+      return t('multiply-to-borrow.button-failure')
+    case 'borrowTransitionSuccess':
+      return t('multiply-to-borrow.button-success')
     default:
       throw new UnreachableCaseError(state.stage)
   }

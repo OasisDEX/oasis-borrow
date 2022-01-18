@@ -10,6 +10,7 @@ import {
 } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
+import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
@@ -149,6 +150,7 @@ export function mockManageMultiplyVault$({
     mockExchangeQuote$(exchangeQuote),
     addGasEstimationMock,
     vaultMultiplyHistory$,
+    saveVaultUsingApi$,
     MOCK_VAULT_ID,
   )
 }
