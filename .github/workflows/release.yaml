@@ -58,6 +58,12 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --prefer-offline --frozen-lockfile
+        
+      - name: Clear git user
+        run: | 
+          git remote rm origin
+          git remote add origin https://OazoApps-DevOps:${secrets.PAT}@github.com/OazoApps-DevOps/https://github.com/OasisDEX/oasis-borrow.git
+          git symbolic-ref HEAD refs/heads/dev
 
       - name: release version
         run: npm run release -- ${{ env.RELEASE_TYPE }} --ci
