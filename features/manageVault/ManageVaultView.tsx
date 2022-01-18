@@ -31,19 +31,19 @@ function ManageVaultMultiplyTransition({ stage, vault }: ManageVaultState) {
     <Grid mt={-3}>
       <Grid variant="text.paragraph3" sx={{ color: 'text.subtitle' }}>
         <TextWithCheckmark>
-          {t('vault-form.subtext.checkmark1', { token: vault.token.toUpperCase() })}
+          {t('borrow-to-multiply.checkmark1', { token: vault.token.toUpperCase() })}
         </TextWithCheckmark>
-        <TextWithCheckmark>{t('vault-form.subtext.checkmark2')}</TextWithCheckmark>
-        <TextWithCheckmark>{t('vault-form.subtext.checkmark3')}</TextWithCheckmark>
-        <TextWithCheckmark>{t('vault-form.subtext.checkmark4')}</TextWithCheckmark>
+        <TextWithCheckmark>{t('borrow-to-multiply.checkmark2')}</TextWithCheckmark>
+        <TextWithCheckmark>{t('borrow-to-multiply.checkmark3')}</TextWithCheckmark>
+        <TextWithCheckmark>{t('borrow-to-multiply.checkmark4')}</TextWithCheckmark>
       </Grid>
       <Divider />
       <Grid gap={2}>
         <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
-          {t('vault-form.subtext.subheader2')}
+          {t('borrow-to-multiply.subheader2')}
         </Text>
         <Text variant="paragraph3" sx={{ color: 'text.subtitle' }}>
-          {t('vault-form.subtext.paragraph2')}
+          {t('borrow-to-multiply.paragraph2')}
         </Text>
       </Grid>
     </Grid>
