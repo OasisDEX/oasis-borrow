@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
+import { Flex, Grid, Heading, Image, SxStyleProp, Text, Box } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { AppLink } from '../../components/Links'
@@ -64,17 +64,16 @@ export function HomepageView() {
   const { context$ } = useAppContext()
   const context = useObservable(context$)
   return (
-    <Grid
+    <Box
       sx={{
         flex: 1,
-        position: 'relative',
       }}
     >
+      here
       <Hero
         isConnected={context?.status === 'connected'}
         sx={{ ...slideInAnimation, position: 'relative' }}
       />
-
       <TabSwitcher
         tabs={[
           {
@@ -119,11 +118,63 @@ export function HomepageView() {
         }}
         wideTabsSx={{ display: ['none', 'block'] }}
       />
-      <Text variant="header2" sx={{ textAlign: 'center', mt: 7 }}>
+      <Text variant="header2" sx={{ textAlign: 'center', mt: 7, mb: 4 }}>
         {t('landing.info-cards.have-some-questions')}
       </Text>
-      <InfoCard />
-    </Grid>
+      <Grid
+        gap={4}
+        sx={{
+          maxWidth: '854px',
+          margin: 'auto',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+        }}
+      >
+        <InfoCard
+          title="Learn"
+          subtitle="Deep dive into oasis.app functionalities and glossary"
+          links={[
+            {
+              href: 'https://kb.oasis.app/help/getting-started',
+              text: 'Get started',
+            },
+            {
+              href: 'https://kb.oasis.app/help/tutorials',
+              text: 'Tutorials',
+            },
+            {
+              href: 'https://kb.oasis.app/help/borrow',
+              text: 'Key concepts',
+            },
+          ]}
+          backgroundGradient="linear-gradient(127.5deg, #EEE1F9 0%, #FFECE8 56.77%, #DDFFF7 100%)"
+          backgroundImage="/static/img/info_cards/cubes_nov27.png"
+        />
+        <InfoCard
+          title="Support"
+          subtitle="Contact Oasis.app team whenever you need"
+          links={[
+            {
+              href: '/support',
+              text: 'FAQ',
+            },
+            {
+              href: 'https://discord.gg/Kc2bBB59GC',
+              text: 'Discord',
+            },
+            {
+              href: '/daiwallet/contact',
+              text: 'Contact us',
+            },
+            {
+              href: 'https://twitter.com/oasisdotapp',
+              text: 'Twitter',
+            },
+          ]}
+          backgroundGradient="linear-gradient(135.35deg, #FEF7FF 0.6%, #FEE9EF 100%), radial-gradient(261.45% 254.85% at 3.41% 2.19%, #FFFADD 0%, #FFFBE3 0.01%, #F0FFF2 52.6%, #FBEDFD 100%)"
+          backgroundImage="/static/img/info_cards/bubbles.png"
+        />
+      </Grid>
+    </Box>
   )
 }
 
