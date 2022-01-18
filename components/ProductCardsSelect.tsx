@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import React, { useState } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import ReactSelect, {
   components,
   OptionProps,
@@ -37,8 +37,7 @@ const customStyles: StylesConfig = {
 const { Option } = components
 
 export interface ProductCardsSelectValue {
-  value: string
-  label: string
+  name: string
   icon: string
 }
 
@@ -47,7 +46,7 @@ function OptionWithIcon(props: OptionProps<ProductCardsSelectValue>) {
     <Option {...props}>
       <Flex sx={{ alignItems: 'center', fontWeight: 'semiBold' }}>
         <Icon name={`${props.data.icon}_color`} size="32px" sx={{ mr: 2, ml: 2 }} />
-        {props.data.label}
+        {props.data.name}
       </Flex>
     </Option>
   )
@@ -62,7 +61,7 @@ const InputWithIcon = (props: SingleValueProps<ProductCardsSelectValue>) => {
         size="32px"
         sx={{ mr: 2, ml: 2 }}
       />
-      {(value as ProductCardsSelectValue).label}
+      {(value as ProductCardsSelectValue).name}
     </Flex>
   )
 }
@@ -70,24 +69,40 @@ const InputWithIcon = (props: SingleValueProps<ProductCardsSelectValue>) => {
 interface ProductCardsSelectProps {
   options: { name: string; icon: string }[]
   handleChange: (tab: string) => void
+  currentFilter: string
 }
 
-export function ProductCardsSelect({ options, handleChange }: ProductCardsSelectProps) {
-  const defaultValue = { label: options[0].name, value: options[0].name, icon: options[0].icon }
-  const [option, setOption] = useState(defaultValue)
+export function ProductCardsSelect({
+  options,
+  handleChange,
+  currentFilter,
+}: ProductCardsSelectProps) {
+  const handleSelectChange = useCallback(
+    (option: ValueType<ProductCardsSelectValue>) =>
+      handleChange((option as ProductCardsSelectValue).name),
+    [],
+  )
 
-  function handleSelectChange(option: ValueType<ProductCardsSelectValue>) {
-    setOption(option as ProductCardsSelectValue)
-    handleChange((option as ProductCardsSelectValue).value)
-  }
+  const value = useMemo(() => options.find((option) => option.name === currentFilter), [
+    currentFilter,
+  ])
+
+  const isSelected = useMemo(
+    () => (option: ProductCardsSelectValue) => currentFilter === option.name,
+    [currentFilter],
+  )
 
   return (
     <ReactSelect<ProductCardsSelectValue>
-      options={options.map((tab) => ({ value: tab.name, label: tab.name, icon: tab.icon }))}
+      options={options}
       onChange={handleSelectChange}
       styles={customStyles}
-      value={option}
-      components={{ Option: OptionWithIcon, SingleValue: InputWithIcon }}
+      value={value}
+      components={{
+        Option: OptionWithIcon,
+        SingleValue: InputWithIcon,
+      }}
+      isOptionSelected={isSelected}
     />
   )
 }
