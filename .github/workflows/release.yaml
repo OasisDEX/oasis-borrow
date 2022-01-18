@@ -64,7 +64,7 @@ jobs:
           git remote rm origin
           git remote add origin https://OazoApps-DevOps:${{secrets.PAT}}@github.com/OasisDEX/oasis-borrow.git
           git symbolic-ref HEAD refs/heads/dev
-          git branch --set-upstream dev origin/dev
+          git branch --set-upstream-to origin/dev
 
       - name: release version
         run: npm run release -- ${{ env.RELEASE_TYPE }} --ci
