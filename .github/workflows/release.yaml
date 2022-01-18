@@ -72,5 +72,5 @@ jobs:
           ref: main
       - name: Pull dev changes
         run: | 
-          git pull origin/div
+          git pull origin/dev
           git push origin HEAD
