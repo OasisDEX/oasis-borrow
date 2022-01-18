@@ -4,8 +4,8 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
-import { VaultType } from 'features/generalManageVault/generalManageVault'
-import { SaveVaultType } from 'features/generalManageVault/vaultTypeLocalStorage'
+import { VaultType, saveVaultTypeForAccount } from 'features/generalManageVault/vaultType'
+import { SaveVaultType } from 'features/generalManageVault/vaultType'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
@@ -193,28 +193,25 @@ export type ManageVaultState = MutableManageVaultState &
     currentStep: number
   } & HasGasEstimation
 
-function saveVaultType(
+
+function setVaultTypeToMultiply(
   saveVaultType$: SaveVaultType,
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ) {
-  // assume that user went through ToS flow and can interact with application
-  const token = jwtAuthGetToken(state.account as string)
-
-  if (token) {
-    saveVaultType$(state.vault.id, token, VaultType.Multiply, state.vault.chainId)
-      .pipe<ManageVaultChange>(
-        map(() => {
-          window.location.reload()
-          return { kind: 'multiplyTransitionSuccess' } as ManageVaultChange
-        }),
-        catchError(() => of({ kind: 'multiplyTransitionFailure' } as ManageVaultChange)),
-        startWith({ kind: 'multiplyTransitionInProgress' } as ManageVaultChange),
-      )
-      .subscribe((ch) => change(ch))
-  } else {
-    change({ kind: 'multiplyTransitionFailure' })
-  }
+  saveVaultTypeForAccount(
+    saveVaultType$,
+    state.account as string,
+    state.vault.id,
+    VaultType.Multiply,
+    state.vault.chainId,
+    () => {
+      window.location.reload()
+      change({ kind: 'multiplyTransitionSuccess'})
+    },
+    () => change({ kind: 'multiplyTransitionFailure'}),
+    () => change({ kind: 'multiplyTransitionInProgress'})
+  )
 }
 
 function addTransitions(
@@ -240,7 +237,7 @@ function addTransitions(
     return {
       ...state,
       toggle: (stage) => change({ kind: 'toggleEditing', stage }),
-      progress: () => saveVaultType(saveVaultType$, change, state),
+      progress: () => setVaultTypeToMultiply(saveVaultType$, change, state),
       regress: () => change({ kind: 'backToEditing' }),
     }
   }
