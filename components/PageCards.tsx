@@ -196,7 +196,7 @@ export function PageCards() {
               </Flex>
               <Heading sx={{ pb: 3, textAlign: 'center' }}>Multiply page ETH</Heading>
               <Flex sx={{ justifyContent: 'space-around', pb: 4, flexWrap: 'wrap' }}>
-                {multiplyPageCardsData({ productCardsData, token: 'ETH' }).map((cardData) => {
+                {multiplyPageCardsData({ productCardsData, cardsFilter: 'ETH' }).map((cardData) => {
                   const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
 
                   return (
@@ -276,7 +276,7 @@ export function PageCards() {
               </Flex>
               <Heading sx={{ pb: 3, textAlign: 'center' }}>Borrow page BTC</Heading>
               <Flex sx={{ justifyContent: 'space-around', pb: 4, flexWrap: 'wrap' }}>
-                {borrowPageCardsData({ productCardsData, token: 'BTC' }).map((cardData) => {
+                {borrowPageCardsData({ productCardsData, cardsFilter: 'BTC' }).map((cardData) => {
                   const maxBorrowAmount = new BigNumber(
                     one
                       .div(cardData.liquidationRatio)
@@ -316,47 +316,51 @@ export function PageCards() {
               </Flex>
               <Heading sx={{ pb: 3, textAlign: 'center' }}>Borrow page UNI-LP</Heading>
               <Flex sx={{ justifyContent: 'space-around', pb: 4, flexWrap: 'wrap' }}>
-                {borrowPageCardsData({ productCardsData, token: 'UNI-LP' }).map((cardData) => {
-                  const maxBorrowAmount = new BigNumber(
-                    one
-                      .div(cardData.liquidationRatio)
-                      .multipliedBy(cardData.currentCollateralPrice.times(hardcodedTokenAmount)),
-                  ).toFixed(0)
+                {borrowPageCardsData({ productCardsData, cardsFilter: 'UNI LP' }).map(
+                  (cardData) => {
+                    const maxBorrowAmount = new BigNumber(
+                      one
+                        .div(cardData.liquidationRatio)
+                        .multipliedBy(cardData.currentCollateralPrice.times(hardcodedTokenAmount)),
+                    ).toFixed(0)
 
-                  return (
-                    <ProductCard
-                      key={cardData.ilk}
-                      tokenImage={cardData.bannerIcon}
-                      title={cardData.ilk}
-                      description={t(`product-card.borrow.description`, { token: cardData.token })}
-                      banner={{
-                        title: t('product-card-banner.with', {
-                          value: hardcodedTokenAmount,
+                    return (
+                      <ProductCard
+                        key={cardData.ilk}
+                        tokenImage={cardData.bannerIcon}
+                        title={cardData.ilk}
+                        description={t(`product-card.borrow.description`, {
                           token: cardData.token,
-                        }),
-                        description: t(`product-card-banner.borrow.description`, {
-                          value: maxBorrowAmount,
-                        }),
-                      }}
-                      leftSlot={{
-                        title: t('system.min-coll-ratio'),
-                        value: `${formatPercent(cardData.liquidationRatio.times(100), {
-                          precision: 2,
-                        })}`,
-                      }}
-                      rightSlot={{
-                        title: t(t('system.stability-fee')),
-                        value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
-                      }}
-                      button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}
-                      background={cardData.background}
-                    />
-                  )
-                })}
+                        })}
+                        banner={{
+                          title: t('product-card-banner.with', {
+                            value: hardcodedTokenAmount,
+                            token: cardData.token,
+                          }),
+                          description: t(`product-card-banner.borrow.description`, {
+                            value: maxBorrowAmount,
+                          }),
+                        }}
+                        leftSlot={{
+                          title: t('system.min-coll-ratio'),
+                          value: `${formatPercent(cardData.liquidationRatio.times(100), {
+                            precision: 2,
+                          })}`,
+                        }}
+                        rightSlot={{
+                          title: t(t('system.stability-fee')),
+                          value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
+                        }}
+                        button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}
+                        background={cardData.background}
+                      />
+                    )
+                  },
+                )}
               </Flex>
               <Heading sx={{ pb: 3, textAlign: 'center' }}>Borrow page UNI</Heading>
               <Flex sx={{ justifyContent: 'space-around', pb: 4, flexWrap: 'wrap' }}>
-                {borrowPageCardsData({ productCardsData, token: 'UNI' }).map((cardData) => {
+                {borrowPageCardsData({ productCardsData, cardsFilter: 'UNI' }).map((cardData) => {
                   const maxBorrowAmount = new BigNumber(
                     one
                       .div(cardData.liquidationRatio)

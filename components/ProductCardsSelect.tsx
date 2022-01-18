@@ -36,13 +36,13 @@ const customStyles: StylesConfig = {
 
 const { Option } = components
 
-export interface TokenSelectValue {
+export interface ProductCardsSelectValue {
   value: string
   label: string
   icon: string
 }
 
-function OptionWithIcon(props: OptionProps<TokenSelectValue>) {
+function OptionWithIcon(props: OptionProps<ProductCardsSelectValue>) {
   return (
     <Option {...props}>
       <Flex sx={{ alignItems: 'center', fontWeight: 'semiBold' }}>
@@ -53,34 +53,37 @@ function OptionWithIcon(props: OptionProps<TokenSelectValue>) {
   )
 }
 
-const InputWithIcon = (props: SingleValueProps<TokenSelectValue>) => {
+const InputWithIcon = (props: SingleValueProps<ProductCardsSelectValue>) => {
   const { value } = props.selectProps
   return (
     <Flex sx={{ alignItems: 'center', fontWeight: 'semiBold' }}>
-      <Icon name={`${(value as TokenSelectValue).icon}_color`} size="32px" sx={{ mr: 2, ml: 2 }} />
-      {(value as TokenSelectValue).label}
+      <Icon
+        name={`${(value as ProductCardsSelectValue).icon}_color`}
+        size="32px"
+        sx={{ mr: 2, ml: 2 }}
+      />
+      {(value as ProductCardsSelectValue).label}
     </Flex>
   )
 }
 
-interface TokenSelectProps {
-  tabs: { name: string; icon: string }[]
+interface ProductCardsSelectProps {
+  options: { name: string; icon: string }[]
   handleChange: (tab: string) => void
 }
 
-export function TokenSelect({ tabs, handleChange }: TokenSelectProps) {
-  const defaultValue = { label: tabs[0].name, value: tabs[0].name, icon: tabs[0].icon }
+export function ProductCardsSelect({ options, handleChange }: ProductCardsSelectProps) {
+  const defaultValue = { label: options[0].name, value: options[0].name, icon: options[0].icon }
   const [option, setOption] = useState(defaultValue)
 
-  function handleSelectChange(option: ValueType<TokenSelectValue>) {
-    setOption(option as TokenSelectValue)
-    handleChange((option as TokenSelectValue).value)
+  function handleSelectChange(option: ValueType<ProductCardsSelectValue>) {
+    setOption(option as ProductCardsSelectValue)
+    handleChange((option as ProductCardsSelectValue).value)
   }
 
   return (
-    <ReactSelect<TokenSelectValue>
-      options={tabs.map((tab) => ({ value: tab.name, label: tab.name, icon: tab.icon }))}
-      defaultValue={defaultValue}
+    <ReactSelect<ProductCardsSelectValue>
+      options={options.map((tab) => ({ value: tab.name, label: tab.name, icon: tab.icon }))}
       onChange={handleSelectChange}
       styles={customStyles}
       value={option}

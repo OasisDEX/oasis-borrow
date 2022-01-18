@@ -95,16 +95,6 @@ module.exports = withBundleAnalyzer(
         async redirects() {
           return [
             {
-              source: '/borrow',
-              destination: '/',
-              permanent: true,
-            },
-            {
-              source: '/borrow/:slug*',
-              destination: '/:slug*',
-              permanent: true,
-            },
-            {
               source: '/dashboard',
               destination: '/daiwallet/dashboard',
               permanent: true,

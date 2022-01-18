@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Grid } from 'theme-ui'
@@ -10,21 +11,23 @@ import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { formatPercent } from '../../helpers/formatters/format'
 import { useObservableWithError } from '../../helpers/observableHook'
-import { multiplyPageCardsData } from '../../helpers/productCards'
+import { borrowPageCardsData } from '../../helpers/productCards'
 import { one } from '../../helpers/zero'
 
-const multiplyCardsFilters = [
+const borrowCardsFilters = [
   { name: 'Featured', icon: 'star_circle' },
   { name: 'ETH', icon: 'eth_circle' },
   { name: 'BTC', icon: 'btc_circle' },
+  { name: 'UNI LP', icon: 'uni_lp_circle' },
   { name: 'LINK', icon: 'link_circle' },
   { name: 'UNI', icon: 'uni_circle' },
   { name: 'YFI', icon: 'yfi_circle' },
   { name: 'MANA', icon: 'mana_circle' },
   { name: 'MATIC', icon: 'matic_circle' },
+  { name: 'GUSD', icon: 'gusd_circle' },
 ]
 
-export function MultiplyView() {
+export function BorrowView() {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
   const { error: productCardsDataError, value: productCardsDataValue } = useObservableWithError(
@@ -40,9 +43,9 @@ export function MultiplyView() {
       }}
     >
       <ProductHeader
-        title={t('product-page.multiply.title')}
-        description={t('product-page.multiply.description')}
-        link={{ href: '', text: t('product-page.multiply.link') }}
+        title={t('product-page.borrow.title')}
+        description={t('product-page.borrow.description')}
+        link={{ href: '', text: t('product-page.borrow.link') }}
       />
 
       <WithErrorHandler error={[productCardsDataError]}>
@@ -55,42 +58,44 @@ export function MultiplyView() {
           }
         >
           {([productCardsData]) => (
-            <ProductCardsFilter filters={multiplyCardsFilters}>
+            <ProductCardsFilter filters={borrowCardsFilters}>
               {(cardsFilter) => (
                 <Grid columns={[1, 2, 3]} sx={{ justifyItems: 'center' }}>
-                  {multiplyPageCardsData({ productCardsData, cardsFilter }).map((cardData) => {
-                    const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
+                  {borrowPageCardsData({ productCardsData, cardsFilter }).map((cardData) => {
+                    const maxBorrowAmount = new BigNumber(
+                      one
+                        .div(cardData.liquidationRatio)
+                        .multipliedBy(cardData.currentCollateralPrice.times(100)),
+                    ).toFixed(0)
 
                     return (
                       <ProductCard
                         key={cardData.ilk}
                         tokenImage={cardData.bannerIcon}
                         title={cardData.ilk}
-                        description={t(`product-card.multiply.description`, {
+                        description={t(`product-card.borrow.description`, {
                           token: cardData.token,
                         })}
                         banner={{
                           title: t('product-card-banner.with', {
-                            value: '100',
+                            value: 100,
                             token: cardData.token,
                           }),
-                          description: t(`product-card-banner.multiply.description`, {
-                            value: maxMultiple.times(100).toFixed(2),
-                            token: cardData.token,
+                          description: t(`product-card-banner.borrow.description`, {
+                            value: maxBorrowAmount,
                           }),
                         }}
                         leftSlot={{
-                          title: t('system.max-multiple'),
-                          value: `${maxMultiple.toFixed(2)}x`,
+                          title: t('system.min-coll-ratio'),
+                          value: `${formatPercent(cardData.liquidationRatio.times(100), {
+                            precision: 2,
+                          })}`,
                         }}
                         rightSlot={{
                           title: t(t('system.stability-fee')),
                           value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
                         }}
-                        button={{
-                          link: `/vaults/open-multiply/${cardData.ilk}`,
-                          text: t('nav.multiply'),
-                        }}
+                        button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}
                         background={cardData.background}
                       />
                     )

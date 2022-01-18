@@ -56,57 +56,57 @@ export function landingPageCardsData({
 
 export function multiplyPageCardsData({
   productCardsData,
-  token,
+  cardsFilter,
 }: {
   productCardsData: ProductCardData[]
-  token?: string
+  cardsFilter?: string
 }) {
   const featuredCards = ['ETH-A', 'WBTC-A', 'LINK-A']
   const multiplyTokens = productCardsData.filter((ilk) =>
     ALLOWED_MULTIPLY_TOKENS.includes(ilk.token),
   )
 
-  if (token === 'Featured') {
+  if (cardsFilter === 'Featured') {
     return productCardsData.filter((ilk) => featuredCards.includes(ilk.ilk))
   }
 
-  if (token === 'BTC') {
+  if (cardsFilter === 'BTC') {
     return btcProductCards(productCardsData)
   }
 
-  if (token === 'ETH') {
+  if (cardsFilter === 'ETH') {
     return ethProductCards(productCardsData)
   }
 
-  return multiplyTokens.filter((ilk) => ilk.token === token)
+  return multiplyTokens.filter((ilk) => ilk.token === cardsFilter)
 }
 
 export function borrowPageCardsData({
   productCardsData,
-  token,
+  cardsFilter,
 }: {
   productCardsData: ProductCardData[]
-  token?: string
+  cardsFilter?: string
 }) {
   const featuredCards = ['ETH-A', 'WBTC-A', 'ETH-C']
 
-  if (!token) {
+  if (cardsFilter === 'Featured') {
     return productCardsData.filter((ilk) => featuredCards.includes(ilk.ilk))
   }
 
-  if (token === 'UNI-LP') {
+  if (cardsFilter === 'UNI LP') {
     return uniLpProductCards(productCardsData)
   }
 
-  if (token === 'BTC') {
+  if (cardsFilter === 'BTC') {
     return btcProductCards(productCardsData)
   }
 
-  if (token === 'ETH') {
+  if (cardsFilter === 'ETH') {
     return ethProductCards(productCardsData)
   }
 
-  return productCardsData.filter((ilk) => ilk.token === token)
+  return productCardsData.filter((ilk) => ilk.token === cardsFilter)
 }
 
 export function createProductCardsData$(

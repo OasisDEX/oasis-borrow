@@ -593,6 +593,7 @@ const oasisBaseTheme = {
       border: 'unset',
       color: 'inherit',
       cursor: 'pointer',
+      fontFamily: 'body',
     },
   },
   links: {

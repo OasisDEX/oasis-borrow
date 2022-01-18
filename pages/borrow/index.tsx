@@ -3,7 +3,7 @@ import React from 'react'
 
 import { WithConnection } from '../../components/connectWallet/ConnectWallet'
 import { LandingPageLayout } from '../../components/Layouts'
-import { MultiplyView } from '../../features/multiply/MultiplyView'
+import { BorrowView } from '../../features/borrow/BorrowView'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
@@ -12,12 +12,12 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-export default function MultiplyPage() {
+export default function BorrowPage() {
   const enabled = useFeatureToggle('MultiplyAndBorrowPage')
-  const view = enabled ? <MultiplyView /> : null
+  const view = enabled ? <BorrowView /> : null
 
   return <WithConnection>{view}</WithConnection>
 }
 
-MultiplyPage.layout = LandingPageLayout
-MultiplyPage.theme = 'Landing'
+BorrowPage.layout = LandingPageLayout
+BorrowPage.theme = 'Landing'

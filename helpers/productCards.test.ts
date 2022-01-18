@@ -157,7 +157,10 @@ describe('createProductCardsData$', () => {
       createProductCardsData$(of([wbtcA, ethA, linkA, wsteth]), () => mockPriceInfo$()),
     )
 
-    const multiplyPageData = multiplyPageCardsData({ productCardsData: state(), token: 'ETH' })
+    const multiplyPageData = multiplyPageCardsData({
+      productCardsData: state(),
+      cardsFilter: 'ETH',
+    })
 
     expect(multiplyPageData).to.eql([
       {
@@ -231,7 +234,7 @@ describe('createProductCardsData$', () => {
       ),
     )
 
-    const borrowPageData = borrowPageCardsData({ productCardsData: state(), token: 'BTC' })
+    const borrowPageData = borrowPageCardsData({ productCardsData: state(), cardsFilter: 'BTC' })
 
     expect(borrowPageData).to.eql([
       {
