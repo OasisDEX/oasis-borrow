@@ -71,9 +71,14 @@ function ethProductCards(productCardsData: ProductCardData[]) {
   return productCardsData.filter((ilk) => ETH_TOKENS.includes(ilk.token))
 }
 
+const notSupportedAnymoreLpTokens = ['UNIV2ETHUSDT', 'UNIV2LINKETH', 'UNIV2AAVEETH', 'UNIV2DAIUSDT']
+
 function uniLpProductCards(productCardsData: ProductCardData[]) {
   return productCardsData.filter(
-    (ilk) => LP_TOKENS.includes(ilk.token) && !ONLY_MULTIPLY_TOKENS.includes(ilk.token),
+    (ilk) =>
+      LP_TOKENS.includes(ilk.token) &&
+      !ONLY_MULTIPLY_TOKENS.includes(ilk.token) &&
+      !notSupportedAnymoreLpTokens.includes(ilk.token),
   )
 }
 

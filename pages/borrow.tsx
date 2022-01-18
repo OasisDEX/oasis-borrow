@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import React from 'react'
 
 import { WithConnection } from '../components/connectWallet/ConnectWallet'
-import { LandingPageLayout } from '../components/Layouts'
+import { ProductPagesLayout } from '../components/Layouts'
 import { BorrowView } from '../features/borrow/BorrowView'
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
 
@@ -28,5 +28,5 @@ export default function BorrowPage() {
   return <WithConnection>{view}</WithConnection>
 }
 
-BorrowPage.layout = LandingPageLayout
+BorrowPage.layout = ProductPagesLayout
 BorrowPage.theme = 'Landing'

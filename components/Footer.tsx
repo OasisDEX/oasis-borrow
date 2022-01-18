@@ -8,6 +8,7 @@ import getConfig from 'next/config'
 import React from 'react'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
 
+import { ProductBackground } from '../theme/ProductBackground'
 import { ChevronUpDown } from './ChevronUpDown'
 import { SelectComponents } from 'react-select/src/components'
 
@@ -178,6 +179,7 @@ export function Footer() {
         </Grid>
       </Container>
       <TemporaryFooter />
+      <ProductBackground variant="bottom" />
     </Box>
   )
 }

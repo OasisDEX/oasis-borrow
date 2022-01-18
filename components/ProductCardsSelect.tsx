@@ -103,6 +103,7 @@ export function ProductCardsSelect({
         SingleValue: InputWithIcon,
       }}
       isOptionSelected={isSelected}
+      isSearchable={false}
     />
   )
 }

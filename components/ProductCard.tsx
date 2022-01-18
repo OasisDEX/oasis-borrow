@@ -13,12 +13,12 @@ interface ProductCardBannerProps {
 
 function ProductCardBanner({ title, description }: ProductCardBannerProps) {
   const dataContainer = useRef<HTMLDivElement>(null)
-  const [bigContainer, setBigCointainer] = useState(false)
+  const [contentHeight, setContentHeight] = useState(0)
   const size = useWindowSize()
 
   useEffect(() => {
     if (dataContainer.current) {
-      setBigCointainer(dataContainer.current.getBoundingClientRect().height > 75)
+      setContentHeight(dataContainer.current.getBoundingClientRect().height)
     }
   }, [size, description])
 
@@ -29,7 +29,7 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
         sx={{
           mixBlendMode: 'overlay',
           backgroundColor: 'black',
-          minHeight: bigContainer ? '116px' : '88px',
+          minHeight: contentHeight > 100 ? '140px' : contentHeight > 75 ? '116px' : '88px',
           border: 'unset',
         }}
       />

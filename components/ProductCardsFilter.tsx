@@ -61,7 +61,11 @@ export function ProductCardsFilter({ filters, children }: TokenTabsProps) {
         </Flex>
       </Box>
       <Flex sx={{ width: '100%', justifyContent: 'center', display: ['block', 'none'], mb: 3 }}>
-        <ProductCardsSelect options={filters} handleChange={handleSelectChange} currentFilter={currentFilter}/>
+        <ProductCardsSelect
+          options={filters}
+          handleChange={handleSelectChange}
+          currentFilter={currentFilter}
+        />
       </Flex>
 
       {children(currentFilter)}
