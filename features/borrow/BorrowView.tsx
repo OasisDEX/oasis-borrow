@@ -46,7 +46,7 @@ export function BorrowView() {
               {(cardsFilter) => (
                 <Grid columns={[1, 2, 3]} sx={{ justifyItems: 'center' }}>
                   {borrowPageCardsData({ productCardsData, cardsFilter }).map((cardData) => (
-                    <ProductCardBorrow cardData={cardData} key={cardData.ilk}/>
+                    <ProductCardBorrow cardData={cardData} key={cardData.ilk} />
                   ))}
                 </Grid>
               )}
