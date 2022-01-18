@@ -204,8 +204,10 @@
   "keyWithCount_plural": "{{count}} items",
   "landing": {
     "hero": {
-      "headline": "Borrow Dai and Multiply your exposure to crypto",
-      "subheader": "Open a Maker Vault, deposit 25+ crypto collaterals. Either borrow Dai or buy additional collateral to increase your exposure.<0/> Connect a wallet to start."
+      "headlinePreAssetLandingPages": "Borrow Dai and Multiply your exposure to crypto",
+      "subheaderPreAssetLandingPages": "Open a Maker Vault, deposit 25+ crypto collaterals. Either borrow Dai or buy additional collateral to increase your exposure.<0/> Connect a wallet to start.",
+      "headline": "Borrow and multiply using your favourite cryptos",
+      "subheader": "ETH, WBTC, +30 more assets available to put to work from just 1.50% per year.<0/> Connect a wallet to get started"
     },
     "cards": {
       "dai": {
@@ -215,6 +217,18 @@
       "faq": {
         "title": "Have a question?",
         "description": "Learn more about Oasis, Dai and DeFi at our FAQ’s page"
+      }
+    },
+    "tabs": {
+      "borrow": {
+        "tabLabel": "Borrow on Oasis",
+        "tabParaContent": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum nibh etc aliquam dolor sit amet.",
+        "tabParaLinkContent": "See all Borrow collateral types →"
+      },
+      "multiply": {
+        "tabLabel": "Multiply on Oasis",
+        "tabParaContent": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum nibh etc aliquam dolor sit amet.",
+        "tabParaLinkContent": "See all Multiply collateral types →"
       }
     },
     "cookie-banner": {
@@ -326,9 +340,10 @@
     "oracles": "Oracles",
     "dai-wallet": "Dai Wallet",
     "borrow": "Borrow",
+    "oasis-borrow": "Oasis Borrow",
     "multiply": "Multiply",
-    "earn": "Earn",
-    "oasis-borrow": "Oasis Borrow"
+    "more": "More",
+    "earn": "Earn"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",

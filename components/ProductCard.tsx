@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Box, Card, Flex, Heading, Image, Text } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
 import { useWindowSize } from '../helpers/useWindowSize'
 import { FloatingLabel } from './FloatingLabel'
@@ -58,7 +58,7 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
   )
 }
 
-interface ProductCardProps {
+export interface ProductCardProps {
   tokenImage: string
   title: string
   description: string
@@ -144,5 +144,21 @@ export function ProductCard({
         </Box>
       </Flex>
     </Card>
+  )
+}
+
+export function ProductCardsLayout(props: { productCards: Array<JSX.Element> }) {
+  return (
+    <Grid
+      sx={{
+        gap: '17px',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(378px, max-content))',
+        width: '100%',
+        boxSizing: 'border-box',
+        justifyContent: 'center',
+      }}
+    >
+      {props.productCards}
+    </Grid>
   )
 }

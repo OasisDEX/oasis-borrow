@@ -62,11 +62,11 @@ jobs:
       - name: release version
         run: npm run release -- ${{ env.RELEASE_TYPE }} --ci
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
       - name: Merge dev -> main
         uses: devmasx/merge-branch@master
         with:
           type: now
           from_branch: dev
           target_branch: main
-          github_token: ${{ github.token }}
+          github_token: ${{ secrets.PAT }}

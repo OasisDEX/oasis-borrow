@@ -237,8 +237,10 @@
       "trade": "Negocie"
     },
     "hero": {
-      "headline": "Gerar Dai usando cripto como colateral.",
-      "subheader": "Abrir um Cofre Maker, deposite seu colateral e crie Dai.<0/> Conectar uma carteira para começar."
+      "headlinePreAssetLandingPages": "Gerar Dai usando cripto como colateral.",
+      "subheaderPreAssetLandingPages": "Abrir um Cofre Maker, deposite seu colateral e crie Dai.<0/> Conectar uma carteira para começar.",
+      "headline": "Borrow and multiply using your favourite cryptos",
+      "subheader": "ETH, WBTC, +30 more assets available to put to work from just 1.50% per year.<0/> Connect a wallet to get started"
     },
     "cards": {
       "dai": {
