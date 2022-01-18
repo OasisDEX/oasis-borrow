@@ -65,10 +65,12 @@ jobs:
         run: npm run release -- ${{ env.RELEASE_TYPE }} --ci
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
-      - name: Merge dev -> main
-        uses: devmasx/merge-branch@master
-        with:
-          type: now
-          from_branch: dev
-          target_branch: main
-          github_token: ${{ secrets.PAT }}
+      - name: Checkout to main
+        uses: actions/checkout@v2
+        with: 
+          token: ${{ secrets.PAT }}
+          ref: main
+      - name: Pull dev changes
+        run: | 
+          git pull origin/div
+          git push origin HEAD
