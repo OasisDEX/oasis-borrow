@@ -11,21 +11,8 @@ import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { formatPercent } from '../../helpers/formatters/format'
 import { useObservableWithError } from '../../helpers/observableHook'
-import { borrowPageCardsData } from '../../helpers/productCards'
+import { borrowPageCardsData, productCardsConfig } from '../../helpers/productCards'
 import { one } from '../../helpers/zero'
-
-const borrowCardsFilters = [
-  { name: 'Featured', icon: 'star_circle' },
-  { name: 'ETH', icon: 'eth_circle' },
-  { name: 'BTC', icon: 'btc_circle' },
-  { name: 'UNI LP', icon: 'uni_lp_circle' },
-  { name: 'LINK', icon: 'link_circle' },
-  { name: 'UNI', icon: 'uni_circle' },
-  { name: 'YFI', icon: 'yfi_circle' },
-  { name: 'MANA', icon: 'mana_circle' },
-  { name: 'MATIC', icon: 'matic_circle' },
-  { name: 'GUSD', icon: 'gusd_circle' },
-]
 
 export function BorrowView() {
   const { t } = useTranslation()
@@ -58,7 +45,7 @@ export function BorrowView() {
           }
         >
           {([productCardsData]) => (
-            <ProductCardsFilter filters={borrowCardsFilters}>
+            <ProductCardsFilter filters={productCardsConfig.borrow.cardsFilters}>
               {(cardsFilter) => (
                 <Grid columns={[1, 2, 3]} sx={{ justifyItems: 'center' }}>
                   {borrowPageCardsData({ productCardsData, cardsFilter }).map((cardData) => {

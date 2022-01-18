@@ -24,6 +24,45 @@ export interface ProductCardData {
   name: string
 }
 
+export const productCardsConfig = {
+  borrow: {
+    cardsFilters: [
+      { name: 'Featured', icon: 'star_circle' },
+      { name: 'ETH', icon: 'eth_circle' },
+      { name: 'BTC', icon: 'btc_circle' },
+      { name: 'UNI LP', icon: 'uni_lp_circle' },
+      { name: 'LINK', icon: 'link_circle' },
+      { name: 'UNI', icon: 'uni_circle' },
+      { name: 'YFI', icon: 'yfi_circle' },
+      { name: 'MANA', icon: 'mana_circle' },
+      { name: 'MATIC', icon: 'matic_circle' },
+      { name: 'GUSD', icon: 'gusd_circle' },
+    ],
+    featuredCards: ['ETH-A', 'WBTC-A', 'LINK-A'],
+  },
+  multiply: {
+    cardsFilters: [
+      { name: 'Featured', icon: 'star_circle' },
+      { name: 'ETH', icon: 'eth_circle' },
+      { name: 'BTC', icon: 'btc_circle' },
+      { name: 'UNI LP', icon: 'uni_lp_circle' },
+      { name: 'LINK', icon: 'link_circle' },
+      { name: 'UNI', icon: 'uni_circle' },
+      { name: 'YFI', icon: 'yfi_circle' },
+      { name: 'MANA', icon: 'mana_circle' },
+      { name: 'MATIC', icon: 'matic_circle' },
+    ],
+    featuredCards: ['ETH-A', 'WBTC-A', 'LINK-A'],
+  },
+  landing: {
+    featuredCards: {
+      multiply: ['ETH-A', 'WBTC-A', 'LINK-A'],
+      borrow: ['ETH-A', 'WBTC-A', 'LINK-A'],
+      earn: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
+    },
+  },
+}
+
 function btcProductCards(productCardsData: ProductCardData[]) {
   return productCardsData.filter((ilk) => BTC_TOKENS.includes(ilk.token))
 }
@@ -45,13 +84,9 @@ export function landingPageCardsData({
   productCardsData: ProductCardData[]
   product?: 'multiply' | 'borrow' | 'earn'
 }) {
-  const landingCardsMap = {
-    multiply: ['ETH-A', 'WBTC-A', 'LINK-A'],
-    borrow: ['ETH-A', 'WBTC-A', 'LINK-A'],
-    earn: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
-  }
-
-  return productCardsData.filter((ilk) => landingCardsMap[product].includes(ilk.ilk))
+  return productCardsData.filter((ilk) =>
+    productCardsConfig.landing.featuredCards[product].includes(ilk.ilk),
+  )
 }
 
 export function multiplyPageCardsData({
@@ -61,13 +96,14 @@ export function multiplyPageCardsData({
   productCardsData: ProductCardData[]
   cardsFilter?: string
 }) {
-  const featuredCards = ['ETH-A', 'WBTC-A', 'LINK-A']
   const multiplyTokens = productCardsData.filter((ilk) =>
     ALLOWED_MULTIPLY_TOKENS.includes(ilk.token),
   )
 
   if (cardsFilter === 'Featured') {
-    return productCardsData.filter((ilk) => featuredCards.includes(ilk.ilk))
+    return productCardsData.filter((ilk) =>
+      productCardsConfig.multiply.featuredCards.includes(ilk.ilk),
+    )
   }
 
   // TODO TEMPORARY UNTIL WE WILL HAVE EARN PAGE
@@ -95,10 +131,10 @@ export function borrowPageCardsData({
   productCardsData: ProductCardData[]
   cardsFilter?: string
 }) {
-  const featuredCards = ['ETH-A', 'WBTC-A', 'ETH-C']
-
   if (cardsFilter === 'Featured') {
-    return productCardsData.filter((ilk) => featuredCards.includes(ilk.ilk))
+    return productCardsData.filter((ilk) =>
+      productCardsConfig.borrow.featuredCards.includes(ilk.ilk),
+    )
   }
 
   if (cardsFilter === 'UNI LP') {

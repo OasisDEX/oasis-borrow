@@ -10,20 +10,8 @@ import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { formatPercent } from '../../helpers/formatters/format'
 import { useObservableWithError } from '../../helpers/observableHook'
-import { multiplyPageCardsData } from '../../helpers/productCards'
+import { multiplyPageCardsData, productCardsConfig } from '../../helpers/productCards'
 import { one } from '../../helpers/zero'
-
-const multiplyCardsFilters = [
-  { name: 'Featured', icon: 'star_circle' },
-  { name: 'ETH', icon: 'eth_circle' },
-  { name: 'BTC', icon: 'btc_circle' },
-  { name: 'UNI LP', icon: 'uni_lp_circle' },
-  { name: 'LINK', icon: 'link_circle' },
-  { name: 'UNI', icon: 'uni_circle' },
-  { name: 'YFI', icon: 'yfi_circle' },
-  { name: 'MANA', icon: 'mana_circle' },
-  { name: 'MATIC', icon: 'matic_circle' },
-]
 
 export function MultiplyView() {
   const { t } = useTranslation()
@@ -56,7 +44,7 @@ export function MultiplyView() {
           }
         >
           {([productCardsData]) => (
-            <ProductCardsFilter filters={multiplyCardsFilters}>
+            <ProductCardsFilter filters={productCardsConfig.multiply.cardsFilters}>
               {(cardsFilter) => (
                 <Grid columns={[1, 2, 3]} sx={{ justifyItems: 'center' }}>
                   {multiplyPageCardsData({ productCardsData, cardsFilter }).map((cardData) => {
