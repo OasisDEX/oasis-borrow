@@ -1,9 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Flex, Grid, Heading, Image, SxStyleProp, Text, Box } from 'theme-ui'
+import { Box, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
+import { InfoCard } from '../../components/InfoCard'
 import { AppLink } from '../../components/Links'
 import { ProductCardsLayout } from '../../components/ProductCard'
 import { ProductCardBorrow } from '../../components/ProductCardBorrow'
@@ -16,7 +17,6 @@ import { landingPageCardsData, ProductCardData } from '../../helpers/productCard
 import { staticFilesRuntimeUrl } from '../../helpers/staticPaths'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { slideInAnimation } from '../../theme/animations'
-import { InfoCard } from '../../components/InfoCard'
 
 function TabContent(props: {
   paraText: JSX.Element

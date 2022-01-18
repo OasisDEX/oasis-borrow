@@ -1,7 +1,7 @@
-import { Box, Card, Heading, Text, SxStyleProp } from 'theme-ui'
+import { Box, Card, Heading, SxStyleProp, Text } from 'theme-ui'
+
 import { staticFilesRuntimeUrl } from '../helpers/staticPaths'
 import { AppLink } from './Links'
-import getConfig from 'next/config'
 
 export function InfoCard({
   title,
@@ -40,7 +40,7 @@ export function InfoCard({
               href={href}
               sx={{ pb: 3, fontSize: '16px', color: 'primary', display: 'block' }}
             >
-              {text} ->
+              {text} -&gt;
             </AppLink>
           </>
         ))}
