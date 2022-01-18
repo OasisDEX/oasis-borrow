@@ -12,13 +12,13 @@ import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import React, { ComponentProps, useCallback } from 'react'
-import { Box, Button, Card, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
+import { Hero } from '../homepage/HomepageView'
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
 //import { TypeformWidget } from './TypeformWidget'
 
@@ -133,58 +133,6 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
     },
   },
 ]
-
-export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boolean }) {
-  const { t } = useTranslation()
-
-  return (
-    <Flex
-      sx={{
-        ...sx,
-        justifySelf: 'center',
-        alignItems: 'center',
-        textAlign: 'center',
-        my: 5,
-        flexDirection: 'column',
-      }}
-    >
-      <Heading as="h1" variant="header1" sx={{ mb: 3 }}>
-        {t('landing.hero.headline')}
-      </Heading>
-      <Text variant="paragraph1" sx={{ mb: 4, color: 'lavender' }}>
-        <Trans i18nKey="landing.hero.subheader" components={[<br />]} />
-      </Text>
-      <Image sx={{ mb: 4 }} src={staticFilesRuntimeUrl('/static/img/icons_set.svg')} />
-      {!isConnected && (
-        <AppLink
-          href="/connect"
-          variant="primary"
-          sx={{
-            display: 'flex',
-            margin: '0 auto',
-            px: '40px',
-            py: 2,
-            alignItems: 'center',
-            '&:hover svg': {
-              transform: 'translateX(10px)',
-            },
-          }}
-        >
-          {t('connect-wallet')}
-          <Icon
-            name="arrow_right"
-            sx={{
-              ml: 2,
-              position: 'relative',
-              left: 2,
-              transition: '0.2s',
-            }}
-          />
-        </AppLink>
-      )}
-    </Flex>
-  )
-}
 
 function LandingCard({ href, cardKey }: { href: string; cardKey: 'dai' | 'faq' }) {
   const { t } = useTranslation()

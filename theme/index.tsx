@@ -217,6 +217,7 @@ const oasisBaseTheme = {
     actionCard: '0px 2px 6px rgba(37, 39, 61, 0.25)',
     userSettingsCardDropdown: '0px 4px 28px rgba(37, 39, 61, 0.36)',
     userSettingsOptionButton: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+    tabSwitcherTabActive: '0px 1px 6px rgba(37, 39, 61, 0.15)',
   },
   gradients: {
     app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
@@ -580,6 +581,34 @@ const oasisBaseTheme = {
         color: 'primary',
       },
     },
+    tabSwitcherTabActive: {
+      fontFamily: 'body',
+      fontSize: 3,
+      fontWeight: 'semiBold',
+      lineHeight: 'body',
+      bg: 'background',
+      p: 3,
+      color: 'primary',
+      boxShadow: 'tabSwitcherTabActive',
+      borderRadius: 'inherit',
+      cursor: 'pointer',
+      paddingLeft: '2em',
+      paddingRight: '2em',
+    },
+    tabSwitcherTabInactive: {
+      fontFamily: 'body',
+      fontSize: 3,
+      fontWeight: 'semiBold',
+      bg: 'transparent',
+      color: 'text.subtitle',
+      cursor: 'pointer',
+      transition: TRANSITIONS.global,
+      '&:hover': {
+        color: 'primary',
+      },
+      paddingLeft: '2em',
+      paddingRight: '2em',
+    },
     menuButton: {
       variant: 'buttons.secondary',
       bg: 'background',
@@ -589,6 +618,10 @@ const oasisBaseTheme = {
     },
   },
   links: {
+    inText: {
+      textDecoration: 'none',
+      color: '#585CF5',
+    },
     primary: {
       px: 3,
       py: 2,
@@ -809,6 +842,11 @@ const oasisBaseTheme = {
       gridTemplateColumns: ['1fr', null, null, '1fr 1fr'],
       alignSelf: 'flex-start',
       mb: 3,
+    },
+    tabSwitcher: {
+      bg: 'backgroundAlt',
+      borderRadius: '2em',
+      gap: '0px',
     },
   },
   styles: {

@@ -220,8 +220,10 @@
       "trade": "交易"
     },
     "hero": {
-      "headline": "抵押数字资产，生成 Dai",
-      "subheader": "开启 Maker 金库，存入抵押品，生成 Dai。<0/> 连接钱包以开始。"
+      "headlinePreAssetLandingPages": "抵押数字资产，生成 Dai",
+      "subheaderPreAssetLandingPages": "开启 Maker 金库，存入抵押品，生成 Dai。<0/> 连接钱包以开始。",
+      "headline": "Borrow and multiply using your favourite cryptos",
+      "subheader": "ETH, WBTC, +30 more assets available to put to work from just 1.50% per year.<0/> Connect a wallet to get started"
     },
     "cards": {
       "dai": {
@@ -331,7 +333,9 @@
     "contact": "联系方式",
     "faq": "常见问题",
     "privacy": "隐私",
-    "terms": "条款"
+    "terms": "条款",
+    "multiply": "Multiply",
+    "more": "More"
   },
   "new-to-ethereum": "刚接触以太坊？",
   "next": "下一步",
