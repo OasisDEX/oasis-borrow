@@ -46,7 +46,7 @@ export function MultiplyView() {
               {(cardsFilter) => (
                 <Grid columns={[1, 2, 3]} sx={{ justifyItems: 'center' }}>
                   {multiplyPageCardsData({ productCardsData, cardsFilter }).map((cardData) => (
-                    <ProductCardMultiply cardData={cardData} />
+                    <ProductCardMultiply cardData={cardData} key={cardData.ilk} />
                   ))}
                 </Grid>
               )}
