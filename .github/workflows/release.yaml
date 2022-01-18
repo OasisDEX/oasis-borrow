@@ -62,7 +62,7 @@ jobs:
       - name: Clear git user
         run: | 
           git remote rm origin
-          git remote add origin https://OazoApps-DevOps:${{secrets.PAT}}@github.com:OasisDEX/oasis-borrow.git
+          git remote add origin https://OazoApps-DevOps:${{secrets.PAT}}@github.com/OasisDEX/oasis-borrow.git
           git symbolic-ref HEAD refs/heads/dev
 
       - name: release version
