@@ -174,6 +174,71 @@ export function HomepageView() {
           backgroundImage="/static/img/info_cards/bubbles.png"
         />
       </Grid>
+      <Text variant="header2" sx={{ textAlign: 'center', mt: 7, mb: 4 }}>
+        Get started with Oasis.app
+      </Text>
+      <Grid
+        gap={4}
+        sx={{
+          maxWidth: '944px',
+          margin: 'auto',
+          gridTemplateColumns: ['1fr', '379px 1fr'],
+          // gridTemplateRows: 'auto',
+          gridTemplateAreas: [
+            'none',
+            `
+            "left topRight"
+            "left bottomRight"
+          `,
+          ],
+        }}
+      >
+        <InfoCard
+          title="Left"
+          subtitle="In a single transaction you can open a Maker vault, generate DAI, and spend them for more collateral."
+          links={[
+            {
+              href: '/support',
+              text: 'FAQ',
+            },
+          ]}
+          backgroundGradient="linear-gradient(135.35deg, #FEF7FF 0.6%, #FEE9EF 100%), radial-gradient(261.45% 254.85% at 3.41% 2.19%, #FFFADD 0%, #FFFBE3 0.01%, #F0FFF2 52.6%, #FBEDFD 100%)"
+          backgroundImage="/static/img/info_cards/bubbles.png"
+          sx={{
+            gridArea: [null, 'left'],
+          }}
+        />
+        <InfoCard
+          sx={{
+            gridArea: [null, 'topRight'],
+          }}
+          title="top right"
+          subtitle="In a single transaction you can open a Maker vault, generate DAI, and spend them for more collateral."
+          links={[
+            {
+              href: '/support',
+              text: 'FAQ',
+            },
+          ]}
+          backgroundGradient="linear-gradient(135.35deg, #FEF7FF 0.6%, #FEE9EF 100%), radial-gradient(261.45% 254.85% at 3.41% 2.19%, #FFFADD 0%, #FFFBE3 0.01%, #F0FFF2 52.6%, #FBEDFD 100%)"
+          backgroundImage="/static/img/info_cards/bubbles.png"
+        />
+        <InfoCard
+          sx={{
+            gridArea: [null, 'bottomRight'],
+          }}
+          title="bottomRight"
+          subtitle="In a single transaction you can open a Maker vault, generate DAI, and spend them for more collateral."
+          links={[
+            {
+              href: '/support',
+              text: 'FAQ',
+            },
+          ]}
+          backgroundGradient="linear-gradient(135.35deg, #FEF7FF 0.6%, #FEE9EF 100%), radial-gradient(261.45% 254.85% at 3.41% 2.19%, #FFFADD 0%, #FFFBE3 0.01%, #F0FFF2 52.6%, #FBEDFD 100%)"
+          backgroundImage="/static/img/info_cards/bubbles.png"
+        />
+      </Grid>
     </Box>
   )
 }

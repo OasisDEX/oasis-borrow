@@ -1,4 +1,4 @@
-import { Box, Card, Heading, Text } from 'theme-ui'
+import { Box, Card, Heading, Text, SxStyleProp } from 'theme-ui'
 import { staticFilesRuntimeUrl } from '../helpers/staticPaths'
 import { AppLink } from './Links'
 import getConfig from 'next/config'
@@ -33,18 +33,20 @@ export function InfoCard({
   links,
   backgroundImage,
   backgroundGradient,
+  sx,
 }: {
   title: string
   subtitle: string
   links: Array<{ href: string; text: string }>
   backgroundImage: string
   backgroundGradient: string
+  sx?: SxStyleProp
 }) {
   return (
     <Card
       sx={{
+        ...sx,
         p: 4,
-        minHeight: '411px',
         borderRadius: 'large',
         border: 'none',
         backgroundImage: `url(${staticFilesRuntimeUrl(backgroundImage)}), ${backgroundGradient}`,
