@@ -28,7 +28,7 @@ const tokens = [
     precision: 18,
     digits: 5,
     maxSell: '10000000',
-    name: 'Ether',
+    name: 'Ethereum',
     icon: 'ether',
     iconCircle: 'ether_circle_color',
     iconColor: 'ether_color',
