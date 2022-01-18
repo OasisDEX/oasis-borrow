@@ -23,6 +23,7 @@ import { MockExchangeQuote, mockExchangeQuote$ } from './exchangeQuote.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
 import { addGasEstimationMock } from './openVault.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
+import { slippageLimitMock } from './slippageLimit.mock'
 import { mockVault$, MockVaultProps } from './vaults.mock'
 
 export const MOCK_VAULT_ID = one
@@ -148,6 +149,7 @@ export function mockManageMultiplyVault$({
     vault$,
     mockExchangeQuote$(exchangeQuote),
     addGasEstimationMock,
+    slippageLimitMock(),
     vaultMultiplyHistory$,
     MOCK_VAULT_ID,
   )

@@ -4,7 +4,7 @@ import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
-import { amountToWad, amountToWei } from 'blockchain/utils'
+import { amountToWad, amountToWei, amountToWeiRoundDown } from 'blockchain/utils'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { CloseVaultTo } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
@@ -90,7 +90,7 @@ export function getWithdrawAndPaybackCallData(
       dssCdpManager.address,
       joins[ilk],
       id.toString(),
-      amountToWei(withdrawAmount, token).toFixed(0),
+      amountToWeiRoundDown(withdrawAmount, token).toFixed(0),
     )
   }
 
@@ -287,6 +287,7 @@ export type OpenMultiplyData = {
   depositCollateral: BigNumber
   requiredDebt: BigNumber
   borrowedCollateral: BigNumber
+  skipFL: boolean
   proxyAddress: string
   userAddress: string
   toTokenAmount: BigNumber
@@ -331,7 +332,7 @@ function getOpenMultiplyCallData(data: OpenMultiplyData, context: ContextConnect
       withdrawDai: amountToWei(zero, 'DAI').toFixed(0),
       depositDai: amountToWei(zero, 'DAI').toFixed(0),
       withdrawCollateral: amountToWei(zero, data.token).toFixed(0),
-      skipFL: false,
+      skipFL: data.skipFL,
       methodName: '',
     } as any,
     {

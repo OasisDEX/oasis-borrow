@@ -2,15 +2,15 @@ import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { getAddress } from 'ethers/lib/utils'
+import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { VaultsOverviewView } from 'features/vaultsOverview/VaultsOverviewView'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
+import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
-
-import { WithTermsOfService } from '../../../features/termsOfService/TermsOfService'
 
 // TODO Move this to /features
 function Summary({ address }: { address: string }) {
@@ -34,10 +34,10 @@ function Summary({ address }: { address: string }) {
   )
 }
 
-export async function getServerSideProps(ctx: any) {
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
     props: {
-      ...(await serverSideTranslations(ctx.locale, ['common'])),
+      ...(await serverSideTranslations(ctx.locale!, ['common'])),
       address: ctx.query?.address || null,
     },
   }

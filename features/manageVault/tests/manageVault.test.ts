@@ -13,8 +13,8 @@ import { zero } from 'helpers/zero'
 import { of, Subject } from 'rxjs'
 import { map } from 'rxjs/internal/operators'
 
-// @ts-ignore
-global.window = {
+type GlobalMock = NodeJS.Global & { window: { location: { reload: () => void } } }
+;(global as GlobalMock).window = {
   location: { reload: () => null },
 }
 

@@ -6,8 +6,8 @@ import BigNumber from 'bignumber.js'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AppContext, TxData } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
+import { SLIPPAGE_DEFAULT } from 'features/userSettings/userSettings'
 import { ModalProvider } from 'helpers/modalHook'
-import { SLIPPAGE } from 'helpers/multiply/calculations'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
 import { of } from 'rxjs'
@@ -224,6 +224,7 @@ const mockTxMetaDefinitions: Pick<TxState<TxData>, 'meta'>[] = [
       toTokenAmount: new BigNumber(3),
       exchangeData: '0x',
       exchangeAddress: '0x',
+      skipFL: false,
     },
   },
   {
@@ -238,7 +239,7 @@ const mockTxMetaDefinitions: Pick<TxState<TxData>, 'meta'>[] = [
       ilk: 'ETH-A',
       exchangeData: '0x',
       exchangeAddress: '0x',
-      slippage: SLIPPAGE,
+      slippage: SLIPPAGE_DEFAULT,
       action: 'BUY_COLLATERAL',
       id: new BigNumber(3456),
     },

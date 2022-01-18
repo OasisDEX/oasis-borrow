@@ -1,4 +1,3 @@
-// @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'

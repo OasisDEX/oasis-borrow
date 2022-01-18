@@ -1,4 +1,5 @@
 {
+  "get-started-button": "Get started on Oasis",
   "404-button": "Go to homepage",
   "404-message": "Sorry, page not found.",
   "about": {
@@ -203,8 +204,10 @@
   "keyWithCount_plural": "{{count}} items",
   "landing": {
     "hero": {
-      "headline": "Borrow Dai and Multiply your exposure to crypto",
-      "subheader": "Open a Maker Vault, deposit 25+ crypto collaterals. Either borrow Dai or buy additional collateral to increase your exposure.<0/> Connect a wallet to start."
+      "headlinePreAssetLandingPages": "Borrow Dai and Multiply your exposure to crypto",
+      "subheaderPreAssetLandingPages": "Open a Maker Vault, deposit 25+ crypto collaterals. Either borrow Dai or buy additional collateral to increase your exposure.<0/> Connect a wallet to start.",
+      "headline": "Borrow and multiply using your favourite cryptos",
+      "subheader": "ETH, WBTC, +30 more assets available to put to work from just 1.50% per year.<0/> Connect a wallet to get started"
     },
     "cards": {
       "dai": {
@@ -214,6 +217,18 @@
       "faq": {
         "title": "Have a question?",
         "description": "Learn more about Oasis, Dai and DeFi at our FAQ’s page"
+      }
+    },
+    "tabs": {
+      "borrow": {
+        "tabLabel": "Borrow on Oasis",
+        "tabParaContent": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum nibh etc aliquam dolor sit amet.",
+        "tabParaLinkContent": "See all Borrow collateral types →"
+      },
+      "multiply": {
+        "tabLabel": "Multiply on Oasis",
+        "tabParaContent": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum nibh etc aliquam dolor sit amet.",
+        "tabParaLinkContent": "See all Multiply collateral types →"
       }
     },
     "cookie-banner": {
@@ -325,7 +340,10 @@
     "oracles": "Oracles",
     "dai-wallet": "Dai Wallet",
     "borrow": "Borrow",
-    "oasis-borrow": "Oasis Borrow"
+    "oasis-borrow": "Oasis Borrow",
+    "multiply": "Multiply",
+    "more": "More",
+    "earn": "Earn"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
@@ -442,7 +460,8 @@
     "vault-dai-debt": "Vault Dai Debt",
     "vault-id": "Vault ID",
     "oracle-price": "Oracle Price",
-    "market-price": "Market Price"
+    "market-price": "Market Price",
+    "max-multiple": "Max Multiple"
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
@@ -501,7 +520,8 @@
     "custom-dai-allowance-amount-less-than-payback-amount": "You need at least an allowance of your payback amount to continue",
     "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, payback your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
     "has-to-deposit-collateral-on-empty-vault": "There is no collateral in this vault. Please first add collateral in the 'Other actions' tab, with the 'deposit collateral' action",
-    "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
+    "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
+    "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting"
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
@@ -673,8 +693,51 @@
       "button": "Borrow against {{token}}"
     }
   },
+  "user-settings": {
+    "button-menu": "Slippage",
+    "slippage-limit": {
+      "preset-title": "Slippage settings",
+      "preset-description": "Select the amount of slippage you would like.",
+      "read-more": "Read more about slippage.",
+      "custom-title": "Set custom slippage amount",
+      "custom-label": "Slippage amount",
+      "errors": {
+        "invalid-slippage": "Invalid slippage. Slippage should be in 20%, 0.1% range"
+      },
+      "warnings": {
+        "high-slippage": "Warning. You have set a high slippage limit which can result in you getting a price quite far from your quoted price. Only continue if you understand this risk."
+      }
+    },
+    "button": "Update settings",
+    "button-in-progress": "Updating settings",
+    "update-success": "Settings updated",
+    "update-failure": "Something went wrong"
+  },
   "modal-trezor-eip1559-title": "Trezor with Metamask does not support EIP-1559",
   "modal-trezor-eip1559-paragraph1": "Oasis.app has recently updated all transactions to support EIP-1559. Doing EIP-1559 transactions with Trezor through metamask is currently not supported, see <0>here</0>.",
   "modal-trezor-eip1559-paragraph2": "You can continue to use Metamask with Trezor with legacy transactions on our environment here: <0>legacy.oasis.app</0>.",
-  "modal-trezor-eip1559-paragraph3": "Alternatively, if you have a Model T Trezor you can <0>connect</0> directly to Oasis.app."
+  "modal-trezor-eip1559-paragraph3": "Alternatively, if you have a Model T Trezor you can <0>connect</0> directly to Oasis.app.",
+  "product-card": {
+    "borrow": {
+      "description": "A Vault designed for borrowing against {{token}}."
+    },
+    "multiply": {
+      "description": "A Vault designed for multiple exposure to {{token}}."
+    },
+    "earn": {
+      "description": "A great way to earn a stable long term yield on your {{token}}"
+    }
+  },
+  "product-card-banner": {
+    "with": "With {{value}} {{token}} \uD83D\uDC47",
+    "borrow": {
+      "description": "Borrow up to {{value}} DAI"
+    },
+    "multiply": {
+      "description": "Get up to {{value}} {{token}} exposure"
+    },
+    "earn": {
+      "description": "Earn {{value}} {{token}} a year"
+    }
+  }
 }

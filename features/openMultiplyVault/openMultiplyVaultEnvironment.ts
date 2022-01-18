@@ -1,10 +1,15 @@
 import { IlkDataChange } from 'blockchain/ilks'
 import { BalanceInfoChange } from 'features/shared/balanceInfo'
 import { PriceInfoChange } from 'features/shared/priceInfo'
+import { SlippageChange } from 'features/userSettings/userSettings'
 
 import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
-export type OpenVaultEnvironmentChange = PriceInfoChange | BalanceInfoChange | IlkDataChange
+export type OpenVaultEnvironmentChange =
+  | PriceInfoChange
+  | BalanceInfoChange
+  | IlkDataChange
+  | SlippageChange
 
 export function applyOpenVaultEnvironment(
   change: OpenMultiplyVaultChange,
@@ -28,6 +33,13 @@ export function applyOpenVaultEnvironment(
     return {
       ...state,
       ilkData: change.ilkData,
+    }
+  }
+
+  if (change.kind === 'slippage') {
+    return {
+      ...state,
+      slippage: change.slippage,
     }
   }
 
