@@ -70,6 +70,13 @@ export function multiplyPageCardsData({
     return productCardsData.filter((ilk) => featuredCards.includes(ilk.ilk))
   }
 
+  // TODO TEMPORARY UNTIL WE WILL HAVE EARN PAGE
+  if (cardsFilter === 'UNI LP') {
+    return productCardsData.filter(
+      (data) => data.ilk === 'GUNIV3DAIUSDC1-A' || data.ilk === 'GUNIV3DAIUSDC2-A',
+    )
+  }
+
   if (cardsFilter === 'BTC') {
     return btcProductCards(productCardsData)
   }

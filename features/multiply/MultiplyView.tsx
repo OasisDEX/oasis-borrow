@@ -17,6 +17,7 @@ const multiplyCardsFilters = [
   { name: 'Featured', icon: 'star_circle' },
   { name: 'ETH', icon: 'eth_circle' },
   { name: 'BTC', icon: 'btc_circle' },
+  { name: 'UNI LP', icon: 'uni_lp_circle' },
   { name: 'LINK', icon: 'link_circle' },
   { name: 'UNI', icon: 'uni_circle' },
   { name: 'YFI', icon: 'yfi_circle' },
