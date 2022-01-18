@@ -16,6 +16,7 @@ import { landingPageCardsData, ProductCardData } from '../../helpers/productCard
 import { staticFilesRuntimeUrl } from '../../helpers/staticPaths'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { slideInAnimation } from '../../theme/animations'
+import { InfoCard } from '../../components/InfoCard'
 
 function TabContent(props: {
   paraText: JSX.Element
@@ -118,6 +119,10 @@ export function HomepageView() {
         }}
         wideTabsSx={{ display: ['none', 'block'] }}
       />
+      <Text variant="header2" sx={{ textAlign: 'center', mt: 7 }}>
+        {t('landing.info-cards.have-some-questions')}
+      </Text>
+      <InfoCard />
     </Grid>
   )
 }
