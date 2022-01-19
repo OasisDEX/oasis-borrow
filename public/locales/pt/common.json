@@ -87,13 +87,13 @@
     "balances": "Saldos",
     "buy": "Comprar",
     "careers": {
-        "heading": "Posições em aberto",
-        "intro": "Nós acreditamos em talento. Junte-se a nós para construir a próxima geração de DeFi",
-        "cta-button": "Candidatar",
-        "back-link": "Voltar para Posições",
-        "no-open-positions": "Não há posições abertas no momento. Mas, estamos sempre em busca do melhor talento para se juntar a nós.",
-        "no-positions-you-like": "Não encontrou algo que te interesse? Nos conte o que deseja! Estamos sempre procurando os melhores talentos para se juntarem a nós!",
-        "write-us": "Mande seu CV para "
+      "heading": "Posições em aberto",
+      "intro": "Nós acreditamos em talento. Junte-se a nós para construir a próxima geração de DeFi",
+      "cta-button": "Candidatar",
+      "back-link": "Voltar para Posições",
+      "no-open-positions": "Não há posições abertas no momento. Mas, estamos sempre em busca do melhor talento para se juntar a nós.",
+      "no-positions-you-like": "Não encontrou algo que te interesse? Nos conte o que deseja! Estamos sempre procurando os melhores talentos para se juntarem a nós!",
+      "write-us": "Mande seu CV para "
     },
     "submit": "Enviar",
     "title": "Contate a Oasis"
@@ -778,15 +778,38 @@
     },
     "multiply": {
       "description": "A Vault designed for multiple exposure to {{token}}."
+    },
+    "earn": {
+      "description": "A great way to earn a stable long term yield on your {{token}}"
     }
   },
   "product-card-banner": {
     "with": "With {{value}} {{token}} \uD83D\uDC47",
     "borrow": {
-      "description": "Borrow up to {{value}} {{token}}"
+      "description": "Borrow up to {{value}} DAI"
     },
     "multiply": {
       "description": "Get up to {{value}} {{token}} exposure"
+    },
+    "earn": {
+      "description": "Earn {{value}} {{token}} a year"
+    }
+  },
+  "product-page": {
+    "multiply": {
+      "title": "Oasis Multiply",
+      "description": "Get Multiple exposure to your favorite crypto assets. Browse our featured products or select a asset.",
+      "link": "Learn more about Multiply ->"
+    },
+    "borrow": {
+      "title": "Oasis Borrow",
+      "description": "Get Multiply exposure to your favorite crypto assets. Select your Base Asset below. Learn more about Borrow ->",
+      "link": "Learn more about Borrow ->"
+    },
+    "earn": {
+      "title": "Oasis Earn",
+      "description": "Put your crypto assets to work today. Start generating the best yields. Select your Base Asset below.",
+      "link": "Learn more about Earn ->"
     }
   }
 }
