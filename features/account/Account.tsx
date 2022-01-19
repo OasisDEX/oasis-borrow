@@ -1,3 +1,5 @@
+// @ts-ignore
+import Davatar from '@davatar/react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
@@ -5,12 +7,12 @@ import { disconnect, getConnectionKindMessage } from 'components/connectWallet/C
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
 import { useSharedUI } from 'components/SharedUIProvider'
+import { ethers } from 'ethers'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useRef } from 'react'
-import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
 import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Flex, Grid, Heading, Text, Textarea } from 'theme-ui'
 
@@ -34,18 +36,24 @@ function DaiIndicator({ daiBalance }: { daiBalance: BigNumber | undefined }) {
     </Flex>
   )
 }
-export function AccountIndicator({ address }: { address: string }) {
+export function AccountIndicator({
+  address,
+  ensName,
+}: {
+  address: string
+  ensName: string | null
+}) {
   return (
     <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mx: 3 }}>
       <Text variant="paragraph4" sx={{ fontWeight: 'bold' }}>
-        {formatAddress(address)}
+        {ensName || formatAddress(address)}
       </Text>
     </Flex>
   )
 }
 
 export function AccountButton() {
-  const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
+  const { vaultFormToggleTitle } = useSharedUI()
   const { accountData$, context$ } = useAppContext()
   const accountData = useObservable(accountData$)
   const context = useObservable(context$)
@@ -95,57 +103,46 @@ export function AccountButton() {
   return (
     <Flex
       sx={{
-        position: ['fixed', 'relative'],
-        bottom: 0,
-        left: 0,
-        right: 0,
-        bg: ['rgba(255,255,255,0.9)', 'transparent'],
-        p: [3, 0],
-        justifyContent: 'space-between',
-        gap: 2,
+        position: 'relative',
+        justifyContent: ['flex-start', 'flex-end'],
+        minWidth: 'auto',
       }}
     >
-      <Flex
+      <Button
+        variant="menuButton"
         sx={{
-          position: 'relative',
-          justifyContent: ['flex-start', 'flex-end'],
-          minWidth: 'auto',
+          minWidth: '150px',
+          p: 1,
+          display: 'flex',
+          alignItems: 'center',
+          '@media screen and (max-width: 440px)': {
+            minWidth: vaultFormToggleTitle ? 'auto' : '150px',
+          },
         }}
+        onClick={() => openModal(AccountModal)}
       >
-        <Button
-          variant="mobileBottomMenu"
+        <AccountIndicator address={context.account} ensName={accountData.ensName} />
+        <Box
           sx={{
-            minWidth: '150px',
-            p: 1,
-            display: 'flex',
-            alignItems: 'center',
+            '@media screen and (max-width: 440px)': {
+              display: vaultFormToggleTitle ? 'none' : 'block',
+            },
           }}
-          onClick={() => openModal(AccountModal)}
         >
-          <AccountIndicator address={context.account} />
           <DaiIndicator daiBalance={accountData.daiBalance} />
-        </Button>
-      </Flex>
-      {vaultFormToggleTitle && (
-        <Box sx={{ display: ['flex', 'none'] }}>
-          <Button
-            variant="mobileBottomMenu"
-            sx={{ px: 3 }}
-            onClick={() => setVaultFormOpened(true)}
-          >
-            <Box>{vaultFormToggleTitle}</Box>
-          </Button>
         </Box>
-      )}
+      </Button>
     </Flex>
   )
 }
 
 export function AccountModal({ close }: ModalProps) {
-  const { web3Context$, accountData$ } = useAppContext()
+  const { web3Context$, accountData$, context$ } = useAppContext()
   const accountData = useObservable(accountData$)
   const web3Context = useObservable(web3Context$)
   const clipboardContentRef = useRef<HTMLTextAreaElement>(null)
+  const context = useObservable(context$)
+  const provider = new ethers.providers.JsonRpcProvider(context?.infuraUrl)
   const { t } = useTranslation()
 
   function disconnectHandler() {
@@ -196,7 +193,12 @@ export function AccountModal({ close }: ModalProps) {
               </Flex>
               <Flex sx={{ alignItems: 'center' }}>
                 <Box mr={2}>
-                  <Jazzicon diameter={28} seed={jsNumberForAddress(account)} />
+                  <Davatar
+                    size={28}
+                    address={account}
+                    generatedAvatarType="jazzicon"
+                    provider={provider}
+                  />
                 </Box>
                 <Text sx={{ fontSize: 5, mx: 1 }}>{formatAddress(account)}</Text>
                 <Icon

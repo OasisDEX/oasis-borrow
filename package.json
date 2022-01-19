@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "2.9.0",
+  "version": "2.11.0",
   "license": "Apache-2.0",
   "scripts": {
     "start": "ts-node --project ./tsconfig.dev.json -r tsconfig-paths/register -r dotenv-flow/config ./server/server.ts",
@@ -29,9 +29,11 @@
     "postinstall": "rm -f node_modules/web3/index.d.ts && yarn prisma:generate && yarn patch-package && yarn typechain:generate",
     "storybook": "start-storybook -p 6006 -s ./public",
     "build:storybook": "build-storybook",
-    "publish:storybook": "storybook-to-aws-s3"
+    "publish:storybook": "storybook-to-aws-s3",
+    "release": "release-it"
   },
   "dependencies": {
+    "@davatar/react": "^1.8.1",
     "@gnosis.pm/safe-apps-web3-react": "^0.5.0",
     "@makerdao/dai-ui-icons": "^0.0.59",
     "@makerdao/dai-ui-icons-branding": "^0.0.66",
@@ -108,11 +110,11 @@
     "react": "^17.0.1",
     "react-countdown-circle-timer": "^2.5.1",
     "react-dom": "^17.0.1",
-    "react-jazzicon": "^0.1.2",
     "react-lottie": "^1.2.3",
     "react-select": "^3.1.0",
     "react-spring": "^8.0.27",
     "react-text-mask": "^5.4.1",
+    "release-it": "^14.12.1",
     "request": "^2.88.2",
     "rxjs": "^6.2.0",
     "rxjs-take-while-inclusive": "^2.1.0",

@@ -9,6 +9,7 @@ import { Observable, of } from 'rxjs'
 
 import { mockExchangeQuote$ } from '../../../helpers/mocks/exchangeQuote.mock'
 import { addGasEstimationMock } from '../../../helpers/mocks/openVault.mock'
+import { slippageLimitMock } from '../../../helpers/mocks/slippageLimit.mock'
 import { createOpenGuniVault$ } from '../openGuniVault'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -64,6 +65,7 @@ describe('test', () => {
       'GUNIV3DAIUSDC1',
       token1Balance$,
       getGuniMintAmount$,
+      slippageLimitMock(),
     )
 
     const state = getStateUnpacker(openGuniVault$)
