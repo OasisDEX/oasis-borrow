@@ -22,6 +22,7 @@ export function ProductCardBorrow(props: { cardData: ProductCardData }) {
     <ProductCard
       key={cardData.ilk}
       tokenImage={cardData.bannerIcon}
+      tokenGif={cardData.bannerGif}
       title={cardData.ilk}
       description={t(`product-card.borrow.description`, { token: cardData.token })}
       banner={{

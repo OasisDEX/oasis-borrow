@@ -13,7 +13,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 })
 
 export default function MultiplyPage() {
-  const enabled = useFeatureToggle('MultiplyAndBorrowPage')
+  const enabled = useFeatureToggle('AssetLandingPages')
   const view = enabled ? <MultiplyView /> : null
 
   return <WithConnection>{view}</WithConnection>

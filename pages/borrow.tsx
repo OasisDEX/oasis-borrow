@@ -21,9 +21,7 @@ export default function BorrowPage() {
       void router.push('/')
     }
   }
-
-  const enabled = useFeatureToggle('MultiplyAndBorrowPage')
-  const view = enabled ? <BorrowView /> : null
+  const view = assetLandingPagesEnabled ? <BorrowView /> : null
 
   return <WithConnection>{view}</WithConnection>
 }
