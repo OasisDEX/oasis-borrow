@@ -5,6 +5,7 @@ import { expect } from 'chai'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
+
 import { legacyToggle } from './legacyToggle'
 
 describe('Other actions calculations', () => {

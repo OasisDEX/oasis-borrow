@@ -12,7 +12,7 @@ function DefaultManageMultiplyVaultEditingController({
   toggle,
   currentStep,
   totalSteps,
-  isBorrowTransitionStage
+  isBorrowTransitionStage,
 }: // accountIsController,
 ManageMultiplyVaultState) {
   const { t } = useTranslation()
@@ -43,9 +43,11 @@ ManageMultiplyVaultState) {
           {t('manage-multiply-vault.action-tabs.borrow')}
         </Button>
       </Grid>
-      {!isBorrowTransitionStage && <Box mt={3} mb={-3}>
-        <WithVaultFormStepIndicator {...{ totalSteps, currentStep }} />
-      </Box>}
+      {!isBorrowTransitionStage && (
+        <Box mt={3} mb={-3}>
+          <WithVaultFormStepIndicator {...{ totalSteps, currentStep }} />
+        </Box>
+      )}
     </Box>
   )
 }
@@ -60,15 +62,17 @@ export function DefaultManageMultiplyVaultFormHeader(props: ManageMultiplyVaultS
         <DefaultManageMultiplyVaultEditingController {...props} />
       )}
       {!isEditingStage && !isBorrowTransitionStage && <ManageVaultHeaderAllowance {...props} />}
-      {!isEditingStage && isBorrowTransitionStage && <Box mt={4}>
-        <WithVaultFormStepIndicator {...{ totalSteps, currentStep }}>
-          <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
-            {stage === 'borrowTransitionEditing'
-              ? t('multiply-to-borrow.title1')
-              : t('multiply-to-borrow.title2')}
-          </Text>
-        </WithVaultFormStepIndicator>
-        </Box>}
+      {!isEditingStage && isBorrowTransitionStage && (
+        <Box mt={4}>
+          <WithVaultFormStepIndicator {...{ totalSteps, currentStep }}>
+            <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
+              {stage === 'borrowTransitionEditing'
+                ? t('multiply-to-borrow.title1')
+                : t('multiply-to-borrow.title2')}
+            </Text>
+          </WithVaultFormStepIndicator>
+        </Box>
+      )}
     </Box>
   )
 }

@@ -12,6 +12,7 @@ import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { of, Subject } from 'rxjs'
 import { map } from 'rxjs/operators'
+
 import { legacyToggle } from './legacyToggle'
 
 type GlobalMock = NodeJS.Global & { document: { getElementById: () => void } }

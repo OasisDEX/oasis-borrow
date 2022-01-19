@@ -1,4 +1,3 @@
-import React from 'react'
 import { ManageMultiplyVaultEditingStage, ManageMultiplyVaultState } from '../manageMultiplyVault'
 
 /*
@@ -16,6 +15,6 @@ import { ManageMultiplyVaultEditingStage, ManageMultiplyVaultState } from '../ma
 */
 export function legacyToggle(state: ManageMultiplyVaultState) {
   const stages: ManageMultiplyVaultEditingStage[] = ['adjustPosition', 'otherActions']
-  const targetStage = stages.find(stage => stage !== state.stage)
+  const targetStage = stages.find((stage) => stage !== state.stage)
   state.toggle!(targetStage!)
 }

@@ -3,6 +3,7 @@ import { expect } from 'chai'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
+
 import { legacyToggle } from './legacyToggle'
 
 describe('manageVaultAdjustPositionValidations', () => {

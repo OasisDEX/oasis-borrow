@@ -76,7 +76,8 @@ export function applyManageVaultTransition(
       ...state,
       ...manageVaultFormDefaults,
       stage: change.stage,
-      originalEditingStage: change.stage === 'borrowTransitionEditing'
+      originalEditingStage:
+        change.stage === 'borrowTransitionEditing'
           ? (stage as ManageMultiplyVaultEditingStage)
           : change.stage,
     }
