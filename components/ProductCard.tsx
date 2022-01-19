@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Box, Card, Flex, Grid, Heading, Image, Text } from 'theme-ui'
+import { Box, Card, Flex,  Heading, Image, Text } from 'theme-ui'
 
 import { useWindowSize } from '../helpers/useWindowSize'
 import { FloatingLabel } from './FloatingLabel'
