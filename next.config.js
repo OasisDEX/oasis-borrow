@@ -95,13 +95,8 @@ module.exports = withBundleAnalyzer(
         async redirects() {
           return [
             {
-              source: '/borrow',
-              destination: '/',
-              permanent: true,
-            },
-            {
-              source: '/borrow/:slug*',
-              destination: '/:slug*',
+              source: '/borrow/:slug(.{1,})', // wildcard redirect `:slug*` was causing an infinite redirect loop
+              destination: '/:slug',
               permanent: true,
             },
             {

@@ -27,6 +27,9 @@ jobs:
       # Runs a single command using the runners shell
       - name: Checkout
         uses: actions/checkout@v2
+        with: 
+          token: ${{ secrets.PAT }}
+          fetch-depth: 0
       - name: 'Determine Release Type'
         run: |
           if ${{ contains(github.event.inputs.release_type, 'major') }}; then
@@ -62,11 +65,13 @@ jobs:
       - name: release version
         run: npm run release -- ${{ env.RELEASE_TYPE }} --ci
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
       - name: Merge dev -> main
-        uses: devmasx/merge-branch@master
-        with:
-          type: now
-          from_branch: dev
-          target_branch: main
-          github_token: ${{ github.token }}
+        run: |
+            git status
+            git pull
+            git fetch
+            git checkout main
+            git rebase dev
+            git push origin main
+            git status
