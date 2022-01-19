@@ -231,6 +231,40 @@
         "tabParaLinkContent": "See all Multiply collateral types →"
       }
     },
+    "info-cards": {
+      "have-some-questions": "Have some questions?",
+      "learn": {
+        "learn": "Learn",
+        "deep-dive": "Deep dive into oasis.app functionalities and glossary",
+        "get-started":"Get started",
+        "tutorials": "Tutorials",
+        "key-concepts": "Key concepts"
+      },
+      "support": {
+        "support": "Support",
+        "contact-whenever": "Contact Oasis.app team whenever you need",
+        "faq": "FAQ",
+        "discord": "Discord",
+        "contact-us": "Contact us",
+        "twitter": "Twitter"
+      },
+      "get-started": "Get started with Oasis.app",
+      "multiply": {
+        "multiply": "Multiply your assets",
+        "subtitle": "In a single transaction you can open a Maker vault, generate DAI, and spend them for more collateral.",
+        "open-vault": "Open vault"
+      },
+      "borrow": {
+        "borrow-dai": "Borrow Dai",
+        "choose-your-preferred-token": "Choose your preferred token as collateral and open a Maker vault to get DAI",
+        "open-vault": "Open vault"
+      },
+      "manage": {
+        "manage-your-vault": "Manage your vault",
+        "make-actions": "Make actions on your vault whenever you want",
+        "connect-your-wallet": "Connect your wallet"
+      }
+    },
     "cookie-banner": {
       "message": "We use the cookies on the website to improve your experience, analyze traffic, and for basic functionality. Cookies are anonymous and do not link to user data. You can still use the website without cookies. For more information, please read our <0>Privacy Policy</0>.",
       "settings-toggle": "Manage settings",
