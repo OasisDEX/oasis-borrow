@@ -20,7 +20,23 @@ import {
   manageVaultWithdrawAndPayback,
 } from './manageMultiplyVaultTransactions'
 
+
+type ManageVaultBorrowTransitionChange =
+  | {
+      kind: 'progressBorrowTransition'
+    }
+  | {
+      kind: 'borrowTransitionInProgress'
+    }
+  | {
+      kind: 'borrowTransitionFailure'
+    }
+  | {
+      kind: 'borrowTransitionSuccess'
+    }
+
 export type ManageVaultTransitionChange =
+  | ManageVaultBorrowTransitionChange
   | {
       kind: 'toggleEditing',
       stage: ManageMultiplyVaultEditingStage
@@ -192,6 +208,34 @@ export function applyManageVaultTransition(
       return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
     }
     return { ...state, stage: originalEditingStage }
+  }
+
+  if (change.kind === 'progressBorrowTransition') {
+    return {
+      ...state,
+      stage: 'borrowTransitionWaitingForConfirmation',
+    }
+  }
+
+  if (change.kind === 'borrowTransitionInProgress') {
+    return {
+      ...state,
+      stage: 'borrowTransitionInProgress',
+    }
+  }
+
+  if (change.kind === 'borrowTransitionFailure') {
+    return {
+      ...state,
+      stage: 'borrowTransitionFailure',
+    }
+  }
+
+  if (change.kind === 'borrowTransitionSuccess') {
+    return {
+      ...state,
+      stage: 'borrowTransitionSuccess',
+    }
   }
 
   if (change.kind === 'clear') {

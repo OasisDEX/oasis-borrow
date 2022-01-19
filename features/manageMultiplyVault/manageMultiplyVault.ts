@@ -5,7 +5,7 @@ import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
-import { SaveVaultType } from 'features/generalManageVault/vaultType'
+import { SaveVaultType, saveVaultTypeForAccount, VaultType } from 'features/generalManageVault/vaultType'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
@@ -245,6 +245,26 @@ export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
     currentStep: number
   } & HasGasEstimation
 
+function setVaultTypeToBorrow(
+  saveVaultType$: SaveVaultType,
+  change: (ch: ManageMultiplyVaultChange) => void,
+  state: ManageMultiplyVaultState,
+) {
+  saveVaultTypeForAccount(
+    saveVaultType$,
+    state.account as string,
+    state.vault.id,
+    VaultType.Borrow,
+    state.vault.chainId,
+    () => {
+      window.location.reload()
+      change({ kind: 'borrowTransitionSuccess'})
+    },
+    () => change({ kind: 'borrowTransitionFailure'}),
+    () => change({ kind: 'borrowTransitionInProgress'})
+  )
+}
+
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   context: Context,
@@ -257,7 +277,7 @@ function addTransitions(
     return {
       ...state,
       toggle: (stage) => change({ kind: 'toggleEditing', stage }),
-      progress: () => {},
+      progress: () => change({ kind: 'progressBorrowTransition' }),
       regress: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -269,7 +289,7 @@ function addTransitions(
     return {
       ...state,
       toggle: (stage) => change({ kind: 'toggleEditing', stage }),
-      progress: () => {},
+      progress: () => setVaultTypeToBorrow(saveVaultType$, change, state),
       regress: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -541,8 +561,8 @@ export function createManageMultiplyVault$(
                     map(validateErrors),
                     map(validateWarnings),
                     switchMap(curry(applyEstimateGas)(addGasEstimation$)),
-                    map(curry(addTransitions)(txHelpers$, context, connectedProxyAddress$,
-                      saveVaultType$, change)),
+                    map(state => addTransitions(txHelpers$, context, connectedProxyAddress$,
+                      saveVaultType$, change, state)),
                     tap((state) => stateSubject$.next(state)),
                   )
                 }),
